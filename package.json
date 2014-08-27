@@ -1,0 +1,24 @@
+{
+  "name": "airpair.com",
+  "version": "1.0.1",
+  "description": "site running airpair.com",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/airpair/airpair.com"
+  },
+  "author": "airpair inc.",
+  "license": "Proprietary",
+  "bugs": {
+    "url": "https://github.com/airpair/airpair.com/issues"
+  },
+  "homepage": "https://github.com/airpair/airpair.com",
+  "devDependencies": {
+    "gulp": "^3.8.7",
+    "gulp-jshint": "^1.8.4",
+    "gulp-nodemon": "^1.0.4"
+  }
+}
