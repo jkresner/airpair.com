@@ -1,6 +1,8 @@
 var express = require('express');
 var app = express();
+var livereload = require('connect-livereload');
 
+app.use(livereload({ port: 35729 }));
 
 app.get('/hello.txt', function(req, res){
   res.send('Hello Uri Worldly');

@@ -3,12 +3,12 @@ path = require('path');
 var gulp = require('gulp');
     nodemon = require('gulp-nodemon'),
     jshint = require('gulp-jshint'),
-    less = require('gulp-less');
-    // rename = require('gulp-rename'),
+    less = require('gulp-less'),
+    livereload = require('gulp-livereload');
     // concat = require('gulp-concat'),
-    // livereload = require('gulp-livereload');
 
 paths = {
+    public: 'public/**',
     less: 'app/styles/*.less'
 }
 
@@ -34,9 +34,13 @@ gulp.task('nodemon', function () {
     })
 });
 
+
+
 // Rerun the task when a file changes
 gulp.task('watch', function() {
+  livereload.listen({ port: 35729 });
   gulp.watch(paths.less, ['less']);
+  gulp.watch(paths.public).on('change',livereload.changed);
 });
 
 
