@@ -4,13 +4,9 @@ var livereload = require('connect-livereload');
 
 app.use(livereload({ port: 35729 }));
 
-app.get('/hello.txt', function(req, res){
-  res.send('Hello Uri Worldly');
-});
-
-app.use(express.static(__dirname + '/public'));
 app.use(express.static(__dirname + '/app'));
+app.use(express.static(__dirname + '/dist'));
 
 var server = app.listen(3333, function() {
-    console.log('Listening on port %d', server.address().port);
+  console.log('Listening on port %d', server.address().port);
 });
