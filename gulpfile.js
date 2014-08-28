@@ -8,7 +8,8 @@ var path = require('path'),
 
 paths = {
   dist: 'dist/**',
-  styles: 'app/styles/*.less'
+  styles: 'app/styles/*.less',
+  blog: 'app/blog/**'
 }
 
 gulp.task('lint', function () {
@@ -35,6 +36,7 @@ gulp.task('less', function () {
 gulp.task('watch', function() {
   livereload.listen({ port: 35729 });
   gulp.watch(paths.styles, ['less']);
+  gulp.watch(paths.blog).on('change',livereload.changed);
   gulp.watch(paths.dist).on('change',livereload.changed);
 });
 
