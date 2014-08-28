@@ -128,18 +128,18 @@
   <p>The main pulls of gulp are code based configuration vs declarative and streaming (faster) builds. This <a href="http://markdalgleish.github.io/presentation-build-wars-gulp-vs-grunt/" target="_blank">awesome Grunt vs Gulp slide deck</a> by Mark Dalgleish help me appreciate the differences quickly.</p>
 </div>
 
-<h3 id="sec-1-1"><span>3.1</span> nodemon</h3>
-<div id="text-1-1">
+<h3 id="sec-3-1"><span>3.1</span> nodemon</h3>
+<div id="text-3-1">
   <p>nodemon is a daemon that watches javascript files that make up your node app and restart the node server when any changes are observed. We installed <code>gulp-nodemon</code> in minutes so that the annoyance I had in my last workflow of manually restarting the node server was gone. I really like that I don't need multiple terminals and multiple commands and it's all taken care of by gulp.</p>
 </div>
 
-<h3 id="sec-1-2"><span>3.2</span> Less</h3>
-<div id="text-1-2">
+<h3 id="sec-3-2"><span>3.2</span> Less</h3>
+<div id="text-3-2">
   <p>I ended up opting for Less because you don't need ruby or c++ to compile. With <code>gulp-less</code> we got things compiling to css relatively quick, though I got caught on having a stylesheet link without a text/css attribute that held us up for a few minutes.</p>
 </div>
 
-<h3 id="sec-1-3"><span>3.3</span> LiveReload</h3>
-<div id="text-1-3">
+<h3 id="sec-3-3"><span>3.3</span> LiveReload</h3>
+<div id="text-3-3">
   <p>LiveReload is a mechanism to auto-refresh the browser when a change occurs so you don't have to manually hit refresh. It's really nice for css editing and proof reading blog posts like this :{}. I might have fiddled with this for quite a while, but Uri knew what he was doing and guided me through setting up both <code>gulp-livereload</code> and <code>connect-livereload</code> on the node side. I love knocking things out as if I've done it a hundred times before.</p>
 </div>
 
