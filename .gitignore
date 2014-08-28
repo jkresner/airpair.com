@@ -1,3 +1,6 @@
+# OSX Stuff
+.DS_Store
+
 # Logs
 logs
 *.log
@@ -23,4 +26,9 @@ build/Release
 # Deployed apps should consider commenting this line out:
 # see https://npmjs.org/doc/faq.html#Should-I-check-my-node_modules-folder-into-git
 node_modules
+public/bower_components/**/*.gzip
+public/bower_components/**/*.min.js
+public/bower_components/**/*.min.css
+public/bower_components/**/*.map
+public/bower_components/**/*.md
 dist
