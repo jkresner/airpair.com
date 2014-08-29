@@ -1,17 +1,17 @@
 angular.module("AirPair", [])
 
   .run(['$rootScope', function($rootScope) {
-    $rootScope.title = 'Hello Airpair';
+		// $rootScope.title = 'Hello Airpair';
   }])
 
-	.controller('UserTagsCtrl', function($scope) {
+	.controller('UserSettingsCtrl', function($scope) {
 		$scope.tags = [];
 		$scope.add = function(tag) {
-			$scope.tags.push(tag);
+			$scope.tags.push({name:tag});
 		}
 	})
 
-  .directive('tagsList', function() {
+  .directive('sideNav', function() {
 	  return {
 		  restrict: 'E',
 		  templateUrl : '/sidenav.html',
