@@ -6,8 +6,17 @@
 </head>
 <body>
 
-  <h1>Hello {{ title }}</h1>
+  <h1>{{ title }}</h1>
 
+  <div ng-controller="UserTagsCtrl">
+  	<tags-list tags="['1','2','3']"></tags-list>
+
+		<button ng-click="add('ruby-on-rails')">ruby-on-rails</button>
+  	<button ng-click="add('angularJS')">angularJS</button>
+  	<button ng-click="add('nodejs')">nodejs</button>
+   	<button ng-click="add('mongodb')">mongodb</button>
+  </div>
+  
 <!-- build:js1 /combined.js -->
 	<script type="text/javascript" src="/bower_components/angular/angular.js"></script>
 	<script type="text/javascript" src="/scripts/app.js"></script>
