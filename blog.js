@@ -13,7 +13,7 @@ var hbsEngine = hbs.express3({ partialsDir: [] });
 
 hbs.registerAsyncHelper('mdEntry', function(entryId, cb) {
   fs.readFile(__dirname + '/app/blog/'+entryId+'.md', 'utf8', function(err, md) {
-    cb(new hbs.SafeString(marked(md, { sanitize: true })));
+    cb(new hbs.SafeString(marked(md, { sanitize: false })));
   });
 });
 
