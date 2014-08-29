@@ -1,0 +1,62 @@
+<html lang="en-US" prefix="og: http://ogp.me/ns#">
+<head>
+  <meta charset="UTF-8" />
+  <title>{{ title }} | AirPair</title>
+
+  <link rel='stylesheet' id='epik-theme-css'  href='http://www.airpair.com/wp-content/themes/epik/style.css?ver=2.0.1' type='text/css' media='all' />
+  <link rel='stylesheet' id='ap-stylesheet-css'  href='http://www.airpair.com/wp-content/themes/epik/airpair.css?ver=2.0.1' type='text/css' media='all' />
+
+  <link rel='stylesheet' href='http://www.airpair.com/wp-content/themes/epik/post-v2.css' type='text/css' media='all' />
+
+  <link rel='stylesheet' id='google-font-css'  href='//fonts.googleapis.com/css?family=Open+Sans%3A300%2C400%2C700&#038;ver=2.0.1' type='text/css' media='all' />
+
+  <style type="text/css">
+    .site-header { border-bottom:solid 1px black;height:50px;width:100%;max-width:100%;padding:5px 10px; }
+    .site-title { float:left;width:200px; }
+    .site-title a { width:100px;background-size:100px }
+    .site-header ul { float:right;width:300px; }
+    .site-header li { float:right;list-style:none }
+    main.content { width:780px;float:none; }
+    a { color:#ce5323; }
+    .content a { color:#ce5323; }
+  </style>
+
+</head>
+<body>
+
+<header class="site-header">
+  <div class="site-title"><a href="http://www.airpair.com/" tile="airpair.com"></a></div>
+  <ul id="menu-services"><li>Experts</li></ul>
+</header>
+
+<div class="site-container">
+  <header class="entry-header"><h1 class="entry-title" itemprop="headline">{{ title }}</h1> 
+    <p class="entry-meta">
+      <time class="entry-time" itemprop="datePublished" datetime="{{ isoMoment date }}">{{ published }}</time> 
+      by 
+      <span class="entry-author" itemprop="author" itemscope="itemscope" itemtype="http://schema.org/Person">
+      <a href="http://www.airpair.com/book/{{by}}" class="entry-author-link" itemprop="url" rel="author"><span class="entry-author-name" itemprop="name">{{by}}</span></a></span>
+    </p>
+  </header>
+
+  <div class="site-inner">
+    <div class="wrap">
+      <index></index>
+
+      <main class="content" role="main" itemprop="mainContentOfPage" itemscope="itemscope" itemtype="http://schema.org/Blog">
+        <article class="post type-post format-standard" itemscope="itemscope" itemtype="http://schema.org/BlogPosting" itemprop="blogPost">
+          <div class="entry-content" itemprop="text">
+            <div id="content">
+              
+              <iframe width="730" height="380" src="//www.youtube-nocookie.com/embed/wLzS0YC4TXw" frameborder="0" allowfullscreen></iframe>
+
+              {{ mdEntry id }}
+
+              <content></content>
+          </div>
+        </main>
+      </div>
+    </div>
+</div>
+
+</body>
