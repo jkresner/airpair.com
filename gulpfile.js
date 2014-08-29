@@ -8,7 +8,7 @@ var path = require('path'),
 
 paths = {
   public: 'public/**',
-  styles: 'app/styles/*.less',
+  styles: 'app/styles/*.+(less|css)',
   blog: 'app/blog/**'
 }
 
