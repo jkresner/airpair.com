@@ -12,29 +12,29 @@ var hbs = require('express-hbs');
 var hbsEngine = hbs.express3({ partialsDir: [] });
 
 hbs.registerAsyncHelper('mdEntry', function(entryId, cb) {
-  fs.readFile(__dirname + '/app/blog/'+entryId+'.md', 'utf8', function(err, md) {
-    cb(new hbs.SafeString(marked(md, { sanitize: false })));
-  });
+	fs.readFile(__dirname + '/app/blog/'+entryId+'.md', 'utf8', function(err, md) {
+		cb(new hbs.SafeString(marked(md, { sanitize: false })));
+	});
 });
 
 hbs.registerHelper('isoMoment', function(moment) {
-  return moment.toISOString();
+	return moment.toISOString();
 });
 
 module.exports = function(app)
 {	
 	app.engine('hbs', hbsEngine);
  
-  var getPost = function(post, day) {
+	var getPost = function(post, day) {
 		post.date = moment(post.id+'2014','MMDDYYYY');
 		post.published = post.date.format('DD MMMM, YYYY');	
 		post.url = '/'+post.by+'/'+post.tag+'/'+post.title.toLowerCase().replace(/ /g, '-');
 		app.get(post.url, function(req,res,next) { 
 			res.status(200).render('./blog/template.hbs', post); 
 		}); 
-  }
+	}
 
-  for (var i = 0; i < posts.length; i++) {
-  	getPost(posts[i], i);
-  }
+	for (var i = 0; i < posts.length; i++) {
+		getPost(posts[i], i);
+	}
 };
