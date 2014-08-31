@@ -5,13 +5,23 @@
 	h1 { margin-bottom:0 }
 	h2 { color:black;font-size:28px;margin-bottom:5px }
 	h4 { color:black }
-	p { margin-top:0;width:640px }
+	p { margin-top:0;width:640px;vertical-align:top }
 	header { border-bottom:solid 1px @lightgray;margin-bottom:20px }
 
-	#table-of-contents {
+	.pw-widget {
 		float:right;
 		width:220px;
 		margin:5px 0;
+		height:60px;
+	}
+
+	#table-of-contents {
+		float:right;
+		clear:right;
+		width:220px;
+		margin:10px 0 8px 0;
+		font-size:24px;
+		color:@gray;
 	}
 	#table-of-contents + ul {
 		clear:right;
@@ -30,13 +40,13 @@
 
 	ul ul { margin-left:12px }
 
-	#author { display:none }
+	#author { color:white }
 	#author + p { width:80px;height:80px;display:inline-block;maring-top:20px }
 	#author + p img { width:80px;height:80px;border-radius:40px }
-	blockquote { display:inline-block;margin:0 10px;font-style:italic;font-size:14px;width:540px }
+	blockquote { display:inline-block;margin:0 10px;font-style:italic;font-size:14px;width:540px;padding:0px 10px }
 	blockquote p { width:500px; }
 
-	iframe { margin:0px 0px 20px 0px }
+	iframe { margin:20px 0px 20px 0px }
 
 	hr { width:640px;color:@lightgray;margin-left:0 }
 }
