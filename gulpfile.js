@@ -7,8 +7,8 @@ var path = require('path'),
 
 
 paths = {
-  dist: 'dist/**',
-  styles: 'app/styles/*.less',
+  public: 'public/**',
+  styles: 'app/styles/*.+(less|css)',
   blog: 'app/blog/**'
 }
 
@@ -30,14 +30,14 @@ gulp.task('less', function () {
     .pipe(less({
       paths: [ path.join(__dirname, 'styles') ]
     }))
-    .pipe(gulp.dest('./dist/css'));
+    .pipe(gulp.dest('./public/css'));
 });
 
 gulp.task('watch', function() {
   livereload.listen({ port: 35729 });
   gulp.watch(paths.styles, ['less']);
   gulp.watch(paths.blog).on('change',livereload.changed);
-  gulp.watch(paths.dist).on('change',livereload.changed);
+  gulp.watch(paths.public).on('change',livereload.changed);
 });
 
 
