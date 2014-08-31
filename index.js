@@ -6,7 +6,7 @@ app.use(livereload({ port: 35729 }));
 
 
 app.use(express.static(__dirname + '/app'));
-app.use(express.static(__dirname + '/dist'));
+app.use(express.static(__dirname + '/public'));
 
 require('./blog')(app);
 app.set('views', __dirname + '/app');

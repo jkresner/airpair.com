@@ -1,17 +1,37 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="AirPair">
 <head>
 	<title>AirPair.com</title>
+	<link rel="stylesheet" href="/css/bootstrap.css" type="text/css" />
 	<link rel="stylesheet" href="/css/index.css" type="text/css" />
+	<link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,300,400italic,400,600italic,600,700italic,700,800italic,800" rel="stylesheet" type="text/css">
 </head>
 <body>
+	<header>
+	  <a href="http://www.airpair.com/" tile="airpair.com"></a>
+	  <ul><li>Experts</li><li>Pair Programming</li></ul>
+	</header>
 
-	<h1>Hello AirPair World</h1>
 
-	<script type="text/javascript" src="/scripts/index.js"></script>
-	<script type="text/javascript">
-		onLoad();
-	</script>
+  <div class="page" ng-controller="UserSettingsCtrl">
+	  <side-nav tags="tags"></side-nav>	
+	  	
+		<main>
+			<header></header>
+
+			<button ng-click="add('ruby-on-rails')">ruby-on-rails</button>
+	  	<button ng-click="add('angularJS')">angularJS</button>
+	  	<button ng-click="add('nodejs')">nodejs</button>
+	   	<button ng-click="add('mongodb')">mongodb</button>
+		</main>  
+  </div>
+  
+
+
+<!-- build:js1 /combined.js -->
+	<script type="text/javascript" src="/bower_components/angular/angular.js"></script>
+	<script type="text/javascript" src="/scripts/app.js"></script>
+<!-- endbuild -->
 
 </body>
 </html>
