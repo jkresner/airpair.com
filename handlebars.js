@@ -14,8 +14,12 @@ hbs.registerHelper('isoMoment', function(moment) {
 
 module.exports = function initHBSEngine (app) {
 
-	app.engine('hbs', hbs.express3(
-		{ partialsDir: __dirname + '/app/partials' }
-	));
+	var hbsEngine = hbs.express3({ partialsDir: __dirname + '/app/partials' });
+	app.engine('hbs', hbsEngine);
+
+	// Temporary for dev 
+	// app.engine('html', hbsEngine);
+	app.get('/', function(req,res) { res.status(200).render('index.hbs'); }); 
+	// -- Temporary
 
 }

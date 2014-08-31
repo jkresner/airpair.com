@@ -8,8 +8,8 @@ app.use(livereload({ port: 35729 }));
 app.use(express.static(__dirname + '/app'));
 app.use(express.static(__dirname + '/public'));
 
-require('./blog')(app);
 app.set('views', __dirname + '/app');
+require('./blog')(app);
 
 app.use(function(err, req, res, next){
   console.error(err.stack);
