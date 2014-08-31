@@ -2,27 +2,33 @@
 <head>
   <meta charset="UTF-8" />
   <title>{{ title }} | AirPair</title>
+  <link rel="stylesheet" href="/css/bootstrap.css" type="text/css" />
+  <link rel="stylesheet" href="/css/ap.css" type="text/css" />
   <link rel='stylesheet' href='/css/blog.css' type='text/css' media='all' />
   <link rel='stylesheet' id='google-font-css'  href='//fonts.googleapis.com/css?family=Open+Sans%3A300%2C400%2C700&#038;ver=2.0.1' type='text/css' media='all' />
 </head>
 <body>
 
-<header>
-  <a href="http://www.airpair.com/" tile="airpair.com"></a>
-  <ul><li>Experts</li><li>Pair Programming</li></ul>
-</header>
+{{> siteHeader }}
 
-<div class="site-container blogpost">
-  <header class="entry-header"><h1 class="entry-title" itemprop="headline">{{ title }}</h1> 
+<main class="blogpost">
+  <header class="entry-header">
     <p class="entry-meta">
-      <time class="entry-time" itemprop="datePublished" datetime="{{ isoMoment date }}">{{ published }}</time> 
-      by 
+      Posts 
+      > 
       <span class="entry-author" itemprop="author" itemscope="itemscope" itemtype="http://schema.org/Person">
       <a href="http://www.airpair.com/book/{{by}}" class="entry-author-link" itemprop="url" rel="author"><span class="entry-author-name" itemprop="name">{{by}}</span></a></span>
+      >
+      <time class="entry-time" itemprop="datePublished" datetime="{{ isoMoment date }}">{{ published }}</time> 
+      
     </p>
   </header>
-  
+  <h1 class="entry-title" itemprop="headline">{{ title }}</h1> 
+
   {{ mdEntry id }}
-</div>
+</main>
+  
+{{> sideNavFull }}
+{{> sideChatFull }}
 
 </body>
