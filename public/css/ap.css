@@ -57,6 +57,10 @@ body > header li {
   margin: 3px 5px;
   font-size: 11px;
 }
+div.main-wrap {
+  margin-left: 140px;
+  margin-right: 220px;
+}
 nav#sideNav header,
 nav#sideChat header {
   background: #151821;

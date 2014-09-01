@@ -11,29 +11,41 @@
 
 {{> siteHeader }}
 
-<main class="blogpost">
-  <header class="entry-header">
-    <p class="entry-meta">
-      Posts 
-      > 
-      <span class="entry-author" itemprop="author" itemscope="itemscope" itemtype="http://schema.org/Person">
-      <a href="http://www.airpair.com/book/{{by}}" class="entry-author-link" itemprop="url" rel="author"><span class="entry-author-name" itemprop="name">{{by}}</span></a></span>
-      >
-      <time class="entry-time" itemprop="datePublished" datetime="{{ isoMoment date }}">{{ published }}</time> 
+<div class="main-wrap">
+  <main class="blogpost">
+    <header class="entry-header">
+      <p class="entry-meta">
+        Posts 
+        > 
+        <span class="entry-author" itemprop="author" itemscope="itemscope" itemtype="http://schema.org/Person">
+        <a href="http://www.airpair.com/book/{{by}}" class="entry-author-link" itemprop="url" rel="author"><span class="entry-author-name" itemprop="name">{{by}}</span></a></span>
+        >
+        <time class="entry-time" itemprop="datePublished" datetime="{{ isoMoment date }}">{{ published }}</time> 
+        
+      </p>
+    </header>
+    <h1 class="entry-title" itemprop="headline">{{ title }}</h1> 
+
+    <div class="pw-widget pw-counter-vertical">     
+      <a class="pw-button-facebook pw-look-native"></a>     
+      <a class="pw-button-twitter pw-look-native"></a>      
+      <a class="pw-button-linkedin pw-look-native"></a>     
+    </div>
+    <script src="//i.po.st/static/v3/post-widget.js#publisherKey=miu9e01ukog3g0nk72m6&retina=true" type="text/javascript"></script>
+
+    {{ mdEntry id }}
+
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//airpairblog.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
       
-    </p>
-  </header>
-  <h1 class="entry-title" itemprop="headline">{{ title }}</h1> 
-
-  <div class="pw-widget pw-counter-vertical">     
-    <a class="pw-button-facebook pw-look-native"></a>     
-    <a class="pw-button-twitter pw-look-native"></a>      
-    <a class="pw-button-linkedin pw-look-native"></a>     
-  </div>
-  <script src="//i.po.st/static/v3/post-widget.js#publisherKey=miu9e01ukog3g0nk72m6&retina=true" type="text/javascript"></script>
-
-  {{ mdEntry id }}
-</main>
+  </main>
+</div>
   
 {{> sideNavFull }}
 {{> sideChatFull }}

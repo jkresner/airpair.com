@@ -57,6 +57,10 @@ body > header li {
   margin: 3px 5px;
   font-size: 11px;
 }
+div.main-wrap {
+  margin-left: 140px;
+  margin-right: 220px;
+}
 nav#sideNav header,
 nav#sideChat header {
   background: #151821;
@@ -221,6 +225,9 @@ main header {
   width: 220px;
   margin: 5px 0;
   height: 60px;
+}
+.blogpost #disqus_thread {
+  min-height: 700px;
 }
 .blogpost #table-of-contents {
   float: right;
