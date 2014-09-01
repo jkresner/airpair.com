@@ -44,6 +44,14 @@ body > header {
 	}
 }
 
+@sideNavWidth:140px;
+@sideChatWidth:220px;
+
+div.main-wrap {
+	margin-left:@sideNavWidth;
+	margin-right:@sideChatWidth; 	
+}
+
 nav#sideNav, nav#sideChat {
 	header {
 		background:@darkblue;
@@ -87,7 +95,7 @@ nav#sideNav {
 	top:40px;
 	bottom:0;	
 	left:0;
-	width:140px;
+	width:@sideNavWidth;
 	margin:0;
 	background:@darkblue;
 
@@ -113,7 +121,7 @@ nav#sideChat {
 	top:40px;
   bottom:0;	
   right:0;
-	width:220px;
+	width:@sideChatWidth;
 	margin:0;
 
 	.online {
@@ -163,7 +171,7 @@ nav#sideChat {
 
 main { 
 	width:900px;
-	margin:auto; 
+	margin:auto;
 
 	a { color:@orange;text-decoration:none }
 	a:hover { color:@gray }
