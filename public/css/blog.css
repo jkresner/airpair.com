@@ -83,10 +83,18 @@ main a:hover {
 }
 main header {
   height: 35px;
-  background-color: #dff2ef;
   margin: 0 auto 20px auto;
-  padding: 6px 10px;
-  font-size: 16px;
+  padding: 9px 10px;
+  font-size: 13px;
+  background: #ffffff;
+  text-transform: uppercase;
+  background: -moz-linear-gradient(left, #ffffff 0%, #dff2ef 50%, #ffffff 100%);
+  background: -webkit-gradient(left top, right top, color-stop(0%, #ffffff), color-stop(50%, #dff2ef), color-stop(100%, #ffffff));
+  background: -webkit-linear-gradient(left, #ffffff 0%, #dff2ef 50%, #ffffff 100%);
+  background: -o-linear-gradient(left, #ffffff 0%, #dff2ef 50%, #ffffff 100%);
+  background: -ms-linear-gradient(left, #ffffff 0%, #dff2ef 50%, #ffffff 100%);
+  background: linear-gradient(to right, #ffffff 0%, #dff2ef 50%, #ffffff 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#ffffff', GradientType=1);
 }
 nav#sideNav,
 nav#sideChat {
