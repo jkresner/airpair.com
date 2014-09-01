@@ -17,6 +17,10 @@ module.exports = function(app)
 		}); 
 	}
 
+	app.get('/posts', function(req,res,next) { 
+		res.status(200).render('./index.hbs'); 
+	}); 
+
 	for (var i = 0; i < posts.length; i++) {
 		getPost(posts[i], i);
 	}
