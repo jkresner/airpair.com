@@ -12,7 +12,7 @@
 {{> siteHeader }}
 
 <div class="main-wrap">
-  <main class="blogpost">
+  <main>
     <header class="entry-header">
       <p class="entry-meta">
         Posts 
@@ -24,30 +24,72 @@
         
       </p>
     </header>
-    <h1 class="entry-title" itemprop="headline">{{ title }}</h1> 
+    <article class="blogpost">
+      <h1 class="entry-title" itemprop="headline">{{ title }}</h1> 
 
-    <div class="pw-widget pw-counter-vertical">     
-      <a class="pw-button-facebook pw-look-native"></a>     
-      <a class="pw-button-twitter pw-look-native"></a>      
-      <a class="pw-button-linkedin pw-look-native"></a>     
-    </div>
-    <script src="//i.po.st/static/v3/post-widget.js#publisherKey=miu9e01ukog3g0nk72m6&retina=true" type="text/javascript"></script>
+      <div class="pw-widget pw-counter-vertical">     
+        <a class="pw-button-facebook pw-look-native"></a>     
+        <a class="pw-button-twitter pw-look-native"></a>      
+        <a class="pw-button-linkedin pw-look-native"></a>     
+      </div>
+      <script src="//i.po.st/static/v3/post-widget.js#publisherKey=miu9e01ukog3g0nk72m6&retina=true" type="text/javascript"></script>
 
-    {{ mdEntry id }}
+      {{ mdEntry id }}
 
-    <div id="disqus_thread"></div>
-    <script type="text/javascript">
-        (function() {
-            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-            dsq.src = '//airpairblog.disqus.com/embed.js';
-            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-        })();
-    </script>
-      
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+          (function() {
+              var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+              dsq.src = '//airpairblog.disqus.com/embed.js';
+              (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+          })();
+      </script>
+    </article>
   </main>
 </div>
   
 {{> sideNavFull }}
 {{> sideChatFull }}
 
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script type="text/javascript">
+  function fixNavs(elmId)
+  {
+    var offset = $('#sideNav').offset().top;
+    console.log(elmId, 'offset', offset);
+    $(window).scroll(function(e){
+      if (window.scrollY < offset) {
+        console.log(elmId, 'offset', offset, window.scrollY);
+        $(elmId).css('top', offset - window.scrollY);
+      } else {
+        $(elmId).css('top', 0);
+      }
+    });
+  }
+
+  function fixRail()
+  {
+    var offset = $('.pw-widget').offset().top;
+    console.log('offset', offset);
+    $(window).scroll(function(e){
+      if (window.scrollY < offset) {
+        $('.pw-widget').css('top', 0);
+        $('#table-of-contents').css('top', 0);
+        $('#table-of-contents + ul').css('top', 0);        
+      } else {
+        console.log('offset', offset, window.scrollY);
+        $('.pw-widget').css('top', window.scrollY - 150);
+        $('#table-of-contents').css('top', window.scrollY - 160);
+        $('#table-of-contents + ul').css('top', window.scrollY - 160);        
+      }
+    });
+  }
+
+  $(function() {
+    fixNavs('#sideNav,#sideChat');
+    fixRail();
+  });
+</script>
+
 </body>
+</html>
