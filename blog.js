@@ -11,7 +11,7 @@ module.exports = function(app)
 	var getPost = function(post, day) {
 		post.date = moment(post.id+'2014','MMDDYYYY');
 		post.published = post.date.format('DD MMMM, YYYY');	
-		post.url = '/'+post.by+'/'+post.tag+'/'+post.title.toLowerCase().replace(/ /g, '-');
+		post.url = '/posts/'+post.tag+'/'+post.title.toLowerCase().replace(/ /g, '-');
 		app.get(post.url, function(req,res,next) { 
 			res.status(200).render('./blog/template.hbs', post); 
 		}); 
