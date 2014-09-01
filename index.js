@@ -1,21 +1,31 @@
-require('./global')();
-var express = require('express');
-var app = express();
-var livereload = require('connect-livereload');
+import {init} from './global';
+import * as blog from './blog';
 
-app.use(livereload({ port: 35729 }));
+export function run(appdir)
+{
+	init();
 
-app.use(express.static(__dirname + '/app'));
-app.use(express.static(__dirname + '/public'));
+	var livereload = require('connect-livereload');
+	var express = require('express');
+	var app = express();
 
-app.set('views', __dirname + '/app');
-require('./blog')(app);
+	app.dir = appdir;
 
-app.use(function(err, req, res, next){
-  console.error(err.stack);
-  res.send(500, 'Something broke!');
-});
+	app.use(livereload({ port: 35729 }));
 
-var server = app.listen(process.env.PORT || 3333, function() {
-  console.log('Listening on port %d', server.address().port);
-});
+	app.use(express.static(app.dir + '/app'));
+	app.use(express.static(app.dir + '/public'));
+
+	app.set('views', app.dir + '/app');
+	blog.blogInit(app);
+
+	app.use(function(err, req, res, next){
+	  console.error(err.stack);
+	  res.send(500, 'Something broke!');
+	});
+
+	var server = app.listen(process.env.PORT || 3333, function() {
+	  console.log('Listening on port %d', server.address().port);
+	});
+
+}
