@@ -39,9 +39,9 @@ a:hover {
   text-decoration: none;
 }
 body > header {
-  height: 40;
-  border-bottom: solid 1 #d3d3d3;
-  padding: 7 10 7 20;
+  height: 40px;
+  border-bottom: solid 1px #d3d3d3;
+  padding: 7px 10px 7px 20px;
 }
 body > header > a {
   background: url('http://www.airpair.com/img/airpair.png');
