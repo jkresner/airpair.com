@@ -4,7 +4,7 @@
   "description": "site running airpair.com",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "node bootstrap.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -30,6 +30,7 @@
     "karma-chrome-launcher": "^0.1.4"
   },
   "dependencies": {
+    "es6-module-loader": "^0.8.2",
     "connect-livereload": "^0.4.0",
     "express": "^4.8.5",
     "express-hbs": "^0.7.11",
