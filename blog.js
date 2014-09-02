@@ -1,6 +1,6 @@
 var posts = [	
-	{ id: '0827', tag: 'mean-stack', title: 'Starting a Mean Stack App', by: 'hackerpreneur' },
-	{ id: '0828', tag: 'mean-stack', title: 'My First AngularJS App', by: 'hackerpreneur' },
+	{ id: '0827', tag: 'javascript', title: 'Starting a Mean Stack App', by: 'hackerpreneur' },
+	{ id: '0828', tag: 'angularjs', title: 'Setting up my First AngularJS App', by: 'hackerpreneur' },
 	{ id: '0829', tag: 'mean-stack', title: 'Using ES6 (Harmony) with NodeJS', by: 'hackerpreneur' }
 ];
 
@@ -10,7 +10,7 @@ export function blogInit(app)
 {	
 	initHBSEngine(app);
 
-	var getPost = (post, day) => {
+	var getPost = (post) => {
 		post.date = moment(post.id+'2014','MMDDYYYY');
 		post.published = post.date.format('DD MMMM, YYYY');	
 		post.url = `/posts/${post.tag}/${post.title.toLowerCase().replace(/ /g, '-')}`;
@@ -18,11 +18,9 @@ export function blogInit(app)
 			res.status(200).render('./blog/template.hbs', post)); 
 	}
 
-	app.get('/posts', function(req,res,next) { 
-		res.status(200).render('./index.hbs'); 
-	}); 
-
-	for (var i = 0; i < posts.length; i++) {
-		getPost(posts[i], i);
+	app.get( '/posts', (req,res) => res.status(200).render('./index.hbs') )
+	
+	for (var post of posts) {
+		getPost(post);
 	}
 };
