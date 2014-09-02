@@ -284,6 +284,7 @@ nav#sideChat input {
 .blogpost pre {
   border: none;
   padding: 8px;
+  width: 640px;
 }
 .blogpost #disqus_thread {
   min-height: 700px;
