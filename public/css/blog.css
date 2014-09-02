@@ -38,6 +38,10 @@ h6 {
 a:hover {
   text-decoration: none;
 }
+ol.linenums > li {
+  list-style-type: decimal!important;
+  color: #7e7f7f;
+}
 body > header {
   height: 40px;
   border-bottom: solid 1px #d3d3d3;
@@ -276,6 +280,10 @@ nav#sideChat input {
 .blogpost header {
   border-bottom: solid 1px #d3d3d3;
   margin-bottom: 20px;
+}
+.blogpost pre {
+  border: none;
+  padding: 8px;
 }
 .blogpost #disqus_thread {
   min-height: 700px;
