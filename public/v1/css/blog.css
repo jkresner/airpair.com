@@ -286,6 +286,25 @@ nav#sideChat input {
   padding: 8px;
   width: 640px;
 }
+.blogpost ol {
+  max-width: 620px;
+}
+.blogpost ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.blogpost ul ul {
+  margin-left: 12px;
+}
+.blogpost iframe {
+  margin: 20px 0px 20px 0px;
+}
+.blogpost hr {
+  width: 640px;
+  color: #d3d3d3;
+  margin-left: 0;
+}
 .blogpost #disqus_thread {
   min-height: 700px;
 }
@@ -319,14 +338,6 @@ nav#sideChat input {
 .blogpost #table-of-contents + ul li {
   padding: 1px 0 2px 0;
 }
-.blogpost ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-.blogpost ul ul {
-  margin-left: 12px;
-}
 .blogpost #author {
   color: white;
   margin: 2px;
@@ -352,12 +363,4 @@ nav#sideChat input {
 }
 .blogpost blockquote p {
   width: 500px;
-}
-.blogpost iframe {
-  margin: 20px 0px 20px 0px;
-}
-.blogpost hr {
-  width: 640px;
-  color: #d3d3d3;
-  margin-left: 0;
 }
