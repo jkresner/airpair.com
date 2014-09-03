@@ -1,7 +1,7 @@
 {
   "name": "airpair.com",
   "version": "1.0.1",
-  "description": "site running airpair.com",
+  "description": "site running airpaxir.com",
   "main": "index.js",
   "scripts": {
     "start": "node bootstrap.js",
