@@ -7,7 +7,7 @@ var path = require('path'),
 
 
 paths = {
-  public: 'public/**',
+  public: 'v1/public/**',
   styles: 'app/styles/*.+(less|css)',
   blog: 'app/blog/**'
 }
@@ -30,7 +30,7 @@ gulp.task('less', function () {
     .pipe(less({
       paths: [ path.join(__dirname, 'styles') ]
     }))
-    .pipe(gulp.dest('./public/css'));
+    .pipe(gulp.dest('./v1/public/css'));
 });
 
 gulp.task('watch', function() {
