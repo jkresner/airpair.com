@@ -5,7 +5,7 @@
   <link rel="stylesheet" href="/v1/css/bootstrap.css" type="text/css" />
   <link rel='stylesheet' href='/v1/css/blog.css' type='text/css' media='all' />
   <link rel='stylesheet' id='google-font-css'  href='//fonts.googleapis.com/css?family=Open+Sans%3A300%2C400%2C700&#038;ver=2.0.1' type='text/css' media='all' />
-  <link rel="canonical" href="http://www.airapir.com{{url}}" />
+  <link rel="canonical" href="//www.airapir.com{{url}}" />
 </head>
 <body>
 
@@ -15,10 +15,10 @@
   <main>
     <header class="entry-header">
       <p class="entry-meta">
-        <a href="http://v1.airpair.com/">Posts</a>
+        <a href="//v1.airpair.com/">Posts</a>
         &nbsp; > &nbsp;
-        <span class="entry-author" itemprop="author" itemscope="itemscope" itemtype="http://schema.org/Person">
-        <a href="http://www.airpair.com/book/{{by}}" class="entry-author-link" itemprop="url" rel="author" target="_blank"><span class="entry-author-name" itemprop="name">{{by}}</span></a></span>
+        <span class="entry-author" itemprop="author" itemscope="itemscope" itemtype="//schema.org/Person">
+        <a href="//www.airpair.com/book/{{by}}" class="entry-author-link" itemprop="url" rel="author" target="_blank"><span class="entry-author-name" itemprop="name">{{by}}</span></a></span>
         &nbsp; > &nbsp;
         <time class="entry-time" itemprop="datePublished" datetime="{{ isoMoment date }}">{{ published }}</time> 
         
@@ -63,10 +63,8 @@
   function fixNavs(elmId)
   {
     var offset = $('#sideNav').offset().top;
-    console.log(elmId, 'offset', offset);
     $(window).scroll(function(e){
       if (window.scrollY < offset) {
-        console.log(elmId, 'offset', offset, window.scrollY);
         $(elmId).css('top', offset - window.scrollY);
       } else {
         $(elmId).css('top', 0);
@@ -77,17 +75,15 @@
   function fixRail()
   {
     var offset = $('.pw-widget').offset().top;
-    console.log('offset', offset);
     $(window).scroll(function(e){
       if (window.scrollY < offset) {
         $('.pw-widget').css('top', 0);
         $('#table-of-contents').css('top', 0);
         $('#table-of-contents + ul').css('top', 0);        
       } else {
-        console.log('offset', offset, window.scrollY);
         $('.pw-widget').css('top', window.scrollY - 150);
         $('#table-of-contents').css('top', window.scrollY - 160);
-        $('#table-of-contents + ul').css('top', window.scrollY - 160);        
+        $('#table-of-contents + ul').css('top', window.scrollY - 160);     
       }
     });
   }
