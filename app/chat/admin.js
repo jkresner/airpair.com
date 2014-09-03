@@ -11,7 +11,6 @@ angular.module("AirPair", ['firebase'])
             var delta = (+new Date) - message.sent_at
             if(delta < MAX_AGE_OF_ACTIVE_CHATS) {
               out.push(chatroom);
-              console.log(delta);
               return true;
             }
           }
