@@ -1,23 +1,24 @@
-import {init} from './global';
-import * as blog from './blog';
+import globals from './global';
+import routes from './routes';
+import hbsEngine from './hbsEngine'
 
 export function run(appdir)
 {
-	init();
-
 	var livereload = require('connect-livereload');
 	var express = require('express');
 	var app = express();
 
 	app.dir = appdir;
 
-	app.use(livereload({ port: 35729 }));
-
+	if (livereload) {
+		app.use(livereload({ port: 35729 }));
+	}
+	
 	app.use(express.static(app.dir + '/app'));
 	app.use(express.static(app.dir + '/public'));
 
-	app.set('views', app.dir + '/app');
-	blog.blogInit(app);
+	hbsEngine(app);
+	routes(app);
 
 	app.use(function(err, req, res, next){
 	  console.error(err.stack);
