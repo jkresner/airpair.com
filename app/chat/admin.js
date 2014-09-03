@@ -1,31 +1,84 @@
 MAX_AGE_OF_ACTIVE_CHATS = 1000000000
 
 angular.module("AirPair", ['firebase'])
+  .controller('ChatAdminController', ['$scope', '$firebase', function(scope, $firebase) {
+    window.scope = scope;
+
+    scope.load = function(slug) {
+      var activeChannelRef = new Firebase("https://airpair-chat.firebaseio.com/channels/" + slug);
+      scope.activeChannel = $firebase(activeChannelRef).$asObject();
+      scope.activeMessages = $firebase(activeChannelRef.child('messages')).$asArray();
+
+      // scope.activeChannel.unread = false;
+      // scope.activeChannel.$save()
+    }
+
+    scope.create = function() {
+      var slug = scope.name.replace(/\W/g, '-');
+      var channel = new Firebase("https://airpair-chat.firebaseio.com/channels/" + slug);
+      channel.set({
+        name: scope.name,
+        unread: true,
+        created_at: Firebase.ServerValue.TIMESTAMP,
+      }, function(err){
+        if(!err) {
+          scope.load(slug);
+        }
+      });
+
+      scope.newChannelName = "";
+    }
+
+    scope.addMessage = function() {
+      msg = {
+        from: 'AirPair Admin',
+        // pic: scope.user.picture,
+        content: scope.message,
+        // user_id: session.data.user.googleId,
+        sent_at: Firebase.ServerValue.TIMESTAMP
+      }
+      scope.activeMessages.$add(msg);
+      scope.message = "";
+    }
+
+  }])
+
+  // todo - is this the best way of reducing this collection? (prob not)
   .filter('activeChats', function() {
-    return function(chats) {
+    return function(channels) {
       var out = [];
-      chats.forEach(function(chatroom){
-        Object.keys(chatroom).some(function(key){
-          var message = chatroom[key];
-          if(message && message.hasOwnProperty('sent_at')) {
-            var delta = (+new Date) - message.sent_at
-            if(delta < MAX_AGE_OF_ACTIVE_CHATS) {
-              out.push(chatroom);
-              return true;
-            }
+      channels.forEach(function(channel){
+        if(channel.unread) {
+          out.push(channel)
+        }
+        else {
+          if(channel.messages) {
+            messages.some(function(msg) {
+              if(msg.hasOwnProperty('sent_at')) {
+                var delta = (+new Date) - msg.sent_at
+                if(delta < MAX_AGE_OF_ACTIVE_CHATS) {
+                  out.push(channel);
+                  return true;
+                }
+              }
+            });
           }
-        });
+        }
       });
       return out;
     }
   })
+
   .directive('chats', ['$firebase', function($firebase) {
     return {
       restrict: 'E',
-      templateUrl : 'chats.html',
+      templateUrl : 'channels.html',
       link: function(scope, element, attributes) {
-        var root = new Firebase("https://airpair-chat.firebaseio.com/chat");
-        scope.chats = $firebase(root).$asArray();
+        var rootRef = new Firebase("https://airpair-chat.firebaseio.com/channels");
+        scope.channels = $firebase(rootRef).$asArray();
+
+        var updatesQuery = rootRef.endAt(null);
+        //updatesQuery.on('child_added', function(newChild){ console.log(newChild)});
       }
     };
   }]);

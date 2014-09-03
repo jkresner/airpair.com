@@ -3,13 +3,33 @@ html(lang="en" ng-app="AirPair")
   head
     title AirPair v1 | Chat Admin Interface
 
-    // build:js1 /chatadmin.js
-    script( type="text/javascript" src="../v1/bower_components/angular/angular.js")
-    script( type="text/javascript" src="../v1/bower_components/firebase/firebase.js")
-    script( type="text/javascript" src="../v1/bower_components/angularfire/dist/angularfire.js")
-    script( type="text/javascript" src="admin.js")
+    link(rel="stylesheet" href="/v1/css/bootstrap.css" type="text/css")
+    link(rel="stylesheet" href="../v1/css/chat.css" type="text/css")
+
+    // build:js1 /admin.js
+    script(type="text/javascript" src="../v1/bower_components/angular/angular.js")
+    script(type="text/javascript" src="../v1/bower_components/firebase/firebase.js")
+    script(type="text/javascript" src="../v1/bower_components/angularfire/dist/angularfire.js")
     // endbuild
 
-  body
-    h1 AirPair Chat Admin Interface
-    chats
+    script(type="text/javascript" src="admin.js")
+
+  body(ng-controller="ChatAdminController")
+    .container-fluid
+      h1 AirPair Chat Admin Interface
+      .row
+        .col-md-3
+          chats
+          form(ng-submit="create()")
+            label Create New Channel
+            input(ng-model="name")
+        .col-md-9
+          h3 {{ activeChannel.name }}
+          table.table
+            tr(ng-repeat="msg in activeMessages")
+              td {{ msg.from }}
+              td {{ msg.content }}
+            tr#entry(ng-show="activeChannel")
+              td(colspan=2)
+                form(ng-submit="addMessage()")
+                  input(ng-model="message")

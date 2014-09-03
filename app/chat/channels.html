@@ -1,0 +1,8 @@
+<h3>Active</h3>
+<table class="table">
+  <tr class="chatroom" ng-repeat="channel in channels | activeChats" ng-class="{unread: channel.unread}">
+  <td>
+  <a ng-click="load(channel.$id)" href="#{{channel.$id}}">{{ channel.$id }}</a>
+  </td>
+  </tr>
+</table class="table">
