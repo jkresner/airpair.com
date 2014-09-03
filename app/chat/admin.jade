@@ -1,0 +1,15 @@
+doctype html
+html(lang="en" ng-app="AirPair")
+  head
+    title AirPair v1 | Chat Admin Interface
+
+    // build:js1 /chatadmin.js
+    script( type="text/javascript" src="../bower_components/angular/angular.js")
+    script( type="text/javascript" src="../bower_components/firebase/firebase.js")
+    script( type="text/javascript" src="../bower_components/angularfire/dist/angularfire.js")
+    script( type="text/javascript" src="admin.js")
+    // endbuild
+
+  body
+    h1 AirPair Chat Admin Interface
+    chats
