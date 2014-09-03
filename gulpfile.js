@@ -8,8 +8,8 @@ var path = require('path'),
 
 paths = {
   public: 'public/v1/**',
-  styles: 'app/styles/*.+(less|css)',
-  blog: 'app/blog/**'
+  styles: 'public/styles/*.+(less|css)',
+  blog: 'server/blog/**'
 }
 
 gulp.task('lint', function () {

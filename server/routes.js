@@ -1,14 +1,15 @@
-import {posts} from './app/blog/posts';
+import {posts} from './blog/posts';
 
 var renderPost = (post, posts) =>
 	(req, res) => {
 		post.posts = posts;
-		res.status(200).render('./blog/template.hbs', post)
+		res.status(200).render('./post.hbs', post)
 	}
 
 export default function(app)
 {	
 	app.get( '/posts', (req,res) => res.status(200).render('./index.hbs') )
+	app.get( '/workshops', (req,res) => res.status(200).render('./workshops.hbs') )
 	
 	for (var post of posts) 
 	{ 

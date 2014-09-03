@@ -1,6 +1,6 @@
-import globals from './global';
-import routes from './routes';
-import hbsEngine from './hbsEngine'
+import globals from './server/global';
+import routes from './server/routes';
+import hbsEngine from './server/hbsEngine'
 
 export function run(appdir)
 {
@@ -14,7 +14,6 @@ export function run(appdir)
 		app.use(livereload({ port: 35729 }));
 	}
 	
-	app.use(express.static(app.dir + '/app'));
 	app.use(express.static(app.dir + '/public'));
 
 	hbsEngine(app);
