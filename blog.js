@@ -1,4 +1,5 @@
 var posts = [	
+	{ id: '0902', tag: 'angularjs', title: 'Getting started with AngularJS 1.3', by: 'hackerpreneur' },
 	{ id: '0901', tag: 'javascript', title: 'Using ES6 Harmony with NodeJS', by: 'hackerpreneur' },
 	{ id: '0828', tag: 'angularjs', title: 'Setting up my First AngularJS App', by: 'hackerpreneur' },
 	{ id: '0827', tag: 'mean-stack', title: 'Starting a Mean Stack App', by: 'hackerpreneur' }
