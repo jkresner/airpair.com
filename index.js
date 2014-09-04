@@ -1,14 +1,16 @@
 import globals from './server/global'
 import routes from './server/routes'
 import hbsEngine from './server/hbsEngine'
+import * as mongoInit from './server/mongoInit'
 
 export function run(appdir)
 {
 	var livereload = require('connect-livereload')
 	var express = require('express')
 	var app = express()
-
 	app.dir = appdir
+
+	mongoInit.setSessionStore(mongoInit.connect())
 
 	if (livereload) {
 		app.use(livereload({ port: 35729 }))
