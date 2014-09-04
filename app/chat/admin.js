@@ -9,16 +9,17 @@ function fakeNgModel(initValue){
   };
 }
 
-angular.module("AirPair", ['firebase'])
+angular.module("AirPair", ['firebase','angularMoment'])
   .run(['$rootScope', function($rootScope) {
-    $rootScope._ = window._
+    $rootScope._ = window._;
+    $rootScope.moment = window.moment;
   }])
   .directive('airpairChatAdmin', [function() {
     return {
       restrict: 'A',
       templateUrl : 'airpairChatAdmin.html',
       controller: 'ChatAdminController'
-    }
+    };
   }])
   .controller('ChatAdminController', ['$scope', '$firebase', '$firebaseSimpleLogin', function(scope, $firebase, $firebaseSimpleLogin) {
     // todo: remove.. for debugging
@@ -27,7 +28,7 @@ angular.module("AirPair", ['firebase'])
     var rootRef = new Firebase("https://airpair-chat.firebaseio.com/");
 
     // todo: change to google
-    $firebaseSimpleLogin(rootRef).$login('anonymous').then(function(user){
+    $firebaseSimpleLogin(rootRef).$login('google',{rememberMe: true}).then(function(user){
       scope.user = user;
 
       console.log(user);
@@ -73,11 +74,14 @@ angular.module("AirPair", ['firebase'])
 
     scope.addMessage = function() {
       msg = {
-        // todo: change to user.displayName later
-        from: scope.user.uid,
-        // pic: scope.user.picture,
-        content: scope.message,
+        from: {
+          email: scope.user.email,
+          name: scope.user.displayName,
+          first_name: scope.user.thirdPartyUserData.given_name,
+          picture: scope.user.thirdPartyUserData.picture
+        },
         user_id: scope.user.uid,
+        content: scope.message,
         sent_at: Firebase.ServerValue.TIMESTAMP
       }
       scope.activeMessages.$add(msg);

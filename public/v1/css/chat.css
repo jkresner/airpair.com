@@ -37,13 +37,18 @@ tr#entry input {
 .from {
   font-size: 8pt;
   font-weight: bold;
+  text-align: center;
 }
 .content {
   background: white;
 }
+.timestamp {
+  color: #aaaaaa;
+  font-size: 8pt;
+}
 .from,
 .content {
-  padding: 5px;
+  padding: 10px;
 }
 tr#messages {
   background: #eee;
@@ -62,4 +67,7 @@ tr#messages td {
 #message-cell > .row {
   background: white;
   border-bottom: 1px solid #eeeeee;
+}
+#message-cell > .row .from img {
+  border-radius: 50%;
 }

@@ -14,11 +14,19 @@
           <td>
             <div id="message-cell" scroll-glue="scroll-glue">
               <div ng-repeat="msg in activeMessages" class="row">
-                <div class="col-md-3">
-                  <div class="from">{{ msg.from }}</div>
+                <div class="col-md-1">
+                  <div class="from" title="{{msg.from.name}}">
+                    <img class="img-responsive" ng-src="{{msg.from.picture}}"/><br>
+                    {{ msg.from.first_name }}
+                  </div>
                 </div>
-                <div class="col-md-9">
-                  <div class="content">{{ msg.content }}</div>
+                <div class="col-md-11">
+                  <div class="content">
+                    {{ msg.content }}
+                    <br>
+                    <em class="timestamp" ng-if="msg.sent_at" am-time-ago="msg.sent_at"></em>
+                  </div>
+
                 </div>
               </div>
             </div>

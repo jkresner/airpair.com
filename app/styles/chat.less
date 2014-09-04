@@ -47,13 +47,20 @@ tr#entry {
 .from {
   font-size: 8pt;
   font-weight: bold;
+  text-align: center;
 }
 .content {
   background: white;
 }
 
+.timestamp {
+  color: @darkerChrome;
+  font-size: 8pt;
+
+}
+
 .from, .content {
-  padding: 5px;
+  padding: 10px;
 }
 
 tr#messages {
@@ -72,5 +79,9 @@ tr#messages {
   & > .row {
     background: white;
     border-bottom: 1px solid @chrome;
+
+    .from img {
+      border-radius: 50%;
+    }
   }
 }

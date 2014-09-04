@@ -3,7 +3,7 @@
   <table class="table">
     <tr class="channel" ng-repeat="channel in channels | activeChats" ng-class="{unread: channel.unread}">
     <td>
-    <a ng-click="load(channel.$id)" href="#{{channel.$id}}">{{ channel.$id }}</a>
+    <a ng-click="load(channel.$id)" href="#{{channel.$id}}">{{ channel.name }}</a>
     </td>
     <td class="notifications">{{ _.keys(notifications[channel.$id]).length }}</td>
     </tr>
