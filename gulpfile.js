@@ -9,7 +9,8 @@ var path = require('path'),
 paths = {
   public: 'public/v1/**',
   styles: 'public/styles/*.+(less|css)',
-  blog: 'server/blog/**'
+  blog: 'server/blog/**',
+  views: 'server/views/**'
 }
 
 gulp.task('lint', function () {
@@ -37,6 +38,7 @@ gulp.task('watch', function() {
   livereload.listen({ port: 35729 });
   gulp.watch(paths.styles, ['less']);
   gulp.watch(paths.blog).on('change',livereload.changed);
+  gulp.watch(paths.views).on('change',livereload.changed);
   gulp.watch(paths.public).on('change',livereload.changed);
 });
 
