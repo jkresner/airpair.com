@@ -1,7 +1,7 @@
 var express = require('express')
 var app = express()
 
-import {ApiWorkshops} from './api/workshops'
+import ApiWorkshops from './api/workshops'
 
 new ApiWorkshops(app)
 
