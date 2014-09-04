@@ -5,6 +5,7 @@
     <td>
     <a ng-click="load(channel.$id)" href="#{{channel.$id}}">{{ channel.$id }}</a>
     </td>
+    <td class="notifications">{{ _.keys(notifications[channel.$id]).length }}</td>
     </tr>
   </table>
 </div>

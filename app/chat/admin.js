@@ -10,6 +10,9 @@ function fakeNgModel(initValue){
 }
 
 angular.module("AirPair", ['firebase'])
+  .run(['$rootScope', function($rootScope) {
+    $rootScope._ = window._
+  }])
   .directive('airpairChatAdmin', [function() {
     return {
       restrict: 'A',
@@ -17,16 +20,39 @@ angular.module("AirPair", ['firebase'])
       controller: 'ChatAdminController'
     }
   }])
-  .controller('ChatAdminController', ['$scope', '$firebase', function(scope, $firebase) {
+  .controller('ChatAdminController', ['$scope', '$firebase', '$firebaseSimpleLogin', function(scope, $firebase, $firebaseSimpleLogin) {
+    // todo: remove.. for debugging
     window.scope = scope;
 
-    scope.load = function(slug) {
-      var activeChannelRef = new Firebase("https://airpair-chat.firebaseio.com/channels/" + slug);
-      scope.activeChannel = $firebase(activeChannelRef).$asObject();
-      scope.activeMessages = $firebase(activeChannelRef.child('messages')).$asArray();
+    var rootRef = new Firebase("https://airpair-chat.firebaseio.com/");
 
-      // scope.activeChannel.unread = false;
-      // scope.activeChannel.$save()
+    // todo: change to google
+    $firebaseSimpleLogin(rootRef).$login('anonymous').then(function(user){
+      scope.user = user;
+
+      console.log(user);
+
+      // load notifications
+      scope.notifications = $firebase(rootRef.child('notifications').child(user.uid)).$asObject();
+    });
+
+    scope.load = function(slug) {
+      if(scope.user) {
+        var activeChannelRef = rootRef.child('channels').child(slug);
+        scope.activeChannel = $firebase(activeChannelRef).$asObject();
+        scope.activeMessages = $firebase(activeChannelRef.child('messages')).$asArray();
+
+        // presence
+        activeChannelRef.child("members").child(scope.user.uid).set(true);
+        // cool stuff - onDisconnect logs stuff to do on the server side
+        activeChannelRef.child("members").child(scope.user.uid).onDisconnect().remove()
+
+        // clear notifications for this channel
+        rootRef.child("notifications").child(scope.user.uid).child(scope.activeChannel.$id).remove()
+      }
+      else {
+        alert('login first');
+      }
     }
 
     scope.create = function() {
@@ -47,10 +73,11 @@ angular.module("AirPair", ['firebase'])
 
     scope.addMessage = function() {
       msg = {
-        from: 'AirPair Admin',
+        // todo: change to user.displayName later
+        from: scope.user.uid,
         // pic: scope.user.picture,
         content: scope.message,
-        // user_id: session.data.user.googleId,
+        user_id: scope.user.uid,
         sent_at: Firebase.ServerValue.TIMESTAMP
       }
       scope.activeMessages.$add(msg);
