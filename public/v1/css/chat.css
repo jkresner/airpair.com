@@ -15,14 +15,55 @@ table {
 .stretch {
   height: 96%;
 }
-#channels {
+.sidebar label {
   margin-top: 10px;
 }
 tr.channel.unread {
   background: #dff2ef;
 }
+td.notifications {
+  text-align: center;
+  width: 35px;
+}
+td.notifications span {
+  background: red;
+  border-radius: 50%;
+  color: white;
+  display: inline-block;
+  font-size: 8pt;
+  font-weight: bold;
+  padding: 2px;
+  min-width: 20px;
+  text-align: center;
+}
 table#chatroom td {
   box-sizing: border-box;
+}
+tr.user td.picture {
+  position: relative;
+  width: 50px;
+}
+tr.user td.picture img {
+  border-radius: 50%;
+}
+tr.user .presence {
+  display: none;
+  background: lightgreen;
+  border: 1px solid #ADFF2F;
+  border-radius: 50%;
+  height: 12px;
+  width: 12px;
+  position: absolute;
+  top: 5px;
+  left: 69%;
+  opacity: 0.7;
+}
+tr.user.active .presence {
+  display: block;
+}
+tr.user.active.away .presence {
+  background: yellow;
+  border: 1px solid lightyellow;
 }
 tr#entry {
   background: #eeeeee;

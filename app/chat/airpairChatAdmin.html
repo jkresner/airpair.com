@@ -1,12 +1,30 @@
-<div class="container-fluid stretch">
+<div class="container-fluid stretch" ng-click="lastSeen()">
   <div class="row stretch">
-    <div class="col-xs-3">
-      <chats></chats>
+
+    <div class="col-xs-3 sidebar">
       <form ng-submit="create()">
         <label>Create New Channel</label>
         <input ng-model="name"/>
       </form>
+      <chats></chats>
+      <label>People</label>
+      <table class="table">
+        <tr class="user" ng-repeat="user in users" ng-class="{active: user.active, away: checkAway(user)}">
+          <td class="picture">
+            <div class="presence" title="Last active {{moment(user.last_seen).format('dddd, MMMM Do YYYY, h:mm:ss a')}}"></div>
+            <img class="img-responsive" ng-src="{{user.thirdPartyUserData.picture}}"/>
+          </td>
+          <td>
+            <strong>{{ user.displayName }}</strong><br>
+            {{ user.thirdPartyUserData.hd }}
+          </td>
+          <td class="actions">
+
+          </td>
+        </tr>
+      </table>
     </div>
+
     <div class="col-xs-9 stretch">
       <h3>{{ activeChannel.name }}</h3>
       <table id="chatroom" class="stretch">
@@ -26,16 +44,15 @@
                     <br>
                     <em class="timestamp" ng-if="msg.sent_at" am-time-ago="msg.sent_at"></em>
                   </div>
-
                 </div>
               </div>
             </div>
           </td>
         </tr>
-        <tr id="entry" ng-show="activeChannel">
+        <tr id="entry" ng-show="activeChannel && user">
           <td colspan="2">
             <form ng-submit="addMessage()">
-              <input id="message" ng-model="message"/>
+              <input id="message" ng-model="message" ng-focus="clearNotifications(activeChannel, user)" placeholder="ask a question"/>
             </form>
           </td>
         </tr>

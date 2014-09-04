@@ -1,13 +1,5 @@
 MAX_AGE_OF_ACTIVE_CHATS = 1000000000
-
-function fakeNgModel(initValue){
-  return {
-    $setViewValue: function(value) {
-      this.$viewValue = value;
-    },
-    $viewValue: initValue
-  };
-}
+MAX_AWAY_OF_ACTIVE_USER = 300000
 
 angular.module("AirPair", ['firebase','angularMoment'])
   .run(['$rootScope', function($rootScope) {
@@ -22,20 +14,43 @@ angular.module("AirPair", ['firebase','angularMoment'])
     };
   }])
   .controller('ChatAdminController', ['$scope', '$firebase', '$firebaseSimpleLogin', function(scope, $firebase, $firebaseSimpleLogin) {
-    // todo: remove.. for debugging
-    window.scope = scope;
-
     var rootRef = new Firebase("https://airpair-chat.firebaseio.com/");
 
-    // todo: change to google
     $firebaseSimpleLogin(rootRef).$login('google',{rememberMe: true}).then(function(user){
       scope.user = user;
 
-      console.log(user);
+      console.log("Logged in as", user);
 
       // load notifications
       scope.notifications = $firebase(rootRef.child('notifications').child(user.uid)).$asObject();
+
+      // site presence
+      scope.user.active = true;
+      rootRef.child('users').child(scope.user.uid).set(scope.user);
+
+      // set user to inactive on disconnect
+      rootRef.child('users').child(scope.user.uid).child('active').onDisconnect().set(false);
+
+      // load people into sidebar
+      scope.users = $firebase(rootRef.child('users')).$asArray();
     });
+
+    scope.checkAway = function(user) {
+      if(user.last_seen) {
+        var delta = (+new Date) - user.last_seen;
+        console.log('checkAway', user.displayName, delta);
+        if(delta > MAX_AWAY_OF_ACTIVE_USER) {
+          return true;
+        }
+      }
+    }
+
+    scope.lastSeen = function() {
+      if(scope.user) {
+        console.log("last seen being set");
+        rootRef.child('users').child(scope.user.uid).child('last_seen').set(Firebase.ServerValue.TIMESTAMP);
+      }
+    }
 
     scope.load = function(slug) {
       if(scope.user) {
@@ -43,13 +58,9 @@ angular.module("AirPair", ['firebase','angularMoment'])
         scope.activeChannel = $firebase(activeChannelRef).$asObject();
         scope.activeMessages = $firebase(activeChannelRef.child('messages')).$asArray();
 
-        // presence
+        // channel participation
         activeChannelRef.child("members").child(scope.user.uid).set(true);
-        // cool stuff - onDisconnect logs stuff to do on the server side
-        activeChannelRef.child("members").child(scope.user.uid).onDisconnect().remove()
-
-        // clear notifications for this channel
-        rootRef.child("notifications").child(scope.user.uid).child(scope.activeChannel.$id).remove()
+        $('#message').focus();
       }
       else {
         alert('login first');
@@ -87,6 +98,10 @@ angular.module("AirPair", ['firebase','angularMoment'])
       scope.activeMessages.$add(msg);
       scope.message = "";
       $('#message').focus();
+    }
+
+    scope.clearNotifications = function(channel, user) {
+      rootRef.child("notifications").child(user.uid).child(channel.$id).remove()
     }
 
   }])
@@ -163,3 +178,12 @@ angular.module("AirPair", ['firebase','angularMoment'])
       }
     };
   });
+
+function fakeNgModel(initValue){
+  return {
+    $setViewValue: function(value) {
+      this.$viewValue = value;
+    },
+    $viewValue: initValue
+  };
+}
