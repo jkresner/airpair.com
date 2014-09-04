@@ -1,3 +1,65 @@
-tr.chatroom.unread {
+html,
+body {
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  bottom: 0;
+  top: 0;
+  right: 0;
+  left: 0;
+}
+table {
+  vertical-align: top;
+  width: 100%;
+}
+.stretch {
+  height: 96%;
+}
+#channels {
+  margin-top: 10px;
+}
+tr.channel.unread {
   background: #dff2ef;
+}
+table#chatroom td {
+  box-sizing: border-box;
+}
+tr#entry {
+  background: #eeeeee;
+  height: 30px;
+}
+tr#entry td {
+  padding: 5px;
+}
+tr#entry input {
+  width: 100%;
+}
+.from {
+  font-size: 8pt;
+  font-weight: bold;
+}
+.content {
+  background: white;
+}
+.from,
+.content {
+  padding: 5px;
+}
+tr#messages {
+  background: #eee;
+}
+tr#messages td {
+  vertical-align: top;
+}
+#message-cell {
+  border: 2px solid #eeeeee;
+  max-height: 101%;
+  overflow: hidden;
+  overflow-y: scroll;
+  padding-right: 15px;
+  top: 0px;
+}
+#message-cell > .row {
+  background: white;
+  border-bottom: 1px solid #eeeeee;
 }

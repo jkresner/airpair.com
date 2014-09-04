@@ -7,6 +7,7 @@ html(lang="en" ng-app="AirPair")
     link(rel="stylesheet" href="../v1/css/chat.css" type="text/css")
 
     // build:js1 /admin.js
+    script(type="text/javascript" src="../v1/bower_components/jquery/dist/jquery.js")
     script(type="text/javascript" src="../v1/bower_components/angular/angular.js")
     script(type="text/javascript" src="../v1/bower_components/firebase/firebase.js")
     script(type="text/javascript" src="../v1/bower_components/angularfire/dist/angularfire.js")
@@ -15,21 +16,25 @@ html(lang="en" ng-app="AirPair")
     script(type="text/javascript" src="admin.js")
 
   body(ng-controller="ChatAdminController")
-    .container-fluid
-      h1 AirPair Chat Admin Interface
-      .row
-        .col-md-3
+    .container-fluid.stretch
+      .row.stretch
+        .col-xs-3
           chats
           form(ng-submit="create()")
             label Create New Channel
             input(ng-model="name")
-        .col-md-9
+        .col-xs-9.stretch
           h3 {{ activeChannel.name }}
-          table.table
-            tr(ng-repeat="msg in activeMessages")
-              td {{ msg.from }}
-              td {{ msg.content }}
+          table#chatroom.stretch
+            tr#messages
+              td
+                #message-cell(scroll-glue)
+                  .row(ng-repeat="msg in activeMessages")
+                    .col-md-3
+                      .from {{ msg.from }}
+                    .col-md-9
+                      .content {{ msg.content }}
             tr#entry(ng-show="activeChannel")
               td(colspan=2)
                 form(ng-submit="addMessage()")
-                  input(ng-model="message")
+                  input#message(ng-model="message")

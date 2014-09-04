@@ -1,7 +1,76 @@
 @highlight: #dff2ef;
+@chrome: #eee;
+@darkerChrome: #aaa;
 
-tr.chatroom {
+html, body {
+  margin: 0;
+  padding:0;
+  position:absolute;
+  bottom:0;
+  top:0;
+  right:0;
+  left:0;
+}
+
+table {
+  vertical-align: top;
+  width: 100%;
+}
+
+.stretch {
+  height: 96%;
+}
+
+#channels {
+  margin-top: 10px;
+}
+
+tr.channel {
   &.unread {
     background: @highlight;
+  }
+}
+
+table#chatroom {
+  td { box-sizing: border-box }
+}
+
+tr#entry {
+  background: @chrome;
+  td { padding: 5px }
+  input {
+    width: 100%
+  }
+  height: 30px;
+}
+
+.from {
+  font-size: 8pt;
+  font-weight: bold;
+}
+.content {
+  background: white;
+}
+
+.from, .content {
+  padding: 5px;
+}
+
+tr#messages {
+  background: #eee;
+  td {
+    vertical-align: top;
+  }
+}
+#message-cell {
+  border: 2px solid @chrome;
+  max-height: 101%;
+  overflow: hidden;
+  overflow-y: scroll;
+  padding-right: 15px;
+  top: 0px;
+  & > .row {
+    background: white;
+    border-bottom: 1px solid @chrome;
   }
 }
