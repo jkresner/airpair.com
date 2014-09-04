@@ -10,6 +10,13 @@ function fakeNgModel(initValue){
 }
 
 angular.module("AirPair", ['firebase'])
+  .directive('airpairChatAdmin', [function() {
+    return {
+      restrict: 'A',
+      templateUrl : 'airpairChatAdmin.html',
+      controller: 'ChatAdminController'
+    }
+  }])
   .controller('ChatAdminController', ['$scope', '$firebase', function(scope, $firebase) {
     window.scope = scope;
 

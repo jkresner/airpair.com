@@ -15,26 +15,6 @@ html(lang="en" ng-app="AirPair")
 
     script(type="text/javascript" src="admin.js")
 
-  body(ng-controller="ChatAdminController")
-    .container-fluid.stretch
-      .row.stretch
-        .col-xs-3
-          chats
-          form(ng-submit="create()")
-            label Create New Channel
-            input(ng-model="name")
-        .col-xs-9.stretch
-          h3 {{ activeChannel.name }}
-          table#chatroom.stretch
-            tr#messages
-              td
-                #message-cell(scroll-glue)
-                  .row(ng-repeat="msg in activeMessages")
-                    .col-md-3
-                      .from {{ msg.from }}
-                    .col-md-9
-                      .content {{ msg.content }}
-            tr#entry(ng-show="activeChannel")
-              td(colspan=2)
-                form(ng-submit="addMessage()")
-                  input#message(ng-model="message")
+  body(airpair-chat-admin)
+
+

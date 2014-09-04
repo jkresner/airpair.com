@@ -1,0 +1,37 @@
+<div class="container-fluid stretch">
+  <div class="row stretch">
+    <div class="col-xs-3">
+      <chats></chats>
+      <form ng-submit="create()">
+        <label>Create New Channel</label>
+        <input ng-model="name"/>
+      </form>
+    </div>
+    <div class="col-xs-9 stretch">
+      <h3>{{ activeChannel.name }}</h3>
+      <table id="chatroom" class="stretch">
+        <tr id="messages">
+          <td>
+            <div id="message-cell" scroll-glue="scroll-glue">
+              <div ng-repeat="msg in activeMessages" class="row">
+                <div class="col-md-3">
+                  <div class="from">{{ msg.from }}</div>
+                </div>
+                <div class="col-md-9">
+                  <div class="content">{{ msg.content }}</div>
+                </div>
+              </div>
+            </div>
+          </td>
+        </tr>
+        <tr id="entry" ng-show="activeChannel">
+          <td colspan="2">
+            <form ng-submit="addMessage()">
+              <input id="message" ng-model="message"/>
+            </form>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>
