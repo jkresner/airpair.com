@@ -30,11 +30,13 @@
     "karma-chrome-launcher": "^0.1.4"
   },
   "dependencies": {
-    "es6-module-loader": "^0.8.2",
     "connect-livereload": "^0.4.0",
+    "connect-mongo": "^0.4.1",
+    "es6-module-loader": "^0.8.2",
     "express": "^4.8.5",
     "express-hbs": "^0.7.11",
     "marked": "^0.3.2",
-    "moment": "^2.8.2"
+    "moment": "^2.8.2",
+    "mongoose": "^3.8.15"
   }
 }
