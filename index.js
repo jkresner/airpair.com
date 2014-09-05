@@ -1,32 +1,33 @@
-import globals from './global';
-import routes from './routes';
-import hbsEngine from './hbsEngine'
+import globals from './server/global'
+import routes from './server/routes'
+import hbsEngine from './server/hbsEngine'
+import * as mongoInit from './server/mongoInit'
 
 export function run(appdir)
 {
-	var livereload = require('connect-livereload');
-	var express = require('express');
-	var app = express();
+	var livereload = require('connect-livereload')
+	var express = require('express')
+	var app = express()
+	app.dir = appdir
 
-	app.dir = appdir;
+	mongoInit.setSessionStore(mongoInit.connect())
 
 	if (livereload) {
-		app.use(livereload({ port: 35729 }));
+		app.use(livereload({ port: 35729 }))
 	}
 	
-	app.use(express.static(app.dir + '/app'));
-	app.use(express.static(app.dir + '/public'));
+	app.use(express.static(app.dir + '/public'))
 
-	hbsEngine(app);
-	routes(app);
+	hbsEngine(app)
+	routes(app)
 
 	app.use(function(err, req, res, next){
-	  console.error(err.stack);
-	  res.send(500, 'Something broke!');
-	});
+	  console.error(err.stack)
+	  res.send(500, 'Something broke!')
+	})
 
 	var server = app.listen(process.env.PORT || 3333, function() {
-	  console.log('Listening on port %d', server.address().port);
-	});
+	  console.log('Listening on port %d', server.address().port)
+	})
 
 }

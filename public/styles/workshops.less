@@ -1,0 +1,60 @@
+@import "ap.less";
+
+@sideRailWidth:212px;
+
+body#workshops {
+
+  .pw-widget {
+    float:right;
+    width:@sideRailWidth;
+    margin:15 0;
+    height:60;
+    position:relative;
+    top:0;
+  }
+
+  #upcoming {
+
+    text-align:center;
+
+    li.workshop { 
+      margin:20px;
+      padding:5px;
+      width:200px;
+      list-style:none;
+      display:inline-block;
+
+      border:solid 1px @lightgray;
+
+      time { display:block }
+
+      h4 {
+        height:60px;
+        vertical-align:middle;
+      }
+
+      img { margin-top:15px }
+    }
+  }
+
+  #show {
+    time { display:block }
+
+    .speakers {
+      float:right;
+      width:@sideRailWidth;
+      font-size:12px;
+      text-align:justify;
+
+      h2 { margin-top:0;padding-top:0;text-align:center }
+      h3 { text-align:center }
+
+      img { width:100%;margin:0px 0 20px 0 }
+
+      ul, li { list-style:none;margin:0;padding:0 }
+    }
+
+    p { max-width:640px }
+  }
+
+}
