@@ -305,6 +305,9 @@ nav#sideChat input {
   color: #d3d3d3;
   margin-left: 0;
 }
+.blogpost img {
+  max-width: 640px;
+}
 .blogpost #disqus_thread {
   min-height: 700px;
 }
@@ -363,4 +366,7 @@ nav#sideChat input {
 }
 .blogpost blockquote p {
   width: 500px;
+}
+.blogpost blockquote + p {
+  margin-top: 20px;
 }

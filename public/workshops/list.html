@@ -1,0 +1,27 @@
+<header>Workshops</header>
+
+<h2>Calendar</h2>
+
+<p>The best way to keep track of upcoming workshops as the schedule is consistently changing is to <a href="https://www.google.com/calendar/ical/airpair.co_o3u16m7fv9fc3agq81nsn0bgrs%40group.calendar.google.com/public/basic.ics">subscribe to the iCal</a>. Make sure you're subscribed to receive updates and not downloaded the calendar in a static state.</p>
+
+<h2>Upcoming workshops</h2>
+
+<ul id="upcoming">
+	<li class="workshop" ng-repeat="entry in workshops.upcoming">
+    <a href="/workshops/{{entry.slug}}">
+      <time>{{entry.time | date:'medium'}}</time> 
+      <h4>{{ entry.title }}</h4>
+      <div ng-repeat="speaker in entry.speakers">
+        {{ speaker.name }}
+        <br />
+        <img src="//0.gravatar.com/avatar/{{ speaker.gravatar }}" />
+      </div>
+    </a>
+  </li>
+</ul>	
+
+<h2>All workshops</h2>
+
+<ul>
+  <li ng-repeat="entry in workshops.entries"><time>{{entry.time | date:'medium'}}</time> <a href="/workshops/{{entry.slug}}"> {{ entry.title }}</a></li>
+</ul> 
