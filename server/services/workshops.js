@@ -11,7 +11,7 @@ class WorkshopsService {
   }
 
   getAll(cb) {
-    Workshop.find({},null,null)
+    Workshop.find({},{title:1,slug:1,time:1,tags:1},null)
       .lean()
       .exec( (e, r) => {
         if (e && logging) 
