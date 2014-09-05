@@ -14,26 +14,32 @@ body#workshops {
   }
 
   #upcoming {
-
     text-align:center;
+    font-size:0;
+    line-heigh:0;
 
-    li.workshop { 
-      margin:20px;
+    a.workshop {
+      display:inline-block; 
+      font-size:0px;
+      letter-spacing:-4px;
+      margin:10px;
       padding:5px;
       width:200px;
-      list-style:none;
-      display:inline-block;
-
+      text-align:center;
+      background:#ECF7F5;
       border:solid 1px @lightgray;
+      border-radius:5px;
+      vertical-align:top;
 
-      time { display:block }
+      time { display:block;height:24px;font-size:12px;letter-spacing:normal }
+      img { display:block;margin:auto;border-radius:50px }
+      h5 { letter-spacing:normal }
+      figure { display:block;height:70px;font-size:16px;padding:0;margin:0;letter-spacing:normal }
+    }
 
-      h4 {
-        height:60px;
-        vertical-align:middle;
-      }
-
-      img { margin-top:15px }
+    a.workshop:hover {
+      background:black;
+      color:white;
     }
   }
 

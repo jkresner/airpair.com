@@ -267,24 +267,47 @@ body#workshops .pw-widget {
 }
 body#workshops #upcoming {
   text-align: center;
+  font-size: 0;
+  line-heigh: 0;
 }
-body#workshops #upcoming li.workshop {
-  margin: 20px;
+body#workshops #upcoming a.workshop {
+  display: inline-block;
+  font-size: 0px;
+  letter-spacing: -4px;
+  margin: 10px;
   padding: 5px;
   width: 200px;
-  list-style: none;
-  display: inline-block;
+  text-align: center;
+  background: #ECF7F5;
   border: solid 1px #d3d3d3;
+  border-radius: 5px;
+  vertical-align: top;
 }
-body#workshops #upcoming li.workshop time {
+body#workshops #upcoming a.workshop time {
   display: block;
+  height: 24px;
+  font-size: 12px;
+  letter-spacing: normal;
 }
-body#workshops #upcoming li.workshop h4 {
-  height: 60px;
-  vertical-align: middle;
+body#workshops #upcoming a.workshop img {
+  display: block;
+  margin: auto;
+  border-radius: 50px;
 }
-body#workshops #upcoming li.workshop img {
-  margin-top: 15px;
+body#workshops #upcoming a.workshop h5 {
+  letter-spacing: normal;
+}
+body#workshops #upcoming a.workshop figure {
+  display: block;
+  height: 70px;
+  font-size: 16px;
+  padding: 0;
+  margin: 0;
+  letter-spacing: normal;
+}
+body#workshops #upcoming a.workshop:hover {
+  background: black;
+  color: white;
 }
 body#workshops #show time {
   display: block;

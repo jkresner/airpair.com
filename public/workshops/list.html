@@ -6,19 +6,17 @@
 
 <h2>Upcoming workshops</h2>
 
-<ul id="upcoming">
-	<li class="workshop" ng-repeat="entry in workshops.upcoming">
-    <a href="/workshops/{{entry.slug}}">
-      <time>{{entry.time | date:'medium'}}</time> 
-      <h4>{{ entry.title }}</h4>
-      <div ng-repeat="speaker in entry.speakers">
-        {{ speaker.name }}
-        <br />
-        <img src="//0.gravatar.com/avatar/{{ speaker.gravatar }}" />
-      </div>
-    </a>
-  </li>
-</ul>	
+<div id="upcoming">
+  <a class="workshop" href="/workshops/{{entry.slug}}"
+     ng-repeat="entry in workshops.upcoming">
+    <time>{{entry.time | date:'medium'}}</time> 
+    <div ng-repeat="speaker in entry.speakers">
+      <img src="//0.gravatar.com/avatar/{{ speaker.gravatar }}?s=120" />
+      <h5>{{ speaker.name }}</h5>
+    </div>
+    <figure>{{ entry.title }}</figure>
+  </a>
+</div>	
 
 <h2>All workshops</h2>
 
