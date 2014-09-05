@@ -1,5 +1,11 @@
+Upcoming workshops:
+
+<ul>
+	<li ng-repeat="entry in workshops.upcoming"><time>{{entry.time | date:'medium'}}</time> <a href="/workshops/{{entry.slug}}"> {{ entry.title }}</a></li>
+</ul>	
+
 The list of workshops:
 
 <ul>
-	<li ng-repeat="entry in workshops.entries"><a href="/workshops/{{entry.slug}}">{{ entry.title }}</a></li>
-</ul>	
+  <li ng-repeat="entry in workshops.entries"><time>{{entry.time | date:'medium'}}</time> <a href="/workshops/{{entry.slug}}"> {{ entry.title }}</a></li>
+</ul> 

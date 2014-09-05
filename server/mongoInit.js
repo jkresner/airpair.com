@@ -9,8 +9,6 @@ export function connect() {
   db.on('error', (e) => $log('mongo connection error:' + e) )
   db.once('open', () => $log(`connected to db ${config.mongoUri}`) )
 
-  $log('got through mongoconnect')
-
   return db
 }
 
