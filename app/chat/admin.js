@@ -41,6 +41,16 @@ angular.module("AirPair", ['firebase','angularMoment'])
       // load channels
       $scope.channels = $firebase(channelsRef).$asArray();
 
+      // autosubscribe if you're an admin
+      if(isAdmin(user)) {
+        channelsRef.on('child_added', function(channelSnapshot) {
+          channel = channelSnapshot.val();
+          if(channel.active) {
+            channelSnapshot.ref().child("members").child(user.uid).set(true);
+          }
+        });
+      }
+
       // load notifications
       $scope.notifications = $firebase(notificationsRef.child(user.uid)).$asObject();
 
@@ -100,8 +110,7 @@ angular.module("AirPair", ['firebase','angularMoment'])
     }
 
     $scope.create = function() {
-      createChannel($scope.name, $scope);
-      $scope.newChannelName = "";
+      createChannel(prompt("Enter name for new channel"), $scope);
     }
 
     $scope.isLoaded = function(channel) {
@@ -202,11 +211,11 @@ function createChannel(name, scope) {
   var slug = name.replace(/\W/g, '-');
   var newChannelRef = channelsRef.child(slug);
 
-  newChannelRef.set({
+  newChannelRef.setWithPriority({
     name: name,
     active: true,
     created_at: Firebase.ServerValue.TIMESTAMP
-  }, function(err){
+  }, Firebase.ServerValue.TIMESTAMP, function(err){
     if(!err) {
       scope.load(slug);
     }
@@ -223,4 +232,8 @@ function fakeNgModel(initValue){
     },
     $viewValue: initValue
   };
+}
+
+function isAdmin(user) {
+  return user.thirdPartyUserData.hd === 'airpair.com';
 }

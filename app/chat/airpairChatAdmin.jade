@@ -1,10 +1,9 @@
 #sidebar
-  form(ng-submit='create()')
-    label Create New Channel
-    br
-    input(ng-model='name')
   #channels
-    label Active Channels
+    label
+      | Active Channels&nbsp;
+      button(ng-click="create()")
+        i.fa.fa-plus
     table.table
       tbody
         tr.channel(ng-repeat='channel in channels | reverse', ng-if='channel.active' ng-class="{active: isLoaded(channel)}")

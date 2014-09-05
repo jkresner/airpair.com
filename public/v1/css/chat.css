@@ -8,6 +8,14 @@ body {
   flex-direction: row;
   padding-bottom: 10px;
 }
+button {
+  background: white;
+  border-radius: 50%;
+  border: 1px solid white;
+}
+button:hover {
+  border: 1px solid #aaaaaa;
+}
 #sidebar {
   display: flex;
   font-size: 9pt;
@@ -26,6 +34,9 @@ body {
 }
 #sidebar .channel.loaded {
   background-color: #dff2ef;
+}
+#sidebar #people td {
+  background-color: #ffffff !important;
 }
 #main {
   display: flex;
@@ -76,10 +87,6 @@ td.actions {
   width: 50px !important;
   min-width: 50px !important;
 }
-td.actions button {
-  border-radius: 50%;
-  border: 1px solid #aaaaaa;
-}
 tr.user td.picture {
   position: relative;
   width: 50px !important;
@@ -114,7 +121,7 @@ tr.user.active.away .presence {
   font-size: 8pt;
 }
 tr.channel td.notifications {
-  text-align: left;
+  text-align: right;
   width: 40px;
 }
 span.unread {
