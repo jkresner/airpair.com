@@ -1,0 +1,52 @@
+#sidebar
+  form(ng-submit='create()')
+    label Create New Channel
+    br
+    input(ng-model='name')
+  #channels
+    label Active Channels
+    table.table
+      tbody
+        tr.channel(ng-repeat='channel in channels | reverse', ng-if='channel.active' ng-class="{active: isLoaded(channel)}")
+          td.name
+            a(ng-click='load(channel.$id)', href='#{{channel.$id}}') {{ channel.name }}
+          td.actions
+          td.notifications
+            span.unread(ng-show='_.keys(notifications[channel.$id]).length > 0') {{ _.keys(notifications[channel.$id]).length }}
+  #people
+    label People
+    table.table
+      tbody
+        tr.user(ng-repeat='u in users', ng-class='{active: u.active, away: checkAway(user)}')
+          td.picture
+            .presence(title='Last active {{moment(u.last_seen).format("dddd, MMMM Do YYYY, h:mm:ss a")}}')
+            img(ng-src='{{u.thirdPartyUserData.picture}}')
+          td
+            strong {{ u.displayName }}
+            br
+            | {{ u.thirdPartyUserData.hd }}
+          td.actions
+            button(ng-click='talkWith(u)', ng-if='u.uid != user.uid', title='Start chatting with {{u.displayName}}')
+              i.fa.fa-comment
+
+  #login(ng-hide='user')
+    button(ng-click='login()') Login
+
+#main
+  #channel-info
+    h3 {{ activeChannel.name }}
+  #messages(scroll-glue ng-mousemove="clearNotifications(activeChannel, user)")
+    .box
+      .msg(ng-repeat='msg in activeMessages')
+        .from(title='{{msg.from.name}}')
+          img(ng-src='{{msg.from.picture}}')
+          br
+          | {{ msg.from.first_name }}
+        .content
+          | {{ msg.content }}
+          br
+          em.timestamp(ng-if='msg.sent_at', am-time-ago='msg.sent_at')
+
+  #entry(ng-show='activeChannel && user')
+    form(ng-submit='addMessage()')
+      input#message(ng-model='message', ng-focus='clearNotifications(activeChannel, user)', placeholder='ask a question')

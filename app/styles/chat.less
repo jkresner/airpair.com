@@ -11,41 +11,80 @@
 @mediumgray:#7e7f7f;
 @lightgray:#d3d3d3;
 
-html, body {
-  margin: 0;
-  padding:0;
-  position:absolute;
-  bottom:0;
-  top:0;
-  right:0;
-  left:0;
+body, html {
+  height: 100%;
 }
 
-table {
-  vertical-align: top;
-  width: 100%;
+body {
+  display: flex;
+  align-items: stretch;
+  flex-direction: row;
+  padding-bottom: 10px;
 }
 
-.stretch {
-  height: 96%;
-  max-height: 100% !important;
+#sidebar {
+  display: flex;
+  font-size: 9pt;
+  flex: 3;
+  flex-direction: column;
+  padding: 10px;
+
+  label {
+    margin-top: 10px;
+  }
+
+  #channels, #people {
+    flex: 2;
+    display: block;
+    overflow: auto;
+  }
+
+  .channel.loaded {
+    background-color: @lightblue;
+  }
 }
 
-.sidebar label {
-  margin-top: 10px;
-}
+#main {
+  display: flex;
+  flex: 8;
+  flex-direction: column;
+  padding-right: 10px;
 
-span {
-  background: red;
-  border-radius: 50%;
-  color: white;
-  font-size: 6pt;
-  font-weight: bold;
-  top: -6px;
-  min-width: 20px;
-  padding: 3px 6px;
-  position: relative;
-  text-align: center;
+  #channel-info {
+    min-height: 60px;
+  }
+
+  #messages {
+    border: 2px solid @chrome;
+    flex-grow: 1;
+    display: block;
+    overflow: auto;
+    .msg {
+      background: white;
+      border-bottom: 1px solid @chrome;
+      display: flex;
+      flex-direction: row;
+
+      .from, .content {
+        padding: 10px
+      }
+      .from {
+        width: 70px;
+        font-size: 8pt;
+        font-weight: bold;
+        text-align: center;
+      }
+      .content { flex-grow: 9 }
+      img { border-radius: 50%; max-width: 50px }
+    }
+  }
+  #entry {
+    max-height: 40px;
+    input {
+      height: 100%;
+      width: 100%;
+    }
+  }
 }
 
 td.actions {
@@ -57,12 +96,6 @@ td.actions {
   }
 }
 
-table#chatroom {
-  tr.heading {
-    height: 50px !important;
-  }
-  td { box-sizing: border-box }
-}
 
 tr.user {
   td.picture {
@@ -96,52 +129,25 @@ tr.user {
   }
 }
 
-tr#entry {
-  background: @chrome;
-  td { padding: 5px }
-  input {
-    width: 100%
-  }
-  height: 30px;
-}
-
-.from {
-  font-size: 8pt;
-  font-weight: bold;
-  text-align: center;
-}
-.content {
-  background: white;
-}
-
 .timestamp {
   color: @darkerChrome;
   font-size: 8pt;
 }
 
-.from, .content {
-  padding: 10px;
-}
-
-tr#messages {
-  background: #eee;
-  td {
-    vertical-align: top;
+tr.channel {
+  td.notifications {
+    text-align: left;
+    width: 40px;
   }
 }
-#message-cell {
-  border: 2px solid @chrome;
-  max-height: 101%;
-  overflow: hidden;
-  overflow-y: scroll !important;
-  padding-right: 15px;
-  top: 0px;
-  & > .row {
-    background: white;
-    border-bottom: 1px solid @chrome;
 
-    .from img {
-      border-radius: 50%;
-    }
-  }
+span.unread {
+  background: red;
+  border-radius: 50%;
+  color: white;
+  font-size: 6pt;
+  font-weight: bold;
+  min-width: 20px;
+  padding: 3px 6px;
+  text-align: center;
 }
