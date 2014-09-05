@@ -9,7 +9,7 @@ angular.module("APWorkshops", ['ngRoute'])
 	.controller('WorkshopsCtrl', ['$scope', '$http', 'API', function($scope, $http, API) {
 		var self = this;
 		var upcomingStart = moment(new Date());
-		var upcomingEnd = moment(new Date()).add('days', 14);
+		var upcomingEnd = moment(new Date()).add(14, 'days');
 		$http.get(API+'/workshops').success(function (data) {
 			self.entries = data;
 			self.upcoming = _.where(data,function(w) { 
