@@ -1,87 +1,28 @@
 MAX_AGE_OF_ACTIVE_CHATS = 1000000000
 MAX_AWAY_OF_ACTIVE_USER = 300000
 
+var rootRef = new Firebase("https://airpair-chat.firebaseio.com/");
+var channelsRef = rootRef.child('channels');
+var notificationsRef = rootRef.child('notifications');
+var usersRef = rootRef.child('users');
+
 angular.module("AirPair", ['firebase','angularMoment'])
   .run(['$rootScope', function($rootScope) {
+    // set globals we want available in ng expressions
     $rootScope._ = window._;
     $rootScope.moment = window.moment;
   }])
+
   .directive('airpairChatAdmin', [function() {
+    // an overall directive so that all rendering is client-side
     return {
       restrict: 'A',
       templateUrl : 'airpairChatAdmin.html',
       controller: 'ChatAdminController'
     };
   }])
+
   .controller('ChatAdminController', ['$scope', '$firebase', '$firebaseSimpleLogin', function(scope, $firebase, $firebaseSimpleLogin) {
-    var rootRef = new Firebase("https://airpair-chat.firebaseio.com/");
-
-    $firebaseSimpleLogin(rootRef).$login('google',{rememberMe: true}).then(function(user){
-      scope.user = user;
-
-      console.log("Logged in as", user);
-
-      // load notifications
-      scope.notifications = $firebase(rootRef.child('notifications').child(user.uid)).$asObject();
-
-      // site presence
-      scope.user.active = true;
-      rootRef.child('users').child(scope.user.uid).set(scope.user);
-
-      // set user to inactive on disconnect
-      rootRef.child('users').child(scope.user.uid).child('active').onDisconnect().set(false);
-
-      // load people into sidebar
-      scope.users = $firebase(rootRef.child('users')).$asArray();
-    });
-
-    scope.checkAway = function(user) {
-      if(user.last_seen) {
-        var delta = (+new Date) - user.last_seen;
-        console.log('checkAway', user.displayName, delta);
-        if(delta > MAX_AWAY_OF_ACTIVE_USER) {
-          return true;
-        }
-      }
-    }
-
-    scope.lastSeen = function() {
-      if(scope.user) {
-        console.log("last seen being set");
-        rootRef.child('users').child(scope.user.uid).child('last_seen').set(Firebase.ServerValue.TIMESTAMP);
-      }
-    }
-
-    scope.load = function(slug) {
-      if(scope.user) {
-        var activeChannelRef = rootRef.child('channels').child(slug);
-        scope.activeChannel = $firebase(activeChannelRef).$asObject();
-        scope.activeMessages = $firebase(activeChannelRef.child('messages')).$asArray();
-
-        // channel participation
-        activeChannelRef.child("members").child(scope.user.uid).set(true);
-        $('#message').focus();
-      }
-      else {
-        alert('login first');
-      }
-    }
-
-    scope.create = function() {
-      var slug = scope.name.replace(/\W/g, '-');
-      var channel = new Firebase("https://airpair-chat.firebaseio.com/channels/" + slug);
-      channel.set({
-        name: scope.name,
-        unread: true,
-        created_at: Firebase.ServerValue.TIMESTAMP,
-      }, function(err){
-        if(!err) {
-          scope.load(slug);
-        }
-      });
-
-      scope.newChannelName = "";
-    }
 
     scope.addMessage = function() {
       msg = {
@@ -100,50 +41,83 @@ angular.module("AirPair", ['firebase','angularMoment'])
       $('#message').focus();
     }
 
+    scope.checkAway = function(user) {
+      if(user.last_seen) {
+        var delta = (+new Date) - user.last_seen;
+        console.log('checkAway', user.displayName, delta);
+        if(delta > MAX_AWAY_OF_ACTIVE_USER) {
+          return true;
+        }
+      }
+    }
+
     scope.clearNotifications = function(channel, user) {
       rootRef.child("notifications").child(user.uid).child(channel.$id).remove()
     }
 
-  }])
-
-  // todo - is this the best way of reducing this collection? (prob not)
-  .filter('activeChats', function() {
-    return function(channels) {
-      var out = [];
-      channels.forEach(function(channel){
-        if(channel.unread) {
-          out.push(channel)
-        }
-        else {
-          if(channel.messages) {
-            messages.some(function(msg) {
-              if(msg.hasOwnProperty('sent_at')) {
-                var delta = (+new Date) - msg.sent_at
-                if(delta < MAX_AGE_OF_ACTIVE_CHATS) {
-                  out.push(channel);
-                  return true;
-                }
-              }
-            });
-          }
-        }
-      });
-      return out;
+    scope.create = function() {
+      createChannel(scope.name, scope);
+      scope.newChannelName = "";
     }
-  })
 
-  .directive('chats', ['$firebase', function($firebase) {
-    return {
-      restrict: 'E',
-      templateUrl : 'channels.html',
-      link: function(scope, element, attributes) {
-        var rootRef = new Firebase("https://airpair-chat.firebaseio.com/channels");
-        scope.channels = $firebase(rootRef).$asArray();
-
-        var updatesQuery = rootRef.endAt(null);
-        //updatesQuery.on('child_added', function(newChild){ console.log(newChild)});
+    scope.lastSeen = function() {
+      if(scope.user) {
+        console.log("last seen being set");
+        usersRef.child(scope.user.uid).child('last_seen').set(Firebase.ServerValue.TIMESTAMP);
       }
-    };
+    }
+
+    scope.load = function(slug) {
+      if(scope.user) {
+        var activeChannelRef = channelsRef.child(slug);
+        scope.activeChannel = $firebase(activeChannelRef).$asObject();
+        scope.activeMessages = $firebase(activeChannelRef.child('messages')).$asArray();
+
+        // channel participation
+        activeChannelRef.child("members").child(scope.user.uid).set(true);
+        scope.clearNotifications(scope.activeChannel, scope.user);
+        $('#message').focus();
+      }
+      else {
+        alert('login first');
+      }
+    }
+
+    scope.login = function() {
+      $firebaseSimpleLogin(rootRef).$login('google',{rememberMe: true}).then(function(user){
+        scope.user = user;
+        console.log("Logged in as", user);
+
+        // load channels
+        scope.channels = $firebase(channelsRef).$asArray();
+
+        // load notifications
+        scope.notifications = $firebase(notificationsRef.child(user.uid)).$asObject();
+
+        // site presence
+        scope.user.active = true;
+        usersRef.child(scope.user.uid).set(scope.user);
+
+        // set user to inactive on disconnect
+        usersRef.child(scope.user.uid).child('active').onDisconnect().set(false);
+
+        // load people into sidebar
+        scope.users = $firebase(usersRef).$asArray();
+      });
+    }
+
+    scope.talkWith = function(otherUser) {
+      var myFirstName = scope.user.thirdPartyUserData.given_name;
+      var theirFirstName = otherUser.thirdPartyUserData.given_name;
+      var name = myFirstName + " + " + theirFirstName;
+
+      // todo: don't re-create if exists already, just load
+      createChannel(name, scope);
+    }
+
+    // try triggering a login (auto-popup doesn't work on all browsers)
+    scope.login();
+
   }])
 
   .directive('scrollGlue', function(){
@@ -178,6 +152,24 @@ angular.module("AirPair", ['firebase','angularMoment'])
       }
     };
   });
+
+function createChannel(name, scope) {
+  var slug = name.replace(/\W/g, '-');
+  var newChannelRef = channelsRef.child(slug);
+
+  newChannelRef.set({
+    name: name,
+    active: true,
+    created_at: Firebase.ServerValue.TIMESTAMP
+  }, function(err){
+    if(!err) {
+      scope.load(slug);
+    }
+    else {
+      console.log("unable to create channel", err);
+    }
+  });
+}
 
 function fakeNgModel(initValue){
   return {

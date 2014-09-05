@@ -1,13 +1,1 @@
-<div id="channels">
-  <label>Active Channels</label>
-  <table class="table">
-    <tr class="channel" ng-repeat="channel in channels | activeChats" ng-class="{unread: channel.unread}">
-    <td>
-    <a ng-click="load(channel.$id)" href="#{{channel.$id}}">{{ channel.name }}</a>
-    </td>
-    <td class="notifications">
-      <span ng-if="_.keys(notifications[channel.$id]).length > 0">{{ _.keys(notifications[channel.$id]).length }}</span>
-    </td>
-    </tr>
-  </table>
-</div>
+

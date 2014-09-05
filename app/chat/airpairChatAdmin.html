@@ -6,28 +6,45 @@
         <label>Create New Channel</label>
         <input ng-model="name"/>
       </form>
-      <chats></chats>
+
+      <div id="channels">
+        <label>Active Channels</label>
+        <table class="table">
+          <tr class="channel" ng-repeat="channel in channels" ng-if="channel.active">
+            <td>
+              <a ng-click="load(channel.$id)" href="#{{channel.$id}}">{{ channel.name }}</a>&nbsp;<span ng-show="_.keys(notifications[channel.$id]).length > 0">{{ _.keys(notifications[channel.$id]).length }}</span>
+            </td>
+            <td class="actions"></td>
+          </tr>
+        </table>
+      </div>
+
       <label>People</label>
       <table class="table">
-        <tr class="user" ng-repeat="user in users" ng-class="{active: user.active, away: checkAway(user)}">
+        <tr class="user" ng-repeat="u in users" ng-class="{active: u.active, away: checkAway(user)}">
           <td class="picture">
-            <div class="presence" title="Last active {{moment(user.last_seen).format('dddd, MMMM Do YYYY, h:mm:ss a')}}"></div>
-            <img class="img-responsive" ng-src="{{user.thirdPartyUserData.picture}}"/>
+            <div class="presence" title="Last active {{moment(u.last_seen).format('dddd, MMMM Do YYYY, h:mm:ss a')}}"></div>
+            <img ng-src="{{u.thirdPartyUserData.picture}}"/>
           </td>
           <td>
-            <strong>{{ user.displayName }}</strong><br>
-            {{ user.thirdPartyUserData.hd }}
+            <strong>{{ u.displayName }}</strong><br>
+            {{ u.thirdPartyUserData.hd }}
           </td>
           <td class="actions">
-
+            <button ng-click="talkWith(u)" ng-if="u.uid != user.uid" title="Start chatting with {{u.displayName}}">
+              <i class="fa fa-comment"></i>
+            </button>
           </td>
         </tr>
       </table>
+      <div ng-hide="user">
+        <button ng-click="login()">Login</button>
+      </div>
     </div>
 
     <div class="col-xs-9 stretch">
-      <h3>{{ activeChannel.name }}</h3>
       <table id="chatroom" class="stretch">
+        <tr class="heading"><td><h3>{{ activeChannel.name }}</h3></td></tr>
         <tr id="messages">
           <td>
             <div id="message-cell" scroll-glue="scroll-glue">
