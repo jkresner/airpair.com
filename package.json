@@ -30,10 +30,12 @@
     "karma-chrome-launcher": "^0.1.4"
   },
   "dependencies": {
-    "es6-module-loader": "^0.8.2",
     "connect-livereload": "^0.4.0",
+    "consolidate": "^0.10.0",
+    "es6-module-loader": "^0.8.2",
     "express": "^4.8.5",
     "express-hbs": "^0.7.11",
+    "jade": "^1.6.0",
     "marked": "^0.3.2",
     "moment": "^2.8.2"
   }
