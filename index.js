@@ -1,7 +1,6 @@
 import globals from './global';
 import routes from './routes';
 import hbsEngine from './hbsEngine'
-import chat from './chat';
 
 export function run(appdir)
 {
@@ -20,7 +19,6 @@ export function run(appdir)
 
 	hbsEngine(app);
 	routes(app);
-	chat(app);
 
 	// Temporary route definition here for development purposes
 	app.get('/', (req,res) => res.status(200).render('index.hbs') );
