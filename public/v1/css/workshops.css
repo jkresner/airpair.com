@@ -257,6 +257,14 @@ nav#sideChat input {
   height: 40px;
   padding: 5px;
 }
+body#workshops .pw-widget {
+  float: right;
+  width: 212px;
+  margin: 15 0;
+  height: 60;
+  position: relative;
+  top: 0;
+}
 body#workshops #upcoming {
   text-align: center;
 }
@@ -277,4 +285,34 @@ body#workshops #upcoming li.workshop h4 {
 }
 body#workshops #upcoming li.workshop img {
   margin-top: 15px;
+}
+body#workshops #show time {
+  display: block;
+}
+body#workshops #show .speakers {
+  float: right;
+  width: 212px;
+  font-size: 12px;
+  text-align: justify;
+}
+body#workshops #show .speakers h2 {
+  margin-top: 0;
+  padding-top: 0;
+  text-align: center;
+}
+body#workshops #show .speakers h3 {
+  text-align: center;
+}
+body#workshops #show .speakers img {
+  width: 100%;
+  margin: 0px 0 20px 0;
+}
+body#workshops #show .speakers ul,
+body#workshops #show .speakers li {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+body#workshops #show p {
+  max-width: 640px;
 }
