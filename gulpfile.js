@@ -40,7 +40,7 @@ gulp.task('watch', function() {
   gulp.watch(paths.blog).on('change',livereload.changed);
   gulp.watch(paths.views).on('change',livereload.changed);
   gulp.watch(paths.public+'/v1/**').on('change',livereload.changed);
-  gulp.watch(paths.public+'/workshops').on('change',livereload.changed);
+  gulp.watch(paths.public+'/workshops/**').on('change',livereload.changed);
 });
 
 
