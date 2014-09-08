@@ -3,8 +3,11 @@ var path = require('path'),
   nodemon = require('gulp-nodemon'),
   jshint = require('gulp-jshint'),
   less = require('gulp-less'),
-  livereload = require('gulp-livereload');
-
+  livereload = require('gulp-livereload'),
+  gutil = require('gulp-util'),
+  source = require('vinyl-source-stream'),
+  watchify = require('watchify'),
+  browserify = require('browserify');
 
 paths = {
   public: 'public/**',
@@ -43,5 +46,26 @@ gulp.task('watch', function() {
   gulp.watch(watching).on('change',livereload.changed);
 });
 
+gulp.task('watchify', function() {
+  var bundler = watchify(browserify('./public/workshops/module.js', watchify.args));
 
-gulp.task('default', ['nodemon','less','watch']);
+  // Optionally, you can apply transforms
+  // and other configuration options on the
+  // bundler just as you would with browserify
+  // bundler.transform('brfs');
+
+  bundler.on('update', rebundle);
+
+  function rebundle() {
+    return bundler.bundle()
+      // log errors if they happen
+      .on('error', gutil.log.bind(gutil, 'Browserify Error'))
+      .pipe(source('workshops.js'))
+      .pipe(gulp.dest('./public/v1/js'));
+  }
+
+  return rebundle();
+});
+
+
+gulp.task('default', ['nodemon','less','watch','watchify']);
