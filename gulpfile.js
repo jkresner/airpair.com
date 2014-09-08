@@ -5,9 +5,11 @@ var path = require('path'),
   less = require('gulp-less'),
   livereload = require('gulp-livereload'),
   gutil = require('gulp-util'),
+  stringify = require('stringify'),
   source = require('vinyl-source-stream'),
   watchify = require('watchify'),
-  browserify = require('browserify');
+  browserify = require('browserify'),
+  es6ify = require('es6ify');
 
 paths = {
   public: 'public/**',
@@ -49,11 +51,9 @@ gulp.task('watch', function() {
 gulp.task('watchify', function() {
   var bundler = watchify(browserify('./public/workshops/module.js', watchify.args));
 
-  // Optionally, you can apply transforms
-  // and other configuration options on the
-  // bundler just as you would with browserify
-  // bundler.transform('brfs');
-
+  bundler.transform(stringify(['.html']));
+  bundler.transform(es6ify);
+  
   bundler.on('update', rebundle);
 
   function rebundle() {
