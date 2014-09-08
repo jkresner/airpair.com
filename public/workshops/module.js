@@ -14,7 +14,7 @@ selectByDateRange = function(list, daysAgo, daysUntil)
 }
 
 
-angular.module("APWorkshops", ['ngRoute','APFilters'])
+angular.module("APWorkshops", ['ngRoute','APFilters','APShare'])
 
 	.constant('API', '/api')
 
