@@ -14,8 +14,15 @@ class WorkshopsService {
     Workshop.find({},{title:1,slug:1,time:1,tags:1,'speakers.name':1,'speakers.gravatar':1},{sort:'time'})
       .lean()
       .exec( (e, r) => {
-        if (e && logging) 
+        if (e && logging) {
           $log('svc.getAll.err', e)
+        }
+        else {
+          for (var w of r)
+          {
+            w.url = `${w.tags[0]}/workshops/${w.slug}`
+          }
+        }
 
         cb(e, r)
       })
