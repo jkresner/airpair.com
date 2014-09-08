@@ -32,4 +32,8 @@ public/v1/lib/**/*.min.js
 public/v1/lib/**/*.min.css
 public/v1/lib/**/*.map
 public/v1/lib/**/*.md
+
+# Chat html templates generated from Jade
+public/admin/chat/**/*.html
+
 dist
