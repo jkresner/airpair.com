@@ -32,7 +32,7 @@ angular.module("APWorkshops", ['ngRoute','APFilters'])
 			templateUrl: '/workshops/subscribe.html'
 		});
 
-		$routeProvider.when('/workshops/:id', {
+		$routeProvider.when('/:tag/workshops/:id', {
 			templateUrl: '/workshops/show.html',
 			controller: 'WorkshopCtrl as workshop'
 		});
