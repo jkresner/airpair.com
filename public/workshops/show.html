@@ -2,15 +2,9 @@
 
 <div id="show">
 
-  <h1>{{ entry.title }}</h1>
+  <div ap-share=""></div>
 
-  <div class="pw-widget pw-counter-vertical" pw:twitter-via="airpair">   
-    <a class="pw-button-facebook pw-look-native"></a>     
-    <a class="pw-button-twitter pw-look-native"></a>      
-    <a class="pw-button-linkedin pw-look-native"></a>     
-  </div>
-  <script src="//i.po.st/static/v3/post-widget.js#publisherKey=miu9e01ukog3g0nk72m6&retina=true" type="text/javascript"></script>
-  <script type="text/javascript"> var pwidget_config = { shareQuote: false, afterShare: false }; </script>
+  <h1>{{ entry.title }}</h1>
 
   <div class="speakers">
     <h2>Presenting</h2>
@@ -36,13 +30,13 @@
   </div>
   <div class="player">
 
-    <div class="recording" ng-show="entry.youtube">
+    <div class="recording" ng-if="entry.youtube">
 
-      <iframe width="640" height="360" src="//www.youtube-nocookie.com/embed/{{ entry.youtube }}" frameborder="0" allowfullscreen></iframe>
+      <iframe width="640" height="360" ng-src="{{ '//www.youtube-nocookie.com/embed/' + entry.youtube | trustUrl  }}" frameborder="0" allowfullscreen></iframe>
 
     </div>
   
-    <div class="slide" ng-hide="entry.youtube">
+    <div class="slide" ng-if="!entry.youtube">
   <svg
      xmlns:dc="http://purl.org/dc/elements/1.1/"
      xmlns:cc="http://creativecommons.org/ns#"
