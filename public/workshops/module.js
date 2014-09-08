@@ -7,7 +7,7 @@ var feautredSlugs = [
 	'learn-meteorjs-1.0'
 ];
 
-selectByDateRange = function(list, daysAgo, daysUntil)
+var selectByDateRange = function(list, daysAgo, daysUntil)
 {
 	var start = moment(new Date()).add(daysAgo, 'days');
 	var end = moment(new Date()).add(daysUntil, 'days');
@@ -26,21 +26,21 @@ angular.module("APWorkshops", ['ngRoute','APFilters','APShare'])
 		$locationProvider.html5Mode(true);
 
 		$routeProvider.when('/workshops', {
-			templateUrl: '/workshops/list.html',
+			template: require('./list.html'),
 			controller: 'WorkshopsCtrl as workshops'
 		});
 
 		$routeProvider.when('/workshops/subscribe', {
-			templateUrl: '/workshops/subscribe.html'
+			template: require('./subscribe.html')
 		});
 
 		$routeProvider.when('/workshops/signup/:id', {
-			templateUrl: '/workshops/signup.html',
+			template: require('./signup.html'),
 			controller: 'SignupCtrl as signup'			
 		});		
 
 		$routeProvider.when('/:tag/workshops/:id', {
-			templateUrl: '/workshops/show.html',
+			template: require('./show.html'),
 			controller: 'WorkshopCtrl as workshop'
 		});
 
