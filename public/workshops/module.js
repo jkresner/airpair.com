@@ -1,3 +1,6 @@
+require('./filters.js');
+require('./../directives/share.js');
+
 var feautredSlugs = [
 	'fast-mvp-with-angularfire',
 	'publishing-at-the-speed-of-ruby',

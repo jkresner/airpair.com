@@ -27,6 +27,7 @@ build/Release
 # see https://npmjs.org/doc/faq.html#Should-I-check-my-node_modules-folder-into-git
 node_modules
 public/v1/css/*
+public/v1/js/*
 public/v1/lib/**/*.gzip
 public/v1/lib/**/*.min.js
 public/v1/lib/**/*.min.css
