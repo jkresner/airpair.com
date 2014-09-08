@@ -21,4 +21,12 @@ angular.module('APFilters', [])
     return function(url) {
       return $sce.trustAsResourceUrl(url);
     };
-  });
+  })
+
+
+  .filter('fancyTags', function () {
+    return function(tags) {
+      if (!tags) { return ''; }
+      return tags.join(', ');
+    };
+  });  

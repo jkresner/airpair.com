@@ -38,6 +38,7 @@
   
     <div class="slide" ng-if="!entry.youtube">
   <svg
+     ng-if="entry"
      xmlns:dc="http://purl.org/dc/elements/1.1/"
      xmlns:cc="http://creativecommons.org/ns#"
      xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
@@ -62,7 +63,7 @@
     </metadata>
     <defs>
       <pattern id="slideavatar" x="0" y="0" patternunits="userSpaceOnUse" width="400" height="400">    
-        <!-- <image xlink:href="https://0.gravatar.com/avatar/{{ entry.speakers[0].gravatar }}" width="300" height="300" x="80" y="70" /> -->
+        <image xlink:href="http://0.gravatar.com/avatar/892cdc57a3a64ea0ad59827bc6d1ddf7?s=400"  width="300" height="300" x="80" y="70" />
       </pattern>
     </defs>
     <g transform="translate(0,27.637817)">
@@ -118,9 +119,8 @@
       <text
          x="100"
          y="640"
-         style="font-size:64pt;font-style:normal;font-weight:200;line-height:50%;word-spacing:100px;fill:#000000;fill-opacity:1;stroke:none;font-family:Open Sans"
-         ng-repeat-start="tag in entry.tags" ng-repeat-end>
-         {{ tag }}</text>    
+         style="font-size:64pt;font-style:normal;font-weight:200;line-height:50%;word-spacing:100px;fill:#000000;fill-opacity:1;stroke:none;font-family:Open Sans">
+         {{ entry.tags | fancyTags }}</text>    
       <image xlink:href="/v1/img/pages/workshops/aircasts.png" width="400" height="400" x="110" y="710" />
     </g>
   </svg>
