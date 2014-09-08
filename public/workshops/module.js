@@ -31,7 +31,7 @@ angular.module("APWorkshops", ['ngRoute','APFilters','APShare'])
 			templateUrl: '/workshops/subscribe.html'
 		});
 
-		$routeProvider.when('/workshops/:id/signup', {
+		$routeProvider.when('/workshops/signup/:id', {
 			templateUrl: '/workshops/signup.html',
 			controller: 'SignupCtrl as signup'			
 		});		
