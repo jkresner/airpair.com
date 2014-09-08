@@ -1,25 +1,62 @@
 <header>Workshops</header>
 
-<h2>Calendar</h2>
+<div id="index">
 
-<p>The best way to keep track of upcoming workshops as the schedule is consistently changing is to <a href="https://www.google.com/calendar/ical/airpair.co_o3u16m7fv9fc3agq81nsn0bgrs%40group.calendar.google.com/public/basic.ics">subscribe to the iCal</a>. Make sure you're subscribed to receive updates and not downloaded the calendar in a static state.</p>
+  <div class="calendar">
 
-<h2>Upcoming workshops</h2>
+    <h3>Calendar</h3>
 
-<div id="upcoming">
-  <a class="workshop" href="/workshops/{{entry.slug}}"
-     ng-repeat="entry in workshops.upcoming">
-    <time>{{entry.time | date:'medium'}}</time> 
-    <div ng-repeat="speaker in entry.speakers">
-      <img src="//0.gravatar.com/avatar/{{ speaker.gravatar }}?s=120" />
-      <h5>{{ speaker.name }}</h5>
-    </div>
-    <figure>{{ entry.title }}</figure>
-  </a>
-</div>	
+    <p>Keep track of the schedule:</p>
 
-<h2>All workshops</h2>
+    <a class="btn" href="/workshops/subscribe">Subscribe to calendar</a>
 
-<ul>
-  <li ng-repeat="entry in workshops.entries"><time>{{entry.time | date:'medium'}}</time> <a href="/workshops/{{entry.slug}}"> {{ entry.title }}</a></li>
-</ul> 
+    <hr />
+    <h5>Next 30 days</h5>
+    <ul id="month">
+      <li ng-repeat="entry in workshops.month">
+        <time>{{entry.time | locaTime }}</time> 
+        <a href="/workshops/{{entry.slug}}"> {{ entry.title }}</a></li>
+    </ul> 
+
+  </div>
+
+  <h3>Coming up</h3>
+
+  <p style="font-size:11px"><i>*All times shown in <b>{{ timeZoneOffset }}</b> (your browser's local time)</i> </p>
+
+  <div id="upcoming">
+    <a class="workshop" href="/workshops/{{entry.slug}}"
+       ng-repeat="entry in workshops.upcoming">
+      <time datetime="{{entry.time}}">{{ entry.time | locaTime }}</time>
+      <div ng-repeat="speaker in entry.speakers">
+        <img src="//0.gravatar.com/avatar/{{ speaker.gravatar }}?s=80" />
+        <h5>{{ speaker.name }}</h5>
+      </div>
+      <figure>{{ entry.title }}</figure>
+    </a>
+  </div>	
+
+  <h2>Recent featured workshops</h2>
+
+  <div id="featured">
+    <a class="workshop" href="/workshops/{{entry.slug}}"
+       ng-repeat="entry in workshops.featured">
+      <div ng-repeat="speaker in entry.speakers">
+        <img src="//0.gravatar.com/avatar/{{ speaker.gravatar }}?s=80" />
+        <h5>{{ speaker.name }}</h5>
+      </div>
+      <figure>{{ entry.title }}</figure>
+    </a>
+  </ul> 
+
+  <h2>Past workshops</h2>
+
+  <ul id="past">
+    <li ng-repeat="entry in workshops.past">
+      <time>{{entry.time | locaTime : 'MMM Do' }}</time> 
+      <a href="/workshops/{{entry.slug}}"> {{ entry.title }}</a>
+    </li>
+  
+  </ul> 
+
+</div>
