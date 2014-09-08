@@ -32,6 +32,11 @@ angular.module("APWorkshops", ['ngRoute','APFilters'])
 			templateUrl: '/workshops/subscribe.html'
 		});
 
+		$routeProvider.when('/workshops/signup', {
+			templateUrl: '/workshops/signup.html',
+			controller: 'WorkshopCtrl as workshop'			
+		});		
+
 		$routeProvider.when('/:tag/workshops/:id', {
 			templateUrl: '/workshops/show.html',
 			controller: 'WorkshopCtrl as workshop'
@@ -50,7 +55,7 @@ angular.module("APWorkshops", ['ngRoute','APFilters'])
 		$http.get(API+'/workshops').success(function (data) {
 			self.entries = data;
 			self.upcoming = selectByDateRange(data, 0, 9);
-			self.month = selectByDateRange(data, 0, 30);
+			self.month = selectByDateRange(data, 0, 45);
 			self.past = selectByDateRange(data, -365, 0).reverse();
 			self.featured = _.where(data, function(i) { 
 				return _.contains(feautredSlugs, i.slug);
@@ -67,11 +72,3 @@ angular.module("APWorkshops", ['ngRoute','APFilters'])
 	}])
 
 ;
-
-
-function showLocalTimes() {
-  $('time').each(function (idx, time) {
-    $time = $(time);
-    
-  });
-}

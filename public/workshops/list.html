@@ -36,7 +36,7 @@
     </a>
   </div>	
 
-  <h2>Recent featured workshops</h2>
+  <h2>Watch featured workshops</h2>
 
   <div id="featured">
     <a class="workshop" href="{{entry.url}}"
@@ -47,16 +47,18 @@
       </div>
       <figure>{{ entry.title }}</figure>
     </a>
-  </ul> 
+  </div>
 
-  <h2>Past workshops</h2>
+  <h2>Watch past workshops</h2>
 
   <ul id="past">
     <li ng-repeat="entry in workshops.past">
-      <time>{{entry.time | locaTime : 'MMM Do' }}</time> 
-      <a href="{{entry.url}}"> {{ entry.title }}</a>
-    </li>
-  
+      <a href="{{entry.url}}">
+        <img src="//0.gravatar.com/avatar/{{entry.speakers[0].gravatar }}"></time> 
+        <time>{{entry.speakers[0].name }}</time> 
+        {{ entry.title }}</a>
+      </li>
+    </li>  
   </ul> 
 
 </div>
