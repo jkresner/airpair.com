@@ -12,7 +12,6 @@
   <script src="//i.po.st/static/v3/post-widget.js#publisherKey=miu9e01ukog3g0nk72m6&retina=true" type="text/javascript"></script>
   <script type="text/javascript"> var pwidget_config = { shareQuote: false, afterShare: false }; </script>
 
-
   <div class="speakers">
     <h2>Presenting</h2>
     <ul>
@@ -27,11 +26,19 @@
 
   <time>{{entry.time | date:'medium'}}</time>
 
-  <label ng-repeat="tag in entry.tags">{ {{ tag }} } </label>
-  <h5>Level: {{ entry.difficulty }}</h5>
+  {{ entry.difficulty }} <label ng-repeat="tag in entry.tags"> { {{ tag }} } </label>
 
   <p>{{ entry.description }}</p>
 
+  <div class="player">
+
+    <div class="recording" ng-show="entry.youtube">
+
+      <iframe width="640" height="360" src="//www.youtube-nocookie.com/embed/{{ entry.youtube }}" frameborder="0" allowfullscreen></iframe>
+
+    </div>
+  
+    <div class="slide" ng-hide="entry.youtube">
   <svg
      xmlns:dc="http://purl.org/dc/elements/1.1/"
      xmlns:cc="http://creativecommons.org/ns#"
@@ -41,7 +48,7 @@
      xmlns:xlink="http://www.w3.org/1999/xlink"
      version="1.1"
      width="640"
-     height="480"
+     height="360"
      id="svg3418"
      preserveAspectRatio="xMinYMin meet"
      viewBox="0 0 1920 1080">
@@ -56,59 +63,81 @@
       </rdf:RDF>
     </metadata>
     <defs>
-      <pattern id="avatar" x="0" y="0" patternunits="userSpaceOnUse" width="400" height="400">    
-        <image xlink:href="https://0.gravatar.com/avatar/892cdc57a3a64ea0ad59827bc6d1ddf7?s=400" width="300" height="300" x="80" y="70" />
+      <pattern id="slideavatar" x="0" y="0" patternunits="userSpaceOnUse" width="400" height="400">    
+        <!-- <image xlink:href="https://0.gravatar.com/avatar/{{ entry.speakers[0].gravatar }}" width="300" height="300" x="80" y="70" /> -->
       </pattern>
     </defs>
     <g transform="translate(0,27.637817)">
       <rect
-         width="1931.4286"
-         height="1088.5714"
-         ry="0.93564385"
+         width="1920"
+         height="1080"
+         ry="0.82633966"
          x="0"
          y="-27.637817"
-         id="rect3437"
-         style="fill:#edf6f5;fill-opacity:1;stroke:none" />       
+         id="rect4895"
+         style="fill:#edf6f5;fill-opacity:1;stroke:none" />  
       <path
-         d="m 308.66302,-25.117104 1619.84818,-0.418419 0.5085,5.813096 -140.0595,8.069243 c -7.7804,0.448254 -117.4189,9.2800597 -125.1793,9.9972797 L 1327.7941,29.396306 4.288096,0.88434142 C 5.635436,0.91971842 4.1892894,-24.265227 4.1892894,-24.265227 L 137.04644,-26.028445 c 7.79277,-0.103423 163.82312,0.920451 171.61658,0.911341 z"
-         id="rect4207"
+       d="M 0,1080 0,825 309.10668,787.05576 789.93929,844.63445 524.26917,1081.0102 z"
+       transform="translate(0,-27.637817)"
+       id="path4831"
+       style="fill:#000000;stroke:none" />
+      <path
+         d="m 790,845 1130,115 0,120 -1395,0 z"
+         transform="translate(0,-27.637817)"
+         id="path4833"
+         style="fill:#91d1cb;fill-opacity:1;stroke:none" />
+      <path
+         d="m 0,-27.637817 c 14.285714,-1.45476 1920,0 1920,0 l 0,15 -600,45 -1320,-35 z"
+         id="path4839"
          style="fill:#ce5423;fill-opacity:1;stroke:none" />
       <path
-         d="M 6.0609137,1.8035352 1925.3508,-19.409668 1923.1747,-14.444444 1333.4014,63.422848 8.0812188,9.8847629 z"
-         id="rect4210"
-         style="fill:#97340f;fill-opacity:1;stroke:none" />
-      <path
-         d="m 8.571429,806.64792 310.751541,-40.83621 469.24844,55.12192 -254.28571,237.14287 -522.857128,0 z"
-         id="rect4213"
-         style="fill:#000000;fill-opacity:1;stroke:none" />
-      <path
-         d="m 785.71428,848.57145 1142.85722,140 -10e-5,99.99995 -1391.42855,-2.8572 z"
+         d="m 0,25 1320,35 600,-50 0,5 L 1320,85.714286 0,48.571429 z"
          transform="translate(0,-27.637817)"
-         id="rect4215"
-         style="fill:#92d0cb;fill-opacity:1;stroke:none" />
+         id="path4841"
+         style="fill:#a83202;fill-opacity:1;stroke:none" />
+      <text
+       x="460"
+       y="240"
+       transform="scale(0.93591061,1.0684781)"
+       id="text4847"
+       xml:space="preserve"
+       style="font-size:104.68206787px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"><tspan
+         x="460"
+         y="240"
+         id="tspan4849"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Open Sans;color:#90d1cc">{{ entry.speakers[0].name }}</tspan></text>         
       <circle 
         id="avatarCircle"
         cx="12%" 
         cy="20%" 
         r="150" 
-        fill="url(#avatar)" 
+        fill="url(#slideavatar)" 
         stroke="black" />
-      <text
-         x="96.31398"
-         y="515.94324"
+      <text x="100" y="570"
          xml:space="preserve"
-         style="font-size:12pt;font-style:normal;font-weight:200;line-height:100%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Open Sans"><tspan
-           x="96.31398"
-           y="515.94324"
-           style="font-size:144px">{{ entry.title }}</tspan></text>    
+         style="font-size:120pt;font-style:normal;font-weight:200;line-height:100%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Open Sans;color:#90d1cc">
+        <tspan x="100" y="570">{{ entry.title }}</tspan></text>
+      <text
+         x="100"
+         y="640"
+         style="font-size:64pt;font-style:normal;font-weight:200;line-height:50%;word-spacing:100px;fill:#000000;fill-opacity:1;stroke:none;font-family:Open Sans"
+         ng-repeat-start="tag in entry.tags" ng-repeat-end>
+         {{ tag }}</text>    
+      <image xlink:href="/v1/img/pages/workshops/aircasts.png" width="400" height="400" x="110" y="710" />
     </g>
   </svg>
-  <div class="action">
+
+    </div>
 
   </div>
 
-  <hr />
+  <div class="action">
+    <a href="#" class="btn" style="width:300px">Sign up to attend workshop</a>
+    <label>3 spots left</label>
+  </div>
 
-  <h3>Chat</h3>
+  <hr />
+<!-- 
+  <h3>Chat</h3> -->
 
 </div>
