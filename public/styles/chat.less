@@ -1,0 +1,162 @@
+@highlight: #dff2ef;
+@chrome: #eee;
+@darkerChrome: #aaa;
+
+@orange:#ce5424;
+@turquoise:#90d1cc;
+@darkblue:#151821;
+@blue:#232835;
+@lightblue:#dff2ef;
+@gray:#4d4e4e;
+@mediumgray:#7e7f7f;
+@lightgray:#d3d3d3;
+
+body, html {
+  height: 100%;
+}
+
+body {
+  display: flex;
+  align-items: stretch;
+  flex-direction: row;
+  padding-bottom: 10px;
+}
+
+button {
+  background: white;
+  border-radius: 50%;
+  border: 1px solid white;
+  &:hover {
+    border: 1px solid @darkerChrome;
+  }
+}
+
+#sidebar {
+  display: flex;
+  font-size: 9pt;
+  flex: 3;
+  flex-direction: column;
+  padding: 10px;
+
+  label {
+    margin-top: 10px;
+  }
+
+  #channels, #people {
+    flex: 2;
+    display: block;
+    overflow: auto;
+  }
+
+  .channel.loaded {
+    background-color: @lightblue;
+  }
+
+  #people {
+    // override stupid bootstrap default
+    td { background-color: white !important }
+  }
+}
+
+#main {
+  display: flex;
+  flex: 8;
+  flex-direction: column;
+  padding-right: 10px;
+
+  #channel-info {
+    min-height: 60px;
+  }
+
+  #messages {
+    border: 2px solid @chrome;
+    flex-grow: 1;
+    display: block;
+    overflow: auto;
+    .msg {
+      background: white;
+      border-bottom: 1px solid @chrome;
+      display: flex;
+      flex-direction: row;
+
+      .from, .content {
+        padding: 10px
+      }
+      .from {
+        width: 70px;
+        font-size: 8pt;
+        font-weight: bold;
+        text-align: center;
+      }
+      .content { flex-grow: 9 }
+      img { border-radius: 50%; max-width: 50px }
+    }
+  }
+  #entry {
+    max-height: 40px;
+    input {
+      height: 100%;
+      width: 100%;
+    }
+  }
+}
+
+td.actions {
+  width: 50px !important;
+  min-width: 50px !important;
+}
+
+tr.user {
+  td.picture {
+    position: relative;
+    width: 50px !important;
+    min-width: 50px !important;
+    img {
+      border-radius: 50%;
+      width: 100%;
+      height: auto;
+    }
+  }
+
+  .presence {
+    display: none;
+    background: lightgreen;
+    border: 1px solid #ADFF2F;
+    border-radius: 50%;
+    height: 12px;
+    width: 12px;
+    position: absolute;
+    top: 5px;
+    left: 69%;
+    opacity: 0.7;
+  }
+
+  &.active .presence { display: block }
+  &.active.away .presence {
+    background: yellow;
+    border: 1px solid lightyellow;
+  }
+}
+
+.timestamp {
+  color: @darkerChrome;
+  font-size: 8pt;
+}
+
+tr.channel {
+  td.notifications {
+    text-align: right;
+    width: 40px;
+  }
+}
+
+span.unread {
+  background: red;
+  border-radius: 50%;
+  color: white;
+  font-size: 6pt;
+  font-weight: bold;
+  min-width: 20px;
+  padding: 3px 6px;
+  text-align: center;
+}
