@@ -9,12 +9,15 @@ angular.module("APShare", ['angularLoad'])
 
     return {
       templateUrl: '/directives/share.html',
-      link: function(scope, element) {
-        
+      scope: { 
+        fb: '=apFb', 
+        tw: '=apTw', 
+        in: '=apIn' 
+      },
+      link: function(scope, element) {  
         ngLoadPromise.then(function(){
           post_init(element[0]);
         });
-
       }
     };
 
