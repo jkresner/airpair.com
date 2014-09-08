@@ -68,4 +68,18 @@ gulp.task('watchify', function() {
 });
 
 
+gulp.task('bundle', function() {
+  var bundler = browserify('./public/workshops/module.js');
+
+  bundler.transform(stringify(['.html']));
+  bundler.transform(es6ify);
+  
+  bundler.bundle()
+    .pipe(source('workshops.js'))
+    .pipe(gulp.dest('./public/v1/js'));
+});
+
+
 gulp.task('default', ['nodemon','less','watch','watchify']);
+
+gulp.task('build', ['less','bundle']);
