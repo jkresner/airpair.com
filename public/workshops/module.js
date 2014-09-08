@@ -13,7 +13,6 @@ selectByDateRange = function(list, daysAgo, daysUntil)
 	});
 }
 
-
 angular.module("APWorkshops", ['ngRoute','APFilters','APShare'])
 
 	.constant('API', '/api')
@@ -32,9 +31,9 @@ angular.module("APWorkshops", ['ngRoute','APFilters','APShare'])
 			templateUrl: '/workshops/subscribe.html'
 		});
 
-		$routeProvider.when('/workshops/signup', {
+		$routeProvider.when('/workshops/:id/signup', {
 			templateUrl: '/workshops/signup.html',
-			controller: 'WorkshopCtrl as workshop'			
+			controller: 'SignupCtrl as signup'			
 		});		
 
 		$routeProvider.when('/:tag/workshops/:id', {
@@ -70,5 +69,13 @@ angular.module("APWorkshops", ['ngRoute','APFilters','APShare'])
 			$scope.entry = data;
 		});
 	}])
+
+	.controller('SignupCtrl', ['$scope', '$http', '$routeParams', 'API', 
+			function($scope, $http, $routeParams, API) {
+
+		$http.get(API+'/workshops/'+$routeParams.id).success(function (data) {
+			$scope.entry = data;
+		});
+	}])	
 
 ;
