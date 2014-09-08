@@ -15,7 +15,7 @@
     <ul id="month">
       <li ng-repeat="entry in workshops.month">
         <time>{{entry.time | locaTime }}</time> 
-        <a href="/workshops/{{entry.slug}}"> {{ entry.title }}</a></li>
+        <a href="{{entry.url}}"> {{ entry.title }}</a></li>
     </ul> 
 
   </div>
@@ -25,7 +25,7 @@
   <p style="font-size:11px"><i>*All times shown in <b>{{ timeZoneOffset }}</b> (your browser's local time)</i> </p>
 
   <div id="upcoming">
-    <a class="workshop" href="/workshops/{{entry.slug}}"
+    <a class="workshop" href="{{entry.url}}"
        ng-repeat="entry in workshops.upcoming">
       <time datetime="{{entry.time}}">{{ entry.time | locaTime }}</time>
       <div ng-repeat="speaker in entry.speakers">
@@ -39,7 +39,7 @@
   <h2>Recent featured workshops</h2>
 
   <div id="featured">
-    <a class="workshop" href="/workshops/{{entry.slug}}"
+    <a class="workshop" href="{{entry.url}}"
        ng-repeat="entry in workshops.featured">
       <div ng-repeat="speaker in entry.speakers">
         <img src="//0.gravatar.com/avatar/{{ speaker.gravatar }}?s=80" />
@@ -54,7 +54,7 @@
   <ul id="past">
     <li ng-repeat="entry in workshops.past">
       <time>{{entry.time | locaTime : 'MMM Do' }}</time> 
-      <a href="/workshops/{{entry.slug}}"> {{ entry.title }}</a>
+      <a href="{{entry.url}}"> {{ entry.title }}</a>
     </li>
   
   </ul> 
