@@ -19,7 +19,8 @@ gulp.task('lint', function () {
 });
 
 gulp.task('nodemon', function () {
-  nodemon({ script: 'bootstrap.js', ext: 'html js', ignore: ['ignored.js'] })
+  nodemon({ script: 'bootstrap.js', ext: 'html js', 
+      ignore: ['public/*'] })
     .on('change', ['lint'])
     .on('restart', function () {
       console.log('>> node restart');
@@ -36,11 +37,10 @@ gulp.task('less', function () {
 
 gulp.task('watch', function() {
   livereload.listen({ port: 35729 });
+  var watching = ['public/**','!public/style/**',paths.blog,paths.views]
+
   gulp.watch(paths.styles, ['less']);
-  gulp.watch(paths.blog).on('change',livereload.changed);
-  gulp.watch(paths.views).on('change',livereload.changed);
-  gulp.watch(paths.public+'/v1/**').on('change',livereload.changed);
-  gulp.watch(paths.public+'/workshops/**').on('change',livereload.changed);
+  gulp.watch(watching).on('change',livereload.changed);
 });
 
 
