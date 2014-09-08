@@ -6,7 +6,7 @@
 
 <div id="signup">
 
-  <div class="choice">
+  <div class="choice" ng-if="!hasAccess">
 
     <h2>two ways to attend</h2>
     <h4>Please choose an option access this workshop</h4>
@@ -15,35 +15,46 @@
       <h2>Ticket</h2>
 
       <ul>
-        <li>$50 one off</li>
+        <li><b>$50 one off</b></li>
         <li>Access to this workshops</li>        
         <li>Access the recording</li>            
         <li>$10 credit towards pairing with {{ entry.speakers[0].name }}</li>        
       </ul>
 
-      <a href="#" class="btn">Buy a ticket</a>
+      <a href="alert('Sign up for this workshop is free, please fill the form below')" class="btn">Buy a ticket</a>
     </div>
 
     <div class="option">
       <h2>Membership</h2>    
       <ul>
-        <li>$300 for 6 months</li>      
+        <li><b>$300 for 6 months</b></li>      
         <li>Access to all workshops</li>        
         <li>$5/hr off all AirPairing</li>                  
         <li>Instant chat access to experts</li>                          
       </ul>
-      <a href="#" class="btn">Get a membership</a>      
+      <a href="alert('Sign up for this workshop is free, please fill the form below')" class="btn">Get a membership</a>      
     </div>
-
-    <p>.</p>
-
     
-    <hr />
+  </div>
 
-    <a href="/workshops" class="btn">Back to the workshops page</a>
+  <div class="rsvp" ng-if="hasAccess && !entry.youtube">
 
-    <hr />
+    <h2>RSVP for workshop</h2>
+
+    <iframe src="{{ '//airpa.ir/aircast-signup-' + entry.slug | trustUrl }}" width="760" height="880" frameborder="0" marginheight="0" marginwidth="0">Loading...</iframe>
 
   </div>
+
+  <div class="attending" ng-if="hasAccess && entry.youtube">
+
+    <h2>This workshop has already happened.</h2>
+
+  </div>
+
+  <hr />
+
+  <a href="/workshops" class="btn">Back to the workshops page</a>
+
+  <hr />
 
 </div>

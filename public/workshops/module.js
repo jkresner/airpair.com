@@ -76,6 +76,8 @@ angular.module("APWorkshops", ['ngRoute','APFilters','APShare'])
 	.controller('SignupCtrl', ['$scope', '$http', '$routeParams', 'API', 
 			function($scope, $http, $routeParams, API) {
 
+		$scope.hasAccess = true;
+
 		$http.get(API+'/workshops/'+$routeParams.id).success(function (data) {
 			$scope.entry = data;
 		});

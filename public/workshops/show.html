@@ -26,14 +26,20 @@
   <p>{{ entry.description }}</p>
 
   <div class="action">
-    <a href="/workshops/signup/{{entry.slug}}" class="btn" style="width:300px">Sign up to attend workshop</a>
-    <label>3 spots left</label>
+    <div ng-if="entry.youtube">
+      <a href="/workshops/signup/{{entry.slug}}" class="btn" style="width:300px">Get access to all live talks</a>      
+      <label>with AirPair Membership</label>        
+    </div>
+    <div ng-if="!entry.youtube">
+      <a href="/workshops/signup/{{entry.slug}}" class="btn" style="width:300px">Sign up to attend workshop</a>
+      <label>3 spots left</label>  
+    </div>    
   </div>
   <div class="player">
 
     <div class="recording" ng-if="entry.youtube">
 
-      <iframe width="640" height="360" ng-src="{{ '//www.youtube-nocookie.com/embed/' + entry.youtube | trustUrl  }}" frameborder="0" allowfullscreen></iframe>
+      <iframe width="640" height="360" ng-src="{{ '//www.youtube-nocookie.com/embed/' + entry.youtube | trustUrl }}" frameborder="0" allowfullscreen></iframe>
 
     </div>
   
@@ -115,7 +121,7 @@
         stroke="black" />
       <text x="100" y="570"
          xml:space="preserve"
-         style="font-size:100pt;font-style:normal;font-weight:200;line-height:100%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Open Sans;color:#90d1cc">
+         style="font-size:82pt;font-style:normal;font-weight:200;line-height:100%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Open Sans;color:#90d1cc">
         <tspan x="100" y="570">{{ entry.title }}</tspan></text>
       <text
          x="100"
