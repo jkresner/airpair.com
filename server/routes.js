@@ -1,4 +1,4 @@
-import {posts} from './blog/posts';
+import posts from './services/posts';
 import {appApi} from './routes_api';
 import workshopsService from './services/workshops';
 

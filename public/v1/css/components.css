@@ -102,7 +102,7 @@ body > header ul {
 }
 body > header li {
   float: left;
-  margin: 4px 5px;
+  margin: 6px 5px;
   font-size: 11px;
 }
 body > header li a {
@@ -151,7 +151,7 @@ main a:hover {
 main header {
   height: 35px;
   margin: 0 auto 20px auto;
-  padding: 9px 10px;
+  padding: 9px 0;
   font-size: 13px;
   background: #ffffff;
   text-transform: uppercase;
