@@ -15,7 +15,7 @@ export default function(app)
 {	
 	app.get( ['/workshops/*', '/:tag/workshops/*'], renderHbs('workshops') )
 	
-	app.use( '/api', appApi )
+	app.use( '/api/v1/', appApi )
 
 	for (var post of posts) 
 	{ 
