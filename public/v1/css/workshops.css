@@ -501,7 +501,7 @@ body#workshops #index #past a {
   float: left;
   margin: 10px;
 }
-@media (max-width: 900px) {
+@media screen and (max-width: 900px) {
   body#workshops #index #next,
   body#workshops #index #featured {
     max-width: 400px;
@@ -511,7 +511,7 @@ body#workshops #index #past a {
     margin: 4px 8px 4px 0px;
   }
 }
-@media (max-width: 640px) {
+@media screen and (max-width: 640px) {
   body#workshops #index #calendar {
     float: none;
     width: 100%;
@@ -591,12 +591,12 @@ body#workshops #show .action a.btn {
 body#workshops #show .action label {
   display: block;
 }
-@media (max-width: 900px) {
+@media screen and (max-width: 900px) {
   body#workshops #show .player iframe {
     max-width: 400px;
   }
 }
-@media (max-width: 640px) {
+@media screen and (max-width: 640px) {
   body#workshops #show {
     text-align: center;
   }
