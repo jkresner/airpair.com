@@ -1,1 +1,0 @@
-AirPair.controller('RequestsController', [function() {}]);

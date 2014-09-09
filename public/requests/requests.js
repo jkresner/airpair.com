@@ -5,3 +5,11 @@ AirPair.directive('airpairRequests', [function() {
     controller: 'RequestsController'
   };
 }]);
+
+AirPair.controller('RequestsHeaderController', ['$scope','chat', function($scope, chat){
+  $scope.chat = chat;
+}]);
+
+AirPair.controller('RequestsController', [function() {
+
+}]);

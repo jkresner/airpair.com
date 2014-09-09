@@ -1,4 +1,4 @@
-header
+header(ng-controller="RequestsHeaderController")
   a(href="/" tile="airpair.com")
   ul
     li
@@ -6,5 +6,6 @@ header
     li
       a(href="/workshops") Workshops
     li
-      a(href="/logout") Logout
+      a(ng-hide="chat.currentUser" ng-click="chat.login()") Sign in
+      a(ng-show="chat.currentUser" ng-click="chat.logout()") Logout
 

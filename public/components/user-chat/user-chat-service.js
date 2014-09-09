@@ -4,19 +4,15 @@ var ChatService = function($rootScope, $firebase, $firebaseSimpleLogin) {
   var channelsRef = rootRef.child('channels');
   var notificationsRef = rootRef.child('notifications');
   var usersRef = rootRef.child('users');
+  var auth = $firebaseSimpleLogin(rootRef);
 
-  return {
+  var service = {
     login: function() {
-      // handle common login features
-      $rootScope.$on("$firebaseSimpleLogin:login", function(event, user) {
-        // site presence
-        $scope.user.active = true;
-        usersRef.child($scope.user.uid).set($scope.user);
-        // set user to inactive on disconnect
-        usersRef.child($scope.user.uid).child('active').onDisconnect().set(false);
-      });
+      return auth.$login('google', {rememberMe: true});
+    },
 
-      return $firebaseSimpleLogin(rootRef);
+    logout: function() {
+      return auth.$logout();
     },
 
     channels: function() {
@@ -48,6 +44,25 @@ var ChatService = function($rootScope, $firebase, $firebaseSimpleLogin) {
       return $firebase(usersRef).$asArray();
     }
   }
+
+  // handle common login features
+  $rootScope.$on("$firebaseSimpleLogin:login", function(event, user) {
+    console.log("Logged in to chat as", user);
+
+    service.currentUser = user;
+    // site presence
+    user.active = true;
+    usersRef.child(user.uid).set(user);
+    // set user to inactive on disconnect
+    usersRef.child(user.uid).child('active').onDisconnect().set(false);
+  });
+
+  $rootScope.$on("$firebaseSimpleLogin:logout", function(event, user) {
+    console.log("Logged out");
+    service.currentUser = null;
+  });
+
+  return service;
 }
 
 AirPair.factory('chat', ['$rootScope', '$firebase', '$firebaseSimpleLogin', ChatService]);
