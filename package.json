@@ -16,6 +16,10 @@
   "bugs": {
     "url": "https://github.com/airpair/airpair.com/issues"
   },
+  "engines": {
+    "node": "0.10.31",
+    "npm": "1.4.23"
+  },  
   "homepage": "https://github.com/airpair/airpair.com",
   "devDependencies": {
     "browserify": "^5.11.1",
