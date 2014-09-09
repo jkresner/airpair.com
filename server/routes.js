@@ -1,5 +1,6 @@
 import {posts} from './blog/posts';
 import {appApi} from './routes_api';
+import workshopsService from './services/workshops';
 
 var renderPost = (post, posts) =>
 	(req, res) => {
@@ -13,10 +14,16 @@ var renderHbs = (fileName, data) =>
 
 export default function(app)
 {	
-	app.get( ['/workshops/*', '/:tag/workshops/*'], renderHbs('workshops') )
-	
 	app.use( '/api/v1/', appApi )
 
+	app.get( ['/workshops/*', '/:tag/workshops/*'], renderHbs('workshops') )
+
+	app.get( '/workshops-slide/:id', (req,res) => {
+		new workshopsService(req.user).getBySlug(req.params.id, (e,r) => {
+			res.status(200).render(`workshopslide.hbs`, r)
+		})
+	})
+	
 	for (var post of posts) 
 	{ 
 		app.get(post.url, renderPost(post, posts)); 
