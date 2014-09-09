@@ -14,6 +14,7 @@ export default function(app) {
 	});
 
 	hbs.registerHelper('isoMoment', date => date.toISOString());
+	hbs.registerHelper('dateFormat', (date, format) => date.format(format));
 
 	app.set('views', app.dir + '/server/views');
 	app.engine('hbs', hbsEngine);

@@ -35,6 +35,9 @@ class WorkshopsService {
         if (e && logging) 
           $log('svc.getBySlug.err', e)
 
+        if (r)
+          r.url = `${r.tags[0]}/workshops/${r.slug}`
+
         cb(e, r)
       })
   }  

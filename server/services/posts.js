@@ -14,4 +14,4 @@ for (var p of posts)
   p.url = `/posts/${p.tag}/${p.title.toLowerCase().replace(/ /g, '-')}`;
 }
 
-export var posts;
+export default posts;

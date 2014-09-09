@@ -2,6 +2,8 @@
 <html ng-app="APWorkshops">
 <head>
 	<title>Workshops | AirPair</title>
+	<meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0;">
 	<link rel="stylesheet" href="/v1/css/bootstrap.css" type="text/css" />
 	<link rel="stylesheet" href="/v1/css/workshops.css" type="text/css" />
   <link rel='stylesheet' id='google-font-css'  href='//fonts.googleapis.com/css?family=Open+Sans%3A300%2C400%2C700&#038;ver=2.0.1' type='text/css' media='all' />
@@ -11,25 +13,10 @@
 
 {{> siteHeader }}
 
-<div class="main-wrap" style="width:100%;margin:0">
-	<main>
+	<div class="main-wrap" style="width:100%;margin:0">
+		<main>
 
-<ng-view></ng-view>
-
-<!-- functionality 
-	1. Going to info about the workshops
-		- before the talk
-			- Slide
-		- after the talk
-			- Movie
-	2. Stateless depending on if the user has 'access' to attend the talks (if they're an AirPair)
-		- if no access
-			- they can get membership
-		- if they have access (but not rsvp'ed)
-			- they can rsvp
-		- if they have access (and rsvp'ed already)
-			- it will tell them the are going
--->
+			<ng-view></ng-view>
 	  
 		</main>
 	</div>
@@ -40,10 +27,8 @@
 	<script type="text/javascript" src="/v1/lib/angular/angular.js"></script>
 	<script type="text/javascript" src="/v1/lib/angular-route/angular-route.js"></script>	
 	<script type="text/javascript" src="/v1/lib/angular-load/angular-load.js"></script>		
-	<script type="text/javascript" src="/directives/share.js"></script>
-	<script type="text/javascript" src="/workshops/filters.js"></script>
-	<script type="text/javascript" src="/workshops/module.js"></script>
 <!-- endbuild -->
+	<script type="text/javascript" src="/v1/js/workshops.js"></script>
 
 </body>
 </html>

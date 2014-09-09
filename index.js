@@ -5,15 +5,14 @@ import * as mongoInit from './server/mongoInit'
 
 export function run(appdir)
 {
-	var livereload = require('connect-livereload')
 	var express = require('express')
 	var app = express()
 	app.dir = appdir
 
 	mongoInit.setSessionStore(mongoInit.connect())
 
-	if (livereload) {
-		app.use(livereload({ port: 35729 }))
+	if (config.local) {
+		app.use(require('connect-livereload')({ port: 35729 }))
 	}
 	
 	app.use(express.static(app.dir + '/public'))
