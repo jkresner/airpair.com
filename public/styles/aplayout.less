@@ -30,7 +30,7 @@ body > header {
     a:hover { color:@orange }
   }
 
-  @media (max-width:640px) {
+  @media only screen and (max-width:640px) {
     padding:7px 4px 7px 8px;
   }  
 }
@@ -42,7 +42,7 @@ div.main-wrap {
   margin:0; // hack until we plop in the menus
   width:100%;
 
-  @media (max-width:640px) {
+  @media only screen and (max-width:640px) {
     margin:0 5px;
   }   
 }
@@ -53,11 +53,11 @@ main {
   a { color:@orange;text-decoration:none }
   a:hover { color:@gray }
 
-  @media (max-width: 900px) {
+  @media only screen and (max-width: 900px) {
     width:640px;
   }
 
-  @media (max-width: 640px) {
+  @media only screen and (max-width: 640px) {
     width:320px;
   }
 
@@ -81,7 +81,7 @@ main {
     overflow:hidden;
     text-overflow:ellipsis;
 
-    @media (max-width: 900px) {
+    @media only screen and (max-width: 900px) {
       padding:9px 2px;
     }
   }

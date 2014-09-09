@@ -35,7 +35,7 @@ h5 {
 h6 {
   font-size: 10px;
 }
-@media (max-width: 640px) {
+@media only screen and (max-width: 640px) {
   h1 {
     font-size: 30px;
     line-height: 42px;
@@ -111,7 +111,7 @@ body > header li a {
 body > header li a:hover {
   color: #ce5424;
 }
-@media (max-width: 640px) {
+@media only screen and (max-width: 640px) {
   body > header {
     padding: 7px 4px 7px 8px;
   }
@@ -122,7 +122,7 @@ div.main-wrap {
   margin: 0;
   width: 100%;
 }
-@media (max-width: 640px) {
+@media only screen and (max-width: 640px) {
   div.main-wrap {
     margin: 0 5px;
   }
@@ -138,12 +138,12 @@ main a {
 main a:hover {
   color: #4d4e4e;
 }
-@media (max-width: 900px) {
+@media only screen and (max-width: 900px) {
   main {
     width: 640px;
   }
 }
-@media (max-width: 640px) {
+@media only screen and (max-width: 640px) {
   main {
     width: 320px;
   }
@@ -167,7 +167,7 @@ main header {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-@media (max-width: 900px) {
+@media only screen and (max-width: 900px) {
   main header {
     padding: 9px 2px;
   }
