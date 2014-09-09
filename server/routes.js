@@ -13,10 +13,10 @@ var renderHbs = (fileName, data) =>
 
 export default function(app)
 {	
-	app.use( '/api', appApi )
-
 	app.get( ['/workshops/*', '/:tag/workshops/*'], renderHbs('workshops') )
 	
+	app.use( '/api', appApi )
+
 	for (var post of posts) 
 	{ 
 		app.get(post.url, renderPost(post, posts)); 
