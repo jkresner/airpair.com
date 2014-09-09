@@ -42,7 +42,13 @@ gulp.task('less', function () {
 
 gulp.task('watch', function() {
   livereload.listen({ port: 35729 });
-  var watching = ['./public/**','!./public/style/**',paths.blog,paths.views]
+  var watching = [
+    './public/**/*.css',
+    './public/**/*.html',
+    './public/**/*.js',    
+    paths.blog,
+    paths.views
+  ];
 
   gulp.watch(paths.styles, ['less']);
   gulp.watch(watching).on('change',livereload.changed);
