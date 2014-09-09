@@ -1,0 +1,14 @@
+chat-header
+  chat-notifications
+    img(src="/v1/img/css/chat/toggle.png")
+  channel-name
+    | {} Prateek Gupta
+other-person
+  img(ng-src="other.picture")
+  br
+  .title {{ other.title }}
+messages
+  | messages go here
+entry
+  form(ng-submit='addMessage()')
+    input#message(ng-model='message', ng-focus='clearNotifications(activeChannel, user)', placeholder='ask a question')

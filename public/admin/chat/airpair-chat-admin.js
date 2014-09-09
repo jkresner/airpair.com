@@ -6,7 +6,7 @@ var channelsRef = rootRef.child('channels');
 var notificationsRef = rootRef.child('notifications');
 var usersRef = rootRef.child('users');
 
-angular.module("AirPair", ['firebase','angularMoment'])
+window.AirPairChatAdmin = angular.module("AirPairChatAdmin", ['firebase','angularMoment'])
   .run(['$rootScope', function($rootScope) {
     // set globals we want available in ng expressions
     $rootScope._ = window._;

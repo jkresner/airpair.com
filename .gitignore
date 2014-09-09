@@ -35,5 +35,8 @@ public/v1/lib/**/*.map
 public/v1/lib/**/*.md
 ^/dist
 
-# Chat html templates generated from Jade
+# Ignore html templates that are generated from Jade
 public/admin/chat/**/*.html
+public/components/user-chat/**/*.html
+public/requests/**/*.html
+public/shared/**/*.html
