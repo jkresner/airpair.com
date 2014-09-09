@@ -1,12 +1,12 @@
 angular.module('APFilters', [])
 
   .filter('locaTime', function() {
-    return function(utc, displayFormat) {
-      offset = moment().format('ZZ')
+    return (utc, displayFormat) => {
+      var offset = moment().format('ZZ')
       if (utc!='') {
-        timeString = utc.split('GMT')[0]
+        var timeString = utc.split('GMT')[0]
+        var format = 'ddd, MMM Do ha'
         if (displayFormat) { format = displayFormat }
-        else { format = 'ddd, MMM Do ha' }
         var result = moment(timeString, 'YYYY-MM-DDTHH:mm:ss:SSSZ').format(format)
         return result.replace(offset,'')
       }
@@ -18,11 +18,8 @@ angular.module('APFilters', [])
   })
 
   .filter('trustUrl', function ($sce) {
-    return function(url) {
-      return $sce.trustAsResourceUrl(url);
-    };
+    return (url) => $sce.trustAsResourceUrl(url)
   })
-
 
   .filter('fancyTags', function () {
     return function(tags) {

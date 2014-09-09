@@ -1,10 +1,16 @@
+require('./filters.js');
+require('./../directives/share.js');
+
 var feautredSlugs = [
 	'fast-mvp-with-angularfire',
+	'learn-meteorjs-1.0',
+	'learn-git-and-github',
 	'publishing-at-the-speed-of-ruby',
-	'learn-meteorjs-1.0'
+	'visualization-with-d3js',
+	'transitioning-to-consulting-for-developers'
 ];
 
-selectByDateRange = function(list, daysAgo, daysUntil)
+var selectByDateRange = function(list, daysAgo, daysUntil)
 {
 	var start = moment(new Date()).add(daysAgo, 'days');
 	var end = moment(new Date()).add(daysUntil, 'days');
@@ -15,7 +21,7 @@ selectByDateRange = function(list, daysAgo, daysUntil)
 
 angular.module("APWorkshops", ['ngRoute','APFilters','APShare'])
 
-	.constant('API', '/api')
+	.constant('API', '/api/v1')
 
 	.config(['$locationProvider', '$routeProvider', '$sceProvider', 
 			function($locationProvider, $routeProvider, $sceProvider) {
@@ -23,21 +29,21 @@ angular.module("APWorkshops", ['ngRoute','APFilters','APShare'])
 		$locationProvider.html5Mode(true);
 
 		$routeProvider.when('/workshops', {
-			templateUrl: '/workshops/list.html',
+			template: require('./list.html'),
 			controller: 'WorkshopsCtrl as workshops'
 		});
 
 		$routeProvider.when('/workshops/subscribe', {
-			templateUrl: '/workshops/subscribe.html'
+			template: require('./subscribe.html')
 		});
 
-		$routeProvider.when('/workshops/:id/signup', {
-			templateUrl: '/workshops/signup.html',
+		$routeProvider.when('/workshops/signup/:id', {
+			template: require('./signup.html'),
 			controller: 'SignupCtrl as signup'			
 		});		
 
 		$routeProvider.when('/:tag/workshops/:id', {
-			templateUrl: '/workshops/show.html',
+			template: require('./show.html'),
 			controller: 'WorkshopCtrl as workshop'
 		});
 
@@ -66,12 +72,15 @@ angular.module("APWorkshops", ['ngRoute','APFilters','APShare'])
 			function($scope, $http, $routeParams, API) {
 
 		$http.get(API+'/workshops/'+$routeParams.id).success(function (data) {
+			console.log('null data', data == '', data);
 			$scope.entry = data;
 		});
 	}])
 
 	.controller('SignupCtrl', ['$scope', '$http', '$routeParams', 'API', 
 			function($scope, $http, $routeParams, API) {
+
+		$scope.hasAccess = true;
 
 		$http.get(API+'/workshops/'+$routeParams.id).success(function (data) {
 			$scope.entry = data;

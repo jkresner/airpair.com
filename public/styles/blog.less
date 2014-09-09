@@ -1,30 +1,33 @@
 @import "ap.less";
 
 @sideRailWidth:212px;
+@mainElmWidth:640px;
+@mainElmPad:0px;
+
+body#post {
+	@media only screen and (max-width:640px) {
+	  .main-wrap, main { width:98%!important;margin:auto }
+	} 
+}  
 
 .blogpost {
-	padding:0 12px;
+	padding:0 0px;
 
-	h1 { margin:0;font-size:42px }
-	h2 { color:black;font-size:28px;margin-bottom:5px }
-	h4 { color:black }
-	p { margin-top:0;width:640px;vertical-align:top }
 	header { border-bottom:solid 1px @lightgray;margin-bottom:20px }
 
-	pre { border:none;padding:8px;width:640px; }
+	hr { max-width:@mainElmWidth;color:@lightblue;margin-left:0 }
+	h1 { margin:0;font-size:42px;padding-left:@mainElmPad }
+	h2 { font-size:28px;margin-bottom:5px;padding-left:@mainElmPad }
+	p { margin-top:0;max-width:@mainElmWidth;vertical-align:top;padding-left:@mainElmPad }
 
-	ol { max-width:620px; }
-	ul { list-style:none;padding:0;margin:0 }
+	pre { border:none;padding:8px;max-width:@mainElmWidth; }
+
+	ol { max-width:620px;padding-left:@mainElmPad }
+	ul { list-style:none;margin:0;padding-left:@mainElmPad }
 	ul ul { margin-left:12px }
 
 	iframe { margin:20px 0px 20px 0px }
-	hr { width:640px;color:@lightgray;margin-left:0 }
-
-	img { max-width:640px }
-
-	#disqus_thread {
-		min-height:700px
-	}
+	img { max-width:100% }
 
 	.pw-widget {
 		float:right;
@@ -41,7 +44,6 @@
 		width:@sideRailWidth;
 		margin:10px 0 8px 0;
 		font-size:24px;
-		color:@gray;
 		position:relative;
 	}
 	#table-of-contents + ul {
@@ -50,20 +52,38 @@
 		width:@sideRailWidth;
 		font-size:12px;
 		position:relative;
+
+		ul { margin-top:4px; }	
+		li { padding:1px 0 2px 0; }	
 	}
-	#table-of-contents + ul ul {
-		margin-top:4px;
-	}	
-	#table-of-contents + ul li {
-		padding:1px 0 2px 0;
-	}	
 
-	#author { color:white;margin:2px }
+	#author { color:white;margin:2px;clear:left }
 	#author + p { width:80px;height:80px;display:inline-block;maring-top:20px }
-	#author + p img { width:80px;height:80px;border-radius:40px }
-	blockquote { display:inline-block;margin:0 10px;font-style:italic;font-size:14px;width:540px;padding:0px 10px }
-	blockquote p { width:500px; }
+	#author + p img { width:100%;height:100%;border-radius:50% }
+	blockquote { width:540px;display:inline-block;margin:0 0px 0 10px;font-style:italic;font-size:14px;padding:0 0px 0 10px; }
+	blockquote p { width:100% }
+	blockquote + p { margin-top:20px } // for images underneath the blockquote
 
-	blockquote + p { margin-top:20px }
+	#disqus_thread {
+		min-height:700px
+	}
 
+
+  @media only screen and (max-width:900px) {
+    h1 { font-size:32px;line-height:48px }
+    #table-of-contents { float:left;clear:left; }
+    #table-of-contents + ul { float:left;clear:left; }
+    #author { color:white;margin:15px;float:none }
+  }  
+
+  @media only screen and (max-width:640px) {
+		p { padding:2px }
+		iframe { width:100% }
+    h1 { font-size:28px;line-height:32px;text-align:center; }
+    h2 { font-size:22px;line-height:32px;text-align:center;margin-bottom:10px }    
+    .pw-widget { display:none }
+    #table-of-contents { font-size:16px;margin-top:20px }
+		#author + p { width:60px;height:60px; }
+		blockquote { width:78%;float:right }   
+  }	
 }

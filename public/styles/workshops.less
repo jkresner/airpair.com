@@ -8,14 +8,18 @@
 
 body#workshops {
 
-  .pw-widget {
+  .share {
+    padding:10px 7px 0 0;
     float:right;
+    clear:right;      
     width:@sideRailWidth;
-    margin:15 0;
-    height:60;
-    position:relative;
-    top:0;
+    height:74px;
+    margin:12px 0 18px 0;
+    border-bottom:solid 1px @lightgray;
+
+    .pw-button { margin-right:7px!important }
   }
+
 
 
   #subscribe {
@@ -36,7 +40,9 @@ body#workshops {
       list-style:none;margin:0;padding:0
     }
 
-    .calendar {
+    #calendar {
+      h2 { margin-top:0 }
+
       float:right;
       width:@sideRailWidth;
 
@@ -45,12 +51,12 @@ body#workshops {
         font-size:16px;
       }
 
-      time { display:block;font-size:11px;margin:5px 0 1px 0 }
+      time { display:block;font-size:11px;margin:6px 0 0px 0 }
 
       font-size:13px;
     }
 
-    #upcoming, #featured {
+    #next, #featured {
       max-width:@mainWidth;
       text-align:center;
       font-size:0;
@@ -76,8 +82,8 @@ body#workshops {
         border-radius:3px;
         vertical-align:top;
 
-        time { display:block;height:20px;font-size:12px;letter-spacing:normal;color:@gray }
-        img { display:block;margin:auto;border-radius:40px;margin-top:5px }
+        time { display:block;height:15px;font-size:12px;letter-spacing:normal;color:@gray }
+        img { display:block;margin:auto;border-radius:40px;margin-top:10px }
         h5 { letter-spacing:normal;color:@gray }
         figure { display:block;height:64px;font-size:14px;padding:0;margin:0;letter-spacing:normal }
       }
@@ -97,12 +103,14 @@ body#workshops {
     }
 
     #past {
+      clear:both;
       text-align:center;
       width:@mainWidth;
       time { display:block;font-size:10px;margin:1px 0 }
       font-size:12px;
       img {
         border-radius:3px;
+        margin-bottom:10px;
       }
 
       a {
@@ -112,6 +120,34 @@ body#workshops {
       }
     }
 
+
+    @media only screen and (max-width: 900px) {
+
+      #next, #featured {
+        max-width:400px;
+
+        a.workshop {
+          margin:4px 8px 4px 0px;
+        }
+      }
+    }
+
+    @media only screen and (max-width:640px) {
+      #calendar {
+        float:none;width:100%;
+        text-align:center;
+      }
+
+      #past {
+        width:100%;
+        a {
+          width:30%;
+          float:none;
+          display:inline-block;
+          margin:10px;
+        }
+      }
+    } 
   }
 
   #show {
@@ -125,6 +161,7 @@ body#workshops {
 
     .speakers {
       float:right;
+      clear:right;
       width:@sideRailWidth;
       font-size:12px;
       text-align:justify;
@@ -146,7 +183,7 @@ body#workshops {
       padding:10px 5px 
     }
 
-    .player svg { 
+    .player .slide { 
       opacity:0.6
     }
 
@@ -157,7 +194,29 @@ body#workshops {
       max-width:@mainWidth;
       text-align:center;
 
+      a.btn { margin-top:18px }
+
       label { display:block }
+    }
+
+    @media only screen and (max-width:900px) {
+      .player { 
+        iframe {
+          max-width:400px;
+        }
+      }
+    }    
+
+    @media only screen and (max-width:640px) {    
+      text-align:center;
+      h1 { font-size:28px;line-height:32px;text-align:center; }
+      h2 { font-size:22px;line-height:32px;text-align:center;margin-bottom:10px }    
+
+      .share { float:none;margin:auto;height:80px; }
+      .speakers { float:none;width:96%;margin:auto }
+      .speakers { float:none;width:96%;margin:auto }
+      time { margin-top:20px }
+      .slide { display:none }
     }
   }
 

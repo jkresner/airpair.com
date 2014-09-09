@@ -8,7 +8,7 @@ angular.module("APShare", ['angularLoad'])
     window.pwidget_config = { shareQuote: false, afterShare: false }; 
 
     return {
-      templateUrl: '/directives/share.html',
+      template: require('./share.html'),
       scope: { 
         fb: '=apFb', 
         tw: '=apTw', 
