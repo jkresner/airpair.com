@@ -8,7 +8,8 @@ other-person
   br
   .title {{ other.title }}
 messages
-  | messages go here
+  ul
+    li(ng-repeat="msg in messages") {{ msg.content }}
 entry
-  form(ng-submit='addMessage()')
+  form(ng-submit='say(message)')
     input#message(ng-model='message', ng-focus='clearNotifications(activeChannel, user)', placeholder='ask a question')

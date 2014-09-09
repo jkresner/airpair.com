@@ -13,11 +13,18 @@ AirPair.directive('airpairUserChat', [function() {
 
 var UserChatController =
   function($rootScope, $scope, chat) {
+    // initialize on login
     $rootScope.$on("$firebaseSimpleLogin:login", function(event, user) {
       if($scope.autocreate) {
-        chat.createChannel(user.displayName + ' ' + Number(new Date), $scope.temporary, function(err, channel) {
+        var name = user.displayName + ' ' + Number(new Date);
+        chat.createChannel(name, $scope.temporary, function(err, channel, messages) {
           if(!err) {
-            window.activeChannel = $scope.activeChannel = channel;
+            $scope.activeChannel = channel;
+            $scope.messages = messages;
+            chat.subscribe(channel, user.uid);
+            if($scope.other) {
+              chat.subscribe(channel, $scope.other);
+            }
           }
           else {
             console.log('problem auto creating channel', err);
@@ -25,6 +32,10 @@ var UserChatController =
         });
       }
     });
+
+    $scope.say = function(message) {
+      chat.say($scope.activeChannel, message);
+    };
   };
 
 AirPair.controller('UserChatController',

@@ -7,6 +7,9 @@ var ChatService = function($rootScope, $firebase, $firebaseSimpleLogin) {
   var auth = $firebaseSimpleLogin(rootRef);
 
   var service = {
+    // initialized on login below
+    currentUser: null,
+
     login: function() {
       return auth.$login('google', {rememberMe: true});
     },
@@ -32,12 +35,39 @@ var ChatService = function($rootScope, $firebase, $firebaseSimpleLogin) {
           if(isTemporary) {
             newChannelRef.onDisconnect().remove();
           }
-          cb(null, $firebase(newChannelRef).$asObject());
+          cb(null, $firebase(newChannelRef).$asObject(),
+                   $firebase(newChannelRef.child('messages')).$asArray());
         }
         else {
           cb(err);
         }
       });
+    },
+
+    say: function(channel, message) {
+      // create a message object
+      msg = {
+        from: {
+          email: this.currentUser.email,
+          name: this.currentUser.displayName,
+          first_name: this.currentUser.thirdPartyUserData.given_name,
+          picture: this.currentUser.thirdPartyUserData.picture
+        },
+        user_id: this.currentUser.uid,
+        content: message,
+        sent_at: Firebase.ServerValue.TIMESTAMP
+      };
+
+      // add it to the channel's messages object
+      messages = $firebase(channelsRef.child(channel.$id).child('messages')).$asArray();
+      messages.$add(msg);
+    },
+
+    subscribe: function(channel, uid) {
+      channelsRef
+        .child(channel.$id)
+        .child("members")
+        .child(uid).set(true);
     },
 
     users: function() {
@@ -48,7 +78,7 @@ var ChatService = function($rootScope, $firebase, $firebaseSimpleLogin) {
   // handle common login features
   $rootScope.$on("$firebaseSimpleLogin:login", function(event, user) {
     console.log("Logged in to chat as", user);
-
+    // keep a reference to user
     service.currentUser = user;
     // site presence
     user.active = true;
