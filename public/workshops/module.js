@@ -69,6 +69,7 @@ angular.module("APWorkshops", ['ngRoute','APFilters','APShare'])
 			function($scope, $http, $routeParams, API) {
 
 		$http.get(API+'/workshops/'+$routeParams.id).success(function (data) {
+			console.log('null data', data == '', data);
 			$scope.entry = data;
 		});
 	}])
