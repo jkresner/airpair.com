@@ -75,7 +75,12 @@ main {
     background: -ms-linear-gradient(left, rgba(255,255,255,1) 0%, rgba(223,242,239,1) 50%, rgba(255,255,255,1) 100%);
     background: linear-gradient(to right, rgba(255,255,255,1) 0%, rgba(223,242,239,1) 50%, rgba(255,255,255,1) 100%);
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ffffff', GradientType=1 );
-  
+
+    width:100%;  
+    white-space: nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+
     @media (max-width: 900px) {
       padding:9px 2px;
     }

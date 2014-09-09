@@ -3,8 +3,11 @@ require('./../directives/share.js');
 
 var feautredSlugs = [
 	'fast-mvp-with-angularfire',
+	'learn-meteorjs-1.0',
+	'learn-git-and-github',
 	'publishing-at-the-speed-of-ruby',
-	'learn-meteorjs-1.0'
+	'visualization-with-d3js',
+	'transitioning-to-consulting-for-developers'
 ];
 
 var selectByDateRange = function(list, daysAgo, daysUntil)

@@ -195,6 +195,10 @@ main header {
   background: -ms-linear-gradient(left, #ffffff 0%, #dff2ef 50%, #ffffff 100%);
   background: linear-gradient(to right, #ffffff 0%, #dff2ef 50%, #ffffff 100%);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#ffffff', GradientType=1);
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 @media (max-width: 900px) {
   main header {
@@ -382,28 +386,31 @@ body#workshops #index ul {
   margin: 0;
   padding: 0;
 }
-body#workshops #index .calendar {
+body#workshops #index #calendar {
   float: right;
   width: 212px;
   font-size: 13px;
 }
-body#workshops #index .calendar .btn {
+body#workshops #index #calendar h2 {
+  margin-top: 0;
+}
+body#workshops #index #calendar .btn {
   width: 212px;
   font-size: 16px;
 }
-body#workshops #index .calendar time {
+body#workshops #index #calendar time {
   display: block;
   font-size: 11px;
-  margin: 5px 0 1px 0;
+  margin: 6px 0 0px 0;
 }
-body#workshops #index #upcoming,
+body#workshops #index #next,
 body#workshops #index #featured {
   max-width: 650px;
   text-align: center;
   font-size: 0;
   line-heigh: 0;
 }
-body#workshops #index #upcoming a.workshop,
+body#workshops #index #next a.workshop,
 body#workshops #index #featured a.workshop {
   color: #151821;
   display: inline-block;
@@ -424,27 +431,27 @@ body#workshops #index #featured a.workshop {
   border-radius: 3px;
   vertical-align: top;
 }
-body#workshops #index #upcoming a.workshop time,
+body#workshops #index #next a.workshop time,
 body#workshops #index #featured a.workshop time {
   display: block;
-  height: 20px;
+  height: 15px;
   font-size: 12px;
   letter-spacing: normal;
   color: #4d4e4e;
 }
-body#workshops #index #upcoming a.workshop img,
+body#workshops #index #next a.workshop img,
 body#workshops #index #featured a.workshop img {
   display: block;
   margin: auto;
   border-radius: 40px;
-  margin-top: 5px;
+  margin-top: 10px;
 }
-body#workshops #index #upcoming a.workshop h5,
+body#workshops #index #next a.workshop h5,
 body#workshops #index #featured a.workshop h5 {
   letter-spacing: normal;
   color: #4d4e4e;
 }
-body#workshops #index #upcoming a.workshop figure,
+body#workshops #index #next a.workshop figure,
 body#workshops #index #featured a.workshop figure {
   display: block;
   height: 64px;
@@ -453,7 +460,7 @@ body#workshops #index #featured a.workshop figure {
   margin: 0;
   letter-spacing: normal;
 }
-body#workshops #index #upcoming a.workshop:hover,
+body#workshops #index #next a.workshop:hover,
 body#workshops #index #featured a.workshop:hover {
   color: #ce5424;
   border-top: solid 1px #ce5424;
@@ -464,17 +471,18 @@ body#workshops #index #featured a.workshop:hover {
   background: -ms-radial-gradient(left, #ffffff 0%, #dff2ef 0%, #ffffff 100%);
   background: radial-radient(to right, #ffffff 0%, #dff2ef 0%, #ffffff 100%);
 }
-body#workshops #index #upcoming a.workshop:hover h5,
+body#workshops #index #next a.workshop:hover h5,
 body#workshops #index #featured a.workshop:hover h5 {
   color: #ce5424;
 }
-body#workshops #index #upcoming a.workshop:hover h5,
+body#workshops #index #next a.workshop:hover h5,
 body#workshops #index #featured a.workshop:hover h5,
-body#workshops #index #upcoming a.workshop:hover figure,
+body#workshops #index #next a.workshop:hover figure,
 body#workshops #index #featured a.workshop:hover figure {
   font-weight: bold;
 }
 body#workshops #index #past {
+  clear: both;
   text-align: center;
   width: 650px;
   font-size: 12px;
@@ -492,6 +500,32 @@ body#workshops #index #past a {
   width: 45%;
   float: left;
   margin: 10px;
+}
+@media (max-width: 900px) {
+  body#workshops #index #next,
+  body#workshops #index #featured {
+    max-width: 400px;
+  }
+  body#workshops #index #next a.workshop,
+  body#workshops #index #featured a.workshop {
+    margin: 4px 8px 4px 0px;
+  }
+}
+@media (max-width: 640px) {
+  body#workshops #index #calendar {
+    float: none;
+    width: 100%;
+    text-align: center;
+  }
+  body#workshops #index #past {
+    width: 100%;
+  }
+  body#workshops #index #past a {
+    width: 30%;
+    float: none;
+    display: inline-block;
+    margin: 10px;
+  }
 }
 body#workshops #show h1 {
   margin-bottom: 20px;
@@ -556,4 +590,46 @@ body#workshops #show .action a.btn {
 }
 body#workshops #show .action label {
   display: block;
+}
+@media (max-width: 900px) {
+  body#workshops #show .player iframe {
+    max-width: 400px;
+  }
+}
+@media (max-width: 640px) {
+  body#workshops #show {
+    text-align: center;
+  }
+  body#workshops #show h1 {
+    font-size: 28px;
+    line-height: 32px;
+    text-align: center;
+  }
+  body#workshops #show h2 {
+    font-size: 22px;
+    line-height: 32px;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  body#workshops #show .share {
+    float: none;
+    margin: auto;
+    height: 80px;
+  }
+  body#workshops #show .speakers {
+    float: none;
+    width: 96%;
+    margin: auto;
+  }
+  body#workshops #show .speakers {
+    float: none;
+    width: 96%;
+    margin: auto;
+  }
+  body#workshops #show time {
+    margin-top: 20px;
+  }
+  body#workshops #show .slide {
+    display: none;
+  }
 }

@@ -162,6 +162,10 @@ main header {
   background: -ms-linear-gradient(left, #ffffff 0%, #dff2ef 50%, #ffffff 100%);
   background: linear-gradient(to right, #ffffff 0%, #dff2ef 50%, #ffffff 100%);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#ffffff', GradientType=1);
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 @media (max-width: 900px) {
   main header {
