@@ -20,7 +20,7 @@ export default function(app)
 
 	app.get( '/workshops-slide/:id', (req,res) => {
 		new workshopsService(req.user).getBySlug(req.params.id, (e,r) => {
-			res.status(200).render(`workshopslide.hbs`, r)
+			res.status(200).render(`workshopsslide.hbs`, r)
 		})
 	})
 	
