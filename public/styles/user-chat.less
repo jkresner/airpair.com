@@ -1,4 +1,9 @@
 @chrome: rgb(201, 214, 210);
+@chatchrome: #d3d3d3;
+@chatlight: #d3d3d3;
+@chatdark: #d3d3d3;
+
+/** Note: For more information on display: flex see http://html5please.com/#flexbox */
 
 airpair-user-chat {
   background: @chrome;
@@ -29,9 +34,34 @@ airpair-user-chat {
     }
   }
 
-  other-person {
-    background: rgb(239, 248, 247);
-    height: 200px;
+  members {
+    background: #333;
+    padding: 20px;
+
+    member {
+      img {
+        border-radius: 50%;
+        height: auto;
+      }
+      &:only-child {
+        text-align: center;
+        img {
+          width: 100px;
+        }
+      }
+
+      &:not(:only-child) {
+        float: left;
+        img {
+          width: 50px;
+        }
+        .title { display: none }
+
+        &:not(:first-child) {
+          margin-left: -10px;
+        }
+      }
+    }
   }
 
   messages {

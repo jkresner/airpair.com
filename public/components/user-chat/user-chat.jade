@@ -3,13 +3,14 @@ chat-header
     img(src="/v1/img/css/chat/toggle.png")
   channel-name
     | {} Prateek Gupta
-other-person
-  img(ng-src="other.picture")
-  br
-  .title {{ other.title }}
-messages
-  ul
-    li(ng-repeat="msg in messages") {{ msg.content }}
+members
+  member(ng-repeat="person in members" ng-if="person.uid != chat.currentUser.uid" title="{{person.name}}")
+    img(ng-src="{{person.picture}}")
+    .title {{ person.name }}
+messages(scroll-glue)
+  table
+    tr(ng-repeat="msg in messages")
+      td{{ msg.content }}
 entry
   form(ng-submit='say(message)')
-    input#message(ng-model='message', ng-focus='clearNotifications(activeChannel, user)', placeholder='ask a question')
+    input#message(ng-model='message' placeholder='ask a question')

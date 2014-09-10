@@ -36,6 +36,7 @@ var ChatService = function($rootScope, $firebase, $firebaseSimpleLogin) {
             newChannelRef.onDisconnect().remove();
           }
           cb(null, $firebase(newChannelRef).$asObject(),
+                   $firebase(newChannelRef.child('members')).$asArray(),
                    $firebase(newChannelRef.child('messages')).$asArray());
         }
         else {
@@ -64,10 +65,12 @@ var ChatService = function($rootScope, $firebase, $firebaseSimpleLogin) {
     },
 
     subscribe: function(channel, uid) {
-      channelsRef
-        .child(channel.$id)
-        .child("members")
-        .child(uid).set(true);
+      usersRef.child(uid).on('value', function(u) {
+        channelsRef
+          .child(channel.$id)
+          .child("members")
+          .child(uid).set(UserHelper.shrink(u.val()));
+      });
     },
 
     users: function() {
@@ -96,3 +99,13 @@ var ChatService = function($rootScope, $firebase, $firebaseSimpleLogin) {
 }
 
 AirPair.factory('chat', ['$rootScope', '$firebase', '$firebaseSimpleLogin', ChatService]);
+
+UserHelper = {
+  shrink: function(user) {
+    return {
+      name: user.displayName,
+      picture: user.thirdPartyUserData.picture
+    }
+  }
+}
+
