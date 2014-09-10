@@ -1,5 +1,5 @@
 import globals from './server/global'
-import routes from './server/routes'
+import routes from './server/routes/index'
 import hbsEngine from './server/hbsEngine'
 import * as mongoInit from './server/mongoInit'
 
