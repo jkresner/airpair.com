@@ -19,4 +19,7 @@ export default function(app) {
 	app.set('views', app.dir + '/server/views');
 	app.engine('hbs', hbsEngine);
 
+	app.renderHbs = (fileName, data) =>
+		(req,res) => res.status(200).render(`./${fileName}.hbs`, data)
+
 }
