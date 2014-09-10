@@ -11,7 +11,8 @@ for (var p of posts)
 {
   p.date = moment(p.id+'2014','MM.DDYYYY');
   p.published = p.date.format('DD MMMM, YYYY');	
-  p.url = `/posts/${p.tag}/${p.title.toLowerCase().replace(/ /g, '-')}`;
+  p.slug = `/${p.tag}/${p.title.toLowerCase().replace(/ /g, '-')}`;
+  p.url = `/posts${p.slug}`;
 }
 
 export default posts;
