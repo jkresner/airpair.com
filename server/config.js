@@ -1,5 +1,9 @@
 var cfg = {
-  mongoUri: process.env.MONGOHQ_URL || "mongodb://localhost/airpair_dev"
+  mongoUri: process.env.MONGOHQ_URL || "mongodb://localhost/airpair_dev",
+  session: { secret: 'airyv1' },
+  oAuth: { 
+    callbackHost: 'http://localhost:3333'
+  }
 } 
 
 // Temporary hack
