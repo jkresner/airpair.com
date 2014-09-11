@@ -1,7 +1,16 @@
 // import BaseService from './_service'
 import User from '../models/user'
+var bcrypt = require('bcrypt')
 
 var logging = false
+
+
+var generateHash = (password) =>
+  bcrypt.hashSync(password, bcrypt.genSaltSync(8))
+
+var validPassword = (password, hash) => 
+  bcrypt.compareSync(password, hash)  
+
 
 //-- TODO, move upsert fn into the UserService class
 // Add the user if new, or updating if existing base on the search
@@ -14,6 +23,17 @@ var upsertSmart = (search, update, done) => {
       console.log('alias')
       console.log('track','signup')
     }
+
+    //-- copy google details to top level users details
+    if (update.google && (!r || !r.email))
+    {
+      if (!r.email) 
+      { 
+        update.email = update.google._json.email 
+        update.name = update.google.displayName 
+      }
+    }
+
     User.findOneAndUpdate(search, update, { upsert: true }, (err, user) => {
       $log('User.upsert', err && err.stack, JSON.stringify(user))
       done(err, user)
@@ -21,11 +41,52 @@ var upsertSmart = (search, update, done) => {
   })
 }
 
+
+
 class UserService {
 
   // constructor(user) {
   //   super(user)
   // }
+
+  tryLocalLogin(email, password, done) {
+    var search = { '$or': [{email:email},{'google._json.email':email}] }
+
+    $log('tryLocalLogin', search)
+    User.findOne(search, (e, r) => {
+      var failMsg = null
+      if (!e)
+      {
+        if (!r) { failMsg = "no user found"; }
+        else if (!r.email) { failMsg = "try google login"; r = false;  }
+        else if (!validPassword(password, r.password)) { failMsg = "wrong password"; r = false; }
+      }
+      return done(e, r, failMsg)
+    })
+  }
+
+  // tryLocalSignup(email, password, name, done) {
+  //   var search = { '$or': { email: email }, { 'google._json.email': email } }
+
+  //   User.findOne(search, (e, r) => {
+  //     if (e) { return done(e) }
+  //     if (r.email && r.email == email) { return done(null, false, "user already exists") }
+  //     if (r.google && r.google._json.email == email) { return done(null, false, "try google login") }
+  //     else
+  //     {
+  //       data = {
+  //         email: email,
+  //         name: name,
+  //         local: { password: generateHash(password) }
+  //       }
+  //       new User(data).save((e,r) => {
+  //         if (r) { r = r.toObject(); }
+  //         done(e,r)
+  //       })
+  //     }
+  //   })
+  // }
+
 
   upsertProviderProfile(loggedInUser, providerName, profile, done) {
 
@@ -40,15 +101,15 @@ class UserService {
     update[providerName] = profile
 
     upsertSmart(search, update, done)
+  
   }
 
   getById(id, cb) {
     User.findOne({_id:id},null,null)
       .lean()
-      .exec( (e, r) => {
-        cb(e, r)
-      })
+      .exec(cb)
   }  
+
 }
 
 export default UserService

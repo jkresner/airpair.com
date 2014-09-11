@@ -1,4 +1,4 @@
-var logging = true;
+var logging = false;
 
 
 export function ensureAuthd(options) 
@@ -33,5 +33,5 @@ var setReqSessionVar = (varName) => {
   }
 }
 
-export var setReturnTo = setReqSessionVar('return_to')
+export var setReturnTo = setReqSessionVar('returnTo')
 export var setMixpanelId = setReqSessionVar('mixpanelId')

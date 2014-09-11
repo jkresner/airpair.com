@@ -1,18 +1,10 @@
 var passport = require('passport')
+import * as authConfig from './config'
 
-var logging = false
+var logging = true
 
-export function getEnvConfig(provider) {
-  return {
-    passReqToCallback: true,
-    callbackURL: `${config.oAuth.callbackHost}/auth/v1/${provider}/callback`, 
-    clientID: config.oAuth[provider].clientID,
-    clientSecret: config.oAuth[provider].clientSecret,
-    scope: config.oAuth[provider].scope
-  }
-}
 
-export var shakeFn = (provider, scope) => {
+var oauthFn = (provider, scope) => {
   var opts = {
     failureRedirect: `${config.auth.loginUrl}?fail=${provider}`,
     scope: scope
@@ -36,9 +28,10 @@ export var shakeFn = (provider, scope) => {
   }
 }
 
+
 export function init(provider, successfulShakeDelegate) {
   var Strategy = require(`passport-${provider}-oauth`).OAuth2Strategy
-  var oauthConfig = getEnvConfig(provider);
+  var cfg = authConfig.getEnvConfig(provider)
 
   var verifyCallback = (req, accessToken, refreshToken, profile, done) =>
   {
@@ -54,8 +47,8 @@ export function init(provider, successfulShakeDelegate) {
     successfulShakeDelegate(req, provider, profile, done)
   }
 
-  passport.use(provider, new Strategy(oauthConfig, verifyCallback))
+  passport.use(provider, new Strategy(cfg, verifyCallback))
 
-  return shakeFn(provider, oauthConfig.scope)
+  return oauthFn(provider, authConfig.scope)
 }
 
