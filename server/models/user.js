@@ -6,11 +6,23 @@ Schema = mongoose.Schema;
 
 User = new Schema({
 
+  email: {
+    type: String,
+    index: {
+      unique: true,
+      dropDups: true
+    }
+  },
+  emailVerfied: {
+    type: Boolean,
+    "default": false
+  },
   name: String,
-  email: String,
-
   initialis: String, 
 
+  local : {
+    password : String
+  },
   googleId: {
     type: String,
     index: {
@@ -31,6 +43,7 @@ User = new Schema({
   bitbucket: {},
   
 });
+
 
 // ap v.0 schema
   // name: String,
