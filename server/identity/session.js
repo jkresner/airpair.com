@@ -1,6 +1,7 @@
 var session = require('express-session')
 var cookieParser = require('cookie-parser')
 var bodyParser = require('body-parser')  
+var passport = require('passport')
 
 // takes a delegate to initalize a store that could be Mongo / Redis etc.
 export default function(app, initSessionStore) 
@@ -21,5 +22,26 @@ export default function(app, initSessionStore)
     app.use(bodyParser.urlencoded({extended: true}))
     app.use(cookieParser(config.session.secret))
     app.use(session(sessionOpts))
+
+    // if (config.env is 'test')
+    //   require('./app_test')(app)
+    // else
+      app.use(passport.initialize())
+    app.use(passport.session())
+  
+    passport.serializeUser( (user, done) => {
+      // The user object we get here is from findOneAndUpdate in UserService.upsert
+      var session = { _id: user._id }
+      $log('serializeUser', session)
+      done( null, session )
+    })
+
+    passport.deserializeUser( (user, done) => {
+      // note the user object here is different from the user mongoose collection
+      // it's actually req.session.passport.user
+      $log('deserializeUser', user)
+      done(null, session)
+    })
+
   })  
 }
