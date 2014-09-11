@@ -4,62 +4,73 @@
 @chatdark: #d3d3d3;
 
 /** Note: For more information on display: flex see http://html5please.com/#flexbox */
+#chat {
+  display: flex;
+  flex-direction: column;
+  width: 270px;
+  &.empty {
+    display: none;
+  }
+}
 
-airpair-user-chat {
+chat-header {
+  background: black;
+  border: 1px solid gray;
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: row;
+  height: 40px;
+
+  chat-notifications {
+    padding: 10px;
+    width: 50px;
+  }
+  .name {
+    color: white;
+    letter-spacing: 1px;
+    font-size: 9pt;
+    font-weight: 600;
+    flex: 1 1 auto;
+    padding: 10px;
+    text-transform: uppercase;
+  }
+}
+
+.chatroom {
   background: @chrome;
   border-left: 1px solid silver;
+  flex: 1 1 auto;
   display: flex;
   flex-direction: column;
 
-  chat-header {
-    background: black;
-    border: 1px solid gray;
-    display: flex;
-    flex-direction: row;
-    height: 40px;
-
-    chat-notifications {
-      border-right: 1px solid gray;
-      padding: 10px;
-      width: 50px;
-    }
-    channel-name {
-      color: white;
-      letter-spacing: 1px;
-      font-size: 9pt;
-      font-weight: 600;
-      flex: 1 1 auto;
-      padding: 10px;
-      text-transform: uppercase;
-    }
+  &:not(:nth-child(2)) {
+    display: none;
   }
 
   members {
     background: #333;
+    flex: 0 0 auto;
     padding: 20px;
 
     member {
-      img {
-        border-radius: 50%;
-        height: auto;
-      }
+      img { border-radius: 50%; height: auto }
+
       &:only-child {
+        display: block;
         text-align: center;
-        img {
-          width: 100px;
+        img { width: 100px }
+        .title {
+          margin-top: 5px;
+          color: white;
         }
       }
 
       &:not(:only-child) {
         float: left;
-        img {
-          width: 50px;
-        }
+        img { width: 50px }
         .title { display: none }
 
-        &:not(:first-child) {
-          margin-left: -10px;
-        }
+        &:not(:first-child) { margin-left: -10px }
       }
     }
   }
@@ -68,13 +79,21 @@ airpair-user-chat {
     flex: 1 1 auto;
     overflow: hidden;
     overflow-y: scroll;
+    table {
+      background-color: white;
+      margin: 0 !important;
+      td.from {
+        color: gray;
+        font-size: 8pt;
+      }
+    }
   }
 
   entry {
+    border-top: 2px solid @chrome;
+    flex: 0 0 auto;
     height: 30px;
-    form { padding: 2px }
     input {
-      border: 0;
       outline: 0;
       display: block;
       height: 28px;

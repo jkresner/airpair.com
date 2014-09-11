@@ -10,6 +10,6 @@ AirPair.controller('RequestsHeaderController', ['$scope','chat', function($scope
   $scope.chat = chat;
 }]);
 
-AirPair.controller('RequestsController', [function() {
-
+AirPair.controller('RequestsController', ['$scope','chat', function($scope, chat) {
+  $scope.chat = chat;
 }]);

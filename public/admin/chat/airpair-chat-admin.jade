@@ -8,30 +8,44 @@
       tbody
         tr.channel(ng-repeat='channel in channels | reverse', ng-if='channel.active' ng-class="{active: isLoaded(channel)}")
           td.name
-            a(ng-click='load(channel.$id)', href='#{{channel.$id}}') {{ channel.name }}
+            a(ng-click='load(channel)', href='#{{channel.$id}}') {{ channel.name }}
           td.actions
           td.notifications
             span.unread(ng-show='_.keys(notifications[channel.$id]).length > 0') {{ _.keys(notifications[channel.$id]).length }}
   #people
-    label People
-    table.table
-      tbody
-        tr.user(ng-repeat='u in users', ng-class='{active: u.active, away: checkAway(user)}')
-          td.picture
-            .presence(title='Last active {{moment(u.last_seen).format("dddd, MMMM Do YYYY, h:mm:ss a")}}')
-            img(ng-src='{{u.thirdPartyUserData.picture}}')
-          td
-            strong {{ u.displayName }}
-            br
-            | {{ u.thirdPartyUserData.hd }}
-          td.actions
-            button(ng-click='talkWith(u)', ng-if='u.uid != user.uid', title='Start chatting with {{u.displayName}}')
-              i.fa.fa-comment
+    tabset
+      tab(heading="Active People")
+        table.table
+          tbody
+            tr.user(ng-repeat='u in activeUsers', ng-class='{active: u.active, away: checkAway(user)}')
+              td.picture
+                .presence(title='Last active {{moment(u.last_seen).format("dddd, MMMM Do YYYY, h:mm:ss a")}}')
+                img(ng-src='{{u.thirdPartyUserData.picture}}')
+              td
+                strong {{ u.displayName }}
+                br
+                | {{ u.thirdPartyUserData.hd }}
+              td.actions
+                button(ng-click='talkWith(u)', ng-if='u.uid != user.uid', title='Start chatting with {{u.displayName}}')
+                  i.fa.fa-comment
+
+
+      tab(heading="Inactive")
+        table.table
+          tbody
+            tr.user(ng-repeat='u in inactiveUsers')
+              td.picture
+                .presence(title='Last active {{moment(u.last_seen).format("dddd, MMMM Do YYYY, h:mm:ss a")}}')
+                img(ng-src='{{u.thirdPartyUserData.picture}}')
+              td
+                strong {{ u.displayName }}
+                br
+                | {{ u.thirdPartyUserData.hd }}
 
   #login(ng-hide='user')
-    button(ng-click='login()') Login
+    button(ng-click='chat.login()') Login
 
-#main
+#main(ng-mouseenter="chat.spy()")
   #channel-info
     h3 {{ activeChannel.name }}
   #messages(scroll-glue ng-mousemove="clearNotifications(activeChannel, user)")
@@ -46,6 +60,6 @@
           br
           em.timestamp(ng-if='msg.sent_at', am-time-ago='msg.sent_at')
 
-  #entry(ng-show='activeChannel && user')
+  #entry(ng-show='activeChannel && chat.currentUser')
     form(ng-submit='addMessage()')
       input#message(ng-model='message', ng-focus='clearNotifications(activeChannel, user)', placeholder='ask a question')

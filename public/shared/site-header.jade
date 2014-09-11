@@ -5,7 +5,13 @@ header(ng-controller="RequestsHeaderController")
       a(href="/posts") Posts
     li
       a(href="/workshops") Workshops
-    li
-      a(ng-hide="chat.currentUser" ng-click="chat.login()") Sign in
-      a(ng-show="chat.currentUser" ng-click="chat.logout()") Logout
+    li(ng-hide="chat.currentUser")
+      a(ng-click="chat.login()") Sign in
+    li.dropdown(ng-if="chat.currentUser")
+      a(href class="dropdown-toggle")
+        img.avatar(ng-src="{{chat.currentUser.thirdPartyUserData.picture}}")
+      ul.dropdown-menu.dropdown-menu-right(role="menu")
+        li.dropdown-header(role="presentation") {{ chat.currentUser.displayName }}
+        li
+          a(ng-click="chat.logout()") Logout
 

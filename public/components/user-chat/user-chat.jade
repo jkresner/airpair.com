@@ -1,16 +1,23 @@
-chat-header
-  chat-notifications
-    img(src="/v1/img/css/chat/toggle.png")
-  channel-name
-    | {} Prateek Gupta
-members
-  member(ng-repeat="person in members" ng-if="person.uid != chat.currentUser.uid" title="{{person.name}}")
-    img(ng-src="{{person.picture}}")
-    .title {{ person.name }}
-messages(scroll-glue)
-  table
-    tr(ng-repeat="msg in messages")
-      td{{ msg.content }}
-entry
-  form(ng-submit='say(message)')
-    input#message(ng-model='message' placeholder='ask a question')
+#chat(ng-if="chat.currentUser" ng-class="{empty: chat.currentUserChannels.length == 0}" ng-mouseenter="chat.spy()")
+  chat-header(ng-controller="ChatSelector")
+    chat-notifications.dropdown
+      a.dropdown-toggle(href)
+        img(src="/v1/img/css/chat/toggle.png")
+      ul.dropdown-menu
+        li(ng-repeat="channel in chat.currentUserChannels") {{ channel.$id }}
+    .name
+      | {{ name }}
+  chatroom(ng-repeat="channelId in chat.currentUserChannels")
+    members
+      member(ng-repeat="person in members" ng-if="person.uid !== chat.currentUser.uid" title="{{person.name}}")
+        img(ng-src="{{person.picture}}")
+        .title {{ person.name }}
+
+    messages(scroll-glue)
+      table.table.table-striped
+        tr(ng-repeat="msg in messages")
+          td.from {{ msg.from.first_name }}
+          td{{ msg.content }}
+    entry
+      form(ng-submit='say(message, $event)')
+        input#message(ng-model='message' placeholder='ask a question')

@@ -1,14 +1,20 @@
 var ChatService = function($rootScope, $firebase, $firebaseSimpleLogin) {
   // firebase refs
   var rootRef = new Firebase("https://airpair-chat.firebaseio.com/");
-  var channelsRef = rootRef.child('channels');
+  var activeChannelsRef = rootRef.child('channels/active');
+  var inactiveChannelsRef = rootRef.child('channels/inactive');
   var notificationsRef = rootRef.child('notifications');
-  var usersRef = rootRef.child('users');
+  var subscriptionsRef = rootRef.child('subscriptions');
+  var activeUsersRef = rootRef.child('users/active');
+  var inactiveUsersRef = rootRef.child('users/inactive');
+
+  // results in login if user is already authenticated
   var auth = $firebaseSimpleLogin(rootRef);
 
   var service = {
     // initialized on login below
     currentUser: null,
+    currentUserChannels: null,
 
     login: function() {
       return auth.$login('google', {rememberMe: true});
@@ -18,23 +24,24 @@ var ChatService = function($rootScope, $firebase, $firebaseSimpleLogin) {
       return auth.$logout();
     },
 
-    channels: function() {
-      return $firebase(channelsRef).$asArray();
+    allChannels: function() {
+      return $firebase(activeChannelsRef).$asArray();
     },
 
-    createChannel: function(name, isTemporary, cb) {
-      var slug = name.replace(/\W/g, '-');
-      var newChannelRef = channelsRef.child(slug);
+    getChannel: function(id) {
+      return $firebase(activeChannelsRef.child(id)).$asObject();
+    },
 
-      newChannelRef.setWithPriority({
+    createChannel: function(name, cb) {
+      data = {
         name: name,
         active: true,
         created_at: Firebase.ServerValue.TIMESTAMP
-      }, Firebase.ServerValue.TIMESTAMP, function(err){
+      };
+
+      newChannelRef = activeChannelsRef.push();
+      newChannelRef.setWithPriority(data, Firebase.ServerValue.TIMESTAMP, function(err){
         if(!err) {
-          if(isTemporary) {
-            newChannelRef.onDisconnect().remove();
-          }
           cb(null, $firebase(newChannelRef).$asObject(),
                    $firebase(newChannelRef.child('members')).$asArray(),
                    $firebase(newChannelRef.child('messages')).$asArray());
@@ -43,6 +50,13 @@ var ChatService = function($rootScope, $firebase, $firebaseSimpleLogin) {
           cb(err);
         }
       });
+    },
+
+    loadChannel: function(name, cb) {
+      cRef = activeChannelsRef.child(name);
+      cb($firebase(cRef).$asObject(),
+         $firebase(cRef.child('members')).$asArray(),
+         $firebase(cRef.child('messages')).$asArray());
     },
 
     say: function(channel, message) {
@@ -59,22 +73,56 @@ var ChatService = function($rootScope, $firebase, $firebaseSimpleLogin) {
         sent_at: Firebase.ServerValue.TIMESTAMP
       };
 
+      cRef = activeChannelsRef.child(channel.$id);
+
       // add it to the channel's messages object
-      messages = $firebase(channelsRef.child(channel.$id).child('messages')).$asArray();
-      messages.$add(msg);
+      messages = $firebase(cRef.child('messages')).$asArray();
+
+      // make the last active channel pop to the top of the admin list
+      cRef.setPriority(Firebase.ServerValue.TIMESTAMP);
+
+      // return the promise so that caller can do stuff then()
+      return messages.$add(msg);
     },
 
     subscribe: function(channel, uid) {
-      usersRef.child(uid).on('value', function(u) {
-        channelsRef
+      activeUsersRef.child(uid).once('value', function(u) {
+        activeChannelsRef
           .child(channel.$id)
           .child("members")
           .child(uid).set(UserHelper.shrink(u.val()));
+        subscriptionsRef
+          .child(uid)
+          .child(channel.$id).set(channel.$id);
       });
     },
 
-    users: function() {
-      return $firebase(usersRef).$asArray();
+    unsubscribe: function(channel, uid) {
+      activeChannelsRef.child(channel.$id).child("members").child(uid).remove();
+      return subscriptionsRef.child(uid).child(channel.$id).remove();
+    },
+
+    activeUsers: function() {
+      return $firebase(activeUsersRef).$asArray();
+    },
+
+    inactiveUsers: function() {
+      return $firebase(inactiveUsersRef).$asArray();
+    },
+
+    spy: function() {
+      if(this.currentUser) {
+        console.log('updating last_seen');
+        activeUsersRef.child(this.currentUser.uid).child('last_seen').set(Firebase.ServerValue.TIMESTAMP);
+      }
+    },
+
+    notifications: function() {
+      $firebase(notificationsRef.child(this.currentUser.uid)).$asObject();
+    },
+
+    clearNotifications: function(channel, user) {
+      return rootRef.child("notifications").child(user.uid).child(channel.$id).remove();
     }
   }
 
@@ -83,11 +131,13 @@ var ChatService = function($rootScope, $firebase, $firebaseSimpleLogin) {
     console.log("Logged in to chat as", user);
     // keep a reference to user
     service.currentUser = user;
-    // site presence
-    user.active = true;
-    usersRef.child(user.uid).set(user);
-    // set user to inactive on disconnect
-    usersRef.child(user.uid).child('active').onDisconnect().set(false);
+    service.currentUserChannels = $firebase(subscriptionsRef.child(user.uid)).$asArray();
+
+    // maintain users in active or inactive state
+    activeUsersRef.child(user.uid).set(user);
+    inactiveUsersRef.child(user.uid).remove();
+    activeUsersRef.child(user.uid).onDisconnect().remove();
+    inactiveUsersRef.child(user.uid).onDisconnect().set(user);
   });
 
   $rootScope.$on("$firebaseSimpleLogin:logout", function(event, user) {
@@ -104,7 +154,8 @@ UserHelper = {
   shrink: function(user) {
     return {
       name: user.displayName,
-      picture: user.thirdPartyUserData.picture
+      picture: user.thirdPartyUserData.picture,
+      uid: user.uid
     }
   }
 }
