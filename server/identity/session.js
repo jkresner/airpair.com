@@ -3,6 +3,8 @@ var cookieParser = require('cookie-parser')
 var bodyParser = require('body-parser')  
 var passport = require('passport')
 
+var logging = false
+
 // takes a delegate to initalize a store that could be Mongo / Redis etc.
 export default function(app, initSessionStore) 
 {
@@ -30,17 +32,17 @@ export default function(app, initSessionStore)
     app.use(passport.session())
   
     passport.serializeUser( (user, done) => {
-      // The user object we get here is from findOneAndUpdate in UserService.upsert
-      var session = { _id: user._id }
-      $log('serializeUser', session)
-      done( null, session )
+      // The user object comes from UserService.upsertSmart
+      var sessionUser = { _id: user._id, name: user.name, email: user.email }
+      if (logging) $log('serializeUser', sessionUser)
+      done(null, sessionUser)
     })
 
-    passport.deserializeUser( (user, done) => {
-      // note the user object here is different from the user mongoose collection
-      // it's actually req.session.passport.user
-      $log('deserializeUser', user)
-      done(null, session)
+    passport.deserializeUser( (sessionUser, done) => {
+      // The sessionUser object is different from the user mongoose collection
+      // it's actually req.session.passport.user and comes from the session collection
+      if (logging) $log('deserializeUser', sessionUser.email)
+      done(null, sessionUser)
     })
 
   })  

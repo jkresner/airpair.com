@@ -26,6 +26,7 @@ User = new Schema({
   googleId: {
     type: String,
     index: {
+      sparse: true,
       unique: true,
       dropDups: true
     }

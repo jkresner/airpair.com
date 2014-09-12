@@ -6,21 +6,25 @@ var logging = true
 var authFn = (provider) => {
   return (req, res, next) => {
     passport.authenticate(provider, (err, user, info) => {
-      if (err) { return next(err); }
+      if (err) { return next(err) }
       
-      var url = '/';
       if (user) { 
-        if (req.session && req.session.returnTo) {
-          url = req.session.returnTo;
-          delete req.session.returnTo;
+        var url = '/'
+        if (req.session && req.session.returnTo)
+        {
+          url = req.session.returnTo
+          delete req.session.returnTo
         }
+
+        req.logIn(user, function(err) {
+          if (err) { return next(err) }
+          return res.redirect(url)
+        })
       }
       else
       {
-        url = `${config.auth.loginUrl}?fail=${provider}&info=${info}`
+        res.redirect(`${config.auth.loginUrl}?fail=${provider}&info=${info}`)
       }
-      res.redirect(url)
-      next()
 
     })(req, res, next)
   }

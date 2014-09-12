@@ -34,8 +34,10 @@ var upsertSmart = (search, update, done) => {
       }
     }
 
+    if (logging) $log('TryUpsert', JSON.stringify(search))
     User.findOneAndUpdate(search, update, { upsert: true }, (err, user) => {
-      $log('User.upsert', err && err.stack, JSON.stringify(user))
+      if (err) $log('User.upsert.err', err && err.stack)
+      if (loggin) $log('User.upsert', JSON.stringify(user))
       done(err, user)
     })
   })
@@ -49,43 +51,46 @@ class UserService {
   //   super(user)
   // }
 
+
   tryLocalLogin(email, password, done) {
     var search = { '$or': [{email:email},{'google._json.email':email}] }
 
-    $log('tryLocalLogin', search)
     User.findOne(search, (e, r) => {
       var failMsg = null
       if (!e)
       {
         if (!r) { failMsg = "no user found"; }
-        else if (!r.email) { failMsg = "try google login"; r = false;  }
-        else if (!validPassword(password, r.password)) { failMsg = "wrong password"; r = false; }
+        else if (!r.local || !r.local.password) { 
+          failMsg = "try google login"; r = false;  }
+        else if (!validPassword(password, r.local.password)) { 
+          failMsg = "wrong password"; r = false; }
       }
       return done(e, r, failMsg)
     })
   }
 
-  // tryLocalSignup(email, password, name, done) {
-  //   var search = { '$or': { email: email }, { 'google._json.email': email } }
 
-  //   User.findOne(search, (e, r) => {
-  //     if (e) { return done(e) }
-  //     if (r.email && r.email == email) { return done(null, false, "user already exists") }
-  //     if (r.google && r.google._json.email == email) { return done(null, false, "try google login") }
-  //     else
-  //     {
-  //       data = {
-  //         email: email,
-  //         name: name,
-  //         local: { password: generateHash(password) }
-  //       }
-  //       new User(data).save((e,r) => {
-  //         if (r) { r = r.toObject(); }
-  //         done(e,r)
-  //       })
-  //     }
-  //   })
-  // }
+  tryLocalSignup(email, password, name, done) {
+    var search = { '$or': [{email:email},{'google._json.email':email}] }
+    User.findOne(search, (e, r) => {
+      if (e) { return done(e) }
+      else if (r) {
+        var info = ""
+        if (r.email == email) { info = "user already exists"; }
+        if (r.google && r.google._json.email == email) { info = "try google login"; }
+        return done(null, false, info)
+      } 
+      else
+      {
+        var data = {
+          email: email,
+          name: name,
+          local: { password: generateHash(password) }
+        }
+        upsertSmart(search, data, done)
+      }
+    })
+  }
 
 
   upsertProviderProfile(loggedInUser, providerName, profile, done) {

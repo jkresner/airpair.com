@@ -12,13 +12,11 @@ export default function(app) {
   router.use(setReturnTo)
   router.use(setMixpanelId)
 
-  console.log('config.auth', config.auth)
-
   router.get('/logout', logout(config.auth) )
   router.get('/login*', app.renderHbs('login') )
 
   router.post('/login', local.login )
-
+  router.post('/signup', local.signup )
 
   router.get('/google', google.oAuth )
   router.get('/google/callback', google.oAuth, shakeDone)
