@@ -13,7 +13,6 @@ export default function(app)
 	app.get( ['/workshops/*', '/:tag/workshops/*'], app.renderHbs('workshops') )
 	
 	app.get( '/workshops-slide/:id', (req,res) => {
-		console.log('slide', req.params.id)
 		return new WorkshopsService(req.user).getBySlug(req.params.id, 
 			(e,r) => res.status(200).render(`workshopsslide.hbs`, r))
 	})
