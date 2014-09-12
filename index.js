@@ -21,6 +21,7 @@ export function run(appdir)
 	mongo.connect()
 	session(app, mongo.initSessionStore)
 
+	//-- Do not move connect-livereload before session middleware
 	if (config.local) {
 		app.use(require('connect-livereload')({ port: 35729 }))
 	}

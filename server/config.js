@@ -2,7 +2,7 @@ var cfg = {
   mongoUri: process.env.MONGOHQ_URL || "mongodb://localhost/airpair_dev",
   session: { secret: 'airyv1' },
   auth: {
-    loginUrl: '/auth/v1/login',
+    loginUrl: '/v1/auth/login',
     oAuth: { callbackHost: 'http://localhost:3333' },
     local: {
       usernameField : 'email',
