@@ -1,6 +1,6 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 "use strict";
-require('./filters.js');
+require('./../common/filters.js');
 require('./../directives/share.js');
 var feautredSlugs = ['fast-mvp-with-angularfire', 'learn-meteorjs-1.0', 'learn-git-and-github', 'publishing-at-the-speed-of-ruby', 'visualization-with-d3js', 'transitioning-to-consulting-for-developers'];
 var selectByDateRange = function(list, daysAgo, daysUntil) {
@@ -10,7 +10,7 @@ var selectByDateRange = function(list, daysAgo, daysUntil) {
     return moment(i.time).isAfter(start) && moment(i.time).isBefore(end);
   });
 };
-angular.module("APWorkshops", ['ngRoute', 'APFilters', 'APShare']).constant('API', '/api/v1').config(['$locationProvider', '$routeProvider', '$sceProvider', function($locationProvider, $routeProvider, $sceProvider) {
+angular.module("APWorkshops", ['ngRoute', 'APFilters', 'APShare']).constant('API', '/api/v1').config(['$locationProvider', '$routeProvider', function($locationProvider, $routeProvider) {
   $locationProvider.html5Mode(true);
   $routeProvider.when('/workshops', {
     template: require('./list.html'),
@@ -54,10 +54,45 @@ angular.module("APWorkshops", ['ngRoute', 'APFilters', 'APShare']).constant('API
 ;
 
 
-},{"./../directives/share.js":3,"./filters.js":4,"./list.html":5,"./show.html":6,"./signup.html":7,"./subscribe.html":8}],2:[function(require,module,exports){
-module.exports = "<div class=\"pw-widget pw-counter-vertical\" pw:twitter-via=\"airpair\"> \n  <a ng-show=\"fb\" class=\"pw-button-facebook pw-look-native\"></a>     \n  <a ng-show=\"tw\" class=\"pw-button-twitter pw-look-native\"></a>      \n  <a ng-show=\"in\" class=\"pw-button-linkedin pw-look-native\"></a>     \n</div>";
+},{"./../common/filters.js":2,"./../directives/share.js":4,"./list.html":5,"./show.html":6,"./signup.html":7,"./subscribe.html":8}],2:[function(require,module,exports){
+"use strict";
+angular.module('APFilters', []).filter('locaTime', function() {
+  return (function(utc, displayFormat) {
+    var offset = moment().format('ZZ');
+    if (utc != '') {
+      var timeString = utc.split('GMT')[0];
+      var format = 'ddd, MMM Do ha';
+      if (displayFormat) {
+        format = displayFormat;
+      }
+      var result = moment(timeString, 'YYYY-MM-DDTHH:mm:ss:SSSZ').format(format);
+      return result.replace(offset, '');
+    } else {
+      return 'Confirming time';
+    }
+  });
+}).filter('trustUrl', function($sce) {
+  return (function(url) {
+    return $sce.trustAsResourceUrl(url);
+  });
+}).filter('markdownHtml', function($sce) {
+  return (function(html) {
+    return $sce.trustAsHtml(html);
+  });
+}).filter('fancyTags', function() {
+  return function(tags) {
+    if (!tags) {
+      return '';
+    }
+    return tags.join(', ');
+  };
+});
+
 
 },{}],3:[function(require,module,exports){
+module.exports = "<div class=\"pw-widget pw-counter-vertical\" pw:twitter-via=\"airpair\"> \n  <a ng-show=\"fb\" class=\"pw-button-facebook pw-look-native\"></a>     \n  <a ng-show=\"tw\" class=\"pw-button-twitter pw-look-native\"></a>      \n  <a ng-show=\"in\" class=\"pw-button-linkedin pw-look-native\"></a>     \n</div>";
+
+},{}],4:[function(require,module,exports){
 "use strict";
 angular.module("APShare", ['angularLoad']).directive('apShare', function(angularLoad) {
   var ngLoadPromise = angularLoad.loadScript('//i.po.st/static/v3/post-widget.js#publisherKey=miu9e01ukog3g0nk72m6&retina=true&init=lazy');
@@ -81,38 +116,7 @@ angular.module("APShare", ['angularLoad']).directive('apShare', function(angular
 });
 
 
-},{"./share.html":2}],4:[function(require,module,exports){
-"use strict";
-angular.module('APFilters', []).filter('locaTime', function() {
-  return (function(utc, displayFormat) {
-    var offset = moment().format('ZZ');
-    if (utc != '') {
-      var timeString = utc.split('GMT')[0];
-      var format = 'ddd, MMM Do ha';
-      if (displayFormat) {
-        format = displayFormat;
-      }
-      var result = moment(timeString, 'YYYY-MM-DDTHH:mm:ss:SSSZ').format(format);
-      return result.replace(offset, '');
-    } else {
-      return 'Confirming time';
-    }
-  });
-}).filter('trustUrl', function($sce) {
-  return (function(url) {
-    return $sce.trustAsResourceUrl(url);
-  });
-}).filter('fancyTags', function() {
-  return function(tags) {
-    if (!tags) {
-      return '';
-    }
-    return tags.join(', ');
-  };
-});
-
-
-},{}],5:[function(require,module,exports){
+},{"./share.html":3}],5:[function(require,module,exports){
 module.exports = "<header>Workshops</header>\n\n<div id=\"index\">\n\n  <div id=\"calendar\">\n\n    <h2>Calendar</h2>\n\n    <p>Keep track of the schedule:</p>\n\n    <a class=\"btn\" href=\"/workshops/subscribe\">Subscribe to calendar</a>\n\n    <hr />\n    <h5>Next 30 days</h5>\n    <ul id=\"month\">\n      <li ng-repeat=\"entry in workshops.month\">\n        <time>{{entry.time | locaTime }}</time> \n        <a href=\"{{entry.url}}\"> {{ entry.title }}</a></li>\n    </ul> \n\n  </div>\n\n\n  <div id=\"next\">\n    <h2>Next up</h2>\n\n    <p style=\"font-size:11px\"><i>* Times shown in <b>{{ timeZoneOffset }}</b> (your browser's timezone)</i> </p>\n\n    <a class=\"workshop\" href=\"{{entry.url}}\"\n       ng-repeat=\"entry in workshops.upcoming\">\n      <time datetime=\"{{entry.time}}\">{{ entry.time | locaTime }}</time>\n      <div ng-repeat=\"speaker in entry.speakers\">\n        <img src=\"//0.gravatar.com/avatar/{{ speaker.gravatar }}?s=80\" />\n        <h5>{{ speaker.name }}</h5>\n      </div>\n      <figure>{{ entry.title }}</figure>\n    </a>\n  </div>\t\n\n  <div id=\"featured\">\n    <h2>Featured</h2>\n    <a class=\"workshop\" href=\"{{entry.url}}\"\n       ng-repeat=\"entry in workshops.featured\">\n      <div ng-repeat=\"speaker in entry.speakers\">\n        <img src=\"//0.gravatar.com/avatar/{{ speaker.gravatar }}?s=80\" />\n        <h5>{{ speaker.name }}</h5>\n      </div>\n      <figure>{{ entry.title }}</figure>\n    </a>\n  </div>\n\n  <div id=\"past\">\n    <h2>Library</h2>\n    <ul>\n      <li ng-repeat=\"entry in workshops.past\">\n        <a href=\"{{entry.url}}\">\n          <img src=\"//0.gravatar.com/avatar/{{entry.speakers[0].gravatar }}\"></time> \n          <time>{{entry.speakers[0].name }}</time> \n          {{ entry.title }}</a>\n        </li>\n      </li>  \n    </ul> \n  </div>\n\n</div>";
 
 },{}],6:[function(require,module,exports){
