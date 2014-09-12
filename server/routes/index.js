@@ -5,8 +5,8 @@ import WorkshopsService from '../services/workshops'
 export default function(app)
 {	
 	app.use( '/api/v1/', apiRouter(app) )
-	app.use( '/posts', postsRouter(app) )	
-
+	
+	app.use( '/posts*', postsRouter(app) )	
 	app.get( ['/workshops/*', '/:tag/workshops/*'], app.renderHbs('workshops') )
 	
 	app.get( '/workshops-slide/:id', (req,res) => {

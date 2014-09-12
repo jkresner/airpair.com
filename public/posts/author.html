@@ -1,0 +1,20 @@
+<div ng-controller="AuthorCtrl">
+
+<header><a href="/posts">Posts</a> > Author</header>
+
+<h2>Author post</h2>
+
+<label>Title</label>
+<br />
+<input ng-model="title" type="text" style="width:100%" />
+<br /><br />
+<label>Markdown</label>
+<textarea ng-model="markdown" ng-model-options="{ debounce: {default: 1000 }}
+" style="width:100%;height:200px;font-size:11px"></textarea>
+
+<article class="blogpost">
+  <h1 class="entry-title" itemprop="headline">{{ title }}</h1> 
+  <div id="preview"ng-bind-html="preview | markdownHtml"></div>
+</article>
+
+</div>
