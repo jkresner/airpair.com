@@ -22,7 +22,6 @@ var oauthFn = (provider, scope) => {
     {
       // If the users is not logged in (got a session), then we
       // handshake with the provider AND authenticate the user
-      opts.successReturnToOrRedirect = '/'
       passport.authenticate(provider, opts)(req, res, next)
     }
   }

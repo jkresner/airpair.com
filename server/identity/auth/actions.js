@@ -9,11 +9,13 @@ export function logout(options) {
 }
 
 
-export function shakeDone(req, res, next) {
+export function authDone(req, res, next) {
   var redirectUrl = '/'
-  if (req.session.return_to)
+  if (req.session && req.session.returnTo)
   {
-    redirectUrl = req.session.return_to
+    redirectUrl = req.session.returnTo
+    delete req.session.returnTo    
   }
+  $log('authDone', redirectUrl)
   res.redirect(redirectUrl)
 }

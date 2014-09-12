@@ -37,7 +37,7 @@ var upsertSmart = (search, update, done) => {
     if (logging) $log('TryUpsert', JSON.stringify(search))
     User.findOneAndUpdate(search, update, { upsert: true }, (err, user) => {
       if (err) $log('User.upsert.err', err && err.stack)
-      if (loggin) $log('User.upsert', JSON.stringify(user))
+      if (logging) $log('User.upsert', JSON.stringify(user))
       done(err, user)
     })
   })
