@@ -1,4 +1,4 @@
-require('./filters.js');
+require('./../common/filters.js');
 require('./../directives/share.js');
 
 var feautredSlugs = [
@@ -23,8 +23,8 @@ angular.module("APWorkshops", ['ngRoute','APFilters','APShare'])
 
 	.constant('API', '/api/v1')
 
-	.config(['$locationProvider', '$routeProvider', '$sceProvider', 
-			function($locationProvider, $routeProvider, $sceProvider) {
+	.config(['$locationProvider', '$routeProvider', 
+			function($locationProvider, $routeProvider) {
 	
 		$locationProvider.html5Mode(true);
 
