@@ -11,7 +11,7 @@ export function getEnvConfig(provider)
   }  
   else 
   { 
-    cfg.callbackURL = `${config.auth.oAuth.callbackHost}/auth/v1/${provider}/callback`
+    cfg.callbackURL = `${config.auth.oAuth.callbackHost}/v1/auth/${provider}/callback`
     _.extend(cfg, config.auth[provider]) 
   }
 
