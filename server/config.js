@@ -21,6 +21,15 @@ var cfg = {
 } 
 
 // Temporary hack
+// -------------------------
 cfg.local = process.env.MONGOHQ_URL == null
+
+if (!cfg.local) {
+  cfg.auth.oAuth.callbackHost = process.env.AUTH_OAUTH_CALLBACKHOST
+  cfg.auth.google.clientID = process.env.AUTH_GOOGLE_CLIENTID
+  cfg.auth.google.clientSecret = process.env.AUTH_GOOGLE_CLIENTSECRET
+}
+
+// -------------------------
 
 export default cfg
