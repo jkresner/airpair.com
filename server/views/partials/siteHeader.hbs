@@ -1,11 +1,14 @@
 <header>
   <a href="http://www.airpair.com/" tile="airpair.com"></a>
   <ul>
-  	{{!-- <li><a href="/experts">Experts</a></li> --}}
-  	<li><a href="http://www.airpair.com/posts">Posts</a></li>
-   	<li><a href="http://www.airpair.com/workshops">Workshops</a></li>
-  	{{!--<li><a href="#">Pair Programming</a></li>
-  	<li><a href="#">Terms of Service</a></li>
-   	<li><a href="#">Logout</a></li>--}}
+    {{!-- <li><a href="/experts">Experts</a></li> --}}
+    <li><a href="http://www.airpair.com/posts">Posts</a></li>
+    <li><a href="http://www.airpair.com/workshops">Workshops</a></li>
+    {{!--<li><a href="#">Pair Programming</a></li>
+    <li><a href="#">Terms of Service</a></li>--}}
+  	<li>
+      {{#if authenticated }}<a href="/auth/v1/logout">Logout</a> {{ user.name }}
+      {{ else }}<a href="/auth/v1/login">Login</a>{{/if}}
+    </li>
   </ul>
 </header>
