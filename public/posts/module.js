@@ -1,11 +1,11 @@
 require('./../directives/share.js');
 require('./../common/filters.js');
 
-var marked = require('marked');
+var marked = require('marked')
 
 angular.module("APPosts", ['ngRoute','APFilters','APShare'])
 
-  .constant('API', '/v1/api')
+  .constant('API', '/api/v1')
 
   .config(['$locationProvider', '$routeProvider', 
       function($locationProvider, $routeProvider) {
@@ -44,9 +44,21 @@ angular.module("APPosts", ['ngRoute','APFilters','APShare'])
           if (err) throw err;
           $scope.preview = content;
         });
+
+        $http.post(API+'/posts-toc', { md: value } ).success(function (value) {
+          console.log('got toc', value.toc)
+          if (value.toc) 
+          { 
+            marked(value.toc, function (err, content) {
+              if (err) throw err;
+              $scope.previewTOC = content;
+            });
+          }
+        });              
       }
     });
 
+    
   }])
 
 ;

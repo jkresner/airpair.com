@@ -9,12 +9,17 @@ function detail(req, cb) {
   Svc.getById.call(this, req.params.id, cb)
 }
 
+function toc(req, cb) {
+  // $log('toc.req.body', req.body)
+  Svc.getTableOfContents.call(this, req.body.md, cb)
+}
 
 export default class {
 
   constructor(app) {
-    app.get( '/posts/', serve(list) )
-    app.get( '/posts/:id', serve(detail) )    
+    app.get('/posts/', serve(list))
+    app.get('/posts/:id', serve(detail))  
+    app.post('/posts-toc', serve(toc)) 
   }
 
 }

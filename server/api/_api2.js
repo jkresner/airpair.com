@@ -1,4 +1,4 @@
-var logging = false
+var logging = true
 
 
 var cbSend = (res, next) => {
@@ -15,6 +15,7 @@ var cbSend = (res, next) => {
 export function serve(svcFn) {
   return (req, res, next) => {
     var thisSvc = { user: req.user }
+    if (logging) { $log('serving', thisSvc); }
     svcFn.call(thisSvc, req, cbSend(res,next))        
   }
 }

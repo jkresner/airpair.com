@@ -14,6 +14,7 @@
 
 <article class="blogpost">
   <h1 class="entry-title" itemprop="headline">{{ title }}</h1> 
+  <div id="previewTOC"ng-bind-html="previewTOC | markdownHtml"></div>
   <div id="preview"ng-bind-html="preview | markdownHtml"></div>
 </article>
 
