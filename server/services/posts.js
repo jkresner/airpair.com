@@ -24,3 +24,12 @@ export function getById(id, cb) {
   var post = _.find(posts, (id) => id)
   return cb(null, post)
 }
+
+
+import generateToc from './postsToc'
+
+export function getTableOfContents(markdown, cb) {
+  var toc = generateToc(markdown);
+  $log('getTableOfContents', toc);
+  return cb(null, {toc:toc})
+}
