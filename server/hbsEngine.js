@@ -20,6 +20,10 @@ export default function(app) {
 	app.engine('hbs', hbsEngine);
 
 	app.renderHbs = (fileName, data) =>
-		(req,res) => res.status(200).render(`./${fileName}.hbs`, data)
-
+		(req,res) => {
+			if (!data) { data = {} }
+			data.authenticated = req.isAuthenticated()
+			data.user = req.user
+			res.status(200).render(`./${fileName}.hbs`, data)
+		}
 }

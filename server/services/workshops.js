@@ -1,5 +1,5 @@
 // import BaseService from './_service'
-import {Workshop} from '../models/workshop'
+import Workshop from '../models/workshop'
 
 var logging = false
 
@@ -44,3 +44,4 @@ class WorkshopsService {
 }
 
 export default WorkshopsService
+
