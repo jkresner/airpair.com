@@ -15,4 +15,12 @@ for (var p of posts)
   p.url = `/posts${p.slug}`;
 }
 
-export default posts;
+export function getAll(cb) {
+  return cb(null, posts)
+}
+
+
+export function getById(id, cb) {
+  var post = _.find(posts, (id) => id)
+  return cb(null, post)
+}
