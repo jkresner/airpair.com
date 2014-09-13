@@ -26,6 +26,16 @@ angular.module("APPosts", ['ngRoute', 'APFilters', 'APShare']).constant('API', '
           throw err;
         $scope.preview = content;
       });
+      $http.post(API + '/posts-toc', {md: value}).success(function(value) {
+        console.log('got toc', value.toc);
+        if (value.toc) {
+          marked(value.toc, function(err, content) {
+            if (err)
+              throw err;
+            $scope.previewTOC = content;
+          });
+        }
+      });
     }
   });
 }]);
@@ -1365,6 +1375,6 @@ angular.module("APShare", ['angularLoad']).directive('apShare', function(angular
 
 
 },{"./share.html":4}],6:[function(require,module,exports){
-module.exports = "<div ng-controller=\"AuthorCtrl\">\n\n<header><a href=\"/posts\">Posts</a> > Author</header>\n\n<h2>Author post</h2>\n\n<label>Title</label>\n<br />\n<input ng-model=\"title\" type=\"text\" style=\"width:100%\" />\n<br /><br />\n<label>Markdown</label>\n<textarea ng-model=\"markdown\" ng-model-options=\"{ debounce: {default: 1000 }}\n\" style=\"width:100%;height:200px;font-size:11px\"></textarea>\n\n<article class=\"blogpost\">\n  <h1 class=\"entry-title\" itemprop=\"headline\">{{ title }}</h1> \n  <div id=\"preview\"ng-bind-html=\"preview | markdownHtml\"></div>\n</article>\n\n</div>";
+module.exports = "<div ng-controller=\"AuthorCtrl\">\n\n<header><a href=\"/posts\">Posts</a> > Author</header>\n\n<h2>Author post</h2>\n\n<label>Title</label>\n<br />\n<input ng-model=\"title\" type=\"text\" style=\"width:100%\" />\n<br /><br />\n<label>Markdown</label>\n<textarea ng-model=\"markdown\" ng-model-options=\"{ debounce: {default: 1000 }}\n\" style=\"width:100%;height:200px;font-size:11px\"></textarea>\n\n<article class=\"blogpost\">\n  <h1 class=\"entry-title\" itemprop=\"headline\">{{ title }}</h1> \n  <div id=\"previewTOC\"ng-bind-html=\"previewTOC | markdownHtml\"></div>\n  <div id=\"preview\"ng-bind-html=\"preview | markdownHtml\"></div>\n</article>\n\n</div>";
 
 },{}]},{},[1]);

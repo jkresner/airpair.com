@@ -10,7 +10,7 @@ var selectByDateRange = function(list, daysAgo, daysUntil) {
     return moment(i.time).isAfter(start) && moment(i.time).isBefore(end);
   });
 };
-angular.module("APWorkshops", ['ngRoute', 'APFilters', 'APShare']).constant('API', '/api/v1').config(['$locationProvider', '$routeProvider', function($locationProvider, $routeProvider) {
+angular.module("APWorkshops", ['ngRoute', 'APFilters', 'APShare']).constant('API', '/v1/api').config(['$locationProvider', '$routeProvider', function($locationProvider, $routeProvider) {
   $locationProvider.html5Mode(true);
   $routeProvider.when('/workshops', {
     template: require('./list.html'),
