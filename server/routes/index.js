@@ -6,8 +6,8 @@ import WorkshopsService from '../services/workshops'
 
 export default function(app)
 {	
-	app.use( '/auth/v1', authRouter(app) )
-	app.use( '/api/v1', apiRouter(app) )
+	app.use( '/v1/auth', authRouter(app) )
+	app.use( '/v1/api', apiRouter(app) )
 	app.use( '/posts', postsRouter(app) )	
 
 	app.get( ['/workshops/*', '/:tag/workshops/*'], app.renderHbs('workshops') )
@@ -17,5 +17,6 @@ export default function(app)
 			(e,r) => res.status(200).render(`workshopsslide.hbs`, r))
 	})
 	
+	app.get( '/v1', app.renderHbs('index') ) // - while still running v0
 	app.get( '/', app.renderHbs('index') )
 }
