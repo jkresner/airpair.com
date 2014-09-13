@@ -2,7 +2,8 @@ var cfg = {
   mongoUri: process.env.MONGOHQ_URL || "mongodb://localhost/airpair_dev",
   session: { secret: 'airyv1' },
   auth: {
-    loginUrl: '/auth/v1/login',
+    loginUrl: '/v1/auth/login',
+    defaultRedirectUrl: '/v1',
     oAuth: { callbackHost: 'http://localhost:3333' },
     local: {
       usernameField : 'email',
@@ -21,6 +22,15 @@ var cfg = {
 } 
 
 // Temporary hack
+// -------------------------
 cfg.local = process.env.MONGOHQ_URL == null
+
+if (!cfg.local) {
+  cfg.auth.oAuth.callbackHost = process.env.AUTH_OAUTH_CALLBACKHOST
+  cfg.auth.google.clientID = process.env.AUTH_GOOGLE_CLIENTID
+  cfg.auth.google.clientSecret = process.env.AUTH_GOOGLE_CLIENTSECRET
+}
+
+// -------------------------
 
 export default cfg

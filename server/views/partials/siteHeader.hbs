@@ -7,8 +7,8 @@
     {{!--<li><a href="#" target="_self">Pair Programming</a></li>
     <li><a href="#" target="_self">Terms of Service</a></li>--}}
   	<li>
-      {{#if authenticated }}<a href="/auth/v1/logout" target="_self">Logout</a> {{ user.name }}
-      {{ else }}<a href="/auth/v1/login" target="_self">Login</a>{{/if}}
+      {{#if authenticated }}<a href="/v1/auth/logout" target="_self">Logout</a> {{ user.name }}
+      {{ else }}<a href="/v1/auth/login" target="_self">Login</a>{{/if}}
     </li>
   </ul>
 </header>
