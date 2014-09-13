@@ -12,15 +12,15 @@ export function connect() {
   return db
 }
 
-export function setSessionStore(express, app, store) {
 
-  // MongoSessionStore = require('connect-mongo')(express)
-  // storeOptions = url: "#{config.mongoUri}/sessions", auto_reconnect: true
+export function initSessionStore(session, callback) 
+{
+  var MongoStore = require('connect-mongo')(session)
 
- //  app.use express.session({
- //   cookie : { path: '/', httpOnly: true, maxAge: 2419200000 },
- //   secret: 'airpairawesome',
- //   store: mongoStore
- //  })
+  var sessionStore = new MongoStore({ 
+    auto_reconnect: true,
+    url : `${config.mongoUri}/v1sessions` 
+  })
 
+  callback(sessionStore)
 }

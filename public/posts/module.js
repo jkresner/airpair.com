@@ -5,7 +5,7 @@ var marked = require('marked')
 
 angular.module("APPosts", ['ngRoute','APFilters','APShare'])
 
-  .constant('API', '/api/v1')
+  .constant('API', '/v1/api')
 
   .config(['$locationProvider', '$routeProvider', 
       function($locationProvider, $routeProvider) {

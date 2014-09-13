@@ -25,7 +25,7 @@ gulp.task('lint', function () {
 
 gulp.task('nodemon', function () {
   nodemon({ script: 'bootstrap.js', ext: 'html js', 
-      ignore: ['public/*'] })
+      ignore: ['public/*','test/*','dist/*'] })
     .on('change', ['lint'])
     .on('restart', function () {
       console.log('>> node restart');
