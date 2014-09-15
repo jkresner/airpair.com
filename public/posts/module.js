@@ -1,12 +1,13 @@
 require('./../directives/share.js');
 require('./../directives/postsList.js');
+require('./../directives/post.js');
 require('./../common/filters.js');
+require('./../common/postsService.js');
+require('./editor.js');
 
-var marked = require('marked')
 
-angular.module("APPosts", ['ngRoute','APFilters','APShare','APPostsList'])
-
-  .constant('API', '/v1/api')
+angular.module("APPosts", ['ngRoute','APFilters','APShare',
+  'APPostsList','APPostEditor','APPost', 'APSvcPosts'])
 
   .config(['$locationProvider', '$routeProvider', 
       function($locationProvider, $routeProvider) {
@@ -22,79 +23,60 @@ angular.module("APPosts", ['ngRoute','APFilters','APShare','APPostsList'])
       template: require('./author.html'),
       controller: 'AuthorCtrl as author'
     });
+    
+    $routeProvider.when('/posts/edit/:id', {
+      template: require('./author.html'),
+      controller: 'EditCtrl as author'
+    });
 
   }])
 
   .run(['$rootScope', function($rootScope) {
   }])
 
-  .controller('IndexCtrl', ['$scope', '$http', 'API', function($scope, $http, API) {
+  .controller('IndexCtrl', ['$scope','PostsService', 
+      function($scope, PostsService) {
     var self = this;
-    $scope.yo = 'yooooo';
-    $http.get(API+'/posts/me').success(function (result) {
+    PostsService.getMyPosts(function (result) {
       $scope.myposts = result;
-      console.log('$scope.myposts',$scope.myposts.length)
     });
   }])
 
-  .controller('AuthorCtrl', ['$scope', '$http', 'API', function($scope, $http, API) {
-    var self = this;
+
+
+  .controller('AuthorCtrl', ['$scope', 'PostsService', '$location', 
+      function($scope, PostsService, $location) {
     
-    $scope.title = "Type post title ... "; 
+    var self = this;
+    $scope.preview = {};
+    $scope.post = { title: "Type post title ... " };
 
-    $scope.previewMarkdown = function(value) {
-      if (!value) {
-        value = angular.element(document.querySelector( '#markdownTextarea' ) ).val();
-      }
-      if (value) 
-      { 
-        marked(value, function (err, postHtml) {
-          if (err) throw err;
-          $scope.preview = postHtml;
-        });
+    $scope.save = () => {
+      $scope.post.md = angular.element(document.querySelector( '#markdownTextarea' ) ).val(),
+      PostsService.create($scope.post, (result) => {
+        $location.path('/posts/edit/'+result._id);
+      });
+    }
 
-        $http.post(API+'/posts-toc', { md: value } ).success(function (tocMd) {
-          if (tocMd.toc) 
-          { 
-            marked(tocMd.toc, function (err, tocHtml) {
-              if (err) throw err;
-              
-              tocHtml = tocHtml.substring(4, tocHtml.length-6)
-              $scope.previewTOC = tocHtml;
-            });
-          }
-        });
-      }
-    };
+  }])
 
-    $scope.$watch('markdown', $scope.previewMarkdown);    
-
-    $scope.$watch('assetUrl', function(value) {
-      if (!value) 
-      { 
-        $scope.previewAsset = "Paste an image url or short link to a youtube movie<br /><br />E.g. http://youtu.be/qlOAbrvjMBo<br /><br />/v1/img/css/blog/example1.jpg"
-      }
-      else if (value.indexOf('http://youtu.be/') == 0) {
-        var youTubeId = value.replace('http://youtu.be/', '');
-        $scope.previewAsset = `<iframe width="640" height="360" frameborder="0" allowfullscreen="" src="//www.youtube-nocookie.com/embed/${youTubeId}"></iframe>`
-      } 
-      else 
-      {
-        $scope.previewAsset = `<img src="${value}" />`;
-      }
+  .controller('EditCtrl', ['$scope', 'PostsService', '$routeParams',
+    function($scope, PostsService, $routeParams) {
+    
+    var self = this;
+    $scope.preview = {};
+  
+    PostsService.getById($routeParams.id, (result) => {
+      $scope.post = result;
     });
 
-    $scope.save = function() {
-      var data = {
-        title: $scope.title,
-        md: angular.element(document.querySelector( '#markdownTextarea' ) ).val(),
-        assetUrl: $scope.assetUrl      
-      }
-
-      $http.post(API+'/posts', data).success(function (result) {
-        console.log('result', result)
+    $scope.save = () => {
+      $scope.post.md = angular.element(document.querySelector( '#markdownTextarea' ) ).val(),
+      PostsService.update($scope.post, (result) => {
+        console.log('updated', result.updated)
       });
-    };        
+    }
+
   }])
 
 ;
