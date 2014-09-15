@@ -10,7 +10,6 @@ function detail(req, cb) {
 }
 
 function toc(req, cb) {
-  // $log('toc.req.body', req.body)
   Svc.getTableOfContents.call(this, req.body.md, cb)
 }
 

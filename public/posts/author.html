@@ -1,21 +1,53 @@
-<div ng-controller="AuthorCtrl">
-
 <header><a href="/posts">Posts</a> > Author</header>
 
-<h2>Author post</h2>
+<div class="editor">
 
-<label>Title</label>
-<br />
-<input ng-model="title" type="text" style="width:100%" />
-<br /><br />
-<label>Markdown</label>
-<textarea ng-model="markdown" ng-model-options="{ debounce: {default: 1000 }}
-" style="width:100%;height:200px;font-size:11px"></textarea>
+  <div class="meta">
+    <div class="form-group">
+      <label>Title</label>
+      <input ng-model="title" type="text" class="form-control" />
+    </div>
+    <div class="form-group">
+      <label>Feature media (image url or youtube id)</label>
+      <input ng-model="assetUrl" type="text" class="form-control" name="asset"/>
+    </div>
 
-<article class="blogpost">
-  <h1 class="entry-title" itemprop="headline">{{ title }}</h1> 
-  <div id="previewTOC"ng-bind-html="previewTOC | markdownHtml"></div>
-  <div id="preview"ng-bind-html="preview | markdownHtml"></div>
+    <button class="btn" ng-click="previewMarkdown(false)">Preview</button>
+    <button class="btn" ng-click="previewMarkdown(markdown)">Save</button>
+
+  </div>
+  <div class="md">
+    <div class="form-group">
+      <label>Markdown (<a href="http://daringfireball.net/projects/markdown/syntax" target="_self">see guide</a>)</label>
+        <textarea id="markdownTextarea" ng-model="markdown" class="form-control" ng-model-options="{ updateOn: 'default blur', debounce: {default: 60000 }}"></textarea>
+    </div>
+  </div>
+  <hr />
+</div>
+
+<hr />
+
+<article class="blogpost" style="height:600px;overflow:scroll">
+  <h1 class="entry-title" itemprop="headline">{{ title }}</h1>
+  <h4 id="table-of-contents">Table of Contents</h4>
+  <ul id="previewToc" ng-bind-html="previewTOC | markdownHtml"></ul>
+  <h6 id="author">Author</h6>
+  <p><img alt="Jonathon Kresner" src="//gravatar.com/avatar/780d02a99798886da48711d8104801a4?s=100"> </p>
+  <blockquote>
+    <p>Jonathon Kresner is AirPair's CEO and Founder. He conceived AirPair to help developers build ideas faster and stay un-stuck. He's decided to put AirPair to the test, by rebuilding airpair.com from scratch in 90 days with daily help from the best AngularJS, NodeJS and MongoDB experts on the web.</p>
+  </blockquote>
+  <p class="asset" ng-bind-html="previewAsset | markdownHtml"></p>
+  <hr />
+  <div id="preview" ng-bind-html="preview | markdownHtml"></div>
 </article>
 
+
+<div class="editor">
+
+  <div class="meta">
+    <button class="btn" ng-click="previewMarkdown(false)">Preview</button>
+    <button class="btn" ng-click="previewMarkdown(markdown)">Save</button>
+  </div>
+  <hr />
+  <br />
 </div>

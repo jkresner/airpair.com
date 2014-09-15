@@ -76,6 +76,7 @@ function getHashId(text, repetition) {
   var id = text.replace(/ /g,'-')
     // single chars that are removed
     .replace(/\./g,'-')
+    .replace(/\?/g,'-')
     // escape codes
     .replace(/%([abcdef]|\d){2,2}/ig, '')
     // single chars that are removed
