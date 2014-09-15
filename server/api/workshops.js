@@ -23,7 +23,7 @@ class ApiWorkshops extends API {
       var slug = req.params.slug
       self.svc.getBySlug(slug, (e , r) => {
         if (e && e.status) { return res.send(400, e) }
-        if (e) { return next(e) }
+        if (!r) { return res.send(404, 'Not found') }
         res.send(r)
       })
     }    
