@@ -20,13 +20,11 @@
  			<header>Posts</header>
 			<h1>Popular posts</h1>
 			{{> postList posts }}
-			<h1>Recent posts</h1>
-			{{> postList posts }}
 			<h1>My Posts</h1>
 			<a href="/posts/author" class="btn">My posts</a>
 			<br />
 			<br /><br />
-			{{> postList posts }}
+			<div ap-posts-list=""></div>
  		</script>
 
 		<ng-view></ng-view>
