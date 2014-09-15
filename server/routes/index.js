@@ -8,7 +8,7 @@ export default function(app)
 {	
 	app.use('/v1/auth', authRouter(app))
 	app.use('/v1/api', apiRouter(app))
-	app.use('/posts*', postsRouter(app))	
+	app.use('/posts', postsRouter(app))	
 
 	app.get( ['/workshops/*', '/:tag/workshops/*'], app.renderHbs('workshops') )
 	
