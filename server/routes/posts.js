@@ -12,7 +12,7 @@ export default function(app) {
       router.get(p.slug, app.renderHbs('post', p))
     }
 
-    router.get('/', app.renderHbs('posts', { posts:posts }))   
+    router.get('/*', app.renderHbs('posts', { posts:posts }))   
   })
 
   return router
