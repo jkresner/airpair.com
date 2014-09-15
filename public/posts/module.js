@@ -29,6 +29,11 @@ angular.module("APPosts", ['ngRoute','APFilters','APShare'])
 
   .controller('IndexCtrl', ['$scope', '$http', 'API', function($scope, $http, API) {
     var self = this;
+    $scope.yo = 'yooooo';
+    $http.get(API+'/posts/me').success(function (result) {
+      $scope.myposts = result;
+      console.log('$scope.myposts',$scope.myposts.length)
+    });
   }])
 
   .controller('AuthorCtrl', ['$scope', '$http', 'API', function($scope, $http, API) {
@@ -76,7 +81,19 @@ angular.module("APPosts", ['ngRoute','APFilters','APShare'])
       {
         $scope.previewAsset = `<img src="${value}" />`;
       }
-    });        
+    });
+
+    $scope.save = function() {
+      var data = {
+        title: $scope.title,
+        md: angular.element(document.querySelector( '#markdownTextarea' ) ).val(),
+        assetUrl: $scope.assetUrl      
+      }
+
+      $http.post(API+'/posts', data).success(function (result) {
+        console.log('result', result)
+      });
+    };        
   }])
 
 ;
