@@ -1,3 +1,11 @@
+import Svc from '../services/_service2'
+import Post from '../models/post'
+import generateToc from './postsToc'
+
+var logging = false
+
+var svc = new Svc(Post, logging)
+
 var posts = [	
   { id: '09.04', tag: 'javscript', title: 'Migrating CoffeeScript to ES6 JavaScript', by: 'hackerpreneur' },
   { id: '09.03', tag: 'angularjs', title: 'AngularJS CDN Architecture', by: 'hackerpreneur' },
@@ -25,10 +33,19 @@ export function getById(id, cb) {
   return cb(null, post)
 }
 
-
-import generateToc from './postsToc'
+export function getUsersPosts(id, cb) {
+  $log('getUsersPosts', id)
+  svc.searchMany({by:id},{ fields: { title:1, slug: 1, created: 1 } },cb) 
+}
 
 export function getTableOfContents(markdown, cb) {
   var toc = generateToc(markdown);
   return cb(null, {toc:toc})
+}
+
+
+export function create(o, cb) {
+  o.created = new Date()
+  o.by = this.user._id
+  svc.create( o, cb ) 
 }

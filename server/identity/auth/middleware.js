@@ -1,7 +1,7 @@
 var logging = false;
 
 
-export function ensureAuthd(options) 
+export function authd(options) 
 {
   return (req, res, next) => {
     if (!req.isAuthenticated || !req.isAuthenticated())
