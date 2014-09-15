@@ -1,9 +1,10 @@
 require('./../directives/share.js');
+require('./../directives/postsList.js');
 require('./../common/filters.js');
 
 var marked = require('marked')
 
-angular.module("APPosts", ['ngRoute','APFilters','APShare'])
+angular.module("APPosts", ['ngRoute','APFilters','APShare','APPostsList'])
 
   .constant('API', '/v1/api')
 
