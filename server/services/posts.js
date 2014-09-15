@@ -29,12 +29,10 @@ export function getAll(cb) {
 
 
 export function getById(id, cb) {
-  var post = _.find(posts, (id) => id)
-  return cb(null, post)
+  svc.getById( id, cb ) 
 }
 
 export function getUsersPosts(id, cb) {
-  $log('getUsersPosts', id)
   svc.searchMany({by:id},{ fields: { title:1, slug: 1, created: 1 } },cb) 
 }
 
@@ -47,5 +45,14 @@ export function getTableOfContents(markdown, cb) {
 export function create(o, cb) {
   o.created = new Date()
   o.by = this.user._id
-  svc.create( o, cb ) 
+  svc.create(o, cb) 
+}
+
+
+export function update(id, o, cb) {
+  o.updated = new Date()
+  
+  //-- todo, authorization for owner or editor (maybe using params?)
+
+  svc.update(id, o, cb) 
 }

@@ -25,15 +25,20 @@ function create(req, cb) {
   Svc.create.call(this, req.body, cb)
 }
 
+function update(req, cb) {
+  Svc.update.call(this, req.params.id, req.body, cb)
+}
+
 export default class {
 
   constructor(app) {
     app.get('/posts/', serve(list))
     app.get('/posts/me', auth, serve(me))     
     app.get('/posts/:id', serve(detail))  
-
+    
     app.post('/posts', auth, serve(create))     
     app.post('/posts-toc', auth, serve(toc))     
+    app.put('/posts/:id', auth, serve(update))  
   }
 
 }
