@@ -30,6 +30,11 @@ angular.module("APPosts", ['ngRoute','APFilters','APShare',
       controller: 'EditCtrl as author'
     });
 
+    $routeProvider.when('/posts/publish/:id', {
+      template: require('./author.html'),
+      controller: 'PublishCtrl as author'
+    });
+
   }])
 
   .run(['$rootScope', 'SessionService', function($rootScope, SessionService) {
@@ -99,6 +104,48 @@ angular.module("APPosts", ['ngRoute','APFilters','APShare',
     $scope.save = () => {
       $scope.post.md = angular.element(document.querySelector( '#markdownTextarea' ) ).val(),
       PostsService.update($scope.post, (r) => {
+        $scope.post = _.extend(r, { saved: true});
+      });
+    }
+
+  }])
+
+
+  .controller('PublishCtrl', ['$scope', 'PostsService', '$routeParams',
+    function($scope, PostsService, $routeParams) {
+    
+    var self = this;
+    $scope.preview = { mode: 'publish' };
+  
+    PostsService.getById($routeParams.id, (r) => {
+      if (!r.slug) {
+        r.slug = r.title.toLowerCase().replace(/ /g, '-');
+      }
+      if (!r.meta) {
+        var ogVideo = null;
+        var ogImage = r.assetUrl;
+        if (r.assetUrl.indexOf('http://youtub.be/', 0))
+        {
+          var youTubeId = r.assetUrl.replace('http://youtu.be/','');
+          ogImage = `http://img.youtube.com/vi/${youTubeId}/hqdefault.jpg`
+          ogVideo = `https://www.youtube-nocookie.com/v/${youTubeId}`
+        }
+
+        r.meta= { 
+          title: r.title,
+          canonical: 'http://www.airpair.com/' + r.slug,
+          ogTitle: r.title,
+          ogImage: ogImage,
+          ogVideo: ogVideo,
+          ogUrl: 'http://www.airpair.com/' + r.slug
+        }        
+      }
+      $scope.post = _.extend(r, { saved: true});
+    });
+
+    $scope.save = () => {
+      $scope.post.md = angular.element(document.querySelector( '#markdownTextarea' ) ).val(),
+      PostsService.publish($scope.post, (r) => {
         $scope.post = _.extend(r, { saved: true});
       });
     }

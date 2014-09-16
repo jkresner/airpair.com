@@ -20,6 +20,10 @@ function update(req, cb) {
   Svc.update.call(this, req.params.id, req.body, cb)
 }
 
+function publish(req, cb) {
+  Svc.publish.call(this, req.params.id, req.body, cb)
+}
+
 var auth = authd({isApiRequest:true})
 
 export default class {
@@ -32,6 +36,7 @@ export default class {
     app.post('/posts', auth, serve(create))     
     app.post('/posts-toc', auth, serve(toc))     
     app.put('/posts/:id', auth, serve(update))  
+    app.put('/posts/publish/:id', auth, serve(publish))      
   }
 
 }
