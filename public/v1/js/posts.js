@@ -1,9 +1,13 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 "use strict";
 require('./../directives/share.js');
+require('./../directives/postsList.js');
+require('./../directives/post.js');
 require('./../common/filters.js');
-var marked = require('marked');
-angular.module("APPosts", ['ngRoute', 'APFilters', 'APShare']).constant('API', '/v1/api').config(['$locationProvider', '$routeProvider', function($locationProvider, $routeProvider) {
+require('./../common/postsService.js');
+require('./../common/sessionService.js');
+require('./editor.js');
+angular.module("APPosts", ['ngRoute', 'APFilters', 'APShare', 'APPostsList', 'APPostEditor', 'APPost', 'APSvcSession', 'APSvcPosts']).config(['$locationProvider', '$routeProvider', function($locationProvider, $routeProvider) {
   $locationProvider.html5Mode(true);
   $routeProvider.when('/posts', {
     templateUrl: 'index',
@@ -13,36 +17,51 @@ angular.module("APPosts", ['ngRoute', 'APFilters', 'APShare']).constant('API', '
     template: require('./author.html'),
     controller: 'AuthorCtrl as author'
   });
-}]).run(['$rootScope', function($rootScope) {}]).controller('IndexCtrl', ['$scope', '$http', 'API', function($scope, $http, API) {
+  $routeProvider.when('/posts/edit/:id', {
+    template: require('./author.html'),
+    controller: 'EditCtrl as author'
+  });
+}]).run(['$rootScope', 'SessionService', function($rootScope, SessionService) {
+  SessionService.getSessionFull(function(r) {
+    $rootScope.session = r;
+    $rootScope.$broadcast('sessionUpdated', $rootScope.session);
+  });
+}]).controller('IndexCtrl', ['$scope', 'PostsService', function($scope, PostsService) {
   var self = this;
-  console.log('indexCrtl');
-}]).controller('AuthorCtrl', ['$scope', '$http', 'API', function($scope, $http, API) {
+  PostsService.getMyPosts(function(result) {
+    $scope.myposts = result;
+  });
+}]).controller('AuthorCtrl', ['$scope', 'PostsService', '$location', function($scope, PostsService, $location) {
   var self = this;
-  $scope.title = "Type post title";
-  $scope.$watch('markdown', function(value) {
-    if (value) {
-      marked(value, function(err, content) {
-        if (err)
-          throw err;
-        $scope.preview = content;
-      });
-      $http.post(API + '/posts-toc', {md: value}).success(function(value) {
-        console.log('got toc', value.toc);
-        if (value.toc) {
-          marked(value.toc, function(err, content) {
-            if (err)
-              throw err;
-            $scope.previewTOC = content;
-          });
-        }
-      });
-    }
+  $scope.preview = {};
+  $scope.post = {
+    title: "Type post title ... ",
+    by: {}
+  };
+  $scope.$on('sessionUpdated', (function(event, session) {
+    return $scope.post.by = session;
+  }));
+  $scope.save = (function() {
+    $scope.post.md = angular.element(document.querySelector('#markdownTextarea')).val(), PostsService.create($scope.post, (function(result) {
+      $location.path('/posts/edit/' + result._id);
+    }));
+  });
+}]).controller('EditCtrl', ['$scope', 'PostsService', '$routeParams', function($scope, PostsService, $routeParams) {
+  var self = this;
+  $scope.preview = {};
+  PostsService.getById($routeParams.id, (function(result) {
+    $scope.post = result;
+  }));
+  $scope.save = (function() {
+    $scope.post.md = angular.element(document.querySelector('#markdownTextarea')).val(), PostsService.update($scope.post, (function(result) {
+      $scope.post = result;
+    }));
   });
 }]);
 ;
 
 
-},{"./../common/filters.js":3,"./../directives/share.js":5,"./author.html":6,"marked":2}],2:[function(require,module,exports){
+},{"./../common/filters.js":3,"./../common/postsService.js":4,"./../common/sessionService.js":5,"./../directives/post.js":7,"./../directives/postsList.js":9,"./../directives/share.js":11,"./author.html":12,"./editor.js":14}],2:[function(require,module,exports){
 (function (global){
 /**
  * marked - a markdown parser
@@ -1314,7 +1333,22 @@ if (typeof exports === 'object') {
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],3:[function(require,module,exports){
 "use strict";
-angular.module('APFilters', []).filter('locaTime', function() {
+angular.module('APFilters', []).filter('publishedTime', function() {
+  return (function(utc, displayFormat) {
+    var offset = moment().format('ZZ');
+    if (utc != '' && utc != null) {
+      var timeString = utc.split('GMT')[0];
+      var format = 'MMM Do hh:mm';
+      if (displayFormat) {
+        format = displayFormat;
+      }
+      var result = moment(timeString, 'YYYY-MM-DDTHH:mm:ss:SSSZ').format(format);
+      return result.replace(offset, '');
+    } else {
+      return '-';
+    }
+  });
+}).filter('locaTime', function() {
   return (function(utc, displayFormat) {
     var offset = moment().format('ZZ');
     if (utc != '') {
@@ -1348,9 +1382,93 @@ angular.module('APFilters', []).filter('locaTime', function() {
 
 
 },{}],4:[function(require,module,exports){
-module.exports = "<div class=\"pw-widget pw-counter-vertical\" pw:twitter-via=\"airpair\"> \n  <a ng-show=\"fb\" class=\"pw-button-facebook pw-look-native\"></a>     \n  <a ng-show=\"tw\" class=\"pw-button-twitter pw-look-native\"></a>      \n  <a ng-show=\"in\" class=\"pw-button-linkedin pw-look-native\"></a>     \n</div>";
+"use strict";
+angular.module('APSvcPosts', []).constant('API', '/v1/api').service('PostsService', ['$http', 'API', function($http, API) {
+  this.getById = function(id, success) {
+    $http.get((API + "/posts/" + id)).success(success);
+  };
+  this.getMyPosts = function(success) {
+    $http.get((API + "/posts/me")).success(success);
+  };
+  this.getToc = function(md, success) {
+    $http.post((API + "/posts-toc"), {md: md}).success(success);
+  };
+  this.create = function(data, success) {
+    $http.post((API + "/posts"), data).success(success);
+  };
+  this.update = function(data, success) {
+    $http.put((API + "/posts/" + data._id), data).success(success);
+  };
+}]);
+
 
 },{}],5:[function(require,module,exports){
+"use strict";
+angular.module('APSvcSession', []).constant('API', '/v1/api').service('SessionService', ['$http', 'API', function($http, API) {
+  this.getSession = function(success) {
+    $http.get((API + "/session")).success(success);
+  };
+  this.getSessionFull = function(success) {
+    $http.get((API + "/session/full")).success(success);
+  };
+}]);
+
+
+},{}],6:[function(require,module,exports){
+module.exports = "\n<div class=\"preview\">\n  <article class=\"blogpost\">\n    <h1 class=\"entry-title\" itemprop=\"headline\">{{ post.title }}</h1>\n    <h4 id=\"table-of-contents\">Table of Contents</h4>\n    <ul id=\"previewToc\" ng-bind-html=\"preview.toc | markdownHtml\"></ul>\n    <h6 id=\"author\">Author</h6>\n    <p><img ng-alt=\"{{post.by.name}}\" ng-src=\"{{post.by.avatar}}?s=100\"> </p>\n    <blockquote>\n      <p>{{post.by.bio}}</p>\n    </blockquote>\n    <p class=\"asset\" ng-bind-html=\"preview.asset | markdownHtml\"></p>\n    <hr />\n    <div id=\"body\" ng-bind-html=\"preview.body | markdownHtml\"></div>\n  </article>\n</div>\n\n<hr />\n";
+
+},{}],7:[function(require,module,exports){
+"use strict";
+var marked = require('marked');
+angular.module("APPost", []).directive('apPost', function() {
+  return {
+    template: require('./post.html'),
+    controller: function($scope, PostsService) {
+      $scope.previewMarkdown = function(md) {
+        if (!md) {
+          md = angular.element(document.querySelector('#markdownTextarea')).val();
+        }
+        if (md) {
+          marked(md, function(err, postHtml) {
+            if (err)
+              throw err;
+            $scope.preview.body = postHtml;
+          });
+          PostsService.getToc(md, function(tocMd) {
+            if (tocMd.toc) {
+              marked(tocMd.toc, function(err, tocHtml) {
+                if (err)
+                  throw err;
+                tocHtml = tocHtml.substring(4, tocHtml.length - 6);
+                $scope.preview.toc = tocHtml;
+              });
+            }
+          });
+        }
+      };
+      $scope.$watch('post.md', $scope.previewMarkdown);
+    }
+  };
+});
+
+
+},{"./post.html":6,"marked":2}],8:[function(require,module,exports){
+module.exports = "<ul>\n  <li ng-repeat=\"p in myposts\"><a href=\"/posts/edit/{{p._id}}\">{{ p.title }}</a></li>\n</ul>";
+
+},{}],9:[function(require,module,exports){
+"use strict";
+angular.module("APPostsList", []).directive('apPostsList', function() {
+  return {
+    template: require('./postsList.html'),
+    controller: function($scope) {}
+  };
+});
+
+
+},{"./postsList.html":8}],10:[function(require,module,exports){
+module.exports = "<div class=\"pw-widget pw-counter-vertical\" pw:twitter-via=\"airpair\"> \n  <a ng-show=\"fb\" class=\"pw-button-facebook pw-look-native\"></a>     \n  <a ng-show=\"tw\" class=\"pw-button-twitter pw-look-native\"></a>      \n  <a ng-show=\"in\" class=\"pw-button-linkedin pw-look-native\"></a>     \n</div>";
+
+},{}],11:[function(require,module,exports){
 "use strict";
 angular.module("APShare", ['angularLoad']).directive('apShare', function(angularLoad) {
   var ngLoadPromise = angularLoad.loadScript('//i.po.st/static/v3/post-widget.js#publisherKey=miu9e01ukog3g0nk72m6&retina=true&init=lazy');
@@ -1374,7 +1492,31 @@ angular.module("APShare", ['angularLoad']).directive('apShare', function(angular
 });
 
 
-},{"./share.html":4}],6:[function(require,module,exports){
-module.exports = "<div ng-controller=\"AuthorCtrl\">\n\n<header><a href=\"/posts\">Posts</a> > Author</header>\n\n<h2>Author post</h2>\n\n<label>Title</label>\n<br />\n<input ng-model=\"title\" type=\"text\" style=\"width:100%\" />\n<br /><br />\n<label>Markdown</label>\n<textarea ng-model=\"markdown\" ng-model-options=\"{ debounce: {default: 1000 }}\n\" style=\"width:100%;height:200px;font-size:11px\"></textarea>\n\n<article class=\"blogpost\">\n  <h1 class=\"entry-title\" itemprop=\"headline\">{{ title }}</h1> \n  <div id=\"previewTOC\"ng-bind-html=\"previewTOC | markdownHtml\"></div>\n  <div id=\"preview\"ng-bind-html=\"preview | markdownHtml\"></div>\n</article>\n\n</div>";
+},{"./share.html":10}],12:[function(require,module,exports){
+module.exports = "<div id=\"author\">\n\n  <header><a href=\"/posts\">Posts</a> > Author</header>\n\n  <div class=\"editor\" ap-post-editor=\"\"></div>\n\n  <hr />\n\n  <div id=\"preview\" ap-post=\"\"></div>\n\n</div>";
 
-},{}]},{},[1]);
+},{}],13:[function(require,module,exports){
+module.exports = "\n\n<div class=\"md\" ng-if=\"post.title && post.bio\">\n  <div class=\"form-group\">\n    <label>Markdown <span>see <a href=\"http://daringfireball.net/projects/markdown/syntax\" target=\"_blank\">markdown guide</a><span></label>\n      <textarea id=\"markdownTextarea\" ng-model=\"post.md\" class=\"form-control\" ng-model-options=\"{ updateOn: 'default blur', debounce: {default: 60000 }}\"></textarea>\n  </div>\n</div>\n\n<div class=\"meta\">\n  <div class=\"form-group\">\n    <label>Title</label>\n    <input ng-model=\"post.title\" type=\"text\" class=\"form-control\" />\n  </div>\n  <div class=\"form-group\">\n    <label>Bio</label>\n    <input ng-model=\"post.by.bio\" type=\"text\" class=\"form-control\" />\n  </div>  \n  <div class=\"form-group\">\n    <label>Feature media <span>image url or youtube id</span></label>\n    <input ng-model=\"post.assetUrl\" type=\"text\" class=\"form-control\" name=\"asset\"/>\n  </div>\n  <div class=\"form-group\">\n    <label>Tags <span>(coming later this week)</span></label>\n    <input ng-model=\"post.tags\" type=\"text\" class=\"form-control\" disabled/>\n  </div>\n  <div class=\"dates\" ng-if=\"post.created\">\n    <label>Created</label> <span>{{ post.created | publishedTime }}</span>\n    <label>Updated</label> <span>{{ post.updated | publishedTime }}</span>\n    <label>Published</label> <span>{{ post.published | publishedTime }}</span>\n  </div>\n\n</div>\n\n<div class=\"form-actions\">\n  <button class=\"btn\" ng-click=\"save()\" disabled>Save</button>\n  <button class=\"btn\" disabled>Preview</button>  \n  <button class=\"btn\" disabled>Submit</button>\n  <button class=\"btn\" disabled>Publish</button>\n  <button class=\"btn\" disabled>Delete</button>  \n</div>\n<hr />\n";
+
+},{}],14:[function(require,module,exports){
+"use strict";
+angular.module("APPostEditor", []).directive('apPostEditor', function() {
+  return {
+    template: require('./editor.html'),
+    controller: function($scope) {
+      $scope.$watch('post.assetUrl', function(value) {
+        if (!value) {
+          $scope.preview.asset = "<span>Paste an image url or short link to a youtube movie<br /><br />Example<br /> http://youtu.be/qlOAbrvjMBo<br />/v1/img/css/blog/example1.jpg</span>";
+        } else if (value.indexOf('http://youtu.be/') == 0) {
+          var youTubeId = value.replace('http://youtu.be/', '');
+          $scope.preview.asset = ("<iframe width=\"640\" height=\"360\" frameborder=\"0\" allowfullscreen=\"\" src=\"//www.youtube-nocookie.com/embed/" + youTubeId + "\"></iframe>");
+        } else {
+          $scope.preview.asset = ("<img src=\"" + value + "\" />");
+        }
+      });
+    }
+  };
+});
+
+
+},{"./editor.html":13}]},{},[1]);
