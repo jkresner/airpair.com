@@ -1,14 +1,33 @@
 AirPair.directive('airpairUserChat', [function() {
   return {
+    controller: 'UserChatController',
     restrict: 'E',
     replace: true,
     templateUrl: '/components/user-chat/user-chat.html'
   };
 }]);
 
+AirPair.controller('UserChatController',
+  ['$scope', 'chat', function($scope, chat) {
+    $scope.loadChannel = function(id, $event) {
+      chat.loadChannel(id, function(channel, members, messages) {
+        $scope.channel = channel;
+        $scope.members = members;
+        $scope.messages = messages;
+      });
+      if($event) {
+        // todo: why isn't the dropdown function present?
+        //$($event.target).closest(".dropdown").dropdown('toggle');
+        // workaround: remove the open class to get it to close
+        $($event.target).closest(".dropdown").removeClass('open');
+      }
+    };
+
+  }]);
+
 AirPair.directive('chatroom', [function() {
   return {
-    controller: 'UserChatController',
+    controller: 'ChatroomController',
     restrict: 'E',
     transclude: true,
     replace: true,
@@ -16,20 +35,15 @@ AirPair.directive('chatroom', [function() {
   };
 }]);
 
-AirPair.controller('UserChatController',
+AirPair.controller('ChatroomController',
   ['$scope', 'chat', function($scope, chat) {
     $scope.chat = chat;
-
-    chat.loadChannel($scope.channelId.$id, function(channel, members, messages) {
-      $scope.channel = channel;
-      $scope.members = members;
-      $scope.messages = messages;
-    });
-
+    $scope.loadChannel($scope.channelId.$id);
     $scope.say = function(message, $event) {
       chat.say($scope.channel, message);
       $($event.currentTarget).find('input').val('').focus();
     };
+
   }]);
 
 AirPair.controller('ChatSelector', ['$scope', 'chat', function($scope, chat){

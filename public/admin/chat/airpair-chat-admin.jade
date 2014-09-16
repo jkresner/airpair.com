@@ -8,7 +8,7 @@
       tbody
         tr.channel(ng-repeat='channel in channels | reverse', ng-if='channel.active' ng-class="{active: isLoaded(channel)}")
           td.name
-            a(ng-click='load(channel)', href='#{{channel.$id}}') {{ channel.name }}
+            a(ng-click='load(channel)', href='#{{channel.$id}}') {{ channel.title }}
           td.actions
           td.notifications
             span.unread(ng-show='_.keys(notifications[channel.$id]).length > 0') {{ _.keys(notifications[channel.$id]).length }}
@@ -47,7 +47,7 @@
 
 #main(ng-mouseenter="chat.spy()")
   #channel-info
-    h3 {{ activeChannel.name }}
+    h3 {{ activeChannel.title }}
   #messages(scroll-glue ng-mousemove="clearNotifications(activeChannel, user)")
     .box
       .msg(ng-repeat='msg in activeMessages')

@@ -56,7 +56,7 @@ AirPair.controller('ChatAdminController', ['$rootScope', '$scope', '$firebase', 
   }
 
   $scope.create = function() {
-    chat.createChannel(prompt("Enter name for new channel"), function(err, channel) {
+    chat.createChannel(prompt("Enter title for new channel"), function(err, channel) {
       if(err) {
         console.log(err);
       }
@@ -78,8 +78,8 @@ AirPair.controller('ChatAdminController', ['$rootScope', '$scope', '$firebase', 
         $scope.activeMessages = messages;
 
         // channel participation
-        chat.subscribe($scope.activeChannel, chat.currentUser.uid);
-        $scope.clearNotifications($scope.activeChannel, chat.currentUser);
+        chat.subscribe(channel, chat.currentUser.uid);
+        $scope.clearNotifications(channel, chat.currentUser);
         $('#message').focus();
       });
     }
@@ -91,16 +91,16 @@ AirPair.controller('ChatAdminController', ['$rootScope', '$scope', '$firebase', 
   $scope.talkWith = function(otherUser) {
     var myFirstName = chat.currentUser.thirdPartyUserData.given_name;
     var theirFirstName = otherUser.thirdPartyUserData.given_name;
-    var name = myFirstName + " + " + theirFirstName;
+    var title = myFirstName + " + " + theirFirstName;
 
-    chat.createChannel(name, function(err, channel, members, messages) {
+    chat.createChannel(title, function(err, channel, members, messages) {
       if(err) {
         console.log(err);
       }
       else {
+        $scope.load(channel);
         chat.subscribe(channel, chat.currentUser.uid);
         chat.subscribe(channel, otherUser.uid);
-        $scope.load(channel);
       }
     });
   }

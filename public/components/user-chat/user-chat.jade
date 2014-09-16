@@ -1,12 +1,13 @@
 #chat(ng-if="chat.currentUser" ng-class="{empty: chat.currentUserChannels.length == 0}" ng-mouseenter="chat.spy()")
   chat-header(ng-controller="ChatSelector")
-    chat-notifications.dropdown
-      a.dropdown-toggle(href)
+    chat-notifications.dropdown(ng-if="chat.currentUserChannels.length > 1")
+      a.dropdown-toggle
         img(src="/v1/img/css/chat/toggle.png")
       ul.dropdown-menu
-        li(ng-repeat="channel in chat.currentUserChannels") {{ channel.$id }}
-    .name
-      | {{ name }}
+        li(ng-repeat="channel in chat.currentUserChannels")
+          a(ng-click="loadChannel(channel.$id, $event)") {{ channel.title }}
+    .title
+      span(ng-bind="chat.activeChannel.title")
   chatroom(ng-repeat="channelId in chat.currentUserChannels")
     members
       member(ng-repeat="person in members" ng-if="person.uid !== chat.currentUser.uid" title="{{person.name}}")

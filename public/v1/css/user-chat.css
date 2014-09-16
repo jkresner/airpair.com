@@ -1,0 +1,102 @@
+/** Note: For more information on display: flex see http://html5please.com/#flexbox */
+#chat {
+  display: flex;
+  flex-direction: column;
+  transition: all ease-out 500ms;
+  width: 270px;
+}
+#chat.empty {
+  transition: all ease-out 500ms;
+  display: none;
+}
+chat-header {
+  background: black;
+  border: 1px solid gray;
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: row;
+  height: 40px;
+}
+chat-header chat-notifications {
+  padding: 10px;
+  width: 50px;
+}
+chat-header .title {
+  border-left: 1px solid silver;
+  color: white;
+  letter-spacing: 1px;
+  font-size: 9pt;
+  font-weight: 600;
+  flex: 1 1 auto;
+  padding: 10px;
+  text-align: center;
+  text-transform: uppercase;
+}
+.chatroom {
+  background: #c9d6d2;
+  border-left: 1px solid silver;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+}
+.chatroom:not(:nth-child(2)) {
+  display: none;
+}
+.chatroom members {
+  background: #333;
+  flex: 0 0 auto;
+  padding: 20px;
+}
+.chatroom members member img {
+  border-radius: 50%;
+  height: auto;
+}
+.chatroom members member:only-child {
+  display: block;
+  text-align: center;
+}
+.chatroom members member:only-child img {
+  width: 100px;
+}
+.chatroom members member:only-child .title {
+  margin-top: 5px;
+  color: white;
+}
+.chatroom members member:not(:only-child) {
+  float: left;
+}
+.chatroom members member:not(:only-child) img {
+  width: 50px;
+}
+.chatroom members member:not(:only-child) .title {
+  display: none;
+}
+.chatroom members member:not(:only-child):not(:first-child) {
+  margin-left: -10px;
+}
+.chatroom messages {
+  flex: 1 1 auto;
+  overflow: hidden;
+  overflow-y: scroll;
+}
+.chatroom messages table {
+  background-color: white;
+  margin: 0 !important;
+}
+.chatroom messages table td.from {
+  color: gray;
+  font-size: 8pt;
+}
+.chatroom entry {
+  border-top: 2px solid #c9d6d2;
+  flex: 0 0 auto;
+  height: 30px;
+}
+.chatroom entry input {
+  outline: 0;
+  display: block;
+  height: 28px;
+  padding: 2px;
+  margin-top: -2px;
+  width: 100%;
+}

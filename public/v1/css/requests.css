@@ -65,7 +65,8 @@ h6 {
     font-size: 10px;
   }
 }
-a, a:hover {
+a,
+a:hover {
   cursor: pointer;
   text-decoration: none;
 }
@@ -88,6 +89,39 @@ a, a:hover {
   background: -ms-radial-gradient(left, #ffffff 0%, #dff2ef 100%, #ffffff 50%);
   background: radial-gradient(to right, #ffffff 0%, #dff2ef 100%, #ffffff 50%);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#ffffff', GradientType=1);
+}
+.choice {
+  text-align: center;
+}
+.choice h2 {
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+.choice h4 {
+  margin: 0 auto 40px auto;
+  padding-top: 0;
+  color: #ce5424;
+}
+.choice .option {
+  vertical-align: top;
+  width: 48%;
+  border: solid 1px #dff2ef;
+  padding: 20px;
+  text-align: center;
+  display: inline-block;
+}
+.choice .option h2 {
+  margin: 0 auto 20px auto;
+  max-width: 70%;
+  border-bottom: solid 1px #dff2ef;
+}
+.choice .option ul {
+  padding: 0;
+  list-style: none;
+}
+.choice .option a.btn {
+  width: 60%;
+  margin-top: 10px;
 }
 body > header {
   height: 40px;
@@ -331,36 +365,46 @@ nav#sideChat input {
   height: 40px;
   padding: 5px;
 }
-.choice {
+body {
+  align-content: stretch;
+  align-items: stretch;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+footer {
+  background: silver;
+  flex: 0 0 auto;
+  font-size: 9pt;
+  padding: 5px;
   text-align: center;
 }
-.choice h2 {
-  margin-bottom: 0;
-  padding-bottom: 0;
+#main {
+  align-content: stretch;
+  align-items: stretch;
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
 }
-.choice h4 {
-  margin: 0 auto 40px auto;
-  padding-top: 0;
-  color: #ce5424;
+#main #requests {
+  flex: 1 1 auto;
+  align-self: auto;
+  overflow: hidden;
+  overflow-y: scroll;
+  padding: 10px;
 }
-.choice .option {
-  vertical-align: top;
-  width: 48%;
-  border: solid 1px #dff2ef;
-  padding: 20px;
-  text-align: center;
-  display: inline-block;
+header {
+  flex: 0 0 auto;
 }
-.choice .option h2 {
-  margin: 0 auto 20px auto;
-  max-width: 70%;
-  border-bottom: solid 1px #dff2ef;
+header ul.dropdown-menu[role="menu"] li {
+  float: none;
+  margin: 0;
+  padding: 5px;
 }
-.choice .option ul {
-  padding: 0;
-  list-style: none;
-}
-.choice .option a.btn {
-  width: 60%;
-  margin-top: 10px;
+img.avatar {
+  border-radius: 50%;
+  width: 25px;
+  height: auto;
 }

@@ -32,21 +32,26 @@ var ChatService = function($rootScope, $firebase, $firebaseSimpleLogin) {
       return $firebase(activeChannelsRef.child(id)).$asObject();
     },
 
-    createChannel: function(name, cb) {
+    createChannel: function(title, cb) {
       data = {
-        name: name,
-        active: true,
+        title: title,
         created_at: Firebase.ServerValue.TIMESTAMP
       };
 
       newChannelRef = activeChannelsRef.push();
       newChannelRef.setWithPriority(data, Firebase.ServerValue.TIMESTAMP, function(err){
         if(!err) {
-          cb(null, $firebase(newChannelRef).$asObject(),
-                   $firebase(newChannelRef.child('members')).$asArray(),
-                   $firebase(newChannelRef.child('messages')).$asArray());
+          $firebase(newChannelRef).$asObject().$loaded(function(newChannel) {
+            // we assume that caller will want to use the channel object right away
+            // and that is why we wait on the promise to resolve before calling back
+            cb(null,
+               newChannel,
+               $firebase(newChannelRef.child('members')).$asArray(),
+               $firebase(newChannelRef.child('messages')).$asArray());
+          });
         }
         else {
+          console.log('ERROR CREATING CHANNEL', err);
           cb(err);
         }
       });
@@ -54,9 +59,15 @@ var ChatService = function($rootScope, $firebase, $firebaseSimpleLogin) {
 
     loadChannel: function(name, cb) {
       cRef = activeChannelsRef.child(name);
-      cb($firebase(cRef).$asObject(),
-         $firebase(cRef.child('members')).$asArray(),
-         $firebase(cRef.child('messages')).$asArray());
+      var self = this;
+      $firebase(cRef).$asObject().$loaded(function(channel) {
+        self.activeChannel = channel;
+        // we assume that caller will want to use the channel object right away
+        // and that is why we wait on the promise to resolve before calling back
+        cb(channel,
+           $firebase(cRef.child('members')).$asArray(),
+           $firebase(cRef.child('messages')).$asArray());
+      });
     },
 
     say: function(channel, message) {
@@ -93,7 +104,7 @@ var ChatService = function($rootScope, $firebase, $firebaseSimpleLogin) {
           .child(uid).set(UserHelper.shrink(u.val()));
         subscriptionsRef
           .child(uid)
-          .child(channel.$id).set(channel.$id);
+          .child(channel.$id).setWithPriority({title: channel.title}, Firebase.ServerValue.TIMESTAMP);
       });
     },
 
@@ -143,6 +154,7 @@ var ChatService = function($rootScope, $firebase, $firebaseSimpleLogin) {
   $rootScope.$on("$firebaseSimpleLogin:logout", function(event, user) {
     console.log("Logged out");
     service.currentUser = null;
+    service.currentUserChannels = null;
   });
 
   return service;
