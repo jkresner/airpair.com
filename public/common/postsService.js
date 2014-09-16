@@ -1,8 +1,33 @@
+var headings = [];
+
 angular.module('APSvcPosts', [])  
 
   .constant('API', '/v1/api')
 
-  .service('PostsService', ['$http', 'API', function($http, API) {
+  .factory('mdHelper', function mdHelperFactory() {
+    this.headingChanged = function(md)
+    {
+      var prevHeadings = headings;
+      headings = md.match(/\n##.*/g) || [];
+    
+      var changed = prevHeadings.length != headings.length;
+      if (!changed)
+      {
+        for (var i=0;i<headings.length;i++)
+        {
+          if (prevHeadings[i] != headings[i]) { 
+            return true;
+          }
+        }
+      }
+      return changed;
+    }
+
+    return this;
+  })
+
+  .service('PostsService', ['$http', 'API', 'mdHelper', function($http, API, mdHelper) {
+
     this.getById = function(id, success)
     {
       $http.get(`${API}/posts/${id}`).success(success);
@@ -12,8 +37,10 @@ angular.module('APSvcPosts', [])
       $http.get(`${API}/posts/me`).success(success);
     }
     this.getToc = function(md, success)
-    {
-      $http.post(`${API}/posts-toc`, { md: md } ).success(success);
+    {      
+      if (mdHelper.headingChanged(md)) {
+        $http.post(`${API}/posts-toc`, { md: md } ).success(success);  
+      }
     }    
     this.create = function(data, success)
     {

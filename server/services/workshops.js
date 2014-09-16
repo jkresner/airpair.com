@@ -1,4 +1,4 @@
-import Svc from '../services/_service2'
+import Svc from '../services/_service'
 import Workshop from '../models/workshop'
 
 var logging = false
