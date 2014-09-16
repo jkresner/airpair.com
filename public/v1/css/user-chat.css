@@ -9,6 +9,30 @@
   transition: all ease-out 500ms;
   display: none;
 }
+#chat.collapsed {
+  max-width: 50px;
+}
+#chat.collapsed messages,
+#chat.collapsed entry,
+#chat.collapsed .title {
+  display: none;
+}
+#chat.collapsed members {
+  padding: 10px;
+}
+#chat.collapsed member {
+  float: none !important;
+  margin: 0 !important;
+}
+#chat.collapsed member:not(:first-child) {
+  margin-top: -10px;
+}
+#chat.collapsed member img {
+  width: 35px !important;
+}
+#chat.collapsed .chatroom:not( :nth-child(2)) {
+  display: inherit;
+}
 chat-header {
   background: black;
   border: 1px solid gray;

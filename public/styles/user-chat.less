@@ -13,6 +13,27 @@
     transition: all ease-out 500ms;
     display: none;
   }
+
+  &.collapsed {
+    max-width: 50px;
+    messages, entry, .title {
+      display: none;
+    }
+    members {
+      padding: 10px;
+    }
+    member {
+      float: none !important;
+      margin: 0 !important;
+      &:not(:first-child) { margin-top: -10px }
+      img {
+        width: 35px !important;
+      }
+    }
+    .chatroom:not(:nth-child(2)) {
+      display: inherit;
+    }
+  }
 }
 
 chat-header {

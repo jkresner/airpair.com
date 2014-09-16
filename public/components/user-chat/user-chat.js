@@ -39,6 +39,11 @@ AirPair.controller('ChatroomController',
   ['$scope', 'chat', function($scope, chat) {
     $scope.chat = chat;
     $scope.loadChannel($scope.channelId.$id);
+
+    $scope.expand = function() {
+      $('#chat').removeClass('collapsed');
+    };
+
     $scope.say = function(message, $event) {
       chat.say($scope.channel, message);
       $($event.currentTarget).find('input').val('').focus();
@@ -48,4 +53,8 @@ AirPair.controller('ChatroomController',
 
 AirPair.controller('ChatSelector', ['$scope', 'chat', function($scope, chat){
   $scope.chat = chat;
+
+  $scope.collapse = function() {
+    $('#chat').addClass("collapsed");
+  }
 }]);
