@@ -50,4 +50,8 @@ angular.module('APSvcPosts', [])
     {
       $http.put(`${API}/posts/${data._id}`, data).success(success);
     }
+    this.publish = function(data, success)
+    {
+      $http.put(`${API}/posts/publish/${data._id}`, data).success(success);
+    }    
   }])

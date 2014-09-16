@@ -54,9 +54,22 @@ export function create(o, cb) {
 
 
 export function update(id, o, cb) {
+  if (o.published) { cb(new Error('Cannot update a published post'), null) }
+
   o.updated = new Date()
   
-  //-- todo, authorization for owner or editor (maybe using params?)
+  //-- todo, authorize for owner or editor (maybe using params?)
+
+  svc.update(id, o, cb) 
+}
+
+export function publish(id, o, cb) {
+  if (!o.slug) { cb(new Error('Slug required for a published post'), null) }
+
+  o.updated = new Date()
+  o.published = new Date()  
+  o.publishedBy = this.user._id
+  //-- todo, authorize for editor role
 
   svc.update(id, o, cb) 
 }

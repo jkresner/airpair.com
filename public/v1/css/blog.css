@@ -442,18 +442,6 @@ body#posts .edit #preview .preview {
   overflow-y: scroll;
   border-right: solid 1px #dff2ef;
 }
-body#posts .edit .form-actions .btn {
-  display: inline-block;
-}
-body#posts .edit .editor {
-  background-color: #dff2ef;
-}
-body#posts .edit .md {
-  display: block;
-}
-body#posts .edit .meta {
-  display: block;
-}
 body#posts .edit #tips {
   display: block;
   background-color: #dff2ef;
@@ -463,6 +451,28 @@ body#posts .edit #tips {
 }
 body#posts .edit #tips ul {
   padding: 4px 14px;
+}
+body#posts .edit .form-actions .btn,
+body#posts .publish .form-actions .btn {
+  display: inline-block;
+}
+body#posts .edit .editor,
+body#posts .publish .editor {
+  background-color: #dff2ef;
+}
+body#posts .edit .md,
+body#posts .publish .md {
+  display: block;
+}
+body#posts .edit .meta,
+body#posts .publish .meta {
+  display: block;
+}
+body#posts .edit .publishMeta input,
+body#posts .publish .publishMeta input {
+  font-size: 11px;
+  padding: 4px;
+  height: 26px;
 }
 .blogpost {
   clear: both;

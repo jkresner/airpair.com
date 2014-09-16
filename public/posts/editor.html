@@ -19,24 +19,48 @@
       <label>Feature media <span ng-show="post.title && post.by.bio">
       <a href ng-click="exampleImage()">image url</a>
       or <a href ng-click="exampleYouTube()">youtu.be url</a></span></label>
-      <input ng-model="post.assetUrl" type="text" class="form-control" name="asset"/>
+      <input ng-model="post.assetUrl" type="text" class="form-control" />
     </div>
-  <!--   <div class="form-group">
-      <label>Tags <span>(coming later this week)</span></label>
-      <input ng-model="post.tags" type="text" class="form-control" disabled/>
-    </div> -->
+
+    <div class="publishMeta" ng-if="preview.mode == 'publish'">
+      <div class="form-group">
+        <label>Slug url</label>
+        <input ng-model="post.slug" type="text" class="form-control" />
+      </div>    
+      <div class="form-group">
+        <label>Tags <span>(coming later this week)</span></label>
+        <input ng-model="post.tags" type="text" class="form-control" disabled/>
+      </div>
+      <div class="form-group">
+        <label>Meta</label>
+        <input ng-model="post.meta.title" type="text" class="form-control" placeholder="title" />
+        <input ng-model="post.meta.keyword" type="text" class="form-control" placeholder="keyword"/>
+        <input ng-model="post.meta.description" type="text" class="form-control" placeholder="description" />
+        <input ng-model="post.meta.canonical" type="text" class="form-control" placeholder="canonical url" />
+      </div>
+      <div class="form-group">
+        <label>Open Graph</label>
+        <input ng-model="post.meta.ogTitle" type="text" class="form-control" placeholder="title" />
+        <input ng-model="post.meta.ogType" type="text" class="form-control" placeholder="type"/>
+        <input ng-model="post.meta.ogImage" type="text" class="form-control" placeholder="image" />
+        <input ng-model="post.meta.ogVideo" type="text" class="form-control" placeholder="video" />
+        <input ng-model="post.meta.ogUrl" type="text" class="form-control" placeholder="url" />        
+      </div>      
+    </div>
+
     <div class="dates" ng-if="post.created">
       <label>Created</label> <span>{{ post.created | publishedTime }}</span>
       <label>Updated</label> <span>{{ post.updated | publishedTime }}</span>
       <label>Published</label> <span>{{ post.published | publishedTime }}</span>
+      <label></label> <span>{{ post.publishedBy }}</span>
     </div>
 
   </div>
 
   <div class="form-actions">
     <button class="btn" ng-click="save()" ng-disabled="(!post.title && !post.by.bio) || post.saved">Save</button>
-    <button class="btn btnPreview" ng-click="previewToggle()" ng-disabled="!post._id">{{preview.mode == 'edit' && 'Preview' || 'Edit' }}</button>  
-    <a class="btn" target="_blank" href="mailto:team@airpair.com?subject=Post%20Sumission%20-%20{{post.title}}&body=Can%20you%20look%20at%20and%20publish%20my%20post:%0A%0Ahttps://www.airpair.com/posts/publish/{{ post._id }}%0A%0A{{post.by.name}}"  ng-disabled="(!post.title && !post.by.bio) || !post.saved">Submit</a>
-    <button class="btn" disabled>Publish</button>
+    <button class="btn btnPreview" ng-click="previewToggle()" ng-disabled="!post._id || (preview.mode == 'publish')">{{preview.mode == 'edit' && 'Preview' || 'Edit' }}</button>  
+    <a class="btn" target="_blank" href="mailto:team@airpair.com?subject=Post%20Sumission%20-%20{{post.title}}&body=Can%20you%20look%20at%20and%20publish%20my%20post:%0A%0Ahttps://www.airpair.com/posts/publish/{{ post._id }}%0A%0A{{post.by.name}}" ng-disabled="(!post.title && !post.by.bio) || !post.saved || (preview.mode == 'publish')">Submit</a>
+    <button class="btn" ng-click="save()" ng-disabled="!preview.mode == 'publish'">Publish</button>
     <button class="btn" disabled>Delete</button>  
   </div>

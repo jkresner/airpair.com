@@ -1,6 +1,18 @@
 var mongoose = require('mongoose')
 var {ObjectId} = mongoose.Schema
 
+var Meta = {  
+  title:        { required: true, type: String },  
+  keyword:      { required: true, type: String },
+  description:  { required: true, type: String },
+  canonical:    { required: true, type: String },  
+  ogTitle:      { type: String },     
+  ogType:       { type: String },       
+  ogImage:      { type: String },    
+  ogVideo:      { type: String },      
+  ogUrl:        { type: String }
+};
+
 var Author = {  
   userId:       { required: true, type: ObjectId, ref: 'User', index: true },
   name:         { required: true, type: String },  
@@ -23,6 +35,7 @@ export default mongoose.model('Post', new mongoose.Schema({
   title:        { required: true, type: String },
   md:           { required: true, type: String }, 
   assetUrl:     { type: String },   
-  tags:         { type: [{}], 'default': [] }  
+  tags:         { type: [{}], 'default': [] },  
+  meta:         { type: Meta }
 
 }))
