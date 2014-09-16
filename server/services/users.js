@@ -1,4 +1,4 @@
-import Svc from '../services/_service2'
+import Svc from '../services/_service'
 import User from '../models/user'
 import * as md5 from '../util/md5'
 

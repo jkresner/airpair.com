@@ -1,15 +1,15 @@
 
 <div class="preview">
   <article class="blogpost">
-    <h1 class="entry-title" itemprop="headline">{{ post.title }}</h1>
-    <h4 id="table-of-contents">Table of Contents</h4>
+    <h1 class="entry-title" itemprop="headline">{{ post.title || "Type post title ..." }}</h1>
+    <h4 id="table-of-contents" ng-if="preview.toc">Table of Contents</h4>
     <ul id="previewToc" ng-bind-html="preview.toc | markdownHtml"></ul>
     <h6 id="author">Author</h6>
     <p><img ng-alt="{{post.by.name}}" ng-src="{{post.by.avatar}}?s=100"> </p>
     <blockquote>
       <p>{{post.by.bio}}</p>
     </blockquote>
-    <p class="asset" ng-bind-html="preview.asset | markdownHtml"></p>
+    <p class="asset" ng-bind-html="preview.asset | markdownHtml" ng-if="post.title && post.by.bio"></p>
     <hr />
     <div id="body" ng-bind-html="preview.body | markdownHtml"></div>
   </article>

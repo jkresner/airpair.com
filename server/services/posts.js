@@ -1,9 +1,11 @@
-import Svc from '../services/_service2'
+import Svc from '../services/_service'
+import User from '../models/user'
 import Post from '../models/post'
 import generateToc from './postsToc'
 
 var logging = false
 
+var userSvc = new Svc(User, logging)
 var svc = new Svc(Post, logging)
 
 var posts = [	
@@ -37,6 +39,7 @@ export function getUsersPosts(id, cb) {
 }
 
 export function getTableOfContents(markdown, cb) {
+  
   var toc = generateToc(markdown);
   return cb(null, {toc:toc})
 }
@@ -44,8 +47,9 @@ export function getTableOfContents(markdown, cb) {
 
 export function create(o, cb) {
   o.created = new Date()
-  o.by = this.user._id
-  svc.create(o, cb) 
+  o.by.userId = this.user._id
+  svc.create(o, cb)
+  userSvc.update(o.by.userId, {bio: o.by.bio},() => {})
 }
 
 

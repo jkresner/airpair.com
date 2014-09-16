@@ -13,7 +13,6 @@ function toc(req, cb) {
 }
 
 function create(req, cb) {
-  $log('create?')
   Svc.create.call(this, req.body, cb)
 }
 
