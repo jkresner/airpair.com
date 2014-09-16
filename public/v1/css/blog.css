@@ -369,7 +369,82 @@ nav#sideChat input {
     margin: auto;
   }
 }
+body#posts .editor {
+  padding: 10px 16px 0px 16px;
+  background-color: #dff2ef;
+}
+body#posts .editor span {
+  font-weight: normal;
+  font-size: 11px;
+}
+body#posts .editor .meta {
+  width: 100%;
+  float: right;
+}
+body#posts .editor .meta .dates {
+  line-height: 10px;
+  float: right;
+  width: 40%;
+  font-size: 10px;
+}
+body#posts .editor .meta .dates label {
+  font-size: 10px;
+  float: left;
+  clear: left;
+  display: block;
+  width: 56px;
+}
+body#posts .editor .meta .dates span {
+  float: left;
+}
+body#posts .editor .md {
+  float: left;
+  width: 60%;
+}
+body#posts .editor .md textarea {
+  padding: 4px;
+  height: 256px;
+  font-size: 11px;
+}
+body#posts .editor .md + .meta {
+  width: 38%;
+}
+body#posts .editor .form-actions {
+  clear: both;
+  text-align: center;
+}
+body#posts .editor .form-actions button {
+  width: 19%;
+  margin: 0px 2px 8px 2px;
+  padding: 3px 0px;
+  display: inline;
+}
+body#posts .editor hr {
+  clear: both;
+  margin: 0;
+}
+body#posts .editor + hr {
+  margin: 4px 0 0 0;
+  border-color: #dff2ef;
+}
+body#posts .preview + hr {
+  margin: 0px 0px 4px 0px;
+  border-color: #dff2ef;
+}
+body#posts #preview .preview {
+  width: 914px;
+  max-height: 720px;
+  overflow-y: scroll;
+}
+body#posts #preview .refersh {
+  padding: 10px 16px 10px 16px;
+  background-color: #dff2ef;
+}
+body#posts #preview .refersh button {
+  width: 140px;
+}
 .blogpost {
+  clear: both;
   padding: 0 0px;
 }
 .blogpost header {
@@ -379,7 +454,7 @@ nav#sideChat input {
 .blogpost hr {
   max-width: 640px;
   color: #dff2ef;
-  margin-left: 0;
+  margin: 10px 0;
 }
 .blogpost h1 {
   margin: 0;
@@ -415,10 +490,21 @@ nav#sideChat input {
   margin-left: 12px;
 }
 .blogpost iframe {
-  margin: 20px 0px 20px 0px;
+  margin: 0px 0px 0px 0px;
 }
 .blogpost img {
   max-width: 100%;
+}
+.blogpost p.asset {
+  margin-bottom: 0;
+}
+.blogpost p.asset span {
+  display: block;
+  text-align: center;
+  border: dotted 1px #d3d3d3;
+  min-height: 360px;
+  line-height: 40px;
+  padding-top: 40px;
 }
 .blogpost .pw-widget {
   float: right;
@@ -466,18 +552,25 @@ nav#sideChat input {
   border-radius: 50%;
 }
 .blogpost blockquote {
+  height: 80px;
   width: 540px;
   display: inline-block;
   margin: 0 0px 0 10px;
   font-style: italic;
   font-size: 14px;
   padding: 0 0px 0 10px;
+  overflow: hidden;
 }
 .blogpost blockquote p {
   width: 100%;
+  height: 80px;
+  margin: 0;
 }
 .blogpost blockquote + p {
-  margin-top: 20px;
+  margin-top: 14px;
+}
+.blogpost blockquote + iframe {
+  margin-top: 14px;
 }
 .blogpost #disqus_thread {
   min-height: 700px;
