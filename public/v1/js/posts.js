@@ -13,9 +13,9 @@ angular.module("APPosts", ['ngRoute', 'APFilters', 'APShare', 'APPostsList', 'AP
     templateUrl: 'index',
     controller: 'IndexCtrl as index'
   });
-  $routeProvider.when('/posts/author', {
+  $routeProvider.when('/posts/new', {
     template: require('./author.html'),
-    controller: 'AuthorCtrl as author'
+    controller: 'NewCtrl as author'
   });
   $routeProvider.when('/posts/edit/:id', {
     template: require('./author.html'),
@@ -25,18 +25,25 @@ angular.module("APPosts", ['ngRoute', 'APFilters', 'APShare', 'APPostsList', 'AP
   SessionService.getSessionFull(function(r) {
     $rootScope.session = r;
     $rootScope.$broadcast('sessionUpdated', $rootScope.session);
+  }, function(e) {
+    $rootScope.session = {authenticated: false};
+    $rootScope.$broadcast('sessionUnavailable', $rootScope.session);
   });
 }]).controller('IndexCtrl', ['$scope', 'PostsService', function($scope, PostsService) {
   var self = this;
   PostsService.getMyPosts(function(result) {
     $scope.myposts = result;
   });
-}]).controller('AuthorCtrl', ['$scope', 'PostsService', '$location', function($scope, PostsService, $location) {
+}]).controller('NewCtrl', ['$scope', 'PostsService', '$location', function($scope, PostsService, $location) {
   var self = this;
   $scope.preview = {mode: 'edit'};
   $scope.post = {md: "Type markdown ... "};
   $scope.$on('sessionUpdated', (function(event, session) {
-    return $scope.post.by = session;
+    $log('sessionUpdated', event, session);
+    $scope.post.by = session;
+  }));
+  $scope.$on('sessionUnavailable', (function(event, session) {
+    window.location = '/v1/auth/login?returnTo=/posts/new';
   }));
   $scope.save = (function() {
     PostsService.create($scope.post, (function(result) {
@@ -1420,11 +1427,11 @@ angular.module('APSvcPosts', []).constant('API', '/v1/api').factory('mdHelper', 
 },{}],5:[function(require,module,exports){
 "use strict";
 angular.module('APSvcSession', []).constant('API', '/v1/api').service('SessionService', ['$http', 'API', function($http, API) {
-  this.getSession = function(success) {
-    $http.get((API + "/session")).success(success);
+  this.getSession = function(success, error) {
+    $http.get((API + "/session")).success(success).error(error);
   };
-  this.getSessionFull = function(success) {
-    $http.get((API + "/session/full")).success(success);
+  this.getSessionFull = function(success, error) {
+    $http.get((API + "/session/full")).success(success).error(error);
   };
 }]);
 
@@ -1513,7 +1520,6 @@ angular.module("APPostEditor", []).directive('apPostEditor', function() {
       $scope.exampleYouTube = function() {
         $scope.post.assetUrl = exampleYoutubeUrl;
       };
-      console.log('$scope.preview.mode', $scope.preview.mode);
       $scope.previewToggle = function() {
         if ($scope.preview.mode == 'edit') {
           $scope.preview.mode = "preview";

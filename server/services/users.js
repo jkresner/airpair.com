@@ -110,6 +110,8 @@ export function setAvatar(user) {
 } 
 
 export function getSessionByUserId(cb) {
+  if (this.user == null) { return cb(null, null); }
+
   var fields = {
     '__v': 1, 
     '_id': 1, 

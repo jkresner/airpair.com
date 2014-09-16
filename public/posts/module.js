@@ -20,9 +20,9 @@ angular.module("APPosts", ['ngRoute','APFilters','APShare',
       controller: 'IndexCtrl as index'
     });
 
-    $routeProvider.when('/posts/author', {
+    $routeProvider.when('/posts/new', {
       template: require('./author.html'),
-      controller: 'AuthorCtrl as author'
+      controller: 'NewCtrl as author'
     });
     
     $routeProvider.when('/posts/edit/:id', {
@@ -36,6 +36,9 @@ angular.module("APPosts", ['ngRoute','APFilters','APShare',
     SessionService.getSessionFull(function (r) {
       $rootScope.session = r;
       $rootScope.$broadcast('sessionUpdated', $rootScope.session);
+    }, function(e) {
+      $rootScope.session = { authenticated: false };
+      $rootScope.$broadcast('sessionUnavailable', $rootScope.session);
     });
   }])
 
@@ -49,14 +52,22 @@ angular.module("APPosts", ['ngRoute','APFilters','APShare',
   }])
 
 
-  .controller('AuthorCtrl', ['$scope', 'PostsService', '$location', 
+  .controller('NewCtrl', ['$scope', 'PostsService', '$location', 
       function($scope, PostsService, $location) {
     
     var self = this;
     $scope.preview = { mode: 'edit' };
     $scope.post = { md: "Type markdown ... " };
     
-    $scope.$on('sessionUpdated', (event, session) => $scope.post.by = session );
+    $scope.$on('sessionUpdated', (event, session) => {
+      $log('sessionUpdated', event, session)
+      
+      $scope.post.by = session 
+    });
+
+    $scope.$on('sessionUnavailable', (event, session) => {
+      window.location = '/v1/auth/login?returnTo=/posts/new';
+    });
 
     $scope.save = () => {
       PostsService.create($scope.post, (result) => {
