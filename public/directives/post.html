@@ -5,9 +5,9 @@
     <h4 id="table-of-contents">Table of Contents</h4>
     <ul id="previewToc" ng-bind-html="preview.toc | markdownHtml"></ul>
     <h6 id="author">Author</h6>
-    <p><img alt="Jonathon Kresner" src="//gravatar.com/avatar/780d02a99798886da48711d8104801a4?s=100"> </p>
+    <p><img ng-alt="{{post.by.name}}" ng-src="{{post.by.avatar}}?s=100"> </p>
     <blockquote>
-      <p>Jonathon Kresner is AirPair's CEO and Founder. He conceived AirPair to help developers build ideas faster and stay un-stuck. He's decided to put AirPair to the test, by rebuilding airpair.com from scratch in 90 days with daily help from the best AngularJS, NodeJS and MongoDB experts on the web.</p>
+      <p>{{post.by.bio}}</p>
     </blockquote>
     <p class="asset" ng-bind-html="preview.asset | markdownHtml"></p>
     <hr />
@@ -16,6 +16,3 @@
 </div>
 
 <hr />
-<div class="refersh">
-  <button class="btn" ng-click="previewMarkdown(false)">Preview</button>
-</div>

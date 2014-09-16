@@ -12,9 +12,17 @@ var cbSend = (res, next) => {
 }
 
 
-export function serve(svcFn) {
+export function serve(svcFn) {  
   return (req, res, next) => {
     var thisSvc = { user: req.user }
     svcFn.call(thisSvc, req, cbSend(res,next))        
+  }
+}
+
+
+export var initAPI = (Svc) => {
+  return {
+    list: serve( (req, cb) => Svc.getAll.call(this, cb) ),
+    detail: serve( (req, cb) => Svc.getById.call(this, req.params.id, cb) )
   }
 }

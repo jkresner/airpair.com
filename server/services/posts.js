@@ -33,7 +33,7 @@ export function getById(id, cb) {
 }
 
 export function getUsersPosts(id, cb) {
-  svc.searchMany({by:id},{ fields: { title:1, slug: 1, created: 1 } },cb) 
+  svc.searchMany({'by.userId':id},{ fields: { title:1, slug: 1, created: 1 } },cb) 
 }
 
 export function getTableOfContents(markdown, cb) {
