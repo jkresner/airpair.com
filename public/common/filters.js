@@ -1,5 +1,22 @@
 angular.module('APFilters', [])
 
+  .filter('publishedTime', function() {
+    return (utc, displayFormat) => {
+      var offset = moment().format('ZZ')
+      if (utc != '' && utc != null) {
+        var timeString = utc.split('GMT')[0]
+        var format = 'MMM Do hh:mm'
+        if (displayFormat) { format = displayFormat }
+        var result = moment(timeString, 'YYYY-MM-DDTHH:mm:ss:SSSZ').format(format)
+        return result.replace(offset,'')
+      }
+      else
+      {
+        return '-';
+      }
+    }
+  })
+
   .filter('locaTime', function() {
     return (utc, displayFormat) => {
       var offset = moment().format('ZZ')

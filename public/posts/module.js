@@ -1,13 +1,15 @@
 require('./../directives/share.js');
 require('./../directives/postsList.js');
-require('./../directives/post.js');
+require('./../directives/post.js')
+require('./../directives/anchorLink.js');
 require('./../common/filters.js');
 require('./../common/postsService.js');
+require('./../common/sessionService.js');
 require('./editor.js');
 
 
 angular.module("APPosts", ['ngRoute','APFilters','APShare',
-  'APPostsList','APPostEditor','APPost', 'APSvcPosts'])
+  'APPostsList','APPostEditor','APPost', 'APSvcSession', 'APSvcPosts'])
 
   .config(['$locationProvider', '$routeProvider', 
       function($locationProvider, $routeProvider) {
@@ -31,8 +33,13 @@ angular.module("APPosts", ['ngRoute','APFilters','APShare',
 
   }])
 
-  .run(['$rootScope', function($rootScope) {
+  .run(['$rootScope', 'SessionService', function($rootScope, SessionService) {
+    SessionService.getSessionFull(function (r) {
+      $rootScope.session = r;
+      $rootScope.$broadcast('sessionUpdated', $rootScope.session);
+    });
   }])
+
 
   .controller('IndexCtrl', ['$scope','PostsService', 
       function($scope, PostsService) {
@@ -43,13 +50,14 @@ angular.module("APPosts", ['ngRoute','APFilters','APShare',
   }])
 
 
-
   .controller('AuthorCtrl', ['$scope', 'PostsService', '$location', 
       function($scope, PostsService, $location) {
     
     var self = this;
     $scope.preview = {};
-    $scope.post = { title: "Type post title ... " };
+    $scope.post = { title: "Type post title ... ", by: {} };
+    
+    $scope.$on('sessionUpdated', (event, session) => $scope.post.by = session );
 
     $scope.save = () => {
       $scope.post.md = angular.element(document.querySelector( '#markdownTextarea' ) ).val(),
@@ -73,7 +81,7 @@ angular.module("APPosts", ['ngRoute','APFilters','APShare',
     $scope.save = () => {
       $scope.post.md = angular.element(document.querySelector( '#markdownTextarea' ) ).val(),
       PostsService.update($scope.post, (result) => {
-        console.log('updated', result.updated)
+        $scope.post = result
       });
     }
 

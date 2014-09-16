@@ -1,7 +1,7 @@
 import apiRouter from './api'
 import postsRouter from './posts'
 import authRouter from './auth'
-import WorkshopsService from '../services/workshops'
+import * as WorkshopsService from '../services/workshops'
 
 
 export default function(app)
@@ -13,7 +13,7 @@ export default function(app)
 	app.get( ['/workshops/*', '/:tag/workshops/*'], app.renderHbs('workshops') )
 	
 	app.get( '/workshops-slide/:id', (req,res) => {
-		return new WorkshopsService(req.user).getBySlug(req.params.id, 
+		return WorkshopsService.getBySlug(req.params.id, 
 			(e,r) => res.status(200).render(`workshopsslide.hbs`, r))
 	})
 	

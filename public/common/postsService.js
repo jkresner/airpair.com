@@ -17,7 +17,7 @@ angular.module('APSvcPosts', [])
     }    
     this.create = function(data, success)
     {
-      $http.post(`${API}\posts`, data).success(success);
+      $http.post(`${API}/posts`, data).success(success);
     }
     this.update = function(data, success)
     {
