@@ -1,7 +1,6 @@
 require('./../directives/share.js');
 require('./../directives/postsList.js');
 require('./../directives/post.js')
-require('./../directives/anchorLink.js');
 require('./../common/filters.js');
 require('./../common/postsService.js');
 require('./../common/sessionService.js');
