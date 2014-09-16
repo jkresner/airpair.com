@@ -1,4 +1,4 @@
-<div id="author">
+<div id="author" ng-attr-class="{{preview.mode == 'edit' && 'edit' || ''}}">
 
   <header><a href="/posts">Posts</a> > Author</header>
 
@@ -7,5 +7,12 @@
   <hr />
 
   <div id="preview" ap-post=""></div>
+
+  <div id="tips">
+    <h6>Tips</h6>
+    <p>Use h2 (##) and lower (###) for headings in your markdown (title is already the h1).</p>
+    <p>Scroll to the part of your post you're interested in while you edit.</p>
+    <p>Submit your post by email to have it review and published by an editor.</p>    
+  </div>  
 
 </div>

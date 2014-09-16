@@ -27,6 +27,11 @@ angular.module("APPostEditor", [])
         $scope.exampleImage = function() { $scope.post.assetUrl = exampleImageUrl }
         $scope.exampleYouTube = function() { $scope.post.assetUrl = exampleYoutubeUrl }
       
+        $scope.previewToggle = function() {
+          if ($scope.preview.mode == 'edit') { $scope.preview.mode = "preview"; }
+          else { $scope.preview.mode = 'edit' }
+        }
+
         var firstRender = true;
         $scope.previewMarkdown = function(md, e) {
           if ($scope.post)
