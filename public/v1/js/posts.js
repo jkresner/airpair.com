@@ -39,7 +39,6 @@ angular.module("APPosts", ['ngRoute', 'APFilters', 'APShare', 'APPostsList', 'AP
   $scope.preview = {mode: 'edit'};
   $scope.post = {md: "Type markdown ... "};
   $scope.$on('sessionUpdated', (function(event, session) {
-    $log('sessionUpdated', event, session);
     $scope.post.by = session;
   }));
   $scope.$on('sessionUnavailable', (function(event, session) {
