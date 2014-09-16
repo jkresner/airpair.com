@@ -35,6 +35,7 @@ var ChatService = function($rootScope, $firebase, $firebaseSimpleLogin) {
     createChannel: function(title, cb) {
       data = {
         title: title,
+        active: true,
         created_at: Firebase.ServerValue.TIMESTAMP
       };
 
@@ -68,6 +69,11 @@ var ChatService = function($rootScope, $firebase, $firebaseSimpleLogin) {
            $firebase(cRef.child('members')).$asArray(),
            $firebase(cRef.child('messages')).$asArray());
       });
+    },
+
+    deactivate: function(list, channel) {
+      channel.active = false;
+      list.$save(channel);
     },
 
     say: function(channel, message) {

@@ -67,6 +67,10 @@ AirPair.controller('ChatAdminController', ['$rootScope', '$scope', '$firebase', 
     });
   }
 
+  $scope.deactivate = function(channel) {
+    chat.deactivate($scope.channels, channel);
+  }
+
   $scope.isLoaded = function(channel) {
     return $scope.activeChannel && $scope.activeChannel.$id === channel.$id
   }

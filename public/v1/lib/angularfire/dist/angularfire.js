@@ -295,6 +295,9 @@
             }
             rec.$id = snap.name();
             rec.$priority = snap.getPriority();
+            // todo: convince angularfire team to add this
+            // https://github.com/firebase/angularfire/issues/427
+            rec.$ref = snap.ref();
             $firebaseUtils.applyDefaults(rec, this.$$defaults);
 
             // add it to array and send notifications
