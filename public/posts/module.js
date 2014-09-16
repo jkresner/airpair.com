@@ -67,7 +67,7 @@ angular.module("APPosts", ['ngRoute','APFilters','APShare',
     else
     {
       $scope.preview = { mode: 'edit' };
-      $scope.post = { md: "Type markdown ... ", by: $scope.session };
+      $scope.post = { md: "Save post to start authoring markdown ... ", by: $scope.session };
       
       $scope.$on('sessionUpdated', (event, session) => {
         $scope.post.by = session 
@@ -78,6 +78,7 @@ angular.module("APPosts", ['ngRoute','APFilters','APShare',
       });
 
       $scope.save = () => {
+        $scope.post.md = "Type markdown ..."  
         PostsService.create($scope.post, (result) => {
           $location.path('/posts/edit/'+result._id);
         });

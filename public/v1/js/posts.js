@@ -43,7 +43,7 @@ angular.module("APPosts", ['ngRoute', 'APFilters', 'APShare', 'APPostsList', 'AP
   } else {
     $scope.preview = {mode: 'edit'};
     $scope.post = {
-      md: "Type markdown ... ",
+      md: "Save post to start authoring markdown ... ",
       by: $scope.session
     };
     $scope.$on('sessionUpdated', (function(event, session) {
@@ -53,6 +53,7 @@ angular.module("APPosts", ['ngRoute', 'APFilters', 'APShare', 'APPostsList', 'AP
       window.location = '/v1/auth/login?returnTo=/posts/new';
     }));
     $scope.save = (function() {
+      $scope.post.md = "Type markdown ...";
       PostsService.create($scope.post, (function(result) {
         $location.path('/posts/edit/' + result._id);
       }));
@@ -1499,7 +1500,7 @@ angular.module("APShare", ['angularLoad']).directive('apShare', function(angular
 
 
 },{"./share.html":10}],12:[function(require,module,exports){
-module.exports = "<div id=\"author\" ng-attr-class=\"{{preview.mode == 'edit' && 'edit' || ''}}\">\n\n  <header><a href=\"/posts\">Posts</a> > Author</header>\n\n  <div class=\"editor\" ap-post-editor=\"\"></div>\n\n  <hr />\n\n  <div id=\"preview\" ap-post=\"\"></div>\n\n  <div id=\"tips\">\n    <h6>Tips</h6>\n    <p>Use h2 (##) and lower (###) for headings in your markdown (title is already the h1).</p>\n    <p>Scroll to the part of your post you're interested in while you edit.</p>\n    <p>Submit your post by email to have it review and published by an editor.</p>    \n  </div>  \n\n</div>";
+module.exports = "<div id=\"author\" ng-attr-class=\"{{preview.mode == 'edit' && 'edit' || ''}}\">\n\n  <header><a href=\"/posts\">Posts</a> > Author</header>\n\n  <div class=\"editor\" ap-post-editor=\"\"></div>\n\n  <hr />\n\n  <div id=\"preview\" ap-post=\"\"></div>\n\n  <div id=\"tips\">\n    <h6>Tips</h6>\n    <ul>\n      <li>Use h2 (##) and lower (###) for headings in your markdown (title is already the h1).</li>\n      <li>Prefix your headings with number like 1 1.1 1.2 2 etc.</li>\n      <li>Scroll to the part of your post you're interested in while you edit.</li>\n      <li>Submit your post by email to have it review and published by an editor.</li>\n    </ul> \n  </div>  \n\n</div>";
 
 },{}],13:[function(require,module,exports){
 module.exports = "\n  <div class=\"md\" ng-if=\"post._id\">\n    <div class=\"form-group\">\n      <label>Markdown <span>see <a href=\"http://daringfireball.net/projects/markdown/syntax\" target=\"_blank\">markdown guide</a><span></label>\n        <textarea id=\"markdownTextarea\" ng-model=\"post.md\" class=\"form-control\" ng-model-options=\"{ updateOn: 'default blur', debounce: { blur: 0, default: (post.md.length * 10) }}\"></textarea>\n    </div>\n  </div>\n\n  <div class=\"meta\">\n    <div class=\"form-group\">\n      <label>Title</label>\n      <input ng-model=\"post.title\" type=\"text\" class=\"form-control\" placeholder=\"Type post title ...\" />\n    </div>\n    <div class=\"form-group\">\n      <label>Author bio</label>\n      <input ng-model=\"post.by.bio\" type=\"text\" class=\"form-control\" />\n    </div>  \n    <div class=\"form-group\">\n      <label>Feature media <span ng-show=\"post.title && post.by.bio\">\n      <a href ng-click=\"exampleImage()\">image url</a>\n      or <a href ng-click=\"exampleYouTube()\">youtu.be url</a></span></label>\n      <input ng-model=\"post.assetUrl\" type=\"text\" class=\"form-control\" name=\"asset\"/>\n    </div>\n  <!--   <div class=\"form-group\">\n      <label>Tags <span>(coming later this week)</span></label>\n      <input ng-model=\"post.tags\" type=\"text\" class=\"form-control\" disabled/>\n    </div> -->\n    <div class=\"dates\" ng-if=\"post.created\">\n      <label>Created</label> <span>{{ post.created | publishedTime }}</span>\n      <label>Updated</label> <span>{{ post.updated | publishedTime }}</span>\n      <label>Published</label> <span>{{ post.published | publishedTime }}</span>\n    </div>\n\n  </div>\n\n  <div class=\"form-actions\">\n    <button class=\"btn\" ng-click=\"save()\" ng-disabled=\"(!post.title && !post.by.bio) || post.saved\">Save</button>\n    <button class=\"btn btnPreview\" ng-click=\"previewToggle()\" ng-disabled=\"!post._id\">{{preview.mode == 'edit' && 'Preview' || 'Edit' }}</button>  \n    <a class=\"btn\" target=\"_blank\" href=\"mailto:team@airpair.com?subject=Post%20Sumission%20-%20{{post.title}}&body=Can%20you%20look%20at%20and%20publish%20my%20post:%0A%0Ahttps://www.airpair.com/posts/publish/{{ post._id }}%0A%0A{{post.by.name}}\"  ng-disabled=\"(!post.title && !post.by.bio) || !post.saved\">Submit</a>\n    <button class=\"btn\" disabled>Publish</button>\n    <button class=\"btn\" disabled>Delete</button>  \n  </div>\n";
