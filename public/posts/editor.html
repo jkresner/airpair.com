@@ -4,16 +4,20 @@
     <input ng-model="post.title" type="text" class="form-control" />
   </div>
   <div class="form-group">
-    <label>Feature media (image url or youtube id)</label>
+    <label>Feature media <span>image url or youtube id</span></label>
     <input ng-model="post.assetUrl" type="text" class="form-control" name="asset"/>
   </div>
-  
+  <div class="form-group">
+    <label>Tags</label>
+    <input ng-model="post.tags" type="text" class="form-control" disabled/>
+  </div>
+
   <button class="btn" ng-click="save()">Save</button>
 
 </div>
 <div class="md">
   <div class="form-group">
-    <label>Markdown (<a href="http://daringfireball.net/projects/markdown/syntax" target="_self">see guide</a>)</label>
+    <label>Markdown <span>see <a href="http://daringfireball.net/projects/markdown/syntax" target="_blank">markdown guide</a><span></label>
       <textarea id="markdownTextarea" ng-model="post.md" class="form-control" ng-model-options="{ updateOn: 'default blur', debounce: {default: 60000 }}"></textarea>
   </div>
 </div>

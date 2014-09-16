@@ -8,7 +8,7 @@ angular.module("APPostEditor", [])
         $scope.$watch('post.assetUrl', function(value) {
           if (!value) 
           { 
-            $scope.preview.asset = "Paste an image url or short link to a youtube movie<br /><br />E.g. http://youtu.be/qlOAbrvjMBo<br /><br />/v1/img/css/blog/example1.jpg"
+            $scope.preview.asset = "<span>Paste an image url or short link to a youtube movie<br /><br />Example<br /> http://youtu.be/qlOAbrvjMBo<br />/v1/img/css/blog/example1.jpg</span>"
           }
           else if (value.indexOf('http://youtu.be/') == 0) {
             var youTubeId = value.replace('http://youtu.be/', '');
