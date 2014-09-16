@@ -18,9 +18,9 @@ body#posts {
 
 	.editor {
 		padding:10px 16px 0px 16px;
-		background-color:@lightblue;
 		span { font-weight:normal;font-size:11px } 
 		.meta {
+			display:none;
 			width:100%;
 			float:right;
 			.dates 
@@ -34,31 +34,40 @@ body#posts {
 			}
 		}
 		.md { float:left;width:60%;
+			display:none;
 			textarea { padding:4px;height:256px;font-size:11px }
 		}
 		.md + .meta {
 			width:38%;
 		}
 		.form-actions { 
+			height:40px;
 			clear:both;
 			text-align:center;
-			button { width:19%;margin:0px 2px 8px 2px;padding:3px 0px;display:inline }
+			.btn { width:19%;margin:0px 2px 8px 2px;padding:3px 0px;display:none }
+			.btnPreview { display:inline-block; }
 		}		
-		hr { clear:both;margin:0 }
 	}
 
 	.editor + hr { margin:4px 0 0 0;border-color:@lightblue; }
 	.preview + hr { margin:0px 0px 4px 0px;border-color:@lightblue; }
 
-	#preview {
-		.preview { 
-			width:914px;max-height:720px;overflow-y:scroll
+	#tips { display:none }
+
+	.edit {
+		#preview {
+			.preview { 
+				width:914px;max-height:720px;overflow-y:scroll;
+				border-right:solid 1px @lightblue;
+			}
 		}
-		.refersh {
-			padding:10px 16px 10px 16px;
-			background-color:@lightblue; 
-			button { width:140px; }
-		}
+
+		.form-actions { .btn { display:inline-block } }
+		.editor { background-color:@lightblue; }
+		.md { display:block }
+		.meta { display:block }		
+
+		#tips { display:block;background-color:@lightblue;padding:4px 10px;font-size:10px;line-height:10px }
 	}
 }
 

@@ -371,17 +371,18 @@ nav#sideChat input {
 }
 body#posts .editor {
   padding: 10px 16px 0px 16px;
-  background-color: #dff2ef;
 }
 body#posts .editor span {
   font-weight: normal;
   font-size: 11px;
 }
 body#posts .editor .meta {
+  display: none;
   width: 100%;
   float: right;
 }
 body#posts .editor .meta .dates {
+  margin: 10px;
   line-height: 10px;
   float: right;
   width: 40%;
@@ -400,6 +401,7 @@ body#posts .editor .meta .dates span {
 body#posts .editor .md {
   float: left;
   width: 60%;
+  display: none;
 }
 body#posts .editor .md textarea {
   padding: 4px;
@@ -410,18 +412,18 @@ body#posts .editor .md + .meta {
   width: 38%;
 }
 body#posts .editor .form-actions {
+  height: 40px;
   clear: both;
   text-align: center;
 }
-body#posts .editor .form-actions button {
+body#posts .editor .form-actions .btn {
   width: 19%;
   margin: 0px 2px 8px 2px;
   padding: 3px 0px;
-  display: inline;
+  display: none;
 }
-body#posts .editor hr {
-  clear: both;
-  margin: 0;
+body#posts .editor .form-actions .btnPreview {
+  display: inline-block;
 }
 body#posts .editor + hr {
   margin: 4px 0 0 0;
@@ -431,17 +433,33 @@ body#posts .preview + hr {
   margin: 0px 0px 4px 0px;
   border-color: #dff2ef;
 }
-body#posts #preview .preview {
+body#posts #tips {
+  display: none;
+}
+body#posts .edit #preview .preview {
   width: 914px;
   max-height: 720px;
   overflow-y: scroll;
+  border-right: solid 1px #dff2ef;
 }
-body#posts #preview .refersh {
-  padding: 10px 16px 10px 16px;
+body#posts .edit .form-actions .btn {
+  display: inline-block;
+}
+body#posts .edit .editor {
   background-color: #dff2ef;
 }
-body#posts #preview .refersh button {
-  width: 140px;
+body#posts .edit .md {
+  display: block;
+}
+body#posts .edit .meta {
+  display: block;
+}
+body#posts .edit #tips {
+  display: block;
+  background-color: #dff2ef;
+  padding: 4px 10px;
+  font-size: 10px;
+  line-height: 10px;
 }
 .blogpost {
   clear: both;

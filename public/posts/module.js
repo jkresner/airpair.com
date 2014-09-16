@@ -53,7 +53,7 @@ angular.module("APPosts", ['ngRoute','APFilters','APShare',
       function($scope, PostsService, $location) {
     
     var self = this;
-    $scope.preview = {};
+    $scope.preview = { mode: 'edit' };
     $scope.post = { md: "Type markdown ... " };
     
     $scope.$on('sessionUpdated', (event, session) => $scope.post.by = session );
@@ -70,16 +70,16 @@ angular.module("APPosts", ['ngRoute','APFilters','APShare',
     function($scope, PostsService, $routeParams) {
     
     var self = this;
-    $scope.preview = {};
+    $scope.preview = { mode: 'edit' };
   
     PostsService.getById($routeParams.id, (r) => {
-      $scope.post = _.extend(r, { save: true});
+      $scope.post = _.extend(r, { saved: true});
     });
 
     $scope.save = () => {
       $scope.post.md = angular.element(document.querySelector( '#markdownTextarea' ) ).val(),
       PostsService.update($scope.post, (r) => {
-        $scope.post = _.extend(r, { save: true});
+        $scope.post = _.extend(r, { saved: true});
       });
     }
 

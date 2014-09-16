@@ -33,28 +33,25 @@ angular.module("APPosts", ['ngRoute', 'APFilters', 'APShare', 'APPostsList', 'AP
   });
 }]).controller('AuthorCtrl', ['$scope', 'PostsService', '$location', function($scope, PostsService, $location) {
   var self = this;
-  $scope.preview = {};
-  $scope.post = {
-    title: "Type post title ... ",
-    by: {}
-  };
+  $scope.preview = {mode: 'edit'};
+  $scope.post = {md: "Type markdown ... "};
   $scope.$on('sessionUpdated', (function(event, session) {
     return $scope.post.by = session;
   }));
   $scope.save = (function() {
-    $scope.post.md = angular.element(document.querySelector('#markdownTextarea')).val(), PostsService.create($scope.post, (function(result) {
+    PostsService.create($scope.post, (function(result) {
       $location.path('/posts/edit/' + result._id);
     }));
   });
 }]).controller('EditCtrl', ['$scope', 'PostsService', '$routeParams', function($scope, PostsService, $routeParams) {
   var self = this;
-  $scope.preview = {};
-  PostsService.getById($routeParams.id, (function(result) {
-    $scope.post = result;
+  $scope.preview = {mode: 'edit'};
+  PostsService.getById($routeParams.id, (function(r) {
+    $scope.post = _.extend(r, {saved: true});
   }));
   $scope.save = (function() {
-    $scope.post.md = angular.element(document.querySelector('#markdownTextarea')).val(), PostsService.update($scope.post, (function(result) {
-      $scope.post = result;
+    $scope.post.md = angular.element(document.querySelector('#markdownTextarea')).val(), PostsService.update($scope.post, (function(r) {
+      $scope.post = _.extend(r, {saved: true});
     }));
   });
 }]);
@@ -1383,7 +1380,23 @@ angular.module('APFilters', []).filter('publishedTime', function() {
 
 },{}],4:[function(require,module,exports){
 "use strict";
-angular.module('APSvcPosts', []).constant('API', '/v1/api').service('PostsService', ['$http', 'API', function($http, API) {
+var headings = [];
+angular.module('APSvcPosts', []).constant('API', '/v1/api').factory('mdHelper', function mdHelperFactory() {
+  this.headingChanged = function(md) {
+    var prevHeadings = headings;
+    headings = md.match(/\n##.*/g) || [];
+    var changed = prevHeadings.length != headings.length;
+    if (!changed) {
+      for (var i = 0; i < headings.length; i++) {
+        if (prevHeadings[i] != headings[i]) {
+          return true;
+        }
+      }
+    }
+    return changed;
+  };
+  return this;
+}).service('PostsService', ['$http', 'API', 'mdHelper', function($http, API, mdHelper) {
   this.getById = function(id, success) {
     $http.get((API + "/posts/" + id)).success(success);
   };
@@ -1391,7 +1404,9 @@ angular.module('APSvcPosts', []).constant('API', '/v1/api').service('PostsServic
     $http.get((API + "/posts/me")).success(success);
   };
   this.getToc = function(md, success) {
-    $http.post((API + "/posts-toc"), {md: md}).success(success);
+    if (mdHelper.headingChanged(md)) {
+      $http.post((API + "/posts-toc"), {md: md}).success(success);
+    }
   };
   this.create = function(data, success) {
     $http.post((API + "/posts"), data).success(success);
@@ -1415,7 +1430,7 @@ angular.module('APSvcSession', []).constant('API', '/v1/api').service('SessionSe
 
 
 },{}],6:[function(require,module,exports){
-module.exports = "\n<div class=\"preview\">\n  <article class=\"blogpost\">\n    <h1 class=\"entry-title\" itemprop=\"headline\">{{ post.title }}</h1>\n    <h4 id=\"table-of-contents\">Table of Contents</h4>\n    <ul id=\"previewToc\" ng-bind-html=\"preview.toc | markdownHtml\"></ul>\n    <h6 id=\"author\">Author</h6>\n    <p><img ng-alt=\"{{post.by.name}}\" ng-src=\"{{post.by.avatar}}?s=100\"> </p>\n    <blockquote>\n      <p>{{post.by.bio}}</p>\n    </blockquote>\n    <p class=\"asset\" ng-bind-html=\"preview.asset | markdownHtml\"></p>\n    <hr />\n    <div id=\"body\" ng-bind-html=\"preview.body | markdownHtml\"></div>\n  </article>\n</div>\n\n<hr />\n";
+module.exports = "\n<div class=\"preview\">\n  <article class=\"blogpost\">\n    <h1 class=\"entry-title\" itemprop=\"headline\">{{ post.title || \"Type post title ...\" }}</h1>\n    <h4 id=\"table-of-contents\" ng-if=\"preview.toc\">Table of Contents</h4>\n    <ul id=\"previewToc\" ng-bind-html=\"preview.toc | markdownHtml\"></ul>\n    <h6 id=\"author\">Author</h6>\n    <p><img ng-alt=\"{{post.by.name}}\" ng-src=\"{{post.by.avatar}}?s=100\"> </p>\n    <blockquote>\n      <p>{{post.by.bio}}</p>\n    </blockquote>\n    <p class=\"asset\" ng-bind-html=\"preview.asset | markdownHtml\" ng-if=\"post.title && post.by.bio\"></p>\n    <hr />\n    <div id=\"body\" ng-bind-html=\"preview.body | markdownHtml\"></div>\n  </article>\n</div>\n\n<hr />\n";
 
 },{}],7:[function(require,module,exports){
 "use strict";
@@ -1423,31 +1438,7 @@ var marked = require('marked');
 angular.module("APPost", []).directive('apPost', function() {
   return {
     template: require('./post.html'),
-    controller: function($scope, PostsService) {
-      $scope.previewMarkdown = function(md) {
-        if (!md) {
-          md = angular.element(document.querySelector('#markdownTextarea')).val();
-        }
-        if (md) {
-          marked(md, function(err, postHtml) {
-            if (err)
-              throw err;
-            $scope.preview.body = postHtml;
-          });
-          PostsService.getToc(md, function(tocMd) {
-            if (tocMd.toc) {
-              marked(tocMd.toc, function(err, tocHtml) {
-                if (err)
-                  throw err;
-                tocHtml = tocHtml.substring(4, tocHtml.length - 6);
-                $scope.preview.toc = tocHtml;
-              });
-            }
-          });
-        }
-      };
-      $scope.$watch('post.md', $scope.previewMarkdown);
-    }
+    controller: function($scope, PostsService) {}
   };
 });
 
@@ -1493,20 +1484,22 @@ angular.module("APShare", ['angularLoad']).directive('apShare', function(angular
 
 
 },{"./share.html":10}],12:[function(require,module,exports){
-module.exports = "<div id=\"author\">\n\n  <header><a href=\"/posts\">Posts</a> > Author</header>\n\n  <div class=\"editor\" ap-post-editor=\"\"></div>\n\n  <hr />\n\n  <div id=\"preview\" ap-post=\"\"></div>\n\n</div>";
+module.exports = "<div id=\"author\" ng-attr-class=\"{{preview.mode == 'edit' && 'edit' || ''}}\">\n\n  <header><a href=\"/posts\">Posts</a> > Author</header>\n\n  <div class=\"editor\" ap-post-editor=\"\"></div>\n\n  <hr />\n\n  <div id=\"preview\" ap-post=\"\"></div>\n\n  <div id=\"tips\">\n    <h6>Tips</h6>\n    <p>Use h2 (##) and lower (###) for headings in your markdown (title is already the h1).</p>\n    <p>Scroll to the part of your post you're interested in while you edit.</p>\n    <p>Submit your post by email to have it review and published by an editor.</p>    \n  </div>  \n\n</div>";
 
 },{}],13:[function(require,module,exports){
-module.exports = "\n\n<div class=\"md\" ng-if=\"post.title && post.bio\">\n  <div class=\"form-group\">\n    <label>Markdown <span>see <a href=\"http://daringfireball.net/projects/markdown/syntax\" target=\"_blank\">markdown guide</a><span></label>\n      <textarea id=\"markdownTextarea\" ng-model=\"post.md\" class=\"form-control\" ng-model-options=\"{ updateOn: 'default blur', debounce: {default: 60000 }}\"></textarea>\n  </div>\n</div>\n\n<div class=\"meta\">\n  <div class=\"form-group\">\n    <label>Title</label>\n    <input ng-model=\"post.title\" type=\"text\" class=\"form-control\" />\n  </div>\n  <div class=\"form-group\">\n    <label>Bio</label>\n    <input ng-model=\"post.by.bio\" type=\"text\" class=\"form-control\" />\n  </div>  \n  <div class=\"form-group\">\n    <label>Feature media <span>image url or youtube id</span></label>\n    <input ng-model=\"post.assetUrl\" type=\"text\" class=\"form-control\" name=\"asset\"/>\n  </div>\n  <div class=\"form-group\">\n    <label>Tags <span>(coming later this week)</span></label>\n    <input ng-model=\"post.tags\" type=\"text\" class=\"form-control\" disabled/>\n  </div>\n  <div class=\"dates\" ng-if=\"post.created\">\n    <label>Created</label> <span>{{ post.created | publishedTime }}</span>\n    <label>Updated</label> <span>{{ post.updated | publishedTime }}</span>\n    <label>Published</label> <span>{{ post.published | publishedTime }}</span>\n  </div>\n\n</div>\n\n<div class=\"form-actions\">\n  <button class=\"btn\" ng-click=\"save()\" disabled>Save</button>\n  <button class=\"btn\" disabled>Preview</button>  \n  <button class=\"btn\" disabled>Submit</button>\n  <button class=\"btn\" disabled>Publish</button>\n  <button class=\"btn\" disabled>Delete</button>  \n</div>\n<hr />\n";
+module.exports = "\n  <div class=\"md\" ng-if=\"post._id\">\n    <div class=\"form-group\">\n      <label>Markdown <span>see <a href=\"http://daringfireball.net/projects/markdown/syntax\" target=\"_blank\">markdown guide</a><span></label>\n        <textarea id=\"markdownTextarea\" ng-model=\"post.md\" class=\"form-control\" ng-model-options=\"{ updateOn: 'default blur', debounce: { blur: 0, default: (post.md.length * 10) }}\"></textarea>\n    </div>\n  </div>\n\n  <div class=\"meta\">\n    <div class=\"form-group\">\n      <label>Title</label>\n      <input ng-model=\"post.title\" type=\"text\" class=\"form-control\" placeholder=\"Type post title ...\" />\n    </div>\n    <div class=\"form-group\">\n      <label>Author bio</label>\n      <input ng-model=\"post.by.bio\" type=\"text\" class=\"form-control\" />\n    </div>  \n    <div class=\"form-group\">\n      <label>Feature media <span ng-show=\"post.title && post.by.bio\">\n      <a href ng-click=\"exampleImage()\">image url</a>\n      or <a href ng-click=\"exampleYouTube()\">youtu.be url</a></span></label>\n      <input ng-model=\"post.assetUrl\" type=\"text\" class=\"form-control\" name=\"asset\"/>\n    </div>\n  <!--   <div class=\"form-group\">\n      <label>Tags <span>(coming later this week)</span></label>\n      <input ng-model=\"post.tags\" type=\"text\" class=\"form-control\" disabled/>\n    </div> -->\n    <div class=\"dates\" ng-if=\"post.created\">\n      <label>Created</label> <span>{{ post.created | publishedTime }}</span>\n      <label>Updated</label> <span>{{ post.updated | publishedTime }}</span>\n      <label>Published</label> <span>{{ post.published | publishedTime }}</span>\n    </div>\n\n  </div>\n\n  <div class=\"form-actions\">\n    <button class=\"btn\" ng-click=\"save()\" ng-disabled=\"(!post.title && !post.by.bio) || post.saved\">Save</button>\n    <button class=\"btn btnPreview\" ng-click=\"previewToggle()\" ng-disabled=\"!post._id\">{{preview.mode == 'edit' && 'Preview' || 'Edit' }}</button>  \n    <a class=\"btn\" target=\"_blank\" href=\"mailto:team@airpair.com?subject=Post%20Sumission%20-%20{{post.title}}&body=Can%20you%20look%20at%20and%20publish%20my%20post:%0A%0Ahttps://www.airpair.com/posts/publish/{{ post._id }}%0A%0A{{post.by.name}}\"  ng-disabled=\"(!post.title && !post.by.bio) || !post.saved\">Submit</a>\n    <button class=\"btn\" disabled>Publish</button>\n    <button class=\"btn\" disabled>Delete</button>  \n  </div>\n";
 
 },{}],14:[function(require,module,exports){
 "use strict";
+var exampleImageUrl = 'http://www.airpair.com/v1/img/css/blog/example2.jpg';
+var exampleYoutubeUrl = 'http://youtu.be/qlOAbrvjMBo';
 angular.module("APPostEditor", []).directive('apPostEditor', function() {
   return {
     template: require('./editor.html'),
-    controller: function($scope) {
+    controller: function($scope, PostsService) {
       $scope.$watch('post.assetUrl', function(value) {
         if (!value) {
-          $scope.preview.asset = "<span>Paste an image url or short link to a youtube movie<br /><br />Example<br /> http://youtu.be/qlOAbrvjMBo<br />/v1/img/css/blog/example1.jpg</span>";
+          $scope.preview.asset = ("<span>Paste an image url or short link to a youtube movie<br /><br />Example<br /> " + exampleYoutubeUrl + "<br /> " + exampleImageUrl + "</span>");
         } else if (value.indexOf('http://youtu.be/') == 0) {
           var youTubeId = value.replace('http://youtu.be/', '');
           $scope.preview.asset = ("<iframe width=\"640\" height=\"360\" frameborder=\"0\" allowfullscreen=\"\" src=\"//www.youtube-nocookie.com/embed/" + youTubeId + "\"></iframe>");
@@ -1514,6 +1507,48 @@ angular.module("APPostEditor", []).directive('apPostEditor', function() {
           $scope.preview.asset = ("<img src=\"" + value + "\" />");
         }
       });
+      $scope.exampleImage = function() {
+        $scope.post.assetUrl = exampleImageUrl;
+      };
+      $scope.exampleYouTube = function() {
+        $scope.post.assetUrl = exampleYoutubeUrl;
+      };
+      console.log('$scope.preview.mode', $scope.preview.mode);
+      $scope.previewToggle = function() {
+        if ($scope.preview.mode == 'edit') {
+          $scope.preview.mode = "preview";
+        } else {
+          $scope.preview.mode = 'edit';
+        }
+      };
+      var firstRender = true;
+      $scope.previewMarkdown = function(md, e) {
+        if ($scope.post) {
+          if (firstRender) {
+            firstRender = false;
+          } else {
+            $scope.post.saved = false;
+          }
+        }
+        if (md) {
+          marked(md, function(err, postHtml) {
+            if (err)
+              throw err;
+            $scope.preview.body = postHtml;
+          });
+          PostsService.getToc(md, function(tocMd) {
+            if (tocMd.toc) {
+              marked(tocMd.toc, function(err, tocHtml) {
+                if (err)
+                  throw err;
+                tocHtml = tocHtml.substring(4, tocHtml.length - 6);
+                $scope.preview.toc = tocHtml;
+              });
+            }
+          });
+        }
+      };
+      $scope.$watch('post.md', $scope.previewMarkdown);
     }
   };
 });
