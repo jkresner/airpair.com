@@ -60,8 +60,6 @@ angular.module("APPosts", ['ngRoute','APFilters','APShare',
     $scope.post = { md: "Type markdown ... " };
     
     $scope.$on('sessionUpdated', (event, session) => {
-      $log('sessionUpdated', event, session)
-      
       $scope.post.by = session 
     });
 
