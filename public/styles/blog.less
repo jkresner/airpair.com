@@ -11,17 +11,37 @@ body#post {
 }  
 
 body#posts {
+	
+	#author {
+		
+	}
+
 	.editor {
 		padding:10px 16px 0px 16px;
-		background-color:@lightblue; 
+		background-color:@lightblue;
+		span { font-weight:normal;font-size:11px } 
 		.meta {
 			float:right;width:38%;
-			button { width:49%;margin-top:15px }
+			button { width:49%;margin-top:0px }
 		}
 		.md { float:left;width:60%;
 			textarea { padding:4px;height:240px;font-size:11px }
 		}
 		hr { clear:both;margin:0 }
+	}
+
+	.editor + hr { margin:4px 0 0 0;border-color:@lightblue; }
+	.preview + hr { margin:0px 0px 4px 0px;border-color:@lightblue; }
+
+	#preview {
+		.preview { 
+			width:914px;max-height:720px;overflow-y:scroll
+		}
+		.refersh {
+			padding:10px 16px 10px 16px;
+			background-color:@lightblue; 
+			button { width:140px; }
+		}
 	}
 }
 
@@ -31,7 +51,7 @@ body#posts {
 
 	header { border-bottom:solid 1px @lightgray;margin-bottom:20px }
 
-	hr { max-width:@mainElmWidth;color:@lightblue;margin-left:0 }
+	hr { max-width:@mainElmWidth;color:@lightblue;margin:10px 0 }
 	h1 { margin:0;font-size:42px;padding-left:@mainElmPad }
 	h2 { font-size:28px;margin-bottom:5px;padding-left:@mainElmPad }
 	p { margin-top:0;max-width:@mainElmWidth;vertical-align:top;padding-left:@mainElmPad }
@@ -42,16 +62,19 @@ body#posts {
 	ul { list-style:none;margin:0;padding-left:@mainElmPad }
 	ul ul { margin-left:12px }
 
-	iframe { margin:0px 0px 20px 0px }
+	iframe { margin:0px 0px 0px 0px }
 	img { max-width:100% }
 
 	p.asset { 
-		min-height:360px;
-		vertical-align:middle;
-		border:dotted 1px @lightgray;
-		text-align:center;
 		margin-bottom:0;
-	  line-height:40px;
+	  span {
+	  	display:block; 
+			text-align:center;
+			border:dotted 1px @lightgray;
+			min-height:360px;
+	  	line-height:40px; 
+	  	padding-top:40px;
+	  }
  }
 
 	.pw-widget {
@@ -87,8 +110,8 @@ body#posts {
 	#author + p img { width:100%;height:100%;border-radius:50% }
 	blockquote { width:540px;display:inline-block;margin:0 0px 0 10px;font-style:italic;font-size:14px;padding:0 0px 0 10px; }
 	blockquote p { width:100% }
-	blockquote + p { margin-top:20px } // for images under blockquote
-	blockquote + iframe { margin-top:20px } // for youtube iframe under blockquote
+	blockquote + p { margin-top:14px } // for images under blockquote
+	blockquote + iframe { margin-top:14px } // for youtube iframe under blockquote
 
 	#disqus_thread {
 		min-height:700px
