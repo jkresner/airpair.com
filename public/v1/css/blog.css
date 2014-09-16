@@ -457,9 +457,12 @@ body#posts .edit .meta {
 body#posts .edit #tips {
   display: block;
   background-color: #dff2ef;
-  padding: 4px 10px;
+  padding: 4px 6px;
   font-size: 10px;
-  line-height: 10px;
+  line-height: 14px;
+}
+body#posts .edit #tips ul {
+  padding: 4px 14px;
 }
 .blogpost {
   clear: both;
