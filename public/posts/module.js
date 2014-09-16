@@ -57,7 +57,7 @@ angular.module("APPosts", ['ngRoute','APFilters','APShare',
     
     var self = this;
     $scope.preview = { mode: 'edit' };
-    $scope.post = { md: "Type markdown ... " };
+    $scope.post = { md: "Type markdown ... ", by: $scope.session };
     
     $scope.$on('sessionUpdated', (event, session) => {
       $scope.post.by = session 

@@ -37,7 +37,10 @@ angular.module("APPosts", ['ngRoute', 'APFilters', 'APShare', 'APPostsList', 'AP
 }]).controller('NewCtrl', ['$scope', 'PostsService', '$location', function($scope, PostsService, $location) {
   var self = this;
   $scope.preview = {mode: 'edit'};
-  $scope.post = {md: "Type markdown ... "};
+  $scope.post = {
+    md: "Type markdown ... ",
+    by: $scope.session
+  };
   $scope.$on('sessionUpdated', (function(event, session) {
     $scope.post.by = session;
   }));
