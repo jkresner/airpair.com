@@ -9,8 +9,8 @@ export default function(app) {
   {
     for (var p of posts) 
     { 
+      p.html = marked(p.md);
       Posts.getTableOfContents(p.md, (e, toc) => {
-        $log(toc);
         p.toc = marked(toc.toc);
         router.get(p.slug, app.renderHbs('post', p))
       })

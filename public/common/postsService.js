@@ -5,7 +5,7 @@ angular.module('APSvcPosts', [])
   .constant('API', '/v1/api')
 
   .factory('mdHelper', function mdHelperFactory() {
-    this.headingChanged = function(md)
+    this.headingsChanged = function(md)
     {
       var prevHeadings = headings;
       headings = md.match(/\n##.*/g) || [];
@@ -38,7 +38,7 @@ angular.module('APSvcPosts', [])
     }
     this.getToc = function(md, success)
     {      
-      if (mdHelper.headingChanged(md)) {
+      if (mdHelper.headingsChanged(md)) {
         $http.post(`${API}/posts-toc`, { md: md } ).success(success);  
       }
     }    
