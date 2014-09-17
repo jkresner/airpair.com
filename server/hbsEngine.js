@@ -6,7 +6,7 @@ export default function(app) {
 
 	var hbsEngine = hbs.express3({ partialsDir: `${app.dir}/server/views/partials` });
 
-	hbs.registerHelper('assetUrlToMedia', (assetUrl, cb) => {
+	hbs.registerHelper('assetUrlToMedia', (assetUrl) => {
 		var mediaHtml = `<img src="${assetUrl}" />`;
 		if (assetUrl.indexOf('http://youtu.be/') == 0) {
       var youTubeId = assetUrl.replace('http://youtu.be/', '');
@@ -32,5 +32,16 @@ export default function(app) {
 			data.authenticated = req.isAuthenticated()
 			data.user = req.user
 			res.status(200).render(`./${fileName}.hbs`, data)
+		}
+
+	app.renderHbsViewData = (fileName, viewDataFn) =>
+		(req, res) => {
+			viewDataFn(req, (e,data) => {
+				if (!data) { data = {} }
+				data.build = config.build
+				data.authenticated = req.isAuthenticated()
+				data.user = req.user
+				res.status(200).render(`./${fileName}.hbs`, data)
+			})
 		}
 }

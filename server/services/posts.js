@@ -2,6 +2,7 @@ import Svc from '../services/_service'
 import User from '../models/user'
 import Post from '../models/post'
 import generateToc from './postsToc'
+var marked = require('marked')
 
 var logging = false
 
@@ -18,15 +19,29 @@ var svc = new Svc(Post, logging)
 // ];
 
 var fields = {
-  listSelect: { 'by.name': 1, 'by.avatar': 1, title:1, slug: 1, created: 1, published: 1 }
+  listSelect: { 'by.name': 1, 'by.avatar': 1, 'meta.description': 1, title:1, slug: 1, created: 1, published: 1 }
 } 
 
 var queries = {
   published: { 'published' : { '$exists': true }}
 }
 
+export function inflateHtml(post) 
+{
+  if (post)
+  {
+    post.html = marked(post.md)
+    post.toc = marked(generateToc(post.md))
+  }
+  return post;
+}
+
 export function getById(id, cb) {
   svc.getById(id, cb) 
+}
+
+export function getBySlug(slug, cb) {
+  svc.searchOne({ slug: slug }, null, (e,r) => cb(e, inflateHtml(r))) 
 }
 
 export function getAll(cb) {
@@ -40,6 +55,11 @@ export function getPublished(cb) {
 export function getRecentPublished(cb) {
   var opts = { fields: fields.listSelect, options: { sort: 'published', limit: 10 } };
   svc.searchMany(queries.published, opts, cb) 
+}
+
+//-- Placeholder for showing similar posts to a currently displayed post
+export function getSimilarPublished(cb) {
+  cb(null,[])
 }
 
 export function getUsersPosts(id, cb) {
@@ -72,7 +92,7 @@ export function publish(id, o, cb) {
   if (!o.slug) { cb(new Error('Slug required for a published post'), null) }
   else
   {
-    if (o.slug.indexOf('/') != 0) { o.slug = '/'+o.slug; }
+    if (o.slug.indexOf('/') != 0) { o.slug.replace('/',''); }
   }
 
   o.updated = new Date()
