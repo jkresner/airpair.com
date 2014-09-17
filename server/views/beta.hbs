@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>V1 | AirPair</title>
+	<meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0;">	
+	<link rel="stylesheet" href="/v1/css/bootstrap.css" type="text/css" />
+	<link rel="stylesheet" href="/v1/css/index.css" type="text/css" />
+  <link rel='stylesheet' id='google-font-css'  href='//fonts.googleapis.com/css?family=Open+Sans%3A300%2C400%2C700&#038;ver=2.0.1' type='text/css' media='all' />
+</head>
+<body id="beta">
+
+{{> siteHeader }}
+
+<style type="text/css">
+	ul.stories li { color:green;list-style-type:circle; }
+	ul.stories li.noimplmob { color:#5FB060; }
+	ul.stories li.noimpl { color:#CC3D27; }	
+	ul.stories li.fail { color:red; }		
+	ul.stories li.mobile { list-style-type:disc; }
+	ul.stories li.draft { color:#3DBA9D; }
+</style>
+
+<div class="main-wrap">
+	<main>
+		<header>AirPair v1 Beta Testing</header>
+
+		<h4>Key</h4>		
+		<ul class="stories">
+			<li>Completed web only story</li>
+			<li class="mobile">Complete web + mobile story</li>
+			<li class="mobile noimplmob">Complet for web, incomplete on mobile</li>
+			<li class="draft">Feature UX need 2nd pass (suggestions welcome)</li>
+			<li class="mobile draft">Feature mobile UX need 2nd pass</li>			
+			<li class="noimpl">Incomplete for web</li>
+			<li class="noimpl mobile">Incomplete for web and mobile</li>			
+			<li class="fail">Failing on web</li>						
+			<li class="fail mobile">Failing on mobile</li>													
+		</ul>
+
+		<hr />
+		<p>As of <b><code>Build {{ build.version }}</code> Deployed {{ build.deployed }}</b>. The following stories are in-progress or complete. Test and email feedback to jk@airpair.com.</p>
+
+		<h4>Authentication</h4>
+		<ul class="stories">
+			<li class="mobile draft">Can login as a new user w google</li>
+			<li class="mobile draft">Can login as an existing (google) user w google</li>
+			<li class="mobile draft">Can create email/password login (not matching existing users email)</li>			
+			<li class="mobile draft">Can sign in with existing email/password login</li>						
+			<li class="noimpl">Can link email/passpord login with google login</li>									
+			<li class="noimpl">Can link google login with email/password</li>							
+			<li class="mobile">Can logout</li>	
+		</ul>
+
+		<h4>Posts</h4>
+		<ul class="stories">
+			<li class="mobile draft">Can see recent posts</li>	
+			<li class="mobile draft">Can view a post</li>									
+			<li class="mobile noimpl">Can share a post</li>												
+			<li class="mobile noimpl">Can bookmark a post</li>
+			<li class="draft">Can view my posts</li>										
+			<li class="draft">Can create a post</li>													
+			<li class="draft">Can edit a post</li>									
+			<li class="noimpl">Can publish a post (in editor role)</li>		
+		</ul>
+
+		<h4>Workshops</h4>
+		<ul class="stories">
+			<li class="mobile draft">Can see upcoming workshops</li>	
+			<li class="mobile draft">Can see historical workshops</li>				
+			<li class="mobile draft">Can view a workshop</li>					
+			<li class="mobile noimpl">Can share a workshop</li>												
+			<li class="mobile draft">Can bookmark a workshop</li>					
+			<li class="mobile noimpl">Can register to attend a workshop</li>			
+		</ul>
+
+		<h4>User settings</h4>
+		<ul class="stories">
+			<li class="noimpl">Can see how to update avatar</li>									
+			<li class="noimpl">Can verify account</li>												
+			<li class="noimpl">Can change account email</li>
+			<li class="noimpl">Can add, remove and order stack tags</li>									
+			<li class="noimpl">Can order bookmarks</li>									
+			<li class="noimpl">Can remove bookmark</li>												
+		</ul>
+	</main>
+</div>
+
+</body>
+</html>
