@@ -3,7 +3,7 @@ angular.module("APShare", ['angularLoad'])
   .directive('apShare', function(angularLoad) {
     
     var ngLoadPromise = angularLoad
-      .loadScript('http://i.po.st/static/v3/post-widget.js#publisherKey=miu9e01ukog3g0nk72m6&retina=true&init=lazy');
+      .loadScript('//i.po.st/static/v3/post-widget.js#publisherKey=miu9e01ukog3g0nk72m6&retina=true&init=lazy');
     
     window.pwidget_config = { shareQuote: false, afterShare: false }; 
 
