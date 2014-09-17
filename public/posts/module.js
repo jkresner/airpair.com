@@ -77,6 +77,13 @@ angular.module("APPosts", ['ngRoute','APFilters','APShare',
       })  
     });
 
+    console.log('angular.element(document.querySelector(.recent))', angular.element(document.querySelector('.recent')).find('article'))
+    if (angular.element(document.querySelector('.recent')).find('article').length == 0)
+    {
+      PostsService.getRecentPosts(function (result) {
+        $scope.recent = result;
+      })  
+    } 
   }])
 
 

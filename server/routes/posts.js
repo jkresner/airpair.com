@@ -19,8 +19,9 @@ export default function(app) {
   var router = require('express').Router()
 
   router.get(`/:tag/posts/:slug`, app.renderHbsViewData('post', vd.post))
-  router.get('/posts', app.renderHbsViewData('posts', vd.posts))     
-  router.get('/posts*', app.renderHbs('posts'))     
+  // router.get('/posts', app.renderHbsViewData('posts', vd.posts))     
+  // router.get('/posts*', app.renderHbs('posts'))     
+  router.get('/posts*', app.renderHbsViewData('posts', vd.posts))     
 
   return router
 

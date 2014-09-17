@@ -1,10 +1,17 @@
-<ul>
-  <li ng-repeat="p in myposts">
-    <span ng-if="p.published">{{ p.published | publishedTime: 'MM.DD' }}</span>
-    <a href="/posts/edit/{{p._id}}">{{ p.title }}</a>
-    <span ng-if="!p.published">(not yet published)</span>
-    <span ng-if="p.published">view 
-      <a href="/posts/{{p.slug}}" target="_blank">published</a>
-    </span>
-  </li>
-</ul>
+<table class="table table-striped">
+  <tr>
+    <th>Published</th>
+    <th>Created</th>
+    <th>Title</th>
+    <th></th>    
+  </tr>
+  <tr ng-repeat="p in myposts">
+    <td>{{ p.published | publishedTime: 'MM.DD' }}</td>
+    <td>{{ p.created | publishedTime: 'MM.DD' }}</td>  
+    <td>{{ p.title }}</td> 
+    <td>
+      <a href="/v1/posts/{{p.slug}}" target="_blank" ng-if="p.published">view</a>
+      <a href="/posts/edit/{{p._id}}" target="_blank" ng-if="!p.published">edit</a>
+    </td>     
+  </tr>
+</table>
