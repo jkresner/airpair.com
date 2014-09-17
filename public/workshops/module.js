@@ -1,4 +1,4 @@
-require('./filters.js');
+require('./../common/filters.js');
 require('./../directives/share.js');
 
 var feautredSlugs = [
@@ -23,8 +23,8 @@ angular.module("APWorkshops", ['ngRoute','APFilters','APShare'])
 
 	.constant('API', '/v1/api')
 
-	.config(['$locationProvider', '$routeProvider', '$sceProvider', 
-			function($locationProvider, $routeProvider, $sceProvider) {
+	.config(['$locationProvider', '$routeProvider', 
+			function($locationProvider, $routeProvider) {
 	
 		$locationProvider.html5Mode(true);
 
@@ -68,12 +68,15 @@ angular.module("APWorkshops", ['ngRoute','APFilters','APShare'])
 		});
 	}])
 
-	.controller('WorkshopCtrl', ['$scope', '$http', '$routeParams', 'API', 
-			function($scope, $http, $routeParams, API) {
+	.controller('WorkshopCtrl', ['$scope', '$http', '$routeParams', '$location', 'API', 
+			function($scope, $http, $routeParams, $location, API) {
 
 		$http.get(API+'/workshops/'+$routeParams.id).success(function (data) {
-			console.log('null data', data == '', data);
 			$scope.entry = data;
+		}).error(function(data, status) {
+			if (status == 404) {
+				$location.path('/workshops');
+			}
 		});
 	}])
 

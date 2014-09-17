@@ -1,9 +1,8 @@
 <ul>
 {{#each this}}
 	<li>
-		<span>{{id}}</span>
-		<a href="{{url}}">{{ title }}</a>
-		<i>by {{by}}</i>
+		<a href="/posts{{slug}}" target="_blank">{{ title }}</a>
+		<i>by {{by.name}}</i>
 	</li>
 {{/each}}
 </ul>
