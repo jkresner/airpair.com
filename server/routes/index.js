@@ -16,6 +16,7 @@ export default function(app)
 			(e,r) => res.status(200).render(`workshopsslide.hbs`, r))
 	})
 	
-	app.get( '/v1', app.renderHbs('index') ) // - while still running v0
 	app.get( '/', app.renderHbs('index') )
+	app.get( '/v1', app.renderHbs('index') ) // - while still running v0
+	app.get( '/v1/beta', app.renderHbs('beta') ) 
 }
