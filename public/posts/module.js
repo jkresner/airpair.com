@@ -1,18 +1,32 @@
 require('./../directives/share.js');
-require('./../directives/postsList.js');
 require('./../directives/post.js')
 require('./../common/filters.js');
 require('./../common/postsService.js');
 require('./../common/sessionService.js');
+require('./myPostsList.js');
 require('./editor.js');
 
 
 angular.module("APPosts", ['ngRoute','APFilters','APShare',
-  'APPostsList','APPostEditor','APPost', 'APSvcSession', 'APSvcPosts'])
+  'APMyPostsList','APPostEditor','APPost', 'APSvcSession', 'APSvcPosts'])
 
   .config(['$locationProvider', '$routeProvider', 
       function($locationProvider, $routeProvider) {
   
+    var resolveSession = ['SessionService', '$window', '$q',
+      function(SessionService, $window, $q) { 
+        return SessionService.getSession().then(
+          function(data) {
+            return data;
+          },
+          function()
+          {   
+            $window.location = '/v1/auth/login?returnTo=/posts/new';
+            return $q.reject();
+          }
+        ); 
+    }]; 
+
     $locationProvider.html5Mode(true);
 
     $routeProvider.when('/posts', {
@@ -22,77 +36,71 @@ angular.module("APPosts", ['ngRoute','APFilters','APShare',
 
     $routeProvider.when('/posts/new', {
       template: require('./author.html'),
-      controller: 'NewCtrl as author'
+      controller: 'NewCtrl as author',
+      resolve: { session: resolveSession }
     });
     
     $routeProvider.when('/posts/edit/:id', {
       template: require('./author.html'),
-      controller: 'EditCtrl as author'
+      controller: 'EditCtrl as author',
+      resolve: { session: resolveSession }      
     });
 
     $routeProvider.when('/posts/publish/:id', {
       template: require('./author.html'),
-      controller: 'PublishCtrl as author'
+      controller: 'PublishCtrl as author',
+      resolve: { session: resolveSession }
     });
 
   }])
 
   .run(['$rootScope', 'SessionService', function($rootScope, SessionService) {
-    SessionService.getSessionFull(function (r) {
-      $rootScope.session = r;
-      $rootScope.$broadcast('sessionUpdated', $rootScope.session);
-    }, function(e) {
-      $rootScope.session = { authenticated: false };
-      $rootScope.$broadcast('sessionUnavailable', $rootScope.session);
-    });
+    
+    SessionService.onAuthenticated( (session) => {
+      $rootScope.session = session;
+    })
+
+    SessionService.onUnauthenticated( (session) => {
+      // $rootScope.session = { authenticated: false };
+    })
+  
   }])
 
 
-  .controller('IndexCtrl', ['$scope','PostsService', 
-      function($scope, PostsService) {
+  .controller('IndexCtrl', ['$scope','PostsService', 'SessionService', 
+      function($scope, PostsService, SessionService) {
     var self = this;
 
-    $scope.$on('sessionUpdated', (event, session) => {
+    SessionService.onAuthenticated( (session) => {
       PostsService.getMyPosts(function (result) {
         $scope.myposts = result;
-      });  
+      })  
     });
 
   }])
 
 
-  .controller('NewCtrl', ['$scope', 'PostsService', '$location', 
-      function($scope, PostsService, $location) {
+  .controller('NewCtrl', ['$scope', 'PostsService', '$location', 'session',
+      function($scope, PostsService, $location, session) {
     
     var self = this;
 
-    if ($scope.session && $scope.session.authenticated == false) {
-      return window.location = '/v1/auth/login?returnTo=/posts/new';
-    }
-    else
-    {
-      $scope.preview = { mode: 'edit' };
-      $scope.post = { md: "Save post to start authoring markdown ... ", by: $scope.session };
-      
-      $scope.$on('sessionUpdated', (event, session) => {
-        $scope.post.by = session 
-      });
+    $scope.preview = { mode: 'edit' };
+    $scope.post = { md: "Save post to start authoring markdown ... ", by: $scope.session };
+    $scope.post.by = session  
 
-      $scope.$on('sessionUnavailable', (event, session) => {
-        window.location = '/v1/auth/login?returnTo=/posts/new';
+    $scope.save = () => {
+      $scope.post.md = "Type markdown ..."  
+      PostsService.create($scope.post, (result) => {
+        $location.path('/posts/edit/'+result._id);
       });
-
-      $scope.save = () => {
-        $scope.post.md = "Type markdown ..."  
-        PostsService.create($scope.post, (result) => {
-          $location.path('/posts/edit/'+result._id);
-        });
-      }
     }
+
   }])
 
-  .controller('EditCtrl', ['$scope', 'PostsService', '$routeParams',
-    function($scope, PostsService, $routeParams) {
+  .controller('EditCtrl', ['$scope', 'PostsService', '$routeParams', 
+    'session',
+    function($scope, PostsService, $routeParams, session) {
     
     var self = this;
     $scope.preview = { mode: 'edit' };
@@ -112,7 +120,8 @@ angular.module("APPosts", ['ngRoute','APFilters','APShare',
 
 
   .controller('PublishCtrl', ['$scope', 'PostsService', '$routeParams',
-    function($scope, PostsService, $routeParams) {
+    'session',
+    function($scope, PostsService, $routeParams, session) {
     
     var self = this;
     $scope.preview = { mode: 'publish' };
