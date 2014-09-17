@@ -24,4 +24,3 @@ export function getBySlug(slug, cb) {
     cb(e, r)
   })
 }
-
