@@ -3,7 +3,6 @@ import postsRouter from './posts'
 import authRouter from './auth'
 import * as WorkshopsService from '../services/workshops'
 
-
 export default function(app)
 {	
 	app.use('/v1/auth', authRouter(app))
