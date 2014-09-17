@@ -17,6 +17,7 @@ var Author = {
   userId:       { required: true, type: ObjectId, ref: 'User', index: true },
   name:         { required: true, type: String },  
   avatar:       { required: true, type: String },
+  username:     { type: String }, // if they are an expert
   tw:           { type: String },   
   gh:           { type: String },     
   in:           { type: String },       

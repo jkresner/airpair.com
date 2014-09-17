@@ -1,5 +1,5 @@
 <header>
-  <a href="http://v1.airpair.com/" tile="v1.airpair.com"></a>
+  <a href="http://www.airpair.com/v1" tile="v1.airpair.com"></a>
   <ul>
     {{!-- <li><a href="/experts">Experts</a></li> --}}
     <li><a href="http://www.airpair.com/posts" target="_self">Posts</a></li>
@@ -7,7 +7,7 @@
     {{!--<li><a href="#" target="_self">Pair Programming</a></li>
     <li><a href="#" target="_self">Terms of Service</a></li>--}}
   	<li>
-      {{#if authenticated }}<a href="/v1/auth/logout" target="_self">Logout</a> {{ user.name }}
+      {{#if authenticated }}<a href="/v1/auth/logout" target="_self">Logout</a> | {{ user.name }}
       {{ else }}<a href="/v1/auth/login" target="_self">Login</a>{{/if}}
     </li>
   </ul>
