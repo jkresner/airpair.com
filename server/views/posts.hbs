@@ -18,11 +18,11 @@
 		
  		<script id="index" type="text/ng-template">
  			<header>Posts</header>
-			<h1>Popular posts</h1>
-			{{> postList posts }}
-			<h1>My Posts</h1>
-			<a href="/posts/new" class="btn">Author new post</a>
-			<br />
+			<h3>Recent</h3>
+			<div class="recent posts">
+				{{#each recent}}{{> postListItem this }}{{/each}}
+			</div>
+			<h3>My Posts</h3>
 			<br /><br />
 			<div ap-my-posts-list=""></div>
  		</script>

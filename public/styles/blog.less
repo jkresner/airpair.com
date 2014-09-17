@@ -10,8 +10,60 @@ body#post {
 	} 
 }  
 
+.posts {
+	margin-left:-10px;
+	text-align:center;
+	article { 
+		text-align:left;
+		position:relative;
+		width:284px; 
+		height:200px;
+		margin:9px;
+		border:solid 1px @lightgray;
+		border-radius:3px;
+		padding:12px 12px 0px 12px;
+		font-size:12px;
+		line-height:14px;
+		display:inline-block;			
+	
+		header { min-height:62px;overflow:hidden }
+
+		h2 {
+			font-size:14px;
+			font-weight:bold;
+			margin:0px;
+			line-height:18px;
+			color:@gray;
+			margin-bottom:2px;
+		}
+
+		.entry-meta { color:@gray;font-size:11px }
+
+		footer {
+			position:absolute;
+			bottom:10px;
+			font-size:9px;
+			text-align:right;
+			width:92%;
+		}
+
+		p { line-height:16px;margin-bottom:0 }
+		.entry-categories { color:@gray;width:100% }
+		.entry-content { height:80px;overflow:hidden;color:@gray }
+		.entry-author { font-weight:bold;color:@orange }
+		.entry-author-image { width:50px;border-radius:25px;display:inline;margin:3px 10px 0 0 }
+	}
+
+	article:hover { 
+		background:@lightblue;
+	}
+}
+
+
 body#posts {
 	
+	h3 { text-align:center;margin-bottom:0px;font-size:18px }
+
 	#author {
 		
 	}
