@@ -20,7 +20,10 @@ export default function(app) {
 	});
 
 	hbs.registerHelper('isoMoment', date => moment(date).toISOString());
-	hbs.registerHelper('dateFormat', (date, format) => moment(date).format(format));
+	hbs.registerHelper('dateFormat', (date, format) => {
+		if (!date) { return ""; }
+		return moment(date).format(format);
+	})
 
 	app.set('views', app.dir + '/server/views');
 	app.engine('hbs', hbsEngine);

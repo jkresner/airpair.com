@@ -23,7 +23,8 @@ var fields = {
 } 
 
 var queries = {
-  published: { 'published' : { '$exists': true }}
+  published: { 'published' : { '$exists': true }},
+  updated: { 'updated' : { '$exists': true }}  
 }
 
 export function inflateHtml(post) 
@@ -44,8 +45,12 @@ export function getBySlug(slug, cb) {
   svc.searchOne({ slug: slug }, null, (e,r) => cb(e, inflateHtml(r))) 
 }
 
-export function getAll(cb) {
-  svc.getAll(cb)
+export function getAllAdmin(cb) {
+  var opts = { fields: fields.listSelect, options: { sort: { 'updated': -1 } } };
+  svc.searchMany(queries.updated, opts, (e,r) => { 
+    for (var p of r) { p.url = `/posts/publish/${p._id}` }
+    cb(e, r)
+  })
 }
 
 export function getPublished(cb) {
@@ -54,7 +59,10 @@ export function getPublished(cb) {
 
 export function getRecentPublished(cb) {
   var opts = { fields: fields.listSelect, options: { sort: 'published', limit: 10 } };
-  svc.searchMany(queries.published, opts, cb) 
+  svc.searchMany(queries.published, opts, (e,r) => { 
+    for (var p of r) { p.url = `/v1/posts/${p.slug}` }
+    cb(e, r)
+  })
 }
 
 //-- Placeholder for showing similar posts to a currently displayed post
