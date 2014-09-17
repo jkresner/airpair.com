@@ -1,12 +1,24 @@
 <html lang="en-US" prefix="og: http://ogp.me/ns#">
 <head>
-  <title>{{ title }} | AirPair</title>
+  <title>
+    {{#if meta.title }}{{meta.title}}
+    {{else}} {{ title }} | AirPair {{/if}}
+  </title>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0;">
+  {{#if meta.canonical }}<link rel="canonical" href="{{ meta.canonical }}" />{{/if}}  
+  {{#if meta.keywords }}<meta name="keywords" content="{{ meta.keywords }}" />{{/if}}
+  {{#if meta.description }}<meta name="description" content="{{ meta.description }}" />{{/if}}
+  <meta property="og:locale" content="en_US"/>
+  <meta property="og:type" content="article"/>
+  {{#if meta.ogUrl }}<meta property="og:url" content="{{meta.ogUrl}}"/>{{/if}}
+  {{#if meta.ogTitle }}<meta property="og:title" content="{{meta.ogTitle}}"/>{{/if}}
+  {{#if meta.ogDescription }}<meta property="og:description" content="{{meta.ogDescription}}"/>{{/if}}
+  {{#if meta.ogImage }}<meta property="og:image" content="{{meta.ogImage}}"/>{{/if}}
+  {{#if meta.ogVideo }}<meta property="og:video" content="{{meta.ogVideo}}"/>{{/if}}
   <link rel="stylesheet" href="/v1/css/bootstrap.css" type="text/css" />
   <link rel='stylesheet' href='/v1/css/blog.css' type='text/css' media='all' />
   <link rel='stylesheet' id='google-font-css'  href='//fonts.googleapis.com/css?family=Open+Sans%3A300%2C400%2C700&#038;ver=2.0.1' type='text/css' media='all' />
-  <link rel="canonical" href="//www.airapir.com{{url}}" />
 </head>
 <body id="post">
 
@@ -19,9 +31,10 @@
         <a href="//www.airpair.com/posts">Posts</a>
         &nbsp; > &nbsp;
         <span class="entry-author" itemprop="author" itemscope="itemscope" itemtype="//schema.org/Person">
-        <a href="//www.airpair.com/book/{{by}}" class="entry-author-link" itemprop="url" rel="author" target="_blank"><span class="entry-author-name" itemprop="name">{{by}}</span></a></span>
+        {{!-- <a href="//www.airpair.com/book/{{by}}" class="entry-author-link" itemprop="url" rel="author" target="_blank"></a> --}}
+        <span class="entry-author-name" itemprop="name">{{by.name}}</span></span>
         &nbsp; > &nbsp;
-        <time class="entry-time" itemprop="datePublished" datetime="{{ isoMoment date }}">{{ dateFormat date 'DD MMM, YYYY' }}</time> 
+        <time class="entry-time" itemprop="datePublished" datetime="{{ isoMoment published }}">{{ dateFormat published 'DD MMM, YYYY' }}</time> 
         
       </p>
     </header>
@@ -36,18 +49,23 @@
       <script src="//i.po.st/static/v3/post-widget.js#publisherKey=miu9e01ukog3g0nk72m6&retina=true" type="text/javascript"></script>
       <script type="text/javascript"> var pwidget_config = { shareQuote: false, afterShare: false }; </script>
 
+      <h4 id="table-of-contents" ng-if="preview.toc">Table of Contents</h4>
+      {{{toc}}}
+      <h6 id="author">Author</h6>
+      <p><img alt="{{by.name}}" src="{{by.avatar}}?s=100"> </p>
+      <blockquote>
+        <p>{{by.bio}}</p>
+      </blockquote>
+      <p class="asset">{{ assetUrl }}</p>
+      <hr />
 
-      {{ mdEntry id }}
-
-      <h3>All posts in this series </h3>
-      
-      {{> postList posts }}
+      {{ mdEntry md }}
 
       <div id="disqus_thread"></div>
       <script type="text/javascript">
           (function() {
               var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-              dsq.src = '//airpairblog.disqus.com/embed.js';
+              dsq.src = 'https://airpairblog.disqus.com/embed.js';
               (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
           })();
       </script>

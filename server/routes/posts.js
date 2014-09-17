@@ -1,15 +1,19 @@
 import * as Posts from '../services/posts'
-
+var marked = require('marked');
 
 export default function(app) {
   
   var router = require('express').Router()
 
-  Posts.getAll( (e, posts) => 
+  Posts.getPublished( (e, posts) => 
   {
     for (var p of posts) 
     { 
-      router.get(p.slug, app.renderHbs('post', p))
+      Posts.getTableOfContents(p.md, (e, toc) => {
+        $log(toc);
+        p.toc = marked(toc.toc);
+        router.get(p.slug, app.renderHbs('post', p))
+      })
     }
 
     router.get('/*', app.renderHbs('posts', { posts:posts }))   
