@@ -10,12 +10,81 @@ body#post {
 	} 
 }  
 
+body#posts {
+	
+	#author {
+		
+	}
+
+	.editor {
+		padding:10px 16px 0px 16px;
+		span { font-weight:normal;font-size:11px } 
+		.meta {
+			display:none;
+			width:100%;
+			float:right;
+			.dates 
+			{
+				margin:10px;
+				line-height:10px;
+				float:right;width:40%;
+				font-size:10px;
+				label { font-size:10px;float:left;clear:left;display:block;width:56px }
+				span { float:left }
+			}
+		}
+		.md { float:left;width:60%;
+			display:none;
+			textarea { padding:4px;height:256px;font-size:11px }
+		}
+		.md + .meta {
+			width:38%;
+		}
+		.form-actions { 
+			height:40px;
+			clear:both;
+			text-align:center;
+			.btn { width:19%;margin:0px 2px 8px 2px;padding:3px 0px;display:none }
+			.btnPreview { display:inline-block; }
+		}		
+	}
+
+	.editor + hr { margin:4px 0 0 0;border-color:@lightblue; }
+	.preview + hr { margin:0px 0px 4px 0px;border-color:@lightblue; }
+
+	#tips { display:none }
+
+	.edit {
+		#preview {
+			.preview { 
+				width:914px;max-height:720px;overflow-y:scroll;
+				border-right:solid 1px @lightblue;
+			}
+		}
+
+		#tips { display:block;background-color:@lightblue;padding:4px 6px;font-size:10px;line-height:14px }
+		#tips ul { padding:4px 14px }		
+	}
+	
+	.edit, .publish {
+	
+		.form-actions { .btn { display:inline-block } }
+		.editor { background-color:@lightblue; }
+		.md { display:block }
+		.meta { display:block }		
+
+		.publishMeta input { font-size:11px;padding:4px;height:26px }
+
+	}
+}
+
 .blogpost {
+	clear:both;
 	padding:0 0px;
 
 	header { border-bottom:solid 1px @lightgray;margin-bottom:20px }
 
-	hr { max-width:@mainElmWidth;color:@lightblue;margin-left:0 }
+	hr { max-width:@mainElmWidth;color:@lightblue;margin:10px 0 }
 	h1 { margin:0;font-size:42px;padding-left:@mainElmPad }
 	h2 { font-size:28px;margin-bottom:5px;padding-left:@mainElmPad }
 	p { margin-top:0;max-width:@mainElmWidth;vertical-align:top;padding-left:@mainElmPad }
@@ -26,8 +95,20 @@ body#post {
 	ul { list-style:none;margin:0;padding-left:@mainElmPad }
 	ul ul { margin-left:12px }
 
-	iframe { margin:20px 0px 20px 0px }
+	iframe { margin:0px 0px 0px 0px }
 	img { max-width:100% }
+
+	p.asset { 
+		margin-bottom:0;
+	  span {
+	  	display:block; 
+			text-align:center;
+			border:dotted 1px @lightgray;
+			min-height:360px;
+	  	line-height:40px; 
+	  	padding-top:40px;
+	  }
+ }
 
 	.pw-widget {
 		float:right;
@@ -60,14 +141,21 @@ body#post {
 	#author { color:white;margin:2px;clear:left }
 	#author + p { width:80px;height:80px;display:inline-block;maring-top:20px }
 	#author + p img { width:100%;height:100%;border-radius:50% }
-	blockquote { width:540px;display:inline-block;margin:0 0px 0 10px;font-style:italic;font-size:14px;padding:0 0px 0 10px; }
-	blockquote p { width:100% }
-	blockquote + p { margin-top:20px } // for images underneath the blockquote
+	blockquote { 
+		height:80px;
+		width:540px;display:inline-block;margin:0 0px 0 10px;
+		font-style:italic;font-size:14px;padding:0 0px 0 10px;
+		overflow:hidden; }
+	blockquote p { 
+		width:100%;
+		height:80px;
+		margin:0; }
+	blockquote + p { margin-top:14px } // for images under blockquote
+	blockquote + iframe { margin-top:14px } // for youtube iframe under blockquote
 
 	#disqus_thread {
 		min-height:700px
 	}
-
 
   @media only screen and (max-width:900px) {
     h1 { font-size:32px;line-height:48px }

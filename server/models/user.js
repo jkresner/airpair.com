@@ -20,6 +20,8 @@ User = new Schema({
   name: String,
   initialis: String, 
 
+  bio: String, // Used for blog posts
+
   local : {
     password : String
   },

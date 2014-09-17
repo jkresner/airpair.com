@@ -26,15 +26,15 @@
 
   <div class="action">
     <div ng-if="entry.youtube">
-      <a href="/workshops/signup/{{entry.slug}}" class="btn" style="width:300px">Get access to all live talks</a>      
+      <a ng-href="/workshops/signup/{{entry.slug}}" class="btn" style="width:300px">Get access to all live talks</a>      
       <label>with AirPair Membership</label>        
     </div>
     <div ng-if="!entry.youtube">
-      <a href="/workshops/signup/{{entry.slug}}" class="btn" style="width:300px">Sign up to attend workshop</a>
+      <a ng-href="/workshops/signup/{{entry.slug}}" class="btn" style="width:300px">Sign up to attend workshop</a>
       <label>3 spots left</label>  
     </div>    
   </div>
-  <div class="player">
+  <div class="player" ng-if="entry">
 
     <div class="recording" ng-if="entry.youtube">
 
@@ -42,9 +42,8 @@
 
     </div>
   
-    <div class="slide" ng-if="!entry.youtube && entry && entry.slug">
-      <iframe src="{{ '/workshops-slide/' + entry.slug  | trustUrl }}" width="640" height="360" ng-if="entry" frameborder="0" scrolling="no" style="overflow:hidden"></iframe>
-
+    <div class="slide" ng-if="entry && !entry.youtube && entry.slug">
+      <iframe ng-src="{{ '/workshops-slide/' + entry.slug  | trustUrl }}" width="640" height="360" frameborder="0" scrolling="no" style="overflow:hidden"></iframe>
     </div>
 
   </div>

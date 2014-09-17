@@ -1,6 +1,6 @@
 import {google,local} from '../identity/auth/providers/index'
 import {logout,authDone} from '../identity/auth/actions'
-import {setReturnTo,setMixpanelId,ensureAuthd} from '../identity/auth/middleware'
+import {setReturnTo,setMixpanelId} from '../identity/auth/middleware'
 
 
 export default function(app) {
