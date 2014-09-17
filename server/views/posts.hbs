@@ -23,8 +23,11 @@
 				{{#each recent}}{{> postListItem this }}{{/each}}
 			</div>
 			<h3>My Posts</h3>
-			<br /><br />
-			<div ap-my-posts-list=""></div>
+			<br />
+			<div class="editOptions">
+				<a href="/posts/new" class="btn">Create new post</a>			
+			</div>
+			<div class="myposts" ap-my-posts-list=""></div>
  		</script>
 
 		<ng-view></ng-view>
