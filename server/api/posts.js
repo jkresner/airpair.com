@@ -24,12 +24,16 @@ function publish(req, cb) {
   Svc.publish.call(this, req.params.id, req.body, cb)
 }
 
+function recent(req, cb) {
+  Svc.getRecentPublished.call(this, cb)
+}
+
 var auth = authd({isApiRequest:true})
 
 export default class {
 
   constructor(app) {
-    app.get('/posts', API.list)
+    app.get('/posts/recent', serve(recent))
     app.get('/posts/me', auth, serve(me))     
     app.get('/posts/:id', API.detail)  
     

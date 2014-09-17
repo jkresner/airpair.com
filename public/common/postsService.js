@@ -36,6 +36,10 @@ angular.module('APSvcPosts', [])
     {
       $http.get(`${API}/posts/me`).success(success);
     }
+    this.getRecentPosts = function(success)
+    {
+      $http.get(`${API}/posts/recent`).success(success);
+    }
     this.getToc = function(md, success)
     {      
       if (mdHelper.headingsChanged(md)) {
