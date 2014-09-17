@@ -1,4 +1,4 @@
-import {serve, initAPI} from './_api2'
+import {serve, initAPI} from './_api'
 import * as Svc from '../services/posts'
 import {authd} from '../identity/auth/middleware'
 
