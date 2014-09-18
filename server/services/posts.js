@@ -18,22 +18,29 @@ var queries = {
   updated: { 'updated' : { '$exists': true }}  
 }
 
-export function inflateHtml(post) 
-{
-  if (post)
-  {
-    post.html = marked(post.md)
-    post.toc = marked(generateToc(post.md))
+var addUrl = (cb) =>
+  (e,r) => { 
+    for (var p of r) { if (p.slug) { p.url = `/v1/posts/${p.slug}` } }
+    cb(e,r)
   }
-  return post;
-}
+
+export var inflateHtml = (cb) =>
+  (e,r) => { 
+    if (r)
+    {
+      r.html = marked(r.md)
+      r.toc = marked(generateToc(r.md))
+    }
+    cb(e,r)
+  }
+
 
 export function getById(id, cb) {
   svc.getById(id, cb) 
 }
 
 export function getBySlug(slug, cb) {
-  svc.searchOne({ slug: slug }, null, (e,r) => cb(e, inflateHtml(r))) 
+  svc.searchOne({ slug: slug }, null, inflateHtml(cb)) 
 }
 
 export function getAllAdmin(cb) {
@@ -50,10 +57,13 @@ export function getPublished(cb) {
 
 export function getRecentPublished(cb) {
   var opts = { fields: fields.listSelect, options: { sort: 'published', limit: 10 } };
-  svc.searchMany(queries.published, opts, (e,r) => { 
-    for (var p of r) { p.url = `/v1/posts/${p.slug}` }
-    cb(e, r)
-  })
+  svc.searchMany(queries.published, opts, addUrl(cb))
+}
+
+export function getUsersPublished(username, cb) {
+  var opts = { fields: fields.listSelect, options: { sort: 'published' } };
+  var query = _.extend({ 'by.username': username }, queries.published)
+  svc.searchMany(query, opts, addUrl(cb))
 }
 
 //-- Placeholder for showing similar posts to a currently displayed post
@@ -105,5 +115,5 @@ export function publish(id, o, cb) {
   o.publishedBy = this.user._id
   //-- todo, authorize for editor role
 
-  svc.update(id, o, cb) 
+  svc.update(id, o, addUrl(cb)) 
 }

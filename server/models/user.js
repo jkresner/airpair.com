@@ -20,6 +20,15 @@ User = new Schema({
   name: String,
   initialis: String, 
 
+  username: {
+    type: String,
+    index: {
+      sparse: true,      
+      unique: true,
+      dropDups: true
+    }
+  },
+
   bio: String, // Used for blog posts
 
   local : {

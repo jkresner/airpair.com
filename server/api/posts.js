@@ -28,6 +28,10 @@ function recent(req, cb) {
   Svc.getRecentPublished.call(this, cb)
 }
 
+function byuser(req, cb) {
+  Svc.getUsersPublished.call(this, req.params.id, cb)
+}
+
 var auth = authd({isApiRequest:true})
 
 export default class {
@@ -36,7 +40,8 @@ export default class {
     app.get('/posts/recent', serve(recent))
     app.get('/posts/me', auth, serve(me))     
     app.get('/posts/:id', API.detail)  
-    
+    app.get('/posts/by/:id', serve(byuser))     
+
     app.post('/posts', auth, serve(create))     
     app.post('/posts-toc', auth, serve(toc))     
     app.put('/posts/:id', auth, serve(update))  
