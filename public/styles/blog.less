@@ -16,25 +16,26 @@ body#post {
 	article { 
 		text-align:left;
 		position:relative;
-		width:284px; 
+		width:286px; 
 		height:200px;
-		margin:9px;
+		margin:6px;
+		padding:0px;		
 		border:solid 1px @lightgray;
 		border-radius:3px;
-		padding:12px 12px 0px 12px;
 		font-size:12px;
 		line-height:14px;
 		display:inline-block;			
 	
-		header { min-height:62px;overflow:hidden }
+		> a { padding:12px 12px 0px 12px;display:block }
+
+		header { min-height:60px;overflow:hidden }
 
 		h2 {
 			font-size:14px;
 			font-weight:bold;
-			margin:0px;
+			margin:0px 0px 1px 0px;
 			line-height:18px;
 			color:@gray;
-			margin-bottom:2px;
 		}
 
 		.entry-meta { color:@gray;font-size:11px }
@@ -47,7 +48,7 @@ body#post {
 			width:92%;
 		}
 
-		p { line-height:16px;margin-bottom:0 }
+		p { line-height:16px;margin:0;padding:0 }
 		.entry-categories { color:@gray;width:100% }
 		.entry-content { height:80px;overflow:hidden;color:@gray }
 		.entry-author { font-weight:bold;color:@orange }

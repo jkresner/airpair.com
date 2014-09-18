@@ -30,6 +30,7 @@ export default function(app) {
 
   // -- Temporary
   app.get('/v1/adm', app.renderHbsViewData('admin', vd.admposts) )  
+  app.get('/me/*', app.renderHbsViewData('posts', vd.posts) )     
 
   return router
 

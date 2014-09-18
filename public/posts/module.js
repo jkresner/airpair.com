@@ -52,6 +52,12 @@ angular.module("APPosts", ['ngRoute','APFilters','APShare',
       resolve: { session: resolveSession }
     });
 
+    $routeProvider.when('/me/:username', {
+      template: require('../me/profile.html'),
+      controller: 'ProfileCtrl as profile',
+      resolve: { session: resolveSession }
+    });
+
   }])
 
   .run(['$rootScope', 'SessionService', function($rootScope, SessionService) {
@@ -174,6 +180,19 @@ angular.module("APPosts", ['ngRoute','APFilters','APShare',
       });
     }
 
+  }])
+
+//-- this will be refactored out of the posts module
+.controller('ProfileCtrl', ['$scope', 'PostsService', '$routeParams',
+    'session',
+  function($scope, PostsService, $routeParams, session) {  
+    
+    $scope.username = $routeParams.username;
+
+    PostsService.getByUsername($routeParams.username, (posts) => {
+      $scope.posts = posts;
+    });
+  
   }])
 
 ;

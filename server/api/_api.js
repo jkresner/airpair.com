@@ -1,4 +1,4 @@
-var logging = true
+var logging = false
 
 
 var cbSend = (res, next) => {
