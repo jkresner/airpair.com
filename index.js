@@ -3,6 +3,7 @@ import routes from './server/routes/index'
 import hbsEngine from './server/hbsEngine'
 import * as mongo from './server/mongoInit'
 import session from './server/identity/session'
+require('colors')
 
 
 // DO NOT MOVE ANYTHING IN THIS FILE
@@ -30,8 +31,8 @@ export function run(appdir)
 	routes(app)
 
 	app.use(function(err, req, res, next){
-	  console.error(err.stack)
-	  res.send(500, 'Something broke!')
+	  console.log(err.stack.red)
+	  res.status(400).send('Something broke!<br /><br />'+err.message)
 	})
 
 	var server = app.listen(process.env.PORT || 3333, function() {

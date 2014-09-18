@@ -1,0 +1,34 @@
+<article itemscope="itemscope" itemtype="http://schema.org/BlogPosting" itemprop="blogPost">
+<a href="{{ url }}" title="{{ title }}" target="_self" rel="bookmark">
+  <header class="entry-header">
+    <h2 class="entry-title" itemprop="headline">{{ title }}</h2> 
+    <p class="entry-meta">
+      <time class="entry-time" itemprop="datePublished" datetime="{{ isoMoment published }}">{{ dateFormat published 'DD MMM, YYYY' }}</time> 
+      by <span class="entry-author" itemprop="author" itemscope="itemscope" itemtype="http://schema.org/Person">
+        
+      {{!-- <a href="http://www.airpair.com/book/alexandruvladutu" class="entry-author-link" itemprop="url" rel="author"></a> --}}
+      <span class="entry-author-name" itemprop="name">{{ by.name }}</span>
+    
+      </span> 
+      {{!-- <span class="entry-comments-link"><a href="http://www.airpair.com/javascript/node-js-tutorial/#disqus_thread" data-disqus-identifier="34170 http://www.airpair.com/?p=34170">1 Comment</a></span> 
+      <a class="post-edit-link" href="http://www.airpair.com/wp-admin/post.php?post=34170&amp;action=edit">(Edit)</a>
+       --}}
+    </p>
+  </header>
+  <div class="entry-content" itemprop="text">
+    <img class="entry-author-image" itemprop="image" src="{{ by.avatar }}?s=50" align="left" />
+    <p>{{ meta.description }}</p>
+  </div>
+</a>
+  <footer class="entry-footer">
+    <p class="entry-meta">
+      <span class="entry-categories"> 
+        <a href="http://www.airpair.com/angularjs" title="View all posts in AngularJS posts" rel="category tag">{ruby-on-rails}</a>
+        <a href="http://www.airpair.com/angularjs" title="View all posts in AngularJS posts" rel="category tag">{angularjs}</a>
+        {{#each tags}}
+          <a href="http://www.airpair.com/{{slug}}" title="View all posts in {{name}}" rel="category tag">{{name}}</a>
+        {{/each}}
+      </span>
+    </p>
+  </footer>
+</article>

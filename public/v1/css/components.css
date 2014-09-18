@@ -148,7 +148,7 @@ main a:hover {
     width: 320px;
   }
 }
-main header {
+main .ng-scope > header {
   height: 35px;
   margin: 0 auto 20px auto;
   padding: 9px 0;
@@ -168,7 +168,7 @@ main header {
   text-overflow: ellipsis;
 }
 @media only screen and (max-width: 900px) {
-  main header {
+  main .ng-scope > header {
     padding: 9px 2px;
   }
 }

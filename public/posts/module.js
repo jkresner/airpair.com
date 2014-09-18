@@ -2,6 +2,7 @@ require('./../directives/share.js');
 require('./../directives/post.js')
 require('./../common/filters.js');
 require('./../common/postsService.js');
+require('./../common/postHelpers.js');
 require('./../common/sessionService.js');
 require('./myPostsList.js');
 require('./editor.js');
@@ -52,6 +53,12 @@ angular.module("APPosts", ['ngRoute','APFilters','APShare',
       resolve: { session: resolveSession }
     });
 
+    $routeProvider.when('/me/:username', {
+      template: require('../me/profile.html'),
+      controller: 'ProfileCtrl as profile',
+      resolve: { session: resolveSession }
+    });
+
   }])
 
   .run(['$rootScope', 'SessionService', function($rootScope, SessionService) {
@@ -77,6 +84,13 @@ angular.module("APPosts", ['ngRoute','APFilters','APShare',
       })  
     });
 
+    // console.log('angular.element(document.querySelector(.recent))', angular.element(document.querySelector('.recent')).find('article'))
+    // if (angular.element(document.querySelector('.recent')).find('article').length == 0)
+    // {
+    //   PostsService.getRecentPosts(function (result) {
+    //     $scope.recent = result;
+    //   })  
+    // } 
   }])
 
 
@@ -126,6 +140,13 @@ angular.module("APPosts", ['ngRoute','APFilters','APShare',
     var self = this;
     $scope.preview = { mode: 'publish' };
   
+    $scope.setPublishedOverride = () => {
+      if (!$scope.post.publishedOverride)
+      {
+        $scope.post.publishedOverride = $scope.post.published || moment().format()
+      }
+    }
+
     PostsService.getById($routeParams.id, (r) => {
       if (!r.slug) {
         r.slug = r.title.toLowerCase().replace(/ /g, '-');
@@ -142,23 +163,37 @@ angular.module("APPosts", ['ngRoute','APFilters','APShare',
 
         r.meta= { 
           title: r.title,
-          canonical: 'http://www.airpair.com/' + r.slug,
+          canonical: 'http://www.airpair.com/v1/posts/' + r.slug,
           ogTitle: r.title,
           ogImage: ogImage,
           ogVideo: ogVideo,
-          ogUrl: 'http://www.airpair.com/' + r.slug
+          ogUrl: 'http://www.airpair.com/v1/posts/' + r.slug
         }        
       }
+
       $scope.post = _.extend(r, { saved: true});
     });
 
     $scope.save = () => {
-      $scope.post.md = angular.element(document.querySelector( '#markdownTextarea' ) ).val(),
+      $scope.post.md = angular.element(document.querySelector( '#markdownTextarea' ) ).val();
       PostsService.publish($scope.post, (r) => {
         $scope.post = _.extend(r, { saved: true});
       });
     }
 
+  }])
+
+//-- this will be refactored out of the posts module
+.controller('ProfileCtrl', ['$scope', 'PostsService', '$routeParams',
+    'session',
+  function($scope, PostsService, $routeParams, session) {  
+    
+    $scope.username = $routeParams.username;
+
+    PostsService.getByUsername($routeParams.username, (posts) => {
+      $scope.posts = posts;
+    });
+  
   }])
 
 ;

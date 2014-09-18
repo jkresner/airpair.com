@@ -2,35 +2,53 @@ import Svc from '../services/_service'
 import User from '../models/user'
 import Post from '../models/post'
 import generateToc from './postsToc'
+var marked = require('marked')
 
 var logging = false
 
 var userSvc = new Svc(User, logging)
 var svc = new Svc(Post, logging)
 
-// var posts = [	
-//   { id: '09.04', tag: 'javscript', title: 'Migrating CoffeeScript to ES6 JavaScript', by: 'hackerpreneur' },
-//   { id: '09.03', tag: 'angularjs', title: 'AngularJS CDN Architecture', by: 'hackerpreneur' },
-//   { id: '09.02', tag: 'angularjs', title: 'Getting started with AngularJS 1.3', by: 'hackerpreneur' },
-//   { id: '09.01', tag: 'javascript', title: 'Using ES6 Harmony with NodeJS', by: 'hackerpreneur' },
-//   { id: '08.28', tag: 'angularjs', title: 'Setting up my First AngularJS App', by: 'hackerpreneur' },
-//   { id: '08.27', tag: 'mean-stack', title: 'Starting a Mean Stack App', by: 'hackerpreneur' }
-// ];
-
 var fields = {
-  listSelect: { 'by.name': 1, 'by.avatar': 1, title:1, slug: 1, created: 1, published: 1 }
+  listSelect: { 'by.name': 1, 'by.avatar': 1, 'meta.description': 1, title:1, slug: 1, created: 1, published: 1 }
 } 
 
 var queries = {
-  published: { 'published' : { '$exists': true }}
+  published: { 'published' : { '$exists': true }},
+  updated: { 'updated' : { '$exists': true }}  
 }
+
+var addUrl = (cb) =>
+  (e,r) => { 
+    for (var p of r) { if (p.slug) { p.url = `/v1/posts/${p.slug}` } }
+    cb(e,r)
+  }
+
+export var inflateHtml = (cb) =>
+  (e,r) => { 
+    if (r)
+    {
+      r.html = marked(r.md)
+      r.toc = marked(generateToc(r.md))
+    }
+    cb(e,r)
+  }
+
 
 export function getById(id, cb) {
   svc.getById(id, cb) 
 }
 
-export function getAll(cb) {
-  svc.getAll(cb)
+export function getBySlug(slug, cb) {
+  svc.searchOne({ slug: slug }, null, inflateHtml(cb)) 
+}
+
+export function getAllAdmin(cb) {
+  var opts = { fields: fields.listSelect, options: { sort: { 'updated': -1 } } };
+  svc.searchMany(queries.updated, opts, (e,r) => { 
+    for (var p of r) { p.url = `/posts/publish/${p._id}` }
+    cb(e, r)
+  })
 }
 
 export function getPublished(cb) {
@@ -39,7 +57,18 @@ export function getPublished(cb) {
 
 export function getRecentPublished(cb) {
   var opts = { fields: fields.listSelect, options: { sort: 'published', limit: 10 } };
-  svc.searchMany(queries.published, opts, cb) 
+  svc.searchMany(queries.published, opts, addUrl(cb))
+}
+
+export function getUsersPublished(username, cb) {
+  var opts = { fields: fields.listSelect, options: { sort: 'published' } };
+  var query = _.extend({ 'by.username': username }, queries.published)
+  svc.searchMany(query, opts, addUrl(cb))
+}
+
+//-- Placeholder for showing similar posts to a currently displayed post
+export function getSimilarPublished(cb) {
+  cb(null,[])
 }
 
 export function getUsersPosts(id, cb) {
@@ -72,13 +101,19 @@ export function publish(id, o, cb) {
   if (!o.slug) { cb(new Error('Slug required for a published post'), null) }
   else
   {
-    if (o.slug.indexOf('/') != 0) { o.slug = '/'+o.slug; }
+    if (o.slug.indexOf('/') != 0) { o.slug.replace('/',''); }
   }
 
   o.updated = new Date()
-  o.published = new Date()  
+
+  if (o.publishedOverride) { 
+    o.published = o.publishedOverride 
+  } else if (!o.published) {
+    o.published = new Date()
+  }
+
   o.publishedBy = this.user._id
   //-- todo, authorize for editor role
 
-  svc.update(id, o, cb) 
+  svc.update(id, o, addUrl(cb)) 
 }
