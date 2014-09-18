@@ -2,6 +2,7 @@ require('./../directives/share.js');
 require('./../directives/post.js')
 require('./../common/filters.js');
 require('./../common/postsService.js');
+require('./../common/postHelpers.js');
 require('./../common/sessionService.js');
 require('./myPostsList.js');
 require('./editor.js');
