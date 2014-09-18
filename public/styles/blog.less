@@ -4,14 +4,81 @@
 @mainElmWidth:640px;
 @mainElmPad:0px;
 
+
 body#post {
 	@media only screen and (max-width:640px) {
 	  .main-wrap, main { width:98%!important;margin:auto }
 	} 
 }  
 
+.posts {
+	margin-left:-10px;
+	text-align:center;
+	article { 
+		text-align:left;
+		position:relative;
+		width:286px; 
+		height:200px;
+		margin:6px;
+		padding:0px;		
+		border:solid 1px @lightgray;
+		border-radius:3px;
+		font-size:12px;
+		line-height:14px;
+		display:inline-block;			
+	
+		> a { padding:12px 12px 0px 12px;display:block }
+
+		header { min-height:60px;overflow:hidden }
+
+		h2 {
+			font-size:14px;
+			font-weight:bold;
+			margin:0px 0px 1px 0px;
+			line-height:18px;
+			color:@gray;
+		}
+
+		.entry-meta { color:@gray;font-size:11px }
+
+		footer {
+			position:absolute;
+			bottom:10px;
+			font-size:9px;
+			text-align:right;
+			width:92%;
+		}
+
+		p { line-height:16px;margin:0;padding:0 }
+		.entry-categories { color:@gray;width:100% }
+		.entry-content { height:80px;overflow:hidden;color:@gray }
+		.entry-author { font-weight:bold;color:@orange }
+		.entry-author-image { width:50px;border-radius:25px;display:inline;margin:3px 10px 0 0 }
+	}
+
+	article:hover { 
+		background:@lightblue;
+	}
+}
+
+
 body#posts {
 	
+	.ng-scope > h3 { text-align:center;margin-bottom:0px;font-size:18px }
+
+	.myposts {
+		width:640px;
+	}
+
+	.editOptions {
+		text-align:right;
+		float:right;
+		margin-right:10px;
+		width:200px;
+
+		a.btn { width:200px; }
+	}
+
 	#author {
 		
 	}
@@ -85,14 +152,30 @@ body#posts {
 	header { border-bottom:solid 1px @lightgray;margin-bottom:20px }
 
 	hr { max-width:@mainElmWidth;color:@lightblue;margin:10px 0 }
-	h1 { margin:0;font-size:42px;padding-left:@mainElmPad }
-	h2 { font-size:28px;margin-bottom:5px;padding-left:@mainElmPad }
+	h1 { text-align:left;margin:0;font-size:42px;padding-left:@mainElmPad }
+	h2 { text-align:left;font-size:28px;margin-bottom:5px;padding-left:@mainElmPad }
+	h3 { text-align:left }	
 	p { margin-top:0;max-width:@mainElmWidth;vertical-align:top;padding-left:@mainElmPad }
 
-	pre { border:none;padding:8px;max-width:@mainElmWidth; }
+	// --- Prism customization
+	.line-numbers .line-numbers-rows { width:1.9em;left:0 }
+	.line-numbers-rows > span:before { padding-right:0.6em }
+	
+	pre { 
+		font-size:12px;
+		border:none;padding:6px;max-width:@mainElmWidth; 
+	
+		footer { text-align:right;border-top:solid 1px @lightgray;
+			margin-top:4px;padding-top:3px }
+	}
 
-	ol { max-width:620px;padding-left:@mainElmPad }
-	ul { list-style:none;margin:0;padding-left:@mainElmPad }
+	pre.line-numbers { 
+		code { padding-left:30px }
+	}
+	// ---End Prism customization
+
+	ol { max-width:620px;padding-left:30px }
+	ul { list-style:none;margin:0;padding-left:15px }
 	ul ul { margin-left:12px }
 
 	iframe { margin:0px 0px 0px 0px }
@@ -128,13 +211,14 @@ body#posts {
 		position:relative;
 	}
 	#table-of-contents + ul {
+		padding-left:0;
 		clear:right;
 		float:right;
 		width:@sideRailWidth;
 		font-size:12px;
 		position:relative;
 
-		ul { margin-top:4px; }	
+		ul { margin-top:4px;padding-left:0px }	
 		li { padding:1px 0 2px 0; }	
 	}
 

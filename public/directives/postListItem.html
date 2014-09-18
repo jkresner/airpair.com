@@ -1,0 +1,24 @@
+<article itemscope="itemscope" itemtype="http://schema.org/BlogPosting" itemprop="blogPost">
+<a href="{{ url }}" title="{{ title }}" target="_self" rel="bookmark">
+  <header class="entry-header">
+    <h2 class="entry-title" itemprop="headline">{{ title }}</h2> 
+    <p class="entry-meta">
+      <time class="entry-time" itemprop="datePublished" datetime="{{ published }}">{{ publishedFormat }}</time> 
+      by 
+      <span class="entry-author" itemprop="author" itemscope="itemscope" itemtype="http://schema.org/Person">
+        <span class="entry-author-name" itemprop="name">{{ by.name }}</span>
+      </span> 
+    </p>
+  </header>
+  <div class="entry-content" itemprop="text">
+    <img class="entry-author-image" itemprop="image" ng-src="{{ by.avatar }}?s=50" align="left" />
+    <p>{{ meta.description }}</p>
+  </div>
+</a>
+  <footer class="entry-footer">
+    <p class="entry-meta">
+      <span class="entry-categories"> 
+      </span>
+    </p>
+  </footer>
+</article>  

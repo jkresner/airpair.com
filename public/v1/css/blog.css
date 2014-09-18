@@ -181,7 +181,7 @@ main a:hover {
     width: 320px;
   }
 }
-main header {
+main .ng-scope > header {
   height: 35px;
   margin: 0 auto 20px auto;
   padding: 9px 0;
@@ -201,7 +201,7 @@ main header {
   text-overflow: ellipsis;
 }
 @media only screen and (max-width: 900px) {
-  main header {
+  main .ng-scope > header {
     padding: 9px 2px;
   }
 }
@@ -369,6 +369,93 @@ nav#sideChat input {
     margin: auto;
   }
 }
+.posts {
+  margin-left: -10px;
+  text-align: center;
+}
+.posts article {
+  text-align: left;
+  position: relative;
+  width: 286px;
+  height: 200px;
+  margin: 6px;
+  padding: 0px;
+  border: solid 1px #d3d3d3;
+  border-radius: 3px;
+  font-size: 12px;
+  line-height: 14px;
+  display: inline-block;
+}
+.posts article > a {
+  padding: 12px 12px 0px 12px;
+  display: block;
+}
+.posts article header {
+  min-height: 60px;
+  overflow: hidden;
+}
+.posts article h2 {
+  font-size: 14px;
+  font-weight: bold;
+  margin: 0px 0px 1px 0px;
+  line-height: 18px;
+  color: #4d4e4e;
+}
+.posts article .entry-meta {
+  color: #4d4e4e;
+  font-size: 11px;
+}
+.posts article footer {
+  position: absolute;
+  bottom: 10px;
+  font-size: 9px;
+  text-align: right;
+  width: 92%;
+}
+.posts article p {
+  line-height: 16px;
+  margin: 0;
+  padding: 0;
+}
+.posts article .entry-categories {
+  color: #4d4e4e;
+  width: 100%;
+}
+.posts article .entry-content {
+  height: 80px;
+  overflow: hidden;
+  color: #4d4e4e;
+}
+.posts article .entry-author {
+  font-weight: bold;
+  color: #ce5424;
+}
+.posts article .entry-author-image {
+  width: 50px;
+  border-radius: 25px;
+  display: inline;
+  margin: 3px 10px 0 0;
+}
+.posts article:hover {
+  background: #dff2ef;
+}
+body#posts .ng-scope > h3 {
+  text-align: center;
+  margin-bottom: 0px;
+  font-size: 18px;
+}
+body#posts .myposts {
+  width: 640px;
+}
+body#posts .editOptions {
+  text-align: right;
+  float: right;
+  margin-right: 10px;
+  width: 200px;
+}
+body#posts .editOptions a.btn {
+  width: 200px;
+}
 body#posts .editor {
   padding: 10px 16px 0px 16px;
 }
@@ -488,14 +575,19 @@ body#posts .publish .publishMeta input {
   margin: 10px 0;
 }
 .blogpost h1 {
+  text-align: left;
   margin: 0;
   font-size: 42px;
   padding-left: 0px;
 }
 .blogpost h2 {
+  text-align: left;
   font-size: 28px;
   margin-bottom: 5px;
   padding-left: 0px;
+}
+.blogpost h3 {
+  text-align: left;
 }
 .blogpost p {
   margin-top: 0;
@@ -503,19 +595,36 @@ body#posts .publish .publishMeta input {
   vertical-align: top;
   padding-left: 0px;
 }
+.blogpost .line-numbers .line-numbers-rows {
+  width: 1.9em;
+  left: 0;
+}
+.blogpost .line-numbers-rows > span:before {
+  padding-right: 0.6em;
+}
 .blogpost pre {
+  font-size: 12px;
   border: none;
-  padding: 8px;
+  padding: 6px;
   max-width: 640px;
+}
+.blogpost pre footer {
+  text-align: right;
+  border-top: solid 1px #d3d3d3;
+  margin-top: 4px;
+  padding-top: 3px;
+}
+.blogpost pre.line-numbers code {
+  padding-left: 30px;
 }
 .blogpost ol {
   max-width: 620px;
-  padding-left: 0px;
+  padding-left: 30px;
 }
 .blogpost ul {
   list-style: none;
   margin: 0;
-  padding-left: 0px;
+  padding-left: 15px;
 }
 .blogpost ul ul {
   margin-left: 12px;
@@ -554,6 +663,7 @@ body#posts .publish .publishMeta input {
   position: relative;
 }
 .blogpost #table-of-contents + ul {
+  padding-left: 0;
   clear: right;
   float: right;
   width: 212px;
@@ -562,6 +672,7 @@ body#posts .publish .publishMeta input {
 }
 .blogpost #table-of-contents + ul ul {
   margin-top: 4px;
+  padding-left: 0px;
 }
 .blogpost #table-of-contents + ul li {
   padding: 1px 0 2px 0;

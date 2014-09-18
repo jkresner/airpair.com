@@ -32,9 +32,17 @@ angular.module('APSvcPosts', [])
     {
       $http.get(`${API}/posts/${id}`).success(success);
     }
+    this.getByUsername = function(username, success)
+    {
+      $http.get(`${API}/posts/by/${username}`).success(success);
+    }    
     this.getMyPosts = function(success)
     {
       $http.get(`${API}/posts/me`).success(success);
+    }
+    this.getRecentPosts = function(success)
+    {
+      $http.get(`${API}/posts/recent`).success(success);
     }
     this.getToc = function(md, success)
     {      
