@@ -104,7 +104,13 @@ export function publish(id, o, cb) {
   }
 
   o.updated = new Date()
-  o.published = new Date()  
+  
+  if (o.publishedOverride) { 
+    o.published = o.publishedOverride 
+  } else if (!o.published) {
+    o.published = new Date()
+  }
+
   o.publishedBy = this.user._id
   //-- todo, authorize for editor role
 

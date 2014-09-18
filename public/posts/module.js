@@ -77,13 +77,13 @@ angular.module("APPosts", ['ngRoute','APFilters','APShare',
       })  
     });
 
-    console.log('angular.element(document.querySelector(.recent))', angular.element(document.querySelector('.recent')).find('article'))
-    if (angular.element(document.querySelector('.recent')).find('article').length == 0)
-    {
-      PostsService.getRecentPosts(function (result) {
-        $scope.recent = result;
-      })  
-    } 
+    // console.log('angular.element(document.querySelector(.recent))', angular.element(document.querySelector('.recent')).find('article'))
+    // if (angular.element(document.querySelector('.recent')).find('article').length == 0)
+    // {
+    //   PostsService.getRecentPosts(function (result) {
+    //     $scope.recent = result;
+    //   })  
+    // } 
   }])
 
 
@@ -133,6 +133,13 @@ angular.module("APPosts", ['ngRoute','APFilters','APShare',
     var self = this;
     $scope.preview = { mode: 'publish' };
   
+    $scope.setPublishedOverride = () => {
+      if (!$scope.post.publishedOverride)
+      {
+        $scope.post.publishedOverride = $scope.post.published || moment().format()
+      }
+    }
+
     PostsService.getById($routeParams.id, (r) => {
       if (!r.slug) {
         r.slug = r.title.toLowerCase().replace(/ /g, '-');
@@ -149,18 +156,19 @@ angular.module("APPosts", ['ngRoute','APFilters','APShare',
 
         r.meta= { 
           title: r.title,
-          canonical: 'http://www.airpair.com/' + r.slug,
+          canonical: 'http://www.airpair.com/v1/posts/' + r.slug,
           ogTitle: r.title,
           ogImage: ogImage,
           ogVideo: ogVideo,
-          ogUrl: 'http://www.airpair.com/' + r.slug
+          ogUrl: 'http://www.airpair.com/v1/posts/' + r.slug
         }        
       }
+
       $scope.post = _.extend(r, { saved: true});
     });
 
     $scope.save = () => {
-      $scope.post.md = angular.element(document.querySelector( '#markdownTextarea' ) ).val(),
+      $scope.post.md = angular.element(document.querySelector( '#markdownTextarea' ) ).val();
       PostsService.publish($scope.post, (r) => {
         $scope.post = _.extend(r, { saved: true});
       });
