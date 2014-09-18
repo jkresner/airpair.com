@@ -10,8 +10,6 @@ angular.module("APPost", [])
         p: '=post'
       },
       link: function(scope, element, attrs) {
-        // scope.p = $parse(attrs.post)(scope)
-        // console.log('post', scope.p);
         scope.url = scope.p.url;
         scope.title = scope.p.title;
         scope.published = scope.p.published;
@@ -21,7 +19,6 @@ angular.module("APPost", [])
           avatar: scope.p.by.avatar };                        
         scope.meta = { description: scope.p.meta.description };                      
         scope.tags = scope.p.tags;  
-
       }
     };
 
@@ -31,7 +28,13 @@ angular.module("APPost", [])
     
     return {
       template: require('./post.html'),
-      controller: function($scope, PostsService) {  
+      controller: function($scope,  $timeout, PostsService) {  
+        $timeout(function () {
+          // Refactor this into a nicer angularjs way
+          // console.log('DOM has finished rendering')
+          postHlpr.highlightSyntax();
+        }, 100);
+        
       }
     };
 
