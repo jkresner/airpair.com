@@ -13,8 +13,8 @@ var API = initAPI(Svc, actions)
 export default class {
 
   constructor(app) {
-    app.get('/session', API.getSessionLite)
-    app.get('/session/full', API.getSessionByUserId)
+    app.get('/session', authd, API.getSessionLite)
+    app.get('/session/full', authd, API.getSessionByUserId)
   }
 
 }

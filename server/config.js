@@ -1,5 +1,6 @@
 var cfg = {
-  build:  { version: '1.02.3', deployed: 'Sep 16' },
+  build:  { version: '1.03', deployed: 'Sep 19' },
+  port:     process.env.PORT || 3333,
   mongoUri: process.env.MONGOHQ_URL || "mongodb://localhost/airpair_dev",
   session: { secret: 'airyv1' },
   auth: {
@@ -20,18 +21,24 @@ var cfg = {
       ]
     }  
   }
-} 
-
-// Temporary hack
-// -------------------------
-cfg.local = process.env.MONGOHQ_URL == null
-
-if (!cfg.local) {
-  cfg.auth.oAuth.callbackHost = process.env.AUTH_OAUTH_CALLBACKHOST
-  cfg.auth.google.clientID = process.env.AUTH_GOOGLE_CLIENTID
-  cfg.auth.google.clientSecret = process.env.AUTH_GOOGLE_CLIENTSECRET
 }
 
-// -------------------------
+module.exports = function(env, appdir) {
+  cfg.env = env;
+  cfg.appdir = appdir;
+  cfg.livereload = cfg.env == 'dev';
 
-export default cfg
+  if (cfg.env == 'test') {
+    cfg.port = 4444
+    cfg.mongoUri = "mongodb://localhost/airpair_test"
+    cfg.testlogin = true
+  }
+
+  if (cfg.env == 'staging' || cfg.env == 'production') {
+    cfg.auth.oAuth.callbackHost = process.env.AUTH_OAUTH_CALLBACKHOST
+    cfg.auth.google.clientID = process.env.AUTH_GOOGLE_CLIENTID
+    cfg.auth.google.clientSecret = process.env.AUTH_GOOGLE_CLIENTSECRET
+  }
+
+  return cfg;
+}
