@@ -43,8 +43,7 @@
       </div>          
       <div class="form-group">
         <label>Meta</label>
-        <input ng-model="post.meta.title" type="text" class="form-control" placeholder="title" />
-        <input ng-model="post.meta.keyword" type="text" class="form-control" placeholder="keyword"/>
+        <input ng-model="post.meta.title" type="text" class="form-control" placeholder="title" /> 
         <input ng-model="post.meta.description" type="text" class="form-control" placeholder="description" />
         <input ng-model="post.meta.canonical" type="text" class="form-control" placeholder="canonical url" />
       </div>
@@ -56,17 +55,20 @@
         <input ng-model="post.meta.ogVideo" type="text" class="form-control" placeholder="video" />
         <input ng-model="post.meta.ogUrl" type="text" class="form-control" placeholder="url" />        
       </div>      
-      <div class="form-group">
-        <label>Publish Date Override</label>   
-        <input ng-model="post.publishedOverride" type="text" class="form-control" ng-click="setPublishedOverride()" />
-      </div>
     </div>
 
-    <div class="dates" ng-if="post.created">
-      <label>Created</label> <span>{{ post.created | publishedTime }}</span>
-      <label>Updated</label> <span>{{ post.updated | publishedTime }}</span>
-      <label>Published</label> <span>{{ post.published | publishedTime }}</span>
-      <label></label> <span>{{ post.publishedBy }}</span>
+    <div class="dates" ng-if="post.created" ng-if="preview.mode == 'publish'">
+      <div class="form-group">
+        <label>Override Publish Date</label>   
+        <input ng-model="post.publishedOverride" type="text" class="form-control" ng-click="setPublishedOverride()" />
+      </div>
+
+      <section>
+        <label>Created</label> <span>{{ post.created | publishedTime }}</span>
+        <label>Updated</label> <span>{{ post.updated | publishedTime }}</span>
+        <label>Published</label> <span>{{ post.published | publishedTime }}</span>
+        <label></label> <span>{{ post.publishedBy }}</span>
+      </section>
     </div>
 
   </div>
