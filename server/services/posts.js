@@ -60,19 +60,20 @@ export function getRecentPublished(cb) {
   svc.searchMany(queries.published, opts, addUrl(cb))
 }
 
+//-- Placeholder for showing similar posts to a currently displayed post
+export function getSimilarPublished(cb) {
+  cb(null,[])
+}
+
 export function getUsersPublished(username, cb) {
   var opts = { fields: fields.listSelect, options: { sort: 'published' } };
   var query = _.extend({ 'by.username': username }, queries.published)
   svc.searchMany(query, opts, addUrl(cb))
 }
 
-//-- Placeholder for showing similar posts to a currently displayed post
-export function getSimilarPublished(cb) {
-  cb(null,[])
-}
-
 export function getUsersPosts(id, cb) {
-  svc.searchMany({'by.userId':id},{ fields: fields.listSelect }, cb) 
+  var opts = { fields: fields.listSelect, options: { sort: { 'created':-1, 'published':1  } } };  
+  svc.searchMany({'by.userId':id},opts, cb) 
 }
 
 export function create(o, cb) {
@@ -117,3 +118,18 @@ export function publish(id, o, cb) {
 
   svc.update(id, o, addUrl(cb)) 
 }
+
+export function deleteById(id, cb) {
+  svc.getById(id, (e, r) => {
+    if (r.by.userId.toString() != this.user._id.toString()) { 
+      cb(new Error('Cannot delete post not created by you'), null) 
+    } 
+    else if (r.published) { 
+      cb(new Error('Cannot delete published post'), null) 
+    } 
+    else {
+      svc.deleteById(id, cb)          
+    }
+  })
+}
+

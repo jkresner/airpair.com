@@ -32,6 +32,10 @@ function byuser(req, cb) {
   Svc.getUsersPublished.call(this, req.params.id, cb)
 }
 
+function deleteById(req, cb) {
+  Svc.deleteById.call(this, req.params.id, cb)
+}
+
 var auth = authd({isApiRequest:true})
 
 export default class {
@@ -46,6 +50,8 @@ export default class {
     app.post('/posts-toc', auth, serve(toc))     
     app.put('/posts/:id', auth, serve(update))  
     app.put('/posts/publish/:id', auth, serve(publish))      
+
+    app.delete('/posts/:id', auth, serve(deleteById))      
   }
 
 }

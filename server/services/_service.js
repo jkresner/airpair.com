@@ -41,7 +41,13 @@ export default function(model, logging) {
         if (e || logging) { $log('svc.update.error', e, data) }
         cb(e, r)
       })
-    } 
+    },
+    deleteById: (id, cb) => {
+      model.findByIdAndRemove(id, (e) => {
+        if (e || logging) { $log('svc.delete', e) }
+        cb(e)
+      })
+    }
   }  
 }
   

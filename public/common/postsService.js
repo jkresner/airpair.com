@@ -62,4 +62,8 @@ angular.module('APSvcPosts', [])
     {
       $http.put(`${API}/posts/publish/${data._id}`, data).success(success);
     }    
+    this.delete = function(_id, success)
+    {
+      $http.delete(`${API}/posts/${_id}`).success(success);
+    }     
   }])
