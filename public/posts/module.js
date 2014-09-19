@@ -148,21 +148,24 @@ angular.module("APPosts", ['ngRoute','APFilters','APShare',
       if (!r.meta) {
         var ogVideo = null;
         var ogImage = r.assetUrl;
-        if (r.assetUrl.indexOf('http://youtub.be/', 0))
+        if (r.assetUrl.indexOf('http://youtub.be/') == 0)
         {
           var youTubeId = r.assetUrl.replace('http://youtu.be/','');
           ogImage = `http://img.youtube.com/vi/${youTubeId}/hqdefault.jpg`
           ogVideo = `https://www.youtube-nocookie.com/v/${youTubeId}`
         }
 
-        r.meta= { 
+        $scope.canonical = 'http://www.airpair.com/v1/posts/' + r.slug;
+
+        r.meta = { 
           title: r.title,
-          canonical: 'http://www.airpair.com/v1/posts/' + r.slug,
+          canonical: $scope.canonical,
+          ogType: 'article',
           ogTitle: r.title,
           ogImage: ogImage,
           ogVideo: ogVideo,
-          ogUrl: 'http://www.airpair.com/v1/posts/' + r.slug
-        }        
+          ogUrl: $scope.canonical
+        }     
       }
 
       $scope.post = _.extend(r, { saved: true});
