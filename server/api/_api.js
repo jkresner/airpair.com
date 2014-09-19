@@ -18,34 +18,33 @@ var cbSend = (httpMethod, res, next) => {
 }
 
 
-
-export function serve(svcFn) {  
+export function serve(Svc, svcFnName, argsFn) {  
   return (req, res, next) => {
     var thisSvc = { user: req.user }
-    // $log('thisSvc', thisSvc, svcFn)
-    svcFn.call(thisSvc, req, cbSend(req.method,res,next))        
+    if (logging) $log('thisSvc', svcFnName, argsFn, Svc, thisSvc)
+    var args = argsFn(req)
+    args.push(cbSend(req.method,res,next))
+    Svc[svcFnName].apply(thisSvc, args)        
   }
 }
 
 
-// var th = (req) => user: req.user;
-
-export var initAPI = (Svc, customActions) => {
+export var initAPI = (Svc, custom) => {
   var base = {
-    list: function(req, cb) { Svc.getAll.call(this, cb) },
-    detail: function(req, cb) { Svc.getById.call(this, req.params.id, cb) },
-    create: function(req, cb) { Svc.create.call(this, req.body, cb) },
-    update: function(req, cb) { Svc.update.call(this, req.params.id, req.body, cb) },
-    delete: function(req, cb) { Svc.deleteById.call(this, req.params.id, cb) }
+    getAll: (req) => [],
+    getById: (req) => [req.params.id],
+    create: (req) => [req.body],
+    update: (req) => [req.params.id,req.body],
+    deleteById: (req) => [req.params.id]
   }
 
-  var actions = _.extend(base, (customActions || {}))
+  var argsFns = _.extend(base, (custom || {}))
+  var api = {};
 
-  for (var name of Object.keys(actions))
+  for (var name of Object.keys(argsFns))
   {
-    // console.log(name);
-    actions[name] = serve(actions[name])
+    api[name] = serve(Svc, name, argsFns[name])
   }
 
-  return actions;
+  return api;
 }
