@@ -529,7 +529,7 @@ body#posts #tips {
 }
 body#posts .edit #preview .preview {
   width: 914px;
-  max-height: 720px;
+  max-height: 740px;
   overflow-y: scroll;
   border-right: solid 1px #dff2ef;
 }
@@ -539,6 +539,7 @@ body#posts .edit #tips {
   padding: 4px 6px;
   font-size: 10px;
   line-height: 14px;
+  min-height: 80px;
 }
 body#posts .edit #tips ul {
   padding: 4px 14px;

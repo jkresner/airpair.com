@@ -57,8 +57,8 @@
       </div>      
     </div>
 
-    <div class="dates" ng-if="post.created" ng-if="preview.mode == 'publish'">
-      <div class="form-group">
+    <div class="dates" ng-if="post.created">
+      <div class="form-group" ng-if="preview.mode == 'publish'">
         <label>Override Publish Date</label>   
         <input ng-model="post.publishedOverride" type="text" class="form-control" ng-click="setPublishedOverride()" />
       </div>

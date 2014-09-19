@@ -9,15 +9,18 @@
   <div id="preview" ap-post=""></div>
 
   <div id="tips">
-    <h6>Tips</h6>
-    <ul>
-      <li>Use h2 (##) and lower (###) for headings in your markdown (title is already the h1).</li>
-      <li>Prefix your headings with number like 1 1.1 1.2 2 etc.</li>
-      <li>Scroll to the part of your post you're interested in while you edit.</li>
-      <li>Submit your post by email to have it review and published by an editor.</li>
-      <li>Code blocks require a comments (e.g. <code>&lt;!--code lang=coffeescript linenums=true--&gt;</code> followed by a line break, to indicate language and optionally show line numbers.
-      </li>
-    </ul> 
+    
+    <div ng-if="post._id">
+      <h6>Tips</h6>
+      <ul>
+        <li>Use h2 (##) and lower (###) for headings in your markdown (title is already the h1).</li>
+        <li>Prefix your headings with number like 1 1.1 1.2 2 etc.</li>
+        <li>Scroll to the part of your post you're interested in while you edit.</li>
+        <li>Submit your post by email to have it review and published by an editor.</li>
+        <li>Code blocks require a comments (e.g. <code>&lt;!--code lang=coffeescript linenums=true--&gt;</code> followed by a line break, to indicate language and optionally show line numbers.
+        </li>
+      </ul> 
+    </div>
   </div>  
 
 </div>
