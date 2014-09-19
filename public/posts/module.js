@@ -66,10 +66,6 @@ angular.module("APPosts", ['ngRoute','APFilters','APShare',
     SessionService.onAuthenticated( (session) => {
       $rootScope.session = session;
     })
-
-    SessionService.onUnauthenticated( (session) => {
-      // $rootScope.session = { authenticated: false };
-    })
   
   }])
 
@@ -82,15 +78,7 @@ angular.module("APPosts", ['ngRoute','APFilters','APShare',
       PostsService.getMyPosts(function (result) {
         $scope.myposts = result;
       })  
-    });
-
-    // console.log('angular.element(document.querySelector(.recent))', angular.element(document.querySelector('.recent')).find('article'))
-    // if (angular.element(document.querySelector('.recent')).find('article').length == 0)
-    // {
-    //   PostsService.getRecentPosts(function (result) {
-    //     $scope.recent = result;
-    //   })  
-    // } 
+    }); 
   }])
 
 
@@ -112,9 +100,9 @@ angular.module("APPosts", ['ngRoute','APFilters','APShare',
 
   }])
 
-  .controller('EditCtrl', ['$scope', 'PostsService', '$routeParams', 
+  .controller('EditCtrl', ['$scope', 'PostsService', '$routeParams', '$location', 
     'session',
-    function($scope, PostsService, $routeParams, session) {
+    function($scope, PostsService, $routeParams, $location, session) {
     
     var self = this;
     $scope.preview = { mode: 'edit' };
@@ -122,6 +110,12 @@ angular.module("APPosts", ['ngRoute','APFilters','APShare',
     PostsService.getById($routeParams.id, (r) => {
       $scope.post = _.extend(r, { saved: true});
     });
+
+    $scope.delete = () => {
+      PostsService.delete($scope.post._id, (r) => {
+        $location.path('/posts');
+      });
+    }
 
     $scope.save = () => {
       $scope.post.md = angular.element(document.querySelector( '#markdownTextarea' ) ).val(),
