@@ -115,6 +115,14 @@ export function setAvatar(user) {
   if (user && user.email) { user.avatar = md5.gravatarUrl(user.email) }
 } 
 
+
+export function getSessionLite(cb) {
+  if (this.user == null) { return cb(null, null); }
+  setAvatar(this.user)
+  return cb(null, this.user)
+}
+
+
 export function getSessionByUserId(cb) {
   if (this.user == null) { return cb(null, null); }
 
