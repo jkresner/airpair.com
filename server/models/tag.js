@@ -1,21 +1,24 @@
-var Schema, VALID_LEVELS, mongoose, schema;
+var mongoose = require('mongoose')
 
-mongoose = require('mongoose');
+var VALID_LEVELS = ['beginner', 'intermediate', 'expert'];
 
-Schema = mongoose.Schema;
+export default mongoose.model('Tag', new mongoose.Schema({
 
-VALID_LEVELS = ['beginner', 'intermediate', 'expert'];
-
-schema = new Schema({
-  name: {
+  name: {               // E.g. Ruby on Rails
     required: true,
     type: String
   },
-  short: {
+  short: {              // E.g. Rails
     required: true,
     type: String
   },
-  desc: String,
+  slug: {               // E.g. ruby-on-rails
+    required: true,
+    type: String,
+    unique: true,
+    sparse: true
+  },  
+  desc: String,         
   soId: {
     type: String,
     unique: true,
@@ -28,8 +31,6 @@ schema = new Schema({
     sparse: true
   },
   gh: {},
-  tokens: String, // extra comma separated strings to assist search
-  levels: [String]
-});
+  tokens: String,       // Extra comma separated strings to assist filter search
 
-module.exports = mongoose.model('Tag', schema);
+}))
