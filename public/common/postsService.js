@@ -1,4 +1,5 @@
 var headings = [];
+var lazyErrorCb = function(resp) { console.log('error:', resp); };
 
 angular.module('APSvcPosts', [])  
 
@@ -30,40 +31,40 @@ angular.module('APSvcPosts', [])
 
     this.getById = function(id, success)
     {
-      $http.get(`${API}/posts/${id}`).success(success);
+      $http.get(`${API}/posts/${id}`).success(success).error(lazyErrorCb);
     }
     this.getByUsername = function(username, success)
     {
-      $http.get(`${API}/posts/by/${username}`).success(success);
+      $http.get(`${API}/posts/by/${username}`).success(success).error(lazyErrorCb);
     }    
     this.getMyPosts = function(success)
     {
-      $http.get(`${API}/posts/me`).success(success);
+      $http.get(`${API}/posts/me`).success(success).error(lazyErrorCb);
     }
     this.getRecentPosts = function(success)
     {
-      $http.get(`${API}/posts/recent`).success(success);
+      $http.get(`${API}/posts/recent`).success(success).error(lazyErrorCb);
     }
     this.getToc = function(md, success)
     {      
       if (mdHelper.headingsChanged(md)) {
-        $http.post(`${API}/posts-toc`, { md: md } ).success(success);  
+        $http.post(`${API}/posts-toc`, { md: md } ).success(success).error(lazyErrorCb);
       }
     }    
     this.create = function(data, success)
     {
-      $http.post(`${API}/posts`, data).success(success);
+      $http.post(`${API}/posts`, data).success(success).error(lazyErrorCb);
     }
     this.update = function(data, success)
     {
-      $http.put(`${API}/posts/${data._id}`, data).success(success);
+      $http.put(`${API}/posts/${data._id}`, data).success(success).error(lazyErrorCb);
     }
     this.publish = function(data, success)
     {
-      $http.put(`${API}/posts/publish/${data._id}`, data).success(success);
+      $http.put(`${API}/posts/publish/${data._id}`, data).success(success).error(lazyErrorCb);
     }    
     this.delete = function(_id, success)
     {
-      $http.delete(`${API}/posts/${_id}`).success(success);
+      $http.delete(`${API}/posts/${_id}`).success(success).error(lazyErrorCb);
     }     
   }])
