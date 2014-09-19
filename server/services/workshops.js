@@ -22,7 +22,6 @@ export function getAll(cb) {
 
 
 export function getBySlug(slug, cb) {
-  $log('getBySlug', slug, cb)
   svc.searchOne({slug:slug},null, (e, r) => {
     if (r) { r.url = `${r.tags[0]}/workshops/${r.slug}`; }
     cb(e, r)
