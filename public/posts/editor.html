@@ -43,8 +43,7 @@
       </div>          
       <div class="form-group">
         <label>Meta</label>
-        <input ng-model="post.meta.title" type="text" class="form-control" placeholder="title" />
-        <input ng-model="post.meta.keyword" type="text" class="form-control" placeholder="keyword"/>
+        <input ng-model="post.meta.title" type="text" class="form-control" placeholder="title" /> 
         <input ng-model="post.meta.description" type="text" class="form-control" placeholder="description" />
         <input ng-model="post.meta.canonical" type="text" class="form-control" placeholder="canonical url" />
       </div>
@@ -56,25 +55,28 @@
         <input ng-model="post.meta.ogVideo" type="text" class="form-control" placeholder="video" />
         <input ng-model="post.meta.ogUrl" type="text" class="form-control" placeholder="url" />        
       </div>      
-      <div class="form-group">
-        <label>Publish Date Override</label>   
-        <input ng-model="post.publishedOverride" type="text" class="form-control" ng-click="setPublishedOverride()" />
-      </div>
     </div>
 
     <div class="dates" ng-if="post.created">
-      <label>Created</label> <span>{{ post.created | publishedTime }}</span>
-      <label>Updated</label> <span>{{ post.updated | publishedTime }}</span>
-      <label>Published</label> <span>{{ post.published | publishedTime }}</span>
-      <label></label> <span>{{ post.publishedBy }}</span>
+      <div class="form-group" ng-if="preview.mode == 'publish'">
+        <label>Override Publish Date</label>   
+        <input ng-model="post.publishedOverride" type="text" class="form-control" ng-click="setPublishedOverride()" />
+      </div>
+
+      <section>
+        <label>Created</label> <span>{{ post.created | publishedTime }}</span>
+        <label>Updated</label> <span>{{ post.updated | publishedTime }}</span>
+        <label>Published</label> <span>{{ post.published | publishedTime }}</span>
+        <label></label> <span>{{ post.publishedBy }}</span>
+      </section>
     </div>
 
   </div>
 
   <div class="form-actions">
-    <button class="btn" ng-click="save()" ng-disabled="(!post.title && !post.by.bio) || post.saved">Save</button>
+    <button class="btn" ng-click="save()" ng-disabled="(!post.title && !post.by.bio) || post.saved || post.published">Save</button>
     <button class="btn btnPreview" ng-click="previewToggle()" ng-disabled="!post._id || (preview.mode == 'publish')">{{preview.mode == 'edit' && 'Preview' || 'Edit' }}</button>  
     <a class="btn" target="_blank" href="mailto:team@airpair.com?subject=Post%20Sumission%20-%20{{post.title}}&body=Can%20you%20look%20at%20and%20publish%20my%20post:%0A%0Ahttps://www.airpair.com/posts/publish/{{ post._id }}%0A%0A{{post.by.name}}" ng-disabled="(!post.title && !post.by.bio) || !post.saved || (preview.mode == 'publish')">Submit</a>
     <button class="btn" ng-click="save()" ng-disabled="!(preview.mode == 'publish')">Publish</button>
-    <button class="btn" disabled>Delete</button>  
+    <button class="btn" ng-click="delete()" ng-disabled="(!(preview.mode == 'edit') || post.published) || !post._id">Delete</button>  
   </div>

@@ -2,22 +2,19 @@ import {serve,initAPI} from './_api'
 import * as Svc from '../services/users'
 import {authd} from '../identity/auth/middleware'
 
-   
-
-function getFull(req, cb) {
-  Svc.getSessionByUserId.call(this, cb)
+var actions = {
+  getSessionByUserId: (req) => [],
+  getSessionLite: (req) => []
 }
 
-function getSession(req, cb) {
-  Svc.setAvatar(req.user)
-  cb(null, req.user)
-}
+
+var API = initAPI(Svc, actions)
 
 export default class {
 
   constructor(app) {
-    app.get('/session', serve(getSession))
-    app.get('/session/full', serve(getFull))
+    app.get('/session', API.getSessionLite)
+    app.get('/session/full', API.getSessionByUserId)
   }
 
 }

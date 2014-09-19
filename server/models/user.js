@@ -29,6 +29,11 @@ User = new Schema({
     }
   },
 
+  // Track user behavior / profile
+  // cohort: {
+  //   type: {},
+  // },
+
   bio: String, // Used for blog posts
 
   local : {
