@@ -1,23 +1,22 @@
 var logging = false;
 
 
-export function authd(options) 
-{
-  return (req, res, next) => {
-    if (!req.isAuthenticated || !req.isAuthenticated())
-    {
-      // save url user is trying to access for graceful redirect after login
-      if (req.session && !options.isApiRequest) { 
-        req.session.returnTo = req.url 
-      }
-
-      if (options.isApiRequest) { res.send(403, {}) } 
-      else { res.redirect(options.loginUrl) }
-    } 
-    else
-    {
-      next()  
+export function authd(req, res, next) {
+  if (!req.isAuthenticated || !req.isAuthenticated())
+  {
+    var apiRequest = req.url.indexOf('api') != 0
+    
+    // save url user is trying to access for graceful redirect after login
+    if (req.session && !apiRequest) { 
+      req.session.returnTo = req.url 
     }
+
+    if (apiRequest) { res.status(403).json({}) } 
+    else { res.status(403).redirect(config.auth.loginUrl) }
+  } 
+  else
+  {
+    next()  
   }
 }
 

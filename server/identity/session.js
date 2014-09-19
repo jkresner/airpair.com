@@ -25,10 +25,7 @@ export default function(app, initSessionStore)
     app.use(cookieParser(config.session.secret))
     app.use(session(sessionOpts))
 
-    // if (config.env is 'test')
-    //   require('./app_test')(app)
-    // else
-      app.use(passport.initialize())
+    app.use(passport.initialize())
     app.use(passport.session())
   
     passport.serializeUser( (user, done) => {

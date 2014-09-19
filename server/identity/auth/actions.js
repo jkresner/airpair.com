@@ -18,3 +18,8 @@ export function authDone(req, res, next) {
   }
   res.redirect(redirectUrl)
 }
+
+
+export function setTestLogin(req, res, next) {
+  req.logIn(global.users[req.params.id], (err) => next(err) )
+}

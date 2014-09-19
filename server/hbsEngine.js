@@ -2,10 +2,9 @@ var fs = require('fs');
 var marked = require('marked');
 var hbs = require('express-hbs');
 
-export default function(app) {
 
-	var hbsEngine = hbs.express3({ partialsDir: `${app.dir}/server/views/partials` });
-
+function registerHelpers(hbs) 
+{
 	hbs.registerHelper('assetUrlToMedia', (assetUrl) => {
 		var mediaHtml = `<img src="${assetUrl}" />`;
 		if (assetUrl.indexOf('http://youtu.be/') == 0) {
@@ -24,8 +23,16 @@ export default function(app) {
 		if (!date) { return ""; }
 		return moment(date).format(format);
 	})
+}
 
-	app.set('views', app.dir + '/server/views');
+
+export default function(app) {
+
+	var hbsEngine = hbs.express3({ partialsDir: `${config.appdir}/server/views/partials` })
+
+	registerHelpers(hbs);
+	
+	app.set('views', `${config.appdir}/server/views`)
 	app.engine('hbs', hbsEngine);
 
 	app.renderHbs = (fileName, data) =>
