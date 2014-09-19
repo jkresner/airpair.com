@@ -22,14 +22,30 @@ var cbSend = (httpMethod, res, next) => {
 export function serve(svcFn) {  
   return (req, res, next) => {
     var thisSvc = { user: req.user }
-    svcFn.call(thisSvc, req, cbSend(req.method, res,next))        
+    // $log('thisSvc', thisSvc, svcFn)
+    svcFn.call(thisSvc, req, cbSend(req.method,res,next))        
   }
 }
 
 
-export var initAPI = (Svc) => {
-  return {
-    list: serve( (req, cb) => Svc.getAll.call(this, cb) ),
-    detail: serve( (req, cb) => Svc.getById.call(this, req.params.id, cb) )
+// var th = (req) => user: req.user;
+
+export var initAPI = (Svc, customActions) => {
+  var base = {
+    list: function(req, cb) { Svc.getAll.call(this, cb) },
+    detail: function(req, cb) { Svc.getById.call(this, req.params.id, cb) },
+    create: function(req, cb) { Svc.create.call(this, req.body, cb) },
+    update: function(req, cb) { Svc.update.call(this, req.params.id, req.body, cb) },
+    delete: function(req, cb) { Svc.deleteById.call(this, req.params.id, cb) }
   }
+
+  var actions = _.extend(base, (customActions || {}))
+
+  for (var name of Object.keys(actions))
+  {
+    // console.log(name);
+    actions[name] = serve(actions[name])
+  }
+
+  return actions;
 }

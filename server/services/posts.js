@@ -115,8 +115,8 @@ export function publish(id, o, cb) {
 
   o.publishedBy = this.user._id
   //-- todo, authorize for editor role
-
-  svc.update(id, o, addUrl(cb)) 
+  
+  svc.update(id, o, cb) 
 }
 
 export function deleteById(id, cb) {
