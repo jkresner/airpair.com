@@ -24,7 +24,8 @@ describe('Server Tests', function() {
   })
 
   describe('Session ', sessionSpec)
-
+  describe('Auth ', authSpec)
+  
 })
 
   
