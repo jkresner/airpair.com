@@ -13,10 +13,7 @@ User = new Schema({
       dropDups: true
     }
   },
-  emailVerfied: {
-    type: Boolean,
-    "default": false
-  },
+  emailVerified: { type: Boolean, required: true, default: false },
   name: String,
   initialis: String, 
 
@@ -41,11 +38,9 @@ User = new Schema({
   },
   googleId: {
     type: String,
-    index: {
-      sparse: true,
-      unique: true,
-      dropDups: true
-    }
+    sparse: true,
+    unique: true,
+    dropDups: true
   },
   google: {},
   githubId: Number,
