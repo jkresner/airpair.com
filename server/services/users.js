@@ -28,7 +28,13 @@ var upsertSmart = (search, upsert, done) => {
       console.log('alias')
       console.log('track','signup')
     }
-    if (r && !r.emailVerified) { upsert.emailVerified = false }
+    else 
+    {
+      if (!r.emailVerified)
+      { 
+        upsert.emailVerified = false 
+      }
+    }
 
     if (upsert.google)
     {
@@ -37,6 +43,7 @@ var upsertSmart = (search, upsert, done) => {
       {
         upsert.email = upsert.google._json.email 
         upsert.name = upsert.google.displayName   
+        upsert.emailVerified = false
       }
 
       if (r && r.googleId && r.googleId != upsert.google.id)

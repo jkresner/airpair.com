@@ -1,4 +1,4 @@
-global.users    = require('./../data/users')
+global.data    = require('./../data/data')
 global.sinon    = require('sinon')
 global.chai     = require('chai')
 global.expect   = chai.expect
@@ -25,7 +25,7 @@ describe('Server Tests', function() {
 
   describe('Session ', sessionSpec)
   describe('Auth ', authSpec)
-  
+
 })
 
   
@@ -36,19 +36,46 @@ global.cookie = null //-- used for maintaining login
 global.login = function(initials, cb) {
   if (logging) $log('login:', '/test/setlogin/'+initials)
   return http(global.app).get('/test/setlogin/'+initials).end(function(e,res){
+    if (e) return done(err)
     cookie = res.headers['set-cookie']
-    cb()
+    cb(e)
   })
 }
 
-global.get = function(url) {
+global.get = function(url, opts, cb) {
   var apiUrl = '/v1/api'+url
   if (logging) $log('get:', apiUrl)
-  return http(global.app).get(apiUrl).expect('Content-Type', /json/)
+
+  var sessionCookie = cookie
+  if (opts.unauthenticated) { sessionCookie = null }
+
+  return http(global.app)
+    .get(apiUrl)
+    .set('cookie',sessionCookie)
+    .expect('Content-Type', /json/)
+    .expect(opts.status||200)
+    .end(function(err, resp){
+      if (err) throw err
+      else cb(resp.body)
+    })
 }
 
-global.post = function(url, data) {
+global.post = function(url, data, opts, cb) {
   var apiUrl = '/v1/api'+url
   if (logging) $log('post:', apiUrl)
-  return http(global.app).post(apiUrl).send(data).expect('Content-Type', /json/)
+
+  var sessionCookie = cookie
+  if (opts.unauthenticated) { sessionCookie = null }
+
+  return http(global.app)
+    .post(apiUrl)
+    .send(data)
+    .set('cookie',sessionCookie)
+    .expect(opts.status||200)
+    .expect('Content-Type', /json/)
+    .end(function(err, resp){
+      if (err) throw err
+      else cb(resp.body, resp)
+    })
+
 }
