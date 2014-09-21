@@ -25,8 +25,7 @@
 {{> siteHeader }}
 
 <div class="main-wrap">
-  <main>
-    <ng-view class="ng-scope">
+  <main ng-view>
     <header class="entry-header">
       <p class="entry-meta">
         <a href="/posts">Posts</a>
@@ -39,7 +38,8 @@
         {{/if}}
         </span>
         &nbsp; > &nbsp;
-        <time class="entry-time" itemprop="datePublished" datetime="{{ isoMoment published }}">{{ dateFormat published 'DD MMM, YYYY' }}</time> 
+        <time class="entry-time" itemprop="datePublished" datetime="{{ isoMoment published }}">{{ dateFormat published 'DD MMM, YYYY' }}
+        </time> 
         
       </p>
     </header>
@@ -68,7 +68,6 @@
       <div id="disqus_thread"></div>
       
     </article>
-    </ng-view>
   </main>
 </div>
   

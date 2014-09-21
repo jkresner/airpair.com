@@ -18,3 +18,8 @@ export function authDone(req, res, next) {
   }
   res.redirect(redirectUrl)
 }
+
+//-- only used in testing
+export function setTestLogin(req, res, next) {
+  req.logIn(global.data.users[req.params.id], (err) => next(err) )
+}

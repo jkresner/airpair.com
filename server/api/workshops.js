@@ -1,7 +1,7 @@
 import {serve,initAPI} from './_api'
 import * as Svc from '../services/workshops'
 import {authd} from '../identity/auth/middleware'
-var auth = authd({isApiRequest:true})
+
 
 var actions = {
   getBySlug: (req) => [req.params.id]

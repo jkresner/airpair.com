@@ -14,14 +14,11 @@
 
 <div class="main-wrap">
   <main>
-    <ng-view class="ng-scope">
-      <header>Posts</header>
-      
-      <div class="posts">
-      {{#each posts}}{{> postListItem this }}{{/each}}
-      </div>
-
-    </ng-view>
+    <header>Posts</header>
+    
+    <div class="posts">
+    {{#each posts}}{{> postListItem this }}{{/each}}
+    </div>
   </main>
 </div>
 
