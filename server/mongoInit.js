@@ -6,8 +6,8 @@ export function connect() {
 
   var db = mongoose.connection
   
-  db.on('error', (e) => $log('mongo connection error:' + e) )
-  db.once('open', () => $log(`connected to db ${config.mongoUri}`) )
+  db.on('error', (e) => $log(('mongo connection error:' + e).red) )
+  db.once('open', () => $log(`connected to db ${config.mongoUri}`.white) )
 
   return db
 }

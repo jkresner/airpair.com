@@ -1,5 +1,5 @@
 import {google,local} from '../identity/auth/providers/index'
-import {logout,authDone} from '../identity/auth/actions'
+import {logout,authDone,setTestLogin} from '../identity/auth/actions'
 import {setReturnTo,setMixpanelId} from '../identity/auth/middleware'
 
 
@@ -20,6 +20,8 @@ export default function(app) {
 
   router.get('/google', google.oAuth)
   router.get('/google/callback', google.oAuth, authDone)
+
+  if (config.testlogin) app.get('/test/setlogin/:id', setTestLogin)
 
   return router
 

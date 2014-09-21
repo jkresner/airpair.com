@@ -15,8 +15,8 @@
 {{> siteHeader }}
 
 <div class="main-wrap">
-	<main>
-		
+	<main ng-view>
+
  		<script id="index" type="text/ng-template">
  			<header>Posts</header>
 			<h3>Recent</h3>
@@ -30,8 +30,6 @@
 			</div>
 			<div class="myposts" ap-my-posts-list=""></div>
  		</script>
-
-		<ng-view></ng-view>
 
 	</main>
 </div>

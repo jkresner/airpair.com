@@ -28,6 +28,13 @@ var upsertSmart = (search, upsert, done) => {
       console.log('alias')
       console.log('track','signup')
     }
+    else 
+    {
+      if (!r.emailVerified)
+      { 
+        upsert.emailVerified = false 
+      }
+    }
 
     if (upsert.google)
     {
@@ -36,6 +43,7 @@ var upsertSmart = (search, upsert, done) => {
       {
         upsert.email = upsert.google._json.email 
         upsert.name = upsert.google.displayName   
+        upsert.emailVerified = false
       }
 
       if (r && r.googleId && r.googleId != upsert.google.id)
@@ -83,6 +91,7 @@ export function tryLocalSignup(email, password, name, done) {
     {
       var data = {
         email: email,
+        emailVerified: false,
         name: name,
         local: { password: generateHash(password) }
       }
@@ -136,7 +145,7 @@ export function getSessionByUserId(cb) {
     'stack.user_id': 1, 'stack.link': 1,
     'twitter.username': 1,
     'email': 1,
-    'emailVerfied': 1,
+    'emailVerified': 1,
     'name': 1,      
     'initials': 1,            
     'bio': 1

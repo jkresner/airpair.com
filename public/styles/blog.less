@@ -7,7 +7,7 @@
 
 body#post {
 	@media only screen and (max-width:640px) {
-	  .main-wrap, main { width:98%!important;margin:auto }
+	  .main-wrap, main { width:100%;margin:auto } //-- let the post be as big as the width
 	} 
 }  
 
@@ -15,6 +15,7 @@ body#post {
 	margin-left:-10px;
 	text-align:center;
 	article { 
+		.gradientfill;
 		text-align:left;
 		position:relative;
 		width:286px; 
@@ -25,8 +26,8 @@ body#post {
 		border-radius:3px;
 		font-size:12px;
 		line-height:14px;
-		display:inline-block;			
-	
+		display:inline-block;		
+
 		> a { padding:12px 12px 0px 12px;display:block }
 
 		header { min-height:60px;overflow:hidden }
@@ -245,21 +246,23 @@ body#posts {
 	#disqus_thread {
 		min-height:700px
 	}
+	
+	@media only screen and (max-width:900px) {
+		> h1 { font-size:32px;line-height:48px;margin:10px 0 }
+		#table-of-contents { float:left;clear:left; }
+		#table-of-contents + ul { float:left;clear:left; }
+		#author { color:white;margin:15px;float:none }
+	}
 
-  @media only screen and (max-width:900px) {
-    h1 { font-size:32px;line-height:48px }
-    #table-of-contents { float:left;clear:left; }
-    #table-of-contents + ul { float:left;clear:left; }
-    #author { color:white;margin:15px;float:none }
-  }  
-
-  @media only screen and (max-width:640px) {
-		p { padding:2px }
-		iframe { width:100% }
-    h1 { font-size:28px;line-height:32px;text-align:center; }
-    h2 { font-size:22px;line-height:32px;text-align:center;margin-bottom:10px }    
-    .pw-widget { display:none }
-    #table-of-contents { font-size:16px;margin-top:20px }
+	@media only screen and (max-width:640px) {
+		p { padding:2px 5px 2px 5px }
+		iframe { width:100%;position:relative;left:0 }
+		> h1 { font-size:28px;line-height:30px;text-align:center;margin-top:20px }
+		h2 { font-size:22px;line-height:32px;text-align:center;margin-bottom:10px }
+		h3, h4, h5, h6 { text-align:center }    
+		.pw-widget { display:none }
+		#table-of-contents { font-size:16px;margin:20px 20px 10px 20px;text-align:left }
+		#table-of-contents + ul { margin:0px 20px }
 		#author + p { width:60px;height:60px; }
 		blockquote { width:78%;float:right }   
   }	
