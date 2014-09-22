@@ -5,6 +5,7 @@ var cfg = {
   session: { secret: 'airyv1' },
   auth: {
     loginUrl: '/v1/auth/login',
+    loginUrl: '/v1/auth/unauthorized',    
     defaultRedirectUrl: '/v1',
     oAuth: { callbackHost: 'http://localhost:3333' },
     local: {

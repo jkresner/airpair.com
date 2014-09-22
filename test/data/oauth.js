@@ -1,4 +1,25 @@
 module.exports = {
+  
+  adm: { provider: 'google',
+    id: '199992380360999999999',
+    displayName: 'Admin Daemon',
+    name: { familyName: 'Daemon', givenName: 'Admin' },
+    emails: [ { value: 'admin@airpair.com' } ],
+    _json: 
+     { id: '199992380360999999999',
+       email: 'admin@airpair.com',
+       verified_email: true,
+       name: 'Admin Daemon',
+       given_name: 'Admin',
+       family_name: 'Daemon',
+       link: 'https://plus.google.com/117132380360243205600',
+       picture: 'https://lh3.googleusercontent.com/-NKYL9eK5Gis/AAAAAAAAAAI/AAAAAAAABKU/25K0BTOoa8c/photo.jpg',
+       gender: 'male',
+       locale: 'en',
+       hd: 'airpair.com' },
+    token: { } 
+  },
+
   jkap: { provider: 'google',
     id: '117132380360243205600',
     displayName: 'Jonathon Kresner',

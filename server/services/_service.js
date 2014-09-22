@@ -36,13 +36,15 @@ export default function(model, logging) {
       })
     },
     update: (id, data, cb) => {
+      if (!id) return cb(new Error('Cannot update object by null id'), null) 
       var ups = _.omit(data, '_id') // so mongo doesn't complain
       model.findByIdAndUpdate(id, ups).lean().exec( (e, r) => {
-        if (e || logging) { $log('svc.update.error', e, data) }
+        if (e || logging) { $log('svc.update.error', id, e, data) }
         cb(e, r)
       })
     },
     deleteById: (id, cb) => {
+      if (!id) return cb(new Error('Cannot delete object by null id'), null) 
       model.findByIdAndRemove(id, (e) => {
         if (e || logging) { $log('svc.delete', e) }
         cb(e)
