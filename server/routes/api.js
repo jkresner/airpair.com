@@ -1,6 +1,6 @@
 import Workshops from '../api/workshops'
 import Posts from '../api/posts'
-import Session from '../api/session'
+import iniUsersApi from '../api/users'
 import Tags from '../api/tags'
 
 export default function(app) {
@@ -10,7 +10,7 @@ export default function(app) {
   new Tags(router)
   new Workshops(router)
   new Posts(router)  
-  new Session(router)    
+  iniUsersApi(router)    
   
   return router
 

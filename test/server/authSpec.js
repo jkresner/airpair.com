@@ -29,7 +29,8 @@ module.exports = function()
             expect(s.name).to.equal(d.name)            
             expect(s.email).to.equal(d.email)
             expect(s.emailVerified).to.equal(false)  
-            expect(s.local).to.be.undefined  // holds password field
+            expect(s.local).to.be.undefined  // holds password field   
+            expect(s.roles).to.be.undefined // new users have undefined roles
             done()
         })
       })
@@ -38,8 +39,7 @@ module.exports = function()
 
     it('Can sign up as new user with google', function(done) {
       UserService.upsertProviderProfile(null, 'google', data.oauth.jkre, function(e,usr) {
-        data.users['jkre'] = { _id: usr.id, name: usr.name, email: usr.email }
-        login('jkre', function() {
+        login('jkre', usr, function() {
           get('/session/full', {}, function(s) {
             expect(s._id).to.equal(usr._id.toString())
             expect(s.email).to.equal(usr.email)
@@ -47,7 +47,8 @@ module.exports = function()
             expect(s.googleId).to.be.undefined  // not returned from session call            
             expect(s.google.id).to.equal(data.oauth.jkre.id)  
             expect(s.emailVerified).to.equal(false)  
-            expect(s.local).to.be.undefined  // holds password field            
+            expect(s.local).to.be.undefined  // holds password field       
+            expect(s.roles).to.be.undefined // new users have undefined roles
             done()
           })    
         })
