@@ -110,6 +110,7 @@ chat-header .title {
 .chatroom messages table td.from {
   color: gray;
   font-size: 8pt;
+  padding: 10px;
 }
 .chatroom entry {
   border-top: 2px solid #c9d6d2;

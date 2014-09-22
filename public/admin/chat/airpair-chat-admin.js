@@ -22,6 +22,7 @@ AirPair.controller('ChatAdminController', ['$rootScope', '$scope', '$firebase', 
     $scope.channels = chat.allChannels();
 
     // load my notifications
+    console.log('loading notifications');
     $scope.notifications = chat.notifications();
 
     // load people
@@ -46,12 +47,6 @@ AirPair.controller('ChatAdminController', ['$rootScope', '$scope', '$firebase', 
       if(delta > MAX_AWAY_OF_ACTIVE_USER) {
         return true;
       }
-    }
-  }
-
-  $scope.clearNotifications = function(channel, user) {
-    if(channel && user) {
-      chat.clearNotifications(channel, user);
     }
   }
 
@@ -83,7 +78,6 @@ AirPair.controller('ChatAdminController', ['$rootScope', '$scope', '$firebase', 
 
         // channel participation
         chat.subscribe(channel, chat.currentUser.uid);
-        $scope.clearNotifications(channel, chat.currentUser);
         $('#message').focus();
       });
     }

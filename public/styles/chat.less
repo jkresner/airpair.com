@@ -151,6 +151,20 @@ tr.channel {
     text-align: right;
     width: 40px;
   }
+  members {
+    display: none;
+    margin-top: 5px;
+    member {
+      display: inline-block;
+      img {
+        border-radius: 50%;
+        max-width: 35px;
+        height: auto;
+      }
+      &:not(:first-child) { margin-left: -10px }
+    }
+  }
+  &.active members { display: block }
 }
 
 span.unread {

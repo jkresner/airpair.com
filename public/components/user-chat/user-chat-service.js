@@ -13,6 +13,7 @@ var ChatService = function($rootScope, $firebase, $firebaseSimpleLogin) {
 
   var service = {
     // initialized on login below
+    activeChannel: null,
     currentUser: null,
     currentUserChannels: null,
 
@@ -63,6 +64,7 @@ var ChatService = function($rootScope, $firebase, $firebaseSimpleLogin) {
       var self = this;
       $firebase(cRef).$asObject().$loaded(function(channel) {
         self.activeChannel = channel;
+        self.clearNotifications();
         // we assume that caller will want to use the channel object right away
         // and that is why we wait on the promise to resolve before calling back
         cb(channel,
@@ -131,15 +133,25 @@ var ChatService = function($rootScope, $firebase, $firebaseSimpleLogin) {
       if(this.currentUser) {
         console.log('updating last_seen');
         activeUsersRef.child(this.currentUser.uid).child('last_seen').set(Firebase.ServerValue.TIMESTAMP);
+
+        if(this.activeChannel) {
+          this.clearNotifications();
+        }
       }
     },
 
     notifications: function() {
-      $firebase(notificationsRef.child(this.currentUser.uid)).$asObject();
+      var n = $firebase(notificationsRef.child(this.currentUser.uid)).$asObject();
+      n.$loaded(function(notifications){
+        console.log(notifications);
+      });
+      return n;
     },
 
-    clearNotifications: function(channel, user) {
-      return rootRef.child("notifications").child(user.uid).child(channel.$id).remove();
+    clearNotifications: function() {
+      if(this.currentUser && this.activeChannel) {
+        rootRef.child("notifications").child(this.currentUser.uid).child(this.activeChannel.$id).remove();
+      }
     }
   }
 

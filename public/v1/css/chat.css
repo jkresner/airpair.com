@@ -127,6 +127,24 @@ tr.channel td.notifications {
   text-align: right;
   width: 40px;
 }
+tr.channel members {
+  display: none;
+  margin-top: 5px;
+}
+tr.channel members member {
+  display: inline-block;
+}
+tr.channel members member img {
+  border-radius: 50%;
+  max-width: 35px;
+  height: auto;
+}
+tr.channel members member:not(:first-child) {
+  margin-left: -10px;
+}
+tr.channel.active members {
+  display: block;
+}
 span.unread {
   background: red;
   border-radius: 50%;
