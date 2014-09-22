@@ -1,4 +1,5 @@
 module.exports = {
   users: require('./users'),
-  oauth: require('./oauth')  
+  oauth: require('./oauth'),
+  sessions: {}
 }

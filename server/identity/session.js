@@ -30,7 +30,7 @@ export default function(app, initSessionStore)
   
     passport.serializeUser( (user, done) => {
       // The user object comes from UserService.upsertSmart
-      var sessionUser = { _id: user._id, name: user.name, email: user.email }
+      var sessionUser = { _id: user._id, name: user.name, email: user.email, roles: user.roles }
       if (logging) $log('serializeUser', sessionUser)
       done(null, sessionUser)
     })

@@ -17,7 +17,7 @@ var Author = {
   userId:       { required: true, type: ObjectId, ref: 'User', index: true },
   name:         { required: true, type: String },  
   avatar:       { required: true, type: String },
-  username:     { type: String }, // if they are an expert
+  username:     { type: String, lowercase: true }, // if they are an expert
   tw:           { type: String },   
   gh:           { type: String },     
   in:           { type: String },       
@@ -32,10 +32,10 @@ export default mongoose.model('Post', new mongoose.Schema({
   updated:      { required: true, type: Date, 'default': Date },
   published:    { type: Date },  
   publishedBy:  { type: ObjectId, ref: 'User' },  
-  slug:         { type: String, unique: true, sparse: true },
-  title:        { required: true, type: String },
+  slug:         { type: String, unique: true, sparse: true, lowercase: true, trim: true },
+  title:        { required: true, type: String, trim: true },
   md:           { required: true, type: String }, 
-  assetUrl:     { type: String },   
+  assetUrl:     { type: String, lowercase: true, trim: true },   
   tags:         { type: [{}], 'default': [] },  
   meta:         { type: Meta }
 

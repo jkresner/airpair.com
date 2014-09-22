@@ -1,10 +1,12 @@
 var logging = false;
 
+var isApiRequest = (req) => req.url.indexOf('api') != 0
+
 
 export function authd(req, res, next) {
   if (!req.isAuthenticated || !req.isAuthenticated())
   {
-    var apiRequest = req.url.indexOf('api') != 0
+    var apiRequest = isApiRequest(req)
     
     // save url user is trying to access for graceful redirect after login
     if (req.session && !apiRequest) { 
@@ -19,6 +21,31 @@ export function authd(req, res, next) {
     next()  
   }
 }
+
+var authorizeRole = (roleName) => {
+  return (req, res, next) => {
+    var apiRequest = req.url.indexOf('api') != 0
+    if (!req.isAuthenticated || !req.isAuthenticated())
+    {
+      if (isApiRequest(req)) { res.status(403).json() } 
+      else { res.status(403).redirect(config.auth.loginUrl) }
+    } 
+    else if ( ! _.contains(req.user.roles, roleName) )
+    {
+      if (isApiRequest(req)) { res.status(403).json() } 
+      else { res.status(403).redirect(config.auth.unauthorizedUrl) }
+    }
+    else 
+    {
+      next()  
+    }
+  }
+}
+
+export var adm = authorizeRole('admin')
+export var pipeliner = authorizeRole('pipeliner')
+export var mm = authorizeRole('matchmaker')
+export var editor = authorizeRole('editor')
 
 
 var setReqSessionVar = (varName) => {
