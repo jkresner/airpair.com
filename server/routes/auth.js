@@ -14,6 +14,7 @@ export default function(app) {
 
   router.get('/logout', logout(config.auth))
   router.get('/login*', app.renderHbs('login'))
+  router.get('/unauthorized*', app.renderHbs('login'))
 
   router.post('/login', local.login, authDone)
   router.post('/signup', local.signup, authDone)

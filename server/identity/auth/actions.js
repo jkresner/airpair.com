@@ -1,5 +1,3 @@
-var logging = true;
-
 
 export function logout(options) {
   return (req, res, next) => {  
@@ -21,5 +19,6 @@ export function authDone(req, res, next) {
 
 //-- only used in testing
 export function setTestLogin(req, res, next) {
-  req.logIn(global.data.users[req.params.id], (err) => next(err) )
+  if (logging) $log('setTestLogin', req.params.id, global.data.sessions[req.params.id])
+  req.logIn(global.data.sessions[req.params.id], (err) => next(err) )
 }

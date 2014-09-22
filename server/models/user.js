@@ -11,11 +11,12 @@ User = new Schema({
     index: {
       unique: true,
       dropDups: true
-    }
+    },
+    trim: true
   },
   emailVerified: { type: Boolean, required: true, default: false },
-  name: String,
-  initialis: String, 
+  name: { type: String, trim: true },
+  initialis: { type: String, lowercase: true, trim: true },
 
   username: {
     type: String,
@@ -23,7 +24,12 @@ User = new Schema({
       sparse: true,      
       unique: true,
       dropDups: true
-    }
+    },
+    lowercase: true
+  },
+
+  roles: {
+    type: [String]
   },
 
   // Track user behavior / profile

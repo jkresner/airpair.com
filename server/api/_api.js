@@ -4,15 +4,17 @@ var logging = false
 var cbSend = (httpMethod, res, next) => {
   return (e , r) => {
     if (logging) { $log('cbSend', e, r) }
-    if (e) { return res.status(400).send(e.message) }
+    if (e) { 
+      return res.status(400).json({message:e.message})
+    }
     if (httpMethod != 'DELETE')
     {
-      if (!r) { return res.status(404).send('Not found') }
+      if (!r) { return res.status(404).json({}) }
       res.json(r)
     }
     else
     {
-      res.status(200).send('')
+      res.status(200).json({})
     }
   }
 }

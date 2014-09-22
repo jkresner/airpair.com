@@ -25,8 +25,7 @@ var upsertSmart = (search, upsert, done) => {
     if (e) { return done(e) }
     if (!r)
     {
-      console.log('alias')
-      console.log('track','signup')
+      console.log('TODO', 'alias', 'track','signup')
     }
     else 
     {
@@ -120,6 +119,8 @@ export function tryLocalLogin(email, password, done) {
 
 
 
+
+
 export function setAvatar(user) {
   if (user && user.email) { user.avatar = md5.gravatarUrl(user.email) }
 } 
@@ -127,9 +128,50 @@ export function setAvatar(user) {
 
 export function getSessionLite(cb) {
   if (this.user == null) { return cb(null, null); }
-  setAvatar(this.user)
+  else if (!this.user.avatar)
+  {
+    setAvatar(this.user)
+  }
   return cb(null, this.user)
 }
+
+
+var VALID_ROLES = ['admin',       // Get access to all admin backend app
+                   'pipeliner',   // Get pipeline emails
+                   'editor',      // Can publish posts
+                   'matchmaker']  // Can make suggestions + schedule times
+
+export function toggleUserInRole(userId, role, cb) {
+  if (!_.contains(VALID_ROLES, role)) {
+    return cb(new Error('Invalid role'))
+  }
+
+  svc.searchOne({ _id:userId }, null, (e,r) => {    
+    if (e || !r) { return cb(e,r) }
+
+    if (!r.roles) {
+      r.roles = [role]
+    } 
+    else if ( _.contains(r.roles, role) )
+      r.roles = _.without(r.roles, role)
+    else {
+      r.roles.push(role)
+    }
+    svc.update(userId, r, cb)
+  })
+} 
+
+
+export function getUsersInRole(role, cb) {
+  var fields = {
+    '_id': 1,
+    'roles': 1, 
+    'email': 1,
+    'name': 1,      
+    'initials': 1
+  }
+  svc.searchMany({ roles:role }, { fields: fields }, cb)
+} 
 
 
 export function getSessionByUserId(cb) {
@@ -137,7 +179,8 @@ export function getSessionByUserId(cb) {
 
   var fields = {
     '__v': 1, 
-    '_id': 1, 
+    '_id': 1,
+    'roles': 1, 
     'bitbucket.username': 1, 'bitbucket.displayName': 1,
     'github.username': 1, 'github.displayName': 1,
     'google.id':1,
@@ -150,7 +193,7 @@ export function getSessionByUserId(cb) {
     'initials': 1,            
     'bio': 1
   }
-  svc.searchOne({ _id:this.user._id },{ fields: fields }, (e,r)=> {
+  svc.searchOne({ _id:this.user._id },{ fields: fields }, (e,r) => {
     setAvatar(r)
     cb(e,r)
   })

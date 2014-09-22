@@ -24,9 +24,8 @@ schema = new Schema({
   slug: {
     required: true,
     type: String,
-    index: {
-      unique: true
-    }
+    unique: true,
+    lowercase: true
   },
   title: String,
   description: String,
