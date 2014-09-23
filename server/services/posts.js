@@ -1,12 +1,10 @@
 import Svc from '../services/_service'
-import User from '../models/user'
+import * as UserSvc from '../services/users'
 import Post from '../models/post'
 import generateToc from './postsToc'
 var marked = require('marked')
 
 var logging = false
-
-var userSvc = new Svc(User, logging)
 var svc = new Svc(Post, logging)
 
 var fields = {
@@ -80,7 +78,7 @@ export function create(o, cb) {
   o.created = new Date()
   o.by.userId = this.user._id
   svc.create(o, cb)
-  userSvc.update(o.by.userId, {bio: o.by.bio},() => {})
+  UserSvc.update(o.by.userId, {bio: o.by.bio},() => {})
 }
 
 export function getTableOfContents(markdown, cb) {
