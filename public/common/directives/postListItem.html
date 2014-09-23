@@ -17,7 +17,8 @@
 </a>
   <footer class="entry-footer">
     <p class="entry-meta">
-      <span class="entry-categories"> 
+      <span class="entry-categories">
+        <a ng-repeat='tag in post.tags' href="#" title="View all posts in {{ tag.name }}" rel="category tag">{{ '{'+tag.slug+'}' }}</a>
       </span>
     </p>
   </footer>
