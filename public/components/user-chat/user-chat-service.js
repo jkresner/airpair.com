@@ -60,9 +60,11 @@ var ChatService = function($rootScope, $firebase, $firebaseSimpleLogin) {
     },
 
     loadChannel: function(name, cb) {
+      console.log('loading channel', name);
       cRef = activeChannelsRef.child(name);
       var self = this;
       $firebase(cRef).$asObject().$loaded(function(channel) {
+        console.log('setting activeChannel to', channel);
         self.activeChannel = channel;
         self.clearNotifications();
         // we assume that caller will want to use the channel object right away
@@ -71,6 +73,10 @@ var ChatService = function($rootScope, $firebase, $firebaseSimpleLogin) {
            $firebase(cRef.child('members')).$asArray(),
            $firebase(cRef.child('messages')).$asArray());
       });
+    },
+
+    touch: function(channelId) {
+      subscriptionsRef.child(this.currentUser.uid).child(channelId).setPriority(Firebase.ServerValue.TIMESTAMP);
     },
 
     deactivate: function(list, channel) {
@@ -99,6 +105,9 @@ var ChatService = function($rootScope, $firebase, $firebaseSimpleLogin) {
 
       // make the last active channel pop to the top of the admin list
       cRef.setPriority(Firebase.ServerValue.TIMESTAMP);
+
+      // clear red notification icons in case they were not already
+      this.clearNotifications();
 
       // return the promise so that caller can do stuff then()
       return messages.$add(msg);

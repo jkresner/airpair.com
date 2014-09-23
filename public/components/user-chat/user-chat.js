@@ -10,11 +10,7 @@ AirPair.directive('airpairUserChat', [function() {
 AirPair.controller('UserChatController',
   ['$scope', 'chat', function($scope, chat) {
     $scope.loadChannel = function(id, $event) {
-      chat.loadChannel(id, function(channel, members, messages) {
-        $scope.channel = channel;
-        $scope.members = members;
-        $scope.messages = messages;
-      });
+      chat.touch(id);
       if($event) {
         // todo: why isn't the dropdown function present?
         //$($event.target).closest(".dropdown").dropdown('toggle');
@@ -22,25 +18,31 @@ AirPair.controller('UserChatController',
         $($event.target).closest(".dropdown").removeClass('open');
       }
     };
-
   }]);
 
 AirPair.directive('chatroom', [function() {
   return {
     controller: 'ChatroomController',
     restrict: 'E',
-    transclude: true,
     replace: true,
-    template: '<div class="chatroom" ng-transclude></div>'
+    templateUrl: '/components/user-chat/chatroom.html',
+    scope: {
+      channel: '@',
+      members: '@',
+      messages: '@'
+    }
   };
 }]);
 
 AirPair.controller('ChatroomController',
   ['$scope', 'chat', function($scope, chat) {
     $scope.chat = chat;
-    $scope.loadChannel($scope.channelId.$id);
+    chat.loadChannel($scope.$parent.channelId.$id, function(channel, members, messages) {
+      $scope.channel = channel;
+    });
 
     $scope.expand = function() {
+      chat.touch(this.channel.$id);
       $('#chat').removeClass('collapsed');
     };
 

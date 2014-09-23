@@ -35,7 +35,6 @@
 }
 chat-header {
   background: black;
-  border: 1px solid gray;
   display: flex;
   flex: 0 0 auto;
   flex-direction: row;
@@ -45,26 +44,27 @@ chat-header chat-notifications {
   padding: 10px;
   width: 50px;
 }
-chat-header .title {
-  border-left: 1px solid silver;
+.chatroom {
+  background: #c9d6d2;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+.chatroom:not(:nth-child(2)) {
+  display: none;
+}
+.chatroom .title {
   color: white;
   letter-spacing: 1px;
   font-size: 9pt;
   font-weight: 600;
-  flex: 1 1 auto;
   padding: 10px;
+  position: absolute;
   text-align: center;
   text-transform: uppercase;
-}
-.chatroom {
-  background: #c9d6d2;
-  border-left: 1px solid silver;
-  flex: 1 1 auto;
-  display: flex;
-  flex-direction: column;
-}
-.chatroom:not(:nth-child(2)) {
-  display: none;
+  top: -38px;
+  left: 40px;
 }
 .chatroom members {
   background: #333;
@@ -105,6 +105,7 @@ chat-header .title {
 }
 .chatroom messages table {
   background-color: white;
+  border: 1px solid silver;
   margin: 0 !important;
 }
 .chatroom messages table td.from {
@@ -113,15 +114,13 @@ chat-header .title {
   padding: 10px;
 }
 .chatroom entry {
-  border-top: 2px solid #c9d6d2;
-  flex: 0 0 auto;
-  height: 30px;
+  flex: 0 0 30px;
 }
 .chatroom entry input {
   outline: 0;
   display: block;
-  height: 28px;
+  height: 31px;
   padding: 2px;
-  margin-top: -2px;
+  margin-top: -1px;
   width: 100%;
 }

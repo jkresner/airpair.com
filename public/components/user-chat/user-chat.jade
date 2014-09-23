@@ -6,19 +6,4 @@
       ul.dropdown-menu
         li(ng-repeat="channel in chat.currentUserChannels")
           a(ng-click="loadChannel(channel.$id, $event)") {{ channel.title }}
-    .title(ng-dblclick="collapse()")
-      span(ng-bind="chat.activeChannel.title")
   chatroom(ng-repeat="channelId in chat.currentUserChannels")
-    members(ng-click="expand()")
-      member(ng-repeat="person in members" ng-if="person.uid !== chat.currentUser.uid" title="{{person.name}}")
-        img(ng-src="{{person.picture}}")
-        .title {{ person.name }}
-
-    messages(scroll-glue)
-      table.table.table-striped
-        tr(ng-repeat="msg in messages")
-          td.from {{ msg.from.first_name }}
-          td{{ msg.content }}
-    entry
-      form(ng-submit='say(message, $event)')
-        input#message(ng-model='message' placeholder='ask a question')

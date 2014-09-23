@@ -38,7 +38,6 @@
 
 chat-header {
   background: black;
-  border: 1px solid gray;
   display: flex;
   flex: 0 0 auto;
   flex-direction: row;
@@ -48,28 +47,30 @@ chat-header {
     padding: 10px;
     width: 50px;
   }
-  .title {
-    border-left: 1px solid silver;
-    color: white;
-    letter-spacing: 1px;
-    font-size: 9pt;
-    font-weight: 600;
-    flex: 1 1 auto;
-    padding: 10px;
-    text-align: center;
-    text-transform: uppercase;
-  }
 }
 
 .chatroom {
   background: @chrome;
-  border-left: 1px solid silver;
   flex: 1 1 auto;
   display: flex;
   flex-direction: column;
+  position: relative;
 
   &:not(:nth-child(2)) {
     display: none;
+  }
+
+  .title {
+    color: white;
+    letter-spacing: 1px;
+    font-size: 9pt;
+    font-weight: 600;
+    padding: 10px;
+    position: absolute;
+    text-align: center;
+    text-transform: uppercase;
+    top: -38px;
+    left: 40px;
   }
 
   members {
@@ -106,6 +107,7 @@ chat-header {
     overflow-y: scroll;
     table {
       background-color: white;
+      border: 1px solid silver;
       margin: 0 !important;
       td.from {
         color: gray;
@@ -116,15 +118,13 @@ chat-header {
   }
 
   entry {
-    border-top: 2px solid @chrome;
-    flex: 0 0 auto;
-    height: 30px;
+    flex: 0 0 30px;
     input {
       outline: 0;
       display: block;
-      height: 28px;
+      height: 31px;
       padding: 2px;
-      margin-top: -2px;
+      margin-top: -1px;
       width: 100%;
     }
   }
