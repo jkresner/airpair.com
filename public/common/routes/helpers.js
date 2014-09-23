@@ -12,7 +12,7 @@
           function()
           {   
             // $window.location = '/v1/auth/login?returnTo=/posts/new';
-            $location.path('/auth/login')
+            $location.path('/v1/auth/login')
             return $q.reject();
           }
         ); 
@@ -31,7 +31,7 @@
         args = entry[1];
       }
       var fnName = 'resolve' + dep.charAt(0).toUpperCase() + dep.substr(1);
-      console.log('fnName', fnName, self, self[fnName])
+      // console.log('fnName', fnName, self, self[fnName])
       var fn = self[fnName](args);
       extend[dep] = fn;
     });
