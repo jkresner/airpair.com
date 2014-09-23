@@ -17,8 +17,9 @@ var testDb = require('./helpers/initDb')
 var sessionSpec = require('./sessionSpec')
 var authSpec = require('./authSpec')
 var authzSpec = require('./authzSpec')
+var postsSpec = require('./postsSpec')
 
-describe('Server Tests', function() {
+describe('Server: ', function() {
 
   before(function(done) {
     System.import('../../index').then(function(index) {      
@@ -29,9 +30,10 @@ describe('Server Tests', function() {
     });    
   })
 
-  describe('Session ', sessionSpec)
-  describe('Auth ', authSpec)
-  describe('Authz ', authzSpec)  
+  describe('Session: ', sessionSpec)
+  describe('Auth: ', authSpec)
+  describe('Authz: ', authzSpec)  
+  describe('Posts: ', postsSpec)    
 
 })
 
