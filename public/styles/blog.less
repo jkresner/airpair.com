@@ -80,9 +80,7 @@ body#posts {
 		a.btn { width:200px; }
 	}
 
-	#author {
-		
-	}
+	#author { padding-top:10px }
 
 	.editor {
 		padding:10px 16px 0px 16px;
@@ -93,25 +91,25 @@ body#posts {
 			float:right;
 			.dates .form-group
 			{
-				float:left;width:50%;
+				float:left;width:60%;
 			}
 			.dates section
 			{
-				margin:10px;
+				margin:0px 0px 2px 0px;
 				line-height:10px;
 				float:right;
-				width:40%;
+				width:32%;
 				font-size:10px;
-				label { font-size:10px;float:left;clear:left;display:block;width:56px }
-				span { float:left }
+				label { font-size:10px;display:block;margin-bottom:5px  }
+				span { display:block;margin-bottom:6px }
 			}
 		}
-		.md { float:left;width:60%;
+		.md { float:left;width:64%;
 			display:none;
-			textarea { padding:4px;height:256px;font-size:11px }
+			textarea { padding:4px;height:340px;font-size:14px }
 		}
 		.md + .meta {
-			width:38%;
+			width:34%;
 		}
 		.form-actions { 
 			height:40px;
@@ -130,7 +128,7 @@ body#posts {
 	.edit {
 		#preview {
 			.preview { 
-				width:914px;max-height:740px;overflow-y:scroll;
+				width:914px;max-height:300px;overflow-y:scroll;
 				border-right:solid 1px @lightblue;
 			}
 		}
@@ -228,20 +226,25 @@ body#posts {
 		li { padding:1px 0 2px 0; }	
 	}
 
-	#author { color:white;margin:2px;clear:left }
-	#author + p { width:80px;height:80px;display:inline-block;maring-top:20px }
-	#author + p img { width:100%;height:100%;border-radius:50% }
-	blockquote { 
-		height:80px;
-		width:540px;display:inline-block;margin:0 0px 0 10px;
-		font-style:italic;font-size:14px;padding:0 0px 0 10px;
-		overflow:hidden; }
-	blockquote p { 
-		width:100%;
-		height:80px;
-		margin:0; }
-	blockquote + p { margin-top:14px } // for images under blockquote
-	blockquote + iframe { margin-top:14px } // for youtube iframe under blockquote
+	// #author + p { width:80px;height:80px;display:inline-block;maring-top:20px }
+	.author {
+		margin:10px 0 24px 0;
+
+		> img { width:80px;height:80px;border-radius:50%;display:inline-block;vertical-align:top }
+	
+		> figcaption {
+			height:80px;
+			width:540px;display:inline-block;margin:0 0px 0 10px;
+			display:inline-block;
+			border-left: 5px solid #eee;
+	    margin: 0 0 0 10px;
+			padding:0 0px 0 15px;
+	    box-sizing: border-box;
+			font-style:italic;
+			font-size:14px;
+			overflow:hidden; 
+		}
+	}
 
 	#disqus_thread {
 		min-height:700px
@@ -251,7 +254,7 @@ body#posts {
 		> h1 { font-size:32px;line-height:48px;margin:10px 0 }
 		#table-of-contents { float:left;clear:left; }
 		#table-of-contents + ul { float:left;clear:left; }
-		#author { color:white;margin:15px;float:none }
+		.author { float:none }
 	}
 
 	@media only screen and (max-width:640px) {
@@ -263,7 +266,7 @@ body#posts {
 		.pw-widget { display:none }
 		#table-of-contents { font-size:16px;margin:20px 20px 10px 20px;text-align:left }
 		#table-of-contents + ul { margin:0px 20px }
-		#author + p { width:60px;height:60px; }
-		blockquote { width:78%;float:right }   
+		.author > img { width:60px;height:60px; }
+		.author > figcaption { width:78%;float:right }   
   }	
 }

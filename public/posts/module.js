@@ -1,5 +1,6 @@
-require('./../directives/share.js');
-require('./../directives/post.js')
+require('./../common/directives/share.js');
+require('./../common/directives/post.js');
+require('./../common/directives/tagInput.js');
 require('./../common/filters.js');
 require('./../common/postsService.js');
 require('./../common/postHelpers.js');
@@ -9,7 +10,7 @@ require('./editor.js');
 
 
 angular.module("APPosts", ['ngRoute','APFilters','APShare',
-  'APMyPostsList','APPostEditor','APPost', 'APSvcSession', 'APSvcPosts'])
+  'APMyPostsList','APPostEditor','APPost', 'APSvcSession', 'APSvcPosts','APTagInput'])
 
   .config(['$locationProvider', '$routeProvider', 
       function($locationProvider, $routeProvider) {
@@ -89,7 +90,15 @@ angular.module("APPosts", ['ngRoute','APFilters','APShare',
 
     $scope.preview = { mode: 'edit' };
     $scope.post = { md: "Save post to start authoring markdown ... ", by: $scope.session };
-    $scope.post.by = session  
+    
+    var social = {}
+    if (session.github) social.gh = session.github.username
+    if (session.linkedin) social.in = session.linkedin.d9YFKgZ7rY
+    if (session.stack) social.so = session.stack.link.replace('http://stackoverflow.com','')
+    if (session.twitter) social.tw = session.twitter.username 
+    if (session.google) social.gp = session.google.id
+
+    $scope.post.by = _.extend(session, social)
 
     $scope.save = () => {
       $scope.post.md = "Type markdown ..."  
@@ -133,6 +142,7 @@ angular.module("APPosts", ['ngRoute','APFilters','APShare',
     
     var self = this;
     $scope.preview = { mode: 'publish' };
+    $scope.post = { tags: [] };
   
     $scope.setPublishedOverride = () => {
       if (!$scope.post.publishedOverride)
@@ -141,10 +151,19 @@ angular.module("APPosts", ['ngRoute','APFilters','APShare',
       }
     }
 
+
     PostsService.getById($routeParams.id, (r) => {
       if (!r.slug) {
         r.slug = r.title.toLowerCase().replace(/ /g, '-');
       }
+
+      $scope.canonical = 'http://www.airpair.com/v1/posts/' + r.slug;
+
+      if (r.tags.length > 0)
+      {
+        $scope.canonical = `http://www.airpair.com/${r.tags[0].slug}/posts/${r.slug}`;
+      }
+
       if (!r.meta) {
         var ogVideo = null;
         var ogImage = r.assetUrl;
@@ -154,8 +173,6 @@ angular.module("APPosts", ['ngRoute','APFilters','APShare',
           ogImage = `http://img.youtube.com/vi/${youTubeId}/hqdefault.jpg`
           ogVideo = `https://www.youtube-nocookie.com/v/${youTubeId}`
         }
-
-        $scope.canonical = 'http://www.airpair.com/v1/posts/' + r.slug;
 
         r.meta = { 
           title: r.title,
@@ -167,9 +184,17 @@ angular.module("APPosts", ['ngRoute','APFilters','APShare',
           ogUrl: $scope.canonical
         }     
       }
-
       $scope.post = _.extend(r, { saved: true});
     });
+
+
+    $scope.$watch('post.tags', function(value){
+      if (value.length > 0)
+      {
+        $scope.post.meta.canonical = `http://www.airpair.com/${$scope.post.tags[0].slug}/posts/${$scope.post.slug}`;
+        $scope.post.meta.ogUrl = `http://www.airpair.com/${$scope.post.tags[0].slug}/posts/${$scope.post.slug}`;
+      }
+    })
 
     $scope.save = () => {
       $scope.post.md = angular.element(document.querySelector( '#markdownTextarea' ) ).val();

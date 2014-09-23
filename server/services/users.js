@@ -8,12 +8,10 @@ var logging = false
 var svc = new Svc(User, logging)
 
 
-var generateHash = (password) =>
-  bcrypt.hashSync(password, bcrypt.genSaltSync(8))
-
-var validPassword = (password, hash) => 
-  bcrypt.compareSync(password, hash)  
-
+var fields = {
+  sessionFull: { '__v': 1, '_id': 1, 'roles': 1, 'bitbucket.username': 1, 'bitbucket.displayName': 1, 'github.username': 1, 'github.displayName': 1, 'google.id':1, 'linkedin.id': 1, 'stack.user_id': 1, 'stack.link': 1, 'twitter.username': 1, 'email': 1, 'emailVerified': 1, 'name': 1, 'initials': 1, 'bio': 1 },
+  usersInRole: { '_id': 1, 'roles': 1, 'email': 1, 'name': 1, 'initials': 1 }
+} 
 
 //-- TODO, move upsert fn into the UserService class
 // Add the user if new, or updating if existing base on the search
@@ -21,7 +19,7 @@ var validPassword = (password, hash) =>
 var upsertSmart = (search, upsert, done) => {
   if (logging) $log('upsertSmart', JSON.stringify(search), JSON.stringify(upsert))
   
-  User.findOne(search, (e, r) => {
+  svc.searchOne(search, null, (e, r) => {
     if (e) { return done(e) }
     if (!r)
     {
@@ -64,9 +62,7 @@ export function upsertProviderProfile(loggedInUser, providerName, profile, done)
   var search = {}
   search[providerName+'Id'] = profile.id
 
-  if (loggedInUser) {
-    search = { '_id': loggedInUser._id }
-  }
+  if (loggedInUser) search = { '_id': loggedInUser._id }
 
   var upsert = {}
   upsert[providerName+'Id'] = profile.id
@@ -78,7 +74,7 @@ export function upsertProviderProfile(loggedInUser, providerName, profile, done)
 
 export function tryLocalSignup(email, password, name, done) {
   var search = { '$or': [{email:email},{'google._json.email':email}] }
-  User.findOne(search, (e, r) => {
+  svc.searchOne(search, null, (e, r) => {
     if (e) { return done(e) }
     else if (r) {
       var info = ""
@@ -88,6 +84,9 @@ export function tryLocalSignup(email, password, name, done) {
     } 
     else
     {
+      var generateHash = (password) =>
+        bcrypt.hashSync(password, bcrypt.genSaltSync(8))
+
       var data = {
         email: email,
         emailVerified: false,
@@ -103,35 +102,50 @@ export function tryLocalSignup(email, password, name, done) {
 export function tryLocalLogin(email, password, done) {
   var search = { '$or': [{email:email},{'google._json.email':email}] }
 
-  User.findOne(search, (e, r) => {
+  svc.searchOne(search, null, (e, r) => {
     var failMsg = null
     if (!e)
     {
-      if (!r) { failMsg = "no user found"; }
-      else if (!r.local || !r.local.password) { 
-        failMsg = "try google login"; r = false;  }
-      else if (!validPassword(password, r.local.password)) { 
-        failMsg = "wrong password"; r = false; }
+      var validPassword = (password, hash) => 
+        bcrypt.compareSync(password, hash)  
+
+      if (!r) 
+        failMsg = "no user found"
+      else if (!r.local || !r.local.password) {
+        failMsg = "try google login"; r = false }
+      else if (!validPassword(password, r.local.password)) {
+        failMsg = "wrong password"; r = false }
     }
     return done(e, r, failMsg)
   })
 }
 
-
-
+//-- Not sure, but this will probably become intelligent
+export function update(id, data, cb) {
+  // o.updated = new Date() ??
+  // authorization etc.
+  svc.getById(id, (e,r) => {
+    var updated = _.extend(r, data)
+    User.findOneAndUpdate({_id:r._id}, updated, (err, user) => {
+      if (err) $log('User.update.err', err && err.stack)
+      if (logging) $log('User.update', JSON.stringify(user))
+      cb(err, user)
+    })
+  })
+}
 
 
 export function setAvatar(user) {
-  if (user && user.email) { user.avatar = md5.gravatarUrl(user.email) }
+  if (user && user.email) user.avatar = md5.gravatarUrl(user.email)
 } 
 
 
 export function getSessionLite(cb) {
-  if (this.user == null) { return cb(null, null); }
+  if (this.user == null) 
+    return cb(null, null)
   else if (!this.user.avatar)
-  {
     setAvatar(this.user)
-  }
+
   return cb(null, this.user)
 }
 
@@ -147,53 +161,28 @@ export function toggleUserInRole(userId, role, cb) {
   }
 
   svc.searchOne({ _id:userId }, null, (e,r) => {    
-    if (e || !r) { return cb(e,r) }
+    if (e || !r) return cb(e,r)
 
-    if (!r.roles) {
-      r.roles = [role]
-    } 
+    if (!r.roles)
+      r.roles = [role] 
     else if ( _.contains(r.roles, role) )
       r.roles = _.without(r.roles, role)
-    else {
+    else 
       r.roles.push(role)
-    }
+    
     svc.update(userId, r, cb)
   })
 } 
 
 
 export function getUsersInRole(role, cb) {
-  var fields = {
-    '_id': 1,
-    'roles': 1, 
-    'email': 1,
-    'name': 1,      
-    'initials': 1
-  }
-  svc.searchMany({ roles:role }, { fields: fields }, cb)
+  svc.searchMany({ roles:role }, { fields: fields.usersInRole }, cb)
 } 
 
 
 export function getSessionByUserId(cb) {
-  if (this.user == null) { return cb(null, null); }
-
-  var fields = {
-    '__v': 1, 
-    '_id': 1,
-    'roles': 1, 
-    'bitbucket.username': 1, 'bitbucket.displayName': 1,
-    'github.username': 1, 'github.displayName': 1,
-    'google.id':1,
-    'linkedin.id': 1,
-    'stack.user_id': 1, 'stack.link': 1,
-    'twitter.username': 1,
-    'email': 1,
-    'emailVerified': 1,
-    'name': 1,      
-    'initials': 1,            
-    'bio': 1
-  }
-  svc.searchOne({ _id:this.user._id },{ fields: fields }, (e,r) => {
+  if (this.user == null) return cb(null, null)
+  svc.searchOne({ _id:this.user._id },{ fields: fields.sessionFull }, (e,r) => {
     setAvatar(r)
     cb(e,r)
   })

@@ -1,3 +1,4 @@
+
 global.addLocalUser = function(userKey, done)
 {      
   var seed = data.users[userKey];
@@ -33,9 +34,27 @@ function addAdmin(userKey, done)
 }
 
 
-module.exports.init = function(done)
-{      
-  addAdmin('adm', done)
+module.exports = {
+
+  init: function(done)
+  {      
+    addAdmin('adm', done)
+  },
+
+  initTags: function(done)
+  {
+    Tag = System._loader.modules['server/models/tag'].module.default;
+    Tag.findOne({slug:'angularjs'}, function(e,r) {
+      if (!r) {
+        var tags = [data.tags.angular,data.tags.node,data.tags.mongo]
+        Tag.create(tags, done)
+      }
+      else 
+        done()
+    })
+
+  }
+
 }
 
 
