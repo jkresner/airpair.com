@@ -1,6 +1,12 @@
 var mongoose = require('mongoose')
 var {ObjectId} = mongoose.Schema
 
+var TagSlim = {  
+  _id:          { required: true, type: ObjectId, ref: 'Tag'},  
+  name:         { required: true, type: String, trim: true },
+  slug:         { required: true, type: String, lowercase: true, trim: true }  
+}
+
 var Meta = {  
   title:        { type: String },  
   description:  { type: String },
@@ -36,7 +42,7 @@ export default mongoose.model('Post', new mongoose.Schema({
   title:        { required: true, type: String, trim: true },
   md:           { required: true, type: String }, 
   assetUrl:     { type: String, trim: true },   
-  tags:         { type: [{}], 'default': [] },  
+  tags:         { type: [TagSlim], 'default': [] },  
   meta:         Meta
 
 }))

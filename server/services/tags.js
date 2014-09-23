@@ -11,7 +11,7 @@ var fields = {
 
 
 export function search(searchTerm, cb) {
-  var opts = { options: { $limit: 10 }, fields: fields.search }
+  var opts = { options: { limit: 10 }, fields: fields.search }
   var query = searchTerm ? { name : new RegExp(searchTerm, "i") } : null;
   svc.searchMany(query, opts, cb)
 }
