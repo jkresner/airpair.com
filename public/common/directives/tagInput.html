@@ -1,0 +1,17 @@
+<script type="text/ng-template" id="template/typeahead/typeahead-match.html">
+  <a>
+    <label bind-html-unsafe="match.model.name | typeaheadHighlight:query"></label>
+    <br /><span bind-html-unsafe="match.model.desc | typeaheadHighlight:query"></span>
+  </a>
+</script>
+
+    
+<input type="text" 
+  placeholder="Type technology" 
+  class="form-control"
+  ng-model="q" 
+  typeahead="t as t for t in getTags($viewValue) | filter:$viewValue" 
+  >
+<!-- typeahead-loading="loading"
+<i ng-show="loading" class="glyphicon glyphicon-refresh"></i>
+ -->Tags: <label ng-repeat="tag in post.tags">{ {{tag.name}} } <a ng-click="deselectMatch(tag)" style="color:red">x</a> &nbsp </label>
