@@ -147,7 +147,7 @@ tr.channel.active members {
 }
 span.unread {
   background: red;
-  border-radius: 50%;
+  border-radius: 10%;
   color: white;
   font-size: 6pt;
   font-weight: bold;

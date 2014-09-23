@@ -18,8 +18,14 @@
 }
 #chat.collapsed messages,
 #chat.collapsed entry,
-#chat.collapsed .title {
+#chat.collapsed .name {
   display: none;
+}
+#chat.collapsed span.unread {
+  display: inline-block;
+  position: absolute;
+  top: 4px;
+  left: -4px;
 }
 #chat.collapsed members {
   padding: 10px;
@@ -56,6 +62,11 @@ chat-header chat-notifications {
   padding-left: 15px;
   width: 50px;
 }
+chat-header chat-notifications span.unread {
+  position: absolute;
+  top: 5px;
+  left: 30px;
+}
 .chatroom {
   background: #c9d6d2;
   flex: 1 1 auto;
@@ -64,6 +75,9 @@ chat-header chat-notifications {
   position: relative;
 }
 .chatroom:not(:nth-child(2)) {
+  display: none;
+}
+.chatroom span.unread {
   display: none;
 }
 .chatroom .title {
@@ -76,7 +90,7 @@ chat-header chat-notifications {
   text-align: center;
   text-transform: uppercase;
   top: -38px;
-  left: 40px;
+  left: 50px;
 }
 .chatroom members {
   background: #333;
@@ -135,4 +149,24 @@ chat-header chat-notifications {
   padding: 2px;
   margin-top: -1px;
   width: 100%;
+}
+span.unread {
+  -webkit-background-clip: padding-box;
+  -webkit-border-radius: 2px;
+  -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.7);
+  -webkit-font-smoothing: subpixel-antialiased;
+  background-image: -webkit-gradient(linear, center top, center bottom, from(#fa3c45), to(#dc0d17));
+  background-image: -webkit-linear-gradient(#fa3c45, #dc0d17);
+  background: #dc0d17;
+  color: #fff;
+  display: inline-block;
+  font-family: 'Helvetica Neue', Helvetica, sans-serif;
+  font-size: 10px;
+  font-weight: bold;
+  line-height: normal;
+  min-height: 13px;
+  min-width: 20px;
+  padding: 2px;
+  text-align: center;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.4);
 }

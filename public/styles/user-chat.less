@@ -20,8 +20,14 @@
     chat-header {
       display: none;
     }
-    messages, entry, .title {
+    messages, entry, .name {
       display: none;
+    }
+    span.unread {
+      display: inline-block;
+      position: absolute;
+      top: 4px;
+      left: -4px;
     }
     members {
       padding: 10px;
@@ -60,6 +66,11 @@ chat-header {
     padding: 10px;
     padding-left: 15px;
     width: 50px;
+    span.unread {
+      position: absolute;
+      top: 5px;
+      left: 30px;
+    }
   }
 }
 
@@ -74,6 +85,10 @@ chat-header {
     display: none;
   }
 
+  span.unread {
+    display: none;
+  }
+
   .title {
     color: white;
     letter-spacing: 1px;
@@ -84,7 +99,7 @@ chat-header {
     text-align: center;
     text-transform: uppercase;
     top: -38px;
-    left: 40px;
+    left: 50px;
   }
 
   members {
@@ -142,4 +157,25 @@ chat-header {
       width: 100%;
     }
   }
+}
+
+span.unread {
+  -webkit-background-clip: padding-box;
+  -webkit-border-radius: 2px;
+  -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .7);
+  -webkit-font-smoothing: subpixel-antialiased;
+  background-image: -webkit-gradient(linear, center top, center bottom, from(#fa3c45), to(#dc0d17));
+  background-image: -webkit-linear-gradient(#fa3c45, #dc0d17);
+  background: #dc0d17;
+  color: #fff;
+  display: inline-block;
+  font-family: 'Helvetica Neue', Helvetica, sans-serif;
+  font-size: 10px;
+  font-weight: bold;
+  line-height: normal;
+  min-height: 13px;
+  min-width: 20px;
+  padding: 2px;
+  text-align: center;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, .4);
 }

@@ -15,6 +15,7 @@ var ChatService = function($rootScope, $firebase, $firebaseSimpleLogin) {
     // initialized on login below
     activeChannel: null,
     currentUser: null,
+    currentUserNotifications: null,
     currentUserChannels: null,
 
     login: function() {
@@ -34,6 +35,8 @@ var ChatService = function($rootScope, $firebase, $firebaseSimpleLogin) {
     },
 
     createChannel: function(title, cb) {
+      var self = this;
+
       data = {
         title: title,
         active: true,
@@ -41,7 +44,7 @@ var ChatService = function($rootScope, $firebase, $firebaseSimpleLogin) {
       };
 
       newChannelRef = activeChannelsRef.push();
-      newChannelRef.setWithPriority(data, Firebase.ServerValue.TIMESTAMP, function(err){
+      newChannelRef.setWithPriority(data, Firebase.ServerValue.TIMESTAMP, function(err) {
         if(!err) {
           $firebase(newChannelRef).$asObject().$loaded(function(newChannel) {
             // we assume that caller will want to use the channel object right away
@@ -49,7 +52,8 @@ var ChatService = function($rootScope, $firebase, $firebaseSimpleLogin) {
             cb(null,
                newChannel,
                $firebase(newChannelRef.child('members')).$asArray(),
-               $firebase(newChannelRef.child('messages')).$asArray());
+               $firebase(newChannelRef.child('messages')).$asArray(),
+               $firebase(notificationsRef.child(self.currentUser.uid).child(newChannel.$id)).$asArray());
           });
         }
         else {
@@ -71,7 +75,8 @@ var ChatService = function($rootScope, $firebase, $firebaseSimpleLogin) {
         // and that is why we wait on the promise to resolve before calling back
         cb(channel,
            $firebase(cRef.child('members')).$asArray(),
-           $firebase(cRef.child('messages')).$asArray());
+           $firebase(cRef.child('messages')).$asArray(),
+           $firebase(notificationsRef.child(self.currentUser.uid).child(channel.$id)).$asArray());
       });
     },
 
@@ -151,16 +156,15 @@ var ChatService = function($rootScope, $firebase, $firebaseSimpleLogin) {
     },
 
     notifications: function() {
-      var n = $firebase(notificationsRef.child(this.currentUser.uid)).$asObject();
-      n.$loaded(function(notifications){
-        console.log(notifications);
-      });
-      return n;
+      return $firebase(notificationsRef.child(this.currentUser.uid)).$asObject();
     },
 
-    clearNotifications: function() {
-      if(this.currentUser && this.activeChannel) {
-        rootRef.child("notifications").child(this.currentUser.uid).child(this.activeChannel.$id).remove();
+    clearNotifications: function(channel) {
+      if(this.currentUser && channel) {
+        notificationsRef.child(this.currentUser.uid).child(channel.$id).remove();
+      }
+      else if(this.currentUser && this.activeChannel) {
+        notificationsRef.child(this.currentUser.uid).child(this.activeChannel.$id).remove();
       }
     }
   }
@@ -171,6 +175,7 @@ var ChatService = function($rootScope, $firebase, $firebaseSimpleLogin) {
     // keep a reference to user
     service.currentUser = user;
     service.currentUserChannels = $firebase(subscriptionsRef.child(user.uid)).$asArray();
+    service.currentUserNotifications = $firebase(notificationsRef.child(user.uid)).$asArray();
 
     // maintain users in active or inactive state
     activeUsersRef.child(user.uid).set(user);

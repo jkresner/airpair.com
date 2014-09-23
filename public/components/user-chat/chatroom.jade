@@ -1,4 +1,5 @@
-.chatroom
+.chatroom(ng-mouseenter='chat.clearNotifications(channel)')
+  span.unread(ng-show="notifications.length > 0") {{ notifications.length }}
   .title
     span(ng-bind="channel.title")
   members(ng-click="expand(channel)")

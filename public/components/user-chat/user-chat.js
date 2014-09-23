@@ -10,7 +10,6 @@ AirPair.directive('airpairUserChat', [function() {
 AirPair.controller('UserChatController',
   ['$scope', 'chat', function($scope, chat) {
     $scope.loadChannel = function(channel, $event) {
-      console.log('loadChannel', channel);
       chat.touch(channel);
       if($event) {
         // todo: why isn't the dropdown function present?
@@ -38,8 +37,9 @@ AirPair.directive('chatroom', [function() {
 AirPair.controller('ChatroomController',
   ['$scope', 'chat', function($scope, chat) {
     $scope.chat = chat;
-    chat.loadChannel($scope.$parent.channel.$id, function(channel, members, messages) {
+    chat.loadChannel($scope.$parent.channel.$id, function(channel, members, messages, notifications) {
       $scope.channel = channel;
+      $scope.notifications = notifications;
     });
 
     $scope.expand = function(channel) {

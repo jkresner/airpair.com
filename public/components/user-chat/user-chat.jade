@@ -2,6 +2,7 @@
   chat-header(ng-controller="ChatSelector")
     chat-notifications.dropdown(ng-if="chat.currentUserChannels.length > 1")
       a#chat-menu-toggle.dropdown-toggle(data-toggle="dropdown")
+        span.unread(ng-show="chat.currentUserNotifications.length > 0") {{ chat.currentUserNotifications.length }}
         img(src="/v1/img/css/chat/toggle.png")
       ul.dropdown-menu(role="menu" aria-labelledby="chat-menu-toggle")
         li(role="presentation" ng-repeat="channel in chat.currentUserChannels | reverse")
