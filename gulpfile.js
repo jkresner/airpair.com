@@ -14,7 +14,6 @@ var path = require('path'),
 paths = {
   public: 'public/**',
   styles: 'public/styles/*.+(less|css)',
-  blog: 'server/blog/**',
   views: 'server/views/**'
 }
 
@@ -46,7 +45,6 @@ gulp.task('watch', function() {
     './public/**/*.css',
     './public/**/*.html',
     './public/**/*.js',    
-    paths.blog,
     paths.views
   ];
 
