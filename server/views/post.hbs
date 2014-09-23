@@ -76,15 +76,89 @@
 {{!-- sideChatFull --}}
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-<!-- build:js1 /combined.js -->
-<script type="text/javascript" src="/v1/lib/lodash/dist/lodash.js"></script>
-<script type="text/javascript" src="/v1/lib/moment/moment.js"></script> 
-<script type="text/javascript" src="/v1/lib/angular/angular.js"></script>
-<script type="text/javascript" src="/v1/lib/angular-route/angular-route.js"></script>
-<script type="text/javascript" src="/v1/lib/prism/prism.js"></script> 
-<!-- endbuild -->
-<script src="/v1/js/posts.js"></script>
 <script type="text/javascript">
+
+var postHlpr = {}
+
+var getHighlightConfig = function(elm) {
+  var cfg = {};
+  var prevSibling = elm.previousSibling;
+  var nodeValue = null;
+  while (prevSibling && prevSibling.nodeType!==1) {
+      if (prevSibling.nodeType === 8) {
+          nodeValue = prevSibling.nodeValue;   
+      }
+      prevSibling = prevSibling.previousSibling;
+  }        
+
+  if (nodeValue)
+  {
+    var lang = nodeValue.match(/lang=\w+/i)
+    if (lang) {
+      cfg.lang = lang[0].replace('lang=','');  
+    }
+    var linenums = (nodeValue.match(/linenums=true+/i)||[])[0];
+    if (linenums)
+    {
+      cfg.linenums = true;   
+    }
+  }
+
+  // console.log(nodeValue, cfg);
+  return cfg;
+}
+
+
+window.postHlpr.highlightSyntax = function(opts) {
+  var elements = document.querySelectorAll('pre > code')
+  // console.log('Prism.highlightElement', elements);
+  for (var i=0, element; element = elements[i++];) {
+    var config = getHighlightConfig(element.parentNode);
+    if (!config || !config.lang) { return }
+
+    if (config.linenums)
+    {
+      element.parentNode.className = 'line-numbers'
+    }
+    // console.log('Prism.highlightElement', element, config);
+    
+    element.className = 'language-'+config.lang
+    Prism.highlightElement(element, false, function() {
+      if (opts && opts.addCtrs)
+      {
+        element.outerHTML+='<footer>Get expert <a href="/find-an-expert">'+config.lang+' help</a></footer>'
+      }
+    });
+  }
+}
+
+window.postHlpr.loadDisqus = function()
+{
+  (function() {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'https://airpairblog.disqus.com/embed.js';
+      
+      var x = document.getElementsByTagName('script')[0]; 
+      x.parentNode.insertBefore(dsq, x); 
+  })();    
+}
+
+window.postHlpr.loadPoSt = function()
+{
+  window.pwidget_config = { shareQuote: false, afterShare: false };
+  var p = document.createElement('script'); 
+  p.type = 'text/javascript'; 
+  p.async = true;
+  p.src = ('https:' == document.location.protocol ? 'https://s' : 'http://i')
+    + '.po.st/static/v3/post-widget.js#publisherKey=miu9e01ukog3g0nk72m6&retina=true';
+  
+  var x = document.getElementsByTagName('script')[0]; 
+  x.parentNode.insertBefore(p, x); 
+
+  console.log('inserted', p.src)
+}
+
+
 
   function fixNavs(elmId)
   {
@@ -122,7 +196,6 @@
   $(function() {    
     // fixNavs('#sideNav,#sideChat');
     fixRail();
-
     postHlpr.loadPoSt();
     postHlpr.highlightSyntax({ addCtrs: true });
     postHlpr.loadDisqus();
