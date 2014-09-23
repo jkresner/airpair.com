@@ -1,5 +1,5 @@
-require('./../directives/share.js');
-require('./../directives/post.js')
+require('./../common/directives/share.js');
+require('./../common/directives/post.js')
 require('./../common/filters.js');
 require('./../common/postsService.js');
 require('./../common/postHelpers.js');
