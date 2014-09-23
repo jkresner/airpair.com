@@ -9,5 +9,7 @@ module.exports = {
   prat: { name:"Prateek Gupta",email:"prateek@gupta.com" },
 
   joem: { name:"Joe Mellin",email:"joe@mellin.com" }, 
-  ramo: { name:"Ramon Porter",email:"sierra@test.com" }    
+  ramo: { name:"Ramon Porter",email:"sierra@test.com" },
+
+  jkre: { name:"Jonathon Kresner",email:"jkresner@gmail.com" },   
 }
