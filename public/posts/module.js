@@ -89,7 +89,15 @@ angular.module("APPosts", ['ngRoute','APFilters','APShare',
 
     $scope.preview = { mode: 'edit' };
     $scope.post = { md: "Save post to start authoring markdown ... ", by: $scope.session };
-    $scope.post.by = session  
+    
+    var social = {}
+    if (session.github) social.gh = session.github.username
+    if (session.linkedin) social.in = session.linkedin.d9YFKgZ7rY
+    if (session.stack) social.so = session.stack.link.replace('http://stackoverflow.com','')
+    if (session.twitter) social.tw = session.twitter.username 
+    if (session.google) social.gp = session.google.id
+
+    $scope.post.by = _.extend(session, social)
 
     $scope.save = () => {
       $scope.post.md = "Type markdown ..."  
