@@ -5,16 +5,20 @@ import Tag from '../models/tag'
 var logging = false
 var svc = new Svc(Tag, logging)
 
+var fields = {
+  search: { '_id': 1, 'name': 1, 'slug': 1, 'desc': 1 },
+} 
 
-export function search(cb) {
-  var options = {sort:'time'}
-  svc.searchMany({},{ fields: fields.listSelect, options: options }, (e, r) => {
-    for (var w of r)
-    {
-      w.url = `${w.tags[0]}/workshops/${w.slug}`
-    }
-    cb(e, r)
-  })     
+
+export function search(searchTerm, cb) {
+  var opts = { options: { $limit: 10 }, fields: fields.search }
+  var query = searchTerm ? { name : new RegExp(searchTerm, "i") } : null;
+  svc.searchMany(query, opts, cb)
+}
+
+
+export function create(o, cb) {
+  svc.create(o,null, cb)
 }
 
 

@@ -1,6 +1,5 @@
 var mongoose = require('mongoose')
 
-var VALID_LEVELS = ['beginner', 'intermediate', 'expert'];
 
 export default mongoose.model('Tag', new mongoose.Schema({
 
