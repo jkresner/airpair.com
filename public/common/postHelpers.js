@@ -57,16 +57,20 @@ postHlpr.loadDisqus = function()
   (function() {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
       dsq.src = 'https://airpairblog.disqus.com/embed.js';
-      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      var x = document.getElementsByTagName('script')[0]; 
+      x.parentNode.insertBefore(p, dsq); 
   })();    
 }
 
 postHlpr.loadPoSt = function()
 {
   window.pwidget_config = { shareQuote: false, afterShare: false };
-  (function() {
-      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-      dsq.src = '//i.po.st/static/v3/post-widget.js#publisherKey=miu9e01ukog3g0nk72m6&retina=true';
-      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-  })();    
+  var p = document.createElement('script'); 
+  p.type = 'text/javascript'; 
+  p.async = true;
+  p.src = ('https:' == document.location.protocol ? 'https://s' : 'http://i')
+    + '.po.st/static/v3/post-widget.js#publisherKey=miu9e01ukog3g0nk72m6&retina=true';
+  
+  var x = document.getElementsByTagName('script')[0]; 
+  x.parentNode.insertBefore(p, x); 
 }

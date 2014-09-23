@@ -167,7 +167,7 @@ angular.module("APPosts", ['ngRoute','APFilters','APShare',
       if (!r.meta) {
         var ogVideo = null;
         var ogImage = r.assetUrl;
-        if (r.assetUrl.indexOf('http://youtub.be/') == 0)
+        if (r.assetUrl && r.assetUrl.indexOf('http://youtub.be/') == 0)
         {
           var youTubeId = r.assetUrl.replace('http://youtu.be/','');
           ogImage = `http://img.youtube.com/vi/${youTubeId}/hqdefault.jpg`

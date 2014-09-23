@@ -1,13 +1,6 @@
 module.exports = function()
 {
   describe("API", function() {
-
-
-    it('gets 401 on unauthenticated session for users own posts', function(done) {
-      var opts = { status: 401, unauthenticated: true }
-      get('/posts/me', opts, function() { done() })
-    })
-
   
     it('gets 401 on unauthenticated session for creating a post', function(done) {
       var opts = { status: 401, unauthenticated: true }
@@ -78,7 +71,7 @@ module.exports = function()
       })
     })
 
-
+    
     it('Can not edit post as non-author', function(done) {
       $log('TODO', 'write test')
       done()      
@@ -117,6 +110,50 @@ module.exports = function()
     //   expect('tags')  
       done()      
     })
+
+
+    it('Get 401 on unauthenticated session for users own posts', function(done) {
+      var opts = { status: 401, unauthenticated: true }
+      get('/posts/me', opts, function() { done() })
+    })
+
+    
+    it('Get users own posts returns published and unpublished posts', function(done) {
+      addLocalUser('jkre', function(userKey) {
+        login(userKey, data.users[userKey], function() {
+          get('/session/full', {}, function(s) {
+            var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
+            var d1 = { title: "test 1", by: by, md: 'Test 1', assetUrl: 'http://youtu.be/qlOAbrvjMBo' }
+            var d2 = { title: "test 2", by: by, md: 'Test 2', assetUrl: 'http://www.airpair.com/v1/img/css/blog/example2.jpg' }
+            var d3 = { title: "test 3", by: by, md: 'Test 3', assetUrl: 'http://youtu.be/qlOAbrvjMBo' }    
+            post('/posts', d1, {}, function(p1) {
+              post('/posts', d2, {}, function(p2) {
+                expect(p2.published).to.be.undefined
+                p2.slug = "test-2-pub-"+moment().format('X')
+                post('/posts', d3, {}, function(p3) {
+                  login('admin', data.users.admin, function() {
+                    put('/posts/publish/'+p2._id, p2, {}, function(p2pub, resp) {
+                      expect(p2pub.published).to.exist
+                      login(userKey, data.users[userKey], function() {
+                        get('/posts/me', {}, function(posts) { 
+                          // $log(_.pluck(posts,'published'))
+                          expect(posts.length).to.equal(3)
+                          done() 
+                        })
+                      })
+                    })                      
+                  })
+                })
+              })
+            })
+          })
+        })
+      })
+    })
+
+
+
+
 
 
   })
