@@ -1,16 +1,12 @@
-require('./../common/filters.js');
-require('./../common/sessionService.js');
 
 var resolver = require('./../common/routes/helpers.js');
 
-angular.module("APLogin", ['ngRoute','APFilters','APSvcSession'])
+angular.module("APAuth", ['ngRoute','APFilters','APSvcSession'])
 
   .config(['$locationProvider', '$routeProvider', 
       function($locationProvider, $routeProvider) {
   
-    $locationProvider.html5Mode(true);
-
-    $routeProvider.when('/auth/login', {
+    $routeProvider.when('/v1/auth/login', {
       template: require('./login.html')
     });
 

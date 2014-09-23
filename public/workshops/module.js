@@ -1,6 +1,3 @@
-require('./../common/filters.js');
-require('./../common/directives/share.js');
-
 var feautredSlugs = [
 	'fast-mvp-with-angularfire',
 	'learn-meteorjs-1.0',
@@ -25,8 +22,6 @@ angular.module("APWorkshops", ['ngRoute','APFilters','APShare'])
 
 	.config(['$locationProvider', '$routeProvider', 
 			function($locationProvider, $routeProvider) {
-	
-		$locationProvider.html5Mode(true);
 
 		$routeProvider.when('/workshops', {
 			template: require('./list.html'),
