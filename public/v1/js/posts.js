@@ -1,14 +1,15 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"./public/posts/module.js":[function(require,module,exports){
 "use strict";
-require('./../directives/share.js');
-require('./../directives/post.js');
+require('./../common/directives/share.js');
+require('./../common/directives/post.js');
+require('./../common/directives/tagInput.js');
 require('./../common/filters.js');
 require('./../common/postsService.js');
 require('./../common/postHelpers.js');
 require('./../common/sessionService.js');
 require('./myPostsList.js');
 require('./editor.js');
-angular.module("APPosts", ['ngRoute', 'APFilters', 'APShare', 'APMyPostsList', 'APPostEditor', 'APPost', 'APSvcSession', 'APSvcPosts']).config(['$locationProvider', '$routeProvider', function($locationProvider, $routeProvider) {
+angular.module("APPosts", ['ngRoute', 'APFilters', 'APShare', 'APMyPostsList', 'APPostEditor', 'APPost', 'APSvcSession', 'APSvcPosts', 'APTagInput']).config(['$locationProvider', '$routeProvider', function($locationProvider, $routeProvider) {
   var resolveSession = ['SessionService', '$window', '$q', function(SessionService, $window, $q) {
     return SessionService.getSession().then(function(data) {
       return data;
@@ -60,7 +61,18 @@ angular.module("APPosts", ['ngRoute', 'APFilters', 'APShare', 'APMyPostsList', '
     md: "Save post to start authoring markdown ... ",
     by: $scope.session
   };
-  $scope.post.by = session;
+  var social = {};
+  if (session.github)
+    social.gh = session.github.username;
+  if (session.linkedin)
+    social.in = session.linkedin.d9YFKgZ7rY;
+  if (session.stack)
+    social.so = session.stack.link.replace('http://stackoverflow.com', '');
+  if (session.twitter)
+    social.tw = session.twitter.username;
+  if (session.google)
+    social.gp = session.google.id;
+  $scope.post.by = _.extend(session, social);
   $scope.save = (function() {
     $scope.post.md = "Type markdown ...";
     PostsService.create($scope.post, (function(result) {
@@ -86,6 +98,7 @@ angular.module("APPosts", ['ngRoute', 'APFilters', 'APShare', 'APMyPostsList', '
 }]).controller('PublishCtrl', ['$scope', 'PostsService', '$routeParams', 'session', function($scope, PostsService, $routeParams, session) {
   var self = this;
   $scope.preview = {mode: 'publish'};
+  $scope.post = {tags: []};
   $scope.setPublishedOverride = (function() {
     if (!$scope.post.publishedOverride) {
       $scope.post.publishedOverride = $scope.post.published || moment().format();
@@ -95,15 +108,18 @@ angular.module("APPosts", ['ngRoute', 'APFilters', 'APShare', 'APMyPostsList', '
     if (!r.slug) {
       r.slug = r.title.toLowerCase().replace(/ /g, '-');
     }
+    $scope.canonical = 'http://www.airpair.com/v1/posts/' + r.slug;
+    if (r.tags.length > 0) {
+      $scope.canonical = ("http://www.airpair.com/" + r.tags[0].slug + "/posts/" + r.slug);
+    }
     if (!r.meta) {
       var ogVideo = null;
       var ogImage = r.assetUrl;
-      if (r.assetUrl.indexOf('http://youtub.be/') == 0) {
+      if (r.assetUrl && r.assetUrl.indexOf('http://youtub.be/') == 0) {
         var youTubeId = r.assetUrl.replace('http://youtu.be/', '');
         ogImage = ("http://img.youtube.com/vi/" + youTubeId + "/hqdefault.jpg");
         ogVideo = ("https://www.youtube-nocookie.com/v/" + youTubeId);
       }
-      $scope.canonical = 'http://www.airpair.com/v1/posts/' + r.slug;
       r.meta = {
         title: r.title,
         canonical: $scope.canonical,
@@ -116,6 +132,12 @@ angular.module("APPosts", ['ngRoute', 'APFilters', 'APShare', 'APMyPostsList', '
     }
     $scope.post = _.extend(r, {saved: true});
   }));
+  $scope.$watch('post.tags', function(value) {
+    if (value.length > 0) {
+      $scope.post.meta.canonical = ("http://www.airpair.com/" + $scope.post.tags[0].slug + "/posts/" + $scope.post.slug);
+      $scope.post.meta.ogUrl = ("http://www.airpair.com/" + $scope.post.tags[0].slug + "/posts/" + $scope.post.slug);
+    }
+  });
   $scope.save = (function() {
     $scope.post.md = angular.element(document.querySelector('#markdownTextarea')).val();
     PostsService.publish($scope.post, (function(r) {
@@ -131,7 +153,107 @@ angular.module("APPosts", ['ngRoute', 'APFilters', 'APShare', 'APMyPostsList', '
 ;
 
 
-},{"../me/profile.html":11,"./../common/filters.js":2,"./../common/postHelpers.js":3,"./../common/postsService.js":4,"./../common/sessionService.js":5,"./../directives/post.js":7,"./../directives/share.js":10,"./author.html":12,"./editor.js":14,"./myPostsList.js":16}],2:[function(require,module,exports){
+},{"../me/profile.html":"/Users/jkrez/src/airpair.com/public/me/profile.html","./../common/directives/post.js":"/Users/jkrez/src/airpair.com/public/common/directives/post.js","./../common/directives/share.js":"/Users/jkrez/src/airpair.com/public/common/directives/share.js","./../common/directives/tagInput.js":"/Users/jkrez/src/airpair.com/public/common/directives/tagInput.js","./../common/filters.js":"/Users/jkrez/src/airpair.com/public/common/filters.js","./../common/postHelpers.js":"/Users/jkrez/src/airpair.com/public/common/postHelpers.js","./../common/postsService.js":"/Users/jkrez/src/airpair.com/public/common/postsService.js","./../common/sessionService.js":"/Users/jkrez/src/airpair.com/public/common/sessionService.js","./author.html":"/Users/jkrez/src/airpair.com/public/posts/author.html","./editor.js":"/Users/jkrez/src/airpair.com/public/posts/editor.js","./myPostsList.js":"/Users/jkrez/src/airpair.com/public/posts/myPostsList.js"}],"/Users/jkrez/src/airpair.com/public/common/directives/post.html":[function(require,module,exports){
+module.exports = "\n<div class=\"preview\">\n  <article class=\"blogpost\">\n    <h1 class=\"entry-title\" itemprop=\"headline\">{{ post.title || \"Type post title ...\" }}</h1>\n    <h4 id=\"table-of-contents\" ng-if=\"preview.toc\">Table of Contents</h4>\n    <ul id=\"previewToc\" ng-bind-html=\"preview.toc | markdownHtml\"></ul>\n    <figure class=\"author\">\n      <img ng-alt=\"{{post.by.name}}\" ng-src=\"{{post.by.avatar}}?s=100\">\n      <figcaption>\n        {{post.by.bio}}\n      </figcaption>\n    </figure>  \n    <p class=\"asset\" ng-bind-html=\"preview.asset | markdownHtml\" ng-if=\"post.title && post.by.bio\"></p>\n    <hr />\n    <div id=\"body\" ng-bind-html=\"preview.body | markdownHtml\"></div>\n  </article>\n</div>\n\n<hr />\n";
+
+},{}],"/Users/jkrez/src/airpair.com/public/common/directives/post.js":[function(require,module,exports){
+"use strict";
+angular.module("APPost", []).directive('apPostListItem', ['$parse', function($parse) {
+  return {
+    restrict: 'E',
+    template: require('./postListItem.html'),
+    link: function(scope, element, attrs) {
+      scope.post = scope.$eval(attrs.post);
+    }
+  };
+}]).directive('apPost', function() {
+  return {
+    template: require('./post.html'),
+    controller: function($scope, $timeout, PostsService) {
+      $timeout(function() {
+        postHlpr.highlightSyntax();
+      }, 100);
+    }
+  };
+});
+;
+
+
+},{"./post.html":"/Users/jkrez/src/airpair.com/public/common/directives/post.html","./postListItem.html":"/Users/jkrez/src/airpair.com/public/common/directives/postListItem.html"}],"/Users/jkrez/src/airpair.com/public/common/directives/postListItem.html":[function(require,module,exports){
+module.exports = "<article itemscope=\"itemscope\" itemtype=\"http://schema.org/BlogPosting\" itemprop=\"blogPost\">\n<a href=\"{{ post.url }}\" title=\"{{ post.title }}\" target=\"_self\" rel=\"bookmark\">\n  <header class=\"entry-header\">\n    <h2 class=\"entry-title\" itemprop=\"headline\">{{ post.title }}</h2> \n    <p class=\"entry-meta\">\n      <time class=\"entry-time\" itemprop=\"datePublished\" datetime=\"{{ post.published }}\">{{ post.publishedFormat }}</time> \n      by \n      <span class=\"entry-author\" itemprop=\"author\" itemscope=\"itemscope\" itemtype=\"http://schema.org/Person\">\n        <span class=\"entry-author-name\" itemprop=\"name\">{{ post.by.name }}</span>\n      </span> \n    </p>\n  </header>\n  <div class=\"entry-content\" itemprop=\"text\">\n    <img class=\"entry-author-image\" itemprop=\"image\" ng-src=\"{{ post.by.avatar }}?s=50\" align=\"left\" />\n    <p>{{ post.meta.description }}</p>\n  </div>\n</a>\n  <footer class=\"entry-footer\">\n    <p class=\"entry-meta\">\n      <span class=\"entry-categories\">\n        <a ng-repeat='tag in post.tags' href=\"#\" title=\"View all posts in {{ tag.name }}\" rel=\"category tag\">{{ '{'+tag.slug+'}' }}</a>\n      </span>\n    </p>\n  </footer>\n</article>  \n";
+
+},{}],"/Users/jkrez/src/airpair.com/public/common/directives/share.html":[function(require,module,exports){
+module.exports = "<div class=\"pw-widget pw-counter-vertical\" pw:twitter-via=\"airpair\"> \n  <a ng-show=\"fb\" class=\"pw-button-facebook pw-look-native\"></a>     \n  <a ng-show=\"tw\" class=\"pw-button-twitter pw-look-native\"></a>      \n  <a ng-show=\"in\" class=\"pw-button-linkedin pw-look-native\"></a>     \n</div>";
+
+},{}],"/Users/jkrez/src/airpair.com/public/common/directives/share.js":[function(require,module,exports){
+"use strict";
+angular.module("APShare", ['angularLoad']).directive('apShare', function(angularLoad) {
+  var src = ('https:' == document.location.protocol ? 'https://s' : 'http://i') + '.po.st/static/v3/post-widget.js#publisherKey=miu9e01ukog3g0nk72m6&retina=true&init=lazy';
+  var ngLoadPromise = angularLoad.loadScript(src);
+  window.pwidget_config = {
+    shareQuote: false,
+    afterShare: false
+  };
+  return {
+    template: require('./share.html'),
+    scope: {
+      fb: '=apFb',
+      tw: '=apTw',
+      in: '=apIn'
+    },
+    link: function(scope, element) {
+      ngLoadPromise.then(function() {
+        post_init(element[0]);
+      });
+    }
+  };
+});
+
+
+},{"./share.html":"/Users/jkrez/src/airpair.com/public/common/directives/share.html"}],"/Users/jkrez/src/airpair.com/public/common/directives/tagInput.html":[function(require,module,exports){
+module.exports = "<script type=\"text/ng-template\" id=\"template/typeahead/typeahead-match.html\">\n  <a>\n    <label bind-html-unsafe=\"match.model.name | typeaheadHighlight:query\"></label>\n    <br /><span bind-html-unsafe=\"match.model.desc | typeaheadHighlight:query\"></span>\n  </a>\n</script>\n\n    \n<input type=\"text\" \n  placeholder=\"Type technology\" \n  class=\"form-control\"\n  ng-model=\"q\" \n  typeahead=\"t as t for t in getTags($viewValue) | filter:$viewValue\" \n  >\n<!-- typeahead-loading=\"loading\"\n<i ng-show=\"loading\" class=\"glyphicon glyphicon-refresh\"></i>\n -->Tags: <label ng-repeat=\"tag in post.tags\">{ {{tag.name}} } <a ng-click=\"deselectMatch(tag)\" style=\"color:red\">x</a> &nbsp </label>\n";
+
+},{}],"/Users/jkrez/src/airpair.com/public/common/directives/tagInput.js":[function(require,module,exports){
+"use strict";
+angular.module('APTagInput', ['ui.bootstrap']).value('acceptableTagsSearchQuery', function(value) {
+  return value && (value.length >= 2 || /r/i.test(value));
+}).directive('tagInput', ['acceptableTagsSearchQuery', function(acceptableTagsSearchQuery) {
+  return {
+    restrict: 'EA',
+    template: require('./tagInput.html'),
+    controller: ['$attrs', '$scope', '$http', function($attrs, $scope, $http) {
+      $scope.getTags = function(q) {
+        if (!acceptableTagsSearchQuery(q)) {
+          return [];
+        }
+        return $http.get('v1/api/tags/search/' + q).then(function(res) {
+          var tags = [];
+          angular.forEach(res.data, function(item) {
+            tags.push(item);
+          });
+          $scope.matches = tags;
+          return tags;
+        });
+      };
+      $scope.selectMatch = function(index) {
+        var tag = $scope.matches[index];
+        var tags = $scope.post.tags;
+        if (_.contains(tags, tag))
+          $scope.post.tags = _.without(tags, tag);
+        else
+          $scope.post.tags = _.union(tags, [tag]);
+        $scope.q = "";
+      };
+      $scope.deselectMatch = function(match) {
+        $scope.post.tags = _.without($scope.post.tags, match);
+      };
+    }]
+  };
+}]);
+;
+
+
+},{"./tagInput.html":"/Users/jkrez/src/airpair.com/public/common/directives/tagInput.html"}],"/Users/jkrez/src/airpair.com/public/common/filters.js":[function(require,module,exports){
 "use strict";
 angular.module('APFilters', []).filter('publishedTime', function() {
   return (function(utc, displayFormat) {
@@ -181,7 +303,7 @@ angular.module('APFilters', []).filter('publishedTime', function() {
 });
 
 
-},{}],3:[function(require,module,exports){
+},{}],"/Users/jkrez/src/airpair.com/public/common/postHelpers.js":[function(require,module,exports){
 "use strict";
 window.postHlpr = {};
 var getHighlightConfig = function(elm) {
@@ -240,16 +362,17 @@ postHlpr.loadPoSt = function() {
     afterShare: false
   };
   (function() {
+    var src = ('https:' == document.location.protocol ? 'https://s' : 'http://i') + '.po.st/static/v3/post-widget.js#publisherKey=miu9e01ukog3g0nk72m6&retina=true&init=lazy';
     var dsq = document.createElement('script');
     dsq.type = 'text/javascript';
     dsq.async = true;
-    dsq.src = '//i.po.st/static/v3/post-widget.js#publisherKey=miu9e01ukog3g0nk72m6&retina=true';
+    dsq.src = src;
     (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
   })();
 };
 
 
-},{}],4:[function(require,module,exports){
+},{}],"/Users/jkrez/src/airpair.com/public/common/postsService.js":[function(require,module,exports){
 "use strict";
 var headings = [];
 var lazyErrorCb = function(resp) {
@@ -303,7 +426,7 @@ angular.module('APSvcPosts', []).constant('API', '/v1/api').factory('mdHelper', 
 }]);
 
 
-},{}],5:[function(require,module,exports){
+},{}],"/Users/jkrez/src/airpair.com/public/common/sessionService.js":[function(require,module,exports){
 "use strict";
 angular.module('APSvcSession', []).constant('API', '/v1/api').service('SessionService', ['$http', 'API', '$cacheFactory', function($http, API, $cacheFactory) {
   var cache;
@@ -325,82 +448,16 @@ angular.module('APSvcSession', []).constant('API', '/v1/api').service('SessionSe
 }]);
 
 
-},{}],6:[function(require,module,exports){
-module.exports = "\n<div class=\"preview\">\n  <article class=\"blogpost\">\n    <h1 class=\"entry-title\" itemprop=\"headline\">{{ post.title || \"Type post title ...\" }}</h1>\n    <h4 id=\"table-of-contents\" ng-if=\"preview.toc\">Table of Contents</h4>\n    <ul id=\"previewToc\" ng-bind-html=\"preview.toc | markdownHtml\"></ul>\n    <h6 id=\"author\">Author</h6>\n    <p><img ng-alt=\"{{post.by.name}}\" ng-src=\"{{post.by.avatar}}?s=100\"> </p>\n    <blockquote>\n      <p>{{post.by.bio}}</p>\n    </blockquote>\n    <p class=\"asset\" ng-bind-html=\"preview.asset | markdownHtml\" ng-if=\"post.title && post.by.bio\"></p>\n    <hr />\n    <div id=\"body\" ng-bind-html=\"preview.body | markdownHtml\"></div>\n  </article>\n</div>\n\n<hr />\n";
-
-},{}],7:[function(require,module,exports){
-"use strict";
-angular.module("APPost", []).directive('apPostListItem', ['$parse', function($parse) {
-  return {
-    restrict: 'E',
-    template: require('./postListItem.html'),
-    scope: {p: '=post'},
-    link: function(scope, element, attrs) {
-      scope.url = scope.p.url;
-      scope.title = scope.p.title;
-      scope.published = scope.p.published;
-      scope.publishedFormat = moment(scope.p.published).format('d0 MMM, YYYY');
-      scope.by = {
-        name: scope.p.by.name,
-        avatar: scope.p.by.avatar
-      };
-      scope.meta = {description: scope.p.meta.description};
-      scope.tags = scope.p.tags;
-    }
-  };
-}]).directive('apPost', function() {
-  return {
-    template: require('./post.html'),
-    controller: function($scope, $timeout, PostsService) {
-      $timeout(function() {
-        postHlpr.highlightSyntax();
-      }, 100);
-    }
-  };
-});
-;
-
-
-},{"./post.html":6,"./postListItem.html":8}],8:[function(require,module,exports){
-module.exports = "<article itemscope=\"itemscope\" itemtype=\"http://schema.org/BlogPosting\" itemprop=\"blogPost\">\n<a href=\"{{ url }}\" title=\"{{ title }}\" target=\"_self\" rel=\"bookmark\">\n  <header class=\"entry-header\">\n    <h2 class=\"entry-title\" itemprop=\"headline\">{{ title }}</h2> \n    <p class=\"entry-meta\">\n      <time class=\"entry-time\" itemprop=\"datePublished\" datetime=\"{{ published }}\">{{ publishedFormat }}</time> \n      by \n      <span class=\"entry-author\" itemprop=\"author\" itemscope=\"itemscope\" itemtype=\"http://schema.org/Person\">\n        <span class=\"entry-author-name\" itemprop=\"name\">{{ by.name }}</span>\n      </span> \n    </p>\n  </header>\n  <div class=\"entry-content\" itemprop=\"text\">\n    <img class=\"entry-author-image\" itemprop=\"image\" ng-src=\"{{ by.avatar }}?s=50\" align=\"left\" />\n    <p>{{ meta.description }}</p>\n  </div>\n</a>\n  <footer class=\"entry-footer\">\n    <p class=\"entry-meta\">\n      <span class=\"entry-categories\"> \n      </span>\n    </p>\n  </footer>\n</article>  ";
-
-},{}],9:[function(require,module,exports){
-module.exports = "<div class=\"pw-widget pw-counter-vertical\" pw:twitter-via=\"airpair\"> \n  <a ng-show=\"fb\" class=\"pw-button-facebook pw-look-native\"></a>     \n  <a ng-show=\"tw\" class=\"pw-button-twitter pw-look-native\"></a>      \n  <a ng-show=\"in\" class=\"pw-button-linkedin pw-look-native\"></a>     \n</div>";
-
-},{}],10:[function(require,module,exports){
-"use strict";
-angular.module("APShare", ['angularLoad']).directive('apShare', function(angularLoad) {
-  var ngLoadPromise = angularLoad.loadScript('//i.po.st/static/v3/post-widget.js#publisherKey=miu9e01ukog3g0nk72m6&retina=true&init=lazy');
-  window.pwidget_config = {
-    shareQuote: false,
-    afterShare: false
-  };
-  return {
-    template: require('./share.html'),
-    scope: {
-      fb: '=apFb',
-      tw: '=apTw',
-      in: '=apIn'
-    },
-    link: function(scope, element) {
-      ngLoadPromise.then(function() {
-        post_init(element[0]);
-      });
-    }
-  };
-});
-
-
-},{"./share.html":9}],11:[function(require,module,exports){
+},{}],"/Users/jkrez/src/airpair.com/public/me/profile.html":[function(require,module,exports){
 module.exports = "<header>Profile > {{ username }} </header>\n\n<div class=\"posts\">\n  <ap-post-list-item post=\"p\" ng-repeat=\"p in posts\"></ap-post-list-item>\n</div>";
 
-},{}],12:[function(require,module,exports){
-module.exports = "<header><a href=\"/posts\">Posts</a> > Author</header>\n\n<div id=\"author\" ng-attr-class=\"{{preview.mode}}\">\n\n  <div class=\"editor\" ap-post-editor=\"\"></div>\n\n  <hr />\n\n  <div id=\"preview\" ap-post=\"\"></div>\n\n  <div id=\"tips\">\n    \n    <div ng-if=\"post._id\">\n      <h6>Tips</h6>\n      <ul>\n        <li>Use h2 (##) and lower (###) for headings in your markdown (title is already the h1).</li>\n        <li>Prefix your headings with number like 1 1.1 1.2 2 etc.</li>\n        <li>Scroll to the part of your post you're interested in while you edit.</li>\n        <li>Submit your post by email to have it review and published by an editor.</li>\n        <li>Code blocks require a comments (e.g. <code>&lt;!--code lang=coffeescript linenums=true--&gt;</code> followed by a line break, to indicate language and optionally show line numbers.\n        </li>\n      </ul> \n    </div>\n  </div>  \n\n</div>";
+},{}],"/Users/jkrez/src/airpair.com/public/posts/author.html":[function(require,module,exports){
+module.exports = "<header><a href=\"/posts\">Posts</a> > Author</header>\n\n<div id=\"author\" ng-attr-class=\"{{preview.mode}}\">\n\n  <div class=\"editor\" ap-post-editor=\"\"></div>\n\n  <hr />\n\n  <div id=\"preview\" ap-post=\"\"></div>\n\n  <div id=\"tips\">\n    \n    <div ng-if=\"post._id\">\n      <h6>Tips</h6>\n      <ul>\n        <li>Use h2 (##) and lower (###) for headings in your markdown (title is already the h1).</li>\n        <li>Prefix your headings with number like 1 1.1 1.2 2 etc.</li>\n        <li>Scroll to the part of your post you're interested in while you edit.</li>\n        <li>Submit your post by email to have it review and published by an editor.</li>\n        <li>Code blocks require a comments (e.g. <code>&lt;!--code lang=coffeescript linenums=true--&gt;</code> followed by a line break, to indicate language and optionally show line numbers.\n        </li>\n        <li>escape characters with <code>\\</code> to render them non markdown, e.g. for a list bullet you might <code>- \\-</code></li>\n      </ul> \n    </div>\n  </div>  \n\n</div>";
 
-},{}],13:[function(require,module,exports){
-module.exports = "\n  <div class=\"md\" ng-if=\"post._id\">\n    <div class=\"form-group\">\n      <label>Markdown <span>see <a href=\"http://daringfireball.net/projects/markdown/syntax\" target=\"_blank\">markdown guide</a><span></label>\n        <textarea id=\"markdownTextarea\" ng-model=\"post.md\" class=\"form-control\" ng-model-options=\"{ updateOn: 'default blur', debounce: { blur: 0, default: (post.md.length * 10) }}\"></textarea>\n    </div>\n\n    <div class=\"publishMeta\" ng-if=\"preview.mode == 'publish'\">\n      <div class=\"form-group\">\n        <label>Tags <span>(coming later this week)</span></label>\n        <input ng-model=\"post.tags\" type=\"text\" class=\"form-control\" disabled/>\n      </div>\n      <div class=\"form-group\">\n        <label>Slug url</label>\n        <input ng-model=\"post.slug\" type=\"text\" class=\"form-control\" />\n      </div>      \n\n      <div class=\"posts\"><ap-post-list-item post=\"post\"></ap-post-list-item></div>\n    </div>\n\n  </div>\n\n  <div class=\"meta\">\n    <div class=\"form-group\">\n      <label>Title</label>\n      <input ng-model=\"post.title\" type=\"text\" class=\"form-control\" placeholder=\"Type post title ...\" />\n    </div>\n    <div class=\"form-group\">\n      <label>Author bio</label>\n      <input ng-model=\"post.by.bio\" type=\"text\" class=\"form-control\" />\n    </div>  \n    <div class=\"form-group\">\n      <label>Feature media <span ng-show=\"post.title && post.by.bio\">\n      <a href ng-click=\"exampleImage()\">image url</a>\n      or <a href ng-click=\"exampleYouTube()\">youtu.be url</a></span></label>\n      <input ng-model=\"post.assetUrl\" type=\"text\" class=\"form-control\" />\n    </div>\n\n    <div class=\"publishMeta\" ng-if=\"preview.mode == 'publish'\">    \n      <div class=\"form-group\">\n        <label>Author username</label>\n        <input ng-model=\"post.by.username\" type=\"text\" class=\"form-control\" />\n      </div>          \n      <div class=\"form-group\">\n        <label>Meta</label>\n        <input ng-model=\"post.meta.title\" type=\"text\" class=\"form-control\" placeholder=\"title\" /> \n        <input ng-model=\"post.meta.description\" type=\"text\" class=\"form-control\" placeholder=\"description\" />\n        <input ng-model=\"post.meta.canonical\" type=\"text\" class=\"form-control\" placeholder=\"canonical url\" />\n      </div>\n      <div class=\"form-group\">\n        <label>Open Graph</label>\n        <input ng-model=\"post.meta.ogTitle\" type=\"text\" class=\"form-control\" placeholder=\"title\" />\n        <input ng-model=\"post.meta.ogType\" type=\"text\" class=\"form-control\" placeholder=\"type\"/>\n        <input ng-model=\"post.meta.ogImage\" type=\"text\" class=\"form-control\" placeholder=\"image\" />\n        <input ng-model=\"post.meta.ogVideo\" type=\"text\" class=\"form-control\" placeholder=\"video\" />\n        <input ng-model=\"post.meta.ogUrl\" type=\"text\" class=\"form-control\" placeholder=\"url\" />        \n      </div>      \n    </div>\n\n    <div class=\"dates\" ng-if=\"post.created\">\n      <div class=\"form-group\" ng-if=\"preview.mode == 'publish'\">\n        <label>Override Publish Date</label>   \n        <input ng-model=\"post.publishedOverride\" type=\"text\" class=\"form-control\" ng-click=\"setPublishedOverride()\" />\n      </div>\n\n      <section>\n        <label>Created</label> <span>{{ post.created | publishedTime }}</span>\n        <label>Updated</label> <span>{{ post.updated | publishedTime }}</span>\n        <label>Published</label> <span>{{ post.published | publishedTime }}</span>\n        <label></label> <span>{{ post.publishedBy }}</span>\n      </section>\n    </div>\n\n  </div>\n\n  <div class=\"form-actions\">\n    <button class=\"btn\" ng-click=\"save()\" ng-disabled=\"(!post.title && !post.by.bio) || post.saved || post.published\">Save</button>\n    <button class=\"btn btnPreview\" ng-click=\"previewToggle()\" ng-disabled=\"!post._id || (preview.mode == 'publish')\">{{preview.mode == 'edit' && 'Preview' || 'Edit' }}</button>  \n    <a class=\"btn\" target=\"_blank\" href=\"mailto:team@airpair.com?subject=Post%20Sumission%20-%20{{post.title}}&body=Can%20you%20look%20at%20and%20publish%20my%20post:%0A%0Ahttps://www.airpair.com/posts/publish/{{ post._id }}%0A%0A{{post.by.name}}\" ng-disabled=\"(!post.title && !post.by.bio) || !post.saved || (preview.mode == 'publish')\">Submit</a>\n    <button class=\"btn\" ng-click=\"save()\" ng-disabled=\"!(preview.mode == 'publish')\">Publish</button>\n    <button class=\"btn\" ng-click=\"delete()\" ng-disabled=\"(!(preview.mode == 'edit') || post.published) || !post._id\">Delete</button>  \n  </div>\n";
+},{}],"/Users/jkrez/src/airpair.com/public/posts/editor.html":[function(require,module,exports){
+module.exports = "\n  <div class=\"md\" ng-if=\"post._id\">\n    <div class=\"form-group\">\n      <label>Markdown <span>see <a href=\"http://daringfireball.net/projects/markdown/syntax\" target=\"_blank\">markdown guide</a><span></label>\n        <textarea id=\"markdownTextarea\" ng-model=\"post.md\" class=\"form-control\" ng-model-options=\"{ updateOn: 'default blur', debounce: { blur: 0, default: (post.md.length * 10) }}\"></textarea>\n    </div>\n\n    <div class=\"publishMeta\" ng-if=\"preview.mode == 'publish'\">\n      <div class=\"form-group\">\n        <label>Tags </label>\n        <div tag-input=\"\"></div>\n      </div>\n      <div class=\"form-group\">\n        <label>Slug url</label>\n        <input ng-model=\"post.slug\" type=\"text\" class=\"form-control\" />\n      </div>      \n\n      <div class=\"posts\"><ap-post-list-item post=\"post\"></ap-post-list-item></div>\n    </div>\n\n  </div>\n\n  <div class=\"meta\">\n    <div class=\"form-group\">\n      <label>Title</label>\n      <input ng-model=\"post.title\" type=\"text\" class=\"form-control\" placeholder=\"Type post title ...\" />\n    </div>\n    <div class=\"form-group\">\n      <label>Author bio</label>\n      <input ng-model=\"post.by.bio\" type=\"text\" class=\"form-control\" />\n    </div>  \n    <div class=\"form-group\">\n      <label>Feature media <span ng-show=\"post.title && post.by.bio\">\n      <a href ng-click=\"exampleImage()\">image url</a>\n      or <a href ng-click=\"exampleYouTube()\">youtu.be url</a></span></label>\n      <input ng-model=\"post.assetUrl\" type=\"text\" class=\"form-control\" />\n    </div>\n\n    <div class=\"publishMeta\" ng-if=\"preview.mode == 'publish'\">    \n      <div class=\"form-group\">\n        <label>Author username</label>\n        <input ng-model=\"post.by.username\" type=\"text\" class=\"form-control\" />\n      </div>          \n      <div class=\"form-group\">\n        <label>Meta</label>\n        <input ng-model=\"post.meta.title\" type=\"text\" class=\"form-control\" placeholder=\"title\" /> \n        <input ng-model=\"post.meta.description\" type=\"text\" class=\"form-control\" placeholder=\"description\" />\n        <input ng-model=\"post.meta.canonical\" type=\"text\" class=\"form-control\" placeholder=\"canonical url\" />\n      </div>\n      <div class=\"form-group\">\n        <label>Open Graph</label>\n        <input ng-model=\"post.meta.ogTitle\" type=\"text\" class=\"form-control\" placeholder=\"title\" />\n        <input ng-model=\"post.meta.ogType\" type=\"text\" class=\"form-control\" placeholder=\"type\"/>\n        <input ng-model=\"post.meta.ogImage\" type=\"text\" class=\"form-control\" placeholder=\"image\" />\n        <input ng-model=\"post.meta.ogVideo\" type=\"text\" class=\"form-control\" placeholder=\"video\" />\n        <input ng-model=\"post.meta.ogUrl\" type=\"text\" class=\"form-control\" placeholder=\"url\" />        \n      </div>      \n    </div>\n\n    <div class=\"dates\" ng-if=\"post.created\">\n      <div class=\"form-group\" ng-if=\"preview.mode == 'publish'\">\n        <label>Override Publish Date</label>   \n        <input ng-model=\"post.publishedOverride\" type=\"text\" class=\"form-control\" ng-click=\"setPublishedOverride()\" />\n      </div>\n\n      <section>\n        <label>Created</label> <span>{{ post.created | publishedTime }}</span>\n        <label>Updated</label> <span>{{ post.updated | publishedTime }}</span>\n        <label>Published</label> <span>{{ post.published | publishedTime }}</span>\n        <label></label> <span>{{ post.publishedBy }}</span>\n      </section>\n    </div>\n\n  </div>\n\n  <div class=\"form-actions\">\n    <button class=\"btn\" ng-click=\"save()\" ng-disabled=\"(!post.title && !post.by.bio) || post.saved || post.published\">Save</button>\n    <button class=\"btn btnPreview\" ng-click=\"previewToggle()\" ng-disabled=\"!post._id || (preview.mode == 'publish')\">{{preview.mode == 'edit' && 'Preview' || 'Edit' }}</button>  \n    <a class=\"btn\" target=\"_blank\" href=\"mailto:team@airpair.com?subject=Post%20Sumission%20-%20{{post.title}}&body=Can%20you%20look%20at%20and%20publish%20my%20post:%0A%0Ahttps://www.airpair.com/posts/publish/{{ post._id }}%0A%0A{{post.by.name}}\" ng-disabled=\"(!post.title && !post.by.bio) || !post.saved || (preview.mode == 'publish')\">Submit</a>\n    <button class=\"btn\" ng-click=\"save()\" ng-disabled=\"!(preview.mode == 'publish')\">Publish</button>\n    <button class=\"btn\" ng-click=\"delete()\" ng-disabled=\"(!(preview.mode == 'edit') || post.published) || !post._id\">Delete</button>  \n  </div>\n";
 
-},{}],14:[function(require,module,exports){
+},{}],"/Users/jkrez/src/airpair.com/public/posts/editor.js":[function(require,module,exports){
 "use strict";
 var exampleImageUrl = 'http://www.airpair.com/v1/img/css/blog/example2.jpg';
 var exampleYoutubeUrl = 'http://youtu.be/qlOAbrvjMBo';
@@ -464,10 +521,10 @@ angular.module("APPostEditor", []).directive('apPostEditor', function() {
 });
 
 
-},{"./editor.html":13}],15:[function(require,module,exports){
+},{"./editor.html":"/Users/jkrez/src/airpair.com/public/posts/editor.html"}],"/Users/jkrez/src/airpair.com/public/posts/myPostsList.html":[function(require,module,exports){
 module.exports = "<table class=\"table table-striped\">\n  <tr>\n    <th>Created</th>\n    <th>Published</th>\n    <th>Title</th>\n    <th></th>    \n  </tr>\n  <tr ng-repeat=\"p in myposts\">\n    <td>{{ p.created | publishedTime: 'MM.DD' }}</td>  \n    <td>\n      {{ p.published | publishedTime: 'MM.DD' }}\n    </td>\n    <td>\n      <a href=\"/v1/posts/{{p.slug}}\" target=\"_blank\" ng-if=\"p.published\">{{ p.title }}</a>\n      <span ng-if=\"!p.published\">{{ p.title }}</span>\n    </td> \n    <td>\n      <a href=\"/posts/edit/{{p._id}}\" target=\"_blank\">edit</a>\n    </td>     \n  </tr>\n</table>";
 
-},{}],16:[function(require,module,exports){
+},{}],"/Users/jkrez/src/airpair.com/public/posts/myPostsList.js":[function(require,module,exports){
 "use strict";
 angular.module("APMyPostsList", []).directive('apMyPostsList', function() {
   return {
@@ -477,4 +534,4 @@ angular.module("APMyPostsList", []).directive('apMyPostsList', function() {
 });
 
 
-},{"./myPostsList.html":15}]},{},[1]);
+},{"./myPostsList.html":"/Users/jkrez/src/airpair.com/public/posts/myPostsList.html"}]},{},["./public/posts/module.js"]);
