@@ -17,7 +17,7 @@ module.exports = function()
 
 
     it('Can create post as signed in user with minimal detail', function(done) {
-      addLocalUser('joem', function(userKey) {
+      addLocalUser('prat', function(userKey) {
         login(userKey, data.users[userKey], function() {
           get('/session/full', {}, function(s) {
             var by = { userId: s._id, name: s.name, bio: 'yo yyoy o', avatar: s.avatar }
@@ -42,7 +42,7 @@ module.exports = function()
     })
 
     it('Can create post as signed in user with max detail', function(done) {
-      addLocalUser('adap', function(userKey) {
+      addLocalUser('ajde', function(userKey) {
         login(userKey, data.users[userKey], function() {
           get('/session/full', {}, function(s) {
             var by = { userId: s._id, name: s.name, bio: 'yes test', avatar: s.avatar }
@@ -79,16 +79,45 @@ module.exports = function()
     })
 
 
-    // it('article edit: non-editor, try publish')
-    //   expect('fail')
+    it('Can not edit post as non-author', function(done) {
+      $log('TODO', 'write test')
+      done()      
+    })
 
 
-    // it('article edit: editor, try publish')
+    it('Can edit post as author', function(done) {
+      $log('TODO', 'write test')
+      done()
+    })
+
+
+    it('Can not delete post as non-author', function(done) {
+      $log('TODO', 'write test')
+      done()      
+    })
+
+
+    it('Can delete post as author', function(done) {
+      $log('TODO', 'write test')
+      done()      
+    })
+
+
+    it('Can not publish post as non-editor', function(done) {
+      $log('TODO', 'write test')
+      done()      
+    })
+
+
+    it('Can publish post as editor', function(done) {
+      $log('TODO', 'write test')
     //   expect('published').toBe(false)  
     //   expect('slug').toBe(false)  
     //   expect('assetUrl')
     //   expect('tags')  
-    
+      done()      
+    })
+
 
   })
 }

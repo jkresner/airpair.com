@@ -5,6 +5,9 @@ module.exports = {
   pgap: { name:"Prateek Gupta",email:"pg@airpair.com" },
   adap: { name:"Ajay Desai",email:"ad@airpair.com" },
 
+  ajde: { name:"Ajay Desai",email:"ajay@desai.com" },
+  prat: { name:"Prateek Gupta",email:"prateek@gupta.com" },
+
   joem: { name:"Joe Mellin",email:"joe@mellin.com" }, 
   ramo: { name:"Ramon Porter",email:"sierra@test.com" }    
 }
