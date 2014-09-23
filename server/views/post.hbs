@@ -53,13 +53,14 @@
       </div>
       <script type="text/javascript">  </script>
 
-      <h4 id="table-of-contents" ng-if="preview.toc">Table of Contents</h4>
+      <h4 id="table-of-contents">Table of Contents</h4>
       {{{toc}}}
-      <h6 id="author">Author</h6>
-      <p><img alt="{{by.name}}" src="{{by.avatar}}?s=100"> </p>
-      <blockquote>
-        <p>{{by.bio}}</p>
-      </blockquote>
+      <figure class="author">
+        <img alt="{{by.name}}" src="{{by.avatar}}?s=100">
+        <figcaption>
+          {{by.bio}}
+        </figcaption>
+      </figure>  
       <p class="asset">{{ assetUrlToMedia assetUrl }}</p>
       <hr />
 
