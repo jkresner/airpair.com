@@ -1,5 +1,5 @@
 require('./../common/filters.js');
-require('./../directives/share.js');
+require('./../common/directives/share.js');
 
 var feautredSlugs = [
 	'fast-mvp-with-angularfire',
