@@ -23,10 +23,8 @@
   <footer class="entry-footer">
     <p class="entry-meta">
       <span class="entry-categories"> 
-        <a href="http://www.airpair.com/angularjs" title="View all posts in AngularJS posts" rel="category tag">{ruby-on-rails}</a>
-        <a href="http://www.airpair.com/angularjs" title="View all posts in AngularJS posts" rel="category tag">{angularjs}</a>
         {{#each tags}}
-          <a href="http://www.airpair.com/{{slug}}" title="View all posts in {{name}}" rel="category tag">{{name}}</a>
+          <a href="http://www.airpair.com/{{slug}}" title="View all posts in {{name}}" rel="category tag">{ {{ name }} }</a>
         {{/each}}
       </span>
     </p>

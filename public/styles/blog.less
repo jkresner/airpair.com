@@ -47,14 +47,21 @@ body#post {
 			bottom:10px;
 			font-size:9px;
 			text-align:right;
-			width:92%;
+			width:94%;
+			height:30px;
+			.entry-meta { float:right }			
+			.entry-categories { 
+				color:@gray;
+				width:100%;
+				a { display:inline-block;margin-left:5px }
+			 }
 		}
 
 		p { line-height:16px;margin:0;padding:0 }
-		.entry-categories { color:@gray;width:100% }
 		.entry-content { height:80px;overflow:hidden;color:@gray }
 		.entry-author { font-weight:bold;color:@orange }
 		.entry-author-image { width:50px;border-radius:25px;display:inline;margin:3px 10px 0 0 }
+
 	}
 
 	article:hover { 
