@@ -8,7 +8,7 @@ var logging = false
 var svc = new Svc(Post, logging)
 
 var fields = {
-  listSelect: { 'by.name': 1, 'by.avatar': 1, 'meta.description': 1, title:1, slug: 1, created: 1, published: 1 }
+  listSelect: { 'by.name': 1, 'by.avatar': 1, 'meta.description': 1, title:1, slug: 1, created: 1, published: 1, tags: 1 }
 } 
 
 var queries = {
@@ -18,7 +18,12 @@ var queries = {
 
 var addUrl = (cb) =>
   (e,r) => { 
-    for (var p of r) { if (p.slug) { p.url = `/v1/posts/${p.slug}` } }
+    for (var p of r) { 
+      if (p.slug) { 
+        if (p.tags.length > 0) p.url = `/${p.tags[0].slug}/posts/${p.slug}` 
+        else p.url = `/v1/posts/${p.slug}` 
+      } 
+    }
     cb(e,r)
   }
 
