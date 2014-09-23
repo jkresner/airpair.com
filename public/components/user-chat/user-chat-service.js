@@ -75,8 +75,9 @@ var ChatService = function($rootScope, $firebase, $firebaseSimpleLogin) {
       });
     },
 
-    touch: function(channelId) {
-      subscriptionsRef.child(this.currentUser.uid).child(channelId).setPriority(Firebase.ServerValue.TIMESTAMP);
+    touch: function(channel) {
+      // update priority to move it to the top of the list
+      subscriptionsRef.child(this.currentUser.uid).child(channel.$id).setPriority(Firebase.ServerValue.TIMESTAMP);
     },
 
     deactivate: function(list, channel) {

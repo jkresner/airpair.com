@@ -1,9 +1,14 @@
 #chat(ng-if="chat.currentUser" ng-class="{empty: chat.currentUserChannels.length == 0}" ng-mouseenter="chat.spy()")
   chat-header(ng-controller="ChatSelector")
     chat-notifications.dropdown(ng-if="chat.currentUserChannels.length > 1")
-      a.dropdown-toggle
+      a#chat-menu-toggle.dropdown-toggle(data-toggle="dropdown")
         img(src="/v1/img/css/chat/toggle.png")
-      ul.dropdown-menu
-        li(ng-repeat="channel in chat.currentUserChannels")
-          a(ng-click="loadChannel(channel.$id, $event)") {{ channel.title }}
-  chatroom(ng-repeat="channelId in chat.currentUserChannels")
+      ul.dropdown-menu(role="menu" aria-labelledby="chat-menu-toggle")
+        li(role="presentation" ng-repeat="channel in chat.currentUserChannels | reverse")
+          a(role="menuitem" ng-click="loadChannel(channel, $event)") {{ channel.title }}
+        li(role="presentation" class="divider")
+        li(role="presentation")
+          a(role="menuitem" ng-click="collapse($event)") Minimize
+
+  chatroom(ng-repeat="channel in chat.currentUserChannels | reverse")
+  end-buffer

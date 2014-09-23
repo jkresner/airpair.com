@@ -1,10 +1,10 @@
 .chatroom
-  .title(ng-dblclick="$parent.collapse()")
+  .title
     span(ng-bind="channel.title")
-  members(ng-click="expand()")
+  members(ng-click="expand(channel)")
     member(ng-repeat="person in channel.members" ng-if="person.uid !== chat.currentUser.uid" title="{{person.name}}")
       img(ng-src="{{person.picture}}")
-      .title {{ person.name }}
+      .name {{ person.name }}
 
   messages(scroll-glue)
     table.table.table-striped

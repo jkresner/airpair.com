@@ -15,7 +15,11 @@
   }
 
   &.collapsed {
+    background: #ddd;
     max-width: 50px;
+    chat-header {
+      display: none;
+    }
     messages, entry, .title {
       display: none;
     }
@@ -33,7 +37,16 @@
     .chatroom:not(:nth-child(2)) {
       display: inherit;
     }
+
+    end-buffer {
+      display: inherit;
+    }
   }
+}
+
+end-buffer {
+  flex: 1000 1 auto;
+  display: none;
 }
 
 chat-header {
@@ -45,6 +58,7 @@ chat-header {
 
   chat-notifications {
     padding: 10px;
+    padding-left: 15px;
     width: 50px;
   }
 }
@@ -85,7 +99,7 @@ chat-header {
         display: block;
         text-align: center;
         img { width: 100px }
-        .title {
+        .name {
           margin-top: 5px;
           color: white;
         }
@@ -94,7 +108,7 @@ chat-header {
       &:not(:only-child) {
         float: left;
         img { width: 50px }
-        .title { display: none }
+        .name { display: none }
 
         &:not(:first-child) { margin-left: -10px }
       }

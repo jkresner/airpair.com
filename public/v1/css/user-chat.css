@@ -10,7 +10,11 @@
   display: none;
 }
 #chat.collapsed {
+  background: #ddd;
   max-width: 50px;
+}
+#chat.collapsed chat-header {
+  display: none;
 }
 #chat.collapsed messages,
 #chat.collapsed entry,
@@ -33,6 +37,13 @@
 #chat.collapsed .chatroom:not( :nth-child(2)) {
   display: inherit;
 }
+#chat.collapsed end-buffer {
+  display: inherit;
+}
+end-buffer {
+  flex: 1000 1 auto;
+  display: none;
+}
 chat-header {
   background: black;
   display: flex;
@@ -42,6 +53,7 @@ chat-header {
 }
 chat-header chat-notifications {
   padding: 10px;
+  padding-left: 15px;
   width: 50px;
 }
 .chatroom {
@@ -82,7 +94,7 @@ chat-header chat-notifications {
 .chatroom members member:only-child img {
   width: 100px;
 }
-.chatroom members member:only-child .title {
+.chatroom members member:only-child .name {
   margin-top: 5px;
   color: white;
 }
@@ -92,7 +104,7 @@ chat-header chat-notifications {
 .chatroom members member:not(:only-child) img {
   width: 50px;
 }
-.chatroom members member:not(:only-child) .title {
+.chatroom members member:not(:only-child) .name {
   display: none;
 }
 .chatroom members member:not(:only-child):not(:first-child) {
