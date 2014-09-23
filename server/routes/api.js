@@ -12,7 +12,7 @@ export default function(app) {
     .get('/session/full', authd, UsersAPI.getSessionByUserId)   
 
     .get('/tags/search/:id', TagsAPI.search)    
-    .get('/tags/:slug', TagsAPI.getBySlug)
+    .get('/tags/:slug', authd, TagsAPI.getBySlug)
     
     .get('/posts/recent', PostsAPI.getRecentPublished)
     .get('/posts/me', authd, PostsAPI.getUsersPosts)     

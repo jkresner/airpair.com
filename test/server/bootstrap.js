@@ -13,11 +13,12 @@ global.logging = false
 
 
 require('./helpers/http')
-var testDb = require('./helpers/initDb')
+global.testDb = require('./helpers/setup')
 var sessionSpec = require('./sessionSpec')
 var authSpec = require('./authSpec')
 var authzSpec = require('./authzSpec')
 var postsSpec = require('./postsSpec')
+var tagsSpec = require('./tagsSpec')
 
 describe('Server: ', function() {
 
@@ -33,7 +34,8 @@ describe('Server: ', function() {
   describe('Session: ', sessionSpec)
   describe('Auth: ', authSpec)
   describe('Authz: ', authzSpec)  
-  describe('Posts: ', postsSpec)    
+  describe('Posts: ', postsSpec)   
+  describe('Tags: ', tagsSpec)    
 
 })
 
