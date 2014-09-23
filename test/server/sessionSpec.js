@@ -2,13 +2,13 @@ module.exports = function()
 {
   describe("API", function() {
 
-    it('gets 403 on unauthenticated session', function(done) {
-      var opts = { status: 403, unauthenticated: true }
+    it('gets 401 on unauthenticated session', function(done) {
+      var opts = { status: 401, unauthenticated: true }
       get('/session', opts, function() { done() })
     })
   
-    it('gets 403 on unauthenticated full session', function(done) {
-      var opts = { status: 403, unauthenticated: true }
+    it('gets 401 on unauthenticated full session', function(done) {
+      var opts = { status: 401, unauthenticated: true }
       get('/session', opts, function() { done() })
     })
 

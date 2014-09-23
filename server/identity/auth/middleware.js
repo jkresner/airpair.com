@@ -13,8 +13,8 @@ export function authd(req, res, next) {
       req.session.returnTo = req.url 
     }
 
-    if (apiRequest) { res.status(403).json({}) } 
-    else { res.status(403).redirect(config.auth.loginUrl) }
+    if (apiRequest) { res.status(401).json({}) } 
+    else { res.redirect(config.auth.loginUrl) }
   } 
   else
   {
@@ -24,16 +24,22 @@ export function authd(req, res, next) {
 
 var authorizeRole = (roleName) => {
   return (req, res, next) => {
-    var apiRequest = req.url.indexOf('api') != 0
+    // var apiRequest = req.url.indexOf('api') != 0
     if (!req.isAuthenticated || !req.isAuthenticated())
     {
-      if (isApiRequest(req)) { res.status(403).json() } 
-      else { res.status(403).redirect(config.auth.loginUrl) }
+      // if (isApiRequest(req)) { 
+      res.status(401).json() 
+      // } 
+      // else { 
+      // res.status(403).redirect(config.auth.loginUrl) 
+      // }
     } 
     else if ( ! _.contains(req.user.roles, roleName) )
     {
-      if (isApiRequest(req)) { res.status(403).json() } 
-      else { res.status(403).redirect(config.auth.unauthorizedUrl) }
+      // if (isApiRequest(req)) { 
+      res.status(403).json() 
+      // } 
+      // else { res.redirect(config.auth.unauthorizedUrl) }
     }
     else 
     {
@@ -41,6 +47,18 @@ var authorizeRole = (roleName) => {
     }
   }
 }
+
+
+export function authDone(req, res, next) {
+  var redirectUrl = config.auth.defaultRedirectUrl
+  if (req.session && req.session.returnTo)
+  {
+    redirectUrl = req.session.returnTo
+    delete req.session.returnTo    
+  }
+  res.redirect(redirectUrl)
+}
+
 
 export var adm = authorizeRole('admin')
 export var pipeliner = authorizeRole('pipeliner')

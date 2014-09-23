@@ -25,9 +25,9 @@ var cfg = {
 }
 
 module.exports = function(env, appdir) {
-  cfg.env = env;
-  cfg.appdir = appdir;
-  cfg.livereload = cfg.env == 'dev';
+  cfg.env = env
+  cfg.appdir = appdir
+  cfg.livereload = cfg.env == 'dev'
 
   if (cfg.env == 'test') {
     cfg.port = 4444

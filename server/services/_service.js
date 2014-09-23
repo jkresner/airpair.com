@@ -17,7 +17,7 @@ export default function(model, logging) {
     model.find(query,fields,options)
       .lean()
       .exec( (e, r) => {
-        if (e && logging) { $log('svc.searchMany.err', query, e, cb) }
+        if (e || logging) { $log('svc.searchMany.err', query, e, cb) }
         cb(e, r)
       } )
   }
