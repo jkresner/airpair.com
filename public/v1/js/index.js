@@ -1,4 +1,4 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"./public/common/index.js":[function(require,module,exports){
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 "use strict";
 require('./../common/directives/share.js');
 require('./../common/directives/post.js');
@@ -16,40 +16,48 @@ angular.module("AP", ['ngRoute', 'APAuth', 'APPosts', 'APWorkshops']).config(['$
 ;
 
 
-},{"./../auth/module.js":"/Users/jkrez/src/airpair.com/public/auth/module.js","./../common/directives/post.js":"/Users/jkrez/src/airpair.com/public/common/directives/post.js","./../common/directives/share.js":"/Users/jkrez/src/airpair.com/public/common/directives/share.js","./../common/directives/tagInput.js":"/Users/jkrez/src/airpair.com/public/common/directives/tagInput.js","./../common/filters/filters.js":"/Users/jkrez/src/airpair.com/public/common/filters/filters.js","./../common/models/postsService.js":"/Users/jkrez/src/airpair.com/public/common/models/postsService.js","./../common/models/sessionService.js":"/Users/jkrez/src/airpair.com/public/common/models/sessionService.js","./../common/postHelpers.js":"/Users/jkrez/src/airpair.com/public/common/postHelpers.js","./../posts/module.js":"/Users/jkrez/src/airpair.com/public/posts/module.js","./../workshops/module.js":"/Users/jkrez/src/airpair.com/public/workshops/module.js"}],"/Users/jkrez/src/airpair.com/public/auth/login.html":[function(require,module,exports){
-module.exports = "<header>Login</header>\n<section id=\"auth\" class=\"choice\">\n\n<h3>Login</h3>\n\n<div class=\"google option\">\n  <h2>Quick login</h2>\n\n  <p> \n    <a class=\"btn btn-error\" href=\"/v1/auth/google\" target=\"_self\">Sign in with google</a>\n  </p>\n\n  <p style=\"font-size:12px;margin:20px 0 0 0\">You will be redirected to a google sign in page.</p>\n\n</div>\n\n<div class=\"local option\">\n\n<h2>Password login</h2>\n\n<!-- LOGIN FORM -->\n<form novalidate ng-submit=\"LoginCtrl.submit(loginForm.$valid, data)\" name=\"loginForm\" ng-controller=\"LoginCtrl as LoginCtrl\">\n  <div class=\"form-group\">\n    <label>Email</label>\n    <input type=\"email\" placeholder=\"Email\" class=\"form-control\" name=\"email\" ng-model=\"data.email\" required >\n    <div ng-if=\"loginForm.$submitted || loginForm.email.$touched\">\n      <div ng-if=\"loginForm.email.$error.required\">Email required</div>\n      <div ng-if=\"loginForm.email.$error.email\">Invalid email</div>\n    </div>\n  </div>\n  <div class=\"form-group\">\n    <label>Password</label>\n    <input type=\"password\" placeholder=\"Password\" class=\"form-control\" name=\"password\" ng-model=\"data.password\" required>\n    <div ng-if=\"loginForm.$submitted || loginForm.password.$touched\">\n      <div ng-if=\"loginForm.password.$error.required\">Password required</div>\n    </div>    \n  </div>\n\n  <button type=\"submit\" class=\"btn btn-warning btn-lg\">Login</button>\n</form>\n  \n</div>\n</section>\n\n";
+},{"./../auth/module.js":3,"./../common/directives/post.js":6,"./../common/directives/share.js":9,"./../common/directives/tagInput.js":11,"./../common/filters/filters.js":12,"./../common/models/postsService.js":13,"./../common/models/sessionService.js":14,"./../common/postHelpers.js":15,"./../posts/module.js":22,"./../workshops/module.js":26}],2:[function(require,module,exports){
+module.exports = "<header>Login</header>\n<section id=\"auth\">\n\n<div class=\"choice\">\n<div class=\"google option\">\n\n  <h2>Quick login</h2>\n  <p> \n    <a class=\"btn btn-error\" href=\"/v1/auth/google\" target=\"_self\">Login with google</a>\n  </p>\n  <p style=\"font-size:12px;margin:20px 0 0 0\">* You will be temporarily redirected to a google login page.</p>\n\n</div>\n\n<div class=\"local option\">\n\n  <h2>Password login</h2>\n  <form novalidate ng-submit=\"LoginCtrl.submit(loginForm.$valid, data)\" name=\"loginForm\" ng-controller=\"LoginCtrl as LoginCtrl\">\n    <div class=\"form-group\">\n      <label>Email</label>\n      <input type=\"email\" placeholder=\"Email\" class=\"form-control\" name=\"email\" ng-model=\"data.email\" required >\n      <div class=\"error\" ng-if=\"loginForm.$submitted || loginForm.email.$touched\">\n        <div ng-if=\"loginForm.email.$error.required\">Email required</div>\n        <div ng-if=\"loginForm.email.$error.email\">Invalid email</div>\n      </div>\n    </div>\n    <div class=\"form-group\">\n      <label>Password</label>\n      <input type=\"password\" placeholder=\"Password\" class=\"form-control\" name=\"password\" ng-model=\"data.password\" required>\n      <div class=\"error\" ng-if=\"loginForm.$submitted || loginForm.password.$touched\">\n        <div ng-if=\"loginForm.password.$error.required\">Password required</div>\n      </div>    \n    </div>\n\n    <button type=\"submit\" class=\"btn btn-warning btn-lg\">Login</button>\n\n    <div class=\"error\" ng-if=\"signupFail\">\n      <b>Login failed:</b> <span ng-if=\"signupFail\">{{signupFail}}</span>\n    </div>   \n  </form>\n  \n</div>\n</div>\n\n<h3>New to AirPair?</h3>\n\n<p>The fastest way to access AirPair is to login with Google (above). You can also <a href=\"/v1/auth/signup\">sign up with an email and password</a>.</p>\n\n</section>\n\n";
 
-},{}],"/Users/jkrez/src/airpair.com/public/auth/module.js":[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 "use strict";
 var resolver = require('./../common/routes/helpers.js');
 angular.module("APAuth", ['ngRoute', 'APFilters', 'APSvcSession']).config(['$locationProvider', '$routeProvider', function($locationProvider, $routeProvider) {
   $routeProvider.when('/v1/auth/login', {template: require('./login.html')});
   $routeProvider.when('/v1/auth/signup', {template: require('./signup.html')});
-}]).run(['$rootScope', 'SessionService', function($rootScope, SessionService) {}]).controller('LoginCtrl', ['$scope', 'SessionService', function($scope, SessionService) {
+}]).run(['$rootScope', 'SessionService', function($rootScope, SessionService) {}]).controller('LoginCtrl', ['$scope', '$window', 'SessionService', function($scope, $window, SessionService) {
   var self = this;
   this.submit = function(isValid, formData) {
-    console.log('validate me biaaat', isValid);
     if (!isValid)
       return;
+    SessionService.login(formData, (function() {
+      return $window.location = '';
+    }), (function(e) {
+      return $scope.signupFail = e.error;
+    }));
   };
-}]).controller('SignupCtrl', ['$scope', 'SessionService', function($scope, SessionService) {
+}]).controller('SignupCtrl', ['$scope', '$window', 'SessionService', function($scope, $window, SessionService) {
   var self = this;
   this.submit = function(isValid, formData) {
-    console.log('validate me biaaat', isValid);
     if (!isValid)
       return;
+    SessionService.signup(formData, (function() {
+      return $window.location = '';
+    }), (function(e) {
+      return $scope.signupFail = e.error;
+    }));
   };
 }]);
 ;
 
 
-},{"./../common/routes/helpers.js":"/Users/jkrez/src/airpair.com/public/common/routes/helpers.js","./login.html":"/Users/jkrez/src/airpair.com/public/auth/login.html","./signup.html":"/Users/jkrez/src/airpair.com/public/auth/signup.html"}],"/Users/jkrez/src/airpair.com/public/auth/signup.html":[function(require,module,exports){
-module.exports = "<div class=\"main-wrap\">\n  <main>\n\n    <hr>\n\n    <h2>Signup</h2>\n\n    <form action=\"/v1/auth/signup\" method=\"post\">\n      <div class=\"form-group\">\n        <label>Full name</label>\n        <input type=\"text\" class=\"form-control\" name=\"name\">\n      </div>\n      <div class=\"form-group\">\n        <label>Email</label>\n        <input type=\"text\" class=\"form-control\" name=\"email\">\n      </div>\n      <div class=\"form-group\">\n        <label>Password</label>\n        <input type=\"password\" class=\"form-control\" name=\"password\">\n      </div>\n\n      <button type=\"submit\" class=\"btn btn-warning btn-lg\">Signup</button>\n    </form>\n\n    <hr>\n\n  </main>\n</div>";
+},{"./../common/routes/helpers.js":16,"./login.html":2,"./signup.html":4}],4:[function(require,module,exports){
+module.exports = "<header>Sign up</header>\n<section id=\"auth\">\n\n<div class=\"choice\">\n<div class=\"signup option\">\n\n  <h2>Signup</h2>\n\n  <form novalidate ng-submit=\"SignupCtrl.submit(signupForm.$valid, data)\" name=\"signupForm\" ng-controller=\"SignupCtrl as SignupCtrl\">\n    <div class=\"form-group\">\n      <label>Full name</label>\n      <input type=\"name\" placeholder=\"Full name\" class=\"form-control\" name=\"name\" ng-model=\"data.name\" required >\n      <div class=\"error\" ng-if=\"signupForm.$submitted || signupForm.email.$touched\">\n        <div ng-if=\"signupForm.email.$error.required\">Full name required</div>\n      </div>\n    </div>    \n    <div class=\"form-group\">\n      <label>Email</label>\n      <input type=\"email\" placeholder=\"Email\" class=\"form-control\" name=\"email\" ng-model=\"data.email\" required >\n      <div class=\"error\" ng-if=\"signupForm.$submitted || signupForm.email.$touched\">\n        <div ng-if=\"signupForm.email.$error.required\">Email required</div>\n        <div ng-if=\"signupForm.email.$error.email\">Invalid email</div>\n      </div>\n    </div>\n    <div class=\"form-group\">\n      <label>Password</label>\n      <input type=\"password\" placeholder=\"Password\" class=\"form-control\" name=\"password\" ng-model=\"data.password\" required>\n      <div class=\"error\" ng-if=\"signupForm.$submitted || signupForm.password.$touched\">\n        <div ng-if=\"signupForm.password.$error.required\">Password required</div>\n      </div>    \n    </div>\n\n    <button type=\"submit\" class=\"btn btn-warning btn-lg\">Sign up</button>\n    \n    <div class=\"error\" ng-if=\"signupFail\">\n      <b>Sign up failed:</b> <span ng-if=\"signupFail\">{{signupFail}}</span>\n    </div>    \n  </form>\n\n</div>\n</div>\n\n<h3>Aleady have an account?</h3>\n\n<p><a href=\"/v1/auth/login\"><b>Login</b></a> with google or an email and password</a>.</p>\n\n\n</section>";
 
-},{}],"/Users/jkrez/src/airpair.com/public/common/directives/post.html":[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 module.exports = "\n<div class=\"preview\">\n  <article class=\"blogpost\">\n    <h1 class=\"entry-title\" itemprop=\"headline\">{{ post.title || \"Type post title ...\" }}</h1>\n    <h4 id=\"table-of-contents\" ng-if=\"preview.toc\">Table of Contents</h4>\n    <ul id=\"previewToc\" ng-bind-html=\"preview.toc | markdownHtml\"></ul>\n    <figure class=\"author\">\n      <img ng-alt=\"{{post.by.name}}\" ng-src=\"{{post.by.avatar}}?s=100\">\n      <figcaption>\n        {{post.by.bio}}\n      </figcaption>\n    </figure>  \n    <p class=\"asset\" ng-bind-html=\"preview.asset | markdownHtml\" ng-if=\"post.title && post.by.bio\"></p>\n    <hr />\n    <div id=\"body\" ng-bind-html=\"preview.body | markdownHtml\"></div>\n  </article>\n</div>\n\n<hr />\n";
 
-},{}],"/Users/jkrez/src/airpair.com/public/common/directives/post.js":[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 "use strict";
 angular.module("APPost", []).directive('apPostListItem', ['$parse', function($parse) {
   return {
@@ -72,13 +80,13 @@ angular.module("APPost", []).directive('apPostListItem', ['$parse', function($pa
 ;
 
 
-},{"./post.html":"/Users/jkrez/src/airpair.com/public/common/directives/post.html","./postListItem.html":"/Users/jkrez/src/airpair.com/public/common/directives/postListItem.html"}],"/Users/jkrez/src/airpair.com/public/common/directives/postListItem.html":[function(require,module,exports){
+},{"./post.html":5,"./postListItem.html":7}],7:[function(require,module,exports){
 module.exports = "<article itemscope=\"itemscope\" itemtype=\"http://schema.org/BlogPosting\" itemprop=\"blogPost\">\n<a href=\"{{ post.url }}\" title=\"{{ post.title }}\" target=\"_self\" rel=\"bookmark\">\n  <header class=\"entry-header\">\n    <h2 class=\"entry-title\" itemprop=\"headline\">{{ post.title }}</h2> \n    <p class=\"entry-meta\">\n      <time class=\"entry-time\" itemprop=\"datePublished\" datetime=\"{{ post.published }}\">{{ post.publishedFormat }}</time> \n      by \n      <span class=\"entry-author\" itemprop=\"author\" itemscope=\"itemscope\" itemtype=\"http://schema.org/Person\">\n        <span class=\"entry-author-name\" itemprop=\"name\">{{ post.by.name }}</span>\n      </span> \n    </p>\n  </header>\n  <div class=\"entry-content\" itemprop=\"text\">\n    <img class=\"entry-author-image\" itemprop=\"image\" ng-src=\"{{ post.by.avatar }}?s=50\" align=\"left\" />\n    <p>{{ post.meta.description }}</p>\n  </div>\n</a>\n  <footer class=\"entry-footer\">\n    <p class=\"entry-meta\">\n      <span class=\"entry-categories\">\n        <a ng-repeat='tag in post.tags' href=\"#\" title=\"View all posts in {{ tag.name }}\" rel=\"category tag\">{{ '{'+tag.slug+'}' }}</a>\n      </span>\n    </p>\n  </footer>\n</article>  \n";
 
-},{}],"/Users/jkrez/src/airpair.com/public/common/directives/share.html":[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 module.exports = "<div class=\"pw-widget pw-counter-vertical\" pw:twitter-via=\"airpair\"> \n  <a ng-show=\"fb\" class=\"pw-button-facebook pw-look-native\"></a>     \n  <a ng-show=\"tw\" class=\"pw-button-twitter pw-look-native\"></a>      \n  <a ng-show=\"in\" class=\"pw-button-linkedin pw-look-native\"></a>     \n</div>";
 
-},{}],"/Users/jkrez/src/airpair.com/public/common/directives/share.js":[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 "use strict";
 angular.module("APShare", ['angularLoad']).directive('apShare', function(angularLoad) {
   var src = ('https:' == document.location.protocol ? 'https://s' : 'http://i') + '.po.st/static/v3/post-widget.js#publisherKey=miu9e01ukog3g0nk72m6&retina=true&init=lazy';
@@ -103,10 +111,10 @@ angular.module("APShare", ['angularLoad']).directive('apShare', function(angular
 });
 
 
-},{"./share.html":"/Users/jkrez/src/airpair.com/public/common/directives/share.html"}],"/Users/jkrez/src/airpair.com/public/common/directives/tagInput.html":[function(require,module,exports){
+},{"./share.html":8}],10:[function(require,module,exports){
 module.exports = "<script type=\"text/ng-template\" id=\"template/typeahead/typeahead-match.html\">\n  <a>\n    <label bind-html-unsafe=\"match.model.name | typeaheadHighlight:query\"></label>\n    <br /><span bind-html-unsafe=\"match.model.desc | typeaheadHighlight:query\"></span>\n  </a>\n</script>\n\n    \n<input type=\"text\" \n  placeholder=\"Type technology\" \n  class=\"form-control\"\n  ng-model=\"q\" \n  typeahead=\"t as t for t in getTags($viewValue) | filter:$viewValue\" \n  >\n<!-- typeahead-loading=\"loading\"\n<i ng-show=\"loading\" class=\"glyphicon glyphicon-refresh\"></i>\n -->Tags: <label ng-repeat=\"tag in post.tags\">{ {{tag.name}} } <a ng-click=\"deselectMatch(tag)\" style=\"color:red\">x</a> &nbsp </label>\n";
 
-},{}],"/Users/jkrez/src/airpair.com/public/common/directives/tagInput.js":[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 "use strict";
 angular.module('APTagInput', ['ui.bootstrap']).value('acceptableTagsSearchQuery', function(value) {
   return value && (value.length >= 2 || /r/i.test(value));
@@ -146,7 +154,7 @@ angular.module('APTagInput', ['ui.bootstrap']).value('acceptableTagsSearchQuery'
 ;
 
 
-},{"./tagInput.html":"/Users/jkrez/src/airpair.com/public/common/directives/tagInput.html"}],"/Users/jkrez/src/airpair.com/public/common/filters/filters.js":[function(require,module,exports){
+},{"./tagInput.html":10}],12:[function(require,module,exports){
 "use strict";
 angular.module('APFilters', []).filter('publishedTime', function() {
   return (function(utc, displayFormat) {
@@ -196,7 +204,7 @@ angular.module('APFilters', []).filter('publishedTime', function() {
 });
 
 
-},{}],"/Users/jkrez/src/airpair.com/public/common/models/postsService.js":[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 "use strict";
 var headings = [];
 var lazyErrorCb = function(resp) {
@@ -250,9 +258,9 @@ angular.module('APSvcPosts', []).constant('API', '/v1/api').factory('mdHelper', 
 }]);
 
 
-},{}],"/Users/jkrez/src/airpair.com/public/common/models/sessionService.js":[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 "use strict";
-angular.module('APSvcSession', []).constant('API', '/v1/api').service('SessionService', ['$http', 'API', '$cacheFactory', function($http, API, $cacheFactory) {
+angular.module('APSvcSession', []).constant('API', '/v1/api').constant('Auth', '/v1/auth').service('SessionService', ['$http', 'API', 'Auth', '$cacheFactory', function($http, API, Auth, $cacheFactory) {
   var cache;
   this.getSession = function() {
     cache = cache || $cacheFactory();
@@ -269,10 +277,16 @@ angular.module('APSvcSession', []).constant('API', '/v1/api').service('SessionSe
   this.flushCache = function() {
     cache = null;
   };
+  this.login = function(data, success, error) {
+    $http.post((Auth + "/login"), data).success(success).error(error);
+  };
+  this.signup = function(data, success, error) {
+    $http.post((Auth + "/signup"), data).success(success).error(error);
+  };
 }]);
 
 
-},{}],"/Users/jkrez/src/airpair.com/public/common/postHelpers.js":[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 "use strict";
 window.postHlpr = {};
 var getHighlightConfig = function(elm) {
@@ -340,7 +354,7 @@ postHlpr.loadPoSt = function() {
 };
 
 
-},{}],"/Users/jkrez/src/airpair.com/public/common/routes/helpers.js":[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 "use strict";
 (function() {
   var self = {};
@@ -374,16 +388,16 @@ postHlpr.loadPoSt = function() {
 })();
 
 
-},{}],"/Users/jkrez/src/airpair.com/public/me/profile.html":[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 module.exports = "<header>Profile > {{ username }} </header>\n\n<div class=\"posts\">\n  <ap-post-list-item post=\"p\" ng-repeat=\"p in posts\"></ap-post-list-item>\n</div>";
 
-},{}],"/Users/jkrez/src/airpair.com/public/posts/author.html":[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 module.exports = "<header><a href=\"/posts\">Posts</a> > Author</header>\n<section id=\"posts\">\n<div id=\"author\" ng-attr-class=\"{{preview.mode}}\">\n\n  <div class=\"editor\" ap-post-editor=\"\"></div>\n\n  <hr />\n\n  <div id=\"preview\" ap-post=\"\"></div>\n\n  <div id=\"tips\">\n    \n    <div ng-if=\"post._id\">\n      <h6>Tips</h6>\n      <ul>\n        <li>Use h2 (##) and lower (###) for headings in your markdown (title is already the h1).</li>\n        <li>Prefix your headings with number like 1 1.1 1.2 2 etc.</li>\n        <li>Scroll to the part of your post you're interested in while you edit.</li>\n        <li>Submit your post by email to have it review and published by an editor.</li>\n        <li>Code blocks require a comments (e.g. <code>&lt;!--code lang=coffeescript linenums=true--&gt;</code> followed by a line break, to indicate language and optionally show line numbers.\n        </li>\n        <li>escape characters with <code>\\</code> to render them non markdown, e.g. for a list bullet you might <code>- \\-</code></li>\n      </ul> \n    </div>\n  </div>  \n\n</div>\n</section>";
 
-},{}],"/Users/jkrez/src/airpair.com/public/posts/editor.html":[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 module.exports = "\n  <div class=\"md\" ng-if=\"post._id\">\n    <div class=\"form-group\">\n      <label>Markdown <span>see <a href=\"http://daringfireball.net/projects/markdown/syntax\" target=\"_blank\">markdown guide</a><span></label>\n        <textarea id=\"markdownTextarea\" ng-model=\"post.md\" class=\"form-control\" ng-model-options=\"{ updateOn: 'default blur', debounce: { blur: 0, default: (post.md.length * 10) }}\"></textarea>\n    </div>\n\n    <div class=\"publishMeta\" ng-if=\"preview.mode == 'publish'\">\n      <div class=\"form-group\">\n        <label>Tags </label>\n        <div tag-input=\"\"></div>\n      </div>\n      <div class=\"form-group\">\n        <label>Slug url</label>\n        <input ng-model=\"post.slug\" type=\"text\" class=\"form-control\" />\n      </div>      \n\n      <div class=\"posts\"><ap-post-list-item post=\"post\"></ap-post-list-item></div>\n    </div>\n\n  </div>\n\n  <div class=\"meta\">\n    <div class=\"form-group\">\n      <label>Title</label>\n      <input ng-model=\"post.title\" type=\"text\" class=\"form-control\" placeholder=\"Type post title ...\" />\n    </div>\n    <div class=\"form-group\">\n      <label>Author bio</label>\n      <input ng-model=\"post.by.bio\" type=\"text\" class=\"form-control\" />\n    </div>  \n    <div class=\"form-group\">\n      <label>Feature media <span ng-show=\"post.title && post.by.bio\">\n      <a href ng-click=\"exampleImage()\">image url</a>\n      or <a href ng-click=\"exampleYouTube()\">youtu.be url</a></span></label>\n      <input ng-model=\"post.assetUrl\" type=\"text\" class=\"form-control\" />\n    </div>\n\n    <div class=\"publishMeta\" ng-if=\"preview.mode == 'publish'\">    \n      <div class=\"form-group\">\n        <label>Author username</label>\n        <input ng-model=\"post.by.username\" type=\"text\" class=\"form-control\" />\n      </div>          \n      <div class=\"form-group\">\n        <label>Meta</label>\n        <input ng-model=\"post.meta.title\" type=\"text\" class=\"form-control\" placeholder=\"title\" /> \n        <input ng-model=\"post.meta.description\" type=\"text\" class=\"form-control\" placeholder=\"description\" />\n        <input ng-model=\"post.meta.canonical\" type=\"text\" class=\"form-control\" placeholder=\"canonical url\" />\n      </div>\n      <div class=\"form-group\">\n        <label>Open Graph</label>\n        <input ng-model=\"post.meta.ogTitle\" type=\"text\" class=\"form-control\" placeholder=\"title\" />\n        <input ng-model=\"post.meta.ogType\" type=\"text\" class=\"form-control\" placeholder=\"type\"/>\n        <input ng-model=\"post.meta.ogImage\" type=\"text\" class=\"form-control\" placeholder=\"image\" />\n        <input ng-model=\"post.meta.ogVideo\" type=\"text\" class=\"form-control\" placeholder=\"video\" />\n        <input ng-model=\"post.meta.ogUrl\" type=\"text\" class=\"form-control\" placeholder=\"url\" />        \n      </div>      \n    </div>\n\n    <div class=\"dates\" ng-if=\"post.created\">\n      <div class=\"form-group\" ng-if=\"preview.mode == 'publish'\">\n        <label>Override Publish Date</label>   \n        <input ng-model=\"post.publishedOverride\" type=\"text\" class=\"form-control\" ng-click=\"setPublishedOverride()\" />\n      </div>\n\n      <section>\n        <label>Created</label> <span>{{ post.created | publishedTime }}</span>\n        <label>Updated</label> <span>{{ post.updated | publishedTime }}</span>\n        <label>Published</label> <span>{{ post.published | publishedTime }}</span>\n        <label></label> <span>{{ post.publishedBy }}</span>\n      </section>\n    </div>\n\n  </div>\n\n  <div class=\"form-actions\">\n    <button class=\"btn\" ng-click=\"save()\" ng-disabled=\"(!post.title && !post.by.bio) || post.saved || post.published\">Save</button>\n    <button class=\"btn btnPreview\" ng-click=\"previewToggle()\" ng-disabled=\"!post._id || (preview.mode == 'publish')\">{{preview.mode == 'edit' && 'Preview' || 'Edit' }}</button>  \n    <a class=\"btn\" target=\"_blank\" href=\"mailto:team@airpair.com?subject=Post%20Sumission%20-%20{{post.title}}&body=Can%20you%20look%20at%20and%20publish%20my%20post:%0A%0Ahttps://www.airpair.com/posts/publish/{{ post._id }}%0A%0A{{post.by.name}}\" ng-disabled=\"(!post.title && !post.by.bio) || !post.saved || (preview.mode == 'publish')\">Submit</a>\n    <button class=\"btn\" ng-click=\"save()\" ng-disabled=\"!(preview.mode == 'publish')\">Publish</button>\n    <button class=\"btn\" ng-click=\"delete()\" ng-disabled=\"(!(preview.mode == 'edit') || post.published) || !post._id\">Delete</button>  \n  </div>\n";
 
-},{}],"/Users/jkrez/src/airpair.com/public/posts/editor.js":[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 "use strict";
 var exampleImageUrl = 'http://www.airpair.com/v1/img/css/blog/example2.jpg';
 var exampleYoutubeUrl = 'http://youtu.be/qlOAbrvjMBo';
@@ -447,10 +461,10 @@ angular.module("APPostEditor", []).directive('apPostEditor', function() {
 });
 
 
-},{"./editor.html":"/Users/jkrez/src/airpair.com/public/posts/editor.html"}],"/Users/jkrez/src/airpair.com/public/posts/list.html":[function(require,module,exports){
+},{"./editor.html":19}],21:[function(require,module,exports){
 module.exports = "<header>Posts</header>\n<section id=\"posts\">\n\n  <h3>Recent</h3>\n  <div class=\"posts recent\">\n    <ap-post-list-item post=\"p\" ng-repeat=\"p in recent\"></ap-post-list-item>\n  </div>\n      \n  <h3>My Posts</h3>\n  <br />\n  <div class=\"editOptions\">\n    <a href=\"/posts/new\" class=\"btn\">Create new post</a>      \n  </div>\n  <div class=\"myposts\" ap-my-posts-list=\"\"></div>\n\n</section>";
 
-},{}],"/Users/jkrez/src/airpair.com/public/posts/module.js":[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 "use strict";
 require('./myPostsList.js');
 require('./editor.js');
@@ -594,10 +608,10 @@ angular.module("APPosts", ['ngRoute', 'APFilters', 'APShare', 'APMyPostsList', '
 ;
 
 
-},{"../me/profile.html":"/Users/jkrez/src/airpair.com/public/me/profile.html","./../common/routes/helpers.js":"/Users/jkrez/src/airpair.com/public/common/routes/helpers.js","./author.html":"/Users/jkrez/src/airpair.com/public/posts/author.html","./editor.js":"/Users/jkrez/src/airpair.com/public/posts/editor.js","./list.html":"/Users/jkrez/src/airpair.com/public/posts/list.html","./myPostsList.js":"/Users/jkrez/src/airpair.com/public/posts/myPostsList.js"}],"/Users/jkrez/src/airpair.com/public/posts/myPostsList.html":[function(require,module,exports){
+},{"../me/profile.html":17,"./../common/routes/helpers.js":16,"./author.html":18,"./editor.js":20,"./list.html":21,"./myPostsList.js":24}],23:[function(require,module,exports){
 module.exports = "<table class=\"table table-striped\">\n  <tr>\n    <th>Created</th>\n    <th>Published</th>\n    <th>Title</th>\n    <th></th>    \n  </tr>\n  <tr ng-repeat=\"p in myposts\">\n    <td>{{ p.created | publishedTime: 'MM.DD' }}</td>  \n    <td>\n      {{ p.published | publishedTime: 'MM.DD' }}\n    </td>\n    <td>\n      <a href=\"/v1/posts/{{p.slug}}\" target=\"_blank\" ng-if=\"p.published\">{{ p.title }}</a>\n      <span ng-if=\"!p.published\">{{ p.title }}</span>\n    </td> \n    <td>\n      <a href=\"/posts/edit/{{p._id}}\" target=\"_blank\">edit</a>\n    </td>     \n  </tr>\n</table>";
 
-},{}],"/Users/jkrez/src/airpair.com/public/posts/myPostsList.js":[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 "use strict";
 angular.module("APMyPostsList", []).directive('apMyPostsList', function() {
   return {
@@ -607,10 +621,10 @@ angular.module("APMyPostsList", []).directive('apMyPostsList', function() {
 });
 
 
-},{"./myPostsList.html":"/Users/jkrez/src/airpair.com/public/posts/myPostsList.html"}],"/Users/jkrez/src/airpair.com/public/workshops/list.html":[function(require,module,exports){
+},{"./myPostsList.html":23}],25:[function(require,module,exports){
 module.exports = "<header>Workshops</header>\n<section id=\"workshops\">\n\n<div id=\"index\">\n\n  <div id=\"calendar\">\n\n    <h2>Calendar</h2>\n\n    <p>Keep track of the schedule:</p>\n\n    <a class=\"btn\" href=\"/workshops/subscribe\">Subscribe to calendar</a>\n\n    <hr />\n    <h5>Next 30 days</h5>\n    <ul id=\"month\">\n      <li ng-repeat=\"entry in workshops.month\">\n        <time>{{entry.time | locaTime }}</time> \n        <a href=\"{{entry.url}}\"> {{ entry.title }}</a></li>\n    </ul> \n\n  </div>\n\n\n  <div id=\"next\">\n    <h2>Next up</h2>\n\n    <p style=\"font-size:11px\"><i>* Times shown in <b>{{ timeZoneOffset }}</b> (your browser's timezone)</i> </p>\n\n    <a class=\"workshop\" href=\"{{entry.url}}\"\n       ng-repeat=\"entry in workshops.upcoming\">\n      <time datetime=\"{{entry.time}}\">{{ entry.time | locaTime }}</time>\n      <div ng-repeat=\"speaker in entry.speakers\">\n        <img src=\"//0.gravatar.com/avatar/{{ speaker.gravatar }}?s=80\" />\n        <h5>{{ speaker.name }}</h5>\n      </div>\n      <figure>{{ entry.title }}</figure>\n    </a>\n  </div>\t\n\n  <div id=\"featured\">\n    <h2>Featured</h2>\n    <a class=\"workshop\" href=\"{{entry.url}}\"\n       ng-repeat=\"entry in workshops.featured\">\n      <div ng-repeat=\"speaker in entry.speakers\">\n        <img src=\"//0.gravatar.com/avatar/{{ speaker.gravatar }}?s=80\" />\n        <h5>{{ speaker.name }}</h5>\n      </div>\n      <figure>{{ entry.title }}</figure>\n    </a>\n  </div>\n\n  <div id=\"past\">\n    <h2>Library</h2>\n    <ul>\n      <li ng-repeat=\"entry in workshops.past\">\n        <a href=\"{{entry.url}}\">\n          <img src=\"//0.gravatar.com/avatar/{{entry.speakers[0].gravatar }}\"></time> \n          <time>{{entry.speakers[0].name }}</time> \n          {{ entry.title }}</a>\n        </li>\n      </li>  \n    </ul> \n  </div>\n\n</div>\n\n</section>";
 
-},{}],"/Users/jkrez/src/airpair.com/public/workshops/module.js":[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 "use strict";
 var feautredSlugs = ['fast-mvp-with-angularfire', 'learn-meteorjs-1.0', 'learn-git-and-github', 'publishing-at-the-speed-of-ruby', 'visualization-with-d3js', 'transitioning-to-consulting-for-developers'];
 var selectByDateRange = function(list, daysAgo, daysUntil) {
@@ -628,7 +642,7 @@ angular.module("APWorkshops", ['ngRoute', 'APFilters', 'APShare']).constant('API
   $routeProvider.when('/workshops/subscribe', {template: require('./subscribe.html')});
   $routeProvider.when('/workshops/signup/:id', {
     template: require('./signup.html'),
-    controller: 'SignupCtrl as signup'
+    controller: 'WorkshopSignupCtrl as signup'
   });
   $routeProvider.when('/:tag/workshops/:id', {
     template: require('./show.html'),
@@ -657,7 +671,7 @@ angular.module("APWorkshops", ['ngRoute', 'APFilters', 'APShare']).constant('API
       $location.path('/workshops');
     }
   });
-}]).controller('SignupCtrl', ['$scope', '$http', '$routeParams', 'API', function($scope, $http, $routeParams, API) {
+}]).controller('WorkshopSignupCtrl', ['$scope', '$http', '$routeParams', 'API', function($scope, $http, $routeParams, API) {
   $scope.hasAccess = true;
   $http.get(API + '/workshops/' + $routeParams.id).success(function(data) {
     $scope.entry = data;
@@ -666,13 +680,13 @@ angular.module("APWorkshops", ['ngRoute', 'APFilters', 'APShare']).constant('API
 ;
 
 
-},{"./list.html":"/Users/jkrez/src/airpair.com/public/workshops/list.html","./show.html":"/Users/jkrez/src/airpair.com/public/workshops/show.html","./signup.html":"/Users/jkrez/src/airpair.com/public/workshops/signup.html","./subscribe.html":"/Users/jkrez/src/airpair.com/public/workshops/subscribe.html"}],"/Users/jkrez/src/airpair.com/public/workshops/show.html":[function(require,module,exports){
+},{"./list.html":25,"./show.html":27,"./signup.html":28,"./subscribe.html":29}],27:[function(require,module,exports){
 module.exports = "<header><a href=\"/workshops\">Workshops</a> > {{ entry.title }}</header>\n\n<section id=\"workshops\">\n<div id=\"show\">\n\n  <h1>{{ entry.title }}</h1>\n\n  <div class=\"share\" ap-share=\"\" ap-fb=\"true\" ap-tw=\"true\" ap-in=\"true\"></div>\n\n  <div class=\"speakers\">\n    <h2>Presenting</h2>\n    <ul>\n      <li ng-repeat=\"speaker in entry.speakers\">\n        <h3>{{ speaker.name }}</h3>\n        <img src=\"//0.gravatar.com/avatar/{{ speaker.gravatar }}?s=400\" />\n\n        {{ speaker.fullBio }}\n      </li>\n    </ul>\n  </div>\n\n  <time>{{entry.time | date:'medium'}}</time>\n\n  {{ entry.difficulty }} <label ng-repeat=\"tag in entry.tags\"> { {{ tag }} } </label>\n\n  <p>{{ entry.description }}</p>\n\n  <div class=\"action\">\n    <div ng-if=\"entry.youtube\">\n      <a ng-href=\"/workshops/signup/{{entry.slug}}\" class=\"btn\" style=\"width:300px\">Get access to all live talks</a>      \n      <label>with AirPair Membership</label>        \n    </div>\n    <div ng-if=\"!entry.youtube\">\n      <a ng-href=\"/workshops/signup/{{entry.slug}}\" class=\"btn\" style=\"width:300px\">Sign up to attend workshop</a>\n      <label>3 spots left</label>  \n    </div>    \n  </div>\n  <div class=\"player\" ng-if=\"entry\">\n\n    <div class=\"recording\" ng-if=\"entry.youtube\">\n\n      <iframe width=\"640\" height=\"360\" ng-src=\"{{ '//www.youtube-nocookie.com/embed/' + entry.youtube | trustUrl }}\" frameborder=\"0\" allowfullscreen></iframe>\n\n    </div>\n  \n    <div class=\"slide\" ng-if=\"entry && !entry.youtube && entry.slug\">\n      <iframe ng-src=\"{{ '/workshops-slide/' + entry.slug  | trustUrl }}\" width=\"640\" height=\"360\" frameborder=\"0\" scrolling=\"no\" style=\"overflow:hidden\"></iframe>\n    </div>\n\n  </div>\n\n\n  <hr />\n<!-- \n  <h3>Chat</h3> -->\n\n</div>\n</section>";
 
-},{}],"/Users/jkrez/src/airpair.com/public/workshops/signup.html":[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 module.exports = "<header>\n  <a href=\"/workshops\">Workshops</a> > \n  <a href=\"{{ entry.url }}\">{{ entry.title }}</a> > \n  Signup\n</header>\n\n<section id=\"workshops\">\n<div id=\"signup\">\n\n  <div class=\"choice\" ng-if=\"!hasAccess\">\n\n    <h2>two ways to attend</h2>\n    <h4>Please choose an option access this workshop</h4>\n\n    <div class=\"option\">\n      <h2>Ticket</h2>\n\n      <ul>\n        <li><b>$50 one off</b></li>\n        <li>Access to this workshops</li>        \n        <li>Access the recording</li>            \n        <li>$10 credit towards pairing with {{ entry.speakers[0].name }}</li>        \n      </ul>\n\n      <a href=\"alert('Sign up for this workshop is free, please fill the form below')\" class=\"btn\">Buy a ticket</a>\n    </div>\n\n    <div class=\"option\">\n      <h2>Membership</h2>    \n      <ul>\n        <li><b>$300 for 6 months</b></li>      \n        <li>Access to all workshops</li>        \n        <li>$5/hr off all AirPairing</li>                  \n        <li>Instant chat access to experts</li>                          \n      </ul>\n      <a href=\"alert('Sign up for this workshop is free, please fill the form below')\" class=\"btn\">Get a membership</a>      \n    </div>\n    \n  </div>\n\n  <div class=\"rsvp\" ng-if=\"hasAccess && !entry.youtube\">\n\n    <h2>RSVP for workshop</h2>\n\n    <iframe src=\"{{ 'http://airpa.ir/aircast-signup-' + entry.slug | trustUrl }}\" width=\"100%\" height=\"920\" frameborder=\"0\" marginheight=\"0\" marginwidth=\"0\">Loading...</iframe>\n\n  </div>\n\n  <div class=\"attending\" ng-if=\"hasAccess && entry.youtube\">\n\n    <h2>This workshop has already happened.</h2>\n\n  </div>\n\n  <hr />\n\n  <a href=\"{{ entry.url }}\" class=\"btn\">Back to workshop</a>\n\n  <hr />\n\n</div>\n</section>";
 
-},{}],"/Users/jkrez/src/airpair.com/public/workshops/subscribe.html":[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 module.exports = "<header><a href=\"/workshops\">Workshops</a> > Subscribe</header>\n<section id=\"workshops\">\n<div id=\"subscribe\">\n\n  <h1>Subscribe to Workshops Calendar</h1>\n\n  <p>For convenience, we provide an iCal feed that automatically updates as we make changes to the workshops schedule.</p>\n\n  <input type=\"text\" style=\"width:100%;margin:15px 0 20px 0\" value=\"https://www.google.com/calendar/ical/airpair.co_o3u16m7fv9fc3agq81nsn0bgrs%40group.calendar.google.com/public/basic.ics\" />\n\n  <p>Make sure your client is setup correctly to receive live changes and that you haven't just imported a static view of the schedule.</p>\n\n  <h2>Google hangouts guide</h2>\n\n  <p>Copy and paste the following url in the \"Add by url\" dialog.\n\n  <p>If you select the 'Import calendar' option you will NOT see updates to the schedule as they are made.</p>\n\n  <img src=\"/v1/img/pages/workshops/ical-google-guide-1.png\" />\n\n  <p>Once the calendar url is added, you will see \"AirCasts\" listed down the left and workshops will appear in your calendar..</p>\n\n  <img src=\"/v1/img/pages/workshops/ical-google-guide-2.png\" />\n\n  <p>See guide to make sure you're correctly subscribe for updates to the AirCasts schedule.</p>\n\n  <hr />\n\n  <a href=\"/workshops\" class=\"btn\">Back to the workshops page</a>\n\n  <hr />\n\n</div>\n</section>";
 
-},{}]},{},["./public/common/index.js"]);
+},{}]},{},[1]);

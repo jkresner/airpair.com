@@ -1,44 +1,50 @@
 <header>Login</header>
-<section id="auth" class="choice">
+<section id="auth">
 
-<h3>Login</h3>
-
+<div class="choice">
 <div class="google option">
+
   <h2>Quick login</h2>
-
   <p> 
-    <a class="btn btn-error" href="/v1/auth/google" target="_self">Sign in with google</a>
+    <a class="btn btn-error" href="/v1/auth/google" target="_self">Login with google</a>
   </p>
-
-  <p style="font-size:12px;margin:20px 0 0 0">You will be redirected to a google sign in page.</p>
+  <p style="font-size:12px;margin:20px 0 0 0">* You will be temporarily redirected to a google login page.</p>
 
 </div>
 
 <div class="local option">
 
-<h2>Password login</h2>
-
-<!-- LOGIN FORM -->
-<form novalidate ng-submit="LoginCtrl.submit(loginForm.$valid, data)" name="loginForm" ng-controller="LoginCtrl as LoginCtrl">
-  <div class="form-group">
-    <label>Email</label>
-    <input type="email" placeholder="Email" class="form-control" name="email" ng-model="data.email" required >
-    <div ng-if="loginForm.$submitted || loginForm.email.$touched">
-      <div ng-if="loginForm.email.$error.required">Email required</div>
-      <div ng-if="loginForm.email.$error.email">Invalid email</div>
+  <h2>Password login</h2>
+  <form novalidate ng-submit="LoginCtrl.submit(loginForm.$valid, data)" name="loginForm" ng-controller="LoginCtrl as LoginCtrl">
+    <div class="form-group">
+      <label>Email</label>
+      <input type="email" placeholder="Email" class="form-control" name="email" ng-model="data.email" required >
+      <div class="error" ng-if="loginForm.$submitted || loginForm.email.$touched">
+        <div ng-if="loginForm.email.$error.required">Email required</div>
+        <div ng-if="loginForm.email.$error.email">Invalid email</div>
+      </div>
     </div>
-  </div>
-  <div class="form-group">
-    <label>Password</label>
-    <input type="password" placeholder="Password" class="form-control" name="password" ng-model="data.password" required>
-    <div ng-if="loginForm.$submitted || loginForm.password.$touched">
-      <div ng-if="loginForm.password.$error.required">Password required</div>
-    </div>    
-  </div>
+    <div class="form-group">
+      <label>Password</label>
+      <input type="password" placeholder="Password" class="form-control" name="password" ng-model="data.password" required>
+      <div class="error" ng-if="loginForm.$submitted || loginForm.password.$touched">
+        <div ng-if="loginForm.password.$error.required">Password required</div>
+      </div>    
+    </div>
 
-  <button type="submit" class="btn btn-warning btn-lg">Login</button>
-</form>
+    <button type="submit" class="btn btn-warning btn-lg">Login</button>
+
+    <div class="error" ng-if="signupFail">
+      <b>Login failed:</b> <span ng-if="signupFail">{{signupFail}}</span>
+    </div>   
+  </form>
   
 </div>
+</div>
+
+<h3>New to AirPair?</h3>
+
+<p>The fastest way to access AirPair is to login with Google (above). You can also <a href="/v1/auth/signup">sign up with an email and password</a>.</p>
+
 </section>
 

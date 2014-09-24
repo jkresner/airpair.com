@@ -59,12 +59,11 @@ module.exports = function()
         password: "Yoyoyoyoy" }
 
       http(global.app).post('/v1/auth/signup').send(d)
-        .expect(302)
-        .expect('Content-Type', /text/)
+        .expect(400)
+        .expect('Content-Type', /json/)
         .end(function(err, res){
           if (err) return done(err)   
-          var failTest = new RegExp('fail=local-singup&info=try%20google%20login')
-          expect(failTest.test(res.text)).to.be.true  // holds password field
+          expect(res.body.error).to.equal('try google login')
           done()
       })
     })
@@ -75,13 +74,12 @@ module.exports = function()
         email: "jkexists"+moment().format()+"@airpair.com",
         password: "Yoyoyoyoy" }
 
-      http(global.app).post('/v1/auth/signup').send(d).expect(302)
+      http(global.app).post('/v1/auth/signup').send(d).expect(200)
         .end(function(e, r) {
-          http(global.app).post('/v1/auth/signup').send(d).expect(302)          
+          http(global.app).post('/v1/auth/signup').send(d).expect(400)          
             .end(function(err, res) {
               if (err) return done(err)   
-              var failTest = new RegExp('fail=local-singup&info=user%20already%20exists')
-              expect(failTest.test(res.text)).to.be.true  // holds password field
+              expect(res.body.error).to.equal('user already exists')
               done()
             })        
         })

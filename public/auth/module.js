@@ -25,40 +25,29 @@ angular.module("APAuth", ['ngRoute','APFilters','APSvcSession'])
   }])
 
 
-  .controller('LoginCtrl', ['$scope', 'SessionService', 
-      function($scope, SessionService) {
+  .controller('LoginCtrl', ['$scope', '$window', 'SessionService', 
+      function($scope, $window, SessionService) {
     var self = this;
 
     this.submit = function(isValid, formData) {
-      console.log('validate me biaaat', isValid)
       if (!isValid) return
-      // submit data to the server
+      SessionService.login(formData, 
+        () => $window.location = '',
+        (e) => $scope.signupFail = e.error
+      )
     }
-
-
-    // SessionService.onAuthenticated( (session) => {
-    //   PostsService.getMyPosts(function (result) {
-    //     $scope.myposts = result;
-    //   })  
-    // }); 
   }])
 
-  .controller('SignupCtrl', ['$scope', 'SessionService', 
-      function($scope, SessionService) {
+  .controller('SignupCtrl', ['$scope', '$window', 'SessionService', 
+      function($scope, $window, SessionService) {
     var self = this;
-
     this.submit = function(isValid, formData) {
-      console.log('validate me biaaat', isValid)
       if (!isValid) return
-      // submit data to the server
+      SessionService.signup(formData, 
+        () => $window.location = '',
+        (e) => $scope.signupFail = e.error
+      )
     }
-
-
-    // SessionService.onAuthenticated( (session) => {
-    //   PostsService.getMyPosts(function (result) {
-    //     $scope.myposts = result;
-    //   })  
-    // }); 
   }])
 
 ;
