@@ -34,7 +34,7 @@ angular.module("APWorkshops", ['ngRoute','APFilters','APShare'])
 
 		$routeProvider.when('/workshops/signup/:id', {
 			template: require('./signup.html'),
-			controller: 'SignupCtrl as signup'			
+			controller: 'WorkshopSignupCtrl as signup'			
 		});		
 
 		$routeProvider.when('/:tag/workshops/:id', {
@@ -75,7 +75,7 @@ angular.module("APWorkshops", ['ngRoute','APFilters','APShare'])
 		});
 	}])
 
-	.controller('SignupCtrl', ['$scope', '$http', '$routeParams', 'API', 
+	.controller('WorkshopSignupCtrl', ['$scope', '$http', '$routeParams', 'API', 
 			function($scope, $http, $routeParams, API) {
 
 		$scope.hasAccess = true;

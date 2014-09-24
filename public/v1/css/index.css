@@ -1089,20 +1089,28 @@ body#index .row > div {
 }
 section#auth {
   padding-top: 40px;
+  text-align: center;
 }
 section#auth .option {
-  height: 300px;
+  min-height: 300px;
+  margin: 30px 8px;
 }
 section#auth .btn {
   width: 80%;
 }
-section#auth .local .form-group {
+section#auth .option form {
+  margin-bottom: 20px;
+}
+section#auth .option .form-group {
   text-align: center;
 }
-section#auth .local input {
+section#auth .option input {
   width: 80%;
   margin: auto;
 }
-section#auth .local label {
+section#auth .option label {
   display: none;
+}
+section#auth .error {
+  color: #ff0000;
 }

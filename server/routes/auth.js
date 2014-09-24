@@ -13,8 +13,6 @@ export default function(app) {
     .use(setMixpanelId)
 
     .get('/logout', logout(config.auth))
-    // .get('/login*', app.renderHbs('login'))
-    // .get('/unauthorized*', app.renderHbs('login'))
     .post('/login', local.login, authDone)
     .post('/signup', local.signup, authDone)
     .get('/google', google.oAuth)
