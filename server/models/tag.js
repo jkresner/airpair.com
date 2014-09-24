@@ -1,7 +1,7 @@
 var mongoose = require('mongoose')
 
 
-export default mongoose.model('Tag', new mongoose.Schema({
+module.exports = mongoose.model('Tag', new mongoose.Schema({
 
   name: {               // E.g. Ruby on Rails
     required: true,

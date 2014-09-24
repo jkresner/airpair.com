@@ -1,4 +1,4 @@
-
+var UserService = require('../../server/services/users')
 module.exports = function()
 {
   

@@ -1,14 +1,11 @@
-
+var UserService = require('../../server/services/users')
 module.exports = function()
 {
   
   describe("Signup: ", function() {
 
     before(function(done) {
-      global.UserService = System._loader.modules['server/services/users'].module;
-      
-      // insert google user if doesn't exist for test cases
-      UserService.upsertProviderProfile(null, 'google', data.oauth.jkap, done)
+      done()
     })
 
 
