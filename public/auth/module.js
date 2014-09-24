@@ -10,6 +10,10 @@ angular.module("APAuth", ['ngRoute','APFilters','APSvcSession'])
       template: require('./login.html')
     });
 
+    $routeProvider.when('/v1/auth/signup', {
+      template: require('./signup.html')
+    });
+
   }])
 
   .run(['$rootScope', 'SessionService', function($rootScope, SessionService) {
@@ -22,6 +26,24 @@ angular.module("APAuth", ['ngRoute','APFilters','APSvcSession'])
 
 
   .controller('LoginCtrl', ['$scope', 'SessionService', 
+      function($scope, SessionService) {
+    var self = this;
+
+    this.submit = function(isValid, formData) {
+      console.log('validate me biaaat', isValid)
+      if (!isValid) return
+      // submit data to the server
+    }
+
+
+    // SessionService.onAuthenticated( (session) => {
+    //   PostsService.getMyPosts(function (result) {
+    //     $scope.myposts = result;
+    //   })  
+    // }); 
+  }])
+
+  .controller('SignupCtrl', ['$scope', 'SessionService', 
       function($scope, SessionService) {
     var self = this;
 

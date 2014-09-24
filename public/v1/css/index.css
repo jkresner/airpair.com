@@ -1087,3 +1087,22 @@ body#index .row > div {
     float: none;
   }
 }
+section#auth {
+  padding-top: 40px;
+}
+section#auth .option {
+  height: 300px;
+}
+section#auth .btn {
+  width: 80%;
+}
+section#auth .local .form-group {
+  text-align: center;
+}
+section#auth .local input {
+  width: 80%;
+  margin: auto;
+}
+section#auth .local label {
+  display: none;
+}

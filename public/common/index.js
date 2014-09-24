@@ -20,9 +20,9 @@ angular.module("AP", ['ngRoute', 'APAuth', 'APPosts', 'APWorkshops'])
 
   .run(['$rootScope', 'SessionService', function($rootScope, SessionService) {
     
-    SessionService.onAuthenticated( (session) => {
-      $rootScope.session = session;
-    })
+    // SessionService.onAuthenticated( (session) => {
+    //   $rootScope.session = session;
+    // })
   
   }])
 
