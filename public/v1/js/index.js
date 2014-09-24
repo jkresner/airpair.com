@@ -12,23 +12,27 @@ require('./../posts/module.js');
 require('./../workshops/module.js');
 angular.module("AP", ['ngRoute', 'APAuth', 'APPosts', 'APWorkshops']).config(['$locationProvider', '$routeProvider', function($locationProvider, $routeProvider) {
   $locationProvider.html5Mode(true);
-}]).run(['$rootScope', 'SessionService', function($rootScope, SessionService) {
-  SessionService.onAuthenticated((function(session) {
-    $rootScope.session = session;
-  }));
-}]);
+}]).run(['$rootScope', 'SessionService', function($rootScope, SessionService) {}]);
 ;
 
 
 },{"./../auth/module.js":"/Users/jkrez/src/airpair.com/public/auth/module.js","./../common/directives/post.js":"/Users/jkrez/src/airpair.com/public/common/directives/post.js","./../common/directives/share.js":"/Users/jkrez/src/airpair.com/public/common/directives/share.js","./../common/directives/tagInput.js":"/Users/jkrez/src/airpair.com/public/common/directives/tagInput.js","./../common/filters/filters.js":"/Users/jkrez/src/airpair.com/public/common/filters/filters.js","./../common/models/postsService.js":"/Users/jkrez/src/airpair.com/public/common/models/postsService.js","./../common/models/sessionService.js":"/Users/jkrez/src/airpair.com/public/common/models/sessionService.js","./../common/postHelpers.js":"/Users/jkrez/src/airpair.com/public/common/postHelpers.js","./../posts/module.js":"/Users/jkrez/src/airpair.com/public/posts/module.js","./../workshops/module.js":"/Users/jkrez/src/airpair.com/public/workshops/module.js"}],"/Users/jkrez/src/airpair.com/public/auth/login.html":[function(require,module,exports){
-module.exports = "<header>Login</header>\n\n<h2>Quick login</h2>\n\n<p> \n  <a class=\"btn btn-error\" href=\"/v1/auth/google\" target=\"_self\">google login</a>\n</p>\n\n<h2>Password login</h2>\n\n<hr />\n\n<!-- LOGIN FORM -->\n<form novalidate ng-submit=\"LoginCtrl.submit(loginForm.$valid, data)\" name=\"loginForm\" ng-controller=\"LoginCtrl as LoginCtrl\">\n  <div class=\"form-group\">\n    <label>Email</label>\n    <input type=\"email\" class=\"form-control\" name=\"email\" ng-model=\"data.email\" required >\n    <div ng-if=\"loginForm.$submitted || loginForm.email.$touched\">\n      <div ng-if=\"loginForm.email.$error.required\">Email required</div>\n      <div ng-if=\"loginForm.email.$error.email\">Invalid email</div>\n    </div>\n  </div>\n  <div class=\"form-group\">\n    <label>Password</label>\n    <input type=\"password\" class=\"form-control\" name=\"password\" ng-model=\"data.password\" required>\n    <div ng-if=\"loginForm.$submitted || loginForm.password.$touched\">\n      <div ng-if=\"loginForm.password.$error.required\">Password required</div>\n    </div>    \n  </div>\n\n  <button type=\"submit\" class=\"btn btn-warning btn-lg\">Login</button>\n</form>\n";
+module.exports = "<header>Login</header>\n<section id=\"auth\" class=\"choice\">\n\n<h3>Login</h3>\n\n<div class=\"google option\">\n  <h2>Quick login</h2>\n\n  <p> \n    <a class=\"btn btn-error\" href=\"/v1/auth/google\" target=\"_self\">Sign in with google</a>\n  </p>\n\n  <p style=\"font-size:12px;margin:20px 0 0 0\">You will be redirected to a google sign in page.</p>\n\n</div>\n\n<div class=\"local option\">\n\n<h2>Password login</h2>\n\n<!-- LOGIN FORM -->\n<form novalidate ng-submit=\"LoginCtrl.submit(loginForm.$valid, data)\" name=\"loginForm\" ng-controller=\"LoginCtrl as LoginCtrl\">\n  <div class=\"form-group\">\n    <label>Email</label>\n    <input type=\"email\" placeholder=\"Email\" class=\"form-control\" name=\"email\" ng-model=\"data.email\" required >\n    <div ng-if=\"loginForm.$submitted || loginForm.email.$touched\">\n      <div ng-if=\"loginForm.email.$error.required\">Email required</div>\n      <div ng-if=\"loginForm.email.$error.email\">Invalid email</div>\n    </div>\n  </div>\n  <div class=\"form-group\">\n    <label>Password</label>\n    <input type=\"password\" placeholder=\"Password\" class=\"form-control\" name=\"password\" ng-model=\"data.password\" required>\n    <div ng-if=\"loginForm.$submitted || loginForm.password.$touched\">\n      <div ng-if=\"loginForm.password.$error.required\">Password required</div>\n    </div>    \n  </div>\n\n  <button type=\"submit\" class=\"btn btn-warning btn-lg\">Login</button>\n</form>\n  \n</div>\n</section>\n\n";
 
 },{}],"/Users/jkrez/src/airpair.com/public/auth/module.js":[function(require,module,exports){
 "use strict";
 var resolver = require('./../common/routes/helpers.js');
 angular.module("APAuth", ['ngRoute', 'APFilters', 'APSvcSession']).config(['$locationProvider', '$routeProvider', function($locationProvider, $routeProvider) {
   $routeProvider.when('/v1/auth/login', {template: require('./login.html')});
+  $routeProvider.when('/v1/auth/signup', {template: require('./signup.html')});
 }]).run(['$rootScope', 'SessionService', function($rootScope, SessionService) {}]).controller('LoginCtrl', ['$scope', 'SessionService', function($scope, SessionService) {
+  var self = this;
+  this.submit = function(isValid, formData) {
+    console.log('validate me biaaat', isValid);
+    if (!isValid)
+      return;
+  };
+}]).controller('SignupCtrl', ['$scope', 'SessionService', function($scope, SessionService) {
   var self = this;
   this.submit = function(isValid, formData) {
     console.log('validate me biaaat', isValid);
@@ -39,7 +43,10 @@ angular.module("APAuth", ['ngRoute', 'APFilters', 'APSvcSession']).config(['$loc
 ;
 
 
-},{"./../common/routes/helpers.js":"/Users/jkrez/src/airpair.com/public/common/routes/helpers.js","./login.html":"/Users/jkrez/src/airpair.com/public/auth/login.html"}],"/Users/jkrez/src/airpair.com/public/common/directives/post.html":[function(require,module,exports){
+},{"./../common/routes/helpers.js":"/Users/jkrez/src/airpair.com/public/common/routes/helpers.js","./login.html":"/Users/jkrez/src/airpair.com/public/auth/login.html","./signup.html":"/Users/jkrez/src/airpair.com/public/auth/signup.html"}],"/Users/jkrez/src/airpair.com/public/auth/signup.html":[function(require,module,exports){
+module.exports = "<div class=\"main-wrap\">\n  <main>\n\n    <hr>\n\n    <h2>Signup</h2>\n\n    <form action=\"/v1/auth/signup\" method=\"post\">\n      <div class=\"form-group\">\n        <label>Full name</label>\n        <input type=\"text\" class=\"form-control\" name=\"name\">\n      </div>\n      <div class=\"form-group\">\n        <label>Email</label>\n        <input type=\"text\" class=\"form-control\" name=\"email\">\n      </div>\n      <div class=\"form-group\">\n        <label>Password</label>\n        <input type=\"password\" class=\"form-control\" name=\"password\">\n      </div>\n\n      <button type=\"submit\" class=\"btn btn-warning btn-lg\">Signup</button>\n    </form>\n\n    <hr>\n\n  </main>\n</div>";
+
+},{}],"/Users/jkrez/src/airpair.com/public/common/directives/post.html":[function(require,module,exports){
 module.exports = "\n<div class=\"preview\">\n  <article class=\"blogpost\">\n    <h1 class=\"entry-title\" itemprop=\"headline\">{{ post.title || \"Type post title ...\" }}</h1>\n    <h4 id=\"table-of-contents\" ng-if=\"preview.toc\">Table of Contents</h4>\n    <ul id=\"previewToc\" ng-bind-html=\"preview.toc | markdownHtml\"></ul>\n    <figure class=\"author\">\n      <img ng-alt=\"{{post.by.name}}\" ng-src=\"{{post.by.avatar}}?s=100\">\n      <figcaption>\n        {{post.by.bio}}\n      </figcaption>\n    </figure>  \n    <p class=\"asset\" ng-bind-html=\"preview.asset | markdownHtml\" ng-if=\"post.title && post.by.bio\"></p>\n    <hr />\n    <div id=\"body\" ng-bind-html=\"preview.body | markdownHtml\"></div>\n  </article>\n</div>\n\n<hr />\n";
 
 },{}],"/Users/jkrez/src/airpair.com/public/common/directives/post.js":[function(require,module,exports){
