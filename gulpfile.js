@@ -52,9 +52,8 @@ gulp.task('watch', function() {
   gulp.watch(watching).on('change',livereload.changed);
 });
 
-
-var watchifyAppFn = function(appName) {
-  var bundler = watchify(browserify('./public/'+appName+'/module.js', watchify.args));
+gulp.task('watchify', function() {
+  var bundler = watchify(browserify('./public/common/index.js', watchify.args));
 
   bundler.transform(stringify(['.html']));
   bundler.transform(es6ify);
@@ -65,32 +64,22 @@ var watchifyAppFn = function(appName) {
     return bundler.bundle()
       // log errors if they happen
       .on('error', gutil.log.bind(gutil, 'Browserify Error'))
-      .pipe(source(appName+'.js'))
+      .pipe(source('index.js'))
       .pipe(gulp.dest('./public/v1/js'));
   }
 
   return rebundle();
-};
-
-gulp.task('watchify', function() {
-  watchifyAppFn('workshops');
-  watchifyAppFn('posts');
 });
 
-var bundleAppFn = function(appName) {
-  var bundler = browserify('./public/'+appName+'/module.js');
+gulp.task('bundle', function() {
+  var bundler = browserify('./public/common/index.js');
 
   bundler.transform(stringify(['.html']));
   bundler.transform(es6ify);
   
   bundler.bundle()
-    .pipe(source(appName+'.js'))
+    .pipe(source('index.js'))
     .pipe(gulp.dest('./public/v1/js'));
-}
-
-gulp.task('bundle', function() {
-  bundleAppFn('workshops');
-  bundleAppFn('posts');
 });
 
 

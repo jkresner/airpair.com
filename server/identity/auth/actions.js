@@ -10,5 +10,6 @@ export function logout(options) {
 //-- only used in testing
 export function setTestLogin(req, res, next) {
   if (logging) $log('setTestLogin', req.params.id, global.data.sessions[req.params.id])
-  req.logIn(global.data.sessions[req.params.id], (err) => next(err) )
+  var user = global.data.sessions[req.params.id]
+  req.logIn( user, (err) => res.json(user) )
 }

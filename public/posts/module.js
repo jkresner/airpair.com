@@ -1,63 +1,43 @@
-require('./../common/directives/share.js');
-require('./../common/directives/post.js');
-require('./../common/directives/tagInput.js');
-require('./../common/filters.js');
-require('./../common/postsService.js');
-require('./../common/postHelpers.js');
-require('./../common/sessionService.js');
 require('./myPostsList.js');
 require('./editor.js');
 
+var resolver = require('./../common/routes/helpers.js');
 
-angular.module("APPosts", ['ngRoute','APFilters','APShare',
+angular.module("APPosts", ['ngRoute', 'APFilters','APShare',
   'APMyPostsList','APPostEditor','APPost', 'APSvcSession', 'APSvcPosts','APTagInput'])
 
   .config(['$locationProvider', '$routeProvider', 
       function($locationProvider, $routeProvider) {
-  
-    var resolveSession = ['SessionService', '$window', '$q',
-      function(SessionService, $window, $q) { 
-        return SessionService.getSession().then(
-          function(data) {
-            return data;
-          },
-          function()
-          {   
-            $window.location = '/v1/auth/login?returnTo=/posts/new';
-            return $q.reject();
-          }
-        ); 
-    }]; 
 
-    $locationProvider.html5Mode(true);
+    var authd = resolver(['session'])
 
     $routeProvider.when('/posts', {
-      templateUrl: 'index',
+      template: require('./list.html'),
       controller: 'IndexCtrl as index'
     });
 
     $routeProvider.when('/posts/new', {
       template: require('./author.html'),
       controller: 'NewCtrl as author',
-      resolve: { session: resolveSession }
+      resolve: authd
     });
     
     $routeProvider.when('/posts/edit/:id', {
       template: require('./author.html'),
       controller: 'EditCtrl as author',
-      resolve: { session: resolveSession }      
+      resolve: authd
     });
 
     $routeProvider.when('/posts/publish/:id', {
       template: require('./author.html'),
       controller: 'PublishCtrl as author',
-      resolve: { session: resolveSession }
+      resolve: authd
     });
 
     $routeProvider.when('/me/:username', {
       template: require('../me/profile.html'),
       controller: 'ProfileCtrl as profile',
-      resolve: { session: resolveSession }
+      resolve: authd
     });
 
   }])
@@ -74,6 +54,10 @@ angular.module("APPosts", ['ngRoute','APFilters','APShare',
   .controller('IndexCtrl', ['$scope','PostsService', 'SessionService', 
       function($scope, PostsService, SessionService) {
     var self = this;
+
+    PostsService.getRecentPosts(function (result) {
+      $scope.recent = result;
+    })  
 
     SessionService.onAuthenticated( (session) => {
       PostsService.getMyPosts(function (result) {
