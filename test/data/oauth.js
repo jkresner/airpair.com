@@ -77,6 +77,24 @@ module.exports = {
        gender: 'male',
        locale: 'en' },
     token: {  }    
-  }
+  },
 
+  rbrw: { provider: 'google',
+    id: '118272682147885899580',
+    displayName: 'Ryan Brown',
+    name: { familyName: 'Ryan', givenName: 'Brown' },
+    emails: [ { value: 'ryan.sc.brown@gmail.com' } ],
+    _json: 
+     { id: '118272682147885899580',
+       email: 'ryan.sc.brown@gmail.com',
+       verified_email: true,
+       name: 'Jonathon Kresner',
+       given_name: 'Jonathon',
+       family_name: 'Kresner',
+       link: 'https://plus.google.com/111546642302857408422',
+       picture: 'https://lh5.googleusercontent.com/-EtHf32yxc-s/AAAAAAAAAAI/AAAAAAAAAUU/aDOPckSKU-E/photo.jpg',
+       gender: 'male',
+       locale: 'en' },
+    token: {  }    
+  }
 }

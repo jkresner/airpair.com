@@ -1,9 +1,11 @@
+var UserService = require('../../../server/services/users')
+
 
 global.addLocalUser = function(userKey, done)
 {      
   var seed = data.users[userKey];
   var suffix = moment().format('X')
-  clone = {
+  var clone = {
     email: seed.email.replace('@',suffix+'@'),
     name: seed.name+suffix
   }
@@ -43,7 +45,7 @@ module.exports = {
 
   initTags: function(done)
   {
-    Tag = System._loader.modules['server/models/tag'].module.default;
+    Tag = require('../../../server/models/tag');
     Tag.findOne({slug:'angularjs'}, function(e,r) {
       if (!r) {
         var tags = [data.tags.angular,data.tags.node,data.tags.mongo]
@@ -53,6 +55,12 @@ module.exports = {
         done()
     })
 
+  },
+
+  upsertProviderProfile: function(provider, userKey, done)
+  {
+    var user = data.oauth[userKey]
+    UserService.upsertProviderProfile(null, provider, user, done)
   }
 
 }

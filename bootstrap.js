@@ -1,16 +1,15 @@
-var System = require('es6-module-loader').System;
+'use strict';
+
+// Traceur will compile all JS aside from node modules
+var Traceur = require('traceur');
+Traceur.require.makeDefault(function(filename) {
+  return !(/node_modules/.test(filename));
+});
+
 var initConfig = require('./server/config')
 var setGlobals = require('./server/global')
 
 var config = initConfig(process.env.env || 'dev', __dirname)
 setGlobals(config)
 
-System.import('./index').then(function(index) {
-  
-  index.run();
-
-}).catch(function(err){
-
-	console.log('err', err);
-
-});
+require('./index').run()
