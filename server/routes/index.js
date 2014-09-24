@@ -2,7 +2,7 @@ import authRouter from './auth'
 import admRouter from './adm'
 import apiRouter from './api'
 import dynamicRouter from './dynamic'
-
+var whiteListedRoutes = require('../../shared/routes')
 
 export default function(app)
 {	
@@ -12,5 +12,5 @@ export default function(app)
 	app.use(dynamicRouter(app))	
 	
 	app.get( ['/','/v1'], app.renderHbs('index') )
-	app.get( ['/*'], app.renderHbs('base') )	
+	app.get( whiteListedRoutes, app.renderHbs('base') )
 }
