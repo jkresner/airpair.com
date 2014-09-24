@@ -1,5 +1,5 @@
 var UserService = require('../../../server/services/users')
-
+var Tag = require('../../../server/models/tag')
 
 global.addLocalUser = function(userKey, done)
 {      
@@ -45,7 +45,6 @@ module.exports = {
 
   initTags: function(done)
   {
-    Tag = require('../../../server/models/tag');
     Tag.findOne({slug:'angularjs'}, function(e,r) {
       if (!r) {
         var tags = [data.tags.angular,data.tags.node,data.tags.mongo]
@@ -54,7 +53,6 @@ module.exports = {
       else 
         done()
     })
-
   },
 
   upsertProviderProfile: function(provider, userKey, done)
@@ -62,7 +60,6 @@ module.exports = {
     var user = data.oauth[userKey]
     UserService.upsertProviderProfile(null, provider, user, done)
   }
-
 }
 
 
