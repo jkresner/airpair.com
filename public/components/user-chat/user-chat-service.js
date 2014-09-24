@@ -121,14 +121,17 @@ var ChatService = function($rootScope, $firebase, $firebaseSimpleLogin, $cookies
 
       cRef = activeChannelsRef.child(channel.$id);
 
-      // add it to the channel's messages object
-      messages = $firebase(cRef.child('messages')).$asArray();
-
       // make the last active channel pop to the top of the admin list
       cRef.setPriority(Firebase.ServerValue.TIMESTAMP);
 
       // clear red notification icons in case they were not already
       this.clearNotifications();
+
+      // subscribe the user speaking to the channel
+      this.subscribe(channel, this.currentUser.uid);
+
+      // add it to the channel's messages object
+      messages = $firebase(cRef.child('messages')).$asArray();
 
       // return the promise so that caller can do stuff then()
       return messages.$add(msg);
