@@ -1,8 +1,11 @@
+
 angular.module('APSvcSession', [])  
 
   .constant('API', '/v1/api')
 
-  .service('SessionService', ['$http', 'API', '$cacheFactory', function($http, API, $cacheFactory) {
+  .constant('Auth', '/v1/auth')
+
+  .service('SessionService', ['$http', 'API', 'Auth', '$cacheFactory', function($http, API, Auth, $cacheFactory) {
     var cache;
     this.getSession = function() {
       cache = cache || $cacheFactory();
@@ -29,4 +32,15 @@ angular.module('APSvcSession', [])
       $http.get(`${API}/session/full`).success(success).error(error);
     }
     */
+
+    this.login = function(data, success, error)
+    {
+      $http.post(`${Auth}/login`, data).success(success).error(error);
+    }
+
+    this.signup = function(data, success, error)
+    {
+      $http.post(`${Auth}/signup`, data).success(success).error(error);
+    }
+  
   }])

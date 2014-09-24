@@ -1,22 +1,16 @@
-import apiRouter from './api'
-import postsRouter from './posts'
 import authRouter from './auth'
-import * as WorkshopsService from '../services/workshops'
+import admRouter from './adm'
+import apiRouter from './api'
+import dynamicRouter from './dynamic'
+var whiteListedRoutes = require('../../shared/routes')
 
 export default function(app)
 {	
 	app.use('/v1/auth', authRouter(app))
 	app.use('/v1/api', apiRouter(app))
-	app.use('', postsRouter(app))	
-
-	app.get( ['/workshops/*', '/:tag/workshops/*'], app.renderHbs('workshops') )
+	app.use('/v1/adm', admRouter(app))
+	app.use(dynamicRouter(app))	
 	
-	app.get( '/workshops-slide/:id', (req,res) => {
-		return WorkshopsService.getBySlug(req.params.id, 
-			(e,r) => res.status(200).render(`workshopsslide.hbs`, r))
-	})
-	
-	app.get( '/', app.renderHbs('index') )
-	app.get( '/v1', app.renderHbs('index') ) // - while still running v0
-	app.get( '/v1/beta', app.renderHbs('beta') ) 
+	app.get( ['/','/v1'], app.renderHbs('index') )
+	app.get( whiteListedRoutes, app.renderHbs('base') )
 }

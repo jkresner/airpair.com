@@ -1,4 +1,6 @@
 @import "ap.less";
+@import "workshops.less";
+@import "posts.less";
 
 body#index {
 
@@ -17,4 +19,30 @@ body#index {
       float:none;
     }
   }    
+}
+
+
+section#auth {
+  padding-top:40px;
+  text-align:center;
+
+  .option {
+    min-height:300px;
+    margin:30px 8px;
+  }
+
+  .btn {
+    width:80%
+  }
+
+  .option 
+  {
+    form { margin-bottom:20px }
+    .form-group { text-align:center; }
+    input { width:80%;margin:auto }
+    label { display:none }
+  }
+
+  .error { color:red }
+
 }

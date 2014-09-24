@@ -17,7 +17,8 @@ var authFn = (provider) => {
       }
       else
       {
-        res.redirect(`${config.auth.loginUrl}?fail=${provider}&info=${info}`)
+        // `${config.auth.loginUrl}?fail=${provider}&info=${info}`
+        res.status(400).json({ provider: provider, error: info })
       }
 
     })(req, res, next)
