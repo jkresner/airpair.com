@@ -1,0 +1,19 @@
+li.chat-summary(ng-class="{highlight: notifications.length > 0}" ng-click="load(channel, $event)")
+  table(role="menuitem" ng-click="loadChannel(channel, $event)")
+    tr
+      td.members
+        member(ng-repeat="person in channel.members" ng-if="person.uid !== chat.currentUser.uid" title="{{person.name}}")
+          img.img-responsive(ng-src="{{person.picture}}")
+      td.info
+        strong {{ channel.title }}
+        span(ng-show="notifications.length > 0") ({{ notifications.length }})
+        .messages
+          .message(ng-repeat="msg in channel.messages | reverse")
+            .content {{ msg.content }}
+            .whowhen
+              em {{msg.from.first_name}} said&nbsp;
+              em.timestamp(ng-if='msg.sent_at', am-time-ago='msg.sent_at')
+
+
+
+

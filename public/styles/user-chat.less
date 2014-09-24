@@ -30,6 +30,7 @@
       left: -4px;
     }
     members {
+      cursor: pointer;
       padding: 10px;
     }
     member {
@@ -74,9 +75,45 @@ chat-header {
   }
 }
 
+li.chat-summary {
+  cursor: pointer;
+  display: block;
+  &.highlight {
+    background-color: #DFF2EF;
+  }
+  table {
+    border-top: 1px solid silver;
+    width: 270px;
+    td {
+      padding: 5px;
+      vertical-align: top;
+    }
+  }
+  &:first-child table { border: 0 }
+  td.members {
+    width: 50px !important;
+    member:not(:only-child):not(:first-child) {
+      margin-left: 0;
+      margin-top: -10px;
+    }
+  }
+  td.info {
+    .message:not(:first-child) {
+      display: none;
+    }
+    .content {
+      margin-bottom: 10px;
+    }
+    .whowhen {
+      color: silver;
+      font-size: 12px;
+    }
+  }
+}
+
 .chatroom {
   background: @chrome;
-  flex: 1 1 auto;
+  flex: 2 3 auto;
   display: flex;
   flex-direction: column;
   position: relative;
@@ -102,50 +139,6 @@ chat-header {
     left: 50px;
   }
 
-  members {
-    background: #333;
-    flex: 0 0 auto;
-    padding: 20px;
-
-    member {
-      img { border-radius: 50%; height: auto }
-
-      &:only-child {
-        display: block;
-        text-align: center;
-        img { width: 100px }
-        .name {
-          margin-top: 5px;
-          color: white;
-        }
-      }
-
-      &:not(:only-child) {
-        float: left;
-        img { width: 50px }
-        .name { display: none }
-
-        &:not(:first-child) { margin-left: -10px }
-      }
-    }
-  }
-
-  messages {
-    flex: 1 1 auto;
-    overflow: hidden;
-    overflow-y: scroll;
-    table {
-      background-color: white;
-      border: 1px solid silver;
-      margin: 0 !important;
-      td.from {
-        color: gray;
-        font-size: 8pt;
-        padding: 10px;
-      }
-    }
-  }
-
   entry {
     flex: 0 0 30px;
     input {
@@ -155,6 +148,50 @@ chat-header {
       padding: 2px;
       margin-top: -1px;
       width: 100%;
+    }
+  }
+}
+
+members {
+  background: #333;
+  flex: 0 0 auto;
+  padding: 20px;
+}
+
+member {
+  img { border-radius: 50%; height: auto }
+
+  &:only-child {
+    display: block;
+    text-align: center;
+    img { width: 100px }
+    .name {
+      margin-top: 5px;
+      color: white;
+    }
+  }
+
+  &:not(:only-child) {
+    float: left;
+    img { width: 50px }
+    .name { display: none }
+
+    &:not(:first-child) { margin-left: -10px }
+  }
+}
+
+messages {
+  flex: 1 1 auto;
+  overflow: hidden;
+  overflow-y: scroll;
+  table {
+    background-color: white;
+    border: 1px solid silver;
+    margin: 0 !important;
+    td.from {
+      color: gray;
+      font-size: 8pt;
+      padding: 10px;
     }
   }
 }

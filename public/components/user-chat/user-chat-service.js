@@ -162,7 +162,6 @@ var ChatService = function($rootScope, $firebase, $firebaseSimpleLogin, $cookies
     spy: function() {
       if(this.currentUser) {
         activeUsersRef.child(this.currentUser.uid).child('last_seen').set(Firebase.ServerValue.TIMESTAMP);
-        this.clearNotifications();
       }
     },
 

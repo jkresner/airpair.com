@@ -20,6 +20,35 @@ AirPair.controller('UserChatController',
     };
   }]);
 
+AirPair.directive('chatSummary',[ function(){
+  return {
+    controller: 'ChatSummaryController',
+    restrict: 'E',
+    replace: true,
+    templateUrl: '/components/user-chat/chat-summary.html',
+    scope: {
+      channel: '@',
+    }
+  };
+}]);
+
+AirPair.controller('ChatSummaryController',
+  ['$scope', 'chat', function($scope, chat) {
+    $scope.chat = chat;
+    chat.loadChannel($scope.$parent.channel.$id, function(channel, members, messages, notifications) {
+      $scope.channel = channel;
+      $scope.members = members;
+      $scope.messages = messages;
+      $scope.notifications = notifications;
+      console.log(messages);
+    });
+
+    $scope.load = function(channel) {
+      chat.touch(channel);
+      $('#chat').removeClass('collapsed');
+    };
+  }]);
+
 AirPair.directive('chatroom', [function() {
   return {
     controller: 'ChatroomController',

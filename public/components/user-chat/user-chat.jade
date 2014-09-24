@@ -5,8 +5,7 @@
         span.unread(ng-show="chat.currentUserNotifications.length > 0") {{ chat.currentUserNotifications.length }}
         img(src="/v1/img/css/chat/toggle.png")
       ul.dropdown-menu(role="menu" aria-labelledby="chat-menu-toggle")
-        li(role="presentation" ng-repeat="channel in chat.currentUserChannels | reverse")
-          a(role="menuitem" ng-click="loadChannel(channel, $event)") {{ channel.title }}
+        chat-summary(role="presentation" ng-repeat="channel in chat.currentUserChannels | reverse")
         li(role="presentation" class="divider")
         li(role="presentation")
           a(role="menuitem" ng-click="collapse($event)") Minimize
