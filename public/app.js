@@ -4,7 +4,7 @@
   Why? A module should be consistent for anyone that wants to include it as a reusable component. If a module can mean different things depending on which files are included, it is not consistent.
   https://google-styleguide.googlecode.com/svn/trunk/angularjs-google-style.html#modules
 */
-window.AirPair = angular.module("AirPair", ['firebase','angularMoment','ui.bootstrap'])
+window.AirPair = angular.module("AirPair", ['firebase','angularMoment','ui.bootstrap','ngCookies'])
   .run(['$rootScope', function($rootScope) {
     // set globals we want available in ng expressions
     $rootScope._ = window._;

@@ -1,4 +1,4 @@
-var ChatService = function($rootScope, $firebase, $firebaseSimpleLogin) {
+var ChatService = function($rootScope, $firebase, $firebaseSimpleLogin, $cookies) {
   // firebase refs
   var rootRef = new Firebase("https://airpair-chat.firebaseio.com/");
   var activeChannelsRef = rootRef.child('channels/active');
@@ -8,8 +8,25 @@ var ChatService = function($rootScope, $firebase, $firebaseSimpleLogin) {
   var activeUsersRef = rootRef.child('users/active');
   var inactiveUsersRef = rootRef.child('users/inactive');
 
-  // results in login if user is already authenticated
-  var auth = $firebaseSimpleLogin(rootRef);
+  // todo: remove once local login not needed anymore
+  var auth = null;
+
+  // this cookie is set by middleware.js on the server side upon login
+  if($cookies.FBT) {
+    rootRef.auth($cookies.FBT, function(error, result) {
+      if (error) {
+        console.log('Login Failed!', error);
+      } else {
+        console.log('Authenticated successfully with payload:', result.auth);
+        console.log('Auth expires at:', new Date(result.expires * 1000));
+        $rootScope.$broadcast("$firebaseSimpleLogin:login", result.auth);
+      }
+    });
+  }
+  else {
+    // todo: left in temporarily for testing purposes
+    auth = $firebaseSimpleLogin(rootRef);
+  }
 
   var service = {
     // initialized on login below
@@ -64,11 +81,9 @@ var ChatService = function($rootScope, $firebase, $firebaseSimpleLogin) {
     },
 
     loadChannel: function(name, cb) {
-      console.log('loading channel', name);
       cRef = activeChannelsRef.child(name);
       var self = this;
       $firebase(cRef).$asObject().$loaded(function(channel) {
-        console.log('setting activeChannel to', channel);
         self.activeChannel = channel;
         self.clearNotifications();
         // we assume that caller will want to use the channel object right away
@@ -146,12 +161,8 @@ var ChatService = function($rootScope, $firebase, $firebaseSimpleLogin) {
 
     spy: function() {
       if(this.currentUser) {
-        console.log('updating last_seen');
         activeUsersRef.child(this.currentUser.uid).child('last_seen').set(Firebase.ServerValue.TIMESTAMP);
-
-        if(this.activeChannel) {
-          this.clearNotifications();
-        }
+        this.clearNotifications();
       }
     },
 
@@ -184,6 +195,7 @@ var ChatService = function($rootScope, $firebase, $firebaseSimpleLogin) {
     inactiveUsersRef.child(user.uid).onDisconnect().set(user);
   });
 
+  // todo: this event is not broadcast right now, unless it gets tied into rest of app
   $rootScope.$on("$firebaseSimpleLogin:logout", function(event, user) {
     console.log("Logged out");
     service.currentUser = null;
@@ -193,7 +205,7 @@ var ChatService = function($rootScope, $firebase, $firebaseSimpleLogin) {
   return service;
 }
 
-AirPair.factory('chat', ['$rootScope', '$firebase', '$firebaseSimpleLogin', ChatService]);
+AirPair.factory('chat', ['$rootScope', '$firebase', '$firebaseSimpleLogin','$cookies', ChatService]);
 
 UserHelper = {
   shrink: function(user) {
