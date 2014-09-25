@@ -59,7 +59,7 @@ export function getPublished(cb) {
 }
 
 export function getRecentPublished(cb) {
-  var opts = { fields: fields.listSelect, options: { sort: 'published', limit: 9 } };
+  var opts = { fields: fields.listSelect, options: { sort: { 'published': -1 }, limit: 9 } };
   svc.searchMany(queries.published, opts, addUrl(cb))
 }
 
