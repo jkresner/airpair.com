@@ -2,5 +2,6 @@ module.exports = [
   '/',
   '*/posts*',
   '*/workshops*',
-  '/v1/auth*'
+  '/v1/auth*',
+  '/me/*'
 ]

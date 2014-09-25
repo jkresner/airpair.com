@@ -1114,3 +1114,27 @@ section#auth .option label {
 section#auth .error {
   color: #ff0000;
 }
+@media only screen and (max-width: 900px) {
+  section#auth .option {
+    width: 300px;
+    margin: 10px 4px;
+    min-height: 280px;
+  }
+  section#auth .option h2 {
+    font-size: 26px;
+  }
+}
+@media only screen and (max-width: 420px) {
+  section#auth {
+    text-align: center;
+  }
+  section#auth .choice {
+    margin: auto;
+  }
+  section#auth .option {
+    margin: 10px auto;
+    min-height: 200px;
+    width: 96%;
+    display: block;
+  }
+}
