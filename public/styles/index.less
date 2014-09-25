@@ -44,5 +44,26 @@ section#auth {
   }
 
   .error { color:red }
+  
+  @media only screen and (max-width:900px) {
+    .option { 
+      width:300px;
+      margin:10px 4px;
+      min-height:280px;
+      h2 { font-size:26px; }
+    }
+  }
+
+  @media only screen and (max-width:420px) {
+    .choice { margin:auto }
+
+    text-align:center;
+    .option {
+      margin:10px auto;
+      min-height:200px;
+      width:96%;
+      display:block;
+    }
+  }   
 
 }
