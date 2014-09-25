@@ -3,7 +3,7 @@ AirPair.directive('airpairUserChat', [function() {
     controller: 'UserChatController',
     restrict: 'E',
     replace: true,
-    templateUrl: '/components/user-chat/user-chat.html'
+    templateUrl: '/chat/user-chat.html'
   };
 }]);
 
@@ -25,7 +25,7 @@ AirPair.directive('chatSummary',[ function(){
     controller: 'ChatSummaryController',
     restrict: 'E',
     replace: true,
-    templateUrl: '/components/user-chat/chat-summary.html',
+    templateUrl: '/chat/chat-summary.html',
     scope: {
       channel: '@',
     }
@@ -54,7 +54,7 @@ AirPair.directive('chatroom', [function() {
     controller: 'ChatroomController',
     restrict: 'E',
     replace: true,
-    templateUrl: '/components/user-chat/chatroom.html',
+    templateUrl: '/chat/chatroom.html',
     scope: {
       channel: '@',
       members: '@',
