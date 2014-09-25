@@ -1,21 +1,29 @@
-var path = require('path'),
-  gulp = require('gulp'),
-  nodemon = require('gulp-nodemon'),
-  jshint = require('gulp-jshint'),
-  less = require('gulp-less'),
-  livereload = require('gulp-livereload'),
-  gutil = require('gulp-util'),
-  stringify = require('stringify'),
-  source = require('vinyl-source-stream'),
-  watchify = require('watchify'),
-  browserify = require('browserify'),
-  es6ify = require('es6ify');
+var browserify = require('browserify'),
+    es6ify = require('es6ify'),
+    gulp = require('gulp'),
+    gutil = require('gulp-util'),
+    jade = require('gulp-jade'),
+    jshint = require('gulp-jshint'),
+    less = require('gulp-less'),
+    livereload = require('gulp-livereload'),
+    nodemon = require('gulp-nodemon'),
+    path = require('path'),
+    source = require('vinyl-source-stream'),
+    stringify = require('stringify'),
+    watchify = require('watchify');
 
 paths = {
   public: 'public/**',
+  jade: 'public/**/*.jade',
   styles: 'public/styles/*.+(less|css)',
   views: 'server/views/**'
 }
+
+gulp.task('jade', function() {
+  gulp.src(paths.jade)
+    .pipe(jade())
+    .pipe(gulp.dest('./public/'))
+});
 
 gulp.task('lint', function () {
   gulp.src('./**/*.js')
@@ -23,8 +31,9 @@ gulp.task('lint', function () {
 });
 
 gulp.task('nodemon', function () {
-  nodemon({ script: 'bootstrap.js', ext: 'html js', 
-      ignore: ['public/*','test/*','dist/*'] })
+  nodemon({ script: 'bootstrap.js',
+            ext: 'html js',
+            ignore: ['public/*','test/*','dist/*'] })
     .on('change', ['lint'])
     .on('restart', function () {
       console.log('>> node restart');
@@ -44,10 +53,11 @@ gulp.task('watch', function() {
   var watching = [
     './public/**/*.css',
     './public/**/*.html',
-    './public/**/*.js',    
+    './public/**/*.js',
     paths.views
   ];
 
+  gulp.watch(paths.jade, ['jade']);
   gulp.watch(paths.styles, ['less']);
   gulp.watch(watching).on('change',livereload.changed);
 });
@@ -57,7 +67,7 @@ gulp.task('watchify', function() {
 
   bundler.transform(stringify(['.html']));
   bundler.transform(es6ify);
-  
+
   bundler.on('update', rebundle);
 
   function rebundle() {
@@ -76,13 +86,11 @@ gulp.task('bundle', function() {
 
   bundler.transform(stringify(['.html']));
   bundler.transform(es6ify);
-  
+
   bundler.bundle()
     .pipe(source('index.js'))
     .pipe(gulp.dest('./public/v1/js'));
 });
 
-
-gulp.task('default', ['nodemon','less','watch','watchify']);
-
+gulp.task('default', ['nodemon','jade', 'less','watch','watchify']);
 gulp.task('build', ['less','bundle']);

@@ -1,0 +1,208 @@
+/** Note: For more information on display: flex see http://html5please.com/#flexbox */
+#chat {
+  display: flex;
+  flex-direction: column;
+  transition: all ease-out 500ms;
+  width: 270px;
+}
+#chat.empty {
+  transition: all ease-out 500ms;
+  display: none;
+}
+#chat.collapsed {
+  background: #ddd;
+  max-width: 50px;
+}
+#chat.collapsed chat-header {
+  display: none;
+}
+#chat.collapsed messages,
+#chat.collapsed entry,
+#chat.collapsed .name {
+  display: none;
+}
+#chat.collapsed span.unread {
+  display: inline-block;
+  position: absolute;
+  top: 4px;
+  left: -4px;
+}
+#chat.collapsed members {
+  cursor: pointer;
+  padding: 10px;
+}
+#chat.collapsed member {
+  float: none !important;
+  margin: 0 !important;
+}
+#chat.collapsed member:not(:first-child) {
+  margin-top: -10px;
+}
+#chat.collapsed member img {
+  width: 35px !important;
+}
+#chat.collapsed .chatroom:not( :nth-child(2)) {
+  display: inherit;
+}
+#chat.collapsed end-buffer {
+  display: inherit;
+}
+end-buffer {
+  flex: 1000 1 auto;
+  display: none;
+}
+chat-header {
+  background: black;
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: row;
+  height: 40px;
+}
+chat-header chat-notifications {
+  padding: 10px;
+  padding-left: 15px;
+  width: 50px;
+}
+chat-header chat-notifications span.unread {
+  position: absolute;
+  top: 5px;
+  left: 30px;
+}
+li.chat-summary {
+  cursor: pointer;
+  display: block;
+}
+li.chat-summary.highlight {
+  background-color: #DFF2EF;
+}
+li.chat-summary table {
+  border-top: 1px solid silver;
+  width: 270px;
+}
+li.chat-summary table td {
+  padding: 5px;
+  vertical-align: top;
+}
+li.chat-summary:first-child table {
+  border: 0;
+}
+li.chat-summary td.members {
+  width: 50px !important;
+}
+li.chat-summary td.members member:not(:only-child):not(:first-child) {
+  margin-left: 0;
+  margin-top: -10px;
+}
+li.chat-summary td.info .message:not(:first-child) {
+  display: none;
+}
+li.chat-summary td.info .content {
+  margin-bottom: 10px;
+}
+li.chat-summary td.info .whowhen {
+  color: silver;
+  font-size: 12px;
+}
+.chatroom {
+  background: #c9d6d2;
+  flex: 2 3 auto;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+.chatroom:not(:nth-child(2)) {
+  display: none;
+}
+.chatroom span.unread {
+  display: none;
+}
+.chatroom .title {
+  color: white;
+  letter-spacing: 1px;
+  font-size: 9pt;
+  font-weight: 600;
+  padding: 10px;
+  position: absolute;
+  text-align: center;
+  text-transform: uppercase;
+  top: -38px;
+  left: 50px;
+}
+.chatroom entry {
+  flex: 0 0 30px;
+}
+.chatroom entry input {
+  outline: 0;
+  display: block;
+  height: 31px;
+  padding: 2px;
+  margin-top: -1px;
+  width: 100%;
+}
+members {
+  background: #333;
+  flex: 0 0 auto;
+  padding: 20px;
+}
+member img {
+  border-radius: 50%;
+  height: auto;
+}
+member:only-child {
+  display: block;
+  text-align: center;
+}
+member:only-child img {
+  width: 100px;
+}
+member:only-child .name {
+  margin-top: 5px;
+  color: white;
+}
+member:not(:only-child) {
+  float: left;
+}
+member:not(:only-child) img {
+  width: 50px;
+}
+member:not(:only-child) .name {
+  display: none;
+}
+member:not(:only-child):not(:first-child) {
+  margin-left: -10px;
+}
+messages {
+  flex: 1 1 auto;
+  overflow: hidden;
+  overflow-y: scroll;
+}
+messages table {
+  background-color: white;
+  border: 1px solid silver;
+  margin: 0 !important;
+}
+messages table td.from {
+  color: gray;
+  font-size: 8pt;
+  padding: 10px;
+}
+span.unread {
+  -webkit-background-clip: padding-box;
+  -webkit-border-radius: 2px;
+  -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.7);
+  -webkit-font-smoothing: subpixel-antialiased;
+  background-image: -webkit-gradient(linear, center top, center bottom, from(#fa3c45), to(#dc0d17));
+  background-image: -webkit-linear-gradient(#fa3c45, #dc0d17);
+  background: #dc0d17;
+  color: #fff;
+  display: inline-block;
+  font-family: 'Helvetica Neue', Helvetica, sans-serif;
+  font-size: 10px;
+  font-weight: bold;
+  line-height: normal;
+  min-height: 13px;
+  min-width: 20px;
+  padding: 2px;
+  text-align: center;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.4);
+}

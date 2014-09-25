@@ -7,18 +7,18 @@ export function authd(req, res, next) {
   if (!req.isAuthenticated || !req.isAuthenticated())
   {
     var apiRequest = isApiRequest(req)
-    
+
     // save url user is trying to access for graceful redirect after login
-    if (req.session && !apiRequest) { 
-      req.session.returnTo = req.url 
+    if (req.session && !apiRequest) {
+      req.session.returnTo = req.url
     }
 
-    if (apiRequest) { res.status(401).json({}) } 
+    if (apiRequest) { res.status(401).json({}) }
     else { res.redirect(config.auth.loginUrl) }
-  } 
+  }
   else
   {
-    next()  
+    next()
   }
 }
 
@@ -27,34 +27,52 @@ var authorizeRole = (roleName) => {
     // var apiRequest = req.url.indexOf('api') != 0
     if (!req.isAuthenticated || !req.isAuthenticated())
     {
-      // if (isApiRequest(req)) { 
-      res.status(401).json() 
-      // } 
-      // else { 
-      // res.status(403).redirect(config.auth.loginUrl) 
+      // if (isApiRequest(req)) {
+      res.status(401).json()
       // }
-    } 
+      // else {
+      // res.status(403).redirect(config.auth.loginUrl)
+      // }
+    }
     else if ( ! _.contains(req.user.roles, roleName) )
     {
-      // if (isApiRequest(req)) { 
-      res.status(403).json() 
-      // } 
+      // if (isApiRequest(req)) {
+      res.status(403).json()
+      // }
       // else { res.redirect(config.auth.unauthorizedUrl) }
     }
-    else 
+    else
     {
-      next()  
+      next()
     }
   }
 }
 
 
 export function authDone(req, res, next) {
+  console.log('authDone', req.user);
+  var FirebaseTokenGenerator = require("firebase-token-generator");
+  // todo: store secret in ENV variable for security
+  var tokenGenerator = new FirebaseTokenGenerator("xEJfxuGTt6HnvdX56jWlVZlZkHdE2czmtUvs33xD");
+  var token = tokenGenerator.createToken(
+    {
+      uid: "google:" + req.user.googleId,
+      displayName: req.user.name,
+      email: req.user.email,
+      thirdPartyUserData: {
+        picture: req.user.google._json.picture,
+        hd: req.user.google._json.hd,
+        given_name: req.user.google._json.given_name
+      }
+    }
+  );
+  res.cookie('FBT', token);
+
   var redirectUrl = config.auth.defaultRedirectUrl
   if (req.session && req.session.returnTo)
   {
     redirectUrl = req.session.returnTo
-    delete req.session.returnTo    
+    delete req.session.returnTo
   }
   res.redirect(redirectUrl)
 }

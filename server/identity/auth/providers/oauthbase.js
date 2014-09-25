@@ -15,7 +15,7 @@ var oauthFn = (provider, scope) => {
     {
       // If the users is ALREADY logged in (got a session), then we
       // handshake with the provider AND do not do anything with the session
-      // * the name authorize is kind of unclear, hence the comments      
+      // * the name authorize is kind of unclear, hence the comments
       passport.authorize(provider, opts)(req, res, next)
     }
     else
@@ -35,14 +35,14 @@ export function init(provider, successfulShakeDelegate) {
   var verifyCallback = (req, accessToken, refreshToken, profile, done) =>
   {
     // remove extra repetitive junk from oauth response
-    delete profile._raw 
+    delete profile._raw
 
     // Save token to db for re-use later
     profile.token = { token: accessToken, attributes: { refreshToken: refreshToken } }
-    
+
     if (logging)
       $log(`${provider}.VerifyCallback`, req.user, profile)
-    
+
     successfulShakeDelegate(req, provider, profile, done)
   }
 

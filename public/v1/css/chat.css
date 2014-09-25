@@ -1,0 +1,157 @@
+body,
+html {
+  height: 100%;
+}
+body {
+  display: flex;
+  align-items: stretch;
+  flex-direction: row;
+  padding-bottom: 10px;
+}
+button {
+  background: white;
+  border-radius: 50%;
+  border: 1px solid white;
+}
+button:hover {
+  border: 1px solid #aaaaaa;
+}
+#sidebar {
+  display: flex;
+  font-size: 9pt;
+  flex: 3;
+  flex-direction: column;
+  padding: 10px;
+}
+#sidebar label {
+  margin-top: 10px;
+}
+#sidebar #channels,
+#sidebar #people {
+  flex: 2;
+  display: block;
+  overflow: auto;
+}
+#sidebar .channel.loaded {
+  background-color: #dff2ef;
+}
+#sidebar #people .tab-pane {
+  overflow: auto;
+}
+#sidebar #people td {
+  background-color: #ffffff !important;
+}
+#main {
+  display: flex;
+  flex: 8;
+  flex-direction: column;
+  padding-right: 10px;
+}
+#main #channel-info {
+  min-height: 60px;
+}
+#main #messages {
+  border: 2px solid #eeeeee;
+  flex-grow: 1;
+  display: block;
+  overflow: auto;
+}
+#main #messages .msg {
+  background: white;
+  border-bottom: 1px solid #eeeeee;
+  display: flex;
+  flex-direction: row;
+}
+#main #messages .msg .from,
+#main #messages .msg .content {
+  padding: 10px;
+}
+#main #messages .msg .from {
+  width: 70px;
+  font-size: 8pt;
+  font-weight: bold;
+  text-align: center;
+}
+#main #messages .msg .content {
+  flex-grow: 9;
+}
+#main #messages .msg img {
+  border-radius: 50%;
+  max-width: 50px;
+}
+#main #entry {
+  max-height: 40px;
+}
+#main #entry input {
+  height: 100%;
+  width: 100%;
+}
+td.actions {
+  width: 50px !important;
+  min-width: 50px !important;
+}
+tr.user td.picture {
+  position: relative;
+  width: 50px !important;
+  min-width: 50px !important;
+}
+tr.user td.picture img {
+  border-radius: 50%;
+  width: 100%;
+  height: auto;
+}
+tr.user .presence {
+  display: none;
+  background: lightgreen;
+  border: 1px solid #ADFF2F;
+  border-radius: 50%;
+  height: 12px;
+  width: 12px;
+  position: absolute;
+  top: 5px;
+  left: 69%;
+  opacity: 0.7;
+}
+tr.user.active .presence {
+  display: block;
+}
+tr.user.active.away .presence {
+  background: yellow;
+  border: 1px solid lightyellow;
+}
+.timestamp {
+  color: #aaaaaa;
+  font-size: 8pt;
+}
+tr.channel td.notifications {
+  text-align: right;
+  width: 40px;
+}
+tr.channel members {
+  display: none;
+  margin-top: 5px;
+}
+tr.channel members member {
+  display: inline-block;
+}
+tr.channel members member img {
+  border-radius: 50%;
+  max-width: 35px;
+  height: auto;
+}
+tr.channel members member:not(:first-child) {
+  margin-left: -10px;
+}
+tr.channel.active members {
+  display: block;
+}
+span.unread {
+  background: red;
+  border-radius: 10%;
+  color: white;
+  font-size: 6pt;
+  font-weight: bold;
+  min-width: 20px;
+  padding: 3px 6px;
+  text-align: center;
+}

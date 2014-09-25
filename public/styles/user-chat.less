@@ -1,0 +1,218 @@
+@chrome: rgb(201, 214, 210);
+@chatchrome: #d3d3d3;
+@chatlight: #d3d3d3;
+@chatdark: #d3d3d3;
+
+/** Note: For more information on display: flex see http://html5please.com/#flexbox */
+#chat {
+  display: flex;
+  flex-direction: column;
+  transition: all ease-out 500ms;
+  width: 270px;
+  &.empty {
+    transition: all ease-out 500ms;
+    display: none;
+  }
+
+  &.collapsed {
+    background: #ddd;
+    max-width: 50px;
+    chat-header {
+      display: none;
+    }
+    messages, entry, .name {
+      display: none;
+    }
+    span.unread {
+      display: inline-block;
+      position: absolute;
+      top: 4px;
+      left: -4px;
+    }
+    members {
+      cursor: pointer;
+      padding: 10px;
+    }
+    member {
+      float: none !important;
+      margin: 0 !important;
+      &:not(:first-child) { margin-top: -10px }
+      img {
+        width: 35px !important;
+      }
+    }
+    .chatroom:not(:nth-child(2)) {
+      display: inherit;
+    }
+
+    end-buffer {
+      display: inherit;
+    }
+  }
+}
+
+end-buffer {
+  flex: 1000 1 auto;
+  display: none;
+}
+
+chat-header {
+  background: black;
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: row;
+  height: 40px;
+
+  chat-notifications {
+    padding: 10px;
+    padding-left: 15px;
+    width: 50px;
+    span.unread {
+      position: absolute;
+      top: 5px;
+      left: 30px;
+    }
+  }
+}
+
+li.chat-summary {
+  cursor: pointer;
+  display: block;
+  &.highlight {
+    background-color: #DFF2EF;
+  }
+  table {
+    border-top: 1px solid silver;
+    width: 270px;
+    td {
+      padding: 5px;
+      vertical-align: top;
+    }
+  }
+  &:first-child table { border: 0 }
+  td.members {
+    width: 50px !important;
+    member:not(:only-child):not(:first-child) {
+      margin-left: 0;
+      margin-top: -10px;
+    }
+  }
+  td.info {
+    .message:not(:first-child) {
+      display: none;
+    }
+    .content {
+      margin-bottom: 10px;
+    }
+    .whowhen {
+      color: silver;
+      font-size: 12px;
+    }
+  }
+}
+
+.chatroom {
+  background: @chrome;
+  flex: 2 3 auto;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+
+  &:not(:nth-child(2)) {
+    display: none;
+  }
+
+  span.unread {
+    display: none;
+  }
+
+  .title {
+    color: white;
+    letter-spacing: 1px;
+    font-size: 9pt;
+    font-weight: 600;
+    padding: 10px;
+    position: absolute;
+    text-align: center;
+    text-transform: uppercase;
+    top: -38px;
+    left: 50px;
+  }
+
+  entry {
+    flex: 0 0 30px;
+    input {
+      outline: 0;
+      display: block;
+      height: 31px;
+      padding: 2px;
+      margin-top: -1px;
+      width: 100%;
+    }
+  }
+}
+
+members {
+  background: #333;
+  flex: 0 0 auto;
+  padding: 20px;
+}
+
+member {
+  img { border-radius: 50%; height: auto }
+
+  &:only-child {
+    display: block;
+    text-align: center;
+    img { width: 100px }
+    .name {
+      margin-top: 5px;
+      color: white;
+    }
+  }
+
+  &:not(:only-child) {
+    float: left;
+    img { width: 50px }
+    .name { display: none }
+
+    &:not(:first-child) { margin-left: -10px }
+  }
+}
+
+messages {
+  flex: 1 1 auto;
+  overflow: hidden;
+  overflow-y: scroll;
+  table {
+    background-color: white;
+    border: 1px solid silver;
+    margin: 0 !important;
+    td.from {
+      color: gray;
+      font-size: 8pt;
+      padding: 10px;
+    }
+  }
+}
+
+span.unread {
+  -webkit-background-clip: padding-box;
+  -webkit-border-radius: 2px;
+  -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .7);
+  -webkit-font-smoothing: subpixel-antialiased;
+  background-image: -webkit-gradient(linear, center top, center bottom, from(#fa3c45), to(#dc0d17));
+  background-image: -webkit-linear-gradient(#fa3c45, #dc0d17);
+  background: #dc0d17;
+  color: #fff;
+  display: inline-block;
+  font-family: 'Helvetica Neue', Helvetica, sans-serif;
+  font-size: 10px;
+  font-weight: bold;
+  line-height: normal;
+  min-height: 13px;
+  min-width: 20px;
+  padding: 2px;
+  text-align: center;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, .4);
+}

@@ -65,10 +65,8 @@ h6 {
     font-size: 10px;
   }
 }
-a {
-  text-decoration: none;
-}
-a:hover {
+a,a:hover {
+  cursor: pointer;
   text-decoration: none;
 }
 .btn {

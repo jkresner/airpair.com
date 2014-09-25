@@ -1,0 +1,52 @@
+@import "ap.less";
+
+body {
+  align-content: stretch;
+  align-items: stretch;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+footer {
+  background: silver;
+  flex: 0 0 auto;
+  font-size: 9pt;
+  padding: 5px;
+  text-align: center;
+}
+
+#main {
+  align-content: stretch;
+  align-items: stretch;
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+
+  #requests {
+    flex: 1 1 auto;
+    align-self: auto;
+    overflow: hidden;
+    overflow-y: scroll;
+    padding: 10px;
+  }
+}
+
+header {
+  flex: 0 0 auto;
+  ul.dropdown-menu[role="menu"] {
+    li {
+      float: none;
+      margin: 0;
+      padding: 5px;
+    }
+  }
+}
+
+img.avatar {
+  border-radius: 50%;
+  width: 25px;
+  height: auto;
+}
