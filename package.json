@@ -61,6 +61,9 @@
     "passport": "^0.2.1",
     "passport-google-oauth": "^0.1.5",
     "passport-local": "^1.0.0",
-    "traceur": "0.0.66"
+    "traceur": "0.0.61",
+    "traceur-source-maps": "^1.0.2",
+    "winston": "^0.8.0",
+    "winston-ses": "0.0.4"
   }
 }

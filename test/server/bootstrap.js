@@ -1,7 +1,8 @@
-var Traceur = require('traceur')
-Traceur.require.makeDefault(function(filename) {
-  return !(/node_modules/.test(filename))
-});
+var traceur = require('traceur')
+require('traceur-source-maps').install(traceur)
+traceur.require.makeDefault(function (filePath) {
+  return !~filePath.indexOf('node_modules')
+})
 
 require('./helpers/http')
 global.data    = require('./../data/data')
@@ -9,8 +10,8 @@ global.sinon    = require('sinon')
 global.chai     = require('chai')
 global.expect   = chai.expect
 
-var initConfig = require('./../../server/config')
-var setGlobals = require('./../../server/global')
+var initConfig = require('./../../server/util/config')
+var setGlobals = require('./../../server/util/global')
 var config = initConfig('test', __dirname)
 setGlobals(config)
 

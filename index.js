@@ -26,9 +26,14 @@ export function run()
 	hbsEngine(app)
 	routes(app)
 
-	app.use(function(err, req, res, next){
-	  console.log(err.stack.red)
-	  res.status(400).send('Something broke!<br /><br />'+err.message)
+	app.use( (err, req, res, next) => {
+		$error(err, req.user, req) 
+		res.status(400).send(err.message)
+	})
+
+	process.on('uncaughtException', (err) => { 
+		$error(err, null, null)
+		process.exit(1) 
 	})
 
 	var server = app.listen(config.port, function() {
