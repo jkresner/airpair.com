@@ -13,7 +13,7 @@ export function logError(e, user, req)
   
   if (e.stack) {
     console.log(e.message.red)
-    console.log(e.stack.white)    
+    console.log(e.stack.grey)    
   }
   else 
   {
