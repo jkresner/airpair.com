@@ -21,7 +21,14 @@ var cfg = {
         'https://www.googleapis.com/auth/userinfo.profile'
       ]
     }  
-  }
+  },
+  mail: {
+    ses: { 
+      access_key: process.env.MAIL_SES_ACCESS_KEY || "none",
+      secret_key: process.env.MAIL_SES_SECRET_KEY || "none"
+    }
+  },
+  log: {}
 }
 
 module.exports = function(env, appdir) {
@@ -39,6 +46,17 @@ module.exports = function(env, appdir) {
     cfg.auth.oAuth.callbackHost = process.env.AUTH_OAUTH_CALLBACKHOST
     cfg.auth.google.clientID = process.env.AUTH_GOOGLE_CLIENTID
     cfg.auth.google.clientSecret = process.env.AUTH_GOOGLE_CLIENTSECRET
+  }
+
+  if (cfg.env == 'production') {
+    cfg.log.email = {
+      level:          process.env.LOG_EMAIL_LEVEL || 'error',
+      sesAccessKey:   cfg.mail.ses.access_key,
+      sesSecretKey:   cfg.mail.ses.secret_key,
+      sesFrom:        process.env.LOG_EMAIL_FROM || '<jk@airpair.com>',
+      sesTo:          process.env.LOG_EMAIL_RECEIVERS.split(','),
+      sesSubject:     process.env.LOG_EMAIL_SUBJECT || 'aperror'
+    }
   }
 
   return cfg;

@@ -1,15 +1,16 @@
 'use strict';
 
-// Traceur will compile all JS aside from node modules
-var Traceur = require('traceur');
-Traceur.require.makeDefault(function(filename) {
-  return !(/node_modules/.test(filename));
-});
+// Compile JS aside from node modules as es6
+var traceur = require('traceur')
+require('traceur-source-maps').install(traceur)
+traceur.require.makeDefault(function (filePath) {
+  return !~filePath.indexOf('node_modules')
+})
 
-var initConfig = require('./server/config')
-var setGlobals = require('./server/global')
-
+var initConfig = require('./server/util/config')
 var config = initConfig(process.env.env || 'dev', __dirname)
+
+var setGlobals = require('./server/util/global')
 setGlobals(config)
 
 require('./index').run()
