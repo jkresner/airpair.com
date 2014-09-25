@@ -60,7 +60,7 @@ module.exports = function(env, appdir) {
   }
 
   if (cfg.env == 'staging' || cfg.env == 'production') {
-    console.log('config: ', cfg);
+    console.log('config: ', JSON.stringify(cfg).white)
   }
 
   return cfg;
