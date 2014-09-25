@@ -28,7 +28,9 @@ var cfg = {
       secret_key: process.env.MAIL_SES_SECRET_KEY || "none"
     }
   },
-  log: {}
+  log: {},
+  analytics: 
+    { segmentio: { writekey: 'wwu223hbml' } }
 }
 
 module.exports = function(env, appdir) {
