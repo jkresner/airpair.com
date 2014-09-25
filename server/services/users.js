@@ -151,6 +151,7 @@ export function getSessionLite(cb) {
 
 
 var VALID_ROLES = ['admin',       // Get access to all admin backend app
+                   'dev',         // Get application error notification
                    'pipeliner',   // Get pipeline emails
                    'editor',      // Can publish posts
                    'matchmaker']  // Can make suggestions + schedule times
