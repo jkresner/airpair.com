@@ -30,6 +30,7 @@ describe('Server: ', function() {
   describe('Authz: ', require('./authzSpec'))  
   describe('Posts: ', require('./postsSpec'))   
   describe('Tags: ', require('./tagsSpec'))    
+  describe('Analytics: ', require('./analyticsSpec'))    
 
 })
 

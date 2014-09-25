@@ -44,6 +44,7 @@
     "watchify": "^1.0.2"
   },
   "dependencies": {
+    "analytics-node": "^1.1.0",
     "bcrypt": "^0.8.0",
     "body-parser": "^1.8.1",
     "colors": "^0.6.2",
