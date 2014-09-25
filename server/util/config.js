@@ -51,8 +51,8 @@ module.exports = function(env, appdir) {
   if (cfg.env == 'production') {
     cfg.log.email = {
       level:          process.env.LOG_EMAIL_LEVEL || 'error',
-      sesAccessKey:   cfg.mail.ses_access_key,
-      sesSecretKey:   cfg.mail.ses_secret_key,
+      sesAccessKey:   cfg.mail.ses.access_key,
+      sesSecretKey:   cfg.mail.ses.secret_key,
       sesFrom:        process.env.LOG_EMAIL_FROM || '<jk@airpair.com>',
       sesTo:          process.env.LOG_EMAIL_RECEIVERS.split(','),
       sesSubject:     process.env.LOG_EMAIL_SUBJECT || 'aperror'
@@ -60,7 +60,7 @@ module.exports = function(env, appdir) {
   }
 
   if (cfg.env == 'staging' || cfg.env == 'production') {
-    console.log('config: ', JSON.stringify(cfg).white)
+    console.log(`config: ${JSON.stringify(cfg)}`.white)
   }
 
   return cfg;
