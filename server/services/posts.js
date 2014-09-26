@@ -92,7 +92,8 @@ export function getTableOfContents(markdown, cb) {
 }
 
 export function update(id, o, cb) {
-  if (o.published) { cb(new Error('Cannot update a published post'), null) }
+  if (o.published && !_.contains(this.user.roles, 'editor')) 
+    return cb(new Error('Cannot update a published post'), null)
 
   o.updated = new Date()
   
