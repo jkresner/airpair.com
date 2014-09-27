@@ -8,6 +8,8 @@ export function logError(e, user, req)
   var reqInfo = req ? 
     `${req.method} ${req.url}` : ''
 
+  if (!user && req) { userInfo += ` ${req.sessionID}` }
+
   console.log(userInfo.red)
   console.log(reqInfo.red)    
   

@@ -46,6 +46,8 @@ module.exports = function(env, appdir) {
   }
 
   if (cfg.env == 'staging' || cfg.env == 'production') {
+    cfg.session.secret = process.env.SESSION_SECRET || 'airyv1'
+
     cfg.auth.oAuth.callbackHost = process.env.AUTH_OAUTH_CALLBACKHOST
     cfg.auth.google.clientID = process.env.AUTH_GOOGLE_CLIENTID
     cfg.auth.google.clientSecret = process.env.AUTH_GOOGLE_CLIENTSECRET
