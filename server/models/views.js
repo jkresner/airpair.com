@@ -1,9 +1,13 @@
+var mongoose = require('mongoose')
+var {ObjectId} = mongoose.Schema
 
-export default mongoose.model('PageView', new mongoose.Schema({
+var objectType = ['post','workshop','expert']
+
+module.exports = mongoose.model('view', new mongoose.Schema({
   
   utc:          { type: Date, required: true },  
   userId:       { type: ObjectId, ref: 'User', index: true },  
-  sessionId:    { type: ObjectId, ref: 'v1Session', index: true },    
+  sessionId:    { type: ObjectId, ref: 'v1Session', index: true, sparse: true },    
   objectId:     { type: ObjectId, required: true },
   objectType:   { enum: objectType, type: String, required: true },  
   url:          { type: [TagSlim], 'default': [] },  
@@ -20,15 +24,3 @@ export default mongoose.model('PageView', new mongoose.Schema({
 //
 // We can also query this list and inject into the request to see what the user viewed
 // leading up to making their request
-
-
-// ?
-// export default mongoose.model('EmailSent', new mongoose.Schema({
-  
-//   utc:          { type: Date, required: true },  
-//   userId:       { type: ObjectId, ref: 'User', index: true },  
-//   objectId:     { type: ObjectId, required: true },
-//   objectType:   { enum: objectType, type: String, required: true },  
-//   utm:          { type: String }  
-
-// }))
