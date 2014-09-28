@@ -19,6 +19,17 @@ var cbSend = (httpMethod, res, next) => {
   }
 }
 
+function resolveParamFn(Svc, svcFnName, pramaName) {  
+  return (req, res, next, id) => {
+    if (logging) $log('paramFn', pramaName, id)
+    Svc[svcFnName](id, function(e, r) {
+      if (!r && !e) e = new Error(`${pramaName} not found`)     
+      req[pramaName] = r
+      next(e, r)
+    })   
+  }
+}
+
 
 export function serve(Svc, svcFnName, argsFn) {  
   return (req, res, next) => {
@@ -31,7 +42,7 @@ export function serve(Svc, svcFnName, argsFn) {
 }
 
 
-export var initAPI = (Svc, custom) => {
+export var initAPI = (Svc, custom, paramFns) => {
   var base = {
     getAll: (req) => [],
     getById: (req) => [req.params.id],
@@ -39,14 +50,19 @@ export var initAPI = (Svc, custom) => {
     update: (req) => [req.params.id,req.body],
     deleteById: (req) => [req.params.id]
   }
-
   var argsFns = _.extend(base, (custom || {}))
-  var api = {};
+  var api = { paramFns: {} }
 
   for (var name of Object.keys(argsFns))
-  {
     api[name] = serve(Svc, name, argsFns[name])
-  }
+
+  if (paramFns)
+    for (var paramName of Object.keys(paramFns)) 
+    {
+      var svcFn = paramFns[paramName]
+      api.paramFns[svcFn] = resolveParamFn(Svc,svcFn,paramName)
+    }
+  
 
   return api;
 }
