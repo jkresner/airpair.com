@@ -2,6 +2,17 @@ var logging = false;
 
 var isApiRequest = (req) => req.url.indexOf('api') != 0
 
+export function setAnonSessionData(req, res, next) {
+  if (!req.isAuthenticated || !req.isAuthenticated())
+  {
+    if (!req.session.anonData) req.session.anonData = {}
+    next()
+  }
+  else
+  {
+    req.session.anonData = null
+  }
+}
 
 export function authd(req, res, next) {
   if (!req.isAuthenticated || !req.isAuthenticated())
@@ -66,7 +77,7 @@ export var mm = authorizeRole('matchmaker')
 export var editor = authorizeRole('editor')
 
 
-var setReqSessionVar = (varName) => {
+var setSessionVarFromQuery = (varName) => {
   return (req, res, next) => {
     var reqVar = req.query[varName]
     if (reqVar) {
@@ -77,5 +88,5 @@ var setReqSessionVar = (varName) => {
   }
 }
 
-export var setReturnTo = setReqSessionVar('returnTo')
-export var setMixpanelId = setReqSessionVar('mixpanelId')
+export var setReturnTo = setSessionVarFromQuery('returnTo')
+export var setMixpanelId = setSessionVarFromQuery('mixpanelId')

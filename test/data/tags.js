@@ -23,7 +23,7 @@ module.exports = {
     "_id" : "514825fa2a26ea0200000025",
     "__v" : 0,
     "desc" : "MongoDB is a scalable, high-performance, open source, document-oriented database.  It supports a large number of languages and application development platforms.  ",
-    "name" : "mongodb",
+    "name" : "MongoDB",
     "short" : "mongodb",
     "soId" : "mongodb",
     "slug" : "mongodb"
