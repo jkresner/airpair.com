@@ -6,13 +6,13 @@ var objectType = ['post','workshop','expert']
 module.exports = mongoose.model('view', new mongoose.Schema({
   
   utc:          { type: Date, required: true },  
-  userId:       { type: ObjectId, ref: 'User', index: true },  
-  sessionId:    { type: ObjectId, ref: 'v1Session', index: true, sparse: true },    
+  userId:       { type: ObjectId, ref: 'User', index: true, sparse: true },  
+  anonymousId:  { type: String, ref: 'v1Session', index: true, sparse: true },    
   objectId:     { type: ObjectId, required: true },
-  objectType:   { enum: objectType, type: String, required: true },  
-  url:          { type: [TagSlim], 'default': [] },  
-  utm:          { type: String }  
-  referrer:     { type: String }  
+  objectType:   { enum: objectType, type: String, required: true, lowercase: true },  
+  url:          { type: String, required: true },  
+  campaign:     { type: {} },  
+  referer:      { type: String }  
 
 }))
 
