@@ -3,7 +3,8 @@ import * as Svc from '../services/users'
 
 
 export default initAPI(Svc, {
-  getSessionByUserId: (req) => [],
-  getSessionLite: (req) => [],
-  toggleUserInRole: (req) => [req.params.id,req.params.role]
+  getSession: (req) => [],
+  getSessionFull: (req) => [],
+  toggleUserInRole: (req) => [req.params.id,req.params.role],
+  toggleTag: (req) => [req.tag]  
 })

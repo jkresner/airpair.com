@@ -33,7 +33,7 @@ function resolveParamFn(Svc, svcFnName, pramaName) {
 
 export function serve(Svc, svcFnName, argsFn) {  
   return (req, res, next) => {
-    var thisSvc = { user: req.user }
+    var thisSvc = { user: req.user, sessionID: req.sessionID, session: req.session }
     if (logging) $log('thisSvc', svcFnName, argsFn, Svc, thisSvc)
     var args = argsFn(req)
     args.push(cbSend(req.method,res,next))

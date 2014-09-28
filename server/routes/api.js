@@ -3,16 +3,18 @@ import PostsAPI from '../api/posts'
 import UsersAPI from '../api/users'
 import TagsAPI from '../api/tags'
 import * as Tags from '../services/tags'
-import {authd,adm} from '../identity/auth/middleware'
+import {authd,adm,setAnonSessionData} from '../identity/auth/middleware'
 
 export default function(app) {
+
   
   var router = require('express').Router()
 
     .param('tag', TagsAPI.paramFns.getBySlug)
 
-    .get('/session', UsersAPI.getSessionLite)
-    .get('/session/full', UsersAPI.getSessionByUserId)         
+    .get('/session', UsersAPI.getSession)
+    .get('/session/full', UsersAPI.getSessionFull)         
+    .put('/users/me/tag/:tag', setAnonSessionData, UsersAPI.toggleTag) 
 
     .get('/tags/search/:id', TagsAPI.search)    
     .get('/tags/:slug', authd, TagsAPI.getBySlug)
