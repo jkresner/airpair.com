@@ -30,7 +30,7 @@ var cfg = {
   },
   log: {},
   analytics: 
-    { segmentio: { writekey: 'wwu223hbml' } }
+    { segmentio: { writekey: '9793xyfxat' } }
 }
 
 module.exports = function(env, appdir) {
