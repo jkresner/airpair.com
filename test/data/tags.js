@@ -13,7 +13,7 @@ module.exports = {
     "_id" : "514825fa2a26ea0200000028",
     "__v" : 0,
     "desc" : "Node.js is an event-based, asynchronous I/O framework that uses Google&#39;s V8 JavaScript engine.",
-    "name" : "node.js",
+    "name" : "Node.JS",
     "short" : "node.js",
     "slug" : "node.js",
     "soId" : "node.js",
