@@ -42,6 +42,7 @@ module.exports = function(env, appdir) {
     cfg.port = 4444
     cfg.mongoUri = "mongodb://localhost/airpair_test"
     cfg.testlogin = true
+    cfg.auth.oAuth.callbackHost = 'http://localhost:4444'
   }
 
   if (cfg.env == 'staging' || cfg.env == 'production') {
