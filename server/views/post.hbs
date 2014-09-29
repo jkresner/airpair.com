@@ -189,13 +189,13 @@ window.postHlpr.loadPoSt = function()
   function bindTracking() {
     $.each($('.trackPostCTA'), function(idx,el){
       $(el).click(function (e) {
-        analytics.track('Click Post CTA', { type: 'code footer', idx: idx, text: el.innerHTML },analytics.ctx());
-        if (el.href && el.target !== '_blank') {
-          prevent(e);
-          _callback(function () {
-            window.location.href = el.href;
-          });
-        }
+        analytics.track('Click', { type: 'Post CTA', unit: 'code footer', idx: idx, text: el.innerHTML, location: window.location.pathname });
+        
+        setTimeout(function () {
+          window.location.href = $(el).attr('href');
+        }, 250);
+        
+        return false;
       });
     })
   }

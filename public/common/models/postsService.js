@@ -1,5 +1,7 @@
 var headings = [];
-var lazyErrorCb = function(resp) { console.log('error:', resp); };
+var lazyErrorCb = function(resp) { 
+  // console.log('error:', resp); 
+};
 
 angular.module('APSvcPosts', [])  
 

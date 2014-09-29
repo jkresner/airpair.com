@@ -1,7 +1,8 @@
 require('./myPostsList.js');
 require('./editor.js');
 
-var resolver = require('./../common/routes/helpers.js');
+var resolver = require('./../common/routes/helpers.js').resolveHelper;
+
 
 angular.module("APPosts", ['ngRoute', 'APFilters','APShare',
   'APMyPostsList','APPostEditor','APPost', 'APSvcSession', 'APSvcPosts','APTagInput'])
@@ -9,7 +10,7 @@ angular.module("APPosts", ['ngRoute', 'APFilters','APShare',
   .config(['$locationProvider', '$routeProvider', 
       function($locationProvider, $routeProvider) {
 
-    var authd = resolver(['session'])
+    var authd = resolver(['session']);
 
     $routeProvider.when('/posts', {
       template: require('./list.html'),
