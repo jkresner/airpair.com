@@ -2,7 +2,6 @@ import WorkshopsAPI from '../api/workshops'
 import PostsAPI from '../api/posts'
 import UsersAPI from '../api/users'
 import TagsAPI from '../api/tags'
-import * as Tags from '../services/tags'
 import {authd,adm,setAnonSessionData} from '../identity/auth/middleware'
 
 export default function(app) {

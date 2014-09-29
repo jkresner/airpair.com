@@ -8,7 +8,7 @@ module.exports = function(config)
   global.config         = config
   global.$log           = console.log
   global.$error         = require('./logging').logError
-  global.analytics      = require('./../../shared/analytics')
+  global.analytics      = require('./../identity/analytics/analytics')
 
   if (config.log.email)
   {

@@ -1,34 +1,97 @@
 var Analytics = require('analytics-node')
-var segment = new Analytics(config.analytics.segmentio.writekey, { flushAt: 1 })
+var setDevSettings = (config.env == 'dev' || config.env == 'test')
+var segmentOpts = setDevSettings ? { flushAt: 1 } : {}
+var segment = new Analytics(config.analytics.segmentio.writekey, segmentOpts)
 var logging = true
+var viewSvc = require('../../services/views')
 
-export var identify = (userId, anonymousId, traits, context, done) => {
-  if (logging) $log('identify', {userId,anonymousId,traits,context}, done)
-  segment.identify({userId,anonymousId,traits,context}, (e, batch) => { if (done) done() })
+
+var doneBackup = null
+
+//-- don't' want to send userId / anonymousId on the wire if null
+var buildPayload = (userId, anonymousId, payload) => {
+  if (userId) payload.userId = userId.toString()
+  if (anonymousId) payload.anonymousId = anonymousId
+  return payload;
 }
 
-export var track = (userId, anonymousId, event, properties, context, done) => {
-  if (logging) $log('track', {userId,anonymousId,event,properties,context}, done)
-  segment.track({userId,anonymousId,event,properties,context}, (e, batch) => { if (done) done() })
-}
+module.exports = {
 
-export var view = (userId, anonymousId, category, name, properties, context, done) => {
-  if (logging) $log('view', {userId,anonymousId,category,name,properties,context}, done)
-  // write to mongo
-  segment.page({userId,anonymousId,category,name,properties,context}, (e, batch) => { if (done) done() })
-}
+  // used for testing
+  setCallback: (cb) => {
+    doneBackup = (e, batch) => { 
+      $log('**** analytics done'.yellow)
+      doneBackup = null
+      cb() 
+    }
+  },
 
-export var alias = (anonymousId, userId, aliasEvent, done) => {
 
-  segment.alias({ previousId: anonymousId, userId: userId })
-  segment.flush() // flush the alias
+  identify: (userId, anonymousId, traits, context, done) => {
+    if (logging) $log('identify', userId,anonymousId,traits,context)
+    segment.identify(buildPayload(userId, anonymousId, {traits,context}),
+      done || doneBackup)
+  },
 
-  segment.identify({userId: userId})
-  segment.track({
-    userId: userId,
-    event: aliasEvent
-  })
 
+  track: (userId, anonymousId, event, properties, context, done) => {
+    if (logging) $log('track', userId, anonymousId, event, properties, context)    
+    segment.track(buildPayload(userId,anonymousId,{event,properties,context}), 
+      done || doneBackup)
+  },
+
+
+  view: (userId, anonymousId, type, name, properties, context, done) => {
+    if (logging) $log('view', userId, anonymousId, type, name, properties, context)
+    
+    segment.page(buildPayload(userId,anonymousId,{category:type,name,properties,context}))
+    
+    var m = { event:'View', integrations: { 'All': false, 'Mixpanel': true }} 
+    var mProperties = _.extend(properties, {type,name})
+    var mPayload = _.extend(m,buildPayload(userId,anonymousId,{properties:mProperties,context})) 
+
+    $log('mPayload', mPayload)
+    segment.track(mPayload, 
+      done || doneBackup)
+    
+    if (context.campaign) segment.identify(buildPayload(userId, anonymousId, {context}))
+
+    // write to mongo    
+    var {objectId,url} = properties
+    var {referer,campaign} = context
+    viewSvc.create({userId,anonymousId,url,type,objectId,campaign,referer}, null)
+  },
+
+
+  alias: (anonymousId, createdAt, user, aliasEvent, done) => {
+    if (logging) $log('alias', anonymousId, createdAt.format(), user._id, aliasEvent, done)
+    var userId = user._id.toString()
+
+    var traits = { 
+      name: user.name, 
+      email: user.email, 
+      lastSeen: new Date(), 
+      createdAt 
+    }
+
+    segment.alias({ previousId: anonymousId, userId: userId }, (e, b) => {
+      $log('**** aliased'.yellow)
+      segment.identify({userId: userId, traits: traits}, (ee, bb) => {
+        $log('**** identified'.yellow)
+        segment.track({
+          userId: userId,
+          event: aliasEvent
+        }, (eee, bbb) => {
+          $log('**** signedup'.yellow)
+          done()
+        })
+        segment.flush()
+      })
+    })
+    segment.flush()
+
+    viewSvc.alias(anonymousId, user._id, null)
+  }
 }
 
 //-- Pairing with segment chris

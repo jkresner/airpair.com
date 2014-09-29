@@ -2,6 +2,16 @@ module.exports = function()
 {
   describe("API", function() {
   
+    before(function(done) {
+      stubAnalytics()
+      testDb.initTags(done)      
+    })
+
+    after(function(done) {
+      resotreAnalytics()
+      done()      
+    })
+  
     it('gets 401 on unauthenticated session for creating a post', function(done) {
       var opts = { status: 401, unauthenticated: true }
       var d = { title: "test", by: { bio: 'yoyo' } }
@@ -72,34 +82,24 @@ module.exports = function()
     })
 
     
-    it('Can not edit post as non-author', function(done) {
-      $log('TODO', 'write test')
-      done()      
-    })
+    it('Can not edit post as non-author', () =>
+      $log('TODO', 'write test') )
 
 
-    it('Can edit post as author', function(done) {
-      $log('TODO', 'write test')
-      done()
-    })
+    it('Can edit post as author', () =>
+      $log('TODO', 'write test') )
 
 
-    it('Can not delete post as non-author', function(done) {
-      $log('TODO', 'write test')
-      done()      
-    })
+    it('Can not delete post as non-author', () =>
+      $log('TODO', 'write test') )
 
 
-    it('Can delete post as author', function(done) {
-      $log('TODO', 'write test')
-      done()      
-    })
+    it('Can delete post as author', () =>
+      $log('TODO', 'write test') )
 
 
-    it('Can not publish post as non-editor', function(done) {
-      $log('TODO', 'write test')
-      done()      
-    })
+    it('Can not publish post as non-editor', () =>
+      $log('TODO', 'write test') )
 
 
     it('Can publish post as editor', function(done) {
