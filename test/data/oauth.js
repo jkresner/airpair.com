@@ -1,6 +1,6 @@
 module.exports = {
   
-  adm: { provider: 'google',
+  admin: { provider: 'google',
     id: '199992380360999999999',
     displayName: 'Admin Daemon',
     name: { familyName: 'Daemon', givenName: 'Admin' },
@@ -60,23 +60,24 @@ module.exports = {
     token: {}
   },
 
-  jkre: { provider: 'google',
-    id: '111546642302857408422',
-    displayName: 'Jonathon Kresner',
-    name: { familyName: 'Kresner', givenName: 'Jonathon' },
-    emails: [ { value: 'jkresner@gmail.com' } ],
+  exap: { provider: 'google',
+    id: '105075583437166504731',
+    displayName: 'AirPair Experts',
+    name: { familyName: 'AirPair', givenName: 'Experts' },
+    emails: [ { value: 'experts@airpair.com' } ],
     _json: 
-     { id: '111546642302857408422',
-       email: 'jkresner@gmail.com',
+     { id: '105075583437166504733',
+       email: 'experts@airpair.com',
        verified_email: true,
-       name: 'Jonathon Kresner',
-       given_name: 'Jonathon',
-       family_name: 'Kresner',
-       link: 'https://plus.google.com/111546642302857408422',
-       picture: 'https://lh3.googleusercontent.com/-daU--wCrRcI/AAAAAAAAAAI/AAAAAAAAAKs/o_lTNF4G8Pk/photo.jpg',
+       name: 'Air Pair',
+       given_name: 'Air',
+       family_name: 'Pair',
+       link: 'https://plus.google.com/+AirPair',
+       picture: 'https://lh6.googleusercontent.com/-tEGuZ5EdOw0/AAAAAAAAAAI/AAAAAAAAAEo/Tvt0ZoRCwv0/photo.jpg',
        gender: 'male',
-       locale: 'en' },
-    token: {  }    
+       locale: 'en',
+       hd: 'airpair.com' },
+    token: {}
   },
 
   rbrw: { provider: 'google',

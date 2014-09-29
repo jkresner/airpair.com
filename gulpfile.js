@@ -17,6 +17,15 @@ paths = {
   views: 'server/views/**'
 }
 
+gulp.task('testnodemon', function () {
+  nodemon({ script: 'test/server/_run.js', ext: 'html js', 
+      ignore: ['public/*','dist/*'] })
+    .on('change', ['lint'])
+    .on('restart', function () {
+      console.log('>> node test restart');
+    })
+});
+
 gulp.task('lint', function () {
   gulp.src('./**/*.js')
     .pipe(jshint())
@@ -84,5 +93,7 @@ gulp.task('bundle', function() {
 
 
 gulp.task('default', ['nodemon','less','watch','watchify']);
+
+gulp.task('test', ['testnodemon','build']);
 
 gulp.task('build', ['less','bundle']);
