@@ -7,16 +7,38 @@
       function(SessionService, $window, $location, $q) { 
         return SessionService.getSession().then(
           function(data) {
-            return data;
+            console.log('data', data)
+            if (data._id)
+            { 
+              return data;
+            } 
+            else
+            {
+              $location.path('/v1/auth/login')
+              return $q.reject();  
+            }
           },
           function()
           {   
-            // $window.location = '/v1/auth/login?returnTo=/posts/new';
             $location.path('/v1/auth/login')
             return $q.reject();
           }
         ); 
       }]; 
+  }
+
+  global.trackRoute = function(locationPath) {
+    if (analytics)
+    {
+      if (locationPath == '/v1/auth/login') {
+        // console.log('tracking', 'login')
+        analytics.track('Route',{ category: 'auth', name: 'login' })
+      }
+      else if (locationPath == '/v1/auth/signup') {
+        // console.log('tracking', 'signup')
+        analytics.track('Route',{ category: 'auth', name: 'signup' })
+      }      
+    }
   }
 
 
@@ -40,7 +62,10 @@
   }
 
 
-  module.exports = resolveHelper;
+  module.exports = {
+    resolveHelper: resolveHelper,
+    trackRoute: trackRoute
+  };
 
 
 })()
