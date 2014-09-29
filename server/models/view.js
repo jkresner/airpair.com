@@ -9,7 +9,7 @@ module.exports = mongoose.model('view', new mongoose.Schema({
   userId:       { type: ObjectId, ref: 'User', index: true, sparse: true },  
   anonymousId:  { type: String, ref: 'v1Session', index: true, sparse: true },    
   objectId:     { type: ObjectId, required: true },
-  objectType:   { enum: objectType, type: String, required: true, lowercase: true },  
+  type:         { enum: objectType, type: String, required: true, lowercase: true },  
   url:          { type: String, required: true },  
   campaign:     { type: {} },  
   referer:      { type: String }  

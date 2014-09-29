@@ -3,7 +3,13 @@ module.exports = function()
   describe("API", function() {
 
     before(function(done) {
-      testDb.initTags(done)
+      stubAnalytics()
+      testDb.initTags(done)      
+    })
+
+    after(function(done) {
+      resotreAnalytics()
+      done()      
     })
 
     it('Gets sessionId on anonymous session', function(done) {
@@ -51,11 +57,46 @@ module.exports = function()
         })
     })
 
-  
+
     it('Can save bookmark data to anonymous session', function(done) {
       $log('TODO write test')
       done()
     })
+
+
+    it('Copies anonymous session data to new local signup user', (done) =>
+      http(global.app)
+        .put('/v1/api/users/me/tag/mongodb')
+        .end( (err, resp) => {
+          cookie = resp.headers['set-cookie']
+          get('/session', {}, (s) => { 
+            expect(s.tags[0].name).to.equal('MongoDB') 
+            var singup = getNewUserData('ramo')
+            http(global.app).post('/v1/auth/signup').send(singup)
+              .set('cookie',cookie)
+              .end( (err, resp) =>
+                get('/session/full', {}, (sFull) => {
+                  expect(sFull._id).to.exist
+                  expect(sFull.name).to.equal(singup.name)                
+                  expect(sFull.tags).to.exist
+                  expect(sFull.tags.length).to.equal(1)
+                  expect(sFull.tags[0].name).to.equal('MongoDB')                  
+                  done() 
+                })
+              )
+          })
+        })
+    )
+
+
+
+    it('Copies anonymous session data to new google signup user', () =>
+      $log('TODO', 'figure out how to write test') )
+
+
+    it('Copies anonymous session data to local login user', () =>
+      $log('NOT going to be implemented'))
+
 
 
     it('gets slim authenticated session', function(done) {

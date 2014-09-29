@@ -5,15 +5,17 @@ module.exports = function()
   describe("Signup: ", function() {
 
     before(function(done) {
+      stubAnalytics()
+      done()
+    })
+    
+    after(function(done) {
+      resotreAnalytics()
       done()
     })
 
-
     it('Can sign up as new user with local credentials', function(done) {
-      var d = { 
-        name: "Jonathon "+moment().format(),
-        email: "jk"+moment().format()+"@airpair.com",
-        password: "Yoyoyoyoy" }
+      var d = getNewUserData('jkap')
 
       http(global.app).post('/v1/auth/signup').send(d).expect(302)
         .end(function(err, resp) {
@@ -35,14 +37,14 @@ module.exports = function()
 
 
     it('Can sign up as new user with google', function(done) {
-      UserService.upsertProviderProfile(null, 'google', data.oauth.jkre, function(e,usr) {
-        login('jkre', usr, function() {
+      UserService.upsertProviderProfile.call(newUserSession(), 'google', data.oauth.rbrw, function(e,usr) {
+        login('rbrw', usr, function() {
           get('/session/full', {}, function(s) {
             expect(s._id).to.equal(usr._id.toString())
             expect(s.email).to.equal(usr.email)
             expect(s.name).to.equal(usr.name) 
             expect(s.googleId).to.be.undefined  // not returned from session call            
-            expect(s.google.id).to.equal(data.oauth.jkre.id)  
+            expect(s.google.id).to.equal(data.oauth.rbrw.id)  
             expect(s.emailVerified).to.equal(false)  
             expect(s.local).to.be.undefined  // holds password field       
             expect(s.roles).to.be.undefined // new users have undefined roles
@@ -54,25 +56,25 @@ module.exports = function()
 
     it('Can not sign up with local credentials and existing gmail', function(done) {
       var d = { 
-        name: "Jonathon Kresner",
-        email: "jk@airpair.com",
+        name: "AirPair Experts",
+        email: "experts@airpair.com",
         password: "Yoyoyoyoy" }
 
-      http(global.app).post('/v1/auth/signup').send(d)
-        .expect(400)
-        .expect('Content-Type', /json/)
-        .end(function(err, res){
-          if (err) return done(err)   
-          expect(res.body.error).to.equal('try google login')
-          done()
+      UserService.upsertProviderProfile.call(newUserSession(), 'google', data.oauth.exap, function(e,usr) {
+        expect(usr._id).to.exist
+        http(global.app).post('/v1/auth/signup').send(d)
+          .expect(400)
+          .expect('Content-Type', /json/)
+          .end(function(err, res){
+            if (err) return done(err)   
+            expect(res.body.error).to.equal('try google login')
+            done()
+        })
       })
     })
 
     it('Can not sign up with local credentials and existing local email', function(done) {
-      var d = { 
-        name: "Jonathon Exists"+moment().format(),
-        email: "jkexists"+moment().format()+"@airpair.com",
-        password: "Yoyoyoyoy" }
+      var d = getNewUserData('jkap')
 
       http(global.app).post('/v1/auth/signup').send(d).expect(200)
         .end(function(e, r) {

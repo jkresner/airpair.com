@@ -8,4 +8,6 @@ export default initAPI(Svc, {
   publish: (req) => [req.params.id,req.body],
   getRecentPublished: (req) => [],
   getUsersPublished: (req) => [req.params.id]
+}, {
+  'post':'getBySlug'
 })

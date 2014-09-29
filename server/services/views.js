@@ -14,15 +14,15 @@ export function getByUsersId(id, cb) {
 }
 
 
-export function getBySessionId(id, cb) {
+export function getByAnonymousId(id, cb) {
   var opts = {}
-  svc.searchMany({ sessionId: id}, opts, cb)
+  svc.searchMany({ anonymousId: id}, opts, cb)
 }
 
 
 // Called when aliasing
-export function updateSessionIdWithUserId(sessionId, userId, cb) {
-  View.update({ sessionId: id}, {userId}, { multi: true }, cb) 
+export function alias(anonymousId, userId, cb) {
+  View.update({ anonymousId}, {userId}, { multi: true }, cb) 
 }
 
 

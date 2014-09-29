@@ -7,7 +7,7 @@ module.exports = {
   idsEqual: idsEqual,
 
   ObjectId2Date: (id) => {
-    new Date(parseInt(id.toString().slice(0, 8), 16) * 1000)
+    return new Date(parseInt(id.toString().slice(0, 8), 16) * 1000)
   },
 
   toggleItemInArray: (array, item) => {
@@ -18,6 +18,10 @@ module.exports = {
       if (existing) return _.without(array, existing) 
       else return array.push(t)
     } 
+  },
+
+  sessionCreatedAt: (session) => {
+    return new moment(session.cookie._expires).subtract(session.cookie.originalMaxAge,'ms')
   }
 
 }
