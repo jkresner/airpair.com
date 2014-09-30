@@ -8,11 +8,15 @@ var logging = false
 var svc = new Svc(Post, logging)
 
 var fields = {
-  listSelect: { 'by.name': 1, 'by.avatar': 1, 'meta.description': 1, title:1, slug: 1, created: 1, published: 1, tags: 1 }
+  listSelect: { 'by.name': 1, 'by.avatar': 1, 'meta.description': 1, title:1, slug: 1, created: 1, published: 1, tags: 1 },
+  adminListSelect: { 'by.name': 1, 'by.avatar': 1, 'meta.description': 1, title:1, slug: 1, created: 1, published: 1, publishedBy: 1, updated: 1, tags: 1 }  
 } 
 
 var queries = {
-  published: { 'published' : { '$exists': true }},
+  published: {  '$and': [
+    {'published' : { '$exists': true }} ,
+    {'published': { '$lt': new Date() }} 
+  ] },
   updated: { 'updated' : { '$exists': true }}  
 }
 
@@ -47,11 +51,8 @@ export function getBySlug(slug, cb) {
 }
 
 export function getAllAdmin(cb) {
-  var opts = { fields: fields.listSelect, options: { sort: { 'updated': -1 } } };
-  svc.searchMany(queries.updated, opts, (e,r) => { 
-    for (var p of r) { p.url = `/posts/publish/${p._id}` }
-    cb(e, r)
-  })
+  var opts = { fields: fields.adminListSelect, options: { sort: { 'updated': -1 } } };
+  svc.searchMany(queries.updated, opts, addUrl(cb))
 }
 
 export function getPublished(cb) {
@@ -63,13 +64,19 @@ export function getRecentPublished(cb) {
   svc.searchMany(queries.published, opts, addUrl(cb))
 }
 
+export function getAllPublished(cb) {
+  var opts = { fields: fields.listSelect, options: { sort: { 'published': -1 } } };
+  svc.searchMany(queries.published, opts, addUrl(cb))
+}
+
+
 //-- Placeholder for showing similar posts to a currently displayed post
 export function getSimilarPublished(cb) {
   cb(null,[])
 }
 
 export function getUsersPublished(username, cb) {
-  var opts = { fields: fields.listSelect, options: { sort: 'published' } };
+  var opts = { fields: fields.listSelect, options: { sort: { 'published': -1 } } };
   var query = _.extend({ 'by.username': username }, queries.published)
   svc.searchMany(query, opts, addUrl(cb))
 }
@@ -91,16 +98,22 @@ export function getTableOfContents(markdown, cb) {
   return cb(null, {toc:toc})
 }
 
+
 export function update(id, o, cb) {
-  if (o.published && !_.contains(this.user.roles, 'editor')) 
-    return cb(new Error('Cannot update a published post'), null)
+  svc.getById(id, (e, r) => {  
+    var inValid = null
+    if (!_.idsEqual(r.by.userId, this.user._id)) inValid = 'Cannot updated post not created by you'
+    if (o.published && !_.contains(this.user.roles, 'editor')) inValid = 'Cannot update a published post'
+    if (inValid) return cb(new Error(403,inValid)
 
-  o.updated = new Date()
-  
-  //-- todo, authorize for owner or editor (maybe using params?)
+    o.updated = new Date()
+    
+    //-- todo, authorize for owner or editor (maybe using params?)
 
-  svc.update(id, o, cb) 
+    svc.update(id, o, cb) 
+  })
 }
+
 
 export function publish(id, o, cb) {
   if (!o.slug) { cb(new Error('Slug required for a published post'), null) }
@@ -123,17 +136,15 @@ export function publish(id, o, cb) {
   svc.update(id, o, cb) 
 }
 
+
 export function deleteById(id, cb) {
   svc.getById(id, (e, r) => {
-    if (r.by.userId.toString() != this.user._id.toString()) { 
+    if (r.by.userId.toString() != this.user._id.toString()) 
       cb(new Error('Cannot delete post not created by you'), null) 
-    } 
-    else if (r.published) { 
+    else if (r.published)
       cb(new Error('Cannot delete published post'), null) 
-    } 
-    else {
+    else
       svc.deleteById(id, cb)          
-    }
   })
 }
 
