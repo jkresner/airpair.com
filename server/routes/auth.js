@@ -1,6 +1,6 @@
 import {google,local} from '../identity/auth/providers/index'
 import {logout,setTestLogin} from '../identity/auth/actions'
-import {setReturnTo,setMixpanelId,authDone} from '../identity/auth/middleware'
+import {setReturnTo,authDone} from '../identity/auth/middleware'
 
 
 export default function(app) {
@@ -10,7 +10,6 @@ export default function(app) {
   // Use middleware (only on auth routes) to look at the
   // querystring and save params to the session
     .use(setReturnTo)
-    .use(setMixpanelId)
 
     .get('/logout', logout(config.auth))
     .post('/login', local.login, authDone)

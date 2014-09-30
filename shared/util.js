@@ -21,7 +21,7 @@ module.exports = {
   },
 
   sessionCreatedAt: (session) => {
-    return new moment(session.cookie._expires).subtract(session.cookie.originalMaxAge,'ms')
+    return new moment(session.cookie._expires).subtract(session.cookie.originalMaxAge,'ms').toDate()
   }
 
 }

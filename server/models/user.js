@@ -26,7 +26,8 @@ var Cohort = {
     visit_last:           { type: Date },    // user this to see if we need to update visit array
     visit_signup:         { type: Date },  
     visits:               { type: [Date] },  // array of dates the user came to the site
-  }
+  },
+  aliases:      { type: [String] }  
   // requests:     Get by query from Requests
   // orders:       Get by query from Order
   // spend:        Get by query from Orders
@@ -59,7 +60,7 @@ var User = new Schema({
   tags:            { type: [TagSlim], 'default': [] },   //-- Stack of the user
   bookmarks:       { type: [Bookmark], 'default': [] },  
 
-  cohort:          { type: Cohort },
+  cohort:          Cohort,
 
   bio: String, // Used for blog posts
 

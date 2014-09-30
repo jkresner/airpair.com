@@ -14,6 +14,7 @@ module.exports = function()
       done()
     })
 
+
     it('Can sign up as new user with local credentials', function(done) {
       var d = getNewUserData('jkap')
 
@@ -30,6 +31,10 @@ module.exports = function()
             expect(s.emailVerified).to.equal(false)  
             expect(s.local).to.be.undefined  // holds password field   
             expect(s.roles).to.be.undefined // new users have undefined roles
+            expect(s.cohort.engagement.visit_first).to.exist 
+            expect(s.cohort.engagement.visit_last).to.be.exist 
+            expect(s.cohort.engagement.visit_signup).to.be.exist
+            expect(s.cohort.engagement.visits).to.be.exist
             done()
         })
       })
@@ -54,6 +59,7 @@ module.exports = function()
       })
     })
 
+
     it('Can not sign up with local credentials and existing gmail', function(done) {
       var d = { 
         name: "AirPair Experts",
@@ -73,6 +79,7 @@ module.exports = function()
       })
     })
 
+
     it('Can not sign up with local credentials and existing local email', function(done) {
       var d = getNewUserData('jkap')
 
@@ -85,6 +92,12 @@ module.exports = function()
               done()
             })        
         })
+    })
+
+    it('New user has cohort info', function(done) { 
+      $log('TODO: write test')
+      // expect(u.aliases)            
+      done()
     })
 
   })
