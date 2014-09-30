@@ -53,7 +53,6 @@ export var trackView = (type) => {
     if (type == 'workshop') var tags = obj.tags // temp hack until we fix workshops
 
     var properties = { tags: tags, url: req.path, objectId: obj._id }
-    // analytics.identify(userId, anonymousId, {}, context)
     analytics.view(userId, anonymousId, type, obj.title, properties, context)      
     next() 
   }
