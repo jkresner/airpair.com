@@ -12,4 +12,7 @@ module.exports = {
   ramo: { name:"Ramon Porter",email:"sierra@test.com" },
 
   jkre: { name:"Jonathon Kresner",email:"jkresner@gmail.com" },   
+  krez: { name:"Jonathon Krezner",email:"krez@hotmail.com" },   
+  igor: { name:"Igor Lebovic",email:"igorlebovic@gmail.com" },     
 }
+  

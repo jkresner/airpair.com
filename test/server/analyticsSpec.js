@@ -1,3 +1,4 @@
+var util = require('../../shared/util')
 var postTitle =  "Analytics Tests "+moment().format('X')
 var postSlug = postTitle.toLowerCase().replace(/ /g,'-')
 
@@ -17,6 +18,8 @@ module.exports = function() {
  
   describe("Tracking: ", function() {
 
+    this.timeout(4000)
+
     before(function(done) {
       testDb.addAdmin('jkap', () =>
         testDb.initTags( () =>
@@ -30,7 +33,16 @@ module.exports = function() {
 
 
     it('Can track an anonymous post view', function(done) {
-      analytics.setCallback(done)
+      var anonymousId = null;
+      analytics.setCallback(()=> {
+        testDb.viewsByAnonymousId(anonymousId,(e,r) => {
+          expect(r.length).to.equal(1)
+          expect(r[0].userId).to.be.null
+          expect(r[0].anonymousId).to.equal(anonymousId)          
+          done()          
+        })
+      })
+
       var spy = sinon.spy(analytics,'view')
       http(global.app)
         .get(`/v1/posts/${postSlug}?utm_source=test1src&utm_content=test1ctn`)
@@ -39,28 +51,41 @@ module.exports = function() {
         .expect(200)
         .end(function(err, resp){
           if (err) throw err
-          expect(spy).to.have.been.calledOnce
-          expect(spy.args[0][0]).to.be.null
-          expect(spy.args[0][1]).to.exist          
-          expect(spy.args[0][2]).to.equal('post')                   
-          expect(spy.args[0][3]).to.equal(postTitle)                            
-          expect(spy.args[0][4].tags).to.exist
-          expect(spy.args[0][5].referer).to.equal('http://airpair.com/posts') 
-          expect(spy.args[0][5].campaign.source).to.equal('test1src')                                        
-          expect(spy.args[0][5].campaign.content).to.equal('test1ctn')          
-          expect(spy.args[0][5].campaign.medium).to.be.undefined
-          expect(spy.args[0][5].campaign.term).to.be.undefined
-          expect(spy.args[0][5].campaign.name).to.be.undefined
-          expect(spy.args[0][6]).to.be.undefined                                        
-          spy.restore()
+          cookie = resp.headers['set-cookie']
+          get('/session', {}, (s) => { 
+            anonymousId = s.sessionID
+            expect(spy).to.have.been.calledOnce
+            expect(spy.args[0][0]).to.be.null
+            expect(spy.args[0][1]).to.exist          
+            expect(spy.args[0][2]).to.equal('post')                   
+            expect(spy.args[0][3]).to.equal(postTitle)                            
+            expect(spy.args[0][4].tags).to.exist
+            expect(spy.args[0][5].referer).to.equal('http://airpair.com/posts') 
+            expect(spy.args[0][5].campaign.source).to.equal('test1src')                                        
+            expect(spy.args[0][5].campaign.content).to.equal('test1ctn')          
+            expect(spy.args[0][5].campaign.medium).to.be.undefined
+            expect(spy.args[0][5].campaign.term).to.be.undefined
+            expect(spy.args[0][5].campaign.name).to.be.undefined
+            expect(spy.args[0][6]).to.be.undefined                                        
+            spy.restore()
+          })
         })
     })
 
 
     it('Can track logged in post view', function(done) {
       var spy = sinon.spy(analytics,'view')
-      addLocalUser('ajde', function(userKey) {
-        analytics.setCallback(done)
+      addLocalUser('krez', function(userKey) {
+        var userId = data.users[userKey]._id
+        analytics.setCallback(()=> {
+          testDb.viewsByUserId(userId,(e,r) => {
+            expect(r.length).to.equal(1)
+            expect(util.idsEqual(r[0].userId,userId)).to.be.true
+            expect(r[0].anonymousId).to.be.null         
+            done()          
+          })
+        })
+
         login(userKey, data.users[userKey], function(s) {
           http(global.app)
             .get(`/v1/posts/${postSlug}?utm_campaign=test2nm`)
@@ -166,12 +191,12 @@ module.exports = function() {
           var spy = sinon.spy(analytics,'alias')
           cookie = resp.headers['set-cookie']
           get('/session', {}, (s) => { 
-            analytics.setCallback(done)
             var singup = getNewUserData('pgap')
             http(global.app).post('/v1/auth/signup').send(singup)
               .set('cookie',cookie)
-              .end( (err, resp) =>
+              .end( (err, resp) => {
                 get('/session/full', {}, (sFull) => {
+                  var userId = sFull._id
                   expect(sFull._id).to.exist
                   expect(sFull.name).to.equal(singup.name)                
                   expect(sFull.tags).to.be.undefined
@@ -189,15 +214,100 @@ module.exports = function() {
             //       // expect(spy.args[0][5].campaign.term).to.be.undefined
             //       // expect(spy.args[0][5].campaign.name).to.equal('test4nm')              
             //       // expect(spy.args[0][6]).to.be.undefined                                        
-            //       spy.restore()
-                  // expect('view docs to be alias')
-                  done()
+                  spy.restore()
+                  testDb.viewsByUserId(userId,(e,r) => {
+                    expect(r.length).to.equal(1)
+                    expect(util.idsEqual(r[0].userId,userId)).to.be.true
+                    expect(util.idsEqual(r[0].anonymousId,s.sessionID)).to.be.true     
+                    done()          
+                  })                  
                 })
-              )
+              })
             })
         })
     )
 
+
+    it('Login local from existing sessionID doesnt alias', function(done) {
+      http(global.app).get(`/v1/posts/${postSlug}`).end(function(err, resp) {
+        cookie = resp.headers['set-cookie']
+        var singup = getNewUserData('pgap')
+        http(global.app).post('/v1/auth/signup').send(singup).set('cookie',cookie).end( (e1, r1) => {     
+          get('/session/full', {}, (s) => { 
+            $log('signedup', s.email)
+            http(global.app).get('/v1/auth/logout').set('cookie',cookie).end( (e2, r2) => {     
+              var spyTrack = sinon.spy(analytics,'track')            
+              var spyAlias = sinon.spy(analytics,'alias')
+              http(global.app).post('/v1/auth/login').send(singup).set('cookie',cookie).end( (e3, r3) => {                     
+                expect(spyTrack).to.have.been.calledOnce 
+                expect(spyTrack.args[0][2]).to.equal('Login')         
+                expect(spyAlias.called).to.be.false
+                spyTrack.restore()
+                spyAlias.restore() 
+                done()               
+              })
+            })
+          })
+        })
+      })
+    })
+
+
+    it('Login from new sessionID (different device) aliases and aliases views', function(done) {
+      http(global.app).get(`/v1/posts/${postSlug}`).end(function(err, resp) {
+      cookie = resp.headers['set-cookie']
+      http(global.app).get(`/v1/posts/${postSlug}`).set('cookie',cookie).end(function() {        
+      get('/session', {}, (s) => { 
+        var anonymousId = s.sessionID
+        testDb.viewsByAnonymousId(anonymousId,(e1,v1) => {
+          expect(v1.length).to.equal(2)
+          expect(v1[0].userId).to.be.null
+          expect(v1[1].userId).to.be.null          
+          expect(v1[0].anonymousId).to.equal(anonymousId)          
+          expect(v1[1].anonymousId).to.equal(anonymousId)                    
+          
+          var singup = getNewUserData('igor')
+          http(global.app).post('/v1/auth/signup').send(singup).set('cookie',cookie).end( () => {  
+            $log('signedup')
+
+            http(global.app).get(`/v1/posts/${postSlug}`).end(function(err2, resp2) {
+            cookie = resp2.headers['set-cookie']
+            http(global.app).get(`/v1/posts/${postSlug}`).set('cookie',cookie).end(function() {       
+            get('/session', {}, (s2) => { 
+              var anonymousId2 = s2.sessionID
+              expect(anonymousId2).to.not.equal(anonymousId)          
+              testDb.viewsByAnonymousId(anonymousId2,(e2,v2) => {
+                expect(v2.length).to.equal(2)
+                expect(v2[0].userId).to.be.null
+                expect(v2[1].userId).to.be.null          
+                expect(v2[0].anonymousId).to.equal(anonymousId2)          
+                expect(v2[1].anonymousId).to.equal(anonymousId2)    
+
+                var spyTrack = sinon.spy(analytics,'track')            
+                var spyAlias = sinon.spy(analytics,'alias')
+
+                http(global.app).post('/v1/auth/login').send(singup).set('cookie',cookie).end( () => {  
+
+                  expect(spyTrack.called).to.be.false       
+                  expect(spyAlias).to.have.been.calledOnce 
+                  expect(spyAlias.args[0][3]).to.equal('Login')         
+
+                  get('/session/full', {}, (s3) => { 
+                    $log('loggedin', s3.email)              
+                    testDb.viewsByUserId(s3._id, (e3,v3) => {
+                      expect(v3.length).to.equal(4)
+                      spyTrack.restore()
+                      spyAlias.restore() 
+                      done()  
+                    })
+                  })
+                })
+              })
+            })})})        
+          })
+        })
+      })})})     
+    })
 
 // make sure we have utms
 
@@ -217,6 +327,11 @@ module.exports = function() {
 // Submit Local Signup (server:distinctId:sessionId)
 // Signup (server:distinctId:userId)
 // View (server:distinctId:userId)
+
+
+    // it('Can alias views from multiple anonymous session to a single user w same login', function(done) {
+
+    // })
 
 
     // it('Can track an anonymous workshop view', function(done) {

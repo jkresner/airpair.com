@@ -10,20 +10,21 @@ var svc = new Svc(User, logging)
 
 
 var fields = {
-  sessionFull: { '__v': 1, '_id': 1, 'roles': 1, 'bitbucket.username': 1, 'bitbucket.displayName': 1, 'github.username': 1, 'github.displayName': 1, 'google.id':1, 'linkedin.id': 1, 'stack.user_id': 1, 'stack.link': 1, 'twitter.username': 1, 'email': 1, 'emailVerified': 1, 'name': 1, 'initials': 1, 'bio': 1, tags: 1, bookmarks: 1 },
+  sessionFull: { '__v': 1, '_id': 1, 'roles': 1, 'bitbucket.username': 1, 'bitbucket.displayName': 1, 'github.username': 1, 'github.displayName': 1, 'google.id':1, 'linkedin.id': 1, 'stack.user_id': 1, 'stack.link': 1, 'twitter.username': 1, 'email': 1, 'emailVerified': 1, 'name': 1, 'initials': 1, 'bio': 1, tags: 1, bookmarks: 1, 'cohort.engagement': 1 },
   usersInRole: { '_id': 1, 'roles': 1, 'email': 1, 'name': 1, 'initials': 1 }
 } 
 
 
 // Add the user if new, or update if existing based on the search
 // If a new user we intelligently link analytics and track signup 
-function upsertSmart(search, upsert, done) {
+function upsertSmart(search, upsert, cb) {
   if (logging) $log('upsertSmart', JSON.stringify(search), JSON.stringify(upsert))
   
   var {session,sessionID} = this
+  var loginFromNewAnonymousSession = false
 
   svc.searchOne(search, null, (e, r) => {
-    if (e) { return done(e) }
+    if (e) { return cb(e) }
     
     var existingUser = (r) ? true : false;
 
@@ -32,7 +33,7 @@ function upsertSmart(search, upsert, done) {
       //-- stop user clobbering user.google details
       if (r && r.googleId && (r.googleId != upsert.google.id))
       {
-        return done(Error(`Cannot overwrite google login ${r.google._json.email} with ${upsert.google._json.email}`),null)
+        return cb(Error(`Cannot overwrite google login ${r.google._json.email} with ${upsert.google._json.email}`),null)
       }      
 
       //-- copy google details to top level users details
@@ -58,21 +59,60 @@ function upsertSmart(search, upsert, done) {
         // need more intelligent logic to avoid dups & such
         upsert.bookmarks = _.union(r.tags, upsert.bookmarks) 
       }
+      if (r.cohort) {
+        var aliases = r.cohort.aliases; 
+        if ( !_.contains(r.cohort.aliases, sessionID) ) {
+          loginFromNewAnonymousSession = true
+          r.cohort.aliases.push(sessionID)
+        }
+       
+        upsert.cohort = { engagement: {
+          visit_first: r.cohort.engagement.visit_first,
+          visit_last: new Date(),
+          visit_signup: r.cohort.engagement.visit_signup,
+          visits: r.cohort.engagement.visits }, // should implemented this properly
+          aliases: r.cohort.aliases
+        }   
+      } else {
+        upsert.cohort = { engagement: {
+          visit_first: util.sessionCreatedAt(session),
+          visit_last: new Date(),
+          visit_signup: util.sessionCreatedAt(session),
+          visits: [new Date()] }, // should implemented this properly
+          aliases: [sessionID]
+        }           
+      }
+    } 
+    
+    if (!existingUser)
+    {
+      upsert.cohort = { engagement: {
+        visit_first: util.sessionCreatedAt(session),
+        visit_last: new Date(),
+        visit_signup: new Date(),
+        visits: [new Date()] },
+        aliases: [sessionID]
+      }
     }
 
     User.findOneAndUpdate(search, upsert, { upsert: true }, (err, user) => {
+      var done = () => { cb(err, user) }
+
       if (err) $log('User.upsert.err', err && err.stack)
       if (logging) $log('User.upsert', JSON.stringify(user))
       if (existingUser)
       {
+        if (loginFromNewAnonymousSession) 
+          analytics.alias(sessionID, null, user, 'Login', done)        
+        else {
+          var context = {} // ??
+          analytics.track(user._id, null, 'Login', { sessionID: sessionID }, context, done)
+        }
         //identify ? //lastSeen // username // createdAt
-        done(err, user)
       } 
       else
       {
-        var createdAt = util.sessionCreatedAt(session)
-        analytics.alias(sessionID, createdAt, user, 'Signup', 
-          () => { done(err, user) })
+        analytics.alias(sessionID, user.cohort.engagement.visit_first, user, 'Signup', done)
       }  
     })
   })
@@ -151,7 +191,13 @@ export function tryLocalLogin(email, password, done) {
       else if (!validPassword(password, r.local.password)) {
         failMsg = "wrong password"; r = false }
     }
-    return done(e, r, failMsg)
+
+    if (e || failMsg) return done(e, r, failMsg)
+    else
+    {
+      //-- Want to update last login etc.
+      upsertSmart.call(this, {_id:r._id}, {}, done)
+    }
   })
 }
 

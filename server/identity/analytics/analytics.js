@@ -50,11 +50,10 @@ module.exports = {
     var mProperties = _.extend(properties, {type,name})
     var mPayload = _.extend(m,buildPayload(userId,anonymousId,{properties:mProperties,context})) 
 
-    $log('mPayload', mPayload)
-    segment.track(mPayload, 
-      done || doneBackup)
+    // $log('mPayload', mPayload)
+    segment.track(mPayload, done || doneBackup)
     
-    if (context.campaign) segment.identify(buildPayload(userId, anonymousId, {context}))
+    // if (context.campaign) segment.identify(buildPayload(userId, anonymousId, {context}))
 
     // write to mongo    
     var {objectId,url} = properties
@@ -64,14 +63,18 @@ module.exports = {
 
 
   alias: (anonymousId, createdAt, user, aliasEvent, done) => {
-    if (logging) $log('alias', anonymousId, createdAt.format(), user._id, aliasEvent, done)
+    if (logging) $log('alias', anonymousId, createdAt, user._id, aliasEvent, done)
     var userId = user._id.toString()
 
     var traits = { 
       name: user.name, 
       email: user.email, 
-      lastSeen: new Date(), 
-      createdAt 
+      lastSeen: new Date()
+    }
+
+    if (createdAt) {
+      traits.createdAt = createdAt  
+      //-- we don't want to overwrite the previous alias on account creation
     }
 
     segment.alias({ previousId: anonymousId, userId: userId }, (e, b) => {

@@ -1,6 +1,7 @@
 var UserService = require('../../../server/services/users')
 var Tag = require('../../../server/models/tag')
 var Workshop = require('../../../server/models/workshop')
+var View = require('../../../server/models/view')
 
 global.stubAnalytics = function()
 {
@@ -35,7 +36,7 @@ global.newUserSession = function()
   var suffix = moment().format('X')
   var session = { cookie: { 
     originalMaxAge: 2419200000, 
-    _expires: moment().add(1, 'month')} 
+    _expires: moment().add(2419200000, 'ms')} 
   }
   return {user:null,sessionID:`test${suffix}`,session};
 }
@@ -53,8 +54,10 @@ global.addLocalUser = function(userKey, done)
 function addAdmin(userKey, done)
 {      
   stubAnalytics()
+  var session = newUserSession();
+  session.sessionID = 'test'+userKey; // so we aren't aliasing on every login
   // Add an administrator
-  UserService.upsertProviderProfile.call(newUserSession(), 'google', data.oauth[userKey], function(e,r){
+  UserService.upsertProviderProfile.call(session, 'google', data.oauth[userKey], function(e,r){
     if (!r.roles || !r.roles.length) {
       UserService.toggleUserInRole.call({user:r}, r._id,'admin', function(e,rr) {
         data.users[userKey] = rr;
@@ -121,7 +124,15 @@ module.exports = {
       else 
         if (done) done()
     })
-  }
+  },
+
+  viewsByUserId: function(userId, cb) {
+    View.find({userId}, cb)
+  },
+
+  viewsByAnonymousId: function(anonymousId, cb) {
+    View.find({anonymousId}, cb)
+  },
 
 }
 
