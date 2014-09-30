@@ -103,16 +103,15 @@ function upsertSmart(search, upsert, cb) {
       if (existingUser)
       {
         if (loginFromNewAnonymousSession) 
-          analytics.alias(sessionID, null, user, 'Login', done)        
+          analytics.alias(sessionID, user, 'Login', done)        
         else {
-          var context = {} // ??
-          analytics.track(user._id, null, 'Login', { sessionID: sessionID }, context, done)
+          var context = {sessionID} // ??
+          analytics.identify(user, context, 'Login', done)
         }
-        //identify ? //lastSeen // username // createdAt
       } 
       else
       {
-        analytics.alias(sessionID, user.cohort.engagement.visit_first, user, 'Signup', done)
+        analytics.alias(sessionID, user, 'Signup', done)
       }  
     })
   })

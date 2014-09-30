@@ -5,10 +5,10 @@ var View = require('../../../server/models/view')
 
 global.stubAnalytics = function()
 {
-  global.identifyStub = sinon.stub(analytics,'identify', (p1,p2,p3,p4,cb) => cb())
+  global.identifyStub = sinon.stub(analytics,'identify', (p1,p2,p3,cb) => cb())
   global.trackStub = sinon.stub(analytics,'track', (p1,p2,p3,p4,p5,cb) => cb()) 
   global.viewStub = sinon.stub(analytics,'view', (p1,p2,p3,p4,p5,p6,cb) => cb()) 
-  global.aliasStub = sinon.stub(analytics,'alias', (p1,p2,p3,p4,cb) => cb())
+  global.aliasStub = sinon.stub(analytics,'alias', (p1,p2,p3,cb) => cb())
 }
 
 global.resotreAnalytics = function()

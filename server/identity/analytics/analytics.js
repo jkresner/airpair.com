@@ -27,12 +27,6 @@ module.exports = {
   },
 
 
-  identify: (userId, anonymousId, traits, context, done) => {
-    if (logging) $log('identify', userId,anonymousId,traits,context)
-    segment.identify(buildPayload(userId, anonymousId, {traits,context}),
-      done || doneBackup)
-  },
-
 
   track: (userId, anonymousId, event, properties, context, done) => {
     if (logging) $log('track', userId, anonymousId, event, properties, context)    
@@ -62,19 +56,32 @@ module.exports = {
   },
 
 
-  alias: (anonymousId, createdAt, user, aliasEvent, done) => {
-    if (logging) $log('alias', anonymousId, createdAt, user._id, aliasEvent, done)
+  identify: (user, context, identifyEvent, done) => {
+    if (logging) $log('identify', user._id, context, identifyEvent)
+    
+    var traits = { 
+      // username / isExpert / isCustomer
+      name: user.name, 
+      email: user.email, 
+      lastSeen: new Date(),
+      createdAt: user.cohort.engagement.visit_first  
+    }
+
+    segment.identify(buildPayload(user._id, null, {traits,context}))
+    segment.track({ userId: user._id.toString(), event: identifyEvent }, done || doneBackup)
+  },
+
+
+  alias: (anonymousId, user, aliasEvent, done) => {
+    if (logging) $log('alias', anonymousId, user._id, aliasEvent, done)
     var userId = user._id.toString()
 
     var traits = { 
+      // username / isExpert / isCustomer    
       name: user.name, 
       email: user.email, 
-      lastSeen: new Date()
-    }
-
-    if (createdAt) {
-      traits.createdAt = createdAt  
-      //-- we don't want to overwrite the previous alias on account creation
+      lastSeen: new Date(),
+      createdAt: user.cohort.engagement.visit_first  
     }
 
     segment.alias({ previousId: anonymousId, userId: userId }, (e, b) => {
@@ -93,7 +100,7 @@ module.exports = {
     })
     segment.flush()
 
-    viewSvc.alias(anonymousId, user._id, null)
+    viewSvc.alias(anonymousId, user._id, ()=>{})
   }
 }
 
