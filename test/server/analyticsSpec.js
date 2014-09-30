@@ -22,7 +22,7 @@ module.exports = function() {
     this.timeout(4000)
 
     before(function(done) {
-      testDb.addAdmin('jkap', () =>
+      testDb.addUserWithRole('jkap', 'editor', () =>
         testDb.initTags( () =>
           login('jkap', data.users['jkap'], function(s) {
             testDb.createWorkshop(data.workshops.railsTests)

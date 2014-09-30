@@ -10,9 +10,19 @@ module.exports = {
 
   joem: { name:"Joe Mellin",email:"joe@mellin.com" }, 
   ramo: { name:"Ramon Porter",email:"sierra@test.com" },
+  rapo: { name:"Ramon Porter",email:"ramonp@apr.com" },
 
   jkre: { name:"Jonathon Kresner",email:"jkresner@gmail.com" },   
   krez: { name:"Jonathon Krezner",email:"krez@hotmail.com" },   
   igor: { name:"Igor Lebovic",email:"igorlebovic@gmail.com" },     
+  evnr: { name:"Evan Richards",email:"goldfish@gmail.com" },       
+  nevk: { name:"Nevan King",email:"nevking@gmail.com" },         
+
+  shcl: { name: "Shane Cole", email: "shanecole@ap.com"},
+  stpv: { name: "Steve Purves", email: "stevep@ap.com"}, 
+  stpu: { name: "Steve Purves", email: "stevepur@gmail.com"}, 
+
+  obfn: { name: "Obie Fernandez", email: "obiefernand@gmail.com"},   
+  obie: { name: "Obie Fernandez", email: "obiefernand@hotmail.com"},   
 }
   

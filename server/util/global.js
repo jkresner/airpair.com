@@ -4,6 +4,7 @@
 module.exports = function(config)
 {
   global._              = require('lodash')
+  _.idsEqual            = require('../../shared/util').idsEqual
   global.moment         = require('moment')
   global.config         = config
   global.$log           = console.log
