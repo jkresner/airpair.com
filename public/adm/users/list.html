@@ -1,0 +1,35 @@
+
+<section id="users">
+
+<br /><br />
+<input type="text" ng-model="_id" placeholder="Type userId" style="width:300px" />
+<select ng-model="role">
+  <option>admin</option>
+  <option>editor</option>  
+</select>
+<button class="btn" ng-click="toggleRole()">Toggle role</button>
+
+
+  <h3>Admins</h3>
+  <ul class="users admin">
+    <li ng-repeat="user in admins">{{ user.name }}</li>
+  </ul>
+    
+  <h3>Editors</h3>
+  <ul class="users editors">
+    <li ng-repeat="user in editors">{{ user.name }}</li>
+  </ul>
+<!-- 
+  <h3>Pipeliners</h3>
+  <ul class="users pipeliners">
+    <li ng-repeat="user in pipeliners">{{ user.name }}</li>    
+  </ul>  
+
+
+  <h3>Matchmakers</h3>
+  <ul class="users matchmakers">
+    <li ng-repeat="user in matchmakers">{{ user.name }}</li>    
+  </ul>  
+
+ -->
+</section>
