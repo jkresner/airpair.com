@@ -1,26 +1,12 @@
 <html lang="en-US" prefix="og: http://ogp.me/ns#">
 <head>
-  <title>
-    {{#if meta.title }}{{meta.title}}
-    {{else}} {{ title }} | AirPair {{/if}}
-  </title>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0;">
-  {{#if meta.canonical }}<link rel="canonical" href="{{ meta.canonical }}" />{{/if}}  
-  {{#if meta.description }}<meta name="description" content="{{ meta.description }}" />{{/if}}
-  <meta property="og:locale" content="en_US"/>
-  <meta property="og:type" content="article"/>
-  {{#if meta.ogUrl }}<meta property="og:url" content="{{meta.ogUrl}}"/>{{/if}}
-  {{#if meta.ogTitle }}<meta property="og:title" content="{{meta.ogTitle}}"/>{{/if}}
-  {{#if meta.ogDescription }}<meta property="og:description" content="{{meta.ogDescription}}"/>{{/if}}
-  {{#if meta.ogImage }}<meta property="og:image" content="{{meta.ogImage}}"/>{{/if}}
-  {{#if meta.ogVideo }}<meta property="og:video" content="{{meta.ogVideo}}"/>{{/if}}
+  {{> pageMeta }}
   <link rel="stylesheet" href="/v1/lib/bootstrap/bootstrap.css" type="text/css" />
   <link rel="stylesheet" href="/v1/lib/prism/prism.css" type="text/css" />  
   <link rel='stylesheet' href='/v1/css/index.css' type='text/css' media='all' />
   <link rel='stylesheet' id='google-font-css'  href='//fonts.googleapis.com/css?family=Open+Sans%3A300%2C400%2C700&#038;ver=2.0.1' type='text/css' media='all' />
 </head>
-<body id="post">
+<body>
 
 {{> siteHeader }}
 
@@ -127,7 +113,7 @@ window.postHlpr.highlightSyntax = function(opts) {
     Prism.highlightElement(element, false, function() {
       if (opts && opts.addCtrs)
       {
-        element.outerHTML+='<footer>Get expert <a href="/find-an-expert">'+config.lang+' help</a></footer>'
+        element.outerHTML+='<footer>Get expert <a class="trackPostCTA" href="/find-an-expert?utm_source=ap-post">'+config.lang+' help</a></footer>'
       }
     });
   }
@@ -200,7 +186,22 @@ window.postHlpr.loadPoSt = function()
     postHlpr.loadDisqus();
   });
 
+  function bindTracking() {
+    $.each($('.trackPostCTA'), function(idx,el){
+      $(el).click(function (e) {
+        analytics.track('Click', { type: 'Post CTA', unit: 'code footer', idx: idx, text: el.innerHTML, location: window.location.pathname });
+        
+        setTimeout(function () {
+          window.location.href = $(el).attr('href');
+        }, 250);
+        
+        return false;
+      });
+    })
+  }
+
 </script>
 
+{{> initPage }}
 </body>
 </html>

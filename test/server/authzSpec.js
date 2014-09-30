@@ -5,7 +5,13 @@ module.exports = function()
   describe("Authorization: ", function() {
 
     before(function(done) {
-      done()
+      stubAnalytics()
+      testDb.initTags(done)      
+    })
+
+    after(function(done) {
+      resotreAnalytics()
+      done()      
     })
 
     

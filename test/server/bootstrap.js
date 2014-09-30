@@ -5,14 +5,14 @@ traceur.require.makeDefault(function (filePath) {
 })
 
 require('./helpers/http')
-global.data    = require('./../data/data')
+global.data     = require('./../data/data')
 global.sinon    = require('sinon')
 global.chai     = require('chai')
 global.expect   = chai.expect
 
 var initConfig = require('./../../server/util/config')
 var setGlobals = require('./../../server/util/global')
-var config = initConfig('test', __dirname)
+var config = initConfig('test', __dirname.replace('/test/server',''))
 setGlobals(config)
 
 
@@ -30,6 +30,7 @@ describe('Server: ', function() {
   describe('Authz: ', require('./authzSpec'))  
   describe('Posts: ', require('./postsSpec'))   
   describe('Tags: ', require('./tagsSpec'))    
+  describe('Analytics: ', require('./analyticsSpec'))    
 
 })
 

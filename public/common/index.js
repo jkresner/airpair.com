@@ -1,6 +1,7 @@
 require('./../common/directives/share.js');
 require('./../common/directives/post.js');
 require('./../common/directives/tagInput.js');
+require('./../common/directives/analytics.js');
 require('./../common/filters/filters.js');
 require('./../common/models/postsService.js');
 require('./../common/models/sessionService.js');
@@ -18,8 +19,15 @@ angular.module("AP", ['ngRoute', 'APAuth', 'APPosts', 'APWorkshops'])
 
   }])
 
-  .run(['$rootScope', 'SessionService', function($rootScope, SessionService) {
+  .run(['$rootScope', '$location', 'SessionService', 
+    function($rootScope, $location, SessionService) {
+
     
+    $rootScope.$on('$routeChangeSuccess', function() {
+      window.trackRoute($location.path());
+    });
+
+
     // SessionService.onAuthenticated( (session) => {
     //   $rootScope.session = session;
     // })

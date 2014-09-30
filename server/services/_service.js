@@ -32,7 +32,7 @@ export default function(model, logging) {
       new model( o ).save( (e,r) => {
         if (e && logging) { $log('svc.create', o, e) }
         if (r) { r = r.toObject() }
-        cb(e, r)
+        if (cb) cb(e, r)
       })
     },
     update: (id, data, cb) => {
@@ -40,14 +40,14 @@ export default function(model, logging) {
       var ups = _.omit(data, '_id') // so mongo doesn't complain
       model.findByIdAndUpdate(id, ups).lean().exec( (e, r) => {
         if (e && logging) { $log('svc.update.error', id, e, data) }
-        cb(e, r)
+        if (cb) cb(e, r)
       })
     },
     deleteById: (id, cb) => {
       if (!id) return cb(new Error('Cannot delete object by null id'), null) 
       model.findByIdAndRemove(id, (e) => {
         if (e || logging) { $log('svc.delete', e) }
-        cb(e)
+        if (cb) cb(e)
       })
     }
   }  

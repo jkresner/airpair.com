@@ -1,10 +1,42 @@
-var Schema, User, mongoose;
+var mongoose = require('mongoose')
+var Schema = mongoose.Schema
+var ObjectId = Schema.Types.ObjectId
 
-mongoose = require('mongoose');
 
-Schema = mongoose.Schema;
+var objectType = ['post','workshop','expert']
 
-User = new Schema({
+var Bookmark = new Schema({  
+  utc:          { type: Date, required: true },  
+  objectId:     { type: ObjectId, required: true },
+  objectType:   { enum: objectType, type: String, required: true },  
+  url:          { type: String, required: true },  
+  priority:     { type: Number, required: true },    
+  name:         { type: String, required: true }
+})
+
+var TagSlim = {  
+  _id:          { required: true, type: ObjectId, ref: 'Tag'},  
+  name:         { required: true, type: String, trim: true },
+  slug:         { required: true, type: String, lowercase: true, trim: true }  
+}
+
+var Cohort = {  
+  engagement:   {
+    visit_first:          { type: Date },  
+    visit_last:           { type: Date },    // user this to see if we need to update visit array
+    visit_signup:         { type: Date },  
+    visits:               { type: [Date] },  // array of dates the user came to the site
+  },
+  aliases:      { type: [String] }  
+  // requests:     Get by query from Requests
+  // orders:       Get by query from Order
+  // spend:        Get by query from Orders
+  // hrs_on_air:   Get by query from Calls
+  // utms          Get by query from Views
+}
+
+
+var User = new Schema({
 
   email: {
     type: String,
@@ -14,28 +46,21 @@ User = new Schema({
     },
     trim: true
   },
-  emailVerified: { type: Boolean, required: true, default: false },
+  emailVerified:   { type: Boolean, required: true, default: false },
   name: { type: String, trim: true },
   initialis: { type: String, lowercase: true, trim: true },
 
   username: {
     type: String,
-    index: {
-      sparse: true,      
-      unique: true,
-      dropDups: true
-    },
+    index: { sparse: true, unique: true, dropDups: true },
     lowercase: true
   },
 
-  roles: {
-    type: [String]
-  },
+  roles:           { type: [String] },
+  tags:            { type: [TagSlim], 'default': [] },   //-- Stack of the user
+  bookmarks:       { type: [Bookmark], 'default': [] },  
 
-  // Track user behavior / profile
-  // cohort: {
-  //   type: {},
-  // },
+  cohort:          Cohort,
 
   bio: String, // Used for blog posts
 
@@ -88,4 +113,4 @@ User = new Schema({
   // bitbucket: {},
   // referrer: {}
 
-export default mongoose.model('User', User);
+module.exports = mongoose.model('User', User)

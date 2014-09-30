@@ -28,7 +28,9 @@ var cfg = {
       secret_key: process.env.MAIL_SES_SECRET_KEY || "none"
     }
   },
-  log: {}
+  log: {},
+  analytics: 
+    { segmentio: { writekey: '9793xyfxat' } }
 }
 
 module.exports = function(env, appdir) {
@@ -40,6 +42,7 @@ module.exports = function(env, appdir) {
     cfg.port = 4444
     cfg.mongoUri = "mongodb://localhost/airpair_test"
     cfg.testlogin = true
+    cfg.auth.oAuth.callbackHost = 'http://localhost:4444'
   }
 
   if (cfg.env == 'staging' || cfg.env == 'production') {

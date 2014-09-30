@@ -8,10 +8,10 @@ global.login = function(key, user, cb) {
   if (logging) $log('login:', '/test/setlogin/'+key)
   data.sessions[key] = { _id: user._id, name: user.name, email: user.email, roles: user.roles };
   if (logging) $log('login.data.sessions[key]', data.sessions[key])
-  return http(global.app).get('/test/setlogin/'+key).end(function(e,res){
+  return http(global.app).get('/test/setlogin/'+key).end(function(e,resp){
     if (e) return done(err)
-    cookie = res.headers['set-cookie']
-    cb(e)
+    cookie = resp.headers['set-cookie']
+    cb(resp.body)
   })
 }
 
