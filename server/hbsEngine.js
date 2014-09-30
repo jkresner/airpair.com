@@ -52,7 +52,7 @@ export default function(app) {
 	app.renderHbsViewData = (fileName, viewDataFn) =>
 		(req, res) => {
 			viewDataFn(req, (e,data) => {
-				res.status(200).render(`./${fileName}.hbs`, combineBaseData(req,data))
+				res.status(200).render(`./${fileName}.hbs`, combineBaseData(req, { viewData: data } ) )
 			})
 		}
 }

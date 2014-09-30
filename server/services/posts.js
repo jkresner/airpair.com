@@ -1,18 +1,24 @@
 import Svc from '../services/_service'
+import * as Validate from '../../shared/validation/post.js'
 import * as UserSvc from '../services/users'
 import Post from '../models/post'
 import generateToc from './postsToc'
 var marked = require('marked')
 
+
 var logging = false
 var svc = new Svc(Post, logging)
 
 var fields = {
-  listSelect: { 'by.name': 1, 'by.avatar': 1, 'meta.description': 1, title:1, slug: 1, created: 1, published: 1, tags: 1 }
+  listSelect: { 'by.name': 1, 'by.avatar': 1, 'meta.description': 1, title:1, slug: 1, created: 1, published: 1, tags: 1 },
+  adminListSelect: { 'by.name': 1, 'by.avatar': 1, 'meta.description': 1, title:1, slug: 1, created: 1, published: 1, publishedBy: 1, updated: 1, tags: 1 }  
 } 
 
 var queries = {
-  published: { 'published' : { '$exists': true }},
+  published: {  '$and': [
+    {'published' : { '$exists': true }} ,
+    {'published': { '$lt': new Date() }} 
+  ] },
   updated: { 'updated' : { '$exists': true }}  
 }
 
@@ -47,11 +53,8 @@ export function getBySlug(slug, cb) {
 }
 
 export function getAllAdmin(cb) {
-  var opts = { fields: fields.listSelect, options: { sort: { 'updated': -1 } } };
-  svc.searchMany(queries.updated, opts, (e,r) => { 
-    for (var p of r) { p.url = `/posts/publish/${p._id}` }
-    cb(e, r)
-  })
+  var opts = { fields: fields.adminListSelect, options: { sort: { 'updated': -1 } } };
+  svc.searchMany(queries.updated, opts, addUrl(cb))
 }
 
 export function getPublished(cb) {
@@ -63,13 +66,19 @@ export function getRecentPublished(cb) {
   svc.searchMany(queries.published, opts, addUrl(cb))
 }
 
+export function getAllPublished(cb) {
+  var opts = { fields: fields.listSelect, options: { sort: { 'published': -1 } } };
+  svc.searchMany(queries.published, opts, addUrl(cb))
+}
+
+
 //-- Placeholder for showing similar posts to a currently displayed post
 export function getSimilarPublished(cb) {
   cb(null,[])
 }
 
 export function getUsersPublished(username, cb) {
-  var opts = { fields: fields.listSelect, options: { sort: 'published' } };
+  var opts = { fields: fields.listSelect, options: { sort: { 'published': -1 } } };
   var query = _.extend({ 'by.username': username }, queries.published)
   svc.searchMany(query, opts, addUrl(cb))
 }
@@ -91,49 +100,43 @@ export function getTableOfContents(markdown, cb) {
   return cb(null, {toc:toc})
 }
 
+
 export function update(id, o, cb) {
-  if (o.published && !_.contains(this.user.roles, 'editor')) 
-    return cb(new Error('Cannot update a published post'), null)
+  svc.getById(id, (e, r) => {  
+    var inValid = Validate.update(this.user, r, o)
+    if (inValid) return cb(svc.Forbidden(inValid))
 
-  o.updated = new Date()
-  
-  //-- todo, authorize for owner or editor (maybe using params?)
+    o.updated = new Date()
 
-  svc.update(id, o, cb) 
+    svc.update(id, o, cb) 
+  })
 }
+
 
 export function publish(id, o, cb) {
-  if (!o.slug) { cb(new Error('Slug required for a published post'), null) }
-  else
-  {
-    if (o.slug.indexOf('/') != 0) { o.slug.replace('/',''); }
-  }
-
+  var inValid = Validate.publish(this.user, null, o)
+  if (inValid) return cb(svc.Forbidden(inValid))
+  
+  if (o.slug.indexOf('/') != 0) { o.slug.replace('/',''); }
   o.updated = new Date()
 
-  if (o.publishedOverride) { 
+  if (o.publishedOverride)
     o.published = o.publishedOverride 
-  } else if (!o.published) {
+  else if (!o.published)
     o.published = new Date()
-  }
+
 
   o.publishedBy = this.user._id
-  //-- todo, authorize for editor role
   
   svc.update(id, o, cb) 
 }
+
 
 export function deleteById(id, cb) {
   svc.getById(id, (e, r) => {
-    if (r.by.userId.toString() != this.user._id.toString()) { 
-      cb(new Error('Cannot delete post not created by you'), null) 
-    } 
-    else if (r.published) { 
-      cb(new Error('Cannot delete published post'), null) 
-    } 
-    else {
-      svc.deleteById(id, cb)          
-    }
+    var inValid = Validate.deleteById(this.user, r)
+    if (inValid) return cb(svc.Forbidden(inValid))
+    svc.deleteById(id, cb)          
   })
 }
 

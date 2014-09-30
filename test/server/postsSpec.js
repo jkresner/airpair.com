@@ -3,7 +3,7 @@ module.exports = function()
   describe("API", function() {
   
     before(function(done) {
-      stubAnalytics()
+      testDb.addUserWithRole('edap', 'editor', stubAnalytics)
       testDb.initTags(done)      
     })
 
@@ -12,14 +12,14 @@ module.exports = function()
       done()      
     })
   
-    it('gets 401 on unauthenticated session for creating a post', function(done) {
+    it('401 on unauthenticated session for creating a post', function(done) {
       var opts = { status: 401, unauthenticated: true }
       var d = { title: "test", by: { bio: 'yoyo' } }
       post('/posts', d, opts, function() { done() })
     })
 
 
-    it('Can create post as signed in user with minimal detail', function(done) {
+    it('Create post as signed in user with minimal detail', function(done) {
       addLocalUser('prat', function(userKey) {
         login(userKey, data.users[userKey], function() {
           get('/session/full', {}, function(s) {
@@ -44,7 +44,8 @@ module.exports = function()
       })
     })
 
-    it('Can create post as signed in user with max detail', function(done) {
+
+    it('Create post as signed in user with max detail', function(done) {
       addLocalUser('ajde', function(userKey) {
         login(userKey, data.users[userKey], function() {
           get('/session/full', {}, function(s) {
@@ -81,69 +82,139 @@ module.exports = function()
       })
     })
 
-    
-    it('Can not edit post as non-author', () =>
-      $log('TODO', 'write test') )
 
+    it('Not edit or delete post as non-author and non-editor', (done) => {
+      addAndLoginLocalUser('evnr', function(s) {
+        var by = { userId: s._id, name: s.name, bio: 'auth test', avatar: s.avatar }
+        var d1 = { title: "test authed", by: by, md: 'Test auths 1', assetUrl: '/v1/img/css/blog/example2.jpg' }
+        post('/posts', d1, {}, function(p1) {
+          addAndLoginLocalUser('nevk', function(s2) {
+            put(`/posts/${p1._id}`, { title: 'updated title' }, { status: 403 }, function(e1) {
+              expect(e1.message).to.equal('Post must be updated by owner')
+              DELETE(`/posts/${p1._id}`, { status: 403 }, function(e2) {
+                expect(e2.message).to.equal('Post must be deleted by owner')
+                done()
+              })
+            })
+          })
+        })
+      })
+    })
+      
 
-    it('Can edit post as author', () =>
-      $log('TODO', 'write test') )
-
-
-    it('Can not delete post as non-author', () =>
-      $log('TODO', 'write test') )
-
-
-    it('Can delete post as author', () =>
-      $log('TODO', 'write test') )
-
-
-    it('Can not publish post as non-editor', () =>
-      $log('TODO', 'write test') )
-
-
-    it('Can publish post as editor', function(done) {
-      $log('TODO', 'write test')
-    //   expect('published').toBe(false)  
-    //   expect('slug').toBe(false)  
-    //   expect('assetUrl')
-    //   expect('tags')  
-      done()      
+    it('Edit and delete post as author', (done) => {
+      addAndLoginLocalUser('stpv', function(s) {
+        var by = { userId: s._id, name: s.name, bio: 'auth test', avatar: s.avatar }
+        var d1 = { title: "test authed delete", by: by, md: 'Test auths 1', assetUrl: '/v1/img/css/blog/example2.jpg' }
+        post('/posts', d1, {}, function(p1) {
+          expect(p1.slug).to.be.undefined
+          p1.slug = d1.title.replace(/ /g,'-')+moment().format('X')
+          put(`/posts/${p1._id}`, p1, {}, function(e2) {
+            expect(e2.slug).to.equal(p1.slug)
+            DELETE(`/posts/${p1._id}`, { status: 200 }, function(r) {
+              get('/posts/me', {}, function(posts) { 
+                expect(posts.length).to.equal(0)
+                done() 
+              })
+            })
+          })            
+        })
+      })
     })
 
 
-    it('Get 401 on unauthenticated session for users own posts', function(done) {
+    it('Edit and delete post as editor', (done) => {
+      addAndLoginLocalUser('stpu', function(s) {
+        var by = { userId: s._id, name: s.name, bio: 'auth test', avatar: s.avatar }
+        var d1 = { title: "test authed", by: by, md: 'Test auths 1', assetUrl: '/v1/img/css/blog/example2.jpg' }
+        post('/posts', d1, {}, function(p1) {
+          expect(p1.slug).to.be.undefined
+          p1.slug = d1.title.replace(/ /g,'-')+moment().format('X')
+          login('edap', data.users['edap'], function() {
+            put(`/posts/${p1._id}`, p1, {}, function(e2) {
+              expect(e2.slug).to.equal(p1.slug)
+              DELETE(`/posts/${p1._id}`, { status: 200 }, function(r) {
+                get('/posts/me', {}, function(posts) { 
+                  expect(posts.length).to.equal(0)
+                  done() 
+                })
+              })
+            })            
+          })
+        })
+      })
+    })
+
+
+    it('Not publish post as non-editor', (done) => {
+      addAndLoginLocalUser('rapo', function(s) {
+        var by = { userId: s._id, name: s.name, bio: 'auth test', avatar: s.avatar }
+        var d1 = { title: "test not publish", by: by, md: 'Test auths 1', assetUrl: '/v1/img/css/blog/example2.jpg' }
+        post('/posts', d1, {}, function(p1) {
+          expect(p1.slug).to.be.undefined
+          expect(p1.publish).to.be.undefined
+          p1.slug = d1.title.replace(/ /g,'-')+moment().format('X')
+          put(`/posts/${p1._id}`, p1, {}, function(e2) {
+            expect(e2.slug).to.equal(p1.slug)
+            put(`/posts/publish/${p1._id}`, p1, { status: 403 }, function(e1) {
+              expect(e1.message).to.equal('Post must be published by an editor')
+              done()
+            })
+          })            
+        })
+      })
+    })
+
+
+    it('Publish post as editor', function(done) {
+      addAndLoginLocalUser('obie', function(s) {
+        var by = { userId: s._id, name: s.name, bio: 'auth test', avatar: s.avatar }
+        var d1 = { title: "test publish as editor", by: by, md: 'Test auths 1', assetUrl: '/v1/img/css/blog/example2.jpg' }
+        post('/posts', d1, {}, function(p1) {
+          expect(p1.slug).to.be.undefined
+          expect(p1.publish).to.be.undefined
+          expect(p1.publishedBy).to.be.undefined          
+          p1.slug = d1.title.replace(/ /g,'-')+moment().format('X')
+          login('edap', data.users['edap'], function() {
+            put(`/posts/publish/${p1._id}`, p1, {}, function(p1pub) {
+              expect(p1pub.published).to.exist
+              expect(_.idsEqual(p1pub.publishedBy,data.users['edap']._id)).to.be.true
+              done()
+            })
+          })            
+        })
+      })
+    })
+
+
+    it('401 on unauthenticated for users own posts', function(done) {
       var opts = { status: 401, unauthenticated: true }
       get('/posts/me', opts, function() { done() })
     })
 
     
-    it('Get users own posts returns published and unpublished posts', function(done) {
-      addLocalUser('jkre', function(userKey) {
-        login(userKey, data.users[userKey], function() {
-          get('/session/full', {}, function(s) {
-            var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
-            var d1 = { title: "test 1", by: by, md: 'Test 1', assetUrl: 'http://youtu.be/qlOAbrvjMBo' }
-            var d2 = { title: "test 2", by: by, md: 'Test 2', assetUrl: 'http://www.airpair.com/v1/img/css/blog/example2.jpg' }
-            var d3 = { title: "test 3", by: by, md: 'Test 3', assetUrl: 'http://youtu.be/qlOAbrvjMBo' }    
-            post('/posts', d1, {}, function(p1) {
-              post('/posts', d2, {}, function(p2) {
-                expect(p2.published).to.be.undefined
-                p2.slug = "test-2-pub-"+moment().format('X')
-                post('/posts', d3, {}, function(p3) {
-                  login('admin', data.users.admin, function() {
-                    put('/posts/publish/'+p2._id, p2, {}, function(p2pub, resp) {
-                      expect(p2pub.published).to.exist
-                      login(userKey, data.users[userKey], function() {
-                        get('/posts/me', {}, function(posts) { 
-                          // $log(_.pluck(posts,'published'))
-                          expect(posts.length).to.equal(3)
-                          done() 
-                        })
-                      })
-                    })                      
+    it('Users own posts returns published and unpublished posts', function(done) {
+      addAndLoginLocalUser('jkre', function(s) {
+        var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
+        var d1 = { title: "test 1", by: by, md: 'Test 1', assetUrl: 'http://youtu.be/qlOAbrvjMBo' }
+        var d2 = { title: "test 2", by: by, md: 'Test 2', assetUrl: 'http://www.airpair.com/v1/img/css/blog/example2.jpg' }
+        var d3 = { title: "test 3", by: by, md: 'Test 3', assetUrl: 'http://youtu.be/qlOAbrvjMBo' }    
+        post('/posts', d1, {}, function(p1) {
+          post('/posts', d2, {}, function(p2) {
+            expect(p2.published).to.be.undefined
+            p2.slug = "test-2-pub-"+moment().format('X')
+            post('/posts', d3, {}, function(p3) {
+              login('edap', data.users.edap, function() {
+                put('/posts/publish/'+p2._id, p2, {}, function(p2pub, resp) {
+                  expect(p2pub.published).to.exist
+                  login(s.userKey, data.users[s.userKey], function() {
+                    get('/posts/me', {}, function(posts) { 
+                      // $log(_.pluck(posts,'published'))
+                      expect(posts.length).to.equal(3)
+                      done() 
+                    })
                   })
-                })
+                })                      
               })
             })
           })

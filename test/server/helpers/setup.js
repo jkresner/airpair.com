@@ -51,7 +51,20 @@ global.addLocalUser = function(userKey, done)
   })
 }
 
-function addAdmin(userKey, done)
+global.addAndLoginLocalUser = function(originalUserKey, done)
+{      
+  addLocalUser(originalUserKey, function(userKey) {
+    login(userKey, data.users[userKey], function() {
+      get('/session/full', {}, function(s) { 
+        s.userKey = userKey 
+        done(s)
+      })
+    })
+  })
+}
+
+
+function addUserWithRole(userKey, role, done)
 {      
   stubAnalytics()
   var session = newUserSession();
@@ -59,16 +72,17 @@ function addAdmin(userKey, done)
   // Add an administrator
   UserService.upsertProviderProfile.call(session, 'google', data.oauth[userKey], function(e,r){
     if (!r.roles || !r.roles.length) {
-      UserService.toggleUserInRole.call({user:r}, r._id,'admin', function(e,rr) {
+      UserService.toggleUserInRole.call({user:r}, r._id, role, function(e,rr) {
         data.users[userKey] = rr;
+        resotreAnalytics()
         done()
       })       
     }
     else {
       data.users[userKey] = r;
+      resotreAnalytics()
       done()
     }
-    resotreAnalytics()
   })
 }
 
@@ -77,10 +91,10 @@ module.exports = {
 
   init: function(done)
   {      
-    addAdmin('admin', done)
+    addUserWithRole('admin', 'admin', done)
   },
 
-  addAdmin: addAdmin,
+  addUserWithRole: addUserWithRole,
 
   initTags: function(done)
   {

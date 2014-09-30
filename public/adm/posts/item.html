@@ -1,0 +1,35 @@
+<article itemscope="itemscope" itemtype="http://schema.org/BlogPosting" itemprop="blogPost">
+<!-- 
+ -->  
+ <header class="entry-header">
+    <h2 class="entry-title" itemprop="headline">{{ post.title }}</h2> 
+    <p class="entry-meta">
+      <time class="entry-time" itemprop="datePublished" datetime="{{ post.published }}">{{ post.publishedFormat }}</time> 
+      <span class="entry-author" itemprop="author" itemscope="itemscope" itemtype="http://schema.org/Person">
+        <span class="entry-author-name" itemprop="name">{{ post.by.name }}</span>
+      </span> 
+      <br />Updated
+      {{ post.updated | agoTime }}
+      <span ng-if="post.published">, 
+      Published {{ post.published | agoTime }}</span>
+    </p>
+  </header>
+  <div class="entry-content" itemprop="text">
+    <img class="entry-author-image" itemprop="image" ng-src="{{ post.by.avatar }}?s=50" align="left" />
+    <p>{{ post.meta.description }}</p>
+  </div>
+
+  <footer class="entry-footer">
+    <ul>
+      <li><a href="/posts/edit/{{ post._id }}" target="_blank">Edit</a></li>
+      <li><a href="/posts/publish/{{ post._id }}" target="_blank">Publish</a></li>
+      <li ng-if="post.published"><a href="{{ post.url }}">View</a></li>
+    </ul>
+    
+    <p class="entry-meta">
+      <span class="entry-categories">
+        <a ng-repeat='tag in post.tags' href="#" title="View all posts in {{ tag.name }}" rel="category tag">{{ '{'+tag.slug+'}' }}</a>
+      </span>    
+    </p>
+  </footer>
+</article>  
