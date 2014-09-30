@@ -33,8 +33,3 @@ describe('Server: ', function() {
   describe('Analytics: ', require('./analyticsSpec'))    
 
 })
-
-  
-
-
-

@@ -23,6 +23,11 @@ export default function(model, logging) {
   }
 
   return {
+    Forbidden: (message) => {
+      var e = new Error(message)
+      e.status = 403
+      return e
+    },
     searchMany: searchMany,
     searchOne: searchOne,    
     getAll: (cb) => { searchMany({}, null, cb) },

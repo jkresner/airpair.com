@@ -1,8 +1,10 @@
 import Svc from '../services/_service'
+import * as Validate from '../../shared/validation/post.js'
 import * as UserSvc from '../services/users'
 import Post from '../models/post'
 import generateToc from './postsToc'
 var marked = require('marked')
+
 
 var logging = false
 var svc = new Svc(Post, logging)
@@ -101,14 +103,10 @@ export function getTableOfContents(markdown, cb) {
 
 export function update(id, o, cb) {
   svc.getById(id, (e, r) => {  
-    var inValid = null
-    if (!_.idsEqual(r.by.userId, this.user._id)) inValid = 'Cannot updated post not created by you'
-    if (o.published && !_.contains(this.user.roles, 'editor')) inValid = 'Cannot update a published post'
-    if (inValid) return cb(new Error(403,inValid)
+    var inValid = Validate.update(this.user, r, o)
+    if (inValid) return cb(svc.Forbidden(inValid))
 
     o.updated = new Date()
-    
-    //-- todo, authorize for owner or editor (maybe using params?)
 
     svc.update(id, o, cb) 
   })
@@ -116,22 +114,19 @@ export function update(id, o, cb) {
 
 
 export function publish(id, o, cb) {
-  if (!o.slug) { cb(new Error('Slug required for a published post'), null) }
-  else
-  {
-    if (o.slug.indexOf('/') != 0) { o.slug.replace('/',''); }
-  }
-
+  var inValid = Validate.publish(this.user, null, o)
+  if (inValid) return cb(svc.Forbidden(inValid))
+  
+  if (o.slug.indexOf('/') != 0) { o.slug.replace('/',''); }
   o.updated = new Date()
 
-  if (o.publishedOverride) { 
+  if (o.publishedOverride)
     o.published = o.publishedOverride 
-  } else if (!o.published) {
+  else if (!o.published)
     o.published = new Date()
-  }
+
 
   o.publishedBy = this.user._id
-  //-- todo, authorize for editor role
   
   svc.update(id, o, cb) 
 }
@@ -139,12 +134,9 @@ export function publish(id, o, cb) {
 
 export function deleteById(id, cb) {
   svc.getById(id, (e, r) => {
-    if (r.by.userId.toString() != this.user._id.toString()) 
-      cb(new Error('Cannot delete post not created by you'), null) 
-    else if (r.published)
-      cb(new Error('Cannot delete published post'), null) 
-    else
-      svc.deleteById(id, cb)          
+    var inValid = Validate.deleteById(this.user, r)
+    if (inValid) return cb(svc.Forbidden(inValid))
+    svc.deleteById(id, cb)          
   })
 }
 

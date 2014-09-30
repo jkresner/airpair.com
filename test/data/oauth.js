@@ -60,6 +60,28 @@ module.exports = {
     token: {}
   },
 
+
+  edap: { provider: 'google',
+    id: '105075583437166404731',
+    displayName: 'AirPair Editors',
+    name: { familyName: 'AirPair', givenName: 'Editors' },
+    emails: [ { value: 'editrs@airpair.com' } ],
+    _json: 
+     { id: '105075583437166404731',
+       email: 'editprs@airpair.com',
+       verified_email: true,
+       name: 'AirPair Editors',
+       given_name: 'Air',
+       family_name: 'Pair',
+       link: 'https://plus.google.com/+AirPair',
+       picture: 'https://lh6.googleusercontent.com/-tEGuZ5EdOw0/AAAAAAAAAAI/AAAAAAAAAEo/Tvt0ZoRCwv0/photo.jpg',
+       gender: 'male',
+       locale: 'en',
+       hd: 'airpair.com' },
+    token: {}
+  },
+
+
   exap: { provider: 'google',
     id: '105075583437166504731',
     displayName: 'AirPair Experts',
