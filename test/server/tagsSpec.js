@@ -3,7 +3,13 @@ module.exports = function()
   describe("API", function() {
 
     before(function(done) {
+      stubAnalytics()
       testDb.initTags(done)
+    })
+
+    after(function(done) {
+      resotreAnalytics()
+      done()
     })
 
 
@@ -29,7 +35,7 @@ module.exports = function()
       var opts = { unauthenticated: true }
       get('/tags/search/mon', opts, function(s) { 
         expect(s.length).to.equal(1)
-        expect(s[0].name).to.equal('mongodb')        
+        expect(s[0].name).to.equal('MongoDB')        
         expect(s[0].slug).to.equal('mongodb')        
         expect(s[0].desc).to.exist
         expect(s[0]._id).to.exist        

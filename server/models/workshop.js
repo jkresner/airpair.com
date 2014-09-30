@@ -59,4 +59,4 @@ schema = new Schema({
   youtube: String
 });
 
-export default mongoose.model('Workshop', schema);
+module.exports = mongoose.model('Workshop', schema);

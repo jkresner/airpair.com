@@ -31,7 +31,7 @@ var Author = {
   gp:           { type: String },    
 };
 
-export default mongoose.model('Post', new mongoose.Schema({
+module.exports = mongoose.model('Post', new mongoose.Schema({
   
   by:           Author,
   created:      { required: true, type: Date, 'default': Date },

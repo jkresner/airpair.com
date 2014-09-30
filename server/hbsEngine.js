@@ -35,23 +35,24 @@ export default function(app) {
 	app.set('views', `${config.appdir}/server/views`)
 	app.engine('hbs', hbsEngine);
 
+	var combineBaseData = (req, data) => {
+		if (!data) { data = {} }
+		data.build = config.build
+		data.authenticated = req.user && req.user._id 
+		data.user = req.user || { sessionID: req.sessionID }
+		data.config = { segmentioKey: config.analytics.segmentio.writekey }
+		return data;
+	}
+
 	app.renderHbs = (fileName, data) =>
 		(req,res) => {
-			if (!data) { data = {} }
-			data.build = config.build
-			data.authenticated = req.isAuthenticated()
-			data.user = req.user
-			res.status(200).render(`./${fileName}.hbs`, data)
+			res.status(200).render(`./${fileName}.hbs`, combineBaseData(req,data))
 		}
 
 	app.renderHbsViewData = (fileName, viewDataFn) =>
 		(req, res) => {
 			viewDataFn(req, (e,data) => {
-				if (!data) { data = {} }
-				data.build = config.build
-				data.authenticated = req.isAuthenticated()
-				data.user = req.user
-				res.status(200).render(`./${fileName}.hbs`, data)
+				res.status(200).render(`./${fileName}.hbs`, combineBaseData(req,data))
 			})
 		}
 }

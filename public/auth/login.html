@@ -1,12 +1,18 @@
 <header>Login</header>
 <section id="auth">
 
+
+<h3>New to AirPair?</h3>
+
+<p>The fastest way to access AirPair is to one click login with Google. You can also <a href="/v1/auth/signup">sign up with an email and password</a>.</p>
+
+
 <div class="choice">
 <div class="google option">
 
-  <h2>Quick login</h2>
+  <h2>One click login</h2>
   <p> 
-    <a class="btn btn-error" href="/v1/auth/google" target="_self">Login with google</a>
+    <a id="authGoogleBtn" class="btn btn-error" href="/v1/auth/google" target="_self" track-click="Google Auth">Login with google</a>
   </p>
   <p style="font-size:12px;margin:20px 0 0 0">* You will be temporarily redirected to a google login page.</p>
 
@@ -32,7 +38,7 @@
       </div>    
     </div>
 
-    <button type="submit" class="btn btn-warning btn-lg">Login</button>
+    <button id="localAuthBtb" type="submit" class="btn btn-warning btn-lg" track-click="Local Auth">Login</button>
 
     <div class="error" ng-if="signupFail">
       <b>Login failed:</b> <span ng-if="signupFail">{{signupFail}}</span>
@@ -42,9 +48,6 @@
 </div>
 </div>
 
-<h3>New to AirPair?</h3>
-
-<p>The fastest way to access AirPair is to login with Google (above). You can also <a href="/v1/auth/signup">sign up with an email and password</a>.</p>
 
 </section>
 
