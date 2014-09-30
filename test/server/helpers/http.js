@@ -75,3 +75,23 @@ global.put = function(url, data, opts, cb) {
     })
 
 }
+
+
+global.DELETE = function(url, opts, cb) {
+  var apiUrl = '/v1/api'+url
+  if (logging) $log('DELETE:', apiUrl)
+
+  var sessionCookie = cookie
+  if (opts.unauthenticated) { sessionCookie = null }
+
+  return http(global.app)
+    .delete(apiUrl)
+    .set('cookie',sessionCookie)
+    .expect(opts.status||200)
+    .expect('Content-Type', /json/)
+    .end(function(err, resp){
+      if (err) throw err
+      else cb(resp.body, resp)
+    })
+
+}

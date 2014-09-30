@@ -2,10 +2,11 @@ var logging = false
 
 
 var cbSend = (httpMethod, res, next) => {
-  return (e , r) => {
+  return (e, r) => {
     if (logging) { $log('cbSend', e, r) }
-    if (e) { 
-      return res.status(400).json({message:e.message})
+    if (e) 
+    { 
+      return res.status(e.status || 400).json({message:e.message})
     }
     if (httpMethod != 'DELETE')
     {
@@ -19,12 +20,12 @@ var cbSend = (httpMethod, res, next) => {
   }
 }
 
-function resolveParamFn(Svc, svcFnName, pramaName) {  
+function resolveParamFn(Svc, svcFnName, paramaName) {  
   return (req, res, next, id) => {
-    if (logging) $log('paramFn', pramaName, id)
+    if (logging) $log('paramFn', paramaName, id)
     Svc[svcFnName](id, function(e, r) {
-      if (!r && !e) e = new Error(`${pramaName} not found`)     
-      req[pramaName] = r
+      if (!r && !e) e = new Error(`${paramaName} not found. Back to <a href="/${paramaName}s">${paramaName}s</a>`)     
+      req[paramaName] = r
       next(e, r)
     })   
   }
@@ -62,7 +63,8 @@ export var initAPI = (Svc, custom, paramFns) => {
       var svcFn = paramFns[paramName]
       api.paramFns[svcFn] = resolveParamFn(Svc,svcFn,paramName)
     }
-  
 
+  api.svc = Svc
+  
   return api;
 }

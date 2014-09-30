@@ -6,5 +6,6 @@ export default initAPI(Svc, {
   getSession: (req) => [],
   getSessionFull: (req) => [],
   toggleUserInRole: (req) => [req.params.id,req.params.role],
-  toggleTag: (req) => [req.tag]  
+  toggleTag: (req) => [req.tag],
+  getUsersInRole: (req) => [req.params.role]
 })

@@ -34,6 +34,12 @@ angular.module('APFilters', [])
     }
   })
 
+  .filter('agoTime', function() {
+    return (date) => {
+      return moment(date).fromNow();
+    }
+  })
+
   .filter('trustUrl', function ($sce) {
     return (url) => $sce.trustAsResourceUrl(url)
   })

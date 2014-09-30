@@ -10,6 +10,12 @@ export default function(app) {
     .param('workshop', WorkshopsAPI.paramFns.getBySlug)
     .param('post', PostsAPI.paramFns.getBySlug)    
 
+    .get('/posts/all', app.renderHbsViewData('postList', 
+      (req, cb) => PostsAPI.svc.getAllPublished(cb) ))
+
+    .get('/posts/airpair-v1', app.renderHbsViewData('postList', 
+      (req, cb) => PostsAPI.svc.getUsersPublished('hackerpreneur', cb) ))
+
     .get('/:tag/posts/:post', trackView('post'), app.renderHbsViewData('post', 
       (req, cb) => cb(null,req.post) ))
 
