@@ -13,6 +13,7 @@ var Meta = {
   canonical:    { type: String, lowercase: true, trim: true },  
   ogTitle:      { type: String },     
   ogType:       { type: String },       
+  ogDescription:{ type: String },         
   ogImage:      { type: String, trim: true },    
   ogVideo:      { type: String, trim: true },      
   ogUrl:        { type: String, lowercase: true, trim: true }

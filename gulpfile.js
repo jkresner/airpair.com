@@ -61,34 +61,43 @@ gulp.task('watch', function() {
   gulp.watch(watching).on('change',livereload.changed);
 });
 
-gulp.task('watchify', function() {
-  var bundler = watchify(browserify('./public/common/index.js', watchify.args));
 
+var watchifyer = function(fileName) {
+  var bundler = watchify(browserify('./public/common/'+fileName, watchify.args));
   bundler.transform(stringify(['.html']));
   bundler.transform(es6ify);
-  
   bundler.on('update', rebundle);
 
   function rebundle() {
     return bundler.bundle()
-      // log errors if they happen
-      .on('error', gutil.log.bind(gutil, 'Browserify Error'))
-      .pipe(source('index.js'))
+      .on('error', gutil.log.bind(gutil, 'Browserify Error')) // log errors if they happen
+      .pipe(source(fileName))
       .pipe(gulp.dest('./public/v1/js'));
   }
 
   return rebundle();
+
+}
+
+gulp.task('watchify', function() {
+  watchifyer('index.js');
+  watchifyer('adm.js');  
 });
 
-gulp.task('bundle', function() {
-  var bundler = browserify('./public/common/index.js');
+var bundlerer = function(fileName) {
+  var bundler = browserify('./public/common/'+fileName);
 
   bundler.transform(stringify(['.html']));
   bundler.transform(es6ify);
   
   bundler.bundle()
-    .pipe(source('index.js'))
-    .pipe(gulp.dest('./public/v1/js'));
+    .pipe(source(fileName))
+    .pipe(gulp.dest('./public/v1/js'));  
+}
+
+gulp.task('bundle', function() {
+  bundlerer('index.js')
+  bundlerer('adm.js')  
 });
 
 

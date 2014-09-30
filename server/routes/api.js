@@ -34,7 +34,8 @@ export default function(app) {
 
   var admrouter = require('express').Router()
     .use(adm)
-    .put('/users/role/:id/:role', UsersAPI.toggleUserInRole)   
+    .get('/posts', PostsAPI.getAllAdmin)  
+    .put('/users/:id/role/:role', UsersAPI.toggleUserInRole)  
 
   router.use('/adm',admrouter)
 
