@@ -16,14 +16,13 @@ section#post {
 	text-align:center;
 	article { 
 		.gradientfill;
+		.tileborder;
 		text-align:left;
 		position:relative;
 		width:286px; 
 		height:200px;
 		margin:6px;
 		padding:0px;		
-		border:solid 1px @lightgray;
-		border-radius:3px;
 		font-size:12px;
 		line-height:14px;
 		display:inline-block;		
@@ -68,7 +67,7 @@ section#post {
 	}
 
 	article:hover { 
-		background:@lightblue;
+		.tileborderHover;
 	}
 
 	@media screen and (max-width:640px) {
@@ -183,15 +182,7 @@ section#posts {
 		color:@lightblue;
 		margin:10px 0 
 	}
-	h1 { text-align:left;
-		margin:0 0 10px 0;
-		padding:10px 0;
-		font-size:42px;
-		padding-left:@mainElmPad;
-		line-height:52px;
-		width:100%;
-		border-bottom:solid 1px #dff2ef
-	}
+	h1 { padding-left:@mainElmPad }
 	h2 { text-align:left;font-size:28px;margin-bottom:5px;padding-left:@mainElmPad }
 	h3 { text-align:left }	
 	p { margin-top:0;max-width:@mainElmWidth;vertical-align:top;padding-left:@mainElmPad }
@@ -232,11 +223,10 @@ section#posts {
 	  }
  }
 
-	.pw-widget {
+	.share {
 		float:right;
 		width:@sideRailWidth;
-		margin:10px 0;
-		height:60;
+		margin:14px 0;
 		position:relative;
 		top:0;
 	}
@@ -300,7 +290,6 @@ section#posts {
 		> h1 { font-size:28px;line-height:30px;text-align:center;margin-top:20px }
 		h2 { font-size:22px;line-height:32px;text-align:center;margin-bottom:10px }
 		h3, h4, h5, h6 { text-align:center }    
-		.pw-widget { display:none }
 		#table-of-contents { font-size:16px;margin:20px 20px 10px 20px;text-align:left }
 		#table-of-contents + ul { margin:0px 20px }
 		figure.author { float:none;
