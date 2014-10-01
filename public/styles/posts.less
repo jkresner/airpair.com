@@ -6,7 +6,7 @@
 
 
 section#post {
-	@media only screen and (max-width:640px) {
+	@media screen and (max-width:640px) {
 	  .main-wrap, main { width:100%;margin:auto } //-- let the post be as big as the width
 	} 
 }  
@@ -16,21 +16,23 @@ section#post {
 	text-align:center;
 	article { 
 		.gradientfill;
+		.tileborder;
 		text-align:left;
 		position:relative;
 		width:286px; 
 		height:200px;
 		margin:6px;
 		padding:0px;		
-		border:solid 1px @lightgray;
-		border-radius:3px;
 		font-size:12px;
 		line-height:14px;
 		display:inline-block;		
 
 		> a { padding:12px 12px 0px 12px;display:block }
 
-		header { min-height:60px;overflow:hidden }
+		header { 
+			min-height:60px;
+			overflow:hidden;
+		}
 
 		h2 {
 			font-size:14px;
@@ -65,14 +67,21 @@ section#post {
 	}
 
 	article:hover { 
-		background:@lightblue;
+		.tileborderHover;
 	}
+
+	@media screen and (max-width:640px) {
+	  margin:auto;
+	} 
 }
 
 
 section#posts {
 	
-	> h3 { width:100%;margin-bottom:0px;font-size:18px;
+	section > h3 { 
+		width:100%;
+		margin-bottom:10px;
+		font-size:18px;
 		span { display:block;float:right }
 	}
 
@@ -156,6 +165,11 @@ section#posts {
 		.publishMeta input { font-size:11px;padding:4px;height:26px }
 
 	}
+
+	@media screen and (max-width:640px) {
+		//-- don't show myposts UI on mobile. might even be worth disabling xhr in angular
+	  section#myposts { display:none } 
+	} 
 }
 
 .blogpost {
@@ -164,8 +178,11 @@ section#posts {
 
 	header { border-bottom:solid 1px @lightgray;margin-bottom:20px }
 
-	hr { max-width:@mainElmWidth;color:@lightblue;margin:10px 0 }
-	h1 { text-align:left;margin:0;font-size:42px;padding-left:@mainElmPad }
+	hr { max-width:@mainElmWidth;
+		color:@lightblue;
+		margin:10px 0 
+	}
+	h1 { padding-left:@mainElmPad }
 	h2 { text-align:left;font-size:28px;margin-bottom:5px;padding-left:@mainElmPad }
 	h3 { text-align:left }	
 	p { margin-top:0;max-width:@mainElmWidth;vertical-align:top;padding-left:@mainElmPad }
@@ -188,8 +205,8 @@ section#posts {
 	// ---End Prism customization
 
 	ol { max-width:620px;padding-left:30px }
-	ul { list-style:none;margin:0;padding-left:15px }
-	ul ul { margin-left:12px }
+	ul { max-width:620px;list-style:none;margin:0;padding-left:15px }
+	ul ul { margin-left:12px } // nested lists
 
 	iframe { margin:0px 0px 0px 0px }
 	img { max-width:100% }
@@ -206,11 +223,10 @@ section#posts {
 	  }
  }
 
-	.pw-widget {
+	.share {
 		float:right;
 		width:@sideRailWidth;
-		margin:15 0;
-		height:60;
+		margin:14px 0;
 		position:relative;
 		top:0;
 	}
@@ -235,9 +251,9 @@ section#posts {
 		li { padding:1px 0 2px 0; }	
 	}
 
-	// #author + p { width:80px;height:80px;display:inline-block;maring-top:20px }
 	.author {
-		margin:10px 0 24px 0;
+		margin:22px 0 24px 0;
+		hr { height:0;padding:0;margin:0;color:white;border:none }		
 
 		> img { width:80px;height:80px;border-radius:50%;display:inline-block;vertical-align:top }
 	
@@ -252,6 +268,7 @@ section#posts {
 			font-style:italic;
 			font-size:14px;
 			overflow:hidden; 
+
 		}
 	}
 
@@ -264,6 +281,7 @@ section#posts {
 		#table-of-contents { float:left;clear:left; }
 		#table-of-contents + ul { float:left;clear:left; }
 		.author { float:none }
+		figure { clear:both;padding-top:20px }
 	}
 
 	@media only screen and (max-width:640px) {
@@ -272,10 +290,12 @@ section#posts {
 		> h1 { font-size:28px;line-height:30px;text-align:center;margin-top:20px }
 		h2 { font-size:22px;line-height:32px;text-align:center;margin-bottom:10px }
 		h3, h4, h5, h6 { text-align:center }    
-		.pw-widget { display:none }
 		#table-of-contents { font-size:16px;margin:20px 20px 10px 20px;text-align:left }
 		#table-of-contents + ul { margin:0px 20px }
+		figure.author { float:none;
+			hr { clear:both }		
+		}
 		.author > img { width:60px;height:60px; }
-		.author > figcaption { width:78%;float:right }   
+		.author > figcaption { width:75%;float:right;height:inherit; }   
   }	
 }

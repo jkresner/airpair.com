@@ -20,7 +20,7 @@ export default function(app) {
       (req, cb) => cb(null,req.post) ))
 
     .get('/:tag/workshops/:workshop', trackView('workshop'), app.renderHbsViewData('workshop', 
-      (req, cb) => cb(null,req.workshop) ))
+      (req, cb) => { req.workshop.by = req.workshop.speakers[0]; cb(null,req.workshop) }))
 
     .get('/workshops-slide/:workshop', app.renderHbsViewData('workshopsslide', 
       (req, cb) => cb(null,req.workshop) ))

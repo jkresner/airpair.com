@@ -1,16 +1,20 @@
 <header>Posts</header>
 <section id="posts">
 
-  <h3>Recent posts<span><a href="/posts/all" target="_self">All posts</a></span></h3>
-  <div class="posts recent">
-    <ap-post-list-item post="p" ng-repeat="p in recent"></ap-post-list-item>
-  </div>
-      
-  <h3>My Posts</h3>
-  <br />
-  <div class="editOptions">
-    <a href="/posts/new" class="btn">Create new post</a>      
-  </div>
-  <div class="myposts" ap-my-posts-list=""></div>
+  <section id="recent">
+    <h3>Recent posts<span><a href="/posts/all" target="_self">All posts</a></span></h3>
+    <div class="posts rec`ent">
+      <ap-post-list-item post="p" ng-repeat="p in recent"></ap-post-list-item>
+    </div>
+  </section>
+
+  <section id="myposts">
+    <h3>My Posts</h3>
+    <br />
+    <div class="editOptions">
+      <a href="/posts/new" class="btn">Create new post</a>      
+    </div>
+    <div class="myposts" ap-my-posts-list=""></div>
+  </section>    
 
 </section>

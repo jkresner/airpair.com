@@ -8,6 +8,94 @@ body {
   font-family: Open Sans, Century Gothic;
 }
 h1 {
+  font-size: 36px;
+  line-height: 60px;
+  font-weight: 300;
+}
+h2 {
+  font-size: 24px;
+  line-height: 36px;
+  font-weight: 400;
+}
+h3 {
+  font-size: 18px;
+  line-height: 30px;
+  font-weight: 400;
+}
+h4 {
+  font-size: 12px;
+  line-height: 20px;
+  font-weight: 400;
+}
+h5 {
+  font-size: 10px;
+}
+a {
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: none;
+}
+.btn {
+  background: #ce5424;
+  color: white;
+  border: none;
+  padding: 8px 20px;
+  font-size: 18px;
+}
+.btn:hover {
+  font-weight: bold;
+  color: #ffffff;
+}
+.gradientfill {
+  background: #ffffff;
+  background: -moz-radial-gradient(left, #ffffff 0%, #dff2ef 100%, #ffffff 50%);
+  background: radial-webkit-gradient(left top, right top, color-stop(0%, #ffffff), color-stop(10%, #dff2ef), color-stop(50%, #ffffff));
+  background: -webkit-radial-gradient(left, #ffffff 0%, #dff2ef 100%, #ffffff 50%);
+  background: -o-radial-gradient(left, #ffffff 0%, #dff2ef 100%, #ffffff 50%);
+  background: -ms-radial-gradient(left, #ffffff 0%, #dff2ef 100%, #ffffff 50%);
+  background: radial-gradient(to right, #ffffff 0%, #dff2ef 100%, #ffffff 50%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#ffffff', GradientType=1);
+}
+main {
+  width: 100%;
+  margin: 0 auto;
+  padding: 0px 10px;
+}
+main a {
+  color: #ce5424;
+}
+main a:hover {
+  color: #4d4e4e;
+}
+main > header {
+  background: #ffffff;
+  background: -moz-radial-gradient(left, #ffffff 0%, #dff2ef 100%, #ffffff 50%);
+  background: radial-webkit-gradient(left top, right top, color-stop(0%, #ffffff), color-stop(10%, #dff2ef), color-stop(50%, #ffffff));
+  background: -webkit-radial-gradient(left, #ffffff 0%, #dff2ef 100%, #ffffff 50%);
+  background: -o-radial-gradient(left, #ffffff 0%, #dff2ef 100%, #ffffff 50%);
+  background: -ms-radial-gradient(left, #ffffff 0%, #dff2ef 100%, #ffffff 50%);
+  background: radial-gradient(to right, #ffffff 0%, #dff2ef 100%, #ffffff 50%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#ffffff', GradientType=1);
+  height: 35px;
+  width: 100%;
+  margin: 0px auto;
+  padding: 10px 0 0 0;
+  font-size: 13px;
+  line-height: 13px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+html,
+body {
+  height: 100%;
+}
+body {
+  background-color: white;
+  color: #7e7f7f;
+  font-family: Open Sans, Century Gothic;
+}
+h1 {
   font-size: 48px;
   line-height: 72px;
   font-weight: 300;
@@ -409,258 +497,6 @@ nav#sideChat input {
   height: 40px;
   padding: 5px;
 }
-section#workshops #subscribe {
-  padding-bottom: 20px;
-}
-section#workshops #subscribe img {
-  max-width: 500px;
-  margin: 20px;
-}
-section#workshops #index ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-section#workshops #index #calendar {
-  float: right;
-  width: 212px;
-  font-size: 13px;
-}
-section#workshops #index #calendar h2 {
-  margin-top: 0;
-}
-section#workshops #index #calendar .btn {
-  width: 212px;
-  font-size: 16px;
-}
-section#workshops #index #calendar time {
-  display: block;
-  font-size: 11px;
-  margin: 6px 0 0px 0;
-}
-section#workshops #index #next,
-section#workshops #index #featured {
-  max-width: 650px;
-  text-align: center;
-  font-size: 0;
-  line-heigh: 0;
-}
-section#workshops #index #next a.workshop,
-section#workshops #index #featured a.workshop {
-  border: solid 1px #d3d3d3;
-  border-radius: 3px;
-  color: #151821;
-  display: inline-block;
-  font-size: 0px;
-  letter-spacing: -4px;
-  margin: 12px;
-  padding: 6px 3px 3px 3px;
-  width: 190px;
-  text-align: center;
-  background: -moz-radial-gradient(left, #ffffff 0%, #dff2ef 100%, #ffffff 50%);
-  background: radial-webkit-gradient(left top, right top, color-stop(0%, #ffffff), color-stop(10%, #dff2ef), color-stop(50%, #ffffff));
-  background: -webkit-radial-gradient(left, #ffffff 0%, #dff2ef 100%, #ffffff 50%);
-  background: -o-radial-gradient(left, #ffffff 0%, #dff2ef 100%, #ffffff 50%);
-  background: -ms-radial-gradient(left, #ffffff 0%, #dff2ef 100%, #ffffff 50%);
-  background: radial-gradient(to right, #ffffff 0%, #dff2ef 100%, #ffffff 50%);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#ffffff', GradientType=1);
-  vertical-align: top;
-}
-section#workshops #index #next a.workshop time,
-section#workshops #index #featured a.workshop time {
-  display: block;
-  height: 15px;
-  font-size: 12px;
-  letter-spacing: normal;
-  color: #4d4e4e;
-}
-section#workshops #index #next a.workshop img,
-section#workshops #index #featured a.workshop img {
-  display: block;
-  margin: auto;
-  border-radius: 40px;
-  margin-top: 10px;
-}
-section#workshops #index #next a.workshop h5,
-section#workshops #index #featured a.workshop h5 {
-  letter-spacing: normal;
-}
-section#workshops #index #next a.workshop .entry-author,
-section#workshops #index #featured a.workshop .entry-author {
-  font-weight: bold;
-  color: #ce5424;
-}
-section#workshops #index #next a.workshop figure,
-section#workshops #index #featured a.workshop figure {
-  display: block;
-  height: 64px;
-  font-size: 14px;
-  padding: 0;
-  margin: 0;
-  letter-spacing: normal;
-}
-section#workshops #index #next a.workshop:hover,
-section#workshops #index #featured a.workshop:hover {
-  border: solid 1px #ce5424;
-  background: -moz-radial-gradient(left, #ffffff 0%, #dff2ef 0%, #ffffff 100%);
-  background: -webkit-radial-gradient(left top, right top, color-stop(0%, #ffffff), color-stop(0%, #dff2ef), color-stop(100%, #ffffff));
-  background: -webkit-radial-gradient(left, #ffffff 0%, #dff2ef 0%, #ffffff 100%);
-  background: -o-radial-gradient(left, #ffffff 0%, #dff2ef 0%, #ffffff 100%);
-  background: -ms-radial-gradient(left, #ffffff 0%, #dff2ef 0%, #ffffff 100%);
-  background: radial-radient(to right, #ffffff 0%, #dff2ef 0%, #ffffff 100%);
-}
-section#workshops #index #past {
-  clear: both;
-  text-align: center;
-  width: 650px;
-  font-size: 12px;
-}
-section#workshops #index #past time {
-  display: block;
-  font-size: 10px;
-  margin: 1px 0;
-}
-section#workshops #index #past img {
-  border-radius: 3px;
-  margin-bottom: 10px;
-}
-section#workshops #index #past a {
-  width: 45%;
-  float: left;
-  margin: 10px;
-}
-@media only screen and (max-width: 900px) {
-  section#workshops #index #next,
-  section#workshops #index #featured {
-    max-width: 400px;
-  }
-  section#workshops #index #next a.workshop,
-  section#workshops #index #featured a.workshop {
-    margin: 4px 8px 4px 0px;
-  }
-}
-@media only screen and (max-width: 640px) {
-  section#workshops #index #calendar {
-    float: none;
-    width: 100%;
-    text-align: center;
-  }
-  section#workshops #index #past {
-    width: 100%;
-  }
-  section#workshops #index #past a {
-    width: 30%;
-    float: none;
-    display: inline-block;
-    margin: 10px;
-  }
-}
-section#workshops #show h1 {
-  margin-bottom: 20px;
-  font-size: 38px;
-}
-section#workshops #show time {
-  display: block;
-  max-width: 650px;
-  margin-botto: 5px;
-  color: black;
-  font-weight: bold;
-}
-section#workshops #show p {
-  max-width: 650px;
-}
-section#workshops #show hr {
-  max-width: 650px;
-}
-section#workshops #show .speakers {
-  float: right;
-  clear: right;
-  width: 212px;
-  font-size: 12px;
-  text-align: justify;
-}
-section#workshops #show .speakers h2 {
-  margin-top: 0;
-  padding-top: 0;
-  text-align: center;
-  line-height: 32px;
-}
-section#workshops #show .speakers h3 {
-  text-align: center;
-}
-section#workshops #show .speakers img {
-  width: 100%;
-  margin: 0px 0 20px 0;
-}
-section#workshops #show .speakers ul,
-section#workshops #show .speakers li {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-section#workshops #show .player {
-  max-width: 650px;
-  background-color: #1b1b1b;
-  padding: 10px 5px;
-}
-section#workshops #show .player .slide {
-  opacity: 0.6;
-}
-section#workshops #show .action {
-  padding: 5px;
-  background: #dff2ef;
-  height: 100px;
-  max-width: 650px;
-  text-align: center;
-}
-section#workshops #show .action a.btn {
-  margin-top: 18px;
-}
-section#workshops #show .action label {
-  display: block;
-}
-@media only screen and (max-width: 900px) {
-  section#workshops #show .player iframe {
-    max-width: 400px;
-  }
-}
-@media only screen and (max-width: 640px) {
-  section#workshops #show {
-    text-align: center;
-  }
-  section#workshops #show h1 {
-    font-size: 28px;
-    line-height: 32px;
-    text-align: center;
-  }
-  section#workshops #show h2 {
-    font-size: 22px;
-    line-height: 32px;
-    text-align: center;
-    margin-bottom: 10px;
-  }
-  section#workshops #show .share {
-    float: none;
-    margin: auto;
-    height: 80px;
-  }
-  section#workshops #show .speakers {
-    float: none;
-    width: 96%;
-    margin: auto;
-  }
-  section#workshops #show .speakers {
-    float: none;
-    width: 96%;
-    margin: auto;
-  }
-  section#workshops #show time {
-    margin-top: 20px;
-  }
-  section#workshops #show .slide {
-    display: none;
-  }
-}
 @media screen and (max-width: 640px) {
   section#post .main-wrap,
   section#post main {
@@ -673,6 +509,7 @@ section#workshops #show .action label {
   text-align: center;
 }
 .posts article {
+  background: #ffffff;
   background: -moz-radial-gradient(left, #ffffff 0%, #dff2ef 100%, #ffffff 50%);
   background: radial-webkit-gradient(left top, right top, color-stop(0%, #ffffff), color-stop(10%, #dff2ef), color-stop(50%, #ffffff));
   background: -webkit-radial-gradient(left, #ffffff 0%, #dff2ef 100%, #ffffff 50%);
@@ -1115,96 +952,27 @@ section#posts .publish .publishMeta input {
     height: inherit;
   }
 }
-body#index .screenshot {
-  width: 59%;
-  margin: 5px 0 0 40px;
-  display: block;
-  float: right;
+.posts .entry-header {
+  padding: 10px 10px 5px 10px;
 }
-body#index .container {
-  width: 100%;
-  padding-left: 0;
+.posts .entry-content {
+  padding: 0 10px 10px 10px;
 }
-body#index .row {
-  margin-left: 0;
+.posts footer ul {
+  list-style: none;
+  float: left;
+  margin: 0;
+  padding-left: 10px;
 }
-body#index .row > div {
-  padding: 0;
+.posts footer li {
+  display: inline-block;
 }
-@media only screen and (max-width: 640px) {
-  body#index .screenshot {
-    margin: 10px 0;
-    width: 94%;
-    float: none;
-  }
-}
-section#auth {
-  padding-top: 20px;
+.posts footer li a {
+  background: #ce5424;
+  width: 40px;
+  color: white;
+  display: inline-block;
   text-align: center;
-}
-section#auth section#newuser {
-  padding: 10px 0 20px 0;
-}
-section#auth .option {
-  min-height: 300px;
-  margin: 30px 8px;
-}
-section#auth .btn {
-  width: 80%;
-}
-section#auth .option form {
-  margin-bottom: 20px;
-}
-section#auth .option .form-group {
-  text-align: center;
-}
-section#auth .option input {
-  width: 80%;
-  margin: auto;
-}
-section#auth .option label {
-  display: none;
-}
-section#auth .error {
-  color: #ff0000;
-}
-section#auth p.help-text {
-  margin: 20px 0 0 0;
-}
-@media only screen and (max-width: 900px) {
-  section#auth .option {
-    width: 300px;
-    margin: 10px 4px;
-    min-height: 280px;
-  }
-  section#auth .option h2 {
-    font-size: 26px;
-  }
-}
-@media only screen and (max-width: 420px) {
-  section#auth {
-    text-align: center;
-  }
-  section#auth h1 {
-    display: none;
-  }
-  section#auth h3 {
-    font-weight: bold;
-  }
-  section#auth p {
-    max-width: 240px;
-    margin: auto;
-  }
-  section#auth .choice {
-    margin: auto;
-  }
-  section#auth .option {
-    margin: 10px auto 0px auto;
-    min-height: 200px;
-    width: 96%;
-    display: block;
-  }
-  section#auth p.help-text {
-    display: none;
-  }
+  border-radius: 2px;
+  padding: 1px 0 2px 0;
 }

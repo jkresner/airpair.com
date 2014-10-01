@@ -32,11 +32,12 @@
     </header>
     <article class="blogpost">
       <h1 class="entry-title" itemprop="headline">{{ title }}</h1> 
-
-      <div class="pw-widget pw-counter-vertical" pw:twitter-via="airpair">   
-        <a class="pw-button-facebook pw-look-native"></a>     
-        <a class="pw-button-twitter pw-look-native"></a>      
-        <a class="pw-button-linkedin pw-look-native"></a>     
+      <div class="share">
+        <div class="pw-widget pw-counter-vertical" pw:twitter-via="airpair">   
+          <a class="pw-button-facebook pw-look-native"></a>     
+          <a class="pw-button-twitter pw-look-native"></a>      
+          <a class="pw-button-linkedin pw-look-native"></a>     
+        </div>
       </div>
       <script type="text/javascript ">  </script>
 
@@ -47,6 +48,7 @@
         <figcaption>
           {{by.bio}}
         </figcaption>
+        <hr />
       </figure>  
       {{#if assetUrl }}
       <p class="asset">{{ assetUrlToMedia assetUrl }}</p>
