@@ -5,7 +5,7 @@
 body#index {
 
   .screenshot {
-    width:60%;margin:20px auto;display:block;float:right;
+    width:59%;margin:5px 0 0 40px;display:block;float:right;
   }
 
   .container { width:100%;padding-left:0 }
@@ -15,7 +15,8 @@ body#index {
 
   @media only screen and (max-width:640px) {
     .screenshot {
-      width:80%;
+      margin:10px 0;
+      width:94%;
       float:none;
     }
   }    
@@ -23,8 +24,12 @@ body#index {
 
 
 section#auth {
-  padding-top:40px;
+  padding-top:20px;
   text-align:center;
+
+  section#newuser {
+    padding:10px 0 20px 0;
+  }
 
   .option {
     min-height:300px;
@@ -32,11 +37,10 @@ section#auth {
   }
 
   .btn {
-    width:80%
+    width:80%;
   }
-
-  .option 
-  {
+  
+  .option {
     form { margin-bottom:20px }
     .form-group { text-align:center; }
     input { width:80%;margin:auto }
@@ -45,6 +49,8 @@ section#auth {
 
   .error { color:red }
   
+  p.help-text { margin:20px 0 0 0 }
+
   @media only screen and (max-width:900px) {
     .option { 
       width:300px;
@@ -55,15 +61,21 @@ section#auth {
   }
 
   @media only screen and (max-width:420px) {
+    h1 { display:none }
+    h3 { font-weight:bold }
+    p { max-width:240px;margin:auto }
+
     .choice { margin:auto }
 
     text-align:center;
     .option {
-      margin:10px auto;
+      margin:10px auto 0px auto;
       min-height:200px;
       width:96%;
       display:block;
     }
+
+    p.help-text { display:none }
   }   
 
 }
