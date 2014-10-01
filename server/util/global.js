@@ -9,7 +9,13 @@ module.exports = function(config)
   global.config         = config
   global.$log           = console.log
   global.$error         = require('./logging').logError
-  global.analytics      = require('./../identity/analytics/analytics')
+
+
+  if (config.analytics.on)
+    global.analytics    = require('./../identity/analytics/analytics')
+  else 
+    global.analytics    = { track: ()=>{}, view: ()=>{}, alias: ()=>{}, identify: ()=>{}  }
+  
 
   if (config.log.email)
   {
