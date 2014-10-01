@@ -18,15 +18,15 @@
 
 		<h1>Welcome to AirPair v1</h1>
 
-		<p>We've embarked on a 90 day journey to show how normal developers can do incredible things with on-tap expert support. The AirPair site you've known until now was an mvp (Minimal Viable Product). We're rebuilding airpair.com from scratch and <a href="/posts">open-sourcing what we learn</a> along the way. Soon you'll have 10x faster and smoother AirPair experience. We'll be releasing builds weekly.</p>
-
 		<img src="/v1/img/pages/index/ap-v1-screenshot-1.png" class="screenshot" />
+
+    <p>We've embarked on a 90 day journey to show how normal developers can do incredible things with on-tap expert support. The AirPair site you've known until now was an mvp (Minimal Viable Product). We're rebuilding airpair.com from scratch and <a href="/posts/airpair-v1" target="_self">open-sourcing what we learn</a> along the way. Soon you'll have 10x faster and smoother AirPair experience. We'll be announcing builds every week.</p>
 
 		<h3>See a bug?</h3>
 		<p>Please log issues via our <a href="https://github.com/airpair/airpair-com-v1-issue-tracker" target="_blank">issue tracking repo</a>.</p>
 
 		<h3>Become a v1 beta tester?</h3>
-		<p style="width:30%">Want to get notified of new releases, give feedback and help squash bugs? <br /><br /><a href="http://twitter.com/home?status=@hackerpreneur I would love to be a beta tester for the new ap" target="_blank">Tweet at @hackerpreneur</a> </p>
+		<p>Want to get notified of new releases, give feedback and help squash bugs? <br /><br /><a class="btn" href="http://twitter.com/home?status=@hackerpreneur I would love to be a beta tester for the new ap" target="_blank">Tweet at @hackerpreneur</a> </p>
 
 		<div class="container">
 		<div class="row">
@@ -36,6 +36,7 @@
 				<h3>Core Team</h3>
 				<ul>
 					<li>Jonathon Kresner</li>			
+					<li>We're hiring Mean-stack developers!</li>
 					<li><a href="https://angel.co/airpair/jobs" target="_blank">Apply to Join AirPair</a></li>
 				</ul>
 
@@ -60,22 +61,27 @@
  --}}
 
 				<h4>Next build</h4>
+
 				<ul>
-					<li><span>2014 10 02</span> <code>v1.05</code>
-						<ul>
-							<li>Workshops Signup</li>
-						</ul>
-					</li>
+					<li>On holidays until Oct 14th :{}</li>
 				</ul>
 
 				<h4>Past builds</h4>
 
+				<ul>
+					<li><span>2014 10 01</span> <code>v{{ build.version }} (current)</code>
+						<ul>
+							<li>Analytics</li>
+{{!-- 							<li>Workshops Signup</li> --}}
+						</ul>
+					</li>
+				</ul>
+ 				
  				<ul>
-					<li><span>2014 09 25</span> <code>v1.04 (current)</code>
+					<li><span>2014 09 25</span> <code>v1.04</code>
 						<ul>
 							<li>Login UX improvement</li>
 							<li>Tests :)</li>
-							<li>Analytics</li>
 						</ul>
 					</li>
 				</ul>
@@ -112,6 +118,9 @@
 
 	</main>
 </div>
+
+{{> initPage }}
+
 
 </body>
 </html>
