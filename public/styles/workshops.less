@@ -8,20 +8,6 @@
 
 section#workshops {
 
-  .share {
-    padding:10px 7px 0 0;
-    float:right;
-    clear:right;      
-    width:@sideRailWidth;
-    height:74px;
-    margin:12px 0 18px 0;
-    border-bottom:solid 1px @lightgray;
-
-    .pw-button { margin-right:7px!important }
-  }
-
-
-
   #subscribe {
     padding-bottom:20px;
 
@@ -63,12 +49,13 @@ section#workshops {
       line-heigh:0;
 
       a.workshop {
+        .tileborder;
         color:@darkblue;
         display:inline-block; 
         font-size:0px;
         letter-spacing:-4px;
         margin:12px;
-        padding:3px;
+        padding:6px 3px 3px 3px;
         width:190px;
         text-align:center;
         background: -moz-radial-gradient(left, white 0%, @two 100%, white 50%);
@@ -78,21 +65,17 @@ section#workshops {
         background: -ms-radial-gradient(left, white 0%, @two 100%, white 50%);
         background: radial-gradient(to right, white 0%, @two 100%, white 50%);
         filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ffffff', GradientType=1 );
-        border-top:solid 1px @lightblue;
-        border-radius:3px;
         vertical-align:top;
 
         time { display:block;height:15px;font-size:12px;letter-spacing:normal;color:@gray }
         img { display:block;margin:auto;border-radius:40px;margin-top:10px }
-        h5 { letter-spacing:normal;color:@gray }
+        h5 { letter-spacing:normal }
+        .entry-author { font-weight:bold;color:@orange }
         figure { display:block;height:64px;font-size:14px;padding:0;margin:0;letter-spacing:normal }
       }
 
       a.workshop:hover {
-        color:@orange;
-        h5 { color: @orange }
-        h5, figure { font-weight:bold }
-        border-top:solid 1px @orange;
+        .tileborderHover;
         background: -moz-radial-gradient(left, white 0%, @one 0%, white 100%);
         background: -webkit-radial-gradient(left top, right top, color-stop(0%, white), color-stop(0%, @one), color-stop(100%, white));
         background: -webkit-radial-gradient(left, white 0%, @one 0%, white 100%);
