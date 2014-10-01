@@ -37,11 +37,6 @@ angular.module("APWorkshops", ['ngRoute','APFilters','APShare'])
 			controller: 'WorkshopSignupCtrl as signup'			
 		});		
 
-		$routeProvider.when('/:tag/workshops/:id', {
-			template: require('./show.html'),
-			controller: 'WorkshopCtrl as workshop'
-		});
-
 	}])
 
   .run(['$rootScope', function($rootScope) {
@@ -63,17 +58,6 @@ angular.module("APWorkshops", ['ngRoute','APFilters','APShare'])
 		});
 	}])
 
-	.controller('WorkshopCtrl', ['$scope', '$http', '$routeParams', '$location', 'API', 
-			function($scope, $http, $routeParams, $location, API) {
-
-		$http.get(API+'/workshops/'+$routeParams.id).success(function (data) {
-			$scope.entry = data;
-		}).error(function(data, status) {
-			if (status == 404) {
-				$location.path('/workshops');
-			}
-		});
-	}])
 
 	.controller('WorkshopSignupCtrl', ['$scope', '$http', '$routeParams', 'API', 
 			function($scope, $http, $routeParams, API) {
