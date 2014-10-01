@@ -18,11 +18,13 @@
 
     <section id="posts">
 
-      <h3>All posts<span><a href="/posts" target="_self">Recent posts</a></span></h3>
-      <div class="posts recent">
-        {{#each viewData}}{{> postListItem this}}{{/each}}
-      </div>
-          
+      <section id="allposts">
+        <h3>All posts<span><a href="/posts" target="_self">Recent posts</a></span></h3>
+        <div class="posts recent">
+          {{#each viewData}}{{> postListItem this}}{{/each}}
+        </div>
+      </section>
+      
     </section>
 
   </main>

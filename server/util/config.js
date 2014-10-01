@@ -1,5 +1,5 @@
 var cfg = {
-  build:  { version: '1.04', deployed: 'Sep 25' },
+  build:  { version: '1.05', deployed: 'Oct 1' },
   port:     process.env.PORT || 3333,
   mongoUri: process.env.MONGOHQ_URL || "mongodb://localhost/airpair_dev",
   session: { secret: 'airyv1' },
@@ -30,7 +30,10 @@ var cfg = {
   },
   log: {},
   analytics: 
-    { segmentio: { writekey: '9793xyfxat' } }
+    { 
+      on: false,
+      segmentio: { writekey: '9793xyfxat' } 
+    }
 }
 
 module.exports = function(env, appdir) {
@@ -39,6 +42,7 @@ module.exports = function(env, appdir) {
   cfg.livereload = cfg.env == 'dev'
 
   if (cfg.env == 'test') {
+    cfg.analytics.on = true
     cfg.port = 4444
     cfg.mongoUri = "mongodb://localhost/airpair_test"
     cfg.testlogin = true
@@ -46,6 +50,7 @@ module.exports = function(env, appdir) {
   }
 
   if (cfg.env == 'staging' || cfg.env == 'production') {
+    cfg.analytics.on = true
     cfg.session.secret = process.env.SESSION_SECRET || 'airyv1'
 
     cfg.auth.oAuth.callbackHost = process.env.AUTH_OAUTH_CALLBACKHOST
