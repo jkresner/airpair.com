@@ -212,6 +212,44 @@ a:hover {
   width: 60%;
   margin-top: 10px;
 }
+.tileborder {
+  border: solid 1px #d3d3d3;
+  border-radius: 3px;
+}
+.tileborderHover {
+  border: solid 1px #ce5424;
+}
+h1.entry-title {
+  text-align: left;
+  margin: 10px 0 10px 0;
+  padding: 10px 0;
+  font-size: 42px;
+  line-height: 52px;
+  width: 100%;
+  border-bottom: solid 1px #dff2ef;
+}
+.share {
+  text-align: center;
+  padding: 0;
+  float: right;
+  clear: right;
+  height: 75px;
+  margin: 0px 0 20px 0;
+  border-bottom: solid 1px #d3d3d3;
+  width: 100%;
+}
+.share a.pw-button {
+  margin-right: 5px!important;
+  margin-left: 5px !important;
+}
+@media only screen and (max-width: 640px) {
+  .share {
+    float: none!important;
+    margin: auto;
+    height: 80px;
+    width: 100%!important;
+  }
+}
 body > header {
   height: 40px;
   border-bottom: solid 1px #d3d3d3;
@@ -479,14 +517,14 @@ nav#sideChat input {
   background: -ms-radial-gradient(left, #ffffff 0%, #dff2ef 100%, #ffffff 50%);
   background: radial-gradient(to right, #ffffff 0%, #dff2ef 100%, #ffffff 50%);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#ffffff', GradientType=1);
+  border: solid 1px #d3d3d3;
+  border-radius: 3px;
   text-align: left;
   position: relative;
   width: 286px;
   height: 200px;
   margin: 6px;
   padding: 0px;
-  border: solid 1px #d3d3d3;
-  border-radius: 3px;
   font-size: 12px;
   line-height: 14px;
   display: inline-block;
@@ -550,7 +588,7 @@ nav#sideChat input {
   margin: 3px 10px 0 0;
 }
 .posts article:hover {
-  background: #dff2ef;
+  border: solid 1px #ce5424;
 }
 @media screen and (max-width: 640px) {
   .posts {
@@ -709,14 +747,7 @@ section#posts .publish .publishMeta input {
   margin: 10px 0;
 }
 .blogpost h1 {
-  text-align: left;
-  margin: 0 0 10px 0;
-  padding: 10px 0;
-  font-size: 42px;
   padding-left: 0px;
-  line-height: 52px;
-  width: 100%;
-  border-bottom: solid 1px #dff2ef;
 }
 .blogpost h2 {
   text-align: left;
@@ -785,11 +816,10 @@ section#posts .publish .publishMeta input {
   line-height: 40px;
   padding-top: 40px;
 }
-.blogpost .pw-widget {
+.blogpost .share {
   float: right;
   width: 212px;
-  margin: 10px 0;
-  height: 60;
+  margin: 14px 0;
   position: relative;
   top: 0;
 }
@@ -897,9 +927,6 @@ section#posts .publish .publishMeta input {
   .blogpost h5,
   .blogpost h6 {
     text-align: center;
-  }
-  .blogpost .pw-widget {
-    display: none;
   }
   .blogpost #table-of-contents {
     font-size: 16px;

@@ -124,6 +124,44 @@ a:hover {
   width: 60%;
   margin-top: 10px;
 }
+.tileborder {
+  border: solid 1px #d3d3d3;
+  border-radius: 3px;
+}
+.tileborderHover {
+  border: solid 1px #ce5424;
+}
+h1.entry-title {
+  text-align: left;
+  margin: 10px 0 10px 0;
+  padding: 10px 0;
+  font-size: 42px;
+  line-height: 52px;
+  width: 100%;
+  border-bottom: solid 1px #dff2ef;
+}
+.share {
+  text-align: center;
+  padding: 0;
+  float: right;
+  clear: right;
+  height: 75px;
+  margin: 0px 0 20px 0;
+  border-bottom: solid 1px #d3d3d3;
+  width: 100%;
+}
+.share a.pw-button {
+  margin-right: 5px!important;
+  margin-left: 5px !important;
+}
+@media only screen and (max-width: 640px) {
+  .share {
+    float: none!important;
+    margin: auto;
+    height: 80px;
+    width: 100%!important;
+  }
+}
 body > header {
   height: 40px;
   border-bottom: solid 1px #d3d3d3;
@@ -203,10 +241,15 @@ main > header {
 @media only screen and (max-width: 640px) {
   main {
     width: 320px;
-    overflow: hidden;
+  }
+  main > * {
+    margin-left: 3px;
   }
   main > header {
+    margin-left: 0;
+    width: 320px;
     padding: 10px 8px;
+    overflow: hidden;
   }
 }
 nav#sideNav,
@@ -366,18 +409,6 @@ nav#sideChat input {
   height: 40px;
   padding: 5px;
 }
-section#workshops .share {
-  padding: 10px 7px 0 0;
-  float: right;
-  clear: right;
-  width: 212px;
-  height: 74px;
-  margin: 12px 0 18px 0;
-  border-bottom: solid 1px #d3d3d3;
-}
-section#workshops .share .pw-button {
-  margin-right: 7px !important;
-}
 section#workshops #subscribe {
   padding-bottom: 20px;
 }
@@ -416,12 +447,14 @@ section#workshops #index #featured {
 }
 section#workshops #index #next a.workshop,
 section#workshops #index #featured a.workshop {
+  border: solid 1px #d3d3d3;
+  border-radius: 3px;
   color: #151821;
   display: inline-block;
   font-size: 0px;
   letter-spacing: -4px;
   margin: 12px;
-  padding: 3px;
+  padding: 6px 3px 3px 3px;
   width: 190px;
   text-align: center;
   background: -moz-radial-gradient(left, #ffffff 0%, #dff2ef 100%, #ffffff 50%);
@@ -431,8 +464,6 @@ section#workshops #index #featured a.workshop {
   background: -ms-radial-gradient(left, #ffffff 0%, #dff2ef 100%, #ffffff 50%);
   background: radial-gradient(to right, #ffffff 0%, #dff2ef 100%, #ffffff 50%);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#ffffff', GradientType=1);
-  border-top: solid 1px #dff2ef;
-  border-radius: 3px;
   vertical-align: top;
 }
 section#workshops #index #next a.workshop time,
@@ -453,7 +484,11 @@ section#workshops #index #featured a.workshop img {
 section#workshops #index #next a.workshop h5,
 section#workshops #index #featured a.workshop h5 {
   letter-spacing: normal;
-  color: #4d4e4e;
+}
+section#workshops #index #next a.workshop .entry-author,
+section#workshops #index #featured a.workshop .entry-author {
+  font-weight: bold;
+  color: #ce5424;
 }
 section#workshops #index #next a.workshop figure,
 section#workshops #index #featured a.workshop figure {
@@ -466,24 +501,13 @@ section#workshops #index #featured a.workshop figure {
 }
 section#workshops #index #next a.workshop:hover,
 section#workshops #index #featured a.workshop:hover {
-  color: #ce5424;
-  border-top: solid 1px #ce5424;
+  border: solid 1px #ce5424;
   background: -moz-radial-gradient(left, #ffffff 0%, #dff2ef 0%, #ffffff 100%);
   background: -webkit-radial-gradient(left top, right top, color-stop(0%, #ffffff), color-stop(0%, #dff2ef), color-stop(100%, #ffffff));
   background: -webkit-radial-gradient(left, #ffffff 0%, #dff2ef 0%, #ffffff 100%);
   background: -o-radial-gradient(left, #ffffff 0%, #dff2ef 0%, #ffffff 100%);
   background: -ms-radial-gradient(left, #ffffff 0%, #dff2ef 0%, #ffffff 100%);
   background: radial-radient(to right, #ffffff 0%, #dff2ef 0%, #ffffff 100%);
-}
-section#workshops #index #next a.workshop:hover h5,
-section#workshops #index #featured a.workshop:hover h5 {
-  color: #ce5424;
-}
-section#workshops #index #next a.workshop:hover h5,
-section#workshops #index #featured a.workshop:hover h5,
-section#workshops #index #next a.workshop:hover figure,
-section#workshops #index #featured a.workshop:hover figure {
-  font-weight: bold;
 }
 section#workshops #index #past {
   clear: both;
@@ -637,7 +661,7 @@ section#workshops #show .action label {
     display: none;
   }
 }
-@media only screen and (max-width: 640px) {
+@media screen and (max-width: 640px) {
   section#post .main-wrap,
   section#post main {
     width: 100%;
@@ -645,7 +669,7 @@ section#workshops #show .action label {
   }
 }
 .posts {
-  margin-left: -10px;
+  margin-left: -5px;
   text-align: center;
 }
 .posts article {
@@ -656,14 +680,14 @@ section#workshops #show .action label {
   background: -ms-radial-gradient(left, #ffffff 0%, #dff2ef 100%, #ffffff 50%);
   background: radial-gradient(to right, #ffffff 0%, #dff2ef 100%, #ffffff 50%);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#ffffff', GradientType=1);
+  border: solid 1px #d3d3d3;
+  border-radius: 3px;
   text-align: left;
   position: relative;
   width: 286px;
   height: 200px;
   margin: 6px;
   padding: 0px;
-  border: solid 1px #d3d3d3;
-  border-radius: 3px;
   font-size: 12px;
   line-height: 14px;
   display: inline-block;
@@ -727,12 +751,21 @@ section#workshops #show .action label {
   margin: 3px 10px 0 0;
 }
 .posts article:hover {
-  background: #dff2ef;
+  border: solid 1px #ce5424;
 }
-section#posts .ng-scope > h3 {
-  text-align: center;
-  margin-bottom: 0px;
+@media screen and (max-width: 640px) {
+  .posts {
+    margin: auto;
+  }
+}
+section#posts section > h3 {
+  width: 100%;
+  margin-bottom: 10px;
   font-size: 18px;
+}
+section#posts section > h3 span {
+  display: block;
+  float: right;
 }
 section#posts .myposts {
   width: 640px;
@@ -858,6 +891,11 @@ section#posts .publish .publishMeta input {
   padding: 4px;
   height: 26px;
 }
+@media screen and (max-width: 640px) {
+  section#posts section#myposts {
+    display: none;
+  }
+}
 .blogpost {
   clear: both;
   padding: 0 0px;
@@ -872,9 +910,6 @@ section#posts .publish .publishMeta input {
   margin: 10px 0;
 }
 .blogpost h1 {
-  text-align: left;
-  margin: 0;
-  font-size: 42px;
   padding-left: 0px;
 }
 .blogpost h2 {
@@ -919,6 +954,7 @@ section#posts .publish .publishMeta input {
   padding-left: 30px;
 }
 .blogpost ul {
+  max-width: 620px;
   list-style: none;
   margin: 0;
   padding-left: 15px;
@@ -943,11 +979,10 @@ section#posts .publish .publishMeta input {
   line-height: 40px;
   padding-top: 40px;
 }
-.blogpost .pw-widget {
+.blogpost .share {
   float: right;
   width: 212px;
-  margin: 15 0;
-  height: 60;
+  margin: 14px 0;
   position: relative;
   top: 0;
 }
@@ -975,7 +1010,14 @@ section#posts .publish .publishMeta input {
   padding: 1px 0 2px 0;
 }
 .blogpost .author {
-  margin: 10px 0 24px 0;
+  margin: 22px 0 24px 0;
+}
+.blogpost .author hr {
+  height: 0;
+  padding: 0;
+  margin: 0;
+  color: white;
+  border: none;
 }
 .blogpost .author > img {
   width: 80px;
@@ -1017,6 +1059,10 @@ section#posts .publish .publishMeta input {
   .blogpost .author {
     float: none;
   }
+  .blogpost figure {
+    clear: both;
+    padding-top: 20px;
+  }
 }
 @media only screen and (max-width: 640px) {
   .blogpost p {
@@ -1045,9 +1091,6 @@ section#posts .publish .publishMeta input {
   .blogpost h6 {
     text-align: center;
   }
-  .blogpost .pw-widget {
-    display: none;
-  }
   .blogpost #table-of-contents {
     font-size: 16px;
     margin: 20px 20px 10px 20px;
@@ -1056,18 +1099,25 @@ section#posts .publish .publishMeta input {
   .blogpost #table-of-contents + ul {
     margin: 0px 20px;
   }
+  .blogpost figure.author {
+    float: none;
+  }
+  .blogpost figure.author hr {
+    clear: both;
+  }
   .blogpost .author > img {
     width: 60px;
     height: 60px;
   }
   .blogpost .author > figcaption {
-    width: 78%;
+    width: 75%;
     float: right;
+    height: inherit;
   }
 }
 body#index .screenshot {
-  width: 60%;
-  margin: 20px auto;
+  width: 59%;
+  margin: 5px 0 0 40px;
   display: block;
   float: right;
 }
@@ -1083,13 +1133,17 @@ body#index .row > div {
 }
 @media only screen and (max-width: 640px) {
   body#index .screenshot {
-    width: 80%;
+    margin: 10px 0;
+    width: 94%;
     float: none;
   }
 }
 section#auth {
-  padding-top: 40px;
+  padding-top: 20px;
   text-align: center;
+}
+section#auth section#newuser {
+  padding: 10px 0 20px 0;
 }
 section#auth .option {
   min-height: 300px;
@@ -1114,6 +1168,9 @@ section#auth .option label {
 section#auth .error {
   color: #ff0000;
 }
+section#auth p.help-text {
+  margin: 20px 0 0 0;
+}
 @media only screen and (max-width: 900px) {
   section#auth .option {
     width: 300px;
@@ -1128,13 +1185,26 @@ section#auth .error {
   section#auth {
     text-align: center;
   }
+  section#auth h1 {
+    display: none;
+  }
+  section#auth h3 {
+    font-weight: bold;
+  }
+  section#auth p {
+    max-width: 240px;
+    margin: auto;
+  }
   section#auth .choice {
     margin: auto;
   }
   section#auth .option {
-    margin: 10px auto;
+    margin: 10px auto 0px auto;
     min-height: 200px;
     width: 96%;
     display: block;
+  }
+  section#auth p.help-text {
+    display: none;
   }
 }
