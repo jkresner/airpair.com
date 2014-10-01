@@ -22,7 +22,7 @@ module.exports = function()
         .end(function(err, resp) {
           if (err) throw err
           cookie = resp.headers['set-cookie']
-          get('/session/full', {}, function(s) {
+          GET('/session/full', {}, function(s) {
             expect(s._id).to.exist
             expect(s.google).to.be.undefined
             expect(s.googleId).to.be.undefined
@@ -43,8 +43,8 @@ module.exports = function()
 
     it('Can sign up as new user with google', function(done) {
       UserService.upsertProviderProfile.call(newUserSession(), 'google', data.oauth.rbrw, function(e,usr) {
-        login('rbrw', usr, function() {
-          get('/session/full', {}, function(s) {
+        LOGIN('rbrw', usr, function() {
+          GET('/session/full', {}, function(s) {
             expect(s._id).to.equal(usr._id.toString())
             expect(s.email).to.equal(usr.email)
             expect(s.name).to.equal(usr.name) 
