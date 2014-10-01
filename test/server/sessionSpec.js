@@ -14,7 +14,7 @@ module.exports = function()
 
     it('Gets sessionId on anonymous session', function(done) {
       var opts = { unauthenticated: true }
-      get('/session', opts, function(s) { 
+      GET('/session', opts, function(s) { 
         expect(s.authenticated).to.be.false
         expect(s.sessionID).to.exist
         done() 
@@ -23,7 +23,7 @@ module.exports = function()
   
     it('Gets sessionId on anonymous full session', function(done) {
       var opts = { unauthenticated: true }
-      get('/session', opts, function(s) { 
+      GET('/session', opts, function(s) { 
         expect(s.authenticated).to.be.false
         expect(s.sessionID).to.exist
         done() 
@@ -39,14 +39,14 @@ module.exports = function()
         .end(function(err, resp){
           if (err) throw err
           cookie = resp.headers['set-cookie']
-          get('/session', {}, function(s) { 
+          GET('/session', {}, function(s) { 
             expect(s.authenticated).to.be.false
             expect(s.sessionID).to.exist
             expect(s.tags).to.exist            
             expect(s.tags.length).to.equal(1)
             expect(s.tags[0].name).to.equal('Node.JS') 
             //-- Remove the tag
-            put('/users/me/tag/node.js', {}, {}, function(s2){
+            PUT('/users/me/tag/node.js', {}, {}, function(s2){
               expect(s2.authenticated).to.be.false
               expect(s2.sessionID).to.equal(s.sessionID)
               expect(s2.tags).to.exist            
@@ -69,13 +69,13 @@ module.exports = function()
         .put('/v1/api/users/me/tag/mongodb')
         .end( (err, resp) => {
           cookie = resp.headers['set-cookie']
-          get('/session', {}, (s) => { 
+          GET('/session', {}, (s) => { 
             expect(s.tags[0].name).to.equal('MongoDB') 
             var singup = getNewUserData('ramo')
             http(global.app).post('/v1/auth/signup').send(singup)
               .set('cookie',cookie)
               .end( (err, resp) =>
-                get('/session/full', {}, (sFull) => {
+                GET('/session/full', {}, (sFull) => {
                   expect(sFull._id).to.exist
                   expect(sFull.name).to.equal(singup.name)                
                   expect(sFull.tags).to.exist
@@ -100,8 +100,8 @@ module.exports = function()
 
 
     it('gets slim authenticated session', function(done) {
-      login('scap', data.users.scap, function() {
-        get('/session', {}, function(r) {
+      LOGIN('scap', data.users.scap, function() {
+        GET('/session', {}, function(r) {
           expect(r._id).to.equal("5418c03f8f8c80299bcc4783")
           expect(r.email).to.equal("sc@airpair.com")
           expect(r.name).to.equal("Shane")      

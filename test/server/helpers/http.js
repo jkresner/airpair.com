@@ -4,7 +4,25 @@ global.http = require('supertest')
 global.cookie = null //-- used for maintaining login
 
 
-global.login = function(key, user, cb) {
+global.GETP = function(url) { 
+  return http(global.app)
+    .get(url)
+    .set('cookie',cookie)
+    .expect(200); 
+}
+
+
+global.ANONSESSION = function(cb) {
+  if (logging) $log('ANONSESSION:')
+  return http(global.app).get('/v1/api/session').end(function(e,resp){
+    if (e) return done(err)
+    cookie = resp.headers['set-cookie']
+    cb(resp.body)
+  })
+}
+
+
+global.LOGIN = function(key, user, cb) {
   if (logging) $log('login:', '/test/setlogin/'+key)
   data.sessions[key] = { _id: user._id, name: user.name, email: user.email, roles: user.roles };
   if (logging) $log('login.data.sessions[key]', data.sessions[key])
@@ -16,7 +34,7 @@ global.login = function(key, user, cb) {
 }
 
 
-global.get = function(url, opts, cb) {
+global.GET = function(url, opts, cb) {
   var apiUrl = '/v1/api'+url
   if (logging) $log('get:', apiUrl)
 
@@ -35,7 +53,7 @@ global.get = function(url, opts, cb) {
 }
 
 
-global.post = function(url, data, opts, cb) {
+global.POST = function(url, data, opts, cb) {
   var apiUrl = '/v1/api'+url
   if (logging) $log('post:', apiUrl)
 
@@ -56,7 +74,7 @@ global.post = function(url, data, opts, cb) {
 }
 
 
-global.put = function(url, data, opts, cb) {
+global.PUT = function(url, data, opts, cb) {
   var apiUrl = '/v1/api'+url
   if (logging) $log('put:', apiUrl)
 

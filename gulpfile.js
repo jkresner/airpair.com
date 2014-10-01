@@ -18,7 +18,7 @@ paths = {
 }
 
 gulp.task('testnodemon', function () {
-  nodemon({ script: 'test/server/_run.js', ext: 'html js', 
+  nodemon({ script: 'test/server/helpers/run.js', ext: 'html js', 
       ignore: ['public/*','dist/*'] })
     .on('change', ['lint'])
     .on('restart', function () {

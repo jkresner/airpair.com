@@ -54,8 +54,8 @@ global.addLocalUser = function(userKey, done)
 global.addAndLoginLocalUser = function(originalUserKey, done)
 {      
   addLocalUser(originalUserKey, function(userKey) {
-    login(userKey, data.users[userKey], function() {
-      get('/session/full', {}, function(s) { 
+    LOGIN(userKey, data.users[userKey], function() {
+      GET('/session/full', {}, function(s) { 
         s.userKey = userKey 
         done(s)
       })
@@ -121,8 +121,8 @@ module.exports = {
     var by = { userId: by._id, name: by.name, bio: 'yo yo', avatar: by.avatar }
     var d = { tags, title, by, slug,  md: 'Test', assetUrl: 'http://youtu.be/qlOAbrvjMBo' }    
     d = _.extend(d, postData)
-    post('/posts', d, {}, function(p) {
-      put('/posts/publish/'+p._id, p, {}, function(ppub) {
+    POST('/posts', d, {}, function(p) {
+      PUT('/posts/publish/'+p._id, p, {}, function(ppub) {
         done()
       })
     })
