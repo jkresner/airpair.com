@@ -73,7 +73,10 @@ function getHtmlHeaders(lines, maxHeaderNo) {
 ////////////----------------------------------------------
 
 function getHashId(text, repetition) {
-  var id = text.replace(/ /g,'-')
+  var id = text
+    .replace(/&/g,'')
+    .replace(/ \/ /g,'-')    
+    .replace(/ /g,'-')
     // single chars that are removed
     .replace(/\./g,'-')
     .replace(/\?/g,'-')

@@ -28,6 +28,8 @@ build/Release
 node_modules
 public/v1/css/posts.css
 public/v1/css/workshops.css
+public/v1/css/aplayout.css
+public/v1/css/components.css
 public/v1/lib/**/*.gzip
 public/v1/lib/**/*.min.js
 public/v1/lib/**/*.min.css
