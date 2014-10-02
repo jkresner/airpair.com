@@ -64,7 +64,7 @@ var view = (userId, anonymousId, type, name, properties, context, done) => {
   // write to mongo    
   var {objectId,url} = properties
   var {referer,campaign} = context
-  viewSvc.create({userId,anonymousId,url,type,objectId,campaign,referer}, (e,r)=>{})
+  viewSvc.create({userId,anonymousId,url:properties.path,type,objectId,campaign,referer}, (e,r)=>{})
 }
 
 
