@@ -32,12 +32,22 @@
     }
     else 
     {
-      var isAlreadyUserId = (mixId.length == 24) // mongoId has length 24
-      console.log('isAlreadyUserId', isAlreadyUserId)
+      // mongo userId or previously aliased email address
+      var isAlreadyUserId = (mixId.length == 24) || mixId.indexOf("@") != 0 
+      console.log('isAlreadyUserId', isAlreadyUserId, mixId)
+      
       if (!isAlreadyUserId)
       {
-        console.log('identify anonId yo')
-        window.analytics.identify(anonymousId, bindTracking);
+        if (anonymousId != mixId)
+        {
+          window.analytics.alias(anonymousId, {}, function(e,r) {
+            window.analytics.identify(anonymousId,{},function(ee,rr) {   
+              window.analytics.track('Aliased SessionID',{},function(eee,rrr) {   
+                bindTracking()
+              })
+            })
+          })         
+        }
       }
     }
   });
