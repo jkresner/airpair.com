@@ -33,7 +33,7 @@ postUrl = "/v1/posts/#{postSlug}"
 # (v1 login userflow of existing v0)
 # OK:   
       email {A|S0} originalMixId
-      sessionID {A|C} newMixId
+      sessionID {A|C} newMixId2
       email {I|L1} sessionID
       userId {A|L1} email
 
@@ -60,6 +60,52 @@ module.exports = ->
 
     afterEach ->
       cookie = null
+
+## cannot get around mixId
+
+
+    ### minimum requirements 
+    
+    ## 1) New anonymous users work across both sites work 
+    # (so we need consistent primary id)
+
+    ## 2) Alias to email -- happens on the server, identify on the client if ids not matching
+
+
+
+
+    it('New user to v0 and signup via v1', (done) ->
+      var originalMixId = "148d2c6d0601af-0273874f6f7804-41672f42-3e8000-148d2c6d061ea1"
+      var anonymousId = "aXcHDAO8N90absnoQ1gQQF80GSlCoZs_"
+      viewV0page('/angularjs')
+      expect(mixId.length).to.equal(60)
+      expect(mixId).to.equal(originalMixId)
+      expect(clientEvent, 'view', '/angularjs', originalMixId)
+      viewV1page('/v1/posts/angular-tutorial')
+      expect(serverEvent, 'View', '/v1/posts/angular-tutorial', anonymousId)            
+      expect(clientAlias.callCount).to.equal(1)
+      expect(mixId.length).to.equal(32)
+      expect(mixId).to.equal(anonymousId)
+      viewV1page('/v1/posts/ember-tutorial')      
+      expect(serverEvent, 'View', '/v1/posts/ember-tutorial', anonymousId)            
+      expect(clientAlias.callCount).to.equal(0)
+      expect(mixId.length).to.equal(32)
+      expect(mixId).to.equal(anonymousId)
+      signupV1('/v1/auth/signup')      
+      expect(serverEvent, 'SignUp', anonymousId)            
+      viewV1page('/v1/posts/rails-tutorial')   
+      expect(clientAlias.callCount).to.equal(1)         
+      expect(clientIdentify.callCount).to.equal(1)               
+      expect(mixId.length).to.equal(24)
+      expect(mixId).to.equal(userId)
+      done()
+
+
+
+    it('Existing v0 user and login from new anonymous mixId', (done) ->
+
+
+
 
 
     it('Alias a v0 user sessionID to email and then to userId', (done) ->
