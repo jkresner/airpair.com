@@ -49,7 +49,7 @@ var view = (userId, anonymousId, type, name, properties, context, done) => {
     path: properties.path
   }
 
-  $log('p', p)
+  $log('p', config.analytics.segmentio.writekey, p)
   segment.page(p)
 
   var m = { event:'View', integrations: { 'All': false, 'Mixpanel': true }} 
