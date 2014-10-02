@@ -40,8 +40,8 @@
       {
         if (anonymousId != mixId)
         {
-          window.analytics.alias(anonymousId, mixId, {}, function(e,r) {
-            window.analytics.identify(anonymousId,{},function(ee,rr) {   
+          window.analytics.alias(anonymousId, mixId, function(e,r) {
+            window.analytics.identify(anonymousId, function(ee,rr) {   
               window.analytics.track('Aliased SessionID',{},function(eee,rrr) {   
                 bindTracking()
               })
