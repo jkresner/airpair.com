@@ -42,7 +42,7 @@ module.exports = function(env, appdir) {
   cfg.livereload = cfg.env == 'dev'
 
   if (cfg.env == 'test') {
-    cfg.analytics.on = true
+    cfg.analytics.on = false
     cfg.port = 4444
     cfg.mongoUri = "mongodb://localhost/airpair_test"
     cfg.testlogin = true
@@ -50,7 +50,7 @@ module.exports = function(env, appdir) {
   }
 
   if (cfg.env == 'staging' || cfg.env == 'production') {
-    cfg.analytics.on = true
+    cfg.analytics.on = false
     cfg.session.secret = process.env.SESSION_SECRET || 'airyv1'
 
     cfg.auth.oAuth.callbackHost = process.env.AUTH_OAUTH_CALLBACKHOST

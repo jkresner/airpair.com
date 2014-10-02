@@ -15,6 +15,103 @@ var buildPayload = (userId, anonymousId, payload) => {
   return payload;
 }
 
+
+var track = (userId, anonymousId, event, properties, context, done) => {
+  if (logging) $log('track', userId, anonymousId, event, properties, context)    
+  segment.track(buildPayload(userId,anonymousId,{event,properties,context}), 
+    done || doneBackup)
+}
+
+
+var view = (userId, anonymousId, type, name, properties, context, done) => {
+  if (logging) $log('view', userId, anonymousId, type, name, properties, context)
+  
+  segment.page(buildPayload(userId,anonymousId,{category:type,name,properties,context}))
+  
+  var m = { event:'View', integrations: { 'All': false, 'Mixpanel': true }} 
+  var mProperties = _.extend(properties, {type,name})
+  var mPayload = _.extend(m,buildPayload(userId,anonymousId,{properties:mProperties,context})) 
+
+  // $log('mPayload', mPayload)
+  segment.track(mPayload, done || doneBackup)
+  
+  // if (context.campaign) segment.identify(buildPayload(userId, anonymousId, {context}))
+
+  // write to mongo    
+  var {objectId,url} = properties
+  var {referer,campaign} = context
+  viewSvc.create({userId,anonymousId,url,type,objectId,campaign,referer}, null)
+}
+
+
+var identify = (user, context, identifyEvent, done) => {
+  if (logging) $log('identify', user._id, context, identifyEvent)
+  
+  var traits = { 
+    // username / isExpert / isCustomer
+    name: user.name, 
+    email: user.email, 
+    lastSeen: new Date(),
+    createdAt: user.cohort.engagement.visit_first  
+  }
+
+  segment.identify(buildPayload(user._id, null, {traits,context}))
+  segment.track({ userId: user._id.toString(), event: identifyEvent }, done || doneBackup)
+}
+
+
+var alias = (anonymousId, user, aliasEvent, done) => {
+  if (logging) $log('alias', anonymousId, user._id, aliasEvent, done)
+  var userId = user._id.toString()
+
+  var traits = { 
+    // username / isExpert / isCustomer    
+    name: user.name, 
+    email: user.email, 
+    lastSeen: new Date(),
+    createdAt: user.cohort.engagement.visit_first  
+  }
+
+  segment.alias({ previousId: anonymousId, userId: userId }, (e, b) => {
+    $log('**** aliased'.yellow)
+    segment.identify({userId: userId, traits: traits}, (ee, bb) => {
+      $log('**** identified'.yellow)
+      segment.track({
+        userId: userId,
+        event: aliasEvent
+      }, (eee, bbb) => {
+        $log('**** signedup'.yellow)
+        done()
+      })
+      segment.flush()
+    })
+  })
+  segment.flush()
+
+  viewSvc.alias(anonymousId, user._id, ()=>{})
+}
+
+var aliasMigrateV0 = (sessionID, googleEmail, userId, done) => {
+  done = done || doneBackup
+  segment.alias({ previousId: sessionID, userId: googleEmail }, (e1, b1) => { 
+    $log(`**** aliase migrate ${sessionID} ${googleEmail}`.yellow)
+    //-- do I need to call identify on the server?
+    segment.track({ userId: googleEmail, event: 'Migrate Alias P1' }, (e2, b2) => {
+      $log(`**** alias migrate track p1`.yellow)
+      segment.alias({ previousId: googleEmail, userId: userId }, (e3, b3) => { 
+        $log(`**** aliase migrate ${googleEmail} ${userId}`.yellow)
+        segment.track({ userId: userId, event: 'Migrate Alias P2' }, (e2, b2) => {
+          $log(`**** alias migrate track p2`.yellow)
+          done()
+        })
+      })
+      segment.flush()
+    })
+  })  
+  segment.flush()
+  viewSvc.alias(sessionID, userId, ()=>{})    
+}
+
 module.exports = {
 
   // used for testing
@@ -26,82 +123,42 @@ module.exports = {
     }
   },
 
+  upsert: (user, existingUser, sessionID, cb) =>
+  {
+    var {aliases} = user.cohort
+    var noAliases = !aliases || aliases.length == 0
 
-
-  track: (userId, anonymousId, event, properties, context, done) => {
-    if (logging) $log('track', userId, anonymousId, event, properties, context)    
-    segment.track(buildPayload(userId,anonymousId,{event,properties,context}), 
-      done || doneBackup)
-  },
-
-
-  view: (userId, anonymousId, type, name, properties, context, done) => {
-    if (logging) $log('view', userId, anonymousId, type, name, properties, context)
-    
-    segment.page(buildPayload(userId,anonymousId,{category:type,name,properties,context}))
-    
-    var m = { event:'View', integrations: { 'All': false, 'Mixpanel': true }} 
-    var mProperties = _.extend(properties, {type,name})
-    var mPayload = _.extend(m,buildPayload(userId,anonymousId,{properties:mProperties,context})) 
-
-    // $log('mPayload', mPayload)
-    segment.track(mPayload, done || doneBackup)
-    
-    // if (context.campaign) segment.identify(buildPayload(userId, anonymousId, {context}))
-
-    // write to mongo    
-    var {objectId,url} = properties
-    var {referer,campaign} = context
-    viewSvc.create({userId,anonymousId,url,type,objectId,campaign,referer}, null)
-  },
-
-
-  identify: (user, context, identifyEvent, done) => {
-    if (logging) $log('identify', user._id, context, identifyEvent)
-    
-    var traits = { 
-      // username / isExpert / isCustomer
-      name: user.name, 
-      email: user.email, 
-      lastSeen: new Date(),
-      createdAt: user.cohort.engagement.visit_first  
+    // This is a new user (easy peasy)
+    if (noAliases && !existingUser) {
+      aliases = [sessionID] // we make the assumption that we're going to alias on the update
+      analytics.alias(sessionID, user, 'Signup', () => cb(aliases) )
     }
-
-    segment.identify(buildPayload(user._id, null, {traits,context}))
-    segment.track({ userId: user._id.toString(), event: identifyEvent }, done || doneBackup)
+    //-- For an existing v0 user, we need to alias their google._json.email to their userId    
+    else if (noAliases && existingUser.google)
+    {
+      aliases = [sessionID, existingUser.google._json.email]
+      aliasMigrateV0(sessionID, existingUser.google._json.email, user._id.toString(), () => cb(aliases) )
+    }
+    else
+    {
+      //-- This is an existing user from a new device / browser
+      if ( ! _.contains(aliases, sessionID) ) {
+        aliases.push(sessionID)
+        analytics.alias(sessionID, user, 'Login', () => cb(aliases))
+      }
+      else
+      {
+        var context = {sessionID} // ??
+        analytics.identify(user, context, 'Login', () => cb(aliases))
+      }
+    }
   },
 
+  track, 
+  view, 
+  identify, 
+  alias
 
-  alias: (anonymousId, user, aliasEvent, done) => {
-    if (logging) $log('alias', anonymousId, user._id, aliasEvent, done)
-    var userId = user._id.toString()
-
-    var traits = { 
-      // username / isExpert / isCustomer    
-      name: user.name, 
-      email: user.email, 
-      lastSeen: new Date(),
-      createdAt: user.cohort.engagement.visit_first  
-    }
-
-    segment.alias({ previousId: anonymousId, userId: userId }, (e, b) => {
-      $log('**** aliased'.yellow)
-      segment.identify({userId: userId, traits: traits}, (ee, bb) => {
-        $log('**** identified'.yellow)
-        segment.track({
-          userId: userId,
-          event: aliasEvent
-        }, (eee, bbb) => {
-          $log('**** signedup'.yellow)
-          done()
-        })
-        segment.flush()
-      })
-    })
-    segment.flush()
-
-    viewSvc.alias(anonymousId, user._id, ()=>{})
-  }
 }
 
 //-- Pairing with segment chris
@@ -163,11 +220,3 @@ module.exports = {
 // A dictionary of traits of the current user. This is useful in cases where you need to track an event, but also associate information from a previous identify call.
 // -- userAgent
 // The user agent of the device making the request.
-
-
-
-
-// -- Revenue 
-// The amount of revenue an event resulted in. This should be a decimal value in dollars, so a shirt worth $19.99 would result in a revenue of 19.99.
-// -- Value 
-// An abstract “value” to associate with an event. This is typically used in situations where the event doesn’t generate real-dollar revenue, but has an intrinsic value to a marketing team, like newsletter signups.

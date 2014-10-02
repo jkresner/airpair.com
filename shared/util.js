@@ -4,11 +4,14 @@ var idsEqual = (id1, id2) =>
 
 module.exports = {
 
+
   idsEqual: idsEqual,
+
 
   ObjectId2Date: (id) => {
     return new Date(parseInt(id.toString().slice(0, 8), 16) * 1000)
   },
+
 
   toggleItemInArray: (array, item) => {
     if (!array) return [item] 
@@ -20,8 +23,15 @@ module.exports = {
     } 
   },
 
+
   sessionCreatedAt: (session) => {
     return new moment(session.cookie._expires).subtract(session.cookie.originalMaxAge,'ms').toDate()
+  },
+
+
+  dateWithDayAccuracy: () => {
+    return moment('yyyy-MM-dd', moment().format('yyyy-MM-dd')).toDate()
   }
+
 
 }

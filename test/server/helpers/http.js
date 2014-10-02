@@ -2,7 +2,7 @@ global.http = require('supertest')
 
 
 global.cookie = null //-- used for maintaining login
-
+global.cookieCreatedAt = null
 
 global.GETP = function(url) { 
   return http(global.app)
@@ -40,6 +40,7 @@ global.GET = function(url, opts, cb) {
 
   var sessionCookie = cookie
   if (opts.unauthenticated) { sessionCookie = null }
+  if (logging) $log('get:cookie:', sessionCookie)
 
   return http(global.app)
     .get(apiUrl)
