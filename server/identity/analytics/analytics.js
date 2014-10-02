@@ -39,10 +39,19 @@ var track = (userId, anonymousId, event, properties, context, done) => {
 
 
 var view = (userId, anonymousId, type, name, properties, context, done) => {
-  if (logging) $log('view', userId, anonymousId, type, name, properties, context)
-  
-  segment.page(buildPayload(userId,anonymousId,{category:type,name,properties,context}))
-  
+  // if (logging) $log('view', userId, anonymousId, type, name, properties, context)
+
+
+  var p = buildPayload(userId,anonymousId,{category:type,name,context})
+  p.properties = {
+    title: properties.title,
+    url: properties.url,
+    path: properties.path
+  }
+
+  $log('p', p)
+  segment.page(p)
+
   var m = { event:'View', integrations: { 'All': false, 'Mixpanel': true }} 
   var mProperties = _.extend(properties, {type,name})
   var mPayload = _.extend(m,buildPayload(userId,anonymousId,{properties:mProperties,context})) 
@@ -55,7 +64,7 @@ var view = (userId, anonymousId, type, name, properties, context, done) => {
   // write to mongo    
   var {objectId,url} = properties
   var {referer,campaign} = context
-  viewSvc.create({userId,anonymousId,url,type,objectId,campaign,referer}, null)
+  viewSvc.create({userId,anonymousId,url,type,objectId,campaign,referer}, (e,r)=>{})
 }
 
 
