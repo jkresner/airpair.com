@@ -10,7 +10,7 @@ export default function(app) {
     .param('workshop', WorkshopsAPI.paramFns.getBySlug)
     .param('post', PostsAPI.paramFns.getBySlug)    
 
-    .get('/posts/all', app.renderHbsViewData('postList', 
+    .get('/posts/all', app.renderHbsViewData('postslist', 
       (req, cb) => PostsAPI.svc.getAllPublished(cb) ))
 
     .get('/posts/airpair-v1', app.renderHbsViewData('postslist', 
