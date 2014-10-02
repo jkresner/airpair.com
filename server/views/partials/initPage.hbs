@@ -40,15 +40,13 @@
       {
         if (anonymousId != mixId)
         {
-          window.analytics.alias(mixId, anonymousId, {}, function(e,r) {
-            console.log('aliased', anonymousId, mixId)
-            window.analytics.identify(anonymousId, {}, function(ee,rr) {   
-              console.log('identified', anonymousId)
-              window.analytics.track('Aliased SessionID',{},function(eee,rrr) {   
-                bindTracking()
-              })
+          window.analytics.alias(anonymousId, mixId)
+          window.analytics.identify(anonymousId, {}, function(ee,rr) {   
+            console.log('identified', anonymousId)  
+            window.analytics.track('Aliased SessionID',{},function(eee,rrr) {   
+              bindTracking()
             })
-          })         
+          })       
         }
       }
     }
