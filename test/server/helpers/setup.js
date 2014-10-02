@@ -2,13 +2,16 @@ var UserService = require('../../../server/services/users')
 var Tag = require('../../../server/models/tag')
 var Workshop = require('../../../server/models/workshop')
 var View = require('../../../server/models/view')
+var User = require('../../../server/models/user')
+var util = require('../../../shared/util')
 
 global.stubAnalytics = function()
 {
-  global.identifyStub = sinon.stub(analytics,'identify', (p1,p2,p3,cb) => cb())
-  global.trackStub = sinon.stub(analytics,'track', (p1,p2,p3,p4,p5,cb) => cb()) 
-  global.viewStub = sinon.stub(analytics,'view', (p1,p2,p3,p4,p5,p6,cb) => cb()) 
-  global.aliasStub = sinon.stub(analytics,'alias', (p1,p2,p3,cb) => cb())
+  global.identifyStub = sinon.stub(analytics,'identify', (p1,p2,p3,cb) => { if (cb) cb() })
+  global.trackStub = sinon.stub(analytics,'track', (p1,p2,p3,p4,p5,cb) => { if (cb) cb() }) 
+  global.viewStub = sinon.stub(analytics,'view', (p1,p2,p3,p4,p5,p6,cb) => { if (cb) cb() }) 
+  global.aliasStub = sinon.stub(analytics,'alias', (p1,p2,p3,cb) => { if (cb) cb() })
+  global.upsertStub = sinon.stub(analytics,'upsert', (p1,p2,p3,cb) => { cb(p1.cohort.aliases) })
 }
 
 global.resotreAnalytics = function()
@@ -17,6 +20,7 @@ global.resotreAnalytics = function()
   global.identifyStub.restore()
   global.aliasStub.restore()
   global.viewStub.restore()
+  global.upsertStub.restore()
 }
 
 global.getNewUserData = function(userKey)
@@ -31,21 +35,24 @@ global.getNewUserData = function(userKey)
   }
 }
 
-global.newUserSession = function()
+
+
+global.newUserSession = function(userKey)
 {
   var suffix = moment().format('X')
   var session = { cookie: { 
     originalMaxAge: 2419200000, 
-    _expires: moment().add(2419200000, 'ms')} 
+    _expires: moment().add(2419200000, 'ms').subtract(1,'s') } 
   }
-  return {user:null,sessionID:`test${suffix}`,session};
+  cookieCreatedAt = util.sessionCreatedAt(session)
+  return {user:null,sessionID:`test${userKey}${suffix}`,session}
 }
 
 global.addLocalUser = function(userKey, done)
 {      
   var clone = getNewUserData(userKey)
 
-  UserService.tryLocalSignup.call(newUserSession(), clone.email, clone.password, clone.name, function(e,r) {
+  UserService.tryLocalSignup.call(newUserSession(userKey), clone.email, clone.password, clone.name, function(e,r) {
     data.users[clone.userKey] = r;
     done(clone.userKey)
   })
@@ -147,6 +154,10 @@ module.exports = {
   viewsByAnonymousId: function(anonymousId, cb) {
     View.find({anonymousId}, cb)
   },
+
+  ensureUser: function(user, cb) {
+    User.findByIdAndRemove(user._id, (e, r) => {new User(user).save(cb)})
+  }
 
 }
 

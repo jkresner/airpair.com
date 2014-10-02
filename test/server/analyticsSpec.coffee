@@ -1,4 +1,3 @@
-util = require('../../shared/util')
 postTitle = "Analytics Tests "+moment().format('X')
 postSlug = postTitle.toLowerCase().replace /\ /g, '-'
 postUrl = "/v1/posts/#{postSlug}"
@@ -9,13 +8,7 @@ postUrl = "/v1/posts/#{postSlug}"
 # (2) Alias the sessionID against the mixpanel distinctId immediately on first client
 # (3) Alias the userId against the sessionId on user creation
 
-#-- TODO
-# 
-# (1) Make sure we have utms available
-# (2) Make sure we can see page views
-# (3) Make sure we alias right with existing v0 users
  
-
 module.exports = ->
  
   describe "Tracking: ", ->
@@ -34,7 +27,7 @@ module.exports = ->
       cookie = null
 
 
-    it 'Can track an anonymous post view', (done) ->
+    it('Can track an anonymous post view', (done) ->
       ANONSESSION (s) ->
         anonymousId = s.sessionID
         spy = sinon.spy(analytics,'view')
@@ -51,8 +44,6 @@ module.exports = ->
           .expect('Content-Type', /text/)
           .end (err, resp) ->
             if err then throw err
-          
-            $log('spy.callCount', spy.callCount)
             expect(spy.callCount).to.equal(1)
             expect(spy.args[0][0]).to.be.null
             expect(spy.args[0][1]).to.exist          
@@ -67,7 +58,7 @@ module.exports = ->
             expect(spy.args[0][5].campaign.name).to.be.undefined
             expect(spy.args[0][6]).to.be.undefined                                        
             spy.restore()
-
+    )
 
     it 'Can track logged in post view', (done) ->
       spy = sinon.spy(analytics,'view')
@@ -76,7 +67,7 @@ module.exports = ->
         analytics.setCallback ->
           testDb.viewsByUserId userId, (e,r) ->
             expect(r.length).to.equal(1)
-            expect(util.idsEqual(r[0].userId,userId)).to.be.true
+            expect(_.idsEqual(r[0].userId,userId)).to.be.true
             expect(r[0].anonymousId).to.be.null         
             done()          
 
@@ -110,7 +101,21 @@ module.exports = ->
     # //   expect('analytics track called')
     # //   expect('analytics track has time to action')      
     # //   expect('expect userId linked to event')      
-    # //   expect('expect sessionId (if anonymous) linked to event')            
+    # //   expect('expect sessionId (if anonymous) linked to event') 
+    # Anonymous View a post
+    # View login
+    # View signup
+    # Signup 
+    # View a workshop
+
+    # expect events
+    # View (server:distinctId:sessionId) 
+    # Click CTA (client:distinctId:sessionId)
+    # Route Login (client:distinctId:sessionId)
+    # Route Signup (client:distinctId:sessionId)
+    # Submit Local Signup (server:distinctId:sessionId)
+    # Signup (server:distinctId:userId)
+    # View (server:distinctId:userId)           
     # })
 
 
@@ -131,14 +136,15 @@ module.exports = ->
                   expect(sFull._id).to.exist
                   expect(sFull.name).to.equal(singup.name)                
                   expect(sFull.tags).to.be.undefined
-
-                  expect(spy).to.have.been.calledOnce
+                  $log('spy',spy.callCount)
+                  expect(spy.callCount).to.equal(1)
                   expect(spy.args[0][0]).to.equal(s.sessionID)
                   spy.restore()
                   testDb.viewsByUserId userId, (e,r) ->
+                    $log('search views')
                     expect(r.length).to.equal(1)
-                    expect(util.idsEqual(r[0].userId,userId)).to.be.true
-                    expect(util.idsEqual(r[0].anonymousId,s.sessionID)).to.be.true     
+                    expect(_.idsEqual(r[0].userId,userId)).to.be.true
+                    expect(_.idsEqual(r[0].anonymousId,s.sessionID)).to.be.true     
                     done()          
 
 
@@ -243,7 +249,7 @@ module.exports = ->
                     expect(v3.length).to.equal(4)
                     spyIdentify.restore()
                     spyAlias.restore()
-                    done()  
+                    done()
                     
       ANONSESSION (s) ->
         anonymousId = s.sessionID
@@ -266,46 +272,8 @@ module.exports = ->
 
 
 
-# Anonymous View a post
-# View login
-# View signup
-# Signup 
-# View a workshop
-
-# expect events
-# View (server:distinctId:sessionId) 
-# Click CTA (client:distinctId:sessionId)
-# Route Login (client:distinctId:sessionId)
-# Route Signup (client:distinctId:sessionId)
-# Submit Local Signup (server:distinctId:sessionId)
-# Signup (server:distinctId:userId)
-# View (server:distinctId:userId)
-
-
-#     it('Can track an anonymous workshop view', function(done) {
-
-#     })
-
-#     it('Can track logged in workshop view', function(done) {
-
-#     })
-
-
 #     it('Can link an existing v0 user', function(done) {
 #       expect('email aliased to userId, preserves events')
-#     })
-
-
-#     it('First visit time tracked in session', function(done) {
-
-#     })
-
-#     it('User signup of new user copied to cohort', function(done) {
-
-#     })
-
-#     it('User signup of existing user copied to cohort', function(done) {
-
 #     })
 
 #     it('User alias', function(done) {
@@ -319,6 +287,4 @@ module.exports = ->
 #       expect('?copied-email')                        
 #     })
 
-#     afterEach(function(){
-#     })
 

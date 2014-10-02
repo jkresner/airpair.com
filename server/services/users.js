@@ -1,40 +1,71 @@
-import Svc from '../services/_service'
-import User from '../models/user'
-import * as md5 from '../util/md5'
-var util = require('../../shared/util')
+import BaseSvc      from '../services/_service'
+import * as md5     from '../util/md5'
+var util =          require('../../shared/util')
+var bcrypt =        require('bcrypt')
+import User         from '../models/user'
+var UserData =      require('./users.data')
 
-var bcrypt = require('bcrypt')
-
-var logging = false
-var svc = new Svc(User, logging)
-
-
-var fields = {
-  sessionFull: { '__v': 1, '_id': 1, 'roles': 1, 'bitbucket.username': 1, 'bitbucket.displayName': 1, 'github.username': 1, 'github.displayName': 1, 'google.id':1, 'linkedin.id': 1, 'stack.user_id': 1, 'stack.link': 1, 'twitter.username': 1, 'email': 1, 'emailVerified': 1, 'name': 1, 'initials': 1, 'bio': 1, tags: 1, bookmarks: 1, 'cohort.engagement': 1 },
-  usersInRole: { '_id': 1, 'roles': 1, 'email': 1, 'name': 1, 'initials': 1 }
-} 
+var logging         = false
+var svc             = new BaseSvc(User, logging)
 
 
-// Add the user if new, or update if existing based on the search
-// If a new user we intelligently link analytics and track signup 
+//-- TODO, consider context ?
+
+function getUpsertEngagementProperties(existingUser, sessionID, sessionCreatedAt, done)
+{  
+  //-- Default engagement
+  var visit_first = sessionCreatedAt
+  var visit_signup = new Date()
+  var visit_last = new Date()
+  var visits = [util.dateWithDayAccuracy()] 
+  var aliases = null
+ 
+  // This is a new user (easy peasy)
+  if (existingUser) 
+  {
+    var {cohort} = existingUser
+
+    //-- This is an existing v0 user. We need to alias their google._json.email to their userId for v1    
+    if (!cohort || !cohort.engagement.visit_first)
+    {
+      var v0AccountCreatedAt = util.ObjectId2Date(existingUser._id)
+      visit_first = v0AccountCreatedAt
+      visit_signup = v0AccountCreatedAt
+    }
+    else
+    {
+      // keep existing fist visit, signup and visits
+      visit_first = cohort.engagement.visit_first
+      visit_signup = cohort.engagement.visit_signup
+      visits = cohort.engagement.visits
+      aliases = cohort.aliases
+    }
+  }
+
+  return {engagement:{visit_first,visit_signup,visit_last,visits},aliases}
+}
+
+// upsertSmart
+// Intelligent logic around updating user accounts on Signup and Login for user info and analytics.
+// Adds the user if new, or updates if existing based on the search which could be by _id or provider e.g. { googleId: 'someId' }
 function upsertSmart(search, upsert, cb) {
   if (logging) $log('upsertSmart', JSON.stringify(search), JSON.stringify(upsert))
   
-  var {session,sessionID} = this
-  var loginFromNewAnonymousSession = false
+  //-- Session is their cookie, which may or may not have been their first visit
+  var sessionCreatedAt = util.sessionCreatedAt(this.session)
+  var {sessionID} = this
 
   svc.searchOne(search, null, (e, r) => {
     if (e) { return cb(e) }
     
-    var existingUser = (r) ? true : false;
+    upsert.cohort = getUpsertEngagementProperties(r,sessionID,sessionCreatedAt)
 
     if (upsert.google)
     {
       //-- stop user clobbering user.google details
       if (r && r.googleId && (r.googleId != upsert.google.id))
-      {
         return cb(Error(`Cannot overwrite google login ${r.google._json.email} with ${upsert.google._json.email}`),null)
-      }      
+            
 
       //-- copy google details to top level users details
       if (!r || !r.email)
@@ -45,77 +76,40 @@ function upsertSmart(search, upsert, cb) {
       }
     }
 
-    if (existingUser) 
+    if (r) 
     {
       if (!r.emailVerified)
-      { 
         upsert.emailVerified = false 
-      }
-      if (r.tags) {
+      if (r.tags) 
         // need more intelligent logic to avoid dups & such
         upsert.tags = _.union(r.tags, upsert.tags) 
-      }
-      if (r.bookmarks) {
+      if (r.bookmarks)
         // need more intelligent logic to avoid dups & such
         upsert.bookmarks = _.union(r.tags, upsert.bookmarks) 
-      }
-      if (r.cohort) {
-        var aliases = r.cohort.aliases; 
-        if ( !_.contains(r.cohort.aliases, sessionID) ) {
-          loginFromNewAnonymousSession = true
-          r.cohort.aliases.push(sessionID)
-        }
-       
-        upsert.cohort = { engagement: {
-          visit_first: r.cohort.engagement.visit_first,
-          visit_last: new Date(),
-          visit_signup: r.cohort.engagement.visit_signup,
-          visits: r.cohort.engagement.visits }, // should implemented this properly
-          aliases: r.cohort.aliases
-        }   
-      } else {
-        upsert.cohort = { engagement: {
-          visit_first: util.sessionCreatedAt(session),
-          visit_last: new Date(),
-          visit_signup: util.sessionCreatedAt(session),
-          visits: [new Date()] }, // should implemented this properly
-          aliases: [sessionID]
-        }           
-      }
     } 
-    
-    if (!existingUser)
-    {
-      upsert.cohort = { engagement: {
-        visit_first: util.sessionCreatedAt(session),
-        visit_last: new Date(),
-        visit_signup: new Date(),
-        visits: [new Date()] },
-        aliases: [sessionID]
-      }
-    }
 
     User.findOneAndUpdate(search, upsert, { upsert: true }, (err, user) => {
-      var done = () => { cb(err, user) }
-
-      if (err) $log('User.upsert.err', err && err.stack)
-      if (logging) $log('User.upsert', JSON.stringify(user))
-      if (existingUser)
-      {
-        if (loginFromNewAnonymousSession) 
-          analytics.alias(sessionID, user, 'Login', done)        
-        else {
-          var context = {sessionID} // ??
-          analytics.identify(user, context, 'Login', done)
-        }
-      } 
-      else
-      {
-        analytics.alias(sessionID, user, 'Signup', done)
-      }  
+      if (logging || err) $log('User.upsert', err, user)
+      if (err) return cb(err)
+      if (!analytics.upsert) return cb(null, user)
+      
+      analytics.upsert(user, r, sessionID, (aliases) => {
+        $log('back.aliases', aliases)
+        if (aliases && user.cohort.aliases &&
+            aliases.length == user.cohort.aliases.length) cb(null, user)
+        else 
+          User.findOneAndUpdate(search, { 'cohort.aliases': aliases }, cb)
+      })
     })
   })
 }
+
+
+//-- Todo, implement and link with middleware using the last_visit property
+// export function addCohortVisitDate()
+// {
+
+// }
 
 
 export function upsertProviderProfile(providerName, profile, done) {
@@ -242,7 +236,7 @@ export function toggleUserInRole(userId, role, cb) {
 
 
 export function getUsersInRole(role, cb) {
-  svc.searchMany({ roles:role }, { fields: fields.usersInRole }, cb)
+  svc.searchMany({ roles:role }, { fields: UserData.select.usersInRole }, cb)
 } 
 
 
@@ -275,7 +269,7 @@ export function getSessionFull(cb) {
   if (!this.user) 
     return getSession.call(this, cb)
 
-  svc.searchOne({ _id:this.user._id },{ fields: fields.sessionFull }, (e,r) => {
+  svc.searchOne({ _id:this.user._id },{ fields: UserData.select.sessionFull }, (e,r) => {
     setAvatar(r)
     cb(e,r)
   })

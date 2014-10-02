@@ -24,5 +24,7 @@ module.exports = {
 
   obfn: { name: "Obie Fernandez", email: "obiefernand@gmail.com"},   
   obie: { name: "Obie Fernandez", email: "obiefernand@hotmail.com"},   
+
+  dysn: { name: "Dilys Sun", email: "dilys@hotmail.com"},     
 }
   
