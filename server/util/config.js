@@ -54,7 +54,7 @@ module.exports = function(env, appdir) {
   }
 
   if (cfg.env == 'staging' || cfg.env == 'production') {
-    cfg.analytics.on = true
+    cfg.analytics.on = false
     cfg.analytics.segmentio.writekey = process.env.ANALYTICS_SEGMENTIO_WRITEKEY
 
     cfg.auth.oAuth.callbackHost = process.env.AUTH_OAUTH_CALLBACKHOST
