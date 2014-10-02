@@ -5,6 +5,7 @@ var getContext = (req) => {
   var ctx = {
     app: config.build,
     // device: 
+    ip: req.ip,
     // ip: req.host var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
     // library: 
     // locale:
@@ -26,6 +27,11 @@ var getContext = (req) => {
   if (utm_content) (c) ? (c.content = utm_content) : (c = {content:utm_content}) 
 
   if (c) ctx.campaign = c
+
+  $log('req.cookies', req.cookies._ga)
+  if (req.cookies._ga) {
+    ctx['Google Analytics'] = { clientId: req.cookies._ga.replace('GA1.1.','').replace('GA1.2.','') }
+  }
 
   return ctx
 }
