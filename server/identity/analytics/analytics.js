@@ -40,9 +40,9 @@ var track = (userId, anonymousId, event, properties, context, done) => {
 
 var view = (userId, anonymousId, type, name, properties, context, done) => {
   // if (logging) $log('view', userId, anonymousId, type, name, properties, context)
+  //category:type,name,
 
-
-  var p = buildPayload(userId,anonymousId,{category:type,name,context})
+  var p = buildPayload(userId,anonymousId,{context})
   p.properties = {
     title: properties.title,
     url: properties.url,
