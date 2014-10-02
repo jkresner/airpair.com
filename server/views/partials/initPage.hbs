@@ -33,7 +33,7 @@
     else 
     {
       // mongo userId or previously aliased email address
-      var isAlreadyUserId = (mixId.length == 24) || mixId.indexOf("@") != 0 
+      var isAlreadyUserId = (mixId.length == 24) || mixId.indexOf("@") != -1 
       console.log('isAlreadyUserId', isAlreadyUserId, mixId)
       
       if (!isAlreadyUserId)
