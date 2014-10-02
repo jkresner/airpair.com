@@ -15,10 +15,10 @@ var fields = {
 } 
 
 var queries = {
-  published: {  '$and': [
+  published: function() { return {  '$and': [
     {'published' : { '$exists': true }} ,
     {'published': { '$lt': new Date() }} 
-  ] },
+  ] } },
   updated: { 'updated' : { '$exists': true }}  
 }
 
@@ -49,7 +49,13 @@ export function getById(id, cb) {
 }
 
 export function getBySlug(slug, cb) {
-  svc.searchOne({ slug: slug }, null, inflateHtml(cb)) 
+  var query = _.extend(queries.published(),{slug})
+  svc.searchOne(query, null, inflateHtml(cb)) 
+}
+
+export function getPublishedById(_id, cb) { //-- used for todd-motto
+  var query = _.extend(queries.published(),{_id})
+  svc.searchOne(query, null, inflateHtml(cb)) 
 }
 
 export function getAllAdmin(cb) {
@@ -58,17 +64,17 @@ export function getAllAdmin(cb) {
 }
 
 export function getPublished(cb) {
-  svc.searchMany(queries.published, { field: fields.listSelect }, cb) 
+  svc.searchMany(queries.published(), { field: fields.listSelect }, cb) 
 }
 
 export function getRecentPublished(cb) {
   var opts = { fields: fields.listSelect, options: { sort: { 'published': -1 }, limit: 9 } };
-  svc.searchMany(queries.published, opts, addUrl(cb))
+  svc.searchMany(queries.published(), opts, addUrl(cb))
 }
 
 export function getAllPublished(cb) {
   var opts = { fields: fields.listSelect, options: { sort: { 'published': -1 } } };
-  svc.searchMany(queries.published, opts, addUrl(cb))
+  svc.searchMany(queries.published(), opts, addUrl(cb))
 }
 
 
@@ -79,7 +85,7 @@ export function getSimilarPublished(cb) {
 
 export function getUsersPublished(username, cb) {
   var opts = { fields: fields.listSelect, options: { sort: { 'published': -1 } } };
-  var query = _.extend({ 'by.username': username }, queries.published)
+  var query = _.extend({ 'by.username': username }, queries.published())
   svc.searchMany(query, opts, addUrl(cb))
 }
 
