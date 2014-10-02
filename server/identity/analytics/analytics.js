@@ -52,6 +52,7 @@ var view = (userId, anonymousId, type, name, properties, context, done) => {
   // $log('p', config.analytics.segmentio.writekey, p)
   // segment.page(p)
 
+  properties.url = properties.path
   var m = { event:'View', integrations: { 'All': false, 'Mixpanel': true }} 
   var mProperties = _.extend(properties, {type,name})
   var mPayload = _.extend(m,buildPayload(userId,anonymousId,{properties:mProperties,context})) 
