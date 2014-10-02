@@ -1,6 +1,6 @@
-var fs = require('fs');
-var marked = require('marked');
-var hbs = require('express-hbs');
+var fs 				= require('fs')
+var marked 		= require('marked')
+var hbs 			= require('express-hbs')
 
 
 function registerHelpers(hbs) 
@@ -40,7 +40,7 @@ export default function(app) {
 		data.build = config.build
 		data.authenticated = req.user && req.user._id 
 		data.user = req.user || { sessionID: req.sessionID }
-		data.config = { segmentioKey: config.analytics.segmentio.writekey }
+		data.config = { analytics: config.analytics }
 		return data;
 	}
 

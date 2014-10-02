@@ -94,7 +94,6 @@ function upsertSmart(search, upsert, cb) {
       if (!analytics.upsert) return cb(null, user)
       
       analytics.upsert(user, r, sessionID, (aliases) => {
-        $log('back.aliases', aliases)
         if (aliases && user.cohort.aliases &&
             aliases.length == user.cohort.aliases.length) cb(null, user)
         else 

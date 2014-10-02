@@ -108,9 +108,8 @@ module.exports = ->
           expect(u.email).to.equal(sou.google._json.email)
           expect(u.name).to.equal(sou.google.displayName)
           expect(u.emailVerified).to.be.false
-          expect(u.cohort.aliases.length).to.equal(2)
-          expect(u.cohort.aliases[0].indexOf('test'+'SoumyaAcharya')).to.equal(0)
-          expect(u.cohort.aliases[1]).to.equal(sou.google._json.email)          
+          expect(u.cohort.aliases.length).to.equal(1)
+          expect(u.cohort.aliases[0]).to.equal(sou.google._json.email)          
           expect(u.cohort.engagement.visit_first).to.exist
           expect(moment(u.cohort.engagement.visit_signup).unix()).to.equal(moment(util.ObjectId2Date(sou._id)).unix())
           expect(u.cohort.engagement.visit_last).to.exists
