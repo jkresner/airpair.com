@@ -49,8 +49,9 @@ export var trackView = (type) => {
     var obj = req[type]
     var tags = _.pluck(obj.tags,'slug')
     if (type == 'workshop') var tags = obj.tags // temp hack until we fix workshops
+    var url = req.protocol + '://' + req.get('host') + req.originalUrl
 
-    var properties = { tags: tags, url: req.path, objectId: obj._id }
+    var properties = { title: obj.title, tags, url, path: req.path, objectId: obj._id, referrer: context.referer }
     analytics.view(userId, anonymousId, type, obj.title, properties, context)      
     next() 
   }
