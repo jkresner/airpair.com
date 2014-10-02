@@ -193,6 +193,8 @@ window.postHlpr.loadPoSt = function()
   });
 
   function bindTracking() {
+    ga('send', 'pageview')
+
     $.each($('.trackPostCTA'), function(idx,el){
       $(el).click(function (e) {
         analytics.track('Click', { type: 'Post CTA', unit: 'code footer', idx: idx, text: el.innerHTML, location: window.location.pathname });

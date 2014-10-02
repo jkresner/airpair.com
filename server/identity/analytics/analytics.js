@@ -42,15 +42,15 @@ var view = (userId, anonymousId, type, name, properties, context, done) => {
   // if (logging) $log('view', userId, anonymousId, type, name, properties, context)
   //category:type,name,
 
-  var p = buildPayload(userId,anonymousId,{context})
-  p.properties = {
-    title: properties.title,
-    url: properties.url,
-    path: properties.path
-  }
+  // var p = buildPayload(userId,anonymousId,{context})
+  // p.properties = {
+  //   title: properties.title,
+  //   url: properties.url,
+  //   path: properties.path
+  // }
 
-  $log('p', config.analytics.segmentio.writekey, p)
-  segment.page(p)
+  // $log('p', config.analytics.segmentio.writekey, p)
+  // segment.page(p)
 
   var m = { event:'View', integrations: { 'All': false, 'Mixpanel': true }} 
   var mProperties = _.extend(properties, {type,name})
