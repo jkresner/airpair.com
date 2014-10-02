@@ -15,6 +15,21 @@ var buildPayload = (userId, anonymousId, payload) => {
   return payload;
 }
 
+var traitsFromUser = (user) =>
+{
+  var traits = { 
+    
+    name: user.name, 
+    email: user.email, 
+    // lastSeen: new Date(),  //-- leave this up to the client as it doesn't work via segment
+    createdAt: user.cohort.engagement.visit_first  
+  }
+  if (user.username) traits.username = user.username
+
+  // isExpert / isCustomer    
+
+  return traits;
+}
 
 var track = (userId, anonymousId, event, properties, context, done) => {
   if (logging) $log('track', userId, anonymousId, event, properties, context)    
@@ -47,13 +62,7 @@ var view = (userId, anonymousId, type, name, properties, context, done) => {
 var identify = (user, context, identifyEvent, done) => {
   if (logging) $log('identify', user._id, context, identifyEvent)
   
-  var traits = { 
-    // username / isExpert / isCustomer
-    name: user.name, 
-    email: user.email, 
-    lastSeen: new Date(),
-    createdAt: user.cohort.engagement.visit_first  
-  }
+  var traits = traitsFromUser(user)
 
   segment.identify(buildPayload(user._id, null, {traits,context}))
   segment.track({ userId: user._id.toString(), event: identifyEvent }, done || doneBackup)
@@ -64,17 +73,9 @@ var alias = (anonymousId, user, aliasEvent, done) => {
   if (logging) $log('alias', anonymousId, user._id, aliasEvent, done)
   var userId = user._id.toString()
 
-  var traits = { 
-    // username / isExpert / isCustomer    
-    name: user.name, 
-    email: user.email, 
-    lastSeen: new Date(),
-    createdAt: user.cohort.engagement.visit_first  
-  }
-
   segment.alias({ previousId: anonymousId, userId: userId }, (e, b) => {
     $log('**** aliased'.yellow)
-    segment.identify({userId: userId, traits: traits}, (ee, bb) => {
+    segment.identify({userId: userId, traits: traitsFromUser(user) }, (ee, bb) => {
       $log('**** identified'.yellow)
       segment.track({
         userId: userId,
@@ -91,21 +92,16 @@ var alias = (anonymousId, user, aliasEvent, done) => {
   viewSvc.alias(anonymousId, user._id, ()=>{})
 }
 
-var aliasMigrateV0 = (sessionID, googleEmail, userId, done) => {
+var aliasMigrateV0 = (sessionID, user, done) => {
   done = done || doneBackup
+  var userId = user._id.toString()
+  var googleEmail = user.google._json.email
   segment.alias({ previousId: sessionID, userId: googleEmail }, (e1, b1) => { 
     $log(`**** aliase migrate ${sessionID} ${googleEmail}`.yellow)
     //-- do I need to call identify on the server?
-    segment.track({ userId: googleEmail, event: 'Migrate Alias P1' }, (e2, b2) => {
-      $log(`**** alias migrate track p1`.yellow)
-      segment.alias({ previousId: googleEmail, userId: userId }, (e3, b3) => { 
-        $log(`**** aliase migrate ${googleEmail} ${userId}`.yellow)
-        segment.track({ userId: userId, event: 'Migrate Alias P2' }, (e2, b2) => {
-          $log(`**** alias migrate track p2`.yellow)
-          done()
-        })
-      })
-      segment.flush()
+    segment.track({ userId: googleEmail, event: 'Migrate Alias P1', properties: {sessionID,userId,googleEmail} }, (e2, b2) => {
+      alias(googleEmail, user, 'Migrate Alias P2', done)
+      segment.identify( { userId:sessionID, traits: { name: `${user.name} (anon)`, userId: user._id.toString() } } )
     })
   })  
   segment.flush()
@@ -136,18 +132,22 @@ module.exports = {
     //-- For an existing v0 user, we need to alias their google._json.email to their userId    
     else if (noAliases && existingUser.google)
     {
-      aliases = [sessionID, existingUser.google._json.email]
-      aliasMigrateV0(sessionID, existingUser.google._json.email, user._id.toString(), () => cb(aliases) )
+      if (logging) $log('noAliases.existingUser', [existingUser.google._json.email])
+      aliases = [existingUser.google._json.email]
+      analytics.alias(existingUser.google._json.email, user, 'Login Migrate', () => cb(aliases))
+      viewSvc.alias(sessionID, user._id, ()=>{})   //-- but update all the anonymous views to the userId
     }
     else
     {
       //-- This is an existing user from a new device / browser
       if ( ! _.contains(aliases, sessionID) ) {
+        if (logging) $log('newAnonSessionID', sessionID)
         aliases.push(sessionID)
         analytics.alias(sessionID, user, 'Login', () => cb(aliases))
       }
       else
       {
+        if (logging) $log('justAloging')
         var context = {sessionID} // ??
         analytics.identify(user, context, 'Login', () => cb(aliases))
       }

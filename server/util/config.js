@@ -3,6 +3,10 @@ var cfg = {
   port:     process.env.PORT || 3333,
   mongoUri: process.env.MONGOHQ_URL || "mongodb://localhost/airpair_dev",
   session: { secret: 'airyv1' },
+  analytics: { 
+      on: false,
+      segmentio: { writekey: '9793xyfxat' } 
+  },
   auth: {
     loginUrl: '/v1/auth/login',
     unauthorizedUrl: '/v1/auth/unauthorized',    
@@ -28,12 +32,7 @@ var cfg = {
       secret_key: process.env.MAIL_SES_SECRET_KEY || "none"
     }
   },
-  log: {},
-  analytics: 
-    { 
-      on: false,
-      segmentio: { writekey: '9793xyfxat' } 
-    }
+  log: {}
 }
 
 module.exports = function(env, appdir) {
@@ -41,8 +40,13 @@ module.exports = function(env, appdir) {
   cfg.appdir = appdir
   cfg.livereload = cfg.env == 'dev'
 
+  //-- Temp for testing prod setting locally
+  cfg.analytics.on = true 
+  cfg.analytics.segmentio. writekey = '0xxx5xrw5q'
+
   if (cfg.env == 'test') {
-    cfg.analytics.on = false
+    cfg.analytics.on = true
+    cfg.analytics.segmentio. writekey = '9793xyfxat'
     cfg.port = 4444
     cfg.mongoUri = "mongodb://localhost/airpair_test"
     cfg.testlogin = true
@@ -50,12 +54,14 @@ module.exports = function(env, appdir) {
   }
 
   if (cfg.env == 'staging' || cfg.env == 'production') {
-    cfg.analytics.on = false
-    cfg.session.secret = process.env.SESSION_SECRET || 'airyv1'
+    cfg.analytics.on = true
+    cfg.analytics.segmentio.writekey = process.env.ANALYTICS_SEGMENTIO_WRITEKEY
 
     cfg.auth.oAuth.callbackHost = process.env.AUTH_OAUTH_CALLBACKHOST
     cfg.auth.google.clientID = process.env.AUTH_GOOGLE_CLIENTID
     cfg.auth.google.clientSecret = process.env.AUTH_GOOGLE_CLIENTSECRET
+
+    cfg.session.secret = process.env.SESSION_SECRET || 'airyv1'
   }
 
   if (cfg.env == 'production') {
