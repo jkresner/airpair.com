@@ -13,7 +13,7 @@ export default function(app) {
     .get('/posts/all', app.renderHbsViewData('postList', 
       (req, cb) => PostsAPI.svc.getAllPublished(cb) ))
 
-    .get('/posts/airpair-v1', app.renderHbsViewData('postlist', 
+    .get('/posts/airpair-v1', app.renderHbsViewData('postslist', 
       (req, cb) => PostsAPI.svc.getUsersPublished('hackerpreneur', cb) ))
 
     .get('/:tag/posts/:post', trackView('post'), app.renderHbsViewData('post', 
