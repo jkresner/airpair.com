@@ -41,7 +41,7 @@ module.exports = function(env, appdir) {
   cfg.livereload = cfg.env == 'dev'
 
   //-- Temp for testing prod setting locally
-  cfg.analytics.on = true 
+  // cfg.analytics.on = true 
   // cfg.analytics.segmentio. writekey = '0xxx5xrw5q'
 
   if (cfg.env == 'test') {
