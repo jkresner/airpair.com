@@ -23,8 +23,8 @@
   <footer class="entry-footer">
     <p class="entry-meta">
       <span class="entry-categories"> 
-        {{#each tags}}
-          <a href="http://www.airpair.com/{{slug}}" title="View all posts in {{name}}" rel="category tag">{ {{ name }} }</a>
+        {{#each tags}}{{!-- http://www.airpair.com/{{slug}} --}}
+          <a href="#" title="View all posts in {{name}}" rel="category tag">{ {{ name }} }</a>
         {{/each}}
       </span>
     </p>
