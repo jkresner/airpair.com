@@ -20,7 +20,9 @@ export default function(app) {
       (req, cb) => PostsAPI.svc.getUsersPublished('hackerpreneur', cb) ))
 
     .get('/:tag/posts/:post', trackView('post'), app.renderHbsViewData('post', 
-      (req, cb) => cb(null,req.post) ))
+      (req, cb) => {
+          req.post.primarytag = req.params.tag
+          cb(null,req.post) }))
 
     .get('/:tag/workshops/:workshop', trackView('workshop'), app.renderHbsViewData('workshop', 
       (req, cb) => { req.workshop.by = req.workshop.speakers[0]; cb(null,req.workshop) }))
