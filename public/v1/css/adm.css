@@ -838,6 +838,7 @@ section#posts .publish .publishMeta input {
   width: 212px;
   font-size: 12px;
   position: relative;
+  z-index: 0;
 }
 .blogpost #table-of-contents + ul ul {
   margin-top: 4px;
@@ -877,7 +878,10 @@ section#posts .publish .publishMeta input {
   overflow: hidden;
 }
 .blogpost #disqus_thread {
+  background: white;
   min-height: 700px;
+  z-index: 2;
+  position: relative;
 }
 @media only screen and (max-width: 900px) {
   .blogpost > h1 {
@@ -952,6 +956,27 @@ section#posts .publish .publishMeta input {
     height: inherit;
   }
 }
+.blogpost .workshop-cta {
+  max-width: 640px;
+  background-color: #dff2ef;
+  padding: 18px;
+  color: black;
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+  border-left: solid 6px #ce5424;
+}
+.blogpost .workshop-cta b {
+  display: block;
+  color: #232835;
+  text-transform: uppercase;
+  padding-bottom: 4px;
+}
+.blogpost .workshop-cta a {
+  display: block;
+  font-weight: bold;
+  padding-top: 8px;
+  font-size: 18px;
+}
 .posts .entry-header {
   padding: 10px 10px 5px 10px;
 }
@@ -975,4 +1000,35 @@ section#posts .publish .publishMeta input {
   text-align: center;
   border-radius: 2px;
   padding: 1px 0 2px 0;
+}
+section#redirects {
+  font-size: 10px;
+  font-family: courier;
+}
+section#redirects ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+section#redirects li {
+  border-bottom: solid 1px #d3d3d3;
+  padding-bottom: 2px;
+}
+section#redirects input {
+  width: 500px;
+  display: block;
+  margin-bottom: 2px;
+}
+section#redirects label {
+  color: red;
+  padding-bottom: 0;
+  margin-bottom: 0;
+  font-weight: normal;
+}
+section#redirects span {
+  color: green;
+  display: block;
+}
+section#redirects #btnCreateRedirect {
+  padding: 0px 20px;
 }
