@@ -23,4 +23,19 @@ angular.module('APSvcAdmin', [])
       $http.put(`${APIAdm}/users/${data._id}/role/${data.role}`, data).success(success).error(lazyErrorCb);
     }
 
+    this.getRedirects = function(success)
+    {
+      $http.get(`${APIAdm}/redirects`).success(success).error(lazyErrorCb);
+    }
+    
+    this.createRedirect = function(data, success)
+    {
+      $http.post(`${APIAdm}/redirects`, data).success(success).error(lazyErrorCb);
+    }
+
+    this.deleteRedirect = function(id, success)
+    {
+      $http.delete(`${APIAdm}/redirects/${id}`).success(success).error(lazyErrorCb);
+    }
+
   }])

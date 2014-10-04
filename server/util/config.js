@@ -26,13 +26,14 @@ var cfg = {
       ]
     }  
   },
+  log: {},
   mail: {
     ses: { 
       access_key: process.env.MAIL_SES_ACCESS_KEY || "none",
       secret_key: process.env.MAIL_SES_SECRET_KEY || "none"
     }
   },
-  log: {}
+  redirects: { on: false }
 }
 
 module.exports = function(env, appdir) {
@@ -61,6 +62,7 @@ module.exports = function(env, appdir) {
     cfg.auth.google.clientID = process.env.AUTH_GOOGLE_CLIENTID
     cfg.auth.google.clientSecret = process.env.AUTH_GOOGLE_CLIENTSECRET
 
+    cfg.redirects.on = true
     cfg.session.secret = process.env.SESSION_SECRET || 'airyv1'
   }
 
