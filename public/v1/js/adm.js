@@ -8,7 +8,8 @@ require('./../common/models/sessionService.js');
 require('./../common/models/adminDataService.js');
 require('./../adm/posts/module.js');
 require('./../adm/users/module.js');
-angular.module("ADM", ['ngRoute', 'APSvcSession', 'ADMPosts', 'ADMUsers']).config(['$locationProvider', '$routeProvider', function($locationProvider, $routeProvider) {
+require('./../adm/redirects/module.js');
+angular.module("ADM", ['ngRoute', 'APSvcSession', 'ADMPosts', 'ADMUsers', 'ADMRedirects']).config(['$locationProvider', '$routeProvider', function($locationProvider, $routeProvider) {
   $locationProvider.html5Mode(true);
 }]).run(['$rootScope', '$location', 'SessionService', function($rootScope, $location, SessionService) {
   SessionService.onAuthenticated((function(session) {
@@ -18,7 +19,7 @@ angular.module("ADM", ['ngRoute', 'APSvcSession', 'ADMPosts', 'ADMUsers']).confi
 ;
 
 
-},{"./../adm/posts/module.js":4,"./../adm/users/module.js":6,"./../common/directives/post.js":8,"./../common/directives/tagInput.js":11,"./../common/filters/filters.js":12,"./../common/models/adminDataService.js":13,"./../common/models/postsService.js":14,"./../common/models/sessionService.js":15}],2:[function(require,module,exports){
+},{"./../adm/posts/module.js":4,"./../adm/redirects/module.js":6,"./../adm/users/module.js":8,"./../common/directives/post.js":10,"./../common/directives/tagInput.js":13,"./../common/filters/filters.js":14,"./../common/models/adminDataService.js":15,"./../common/models/postsService.js":16,"./../common/models/sessionService.js":17}],2:[function(require,module,exports){
 module.exports = "<article itemscope=\"itemscope\" itemtype=\"http://schema.org/BlogPosting\" itemprop=\"blogPost\">\n<!-- \n -->  \n <header class=\"entry-header\">\n    <h2 class=\"entry-title\" itemprop=\"headline\">{{ post.title }}</h2> \n    <p class=\"entry-meta\">\n      <time class=\"entry-time\" itemprop=\"datePublished\" datetime=\"{{ post.published }}\">{{ post.publishedFormat }}</time> \n      <span class=\"entry-author\" itemprop=\"author\" itemscope=\"itemscope\" itemtype=\"http://schema.org/Person\">\n        <span class=\"entry-author-name\" itemprop=\"name\">{{ post.by.name }}</span>\n      </span> \n      <br />Updated\n      {{ post.updated | agoTime }}\n      <span ng-if=\"post.published\">, \n      Published {{ post.published | agoTime }}</span>\n    </p>\n  </header>\n  <div class=\"entry-content\" itemprop=\"text\">\n    <img class=\"entry-author-image\" itemprop=\"image\" ng-src=\"{{ post.by.avatar }}?s=50\" align=\"left\" />\n    <p>{{ post.meta.description }}</p>\n  </div>\n\n  <footer class=\"entry-footer\">\n    <ul>\n      <li><a href=\"/posts/edit/{{ post._id }}\" target=\"_blank\">Edit</a></li>\n      <li><a href=\"/posts/publish/{{ post._id }}\" target=\"_blank\">Publish</a></li>\n      <li ng-if=\"post.published\"><a href=\"{{ post.url }}\" target=\"_blank\">View</a></li>\n    </ul>\n    \n    <p class=\"entry-meta\">\n      <span class=\"entry-categories\">\n        <a ng-repeat='tag in post.tags' href=\"#\" title=\"View all posts in {{ tag.name }}\" rel=\"category tag\">{{ '{'+tag.slug+'}' }}</a>\n      </span>    \n    </p>\n  </footer>\n</article>  \n";
 
 },{}],3:[function(require,module,exports){
@@ -46,9 +47,43 @@ angular.module("ADMPosts", ['ngRoute', 'APSvcAdmin', 'APSvcPosts', 'APFilters'])
 
 
 },{"./item.html":2,"./list.html":3}],5:[function(require,module,exports){
-module.exports = "\n<section id=\"users\">\n\n<br /><br />\n<input type=\"text\" ng-model=\"_id\" placeholder=\"Type userId\" style=\"width:300px\" />\n<select ng-model=\"role\">\n  <option>admin</option>\n  <option>editor</option>  \n</select>\n<button class=\"btn\" ng-click=\"toggleRole()\">Toggle role</button>\n\n\n  <h3>Admins</h3>\n  <ul class=\"users admin\">\n    <li ng-repeat=\"user in admins\">{{ user.name }}</li>\n  </ul>\n    \n  <h3>Editors</h3>\n  <ul class=\"users editors\">\n    <li ng-repeat=\"user in editors\">{{ user.name }}</li>\n  </ul>\n<!-- \n  <h3>Pipeliners</h3>\n  <ul class=\"users pipeliners\">\n    <li ng-repeat=\"user in pipeliners\">{{ user.name }}</li>    \n  </ul>  \n\n\n  <h3>Matchmakers</h3>\n  <ul class=\"users matchmakers\">\n    <li ng-repeat=\"user in matchmakers\">{{ user.name }}</li>    \n  </ul>  \n\n -->\n</section>";
+module.exports = "\n<section id=\"redirects\">\n\n  <h3>Redirects </h3>\n\n  <div style=\"float:right\">note a restart is necessary for the redirects to take effect</div>\n\n  <input type=\"text\" ng-model='previous' placeholder=\"From\" />\n  <input type=\"text\" ng-model='current' placeholder=\"To\" />\n  <button id=\"btnCreateRedirect\" ng-click=\"createRedirect()\" class=\"btn\">Create</button>\n\n  <hr />\n\n  <div class=\"redirects\">\n    <ul>\n      <li ng-repeat=\"r in redirects\">\n        <time>{{ r._id | objectIdToDate : 'MM.DD' }}</time>\n        <label><a href=\"{{ r.previous }}\" target=\"_blank\">{{ r.previous }}</a></label>\n        <span><a href=\"#\" ng-click=\"deleteRedirect(r._id)\">x</a>===> {{ r.current }}</span>\n      </li>\n    </ul>\n  </div>\n      \n</section>";
 
 },{}],6:[function(require,module,exports){
+"use strict";
+angular.module("ADMRedirects", ['ngRoute', 'APSvcAdmin', 'APFilters']).config(['$locationProvider', '$routeProvider', function($locationProvider, $routeProvider) {
+  $routeProvider.when('/v1/adm/redirects', {
+    template: require('./list.html'),
+    controller: 'RedirectsCtrl as redirects'
+  });
+}]).run(['$rootScope', function($rootScope) {}]).controller('RedirectsCtrl', ['$scope', 'AdmDataService', function($scope, AdmDataService) {
+  AdmDataService.getRedirects(function(result) {
+    $scope.redirects = result;
+  });
+  $scope.createRedirect = function() {
+    var d = {
+      previous: $scope.previous,
+      current: $scope.current
+    };
+    AdmDataService.createRedirect(d, function(result) {
+      $scope.redirects.push(result);
+    });
+  };
+  $scope.deleteRedirect = function(id) {
+    AdmDataService.deleteRedirect(id, function() {
+      var r = _.find($scope.redirects, (function(r) {
+        return r._id == id;
+      }));
+      $scope.redirects = _.without($scope.redirects, r);
+    });
+  };
+}]);
+
+
+},{"./list.html":5}],7:[function(require,module,exports){
+module.exports = "\n<section id=\"users\">\n\n<br /><br />\n<input type=\"text\" ng-model=\"_id\" placeholder=\"Type userId\" style=\"width:300px\" />\n<select ng-model=\"role\">\n  <option>admin</option>\n  <option>editor</option>  \n</select>\n<button class=\"btn\" ng-click=\"toggleRole()\">Toggle role</button>\n\n\n  <h3>Admins</h3>\n  <ul class=\"users admin\">\n    <li ng-repeat=\"user in admins\">{{ user.name }}</li>\n  </ul>\n    \n  <h3>Editors</h3>\n  <ul class=\"users editors\">\n    <li ng-repeat=\"user in editors\">{{ user.name }}</li>\n  </ul>\n<!-- \n  <h3>Pipeliners</h3>\n  <ul class=\"users pipeliners\">\n    <li ng-repeat=\"user in pipeliners\">{{ user.name }}</li>    \n  </ul>  \n\n\n  <h3>Matchmakers</h3>\n  <ul class=\"users matchmakers\">\n    <li ng-repeat=\"user in matchmakers\">{{ user.name }}</li>    \n  </ul>  \n\n -->\n</section>";
+
+},{}],8:[function(require,module,exports){
 "use strict";
 angular.module("ADMUsers", ['ngRoute', 'APSvcAdmin', 'APFilters']).config(['$locationProvider', '$routeProvider', function($locationProvider, $routeProvider) {
   $routeProvider.when('/v1/adm/users', {
@@ -76,10 +111,10 @@ angular.module("ADMUsers", ['ngRoute', 'APSvcAdmin', 'APFilters']).config(['$loc
 }]);
 
 
-},{"./list.html":5}],7:[function(require,module,exports){
+},{"./list.html":7}],9:[function(require,module,exports){
 module.exports = "\n<div class=\"preview\">\n  <article class=\"blogpost\">\n    <h1 class=\"entry-title\" itemprop=\"headline\">{{ post.title || \"Type post title ...\" }}</h1>\n    <h4 id=\"table-of-contents\" ng-if=\"preview.toc\">Table of Contents</h4>\n    <ul id=\"previewToc\" ng-bind-html=\"preview.toc | markdownHtml\"></ul>\n    <figure class=\"author\">\n      <img ng-alt=\"{{post.by.name}}\" ng-src=\"{{post.by.avatar}}?s=100\">\n      <figcaption>\n        {{post.by.bio}}\n      </figcaption>\n    </figure>  \n    <p class=\"asset\" ng-bind-html=\"preview.asset | markdownHtml\" ng-if=\"post.title && post.by.bio\"></p>\n    <hr />\n    <div id=\"body\" ng-bind-html=\"preview.body | markdownHtml\"></div>\n  </article>\n</div>\n\n<hr />\n";
 
-},{}],8:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 "use strict";
 angular.module("APPost", []).directive('apPostListItem', ['$parse', function($parse) {
   return {
@@ -102,13 +137,13 @@ angular.module("APPost", []).directive('apPostListItem', ['$parse', function($pa
 ;
 
 
-},{"./post.html":7,"./postListItem.html":9}],9:[function(require,module,exports){
+},{"./post.html":9,"./postListItem.html":11}],11:[function(require,module,exports){
 module.exports = "<article itemscope=\"itemscope\" itemtype=\"http://schema.org/BlogPosting\" itemprop=\"blogPost\">\n<a href=\"{{ post.url }}\" title=\"{{ post.title }}\" target=\"_self\" rel=\"bookmark\">\n  <header class=\"entry-header\">\n    <h2 class=\"entry-title\" itemprop=\"headline\">{{ post.title }}</h2> \n    <p class=\"entry-meta\">\n      <time class=\"entry-time\" itemprop=\"datePublished\" datetime=\"{{ post.published }}\">{{ post.publishedFormat }}</time> \n      by \n      <span class=\"entry-author\" itemprop=\"author\" itemscope=\"itemscope\" itemtype=\"http://schema.org/Person\">\n        <span class=\"entry-author-name\" itemprop=\"name\">{{ post.by.name }}</span>\n      </span> \n    </p>\n  </header>\n  <div class=\"entry-content\" itemprop=\"text\">\n    <img class=\"entry-author-image\" itemprop=\"image\" ng-src=\"{{ post.by.avatar }}?s=50\" align=\"left\" />\n    <p>{{ post.meta.description }}</p>\n  </div>\n</a>\n  <footer class=\"entry-footer\">\n    <p class=\"entry-meta\">\n      <span class=\"entry-categories\">\n        <a ng-repeat='tag in post.tags' href=\"#\" title=\"View all posts in {{ tag.name }}\" rel=\"category tag\">{{ '{'+tag.slug+'}' }}</a>\n      </span>\n    </p>\n  </footer>\n</article>  \n";
 
-},{}],10:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 module.exports = "<script type=\"text/ng-template\" id=\"template/typeahead/typeahead-match.html\">\n  <a>\n    <label bind-html-unsafe=\"match.model.name | typeaheadHighlight:query\"></label>\n    <br /><span bind-html-unsafe=\"match.model.desc | typeaheadHighlight:query\"></span>\n  </a>\n</script>\n\n    \n<input type=\"text\" \n  placeholder=\"Type technology\" \n  class=\"form-control\"\n  ng-model=\"q\" \n  typeahead=\"t as t for t in getTags($viewValue) | filter:$viewValue\" \n  >\n<!-- typeahead-loading=\"loading\"\n<i ng-show=\"loading\" class=\"glyphicon glyphicon-refresh\"></i>\n -->Tags: <label ng-repeat=\"tag in post.tags\">{ {{tag.name}} } <a ng-click=\"deselectMatch(tag)\" style=\"color:red\">x</a> &nbsp </label>\n";
 
-},{}],11:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 "use strict";
 angular.module('APTagInput', ['ui.bootstrap']).value('acceptableTagsSearchQuery', function(value) {
   return value && (value.length >= 2 || /r/i.test(value));
@@ -148,8 +183,9 @@ angular.module('APTagInput', ['ui.bootstrap']).value('acceptableTagsSearchQuery'
 ;
 
 
-},{"./tagInput.html":10}],12:[function(require,module,exports){
+},{"./tagInput.html":12}],14:[function(require,module,exports){
 "use strict";
+var util = require('../../../shared/util.js');
 angular.module('APFilters', []).filter('publishedTime', function() {
   return (function(utc, displayFormat) {
     var offset = moment().format('ZZ');
@@ -170,15 +206,17 @@ angular.module('APFilters', []).filter('publishedTime', function() {
     var offset = moment().format('ZZ');
     if (utc != '') {
       var timeString = utc.split('GMT')[0];
-      var format = 'ddd, MMM Do ha';
-      if (displayFormat) {
-        format = displayFormat;
-      }
-      var result = moment(timeString, 'YYYY-MM-DDTHH:mm:ss:SSSZ').format(format);
+      displayFormat = displayFormat || 'ddd, MMM Do ha';
+      var result = moment(timeString, 'YYYY-MM-DDTHH:mm:ss:SSSZ').format(displayFormat);
       return result.replace(offset, '');
     } else {
       return 'Confirming time';
     }
+  });
+}).filter('objectIdToDate', function() {
+  return (function(id, displayFormat) {
+    displayFormat = displayFormat || 'MMM DD';
+    return moment(util.ObjectId2Date(id)).format(displayFormat);
   });
 }).filter('agoTime', function() {
   return (function(date) {
@@ -202,7 +240,7 @@ angular.module('APFilters', []).filter('publishedTime', function() {
 });
 
 
-},{}],13:[function(require,module,exports){
+},{"../../../shared/util.js":18}],15:[function(require,module,exports){
 "use strict";
 var lazyErrorCb = function(resp) {
   console.log('error:', resp);
@@ -217,10 +255,19 @@ angular.module('APSvcAdmin', []).constant('APIAdm', '/v1/api/adm').service('AdmD
   this.toggleRole = function(data, success) {
     $http.put((APIAdm + "/users/" + data._id + "/role/" + data.role), data).success(success).error(lazyErrorCb);
   };
+  this.getRedirects = function(success) {
+    $http.get((APIAdm + "/redirects")).success(success).error(lazyErrorCb);
+  };
+  this.createRedirect = function(data, success) {
+    $http.post((APIAdm + "/redirects"), data).success(success).error(lazyErrorCb);
+  };
+  this.deleteRedirect = function(id, success) {
+    $http.delete((APIAdm + "/redirects/" + id)).success(success).error(lazyErrorCb);
+  };
 }]);
 
 
-},{}],14:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 "use strict";
 var headings = [];
 var lazyErrorCb = function(resp) {};
@@ -272,7 +319,7 @@ angular.module('APSvcPosts', []).constant('API', '/v1/api').factory('mdHelper', 
 }]);
 
 
-},{}],15:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 "use strict";
 angular.module('APSvcSession', []).constant('API', '/v1/api').constant('Auth', '/v1/auth').service('SessionService', ['$http', 'API', 'Auth', '$cacheFactory', function($http, API, Auth, $cacheFactory) {
   var cache;
@@ -298,6 +345,38 @@ angular.module('APSvcSession', []).constant('API', '/v1/api').constant('Auth', '
     $http.post((Auth + "/signup"), data).success(success).error(error);
   };
 }]);
+
+
+},{}],18:[function(require,module,exports){
+"use strict";
+var idsEqual = (function(id1, id2) {
+  return id1.toString() == id2.toString();
+});
+module.exports = {
+  idsEqual: idsEqual,
+  ObjectId2Date: (function(id) {
+    return new Date(parseInt(id.toString().slice(0, 8), 16) * 1000);
+  }),
+  toggleItemInArray: (function(array, item) {
+    if (!array)
+      return [item];
+    else {
+      var existing = _.find(array, (function(i) {
+        return idsEqual(i._id, item._id);
+      }));
+      if (existing)
+        return _.without(array, existing);
+      else
+        return array.push(t);
+    }
+  }),
+  sessionCreatedAt: (function(session) {
+    return new moment(session.cookie._expires).subtract(session.cookie.originalMaxAge, 'ms').toDate();
+  }),
+  dateWithDayAccuracy: (function() {
+    return moment('yyyy-MM-dd', moment().format('yyyy-MM-dd')).toDate();
+  })
+};
 
 
 },{}]},{},[1]);

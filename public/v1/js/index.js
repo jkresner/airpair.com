@@ -190,6 +190,7 @@ angular.module('APTagInput', ['ui.bootstrap']).value('acceptableTagsSearchQuery'
 
 },{"./tagInput.html":11}],13:[function(require,module,exports){
 "use strict";
+var util = require('../../../shared/util.js');
 angular.module('APFilters', []).filter('publishedTime', function() {
   return (function(utc, displayFormat) {
     var offset = moment().format('ZZ');
@@ -210,15 +211,17 @@ angular.module('APFilters', []).filter('publishedTime', function() {
     var offset = moment().format('ZZ');
     if (utc != '') {
       var timeString = utc.split('GMT')[0];
-      var format = 'ddd, MMM Do ha';
-      if (displayFormat) {
-        format = displayFormat;
-      }
-      var result = moment(timeString, 'YYYY-MM-DDTHH:mm:ss:SSSZ').format(format);
+      displayFormat = displayFormat || 'ddd, MMM Do ha';
+      var result = moment(timeString, 'YYYY-MM-DDTHH:mm:ss:SSSZ').format(displayFormat);
       return result.replace(offset, '');
     } else {
       return 'Confirming time';
     }
+  });
+}).filter('objectIdToDate', function() {
+  return (function(id, displayFormat) {
+    displayFormat = displayFormat || 'MMM DD';
+    return moment(util.ObjectId2Date(id)).format(displayFormat);
   });
 }).filter('agoTime', function() {
   return (function(date) {
@@ -242,7 +245,7 @@ angular.module('APFilters', []).filter('publishedTime', function() {
 });
 
 
-},{}],14:[function(require,module,exports){
+},{"../../../shared/util.js":30}],14:[function(require,module,exports){
 "use strict";
 var headings = [];
 var lazyErrorCb = function(resp) {};
@@ -560,6 +563,7 @@ angular.module("APPosts", ['ngRoute', 'APFilters', 'APShare', 'APMyPostsList', '
 }]).run(['$rootScope', 'SessionService', function($rootScope, SessionService) {
   SessionService.onAuthenticated((function(session) {
     $rootScope.session = session;
+    $rootScope.editor = _.contains(session.roles, 'editor');
   }));
 }]).controller('IndexCtrl', ['$scope', 'PostsService', 'SessionService', function($scope, PostsService, SessionService) {
   var self = this;
@@ -735,5 +739,37 @@ module.exports = "<header>\n  <a href=\"/workshops\">Workshops</a> > \n  <a href
 
 },{}],29:[function(require,module,exports){
 module.exports = "<header><a href=\"/workshops\">Workshops</a> > Subscribe</header>\n<section id=\"workshops\">\n<div id=\"subscribe\">\n\n  <h1>Subscribe to Workshops Calendar</h1>\n\n  <p>For convenience, we provide an iCal feed that automatically updates as we make changes to the workshops schedule.</p>\n\n  <input type=\"text\" style=\"width:100%;margin:15px 0 20px 0\" value=\"https://www.google.com/calendar/ical/airpair.co_o3u16m7fv9fc3agq81nsn0bgrs%40group.calendar.google.com/public/basic.ics\" />\n\n  <p>Make sure your client is setup correctly to receive live changes and that you haven't just imported a static view of the schedule.</p>\n\n  <h2>Google hangouts guide</h2>\n\n  <p>Copy and paste the following url in the \"Add by url\" dialog.\n\n  <p>If you select the 'Import calendar' option you will NOT see updates to the schedule as they are made.</p>\n\n  <img src=\"/v1/img/pages/workshops/ical-google-guide-1.png\" />\n\n  <p>Once the calendar url is added, you will see \"AirCasts\" listed down the left and workshops will appear in your calendar..</p>\n\n  <img src=\"/v1/img/pages/workshops/ical-google-guide-2.png\" />\n\n  <p>See guide to make sure you're correctly subscribe for updates to the AirCasts schedule.</p>\n\n  <hr />\n\n  <a href=\"/workshops\" class=\"btn\">Back to the workshops page</a>\n\n  <hr />\n\n</div>\n</section>";
+
+},{}],30:[function(require,module,exports){
+"use strict";
+var idsEqual = (function(id1, id2) {
+  return id1.toString() == id2.toString();
+});
+module.exports = {
+  idsEqual: idsEqual,
+  ObjectId2Date: (function(id) {
+    return new Date(parseInt(id.toString().slice(0, 8), 16) * 1000);
+  }),
+  toggleItemInArray: (function(array, item) {
+    if (!array)
+      return [item];
+    else {
+      var existing = _.find(array, (function(i) {
+        return idsEqual(i._id, item._id);
+      }));
+      if (existing)
+        return _.without(array, existing);
+      else
+        return array.push(t);
+    }
+  }),
+  sessionCreatedAt: (function(session) {
+    return new moment(session.cookie._expires).subtract(session.cookie.originalMaxAge, 'ms').toDate();
+  }),
+  dateWithDayAccuracy: (function() {
+    return moment('yyyy-MM-dd', moment().format('yyyy-MM-dd')).toDate();
+  })
+};
+
 
 },{}]},{},[1]);

@@ -1001,6 +1001,7 @@ section#posts .publish .publishMeta input {
   width: 212px;
   font-size: 12px;
   position: relative;
+  z-index: 0;
 }
 .blogpost #table-of-contents + ul ul {
   margin-top: 4px;
@@ -1040,7 +1041,10 @@ section#posts .publish .publishMeta input {
   overflow: hidden;
 }
 .blogpost #disqus_thread {
+  background: white;
   min-height: 700px;
+  z-index: 2;
+  position: relative;
 }
 @media only screen and (max-width: 900px) {
   .blogpost > h1 {
@@ -1114,6 +1118,27 @@ section#posts .publish .publishMeta input {
     float: right;
     height: inherit;
   }
+}
+.blogpost .workshop-cta {
+  max-width: 640px;
+  background-color: #dff2ef;
+  padding: 18px;
+  color: black;
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+  border-left: solid 6px #ce5424;
+}
+.blogpost .workshop-cta b {
+  display: block;
+  color: #232835;
+  text-transform: uppercase;
+  padding-bottom: 4px;
+}
+.blogpost .workshop-cta a {
+  display: block;
+  font-weight: bold;
+  padding-top: 8px;
+  font-size: 18px;
 }
 body#index .screenshot {
   width: 59%;

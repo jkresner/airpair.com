@@ -241,9 +241,14 @@ module.exports = ->
 
               http(global.app).post('/v1/auth/login').send(singup).set('cookie',cookie).end -> 
 
-                expect(spyIdentify.called).to.be.false
-                expect(spyAlias.callCount).to.equal(1)                         
-                expect(spyAlias.args[0][2]).to.equal('Login')         
+                # expect(spyIdentify.called).to.be.false
+                # expect(spyAlias.callCount).to.equal(1)                         
+                # expect(spyAlias.args[0][2]).to.equal('Login')         
+
+                expect(spyIdentify.called).to.be.true
+                expect(spyAlias.called).to.be.false
+                # expect(spyAlias.args[0][2]).to.equal('Login')         
+
 
                 GET '/session/full', {}, (s3) -> 
                   $log('loggedin', s3.email)              

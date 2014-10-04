@@ -23,7 +23,6 @@ module.exports = ->
     it 'can create redirect as admin', (done) ->
       LOGIN 'admin', data.users.admin, (s) ->
         GET '/adm/redirects', {}, (r1) -> 
-          $log('r1', r1)
           beforeCount = r1.length
           suffix = moment().format('X')
           d = previous: "/previous-#{suffix}", current: "/current-#{suffix}"
