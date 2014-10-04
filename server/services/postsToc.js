@@ -72,25 +72,25 @@ function getHtmlHeaders(lines, maxHeaderNo) {
 
 ////////////----------------------------------------------
 
-function getHashId(text, repetition) {
+
+
+export function getHashId(text, repetition) {
   var id = text
-    .replace(/&/g,'')
-    .replace(/ \/ /g,'-')    
-    .replace(/ /g,'-')
+    .replace(/ '/g,'-')
+    .replace(/ \/ /g,'-')
+    .replace(/\)/g,'-')    
+    .replace(/[ \/\.\?']/g,'-')
     // single chars that are removed
-    .replace(/\./g,'-')
-    .replace(/\?/g,'-')
-    // escape codes
     .replace(/%([abcdef]|\d){2,2}/ig, '')
     // single chars that are removed
-    .replace(/[\/?:\[\]`,()*"';{}+<>]/g,'');
+    .replace(/[?:\[\]`,()*"';{}+<>\$&]/g,'');
 
   // If no repetition, or if the repetition is 0 then ignore. Otherwise append '-' and the number.
   if (repetition) {
     id += '-' + repetition;
   }
 
-  return id;
+  return id.trim().toLowerCase();
 }
 
 
