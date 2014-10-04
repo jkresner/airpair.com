@@ -12,11 +12,13 @@ export function init(app, cb) {
   //-- Express routes don't handle spaces, so always put in %20
   //-- More so for some reason it's important to test the fully encoded
   //-- Version of the url first
-           
+
+  app.get(/%E2%80%A6/, redirectWithQuery('%E2%80%A6',''))           
   app.get(/%20%e2%80%a6/, redirectWithQuery('%20%e2%80%a6',''))           
   app.get(/%20%E2%80%A6/, redirectWithQuery('%20%E2%80%A6',''))
   app.get(/%20.../, redirectWithQuery('%20...',''))
   app.get(/ .../, redirectWithQuery(' ...',''))
+  app.get(/.../, redirectWithQuery('...',''))
 
   RedirectsAPI.svc.getAllRedirects((e,all) =>{
     for (var r of all) 
