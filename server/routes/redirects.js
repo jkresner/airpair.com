@@ -2,7 +2,7 @@ import RedirectsAPI from '../api/redirects'
     
 var redirectWithQuery = (match, replace) =>
   (req, res) => { 
-    res.redirect(req.url.replace(match,replace)) 
+    res.redirect(301, req.url.replace(match,replace)) 
     res.end()
   }
 
