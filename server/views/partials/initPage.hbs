@@ -15,33 +15,50 @@
     var mixId = mixpanel.get_distinct_id()      
 
 {{#if authenticated}}
-    var userId = '{{ user._id }}';
+    var email = '{{ user.email }}';
     var anonymousId = null;
 {{else}}
-    var userId = null;  
+    var email = null;  
     var anonymousId = '{{ user.sessionID }}';
 {{/if}}
 
-    console.log('userId', userId, 'mixId', mixId, 'anonymousId', anonymousId)
+    console.log('userEmail', email, 'mixId', mixId, 'anonymousId', anonymousId)
 
-    if (userId) {
-      if (userId != mixId) {
-        console.log('identify userId yo')
-        window.analytics.identify(userId, bindTracking);   
-      }
+    var ident = function() {
+      console.log('identify', email || anonymousId)  //-- could be from a different session.
+      window.analytics.identify(email || anonymousId, { id: email || anonymousId }, bindTracking);
     }
-    else 
-    {
-      var isAlreadyUserId = (mixId.length == 24) // mongoId has length 24
-      console.log('isAlreadyUserId', isAlreadyUserId)
-      if (!isAlreadyUserId)
-      {
-        console.log('identify anonId yo')
-        window.analytics.identify(anonymousId, bindTracking);
-      }
+
+    
+    // If they're signed in
+    if (email && mixId != email) ident()
+      
+    // If they didn't already identify their email and log out  
+    else if (mixId.indexOf("@") == -1 && anonymousId != mixId) 
+    {      
+      mixpanel.alias(anonymousId) 
+      setTimeout(ident,200)      
     }
   });
 
+</script>
+
+<script type="text/javascript">
+adroll_adv_id = "XF634YIRAZHM5AG2HSQDII";
+adroll_pix_id = "RJLKZHU5IFD2NP5M3C6X35";
+(function () {
+var oldonload = window.onload;
+window.onload = function(){
+   __adroll_loaded=true;
+   var scr = document.createElement("script");
+   var host = (("https:" == document.location.protocol) ? "https://s.adroll.com" : "http://a.adroll.com");
+   scr.setAttribute('async', 'true');
+   scr.type = "text/javascript";
+   scr.src = host + "/j/roundtrip.js";
+   ((document.getElementsByTagName('head') || [null])[0] ||
+    document.getElementsByTagName('script')[0].parentNode).appendChild(scr);
+   if(oldonload){oldonload()}};
+}());
 </script>
 
 {{else}}

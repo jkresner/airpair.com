@@ -47,6 +47,7 @@ angular.module("APPosts", ['ngRoute', 'APFilters','APShare',
     
     SessionService.onAuthenticated( (session) => {
       $rootScope.session = session;
+      $rootScope.editor = _.contains(session.roles,'editor');
     })
   
   }])

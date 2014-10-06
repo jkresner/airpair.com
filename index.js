@@ -24,21 +24,21 @@ export function run()
 	if (config.livereload) app.use(require('connect-livereload')({ port: 35729 }))
 	
 	hbsEngine(app)
-	routes(app)
+	routes(app, () => {	
+		app.use( (err, req, res, next) => {
+			$error(err, req.user, req) 
+			res.status(400).send(err.message)
+		})
 
-	app.use( (err, req, res, next) => {
-		$error(err, req.user, req) 
-		res.status(400).send(err.message)
+		process.on('uncaughtException', (err) => { 
+			$error(err, null, null)
+			process.exit(1) 
+		})
+
+		var server = app.listen(config.port, function() {
+		  console.log(`Listening on port ${server.address().port}`.white)
+		})
+
+		return app;
 	})
-
-	process.on('uncaughtException', (err) => { 
-		$error(err, null, null)
-		process.exit(1) 
-	})
-
-	var server = app.listen(config.port, function() {
-	  console.log(`Listening on port ${server.address().port}`.white)
-	})
-
-	return app;
 }

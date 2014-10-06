@@ -13,7 +13,7 @@ module.exports = ->
  
   describe "Tracking: ", ->
 
-    @timeout(4000)
+    @timeout(10000)
 
     before (done) ->
       testDb.addUserWithRole 'jkap', 'editor', ->
@@ -45,7 +45,7 @@ module.exports = ->
           .end (err, resp) ->
             if err then throw err
             expect(spy.callCount).to.equal(1)
-            expect(spy.args[0][0]).to.be.null
+            expect(spy.args[0][0]).to.be.undefined
             expect(spy.args[0][1]).to.exist          
             expect(spy.args[0][2]).to.equal('post')                   
             expect(spy.args[0][3]).to.equal(postTitle)                            
@@ -78,7 +78,7 @@ module.exports = ->
             .end (err, resp) ->
               if (err) then throw err
               expect(spy.callCount).to.equal(1)
-              expect(spy.args[0][0]).to.equal(s._id)
+              expect(spy.args[0][0]._id).to.equal(s._id)
               expect(spy.args[0][1]).to.be.null          
               expect(spy.args[0][2]).to.equal('post')                   
               expect(spy.args[0][3]).to.equal(postTitle)                            
@@ -160,14 +160,14 @@ module.exports = ->
           .end (err, resp) ->
             if (err) then throw err
             expect(spy.callCount).to.equal(1)
-            expect(spy.args[0][0]).to.be.null
+            expect(spy.args[0][0]).to.be.undefined
             expect(spy.args[0][1]).to.exist          
             expect(spy.args[0][2]).to.equal('workshop')                   
             expect(spy.args[0][3]).to.equal('Breaking Up (with) Your Test Suite')                            
             expect(spy.args[0][4].tags).to.exist
             expect(spy.args[0][5].referer).to.equal('http://airpair.com/workshops') 
             expect(spy.args[0][5].campaign).to.be.undefined
-            expect(spy.args[0][6]).to.be.undefined                                        
+            expect(spy.args[0][6]).to.be.undefined                          
             spy.restore()
 
 
@@ -182,7 +182,7 @@ module.exports = ->
             .end (err, resp) ->
               if (err) then throw err
               expect(spy.callCount).to.equal(1)
-              expect(spy.args[0][0]).to.equal(s._id)
+              expect(spy.args[0][0]._id).to.equal(s._id)
               expect(spy.args[0][1]).to.be.null          
               expect(spy.args[0][2]).to.equal('workshop')                   
               expect(spy.args[0][3]).to.equal('Breaking Up (with) Your Test Suite')                            
@@ -202,7 +202,9 @@ module.exports = ->
         GETP("/v1/posts/#{postSlug}").end (err, resp) ->
         singup = getNewUserData('pgap')
         http(global.app).post('/v1/auth/signup').send(singup).set('cookie',cookie).end (e1, r1) ->     
+          $log('got back from signup')
           GET '/session/full', {}, (s) ->
+            $log('got back session', s)
             spyIdentify = sinon.spy(analytics,'identify')            
             spyAlias = sinon.spy(analytics,'alias')
             GETP('/v1/auth/logout').end (e2, r2) ->
@@ -239,9 +241,14 @@ module.exports = ->
 
               http(global.app).post('/v1/auth/login').send(singup).set('cookie',cookie).end -> 
 
-                expect(spyIdentify.called).to.be.false
-                expect(spyAlias.callCount).to.equal(1)                         
-                expect(spyAlias.args[0][2]).to.equal('Login')         
+                # expect(spyIdentify.called).to.be.false
+                # expect(spyAlias.callCount).to.equal(1)                         
+                # expect(spyAlias.args[0][2]).to.equal('Login')         
+
+                expect(spyIdentify.called).to.be.true
+                expect(spyAlias.called).to.be.false
+                # expect(spyAlias.args[0][2]).to.equal('Login')         
+
 
                 GET '/session/full', {}, (s3) -> 
                   $log('loggedin', s3.email)              

@@ -40,7 +40,6 @@ global.GET = function(url, opts, cb) {
 
   var sessionCookie = cookie
   if (opts.unauthenticated) { sessionCookie = null }
-  if (logging) $log('get:cookie:', sessionCookie)
 
   return http(global.app)
     .get(apiUrl)
@@ -56,7 +55,7 @@ global.GET = function(url, opts, cb) {
 
 global.POST = function(url, data, opts, cb) {
   var apiUrl = '/v1/api'+url
-  if (logging) $log('post:', apiUrl)
+  if (logging) $log('post:', apiUrl, data)
 
   var sessionCookie = cookie
   if (opts.unauthenticated) { sessionCookie = null }

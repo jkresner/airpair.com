@@ -64,6 +64,8 @@
 </div>
 {{/with}}
   
+
+
 {{!-- sideNavFull --}}
 {{!-- sideChatFull --}}
 
@@ -119,7 +121,7 @@ window.postHlpr.highlightSyntax = function(opts) {
     Prism.highlightElement(element, false, function() {
       if (opts && opts.addCtrs)
       {
-        element.outerHTML+='<footer>Get expert <a class="trackPostCTA" href="/find-an-expert?utm_source=ap-post">'+config.lang+' help</a></footer>'
+        element.outerHTML+='<footer>Get expert <a class="trackPostCTA" href="/find-an-expert?utm_source=airpair.com&utm_campaign=posts-{{campPeriod}}&utm_content={{viewData.slug}}&utm_medium=website&utm_term='+config.lang+'">'+config.lang+' help</a></footer>';
       }
     });
   }
@@ -171,13 +173,13 @@ window.postHlpr.loadPoSt = function()
     $(window).scroll(function(e)
     {
       if (window.scrollY < offset) {
-        $('.pw-widget').css('top', 0);
+        $('.share').css('top', 0);
         $('#table-of-contents').css('top', 0);
         $('#table-of-contents + ul').css('top', 0);        
       } 
       else if (scrollingOn)
       {
-        $('.pw-widget').css('top', window.scrollY - 150);
+        $('.share').css('top', window.scrollY - 150);
         $('#table-of-contents').css('top', window.scrollY - 160);
         $('#table-of-contents + ul').css('top', window.scrollY - 160);     
       }
@@ -193,13 +195,15 @@ window.postHlpr.loadPoSt = function()
   });
 
   function bindTracking() {
+    ga('send', 'pageview')
+
     $.each($('.trackPostCTA'), function(idx,el){
       $(el).click(function (e) {
         analytics.track('Click', { type: 'Post CTA', unit: 'code footer', idx: idx, text: el.innerHTML, location: window.location.pathname });
         
         setTimeout(function () {
           window.location.href = $(el).attr('href');
-        }, 250);
+        }, 350);
         
         return false;
       });
