@@ -28,12 +28,12 @@ var getContext = (req) => {
 
   if (c) ctx.campaign = c
 
-  $log('req.cookies', req.cookies._ga)
-  if (req.cookies._ga) {
-    ctx['Google Analytics'] = { clientId: req.cookies._ga.replace('GA1.1.','').replace('GA1.2.',''),
-      userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_2) AppleWebKit/537.17 (KHTML, like Gecko) Chrome/24.0.1312.57 Safari/537.17',
-ip: '11.1.11.11' }
-  }
+//   $log('req.cookies', req.cookies._ga)
+//   if (req.cookies._ga) {
+//     ctx['Google Analytics'] = { clientId: req.cookies._ga.replace('GA1.1.','').replace('GA1.2.',''),
+//       userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_2) AppleWebKit/537.17 (KHTML, like Gecko) Chrome/24.0.1312.57 Safari/537.17',
+// ip: '11.1.11.11' }
+//   }
 
   return ctx
 }
@@ -49,10 +49,6 @@ export var trackView = (type) => {
     {
       anonymousId = req.sessionID
     } 
-    else
-    {
-      userId = req.user._id
-    } 
 
     var obj = req[type]
     var tags = _.pluck(obj.tags,'slug')
@@ -60,7 +56,7 @@ export var trackView = (type) => {
     var url = req.protocol + '://' + req.get('host') + req.originalUrl
 
     var properties = { title: obj.title, tags, url, path: req.path, objectId: obj._id, referrer: context.referer }
-    analytics.view(userId, anonymousId, type, obj.title, properties, context)      
+    analytics.view(req.user, anonymousId, type, obj.title, properties, context)      
     next() 
   }
 }

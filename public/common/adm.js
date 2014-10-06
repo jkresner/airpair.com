@@ -6,8 +6,10 @@ require('./../common/models/sessionService.js');
 require('./../common/models/adminDataService.js');
 require('./../adm/posts/module.js');
 require('./../adm/users/module.js');
+require('./../adm/redirects/module.js');
 
-angular.module("ADM", ['ngRoute', 'APSvcSession', 'ADMPosts', 'ADMUsers'])
+angular.module("ADM", ['ngRoute', 'APSvcSession', 'ADMPosts', 'ADMUsers', 
+  'ADMRedirects'])
 
   .config(['$locationProvider', '$routeProvider', 
       function($locationProvider, $routeProvider) {

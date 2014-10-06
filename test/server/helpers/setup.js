@@ -7,11 +7,10 @@ var util = require('../../../shared/util')
 
 global.stubAnalytics = function()
 {
-  global.identifyStub = sinon.stub(analytics,'identify', (p1,p2,p3,cb) => { if (cb) cb() })
   global.trackStub = sinon.stub(analytics,'track', (p1,p2,p3,p4,p5,cb) => { if (cb) cb() }) 
   global.viewStub = sinon.stub(analytics,'view', (p1,p2,p3,p4,p5,p6,cb) => { if (cb) cb() }) 
+  global.identifyStub = sinon.stub(analytics,'identify', (p1,p2,p3,p4,cb) => { if (cb) cb() })
   global.aliasStub = sinon.stub(analytics,'alias', (p1,p2,p3,cb) => { if (cb) cb() })
-  global.upsertStub = sinon.stub(analytics,'upsert', (p1,p2,p3,cb) => { cb(p1.cohort.aliases) })
 }
 
 global.resotreAnalytics = function()
@@ -20,7 +19,6 @@ global.resotreAnalytics = function()
   global.identifyStub.restore()
   global.aliasStub.restore()
   global.viewStub.restore()
-  global.upsertStub.restore()
 }
 
 global.getNewUserData = function(userKey)
