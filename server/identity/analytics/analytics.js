@@ -113,11 +113,11 @@ module.exports = {
     if (noAliases && !existingUser) {
       aliases = [sessionID] // we make the assumption that we're going to alias on the update
       analytics.alias(sessionID, user, 'Signup', () => cb(aliases) )
-    }
+    } 
     else
     {
       aliases = aliases || []
-
+      
       //-- This is an existing user from a new device / browser
       if ( ! _.contains(aliases, sessionID) ) {
         if (logging) $log('newAnonSessionID', sessionID)
