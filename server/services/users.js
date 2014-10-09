@@ -317,5 +317,5 @@ export function verifyEmail(email, hash, cb) {
 	if (bcrypt.compareSync(email, hash))
 		cb(null, email)
 	else
-	  cb(true, "emails don't match");
+	  cb("error", undefined);
 }

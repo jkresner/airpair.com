@@ -69,9 +69,11 @@ module.exports = -> describe "Signup: ", ->
 
     it 'send a verification email to new users'
 
-    it 'a good verification link marks user as email verified'
+    it 'a good verification link marks user as email verified', (done) ->
+    	d = getNewUserData('stev')
 
-    it 'verify user email via a good hash', (done) ->
+
+    it 'email verification succeeds with a good hash', (done) ->
     	d = getNewUserData('stps')
     	hashed_email = bcrypt.hashSync(d.email, bcrypt.genSaltSync(8))
     	addLocalUser 'stps', (userKey) ->
@@ -91,6 +93,14 @@ module.exports = -> describe "Signup: ", ->
           if (err) then return done(err)
           expect(res.body.error).to.equal('try google login')
           done()
+
+    it 'email verification fails with a bad hash', (done) ->
+    	d = getNewUserData('stpe')
+    	addLocalUser 'stpe', (userKey) ->
+    		UserService.verifyEmail d.email, "ju5tas1llyh45h", (err, resp) ->
+    			expect(err).to.not.be.null
+    			expect(resp).to.be.undefined
+    			done()
 
 
   it 'Can not sign up with local credentials and existing local email', (done) ->
