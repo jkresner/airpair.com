@@ -1,5 +1,6 @@
 UserService = require('../../server/services/users')
 util = require('../../shared/util')
+bcrypt = require('bcrypt')
 
 module.exports = -> describe "Signup: ", ->
 
@@ -66,6 +67,17 @@ module.exports = -> describe "Signup: ", ->
           expect(s.cohort.engagement).to.exist
           done()
 
+    it 'send a verification email to new users'
+
+    it 'a good verification link marks user as email verified'
+
+    it 'verify user email via a good hash', (done) ->
+    	d = getNewUserData('stps')
+    	hashed_email = bcrypt.hashSync(d.email, bcrypt.genSaltSync(8))
+    	addLocalUser 'stps', (userKey) ->
+    		UserService.verifyEmail d.email, hashed_email, (err, resp) ->
+    			expect(err).to.be.null
+    			expect(resp).to.equal d.email
 
   it 'Can not sign up with local credentials and existing gmail', (done) ->
     d = name: "AirPair Experts", email: "experts@airpair.com", password: "Yoyoyoyoy"

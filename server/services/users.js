@@ -65,38 +65,38 @@ function upsertSmart(search, upsert, cb) {
       //-- stop user clobbering user.google details
       if (r && r.googleId && (r.googleId != upsert.google.id))
         return cb(Error(`Cannot overwrite google login ${r.google._json.email} with ${upsert.google._json.email}`),null)
-
+            
 
       //-- copy google details to top level users details
       if (!r || !r.email)
       {
-        upsert.email = upsert.google._json.email
-        upsert.name = upsert.google.displayName
+        upsert.email = upsert.google._json.email 
+        upsert.name = upsert.google.displayName   
         upsert.emailVerified = false
       }
     }
 
-    if (r)
+    if (r) 
     {
       if (!r.emailVerified)
-        upsert.emailVerified = false
-      if (r.tags)
+        upsert.emailVerified = false 
+      if (r.tags) 
         // need more intelligent logic to avoid dups & such
-        upsert.tags = _.union(r.tags, upsert.tags)
+        upsert.tags = _.union(r.tags, upsert.tags) 
       if (r.bookmarks)
         // need more intelligent logic to avoid dups & such
-        upsert.bookmarks = _.union(r.tags, upsert.bookmarks)
-    }
+        upsert.bookmarks = _.union(r.tags, upsert.bookmarks) 
+    } 
 
     User.findOneAndUpdate(search, upsert, { upsert: true }, (err, user) => {
       if (logging || err) $log('User.upsert', err, user)
       if (err) return cb(err)
       if (!analytics.upsert) return cb(null, user)
-
+      
       analytics.upsert(user, r, sessionID, (aliases) => {
         if (aliases && user.cohort.aliases &&
             aliases.length == user.cohort.aliases.length) cb(null, user)
-        else
+        else 
           User.findOneAndUpdate(search, { 'cohort.aliases': aliases }, cb)
       })
     })
@@ -115,7 +115,7 @@ export function upsertProviderProfile(providerName, profile, done) {
   var search = {}
   search[providerName+'Id'] = profile.id
 
-  if (this.user && this.user._id)
+  if (this.user && this.user._id) 
     search = { '_id': this.user._id }
 
   var upsert = {}
@@ -141,20 +141,20 @@ export function tryLocalSignup(email, password, name, done) {
       if (r.email == email) { info = "user already exists"; }
       if (r.google && r.google._json.email == email) { info = "try google login"; }
       return done(null, false, info)
-    }
+    } 
     else
     {
       var generateHash = (password) =>
         bcrypt.hashSync(password, bcrypt.genSaltSync(8))
 
-      var data = {
+      var data = { 
         email: email,
         emailVerified: false,
         name: name,
         local: { password: generateHash(password) }
       }
 
-      if (this.session.anonData)
+      if (this.session.anonData) 
         data = _.extend(this.session.anonData, data)
 
       upsertSmart.call(this, search, data, done)
@@ -165,7 +165,7 @@ export function tryLocalSignup(email, password, name, done) {
 
 export function tryLocalLogin(email, password, done) {
   if (this.user && this.user._id)
-    done(Error(`Cannot login. Already signed in as ${user.name}. Logout first?`),null)
+    done(Error(`Cannot login. Already signed in as ${user.name}. Logout first?`),null)  
 
   var search = { '$or': [{email:email},{'google._json.email':email}] }
 
@@ -173,10 +173,10 @@ export function tryLocalLogin(email, password, done) {
     var failMsg = null
     if (!e)
     {
-      var validPassword = (password, hash) =>
-        bcrypt.compareSync(password, hash)
+      var validPassword = (password, hash) => 
+        bcrypt.compareSync(password, hash)  
 
-      if (!r)
+      if (!r) 
         failMsg = "no user found"
       else if (!r.local || !r.local.password) {
         failMsg = "try google login"; r = false }
@@ -219,30 +219,30 @@ export function toggleUserInRole(userId, role, cb) {
     return cb(new Error('Invalid role'))
   }
 
-  svc.searchOne({ _id:userId }, null, (e,r) => {
+  svc.searchOne({ _id:userId }, null, (e,r) => {    
     if (e || !r) return cb(e,r)
 
     if (!r.roles)
-      r.roles = [role]
+      r.roles = [role] 
     else if ( _.contains(r.roles, role) )
       r.roles = _.without(r.roles, role)
-    else
+    else 
       r.roles.push(role)
-
+    
     svc.update(userId, r, cb)
   })
-}
+} 
 
 
 export function getUsersInRole(role, cb) {
   svc.searchMany({ roles:role }, { fields: UserData.select.usersInRole }, cb)
-}
+} 
 
 
 
 export function setAvatar(user) {
   if (user && user.email) user.avatar = md5.gravatarUrl(user.email)
-}
+} 
 
 
 export function getSession(cb) {
@@ -254,8 +254,8 @@ export function getSession(cb) {
       s.bookmarks = this.session.anonData.bookmarks;
     }
     return cb(null, s)
-  }
-  else if (!this.user.avatar)
+  } 
+  else if (!this.user.avatar) 
   {
     setAvatar(this.user)
   }
@@ -265,21 +265,21 @@ export function getSession(cb) {
 
 
 export function getSessionFull(cb) {
-  if (!this.user)
+  if (!this.user) 
     return getSession.call(this, cb)
 
   svc.searchOne({ _id:this.user._id },{ fields: UserData.select.sessionFull }, (e,r) => {
     setAvatar(r)
     cb(e,r)
   })
-}
+}  
 
 
 export function toggleTag(tag, cb) {
   tag = { _id: tag._id, name: tag.name, slug: tag.slug }
 
   if (this.user) {
-    svc.searchOne({ _id:this.user_id }, null, (e,r) => {
+    svc.searchOne({ _id:this.user_id }, null, (e,r) => {    
       if (e || !r) return cb(e,r)
       r.tags = util.toggleItemInArray(r.tags,tag)
       this.user.tags = r.tags
@@ -287,18 +287,18 @@ export function toggleTag(tag, cb) {
     })
   }
   else {
-    this.session.anonData.tags =
+    this.session.anonData.tags = 
       util.toggleItemInArray(this.session.anonData.tags, tag)
-
+    
     return getSession.call(this, cb)
   }
-}
+} 
 
 export function toggleBookmark(tag, cb) {
   tag = { _id: tag._id, name: tag.name, slug: tag.slug }
 
   if (this.user) {
-    svc.searchOne({ _id:this.user_id }, null, (e,r) => {
+    svc.searchOne({ _id:this.user_id }, null, (e,r) => {    
       if (e || !r) return cb(e,r)
       r.tags = util.toggleItemInArray(r.tags,tag)
       this.user.tags = r.tags
@@ -306,9 +306,16 @@ export function toggleBookmark(tag, cb) {
     })
   }
   else {
-    this.session.anonData.tags =
+    this.session.anonData.tags = 
       util.toggleItemInArray(this.session.anonData.tags, tag)
-
+    
     return getSession.call(this, cb)
   }
+} 
+
+export function verifyEmail(email, hash, cb) {
+	if (bcrypt.compareSync(email, hash))
+		cb(null, email)
+	else
+	  cb(true, "emails don't match");
 }
