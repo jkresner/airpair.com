@@ -80,6 +80,16 @@ module.exports = -> describe "Signup: ", ->
     		UserService.verifyEmail d.email, hashed_email, (err, resp) ->
     			expect(err).to.be.null
     			expect(resp).to.equal d.email
+    			done()
+
+    it 'email verification fails with a bad hash', (done) ->
+    	d = getNewUserData('stpe')
+    	addLocalUser 'stpe', (userKey) ->
+    		UserService.verifyEmail d.email, "ju5tas1llyh45h", (err, resp) ->
+    			expect(err).to.not.be.null
+    			expect(resp).to.be.undefined
+    			done()
+
 
   it 'Can not sign up with local credentials and existing gmail', (done) ->
     d = name: "AirPair Experts", email: "experts@airpair.com", password: "Yoyoyoyoy"
@@ -158,4 +168,48 @@ module.exports = -> describe "Signup: ", ->
   #     expect('signup fail')
   #     expect('ask user to login')
   # }
+  describe "Verify e-mail", ->
+  	generateHash = (s) ->
+  		return bcrypt.hashSync(s, bcrypt.genSaltSync(8))
+
+  	xit 'send a verification email to new users'
+  	# not sure how to end-2-end test this yet
+  	# needs to be sent on sign up, need to invesigate how to stub/mock out the relevant service(s)
+
+  	it 'redirect/deny user if e-mail is not verified', (done) ->
+  		d = getNewUserData('spur')
+  		addAndLoginUser 'spur', (userKey) ->
+         http(global.app)
+         		.get('/session/full')
+         		.expect(302)
+         		.expect('Location', '/please_verify_email') # probably a frontend angular route or use (err, resp)
+           done()
+
+  	it 'a good standalone verification link marks user as email verified', (done) ->
+    	d = getNewUserData('stev')
+    	the_hash = generateHash(d.email)
+    	addLocalUser 'stev', (userKey) ->
+    		http(global.app).get('/v1/auth/verify?email=' + d.email + '&hash=' + the_hash)
+    		  .expect(302).expect('Location', '/email_verified') # a frontend angular route? or just serve a static page?
+    		  .end (err, res) ->
+    		  	if (err) then return done(err)
+    		  	expect(res.body).to.equal('your e-mail is verified') # do someting via testDb or make another API call? to assert that emailVerified == true,
+    				done()
+
+    it 'email verification succeeds with a good hash', (done) ->
+    	d = getNewUserData('stps')
+    	the_hash = generateHash(d.email)
+    	addLocalUser 'stps', (userKey) ->
+    		UserService.verifyEmail d.email, the_hash, (err, resp) ->
+    			expect(err).to.be.null
+    			expect(resp).to.equal d.email
+    			done()
+
+    it 'email verification fails with a bad hash', (done) ->
+    	d = getNewUserData('stpe')
+    	addLocalUser 'stpe', (userKey) ->
+    		UserService.verifyEmail d.email, "ju5tas1llyh45h", (err, resp) ->
+    			expect(err).to.not.be.null
+    			expect(resp).to.be.undefined
+    			done()
 
