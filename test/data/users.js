@@ -23,6 +23,8 @@ module.exports = {
   stpv: { name: "Steve Purves", email: "stevep@ap.com"}, 
   stpu: { name: "Steve Purves", email: "stevepur@gmail.com"}, 
   stps: { name: "Steve Purves", email: "stevejpurves@hotmail.com"},
+  stpe: { name: "Steve Purves", email: "sjp@hotmail.com"},
+  stev: { name: "Steve Purves", email: "steve@hotmail.com"},
 
   obfn: { name: "Obie Fernandez", email: "obiefernand@gmail.com"},   
   obie: { name: "Obie Fernandez", email: "obiefernand@hotmail.com"},   
