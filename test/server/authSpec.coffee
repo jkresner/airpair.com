@@ -193,14 +193,19 @@ module.exports = -> describe "Signup: ", ->
       d = getNewUserData('chuc')
       addLocalUser 'chuc', (s) ->
         http(global.app)
-          .get('/v1/api/verify?hash=abc')
-          .expect(401, done)
+          .get('/v1/auth/verify?hash=abc')
+          .expect(302)
+          .end (err, res) ->
+            if (err) then return done(err)
+            expect(res.redirect).to.be.true
+            expect(res.header['location']).to.include('/login')
+            done()
 
     it 'a good standalone verification link marks user as e-mail verified', (done) ->
       d = getNewUserData('stev')
       the_hash = generateHash(d.email)
       addAndLoginLocalUser 'stev', (s) ->
-        http(global.app).get('/v1/api/verify?hash=' + the_hash)
+        http(global.app).get('/v1/auth/verify?hash=' + the_hash)
           .set('cookie',cookie)
           .expect(302)
           .end (err, res) ->
