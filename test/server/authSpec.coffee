@@ -169,47 +169,58 @@ module.exports = -> describe "Signup: ", ->
   #     expect('ask user to login')
   # }
   describe "Verify e-mail", ->
-  	generateHash = (s) ->
-  		return bcrypt.hashSync(s, bcrypt.genSaltSync(8))
+    @timeout(10000)
+    generateHash = (s) ->
+      return bcrypt.hashSync(s, bcrypt.genSaltSync(8))
 
-  	xit 'send a verification email to new users'
-  	# not sure how to end-2-end test this yet
-  	# needs to be sent on sign up, need to invesigate how to stub/mock out the relevant service(s)
+    xit 'send a verification email to new users'
+    # not sure how to end-2-end test this yet
+    # needs to be sent on sign up, need to invesigate how to stub/mock out the relevant service(s)
 
-  	it 'redirect/deny user if e-mail is not verified', (done) ->
-  		d = getNewUserData('spur')
-  		addAndLoginUser 'spur', (userKey) ->
+    it 'redirect/deny user if e-mail is not verified', (done) ->
+      d = getNewUserData('spur')
+      addAndLoginLocalUser 'spur', (userKey) ->
          http(global.app)
-         		.get('/session/full')
-         		.expect(302)
-         		.expect('Location', '/please_verify_email') # probably a frontend angular route or use (err, resp)
-           done()
+            .get('/v1/api/session/full')
+            .expect(401)
+            .end (err, res) ->
+              if (err) then return done(err)
+              $log(res)
+              done()
 
-  	it 'a good standalone verification link marks user as email verified', (done) ->
-    	d = getNewUserData('stev')
-    	the_hash = generateHash(d.email)
-    	addLocalUser 'stev', (userKey) ->
-    		http(global.app).get('/v1/auth/verify?email=' + d.email + '&hash=' + the_hash)
-    		  .expect(302).expect('Location', '/email_verified') # a frontend angular route? or just serve a static page?
-    		  .end (err, res) ->
-    		  	if (err) then return done(err)
-    		  	expect(res.body).to.equal('your e-mail is verified') # do someting via testDb or make another API call? to assert that emailVerified == true,
-    				done()
+    xit 'user can only verify e-mail when logged in', (done) ->
+      #pending
 
-    it 'email verification succeeds with a good hash', (done) ->
-    	d = getNewUserData('stps')
-    	the_hash = generateHash(d.email)
-    	addLocalUser 'stps', (userKey) ->
-    		UserService.verifyEmail d.email, the_hash, (err, resp) ->
-    			expect(err).to.be.null
-    			expect(resp).to.equal d.email
-    			done()
+    it 'a good standalone verification link marks user as e-mail verified', (done) ->
+      d = getNewUserData('stev')
+      the_hash = generateHash(d.email)
+      addAndLoginLocalUser 'stev', (s) ->
+        http(global.app).get('/v1/api/verify?email=' + d.email + '&hash=' + the_hash)
+          .set('cookie',cookie)
+          .expect(302)
+          .end (err, res) ->
+            if (err) then return done(err)
+            expect(res.header['location']).to.include('/email_verified')
+            GET '/session/full', {}, (s) ->
+              expect(s.emailVerified).to.be.true
+              done()
 
-    it 'email verification fails with a bad hash', (done) ->
-    	d = getNewUserData('stpe')
-    	addLocalUser 'stpe', (userKey) ->
-    		UserService.verifyEmail d.email, "ju5tas1llyh45h", (err, resp) ->
-    			expect(err).to.not.be.null
-    			expect(resp).to.be.undefined
-    			done()
+    # it 'email verification succeeds with a good hash', (done) ->
+    #   @timeout(10000)
+    #   d = getNewUserData('stps')
+    #   console.log()
+    #   the_hash = generateHash(d.email)
+    #   addAndLoginLocalUser 'stps', (userKey) ->
+    #     UserService.verifyEmail.call newUserSession(d.userKey), the_hash, (err, resp) ->
+    #       expect(err).to.be.null
+    #       expect(resp).to.equal d.email
+    #       done()
+
+    # it 'email verification fails with a bad hash', (done) ->
+    #   d = getNewUserData('stpe')
+    #   addAndLoginLocalUser 'stpe', (userKey) ->
+    #     UserService.verifyEmail.call newUserSession(), "ju5tas1llyh45h", (err, resp) ->
+    #       expect(err.message).to.not.equal("e-mail verificaiton failed")
+    #       expect(resp).to.be.undefined
+    #       done()
 
