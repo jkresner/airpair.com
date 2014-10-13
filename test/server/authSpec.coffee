@@ -196,7 +196,7 @@ module.exports = -> describe "Signup: ", ->
       d = getNewUserData('stev')
       the_hash = generateHash(d.email)
       addAndLoginLocalUser 'stev', (s) ->
-        http(global.app).get('/v1/api/verify?email=' + d.email + '&hash=' + the_hash)
+        http(global.app).get('/v1/api/verify?hash=' + the_hash)
           .set('cookie',cookie)
           .expect(302)
           .end (err, res) ->
