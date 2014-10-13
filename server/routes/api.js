@@ -14,7 +14,7 @@ export default function(app) {
 
     .get('/session', UsersAPI.getSession)
     .get('/session/full', UsersAPI.getSessionFull)
-    .get('/verify', UsersAPI.verifyEmail)
+    .get('/verify', authd, UsersAPI.verifyEmail)
     .put('/users/me/tag/:tag', setAnonSessionData, UsersAPI.toggleTag)
 
     .get('/tags/search/:id', TagsAPI.search)
