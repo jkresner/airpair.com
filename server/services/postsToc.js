@@ -79,7 +79,7 @@ export function getHashId(text, repetition) {
     .replace(/ '/g,'-')
     .replace(/ \/ /g,'-')
     .replace(/\)/g,'-')    
-    .replace(/[ \/\.\?']/g,'-')
+    .replace(/[ \/\.\?';]/g,'-')
     // single chars that are removed
     .replace(/%([abcdef]|\d){2,2}/ig, '')
     // single chars that are removed
