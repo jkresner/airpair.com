@@ -181,11 +181,12 @@ module.exports = -> describe "Signup: ", ->
       d = getNewUserData('spur')
       addAndLoginLocalUser 'spur', (userKey) ->
          http(global.app)
-            .get('/v1/api/session/full')
+            .get('/')
+            .set('cookie',cookie)
             .expect(401)
             .end (err, res) ->
               if (err) then return done(err)
-              $log(res)
+              expect(res.header['location']).to.include('/email_not_verified')
               done()
 
     xit 'user can only verify e-mail when logged in', (done) ->
@@ -204,23 +205,3 @@ module.exports = -> describe "Signup: ", ->
             GET '/session/full', {}, (s) ->
               expect(s.emailVerified).to.be.true
               done()
-
-    # it 'email verification succeeds with a good hash', (done) ->
-    #   @timeout(10000)
-    #   d = getNewUserData('stps')
-    #   console.log()
-    #   the_hash = generateHash(d.email)
-    #   addAndLoginLocalUser 'stps', (userKey) ->
-    #     UserService.verifyEmail.call newUserSession(d.userKey), the_hash, (err, resp) ->
-    #       expect(err).to.be.null
-    #       expect(resp).to.equal d.email
-    #       done()
-
-    # it 'email verification fails with a bad hash', (done) ->
-    #   d = getNewUserData('stpe')
-    #   addAndLoginLocalUser 'stpe', (userKey) ->
-    #     UserService.verifyEmail.call newUserSession(), "ju5tas1llyh45h", (err, resp) ->
-    #       expect(err.message).to.not.equal("e-mail verificaiton failed")
-    #       expect(resp).to.be.undefined
-    #       done()
-
