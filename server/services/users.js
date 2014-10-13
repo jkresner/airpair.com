@@ -313,9 +313,12 @@ export function toggleBookmark(tag, cb) {
   }
 } 
 
-export function verifyEmail(email, hash, cb) {
-	if (bcrypt.compareSync(email, hash))
-		cb(null, email)
-	else
-	  cb("error", undefined);
+export function verifyEmail(hash, cb) {
+  if (bcrypt.compareSync(this.user.email, hash)) {
+    svc.update(this.user._id, { emailVerified: true }, function(err) {
+      cb(err, {status:302, redirectTo:'/email_verified'});
+    });
+  }
+  else
+    cb(new Error("e-mail verification failed"), undefined);
 }
