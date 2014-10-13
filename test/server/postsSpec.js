@@ -223,6 +223,7 @@ module.exports = function()
       expect(getHashId("8 Scoping $scope's")).to.equal('8-scoping-scope-s')
       expect(getHashId("2 Single-page applications and 'modules'")).to.equal('2-single-page-applications-and-modules-')
       expect(getHashId('3.3 Cypher expressions and scalar/collection functions')).to.equal('3-3-cypher-expressions-and-scalar-collection-functions')
+      expect(getHashId('TL;DR')).to.equal('tl-dr')
     })
 
 

@@ -2,7 +2,7 @@ var Analytics = require('analytics-node')
 var setDevSettings = (config.env == 'dev' || config.env == 'test')
 var segmentOpts = setDevSettings ? { flushAt: 1 } : {}
 var segment = new Analytics(config.analytics.segmentio.writekey, segmentOpts)
-var logging = true
+var logging = false
 var viewSvc = require('../../services/views')
 
 
@@ -65,9 +65,9 @@ var identify = (user, context, identifyEvent, identifyEventProps, done) => {
   var context = null // ?? to populate
 
   segment.identify(buildPayload('identify', user, null, {traits,context}), () => {
-    $log('**** identified'.yellow)
+    if (logging) $log('**** identified'.yellow)
     track(user, null, identifyEvent, identifyEventProps, context, () => {
-      $log(`**** ${identifyEvent}`.yellow)
+      if (logging) $log(`**** ${identifyEvent}`.yellow)
       done()
     })
     segment.flush()
@@ -80,7 +80,7 @@ var alias = (sessionID, user, aliasEvent, done) => {
   var userId = user._id.toString()
 
   segment.alias({ previousId: sessionID, userId: user.email }, (e, b) => {
-    $log('**** aliased'.yellow)
+    if (logging) $log('**** aliased'.yellow)
     identify(user, {}, aliasEvent, {sessionID}, done)
   })
   segment.flush()
@@ -94,7 +94,7 @@ module.exports = {
   // used for testing
   setCallback: (cb) => {
     doneBackup = (e, batch) => { 
-      $log('**** analytics done'.yellow)
+      if (logging) $log('**** analytics done'.yellow)
       doneBackup = null
       cb() 
     }

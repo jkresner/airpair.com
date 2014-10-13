@@ -32,8 +32,7 @@ module.exports = ->
         anonymousId = s.sessionID
         spy = sinon.spy(analytics,'view')
         analytics.setCallback =>
-          testDb.viewsByAnonymousId anonymousId, (e,r) ->
-            $log 'in.callback', r.length, anonymousId        
+          testDb.viewsByAnonymousId anonymousId, (e,r) ->      
             expect(r.length).to.equal(1)
             expect(r[0].userId).to.be.null
             expect(r[0].anonymousId).to.equal(anonymousId)          
@@ -61,8 +60,8 @@ module.exports = ->
     )
 
     it 'Can track logged in post view', (done) ->
-      spy = sinon.spy(analytics,'view')
       addLocalUser 'krez', (userKey) ->
+        spy = sinon.spy(analytics,'view')
         userId = data.users[userKey]._id
         analytics.setCallback ->
           testDb.viewsByUserId userId, (e,r) ->
@@ -136,12 +135,10 @@ module.exports = ->
                   expect(sFull._id).to.exist
                   expect(sFull.name).to.equal(singup.name)                
                   expect(sFull.tags).to.be.undefined
-                  $log('spy',spy.callCount)
                   expect(spy.callCount).to.equal(1)
                   expect(spy.args[0][0]).to.equal(s.sessionID)
                   spy.restore()
                   testDb.viewsByUserId userId, (e,r) ->
-                    $log('search views')
                     expect(r.length).to.equal(1)
                     expect(_.idsEqual(r[0].userId,userId)).to.be.true
                     expect(_.idsEqual(r[0].anonymousId,s.sessionID)).to.be.true     
@@ -151,9 +148,12 @@ module.exports = ->
     it 'Can track an anonymous workshop view', (done) ->
       ANONSESSION (s) ->
         anonymousId = s.sessionID
-
-        analytics.setCallback(done)
         spy = sinon.spy(analytics,'view')
+
+        analytics.setCallback =>
+          spy.restore()
+          done()
+        
         GETP("/v1/workshops/simplifying-rails-tests")
           .set('referer', 'http://airpair.com/workshops')
           .expect('Content-Type', /text/)
@@ -168,12 +168,11 @@ module.exports = ->
             expect(spy.args[0][5].referer).to.equal('http://airpair.com/workshops') 
             expect(spy.args[0][5].campaign).to.be.undefined
             expect(spy.args[0][6]).to.be.undefined                          
-            spy.restore()
 
 
     it 'Can track logged in workshop view', (done) ->
-      spy = sinon.spy(analytics,'view')
       addLocalUser 'joem', (userKey) ->
+        spy = sinon.spy(analytics,'view')
         analytics.setCallback(done)
         LOGIN userKey, data.users[userKey], (s) ->
           GETP("/v1/workshops/simplifying-rails-tests?utm_campaign=test4nm&utm_medium=test4md")
@@ -202,9 +201,7 @@ module.exports = ->
         GETP("/v1/posts/#{postSlug}").end (err, resp) ->
         singup = getNewUserData('pgap')
         http(global.app).post('/v1/auth/signup').send(singup).set('cookie',cookie).end (e1, r1) ->     
-          $log('got back from signup')
           GET '/session/full', {}, (s) ->
-            $log('got back session', s)
             spyIdentify = sinon.spy(analytics,'identify')            
             spyAlias = sinon.spy(analytics,'alias')
             GETP('/v1/auth/logout').end (e2, r2) ->
@@ -250,8 +247,7 @@ module.exports = ->
                 # expect(spyAlias.args[0][2]).to.equal('Login')         
 
 
-                GET '/session/full', {}, (s3) -> 
-                  $log('loggedin', s3.email)              
+                GET '/session/full', {}, (s3) ->          
                   testDb.viewsByUserId s3._id, (e3,v3) ->
                     expect(v3.length).to.equal(4)
                     spyIdentify.restore()
