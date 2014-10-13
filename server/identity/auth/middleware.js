@@ -1,6 +1,6 @@
 var logging = false;
 
-var isApiRequest = (req) => req.url.indexOf('api') != 0
+var isApiRequest = (req) => req.url.indexOf('api') > -1
 
 
 export function setAnonSessionData(req, res, next) {
