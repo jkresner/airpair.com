@@ -33,5 +33,6 @@ module.exports = {
   dysn: { name: "Dilys Sun", email: "dilys@hotmail.com"},     
   dily: { name: "Dilys Sun", email: "dilys@gmail.com"},       
 
+  chuc: { name: "Chuck Norris", email: "chuck@hotmail.com"}
 }
   

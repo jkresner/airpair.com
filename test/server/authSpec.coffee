@@ -189,8 +189,12 @@ module.exports = -> describe "Signup: ", ->
               expect(res.header['location']).to.include('/email_not_verified')
               done()
 
-    xit 'user can only verify e-mail when logged in', (done) ->
-      #pending
+    it 'user can only verify e-mail when logged in', (done) ->
+      d = getNewUserData('chuc')
+      addLocalUser 'chuc', (s) ->
+        http(global.app)
+          .get('/v1/api/verify?hash=abc')
+          .expect(401, done)
 
     it 'a good standalone verification link marks user as e-mail verified', (done) ->
       d = getNewUserData('stev')
