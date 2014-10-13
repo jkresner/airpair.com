@@ -28,10 +28,10 @@ describe 'Server: ', ->
 
 
   describe('Session: ', require('./sessionSpec'))
-  describe('Tags: ', require('./tagsSpec'))
+  # describe('Tags: ', require('./tagsSpec'))
   describe('Auth: ', require('./authSpec'))
   describe('Authz: ', require('./authzSpec'))
-  describe('Posts: ', require('./postsSpec'))
+  #describe('Posts: ', require('./postsSpec'))
   describe('Analytics: ', require('./analyticsSpec'))
   describe('Redirects: ', require('./redirectsSpec'))
 
