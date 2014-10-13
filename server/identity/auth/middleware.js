@@ -35,6 +35,16 @@ export function authd(req, res, next) {
   }
 }
 
+export function emailv(req, res, next) {
+  if (!req.session.passport.user.emailVerified)
+  {
+    res.redirect(401, '/email_not_verified');
+  }
+  else
+  {
+    next()
+  }
+}
 
 var authorizeRole = (roleName) => {
   return (req, res, next) => {

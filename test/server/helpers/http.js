@@ -24,7 +24,7 @@ global.ANONSESSION = function(cb) {
 
 global.LOGIN = function(key, user, cb) {
   if (logging) $log('login:', '/test/setlogin/'+key)
-  data.sessions[key] = { _id: user._id, name: user.name, email: user.email, roles: user.roles };
+  data.sessions[key] = { _id: user._id, name: user.name, emailVerified: user.emailVerified, email: user.email, roles: user.roles };
   if (logging) $log('login.data.sessions[key]', data.sessions[key])
   return http(global.app).get('/test/setlogin/'+key).end(function(e,resp){
     if (e) return done(err)
