@@ -1,98 +1,96 @@
 UserService = require('../../server/services/users')
 util = require('../../shared/util')
 
-module.exports = ->
-  describe "Signup: ", ->
+module.exports = -> describe "Signup: ", ->
 
-    @timeout(3000)
+  @timeout(3000)
 
-    before (done) ->
-      # stubAnalytics()
+  before (done) ->
+    # stubAnalytics()
+    done()
+
+
+  after (done) ->
+    # resotreAnalytics()
+    global.cookie = null
+    global.cookieCreatedAt = null
+    done()
+
+
+  it 'Can sign up as new user with local credentials', (done) ->
+    d = getNewUserData('jkap')
+
+    http(global.app).post('/v1/auth/signup').send(d).expect(302)
+      .end (err, resp) ->
+        if (err) then throw err
+        global.cookie = resp.headers['set-cookie']
+        GET '/session/full', {}, (s) ->
+          expect(s._id).to.exist
+          expect(s.google).to.be.undefined
+          expect(s.googleId).to.be.undefined
+          expect(s.name).to.equal(d.name)
+          expect(s.email).to.equal(d.email)
+          expect(s.emailVerified).to.equal(false)
+          expect(s.local).to.be.undefined  # holds password field
+          expect(s.roles).to.be.undefined # new users have undefined roles
+          expect(s.cohort.engagement).to.exist
+          done()
+
+
+  it 'New user has correct cohort information', (done) ->
+    addAndLoginLocalUser 'dysn', (s) ->
+      {userKey,sessionID} = s
+      {cohort} = data.users[userKey]
+      expect(moment(cohort.engagement.visit_first).unix()).to.equal(moment(cookieCreatedAt).unix())
+      expect(cohort.engagement.visit_signup).to.be.exist
+      expect(cohort.engagement.visit_last).to.be.exist
+      expect(cohort.engagement.visits.length).to.equal(1)
+      expect(moment(cohort.engagement.visits[0]).unix()).to.equal(moment(util.dateWithDayAccuracy()).unix())
+      expect(cohort.aliases.length).to.equal(1)
+      expect(cohort.aliases[0].indexOf("testdysn")).to.equal(0)
       done()
 
 
-    after (done) ->
-      # resotreAnalytics()
-      global.cookie = null
-      global.cookieCreatedAt = null
-      done()
+  it 'Can sign up as new user with google', (done) ->
+    UserService.upsertProviderProfile.call newUserSession(), 'google', data.oauth.rbrw, (e,usr) ->
+      LOGIN 'rbrw', usr, ->
+        GET '/session/full', {}, (s) ->
+          expect(s._id).to.equal(usr._id.toString())
+          expect(s.email).to.equal(usr.email)
+          expect(s.name).to.equal(usr.name)
+          expect(s.googleId).to.be.undefined  # not returned from session call
+          expect(s.google.id).to.equal(data.oauth.rbrw.id)
+          expect(s.emailVerified).to.equal(false)
+          expect(s.local).to.be.undefined  # holds password field
+          expect(s.roles).to.be.undefined  # new users have undefined roles
+          expect(s.cohort.engagement).to.exist
+          done()
 
 
-    it 'Can sign up as new user with local credentials', (done) ->
-      d = getNewUserData('jkap')
+  it 'Can not sign up with local credentials and existing gmail', (done) ->
+    d = name: "AirPair Experts", email: "experts@airpair.com", password: "Yoyoyoyoy"
 
-      http(global.app).post('/v1/auth/signup').send(d).expect(302)
-        .end (err, resp) ->
-          if (err) then throw err
-          global.cookie = resp.headers['set-cookie']
-          GET '/session/full', {}, (s) ->
-            expect(s._id).to.exist
-            expect(s.google).to.be.undefined
-            expect(s.googleId).to.be.undefined
-            expect(s.name).to.equal(d.name)
-            expect(s.email).to.equal(d.email)
-            expect(s.emailVerified).to.equal(false)
-            expect(s.local).to.be.undefined  # holds password field
-            expect(s.roles).to.be.undefined # new users have undefined roles
-            expect(s.cohort.engagement).to.exist
-            done()
+    UserService.upsertProviderProfile.call newUserSession(), 'google', data.oauth.exap, (e,usr) ->
+      expect(usr._id).to.exist
+      http(global.app).post('/v1/auth/signup').send(d)
+        .expect(400)
+        .expect('Content-Type', /json/)
+        .end (err, res) ->
+          if (err) then return done(err)
+          expect(res.body.error).to.equal('try google login')
+          done()
 
 
-    it 'New user has correct cohort information', (done) ->
-      addAndLoginLocalUser 'dysn', (s) ->
-        {userKey,sessionID} = s
-        {cohort} = data.users[userKey]
-        expect(moment(cohort.engagement.visit_first).unix()).to.equal(moment(cookieCreatedAt).unix())
-        expect(cohort.engagement.visit_signup).to.be.exist
-        expect(cohort.engagement.visit_last).to.be.exist
-        expect(cohort.engagement.visits.length).to.equal(1)
-        expect(moment(cohort.engagement.visits[0]).unix()).to.equal(moment(util.dateWithDayAccuracy()).unix())
-        expect(cohort.aliases.length).to.equal(1)
-        expect(cohort.aliases[0].indexOf("testdysn")).to.equal(0)
-        done()
+  it 'Can not sign up with local credentials and existing local email', (done) ->
+    d = getNewUserData('jkap')
 
-
-    it 'Can sign up as new user with google', (done) ->
-      UserService.upsertProviderProfile.call newUserSession(), 'google', data.oauth.rbrw, (e,usr) ->
-        LOGIN 'rbrw', usr, ->
-          GET '/session/full', {}, (s) ->
-            expect(s._id).to.equal(usr._id.toString())
-            expect(s.email).to.equal(usr.email)
-            expect(s.name).to.equal(usr.name)
-            expect(s.googleId).to.be.undefined  # not returned from session call
-            expect(s.google.id).to.equal(data.oauth.rbrw.id)
-            expect(s.emailVerified).to.equal(false)
-            expect(s.local).to.be.undefined  # holds password field
-            expect(s.roles).to.be.undefined  # new users have undefined roles
-            expect(s.cohort.engagement).to.exist
-            done()
-
-
-    it 'Can not sign up with local credentials and existing gmail', (done) ->
-      d = name: "AirPair Experts", email: "experts@airpair.com", password: "Yoyoyoyoy"
-
-      UserService.upsertProviderProfile.call newUserSession(), 'google', data.oauth.exap, (e,usr) ->
-        expect(usr._id).to.exist
-        http(global.app).post('/v1/auth/signup').send(d)
-          .expect(400)
-          .expect('Content-Type', /json/)
+    http(global.app).post('/v1/auth/signup').send(d).expect(200)
+      .end (e, r) ->
+        http(global.app).post('/v1/auth/signup').send(d).expect(400)
           .end (err, res) ->
             if (err) then return done(err)
-            expect(res.body.error).to.equal('try google login')
+            expect(res.body.error).to.equal('user already exists')
             done()
-
-
-    it 'Can not sign up with local credentials and existing local email', (done) ->
-      d = getNewUserData('jkap')
-
-      http(global.app).post('/v1/auth/signup').send(d).expect(200)
-        .end (e, r) ->
-          http(global.app).post('/v1/auth/signup').send(d).expect(400)
-            .end (err, res) ->
-              if (err) then return done(err)
-              expect(res.body.error).to.equal('user already exists')
-              done()
-
 
 
   describe "Login", ->
@@ -118,14 +116,10 @@ module.exports = ->
           done()
 
 
-    it.skip 'Login from a new anonymous session adds sessionID to aliases', () ->
-      $log('TODO: Write Test')
+    it.skip 'TODO: Login from a new anonymous session adds sessionID to aliases', () ->
       # expect('updates last visit')
 
-    it.skip 'Login from existing anonymous session leaves aliases', () ->
-      $log('TODO: Write Test')
-      # expect('updates last visit')
-
+    it.skip 'TODO: Login from existing anonymous session leaves aliases', () ->
 
   #   it('login google: no google, has local, google login matching local email')
   #     expect('login success')

@@ -23,6 +23,7 @@ module.exports = {
   		'updated': 1,
   		'tags': 1
   	}
+  },
 
   query: {
 		published: function() {

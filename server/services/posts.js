@@ -37,13 +37,13 @@ export function getById(id, cb) {
 
 
 export function getBySlug(slug, cb) {
-  var query = _.extend(Data.queries.published(),{slug})
+  var query = _.extend(Data.query.published(),{slug})
   svc.searchOne(query, null, inflateHtml(cb))
 }
 
 
 export function getPublishedById(_id, cb) { //-- used for todd-motto
-  var query = _.extend(Data.queries.published(),{_id})
+  var query = _.extend(Data.query.published(),{_id})
   svc.searchOne(query, null, inflateHtml(cb))
 }
 
@@ -55,19 +55,19 @@ export function getAllAdmin(cb) {
 
 
 export function getPublished(cb) {
-  svc.searchMany(Data.queries.published(), { field: Data.select.list }, cb)
+  svc.searchMany(Data.query.published(), { field: Data.select.list }, cb)
 }
 
 
 export function getRecentPublished(cb) {
   var opts = { fields: Data.select.list, options: { sort: { 'published': -1 }, limit: 9 } };
-  svc.searchMany(Data.queries.published(), opts, addUrl(cb))
+  svc.searchMany(Data.query.published(), opts, addUrl(cb))
 }
 
 
 export function getAllPublished(cb) {
   var opts = { fields: Data.select.list, options: { sort: { 'published': -1 } } };
-  svc.searchMany(Data.queries.published(), opts, addUrl(cb))
+  svc.searchMany(Data.query.published(), opts, addUrl(cb))
 }
 
 
@@ -78,7 +78,7 @@ export function getSimilarPublished(cb) {
 
 export function getUsersPublished(username, cb) {
   var opts = { fields: Data.select.list, options: { sort: { 'published': -1 } } };
-  var query = _.extend({ 'by.username': username }, Data.queries.published())
+  var query = _.extend({ 'by.username': username }, Data.query.published())
   svc.searchMany(query, opts, addUrl(cb))
 }
 

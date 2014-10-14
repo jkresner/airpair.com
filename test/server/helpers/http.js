@@ -1,14 +1,14 @@
 global.http = require('supertest')
 
-
 global.cookie = null //-- used for maintaining login
 global.cookieCreatedAt = null
 
-global.GETP = function(url) { 
+
+global.GETP = function(url) {
   return http(global.app)
     .get(url)
     .set('cookie',cookie)
-    .expect(200); 
+    .expect(200);
 }
 
 
