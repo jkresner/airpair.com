@@ -1,6 +1,5 @@
-
 export function logout(options) {
-  return (req, res, next) => {  
+  return (req, res, next) => {
     req.logout()
     res.redirect(options.loginUrl)
   }

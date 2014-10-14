@@ -4,31 +4,31 @@ var logging = false
 var getContext = (req) => {
   var ctx = {
     app: config.build,
-    // device: 
+    // device:
     ip: req.ip,
     // ip: req.host var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-    // library: 
+    // library:
     // locale:
     // location:
     // network:
     // os:
     referer: req.header('Referer')
-    // screen: 
+    // screen:
     // traits: ,
-    // userAgent: 
+    // userAgent:
   }
 
   var c = null
   var {utm_campaign,utm_source,utm_medium,utm_term,utm_content} = req.query
-  if (utm_campaign) (c) ? (c.name = utm_campaign) : (c = {name:utm_campaign})  
-  if (utm_source) (c) ? (c.source = utm_source) : (c = {source:utm_source}) 
-  if (utm_medium) (c) ? (c.medium = utm_medium) : (c = {medium:utm_medium}) 
-  if (utm_term) (c) ? (c.term = utm_term) : (c = {term:utm_term}) 
-  if (utm_content) (c) ? (c.content = utm_content) : (c = {content:utm_content}) 
+  if (utm_campaign) (c) ? (c.name = utm_campaign) : (c = {name:utm_campaign})
+  if (utm_source) (c) ? (c.source = utm_source) : (c = {source:utm_source})
+  if (utm_medium) (c) ? (c.medium = utm_medium) : (c = {medium:utm_medium})
+  if (utm_term) (c) ? (c.term = utm_term) : (c = {term:utm_term})
+  if (utm_content) (c) ? (c.content = utm_content) : (c = {content:utm_content})
 
   if (c) ctx.campaign = c
 
-//   $log('req.cookies', req.cookies._ga)
+//   Recommended by segment for server-side GA tracking (which doesn't work.)
 //   if (req.cookies._ga) {
 //     ctx['Google Analytics'] = { clientId: req.cookies._ga.replace('GA1.1.','').replace('GA1.2.',''),
 //       userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_2) AppleWebKit/537.17 (KHTML, like Gecko) Chrome/24.0.1312.57 Safari/537.17',
@@ -48,7 +48,7 @@ export var trackView = (type) => {
     if (!req.isAuthenticated || !req.isAuthenticated())
     {
       anonymousId = req.sessionID
-    } 
+    }
 
     var obj = req[type]
     var tags = _.pluck(obj.tags,'slug')
@@ -56,7 +56,7 @@ export var trackView = (type) => {
     var url = req.protocol + '://' + req.get('host') + req.originalUrl
 
     var properties = { title: obj.title, tags, url, path: req.path, objectId: obj._id, referrer: context.referer }
-    analytics.view(req.user, anonymousId, type, obj.title, properties, context)      
-    next() 
+    analytics.view(req.user, anonymousId, type, obj.title, properties, context)
+    next()
   }
 }

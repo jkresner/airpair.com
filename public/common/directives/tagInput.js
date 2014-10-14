@@ -1,13 +1,11 @@
 
 angular.module('APTagInput', ['ui.bootstrap'])
 
-
   .value('acceptableTagsSearchQuery', function(value) {
     return value && (value.length >= 2 || /r/i.test(value));
   })
 
-  .directive('tagInput', ['acceptableTagsSearchQuery',
-                     function(acceptableTagsSearchQuery) {
+  .directive('tagInput', ['acceptableTagsSearchQuery', function(acceptableTagsSearchQuery) {
 
     return {
       restrict: 'EA',
@@ -18,7 +16,7 @@ angular.module('APTagInput', ['ui.bootstrap'])
           if (!acceptableTagsSearchQuery(q)) {
             return [];
           }
-          
+
           return $http.get('v1/api/tags/search/'+q).then(function(res){
             var tags = [];
             angular.forEach(res.data, function(item){
@@ -35,7 +33,7 @@ angular.module('APTagInput', ['ui.bootstrap'])
           var tags = $scope.post.tags
           if ( _.contains(tags, tag) )
             $scope.post.tags = _.without(tags, tag)
-          else 
+          else
             $scope.post.tags = _.union(tags, [tag])
 
           $scope.q = ""

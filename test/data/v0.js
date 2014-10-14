@@ -1,5 +1,6 @@
 module.exports = {
-  users: {  
+
+  users: {
     cohort: null,
     SoumyaAcharya: {
       "_id" : "51a6668866a6f999a465f2fc",
@@ -11,7 +12,7 @@ module.exports = {
               "familyName" : "Acharya",
               "givenName" : "Soumya"
           },
-          "emails" : [ 
+          "emails" : [
               {
                   "value" : "cse.soumya@gmail.com"
               }
@@ -34,5 +35,6 @@ module.exports = {
       "googleId" : "101673072972612685381"
     }
   }
+
 }
-  
+

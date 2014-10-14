@@ -1,4 +1,5 @@
 module.exports = {
+
   railsTests: {
     "description" : "Ever feel like you're writing tests to make somebody else happy?",
       "difficulty" : "All levels",
@@ -6,7 +7,7 @@ module.exports = {
       "price" : 0,
       "public" : false,
       "slug" : "simplifying-rails-tests",
-      "speakers" : [ 
+      "speakers" : [
           {
               "name" : "Justin Searls",
               "shortBio" : "Programmer at Test Double",
@@ -20,9 +21,9 @@ module.exports = {
               "gh" : null
           }
       ],
-      "tags" : [ 
-          "rails", 
-          "testing", 
+      "tags" : [
+          "rails",
+          "testing",
           "teams"
       ],
       "time" : "2014-08-12T15:00:00.000Z",
@@ -30,4 +31,5 @@ module.exports = {
       "updatedAt" : "2014-08-01T21:20:10.000Z",
       "youtube" : "eWthxP4MZXE"
   }
+
 }

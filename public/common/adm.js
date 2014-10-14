@@ -8,24 +8,28 @@ require('./../adm/posts/module.js');
 require('./../adm/users/module.js');
 require('./../adm/redirects/module.js');
 
-angular.module("ADM", ['ngRoute', 'APSvcSession', 'ADMPosts', 'ADMUsers', 
-  'ADMRedirects'])
 
-  .config(['$locationProvider', '$routeProvider', 
+angular.module("ADM", [
+	'ngRoute',
+	'APSvcSession',
+	'ADMPosts',
+	'ADMUsers',
+	'ADMRedirects'])
+
+  .config(['$locationProvider', '$routeProvider',
       function($locationProvider, $routeProvider) {
-  
+
     $locationProvider.html5Mode(true);
 
   }])
 
-  .run(['$rootScope', '$location', 'SessionService', 
+  .run(['$rootScope', '$location', 'SessionService',
     function($rootScope, $location, SessionService) {
 
     SessionService.onAuthenticated( (session) => {
       $rootScope.session = session;
     });
-  
-  }])
 
+  }])
 
 ;
