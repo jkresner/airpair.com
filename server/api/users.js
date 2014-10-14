@@ -1,7 +1,6 @@
 import {initAPI} from './_api'
 import * as Svc from '../services/users'
 
-
 export default initAPI(Svc, {
   getSession: (req) => [],
   getSessionFull: (req) => [],

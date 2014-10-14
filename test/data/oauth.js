@@ -1,11 +1,11 @@
 module.exports = {
-  
+
   admin: { provider: 'google',
     id: '199992380360999999999',
     displayName: 'Admin Daemon',
     name: { familyName: 'Daemon', givenName: 'Admin' },
     emails: [ { value: 'admin@airpair.com' } ],
-    _json: 
+    _json:
      { id: '199992380360999999999',
        email: 'admin@airpair.com',
        verified_email: true,
@@ -17,7 +17,7 @@ module.exports = {
        gender: 'male',
        locale: 'en',
        hd: 'airpair.com' },
-    token: { } 
+    token: { }
   },
 
   jkap: { provider: 'google',
@@ -25,7 +25,7 @@ module.exports = {
     displayName: 'Jonathon Kresner',
     name: { familyName: 'Kresner', givenName: 'Jonathon' },
     emails: [ { value: 'jk@airpair.com' } ],
-    _json: 
+    _json:
      { id: '117132380360243205600',
        email: 'jk@airpair.com',
        verified_email: true,
@@ -37,7 +37,7 @@ module.exports = {
        gender: 'male',
        locale: 'en',
        hd: 'airpair.com' },
-    token: { } 
+    token: { }
   },
 
   tmap: { provider: 'google',
@@ -45,7 +45,7 @@ module.exports = {
     displayName: 'Air Pair',
     name: { familyName: 'Pair', givenName: 'Air' },
     emails: [ { value: 'team@airpair.com' } ],
-    _json: 
+    _json:
      { id: '105075583437166504731',
        email: 'team@airpair.com',
        verified_email: true,
@@ -66,7 +66,7 @@ module.exports = {
     displayName: 'AirPair Editors',
     name: { familyName: 'AirPair', givenName: 'Editors' },
     emails: [ { value: 'editrs@airpair.com' } ],
-    _json: 
+    _json:
      { id: '105075583437166404731',
        email: 'editprs@airpair.com',
        verified_email: true,
@@ -81,13 +81,12 @@ module.exports = {
     token: {}
   },
 
-
   exap: { provider: 'google',
     id: '105075583437166504731',
     displayName: 'AirPair Experts',
     name: { familyName: 'AirPair', givenName: 'Experts' },
     emails: [ { value: 'experts@airpair.com' } ],
-    _json: 
+    _json:
      { id: '105075583437166504733',
        email: 'experts@airpair.com',
        verified_email: true,
@@ -107,7 +106,7 @@ module.exports = {
     displayName: 'Ryan Brown',
     name: { familyName: 'Ryan', givenName: 'Brown' },
     emails: [ { value: 'ryan.sc.brown@gmail.com' } ],
-    _json: 
+    _json:
      { id: '118272682147885899580',
        email: 'ryan.sc.brown@gmail.com',
        verified_email: true,
@@ -118,6 +117,6 @@ module.exports = {
        picture: 'https://lh5.googleusercontent.com/-EtHf32yxc-s/AAAAAAAAAAI/AAAAAAAAAUU/aDOPckSKU-E/photo.jpg',
        gender: 'male',
        locale: 'en' },
-    token: {  }    
+    token: {  }
   }
 }

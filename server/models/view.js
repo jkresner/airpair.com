@@ -3,16 +3,17 @@ var {ObjectId} = mongoose.Schema
 
 var objectType = ['post','workshop','expert']
 
+
 module.exports = mongoose.model('view', new mongoose.Schema({
-  
-  utc:          { type: Date, required: true },  
-  userId:       { type: ObjectId, ref: 'User', index: true, sparse: true },  
-  anonymousId:  { type: String, ref: 'v1Session', index: true, sparse: true },    
+
+  utc:          { type: Date, required: true },
+  userId:       { type: ObjectId, ref: 'User', index: true, sparse: true },
+  anonymousId:  { type: String, ref: 'v1Session', index: true, sparse: true },
   objectId:     { type: ObjectId, required: true },
-  type:         { enum: objectType, type: String, required: true, lowercase: true },  
-  url:          { type: String, required: true },  
-  campaign:     { type: {} },  
-  referer:      { type: String }  
+  type:         { enum: objectType, type: String, required: true, lowercase: true },
+  url:          { type: String, required: true },
+  campaign:     { type: {} },
+  referer:      { type: String }
 
 }))
 

@@ -1,18 +1,18 @@
 var passport = require('passport')
 import * as authConfig from './config'
 
-var logging = true
+var logging = false
 
 var authFn = (provider) => {
   return (req, res, next) => {
     passport.authenticate(provider, (err, user, info) => {
-      
-      if (err) 
-      { 
-        next(err) 
+
+      if (err)
+      {
+        next(err)
       }
-      else if (user) 
-      { 
+      else if (user)
+      {
         req.logIn(user, function(err) { next(err) })
       }
       else
@@ -26,7 +26,7 @@ var authFn = (provider) => {
 }
 
 export function init(provider, strategyCallback) {
-  var Strategy = require(`passport-local`).Strategy 
+  var Strategy = require(`passport-local`).Strategy
   var cfg = authConfig.getEnvConfig(provider)
 
   passport.use(provider, new Strategy(cfg, strategyCallback))

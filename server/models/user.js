@@ -5,29 +5,30 @@ var ObjectId = Schema.Types.ObjectId
 
 var objectType = ['post','workshop','expert']
 
-var Bookmark = new Schema({  
-  utc:          { type: Date, required: true },  
+
+var Bookmark = new Schema({
+  utc:          { type: Date, required: true },
   objectId:     { type: ObjectId, required: true },
-  objectType:   { enum: objectType, type: String, required: true },  
-  url:          { type: String, required: true },  
-  priority:     { type: Number, required: true },    
+  objectType:   { enum: objectType, type: String, required: true },
+  url:          { type: String, required: true },
+  priority:     { type: Number, required: true },
   name:         { type: String, required: true }
 })
 
-var TagSlim = {  
-  _id:          { required: true, type: ObjectId, ref: 'Tag'},  
+var TagSlim = {
+  _id:          { required: true, type: ObjectId, ref: 'Tag'},
   name:         { required: true, type: String, trim: true },
-  slug:         { required: true, type: String, lowercase: true, trim: true }  
+  slug:         { required: true, type: String, lowercase: true, trim: true }
 }
 
-var Cohort = {  
+var Cohort = {
   engagement:   {
-    visit_first:          { type: Date },  
+    visit_first:          { type: Date },
     visit_last:           { type: Date },    // user this to see if we need to update visit array
-    visit_signup:         { type: Date },  
+    visit_signup:         { type: Date },
     visits:               { type: [Date] },  // array of dates the user came to the site
   },
-  aliases:      { type: [String] }  
+  aliases:      { type: [String] }
   // requests:     Get by query from Requests
   // orders:       Get by query from Order
   // spend:        Get by query from Orders
@@ -38,14 +39,7 @@ var Cohort = {
 
 var User = new Schema({
 
-  email: {
-    type: String,
-    index: {
-      unique: true,
-      dropDups: true
-    },
-    trim: true
-  },
+  email: { type: String, index: { unique: true, dropDups: true }, trim: true },
   emailVerified:   { type: Boolean, required: true, default: false },
   name: { type: String, trim: true },
   initialis: { type: String, lowercase: true, trim: true },
@@ -58,7 +52,7 @@ var User = new Schema({
 
   roles:           { type: [String] },
   tags:            { type: [TagSlim], 'default': [] },   //-- Stack of the user
-  bookmarks:       { type: [Bookmark], 'default': [] },  
+  bookmarks:       { type: [Bookmark], 'default': [] },
 
   cohort:          Cohort,
 
@@ -84,7 +78,7 @@ var User = new Schema({
   stack: {},
   bitbucketId: String,
   bitbucket: {},
-  
+
 });
 
 

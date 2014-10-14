@@ -1,7 +1,7 @@
 import Svc from '../services/_service'
 import Redirect from '../models/redirect'
-
 var logging = false
+
 var svc = new Svc(Redirect, logging)
 
 
@@ -16,5 +16,5 @@ export function createRedirect(o, cb) {
 }
 
 export function deleteRedirectById(id, cb) {
-  svc.deleteById(id, cb)          
+  svc.deleteById(id, cb)
 }
