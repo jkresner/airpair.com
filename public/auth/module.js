@@ -3,9 +3,9 @@ var resolver = require('./../common/routes/helpers.js');
 
 angular.module("APAuth", ['ngRoute','APFilters','APSvcSession','APAnalytics'])
 
-  .config(['$locationProvider', '$routeProvider', 
+  .config(['$locationProvider', '$routeProvider',
       function($locationProvider, $routeProvider) {
-  
+
     $routeProvider.when('/v1/auth/login', {
       template: require('./login.html')
     });
@@ -16,34 +16,25 @@ angular.module("APAuth", ['ngRoute','APFilters','APSvcSession','APAnalytics'])
 
   }])
 
-  .run(['$rootScope', 'SessionService', function($rootScope, SessionService) {
-    
-    // SessionService.onAuthenticated( (session) => {
-    //   $rootScope.session = session;
-    // })
-  
-  }])
-
-
-  .controller('LoginCtrl', ['$scope', '$window', 'SessionService', 
+  .controller('LoginCtrl', ['$scope', '$window', 'SessionService',
       function($scope, $window, SessionService) {
     var self = this;
 
     this.submit = function(isValid, formData) {
       if (!isValid) return
-      SessionService.login(formData, 
+      SessionService.login(formData,
         () => $window.location = '',
         (e) => $scope.signupFail = e.error
       )
     }
   }])
 
-  .controller('SignupCtrl', ['$scope', '$window', 'SessionService', 
+  .controller('SignupCtrl', ['$scope', '$window', 'SessionService',
       function($scope, $window, SessionService) {
     var self = this;
     this.submit = function(isValid, formData) {
       if (!isValid) return
-      SessionService.signup(formData, 
+      SessionService.signup(formData,
         () => $window.location = '',
         (e) => $scope.signupFail = e.error
       )

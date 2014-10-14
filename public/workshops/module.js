@@ -11,7 +11,7 @@ var selectByDateRange = function(list, daysAgo, daysUntil)
 {
 	var start = moment(new Date()).add(daysAgo, 'days');
 	var end = moment(new Date()).add(daysUntil, 'days');
-	return _.where(list,function(i) { 
+	return _.where(list,function(i) {
 		return moment(i.time).isAfter(start) && moment(i.time).isBefore(end);
 	});
 }
@@ -20,7 +20,7 @@ angular.module("APWorkshops", ['ngRoute','APFilters','APShare'])
 
 	.constant('API', '/v1/api')
 
-	.config(['$locationProvider', '$routeProvider', 
+	.config(['$locationProvider', '$routeProvider',
 			function($locationProvider, $routeProvider) {
 
 		$routeProvider.when('/workshops', {
@@ -34,14 +34,16 @@ angular.module("APWorkshops", ['ngRoute','APFilters','APShare'])
 
 		$routeProvider.when('/workshops/signup/:id', {
 			template: require('./signup.html'),
-			controller: 'WorkshopSignupCtrl as signup'			
-		});		
+			controller: 'WorkshopSignupCtrl as signup'
+		});
 
 	}])
+
 
   .run(['$rootScope', function($rootScope) {
 		$rootScope.timeZoneOffset = moment().format('ZZ');
   }])
+
 
 	.controller('WorkshopsCtrl', ['$scope', '$http', 'API', function($scope, $http, API) {
 		var self = this;
@@ -52,14 +54,14 @@ angular.module("APWorkshops", ['ngRoute','APFilters','APShare'])
 			self.upcoming = selectByDateRange(data, 0, 9);
 			self.month = selectByDateRange(data, 0, 45);
 			self.past = selectByDateRange(data, -365, 0).reverse();
-			self.featured = _.where(data, function(i) { 
+			self.featured = _.where(data, function(i) {
 				return _.contains(feautredSlugs, i.slug);
 			});
 		});
 	}])
 
 
-	.controller('WorkshopSignupCtrl', ['$scope', '$http', '$routeParams', 'API', 
+	.controller('WorkshopSignupCtrl', ['$scope', '$http', '$routeParams', 'API',
 			function($scope, $http, $routeParams, API) {
 
 		$scope.hasAccess = true;
@@ -67,6 +69,6 @@ angular.module("APWorkshops", ['ngRoute','APFilters','APShare'])
 		$http.get(API+'/workshops/'+$routeParams.id).success(function (data) {
 			$scope.entry = data;
 		});
-	}])	
+	}])
 
 ;

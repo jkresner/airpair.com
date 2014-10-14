@@ -7,7 +7,7 @@ var resolver = require('./../common/routes/helpers.js').resolveHelper;
 angular.module("APPosts", ['ngRoute', 'APFilters','APShare',
   'APMyPostsList','APPostEditor','APPost', 'APSvcSession', 'APSvcPosts','APTagInput'])
 
-  .config(['$locationProvider', '$routeProvider', 
+  .config(['$locationProvider', '$routeProvider',
       function($locationProvider, $routeProvider) {
 
     var authd = resolver(['session']);
@@ -22,7 +22,7 @@ angular.module("APPosts", ['ngRoute', 'APFilters','APShare',
       controller: 'NewCtrl as author',
       resolve: authd
     });
-    
+
     $routeProvider.when('/posts/edit/:id', {
       template: require('./author.html'),
       controller: 'EditCtrl as author',
@@ -44,50 +44,50 @@ angular.module("APPosts", ['ngRoute', 'APFilters','APShare',
   }])
 
   .run(['$rootScope', 'SessionService', function($rootScope, SessionService) {
-    
+
     SessionService.onAuthenticated( (session) => {
       $rootScope.session = session;
       $rootScope.editor = _.contains(session.roles,'editor');
     })
-  
+
   }])
 
 
-  .controller('IndexCtrl', ['$scope','PostsService', 'SessionService', 
+  .controller('IndexCtrl', ['$scope','PostsService', 'SessionService',
       function($scope, PostsService, SessionService) {
     var self = this;
 
     PostsService.getRecentPosts(function (result) {
       $scope.recent = result;
-    })  
+    })
 
     SessionService.onAuthenticated( (session) => {
       PostsService.getMyPosts(function (result) {
         $scope.myposts = result;
-      })  
-    }); 
+      })
+    });
   }])
 
 
   .controller('NewCtrl', ['$scope', 'PostsService', '$location', 'session',
       function($scope, PostsService, $location, session) {
-    
+
     var self = this;
 
     $scope.preview = { mode: 'edit' };
     $scope.post = { md: "Save post to start authoring markdown ... ", by: $scope.session };
-    
+
     var social = {}
     if (session.github) social.gh = session.github.username
     if (session.linkedin) social.in = session.linkedin.d9YFKgZ7rY
     if (session.stack) social.so = session.stack.link.replace('http://stackoverflow.com','')
-    if (session.twitter) social.tw = session.twitter.username 
+    if (session.twitter) social.tw = session.twitter.username
     if (session.google) social.gp = session.google.id
 
     $scope.post.by = _.extend(session, social)
 
     $scope.save = () => {
-      $scope.post.md = "Type markdown ..."  
+      $scope.post.md = "Type markdown ..."
       PostsService.create($scope.post, (result) => {
         $location.path('/posts/edit/'+result._id);
       });
@@ -95,13 +95,13 @@ angular.module("APPosts", ['ngRoute', 'APFilters','APShare',
 
   }])
 
-  .controller('EditCtrl', ['$scope', 'PostsService', '$routeParams', '$location', 
+  .controller('EditCtrl', ['$scope', 'PostsService', '$routeParams', '$location',
     'session',
     function($scope, PostsService, $routeParams, $location, session) {
-    
+
     var self = this;
     $scope.preview = { mode: 'edit' };
-  
+
     PostsService.getById($routeParams.id, (r) => {
       $scope.post = _.extend(r, { saved: true});
     });
@@ -125,11 +125,11 @@ angular.module("APPosts", ['ngRoute', 'APFilters','APShare',
   .controller('PublishCtrl', ['$scope', 'PostsService', '$routeParams',
     'session',
     function($scope, PostsService, $routeParams, session) {
-    
+
     var self = this;
     $scope.preview = { mode: 'publish' };
     $scope.post = { tags: [] };
-  
+
     $scope.setPublishedOverride = () => {
       if (!$scope.post.publishedOverride)
       {
@@ -160,7 +160,7 @@ angular.module("APPosts", ['ngRoute', 'APFilters','APShare',
           ogVideo = `https://www.youtube-nocookie.com/v/${youTubeId}`
         }
 
-        r.meta = { 
+        r.meta = {
           title: r.title,
           canonical: $scope.canonical,
           ogType: 'article',
@@ -168,7 +168,7 @@ angular.module("APPosts", ['ngRoute', 'APFilters','APShare',
           ogImage: ogImage,
           ogVideo: ogVideo,
           ogUrl: $scope.canonical
-        }     
+        }
       }
       $scope.post = _.extend(r, { saved: true});
     });
@@ -192,16 +192,15 @@ angular.module("APPosts", ['ngRoute', 'APFilters','APShare',
   }])
 
 //-- this will be refactored out of the posts module
-.controller('ProfileCtrl', ['$scope', 'PostsService', '$routeParams',
-    'session',
-  function($scope, PostsService, $routeParams, session) {  
-    
+.controller('ProfileCtrl', ['$scope', 'PostsService', '$routeParams', 'session',
+  function($scope, PostsService, $routeParams, session) {
+
     $scope.username = $routeParams.username;
 
     PostsService.getByUsername($routeParams.username, (posts) => {
       $scope.posts = posts;
     });
-  
+
   }])
 
 ;

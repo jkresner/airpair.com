@@ -4,28 +4,29 @@
 
   self.resolveSession = function(args) {
     return ['SessionService', '$window', '$location', '$q',
-      function(SessionService, $window, $location, $q) { 
+      function(SessionService, $window, $location, $q) {
         return SessionService.getSession().then(
           function(data) {
             console.log('data', data)
             if (data._id)
-            { 
+            {
               return data;
-            } 
+            }
             else
             {
               $location.path('/v1/auth/login')
-              return $q.reject();  
+              return $q.reject();
             }
           },
           function()
-          {   
+          {
             $location.path('/v1/auth/login')
             return $q.reject();
           }
-        ); 
-      }]; 
+        );
+      }];
   }
+
 
   global.trackRoute = function(locationPath) {
     if (analytics)
@@ -37,7 +38,7 @@
       else if (locationPath == '/v1/auth/signup') {
         // console.log('tracking', 'signup')
         analytics.track('Route',{ category: 'auth', name: 'signup' })
-      }      
+      }
     }
   }
 
