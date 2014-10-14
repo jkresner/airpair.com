@@ -1,23 +1,26 @@
-export function logError(e, user, req) 
+export function logError(e, user, req)
 {
   if (!e) return
 
-  var userInfo = (user && user.name) ? 
+  var userInfo = (user && user.name) ?
     `${user.name} ${user.email} ${user._id}` : 'anonymous'
 
-  var reqInfo = req ? 
+  var reqInfo = req ?
     `${req.method} ${req.url}` : ''
+
+  if (reqInfo != '' && req.header('Referer'))
+  	reqInfo = `${reqInfo} << ${req.header('Referer')}`
 
   if (!user && req) { userInfo += ` ${req.sessionID}` }
 
   console.log(userInfo.red)
-  console.log(reqInfo.red)    
-  
+  console.log(reqInfo.red)
+
   if (e.stack) {
     console.log(e.message.red)
-    console.log(e.stack.grey)    
+    console.log(e.stack.grey)
   }
-  else 
+  else
   {
     console.log(e.toString().red)
   }
