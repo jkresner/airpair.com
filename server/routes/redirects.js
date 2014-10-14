@@ -1,8 +1,10 @@
 import RedirectsAPI from '../api/redirects'
 
 var redirectWithQuery = (match, replace) =>
-  (req, res) =>
-    res.redirect(301, req.url.replace(match,replace)).end()
+  (req, res) => {
+    res.redirect(301, req.url.replace(match,replace))
+    res.end()
+  }
 
 export function init(app, cb) {
   if (!config.redirects.on) return cb()
