@@ -10,9 +10,11 @@ global.sinon    = require('sinon')
 global.chai     = require('chai')
 global.expect   = chai.expect
 
+
 initConfig = require('./../../server/util/config')
 setGlobals = require('./../../server/util/global')
-config = initConfig('test', __dirname.replace('/test/server',''))
+appdir = __dirname.replace('/test/server','').replace('\\test\\server','')
+config = initConfig('test', appdir)
 setGlobals(config)
 
 
