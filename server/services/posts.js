@@ -50,7 +50,7 @@ export function getPublishedById(_id, cb) { //-- used for todd-motto
 
 export function getAllAdmin(cb) {
   var opts = { fields: Data.select.listAdmin, options: { sort: { 'updated': -1 } } };
-  svc.searchMany(Data.queries.updated, opts, addUrl(cb))
+  svc.searchMany(Data.query.updated, opts, addUrl(cb))
 }
 
 
