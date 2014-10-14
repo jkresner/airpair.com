@@ -1,8 +1,8 @@
-var lazyErrorCb = function(resp) { 
-  console.log('error:', resp); 
+var lazyErrorCb = function(resp) {
+  console.log('error:', resp);
 };
 
-angular.module('APSvcAdmin', [])  
+angular.module('APSvcAdmin', [])
 
   .constant('APIAdm', '/v1/api/adm')
 
@@ -17,7 +17,7 @@ angular.module('APSvcAdmin', [])
     {
       $http.get(`${APIAdm}/users/role/${data.role}`).success(success).error(lazyErrorCb);
     }
-    
+
     this.toggleRole = function(data, success)
     {
       $http.put(`${APIAdm}/users/${data._id}/role/${data.role}`, data).success(success).error(lazyErrorCb);
@@ -27,7 +27,7 @@ angular.module('APSvcAdmin', [])
     {
       $http.get(`${APIAdm}/redirects`).success(success).error(lazyErrorCb);
     }
-    
+
     this.createRedirect = function(data, success)
     {
       $http.post(`${APIAdm}/redirects`, data).success(success).error(lazyErrorCb);

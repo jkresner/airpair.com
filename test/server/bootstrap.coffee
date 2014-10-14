@@ -23,14 +23,14 @@ describe 'Server: ', ->
     global.app = require('../../index').run()
     global.testDb = require('./helpers/setup')
     setTimeout(( -> testDb.init(done) ), 100)
-  
 
-  describe('Session: ', require('./sessionSpec'))    
-  describe('Tags: ', require('./tagsSpec'))    
+
+  describe('Session: ', require('./sessionSpec'))
+  describe('Tags: ', require('./tagsSpec'))
   describe('Auth: ', require('./authSpec'))
-  describe('Authz: ', require('./authzSpec'))  
-  describe('Posts: ', require('./postsSpec'))   
-  describe('Analytics: ', require('./analyticsSpec'))      
-  describe('Redirects: ', require('./redirectsSpec'))        
+  describe('Authz: ', require('./authzSpec'))
+  describe('Posts: ', require('./postsSpec'))
+  describe('Analytics: ', require('./analyticsSpec'))
+  describe('Redirects: ', require('./redirectsSpec'))
 
 

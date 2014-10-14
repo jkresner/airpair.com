@@ -1,7 +1,7 @@
 
 angular.module("ADMPosts", ['ngRoute', 'APSvcAdmin', 'APSvcPosts', 'APFilters'])
 
-  .config(['$locationProvider', '$routeProvider', 
+  .config(['$locationProvider', '$routeProvider',
       function($locationProvider, $routeProvider) {
 
     $routeProvider.when('/v1/adm/posts', {
@@ -9,10 +9,6 @@ angular.module("ADMPosts", ['ngRoute', 'APSvcAdmin', 'APSvcPosts', 'APFilters'])
       controller: 'PostsCtrl as posts'
     });
 
-  }])
-
-  .run(['$rootScope', 'SessionService', 'AdmDataService', function($rootScope, SessionService, AdmDataService) {
-    
   }])
 
   .directive('apPostListItem', ['$parse', function($parse) {
@@ -24,12 +20,11 @@ angular.module("ADMPosts", ['ngRoute', 'APSvcAdmin', 'APSvcPosts', 'APFilters'])
     };
   }])
 
-
-  .controller('PostsCtrl', ['$scope','PostsService', 'AdmDataService', 
+  .controller('PostsCtrl', ['$scope','PostsService', 'AdmDataService',
       function($scope, PostsService, AdmDataService) {
-    
+
     AdmDataService.getPosts(function (result) {
       $scope.recent = result;
-    })  
+    })
 
   }])

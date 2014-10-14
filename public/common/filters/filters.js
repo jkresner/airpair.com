@@ -58,10 +58,9 @@ angular.module('APFilters', [])
     }
   })
 
-
   .filter('fancyTags', function () {
     return function(tags) {
       if (!tags) { return ''; }
       return tags.join(', ');
     };
-  });  
+  });
