@@ -3,11 +3,7 @@ var mongoose = require('mongoose')
 
 module.exports = mongoose.model('Tag', new mongoose.Schema({
 
-  name: {               // E.g. Ruby on Rails
-    required: true,
-    type: String,
-    trim: true
-  },
+  name: { required: true, type: String, trim: true },  // E.g. Ruby on Rails
   short: {              // E.g. Rails
     required: true,
     type: String,
@@ -20,8 +16,8 @@ module.exports = mongoose.model('Tag', new mongoose.Schema({
     sparse: true,
     lowercase: true,
     trim: true
-  },  
-  desc: String,         
+  },
+  desc: String,
   soId: {
     type: String,
     unique: true,

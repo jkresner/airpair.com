@@ -1,6 +1,6 @@
 var idsEqual = (id1, id2) =>
   id1.toString() == id2.toString()
- 
+
 
 module.exports = {
 
@@ -14,13 +14,13 @@ module.exports = {
 
 
   toggleItemInArray: (array, item) => {
-    if (!array) return [item] 
-    else 
+    if (!array) return [item]
+    else
     {
       var existing = _.find(array, (i) => idsEqual(i._id,item._id))
-      if (existing) return _.without(array, existing) 
+      if (existing) return _.without(array, existing)
       else return array.push(t)
-    } 
+    }
   },
 
 
@@ -32,6 +32,5 @@ module.exports = {
   dateWithDayAccuracy: () => {
     return moment('yyyy-MM-dd', moment().format('yyyy-MM-dd')).toDate()
   }
-
 
 }

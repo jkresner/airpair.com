@@ -21,12 +21,7 @@ Attendee = new Schema({
 });
 
 schema = new Schema({
-  slug: {
-    required: true,
-    type: String,
-    unique: true,
-    lowercase: true
-  },
+  slug: { required: true, type: String, unique: true, lowercase: true },
   title: String,
   description: String,
   difficulty: String,

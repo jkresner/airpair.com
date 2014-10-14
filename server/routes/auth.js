@@ -4,11 +4,10 @@ import {setReturnTo,authDone} from '../identity/auth/middleware'
 
 
 export default function(app) {
-  
+
   var router = require('express').Router()
 
-  // Use middleware (only on auth routes) to look at the
-  // querystring and save params to the session
+  	// Looks at the querystring and save params to the session
     .use(setReturnTo)
 
     .get('/logout', logout(config.auth))

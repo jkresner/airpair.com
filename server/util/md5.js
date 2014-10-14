@@ -8,6 +8,7 @@ export function md5(str, encoding) {
     .digest(encoding || 'hex')
 }
 
+
 export function gravatarUrl(email) {
   return `//0.gravatar.com/avatar/${md5(email)}`
 }
