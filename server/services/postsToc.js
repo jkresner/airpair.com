@@ -73,13 +73,12 @@ function getHtmlHeaders(lines, maxHeaderNo) {
 ////////////----------------------------------------------
 
 
-
 export function getHashId(text, repetition) {
   var id = text
     .replace(/ '/g,'-')
     .replace(/ \/ /g,'-')
-    .replace(/\)/g,'-')    
-    .replace(/[ \/\.\?']/g,'-')
+    .replace(/\)/g,'-')
+    .replace(/[ \/\.\?';]/g,'-')
     // single chars that are removed
     .replace(/%([abcdef]|\d){2,2}/ig, '')
     // single chars that are removed
@@ -135,7 +134,7 @@ function getHashedHeaders (lines) {
     .map(function (x) {
       var match = /^(\#{1,8})[ ]*(.+)\r?$/.exec(x.line);
 
-      return match 
+      return match
         ? { rank :  match[1].length
           , name :  normalize(match[2])
           , line :  x.lineno

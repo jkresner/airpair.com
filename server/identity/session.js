@@ -1,21 +1,22 @@
 var session = require('express-session')
 var cookieParser = require('cookie-parser')
-var bodyParser = require('body-parser')  
+var bodyParser = require('body-parser')
 var passport = require('passport')
 
 var logging = false
 
+
 // takes a delegate to initalize a store that could be Mongo / Redis etc.
-export default function(app, initSessionStore) 
+export default function(app, initSessionStore)
 {
-  initSessionStore( session, (sessionStore) => {    
-    // Passport does not directly manage your session, it only uses the session. 
+  initSessionStore( session, (sessionStore) => {
+    // Passport does not directly manage your session, it only uses the session.
     // So you configure session attributes (e.g. life of your session) via express
-    var sessionOpts = { 
+    var sessionOpts = {
       saveUninitialized: true, // saved new sessions
       resave: false, // do not automatically write to the session store
       store: sessionStore,
-      secret: config.session.secret, 
+      secret: config.session.secret,
       cookie : { httpOnly: true, maxAge: 2419200000 },
       name: 'aps'
     }
@@ -27,7 +28,7 @@ export default function(app, initSessionStore)
 
     app.use(passport.initialize())
     app.use(passport.session())
-  
+
     passport.serializeUser( (user, done) => {
       // The user object comes from UserService.upsertSmart
       var sessionUser = { _id: user._id, name: user.name, email: user.email, roles: user.roles }
@@ -42,5 +43,5 @@ export default function(app, initSessionStore)
       done(null, sessionUser)
     })
 
-  })  
+  })
 }

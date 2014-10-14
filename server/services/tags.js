@@ -5,9 +5,10 @@ import Tag from '../models/tag'
 var logging = false
 var svc = new Svc(Tag, logging)
 
+
 var fields = {
   search: { '_id': 1, 'name': 1, 'slug': 1, 'desc': 1 },
-} 
+}
 
 
 export function search(searchTerm, cb) {

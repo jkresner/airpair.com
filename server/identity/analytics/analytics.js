@@ -2,7 +2,7 @@ var Analytics = require('analytics-node')
 var setDevSettings = (config.env == 'dev' || config.env == 'test')
 var segmentOpts = setDevSettings ? { flushAt: 1 } : {}
 var segment = new Analytics(config.analytics.segmentio.writekey, segmentOpts)
-var logging = true
+var logging = false
 var viewSvc = require('../../services/views')
 
 
@@ -12,46 +12,46 @@ var doneBackup = null
 var buildPayload = (type, user, anonymousId, payload) => {
   if (user) payload.userId = user.email
   else payload.anonymousId = anonymousId
-  if (logging) $log(`analytics.${type}`.yellow, payload)    
+  if (logging) $log(`analytics.${type}`.yellow, payload)
   return payload;
 }
 
 var traitsFromUser = (user) =>
 {
-  var traits = { 
-    name: user.name, 
-    email: user.email, 
+  var traits = {
+    name: user.name,
+    email: user.email,
     // lastSeen: new Date(),  //-- leave this up to the client as it doesn't work via segment
-    createdAt: user.cohort.engagement.visit_first  
+    createdAt: user.cohort.engagement.visit_first
   }
   if (user.username) traits.username = user.username
 
-  // isExpert / isCustomer    
+  // isExpert / isCustomer
 
   return traits;
 }
 
 var track = (user, sessionId, event, properties, context, done) => {
-  segment.track(buildPayload('track', user, sessionId, {event,properties,context}), 
+  segment.track(buildPayload('track', user, sessionId, {event,properties,context}),
     done || doneBackup)
 }
 
 
 var view = (user, sessionID, type, name, properties, context, done) => {
 
-  // FUCK SEGMENT PAGE 
+  // FUCK SEGMENT PAGE
   // segment.page(p)
 
   properties.url = properties.path
-  var m = { event:'View', integrations: { 'All': false, 'Mixpanel': true }} 
+  var m = { event:'View', integrations: { 'All': false, 'Mixpanel': true }}
   var mProperties = _.extend(properties, {type,name})
-  var mPayload = _.extend(m,buildPayload('mp.view', user,sessionID,{properties:mProperties,context})) 
+  var mPayload = _.extend(m,buildPayload('mp.view', user,sessionID,{properties:mProperties,context}))
 
   segment.track(mPayload, done || doneBackup)
-  
+
   // if (context.campaign) segment.identify(buildPayload(userId, anonymousId, {context}))
 
-  // write to mongo    
+  // write to mongo
   var {objectId,url} = properties
   var {referer,campaign} = context
   var userId = (user) ? user._id: null
@@ -60,14 +60,14 @@ var view = (user, sessionID, type, name, properties, context, done) => {
 }
 
 
-var identify = (user, context, identifyEvent, identifyEventProps, done) => {  
+var identify = (user, context, identifyEvent, identifyEventProps, done) => {
   var traits = traitsFromUser(user)
   var context = null // ?? to populate
 
   segment.identify(buildPayload('identify', user, null, {traits,context}), () => {
-    $log('**** identified'.yellow)
+    if (logging) $log('**** identified'.yellow)
     track(user, null, identifyEvent, identifyEventProps, context, () => {
-      $log(`**** ${identifyEvent}`.yellow)
+      if (logging) $log(`**** ${identifyEvent}`.yellow)
       done()
     })
     segment.flush()
@@ -80,7 +80,7 @@ var alias = (sessionID, user, aliasEvent, done) => {
   var userId = user._id.toString()
 
   segment.alias({ previousId: sessionID, userId: user.email }, (e, b) => {
-    $log('**** aliased'.yellow)
+    if (logging) $log('**** aliased'.yellow)
     identify(user, {}, aliasEvent, {sessionID}, done)
   })
   segment.flush()
@@ -93,13 +93,17 @@ module.exports = {
 
   // used for testing
   setCallback: (cb) => {
-    doneBackup = (e, batch) => { 
-      $log('**** analytics done'.yellow)
+    doneBackup = (e, batch) => {
+      if (logging) $log('**** analytics done'.yellow)
       doneBackup = null
-      cb() 
+      cb()
     }
   },
 
+  // params:
+  // user = most up to date user
+  // existingUser = not null if they are logging in, if it's a singup will be null
+  // sessionID = the random Id of their current session
   upsert: (user, existingUser, sessionID, cb) =>
   {
     var {aliases} = user.cohort
@@ -109,27 +113,28 @@ module.exports = {
     if (noAliases && !existingUser) {
       aliases = [sessionID] // we make the assumption that we're going to alias on the update
       analytics.alias(sessionID, user, 'Signup', () => cb(aliases) )
-    } 
+    }
     else
     {
       aliases = aliases || []
-      
+
       //-- This is an existing user from a new device / browser
       if ( ! _.contains(aliases, sessionID) ) {
         if (logging) $log('newAnonSessionID', sessionID)
         aliases.push(sessionID)
       }
-      
-      viewSvc.alias(sessionID, user._id, ()=>{})   //-- but update all the anonymous views to the userId
-      
+
+      //-- but update all the anonymous views to the userId
+      viewSvc.alias(sessionID, user._id, ()=>{})
+
       var context = {sessionID} // ??
       analytics.identify(user, context, 'Login', {sessionID}, () => cb(aliases))
     }
   },
 
-  track, 
-  view, 
-  identify, 
+  track,
+  view,
+  identify,
   alias
 
 }

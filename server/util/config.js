@@ -3,13 +3,13 @@ var cfg = {
   port:     process.env.PORT || 3333,
   mongoUri: process.env.MONGOHQ_URL || "mongodb://localhost/airpair_dev",
   session: { secret: 'airyv1' },
-  analytics: { 
-      on: false,
-      segmentio: { writekey: '9793xyfxat' } 
+  analytics: {
+		on: false,
+		segmentio: { writekey: '9793xyfxat' }
   },
   auth: {
     loginUrl: '/v1/auth/login',
-    unauthorizedUrl: '/v1/auth/unauthorized',    
+    unauthorizedUrl: '/v1/auth/unauthorized',
     defaultRedirectUrl: '/v1',
     oAuth: { callbackHost: 'http://localhost:3333' },
     local: {
@@ -24,11 +24,11 @@ var cfg = {
         'https://www.googleapis.com/auth/userinfo.email',
         'https://www.googleapis.com/auth/userinfo.profile'
       ]
-    }  
+    }
   },
   log: {},
   mail: {
-    ses: { 
+    ses: {
       access_key: process.env.MAIL_SES_ACCESS_KEY || "none",
       secret_key: process.env.MAIL_SES_SECRET_KEY || "none"
     }
@@ -42,7 +42,7 @@ module.exports = function(env, appdir) {
   cfg.livereload = cfg.env == 'dev'
 
   //-- Temp for testing prod setting locally
-  // cfg.analytics.on = true 
+  // cfg.analytics.on = true
   // cfg.analytics.segmentio. writekey = '0xxx5xrw5q'
 
   if (cfg.env == 'test') {

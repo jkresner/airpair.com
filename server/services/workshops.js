@@ -5,8 +5,8 @@ var logging = false
 var svc = new Svc(Workshop, logging)
 
 var fields = {
-  listSelect: {title:1,slug:1,time:1,tags:1,'speakers.name':1,'speakers.gravatar':1}
-} 
+  listSelect: { title:1,slug:1,time:1,tags:1,'speakers.name':1,'speakers.gravatar':1 }
+}
 
 
 export function getAll(cb) {
@@ -17,7 +17,7 @@ export function getAll(cb) {
       w.url = `${w.tags[0]}/workshops/${w.slug}`
     }
     cb(e, r)
-  })     
+  })
 }
 
 

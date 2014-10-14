@@ -31,7 +31,7 @@ export function run()
 		})
 
 		process.on('uncaughtException', (err) => { 
-			$error(err, null, null)
+			$error(err, {name:'uncaught',_id:'',email:''}, null)
 			process.exit(1) 
 		})
 
@@ -39,6 +39,6 @@ export function run()
 		  console.log(`Listening on port ${server.address().port}`.white)
 		})
 
-		return app;
 	})
+	return app;
 }

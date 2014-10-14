@@ -1,5 +1,5 @@
 
-angular.module('APSvcSession', [])  
+angular.module('APSvcSession', [])
 
   .constant('API', '/v1/api')
 
@@ -23,15 +23,8 @@ angular.module('APSvcSession', [])
     }
 
     this.flushCache = function() {
-      cache = null; 
+      cache = null;
     };
-
-    /*
-    this.getSessionFull = function(success, error)
-    {
-      $http.get(`${API}/session/full`).success(success).error(error);
-    }
-    */
 
     this.login = function(data, success, error)
     {
@@ -42,5 +35,5 @@ angular.module('APSvcSession', [])
     {
       $http.post(`${Auth}/signup`, data).success(success).error(error);
     }
-  
+
   }])
