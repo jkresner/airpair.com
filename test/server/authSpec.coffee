@@ -210,7 +210,20 @@ module.exports = -> describe "Signup: ", ->
           .expect(302)
           .end (err, res) ->
             if (err) then return done(err)
-            expect(res.header['location']).to.include('/email_verified')
+            expect(res.header['location']).to.include('/verify_success')
             GET '/session/full', {}, (s) ->
               expect(s.emailVerified).to.be.true
+              done()
+
+    it 'a bad standalone verification link does not verify the user', (done) ->
+      d = getNewUserData('step')
+      addAndLoginLocalUser 'step', (s) ->
+        http(global.app).get('/v1/auth/verify?hash=' + 'ABCDEF1234567')
+          .set('cookie',cookie)
+          .expect(302)
+          .end (err, res) ->
+            if (err) then return done(err)
+            expect(res.header['location']).to.include('/verify_failed')
+            GET '/session/full', {}, (s) ->
+              expect(s.emailVerified).to.be.false
               done()
