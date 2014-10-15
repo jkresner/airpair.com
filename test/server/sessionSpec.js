@@ -58,7 +58,7 @@ module.exports = () => describe("API: ", function() {
   })
 
 
-    xit('Can save bookmark data to anonymous session', function(done) {
+  it.skip('Can save bookmark data to anonymous session', () => {} )
 
 
   it('Copies anonymous session data to new local signup user', (done) =>
@@ -66,19 +66,19 @@ module.exports = () => describe("API: ", function() {
       .put('/v1/api/users/me/tag/mongodb')
       .end( (err, resp) => {
         cookie = resp.headers['set-cookie']
-          GET('/session', {}, (s) => {
-            expect(s.tags[0].name).to.equal('MongoDB')
+        GET('/session', {}, (s) => {
+          expect(s.tags[0].name).to.equal('MongoDB')
           var singup = getNewUserData('ramo')
           http(global.app).post('/v1/auth/signup').send(singup)
             .set('cookie',cookie)
             .end( (err, resp) =>
               GET('/session/full', {}, (sFull) => {
                 expect(sFull._id).to.exist
-                  expect(sFull.name).to.equal(singup.name)
+                expect(sFull.name).to.equal(singup.name)
                 expect(sFull.tags).to.exist
                 expect(sFull.tags.length).to.equal(1)
-                  expect(sFull.tags[0].name).to.equal('MongoDB')
-                  done()
+                expect(sFull.tags[0].name).to.equal('MongoDB')
+                done()
               })
             )
         })
@@ -89,7 +89,7 @@ module.exports = () => describe("API: ", function() {
   it.skip('TODO: Copies anonymous session data to new google signup user', () => {} )
 
 
-    xit('Copies anonymous session data to local login user', () =>
+  it.skip('Not gonna Impl: Merges anonymous session data to local LOGIN user', () => {} )
 
 
   it('gets slim authenticated session', function(done) {
@@ -97,7 +97,7 @@ module.exports = () => describe("API: ", function() {
       GET('/session', {}, function(r) {
         expect(r._id).to.equal("5418c03f8f8c80299bcc4783")
         expect(r.email).to.equal("sc@airpair.com")
-          expect(r.name).to.equal("Shane")
+        expect(r.name).to.equal("Shane")
         expect(r.avatar).to.equal("//0.gravatar.com/avatar/54856fdf0610d64c79bf82b43d56f356")
         done()
       })
@@ -105,4 +105,3 @@ module.exports = () => describe("API: ", function() {
   })
 
 })
-
