@@ -4,7 +4,7 @@ bcrypt = require('bcrypt')
 
 module.exports = -> describe "Signup: ", ->
 
-    @timeout(6000)
+  @timeout(6000)
 
   before (done) ->
     # stubAnalytics()
