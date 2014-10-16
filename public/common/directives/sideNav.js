@@ -23,8 +23,7 @@ angular.module("APSideNav", ['APSvcSession'])
 			controller: function($scope, $element) {
 
 				// SessionService.onAuthenticated( (session) => {
-    //   		// console.log('got the session', session)
-    //   		// ??
+    //   		console.log('got the session', session)
     // 		})
 
         this.toggle = function() {
@@ -36,7 +35,7 @@ angular.module("APSideNav", ['APSvcSession'])
         	$element.toggleClass('collapse', storage('sideNavOpen') == 'false')
         }
 
-        $element.toggleClass('collapse', storage('sideNavOpen') == 'false')
+        $element.toggleClass('collapse', storage('sideNavOpen') != 'true')
       }
 		};
 

@@ -18,6 +18,10 @@ angular.module("AP", ['ngRoute', 'APSideNav', 'APAuth', 'APPosts', 'APWorkshops'
 
     $locationProvider.html5Mode(true);
 
+		$routeProvider.when('/v1', {
+			template: require('../home.html')
+		});
+
   }])
 
   .run(['$rootScope', '$location', 'SessionService',
