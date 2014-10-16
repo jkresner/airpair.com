@@ -1,0 +1,36 @@
+<header>
+  <img ng-click="sideNav.toggle()" src="/v1/img/css/sidenav/toggle.png" />
+</header>
+
+<section>
+	<figure><img class="avatar" ng-src="{{ session.avatar }}?s=120" /></figure>
+</section>
+
+<section> <label>{{ session.name.split(' ')[0] }}</label>
+  <ul id="main">
+    <!-- <li><a href="#">dashboard</a></li> -->
+    <li><a href="/billing">billing</a></li>
+    <!-- <li><a href="#">airpairs</a></li> -->
+    <!-- <li><a href="#">settings</a></li> -->
+    <li><a href="/v1/auth/logout" target="_self">logout</a></li>
+  </ul>
+</section>
+
+<!-- <section> <label>Stack</label>
+	<ul id="tags">
+	  <li><a href="#">nodejs</a></li>
+	  <li><a href="#">angularjs</a></li>
+	  <li><a href="#">mongodb</a></li>
+	  <li><a href="#">passport</a></li>
+	  <li><a href="#">svg</a></li>
+	</ul>
+</section> -->
+
+<!-- <section> <label>Bookmarks</label>
+	<ul id="bookmarks">
+	  <li><a href="#">Starting a Mean Stack App</a></li>
+	  <li><a href="#">AngularJS vs Backbone.js vs Ember.js</a></li>
+	  <li><a href="#">Zero to Product Market Fit</a></li>
+	</ul>
+</section>
+ -->
