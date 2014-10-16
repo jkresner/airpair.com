@@ -10,8 +10,9 @@ require('./../common/postHelpers.js');
 require('./../auth/module.js');
 require('./../posts/module.js');
 require('./../workshops/module.js');
+require('./../billing/module.js');
 
-angular.module("AP", ['ngRoute', 'APSideNav', 'APAuth', 'APPosts', 'APWorkshops'])
+angular.module("AP", ['ngRoute', 'APSideNav', 'APAuth', 'APPosts', 'APWorkshops', 'APBilling'])
 
   .config(['$locationProvider', '$routeProvider',
       function($locationProvider, $routeProvider) {
