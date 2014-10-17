@@ -9,6 +9,7 @@ module.exports = {
   ajde: { name:"Ajay Desai",email:"ajay@desai.com" },
   prat: { name:"Prateek Gupta",email:"prateek@gupta.com" },
 
+  jmel: { name:"Joe Mellin",email:"joemellin@gmail.com" },
   joem: { name:"Joe Mellin",email:"joe@mellin.com" },
   ramo: { name:"Ramon Porter",email:"sierra@test.com" },
   rapo: { name:"Ramon Porter",email:"ramonp@apr.com" },
@@ -18,6 +19,7 @@ module.exports = {
   igor: { name:"Igor Lebovic",email:"igorlebovic@gmail.com" },
   evnr: { name:"Evan Richards",email:"goldfish@gmail.com" },
   nevk: { name:"Nevan King",email:"nevking@gmail.com" },
+  nkig: { name:"Nevan King",email:"nevanking@hotmail.com" },
 
   shcl: { name: "Shane Cole", email: "shanecole@ap.com"},
   stpv: { name: "Steve Purves", email: "stevep@ap.com"},

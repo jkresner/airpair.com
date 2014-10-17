@@ -34,6 +34,81 @@ module.exports = {
       },
       "googleId" : "101673072972612685381"
     }
+  },
+
+
+  settings: {
+  	jk: {
+	    "paymentMethods" : [
+	        {
+	            "type" : "paypal",
+	            "isPrimary" : true,
+	            "info" : {
+	                "email" : "jkresner@gmail.com"
+	            },
+	            "_id" : "539b5c5c1f18ce0200d105d0"
+	        },
+	        {
+	            "type" : "stripe",
+	            "info" : {
+	                "subscription" : null,
+	                "default_card" : "card_4KveLBBqT0rs0P",
+	                "cards" : {
+	                    "count" : 1,
+	                    "data" : [
+	                        {
+	                            "type" : "Visa",
+	                            "customer" : "cus_5Kvew1gjYgXWZd",
+	                            "address_zip_check" : null,
+	                            "address_line1_check" : null,
+	                            "cvc_check" : "pass",
+	                            "address_country" : null,
+	                            "address_zip" : null,
+	                            "address_state" : null,
+	                            "address_city" : null,
+	                            "address_line2" : null,
+	                            "address_line1" : null,
+	                            "name" : null,
+	                            "country" : "US",
+	                            "fingerprint" : "MR0HO4NuvjtLvhjr",
+	                            "exp_year" : 2017,
+	                            "exp_month" : 4,
+	                            "funding" : "credit",
+	                            "brand" : "Visa",
+	                            "last4" : "4925",
+	                            "object" : "card",
+	                            "id" : "card_4KveLBBqT0rs0P"
+	                        }
+	                    ],
+	                    "url" : "/v1/customers/cus_5Kvew1gjYgXWZd/cards",
+	                    "has_more" : false,
+	                    "total_count" : 1,
+	                    "object" : "list"
+	                },
+	                "currency" : null,
+	                "account_balance" : 0,
+	                "discount" : null,
+	                "subscriptions" : {
+	                    "count" : 0,
+	                    "data" : [],
+	                    "url" : "/v1/customers/cus_4Kvew1gjYgXWZd/subscriptions",
+	                    "has_more" : false,
+	                    "total_count" : 0,
+	                    "object" : "list"
+	                },
+	                "delinquent" : false,
+	                "email" : "jk@airpair.com",
+	                "description" : null,
+	                "livemode" : true,
+	                "id" : "cus_5Kvew1gjYgXWZd",
+	                "created" : 1404415342,
+	                "object" : "customer"
+	            },
+	            "isPrimary" : false,
+	            "_id" : "53b5ad6f69548e0200ee8018"
+	        }
+		    ]
+		}
   }
 
 }

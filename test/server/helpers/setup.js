@@ -3,6 +3,7 @@ var Tag = require('../../../server/models/tag')
 var Workshop = require('../../../server/models/workshop')
 var View = require('../../../server/models/view')
 var User = require('../../../server/models/user')
+var Settings = require('../../../server/models/settings')
 var util = require('../../../shared/util')
 
 global.stubAnalytics = function()
@@ -90,6 +91,10 @@ function addUserWithRole(userKey, role, done)
   })
 }
 
+function ensureDocument(Model, doc, cb)
+{
+  Model.findByIdAndRemove(doc._id, function(e, r) { new Model(doc).save(cb); })
+}
 
 module.exports = {
 
@@ -153,7 +158,12 @@ module.exports = {
   },
 
   ensureUser: function(user, cb) {
-    User.findByIdAndRemove(user._id, (e, r) => {new User(user).save(cb)})
+  	ensureDocument(User, user, cb)
+  },
+
+  ensureSettings: function(user, settings, cb) {
+  	settings.userId = user._id
+    ensureDocument(Settings, settings, cb)
   }
 
 }
