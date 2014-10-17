@@ -15,7 +15,6 @@ export default function(app) {
     .post('/signup', local.signup, authDone)
     .get('/google', google.oAuth)
     .get('/google/callback', google.oAuth, authDone)
-    .get('/verify', authd, UsersAPI.verifyEmail)
 
   if (config.testlogin) app.get('/test/setlogin/:id', setTestLogin)
 
