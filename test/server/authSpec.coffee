@@ -186,6 +186,7 @@ module.exports = -> describe "Signup: ", ->
             .expect(403)
             .end (err, res) ->
               if (err) then return done(err)
+              expect(res.body.error).to.include('e-mail not verified')
               done()
 
     it 'user can only verify e-mail when logged in', (done) ->
@@ -219,7 +220,7 @@ module.exports = -> describe "Signup: ", ->
       addAndLoginLocalUser 'step', (s) ->
         http(global.app).get('/v1/email-verify?hash=' + 'ABCDEF1234567')
           .set('cookie',cookie)
-          .expect(302) # if this was an api call we'd do 403 but we need the redirect as we are called from outside our app
+          .expect(302) # if this was an api call we'd do 403 but we need the redirect as we are called from outside our
           .end (err, res) ->
             if (err) then return done(err)
             GET '/session/full', {}, (s) ->
