@@ -7,7 +7,7 @@ root = true
 [*]
 
 # Change these settings to your own preference
-indent_style = space
+indent_style = tab
 indent_size = 2
 
 # We recommend you to keep these unchanged
@@ -22,6 +22,6 @@ trim_trailing_whitespace = false
 [*.coffee]
 indent_style = space
 
-[{bower.json,package.json}]
+[{bower.json,package.json,*.coffee}]
 indent_style = space
 indent_size = 2
