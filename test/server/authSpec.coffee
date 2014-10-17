@@ -192,7 +192,7 @@ module.exports = -> describe "Signup: ", ->
       d = getNewUserData('chuc')
       addLocalUser 'chuc', (s) ->
         http(global.app)
-          .get('/v1/verify?hash=anything')
+          .get('/v1/email-verify?hash=anything')
           .expect(302) # should be 401 and include WWW-Wuthenitcate header
           .end (err, res) ->
             if (err) then return done(err)
@@ -204,26 +204,25 @@ module.exports = -> describe "Signup: ", ->
       d = getNewUserData('stev')
       the_hash = generateHash(d.email)
       addAndLoginLocalUser 'stev', (s) ->
-        http(global.app).get('/v1/verify?hash=' + the_hash)
+        http(global.app).get('/v1/email-verify?hash=' + the_hash)
           .set('cookie',cookie)
           .expect(302)
           .end (err, res) ->
             if (err) then return done(err)
             GET '/session/full', {}, (s) ->
               expect(s.emailVerified).to.be.true
-              #expect(res.header['location']).to.include('/email_verified')
+              expect(res.header['location']).to.include('/email_verified')
               done()
 
     it 'a bad standalone verification link does not verify the user', (done) ->
       d = getNewUserData('step')
       addAndLoginLocalUser 'step', (s) ->
-        http(global.app).get('/v1/verify?hash=' + 'ABCDEF1234567')
+        http(global.app).get('/v1/email-verify?hash=' + 'ABCDEF1234567')
           .set('cookie',cookie)
-          .expect(403)
+          .expect(302) # if this was an api call we'd do 403 but we need the redirect as we are called from outside our app
           .end (err, res) ->
             if (err) then return done(err)
-            # res.body.message = "something"
             GET '/session/full', {}, (s) ->
               expect(s.emailVerified).to.be.false
-              #expect(res.header['location']).to.include('/email_not_verified')
+              expect(res.header['location']).to.include('/email_verification_failed')
               done()

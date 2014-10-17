@@ -11,7 +11,6 @@ var cbSend = (httpMethod, res, next) => {
     if (httpMethod != 'DELETE')
     {
       if (!r) { return res.status(404).json({}) }
-      if (r.status && r.status == 302) { return res.redirect(r.redirectTo) }
       res.json(r)
     }
     else
