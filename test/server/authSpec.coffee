@@ -183,7 +183,7 @@ module.exports = -> describe "Signup: ", ->
          http(global.app)
             .get('/')
             .set('cookie',cookie)
-            .expect(302)
+            .expect(403)
             .end (err, res) ->
               if (err) then return done(err)
               done()
@@ -193,7 +193,7 @@ module.exports = -> describe "Signup: ", ->
       addLocalUser 'chuc', (s) ->
         http(global.app)
           .get('/v1/verify?hash=anything')
-          .expect(302)
+          .expect(302) # should be 401 and include WWW-Wuthenitcate header
           .end (err, res) ->
             if (err) then return done(err)
             expect(res.redirect).to.be.true
@@ -219,9 +219,10 @@ module.exports = -> describe "Signup: ", ->
       addAndLoginLocalUser 'step', (s) ->
         http(global.app).get('/v1/verify?hash=' + 'ABCDEF1234567')
           .set('cookie',cookie)
-          .expect(302)
+          .expect(403)
           .end (err, res) ->
             if (err) then return done(err)
+            # res.body.message = "something"
             GET '/session/full', {}, (s) ->
               expect(s.emailVerified).to.be.false
               #expect(res.header['location']).to.include('/email_not_verified')
