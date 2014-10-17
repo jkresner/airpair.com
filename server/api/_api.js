@@ -34,13 +34,13 @@ function resolveParamFn(Svc, svcFnName, paramaName) {
 }
 
 
-export function serve(Svc, svcFnName, argsFn) {  
+export function serve(Svc, svcFnName, argsFn) {
   return (req, res, next) => {
     var thisSvc = { user: req.user, sessionID: req.sessionID, session: req.session }
     if (logging) $log('thisSvc', svcFnName, argsFn, Svc, thisSvc)
     var args = argsFn(req)
     args.push(cbSend(req.method,res,next))
-    Svc[svcFnName].apply(thisSvc, args)        
+    Svc[svcFnName].apply(thisSvc, args)
   }
 }
 
@@ -60,13 +60,13 @@ export var initAPI = (Svc, custom, paramFns) => {
     api[name] = serve(Svc, name, argsFns[name])
 
   if (paramFns)
-    for (var paramName of Object.keys(paramFns)) 
+    for (var paramName of Object.keys(paramFns))
     {
       var svcFn = paramFns[paramName]
       api.paramFns[svcFn] = resolveParamFn(Svc,svcFn,paramName)
     }
 
   api.svc = Svc
-  
+
   return api;
 }
