@@ -3,6 +3,7 @@ import PostsAPI from '../api/posts'
 import UsersAPI from '../api/users'
 import TagsAPI from '../api/tags'
 import RedirectsAPI from '../api/redirects'
+import BillingAPI from '../api/billing'
 import {authd,adm,setAnonSessionData} from '../identity/auth/middleware'
 
 export default function(app) {
@@ -31,6 +32,11 @@ export default function(app) {
 
     .get('/workshops/', WorkshopsAPI.getAll)
     .get('/workshops/:id', WorkshopsAPI.getBySlug)
+
+    .use(authd) //-- swap out for email verify or something
+    .get('/billing/paymethods', BillingAPI.getMyPaymethods)
+    .post('/billing/paymethods', BillingAPI.createPaymethod)
+    .delete('/billing/paymethods/:id', BillingAPI.deletePaymethod)
 
 
   var admrouter = require('express').Router()
