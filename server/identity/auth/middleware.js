@@ -38,7 +38,7 @@ export function authd(req, res, next) {
 export function emailv(req, res, next) {
 	if (!req.session.passport.user.emailVerified)
 	{
-		res.redirect(302, '/email_not_verified');
+		res.status(403).send({error: 'e-mail not verified'});
 	}
 	else
 	{
