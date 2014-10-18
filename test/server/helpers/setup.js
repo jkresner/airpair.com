@@ -6,6 +6,9 @@ var User = require('../../../server/models/user')
 var {Settings,Company} = require('../../../server/models/v0')
 var util = require('../../../shared/util')
 
+global.braintree = require('braintree')
+
+
 global.stubAnalytics = function()
 {
   global.trackStub = sinon.stub(analytics,'track', (p1,p2,p3,p4,p5,cb) => { if (cb) cb() })
