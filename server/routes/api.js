@@ -35,7 +35,7 @@ export default function(app) {
 
     .use(authd) //-- swap out for email verify or something
     .get('/billing/paymethods', BillingAPI.getMyPaymethods)
-    .post('/billing/paymethods', BillingAPI.createPaymethod)
+    .post('/billing/paymethods', BillingAPI.addPaymethod)
     .delete('/billing/paymethods/:id', BillingAPI.deletePaymethod)
 
 

@@ -202,7 +202,7 @@ export function update(id, data, cb) {
     User.findOneAndUpdate({_id:r._id}, updated, (err, user) => {
       if (err) $log('User.update.err', err && err.stack)
       if (logging) $log('User.update', JSON.stringify(user))
-      cb(err, user)
+      if (cb) cb(err, user)
     })
   })
 }
