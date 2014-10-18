@@ -6,13 +6,16 @@ var environment = braintree.Environment[config.payments.braintree.environment]
 
 var gateway = braintree.connect({ environment, merchantId, publicKey, privateKey })
 
+var logging = false
+
+
 var logCB = (operation, payload, cb) =>
 	(e,r) => {
 		if (e) { $log(`braintree.${operation}.ERROR`, e, payload); cb(e) }
 		else if (!r.success) { $log(`braintree.${operation}.ERROR`, r.message, r, payload); cb(r) }
 		else {
 			if (logging) $log(`braintree.${operation}`, r)
-			cb(e, r)
+			cb(null, r)
 		}
 	}
 
@@ -50,7 +53,7 @@ export function addPaymentMethod(customerId, user, company, paymentMethodNonce, 
 		if (existing)
 		{
 			var payload = { customerId, paymentMethodNonce }
-			gateway.paymentMethod.create(payload, logCB('paymentMethod.create', payload, cb))
+			gateway.paymentMethod.create(payload, logCB('paymentMethod.create', payload, (e,r) => cb(null, r.paymentMethod)))
 		}
 		else
 		{
@@ -71,7 +74,7 @@ export function addPaymentMethod(customerId, user, company, paymentMethodNonce, 
 				payload.customFields.companyId = company._id
 			}
 
-			gateway.customer.create(payload, logCB('customer.create', payload, cb))
+			gateway.customer.create(payload, logCB('customer.create', payload, (e,r) => cb(null, r.customer.creditCards[0])))
 		}
 	})
 }
