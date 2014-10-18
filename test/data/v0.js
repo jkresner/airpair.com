@@ -109,7 +109,29 @@ module.exports = {
 	        }
 		    ]
 		}
+  },
+
+  companys: {
+  	urbn : {
+	    "name" : "Ubersense",
+	    "url" : "www.ubersense.com",
+	    "about" : "Ubersense is a mobile app that is helping athletes improve at sports using video and expert coaching. Ubersense iOS apps have been used by more than a million athletes and coaches at all levels, in all kinds of sports.",
+	    "contacts" : [
+	        {
+	            "fullName" : "Amit Jardosh",
+	            "email" : "amit.jardosh@gmail.com",
+	            "gmail" : "amit.jardosh@gmail.com",
+	            "title" : "",
+	            "phone" : "",
+	            "userId" : "51a4c3f566a6f999a465f2ef",
+	            "pic" : "https://lh6.googleusercontent.com/-Nl10iDSmQfQ/AAAAAAAAAAI/AAAAAAAABuU/bXgQXuZgofc/photo.jpg",
+	            "twitter" : "",
+	            "timezone" : "GMT-0700 (PDT)",
+	        }
+	    ]
+		}
   }
+
 
 }
 

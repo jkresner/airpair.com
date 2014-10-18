@@ -3,7 +3,7 @@ var Tag = require('../../../server/models/tag')
 var Workshop = require('../../../server/models/workshop')
 var View = require('../../../server/models/view')
 var User = require('../../../server/models/user')
-var Settings = require('../../../server/models/settings')
+var {Settings,Company} = require('../../../server/models/v0')
 var util = require('../../../shared/util')
 
 global.stubAnalytics = function()
@@ -164,8 +164,13 @@ module.exports = {
   ensureSettings: function(user, settings, cb) {
   	settings.userId = user._id
     ensureDocument(Settings, settings, cb)
-  }
+  },
 
+  ensureCompany: function(user, company, cb) {
+  	company.contacts[0].fullName = user.name
+  	company.contacts[0].userId = user._id
+    ensureDocument(Company, company, cb)
+  }
 }
 
 

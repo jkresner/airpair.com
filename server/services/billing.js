@@ -1,8 +1,9 @@
 import Svc from './_service'
+import * as Validate from '../../shared/validation/billing.js'
 import PayMethod from '../models/paymethod'
-import Settings from '../models/settings'
 import * as Braintree from './wrappers/braintree'
 import * as UserSvc from './users'
+var Settings = require('../models/v0').Settings
 
 // Approach:
 // Since our system allows multiple pay methods by different providers (braintree / stripe)
@@ -36,6 +37,7 @@ export function addPaymethod(o, cb) {
 			o.userId = user._id
 			o.companyId = o.companyId
 			o.info = payMethodInfo
+			if (logging) $log('savePayMethod', payMethodInfo)
 
   		svc.create(o, (e,r) => {
 				if (logging) $log('savePayMethod', o.makeDefault, user._id, o)
@@ -56,11 +58,16 @@ export function addPaymethod(o, cb) {
 
 
 export function deletePaymethod(id, cb) {
-  svc.getById(id, (e, r) => {
-    // var inValid = Validate.deleteById(this.user, r)
-    // if (inValid) return cb(svc.Forbidden(inValid))
-    svc.deleteById(id, cb)
+  UserSvc.getSessionFull.call(this, (e, user) => {
+	  svc.getById(id, (e, r) => {
+	    var inValid = Validate.deletePayMethodById(this.user, r)
+	    if (inValid) return cb(svc.Forbidden(inValid))
+	    svc.deleteById(id, cb)
+	  	if (_.idsEqual(user.primaryPayMethodId,id))
+	  		UserSvc.update.call(this, user._id, { primaryPayMethodId: null })
+	  })
   })
+
 }
 
 
