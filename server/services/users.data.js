@@ -16,6 +16,7 @@ module.exports = {
       'twitter.username': 1,
       'email': 1,
       'emailVerified': 1,
+      'primaryPayMethodId': 1,
       'name': 1,
       'initials': 1,
       'bio': 1,

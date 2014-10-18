@@ -31,6 +31,17 @@ module.exports = {
 
   dateWithDayAccuracy: () => {
     return moment('yyyy-MM-dd', moment().format('yyyy-MM-dd')).toDate()
+  },
+
+
+  firstName: (name) => {
+    return name.split(' ')[0]
+  },
+
+
+  lastName: (name) => {
+    return name.replace(name.split(' ')[0]+ '' , '')
   }
+
 
 }

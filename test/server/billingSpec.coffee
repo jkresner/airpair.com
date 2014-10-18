@@ -1,3 +1,6 @@
+braintree = require('braintree')
+
+
 module.exports = -> describe "PayMethods", ->
 
   before (done) ->
@@ -21,34 +24,56 @@ module.exports = -> describe "PayMethods", ->
         expect(r.length).to.equal(0)
         done()
 
+
   it 'Gets migrated stripe result for v0 user from settings', (done) ->
     addAndLoginLocalUser 'jmel', (s) ->
-      testDb.ensureSettings s, data.v0.settings.jk, (e, r) ->
+      testDb.ensureSettings s, data.v0.settings.jk, ->
         GET '/billing/paymethods', {}, (r) ->
           expect(r).to.exist
           expect(r.length).to.equal(1)
           expect(r[0].type).to.equal('stripe')
           expect(r[0].name).to.exist
           expect(r[0].info.default_card).to.equal(data.v0.settings.jk.paymentMethods[1].info.default_card)
-          done()
-
-    # LOGIN 'admin', data.users.admin, (s) ->
-    #   GET '/tags/angularjs', {}, (t) ->
-    #     expect(t.slug).to.equal('angularjs')
-    #     expect(t.name).to.equal('AngularJS')
-    #     expect(t.short).to.equal('Angular')
-    #     done()
+          GET '/session/full', {}, (s1) ->
+            $log('sesh', s1)
+            expect(s1.primaryPayMethodId).to.equal(r[0]._id)
+            done()
 
 
-  it.skip 'Can add payment braintree payment method', (done) ->
-    # opts = { unauthenticated: true }
-    # GET '/tags/search/mon', opts, (s) ->
-    #   expect(s.length).to.equal(1)
-    #   expect(s[0].name).to.equal('MongoDB')
-    #   expect(s[0].slug).to.equal('mongodb')
-    #   expect(s[0].desc).to.exist
-    #   expect(s[0]._id).to.exist
-    #   done()
+  it 'Can add braintree payment method to new user', (done) ->
+    addAndLoginLocalUser 'evan', (s) ->
+      d = type: 'braintree', token: braintree.Test.Nonces.Transactable, name: 'Default Card', makeDefault: true
+      POST '/billing/paymethods', d, {}, (r) ->
+        expect(r).to.exist
+        expect(r.type).to.equal('braintree')
+        expect(r.name).to.exist
+        GET '/billing/paymethods', {}, (pms) ->
+          expect(pms).to.exist
+          expect(pms.length).to.equal(1)
+          expect(pms[0].type).to.equal('braintree')
+          expect(pms[0].name).to.equal('Default Card')
+          GET '/session/full', {}, (s1) ->
+            expect(s1.primaryPayMethodId).to.equal(pms[0]._id)
+            done()
+
+
+  it 'Can add multiple braintree payment methods to new user', (done) ->
+    @timeout(3000)
+    addAndLoginLocalUser 'elld', (s) ->
+      d = type: 'braintree', token: braintree.Test.Nonces.Transactable, name: 'Default Card', makeDefault: true
+      POST '/billing/paymethods', d, {}, (r1) ->
+        d2 = type: 'braintree', token: braintree.Test.Nonces.Transactable, name: 'Backup Card'
+        POST '/billing/paymethods', d2, {}, (r2) ->
+          $log('go2', r2._id)
+          GET '/billing/paymethods', {}, (pms2) ->
+            expect(pms2.length).to.equal(2)
+            GET '/session/full', {}, (s1) ->
+              expect(s1.primaryPayMethodId).to.equal(r1._id)
+              done()
+
+
+  it.skip 'Can add company payment method to new user', (done) ->
+
 
 
 describe.skip "COMPANY PayMethods", ->

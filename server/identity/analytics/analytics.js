@@ -22,7 +22,8 @@ var traitsFromUser = (user) =>
     name: user.name,
     email: user.email,
     // lastSeen: new Date(),  //-- leave this up to the client as it doesn't work via segment
-    createdAt: user.cohort.engagement.visit_first
+    createdAt: user.cohort.engagement.visit_first,
+    paymentInfoSet: user.primaryPayMethodId != null
   }
   if (user.username) traits.username = user.username
 
