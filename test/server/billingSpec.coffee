@@ -1,6 +1,3 @@
-braintree = require('braintree')
-
-
 module.exports = -> describe "PayMethods", ->
 
   before (done) ->
@@ -100,16 +97,3 @@ module.exports = -> describe "PayMethods", ->
               GET '/billing/paymethods', {}, (pms) ->
                 expect(pms.length).to.equal(0)
                 done()
-
-
-describe.skip "ORDER HISTORY", ->
-
-
-  it.skip 'Empty result for orderHistory on new user', (done) ->
-    # opts = status: 401, unauthenticated: true
-    # GET('/tags/angularjs', opts, -> done() )
-
-
-  it.skip 'Empty result for orderHistory on new user', (done) ->
-    # opts = status: 401, unauthenticated: true
-    # GET('/tags/angularjs', opts, -> done() )

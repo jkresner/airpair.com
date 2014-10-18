@@ -5,27 +5,22 @@ import * as Braintree from './wrappers/braintree'
 import * as UserSvc from './users'
 var Settings = require('../models/v0').Settings
 
-// Approach:
-// Since our system allows multiple pay methods by different providers (braintree / stripe)
-// We do not allow multiple paymethods by one provider unless they are adding a company card
-// Users can have as many company cards as they like ...
-// But if they add multiple company cards then the company itself need to store multiple cards.
-
-// payMethod._id === braintree.customerId
-// customFields
-// {
-//		createdByuserId: ''
-//		companyId: ''
-// }
 
 var logging = false
 var svc = new Svc(PayMethod, logging)
 
-export function createMembershipSubscription(o, cb) {
-  cb('Not Implemented')
-  // svc.create(o, cb)
-}
+export function getById(id, cb) {
+	var userId = this.user._id
+	svc.getById(id, (e, r) => {
+		if (r)
+		{
+			var validPaymethodForUser = r.userId == userId  // TODO check company cards
+			if (validPaymethodForUser) return cb(null, r)
+		}
 
+		cb(e,null)
+	})
+}
 
 export function addPaymethod(o, cb) {
 	var user = this.user

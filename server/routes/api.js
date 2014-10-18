@@ -3,7 +3,8 @@ import PostsAPI from '../api/posts'
 import UsersAPI from '../api/users'
 import TagsAPI from '../api/tags'
 import RedirectsAPI from '../api/redirects'
-import BillingAPI from '../api/billing'
+import PaymethodsAPI from '../api/paymethods'
+import OrdersAPI from '../api/orders'
 import {authd,adm,setAnonSessionData} from '../identity/auth/middleware'
 
 export default function(app) {
@@ -12,6 +13,7 @@ export default function(app) {
   var router = require('express').Router()
 
     .param('tag', TagsAPI.paramFns.getBySlug)
+    .param('paymethod', PaymethodsAPI.paramFns.getById)
 
     .get('/session', UsersAPI.getSession)
     .get('/session/full', UsersAPI.getSessionFull)
@@ -34,9 +36,11 @@ export default function(app) {
     .get('/workshops/:id', WorkshopsAPI.getBySlug)
 
     .use(authd) //-- swap out for email verify or something
-    .get('/billing/paymethods', BillingAPI.getMyPaymethods)
-    .post('/billing/paymethods', BillingAPI.addPaymethod)
-    .delete('/billing/paymethods/:id', BillingAPI.deletePaymethod)
+    .get('/billing/paymethods', PaymethodsAPI.getMyPaymethods)
+    .post('/billing/paymethods', PaymethodsAPI.addPaymethod)
+    .delete('/billing/paymethods/:id', PaymethodsAPI.deletePaymethod)
+    // .get('/billing/orders', PaymethodsAPI.getMyPaymethods)
+    .post('/billing/orders/:paymethod', OrdersAPI.create)
 
 
   var admrouter = require('express').Router()
