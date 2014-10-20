@@ -16,6 +16,9 @@ module.exports = {
   elld: { name:"Ellen Dudley",email:"ellen@apr.com" },
   edud: { name:"Ellen Dudley",email:"edud@apr.com" },
   abeh: { name:"Abe Haskin",email:"abe@apr.com" },
+  ahas: { name:"Abe Haskin",email:"abehas@apr.com" },
+  uris: { name:"Uri Shaked",email:"urish@apr.com" },
+  usha: { name:"Uri Shaked",email:"urish@gmail.com" },
 
   jkre: { name:"Jonathon Kresner",email:"jkresner@gmail.com" },
   krez: { name:"Jonathon Krezner",email:"krez@hotmail.com" },

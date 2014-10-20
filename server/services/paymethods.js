@@ -22,6 +22,15 @@ export function getById(id, cb) {
 	})
 }
 
+export function charge(amount, orderId, payMethod, cb) {
+  if (payMethod.type == 'braintree')
+  	Braintree.chargeWithMethod(amount, orderId, payMethod.info.token, cb)
+  else if (payMethod.type == 'stripe')
+  	return cb(`stripe not yet implemented`)
+  else
+    return cb(`${payMethod.type} not supported a payment type`)
+}
+
 export function addPaymethod(o, cb) {
 	var user = this.user
 	var customerId = (o.companyId != null) ? o.companyId : user._id

@@ -6,12 +6,12 @@ module.exports = -> describe "Signup: ", ->
   @timeout(3000)
 
   before (done) ->
-    # stubAnalytics()
+    stubAnalytics()
     done()
 
 
   after (done) ->
-    # resotreAnalytics()
+    resotreAnalytics()
     global.cookie = null
     global.cookieCreatedAt = null
     done()

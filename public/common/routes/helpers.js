@@ -7,7 +7,7 @@
       function(SessionService, $window, $location, $q) {
         return SessionService.getSession().then(
           function(data) {
-            console.log('data', data)
+            // console.log('data', data)
             if (data._id)
             {
               return data;
