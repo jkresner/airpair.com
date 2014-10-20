@@ -12,9 +12,12 @@ export default function(app, cb)
 {
 
 	function handleVerify(req, res, next) {
-		UsersAPI.svc.verifyEmail.apply({user:req.user}, [req.query.hash, function(e, resp) {
+		UsersAPI.svc.verifyEmail.apply({user:req.user}, [req.query.hash, function(e, r) {
 			if (e) res.redirect('/email_verification_failed')
-			else res.redirect('/email_verified')
+			else {
+				res.req.session.passport.user.emailVerified = r.emailVerified;
+				res.redirect('/email_verified')
+			}
 			next();
 		}]);
 	}
@@ -24,7 +27,7 @@ export default function(app, cb)
 	redirects.init(app, ()=>{
 		app.use('/v1/auth', authRouter(app))
 		app.get('/v1/email-verify', authd, handleVerify)
-		app.get('/v1/emailv-test', emailv, function(req, res) { res.send(200) })
+		app.get('/v1/emailv-test', emailv, function(req, res) { res.status(200).end() })
 		app.use('/v1/api', apiRouter(app))
 		app.use('/v1/adm', admRouter(app))
 		app.use(dynamicRouter(app))
