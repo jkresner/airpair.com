@@ -162,7 +162,7 @@ module.exports = -> describe "Signup: ", ->
       d = getNewUserData('spur')
       addAndLoginLocalUser 'spur', (userKey) ->
          http(global.app)
-            .get('/')
+            .get('/v1/emailv-test')
             .set('cookie',cookie)
             .expect(403)
             .end (err, res) ->

@@ -24,10 +24,11 @@ export default function(app, cb)
 	redirects.init(app, ()=>{
 		app.use('/v1/auth', authRouter(app))
 		app.get('/v1/email-verify', authd, handleVerify)
+		app.get('/v1/emailv-test', emailv, function(req, res) { res.send(200) })
 		app.use('/v1/api', apiRouter(app))
 		app.use('/v1/adm', admRouter(app))
 		app.use(dynamicRouter(app))
-		app.get( ['/','/v1'], emailv, app.renderHbs('index') )
+		app.get( ['/','/v1'], app.renderHbs('index') )
 		app.get( whiteListedRoutes, app.renderHbs('base') )
 
 		cb()
