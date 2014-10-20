@@ -324,7 +324,7 @@ export function verifyEmail(hash, cb) {
 }
 
 export function generateEmailVerificationMessage(cb) {
-  var the_hash = bcrypt.hashSync(this.user.email, bcrypt.genSaltSync(8))
+  var the_hash = bcrypt.hashSync(this.user.email, bcrypt.genSaltSync(7))
   var the_body = "Hi " + this.user.name + ","
   the_body += "\n\n Please verify the email using the following link:\n\n"
   the_body += "http://www.airpair.com/v1/email-verify?hash=" + the_hash + "\n\n"
