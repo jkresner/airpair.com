@@ -10,6 +10,22 @@ var logging = false
 var svc = new Svc(Order, logging)
 
 
+function credit(paid, amount, expires, source)
+{
+	var info = { name: `Credit ($${amount})`, amount, source, remaining: amount, expires, redeemedLines: [] }
+	//-- profit on credit is always 0 because it is calculated in future line items
+	var paidAmount = (paid) ? amount : 0
+	var profitAmount = (paid) ? 0 : -1*amount
+	return { type : 'credit', unitPrice: paidAmount, qty: 1, total: paidAmount, profit: profitAmount, expires, info }
+}
+
+function discount(coupon, amount, source, user)
+{
+	var info = { name: `Discount ($${amount})`, amount, coupon, source, appliedBy: { _id: user._id, name: user.name } }
+	return { type : 'discount', unitPrice: -1*amount, qty: 1, total:  -1*amount, profit:  -1*amount, info }
+}
+
+
 function createOrder(lineItems, payMethod, cb) {
 	var o = {
 		_id: new mongoose.Types.ObjectId().toString(),
@@ -59,10 +75,9 @@ function createOrder(lineItems, payMethod, cb) {
 }
 
 
-
-export function createMembership(length, coupon, payMethod, cb)
+export function buyMembership(length, coupon, payMethod, cb)
 {
-  var inValid = Validate.createMembership(this.user, length)
+  var inValid = Validate.buyMembership(this.user, length)
   if (inValid) return cb(svc.Forbidden(inValid))
 
 	var total = (length == 12) ? 500 : 300
@@ -74,12 +89,10 @@ export function createMembership(length, coupon, payMethod, cb)
 		info: { name: 'Membership (6 mth)', expires }} )
 
 	if (length == 12)
-		lineItems.push({ type : 'credit', unitPrice: 0, qty: 1, total: 0, profit: -500,
-			info: { name: 'Credit ($500)', amount: 500, remaining: 500, source: '12 Month Membership Promo' }} )
+		lineItems.push( credit(false, 500, expires, '12 Month Membership Promo') )
 
 	if (coupon == "bestpair")
-		lineItems.push({ type : 'discount', unitPrice: -50, qty: 1, total: -50, profit: -50,
-			info: { name: 'Discount ($50)', amount: 50, source: 'Membership Announcement Promo' } })
+		lineItems.push( discount("bestpair", 50, 'Membership Announcement Promo', this.user) )
 
 	createOrder.call(this, lineItems, payMethod, (e,r) => {
 		if (e) return cb(e)
@@ -89,7 +102,31 @@ export function createMembership(length, coupon, payMethod, cb)
 }
 
 
+export function buyCredit(total, coupon, payMethod, cb)
+{
+	var inValid = Validate.buyCredit(this.user, total)
+  if (inValid) return cb(svc.Forbidden(inValid))
 
+	var expires = util.dateWithDayAccuracy(moment().add(3,'month'))
+
+	var lineItems = []
+	lineItems.push(credit(true, total, expires, `Credit Exrta ($${total})`))
+
+	if (total == 1000)
+		lineItems.push(credit(false, 50, expires, `Credit Exrta (5%)`))
+	if (total == 3000)
+		lineItems.push(credit(false, 300, expires, `Credit Exrta (10%)`))
+	if (total == 5000)
+		lineItems.push(credit(false, 1000, expires, `Credit Exrta (20%)`))
+
+	createOrder.call(this, lineItems, payMethod, cb)
+}
+
+
+export function addCouponToExistingOrder(orderId, coupon, cb)
+{
+	return cb('addCouponToExistingOrder not implemented')
+}
 
 // function trackOrder(order) {
 // 	var props = {

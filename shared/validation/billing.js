@@ -1,7 +1,14 @@
-export function createMembership(user, length)
+export function buyMembership(user, length)
 {
 	if (length != 6 && length != 12)
 		return 'Can purchase only 6 month and 12 month membership'
+}
+
+
+export function buyCredit(user, total)
+{
+	if (total != 500 && total != 1000 && total != 3000 && total != 5000)
+		return 'Can purchase only 500, 1000, 3000, 5000 amounts of credit'
 }
 
 

@@ -20,6 +20,9 @@ module.exports = {
   uris: { name:"Uri Shaked",email:"urish@apr.com" },
   usha: { name:"Uri Shaked",email:"urish@gmail.com" },
 
+  somr: { name:"Somik Rana",email:"somik@gmail.com" },
+  soik: { name:"Somik Rana",email:"somik@hotmail.com" },
+
   jkre: { name:"Jonathon Kresner",email:"jkresner@gmail.com" },
   krez: { name:"Jonathon Krezner",email:"krez@hotmail.com" },
   igor: { name:"Igor Lebovic",email:"igorlebovic@gmail.com" },
