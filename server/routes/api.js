@@ -21,7 +21,6 @@ export default function(app) {
 
     .get('/posts/recent', PostsAPI.getRecentPublished)
     .get('/posts/me', authd, PostsAPI.getUsersPosts)
-    .get('/posts/:id', PostsAPI.getById)
     .get('/posts/by/:id', PostsAPI.getUsersPublished)
     .post('/posts', authd, PostsAPI.create)
     .post('/posts-toc', authd, PostsAPI.getTableOfContents)
@@ -31,7 +30,6 @@ export default function(app) {
 
     .get('/workshops/', WorkshopsAPI.getAll)
     .get('/workshops/:id', WorkshopsAPI.getBySlug)
-
 
   var admrouter = require('express').Router()
     .use(adm)
