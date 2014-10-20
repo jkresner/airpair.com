@@ -175,7 +175,7 @@ module.exports = -> describe "Signup: ", ->
       addLocalUser 'chuc', (s) ->
         http(global.app)
           .get('/v1/email-verify?hash=anything')
-          .expect(302) # should be 401 and include WWW-Wuthenitcate header
+          .expect(302) # should be 401 and include WWW-Wuthenitcate header?
           .end (err, res) ->
             if (err) then return done(err)
             expect(res.redirect).to.be.true
@@ -184,17 +184,19 @@ module.exports = -> describe "Signup: ", ->
 
     it 'a good standalone verification link marks user as e-mail verified', (done) ->
       d = getNewUserData('stev')
-      the_hash = generateHash(d.email)
-      addAndLoginLocalUser 'stev', (s) ->
-        http(global.app).get('/v1/email-verify?hash=' + the_hash)
-          .set('cookie',cookie)
-          .expect(302)
-          .end (err, res) ->
-            if (err) then return done(err)
-            GET '/session/full', {}, (s) ->
-              expect(s.emailVerified).to.be.true
-              expect(res.header['location']).to.include('/email_verified')
-              done()
+      context = { user: d }
+      UserService.generateEmailVerificationMessage.call context, (e,r) ->
+        the_verification_link = r.body.match("http.*(/v1/email-verify\\?hash=.*)")[1]
+        addAndLoginLocalUser 'stev', (s) ->
+          http(global.app).get(the_verification_link)
+            .set('cookie',cookie)
+            .expect(302)
+            .end (err, res) ->
+              if (err) then return done(err)
+              GET '/session/full', {}, (s) ->
+                expect(s.emailVerified).to.be.true
+                expect(res.header['location']).to.include('/email_verified')
+                done()
 
     it 'a bad standalone verification link does not verify the user', (done) ->
       d = getNewUserData('step')
@@ -208,14 +210,3 @@ module.exports = -> describe "Signup: ", ->
               expect(s.emailVerified).to.be.false
               expect(res.header['location']).to.include('/email_verification_failed')
               done()
-
-    it 'generate verification email body', (done) ->
-      d = getNewUserData('step')
-      context = { user: d }
-      UserService.generateEmailVerificationMessage.call context, (e,r) ->
-        expect(e).to.equal(null)
-        expect(r.to).to.include(d.email)
-        expect(r.subject).to.include("Verify your email - www.airpair.com")
-        expect(r.body).to.include(d.name)
-        expect(r.body).to.include("/v1/email-verify?hash=")
-        done()
