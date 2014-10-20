@@ -72,25 +72,6 @@ module.exports = -> describe "Signup: ", ->
     it 'a good verification link marks user as email verified', (done) ->
     	d = getNewUserData('stev')
 
-
-    it 'email verification succeeds with a good hash', (done) ->
-    	d = getNewUserData('stps')
-    	hashed_email = bcrypt.hashSync(d.email, bcrypt.genSaltSync(8))
-    	addLocalUser 'stps', (userKey) ->
-    		UserService.verifyEmail d.email, hashed_email, (err, resp) ->
-    			expect(err).to.be.null
-    			expect(resp).to.equal d.email
-    			done()
-
-    it 'email verification fails with a bad hash', (done) ->
-    	d = getNewUserData('stpe')
-    	addLocalUser 'stpe', (userKey) ->
-    		UserService.verifyEmail d.email, "ju5tas1llyh45h", (err, resp) ->
-    			expect(err).to.not.be.null
-    			expect(resp).to.be.undefined
-    			done()
-
-
   it 'Can not sign up with local credentials and existing gmail', (done) ->
     d = name: "AirPair Experts", email: "experts@airpair.com", password: "Yoyoyoyoy"
 
@@ -227,3 +208,14 @@ module.exports = -> describe "Signup: ", ->
               expect(s.emailVerified).to.be.false
               expect(res.header['location']).to.include('/email_verification_failed')
               done()
+
+    it 'generate verification email body', (done) ->
+      d = getNewUserData('step')
+      context = { user: d }
+      UserService.generateEmailVerificationMessage.call context, (e,r) ->
+        expect(e).to.equal(null)
+        expect(r.to).to.include(d.email)
+        expect(r.subject).to.include("Verify your email - www.airpair.com")
+        expect(r.body).to.include(d.name)
+        expect(r.body).to.include("/v1/email-verify?hash=")
+        done()

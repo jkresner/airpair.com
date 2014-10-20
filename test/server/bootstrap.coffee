@@ -19,7 +19,7 @@ setGlobals(config)
 
 
 describe 'Server: ', ->
-
+  @timeout(20000)
   before (done) ->
     global.logging = false
     global.app = require('../../index').run()

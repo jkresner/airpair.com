@@ -316,9 +316,23 @@ export function toggleBookmark(tag, cb) {
 export function verifyEmail(hash, cb) {
 	if (bcrypt.compareSync(this.user.email, hash)) {
 		svc.update(this.user._id, { emailVerified: true }, function(err, user) {
-			cb(err, user);
-		});
+			cb(err, user)
+		})
 	}
 	else
 		cb(new Error("e-mail verification failed"), undefined);
+}
+
+export function generateEmailVerificationMessage(cb) {
+  var the_hash = bcrypt.hashSync(this.user.email, bcrypt.genSaltSync(8))
+  var the_body = "Hi " + this.user.name + ","
+  the_body += "\n\n Please verify the email using the following link:\n\n"
+  the_body += "http://www.airpair.com/v1/email-verify?hash=" + the_hash + "\n\n"
+  the_body += "Thanks\nThe AirPair Team\nhttp://twitter.com/airpair"
+
+	cb(null, {
+		to: this.user.email,
+		subject: "Verify your email - www.airpair.com",
+		body: the_body
+	})
 }
