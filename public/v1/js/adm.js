@@ -1,4 +1,4 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"./public/common/adm.js":[function(require,module,exports){
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 "use strict";
 require('./../common/directives/post.js');
 require('./../common/directives/tagInput.js');
@@ -19,13 +19,13 @@ angular.module("ADM", ['ngRoute', 'APSvcSession', 'ADMPosts', 'ADMUsers', 'ADMRe
 ;
 
 
-},{"./../adm/posts/module.js":"/Users/jkrez/src/airpair.com/public/adm/posts/module.js","./../adm/redirects/module.js":"/Users/jkrez/src/airpair.com/public/adm/redirects/module.js","./../adm/users/module.js":"/Users/jkrez/src/airpair.com/public/adm/users/module.js","./../common/directives/post.js":"/Users/jkrez/src/airpair.com/public/common/directives/post.js","./../common/directives/tagInput.js":"/Users/jkrez/src/airpair.com/public/common/directives/tagInput.js","./../common/filters/filters.js":"/Users/jkrez/src/airpair.com/public/common/filters/filters.js","./../common/models/adminDataService.js":"/Users/jkrez/src/airpair.com/public/common/models/adminDataService.js","./../common/models/postsService.js":"/Users/jkrez/src/airpair.com/public/common/models/postsService.js","./../common/models/sessionService.js":"/Users/jkrez/src/airpair.com/public/common/models/sessionService.js"}],"/Users/jkrez/src/airpair.com/public/adm/posts/item.html":[function(require,module,exports){
+},{"./../adm/posts/module.js":4,"./../adm/redirects/module.js":6,"./../adm/users/module.js":8,"./../common/directives/post.js":10,"./../common/directives/tagInput.js":13,"./../common/filters/filters.js":14,"./../common/models/adminDataService.js":15,"./../common/models/postsService.js":16,"./../common/models/sessionService.js":17}],2:[function(require,module,exports){
 module.exports = "<article itemscope=\"itemscope\" itemtype=\"http://schema.org/BlogPosting\" itemprop=\"blogPost\">\n <header class=\"entry-header\">\n    <h2 class=\"entry-title\" itemprop=\"headline\">{{ post.title }}</h2>\n    <p class=\"entry-meta\">\n      <time class=\"entry-time\" itemprop=\"datePublished\" datetime=\"{{ post.published }}\">{{ post.publishedFormat }}</time>\n      <span class=\"entry-author\" itemprop=\"author\" itemscope=\"itemscope\" itemtype=\"http://schema.org/Person\">\n        <span class=\"entry-author-name\" itemprop=\"name\">{{ post.by.name }}</span>\n      </span>\n      <br />Updated\n      {{ post.updated | agoTime }}\n      <span ng-if=\"post.published\">,\n      Published {{ post.published | agoTime }}</span>\n    </p>\n  </header>\n  <div class=\"entry-content\" itemprop=\"text\">\n    <img class=\"entry-author-image\" itemprop=\"image\" ng-src=\"{{ post.by.avatar }}?s=50\" align=\"left\" />\n    <p>{{ post.meta.description }}</p>\n  </div>\n\n  <footer class=\"entry-footer\">\n    <ul>\n      <li><a href=\"/posts/edit/{{ post._id }}\" target=\"_blank\">Edit</a></li>\n      <li><a href=\"/posts/publish/{{ post._id }}\" target=\"_blank\">Publish</a></li>\n      <li ng-if=\"post.published\"><a href=\"{{ post.url }}\" target=\"_blank\">View</a></li>\n    </ul>\n\n    <p class=\"entry-meta\">\n      <span class=\"entry-categories\">\n        <a ng-repeat='tag in post.tags' href=\"#\" title=\"View all posts in {{ tag.name }}\" rel=\"category tag\">{{ '{'+tag.slug+'}' }}</a>\n      </span>\n    </p>\n  </footer>\n</article>\n";
 
-},{}],"/Users/jkrez/src/airpair.com/public/adm/posts/list.html":[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 module.exports = "<section id=\"posts\">\n\n  <h3>Recently updated <span><a href=\"/posts/all\" target=\"_blank\">All posts</a></span></h3>\n  <div class=\"posts recent\">\n    <ap-post-list-item post=\"p\" ng-repeat=\"p in recent\"></ap-post-list-item>\n  </div>\n\n</section>\n";
 
-},{}],"/Users/jkrez/src/airpair.com/public/adm/posts/module.js":[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 "use strict";
 angular.module("ADMPosts", ['ngRoute', 'APSvcAdmin', 'APSvcPosts', 'APFilters']).config(['$locationProvider', '$routeProvider', function($locationProvider, $routeProvider) {
   $routeProvider.when('/v1/adm/posts', {
@@ -46,10 +46,10 @@ angular.module("ADMPosts", ['ngRoute', 'APSvcAdmin', 'APSvcPosts', 'APFilters'])
 }]);
 
 
-},{"./item.html":"/Users/jkrez/src/airpair.com/public/adm/posts/item.html","./list.html":"/Users/jkrez/src/airpair.com/public/adm/posts/list.html"}],"/Users/jkrez/src/airpair.com/public/adm/redirects/list.html":[function(require,module,exports){
+},{"./item.html":2,"./list.html":3}],5:[function(require,module,exports){
 module.exports = "<section id=\"redirects\">\n\n  <h3>Redirects </h3>\n\n  <div style=\"float:right\">note a restart is necessary for the redirects to take effect</div>\n\n  <input type=\"text\" ng-model='previous' placeholder=\"From\" />\n  <input type=\"text\" ng-model='current' placeholder=\"To\" />\n  <button id=\"btnCreateRedirect\" ng-click=\"createRedirect()\" class=\"btn\">Create</button>\n\n  <hr />\n\n  <div class=\"redirects\">\n    <ul>\n      <li ng-repeat=\"r in redirects\">\n        <time>{{ r._id | objectIdToDate : 'MM.DD' }}</time>\n        <label><a href=\"{{ r.previous }}\" target=\"_blank\">{{ r.previous }}</a></label>\n        <span><a href=\"#\" ng-click=\"deleteRedirect(r._id)\">x</a>===> {{ r.current }}</span>\n      </li>\n    </ul>\n  </div>\n\n</section>\n";
 
-},{}],"/Users/jkrez/src/airpair.com/public/adm/redirects/module.js":[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 "use strict";
 angular.module("ADMRedirects", ['ngRoute', 'APSvcAdmin', 'APFilters']).config(['$locationProvider', '$routeProvider', function($locationProvider, $routeProvider) {
   $routeProvider.when('/v1/adm/redirects', {
@@ -80,10 +80,10 @@ angular.module("ADMRedirects", ['ngRoute', 'APSvcAdmin', 'APFilters']).config(['
 }]);
 
 
-},{"./list.html":"/Users/jkrez/src/airpair.com/public/adm/redirects/list.html"}],"/Users/jkrez/src/airpair.com/public/adm/users/list.html":[function(require,module,exports){
+},{"./list.html":5}],7:[function(require,module,exports){
 module.exports = "<section id=\"users\">\n\n\t<br /><br />\n\t<input type=\"text\" ng-model=\"_id\" placeholder=\"Type userId\" style=\"width:300px\" />\n\t<select ng-model=\"role\">\n\t\t<option>admin</option>\n\t\t<option>editor</option>\n\t</select>\n\t<button class=\"btn\" ng-click=\"toggleRole()\">Toggle role</button>\n\n\n\t<h3>Admins</h3>\n\t<ul class=\"users admin\">\n\t\t<li ng-repeat=\"user in admins\">{{ user.name }}</li>\n\t</ul>\n\n\t<h3>Editors</h3>\n\t<ul class=\"users editors\">\n\t\t<li ng-repeat=\"user in editors\">{{ user.name }}</li>\n\t</ul>\n\t<!--\n\t<h3>Pipeliners</h3>\n\t<ul class=\"users pipeliners\">\n\t<li ng-repeat=\"user in pipeliners\">{{ user.name }}</li>\n\t</ul>\n\n\n\t<h3>Matchmakers</h3>\n\t<ul class=\"users matchmakers\">\n\t<li ng-repeat=\"user in matchmakers\">{{ user.name }}</li>\n\t</ul>\n\n\t -->\n</section>\n";
 
-},{}],"/Users/jkrez/src/airpair.com/public/adm/users/module.js":[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 "use strict";
 angular.module("ADMUsers", ['ngRoute', 'APSvcAdmin', 'APFilters']).config(['$locationProvider', '$routeProvider', function($locationProvider, $routeProvider) {
   $routeProvider.when('/v1/adm/users', {
@@ -111,10 +111,10 @@ angular.module("ADMUsers", ['ngRoute', 'APSvcAdmin', 'APFilters']).config(['$loc
 }]);
 
 
-},{"./list.html":"/Users/jkrez/src/airpair.com/public/adm/users/list.html"}],"/Users/jkrez/src/airpair.com/public/common/directives/post.html":[function(require,module,exports){
+},{"./list.html":7}],9:[function(require,module,exports){
 module.exports = "<div class=\"preview\">\n  <article class=\"blogpost\">\n    <h1 class=\"entry-title\" itemprop=\"headline\">{{ post.title || \"Type post title ...\" }}</h1>\n    <h4 id=\"table-of-contents\" ng-if=\"preview.toc\">Table of Contents</h4>\n    <ul id=\"previewToc\" ng-bind-html=\"preview.toc | markdownHtml\"></ul>\n    <figure class=\"author\">\n      <img ng-alt=\"{{post.by.name}}\" ng-src=\"{{post.by.avatar}}?s=100\">\n      <figcaption>\n        {{post.by.bio}}\n      </figcaption>\n    </figure>\n    <p class=\"asset\" ng-bind-html=\"preview.asset | markdownHtml\" ng-if=\"post.title && post.by.bio\"></p>\n    <hr />\n    <div id=\"body\" ng-bind-html=\"preview.body | markdownHtml\"></div>\n  </article>\n</div>\n\n<hr />\n";
 
-},{}],"/Users/jkrez/src/airpair.com/public/common/directives/post.js":[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 "use strict";
 angular.module("APPost", []).directive('apPostListItem', ['$parse', function($parse) {
   return {
@@ -137,13 +137,13 @@ angular.module("APPost", []).directive('apPostListItem', ['$parse', function($pa
 ;
 
 
-},{"./post.html":"/Users/jkrez/src/airpair.com/public/common/directives/post.html","./postListItem.html":"/Users/jkrez/src/airpair.com/public/common/directives/postListItem.html"}],"/Users/jkrez/src/airpair.com/public/common/directives/postListItem.html":[function(require,module,exports){
+},{"./post.html":9,"./postListItem.html":11}],11:[function(require,module,exports){
 module.exports = "<article itemscope=\"itemscope\" itemtype=\"http://schema.org/BlogPosting\" itemprop=\"blogPost\">\n\t<a href=\"{{ post.url }}\" title=\"{{ post.title }}\" target=\"_self\" rel=\"bookmark\">\n\t  <header class=\"entry-header\">\n\t    <h2 class=\"entry-title\" itemprop=\"headline\">{{ post.title }}</h2>\n\t    <p class=\"entry-meta\">\n\t      <time class=\"entry-time\" itemprop=\"datePublished\" datetime=\"{{ post.published }}\">{{ post.publishedFormat }}</time>\n\t      by\n\t      <span class=\"entry-author\" itemprop=\"author\" itemscope=\"itemscope\" itemtype=\"http://schema.org/Person\">\n\t        <span class=\"entry-author-name\" itemprop=\"name\">{{ post.by.name }}</span>\n\t      </span>\n\t    </p>\n\t  </header>\n\t  <div class=\"entry-content\" itemprop=\"text\">\n\t    <img class=\"entry-author-image\" itemprop=\"image\" ng-src=\"{{ post.by.avatar }}?s=50\" align=\"left\" />\n\t    <p>{{ post.meta.description }}</p>\n\t  </div>\n\t</a>\n  <footer class=\"entry-footer\">\n    <p class=\"entry-meta\">\n      <span class=\"entry-categories\">\n        <a ng-repeat='tag in post.tags' href=\"#\" title=\"View all posts in {{ tag.name }}\" rel=\"category tag\">{{ '{'+tag.slug+'}' }}</a>\n      </span>\n    </p>\n  </footer>\n</article>\n";
 
-},{}],"/Users/jkrez/src/airpair.com/public/common/directives/tagInput.html":[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 module.exports = "<script type=\"text/ng-template\" id=\"template/typeahead/typeahead-match.html\">\n  <a>\n    <label bind-html-unsafe=\"match.model.name | typeaheadHighlight:query\"></label>\n    <br /><span bind-html-unsafe=\"match.model.desc | typeaheadHighlight:query\"></span>\n  </a>\n</script>\n\n    \n<input type=\"text\" \n  placeholder=\"Type technology\" \n  class=\"form-control\"\n  ng-model=\"q\" \n  typeahead=\"t as t for t in getTags($viewValue) | filter:$viewValue\" \n  >\n<!-- typeahead-loading=\"loading\"\n<i ng-show=\"loading\" class=\"glyphicon glyphicon-refresh\"></i>\n -->Tags: <label ng-repeat=\"tag in post.tags\">{ {{tag.name}} } <a ng-click=\"deselectMatch(tag)\" style=\"color:red\">x</a> &nbsp </label>\n";
 
-},{}],"/Users/jkrez/src/airpair.com/public/common/directives/tagInput.js":[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 "use strict";
 angular.module('APTagInput', ['ui.bootstrap']).value('acceptableTagsSearchQuery', function(value) {
   return value && (value.length >= 2 || /r/i.test(value));
@@ -183,7 +183,7 @@ angular.module('APTagInput', ['ui.bootstrap']).value('acceptableTagsSearchQuery'
 ;
 
 
-},{"./tagInput.html":"/Users/jkrez/src/airpair.com/public/common/directives/tagInput.html"}],"/Users/jkrez/src/airpair.com/public/common/filters/filters.js":[function(require,module,exports){
+},{"./tagInput.html":12}],14:[function(require,module,exports){
 "use strict";
 var util = require('../../../shared/util.js');
 angular.module('APFilters', []).filter('publishedTime', function() {
@@ -240,7 +240,7 @@ angular.module('APFilters', []).filter('publishedTime', function() {
 });
 
 
-},{"../../../shared/util.js":"/Users/jkrez/src/airpair.com/shared/util.js"}],"/Users/jkrez/src/airpair.com/public/common/models/adminDataService.js":[function(require,module,exports){
+},{"../../../shared/util.js":18}],15:[function(require,module,exports){
 "use strict";
 var lazyErrorCb = function(resp) {
   console.log('error:', resp);
@@ -267,7 +267,7 @@ angular.module('APSvcAdmin', []).constant('APIAdm', '/v1/api/adm').service('AdmD
 }]);
 
 
-},{}],"/Users/jkrez/src/airpair.com/public/common/models/postsService.js":[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 "use strict";
 var headings = [];
 var lazyErrorCb = function(resp) {};
@@ -319,7 +319,7 @@ angular.module('APSvcPosts', []).constant('API', '/v1/api').factory('mdHelper', 
 }]);
 
 
-},{}],"/Users/jkrez/src/airpair.com/public/common/models/sessionService.js":[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 "use strict";
 angular.module('APSvcSession', []).constant('API', '/v1/api').constant('Auth', '/v1/auth').service('SessionService', ['$http', 'API', 'Auth', '$cacheFactory', function($http, API, Auth, $cacheFactory) {
   var cache;
@@ -347,7 +347,7 @@ angular.module('APSvcSession', []).constant('API', '/v1/api').constant('Auth', '
 }]);
 
 
-},{}],"/Users/jkrez/src/airpair.com/shared/util.js":[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 "use strict";
 var idsEqual = (function(id1, id2) {
   return id1.toString() == id2.toString();
@@ -379,4 +379,4 @@ module.exports = {
 };
 
 
-},{}]},{},["./public/common/adm.js"]);
+},{}]},{},[1]);
