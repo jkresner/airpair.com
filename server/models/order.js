@@ -13,15 +13,23 @@ var lineType = [
 	'airpair'
 ]
 
+// var RedeemedLine = {
+
+// 	lineItemId:     { required: true, type: ObjectId, ref: 'LineItem' },
+// 	amount:         { required: true, type: Number },
+// 	isPartial: 			{ required: true, type: Boolean, default: false }
+
+// }
+
 
 var LineItem = new Schema({
 
-	type:               { required: true, type: String, enum: lineType },
-	total:              { required: true, type: Number },
-	profit:             { required: true, type: Number },
-	unitPrice:          { required: true, type: Number },
-	qty:                { required: true, type: Number },
-	info:         			{ required: true, type: {} }
+	type:           { required: true, type: String, enum: lineType },
+	total:          { required: true, type: Number },
+	profit:         { required: true, type: Number },
+	unitPrice:      { required: true, type: Number },
+	qty:            { required: true, type: Number },
+	info:         	{ required: true, type: {} }
 
 })
 
