@@ -182,6 +182,33 @@ module.exports = -> describe "Signup: ", ->
             expect(res.header['location']).to.include('/login')
             done()
 
+
+    it 'users need to verify email for some features', (done) ->
+      d = getNewUserData('stev')
+      context = { user: d }
+      addAndLoginLocalUser 'stev', (s) ->
+         http(global.app)
+            .get('/v1/emailv-test')
+            .set('cookie',cookie)
+            .expect(403)
+            .end (err, res) ->
+              # console.log "GET 1"
+              if (err) then return done(err)
+              UserService.generateEmailVerificationMessage.call context, (e,r) ->
+                the_verification_link = r.body.match("http.*(/v1/email-verify\\?hash=.*)")[1]
+                http(global.app).get(the_verification_link)
+                  .set('cookie',cookie)
+                  .expect(302)
+                  .end (err, res) ->
+                    if (err) then return done(err)
+                    GET '/session/full', {}, (s) ->
+                      expect(s.emailVerified).to.be.true
+                      expect(res.header['location']).to.include('/email_verified')
+                      http(global.app)
+                        .get('/v1/emailv-test')
+                        .set('cookie', cookie)
+                        .expect(200, done)
+
     it 'a good standalone verification link marks user as e-mail verified', (done) ->
       d = getNewUserData('stev')
       context = { user: d }
