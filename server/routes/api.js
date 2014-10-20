@@ -40,7 +40,7 @@ export default function(app) {
     .post('/billing/paymethods', PaymethodsAPI.addPaymethod)
     .delete('/billing/paymethods/:id', PaymethodsAPI.deletePaymethod)
     // .get('/billing/orders', PaymethodsAPI.getMyPaymethods)
-    .post('/billing/orders/:paymethod', OrdersAPI.create)
+    .post('/billing/orders/membership/:paymethod', OrdersAPI.createMembership)
 
 
   var admrouter = require('express').Router()

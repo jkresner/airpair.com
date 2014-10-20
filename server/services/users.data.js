@@ -22,7 +22,8 @@ module.exports = {
       'bio': 1,
       'tags': 1,
       'bookmarks': 1,
-      'cohort.engagement': 1
+      'cohort.engagement': 1,
+      'membership': 1
     },
     usersInRole: {
       '_id': 1,
