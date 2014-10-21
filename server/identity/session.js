@@ -31,7 +31,7 @@ export default function(app, initSessionStore)
 
     passport.serializeUser( (user, done) => {
       // The user object comes from UserService.upsertSmart
-      var sessionUser = { _id: user._id, name: user.name, email: user.email, roles: user.roles }
+      var sessionUser = { _id: user._id, name: user.name, emailVerified: user.emailVerified, email: user.email, roles: user.roles }
       if (logging) $log('serializeUser', sessionUser)
       done(null, sessionUser)
     })
@@ -39,7 +39,7 @@ export default function(app, initSessionStore)
     passport.deserializeUser( (sessionUser, done) => {
       // The sessionUser object is different from the user mongoose collection
       // it's actually req.session.passport.user and comes from the session collection
-      if (logging) $log('deserializeUser', sessionUser.email)
+      if (logging) $log('deserializeUser', sessionUser.email);
       done(null, sessionUser)
     })
 

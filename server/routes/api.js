@@ -32,7 +32,6 @@ export default function(app) {
     .get('/workshops/', WorkshopsAPI.getAll)
     .get('/workshops/:id', WorkshopsAPI.getBySlug)
 
-
   var admrouter = require('express').Router()
     .use(adm)
     .get('/posts', PostsAPI.getAllAdmin)
