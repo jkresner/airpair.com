@@ -1,7 +1,7 @@
 import {google,local} from '../identity/auth/providers/index'
 import {logout,setTestLogin} from '../identity/auth/actions'
-import {authd,setReturnTo,authDone} from '../identity/auth/middleware'
-import UsersAPI from '../api/users'
+import {setReturnTo,authDone} from '../identity/auth/middleware'
+
 
 export default function(app) {
 

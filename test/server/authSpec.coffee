@@ -192,7 +192,6 @@ module.exports = -> describe "Signup: ", ->
             .set('cookie',cookie)
             .expect(403)
             .end (err, res) ->
-              # console.log "GET 1"
               if (err) then return done(err)
               UserService.generateEmailVerificationMessage.call context, (e,r) ->
                 the_verification_link = r.body.match("http.*(/v1/email-verify\\?hash=.*)")[1]
@@ -200,10 +199,10 @@ module.exports = -> describe "Signup: ", ->
                   .set('cookie',cookie)
                   .expect(302)
                   .end (err, res) ->
+                    expect(res.header['location']).to.include('/email_verified')
                     if (err) then return done(err)
                     GET '/session/full', {}, (s) ->
                       expect(s.emailVerified).to.be.true
-                      expect(res.header['location']).to.include('/email_verified')
                       http(global.app)
                         .get('/v1/emailv-test')
                         .set('cookie', cookie)
