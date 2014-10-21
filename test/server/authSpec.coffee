@@ -154,7 +154,7 @@ module.exports = -> describe "Signup: ", ->
     generateHash = (s) ->
       return bcrypt.hashSync(s, bcrypt.genSaltSync(8))
 
-    xit 'send a verification email to new users'
+    it.skip 'send a verification email to new users'
     # not sure how to end-2-end test this yet
     # needs to be sent on sign up, need to invesigate how to stub/mock out the relevant service(s)
 
