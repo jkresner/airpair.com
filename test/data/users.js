@@ -22,6 +22,11 @@ module.exports = {
   shcl: { name: "Shane Cole", email: "shanecole@ap.com"},
   stpv: { name: "Steve Purves", email: "stevep@ap.com"},
   stpu: { name: "Steve Purves", email: "stevepur@gmail.com"},
+  stps: { name: "Steve Purves", email: "stevejpurves@hotmail.com"},
+  stpe: { name: "Steve Purves", email: "sjp@hotmail.com"},
+  stev: { name: "Steve Purves", email: "steve@hotmail.com"},
+  spur: { name: "Steve Purves", email: "sjpurves@yahoo.com"},
+  step: { name: "Stephen Purves", email: "stephenp@yahoo.com"},
 
   obfn: { name: "Obie Fernandez", email: "obiefernand@gmail.com"},
   obie: { name: "Obie Fernandez", email: "obiefernand@hotmail.com"},
@@ -29,5 +34,6 @@ module.exports = {
   dysn: { name: "Dilys Sun", email: "dilys@hotmail.com"},
   dily: { name: "Dilys Sun", email: "dilys@gmail.com"},
 
+  chuc: { name: "Chuck Norris", email: "chuck@hotmail.com"}
 }
 
