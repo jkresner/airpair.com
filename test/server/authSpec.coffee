@@ -85,15 +85,6 @@ module.exports = -> describe "Signup: ", ->
           expect(res.body.error).to.equal('try google login')
           done()
 
-    it 'email verification fails with a bad hash', (done) ->
-    	d = getNewUserData('stpe')
-    	addLocalUser 'stpe', (userKey) ->
-    		UserService.verifyEmail d.email, "ju5tas1llyh45h", (err, resp) ->
-    			expect(err).to.not.be.null
-    			expect(resp).to.be.undefined
-    			done()
-
-
   it 'Can not sign up with local credentials and existing local email', (done) ->
     d = getNewUserData('jkap')
 
