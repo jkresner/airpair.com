@@ -150,7 +150,7 @@ module.exports = -> describe "Signup: ", ->
   #     expect('ask user to login')
   # }
   describe "Verify e-mail", ->
-    @timeout(10000)
+
     generateHash = (s) ->
       return bcrypt.hashSync(s, bcrypt.genSaltSync(8))
 
