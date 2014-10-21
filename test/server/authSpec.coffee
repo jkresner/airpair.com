@@ -67,10 +67,6 @@ module.exports = -> describe "Signup: ", ->
           expect(s.cohort.engagement).to.exist
           done()
 
-    it 'send a verification email to new users'
-
-    it 'a good verification link marks user as email verified', (done) ->
-    	d = getNewUserData('stev')
 
   it 'Can not sign up with local credentials and existing gmail', (done) ->
     d = name: "AirPair Experts", email: "experts@airpair.com", password: "Yoyoyoyoy"
