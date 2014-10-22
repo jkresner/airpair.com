@@ -8,5 +8,6 @@ export default initAPI(Svc, {
   toggleTag: (req) => [req.tag],
   toggleBookmark: (req) => [req.params.type,req.params.id],
   getUsersInRole: (req) => [req.params.role],
+  changeEmail: (req) => [req.body],
   verifyEmail: (req) => [req.query.hash]
 })

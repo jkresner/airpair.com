@@ -62,6 +62,24 @@ global.addLocalUser = function(userKey, done)
   })
 }
 
+// global.addLocalUserWithEmailVerified = function(originalUserKey, done)
+// {
+// 	addLocalUser(originalUserKey, function(userKey) {
+// 		var d = getNewUserData(userKey)
+// 		console.log(d)
+// 		UserService.upsertSmart.call(newUserSession(userKey), {email: d.email}, {emailVerified: true}, function() {
+// 			done(userKey)
+// 		})
+// 	})
+// }
+
+global.setUserAsEmailVerified = function(id, done)
+{
+	UserService.update(id, {emailVerified: true}, function (e, r) {
+		done(r)
+	})
+}
+
 global.addAndLoginLocalUser = function(originalUserKey, done)
 {
   addLocalUser(originalUserKey, function(userKey) {

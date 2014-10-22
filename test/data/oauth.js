@@ -118,5 +118,24 @@ module.exports = {
        gender: 'male',
        locale: 'en' },
     token: {  }
+  },
+
+  spgo: { provider: 'google',
+    id: '118272682147885899580',
+    displayName: 'Steve Purves',
+    name: { familyName: 'Steve', givenName: 'Purves' },
+    emails: [ { value: 'stevejpurves@gmail.com' } ],
+    _json:
+     { id: '118272682147885899580',
+       email: 'stevejpurves@gmail.com',
+       verified_email: true,
+       name: 'Steve Purves',
+       given_name: 'Steve',
+       family_name: 'Purves',
+       link: 'https://plus.google.com/111546642302857408422',
+       picture: 'https://lh5.googleusercontent.com/-EtHf32yxc-s/AAAAAAAAAAI/AAAAAAAAAUU/aDOPckSKU-E/photo.jpg',
+       gender: 'male',
+       locale: 'en' },
+    token: {  }
   }
 }
