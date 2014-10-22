@@ -1,6 +1,6 @@
 var logging = false;
 
-var isApiRequest = (req) => req.url.indexOf('api') != 0
+var isApiRequest = (req) => req.originalUrl.indexOf('/api/') > -1
 
 
 export function setAnonSessionData(req, res, next) {
@@ -33,6 +33,18 @@ export function authd(req, res, next) {
   {
     next()
   }
+}
+
+
+export function emailv(req, res, next) {
+	if (!req.user.emailVerified)
+	{
+		res.status(403).send({error: 'e-mail not verified'});
+	}
+	else
+	{
+		next()
+	}
 }
 
 
