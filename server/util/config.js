@@ -33,6 +33,15 @@ var cfg = {
       secret_key: process.env.MAIL_SES_SECRET_KEY || "none"
     }
   },
+  payments: {
+  	braintree: {
+  		environment: 'Sandbox',
+  		verifyCards: false,
+  		merchantId: 'chkr49r8yxk5y65p',
+  		publicKey: '3pwpby7rrfdr3x3m',
+  		privateKey: '7d5586d4be9ba9e36daebfa814f0584a'
+  	}
+  },
   redirects: { on: false }
 }
 

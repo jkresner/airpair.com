@@ -39,7 +39,7 @@ export default function(app, initSessionStore)
     passport.deserializeUser( (sessionUser, done) => {
       // The sessionUser object is different from the user mongoose collection
       // it's actually req.session.passport.user and comes from the session collection
-      if (logging) $log('deserializeUser', sessionUser.email);
+      if (logging) $log('deserializeUser', sessionUser.email)
       done(null, sessionUser)
     })
 

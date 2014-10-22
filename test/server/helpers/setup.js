@@ -3,7 +3,13 @@ var Tag = require('../../../server/models/tag')
 var Workshop = require('../../../server/models/workshop')
 var View = require('../../../server/models/view')
 var User = require('../../../server/models/user')
+var Expert = require('../../../server/models/expert')
+var PayMethod = require('../../../server/models/paymethod')
+var {Settings,Company} = require('../../../server/models/v0')
 var util = require('../../../shared/util')
+
+global.braintree = require('braintree')
+
 
 global.stubAnalytics = function()
 {
@@ -67,6 +73,15 @@ global.addAndLoginLocalUser = function(originalUserKey, done)
   })
 }
 
+global.addAndLoginLocalUserWithPayMethod = function(originalUserKey, done)
+{
+	addAndLoginLocalUser(originalUserKey, (s) =>{
+		new PayMethod( _.extend({userId: s._id}, data.paymethods.generic) ).save( (e,r) => {
+	    s.primaryPayMethodId = r._id
+	    done(s)
+		})
+	})
+}
 
 function addUserWithRole(userKey, role, done)
 {
@@ -90,6 +105,10 @@ function addUserWithRole(userKey, role, done)
   })
 }
 
+function ensureDocument(Model, doc, cb)
+{
+  Model.findByIdAndRemove(doc._id, function(e, r) { new Model(doc).save(cb); })
+}
 
 module.exports = {
 
@@ -153,9 +172,25 @@ module.exports = {
   },
 
   ensureUser: function(user, cb) {
-    User.findByIdAndRemove(user._id, (e, r) => {new User(user).save(cb)})
-  }
+  	ensureDocument(User, user, cb)
+  },
 
+  ensureExpert: function(user, expert, cb) {
+  	ensureDocument(User, user, () => {
+	  	ensureDocument(Expert, expert, cb)
+  	})
+  },
+
+  ensureSettings: function(user, settings, cb) {
+  	settings.userId = user._id
+    ensureDocument(Settings, settings, cb)
+  },
+
+  ensureCompany: function(user, company, cb) {
+  	company.contacts[0].fullName = user.name
+  	company.contacts[0].userId = user._id
+    ensureDocument(Company, company, cb)
+  }
 }
 
 

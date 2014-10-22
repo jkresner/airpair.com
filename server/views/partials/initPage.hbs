@@ -21,10 +21,10 @@
     var anonymousId = '{{ user.sessionID }}';
 {{/if}}
 
-    console.log('userEmail', email, 'mixId', mixId, 'anonymousId', anonymousId)
+    //console.log('userEmail', email, 'mixId', mixId, 'anonymousId', anonymousId)
 
     var ident = function() {
-      console.log('identify', email || anonymousId)  //-- could be from a different session.
+      //console.log('identify', email || anonymousId)  //-- could be from a different session.
       window.analytics.identify(email || anonymousId, { id: email || anonymousId }, bindTracking);
     }
 

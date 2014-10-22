@@ -10,7 +10,6 @@ var whiteListedRoutes = require('../../shared/routes')
 
 export default function(app, cb)
 {
-
 	function handleVerify(req, res, next) {
 		UsersAPI.svc.verifyEmail.apply({user:req.user}, [req.query.hash, function(e, r) {
 			if (e) res.redirect('/email_verification_failed')
@@ -24,7 +23,7 @@ export default function(app, cb)
 
 
 	//-- Have to redirects from the db first so they take precedence
-	redirects.init(app, ()=>{
+	redirects.init(app, () => {
 		app.use('/v1/auth', authRouter(app))
 		app.get('/v1/email-verify', authd, handleVerify)
 		app.get('/v1/emailv-test', authd, emailv, function(req, res) { res.status(200).end() })
@@ -36,5 +35,4 @@ export default function(app, cb)
 
 		cb()
 	})
-
 }

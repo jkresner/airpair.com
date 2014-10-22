@@ -36,8 +36,9 @@ export default function(model, logging)
     getByUseId: (id, cb) => { searchOne({userId:id}, null, cb) },
     create: (o, cb) => {
       new model( o ).save( (e,r) => {
-        if (e && logging) { $log('svc.create', o, e) }
-        if (r) { r = r.toObject() }
+        if (e) $log('svc.create.error', e)
+        if (logging) $log('svc.create', o)
+        if (r) r = r.toObject()
         if (cb) cb(e, r)
       })
     },
@@ -45,14 +46,23 @@ export default function(model, logging)
       if (!id) return cb(new Error('Cannot update object by null id'), null)
       var ups = _.omit(data, '_id') // so mongo doesn't complain
       model.findByIdAndUpdate(id, ups).lean().exec( (e, r) => {
-        if (e && logging) { $log('svc.update.error', id, e, data) }
+        if (e) $log('svc.update.error', id, e, data)
+        if (logging) $log('svc.updated', r)
         if (cb) cb(e, r)
       })
+    },
+    updateBulk: (list, cb) => {
+    	var bulk = model.collection.initializeOrderedBulkOp()
+    	for (var item of list) {
+				bulk.find({_id:item._id}).updateOne(item)
+    	}
+    	bulk.execute(cb)
     },
     deleteById: (id, cb) => {
       if (!id) return cb(new Error('Cannot delete object by null id'), null)
       model.findByIdAndRemove(id, (e) => {
-        if (e || logging) { $log('svc.delete', e) }
+        if (e) $log('svc.delete.error', id, e)
+				if (logging) $log('svc.delete', id)
         if (cb) cb(e)
       })
     }

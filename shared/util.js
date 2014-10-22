@@ -29,8 +29,20 @@ module.exports = {
   },
 
 
-  dateWithDayAccuracy: () => {
-    return moment('yyyy-MM-dd', moment().format('yyyy-MM-dd')).toDate()
+  dateWithDayAccuracy: (mom) => {
+  	if (!mom) mom = moment()
+    return moment(mom.format('YYYY-MM-DD'), 'YYYY-MM-DD').toDate()
+  },
+
+
+  firstName: (name) => {
+    return name.split(' ')[0]
+  },
+
+
+  lastName: (name) => {
+    return name.replace(name.split(' ')[0]+ '' , '')
   }
+
 
 }
