@@ -17,15 +17,15 @@ export function getByExpertId(id, cb) {
 }
 
 
-function create(e, r) {
+function create(e, r, user, expert, time, minutes, type, cb) {
 	if (e) return cb(e)
 
 	var booking = {
-		customerId: this.user._id, // consider use case of expert creating booking
+		customerId: user._id, // consider use case of expert creating booking
 		expertId: expert._id,
 		type,
 		minutes,
-		createdById: this.user._id,
+		createdById: user._id,
 		status: 'pending',
 		datetime: time,
 		gcal: {},
@@ -37,12 +37,14 @@ function create(e, r) {
 
 export function createWithCredit(expert, time, minutes, type, cb)
 {
-	OrdersSvc.bookUsingCredit.call(this, expert, time, minutes, type, create)
+	var createCB = (e, r) => create(e, r, this.user, expert, time, minutes, type, cb)
+	OrdersSvc.bookUsingCredit.call(this, expert, time, minutes, type, createCB)
 }
 
 export function createWithPAYG(expert, time, minutes, type, payMethod, cb)
 {
-	OrdersSvc.bookUsingPAYG.call(this, expert, time, minutes, type, payMethod, create)
+	var createCB = (e, r) => create(e, r, this.user, expert, time, minutes, type, cb)
+	OrdersSvc.bookUsingPAYG.call(this, expert, time, minutes, type, payMethod, createCB)
 }
 
 export function confirmBooking()
