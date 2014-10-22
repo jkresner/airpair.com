@@ -51,6 +51,13 @@ export default function(model, logging)
         if (cb) cb(e, r)
       })
     },
+    updateBulk: (list, cb) => {
+    	var bulk = model.collection.initializeOrderedBulkOp()
+    	for (var item of list) {
+				bulk.find({_id:item._id}).updateOne(item)
+    	}
+    	bulk.execute(cb)
+    },
     deleteById: (id, cb) => {
       if (!id) return cb(new Error('Cannot delete object by null id'), null)
       model.findByIdAndRemove(id, (e) => {
