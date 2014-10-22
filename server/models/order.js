@@ -13,14 +13,6 @@ var lineType = [
 	'airpair'
 ]
 
-// var RedeemedLine = {
-
-// 	lineItemId:     { required: true, type: ObjectId, ref: 'LineItem' },
-// 	amount:         { required: true, type: Number },
-// 	isPartial: 			{ required: true, type: Boolean, default: false }
-
-// }
-
 
 var LineItem = new Schema({
 

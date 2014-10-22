@@ -36,14 +36,6 @@ export function chargeWithMethod(amount, orderId, paymentMethodToken, cb) {
 }
 
 
-export function chargeWithDefault(amount, customerId, cb) {
-	gateway.transaction.sale({
-	  amount: amount, //'10.00',
-	  customerId: customerId,
-	}, cb)
-}
-
-
 export function addPaymentMethod(customerId, user, company, paymentMethodNonce, cb) {
 	var options = {}; // {
     // verifyCard: config.payments.braintree.verifyCards
