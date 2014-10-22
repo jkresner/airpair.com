@@ -18,7 +18,7 @@ export function logError(e, user, req)
   	if (req.header('user-agent'))
   	{
   		var source = req.header('user-agent').replace(/^\s*/, '').replace(/\s*$/, '')
-  		var isBot = (source) ? 'true' : 'false'
+  		var isBot = (botPattern.test(source)) ? 'true' : 'false'
 
   		reqInfo = `${reqInfo} || isBot:${isBot}:${req.header('user-agent')}`
   	}

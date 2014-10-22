@@ -1,9 +1,10 @@
 UserService = require('../../server/services/users')
 util = require('../../shared/util')
+bcrypt = require('bcrypt')
 
 module.exports = -> describe "Signup: ", ->
 
-  @timeout(3000)
+  @timeout(6000)
 
   before (done) ->
     stubAnalytics()
@@ -80,7 +81,6 @@ module.exports = -> describe "Signup: ", ->
           expect(res.body.error).to.equal('try google login')
           done()
 
-
   it 'Can not sign up with local credentials and existing local email', (done) ->
     d = getNewUserData('jkap')
 
@@ -135,4 +135,74 @@ module.exports = -> describe "Signup: ", ->
   #     expect('signup fail')
   #     expect('ask user to login')
   # }
+  describe "Verify e-mail", ->
 
+    generateHash = (s) ->
+      return bcrypt.hashSync(s, bcrypt.genSaltSync(8))
+
+    it.skip 'send a verification email to new users'
+    # not sure how to end-2-end test this yet
+    # needs to be sent on sign up, need to invesigate how to stub/mock out the relevant service(s)
+
+    it 'redirect/deny user if e-mail is not verified', (done) ->
+      d = getNewUserData('spur')
+      addAndLoginLocalUser 'spur', (userKey) ->
+         http(global.app)
+            .get('/v1/emailv-test')
+            .set('cookie',cookie)
+            .expect(403)
+            .end (err, res) ->
+              if (err) then return done(err)
+              expect(res.body.error).to.include('e-mail not verified')
+              done()
+
+    it 'user can only verify e-mail when logged in', (done) ->
+      d = getNewUserData('chuc')
+      addLocalUser 'chuc', (s) ->
+        http(global.app)
+          .get('/v1/email-verify?hash=anything')
+          .expect(302) # should be 401 and include WWW-Wuthenitcate header?
+          .end (err, res) ->
+            if (err) then return done(err)
+            expect(res.redirect).to.be.true
+            expect(res.header['location']).to.include('/login')
+            done()
+
+
+    it 'users need to verify email for some features', (done) ->
+      d = getNewUserData('stev')
+      context = { user: d }
+      addAndLoginLocalUser 'stev', (s) ->
+         http(global.app)
+            .get('/v1/emailv-test')
+            .set('cookie',cookie)
+            .expect(403)
+            .end (err, res) ->
+              if (err) then return done(err)
+              UserService.generateEmailVerificationMessage.call context, (e,r) ->
+                the_verification_link = r.body.match("http.*(/v1/email-verify\\?hash=.*)")[1]
+                http(global.app).get(the_verification_link)
+                  .set('cookie',cookie)
+                  .expect(302)
+                  .end (err, res) ->
+                    expect(res.header['location']).to.include('/email_verified')
+                    if (err) then return done(err)
+                    GET '/session/full', {}, (s) ->
+                      expect(s.emailVerified).to.be.true
+                      http(global.app)
+                        .get('/v1/emailv-test')
+                        .set('cookie', cookie)
+                        .expect(200, done)
+
+    it 'a bad standalone verification link does not verify the user', (done) ->
+      d = getNewUserData('step')
+      addAndLoginLocalUser 'step', (s) ->
+        http(global.app).get('/v1/email-verify?hash=' + 'ABCDEF1234567')
+          .set('cookie',cookie)
+          .expect(302) # if this was an api call we'd do 403 but we need the redirect as we are called from outside our
+          .end (err, res) ->
+            if (err) then return done(err)
+            GET '/session/full', {}, (s) ->
+              expect(s.emailVerified).to.be.false
+              expect(res.header['location']).to.include('/email_verification_failed')
+              done()
