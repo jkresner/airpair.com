@@ -1,6 +1,5 @@
 UserService = require('../../server/services/users')
 util = require('../../shared/util')
-bcrypt = require('bcrypt')
 
 module.exports = -> describe "Signup: ", ->
 
@@ -92,6 +91,26 @@ module.exports = -> describe "Signup: ", ->
             expect(res.body.error).to.equal('user already exists')
             done()
 
+  it.skip 'google user can set their primary email'
+
+  it 'a local user can change their email', (done) ->
+    the_new_email = "hello" + moment().format('X').toString() + "@mydomain.com"
+    addAndLoginLocalUser 'spgo', (userKey) ->
+      GET '/session/full', {}, (s) ->
+        setUserAsEmailVerified s._id, ->
+          GET '/session/full', {}, (s) ->
+            expect(s.emailVerified).to.be.true
+            http(global.app)
+              .put('/v1/api/users/me/change-email')
+              .send({email:the_new_email})
+              .set('cookie', cookie)
+              .expect(200)
+              .end (err, res) ->
+                if (err) then return done(err)
+                GET '/session/full', {}, (s) ->
+                  expect(s.email).to.equal(the_new_email)
+                  expect(s.emailVerified).to.be.false
+                  done()
 
   describe "Login", ->
 
@@ -136,9 +155,6 @@ module.exports = -> describe "Signup: ", ->
   #     expect('ask user to login')
   # }
   describe "Verify e-mail", ->
-
-    generateHash = (s) ->
-      return bcrypt.hashSync(s, bcrypt.genSaltSync(8))
 
     it.skip 'send a verification email to new users'
     # not sure how to end-2-end test this yet

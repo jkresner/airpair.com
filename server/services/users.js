@@ -312,7 +312,13 @@ export function toggleBookmark(tag, cb) {
   }
 }
 
+export function changeEmail(body, cb) {
+	svc.update(this.user._id, {email: body.email, emailVerified: false}, function(e,r) {
+		// then send verification email to new address
+		cb(e,r)
+	})
 
+}
 export function verifyEmail(hash, cb) {
 	if (bcrypt.compareSync(this.user.email, hash)) {
 		svc.update(this.user._id, { emailVerified: true }, function(err, user) {
