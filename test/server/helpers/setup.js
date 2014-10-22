@@ -3,6 +3,8 @@ var Tag = require('../../../server/models/tag')
 var Workshop = require('../../../server/models/workshop')
 var View = require('../../../server/models/view')
 var User = require('../../../server/models/user')
+var Expert = require('../../../server/models/expert')
+var PayMethod = require('../../../server/models/paymethod')
 var {Settings,Company} = require('../../../server/models/v0')
 var util = require('../../../shared/util')
 
@@ -71,6 +73,15 @@ global.addAndLoginLocalUser = function(originalUserKey, done)
   })
 }
 
+global.addAndLoginLocalUserWithPayMethod = function(originalUserKey, done)
+{
+	addAndLoginLocalUser(originalUserKey, (s) =>{
+		new PayMethod( _.extend({userId: s._id}, data.paymethods.generic) ).save( (e,r) => {
+	    s.primaryPayMethodId = r._id
+	    done(s)
+		})
+	})
+}
 
 function addUserWithRole(userKey, role, done)
 {
@@ -162,6 +173,12 @@ module.exports = {
 
   ensureUser: function(user, cb) {
   	ensureDocument(User, user, cb)
+  },
+
+  ensureExpert: function(user, expert, cb) {
+  	ensureDocument(User, user, () => {
+	  	ensureDocument(Expert, expert, cb)
+  	})
   },
 
   ensureSettings: function(user, settings, cb) {

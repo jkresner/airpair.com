@@ -36,4 +36,5 @@ describe 'Server: ', ->
   describe('Billing: ', require('./billingSpec'))
   describe('Orders: ', require('./ordersSpec'))
   describe('Orders: ', require('./ordersMembershipSpec'))
+  describe('Orders: ', require('./ordersBookingSpec'))
 

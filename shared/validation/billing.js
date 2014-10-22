@@ -5,10 +5,12 @@ export function buyMembership(user, length)
 }
 
 
-export function buyCredit(user, total)
+export function buyCredit(user, coupon, total)
 {
 	if (total != 500 && total != 1000 && total != 3000 && total != 5000)
 		return 'Can purchase only 500, 1000, 3000, 5000 amounts of credit'
+
+	// TODO validate coupon usage
 }
 
 

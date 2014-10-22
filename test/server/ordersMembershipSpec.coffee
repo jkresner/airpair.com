@@ -78,14 +78,6 @@ module.exports = -> describe "Membership: ", ->
   it.skip 'Can create stripe membership order', (done) ->
 
 
-  it.skip 'Gets $5 off order if member', (done) ->
-
-
-
-  it.skip 'Can redeem membership credit', (done) ->
-
-
-
   # it.skip 'Empty result for orderHistory on new user', (done) ->
     # opts = status: 401, unauthenticated: true
     # GET('/tags/angularjs', opts, -> done() )
