@@ -1,3 +1,5 @@
+var mongoose = require('mongoose')
+
 var idsEqual = (id1, id2) =>
   id1.toString() == id2.toString()
 
@@ -13,14 +15,23 @@ module.exports = {
   },
 
 
-  toggleItemInArray: (array, item) => {
+  toggleItemInArray: (array, item, comparator) => {
     if (!array) return [item]
     else
     {
-      var existing = _.find(array, (i) => idsEqual(i._id,item._id))
+    	if (!comparator) { comparator = (i) => idsEqual(i._id,item._id) }
+      var existing = _.find(array, comparator)
       if (existing) return _.without(array, existing)
-      else return array.push(t)
+      else {
+      	array.push(item)
+      	return array
+      }
     }
+  },
+
+
+  newId: () => {
+    return new mongoose.Types.ObjectId().toString()
   },
 
 
