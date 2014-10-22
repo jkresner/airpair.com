@@ -245,21 +245,25 @@ export function setAvatar(user) {
 
 
 export function getSession(cb) {
-  if (this.user == null) {
-    var s = {authenticated:false,sessionID:this.sessionID}
-    if (this.session.anonData)
-    {
-      s.tags = this.session.anonData.tags;
-      s.bookmarks = this.session.anonData.bookmarks;
-    }
-    return cb(null, s)
-  }
-  else if (!this.user.avatar)
-  {
-    setAvatar(this.user)
-  }
+	if (this.user == null) {
+		var s = _.extend( {authenticated:false,sessionID:this.sessionID}, _.clone(this.session.anonData))
+		if (s.tags) s.tags = _.map(s.tags, (t) => {
+			var tt = cache.get('tags')[t.tagId]
+			var {name,slug} = tt
+			return _.extend({name,slug},t)
+		})
+		if (s.bookmarks) s.bookmarks = _.map(s.bookmarks, (b) => {
+			var {name,url} = cache.get(b.type)[b.objectId]
+			return _.extend({name,url},b)
+		})
+		return cb(null, s)
+	}
+	else if (!this.user.avatar)
+	{
+		setAvatar(this.user)
+	}
 
-  return cb(null, this.user)
+	return cb(null, this.user)
 }
 
 
@@ -275,38 +279,44 @@ export function getSessionFull(cb) {
 
 
 export function toggleTag(tag, cb) {
-  tag = { _id: tag._id, name: tag.name, slug: tag.slug }
+  tag = { _id: util.newId(), tagId: tag._id, sort: 0 }
 
   if (this.user) {
     svc.searchOne({ _id:this.user_id }, null, (e,r) => {
       if (e || !r) return cb(e,r)
-      r.tags = util.toggleItemInArray(r.tags,tag)
+      r.tags = util.toggleItemInArray(r.tags,tag, (i) => i.tagId == tag.tagId )
       this.user.tags = r.tags
       svc.update(userId, r, cb)
     })
   }
   else {
-    this.session.anonData.tags =
-      util.toggleItemInArray(this.session.anonData.tags, tag)
+  	var {tags} = this.session.anonData
+  	if (tags && tags.length > 3) return cb(Error('Max allowed tags reached'))
+
+    this.session.anonData.tags = util.toggleItemInArray(tags, tag, (i) => i.tagId == tag.tagId )
 
     return getSession.call(this, cb)
   }
 }
 
-export function toggleBookmark(tag, cb) {
-  tag = { _id: tag._id, name: tag.name, slug: tag.slug }
+export function toggleBookmark(type, id, cb) {
+	var	bookmark = { _id: util.newId(), objectId: id, type, sort: 0 }
+	$log('toggleBookmark', bookmark)
 
   if (this.user) {
-    svc.searchOne({ _id:this.user_id }, null, (e,r) => {
-      if (e || !r) return cb(e,r)
-      r.tags = util.toggleItemInArray(r.tags,tag)
-      this.user.tags = r.tags
-      svc.update(userId, r, cb)
-    })
+    cb('not impl')
+    // svc.searchOne({ _id:this.user_id }, null, (e,r) => {
+    //   if (e || !r) return cb(e,r)
+    //   r.tags = util.toggleItemInArray(r.tags,tag)
+    //   this.user.tags = r.tags
+    //   svc.update(userId, r, cb)
+    // })
   }
   else {
-    this.session.anonData.tags =
-      util.toggleItemInArray(this.session.anonData.tags, tag)
+  	var {bookmarks} = this.session.anonData
+  	if (bookmarks && bookmarks.length > 2) return cb(Error('Max allowed bookmarks reached'))
+
+    this.session.anonData.bookmarks = util.toggleItemInArray(bookmarks, bookmark, (i) => i.objectId == bookmark.objectId )
 
     return getSession.call(this, cb)
   }

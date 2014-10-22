@@ -3,7 +3,7 @@ import hbsEngine from './server/hbsEngine'
 import * as mongo from './server/mongoInit'
 import session from './server/identity/session'
 require('colors')
-
+require('./server/util/cache')
 
 // DO NOT MOVE ANYTHING IN THIS FILE
 // middleware order is 112% crucial to not screw up sessions
