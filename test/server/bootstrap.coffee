@@ -17,7 +17,6 @@ appdir = __dirname.replace('/test/server','').replace('\\test\\server','')
 config = initConfig('test', appdir)
 setGlobals(config)
 
-
 describe 'Server: ', ->
 
   before (done) ->
@@ -34,5 +33,8 @@ describe 'Server: ', ->
   describe('Posts: ', require('./postsSpec'))
   describe('Analytics: ', require('./analyticsSpec'))
   describe('Redirects: ', require('./redirectsSpec'))
-
+  describe('Billing: ', require('./billingSpec'))
+  describe('Orders: ', require('./ordersSpec'))
+  describe('Orders: ', require('./ordersMembershipSpec'))
+  describe('Orders: ', require('./ordersBookingSpec'))
 

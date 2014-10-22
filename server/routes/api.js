@@ -3,14 +3,20 @@ import PostsAPI from '../api/posts'
 import UsersAPI from '../api/users'
 import TagsAPI from '../api/tags'
 import RedirectsAPI from '../api/redirects'
+import PaymethodsAPI from '../api/paymethods'
+import OrdersAPI from '../api/orders'
+import BookingsAPI from '../api/bookings'
+import ExpertsAPI from '../api/experts'
 import {authd,adm,setAnonSessionData} from '../identity/auth/middleware'
 
-export default function(app) {
 
+export default function(app) {
 
   var router = require('express').Router()
 
     .param('tag', TagsAPI.paramFns.getBySlug)
+    .param('paymethod', PaymethodsAPI.paramFns.getById)
+    .param('expert', ExpertsAPI.paramFns.getById)
 
     .get('/session', UsersAPI.getSession)
     .get('/session/full', UsersAPI.getSessionFull)
@@ -31,6 +37,18 @@ export default function(app) {
 
     .get('/workshops/', WorkshopsAPI.getAll)
     .get('/workshops/:id', WorkshopsAPI.getBySlug)
+
+    .use(authd) //-- swap out for email verify or something
+    .get('/billing/paymethods', PaymethodsAPI.getMyPaymethods)
+    .post('/billing/paymethods', PaymethodsAPI.addPaymethod)
+    .delete('/billing/paymethods/:id', PaymethodsAPI.deletePaymethod)
+    .get('/billing/orders', OrdersAPI.getMyOrders)
+    .get('/billing/orders/credit', OrdersAPI.getMyOrdersWithCredit)
+    .post('/billing/orders/membership/:paymethod', OrdersAPI.buyMembership)
+    .post('/billing/orders/credit/:paymethod', OrdersAPI.buyCredit)
+
+    .post('/bookings/credit/:expert', BookingsAPI.createWithCredit)
+    .post('/bookings/payg/:expert/:paymethod', BookingsAPI.createWithPAYG)
 
   var admrouter = require('express').Router()
     .use(adm)

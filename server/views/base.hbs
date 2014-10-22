@@ -18,6 +18,9 @@
 	<main ng-view></main>
 </div>
 
+
+<nav id="side" class="collapse" side-nav><nav>
+
 <!-- build:js1 /combined.js -->
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 <script type="text/javascript" src="/v1/lib/lodash/dist/lodash.js"></script>
@@ -32,13 +35,12 @@
 <!-- endbuild -->
 
 <script type="text/javascript" src="/v1/js/index.js"></script>
+<script type="text/javascript">
 
- <script type="text/javascript">
+function bindTracking() {}
 
- function bindTracking() {
- }
+</script>
 
- </script>
 {{> initPage }}
 
 </body>

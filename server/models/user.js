@@ -36,13 +36,20 @@ var Cohort = {
   // utms          Get by query from Views
 }
 
+var Membership = {
+  expires:      { type: Date }
+}
+
 
 var User = new Schema({
 
-  email: { type: String, index: { unique: true, dropDups: true }, trim: true },
-  emailVerified:   { type: Boolean, required: true, default: false },
-  name: { type: String, trim: true },
-  initialis: { type: String, lowercase: true, trim: true },
+  email: 								{ type: String, index: { unique: true, sparse: true }, trim: true },
+  emailVerified:   			{ type: Boolean, required: true, default: false },
+  primaryPayMethodId: 	{ type: ObjectId, ref: 'PayMethod' }, // null indicates user has no payMethod
+  membership: 					Membership,
+
+  name: 								{ type: String, trim: true },
+  initialis: 						{ type: String, lowercase: true, trim: true },
 
   username: {
     type: String,
@@ -58,15 +65,8 @@ var User = new Schema({
 
   bio: String, // Used for blog posts
 
-  local : {
-    password : String
-  },
-  googleId: {
-    type: String,
-    sparse: true,
-    unique: true,
-    dropDups: true
-  },
+  local : 							{ password : String },
+  googleId: 						{ type: String, sparse: true, unique: true, dropDups: true },
   google: {},
   githubId: Number,
   github: {},

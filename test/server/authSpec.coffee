@@ -7,12 +7,12 @@ module.exports = -> describe "Signup: ", ->
   @timeout(6000)
 
   before (done) ->
-    # stubAnalytics()
+    stubAnalytics()
     done()
 
 
   after (done) ->
-    # resotreAnalytics()
+    resotreAnalytics()
     global.cookie = null
     global.cookieCreatedAt = null
     done()
@@ -102,8 +102,7 @@ module.exports = -> describe "Signup: ", ->
         expect(sou.name).to.be.undefined
         expect(sou.cohort.visit_first).to.be.undefined
         expect(sou.cohort.aliases.length).to.equal(0)
-
-        UserService.upsertProviderProfile.call newUserSession('SoumyaAcharya'), 'google', sou.google, (e,u) ->
+        UserService.upsertProviderProfile.call newUserSession('SoumyaAcharya'), 'google', sou.google, (ee,u) ->
           expect(u.email).to.equal(sou.google._json.email)
           expect(u.name).to.equal(sou.google.displayName)
           expect(u.emailVerified).to.be.false

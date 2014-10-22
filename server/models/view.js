@@ -4,7 +4,7 @@ var {ObjectId} = mongoose.Schema
 var objectType = ['post','workshop','expert']
 
 
-module.exports = mongoose.model('view', new mongoose.Schema({
+module.exports = mongoose.model('View', new mongoose.Schema({
 
   utc:          { type: Date, required: true },
   userId:       { type: ObjectId, ref: 'User', index: true, sparse: true },
