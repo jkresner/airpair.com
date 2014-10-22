@@ -1,5 +1,7 @@
 module.exports = -> describe "PayMethods", ->
 
+  @timeout(4000)
+
   before (done) ->
     stubAnalytics()
     done()
@@ -55,7 +57,6 @@ module.exports = -> describe "PayMethods", ->
 
 
   it 'Can add multiple braintree payment methods to new user', (done) ->
-    @timeout(3000)
     addAndLoginLocalUser 'elld', (s) ->
       d = type: 'braintree', token: braintree.Test.Nonces.Transactable, name: 'Default Card', makeDefault: true
       POST '/billing/paymethods', d, {}, (r1) ->

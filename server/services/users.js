@@ -114,7 +114,6 @@ function upsertSmart(search, upsert, cb) {
 export function upsertProviderProfile(providerName, profile, done) {
   var search = {}
   search[providerName+'Id'] = profile.id
-
   if (this.user && this.user._id)
     search = { '_id': this.user._id }
 

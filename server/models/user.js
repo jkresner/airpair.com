@@ -43,7 +43,7 @@ var Membership = {
 
 var User = new Schema({
 
-  email: 								{ type: String, index: { unique: true, dropDups: true }, trim: true },
+  email: 								{ type: String, index: { unique: true, sparse: true }, trim: true },
   emailVerified:   			{ type: Boolean, required: true, default: false },
   primaryPayMethodId: 	{ type: ObjectId, ref: 'PayMethod' }, // null indicates user has no payMethod
   membership: 					Membership,
