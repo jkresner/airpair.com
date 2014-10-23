@@ -101,7 +101,7 @@ module.exports = -> describe "Signup: ", ->
           GET '/session/full', {}, (s) ->
             expect(s.emailVerified).to.be.true
             http(global.app)
-              .put('/v1/api/users/me/change-email')
+              .put('/v1/api/users/me/email')
               .send({email:the_new_email})
               .set('cookie', cookie)
               .expect(200)
