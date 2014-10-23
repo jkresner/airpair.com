@@ -91,8 +91,6 @@ module.exports = -> describe "Signup: ", ->
             expect(res.body.error).to.equal('user already exists')
             done()
 
-  it.skip 'google user can set their primary email'
-
   it 'a local user can change their email', (done) ->
     the_new_email = "hello" + moment().format('X').toString() + "@mydomain.com"
     addAndLoginLocalUser 'spgo', (userKey) ->
