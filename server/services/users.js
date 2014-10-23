@@ -48,7 +48,7 @@ function getUpsertEngagementProperties(existingUser, sessionID, sessionCreatedAt
 // upsertSmart
 // Intelligent logic around updating user accounts on Signup and Login for user info and analytics.
 // Adds the user if new, or updates if existing based on the search which could be by _id or provider e.g. { googleId: 'someId' }
-export function upsertSmart(search, upsert, cb) {
+function upsertSmart(search, upsert, cb) {
   if (logging) $log('upsertSmart', JSON.stringify(search), JSON.stringify(upsert))
 
   //-- Session is their cookie, which may or may not have been their first visit
