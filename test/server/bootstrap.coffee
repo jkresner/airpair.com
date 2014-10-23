@@ -3,19 +3,17 @@ require('traceur-source-maps').install(traceur)
 traceur.require.makeDefault (filePath) ->
   !~filePath.indexOf('node_modules') && !~filePath.indexOf('test') != 0
 
+initConfig = require('./../../server/util/config')
+setGlobals = require('./../../server/util/global')
+appdir = __dirname.replace('/test/server','').replace('\\test\\server','')
+config = initConfig('test', appdir)
+setGlobals(config)
 
 require('./helpers/http')
 global.data     = require('./../data/data')
 global.sinon    = require('sinon')
 global.chai     = require('chai')
 global.expect   = chai.expect
-
-
-initConfig = require('./../../server/util/config')
-setGlobals = require('./../../server/util/global')
-appdir = __dirname.replace('/test/server','').replace('\\test\\server','')
-config = initConfig('test', appdir)
-setGlobals(config)
 
 describe 'Server: ', ->
 

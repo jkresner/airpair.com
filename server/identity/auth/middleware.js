@@ -7,12 +7,12 @@ export function setAnonSessionData(req, res, next) {
   if (!req.isAuthenticated || !req.isAuthenticated())
   {
     if (!req.session.anonData) req.session.anonData = {}
-    next()
   }
   else
   {
     req.session.anonData = null
   }
+  next()
 }
 
 

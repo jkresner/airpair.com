@@ -1,4 +1,3 @@
-var mongoose = require('mongoose')
 
 var idsEqual = (id1, id2) =>
   id1.toString() == id2.toString()
@@ -27,11 +26,6 @@ module.exports = {
       	return array
       }
     }
-  },
-
-
-  newId: () => {
-    return new mongoose.Types.ObjectId().toString()
   },
 
 
