@@ -98,17 +98,11 @@ module.exports = -> describe "Signup: ", ->
         setUserAsEmailVerified s._id, ->
           GET '/session/full', {}, (s) ->
             expect(s.emailVerified).to.be.true
-            http(global.app)
-              .put('/v1/api/users/me/email')
-              .send({email:the_new_email})
-              .set('cookie', cookie)
-              .expect(200)
-              .end (err, res) ->
-                if (err) then return done(err)
-                GET '/session/full', {}, (s) ->
-                  expect(s.email).to.equal(the_new_email)
-                  expect(s.emailVerified).to.be.false
-                  done()
+            PUT '/users/me/email', {email: the_new_email}, {}, ->
+              GET '/session/full', {}, (s) ->
+                expect(s.email).to.equal(the_new_email)
+                expect(s.emailVerified).to.be.false
+                done()
 
   describe "Login", ->
 
