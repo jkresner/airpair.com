@@ -244,22 +244,39 @@ export function setAvatar(user) {
 }
 
 
-export function getSession(cb) {
-  if (this.user == null) {
-    var s = {authenticated:false,sessionID:this.sessionID}
-    if (this.session.anonData)
-    {
-      s.tags = this.session.anonData.tags;
-      s.bookmarks = this.session.anonData.bookmarks;
-    }
-    return cb(null, s)
-  }
-  else if (!this.user.avatar)
-  {
-    setAvatar(this.user)
-  }
+//-- TODO, watch out for cache changing via adds and deletes of records
+function inflateTagsAndBookmarks(sessionData, cb) {
+	if (!sessionData) return cb(null, sessionData)
+	var {tags,bookmarks} = sessionData
+	if (!tags && !bookmarks) return cb(null, sessionData)
+	cache.ready(['tags','posts'], () => {
+		if (tags) tags = _.map(tags, (t) => {
+			var tt = cache['tags'][t.tagId]
+			if (!tt) return cb(Error(`tag with Id ${t.tagId} not in cache`))
+			var {name,slug} = tt
+			return _.extend({name,slug},t)
+		})
+		if (bookmarks) bookmarks = _.map(bookmarks, (b) => {
+			var bb = cache[b.type+'s'][b.objectId]
+			if (!bb) return cb(Error(`${b.type} with Id ${b.objectId} not in cache`))
+			var {title,url} = bb
+			return _.extend({title,url},b)
+		})
+		cb(null, _.extend(sessionData, {tags, bookmarks}))
+	})
+}
 
-  return cb(null, this.user)
+export function getSession(cb) {
+	if (this.user == null)
+	{
+		var session = _.extend({ authenticated:false,sessionID:this.sessionID }, this.session.anonData)
+		inflateTagsAndBookmarks(session, cb)
+	}
+	else
+	{
+		if (!this.user.avatar) setAvatar(this.user)
+		inflateTagsAndBookmarks(this.user, cb)
+	}
 }
 
 
@@ -268,46 +285,51 @@ export function getSessionFull(cb) {
     return getSession.call(this, cb)
 
   svc.searchOne({ _id:this.user._id },{ fields: UserData.select.sessionFull }, (e,r) => {
+    if (e) return cb(e)
     setAvatar(r)
-    cb(e,r)
+    inflateTagsAndBookmarks(r, cb)
   })
 }
 
 
 export function toggleTag(tag, cb) {
-  tag = { _id: tag._id, name: tag.name, slug: tag.slug }
-
+	tag = { _id: svc.newId(), tagId: tag._id, sort: 0 }
   if (this.user) {
-    svc.searchOne({ _id:this.user_id }, null, (e,r) => {
-      if (e || !r) return cb(e,r)
-      r.tags = util.toggleItemInArray(r.tags,tag)
-      this.user.tags = r.tags
-      svc.update(userId, r, cb)
-    })
-  }
-  else {
-    this.session.anonData.tags =
-      util.toggleItemInArray(this.session.anonData.tags, tag)
+		var userId = this.user._id
+		svc.searchOne({ _id: userId }, null, (e,r) => {
+			if (e || !r) return cb(e,r)
+			r.tags = util.toggleItemInArray(r.tags, tag, (i) => i.tagId == tag.tagId)
+			this.user.tags = r.tags
+			svc.update(userId, r, () => inflateTagsAndBookmarks(r, cb))
+		})
+	}
+	else {
+		var {tags} = this.session.anonData
+		if (tags && tags.length >= 4) return cb(Error('Max allowed tags reached'))
 
-    return getSession.call(this, cb)
-  }
+		this.session.anonData.tags = util.toggleItemInArray(tags, tag, (i) => i.tagId == tag.tagId )
+
+		return getSession.call(this, cb)
+	}
 }
 
-export function toggleBookmark(tag, cb) {
-  tag = { _id: tag._id, name: tag.name, slug: tag.slug }
+export function toggleBookmark(type, id, cb) {
+	var	bookmark = { _id: svc.newId(), objectId: id, type, sort: 0 }
 
-  if (this.user) {
-    svc.searchOne({ _id:this.user_id }, null, (e,r) => {
-      if (e || !r) return cb(e,r)
-      r.tags = util.toggleItemInArray(r.tags,tag)
-      this.user.tags = r.tags
-      svc.update(userId, r, cb)
-    })
-  }
+	if (this.user) {
+		var userId = this.user._id
+		svc.searchOne({ _id: userId }, null, (e,r) => {
+			if (e || !r) return cb(e,r)
+			r.bookmarks = util.toggleItemInArray(r.bookmarks, bookmark, (i) => i.objectId == id)
+			this.user.bookmarks = r.bookmarks
+			svc.update(userId, r, () => inflateTagsAndBookmarks(r, cb))
+		})
+	}
   else {
-    this.session.anonData.tags =
-      util.toggleItemInArray(this.session.anonData.tags, tag)
+  	var {bookmarks} = this.session.anonData
+  	if (bookmarks && bookmarks.length >= 2) return cb(Error('Max allowed bookmarks reached'))
 
+    this.session.anonData.bookmarks = util.toggleItemInArray(bookmarks, bookmark, (i) => i.objectId == id )
     return getSession.call(this, cb)
   }
 }

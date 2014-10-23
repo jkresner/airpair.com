@@ -7,19 +7,17 @@ var objectType = ['post','workshop','expert']
 
 
 var Bookmark = new Schema({
-  utc:          { type: Date, required: true },
+  type:   			{ type: String, required: true,  enum: objectType },
   objectId:     { type: ObjectId, required: true },
-  objectType:   { enum: objectType, type: String, required: true },
-  url:          { type: String, required: true },
-  priority:     { type: Number, required: true },
-  name:         { type: String, required: true }
+  sort: 		    { type: Number, required: true }
 })
 
-var TagSlim = {
-  _id:          { required: true, type: ObjectId, ref: 'Tag'},
-  name:         { required: true, type: String, trim: true },
-  slug:         { required: true, type: String, lowercase: true, trim: true }
-}
+
+var TagSlim = new Schema({
+  tagId:        { required: true, type: ObjectId, ref: 'Tag'},
+  sort:     		{ type: Number, required: true },
+})
+
 
 var Cohort = {
   engagement:   {

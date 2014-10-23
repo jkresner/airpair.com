@@ -1,5 +1,4 @@
 var util = require('../../shared/util')
-var mongoose = require('mongoose')
 import Svc from './_service'
 import Order from '../models/order'
 import * as PayMethodSvc from './payMethods'
@@ -8,7 +7,7 @@ import * as Validate from '../../shared/validation/billing.js'
 var {linesWithCredit,getAvailableCredit} = require('../../shared/orders.js')
 var Data = require('./orders.data')
 
-var logging = false	
+var logging = false
 var svc = new Svc(Order, logging)
 
 var base = {
@@ -43,7 +42,7 @@ function airpair(expert, minutes, time, unitPrice, unitProfit)
 
 function createOrder(lineItems, payMethod, cb) {
 	var o = {
-		_id: new mongoose.Types.ObjectId().toString(),
+		_id: util.newId(),
 		utc: new Date(),
 		userId: this.user._id,
 		total: 0,
@@ -196,7 +195,7 @@ export function bookUsingCredit(expert, time, minutes, type, cb)
 					if (li.info.remaining > need) {
 						var orderIdWithLineItem = o._id
 						o.lineItems.push(airpair(expert, minutes, time, unitPrice, profit))
-					}	
+					}
 					else
 						deducted = li.info.remaining
 

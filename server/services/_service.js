@@ -29,6 +29,9 @@ export default function(model, logging)
       e.status = 403
       return e
     },
+    newId: () => {
+			return new require('mongoose').Types.ObjectId().toString()
+		},
     searchMany: searchMany,
     searchOne: searchOne,
     getAll: (cb) => { searchMany({}, null, cb) },

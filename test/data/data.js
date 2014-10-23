@@ -6,5 +6,6 @@ module.exports = {
 	workshops:	require('./workshops'),
 	experts:		require('./experts'),
 	paymethods:	require('./paymethods'),
+	posts:			require('./posts'),
 	sessions:		{}
 }
