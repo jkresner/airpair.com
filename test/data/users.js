@@ -47,6 +47,7 @@ module.exports = {
 	spur: { name: "Steve Purves", email: "sjpurves@yahoo.com"},
 	step: { name: "Stephen Purves", email: "stephenp@yahoo.com"},
 	chuc: { name: "Chuck Norris", email: "chuck@hotmail.com"},
+	spgo: { name: "SJ Purves", email: "stevejpurves@ymail.com"},
 
 	obfn: { name: "Obie Fernandez", email: "obiefernand@gmail.com"},
 	obie: { name: "Obie Fernandez", email: "obiefernand@hotmail.com"},
