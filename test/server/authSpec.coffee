@@ -93,16 +93,13 @@ module.exports = -> describe "Signup: ", ->
 
   it 'a local user can change their email', (done) ->
     the_new_email = "hello" + moment().format('X').toString() + "@mydomain.com"
-    addAndLoginLocalUser 'spgo', (userKey) ->
-      GET '/session/full', {}, (s) ->
-        setUserAsEmailVerified s._id, ->
-          GET '/session/full', {}, (s) ->
-            expect(s.emailVerified).to.be.true
-            PUT '/users/me/email', {email: the_new_email}, {}, ->
-              GET '/session/full', {}, (s) ->
-                expect(s.email).to.equal(the_new_email)
-                expect(s.emailVerified).to.be.false
-                done()
+    addAndLoginLocalUserWithEmailVerified 'spgo', (s) ->
+      expect(s.emailVerified).to.be.true
+      PUT '/users/me/email', {email: the_new_email}, {}, ->
+        GET '/session/full', {}, (s) ->
+          expect(s.email).to.equal(the_new_email)
+          expect(s.emailVerified).to.be.false
+          done()
 
   describe "Login", ->
 
