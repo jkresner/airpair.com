@@ -335,11 +335,14 @@ export function toggleBookmark(type, id, cb) {
 }
 
 export function changeEmail(body, cb) {
-	svc.update(this.user._id, {email: body.email, emailVerified: false}, function(e,r) {
-		// then send verification email to new address
-		cb(e,r)
-	})
-
+	if (body.email) {
+		svc.update(this.user._id, {email: body.email, emailVerified: false}, function(e,r) {
+			// then send verification email to new address
+			cb(e,r)
+		})
+	}
+	else
+		cb(new Error('no email provided'))
 }
 export function verifyEmail(hash, cb) {
 	if (bcrypt.compareSync(this.user.email, hash)) {
