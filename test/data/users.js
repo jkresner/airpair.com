@@ -42,6 +42,8 @@ module.exports = {
 	nkig: { name:"Nevan King",email:"nevanking@hotmail.com" },
 
 	shcl: { name: "Shane Cole", email: "shanecole@ap.com"},
+	shan: { name: "Shane Cole", email: "shanecole@yahoo.com"},
+	scol: { name: "Shane Cole", email: "shane.cole@yahoo.com"},
 	stpv: { name: "Steve Purves", email: "stevep@ap.com"},
 	stpu: { name: "Steve Purves", email: "stevepur@gmail.com"},
 	stps: { name: "Steve Purves", email: "stevejpurves@hotmail.com"},

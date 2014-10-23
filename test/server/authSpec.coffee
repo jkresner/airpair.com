@@ -103,14 +103,14 @@ module.exports = -> describe "Signup: ", ->
 
   it 'cannot change a users email to just any string', (done) ->
     the_new_email = "justsomestring"
-    addAndLoginLocalUserWithEmailVerified 'spgo', (s) ->
+    addAndLoginLocalUserWithEmailVerified 'shan', (s) ->
       expect(s.emailVerified).to.be.true
       PUT '/users/me/email', {email: the_new_email}, {status:400}, (e)->
         expect(e.message).to.include('email appears to be invalid')
         done()
 
   it 'to change email the client must supply email field in body of request', (done) ->
-    addAndLoginLocalUserWithEmailVerified 'spgo', (s) ->
+    addAndLoginLocalUserWithEmailVerified 'scol', (s) ->
       expect(s.emailVerified).to.be.true
       PUT '/users/me/email', {}, {status:400}, (e)->
         expect(e.message).to.include('no email field present in request')
