@@ -58,8 +58,8 @@ global.addLocalUser = function(userKey, opts, done)
     data.users[clone.userKey] = r
     if (opts && opts.emailVerified)
     {
-	    UserService.update.call(this, data.users[clone.userKey]._id, {emailVerified: true}, function(err, user) {
-				data.users[clone.userKey].emailVerified = true
+	    UserService.update.call(this, data.users[clone.userKey]._id, opts, function(err, user) {
+				data.users[clone.userKey] = user
 				done(clone.userKey)
 			})
 	  }

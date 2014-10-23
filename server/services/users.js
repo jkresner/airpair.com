@@ -313,14 +313,17 @@ export function toggleBookmark(tag, cb) {
 }
 
 export function changeEmail(body, cb) {
-	if (body.email) {
+	if (!body.email)
+		cb(new Error('no email field present in request'))
+	else if (!body.email.match(/.+@.+\.+.+/))
+		cb(new Error('email appears to be invalid'))
+	else
+	{
 		svc.update(this.user._id, {email: body.email, emailVerified: false}, function(e,r) {
 			// then send verification email to new address
 			cb(e,r)
 		})
 	}
-	else
-		cb(new Error('no email provided'))
 }
 export function verifyEmail(hash, cb) {
 	if (bcrypt.compareSync(this.user.email, hash)) {

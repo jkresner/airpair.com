@@ -101,6 +101,21 @@ module.exports = -> describe "Signup: ", ->
           expect(s.emailVerified).to.be.false
           done()
 
+  it 'cannot change a users email to just any string', (done) ->
+    the_new_email = "justsomestring"
+    addAndLoginLocalUserWithEmailVerified 'spgo', (s) ->
+      expect(s.emailVerified).to.be.true
+      PUT '/users/me/email', {email: the_new_email}, {status:400}, (e)->
+        expect(e.message).to.include('email appears to be invalid')
+        done()
+
+  it 'to change email the client must supply email field in body of request', (done) ->
+    addAndLoginLocalUserWithEmailVerified 'spgo', (s) ->
+      expect(s.emailVerified).to.be.true
+      PUT '/users/me/email', {}, {status:400}, (e)->
+        expect(e.message).to.include('no email field present in request')
+        done()
+
   describe "Login", ->
 
     it 'Login of existing v0 user creates cohort', (done) ->
