@@ -21,6 +21,7 @@ export default function(app) {
     .get('/session', UsersAPI.getSession)
     .get('/session/full', UsersAPI.getSessionFull)
     .put('/users/me/tag/:tag', setAnonSessionData, UsersAPI.toggleTag)
+    .put('/users/me/bookmarks/:type/:id', setAnonSessionData, UsersAPI.toggleBookmark)
 
     .get('/tags/search/:id', TagsAPI.search)
     .get('/tags/:slug', authd, TagsAPI.getBySlug)

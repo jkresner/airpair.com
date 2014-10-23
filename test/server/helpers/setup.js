@@ -5,6 +5,7 @@ var View = require('../../../server/models/view')
 var User = require('../../../server/models/user')
 var Expert = require('../../../server/models/expert')
 var PayMethod = require('../../../server/models/paymethod')
+var Post = require('../../../server/models/post')
 var {Settings,Company} = require('../../../server/models/v0')
 var util = require('../../../shared/util')
 
@@ -107,7 +108,7 @@ function addUserWithRole(userKey, role, done)
 
 function ensureDocument(Model, doc, cb)
 {
-  Model.findByIdAndRemove(doc._id, function(e, r) { new Model(doc).save(cb); })
+  Model.findOneAndUpdate({_id:doc._id}, doc, {upsert:true}, cb)
 }
 
 module.exports = {
@@ -123,8 +124,24 @@ module.exports = {
   {
     Tag.findOne({slug:'angularjs'}, function(e,r) {
       if (!r) {
-        var tags = [data.tags.angular,data.tags.node,data.tags.mongo]
-        Tag.create(tags, done)
+      	var {angular,node,mongo,mean,rails} = data.tags
+        var bulk = Tag.collection.initializeOrderedBulkOp()
+	    	for (var t of [angular,node,mongo,mean,rails]) { bulk.insert(t) }
+	    	bulk.execute(done)
+      }
+      else
+        done()
+    })
+  },
+
+  initPosts: function(done)
+  {
+    Post.findOne({slug:'starting-a-mean-stack-app'}, function(e,r) {
+      if (!r) {
+      	var {v1AirPair,migrateES6,sessionDeepDive} = data.posts
+        var bulk = Post.collection.initializeOrderedBulkOp()
+	    	for (var t of [v1AirPair,migrateES6,sessionDeepDive]) { bulk.insert(t) }
+	    	bulk.execute(done)
       }
       else
         done()
@@ -190,7 +207,12 @@ module.exports = {
   	company.contacts[0].fullName = user.name
   	company.contacts[0].userId = user._id
     ensureDocument(Company, company, cb)
+  },
+
+  ensurePost: function(post, cb) {
+  	ensureDocument(Post, post, cb)
   }
+
 }
 
 

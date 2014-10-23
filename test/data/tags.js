@@ -27,5 +27,23 @@ module.exports = {
     "short" : "mongodb",
     "soId" : "mongodb",
     "slug" : "mongodb"
-  }
+  },
+  mean: {
+    "_id" : "53c54f5e8f8c80299bcc39bf",
+    "desc" : "The MEAN stack is a methodology that employs MongoDB, Express, AngularJS and Node.js to provide a complete end-to-end system. One of the primary motivations of such a stack is that it is pure JavaScript at all ends.\r\n\r\nTwo different implementations are available: http://mean.io and http://meanjs.org/",
+    "name" : "mean-stack",
+    "short" : "mean-stack",
+    "soId" : "mean-stack",
+    "slug" : "mean-stack"
+	},
+	rails: {
+    "_id" : "514825fa2a26ea020000002f",
+    "__v" : 0,
+    "desc" : "Ruby on Rails is an open source full-stack web application framework written in Ruby. It follows the popular MVC framework model and is known for its &quot;convention over configuration&quot; approach to application development.",
+    "name" : "Rails",
+    "short" : "ruby-on-rails",
+    "soId" : "ruby-on-rails",
+    "tokens" : "",
+    "slug" : "ruby-on-rails"
+	}
 }
