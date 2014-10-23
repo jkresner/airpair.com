@@ -108,7 +108,7 @@ function addUserWithRole(userKey, role, done)
 
 function ensureDocument(Model, doc, cb)
 {
-  Model.findByIdAndRemove(doc._id, function(e, r) { new Model(doc).save(cb); })
+  Model.findOneAndUpdate({_id:doc._id}, doc, {upsert:true}, cb)
 }
 
 module.exports = {
@@ -127,6 +127,20 @@ module.exports = {
       	var {angular,node,mongo,mean,rails} = data.tags
         var bulk = Tag.collection.initializeOrderedBulkOp()
 	    	for (var t of [angular,node,mongo,mean,rails]) { bulk.insert(t) }
+	    	bulk.execute(done)
+      }
+      else
+        done()
+    })
+  },
+
+  initPosts: function(done)
+  {
+    Post.findOne({slug:'starting-a-mean-stack-app'}, function(e,r) {
+      if (!r) {
+      	var {v1AirPair,migrateES6,sessionDeepDive} = data.posts
+        var bulk = Post.collection.initializeOrderedBulkOp()
+	    	for (var t of [v1AirPair,migrateES6,sessionDeepDive]) { bulk.insert(t) }
 	    	bulk.execute(done)
       }
       else

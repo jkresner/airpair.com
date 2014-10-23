@@ -53,6 +53,9 @@ export function getAllAdmin(cb) {
   svc.searchMany(Data.query.updated, opts, addUrl(cb))
 }
 
+export function getAllForCache(cb) {
+  svc.searchMany(Data.query.published(), { fields: Data.select.listCache }, addUrl(cb))
+}
 
 export function getPublished(cb) {
   svc.searchMany(Data.query.published(), { field: Data.select.list }, cb)
@@ -128,6 +131,7 @@ export function publish(id, o, cb) {
   o.publishedBy = this.user._id
 
   svc.update(id, o, cb)
+  if (cache) cache.flush('posts')
 }
 
 
