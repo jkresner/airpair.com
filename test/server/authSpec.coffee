@@ -163,7 +163,7 @@ module.exports = -> describe "Signup: ", ->
 
     it 'user can only verify e-mail when logged in', (done) ->
       d = getNewUserData('chuc')
-      addLocalUser 'chuc', (s) ->
+      addLocalUser 'chuc', {}, (s) ->
         http(global.app)
           .get('/v1/email-verify?hash=anything')
           .expect(302) # should be 401 and include WWW-Wuthenitcate header?
