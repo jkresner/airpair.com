@@ -8,7 +8,8 @@ export default initAPI(Svc, {
   getRecentPublished: (req) => [],
   getAllPublished: (req) => [],  //-- For indexable page
   getAllAdmin: (req) => [],
-  getUsersPublished: (req) => [req.params.id]
+  getUsersPublished: (req) => [req.params.id],
+  getByTag: (req) => [req.tag]
 }, {
   'post':'getBySlug'
 })

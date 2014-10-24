@@ -10,7 +10,7 @@ angular.module('APTagInput', ['ui.bootstrap'])
     return {
       restrict: 'EA',
       template: require('./tagInput.html'),
-      controller : ['$attrs', '$scope', '$http', function($attrs, $scope, $http) {
+      controller: ['$scope', '$attrs', '$http', function($scope, $attrs, $http) {
 
         $scope.getTags = function(q) {
           if (!acceptableTagsSearchQuery(q)) {
@@ -22,7 +22,7 @@ angular.module('APTagInput', ['ui.bootstrap'])
             angular.forEach(res.data, function(item){
               tags.push(item);
             });
-            // console.log('val', q, tags.length)
+
             $scope.matches = tags;
             return tags;
           });
@@ -30,17 +30,12 @@ angular.module('APTagInput', ['ui.bootstrap'])
 
         $scope.selectMatch = function (index) {
           var tag = $scope.matches[index]
-          var tags = $scope.post.tags
-          if ( _.contains(tags, tag) )
-            $scope.post.tags = _.without(tags, tag)
-          else
-            $scope.post.tags = _.union(tags, [tag])
-
+          $scope.selectTag(tag)
           $scope.q = ""
         };
 
         $scope.deselectMatch = function (match) {
-          $scope.post.tags = _.without($scope.post.tags, match)
+          this.deselectTag(match)
         };
 
       }]
