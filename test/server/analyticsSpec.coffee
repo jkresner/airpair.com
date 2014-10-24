@@ -58,7 +58,7 @@ module.exports = ->describe "Tracking: ", ->
 
 
   it 'Can track logged in post view', (done) ->
-    addLocalUser 'krez', (userKey) ->
+    addLocalUser 'krez', {}, (userKey) ->
       spy = sinon.spy(analytics,'view')
       userId = data.users[userKey]._id
       analytics.setCallback ->
@@ -169,7 +169,7 @@ module.exports = ->describe "Tracking: ", ->
 
 
   it 'Can track logged in workshop view', (done) ->
-    addLocalUser 'joem', (userKey) ->
+    addLocalUser 'joem', {}, (userKey) ->
       spy = sinon.spy(analytics,'view')
       analytics.setCallback(done)
       LOGIN userKey, data.users[userKey], (s) ->

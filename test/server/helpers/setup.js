@@ -52,19 +52,37 @@ global.newUserSession = function(userKey)
   return {user:null,sessionID:`test${userKey}${suffix}`,session}
 }
 
-global.addLocalUser = function(userKey, done)
+global.addLocalUser = function(userKey, opts, done)
 {
   var clone = getNewUserData(userKey)
-
-  UserService.tryLocalSignup.call(newUserSession(userKey), clone.email, clone.password, clone.name, function(e,r) {
-    data.users[clone.userKey] = r;
-    done(clone.userKey)
+  UserService.tryLocalSignup.call(newUserSession(userKey), clone.email, clone.password, clone.name, function(e, r) {
+    data.users[clone.userKey] = r
+    if (opts && opts.emailVerified)
+    {
+	    UserService.update.call(this, data.users[clone.userKey]._id, opts, function(err, user) {
+				data.users[clone.userKey] = user
+				done(clone.userKey)
+			})
+	  }
+    else done(clone.userKey)
   })
+}
+
+global.addAndLoginLocalUserWithEmailVerified = function(originalUserKey, done)
+{
+	addLocalUser(originalUserKey, {emailVerified: true}, function(userKey) {
+		LOGIN(userKey, data.users[userKey], function(resp) {
+      GET('/session/full', {}, function(s) {
+        s.userKey = userKey
+        done(s)
+      })
+    })
+	})
 }
 
 global.addAndLoginLocalUser = function(originalUserKey, done)
 {
-  addLocalUser(originalUserKey, function(userKey) {
+  addLocalUser(originalUserKey, {}, function(userKey) {
     LOGIN(userKey, data.users[userKey], function() {
       GET('/session/full', {}, function(s) {
         s.userKey = userKey
