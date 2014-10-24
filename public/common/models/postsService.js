@@ -48,6 +48,10 @@ angular.module('APSvcPosts', [])
     {
       $http.get(`${API}/posts/recent`).success(success).error(lazyErrorCb);
     }
+		this.getTagsPosts = function(tagSlug, success)
+    {
+      $http.get(`${API}/posts/tag/${tagSlug}`).success(success).error(lazyErrorCb);
+    }
     this.getToc = function(md, success)
     {
       if (mdHelper.headingsChanged(md)) {

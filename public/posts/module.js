@@ -5,7 +5,7 @@ var resolver = require('./../common/routes/helpers.js').resolveHelper;
 
 
 angular.module("APPosts", ['ngRoute', 'APFilters','APShare',
-  'APMyPostsList','APPostEditor','APPost', 'APSvcSession', 'APSvcPosts','APTagInput'])
+  'APMyPostsList','APPostEditor','APPost', 'APBookmarker','APSvcSession', 'APSvcPosts','APTagInput'])
 
   .config(['$locationProvider', '$routeProvider',
       function($locationProvider, $routeProvider) {
@@ -35,6 +35,11 @@ angular.module("APPosts", ['ngRoute', 'APFilters','APShare',
       resolve: authd
     });
 
+    $routeProvider.when('/posts/tag/:tagslug', {
+      template: require('./listTag.html'),
+      controller: 'TagIndexCtrl'
+    });
+
     $routeProvider.when('/me/:username', {
       template: require('../me/profile.html'),
       controller: 'ProfileCtrl as profile',
@@ -46,7 +51,6 @@ angular.module("APPosts", ['ngRoute', 'APFilters','APShare',
   .run(['$rootScope', 'SessionService', function($rootScope, SessionService) {
 
     SessionService.onAuthenticated( (session) => {
-      $rootScope.session = session;
       $rootScope.editor = _.contains(session.roles,'editor');
     })
 
@@ -66,6 +70,17 @@ angular.module("APPosts", ['ngRoute', 'APFilters','APShare',
         $scope.myposts = result;
       })
     });
+  }])
+
+  .controller('TagIndexCtrl', ['$scope','PostsService', '$routeParams',
+      function($scope, PostsService, $routeParams) {
+		$scope.tagslug = $routeParams.tagslug;
+
+    PostsService.getTagsPosts($scope.tagslug, function (result) {
+      $scope.tag = result.tag;
+      $scope.tagposts = result.posts;
+    })
+
   }])
 
 

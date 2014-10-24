@@ -29,6 +29,7 @@ export default function(app) {
 
     .get('/posts/recent', PostsAPI.getRecentPublished)
     .get('/posts/me', authd, PostsAPI.getUsersPosts)
+    .get('/posts/tag/:tag', PostsAPI.getByTag)
     .get('/posts/:id', PostsAPI.getById)
     .get('/posts/by/:id', PostsAPI.getUsersPublished)
     .post('/posts', authd, PostsAPI.create)

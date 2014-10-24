@@ -36,4 +36,14 @@ angular.module('APSvcSession', [])
       $http.post(`${Auth}/signup`, data).success(success).error(error);
     }
 
+    this.updateTag = function(data, success, error)
+    {
+      $http.put(`${API}/users/me/tag/${data.slug}`, {}).success(success).error(error)
+    }
+
+    this.updateBookmark = function(data, success, error)
+    {
+      $http.put(`${API}/users/me/bookmarks/${data.type}/${data.objectId}`, {}).success(success).error(error)
+    }
+
   }])
