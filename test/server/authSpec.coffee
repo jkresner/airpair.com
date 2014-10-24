@@ -105,14 +105,14 @@ module.exports = -> describe "Signup: ", ->
     the_new_email = "justsomestring"
     addAndLoginLocalUserWithEmailVerified 'shan', (s) ->
       expect(s.emailVerified).to.be.true
-      PUT '/users/me/email', {email: the_new_email}, {status:400}, (e)->
+      PUT '/users/me/email', {email: the_new_email}, {status:403}, (e)->
         expect(e.message).to.include('email required')
         done()
 
   it 'to change email the client must supply email field in body of request', (done) ->
     addAndLoginLocalUserWithEmailVerified 'scol', (s) ->
       expect(s.emailVerified).to.be.true
-      PUT '/users/me/email', {}, {status:400}, (e)->
+      PUT '/users/me/email', {}, {status:403}, (e)->
         expect(e.message).to.include('email required')
         done()
 
