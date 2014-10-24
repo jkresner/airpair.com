@@ -293,50 +293,44 @@ export function getSessionFull(cb) {
 }
 
 
-export function toggleTag(tag, cb) {
+function toggleSessionItem(type, item, maxAnon, maxAuthd, comparator, cb)
+{
 	var self = this
-	var tagId = tag._id
-	var tagCompator = (i) => _.idsEqual(i.tagId, tagId)
-	tag = { _id: svc.newId(), tagId: tag._id, sort: 0 }
 	if (this.user) {
 		var userId = this.user._id
 		svc.searchOne({ _id: userId }, null, (e,r) => {
 			if (e || !r) return cb(e,r)
-			var tags = util.toggleItemInArray(r.tags, tag, tagCompator)
-			if (tags.length > 6) return cb(Error('Max allowed tags reached'))
+			var list = util.toggleItemInArray(r[type], item, comparator)
+			if (list.length > maxAuthd) return cb(Error(`Max allowed ${type} reached`))
 
-			svc.update(userId, {tags}, () => getSessionFull.call(self, cb))
+			var up = {}
+			up[type] = list
+			svc.update(userId, up, () => getSessionFull.call(self, cb))
 		})
 	}
 	else {
-		var {tags} = this.session.anonData
+		var existing = this.session.anonData[type]
 
-		tags = util.toggleItemInArray(tags, tag, tagCompator)
-		if (tags.length > 3) return cb(Error('Max allowed tags reached'))
-		this.session.anonData.tags = tags
+		var list = util.toggleItemInArray(existing, item, comparator)
+		if (list.length > maxAnon) return cb(Error(`Max allowed ${type} reached`))
+		this.session.anonData[type] = list
 
 		return getSession.call(this, cb)
 	}
 }
 
+
+export function toggleTag(tag, cb) {
+	var tagId = tag._id
+	tag = { _id: svc.newId(), tagId: tag._id, sort: 0 }
+	var tagCompator = (i) => _.idsEqual(i.tagId, tagId)
+	toggleSessionItem.call(this, 'tags', tag, 3, 6, tagCompator, cb)
+}
+
 export function toggleBookmark(type, id, cb) {
 	var	bookmark = { _id: svc.newId(), objectId: id, type, sort: 0 }
-
-	if (this.user) {
-		var userId = this.user._id
-		svc.searchOne({ _id: userId }, null, (e,r) => {
-			if (e || !r) return cb(e,r)
-			r.bookmarks = util.toggleItemInArray(r.bookmarks, bookmark, (i) => i.objectId == id)
-			svc.update(userId, r, () => inflateTagsAndBookmarks(r, cb))
-		})
-	}
-	else {
-		var {bookmarks} = this.session.anonData
-		if (bookmarks && bookmarks.length >= 2) return cb(Error('Max allowed bookmarks reached'))
-
-		this.session.anonData.bookmarks = util.toggleItemInArray(bookmarks, bookmark, (i) => i.objectId == id )
-		return getSession.call(this, cb)
-	}
+	var bookmarkComparator = (i) => _.idsEqual(i.objectId,id)
+	toggleSessionItem.call(this, 'bookmarks', bookmark, 2, 15, bookmarkComparator, cb)
 }
 
 
