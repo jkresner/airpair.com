@@ -4,6 +4,7 @@ var util =          require('../../shared/util')
 var bcrypt =        require('bcrypt')
 import User         from '../models/user'
 var UserData =      require('./users.data')
+import * as Validate from '../../shared/validation/users.js'
 
 var logging         = false
 var svc             = new BaseSvc(User, logging)
@@ -334,6 +335,15 @@ export function toggleBookmark(type, id, cb) {
   }
 }
 
+export function changeEmail(body, cb) {
+	var inValid = Validate.changeEmail(body.email)
+	if (inValid) return cb(svc.Forbidden(inValid))
+
+	svc.update(this.user._id, {email: body.email, emailVerified: false}, function(e,r) {
+		// then send verification email to new address
+		cb(e,r)
+	})
+}
 
 export function verifyEmail(hash, cb) {
 	if (bcrypt.compareSync(this.user.email, hash)) {

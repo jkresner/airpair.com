@@ -1,6 +1,5 @@
 UserService = require('../../server/services/users')
 util = require('../../shared/util')
-bcrypt = require('bcrypt')
 
 module.exports = -> describe "Signup: ", ->
 
@@ -92,6 +91,30 @@ module.exports = -> describe "Signup: ", ->
             expect(res.body.error).to.equal('user already exists')
             done()
 
+  it 'a local user can change their email', (done) ->
+    the_new_email = "hello" + moment().format('X').toString() + "@mydomain.com"
+    addAndLoginLocalUserWithEmailVerified 'spgo', (s) ->
+      expect(s.emailVerified).to.be.true
+      PUT '/users/me/email', {email: the_new_email}, {}, ->
+        GET '/session/full', {}, (s) ->
+          expect(s.email).to.equal(the_new_email)
+          expect(s.emailVerified).to.be.false
+          done()
+
+  it 'cannot change a users email to just any string', (done) ->
+    the_new_email = "justsomestring"
+    addAndLoginLocalUserWithEmailVerified 'shan', (s) ->
+      expect(s.emailVerified).to.be.true
+      PUT '/users/me/email', {email: the_new_email}, {status:403}, (e)->
+        expect(e.message).to.include('email required')
+        done()
+
+  it 'to change email the client must supply email field in body of request', (done) ->
+    addAndLoginLocalUserWithEmailVerified 'scol', (s) ->
+      expect(s.emailVerified).to.be.true
+      PUT '/users/me/email', {}, {status:403}, (e)->
+        expect(e.message).to.include('email required')
+        done()
 
   describe "Login", ->
 
@@ -137,9 +160,6 @@ module.exports = -> describe "Signup: ", ->
   # }
   describe "Verify e-mail", ->
 
-    generateHash = (s) ->
-      return bcrypt.hashSync(s, bcrypt.genSaltSync(8))
-
     it.skip 'send a verification email to new users'
     # not sure how to end-2-end test this yet
     # needs to be sent on sign up, need to invesigate how to stub/mock out the relevant service(s)
@@ -158,7 +178,7 @@ module.exports = -> describe "Signup: ", ->
 
     it 'user can only verify e-mail when logged in', (done) ->
       d = getNewUserData('chuc')
-      addLocalUser 'chuc', (s) ->
+      addLocalUser 'chuc', {}, (s) ->
         http(global.app)
           .get('/v1/email-verify?hash=anything')
           .expect(302) # should be 401 and include WWW-Wuthenitcate header?
