@@ -4,7 +4,7 @@ var util =          require('../../shared/util')
 var bcrypt =        require('bcrypt')
 import User         from '../models/user'
 var UserData =      require('./users.data')
-var Validate = require('../../shared/validation/users.js')
+import * as Validate from '../../shared/validation/users.js'
 
 var logging         = false
 var svc             = new BaseSvc(User, logging)
@@ -141,28 +141,31 @@ export function upsertProviderProfile(providerName, profile, done) {
 
 
 export function tryLocalSignup(email, password, name, done) {
-	if (this.user && this.user._id)
-		done(Error(`Cannot signup. Already signed in as ${user.name}. Logout first?`),null)
+  if (this.user && this.user._id)
+    done(Error(`Cannot signup. Already signed in as ${user.name}. Logout first?`),null)
 
-	var search = { '$or': [{email:email},{'google._json.email':email}] }
-	svc.searchOne(search, null, (e, r) => {
-		if (e) { return done(e) }
-		else if (r) {
-			var info = ""
-			if (r.email == email) { info = "user already exists"; }
-			if (r.google && r.google._json.email == email) { info = "try google login"; }
-			return done(null, false, info)
-		}
-		else
-		{
-			var generateHash = (password) =>
-				bcrypt.hashSync(password, bcrypt.genSaltSync(8))
+  var search = { '$or': [{email:email},{'google._json.email':email}] }
+  svc.searchOne(search, null, (e, r) => {
+    if (e) { return done(e) }
+    else if (r) {
+      var info = ""
+      if (r.email == email) { info = "user already exists"; }
+      if (r.google && r.google._json.email == email) { info = "try google login"; }
+      return done(null, false, info)
+    }
+    else
+    {
+      var generateHash = (password) =>
+        bcrypt.hashSync(password, bcrypt.genSaltSync(8))
 
-			var data = {
-				email: email,
-				emailVerified: false,
-				name: name,
-				local: { password: generateHash(password) }
+      var data = {
+        email: email,
+        emailVerified: false,
+        name: name,
+        local: {
+					password: generateHash(password),
+					email: generateHash(email)
+        }
 			}
 
 			if (this.session.anonData)
@@ -398,15 +401,18 @@ export function verifyEmail(hash, cb) {
 }
 
 export function generateEmailVerificationMessage(cb) {
-	var the_hash = bcrypt.hashSync(this.user.email, bcrypt.genSaltSync(7))
-	var the_body = "Hi " + this.user.name + ","
-	the_body += "\n\n Please verify the email using the following link:\n\n"
-	the_body += "http://www.airpair.com/v1/email-verify?hash=" + the_hash + "\n\n"
-	the_body += "Thanks\nThe AirPair Team\nhttp://twitter.com/airpair"
+	svc.searchOne({ email:this.user.email }, null, (e,r) => {
+    if (e || !r) return cb(e,r)
 
-	cb(null, {
-		to: this.user.email,
-		subject: "Verify your email - www.airpair.com",
-		body: the_body
+	  var the_body = "Hi " + this.user.name + ","
+	  the_body += "\n\nPlease verify your email using the following link:\n\n"
+	  the_body += "http://www.airpair.com/v1/email-verify?hash=" + r.local.email + "\n\n"
+	  the_body += "Thanks\nThe AirPair Team\nhttp://twitter.com/airpair"
+
+		cb(null, {
+			to: this.user.email,
+			subject: "Verify your email - www.airpair.com",
+			body: the_body
+		})
 	})
 }
