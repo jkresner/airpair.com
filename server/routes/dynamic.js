@@ -1,6 +1,7 @@
 import WorkshopsAPI from '../api/workshops'
 import PostsAPI from '../api/posts'
 import {trackView} from '../identity/analytics/middleware'
+import {noTrailingSlash} from '../util/seo/middleware'
 
 
 export default function(app) {
@@ -19,12 +20,12 @@ export default function(app) {
     .get('/posts/airpair-v1', app.renderHbsViewData('postslist',
       (req, cb) => PostsAPI.svc.getUsersPublished('hackerpreneur', cb) ))
 
-    .get('/:tag/posts/:post', trackView('post'), app.renderHbsViewData('post',
+    .get('/:tag/posts/:post', noTrailingSlash(), trackView('post'), app.renderHbsViewData('post',
       (req, cb) => {
           req.post.primarytag = req.params.tag
           cb(null,req.post) }))
 
-    .get('/:tag/workshops/:workshop', trackView('workshop'), app.renderHbsViewData('workshop',
+    .get('/:tag/workshops/:workshop', noTrailingSlash(), trackView('workshop'), app.renderHbsViewData('workshop',
       (req, cb) => { req.workshop.by = req.workshop.speakers[0]; cb(null,req.workshop) }))
 
     .get('/workshops-slide/:workshop', app.renderHbsViewData('workshopsslide',
