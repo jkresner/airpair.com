@@ -1,0 +1,12 @@
+<header>Posts > {{ tag.name }} </header>
+
+<section id="posts">
+
+  <section id="recent">
+    <h3>{{ tag.name }} posts<span><a href="/posts" target="_self">Recent posts</a></span></h3>
+    <div class="posts recent">
+      <ap-post-list-item post="p" ng-repeat="p in tagposts"></ap-post-list-item>
+    </div>
+  </section>
+
+</section>

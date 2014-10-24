@@ -172,9 +172,20 @@ nav#side {
     a { width:120px }
   }
 
-  // @media only screen and (max-width: 1040px) {
-  //   opacity:0.9;
-  // }
+	.welcome {
+		padding:9px 8px;
+		span {
+			color:white;display:block
+		}
+		i { font-size:12px }
+		img { margin:15px 10px }
+
+		ul.main {
+			font-size:12px;
+			li { color:gray; }
+			a { font-weight:bold; }
+		}
+	}
 
   @media only screen and (max-width: 1280px) {
     display:none;
@@ -246,7 +257,12 @@ nav#side.collapse {
 	section {
     padding:10px 1px;
     figure {
-    	img { width:28px;height:28px;border:none }
+    	img {
+    		width:28px;
+    		height:28px;
+    		border:none;
+    		margin:0;
+    	}
     }
   }
   ul { display:none }
@@ -255,4 +271,31 @@ nav#side.collapse {
 
 nav#chat.collapse {
 	width:40px;
+}
+
+
+.modal-dialog {
+	.modal-content {
+		border-radius:2px;
+	}
+	.modal-header {
+		background:@darkblue;
+		color:white;
+	}
+	.modal-footer
+	{
+		clear:both
+	}
+}
+
+
+.modal-body.stack
+{
+	.nomobile { display:none; }
+	height:440px;
+	padding:20px 20px 40px 20px;
+	p {
+		margin:10px 0 30px 0;
+	}
+	label { display:block }
 }
