@@ -192,6 +192,7 @@ export function tryLocalLogin(email, password, done) {
 	})
 }
 
+
 //-- Not sure, but this will probably become intelligent
 export function update(id, data, cb) {
 	// o.updated = new Date() ??
@@ -301,16 +302,18 @@ export function toggleTag(tag, cb) {
 		var userId = this.user._id
 		svc.searchOne({ _id: userId }, null, (e,r) => {
 			if (e || !r) return cb(e,r)
-			if (r.tags && r.tags.length >= 6) return cb(Error('Max allowed tags reached'))
 			var tags = util.toggleItemInArray(r.tags, tag, tagCompator)
+			if (tags.length > 6) return cb(Error('Max allowed tags reached'))
+
 			svc.update(userId, {tags}, () => getSessionFull.call(self, cb))
 		})
 	}
 	else {
 		var {tags} = this.session.anonData
-		if (tags && tags.length >= 3) return cb(Error('Max allowed tags reached'))
 
-		this.session.anonData.tags = util.toggleItemInArray(tags, tag, tagCompator)
+		tags = util.toggleItemInArray(tags, tag, tagCompator)
+		if (tags.length > 3) return cb(Error('Max allowed tags reached'))
+		this.session.anonData.tags = tags
 
 		return getSession.call(this, cb)
 	}
