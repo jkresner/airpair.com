@@ -11,13 +11,12 @@ function storage(k, v) {
 }
 
 angular.module("APSideNav", ['ui.bootstrap', 'APSvcSession', 'APTagInput'])
-
 	.directive('sideNav', ['SessionService', '$modal', function(SessionService, $modal) {
-
 		return {
 			template: require('./sideNav.html'),
 			link: function(scope, element, attrs) {
-      },
+
+			},
       controllerAs: 'sideNav',
 			controller: function($scope, $element, $attrs) {
 
@@ -54,6 +53,16 @@ angular.module("APSideNav", ['ui.bootstrap', 'APSvcSession', 'APTagInput'])
           $scope.session.tags = _.without($scope.session.tags, tag);
           SessionService.updateTag(tag, angular.noop, (e) => alert(e.message));
         };
+
+			  $scope.openBookmarks = function() {
+			    var modalInstance = $modal.open({
+			      windowClass: 'bookmarks',
+			      template: require('./bookmarks.html'),
+			      controller: "ModalInstanceCtrl",
+			      size: 'lg'
+			    });
+			  }
+
 			}
 		};
 

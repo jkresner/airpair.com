@@ -5,7 +5,7 @@ var resolver = require('./../common/routes/helpers.js').resolveHelper;
 
 
 angular.module("APPosts", ['ngRoute', 'APFilters','APShare',
-  'APMyPostsList','APPostEditor','APPost', 'APSvcSession', 'APSvcPosts','APTagInput'])
+  'APMyPostsList','APPostEditor','APPost', 'APBookmarker','APSvcSession', 'APSvcPosts','APTagInput'])
 
   .config(['$locationProvider', '$routeProvider',
       function($locationProvider, $routeProvider) {
@@ -51,7 +51,6 @@ angular.module("APPosts", ['ngRoute', 'APFilters','APShare',
   .run(['$rootScope', 'SessionService', function($rootScope, SessionService) {
 
     SessionService.onAuthenticated( (session) => {
-      $rootScope.session = session;
       $rootScope.editor = _.contains(session.roles,'editor');
     })
 

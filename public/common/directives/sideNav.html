@@ -40,11 +40,11 @@
 		<li><a href="#" ng-click="openStack()">Customize</a></li>
 	</ul>
 </section>
-	
+
 <section class="bookmarks"> <label>Bookmarks</label>
 	<ul class="bookmarks">
-<!-- 		<li><a href="#">nodejs</a></li> -->
-		<li><a href="#" ng-click="showbookmarks">Manage</a></li>
+		<li ng-repeat="b in session.bookmarks"><a href="{{b.url}}" target="_self">{{b.title}}</a></li>
+		<li><a href="#" ng-click="openBookmarks()">Manage</a></li>
 	</ul>
 </section>
 
