@@ -72,22 +72,20 @@ module.exports = () => describe("API: ", function() {
 		})
 
 
-		it('Can add up to 4 tags to anonymous session', function(done) {
+		it('Can add up to 3 tags to anonymous session', function(done) {
 			http(global.app)
 				.put('/v1/api/users/me/tag/node.js')
 				.end(function(err, resp){
 					cookie = resp.headers['set-cookie']
 					PUT('/users/me/tag/angularjs', {}, {}, function(s2) {
 						PUT('/users/me/tag/mongodb', {}, {}, function(s3) {
-							PUT('/users/me/tag/mean-stack', {}, {}, function(s4) {
-								expect(s4.authenticated).to.be.false
-								expect(s4.sessionID).to.exist
-								expect(s4.tags).to.exist
-								expect(s4.tags.length).to.equal(4)
-								PUT('/users/me/tag/ruby-on-rails', {}, { status: 400 }, function(err, resp) {
-									expect(resp.text.indexOf('Max allowed tags reached') != -1).to.be.true
-									done()
-								})
+							expect(s3.authenticated).to.be.false
+							expect(s3.sessionID).to.exist
+							expect(s3.tags).to.exist
+							expect(s3.tags.length).to.equal(3)
+							PUT('/users/me/tag/ruby-on-rails', {}, { status: 400 }, function(err, resp) {
+								expect(resp.text.indexOf('Max allowed tags reached') != -1).to.be.true
+								done()
 							})
 						})
 					})
@@ -101,7 +99,7 @@ module.exports = () => describe("API: ", function() {
 				.expect(200)
 				.expect('Content-Type', /json/)
 				.end(function(err, resp){
-					if (err) throw err
+					if (err) done(err)
 					cookie = resp.headers['set-cookie']
 					//-- Remove the tag
 					PUT('/users/me/tag/node.js', {}, {}, function(s2){
@@ -205,7 +203,7 @@ module.exports = () => describe("API: ", function() {
 							expect(s.sessionID).to.exist
 							expect(s.bookmarks).to.exist
 							expect(s.bookmarks.length).to.equal(2)
-							PUT(`/users/me/bookmarks/post/${data.posts.sessionDeepDive._id}`, {}, { status: 400 }, function(err, resp) {
+							PUT(`/users/me/bookmarks/post/${data.posts.migrateES6._id}`, {}, { status: 400 }, function(err, resp) {
 								expect(resp.text.indexOf('Max allowed bookmarks reached') != -1).to.be.true
 								done()
 							})
@@ -240,7 +238,7 @@ module.exports = () => describe("API: ", function() {
 		)
 
 
-		it.skip('Does not wipe anonymous bookmarks data over existing local login user', (done) =>
+		it.skip('Does not wipe anonymous bookmarks data over existing local login user')
 
 
 
@@ -267,7 +265,7 @@ module.exports = () => describe("API: ", function() {
 
 
 
-	it.skip('Not gonna impl: Merges anonymous session data to local LOGIN user', () => {} )
+	it.skip('Not gonna impl: Merges anonymous session data to local LOGIN user', () => {})
 
 
 })
