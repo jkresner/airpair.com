@@ -240,7 +240,7 @@ module.exports = () => describe("API: ", function() {
 		)
 
 
-		it.skip('Does not wipe anonymous bookmarks data over existing local login user', (done) =>
+		it.skip('Does not wipe anonymous bookmarks data over existing local login user')
 
 
 
