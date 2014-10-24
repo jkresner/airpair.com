@@ -18,7 +18,7 @@ paths = {
 }
 
 gulp.task('testnodemon', function () {
-  nodemon({ script: 'test/server/helpers/run.js', ext: 'html js', 
+  nodemon({ script: 'test/server/helpers/run.js', ext: 'html js',
       ignore: ['public/*','dist/*'] })
     .on('change', ['lint'])
     .on('restart', function () {
@@ -32,7 +32,7 @@ gulp.task('lint', function () {
 });
 
 gulp.task('nodemon', function () {
-  nodemon({ script: 'bootstrap.js', ext: 'html js', 
+  nodemon({ script: 'bootstrap.js', ext: 'html js',
       ignore: ['public/*','test/*','dist/*'] })
     .on('change', ['lint'])
     .on('restart', function () {
@@ -53,7 +53,7 @@ gulp.task('watch', function() {
   var watching = [
     './public/**/*.css',
     './public/**/*.html',
-    './public/**/*.js',    
+    './public/**/*.js',
     paths.views
   ];
 
@@ -80,8 +80,9 @@ var watchifyer = function(fileName) {
 }
 
 gulp.task('watchify', function() {
+  watchifyer('lite.js');
   watchifyer('index.js');
-  watchifyer('adm.js');  
+  watchifyer('adm.js');
 });
 
 var bundlerer = function(fileName) {
@@ -89,15 +90,16 @@ var bundlerer = function(fileName) {
 
   bundler.transform(stringify(['.html']));
   bundler.transform(es6ify);
-  
+
   bundler.bundle()
     .pipe(source(fileName))
-    .pipe(gulp.dest('./public/v1/js'));  
+    .pipe(gulp.dest('./public/v1/js'));
 }
 
 gulp.task('bundle', function() {
+  bundlerer('lite.js')
   bundlerer('index.js')
-  bundlerer('adm.js')  
+  bundlerer('adm.js')
 });
 
 

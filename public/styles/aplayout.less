@@ -160,7 +160,7 @@ nav#side {
     text-transform:none;
   }
 
-  #bookmarks li {
+  .bookmarks li {
     font-size:10px;
     height:19px;
     width: 120px;
@@ -187,7 +187,11 @@ nav#side {
 		}
 	}
 
-  @media only screen and (max-width: 1280px) {
+	@media only screen and (max-width:1200px) {
+    opacity:0.9;
+  }
+
+  @media only screen and (max-width: 640px) {
     display:none;
   }
 }
@@ -267,6 +271,7 @@ nav#side.collapse {
   }
   ul { display:none }
   label { display:none }
+	opacity:1.0;
 }
 
 nav#chat.collapse {

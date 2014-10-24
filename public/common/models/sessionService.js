@@ -41,4 +41,9 @@ angular.module('APSvcSession', [])
       $http.put(`${API}/users/me/tag/${data.slug}`, {}).success(success).error(error)
     }
 
+    this.updateBookmark = function(data, success, error)
+    {
+      $http.put(`${API}/users/me/bookmarks/${data.type}/${data.objectId}`, {}).success(success).error(error)
+    }
+
   }])

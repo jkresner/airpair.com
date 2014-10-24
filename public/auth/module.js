@@ -16,6 +16,17 @@ angular.module("APAuth", ['ngRoute','APFilters','APSvcSession','APAnalytics'])
 
   }])
 
+  .run(['$rootScope', 'SessionService',
+    function($rootScope, SessionService) {
+
+    SessionService.onAuthenticated( (session) => {
+      $rootScope.session = session;
+      // console.log('setting root scope', $rootScope.session)
+    })
+
+  }])
+
+
   .controller('LoginCtrl', ['$scope', '$window', 'SessionService',
       function($scope, $window, SessionService) {
     var self = this;
