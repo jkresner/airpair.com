@@ -32,11 +32,15 @@ module.exports = {
   },
 
   query: {
-		published: function() {
-			return {  '$and': [
-    								{'published' : { '$exists': true }} ,
-    								{'published': { '$lt': new Date() }}
-  							] }
+		published: function(andCondition) {
+			var query = [
+				{'published' : { '$exists': true }} ,
+				{'published': { '$lt': new Date() }}
+			]
+
+			if (andCondition) query.push(andCondition)
+
+			return { '$and': query }
   	},
   	updated: {
   		'updated' : { '$exists': true }

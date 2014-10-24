@@ -1,10 +1,11 @@
+<!DOCTYPE html>
 <html lang="en-US" prefix="og: http://ogp.me/ns#">
 <head>
 {{#with viewData}}{{> pageMeta }}{{/with}}
+  <link rel='stylesheet' id='google-font-css'  href='//fonts.googleapis.com/css?family=Open+Sans%3A300%2C400%2C700&#038;ver=2.0.1' type='text/css' media='all' />
   <link rel="stylesheet" href="/v1/lib/bootstrap/bootstrap.css" type="text/css" />
   <link rel="stylesheet" href="/v1/lib/prism/prism.css" type="text/css" />
   <link rel='stylesheet' href='/v1/css/index.css' type='text/css' media='all' />
-  <link rel='stylesheet' id='google-font-css'  href='//fonts.googleapis.com/css?family=Open+Sans%3A300%2C400%2C700&#038;ver=2.0.1' type='text/css' media='all' />
 </head>
 <body>
 
@@ -64,135 +65,14 @@
 </div>
 {{/with}}
 
+<div ng-app="AP">
+	<nav id="side" class="collapse" side-nav></nav>
+	<bookmarker type="post"></bookmarker>
+</div>
 
-
-{{!-- sideNavFull --}}
-{{!-- sideChatFull --}}
-
-<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-<script type="text/javascript" src="/v1/lib/prism/prism.js"></script>
+{{> siteScripts }}
+<script type="text/javascript" src="/v1/js/lite.js"></script>
 <script type="text/javascript">
-
-var postHlpr = {}
-
-var getHighlightConfig = function(elm) {
-  var cfg = {};
-  var prevSibling = elm.previousSibling;
-  var nodeValue = null;
-  while (prevSibling && prevSibling.nodeType!==1) {
-      if (prevSibling.nodeType === 8) {
-          nodeValue = prevSibling.nodeValue;
-      }
-      prevSibling = prevSibling.previousSibling;
-  }
-
-  if (nodeValue)
-  {
-    var lang = nodeValue.match(/lang=\w+/i)
-    if (lang) {
-      cfg.lang = lang[0].replace('lang=','');
-    }
-    var linenums = (nodeValue.match(/linenums=true+/i)||[])[0];
-    if (linenums)
-    {
-      cfg.linenums = true;
-    }
-  }
-
-  // console.log(nodeValue, cfg);
-  return cfg;
-}
-
-
-window.postHlpr.highlightSyntax = function(opts) {
-  var elements = document.querySelectorAll('pre > code')
-  // console.log('Prism.highlightElement', elements);
-  for (var i=0, element; element = elements[i++];) {
-    var config = getHighlightConfig(element.parentNode);
-    if (!config || !config.lang) { return }
-
-    if (config.linenums)
-    {
-      element.parentNode.className = 'line-numbers'
-    }
-    // console.log('Prism.highlightElement', element, config);
-
-    element.className = 'language-'+config.lang
-    Prism.highlightElement(element, false, function() {
-      if (opts && opts.addCtrs)
-      {
-        element.outerHTML+='<footer>Get expert <a class="trackPostCTA" href="/find-an-expert?utm_source=airpair.com&utm_campaign=posts-{{campPeriod}}&utm_content={{viewData.slug}}&utm_medium=website&utm_term='+config.lang+'">'+config.lang+' help</a></footer>';
-      }
-    });
-  }
-}
-
-window.postHlpr.loadDisqus = function()
-{
-	(function() {
-			window.disqus_url = '{{viewData.meta.canonical}}';
-			var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-			dsq.src = 'https://airpairblog.disqus.com/embed.js';
-			var x = document.getElementsByTagName('script')[0];
-			x.parentNode.insertBefore(dsq, x);
-	})();
-}
-
-window.postHlpr.loadPoSt = function()
-{
-  window.pwidget_config = { shareQuote: false, afterShare: false };
-  var p = document.createElement('script');
-  p.type = 'text/javascript';
-  p.async = true;
-  p.src = ('https:' == document.location.protocol ? 'https://s' : 'http://i')
-    + '.po.st/static/v3/post-widget.js#publisherKey=miu9e01ukog3g0nk72m6&retina=true';
-
-  var x = document.getElementsByTagName('script')[0];
-  x.parentNode.insertBefore(p, x);
-}
-
-
-
-  function fixNavs(elmId)
-  {
-    var scrollingOn = $(document).width() > 900;
-    var offset = $('#sideNav').offset().top;
-    $(window).scroll(function(e){
-      if (window.scrollY < offset) {
-        $(elmId).css('top', offset - window.scrollY);
-      } else if (scrollingOn) {
-        $(elmId).css('top', 0);
-      }
-    });
-  }
-
-  function fixRail()
-  {
-    var scrollingOn = $(document).width() > 900;
-    var offset = $('.pw-widget').offset().top;
-    $(window).scroll(function(e)
-    {
-      if (window.scrollY < offset) {
-        $('.share').css('top', 0);
-        $('#table-of-contents').css('top', 0);
-        $('#table-of-contents + ul').css('top', 0);
-      }
-      else if (scrollingOn)
-      {
-        $('.share').css('top', window.scrollY - 150);
-        $('#table-of-contents').css('top', window.scrollY - 160);
-        $('#table-of-contents + ul').css('top', window.scrollY - 160);
-      }
-    });
-  }
-
-  $(function() {
-    // fixNavs('#sideNav,#sideChat');
-    fixRail();
-    postHlpr.loadPoSt();
-    postHlpr.highlightSyntax({ addCtrs: true });
-    postHlpr.loadDisqus();
-  });
 
   function bindTracking() {
     ga('send', 'pageview')
@@ -210,8 +90,30 @@ window.postHlpr.loadPoSt = function()
     })
   }
 
-</script>
+	function loadDisqus()
+	{
+		window.disqus_url = '{{viewData.meta.canonical}}';
+		var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+		dsq.src = 'https://airpairblog.disqus.com/embed.js';
+		var x = document.getElementsByTagName('script')[0];
+		x.parentNode.insertBefore(dsq, x);
+	}
 
+	$(function() {
+	  pageHlpr.fixNavs('#side');
+	  pageHlpr.fixPostRail();
+	  pageHlpr.loadPoSt();
+	  pageHlpr.highlightSyntax({ addCtrs: true });
+	  loadDisqus();
+	});
+
+
+{{#with viewData}}
+  window.viewData = { post: { _id: '{{_id}}' } }
+{{/with}}
+
+</script>
 {{> initPage }}
+
 </body>
 </html>

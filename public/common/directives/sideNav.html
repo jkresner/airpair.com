@@ -2,33 +2,22 @@
   <img ng-click="sideNav.toggle()" src="/v1/img/css/sidenav/toggle.png" />
 </header>
 
-<section ng-if="session.authenticated == false" style="text-transform:none">
-	<label>Welcome to AirPair
-	<br /><i style="font-family:courier;font-size:10px">Visitor {{ session.sessionID.substring(0,10) }}</span></i> !</label>
-	<figure><img class="avatar" src="/v1/img/css/sideNav/default-cat.jpg" /></figure>
-  <ul id="main">
-    <li style="color:gray">
-    	Been here before?
-    </li>
-    <li>
-    	<a href="/v1/auth/login" target="_self">Login, to get your identity back</a>
-    </li>
-<!--     <li style="color:gray">
-    	New to the tribe?
-    </li>
-    <li>
-    	<a href="alert('feature coming next week')">Customize AirPair to show relevant content</a></label>
-    </li> -->
-    <li style="color:gray">
-    	Prefer looking like a cat?
-    </li>
-    <li>
-    	<a ng-click="sideNav.toggle()" href="#">Hide menu</a></label>
-    </li>
+<section class="welcome" ng-if="session.authenticated == false" style="text-transform:none">
+	<label>Welcome
+		<span><a href="#" ng-click="profile()">Visitor {{ session.sessionID.substring(0,10) }}</a></span>
+		<i>That's a nice hair tie ...</i>
+	</label>
+	<figure><a href="#" ng-click="profile()"><img class="avatar" src="/v1/img/css/sideNav/default-cat.jpg" /></a></figure>
+  <ul class="main">
+    <li>Want your face back?</li>
+    <li><a href="/v1/auth/login" target="_self">> Login</a></li>
+    <li>Prefer being a cat?</li>
+    <li><a ng-click="toggle()" href="#">> Hide menu</a></li>
+		<li>Not sure?</li>
+    <li><a href="/v1/auth/login" target="_self">> See about AirPair</a></li>
   </ul>
-
-
 </section>
+
 
 <section ng-if="session.avatar">
 	<figure><img class="avatar" ng-src="{{ session.avatar }}?s=120" /></figure>
@@ -44,21 +33,19 @@
   </ul>
 </section>
 
-<!-- <section> <label>Stack</label>
-	<ul id="tags">
-	  <li><a href="#">nodejs</a></li>
-	  <li><a href="#">angularjs</a></li>
-	  <li><a href="#">mongodb</a></li>
-	  <li><a href="#">passport</a></li>
-	  <li><a href="#">svg</a></li>
-	</ul>
-</section> -->
 
-<!-- <section> <label>Bookmarks</label>
-	<ul id="bookmarks">
-	  <li><a href="#">Starting a Mean Stack App</a></li>
-	  <li><a href="#">AngularJS vs Backbone.js vs Ember.js</a></li>
-	  <li><a href="#">Zero to Product Market Fit</a></li>
+<section class="stack"> <label>Stack</label>
+	<ul>
+		<li ng-repeat="tag in session.tags"><a href="/posts/tag/{{tag.slug}}">{{tag.name}}</a></li>
+		<li><a href="#" ng-click="openStack()">Customize</a></li>
 	</ul>
 </section>
- -->
+
+<section class="bookmarks"> <label>Bookmarks</label>
+	<ul class="bookmarks">
+		<li ng-repeat="b in session.bookmarks"><a href="{{b.url}}" target="_self">{{b.title}}</a></li>
+		<li><a href="#" ng-click="openBookmarks()">Manage</a></li>
+	</ul>
+</section>
+
+<div stack></div>

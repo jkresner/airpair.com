@@ -74,10 +74,18 @@ export function getAllPublished(cb) {
 }
 
 
+export function getByTag(tag, cb) {
+  var opts = { fields: Data.select.list, options: { sort: { 'published': -1 } } };
+  var query = Data.query.published({'tags._id': tag._id})
+  svc.searchMany(query, opts, addUrl((e,r) => cb(null, {tag,posts:r}) ))
+}
+
+
 //-- Placeholder for showing similar posts to a currently displayed post
 export function getSimilarPublished(cb) {
   cb(null,[])
 }
+
 
 export function getUsersPublished(username, cb) {
   var opts = { fields: Data.select.list, options: { sort: { 'published': -1 } } };
