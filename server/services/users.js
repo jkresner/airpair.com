@@ -115,6 +115,9 @@ function upsertSmart(search, upsert, cb) {
 	})
 }
 
+// local function for password and email hashing
+var generateHash = (password) =>
+  bcrypt.hashSync(password, bcrypt.genSaltSync(8))
 
 //-- Todo, implement and link with middleware using the last_visit property
 // export function addCohortVisitDate()
@@ -155,16 +158,13 @@ export function tryLocalSignup(email, password, name, done) {
     }
     else
     {
-      var generateHash = (password) =>
-        bcrypt.hashSync(password, bcrypt.genSaltSync(8))
-
       var data = {
         email: email,
         emailVerified: false,
         name: name,
         local: {
 					password: generateHash(password),
-					email: generateHash(email)
+					email: ''
         }
 			}
 
@@ -404,15 +404,20 @@ export function generateEmailVerificationMessage(cb) {
 	svc.searchOne({ email:this.user.email }, null, (e,r) => {
     if (e || !r) return cb(e,r)
 
-	  var the_body = "Hi " + this.user.name + ","
-	  the_body += "\n\nPlease verify your email using the following link:\n\n"
-	  the_body += "http://www.airpair.com/v1/email-verify?hash=" + r.local.email + "\n\n"
-	  the_body += "Thanks\nThe AirPair Team\nhttp://twitter.com/airpair"
+		var new_hash = generateHash(r.email)
+		r.local = _.extend(r.local, { email: new_hash } )
 
-		cb(null, {
-			to: this.user.email,
-			subject: "Verify your email - www.airpair.com",
-			body: the_body
+		svc.update(r._id, {local: r.local}, function(err, user) {
+		  var the_body = "Hi " + user.name + ","
+		  the_body += "\n\nPlease verify your email using the following link:\n\n"
+		  the_body += "http://www.airpair.com/v1/email-verify?hash=" + r.local.email + "\n\n"
+		  the_body += "Thanks\nThe AirPair Team\nhttp://twitter.com/airpair"
+
+			cb(null, {
+				to: user.email,
+				subject: "Verify your email - www.airpair.com",
+				body: the_body
+			})
 		})
 	})
 }
