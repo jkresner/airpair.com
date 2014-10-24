@@ -337,7 +337,7 @@ export function toggleBookmark(type, id, cb) {
 
 export function changeEmail(body, cb) {
 	var inValid = Validate.changeEmail(body.email)
-	if (inValid) return cb(new Error(svc.Forbidden(inValid)))
+	if (inValid) return cb(svc.Forbidden(inValid))
 
 	svc.update(this.user._id, {email: body.email, emailVerified: false}, function(e,r) {
 		// then send verification email to new address
