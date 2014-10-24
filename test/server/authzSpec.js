@@ -15,7 +15,7 @@ module.exports = () => describe("Authorization: ", function() {
 
 
   it('Cannot grant roles as non-admin', function(done) {
-    addLocalUser('joem', function(userKey) {
+    addLocalUser('joem', {}, function(userKey) {
       LOGIN(userKey, data.users[userKey], function() {
         PUT(`/adm/users/${data.users[userKey]._id}/role/admin`, {}, {status: 403}, function(s) {
           expect(_.isEmpty(s)).to.be.true // new users have undefined roles
@@ -41,7 +41,7 @@ module.exports = () => describe("Authorization: ", function() {
 
 
   it('Cannot grant invalid role as admin', function(done) {
-    addLocalUser('adap', function(userKey) {
+    addLocalUser('adap', {}, function(userKey) {
       LOGIN('admin', data.users.admin, function() {
         PUT(`/adm/users/${data.users[userKey]._id}/role/goodlookin`, {}, {status:400}, function(s) {
           expect(s.message).to.equal('Invalid role')
@@ -53,8 +53,8 @@ module.exports = () => describe("Authorization: ", function() {
 
 
   it('Can get users in role', function(done) {
-    addLocalUser('pgap', function(pgKey) {
-      addLocalUser('scap', function(scKey) {
+    addLocalUser('pgap', {}, function(pgKey) {
+      addLocalUser('scap', {}, function(scKey) {
         LOGIN('admin', data.users.admin, function() {
           PUT(`/adm/users/${data.users[pgKey]._id}/role/pipeliner`, {}, {}, function(s) {
             PUT(`/adm/users/${data.users[scKey]._id}/role/pipeliner`, {}, {}, function(s2) {
