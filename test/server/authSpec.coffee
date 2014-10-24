@@ -201,6 +201,7 @@ module.exports = -> describe "Signup: ", ->
               if (err) then return done(err)
               UserService.generateEmailVerificationMessage.call context, (e,r) ->
                 the_verification_link = r.body.match("http.*(/v1/email-verify\\?hash=.*)")[1]
+                expect(the_verification_link.match(".*?hash=(.*)")[1]).to.not.equal('')
                 http(global.app).get(the_verification_link)
                   .set('cookie',cookie)
                   .expect(302)
