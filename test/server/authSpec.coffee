@@ -173,7 +173,7 @@ module.exports = -> describe "Signup: ", ->
             .expect(403)
             .end (err, res) ->
               if (err) then return done(err)
-              expect(res.body.error).to.include('e-mail not verified')
+              expect(res.text).to.include('e-mail not verified')
               done()
 
     it 'user can only verify e-mail when logged in', (done) ->
@@ -181,7 +181,7 @@ module.exports = -> describe "Signup: ", ->
       addLocalUser 'chuc', {}, (s) ->
         http(global.app)
           .get('/v1/email-verify?hash=anything')
-          .expect(302) # should be 401 and include WWW-Wuthenitcate header?
+          .expect(302)
           .end (err, res) ->
             if (err) then return done(err)
             expect(res.redirect).to.be.true
