@@ -26,14 +26,17 @@ section#index {
 section#auth {
   padding-top:20px;
   text-align:center;
+  width:100%;
 
   section#newuser {
     padding:10px 0 20px 0;
   }
 
   .option {
-    min-height:300px;
+    min-height:340px;
     margin:30px 8px;
+    background:white;
+    opacity:0.9;
   }
 
   .btn {
@@ -44,10 +47,10 @@ section#auth {
     form { margin-bottom:20px }
     .form-group { text-align:center; }
     input { width:80%;margin:auto }
-    label { display:none }
+    // label { display:none }
   }
 
-  .error { color:red }
+  .error { color:@error }
 
   p.help-text { margin:20px 0 0 0 }
 

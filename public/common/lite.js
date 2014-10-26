@@ -3,6 +3,7 @@ require('./../common/directives/tagInput.js');
 require('./../common/directives/sideNav.js');
 require('./../common/directives/bookmarker.js');
 require('./../common/directives/analytics.js');
+require('./../common/directives/forms.js');
 require('./../common/filters/filters.js');
 require('./../common/models/postsService.js');
 require('./../common/models/sessionService.js');
@@ -10,7 +11,7 @@ require('./../common/pageHelpers.js');
 require('./../auth/module.js');
 
 
-angular.module("AP", ['ngRoute', 'APSideNav', 'APBookmarker', 'APAuth'])
+angular.module("AP", ['ngRoute', 'APFilters', 'APAnalytics', 'APSideNav', 'APBookmarker', 'APAuth'])
 
 	.config( ['$provide', function ($provide){
 

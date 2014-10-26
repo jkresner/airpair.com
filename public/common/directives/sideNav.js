@@ -1,3 +1,5 @@
+var Validate = require('../../../shared/validation/users.js')
+
 function storage(k, v) {
   if (window.localStorage)
   {
@@ -10,8 +12,9 @@ function storage(k, v) {
   }
 }
 
-angular.module("APSideNav", ['ui.bootstrap', 'APSvcSession', 'APTagInput'])
-	.directive('sideNav', ['SessionService', '$modal', function(SessionService, $modal) {
+angular.module("APSideNav", ['ui.bootstrap','APSvcSession', 'APTagInput'])
+
+	.directive('sideNav', ['$rootScope', '$modal', 'SessionService', function($rootScope, $modal, SessionService) {
 		return {
 			template: require('./sideNav.html'),
 			link: function(scope, element, attrs) {
@@ -38,9 +41,8 @@ angular.module("APSideNav", ['ui.bootstrap', 'APSvcSession', 'APTagInput'])
 
 			  $scope.openStack = function() {
 			    var modalInstance = $modal.open({
-			      windowClass: 'stack',
 			      template: require('./stack.html'),
-			      controller: "ModalInstanceCtrl",
+			      controller: "StackCtrl",
 			      size: 'lg'
 			    });
 			  }
@@ -62,44 +64,86 @@ angular.module("APSideNav", ['ui.bootstrap', 'APSvcSession', 'APTagInput'])
 
 			  $scope.openBookmarks = function() {
 			    var modalInstance = $modal.open({
-			      windowClass: 'bookmarks',
 			      template: require('./bookmarks.html'),
-			      controller: "ModalInstanceCtrl",
-			      size: 'lg',
-			      resolve: { session: () => $scope.session }
+			      controller: "BookmarksCtrl",
+			      size: 'lg'
 			    });
 			  }
 
-				$scope.openProfile = function() {
+				var self = this;
+				$rootScope.openProfile = function() {
+
 					var modalInstance = $modal.open({
-						windowClass: 'profile',
 						template: require('./profile.html'),
-						controller: "ModalInstanceCtrl",
-						size: 'lg'
+						controller: 'ProileCtrl as ProileCtrl',
+						size: 'lg',
+						resolve: {}
 					});
 				}
-
-				// $scope.openProfile()
 			}
 		};
 
 	}])
 
 
-	.controller('ModalInstanceCtrl', function ($scope, $modalInstance) {
+	.controller('StackCtrl', ['$scope', '$modalInstance', '$window', 'SessionService',
+		function($scope, $modalInstance, $window, SessionService) {
+
+		$scope.ok = () => $modalInstance.close();
+		$scope.cancel = () => $modalInstance.dismiss('cancel');
+
+	}])
+
+
+	.controller('BookmarksCtrl', ['$scope', '$modalInstance', '$window', 'SessionService',
+		function($scope, $modalInstance, $window, SessionService) {
+
+		$scope.ok = () => $modalInstance.close();
+		$scope.cancel = () => $modalInstance.dismiss('cancel');
+
+	}])
+
+
+	.controller('ProileCtrl', ['$scope', '$rootScope', '$modalInstance', '$window', 'SessionService',
+		function($scope, $rootScope, $modalInstance, $window, SessionService) {
+
+
+		$scope.updateEmail = function() {
+			$scope.emailChangeFailed = ""
+		  console.log('updateEmail', $scope.session.email, Validate.changeEmail)
+		  var inValid = Validate.changeEmail($scope.session.email)
+		  if (inValid) return $scope.session.email = ""
+		  console.log('updateEmail.valid', { email: $scope.session.email })
+
+		  SessionService.changeEmail({ email: $scope.session.email },
+		    (result) => $rootScope.session = result,
+		    (e) => $scope.emailChangeFailed = e.message
+		  )
+		}
 
 		$scope.clearDefaultName = function() {
-			console.log('focused', $scope.session.name)
 			if ($scope.session.name.indexOf('Visitor') != -1) $scope.session.name = ''
 		}
 
-	  $scope.ok = () => $modalInstance.close();
-	  $scope.cancel = () => $modalInstance.dismiss('cancel');
 
-	})
+		$scope.ok = () => {
+			console.log('scope', $scope, $scope.password)
+			if (!$scope.session._id) {
+				// function(isValid, formData) {
+					// console.log('signup', isValid, formData)
+				 //  if (!isValid) return
+				  SessionService.signup({email:$scope.session.email, name:$scope.session.name, password: $scope.session.password },
+				    () => $window.location = '',
+				    (e) => $scope.signupFail = e.error
+				  )
+				// }
+			}
+
+		}
 
 
+		$scope.cancel = () => $modalInstance.dismiss('cancel');
 
-
+	}])
 
 ;

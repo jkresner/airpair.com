@@ -1,7 +1,7 @@
 
 var resolver = require('./../common/routes/helpers.js');
 
-angular.module("APAuth", ['ngRoute','APFilters','APSvcSession','APAnalytics'])
+angular.module("APAuth", ['ngRoute','ngMessages','APFormsDirectives','APFilters','APSvcSession','APAnalytics'])
 
   .config(['$locationProvider', '$routeProvider',
       function($locationProvider, $routeProvider) {
@@ -44,6 +44,7 @@ angular.module("APAuth", ['ngRoute','APFilters','APSvcSession','APAnalytics'])
 
   .controller('SignupCtrl', ['$scope', '$window', 'SessionService',
       function($scope, $window, SessionService) {
+
     var self = this;
     this.submit = function(isValid, formData) {
       if (!isValid) return
