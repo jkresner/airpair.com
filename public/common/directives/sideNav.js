@@ -16,6 +16,10 @@ angular.module("APSideNav", ['ui.bootstrap', 'APSvcSession', 'APTagInput'])
 			template: require('./sideNav.html'),
 			link: function(scope, element, attrs) {
 
+				// Only track menu behavior for anonymous users
+		    SessionService.onAuthenticated( (session) =>
+		    	scope.tracking = (session._id) ? false : true )
+
 			},
       controllerAs: 'sideNav',
 			controller: function($scope, $element, $attrs) {
@@ -27,8 +31,10 @@ angular.module("APSideNav", ['ui.bootstrap', 'APSvcSession', 'APTagInput'])
 						storage('sideNavOpen', 'true');
 
         	$element.toggleClass('collapse', storage('sideNavOpen') == 'false')
+					$scope.toggleAction = (storage('sideNavOpen') != 'true') ? 'Show' : 'Hide';
         }
         $element.toggleClass('collapse', storage('sideNavOpen') != 'true')
+        $scope.toggleAction = (storage('sideNavOpen') != 'true') ? 'Show' : 'Hide';
 
 			  $scope.openStack = function() {
 			    var modalInstance = $modal.open({
@@ -59,10 +65,21 @@ angular.module("APSideNav", ['ui.bootstrap', 'APSvcSession', 'APTagInput'])
 			      windowClass: 'bookmarks',
 			      template: require('./bookmarks.html'),
 			      controller: "ModalInstanceCtrl",
-			      size: 'lg'
+			      size: 'lg',
+			      resolve: { session: () => $scope.session }
 			    });
 			  }
 
+				$scope.openProfile = function() {
+					var modalInstance = $modal.open({
+						windowClass: 'profile',
+						template: require('./profile.html'),
+						controller: "ModalInstanceCtrl",
+						size: 'lg'
+					});
+				}
+
+				// $scope.openProfile()
 			}
 		};
 
@@ -70,6 +87,11 @@ angular.module("APSideNav", ['ui.bootstrap', 'APSvcSession', 'APTagInput'])
 
 
 	.controller('ModalInstanceCtrl', function ($scope, $modalInstance) {
+
+		$scope.clearDefaultName = function() {
+			console.log('focused', $scope.session.name)
+			if ($scope.session.name.indexOf('Visitor') != -1) $scope.session.name = ''
+		}
 
 	  $scope.ok = () => $modalInstance.close();
 	  $scope.cancel = () => $modalInstance.dismiss('cancel');

@@ -19,9 +19,14 @@ angular.module("AP", ['ngRoute', 'APSideNav', 'APBookmarker', 'APAuth'])
   .run(['$rootScope', 'SessionService',
     function($rootScope, SessionService) {
 
-    if (window.viewData.post) $rootScope.post = window.viewData.post
-    if (window.viewData.workshop) $rootScope.workshop = window.viewData.workshop
-    if (window.viewData.expert) $rootScope.expert = window.viewData.expert
+    pageHlpr.fixNavs('#side');
+
+    if (window.viewData)
+    {
+	    if (window.viewData.post) $rootScope.post = window.viewData.post
+	    if (window.viewData.workshop) $rootScope.workshop = window.viewData.workshop
+	    if (window.viewData.expert) $rootScope.expert = window.viewData.expert
+	  }
 
   }])
 

@@ -178,7 +178,7 @@ nav#side {
 			color:white;display:block
 		}
 		i { font-size:12px }
-		img { margin:15px 10px }
+		img { margin:15px 10px;background:@orange }
 
 		ul.main {
 			font-size:12px;
@@ -186,6 +186,8 @@ nav#side {
 			a { font-weight:bold; }
 		}
 	}
+
+	a.icon { display:none }
 
 	@media only screen and (max-width:1200px) {
     opacity:0.9;
@@ -259,7 +261,7 @@ nav#chat {
 nav#side.collapse {
 	width:40px;
 	section {
-    padding:10px 1px;
+    padding:14px 1px 10px 1px;
     figure {
     	img {
     		width:28px;
@@ -272,6 +274,20 @@ nav#side.collapse {
   ul { display:none }
   label { display:none }
 	opacity:1.0;
+
+	a.icon {
+		display:block;
+		text-align:center;
+		img {
+		width:28px;
+		height:28px;
+		border:none;
+		margin:0; }
+	}
+
+	section.main {
+		display:none
+	}
 }
 
 nav#chat.collapse {
@@ -282,10 +298,18 @@ nav#chat.collapse {
 .modal-dialog {
 	.modal-content {
 		border-radius:2px;
+		a { color:@orange }
+		label span { font-weight:normal;text-transform:none;font-size:11px }
 	}
 	.modal-header {
+		h3 { display:inline }
 		background:@darkblue;
 		color:white;
+		span {
+			color:@mediumgray;
+			padding:0px 6px;
+		}
+		a.close { color:@lightblue;opacity:1;padding:6px 8px 6px 6px }
 	}
 	.modal-footer
 	{
@@ -304,3 +328,49 @@ nav#chat.collapse {
 	}
 	label { display:block }
 }
+
+.modal-body.profile
+{
+	section.google {
+		float:right;
+		width:140px;
+		padding:10px 10px;
+		background:@palegray;
+	}
+
+	height:540px;
+	padding:30px 30px 30px 30px;
+	img { border-radius:160px;background:@orange;border:solid 10px @bluegray;margin:10px }
+	section.avatar {
+		float:left;
+		width:280px;
+		border-right:solid 1px @lightgray;
+		margin-right:40px;
+		padding:4px 0px 10px 0px;
+		text-align:center;
+		background:@lightblue;
+		.gradientfill;
+		.tileborder;
+		label { display:block;
+			text-transform:uppercase;
+			margin:10px 0 0 0;
+		}
+	 }
+	section.info {
+		padding-top:18px;
+		border-top:solid 1px @palegray;
+		float:left;
+		min-width:310px;
+		max-width:480px;
+	}
+	.verifyEmail {
+		text-align:right;
+		color:red;
+		font-weight:bold;
+	}
+}
+.modal-footer.profile {
+	margin-top:20px;
+	.btn-primary { width:100% }
+}
+

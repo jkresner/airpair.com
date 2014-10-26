@@ -1,0 +1,78 @@
+<div class="modal-header">
+	<h3 class="modal-title">Account info <span>></span> {{ session.name }}</h3>
+	<a href="#" class="close" ng-click="cancel()">x</a>
+</div>
+<div class="modal-body profile">
+
+<section>
+	<section class="login" ng-if="session.authenticated == false">
+	 <p>Aren't you a little short for a storm trooper?</p>
+	 <br />
+	</section>
+
+	<section class="avatar tile">
+		<img class="avatar" ng-src="{{session.avatar}}?s=230" title="Avatars are gravtars from your email." />
+		<p style="font-size:12px">
+			<span ng-if="session.email">Update the <b><a href="http://www.gravatar.com/" target="_blank">gravatar</a></b> for {{ session.email }}</span>
+			<span ng-if="!session.email">Enter an email address</span>
+		 	<br /> to change your profile pic.</p>
+		<hr />
+		<label>Account Credit</label> <b style="font-size:26px;color:black">$10</b> <br />available when you sign up</a>
+		<!-- <label>Last seen</label> Today -->
+	<!-- 			<label>Timezone</label> - 07:00
+<br /><label>Membership</label> No
+		<hr />
+		<br /><label>Roles</label> Visitor -->
+
+	</section>
+
+	<section class="info">
+		<section class="google" ng-if="session.authenticated == false">
+			Hate forms and passwords? <br /><br /><a href=""><b>Sign in with your google account instead</b></a>.
+		</section>
+
+		<div class="form-group tag-input-group">
+			<label for="session_name">Name</label>
+			<input id="session_name" type="text" class="form-control" placeholder="Full name" ng-model="session.name" ng-focus="clearDefaultName()">
+		</div>
+		<div ng-if="session._id">
+			<div class="form-group tag-input-group">
+				<label for="session_initials">Initials <span style="">used in chat</span></label>
+				<input id="session_initials" type="text" class="form-control" placeholder="Initials" ng-model="session.initials">
+			</div>
+			<div class="form-group tag-input-group">
+				<label for="session_username">Username <span>optional</span></label>
+				<input id="session_username" type="text" class="form-control" placeholder="Username" ng-model="session.username">
+			</div>
+		</div>
+		<div class="form-group tag-input-group">
+			<label for="session_email">Email <span class="verifyEmail" ng-if="session.emailVerified  == false">Unverified - <a hred="#">Resend verification email</a></span></label>
+			<input id="session_email" type="text" class="form-control" placeholder="Primary contact email" ng-model="session.email">
+		</div>
+		<hr />
+		<div ng-if="session.authenticated == false" class="form-group tag-input-group">
+			<label for="password">Password</label>
+			<input id="password" type="password" class="form-control" placeholder="Password" ng-model="session.password">
+		</div>
+		<div ng-if="session.authenticated != false">
+			<div class="form-group tag-input-group">
+				<label for="password">Set Password</label>
+				<input id="password" type="password" class="form-control" placeholder="Password" ng-model="session.password">
+			</div>
+			<div class="form-group tag-input-group">
+				<label for="password">Confirm Password</label>
+				<input id="password" type="password" class="form-control" placeholder="Password" ng-model="session.passwordconfirm">
+			</div>
+		</div>
+
+
+	</section>
+
+</section>
+
+
+</div>
+<div class="modal-footer profile">
+	<button class="btn btn-primary" ng-click="ok()" ng-if="session.authenticated == false">Create account</button>
+	<button class="btn" ng-click="ok()" ng-if="session.authenticated != false">Close</button>
+</div>

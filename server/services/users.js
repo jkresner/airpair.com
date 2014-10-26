@@ -65,7 +65,7 @@ function upsertSmart(search, upsert, cb) {
 		{
 			//-- stop user clobbering user.google details
 			if (r && r.googleId && (r.googleId != upsert.google.id))
-				return cb(Error(`Cannot overwrite google login ${r.google._json.email} with ${upsert.google._json.email}`),null)
+				return cb(Error(`Cannot overwrite google login ${r.google._json.email} with ${upsert.google._json.email}. <a href="/v1/auth/logout">Logout</a> first?`),null)
 
 
 			//-- copy google details to top level users details
@@ -271,7 +271,9 @@ function inflateTagsAndBookmarks(sessionData, cb) {
 export function getSession(cb) {
 	if (this.user == null)
 	{
-		var session = _.extend({ authenticated:false,sessionID:this.sessionID }, this.session.anonData)
+		var avatar = "/v1/img/css/sidenav/default-cat.png"
+		avatar = "/v1/img/css/sidenav/default-stormtrooper.png"
+		var session = _.extend({ authenticated:false,sessionID:this.sessionID, avatar }, this.session.anonData)
 		inflateTagsAndBookmarks(session, cb)
 	}
 	else
