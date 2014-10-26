@@ -16,7 +16,7 @@ angular.module("APAnalytics", [])
 
           var props = {
             id: element.attr('id'),
-            text: element.text(),
+            text: element.text().trim(),
             location: window.location.pathname, // $location.path() no good...
             type: type
           };

@@ -173,6 +173,7 @@ nav#side {
   }
 
 	.welcome {
+		text-transform:none;
 		padding:9px 8px;
 		span {
 			color:white;display:block
@@ -187,7 +188,15 @@ nav#side {
 		}
 	}
 
-	a.icon { display:none }
+	a.icon {
+		display:block;
+		width:100%;
+		border-bottom: 1px solid #4d4e4e;
+    color: white;
+    padding: 2px 1px 3px;
+    text-transform: none;
+    img { display:none }
+	}
 
 	@media only screen and (max-width:1200px) {
     opacity:0.9;
@@ -196,6 +205,42 @@ nav#side {
   @media only screen and (max-width: 640px) {
     display:none;
   }
+}
+
+nav#side.collapse {
+	width:40px;
+	section {
+		text-align:center;
+    padding:14px 1px;
+    figure {
+    	img {
+    		width:28px;
+    		height:28px;
+    		border:none;
+    		margin:0;
+    	}
+    }
+  }
+  ul { display:none }
+  label { display:none }
+	opacity:1.0;
+
+	a.icon {
+		text-align:center;
+		border:none;
+		padding:0;
+		span { display:none }
+		img {
+			display:inline-block;
+			width:28px;
+			height:28px;
+			border:none;
+			margin:0; }
+	}
+
+	section.main {
+		display:none
+	}
 }
 
 nav#chat {
@@ -258,37 +303,6 @@ nav#chat {
   }
 }
 
-nav#side.collapse {
-	width:40px;
-	section {
-    padding:14px 1px 10px 1px;
-    figure {
-    	img {
-    		width:28px;
-    		height:28px;
-    		border:none;
-    		margin:0;
-    	}
-    }
-  }
-  ul { display:none }
-  label { display:none }
-	opacity:1.0;
-
-	a.icon {
-		display:block;
-		text-align:center;
-		img {
-		width:28px;
-		height:28px;
-		border:none;
-		margin:0; }
-	}
-
-	section.main {
-		display:none
-	}
-}
 
 nav#chat.collapse {
 	width:40px;

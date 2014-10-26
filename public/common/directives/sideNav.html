@@ -2,13 +2,13 @@
   <img id="sideNavToggle" track-click="SideNav" data="{{ toggleAction }}" track-click-if="!session._id" ng-click="sideNav.toggle()" src="/v1/img/css/sidenav/toggle.png" />
 </header>
 
-<section class="welcome" ng-if="session.authenticated == false" style="text-transform:none">
-	<label>Welcome
-		<span><a href="#" ng-click="openProfile()">Visitor {{ session.sessionID.substring(0,10) }}</a></span>
-		<!-- <i>That's a nice hair tie ...</i> -->
+<section class="welcome" ng-if="session.authenticated == false">
+<!-- 	<label>Welcome
+		<span><a href="welcomeName" track-click="SideNav" ng-click="openProfile()">Visitor {{ session.sessionID.substring(0,10) }}</a></span>
+		<!-- <i>That's a nice hair tie ...</i>
 		<i>? Little short for a ...</i>
-	</label>
-	<figure><a href="#" ng-click="openProfile()"><img class="avatar" ng-src="{{ session.avatar }}" /></a></figure>
+	</label> -->
+	<figure><a id="welcomeAvatar" track-click="SideNav" ng-click="openProfile()"><img class="avatar" ng-src="{{ session.avatar }}" /></a></figure>
   <ul class="main">
     <li>Want your face back?</li>
     <li><a href="/v1/auth/login" target="_self">> Login</a></li>
@@ -38,17 +38,18 @@
 <section class="stack"> <label>Stack</label>
 	<ul>
 		<li ng-repeat="tag in session.tags"><a href="/posts/tag/{{tag.slug}}">{{tag.name}}</a></li>
-		<li><a href="#" ng-click="openStack()">Customize</a></li>
 	</ul>
-	<a href="#" ng-click="openStack()" class="icon"><img src="/v1/img/css/sidenav/tags.png" /></a>
+	<a id="stackToggle" track-click="SideNav" href="#" ng-click="openStack()" class="icon">
+		<span>Customize</span><img src="/v1/img/css/sidenav/tags.png" />
+	</a>
 </section>
+
 
 <section class="bookmarks"> <label>Bookmarks</label>
 	<ul class="bookmarks">
 		<li ng-repeat="b in session.bookmarks"><a href="{{b.url}}" target="_self">{{b.title}}</a></li>
-		<li><a href="#" ng-click="openBookmarks()" class="bookmarks">Manage</a></li>
 	</ul>
-	<a href="#" ng-click="openBookmarks()" class="icon"><img src="/v1/img/css/sideNav/sort-arrows.png" /></a>
+	<a id="bookmarksToggle" track-click="SideNav"  ng-click="openBookmarks()" class="icon"><span>Manage</span> <img src="/v1/img/css/sideNav/sort-arrows.png" /></a>
 </section>
 
 <div stack></div>
