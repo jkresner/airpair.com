@@ -6,7 +6,7 @@
 
 <section>
 	<section class="login" ng-if="session.authenticated == false">
-	 <p>Aren't you a little short for a storm trooper?</p>
+	 <p>Aren't you a little short for a storm trooper? <span ng-if="!session.email">Enter your email address to change your avatar.</span></p>
 	 <br />
 	</section>
 
@@ -32,6 +32,10 @@
 		</section>
 
 		<div class="form-group tag-input-group">
+			<label for="session_email">Email <span class="verifyEmail" ng-if="session.emailVerified  == false">Unverified - <a hred="#">Resend verification email</a></span></label>
+			<input id="session_email" type="text" class="form-control" placeholder="Primary contact email" ng-model="session.email">
+		</div>
+		<div class="form-group tag-input-group">
 			<label for="session_name">Name</label>
 			<input id="session_name" type="text" class="form-control" placeholder="Full name" ng-model="session.name" ng-focus="clearDefaultName()">
 		</div>
@@ -44,10 +48,6 @@
 				<label for="session_username">Username <span>optional</span></label>
 				<input id="session_username" type="text" class="form-control" placeholder="Username" ng-model="session.username">
 			</div>
-		</div>
-		<div class="form-group tag-input-group">
-			<label for="session_email">Email <span class="verifyEmail" ng-if="session.emailVerified  == false">Unverified - <a hred="#">Resend verification email</a></span></label>
-			<input id="session_email" type="text" class="form-control" placeholder="Primary contact email" ng-model="session.email">
 		</div>
 		<hr />
 		<div ng-if="session.authenticated == false" class="form-group tag-input-group">
