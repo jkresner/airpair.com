@@ -4,7 +4,7 @@ var util =          require('../../shared/util')
 var bcrypt =        require('bcrypt')
 import User         from '../models/user'
 var UserData =      require('./users.data')
-import * as Validate from '../../shared/validation/users.js'
+var Validate = require('../../shared/validation/users.js')
 
 var logging         = false
 var svc             = new BaseSvc(User, logging)
@@ -273,6 +273,9 @@ export function getSession(cb) {
 	{
 		var avatar = "/v1/img/css/sidenav/default-cat.png"
 		avatar = "/v1/img/css/sidenav/default-stormtrooper.png"
+
+		if (this.session.anonData.email) setAvatar(this.session.anonData)
+		if (this.session.anonData.avatar) avatar = this.session.anonData.avatar
 		var session = _.extend({ authenticated:false,sessionID:this.sessionID, avatar }, this.session.anonData)
 		inflateTagsAndBookmarks(session, cb)
 	}
@@ -336,14 +339,27 @@ export function toggleBookmark(type, id, cb) {
 	toggleSessionItem.call(this, 'bookmarks', bookmark, 2, 15, bookmarkComparator, cb)
 }
 
-export function changeEmail(body, cb) {
-	var inValid = Validate.changeEmail(body.email)
+
+export function changeEmail(email, cb) {
+	var inValid = Validate.changeEmail(email)
 	if (inValid) return cb(svc.Forbidden(inValid))
 
-	svc.update(this.user._id, {email: body.email, emailVerified: false}, function(e,r) {
-		// then send verification email to new address
-		cb(e,r)
-	})
+
+	if (this.user) {
+		svc.update(this.user._id, {email: email, emailVerified: false}, function(e,r) {
+			// then send verification email to new address
+			cb(e,r)
+		})
+	}
+	else {
+		var search = { '$or': [{email:email},{'google._json.email':email}] }
+		var self = this
+		svc.searchOne(search, null, function(e,r) {
+			if (r) return cb(svc.Forbidden(`${email} already registered`))
+			self.session.anonData.email = email
+			return getSession.call(self, cb)
+		})
+	}
 }
 
 export function verifyEmail(hash, cb) {

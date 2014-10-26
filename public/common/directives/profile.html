@@ -5,8 +5,8 @@
 <div class="modal-body profile">
 
 <section>
-	<section class="login" ng-if="session.authenticated == false">
-	 <p>Aren't you a little short for a storm trooper? <span ng-if="!session.email">Enter your email address to change your avatar.</span></p>
+	<section class="login">
+	 <p ng-if="!session.email">Aren't you a little short for a storm trooper? <span ng-if="!session.email">Enter your email address to fix your avatar.</span></p>
 	 <br />
 	</section>
 
@@ -26,21 +26,31 @@
 
 	</section>
 
-	<section class="info">
-		<section class="google" ng-if="session.authenticated == false">
-			Hate forms and passwords? <br /><br /><a href=""><b>Sign in with your google account instead</b></a>.
-		</section>
+	<section class="google" ng-if="session.authenticated == false">
+		Hate forms and passwords? <br /><br /><a href=""><b>Sign in with your google account instead</b></a>.
+	</section>
 
-		<div class="form-group tag-input-group">
-			<label for="session_email">Email <span class="verifyEmail" ng-if="session.emailVerified  == false">Unverified - <a hred="#">Resend verification email</a></span></label>
-			<input id="session_email" type="text" class="form-control" placeholder="Primary contact email" ng-model="session.email">
+	<section class="info">
+
+		<div class="form-group">
+			<label class="control-label" for="sessionEmail">Email <span class="verifyEmail" ng-if="session.emailVerified  == false">Unverified - <a hred="#">Resend verification email</a></span></label>
+			<input id="sessionEmail" name="email" class="form-control" type="email" placeholder="Primary contact email" ng-model="session.email" ng-blur="updateEmail(session.email)" required >
+<!--       <div class="error" ng-if="formGroup.showError(data.email)" ng-messages="data.email.$error">
+        <div ng-message="required">Field required</div>
+        <div ng-message="email">Invalid email</div>
+      </div> -->
+      <span style="color:red">{{ emailChangeFailed }}</span>
 		</div>
-		<div class="form-group tag-input-group">
-			<label for="session_name">Name</label>
-			<input id="session_name" type="text" class="form-control" placeholder="Full name" ng-model="session.name" ng-focus="clearDefaultName()">
+		<div class="form-group">
+			<label class="control-label" for="sessionName">Name </label>
+			<input id="sessionName" name="email" class="form-control" type="text" placeholder="Full name" ng-model="session.name" ng-focus="clearDefaultName()" required >
+<!--       <div class="error" ng-if="formGroup.showError(data.email)" ng-messages="data.email.$error">
+        <div ng-message="required">Field required</div>
+        <div ng-message="email">Invalid email</div>
+      </div> -->
 		</div>
 		<div ng-if="session._id">
-			<div class="form-group tag-input-group">
+			<div class="form-group">
 				<label for="session_initials">Initials <span style="">used in chat</span></label>
 				<input id="session_initials" type="text" class="form-control" placeholder="Initials" ng-model="session.initials">
 			</div>
@@ -49,21 +59,26 @@
 				<input id="session_username" type="text" class="form-control" placeholder="Username" ng-model="session.username">
 			</div>
 		</div>
-		<hr />
-		<div ng-if="session.authenticated == false" class="form-group tag-input-group">
-			<label for="password">Password</label>
-			<input id="password" type="password" class="form-control" placeholder="Password" ng-model="session.password">
+
+		<div class="form-group" ng-if="!session._id">
+			<label class="control-label" for="password">Password </label>
+			<input id="signupPassword" name="password" class="form-control" type="password" placeholder="Password" ng-model="session.password" required >
+<!--       <div class="error" ng-if="formGroup.showError(data.email)" ng-messages="data.email.$error">
+        <div ng-message="required">Field required</div>
+        <div ng-message="email">Invalid email</div>
+      </div> -->
 		</div>
-		<div ng-if="session.authenticated != false">
-			<div class="form-group tag-input-group">
+		<hr />
+<!-- 		<div ng-if="session.authenticated != false">
+			<div class="form-group">
 				<label for="password">Set Password</label>
 				<input id="password" type="password" class="form-control" placeholder="Password" ng-model="session.password">
 			</div>
-			<div class="form-group tag-input-group">
+			<div class="form-group">
 				<label for="password">Confirm Password</label>
 				<input id="password" type="password" class="form-control" placeholder="Password" ng-model="session.passwordconfirm">
 			</div>
-		</div>
+		</div> -->
 
 
 	</section>
@@ -74,5 +89,5 @@
 </div>
 <div class="modal-footer profile">
 	<button class="btn btn-primary" ng-click="ok()" ng-if="session.authenticated == false">Create account</button>
-	<button class="btn" ng-click="ok()" ng-if="session.authenticated != false">Close</button>
+	<button class="btn" ng-click="cancel()" ng-if="session.authenticated != false">Close</button>
 </div>
