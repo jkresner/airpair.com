@@ -29,6 +29,7 @@ angular.module("AP", ['ngRoute', 'APSideNav', 'APAuth', 'APPosts', 'APWorkshops'
   .run(['$rootScope', '$location', 'SessionService',
     function($rootScope, $location, SessionService) {
 
+    pageHlpr.fixNavs('#side');
 
     $rootScope.$on('$routeChangeSuccess', function() {
       window.trackRoute($location.path());

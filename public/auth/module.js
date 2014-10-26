@@ -20,6 +20,8 @@ angular.module("APAuth", ['ngRoute','APFilters','APSvcSession','APAnalytics'])
     function($rootScope, SessionService) {
 
     SessionService.onAuthenticated( (session) => {
+      if (!session.name) session.name = `Visitor ${session.sessionID.substring(0,10)}`
+
       $rootScope.session = session;
       // console.log('setting root scope', $rootScope.session)
     })
