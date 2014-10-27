@@ -3,12 +3,9 @@
 </header>
 
 <section class="welcome" ng-if="session.authenticated == false">
-<!-- 	<label>Welcome
-		<span><a href="welcomeName" track-click="SideNav" ng-click="openProfile()">Visitor {{ session.sessionID.substring(0,10) }}</a></span>
-		<!-- <i>That's a nice hair tie ...</i>
-		<i>? Little short for a ...</i>
-	</label> -->
+
 	<figure><a id="navWelcomeAvatar" track-click="SideNav" ng-click="openProfile()"><img class="avatar" ng-src="{{ session.avatar }}" /></a></figure>
+
   <ul class="main">
     <li ng-if="!session.email">Want your real face?</li>
     <li ng-if="!session.email"><a id="navEditProfile" href="#" track-click="SideNav" ng-click="openProfile()">Edit your profile</a></li>
@@ -17,8 +14,10 @@
     <li>Already in the tribe?</li>
     <li><a id="navLogin" href="/v1/auth/login" track-click="SideNav">Login</a></li>
     <li>Why join?</li>
-    <li><a id="navAbout" href="/about" track-click="SideNav">Read about AirPair</a></li>
   </ul>
+  <a id="navAbout" track-click="SideNav" href="/about" class="icon">
+		<span>Read about AirPair</span><img src="/v1/img/css/sidenav/airpair.png" />
+	</a>
 </section>
 
 

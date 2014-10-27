@@ -63,7 +63,9 @@ window.onload = function(){
 {{else}}
 
 <script type="text/javascript">
-  window.analytics = false;
+  window.analytics = {};
+  window.analytics.track = function(event, props) { console.log('off.track', event, props); }
+
 </script>
 
 {{/if}}

@@ -92,13 +92,24 @@ function upsertSmart(search, upsert, cb) {
 		User.findOneAndUpdate(search, upsert, { upsert: true }, (err, user) => {
 			if (logging || err) $log('User.upsert', err, user)
 			if (err) return cb(err)
-			if (!analytics.upsert) return cb(null, user)
+
+			var cbSession = (error, ruser) => {
+				if (error) return cb(error)
+				getSessionFull.call({user:{_id:ruser._id}}, cb)
+			}
+
+			if (!analytics.upsert) return cbSession(null, user)
 
 			analytics.upsert(user, r, sessionID, (aliases) => {
 				if (aliases && user.cohort.aliases &&
-						aliases.length == user.cohort.aliases.length) cb(null, user)
+						aliases.length == user.cohort.aliases.length)
+				{
+					cbSession(null, user)
+				}
 				else
-					User.findOneAndUpdate(search, { 'cohort.aliases': aliases }, cb)
+				{
+					User.findOneAndUpdate(search, { 'cohort.aliases': aliases }, cbSession)
+				}
 			})
 		})
 	})
