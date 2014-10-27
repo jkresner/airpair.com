@@ -13,8 +13,9 @@ require('./../auth/module.js');
 require('./../posts/module.js');
 require('./../workshops/module.js');
 require('./../billing/module.js');
+require('./../profile/module.js');
 
-angular.module("AP", ['ngRoute', 'APSideNav', 'APAuth', 'APPosts', 'APWorkshops', 'APBilling'])
+angular.module("AP", ['ngRoute', 'APSideNav', 'APAuth', 'APPosts', 'APWorkshops', 'APProfile', 'APBilling'])
 
   .config(['$locationProvider', '$routeProvider',
       function($locationProvider, $routeProvider) {
@@ -23,6 +24,10 @@ angular.module("AP", ['ngRoute', 'APSideNav', 'APAuth', 'APPosts', 'APWorkshops'
 
 		$routeProvider.when('/v1', {
 			template: require('../home.html')
+		});
+
+		$routeProvider.when('/about', {
+			template: require('../about.html')
 		});
 
   }])
@@ -34,9 +39,6 @@ angular.module("AP", ['ngRoute', 'APSideNav', 'APAuth', 'APPosts', 'APWorkshops'
 
     $rootScope.$on('$routeChangeSuccess', function() {
       window.trackRoute($location.path());
-
-      // Hack to hide menu on login pages
-      $('nav#side').toggle(!($location.path().indexOf('/auth') != -1))
     });
 
   }])

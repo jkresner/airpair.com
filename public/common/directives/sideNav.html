@@ -8,20 +8,20 @@
 		<!-- <i>That's a nice hair tie ...</i>
 		<i>? Little short for a ...</i>
 	</label> -->
-	<figure><a id="welcomeAvatar" track-click="SideNav" ng-click="openProfile()"><img class="avatar" ng-src="{{ session.avatar }}" /></a></figure>
+	<figure><a id="navWelcomeAvatar" track-click="SideNav" ng-click="openProfile()"><img class="avatar" ng-src="{{ session.avatar }}" /></a></figure>
   <ul class="main">
-    <li>Want your face back?</li>
-    <li><a href="/v1/auth/login" target="_self">> Login</a></li>
-    <li>Prefer being a cat?</li>
-    <li><a ng-click="sideNav.toggle()" href="#">> Hide menu</a></li>
-		<li>Not sure?</li>
-    <li><a href="/v1/auth/login" target="_self">> See about AirPair</a></li>
+    <li>Want your real face?</li>
+    <li><a id="navEditProfile" href="#" track-click="SideNav" ng-click="openProfile()">Edit your profile</a></li>
+    <li>Already in the tribe?</li>
+    <li><a id="navLogin" href="/v1/auth/login" track-click="SideNav">Login</a></li>
+    <li>Why join?</li>
+    <li><a id="navAbout" href="/about" track-click="SideNav">Read about AirPair</a></li>
   </ul>
 </section>
 
 
 <section ng-if="session._id">
-	<figure><a href="#" ng-click="openProfile()"><img class="avatar" ng-src="{{ session.avatar }}?s=120" /></a></figure>
+	<figure><a href="/me"><img class="avatar" ng-src="{{ session.avatar }}?s=120" /></a></figure>
 </section>
 
 <section class="main" ng-if="session._id"> <label>{{ session.name.split(' ')[0] }}</label>

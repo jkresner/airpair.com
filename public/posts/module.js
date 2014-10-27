@@ -40,12 +40,6 @@ angular.module("APPosts", ['ngRoute', 'APFilters','APShare',
       controller: 'TagIndexCtrl'
     });
 
-    $routeProvider.when('/me/:username', {
-      template: require('../me/profile.html'),
-      controller: 'ProfileCtrl as profile',
-      resolve: authd
-    });
-
   }])
 
   .run(['$rootScope', 'SessionService', function($rootScope, SessionService) {

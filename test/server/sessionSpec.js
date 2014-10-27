@@ -162,6 +162,7 @@ module.exports = () => describe("API: ", function() {
 						expect(s.bookmarks).to.exist
 						expect(s.bookmarks.length).to.equal(1)
 						expect(s.bookmarks[0].title).to.equal("Starting a Mean Stack App")
+						expect(s.bookmarks[0].type).to.equal("post")
 						done()
 					})
 				})
@@ -216,15 +217,12 @@ module.exports = () => describe("API: ", function() {
 		)
 
 
-		it.skip('Does not wipe anonymous bookmarks data over existing local login user')
-
-
-
 		it('Can add and remove bookmarks to authenticated session', function(done) {
 			addAndLoginLocalUser('alys', function(s) {
 				PUT(`/users/me/bookmarks/post/${data.posts.v1AirPair._id}`, {}, {}, function(s1) {
 					expect(s1.bookmarks.length).to.equal(1)
 					expect(s1.bookmarks[0].title).to.equal("Starting a Mean Stack App")
+					expect(s1.bookmarks[0].type).to.equal("post")
 					PUT(`/users/me/bookmarks/post/${data.posts.sessionDeepDive._id}`, {}, {}, function(s2) {
 						expect(s2.bookmarks.length).to.equal(2)
 						PUT(`/users/me/bookmarks/post/${data.posts.v1AirPair._id}`, {}, {}, function(s3) {
@@ -236,8 +234,63 @@ module.exports = () => describe("API: ", function() {
 				})
 			})
 		})
+
+
 	})
 
+
+	it('Can login and get previous sessions bookmarks', function(done) {
+		addAndLoginLocalUser('wilm', function(s) {
+			PUT(`/users/me/bookmarks/post/${data.posts.v1AirPair._id}`, {}, {}, function(s1) {
+				expect(s1.bookmarks.length).to.equal(1)
+				expect(s1.bookmarks[0].title).to.equal("Starting a Mean Stack App")
+				expect(s1.bookmarks[0].type).to.equal("post")
+				LOGIN('wilm', s1, function() {
+					GET('/session/full', {}, (sFull) => {
+						expect(sFull.bookmarks.length).to.equal(1)
+						expect(sFull.bookmarks[0].title).to.equal("Starting a Mean Stack App")
+						expect(sFull.bookmarks[0].type).to.equal("post")
+						done()
+					})
+				})
+			})
+		})
+	})
+
+
+
+
+	it('Does not wipe existing local login data with anonymous tags and bookmarks data', function(done) {
+		addAndLoginLocalUser('wlmo', function(s) {
+			PUT(`/users/me/bookmarks/post/${data.posts.v1AirPair._id}`, {}, {}, function(s1) {
+				expect(s1.bookmarks.length).to.equal(1)
+				expect(s1.bookmarks[0].title).to.equal("Starting a Mean Stack App")
+				expect(s1.bookmarks[0].type).to.equal("post")
+				PUT(`/users/me/tag/node.js`, {}, {}, function(s2) {
+					expect(s2.bookmarks.length).to.equal(1)
+					expect(s2.tags.length).to.equal(1)
+					expect(s2.tags[0].name).to.equal("Node.JS")
+					expect(s2.tags[0].slug).to.equal("node.js")
+					cookie = null
+					GET('/session/full', {}, (anon) => {
+						expect(anon.bookmarks).to.be.undefined
+						expect(anon.tags).to.be.undefined
+						LOGIN('wlmo', s, function() {
+							GET('/session/full', {}, (sFull) => {
+								expect(sFull.bookmarks.length).to.equal(1)
+								expect(sFull.bookmarks[0].title).to.equal("Starting a Mean Stack App")
+								expect(sFull.bookmarks[0].type).to.equal("post")
+								expect(sFull.tags.length).to.equal(1)
+								expect(sFull.tags[0].name).to.equal("Node.JS")
+								expect(sFull.tags[0].slug).to.equal("node.js")
+								done()
+							})
+						})
+					})
+				})
+			})
+		})
+	})
 
 
 	it.skip('Not gonna impl: Merges anonymous session data to local LOGIN user', () => {})

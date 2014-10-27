@@ -27,14 +27,16 @@ angular.module("APFormsDirectives", [])
 				element.addClass('form-group');
 
 				ctrl.showError = function(model) {
-					console.log('show error called', model)
+					// console.log('show error called', model)
 					var toShow = !model.$valid && (model.$touched || formCtrl.$submitted)
-					console.log('show', toShow, element, model.$valid, model.$touched, formCtrl.$submitted)
+					// console.log('show', toShow, element, model.$valid, model.$touched, formCtrl.$submitted)
 					element.toggleClass('has-error', toShow).toggleClass('has-feedback', toShow);
 					return toShow
 				}
 
 				console.log('linked validator', ctrl, formCtrl)
+
+
 				// ctrl.update = function(valid) {
 				// 	var showError = !valid && ctrl.showError()
 				// 	// var showError = ctrl.showError(model);
