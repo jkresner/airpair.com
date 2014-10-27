@@ -17,11 +17,6 @@
 		 	<br /> to change your profile pic.</p>
 		<hr />
 		<label>Account Credit</label> <b style="font-size:26px;color:black">$10</b> <br />available when you sign up</a>
-		<!-- <label>Last seen</label> Today -->
-	<!-- 			<label>Timezone</label> - 07:00
-<br /><label>Membership</label> No
-		<hr />
-		<br /><label>Roles</label> Visitor -->
 
 	</section>
 
@@ -40,6 +35,8 @@
       </div> -->
       <span style="color:red">{{ emailChangeFailed }}</span>
 		</div>
+
+
 		<div class="form-group" ng-if="session.email">
 			<label class="control-label" for="sessionName">Name </label>
 			<input id="sessionName" name="email" class="form-control" type="text" placeholder="Full name" ng-model="session.name" ng-focus="clearDefaultName()" required >
@@ -47,16 +44,6 @@
         <div ng-message="required">Field required</div>
         <div ng-message="email">Invalid email</div>
       </div> -->
-		</div>
-		<div ng-if="session._id">
-			<div class="form-group">
-				<label for="session_initials">Initials <span style="">used in chat</span></label>
-				<input id="session_initials" type="text" class="form-control" placeholder="Initials" ng-model="session.initials">
-			</div>
-			<div class="form-group tag-input-group">
-				<label for="session_username">Username <span>optional</span></label>
-				<input id="session_username" type="text" class="form-control" placeholder="Username" ng-model="session.username">
-			</div>
 		</div>
 
 		<div class="form-group" ng-if="!session._id && session.email">
@@ -68,17 +55,6 @@
       </div> -->
 		</div>
 		<hr />
-<!-- 		<div ng-if="session.authenticated != false">
-			<div class="form-group">
-				<label for="password">Set Password</label>
-				<input id="password" type="password" class="form-control" placeholder="Password" ng-model="session.password">
-			</div>
-			<div class="form-group">
-				<label for="password">Confirm Password</label>
-				<input id="password" type="password" class="form-control" placeholder="Password" ng-model="session.passwordconfirm">
-			</div>
-		</div> -->
-
 
 	</section>
 
