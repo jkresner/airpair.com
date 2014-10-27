@@ -9,7 +9,7 @@ angular.module("APBookmarker", ['APSvcSession'])
 				scope.type = attrs.type
 			},
 			controller: ['$rootScope', '$scope', function($rootScope, $scope) {
-				console.log('bookmarker loaded', $scope.post)
+				// console.log('bookmarker loaded', $scope.post)
 				$scope.bookmark = function(objectId) {
 					var data = { type: $scope.type, objectId }
 					var success = function(result) {

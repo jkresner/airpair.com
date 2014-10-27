@@ -1,30 +1,31 @@
 <header>
-  <img ng-click="sideNav.toggle()" src="/v1/img/css/sidenav/toggle.png" />
+  <img id="sideNavToggle" track-click="SideNav" data="{{ toggleAction }}" track-click-if="!session._id" ng-click="sideNav.toggle()" src="/v1/img/css/sidenav/toggle.png" />
 </header>
 
-<section class="welcome" ng-if="session.authenticated == false" style="text-transform:none">
-	<label>Welcome
-		<span><a href="#" ng-click="profile()">Visitor {{ session.sessionID.substring(0,10) }}</a></span>
-		<i>That's a nice hair tie ...</i>
-	</label>
-	<figure><a href="#" ng-click="profile()"><img class="avatar" src="/v1/img/css/sideNav/default-cat.jpg" /></a></figure>
+<section class="welcome" ng-if="session.authenticated == false">
+<!-- 	<label>Welcome
+		<span><a href="welcomeName" track-click="SideNav" ng-click="openProfile()">Visitor {{ session.sessionID.substring(0,10) }}</a></span>
+		<!-- <i>That's a nice hair tie ...</i>
+		<i>? Little short for a ...</i>
+	</label> -->
+	<figure><a id="navWelcomeAvatar" track-click="SideNav" ng-click="openProfile()"><img class="avatar" ng-src="{{ session.avatar }}" /></a></figure>
   <ul class="main">
-    <li>Want your face back?</li>
-    <li><a href="/v1/auth/login" target="_self">> Login</a></li>
-    <li>Prefer being a cat?</li>
-    <li><a ng-click="toggle()" href="#">> Hide menu</a></li>
-		<li>Not sure?</li>
-    <li><a href="/v1/auth/login" target="_self">> See about AirPair</a></li>
+    <li>Want your real face?</li>
+    <li><a id="navEditProfile" href="#" track-click="SideNav" ng-click="openProfile()">Edit your profile</a></li>
+    <li>Already in the tribe?</li>
+    <li><a id="navLogin" href="/v1/auth/login" track-click="SideNav">Login</a></li>
+    <li>Why join?</li>
+    <li><a id="navAbout" href="/about" track-click="SideNav">Read about AirPair</a></li>
   </ul>
 </section>
 
 
-<section ng-if="session.avatar">
-	<figure><img class="avatar" ng-src="{{ session.avatar }}?s=120" /></figure>
+<section ng-if="session._id">
+	<figure><a href="/me"><img class="avatar" ng-src="{{ session.avatar }}?s=120" /></a></figure>
 </section>
 
-<section ng-if="session._id"> <label>{{ session.name.split(' ')[0] }}</label>
-  <ul id="main">
+<section class="main" ng-if="session._id"> <label>{{ session.name.split(' ')[0] }}</label>
+  <ul>
     <!-- <li><a href="#">dashboard</a></li> -->
     <li><a href="/billing">billing</a></li>
     <!-- <li><a href="#">airpairs</a></li> -->
@@ -37,15 +38,18 @@
 <section class="stack"> <label>Stack</label>
 	<ul>
 		<li ng-repeat="tag in session.tags"><a href="/posts/tag/{{tag.slug}}">{{tag.name}}</a></li>
-		<li><a href="#" ng-click="openStack()">Customize</a></li>
 	</ul>
+	<a id="navStackToggle" track-click="SideNav" href="#" ng-click="openStack()" class="icon">
+		<span>Customize</span><img src="/v1/img/css/sidenav/tags.png" />
+	</a>
 </section>
+
 
 <section class="bookmarks"> <label>Bookmarks</label>
 	<ul class="bookmarks">
 		<li ng-repeat="b in session.bookmarks"><a href="{{b.url}}" target="_self">{{b.title}}</a></li>
-		<li><a href="#" ng-click="openBookmarks()">Manage</a></li>
 	</ul>
+	<a id="navBookmarksToggle" track-click="SideNav"  ng-click="openBookmarks()" class="icon"><span>Manage</span> <img src="/v1/img/css/sideNav/sort-arrows.png" /></a>
 </section>
 
 <div stack></div>

@@ -42,7 +42,7 @@ function airpair(expert, minutes, time, unitPrice, unitProfit)
 
 function createOrder(lineItems, payMethod, cb) {
 	var o = {
-		_id: util.newId(),
+		_id: svc.newId(),
 		utc: new Date(),
 		userId: this.user._id,
 		total: 0,

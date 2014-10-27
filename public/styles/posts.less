@@ -41,7 +41,12 @@ section#post {
 			color:@gray;
 		}
 
-		.entry-meta { color:@gray;font-size:11px }
+		.entry-meta {
+			color:@gray;
+			font-size:11px;
+			max-height:20px;
+			overflow:hidden;
+		}
 
 		footer {
 			position:absolute;
@@ -60,8 +65,19 @@ section#post {
 
 		p { line-height:16px;margin:0;padding:0 }
 		.entry-content { height:80px;overflow:hidden;color:@gray }
-		.entry-author { font-weight:bold;color:@orange }
-		.entry-author-image { width:50px;border-radius:25px;display:inline;margin:3px 10px 0 0 }
+		.entry-author {
+			font-weight:bold;
+			color:@orange;
+		}
+		.entry-author-image { width:50px;
+			border-radius:25px;
+			display:inline;
+			margin:3px 10px 0 0;
+			border:solid 3px @bluegray;
+			webkit-filter: grayscale(100%);
+      -moz-filter: grayscale(100%);
+			filter: grayscale(100%);
+		}
 
 	}
 

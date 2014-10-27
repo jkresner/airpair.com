@@ -22,6 +22,8 @@ module.exports = {
 	ahas: { name:"Abe Haskin",email:"abehas@apr.com" },
 	uris: { name:"Uri Shaked",email:"urish@apr.com" },
 	usha: { name:"Uri Shaked",email:"urish@gmail.com" },
+	wilm: { name:"Will Moss",email:"will.mossy@gmail.com" },
+	wlmo: { name:"Will Moss",email:"will.mossy@hotmai.com" },
 
 	somr: { name:"Somik Rana",email:"somik@gmail.com" },
 	soik: { name:"Somik Rana",email:"somik@hotmail.com" },

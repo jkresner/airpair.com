@@ -31,9 +31,15 @@ angular.module('APSvcSession', [])
       $http.post(`${Auth}/login`, data).success(success).error(error);
     }
 
+
     this.signup = function(data, success, error)
     {
       $http.post(`${Auth}/signup`, data).success(success).error(error);
+    }
+
+    this.changeEmail = function(data, success, error)
+    {
+      $http.put(`${API}/users/me/email`, data).success(success).error(error);
     }
 
     this.updateTag = function(data, success, error)
