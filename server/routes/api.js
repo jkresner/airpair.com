@@ -18,7 +18,6 @@ export default function(app) {
     .param('paymethod', PaymethodsAPI.paramFns.getById)
     .param('expert', ExpertsAPI.paramFns.getById)
 
-    .get('/session', UsersAPI.getSession)
     .get('/session/full', setAnonSessionData, UsersAPI.getSessionFull)
     .put('/users/me/tag/:tag', setAnonSessionData, UsersAPI.toggleTag)
     .put('/users/me/email', setAnonSessionData, UsersAPI.changeEmail)
