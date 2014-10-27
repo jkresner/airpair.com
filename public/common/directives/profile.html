@@ -2,67 +2,78 @@
 	<h3 class="modal-title">Account info</h3>
 	<a href="#" class="close" ng-click="cancel()">x</a>
 </div>
-<div class="modal-body profile">
 
-<section>
-	<section class="login" style="height:40px">
-	 <p ng-if="!session.email">Aren't you a little short for a storm trooper? <span ng-if="!session.email">Enter your email address to fix your avatar.</span></p>
+
+<form novalidate name="profileForm" ng-submit="submit(profileForm.$valid, data)">
+
+	<div class="modal-body profile">
+
+	<section>
+		<section style="height:40px">
+		 <p ng-if="!session.email"><i>Aren't you a little short for a storm trooper?</i> <span ng-if="!session.email">Enter your email address to fix your avatar.</span></p>
+		 <p ng-if="session.email">Save your name and password to get $10 credit.</p>
+
+		</section>
+
+		<section class="avatar">
+			<img class="avatar" ng-src="{{session.avatar}}?s=230" title="Avatars are gravtars generated from your email." />
+			<p style="font-size:12px">
+				<span ng-if="session.email">Update the <b><a href="http://www.gravatar.com/" target="_blank">gravatar</a></b> for <br />{{ session.email }}</span>
+				<span ng-if="!session.email">Enter an email address</span>
+			 	<br /> to change your profile pic.
+			</p>
+			<hr />
+			<label>Account Credit</label> <b style="font-size:26px;color:black">$10</b> <br />available when you sign up
+
+		</section>
+
+		<section class="google">
+			Hate forms and passwords? <br /><br /><a href="/v1/auth/google" target="_self"><b>Sign in with your Google account instead</b></a>.
+		</section>
+
+		<section class="info">
+
+			<div form-group>
+				<label class="control-label" for="signupEmail">Email</label>
+				<input id="signupEmail" name="email" form-control type="email" placeholder="Primary contact email" ng-model="data.email" ng-blur="updateEmail(profileForm.email)">
+	      <div class="error" ng-if="formGroup.showError(profileForm.email)" ng-messages="profileForm.email.$error">
+	        <div ng-message="required">Email required</div>
+	        <div ng-message="email">Invalid email</div>
+	      </div>
+	      <span class="error">{{ emailChangeFailed }}</span>
+			</div>
+
+			<div form-group ng-if="session.email">
+				<label class="control-label" for="sessionName">Full name </label>
+				<input id="sessionName" name="name" form-control type="text" placeholder="Full name" ng-model="data.name" required required ng-minlength="4" ng-minlength="60" ng-pattern="/\w+ \w+/">
+	      <div class="error" ng-if="formGroup.showError(profileForm.name)" ng-messages="profileForm.name.$error">
+	        <div ng-message="required">Name required</div>
+	        <div ng-message="minlength">Full name required (e.g. John Smith)</div>
+	        <div ng-message="pattern">Full name required (e.g. John Smith)</div>
+	        <div ng-message="maxlength">Full name max length 60 chars</div>
+	      </div>
+			</div>
+
+			<div form-group ng-if="data.name">
+				<label class="control-label" for="signupPassword">Password </label>
+				<input id="signupPassword" name="password" form-control type="password" placeholder="Password" ng-model="data.password" required ng-minlength="5" ng-maxlength="10">
+				<div class="error" ng-if="formGroup.showError(profileForm.password)" ng-messages="profileForm.password.$error">
+	        <div ng-message="required">Password required</div>
+	        <div ng-message="minlength">Password min length 5 chars</div>
+	        <div ng-message="maxlength">Password max length 10 chars</div>
+	      </div>
+			</div>
+
+		</section>
+
 	</section>
 
-	<section class="avatar tile">
-		<img class="avatar" ng-src="{{session.avatar}}?s=230" title="Avatars are gravtars from your email." />
-		<p style="font-size:12px">
-			<span ng-if="session.email">Update the <b><a href="http://www.gravatar.com/" target="_blank">gravatar</a></b> for <br />{{ session.email }}</span>
-			<span ng-if="!session.email">Enter an email address</span>
-		 	<br /> to change your profile pic.</p>
-		<hr />
-		<label>Account Credit</label> <b style="font-size:26px;color:black">$10</b> <br />available when you sign up</a>
+	</div>
 
-	</section>
-
-	<section class="google" ng-if="session.authenticated == false">
-		Hate forms and passwords? <br /><br /><a href="/v1/auth/google" target="_self"><b>Sign in with your google account instead</b></a>.
-	</section>
-
-	<section class="info">
-
-		<div class="form-group">
-			<label class="control-label" for="sessionEmail">Email <span class="verifyEmail" ng-if="session.emailVerified  == false">Unverified - <a hred="#">Resend verification email</a></span></label>
-			<input id="sessionEmail" name="email" class="form-control" type="email" placeholder="Primary contact email" ng-model="session.email" ng-blur="updateEmail(session.email)" required >
-<!--       <div class="error" ng-if="formGroup.showError(data.email)" ng-messages="data.email.$error">
-        <div ng-message="required">Field required</div>
-        <div ng-message="email">Invalid email</div>
-      </div> -->
-      <span style="color:red">{{ emailChangeFailed }}</span>
-		</div>
+	<div class="modal-footer profile">
+		<button class="btn btn-primary">Create account</button>
+	  <span class="error">{{ signupFail }}</span>
+	</div>
 
 
-		<div class="form-group" ng-if="session.email">
-			<label class="control-label" for="sessionName">Name </label>
-			<input id="sessionName" name="email" class="form-control" type="text" placeholder="Full name" ng-model="session.name" ng-focus="clearDefaultName()" required >
-<!--       <div class="error" ng-if="formGroup.showError(data.email)" ng-messages="data.email.$error">
-        <div ng-message="required">Field required</div>
-        <div ng-message="email">Invalid email</div>
-      </div> -->
-		</div>
-
-		<div class="form-group" ng-if="!session._id && session.email">
-			<label class="control-label" for="password">Password </label>
-			<input id="signupPassword" name="password" class="form-control" type="password" placeholder="Password" ng-model="session.password" required >
-<!--       <div class="error" ng-if="formGroup.showError(data.email)" ng-messages="data.email.$error">
-        <div ng-message="required">Field required</div>
-        <div ng-message="email">Invalid email</div>
-      </div> -->
-		</div>
-		<hr />
-
-	</section>
-
-</section>
-
-
-</div>
-<div class="modal-footer profile">
-	<button class="btn btn-primary" ng-click="ok()" ng-if="session.authenticated == false">Create account</button>
-	<button class="btn" ng-click="cancel()" ng-if="session.authenticated != false">Close</button>
-</div>
+</form>

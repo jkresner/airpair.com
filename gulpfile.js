@@ -41,7 +41,7 @@ gulp.task('nodemon', function () {
 });
 
 gulp.task('less', function () {
-  gulp.src(paths.styles)
+  gulp.src(['public/styles/index.less','public/styles/adm.less'])
     .pipe(less({
       paths: [ path.join(__dirname, 'styles') ]
     }))
