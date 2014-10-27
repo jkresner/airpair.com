@@ -11,8 +11,8 @@ export default function(app) {
     .use(setReturnTo)
 
     .get('/logout', logout(config.auth))
-    .post('/login', local.login, authDone)
-    .post('/signup', local.signup, authDone)
+    .post('/login', local.login)
+    .post('/signup', local.signup)
     .get('/google', google.oAuth)
     .get('/google/callback', google.oAuth, authDone)
 

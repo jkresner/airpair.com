@@ -1,5 +1,5 @@
 <header>Login</header>
-<section id="auth">
+<section id="auth" ng-controller="LoginCtrl as LoginCtrl">
 
 <h3>Welcome back.</h3>
 
@@ -23,7 +23,7 @@
 
   <h2>Password login</h2>
 
-  <form novalidate name="loginForm" ng-controller="LoginCtrl as LoginCtrl" ng-submit="LoginCtrl.submit(loginForm.$valid, data)">
+  <form novalidate name="loginForm" ng-submit="LoginCtrl.submit(loginForm.$valid, data)">
     <div form-group>
       <label class="control-label sr-only" for="loginEmail">Email</label>
       <input id="loginEmail" form-control type="email" placeholder="Email" name="email" ng-model="data.email" required>
@@ -42,8 +42,8 @@
 
     <button type="submit" class="btn btn-warning btn-lg">Login</button>
 
-    <div class="error" ng-if="signupFail">
-      <b>Login failed:</b> <span ng-if="signupFail">{{signupFail.message}}</span>
+    <div class="error" ng-if="loginFail">
+      <b>Login failed:</b> <span ng-if="loginFail">{{loginFail.message}}</span>
     </div>
   </form>
 
