@@ -55,6 +55,10 @@ module.exports = -> describe "Credit: ", ->
         done()
 
 
+  it.skip 'Signup with offer created credit order', (done) ->
+
+
+
   it.skip 'GetMyOrdersWithCredit returns only orders with Credit', (done) ->
 
 

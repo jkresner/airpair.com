@@ -10,8 +10,10 @@
 	</label> -->
 	<figure><a id="navWelcomeAvatar" track-click="SideNav" ng-click="openProfile()"><img class="avatar" ng-src="{{ session.avatar }}" /></a></figure>
   <ul class="main">
-    <li>Want your real face?</li>
-    <li><a id="navEditProfile" href="#" track-click="SideNav" ng-click="openProfile()">Edit your profile</a></li>
+    <li ng-if="!session.email">Want your real face?</li>
+    <li ng-if="!session.email"><a id="navEditProfile" href="#" track-click="SideNav" ng-click="openProfile()">Edit your profile</a></li>
+    <li ng-if="session.email">Get $10 credit?</li>
+    <li ng-if="session.email"><a id="navEditProfile" href="#" track-click="SideNav" ng-click="openProfile()">Finish your profile</a></li>
     <li>Already in the tribe?</li>
     <li><a id="navLogin" href="/v1/auth/login" track-click="SideNav">Login</a></li>
     <li>Why join?</li>

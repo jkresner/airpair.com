@@ -74,7 +74,7 @@ angular.module("APSideNav", ['ui.bootstrap','APSvcSession', 'APTagInput'])
 				$rootScope.openProfile = function() {
 
 					var modalInstance = $modal.open({
-						template: require('./profile2.html'),
+						template: require('./profile.html'),
 						controller: 'ProileCtrl as ProileCtrl',
 						size: 'lg'
 					});
@@ -106,38 +106,43 @@ angular.module("APSideNav", ['ui.bootstrap','APSvcSession', 'APTagInput'])
 	.controller('ProileCtrl', ['$scope', '$rootScope', '$modalInstance', '$window', 'SessionService',
 		function($scope, $rootScope, $modalInstance, $window, SessionService) {
 
+		$scope.data = { email: $scope.session.email, name: $scope.session.name }
 
-		$scope.updateEmail = function() {
+		$scope.updateEmail = function(model) {
+			//console.log('blur', model)
+			//console.log('model', model.$valid, model)
+			if (!model.$valid) return
 			$scope.emailChangeFailed = ""
-		  console.log('updateEmail', $scope.session.email, Validate.changeEmail)
-		  var inValid = Validate.changeEmail($scope.session.email)
-		  if (inValid) return $scope.session.email = ""
-		  console.log('updateEmail.valid', { email: $scope.session.email })
+		  // var inValid = Validate.changeEmail($scope.data.email)
+		  // if (inValid) return $scope.data.email = ""
 
-		  SessionService.changeEmail({ email: $scope.session.email },
-		    (result) => $rootScope.session = result,
-		    (e) => $scope.emailChangeFailed = e.message
+		  SessionService.changeEmail({ email: $scope.data.email },
+		    (result) => {
+		    	analytics.track('Save', { type:'email', email: result.email });
+		    	$rootScope.session = result
+		    	$scope.data = { email: result.email, name: result.name }
+		    }
+		    ,
+		    (e) => {
+		    	$scope.emailChangeFailed = e.message
+		    	$scope.data.email = null
+		    }
 		  )
 		}
 
-		$scope.clearDefaultName = function() {
-			if ($scope.session.name.indexOf('Visitor') != -1) $scope.session.name = ''
-		}
-
-
-		$scope.ok = () => {
-			console.log('scope', $scope, $scope.password)
-			if (!$scope.session._id) {
-				// function(isValid, formData) {
-					// console.log('signup', isValid, formData)
-				 //  if (!isValid) return
-				  SessionService.signup({email:$scope.session.email, name:$scope.session.name, password: $scope.session.password },
-				    () => $window.location = '',
-				    (e) => $scope.signupFail = e.error
-				  )
-				// }
+		$scope.ok = (form) => {
+			if (form.$valid)
+			{
+				// console.log('profileForm', form)
+				var data = {email:form.email.$modelValue, name:form.name.$modelValue, password:form.password.$modelValue}
+				SessionService.signup(data,
+				  (result) => {
+				  	$rootScope.session = result;
+				  	$modalInstance.close();
+				  },
+				  (e) => $scope.signupFail = e.error
+				)
 			}
-
 		}
 
 
