@@ -27,7 +27,7 @@ angular.module("APFormsDirectives", [])
 				element.addClass('form-group');
 
 				ctrl.showError = function(model) {
-					// console.log('show error called', model)
+					// console.log('show error called', element, model)
 					var toShow = !model.$valid && (model.$touched || formCtrl.$submitted)
 					// console.log('show', toShow, element, model.$valid, model.$touched, formCtrl.$submitted)
 					element.toggleClass('has-error', toShow).toggleClass('has-feedback', toShow);
@@ -62,7 +62,10 @@ angular.module("APFormsDirectives", [])
 
 			link: function(scope, element, attrs, ctrls) {
 				element.addClass('form-control')
-				element.after('<span class="glyphicon glyphicon-remove form-control-feedback"></span>')
+				// Add back in when we figure out css
+				// element.after('<span class="glyphicon glyphicon-remove form-control-feedback"></span>')
+
+
 
 				// var formGroupCtrl = ctrls[0];
 				// var ngModelCtrl = ctrls[1];

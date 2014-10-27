@@ -74,10 +74,9 @@ angular.module("APSideNav", ['ui.bootstrap','APSvcSession', 'APTagInput'])
 				$rootScope.openProfile = function() {
 
 					var modalInstance = $modal.open({
-						template: require('./profile.html'),
+						template: require('./profile2.html'),
 						controller: 'ProileCtrl as ProileCtrl',
-						size: 'lg',
-						resolve: {}
+						size: 'lg'
 					});
 				}
 			}
