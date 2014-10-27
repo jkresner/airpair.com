@@ -4,7 +4,7 @@ var util =          require('../../shared/util')
 var bcrypt =        require('bcrypt')
 import User         from '../models/user'
 var UserData =      require('./users.data')
-import * as Validate from '../../shared/validation/users.js'
+var Validate = require('../../shared/validation/users.js')
 
 var logging         = false
 var svc             = new BaseSvc(User, logging)
@@ -65,7 +65,7 @@ function upsertSmart(search, upsert, cb) {
 		{
 			//-- stop user clobbering user.google details
 			if (r && r.googleId && (r.googleId != upsert.google.id))
-				return cb(Error(`Cannot overwrite google login ${r.google._json.email} with ${upsert.google._json.email}`),null)
+				return cb(Error(`Cannot overwrite google login ${r.google._json.email} with ${upsert.google._json.email}. <a href="/v1/auth/logout">Logout</a> first?`),null)
 
 
 			//-- copy google details to top level users details
@@ -86,7 +86,7 @@ function upsertSmart(search, upsert, cb) {
 				upsert.tags = _.union(r.tags, upsert.tags)
 			if (r.bookmarks)
 				// need more intelligent logic to avoid dups & such
-				upsert.bookmarks = _.union(r.tags, upsert.bookmarks)
+				upsert.bookmarks = _.union(r.bookmarks, upsert.bookmarks)
 		}
 
 		User.findOneAndUpdate(search, upsert, { upsert: true }, (err, user) => {
@@ -259,6 +259,7 @@ function inflateTagsAndBookmarks(sessionData, cb) {
 			return _.extend({name,slug},t)
 		})
 		if (bookmarks) bookmarks = _.map(bookmarks, (b) => {
+			if (!b || !b.type) $log('bb', bookmarks, sessionData)
 			var bb = cache[b.type+'s'][b.objectId]
 			if (!bb) return cb(Error(`${b.type} with Id ${b.objectId} not in cache`))
 			var {title,url} = bb
@@ -268,10 +269,16 @@ function inflateTagsAndBookmarks(sessionData, cb) {
 	})
 }
 
+
 export function getSession(cb) {
 	if (this.user == null)
 	{
-		var session = _.extend({ authenticated:false,sessionID:this.sessionID }, this.session.anonData)
+		var avatar = "/v1/img/css/sidenav/default-cat.png"
+		avatar = "/v1/img/css/sidenav/default-stormtrooper.png"
+
+		if (this.session.anonData.email) setAvatar(this.session.anonData)
+		if (this.session.anonData.avatar) avatar = this.session.anonData.avatar
+		var session = _.extend({ authenticated:false,sessionID:this.sessionID, avatar }, this.session.anonData)
 		inflateTagsAndBookmarks(session, cb)
 	}
 	else
@@ -306,6 +313,7 @@ function toggleSessionItem(type, item, maxAnon, maxAuthd, comparator, cb)
 
 			var up = {}
 			up[type] = list
+
 			svc.update(userId, up, () => getSessionFull.call(self, cb))
 		})
 	}
@@ -329,19 +337,33 @@ export function toggleTag(tag, cb) {
 }
 
 export function toggleBookmark(type, id, cb) {
+	if (!type) $log('toggleBookmark.type', type, cb)
 	var	bookmark = { _id: svc.newId(), objectId: id, type, sort: 0 }
 	var bookmarkComparator = (i) => _.idsEqual(i.objectId,id)
 	toggleSessionItem.call(this, 'bookmarks', bookmark, 2, 15, bookmarkComparator, cb)
 }
 
-export function changeEmail(body, cb) {
-	var inValid = Validate.changeEmail(body.email)
+
+export function changeEmail(email, cb) {
+	var inValid = Validate.changeEmail(email)
 	if (inValid) return cb(svc.Forbidden(inValid))
 
-	svc.update(this.user._id, {email: body.email, emailVerified: false}, function(e,r) {
-		// then send verification email to new address
-		cb(e,r)
-	})
+
+	if (this.user) {
+		svc.update(this.user._id, {email: email, emailVerified: false}, function(e,r) {
+			// then send verification email to new address
+			cb(e,r)
+		})
+	}
+	else {
+		var search = { '$or': [{email:email},{'google._json.email':email}] }
+		var self = this
+		svc.searchOne(search, null, function(e,r) {
+			if (r) return cb(svc.Forbidden(`${email} already registered`))
+			self.session.anonData.email = email
+			return getSession.call(self, cb)
+		})
+	}
 }
 
 export function verifyEmail(hash, cb) {

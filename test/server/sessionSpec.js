@@ -13,16 +13,6 @@ module.exports = () => describe("API: ", function() {
 
 	it('Gets sessionId on anonymous session', function(done) {
 		var opts = { unauthenticated: true }
-		GET('/session', opts, function(s) {
-			expect(s.authenticated).to.be.false
-			expect(s.sessionID).to.exist
-			done()
-		})
-	})
-
-
-	it('Gets sessionId on anonymous full session', function(done) {
-		var opts = { unauthenticated: true }
 		GET('/session/full', opts, function(s) {
 			expect(s.authenticated).to.be.false
 			expect(s.sessionID).to.exist
@@ -31,22 +21,10 @@ module.exports = () => describe("API: ", function() {
 	})
 
 
-	it('gets slim authenticated session', function(done) {
-		LOGIN('scap', data.users.scap, function() {
-			GET('/session', {}, function(r) {
-				expect(r._id).to.equal("5418c03f8f8c80299bcc4783")
-				expect(r.email).to.equal("sc@airpair.com")
-				expect(r.name).to.equal("Shane")
-				expect(r.avatar).to.equal("//0.gravatar.com/avatar/54856fdf0610d64c79bf82b43d56f356")
-				done()
-			})
-		})
-	})
-
-
 	describe("Stack: ", function(done) {
 
 		before(function(done) {
+			cache.flush('tags')
 			testDb.initTags(done)
 		})
 
@@ -56,9 +34,8 @@ module.exports = () => describe("API: ", function() {
 				.expect(200)
 				.expect('Content-Type', /json/)
 				.end(function(err, resp){
-					if (err) throw err
 					cookie = resp.headers['set-cookie']
-					GET('/session', {}, function(s) {
+					GET('/session/full', {}, function(s) {
 						expect(s.authenticated).to.be.false
 						expect(s.sessionID).to.exist
 						expect(s.tags).to.exist
@@ -105,7 +82,7 @@ module.exports = () => describe("API: ", function() {
 					PUT('/users/me/tag/node.js', {}, {}, function(s2){
 						expect(s2.tags).to.exist
 						expect(s2.tags.length).to.equal(0)
-						GET('/session', {}, function(s) {
+						GET('/session/full', {}, function(s) {
 							expect(s.authenticated).to.be.false
 							expect(s.sessionID).to.exist
 							expect(s.tags).to.exist
@@ -122,7 +99,7 @@ module.exports = () => describe("API: ", function() {
 				.put('/v1/api/users/me/tag/mongodb')
 				.end( (err, resp) => {
 					cookie = resp.headers['set-cookie']
-					GET('/session', {}, (s) => {
+					GET('/session/full', {}, (s) => {
 						expect(s.tags[0].name).to.equal('MongoDB')
 						var singup = getNewUserData('ramo')
 						http(global.app).post('/v1/auth/signup').send(singup)
@@ -166,6 +143,7 @@ module.exports = () => describe("API: ", function() {
 	describe("Bookmarks: ", function(done) {
 
 		before(function(done) {
+			cache.flush('posts')
 			testDb.initPosts(done)
 		})
 
@@ -178,12 +156,13 @@ module.exports = () => describe("API: ", function() {
 				.end(function(err, resp){
 					if (err) throw err
 					cookie = resp.headers['set-cookie']
-					GET('/session', {}, function(s) {
+					GET('/session/full', {}, function(s) {
 						expect(s.authenticated).to.be.false
 						expect(s.sessionID).to.exist
 						expect(s.bookmarks).to.exist
 						expect(s.bookmarks.length).to.equal(1)
 						expect(s.bookmarks[0].title).to.equal("Starting a Mean Stack App")
+						expect(s.bookmarks[0].type).to.equal("post")
 						done()
 					})
 				})
@@ -198,7 +177,7 @@ module.exports = () => describe("API: ", function() {
 				.end(function(err, resp){
 					cookie = resp.headers['set-cookie']
 					PUT(`/users/me/bookmarks/post/${data.posts.v1AirPair._id}`, {}, {}, function(s2) {
-						GET('/session', {}, function(s) {
+						GET('/session/full', {}, function(s) {
 							expect(s.authenticated).to.be.false
 							expect(s.sessionID).to.exist
 							expect(s.bookmarks).to.exist
@@ -218,7 +197,7 @@ module.exports = () => describe("API: ", function() {
 				.put(`/v1/api/users/me/bookmarks/post/${data.posts.sessionDeepDive._id}`)
 				.end( (err, resp) => {
 					cookie = resp.headers['set-cookie']
-					GET('/session', {}, (s) => {
+					GET('/session/full', {}, (s) => {
 						expect(s.bookmarks[0].title).to.equal('ExpressJS and PassportJS Sessions Deep Dive')
 						var singup = getNewUserData('alry')
 						http(global.app).post('/v1/auth/signup').send(singup)
@@ -238,15 +217,12 @@ module.exports = () => describe("API: ", function() {
 		)
 
 
-		it.skip('Does not wipe anonymous bookmarks data over existing local login user')
-
-
-
 		it('Can add and remove bookmarks to authenticated session', function(done) {
 			addAndLoginLocalUser('alys', function(s) {
 				PUT(`/users/me/bookmarks/post/${data.posts.v1AirPair._id}`, {}, {}, function(s1) {
 					expect(s1.bookmarks.length).to.equal(1)
 					expect(s1.bookmarks[0].title).to.equal("Starting a Mean Stack App")
+					expect(s1.bookmarks[0].type).to.equal("post")
 					PUT(`/users/me/bookmarks/post/${data.posts.sessionDeepDive._id}`, {}, {}, function(s2) {
 						expect(s2.bookmarks.length).to.equal(2)
 						PUT(`/users/me/bookmarks/post/${data.posts.v1AirPair._id}`, {}, {}, function(s3) {
@@ -258,8 +234,63 @@ module.exports = () => describe("API: ", function() {
 				})
 			})
 		})
+
+
 	})
 
+
+	it('Can login and get previous sessions bookmarks', function(done) {
+		addAndLoginLocalUser('wilm', function(s) {
+			PUT(`/users/me/bookmarks/post/${data.posts.v1AirPair._id}`, {}, {}, function(s1) {
+				expect(s1.bookmarks.length).to.equal(1)
+				expect(s1.bookmarks[0].title).to.equal("Starting a Mean Stack App")
+				expect(s1.bookmarks[0].type).to.equal("post")
+				LOGIN('wilm', s1, function() {
+					GET('/session/full', {}, (sFull) => {
+						expect(sFull.bookmarks.length).to.equal(1)
+						expect(sFull.bookmarks[0].title).to.equal("Starting a Mean Stack App")
+						expect(sFull.bookmarks[0].type).to.equal("post")
+						done()
+					})
+				})
+			})
+		})
+	})
+
+
+
+
+	it('Does not wipe existing local login data with anonymous tags and bookmarks data', function(done) {
+		addAndLoginLocalUser('wlmo', function(s) {
+			PUT(`/users/me/bookmarks/post/${data.posts.v1AirPair._id}`, {}, {}, function(s1) {
+				expect(s1.bookmarks.length).to.equal(1)
+				expect(s1.bookmarks[0].title).to.equal("Starting a Mean Stack App")
+				expect(s1.bookmarks[0].type).to.equal("post")
+				PUT(`/users/me/tag/node.js`, {}, {}, function(s2) {
+					expect(s2.bookmarks.length).to.equal(1)
+					expect(s2.tags.length).to.equal(1)
+					expect(s2.tags[0].name).to.equal("Node.JS")
+					expect(s2.tags[0].slug).to.equal("node.js")
+					cookie = null
+					GET('/session/full', {}, (anon) => {
+						expect(anon.bookmarks).to.be.undefined
+						expect(anon.tags).to.be.undefined
+						LOGIN('wlmo', s, function() {
+							GET('/session/full', {}, (sFull) => {
+								expect(sFull.bookmarks.length).to.equal(1)
+								expect(sFull.bookmarks[0].title).to.equal("Starting a Mean Stack App")
+								expect(sFull.bookmarks[0].type).to.equal("post")
+								expect(sFull.tags.length).to.equal(1)
+								expect(sFull.tags[0].name).to.equal("Node.JS")
+								expect(sFull.tags[0].slug).to.equal("node.js")
+								done()
+							})
+						})
+					})
+				})
+			})
+		})
+	})
 
 
 	it.skip('Not gonna impl: Merges anonymous session data to local LOGIN user', () => {})

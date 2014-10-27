@@ -14,7 +14,7 @@ global.GETP = function(url) {
 
 global.ANONSESSION = function(cb) {
   if (logging) $log('ANONSESSION:')
-  return http(global.app).get('/v1/api/session').end(function(e,resp){
+  return http(global.app).get('/v1/api/session/full').end(function(e,resp){
     if (e) return done(err)
     cookie = resp.headers['set-cookie']
     cb(resp.body)

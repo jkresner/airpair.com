@@ -1,7 +1,7 @@
 angular.module("APAnalytics", [])
 
-  .directive('trackClick', ['$location', '$timeout',
-    function($location, $timeout) {
+  .directive('trackClick', ['$location', '$timeout', '$parse',
+    function($location, $timeout, $parse) {
 
     return {
       restrict: 'A',
@@ -9,25 +9,38 @@ angular.module("APAnalytics", [])
         var event = "Click";
         var target = attrs.target;
         var location = attrs.href;
+        var type = attrs.trackClick;
 
         element.click(function(){
+        	if (scope.tracking === false) return
+
           var props = {
             id: element.attr('id'),
-            text: element.text(),
-            location: $location.path(),
-            type: attrs.trackClick
+            text: element.text().trim(),
+            location: window.location.pathname, // $location.path() no good...
+            type: type
           };
 
-          analytics.track(event, props);
+	        var data = element.attr('data');
+       		if (data) props.data = data;
 
-          // delay redirect so tracking finishes properly
-          if (target == '_blank' || target == '_self')
+          if (window.analytics)
           {
-            $timeout(function () {
-              window.location.href = location;
-            }, 250);
+          	analytics.track(event, props);
 
-            return false;
+						// delay redirect so tracking finishes properly
+	          if (target == '_blank' || target == '_self')
+	          {
+	            $timeout(function () {
+	              window.location.href = location;
+	            }, 250);
+
+	            return false;
+	          }
+          }
+          else
+          {
+          	console.log('debug.analytics', 'track', event, props);
           }
         })
       }
