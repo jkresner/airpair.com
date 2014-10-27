@@ -86,7 +86,7 @@ function upsertSmart(search, upsert, cb) {
 				upsert.tags = _.union(r.tags, upsert.tags)
 			if (r.bookmarks)
 				// need more intelligent logic to avoid dups & such
-				upsert.bookmarks = _.union(r.tags, upsert.bookmarks)
+				upsert.bookmarks = _.union(r.bookmarks, upsert.bookmarks)
 		}
 
 		User.findOneAndUpdate(search, upsert, { upsert: true }, (err, user) => {
@@ -259,6 +259,7 @@ function inflateTagsAndBookmarks(sessionData, cb) {
 			return _.extend({name,slug},t)
 		})
 		if (bookmarks) bookmarks = _.map(bookmarks, (b) => {
+			if (!b || !b.type) $log('bb', bookmarks, sessionData)
 			var bb = cache[b.type+'s'][b.objectId]
 			if (!bb) return cb(Error(`${b.type} with Id ${b.objectId} not in cache`))
 			var {title,url} = bb
@@ -267,6 +268,7 @@ function inflateTagsAndBookmarks(sessionData, cb) {
 		cb(null, _.extend(sessionData, {tags, bookmarks}))
 	})
 }
+
 
 export function getSession(cb) {
 	if (this.user == null)
@@ -311,6 +313,7 @@ function toggleSessionItem(type, item, maxAnon, maxAuthd, comparator, cb)
 
 			var up = {}
 			up[type] = list
+
 			svc.update(userId, up, () => getSessionFull.call(self, cb))
 		})
 	}
@@ -334,6 +337,7 @@ export function toggleTag(tag, cb) {
 }
 
 export function toggleBookmark(type, id, cb) {
+	if (!type) $log('toggleBookmark.type', type, cb)
 	var	bookmark = { _id: svc.newId(), objectId: id, type, sort: 0 }
 	var bookmarkComparator = (i) => _.idsEqual(i.objectId,id)
 	toggleSessionItem.call(this, 'bookmarks', bookmark, 2, 15, bookmarkComparator, cb)

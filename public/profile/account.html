@@ -1,13 +1,8 @@
-<div class="modal-header">
-	<h3 class="modal-title">Account info</h3>
-	<a href="#" class="close" ng-click="cancel()">x</a>
-</div>
-<div class="modal-body profile">
+<header>Profile > {{ username }}</header>
 
-<section>
-	<section class="login" style="height:40px">
-	 <p ng-if="!session.email">Aren't you a little short for a storm trooper? <span ng-if="!session.email">Enter your email address to fix your avatar.</span></p>
-	</section>
+<div class="posts">
+  <ap-post-list-item post="p" ng-repeat="p in posts"></ap-post-list-item>
+</div>
 
 	<section class="avatar tile">
 		<img class="avatar" ng-src="{{session.avatar}}?s=230" title="Avatars are gravtars from your email." />
@@ -79,14 +74,3 @@
 			</div>
 		</div> -->
 
-
-	</section>
-
-</section>
-
-
-</div>
-<div class="modal-footer profile">
-	<button class="btn btn-primary" ng-click="ok()" ng-if="session.authenticated == false">Create account</button>
-	<button class="btn" ng-click="cancel()" ng-if="session.authenticated != false">Close</button>
-</div>
