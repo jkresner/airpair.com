@@ -1,6 +1,6 @@
 module.exports = -> describe "PayMethods", ->
 
-  @timeout(4000)
+  @timeout(5000)
 
   before (done) ->
     stubAnalytics()
