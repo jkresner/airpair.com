@@ -20,24 +20,27 @@ angular.module("APAuth", ['ngRoute','ngMessages','APFormsDirectives','APFilters'
     function($rootScope, SessionService) {
 
     SessionService.onAuthenticated( (session) => {
-      if (!session.name) session.name = `Visitor ${session.sessionID.substring(0,10)}`
-
       $rootScope.session = session;
-      // console.log('setting root scope', $rootScope.session)
+      //console.log('setting root scope', $rootScope.session)
     })
 
   }])
 
 
-  .controller('LoginCtrl', ['$scope', '$window', 'SessionService',
-      function($scope, $window, SessionService) {
+  .controller('LoginCtrl', ['$rootScope', '$scope', '$window', 'SessionService',
+      function($rootScope, $scope, $window, SessionService) {
     var self = this;
+
+    $scope.data = {};
 
     this.submit = function(isValid, formData) {
       if (!isValid) return
       SessionService.login(formData,
-        () => $window.location = '',
-        (e) => $scope.signupFail = e.error
+        (result) => {
+        	$rootScope.session = result;
+        	// $window.location = '',
+        },
+        (e) => $scope.loginFail = e.error
       )
     }
   }])

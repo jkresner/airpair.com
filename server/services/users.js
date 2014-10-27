@@ -92,13 +92,24 @@ function upsertSmart(search, upsert, cb) {
 		User.findOneAndUpdate(search, upsert, { upsert: true }, (err, user) => {
 			if (logging || err) $log('User.upsert', err, user)
 			if (err) return cb(err)
-			if (!analytics.upsert) return cb(null, user)
+
+			var cbSession = (error, ruser) => {
+				if (error) return cb(error)
+				getSessionFull.call({user:{_id:ruser._id}}, cb)
+			}
+
+			if (!analytics.upsert) return cbSession(null, user)
 
 			analytics.upsert(user, r, sessionID, (aliases) => {
 				if (aliases && user.cohort.aliases &&
-						aliases.length == user.cohort.aliases.length) cb(null, user)
+						aliases.length == user.cohort.aliases.length)
+				{
+					cbSession(null, user)
+				}
 				else
-					User.findOneAndUpdate(search, { 'cohort.aliases': aliases }, cb)
+				{
+					User.findOneAndUpdate(search, { 'cohort.aliases': aliases }, cbSession)
+				}
 			})
 		})
 	})
@@ -243,6 +254,7 @@ export function getUsersInRole(role, cb) {
 
 export function setAvatar(user) {
 	if (user && user.email) user.avatar = md5.gravatarUrl(user.email)
+	else user.avatar = undefined
 }
 
 
@@ -274,10 +286,16 @@ export function getSession(cb) {
 	if (this.user == null)
 	{
 		var avatar = "/v1/img/css/sidenav/default-cat.png"
-		avatar = "/v1/img/css/sidenav/default-stormtrooper.png"
 
-		if (this.session.anonData.email) setAvatar(this.session.anonData)
-		if (this.session.anonData.avatar) avatar = this.session.anonData.avatar
+		if (this.session.anonData.email)
+		{
+			setAvatar(this.session.anonData)
+			avatar = this.session.anonData.avatar
+		}
+		else
+			avatar = "/v1/img/css/sidenav/default-stormtrooper.png"
+
+
 		var session = _.extend({ authenticated:false,sessionID:this.sessionID, avatar }, this.session.anonData)
 		inflateTagsAndBookmarks(session, cb)
 	}
@@ -347,7 +365,7 @@ export function toggleBookmark(type, id, cb) {
 export function changeEmail(email, cb) {
 	var inValid = Validate.changeEmail(email)
 	if (inValid) return cb(svc.Forbidden(inValid))
-
+	email = email.toLowerCase()
 
 	if (this.user) {
 		svc.update(this.user._id, {email: email, emailVerified: false}, function(e,r) {
@@ -359,7 +377,10 @@ export function changeEmail(email, cb) {
 		var search = { '$or': [{email:email},{'google._json.email':email}] }
 		var self = this
 		svc.searchOne(search, null, function(e,r) {
-			if (r) return cb(svc.Forbidden(`${email} already registered`))
+			if (r) {
+				self.session.anonData.email = null
+				return cb(svc.Forbidden(`${email} already registered`))
+			}
 			self.session.anonData.email = email
 			return getSession.call(self, cb)
 		})

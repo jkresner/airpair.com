@@ -34,9 +34,6 @@ angular.module("APFormsDirectives", [])
 					return toShow
 				}
 
-				console.log('linked validator', ctrl, formCtrl)
-
-
 				// ctrl.update = function(valid) {
 				// 	var showError = !valid && ctrl.showError()
 				// 	// var showError = ctrl.showError(model);

@@ -13,7 +13,15 @@ var authFn = (provider) => {
       }
       else if (user)
       {
-        req.logIn(user, function(err) { next(err) })
+      	//-- wipe anonymous data so logging out isn't weird
+      	req.session.anonData = null
+
+
+        req.logIn(user, function(err) {
+        	res.json(user)
+        	res.end()
+        	// next(err)
+        })
       }
       else
       {
