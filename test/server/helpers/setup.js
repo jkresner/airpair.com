@@ -208,6 +208,10 @@ module.exports = {
     View.find({anonymousId}, cb)
   },
 
+  readUser: function(id, cb) {
+  	User.findOne({_id:id}, cb)
+  },
+
   ensureUser: function(user, cb) {
   	ensureDocument(User, user, cb, true)
   },

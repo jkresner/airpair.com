@@ -17,6 +17,11 @@ module.exports = function(config)
     global.analytics    = { track: ()=>{}, view: ()=>{}, alias: ()=>{}, identify: ()=>{} }
 
 
+  var {mailProvider} = config //-- only set in test
+  if (!mailProvider) mailProvider = require('./mail/ses')
+  global.mailman 			  =	require('./mail/mailman')(mailProvider)
+
+
   if (config.log.email)
   {
     global.winston      = require('winston')

@@ -2,6 +2,32 @@
 var idsEqual = (id1, id2) =>
   id1.toString() == id2.toString()
 
+var nestedPick = (object, keys) => {
+  if (!object) return null
+
+  // Pick out elements marked as pick
+  var copy  = {}
+  for (var key of keys)
+  {
+    var props = key.split('.')
+    if (props.length === 1)
+    {
+      // Pick the marked element
+      if (typeof object[key] !== "undefined" && object[key] !== null)
+      	copy[key] = object[key]
+    }
+    else
+    {
+      // Pick recursively and apply only if something was picked
+      var result = nestedPick(object[props[0]], [key.replace(`${props[0]}.`,'')])
+      if (!_.isEmpty(result))
+				copy[props[0]] = result
+    }
+	}
+
+  return copy
+}
+
 
 module.exports = {
 
@@ -47,7 +73,11 @@ module.exports = {
 
   lastName: (name) => {
     return name.replace(name.split(' ')[0]+ '' , '')
-  }
+  },
 
+  selectFromObject: (obj, selectList) => {
+    if (!obj || !selectList) return obj
+    else return nestedPick(obj, _.keys(selectList))
+	}
 
 }

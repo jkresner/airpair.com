@@ -39,7 +39,8 @@ export function authd(req, res, next) {
 export function emailv(req, res, next) {
 	if (!req.user.emailVerified)
 	{
-		res.status(403).end('e-mail not verified');
+		res.status(403).send({message:'e-mail not verified'})
+		res.end()
 	}
 	else
 	{
