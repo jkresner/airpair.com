@@ -8,7 +8,7 @@ var Recording = {
   data: { required: true, type: {} } // YouTube's API response
 }
 
-module.exports = mongoose.model('Call', new mongoose.Schema({
+module.exports = mongoose.model('Booking', new mongoose.Schema({
 
 	customerId:    { required: true, type: ObjectId, ref: 'User', index: true },
 	expertId:      { required: true, type: ObjectId, ref: 'Expert', index: true },

@@ -1,13 +1,23 @@
 import BaseSvc      from '../services/_service'
+import User         from '../models/user'
 import * as md5     from '../util/md5'
 var util =          require('../../shared/util')
 var bcrypt =        require('bcrypt')
-import User         from '../models/user'
 var UserData =      require('./users.data')
-import * as Validate from '../../shared/validation/users.js'
-
+var Validate =			require('../../shared/validation/users.js')
 var logging         = false
 var svc             = new BaseSvc(User, logging)
+
+
+
+var cbSession = (cb) =>
+	(e, r) => {
+		if (e || !r) return cb(e, r)
+		var obj = util.selectFromObject(r, UserData.select.sessionFull)
+		if (obj.roles && obj.roles.length == 0) delete obj.roles
+		setAvatar(obj)
+		inflateTagsAndBookmarks(obj, cb)
+	}
 
 
 //-- TODO, consider analytics context ?
@@ -93,22 +103,18 @@ function upsertSmart(search, upsert, cb) {
 			if (logging || err) $log('User.upsert', err, user)
 			if (err) return cb(err)
 
-			var cbSession = (error, ruser) => {
-				if (error) return cb(error)
-				getSessionFull.call({user:{_id:ruser._id}}, cb)
-			}
-
-			if (!analytics.upsert) return cbSession(null, user)
+			var done = cbSession(cb)
+			if (!analytics.upsert) return done(null, user)
 
 			analytics.upsert(user, r, sessionID, (aliases) => {
 				if (aliases && user.cohort.aliases &&
 						aliases.length == user.cohort.aliases.length)
 				{
-					cbSession(null, user)
+					done(null, user)
 				}
 				else
 				{
-					User.findOneAndUpdate(search, { 'cohort.aliases': aliases }, cbSession)
+					User.findOneAndUpdate(search, { 'cohort.aliases': aliases }, done)
 				}
 			})
 		})
@@ -118,12 +124,6 @@ function upsertSmart(search, upsert, cb) {
 // local function for password and email hashing
 var generateHash = (password) =>
   bcrypt.hashSync(password, bcrypt.genSaltSync(8))
-
-//-- Todo, implement and link with middleware using the last_visit property
-// export function addCohortVisitDate()
-// {
-
-// }
 
 
 export function upsertProviderProfile(providerName, profile, done) {
@@ -213,6 +213,8 @@ export function update(id, data, cb) {
 	// o.updated = new Date() ??
 	// authorization etc.
 	svc.getById(id, (e,r) => {
+		if (e) return cb(e)
+		if (!r) return cb(Error(`Failed to update user with id: ${id}`))
 		var updated = _.extend(r, data)
 		User.findOneAndUpdate({_id:r._id}, updated, (err, user) => {
 			if (err) $log('User.update.err', err && err.stack)
@@ -314,11 +316,7 @@ export function getSessionFull(cb) {
 	if (!this.user)
 		return getSession.call(this, cb)
 
-	svc.searchOne({ _id:this.user._id },{ fields: UserData.select.sessionFull }, (e,r) => {
-		if (e) return cb(e)
-		setAvatar(r)
-		inflateTagsAndBookmarks(r, cb)
-	})
+	svc.searchOne({ _id:this.user._id },{ fields: UserData.select.sessionFull }, cbSession(cb))
 }
 
 
@@ -335,7 +333,7 @@ function toggleSessionItem(type, item, maxAnon, maxAuthd, comparator, cb)
 			var up = {}
 			up[type] = list
 
-			svc.update(userId, up, () => getSessionFull.call(self, cb))
+			svc.update(userId, up, cbSession(cb))
 		})
 	}
 	else {
@@ -365,15 +363,25 @@ export function toggleBookmark(type, id, cb) {
 }
 
 
+// Change email can be used both to change an email
+// and to set and send a new email hash for verification
 export function changeEmail(email, cb) {
 	var inValid = Validate.changeEmail(email)
 	if (inValid) return cb(svc.Forbidden(inValid))
 	email = email.toLowerCase()
 
-	if (this.user) {
-		svc.update(this.user._id, {email: email, emailVerified: false}, function(e,r) {
-			// then send verification email to new address
-			cb(e,r)
+	var {user} = this
+	if (user)
+	{
+		var update = {
+			'email': email,
+			'emailVerified': false,
+			'local.emailHash': generateHash(email)
+		}
+
+		svc.update(user._id, update, (e,r) => {
+			mailman.sendVerifyEmail(r, r.local.emailHash)
+			cbSession(cb)(e,r)
 		})
 	}
 	else {
@@ -392,35 +400,15 @@ export function changeEmail(email, cb) {
 
 export function verifyEmail(hash, cb) {
 	svc.searchOne({ email:this.user.email }, null, (e,r) => {
-    if (e || !r) return cb(e,r)
+    if (e || !r) {
+    	$log(e,r)
+    	return cb(e,r)
+    }
 		if (r.local.emailHash == hash) {
-			svc.update(this.user._id, { emailVerified: true }, function(err, user) {
-				cb(err, user)
-			})
+			this.user.emailVerified = true
+			svc.update(this.user._id, { emailVerified: true }, cb)
 		}
 		else
-			cb(new Error("e-mail verification failed"));
+			cb(Error("e-mail verification failed"))
   })
-}
-
-export function generateEmailVerificationMessage(cb) {
-	svc.searchOne({ email:this.user.email }, null, (e,r) => {
-    if (e || !r) return cb(e,r)
-
-		var new_hash = generateHash(r.email)
-		r.local = _.extend(r.local, { emailHash: new_hash } )
-
-		svc.update(r._id, {local: r.local}, function(err, user) {
-		  var the_body = "Hi " + user.name + ","
-		  the_body += "\n\nPlease verify your email using the following link:\n\n"
-		  the_body += "http://www.airpair.com/v1/email-verify?hash=" + r.local.emailHash + "\n\n"
-		  the_body += "Thanks\nThe AirPair Team\nhttp://twitter.com/airpair"
-
-			cb(null, {
-				to: user.email,
-				subject: "Verify your email - www.airpair.com",
-				body: the_body
-			})
-		})
-	})
 }

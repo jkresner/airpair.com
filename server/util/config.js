@@ -28,6 +28,7 @@ var cfg = {
   },
   log: {},
   mail: {
+  	on: false, // we don't send mail in dev
     ses: {
       access_key: process.env.MAIL_SES_ACCESS_KEY || "none",
       secret_key: process.env.MAIL_SES_SECRET_KEY || "none"
@@ -64,6 +65,7 @@ module.exports = function(env, appdir) {
   }
 
   if (cfg.env == 'staging' || cfg.env == 'production') {
+    cfg.mail.on = true
     cfg.analytics.on = true
     cfg.analytics.segmentio.writekey = process.env.ANALYTICS_SEGMENTIO_WRITEKEY
 

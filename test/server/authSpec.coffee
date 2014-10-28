@@ -20,10 +20,20 @@ module.exports = -> describe "Signup: ", ->
   it 'Can sign up as new user with local credentials', (done) ->
     d = getNewUserData('jkap')
 
-    http(global.app).post('/v1/auth/signup').send(d).expect(302)
+    http(global.app).post('/v1/auth/signup').send(d).expect(200)
       .end (err, resp) ->
         if (err) then throw err
         global.cookie = resp.headers['set-cookie']
+        r = resp.body
+        expect(r._id).to.exist
+        expect(r.google).to.be.undefined
+        expect(r.googleId).to.be.undefined
+        expect(r.name).to.equal(d.name)
+        expect(r.email).to.equal(d.email)
+        expect(r.emailVerified).to.equal(false)
+        expect(r.local).to.be.undefined  # holds password field
+        expect(r.roles).to.be.undefined # new users have undefined roles
+        expect(r.cohort.engagement).to.exist
         GET '/session/full', {}, (s) ->
           expect(s._id).to.exist
           expect(s.google).to.be.undefined
@@ -38,17 +48,18 @@ module.exports = -> describe "Signup: ", ->
 
 
   it 'New user has correct cohort information', (done) ->
-    addAndLoginLocalUser 'dysn', (s) ->
-      {userKey,sessionID} = s
-      {cohort} = data.users[userKey]
-      expect(moment(cohort.engagement.visit_first).unix()).to.equal(moment(cookieCreatedAt).unix())
-      expect(cohort.engagement.visit_signup).to.be.exist
-      expect(cohort.engagement.visit_last).to.be.exist
-      expect(cohort.engagement.visits.length).to.equal(1)
-      expect(moment(cohort.engagement.visits[0]).unix()).to.equal(moment(util.dateWithDayAccuracy()).unix())
-      expect(cohort.aliases.length).to.equal(1)
-      expect(cohort.aliases[0].indexOf("testdysn")).to.equal(0)
-      done()
+    addLocalUser 'dysn', {}, (userKey) ->
+      userId = data.users[userKey]._id
+      testDb.readUser userId, (e,r) ->
+        {cohort} = r
+        expect(moment(cohort.engagement.visit_first).unix()).to.equal(moment(cookieCreatedAt).unix())
+        expect(cohort.engagement.visit_signup).to.be.exist
+        expect(cohort.engagement.visit_last).to.be.exist
+        expect(cohort.engagement.visits.length).to.equal(1)
+        expect(moment(cohort.engagement.visits[0]).unix()).to.equal(moment(util.dateWithDayAccuracy()).unix())
+        expect(cohort.aliases.length).to.equal(1)
+        expect(cohort.aliases[0].indexOf("testdysn")).to.equal(0)
+        done()
 
 
   it 'Can sign up as new user with google', (done) ->
@@ -80,6 +91,7 @@ module.exports = -> describe "Signup: ", ->
           expect(res.body.error).to.equal('try google login')
           done()
 
+
   it 'Can not sign up with local credentials and existing local email', (done) ->
     d = getNewUserData('jkap')
 
@@ -91,7 +103,8 @@ module.exports = -> describe "Signup: ", ->
             expect(res.body.error).to.equal('user already exists')
             done()
 
-  it 'a local user can change their email', (done) ->
+
+  it 'Local user can change their email', (done) ->
     the_new_email = "hello" + moment().format('X').toString() + "@mydomain.com"
     addAndLoginLocalUserWithEmailVerified 'spgo', (s) ->
       expect(s.emailVerified).to.be.true
@@ -101,20 +114,23 @@ module.exports = -> describe "Signup: ", ->
           expect(s.emailVerified).to.be.false
           done()
 
-  it 'cannot change a users email to just any string', (done) ->
+
+  it 'Cannot change a users email to just any string', (done) ->
     the_new_email = "justsomestring"
     addAndLoginLocalUserWithEmailVerified 'shan', (s) ->
       expect(s.emailVerified).to.be.true
       PUT '/users/me/email', {email: the_new_email}, {status:403}, (e)->
-        expect(e.message).to.include('email required')
+        expect(e.message).to.include('Invalid email address')
         done()
 
-  it 'to change email the client must supply email field in body of request', (done) ->
+
+  it 'Cannot change email with empty string', (done) ->
     addAndLoginLocalUserWithEmailVerified 'scol', (s) ->
       expect(s.emailVerified).to.be.true
       PUT '/users/me/email', {}, {status:403}, (e)->
-        expect(e.message).to.include('email required')
+        expect(e.message).to.include('Invalid email address')
         done()
+
 
   describe "Login", ->
 
@@ -129,8 +145,8 @@ module.exports = -> describe "Signup: ", ->
           expect(u.email).to.equal(sou.google._json.email)
           expect(u.name).to.equal(sou.google.displayName)
           expect(u.emailVerified).to.be.false
-          expect(u.cohort.aliases.length).to.equal(1)
-          expect(u.cohort.aliases[0].indexOf('testSoumyaAcharya')).to.equal(0)
+          # expect(u.cohort.aliases.length).to.equal(1)
+          # expect(u.cohort.aliases[0].indexOf('testSoumyaAcharya')).to.equal(0)
           expect(u.cohort.engagement.visit_first).to.exist
           expect(moment(u.cohort.engagement.visit_signup).unix()).to.equal(moment(util.ObjectId2Date(sou._id)).unix())
           expect(u.cohort.engagement.visit_last).to.exists
@@ -160,70 +176,45 @@ module.exports = -> describe "Signup: ", ->
   # }
   describe "Verify e-mail", ->
 
-    it.skip 'send a verification email to new users'
-    # not sure how to end-2-end test this yet
-    # needs to be sent on sign up, need to invesigate how to stub/mock out the relevant service(s)
+    # it.skip 'send a verification email to new users'
 
-    it 'redirect/deny user if e-mail is not verified', (done) ->
+
+    it 'deny user if e-mail is not verified', (done) ->
       d = getNewUserData('spur')
       addAndLoginLocalUser 'spur', (userKey) ->
-         http(global.app)
-            .get('/v1/emailv-test')
-            .set('cookie',cookie)
-            .expect(403)
-            .end (err, res) ->
-              if (err) then return done(err)
-              expect(res.text).to.include('e-mail not verified')
-              done()
+        GET '/billing/orders', { status: 403 }, (err) ->
+          expect(err.message).to.equal('e-mail not verified')
+          done()
+
 
     it 'user can only verify e-mail when logged in', (done) ->
-      d = getNewUserData('chuc')
-      addLocalUser 'chuc', {}, (s) ->
-        http(global.app)
-          .get('/v1/email-verify?hash=anything')
-          .expect(302)
-          .end (err, res) ->
-            if (err) then return done(err)
-            expect(res.redirect).to.be.true
-            expect(res.header['location']).to.include('/login')
-            done()
+      http(global.app)
+        .put('/v1/api/users/email-verify')
+        .send({hash:'yoyoy'})
+        .expect(401)
+        .end (err, res) ->
+          if (err) then return done(err)
+          done()
 
 
-    it 'users need to verify email for some features', (done) ->
-      d = getNewUserData('stev')
-      context = { user: d }
+    it 'users can verify email for some features', (done) ->
+      spy = sinon.spy(mailman,'sendVerifyEmail')
       addAndLoginLocalUser 'stev', (s) ->
-         http(global.app)
-            .get('/v1/emailv-test')
-            .set('cookie',cookie)
-            .expect(403)
-            .end (err, res) ->
-              if (err) then return done(err)
-              UserService.generateEmailVerificationMessage.call context, (e,r) ->
-                the_verification_link = r.body.match("http.*(/v1/email-verify\\?hash=.*)")[1]
-                expect(the_verification_link.match(".*?hash=(.*)")[1]).to.not.equal('')
-                http(global.app).get(the_verification_link)
-                  .set('cookie',cookie)
-                  .expect(302)
-                  .end (err, res) ->
-                    expect(res.header['location']).to.include('/email_verified')
-                    if (err) then return done(err)
-                    GET '/session/full', {}, (s) ->
-                      expect(s.emailVerified).to.be.true
-                      http(global.app)
-                        .get('/v1/emailv-test')
-                        .set('cookie', cookie)
-                        .expect(200, done)
+        GET '/billing/orders', { status: 403 }, (err) ->
+          expect(err.message).to.equal('e-mail not verified')
+          PUT '/users/me/email', { email: s.email }, {}, (s2) ->
+            expect(spy.callCount).to.equal(1)
+            hash = spy.args[0][1]
+            PUT "/users/me/email-verify", { hash }, {}, (sVerified) ->
+              expect(sVerified.emailVerified).to.be.true
+              GET '/billing/orders', {}, (order) ->
+                spy.restore()
+                done()
 
-    it 'a bad standalone verification link does not verify the user', (done) ->
-      d = getNewUserData('step')
+
+    it 'bad verification link does not verify the user', (done) ->
       addAndLoginLocalUser 'step', (s) ->
-        http(global.app).get('/v1/email-verify?hash=' + 'ABCDEF1234567')
-          .set('cookie',cookie)
-          .expect(302) # if this was an api call we'd do 403 but we need the redirect as we are called from outside our
-          .end (err, res) ->
-            if (err) then return done(err)
-            GET '/session/full', {}, (s) ->
-              expect(s.emailVerified).to.be.false
-              expect(res.header['location']).to.include('/email_verification_failed')
-              done()
+        fakeHash = 'ABCDEF1234567'
+        PUT "/users/me/email-verify", { hash: fakeHash }, { status: 400 }, (r) ->
+          expect(r.message).to.equal("e-mail verification failed")
+          done()
