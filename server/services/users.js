@@ -391,13 +391,16 @@ export function changeEmail(email, cb) {
 }
 
 export function verifyEmail(hash, cb) {
-	if (bcrypt.compareSync(this.user.email, hash)) {
-		svc.update(this.user._id, { emailVerified: true }, function(err, user) {
-			cb(err, user)
-		})
-	}
-	else
-		cb(new Error("e-mail verification failed"), undefined);
+	svc.searchOne({ email:this.user.email }, null, (e,r) => {
+    if (e || !r) return cb(e,r)
+		if (r.local.emailHash == hash) {
+			svc.update(this.user._id, { emailVerified: true }, function(err, user) {
+				cb(err, user)
+			})
+		}
+		else
+			cb(new Error("e-mail verification failed"));
+  })
 }
 
 export function generateEmailVerificationMessage(cb) {
@@ -405,12 +408,12 @@ export function generateEmailVerificationMessage(cb) {
     if (e || !r) return cb(e,r)
 
 		var new_hash = generateHash(r.email)
-		r.local = _.extend(r.local, { email: new_hash } )
+		r.local = _.extend(r.local, { emailHash: new_hash } )
 
 		svc.update(r._id, {local: r.local}, function(err, user) {
 		  var the_body = "Hi " + user.name + ","
 		  the_body += "\n\nPlease verify your email using the following link:\n\n"
-		  the_body += "http://www.airpair.com/v1/email-verify?hash=" + r.local.email + "\n\n"
+		  the_body += "http://www.airpair.com/v1/email-verify?hash=" + r.local.emailHash + "\n\n"
 		  the_body += "Thanks\nThe AirPair Team\nhttp://twitter.com/airpair"
 
 			cb(null, {
