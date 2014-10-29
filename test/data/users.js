@@ -10,6 +10,7 @@ module.exports = {
 	arys: { name:"Alyssa Reese",email:"aresse@apr.com" },
 	alys: { name:"Alyssa Reese",email:"aresse@gmail.com" },
 	alry: { name:"Alyssa Reese",email:"aresse@hotmail.com" },
+	// ajad: { name:"Ajay Desai", email:"ajayd@gmail.com"},
 
 	jmel: { name:"Joe Mellin",email:"joemellin@gmail.com" },
 	joem: { name:"Joe Mellin",email:"joe@mellin.com" },
