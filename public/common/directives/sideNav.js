@@ -103,8 +103,8 @@ angular.module("APSideNav", ['ui.bootstrap','APSvcSession', 'APTagInput'])
 	}])
 
 
-	.controller('ProileCtrl', ['$scope', '$rootScope', '$modalInstance', '$window', 'SessionService',
-		function($scope, $rootScope, $modalInstance, $window, SessionService) {
+	.controller('ProileCtrl', ['$scope', '$rootScope', '$modalInstance', '$window', '$timeout', 'SessionService',
+		function($scope, $rootScope, $modalInstance, $window, $timeout, SessionService) {
 
 		$scope.data = { email: $scope.session.email, name: $scope.session.name }
 
@@ -118,7 +118,8 @@ angular.module("APSideNav", ['ui.bootstrap','APSvcSession', 'APTagInput'])
 		    (result) => {
 		    	analytics.track('Save', { type:'email', email: result.email });
 		    	$rootScope.session = result
-		    	$scope.data = { email: result.email, name: result.name }
+		    	$scope.data.email = result.email
+		    	$timeout(() => { angular.element('#signupName').trigger('focus'); }, 40)
 		    }
 		    ,
 		    (e) => {
