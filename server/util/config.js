@@ -11,6 +11,7 @@ var cfg = {
     loginUrl: '/v1/auth/login',
     unauthorizedUrl: '/v1/auth/unauthorized',
     defaultRedirectUrl: '/v1',
+    firebaseSecret: '',
     oAuth: { callbackHost: 'http://localhost:3333' },
     local: {
       usernameField : 'email',
