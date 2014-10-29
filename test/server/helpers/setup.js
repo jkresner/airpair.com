@@ -94,7 +94,7 @@ global.addAndLoginLocalUser = function(originalUserKey, done)
 
 global.addAndLoginLocalUserWithPayMethod = function(originalUserKey, done)
 {
-	addAndLoginLocalUser(originalUserKey, (s) =>{
+	addAndLoginLocalUserWithEmailVerified(originalUserKey, (s) =>{
 		new PayMethod( _.extend({userId: s._id}, data.paymethods.generic) ).save( (e,r) => {
 	    s.primaryPayMethodId = r._id
 	    done(s)
