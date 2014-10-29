@@ -4,7 +4,7 @@ var util =          require('../../shared/util')
 var bcrypt =        require('bcrypt')
 import User         from '../models/user'
 var UserData =      require('./users.data')
-import * as Validate from '../../shared/validation/users.js'
+import Validate from '../../shared/validation/users.js'
 
 var logging         = false
 var svc             = new BaseSvc(User, logging)
@@ -364,6 +364,14 @@ export function toggleBookmark(type, id, cb) {
 	toggleSessionItem.call(this, 'bookmarks', bookmark, 2, 15, bookmarkComparator, cb)
 }
 
+export function setPassword(password, cb) {
+	var inValid = Validate.passwordStrength(password)
+	if (inValid) return cb(svc.Forbidden(inValid))
+	svc.update(this.user._id, { 'local.password': generateHash(password) }, (e,r) => {
+		if (e || !r) return cb(e,r)
+		return getSession.call(this,cb)
+	});
+}
 
 export function changeEmail(email, cb) {
 	var inValid = Validate.changeEmail(email)

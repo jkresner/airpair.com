@@ -20,6 +20,7 @@ export default function(app) {
 
     .get('/session/full', setAnonSessionData, UsersAPI.getSessionFull)
     .put('/users/me/tag/:tag', setAnonSessionData, UsersAPI.toggleTag)
+    .put('/users/me/password', authd, setAnonSessionData, UsersAPI.setPassword)
     .put('/users/me/email', setAnonSessionData, UsersAPI.changeEmail)
     .put('/users/me/bookmarks/:type/:id', setAnonSessionData, UsersAPI.toggleBookmark)
 

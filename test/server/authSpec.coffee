@@ -66,7 +66,6 @@ module.exports = -> describe "Signup: ", ->
           expect(s.cohort.engagement).to.exist
           done()
 
-
   it 'Can not sign up with local credentials and existing gmail', (done) ->
     d = name: "AirPair Experts", email: "experts@airpair.com", password: "Yoyoyoyoy"
 
@@ -91,6 +90,31 @@ module.exports = -> describe "Signup: ", ->
             expect(res.body.error).to.equal('user already exists')
             done()
 
+  it 'A google user can add a local password', (done) ->
+    the_password = 'Secr3tsom*'
+    session = newUserSession()
+    UserService.upsertProviderProfile.call session, 'google', data.oauth.ajad, (e,usr) ->
+      LOGIN 'ajad', usr, ->
+        GET '/session/full', {}, (s) ->
+          PUT '/users/me/password', {password: the_password}, {}, (user,r) ->
+            GET '/session/full', {}, (s) ->
+              expect(s.local).to.be.undefined
+              UserService.tryLocalLogin.call session, data.oauth.ajad._json.email, the_password, (e,r) ->
+                if (e) then return done(e)
+                expect(r.email).to.include(usr.email)
+                expect(r.local).to.be.undefined
+                done()
+
+  it "A google user can't set a weak local password", (done) ->
+    the_password = 'secretsometing'
+    session = newUserSession()
+    UserService.upsertProviderProfile.call session, 'google', data.oauth.ajad, (e,usr) ->
+      LOGIN 'ajad', usr, ->
+        GET '/session/full', {}, (s) ->
+          PUT '/users/me/password', {password: the_password}, {status:403}, (user,r) ->
+            expect(r.text).to.include('weak password')
+            done()
+
   it 'a local user can change their email', (done) ->
     the_new_email = "hello" + moment().format('X').toString() + "@mydomain.com"
     addAndLoginLocalUserWithEmailVerified 'spgo', (s) ->
@@ -106,14 +130,14 @@ module.exports = -> describe "Signup: ", ->
     addAndLoginLocalUserWithEmailVerified 'shan', (s) ->
       expect(s.emailVerified).to.be.true
       PUT '/users/me/email', {email: the_new_email}, {status:403}, (e)->
-        expect(e.message).to.include('email required')
+        expect(e.message).to.include('Invalid email address')
         done()
 
   it 'to change email the client must supply email field in body of request', (done) ->
     addAndLoginLocalUserWithEmailVerified 'scol', (s) ->
       expect(s.emailVerified).to.be.true
       PUT '/users/me/email', {}, {status:403}, (e)->
-        expect(e.message).to.include('email required')
+        expect(e.message).to.include('Invalid email address')
         done()
 
   describe "Login", ->
