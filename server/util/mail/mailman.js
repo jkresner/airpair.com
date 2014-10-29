@@ -49,6 +49,13 @@ module.exports = function(mailProvider)
 			hash
 		}), cb)
 
+	mailman.sendChangePasswordEmail = (toUser, hash, cb) =>
+		mailProvider.send(`${toUser.name} <${toUser.email}>`, renderEmail('changepassword', {
+			firstName: util.firstName(toUser.name),
+			hash
+		}), cb)
+
+
 	return mailman
 }
 
