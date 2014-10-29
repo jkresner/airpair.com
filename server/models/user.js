@@ -63,7 +63,7 @@ var User = new Schema({
 
 	bio: String, // Used for blog posts
 
-	local : 							{ password : String, emailHash: String },
+	local : 							{ password : String, emailHash: String, changePasswordHash: String },
 	googleId: 						{ type: String, sparse: true, unique: true, dropDups: true },
 	google: {},
 	githubId: Number,

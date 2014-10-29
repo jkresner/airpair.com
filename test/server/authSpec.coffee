@@ -91,10 +91,49 @@ module.exports = -> describe "Signup: ", ->
           expect(res.body.error).to.equal('try google login')
           done()
 
+  it 'a user can request a password change, and set a new local password', (done) ->
+    new_password = 'drowssap'
+    spy = sinon.spy(mailman,'sendChangePasswordEmail')
+    d = getNewUserData('prak')
+    addAndLoginLocalUser 'prak', (user) ->
+      PUT '/users/me/password-change', {email: d.email}, {}, ->
+        expect(spy.callCount).to.equal(1)
+        generated_hash = spy.args[0][1]
+        expect(generated_hash).to.not.be.empty
+        testDb.readUser user._id, (e,r) ->
+          expect(r.local.changePasswordHash).to.equal(generated_hash)
+          old_password_hash = r.local.password
+          data = { hash: generated_hash, password: new_password }
+          PUT "/users/me/password", data, {unauthenticated: true}, (s) ->
+            UserService.tryLocalLogin.call newUserSession(), d.email, new_password, (e,r) ->
+              if (e)
+                done(e)
+              testDb.readUser user._id, (e,r) ->
+                if (e) then return done(e)
+                expect(old_password_hash).to.not.equal(r.local.password)
+                expect(r.local.changePasswordHash).to.be.empty
+                done()
+
+  it 'must supply a valid email when requesting a password change', (done) ->
+    addAndLoginLocalUser 'stjp', (user) ->
+      PUT '/users/me/password-change', {email: "abc"}, {}, (r) ->
+        expect(r.message).to.include('Invalid email address')
+        done()
+
+
+  it 'cannot change local password to an invalid password', (done) ->
+    PUT "/users/me/password", {hash: "ABC", password:"abc"}, {status:403, unauthenticated: true}, (r) ->
+      expect(r.message).to.include('Invalid password')
+      done()
+
+  it 'cannot change local password with any empty hash', (done) ->
+    PUT "/users/me/password", {hash: "", password:"newpassword"}, {status:403, unauthenticated: true}, (r) ->
+      expect(r.message).to.include('Invalid hash')
+      done()
+
 
   it 'Can not sign up with local credentials and existing local email', (done) ->
     d = getNewUserData('jkap')
-
     http(global.app).post('/v1/auth/signup').send(d).expect(200)
       .end (e, r) ->
         http(global.app).post('/v1/auth/signup').send(d).expect(400)
@@ -189,7 +228,7 @@ module.exports = -> describe "Signup: ", ->
 
     it 'user can only verify e-mail when logged in', (done) ->
       http(global.app)
-        .put('/v1/api/users/email-verify')
+        .put('/v1/api/users/me/email-verify')
         .send({hash:'yoyoy'})
         .expect(401)
         .end (err, res) ->
