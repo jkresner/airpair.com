@@ -53,8 +53,10 @@ module.exports = {
 	stev: { name: "Steve Purves", email: "steve@hotmail.com"},
 	spur: { name: "Steve Purves", email: "sjpurves@yahoo.com"},
 	step: { name: "Stephen Purves", email: "stephenp@yahoo.com"},
+	stjp: { name: "Stephen Purves", email: "stevejpurves@yahoo.com"},
 	chuc: { name: "Chuck Norris", email: "chuck@hotmail.com"},
 	spgo: { name: "SJ Purves", email: "stevejpurves@ymail.com"},
+	prak: { name: "Prateek Gupta", email: "prateek@hotmail.com"},
 
 	obfn: { name: "Obie Fernandez", email: "obiefernand@gmail.com"},
 	obie: { name: "Obie Fernandez", email: "obiefernand@hotmail.com"},
