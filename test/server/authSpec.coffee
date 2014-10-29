@@ -114,6 +114,24 @@ module.exports = -> describe "Signup: ", ->
                 expect(r.local.changePasswordHash).to.be.empty
                 done()
 
+  it 'must supply a valid email when requesting a password change', (done) ->
+    addAndLoginLocalUser 'stjp', (user) ->
+      PUT '/users/me/password', {email: "abc"}, {}, (r) ->
+        expect(r.message).to.include('Invalid email address')
+        done()
+
+
+  it 'cannot change local password to an invalid password', (done) ->
+    PUT "/users/me/password-change", {hash: "ABC", password:"abc"}, {status:403, unauthenticated: true}, (r) ->
+      expect(r.message).to.include('Invalid password')
+      done()
+
+  it 'cannot change local password with any empty hash', (done) ->
+    PUT "/users/me/password-change", {hash: "", password:"newpassword"}, {status:403, unauthenticated: true}, (r) ->
+      expect(r.message).to.include('Invalid hash')
+      done()
+
+
   it 'Can not sign up with local credentials and existing local email', (done) ->
     d = getNewUserData('jkap')
     http(global.app).post('/v1/auth/signup').send(d).expect(200)

@@ -364,47 +364,52 @@ export function toggleBookmark(type, id, cb) {
 }
 
 export function requestPasswordChange(email, cb) {
-	if (email) {
-		var search = { '$or': [{email:email},{'google._json.email':email}] }
-		var self = this
-		svc.searchOne(search, null, function(e,user) {
-			if (e||!user) {
-				return cb(svc.Forbidden(`${email} not found`))
-			}
+	var inValid = Validate.changeEmail(email)
+	if (inValid) return cb(svc.Forbidden(inValid))
 
-			if (!user.emailVerified)
-				return cb(svc.Forbidden(`${email} is not verified`))
+	var search = { '$or': [{email:email},{'google._json.email':email}] }
+	var self = this
+	svc.searchOne(search, null, function(e,user) {
+		if (e||!user) {
+			return cb(svc.Forbidden(`${email} not found`))
+		}
 
-			var update = { 'local.changePasswordHash': generateHash(email) }
-			svc.update(user._id, update, (e,r) => {
-				mailman.sendChangePasswordEmail(r, r.local.changePasswordHash)
-				return cbSession(cb)(e,r)
-			})
+		if (!user.emailVerified)
+			return cb(svc.Forbidden(`${email} is not verified`))
+
+		var update = { 'local.changePasswordHash': generateHash(email) }
+		svc.update(user._id, update, (e,r) => {
+			mailman.sendChangePasswordEmail(r, r.local.changePasswordHash)
+			return cbSession(cb)(e,r)
 		})
-	}
+	})
 }
 
 export function changePassword(hash, password, cb) {
-	if (hash&&password) {
-		var query = {'local.changePasswordHash': hash}
-		var self = this
-		svc.searchOne(query, null, (e,user) => {
-			if (e||!user) return cb(svc.Forbidden('hash not found'))
+	var inValid = Validate.hash(hash)
+	if (inValid) return cb(svc.Forbidden(inValid))
 
-			var inValid = Validate.passwordStrength(password)
-			if (inValid) return cb(svc.Forbidden(inValid))
+	var inValid = Validate.passwordStrength(password)
+	if (inValid) return cb(svc.Forbidden(inValid))
 
-			var update = {
-				'local.password': generateHash(password),
-				'local.changePasswordHash': ''
-			}
+	var query = {'local.changePasswordHash': hash}
+	var self = this
+	svc.searchOne(query, null, (e,user) => {
+		if (e||!user) return cb(svc.Forbidden('hash not found'))
 
-			svc.update(user._id, update, (e,r) => {
-				if (e || !r) return cb(e,r)
-				return getSession.call(this,cb)
-			});
+		var inValid = Validate.passwordStrength(password)
+		if (inValid) return cb(svc.Forbidden(inValid))
+
+		var update = {
+			'local.password': generateHash(password),
+			'local.changePasswordHash': ''
+		}
+
+		svc.update(user._id, update, (e,r) => {
+			if (e || !r) return cb(e,r)
+			return getSession.call(this,cb)
 		});
-	}
+	});
 }
 
 
