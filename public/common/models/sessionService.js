@@ -42,6 +42,12 @@ angular.module('APSvcSession', [])
       $http.put(`${API}/users/me/email`, data).success(success).error(error);
     }
 
+    this.verifyEmail = function(data, success, error)
+    {
+      $http.put(`${API}/users/me/email-verify`, data).success(success).error(error);
+    }
+
+
     this.updateTag = function(data, success, error)
     {
       $http.put(`${API}/users/me/tag/${data.slug}`, {}).success(success).error(error)

@@ -26,7 +26,7 @@ function renderEmail(templateName, templateData) {
 	var rendered = {}
   var subjectFn = templates[`${templateName}_subject`],
   		htmlFn = templates[`${templateName}_html`],
-  		textFn = templates[`${templateName}_txt`]
+  		textFn = templates[`${templateName}_text`]
 
 	if (!htmlFn && !textFn || !subjectFn) throw Error(`No email template functions for ${templateName}`)
 

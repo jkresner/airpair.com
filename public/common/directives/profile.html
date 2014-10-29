@@ -3,8 +3,20 @@
 	<a href="#" class="close" ng-click="cancel()">x</a>
 </div>
 
+<div ng-if="session._id" class="success">
+	<div class="modal-body profile">
+		<p>Account successfully created.</p>
 
-<form id="profileForm" novalidate name="profileForm" ng-submit="submit(profileForm.$valid, data)">
+	</div>
+
+	<div class="modal-footer profile">
+		<button ng-click="cancel()" class="btn btn-primary">Continue</button>
+	</div>
+
+</div>
+
+
+<form ng-if="!session._id" id="profileForm" novalidate name="profileForm" ng-submit="submit(profileForm.$valid, data)">
 
 	<div class="modal-body profile">
 
