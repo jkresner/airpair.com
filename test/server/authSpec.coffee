@@ -95,8 +95,8 @@ module.exports = -> describe "Signup: ", ->
     new_password = 'drowssap'
     spy = sinon.spy(mailman,'sendChangePasswordEmail')
     d = getNewUserData('prak')
-    addAndLoginLocalUserWithEmailVerified 'prak', (user) ->
-      PUT '/users/me/password', {email: d.email}, {}, ->
+    addAndLoginLocalUser 'prak', (user) ->
+      PUT '/users/me/password-change', {email: d.email}, {}, ->
         expect(spy.callCount).to.equal(1)
         generated_hash = spy.args[0][1]
         expect(generated_hash).to.not.be.empty
@@ -104,7 +104,7 @@ module.exports = -> describe "Signup: ", ->
           expect(r.local.changePasswordHash).to.equal(generated_hash)
           old_password_hash = r.local.password
           data = { hash: generated_hash, password: new_password }
-          PUT "/users/me/password-change", data, {unauthenticated: true}, (s) ->
+          PUT "/users/me/password", data, {unauthenticated: true}, (s) ->
             UserService.tryLocalLogin.call newUserSession(), d.email, new_password, (e,r) ->
               if (e)
                 done(e)
@@ -116,18 +116,18 @@ module.exports = -> describe "Signup: ", ->
 
   it 'must supply a valid email when requesting a password change', (done) ->
     addAndLoginLocalUser 'stjp', (user) ->
-      PUT '/users/me/password', {email: "abc"}, {}, (r) ->
+      PUT '/users/me/password-change', {email: "abc"}, {}, (r) ->
         expect(r.message).to.include('Invalid email address')
         done()
 
 
   it 'cannot change local password to an invalid password', (done) ->
-    PUT "/users/me/password-change", {hash: "ABC", password:"abc"}, {status:403, unauthenticated: true}, (r) ->
+    PUT "/users/me/password", {hash: "ABC", password:"abc"}, {status:403, unauthenticated: true}, (r) ->
       expect(r.message).to.include('Invalid password')
       done()
 
   it 'cannot change local password with any empty hash', (done) ->
-    PUT "/users/me/password-change", {hash: "", password:"newpassword"}, {status:403, unauthenticated: true}, (r) ->
+    PUT "/users/me/password", {hash: "", password:"newpassword"}, {status:403, unauthenticated: true}, (r) ->
       expect(r.message).to.include('Invalid hash')
       done()
 

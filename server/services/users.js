@@ -364,7 +364,7 @@ export function toggleBookmark(type, id, cb) {
 }
 
 export function requestPasswordChange(email, cb) {
-	var inValid = Validate.email(email)
+	var inValid = Validate.changeEmail(email)
 	if (inValid) return cb(svc.Forbidden(inValid))
 
 	var search = { '$or': [{email:email},{'google._json.email':email}] }
@@ -373,9 +373,6 @@ export function requestPasswordChange(email, cb) {
 		if (e||!user) {
 			return cb(svc.Forbidden(`${email} not found`))
 		}
-
-		if (!user.emailVerified)
-			return cb(svc.Forbidden(`${email} is not verified`))
 
 		var update = { 'local.changePasswordHash': generateHash(email) }
 		svc.update(user._id, update, (e,r) => {
@@ -386,10 +383,7 @@ export function requestPasswordChange(email, cb) {
 }
 
 export function changePassword(hash, password, cb) {
-	var inValid = Validate.hash(hash)
-	if (inValid) return cb(svc.Forbidden(inValid))
-
-	var inValid = Validate.passwordStrength(password)
+	var inValid = Validate.changePassword(hash, password)
 	if (inValid) return cb(svc.Forbidden(inValid))
 
 	var query = {'local.changePasswordHash': hash}
@@ -397,12 +391,12 @@ export function changePassword(hash, password, cb) {
 	svc.searchOne(query, null, (e,user) => {
 		if (e||!user) return cb(svc.Forbidden('hash not found'))
 
-		var inValid = Validate.passwordStrength(password)
-		if (inValid) return cb(svc.Forbidden(inValid))
-
+		// we've just received the hash that we sent to user.email
+		// so mark their email as verified
 		var update = {
 			'local.password': generateHash(password),
-			'local.changePasswordHash': ''
+			'local.changePasswordHash': '',
+			'emailVerified': true
 		}
 
 		svc.update(user._id, update, (e,r) => {
@@ -416,7 +410,7 @@ export function changePassword(hash, password, cb) {
 // Change email can be used both to change an email
 // and to set and send a new email hash for verification
 export function changeEmail(email, cb) {
-	var inValid = Validate.email(email)
+	var inValid = Validate.changeEmail(email)
 	if (inValid) return cb(svc.Forbidden(inValid))
 	email = email.toLowerCase()
 
