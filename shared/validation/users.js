@@ -9,10 +9,15 @@ module.exports = {
 
 	passwordStrength: (password) =>
 	{
-		// adapted from http://stackoverflow.com/questions/5142103/regex-for-password-strength
-		// tested on scriptular.com
 		if (!password || !password.match(/.{5,10}/))
-			return "weak password (need min 5, max 10 chars)"
+			return "Invalid password (need min 5, max 10 chars)"
+		return ""
+	},
+
+	hash: (hash) =>
+	{
+		if (!hash || hash.match(/\s/))
+			return "Invalid hash"
 		return ""
 	}
 }
