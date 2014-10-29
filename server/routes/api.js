@@ -7,7 +7,7 @@ import PaymethodsAPI from '../api/paymethods'
 import OrdersAPI from '../api/orders'
 import BookingsAPI from '../api/bookings'
 import ExpertsAPI from '../api/experts'
-import {authd,adm,setAnonSessionData} from '../identity/auth/middleware'
+import {authd,adm,setAnonSessionData,emailv} from '../identity/auth/middleware'
 
 
 export default function(app) {
@@ -21,6 +21,7 @@ export default function(app) {
     .get('/session/full', setAnonSessionData, UsersAPI.getSessionFull)
     .put('/users/me/tag/:tag', setAnonSessionData, UsersAPI.toggleTag)
     .put('/users/me/email', setAnonSessionData, UsersAPI.changeEmail)
+    .put('/users/me/email-verify', authd, setAnonSessionData, UsersAPI.verifyEmail)
     .put('/users/me/bookmarks/:type/:id', setAnonSessionData, UsersAPI.toggleBookmark)
 
     .get('/tags/search/:id', TagsAPI.search)
@@ -44,13 +45,14 @@ export default function(app) {
     .get('/billing/paymethods', PaymethodsAPI.getMyPaymethods)
     .post('/billing/paymethods', PaymethodsAPI.addPaymethod)
     .delete('/billing/paymethods/:id', PaymethodsAPI.deletePaymethod)
-    .get('/billing/orders', OrdersAPI.getMyOrders)
+    .get('/billing/orders', emailv, OrdersAPI.getMyOrders)
     .get('/billing/orders/credit', OrdersAPI.getMyOrdersWithCredit)
     .post('/billing/orders/membership/:paymethod', OrdersAPI.buyMembership)
     .post('/billing/orders/credit/:paymethod', OrdersAPI.buyCredit)
 
     .post('/bookings/credit/:expert', BookingsAPI.createWithCredit)
     .post('/bookings/payg/:expert/:paymethod', BookingsAPI.createWithPAYG)
+
 
   var admrouter = require('express').Router()
     .use(adm)

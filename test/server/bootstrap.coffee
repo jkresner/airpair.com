@@ -3,10 +3,11 @@ require('traceur-source-maps').install(traceur)
 traceur.require.makeDefault (filePath) ->
   !~filePath.indexOf('node_modules') && !~filePath.indexOf('test') != 0
 
-initConfig = require('./../../server/util/config')
 setGlobals = require('./../../server/util/global')
+initConfig = require('./../../server/util/config')
 appdir = __dirname.replace('/test/server','').replace('\\test\\server','')
 config = initConfig('test', appdir)
+config.mailProvider = { send: ()=>{} }
 setGlobals(config)
 
 require('./helpers/http')

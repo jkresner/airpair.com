@@ -94,7 +94,7 @@ global.addAndLoginLocalUser = function(originalUserKey, done)
 
 global.addAndLoginLocalUserWithPayMethod = function(originalUserKey, done)
 {
-	addAndLoginLocalUser(originalUserKey, (s) =>{
+	addAndLoginLocalUserWithEmailVerified(originalUserKey, (s) =>{
 		new PayMethod( _.extend({userId: s._id}, data.paymethods.generic) ).save( (e,r) => {
 	    s.primaryPayMethodId = r._id
 	    done(s)
@@ -206,6 +206,10 @@ module.exports = {
 
   viewsByAnonymousId: function(anonymousId, cb) {
     View.find({anonymousId}, cb)
+  },
+
+  readUser: function(id, cb) {
+  	User.findOne({_id:id}, cb)
   },
 
   ensureUser: function(user, cb) {
