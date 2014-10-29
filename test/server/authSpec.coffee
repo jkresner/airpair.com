@@ -96,24 +96,23 @@ module.exports = -> describe "Signup: ", ->
     spy = sinon.spy(mailman,'sendChangePasswordEmail')
     d = getNewUserData('prak')
     addAndLoginLocalUserWithEmailVerified 'prak', (user) ->
-      expect(user.emailVerified).to.be.true
-      testDb.readUser user._id, (e,r) ->
-        original_password_hash = r.local.password
-        PUT '/users/me/password', {email: d.email}, {}, ->
-          expect(spy.callCount).to.equal(1)
-          hash = spy.args[0][1]
-          expect(hash).to.not.be.empty
-          PUT "/users/me/password-change", { hash: hash, password: new_password }, {}, (sVerified) ->
+      PUT '/users/me/password', {email: d.email}, {}, ->
+        expect(spy.callCount).to.equal(1)
+        generated_hash = spy.args[0][1]
+        expect(generated_hash).to.not.be.empty
+        testDb.readUser user._id, (e,r) ->
+          expect(r.local.changePasswordHash).to.equal(generated_hash)
+          old_password_hash = r.local.password
+          PUT "/users/me/password-change", { hash: generated_hash, password: new_password }, {}, (s) ->
             UserService.tryLocalLogin.call newUserSession(), d.email, new_password, (e,r) ->
               testDb.readUser user._id, (e,r) ->
                 if (e) then return done(e)
-                expect(original_password_hash).to.not.equal(r.local.password)
+                expect(old_password_hash).to.not.equal(r.local.password)
                 expect(r.local.changePasswordHash).to.be.empty
                 done()
 
   it 'Can not sign up with local credentials and existing local email', (done) ->
     d = getNewUserData('jkap')
-
     http(global.app).post('/v1/auth/signup').send(d).expect(200)
       .end (e, r) ->
         http(global.app).post('/v1/auth/signup').send(d).expect(400)
@@ -208,7 +207,7 @@ module.exports = -> describe "Signup: ", ->
 
     it 'user can only verify e-mail when logged in', (done) ->
       http(global.app)
-        .put('/v1/api/users/email-verify')
+        .put('/v1/api/users/me/email-verify')
         .send({hash:'yoyoy'})
         .expect(401)
         .end (err, res) ->
