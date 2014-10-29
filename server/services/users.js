@@ -364,7 +364,7 @@ export function toggleBookmark(type, id, cb) {
 }
 
 export function requestPasswordChange(email, cb) {
-	var inValid = Validate.changeEmail(email)
+	var inValid = Validate.email(email)
 	if (inValid) return cb(svc.Forbidden(inValid))
 
 	var search = { '$or': [{email:email},{'google._json.email':email}] }
@@ -416,7 +416,7 @@ export function changePassword(hash, password, cb) {
 // Change email can be used both to change an email
 // and to set and send a new email hash for verification
 export function changeEmail(email, cb) {
-	var inValid = Validate.changeEmail(email)
+	var inValid = Validate.email(email)
 	if (inValid) return cb(svc.Forbidden(inValid))
 	email = email.toLowerCase()
 

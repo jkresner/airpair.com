@@ -1,6 +1,6 @@
 module.exports = {
 
-	changeEmail: (email) =>
+	email: (email) =>
 	{
 		if (!email || !email.match(/.+@.+\.+.+/))
 			return "Invalid email address"
