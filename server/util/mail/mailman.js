@@ -52,32 +52,3 @@ module.exports = function(mailProvider)
 	return mailman
 }
 
-
-// var roles =       require('../identity/roles')
-
-///////////////////////////////////////////////////////////////////////
-
-// notifyAnAdmin: (options, callback) ->
-// 	options.to = "il@airpair.com"
-// 	options.templateName = "blogNewPurchase"
-// 	@renderEmail options, options.templateName, (e, rendered) ->
-// 		rendered.Subject = "New package purchased from article"
-// 		ses.send options.to, rendered, callback
-
-// sendEmailToAdmins: (options, callback) ->
-// 	options.to = roles.getAdminEmails()
-// 	@sendEmail options, callback
-
-// sendEmailToPipeliners: (options, callback) ->
-// 	options.to = roles.getPipelinerEmails()
-// 	@sendEmail options, callback
-
-// admNewRequest: (request) ->
-// 	fullName = ''  #temporary until fix bookme flow
-// 	if request.company? then fullName = request.company.contacts[0].fullName
-// 	@sendEmailToPipeliners
-// 		templateName: "admNewRequest"
-// 		subject: "New request: #{fullName} #{request.budget}$"
-// 		request: request
-// 		tags: request.tags.map((o) -> o.short).join(' ')
-// 		(e) -> if e then $log 'admNewRequest error', e
