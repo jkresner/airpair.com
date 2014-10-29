@@ -91,6 +91,30 @@ module.exports = -> describe "Signup: ", ->
           expect(res.body.error).to.equal('try google login')
           done()
 
+  it 'A google user can add a local password', (done) ->
+    the_password = 'secretsomthing'
+    session = newUserSession()
+    UserService.upsertProviderProfile.call session, 'google', data.oauth.ajad, (e,usr) ->
+      LOGIN 'ajad', usr, ->
+        GET '/session/full', {}, (s) ->
+          PUT '/users/me/password', {password: the_password}, {}, (user,r) ->
+            GET '/session/full', {}, (s) ->
+              expect(s.local).to.be.undefined
+              UserService.tryLocalLogin.call session, data.oauth.ajad._json.email, the_password, (e,r) ->
+                if (e) then return done(e)
+                expect(r.email).to.include(usr.email)
+                expect(r.local).to.be.undefined
+                done()
+
+  it "A google user can't set a short local password", (done) ->
+    the_password = 'secr'
+    session = newUserSession()
+    UserService.upsertProviderProfile.call session, 'google', data.oauth.ajad, (e,usr) ->
+      LOGIN 'ajad', usr, ->
+        GET '/session/full', {}, (s) ->
+          PUT '/users/me/password', {password: the_password}, {status:403}, (user,r) ->
+            expect(r.text).to.include('weak password')
+            done()
 
   it 'Can not sign up with local credentials and existing local email', (done) ->
     d = getNewUserData('jkap')
