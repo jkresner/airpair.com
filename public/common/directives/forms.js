@@ -1,21 +1,6 @@
 
 angular.module("APFormsDirectives", [])
 
-	// .directive('form', [function() {
-	// 	return {
-	// 		priority: -1000,
-	// 		link: function(scope, element, attrs) {
-	// 			console.log('set form submitCount')
-	// 			scope.submitCount = 0;
-	// 			element.on('submit', function() {
-	// 				scope.submitCount++;
-	// 				console.log('fired submit', scope.submitCount)
-	// 			})
-	// 		}
-	// 	}
-
-	// }])
-
 	.directive('formGroup', [function() {
 
 		return {
