@@ -103,8 +103,11 @@ module.exports = -> describe "Signup: ", ->
         testDb.readUser user._id, (e,r) ->
           expect(r.local.changePasswordHash).to.equal(generated_hash)
           old_password_hash = r.local.password
-          PUT "/users/me/password-change", { hash: generated_hash, password: new_password }, {}, (s) ->
+          data = { hash: generated_hash, password: new_password }
+          PUT "/users/me/password-change", data, {unauthenticated: true}, (s) ->
             UserService.tryLocalLogin.call newUserSession(), d.email, new_password, (e,r) ->
+              if (e)
+                done(e)
               testDb.readUser user._id, (e,r) ->
                 if (e) then return done(e)
                 expect(old_password_hash).to.not.equal(r.local.password)

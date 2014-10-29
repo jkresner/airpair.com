@@ -388,8 +388,8 @@ export function changePassword(hash, password, cb) {
 	if (hash&&password) {
 		var query = {'local.changePasswordHash': hash}
 		var self = this
-		svc.searchOne(query, null, (e,r) => {
-			if (e||!r) return cb(svc.Forbidden('hash not found'))
+		svc.searchOne(query, null, (e,user) => {
+			if (e||!user) return cb(svc.Forbidden('hash not found'))
 
 			var inValid = Validate.passwordStrength(password)
 			if (inValid) return cb(svc.Forbidden(inValid))
@@ -399,7 +399,7 @@ export function changePassword(hash, password, cb) {
 				'local.changePasswordHash': ''
 			}
 
-			svc.update(this.user._id, update, (e,r) => {
+			svc.update(user._id, update, (e,r) => {
 				if (e || !r) return cb(e,r)
 				return getSession.call(this,cb)
 			});
