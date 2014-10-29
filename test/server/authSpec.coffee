@@ -101,6 +101,7 @@ module.exports = -> describe "Signup: ", ->
               expect(s.local).to.be.undefined
               UserService.tryLocalLogin.call session, data.oauth.ajad._json.email, the_password, (e,r) ->
                 if (e) then return done(e)
+                expect(r.email).to.include(usr.email)
                 expect(r.local).to.be.undefined
                 done()
 
@@ -111,12 +112,8 @@ module.exports = -> describe "Signup: ", ->
       LOGIN 'ajad', usr, ->
         GET '/session/full', {}, (s) ->
           PUT '/users/me/password', {password: the_password}, {status:403}, (user,r) ->
-            GET '/session/full', {}, (s) ->
-              expect(s.local).to.be.undefined
-              UserService.tryLocalLogin.call session, data.oauth.ajad._json.email, the_password, (e,r) ->
-                if (e) then return done(e)
-                expect(r.local).to.be.undefined
-                done()
+            expect(r.text).to.include('weak password')
+            done()
 
   it 'a local user can change their email', (done) ->
     the_new_email = "hello" + moment().format('X').toString() + "@mydomain.com"
