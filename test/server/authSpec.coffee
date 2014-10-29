@@ -91,30 +91,25 @@ module.exports = -> describe "Signup: ", ->
           expect(res.body.error).to.equal('try google login')
           done()
 
-  it 'A google user can add a local password', (done) ->
-    the_password = 'secretsomthing'
-    session = newUserSession()
-    UserService.upsertProviderProfile.call session, 'google', data.oauth.ajad, (e,usr) ->
-      LOGIN 'ajad', usr, ->
-        GET '/session/full', {}, (s) ->
-          PUT '/users/me/password', {password: the_password}, {}, (user,r) ->
-            GET '/session/full', {}, (s) ->
-              expect(s.local).to.be.undefined
-              UserService.tryLocalLogin.call session, data.oauth.ajad._json.email, the_password, (e,r) ->
+  it 'a user can request a password change, and set a new local password', (done) ->
+    new_password = 'drowssap'
+    spy = sinon.spy(mailman,'sendChangePasswordEmail')
+    d = getNewUserData('prak')
+    addAndLoginLocalUserWithEmailVerified 'prak', (user) ->
+      expect(user.emailVerified).to.be.true
+      testDb.readUser user._id, (e,r) ->
+        original_password_hash = r.local.password
+        PUT '/users/me/password', {email: d.email}, {}, ->
+          expect(spy.callCount).to.equal(1)
+          hash = spy.args[0][1]
+          expect(hash).to.not.be.empty
+          PUT "/users/me/password-change", { hash: hash, password: new_password }, {}, (sVerified) ->
+            UserService.tryLocalLogin.call newUserSession(), d.email, new_password, (e,r) ->
+              testDb.readUser user._id, (e,r) ->
                 if (e) then return done(e)
-                expect(r.email).to.include(usr.email)
-                expect(r.local).to.be.undefined
+                expect(original_password_hash).to.not.equal(r.local.password)
+                expect(r.local.changePasswordHash).to.be.empty
                 done()
-
-  it "A google user can't set a short local password", (done) ->
-    the_password = 'secr'
-    session = newUserSession()
-    UserService.upsertProviderProfile.call session, 'google', data.oauth.ajad, (e,usr) ->
-      LOGIN 'ajad', usr, ->
-        GET '/session/full', {}, (s) ->
-          PUT '/users/me/password', {password: the_password}, {status:403}, (user,r) ->
-            expect(r.text).to.include('weak password')
-            done()
 
   it 'Can not sign up with local credentials and existing local email', (done) ->
     d = getNewUserData('jkap')

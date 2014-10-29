@@ -9,5 +9,6 @@ export default initAPI(Svc, {
   getUsersInRole: (req) => [req.params.role],
   changeEmail: (req) => [req.body.email],
   verifyEmail: (req) => [req.body.hash],
-  setPassword: (req) => [req.body.password]
+  requestPasswordChange: (req) => [req.body.email],
+  changePassword: (req) => [req.body.hash, req.body.password]
 })

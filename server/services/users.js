@@ -164,7 +164,8 @@ export function tryLocalSignup(email, password, name, done) {
         name: name,
         local: {
 					password: generateHash(password),
-					emailHash: ''
+					emailHash: '',
+					changePasswordHash: ''
         }
 			}
 
@@ -362,13 +363,48 @@ export function toggleBookmark(type, id, cb) {
 	toggleSessionItem.call(this, 'bookmarks', bookmark, 2, 15, bookmarkComparator, cb)
 }
 
-export function setPassword(password, cb) {
-	var inValid = Validate.passwordStrength(password)
-	if (inValid) return cb(svc.Forbidden(inValid))
-	svc.update(this.user._id, { 'local.password': generateHash(password) }, (e,r) => {
-		if (e || !r) return cb(e,r)
-		return getSession.call(this,cb)
-	});
+export function requestPasswordChange(email, cb) {
+	if (email) {
+		var search = { '$or': [{email:email},{'google._json.email':email}] }
+		var self = this
+		svc.searchOne(search, null, function(e,user) {
+			if (e||!user) {
+				return cb(svc.Forbidden(`${email} not found`))
+			}
+
+			if (!user.emailVerified)
+				return cb(svc.Forbidden(`${email} is not verified`))
+
+			var update = { 'local.changePasswordHash': generateHash(email) }
+			svc.update(user._id, update, (e,r) => {
+				mailman.sendChangePasswordEmail(r, r.local.changePasswordHash)
+				return cbSession(cb)(e,r)
+			})
+		})
+	}
+}
+
+export function changePassword(hash, password, cb) {
+	if (hash&&password) {
+		var query = {'local.changePasswordHash': hash}
+		var self = this
+		svc.searchOne(query, null, (e,r) => {
+			if (e||!r) return cb(svc.Forbidden('hash not found'))
+
+			var inValid = Validate.passwordStrength(password)
+			if (inValid) return cb(svc.Forbidden(inValid))
+
+			var update = {
+				'local.password': generateHash(password),
+				'local.changePasswordHash': ''
+			}
+
+			svc.update(this.user._id, update, (e,r) => {
+				if (e || !r) return cb(e,r)
+				return getSession.call(this,cb)
+			});
+		});
+	}
 }
 
 
