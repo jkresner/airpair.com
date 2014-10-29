@@ -1,6 +1,21 @@
 
 angular.module("APFormsDirectives", [])
 
+	// .directive('form', [function() {
+	// 	return {
+	// 		priority: -1000,
+	// 		link: function(scope, element, attrs) {
+	// 			console.log('set form submitCount')
+	// 			scope.submitCount = 0;
+	// 			element.on('submit', function() {
+	// 				scope.submitCount++;
+	// 				console.log('fired submit', scope.submitCount)
+	// 			})
+	// 		}
+	// 	}
+
+	// }])
+
 	.directive('formGroup', [function() {
 
 		return {
@@ -10,28 +25,35 @@ angular.module("APFormsDirectives", [])
 			//-- Sometimes controller may run before link
 			controllerAs: 'formGroup',
 			controller : function() {
-
 				//-- Setting a placeholder
-				this.update = angular.noop;
-
+				// this.update = angular.noop;
 			},
 
 			// -- tells directive we want to have ctrl param (as 4th param)
 			require: ['^form','formGroup'],
 
 			link : function(scope, element, attrs, ctrls) {
-
 				var formCtrl = ctrls[0];
 				var ctrl = ctrls[1];
+				ctrl.$fieldSubmitted = false
 
 				element.addClass('form-group');
 
+				var form = element.closest('form').on('submit', function() {
+					console.log('submit', ctrl.$fieldSubmitted)
+					if (!ctrl.$fieldSubmitted)
+					{
+						ctrl.$fieldSubmitted = true
+						ctrl.showError(ctrl.model)
+					}
+				})
+
 				ctrl.showError = function(model) {
-					// console.log('show error called', element, model)
-					var toShow = !model.$valid && (model.$touched || formCtrl.$submitted)
-					// console.log('show', toShow, element, model.$valid, model.$touched, formCtrl.$submitted)
-					element.toggleClass('has-error', toShow).toggleClass('has-feedback', toShow);
-					return toShow
+					ctrl.model = model;
+					var show = model.$invalid && (model.$touched || ctrl.$fieldSubmitted)
+					// console.log('show', element, model.$invalid, 'touched', model.$touched, ctrl.$fieldSubmitted)
+					element.toggleClass('has-error', show).toggleClass('has-feedback', show);
+					return show
 				}
 
 				// ctrl.update = function(valid) {
@@ -61,8 +83,6 @@ angular.module("APFormsDirectives", [])
 				element.addClass('form-control')
 				// Add back in when we figure out css
 				// element.after('<span class="glyphicon glyphicon-remove form-control-feedback"></span>')
-
-
 
 				// var formGroupCtrl = ctrls[0];
 				// var ngModelCtrl = ctrls[1];

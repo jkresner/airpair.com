@@ -35,7 +35,7 @@
 
 			<div form-group>
 				<label class="control-label" for="signupEmail">Email</label>
-				<input id="signupEmail" name="email" form-control type="email" placeholder="Primary contact email" ng-model="data.email" ng-blur="updateEmail(profileForm.email)">
+				<input id="signupEmail" name="email" form-control type="email" placeholder="Primary contact email" ng-model="data.email" ng-blur="updateEmail(profileForm.email)" required >
 	      <div class="error" ng-if="formGroup.showError(profileForm.email)" ng-messages="profileForm.email.$error">
 	        <div ng-message="required">Email required</div>
 	        <div ng-message="email">Invalid email</div>
@@ -45,7 +45,7 @@
 
 			<div form-group ng-if="session.email">
 				<label class="control-label" for="sessionName">Full name </label>
-				<input id="sessionName" name="name" form-control type="text" placeholder="Full name" ng-model="data.name" required required ng-minlength="4" ng-minlength="60" ng-pattern="/\w+ \w+/">
+				<input id="sessionName" name="name" form-control type="text" placeholder="Full name" ng-model="data.name" required ng-minlength="4" ng-minlength="60" ng-pattern="/\w+ \w+/">
 	      <div class="error" ng-if="formGroup.showError(profileForm.name)" ng-messages="profileForm.name.$error">
 	        <div ng-message="required">Name required</div>
 	        <div ng-message="minlength">Full name required (e.g. John Smith)</div>
@@ -71,7 +71,7 @@
 	</div>
 
 	<div class="modal-footer profile">
-		<button class="btn btn-primary">Create account</button>
+		<button type="submit" class="btn btn-primary">Create account</button>
 	  <span class="error">{{ signupFail }}</span>
 	</div>
 

@@ -19,8 +19,6 @@ function initTemplates() {
 	    templates[name] = handlebars.compile(template)
 	  }
 	}
-	
-	$log('loading', config.appdir, templates)
 }
 
 
@@ -45,12 +43,12 @@ module.exports = function(mailProvider)
 	initTemplates()
 	var mailman = {}
 
-	mailman.sendVerifyEmail = (toUser, hash, cb) => 
+	mailman.sendVerifyEmail = (toUser, hash, cb) =>
 		mailProvider.send(`${toUser.name} <${toUser.email}>`, renderEmail('verifyemail', {
 			firstName: util.firstName(toUser.name),
 			hash
 		}), cb)
-	
+
 	return mailman
 }
 

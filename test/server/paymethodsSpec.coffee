@@ -94,7 +94,7 @@ module.exports = -> describe "PayMethods", ->
           expect(s1.primaryPayMethodId).to.equal(r._id)
           DELETE "/billing/paymethods/#{s1.primaryPayMethodId}", {}, () ->
             GET '/session/full', {}, (s2) ->
-              expect(s2.primaryPayMethodId).to.be.null
+              expect(s2.primaryPayMethodId).to.be.undefined
               GET '/billing/paymethods', {}, (pms) ->
                 expect(pms.length).to.equal(0)
                 done()

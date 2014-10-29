@@ -129,7 +129,7 @@ angular.module("APSideNav", ['ui.bootstrap','APSvcSession', 'APTagInput'])
 		}
 
 		$scope.submit = (formValid, data) => {
-			if (formValid && data.password)
+			if (formValid)
 			{
 				SessionService.signup(data,
 				  (result) => {
@@ -138,9 +138,6 @@ angular.module("APSideNav", ['ui.bootstrap','APSvcSession', 'APTagInput'])
 				  },
 				  (e) => $scope.signupFail = e.error
 				)
-			}
-			else {
-				$scope.signupFail = "Enter a valid email, full name and password"
 			}
 		}
 
