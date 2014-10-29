@@ -111,8 +111,6 @@ angular.module("APSideNav", ['ui.bootstrap','APSvcSession', 'APTagInput'])
 		$scope.updateEmail = function(model) {
 			if (!model.$valid) return
 			$scope.emailChangeFailed = ""
-		  // var inValid = Validate.changeEmail($scope.data.email)
-		  // if (inValid) return $scope.data.email = ""
 
 		  SessionService.changeEmail({ email: $scope.data.email },
 		    (result) => {
@@ -135,7 +133,7 @@ angular.module("APSideNav", ['ui.bootstrap','APSvcSession', 'APTagInput'])
 				SessionService.signup(data,
 				  (result) => {
 				  	$rootScope.session = result;
-				  	$modalInstance.close();
+				  	//$modalInstance.close();
 				  },
 				  (e) => $scope.signupFail = e.error
 				)

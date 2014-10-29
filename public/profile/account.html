@@ -1,76 +1,70 @@
-<header>Profile > {{ username }}</header>
+<header>Account Info > {{ session.name }}</header>
+<section id="account">
 
-<div class="posts">
-  <ap-post-list-item post="p" ng-repeat="p in posts"></ap-post-list-item>
-</div>
-
-	<section class="avatar tile">
+	<section class="avatar">
 		<img class="avatar" ng-src="{{session.avatar}}?s=230" title="Avatars are gravtars from your email." />
 		<p style="font-size:12px">
-			<span ng-if="session.email">Update the <b><a href="http://www.gravatar.com/" target="_blank">gravatar</a></b> for <br />{{ session.email }}</span>
+			<span ng-if="session.email">Update the <b><a href="http://www.gravatar.com/" target="_blank">gravatar</a></b> for {{ session.email }}</span>
 			<span ng-if="!session.email">Enter an email address</span>
-		 	<br /> to change your profile pic.</p>
-		<hr />
-		<label>Account Credit</label> <b style="font-size:26px;color:black">$10</b> <br />available when you sign up</a>
+		  to change your pic.
+		</p>
 		<!-- <label>Last seen</label> Today -->
 	<!-- 			<label>Timezone</label> - 07:00
 <br /><label>Membership</label> No
 		<hr />
 		<br /><label>Roles</label> Visitor -->
-
 	</section>
-
-	<section class="google" ng-if="session.authenticated == false">
-		Hate forms and passwords? <br /><br /><a href="/v1/auth/google" target="_self"><b>Sign in with your google account instead</b></a>.
-	</section>
-
 	<section class="info">
 
+	<form id="profileForm" novalidate name="profileForm" ng-submit="submit(profileForm.$valid, data)">
+
+		<div form-group ng-if="session.email">
+			<label class="control-label" for="sessionName">Full name </label>
+			<input id="signupName" name="name" form-control type="text" placeholder="Full name" ng-model="data.name" required ng-minlength="4" ng-minlength="60" ng-pattern="/\w+ \w+/" tabindex="2">
+      <div class="error" ng-if="formGroup.showError(profileForm.name)" ng-messages="profileForm.name.$error">
+        <div ng-message="required">Name required</div>
+        <div ng-message="minlength">Full name required (e.g. John Smith)</div>
+        <div ng-message="pattern">Full name required (e.g. John Smith)</div>
+        <div ng-message="maxlength">Full name max length 60 chars</div>
+      </div>
+		</div>
+
 		<div class="form-group">
-			<label class="control-label" for="sessionEmail">Email <span class="verifyEmail" ng-if="session.emailVerified  == false">Unverified - <a hred="#">Resend verification email</a></span></label>
-			<input id="sessionEmail" name="email" class="form-control" type="email" placeholder="Primary contact email" ng-model="session.email" ng-blur="updateEmail(session.email)" required >
-<!--       <div class="error" ng-if="formGroup.showError(data.email)" ng-messages="data.email.$error">
-        <div ng-message="required">Field required</div>
-        <div ng-message="email">Invalid email</div>
-      </div> -->
-      <span style="color:red">{{ emailChangeFailed }}</span>
+			<label for="session_initials">Initials <span>used in chat</span></label>
+			<input id="session_initials" type="text" class="form-control" placeholder="Initials" ng-model="session.initials">
 		</div>
-		<div class="form-group" ng-if="session.email">
-			<label class="control-label" for="sessionName">Name </label>
-			<input id="sessionName" name="email" class="form-control" type="text" placeholder="Full name" ng-model="session.name" ng-focus="clearDefaultName()" required >
-<!--       <div class="error" ng-if="formGroup.showError(data.email)" ng-messages="data.email.$error">
-        <div ng-message="required">Field required</div>
-        <div ng-message="email">Invalid email</div>
-      </div> -->
-		</div>
-		<div ng-if="session._id">
-			<div class="form-group">
-				<label for="session_initials">Initials <span style="">used in chat</span></label>
-				<input id="session_initials" type="text" class="form-control" placeholder="Initials" ng-model="session.initials">
-			</div>
-			<div class="form-group tag-input-group">
-				<label for="session_username">Username <span>optional</span></label>
-				<input id="session_username" type="text" class="form-control" placeholder="Username" ng-model="session.username">
-			</div>
+		<div class="form-group">
+			<label for="session_username">Username <span>optional</span></label>
+			<input id="session_username" type="text" class="form-control" placeholder="Username" ng-model="session.username">
 		</div>
 
-		<div class="form-group" ng-if="!session._id && session.email">
-			<label class="control-label" for="password">Password </label>
-			<input id="signupPassword" name="password" class="form-control" type="password" placeholder="Password" ng-model="session.password" required >
-<!--       <div class="error" ng-if="formGroup.showError(data.email)" ng-messages="data.email.$error">
-        <div ng-message="required">Field required</div>
-        <div ng-message="email">Invalid email</div>
-      </div> -->
-		</div>
+	</form>
+
+	</section>
+
 		<hr />
-<!-- 		<div ng-if="session.authenticated != false">
-			<div class="form-group">
-				<label for="password">Set Password</label>
-				<input id="password" type="password" class="form-control" placeholder="Password" ng-model="session.password">
-			</div>
-			<div class="form-group">
-				<label for="password">Confirm Password</label>
-				<input id="password" type="password" class="form-control" placeholder="Password" ng-model="session.passwordconfirm">
-			</div>
-		</div> -->
+	<section class="email">
 
+	<form id="emailForm" novalidate name="emailForm" ng-submit="submit(emailForm.$valid, data)">
+
+		<div form-group class="email-group verified-{{session.emailVerified}}">
+			<label class="control-label" for="sessionEmail">Email <span class="verifyEmail" ng-if="session.emailVerified == false">unverified </span></label>
+      <span style="color:red">{{ emailChangeFailed }}</span>
+			<input id="sessionEmail" name="email" form-control type="email" placeholder="Primary contact email" ng-model="data.email" ng-blur="updateEmail(emailForm.email)" required >
+       <div class="error" ng-if="formGroup.showError(emailForm.email)" ng-messages="emailForm.email.$error">
+        <div ng-message="required">Field required</div>
+        <div ng-message="email">Invalid email</div>
+      </div>
+		</div>
+		<div class="verifyEmail" ng-if="session.emailVerified == false">
+			Please verify your email
+			<a href="#" ng-click="sendVerificationEmail()" class="btn">Send verification email</a>
+		</div>
+
+	</form>
+
+		<hr />
+		<h3>Password</h3>
+		<p>To set your password, we will send an email to {{ session.email }}.</p>
+		<a href="#" ng-click="sendVerificationEmail()" class="btn">Send new password email</a>
+</section>

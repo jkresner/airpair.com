@@ -18,7 +18,7 @@ module.exports = function(config)
 
 
   var {mailProvider} = config //-- only set in test
-  if (!mailProvider) mailProvider = require('./mail/ses')
+  if (!mailProvider) mailProvider = require('./mail/ses')()
   global.mailman 			  =	require('./mail/mailman')(mailProvider)
 
 
