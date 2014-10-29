@@ -57,7 +57,7 @@ global.addLocalUser = function(userKey, opts, done)
   var clone = getNewUserData(userKey)
   UserService.tryLocalSignup.call(newUserSession(userKey), clone.email, clone.password, clone.name, function(e, r) {
     data.users[clone.userKey] = r
-    if (opts)
+    if (opts && opts.emailVerified)
     {
 	    UserService.update.call(this, data.users[clone.userKey]._id, opts, function(err, user) {
 				data.users[clone.userKey] = user
