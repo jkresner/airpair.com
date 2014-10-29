@@ -164,7 +164,7 @@ export function tryLocalSignup(email, password, name, done) {
         name: name,
         local: {
 					password: generateHash(password),
-					email: ''
+					emailHash: ''
         }
 			}
 
@@ -360,6 +360,15 @@ export function toggleBookmark(type, id, cb) {
 	var	bookmark = { _id: svc.newId(), objectId: id, type, sort: 0 }
 	var bookmarkComparator = (i) => _.idsEqual(i.objectId,id)
 	toggleSessionItem.call(this, 'bookmarks', bookmark, 2, 15, bookmarkComparator, cb)
+}
+
+export function setPassword(password, cb) {
+	var inValid = Validate.passwordStrength(password)
+	if (inValid) return cb(svc.Forbidden(inValid))
+	svc.update(this.user._id, { 'local.password': generateHash(password) }, (e,r) => {
+		if (e || !r) return cb(e,r)
+		return getSession.call(this,cb)
+	});
 }
 
 
