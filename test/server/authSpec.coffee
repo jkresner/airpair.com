@@ -91,6 +91,25 @@ module.exports = -> describe "Signup: ", ->
           expect(res.body.error).to.equal('try google login')
           done()
 
+  it 'a user can request a password change, and set a new local password', (done) ->
+    new_password = 'drowssap'
+    spy = sinon.spy(mailman,'sendChangePasswordEmail')
+    d = getNewUserData('prak')
+    addAndLoginLocalUserWithEmailVerified 'prak', (user) ->
+      expect(user.emailVerified).to.be.true
+      testDb.readUser user._id, (e,r) ->
+        original_password_hash = r.local.password
+        PUT '/users/me/password', {email: d.email}, {}, ->
+          expect(spy.callCount).to.equal(1)
+          hash = spy.args[0][1]
+          expect(hash).to.not.be.empty
+          PUT "/users/me/password-change", { hash: hash, password: new_password }, {}, (sVerified) ->
+            UserService.tryLocalLogin.call newUserSession(), d.email, new_password, (e,r) ->
+              testDb.readUser user._id, (e,r) ->
+                if (e) then return done(e)
+                expect(original_password_hash).to.not.equal(r.local.password)
+                expect(r.local.changePasswordHash).to.be.empty
+                done()
 
   it 'Can not sign up with local credentials and existing local email', (done) ->
     d = getNewUserData('jkap')

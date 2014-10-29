@@ -118,5 +118,24 @@ module.exports = {
        gender: 'male',
        locale: 'en' },
     token: {  }
+  },
+
+  ajad: { provider: 'google',
+    id: '111060036231434960159',
+    displayName: 'Ajay Desai',
+    name: { familyName: 'Ajay', givenName: 'Desai' },
+    emails: [ { value: 'ajayd@gmail.com' } ],
+    _json:
+     { id: '111060036231434960159',
+       email: 'ajayd@gmail.com',
+       verified_email: true,
+       name: 'Ajay Desai',
+       given_name: 'Ajay',
+       family_name: 'Desai',
+       link: 'https://plus.google.com/111060036231434960159',
+       picture: 'https://lh5.googleusercontent.com/-UHIAyacsqVA/AAAAAAAAAAI/AAAAAAAAADE/1XfbuhAWxC0/s120-c/photo.jpg',
+       gender: 'male',
+       locale: 'en' },
+    token: {  }
   }
 }
