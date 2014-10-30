@@ -21,7 +21,7 @@
 			Verify your email for billing
 			<a href="#" ng-click="sendVerificationEmail()" class="btn">Send verification email</a>
 		</div>
-		<div class="verifyEmail" ng-if="session.emailVerified" style="background:white">
+		<div class="verifyEmail" style="background:white">
 			<alert ng-repeat="alert in emailAlerts" type="{{alert.type}}">{{alert.msg}}</alert>
 		</div>
 	</form>
@@ -82,7 +82,7 @@
 	<section class="password">
 		<h3 style="margin-top:0">Password</h3>
 		<p>To set your password, we will send an email to {{ session.email }}.</p>
-		<a href="#" ng-click="sendPasswordChange()" class="btn">Send new password email</a>
+		<a href="#" ng-click="sendPasswordChange()" class="btn">Send reset password email</a>
 		<alert ng-repeat="alert in passwordAlerts" type="{{alert.type}}">{{alert.msg}}</alert>
 	</section>
 

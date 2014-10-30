@@ -56,6 +56,7 @@ module.exports = function(env, appdir) {
   // cfg.analytics.segmentio. writekey = '0xxx5xrw5q'
 
   if (cfg.env == 'test') {
+  	cfg.mail.on = false   // always leave this off
     cfg.analytics.on = true
     cfg.analytics.segmentio. writekey = '9793xyfxat'
     cfg.port = 4444

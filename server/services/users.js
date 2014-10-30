@@ -235,9 +235,7 @@ export function updateProfile(name, initials, username, cb) {
 	if (!username)
 		return update(userId, ups, cbSession(cb))
 
-	console.log('searching existing', {username})
 	svc.searchOne({username}, null, function(e,r) {
-		console.log('return existing', e, r, {name,initials,username})
 		if (r) {
 			return cb(svc.Forbidden(`username ${username} already taken`))
 		}

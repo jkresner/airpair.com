@@ -2,7 +2,9 @@ module.exports = () => describe("API: ", function() {
 
 	before(function(done) {
 		stubAnalytics()
-		done()
+		testDb.initPosts( () => {
+			testDb.initTags(done) })
+
 	})
 
 	after(function(done) {
@@ -22,11 +24,6 @@ module.exports = () => describe("API: ", function() {
 
 
 	describe("Stack: ", function(done) {
-
-		before(function(done) {
-			cache.flush('tags')
-			testDb.initTags(done)
-		})
 
 		it('Can add tag data to anonymous session', function(done) {
 			http(global.app)
@@ -141,12 +138,6 @@ module.exports = () => describe("API: ", function() {
 
 
 	describe("Bookmarks: ", function(done) {
-
-		before(function(done) {
-			cache.flush('posts')
-			testDb.initPosts(done)
-		})
-
 
 		it('Can add bookmark data to anonymous session', function(done) {
 			http(global.app)
@@ -294,7 +285,6 @@ module.exports = () => describe("API: ", function() {
 
 
 	it.skip('Not gonna impl: Merges anonymous session data to local LOGIN user', () => {})
-
 
 
 	describe("Profile: ", function(done) {

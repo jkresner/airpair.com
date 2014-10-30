@@ -127,7 +127,7 @@ function addUserWithRole(userKey, role, done)
 function ensureDocument(Model, doc, cb, refresh)
 {
 	//if (refresh) return
-	Model.findByIdAndRemove(doc._id, function(e, r) { new Model(doc).save(cb); })
+	Model.findByIdAndRemove(doc._id, function(e, r) { new Model(doc).save((e,r)=> { r.toObject(); cb(e,r); } ); })
   //Model.findOneAndUpdate({_id:doc._id}, doc, {upsert:true}, cb)  // problems in few places with upsert method
 }
 
@@ -209,7 +209,7 @@ module.exports = {
   },
 
   readUser: function(id, cb) {
-  	User.findOne({_id:id}, cb)
+  	User.findOne({_id:id}, (e,r)=> { r.toObject(); cb(e,r); })
   },
 
   ensureUser: function(user, cb) {
