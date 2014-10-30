@@ -217,13 +217,32 @@ export function update(id, data, cb) {
 		if (e) return cb(e)
 		if (!r) return cb(Error(`Failed to update user with id: ${id}`))
 		var updated = _.extend(r, data)
-		User.findOneAndUpdate({_id:r._id}, updated, (err, user) => {
+		svc.update(r._id, updated, (err, user) => {
 			if (err) $log('User.update.err', err && err.stack)
 			if (logging) $log('User.update', JSON.stringify(user))
 			if (cb) cb(err, user)
 		})
 	})
 }
+
+
+export function updateProfile(name, initials, username, cb) {
+	var userId = this.user._id
+	var ups = {name}
+	if (initials) ups.initials = initials
+	if (username) ups.username = username
+
+	if (!username)
+		return update(userId, ups, cbSession(cb))
+
+	svc.searchOne({username}, null, function(e,r) {
+		if (r) {
+			return cb(svc.Forbidden(`username ${username} already taken`))
+		}
+		update(userId, ups, cbSession(cb))
+	})
+}
+
 
 
 var VALID_ROLES = ['admin',       // Get access to all admin backend app
@@ -293,7 +312,7 @@ export function getSession(cb) {
 	{
 		var avatar = "/v1/img/css/sidenav/default-cat.png"
 
-		if (this.session.anonData.email)
+		if (this.session.anonData && this.session.anonData.email)
 		{
 			setAvatar(this.session.anonData)
 			avatar = this.session.anonData.avatar
@@ -410,21 +429,35 @@ export function changePassword(hash, password, cb) {
 // Change email can be used both to change an email
 // and to set and send a new email hash for verification
 export function changeEmail(email, cb) {
+	email = email.toLowerCase()
 	var inValid = Validate.changeEmail(email)
 	if (inValid) return cb(svc.Forbidden(inValid))
-	email = email.toLowerCase()
+
+	self = this
 
 	var {user} = this
+	$log('changeEmail', email, user)
 	if (user)
 	{
-		var update = {
+		var up = { '$set': {
 			'email': email,
 			'emailVerified': false,
 			'local.emailHash': generateHash(email)
+			}
 		}
+		var previousEmail = user.email
 
-		svc.update(user._id, update, (e,r) => {
-			mailman.sendVerifyEmail(r, r.local.emailHash)
+		User.findOneAndUpdate({_id:user._id}, up, (e,r) => {
+			if (e) {
+				if (e.message.indexOf('duplicate key error index') != -1)	return cb(Error('Email belongs to another account'))
+				return cb(e)
+			}
+
+			if (user.email == email)
+				mailman.sendVerifyEmail(r, r.local.emailHash) // only send if the user explicitly is verifying
+			else
+				self.user.email = email // update the session object
+
 			cbSession(cb)(e,r)
 		})
 	}

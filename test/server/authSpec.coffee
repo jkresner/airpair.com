@@ -91,7 +91,8 @@ module.exports = -> describe "Signup: ", ->
           expect(res.body.error).to.equal('try google login')
           done()
 
-  it 'a user can request a password change, and set a new local password', (done) ->
+
+  it 'Can request a password change, and set a new local password', (done) ->
     new_password = 'drowssap'
     spy = sinon.spy(mailman,'sendChangePasswordEmail')
     d = getNewUserData('prak')
@@ -114,14 +115,16 @@ module.exports = -> describe "Signup: ", ->
                 expect(r.local.changePasswordHash).to.be.empty
                 done()
 
-  it 'must supply a valid email when requesting a password change', (done) ->
+
+
+  it.skip 'must supply a valid email when requesting a password change', (done) ->
     addAndLoginLocalUser 'stjp', (user) ->
       PUT '/users/me/password-change', {email: "abc"}, {}, (r) ->
         expect(r.message).to.include('Invalid email address')
         done()
 
 
-  it 'cannot change local password to an invalid password', (done) ->
+  it.skip 'cannot change local password to an invalid password', (done) ->
     PUT "/users/me/password", {hash: "ABC", password:"abc"}, {status:403, unauthenticated: true}, (r) ->
       expect(r.message).to.include('Invalid password')
       done()
@@ -169,6 +172,15 @@ module.exports = -> describe "Signup: ", ->
       PUT '/users/me/email', {}, {status:403}, (e)->
         expect(e.message).to.include('Invalid email address')
         done()
+
+
+  it 'Cannot change email to an existing users email', (done) ->
+    addAndLoginLocalUserWithEmailVerified 'scmo', (s) ->
+      expect(s.emailVerified).to.be.true
+      PUT '/users/me/email', {email:'jk@airpair.com'}, {status:400}, (e)->
+        expect(e.message).to.include('Email belongs to another account')
+        done()
+
 
 
   describe "Login", ->

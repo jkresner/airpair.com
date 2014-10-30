@@ -41,7 +41,7 @@
 		<li ng-repeat="tag in session.tags"><a href="/posts/tag/{{tag.slug}}">{{tag.name}}</a></li>
 	</ul>
 	<a id="navStackToggle" track-click="SideNav" href="#" ng-click="openStack()" class="icon">
-		<span>Customize</span><img src="/v1/img/css/sidenav/tags.png" />
+		<span>Customize</span><img src="/v1/img/css/sidenav/stack.png" />
 	</a>
 </section>
 
@@ -50,7 +50,7 @@
 	<ul class="bookmarks">
 		<li ng-repeat="b in session.bookmarks"><a href="{{b.url}}" target="_self">{{b.title}}</a></li>
 	</ul>
-	<a id="navBookmarksToggle" track-click="SideNav"  ng-click="openBookmarks()" class="icon"><span>Manage</span> <img src="/v1/img/css/sideNav/sort-arrows.png" /></a>
+	<a id="navBookmarksToggle" track-click="SideNav"  ng-click="openBookmarks()" class="icon"><span>Manage</span> <img src="/v1/img/css/sideNav/bookmarks.png" /></a>
 </section>
 
 <div stack></div>
