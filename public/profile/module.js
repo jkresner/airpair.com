@@ -37,13 +37,12 @@ angular.module("APProfile", ['ngRoute', 'APFilters', 'APSvcSession', 'APTagInput
     function($rootScope, $scope, $location, SessionService) {
 
  		var self = this;
-		$scope.emailAlerts = []
 
  		if ($location.search().verify) {
  			SessionService.verifyEmail({hash:$location.search().verify}, function(result){
-				$scope.emailAlerts.push({ type: 'success', msg: `${$scope.session.email} verified !` })
+				$scope.emailAlerts = [{ type: 'success', msg: `${$scope.session.email} verified !` }]
 			}, function(e){
-				console.log('verifyEmail.failed', e)
+				$scope.emailAlerts = [{ type: 'danger', msg: `${e} failed` }]
 			})
  		}
 
@@ -90,9 +89,9 @@ angular.module("APProfile", ['ngRoute', 'APFilters', 'APSvcSession', 'APTagInput
 
  		$scope.sendVerificationEmail = function() {
 			SessionService.changeEmail({email:$scope.session.email}, function(result){
-				console.log('changeEmail.success', result)
+				$scope.emailAlerts = [{ type: 'success', msg: `Email verification mail sent` }]
 			}, function(e){
-				console.log('changeEmail.failed', e)
+				$scope.emailAlerts = [{ type: 'danger', msg: `${e} failed` }]
 			})
  		};
 
