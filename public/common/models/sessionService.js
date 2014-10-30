@@ -17,7 +17,8 @@ angular.module('APSvcSession', [])
 
     var setScope = (successFn) => {
     	return function(result) {
-    		$rootScope = result
+    		$rootScope.session = result
+
     		successFn(result)
     	}
     }
@@ -69,4 +70,16 @@ angular.module('APSvcSession', [])
     {
       $http.put(`${API}/users/me`, data).success(setScope(success)).error(error)
     }
+
+    this.requestPasswordChange = function(data, success, error)
+    {
+      $http.put(`${API}/users/me/password-change`, data).success(success).error(error)
+    }
+
+    this.changePassword = function(data, success, error)
+    {
+      $http.put(`${API}/users/me/password`, data).success(success).error(error)
+    }
+
+
   }])
