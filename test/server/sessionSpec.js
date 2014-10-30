@@ -2,7 +2,9 @@ module.exports = () => describe("API: ", function() {
 
 	before(function(done) {
 		stubAnalytics()
-		done()
+		testDb.initPosts( () => {
+			testDb.initTags(done) })
+
 	})
 
 	after(function(done) {
@@ -22,11 +24,6 @@ module.exports = () => describe("API: ", function() {
 
 
 	describe("Stack: ", function(done) {
-
-		before(function(done) {
-			cache.flush('tags')
-			testDb.initTags(done)
-		})
 
 		it('Can add tag data to anonymous session', function(done) {
 			http(global.app)
@@ -141,12 +138,6 @@ module.exports = () => describe("API: ", function() {
 
 
 	describe("Bookmarks: ", function(done) {
-
-		before(function(done) {
-			cache.flush('posts')
-			testDb.initPosts(done)
-		})
-
 
 		it('Can add bookmark data to anonymous session', function(done) {
 			http(global.app)
@@ -294,6 +285,34 @@ module.exports = () => describe("API: ", function() {
 
 
 	it.skip('Not gonna impl: Merges anonymous session data to local LOGIN user', () => {})
+
+
+	describe("Profile: ", function(done) {
+
+		before(function(done) { done() })
+
+		it('Can update profile', function(done) {
+			addAndLoginLocalUser('sctm', function(s) {
+				GET('/session/full', {}, (s1) => {
+					var originalName = s1.name
+					var username = originalName.toLowerCase().replace(/ /g,'')
+					expect(s1.initials).to.be.undefined
+					expect(s1.username).to.be.undefined
+					PUT('/users/me', { name: 'testUP', initials: 'IN', username }, {}, function(r) {
+						expect(r.initials).to.equal('IN')
+						expect(r.name).to.equal('testUP')
+						GET('/session/full', {}, (s2) => {
+							expect(s2.initials).to.equal('IN')
+							expect(s2.name).to.equal('testUP')
+							expect(s2.username).to.equal(username)
+							done()
+						})
+					})
+				})
+			})
+		})
+
+	})
 
 
 })

@@ -30,6 +30,10 @@ angular.module("AP", ['ngRoute', 'APSideNav', 'APAuth', 'APPosts', 'APWorkshops'
 			template: require('../about.html')
 		});
 
+		$routeProvider.when('/', {
+			template: require('../about.html')
+		});
+
   }])
 
   .run(['$rootScope', '$location', 'SessionService',

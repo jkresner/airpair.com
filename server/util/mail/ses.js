@@ -1,5 +1,6 @@
 var Ses = require('awssum-amazon-ses').Ses
 
+var logging = true
 
 module.exports = function() {
 
