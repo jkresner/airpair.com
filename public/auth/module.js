@@ -37,7 +37,6 @@ angular.module("APAuth", ['ngRoute','ngMessages','APFormsDirectives','APFilters'
       if (!isValid) return
       SessionService.login(formData,
         (result) => {
-        	$rootScope.session = result;
         	// $window.location = '',
         },
         (e) => $scope.loginFail = e.error

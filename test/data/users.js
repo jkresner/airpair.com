@@ -24,6 +24,8 @@ module.exports = {
 	usha: { name:"Uri Shaked",email:"urish@gmail.com" },
 	wilm: { name:"Will Moss",email:"will.mossy@gmail.com" },
 	wlmo: { name:"Will Moss",email:"will.mossy@hotmai.com" },
+	sctm: { name:"Scott Moss",email:"scott.mossy@gmail.com" },
+	// wlmo: { name:"Will Moss",email:"will.mossy@hotmai.com" },
 
 	somr: { name:"Somik Rana",email:"somik@gmail.com" },
 	soik: { name:"Somik Rana",email:"somik@hotmail.com" },

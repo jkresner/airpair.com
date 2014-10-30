@@ -47,7 +47,7 @@ var User = new Schema({
 	membership: 					Membership,
 
 	name: 								{ type: String, trim: true },
-	initialis: 						{ type: String, lowercase: true, trim: true },
+	initials: 						{ type: String, lowercase: true, trim: true },
 
 	username: {
 		type: String,

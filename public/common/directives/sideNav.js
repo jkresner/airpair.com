@@ -115,7 +115,6 @@ angular.module("APSideNav", ['ui.bootstrap','APSvcSession', 'APTagInput'])
 		  SessionService.changeEmail({ email: $scope.data.email },
 		    (result) => {
 		    	analytics.track('Save', { type:'email', email: result.email });
-		    	$rootScope.session = result
 		    	$scope.data.email = result.email
 		    	$timeout(() => { angular.element('#signupName').trigger('focus'); }, 40)
 		    }
@@ -132,7 +131,6 @@ angular.module("APSideNav", ['ui.bootstrap','APSvcSession', 'APTagInput'])
 			{
 				SessionService.signup(data,
 				  (result) => {
-				  	$rootScope.session = result;
 				  	//$modalInstance.close();
 				  },
 				  (e) => $scope.signupFail = e.error
