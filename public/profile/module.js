@@ -35,7 +35,6 @@ angular.module("APProfile", ['ngRoute', 'APFilters', 'APSvcSession', 'APTagInput
 
  		if ($location.search().verify) {
  			SessionService.verifyEmail({hash:$location.search().verify}, function(result){
-				$rootScope.session = result
 			}, function(e){
 				console.log('verifyEmail.failed', e)
 			})
@@ -55,15 +54,31 @@ angular.module("APProfile", ['ngRoute', 'APFilters', 'APSvcSession', 'APTagInput
 			})
  		};
 
+ 		angular.element('#profileForm input').on('blur', function(event) {
+ 			$scope.profileAlerts = []
+
+ 			console.log('profileForm.$valid', profileForm.$valid)
+
+ 			if ($scope.session.name != $scope.data.name ||
+ 				$scope.session.initials != $scope.data.initials ||
+ 				$scope.session.username != $scope.data.username
+ 				)
+ 			{
+	 			SessionService.updateProfile($scope.data, function(result){
+					$scope.profileAlerts.push({ type: 'success', msg: `${event.target.name} updated` })
+				}, function(e){
+					$scope.data.username = $scope.session.username
+					$scope.profileAlerts.push({ type: 'danger', msg: e.message })
+				})
+ 			}
+ 		})
+
 		$scope.updateEmail = function(model) {
 			if (!model.$valid) return
 			$scope.emailChangeFailed = ""
 
 		  SessionService.changeEmail({ email: $scope.data.email },
 		    (result) => {
-					console.log('updateEmail', analytics)
-		    	analytics.track('Save', { type:'email', email: result.email });
-		    	$rootScope.session = result
 		    	$scope.data.email = result.email
 		    }
 		    ,

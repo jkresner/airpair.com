@@ -217,13 +217,34 @@ export function update(id, data, cb) {
 		if (e) return cb(e)
 		if (!r) return cb(Error(`Failed to update user with id: ${id}`))
 		var updated = _.extend(r, data)
-		User.findOneAndUpdate({_id:r._id}, updated, (err, user) => {
+		svc.update(r._id, updated, (err, user) => {
 			if (err) $log('User.update.err', err && err.stack)
 			if (logging) $log('User.update', JSON.stringify(user))
 			if (cb) cb(err, user)
 		})
 	})
 }
+
+
+export function updateProfile(name, initials, username, cb) {
+	var userId = this.user._id
+	var ups = {name}
+	if (initials) ups.initials = initials
+	if (username) ups.username = username
+
+	if (!username)
+		return update(userId, ups, cbSession(cb))
+
+	console.log('searching existing', {username})
+	svc.searchOne({username}, null, function(e,r) {
+		console.log('return existing', e, r, {name,initials,username})
+		if (r) {
+			return cb(svc.Forbidden(`username ${username} already taken`))
+		}
+		update(userId, ups, cbSession(cb))
+	})
+}
+
 
 
 var VALID_ROLES = ['admin',       // Get access to all admin backend app

@@ -13,7 +13,6 @@ angular.module("APBookmarker", ['APSvcSession'])
 				$scope.bookmark = function(objectId) {
 					var data = { type: $scope.type, objectId }
 					var success = function(result) {
-						$rootScope.session = result
 					}
 					SessionService.updateBookmark(data, success, (e) => alert(e.message));
 				}
