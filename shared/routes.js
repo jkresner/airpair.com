@@ -7,5 +7,5 @@ module.exports = [
   '*/workshops*',
   '/billing*',
   '/v1/auth*',
-  '/me'
+  '/me*'
 ]
