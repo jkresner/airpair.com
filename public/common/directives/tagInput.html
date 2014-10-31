@@ -1,34 +1,37 @@
 <div class="form-group tag-input-group">
-  <div class="nomobile">This feature is not available on mobile</div>
+    <div class="nomobile">This feature is not available on mobile</div>
 
-  <div class="drag">
-  	<p>
-			<b>drag in order of importance</b>
-			<br />place most used first
-		</p>
-  </div>
-  <div class="selected">
-		<label for="tagInput">Your stack</label>
+    <div class="drag">
+        <p>
+            <b>drag in order of importance</b>
+            <br />place most used first
+        </p>
+    </div>
+    <div class="selected">
+        <label for="tagInput">Your stack</label>
 
-		<ul class="tags">
-			<li ng-repeat="tag in selectedTags()">{{tag.slug}}  <a class="remove" ng-click="deselectMatch(tag)">x</a></li>
-		</ul>
+        <ul class="tags" sortable>
+            <li ng-repeat="tag in selectedTags()"
+                ng-attr-data-id="{{tag.tagId}}" ng-attr-data-sort="{{tag.sort}}">
+                {{tag.slug}}
+            	<a class="order"></a>
+            	<a class="remove" ng-click="deselectMatch(tag)">x</a>
+            </li>
+        </ul>
 
-		<p ng-if="!selectedTags() || selectedTags().length == 0">No tags selected yet.</p>
-  </div>
+        <p ng-if="!selectedTags() || selectedTags().length == 0">No tags selected yet.</p>
+    </div>
 
-  <label for="tagInput">Search technologies</label>
-	<input type="text" class="tagInput form-control"
-	  placeholder="type a technology (e.g. javascript)"
-	  ng-model="q" typeahead="t as t for t in getTags($viewValue) | filter:$viewValue">
-	<!-- typeahead-loading="loading"
+    <label for="tagInput">Search technologies</label>
+    <input type="text" class="tagInput form-control" placeholder="type a technology (e.g. javascript)" ng-model="q" typeahead="t as t for t in getTags($viewValue) | filter:$viewValue">
+    <!-- typeahead-loading="loading"
 	<i ng-show="loading" class="glyphicon glyphicon-refresh"></i>
 	 -->
 </div>
 
 <script type="text/ng-template" id="template/typeahead/typeahead-match.html">
-  <a class="tagSelect">
-    <span bind-html-unsafe="match.model.slug | typeaheadHighlight:query"></span>
-    <div style="width:199px;overflow:hidden;height:auto" bind-html-unsafe="match.model.desc | typeaheadHighlight:query"></div>
-  </a>
+    <a class="tagSelect">
+        <span bind-html-unsafe="match.model.slug | typeaheadHighlight:query"></span>
+        <div style="width:199px;overflow:hidden;height:auto" bind-html-unsafe="match.model.desc | typeaheadHighlight:query"></div>
+    </a>
 </script>

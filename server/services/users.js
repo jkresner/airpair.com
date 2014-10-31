@@ -346,12 +346,21 @@ function toggleSessionItem(type, item, maxAnon, maxAuthd, comparator, cb)
 	}
 }
 
-
 export function toggleTag(tag, cb) {
 	var tagId = tag._id
 	tag = { _id: svc.newId(), tagId: tag._id, sort: 0 }
 	var tagCompator = (i) => _.idsEqual(i.tagId, tagId)
 	toggleSessionItem.call(this, 'tags', tag, 3, 6, tagCompator, cb)
+}
+
+export function sortTags(tags, cb) {
+	if (this.user) {
+		svc.update(userId, tags, callback);
+	}
+	else {
+		this.session.anonData.tags = tags
+	}
+	return getSession.call(this, cb);
 }
 
 export function toggleBookmark(type, id, cb) {

@@ -8,5 +8,6 @@ export default initAPI(Svc, {
   toggleBookmark: (req) => [req.params.type,req.params.id],
   getUsersInRole: (req) => [req.params.role],
   changeEmail: (req) => [req.body.email],
-  verifyEmail: (req) => [req.query.hash]
+  verifyEmail: (req) => [req.query.hash],
+  sortTags: (req) => [req.body]
 })
