@@ -18,10 +18,10 @@ var localSignup = LocalProvider.init('local-singup', (req, email, password, done
 
 var googleOAuth = OAuthProvider.init('google', (req, provider, profile, done) => {
   var donedone = function(e, r) {
-  	$log('donedone', e, r)
+  	$log('donedone', e, r, done)
   	done(e,r)
   }
-  UserService.upsertProviderProfile.call(thisSvc(req), provider, profile, done)
+  UserService.upsertProviderProfile.call(thisSvc(req), provider, profile, donedone)
 })
 
 

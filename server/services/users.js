@@ -101,7 +101,7 @@ function upsertSmart(search, upsert, cb) {
 				upsert.bookmarks = _.union(r.bookmarks, upsert.bookmarks)
 		}
 
-		if (logging) $log('upserting', upsert)
+		// if (logging) $log('upserting', upsert)
 
 		User.findOneAndUpdate(search, upsert, { upsert: true }, (err, user) => {
 			if (logging || err) $log('User.upsert', err, user)
@@ -110,7 +110,7 @@ function upsertSmart(search, upsert, cb) {
 			var done = cbSession(cb)
 			if (!analytics.upsert) return done(null, user)
 
-			if (logging) $log('analytics.upsert **********************************')
+			// if (logging) $log('analytics.upsert **********************************')
 			analytics.upsert(user, r, sessionID, (aliases) => {
 				if (logging) $log('back from the analytics.upsert **********************************')
 				if (aliases && user.cohort.aliases &&

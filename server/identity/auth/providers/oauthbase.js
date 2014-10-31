@@ -12,8 +12,12 @@ var oauthFn = (provider, scope) => {
   }
 
   return (req, res, next) => {
+    if (logging) $log('oauthFn.req.isAuthenticated', req.isAuthenticated)
+
     if ( req.isAuthenticated() )
     {
+    	if (logging) $log('oauthFn.req.isAuthenticated().true', req.user)
+
       // If the users is ALREADY logged in (got a session), then we
       // handshake with the provider AND do not do anything with the session
       // * the name authorize is kind of unclear, hence the comments
@@ -21,6 +25,8 @@ var oauthFn = (provider, scope) => {
     }
     else
     {
+    	if (logging) $log('oauthFn.req.isAuthenticated().false')
+
       // If the users is not logged in (got a session), then we
       // handshake with the provider AND authenticate the user
       passport.authenticate(provider, opts)(req, res, next)
