@@ -1,7 +1,6 @@
 module.exports = {
 
   users: {
-    cohort: null,
     SoumyaAcharya: {
       "_id" : "51a6668866a6f999a465f2fc",
       "google" : {

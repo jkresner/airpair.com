@@ -66,6 +66,28 @@ module.exports = {
 	dysn: { name: "Dilys Sun", email: "dilys@hotmail.com"},
 	dily: { name: "Dilys Sun", email: "dilys@gmail.com"},
 
+	aone: {
+		_id: "5452cea65f221efa174237b4",
+	  email: 'airpairone001@gmail.com',
+	  name: 'AirPair TestOne',
+	  local:
+	   { password: '$2a$08$Wk3aFR5GHTo4CMgWQgd3Ve9NZG2bZH6lT1YchsIZ99TAKUlhg.16W',
+	     emailHash: '',
+	     changePasswordHash: '' },
+	  cohort:
+	   { aliases: null,
+	     engagement:
+	      { visit_first: "Thu Oct 30 2014 17:49:50 GMT-0600 (CST)",
+	        visit_signup: "Thu Oct 30 2014 17:49:58 GMT-0600 (CST)",
+	        visit_last: "Thu Oct 30 2014 17:49:58 GMT-0600 (CST)",
+	        visits: [] } },
+	  bookmarks: [],
+	  tags: [],
+	  roles: [],
+	  membership: {},
+	  emailVerified: false
+	},
+
 	dros :{
     "_id" : "52cd929666a6f999a465fee8",
     "github" : {
