@@ -148,6 +148,7 @@ module.exports = {
         var bulk = Tag.collection.initializeOrderedBulkOp()
 	    	for (var t of [angular,node,mongo,mean,rails]) { bulk.insert(t) }
 	    	bulk.execute(done)
+	    	cache.flush('tags')
       }
       else
         done()
@@ -162,6 +163,7 @@ module.exports = {
         var bulk = Post.collection.initializeOrderedBulkOp()
 	    	for (var t of [v1AirPair,migrateES6,sessionDeepDive]) { bulk.insert(t) }
 	    	bulk.execute(done)
+	    	cache.flush('posts')
       }
       else
         done()
