@@ -68,7 +68,6 @@ function upsertSmart(search, upsert, cb) {
 
 	svc.searchOne(search, null, (e, r) => {
 		if (e) { return cb(e) }
-
 		upsert.cohort = getUpsertEngagementProperties(r,sessionID,sessionCreatedAt)
 
 		if (upsert.google)
@@ -76,7 +75,6 @@ function upsertSmart(search, upsert, cb) {
 			//-- stop user clobbering user.google details
 			if (r && r.googleId && (r.googleId != upsert.google.id))
 				return cb(Error(`Cannot overwrite google login ${r.google._json.email} with ${upsert.google._json.email}. <a href="/v1/auth/logout">Logout</a> first?`),null)
-
 
 			//-- copy google details to top level users details
 			if (!r || !r.email)
@@ -129,6 +127,8 @@ var generateHash = (password) =>
 export function upsertProviderProfile(providerName, profile, done) {
 	var search = {}
 	search[providerName+'Id'] = profile.id
+	if (providerName == 'google')
+		search = { '$or': [{email:profile._json.email},search] }
 	if (this.user && this.user._id)
 		search = { '_id': this.user._id }
 
@@ -306,20 +306,22 @@ function inflateTagsAndBookmarks(sessionData, cb) {
 	})
 }
 
+var anonAvatars = [
+	"/v1/img/css/sidenav/default-cat.png",
+	"/v1/img/css/sidenav/default-mario.png",
+	"/v1/img/css/sidenav/default-stormtrooper.png"
+]
 
 export function getSession(cb) {
 	if (this.user == null)
 	{
-		var avatar = "/v1/img/css/sidenav/default-cat.png"
+		var avatar = anonAvatars[_.random(1)]
 
 		if (this.session.anonData && this.session.anonData.email)
 		{
 			setAvatar(this.session.anonData)
 			avatar = this.session.anonData.avatar
 		}
-		else
-			avatar = "/v1/img/css/sidenav/default-stormtrooper.png"
-
 
 		var session = _.extend({ authenticated:false,sessionID:this.sessionID, avatar }, this.session.anonData)
 		inflateTagsAndBookmarks(session, cb)
@@ -429,14 +431,13 @@ export function changePassword(hash, password, cb) {
 // Change email can be used both to change an email
 // and to set and send a new email hash for verification
 export function changeEmail(email, cb) {
-	email = email.toLowerCase()
 	var inValid = Validate.changeEmail(email)
 	if (inValid) return cb(svc.Forbidden(inValid))
+	email = email.toLowerCase()
 
 	self = this
 
 	var {user} = this
-	$log('changeEmail', email, user)
 	if (user)
 	{
 		var up = { '$set': {
