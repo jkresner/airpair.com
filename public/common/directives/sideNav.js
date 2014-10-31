@@ -108,6 +108,14 @@ angular.module("APSideNav", ['ui.bootstrap','APSvcSession', 'APTagInput'])
 
 		$scope.data = { email: $scope.session.email, name: $scope.session.name }
 
+		if (!$scope.session.email)
+		{
+			$scope.avatarQuestion = "Aren't you a little short for a storm trooper?";
+			var avatar = $scope.session.avatar.replace('/v1/img/css/sidenav/default-','').replace('.png','')
+			if (avatar == 'cat') $scope.avatarQuestion = "That's a nice hair tie...";
+			if (avatar == 'mario') $scope.avatarQuestion = "Eating a little too many mushrooms aren't we?";
+		}
+
 		$scope.updateEmail = function(model) {
 			if (!model.$valid) return
 			$scope.emailChangeFailed = ""
