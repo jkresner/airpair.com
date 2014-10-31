@@ -2,6 +2,7 @@ airpair.com
 ===========
 
 
+<<<<<<< HEAD
 Developing
 ==========
 
@@ -18,6 +19,11 @@ Let's keep whitespace out of the repo. To help with this:
 
 Running Tests
 =============
+=======
+
+Running tests
+===============================================================================
+>>>>>>> FETCH_HEAD
 
 ##### 1. /test/server
 
