@@ -61,6 +61,3 @@ angular.module('APSvcAdmin', [])
     }
 
   }])
-
-
-  }])
