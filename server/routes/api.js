@@ -65,6 +65,10 @@ export default function(app) {
     .get('/redirects', RedirectsAPI.getAllRedirects)
     .post('/redirects', RedirectsAPI.createRedirect)
     .delete('/redirects/:id', RedirectsAPI.deleteRedirectById)
+    .get('/tags', TagsAPI.getAll)
+    .put('/tags/:id', TagsAPI.update)
+    .delete('/tags/:id', TagsAPI.deleteById)
+    .post('/tags', TagsAPI.create);
 
 
   router.use('/adm',admrouter)

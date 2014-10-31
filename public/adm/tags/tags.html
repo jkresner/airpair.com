@@ -1,0 +1,105 @@
+<div>
+	<div class="row tag-search">
+		<div class="col-md-6" >
+			<input type="text" class="tagInput form-control"
+				placeholder="find or create tags"
+				ng-model="search">
+		</div>
+		<div class="col-md-3">
+			<button class="btn" ng-click="tags.enableEdit()">new tag</button>
+		</div>
+		<div class="col-md-3">
+			<h3>Tags<strong>({{ tags.count }})</strong></h3>
+		</div>
+	</div>
+
+	<div ng-if="tags.edit.show" class="edit-tag fx-zoom-normal">
+		<div class="row left" >
+			<div class="col-md-6">
+				<div class="row">
+					<h4 class="col-md-3 edit-label">Slug:</h4>
+					<h4
+						ng-attr-contenteditable="{{ tags.editmode }}"
+						ng-model="tags.edit.tag.slug" class="col-md-8"
+						ng-class="{edit: tags.editmode === true}">
+					</h4>
+				</div>
+			</div>
+			<div class="col-md-6">
+				<div class="row">
+					<h4 class="col-md-3 edit-label">Name:</h4>
+					<h4
+						ng-attr-contenteditable="{{ tags.editmode }}"
+						ng-model="tags.edit.tag.name" class="col-md-8"
+						ng-class="{edit: tags.editmode === true}">
+					</h4>
+				</div>
+			</div>
+		</div>
+
+		<div class="row left" >
+			<div class="col-md-6">
+				<div class="row">
+					<h4 class="col-md-3 edit-label">Short:</h4>
+					<h4
+						ng-attr-contenteditable="{{ tags.editmode }}"
+						ng-model="tags.edit.tag.short" class="col-md-8"
+						ng-class="{edit: tags.editmode === true}">
+					</h4>
+				</div>
+			</div>
+			<div class="col-md-6">
+				<div class="row">
+					<h4 class="col-md-3 edit-label">soID:</h4>
+					<h4
+						ng-attr-contenteditable="{{ tags.editmode }}"
+						ng-model="tags.edit.tag.soId" class="col-md-8"
+						ng-class="{edit: tags.editmode === true}">
+					</h4>
+				</div>
+			</div>
+		</div>
+
+		<div class="row left">
+			<h4 class="col-md-3 edit-label">Tokens:</h4>
+			<h4
+				ng-attr-contenteditable="{{ tags.editmode }}"
+				ng-model="tags.edit.tag.tokens" class="col-md-4"
+				ng-class="{edit: tags.editmode === true}">
+			</h4>
+		</div>
+		<div class="row box left">
+			<h4 class="col-md-3 edit-label">Desc:</h4>
+			<div class="col-md-9"
+				ng-model="tags.edit.tag.desc"
+				class="col-md-11"
+				ng-attr-contenteditable="{{ tags.editmode }}"
+				ng-class="{edit: tags.editmode === true}">
+			</div>
+		</div>
+		<div class="row left">
+			<div class="btn-group col-md-6 col-md-offset-6">
+				<button ng-if="!tags.edit.create" class="btn" ng-click="tags.deleteTag(tags.edit.tag._id)">delete</button>
+				<button ng-if="tags.edit.create" class="btn" ng-click="tags.resetEdit()">close</button>
+
+				<button class="btn btn-edit" ng-click="tags.editmode = !tags.editmode">edit</button>
+
+				<button ng-if="!tags.edit.create"class="btn btn-done" ng-click="tags.doneEditing()">update</button>
+				<button ng-if="tags.edit.create" class="btn btn-done" ng-click="tags.create(tags.edit.tag)">create</button>
+			</div>
+		</div>
+	</div>
+
+	<section class="tags-container">
+		<div class="row">
+			<div class="tags" ng-class="{fade: tags.edit.show === true}">
+				<span class=""ng-repeat="tag in tags.tags | filter:tags.filter.search">
+						<small ng-click="tags.enableEdit(tag)">{{ ::tag.slug || tag.name }}</small>
+						<a class="remove" ng-click="tags.deleteTag(tag._id, $index)">X</a>
+				</span>
+			</div>
+		</div>
+	</section>
+
+</div>
+
