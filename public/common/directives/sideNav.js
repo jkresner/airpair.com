@@ -103,22 +103,28 @@ angular.module("APSideNav", ['ui.bootstrap','APSvcSession', 'APTagInput'])
 	}])
 
 
-	.controller('ProileCtrl', ['$scope', '$rootScope', '$modalInstance', '$window', 'SessionService',
-		function($scope, $rootScope, $modalInstance, $window, SessionService) {
+	.controller('ProileCtrl', ['$scope', '$rootScope', '$modalInstance', '$window', '$timeout', 'SessionService',
+		function($scope, $rootScope, $modalInstance, $window, $timeout, SessionService) {
 
 		$scope.data = { email: $scope.session.email, name: $scope.session.name }
+
+		if (!$scope.session.email)
+		{
+			$scope.avatarQuestion = "Aren't you a little short for a storm trooper?";
+			var avatar = $scope.session.avatar.replace('/v1/img/css/sidenav/default-','').replace('.png','')
+			if (avatar == 'cat') $scope.avatarQuestion = "That's a nice hair tie...";
+			if (avatar == 'mario') $scope.avatarQuestion = "Eating a little too many mushrooms aren't we?";
+		}
 
 		$scope.updateEmail = function(model) {
 			if (!model.$valid) return
 			$scope.emailChangeFailed = ""
-		  // var inValid = Validate.changeEmail($scope.data.email)
-		  // if (inValid) return $scope.data.email = ""
 
 		  SessionService.changeEmail({ email: $scope.data.email },
 		    (result) => {
 		    	analytics.track('Save', { type:'email', email: result.email });
-		    	$rootScope.session = result
-		    	$scope.data = { email: result.email, name: result.name }
+		    	$scope.data.email = result.email
+		    	$timeout(() => { angular.element('#signupName').trigger('focus'); }, 40)
 		    }
 		    ,
 		    (e) => {
@@ -133,8 +139,7 @@ angular.module("APSideNav", ['ui.bootstrap','APSvcSession', 'APTagInput'])
 			{
 				SessionService.signup(data,
 				  (result) => {
-				  	$rootScope.session = result;
-				  	$modalInstance.close();
+				  	//$modalInstance.close();
 				  },
 				  (e) => $scope.signupFail = e.error
 				)

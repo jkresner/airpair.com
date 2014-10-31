@@ -27,7 +27,6 @@ angular.module("ADM", [
     function($rootScope, $location, SessionService) {
 
     SessionService.onAuthenticated( (session) => {
-      $rootScope.session = session;
     });
 
   }])

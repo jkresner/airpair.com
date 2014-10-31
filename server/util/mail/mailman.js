@@ -26,7 +26,7 @@ function renderEmail(templateName, templateData) {
 	var rendered = {}
   var subjectFn = templates[`${templateName}_subject`],
   		htmlFn = templates[`${templateName}_html`],
-  		textFn = templates[`${templateName}_txt`]
+  		textFn = templates[`${templateName}_text`]
 
 	if (!htmlFn && !textFn || !subjectFn) throw Error(`No email template functions for ${templateName}`)
 
@@ -48,6 +48,13 @@ module.exports = function(mailProvider)
 			firstName: util.firstName(toUser.name),
 			hash
 		}), cb)
+
+	mailman.sendChangePasswordEmail = (toUser, hash, cb) =>
+		mailProvider.send(`${toUser.name} <${toUser.email}>`, renderEmail('changepassword', {
+			firstName: util.firstName(toUser.name),
+			hash
+		}), cb)
+
 
 	return mailman
 }

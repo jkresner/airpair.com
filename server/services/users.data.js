@@ -19,6 +19,7 @@ module.exports = {
       'primaryPayMethodId': 1,
       'name': 1,
       'initials': 1,
+      'username': 1,
       'bio': 1,
       'tags': 1,
       'bookmarks': 1,

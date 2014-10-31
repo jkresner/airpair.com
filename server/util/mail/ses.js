@@ -1,5 +1,6 @@
 var Ses = require('awssum-amazon-ses').Ses
 
+var logging = false
 
 module.exports = function() {
 
@@ -22,14 +23,15 @@ module.exports = function() {
 			if (typeof(to) == 'string') to = [to]
 			data.ToAddresses = to
 
-			if (logging) $log('ses.send', to, data.Subject, data.Text)
-
 			data = _.defaults(data, emailDefaults)
 
 			if (config.mail.on)
 				ses.SendEmail(data, callback)
-			else
+			else {
+				// if (logging)
+				$log('ses.send', to, data.Subject, data.Text)
 				callback()
+			}
 		}
 	}
 

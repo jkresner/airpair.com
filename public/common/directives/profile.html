@@ -3,14 +3,25 @@
 	<a href="#" class="close" ng-click="cancel()">x</a>
 </div>
 
+<div ng-if="session._id" class="success">
+	<div class="modal-body profile">
+		<h2>Account successfully created.</h2>
+	</div>
 
-<form novalidate name="profileForm" ng-submit="submit(profileForm.$valid, data)">
+	<div class="modal-footer profile">
+		<button ng-click="cancel()" class="btn btn-primary">Continue</button>
+	</div>
+
+</div>
+
+
+<form ng-if="!session._id" id="profileForm" novalidate name="profileForm" ng-submit="submit(profileForm.$valid, data)">
 
 	<div class="modal-body profile">
 
 	<section>
 		<section style="height:40px">
-		 <p ng-if="!session.email"><i>Aren't you a little short for a storm trooper?</i> <span ng-if="!session.email">Enter your email address to fix your avatar.</span></p>
+		 <p ng-if="!session.email"><i>{{ avatarQuestion }}</i> <span ng-if="!session.email">Enter your email address to fix your avatar.</span></p>
 		 <p ng-if="session.email">Save your name and password to get $10 credit.</p>
 
 		</section>
@@ -22,20 +33,20 @@
 				<span ng-if="!session.email">Enter an email address</span>
 			 	<br /> to change your profile pic.
 			</p>
-			<hr />
-			<label>Account Credit</label> <b style="font-size:26px;color:black">$10</b> <br />available when you sign up
+			<!-- <hr />
+			<label>Account Credit</label> <b style="font-size:26px;color:black">$10</b> <br />available when you sign up -->
 
 		</section>
 
 		<section class="google">
-			Hate forms and passwords? <br /><br /><a href="/v1/auth/google" target="_self"><b>Sign in with your Google account instead</b></a>.
+			Hate signup forms and remembering passwords? <br /><br /><a href="/v1/auth/google" target="_self"><b>Sign in with your Google account instead</b></a>.
 		</section>
 
 		<section class="info">
 
 			<div form-group>
 				<label class="control-label" for="signupEmail">Email</label>
-				<input id="signupEmail" name="email" form-control type="email" placeholder="Primary contact email" ng-model="data.email" ng-blur="updateEmail(profileForm.email)" required >
+				<input id="signupEmail" name="email" form-control type="email" placeholder="Primary contact email" ng-model="data.email" ng-blur="updateEmail(profileForm.email)" required tabindex="1">
 	      <div class="error" ng-if="formGroup.showError(profileForm.email)" ng-messages="profileForm.email.$error">
 	        <div ng-message="required">Email required</div>
 	        <div ng-message="email">Invalid email</div>
@@ -45,7 +56,7 @@
 
 			<div form-group ng-if="session.email">
 				<label class="control-label" for="sessionName">Full name </label>
-				<input id="sessionName" name="name" form-control type="text" placeholder="Full name" ng-model="data.name" required ng-minlength="4" ng-minlength="60" ng-pattern="/\w+ \w+/">
+				<input id="signupName" name="name" form-control type="text" placeholder="Full name" ng-model="data.name" required ng-minlength="4" ng-minlength="60" ng-pattern="/\w+ \w+/" tabindex="2">
 	      <div class="error" ng-if="formGroup.showError(profileForm.name)" ng-messages="profileForm.name.$error">
 	        <div ng-message="required">Name required</div>
 	        <div ng-message="minlength">Full name required (e.g. John Smith)</div>
@@ -56,7 +67,7 @@
 
 			<div form-group ng-if="data.name">
 				<label class="control-label" for="signupPassword">Password </label>
-				<input id="signupPassword" name="password" form-control type="password" placeholder="Password" ng-model="data.password" required ng-minlength="5" ng-maxlength="10">
+				<input id="signupPassword" name="password" form-control type="password" placeholder="Password" ng-model="data.password" required ng-minlength="5" ng-maxlength="10" tabindex="3">
 				<div class="error" ng-if="formGroup.showError(profileForm.password)" ng-messages="profileForm.password.$error">
 	        <div ng-message="required">Password required</div>
 	        <div ng-message="minlength">Password min length 5 chars</div>

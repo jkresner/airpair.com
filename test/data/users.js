@@ -24,6 +24,8 @@ module.exports = {
 	usha: { name:"Uri Shaked",email:"urish@gmail.com" },
 	wilm: { name:"Will Moss",email:"will.mossy@gmail.com" },
 	wlmo: { name:"Will Moss",email:"will.mossy@hotmai.com" },
+	sctm: { name:"Scott Moss",email:"scott.mossy@gmail.com" },
+	scmo: { name:"Scott Moss",email:"scott.mossy@hotmai.com" },
 
 	somr: { name:"Somik Rana",email:"somik@gmail.com" },
 	soik: { name:"Somik Rana",email:"somik@hotmail.com" },
@@ -53,14 +55,38 @@ module.exports = {
 	stev: { name: "Steve Purves", email: "steve@hotmail.com"},
 	spur: { name: "Steve Purves", email: "sjpurves@yahoo.com"},
 	step: { name: "Stephen Purves", email: "stephenp@yahoo.com"},
+	stjp: { name: "Stephen Purves", email: "stevejpurves@yahoo.com"},
 	chuc: { name: "Chuck Norris", email: "chuck@hotmail.com"},
 	spgo: { name: "SJ Purves", email: "stevejpurves@ymail.com"},
+	prak: { name: "Prateek Gupta", email: "prateek@hotmail.com"},
 
 	obfn: { name: "Obie Fernandez", email: "obiefernand@gmail.com"},
 	obie: { name: "Obie Fernandez", email: "obiefernand@hotmail.com"},
 
 	dysn: { name: "Dilys Sun", email: "dilys@hotmail.com"},
 	dily: { name: "Dilys Sun", email: "dilys@gmail.com"},
+
+	aone: {
+		_id: "5452cea65f221efa174237b4",
+	  email: 'airpairone001@gmail.com',
+	  name: 'AirPair TestOne',
+	  local:
+	   { password: '$2a$08$Wk3aFR5GHTo4CMgWQgd3Ve9NZG2bZH6lT1YchsIZ99TAKUlhg.16W',
+	     emailHash: '',
+	     changePasswordHash: '' },
+	  cohort:
+	   { aliases: null,
+	     engagement:
+	      { visit_first: "Thu Oct 30 2014 17:49:50 GMT-0600 (CST)",
+	        visit_signup: "Thu Oct 30 2014 17:49:58 GMT-0600 (CST)",
+	        visit_last: "Thu Oct 30 2014 17:49:58 GMT-0600 (CST)",
+	        visits: [] } },
+	  bookmarks: [],
+	  tags: [],
+	  roles: [],
+	  membership: {},
+	  emailVerified: false
+	},
 
 	dros :{
     "_id" : "52cd929666a6f999a465fee8",

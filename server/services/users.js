@@ -68,7 +68,6 @@ function upsertSmart(search, upsert, cb) {
 
 	svc.searchOne(search, null, (e, r) => {
 		if (e) { return cb(e) }
-
 		upsert.cohort = getUpsertEngagementProperties(r,sessionID,sessionCreatedAt)
 
 		if (upsert.google)
@@ -76,7 +75,6 @@ function upsertSmart(search, upsert, cb) {
 			//-- stop user clobbering user.google details
 			if (r && r.googleId && (r.googleId != upsert.google.id))
 				return cb(Error(`Cannot overwrite google login ${r.google._json.email} with ${upsert.google._json.email}. <a href="/v1/auth/logout">Logout</a> first?`),null)
-
 
 			//-- copy google details to top level users details
 			if (!r || !r.email)
@@ -129,6 +127,8 @@ var generateHash = (password) =>
 export function upsertProviderProfile(providerName, profile, done) {
 	var search = {}
 	search[providerName+'Id'] = profile.id
+	if (providerName == 'google')
+		search = { '$or': [{email:profile._json.email},search] }
 	if (this.user && this.user._id)
 		search = { '_id': this.user._id }
 
@@ -164,7 +164,8 @@ export function tryLocalSignup(email, password, name, done) {
         name: name,
         local: {
 					password: generateHash(password),
-					email: ''
+					emailHash: '',
+					changePasswordHash: ''
         }
 			}
 
@@ -216,13 +217,32 @@ export function update(id, data, cb) {
 		if (e) return cb(e)
 		if (!r) return cb(Error(`Failed to update user with id: ${id}`))
 		var updated = _.extend(r, data)
-		User.findOneAndUpdate({_id:r._id}, updated, (err, user) => {
+		svc.update(r._id, updated, (err, user) => {
 			if (err) $log('User.update.err', err && err.stack)
 			if (logging) $log('User.update', JSON.stringify(user))
 			if (cb) cb(err, user)
 		})
 	})
 }
+
+
+export function updateProfile(name, initials, username, cb) {
+	var userId = this.user._id
+	var ups = {name}
+	if (initials) ups.initials = initials
+	if (username) ups.username = username
+
+	if (!username)
+		return update(userId, ups, cbSession(cb))
+
+	svc.searchOne({username}, null, function(e,r) {
+		if (r) {
+			return cb(svc.Forbidden(`username ${username} already taken`))
+		}
+		update(userId, ups, cbSession(cb))
+	})
+}
+
 
 
 var VALID_ROLES = ['admin',       // Get access to all admin backend app
@@ -286,20 +306,22 @@ function inflateTagsAndBookmarks(sessionData, cb) {
 	})
 }
 
+var anonAvatars = [
+	"/v1/img/css/sidenav/default-cat.png",
+	"/v1/img/css/sidenav/default-mario.png",
+	"/v1/img/css/sidenav/default-stormtrooper.png"
+]
 
 export function getSession(cb) {
 	if (this.user == null)
 	{
-		var avatar = "/v1/img/css/sidenav/default-cat.png"
+		var avatar = anonAvatars[_.random(1)]
 
-		if (this.session.anonData.email)
+		if (this.session.anonData && this.session.anonData.email)
 		{
 			setAvatar(this.session.anonData)
 			avatar = this.session.anonData.avatar
 		}
-		else
-			avatar = "/v1/img/css/sidenav/default-stormtrooper.png"
-
 
 		var session = _.extend({ authenticated:false,sessionID:this.sessionID, avatar }, this.session.anonData)
 		inflateTagsAndBookmarks(session, cb)
@@ -362,6 +384,49 @@ export function toggleBookmark(type, id, cb) {
 	toggleSessionItem.call(this, 'bookmarks', bookmark, 2, 15, bookmarkComparator, cb)
 }
 
+export function requestPasswordChange(email, cb) {
+	var inValid = Validate.changeEmail(email)
+	if (inValid) return cb(svc.Forbidden(inValid))
+
+	var search = { '$or': [{email:email},{'google._json.email':email}] }
+	var self = this
+	svc.searchOne(search, null, function(e,user) {
+		if (e||!user) {
+			return cb(svc.Forbidden(`${email} not found`))
+		}
+
+		var update = { 'local.changePasswordHash': generateHash(email) }
+		svc.update(user._id, update, (e,r) => {
+			mailman.sendChangePasswordEmail(r, r.local.changePasswordHash)
+			return cbSession(cb)(e,r)
+		})
+	})
+}
+
+export function changePassword(hash, password, cb) {
+	var inValid = Validate.changePassword(hash, password)
+	if (inValid) return cb(svc.Forbidden(inValid))
+
+	var query = {'local.changePasswordHash': hash}
+	var self = this
+	svc.searchOne(query, null, (e,user) => {
+		if (e||!user) return cb(svc.Forbidden('hash not found'))
+
+		// we've just received the hash that we sent to user.email
+		// so mark their email as verified
+		var update = {
+			'local.password': generateHash(password),
+			'local.changePasswordHash': '',
+			'emailVerified': true
+		}
+
+		svc.update(user._id, update, (e,r) => {
+			if (e || !r) return cb(e,r)
+			return getSession.call(this,cb)
+		});
+	});
+}
+
 
 // Change email can be used both to change an email
 // and to set and send a new email hash for verification
@@ -370,17 +435,30 @@ export function changeEmail(email, cb) {
 	if (inValid) return cb(svc.Forbidden(inValid))
 	email = email.toLowerCase()
 
+	self = this
+
 	var {user} = this
 	if (user)
 	{
-		var update = {
+		var up = { '$set': {
 			'email': email,
 			'emailVerified': false,
 			'local.emailHash': generateHash(email)
+			}
 		}
+		var previousEmail = user.email
 
-		svc.update(user._id, update, (e,r) => {
-			mailman.sendVerifyEmail(r, r.local.emailHash)
+		User.findOneAndUpdate({_id:user._id}, up, (e,r) => {
+			if (e) {
+				if (e.message.indexOf('duplicate key error index') != -1)	return cb(Error('Email belongs to another account'))
+				return cb(e)
+			}
+
+			if (user.email == email)
+				mailman.sendVerifyEmail(r, r.local.emailHash) // only send if the user explicitly is verifying
+			else
+				self.user.email = email // update the session object
+
 			cbSession(cb)(e,r)
 		})
 	}
