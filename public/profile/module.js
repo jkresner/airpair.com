@@ -128,9 +128,10 @@ angular.module("APProfile", ['ngRoute', 'APFilters', 'APSvcSession', 'APTagInput
 
 	  $scope.savePassword = function() {
 	  	SessionService.changePassword($scope.data, function(result){
-				$scope.alerts.push({ type: 'success', msg: `New password set` })
+				$scope.alerts = [{ type: 'success', msg: `New password set` }]
+
 			}, function(e){
-				$scope.alerts.push({ type: 'danger', msg: `Password change failed` })
+				$scope.alerts = [{ type: 'danger', msg: `Password change failed` }]
 			})
 	  }
 
