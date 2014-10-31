@@ -5,8 +5,7 @@
 
 <div ng-if="session._id" class="success">
 	<div class="modal-body profile">
-		<p>Account successfully created.</p>
-
+		<h2>Account successfully created.</h2>
 	</div>
 
 	<div class="modal-footer profile">
@@ -22,7 +21,7 @@
 
 	<section>
 		<section style="height:40px">
-		 <p ng-if="!session.email"><i>Aren't you a little short for a storm trooper?</i> <span ng-if="!session.email">Enter your email address to fix your avatar.</span></p>
+		 <p ng-if="!session.email"><i>{{ avatarQuestion }}</i> <span ng-if="!session.email">Enter your email address to fix your avatar.</span></p>
 		 <p ng-if="session.email">Save your name and password to get $10 credit.</p>
 
 		</section>
@@ -34,13 +33,13 @@
 				<span ng-if="!session.email">Enter an email address</span>
 			 	<br /> to change your profile pic.
 			</p>
-			<hr />
-			<label>Account Credit</label> <b style="font-size:26px;color:black">$10</b> <br />available when you sign up
+			<!-- <hr />
+			<label>Account Credit</label> <b style="font-size:26px;color:black">$10</b> <br />available when you sign up -->
 
 		</section>
 
 		<section class="google">
-			Hate forms and passwords? <br /><br /><a href="/v1/auth/google" target="_self"><b>Sign in with your Google account instead</b></a>.
+			Hate signup forms and remembering passwords? <br /><br /><a href="/v1/auth/google" target="_self"><b>Sign in with your Google account instead</b></a>.
 		</section>
 
 		<section class="info">

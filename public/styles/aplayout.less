@@ -7,18 +7,21 @@
 body > header {
   height:@headerHeight;
   border-bottom:solid 1px @lightgray;
-  padding:7px 10px 7px 20px;
+  // padding:7px 10px 7px 20px;
 
   > a {
+  	padding:7px 20px;
     background:url('../img/css/header/logo.png') no-repeat;
-    width:100px;
-    height:30px;
-    margin-top:2px;
+    background-position:25px 9px;
+    background-size:90px 22px;
+    width:140px;
+    height:40px;
     display:block;
     float:left;
   }
 
   ul {
+  	padding:7px 10px;
     float:right;
     list-style:none;
   }
@@ -359,9 +362,12 @@ nav#chat.collapse {
 
 .modal-body.profile
 {
+	section.success {
+		h2 { color:green }
+	}
 	section.google {
 		float:right;
-		width:140px;
+		width:160px;
 		padding:10px 10px;
 		background:@palegray;
 	}
