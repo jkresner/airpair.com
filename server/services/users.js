@@ -19,7 +19,7 @@ var cbSession = (cb) =>
 		var obj = util.selectFromObject(r, UserData.select.sessionFull)
 		if (obj.roles && obj.roles.length == 0) delete obj.roles
 		setAvatar(obj)
-		if (logging) $log('cbSession.before.inflateTagsAndBookmarks', obj)
+		//if (logging) $log('cbSession.before.inflateTagsAndBookmarks', obj)
 		inflateTagsAndBookmarks(obj, cb)
 	}
 
@@ -104,13 +104,15 @@ function upsertSmart(search, upsert, cb) {
 		// if (logging) $log('upserting', upsert)
 
 		User.findOneAndUpdate(search, upsert, { upsert: true }, (err, user) => {
-			if (logging || err) $log('User.upsert', err, user)
-			if (err) return cb(err)
+			if (err) {
+				var errData = { upsert: upsert, search: search, existing: r }
+				$error(Error(JSON.stringify(errData)))
+				return cb(err)
+			}
 
 			var done = cbSession(cb)
 			if (!analytics.upsert) return done(null, user)
 
-			// if (logging) $log('analytics.upsert **********************************')
 			analytics.upsert(user, r, sessionID, (aliases) => {
 				if (logging) $log('back from the analytics.upsert **********************************')
 				if (aliases && user.cohort.aliases &&

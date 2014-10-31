@@ -20,9 +20,9 @@ var cfg = {
       clientID: '1019727294613-rjf83l9dl3rqb5courtokvdadaj2dlk5.apps.googleusercontent.com',
       clientSecret: 'Kd6ceFORVbABH7p5UbKURexZ',
       scope: [
-        'https://www.googleapis.com/auth/plus.me',
-        'https://www.googleapis.com/auth/userinfo.email',
-        'https://www.googleapis.com/auth/userinfo.profile'
+      	'profile',
+      	'email',
+        'https://www.googleapis.com/auth/plus.profile.emails.read'
       ]
     }
   },
