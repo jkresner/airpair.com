@@ -139,5 +139,21 @@ module.exports = {
 		     locale: 'en' },
 		  token: { }
 		}
+	},
+
+	{
+		google: {
+			provider: 'google',
+		 _json: {
+		    verified_email: true,
+		    name: 'Daniel Lamb',
+		    given_name: 'Daniel',
+		    family_name: 'Lamb',
+		    link: 'https://plus.google.com/+DanielLamb',
+		    picture: 'https://lh5.googleusercontent.com/-dzw-WsXYvsU/AAAAAAAAAAI/AAAAAAAAESg/BBZutcoiZyI/photo.jpg',
+		    gender: 'male',
+		    locale: 'en' },
+		 token: { }
+		}
 	}
 }
