@@ -48,9 +48,9 @@
 
 <section class="bookmarks"> <label>Bookmarks</label>
 	<ul class="bookmarks">
-		<li ng-repeat="b in session.bookmarks"><a href="{{b.url}}" target="_self">{{b.title}}</a></li>
+		<li ng-repeat="bookmark in session.bookmarks"><a href="{{bookmark.url}}" target="_self">{{bookmark.title}}</a></li>
 	</ul>
-	<a id="navBookmarksToggle" track-click="SideNav"  ng-click="openBookmarks()" class="icon"><span>Manage</span> <img src="/v1/img/css/sideNav/bookmarks.png" /></a>
+	<a id="navBookmarksToggle" track-click="SideNav"  ng-click="openBookmarks()" class="icon"><span> Manage </span> <img src="/v1/img/css/sidenav/bookmark.png" /></a>
 </section>
 
 <div stack></div>

@@ -77,9 +77,11 @@ var authorizeRole = (roleName) => {
 
 
 export function authDone(req, res, next) {
+	$log('authDone', config.auth.defaultRedirectUrl)
   var redirectUrl = config.auth.defaultRedirectUrl
   if (req.session && req.session.returnTo)
   {
+  	$log('authDone', 'req.session', req.session)
     redirectUrl = req.session.returnTo
     delete req.session.returnTo
   }
