@@ -155,6 +155,13 @@ module.exports = {
     })
   },
 
+  deleteTags: function(done)
+  {
+  	Tag.find({}).remove(function(e, r) {
+  		e ? done(e) : done()
+  	});
+  },
+
   initPosts: function(done)
   {
     Post.findOne({slug:'starting-a-mean-stack-app'}, function(e,r) {

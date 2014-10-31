@@ -20,7 +20,7 @@ export function search(searchTerm, cb) {
 
 
 export function create(o, cb) {
-	svc.create(o,null, cb)
+	svc.create(o, cb)
 }
 
 
@@ -31,4 +31,16 @@ export function getAllForCache(cb) {
 
 export function getBySlug(slug, cb) {
 	svc.searchOne({slug:slug},null, cb)
+}
+
+export function getAll(cb) {
+	svc.getAll(cb);
+}
+
+export function update(id, values, cb) {
+	svc.update(id, values, cb);
+}
+
+export function deleteById(id, cb) {
+	svc.deleteById(id, cb);
 }

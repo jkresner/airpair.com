@@ -7,6 +7,7 @@ require('./../common/models/adminDataService.js');
 require('./../adm/posts/module.js');
 require('./../adm/users/module.js');
 require('./../adm/redirects/module.js');
+require('./../adm/tags/module.js');
 
 
 angular.module("ADM", [
@@ -14,7 +15,8 @@ angular.module("ADM", [
 	'APSvcSession',
 	'ADMPosts',
 	'ADMUsers',
-	'ADMRedirects'])
+	'ADMRedirects',
+	'ADMTags'])
 
   .config(['$locationProvider', '$routeProvider',
       function($locationProvider, $routeProvider) {

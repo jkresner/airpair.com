@@ -97,3 +97,148 @@ section#redirects {
     padding:0px 20px;
   }
 }
+
+.tag-tile {
+	background-color: @lightblue;
+	height: 150px;
+	width: 250px;
+	margin-right: 20px;
+	margin-bottom: 20px;
+	padding: 15px;
+	transition: all 0.3s linear;
+	.tag-close {
+		cursor: pointer;
+	}
+	h4 {
+		text-decoration: underline;
+		color: @orange;
+	}
+	span {
+		cursor: pointer;
+	}
+
+	.tag:hover {
+		color: @orange;
+		text-decoration: underline;
+	}
+	span i {
+		color: @orange;
+	}
+}
+
+.tag-tile.max {
+	height: 60%;
+	width: 60%;
+	transform: scale(1.1);
+
+	z-index: 8888;
+	position: absolute;
+	top: 100px;
+	left: 20%;
+
+	.tag {
+		font-size: 1.2em;
+	}
+}
+
+.fade {
+	opacity: 0.4;
+}
+
+.tag-search {
+	margin-bottom: 30px;
+	margin-top: 50px;
+	padding-left: 20px;
+}
+section.tags-container {
+	width: 100%;
+	height: 100%;
+	max-height: 800px;
+	overflow: scroll;
+	padding-left: 30px;
+	padding-right: 30px;
+}
+
+.edit-tag {
+	height: 400px;
+	width: 800px;
+	padding: 15px;
+	background-color: @lightblue;
+	position: fixed;
+	z-index: 99999;
+	top: 30;
+	box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+	.row.left {
+		padding-left: 15px;
+	}
+
+	.box {
+		margin-bottom: 15px;
+	}
+}
+
+.edit {
+	border: @orange 2px solid;
+	outline: none;
+	background-color: #efefef;
+	color: @darkblue;
+}
+.edit:hover {
+	oultine: none;
+}
+
+.btn.btn-done {
+	background-color: @turquoise;
+}
+.btn.btn-edit {
+	background-color: @darkblue;
+	color: white;
+}
+.edit-label {
+	background-color: @darkblue;
+	color: white;
+	width: 65px;
+	margin-right: 10px;
+	overflow: hidden;
+	padding: 0px;
+	padding-left: 5px;
+}
+.tags span {
+	color:@darkblue;
+	font-weight:bold;
+	font-size:11px;
+	display:block;
+	width:auto;
+	background:@lightblue;
+	border:solid 1px @bluegray;
+	padding:12px 12px;
+	margin:8px 5px;
+	display: inline-block;
+	transition: all 0.2s ease-in-out;
+	transition-delay: 0.3s;
+	border-radius: 10px;
+	small:hover {
+		text-decoration: underline;
+		cursor: pointer;
+	}
+	.remove {
+		margin-top:-2px;
+		line-height:18px;
+		font-size:18px;
+		font-weight:bold;
+		float:right;
+		display:block;
+		background:@blue;
+		margin-left: 15px;
+		color:@lightblue;
+		border-radius:11px;
+		width:22px;
+		height:22px;
+		text-align:center;
+		cursor: pointer;
+	}
+}
+// .tags span:hover {
+// 	transform: scale(1.1);
+// 	box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+// }
