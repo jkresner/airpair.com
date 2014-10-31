@@ -5,17 +5,21 @@ var util =          require('../../shared/util')
 var bcrypt =        require('bcrypt')
 var UserData =      require('./users.data')
 var Validate =			require('../../shared/validation/users.js')
-var logging         = false
+var logging         = true
 var svc             = new BaseSvc(User, logging)
 
 
 
 var cbSession = (cb) =>
 	(e, r) => {
-		if (e || !r) return cb(e, r)
+		if (e || !r) {
+			if (logging) $log('cbSession', e, r)
+			return cb(e, r)
+		}
 		var obj = util.selectFromObject(r, UserData.select.sessionFull)
 		if (obj.roles && obj.roles.length == 0) delete obj.roles
 		setAvatar(obj)
+		if (logging) $log('cbSession.before.inflateTagsAndBookmarks', obj)
 		inflateTagsAndBookmarks(obj, cb)
 	}
 
@@ -97,6 +101,8 @@ function upsertSmart(search, upsert, cb) {
 				upsert.bookmarks = _.union(r.bookmarks, upsert.bookmarks)
 		}
 
+		if (logging) $log('upserting', upsert)
+
 		User.findOneAndUpdate(search, upsert, { upsert: true }, (err, user) => {
 			if (logging || err) $log('User.upsert', err, user)
 			if (err) return cb(err)
@@ -104,7 +110,9 @@ function upsertSmart(search, upsert, cb) {
 			var done = cbSession(cb)
 			if (!analytics.upsert) return done(null, user)
 
+			if (logging) $log('analytics.upsert **********************************')
 			analytics.upsert(user, r, sessionID, (aliases) => {
+				if (logging) $log('back from the analytics.upsert **********************************')
 				if (aliases && user.cohort.aliases &&
 						aliases.length == user.cohort.aliases.length)
 				{
@@ -289,6 +297,7 @@ function inflateTagsAndBookmarks(sessionData, cb) {
 	var {tags,bookmarks} = sessionData
 	if (!tags && !bookmarks) return cb(null, sessionData)
 	cache.ready(['tags','posts'], () => {
+		if (logging) $log('inflateTagsAndBookmarks.start')
 		if (tags) tags = _.map(tags, (t) => {
 			var tt = cache['tags'][t.tagId]
 			if (!tt) return cb(Error(`tag with Id ${t.tagId} not in cache`))
@@ -302,6 +311,7 @@ function inflateTagsAndBookmarks(sessionData, cb) {
 			var {title,url} = bb
 			return _.extend({title,url},b)
 		})
+		if (logging) $log('inflateTagsAndBookmarks.done', {tags, bookmarks})
 		cb(null, _.extend(sessionData, {tags, bookmarks}))
 	})
 }

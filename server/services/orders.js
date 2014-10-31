@@ -1,7 +1,7 @@
 var util = require('../../shared/util')
 import Svc from './_service'
 import Order from '../models/order'
-import * as PayMethodSvc from './payMethods'
+import * as PayMethodSvc from './paymethods'
 import * as UserSvc from './users'
 import * as Validate from '../../shared/validation/billing.js'
 var {linesWithCredit,getAvailableCredit} = require('../../shared/orders.js')
