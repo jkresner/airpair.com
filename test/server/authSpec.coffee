@@ -7,7 +7,8 @@ module.exports = -> describe "Signup: ", ->
 
   before (done) ->
     stubAnalytics()
-    done()
+    testDb.initPosts () ->
+      testDb.initTags(done)
 
 
   after (done) ->
@@ -78,7 +79,7 @@ module.exports = -> describe "Signup: ", ->
           done()
 
 
-  it 'Can not sign up with local credentials and existing gmail', (done) ->
+  it 'Cannot sign up with local credentials and existing gmail', (done) ->
     d = name: "AirPair Experts", email: "experts@airpair.com", password: "Yoyoyoyoy"
 
     UserService.upsertProviderProfile.call newUserSession(), 'google', data.oauth.exap, (e,usr) ->
@@ -92,50 +93,7 @@ module.exports = -> describe "Signup: ", ->
           done()
 
 
-  it 'Can request a password change, and set a new local password', (done) ->
-    new_password = 'drowssap'
-    spy = sinon.spy(mailman,'sendChangePasswordEmail')
-    d = getNewUserData('prak')
-    addAndLoginLocalUser 'prak', (user) ->
-      PUT '/users/me/password-change', {email: d.email}, {}, ->
-        expect(spy.callCount).to.equal(1)
-        generated_hash = spy.args[0][1]
-        expect(generated_hash).to.not.be.empty
-        testDb.readUser user._id, (e,r) ->
-          expect(r.local.changePasswordHash).to.equal(generated_hash)
-          old_password_hash = r.local.password
-          data = { hash: generated_hash, password: new_password }
-          PUT "/users/me/password", data, {unauthenticated: true}, (s) ->
-            UserService.tryLocalLogin.call newUserSession(), d.email, new_password, (e,r) ->
-              if (e)
-                done(e)
-              testDb.readUser user._id, (e,r) ->
-                if (e) then return done(e)
-                expect(old_password_hash).to.not.equal(r.local.password)
-                expect(r.local.changePasswordHash).to.be.empty
-                done()
-
-
-
-  it.skip 'must supply a valid email when requesting a password change', (done) ->
-    addAndLoginLocalUser 'stjp', (user) ->
-      PUT '/users/me/password-change', {email: "abc"}, {}, (r) ->
-        expect(r.message).to.include('Invalid email address')
-        done()
-
-
-  it.skip 'cannot change local password to an invalid password', (done) ->
-    PUT "/users/me/password", {hash: "ABC", password:"abc"}, {status:403, unauthenticated: true}, (r) ->
-      expect(r.message).to.include('Invalid password')
-      done()
-
-  it 'cannot change local password with any empty hash', (done) ->
-    PUT "/users/me/password", {hash: "", password:"newpassword"}, {status:403, unauthenticated: true}, (r) ->
-      expect(r.message).to.include('Invalid hash')
-      done()
-
-
-  it 'Can not sign up with local credentials and existing local email', (done) ->
+  it 'Cannot sign up with local credentials and existing local email', (done) ->
     d = getNewUserData('jkap')
     http(global.app).post('/v1/auth/signup').send(d).expect(200)
       .end (e, r) ->
@@ -146,40 +104,7 @@ module.exports = -> describe "Signup: ", ->
             done()
 
 
-  it 'Local user can change their email', (done) ->
-    the_new_email = "hello" + moment().format('X').toString() + "@mydomain.com"
-    addAndLoginLocalUserWithEmailVerified 'spgo', (s) ->
-      expect(s.emailVerified).to.be.true
-      PUT '/users/me/email', {email: the_new_email}, {}, ->
-        GET '/session/full', {}, (s) ->
-          expect(s.email).to.equal(the_new_email)
-          expect(s.emailVerified).to.be.false
-          done()
 
-
-  it 'Cannot change a users email to just any string', (done) ->
-    the_new_email = "justsomestring"
-    addAndLoginLocalUserWithEmailVerified 'shan', (s) ->
-      expect(s.emailVerified).to.be.true
-      PUT '/users/me/email', {email: the_new_email}, {status:403}, (e)->
-        expect(e.message).to.include('Invalid email address')
-        done()
-
-
-  it 'Cannot change email with empty string', (done) ->
-    addAndLoginLocalUserWithEmailVerified 'scol', (s) ->
-      expect(s.emailVerified).to.be.true
-      PUT '/users/me/email', {}, {status:403}, (e)->
-        expect(e.message).to.include('Invalid email address')
-        done()
-
-
-  it 'Cannot change email to an existing users email', (done) ->
-    addAndLoginLocalUserWithEmailVerified 'scmo', (s) ->
-      expect(s.emailVerified).to.be.true
-      PUT '/users/me/email', {email:'jk@airpair.com'}, {status:400}, (e)->
-        expect(e.message).to.include('Email belongs to another account')
-        done()
 
 
 
@@ -205,6 +130,19 @@ module.exports = -> describe "Signup: ", ->
           done()
 
 
+    it 'Can signup with local credentials then login with google of same email', (done) ->
+      testDb.ensureUser data.users.aone, (e, aone) ->
+        expect(aone.email).to.equal('airpairone001@gmail.com')
+        expect(aone.google).to.be.undefined
+        expect(aone.googleId).to.be.undefined
+        UserService.upsertProviderProfile.call newUserSession('aone'), 'google', data.oauth.aone.google, (ee,user) ->
+          testDb.readUser user._id, (e,r) ->
+            expect(r.googleId).to.equal(data.oauth.aone.google._json.id)
+            expect(r.google._json.email).to.equal('airpairone001@gmail.com')
+            expect(r.email).to.equal('airpairone001@gmail.com')
+            done()
+
+
     it.skip 'TODO: Login from a new anonymous session adds sessionID to aliases', () ->
       # expect('updates last visit')
 
@@ -225,9 +163,91 @@ module.exports = -> describe "Signup: ", ->
   #     expect('signup fail')
   #     expect('ask user to login')
   # }
-  describe "Verify e-mail", ->
+
+  describe "Password", ->
+
+
+    it 'Can request a password change, and set a new local password', (done) ->
+      new_password = 'drowssap'
+      spy = sinon.spy(mailman,'sendChangePasswordEmail')
+      d = getNewUserData('prak')
+      addAndLoginLocalUser 'prak', (user) ->
+        PUT '/users/me/password-change', {email: d.email}, {}, ->
+          expect(spy.callCount).to.equal(1)
+          generated_hash = spy.args[0][1]
+          expect(generated_hash).to.not.be.empty
+          testDb.readUser user._id, (e,r) ->
+            expect(r.local.changePasswordHash).to.equal(generated_hash)
+            old_password_hash = r.local.password
+            data = { hash: generated_hash, password: new_password }
+            PUT "/users/me/password", data, {unauthenticated: true}, (s) ->
+              UserService.tryLocalLogin.call newUserSession(), d.email, new_password, (e,r) ->
+                if (e)
+                  done(e)
+                testDb.readUser user._id, (e,r) ->
+                  if (e) then return done(e)
+                  expect(old_password_hash).to.not.equal(r.local.password)
+                  expect(r.local.changePasswordHash).to.be.empty
+                  done()
+
+
+    it 'must supply a valid email when requesting a password change', (done) ->
+      addAndLoginLocalUser 'stjp', (user) ->
+        PUT '/users/me/password-change', {email: "abc"}, { status: 403 }, (r) ->
+          expect(r.message).to.include('Invalid email address')
+          done()
+
+
+    it 'cannot change local password to an invalid password', (done) ->
+      PUT "/users/me/password", {hash: "ABC", password:"abc"}, {status:403, unauthenticated: true}, (r) ->
+        expect(r.message).to.include('Invalid password')
+        done()
+
+
+    it 'cannot change local password with any empty hash', (done) ->
+      PUT "/users/me/password", {hash: "", password:"newpassword"}, {status:403, unauthenticated: true}, (r) ->
+        expect(r.message).to.include('Invalid hash')
+        done()
+
+
+  describe "Change and verify e-mail", ->
 
     # it.skip 'send a verification email to new users'
+
+    it 'Local user can change their email', (done) ->
+      the_new_email = "hello" + moment().format('X').toString() + "@mydomain.com"
+      addAndLoginLocalUserWithEmailVerified 'spgo', (s) ->
+        expect(s.emailVerified).to.be.true
+        PUT '/users/me/email', {email: the_new_email}, {}, ->
+          GET '/session/full', {}, (s) ->
+            expect(s.email).to.equal(the_new_email)
+            expect(s.emailVerified).to.be.false
+            done()
+
+
+    it 'Cannot change a users email to just any string', (done) ->
+      the_new_email = "justsomestring"
+      addAndLoginLocalUserWithEmailVerified 'shan', (s) ->
+        expect(s.emailVerified).to.be.true
+        PUT '/users/me/email', {email: the_new_email}, {status:403}, (e)->
+          expect(e.message).to.include('Invalid email address')
+          done()
+
+
+    it 'Cannot change email with empty string', (done) ->
+      addAndLoginLocalUserWithEmailVerified 'scol', (s) ->
+        expect(s.emailVerified).to.be.true
+        PUT '/users/me/email', {}, {status:403}, (e)->
+          expect(e.message).to.include('Invalid email address')
+          done()
+
+
+    it 'Cannot change email to an existing users email', (done) ->
+      addAndLoginLocalUserWithEmailVerified 'scmo', (s) ->
+        expect(s.emailVerified).to.be.true
+        PUT '/users/me/email', {email:'admin@airpair.com'}, {status:400}, (e)->
+          expect(e.message).to.include('Email belongs to another account')
+          done()
 
 
     it 'deny user if e-mail is not verified', (done) ->

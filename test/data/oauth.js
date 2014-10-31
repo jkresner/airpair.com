@@ -118,5 +118,26 @@ module.exports = {
        gender: 'male',
        locale: 'en' },
     token: {  }
-  }
+  },
+
+	aone: {
+		google: {
+			provider: 'google',
+		  id: '114645756370492848673',
+		  displayName: 'Air One',
+		  name: { familyName: 'One', givenName: 'Air' },
+		  emails: [ { value: 'airpairone001@gmail.com' } ],
+		  _json:
+		   { id: '114645756370492848673',
+		     email: 'airpairone001@gmail.com',
+		     verified_email: true,
+		     name: 'Air One',
+		     given_name: 'Air',
+		     family_name: 'One',
+		     picture: 'https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg',
+		     gender: 'male',
+		     locale: 'en' },
+		  token: { }
+		}
+	}
 }
