@@ -141,7 +141,7 @@ module.exports = {
 		}
 	},
 
-	{
+	'DanielLamb': {
 		google: {
 			provider: 'google',
 		 _json: {
@@ -155,5 +155,28 @@ module.exports = {
 		    locale: 'en' },
 		 token: { }
 		}
+	},
+
+	athr: {
+		google: {
+			"provider":"google",
+			"id":"111746744275274161217",
+			"displayName":"airpair three",
+			"name":{"familyName":"three","givenName":"airpair"},
+			"emails":[{"value":"airpairone003@gmail.com"}],
+			"_json":{
+				"id":"111746744275274161217",
+				"email":"airpairone003@gmail.com",
+				"verified_email":true,
+				"name":"airpair three",
+				"given_name":"airpair",
+				"family_name":"three",
+				"picture":"https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg",
+				"gender":"female",
+				"locale":"en"
+			},
+			"token":{}
+		}
 	}
+
 }
