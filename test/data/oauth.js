@@ -177,6 +177,51 @@ module.exports = {
 			},
 			"token":{}
 		}
+	},
+
+
+	samt: {
+		"google":{
+			"provider":"google",
+			"id":"107929348314160277508",
+			"displayName":"san thanki",
+			"name":{"familyName":"thanki","givenName":"san"},
+			"emails":[{"value":"san.thanki@gmail.com"}],
+			"_json":{
+				"id":"107929348314160277508",
+				"email":"san.thanki@gmail.com",
+				"verified_email":true,
+				"name":"san thanki",
+				"given_name":"san",
+				"family_name":"thanki",
+				"link":"https://plus.google.com/107929348314160277508",
+				"picture":"https://lh5.googleusercontent.com/-fft7QY9X0uM/AAAAAAAAAAI/AAAAAAAAAHQ/ajiVJmUX-5s/photo.jpg",
+				"gender":"male",
+				"locale":"en-GB"
+			},
+			"token": {}
+		}
+	},
+
+	bbe: {
+		"google":{
+			"provider":"google",
+			"id":"108341472603890720649",
+			"displayName":"Ben Beetle",
+			"name":{"familyName":"Beetle","givenName":"Ben"},
+			"emails":[{"value":"ben.beetle@gmail.com"}],
+			"_json":{
+				"id":"108341472603890720649",
+				"email":"ben.beetle@gmail.com",
+				"verified_email":true,
+				"name":"Ben Beetle",
+				"given_name":"Ben",
+				"family_name":"Beetle",
+				"link":"https://plus.google.com/+BenBeetle42",
+				"picture":"https://lh5.googleusercontent.com/-MeA4daSC7fQ/AAAAAAAAAAI/AAAAAAAAAUY/Fo06ddQB-j8/photo.jpg","gender":"male","locale":"en"
+			},
+			"token":{}
+		},
 	}
 
 }

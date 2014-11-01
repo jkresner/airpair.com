@@ -135,7 +135,8 @@ module.exports = {
 
   init: function(done)
   {
-    addUserWithRole('admin', 'admin', done)
+  	var _id = data.users.admin._id
+    User.findOneAndUpdate({_id}, data.users.admin, { upsert: true }, done)
   },
 
   addUserWithRole: addUserWithRole,
