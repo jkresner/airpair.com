@@ -143,6 +143,37 @@ module.exports = -> describe "Signup: ", ->
             done()
 
 
+    it 'Google login for existing v1 user works after played with singup form', (done) ->
+      testDb.ensureUser data.users.samt, (e, samt) ->
+        expect(samt.email).to.equal('san.thanki@gmail.com')
+        expect(samt.google).to.exist
+        expect(samt.googleId).to.equal('107929348314160277508')
+        svcCtx = newUserSession('samt')
+        svcCtx.session.anonData = { email: null }
+        UserService.upsertProviderProfile.call svcCtx, 'google', data.oauth.samt.google, (ee,user) ->
+          expect(user).to.exist
+          testDb.readUser user._id, (e,r) ->
+            expect(r.googleId).to.equal(data.oauth.samt.google._json.id)
+            expect(r.google._json.email).to.equal("san.thanki@gmail.com")
+            expect(r.email).to.equal("san.thanki@gmail.com")
+            done()
+
+
+    it 'Google login for existing v1 user doesnt blow up when tag not found', (done) ->
+      testDb.ensureUser data.users.bbe, (e, bbe) ->
+        expect(bbe.email).to.equal('ben.beetle@gmail.com')
+        expect(bbe.google).to.exist
+        expect(bbe.googleId).to.equal('108341472603890720649')
+        svcCtx = newUserSession('bbe')
+        UserService.upsertProviderProfile.call svcCtx, 'google', data.oauth.bbe.google, (ee,user) ->
+          expect(user).to.exist
+          testDb.readUser user._id, (e,r) ->
+            expect(r.googleId).to.equal(data.oauth.bbe.google._json.id)
+            expect(r.google._json.email).to.equal('ben.beetle@gmail.com')
+            expect(r.email).to.equal('ben.beetle@gmail.com')
+            done()
+
+
     it.skip 'TODO: Login from a new anonymous session adds sessionID to aliases', () ->
       # expect('updates last visit')
 
