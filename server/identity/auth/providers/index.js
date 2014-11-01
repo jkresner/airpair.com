@@ -1,30 +1,51 @@
 import * as OAuthProvider from './oauthbase'
 import * as LocalProvider from './localbase'
-import * as UserService from '../../../services/users'
+import {localLogin,localSignup,googleLogin,cbSession}
+	from '../../../services/users'
 
 
-function thisSvc(req) {
-  return { user: req.user, sessionID: req.sessionID, session: req.session };
-}
+var doneWrap = (cb) =>
+	(e, r, info) => {
+		$log('auth.done', e, info, cb)
+		if (e) return cb(e)
+		if (info) return cb(null, false, info)
+		cbSession( (ee,session) => {
+			if (ee) {
+				$log('auth.done.session.ee', ee)
+				cb(ee)
+			}
+			cb(null, session)
+		})
+	}
 
 
-var localLogin = LocalProvider.init('local-login', (req, email, password, done) => {
-  UserService.tryLocalLogin.call(thisSvc(req), email, password, done)
-})
 
-var localSignup = LocalProvider.init('local-singup', (req, email, password, done) => {
-  UserService.tryLocalSignup.call(thisSvc(req), email, password, req.body.name, done)
-})
+var login = LocalProvider.init('local-login',
+	(req, email, password, done) =>
+  	localLogin.call($ctx(req), email, password, doneWrap(done))
+)
 
-var googleOAuth = OAuthProvider.init('google', (req, provider, profile, done) => {
-  var donedone = function(e, r) {
-  	$log('donedone', e, r, done)
-  	if (e) $error(e, req.user, req)
-  	done(e,r)
-  }
-  UserService.upsertProviderProfile.call(thisSvc(req), provider, profile, donedone)
-})
+var signup = LocalProvider.init('local-singup',
+	(req, email, password, done) =>
+  	localSignup.call($ctx(req), email, password, req.body.name, doneWrap(done))
+)
+
+var googleOAuth = OAuthProvider.init('google',
+	(req, provider, profile, done) => {
+
+	  if (req.user)
+	  	done(Error("Google connect not yet impl"))
+	  else
+	  	googleLogin.call($ctx(req), provider, profile, doneWrap(done))
+	}
+)
+
+// var twitterOAuth = LocalProvider.init('twitter',
+// 	(req, provider, profile, done) => {
+//   	connectProvider.call($ctx(req), provider, profile, done)
+//   }
+// })
 
 
-export var local = { login: localLogin, signup: localSignup }
+export var local = { login, signup }
 export var google = { oAuth: googleOAuth }

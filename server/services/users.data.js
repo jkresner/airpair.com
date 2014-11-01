@@ -36,6 +36,9 @@ module.exports = {
   },
 
   query: {
+  	existing: function(email) {
+			return { '$or': [{email:email},{'google._json.email':email}] }
+  	},
   }
 
 }

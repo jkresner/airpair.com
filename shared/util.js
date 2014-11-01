@@ -55,6 +55,22 @@ module.exports = {
   },
 
 
+  combineItems: (array1, array2, compareProp) => {
+  	if (!array1 && !array2) return []
+  	if (!array1 || array1.length == 0) return array2
+  	if (!array2 || array2.length == 0) return array1
+
+  	for (var item of array2) {
+  		var existing = _.find(array1,
+  			(i) => idsEqual(i[compareProp],item[compareProp]))
+
+  		if (!existing) array1.push(item)
+  	}
+
+  	return array1
+  },
+
+
   sessionCreatedAt: (session) => {
     return new moment(session.cookie._expires).subtract(session.cookie.originalMaxAge,'ms').toDate()
   },

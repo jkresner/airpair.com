@@ -29,4 +29,8 @@ module.exports = function(config)
     winston.add(require('winston-ses').Ses, config.log.email)
   }
 
+  global.$ctx 	  			= function(r) {
+  	return { user: r.user, sessionID: r.sessionID, session: r.session }
+  }
+
 }
