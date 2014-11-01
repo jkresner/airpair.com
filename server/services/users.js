@@ -10,18 +10,16 @@ var logging         = true
 var svc             = new BaseSvc(User, logging)
 
 
-
-
 export var cbSession = (cb) =>
 	(e, r) => {
 		if (e || !r) {
-			if (logging) $log('cbSession', e, r)
+			if (logging) $log('cbSession.no.good', e, r)
 			return cb(e, r)
 		}
 		var obj = util.selectFromObject(r, UserData.select.sessionFull)
 		if (obj.roles && obj.roles.length == 0) delete obj.roles
 		setAvatar(obj)
-		//if (logging) $log('cbSession.before.inflateTagsAndBookmarks', obj)
+		if (logging) $log('cbSession.before.inflateTagsAndBookmarks', obj)
 		inflateTagsAndBookmarks(obj, cb)
 	}
 

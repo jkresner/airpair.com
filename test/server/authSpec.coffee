@@ -51,7 +51,8 @@ module.exports = -> describe "Signup: ", ->
   it 'New user has correct cohort information', (done) ->
     addLocalUser 'dysn', {}, (userKey) ->
       userId = data.users[userKey]._id
-      testDb.readUser userId, (e,r) ->
+
+      checkUser = => testDb.readUser userId, (e,r) ->
         {cohort} = r
         expect(moment(cohort.engagement.visit_first).unix()).to.equal(moment(cookieCreatedAt).unix())
         expect(cohort.engagement.visit_signup).to.be.exist
@@ -62,10 +63,13 @@ module.exports = -> describe "Signup: ", ->
         expect(cohort.aliases[0].indexOf("testdysn")).to.equal(0)
         done()
 
+      setTimeout checkUser, 50
+
 
   it 'Can sign up as new user with google', (done) ->
-    UserService.upsertProviderProfile.call newUserSession(), 'google', data.oauth.rbrw, (e,usr) ->
-      LOGIN 'rbrw', usr, ->
+    addGoogleLoginUser 'rbrw', {}, (userKey) ->
+      usr = data.users[userKey]
+      LOGIN userKey, data.users[userKey], ->
         GET '/session/full', {}, (s) ->
           expect(s._id).to.equal(usr._id.toString())
           expect(s.email).to.equal(usr.email)
@@ -82,7 +86,8 @@ module.exports = -> describe "Signup: ", ->
   it 'Cannot sign up with local credentials and existing gmail', (done) ->
     d = name: "AirPair Experts", email: "experts@airpair.com", password: "Yoyoyoyoy"
 
-    UserService.upsertProviderProfile.call newUserSession(), 'google', data.oauth.exap, (e,usr) ->
+    addGoogleLoginUser 'exap', {}, (userKey) ->
+      usr = data.users[userKey]
       expect(usr._id).to.exist
       http(global.app).post('/v1/auth/signup').send(d)
         .expect(400)

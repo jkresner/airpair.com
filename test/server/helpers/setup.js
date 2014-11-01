@@ -55,7 +55,8 @@ global.newUserSession = function(userKey)
 global.addLocalUser = function(userKey, opts, done)
 {
   var clone = getNewUserData(userKey)
-  UserService.tryLocalSignup.call(newUserSession(userKey), clone.email, clone.password, clone.name, function(e, r) {
+  var svcCtx = newUserSession(userKey)
+  UserService.localSignup.call(svcCtx, clone.email, clone.password, clone.name, function(e, r) {
     data.users[clone.userKey] = r
     if (opts && opts.emailVerified)
     {
@@ -67,6 +68,27 @@ global.addLocalUser = function(userKey, opts, done)
     else done(clone.userKey)
   })
 }
+
+
+global.addGoogleLoginUser = function(userKey, opts, done)
+{
+	var oauth = data.oauth[userKey]
+	User.findOneAndRemove({email:oauth._json.email}, () => {
+	  var svcCtx = newUserSession(userKey)
+	  UserService.googleLogin.call(svcCtx, oauth, (e, usr) => {
+	    data.users[userKey] = usr
+	    if (opts && opts.emailVerified)
+	    {
+		    UserService.update.call(svcCtx, usr._id, opts, function(err, user) {
+					data.users[userKey] = user
+					done(userKey)
+				})
+		  }
+	    else done(userKey)
+	  })
+	})
+}
+
 
 global.addAndLoginLocalUserWithEmailVerified = function(originalUserKey, done)
 {
@@ -136,6 +158,7 @@ module.exports = {
   init: function(done)
   {
   	var _id = data.users.admin._id
+  	$log('adding admin')
     User.findOneAndUpdate({_id}, data.users.admin, { upsert: true }, done)
   },
 
@@ -171,11 +194,11 @@ module.exports = {
     })
   },
 
-  upsertProviderProfile: function(provider, userKey, done)
-  {
-    var user = data.oauth[userKey]
-    UserService.upsertProviderProfile(null, provider, user, done)
-  },
+  // upsertProviderProfile: function(provider, userKey, done)
+  // {
+  //   var user = data.oauth[userKey]
+  //   UserService.upsertProviderProfile(null, provider, user, done)
+  // },
 
   createAndPublishPost: function(by, postData, done) {
     var title = 'A test post '+moment().format('X')

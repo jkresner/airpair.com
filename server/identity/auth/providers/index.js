@@ -3,10 +3,11 @@ import * as LocalProvider from './localbase'
 import {localLogin,localSignup,googleLogin,cbSession}
 	from '../../../services/users'
 
+var logging = true
 
 var doneWrap = (cb) =>
 	(e, r, info) => {
-		$log('auth.done', e, info, cb)
+		if (logging) $log('auth.done', e, info)
 		if (e) return cb(e)
 		if (info) return cb(null, false, info)
 		cbSession( (ee,session) => {
@@ -15,7 +16,7 @@ var doneWrap = (cb) =>
 				cb(ee)
 			}
 			cb(null, session)
-		})
+		})(e, r)
 	}
 
 

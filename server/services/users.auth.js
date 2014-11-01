@@ -14,16 +14,17 @@ var generateHash = (password) =>
   bcrypt.hashSync(password, bcrypt.genSaltSync(8))
 
 
-var wrap = (fnName, cb) =>
+var wrap = (fnName, done, cb) =>
 	(e,r) => {
 		if (e) {
-			if (logging) $log(fnName)
+			if (logging) $log(fnName+'.error')
+			$log(e)
 			//winston.error
 			// winston.error(JSON.stringify(errData))
-			return cb(err)
+			done(e)
 		}
 		else {
-			if (logging) $log(fnName)
+			if (logging) $log((fnName+'.ok').white)
 			if (r) r = r.toObject()
 			cb(r)
 		}
@@ -32,19 +33,18 @@ var wrap = (fnName, cb) =>
 
 function getCohortProperties(session, existingUser)
 {
-	//-- Default engagement
+	//-- Default engagement for a new user
 	var visit_first = util.sessionCreatedAt(session)
 	var visit_signup = new Date()
 	var visit_last = new Date()
 	var visits = [util.dateWithDayAccuracy()]
-	var aliases = []
+	var aliases = []   // we add the aliases after successful sign up
 
-	// This is a new user (easy peasy)
 	if (existingUser)
 	{
 		var {cohort} = existingUser
 
-		//-- This is an existing v0 user. We need to alias their google._json.email to their userId for v1
+		//-This is an existing v0 user.
 		if (!cohort || !cohort.engagement.visit_first)
 		{
 			var v0AccountCreatedAt = util.ObjectId2Date(existingUser._id)
@@ -70,11 +70,11 @@ function getCohortProperties(session, existingUser)
 // User info and analytics. Adds the user if new, or updates if existing
 // based on the search which could be by _id or provider e.g. { googleId: 'someId' }
 function upsertSmart(upsert, existing, cb) {
-	if (logging) $log('upsertSmart', 'existing', JSON.stringify(existing), 'upsert', JSON.stringify(upsert))
+	if (logging) $log('upsertSmart', 'existing[', JSON.stringify(existing), '] upsert =>', JSON.stringify(upsert))
 
 	//-- Include users anon data in the upsert
 	upsert = _.extend(upsert, this.session.anonData || {})
-	upsert.cohort = getUpsertEngagement.call(this, existing)
+	upsert.cohort = getCohortProperties(this.session, existing)
 
 	if (existing)
 	{
@@ -95,15 +95,13 @@ function upsertSmart(upsert, existing, cb) {
 		cb(null, user)
 
 		//-- Do the rest async
-		if (analytics.upsert)
-		{
-			analytics.upsert(user, existing, sessionID, (aliases) => {
-				if (aliases && aliases.length != user.cohort.aliases.length)
-				{
-					User.findOneAndUpdate({_id:user._id}, { 'cohort.aliases': aliases }, ()=>{})
-				}
-			})
-		}
+		analytics.upsert(user, existing, sessionID, (aliases) => {
+			if (aliases && aliases.length != user.cohort.aliases.length)
+			{
+				if (logging) $log(`updating ${user._id} {aliases}`.yellow)
+				User.findOneAndUpdate({_id:user._id}, { 'cohort.aliases': aliases }, ()=>{} )
+			}
+		})
 
 	}))
 }
@@ -113,9 +111,12 @@ function googleLogin(profile, done)
 {
 	// var inValid = Validate.googleLogin(email)
 	// if (inValid) return cb(svc.Forbidden(inValid))
+	$log('glogin', Data.query.existing(profile._json.email))
 
 	User.findOne(Data.query.existing(profile._json.email),
-		wrap(`googleLogin.existing ${email}`, done, (existing) => {
+		wrap(`googleLogin.existing ${profile._json.email}`, done, (existing) => {
+
+		var upsert = { googleId: profile.id, google: profile }
 
 		if (existing && this.user)
 			return cb(Error("Should not be here. G+ Login not yet implemented for authd users. <a href='/auth/logout'>logout</a>?"))
@@ -132,9 +133,7 @@ function googleLogin(profile, done)
 			upsert.email = existing.email
 		}
 
-		var upsertData = { googleId: profile.id, google: profile }
-
-		upsertSmart.call(this, upsertData, existing, done)
+		upsertSmart.call(this, upsert, existing, done)
 
 	}))
 }
@@ -149,21 +148,22 @@ function localSignup(email, password, name, done) {
 
 	  if (existing)
 	  {
-	    if (logging) $log('existing', existing)
+	    // if (logging) $log('existing', existing)
 
 	    var info = ""
 	    if (existing.email == email) info = "user already exists"
-	    else if (existing.google._json.email == email) info = "try google login"
+	    if (existing.google && existing.google._json.email == email)
+	    	info = "try google login"
 	    return done(null, false, info)
 	  }
 
-    var upsertData = {
+    var upsert = {
     	name, email,
       emailVerified: false,
       local: { password: generateHash(password) }
 		}
 
-		upsertSmart.call(this, upsertData, null, done)
+		upsertSmart.call(this, upsert, null, done)
 
 	}))
 
@@ -190,9 +190,9 @@ function localLogin(email, password, done) {
 		if (info) return done(null, false, info)
 
 
-		var upsertData = { email: email }
+		var upsert = { email: email }
 
-		upsertSmart.call(this, upsertData, existing, done)
+		upsertSmart.call(this, upsert, existing, done)
 
 	}))
 }
