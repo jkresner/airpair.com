@@ -105,8 +105,8 @@ function upsertSmart(search, upsert, cb) {
 
 		User.findOneAndUpdate(search, upsert, { upsert: true }, (err, user) => {
 			if (err) {
-				var errData = { upsert: upsert, search: search, existing: r }
-				$error(Error(JSON.stringify(errData)))
+				var errData = { search: search, upsert: upsert, existing: r }
+				winston.error(JSON.stringify(errData))
 				return cb(err)
 			}
 
@@ -148,6 +148,8 @@ export function upsertProviderProfile(providerName, profile, done) {
 
 	if (!this.user && this.session.anonData)
 		upsert = _.extend(upsert, this.session.anonData)
+
+
 
 	upsertSmart.call(this, search, upsert, done)
 }
