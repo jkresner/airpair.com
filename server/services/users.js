@@ -5,7 +5,7 @@ var util =          require('../../shared/util')
 var bcrypt =        require('bcrypt')
 var UserData =      require('./users.data')
 var Validate =			require('../../shared/validation/users.js')
-var logging         = true
+var logging         = false
 var svc             = new BaseSvc(User, logging)
 
 
@@ -101,8 +101,6 @@ function upsertSmart(search, upsert, cb) {
 				upsert.bookmarks = _.union(r.bookmarks, upsert.bookmarks)
 		}
 
-		// if (logging) $log('upserting', upsert)
-
 		User.findOneAndUpdate(search, upsert, { upsert: true }, (err, user) => {
 			if (err) {
 				var errData = { search: search, upsert: upsert, existing: r }
@@ -149,7 +147,7 @@ export function upsertProviderProfile(providerName, profile, done) {
 	if (!this.user && this.session.anonData)
 		upsert = _.extend(upsert, this.session.anonData)
 
-
+	delete upsert.email // gotcha, don't remove
 
 	upsertSmart.call(this, search, upsert, done)
 }
@@ -297,24 +295,39 @@ export function setAvatar(user) {
 
 //-- TODO, watch out for cache changing via adds and deletes of records
 function inflateTagsAndBookmarks(sessionData, cb) {
-	if (!sessionData) return cb(null, sessionData)
-	var {tags,bookmarks} = sessionData
-	if (!tags && !bookmarks) return cb(null, sessionData)
+	if (!sessionData ||
+		(!sessionData.tags && !sessionData.bookmarks) )
+		return cb(null, sessionData)
+
 	cache.ready(['tags','posts'], () => {
 		if (logging) $log('inflateTagsAndBookmarks.start')
-		if (tags) tags = _.map(tags, (t) => {
+
+		var tags = []
+		for (var t of (sessionData.tags || []))
+		{
 			var tt = cache['tags'][t.tagId]
-			if (!tt) return cb(Error(`tag with Id ${t.tagId} not in cache`))
-			var {name,slug} = tt
-			return _.extend({name,slug},t)
-		})
-		if (bookmarks) bookmarks = _.map(bookmarks, (b) => {
-			if (!b || !b.type) $log('bb', bookmarks, sessionData)
+			if (tt) {
+				var {name,slug} = tt
+				tags.push( _.extend({name,slug},t) )
+			}
+			else
+				$log(`tag with Id ${t.tagId} not in cache`)
+				// return cb(Error(`tag with Id ${t.tagId} not in cache`))
+		}
+
+		var bookmarks = []
+		for (var b of (sessionData.bookmarks || []))
+		{
 			var bb = cache[b.type+'s'][b.objectId]
-			if (!bb) return cb(Error(`${b.type} with Id ${b.objectId} not in cache`))
-			var {title,url} = bb
-			return _.extend({title,url},b)
-		})
+			if (bb) {
+				var {title,url} = bb
+				bookmarks.push( _.extend({title,url},b) )
+			}
+			else
+				$log(`${b.type} with Id ${b.objectId} not in cache`)
+				// return cb(Error(`${b.type} with Id ${b.objectId} not in cache`))
+		}
+
 		if (logging) $log('inflateTagsAndBookmarks.done', {tags, bookmarks})
 		cb(null, _.extend(sessionData, {tags, bookmarks}))
 	})
@@ -379,7 +392,7 @@ function toggleSessionItem(type, item, maxAnon, maxAuthd, comparator, cb)
 		if (list.length > maxAnon) return cb(Error(`Max allowed ${type} reached`))
 		this.session.anonData[type] = list
 
-		return getSession.call(this, cb)
+		getSession.call(this, cb)
 	}
 }
 
@@ -481,7 +494,7 @@ export function changeEmail(email, cb) {
 		var self = this
 		svc.searchOne(search, null, function(e,r) {
 			if (r) {
-				self.session.anonData.email = null
+				delete self.session.anonData.email
 				return cb(svc.Forbidden(`${email} already registered`))
 			}
 			self.session.anonData.email = email
