@@ -14,16 +14,16 @@ var nestedPick = (object, keys) => {
     {
       // Pick the marked element
       if (typeof object[key] !== "undefined" && object[key] !== null)
-      	copy[key] = object[key]
+        copy[key] = object[key]
     }
     else
     {
       // Pick recursively and apply only if something was picked
       var result = nestedPick(object[props[0]], [key.replace(`${props[0]}.`,'')])
       if (!_.isEmpty(result))
-				copy[props[0]] = result
+        copy[props[0]] = result
     }
-	}
+  }
 
   return copy
 }
@@ -44,12 +44,12 @@ module.exports = {
     if (!array) return [item]
     else
     {
-    	if (!comparator) { comparator = (i) => idsEqual(i._id,item._id) }
+      if (!comparator) { comparator = (i) => idsEqual(i._id,item._id) }
       var existing = _.find(array, comparator)
       if (existing) return _.without(array, existing)
       else {
-      	array.push(item)
-      	return array
+        array.push(item)
+        return array
       }
     }
   },
@@ -61,7 +61,7 @@ module.exports = {
 
 
   dateWithDayAccuracy: (mom) => {
-  	if (!mom) mom = moment()
+    if (!mom) mom = moment()
     return moment(mom.format('YYYY-MM-DD'), 'YYYY-MM-DD').toDate()
   },
 
@@ -78,6 +78,6 @@ module.exports = {
   selectFromObject: (obj, selectList) => {
     if (!obj || !selectList) return obj
     else return nestedPick(obj, _.keys(selectList))
-	}
+  }
 
 }

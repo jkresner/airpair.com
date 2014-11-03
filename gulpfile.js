@@ -104,7 +104,5 @@ gulp.task('bundle', function() {
 
 
 gulp.task('default', ['nodemon','less','watch','watchify']);
-
 gulp.task('test', ['testnodemon','build']);
-
 gulp.task('build', ['less','bundle']);
