@@ -64,6 +64,10 @@ angular.module('APSvcSession', [])
       $http.put(`${API}/users/me/sortTags`, data).success(success).error(error);
     }
 
+    this.sortTags = function(data, success, error) {
+      $http.put(`${API}/users/me/sortTags`, data).success(success).error(error);
+    }
+
     this.updateBookmark = function(data, success, error)
     {
       $http.put(`${API}/users/me/bookmarks/${data.type}/${data.objectId}`, {}).success(setScope(success)).error(error)
