@@ -11,120 +11,118 @@ var svc             = new BaseSvc(User, logging)
 
 
 var cbSession = (cb) =>
-	(e, r) => {
-		if (e || !r) {
-			if (logging) $log('cbSession', e, r)
-			return cb(e, r)
-		}
-		var obj = util.selectFromObject(r, UserData.select.sessionFull)
-		if (obj.roles && obj.roles.length == 0) delete obj.roles
-		setAvatar(obj)
-		//if (logging) $log('cbSession.before.inflateTagsAndBookmarks', obj)
-		inflateTagsAndBookmarks(obj, cb)
-	}
+  (e, r) => {
+    if (e || !r) {
+      if (logging) $log('cbSession', e, r)
+      return cb(e, r)
+    }
+    var obj = util.selectFromObject(r, UserData.select.sessionFull)
+    if (obj.roles && obj.roles.length == 0) delete obj.roles
+    setAvatar(obj)
+    //if (logging) $log('cbSession.before.inflateTagsAndBookmarks', obj)
+    inflateTagsAndBookmarks(obj, cb)
+  }
 
 
 //-- TODO, consider analytics context ?
 
 function getUpsertEngagementProperties(existingUser, sessionID, sessionCreatedAt, done)
 {
-	//-- Default engagement
-	var visit_first = sessionCreatedAt
-	var visit_signup = new Date()
-	var visit_last = new Date()
-	var visits = [util.dateWithDayAccuracy()]
-	var aliases = null
+  //-- Default engagement
+  var visit_first = sessionCreatedAt
+  var visit_signup = new Date()
+  var visit_last = new Date()
+  var visits = [util.dateWithDayAccuracy()]
+  var aliases = null
 
-	// This is a new user (easy peasy)
-	if (existingUser)
-	{
-		var {cohort} = existingUser
+  // This is a new user (easy peasy)
+  if (existingUser)
+  {
+    var {cohort} = existingUser
 
-		//-- This is an existing v0 user. We need to alias their google._json.email to their userId for v1
-		if (!cohort || !cohort.engagement.visit_first)
-		{
-			var v0AccountCreatedAt = util.ObjectId2Date(existingUser._id)
-			visit_first = v0AccountCreatedAt
-			visit_signup = v0AccountCreatedAt
-		}
-		else
-		{
-			// keep existing fist visit, signup and visits
-			visit_first = cohort.engagement.visit_first
-			visit_signup = cohort.engagement.visit_signup
-			visits = cohort.engagement.visits
-			aliases = cohort.aliases
-		}
-	}
+    //-- This is an existing v0 user. We need to alias their google._json.email to their userId for v1
+    if (!cohort || !cohort.engagement.visit_first)
+    {
+      var v0AccountCreatedAt = util.ObjectId2Date(existingUser._id)
+      visit_first = v0AccountCreatedAt
+      visit_signup = v0AccountCreatedAt
+    }
+    else
+    {
+      // keep existing fist visit, signup and visits
+      visit_first = cohort.engagement.visit_first
+      visit_signup = cohort.engagement.visit_signup
+      visits = cohort.engagement.visits
+      aliases = cohort.aliases
+    }
+  }
 
-	return {engagement:{visit_first,visit_signup,visit_last,visits},aliases}
+  return {engagement:{visit_first,visit_signup,visit_last,visits},aliases}
 }
 
 // upsertSmart
 // Intelligent logic around updating user accounts on Signup and Login for user info and analytics.
 // Adds the user if new, or updates if existing based on the search which could be by _id or provider e.g. { googleId: 'someId' }
 function upsertSmart(search, upsert, cb) {
-	if (logging) $log('upsertSmart', JSON.stringify(search), JSON.stringify(upsert))
+  if (logging) $log('upsertSmart', JSON.stringify(search), JSON.stringify(upsert))
 
-	//-- Session is their cookie, which may or may not have been their first visit
-	var sessionCreatedAt = util.sessionCreatedAt(this.session)
-	var {sessionID} = this
+  //-- Session is their cookie, which may or may not have been their first visit
+  var sessionCreatedAt = util.sessionCreatedAt(this.session)
+  var {sessionID} = this
 
-	svc.searchOne(search, null, (e, r) => {
-		if (e) { return cb(e) }
-		upsert.cohort = getUpsertEngagementProperties(r,sessionID,sessionCreatedAt)
+  svc.searchOne(search, null, (e, r) => {
+    if (e) { return cb(e) }
+    upsert.cohort = getUpsertEngagementProperties(r,sessionID,sessionCreatedAt)
 
-		if (upsert.google)
-		{
-			//-- stop user clobbering user.google details
-			if (r && r.googleId && (r.googleId != upsert.google.id))
-				return cb(Error(`Cannot overwrite google login ${r.google._json.email} with ${upsert.google._json.email}. <a href="/v1/auth/logout">Logout</a> first?`),null)
+    if (upsert.google)
+    {
+      //-- stop user clobbering user.google details
+      if (r && r.googleId && (r.googleId != upsert.google.id))
+        return cb(Error(`Cannot overwrite google login ${r.google._json.email} with ${upsert.google._json.email}. <a href="/v1/auth/logout">Logout</a> first?`),null)
 
-			//-- copy google details to top level users details
-			if (!r || !r.email)
-			{
-				upsert.email = upsert.google._json.email
-				upsert.name = upsert.google.displayName
-				upsert.emailVerified = false
-			}
-		}
+      //-- copy google details to top level users details
+      if (!r || !r.email)
+      {
+        upsert.email = upsert.google._json.email
+        upsert.name = upsert.google.displayName
+        upsert.emailVerified = false
+      }
+    }
 
-		if (r)
-		{
-			if (!r.emailVerified)
-				upsert.emailVerified = false
-			if (r.tags)
-				// need more intelligent logic to avoid dups & such
-				upsert.tags = _.union(r.tags, upsert.tags)
-			if (r.bookmarks)
-				// need more intelligent logic to avoid dups & such
-				upsert.bookmarks = _.union(r.bookmarks, upsert.bookmarks)
-		}
+    if (r)
+    {
+      if (!r.emailVerified)
+        upsert.emailVerified = false
+      if (r.tags)
+        // need more intelligent logic to avoid dups & such
+        upsert.tags = _.union(r.tags, upsert.tags)
+      if (r.bookmarks)
+        // need more intelligent logic to avoid dups & such
+        upsert.bookmarks = _.union(r.bookmarks, upsert.bookmarks)
+    }
 
-		User.findOneAndUpdate(search, upsert, { upsert: true }, (err, user) => {
-			if (err) {
-				var errData = { search: search, upsert: upsert, existing: r }
-				winston.error(JSON.stringify(errData))
-				return cb(err)
-			}
+    User.findOneAndUpdate(search, upsert, { upsert: true }, (err, user) => {
+      if (err) {
+        var errData = { search: search, upsert: upsert, existing: r }
+        winston.error(JSON.stringify(errData))
+        return cb(err)
+      }
 
-			var done = cbSession(cb)
-			if (!analytics.upsert) return done(null, user)
+      var done = cbSession(cb)
+      if (!analytics.upsert) return done(null, user)
 
-			analytics.upsert(user, r, sessionID, (aliases) => {
-				if (logging) $log('back from the analytics.upsert **********************************')
-				if (aliases && user.cohort.aliases &&
-						aliases.length == user.cohort.aliases.length)
-				{
-					done(null, user)
-				}
-				else
-				{
-					User.findOneAndUpdate(search, { 'cohort.aliases': aliases }, done)
-				}
-			})
-		})
-	})
+      analytics.upsert(user, r, sessionID, (aliases) => {
+        if (logging) $log('back from the analytics.upsert **********************************')
+        if (aliases && user.cohort.aliases &&
+          aliases.length == user.cohort.aliases.length)
+        {
+          done(null, user)
+        }
+        else
+          User.findOneAndUpdate(search, { 'cohort.aliases': aliases }, done)
+    	})
+    })
+  })
 }
 
 // local function for password and email hashing
@@ -458,62 +456,62 @@ export function changePassword(hash, password, cb) {
 // Change email can be used both to change an email
 // and to set and send a new email hash for verification
 export function changeEmail(email, cb) {
-	var inValid = Validate.changeEmail(email)
-	if (inValid) return cb(svc.Forbidden(inValid))
-	email = email.toLowerCase()
+  var inValid = Validate.changeEmail(email)
+  if (inValid) return cb(svc.Forbidden(inValid))
+  email = email.toLowerCase()
 
-	self = this
+  self = this
 
-	var {user} = this
-	if (user)
-	{
-		var up = { '$set': {
-			'email': email,
-			'emailVerified': false,
-			'local.emailHash': generateHash(email)
-			}
-		}
-		var previousEmail = user.email
+  var {user} = this
+  if (user)
+  {
+    var up = { '$set': {
+      'email': email,
+      'emailVerified': false,
+      'local.emailHash': generateHash(email)
+    }}
 
-		User.findOneAndUpdate({_id:user._id}, up, (e,r) => {
-			if (e) {
-				if (e.message.indexOf('duplicate key error index') != -1)	return cb(Error('Email belongs to another account'))
-				return cb(e)
-			}
+    var previousEmail = user.email
 
-			if (user.email == email)
-				mailman.sendVerifyEmail(r, r.local.emailHash) // only send if the user explicitly is verifying
-			else
-				self.user.email = email // update the session object
+    User.findOneAndUpdate({_id:user._id}, up, (e,r) => {
+      if (e) {
+        if (e.message.indexOf('duplicate key error index') != -1)	return cb(Error('Email belongs to another account'))
+        return cb(e)
+      }
 
-			cbSession(cb)(e,r)
-		})
-	}
-	else {
-		var search = { '$or': [{email:email},{'google._json.email':email}] }
-		var self = this
-		svc.searchOne(search, null, function(e,r) {
-			if (r) {
-				delete self.session.anonData.email
-				return cb(svc.Forbidden(`${email} already registered`))
-			}
-			self.session.anonData.email = email
-			return getSession.call(self, cb)
-		})
-	}
+      if (user.email == email)
+        mailman.sendVerifyEmail(r, r.local.emailHash) // only send if the user explicitly is verifying
+      else
+        self.user.email = email // update the session object
+
+      cbSession(cb)(e,r)
+    })
+  }
+  else {
+    var search = { '$or': [{email:email},{'google._json.email':email}] }
+    var self = this
+    svc.searchOne(search, null, function(e,r) {
+      if (r) {
+        delete self.session.anonData.email
+        return cb(svc.Forbidden(`${email} already registered`))
+      }
+      self.session.anonData.email = email
+      return getSession.call(self, cb)
+    })
+  }
 }
 
 export function verifyEmail(hash, cb) {
-	svc.searchOne({ email:this.user.email }, null, (e,r) => {
+  svc.searchOne({ email:this.user.email }, null, (e,r) => {
     if (e || !r) {
-    	$log(e,r)
-    	return cb(e,r)
+      $log(e,r)
+      return cb(e,r)
     }
-		if (r.local.emailHash == hash) {
-			this.user.emailVerified = true
-			svc.update(this.user._id, { emailVerified: true }, cb)
-		}
-		else
-			cb(Error("e-mail verification failed"))
+    if (r.local.emailHash == hash) {
+      this.user.emailVerified = true
+      svc.update(this.user._id, { emailVerified: true }, cb)
+    }
+    else
+      cb(Error("e-mail verification failed"))
   })
 }
