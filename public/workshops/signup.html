@@ -5,58 +5,58 @@
 </header>
 
 <section id="workshops">
-	<div id="signup">
+  <div id="signup">
 
-	  <div class="choice" ng-if="!hasAccess">
+    <div class="choice" ng-if="!hasAccess">
 
-	    <h2>two ways to attend</h2>
-	    <h4>Please choose an option access this workshop</h4>
+      <h2>two ways to attend</h2>
+      <h4>Please choose an option access this workshop</h4>
 
-	    <div class="option">
-	      <h2>Ticket</h2>
+      <div class="option">
+        <h2>Ticket</h2>
 
-	      <ul>
-	        <li><b>$50 one off</b></li>
-	        <li>Access to this workshops</li>
-	        <li>Access the recording</li>
-	        <li>$10 credit towards pairing with {{ entry.speakers[0].name }}</li>
-	      </ul>
+        <ul>
+          <li><b>$50 one off</b></li>
+          <li>Access to this workshops</li>
+          <li>Access the recording</li>
+          <li>$10 credit towards pairing with {{ entry.speakers[0].name }}</li>
+        </ul>
 
-	      <a href="alert('Sign up for this workshop is free, please fill the form below')" class="btn">Buy a ticket</a>
-	    </div>
+        <a href="alert('Sign up for this workshop is free, please fill the form below')" class="btn">Buy a ticket</a>
+      </div>
 
-	    <div class="option">
-	      <h2>Membership</h2>
-	      <ul>
-	        <li><b>$300 for 6 months</b></li>
-	        <li>Access to all workshops</li>
-	        <li>$5/hr off all AirPairing</li>
-	        <li>Instant chat access to experts</li>
-	      </ul>
-	      <a href="alert('Sign up for this workshop is free, please fill the form below')" class="btn">Get a membership</a>
-	    </div>
+      <div class="option">
+        <h2>Membership</h2>
+        <ul>
+          <li><b>$300 for 6 months</b></li>
+          <li>Access to all workshops</li>
+          <li>$5/hr off all AirPairing</li>
+          <li>Instant chat access to experts</li>
+        </ul>
+        <a href="alert('Sign up for this workshop is free, please fill the form below')" class="btn">Get a membership</a>
+      </div>
 
-	  </div>
+    </div>
 
-	  <div class="rsvp" ng-if="hasAccess && !entry.youtube">
+    <div class="rsvp" ng-if="hasAccess && !entry.youtube">
 
-	    <h2>RSVP for workshop</h2>
+      <h2>RSVP for workshop</h2>
 
-	    <iframe ng-src="{{ 'http://bit.ly/aircastsignup-' + entry.slug | trustUrl }}" width="100%" height="920" frameborder="0" marginheight="0" marginwidth="0">Loading...</iframe>
+      <iframe ng-src="{{ 'http://bit.ly/aircastsignup-' + entry.slug | trustUrl }}" width="100%" height="920" frameborder="0" marginheight="0" marginwidth="0">Loading...</iframe>
 
-	  </div>
+    </div>
 
-	  <div class="attending" ng-if="hasAccess && entry.youtube">
+    <div class="attending" ng-if="hasAccess && entry.youtube">
 
-	    <h2>This workshop has already happened.</h2>
+      <h2>This workshop has already happened.</h2>
 
-	  </div>
+    </div>
 
-	  <hr />
+    <hr />
 
-	  <a href="{{ entry.url }}" class="btn" target="_self">Back to workshop</a>
+    <a href="{{ entry.url }}" class="btn" target="_self">Back to workshop</a>
 
-	  <hr />
+    <hr />
 
-	</div>
+  </div>
 </section>

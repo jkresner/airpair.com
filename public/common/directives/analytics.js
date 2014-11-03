@@ -12,7 +12,7 @@ angular.module("APAnalytics", [])
         var type = attrs.trackClick;
 
         element.click(function(){
-        	if (scope.tracking === false) return
+          if (scope.tracking === false) return
 
           var props = {
             id: element.attr('id'),
@@ -21,22 +21,22 @@ angular.module("APAnalytics", [])
             type: type
           };
 
-	        var data = element.attr('data');
-       		if (data) props.data = data;
+          var data = element.attr('data');
+          if (data) props.data = data;
 
           if (window.analytics)
           {
-          	analytics.track(event, props);
+            analytics.track(event, props);
 
-						// delay redirect so tracking finishes properly
-	          if (target == '_blank' || target == '_self')
-	          {
-	            $timeout(function () {
-	              window.location.href = location;
-	            }, 250);
+            // delay redirect so tracking finishes properly
+            if (target == '_blank' || target == '_self')
+            {
+              $timeout(function () {
+                window.location.href = location;
+              }, 250);
 
-	            return false;
-	          }
+              return false;
+            }
           }
           else
           {

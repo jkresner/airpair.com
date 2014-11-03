@@ -13,9 +13,9 @@ require('./../auth/module.js');
 
 angular.module("AP", ['ngRoute', 'APFilters', 'APAnalytics', 'APSideNav', 'APBookmarker', 'APAuth'])
 
-	.config( ['$provide', function ($provide){
+  .config( ['$provide', function ($provide){
 
-	}])
+  }])
 
   .run(['$rootScope', 'SessionService',
     function($rootScope, SessionService) {
@@ -24,10 +24,10 @@ angular.module("AP", ['ngRoute', 'APFilters', 'APAnalytics', 'APSideNav', 'APBoo
 
     if (window.viewData)
     {
-	    if (window.viewData.post) $rootScope.post = window.viewData.post
-	    if (window.viewData.workshop) $rootScope.workshop = window.viewData.workshop
-	    if (window.viewData.expert) $rootScope.expert = window.viewData.expert
-	  }
+      if (window.viewData.post) $rootScope.post = window.viewData.post
+      if (window.viewData.workshop) $rootScope.workshop = window.viewData.workshop
+      if (window.viewData.expert) $rootScope.expert = window.viewData.expert
+    }
 
   }])
 

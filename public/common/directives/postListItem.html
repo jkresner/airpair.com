@@ -1,20 +1,20 @@
 <article itemscope="itemscope" itemtype="http://schema.org/BlogPosting" itemprop="blogPost">
-	<a href="{{ post.url }}" title="{{ post.title }}" target="_self" rel="bookmark">
-	  <header class="entry-header">
-	    <h2 class="entry-title" itemprop="headline">{{ post.title }}</h2>
-	    <p class="entry-meta">
-	      <time class="entry-time" itemprop="datePublished" datetime="{{ post.published }}">{{ post.publishedFormat }}</time>
-	      by
-	      <span class="entry-author" itemprop="author" itemscope="itemscope" itemtype="http://schema.org/Person">
-	        <span class="entry-author-name" itemprop="name">{{ post.by.name }}</span>
-	      </span>
-	    </p>
-	  </header>
-	  <div class="entry-content" itemprop="text">
-	    <img class="entry-author-image" itemprop="image" ng-src="{{ post.by.avatar }}?s=50" align="left" />
-	    <p>{{ post.meta.description }}</p>
-	  </div>
-	</a>
+  <a href="{{ post.url }}" title="{{ post.title }}" target="_self" rel="bookmark">
+    <header class="entry-header">
+      <h2 class="entry-title" itemprop="headline">{{ post.title }}</h2>
+      <p class="entry-meta">
+        <time class="entry-time" itemprop="datePublished" datetime="{{ post.published }}">{{ post.publishedFormat }}</time>
+        by
+        <span class="entry-author" itemprop="author" itemscope="itemscope" itemtype="http://schema.org/Person">
+          <span class="entry-author-name" itemprop="name">{{ post.by.name }}</span>
+        </span>
+      </p>
+    </header>
+    <div class="entry-content" itemprop="text">
+      <img class="entry-author-image" itemprop="image" ng-src="{{ post.by.avatar }}?s=50" align="left" />
+      <p>{{ post.meta.description }}</p>
+    </div>
+  </a>
   <footer class="entry-footer">
     <p class="entry-meta">
       <span class="entry-categories">
@@ -22,6 +22,6 @@
       </span>
     </p>
 
-   	<bookmarker type="post"></bookmarker>
+    <bookmarker type="post"></bookmarker>
   </footer>
 </article>

@@ -13,8 +13,8 @@ var oauthFn = (provider, scope) => {
 
   return (req, res, next) => {
     if (logging) {
-    	$log('oauthFn.req.isAuthenticated'.white, JSON.stringify(opts))
-    	$log('oauthFn.req.user', req.user)
+			$log('oauthFn.req.isAuthenticated'.white, JSON.stringify(opts))
+			$log('oauthFn.req.user', req.user)
     }
 
     if (opts.assignProperty) delete opts.assignProperty

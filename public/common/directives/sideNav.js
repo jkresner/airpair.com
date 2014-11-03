@@ -14,140 +14,138 @@ function storage(k, v) {
 
 angular.module("APSideNav", ['ui.bootstrap','APSvcSession', 'APTagInput'])
 
-	.directive('sideNav', ['$rootScope', '$modal', 'SessionService', function($rootScope, $modal, SessionService) {
-		return {
-			template: require('./sideNav.html'),
-			link: function(scope, element, attrs) {
+  .directive('sideNav', ['$rootScope', '$modal', 'SessionService', function($rootScope, $modal, SessionService) {
+    return {
+      template: require('./sideNav.html'),
+      link: function(scope, element, attrs) {
 
-				// Only track menu behavior for anonymous users
-		    SessionService.onAuthenticated( (session) =>
-		    	scope.tracking = (session._id) ? false : true )
+        // Only track menu behavior for anonymous users
+        SessionService.onAuthenticated( (session) =>
+          scope.tracking = (session._id) ? false : true )
 
-			},
+      },
       controllerAs: 'sideNav',
-			controller: function($scope, $element, $attrs) {
+      controller: function($scope, $element, $attrs) {
 
         this.toggle = function() {
-        	if (storage('sideNavOpen') == 'true')
-						storage('sideNavOpen', 'false');
-					else
-						storage('sideNavOpen', 'true');
+          if (storage('sideNavOpen') == 'true') storage('sideNavOpen', 'false');
+          else storage('sideNavOpen', 'true');
 
-        	$element.toggleClass('collapse', storage('sideNavOpen') == 'false')
-					$scope.toggleAction = (storage('sideNavOpen') != 'true') ? 'Show' : 'Hide';
+          $element.toggleClass('collapse', storage('sideNavOpen') == 'false')
+          $scope.toggleAction = (storage('sideNavOpen') != 'true') ? 'Show' : 'Hide';
         }
         $element.toggleClass('collapse', storage('sideNavOpen') != 'true')
         $scope.toggleAction = (storage('sideNavOpen') != 'true') ? 'Show' : 'Hide';
 
-			  $scope.openStack = function() {
-			    var modalInstance = $modal.open({
-			      template: require('./stack.html'),
-			      controller: "StackCtrl",
-			      size: 'lg'
-			    });
-			  }
+        $scope.openStack = function() {
+          var modalInstance = $modal.open({
+            template: require('./stack.html'),
+            controller: "StackCtrl",
+            size: 'lg'
+          });
+        }
 
-			  $scope.selectedTags = () => ($scope.session) ? $scope.session.tags : null;
+        $scope.selectedTags = () => ($scope.session) ? $scope.session.tags : null;
 
-			  $scope.selectTag = function(tag) {
-			  	var tags = $scope.session.tags;
+        $scope.selectTag = function(tag) {
+          var tags = $scope.session.tags;
           if ( _.contains(tags, tag) ) $scope.session.tags = _.without(tags, tag)
           else $scope.session.tags = _.union(tags, [tag])
 
           SessionService.updateTag(tag, angular.noop, (e) => alert(e.message));
-			  };
+        };
 
         $scope.deselectTag = (tag) => {
           $scope.session.tags = _.without($scope.session.tags, tag);
           SessionService.updateTag(tag, angular.noop, (e) => alert(e.message));
         };
 
-			  $scope.openBookmarks = function() {
-			    var modalInstance = $modal.open({
-			      template: require('./bookmarks.html'),
-			      controller: "BookmarksCtrl",
-			      size: 'lg'
-			    });
-			  }
+        $scope.openBookmarks = function() {
+          var modalInstance = $modal.open({
+            template: require('./bookmarks.html'),
+            controller: "BookmarksCtrl",
+            size: 'lg'
+          });
+        }
 
-				var self = this;
-				$rootScope.openProfile = function() {
+        var self = this;
+        $rootScope.openProfile = function() {
 
-					var modalInstance = $modal.open({
-						template: require('./profile.html'),
-						controller: 'ProileCtrl as ProileCtrl',
-						size: 'lg'
-					});
-				}
-			}
-		};
+          var modalInstance = $modal.open({
+            template: require('./profile.html'),
+            controller: 'ProileCtrl as ProileCtrl',
+            size: 'lg'
+          });
+        }
+      }
+    };
 
-	}])
-
-
-	.controller('StackCtrl', ['$scope', '$modalInstance', '$window', 'SessionService',
-		function($scope, $modalInstance, $window, SessionService) {
-
-		$scope.ok = () => $modalInstance.close();
-		$scope.cancel = () => $modalInstance.dismiss('cancel');
-
-	}])
+  }])
 
 
-	.controller('BookmarksCtrl', ['$scope', '$modalInstance', '$window', 'SessionService',
-		function($scope, $modalInstance, $window, SessionService) {
+  .controller('StackCtrl', ['$scope', '$modalInstance', '$window', 'SessionService',
+    function($scope, $modalInstance, $window, SessionService) {
 
-		$scope.ok = () => $modalInstance.close();
-		$scope.cancel = () => $modalInstance.dismiss('cancel');
+    $scope.ok = () => $modalInstance.close();
+    $scope.cancel = () => $modalInstance.dismiss('cancel');
 
-	}])
+  }])
 
 
-	.controller('ProileCtrl', ['$scope', '$rootScope', '$modalInstance', '$window', '$timeout', 'SessionService',
-		function($scope, $rootScope, $modalInstance, $window, $timeout, SessionService) {
+  .controller('BookmarksCtrl', ['$scope', '$modalInstance', '$window', 'SessionService',
+    function($scope, $modalInstance, $window, SessionService) {
 
-		$scope.data = { email: $scope.session.email, name: $scope.session.name }
+    $scope.ok = () => $modalInstance.close();
+    $scope.cancel = () => $modalInstance.dismiss('cancel');
 
-		if (!$scope.session.email)
-		{
-			$scope.avatarQuestion = "Aren't you a little short for a storm trooper?";
-			var avatar = $scope.session.avatar.replace('/v1/img/css/sidenav/default-','').replace('.png','')
-			if (avatar == 'cat') $scope.avatarQuestion = "That's a nice hair tie...";
-			if (avatar == 'mario') $scope.avatarQuestion = "Eating a little too many mushrooms aren't we?";
-		}
+  }])
 
-		$scope.updateEmail = function(model) {
-			if (!model.$valid) return
-			$scope.emailChangeFailed = ""
 
-		  SessionService.changeEmail({ email: $scope.data.email },
-		    (result) => {
-		    	analytics.track('Save', { type:'email', email: result.email });
-		    	$scope.data.email = result.email
-		    	$timeout(() => { angular.element('#signupName').trigger('focus'); }, 40)
-		    }
-		    ,
-		    (e) => {
-		    	$scope.emailChangeFailed = e.message
-		    	$scope.data.email = null
-		    }
-		  )
-		}
+  .controller('ProileCtrl', ['$scope', '$rootScope', '$modalInstance', '$window', '$timeout', 'SessionService',
+    function($scope, $rootScope, $modalInstance, $window, $timeout, SessionService) {
 
-		$scope.submit = (formValid, data) => {
-			if (formValid)
-			{
-				SessionService.signup(data,
-				  (result) => {
-				  	//$modalInstance.close();
-				  },
-				  (e) => $scope.signupFail = e.error
-				)
-			}
-		}
+    $scope.data = { email: $scope.session.email, name: $scope.session.name }
 
-		$scope.cancel = () => $modalInstance.dismiss('cancel');
+    if (!$scope.session.email)
+    {
+      $scope.avatarQuestion = "Aren't you a little short for a storm trooper?";
+      var avatar = $scope.session.avatar.replace('/v1/img/css/sidenav/default-','').replace('.png','')
+      if (avatar == 'cat') $scope.avatarQuestion = "That's a nice hair tie...";
+      if (avatar == 'mario') $scope.avatarQuestion = "Eating a little too many mushrooms aren't we?";
+    }
 
-	}])
+    $scope.updateEmail = function(model) {
+      if (!model.$valid) return
+      $scope.emailChangeFailed = ""
+
+      SessionService.changeEmail({ email: $scope.data.email },
+        (result) => {
+          analytics.track('Save', { type:'email', email: result.email });
+          $scope.data.email = result.email
+          $timeout(() => { angular.element('#signupName').trigger('focus'); }, 40)
+        }
+        ,
+        (e) => {
+        	$scope.emailChangeFailed = e.message
+        	$scope.data.email = null
+        }
+      )
+    }
+
+    $scope.submit = (formValid, data) => {
+      if (formValid)
+      {
+        SessionService.signup(data,
+          (result) => {
+          //$modalInstance.close();
+        },
+          (e) => $scope.signupFail = e.error
+        )
+      }
+    }
+
+    $scope.cancel = () => $modalInstance.dismiss('cancel');
+
+  }])
 
 ;
