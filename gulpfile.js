@@ -19,7 +19,7 @@ paths = {
 
 gulp.task('testnodemon', function () {
   nodemon({ script: 'test/server/helpers/run.js', ext: 'html js',
-      ignore: ['public/*','dist/*'] })
+      ignore: ['public/*','dist/*','node_modules/*'] })
     .on('change', ['lint'])
     .on('restart', function () {
       console.log('>> node test restart');
@@ -33,7 +33,7 @@ gulp.task('lint', function () {
 
 gulp.task('nodemon', function () {
   nodemon({ script: 'bootstrap.js', ext: 'html js',
-      ignore: ['public/*','test/*','dist/*'] })
+      ignore: ['public/*','test/*','dist/*','node_modules/*'] })
     .on('change', ['lint'])
     .on('restart', function () {
       console.log('>> node restart');
