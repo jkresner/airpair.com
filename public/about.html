@@ -1,10 +1,120 @@
 <header>About</header>
 <section id="about">
-<h1>Welcome</h1>
 
-<p>AirPair is a community of Developers Helping Developers.</p>
+  <img src="/v1/img/pages/about/airpair.png" />
 
-<br /><br /><br /><br /><br /><br />
+  <section class="header">
+    <table>
+      <tr>
+        <td><span>{</span></td>
+        <td><h2><br />
+      AirPair is a <b>community</b> of <b>world class developers</b>
+      <label>available for micro-consulting through video chat</label>
+    </h2></td>
+        <td><span>}</span></td>
+      </tr>
+    </table>
+  </section>
 
-<a href="#" ng-click="openProfile()" class="btn">Join AirPair</a>
-<a href="#" class="btn">Back</a>
+
+  <section class="expertise">
+
+    <div class="block">you need expertise.</div>
+    <div class="vr" style="margin-top:-30px"></div>
+
+    <p>The average senior developer makes <em>$124,131</em> a year + benefits</p>
+    <p>For less than <em>$10,000</em> you could have that person on your team</p>
+
+    <label>(did we mention he's the senior developer at Groupon?)</label>
+
+<!--
+    <p>The average 4 year degree costs developer makes <em>$124,131</em> a year + benefits.</p>
+    <p>For less than <em>$10,000</em> you could have that person on your team.</p> -->
+
+  </section>
+
+  <section class="how">
+
+    <div class="vr"></div>
+
+    <h2>How can you use AirPair?</h2>
+    <br />
+
+    <div class="row">
+      <div class="col-md-4">
+        <h3>Problem solving</h3>
+        <p></p>
+      </div>
+      <div class="col-md-4">
+        <h3>Mentorship</h3>
+        <p></p>
+      </div>
+      <div class="col-md-4">
+        <h3>Code Review</h3>
+        <p></p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4">
+        <h3>Vetting</h3>
+        <p></p>
+      </div>
+      <div class="col-md-4">
+        <h3>Advising</h3>
+        <p></p>
+      </div>
+      <div class="col-md-4">
+        <h3>And More!</h3>
+        <p></p>
+      </div>
+    </div>
+
+
+  </section>
+
+  <div class="vr"></div>
+
+  <section class="help">
+
+    <div class="block">got a problem?</div>
+    <div class="vr" style="margin-top:-30px"></div>
+
+    <p>The average jaunt on Stack Overflow takes <em>4 painful hours</em>.</p>
+
+    <label>and shortens your life by 3 months</label>
+
+    <p>Solve your problem <em>10x quicker</em> with experts in every language.</p>
+
+  </section>
+
+  <br />
+
+
+  <div class="vr"></div>
+  <section class="help">
+
+    <div class="block">it's easy</div>
+    <div class="vr" style="margin-top:-30px"></div>
+
+    <p>Spend <em>5 minutes</em> filling out a request and get introduced to</p>
+
+    <p>developers that <em>Facebook, Google and Apple</em> would salivate over.</p>
+    <br />
+  </section>
+
+  <div class="vr"></div>
+  <section class="gaurantee">
+
+    <div class="block">try it out, risk free</div>
+    <div class="vr" style="margin-top:-30px"></div>
+
+    <p>We have a 100% satisfaction guarantee</p>
+
+    <label>Warning AirPairing can become addictive once you realized how awesome it is.</label>
+
+  </section>
+
+
+
+<a ng-if="!session._id" href="#" ng-click="openProfile()" class="btn">Join AirPair</a>
+<a ng-if="session._id" href="/find-an-expert" target="_self" class="btn">Get help</a>
