@@ -53,7 +53,6 @@ export function init(provider, successfulShakeDelegate) {
     profile.token = { token: accessToken, attributes: { refreshToken: refreshToken } }
 
     if (logging) {
-      winston.error(`oauth.loggedIn[${req.user!=null}]: `+JSON.stringify(profile))
       $log(`${provider}.VerifyCallback`, req.user, profile)
     }
 
