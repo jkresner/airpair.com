@@ -12,11 +12,16 @@ var oauthFn = (provider, scope) => {
   }
 
   return (req, res, next) => {
-    if (logging) $log('oauthFn.req.isAuthenticated', req.isAuthenticated)
+    if (logging) {
+    	$log('oauthFn.req.isAuthenticated'.white, JSON.stringify(opts))
+    	$log('oauthFn.req.user', req.user)
+    }
+
+    if (opts.assignProperty) delete opts.assignProperty
 
     if ( req.isAuthenticated() )
     {
-    	if (logging) $log('oauthFn.req.isAuthenticated().true', req.user)
+    	if (logging) $log('oauthFn.req.isAuthenticated().true.authorize'.red)
 
       // If the users is ALREADY logged in (got a session), then we
       // handshake with the provider AND do not do anything with the session
@@ -25,7 +30,7 @@ var oauthFn = (provider, scope) => {
     }
     else
     {
-    	if (logging) $log('oauthFn.req.isAuthenticated().false')
+    	if (logging) $log('oauthFn.req.isAuthenticated().false.authenticate'.red)
 
       // If the users is not logged in (got a session), then we
       // handshake with the provider AND authenticate the user
@@ -37,7 +42,7 @@ var oauthFn = (provider, scope) => {
 
 export function init(provider, successfulShakeDelegate) {
   var Strategy = require(`passport-${provider}-oauth`).OAuth2Strategy
-  var cfg = authConfig.getEnvConfig(provider)
+  var oauthConfig = authConfig.getEnvConfig(provider)
 
   var verifyCallback = (req, accessToken, refreshToken, profile, done) =>
   {
@@ -47,14 +52,15 @@ export function init(provider, successfulShakeDelegate) {
     // Save token to db for re-use later
     profile.token = { token: accessToken, attributes: { refreshToken: refreshToken } }
 
-    if (logging)
+    if (logging) {
+      winston.error(`oauth.loggedIn[${req.user!=null}]: `+JSON.stringify(profile))
       $log(`${provider}.VerifyCallback`, req.user, profile)
+    }
 
     successfulShakeDelegate(req, provider, profile, done)
   }
 
-  passport.use(provider, new Strategy(cfg, verifyCallback))
+  passport.use(provider, new Strategy(oauthConfig, verifyCallback))
 
-  return oauthFn(provider, authConfig.scope)
+  return oauthFn(provider, oauthConfig.scope)
 }
-
