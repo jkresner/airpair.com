@@ -10,11 +10,11 @@ require('./../adm/redirects/module.js');
 
 
 angular.module("ADM", [
-	'ngRoute',
-	'APSvcSession',
-	'ADMPosts',
-	'ADMUsers',
-	'ADMRedirects'])
+  'ngRoute',
+  'APSvcSession',
+  'ADMPosts',
+  'ADMUsers',
+  'ADMRedirects'])
 
   .config(['$locationProvider', '$routeProvider',
       function($locationProvider, $routeProvider) {

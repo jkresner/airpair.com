@@ -22,17 +22,17 @@ angular.module("AP", ['ngRoute', 'APSideNav', 'APAuth', 'APPosts', 'APWorkshops'
 
     $locationProvider.html5Mode(true);
 
-		$routeProvider.when('/v1', {
-			template: require('../home.html')
-		});
+    $routeProvider.when('/v1', {
+      template: require('../home.html')
+    });
 
-		$routeProvider.when('/about', {
-			template: require('../about.html')
-		});
+    $routeProvider.when('/about', {
+      template: require('../about.html')
+    });
 
-		$routeProvider.when('/', {
-			template: require('../about.html')
-		});
+    $routeProvider.when('/', {
+      template: require('../about.html')
+    });
 
   }])
 
