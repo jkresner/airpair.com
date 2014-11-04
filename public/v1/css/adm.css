@@ -406,6 +406,7 @@ body > header li a:hover {
   body > header > a {
     padding: 0px;
     background-position: 5px 3px;
+    width: 100px;
   }
   body > header ul {
     padding: 1px 3px;
@@ -953,6 +954,20 @@ nav#chat.collapse {
   -moz-filter: grayscale(100%);
   filter: grayscale(100%);
 }
+.posts article a.bookmark {
+  background: #ce5424;
+  float: left;
+  padding: 2px 10px;
+  width: 30%;
+  color: white;
+  background-image: url('/v1/img/css/sidenav/bookmark.png');
+  font-weight: bold;
+  background-position: 10% center;
+  background-repeat: no-repeat;
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+  background-size: 12px 12px;
+}
 .posts article:hover {
   border: solid 1px #ce5424;
 }
@@ -1374,6 +1389,29 @@ section#posts .publish .publishMeta input {
   margin-top: -150px;
 }
 @media only screen and (max-width: 900px) {
+  .blogpost .island {
+    width: 100%;
+  }
+  .blogpost .island .rail {
+    float: none!important;
+    display: block;
+    margin: auto;
+  }
+  .blogpost div.railCTA1Holder {
+    float: none;
+    margin: auto;
+  }
+  .blogpost .railCTA {
+    margin: auto;
+    float: none;
+    display: block;
+  }
+  .blogpost .rail1CTA {
+    margin: auto;
+    float: none;
+    display: block;
+    position: fixed;
+  }
   .blogpost > h1 {
     font-size: 32px;
     line-height: 48px;
@@ -1398,6 +1436,8 @@ section#posts .publish .publishMeta input {
 @media only screen and (max-width: 640px) {
   .blogpost p {
     padding: 2px 5px 2px 5px;
+    font-size: 14px;
+    line-height: 22px;
   }
   .blogpost iframe {
     width: 100%;
