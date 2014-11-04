@@ -60,6 +60,11 @@ angular.module("APSideNav", ['ui.bootstrap','APSvcSession', 'APTagInput'])
           SessionService.updateTag(tag, angular.noop, (e) => alert(e.message));
         };
 
+        $scope.deselectBookmark = (bookmark) => {
+          $scope.session.bookmarks = _.without($scope.session.bookmarks, bookmark);
+          SessionService.bookmarks($scope.session.bookmarks);
+        }
+
         $scope.openBookmarks = function() {
           var modalInstance = $modal.open({
             template: require('./bookmarks.html'),
@@ -80,6 +85,32 @@ angular.module("APSideNav", ['ui.bootstrap','APSvcSession', 'APTagInput'])
       }
     };
 
+  }])
+
+
+  .directive('sortable', ['SessionService', function(SessionService) {
+    return {
+      link: function(scope, element, attrs) {
+        $(element).sortable({
+          stop: function(event, ui) {
+            var property = attrs['sort'];
+            var method = attrs['service'];
+
+            var list = scope.session[property];
+            var elems = $(element).children();
+
+            for (var i = 0; i < elems.length; i++) {
+              var elem = $(elems[i]);
+              var obj = _.find(list, (t) => t._id === elem.data('id'));
+              obj.sort = i;
+            }
+
+            SessionService[method](scope.session[property]);
+          }
+        });
+        $(element).disableSelection();
+      }
+    }
   }])
 
 
