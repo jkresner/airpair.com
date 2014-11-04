@@ -1,0 +1,49 @@
+@import "ap.less";
+
+
+section#tag {
+
+  text-align:center;
+  color:#4D4D57;
+
+  section.header {
+    padding:30px 0;
+
+    hr { height:30px;
+      background:@lightblue;
+    }
+
+    img { margin:-90px auto 0 auto }
+    img.angularjs { width:220px }
+
+    h1 { font-size:32px }
+
+    p { color:@orange }
+  }
+
+
+  section.featured {
+
+    margin:auto;
+    width:800px;
+    .btn { width:90% }
+    hr { border-top:dashed 1px @orange }
+    .row { margin-top:-40px }
+
+    hr.vr {
+      width:1px;
+      border:none;
+      border-right:solid 2px @lightblue;
+      height:30px;
+      margin:auto;
+    }
+
+    .col-md-4 > div {
+      margin:auto;
+      border:solid 2px @lightblue;
+      width:90%;
+      height:180px;
+    }
+  }
+
+}

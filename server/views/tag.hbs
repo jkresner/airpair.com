@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{{viewData.tag.name}} Community</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel='stylesheet' id='google-font-css'  href='//fonts.googleapis.com/css?family=Open+Sans%3A300%2C400%2C700&#038;ver=2.0.1' type='text/css' media='all' />
+  <link rel="stylesheet" href="/v1/lib/bootstrap/bootstrap.css" type="text/css" />
+  <link rel="stylesheet" href="/v1/lib/prism/prism.css" type="text/css" />
+  <link rel="stylesheet" href="/v1/css/index.css" type="text/css" />
+  <base href="/" />
+</head>
+<body>
+
+{{> siteHeader }}
+
+<div class="main-wrap">
+  {{#with viewData.tag}}
+  <main ng-view>
+    <header class="entry-header">
+    {{ name }}
+    </header>
+
+
+  <section id="tag">
+
+    <section class="header">
+
+      <hr />
+      <img src="/v1/img/css/tags/angularjs.png" class="{{slug}}" />
+
+      <h1>Welcome to a community of {{name}} help</h1>
+
+      <p>Here you can meet senior {{short}} developers and learn from them through articles,
+          workshops and pair programming.</p>
+
+    </section>
+
+
+    <section class="featured">
+      <hr />
+
+      <div class="row">
+
+        <div class="col-md-4">
+          <a class="btn" href="#workshops">Workshops</a>
+          <hr class="vr" />
+          <div>
+            <a href="/angularjs/workshops/top-10-mistakes-angularjs-developers-make">
+            </a>
+
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <a class="btn" href="#posts">Articles</a>
+          <hr class="vr" />
+          <div>
+
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <a class="btn" href="#pairing">Pair Programming</a>
+          <hr class="vr" />
+          <div>
+
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+
+    <section id="workshops">
+    </section>
+
+
+    <section id="posts">
+    </section>
+
+
+    <section id="pairing">
+    </section>
+
+
+  </section>
+  {{/with}}
+
+  </main>
+</div>
+
+<div ng-app="AP">
+  <nav id="side" class="collapse" side-nav></nav>
+</div>
+
+{{> siteScripts }}
+<script type="text/javascript" src="/v1/js/index.js"></script>
+<script type="text/javascript">
+
+function bindTracking() {}
+
+</script>
+
+{{> initPage }}
+
+</body>
+</html>
