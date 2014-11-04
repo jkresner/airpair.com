@@ -214,6 +214,23 @@ nav#side {
     padding: 2px 1px 3px;
     text-transform: none;
     img { display:none }
+
+    i {
+      display:none;
+      position:relative;
+      top:-32px;
+      left:-2px;
+      opacity:0.9;
+      background:@orange;
+      border-radius:7px;
+      width:14px;
+      height:14px;
+      float:right;
+      font-style:normal;
+      font-size:9px;
+      font-weight:bold;
+      color:white;
+    }
 	}
 
 	@media only screen and (max-width:1200px) {
@@ -255,6 +272,11 @@ nav#side.collapse {
 			height:28px;
 			border:none;
 			margin:0; }
+
+    i {
+      display:block;
+    }
+
 	}
 
 	#navAbout { margin-top:30px }
@@ -362,6 +384,18 @@ nav#chat.collapse {
 		margin:10px 0 30px 0;
 	}
 	label { display:block }
+}
+
+
+.modal-body.bookmarks
+{
+  p {
+    margin:10px 0 30px 0;
+  }
+  ul {
+    margin:20px 0;
+    padding-left:0;
+  }
 }
 
 .modal-body.profile

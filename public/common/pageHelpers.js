@@ -100,15 +100,19 @@ window.pageHlpr.fixPostRail = function()
   $(window).scroll(function(e)
   {
     if (window.scrollY < offset) {
+      $('.rail1CTA').css('top', $('.railCTA1Holder').offset().top - window.scrollY);
       $('.share').css('top', 0);
       $('#table-of-contents').css('top', 0);
       $('#table-of-contents + ul').css('top', 0);
     }
     else if (scrollingOn)
     {
-      $('.share').css('top', window.scrollY - 150);
-      $('#table-of-contents').css('top', window.scrollY - 160);
-      $('#table-of-contents + ul').css('top', window.scrollY - 160);
+      $('.rail1CTA').css('top', 0);
+      $('.share').css('top', window.scrollY - 220);
+      $('#table-of-contents').css('top', window.scrollY - 230);
+      $('#table-of-contents + ul').css('top', window.scrollY - 230);
     }
   });
+
+  $('.rail1CTA').css('top', $('.railCTA1Holder').offset().top);
 }

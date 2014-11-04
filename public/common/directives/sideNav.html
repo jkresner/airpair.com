@@ -44,7 +44,7 @@
     </li>
   </ul>
   <a id="navStackToggle" track-click="SideNav" href="#" ng-click="openStack()" class="icon">
-    <span>Customize</span><img src="/v1/img/css/sidenav/stack.png" />
+    <span>Customize</span><img src="/v1/img/css/sidenav/stack.png" /><i>{{ session.tags.length }}</i>
   </a>
 </section>
 
@@ -55,7 +55,7 @@
       <a href="{{bookmark.url}}" target="_self">{{bookmark.title}}</a>
     </li>
   </ul>
-  <a id="navBookmarksToggle" track-click="SideNav" href="#" ng-click="openBookmarks()" class="icon"><span> Manage </span> <img src="/v1/img/css/sidenav/bookmark.png" /></a>
+  <a id="navBookmarksToggle" track-click="SideNav" href="#" ng-click="openBookmarks()" class="icon"><span> Manage </span> <img src="/v1/img/css/sidenav/bookmark.png" /><i>{{ session.bookmarks.length }}</i></a>
 </section>
 
 <div stack></div>

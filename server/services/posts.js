@@ -82,8 +82,11 @@ export function getByTag(tag, cb) {
 
 
 //-- Placeholder for showing similar posts to a currently displayed post
-export function getSimilarPublished(cb) {
-  cb(null,[])
+export function getSimilarPublished(tagSlug, cb) {
+  var opts = { fields: Data.select.list, options: { sort: { 'published': -1 }, limit: 3 } };
+  var query = { '$and': [{'tags.slug':tagSlug}, Data.query.published()] }
+  $log('query', query)
+  svc.searchMany(query, opts, addUrl(cb))
 }
 
 
