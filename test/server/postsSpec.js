@@ -225,6 +225,7 @@ module.exports = () => describe("API: ", function() {
 		expect(getHashId('2 Python 2 vs. Python 3')).to.equal('2-python-2-vs-python-3')
 		expect(getHashId('3 Library & component compatibility with Python 3?')).to.equal('3-library-component-compatibility-with-python-3-')
 		expect(getHashId('2.2 Express `req.session`')).to.equal('2-2-express-req-session-')
+    expect(getHashId(`jQuery.prop('checked') vs. ng-checked`)).to.equal('jquery-prop-checked-vs-ng-checked')
   })
 
 

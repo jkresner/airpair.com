@@ -75,6 +75,7 @@ function getHtmlHeaders(lines, maxHeaderNo) {
 
 export function getHashId(text, repetition) {
   var id = text
+    .replace(/'\) /g,'-')
     .replace(/`$/g,'-')
     .replace(/\. /g,'-')
     .replace(/ '/g,'-')
