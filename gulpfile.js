@@ -9,6 +9,9 @@ var path = require('path'),
   source = require('vinyl-source-stream'),
   watchify = require('watchify'),
   browserify = require('browserify'),
+  usemin = require('gulp-usemin'),
+  uglify = require('gulp-uglify'),
+  rev = require('gulp-rev'),
   es6ify = require('es6ify');
 
 paths = {
@@ -102,7 +105,17 @@ gulp.task('bundle', function() {
   bundlerer('adm.js')
 });
 
+gulp.task('usemin', function() {
+  gulp.src('./server/views/partials/siteScripts.hbs')
+    .pipe(usemin({
+      assetsDir: './public',
+      outputRelativePath: './../../../../public/v1/js/',
+      js: [uglify(), rev()]
+    }))
+    .pipe(gulp.dest('./server/views/partials/built'));
+});
+
 
 gulp.task('default', ['nodemon','less','watch','watchify']);
 gulp.task('test', ['testnodemon','build']);
-gulp.task('build', ['less','bundle']);
+gulp.task('build', ['usemin','less','bundle']);
