@@ -21,9 +21,14 @@ export default function(app) {
       (req, cb) => PostsAPI.svc.getUsersPublished('hackerpreneur', cb) ))
 
     .get('/:tag/posts/:post', noTrailingSlash(), trackView('post'), app.renderHbsViewData('post',
-      (req, cb) => {
-          req.post.primarytag = req.params.tag
-          cb(null,req.post) }))
+      function(req, cb) {
+        req.post.primarytag = req.params.tag
+        PostsAPI.svc.getSimilarPublished(req.post.primarytag, (e,r) => {
+          req.post.similar = r
+          cb(null,req.post)
+        })
+      })
+    )
 
     .get('/:tag/workshops/:workshop', noTrailingSlash(), trackView('workshop'), app.renderHbsViewData('workshop',
       (req, cb) => { req.workshop.by = req.workshop.speakers[0]; cb(null,req.workshop) }))

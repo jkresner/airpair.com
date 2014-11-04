@@ -32,6 +32,7 @@
     </header>
     <article class="blogpost">
       <h1 class="entry-title" itemprop="headline">{{ title }}</h1>
+      <div class="railCTA1Holder"></div>
       <div class="share">
         <div class="pw-widget pw-counter-vertical" pw:twitter-via="airpair">
           <a class="pw-button-facebook pw-look-native"></a>
@@ -42,6 +43,7 @@
 
       <h4 id="table-of-contents">Table of Contents</h4>
       {{{toc}}}
+      <div class="railCTA3Holder"></div>
       <figure class="author">
         <img alt="{{by.name}}" src="{{by.avatar}}?s=100">
         <figcaption>
@@ -53,20 +55,53 @@
       <p class="asset">{{ assetUrlToMedia assetUrl }}</p>
       {{/if}}
       <hr />
-
       {{{ html }}}
+
+      <div class="island" ng-app="AP">
+        <nav id="side" class="collapse" side-nav></nav>
+
+
+        <div class="rail">
+          <div class="rail1CTA railCTA">
+            <h6>Like this article?</h6>
+            <div>
+              <img src="{{by.avatar}}?s=100" />
+              <p>Save this post to your bookmarks</p>
+              <div bookmarker type="post" class="bookmark"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bodyCTA1 bodyCTA">
+        <h6>Want to keep track of more {{ primarytag }} posts on AirPair?</h6>
+        <div>
+          {{!-- <p>Personalize AirPair >> <a href="#" ng-click="openStack()">Add <b>{{ primarytag }}</b> to your stack</a></p>
+          <h5>And of course ... </h5> --}}
+          <a href="https://twitter.com/airpair" class="twitter-follow-button" data-show-count="true">Follow @airpair</a>
+          <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+        </div>
+      </div>
 
       <div id="disqus_thread"></div>
 
     </article>
+
+    <section id="posts" class="similar">
+      <hr />
+      <section id="allposts">
+        <h3>Similar posts<span><a href="/posts" target="_self">Recent posts</a></span></h3>
+        <div class="posts recent">
+          {{#each similar}}{{> postListItem this}}{{/each}}
+        </div>
+      </section>
+
+    </section>
+
   </main>
 </div>
 {{/with}}
 
-<div ng-app="AP">
-	<nav id="side" class="collapse" side-nav></nav>
-	<bookmarker type="post"></bookmarker>
-</div>
 
 {{> siteScripts }}
 <script type="text/javascript" src="/v1/js/lite.js"></script>
