@@ -12,6 +12,7 @@
     "angular-load": "~0.2.0",
     "marked": "~0.3.2",
     "angular-bootstrap": "0.11.0",
-    "jquery": "~2.1.1"
+    "jquery": "~2.1.1",
+    "jquery-ui": "~1.11.2"
   }
 }
