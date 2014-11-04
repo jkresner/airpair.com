@@ -409,6 +409,26 @@ export function toggleBookmark(type, id, cb) {
 	toggleSessionItem.call(this, 'bookmarks', bookmark, 2, 15, bookmarkComparator, cb)
 }
 
+export function tags(tags, cb) {
+  if (this.user) {
+    svc.update(userId, tags, cbSession(cb));
+  }
+  else {
+    this.session.anonData.tags = tags
+    return getSession.call(this, cb);
+  }
+}
+
+export function bookmarks(bookmarks, cb) {
+  if (this.user) {
+    svc.update(userId, bookmarks, cbSession(cb));
+  }
+  else {
+    this.session.anonData.bookmarks = bookmarks
+    return getSession.call(this, cb);
+  }
+}
+
 export function requestPasswordChange(email, cb) {
 	var inValid = Validate.changeEmail(email)
 	if (inValid) return cb(svc.Forbidden(inValid))
