@@ -411,7 +411,7 @@ export function toggleBookmark(type, id, cb) {
 
 export function tags(tags, cb) {
   if (this.user) {
-    svc.update(userId, tags, cbSession(cb));
+    svc.update(this.user._id, {tags}, cbSession(cb));
   }
   else {
     this.session.anonData.tags = tags
@@ -421,7 +421,7 @@ export function tags(tags, cb) {
 
 export function bookmarks(bookmarks, cb) {
   if (this.user) {
-    svc.update(userId, bookmarks, cbSession(cb));
+    svc.update(this.user._id, {bookmarks}, cbSession(cb));
   }
   else {
     this.session.anonData.bookmarks = bookmarks
