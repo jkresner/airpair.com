@@ -10,8 +10,12 @@
   <div class="selected">
     <label for="tagInput">Your stack</label>
 
-    <ul class="tags" sortable>
-      <li ng-repeat="tag in selectedTags()">{{tag.slug}}  <a class="remove" ng-click="deselectMatch(tag)">x</a></li>
+    <ul class="tags" sortable sort='tags' service='sortTags'>
+      <li ng-repeat="tag in selectedTags() | orderBy:'sort'" ng-attr-data-id="{{tag.tagId}}">
+        {{tag.slug}}
+        <a class="remove" ng-click="deselectMatch(tag)">x</a>
+        <a class="order"></a>
+      </li>
     </ul>
 
     <p ng-if="!selectedTags() || selectedTags().length == 0">No tags selected yet.</p>

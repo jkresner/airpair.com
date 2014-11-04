@@ -38,7 +38,9 @@
 
 <section class="stack"> <label>Stack</label>
   <ul>
-    <li ng-repeat="tag in session.tags"><a href="/posts/tag/{{tag.slug}}">{{tag.name}}</a></li>
+    <li ng-repeat="tag in selectedTags() | orderBy:'sort'">
+      <a href="/posts/tag/{{tag.slug}}">{{tag.name}}</a>
+    </li>
   </ul>
   <a id="navStackToggle" track-click="SideNav" href="#" ng-click="openStack()" class="icon">
     <span>Customize</span><img src="/v1/img/css/sidenav/stack.png" />
@@ -48,7 +50,9 @@
 
 <section class="bookmarks"> <label>Bookmarks</label>
   <ul class="bookmarks">
-    <li ng-repeat="bookmark in session.bookmarks"><a href="{{bookmark.url}}" target="_self">{{bookmark.title}}</a></li>
+    <li ng-repeat="bookmark in session.bookmarks | orderBy:'sort'">
+      <a href="{{bookmark.url}}" target="_self">{{bookmark.title}}</a>
+    </li>
   </ul>
   <a id="navBookmarksToggle" track-click="SideNav"  ng-click="openBookmarks()" class="icon"><span> Manage </span> <img src="/v1/img/css/sidenav/bookmark.png" /></a>
 </section>

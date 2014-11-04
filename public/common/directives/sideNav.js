@@ -86,16 +86,19 @@ angular.module("APSideNav", ['ui.bootstrap', 'APSvcSession', 'APTagInput'])
       link: function(scope, element, attrs) {
         $(element).sortable({
           stop: function(event, ui) {
-            var tags = scope.session.tags;
+            var property = attrs['sort'];
+            var method = attrs['service'];
+
+            var list = scope.session[property];
             var elems = $(element).children();
 
             for (var i = 0; i < elems.length; i++) {
               var elem = $(elems[i]);
-              var tag = _.find(tags, (t) => t.tagId === elem.data('id'));
+              var tag = _.find(list, (t) => t.tagId === elem.data('id'));
               tag.sort = i;
             }
 
-            SessionService.sortTags(scope.session.tags);
+            SessionService[method](scope.session[property]);
           }
         });
         $(element).disableSelection();

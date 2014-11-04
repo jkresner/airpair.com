@@ -24,6 +24,7 @@ export default function(app) {
     .put('/users/me/password-change', UsersAPI.requestPasswordChange)
     .put('/users/me/password', UsersAPI.changePassword)
     .put('/users/me/sortTags', setAnonSessionData, UsersAPI.sortTags)
+    .put('/users/me/sortBookmarks', setAnonSessionData, UsersAPI.sortTags)
     .put('/users/me/email', setAnonSessionData, UsersAPI.changeEmail)
     .put('/users/me/email-verify', authd, setAnonSessionData, UsersAPI.verifyEmail)
     .put('/users/me/bookmarks/:type/:id', setAnonSessionData, UsersAPI.toggleBookmark)

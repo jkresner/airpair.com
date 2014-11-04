@@ -72,17 +72,10 @@ module.exports = {
     },
 
 
-<<<<<<< HEAD
   dateWithDayAccuracy: (mom) => {
     if (!mom) mom = moment()
     return moment(mom.format('YYYY-MM-DD'), 'YYYY-MM-DD').toDate()
   },
-=======
-    dateWithDayAccuracy: (mom) => {
-        if (!mom) mom = moment()
-        return moment(mom.format('YYYY-MM-DD'), 'YYYY-MM-DD').toDate()
-    },
->>>>>>> manage-tags-bookmarks
 
 
     firstName: (name) => {
@@ -90,15 +83,9 @@ module.exports = {
     },
 
 
-<<<<<<< HEAD
   lastName: (name) => {
     return name.replace(name.split(' ')[0]+ '' , '')
   },
-=======
-    lastName: (name) => {
-        return name.replace(name.split(' ')[0] + '', '')
-    }
->>>>>>> manage-tags-bookmarks
 
   selectFromObject: (obj, selectList) => {
     if (!obj || !selectList) return obj

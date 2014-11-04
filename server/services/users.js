@@ -411,6 +411,16 @@ export function sortTags(tags, cb) {
 	return getSession.call(this, cb);
 }
 
+export function sortBookmarks(bookmarks, cb) {
+  if (this.user) {
+    svc.update(userId, bookmarks, callback);
+  }
+  else {
+    this.session.anonData.bookmarks = bookmarks
+  }
+  return getSession.call(this, cb);
+}
+
 export function toggleBookmark(type, id, cb) {
 	if (!type) $log('toggleBookmark.type', type, cb)
 	var	bookmark = { _id: svc.newId(), objectId: id, type, sort: 0 }
