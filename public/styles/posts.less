@@ -79,6 +79,11 @@ section#post {
 			filter: grayscale(100%);
 		}
 
+    a.bookmark {
+      background:@orange;
+      float:left;
+    }
+
 	}
 
 	article:hover {
@@ -410,6 +415,20 @@ section#posts {
   }
 
 	@media only screen and (max-width:900px) {
+    .island {
+      width:100%;
+      .rail {
+        float:none!important;
+        display:block;
+        margin:auto;
+      }
+    }
+    div.railCTA1Holder {
+      float:none;
+      margin:auto;
+    }
+    .railCTA { margin:auto;float:none;display:block; }
+    .rail1CTA { margin:auto;float:none;display:block;position:fixed }
 		> h1 { font-size:32px;line-height:48px;margin:10px 0 }
 		#table-of-contents { float:left;clear:left; }
 		#table-of-contents + ul { float:left;clear:left; }
@@ -418,7 +437,7 @@ section#posts {
 	}
 
 	@media only screen and (max-width:640px) {
-		p { padding:2px 5px 2px 5px }
+		p { padding:2px 5px 2px 5px;font-size:14px;line-height:22px }
 		iframe { width:100%;position:relative;left:0 }
 		> h1 { font-size:28px;line-height:30px;text-align:center;margin-top:20px }
 		h2 { font-size:22px;line-height:32px;text-align:center;margin-bottom:10px }

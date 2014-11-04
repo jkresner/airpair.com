@@ -112,7 +112,15 @@ window.pageHlpr.fixPostRail = function()
       $('#table-of-contents').css('top', window.scrollY - 230);
       $('#table-of-contents + ul').css('top', window.scrollY - 230);
     }
+
+    if (!scrollingOn && window.scrollY < 240) {
+      $('.rail1CTA').css('top', $('.railCTA1Holder').offset().top - window.scrollY);
+      $('.rail1CTA').css('display', 'block')
+    } else
+      $('.rail1CTA').css('display', 'none')
   });
 
-  $('.rail1CTA').css('top', $('.railCTA1Holder').offset().top);
+  if (!scrollingOn && window.scrollY < 240)
+    $('.rail1CTA').css('top', $('.railCTA1Holder').offset().top - window.scrollY);
+
 }
