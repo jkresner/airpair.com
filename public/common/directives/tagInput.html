@@ -1,5 +1,5 @@
 <div class="form-group tag-input-group">
-  <div class="nomobile">This feature is not available on mobile</div>
+    <div class="nomobile">This feature is not available on mobile</div>
 
   <div class="drag">
     <p>
@@ -10,8 +10,12 @@
   <div class="selected">
     <label for="tagInput">Your stack</label>
 
-    <ul class="tags">
-      <li ng-repeat="tag in selectedTags()">{{tag.slug}}  <a class="remove" ng-click="deselectMatch(tag)">x</a></li>
+    <ul class="tags" sortable sort='tags' service='sortTags'>
+      <li ng-repeat="tag in selectedTags() | orderBy:'sort'" ng-attr-data-id="{{tag.tagId}}">
+        {{tag.slug}}
+        <a class="remove" ng-click="deselectMatch(tag)">x</a>
+        <a class="order"></a>
+      </li>
     </ul>
 
     <p ng-if="!selectedTags() || selectedTags().length == 0">No tags selected yet.</p>
@@ -27,8 +31,8 @@
 </div>
 
 <script type="text/ng-template" id="template/typeahead/typeahead-match.html">
-  <a class="tagSelect">
-    <span bind-html-unsafe="match.model.slug | typeaheadHighlight:query"></span>
-    <div style="width:199px;overflow:hidden;height:auto" bind-html-unsafe="match.model.desc | typeaheadHighlight:query"></div>
-  </a>
+    <a class="tagSelect">
+        <span bind-html-unsafe="match.model.slug | typeaheadHighlight:query"></span>
+        <div style="width:199px;overflow:hidden;height:auto" bind-html-unsafe="match.model.desc | typeaheadHighlight:query"></div>
+    </a>
 </script>

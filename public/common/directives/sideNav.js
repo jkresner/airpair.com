@@ -1,18 +1,16 @@
 var Validate = require('../../../shared/validation/users.js')
 
 function storage(k, v) {
-  if (window.localStorage)
-  {
-    if (typeof v == 'undefined')
-    {
-      return localStorage[k];
-    }
-    localStorage[k] = v;
-    return v;
-  }
+	if (window.localStorage) {
+		if (typeof v == 'undefined') {
+			return localStorage[k];
+		}
+		localStorage[k] = v;
+		return v;
+	}
 }
 
-angular.module("APSideNav", ['ui.bootstrap','APSvcSession', 'APTagInput'])
+angular.module("APSideNav", ['ui.bootstrap', 'APSvcSession', 'APTagInput'])
 
   .directive('sideNav', ['$rootScope', '$modal', 'SessionService', function($rootScope, $modal, SessionService) {
     return {
@@ -83,6 +81,32 @@ angular.module("APSideNav", ['ui.bootstrap','APSvcSession', 'APTagInput'])
   }])
 
 
+  .directive('sortable', ['SessionService', function(SessionService) {
+    return {
+      link: function(scope, element, attrs) {
+        $(element).sortable({
+          stop: function(event, ui) {
+            var property = attrs['sort'];
+            var method = attrs['service'];
+
+            var list = scope.session[property];
+            var elems = $(element).children();
+
+            for (var i = 0; i < elems.length; i++) {
+              var elem = $(elems[i]);
+              var tag = _.find(list, (t) => t.tagId === elem.data('id'));
+              tag.sort = i;
+            }
+
+            SessionService[method](scope.session[property]);
+          }
+        });
+        $(element).disableSelection();
+      }
+    }
+  }])
+
+
   .controller('StackCtrl', ['$scope', '$modalInstance', '$window', 'SessionService',
     function($scope, $modalInstance, $window, SessionService) {
 
@@ -146,6 +170,4 @@ angular.module("APSideNav", ['ui.bootstrap','APSvcSession', 'APTagInput'])
 
     $scope.cancel = () => $modalInstance.dismiss('cancel');
 
-  }])
-
-;
+  }]);

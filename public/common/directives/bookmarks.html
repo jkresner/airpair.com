@@ -5,8 +5,11 @@
 
   <p>Collect your favorite posts, workshops and experts.</p>
 
-  <ul class="bookmarks">
-    <li ng-repeat="b in session.bookmarks"><a href="{{b.url}}" target="_self">{{b.title}}</a></li>
+  <ul class="bookmarks" sortable sort='bookmarks' service='sortBookmarks'>
+    <li ng-repeat="b in session.bookmarks | orderBy:'sort'"
+      ng-attr-data-id="{{b._id}}">
+      <a href="{{b.url}}" target="_self">{{b.title}}</a>
+    </li>
 </ul>
 
 </div>

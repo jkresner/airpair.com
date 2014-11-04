@@ -1,6 +1,5 @@
-
 var idsEqual = (id1, id2) =>
-  id1.toString() == id2.toString()
+    id1.toString() == id2.toString()
 
 var nestedPick = (object, keys) => {
   if (!object) return null
@@ -32,12 +31,12 @@ var nestedPick = (object, keys) => {
 module.exports = {
 
 
-  idsEqual: idsEqual,
+    idsEqual: idsEqual,
 
 
-  ObjectId2Date: (id) => {
-    return new Date(parseInt(id.toString().slice(0, 8), 16) * 1000)
-  },
+    ObjectId2Date: (id) => {
+        return new Date(parseInt(id.toString().slice(0, 8), 16) * 1000)
+    },
 
 
   toggleItemInArray: (array, item, comparator) => {
@@ -54,10 +53,23 @@ module.exports = {
     }
   },
 
-
-  sessionCreatedAt: (session) => {
-    return new moment(session.cookie._expires).subtract(session.cookie.originalMaxAge,'ms').toDate()
+  updateItemInArray: (array, item, comparator, updater) => {
+      if (!array) return [item]
+      else {
+          if (!comparator) {
+              comparator = (i) => idsEqual(i._id, item._id)
+          }
+          var existing = _.find(array, comparator)
+          if (existing) {
+              updater(existing, item)
+          }
+          return array
+      }
   },
+
+    sessionCreatedAt: (session) => {
+        return new moment(session.cookie._expires).subtract(session.cookie.originalMaxAge, 'ms').toDate()
+    },
 
 
   dateWithDayAccuracy: (mom) => {
@@ -66,9 +78,9 @@ module.exports = {
   },
 
 
-  firstName: (name) => {
-    return name.split(' ')[0]
-  },
+    firstName: (name) => {
+        return name.split(' ')[0]
+    },
 
 
   lastName: (name) => {
