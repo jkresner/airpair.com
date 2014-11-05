@@ -162,6 +162,9 @@ h1.entry-title {
   margin-right: 5px!important;
   margin-left: 5px !important;
 }
+.pw-popup-type_aftershare {
+  display: none !important;
+}
 @media only screen and (max-width: 640px) {
   .share {
     float: none!important;
@@ -1942,6 +1945,11 @@ section#tag section.header h1 {
 }
 section#tag section.header p {
   color: #ce5424;
+}
+section#tag section.header .share {
+  margin: 20px 0px 40px 0px;
+  padding-bottom: 40px;
+  height: 85px;
 }
 section#tag section.featured {
   padding-top: 20px;

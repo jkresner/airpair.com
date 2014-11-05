@@ -250,6 +250,9 @@ h1.entry-title {
   margin-right: 5px!important;
   margin-left: 5px !important;
 }
+.pw-popup-type_aftershare {
+  display: none !important;
+}
 @media only screen and (max-width: 640px) {
   .share {
     float: none!important;
