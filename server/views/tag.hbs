@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{{viewData.tag.name}} Community</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel='stylesheet' id='google-font-css'  href='//fonts.googleapis.com/css?family=Open+Sans%3A300%2C400%2C700&#038;ver=2.0.1' type='text/css' media='all' />
+  <link rel="stylesheet" href="/v1/lib/bootstrap/bootstrap.css" type="text/css" />
+  <link rel="stylesheet" href="/v1/lib/prism/prism.css" type="text/css" />
+  <link rel="stylesheet" href="/v1/css/index.css" type="text/css" />
+  <base href="/" />
+</head>
+<body>
+
+{{> siteHeader }}
+
+<div class="main-wrap">
+  {{#with viewData}}
+  <main>
+    <header class="entry-header">
+    {{ name }}
+    </header>
+
+
+  <section id="tag">
+
+    <section class="header">
+
+      <hr />
+      <img src="/v1/img/css/tags/angularjs.png" class="{{tag.slug}}" />
+
+      <h1>Welcome to a community of {{tag.name}} help</h1>
+
+      <p>Here you can meet senior {{tag.short}} developers and learn from them through articles,
+          workshops and pair programming.</p>
+
+    </section>
+
+
+    <section class="featured">
+      <hr />
+
+      <div class="row">
+
+        <div class="col-md-4 workshops">
+          <a class="btn" href="#tagworkshops">Workshops</a>
+          <hr class="vr" />
+          <article itemprop="blogPost" itemtype="http://schema.org/BlogPosting" itemscope="itemscope">
+            <a rel="bookmark" href="/angularjs/workshops/top-10-mistakes-angularjs-developers-make">
+
+            <time class="ng-binding" datetime="2014-11-11T16:30:00.000Z">Tuesday<br /> Nov 11 <b>8:00am</b></time>
+            <div>
+              <h2 class="entry-title">The Top 10 Mistakes AngularJS Developers Make</h2>
+              <h5 class="entry-author">Mark Meyer</h5>
+              <img src="//0.gravatar.com/avatar/6c2f0695e0ca4445a223ce325c7fb970?s=80">
+            </div>
+
+            </a>
+
+          </article>
+        </div>
+
+        <div class="col-md-4 posts">
+          <a class="btn" href="#tagposts">Articles</a>
+          <hr class="vr" />
+          <article itemprop="blogPost" itemtype="http://schema.org/BlogPosting" itemscope="itemscope">
+            <a rel="bookmark" target="_self" title="AngularJS Tutorial: A Comprehensive 10,000 Word Guide" href="/angularjs/posts/angularjs-tutorial">
+              <header class="entry-header">
+                <h2 itemprop="headline" class="entry-title">AngularJS Tutorial: A Comprehensive 10,000 Word Guide</h2>
+                <p class="entry-meta">
+                  by <span itemtype="http://schema.org/Person" itemscope="itemscope" itemprop="author" class="entry-author">
+
+                  <span itemprop="name" class="entry-author-name">Todd Motto</span>
+
+                  </span>
+                </p>
+              </header>
+              <div itemprop="text" class="entry-content">
+                <img align="left" src="//0.gravatar.com/avatar/b56bb22b3a4b83c6b534b4c114671380?s=50" itemprop="image" class="entry-author-image">
+                <p>Written by Google Developer Expert (GDE) Todd Motto, this Angular tutorial serves as an ultimate resource for learning AngularJS.</p>
+              </div>
+            </a>
+            <footer class="entry-footer">
+              <p class="entry-meta">
+                <span class="entry-categories">
+
+                    <a rel="category tag" title="View all posts in AngularJS" href="/posts/tag/angularjs">{ AngularJS }</a>
+                </span>
+              </p>
+            </footer>
+          </article>
+        </div>
+
+        <div class="col-md-4 pairing">
+          <a class="btn" href="#tagpairing">Pair Programming</a>
+          <hr class="vr" />
+          <article>
+
+          </article>
+        </div>
+      </div>
+
+    </section>
+
+
+    <section class="about">
+      <h2>{{ about.tagline }}</h2>
+
+      <blockquote>
+        <img src="{{ about.byPic }}?s=160" />
+        <p>{{ about.quote }}</p>
+        <cite>{{ about.by }}</cite>
+      </blockquote>
+    </section>
+
+
+    <section id="tagworkshops" class="workshops">
+      <h2>{{tag.name}} Workshops</h2>
+
+      {{#each workshops }}
+      <a href="{{ url }}" class="workshop">
+        <time datetime="{{ isoMoment time }}">{{ dateFormat time 'ddd DD MMM, YYYY' }}</time>
+        <img src="//0.gravatar.com/avatar/{{speaker.gravatar}}?s=120">
+        <h3 class="entry-title">{{ title }}</h3>
+        <h5 class="entry-author">{{ speaker.name }}</h5>
+        <hr />
+      </a>
+      {{/each}}
+
+    </section>
+
+
+    <section id="tagposts" class="posts">
+      <h2>{{tag.name}} Articles</h2>
+    </section>
+
+
+    <section id="tagpairing" class="pairing">
+      <h2>{{tag.name}} Pair Programming</h2>
+
+    </section>
+
+
+  </section>
+  {{/with}}
+
+  </main>
+</div>
+
+<div ng-app="AP">
+  <nav id="side" class="collapse" side-nav></nav>
+</div>
+
+{{> siteScripts }}
+<script type="text/javascript" src="/v1/js/lite.js"></script>
+<script type="text/javascript">
+
+function bindTracking() {}
+
+</script>
+
+{{> initPage }}
+
+</body>
+</html>

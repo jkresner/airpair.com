@@ -94,6 +94,7 @@ input.form-control {
     padding:12px 12px;
     margin:8px 0;
     .remove, .order {
+      cursor:pointer;
       margin-top:-2px;
       line-height:18px;
       font-size:18px;
@@ -120,8 +121,12 @@ input.form-control {
 
   .tagSelect
   {
+    display:block;
     width:280px;
+    height:80px;
+    cursor:pointer;
     border-bottom:solid 1px @lightblue;
+
     padding:10px;
     span {
       font-weight:bold;
@@ -132,12 +137,22 @@ input.form-control {
       strong { color:@orange }
     }
     p {
-      width:100%;
+      padding:0px 4px;
+      width:260px;
+      height:30px;
+      word-wrap:normal;
       font-size:10px;
       color:@mediumgray;
-      word-wrap:normal;
-      height:24px;
+      overflow:hidden;
+      strong {
+        color:@orange;
+      }
     }
+  }
+
+  .tagSelect:hover
+  {
+    background:@bluegray;
   }
 
 }
