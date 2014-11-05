@@ -1,4 +1,5 @@
-var botPattern = /googlebot|gurujibot|twitterbot|yandexbot|slurp|msnbot|bingbot|facebookexternalhit/i
+var util = require('../../shared/util')
+
 
 export function logError(e, user, req)
 {
@@ -12,16 +13,14 @@ export function logError(e, user, req)
 
   if (reqInfo != '')
   {
-  	if (req.header('Referer'))
-  		reqInfo = `${reqInfo} << ${req.header('Referer')}`
+    if (req.header('Referer'))
+      reqInfo = `${reqInfo} << ${req.header('Referer')}`
 
-  	if (req.header('user-agent'))
-  	{
-  		var source = req.header('user-agent').replace(/^\s*/, '').replace(/\s*$/, '')
-  		var isBot = (botPattern.test(source)) ? 'true' : 'false'
-
-  		reqInfo = `${reqInfo} || isBot:${isBot}:${req.header('user-agent')}`
-  	}
+    if (req.header('user-agent'))
+    {
+      var isBot = (util.isBot(req.header('user-agent'))) ? 'true' : 'false'
+      reqInfo = `${reqInfo} || isBot:${isBot}:${req.header('user-agent')}`
+    }
   }
 
   if (!user && req) { userInfo += ` ${req.sessionID}` }

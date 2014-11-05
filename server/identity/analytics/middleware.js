@@ -1,5 +1,5 @@
 var logging = false
-
+var util = require('../../../shared/util')
 
 var getContext = (req) => {
   var ctx = {
@@ -41,14 +41,14 @@ var getContext = (req) => {
 
 export var trackView = (type) => {
   return (req, res, next) => {
+    if (req.header('user-agent') && util.isBot(req.header('user-agent'))) return next()
+
     var userId = null
     var anonymousId = null
     var context = getContext(req)
 
     if (!req.isAuthenticated || !req.isAuthenticated())
-    {
       anonymousId = req.sessionID
-    }
 
     var obj = req[type]
     var tags = _.pluck(obj.tags,'slug')
@@ -57,6 +57,8 @@ export var trackView = (type) => {
 
     var properties = { title: obj.title, tags, url, path: req.path, objectId: obj._id, referrer: context.referer }
     analytics.view(req.user, anonymousId, type, obj.title, properties, context)
+
+    if (logging) $log('trackView', type, properties)
     next()
   }
 }
