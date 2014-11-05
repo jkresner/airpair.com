@@ -105,7 +105,7 @@ angular.module("APSideNav", ['ui.bootstrap','APSvcSession', 'APTagInput'])
               obj.sort = i;
             }
 
-            SessionService[method](scope.session[property]);
+            SessionService[method](scope.session[property], scope.sortSuccess, scope.sortFail);
           }
         });
         $(element).disableSelection();
@@ -117,6 +117,10 @@ angular.module("APSideNav", ['ui.bootstrap','APSvcSession', 'APTagInput'])
   .controller('StackCtrl', ['$scope', '$modalInstance', '$window', 'SessionService',
     function($scope, $modalInstance, $window, SessionService) {
 
+
+    $scope.sortSuccess = function() {}
+    $scope.sortFail = function() {}
+
     $scope.ok = () => $modalInstance.close();
     $scope.cancel = () => $modalInstance.dismiss('cancel');
 
@@ -125,6 +129,9 @@ angular.module("APSideNav", ['ui.bootstrap','APSvcSession', 'APTagInput'])
 
   .controller('BookmarksCtrl', ['$scope', '$modalInstance', '$window', 'SessionService',
     function($scope, $modalInstance, $window, SessionService) {
+
+    $scope.sortSuccess = function() {}
+    $scope.sortFail = function() {}
 
     $scope.ok = () => $modalInstance.close();
     $scope.cancel = () => $modalInstance.dismiss('cancel');

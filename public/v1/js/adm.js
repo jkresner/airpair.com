@@ -85,7 +85,7 @@ angular.module("ADMRedirects", ['ngRoute', 'APSvcAdmin', 'APFilters']).config(['
 
 
 },{"./list.html":5}],7:[function(require,module,exports){
-module.exports = "<section id=\"users\">\n\n\t<br /><br />\n\t<input type=\"text\" ng-model=\"_id\" placeholder=\"Type userId\" style=\"width:300px\" />\n\t<select ng-model=\"role\">\n\t\t<option>admin</option>\n\t\t<option>editor</option>\n\t</select>\n\t<button class=\"btn\" ng-click=\"toggleRole()\">Toggle role</button>\n\n\n\t<h3>Admins</h3>\n\t<ul class=\"users admin\">\n\t\t<li ng-repeat=\"user in admins\">{{ user.name }}</li>\n\t</ul>\n\n\t<h3>Editors</h3>\n\t<ul class=\"users editors\">\n\t\t<li ng-repeat=\"user in editors\">{{ user.name }}</li>\n\t</ul>\n\t<!--\n\t<h3>Pipeliners</h3>\n\t<ul class=\"users pipeliners\">\n\t<li ng-repeat=\"user in pipeliners\">{{ user.name }}</li>\n\t</ul>\n\n\n\t<h3>Matchmakers</h3>\n\t<ul class=\"users matchmakers\">\n\t<li ng-repeat=\"user in matchmakers\">{{ user.name }}</li>\n\t</ul>\n\n\t -->\n</section>\n";
+module.exports = "<section id=\"users\">\n\n  <br /><br />\n  <input type=\"text\" ng-model=\"_id\" placeholder=\"Type userId\" style=\"width:300px\" />\n  <select ng-model=\"role\">\n    <option>admin</option>\n    <option>editor</option>\n  </select>\n  <button class=\"btn\" ng-click=\"toggleRole()\">Toggle role</button>\n\n\n  <h3>Admins</h3>\n  <ul class=\"users admin\">\n    <li ng-repeat=\"user in admins\">{{ user.name }}</li>\n  </ul>\n\n  <h3>Editors</h3>\n  <ul class=\"users editors\">\n    <li ng-repeat=\"user in editors\">{{ user.name }}</li>\n  </ul>\n\n</section>\n";
 
 },{}],8:[function(require,module,exports){
 "use strict";
@@ -135,7 +135,7 @@ angular.module("APPost", []).directive('apPostListItem', ['$parse', function($pa
     template: require('./post.html'),
     controller: function($scope, $timeout, PostsService) {
       $timeout(function() {
-        postHlpr.highlightSyntax();
+        pageHlpr.highlightSyntax();
       }, 100);
     }
   };
@@ -146,10 +146,10 @@ angular.module("APPost", []).directive('apPostListItem', ['$parse', function($pa
 
 
 },{"./post.html":9,"./postListItem.html":11}],11:[function(require,module,exports){
-module.exports = "<article itemscope=\"itemscope\" itemtype=\"http://schema.org/BlogPosting\" itemprop=\"blogPost\">\n\t<a href=\"{{ post.url }}\" title=\"{{ post.title }}\" target=\"_self\" rel=\"bookmark\">\n\t  <header class=\"entry-header\">\n\t    <h2 class=\"entry-title\" itemprop=\"headline\">{{ post.title }}</h2>\n\t    <p class=\"entry-meta\">\n\t      <time class=\"entry-time\" itemprop=\"datePublished\" datetime=\"{{ post.published }}\">{{ post.publishedFormat }}</time>\n\t      by\n\t      <span class=\"entry-author\" itemprop=\"author\" itemscope=\"itemscope\" itemtype=\"http://schema.org/Person\">\n\t        <span class=\"entry-author-name\" itemprop=\"name\">{{ post.by.name }}</span>\n\t      </span>\n\t    </p>\n\t  </header>\n\t  <div class=\"entry-content\" itemprop=\"text\">\n\t    <img class=\"entry-author-image\" itemprop=\"image\" ng-src=\"{{ post.by.avatar }}?s=50\" align=\"left\" />\n\t    <p>{{ post.meta.description }}</p>\n\t  </div>\n\t</a>\n  <footer class=\"entry-footer\">\n    <p class=\"entry-meta\">\n      <span class=\"entry-categories\">\n        <a ng-repeat='tag in post.tags' ng-href=\"/posts/tag/{{tag.slug}}\" title=\"View all posts in {{ tag.name }}\" rel=\"category tag\">{{ '{'+tag.slug+'}' }}</a>\n      </span>\n    </p>\n\n   \t<bookmarker type=\"post\"></bookmarker>\n  </footer>\n</article>\n";
+module.exports = "<article itemscope=\"itemscope\" itemtype=\"http://schema.org/BlogPosting\" itemprop=\"blogPost\">\n  <a href=\"{{ post.url }}\" title=\"{{ post.title }}\" target=\"_self\" rel=\"bookmark\">\n    <header class=\"entry-header\">\n      <h2 class=\"entry-title\" itemprop=\"headline\">{{ post.title }}</h2>\n      <p class=\"entry-meta\">\n        <time class=\"entry-time\" itemprop=\"datePublished\" datetime=\"{{ post.published }}\">{{ post.publishedFormat }}</time>\n        by\n        <span class=\"entry-author\" itemprop=\"author\" itemscope=\"itemscope\" itemtype=\"http://schema.org/Person\">\n          <span class=\"entry-author-name\" itemprop=\"name\">{{ post.by.name }}</span>\n        </span>\n      </p>\n    </header>\n    <div class=\"entry-content\" itemprop=\"text\">\n      <img class=\"entry-author-image\" itemprop=\"image\" ng-src=\"{{ post.by.avatar }}?s=50\" align=\"left\" />\n      <p>{{ post.meta.description }}</p>\n    </div>\n  </a>\n  <footer class=\"entry-footer\">\n    <p class=\"entry-meta\">\n      <span class=\"entry-categories\">\n        <a ng-repeat='tag in post.tags' ng-href=\"/posts/tag/{{tag.slug}}\" title=\"View all posts in {{ tag.name }}\" rel=\"category tag\">{{ '{'+tag.slug+'}' }}</a>\n      </span>\n    </p>\n\n    <bookmarker type=\"post\"></bookmarker>\n  </footer>\n</article>\n";
 
 },{}],12:[function(require,module,exports){
-module.exports = "<div class=\"form-group tag-input-group\">\n  <div class=\"nomobile\">This feature is not available on mobile</div>\n\n  <div class=\"drag\">\n  \t<p>\n\t\t\t<b>drag in order of importance</b>\n\t\t\t<br />place most used first\n\t\t</p>\n  </div>\n  <div class=\"selected\">\n\t\t<label for=\"tagInput\">Your stack</label>\n\n\t\t<ul class=\"tags\">\n\t\t\t<li ng-repeat=\"tag in selectedTags()\">{{tag.slug}}  <a class=\"remove\" ng-click=\"deselectMatch(tag)\">x</a></li>\n\t\t</ul>\n\n\t\t<p ng-if=\"!selectedTags() || selectedTags().length == 0\">No tags selected yet.</p>\n  </div>\n\n  <label for=\"tagInput\">Search technologies</label>\n\t<input type=\"text\" class=\"tagInput form-control\"\n\t  placeholder=\"type a technology (e.g. javascript)\"\n\t  ng-model=\"q\" typeahead=\"t as t for t in getTags($viewValue) | filter:$viewValue\">\n\t<!-- typeahead-loading=\"loading\"\n\t<i ng-show=\"loading\" class=\"glyphicon glyphicon-refresh\"></i>\n\t -->\n</div>\n\n<script type=\"text/ng-template\" id=\"template/typeahead/typeahead-match.html\">\n  <a class=\"tagSelect\">\n    <span bind-html-unsafe=\"match.model.slug | typeaheadHighlight:query\"></span>\n    <div style=\"width:199px;overflow:hidden;height:auto\" bind-html-unsafe=\"match.model.desc | typeaheadHighlight:query\"></div>\n  </a>\n</script>\n";
+module.exports = "<div class=\"form-group tag-input-group\">\n  <div class=\"nomobile\">This feature is not available on mobile</div>\n\n  <div class=\"drag\">\n    <p>\n      <b>drag in order of importance</b>\n      <br />place most used first\n    </p>\n  </div>\n  <div class=\"selected\">\n    <label for=\"tagInput\">Your stack</label>\n\n    <ul class=\"tags\" sortable sort='tags' service='tags'>\n      <li ng-repeat=\"tag in session.tags | orderBy:'sort'\" ng-attr-data-id=\"{{tag._id}}\">\n        {{tag.slug}}\n        <a class=\"remove\" href=\"#\" ng-click=\"deselectMatch(tag)\">x</a>\n        <a class=\"order\" href=\"#\"></a>\n      </li>\n    </ul>\n\n    <p ng-if=\"!selectedTags() || selectedTags().length == 0\">No tags selected yet.</p>\n  </div>\n\n  <label for=\"tagInput\">Search technologies</label>\n  <input type=\"text\" class=\"tagInput form-control\"\n    placeholder=\"type a technology (e.g. javascript)\"\n    ng-model=\"q\" typeahead=\"t as t for t in getTags($viewValue) | filter:$viewValue\">\n  <!-- typeahead-loading=\"loading\"\n  <i ng-show=\"loading\" class=\"glyphicon glyphicon-refresh\"></i>\n   -->\n</div>\n\n<script type=\"text/ng-template\" id=\"template/typeahead/typeahead-match.html\">\n  <a class=\"tagSelect\">\n    <span bind-html-unsafe=\"match.model.slug | typeaheadHighlight:query\"></span>\n    <div style=\"width:199px;overflow:hidden;height:auto\" bind-html-unsafe=\"match.model.desc | typeaheadHighlight:query\"></div>\n  </a>\n</script>\n";
 
 },{}],13:[function(require,module,exports){
 "use strict";
@@ -386,6 +386,12 @@ angular.module('APSvcSession', []).constant('API', '/v1/api').constant('Auth', '
   this.changePassword = function(data, success, error) {
     $http.put((API + "/users/me/password"), data).success(success).error(error);
   };
+  this.tags = function(data, success, error) {
+    $http.put((API + "/users/me/tags"), data).success(success).error(error);
+  };
+  this.bookmarks = function(data, success, error) {
+    $http.put((API + "/users/me/bookmarks"), data).success(success).error(error);
+  };
 }]);
 
 //# sourceMappingURL=<compileOutput>
@@ -439,6 +445,26 @@ module.exports = {
         return array;
       }
     }
+  }),
+  combineItems: (function(array1, array2, compareProp) {
+    if (!array1 && !array2)
+      return [];
+    if (!array1 || array1.length == 0)
+      return array2;
+    if (!array2 || array2.length == 0)
+      return array1;
+    for (var $__0 = array2[Symbol.iterator](),
+        $__1; !($__1 = $__0.next()).done; ) {
+      var item = $__1.value;
+      {
+        var existing = _.find(array1, (function(i) {
+          return idsEqual(i[compareProp], item[compareProp]);
+        }));
+        if (!existing)
+          array1.push(item);
+      }
+    }
+    return array1;
   }),
   sessionCreatedAt: (function(session) {
     return new moment(session.cookie._expires).subtract(session.cookie.originalMaxAge, 'ms').toDate();

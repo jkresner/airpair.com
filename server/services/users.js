@@ -94,11 +94,9 @@ function upsertSmart(search, upsert, cb) {
       if (!r.emailVerified)
         upsert.emailVerified = false
       if (r.tags)
-        // need more intelligent logic to avoid dups & such
-        upsert.tags = _.union(r.tags, upsert.tags)
+        upsert.tags = util.combineItems(r.tags, upsert.tags, 'tagId')
       if (r.bookmarks)
-        // need more intelligent logic to avoid dups & such
-        upsert.bookmarks = _.union(r.bookmarks, upsert.bookmarks)
+        upsert.bookmarks = util.combineItems(r.bookmarks, upsert.bookmarks, 'objectId')
     }
 
     User.findOneAndUpdate(search, upsert, { upsert: true }, (err, user) => {
@@ -411,7 +409,7 @@ export function toggleBookmark(type, id, cb) {
 
 export function tags(tags, cb) {
   if (this.user) {
-    svc.update(userId, tags, cbSession(cb));
+    svc.update(this.user._id, {tags}, cbSession(cb));
   }
   else {
     this.session.anonData.tags = tags
@@ -421,7 +419,7 @@ export function tags(tags, cb) {
 
 export function bookmarks(bookmarks, cb) {
   if (this.user) {
-    svc.update(userId, bookmarks, cbSession(cb));
+    svc.update(this.user._id, {bookmarks}, cbSession(cb));
   }
   else {
     this.session.anonData.bookmarks = bookmarks

@@ -79,6 +79,20 @@ section#post {
 			filter: grayscale(100%);
 		}
 
+    a.bookmark {
+      background:@orange;
+      float:left;
+      padding:2px 10px;
+      width:30%;
+      color:white;
+      background-image:url('/v1/img/css/sidenav/bookmark.png');
+      font-weight:bold;
+      background-position:10% center;
+      background-repeat:no-repeat;
+      border-top-right-radius:4px;
+      border-bottom-right-radius:4px;
+      background-size:12px 12px;
+    }
 	}
 
 	article:hover {
@@ -200,6 +214,12 @@ section#posts {
 }
 
 .blogpost {
+  .rail {
+    float:right;
+    clear:right;
+    width:@sideRailWidth;
+  }
+
 	clear:both;
 	padding:0 0px;
 
@@ -212,7 +232,14 @@ section#posts {
 	h1 { padding-left:@mainElmPad }
 	h2 { text-align:left;font-size:28px;margin-bottom:5px;padding-left:@mainElmPad }
 	h3 { text-align:left }
-	p { margin-top:0;max-width:@mainElmWidth;vertical-align:top;padding-left:@mainElmPad;color:#4D4D57 }
+	p { margin-top:0;
+    max-width:@mainElmWidth;
+    vertical-align:top;
+    padding-left:@mainElmPad;
+    color:#4D4D57;
+    font-size: 16px;
+    line-height: 26px;
+  }
 
 	// --- Prism customization
 	.line-numbers .line-numbers-rows { width:1.9em;left:0 }
@@ -250,28 +277,84 @@ section#posts {
 	  }
  }
 
+  div.railCTA1Holder {
+    .rail;
+    height:130px;
+  }
+
+  .railCTA {
+    .rail;
+    margin:10px 0 8px 0;
+    position:fixed;
+    > div {
+      background-color:@lightblue;
+      border-radius:4px;
+      height:95px;
+    }
+
+    img { width:70px;
+      height:70px;
+      border-radius:50%;
+      display:inline-block;
+      vertical-align:top;
+      padding:10px 10px 10px 10px;
+   }
+
+   p { float:right;
+      width:120px;
+      font-size:12px;
+      padding:10px 10px 0 0;
+      line-height:16px;
+    }
+
+    h6 {
+      font-weight:bold;
+      text-transform:
+      uppercase;
+      padding:0;
+      margin:0 0 10px 0;
+    }
+
+    a {
+      margin-top:-15px;
+      display:block;
+      background:@orange;
+      color:white;
+      border-top-left-radius:4px;
+      border-bottom-left-radius:4px;
+      padding:5px 10px;
+      width:60%;
+      font-weight:bold;
+      background-position:90% center;
+      background-repeat:no-repeat;
+    }
+
+    a.bookmark {
+      background-image:url('/v1/img/css/sidenav/bookmark.png');
+    }
+
+    a.bookmark:hover {
+      background-color:@darkblue;
+    }
+  }
+
 	.share {
-		float:right;
-		width:@sideRailWidth;
+		.rail;
 		margin:14px 0;
 		position:relative;
 		top:0;
 	}
 
 	#table-of-contents {
-		float:right;
-		clear:right;
-		width:@sideRailWidth;
+    .rail;
 		margin:10px 0 8px 0;
 		font-size:24px;
 		position:relative;
 	}
 	#table-of-contents + ul {
-		list-style:none;
-		padding-left:0;
-		clear:right;
-		float:right;
-		width:@sideRailWidth;
+		.rail;
+    list-style:none;
+    padding-left:0;
 		font-size:12px;
 		position:relative;
 		z-index:0;
@@ -279,6 +362,7 @@ section#posts {
 		ul { list-style:none;margin-top:4px;padding-left:0px }
 		li { padding:1px 0 2px 0; }
 	}
+
 
 	.author {
 		margin:22px 0 24px 0;
@@ -300,14 +384,66 @@ section#posts {
 		}
 	}
 
+  div.island {
+    width:100%;
+    height:60px;
+
+    div.rail {
+      float:right;
+      clear:right;
+      width:@sideRailWidth;
+      position:relative;
+    }
+  }
+
+  .bodyCTA {
+    width:640px;
+    h6 { text-transform:uppercase;font-weight:bold }
+    div > {
+      background:@lightblue;
+      height:110px;
+      border-radius:5px;
+      padding:10px;
+    }
+  }
+
 	#disqus_thread {
+    margin-top:60px;
 		background:white;
 		min-height:700px;
 		z-index:2;
 		position:relative;
 	}
 
+  .similar {
+    padding:20px 0;
+    position:relative;
+    background:white;
+    z-index:3;
+    margin-top:-150px;
+  }
+
 	@media only screen and (max-width:900px) {
+    .island {
+      width:100%;
+      .rail {
+        float:none!important;
+        display:block;
+        margin:auto;
+      }
+    }
+    div.railCTA1Holder {
+      float:none;
+      margin:auto;
+    }
+    .railCTA { margin:auto;float:none;display:block; }
+    .rail1CTA { margin:auto;float:none;display:block;position:fixed }
+
+    .bodyCTA {
+      margin:auto;
+      width:90%;
+    }
+
 		> h1 { font-size:32px;line-height:48px;margin:10px 0 }
 		#table-of-contents { float:left;clear:left; }
 		#table-of-contents + ul { float:left;clear:left; }
@@ -316,7 +452,7 @@ section#posts {
 	}
 
 	@media only screen and (max-width:640px) {
-		p { padding:2px 5px 2px 5px }
+		p { padding:2px 5px 2px 5px;font-size:14px;line-height:22px }
 		iframe { width:100%;position:relative;left:0 }
 		> h1 { font-size:28px;line-height:30px;text-align:center;margin-top:20px }
 		h2 { font-size:22px;line-height:32px;text-align:center;margin-bottom:10px }
