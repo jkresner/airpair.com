@@ -3,7 +3,7 @@ angular.module("APBookmarker", ['APSvcSession'])
 .directive('bookmarker', ['SessionService', function(SessionService) {
 
   return {
-    restrict: 'E',
+    restrict: 'EA',
     template: '<a href="#" class="bookmark" ng-click="bookmark(post._id)">bookmark</a>',
     link: function(scope, element, attrs) {
       scope.type = attrs.type

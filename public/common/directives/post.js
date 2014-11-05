@@ -21,7 +21,7 @@ angular.module("APPost", [])
         $timeout(function () {
           // Refactor this into a nicer angularjs way
           // console.log('DOM has finished rendering')
-          postHlpr.highlightSyntax();
+          pageHlpr.highlightSyntax();
         }, 100);
 
       }
