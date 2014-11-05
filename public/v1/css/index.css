@@ -1668,6 +1668,10 @@ section#posts .publish .publishMeta input {
     display: block;
     position: fixed;
   }
+  .blogpost .bodyCTA {
+    margin: auto;
+    width: 90%;
+  }
   .blogpost > h1 {
     font-size: 32px;
     line-height: 48px;
