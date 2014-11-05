@@ -34,17 +34,11 @@ export function getBySlug(slug, cb) {
 }
 
 
-export function getTagPage(slug, cb) {
-  WorkshopsSvc.getByTag(slug, (e,workshops)=>{
+export function getTagPage(tag, cb) {
+  WorkshopsSvc.getByTag(tag.slug, (e,workshops)=>{
     cb(null,
       {
-        tag: { _id: "5149dccb5fc6390200000013",
-              desc: 'AngularJS is an open-source JavaScript framework. Its goal is to augment browser-based applications with Model–View–Whatever(MV*) capability and reduce the amount of JavaScript needed to make web applications functional. These types of apps are also frequently known as Single-Page Applications.',
-              name: 'AngularJS',
-              short: 'Angular',
-              slug: 'angularjs',
-              soId: 'angularjs'
-        },
+        tag,
         featured: {
           pairing: {
             name: 'Ari Lerner',
