@@ -452,19 +452,23 @@ angular.module("APSideNav", ['ui.bootstrap', 'APSvcSession', 'APTagInput']).dire
 module.exports = "<div class=\"modal-header\">\n  <h3 class=\"modal-title\">Customize AirPair to your Stack</h3>\n</div>\n<div class=\"modal-body stack\">\n\n  <p>Personalize AirPair content, by selecting technologies that make up your stack.</p>\n\n  <div tag-input></div>\n\n</div>\n<div class=\"modal-footer\">\n  <button class=\"btn btn-primary\" ng-click=\"ok()\">Done</button>\n  <button class=\"btn btn-warning\" ng-click=\"cancel()\">Cancel</button>\n</div>\n";
 
 },{}],22:[function(require,module,exports){
-module.exports = "<div class=\"form-group tag-input-group\">\n  <div class=\"nomobile\">This feature is not available on mobile</div>\n\n  <div class=\"drag\">\n    <p>\n      <b>drag in order of importance</b>\n      <br />place most used first\n    </p>\n  </div>\n  <div class=\"selected\">\n    <label for=\"tagInput\">Your stack</label>\n\n    <ul class=\"tags\" sortable sort='tags' service='tags'>\n      <li ng-repeat=\"tag in session.tags | orderBy:'sort'\" ng-attr-data-id=\"{{tag._id}}\">\n        {{tag.slug}}\n        <a class=\"remove\" href=\"#\" ng-click=\"deselectMatch(tag)\">x</a>\n        <a class=\"order\" href=\"#\"></a>\n      </li>\n    </ul>\n\n    <p ng-if=\"!selectedTags() || selectedTags().length == 0\">No tags selected yet.</p>\n  </div>\n\n  <label for=\"tagInput\">Search technologies</label>\n  <input type=\"text\" class=\"tagInput form-control\"\n    placeholder=\"type a technology (e.g. javascript)\"\n    ng-model=\"q\" typeahead=\"t as t for t in getTags($viewValue) | filter:$viewValue\">\n  <!-- typeahead-loading=\"loading\"\n  <i ng-show=\"loading\" class=\"glyphicon glyphicon-refresh\"></i>\n   -->\n</div>\n\n<script type=\"text/ng-template\" id=\"template/typeahead/typeahead-match.html\">\n  <a class=\"tagSelect\">\n    <span bind-html-unsafe=\"match.model.slug | typeaheadHighlight:query\"></span>\n    <div style=\"width:199px;overflow:hidden;height:auto\" bind-html-unsafe=\"match.model.desc | typeaheadHighlight:query\"></div>\n  </a>\n</script>\n";
+module.exports = "<div class=\"form-group tag-input-group\">\n  <div class=\"nomobile\">This feature is not available on mobile</div>\n\n  <div class=\"drag\">\n    <p>\n      <b>drag in order of importance</b>\n      <br />place most used first\n    </p>\n  </div>\n  <div class=\"selected\">\n    <label for=\"tagInput\">Your stack</label>\n\n    <ul class=\"tags\" sortable sort='tags' service='tags'>\n      <li ng-repeat=\"tag in session.tags | orderBy:'sort'\" ng-attr-data-id=\"{{tag._id}}\">\n        {{tag.slug}}\n        <a class=\"remove\" ng-click=\"deselectMatch(tag)\">x</a>\n        <a class=\"order\" href=\"#\"></a>\n      </li>\n    </ul>\n\n    <p ng-if=\"!selectedTags() || selectedTags().length == 0\">No tags selected yet.</p>\n  </div>\n\n  <label for=\"tagInput\">Search technologies</label>\n  <input type=\"text\" class=\"tagInput form-control\"\n    placeholder=\"type a technology (e.g. javascript)\"\n    ng-model=\"q\"\n    typeahead=\"t as t for t in getTags($viewValue) | filter:$viewValue\"\n    typeahead-editable=\"false\"\n    typeahead-input-formatter=\"keypressSelect($model)\" tabindex=\"100\">\n  <!-- typeahead-loading=\"loading\"\n  <i ng-show=\"loading\" class=\"glyphicon glyphicon-refresh\"></i>\n   -->\n</div>\n\n<script type=\"text/ng-template\" id=\"template/typeahead/typeahead-match.html\">\n  <div>\n    <a class=\"tagSelect\">\n      <span bind-html-unsafe=\"match.model.slug | typeaheadHighlight:query\"></span>\n      <p bind-html-unsafe=\"match.model.desc | typeaheadHighlight:query\"></p>\n    </a>\n  </div>\n</script>\n";
 
 },{}],23:[function(require,module,exports){
 "use strict";
-angular.module('APTagInput', ['ui.bootstrap']).value('acceptableTagsSearchQuery', function(value) {
-  return value && (value.length >= 2 || /r/i.test(value));
-}).directive('tagInput', ['acceptableTagsSearchQuery', function(acceptableTagsSearchQuery) {
+angular.module('APTagInput', ['ui.bootstrap']).value('badTagsSearchQuery', function(value) {
+  var lengthOk = value && (value.length >= 2 || /r/i.test(value));
+  var regexMatch = /\[|\]|\{|\}/g.test(value);
+  var searchBad = !lengthOk || regexMatch;
+  angular.element('.tag-input-group').toggleClass('has-error', searchBad);
+  return searchBad;
+}).directive('tagInput', ['badTagsSearchQuery', function(badTagsSearchQuery) {
   return {
     restrict: 'EA',
     template: require('./tagInput.html'),
     controller: ['$scope', '$attrs', '$http', function($scope, $attrs, $http) {
       $scope.getTags = function(q) {
-        if (!acceptableTagsSearchQuery(q)) {
+        if (badTagsSearchQuery(q)) {
           return [];
         }
         return $http.get('/v1/api/tags/search/' + q).then(function(res) {
@@ -475,6 +479,11 @@ angular.module('APTagInput', ['ui.bootstrap']).value('acceptableTagsSearchQuery'
           $scope.matches = tags;
           return tags;
         });
+      };
+      $scope.keypressSelect = function(val) {
+        if (!val || $scope.matches.length == 0)
+          return null;
+        $scope.selectMatch(0);
       };
       $scope.selectMatch = function(index) {
         var tag = $scope.matches[index];

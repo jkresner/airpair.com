@@ -317,6 +317,7 @@ input.form-control {
 .bookmark-input-group ul.tags li .order,
 .tag-input-group ul.bookmarks li .order,
 .bookmark-input-group ul.bookmarks li .order {
+  cursor: pointer;
   margin-top: -2px;
   line-height: 18px;
   font-size: 18px;
@@ -345,7 +346,10 @@ input.form-control {
 }
 .tag-input-group .tagSelect,
 .bookmark-input-group .tagSelect {
+  display: block;
   width: 280px;
+  height: 80px;
+  cursor: pointer;
   border-bottom: solid 1px #dff2ef;
   padding: 10px;
 }
@@ -363,11 +367,21 @@ input.form-control {
 }
 .tag-input-group .tagSelect p,
 .bookmark-input-group .tagSelect p {
-  width: 100%;
+  padding: 0px 4px;
+  width: 260px;
+  height: 30px;
+  word-wrap: normal;
   font-size: 10px;
   color: #7e7f7f;
-  word-wrap: normal;
-  height: 24px;
+  overflow: hidden;
+}
+.tag-input-group .tagSelect p strong,
+.bookmark-input-group .tagSelect p strong {
+  color: #ce5424;
+}
+.tag-input-group .tagSelect:hover,
+.bookmark-input-group .tagSelect:hover {
+  background: #c8d6d3;
 }
 body > header {
   height: 40px;

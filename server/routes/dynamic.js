@@ -1,5 +1,6 @@
 import WorkshopsAPI from '../api/workshops'
 import PostsAPI from '../api/posts'
+import TagsAPI from '../api/tags'
 import {trackView} from '../identity/analytics/middleware'
 import {noTrailingSlash} from '../util/seo/middleware'
 
@@ -11,8 +12,11 @@ export default function(app) {
     .param('workshop', WorkshopsAPI.paramFns.getBySlug)
     .param('post', PostsAPI.paramFns.getBySlug)
 
-    .get('/angularjs', app.renderHbsViewData('post',
-      (req, cb) => PostsAPI.svc.getPublishedById('542c4b4f8e66ce0b00c885a4', cb) ))
+    // .get('/angularjs', app.renderHbsViewData('post',
+    //   (req, cb) => PostsAPI.svc.getPublishedById('542c4b4f8e66ce0b00c885a4', cb) ))
+
+    .get('/angularjs', app.renderHbsViewData('tag',
+      (req, cb) => TagsAPI.svc.getTagPage('angularjs', cb) ))
 
     .get('/posts/all', app.renderHbsViewData('postslist',
       (req, cb) => PostsAPI.svc.getAllPublished(cb) ))
