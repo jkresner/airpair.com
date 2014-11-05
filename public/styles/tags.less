@@ -116,4 +116,54 @@ section#tag {
     }
   }
 
+  .sectionDashed
+  {
+    margin-top:40px;
+    border-top:dashed 1px @orange;
+    h2 {
+      font-size:26px;
+      margin:-40px auto 30px auto;
+      padding:0 20px 0 20px;
+      background:white;
+      display:inline-block;
+    }
+  }
+
+
+  section.workshops
+  {
+    .sectionDashed;
+    a.workshop {
+      display:block;
+      text-align:left;
+      border:solid 2px @lightblue;
+      border-radius:4px;
+      color:@gray;
+      margin-bottom:20px;
+      hr { clear:both;margin-bottom:0;height:0 }
+      img { border-radius:50%;float:left;margin:10px 20px 10px 10px }
+      h3 { float:left;width:500px;font-size:20px;margin-top:20px }
+      h5 { float:left;width:500px;font-size:16px;margin-top:0px }
+      time { float:right;width:80px;background:@lightblue;margin-right:40px;height:140px;text-align:center;padding:20px 10px }
+    }
+    a.workshop:hover {
+      border:solid 2px @bluegray;
+      color:@orange;
+      time { background:@bluegray; }
+    }
+  }
+
+  section.posts
+  {
+    .sectionDashed;
+  }
+
+  section.pairing
+  {
+    .sectionDashed;
+  }
+
+
+
+
 }
