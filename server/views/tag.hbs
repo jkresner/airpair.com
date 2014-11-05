@@ -1,9 +1,19 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>{{viewData.tag.name}} Community</title>
+  <title>{{viewData.tag.name}} Articles, Workshops & Developers ready to help. A top #{{viewData.tag.name}} resource!</title>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1">
+{{#with viewData}}
+  <meta name="description" content="{{viewData.tag.name}} Articles, Workshops & Developers ready to help. One of the web's top #{{viewData.tag.name}} resources - totally worth bookmarking!"/>
+  <meta property="og:locale" content="en_US"/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:title" content="AngularJS Articles, Workshops and Developers"/>
+  <meta property="og:description" content="One of the best collections of #AngularJS Articles, Live Workshops and Developers on the web" />
+  <meta property="og:image" content="http://www.airpair.com/v1/img/css/tags/{{tag.slug}}-og.png"/>
+  <meta property="og:url" content="http://www.airpair.com/{{tag.slug}}"/>
+  <link rel="canonical" href="http://www.airpair.com/{{tag.slug}}" />
+{{/with}}
   <link rel='stylesheet' id='google-font-css'  href='//fonts.googleapis.com/css?family=Open+Sans%3A300%2C400%2C700&#038;ver=2.0.1' type='text/css' media='all' />
   <link rel="stylesheet" href="/v1/lib/bootstrap/bootstrap.css" type="text/css" />
   <link rel="stylesheet" href="/v1/lib/prism/prism.css" type="text/css" />
@@ -32,6 +42,16 @@
 
       <p>Here you can meet senior {{tag.short}} developers and learn from them through articles,
         workshops and pair programming.</p>
+
+      <div class="share">
+        <div class="pw-widget pw-counter-vertical" pw:twitter-via="airpair">
+          <a class="pw-button-facebook pw-look-native"></a>
+          <a class="pw-button-twitter pw-look-native"></a>
+          <a class="pw-button-googleplus pw-look-native"></a>
+          <a class="pw-button-linkedin pw-look-native"></a>
+        </div>
+      </div>
+      <hr />
 
     </section>
 
@@ -267,7 +287,20 @@
 <script type="text/javascript" src="/v1/js/lite.js"></script>
 <script type="text/javascript">
 
-function bindTracking() {}
+function bindTracking() {
+  ga('send', 'pageview')
+
+  $.each($('.featured a.btn'), function(idx,el) {
+    $(el).click(function (e) {
+      analytics.track('Click', { type: 'Tag Feature', unit: 'featured', idx: idx, text: el.innerHTML, location: window.location.pathname });
+    });
+  })
+}
+
+$(function() {
+  pageHlpr.loadPoSt();
+});
+
 
 </script>
 

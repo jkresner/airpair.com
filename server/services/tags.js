@@ -48,7 +48,7 @@ export function getTagPage(tag, cb) {
         },
         about: {
           tagline: "AngularJS is an amazing framework for creating rich client-side applications.",
-          quote: "It can be used to create sleek and crisp web applications with minimal amounts of code. Seeing as AngularJS is a comparatively new framework, it is important to learn the basics, understand testing and get acquainted with best practices.",
+          quote: "Angular can be used to create sleek and crisp web applications with minimal amounts of code. Seeing as Angular.JS is a comparatively new framework, it is important to learn the basics, understand testing and get acquainted with best practices.",
           by: "Matias Niemelä, AirPair Experts and AngularJS Core Team Member",
           byPic: "//secure.gravatar.com/avatar/3c0ca2c60c5cc418c6b3dbed47b23b69"
         },
