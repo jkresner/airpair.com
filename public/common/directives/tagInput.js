@@ -1,11 +1,15 @@
 
 angular.module('APTagInput', ['ui.bootstrap'])
 
-  .value('acceptableTagsSearchQuery', function(value) {
-    return value && (value.length >= 2 || /r/i.test(value));
+  .value('badTagsSearchQuery', function(value) {
+    var lengthOk = value && (value.length >= 2 || /r/i.test(value));
+    var regexMatch = /\[|\]|\{|\}/g.test(value);
+    var searchBad = !lengthOk || regexMatch;
+    angular.element('.tag-input-group').toggleClass('has-error',searchBad)
+    return searchBad;
   })
 
-  .directive('tagInput', ['acceptableTagsSearchQuery', function(acceptableTagsSearchQuery) {
+  .directive('tagInput', ['badTagsSearchQuery', function(badTagsSearchQuery) {
 
     return {
       restrict: 'EA',
@@ -13,7 +17,7 @@ angular.module('APTagInput', ['ui.bootstrap'])
       controller: ['$scope', '$attrs', '$http', function($scope, $attrs, $http) {
 
         $scope.getTags = function(q) {
-          if (!acceptableTagsSearchQuery(q)) {
+          if (badTagsSearchQuery(q)) {
             return [];
           }
 
@@ -27,6 +31,11 @@ angular.module('APTagInput', ['ui.bootstrap'])
             return tags;
           });
         };
+
+        $scope.keypressSelect = function(val) {
+          if (!val || $scope.matches.length == 0) return null;
+          $scope.selectMatch(0);
+        }
 
         $scope.selectMatch = function (index) {
           var tag = $scope.matches[index]
