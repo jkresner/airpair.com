@@ -13,7 +13,7 @@
     <ul class="tags" sortable sort='tags' service='tags'>
       <li ng-repeat="tag in session.tags | orderBy:'sort'" ng-attr-data-id="{{tag._id}}">
         {{tag.slug}}
-        <a class="remove" href="#" ng-click="deselectMatch(tag)">x</a>
+        <a class="remove" ng-click="deselectMatch(tag)">x</a>
         <a class="order" href="#"></a>
       </li>
     </ul>
@@ -24,15 +24,20 @@
   <label for="tagInput">Search technologies</label>
   <input type="text" class="tagInput form-control"
     placeholder="type a technology (e.g. javascript)"
-    ng-model="q" typeahead="t as t for t in getTags($viewValue) | filter:$viewValue">
+    ng-model="q"
+    typeahead="t as t for t in getTags($viewValue) | filter:$viewValue"
+    typeahead-editable="false"
+    typeahead-input-formatter="keypressSelect($model)" tabindex="100">
   <!-- typeahead-loading="loading"
   <i ng-show="loading" class="glyphicon glyphicon-refresh"></i>
    -->
 </div>
 
 <script type="text/ng-template" id="template/typeahead/typeahead-match.html">
-  <a class="tagSelect">
-    <span bind-html-unsafe="match.model.slug | typeaheadHighlight:query"></span>
-    <div style="width:199px;overflow:hidden;height:auto" bind-html-unsafe="match.model.desc | typeaheadHighlight:query"></div>
-  </a>
+  <div>
+    <a class="tagSelect">
+      <span bind-html-unsafe="match.model.slug | typeaheadHighlight:query"></span>
+      <p bind-html-unsafe="match.model.desc | typeaheadHighlight:query"></p>
+    </a>
+  </div>
 </script>
