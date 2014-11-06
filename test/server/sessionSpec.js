@@ -27,7 +27,7 @@ module.exports = () => describe("API: ", function() {
       testDb.countSessionsInSessionStore( (e, oldSessionCount) => {
         if (e) return done(e)
         http(global.app)
-          .get('/v1/api/session/full') // maybe there is a better route to be hiting?
+          .get('/v1/api/session/full')
           .set('set-cookie', null)
           .set('user-agent', known_agent_string)
           .expect(200)
@@ -43,16 +43,16 @@ module.exports = () => describe("API: ", function() {
       }
 
     it('New sessions are not created for known bots', (done) => {
-      var expected = 8
-      var checkDone = () => { expected--; if (expected == 0) return done() }
-      checkNoNewSessionForBot('Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)', checkDone)
-      checkNoNewSessionForBot('Mozilla/5.0 (compatible; GurujiBot/1.0; +http://www.guruji.com/en/WebmasterFAQ.html)', checkDone)
-      checkNoNewSessionForBot('Twitterbot', checkDone)
-      checkNoNewSessionForBot('Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)', checkDone)
-      checkNoNewSessionForBot('Slurp', checkDone)
-      checkNoNewSessionForBot('msnbot-media/1.1 (+http://search.msn.com/msnbot.htm)', checkDone)
-      checkNoNewSessionForBot('Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)', checkDone)
-      checkNoNewSessionForBot('facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)', checkDone)
+      var assertions = 8
+      var doneDone = () => { assertions--; if (assertions == 0) return done() }
+      checkNoNewSessionForBot('Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)', doneDone)
+      checkNoNewSessionForBot('Mozilla/5.0 (compatible; GurujiBot/1.0; +http://www.guruji.com/en/WebmasterFAQ.html)', doneDone)
+      checkNoNewSessionForBot('Twitterbot', doneDone)
+      checkNoNewSessionForBot('Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)', doneDone)
+      checkNoNewSessionForBot('Slurp', doneDone)
+      checkNoNewSessionForBot('msnbot-media/1.1 (+http://search.msn.com/msnbot.htm)', doneDone)
+      checkNoNewSessionForBot('Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)', doneDone)
+      checkNoNewSessionForBot('facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)', doneDone)
     })
 
   })
