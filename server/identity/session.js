@@ -2,6 +2,7 @@ var session = require('express-session')
 var cookieParser = require('cookie-parser')
 var bodyParser = require('body-parser')
 var passport = require('passport')
+var util = require('../../shared/util')
 
 var logging = false
 
@@ -24,7 +25,15 @@ export default function(app, initSessionStore)
     app.use(bodyParser.json())
     app.use(bodyParser.urlencoded({extended: true}))
     app.use(cookieParser(config.session.secret))
-    app.use(session(sessionOpts))
+
+    var expressSession = session(sessionOpts)
+    app.use((req, res, next) => {
+      if (util.isBot(req.get('user-agent'))) {
+        req.session = { anonData: {} }
+        return next()
+      }
+      return expressSession(req, res, next)
+    })
 
     app.use(passport.initialize())
     app.use(passport.session())
