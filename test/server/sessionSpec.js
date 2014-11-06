@@ -12,16 +12,50 @@ module.exports = () => describe("API: ", function() {
 		done()
 	})
 
+  describe("Anonymous:", (done) => {
 
-	it('Gets sessionId on anonymous session', function(done) {
-		var opts = { unauthenticated: true }
-		GET('/session/full', opts, function(s) {
-			expect(s.authenticated).to.be.false
-			expect(s.sessionID).to.exist
-			done()
-		})
-	})
+    it('Gets sessionId on anonymous session', function(done) {
+      var opts = { unauthenticated: true }
+      GET('/session/full', opts, function(s) {
+        expect(s.authenticated).to.be.false
+        expect(s.sessionID).to.exist
+        done()
+      })
+    })
 
+    var checkNoNewSessionForBot = (known_agent_string, done) => {
+      testDb.countSessionsInSessionStore( (e, oldSessionCount) => {
+        if (e) return done(e)
+        http(global.app)
+          .get('/v1/api/session/full') // maybe there is a better route to be hiting?
+          .set('set-cookie', null)
+          .set('user-agent', known_agent_string)
+          .expect(200)
+          .end( (e, r) => {
+            if (e) return done(e)
+            testDb.countSessionsInSessionStore( (e, count) => {
+              if (e) return done(e)
+              expect(count).to.equal(oldSessionCount)
+              done();
+            })
+          })
+        })
+      }
+
+    it('New sessions are not created for known bots', (done) => {
+      var expected = 8
+      var checkDone = () => { expected--; if (expected == 0) return done() }
+      checkNoNewSessionForBot('Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)', checkDone)
+      checkNoNewSessionForBot('Mozilla/5.0 (compatible; GurujiBot/1.0; +http://www.guruji.com/en/WebmasterFAQ.html)', checkDone)
+      checkNoNewSessionForBot('Twitterbot', checkDone)
+      checkNoNewSessionForBot('Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)', checkDone)
+      checkNoNewSessionForBot('Slurp', checkDone)
+      checkNoNewSessionForBot('msnbot-media/1.1 (+http://search.msn.com/msnbot.htm)', checkDone)
+      checkNoNewSessionForBot('Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)', checkDone)
+      checkNoNewSessionForBot('facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)', checkDone)
+    })
+
+  })
 
 	describe("Stack: ", function(done) {
 

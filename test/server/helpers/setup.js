@@ -11,6 +11,8 @@ var util = require('../../../shared/util')
 
 global.braintree = require('braintree')
 
+var mongoose = require('mongoose')
+var Session = mongoose.model('Session', {_id: String, session: String, expires: Date}, 'v1sessions')
 
 global.stubAnalytics = function()
 {
@@ -200,6 +202,12 @@ module.exports = {
       }
       else
         if (done) done()
+    })
+  },
+
+  countSessionsInSessionStore: function(cb) {
+    Session.find({}, function(e, r) {
+      return cb(e, r.length)
     })
   },
 
