@@ -4,7 +4,8 @@ var {ObjectId} = mongoose.Schema
 var TagSlim = {
   _id:          { required: true, type: ObjectId, ref: 'Tag'},
   name:         { required: true, type: String, trim: true },
-  slug:         { required: true, type: String, lowercase: true, trim: true }
+  slug:         { required: true, type: String, lowercase: true, trim: true },
+  sort:         { type: Number, required: true }, 
 }
 
 var Meta = {

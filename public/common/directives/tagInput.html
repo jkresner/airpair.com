@@ -11,14 +11,14 @@
     <label for="tagInput">Your stack</label>
 
     <ul class="tags" sortable sort='tags' service='tags'>
-      <li ng-repeat="tag in session.tags | orderBy:'sort'" ng-attr-data-id="{{tag._id}}">
+      <li ng-repeat="tag in tags() | orderBy:'sort'" ng-attr-data-id="{{tag._id}}">
         {{tag.slug}}
         <a class="remove" ng-click="deselectMatch(tag)">x</a>
         <a class="order" href="#"></a>
       </li>
     </ul>
 
-    <p ng-if="!selectedTags() || selectedTags().length == 0">No tags selected yet.</p>
+    <p ng-if="!tags() || tags().length == 0">No tags selected yet.</p>
   </div>
 
   <label for="tagInput">Search technologies</label>
