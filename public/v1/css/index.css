@@ -1354,6 +1354,9 @@ section#posts .editor .tag-input-group .selected .remove {
   display: inline;
   font-size: 12px;
 }
+section#posts .editor .tag-input-group .selected .order {
+  display: none;
+}
 section#posts .editor + hr {
   margin: 4px 0 0 0;
   border-color: #dff2ef;
