@@ -1,9 +1,9 @@
-var botPattern = /googlebot|gurujibot|twitterbot|yandexbot|slurp|msnbot|bingbot|facebookexternalhit/i
+import checkForBot from './bots'
 
 export function logError(e, user, req)
 {
   if (!e) return
-
+console.log("BOOM")
   var userInfo = (user && user.name) ?
     `${user.name} ${user.email} ${user._id}` : 'anonymous'
 
@@ -12,16 +12,17 @@ export function logError(e, user, req)
 
   if (reqInfo != '')
   {
-  	if (req.header('Referer'))
-  		reqInfo = `${reqInfo} << ${req.header('Referer')}`
+    if (req.header('Referer'))
+      reqInfo = `${reqInfo} << ${req.header('Referer')}`
 
-  	if (req.header('user-agent'))
-  	{
-  		var source = req.header('user-agent').replace(/^\s*/, '').replace(/\s*$/, '')
-  		var isBot = (botPattern.test(source)) ? 'true' : 'false'
+    if (req.header('user-agent'))
+    {
 
-  		reqInfo = `${reqInfo} || isBot:${isBot}:${req.header('user-agent')}`
-  	}
+      // var source = req.header('user-agent').replace(/^\s*/, '').replace(/\s*$/, '')
+      var isBot = checkForBot(req) //(botPattern.test(source)) ? 'true' : 'false'
+
+      reqInfo = `${reqInfo} || isBot:${isBot}:${req.header('user-agent')}`
+    }
   }
 
   if (!user && req) { userInfo += ` ${req.sessionID}` }

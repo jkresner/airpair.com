@@ -12,16 +12,38 @@ module.exports = () => describe("API: ", function() {
 		done()
 	})
 
+	describe("Anonymous:", (done) => {
 
-	it('Gets sessionId on anonymous session', function(done) {
-		var opts = { unauthenticated: true }
-		GET('/session/full', opts, function(s) {
-			expect(s.authenticated).to.be.false
-			expect(s.sessionID).to.exist
-			done()
+		it('Gets sessionId on anonymous session', function(done) {
+			var opts = { unauthenticated: true }
+			GET('/session/full', opts, function(s) {
+				expect(s.authenticated).to.be.false
+				expect(s.sessionID).to.exist
+				done()
+			})
 		})
-	})
 
+		it('New sessions are not created for known bots', (done) => {
+			testDb.countSessionsInSessionStore( (e, oldSessionCount) => {
+				if (e) return done(e)
+				http(global.app)
+					.get('/v1/') // maybe there is a better route to be hiting?
+					.set('set-cookie', null)
+					.set('user-agent', 'googlebot')
+					.expect(200)
+					.end( (e, r) => {
+						if (e) return done(e)
+						testDb.countSessionsInSessionStore( (e, count) => {
+							if (e) return done(e)
+							expect(count).to.equal(oldSessionCount)
+							done();
+						})
+					})
+			})
+		})
+
+		it.skip("do bots trigger api calls?")
+	})
 
 	describe("Stack: ", function(done) {
 
