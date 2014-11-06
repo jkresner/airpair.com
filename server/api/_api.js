@@ -25,6 +25,7 @@ function resolveParamFn(Svc, svcFnName, paramaName) {
   return (req, res, next, id) => {
     var thisSvc = { user: req.user, sessionID: req.sessionID, session: req.session }
     if (logging) $log('paramFn', paramaName, id)
+    if (id) id = id.trim()
     Svc[svcFnName].call(thisSvc, id, function(e, r) {
       if (!r && !e) e = new Error(`${paramaName} not found. Back to <a href="/${paramaName}s">${paramaName}s</a>`)
       req[paramaName] = r

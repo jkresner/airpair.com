@@ -5,6 +5,18 @@ import {trackView} from '../identity/analytics/middleware'
 import {noTrailingSlash} from '../util/seo/middleware'
 
 
+var angular = {
+  _id: "5149dccb5fc6390200000013",
+  desc: 'AngularJS is an open-source JavaScript framework. Its goal is to augment browser-based applications with Model–View–Whatever(MV*) capability and reduce the amount of JavaScript needed to make web applications functional. These types of apps are also frequently known as Single-Page Applications.',
+  name: 'AngularJS',
+  short: 'Angular',
+  slug: 'angularjs',
+  soId: 'angularjs'
+}
+
+var setTagForTrackView = (req, res, next) => { req.tag = angular; req.tag.title = req.tag.name; next() }
+
+
 export default function(app) {
 
   var router = require('express').Router()
@@ -12,11 +24,8 @@ export default function(app) {
     .param('workshop', WorkshopsAPI.paramFns.getBySlug)
     .param('post', PostsAPI.paramFns.getBySlug)
 
-    // .get('/angularjs', app.renderHbsViewData('post',
-    //   (req, cb) => PostsAPI.svc.getPublishedById('542c4b4f8e66ce0b00c885a4', cb) ))
-
-    .get('/angularjs', app.renderHbsViewData('tag',
-      (req, cb) => TagsAPI.svc.getTagPage('angularjs', cb) ))
+    .get('/angularjs', noTrailingSlash(), setTagForTrackView, trackView('tag'), app.renderHbsViewData('tag',
+      (req, cb) => TagsAPI.svc.getTagPage(req.tag, cb) ))
 
     .get('/posts/all', app.renderHbsViewData('postslist',
       (req, cb) => PostsAPI.svc.getAllPublished(cb) ))

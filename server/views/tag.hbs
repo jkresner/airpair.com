@@ -1,14 +1,23 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>{{viewData.tag.name}} Community</title>
+  <title>{{viewData.tag.name}} Articles, Workshops & Developers ready to help. A top #{{viewData.tag.name}} resource!</title>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1">
+{{#with viewData}}
+  <meta name="description" content="{{viewData.tag.name}} Articles, Workshops & Developers ready to help. One of the web's top #{{viewData.tag.name}} resources - totally worth bookmarking!"/>
+  <meta property="og:locale" content="en_US"/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:title" content="AngularJS Articles, Workshops and Developers"/>
+  <meta property="og:description" content="One of the best collections of #AngularJS Articles, Live Workshops and Developers on the web" />
+  <meta property="og:image" content="http://www.airpair.com/v1/img/css/tags/{{tag.slug}}-og.png"/>
+  <meta property="og:url" content="http://www.airpair.com/{{tag.slug}}"/>
+  <link rel="canonical" href="http://www.airpair.com/{{tag.slug}}" />
+{{/with}}
   <link rel='stylesheet' id='google-font-css'  href='//fonts.googleapis.com/css?family=Open+Sans%3A300%2C400%2C700&#038;ver=2.0.1' type='text/css' media='all' />
   <link rel="stylesheet" href="/v1/lib/bootstrap/bootstrap.css" type="text/css" />
   <link rel="stylesheet" href="/v1/lib/prism/prism.css" type="text/css" />
   <link rel="stylesheet" href="/v1/css/index.css" type="text/css" />
-  <base href="/" />
 </head>
 <body>
 
@@ -32,14 +41,24 @@
       <h1>Welcome to a community of {{tag.name}} help</h1>
 
       <p>Here you can meet senior {{tag.short}} developers and learn from them through articles,
-          workshops and pair programming.</p>
+        workshops and pair programming.</p>
+
+      <div class="share">
+        <div class="pw-widget pw-counter-vertical" pw:twitter-via="airpair">
+          <a class="pw-button-facebook pw-look-native"></a>
+          <a class="pw-button-twitter pw-look-native"></a>
+          <a class="pw-button-googleplus pw-look-native"></a>
+          <a class="pw-button-linkedin pw-look-native"></a>
+        </div>
+      </div>
+      <hr />
 
     </section>
 
 
     <section class="featured">
       <hr />
-
+      {{#with featured}}
       <div class="row">
 
         <div class="col-md-4 workshops">
@@ -48,11 +67,11 @@
           <article itemprop="blogPost" itemtype="http://schema.org/BlogPosting" itemscope="itemscope">
             <a rel="bookmark" href="/angularjs/workshops/top-10-mistakes-angularjs-developers-make">
 
-            <time class="ng-binding" datetime="2014-11-11T16:30:00.000Z">Tuesday<br /> Nov 11 <b>8:00am</b></time>
+            <time datetime="2014-11-11T16:30:00.000Z">Tuesday<br /> Nov 11 <b>8:00am</b></time>
             <div>
               <h2 class="entry-title">The Top 10 Mistakes AngularJS Developers Make</h2>
               <h5 class="entry-author">Mark Meyer</h5>
-              <img src="//0.gravatar.com/avatar/6c2f0695e0ca4445a223ce325c7fb970?s=80">
+              <img src="//0.gravatar.com/avatar/6c2f0695e0ca4445a223ce325c7fb970?s=100">
             </div>
 
             </a>
@@ -94,12 +113,10 @@
         <div class="col-md-4 pairing">
           <a class="btn" href="#tagpairing">Pair Programming</a>
           <hr class="vr" />
-          <article>
-
-          </article>
+          {{#with pairing}}{{> expertListItem }}{{/with}}
         </div>
       </div>
-
+      {{/with}}
     </section>
 
 
@@ -132,12 +149,127 @@
 
     <section id="tagposts" class="posts">
       <h2>{{tag.name}} Articles</h2>
+
+
+<div class="posts recent">
+   <article itemprop="blogPost" itemtype="http://schema.org/BlogPosting" itemscope="itemscope">
+  <a rel="bookmark" target="_self" title="How to Set Up Authentication with AngularJS and Ruby on Rails" href="/ruby-on-rails-4/posts/authentication-with-angularjs-and-ruby-on-rails">
+    <header class="entry-header">
+      <h2 itemprop="headline" class="entry-title">How to Set Up Authentication with AngularJS and Ruby on Rails</h2>
+      <p class="entry-meta">
+        <time datetime="2014-10-17T00:20:17.331Z" itemprop="datePublished" class="entry-time"></time>
+        by
+        <span itemtype="http://schema.org/Person" itemscope="itemscope" itemprop="author" class="entry-author">
+          <span itemprop="name" class="entry-author-name">Jason Swett</span>
+        </span>
+      </p>
+    </header>
+    <div itemprop="text" class="entry-content">
+      <img align="left" itemprop="image" class="entry-author-image" src="//0.gravatar.com/avatar/4fa58c43c72a15d2d560ffd931fbe9bb?s=50">
+      <p>The intricacies of implementing authentication using Rails and Angular are discussed, including topics such as testing, security, etc.</p>
+    </div>
+  </a>
+  <footer class="entry-footer">
+    <p class="entry-meta">
+      <span class="entry-categories">
+        <a rel="category tag" title="View all posts in Ruby on Rails 4" href="/posts/tag/ruby-on-rails-4">{ruby-on-rails-4}</a>
+        <a rel="category tag" title="View all posts in AngularJS" href="/posts/tag/angularjs">{angularjs}</a>
+      </span>
+    </p>
+  </footer>
+</article>
+<article itemprop="blogPost" itemtype="http://schema.org/BlogPosting" itemscope="itemscope">
+  <a rel="bookmark" target="_self" title="Hybrid UI framework shootout: Ionic vs. Famo.us vs. F7 vs. OnsenUI" href="/ionic-framework/posts/hybrid-apps-ionic-famous-f7-onsen">
+    <header class="entry-header">
+      <h2 itemprop="headline" class="entry-title">Hybrid UI framework shootout: Ionic vs. Famo.us vs. F7 vs. OnsenUI</h2>
+      <p class="entry-meta">
+        <time datetime="2014-10-15T17:51:41.967Z" itemprop="datePublished" class="entry-time"></time>
+        by
+        <span itemtype="http://schema.org/Person" itemscope="itemscope" itemprop="author" class="entry-author">
+          <span itemprop="name" class="entry-author-name">Tal Gleichger</span>
+        </span>
+      </p>
+    </header>
+    <div itemprop="text" class="entry-content">
+      <img align="left" itemprop="image" class="entry-author-image" src="//0.gravatar.com/avatar/1b3fa67a9bc040b78e53879059adcf58?s=50">
+      <p>JavaScript expert Tal Gleichger compares and contrasts the four most popular UI frameworks for creating hybrid applications - Ionic, Famo.us, F7, and Onsen.</p>
+    </div>
+  </a>
+  <footer class="entry-footer">
+    <p class="entry-meta">
+      <span class="entry-categories">
+        <a rel="category tag" title="View all posts in ionic-framework" href="/posts/tag/ionic-framework">{ionic-framework}</a>
+        <a rel="category tag" title="View all posts in famo.us" href="/posts/tag/famo.us">{famo.us}</a>
+        <a rel="category tag" title="View all posts in AngularJS" href="/posts/tag/angularjs">{angularjs}</a>
+      </span>
+    </p>
+  </footer>
+</article>
+<article itemprop="blogPost" itemtype="http://schema.org/BlogPosting" itemscope="itemscope">
+  <a rel="bookmark" target="_self" title="AngularJS Tutorial: A Comprehensive 10,000 Word Guide" href="/angularjs/posts/angularjs-tutorial">
+    <header class="entry-header">
+      <h2 itemprop="headline" class="entry-title">AngularJS Tutorial: A Comprehensive 10,000 Word Guide</h2>
+      <p class="entry-meta">
+        <time datetime="2014-10-03T02:21:49.051Z" itemprop="datePublished" class="entry-time"></time>
+        by
+        <span itemtype="http://schema.org/Person" itemscope="itemscope" itemprop="author" class="entry-author">
+          <span itemprop="name" class="entry-author-name">Todd Motto</span>
+        </span>
+      </p>
+    </header>
+    <div itemprop="text" class="entry-content">
+      <img align="left" itemprop="image" class="entry-author-image" src="//0.gravatar.com/avatar/b56bb22b3a4b83c6b534b4c114671380?s=50">
+      <p>Written by Google Developer Expert (GDE) Todd Motto, this Angular tutorial serves as an ultimate resource for learning AngularJS.</p>
+    </div>
+  </a>
+  <footer class="entry-footer">
+    <p class="entry-meta">
+      <span class="entry-categories">
+        <a rel="category tag" title="View all posts in AngularJS" href="/posts/tag/angularjs">{angularjs}</a>
+      </span>
+    </p>
+
+  </footer>
+</article>
+<article itemprop="blogPost" itemtype="http://schema.org/BlogPosting" itemscope="itemscope">
+  <a rel="bookmark" target="_self" title="The Top 10 Mistakes AngularJS Developers Make" href="/angularjs/posts/top-10-mistakes-angularjs-developers-make">
+    <header class="entry-header">
+      <h2 itemprop="headline" class="entry-title">The Top 10 Mistakes AngularJS Developers Make</h2>
+      <p class="entry-meta">
+        <time datetime="2014-10-01T22:02:35.113Z" itemprop="datePublished" class="entry-time"></time>
+        by
+        <span itemtype="http://schema.org/Person" itemscope="itemscope" itemprop="author" class="entry-author">
+          <span itemprop="name" class="entry-author-name">Mark Meyer</span>
+        </span>
+      </p>
+    </header>
+    <div itemprop="text" class="entry-content">
+      <img align="left" itemprop="image" class="entry-author-image" src="//0.gravatar.com/avatar/6c2f0695e0ca4445a223ce325c7fb970?s=50">
+      <p >AngularJS expert Mark Meyer runs down the top 10 mistakes made by AngularJS developers, from code organization to bloated controllers.</p>
+    </div>
+  </a>
+  <footer class="entry-footer">
+    <p class="entry-meta">
+      <span class="entry-categories">
+       <a rel="category tag" title="View all posts in AngularJS" href="/posts/tag/angularjs">{angularjs}</a>
+      </span>
+    </p>
+  </footer>
+</article>
+
+
+    </div>
+
     </section>
 
 
     <section id="tagpairing" class="pairing">
       <h2>{{tag.name}} Pair Programming</h2>
 
+      <hr />
+      {{#each experts}}{{> expertListItem }}{{/each}}
+
+      <hr />
     </section>
 
 
@@ -155,7 +287,20 @@
 <script type="text/javascript" src="/v1/js/lite.js"></script>
 <script type="text/javascript">
 
-function bindTracking() {}
+function bindTracking() {
+  ga('send', 'pageview')
+
+  $.each($('.featured a.btn'), function(idx,el) {
+    $(el).click(function (e) {
+      analytics.track('Click', { type: 'Tag Feature', unit: 'featured', idx: idx, text: el.innerHTML, location: window.location.pathname });
+    });
+  })
+}
+
+$(function() {
+  pageHlpr.loadPoSt();
+});
+
 
 </script>
 
