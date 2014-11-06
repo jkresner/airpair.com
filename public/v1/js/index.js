@@ -448,7 +448,7 @@ angular.module("APSideNav", ['ui.bootstrap', 'APSvcSession', 'APTagInput']).dire
 //# sourceMappingURL=<compileOutput>
 
 
-},{"../../../shared/validation/users.js":47,"./bookmarks.html":11,"./profile.html":16,"./sideNav.html":19,"./stack.html":21}],21:[function(require,module,exports){
+},{"../../../shared/validation/users.js":48,"./bookmarks.html":11,"./profile.html":16,"./sideNav.html":19,"./stack.html":21}],21:[function(require,module,exports){
 module.exports = "<div class=\"modal-header\">\n  <h3 class=\"modal-title\">Customize AirPair to your Stack</h3>\n</div>\n<div class=\"modal-body stack\">\n\n  <p>Personalize AirPair content, by selecting technologies that make up your stack.</p>\n\n  <div tag-input></div>\n\n</div>\n<div class=\"modal-footer\">\n  <button class=\"btn btn-primary\" ng-click=\"ok()\">Done</button>\n  <button class=\"btn btn-warning\" ng-click=\"cancel()\">Cancel</button>\n</div>\n";
 
 },{}],22:[function(require,module,exports){
@@ -560,7 +560,7 @@ angular.module('APFilters', []).filter('publishedTime', function() {
 //# sourceMappingURL=<compileOutput>
 
 
-},{"../../../shared/util.js":46}],25:[function(require,module,exports){
+},{"../../../shared/util.js":47}],25:[function(require,module,exports){
 "use strict";
 var headings = [];
 var lazyErrorCb = function(resp) {};
@@ -1259,6 +1259,10 @@ angular.module("APWorkshops", ['ngRoute', 'APFilters', 'APShare']).constant('API
     template: require('./signup.html'),
     controller: 'WorkshopSignupCtrl as signup'
   });
+  $routeProvider.when('/workshops/signup-confirmed/:id', {
+    template: require('./signupconfirmed.html'),
+    controller: 'WorkshopSignupConfirmedCtrl'
+  });
 }]).run(['$rootScope', function($rootScope) {
   $rootScope.timeZoneOffset = moment().format('ZZ');
 }]).controller('WorkshopsCtrl', ['$scope', '$http', 'API', function($scope, $http, API) {
@@ -1279,20 +1283,33 @@ angular.module("APWorkshops", ['ngRoute', 'APFilters', 'APShare']).constant('API
   $http.get(API + '/workshops/' + $routeParams.id).success(function(data) {
     $scope.entry = data;
   });
+}]).controller('WorkshopSignupConfirmedCtrl', ['$scope', '$http', '$routeParams', '$location', 'API', function($scope, $http, $routeParams, $location, API) {
+  $scope.later = false;
+  if ($location.search().later) {
+    $scope.later = true;
+  }
+  console.log('signup confirmed');
+  $http.get(API + '/workshops/' + $routeParams.id).success(function(data) {
+    $scope.entry = data;
+  });
 }]);
 ;
 
 //# sourceMappingURL=<compileOutput>
 
 
-},{"./list.html":42,"./signup.html":44,"./subscribe.html":45}],44:[function(require,module,exports){
+},{"./list.html":42,"./signup.html":44,"./signupconfirmed.html":45,"./subscribe.html":46}],44:[function(require,module,exports){
 module.exports = "<header>\n  <a href=\"/workshops\">Workshops</a> >\n  <a href=\"{{ entry.url }}\" target=\"_self\">{{ entry.title }}</a> >\n  Signup\n</header>\n\n<section id=\"workshops\">\n  <div id=\"signup\">\n\n    <div class=\"choice\" ng-if=\"!hasAccess\">\n\n      <h2>two ways to attend</h2>\n      <h4>Please choose an option access this workshop</h4>\n\n      <div class=\"option\">\n        <h2>Ticket</h2>\n\n        <ul>\n          <li><b>$50 one off</b></li>\n          <li>Access to this workshops</li>\n          <li>Access the recording</li>\n          <li>$10 credit towards pairing with {{ entry.speakers[0].name }}</li>\n        </ul>\n\n        <a href=\"alert('Sign up for this workshop is free, please fill the form below')\" class=\"btn\">Buy a ticket</a>\n      </div>\n\n      <div class=\"option\">\n        <h2>Membership</h2>\n        <ul>\n          <li><b>$300 for 6 months</b></li>\n          <li>Access to all workshops</li>\n          <li>$5/hr off all AirPairing</li>\n          <li>Instant chat access to experts</li>\n        </ul>\n        <a href=\"alert('Sign up for this workshop is free, please fill the form below')\" class=\"btn\">Get a membership</a>\n      </div>\n\n    </div>\n\n    <div class=\"rsvp\" ng-if=\"hasAccess && !entry.youtube\">\n\n      <h2>RSVP for workshop</h2>\n\n      <iframe ng-src=\"{{ '//bit.ly/aircastsignup-' + entry.slug | trustUrl }}\" width=\"100%\" height=\"920\" frameborder=\"0\" marginheight=\"0\" marginwidth=\"0\">Loading...</iframe>\n\n    </div>\n\n    <div class=\"attending\" ng-if=\"hasAccess && entry.youtube\">\n\n      <h2>This workshop has already happened.</h2>\n\n    </div>\n\n    <hr />\n\n    <a href=\"{{ entry.url }}\" class=\"btn\" target=\"_self\">Back to workshop</a>\n\n    <hr />\n\n  </div>\n</section>\n";
 
 },{}],45:[function(require,module,exports){
-module.exports = "<header><a href=\"/workshops\">Workshops</a> > Subscribe</header>\n<section id=\"workshops\">\n  <div id=\"subscribe\">\n\n    <h1>Subscribe to Workshops Calendar</h1>\n\n    <p>For convenience, we provide an iCal feed that automatically updates as we make changes to the workshops schedule.</p>\n\n    <input type=\"text\" style=\"width:100%;margin:15px 0 20px 0\" value=\"https://www.google.com/calendar/ical/airpair.co_o3u16m7fv9fc3agq81nsn0bgrs%40group.calendar.google.com/public/basic.ics\" />\n\n    <p>Make sure your client is setup correctly to receive live changes and that you haven't just imported a static view of the schedule.</p>\n\n    <h2>Google hangouts guide</h2>\n\n    <p>Copy and paste the following url in the \"Add by url\" dialog.\n\n    <p>If you select the 'Import calendar' option you will NOT see updates to the schedule as they are made.</p>\n\n    <img src=\"/v1/img/pages/workshops/ical-google-guide-1.png\" />\n\n    <p>Once the calendar url is added, you will see \"AirCasts\" listed down the left and workshops will appear in your calendar..</p>\n\n    <img src=\"/v1/img/pages/workshops/ical-google-guide-2.png\" />\n\n    <p>See guide to make sure you're correctly subscribe for updates to the AirCasts schedule.</p>\n\n    <hr />\n\n    <a href=\"/workshops\" class=\"btn\">Back to the workshops page</a>\n\n    <hr />\n\n  </div>\n</section>\n";
+module.exports = "<header>\n  <a href=\"/workshops\">Workshops</a> >\n  <a href=\"{{ entry.url }}\" target=\"_self\">{{ entry.title }}</a> >\n  Thank you\n</header>\n\n<section id=\"workshops\">\n  <div id=\"confirmed\">\n\n\n    <h3 ng-if=\"later\">We will send you {{entry.title}}</h3>\n    <h3 ng-if=\"!later\">You are confirmed for {{entry.title}}</h3>\n\n    <hr />\n\n    <a href=\"{{ entry.url }}\" class=\"btn\" target=\"_self\">Back to workshop</a>\n\n    <hr />\n\n  </div>\n</section>\n";
 
 },{}],46:[function(require,module,exports){
+module.exports = "<header><a href=\"/workshops\">Workshops</a> > Subscribe</header>\n<section id=\"workshops\">\n  <div id=\"subscribe\">\n\n    <h1>Subscribe to Workshops Calendar</h1>\n\n    <p>For convenience, we provide an iCal feed that automatically updates as we make changes to the workshops schedule.</p>\n\n    <input type=\"text\" style=\"width:100%;margin:15px 0 20px 0\" value=\"https://www.google.com/calendar/ical/airpair.co_o3u16m7fv9fc3agq81nsn0bgrs%40group.calendar.google.com/public/basic.ics\" />\n\n    <p>Make sure your client is setup correctly to receive live changes and that you haven't just imported a static view of the schedule.</p>\n\n    <h2>Google hangouts guide</h2>\n\n    <p>Copy and paste the following url in the \"Add by url\" dialog.\n\n    <p>If you select the 'Import calendar' option you will NOT see updates to the schedule as they are made.</p>\n\n    <img src=\"/v1/img/pages/workshops/ical-google-guide-1.png\" />\n\n    <p>Once the calendar url is added, you will see \"AirCasts\" listed down the left and workshops will appear in your calendar..</p>\n\n    <img src=\"/v1/img/pages/workshops/ical-google-guide-2.png\" />\n\n    <p>See guide to make sure you're correctly subscribe for updates to the AirCasts schedule.</p>\n\n    <hr />\n\n    <a href=\"/workshops\" class=\"btn\">Back to the workshops page</a>\n\n    <hr />\n\n  </div>\n</section>\n";
+
+},{}],47:[function(require,module,exports){
 "use strict";
+var botPattern = /googlebot|gurujibot|twitterbot|yandexbot|slurp|msnbot|bingbot|facebookexternalhit/i;
 var idsEqual = (function(id1, id2) {
   return id1.toString() == id2.toString();
 });
@@ -1379,13 +1396,17 @@ module.exports = {
       return obj;
     else
       return nestedPick(obj, _.keys(selectList));
+  }),
+  isBot: (function(useragent) {
+    var source = useragent.replace(/^\s*/, '').replace(/\s*$/, '');
+    return botPattern.test(source);
   })
 };
 
 //# sourceMappingURL=<compileOutput>
 
 
-},{}],47:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 "use strict";
 var validateEmail = (function(email) {
   if (!email || !email.match(/.+@.+\.+.+/))

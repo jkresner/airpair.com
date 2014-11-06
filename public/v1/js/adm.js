@@ -408,6 +408,7 @@ angular.module('APSvcSession', []).constant('API', '/v1/api').constant('Auth', '
 
 },{}],18:[function(require,module,exports){
 "use strict";
+var botPattern = /googlebot|gurujibot|twitterbot|yandexbot|slurp|msnbot|bingbot|facebookexternalhit/i;
 var idsEqual = (function(id1, id2) {
   return id1.toString() == id2.toString();
 });
@@ -494,6 +495,10 @@ module.exports = {
       return obj;
     else
       return nestedPick(obj, _.keys(selectList));
+  }),
+  isBot: (function(useragent) {
+    var source = useragent.replace(/^\s*/, '').replace(/\s*$/, '');
+    return botPattern.test(source);
   })
 };
 
