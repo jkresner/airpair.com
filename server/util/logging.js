@@ -1,9 +1,9 @@
-import checkForBot from './bots'
+import {checkForBots} from './bots'
 
 export function logError(e, user, req)
 {
   if (!e) return
-console.log("BOOM")
+
   var userInfo = (user && user.name) ?
     `${user.name} ${user.email} ${user._id}` : 'anonymous'
 
@@ -19,7 +19,7 @@ console.log("BOOM")
     {
 
       // var source = req.header('user-agent').replace(/^\s*/, '').replace(/\s*$/, '')
-      var isBot = checkForBot(req) //(botPattern.test(source)) ? 'true' : 'false'
+      var isBot = checkForBots(req) //(botPattern.test(source)) ? 'true' : 'false'
 
       reqInfo = `${reqInfo} || isBot:${isBot}:${req.header('user-agent')}`
     }

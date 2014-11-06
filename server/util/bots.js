@@ -1,5 +1,5 @@
-export function checkForBot(req) {
+export function checkForBots(req) {
     var botPattern = /googlebot|gurujibot|twitterbot|yandexbot|slurp|msnbot|bingbot|facebookexternalhit/i
     var source = req.header('user-agent').replace(/^\s*/, '').replace(/\s*$/, '')
-    var isBot = (botPattern.test(source)) ? 'true' : 'false'
+    return (botPattern.test(source)) ? 'true' : 'false'
 }
