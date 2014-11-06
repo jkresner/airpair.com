@@ -35,7 +35,15 @@ export default function(app, initSessionStore)
     app.use(bodyParser.urlencoded({extended: true}))
     app.use(cookieParser(config.session.secret))
 
-    app.use(botAwareSession( session(sessionOpts) ))
+    // app.use(botAwareSession( session(sessionOpts) ))
+    var expressSession = session(sessionOpts)
+    app.use((req, res, next) => {
+      if (checkForBots(req)) {
+        req.session = { anonData: {} }
+        return next()
+      }
+      return expressSession(req, res, next)
+    })
 
     app.use(passport.initialize())
     app.use(passport.session())
