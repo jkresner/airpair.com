@@ -1,0 +1,21 @@
+<header>
+  <a href="/workshops">Workshops</a> >
+  <a href="{{ entry.url }}" target="_self">{{ entry.title }}</a> >
+  Thank you
+</header>
+
+<section id="workshops">
+  <div id="confirmed">
+
+
+    <h3 ng-if="later">We will send you {{entry.title}}</h3>
+    <h3 ng-if="!later">You are confirmed for {{entry.title}}</h3>
+
+    <hr />
+
+    <a href="{{ entry.url }}" class="btn" target="_self">Back to workshop</a>
+
+    <hr />
+
+  </div>
+</section>

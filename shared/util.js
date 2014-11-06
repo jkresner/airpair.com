@@ -1,3 +1,4 @@
+var botPattern = /googlebot|gurujibot|twitterbot|yandexbot|slurp|msnbot|bingbot|facebookexternalhit/i
 
 var idsEqual = (id1, id2) =>
   id1.toString() == id2.toString()
@@ -91,9 +92,16 @@ combineItems: (array1, array2, compareProp) => {
     return name.replace(name.split(' ')[0]+ '' , '')
   },
 
+
   selectFromObject: (obj, selectList) => {
     if (!obj || !selectList) return obj
     else return nestedPick(obj, _.keys(selectList))
+  },
+
+
+  isBot: (useragent) => {
+    var source = useragent.replace(/^\s*/, '').replace(/\s*$/, '')
+    return botPattern.test(source)
   }
 
 }
