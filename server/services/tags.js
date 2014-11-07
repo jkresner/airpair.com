@@ -2,20 +2,70 @@ import Svc from '../services/_service'
 import Tag from '../models/tag'
 import * as WorkshopsSvc from './workshops'
 
+
 var logging = false
 var svc = new Svc(Tag, logging)
 
 
 var fields = {
 	listCache: { '_id':1, name: 1, slug: 1 },
-	search: { '_id': 1, 'name': 1, 'slug': 1, 'desc': 1 }
+	search: { '_id': 1, 'name': 1, 'slug': 1, 'desc': 1, 'tokens': 1 }
+}
+
+
+function tokenize(term, wildcardStart, wildcardEnd) {
+  if (!term) return '.*';
+  term = term.replace(/[-\/\\^$*+?.()|[\]{}+]/g, '\\$&');
+
+  var regex = '';
+  if (wildcardStart) regex += '.*';
+
+  var tokens = term.split(' ');
+  if (tokens) regex += tokens.join('.*');
+  else regex += term;
+
+  if (wildcardEnd) regex += '.*';
+
+  return regex;
 }
 
 
 export function search(searchTerm, cb) {
-	var opts = { options: { limit: 3 }, fields: fields.search }
-	var query = searchTerm ? { name : new RegExp(searchTerm, "i") } : null;
-	svc.searchMany(query, opts, cb)
+  var regex = new RegExp(tokenize(searchTerm, true, true), 'i');
+
+  var query = { name: regex };
+	var opts = { fields: fields.search }
+
+	svc.searchMany(query, opts, function(err, result) {
+    if (err) {
+      cb(err, result);
+      return;
+    }
+
+    var startsWith = new RegExp('^' + tokenize(searchTerm, false, true), 'i');
+    var endsWith = new RegExp(tokenize(searchTerm, true, false) + '$', 'i');
+
+    for (var i = 0; i < result.length; i++) {
+      var o = result[i];
+      o.weight = 0;
+
+      // if it's an exact match: -
+      if (o.name.toLowerCase() === searchTerm.toLowerCase()) {
+        o.weight -= 1;
+      }
+      // if starts with: -
+      if (o.name.match(startsWith)) {
+        o.weight -= 1;
+      }
+      // if it ends with: +
+      if (o.name.match(endsWith)) {
+        o.weight += 1;
+      }
+    }
+
+    var retVal = _.sortBy(result, (x) => x.weight + '_' + x.name).splice(0, 3);
+    cb(err, retVal);
+  });
 }
 
 
