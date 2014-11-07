@@ -14,7 +14,19 @@ angular.module('APTagInput', ['ui.bootstrap'])
     return {
       restrict: 'EA',
       template: require('./tagInput.html'),
+      scope: {
+      },
       controller: ['$scope', '$attrs', '$http', function($scope, $attrs, $http) {
+
+        $scope.tags = $scope.$parent.tags
+        $scope.selectTag = $scope.$parent.selectTag
+        $scope.deselectTag = $scope.$parent.deselectTag
+        $scope.updateTags = $scope.$parent.updateTags
+        $scope.sortSuccess = $scope.$parent.sortSuccess
+        $scope.sortFail = $scope.$parent.sortFail
+
+        //-- stupid broken angular ui, this fixes it though
+        $scope.templateUrl = "tagMatch.html"
 
         $scope.getTags = function(q) {
           if (badTagsSearchQuery(q)) {
@@ -44,7 +56,7 @@ angular.module('APTagInput', ['ui.bootstrap'])
         };
 
         $scope.deselectMatch = function (match) {
-          this.deselectTag(match)
+          $scope.deselectTag(match)
         };
 
       }]
