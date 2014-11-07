@@ -1,0 +1,26 @@
+<script type="text/ng-template" id="userMatch.html">
+  <div>
+    <a class="userSelect">
+      <img ng-src="{{match.model.avatar}}" />
+      <span bind-html-unsafe="match.model.name | typeaheadHighlight:query"></span>
+      <p bind-html-unsafe="match.model.username | typeaheadHighlight:query"></p>
+    </a>
+  </div>
+</script>
+
+<div class="form-group user-input-group">
+  {{post.by.name}}
+  <div class="selected">
+    <img ng-src="{{post.by.avatar}}" />
+  </div>
+
+  <input type="text" class="userInput form-control"
+    placeholder="type a name (e.g. John Smith)"
+    ng-model="q"
+    typeahead="u as u for u in getUsers($viewValue) | filter:$viewValue"
+    typeahead-editable="false"
+    typeahead-input-formatter="keypressSelect($model)"
+    typeahead-template-url="userMatch.html">
+
+</div>
+

@@ -5,7 +5,8 @@ var resolver = require('./../common/routes/helpers.js').resolveHelper;
 
 
 angular.module("APPosts", ['ngRoute', 'APFilters','APShare',
-  'APMyPostsList','APPostEditor','APPost', 'APBookmarker','APSvcSession', 'APSvcPosts','APTagInput'])
+  'APMyPostsList','APPostEditor','APPost', 'APBookmarker','APSvcSession',
+  'APSvcPosts', 'APTagInput','APUserInput'])
 
   .config(['$locationProvider', '$routeProvider',
       function($locationProvider, $routeProvider) {
@@ -30,7 +31,7 @@ angular.module("APPosts", ['ngRoute', 'APFilters','APShare',
     });
 
     $routeProvider.when('/posts/publish/:id', {
-      template: require('./author.html'),
+      template: require('./publish.html'),
       controller: 'PublishCtrl as author',
       resolve: authd
     });
@@ -147,6 +148,18 @@ angular.module("APPosts", ['ngRoute', 'APFilters','APShare',
     }
 
 
+    //-- TODO also figure out to add social later
+    // $scope.user = () => { return $scope.post.by }
+    $scope.selectUser = (user) => {
+      $scope.post.by = {
+        userId: user._id,
+        name: user.name,
+        avatar: user.avatar,
+        bio: user.bio,
+        username: user.username
+      };
+    }
+
     PostsService.getById($routeParams.id, (r) => {
       if (!r.slug) {
         r.slug = r.title.toLowerCase().replace(/ /g, '-');
@@ -197,6 +210,25 @@ angular.module("APPosts", ['ngRoute', 'APFilters','APShare',
         $scope.post = _.extend(r, { saved: true});
       });
     }
+
+    $scope.tags = () => $scope.post ? $scope.post.tags : null;
+    $scope.updateTags = (scope, newTags) => {
+      if (!$scope.post) {
+        return;
+      }
+
+      $scope.post.tags = newTags;
+    }
+
+    $scope.selectTag = function(tag) {
+      var tags = $scope.post.tags;
+      if ( _.contains(tags, tag) ) $scope.post.tags = _.without(tags, tag)
+      else $scope.post.tags = _.union(tags, [tag])
+    };
+
+    $scope.deselectTag = (tag) => {
+      $scope.post.tags = _.without($scope.post.tags, tag);
+    };
 
   }])
 
