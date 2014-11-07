@@ -6,6 +6,15 @@ var util = require('../../shared/util')
 
 var logging = false
 
+var botAwareSession = (expressSession) => {
+  return (req, res, next) => {
+      if (util.isBot(req.get('user-agent'))) {
+        req.session = { anonData: {} }
+        return next()
+      }
+      return expressSession(req, res, next)
+    }
+}
 
 // takes a delegate to initalize a store that could be Mongo / Redis etc.x
 export default function(app, initSessionStore)
@@ -26,14 +35,7 @@ export default function(app, initSessionStore)
     app.use(bodyParser.urlencoded({extended: true}))
     app.use(cookieParser(config.session.secret))
 
-    var expressSession = session(sessionOpts)
-    app.use((req, res, next) => {
-      if (util.isBot(req.get('user-agent'))) {
-        req.session = { anonData: {} }
-        return next()
-      }
-      return expressSession(req, res, next)
-    })
+    app.use(botAwareSession(session(sessionOpts)))
 
     app.use(passport.initialize())
     app.use(passport.session())
