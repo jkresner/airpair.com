@@ -17,7 +17,6 @@ module.exports = () => describe("API: ", function() {
     it('Gets sessionId on anonymous session', function(done) {
       var opts = { unauthenticated: true }
       GET('/session/full', opts, function(s) {
-        console.log(s)
         expect(s.authenticated).to.be.false
         expect(s.sessionID).to.exist
         done()
