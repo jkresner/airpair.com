@@ -58,11 +58,6 @@ export function getTagPage(tag, cb) {
               published: new Date(),
               tags: []
             },
-            pairing: {
-              name: 'Ari Lerner',
-              username: 'auser',
-              avatar: 'https://avatars1.githubusercontent.com/u/529'
-            }
           },
           about: {
             tagline: "AngularJS is an amazing framework for creating rich client-side applications.",
@@ -75,37 +70,65 @@ export function getTagPage(tag, cb) {
               name: 'Ari Lerner',
               username: 'auser',
               avatar: 'https://avatars1.githubusercontent.com/u/529',
-              tags: []
+              tags: ['angularjs','ruby-on-rails','erlang'],
+              bio: 'ng-book author',
+              rate: '280'
             },
             {
               name: 'Matias Niemelä',
               username: 'matsko',
               avatar: '//secure.gravatar.com/avatar/3c0ca2c60c5cc418c6b3dbed47b23b69',
-              tags: []
+              tags: ['angularjs', 'html5', 'testing'],
+              bio: 'AngularJS Core Team Member',
+              rate: '280'
             },
             {
               name: 'Basarat Ali',
               username: 'basarat',
               avatar: '//secure.gravatar.com/avatar/1400be56ff17549b926dd3260da4a494',
-              tags: []
+              tags: ['typescript','javascript','angularjs'],
+              bio: '',
+              rate: '130'
             },
             {
               name: 'Todd Motto',
               username: 'toddmotto',
               avatar: '//secure.gravatar.com/avatar/b56bb22b3a4b83c6b534b4c114671380',
-              tags: []
+              tags: ['angularjs','chrome','html5'],
+              bio: 'Google Developer Expert',
+              rate: '250'
             },
             {
               name: 'Abe Haskins',
               username: 'abeisgreat',
               avatar: '//secure.gravatar.com/avatar/fbb79df0f24e736c8e37f9f195a738cc',
-              tags: []
+              tags: ['angularjs','firebase','angularfire'],
+              bio: 'AngularFire Contributor',
+              rate: '220'
             },
             {
               name: 'Uri Shaked',
               username: 'urish',
               avatar: '//secure.gravatar.com/avatar/fbf41c66afb1e3807b7b330c2d8fcc28',
-              tags: []
+              tags: ['angularjs', 'node.js', 'gulp'],
+              bio: 'Google Developer Expert',
+              rate: '160'
+            },
+            {
+              name: 'Mark Meyer',
+              username: 'nuclearghost',
+              avatar: '//secure.gravatar.com/avatar/6c2f0695e0ca4445a223ce325c7fb970',
+              tags: ['angularjs','angular-ui','ios'],
+              bio: '',
+              rate: '90'
+            },
+            {
+              name: 'Fernando Villalobos',
+              username: 'fervisa',
+              avatar: '//secure.gravatar.com/avatar/0e74aa62f0a56b438237adf678eae3a0',
+              tags: ['angularjs','coffeescript','ruby'],
+              bio: '',
+              rate: '40'
             }
           ],
           workshops,
@@ -114,6 +137,7 @@ export function getTagPage(tag, cb) {
 
       d.workshops = _.sortBy(_.first(_.filter(d.workshops, (w) => w.time > new Date() ), 5), (w) => w.time)
       d.posts = _.first(d.posts, 5)
+      d.featured.pairing = d.experts[0];
 
       cb(null, d)
     })
