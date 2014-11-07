@@ -211,6 +211,12 @@ module.exports = {
     })
   },
 
+  countViews: function(cb) {
+    View.find({}, (e,r) => {
+      return cb(e, r.length)
+    })
+  },
+
   viewsByUserId: function(userId, cb) {
     View.find({userId}, cb)
   },
