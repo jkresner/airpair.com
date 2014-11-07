@@ -33,6 +33,7 @@ angular.module('APTagInput', ['ui.bootstrap'])
             return [];
           }
 
+          q = encodeURIComponent(q);
           return $http.get('/v1/api/tags/search/'+q).then(function(res){
             var tags = [];
             angular.forEach(res.data, function(item){
