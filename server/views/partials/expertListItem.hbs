@@ -2,15 +2,23 @@
   <a rel="bookmark" target="_self" title="{{name}}" href="/book/{{username}}">
     <header class="entry-header">
       <img align="left" src="{{avatar}}?s=100" itemprop="image" class="entry-author-image" />
+      <p class="entry-meta">
+        <span class="entry-categories">
+          {{#each tags}}<br />{ {{this}} }{{/each}}
+        </span>
+      </p>
     </header>
     <div itemprop="text" class="entry-content">
       <h2 itemprop="headline" class="entry-title">{{name}}</h2>
+      <label>${{rate}}/hr</label>
 
-      {{!-- <p class="entry-meta">
-        <span class="entry-categories">
-          { AngularJS }
-        </span>
-      </p> --}}
+      <br /><br />
+      <p>{{ bio }}</p>
     </div>
   </a>
+  <footer class="entry-footer">
+    <img class="bookmark" src="/v1/img/css/bookmark-add.png" />
+    {{!-- <img class="bookmark" src="/v1/img/css/bookmarked.png" /> --}}
+  </footer>
+
 </article>
