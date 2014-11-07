@@ -4,7 +4,6 @@ module.exports = () => describe("API: ", function() {
 		stubAnalytics()
 		testDb.initPosts( () => {
 			testDb.initTags(done) })
-
 	})
 
 	after(function(done) {
@@ -12,18 +11,19 @@ module.exports = () => describe("API: ", function() {
 		done()
 	})
 
-  describe("Anonymous:", (done) => {
-
-    it('Gets sessionId on anonymous session', function(done) {
-      var opts = { unauthenticated: true }
-      GET('/session/full', opts, function(s) {
-        expect(s.authenticated).to.be.false
-        expect(s.sessionID).to.exist
-        done()
-      })
+  it('Gets sessionId on anonymous session', function(done) {
+    var opts = { unauthenticated: true }
+    GET('/session/full', opts, function(s) {
+      expect(s.authenticated).to.be.false
+      expect(s.sessionID).to.exist
+      done()
     })
+  })
 
-    var checkNoNewSessionForBot = (known_agent_string, done) => {
+
+  describe("Bots:", (done) => {
+
+    var checkSessionIsNotAdded = (known_agent_string, done) => {
       testDb.countSessionsInSessionStore( (e, oldSessionCount) => {
         if (e) return done(e)
         http(global.app)
@@ -43,17 +43,49 @@ module.exports = () => describe("API: ", function() {
         })
       }
 
-    it('New sessions are not created for known bots', (done) => {
+    var checkSessionIsAdded = (known_agent_string, done) => {
+      testDb.countSessionsInSessionStore( (e, oldSessionCount ) => {
+        if (e) return done(e)
+        http(global.app)
+          .get('/v1/api/session/full')
+          .set('user-agent', known_agent_string)
+          .expect(200)
+          .end( (e, r) => {
+            if (e) return done(e)
+            expect(r.body.authenticated).to.be.false
+            expect(r.body.sessionID).to.exist
+            testDb.countSessionsInSessionStore( (e, count) => {
+              if (e) return done(e)
+              expect(count).to.equal(oldSessionCount+1)
+              done()
+            })
+          })
+      })
+    }
+
+    it('Sessions are not saved for known bots', (done) => {
       var assertions = 8
       var doneDone = () => { assertions--; if (assertions == 0) return done() }
-      checkNoNewSessionForBot('Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)', doneDone)
-      checkNoNewSessionForBot('Mozilla/5.0 (compatible; GurujiBot/1.0; +http://www.guruji.com/en/WebmasterFAQ.html)', doneDone)
-      checkNoNewSessionForBot('Twitterbot', doneDone)
-      checkNoNewSessionForBot('Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)', doneDone)
-      checkNoNewSessionForBot('Mozilla/5.0 (compatible; Yahoo! Slurp; http://help.yahoo.com/help/us/ysearch/slurp)', doneDone)
-      checkNoNewSessionForBot('msnbot-media/1.1 (+http://search.msn.com/msnbot.htm)', doneDone)
-      checkNoNewSessionForBot('Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)', doneDone)
-      checkNoNewSessionForBot('facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)', doneDone)
+      checkSessionIsNotAdded('Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)', doneDone)
+      checkSessionIsNotAdded('Mozilla/5.0 (compatible; GurujiBot/1.0; +http://www.guruji.com/en/WebmasterFAQ.html)', doneDone)
+      checkSessionIsNotAdded('Twitterbot', doneDone)
+      checkSessionIsNotAdded('Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)', doneDone)
+      checkSessionIsNotAdded('Mozilla/5.0 (compatible; Yahoo! Slurp; http://help.yahoo.com/help/us/ysearch/slurp)', doneDone)
+      checkSessionIsNotAdded('msnbot-media/1.1 (+http://search.msn.com/msnbot.htm)', doneDone)
+      checkSessionIsNotAdded('Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)', doneDone)
+      checkSessionIsNotAdded('facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)', doneDone)
+    })
+
+    it('Sessions are saved for some Firefox', (done) => {
+      checkSessionIsAdded('Mozilla/5.0 (Windows NT 5.1; rv:31.0) Gecko/20100101 Firefox/31.0', done)
+    })
+
+    it('Sessions are saved for Safari', (done) => {
+      checkSessionIsAdded('Mozilla/5.0 (iPad; CPU OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5355d Safari/8536.25', done)
+    })
+
+    it('Sessions are saved for Chrome', (done) => {
+      checkSessionIsAdded('Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2049.0 Safari/537.36', done)
     })
 
     it('Views from bots are not saved', (done) => {
