@@ -17,6 +17,7 @@ module.exports = () => describe("API: ", function() {
     it('Gets sessionId on anonymous session', function(done) {
       var opts = { unauthenticated: true }
       GET('/session/full', opts, function(s) {
+        console.log(s)
         expect(s.authenticated).to.be.false
         expect(s.sessionID).to.exist
         done()
@@ -33,6 +34,8 @@ module.exports = () => describe("API: ", function() {
           .expect(200)
           .end( (e, r) => {
             if (e) return done(e)
+            expect(r.body.authenticated).to.be.false
+            expect(r.body.sessionID).to.not.exist
             testDb.countSessionsInSessionStore( (e, count) => {
               if (e) return done(e)
               expect(count).to.equal(oldSessionCount)
