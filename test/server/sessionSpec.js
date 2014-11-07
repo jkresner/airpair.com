@@ -50,7 +50,7 @@ module.exports = () => describe("API: ", function() {
       checkNoNewSessionForBot('Mozilla/5.0 (compatible; GurujiBot/1.0; +http://www.guruji.com/en/WebmasterFAQ.html)', doneDone)
       checkNoNewSessionForBot('Twitterbot', doneDone)
       checkNoNewSessionForBot('Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)', doneDone)
-      checkNoNewSessionForBot('Slurp', doneDone)
+      checkNoNewSessionForBot('Mozilla/5.0 (compatible; Yahoo! Slurp; http://help.yahoo.com/help/us/ysearch/slurp)', doneDone)
       checkNoNewSessionForBot('msnbot-media/1.1 (+http://search.msn.com/msnbot.htm)', doneDone)
       checkNoNewSessionForBot('Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)', doneDone)
       checkNoNewSessionForBot('facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)', doneDone)
