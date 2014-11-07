@@ -28,7 +28,6 @@ module.exports = () => describe("API: ", function() {
         if (e) return done(e)
         http(global.app)
           .get('/v1/api/session/full')
-          .set('set-cookie', null)
           .set('user-agent', known_agent_string)
           .expect(200)
           .end( (e, r) => {
@@ -57,6 +56,23 @@ module.exports = () => describe("API: ", function() {
       checkNoNewSessionForBot('facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)', doneDone)
     })
 
+    it('Views from bots are not saved', (done) => {
+      testDb.countViews( (e, oldViewsCount) => {
+        if (e) return done(e)
+        http(global.app)
+          .get('/v1/api/session/full')
+          .set('user-agent', 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)')
+          .expect(200)
+          .end( (e,r) => {
+            if (e) return done(e)
+            testDb.countViews( (e, count) => {
+              if (e) return done(e)
+                expect(count).to.equal(oldViewsCount)
+                done()
+            })
+          })
+      })
+    })
   })
 
 	describe("Stack: ", function(done) {
