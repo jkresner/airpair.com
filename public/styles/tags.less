@@ -122,9 +122,9 @@ section#tag {
   section.featured {
     padding-top:20px;
     margin:auto;
-    width:900px;
-    .btn { width:100% }
+    max-width:900px;
     hr { border-top:dashed 1px @orange }
+    .btn { width:100% }
     .row { margin-top:-40px }
 
     hr.vr {
@@ -137,6 +137,7 @@ section#tag {
 
     .col-md-4 {
       padding:0 10px;
+      margin-bottom:20px;
     }
 
     .col-md-4 > article {
@@ -144,34 +145,14 @@ section#tag {
       padding:0;
     }
 
-  }
 
-  section.about {
-    margin:auto;
-    width:900px;
-    padding:20px 0;
-    h2 {
-      font-size:20px;
-      font-weight:bold;
-    }
-
-    blockquote {
-      text-align:left;
-      font-size:16px;
-      padding:20px;
-      height:200px;
-      background-color:@lightblue;
-      p { float:left;width:520px;padding:10px }
-      cite { float:left;display:block;
-        padding:0 10px;
-        color:@mediumgray;
-        font-style:italic;
-      }
-      img { float:right;
-        width:160px;
-        border-radius:50%;
+    @media screen and (max-width:1000px) {
+      .btn { width:60% }
+      .col-md-4 > article {
+        margin:0 auto 20px auto;
       }
     }
+
   }
 
   .sectionDashed
@@ -185,6 +166,52 @@ section#tag {
       padding:0 20px 0 20px;
       background:white;
       display:inline-block;
+    }
+  }
+
+  section.about {
+    margin:auto;
+    max-width:880px;
+    padding:0px 0;
+    h2 {
+      font-size:20px;
+      font-weight:bold;
+    }
+
+    blockquote {
+      text-align:left;
+      font-size:16px;
+      padding:20px;
+      height:200px;
+      background-color:@lightblue;
+      p { float:left;max-width:70%;padding:10px }
+      cite { float:left;display:block;
+        padding:0 10px;
+        color:@mediumgray;
+        font-style:italic;
+      }
+      img {
+        float:right;
+        width:160px;
+        border-radius:50%;
+      }
+    }
+
+    @media screen and (max-width:1000px) {
+      blockquote {
+        cite {
+          font-size:11px
+        }
+      }
+    }
+
+    @media screen and (max-width:640px) {
+      blockquote {
+        height:260px;
+        padding:5px 10px;
+        font-size:13px;
+        img { width:60px;margin-top:15px; }
+      }
     }
   }
 
@@ -203,8 +230,8 @@ section#tag {
       margin-bottom:20px;
       hr { clear:both;margin-bottom:0;height:0 }
       img { border-radius:50%;float:left;margin:10px 20px 10px 10px }
-      h3 { float:left;width:500px;font-size:20px;margin-top:20px }
-      h5 { float:left;width:500px;font-size:16px;margin-top:0px }
+      h3 { float:left;max-width:500px;font-size:20px;margin-top:20px }
+      h5 { float:left;max-width:500px;font-size:16px;margin-top:0px }
       header { float:right;width:80px;background:@lightblue;margin-right:40px;height:140px;text-align:center;padding:20px 10px }
     }
     a.workshop:hover {
@@ -215,6 +242,23 @@ section#tag {
       border-color:@palegray;
       header {
         background:@palegray;
+      }
+    }
+
+    @media screen and (max-width:1000px) {
+      width:640px;
+      a.workshop {
+        h3 { max-width:340px;font-size:20px;line-height:24px }
+        h5 { max-width:340px; }
+      }
+    }
+
+    @media screen and (max-width:640px) {
+      width:310px;
+      img { width:60px; }
+      a.workshop {
+        h3 { max-width:160px;font-size:14px;line-height:16px;margin:5px }
+        h5 { max-width:160px;font-size:12px;clear:left;display:none }
       }
     }
   }
