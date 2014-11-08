@@ -4,15 +4,26 @@ angular.module("APBookmarker", ['APSvcSession'])
 
   return {
     restrict: 'EA',
-    template: '<a href="#" class="bookmark" ng-click="bookmark(post._id)">bookmark</a>',
+    template:  require('./bookmarker.html'),
+    scope: {
+      objectId: '=objectId'
+    },
     link: function(scope, element, attrs) {
       scope.type = attrs.type
     },
     controller: ['$rootScope', '$scope', function($rootScope, $scope) {
-      // console.log('bookmarker loaded', $scope.post)
-      $scope.bookmark = function(objectId) {
-        var data = { type: $scope.type, objectId }
+
+      $scope.bookmarked = (objectId) => {
+        var booked = _.find($rootScope.session.bookmarks, (b) =>
+          b.objectId == objectId)
+        return booked ? 'bookmarked' : 'bookmark';
+      }
+
+
+      $scope.bookmark = function() {
+        var data = { type: $scope.type, objectId: $scope.objectId }
         var success = function(result) {
+          // console.log('bookmarked')
         }
         SessionService.updateBookmark(data, success, (e) => alert(e.message));
       }
@@ -20,6 +31,5 @@ angular.module("APBookmarker", ['APSvcSession'])
   };
 
 }])
-
 
 ;
