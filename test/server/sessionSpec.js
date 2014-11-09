@@ -37,7 +37,7 @@ module.exports = () => describe("API: ", function() {
             testDb.countSessionsInSessionStore( (e, count) => {
               if (e) return done(e)
               expect(count).to.equal(oldSessionCount)
-              done();
+              done()
             })
           })
         })
@@ -55,42 +55,43 @@ module.exports = () => describe("API: ", function() {
           testDb.sessionBySessionId(r.body.sessionID, (e, s) => {
             if (e) return done(e)
             expect(s.id).to.equal(r.body.sessionID)
-            done()
+            return done()
           })
         })
     }
 
-    it('Sessions are not saved for known bots', (done) => {
-      var assertions = 8
-      var doneDone = () => { assertions--; if (assertions == 0) return done() }
-      checkSessionIsNotAdded('Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)', doneDone)
-      checkSessionIsNotAdded('Mozilla/5.0 (compatible; GurujiBot/1.0; +http://www.guruji.com/en/WebmasterFAQ.html)', doneDone)
-      checkSessionIsNotAdded('Twitterbot', doneDone)
-      checkSessionIsNotAdded('Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)', doneDone)
-      checkSessionIsNotAdded('Mozilla/5.0 (compatible; Yahoo! Slurp; http://help.yahoo.com/help/us/ysearch/slurp)', doneDone)
-      checkSessionIsNotAdded('msnbot-media/1.1 (+http://search.msn.com/msnbot.htm)', doneDone)
-      checkSessionIsNotAdded('Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)', doneDone)
-      checkSessionIsNotAdded('facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)', doneDone)
+
+
+    it('Sessions are not saved for known bots', (d) => {
+      var done = createCountedDone(8, d)
+      checkSessionIsNotAdded('Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)', done)
+      checkSessionIsNotAdded('Mozilla/5.0 (compatible; GurujiBot/1.0; +http://www.guruji.com/en/WebmasterFAQ.html)', done)
+      checkSessionIsNotAdded('Twitterbot', done)
+      checkSessionIsNotAdded('Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)', done)
+      checkSessionIsNotAdded('Mozilla/5.0 (compatible; Yahoo! Slurp; http://help.yahoo.com/help/us/ysearch/slurp)', done)
+      checkSessionIsNotAdded('msnbot-media/1.1 (+http://search.msn.com/msnbot.htm)', done)
+      checkSessionIsNotAdded('Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)', done)
+      checkSessionIsNotAdded('facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)', done)
     })
 
-    it('Sessions are saved for some Firefox', (done) => {
+    it('Sessions are saved for firefox', (done) => {
       checkSessionIsAdded('Mozilla/5.0 (Windows NT 5.1; rv:31.0) Gecko/20100101 Firefox/31.0', done)
     })
 
-    it('Sessions are saved for Safari', (done) => {
+    it('Sessions are saved for chrome', (done) => {
       checkSessionIsAdded('Mozilla/5.0 (iPad; CPU OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5355d Safari/8536.25', done)
     })
 
-    it('Sessions are saved for Chrome', (done) => {
+    it('Sessions are saved for safari', (done) => {
       checkSessionIsAdded('Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2049.0 Safari/537.36', done)
     })
 
-    it('Views from bots are not saved', (done) => {
+    var checkViewIsNotSaved = (known_agent_string, done) => {
       testDb.countViews( (e, oldViewsCount) => {
         if (e) return done(e)
         http(global.app)
-          .get('/v1/api/session/full')
-          .set('user-agent', 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)')
+          .get('/v1/posts/starting-a-mean-stack-app')
+          .set('user-agent', known_agent_string)
           .expect(200)
           .end( (e,r) => {
             if (e) return done(e)
@@ -101,6 +102,47 @@ module.exports = () => describe("API: ", function() {
             })
           })
       })
+    }
+
+   var checkViewIsSaved = (known_agent_string, done) => {
+      testDb.countViews( (e, oldViewsCount) => {
+        http(global.app)
+          .get('/v1/posts/starting-a-mean-stack-app')
+          .set('user-agent', known_agent_string)
+          .expect(200)
+          .end( (e, r) => {
+            if (e) return done(e)
+            testDb.countViews( (e, count) => {
+              if (e) return done(e)
+              expect(count).to.equal(oldViewsCount+1)
+              done()
+            })
+          })
+      })
+    }
+
+    it('Views from bots are not saved', (d) => {
+      var done = createCountedDone(8, d)
+      checkViewIsNotSaved('Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)', done)
+      checkViewIsNotSaved('Mozilla/5.0 (compatible; GurujiBot/1.0; +http://www.guruji.com/en/WebmasterFAQ.html)', done)
+      checkViewIsNotSaved('Twitterbot', done)
+      checkViewIsNotSaved('Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)', done)
+      checkViewIsNotSaved('Mozilla/5.0 (compatible; Yahoo! Slurp; http://help.yahoo.com/help/us/ysearch/slurp)', done)
+      checkViewIsNotSaved('msnbot-media/1.1 (+http://search.msn.com/msnbot.htm)', done)
+      checkViewIsNotSaved('Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)', done)
+      checkViewIsNotSaved('facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)', done)
+    })
+
+    it('Views are saved for firefox', (done) => {
+      checkViewIsSaved('Mozilla/5.0 (Windows NT 5.1; rv:31.0) Gecko/20100101 Firefox/31.0', done)
+    })
+
+    it('Views are saved for chrome', (done) => {
+      checkViewIsSaved('Mozilla/5.0 (iPad; CPU OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5355d Safari/8536.25', done)
+    })
+
+    it('Views are saved for safari', (done) => {
+      checkViewIsSaved('Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2049.0 Safari/537.36', done)
     })
   })
 
