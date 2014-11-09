@@ -104,6 +104,19 @@ global.addAndLoginLocalUserWithPayMethod = function(originalUserKey, done)
 	})
 }
 
+global.createCountedDone = function(count, done)
+{
+    return (function(){
+      var the_count = count
+      return function() {
+        the_count--
+        if (the_count == 0) {
+          return done()
+        }
+      }
+    })()
+}
+
 function addUserWithRole(userKey, role, done)
 {
   stubAnalytics()
@@ -221,6 +234,10 @@ module.exports = {
     View.find({}, (e,r) => {
       return cb(e, r.length)
     })
+  },
+
+  viewsById: function(id, cb) {
+    View.find({_id:id}, cb)
   },
 
   viewsByUserId: function(userId, cb) {
