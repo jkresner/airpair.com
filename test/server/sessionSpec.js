@@ -44,23 +44,20 @@ module.exports = () => describe("API: ", function() {
       }
 
     var checkSessionIsAdded = (known_agent_string, done) => {
-      testDb.countSessionsInSessionStore( (e, oldSessionCount ) => {
-        if (e) return done(e)
-        http(global.app)
-          .get('/v1/api/session/full')
-          .set('user-agent', known_agent_string)
-          .expect(200)
-          .end( (e, r) => {
+      http(global.app)
+        .get('/v1/api/session/full')
+        .set('user-agent', known_agent_string)
+        .expect(200)
+        .end( (e, r) => {
+          if (e) return done(e)
+          expect(r.body.authenticated).to.be.false
+          expect(r.body.sessionID).to.exist
+          testDb.sessionBySessionId(r.body.sessionID, (e, s) => {
             if (e) return done(e)
-            expect(r.body.authenticated).to.be.false
-            expect(r.body.sessionID).to.exist
-            testDb.countSessionsInSessionStore( (e, count) => {
-              if (e) return done(e)
-              expect(count).to.equal(oldSessionCount+1)
-              done()
-            })
+            expect(s.id).to.equal(r.body.sessionID)
+            done()
           })
-      })
+        })
     }
 
     it('Sessions are not saved for known bots', (done) => {

@@ -205,9 +205,9 @@ module.exports = {
     })
   },
 
-  sessionBySessionId: (id, cb) => {
+  sessionBySessionId: function (id, cb) {
     Session.find({_id:id}, (e,r) => {
-      return cb(e,r)
+      return cb(e,r[0])
     })
   },
 

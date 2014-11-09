@@ -228,12 +228,10 @@ module.exports = -> describe "Signup: ", ->
           expect(r.message).to.include('Invalid email address')
           done()
 
-
-    it 'cannot change local password to an invalid password', (done) ->
+    it 'cannot change local password to an short password', (done) ->
       PUT "/users/me/password", {hash: "ABC", password:"abc"}, {status:403, unauthenticated: true}, (r) ->
         expect(r.message).to.include('Invalid password')
         done()
-
 
     it 'cannot change local password with any empty hash', (done) ->
       PUT "/users/me/password", {hash: "", password:"newpassword"}, {status:403, unauthenticated: true}, (r) ->
