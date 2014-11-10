@@ -17,7 +17,7 @@ global.chai     = require('chai')
 global.expect   = chai.expect
 
 describe 'Server: ', ->
-  @timeout(10000)
+
   before (done) ->
     global.logging = false
     global.app = require('../../index').run()
