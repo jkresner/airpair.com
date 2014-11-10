@@ -195,12 +195,13 @@
     margin:10px 0 8px 0;
     position:fixed;
     > div {
+      position:relative;
       background-color:@lightblue;
       border-radius:4px;
       height:95px;
     }
 
-    img { width:70px;
+    > div > img { width:70px;
       height:70px;
       border-radius:50%;
       display:inline-block;
@@ -237,7 +238,20 @@
       background-repeat:no-repeat;
     }
 
+    div.bookmark {
+      cursor:pointer;
+      text-align:right;
+      margin:-10px 0px 0px 0px;
+      width:98%
+    }
+
     a.bookmark {
+      width:auto;
+      height:auto;
+      cursor:pointer;
+      position:absolute;
+      bottom:0;
+      right:0;
       background-image:url('/v1/img/css/sidenav/bookmark.png');
     }
 
