@@ -1,5 +1,44 @@
 angular.module("APBookmarker", ['APSvcSession'])
 
+
+.directive('bookmarkerlist', ['SessionService', function(SessionService) {
+
+  return {
+    link: function(scope, element, attrs) {
+    },
+    controller: ['$rootScope', '$scope', function($rootScope, $scope) {
+
+      SessionService.onAuthenticated(function(session) {
+        _.each(session.bookmarks, function(bookmark) {
+          $(".bookmark"+bookmark.objectId).attr('src', "/v1/img/css/bookmarked.png")
+        })
+      });
+
+      window.toggleBookmark = function(e) {
+        var $elem = $(e)
+        var objectId = $elem.data('id')
+        var type = $elem.data('type')
+
+        var success = function(result) {
+          //-- Update the
+          if ($elem.attr('src') == "/v1/img/css/bookmarked.png")
+            $elem.attr('src', "/v1/img/css/bookmark.png")
+          else
+            $elem.attr('src', "/v1/img/css/bookmarked.png")
+
+        }
+        var error = function(result) {
+          console.log('bookmarked.error', result)
+        }
+        SessionService.updateBookmark({ type:type, objectId:objectId }, success, error);
+      }
+    }]
+  };
+
+}])
+
+
+
 .directive('bookmarker', ['SessionService', function(SessionService) {
 
   return {
@@ -14,8 +53,11 @@ angular.module("APBookmarker", ['APSvcSession'])
     },
     controller: ['$rootScope', '$scope', function($rootScope, $scope) {
       $scope.bookmarked = (objectId) => {
-        if (viewData.post) objectId = viewData.post._id
-        if (viewData.workshop) objectId = viewData.workshop._id
+        if (window.viewData)
+        {
+          if (viewData.post) objectId = viewData.post._id
+          if (viewData.workshop) objectId = viewData.workshop._id
+        }
 
         if (!$rootScope.session) return 'bookmark'
 

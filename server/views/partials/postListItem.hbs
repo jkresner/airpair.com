@@ -25,7 +25,8 @@
     </div>
   </a>
   <footer class="entry-footer">
-    <img class="bookmark" src="/v1/img/css/bookmark-add.png" />
-    {{!-- <img class="bookmark" src="/v1/img/css/bookmarked.png" /> --}}
+
+     <img class="bookmark bookmark{{_id}}" data-id="{{_id}}" data-type="post" src="/v1/img/css/bookmark.png" onclick="toggleBookmark(this)"  />
+
   </footer>
 </article>
