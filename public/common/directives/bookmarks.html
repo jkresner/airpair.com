@@ -8,8 +8,8 @@
   <ul class="bookmarks" sortable get='bookmarks' set='updateBookmarks'>
     <li ng-repeat="b in bookmarks() | orderBy:'sort'" ng-attr-data-id="{{b._id}}">
       <a href="{{b.url}}" target="_self">{{b.title}}</a>
-      <a class="remove" href="#" ng-click="deselectBookmark(b)">x</a>
-      <a class="order" href="#"></a>
+      <a class="remove" ng-click="deselectBookmark(b)">x</a>
+      <a class="order"></a>
     </li>
  </ul>
 </div>
