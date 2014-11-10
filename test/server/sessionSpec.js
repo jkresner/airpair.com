@@ -24,21 +24,18 @@ module.exports = () => describe("API: ", function() {
   describe("Bots:", (done) => {
 
     var checkSessionIsNotAdded = (known_agent_string, done) => {
-      testDb.countSessionsInSessionStore( (e, oldSessionCount) => {
-        if (e) return done(e)
-        http(global.app)
-          .get('/v1/api/session/full')
-          .set('user-agent', known_agent_string)
-          .expect(200)
-          .end( (e, r) => {
+      http(global.app)
+        .get('/v1/api/session/full')
+        .set('user-agent', known_agent_string)
+        .expect(200)
+        .end( (e, r) => {
+          if (e) return done(e)
+          expect(r.body.authenticated).to.be.false
+          expect(r.body.sessionID).to.not.exist
+          testDb.sessionBySessionId(r.body.sessionID, (e, s) => {
             if (e) return done(e)
-            expect(r.body.authenticated).to.be.false
-            expect(r.body.sessionID).to.not.exist
-            testDb.countSessionsInSessionStore( (e, count) => {
-              if (e) return done(e)
-              expect(count).to.equal(oldSessionCount)
-              done()
-            })
+            expect(s).to.be.empty
+            done()
           })
         })
       }
@@ -54,7 +51,8 @@ module.exports = () => describe("API: ", function() {
           expect(r.body.sessionID).to.exist
           testDb.sessionBySessionId(r.body.sessionID, (e, s) => {
             if (e) return done(e)
-            expect(s.id).to.equal(r.body.sessionID)
+            expect(s.length).to.be.greaterThan(0)
+            expect(s[0].id).to.equal(r.body.sessionID)
             return done()
           })
         })
