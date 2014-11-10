@@ -45,9 +45,10 @@ export function getTagPage(tag, cb) {
               url: '/angularjs/workshops/top-10-mistakes-angularjs-developers-make',
               title: 'The Top 10 Mistakes AngularJS Developers Make',
               speaker: { name: 'Mark Meyer', gravatar: '6c2f0695e0ca4445a223ce325c7fb970' }, //todo change to avatar
-              time: new Date(),
+              time: new Date(2014,10,13),
             },
             post: {
+              _id: "542c4b4f8e66ce0b00c885a4",
               by: { name: 'Todd Motto', avatar: '//0.gravatar.com/avatar/b56bb22b3a4b83c6b534b4c114671380', username: 'toddmotto' },
               url: '/angularjs/posts/angularjs-tutorial',
               title: 'AngularJS Tutorial: A Comprehensive 10,000 Word Guide',
