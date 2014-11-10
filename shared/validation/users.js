@@ -22,8 +22,8 @@ module.exports = {
 	{
 		if (!hash || hash.match(/\s/))
 			return "Invalid hash"
-		if (!password || !password.match(/.{5,10}/))
-			return "Invalid password (need min 5, max 10 chars)"
+		if (!password || !password.match(/.{5,40}/))
+			return "Invalid password (need min 5, max 40 chars)"
 		return ""
 	}
 }
