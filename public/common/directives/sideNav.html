@@ -40,7 +40,8 @@
 <section class="stack"> <label>Stack</label>
   <ul>
     <li ng-repeat="tag in session.tags | orderBy:'sort'">
-      <a href="/posts/tag/{{tag.slug}}">{{tag.name}}</a>
+      <a ng-if="tag.slug != 'angularjs'" href="/posts/tag/{{tag.slug}}">{{tag.name}}</a>
+      <a ng-if="tag.slug == 'angularjs'" href="/angularjs" target="_self">{{tag.name}}</a>
     </li>
   </ul>
   <a id="navStackToggle" track-click="SideNav" href="#" ng-click="openStack()" class="icon">

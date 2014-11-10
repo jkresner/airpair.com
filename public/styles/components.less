@@ -29,14 +29,38 @@
   }
 }
 
-.tileborder {
-  border:solid 1px @lightgray;
+.tile {
+  width:286px;
+  height:200px;
+  position:relative;
+  font-size:11px;
+  border:solid 2px @lightblue;
   border-radius:3px;
+  header { background-color:@lightblue }
+  h2 { font-size:13px;
+    font-weight:bold;
+    color:@gray;
+    line-height:18px;
+  }
+  img.bookmark {
+    padding:2px;
+    margin:2px;
+    color:black;
+    cursor:pointer;
+  }
+  footer {
+    text-align:right;
+    position:absolute;
+    bottom:0px;
+    right:0px;
+  }
+
+  &:hover {
+    border:solid 2px @bluegray!important;
+    header { background-color:@bluegray!important; }
+  }
 }
 
-.tileborderHover {
-  border:solid 1px @orange;
-}
 
 h1.entry-title {
   text-align:left;
@@ -115,6 +139,7 @@ input.form-control {
       border-radius: 4px;
       margin-right: 0.5rem;
       padding-bottom: 0.5rem;
+      cursor:pointer;
     }
   }
   ul.bookmarks li {
