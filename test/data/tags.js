@@ -197,5 +197,13 @@ module.exports = {
     "soId" : "android",
     "tokens" : "",
     "slug" : "android"
+  },
+  androidx86: {
+    "_id" : "5237566166a6f999a465f809",
+    "desc" : "Android-x86 is an open source project with the purpose of porting the Android system to x86 platforms. It is formerly known as &quot;patch hosting for android x86 support&quot;.",
+    "name" : "android-x86",
+    "short" : "android-x86",
+    "soId" : "android-x86",
+    "slug" : "android-x86"
   }
 }
