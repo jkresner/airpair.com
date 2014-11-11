@@ -72,9 +72,11 @@ module.exports = -> describe "API", ->
     opts = { unauthenticated: true }
     GET '/tags/search/android', opts, (s1) ->
       GET '/tags/search/droid', opts, (s2) ->
-        expect(s1[0].slug).to.equal('android')
-        expect(s2[0].slug).to.equal('android')
-        done()
+        GET '/tags/search/android x86', opts, (s3) ->
+          expect(s1[0].slug).to.equal('android')
+          expect(s2[0].slug).to.equal('android')
+          expect(s3[0].slug).to.equal('android-x86')
+          done()
 
   it 'Search tags for angularjs', (done) ->
     opts = { unauthenticated: true }
