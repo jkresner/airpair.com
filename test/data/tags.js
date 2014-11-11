@@ -187,5 +187,15 @@ module.exports = {
     "short" : "ruby-on-rails-3.2",
     "soId" : "ruby-on-rails-3.2",
     "slug" : "ruby-on-rails-3.2"
+  },
+  android: {
+    "_id" : "514825fa2a26ea0200000006",
+    "__v" : 0,
+    "desc" : "Android is Google&#39;s OS for digital devices[Phone,Tablet,Auto,TV,Watch]. Please use Android-specific tags such as [android-intent], not [intent]. For non-developer/programming questions, see http://android.stackexchange.com.",
+    "name" : "Android",
+    "short" : "android",
+    "soId" : "android",
+    "tokens" : "",
+    "slug" : "android"
   }
 }
