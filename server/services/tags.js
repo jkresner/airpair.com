@@ -33,7 +33,7 @@ function tokenize(term, wildcardStart, wildcardEnd) {
 export function search(searchTerm, cb) {
   var regex = new RegExp(tokenize(searchTerm, true, true), 'i');
 
-  var query = { name: regex };
+  var query = { $or: [{name: regex},{tokens: regex}] };
 	var opts = { fields: fields.search, limit: 10 }
 
 	svc.searchMany(query, opts, function(err, result) {

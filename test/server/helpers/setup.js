@@ -145,11 +145,10 @@ module.exports = {
   {
     Tag.findOne({slug:'angularjs'}, function(e,r) {
       if (!r) {
-      	var {angular,node,mongo,mean,rails} = data.tags
         var bulk = Tag.collection.initializeOrderedBulkOp()
-	    	for (var t of [angular,node,mongo,mean,rails]) { bulk.insert(t) }
-	    	bulk.execute(done)
-	    	cache.flush('tags')
+        for (var t in data.tags) { bulk.insert(data.tags[t]) }
+        bulk.execute(done)
+        cache.flush('tags')
       }
       else
         done()
