@@ -35,7 +35,7 @@ export default function(app, initSessionStore)
     app.use(bodyParser.urlencoded({extended: true}))
     app.use(cookieParser(config.session.secret))
 
-    app.use(botAwareSession(session(sessionOpts)))
+    app.use(session(sessionOpts))  //botAwareSession()
 
     app.use(passport.initialize())
     app.use(passport.session())
