@@ -34,7 +34,7 @@ export function search(searchTerm, cb) {
   var regex = new RegExp(tokenize(searchTerm, true, true), 'i');
 
   var query = { name: regex };
-	var opts = { fields: fields.search }
+	var opts = { fields: fields.search, limit: 10 }
 
 	svc.searchMany(query, opts, function(err, result) {
     if (err) {
