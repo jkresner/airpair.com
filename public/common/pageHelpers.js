@@ -130,3 +130,9 @@ window.pageHlpr.fixPostRail = function()
   $(window).scroll(fixRailElements);
   fixRailElements();
 }
+
+window.pageHlpr.animateSelectedBookmark = function(bookmarkElm, destinationElm) {
+  bookmarkElm.css({
+
+  });
+}

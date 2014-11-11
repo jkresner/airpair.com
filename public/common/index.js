@@ -16,7 +16,7 @@ require('./../workshops/module.js');
 require('./../billing/module.js');
 require('./../profile/module.js');
 
-angular.module("AP", ['ngRoute', 'APSideNav', 'APAuth', 'APPosts', 'APWorkshops', 'APProfile', 'APBilling'])
+angular.module("AP", ['ngRoute', 'ngAnimate', 'APSideNav', 'APAuth', 'APPosts', 'APWorkshops', 'APProfile', 'APBilling'])
 
   .config(['$locationProvider', '$routeProvider',
       function($locationProvider, $routeProvider) {

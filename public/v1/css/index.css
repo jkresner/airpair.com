@@ -132,12 +132,40 @@ section.comingsoon {
   width: 60%;
   margin-top: 10px;
 }
-.tileborder {
-  border: solid 1px #d3d3d3;
+.tile {
+  width: 286px;
+  height: 200px;
+  position: relative;
+  font-size: 11px;
+  border: solid 2px #dff2ef;
   border-radius: 3px;
 }
-.tileborderHover {
-  border: solid 1px #ce5424;
+.tile header {
+  background-color: #dff2ef;
+}
+.tile h2 {
+  font-size: 13px;
+  font-weight: bold;
+  color: #4d4e4e;
+  line-height: 18px;
+}
+.tile img.bookmark {
+  padding: 2px;
+  margin: 2px;
+  color: black;
+  cursor: pointer;
+}
+.tile footer {
+  text-align: right;
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+}
+.tile:hover {
+  border: solid 2px #c8d6d3 !important;
+}
+.tile:hover header {
+  background-color: #c8d6d3 !important;
 }
 h1.entry-title {
   text-align: left;
@@ -254,6 +282,7 @@ input.form-control {
   border-radius: 4px;
   margin-right: 0.5rem;
   padding-bottom: 0.5rem;
+  cursor: pointer;
 }
 .tag-input-group ul.bookmarks li,
 .bookmark-input-group ul.bookmarks li {
@@ -760,8 +789,39 @@ nav#chat.collapse {
   background: -ms-radial-gradient(left, #ffffff 0%, #dff2ef 100%, #ffffff 50%);
   background: radial-gradient(to right, #ffffff 0%, #dff2ef 100%, #ffffff 50%);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#ffffff', GradientType=1);
-  border: solid 1px #d3d3d3;
+  width: 286px;
+  height: 200px;
+  position: relative;
+  font-size: 11px;
+  border: solid 2px #dff2ef;
   border-radius: 3px;
+}
+.modal-body.profile section.avatar header {
+  background-color: #dff2ef;
+}
+.modal-body.profile section.avatar h2 {
+  font-size: 13px;
+  font-weight: bold;
+  color: #4d4e4e;
+  line-height: 18px;
+}
+.modal-body.profile section.avatar img.bookmark {
+  padding: 2px;
+  margin: 2px;
+  color: black;
+  cursor: pointer;
+}
+.modal-body.profile section.avatar footer {
+  text-align: right;
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+}
+.modal-body.profile section.avatar:hover {
+  border: solid 2px #c8d6d3 !important;
+}
+.modal-body.profile section.avatar:hover header {
+  background-color: #c8d6d3 !important;
 }
 .modal-body.profile section.avatar label {
   display: block;
@@ -918,7 +978,11 @@ section#workshops #index #featured {
 }
 section#workshops #index #next a.workshop,
 section#workshops #index #featured a.workshop {
-  border: solid 1px #d3d3d3;
+  width: 286px;
+  height: 200px;
+  position: relative;
+  font-size: 11px;
+  border: solid 2px #dff2ef;
   border-radius: 3px;
   color: #151821;
   display: inline-block;
@@ -936,6 +1000,39 @@ section#workshops #index #featured a.workshop {
   background: radial-gradient(to right, #ffffff 0%, #dff2ef 100%, #ffffff 50%);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#ffffff', GradientType=1);
   vertical-align: top;
+}
+section#workshops #index #next a.workshop header,
+section#workshops #index #featured a.workshop header {
+  background-color: #dff2ef;
+}
+section#workshops #index #next a.workshop h2,
+section#workshops #index #featured a.workshop h2 {
+  font-size: 13px;
+  font-weight: bold;
+  color: #4d4e4e;
+  line-height: 18px;
+}
+section#workshops #index #next a.workshop img.bookmark,
+section#workshops #index #featured a.workshop img.bookmark {
+  padding: 2px;
+  margin: 2px;
+  color: black;
+  cursor: pointer;
+}
+section#workshops #index #next a.workshop footer,
+section#workshops #index #featured a.workshop footer {
+  text-align: right;
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+}
+section#workshops #index #next a.workshop:hover,
+section#workshops #index #featured a.workshop:hover {
+  border: solid 2px #c8d6d3 !important;
+}
+section#workshops #index #next a.workshop:hover header,
+section#workshops #index #featured a.workshop:hover header {
+  background-color: #c8d6d3 !important;
 }
 section#workshops #index #next a.workshop time,
 section#workshops #index #featured a.workshop time {
@@ -972,7 +1069,6 @@ section#workshops #index #featured a.workshop figure {
 }
 section#workshops #index #next a.workshop:hover,
 section#workshops #index #featured a.workshop:hover {
-  border: solid 1px #ce5424;
   background: -moz-radial-gradient(left, #ffffff 0%, #dff2ef 0%, #ffffff 100%);
   background: -webkit-radial-gradient(left top, right top, color-stop(0%, #ffffff), color-stop(0%, #dff2ef), color-stop(100%, #ffffff));
   background: -webkit-radial-gradient(left, #ffffff 0%, #dff2ef 0%, #ffffff 100%);
@@ -1132,288 +1228,142 @@ section#workshops #show .action label {
     display: none;
   }
 }
-@media screen and (max-width: 640px) {
-  section#post .main-wrap,
-  section#post main {
-    width: 100%;
-    margin: auto;
-  }
-}
 .posts {
   margin-left: -5px;
   text-align: center;
-}
-.posts article {
-  background: -moz-radial-gradient(left, #ffffff 0%, #dff2ef 100%, #ffffff 50%);
-  background: radial-webkit-gradient(left top, right top, color-stop(0%, #ffffff), color-stop(10%, #dff2ef), color-stop(50%, #ffffff));
-  background: -webkit-radial-gradient(left, #ffffff 0%, #dff2ef 100%, #ffffff 50%);
-  background: -o-radial-gradient(left, #ffffff 0%, #dff2ef 100%, #ffffff 50%);
-  background: -ms-radial-gradient(left, #ffffff 0%, #dff2ef 100%, #ffffff 50%);
-  background: radial-gradient(to right, #ffffff 0%, #dff2ef 100%, #ffffff 50%);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#ffffff', GradientType=1);
-  border: solid 1px #d3d3d3;
-  border-radius: 3px;
-  text-align: left;
-  position: relative;
-  width: 286px;
-  height: 200px;
-  margin: 6px;
-  padding: 0px;
-  font-size: 12px;
-  line-height: 14px;
-  display: inline-block;
-}
-.posts article > a {
-  padding: 12px 12px 0px 12px;
-  display: block;
-}
-.posts article header {
-  min-height: 60px;
-  overflow: hidden;
-}
-.posts article h2 {
-  font-size: 14px;
-  font-weight: bold;
-  margin: 0px 0px 1px 0px;
-  line-height: 18px;
-  color: #4d4e4e;
-}
-.posts article .entry-meta {
-  color: #4d4e4e;
-  font-size: 11px;
-  max-height: 20px;
-  overflow: hidden;
-}
-.posts article footer {
-  position: absolute;
-  bottom: 10px;
-  font-size: 9px;
-  text-align: right;
-  width: 94%;
-  height: 30px;
-}
-.posts article footer .entry-meta {
-  float: right;
-}
-.posts article footer .entry-categories {
-  color: #4d4e4e;
-  width: 100%;
-}
-.posts article footer .entry-categories a {
-  display: inline-block;
-  margin-left: 5px;
-}
-.posts article p {
-  line-height: 16px;
-  margin: 0;
-  padding: 0;
-}
-.posts article .entry-content {
-  height: 80px;
-  overflow: hidden;
-  color: #4d4e4e;
-}
-.posts article .entry-author {
-  font-weight: bold;
-  color: #ce5424;
-}
-.posts article .entry-author-image {
-  width: 50px;
-  border-radius: 25px;
-  display: inline;
-  margin: 3px 10px 0 0;
-  border: solid 3px #c8d6d3;
-  webkit-filter: grayscale(100%);
-  -moz-filter: grayscale(100%);
-  filter: grayscale(100%);
-}
-.posts article a.bookmark {
-  background: #ce5424;
-  float: left;
-  padding: 2px 10px;
-  width: 30%;
-  color: white;
-  background-image: url('/v1/img/css/sidenav/bookmark.png');
-  font-weight: bold;
-  background-position: 10% center;
-  background-repeat: no-repeat;
-  border-top-right-radius: 4px;
-  border-bottom-right-radius: 4px;
-  background-size: 12px 12px;
-}
-.posts article:hover {
-  border: solid 1px #ce5424;
 }
 @media screen and (max-width: 640px) {
   .posts {
     margin: auto;
   }
 }
-section#posts section > h3 {
-  width: 100%;
-  margin-bottom: 10px;
-  font-size: 18px;
-}
-section#posts section > h3 span {
-  display: block;
-  float: right;
-}
-section#posts .myposts {
-  width: 640px;
-}
-section#posts .editOptions {
-  text-align: right;
-  float: right;
-  margin-right: 10px;
-  width: 200px;
-}
-section#posts .editOptions a.btn {
-  width: 200px;
-}
-section#posts #author {
-  padding-top: 10px;
-}
-section#posts .editor {
-  padding: 10px 16px 0px 16px;
-}
-section#posts .editor span {
-  font-weight: normal;
+.posts article {
+  width: 286px;
+  height: 200px;
   font-size: 11px;
-}
-section#posts .editor .meta {
-  display: none;
-  width: 100%;
-  float: right;
-}
-section#posts .editor .meta .dates .form-group {
-  float: left;
-  width: 60%;
-}
-section#posts .editor .meta .dates section {
-  margin: 0px 0px 2px 0px;
-  line-height: 10px;
-  float: right;
-  width: 32%;
-  font-size: 10px;
-}
-section#posts .editor .meta .dates section label {
-  font-size: 10px;
-  display: block;
-  margin-bottom: 5px;
-}
-section#posts .editor .meta .dates section span {
-  display: block;
-  margin-bottom: 6px;
-}
-section#posts .editor .md {
-  float: left;
-  width: 64%;
-  display: none;
-}
-section#posts .editor .md textarea {
-  padding: 4px;
-  height: 340px;
-  font-size: 14px;
-}
-section#posts .editor .md + .meta {
-  width: 34%;
-}
-section#posts .editor .form-actions {
-  height: 40px;
-  clear: both;
-  text-align: center;
-}
-section#posts .editor .form-actions .btn {
-  width: 19%;
-  margin: 0px 2px 8px 2px;
-  padding: 3px 0px;
-  display: none;
-}
-section#posts .editor .form-actions .btnPreview {
-  display: inline-block;
-}
-section#posts .editor .tag-input-group .nomobile {
-  display: none;
-}
-section#posts .editor .tag-input-group label {
-  display: none;
-}
-section#posts .editor .tag-input-group .drag {
-  display: none;
-}
-section#posts .editor .tag-input-group .selected {
-  display: block;
-  float: none;
-}
-section#posts .editor .tag-input-group .selected li {
-  display: inline;
-  background: none;
-  border: none;
-}
-section#posts .editor .tag-input-group .selected .remove {
-  float: none;
-  background: none;
-  color: red;
-  display: inline;
-  font-size: 12px;
-}
-section#posts .editor .tag-input-group .selected .order {
-  display: none;
-}
-section#posts .editor + hr {
-  margin: 4px 0 0 0;
-  border-color: #dff2ef;
-}
-section#posts .preview + hr {
-  margin: 0px 0px 4px 0px;
-  border-color: #dff2ef;
-}
-section#posts #tips {
-  display: none;
-}
-section#posts .edit #preview .preview {
-  width: 914px;
-  max-height: 300px;
-  overflow-y: scroll;
-  border-right: solid 1px #dff2ef;
-}
-section#posts .edit #tips {
-  display: block;
-  background-color: #dff2ef;
-  padding: 4px 6px;
-  font-size: 10px;
+  border: solid 2px #dff2ef;
+  border-radius: 3px;
+  text-align: left;
+  position: relative;
+  margin: 6px;
+  padding: 0px;
   line-height: 14px;
-  min-height: 80px;
-}
-section#posts .edit #tips ul {
-  padding: 4px 14px;
-}
-section#posts .edit .form-actions .btn,
-section#posts .publish .form-actions .btn {
   display: inline-block;
 }
-section#posts .edit .editor,
-section#posts .publish .editor {
+.posts article header {
   background-color: #dff2ef;
 }
-section#posts .edit .md,
-section#posts .publish .md {
+.posts article h2 {
+  font-size: 13px;
+  font-weight: bold;
+  color: #4d4e4e;
+  line-height: 18px;
+}
+.posts article img.bookmark {
+  padding: 2px;
+  margin: 2px;
+  color: black;
+  cursor: pointer;
+}
+.posts article footer {
+  text-align: right;
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+}
+.posts article:hover {
+  border: solid 2px #c8d6d3 !important;
+}
+.posts article:hover header {
+  background-color: #c8d6d3 !important;
+}
+.posts article > a {
+  padding: 0px 6px 0px 0px;
   display: block;
 }
-section#posts .edit .meta,
-section#posts .publish .meta {
-  display: block;
-}
-section#posts .edit .publishMeta input,
-section#posts .publish .publishMeta input {
-  font-size: 11px;
+.posts article header {
   padding: 4px;
-  height: 26px;
+  float: left;
+  width: 50%;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background-color: #dff2ef;
 }
-@media screen and (max-width: 640px) {
-  section#posts section#myposts {
-    display: none;
-  }
+.posts article header .entry-header-image {
+  max-width: 100%;
+}
+.posts article header p.entry-meta {
+  width: 100%;
+  line-height: 16px;
+  margin: 0;
+  padding: 0;
+  color: #4d4e4e;
+  font-size: 11px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+.posts article header .entry-categories {
+  color: #151821;
+  width: 100%;
+  font-size: 9px;
+}
+.posts article header .entry-categories em {
+  display: inline-block;
+  font-style: normal;
+}
+.posts article header .entry-categories a {
+  display: inline-block;
+  margin-left: 5px;
+}
+.posts article header .entry-author {
+  padding-top: 15px;
+  font-weight: bold;
+  color: #ce5424;
+  width: 100%;
+}
+.posts article header .entry-author-name {
+  display: inline-block;
+  width: 50%;
+}
+.posts article header .entry-author-image {
+  width: 50px;
+  border-radius: 25px;
+  display: inline;
+  margin: 0px 6px 0 1px;
+  border: solid 3px #c8d6d3;
+  webkit-filter: grayscale(100%);
+  -moz-filter: grayscale(100%);
+  filter: grayscale(100%);
+}
+.posts article header time {
+  display: block;
+  color: #4d4e4e;
+  font-weight: normal;
+}
+.posts article .entry-content {
+  text-align: left;
+  float: right;
+  width: 48%;
+  padding: 3px;
+  max-height: 143px;
+  overflow: hidden;
+}
+.posts article .entry-content h2 {
+  margin: 0px 0px 1px 0px;
+}
+.posts article .entry-content p {
+  color: #7e7f7f;
+}
+.posts article footer {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  font-size: 9px;
+  text-align: right;
+  width: 40%;
+  height: 40px;
 }
 .blogpost {
   clear: both;
@@ -1437,12 +1387,15 @@ section#posts .publish .publishMeta input {
   padding-left: 0px;
 }
 .blogpost h2 {
+  max-width: 640px;
   text-align: left;
   font-size: 28px;
-  margin-bottom: 5px;
+  margin: 40px 0 30px 0;
   padding-left: 0px;
+  line-height: 35px;
 }
 .blogpost h3 {
+  max-width: 640px;
   text-align: left;
 }
 .blogpost p {
@@ -1519,11 +1472,12 @@ section#posts .publish .publishMeta input {
   position: fixed;
 }
 .blogpost .railCTA > div {
+  position: relative;
   background-color: #dff2ef;
   border-radius: 4px;
   height: 95px;
 }
-.blogpost .railCTA img {
+.blogpost .railCTA > div > img {
   width: 70px;
   height: 70px;
   border-radius: 50%;
@@ -1557,7 +1511,19 @@ section#posts .publish .publishMeta input {
   background-position: 90% center;
   background-repeat: no-repeat;
 }
+.blogpost .railCTA div.bookmark {
+  cursor: pointer;
+  text-align: right;
+  margin: -10px 0px 0px 0px;
+  width: 98%;
+}
 .blogpost .railCTA a.bookmark {
+  width: auto;
+  height: auto;
+  cursor: pointer;
+  position: absolute;
+  bottom: 0;
+  right: 0;
   background-image: url('/v1/img/css/sidenav/bookmark.png');
 }
 .blogpost .railCTA a.bookmark:hover {
@@ -1787,8 +1753,171 @@ section#posts .publish .publishMeta input {
   padding-top: 8px;
   font-size: 18px;
 }
-a.bookmark {
+section#posts section > h3 {
+  width: 100%;
+  margin-bottom: 10px;
+  font-size: 18px;
+}
+section#posts section > h3 span {
+  display: block;
   float: right;
+}
+section#posts .myposts {
+  width: 640px;
+}
+section#posts .editOptions {
+  text-align: right;
+  float: right;
+  margin-right: 10px;
+  width: 200px;
+}
+section#posts .editOptions a.btn {
+  width: 200px;
+}
+section#posts #author {
+  padding-top: 10px;
+}
+section#posts .editor {
+  padding: 10px 16px 0px 16px;
+}
+section#posts .editor span {
+  font-weight: normal;
+  font-size: 11px;
+}
+section#posts .editor .meta {
+  display: none;
+  width: 100%;
+  float: right;
+}
+section#posts .editor .meta .dates .form-group {
+  float: left;
+  width: 60%;
+}
+section#posts .editor .meta .dates section {
+  margin: 0px 0px 2px 0px;
+  line-height: 10px;
+  float: right;
+  width: 32%;
+  font-size: 10px;
+}
+section#posts .editor .meta .dates section label {
+  font-size: 10px;
+  display: block;
+  margin-bottom: 5px;
+}
+section#posts .editor .meta .dates section span {
+  display: block;
+  margin-bottom: 6px;
+}
+section#posts .editor .md {
+  float: left;
+  width: 64%;
+  display: none;
+}
+section#posts .editor .md textarea {
+  padding: 4px;
+  height: 340px;
+  font-size: 14px;
+}
+section#posts .editor .md + .meta {
+  width: 34%;
+}
+section#posts .editor .form-actions {
+  height: 40px;
+  clear: both;
+  text-align: center;
+}
+section#posts .editor .form-actions .btn {
+  width: 19%;
+  margin: 0px 2px 8px 2px;
+  padding: 3px 0px;
+  display: none;
+}
+section#posts .editor .form-actions .btnPreview {
+  display: inline-block;
+}
+section#posts .editor .tag-input-group .nomobile {
+  display: none;
+}
+section#posts .editor .tag-input-group label {
+  display: none;
+}
+section#posts .editor .tag-input-group .drag {
+  display: none;
+}
+section#posts .editor .tag-input-group .selected {
+  display: block;
+  float: none;
+}
+section#posts .editor .tag-input-group .selected li {
+  display: inline;
+  background: none;
+  border: none;
+}
+section#posts .editor .tag-input-group .selected .remove {
+  float: none;
+  background: none;
+  color: red;
+  display: inline;
+  font-size: 12px;
+}
+section#posts .editor .tag-input-group .selected .order {
+  display: none;
+}
+section#posts .editor + hr {
+  margin: 4px 0 0 0;
+  border-color: #dff2ef;
+}
+section#posts .preview + hr {
+  margin: 0px 0px 4px 0px;
+  border-color: #dff2ef;
+}
+section#posts #tips {
+  display: none;
+}
+section#posts .edit #preview .preview {
+  width: 914px;
+  max-height: 300px;
+  overflow-y: scroll;
+  border-right: solid 1px #dff2ef;
+}
+section#posts .edit #tips {
+  display: block;
+  background-color: #dff2ef;
+  padding: 4px 6px;
+  font-size: 10px;
+  line-height: 14px;
+  min-height: 80px;
+}
+section#posts .edit #tips ul {
+  padding: 4px 14px;
+}
+section#posts .edit .form-actions .btn,
+section#posts .publish .form-actions .btn {
+  display: inline-block;
+}
+section#posts .edit .editor,
+section#posts .publish .editor {
+  background-color: #dff2ef;
+}
+section#posts .edit .md,
+section#posts .publish .md {
+  display: block;
+}
+section#posts .edit .meta,
+section#posts .publish .meta {
+  display: block;
+}
+section#posts .edit .publishMeta input,
+section#posts .publish .publishMeta input {
+  font-size: 11px;
+  padding: 4px;
+  height: 26px;
+}
+@media screen and (max-width: 640px) {
+  section#posts section#myposts {
+    display: none;
+  }
 }
 section#membership {
   text-align: center;
@@ -1872,51 +2001,142 @@ section#tag {
   color: #4D4D57;
 }
 section#tag .workshops article {
-  text-align: left;
-  border: solid 2px #dff2ef;
+  width: 286px;
   height: 200px;
+  position: relative;
+  font-size: 11px;
+  border: solid 2px #dff2ef;
+  border-radius: 3px;
+  text-align: left;
+}
+section#tag .workshops article header {
+  background-color: #dff2ef;
+}
+section#tag .workshops article h2 {
+  font-size: 13px;
+  font-weight: bold;
+  color: #4d4e4e;
+  line-height: 18px;
+}
+section#tag .workshops article img.bookmark {
+  padding: 2px;
+  margin: 2px;
+  color: black;
+  cursor: pointer;
+}
+section#tag .workshops article footer {
+  text-align: right;
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+}
+section#tag .workshops article:hover {
+  border: solid 2px #c8d6d3 !important;
+}
+section#tag .workshops article:hover header {
+  background-color: #c8d6d3 !important;
 }
 section#tag .workshops article a > div {
   padding: 10px;
 }
-section#tag .workshops article time {
-  padding: 120px 10px 10px 10px;
+section#tag .workshops article a > div img {
+  border-radius: 50%;
+}
+section#tag .workshops article header {
+  padding: 60px 10px 10px 10px;
   vertical-align: bottom;
   float: right;
   width: 80px;
-  height: 196px;
+  height: 126px;
   background: #dff2ef;
 }
 section#tag .workshops article .entry-title {
-  color: #4d4e4e;
-  font-size: 14px;
-  font-weight: bold;
-  line-height: 18px;
   margin: 0 0 1px;
 }
-section#tag .workshops article img {
-  border-radius: 50%;
+section#tag .workshops article footer {
+  width: 80px;
+  background: white;
+  height: 50px;
+  padding: 10px 2px 6px 2px;
+}
+section#tag .more {
+  border-color: #eeeeee;
+}
+section#tag .more header {
+  background: #eeeeee;
 }
 section#tag .pairing article {
+  width: 286px;
+  height: 200px;
+  position: relative;
+  font-size: 11px;
+  border-radius: 3px;
   text-align: left;
   border: solid 2px #dff2ef;
-  height: 200px;
-  width: 290px;
   display: inline-block;
   margin-bottom: 20px;
+}
+section#tag .pairing article header {
+  background-color: #dff2ef;
+}
+section#tag .pairing article h2 {
+  font-size: 13px;
+  font-weight: bold;
+  color: #4d4e4e;
+  line-height: 18px;
+}
+section#tag .pairing article img.bookmark {
+  padding: 2px;
+  margin: 2px;
+  color: black;
+  cursor: pointer;
+}
+section#tag .pairing article footer {
+  text-align: right;
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+}
+section#tag .pairing article:hover {
+  border: solid 2px #c8d6d3 !important;
+}
+section#tag .pairing article:hover header {
+  background-color: #c8d6d3 !important;
 }
 section#tag .pairing article a > div {
   padding: 10px;
 }
 section#tag .pairing article header {
+  position: absolute;
+  width: 100%;
   background: #dff2ef;
   height: 70px;
   display: block;
 }
+section#tag .pairing article header img {
+  border-radius: 50%;
+  margin: 20px 10px 0px 20px;
+}
+section#tag .pairing article header .entry-meta {
+  text-align: right;
+  margin-right: 10px;
+}
 section#tag .pairing article .entry-content {
-  margin-top: 60px;
+  position: absolute;
+  top: 70px;
+  margin-top: 0px;
   display: block;
   padding-left: 30px;
+  height: 86px;
+}
+section#tag .pairing article .entry-content h2 {
+  margin-left: 100px;
+}
+section#tag .pairing article .entry-content label {
+  margin-left: 100px;
+}
+section#tag .pairing article .entry-content label {
+  font-size: 14px;
 }
 section#tag .pairing article .entry-title {
   color: #4d4e4e;
@@ -1925,9 +2145,8 @@ section#tag .pairing article .entry-title {
   line-height: 18px;
   margin: 0 0 1px;
 }
-section#tag .pairing article img {
-  border-radius: 50%;
-  margin: 20px 20px 0px 20px;
+section#tag .pairing article footer {
+  height: 40px;
 }
 section#tag section.header {
   padding: 20px 0;
@@ -1957,13 +2176,13 @@ section#tag section.header .share {
 section#tag section.featured {
   padding-top: 20px;
   margin: auto;
-  width: 900px;
-}
-section#tag section.featured .btn {
-  width: 100%;
+  max-width: 900px;
 }
 section#tag section.featured hr {
   border-top: dashed 1px #ce5424;
+}
+section#tag section.featured .btn {
+  width: 100%;
 }
 section#tag section.featured .row {
   margin-top: -40px;
@@ -1977,15 +2196,36 @@ section#tag section.featured hr.vr {
 }
 section#tag section.featured .col-md-4 {
   padding: 0 10px;
+  margin-bottom: 20px;
 }
 section#tag section.featured .col-md-4 > article {
   margin: 0;
   padding: 0;
 }
+@media screen and (max-width: 1000px) {
+  section#tag section.featured .btn {
+    width: 60%;
+  }
+  section#tag section.featured .col-md-4 > article {
+    margin: 0 auto 20px auto;
+  }
+}
+section#tag .sectionDashed {
+  margin-top: 40px;
+  padding-bottom: 40px;
+  border-top: dashed 1px #ce5424;
+}
+section#tag .sectionDashed > h2 {
+  font-size: 26px;
+  margin: -40px auto 30px auto;
+  padding: 0 20px 0 20px;
+  background: white;
+  display: inline-block;
+}
 section#tag section.about {
   margin: auto;
-  width: 900px;
-  padding: 20px 0;
+  max-width: 880px;
+  padding: 0px 0;
 }
 section#tag section.about h2 {
   font-size: 20px;
@@ -2000,7 +2240,7 @@ section#tag section.about blockquote {
 }
 section#tag section.about blockquote p {
   float: left;
-  width: 520px;
+  max-width: 70%;
   padding: 10px;
 }
 section#tag section.about blockquote cite {
@@ -2015,17 +2255,21 @@ section#tag section.about blockquote img {
   width: 160px;
   border-radius: 50%;
 }
-section#tag .sectionDashed {
-  margin-top: 40px;
-  padding-bottom: 40px;
-  border-top: dashed 1px #ce5424;
+@media screen and (max-width: 1000px) {
+  section#tag section.about blockquote cite {
+    font-size: 11px;
+  }
 }
-section#tag .sectionDashed > h2 {
-  font-size: 26px;
-  margin: -40px auto 30px auto;
-  padding: 0 20px 0 20px;
-  background: white;
-  display: inline-block;
+@media screen and (max-width: 640px) {
+  section#tag section.about blockquote {
+    height: 260px;
+    padding: 5px 10px;
+    font-size: 13px;
+  }
+  section#tag section.about blockquote img {
+    width: 60px;
+    margin-top: 15px;
+  }
 }
 section#tag section.workshops {
   margin-top: 40px;
@@ -2040,12 +2284,46 @@ section#tag section.workshops > h2 {
   display: inline-block;
 }
 section#tag section.workshops a.workshop {
+  width: 286px;
+  height: 200px;
+  position: relative;
+  font-size: 11px;
+  border: solid 2px #dff2ef;
+  border-radius: 3px;
+  width: 100%;
+  height: 143px;
   display: block;
   text-align: left;
-  border: solid 2px #dff2ef;
   border-radius: 4px;
   color: #4d4e4e;
   margin-bottom: 20px;
+}
+section#tag section.workshops a.workshop header {
+  background-color: #dff2ef;
+}
+section#tag section.workshops a.workshop h2 {
+  font-size: 13px;
+  font-weight: bold;
+  color: #4d4e4e;
+  line-height: 18px;
+}
+section#tag section.workshops a.workshop img.bookmark {
+  padding: 2px;
+  margin: 2px;
+  color: black;
+  cursor: pointer;
+}
+section#tag section.workshops a.workshop footer {
+  text-align: right;
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+}
+section#tag section.workshops a.workshop:hover {
+  border: solid 2px #c8d6d3 !important;
+}
+section#tag section.workshops a.workshop:hover header {
+  background-color: #c8d6d3 !important;
 }
 section#tag section.workshops a.workshop hr {
   clear: both;
@@ -2059,17 +2337,17 @@ section#tag section.workshops a.workshop img {
 }
 section#tag section.workshops a.workshop h3 {
   float: left;
-  width: 500px;
+  max-width: 500px;
   font-size: 20px;
   margin-top: 20px;
 }
 section#tag section.workshops a.workshop h5 {
   float: left;
-  width: 500px;
+  max-width: 500px;
   font-size: 16px;
   margin-top: 0px;
 }
-section#tag section.workshops a.workshop time {
+section#tag section.workshops a.workshop header {
   float: right;
   width: 80px;
   background: #dff2ef;
@@ -2079,11 +2357,45 @@ section#tag section.workshops a.workshop time {
   padding: 20px 10px;
 }
 section#tag section.workshops a.workshop:hover {
-  border: solid 2px #c8d6d3;
   color: #ce5424;
 }
-section#tag section.workshops a.workshop:hover time {
-  background: #c8d6d3;
+section#tag section.workshops a.workshop.more {
+  border-color: #eeeeee;
+}
+section#tag section.workshops a.workshop.more header {
+  background: #eeeeee;
+}
+@media screen and (max-width: 1000px) {
+  section#tag section.workshops {
+    width: 640px;
+  }
+  section#tag section.workshops a.workshop h3 {
+    max-width: 340px;
+    font-size: 20px;
+    line-height: 24px;
+  }
+  section#tag section.workshops a.workshop h5 {
+    max-width: 340px;
+  }
+}
+@media screen and (max-width: 640px) {
+  section#tag section.workshops {
+    width: 310px;
+  }
+  section#tag section.workshops img {
+    width: 60px;
+  }
+  section#tag section.workshops a.workshop h3 {
+    max-width: 160px;
+    font-size: 14px;
+    line-height: 16px;
+    margin: 5px;
+  }
+  section#tag section.workshops a.workshop h5 {
+    max-width: 160px;
+    font-size: 12px;
+    display: none;
+  }
 }
 section#tag section.posts {
   margin-top: 40px;
@@ -2111,6 +2423,12 @@ section#tag section.pairing > h2 {
 }
 section#tag section.pairing hr {
   border: none;
+}
+section#tag section.pairing .more {
+  border-color: #eeeeee;
+}
+section#tag section.pairing .more header {
+  background: #eeeeee;
 }
 section#index .screenshot {
   width: 59%;
@@ -2204,4 +2522,7 @@ section#auth p.help-text {
   section#auth p.help-text {
     display: none;
   }
+}
+.bookmark-animation.ng-leave {
+  transition: 1s linear all;
 }

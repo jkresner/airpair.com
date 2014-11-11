@@ -1,4 +1,4 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"./public/common/lite.js":[function(require,module,exports){
 "use strict";
 require('./../common/directives/share.js');
 require('./../common/directives/tagInput.js');
@@ -27,10 +27,10 @@ angular.module("AP", ['ngRoute', 'APFilters', 'APAnalytics', 'APSideNav', 'APBoo
 //# sourceMappingURL=<compileOutput>
 
 
-},{"./../auth/module.js":3,"./../common/directives/analytics.js":5,"./../common/directives/bookmarker.js":6,"./../common/directives/forms.js":8,"./../common/directives/share.js":11,"./../common/directives/sideNav.js":13,"./../common/directives/tagInput.js":16,"./../common/filters/filters.js":17,"./../common/models/postsService.js":18,"./../common/models/sessionService.js":19,"./../common/pageHelpers.js":20}],2:[function(require,module,exports){
+},{"./../auth/module.js":"/Users/matias/Sites/airpair.com/public/auth/module.js","./../common/directives/analytics.js":"/Users/matias/Sites/airpair.com/public/common/directives/analytics.js","./../common/directives/bookmarker.js":"/Users/matias/Sites/airpair.com/public/common/directives/bookmarker.js","./../common/directives/forms.js":"/Users/matias/Sites/airpair.com/public/common/directives/forms.js","./../common/directives/share.js":"/Users/matias/Sites/airpair.com/public/common/directives/share.js","./../common/directives/sideNav.js":"/Users/matias/Sites/airpair.com/public/common/directives/sideNav.js","./../common/directives/tagInput.js":"/Users/matias/Sites/airpair.com/public/common/directives/tagInput.js","./../common/filters/filters.js":"/Users/matias/Sites/airpair.com/public/common/filters/filters.js","./../common/models/postsService.js":"/Users/matias/Sites/airpair.com/public/common/models/postsService.js","./../common/models/sessionService.js":"/Users/matias/Sites/airpair.com/public/common/models/sessionService.js","./../common/pageHelpers.js":"/Users/matias/Sites/airpair.com/public/common/pageHelpers.js"}],"/Users/matias/Sites/airpair.com/public/auth/login.html":[function(require,module,exports){
 module.exports = "<header>Login</header>\n<section id=\"auth\" ng-controller=\"LoginCtrl as LoginCtrl\">\n\n<h3>Welcome back.</h3>\n\n<p ng-if=\"session._id\"><br /><br />You are logged in as {{ session.email }}. <br /><br />Want to <a href=\"/v1/auth/logout\">Logout</a>?</p>\n\n\n<div class=\"choice\" ng-if=\"!session._id\">\n<div class=\"google option\">\n\n  <h2>One-click login</h2>\n  <p>\n    <a class=\"btn btn-error\" href=\"/v1/auth/google\" target=\"_self\">Login with google</a>\n  </p>\n  <p style=\"font-size:12px;margin:20px 0 0 0\">\n\n  * You will be temporarily redirected to a google login page</p>\n\n</div>\n\n<div class=\"local option\">\n\n  <h2>Password login</h2>\n\n  <form novalidate name=\"loginForm\" ng-submit=\"LoginCtrl.submit(loginForm.$valid, data)\">\n    <div form-group>\n      <label class=\"control-label sr-only\" for=\"loginEmail\">Email</label>\n      <input id=\"loginEmail\" form-control type=\"email\" placeholder=\"Email\" name=\"email\" ng-model=\"data.email\" required>\n      <div class=\"error\" ng-if=\"formGroup.showError(loginForm.email)\" ng-messages=\"loginForm.email.$error\">\n        <div ng-message=\"required\">Field required</div>\n        <div ng-message=\"email\">Invalid email</div>\n      </div>\n    </div>\n    <div form-group>\n      <label class=\"control-label sr-only\" for=\"loginPassword\">Password</label>\n      <input id=\"loginPassword\" form-control type=\"password\" placeholder=\"Password\" name=\"password\" ng-model=\"data.password\" required>\n      <div class=\"error\" ng-if=\"formGroup.showError(loginForm.password)\" ng-messages=\"loginForm.password.$error\">\n        <div ng-message=\"required\">Password required</div>\n      </div>\n    </div>\n\n    <button type=\"submit\" class=\"btn btn-warning btn-lg\">Login</button>\n\n    <div class=\"error\" ng-if=\"loginFail\">\n      <b>Login failed:</b> <span ng-if=\"loginFail\">{{loginFail.message}}</span>\n    </div>\n  </form>\n\n\n  <p>New? <a href=\"#\" ng-click=\"openProfile()\">Create an account</a>.</p>\n\n</div>\n</div>\n\n</section>\n";
 
-},{}],3:[function(require,module,exports){
+},{}],"/Users/matias/Sites/airpair.com/public/auth/module.js":[function(require,module,exports){
 "use strict";
 var resolver = require('./../common/routes/helpers.js');
 angular.module("APAuth", ['ngRoute', 'ngMessages', 'APFormsDirectives', 'APFilters', 'APSvcSession', 'APAnalytics']).config(['$locationProvider', '$routeProvider', function($locationProvider, $routeProvider) {
@@ -67,10 +67,10 @@ angular.module("APAuth", ['ngRoute', 'ngMessages', 'APFormsDirectives', 'APFilte
 //# sourceMappingURL=<compileOutput>
 
 
-},{"./../common/routes/helpers.js":21,"./login.html":2,"./signup.html":4}],4:[function(require,module,exports){
+},{"./../common/routes/helpers.js":"/Users/matias/Sites/airpair.com/public/common/routes/helpers.js","./login.html":"/Users/matias/Sites/airpair.com/public/auth/login.html","./signup.html":"/Users/matias/Sites/airpair.com/public/auth/signup.html"}],"/Users/matias/Sites/airpair.com/public/auth/signup.html":[function(require,module,exports){
 module.exports = "<header>Sign up</header>\n<section id=\"auth\">\n\n  <div class=\"choice\">\n  <div class=\"signup option\">\n\n    <h2>Signup</h2>\n\n    <form novalidate ng-submit=\"SignupCtrl.submit(signupForm.$valid, data)\" name=\"signupForm\" ng-controller=\"SignupCtrl as SignupCtrl\">\n      <div class=\"form-group\">\n        <label>Full name</label>\n        <input type=\"name\" placeholder=\"Full name\" class=\"form-control\" name=\"name\" ng-model=\"data.name\" required >\n        <div class=\"error\" ng-if=\"signupForm.$submitted || signupForm.email.$touched\">\n          <div ng-if=\"signupForm.email.$error.required\">Full name required</div>\n        </div>\n      </div>\n      <div class=\"form-group\">\n        <label>Email</label>\n        <input type=\"email\" placeholder=\"Email\" class=\"form-control\" name=\"email\" ng-model=\"data.email\" required >\n        <div class=\"error\" ng-if=\"signupForm.$submitted || signupForm.email.$touched\">\n          <div ng-if=\"signupForm.email.$error.required\">Email required</div>\n          <div ng-if=\"signupForm.email.$error.email\">Invalid email</div>\n        </div>\n      </div>\n      <div class=\"form-group\">\n        <label>Password</label>\n        <input type=\"password\" placeholder=\"Password\" class=\"form-control\" name=\"password\" ng-model=\"data.password\" required>\n        <div class=\"error\" ng-if=\"signupForm.$submitted || signupForm.password.$touched\">\n          <div ng-if=\"signupForm.password.$error.required\">Password required</div>\n        </div>\n      </div>\n\n      <button type=\"submit\" class=\"btn btn-warning btn-lg\">Sign up</button>\n\n      <div class=\"error\" ng-if=\"signupFail\">\n        <b>Sign up failed:</b> <span ng-if=\"signupFail\">{{signupFail}}</span>\n      </div>\n    </form>\n\n  </div>\n  </div>\n\n  <h3>Already have an account?</h3>\n\n  <p><a href=\"/v1/auth/login\"><b>Login</b></a> with Google or an email and password</a>.</p>\n\n</section>\n";
 
-},{}],5:[function(require,module,exports){
+},{}],"/Users/matias/Sites/airpair.com/public/common/directives/analytics.js":[function(require,module,exports){
 "use strict";
 angular.module("APAnalytics", []).directive('trackClick', ['$location', '$timeout', '$parse', function($location, $timeout, $parse) {
   return {
@@ -111,38 +111,131 @@ angular.module("APAnalytics", []).directive('trackClick', ['$location', '$timeou
 //# sourceMappingURL=<compileOutput>
 
 
-},{}],6:[function(require,module,exports){
+},{}],"/Users/matias/Sites/airpair.com/public/common/directives/bookmarker.html":[function(require,module,exports){
+module.exports = "<a href=\"\" ng-click=\"bookmarker.toggle(objectId, type)\">\n  <img ng-hide=\"bookmarker.exists(objectId)\" class=\"bookmark\" ng-src=\"/v1/img/css/bookmark.png\" />\n  <img ng-show=\"bookmarker.exists(objectId)\" class=\"bookmark\" ng-src=\"/v1/img/css/bookmarked.png\" />\n</a>\n";
+
+},{}],"/Users/matias/Sites/airpair.com/public/common/directives/bookmarker.js":[function(require,module,exports){
 "use strict";
-angular.module("APBookmarker", ['APSvcSession']).directive('bookmarker', ['SessionService', function(SessionService) {
+angular.module("APBookmarker", ['APSvcSession']).directive('bookmarkerlist', ['SessionService', function(SessionService) {
   return {
-    restrict: 'EA',
-    template: '<a href="#" class="bookmark" ng-click="bookmark(post._id)">bookmark</a>',
-    link: function(scope, element, attrs) {
-      scope.type = attrs.type;
-    },
+    link: function(scope, element, attrs) {},
     controller: ['$rootScope', '$scope', function($rootScope, $scope) {
-      $scope.bookmark = function(objectId) {
-        var data = {
-          type: $scope.type,
-          objectId: objectId
+      SessionService.onAuthenticated(function(session) {
+        _.each(session.bookmarks, function(bookmark) {
+          $(".bookmark" + bookmark.objectId).attr('src', "/v1/img/css/bookmarked.png");
+        });
+      });
+      alert('asd');
+      window.toggleBookmark = function(e) {
+        var $elem = $(e);
+        var objectId = $elem.data('id');
+        var type = $elem.data('type');
+        var success = function(result) {
+          if ($elem.attr('src') == "/v1/img/css/bookmarked.png")
+            $elem.attr('src', "/v1/img/css/bookmark.png");
+          else
+            $elem.attr('src', "/v1/img/css/bookmarked.png");
         };
-        var success = function(result) {};
-        SessionService.updateBookmark(data, success, (function(e) {
-          return alert(e.message);
-        }));
+        var error = function(result) {
+          console.log('bookmarked.error', result);
+        };
+        SessionService.updateBookmark({
+          type: type,
+          objectId: objectId
+        }, success, error);
       };
     }]
   };
+}]).factory('BookmarkerService', ['SessionService', '$rootScope', function(SessionService, $rootScope) {
+  var bookmarkLookup = {};
+  var bookmarksChanged = false;
+  function populateBookmarkLookup() {
+    bookmarkLookup = {};
+    bookmarksChanged = false;
+    var bookmarks = $rootScope.session ? $rootScope.session.bookmarks : [];
+    _.each(bookmarks, function(b) {
+      bookmarkLookup[b.objectId] = true;
+    });
+  }
+  function lookup(objectId) {
+    if (bookmarksChanged)
+      populateBookmarkLookup();
+    return bookmarkLookup[objectId];
+  }
+  SessionService.onAuthenticated(function() {
+    bookmarksChanged = true;
+  });
+  var self;
+  return self = {
+    exists: lookup,
+    toggle: function(objectId, type, success, error) {
+      SessionService.updateBookmark({
+        objectId: objectId,
+        type: type
+      }, function(response) {
+        bookmarksChanged = true;
+        success(lookup(objectId));
+      }, error);
+    }
+  };
+}]).directive('bookmarker', ['BookmarkerService', 'SessionService', '$document', '$animate', function(BookmarkerService, SessionService, $document, $animate) {
+  return {
+    restrict: 'EA',
+    template: require('./bookmarker.html'),
+    require: 'bookmarker',
+    controllerAs: 'bookmarker',
+    controller: ['$scope', '$attrs', function($scope, $attrs) {
+      $scope.type = $scope.$eval($attrs.type);
+      $scope.objectId = $scope.$eval($attrs.objectId);
+      var authenticated = false;
+      SessionService.onAuthenticated(function(e) {
+        authenticated = e && e._id && e._id.length;
+      });
+      var ctrl = this;
+      ctrl.exists = function(objectId) {
+        return BookmarkerService.exists(objectId);
+      };
+      ctrl.toggle = function(objectId, type) {
+        if (!authenticated)
+          return;
+        BookmarkerService.toggle(objectId, type, function(status) {
+          $scope.$evalAsync(status ? ctrl.onActive : ctrl.onInactive);
+        });
+      };
+    }],
+    link: function(scope, element, attrs, bookmarker) {
+      var body = angular.element($document[0].body);
+      bookmarker.onActive = function() {
+        var clone = angular.element(element[0].cloneNode(true));
+        body.append(clone);
+        var start = element.offset();
+        var destination = $('#navBookmarksToggle');
+        var end = destination.offset();
+        clone.addClass('bookmark-animation');
+        $animate.leave(clone, {
+          from: {
+            position: 'absolute',
+            left: start.left,
+            top: start.top
+          },
+          to: {
+            left: end.left,
+            top: end.top
+          }
+        });
+      };
+      bookmarker.onInactive = function() {};
+    }
+  };
 }]);
-;
 
 //# sourceMappingURL=<compileOutput>
 
 
-},{}],7:[function(require,module,exports){
-module.exports = "<div class=\"modal-header\">\n  <h3 class=\"modal-title\">Bookmark AirPair Content</h3>\n</div>\n<div class=\"modal-body bookmarks bookmark-input-group\">\n\n  <p>Collect your favorite <a href=\"/posts\">posts</a>, <a href=\"/workshops\">workshops</a> and experts.</p>\n\n  <ul class=\"bookmarks\" sortable sort='bookmarks' service='bookmarks'>\n    <li ng-repeat=\"b in session.bookmarks | orderBy:'sort'\" ng-attr-data-id=\"{{b._id}}\">\n      <a href=\"{{b.url}}\" target=\"_self\">{{b.title}}</a>\n      <a class=\"remove\" href=\"#\" ng-click=\"deselectBookmark(b)\">x</a>\n      <a class=\"order\" href=\"#\"></a>\n    </li>\n </ul>\n</div>\n<div class=\"modal-footer\">\n  <button class=\"btn btn-primary\" ng-click=\"ok()\">Done</button>\n  <button class=\"btn btn-warning\" ng-click=\"cancel()\">Cancel</button>\n</div>\n";
+},{"./bookmarker.html":"/Users/matias/Sites/airpair.com/public/common/directives/bookmarker.html"}],"/Users/matias/Sites/airpair.com/public/common/directives/bookmarks.html":[function(require,module,exports){
+module.exports = "<div class=\"modal-header\">\n  <h3 class=\"modal-title\">Bookmark AirPair Content</h3>\n</div>\n<div class=\"modal-body bookmarks bookmark-input-group\">\n\n  <p>Collect your favorite <a href=\"/posts\">posts</a>, <a href=\"/workshops\">workshops</a> and experts.</p>\n\n  <ul class=\"bookmarks\" sortable get='bookmarks' set='updateBookmarks'>\n    <li ng-repeat=\"b in bookmarks() | orderBy:'sort'\" ng-attr-data-id=\"{{b._id}}\">\n      <a href=\"{{b.url}}\" target=\"_self\">{{b.title}}</a>\n      <a class=\"remove\" ng-click=\"deselectBookmark(b)\">x</a>\n      <a class=\"order\"></a>\n    </li>\n </ul>\n</div>\n<div class=\"modal-footer\">\n  <button class=\"btn btn-primary\" ng-click=\"ok()\">Done</button>\n  <button class=\"btn btn-warning\" ng-click=\"cancel()\">Cancel</button>\n</div>\n";
 
-},{}],8:[function(require,module,exports){
+},{}],"/Users/matias/Sites/airpair.com/public/common/directives/forms.js":[function(require,module,exports){
 "use strict";
 angular.module("APFormsDirectives", []).directive('formGroup', [function() {
   return {
@@ -183,13 +276,13 @@ angular.module("APFormsDirectives", []).directive('formGroup', [function() {
 //# sourceMappingURL=<compileOutput>
 
 
-},{}],9:[function(require,module,exports){
+},{}],"/Users/matias/Sites/airpair.com/public/common/directives/profile.html":[function(require,module,exports){
 module.exports = "<div class=\"modal-header\">\n  <h3 class=\"modal-title\">Account info</h3>\n  <a href=\"#\" class=\"close\" ng-click=\"cancel()\">x</a>\n</div>\n\n<div ng-if=\"session._id\" class=\"success\">\n  <div class=\"modal-body profile\">\n    <h2>Account successfully created.</h2>\n  </div>\n\n  <div class=\"modal-footer profile\">\n    <button ng-click=\"cancel()\" class=\"btn btn-primary\">Continue</button>\n  </div>\n</div>\n\n\n<form ng-if=\"!session._id\" id=\"profileForm\" novalidate name=\"profileForm\" ng-submit=\"submit(profileForm.$valid, data)\">\n\n  <div class=\"modal-body profile\">\n\n  <section>\n    <section style=\"height:40px\">\n     <p ng-if=\"!session.email\"><i>{{ avatarQuestion }}</i> <span ng-if=\"!session.email\">Enter your email address to fix your avatar.</span></p>\n     <p ng-if=\"session.email\">Save your name and password to get $10 credit.</p>\n\n    </section>\n\n    <section class=\"avatar\">\n      <img class=\"avatar\" ng-src=\"{{session.avatar}}?s=230\" title=\"Avatars are gravtars generated from your email.\" />\n      <p style=\"font-size:12px\">\n        <span ng-if=\"session.email\">Update the <b><a href=\"http://www.gravatar.com/\" target=\"_blank\">gravatar</a></b> for <br />{{ session.email }}</span>\n        <span ng-if=\"!session.email\">Enter an email address</span>\n        <br /> to change your profile pic.\n      </p>\n      <!-- <hr />\n      <label>Account Credit</label> <b style=\"font-size:26px;color:black\">$10</b> <br />available when you sign up -->\n\n    </section>\n\n    <section class=\"google\">\n    \tHate signup forms and remembering passwords? <br /><br /><a href=\"/v1/auth/google\" target=\"_self\"><b>Sign in with your Google account instead</b></a>.\n    </section>\n\n    <section class=\"info\">\n\n      <div form-group>\n        <label class=\"control-label\" for=\"signupEmail\">Email</label>\n        <input id=\"signupEmail\" name=\"email\" form-control type=\"email\" placeholder=\"Primary contact email\" ng-model=\"data.email\" ng-blur=\"updateEmail(profileForm.email)\" required tabindex=\"1\">\n        <div class=\"error\" ng-if=\"formGroup.showError(profileForm.email)\" ng-messages=\"profileForm.email.$error\">\n          <div ng-message=\"required\">Email required</div>\n          <div ng-message=\"email\">Invalid email</div>\n        </div>\n        <span class=\"error\">{{ emailChangeFailed }}</span>\n      </div>\n\n      <div form-group ng-if=\"session.email\">\n        <label class=\"control-label\" for=\"sessionName\">Full name </label>\n        <input id=\"signupName\" name=\"name\" form-control type=\"text\" placeholder=\"Full name\" ng-model=\"data.name\" required ng-minlength=\"4\" ng-minlength=\"60\" ng-pattern=\"/\\w+ \\w+/\" tabindex=\"2\">\n        <div class=\"error\" ng-if=\"formGroup.showError(profileForm.name)\" ng-messages=\"profileForm.name.$error\">\n          <div ng-message=\"required\">Name required</div>\n          <div ng-message=\"minlength\">Full name required (e.g. John Smith)</div>\n          <div ng-message=\"pattern\">Full name required (e.g. John Smith)</div>\n          <div ng-message=\"maxlength\">Full name max length 60 chars</div>\n        </div>\n      </div>\n\n      <div form-group ng-if=\"data.name\">\n        <label class=\"control-label\" for=\"signupPassword\">Password </label>\n        <input id=\"signupPassword\" name=\"password\" form-control type=\"password\" placeholder=\"Password\" ng-model=\"data.password\" required ng-minlength=\"5\" ng-maxlength=\"10\" tabindex=\"3\">\n        <div class=\"error\" ng-if=\"formGroup.showError(profileForm.password)\" ng-messages=\"profileForm.password.$error\">\n          <div ng-message=\"required\">Password required</div>\n          <div ng-message=\"minlength\">Password min length 5 chars</div>\n          <div ng-message=\"maxlength\">Password max length 10 chars</div>\n        </div>\n      </div>\n\n    </section>\n\n  </section>\n\n  </div>\n\n  <div class=\"modal-footer profile\">\n    <button type=\"submit\" class=\"btn btn-primary\">Create account</button>\n    <span class=\"error\">{{ signupFail }}</span>\n  </div>\n\n\n</form>\n";
 
-},{}],10:[function(require,module,exports){
+},{}],"/Users/matias/Sites/airpair.com/public/common/directives/share.html":[function(require,module,exports){
 module.exports = "<div class=\"pw-widget pw-counter-vertical\" pw:twitter-via=\"airpair\">\n  <a ng-show=\"fb\" class=\"pw-button-facebook pw-look-native\"></a>\n  <a ng-show=\"tw\" class=\"pw-button-twitter pw-look-native\"></a>\n  <a ng-show=\"in\" class=\"pw-button-linkedin pw-look-native\"></a>\n</div>\n";
 
-},{}],11:[function(require,module,exports){
+},{}],"/Users/matias/Sites/airpair.com/public/common/directives/share.js":[function(require,module,exports){
 "use strict";
 angular.module("APShare", ['angularLoad']).directive('apShare', function(angularLoad) {
   var src = ('https:' == document.location.protocol ? 'https://s' : 'http://i') + '.po.st/static/v3/post-widget.js#publisherKey=miu9e01ukog3g0nk72m6&retina=true&init=lazy';
@@ -216,10 +309,10 @@ angular.module("APShare", ['angularLoad']).directive('apShare', function(angular
 //# sourceMappingURL=<compileOutput>
 
 
-},{"./share.html":10}],12:[function(require,module,exports){
-module.exports = "<header>\n  <img id=\"sideNavToggle\" track-click=\"SideNav\" data=\"{{ toggleAction }}\" track-click-if=\"!session._id\" ng-click=\"sideNav.toggle()\" src=\"/v1/img/css/sidenav/toggle.png\" />\n</header>\n\n<section class=\"welcome\" ng-if=\"session.authenticated == false\">\n\n  <figure><a id=\"navWelcomeAvatar\" track-click=\"SideNav\" ng-click=\"openProfile()\"><img class=\"avatar\" ng-src=\"{{ session.avatar }}\" /></a></figure>\n\n  <ul class=\"main\">\n    <li ng-if=\"!session.email\">Want your real face?</li>\n    <li ng-if=\"!session.email\"><a id=\"navEditProfile\" href=\"#\" track-click=\"SideNav\" ng-click=\"openProfile()\">Edit your profile</a></li>\n    <li ng-if=\"session.email\">Get $10 credit?</li>\n    <li ng-if=\"session.email\"><a id=\"navEditProfile\" href=\"#\" track-click=\"SideNav\" ng-click=\"openProfile()\">Finish your profile</a></li>\n    <li>Already in the tribe?</li>\n    <li><a id=\"navLogin\" href=\"/v1/auth/login\" track-click=\"SideNav\">Login</a></li>\n    <li>Why join?</li>\n  </ul>\n  <a id=\"navAbout\" track-click=\"SideNav\" href=\"/about\" class=\"icon\">\n    <span>Read about AirPair</span><img src=\"/v1/img/css/sidenav/airpair.png\" />\n  </a>\n</section>\n\n\n<section ng-if=\"session._id\">\n  <figure><a href=\"/me\"><img class=\"avatar\" ng-src=\"{{ session.avatar }}?s=120\" /></a></figure>\n</section>\n\n<section class=\"main\" ng-if=\"session._id\"> <label>{{ session.name.split(' ')[0] }}</label>\n  <ul>\n    <li><a href=\"mailto:team@airpair.com?Subject=Bug spotted!\" target=\"_blank\">see a bug?</a></li>\n    <!-- <li><a href=\"/\" target=\"_self\">dashboard (old)</a></li> -->\n    <li><a href=\"/billing\">billing</a></li>\n    <!-- <li><a href=\"#\">airpairs</a></li> -->\n    <!-- <li><a href=\"#\">settings</a></li> -->\n    <li><a href=\"/v1/auth/logout\" target=\"_self\">logout</a></li>\n  </ul>\n</section>\n\n\n<section class=\"stack\"> <label>Stack</label>\n  <ul>\n    <li ng-repeat=\"tag in session.tags | orderBy:'sort'\">\n      <a href=\"/posts/tag/{{tag.slug}}\">{{tag.name}}</a>\n    </li>\n  </ul>\n  <a id=\"navStackToggle\" track-click=\"SideNav\" href=\"#\" ng-click=\"openStack()\" class=\"icon\">\n    <span>Customize</span><img src=\"/v1/img/css/sidenav/stack.png\" /><i>{{ session.tags.length || 0 }}</i>\n  </a>\n</section>\n\n\n<section class=\"bookmarks\"> <label>Bookmarks</label>\n  <ul class=\"bookmarks\">\n    <li ng-repeat=\"bookmark in session.bookmarks | orderBy:'sort'\">\n      <a href=\"{{bookmark.url}}\" target=\"_self\">{{bookmark.title}}</a>\n    </li>\n  </ul>\n  <a id=\"navBookmarksToggle\" track-click=\"SideNav\" href=\"#\" ng-click=\"openBookmarks()\" class=\"icon\"><span> Manage </span> <img src=\"/v1/img/css/sidenav/bookmark.png\" /><i>{{ session.bookmarks.length || 0 }}</i></a>\n</section>\n\n<div stack></div>\n";
+},{"./share.html":"/Users/matias/Sites/airpair.com/public/common/directives/share.html"}],"/Users/matias/Sites/airpair.com/public/common/directives/sideNav.html":[function(require,module,exports){
+module.exports = "<header>\n  <img id=\"sideNavToggle\" track-click=\"SideNav\" data=\"{{ toggleAction }}\" track-click-if=\"!session._id\" ng-click=\"sideNav.toggle()\" src=\"/v1/img/css/sidenav/toggle.png\" />\n</header>\n\n<section class=\"welcome\" ng-if=\"session.authenticated == false\">\n\n  <figure><a id=\"navWelcomeAvatar\" track-click=\"SideNav\" ng-click=\"openProfile()\"><img class=\"avatar\" ng-src=\"{{ session.avatar }}\" /></a></figure>\n\n  <ul class=\"main\">\n    <li ng-if=\"!session.email\">Want your real face?</li>\n    <li ng-if=\"!session.email\"><a id=\"navEditProfile\" href=\"#\" track-click=\"SideNav\" ng-click=\"openProfile()\">Edit your profile</a></li>\n    <li ng-if=\"session.email\">Get $10 credit?</li>\n    <li ng-if=\"session.email\"><a id=\"navEditProfile\" href=\"#\" track-click=\"SideNav\" ng-click=\"openProfile()\">Finish your profile</a></li>\n    <li>Already in the tribe?</li>\n    <li><a id=\"navLogin\" href=\"/v1/auth/login\" track-click=\"SideNav\">Login</a></li>\n    <li>Why join?</li>\n  </ul>\n  <a id=\"navAbout\" track-click=\"SideNav\" href=\"/about\" class=\"icon\">\n    <span>Read about AirPair</span><img src=\"/v1/img/css/sidenav/airpair.png\" />\n  </a>\n</section>\n\n\n<section ng-if=\"session._id\">\n  <figure><a href=\"/me\"><img class=\"avatar\" ng-src=\"{{ session.avatar }}?s=120\" /></a></figure>\n</section>\n\n<section class=\"main\" ng-if=\"session._id\"> <label>{{ session.name.split(' ')[0] }}</label>\n  <ul>\n    <li><a href=\"mailto:team@airpair.com?Subject=Bug spotted!\" target=\"_blank\">see a bug?</a></li>\n    <!-- <li><a href=\"/\" target=\"_self\">dashboard (old)</a></li> -->\n    <li><a href=\"/billing\">billing</a></li>\n    <!-- <li><a href=\"#\">airpairs</a></li> -->\n    <!-- <li><a href=\"#\">settings</a></li> -->\n    <li><a href=\"/v1/auth/logout\" target=\"_self\">logout</a></li>\n  </ul>\n</section>\n\n\n<section class=\"stack\"> <label>Stack</label>\n  <ul>\n    <li ng-repeat=\"tag in session.tags | orderBy:'sort'\">\n      <a ng-if=\"tag.slug != 'angularjs'\" href=\"/posts/tag/{{tag.slug}}\">{{tag.name}}</a>\n      <a ng-if=\"tag.slug == 'angularjs'\" href=\"/angularjs\" target=\"_self\">{{tag.name}}</a>\n    </li>\n  </ul>\n  <a id=\"navStackToggle\" track-click=\"SideNav\" href=\"#\" ng-click=\"openStack()\" class=\"icon\">\n    <span>Customize</span><img src=\"/v1/img/css/sidenav/stack.png\" /><i>{{ session.tags.length || 0 }}</i>\n  </a>\n</section>\n\n\n<section class=\"bookmarks\"> <label>Bookmarks</label>\n  <ul class=\"bookmarks\">\n    <li ng-repeat=\"bookmark in session.bookmarks | orderBy:'sort'\">\n      <a href=\"{{bookmark.url}}\" target=\"_self\">{{bookmark.title}}</a>\n    </li>\n  </ul>\n  <a id=\"navBookmarksToggle\" track-click=\"SideNav\" href=\"#\" ng-click=\"openBookmarks()\" class=\"icon\"><span> Manage </span> <img src=\"/v1/img/css/sidenav/bookmark.png\" /><i>{{ session.bookmarks.length || 0 }}</i></a>\n</section>\n\n<div stack></div>\n";
 
-},{}],13:[function(require,module,exports){
+},{}],"/Users/matias/Sites/airpair.com/public/common/directives/sideNav.js":[function(require,module,exports){
 "use strict";
 var Validate = require('../../../shared/validation/users.js');
 function storage(k, v) {
@@ -258,8 +351,23 @@ angular.module("APSideNav", ['ui.bootstrap', 'APSvcSession', 'APTagInput']).dire
           size: 'lg'
         });
       };
-      $scope.selectedTags = (function() {
-        return ($scope.session) ? $scope.session.tags : null;
+      $scope.tags = (function() {
+        return $scope.session ? $scope.session.tags : null;
+      });
+      $scope.updateTags = (function(scope, newTags) {
+        if (!$scope.session)
+          return;
+        $scope.session.tags = newTags;
+        SessionService.tags(newTags, scope.sortSuccess, scope.sortFail);
+      });
+      $scope.bookmarks = (function() {
+        return $scope.session ? $scope.session.bookmarks : null;
+      });
+      $scope.updateBookmarks = (function(scope, newBookmarks) {
+        if (!$scope.session)
+          return;
+        $scope.session.bookmarks = newBookmarks;
+        SessionService.bookmarks(newBookmarks, scope.sortSuccess, scope.sortFail);
       });
       $scope.selectTag = function(tag) {
         var tags = $scope.session.tags;
@@ -301,9 +409,7 @@ angular.module("APSideNav", ['ui.bootstrap', 'APSvcSession', 'APTagInput']).dire
 }]).directive('sortable', ['SessionService', function(SessionService) {
   return {link: function(scope, element, attrs) {
       $(element).sortable({stop: function(event, ui) {
-          var property = attrs['sort'];
-          var method = attrs['service'];
-          var list = scope.session[property];
+          var list = scope[attrs['get']]();
           var elems = $(element).children();
           for (var i = 0; i < elems.length; i++) {
             var elem = $(elems[i]);
@@ -312,7 +418,7 @@ angular.module("APSideNav", ['ui.bootstrap', 'APSvcSession', 'APTagInput']).dire
             }));
             obj.sort = i;
           }
-          SessionService[method](scope.session[property], scope.sortSuccess, scope.sortFail);
+          scope[attrs['set']](scope, list);
         }});
       $(element).disableSelection();
     }};
@@ -381,13 +487,13 @@ angular.module("APSideNav", ['ui.bootstrap', 'APSvcSession', 'APTagInput']).dire
 //# sourceMappingURL=<compileOutput>
 
 
-},{"../../../shared/validation/users.js":23,"./bookmarks.html":7,"./profile.html":9,"./sideNav.html":12,"./stack.html":14}],14:[function(require,module,exports){
+},{"../../../shared/validation/users.js":"/Users/matias/Sites/airpair.com/shared/validation/users.js","./bookmarks.html":"/Users/matias/Sites/airpair.com/public/common/directives/bookmarks.html","./profile.html":"/Users/matias/Sites/airpair.com/public/common/directives/profile.html","./sideNav.html":"/Users/matias/Sites/airpair.com/public/common/directives/sideNav.html","./stack.html":"/Users/matias/Sites/airpair.com/public/common/directives/stack.html"}],"/Users/matias/Sites/airpair.com/public/common/directives/stack.html":[function(require,module,exports){
 module.exports = "<div class=\"modal-header\">\n  <h3 class=\"modal-title\">Customize AirPair to your Stack</h3>\n</div>\n<div class=\"modal-body stack\">\n\n  <p>Personalize AirPair content, by selecting technologies that make up your stack.</p>\n\n  <div tag-input></div>\n\n</div>\n<div class=\"modal-footer\">\n  <button class=\"btn btn-primary\" ng-click=\"ok()\">Done</button>\n  <button class=\"btn btn-warning\" ng-click=\"cancel()\">Cancel</button>\n</div>\n";
 
-},{}],15:[function(require,module,exports){
-module.exports = "<div class=\"form-group tag-input-group\">\n  <div class=\"nomobile\">This feature is not available on mobile</div>\n\n  <div class=\"drag\">\n    <p>\n      <b>drag in order of importance</b>\n      <br />place most used first\n    </p>\n  </div>\n  <div class=\"selected\">\n    <label for=\"tagInput\">Your stack</label>\n\n    <ul class=\"tags\" sortable sort='tags' service='tags'>\n      <li ng-repeat=\"tag in session.tags | orderBy:'sort'\" ng-attr-data-id=\"{{tag._id}}\">\n        {{tag.slug}}\n        <a class=\"remove\" ng-click=\"deselectMatch(tag)\">x</a>\n        <a class=\"order\" href=\"#\"></a>\n      </li>\n    </ul>\n\n    <p ng-if=\"!selectedTags() || selectedTags().length == 0\">No tags selected yet.</p>\n  </div>\n\n  <label for=\"tagInput\">Search technologies</label>\n  <input type=\"text\" class=\"tagInput form-control\"\n    placeholder=\"type a technology (e.g. javascript)\"\n    ng-model=\"q\"\n    typeahead=\"t as t for t in getTags($viewValue) | filter:$viewValue\"\n    typeahead-editable=\"false\"\n    typeahead-input-formatter=\"keypressSelect($model)\" tabindex=\"100\">\n  <!-- typeahead-loading=\"loading\"\n  <i ng-show=\"loading\" class=\"glyphicon glyphicon-refresh\"></i>\n   -->\n</div>\n\n<script type=\"text/ng-template\" id=\"template/typeahead/typeahead-match.html\">\n  <div>\n    <a class=\"tagSelect\">\n      <span bind-html-unsafe=\"match.model.slug | typeaheadHighlight:query\"></span>\n      <p bind-html-unsafe=\"match.model.desc | typeaheadHighlight:query\"></p>\n    </a>\n  </div>\n</script>\n";
+},{}],"/Users/matias/Sites/airpair.com/public/common/directives/tagInput.html":[function(require,module,exports){
+module.exports = "<div class=\"form-group tag-input-group\">\n  <div class=\"nomobile\">This feature is not available on mobile</div>\n\n  <div class=\"drag\">\n    <p>\n      <b>drag in order of importance</b>\n      <br />place most used first\n    </p>\n  </div>\n  <div class=\"selected\">\n    <label for=\"tagInput\">Your stack</label>\n\n    <ul class=\"tags\" sortable get='tags' set='updateTags'>\n      <li ng-repeat=\"tag in tags() | orderBy:'sort'\" ng-attr-data-id=\"{{tag._id}}\">\n        {{tag.slug}}\n        <a class=\"remove\" ng-click=\"deselectMatch(tag)\">x</a>\n        <a class=\"order\" href=\"#\"></a>\n      </li>\n    </ul>\n\n    <p ng-if=\"!tags() || tags().length == 0\">No tags selected yet.</p>\n  </div>\n\n  <label for=\"tagInput\">Search technologies</label>\n  <input type=\"text\" class=\"tagInput form-control\"\n    placeholder=\"type a technology (e.g. javascript)\"\n    ng-model=\"q\"\n    typeahead=\"t as t for t in getTags($viewValue) | filter:$viewValue\"\n    typeahead-editable=\"false\"\n    typeahead-input-formatter=\"keypressSelect($model)\" tabindex=\"100\"\n    typeahead-template-url=\"tagMatch.html\"\n    >\n  <!-- typeahead-loading=\"loading\"\n  <i ng-show=\"loading\" class=\"glyphicon glyphicon-refresh\"></i>\n   -->\n</div>\n\n<script type=\"text/ng-template\" id=\"tagMatch.html\">\n  <div>\n    <a class=\"tagSelect\">\n      <span bind-html-unsafe=\"match.model.slug | typeaheadHighlight:query\"></span>\n      <p bind-html-unsafe=\"match.model.desc | typeaheadHighlight:query\"></p>\n    </a>\n  </div>\n</script>\n";
 
-},{}],16:[function(require,module,exports){
+},{}],"/Users/matias/Sites/airpair.com/public/common/directives/tagInput.js":[function(require,module,exports){
 "use strict";
 angular.module('APTagInput', ['ui.bootstrap']).value('badTagsSearchQuery', function(value) {
   var lengthOk = value && (value.length >= 2 || /r/i.test(value));
@@ -399,7 +505,15 @@ angular.module('APTagInput', ['ui.bootstrap']).value('badTagsSearchQuery', funct
   return {
     restrict: 'EA',
     template: require('./tagInput.html'),
+    scope: {},
     controller: ['$scope', '$attrs', '$http', function($scope, $attrs, $http) {
+      $scope.tags = $scope.$parent.tags;
+      $scope.selectTag = $scope.$parent.selectTag;
+      $scope.deselectTag = $scope.$parent.deselectTag;
+      $scope.updateTags = $scope.$parent.updateTags;
+      $scope.sortSuccess = $scope.$parent.sortSuccess;
+      $scope.sortFail = $scope.$parent.sortFail;
+      $scope.templateUrl = "tagMatch.html";
       $scope.getTags = function(q) {
         if (badTagsSearchQuery(q)) {
           return [];
@@ -424,7 +538,7 @@ angular.module('APTagInput', ['ui.bootstrap']).value('badTagsSearchQuery', funct
         $scope.q = "";
       };
       $scope.deselectMatch = function(match) {
-        this.deselectTag(match);
+        $scope.deselectTag(match);
       };
     }]
   };
@@ -434,7 +548,7 @@ angular.module('APTagInput', ['ui.bootstrap']).value('badTagsSearchQuery', funct
 //# sourceMappingURL=<compileOutput>
 
 
-},{"./tagInput.html":15}],17:[function(require,module,exports){
+},{"./tagInput.html":"/Users/matias/Sites/airpair.com/public/common/directives/tagInput.html"}],"/Users/matias/Sites/airpair.com/public/common/filters/filters.js":[function(require,module,exports){
 "use strict";
 var util = require('../../../shared/util.js');
 angular.module('APFilters', []).filter('publishedTime', function() {
@@ -493,7 +607,7 @@ angular.module('APFilters', []).filter('publishedTime', function() {
 //# sourceMappingURL=<compileOutput>
 
 
-},{"../../../shared/util.js":22}],18:[function(require,module,exports){
+},{"../../../shared/util.js":"/Users/matias/Sites/airpair.com/shared/util.js"}],"/Users/matias/Sites/airpair.com/public/common/models/postsService.js":[function(require,module,exports){
 "use strict";
 var headings = [];
 var lazyErrorCb = function(resp) {};
@@ -550,7 +664,7 @@ angular.module('APSvcPosts', []).constant('API', '/v1/api').factory('mdHelper', 
 //# sourceMappingURL=<compileOutput>
 
 
-},{}],19:[function(require,module,exports){
+},{}],"/Users/matias/Sites/airpair.com/public/common/models/sessionService.js":[function(require,module,exports){
 "use strict";
 angular.module('APSvcSession', []).constant('API', '/v1/api').constant('Auth', '/v1/auth').service('SessionService', ['$rootScope', '$http', 'API', 'Auth', '$cacheFactory', function($rootScope, $http, API, Auth, $cacheFactory) {
   var cache;
@@ -613,7 +727,7 @@ angular.module('APSvcSession', []).constant('API', '/v1/api').constant('Auth', '
 //# sourceMappingURL=<compileOutput>
 
 
-},{}],20:[function(require,module,exports){
+},{}],"/Users/matias/Sites/airpair.com/public/common/pageHelpers.js":[function(require,module,exports){
 "use strict";
 window.pageHlpr = {};
 var getHighlightConfig = function(elm) {
@@ -709,11 +823,14 @@ window.pageHlpr.fixPostRail = function() {
   $(window).scroll(fixRailElements);
   fixRailElements();
 };
+window.pageHlpr.animateSelectedBookmark = function(bookmarkElm, destinationElm) {
+  bookmarkElm.css({});
+};
 
 //# sourceMappingURL=<compileOutput>
 
 
-},{}],21:[function(require,module,exports){
+},{}],"/Users/matias/Sites/airpair.com/public/common/routes/helpers.js":[function(require,module,exports){
 (function (global){
 "use strict";
 (function() {
@@ -774,7 +891,7 @@ window.pageHlpr.fixPostRail = function() {
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],22:[function(require,module,exports){
+},{}],"/Users/matias/Sites/airpair.com/shared/util.js":[function(require,module,exports){
 "use strict";
 var botPattern = /googlebot|gurujibot|twitterbot|yandexbot|slurp|msnbot|bingbot|facebookexternalhit/i;
 var idsEqual = (function(id1, id2) {
@@ -873,7 +990,7 @@ module.exports = {
 //# sourceMappingURL=<compileOutput>
 
 
-},{}],23:[function(require,module,exports){
+},{}],"/Users/matias/Sites/airpair.com/shared/validation/users.js":[function(require,module,exports){
 "use strict";
 var validateEmail = (function(email) {
   if (!email || !email.match(/.+@.+\.+.+/))
@@ -890,8 +1007,8 @@ module.exports = {
   changePassword: (function(hash, password) {
     if (!hash || hash.match(/\s/))
       return "Invalid hash";
-    if (!password || !password.match(/.{5,10}/))
-      return "Invalid password (need min 5, max 10 chars)";
+    if (!password || !password.match(/.{5,40}/))
+      return "Invalid password (need min 5, max 40 chars)";
     return "";
   })
 };
@@ -899,4 +1016,4 @@ module.exports = {
 //# sourceMappingURL=<compileOutput>
 
 
-},{}]},{},[1]);
+},{}]},{},["./public/common/lite.js"]);
