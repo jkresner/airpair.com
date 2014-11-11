@@ -93,5 +93,79 @@ module.exports = {
     "short" : "ios-simulator",
     "soId" : "ios-simulator",
     "slug" : "ios-simulator"
+  },
+  cplusplus: {
+    "_id" : "514825fa2a26ea020000000d",
+    "__v" : 0,
+    "desc" : "C++ is a general-purpose programming language based on C. Use this tag for questions about code compiled with a C++ compiler, regardless of whether the code could be valid in C, C#, Objective-C and other C based programming languages.",
+    "name" : "c++",
+    "short" : "c++",
+    "soId" : "c++",
+    "slug" : "c++"
+  },
+  cpluspluszerox: {
+    "_id" : "5181d0ac66a6f999a465f0e6",
+    "desc" : "This tag is obsolete, please use c++11 for new questions.\r\n\r\nC++0x was the unofficial name used while preparing the new C++ standard, C++2011. It will replace the existing C++03 standard with various core language changes and fixes, and an improved and expanded standard library.",
+    "name" : "c++0x",
+    "short" : "c++0x",
+    "soId" : "c++0x",
+    "slug" : "c++0x"
+  },
+  cpluspluscli: {
+    "_id" : "5181d0aa66a6f999a465ed76",
+    "desc" : "C++/CLI is an extension of the C++ programming language. It extends the syntax to allow compilation of a mixture of native code and code for Microsoft&#39;s Common Language Infrastructure (CLI). It is a replacement for Microsoft&#39;s now deprecated Managed Extensions for C++.",
+    "name" : "c++-cli",
+    "short" : "c++-cli",
+    "soId" : "c++-cli",
+    "slug" : "c++-cli"
+  },
+  csharp: {
+    "_id" : "514825fa2a26ea020000000e",
+    "__v" : 0,
+    "desc" : "C# is a multi-paradigm programming language encompassing strong typing, imperative, declarative, functional, generic, object-oriented (class-based), and component-oriented programming disciplines.",
+    "name" : "c#",
+    "short" : "c#",
+    "soId" : "c#",
+    "slug" : "c#"
+  },
+  csharptwo: {
+    "_id" : "5181d0ab66a6f999a465effa",
+    "desc" : "For issues relating to development with C#, version 2.0.",
+    "name" : "c#-2.0",
+    "short" : "c#-2.0",
+    "soId" : "c#-2.0",
+    "slug" : "c#-2.0"
+  },
+  csharpthree: {
+    "_id" : "5181d0aa66a6f999a465ed81",
+    "desc" : "C# 3.0 (&quot;C# Orcas&quot;) introduces several language extensions that build on C# 2.0 to support the creation and use of higher order, functional style class libraries. The extensions enable construction of compositional APIs that have equal expressive power of query languages in domains such as relational databases and XML.",
+    "name" : "c#-3.0",
+    "short" : "c#-3.0",
+    "soId" : "c#-3.0",
+    "slug" : "c#-3.0"
+  },
+  rorthree: {
+    "_id" : "5181d0a966a6f999a465eb3d",
+    "desc" : "Ruby on Rails is an open-source web development framework written in Ruby. Ruby on Rails follows the principle of convention over configuration, freeing you from having to re-invent things to stay productive. Ruby on Rails 4.0 is now available.",
+    "name" : "ruby-on-rails-3",
+    "short" : "ruby-on-rails-3",
+    "slug" : "ruby-on-rails-3",
+    "soId" : "ruby-on-rails-3"
+  },
+  rorthreeone: {
+    "_id" : "5181d0a966a6f999a465ec58",
+    "desc" : "Ruby on Rails version 3.1.0 is a specific version of Ruby on Rails. It was released on  August 30th, 2011. Use this tag for issues related to development in Ruby on Rails version 3.1.",
+    "name" : "ruby-on-rails-3.1",
+    "short" : "ruby-on-rails-3.1",
+    "soId" : "ruby-on-rails-3.1",
+    "slug" : "ruby-on-rails-3.1"
+  },
+  rorthreetwo: {
+    "_id" : "5181d0aa66a6f999a465ece5",
+    "desc" : "Ruby on Rails version 3.2.0 released at January 20, 2012. Use this tag for issues related to development in Ruby on Rails version 3.2.0.",
+    "name" : "ruby-on-rails-3.2",
+    "short" : "ruby-on-rails-3.2",
+    "soId" : "ruby-on-rails-3.2",
+    "slug" : "ruby-on-rails-3.2"
   }
 }
