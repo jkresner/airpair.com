@@ -68,6 +68,14 @@ module.exports = -> describe "API", ->
       expect(s[2].name).to.equal('c#-3.0')
       done()
 
+  it 'Search tags for android', (done) ->
+    opts = { unauthenticated: true }
+    GET '/tags/search/android', opts, (s1) ->
+      GET '/tags/search/droid', opts, (s2) ->
+        expect(s1[0].slug).to.equal('android')
+        expect(s2[0].slug).to.equal('android')
+        done()
+
   it 'Search tags for angularjs', (done) ->
     opts = { unauthenticated: true }
     GET '/tags/search/angularjs', opts, (s1) ->
