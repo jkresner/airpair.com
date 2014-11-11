@@ -9,6 +9,26 @@ module.exports = {
     "tokens" : "",
     "slug" : "angularjs"
   },
+  angularonetwo: {
+    "_id" : "54624a63791b7e75a3faff1a",
+    "__v" : 0,
+    "desc" : "AngularJS is an open-source JavaScript framework. Its goal is to augment browser-based applications with Model–View–Controller (MVC) capability and reduce the amount of JavaScript needed to make web applications functional. These type of apps are also known as Single-Page Applications.",
+    "name" : "AngularJS 1.2",
+    "short" : "Angular 1.2",
+    "soId" : "angularjs-1.2",
+    "tokens" : "",
+    "slug" : "angularjs-1.2"
+  },
+  angularonethree: {
+    "_id" : "54624a6c791b7e75a3faff1b",
+    "__v" : 0,
+    "desc" : "AngularJS is an open-source JavaScript framework. Its goal is to augment browser-based applications with Model–View–Controller (MVC) capability and reduce the amount of JavaScript needed to make web applications functional. These type of apps are also known as Single-Page Applications.",
+    "name" : "AngularJS 1.3",
+    "short" : "Angular 1.3",
+    "soId" : "angularjs-1.3",
+    "tokens" : "",
+    "slug" : "angularjs-1.3"
+  },
   node: {
     "_id" : "514825fa2a26ea0200000028",
     "__v" : 0,
@@ -56,8 +76,8 @@ module.exports = {
     "_id" : "514825fa2a26ea020000002f",
     "__v" : 0,
     "desc" : "Ruby on Rails is an open source full-stack web application framework written in Ruby. It follows the popular MVC framework model and is known for its &quot;convention over configuration&quot; approach to application development.",
-    "name" : "Rails",
-    "short" : "ruby-on-rails",
+    "name" : "Ruby on Rails",
+    "short" : "Rails",
     "soId" : "ruby-on-rails",
     "tokens" : "ror, rrr",
     "slug" : "ruby-on-rails"

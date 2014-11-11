@@ -9,13 +9,18 @@ var svc = new Svc(Tag, logging)
 
 var fields = {
 	listCache: { '_id':1, name: 1, slug: 1 },
-	search: { '_id': 1, 'name': 1, 'slug': 1, 'desc': 1, 'tokens': 1 }
+	search: { '_id': 1, 'name': 1, 'slug': 1, 'desc': 1, 'tokens': 1, 'short': 1 }
+}
+
+
+function encode(term) {
+  if (!term) return term;
+  return term.replace(/[-\/\\^$*+?.()|[\]{}+]/g, '\\$&');
 }
 
 
 function tokenize(term, wildcardStart, wildcardEnd) {
   if (!term) return '.*';
-  term = term.replace(/[-\/\\^$*+?.()|[\]{}+]/g, '\\$&');
 
   var regex = '';
   if (wildcardStart) regex += '.*';
@@ -30,41 +35,60 @@ function tokenize(term, wildcardStart, wildcardEnd) {
 }
 
 
-export function search(searchTerm, cb) {
-  var regex = new RegExp(tokenize(searchTerm, true, true), 'i');
+function isMatchOnWeightedFields(tag, regex) {
+  if (tag.name && tag.name.match(regex)) return true;
+  if (tag.short && tag.short.match(regex)) return true;
+  if (tag.slug && tag.slug.match(regex)) return true;
+  return false;
+}
 
-  var query = { $or: [{name: regex},{tokens: regex}] };
+
+export function search(searchTerm, cb) {
+  //console.log('Search term: ', searchTerm);
+
+  if (searchTerm) searchTerm = searchTerm.replace(/-/g, ' ');
+  var encodedTerm = encode(searchTerm)
+
+  var regex = new RegExp(tokenize(encodedTerm, true, true), 'i');
+  var exactMatch = new RegExp('^' + encodedTerm + '$', 'i');
+  var startsWith = new RegExp('^' + encodedTerm + '[^-]', 'i');
+
+  //console.log('Encoded term: ', encodedTerm);
+  //console.log('Regex: ', regex);
+  //console.log('Exact match: ', exactMatch);
+  //console.log('Starts with: ', startsWith);
+
+  var query = { $or: [{name: regex},{short: regex},{tokens: regex}] };
 	var opts = { fields: fields.search, limit: 10 }
 
 	svc.searchMany(query, opts, function(err, result) {
+    //console.log('Error: ', err);
+
     if (err) {
       cb(err, result);
       return;
     }
 
-    var startsWith = new RegExp('^' + tokenize(searchTerm, false, true), 'i');
-    var endsWith = new RegExp(tokenize(searchTerm, true, false) + '$', 'i');
-
     for (var i = 0; i < result.length; i++) {
-      var o = result[i];
-      o.weight = 0;
+      var tag = result[i];
+      tag.weight = 0;
 
       // if it's an exact match: -
-      if (o.name.toLowerCase() === searchTerm.toLowerCase()) {
-        o.weight -= 1;
+      if (isMatchOnWeightedFields(tag, exactMatch)) {
+        tag.weight -= 1;
       }
       // if starts with: -
-      if (o.name.match(startsWith)) {
-        o.weight -= 1;
-      }
-      // if it ends with: +
-      if (o.name.match(endsWith)) {
-        o.weight += 1;
+      if (isMatchOnWeightedFields(tag, startsWith)) {
+        tag.weight -= 1;
       }
     }
 
-    var retVal = _.sortBy(result, (x) => x.weight + '_' + x.name).splice(0, 3);
+    var retVal = _.sortBy(result, (x) => x.weight).splice(0, 3);
     cb(err, retVal);
+
+    //console.log('Results: ', retVal);
+    //console.log('');
+    //console.log('');
   });
 }
 
