@@ -1,13 +1,13 @@
 module.exports = () => describe("API: ", function() {
 
 	before(function(done) {
-		// stubAnalytics()
+		stubAnalytics()
 		testDb.initPosts( () => {
 			testDb.initTags(done) })
 	})
 
 	after(function(done) {
-		// resotreAnalytics()
+		resotreAnalytics()
 		done()
 	})
 
