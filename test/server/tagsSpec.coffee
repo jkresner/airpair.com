@@ -72,4 +72,16 @@ module.exports = -> describe "API", ->
       expect(s[2].name).to.equal('ruby-on-rails-3.2')
       done()
 
-  it.skip('Search for tags by tokens (e.g. RoR)')
+  it 'Search for tags by tokens - RoR', (done) ->
+    opts = { unauthenticated: true }
+    GET '/tags/search/RoR', opts, (s) ->
+      expect(s.length).to.equal(1)
+      expect(s[0].name).to.equal('Rails')
+      done()
+
+  it 'Search for tags by tokens - rrr', (done) ->
+    opts = { unauthenticated: true }
+    GET '/tags/search/rrr', opts, (s) ->
+      expect(s.length).to.equal(1)
+      expect(s[0].name).to.equal('Rails')
+      done()

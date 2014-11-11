@@ -59,7 +59,7 @@ module.exports = {
     "name" : "Rails",
     "short" : "ruby-on-rails",
     "soId" : "ruby-on-rails",
-    "tokens" : "",
+    "tokens" : "ror, rrr",
     "slug" : "ruby-on-rails"
   },
   ios: {
