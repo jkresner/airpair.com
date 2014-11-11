@@ -34,7 +34,7 @@ function tokenize(term, wildcardStart, wildcardEnd) {
 export function search(searchTerm, cb) {
   var regex = new RegExp(tokenize(searchTerm, true, true), 'i');
 
-  var query = { $or: [{name: regex},{tokens: regex}] };
+  var query = { $or: [{short: regex},{name: regex},{tokens: regex}] };
 	var opts = { fields: fields.search, limit: 10 }
 
 	svc.searchMany(query, opts, function(err, result) {
@@ -95,7 +95,7 @@ export function getTagPage(tag, cb) {
               url: '/angularjs/workshops/top-10-mistakes-angularjs-developers-make',
               title: 'The Top 10 Mistakes AngularJS Developers Make',
               speaker: { name: 'Mark Meyer', gravatar: '6c2f0695e0ca4445a223ce325c7fb970' }, //todo change to avatar
-              time: new Date(2014,10,13),
+              time: new Date(2014,10,11),
             },
             post: {
               _id: "542c4b4f8e66ce0b00c885a4",

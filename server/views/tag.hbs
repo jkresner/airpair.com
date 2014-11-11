@@ -103,8 +103,10 @@
           <time datetime="{{ isoMoment time }}">{{ dateFormat time 'ddd DD MMM, YYYY' }}</time>
         </header>
         <img src="//0.gravatar.com/avatar/{{speaker.gravatar}}?s=120">
-        <h3 class="entry-title">{{ title }}</h3>
-        <h5 class="entry-author">{{ speaker.name }}</h5>
+        <p class="entry-meta">
+          <h3 class="entry-title">{{ title }}</h3>
+          <h5 class="entry-author">{{ speaker.name }}</h5>
+        </p>
         <hr />
       </a>
       {{/each}}
