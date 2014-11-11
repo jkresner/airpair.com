@@ -19,6 +19,7 @@ global.expect   = chai.expect
 describe 'Server: ', ->
 
   before (done) ->
+    @timeout(10000)
     global.logging = false
     global.app = require('../../index').run()
     global.testDb = require('./helpers/setup')

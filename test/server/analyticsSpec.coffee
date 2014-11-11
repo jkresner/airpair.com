@@ -322,6 +322,24 @@ module.exports = ->describe "Tracking: ", ->
     it 'Views are saved for safari', (done) ->
       checkViewIsSaved 'Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2049.0 Safari/537.36', done
 
+    it 'Views are saved for empty user-agent strings', (done) ->
+      checkViewIsSaved '', done
+
+    it 'Views are saved when user-agent header is not set', (done) ->
+      testDb.countViews (e, oldViewsCount) ->
+        http(global.app)
+        .get('/v1/posts/starting-a-mean-stack-app')
+        .unset('user-agent')
+        .expect(200)
+        .end (e, r) ->
+          if (e)
+            return done(e)
+          testDb.countViews (e, count) ->
+            if (e)
+              return done(e)
+            expect(count).to.equal(oldViewsCount+1)
+            done()
+
 #     it('User alias', function(done) {
 #       expect('pageViews linked')
 #       expect('visit_first')
