@@ -44,8 +44,6 @@ function isMatchOnWeightedFields(tag, regex) {
 
 
 export function search(searchTerm, cb) {
-  //console.log('Search term: ', searchTerm);
-
   if (searchTerm) searchTerm = searchTerm.replace(/-/g, ' ');
   var encodedTerm = encode(searchTerm)
 
@@ -53,17 +51,10 @@ export function search(searchTerm, cb) {
   var exactMatch = new RegExp('^' + encodedTerm + '$', 'i');
   var startsWith = new RegExp('^' + encodedTerm + '[^-]', 'i');
 
-  //console.log('Encoded term: ', encodedTerm);
-  //console.log('Regex: ', regex);
-  //console.log('Exact match: ', exactMatch);
-  //console.log('Starts with: ', startsWith);
-
   var query = { $or: [{name: regex},{short: regex},{tokens: regex}] };
 	var opts = { fields: fields.search, limit: 10 }
 
 	svc.searchMany(query, opts, function(err, result) {
-    //console.log('Error: ', err);
-
     if (err) {
       cb(err, result);
       return;
@@ -85,10 +76,6 @@ export function search(searchTerm, cb) {
 
     var retVal = _.sortBy(result, (x) => x.weight).splice(0, 3);
     cb(err, retVal);
-
-    //console.log('Results: ', retVal);
-    //console.log('');
-    //console.log('');
   });
 }
 
