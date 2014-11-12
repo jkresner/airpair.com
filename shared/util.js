@@ -100,6 +100,7 @@ combineItems: (array1, array2, compareProp) => {
 
 
   isBot: (useragent) => {
+    if (!useragent) return true // browser and even bots should have a defined user agent
     var source = useragent.replace(/^\s*/, '').replace(/\s*$/, '')
     return botPattern.test(source)
   }

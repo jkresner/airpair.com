@@ -404,7 +404,7 @@ export function toggleBookmark(type, id, cb) {
 	if (!type) $log('toggleBookmark.type', type, cb)
 	var	bookmark = { _id: svc.newId(), objectId: id, type, sort: 0 }
 	var bookmarkComparator = (i) => _.idsEqual(i.objectId,id)
-	toggleSessionItem.call(this, 'bookmarks', bookmark, 2, 15, bookmarkComparator, cb)
+	toggleSessionItem.call(this, 'bookmarks', bookmark, 3, 15, bookmarkComparator, cb)
 }
 
 export function tags(tags, cb) {
