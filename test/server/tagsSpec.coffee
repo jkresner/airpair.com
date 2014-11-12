@@ -38,21 +38,26 @@ module.exports = -> describe "API", ->
 
   it 'Search tags for ios', (done) ->
     opts = { unauthenticated: true }
-    GET '/tags/search/ios', opts, (s) ->
-      expect(s.length).to.equal(3)
-      expect(s[0].name).to.equal('ios')
-      expect(s[1].name).to.equal('ios-simulator')
-      expect(s[2].name).to.equal('ios4')
-      done()
+    GET '/tags/search/ios', opts, (s1) ->
+      GET '/tags/search/ios simulator', opts, (s2) ->
+        GET '/tags/search/ios sim', opts, (s2) ->
+          expect(s1.length).to.equal(3)
+          expect(s1[0].name).to.equal('ios')
+          expect(s1[1].name).to.equal('ios4')
+          expect(s1[2].name).to.equal('ios5')
+          expect(s2[0].name).to.equal('ios-simulator')
+          done()
 
   it 'Search tags for c++', (done) ->
     opts = { unauthenticated: true }
-    GET '/tags/search/c++', opts, (s) ->
-      expect(s.length).to.equal(3)
-      expect(s[0].name).to.equal('c++')
-      expect(s[1].name).to.equal('c++-cli')
-      expect(s[2].name).to.equal('c++0x')
-      done()
+    GET '/tags/search/c++', opts, (s1) ->
+      GET '/tags/search/c+', opts, (s2) ->
+        expect(s1.length).to.equal(3)
+        expect(s1[0].name).to.equal('c++')
+        expect(s1[1].name).to.equal('c++0x')
+        expect(s1[2].name).to.equal('c++-cli')
+        expect(s2[0].name).to.equal('c++')
+        done()
 
   it 'Search tags for c#', (done) ->
     opts = { unauthenticated: true }
@@ -63,25 +68,44 @@ module.exports = -> describe "API", ->
       expect(s[2].name).to.equal('c#-3.0')
       done()
 
+  it 'Search tags for android', (done) ->
+    opts = { unauthenticated: true }
+    GET '/tags/search/android', opts, (s1) ->
+      GET '/tags/search/droid', opts, (s2) ->
+        GET '/tags/search/android x86', opts, (s3) ->
+          expect(s1[0].slug).to.equal('android')
+          expect(s2[0].slug).to.equal('android')
+          expect(s3[0].slug).to.equal('android-x86')
+          done()
+
+  it 'Search tags for angularjs', (done) ->
+    opts = { unauthenticated: true }
+    GET '/tags/search/angularjs', opts, (s1) ->
+      GET '/tags/search/angular', opts, (s2) ->
+        GET '/tags/search/angular-js', opts, (s3) ->
+          GET '/tags/search/angular js', opts, (s4) ->
+            GET '/tags/search/angular 1.2', opts, (s5) ->
+              GET '/tags/search/angular-1.2', opts, (s6) ->
+                expect(s1[0].slug).to.equal('angularjs')
+                expect(s2[0].slug).to.equal('angularjs')
+                expect(s3[0].slug).to.equal('angularjs')
+                expect(s4[0].slug).to.equal('angularjs')
+                expect(s5[0].slug).to.equal('angularjs-1.2')
+                expect(s6[0].slug).to.equal('angularjs-1.2')
+                done()
+
   it 'Search tags for ruby on rails', (done) ->
     opts = { unauthenticated: true }
-    GET '/tags/search/ruby on rails', opts, (s) ->
-      expect(s.length).to.equal(3)
-      expect(s[0].name).to.equal('ruby-on-rails-3')
-      expect(s[1].name).to.equal('ruby-on-rails-3.1')
-      expect(s[2].name).to.equal('ruby-on-rails-3.2')
-      done()
-
-  it 'Search for tags by tokens - RoR', (done) ->
-    opts = { unauthenticated: true }
-    GET '/tags/search/RoR', opts, (s) ->
-      expect(s.length).to.equal(1)
-      expect(s[0].name).to.equal('Rails')
-      done()
-
-  it 'Search for tags by tokens - rrr', (done) ->
-    opts = { unauthenticated: true }
-    GET '/tags/search/rrr', opts, (s) ->
-      expect(s.length).to.equal(1)
-      expect(s[0].name).to.equal('Rails')
-      done()
+    GET '/tags/search/ruby on rails', opts, (s1) ->
+      GET '/tags/search/RoR', opts, (s2) ->
+        GET '/tags/search/rrr', opts, (s3) ->
+          GET '/tags/search/ruby-on-rails', opts, (s4) ->
+            GET '/tags/search/rails', opts, (s5) ->
+              GET '/tags/search/ruby', opts, (s6) ->
+                expect(s1[0].slug).to.equal('ruby-on-rails')
+                expect(s2[0].slug).to.equal('ruby-on-rails')
+                expect(s3[0].slug).to.equal('ruby-on-rails')
+                expect(s4[0].slug).to.equal('ruby-on-rails')
+                expect(s5[0].slug).to.equal('ruby-on-rails')
+                expect(s6[0].slug).to.equal('ruby-on-rails')
+                done()
