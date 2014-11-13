@@ -5,6 +5,7 @@ module.exports = () => describe("API: ", function() {
   before(function(done) {
     testDb.addUserWithRole('edap', 'editor', stubAnalytics)
     testDb.initTags(done)
+    this.spy = sinon.spy(mailman, 'sendChangePasswordEmail');
   })
 
   after(function(done) {
@@ -227,6 +228,21 @@ module.exports = () => describe("API: ", function() {
 		expect(getHashId('2.2 Express `req.session`')).to.equal('2-2-express-req-session-')
     expect(getHashId(`jQuery.prop('checked') vs. ng-checked`)).to.equal('jquery-prop-checked-vs-ng-checked')
   })
+
+
+  it('Should send an email when posts throws a 404', function() {
+    var opts = { unauthenticated: true };
+    var headers = {'User-Agent': 'test_agent', 'Referer': 'http://localhost:4444'};
+
+    GET('/angularjs/posts/this-should-fail', opts, headers, function(res) {
+      expect(res).to.equal('post not found. Back to <a href="/posts">posts</a>');
+
+      expect(spy.callCount).to.equal(1);
+      expect(spy.args[0][2]).to.equal('/angularjs/posts/this-should-fail');
+      expect(spy.args[0][3]).to.equal('test_agent');
+      expect(spy.args[0][4]).to.equal('test_referer');
+    });
+  });
 
 
 })

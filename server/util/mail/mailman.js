@@ -55,6 +55,21 @@ module.exports = function(mailProvider)
 			hash
 		}), cb)
 
+  mailman.sendFailedPostEmail = (toUsers, requestTime, requestUrl, userAgent, referrer, cb) => {
+    if (Object.prototype.toString.call(toUsers) !== '[object Array]') {
+      cb('The toUsers parameter is not an array.')
+    }
+
+  	for (var i = 0; i < toUsers.length; i++) {
+  		var toUser = toUsers[i];
+			mailProvider.send(`${toUser.name} <${toUser.email}>`, renderEmail('post404', {
+				requestTime,
+				requestUrl,
+				userAgent,
+				referrer
+			}), cb)
+  	}
+  }
 
 	return mailman
 }

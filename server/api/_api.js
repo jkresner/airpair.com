@@ -30,7 +30,7 @@ function resolveParamFn(Svc, svcFnName, paramaName) {
       if (!r && !e) e = new Error(`${paramaName} not found. Back to <a href="/${paramaName}s">${paramaName}s</a>`)
       req[paramaName] = r
       next(e, r)
-    })
+    }, req)
   }
 }
 
