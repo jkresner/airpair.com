@@ -6,7 +6,7 @@ var svc = new Svc(Redirect, logging)
 
 
 export function getAllRedirects(cb) {
-  var opts = { fields: { _id:1,previous:1,current:1 }, options: { sort: 'previous' } }
+  var opts = { fields: { _id:1,previous:1,current:1,type:1 }, options: { sort: 'previous' } }
   svc.searchMany({}, opts, cb)
 }
 
