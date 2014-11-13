@@ -1,17 +1,9 @@
-<script type="text/javascript" src="/v1/js/lib.js"></script>
-{{!--
-<!-- build:js1 /lib.js -->
-  <script type="text/javascript" src="/v1/lib/jquery/dist/jquery.js"></script>
-  <script type="text/javascript" src="/v1/lib/lodash/dist/lodash.min.js"></script>
-  <script type="text/javascript" src="/v1/lib/moment/min/moment.min.js"></script>
-  <script type="text/javascript" src="/v1/lib/angular/angular.min.js"></script>
-  <script type="text/javascript" src="/v1/lib/angular-route/angular-route.min.js"></script>
-  <script type="text/javascript" src="/v1/lib/angular-messages/angular-messages.min.js"></script>
-  <script type="text/javascript" src="/v1/lib/angular-load/angular-load.min.js"></script>
-  <script type="text/javascript" src="/v1/lib/angular-bootstrap/ui-bootstrap.min.js"></script>
-  <script type="text/javascript" src="/v1/lib/angular-bootstrap/ui-bootstrap-tpls.js"></script>
-  <script type="text/javascript" src="/v1/lib/marked/lib/marked.js"></script>
-  <script type="text/javascript" src="/v1/lib/prism/prism.js"></script>
-  <script type="text/javascript" src="/v1/lib/jquery-ui/jquery-ui.min.js"></script>
-  <!-- endbuild -->
---}}
+{{#if config.isDist }}
+
+<script type="text/javascript" src="//static.airpair.com/js/{{distscript}}"></script>
+
+{{else}}
+
+<script type="text/javascript" src="/v1/js/index.js"></script>
+
+{{/if}}

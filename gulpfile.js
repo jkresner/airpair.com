@@ -5,14 +5,15 @@ var path = require('path'),
   less = require('gulp-less'),
   livereload = require('gulp-livereload'),
   gutil = require('gulp-util'),
-  stringify = require('stringify'),
   source = require('vinyl-source-stream'),
+  buffer = require('gulp-buffer'),
+  merge = require('merge-stream'),
+  es6ify = require('es6ify'),
+  stringify = require('stringify'),
   watchify = require('watchify'),
   browserify = require('browserify'),
-  usemin = require('gulp-usemin'),
-  uglify = require('gulp-uglify'),
-  rev = require('gulp-rev'),
-  es6ify = require('es6ify');
+  uglifyify = require('uglifyify'),
+  rev = require('gulp-rev');
 
 paths = {
   public: 'public/**',
@@ -65,10 +66,11 @@ gulp.task('watch', function() {
 });
 
 
-var watchifyer = function(fileName) {
+var watchifyer = function(fileName)
+{
   var bundler = watchify(browserify('./public/common/'+fileName, watchify.args));
   bundler.transform(stringify(['.html']));
-  bundler.transform(es6ify);
+  bundler.transform(es6ify.configure(/^(?!.*lib)+.+\.js$/));
   bundler.on('update', rebundle);
 
   function rebundle() {
@@ -83,7 +85,6 @@ var watchifyer = function(fileName) {
 }
 
 gulp.task('watchify', function() {
-  watchifyer('lite.js');
   watchifyer('index.js');
   watchifyer('adm.js');
 });
@@ -92,30 +93,27 @@ var bundlerer = function(fileName) {
   var bundler = browserify('./public/common/'+fileName);
 
   bundler.transform(stringify(['.html']));
-  bundler.transform(es6ify);
+  bundler.transform(es6ify.configure(/^(?!.*lib)+.+\.js$/));
 
-  bundler.bundle()
+  bundler.transform({global:true}, 'uglifyify');
+
+  return bundler.bundle()
     .pipe(source(fileName))
-    .pipe(gulp.dest('./public/v1/js'));
+    .pipe(buffer());
 }
 
 gulp.task('bundle', function() {
-  bundlerer('lite.js')
-  bundlerer('index.js')
-  bundlerer('adm.js')
-});
-
-gulp.task('usemin', function() {
-  gulp.src('./server/views/partials/siteScripts.hbs')
-    .pipe(usemin({
-      assetsDir: './public',
-      outputRelativePath: './../../../../public/v1/js/',
-      js: [uglify(), rev()]
-    }))
-    .pipe(gulp.dest('./server/views/partials/built'));
+  merge(
+    bundlerer('index.js'),
+    bundlerer('adm.js')
+    )
+    .pipe(rev())
+    .pipe(gulp.dest('./dist/js'))
+    .pipe(rev.manifest())
+    .pipe(gulp.dest('./dist'))
 });
 
 
 gulp.task('default', ['nodemon','less','watch','watchify']);
 gulp.task('test', ['testnodemon','build']);
-gulp.task('build', ['usemin','less','bundle']);
+gulp.task('build', ['less','bundle']);
