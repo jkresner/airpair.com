@@ -36,16 +36,16 @@ angular.module('APUserInput', ['ui.bootstrap'])
           });
         };
 
-        $scope.keypressSelect = function(val) {
-          if (!val || $scope.matches.length == 0) return null;
-          $scope.selectMatch(0);
-        }
-
         $scope.selectMatch = function (index) {
           var user = $scope.matches[index];
           $scope.selectUser(user);
-          $scope.q = user.name;
+          // $scope.q = user.name;
         };
+
+        $scope.keypressSelect = function(val) {
+          if (!val || $scope.matches.length == 0) return null;
+          $scope.selectMatch(val);
+        }
 
       }]
     }

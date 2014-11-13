@@ -79,7 +79,7 @@
         color:@gray;
         font-weight:normal;
       }
-		}
+    }
 
     .entry-content {
       text-align:left;
@@ -92,30 +92,15 @@
       overflow:hidden;
     }
 
-		footer {
-			position:absolute;
-			bottom:0;
+    footer {
+      position:absolute;
+      bottom:0;
       right:0;
-			font-size:9px;
-			text-align:right;
-			width:40%;
-			height:40px;
-
-		}
-
-    // a.bookmark {
-    //   background:@orange;
-    //   float:left;
-    //   padding:2px 10px;
-    //   width:30%;
-    //   color:white;
-    //   font-weight:bold;
-    //   background-position:10% center;
-    //   background-repeat:no-repeat;
-    //   border-top-right-radius:4px;
-    //   border-bottom-right-radius:4px;
-    //   background-size:12px 12px;
-    // }
+      font-size:9px;
+      text-align:right;
+      width:40%;
+      height:40px;
+    }
 	}
 }
 
@@ -407,109 +392,111 @@
 
 section#posts {
 
-	section > h3 {
-		width:100%;
-		margin-bottom:10px;
-		font-size:18px;
-		span { display:block;float:right }
-	}
+  section > h3 {
+    width:100%;
+    margin-bottom:10px;
+    font-size:18px;
+    span { display:block;float:right }
+  }
 
-	.myposts {
-		width:640px;
-	}
+  .myposts {
+    width:640px;
+  }
 
-	.editOptions {
-		text-align:right;
-		float:right;
-		margin-right:10px;
-		width:200px;
+  .editOptions {
+    text-align:right;
+    float:right;
+    margin-right:10px;
+    width:200px;
 
-		a.btn { width:200px; }
-	}
+    a.btn { width:200px; }
+  }
 
-	#author { padding-top:10px }
+  #author { padding-top:10px }
 
-	.editor {
-		padding:10px 16px 0px 16px;
-		span { font-weight:normal;font-size:11px }
-		.meta {
-			display:none;
-			width:100%;
-			float:right;
-			.dates .form-group
-			{
-				float:left;width:60%;
-			}
-			.dates section
-			{
-				margin:0px 0px 2px 0px;
-				line-height:10px;
-				float:right;
-				width:32%;
-				font-size:10px;
-				label { font-size:10px;display:block;margin-bottom:5px  }
-				span { display:block;margin-bottom:6px }
-			}
-		}
-		.md { float:left;width:64%;
-			display:none;
-			textarea { padding:4px;height:340px;font-size:14px }
-		}
-		.md + .meta {
-			width:34%;
-		}
-		.form-actions {
-			height:40px;
-			clear:both;
-			text-align:center;
-			.btn { width:19%;margin:0px 2px 8px 2px;padding:3px 0px;display:none }
-			.btnPreview { display:inline-block; }
-		}
+  .editor {
+    padding:10px 16px 0px 16px;
+    span { font-weight:normal;font-size:11px }
+    .meta {
+      display:none;
+      width:100%;
+      float:right;
+      .dates .form-group
+      {
+        float:left;width:60%;
+      }
+      .dates section
+      {
+        margin:0px 0px 2px 0px;
+        line-height:10px;
+        float:right;
+        width:32%;
+        font-size:10px;
+        label { font-size:10px;display:block;margin-bottom:5px  }
+        span { display:block;margin-bottom:6px }
+      }
+    }
+    .md { float:left;width:64%;
+      display:none;
+      textarea { padding:4px;height:340px;font-size:14px }
+    }
+    .md + .meta {
+      width:34%;
+    }
+    .form-actions {
+      height:40px;
+      clear:both;
+      text-align:center;
+      .btn { width:19%;margin:0px 2px 8px 2px;padding:3px 0px;display:none }
+      .btnPreview { display:inline-block; }
+    }
 
-		.tag-input-group {
-			.nomobile { display:none }
-			label { display:none }
-			.drag { display:none }
-			.selected {
-				display:block;
-				float:none;
-				li { display:inline;background:none;border:none }
-				.remove { float:none;background:none;color:red;display:inline;font-size:12px }
+    .tag-input-group {
+      .nomobile { display:none }
+      label { display:none }
+      .drag { display:none }
+      .selected {
+        display:block;
+        float:none;
+        li { display:inline;background:none;border:none }
+        .remove { float:none;background:none;color:red;display:inline;font-size:12px }
         .order { display: none; }
-			}
-		}
-	}
+      }
+    }
+  }
 
-	.editor + hr { margin:4px 0 0 0;border-color:@lightblue; }
-	.preview + hr { margin:0px 0px 4px 0px;border-color:@lightblue; }
+  .editor + hr { margin:4px 0 0 0;border-color:@lightblue; }
+  .preview + hr { margin:0px 0px 4px 0px;border-color:@lightblue; }
 
-	#tips { display:none; }
+  #tips { display:none; }
 
-	.edit {
-		#preview {
-			.preview {
-				width:914px;max-height:300px;overflow-y:scroll;
-				border-right:solid 1px @lightblue;
-			}
-		}
+  .edit {
+    #preview {
+      .preview {
+        width:914px;max-height:300px;overflow-y:scroll;
+        border-right:solid 1px @lightblue;
+      }
+    }
 
-		#tips { display:block;background-color:@lightblue;padding:4px 6px;font-size:10px;line-height:14px;min-height:80px }
-		#tips ul { padding:4px 14px }
-	}
+    #tips { display:block;background-color:@lightblue;padding:4px 6px;font-size:10px;line-height:14px;min-height:80px }
+    #tips ul { padding:4px 14px }
+  }
 
-	.edit, .publish {
+  .edit, .publish {
 
-		.form-actions { .btn { display:inline-block } }
-		.editor { background-color:@lightblue; }
-		.md { display:block }
-		.meta { display:block }
+    .form-actions { .btn { display:inline-block } }
+    .editor { background-color:@lightblue; }
+    .md { display:block }
+    .meta { display:block }
 
-		.publishMeta input { font-size:11px;padding:4px;height:26px }
+    .publishMeta input { font-size:11px;padding:4px;height:26px }
 
-	}
+    article { border:solid 2px @bluegray;background:white }
+    article header { background:@bluegray }
+  }
 
-	@media screen and (max-width:640px) {
-		//-- don't show myposts UI on mobile. might even be worth disabling xhr in angular
-	  section#myposts { display:none }
-	}
+  @media screen and (max-width:640px) {
+    //-- don't show myposts UI on mobile. might even be worth disabling xhr in angular
+    section#myposts { display:none }
+  }
 }

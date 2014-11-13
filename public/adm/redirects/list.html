@@ -6,6 +6,11 @@
 
   <input type="text" ng-model='previous' placeholder="From" />
   <input type="text" ng-model='current' placeholder="To" />
+  <select type="text" ng-model='type' placeholder="RedirectType">
+    <option>301</option>
+    <option>302</option>
+    <option>410</option>
+  </select>
   <button id="btnCreateRedirect" ng-click="createRedirect()" class="btn">Create</button>
 
   <hr />
@@ -15,7 +20,7 @@
       <li ng-repeat="r in redirects">
         <time>{{ r._id | objectIdToDate : 'MM.DD' }}</time>
         <label><a href="{{ r.previous }}" target="_blank">{{ r.previous }}</a></label>
-        <span><a href="#" ng-click="deleteRedirect(r._id)">x</a>===> {{ r.current }}</span>
+        <span><a href="#" ng-click="deleteRedirect(r._id)">x</a><b>{{ r.type }}</b> {{ r.current }}</span>
       </li>
     </ul>
   </div>
