@@ -19,7 +19,7 @@ angular.module("ADMRedirects", ['ngRoute', 'APSvcAdmin', 'APFilters'])
     })
 
     $scope.createRedirect = function() {
-      var d = { previous: $scope.previous, current: $scope.current }
+      var d = { previous: $scope.previous, current: $scope.current, type: $scope.type }
       AdmDataService.createRedirect(d, function (result) {
         $scope.redirects.push(result);
       })
