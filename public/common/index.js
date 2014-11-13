@@ -1,3 +1,15 @@
+window.$ = window.jQuery = require('./../v1/lib/jquery/dist/jquery.js');
+window._ = require('./../v1/lib/lodash/dist/lodash.min.js');
+window.moment = require('./../v1/lib/moment/min/moment.min.js');
+require('./../v1/lib/angular/angular.min.js');
+require('./../v1/lib/angular-route/angular-route.min.js');
+require('./../v1/lib/angular-messages/angular-messages.min.js');
+require('./../v1/lib/angular-load/angular-load.min.js');
+require('./../v1/lib/angular-bootstrap/ui-bootstrap.min.js');
+require('./../v1/lib/angular-bootstrap/ui-bootstrap-tpls.js');
+require('./../v1/lib/marked/lib/marked.js');
+require('./../v1/lib/prism/prism.js');
+require('./../v1/lib/jquery-ui/jquery-ui.min.js');
 require('./../common/directives/share.js');
 require('./../common/directives/post.js');
 require('./../common/directives/tagInput.js');
@@ -44,6 +56,29 @@ angular.module("AP", ['ngRoute', 'APSideNav', 'APAuth', 'APPosts', 'APWorkshops'
     $rootScope.$on('$routeChangeSuccess', function() {
       window.trackRoute($location.path());
     });
+
+  }])
+
+;
+
+
+angular.module("APLite", ['ngRoute', 'APFilters', 'APAnalytics', 'APSideNav', 'APBookmarker'])
+
+  .config( ['$provide', function ($provide){
+
+  }])
+
+  .run(['$rootScope', 'SessionService',
+    function($rootScope, SessionService) {
+
+    pageHlpr.fixNavs('#side');
+
+    if (window.viewData)
+    {
+      if (window.viewData.post) $rootScope.post = window.viewData.post
+      if (window.viewData.workshop) $rootScope.workshop = window.viewData.workshop
+      if (window.viewData.expert) $rootScope.expert = window.viewData.expert
+    }
 
   }])
 
