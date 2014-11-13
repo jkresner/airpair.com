@@ -1,3 +1,5 @@
+var dist = require('../../dist/js/rev-manifest.json')
+
 var cfg = {
   build:  { version: '1.06', deployed: 'Oct 15' },
   port:     process.env.PORT || 3333,
@@ -26,6 +28,7 @@ var cfg = {
       ]
     }
   },
+  dist,
   log: {},
   mail: {
   	on: false, // we don't send mail in dev
@@ -50,6 +53,8 @@ module.exports = function(env, appdir) {
   cfg.env = env
   cfg.appdir = appdir
   cfg.livereload = cfg.env == 'dev'
+
+  cfg.isDist = false
 
   //-- Temp for testing prod setting locally
   // cfg.analytics.on = true
