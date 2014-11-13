@@ -24,18 +24,20 @@ module.exports = () => describe("API: ", function() {
   describe("Bots:", (done) => {
 
     var checkSessionIsNotAdded = (known_agent_string, done) => {
-      http(global.app)
-        .get('/v1/api/session/full')
-        .set('user-agent', known_agent_string)
-        .expect(200)
-        .end( (e, r) => {
-          if (e) return done(e)
-          expect(r.body.authenticated).to.be.false
-          expect(r.body.sessionID).to.not.exist
-          testDb.sessionBySessionId(r.body.sessionID, (e, s) => {
+      testDb.countSessions( (e, oldNumSessions) => {
+        http(global.app)
+          .get('/v1/api/session/full')
+          .set('user-agent', known_agent_string)
+          .expect(200)
+          .end( (e, r) => {
             if (e) return done(e)
-            expect(s).to.be.empty
-            done()
+            expect(r.body.authenticated).to.be.false
+            expect(r.body.sessionID).to.not.exist
+            testDb.countSessions( (e, count) => {
+              if (e) return done(e)
+              expect(count).to.equal(oldNumSessions)
+              done()
+            })
           })
         })
       }
@@ -82,6 +84,29 @@ module.exports = () => describe("API: ", function() {
       checkSessionIsAdded('Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2049.0 Safari/537.36', done)
     })
 
+    it('Sessions are saved for empty user-agent strings', (d) => {
+      var done = createCountedDone(2, d)
+      checkSessionIsAdded('', done)
+      checkSessionIsAdded(null, done)
+    })
+
+    it('Sessions are saved when no user-agent header is set', (done) => {
+      http(global.app)
+        .get('/v1/api/session/full')
+        .unset('user-agent')
+        .expect(200)
+        .end( (e, r) => {
+          if (e) return done(e)
+          expect(r.body.authenticated).to.be.false
+          expect(r.body.sessionID).to.exist
+          testDb.sessionBySessionId(r.body.sessionID, (e, s) => {
+            if (e) return done(e)
+            expect(s.length).to.be.greaterThan(0)
+            expect(s[0].id).to.equal(r.body.sessionID)
+            return done()
+          })
+        })
+    })
   })
 
 	describe("Stack: ", function(done) {

@@ -8,7 +8,7 @@ var logging = false
 
 var botAwareSession = (expressSession) => {
   return (req, res, next) => {
-      if (util.isBot(req.get('user-agent'))) {
+      if (req.header('user-agent') && util.isBot(req.header('user-agent'))) {
         req.session = { anonData: {} }
         return next()
       }

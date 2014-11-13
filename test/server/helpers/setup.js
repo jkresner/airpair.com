@@ -217,6 +217,12 @@ module.exports = {
     })
   },
 
+  countSessions: function(cb) {
+    Session.find({}, (e,r) => {
+      return cb(e, r.length)
+    })
+  },
+
   sessionBySessionId: function (id, cb) {
     Session.find({_id:id}, (e,r) => {
       return cb(e,r)
