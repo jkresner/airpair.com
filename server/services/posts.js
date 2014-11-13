@@ -12,10 +12,7 @@ var svc = new Svc(Post, logging)
 var addUrl = (cb) =>
   (e,r) => {
     for (var p of r) {
-      if (p.slug) {
-        if (p.tags.length > 0) p.url = `/${p.tags[0].slug}/posts/${p.slug}`
-        else p.url = `/v1/posts/${p.slug}`
-      }
+      if (p.meta) p.url = p.meta.canonical
     }
     cb(e,r)
   }
