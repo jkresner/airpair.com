@@ -1,5 +1,3 @@
-var dist = require('../../dist/js/rev-manifest.json')
-
 var cfg = {
   build:  { version: '1.06', deployed: 'Oct 15' },
   port:     process.env.PORT || 3333,
@@ -28,7 +26,10 @@ var cfg = {
       ]
     }
   },
-  dist,
+  bundle: {
+    indexScript: '/v1/js/index.js',
+    indexCss: '/v1/css/index.css'
+  },
   log: {},
   mail: {
   	on: false, // we don't send mail in dev
@@ -54,8 +55,6 @@ module.exports = function(env, appdir) {
   cfg.appdir = appdir
   cfg.livereload = cfg.env == 'dev'
 
-  cfg.isDist = false
-
   //-- Temp for testing prod setting locally
   // cfg.analytics.on = true
   // cfg.analytics.segmentio. writekey = '0xxx5xrw5q'
@@ -71,6 +70,11 @@ module.exports = function(env, appdir) {
   }
 
   if (cfg.env == 'staging' || cfg.env == 'production') {
+    var dist = require('../../dist/rev-manifest.json')
+    // cfg.bundle.indexScript = `//static.airpair.com/js/${dist['index.js']}`
+    // cfg.bundle.indexCss = `//static.airpair.com/css/${dist['index.css']}`
+    cfg.bundle.indexScript = `/v1/js/${dist['index.js']}`
+    cfg.bundle.indexCss = `/v1/css/${dist['index.css']}`
     cfg.mail.on = true
     cfg.analytics.on = true
     cfg.analytics.segmentio.writekey = process.env.ANALYTICS_SEGMENTIO_WRITEKEY

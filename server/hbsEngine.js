@@ -45,7 +45,7 @@ export default function(app) {
 		data.build = config.build
 		data.authenticated = req.user && req.user._id
 		data.user = req.user || { sessionID: req.sessionID }
-		data.config = { analytics: config.analytics }
+		data.config = { analytics: config.analytics, bundle: config.bundle }
 		data.campPeriod = moment().format('MMMYY').toLowerCase()
 		return data;
 	}
