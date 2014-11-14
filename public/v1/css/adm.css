@@ -220,40 +220,12 @@ section.comingsoon {
   width: 60%;
   margin-top: 10px;
 }
-.tile {
-  width: 286px;
-  height: 200px;
-  position: relative;
-  font-size: 11px;
-  border: solid 2px #dff2ef;
+.tileborder {
+  border: solid 1px #d3d3d3;
   border-radius: 3px;
 }
-.tile header {
-  background-color: #dff2ef;
-}
-.tile h2 {
-  font-size: 13px;
-  font-weight: bold;
-  color: #4d4e4e;
-  line-height: 18px;
-}
-.tile img.bookmark {
-  padding: 2px;
-  margin: 2px;
-  color: black;
-  cursor: pointer;
-}
-.tile footer {
-  text-align: right;
-  position: absolute;
-  bottom: 0px;
-  right: 0px;
-}
-.tile:hover {
-  border: solid 2px #c8d6d3 !important;
-}
-.tile:hover header {
-  background-color: #c8d6d3 !important;
+.tileborderHover {
+  border: solid 1px #ce5424;
 }
 h1.entry-title {
   text-align: left;
@@ -370,7 +342,6 @@ input.form-control {
   border-radius: 4px;
   margin-right: 0.5rem;
   padding-bottom: 0.5rem;
-  cursor: pointer;
 }
 .tag-input-group ul.bookmarks li,
 .bookmark-input-group ul.bookmarks li {
@@ -878,39 +849,8 @@ nav#chat.collapse {
   background: -ms-radial-gradient(left, #ffffff 0%, #dff2ef 100%, #ffffff 50%);
   background: radial-gradient(to right, #ffffff 0%, #dff2ef 100%, #ffffff 50%);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#ffffff', GradientType=1);
-  width: 286px;
-  height: 200px;
-  position: relative;
-  font-size: 11px;
-  border: solid 2px #dff2ef;
+  border: solid 1px #d3d3d3;
   border-radius: 3px;
-}
-.modal-body.profile section.avatar header {
-  background-color: #dff2ef;
-}
-.modal-body.profile section.avatar h2 {
-  font-size: 13px;
-  font-weight: bold;
-  color: #4d4e4e;
-  line-height: 18px;
-}
-.modal-body.profile section.avatar img.bookmark {
-  padding: 2px;
-  margin: 2px;
-  color: black;
-  cursor: pointer;
-}
-.modal-body.profile section.avatar footer {
-  text-align: right;
-  position: absolute;
-  bottom: 0px;
-  right: 0px;
-}
-.modal-body.profile section.avatar:hover {
-  border: solid 2px #c8d6d3 !important;
-}
-.modal-body.profile section.avatar:hover header {
-  background-color: #c8d6d3 !important;
 }
 .modal-body.profile section.avatar label {
   display: block;
@@ -935,142 +875,289 @@ nav#chat.collapse {
 .modal-footer.profile .btn-primary {
   width: 100%;
 }
+@media screen and (max-width: 640px) {
+  section#post .main-wrap,
+  section#post main {
+    width: 100%;
+    margin: auto;
+  }
+}
 .posts {
   margin-left: -5px;
   text-align: center;
+}
+.posts article {
+  background: #ffffff;
+  background: -moz-radial-gradient(left, #ffffff 0%, #dff2ef 100%, #ffffff 50%);
+  background: radial-webkit-gradient(left top, right top, color-stop(0%, #ffffff), color-stop(10%, #dff2ef), color-stop(50%, #ffffff));
+  background: -webkit-radial-gradient(left, #ffffff 0%, #dff2ef 100%, #ffffff 50%);
+  background: -o-radial-gradient(left, #ffffff 0%, #dff2ef 100%, #ffffff 50%);
+  background: -ms-radial-gradient(left, #ffffff 0%, #dff2ef 100%, #ffffff 50%);
+  background: radial-gradient(to right, #ffffff 0%, #dff2ef 100%, #ffffff 50%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#ffffff', GradientType=1);
+  border: solid 1px #d3d3d3;
+  border-radius: 3px;
+  text-align: left;
+  position: relative;
+  width: 286px;
+  height: 200px;
+  margin: 6px;
+  padding: 0px;
+  font-size: 12px;
+  line-height: 14px;
+  display: inline-block;
+}
+.posts article > a {
+  padding: 12px 12px 0px 12px;
+  display: block;
+}
+.posts article header {
+  min-height: 60px;
+  overflow: hidden;
+}
+.posts article h2 {
+  font-size: 14px;
+  font-weight: bold;
+  margin: 0px 0px 1px 0px;
+  line-height: 18px;
+  color: #4d4e4e;
+}
+.posts article .entry-meta {
+  color: #4d4e4e;
+  font-size: 11px;
+  max-height: 20px;
+  overflow: hidden;
+}
+.posts article footer {
+  position: absolute;
+  bottom: 10px;
+  font-size: 9px;
+  text-align: right;
+  width: 94%;
+  height: 30px;
+}
+.posts article footer .entry-meta {
+  float: right;
+}
+.posts article footer .entry-categories {
+  color: #4d4e4e;
+  width: 100%;
+}
+.posts article footer .entry-categories a {
+  display: inline-block;
+  margin-left: 5px;
+}
+.posts article p {
+  line-height: 16px;
+  margin: 0;
+  padding: 0;
+}
+.posts article .entry-content {
+  height: 80px;
+  overflow: hidden;
+  color: #4d4e4e;
+}
+.posts article .entry-author {
+  font-weight: bold;
+  color: #ce5424;
+}
+.posts article .entry-author-image {
+  width: 50px;
+  border-radius: 25px;
+  display: inline;
+  margin: 3px 10px 0 0;
+  border: solid 3px #c8d6d3;
+  webkit-filter: grayscale(100%);
+  -moz-filter: grayscale(100%);
+  filter: grayscale(100%);
+}
+.posts article a.bookmark {
+  background: #ce5424;
+  float: left;
+  padding: 2px 10px;
+  width: 30%;
+  color: white;
+  background-image: url('/v1/img/css/sidenav/bookmark.png');
+  font-weight: bold;
+  background-position: 10% center;
+  background-repeat: no-repeat;
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+  background-size: 12px 12px;
+}
+.posts article:hover {
+  border: solid 1px #ce5424;
 }
 @media screen and (max-width: 640px) {
   .posts {
     margin: auto;
   }
 }
-.posts article {
-  width: 286px;
-  height: 200px;
-  font-size: 11px;
-  border: solid 2px #dff2ef;
-  border-radius: 3px;
-  text-align: left;
-  position: relative;
-  margin: 6px;
-  padding: 0px;
-  line-height: 14px;
-  display: inline-block;
+section#posts section > h3 {
+  width: 100%;
+  margin-bottom: 10px;
+  font-size: 18px;
 }
-.posts article header {
-  background-color: #dff2ef;
-}
-.posts article h2 {
-  font-size: 13px;
-  font-weight: bold;
-  color: #4d4e4e;
-  line-height: 18px;
-}
-.posts article img.bookmark {
-  padding: 2px;
-  margin: 2px;
-  color: black;
-  cursor: pointer;
-}
-.posts article footer {
-  text-align: right;
-  position: absolute;
-  bottom: 0px;
-  right: 0px;
-}
-.posts article:hover {
-  border: solid 2px #c8d6d3 !important;
-}
-.posts article:hover header {
-  background-color: #c8d6d3 !important;
-}
-.posts article > a {
-  padding: 0px 6px 0px 0px;
+section#posts section > h3 span {
   display: block;
-}
-.posts article header {
-  padding: 4px;
-  float: left;
-  width: 50%;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  background-color: #dff2ef;
-}
-.posts article header .entry-header-image {
-  max-width: 100%;
-}
-.posts article header p.entry-meta {
-  width: 100%;
-  line-height: 16px;
-  margin: 0;
-  padding: 0;
-  color: #4d4e4e;
-  font-size: 11px;
-  position: absolute;
-  bottom: 0;
-  left: 0;
-}
-.posts article header .entry-categories {
-  color: #151821;
-  width: 100%;
-  font-size: 9px;
-}
-.posts article header .entry-categories em {
-  display: inline-block;
-  font-style: normal;
-}
-.posts article header .entry-categories a {
-  display: inline-block;
-  margin-left: 5px;
-}
-.posts article header .entry-author {
-  padding-top: 15px;
-  font-weight: bold;
-  color: #ce5424;
-  width: 100%;
-}
-.posts article header .entry-author-name {
-  display: inline-block;
-  width: 50%;
-}
-.posts article header .entry-author-image {
-  width: 50px;
-  border-radius: 25px;
-  display: inline;
-  margin: 0px 6px 0 1px;
-  border: solid 3px #c8d6d3;
-  webkit-filter: grayscale(100%);
-  -moz-filter: grayscale(100%);
-  filter: grayscale(100%);
-}
-.posts article header time {
-  display: block;
-  color: #4d4e4e;
-  font-weight: normal;
-}
-.posts article .entry-content {
-  text-align: left;
   float: right;
-  width: 48%;
-  padding: 3px;
-  max-height: 143px;
-  overflow: hidden;
 }
-.posts article .entry-content h2 {
-  margin: 0px 0px 1px 0px;
+section#posts .myposts {
+  width: 640px;
 }
-.posts article .entry-content p {
-  color: #7e7f7f;
-}
-.posts article footer {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  font-size: 9px;
+section#posts .editOptions {
   text-align: right;
-  width: 40%;
+  float: right;
+  margin-right: 10px;
+  width: 200px;
+}
+section#posts .editOptions a.btn {
+  width: 200px;
+}
+section#posts #author {
+  padding-top: 10px;
+}
+section#posts .editor {
+  padding: 10px 16px 0px 16px;
+}
+section#posts .editor span {
+  font-weight: normal;
+  font-size: 11px;
+}
+section#posts .editor .meta {
+  display: none;
+  width: 100%;
+  float: right;
+}
+section#posts .editor .meta .dates .form-group {
+  float: left;
+  width: 60%;
+}
+section#posts .editor .meta .dates section {
+  margin: 0px 0px 2px 0px;
+  line-height: 10px;
+  float: right;
+  width: 32%;
+  font-size: 10px;
+}
+section#posts .editor .meta .dates section label {
+  font-size: 10px;
+  display: block;
+  margin-bottom: 5px;
+}
+section#posts .editor .meta .dates section span {
+  display: block;
+  margin-bottom: 6px;
+}
+section#posts .editor .md {
+  float: left;
+  width: 64%;
+  display: none;
+}
+section#posts .editor .md textarea {
+  padding: 4px;
+  height: 340px;
+  font-size: 14px;
+}
+section#posts .editor .md + .meta {
+  width: 34%;
+}
+section#posts .editor .form-actions {
   height: 40px;
+  clear: both;
+  text-align: center;
+}
+section#posts .editor .form-actions .btn {
+  width: 19%;
+  margin: 0px 2px 8px 2px;
+  padding: 3px 0px;
+  display: none;
+}
+section#posts .editor .form-actions .btnPreview {
+  display: inline-block;
+}
+section#posts .editor .tag-input-group .nomobile {
+  display: none;
+}
+section#posts .editor .tag-input-group label {
+  display: none;
+}
+section#posts .editor .tag-input-group .drag {
+  display: none;
+}
+section#posts .editor .tag-input-group .selected {
+  display: block;
+  float: none;
+}
+section#posts .editor .tag-input-group .selected li {
+  display: inline;
+  background: none;
+  border: none;
+}
+section#posts .editor .tag-input-group .selected .remove {
+  float: none;
+  background: none;
+  color: red;
+  display: inline;
+  font-size: 12px;
+}
+section#posts .editor .tag-input-group .selected .order {
+  display: none;
+}
+section#posts .editor + hr {
+  margin: 4px 0 0 0;
+  border-color: #dff2ef;
+}
+section#posts .preview + hr {
+  margin: 0px 0px 4px 0px;
+  border-color: #dff2ef;
+}
+section#posts #tips {
+  display: none;
+}
+section#posts .edit #preview .preview {
+  width: 914px;
+  max-height: 300px;
+  overflow-y: scroll;
+  border-right: solid 1px #dff2ef;
+}
+section#posts .edit #tips {
+  display: block;
+  background-color: #dff2ef;
+  padding: 4px 6px;
+  font-size: 10px;
+  line-height: 14px;
+  min-height: 80px;
+}
+section#posts .edit #tips ul {
+  padding: 4px 14px;
+}
+section#posts .edit .form-actions .btn,
+section#posts .publish .form-actions .btn {
+  display: inline-block;
+}
+section#posts .edit .editor,
+section#posts .publish .editor {
+  background-color: #dff2ef;
+}
+section#posts .edit .md,
+section#posts .publish .md {
+  display: block;
+}
+section#posts .edit .meta,
+section#posts .publish .meta {
+  display: block;
+}
+section#posts .edit .publishMeta input,
+section#posts .publish .publishMeta input {
+  font-size: 11px;
+  padding: 4px;
+  height: 26px;
+}
+@media screen and (max-width: 640px) {
+  section#posts section#myposts {
+    display: none;
+  }
 }
 .blogpost {
   clear: both;
@@ -1094,15 +1181,12 @@ nav#chat.collapse {
   padding-left: 0px;
 }
 .blogpost h2 {
-  max-width: 640px;
   text-align: left;
   font-size: 28px;
-  margin: 40px 0 30px 0;
+  margin-bottom: 5px;
   padding-left: 0px;
-  line-height: 35px;
 }
 .blogpost h3 {
-  max-width: 640px;
   text-align: left;
 }
 .blogpost p {
@@ -1179,12 +1263,11 @@ nav#chat.collapse {
   position: fixed;
 }
 .blogpost .railCTA > div {
-  position: relative;
   background-color: #dff2ef;
   border-radius: 4px;
   height: 95px;
 }
-.blogpost .railCTA > div > img {
+.blogpost .railCTA img {
   width: 70px;
   height: 70px;
   border-radius: 50%;
@@ -1218,19 +1301,7 @@ nav#chat.collapse {
   background-position: 90% center;
   background-repeat: no-repeat;
 }
-.blogpost .railCTA div.bookmark {
-  cursor: pointer;
-  text-align: right;
-  margin: -10px 0px 0px 0px;
-  width: 98%;
-}
 .blogpost .railCTA a.bookmark {
-  width: auto;
-  height: auto;
-  cursor: pointer;
-  position: absolute;
-  bottom: 0;
-  right: 0;
   background-image: url('/v1/img/css/sidenav/bookmark.png');
 }
 .blogpost .railCTA a.bookmark:hover {
@@ -1460,171 +1531,8 @@ nav#chat.collapse {
   padding-top: 8px;
   font-size: 18px;
 }
-section#posts section > h3 {
-  width: 100%;
-  margin-bottom: 10px;
-  font-size: 18px;
-}
-section#posts section > h3 span {
-  display: block;
+a.bookmark {
   float: right;
-}
-section#posts .myposts {
-  width: 640px;
-}
-section#posts .editOptions {
-  text-align: right;
-  float: right;
-  margin-right: 10px;
-  width: 200px;
-}
-section#posts .editOptions a.btn {
-  width: 200px;
-}
-section#posts #author {
-  padding-top: 10px;
-}
-section#posts .editor {
-  padding: 10px 16px 0px 16px;
-}
-section#posts .editor span {
-  font-weight: normal;
-  font-size: 11px;
-}
-section#posts .editor .meta {
-  display: none;
-  width: 100%;
-  float: right;
-}
-section#posts .editor .meta .dates .form-group {
-  float: left;
-  width: 60%;
-}
-section#posts .editor .meta .dates section {
-  margin: 0px 0px 2px 0px;
-  line-height: 10px;
-  float: right;
-  width: 32%;
-  font-size: 10px;
-}
-section#posts .editor .meta .dates section label {
-  font-size: 10px;
-  display: block;
-  margin-bottom: 5px;
-}
-section#posts .editor .meta .dates section span {
-  display: block;
-  margin-bottom: 6px;
-}
-section#posts .editor .md {
-  float: left;
-  width: 64%;
-  display: none;
-}
-section#posts .editor .md textarea {
-  padding: 4px;
-  height: 340px;
-  font-size: 14px;
-}
-section#posts .editor .md + .meta {
-  width: 34%;
-}
-section#posts .editor .form-actions {
-  height: 40px;
-  clear: both;
-  text-align: center;
-}
-section#posts .editor .form-actions .btn {
-  width: 19%;
-  margin: 0px 2px 8px 2px;
-  padding: 3px 0px;
-  display: none;
-}
-section#posts .editor .form-actions .btnPreview {
-  display: inline-block;
-}
-section#posts .editor .tag-input-group .nomobile {
-  display: none;
-}
-section#posts .editor .tag-input-group label {
-  display: none;
-}
-section#posts .editor .tag-input-group .drag {
-  display: none;
-}
-section#posts .editor .tag-input-group .selected {
-  display: block;
-  float: none;
-}
-section#posts .editor .tag-input-group .selected li {
-  display: inline;
-  background: none;
-  border: none;
-}
-section#posts .editor .tag-input-group .selected .remove {
-  float: none;
-  background: none;
-  color: red;
-  display: inline;
-  font-size: 12px;
-}
-section#posts .editor .tag-input-group .selected .order {
-  display: none;
-}
-section#posts .editor + hr {
-  margin: 4px 0 0 0;
-  border-color: #dff2ef;
-}
-section#posts .preview + hr {
-  margin: 0px 0px 4px 0px;
-  border-color: #dff2ef;
-}
-section#posts #tips {
-  display: none;
-}
-section#posts .edit #preview .preview {
-  width: 914px;
-  max-height: 300px;
-  overflow-y: scroll;
-  border-right: solid 1px #dff2ef;
-}
-section#posts .edit #tips {
-  display: block;
-  background-color: #dff2ef;
-  padding: 4px 6px;
-  font-size: 10px;
-  line-height: 14px;
-  min-height: 80px;
-}
-section#posts .edit #tips ul {
-  padding: 4px 14px;
-}
-section#posts .edit .form-actions .btn,
-section#posts .publish .form-actions .btn {
-  display: inline-block;
-}
-section#posts .edit .editor,
-section#posts .publish .editor {
-  background-color: #dff2ef;
-}
-section#posts .edit .md,
-section#posts .publish .md {
-  display: block;
-}
-section#posts .edit .meta,
-section#posts .publish .meta {
-  display: block;
-}
-section#posts .edit .publishMeta input,
-section#posts .publish .publishMeta input {
-  font-size: 11px;
-  padding: 4px;
-  height: 26px;
-}
-@media screen and (max-width: 640px) {
-  section#posts section#myposts {
-    display: none;
-  }
 }
 .posts .entry-header {
   padding: 10px 10px 5px 10px;
