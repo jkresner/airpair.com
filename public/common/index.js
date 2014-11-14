@@ -28,8 +28,7 @@ require('./../profile/module.js');
 
 angular.module("AP", ['ngRoute', 'APSideNav', 'APAuth', 'APPosts', 'APWorkshops', 'APProfile', 'APBilling'])
 
-  .config(['$locationProvider', '$routeProvider',
-      function($locationProvider, $routeProvider) {
+  .config(function($locationProvider, $routeProvider) {
 
     $locationProvider.html5Mode(true);
 
@@ -45,10 +44,9 @@ angular.module("AP", ['ngRoute', 'APSideNav', 'APAuth', 'APPosts', 'APWorkshops'
       template: require('../about.html')
     });
 
-  }])
+  })
 
-  .run(['$rootScope', '$location', 'SessionService',
-    function($rootScope, $location, SessionService) {
+  .run(function($rootScope, $location, SessionService) {
 
     pageHlpr.fixNavs('#side');
 
@@ -56,19 +54,18 @@ angular.module("AP", ['ngRoute', 'APSideNav', 'APAuth', 'APPosts', 'APWorkshops'
       window.trackRoute($location.path());
     });
 
-  }])
+  })
 
 ;
 
 
-angular.module("APLite", ['ngRoute', 'APFilters', 'APAnalytics', 'APSideNav', 'APBookmarker'])
+angular.module("APLite", ['ngRoute', 'APSideNav', 'APAuth', 'APFilters', 'APAnalytics', 'APBookmarker'])
 
-  .config( ['$provide', function ($provide){
+  .config(function ($provide){
 
-  }])
+  })
 
-  .run(['$rootScope', 'SessionService',
-    function($rootScope, SessionService) {
+  .run(function($rootScope, SessionService) {
 
     pageHlpr.fixNavs('#side');
 
@@ -79,6 +76,6 @@ angular.module("APLite", ['ngRoute', 'APFilters', 'APAnalytics', 'APSideNav', 'A
       if (window.viewData.expert) $rootScope.expert = window.viewData.expert
     }
 
-  }])
+  })
 
 ;
