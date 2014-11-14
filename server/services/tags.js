@@ -66,7 +66,7 @@ export function search(searchTerm, cb) {
 
       // if it's an exact match: -
       if (isMatchOnWeightedFields(tag, exactMatch)) {
-        tag.weight -= 1;
+        tag.weight -= 2;
       }
       // if starts with: -
       if (isMatchOnWeightedFields(tag, startsWith)) {

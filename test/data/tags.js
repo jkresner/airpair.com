@@ -205,5 +205,15 @@ module.exports = {
     "short" : "android-x86",
     "soId" : "android-x86",
     "slug" : "android-x86"
+  },
+  ruby: {
+    "_id" : "514825fa2a26ea0200000031",
+    "__v" : 0,
+    "desc" : "Ruby is a multi-platform open-source dynamic object-oriented interpreted language created by Yukihiro Matsumoto (Matz) in 1993.",
+    "name" : "ruby",
+    "short" : "ruby",
+    "slug" : "ruby",
+    "soId" : "ruby",
+    "tokens" : ""
   }
 }
