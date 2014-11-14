@@ -41,7 +41,7 @@ var getContext = (req) => {
 
 export var trackView = (type) => {
   return (req, res, next) => {
-    if (req.header('user-agent') && util.isBot(req.header('user-agent'))) return next()
+    if (util.isBot(req.header('user-agent'))) return next()
 
     var userId = null
     var anonymousId = null

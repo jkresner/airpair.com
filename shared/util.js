@@ -100,8 +100,8 @@ combineItems: (array1, array2, compareProp) => {
 
 
   isBot: (useragent) => {
+    if (!useragent) return false
     var source = useragent.replace(/^\s*/, '').replace(/\s*$/, '')
     return botPattern.test(source)
   }
-
 }

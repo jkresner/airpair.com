@@ -27,8 +27,8 @@ angular.module("AP", ['ngRoute', 'APFilters', 'APAnalytics', 'APSideNav', 'APBoo
 //# sourceMappingURL=<compileOutput>
 
 
-},{"./../auth/module.js":3,"./../common/directives/analytics.js":5,"./../common/directives/bookmarker.js":6,"./../common/directives/forms.js":8,"./../common/directives/share.js":11,"./../common/directives/sideNav.js":13,"./../common/directives/tagInput.js":16,"./../common/filters/filters.js":17,"./../common/models/postsService.js":18,"./../common/models/sessionService.js":19,"./../common/pageHelpers.js":20}],2:[function(require,module,exports){
-module.exports = "<header>Login</header>\n<section id=\"auth\" ng-controller=\"LoginCtrl as LoginCtrl\">\n\n<h3>Welcome back.</h3>\n\n<p ng-if=\"session._id\"><br /><br />You are logged in as {{ session.email }}. <br /><br />Want to <a href=\"/v1/auth/logout\">Logout</a>?</p>\n\n\n<div class=\"choice\" ng-if=\"!session._id\">\n<div class=\"google option\">\n\n  <h2>One-click login</h2>\n  <p>\n    <a class=\"btn btn-error\" href=\"/v1/auth/google\" target=\"_self\">Login with google</a>\n  </p>\n  <p style=\"font-size:12px;margin:20px 0 0 0\">\n\n  * You will be temporarily redirected to a google login page</p>\n\n</div>\n\n<div class=\"local option\">\n\n  <h2>Password login</h2>\n\n  <form novalidate name=\"loginForm\" ng-submit=\"LoginCtrl.submit(loginForm.$valid, data)\">\n    <div form-group>\n      <label class=\"control-label sr-only\" for=\"loginEmail\">Email</label>\n      <input id=\"loginEmail\" form-control type=\"email\" placeholder=\"Email\" name=\"email\" ng-model=\"data.email\" required>\n      <div class=\"error\" ng-if=\"formGroup.showError(loginForm.email)\" ng-messages=\"loginForm.email.$error\">\n        <div ng-message=\"required\">Field required</div>\n        <div ng-message=\"email\">Invalid email</div>\n      </div>\n    </div>\n    <div form-group>\n      <label class=\"control-label sr-only\" for=\"loginPassword\">Password</label>\n      <input id=\"loginPassword\" form-control type=\"password\" placeholder=\"Password\" name=\"password\" ng-model=\"data.password\" required>\n      <div class=\"error\" ng-if=\"formGroup.showError(loginForm.password)\" ng-messages=\"loginForm.password.$error\">\n        <div ng-message=\"required\">Password required</div>\n      </div>\n    </div>\n\n    <button type=\"submit\" class=\"btn btn-warning btn-lg\">Login</button>\n\n    <div class=\"error\" ng-if=\"loginFail\">\n      <b>Login failed:</b> <span ng-if=\"loginFail\">{{loginFail.message}}</span>\n    </div>\n  </form>\n\n\n  <p>New? <a href=\"#\" ng-click=\"openProfile()\">Create an account</a>.</p>\n\n</div>\n</div>\n\n</section>\n";
+},{"./../auth/module.js":3,"./../common/directives/analytics.js":5,"./../common/directives/bookmarker.js":7,"./../common/directives/forms.js":9,"./../common/directives/share.js":12,"./../common/directives/sideNav.js":14,"./../common/directives/tagInput.js":17,"./../common/filters/filters.js":18,"./../common/models/postsService.js":19,"./../common/models/sessionService.js":20,"./../common/pageHelpers.js":21}],2:[function(require,module,exports){
+module.exports = "<header>Login</header>\r\n<section id=\"auth\" ng-controller=\"LoginCtrl as LoginCtrl\">\r\n\r\n<h3>Welcome back.</h3>\r\n\r\n<p ng-if=\"session._id\"><br /><br />You are logged in as {{ session.email }}. <br /><br />Want to <a href=\"/v1/auth/logout\">Logout</a>?</p>\r\n\r\n\r\n<div class=\"choice\" ng-if=\"!session._id\">\r\n<div class=\"google option\">\r\n\r\n  <h2>One-click login</h2>\r\n  <p>\r\n    <a class=\"btn btn-error\" href=\"/v1/auth/google\" target=\"_self\">Login with google</a>\r\n  </p>\r\n  <p style=\"font-size:12px;margin:20px 0 0 0\">\r\n\r\n  * You will be temporarily redirected to a google login page</p>\r\n\r\n</div>\r\n\r\n<div class=\"local option\">\r\n\r\n  <h2>Password login</h2>\r\n\r\n  <form novalidate name=\"loginForm\" ng-submit=\"LoginCtrl.submit(loginForm.$valid, data)\">\r\n    <div form-group>\r\n      <label class=\"control-label sr-only\" for=\"loginEmail\">Email</label>\r\n      <input id=\"loginEmail\" form-control type=\"email\" placeholder=\"Email\" name=\"email\" ng-model=\"data.email\" required>\r\n      <div class=\"error\" ng-if=\"formGroup.showError(loginForm.email)\" ng-messages=\"loginForm.email.$error\">\r\n        <div ng-message=\"required\">Field required</div>\r\n        <div ng-message=\"email\">Invalid email</div>\r\n      </div>\r\n    </div>\r\n    <div form-group>\r\n      <label class=\"control-label sr-only\" for=\"loginPassword\">Password</label>\r\n      <input id=\"loginPassword\" form-control type=\"password\" placeholder=\"Password\" name=\"password\" ng-model=\"data.password\" required>\r\n      <div class=\"error\" ng-if=\"formGroup.showError(loginForm.password)\" ng-messages=\"loginForm.password.$error\">\r\n        <div ng-message=\"required\">Password required</div>\r\n      </div>\r\n    </div>\r\n\r\n    <button type=\"submit\" class=\"btn btn-warning btn-lg\">Login</button>\r\n\r\n    <div class=\"error\" ng-if=\"loginFail\">\r\n      <b>Login failed:</b> <span ng-if=\"loginFail\">{{loginFail.message}}</span>\r\n    </div>\r\n  </form>\r\n\r\n\r\n  <p>New? <a href=\"#\" ng-click=\"openProfile()\">Create an account</a>.</p>\r\n\r\n</div>\r\n</div>\r\n\r\n</section>\r\n";
 
 },{}],3:[function(require,module,exports){
 "use strict";
@@ -67,8 +67,8 @@ angular.module("APAuth", ['ngRoute', 'ngMessages', 'APFormsDirectives', 'APFilte
 //# sourceMappingURL=<compileOutput>
 
 
-},{"./../common/routes/helpers.js":21,"./login.html":2,"./signup.html":4}],4:[function(require,module,exports){
-module.exports = "<header>Sign up</header>\n<section id=\"auth\">\n\n  <div class=\"choice\">\n  <div class=\"signup option\">\n\n    <h2>Signup</h2>\n\n    <form novalidate ng-submit=\"SignupCtrl.submit(signupForm.$valid, data)\" name=\"signupForm\" ng-controller=\"SignupCtrl as SignupCtrl\">\n      <div class=\"form-group\">\n        <label>Full name</label>\n        <input type=\"name\" placeholder=\"Full name\" class=\"form-control\" name=\"name\" ng-model=\"data.name\" required >\n        <div class=\"error\" ng-if=\"signupForm.$submitted || signupForm.email.$touched\">\n          <div ng-if=\"signupForm.email.$error.required\">Full name required</div>\n        </div>\n      </div>\n      <div class=\"form-group\">\n        <label>Email</label>\n        <input type=\"email\" placeholder=\"Email\" class=\"form-control\" name=\"email\" ng-model=\"data.email\" required >\n        <div class=\"error\" ng-if=\"signupForm.$submitted || signupForm.email.$touched\">\n          <div ng-if=\"signupForm.email.$error.required\">Email required</div>\n          <div ng-if=\"signupForm.email.$error.email\">Invalid email</div>\n        </div>\n      </div>\n      <div class=\"form-group\">\n        <label>Password</label>\n        <input type=\"password\" placeholder=\"Password\" class=\"form-control\" name=\"password\" ng-model=\"data.password\" required>\n        <div class=\"error\" ng-if=\"signupForm.$submitted || signupForm.password.$touched\">\n          <div ng-if=\"signupForm.password.$error.required\">Password required</div>\n        </div>\n      </div>\n\n      <button type=\"submit\" class=\"btn btn-warning btn-lg\">Sign up</button>\n\n      <div class=\"error\" ng-if=\"signupFail\">\n        <b>Sign up failed:</b> <span ng-if=\"signupFail\">{{signupFail}}</span>\n      </div>\n    </form>\n\n  </div>\n  </div>\n\n  <h3>Already have an account?</h3>\n\n  <p><a href=\"/v1/auth/login\"><b>Login</b></a> with Google or an email and password</a>.</p>\n\n</section>\n";
+},{"./../common/routes/helpers.js":22,"./login.html":2,"./signup.html":4}],4:[function(require,module,exports){
+module.exports = "<header>Sign up</header>\r\n<section id=\"auth\">\r\n\r\n  <div class=\"choice\">\r\n  <div class=\"signup option\">\r\n\r\n    <h2>Signup</h2>\r\n\r\n    <form novalidate ng-submit=\"SignupCtrl.submit(signupForm.$valid, data)\" name=\"signupForm\" ng-controller=\"SignupCtrl as SignupCtrl\">\r\n      <div class=\"form-group\">\r\n        <label>Full name</label>\r\n        <input type=\"name\" placeholder=\"Full name\" class=\"form-control\" name=\"name\" ng-model=\"data.name\" required >\r\n        <div class=\"error\" ng-if=\"signupForm.$submitted || signupForm.email.$touched\">\r\n          <div ng-if=\"signupForm.email.$error.required\">Full name required</div>\r\n        </div>\r\n      </div>\r\n      <div class=\"form-group\">\r\n        <label>Email</label>\r\n        <input type=\"email\" placeholder=\"Email\" class=\"form-control\" name=\"email\" ng-model=\"data.email\" required >\r\n        <div class=\"error\" ng-if=\"signupForm.$submitted || signupForm.email.$touched\">\r\n          <div ng-if=\"signupForm.email.$error.required\">Email required</div>\r\n          <div ng-if=\"signupForm.email.$error.email\">Invalid email</div>\r\n        </div>\r\n      </div>\r\n      <div class=\"form-group\">\r\n        <label>Password</label>\r\n        <input type=\"password\" placeholder=\"Password\" class=\"form-control\" name=\"password\" ng-model=\"data.password\" required>\r\n        <div class=\"error\" ng-if=\"signupForm.$submitted || signupForm.password.$touched\">\r\n          <div ng-if=\"signupForm.password.$error.required\">Password required</div>\r\n        </div>\r\n      </div>\r\n\r\n      <button type=\"submit\" class=\"btn btn-warning btn-lg\">Sign up</button>\r\n\r\n      <div class=\"error\" ng-if=\"signupFail\">\r\n        <b>Sign up failed:</b> <span ng-if=\"signupFail\">{{signupFail}}</span>\r\n      </div>\r\n    </form>\r\n\r\n  </div>\r\n  </div>\r\n\r\n  <h3>Already have an account?</h3>\r\n\r\n  <p><a href=\"/v1/auth/login\"><b>Login</b></a> with Google or an email and password</a>.</p>\r\n\r\n</section>\r\n";
 
 },{}],5:[function(require,module,exports){
 "use strict";
@@ -112,24 +112,73 @@ angular.module("APAnalytics", []).directive('trackClick', ['$location', '$timeou
 
 
 },{}],6:[function(require,module,exports){
+module.exports = "<img class=\"bookmark\" ng-click=\"bookmark(post._id)\" ng-src=\"{{'/v1/img/css/'+bookmarked(objectId)+'.png'}}\"></a>\r\n";
+
+},{}],7:[function(require,module,exports){
 "use strict";
-angular.module("APBookmarker", ['APSvcSession']).directive('bookmarker', ['SessionService', function(SessionService) {
+angular.module("APBookmarker", ['APSvcSession']).directive('bookmarkerlist', ['SessionService', function(SessionService) {
+  return {
+    link: function(scope, element, attrs) {},
+    controller: ['$rootScope', '$scope', function($rootScope, $scope) {
+      SessionService.onAuthenticated(function(session) {
+        _.each(session.bookmarks, function(bookmark) {
+          $(".bookmark" + bookmark.objectId).attr('src', "/v1/img/css/bookmarked.png");
+        });
+      });
+      window.toggleBookmark = function(e) {
+        var $elem = $(e);
+        var objectId = $elem.data('id');
+        var type = $elem.data('type');
+        var success = function(result) {
+          if ($elem.attr('src') == "/v1/img/css/bookmarked.png")
+            $elem.attr('src', "/v1/img/css/bookmark.png");
+          else
+            $elem.attr('src', "/v1/img/css/bookmarked.png");
+        };
+        var error = function(result) {
+          console.log('bookmarked.error', result);
+        };
+        SessionService.updateBookmark({
+          type: type,
+          objectId: objectId
+        }, success, error);
+      };
+    }]
+  };
+}]).directive('bookmarker', ['SessionService', function(SessionService) {
   return {
     restrict: 'EA',
-    template: '<a href="#" class="bookmark" ng-click="bookmark(post._id)">bookmark</a>',
+    template: require('./bookmarker.html'),
+    scope: {objectId: '=objectId'},
     link: function(scope, element, attrs) {
       scope.type = attrs.type;
     },
     controller: ['$rootScope', '$scope', function($rootScope, $scope) {
-      $scope.bookmark = function(objectId) {
+      $scope.bookmarked = (function(objectId) {
+        if (window.viewData) {
+          if (viewData.post)
+            objectId = viewData.post._id;
+          if (viewData.workshop)
+            objectId = viewData.workshop._id;
+        }
+        if (!$rootScope.session)
+          return 'bookmark';
+        var booked = _.find($rootScope.session.bookmarks, (function(b) {
+          return b.objectId == objectId;
+        }));
+        return booked ? 'bookmarked' : 'bookmark';
+      });
+      $scope.bookmark = function() {
+        var objectId = $scope.objectId || viewData.post._id || viewData.workshop._id;
         var data = {
           type: $scope.type,
           objectId: objectId
         };
         var success = function(result) {};
-        SessionService.updateBookmark(data, success, (function(e) {
-          return alert(e.message);
-        }));
+        var error = function(result) {
+          console.log('bookmarked.error', result);
+        };
+        SessionService.updateBookmark(data, success, error);
       };
     }]
   };
@@ -139,10 +188,10 @@ angular.module("APBookmarker", ['APSvcSession']).directive('bookmarker', ['Sessi
 //# sourceMappingURL=<compileOutput>
 
 
-},{}],7:[function(require,module,exports){
-module.exports = "<div class=\"modal-header\">\n  <h3 class=\"modal-title\">Bookmark AirPair Content</h3>\n</div>\n<div class=\"modal-body bookmarks bookmark-input-group\">\n\n  <p>Collect your favorite <a href=\"/posts\">posts</a>, <a href=\"/workshops\">workshops</a> and experts.</p>\n\n  <ul class=\"bookmarks\" sortable sort='bookmarks' service='bookmarks'>\n    <li ng-repeat=\"b in session.bookmarks | orderBy:'sort'\" ng-attr-data-id=\"{{b._id}}\">\n      <a href=\"{{b.url}}\" target=\"_self\">{{b.title}}</a>\n      <a class=\"remove\" href=\"#\" ng-click=\"deselectBookmark(b)\">x</a>\n      <a class=\"order\" href=\"#\"></a>\n    </li>\n </ul>\n</div>\n<div class=\"modal-footer\">\n  <button class=\"btn btn-primary\" ng-click=\"ok()\">Done</button>\n  <button class=\"btn btn-warning\" ng-click=\"cancel()\">Cancel</button>\n</div>\n";
+},{"./bookmarker.html":6}],8:[function(require,module,exports){
+module.exports = "<div class=\"modal-header\">\r\n  <h3 class=\"modal-title\">Bookmark AirPair Content</h3>\r\n</div>\r\n<div class=\"modal-body bookmarks bookmark-input-group\">\r\n\r\n  <p>Collect your favorite <a href=\"/posts\">posts</a>, <a href=\"/workshops\">workshops</a> and experts.</p>\r\n\r\n  <ul class=\"bookmarks\" sortable get='bookmarks' set='updateBookmarks'>\r\n    <li ng-repeat=\"b in bookmarks() | orderBy:'sort'\" ng-attr-data-id=\"{{b._id}}\">\r\n      <a href=\"{{b.url}}\" target=\"_self\">{{b.title}}</a>\r\n      <a class=\"remove\" ng-click=\"deselectBookmark(b)\">x</a>\r\n      <a class=\"order\"></a>\r\n    </li>\r\n </ul>\r\n</div>\r\n<div class=\"modal-footer\">\r\n  <button class=\"btn btn-primary\" ng-click=\"ok()\">Done</button>\r\n  <button class=\"btn btn-warning\" ng-click=\"cancel()\">Cancel</button>\r\n</div>\r\n";
 
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 "use strict";
 angular.module("APFormsDirectives", []).directive('formGroup', [function() {
   return {
@@ -183,13 +232,13 @@ angular.module("APFormsDirectives", []).directive('formGroup', [function() {
 //# sourceMappingURL=<compileOutput>
 
 
-},{}],9:[function(require,module,exports){
-module.exports = "<div class=\"modal-header\">\n  <h3 class=\"modal-title\">Account info</h3>\n  <a href=\"#\" class=\"close\" ng-click=\"cancel()\">x</a>\n</div>\n\n<div ng-if=\"session._id\" class=\"success\">\n  <div class=\"modal-body profile\">\n    <h2>Account successfully created.</h2>\n  </div>\n\n  <div class=\"modal-footer profile\">\n    <button ng-click=\"cancel()\" class=\"btn btn-primary\">Continue</button>\n  </div>\n</div>\n\n\n<form ng-if=\"!session._id\" id=\"profileForm\" novalidate name=\"profileForm\" ng-submit=\"submit(profileForm.$valid, data)\">\n\n  <div class=\"modal-body profile\">\n\n  <section>\n    <section style=\"height:40px\">\n     <p ng-if=\"!session.email\"><i>{{ avatarQuestion }}</i> <span ng-if=\"!session.email\">Enter your email address to fix your avatar.</span></p>\n     <p ng-if=\"session.email\">Save your name and password to get $10 credit.</p>\n\n    </section>\n\n    <section class=\"avatar\">\n      <img class=\"avatar\" ng-src=\"{{session.avatar}}?s=230\" title=\"Avatars are gravtars generated from your email.\" />\n      <p style=\"font-size:12px\">\n        <span ng-if=\"session.email\">Update the <b><a href=\"http://www.gravatar.com/\" target=\"_blank\">gravatar</a></b> for <br />{{ session.email }}</span>\n        <span ng-if=\"!session.email\">Enter an email address</span>\n        <br /> to change your profile pic.\n      </p>\n      <!-- <hr />\n      <label>Account Credit</label> <b style=\"font-size:26px;color:black\">$10</b> <br />available when you sign up -->\n\n    </section>\n\n    <section class=\"google\">\n    \tHate signup forms and remembering passwords? <br /><br /><a href=\"/v1/auth/google\" target=\"_self\"><b>Sign in with your Google account instead</b></a>.\n    </section>\n\n    <section class=\"info\">\n\n      <div form-group>\n        <label class=\"control-label\" for=\"signupEmail\">Email</label>\n        <input id=\"signupEmail\" name=\"email\" form-control type=\"email\" placeholder=\"Primary contact email\" ng-model=\"data.email\" ng-blur=\"updateEmail(profileForm.email)\" required tabindex=\"1\">\n        <div class=\"error\" ng-if=\"formGroup.showError(profileForm.email)\" ng-messages=\"profileForm.email.$error\">\n          <div ng-message=\"required\">Email required</div>\n          <div ng-message=\"email\">Invalid email</div>\n        </div>\n        <span class=\"error\">{{ emailChangeFailed }}</span>\n      </div>\n\n      <div form-group ng-if=\"session.email\">\n        <label class=\"control-label\" for=\"sessionName\">Full name </label>\n        <input id=\"signupName\" name=\"name\" form-control type=\"text\" placeholder=\"Full name\" ng-model=\"data.name\" required ng-minlength=\"4\" ng-minlength=\"60\" ng-pattern=\"/\\w+ \\w+/\" tabindex=\"2\">\n        <div class=\"error\" ng-if=\"formGroup.showError(profileForm.name)\" ng-messages=\"profileForm.name.$error\">\n          <div ng-message=\"required\">Name required</div>\n          <div ng-message=\"minlength\">Full name required (e.g. John Smith)</div>\n          <div ng-message=\"pattern\">Full name required (e.g. John Smith)</div>\n          <div ng-message=\"maxlength\">Full name max length 60 chars</div>\n        </div>\n      </div>\n\n      <div form-group ng-if=\"data.name\">\n        <label class=\"control-label\" for=\"signupPassword\">Password </label>\n        <input id=\"signupPassword\" name=\"password\" form-control type=\"password\" placeholder=\"Password\" ng-model=\"data.password\" required ng-minlength=\"5\" ng-maxlength=\"10\" tabindex=\"3\">\n        <div class=\"error\" ng-if=\"formGroup.showError(profileForm.password)\" ng-messages=\"profileForm.password.$error\">\n          <div ng-message=\"required\">Password required</div>\n          <div ng-message=\"minlength\">Password min length 5 chars</div>\n          <div ng-message=\"maxlength\">Password max length 10 chars</div>\n        </div>\n      </div>\n\n    </section>\n\n  </section>\n\n  </div>\n\n  <div class=\"modal-footer profile\">\n    <button type=\"submit\" class=\"btn btn-primary\">Create account</button>\n    <span class=\"error\">{{ signupFail }}</span>\n  </div>\n\n\n</form>\n";
-
 },{}],10:[function(require,module,exports){
-module.exports = "<div class=\"pw-widget pw-counter-vertical\" pw:twitter-via=\"airpair\">\n  <a ng-show=\"fb\" class=\"pw-button-facebook pw-look-native\"></a>\n  <a ng-show=\"tw\" class=\"pw-button-twitter pw-look-native\"></a>\n  <a ng-show=\"in\" class=\"pw-button-linkedin pw-look-native\"></a>\n</div>\n";
+module.exports = "<div class=\"modal-header\">\r\n  <h3 class=\"modal-title\">Account info</h3>\r\n  <a href=\"#\" class=\"close\" ng-click=\"cancel()\">x</a>\r\n</div>\r\n\r\n<div ng-if=\"session._id\" class=\"success\">\r\n  <div class=\"modal-body profile\">\r\n    <h2>Account successfully created.</h2>\r\n  </div>\r\n\r\n  <div class=\"modal-footer profile\">\r\n    <button ng-click=\"cancel()\" class=\"btn btn-primary\">Continue</button>\r\n  </div>\r\n</div>\r\n\r\n\r\n<form ng-if=\"!session._id\" id=\"profileForm\" novalidate name=\"profileForm\" ng-submit=\"submit(profileForm.$valid, data)\">\r\n\r\n  <div class=\"modal-body profile\">\r\n\r\n  <section>\r\n    <section style=\"height:40px\">\r\n     <p ng-if=\"!session.email\"><i>{{ avatarQuestion }}</i> <span ng-if=\"!session.email\">Enter your email address to fix your avatar.</span></p>\r\n     <p ng-if=\"session.email\">Save your name and password to get $10 credit.</p>\r\n\r\n    </section>\r\n\r\n    <section class=\"avatar\">\r\n      <img class=\"avatar\" ng-src=\"{{session.avatar}}?s=230\" title=\"Avatars are gravtars generated from your email.\" />\r\n      <p style=\"font-size:12px\">\r\n        <span ng-if=\"session.email\">Update the <b><a href=\"http://www.gravatar.com/\" target=\"_blank\">gravatar</a></b> for <br />{{ session.email }}</span>\r\n        <span ng-if=\"!session.email\">Enter an email address</span>\r\n        <br /> to change your profile pic.\r\n      </p>\r\n      <!-- <hr />\r\n      <label>Account Credit</label> <b style=\"font-size:26px;color:black\">$10</b> <br />available when you sign up -->\r\n\r\n    </section>\r\n\r\n    <section class=\"google\">\r\n    \tHate signup forms and remembering passwords? <br /><br /><a href=\"/v1/auth/google\" target=\"_self\"><b>Sign in with your Google account instead</b></a>.\r\n    </section>\r\n\r\n    <section class=\"info\">\r\n\r\n      <div form-group>\r\n        <label class=\"control-label\" for=\"signupEmail\">Email</label>\r\n        <input id=\"signupEmail\" name=\"email\" form-control type=\"email\" placeholder=\"Primary contact email\" ng-model=\"data.email\" ng-blur=\"updateEmail(profileForm.email)\" required tabindex=\"1\">\r\n        <div class=\"error\" ng-if=\"formGroup.showError(profileForm.email)\" ng-messages=\"profileForm.email.$error\">\r\n          <div ng-message=\"required\">Email required</div>\r\n          <div ng-message=\"email\">Invalid email</div>\r\n        </div>\r\n        <span class=\"error\">{{ emailChangeFailed }}</span>\r\n      </div>\r\n\r\n      <div form-group ng-if=\"session.email\">\r\n        <label class=\"control-label\" for=\"sessionName\">Full name </label>\r\n        <input id=\"signupName\" name=\"name\" form-control type=\"text\" placeholder=\"Full name\" ng-model=\"data.name\" required ng-minlength=\"4\" ng-minlength=\"60\" ng-pattern=\"/\\w+ \\w+/\" tabindex=\"2\">\r\n        <div class=\"error\" ng-if=\"formGroup.showError(profileForm.name)\" ng-messages=\"profileForm.name.$error\">\r\n          <div ng-message=\"required\">Name required</div>\r\n          <div ng-message=\"minlength\">Full name required (e.g. John Smith)</div>\r\n          <div ng-message=\"pattern\">Full name required (e.g. John Smith)</div>\r\n          <div ng-message=\"maxlength\">Full name max length 60 chars</div>\r\n        </div>\r\n      </div>\r\n\r\n      <div form-group ng-if=\"data.name\">\r\n        <label class=\"control-label\" for=\"signupPassword\">Password </label>\r\n        <input id=\"signupPassword\" name=\"password\" form-control type=\"password\" placeholder=\"Password\" ng-model=\"data.password\" required ng-minlength=\"5\" ng-maxlength=\"10\" tabindex=\"3\">\r\n        <div class=\"error\" ng-if=\"formGroup.showError(profileForm.password)\" ng-messages=\"profileForm.password.$error\">\r\n          <div ng-message=\"required\">Password required</div>\r\n          <div ng-message=\"minlength\">Password min length 5 chars</div>\r\n          <div ng-message=\"maxlength\">Password max length 10 chars</div>\r\n        </div>\r\n      </div>\r\n\r\n    </section>\r\n\r\n  </section>\r\n\r\n  </div>\r\n\r\n  <div class=\"modal-footer profile\">\r\n    <button type=\"submit\" class=\"btn btn-primary\">Create account</button>\r\n    <span class=\"error\">{{ signupFail }}</span>\r\n  </div>\r\n\r\n\r\n</form>\r\n";
 
 },{}],11:[function(require,module,exports){
+module.exports = "<div class=\"pw-widget pw-counter-vertical\" pw:twitter-via=\"airpair\">\r\n  <a ng-show=\"fb\" class=\"pw-button-facebook pw-look-native\"></a>\r\n  <a ng-show=\"tw\" class=\"pw-button-twitter pw-look-native\"></a>\r\n  <a ng-show=\"in\" class=\"pw-button-linkedin pw-look-native\"></a>\r\n</div>\r\n";
+
+},{}],12:[function(require,module,exports){
 "use strict";
 angular.module("APShare", ['angularLoad']).directive('apShare', function(angularLoad) {
   var src = ('https:' == document.location.protocol ? 'https://s' : 'http://i') + '.po.st/static/v3/post-widget.js#publisherKey=miu9e01ukog3g0nk72m6&retina=true&init=lazy';
@@ -216,10 +265,10 @@ angular.module("APShare", ['angularLoad']).directive('apShare', function(angular
 //# sourceMappingURL=<compileOutput>
 
 
-},{"./share.html":10}],12:[function(require,module,exports){
-module.exports = "<header>\n  <img id=\"sideNavToggle\" track-click=\"SideNav\" data=\"{{ toggleAction }}\" track-click-if=\"!session._id\" ng-click=\"sideNav.toggle()\" src=\"/v1/img/css/sidenav/toggle.png\" />\n</header>\n\n<section class=\"welcome\" ng-if=\"session.authenticated == false\">\n\n  <figure><a id=\"navWelcomeAvatar\" track-click=\"SideNav\" ng-click=\"openProfile()\"><img class=\"avatar\" ng-src=\"{{ session.avatar }}\" /></a></figure>\n\n  <ul class=\"main\">\n    <li ng-if=\"!session.email\">Want your real face?</li>\n    <li ng-if=\"!session.email\"><a id=\"navEditProfile\" href=\"#\" track-click=\"SideNav\" ng-click=\"openProfile()\">Edit your profile</a></li>\n    <li ng-if=\"session.email\">Get $10 credit?</li>\n    <li ng-if=\"session.email\"><a id=\"navEditProfile\" href=\"#\" track-click=\"SideNav\" ng-click=\"openProfile()\">Finish your profile</a></li>\n    <li>Already in the tribe?</li>\n    <li><a id=\"navLogin\" href=\"/v1/auth/login\" track-click=\"SideNav\">Login</a></li>\n    <li>Why join?</li>\n  </ul>\n  <a id=\"navAbout\" track-click=\"SideNav\" href=\"/about\" class=\"icon\">\n    <span>Read about AirPair</span><img src=\"/v1/img/css/sidenav/airpair.png\" />\n  </a>\n</section>\n\n\n<section ng-if=\"session._id\">\n  <figure><a href=\"/me\"><img class=\"avatar\" ng-src=\"{{ session.avatar }}?s=120\" /></a></figure>\n</section>\n\n<section class=\"main\" ng-if=\"session._id\"> <label>{{ session.name.split(' ')[0] }}</label>\n  <ul>\n    <li><a href=\"mailto:team@airpair.com?Subject=Bug spotted!\" target=\"_blank\">see a bug?</a></li>\n    <!-- <li><a href=\"/\" target=\"_self\">dashboard (old)</a></li> -->\n    <li><a href=\"/billing\">billing</a></li>\n    <!-- <li><a href=\"#\">airpairs</a></li> -->\n    <!-- <li><a href=\"#\">settings</a></li> -->\n    <li><a href=\"/v1/auth/logout\" target=\"_self\">logout</a></li>\n  </ul>\n</section>\n\n\n<section class=\"stack\"> <label>Stack</label>\n  <ul>\n    <li ng-repeat=\"tag in session.tags | orderBy:'sort'\">\n      <a href=\"/posts/tag/{{tag.slug}}\">{{tag.name}}</a>\n    </li>\n  </ul>\n  <a id=\"navStackToggle\" track-click=\"SideNav\" href=\"#\" ng-click=\"openStack()\" class=\"icon\">\n    <span>Customize</span><img src=\"/v1/img/css/sidenav/stack.png\" /><i>{{ session.tags.length || 0 }}</i>\n  </a>\n</section>\n\n\n<section class=\"bookmarks\"> <label>Bookmarks</label>\n  <ul class=\"bookmarks\">\n    <li ng-repeat=\"bookmark in session.bookmarks | orderBy:'sort'\">\n      <a href=\"{{bookmark.url}}\" target=\"_self\">{{bookmark.title}}</a>\n    </li>\n  </ul>\n  <a id=\"navBookmarksToggle\" track-click=\"SideNav\" href=\"#\" ng-click=\"openBookmarks()\" class=\"icon\"><span> Manage </span> <img src=\"/v1/img/css/sidenav/bookmark.png\" /><i>{{ session.bookmarks.length || 0 }}</i></a>\n</section>\n\n<div stack></div>\n";
+},{"./share.html":11}],13:[function(require,module,exports){
+module.exports = "<header>\r\n  <img id=\"sideNavToggle\" track-click=\"SideNav\" data=\"{{ toggleAction }}\" track-click-if=\"!session._id\" ng-click=\"sideNav.toggle()\" src=\"/v1/img/css/sidenav/toggle.png\" />\r\n</header>\r\n\r\n<section class=\"welcome\" ng-if=\"session.authenticated == false\">\r\n\r\n  <figure><a id=\"navWelcomeAvatar\" track-click=\"SideNav\" ng-click=\"openProfile()\"><img class=\"avatar\" ng-src=\"{{ session.avatar }}\" /></a></figure>\r\n\r\n  <ul class=\"main\">\r\n    <li ng-if=\"!session.email\">Want your real face?</li>\r\n    <li ng-if=\"!session.email\"><a id=\"navEditProfile\" href=\"#\" track-click=\"SideNav\" ng-click=\"openProfile()\">Edit your profile</a></li>\r\n    <li ng-if=\"session.email\">Get $10 credit?</li>\r\n    <li ng-if=\"session.email\"><a id=\"navEditProfile\" href=\"#\" track-click=\"SideNav\" ng-click=\"openProfile()\">Finish your profile</a></li>\r\n    <li>Already in the tribe?</li>\r\n    <li><a id=\"navLogin\" href=\"/v1/auth/login\" track-click=\"SideNav\">Login</a></li>\r\n    <li>Why join?</li>\r\n  </ul>\r\n  <a id=\"navAbout\" track-click=\"SideNav\" href=\"/about\" class=\"icon\">\r\n    <span>Read about AirPair</span><img src=\"/v1/img/css/sidenav/airpair.png\" />\r\n  </a>\r\n</section>\r\n\r\n\r\n<section ng-if=\"session._id\">\r\n  <figure><a href=\"/me\"><img class=\"avatar\" ng-src=\"{{ session.avatar }}?s=120\" /></a></figure>\r\n</section>\r\n\r\n<section class=\"main\" ng-if=\"session._id\"> <label>{{ session.name.split(' ')[0] }}</label>\r\n  <ul>\r\n    <li><a href=\"mailto:team@airpair.com?Subject=Bug spotted!\" target=\"_blank\">see a bug?</a></li>\r\n    <!-- <li><a href=\"/\" target=\"_self\">dashboard (old)</a></li> -->\r\n    <li><a href=\"/billing\">billing</a></li>\r\n    <!-- <li><a href=\"#\">airpairs</a></li> -->\r\n    <!-- <li><a href=\"#\">settings</a></li> -->\r\n    <li><a href=\"/v1/auth/logout\" target=\"_self\">logout</a></li>\r\n  </ul>\r\n</section>\r\n\r\n\r\n<section class=\"stack\"> <label>Stack</label>\r\n  <ul>\r\n    <li ng-repeat=\"tag in session.tags | orderBy:'sort'\">\r\n      <a ng-if=\"tag.slug != 'angularjs'\" href=\"/posts/tag/{{tag.slug}}\">{{tag.name}}</a>\r\n      <a ng-if=\"tag.slug == 'angularjs'\" href=\"/angularjs\" target=\"_self\">{{tag.name}}</a>\r\n    </li>\r\n  </ul>\r\n  <a id=\"navStackToggle\" track-click=\"SideNav\" href=\"#\" ng-click=\"openStack()\" class=\"icon\">\r\n    <span>Customize</span><img src=\"/v1/img/css/sidenav/stack.png\" /><i>{{ session.tags.length || 0 }}</i>\r\n  </a>\r\n</section>\r\n\r\n\r\n<section class=\"bookmarks\"> <label>Bookmarks</label>\r\n  <ul class=\"bookmarks\">\r\n    <li ng-repeat=\"bookmark in session.bookmarks | orderBy:'sort'\">\r\n      <a href=\"{{bookmark.url}}\" target=\"_self\">{{bookmark.title}}</a>\r\n    </li>\r\n  </ul>\r\n  <a id=\"navBookmarksToggle\" track-click=\"SideNav\" href=\"#\" ng-click=\"openBookmarks()\" class=\"icon\"><span> Manage </span> <img src=\"/v1/img/css/sidenav/bookmark.png\" /><i>{{ session.bookmarks.length || 0 }}</i></a>\r\n</section>\r\n\r\n<div stack></div>\r\n";
 
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 "use strict";
 var Validate = require('../../../shared/validation/users.js');
 function storage(k, v) {
@@ -258,8 +307,23 @@ angular.module("APSideNav", ['ui.bootstrap', 'APSvcSession', 'APTagInput']).dire
           size: 'lg'
         });
       };
-      $scope.selectedTags = (function() {
-        return ($scope.session) ? $scope.session.tags : null;
+      $scope.tags = (function() {
+        return $scope.session ? $scope.session.tags : null;
+      });
+      $scope.updateTags = (function(scope, newTags) {
+        if (!$scope.session)
+          return;
+        $scope.session.tags = newTags;
+        SessionService.tags(newTags, scope.sortSuccess, scope.sortFail);
+      });
+      $scope.bookmarks = (function() {
+        return $scope.session ? $scope.session.bookmarks : null;
+      });
+      $scope.updateBookmarks = (function(scope, newBookmarks) {
+        if (!$scope.session)
+          return;
+        $scope.session.bookmarks = newBookmarks;
+        SessionService.bookmarks(newBookmarks, scope.sortSuccess, scope.sortFail);
       });
       $scope.selectTag = function(tag) {
         var tags = $scope.session.tags;
@@ -301,9 +365,7 @@ angular.module("APSideNav", ['ui.bootstrap', 'APSvcSession', 'APTagInput']).dire
 }]).directive('sortable', ['SessionService', function(SessionService) {
   return {link: function(scope, element, attrs) {
       $(element).sortable({stop: function(event, ui) {
-          var property = attrs['sort'];
-          var method = attrs['service'];
-          var list = scope.session[property];
+          var list = scope[attrs['get']]();
           var elems = $(element).children();
           for (var i = 0; i < elems.length; i++) {
             var elem = $(elems[i]);
@@ -312,7 +374,7 @@ angular.module("APSideNav", ['ui.bootstrap', 'APSvcSession', 'APTagInput']).dire
             }));
             obj.sort = i;
           }
-          SessionService[method](scope.session[property], scope.sortSuccess, scope.sortFail);
+          scope[attrs['set']](scope, list);
         }});
       $(element).disableSelection();
     }};
@@ -381,13 +443,13 @@ angular.module("APSideNav", ['ui.bootstrap', 'APSvcSession', 'APTagInput']).dire
 //# sourceMappingURL=<compileOutput>
 
 
-},{"../../../shared/validation/users.js":23,"./bookmarks.html":7,"./profile.html":9,"./sideNav.html":12,"./stack.html":14}],14:[function(require,module,exports){
-module.exports = "<div class=\"modal-header\">\n  <h3 class=\"modal-title\">Customize AirPair to your Stack</h3>\n</div>\n<div class=\"modal-body stack\">\n\n  <p>Personalize AirPair content, by selecting technologies that make up your stack.</p>\n\n  <div tag-input></div>\n\n</div>\n<div class=\"modal-footer\">\n  <button class=\"btn btn-primary\" ng-click=\"ok()\">Done</button>\n  <button class=\"btn btn-warning\" ng-click=\"cancel()\">Cancel</button>\n</div>\n";
-
-},{}],15:[function(require,module,exports){
-module.exports = "<div class=\"form-group tag-input-group\">\n  <div class=\"nomobile\">This feature is not available on mobile</div>\n\n  <div class=\"drag\">\n    <p>\n      <b>drag in order of importance</b>\n      <br />place most used first\n    </p>\n  </div>\n  <div class=\"selected\">\n    <label for=\"tagInput\">Your stack</label>\n\n    <ul class=\"tags\" sortable sort='tags' service='tags'>\n      <li ng-repeat=\"tag in session.tags | orderBy:'sort'\" ng-attr-data-id=\"{{tag._id}}\">\n        {{tag.slug}}\n        <a class=\"remove\" ng-click=\"deselectMatch(tag)\">x</a>\n        <a class=\"order\" href=\"#\"></a>\n      </li>\n    </ul>\n\n    <p ng-if=\"!selectedTags() || selectedTags().length == 0\">No tags selected yet.</p>\n  </div>\n\n  <label for=\"tagInput\">Search technologies</label>\n  <input type=\"text\" class=\"tagInput form-control\"\n    placeholder=\"type a technology (e.g. javascript)\"\n    ng-model=\"q\"\n    typeahead=\"t as t for t in getTags($viewValue) | filter:$viewValue\"\n    typeahead-editable=\"false\"\n    typeahead-input-formatter=\"keypressSelect($model)\" tabindex=\"100\">\n  <!-- typeahead-loading=\"loading\"\n  <i ng-show=\"loading\" class=\"glyphicon glyphicon-refresh\"></i>\n   -->\n</div>\n\n<script type=\"text/ng-template\" id=\"template/typeahead/typeahead-match.html\">\n  <div>\n    <a class=\"tagSelect\">\n      <span bind-html-unsafe=\"match.model.slug | typeaheadHighlight:query\"></span>\n      <p bind-html-unsafe=\"match.model.desc | typeaheadHighlight:query\"></p>\n    </a>\n  </div>\n</script>\n";
+},{"../../../shared/validation/users.js":24,"./bookmarks.html":8,"./profile.html":10,"./sideNav.html":13,"./stack.html":15}],15:[function(require,module,exports){
+module.exports = "<div class=\"modal-header\">\r\n  <h3 class=\"modal-title\">Customize AirPair to your Stack</h3>\r\n</div>\r\n<div class=\"modal-body stack\">\r\n\r\n  <p>Personalize AirPair content, by selecting technologies that make up your stack.</p>\r\n\r\n  <div tag-input></div>\r\n\r\n</div>\r\n<div class=\"modal-footer\">\r\n  <button class=\"btn btn-primary\" ng-click=\"ok()\">Done</button>\r\n  <button class=\"btn btn-warning\" ng-click=\"cancel()\">Cancel</button>\r\n</div>\r\n";
 
 },{}],16:[function(require,module,exports){
+module.exports = "<div class=\"form-group tag-input-group\">\r\n  <div class=\"nomobile\">This feature is not available on mobile</div>\r\n\r\n  <div class=\"drag\">\r\n    <p>\r\n      <b>drag in order of importance</b>\r\n      <br />place most used first\r\n    </p>\r\n  </div>\r\n  <div class=\"selected\">\r\n    <label for=\"tagInput\">Your stack</label>\r\n\r\n    <ul class=\"tags\" sortable get='tags' set='updateTags'>\r\n      <li ng-repeat=\"tag in tags() | orderBy:'sort'\" ng-attr-data-id=\"{{tag._id}}\">\r\n        {{tag.slug}}\r\n        <a class=\"remove\" ng-click=\"deselectMatch(tag)\">x</a>\r\n        <a class=\"order\" href=\"#\"></a>\r\n      </li>\r\n    </ul>\r\n\r\n    <p ng-if=\"!tags() || tags().length == 0\">No tags selected yet.</p>\r\n  </div>\r\n\r\n  <label for=\"tagInput\">Search technologies</label>\r\n  <input type=\"text\" class=\"tagInput form-control\"\r\n    placeholder=\"type a technology (e.g. javascript)\"\r\n    ng-model=\"q\"\r\n    typeahead=\"t as t for t in getTags($viewValue) | filter:$viewValue\"\r\n    typeahead-editable=\"false\"\r\n    typeahead-input-formatter=\"keypressSelect($model)\" tabindex=\"100\"\r\n    typeahead-template-url=\"tagMatch.html\"\r\n    >\r\n  <!-- typeahead-loading=\"loading\"\r\n  <i ng-show=\"loading\" class=\"glyphicon glyphicon-refresh\"></i>\r\n   -->\r\n</div>\r\n\r\n<script type=\"text/ng-template\" id=\"tagMatch.html\">\r\n  <div>\r\n    <a class=\"tagSelect\">\r\n      <span bind-html-unsafe=\"match.model.slug | typeaheadHighlight:query\"></span>\r\n      <p bind-html-unsafe=\"match.model.desc | typeaheadHighlight:query\"></p>\r\n    </a>\r\n  </div>\r\n</script>\r\n";
+
+},{}],17:[function(require,module,exports){
 "use strict";
 angular.module('APTagInput', ['ui.bootstrap']).value('badTagsSearchQuery', function(value) {
   var lengthOk = value && (value.length >= 2 || /r/i.test(value));
@@ -399,11 +461,20 @@ angular.module('APTagInput', ['ui.bootstrap']).value('badTagsSearchQuery', funct
   return {
     restrict: 'EA',
     template: require('./tagInput.html'),
+    scope: {},
     controller: ['$scope', '$attrs', '$http', function($scope, $attrs, $http) {
+      $scope.tags = $scope.$parent.tags;
+      $scope.selectTag = $scope.$parent.selectTag;
+      $scope.deselectTag = $scope.$parent.deselectTag;
+      $scope.updateTags = $scope.$parent.updateTags;
+      $scope.sortSuccess = $scope.$parent.sortSuccess;
+      $scope.sortFail = $scope.$parent.sortFail;
+      $scope.templateUrl = "tagMatch.html";
       $scope.getTags = function(q) {
         if (badTagsSearchQuery(q)) {
           return [];
         }
+        q = encodeURIComponent(q);
         return $http.get('/v1/api/tags/search/' + q).then(function(res) {
           var tags = [];
           angular.forEach(res.data, function(item) {
@@ -424,7 +495,7 @@ angular.module('APTagInput', ['ui.bootstrap']).value('badTagsSearchQuery', funct
         $scope.q = "";
       };
       $scope.deselectMatch = function(match) {
-        this.deselectTag(match);
+        $scope.deselectTag(match);
       };
     }]
   };
@@ -434,7 +505,7 @@ angular.module('APTagInput', ['ui.bootstrap']).value('badTagsSearchQuery', funct
 //# sourceMappingURL=<compileOutput>
 
 
-},{"./tagInput.html":15}],17:[function(require,module,exports){
+},{"./tagInput.html":16}],18:[function(require,module,exports){
 "use strict";
 var util = require('../../../shared/util.js');
 angular.module('APFilters', []).filter('publishedTime', function() {
@@ -493,7 +564,7 @@ angular.module('APFilters', []).filter('publishedTime', function() {
 //# sourceMappingURL=<compileOutput>
 
 
-},{"../../../shared/util.js":22}],18:[function(require,module,exports){
+},{"../../../shared/util.js":23}],19:[function(require,module,exports){
 "use strict";
 var headings = [];
 var lazyErrorCb = function(resp) {};
@@ -550,7 +621,7 @@ angular.module('APSvcPosts', []).constant('API', '/v1/api').factory('mdHelper', 
 //# sourceMappingURL=<compileOutput>
 
 
-},{}],19:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 "use strict";
 angular.module('APSvcSession', []).constant('API', '/v1/api').constant('Auth', '/v1/auth').service('SessionService', ['$rootScope', '$http', 'API', 'Auth', '$cacheFactory', function($rootScope, $http, API, Auth, $cacheFactory) {
   var cache;
@@ -613,7 +684,7 @@ angular.module('APSvcSession', []).constant('API', '/v1/api').constant('Auth', '
 //# sourceMappingURL=<compileOutput>
 
 
-},{}],20:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 "use strict";
 window.pageHlpr = {};
 var getHighlightConfig = function(elm) {
@@ -713,7 +784,7 @@ window.pageHlpr.fixPostRail = function() {
 //# sourceMappingURL=<compileOutput>
 
 
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 (function (global){
 "use strict";
 (function() {
@@ -774,7 +845,7 @@ window.pageHlpr.fixPostRail = function() {
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],22:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 "use strict";
 var botPattern = /googlebot|gurujibot|twitterbot|yandexbot|slurp|msnbot|bingbot|facebookexternalhit/i;
 var idsEqual = (function(id1, id2) {
@@ -865,6 +936,8 @@ module.exports = {
       return nestedPick(obj, _.keys(selectList));
   }),
   isBot: (function(useragent) {
+    if (!useragent)
+      return false;
     var source = useragent.replace(/^\s*/, '').replace(/\s*$/, '');
     return botPattern.test(source);
   })
@@ -873,7 +946,7 @@ module.exports = {
 //# sourceMappingURL=<compileOutput>
 
 
-},{}],23:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 "use strict";
 var validateEmail = (function(email) {
   if (!email || !email.match(/.+@.+\.+.+/))
@@ -890,8 +963,8 @@ module.exports = {
   changePassword: (function(hash, password) {
     if (!hash || hash.match(/\s/))
       return "Invalid hash";
-    if (!password || !password.match(/.{5,10}/))
-      return "Invalid password (need min 5, max 10 chars)";
+    if (!password || !password.match(/.{5,40}/))
+      return "Invalid password (need min 5, max 40 chars)";
     return "";
   })
 };

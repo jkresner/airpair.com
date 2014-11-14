@@ -10,12 +10,12 @@ module.exports = function(config)
   global.$log           = console.log
   global.$error         = require('./logging').logError
 
+  global.sessions       = require('../identity/sessionMiddleware')
 
   if (config.analytics.on)
     global.analytics    = require('./../identity/analytics/analytics')
   else
     global.analytics    = { track: ()=>{}, view: ()=>{}, alias: ()=>{}, identify: ()=>{} }
-
 
   var {mailProvider} = config //-- only set in test
   if (!mailProvider) mailProvider = require('./mail/ses')()

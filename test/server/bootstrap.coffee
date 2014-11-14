@@ -27,6 +27,7 @@ describe 'Server: ', ->
 
 
   describe('Session: ', require('./sessionSpec'))
+  describe('Bots: ', require('./botsSpec'))
   describe('Tags: ', require('./tagsSpec'))
   describe('Auth: ', require('./authSpec'))
   describe('Authz: ', require('./authzSpec'))

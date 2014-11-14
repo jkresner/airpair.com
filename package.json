@@ -70,6 +70,7 @@
     "passport-local": "^1.0.0",
     "traceur": "0.0.61",
     "traceur-source-maps": "^1.0.2",
+    "uid-safe": "^1.0.1",
     "winston": "^0.8.0",
     "winston-ses": "0.0.4"
   }

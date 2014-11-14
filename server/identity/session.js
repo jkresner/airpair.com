@@ -2,19 +2,8 @@ var session = require('express-session')
 var cookieParser = require('cookie-parser')
 var bodyParser = require('body-parser')
 var passport = require('passport')
-var util = require('../../shared/util')
 
 var logging = false
-
-var botAwareSession = (expressSession) => {
-  return (req, res, next) => {
-      if (req.header('user-agent') && util.isBot(req.header('user-agent'))) {
-        req.session = { anonData: {} }
-        return next()
-      }
-      return expressSession(req, res, next)
-    }
-}
 
 // takes a delegate to initalize a store that could be Mongo / Redis etc.x
 export default function(app, initSessionStore)
@@ -35,7 +24,8 @@ export default function(app, initSessionStore)
     app.use(bodyParser.urlencoded({extended: true}))
     app.use(cookieParser(config.session.secret))
 
-    app.use(botAwareSession(session(sessionOpts)))
+    sessions.configure(sessionOpts)
+    app.use(function(req, res, next) { sessions.middleware(req, res, next) })
 
     app.use(passport.initialize())
     app.use(passport.session())
