@@ -5,14 +5,18 @@ var path = require('path'),
   less = require('gulp-less'),
   livereload = require('gulp-livereload'),
   gutil = require('gulp-util'),
-  stringify = require('stringify'),
   source = require('vinyl-source-stream'),
+  buffer = require('gulp-buffer'),
+  merge = require('merge-stream'),
+  es6ify = require('es6ify'),
+  stringify = require('stringify'),
   watchify = require('watchify'),
   browserify = require('browserify'),
-  usemin = require('gulp-usemin'),
-  uglify = require('gulp-uglify'),
-  rev = require('gulp-rev'),
-  es6ify = require('es6ify');
+  uglifyify = require('uglifyify'),
+  annotate = require('browserify-ngannotate'),
+  rev = require('gulp-rev');
+
+require('./build/traceur');
 
 paths = {
   public: 'public/**',
@@ -43,13 +47,7 @@ gulp.task('nodemon', function () {
     })
 });
 
-gulp.task('less', function () {
-  gulp.src(['public/styles/index.less','public/styles/adm.less'])
-    .pipe(less({
-      paths: [ path.join(__dirname, 'styles') ]
-    }))
-    .pipe(gulp.dest('./public/v1/css'));
-});
+gulp.task('less', require('./build/less'));
 
 gulp.task('watch', function() {
   livereload.listen({ port: 35729 });
@@ -64,58 +62,12 @@ gulp.task('watch', function() {
   gulp.watch(watching).on('change',livereload.changed);
 });
 
-
-var watchifyer = function(fileName) {
-  var bundler = watchify(browserify('./public/common/'+fileName, watchify.args));
-  bundler.transform(stringify(['.html']));
-  bundler.transform(es6ify);
-  bundler.on('update', rebundle);
-
-  function rebundle() {
-    return bundler.bundle()
-      .on('error', gutil.log.bind(gutil, 'Browserify Error')) // log errors if they happen
-      .pipe(source(fileName))
-      .pipe(gulp.dest('./public/v1/js'));
-  }
-
-  return rebundle();
-
-}
-
-gulp.task('watchify', function() {
-  watchifyer('lite.js');
-  watchifyer('index.js');
-  watchifyer('adm.js');
-});
-
-var bundlerer = function(fileName) {
-  var bundler = browserify('./public/common/'+fileName);
-
-  bundler.transform(stringify(['.html']));
-  bundler.transform(es6ify);
-
-  bundler.bundle()
-    .pipe(source(fileName))
-    .pipe(gulp.dest('./public/v1/js'));
-}
-
-gulp.task('bundle', function() {
-  bundlerer('lite.js')
-  bundlerer('index.js')
-  bundlerer('adm.js')
-});
-
-gulp.task('usemin', function() {
-  gulp.src('./server/views/partials/siteScripts.hbs')
-    .pipe(usemin({
-      assetsDir: './public',
-      outputRelativePath: './../../../../public/v1/js/',
-      js: [uglify(), rev()]
-    }))
-    .pipe(gulp.dest('./server/views/partials/built'));
-});
-
+gulp.task('clean', require('./build/clean'));
+gulp.task('watchify', require('./build/watchify'));
+gulp.task('dist', require('./build/dist'));
 
 gulp.task('default', ['nodemon','less','watch','watchify']);
 gulp.task('test', ['testnodemon','build']);
-gulp.task('build', ['usemin','less','bundle']);
+gulp.task('build', ['clean'], function() {
+  gulp.start(['less', 'dist']);
+});
