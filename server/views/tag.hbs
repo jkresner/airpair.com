@@ -36,9 +36,9 @@
     <section class="header">
 
       <hr />
-      <img src="/v1/img/css/tags/angularjs.png" class="{{tag.slug}}" />
+      <img src="/v1/img/css/tags/{{tag.slug}}.png" class="{{tag.slug}}" />
 
-      <h1>Welcome to a community of {{tag.name}} help</h1>
+      <h1>Welcome to a community of {{tag.name}} experts</h1>
 
       <p>Here you can meet senior {{tag.short}} developers and learn from them through articles,
         workshops and pair programming.</p>
@@ -64,50 +64,13 @@
         <div class="col-md-4 workshops">
           <a class="btn" href="#tagworkshops">Workshops</a>
           <hr class="vr" />
-          <article itemprop="blogPost" itemtype="http://schema.org/BlogPosting" itemscope="itemscope">
-            <a rel="bookmark" href="/angularjs/workshops/top-10-mistakes-angularjs-developers-make">
-
-            <time datetime="2014-11-11T16:30:00.000Z">Tuesday<br /> Nov 11 <b>8:00am</b></time>
-            <div>
-              <h2 class="entry-title">The Top 10 Mistakes AngularJS Developers Make</h2>
-              <h5 class="entry-author">Mark Meyer</h5>
-              <img src="//0.gravatar.com/avatar/6c2f0695e0ca4445a223ce325c7fb970?s=100">
-            </div>
-
-            </a>
-
-          </article>
+          {{#with workshop}}{{> workshopListItem }}{{/with}}
         </div>
 
         <div class="col-md-4 posts">
           <a class="btn" href="#tagposts">Articles</a>
           <hr class="vr" />
-          <article itemprop="blogPost" itemtype="http://schema.org/BlogPosting" itemscope="itemscope">
-            <a rel="bookmark" target="_self" title="AngularJS Tutorial: A Comprehensive 10,000 Word Guide" href="/angularjs/posts/angularjs-tutorial">
-              <header class="entry-header">
-                <h2 itemprop="headline" class="entry-title">AngularJS Tutorial: A Comprehensive 10,000 Word Guide</h2>
-                <p class="entry-meta">
-                  by <span itemtype="http://schema.org/Person" itemscope="itemscope" itemprop="author" class="entry-author">
-
-                  <span itemprop="name" class="entry-author-name">Todd Motto</span>
-
-                  </span>
-                </p>
-              </header>
-              <div itemprop="text" class="entry-content">
-                <img align="left" src="//0.gravatar.com/avatar/b56bb22b3a4b83c6b534b4c114671380?s=50" itemprop="image" class="entry-author-image">
-                <p>Written by Google Developer Expert (GDE) Todd Motto, this Angular tutorial serves as an ultimate resource for learning AngularJS.</p>
-              </div>
-            </a>
-            <footer class="entry-footer">
-              <p class="entry-meta">
-                <span class="entry-categories">
-
-                    <a rel="category tag" title="View all posts in AngularJS" href="/posts/tag/angularjs">{ AngularJS }</a>
-                </span>
-              </p>
-            </footer>
-          </article>
+          {{#with post}}{{> postListItem }}{{/with}}
         </div>
 
         <div class="col-md-4 pairing">
@@ -136,129 +99,54 @@
 
       {{#each workshops }}
       <a href="{{ url }}" class="workshop">
-        <time datetime="{{ isoMoment time }}">{{ dateFormat time 'ddd DD MMM, YYYY' }}</time>
+        <header>
+          <time datetime="{{ isoMoment time }}">{{ dateFormat time 'ddd DD MMM, YYYY' }}</time>
+        </header>
         <img src="//0.gravatar.com/avatar/{{speaker.gravatar}}?s=120">
-        <h3 class="entry-title">{{ title }}</h3>
-        <h5 class="entry-author">{{ speaker.name }}</h5>
+        <p class="entry-meta">
+          <h3 class="entry-title">{{ title }}</h3>
+          <h5 class="entry-author">{{ speaker.name }}</h5>
+        </p>
         <hr />
       </a>
       {{/each}}
-
+      <a class="workshop more" href="/workshops" target="_self">
+        <header></header>
+        <img src="//0.gravatar.com/avatar/e79ddd03edffc5c0669b78e7a090b037?s=120">
+        <h3 class="entry-title">See all workshops</h3>
+        <h5 class="entry-author">by AirPair</h5>
+        <hr>
+      </a>
     </section>
 
 
     <section id="tagposts" class="posts">
       <h2>{{tag.name}} Articles</h2>
 
+      <div class="posts recent">
+        {{#each posts}}{{> postListItem }}{{/each}}
 
-<div class="posts recent">
-   <article itemprop="blogPost" itemtype="http://schema.org/BlogPosting" itemscope="itemscope">
-  <a rel="bookmark" target="_self" title="How to Set Up Authentication with AngularJS and Ruby on Rails" href="/ruby-on-rails-4/posts/authentication-with-angularjs-and-ruby-on-rails">
-    <header class="entry-header">
-      <h2 itemprop="headline" class="entry-title">How to Set Up Authentication with AngularJS and Ruby on Rails</h2>
-      <p class="entry-meta">
-        <time datetime="2014-10-17T00:20:17.331Z" itemprop="datePublished" class="entry-time"></time>
-        by
-        <span itemtype="http://schema.org/Person" itemscope="itemscope" itemprop="author" class="entry-author">
-          <span itemprop="name" class="entry-author-name">Jason Swett</span>
-        </span>
-      </p>
-    </header>
-    <div itemprop="text" class="entry-content">
-      <img align="left" itemprop="image" class="entry-author-image" src="//0.gravatar.com/avatar/4fa58c43c72a15d2d560ffd931fbe9bb?s=50">
-      <p>The intricacies of implementing authentication using Rails and Angular are discussed, including topics such as testing, security, etc.</p>
-    </div>
-  </a>
-  <footer class="entry-footer">
-    <p class="entry-meta">
-      <span class="entry-categories">
-        <a rel="category tag" title="View all posts in Ruby on Rails 4" href="/posts/tag/ruby-on-rails-4">{ruby-on-rails-4}</a>
-        <a rel="category tag" title="View all posts in AngularJS" href="/posts/tag/angularjs">{angularjs}</a>
-      </span>
-    </p>
-  </footer>
-</article>
-<article itemprop="blogPost" itemtype="http://schema.org/BlogPosting" itemscope="itemscope">
-  <a rel="bookmark" target="_self" title="Hybrid UI framework shootout: Ionic vs. Famo.us vs. F7 vs. OnsenUI" href="/ionic-framework/posts/hybrid-apps-ionic-famous-f7-onsen">
-    <header class="entry-header">
-      <h2 itemprop="headline" class="entry-title">Hybrid UI framework shootout: Ionic vs. Famo.us vs. F7 vs. OnsenUI</h2>
-      <p class="entry-meta">
-        <time datetime="2014-10-15T17:51:41.967Z" itemprop="datePublished" class="entry-time"></time>
-        by
-        <span itemtype="http://schema.org/Person" itemscope="itemscope" itemprop="author" class="entry-author">
-          <span itemprop="name" class="entry-author-name">Tal Gleichger</span>
-        </span>
-      </p>
-    </header>
-    <div itemprop="text" class="entry-content">
-      <img align="left" itemprop="image" class="entry-author-image" src="//0.gravatar.com/avatar/1b3fa67a9bc040b78e53879059adcf58?s=50">
-      <p>JavaScript expert Tal Gleichger compares and contrasts the four most popular UI frameworks for creating hybrid applications - Ionic, Famo.us, F7, and Onsen.</p>
-    </div>
-  </a>
-  <footer class="entry-footer">
-    <p class="entry-meta">
-      <span class="entry-categories">
-        <a rel="category tag" title="View all posts in ionic-framework" href="/posts/tag/ionic-framework">{ionic-framework}</a>
-        <a rel="category tag" title="View all posts in famo.us" href="/posts/tag/famo.us">{famo.us}</a>
-        <a rel="category tag" title="View all posts in AngularJS" href="/posts/tag/angularjs">{angularjs}</a>
-      </span>
-    </p>
-  </footer>
-</article>
-<article itemprop="blogPost" itemtype="http://schema.org/BlogPosting" itemscope="itemscope">
-  <a rel="bookmark" target="_self" title="AngularJS Tutorial: A Comprehensive 10,000 Word Guide" href="/angularjs/posts/angularjs-tutorial">
-    <header class="entry-header">
-      <h2 itemprop="headline" class="entry-title">AngularJS Tutorial: A Comprehensive 10,000 Word Guide</h2>
-      <p class="entry-meta">
-        <time datetime="2014-10-03T02:21:49.051Z" itemprop="datePublished" class="entry-time"></time>
-        by
-        <span itemtype="http://schema.org/Person" itemscope="itemscope" itemprop="author" class="entry-author">
-          <span itemprop="name" class="entry-author-name">Todd Motto</span>
-        </span>
-      </p>
-    </header>
-    <div itemprop="text" class="entry-content">
-      <img align="left" itemprop="image" class="entry-author-image" src="//0.gravatar.com/avatar/b56bb22b3a4b83c6b534b4c114671380?s=50">
-      <p>Written by Google Developer Expert (GDE) Todd Motto, this Angular tutorial serves as an ultimate resource for learning AngularJS.</p>
-    </div>
-  </a>
-  <footer class="entry-footer">
-    <p class="entry-meta">
-      <span class="entry-categories">
-        <a rel="category tag" title="View all posts in AngularJS" href="/posts/tag/angularjs">{angularjs}</a>
-      </span>
-    </p>
+        <article class="more">
+        <a rel="bookmark" target="_self" title="All {{tag.name}} posts" href="/posts/tag/{{tag.slug}}">
+          <header class="entry-header">
+            <img align="left" src="/v1/img/css/tags/{{tag.slug}}.png" style="width:100%">
 
-  </footer>
-</article>
-<article itemprop="blogPost" itemtype="http://schema.org/BlogPosting" itemscope="itemscope">
-  <a rel="bookmark" target="_self" title="The Top 10 Mistakes AngularJS Developers Make" href="/angularjs/posts/top-10-mistakes-angularjs-developers-make">
-    <header class="entry-header">
-      <h2 itemprop="headline" class="entry-title">The Top 10 Mistakes AngularJS Developers Make</h2>
-      <p class="entry-meta">
-        <time datetime="2014-10-01T22:02:35.113Z" itemprop="datePublished" class="entry-time"></time>
-        by
-        <span itemtype="http://schema.org/Person" itemscope="itemscope" itemprop="author" class="entry-author">
-          <span itemprop="name" class="entry-author-name">Mark Meyer</span>
-        </span>
-      </p>
-    </header>
-    <div itemprop="text" class="entry-content">
-      <img align="left" itemprop="image" class="entry-author-image" src="//0.gravatar.com/avatar/6c2f0695e0ca4445a223ce325c7fb970?s=50">
-      <p >AngularJS expert Mark Meyer runs down the top 10 mistakes made by AngularJS developers, from code organization to bloated controllers.</p>
-    </div>
-  </a>
-  <footer class="entry-footer">
-    <p class="entry-meta">
-      <span class="entry-categories">
-       <a rel="category tag" title="View all posts in AngularJS" href="/posts/tag/angularjs">{angularjs}</a>
-      </span>
-    </p>
-  </footer>
-</article>
+            <p class="entry-meta">
+
+              <span itemtype="http://schema.org/Person" itemscope="itemscope" itemprop="author" class="entry-author">
+                <img align="left" src="//0.gravatar.com/avatar/e79ddd03edffc5c0669b78e7a090b037?s=50" class="entry-author-image">
+              </span>
+            </p>
+          </header>
+          <div itemprop="text" class="entry-content">
+            <h2 itemprop="headline" class="entry-title">All AngularJS Posts</h2>
+            <p>See all posts tagged with {{tag.slug}}.</p>
+          </div>
+        </a>
+      </article>
+      </div>
 
 
-    </div>
 
     </section>
 
@@ -268,6 +156,27 @@
 
       <hr />
       {{#each experts}}{{> expertListItem }}{{/each}}
+      <article class="more" itemprop="blogPost" itemtype="http://schema.org/BlogPosting" itemscope="itemscope">
+        <a rel="bookmark" target="_self" title="Get AngularJS Help" href="/find-an-expert">
+          <header class="entry-header">
+            <img align="left" src="//0.gravatar.com/avatar/e79ddd03edffc5c0669b78e7a090b037?s=100" itemprop="image" class="entry-author-image" />
+            <p class="entry-meta">
+              <span class="entry-categories">
+                <br />{ angularjs }
+              </span>
+            </p>
+          </header>
+          <div itemprop="text" class="entry-content">
+            <h2 itemprop="headline" class="entry-title">Get introduced</h2>
+            <label>your budget/hr</label>
+
+            <br /><br />
+            <p>Get introduced by AirPair customer service to the perfect expert for your team and challenge</p>
+          </div>
+        </a>
+        <footer></footer>
+      </article>
+
 
       <hr />
     </section>
@@ -281,6 +190,7 @@
 
 <div ng-app="APLite" ng-strict-di>
   <nav id="side" class="collapse" side-nav></nav>
+  <bookmarkerlist></bookmarkerlist>
 </div>
 
 {{> siteScripts }}

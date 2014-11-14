@@ -45,7 +45,21 @@ angular.module("APSideNav", ['ui.bootstrap','APSvcSession', 'APTagInput'])
           });
         }
 
-        $scope.selectedTags = () => ($scope.session) ? $scope.session.tags : null;
+        $scope.tags = () => $scope.session ? $scope.session.tags : null;
+        $scope.updateTags = (scope, newTags) => {
+          if (!$scope.session) return;
+
+          $scope.session.tags = newTags;
+          SessionService.tags(newTags, scope.sortSuccess, scope.sortFail);
+        };
+
+        $scope.bookmarks = () => $scope.session ? $scope.session.bookmarks : null;
+        $scope.updateBookmarks = (scope, newBookmarks) => {
+          if (!$scope.session) return;
+
+          $scope.session.bookmarks = newBookmarks;
+          SessionService.bookmarks(newBookmarks, scope.sortSuccess, scope.sortFail);
+        }
 
         $scope.selectTag = function(tag) {
           var tags = $scope.session.tags;
@@ -93,10 +107,7 @@ angular.module("APSideNav", ['ui.bootstrap','APSvcSession', 'APTagInput'])
       link: function(scope, element, attrs) {
         $(element).sortable({
           stop: function(event, ui) {
-            var property = attrs['sort'];
-            var method = attrs['service'];
-
-            var list = scope.session[property];
+            var list = scope[attrs['get']]();
             var elems = $(element).children();
 
             for (var i = 0; i < elems.length; i++) {
@@ -105,7 +116,7 @@ angular.module("APSideNav", ['ui.bootstrap','APSvcSession', 'APTagInput'])
               obj.sort = i;
             }
 
-            SessionService[method](scope.session[property], scope.sortSuccess, scope.sortFail);
+            scope[attrs['set']](scope, list);
           }
         });
         $(element).disableSelection();

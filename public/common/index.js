@@ -12,6 +12,7 @@ require('./../v1/lib/jquery-ui/jquery-ui.min.js');
 require('./../common/directives/share.js');
 require('./../common/directives/post.js');
 require('./../common/directives/tagInput.js');
+require('./../common/directives/userInput.js');
 require('./../common/directives/sideNav.js');
 require('./../common/directives/bookmarker.js');
 require('./../common/directives/analytics.js');

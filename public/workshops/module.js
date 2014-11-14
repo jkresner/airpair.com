@@ -37,6 +37,11 @@ angular.module("APWorkshops", ['ngRoute','APFilters','APShare'])
       controller: 'WorkshopSignupCtrl as signup'
     });
 
+    $routeProvider.when('/workshops/signup-confirmed/:id', {
+      template: require('./signupconfirmed.html'),
+      controller: 'WorkshopSignupConfirmedCtrl'
+    });
+
   }])
 
 
@@ -69,6 +74,23 @@ angular.module("APWorkshops", ['ngRoute','APFilters','APShare'])
     $http.get(API+'/workshops/'+$routeParams.id).success(function (data) {
       $scope.entry = data;
     });
+  }])
+
+  .controller('WorkshopSignupConfirmedCtrl', ['$scope', '$http', '$routeParams', '$location','API',
+    function($scope, $http, $routeParams, $location, API) {
+
+    $scope.later = false
+    if ($location.search().later)
+    {
+      $scope.later = true
+    }
+
+    console.log('signup confirmed')
+
+    $http.get(API+'/workshops/'+$routeParams.id).success(function (data) {
+      $scope.entry = data;
+    });
+
   }])
 
 ;
