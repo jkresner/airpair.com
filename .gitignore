@@ -26,8 +26,7 @@ build/Release
 # Deployed apps should consider commenting this line out:
 # see https://npmjs.org/doc/faq.html#Should-I-check-my-node_modules-folder-into-git
 node_modules
-public/v1/lib/**/*.gzip
-public/v1/lib/**/*.min.css
-public/v1/lib/**/*.map
-public/v1/lib/**/*.md
+public/v1/lib/*
+!public/v1/lib/fonts
+!public/v1/lib/prism
 ^/dist
