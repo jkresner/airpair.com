@@ -1,9 +1,1 @@
-{{#if config.isDist }}
-
-<script type="text/javascript" src="//static.airpair.com/js/{{distscript}}"></script>
-
-{{else}}
-
-<script type="text/javascript" src="/v1/js/index.js"></script>
-
-{{/if}}
+<script type="text/javascript" src="{{config.bundle.indexScript}}"></script>
