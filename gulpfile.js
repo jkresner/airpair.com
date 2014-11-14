@@ -13,7 +13,10 @@ var path = require('path'),
   watchify = require('watchify'),
   browserify = require('browserify'),
   uglifyify = require('uglifyify'),
+  annotate = require('browserify-ngannotate'),
   rev = require('gulp-rev');
+
+require('./build/traceur');
 
 paths = {
   public: 'public/**',
@@ -44,13 +47,7 @@ gulp.task('nodemon', function () {
     })
 });
 
-gulp.task('less', function () {
-  gulp.src(['public/styles/index.less','public/styles/adm.less'])
-    .pipe(less({
-      paths: [ path.join(__dirname, 'styles') ]
-    }))
-    .pipe(gulp.dest('./public/v1/css'));
-});
+gulp.task('less', require('./build/less'));
 
 gulp.task('watch', function() {
   livereload.listen({ port: 35729 });
@@ -65,55 +62,12 @@ gulp.task('watch', function() {
   gulp.watch(watching).on('change',livereload.changed);
 });
 
-
-var watchifyer = function(fileName)
-{
-  var bundler = watchify(browserify('./public/common/'+fileName, watchify.args));
-  bundler.transform(stringify(['.html']));
-  bundler.transform(es6ify.configure(/^(?!.*lib)+.+\.js$/));
-  bundler.on('update', rebundle);
-
-  function rebundle() {
-    return bundler.bundle()
-      .on('error', gutil.log.bind(gutil, 'Browserify Error')) // log errors if they happen
-      .pipe(source(fileName))
-      .pipe(gulp.dest('./public/v1/js'));
-  }
-
-  return rebundle();
-
-}
-
-gulp.task('watchify', function() {
-  watchifyer('index.js');
-  watchifyer('adm.js');
-});
-
-var bundlerer = function(fileName) {
-  var bundler = browserify('./public/common/'+fileName);
-
-  bundler.transform(stringify(['.html']));
-  bundler.transform(es6ify.configure(/^(?!.*lib)+.+\.js$/));
-
-  bundler.transform({global:true}, 'uglifyify');
-
-  return bundler.bundle()
-    .pipe(source(fileName))
-    .pipe(buffer());
-}
-
-gulp.task('bundle', function() {
-  merge(
-    bundlerer('index.js'),
-    bundlerer('adm.js')
-    )
-    .pipe(rev())
-    .pipe(gulp.dest('./dist/js'))
-    .pipe(rev.manifest())
-    .pipe(gulp.dest('./dist'))
-});
-
+gulp.task('clean', require('./build/clean'));
+gulp.task('watchify', require('./build/watchify'));
+gulp.task('dist', require('./build/dist'));
 
 gulp.task('default', ['nodemon','less','watch','watchify']);
 gulp.task('test', ['testnodemon','build']);
-gulp.task('build', ['less','bundle']);
+gulp.task('build', ['clean'], function() {
+  gulp.start(['less', 'dist']);
+});
