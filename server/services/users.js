@@ -404,7 +404,7 @@ export function toggleBookmark(type, id, cb) {
 	if (!type) $log('toggleBookmark.type', type, cb)
 	var	bookmark = { _id: svc.newId(), objectId: id, type, sort: 0 }
 	var bookmarkComparator = (i) => _.idsEqual(i.objectId,id)
-	toggleSessionItem.call(this, 'bookmarks', bookmark, 2, 15, bookmarkComparator, cb)
+	toggleSessionItem.call(this, 'bookmarks', bookmark, 3, 15, bookmarkComparator, cb)
 }
 
 export function tags(tags, cb) {
@@ -531,5 +531,21 @@ export function verifyEmail(hash, cb) {
     }
     else
       cb(Error("e-mail verification failed"))
+  })
+}
+
+
+export function search(searchTerm, cb) {
+  var opts = { options: { limit: 4 }, fields: UserData.select.search }
+  var rex = new RegExp(searchTerm, "i")
+  var query = searchTerm ? { '$or' : [{name : rex},{'google.displayName' : rex}] } : null;
+  svc.searchMany(query, opts, (e,r) =>{
+    for (var u of r)
+    {
+      if (!u.email && u.google._json.email) u.email = u.google._json.email
+      if (!u.name && u.google.displayName) u.name = u.google.displayName
+      u = setAvatar(u);
+    }
+    cb(e,r)
   })
 }

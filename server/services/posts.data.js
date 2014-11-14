@@ -4,17 +4,21 @@ module.exports = {
 		list: {
 			'by.name': 1,
 			'by.avatar': 1,
-			'meta.description': 1,
-			'title':1,
-			'slug': 1,
-			'created': 1,
-			'published': 1,
-			'tags': 1
+      'meta.canonical': 1,
+      'meta.description': 1,
+      'meta.ogImage': 1,
+      'title':1,
+      'slug': 1,
+      'created': 1,
+      'published': 1,
+      'tags': 1,
 		},
 		listAdmin: {
 			'by.name': 1,
 			'by.avatar': 1,
+      'meta.canonical': 1,
 			'meta.description': 1,
+      'meta.ogImage': 1,
 			'title':1,
 			'slug': 1,
 			'created': 1,
@@ -26,8 +30,7 @@ module.exports = {
 		listCache: {
 			'_id': 1,
 			'title': 1,
-			'slug': 1,
-			'tags': 1
+      'meta.canonical': 1
 		}
   },
 

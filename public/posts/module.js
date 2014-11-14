@@ -5,7 +5,8 @@ var resolver = require('./../common/routes/helpers.js').resolveHelper;
 
 
 angular.module("APPosts", ['ngRoute', 'APFilters','APShare',
-  'APMyPostsList','APPostEditor','APPost', 'APBookmarker','APSvcSession', 'APSvcPosts','APTagInput'])
+  'APMyPostsList','APPostEditor','APPost', 'APBookmarker','APSvcSession',
+  'APSvcPosts', 'APTagInput','APUserInput'])
 
   .config(['$locationProvider', '$routeProvider',
       function($locationProvider, $routeProvider) {
@@ -30,7 +31,7 @@ angular.module("APPosts", ['ngRoute', 'APFilters','APShare',
     });
 
     $routeProvider.when('/posts/publish/:id', {
-      template: require('./author.html'),
+      template: require('./publish.html'),
       controller: 'PublishCtrl as author',
       resolve: authd
     });
@@ -135,68 +136,93 @@ angular.module("APPosts", ['ngRoute', 'APFilters','APShare',
     'session',
     function($scope, PostsService, $routeParams, session) {
 
-    var self = this;
-    $scope.preview = { mode: 'publish' };
     $scope.post = { tags: [] };
 
     $scope.setPublishedOverride = () => {
       if (!$scope.post.publishedOverride)
-      {
         $scope.post.publishedOverride = $scope.post.published || moment().format()
-      }
     }
 
+    //-- TODO also figure out to add social later
+    // $scope.user = () => { return $scope.post.by }
+    $scope.selectUser = (user) => {
+      $scope.post.by = {
+        userId: user._id,
+        name: user.name,
+        avatar: user.avatar,
+        bio: user.bio,
+        username: user.username
+      };
+    }
 
     PostsService.getById($routeParams.id, (r) => {
-      if (!r.slug) {
-        r.slug = r.title.toLowerCase().replace(/ /g, '-');
-      }
 
-      $scope.canonical = 'http://www.airpair.com/v1/posts/' + r.slug;
+      if (!r.slug) r.slug = r.title.toLowerCase().replace(/ /g, '-');
 
-      if (r.tags.length > 0)
+      if (r.meta)
       {
-        $scope.canonical = `http://www.airpair.com/${r.tags[0].slug}/posts/${r.slug}`;
+        $scope.canonical = r.meta.canonical;
+        r.url = r.meta.canonical;
       }
-
-      if (!r.meta) {
-        var ogVideo = null;
-        var ogImage = r.assetUrl;
-        if (r.assetUrl && r.assetUrl.indexOf('http://youtub.be/') == 0)
-        {
-          var youTubeId = r.assetUrl.replace('http://youtu.be/','');
-          ogImage = `http://img.youtube.com/vi/${youTubeId}/hqdefault.jpg`
-          ogVideo = `https://www.youtube-nocookie.com/v/${youTubeId}`
-        }
-
+      else
+      {
         r.meta = {
           title: r.title,
-          canonical: $scope.canonical,
+          canonical: '',
           ogType: 'article',
           ogTitle: r.title,
-          ogImage: ogImage,
-          ogVideo: ogVideo,
-          ogUrl: $scope.canonical
-        }
+          ogImage: r.assetUrl,
+          ogVideo: null,  // we don't want facebook to point to the original moview, but the post instead
+          ogUrl: ''
+        };
       }
-      $scope.post = _.extend(r, { saved: true});
+
+      if (r.assetUrl && r.assetUrl.indexOf('http://youtu.be/') == 0)
+      {
+        var youTubeId = r.assetUrl.replace('http://youtu.be/','');
+        r.meta.ogImage = `http://img.youtube.com/vi/${youTubeId}/hqdefault.jpg`;
+        // ogVideo = `https://www.youtube-nocookie.com/v/${youTubeId}`;
+      }
+
+      $scope.post = _.extend(r, { saved: false });
+
+
+      $scope.$watch('post.meta.canonical', (value) => $scope.post.meta.ogUrl = value );
     });
 
 
-    $scope.$watch('post.tags', function(value){
-      if (value.length > 0)
-      {
+    $scope.$watch('post.tags', function(value) {
+      // console.log('post.tags.changed', value)
+      if (value.length > 0 && !$scope.post.published)
         $scope.post.meta.canonical = `http://www.airpair.com/${$scope.post.tags[0].slug}/posts/${$scope.post.slug}`;
-        $scope.post.meta.ogUrl = `http://www.airpair.com/${$scope.post.tags[0].slug}/posts/${$scope.post.slug}`;
-      }
     })
 
     $scope.save = () => {
-      $scope.post.md = angular.element(document.querySelector( '#markdownTextarea' ) ).val();
+      $scope.post.meta.ofUrl = $scope.post.meta.canonical
       PostsService.publish($scope.post, (r) => {
+        r.url = r.meta.canonical
         $scope.post = _.extend(r, { saved: true});
       });
     }
+
+    $scope.tags = () => $scope.post ? $scope.post.tags : null;
+    $scope.updateTags = (scope, newTags) => {
+      if (!$scope.post) {
+        return;
+      }
+
+      $scope.post.tags = newTags;
+    }
+
+    $scope.selectTag = function(tag) {
+      var tags = $scope.post.tags;
+      if ( _.contains(tags, tag) ) $scope.post.tags = _.without(tags, tag)
+      else $scope.post.tags = _.union(tags, [tag])
+    };
+
+    $scope.deselectTag = (tag) => {
+      $scope.post.tags = _.without($scope.post.tags, tag);
+    };
 
   }])
 

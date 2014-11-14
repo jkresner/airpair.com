@@ -32,7 +32,18 @@ module.exports = {
       'email': 1,
       'name': 1,
       'initials': 1
-    }
+    },
+    search: {
+      '_id': 1,
+      'email': 1,
+      'name': 1,
+      'initials': 1,
+      'username': 1,
+      'bio': 1,
+      'google': 1,
+      'cohort': 1,
+      'membership': 1
+    },
   },
 
   query: {

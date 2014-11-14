@@ -10,15 +10,15 @@
   <div class="selected">
     <label for="tagInput">Your stack</label>
 
-    <ul class="tags" sortable sort='tags' service='tags'>
-      <li ng-repeat="tag in session.tags | orderBy:'sort'" ng-attr-data-id="{{tag._id}}">
+    <ul class="tags" sortable get='tags' set='updateTags'>
+      <li ng-repeat="tag in tags() | orderBy:'sort'" ng-attr-data-id="{{tag._id}}">
         {{tag.slug}}
         <a class="remove" ng-click="deselectMatch(tag)">x</a>
         <a class="order" href="#"></a>
       </li>
     </ul>
 
-    <p ng-if="!selectedTags() || selectedTags().length == 0">No tags selected yet.</p>
+    <p ng-if="!tags() || tags().length == 0">No tags selected yet.</p>
   </div>
 
   <label for="tagInput">Search technologies</label>
@@ -27,13 +27,15 @@
     ng-model="q"
     typeahead="t as t for t in getTags($viewValue) | filter:$viewValue"
     typeahead-editable="false"
-    typeahead-input-formatter="keypressSelect($model)" tabindex="100">
+    typeahead-input-formatter="keypressSelect($model)" tabindex="100"
+    typeahead-template-url="tagMatch.html"
+    >
   <!-- typeahead-loading="loading"
   <i ng-show="loading" class="glyphicon glyphicon-refresh"></i>
    -->
 </div>
 
-<script type="text/ng-template" id="template/typeahead/typeahead-match.html">
+<script type="text/ng-template" id="tagMatch.html">
   <div>
     <a class="tagSelect">
       <span bind-html-unsafe="match.model.slug | typeaheadHighlight:query"></span>
