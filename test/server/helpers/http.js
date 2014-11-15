@@ -38,16 +38,32 @@ global.LOGIN = function(key, user, cb) {
 }
 
 
-global.GET = function(url, opts, cb) {
+global.GET = function(url, opts, headers, cb) {
+  if (arguments.length == 3) {
+    if (Object.prototype.toString.call(headers) == "[object Function]") {
+      cb = headers;
+      headers = undefined; 
+    }
+  }
+
   var apiUrl = '/v1/api'+url
   if (logging) $log('get:', apiUrl)
 
   var sessionCookie = cookie
   if (opts.unauthenticated) { sessionCookie = null }
 
-  return http(global.app)
-    .get(apiUrl)
-    .set('cookie',sessionCookie)
+  // setup the get request
+  var req = http(global.app).get(apiUrl);
+
+  // add custom headers if we have them
+  if (headers) {
+    for (var h in headers) {
+      req.set(h, headers[h]);
+    }
+  }
+
+  // finish setting up the request
+  return req.set('cookie',sessionCookie)
     .expect('Content-Type', /json/)
     .expect(opts.status||200)
     .end(function(err, resp){

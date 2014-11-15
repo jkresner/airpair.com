@@ -33,9 +33,36 @@ export function getById(id, cb) {
 }
 
 
-export function getBySlug(slug, cb) {
+export function getBySlug(slug, cb, req) {
   var query = _.extend(Data.query.published(),{slug})
-  svc.searchOne(query, null, inflateHtml(cb))
+  svc.searchOne(query, null, (e, r) => {
+    if (e) {
+      cb(e, r);
+      return;
+    }
+
+    if (!r) {
+      UserSvc.getUsersInRole('editor', (e2, r2) => {
+        if (e2) {
+          $log('Error getting users in editor role: ', e2);
+          return;
+        }
+
+        var requestDate = moment().format("dddd, MMMM Do YYYY, h:mm:ss a");
+        mailman.sendFailedPostEmail(r2, requestDate, req.path,
+          req.get('User-Agent'), req.get('Referer'), (e3) => {
+            if (e3) {
+              $log('Error sending email: ', e3);
+            }
+          });
+      });
+
+      cb(e, r);
+      return;
+    }
+
+    inflateHtml(cb)(e, r);
+  });
 }
 
 
