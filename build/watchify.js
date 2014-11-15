@@ -1,7 +1,7 @@
 var
   gulp = require('gulp'),
   gutil = require('gulp-util'),
-  source = require('vinyl-source-stream'),
+  source = require('vinyl-source-stream2'),
   merge = require('merge-stream'),
   watchify = require('watchify'),
   browserify = require('browserify'),
