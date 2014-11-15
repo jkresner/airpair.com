@@ -28,8 +28,8 @@ var cfg = {
   },
   bundle: {
     indexScript: '/v1/js/index.js',
-    indexCss: '/v1/css/index.css',
-    libCss: '/v1/css/lib.css'
+    indexCss: '/v1/styles/index.css',
+    libCss: '/styles/libs.css'
   },
   log: {},
   mail: {

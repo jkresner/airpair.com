@@ -28,6 +28,7 @@ build/Release
 node_modules
 public/v1/js/*
 public/v1/lib/*
+public/v1/styles/*
 !public/v1/lib/fonts
 !public/v1/lib/bootstrap/bootstrap.css
 !public/v1/lib/prism
