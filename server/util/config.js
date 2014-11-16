@@ -1,5 +1,5 @@
 var cfg = {
-  build:  { version: '1.06', deployed: 'Oct 15' },
+  build:  { version: '1.09', deployed: 'Oct 17' },
   port:     process.env.PORT || 3333,
   mongoUri: process.env.MONGOHQ_URL || "mongodb://localhost/airpair_dev",
   session: { secret: 'airyv1' },
