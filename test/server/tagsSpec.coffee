@@ -54,8 +54,6 @@ module.exports = -> describe "API", ->
       GET '/tags/search/c+', opts, (s2) ->
         expect(s1.length).to.equal(3)
         expect(s1[0].name).to.equal('c++')
-        expect(s1[1].name).to.equal('c++0x')
-        expect(s1[2].name).to.equal('c++-cli')
         expect(s2[0].name).to.equal('c++')
         done()
 
@@ -107,5 +105,5 @@ module.exports = -> describe "API", ->
                 expect(s3[0].slug).to.equal('ruby-on-rails')
                 expect(s4[0].slug).to.equal('ruby-on-rails')
                 expect(s5[0].slug).to.equal('ruby-on-rails')
-                expect(s6[0].slug).to.equal('ruby-on-rails')
+                expect(s6[0].slug).to.equal('ruby')
                 done()
