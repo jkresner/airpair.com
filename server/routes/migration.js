@@ -4,9 +4,9 @@ import {noTrailingSlash} from '../util/seo/middleware'
 
 function routeCanonicalPost(router, app, canonical, slug) {
   router.get(canonical, noTrailingSlash(), app.renderHbsViewData('post', function (req, cb) {
-      $log('slug', slug)
+      // $log('slug', slug)
       PostsAPI.svc.getBySlug(slug, (ee,post) => {
-        $log('p', post)
+        // $log('p', post)
         if (!post) return cb({title:"Post not found",md:"."})
         req.post = post
         req.post.primarytag = post.tags[0]
@@ -110,7 +110,7 @@ var postCanonicals = [
   {o:'/javascript/javascript-code-mentoring', c:'/javascript/posts/javascript-code-mentoring-1'},
   {o:'/javascript/javascript-consultant-marek-publicewicz', c:'/javascript/posts/javascript-consultant-marek-publicewicz-1'},
   {o:'/javascript/learn-javascript', c:'/javascript/posts/learn-javascript-in-1-week'},
-  {o:'/javascript/node-js-tutorial/', c:'node.js/posts/node-js-tutorial-step-by-step-guide-for-getting-started'},
+  {o:'/javascript/node-js-tutorial', c:'/node.js/posts/node-js-tutorial-step-by-step-guide-for-getting-started'},
   {o:'/javascript/teacher-aldo-bucchi', c:'/javascript/posts/javascript-teacher-aldo-bucchi-1'},
   {o:'/jquery/jquery-code-mentoring', c:'/jquery/posts/jquery-code-mentoring-1'},
   {o:'/js/javascript-framework-comparison', c:'/javascript/posts/angularjs-vs-backbonejs-vs-emberjs'},
