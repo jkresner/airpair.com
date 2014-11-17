@@ -161,6 +161,9 @@ angular.module("APPosts", ['ngRoute', 'APFilters','APShare',
 
       if (r.meta)
       {
+        if (r.meta.canonical) r.meta.canonical = r.meta.canonical.replace('http://','https://')
+        if (r.meta.ogImage) r.meta.ogImage = r.meta.ogImage.replace('http://','https://')
+
         $scope.canonical = r.meta.canonical;
         r.url = r.meta.canonical;
       }
@@ -171,17 +174,19 @@ angular.module("APPosts", ['ngRoute', 'APFilters','APShare',
           canonical: '',
           ogType: 'article',
           ogTitle: r.title,
-          ogImage: r.assetUrl,
+          ogImage: r.assetUrl.replace('http://','https://'),
           ogVideo: null,  // we don't want facebook to point to the original moview, but the post instead
           ogUrl: ''
         };
       }
 
-      if (r.assetUrl && r.assetUrl.indexOf('http://youtu.be/') == 0)
+      if (r.assetUrl)
       {
-        var youTubeId = r.assetUrl.replace('http://youtu.be/','');
-        r.meta.ogImage = `http://img.youtube.com/vi/${youTubeId}/hqdefault.jpg`;
-        // ogVideo = `https://www.youtube-nocookie.com/v/${youTubeId}`;
+        if (r.assetUrl.indexOf('http://youtu.be/') == 0) {
+          var youTubeId = r.assetUrl.replace('http://youtu.be/','');
+          r.meta.ogImage = `https://img.youtube.com/vi/${youTubeId}/hqdefault.jpg`;
+          // ogVideo = `https://www.youtube-nocookie.com/v/${youTubeId}`;
+        }
       }
 
       $scope.post = _.extend(r, { saved: false });
@@ -194,7 +199,7 @@ angular.module("APPosts", ['ngRoute', 'APFilters','APShare',
     $scope.$watch('post.tags', function(value) {
       // console.log('post.tags.changed', value)
       if (value.length > 0 && !$scope.post.published)
-        $scope.post.meta.canonical = `http://www.airpair.com/${$scope.post.tags[0].slug}/posts/${$scope.post.slug}`;
+        $scope.post.meta.canonical = `https://www.airpair.com/${$scope.post.tags[0].slug}/posts/${$scope.post.slug}`;
     })
 
     $scope.save = () => {
