@@ -2,7 +2,7 @@ var passport = require('passport')
 import * as authConfig from './config'
 
 
-var logging = true
+var logging = false
 
 
 var oauthFn = (provider, scope) => {
