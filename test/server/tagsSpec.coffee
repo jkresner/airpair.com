@@ -62,6 +62,8 @@ module.exports = -> describe "API", ->
     GET '/tags/search/c%23', opts, (s) ->
       expect(s.length).to.equal(3)
       expect(s[0].name).to.equal('c#')
+      expect(s[1].name).to.equal('c#-2.0')
+      expect(s[2].name).to.equal('c#-3.0')
       done()
 
   it 'Search tags for android', (done) ->
