@@ -26,4 +26,6 @@ export function init(app, cb) {
       app.get( r.previous, redirectWithQuery(r.previous,r.current,r.type))
     cb()
   })
+
+  app.get("/c\\+\\+", redirectWithQuery("/c++","/posts/tag/c++", "302") )
 }

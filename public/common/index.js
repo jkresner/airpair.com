@@ -6,7 +6,7 @@ require('./../v1/lib/angular-route/angular-route.js');
 require('./../v1/lib/angular-messages/angular-messages.js');
 require('./../v1/lib/angular-load/angular-load.js');
 require('./../v1/lib/angular-bootstrap/ui-bootstrap-tpls.js');
-require('./../v1/lib/marked/lib/marked.js');
+window.marked = require('./../v1/lib/marked/lib/marked.js');
 require('./../v1/lib/prism/prism.js');
 require('./../v1/lib/jquery-ui/jquery-ui.js');
 require('./../common/directives/share.js');
