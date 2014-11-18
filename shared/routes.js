@@ -7,6 +7,7 @@ module.exports = [
   '*/posts*',
   '*/workshops*',
   '/billing*',
+  '*pair-programming*',
   '/v1/auth*',
   '/me*'
 ]
