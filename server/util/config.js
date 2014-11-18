@@ -1,5 +1,5 @@
 var cfg = {
-  build:  { version: '1.06', deployed: 'Oct 15' },
+  build:  { version: '1.09', deployed: 'Oct 17' },
   port:     process.env.PORT || 3333,
   mongoUri: process.env.MONGOHQ_URL || "mongodb://localhost/airpair_dev",
   session: { secret: 'airyv1' },
@@ -28,7 +28,9 @@ var cfg = {
   },
   bundle: {
     indexScript: '/v1/js/index.js',
+    admScript: '/v1/js/adm.js',
     indexCss: '/v1/styles/index.css',
+    admCss: '/v1/styles/adm.css',
     libCss: '/styles/libs.css'
   },
   log: {},
@@ -74,6 +76,8 @@ module.exports = function(env, appdir) {
     var dist = require('../../dist/rev-manifest.json')
     cfg.bundle.indexScript = `/v1/${dist['js/index.js']}`
     cfg.bundle.indexCss = `/v1/${dist['styles/index.css']}`
+    cfg.bundle.admScript = `/v1/${dist['js/adm.js']}`
+    cfg.bundle.admCss = `/v1/${dist['styles/adm.css']}`
     cfg.bundle.libCss = `/v1/${dist['styles/libs.css']}`
     cfg.mail.on = true
     cfg.analytics.on = true
