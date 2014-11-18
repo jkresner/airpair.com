@@ -45,6 +45,10 @@ angular.module("AP", ['ngRoute', 'APSideNav', 'APAuth', 'APPosts', 'APWorkshops'
       template: require('../about.html')
     });
 
+    $routeProvider.when('/angularjs/pair-programming', {
+      template: require('../sales/angular.html')
+    });
+
   })
 
   .run(function($rootScope, $location, SessionService) {

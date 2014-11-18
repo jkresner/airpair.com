@@ -154,7 +154,7 @@ var postCanonicals = [
   {o:'/pubnub/expert-ian-jennings', c:'expert-ian-jennings-1'},
   {o:'/python/code-mentor-semion-sidorenko', c:'code-mentor-semion-sidorenko-1'},
   {o:'/python/django-expert-daniel-roseman', c:'django-expert-daniel-roseman-1'},
-  {o:'/python/machine-learning-expert-alexandre-gravier', c:'posts/machine-learning-expert-alexandre-gravier-1'},
+  {o:'/python/machine-learning-expert-alexandre-gravier', c:'machine-learning-expert-alexandre-gravier-1'},
   {o:'/python/python-code-mentoring-web-scraping', c:'python-code-mentoring-web-scraping-1'},
   {o:'/python/python-expert-josh-kuhn', c:'python-expert-josh-kuhn-1'},
   {o:'/ruby-on-rails/agile-development-fernando-villalobos', c:'agile-development-fernando-villalobos-1'},
