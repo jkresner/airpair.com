@@ -4,7 +4,7 @@
 
 <section class="welcome" ng-if="session.authenticated == false">
 
-	<figure><a id="navWelcomeAvatar" track-click="SideNav" ng-click="openProfile()"><img class="avatar" ng-src="{{ session.avatar }}" /></a></figure>
+  <figure><a id="navWelcomeAvatar" track-click="SideNav" ng-click="openProfile()"><img class="avatar" ng-src="{{ session.avatar }}" /></a></figure>
 
   <ul class="main">
     <li ng-if="!session.email">Want your real face?</li>
@@ -16,18 +16,21 @@
     <li>Why join?</li>
   </ul>
   <a id="navAbout" track-click="SideNav" href="/about" class="icon">
-		<span>Read about AirPair</span><img src="/v1/img/css/sidenav/airpair.png" />
-	</a>
+    <span>Read about AirPair</span><img src="/v1/img/css/sidenav/airpair.png" />
+  </a>
 </section>
 
 
 <section ng-if="session._id">
-	<figure><a href="/me"><img class="avatar" ng-src="{{ session.avatar }}?s=120" /></a></figure>
+  <figure><a href="/me"><img class="avatar" ng-src="{{ session.avatar }}?s=120" /></a></figure>
 </section>
 
 <section class="main" ng-if="session._id"> <label>{{ session.name.split(' ')[0] }}</label>
   <ul>
-    <!-- <li><a href="#">dashboard</a></li> -->
+    <li><a href="/dashboard" target="_self">dashboard</a></li>
+    <li><a href="/find-an-expert" target="_self">get help</a></li>
+    <li><a href="mailto:team@airpair.com?Subject=Bug spotted!" target="_blank">see a bug?</a></li>
+    <!-- <li><a href="/" target="_self">dashboard (old)</a></li> -->
     <li><a href="/billing">billing</a></li>
     <!-- <li><a href="#">airpairs</a></li> -->
     <!-- <li><a href="#">settings</a></li> -->
@@ -37,20 +40,25 @@
 
 
 <section class="stack"> <label>Stack</label>
-	<ul>
-		<li ng-repeat="tag in session.tags"><a href="/posts/tag/{{tag.slug}}">{{tag.name}}</a></li>
-	</ul>
-	<a id="navStackToggle" track-click="SideNav" href="#" ng-click="openStack()" class="icon">
-		<span>Customize</span><img src="/v1/img/css/sidenav/stack.png" />
-	</a>
+  <ul>
+    <li ng-repeat="tag in session.tags | orderBy:'sort'">
+      <a ng-if="tag.slug != 'angularjs'" href="/posts/tag/{{tag.slug}}">{{tag.name}}</a>
+      <a ng-if="tag.slug == 'angularjs'" href="/angularjs" target="_self">{{tag.name}}</a>
+    </li>
+  </ul>
+  <a id="navStackToggle" track-click="SideNav" href="#" ng-click="openStack()" class="icon">
+    <span>Customize</span><img src="/v1/img/css/sidenav/stack.png" /><i>{{ session.tags.length || 0 }}</i>
+  </a>
 </section>
 
 
 <section class="bookmarks"> <label>Bookmarks</label>
-	<ul class="bookmarks">
-		<li ng-repeat="b in session.bookmarks"><a href="{{b.url}}" target="_self">{{b.title}}</a></li>
-	</ul>
-	<a id="navBookmarksToggle" track-click="SideNav"  ng-click="openBookmarks()" class="icon"><span>Manage</span> <img src="/v1/img/css/sideNav/bookmarks.png" /></a>
+  <ul class="bookmarks">
+    <li ng-repeat="bookmark in session.bookmarks | orderBy:'sort'">
+      <a href="{{bookmark.url}}" target="_self">{{bookmark.title}}</a>
+    </li>
+  </ul>
+  <a id="navBookmarksToggle" track-click="SideNav" href="#" ng-click="openBookmarks()" class="icon"><span> Manage </span> <img src="/v1/img/css/sidenav/bookmark.png" /><i>{{ session.bookmarks.length || 0 }}</i></a>
 </section>
 
 <div stack></div>

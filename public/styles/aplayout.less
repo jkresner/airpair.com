@@ -10,7 +10,7 @@ body > header {
   // padding:7px 10px 7px 20px;
 
   > a {
-  	padding:7px 20px;
+    padding:7px 20px;
     background:url('../img/css/header/logo.png') no-repeat;
     background-position:25px 9px;
     background-size:90px 22px;
@@ -35,6 +35,17 @@ body > header {
 
   @media only screen and (max-width:640px) {
     padding:7px 4px 7px 8px;
+    > a {
+      padding:0px;
+      background-position:5px 3px;
+      width:100px;
+    }
+    ul {
+      padding:1px 3px;
+    }
+
+    .pp { display:none }
+    .wk { display:none }
   }
 }
 
@@ -210,6 +221,23 @@ nav#side {
     padding: 2px 1px 3px;
     text-transform: none;
     img { display:none }
+
+    i {
+      display:none;
+      position:relative;
+      top:-32px;
+      left:-2px;
+      opacity:0.9;
+      background:@orange;
+      border-radius:7px;
+      width:14px;
+      height:14px;
+      float:right;
+      font-style:normal;
+      font-size:9px;
+      font-weight:bold;
+      color:white;
+    }
 	}
 
 	@media only screen and (max-width:1200px) {
@@ -251,6 +279,11 @@ nav#side.collapse {
 			height:28px;
 			border:none;
 			margin:0; }
+
+    i {
+      display:block;
+    }
+
 	}
 
 	#navAbout { margin-top:30px }
@@ -360,6 +393,18 @@ nav#chat.collapse {
 	label { display:block }
 }
 
+
+.modal-body.bookmarks
+{
+  p {
+    margin:10px 0 30px 0;
+  }
+  ul {
+    margin:20px 0;
+    padding-left:0;
+  }
+}
+
 .modal-body.profile
 {
 	section.success {
@@ -384,7 +429,7 @@ nav#chat.collapse {
 		text-align:center;
 		background:@lightblue;
 		.gradientfill;
-		.tileborder;
+		.tile;
 		label { display:block;
 			text-transform:uppercase;
 			margin:10px 0 0 0;

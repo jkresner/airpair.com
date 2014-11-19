@@ -1,0 +1,9 @@
+var nodemon = require('gulp-nodemon');
+
+module.exports = () =>
+  nodemon({ script: 'test/server/helpers/run.js', ext: 'html js',
+      ignore: ['public/*','dist/*','node_modules/*'] })
+    .on('change', ['lint'])
+    .on('restart', function () {
+      console.log('>> node test restart');
+    })

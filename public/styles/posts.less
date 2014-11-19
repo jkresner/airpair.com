@@ -4,330 +4,373 @@
 @mainElmWidth:640px;
 @mainElmPad:0px;
 
-section#post {
-	@media screen and (max-width:640px) {
-	  .main-wrap, main { width:100%;margin:auto } //-- let the post be as big as the width
-	}
-}
+//-- A list (tile grid) of posts
 
 .posts {
-	margin-left:-5px;
-	text-align:center;
-	article {
-		.gradientfill;
-		.tileborder;
-		text-align:left;
-		position:relative;
-		width:286px;
-		height:200px;
-		margin:6px;
-		padding:0px;
-		font-size:12px;
-		line-height:14px;
-		display:inline-block;
+  margin-left:-5px;
+  text-align:center;
 
-		> a { padding:12px 12px 0px 12px;display:block }
+  @media screen and (max-width:640px) {
+    margin:auto;
+  }
 
-		header {
-			min-height:60px;
-			overflow:hidden;
-		}
+  article {
+    .tile;
+    text-align:left;
+    position:relative;
+    margin:6px;
+    padding:0px;
+    line-height:14px;
+    display:inline-block;
 
-		h2 {
-			font-size:14px;
-			font-weight:bold;
-			margin:0px 0px 1px 0px;
-			line-height:18px;
-			color:@gray;
-		}
+    > a { padding:0px 6px 0px 0px;display:block }
 
-		.entry-meta {
-			color:@gray;
-			font-size:11px;
-			max-height:20px;
-			overflow:hidden;
-		}
+    header {
+      padding:4px;
+      float:left;
+      width:50%;
+      position:absolute;
+      top:0;
+      bottom:0;
+      background-color:@lightblue;
+      .entry-header-image { max-width:100%; }
+      p.entry-meta {
+        width:100%;
+        line-height:16px;
+        margin:0;
+        padding:0;
+        color:@gray;
+        font-size:11px;
+        position:absolute;
+        bottom:0;
+        left:0;
+      }
+      .entry-categories {
+        em { display:inline-block;font-style:normal; }
+        color:@darkblue;
+        width:100%;
+        font-size:9px;
+        a {
+          display:inline-block;
+          margin-left:5px }
+       }
+      .entry-author {
+        padding-top:15px;
+        font-weight:bold;
+        color:@orange;
+        width:100%;
+      }
+      .entry-author-name {
+        display:inline-block;
+        width:50%;
+      }
+      .entry-author-image {
+        width:50px;
+        border-radius:25px;
+        display:inline;
+        margin:0px 6px 0 1px;
+        border:solid 3px @bluegray;
+        webkit-filter: grayscale(100%);
+        -moz-filter: grayscale(100%);
+        filter: grayscale(100%);
+      }
+      time {
+        display:block;
+        color:@gray;
+        font-weight:normal;
+      }
+    }
 
-		footer {
-			position:absolute;
-			bottom:10px;
-			font-size:9px;
-			text-align:right;
-			width:94%;
-			height:30px;
-			.entry-meta { float:right }
-			.entry-categories {
-				color:@gray;
-				width:100%;
-				a { display:inline-block;margin-left:5px }
-			 }
-		}
+    .entry-content {
+      text-align:left;
+      float:right;
+      width:48%;
+      padding:3px;
+      h2 { margin:0px 0px 1px 0px; }
+      p { color:@mediumgray }
+      max-height:143px;
+      overflow:hidden;
+    }
 
-		p { line-height:16px;margin:0;padding:0 }
-		.entry-content { height:80px;overflow:hidden;color:@gray }
-		.entry-author {
-			font-weight:bold;
-			color:@orange;
-		}
-		.entry-author-image { width:50px;
-			border-radius:25px;
-			display:inline;
-			margin:3px 10px 0 0;
-			border:solid 3px @bluegray;
-			webkit-filter: grayscale(100%);
-      -moz-filter: grayscale(100%);
-			filter: grayscale(100%);
-		}
-
-	}
-
-	article:hover {
-		.tileborderHover;
-	}
-
-	@media screen and (max-width:640px) {
-	  margin:auto;
-	}
-}
-
-
-section#posts {
-
-	section > h3 {
-		width:100%;
-		margin-bottom:10px;
-		font-size:18px;
-		span { display:block;float:right }
-	}
-
-	.myposts {
-		width:640px;
-	}
-
-	.editOptions {
-		text-align:right;
-		float:right;
-		margin-right:10px;
-		width:200px;
-
-		a.btn { width:200px; }
-	}
-
-	#author { padding-top:10px }
-
-	.editor {
-		padding:10px 16px 0px 16px;
-		span { font-weight:normal;font-size:11px }
-		.meta {
-			display:none;
-			width:100%;
-			float:right;
-			.dates .form-group
-			{
-				float:left;width:60%;
-			}
-			.dates section
-			{
-				margin:0px 0px 2px 0px;
-				line-height:10px;
-				float:right;
-				width:32%;
-				font-size:10px;
-				label { font-size:10px;display:block;margin-bottom:5px  }
-				span { display:block;margin-bottom:6px }
-			}
-		}
-		.md { float:left;width:64%;
-			display:none;
-			textarea { padding:4px;height:340px;font-size:14px }
-		}
-		.md + .meta {
-			width:34%;
-		}
-		.form-actions {
-			height:40px;
-			clear:both;
-			text-align:center;
-			.btn { width:19%;margin:0px 2px 8px 2px;padding:3px 0px;display:none }
-			.btnPreview { display:inline-block; }
-		}
-
-		.tag-input-group {
-			.nomobile { display:none }
-			label { display:none }
-			.drag { display:none }
-			.selected {
-				display:block;
-				float:none;
-				li { display:inline;background:none;border:none }
-				.remove { float:none;background:none;color:red;display:inline;font-size:12px }
-			}
-		}
-	}
-
-	.editor + hr { margin:4px 0 0 0;border-color:@lightblue; }
-	.preview + hr { margin:0px 0px 4px 0px;border-color:@lightblue; }
-
-	#tips { display:none; }
-
-	.edit {
-		#preview {
-			.preview {
-				width:914px;max-height:300px;overflow-y:scroll;
-				border-right:solid 1px @lightblue;
-			}
-		}
-
-		#tips { display:block;background-color:@lightblue;padding:4px 6px;font-size:10px;line-height:14px;min-height:80px }
-		#tips ul { padding:4px 14px }
-	}
-
-	.edit, .publish {
-
-		.form-actions { .btn { display:inline-block } }
-		.editor { background-color:@lightblue; }
-		.md { display:block }
-		.meta { display:block }
-
-		.publishMeta input { font-size:11px;padding:4px;height:26px }
-
-	}
-
-	@media screen and (max-width:640px) {
-		//-- don't show myposts UI on mobile. might even be worth disabling xhr in angular
-	  section#myposts { display:none }
+    footer {
+      position:absolute;
+      bottom:0;
+      right:0;
+      font-size:9px;
+      text-align:right;
+      width:40%;
+      height:40px;
+    }
 	}
 }
+
+//-- A single full post view
 
 .blogpost {
-	clear:both;
-	padding:0 0px;
+  .rail {
+    float:right;
+    clear:right;
+    width:@sideRailWidth;
+  }
 
-	header { border-bottom:solid 1px @lightgray;margin-bottom:20px }
+  clear:both;
+  padding:0 0px;
 
-	hr { max-width:@mainElmWidth;
-		color:@lightblue;
-		margin:10px 0
-	}
-	h1 { padding-left:@mainElmPad }
-	h2 { text-align:left;font-size:28px;margin-bottom:5px;padding-left:@mainElmPad }
-	h3 { text-align:left }
-	p { margin-top:0;max-width:@mainElmWidth;vertical-align:top;padding-left:@mainElmPad;color:#4D4D57 }
+  header { border-bottom:solid 1px @lightgray;margin-bottom:20px }
 
-	// --- Prism customization
-	.line-numbers .line-numbers-rows { width:1.9em;left:0 }
-	.line-numbers-rows > span:before { padding-right:0.6em }
+  hr { max-width:@mainElmWidth;
+    color:@lightblue;
+    margin:10px 0
+  }
+  h1 { padding-left:@mainElmPad }
+  h2 { max-width:@mainElmWidth;text-align:left;font-size:28px;margin:40px 0 30px 0;padding-left:@mainElmPad;line-height:35px }
+  h3 { max-width:@mainElmWidth;text-align:left }
+  p { margin-top:0;
+    max-width:@mainElmWidth;
+    vertical-align:top;
+    padding-left:@mainElmPad;
+    color:#4D4D57;
+    font-size: 16px;
+    line-height: 26px;
+  }
 
-	pre {
-		font-size:12px;
-		border:none;padding:6px;max-width:@mainElmWidth;
+  // --- Prism customization
+  .line-numbers .line-numbers-rows { width:1.9em;left:0 }
+  .line-numbers-rows > span:before { padding-right:0.6em }
 
-		footer { text-align:right;border-top:solid 1px @lightgray;
-			margin-top:4px;padding-top:3px }
-	}
+  pre {
+    font-size:12px;
+    border:none;padding:6px;max-width:@mainElmWidth;
 
-	pre.line-numbers {
-		code { padding-left:30px }
-	}
-	// ---End Prism customization
+    footer { text-align:right;border-top:solid 1px @lightgray;
+      margin-top:4px;padding-top:3px }
+  }
 
-	ol { max-width:620px;padding-left:30px }
-	ul { max-width:620px;margin:0;padding-left:15px }
-	ul ul { margin-left:12px } // nested lists
+  pre.line-numbers {
+    code { padding-left:30px }
+  }
+  // ---End Prism customization
 
-	iframe { margin:0px 0px 0px 0px }
-	img { max-width:100% }
+  ol { max-width:620px;padding-left:30px }
+  ul { max-width:620px;margin:0;padding-left:15px }
+  ul ul { margin-left:12px } // nested lists
 
-	p.asset {
-		margin-bottom:0;
-	  span {
-	  	display:block;
-			text-align:center;
-			border:dotted 1px @lightgray;
-			min-height:360px;
-	  	line-height:40px;
-	  	padding-top:40px;
-	  }
+  iframe { margin:0px 0px 0px 0px }
+  img { max-width:100% }
+
+  p.asset {
+    margin-bottom:0;
+    span {
+      display:block;
+      text-align:center;
+      border:dotted 1px @lightgray;
+      min-height:360px;
+      line-height:40px;
+      padding-top:40px;
+    }
  }
 
-	.share {
-		float:right;
-		width:@sideRailWidth;
-		margin:14px 0;
-		position:relative;
-		top:0;
-	}
+  div.railCTA1Holder {
+    .rail;
+    height:130px;
+  }
 
-	#table-of-contents {
-		float:right;
-		clear:right;
-		width:@sideRailWidth;
-		margin:10px 0 8px 0;
-		font-size:24px;
-		position:relative;
-	}
-	#table-of-contents + ul {
-		list-style:none;
-		padding-left:0;
-		clear:right;
-		float:right;
-		width:@sideRailWidth;
-		font-size:12px;
-		position:relative;
-		z-index:0;
+  .railCTA {
+    .rail;
+    margin:10px 0 8px 0;
+    position:fixed;
+    > div {
+      position:relative;
+      background-color:@lightblue;
+      border-radius:4px;
+      height:95px;
+    }
 
-		ul { list-style:none;margin-top:4px;padding-left:0px }
-		li { padding:1px 0 2px 0; }
-	}
+    > div > img { width:70px;
+      height:70px;
+      border-radius:50%;
+      display:inline-block;
+      vertical-align:top;
+      padding:10px 10px 10px 10px;
+   }
 
-	.author {
-		margin:22px 0 24px 0;
-		hr { height:0;padding:0;margin:0;color:white;border:none }
+   p { float:right;
+      width:120px;
+      font-size:12px;
+      padding:10px 10px 0 0;
+      line-height:16px;
+    }
 
-		> img { width:80px;height:80px;border-radius:50%;display:inline-block;vertical-align:top }
+    h6 {
+      font-weight:bold;
+      text-transform:
+      uppercase;
+      padding:0;
+      margin:0 0 10px 0;
+    }
 
-		> figcaption {
-			height:80px;
-			width:540px;display:inline-block;margin:0 0px 0 10px;
-			display:inline-block;
-			border-left: 5px solid #eee;
-	    margin: 0 0 0 10px;
-			padding:0 0px 0 15px;
-	    box-sizing: border-box;
-			font-style:italic;
-			font-size:14px;
-			overflow:hidden;
-		}
-	}
+    a {
+      margin-top:-15px;
+      display:block;
+      background:@orange;
+      color:white;
+      border-top-left-radius:4px;
+      border-bottom-left-radius:4px;
+      padding:5px 10px;
+      width:60%;
+      font-weight:bold;
+      background-position:90% center;
+      background-repeat:no-repeat;
+    }
 
-	#disqus_thread {
-		background:white;
-		min-height:700px;
-		z-index:2;
-		position:relative;
-	}
+    div.bookmark {
+      cursor:pointer;
+      text-align:right;
+      margin:-10px 0px 0px 0px;
+      width:98%
+    }
 
-	@media only screen and (max-width:900px) {
-		> h1 { font-size:32px;line-height:48px;margin:10px 0 }
-		#table-of-contents { float:left;clear:left; }
-		#table-of-contents + ul { float:left;clear:left; }
-		.author { float:none }
-		figure { clear:both;padding-top:20px }
-	}
+    a.bookmark {
+      width:auto;
+      height:auto;
+      cursor:pointer;
+      position:absolute;
+      bottom:0;
+      right:0;
+      background-image:url('/v1/img/css/sidenav/bookmark.png');
+    }
 
-	@media only screen and (max-width:640px) {
-		p { padding:2px 5px 2px 5px }
-		iframe { width:100%;position:relative;left:0 }
-		> h1 { font-size:28px;line-height:30px;text-align:center;margin-top:20px }
-		h2 { font-size:22px;line-height:32px;text-align:center;margin-bottom:10px }
-		h3, h4, h5, h6 { text-align:center }
-		#table-of-contents { font-size:16px;margin:20px 20px 10px 20px;text-align:left }
-		#table-of-contents + ul { margin:0px 20px }
-		figure.author { float:none;
-			hr { clear:both }
-		}
-		.author > img { width:60px;height:60px; }
-		.author > figcaption { width:75%;float:right;height:inherit; }
+    a.bookmark:hover {
+      background-color:@darkblue;
+    }
+  }
+
+  .share {
+    .rail;
+    margin:14px 0;
+    position:relative;
+    top:0;
+  }
+
+  #table-of-contents {
+    .rail;
+    margin:10px 0 8px 0;
+    font-size:24px;
+    position:relative;
+  }
+  #table-of-contents + ul {
+    .rail;
+    list-style:none;
+    padding-left:0;
+    font-size:12px;
+    position:relative;
+    z-index:0;
+
+    ul { list-style:none;margin-top:4px;padding-left:0px }
+    li { padding:1px 0 2px 0; }
+  }
+
+
+  .author {
+    margin:22px 0 24px 0;
+    hr { height:0;padding:0;margin:0;color:white;border:none }
+
+    > img { width:80px;height:80px;border-radius:50%;display:inline-block;vertical-align:top }
+
+    > figcaption {
+      height:80px;
+      width:540px;display:inline-block;margin:0 0px 0 10px;
+      display:inline-block;
+      border-left: 5px solid #eee;
+      margin: 0 0 0 10px;
+      padding:0 0px 0 15px;
+      box-sizing: border-box;
+      font-style:italic;
+      font-size:14px;
+      overflow:hidden;
+    }
+  }
+
+  div.island {
+    width:100%;
+    height:60px;
+
+    div.rail {
+      float:right;
+      clear:right;
+      width:@sideRailWidth;
+      position:relative;
+    }
+  }
+
+  .bodyCTA {
+    width:640px;
+    h6 { text-transform:uppercase;font-weight:bold }
+    div > {
+      background:@lightblue;
+      height:110px;
+      border-radius:5px;
+      padding:10px;
+    }
+  }
+
+  #disqus_thread {
+    margin-top:60px;
+    background:white;
+    min-height:700px;
+    z-index:2;
+    position:relative;
+  }
+
+  .similar {
+    padding:20px 0;
+    position:relative;
+    background:white;
+    z-index:3;
+    margin-top:-150px;
+  }
+
+  @media only screen and (max-width:900px) {
+    .island {
+      width:100%;
+      .rail {
+        float:none!important;
+        display:block;
+        margin:auto;
+      }
+    }
+    div.railCTA1Holder {
+      float:none;
+      margin:auto;
+    }
+    .railCTA { margin:auto;float:none;display:block; }
+    .rail1CTA { margin:auto;float:none;display:block;position:fixed }
+
+    .bodyCTA {
+      margin:auto;
+      width:90%;
+    }
+
+    > h1 { font-size:32px;line-height:48px;margin:10px 0 }
+    #table-of-contents { float:left;clear:left; }
+    #table-of-contents + ul { float:left;clear:left; }
+    .author { float:none }
+    figure { clear:both;padding-top:20px }
+  }
+
+  @media only screen and (max-width:640px) {
+    p { padding:2px 5px 2px 5px;font-size:14px;line-height:22px }
+    iframe { width:100%;position:relative;left:0 }
+    > h1 { font-size:28px;line-height:30px;text-align:center;margin-top:20px }
+    h2 { font-size:22px;line-height:32px;text-align:center;margin-bottom:10px }
+    h3, h4, h5, h6 { text-align:center }
+    #table-of-contents { font-size:16px;margin:20px 20px 10px 20px;text-align:left }
+    #table-of-contents + ul { margin:0px 20px }
+    figure.author { float:none;
+      hr { clear:both }
+    }
+    .author > img { width:60px;height:60px; }
+    .author > figcaption { width:75%;float:right;height:inherit; }
   }
 
    .workshop-cta {
@@ -340,8 +383,120 @@ section#posts {
     border-left:solid 6px #ce5424;
 
     b { display:block;color:@blue;text-transform:uppercase;padding-bottom:4px }
-   	a { display:block;font-weight:bold;padding-top:8px;font-size:18px }
+    a { display:block;font-weight:bold;padding-top:8px;font-size:18px }
   }
 }
 
-a.bookmark { float:right }
+
+//-- For posts module (create / edit / publish)
+
+section#posts {
+
+  section > h3 {
+    width:100%;
+    margin-bottom:10px;
+    font-size:18px;
+    span { display:block;float:right }
+  }
+
+  .myposts {
+    width:640px;
+  }
+
+  .editOptions {
+    text-align:right;
+    float:right;
+    margin-right:10px;
+    width:200px;
+
+    a.btn { width:200px; }
+  }
+
+  #author { padding-top:10px }
+
+  .editor {
+    padding:10px 16px 0px 16px;
+    span { font-weight:normal;font-size:11px }
+    .meta {
+      display:none;
+      width:100%;
+      float:right;
+      .dates .form-group
+      {
+        float:left;width:60%;
+      }
+      .dates section
+      {
+        margin:0px 0px 2px 0px;
+        line-height:10px;
+        float:right;
+        width:32%;
+        font-size:10px;
+        label { font-size:10px;display:block;margin-bottom:5px  }
+        span { display:block;margin-bottom:6px }
+      }
+    }
+    .md { float:left;width:64%;
+      display:none;
+      textarea { padding:4px;height:340px;font-size:14px }
+    }
+    .md + .meta {
+      width:34%;
+    }
+    .form-actions {
+      height:40px;
+      clear:both;
+      text-align:center;
+      .btn { width:19%;margin:0px 2px 8px 2px;padding:3px 0px;display:none }
+      .btnPreview { display:inline-block; }
+    }
+
+    .tag-input-group {
+      .nomobile { display:none }
+      label { display:none }
+      .drag { display:none }
+      .selected {
+        display:block;
+        float:none;
+        li { display:inline;background:none;border:none }
+        .remove { float:none;background:none;color:red;display:inline;font-size:12px }
+        .order { display: none; }
+      }
+    }
+  }
+
+  .editor + hr { margin:4px 0 0 0;border-color:@lightblue; }
+  .preview + hr { margin:0px 0px 4px 0px;border-color:@lightblue; }
+
+  #tips { display:none; }
+
+  .edit {
+    #preview {
+      .preview {
+        width:914px;max-height:300px;overflow-y:scroll;
+        border-right:solid 1px @lightblue;
+      }
+    }
+
+    #tips { display:block;background-color:@lightblue;padding:4px 6px;font-size:10px;line-height:14px;min-height:80px }
+    #tips ul { padding:4px 14px }
+  }
+
+  .edit, .publish {
+
+    .form-actions { .btn { display:inline-block } }
+    .editor { background-color:@lightblue; }
+    .md { display:block }
+    .meta { display:block }
+
+    .publishMeta input { font-size:11px;padding:4px;height:26px }
+
+    article { border:solid 2px @bluegray;background:white }
+    article header { background:@bluegray }
+  }
+
+  @media screen and (max-width:640px) {
+    //-- don't show myposts UI on mobile. might even be worth disabling xhr in angular
+    section#myposts { display:none }
+  }
+}

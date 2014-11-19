@@ -10,7 +10,7 @@ traceur.require.makeDefault(function (filePath) {
 var setGlobals = require('./../../../server/util/global')
 var initConfig = require('./../../../server/util/config')
 var config = initConfig('test', __dirname.replace('/test/server/helpers',''))
-config.mailProvider = { send: ()=>{} }
+config.mailProvider = { send: function() {} }
 setGlobals(config)
 
 global.app = require('../../../index').run()

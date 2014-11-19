@@ -27,3 +27,16 @@ export function getBySlug(slug, cb) {
     cb(e, r)
   })
 }
+
+
+
+export function getByTag(tagSlug, cb) {
+  svc.searchMany({'tags': new RegExp(tagSlug, "i") },{fields:fields.listSelect}, (e, r) => {
+    for (var w of r)
+    {
+      w.url = `${w.tags[0]}/workshops/${w.slug}`
+      w.speaker = w.speakers[0]
+    }
+    cb(e, r)
+  })
+}

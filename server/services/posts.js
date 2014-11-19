@@ -12,10 +12,7 @@ var svc = new Svc(Post, logging)
 var addUrl = (cb) =>
   (e,r) => {
     for (var p of r) {
-      if (p.slug) {
-        if (p.tags.length > 0) p.url = `/${p.tags[0].slug}/posts/${p.slug}`
-        else p.url = `/v1/posts/${p.slug}`
-      }
+      if (p.meta) p.url = p.meta.canonical
     }
     cb(e,r)
   }
@@ -82,8 +79,10 @@ export function getByTag(tag, cb) {
 
 
 //-- Placeholder for showing similar posts to a currently displayed post
-export function getSimilarPublished(cb) {
-  cb(null,[])
+export function getSimilarPublished(tagSlug, cb) {
+  var opts = { fields: Data.select.list, options: { sort: { 'published': -1 }, limit: 3 } };
+  var query = { '$and': [{'tags.slug':tagSlug}, Data.query.published()] }
+  svc.searchMany(query, opts, addUrl(cb))
 }
 
 

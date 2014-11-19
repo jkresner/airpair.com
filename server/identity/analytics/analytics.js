@@ -113,7 +113,8 @@ module.exports = {
     // This is a new user (easy peasy)
     if (noAliases && !existingUser) {
       aliases = [sessionID] // we make the assumption that we're going to alias on the update
-      analytics.alias(sessionID, user, 'Signup', () => cb(aliases) )
+      analytics.alias(sessionID, user, 'Signup', () => {})
+      cb(aliases)
     }
     else
     {
@@ -129,7 +130,8 @@ module.exports = {
       viewSvc.alias(sessionID, user._id, ()=>{})
 
       var context = {sessionID} // ??
-      analytics.identify(user, context, 'Login', {sessionID}, () => cb(aliases))
+      analytics.identify(user, context, 'Login', {sessionID}, () => {})
+      cb(aliases)
     }
   },
 

@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{{viewData.tag.name}} Articles, Workshops & Developers ready to help. A top #{{viewData.tag.name}} resource!</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+{{#with viewData}}
+  <meta name="description" content="{{viewData.tag.name}} Articles, Workshops & Developers ready to help. One of the web's top #{{viewData.tag.name}} resources - totally worth bookmarking!"/>
+  <meta property="og:locale" content="en_US"/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:title" content="AngularJS Articles, Workshops and Developers"/>
+  <meta property="og:description" content="One of the best collections of #AngularJS Articles, Live Workshops and Developers on the web" />
+  <meta property="og:image" content="http://www.airpair.com/v1/img/css/tags/{{tag.slug}}-og.png"/>
+  <meta property="og:url" content="http://www.airpair.com/{{tag.slug}}"/>
+  <link rel="canonical" href="http://www.airpair.com/{{tag.slug}}" />
+{{/with}}
+  {{> siteCss }}
+<body>
+
+{{> siteHeader }}
+
+<div class="main-wrap">
+  {{#with viewData}}
+  <main>
+    <header class="entry-header">
+    {{ name }}
+    </header>
+
+
+  <section id="tag">
+
+    <section class="header">
+
+      <hr />
+      <img src="/v1/img/css/tags/{{tag.slug}}.png" class="{{tag.slug}}" />
+
+      <h1>Welcome to a community of {{tag.name}} experts</h1>
+
+      <p>Here you can meet senior {{tag.short}} developers and learn from them through articles,
+        workshops and pair programming.</p>
+
+      <div class="share">
+        <div class="pw-widget pw-counter-vertical" pw:twitter-via="airpair">
+          <a class="pw-button-facebook pw-look-native"></a>
+          <a class="pw-button-twitter pw-look-native"></a>
+          <a class="pw-button-googleplus pw-look-native"></a>
+          <a class="pw-button-linkedin pw-look-native"></a>
+        </div>
+      </div>
+      <hr />
+
+    </section>
+
+
+    <section class="featured">
+      <hr />
+      {{#with featured}}
+      <div class="row">
+
+        <div class="col-md-4 workshops">
+          <a class="btn" href="#tagworkshops">Workshops</a>
+          <hr class="vr" />
+          {{#with workshop}}{{> workshopListItem }}{{/with}}
+        </div>
+
+        <div class="col-md-4 posts">
+          <a class="btn" href="#tagposts">Articles</a>
+          <hr class="vr" />
+          {{#with post}}{{> postListItem }}{{/with}}
+        </div>
+
+        <div class="col-md-4 pairing">
+          <a class="btn" href="#tagpairing">Pair Programming</a>
+          <hr class="vr" />
+          {{#with pairing}}{{> expertListItem }}{{/with}}
+        </div>
+      </div>
+      {{/with}}
+    </section>
+
+
+    <section class="about">
+      <h2>{{ about.tagline }}</h2>
+
+      <blockquote>
+        <img src="{{ about.byPic }}?s=160" />
+        <p>{{ about.quote }}</p>
+        <cite>{{ about.by }}</cite>
+      </blockquote>
+    </section>
+
+
+    <section id="tagworkshops" class="workshops">
+      <h2>{{tag.name}} Workshops</h2>
+
+      {{#each workshops }}
+      <a href="{{ url }}" class="workshop">
+        <header>
+          <time datetime="{{ isoMoment time }}">{{ dateFormat time 'ddd DD MMM, YYYY' }}</time>
+        </header>
+        <img src="//0.gravatar.com/avatar/{{speaker.gravatar}}?s=120">
+        <p class="entry-meta">
+          <h3 class="entry-title">{{ title }}</h3>
+          <h5 class="entry-author">{{ speaker.name }}</h5>
+        </p>
+        <hr />
+      </a>
+      {{/each}}
+      <a class="workshop more" href="/workshops" target="_self">
+        <header></header>
+        <img src="//0.gravatar.com/avatar/e79ddd03edffc5c0669b78e7a090b037?s=120">
+        <h3 class="entry-title">See all workshops</h3>
+        <h5 class="entry-author">by AirPair</h5>
+        <hr>
+      </a>
+    </section>
+
+
+    <section id="tagposts" class="posts">
+      <h2>{{tag.name}} Articles</h2>
+
+      <div class="posts recent">
+        {{#each posts}}{{> postListItem }}{{/each}}
+
+        <article class="more">
+        <a rel="bookmark" target="_self" title="All {{tag.name}} posts" href="/posts/tag/{{tag.slug}}">
+          <header class="entry-header">
+            <img align="left" src="/v1/img/css/tags/{{tag.slug}}.png" style="width:100%">
+
+            <p class="entry-meta">
+
+              <span itemtype="http://schema.org/Person" itemscope="itemscope" itemprop="author" class="entry-author">
+                <img align="left" src="//0.gravatar.com/avatar/e79ddd03edffc5c0669b78e7a090b037?s=50" class="entry-author-image">
+              </span>
+            </p>
+          </header>
+          <div itemprop="text" class="entry-content">
+            <h2 itemprop="headline" class="entry-title">All AngularJS Posts</h2>
+            <p>See all posts tagged with {{tag.slug}}.</p>
+          </div>
+        </a>
+      </article>
+      </div>
+
+
+
+    </section>
+
+
+    <section id="tagpairing" class="pairing">
+      <h2>{{tag.name}} Pair Programming</h2>
+
+      <hr />
+      {{#each experts}}{{> expertListItem }}{{/each}}
+      <article class="more" itemprop="blogPost" itemtype="http://schema.org/BlogPosting" itemscope="itemscope">
+        <a rel="bookmark" target="_self" title="Get AngularJS Help" href="/find-an-expert">
+          <header class="entry-header">
+            <img align="left" src="//0.gravatar.com/avatar/e79ddd03edffc5c0669b78e7a090b037?s=100" itemprop="image" class="entry-author-image" />
+            <p class="entry-meta">
+              <span class="entry-categories">
+                <br />{ angularjs }
+              </span>
+            </p>
+          </header>
+          <div itemprop="text" class="entry-content">
+            <h2 itemprop="headline" class="entry-title">Get introduced</h2>
+            <label>your budget/hr</label>
+
+            <br /><br />
+            <p>Get introduced by AirPair customer service to the perfect expert for your team and challenge</p>
+          </div>
+        </a>
+        <footer></footer>
+      </article>
+
+
+      <hr />
+    </section>
+
+ <section class="packages">
+      <h2>{{tag.name}} AngularJS Help</h2>
+
+      <div class="choice">
+        <div class="option">
+          <div style="width:160px"></div>
+
+          <h2>2 Hour {{tag.name}} <b>Consultation</b></h2>
+          <p>Is {{tag.short}} right for your app?</p>
+          <p>Get your whole team on call with an expert to discuss the future of your app and costs and benefits of adopting {{tag.name}} in your organization.</p>
+          <a href="mailto:team@airpair.com?subject=AngularJS Conultation&body=Are there more Consultation packages available?" target="_blank" class="btn">Book $350 {{tag.short}} Consultation</a>
+          <span>* Limited offer, normally $400</span>
+        </div>
+        <div class="option">
+          <h2>5 Hour {{tag.name}} <b>Spike</b></h2>
+          <p>Get knowledgeable on {{tag.short}}, before going full bore.</p>
+
+          <p>5 hours on training on AngularJS concepts, where an expert will build an app from scratch and answer all your questions live in front of your team.</p>
+          <a href="mailto:team@airpair.com?subject=AngularJS Spike&body=Are there more Spike packages available?" target="_blank" class="btn">Book $750 {{tag.short}} Spike</a>
+          <span>* Limited offer, normally $1000</span>
+        </div>
+
+        <div class="option">
+          <h2>10 Hour {{tag.name}} <b>Onboard</b></h2>
+          <p>Turbo-boost your {{tag.short}} journey, out of the gate.</p>
+
+          <p>Guide your first AngularJS code with on tap code reviews, architectural suggestions and bug squashing help from our {{tag.short}} experts.</p>
+          <a  href="mailto:team@airpair.com?subject=AngularJS Onboard&body=Are there more Onboard packages available?" target="_blank" class="btn">Book $1300 {{tag.short}} Onboard</a>
+          <span>* Limited offer, normally $2000</span>
+        </div>
+
+        <div class="option">
+          <h2>20 Hour {{tag.name}} <b>Support</b></h2>
+
+          <p>2x your teams productivity.</p>
+
+          <p>You already know how AirPairing multiplies your team productivity. Get a block of Angular Debugging help and more...</p>
+          <a  href="mailto:team@airpair.com?subject=AngularJS Support&body=Are there more Support packages available?" target="_blank" class="btn">Book $2500 {{tag.short}} Support</a>
+          <span>* Limited offer, normally $4000</span>
+        </div>
+      </div>
+    </section>
+  </section>
+
+  </section>
+
+
+
+
+  {{/with}}
+
+  </main>
+</div>
+
+<div ng-app="APLite" ng-strict-di>
+  <nav id="side" class="collapse" side-nav></nav>
+  <bookmarkerlist></bookmarkerlist>
+</div>
+
+{{> siteScripts }}
+<script type="text/javascript">
+
+function bindTracking() {
+  ga('send', 'pageview')
+
+  $.each($('.featured a.btn'), function(idx,el) {
+    $(el).click(function (e) {
+      analytics.track('Click', { type: 'Tag Feature', unit: 'featured', idx: idx, text: el.innerHTML, location: window.location.pathname });
+    });
+  })
+}
+
+$(function() {
+  pageHlpr.loadPoSt();
+});
+
+
+</script>
+
+{{> initPage }}
+
+</body>
+</html>

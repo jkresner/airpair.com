@@ -63,13 +63,20 @@ angular.module("APPostEditor", [])
 
         $scope.$watch('post.md', $scope.previewMarkdown);
 
-				$scope.selectedTags = () => ($scope.post) ? $scope.post.tags : null;
+        $scope.tags = () => $scope.post ? $scope.post.tags : null;
+        $scope.updateTags = (scope, newTags) => {
+          if (!$scope.post) {
+            return;
+          }
 
-			  $scope.selectTag = function(tag) {
-			  	var tags = $scope.post.tags;
+          $scope.post.tags = newTags;
+        }
+
+        $scope.selectTag = function(tag) {
+          var tags = $scope.post.tags;
           if ( _.contains(tags, tag) ) $scope.post.tags = _.without(tags, tag)
           else $scope.post.tags = _.union(tags, [tag])
-			  };
+        };
 
         $scope.deselectTag = (tag) => {
           $scope.post.tags = _.without($scope.post.tags, tag);

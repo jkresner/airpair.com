@@ -11,5 +11,8 @@ export default initAPI(Svc, {
   verifyEmail: (req) => [req.body.hash],
   requestPasswordChange: (req) => [req.body.email],
   changePassword: (req) => [req.body.hash, req.body.password],
-  updateProfile: (req) => [req.body.name, req.body.initials, req.body.username]
+  updateProfile: (req) => [req.body.name, req.body.initials, req.body.username],
+  tags: (req) => [req.body],
+  search: (req) => [req.params.id],
+  bookmarks: (req) => [req.body]
 })

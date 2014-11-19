@@ -1,8 +1,10 @@
 import RedirectsAPI from '../api/redirects'
 
-var redirectWithQuery = (match, replace) =>
+var redirectWithQuery = (match, replace, type) =>
   (req, res) => {
-    res.redirect(301, req.url.replace(match,replace))
+    if (type == "301") res.redirect(301, req.url.replace(match,replace))
+    else if (type == "302") res.redirect(req.url.replace(match,replace))
+    else if (type == "410") res.status(410).send("Sorry, we dropped this page. It's no longer here. Return to <a href='/'>homepage</a>.")
     res.end()
   }
 
@@ -21,7 +23,9 @@ export function init(app, cb) {
 
   RedirectsAPI.svc.getAllRedirects((e,all) =>{
     for (var r of all)
-      app.get( r.previous, redirectWithQuery(r.previous,r.current))
+      app.get( r.previous, redirectWithQuery(r.previous,r.current,r.type))
     cb()
   })
+
+  app.get("/c\\+\\+", redirectWithQuery("/c++","/posts/tag/c++", "302") )
 }

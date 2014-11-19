@@ -93,22 +93,40 @@ window.pageHlpr.fixNavs = function(elmId)
   fix();
 }
 
-window.pageHlpr.fixPostRail = function()
+
+var fixRailElements = function(e)
 {
   var scrollingOn = $(document).width() > 900;
-  var offset = $('.pw-widget').offset().top;
-  $(window).scroll(function(e)
+  var offset = $('.railCTA1Holder').offset().top;
+
+  if (scrollingOn)
   {
     if (window.scrollY < offset) {
+      $('.rail1CTA').css('top', offset - window.scrollY);
       $('.share').css('top', 0);
       $('#table-of-contents').css('top', 0);
       $('#table-of-contents + ul').css('top', 0);
     }
-    else if (scrollingOn)
-    {
-      $('.share').css('top', window.scrollY - 150);
-      $('#table-of-contents').css('top', window.scrollY - 160);
-      $('#table-of-contents + ul').css('top', window.scrollY - 160);
+    else {
+      $('.rail1CTA').css('top', 0);
+      $('.share').css('top', window.scrollY - 170);
+      $('#table-of-contents').css('top', window.scrollY - 180);
+      $('#table-of-contents + ul').css('top', window.scrollY - 180);
     }
-  });
+  }
+  else
+  {
+    if (window.scrollY < (offset + 100)) {
+      $('.rail1CTA').css('top', offset+10 - window.scrollY);
+      $('.rail1CTA').toggle(true)
+    }
+    else
+      $('.rail1CTA').toggle(false)
+  }
+}
+
+window.pageHlpr.fixPostRail = function()
+{
+  $(window).scroll(fixRailElements);
+  fixRailElements();
 }

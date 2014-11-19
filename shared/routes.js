@@ -1,5 +1,6 @@
 module.exports = [
   '/',
+  '/angularjs',
   '/v1',
   '/about',
   '/posts*',
