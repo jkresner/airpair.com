@@ -1,7 +1,7 @@
 
 var resolver = require('./../common/routes/helpers.js').resolveHelper;
 
-angular.module("APBilling", ['ngRoute','APFilters','APSvcSession','APAnalytics', 'APPaymentDirectives'])
+angular.module("APBilling", ['ngRoute','APFormsDirectives','APFilters','APSvcSession','APAnalytics', 'APPaymentDirectives'])
 
   .config(function($locationProvider, $routeProvider) {
 
@@ -24,8 +24,7 @@ angular.module("APBilling", ['ngRoute','APFilters','APSvcSession','APAnalytics',
   .controller('BillingCtrl', function($scope, SessionService) {
 
     var success = (r) => {
-      console.log('suc', r)
-      if (r.btoken) $scope.broken = r.btoken
+      if (r.btoken) $scope.btoken = r.btoken
       else $scope.paymethods = r
     }
 
@@ -48,7 +47,7 @@ angular.module("APBilling", ['ngRoute','APFilters','APSvcSession','APAnalytics',
 
   .controller('BillingMembershipCtrl', function($scope, SessionService) {
 
-    console.log('in membership billing')
+    // console.log('in membership billing')
 
   })
 
