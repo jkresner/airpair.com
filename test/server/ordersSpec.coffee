@@ -28,6 +28,9 @@ module.exports = -> describe "Credit: ", ->
         done()
 
 
+  it.skip '$500 credit purchase with stripe', (done) ->
+
+
   it '$3000 credit purchase with 10% extra', (done) ->
     addAndLoginLocalUserWithPayMethod 'soik', (s) ->
       o = total: 3000
@@ -56,7 +59,6 @@ module.exports = -> describe "Credit: ", ->
 
 
   it.skip 'Signup with offer created credit order', (done) ->
-
 
 
   it.skip 'GetMyOrdersWithCredit returns only orders with Credit', (done) ->

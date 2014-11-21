@@ -11,17 +11,21 @@ module.exports = -> describe "PayMethods", ->
     done()
 
 
-  it '401 on unauthenticated getPayMethods', (done) ->
-    opts = status: 401, unauthenticated: true
-    GET('/billing/paymethods', opts, -> done() )
+  it 'Gets braintree token on new anonymous get-paymethods', (done) ->
+    opts = status: 200, unauthenticated: true
+    GET '/billing/paymethods', opts, (r) ->
+      expect(r.btoken).to.exist
+      done()
 
-
-  it 'Empty result for getPayMethods on new user', (done) ->
+  it 'Gets braintree token on new loggedin user get-paymethods', (done) ->
     addAndLoginLocalUser 'nkig', (s) ->
       GET '/billing/paymethods', {}, (r) ->
-        expect(r).to.exist
-        expect(r.length).to.equal(0)
+        expect(r.btoken).to.exist
         done()
+
+
+
+  it.skip 'Can create anonymous paymethod and migrate paymethod to new account creation', (done) ->
 
 
   it 'Gets migrated stripe result for v0 user from settings', (done) ->
@@ -96,5 +100,5 @@ module.exports = -> describe "PayMethods", ->
             GET '/session/full', {}, (s2) ->
               expect(s2.primaryPayMethodId).to.be.undefined
               GET '/billing/paymethods', {}, (pms) ->
-                expect(pms.length).to.equal(0)
+                expect(pms.btoken).to.exist
                 done()

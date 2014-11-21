@@ -1,27 +1,52 @@
 <header>Billing</header>
-<section id="billing" class="comingsoon">
 
-  <h3>Billing coming soon</h3>
+<section id="billing">
 
-  <p>This page is scheduled for Nov 27</p>
+  <div class="welcome" ng-if="!paymethods">
 
-<!-- <h1>Two ways to pay</h1>
+    <h1>Two ways to pay</h1>
 
 
-<div class="choice">
-<div class="google option">
+    <div class="choice">
+    <div class="google option">
 
-<h2>Pay as you go</h2>
-<p>Pay for each AirPair session a la carte as you schedule them.</p>
+    <h2>Pay as you go</h2>
+    <p>Pay for each AirPair session a la carte as you schedule them.</p>
 
-</div>
+    </div>
 
-<div class="local option">
+    <div class="local option">
 
-<h2>Credit</h2>
-<p>Purchase bulk credit to use with any expert and receive up to 20% extra.</p>
+    <h2>Credit</h2>
+    <p>Purchase bulk credit to use with any expert and receive up to 20% extra.</p>
 
-</div>
-</div> -->
+    </div>
+    </div>
+
+    <hr />
+
+    <payment-info></payment-info>
+
+  </div>
+
+  <div class="history" ng-if="paymethods">
+
+    <h2>Billing info</h2>
+
+    <p>We have your billing info securely stored with {{paymethods[0].type}}</p>
+
+    <p>Purchase credt now:</p>
+
+    <ul>
+      <li><a href="#" class="btn">Buy $500 credit</a> (get $50 extra)</li>
+      <li><a href="#" class="btn">Buy $1000 credit</a> (get $150 extra)</li>
+    </ul>
+
+    <h2>Transaction history</h2>
+
+
+
+  </div>
+
 
 </section>
