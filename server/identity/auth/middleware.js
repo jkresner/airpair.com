@@ -106,5 +106,35 @@ var setSessionVarFromQuery = (varName) => {
   }
 }
 
+// require firebase-token-generator somewhere
+var setFirebaseTokenOnSession = () => {
+  var tokenGenerator = new FirebaseTokenGenerator(config.auth.firebaseSecret);
+  return (req, res, next) => {
+    var token, trues = _.map(roles, function () {return true});
+    if (req.user) {
+      // Generate firebase token using 
+      token = tokenGenerator.createToken({
+        uid: req.user._id,
+        name: req.user.name,
+        avatar: req.user.avatar,
+        type: "user", 
+        // Convert roles to an object for easy lookup in Firebase security rules
+        roles: _.object(user.roles, trues)
+      });
+    } else {
+      // Generate firebase token using req.sessionID
+      token = tokenGenerator.createToken({
+        uid: req.sessionID, 
+        name: req.session.name || "Visitor " + req.sessionID.substring(0, 6),
+        avatar: req.session.avatar,
+        type: "session"
+      });
+    }
+    
+    req.session.firebaseToken = token
+    next()
+  }
+}
+
 export var setReturnTo = setSessionVarFromQuery('returnTo')
 export var setMixpanelId = setSessionVarFromQuery('mixpanelId')

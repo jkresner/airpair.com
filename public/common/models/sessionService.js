@@ -16,10 +16,11 @@ angular.module('APSvcSession', [])
     }
 
     var setScope = (successFn) => {
-      return function(result) {
-        $rootScope.session = result
-        successFn(result)
-      }
+    	return function(result) {
+    		$rootScope.session = result
+        window.firebaseToken = result.firebaseToken;
+    		successFn(result)
+    	}
     }
 
 
