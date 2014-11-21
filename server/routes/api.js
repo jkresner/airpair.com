@@ -45,9 +45,9 @@ export default function(app) {
 
     .get('/workshops/', WorkshopsAPI.getAll)
     .get('/workshops/:id', WorkshopsAPI.getBySlug)
+    .get('/billing/paymethods', PaymethodsAPI.getMyPaymethods)
 
     .use(authd) //-- swap out for email verify or something
-    .get('/billing/paymethods', PaymethodsAPI.getMyPaymethods)
     .post('/billing/paymethods', PaymethodsAPI.addPaymethod)
     .delete('/billing/paymethods/:id', PaymethodsAPI.deletePaymethod)
     .get('/billing/orders', emailv, OrdersAPI.getMyOrders)

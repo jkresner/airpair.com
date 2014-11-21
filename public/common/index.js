@@ -17,6 +17,7 @@ require('./../common/directives/sideNav.js');
 require('./../common/directives/bookmarker.js');
 require('./../common/directives/analytics.js');
 require('./../common/directives/forms.js');
+require('./../common/directives/payment.js');
 require('./../common/filters/filters.js');
 require('./../common/models/postsService.js');
 require('./../common/models/sessionService.js');

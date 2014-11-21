@@ -87,4 +87,14 @@ angular.module('APSvcSession', [])
     this.bookmarks = function(data, success, error) {
       $http.put(`${API}/users/me/bookmarks`, data).success(success).error(error);
     }
+
+
+    this.getPaymethods = function(success, error) {
+      $http.get(`${API}/billing/paymethods`).success(success).error(error);
+    }
+
+    // this.createPaymethod = function(data, success, error) {
+    //   $http.put(`${API}/users/me/bookmarks`, data).success(setScope(success)).error(error);
+    // }
+
   }])
