@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html lang="en-US" prefix="og: http://ogp.me/ns#">
+<html lang="en-US" prefix="og: http://ogp.me/ns#" ng-app="AP" ng-strict-di>
 <head>
 {{#with viewData}}{{> pageMeta }}{{/with}}
   {{> siteCss }}
+  <base href="/" />
 </head>
 <body>
 {{> siteHeader }}
@@ -10,6 +11,7 @@
 {{#with viewData}}
 <div class="main-wrap">
   <main ng-view>
+    <div id="serverTemplate">
     <header class="entry-header">
       <p class="entry-meta">
         <a href="/posts">Posts</a>
@@ -54,10 +56,7 @@
       <hr />
       {{{ html }}}
 
-      <div class="island" ng-app="APLite" ng-strict-di>
-        <nav id="side" class="collapse" side-nav></nav>
-
-
+      <div class="island">
         <div class="rail">
           <div class="rail1CTA railCTA">
             <h6>Like this article?</h6>
@@ -94,11 +93,12 @@
       </section>
 
     </section>
-
+  </div>
   </main>
 </div>
 {{/with}}
 
+<nav id="side" class="collapse" side-nav></nav>
 
 {{> siteScripts }}
 <script type="text/javascript">
@@ -127,13 +127,6 @@
     var x = document.getElementsByTagName('script')[0];
     x.parentNode.insertBefore(dsq, x);
   }
-
-  $(function() {
-    pageHlpr.fixPostRail();
-    pageHlpr.highlightSyntax({ addCtrs: true });
-    pageHlpr.loadPoSt();
-    loadDisqus();
-  });
 
 
 {{#with viewData}}

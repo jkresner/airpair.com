@@ -8,8 +8,7 @@ angular.module("APPosts", ['ngRoute', 'APFilters','APShare',
   'APMyPostsList','APPostEditor','APPost', 'APBookmarker','APSvcSession',
   'APSvcPosts', 'APTagInput','APUserInput'])
 
-  .config(['$locationProvider', '$routeProvider',
-      function($locationProvider, $routeProvider) {
+  .config(function($locationProvider, $routeProvider) {
 
     var authd = resolver(['session']);
 
@@ -41,19 +40,18 @@ angular.module("APPosts", ['ngRoute', 'APFilters','APShare',
       controller: 'TagIndexCtrl'
     });
 
-  }])
+  })
 
-  .run(['$rootScope', 'SessionService', function($rootScope, SessionService) {
+  .run(function($rootScope, SessionService) {
 
     SessionService.onAuthenticated( (session) => {
       $rootScope.editor = _.contains(session.roles,'editor');
     })
 
-  }])
+  })
 
 
-  .controller('IndexCtrl', ['$scope','PostsService', 'SessionService',
-      function($scope, PostsService, SessionService) {
+  .controller('IndexCtrl', function($scope, PostsService, SessionService) {
     var self = this;
 
     PostsService.getRecentPosts(function (result) {
@@ -65,10 +63,9 @@ angular.module("APPosts", ['ngRoute', 'APFilters','APShare',
         $scope.myposts = result;
       })
     });
-  }])
+  })
 
-  .controller('TagIndexCtrl', ['$scope','PostsService', '$routeParams',
-      function($scope, PostsService, $routeParams) {
+  .controller('TagIndexCtrl', function($scope, PostsService, $routeParams) {
 		$scope.tagslug = $routeParams.tagslug;
 
     PostsService.getTagsPosts($scope.tagslug, function (result) {
@@ -76,11 +73,10 @@ angular.module("APPosts", ['ngRoute', 'APFilters','APShare',
       $scope.tagposts = result.posts;
     })
 
-  }])
+  })
 
 
-  .controller('NewCtrl', ['$scope', 'PostsService', '$location', 'session',
-      function($scope, PostsService, $location, session) {
+  .controller('NewCtrl', function($scope, PostsService, $location, session) {
 
     var self = this;
 
@@ -103,11 +99,9 @@ angular.module("APPosts", ['ngRoute', 'APFilters','APShare',
       });
     }
 
-  }])
+  })
 
-  .controller('EditCtrl', ['$scope', 'PostsService', '$routeParams', '$location',
-    'session',
-    function($scope, PostsService, $routeParams, $location, session) {
+  .controller('EditCtrl', function($scope, PostsService, $routeParams, $location, session) {
 
     var self = this;
     $scope.preview = { mode: 'edit' };
@@ -129,12 +123,10 @@ angular.module("APPosts", ['ngRoute', 'APFilters','APShare',
       });
     }
 
-  }])
+  })
 
 
-  .controller('PublishCtrl', ['$scope', 'PostsService', '$routeParams',
-    'session',
-    function($scope, PostsService, $routeParams, session) {
+  .controller('PublishCtrl', function($scope, PostsService, $routeParams, session) {
 
     $scope.post = { tags: [] };
 
@@ -229,11 +221,10 @@ angular.module("APPosts", ['ngRoute', 'APFilters','APShare',
       $scope.post.tags = _.without($scope.post.tags, tag);
     };
 
-  }])
+  })
 
 //-- this will be refactored out of the posts module
-.controller('ProfileCtrl', ['$scope', 'PostsService', '$routeParams', 'session',
-  function($scope, PostsService, $routeParams, session) {
+.controller('ProfileCtrl', function($scope, PostsService, $routeParams, session) {
 
     $scope.username = $routeParams.username;
 
@@ -241,6 +232,6 @@ angular.module("APPosts", ['ngRoute', 'APFilters','APShare',
       $scope.posts = posts;
     });
 
-  }])
+  })
 
 ;
