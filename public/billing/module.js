@@ -1,7 +1,8 @@
 
 var resolver = require('./../common/routes/helpers.js').resolveHelper;
 
-angular.module("APBilling", ['ngRoute','APFormsDirectives','APFilters','APSvcSession','APAnalytics', 'APPaymentDirectives'])
+angular.module("APBilling", ['ngRoute','APFormsDirectives','APPaymentDirectives','APAnalytics',
+  'APFilters','APSvcSession','APSvcBilling'])
 
   .config(function($locationProvider, $routeProvider) {
 
@@ -21,18 +22,18 @@ angular.module("APBilling", ['ngRoute','APFormsDirectives','APFilters','APSvcSes
 
   })
 
-  .controller('BillingCtrl', function($scope, SessionService) {
+  .controller('BillingCtrl', function($scope, SessionService, BillingService) {
 
     var success = (r) => {
       if (r.btoken) $scope.btoken = r.btoken
       else $scope.paymethods = r
     }
 
-    var err = (r) => {
-      console.log('err', r)
-    }
+    var err = (r) => console.log('err', r)
 
-    SessionService.getPaymethods(success, err)
+
+    BillingService.billing.getPaymethods(success, err)
+    BillingService.billing.getMyOrders(success, err)
 
     // console.log('on settings billing')
     // this.submit = function(isValid, formData) {
@@ -42,6 +43,16 @@ angular.module("APBilling", ['ngRoute','APFormsDirectives','APFilters','APSvcSes
     //     (e) => $scope.signupFail = e.error
     //   )
     // }
+
+    $scope.buyFivehundred = function() {
+      console.log('buyFivehundred', $scope.paymethods[0]._id)
+      var orderSuccess = (r) => {
+        console.log('r.success', r)
+      }
+
+      BillingService.billing.orderCredit({total:500,paymethodId:$scope.paymethods[0]._id}, orderSuccess, err)
+    }
+
   })
 
 
