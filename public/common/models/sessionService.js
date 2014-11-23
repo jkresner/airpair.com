@@ -5,7 +5,26 @@ angular.module('APSvcSession', [])
 
   .constant('Auth', '/v1/auth')
 
-  .service('SessionService', ['$rootScope', '$http', 'API', 'Auth', '$cacheFactory', function($rootScope, $http, API, Auth, $cacheFactory) {
+  .factory('notifications', function notificationsFactory($rootScope) {
+    this.add = (msg) =>
+      $rootScope.notifications = _.union($rootScope.notifications, [msg])
+
+    this.remove = (msg) =>
+      $rootScope.notifications = _.without($rootScope.notifications, msg)
+
+    return this;
+  })
+
+  .service('SessionService', function($rootScope, $http, API, Auth, $cacheFactory, notifications) {
+
+    var setScope = (successFn) => {
+      return function(result) {
+        if (!result.emailVerified) notifications.add("Please <a href='/me'>verify your email</a>")
+
+        $rootScope.session = result
+        successFn(result)
+      }
+    }
 
     var cache;
     this.getSession = function() {
@@ -15,25 +34,17 @@ angular.module('APSvcSession', [])
         );
     }
 
-    var setScope = (successFn) => {
-      return function(result) {
-        $rootScope.session = result
-        successFn(result)
-      }
-    }
-
+    this.flushCache = function() {
+      cache = null;
+    };
 
     this.onAuthenticated = function(fn) {
-      return this.getSession().then(fn);
+      return this.getSession().then(setScope(fn));
     }
 
     this.onUnauthenticated = function(fn) {
       return this.getSession().then(null, fn);
     }
-
-    this.flushCache = function() {
-      cache = null;
-    };
 
     this.login = function(data, success, error)
     {
@@ -88,14 +99,4 @@ angular.module('APSvcSession', [])
       $http.put(`${API}/users/me/bookmarks`, data).success(success).error(error);
     }
 
-
-    this.getPaymethods = function(success, error) {
-      $http.get(`${API}/billing/paymethods`).success(success).error(error);
-    }
-
-    this.addPaymethod = function(data, success, error) {
-      // todo setScope
-      $http.post(`${API}/billing/paymethods`, data).success(success).error(error);
-    }
-
-  }])
+  })

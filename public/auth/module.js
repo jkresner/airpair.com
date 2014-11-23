@@ -20,7 +20,6 @@ angular.module("APAuth", ['ngRoute','ngMessages','APFormsDirectives','APFilters'
     function($rootScope, SessionService) {
 
     SessionService.onAuthenticated( (session) => {
-      $rootScope.session = session;
       //console.log('setting root scope', $rootScope.session)
     })
 

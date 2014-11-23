@@ -33,6 +33,20 @@ body > header {
     a:hover { color:@orange }
   }
 
+  div {
+    padding:8px;
+    display:inline-block;
+    max-width:300px;
+    label {
+      font-size:10px;
+      font-weight:normal;
+      background-color:#fcf8e3;
+      border: 1px solid #fbeed5;
+      border-radius: 4px;
+      padding:3px 10px;
+    }
+  }
+
   @media only screen and (max-width:640px) {
     padding:7px 4px 7px 8px;
     > a {
@@ -44,6 +58,7 @@ body > header {
       padding:1px 3px;
     }
 
+    div { display:none }
     .pp { display:none }
     .wk { display:none }
   }
