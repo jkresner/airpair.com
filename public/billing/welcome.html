@@ -35,10 +35,10 @@
 
     <p>We have your billing info securely stored with {{paymethods[0].type}}</p>
 
-    <p>Purchase credt now:</p>
+    <p>Purchase credt now with <b>{{paymethods[0].name}}</b>:</p>
 
     <ul>
-      <li><a href="#" class="btn">Buy $500 credit</a> (get $50 extra)</li>
+      <li><button class="btn" ng-click="buyFivehundred()">Buy $500 credit</button> (get $50 extra)</li>
       <li><a href="#" class="btn">Buy $1000 credit</a> (get $150 extra)</li>
     </ul>
 
