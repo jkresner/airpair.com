@@ -18,7 +18,7 @@ var base = {
 
 function credit(paid, amount, expires, source)
 {
-	var info = { name: `Credit ($${amount})`, amount, source, remaining: amount, expires, redeemedLines: [] }
+	var info = { name: `$${amount} Credit`, amount, source, remaining: amount, expires, redeemedLines: [] }
 	//-- profit on credit is always 0 because it is calculated in future line items
 	var paidAmount = (paid) ? amount : 0
 	var profitAmount = (paid) ? 0 : -1*amount
@@ -140,20 +140,21 @@ export function buyCredit(total, coupon, payMethod, cb)
 	var expires = util.dateWithDayAccuracy(moment().add(3,'month'))
 
 	var lineItems = []
-	lineItems.push(credit(true, total, expires, `Credit Extra ($${total})`))
+	lineItems.push(credit(true, total, expires, `$${total} Credit Purchase`))
 
 	if (total == 1000)
-		lineItems.push(credit(false, 50, expires, `Credit Extra (5%)`))
+		lineItems.push(credit(false, 50, expires, `Credit Bonus (5% on $${total})`))
 	if (total == 3000)
-		lineItems.push(credit(false, 300, expires, `Credit Extra (10%)`))
+		lineItems.push(credit(false, 300, expires, `Credit Bonus (10% on $${total})`))
 	if (total == 5000)
-		lineItems.push(credit(false, 1000, expires, `Credit Extra (20%)`))
+		lineItems.push(credit(false, 1000, expires, `Credit Bonus (20% on $${total})`))
 
 	if (coupon == "letspair")
 		lineItems.push( discount("letspair", 100, 'Credit Announcement Promo', this.user) )
 
 	createOrder.call(this, lineItems, payMethod, cb)
 }
+
 
 export function getMyOrders(cb)
 {

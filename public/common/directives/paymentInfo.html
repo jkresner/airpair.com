@@ -1,5 +1,15 @@
 <form id="cardinfoForm" novalidate name="cardinfoForm" ng-submit="submit(cardinfoForm.$valid, data)">
 
+  <div form-group ng-if="choice == 'credit'">
+    <label class="control-label" for="cardholderName">Amount</label>
+    <div>
+      <label class="control-label" for="choiceAmount"></label>
+      <br />$500 <input class="form-control" name="number" ng-model="choiceAmount" type="radio">
+      <br />$3000 <input class="form-control" name="number" ng-model="choiceAmount" type="radio">
+      <br />$5000 <input class="form-control" name="number" ng-model="choiceAmount" type="radio">
+    </div>
+  </div>
+
   <div form-group>
     <label class="control-label" for="cardholderName">Name on Card</label>
     <input form-control id="cardholderName" name="cardholderName" data-braintree-name="cardholderName" ng-model="card.cardholderName" type="text" placeholder="Full name on card" required ng-minlength="4" ng-minlength="60" ng-pattern="/\w+ \w+/" tabindex="1201">
@@ -39,7 +49,7 @@
   </div>
 
   <div form-group>
-    <label class="control-label" for="cardNickName">Card nickname <i style="font-weight:200">* to help you distiguide between differen cards</i></label>
+    <label class="control-label" for="cardNickName">Card nickname <i>* to help you distiguide between differen cards</i></label>
     <input form-control id="cardNickName" name="cardNickName" data-braintree-name="cardNickName" ng-model="card.cardNickName" type="text" placeholder="Nick name for card (e.g. personal visa)" required ng-minlength="4" ng-minlength="60" tabindex="1205">
     <div class="error" ng-if="formGroup.showError(cardinfoForm.cardNickName)" ng-messages="cardinfoForm.cardNickName.$error">
       <div ng-message="required">Card nickname required</div>
@@ -48,6 +58,6 @@
 
   <hr />
 
-  <input type="submit" id="submit" value="Pay" class="btn">
+  <input type="submit" id="submit" value="{{cardSubmitText}}" class="btn">
 
 </form>

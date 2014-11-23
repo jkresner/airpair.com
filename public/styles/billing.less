@@ -2,9 +2,23 @@
 
 
 section#billing {
-  h1 { text-align:center;margin-bottom:40px }
+  h1 { text-align:center;margin-bottom:22px;font-size:42px }
+
+  .welcome {
+    p { text-align:center;margin-bottom:20px }
+
+    .choice {
+      .btn { width:260px }
+      h2 { font-size:28px }
+    }
+  }
+
+  .selected {
+    background-color:@lightblue
+  }
 
   #cardinfoForm {
+    text-align:left;
     max-width:480px;
     label { display:block }
 
@@ -18,7 +32,13 @@ section#billing {
       display:inline-block;
     }
 
+    label i { font-weight:200;font-size:11px }
+
     .btn { width:100% }
+  }
+
+  table td {
+    padding:3px 5px
   }
 }
 

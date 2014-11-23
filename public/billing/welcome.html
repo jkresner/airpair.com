@@ -6,26 +6,38 @@
 
     <h1>Two ways to pay</h1>
 
+    <p>Before connecting you with experts, payment info must be provided. You have two options with payments.</p>
 
     <div class="choice">
-    <div class="google option">
+    <div class="{{ (choice == 'alacart') ? 'option selected' : 'option' }}">
 
-    <h2>Pay as you go</h2>
-    <p>Pay for each AirPair session a la carte as you schedule them.</p>
+      <h2>Pay as you go</h2>
+      <p>Pay for each AirPair session a la carte. We'll store your payment info now without charging your card.</p>
+
+      <button class="btn" ng-if="choice != 'alacart'" ng-click="setChoice('alacart')">Pay a la carte</button>
+
+      <div ng-if="choice == 'alacart'">
+        <payment-info></payment-info>
+      </div>
 
     </div>
 
-    <div class="local option">
+    <div class="{{ (choice == 'credit') ? 'option selected' : 'option' }}">
 
-    <h2>Credit</h2>
-    <p>Purchase bulk credit to use with any expert and receive up to 20% extra.</p>
+      <h2>Top-up</h2>
+      <p>Purchase $500 - $5000 credit at a time and receive up to 20% bonus credit.</p>
+
+      <button class="btn" ng-if="choice != 'credit'" ng-click="setChoice('credit')">See Top-up Options</button>
+
+      <div ng-if="choice == 'credit'">
+        <payment-info></payment-info>
+      </div>
 
     </div>
     </div>
 
     <hr />
 
-    <payment-info></payment-info>
 
   </div>
 
@@ -39,12 +51,13 @@
 
     <ul>
       <li><button class="btn" ng-click="buyFivehundred()">Buy $500 credit</button> (get $50 extra)</li>
-      <li><a href="#" class="btn">Buy $1000 credit</a> (get $150 extra)</li>
+      <li><button class="btn" ng-click="buyThreeThousand()">Buy $3000 credit</button> (get $300 extra)</li>
+      <li><button class="btn" ng-click="buyFiveThousand()">Buy $5000 credit</button> (get $1000 extra)</li>
     </ul>
 
     <h2>Transaction history</h2>
 
-
+    <div transaction-list></div>
 
   </div>
 
