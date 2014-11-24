@@ -30,6 +30,7 @@
       <button class="btn" ng-if="choice != 'credit'" ng-click="setChoice('credit')">See Top-up Options</button>
 
       <div ng-if="choice == 'credit'">
+        <payment-credit></payment-credit>
         <payment-info></payment-info>
       </div>
 
@@ -41,18 +42,17 @@
 
   </div>
 
-  <div class="history" ng-if="paymethods">
+  <div class="info" ng-if="paymethods">
+
+    <p class="buy">
+      <a href="/billing/top-up" class="btn">Top-up</a>
+
+    </p>
+
     <h2>Billing info</h2>
 
-    <p>We have your billing info securely stored with {{paymethods[0].type}}</p>
+    <p>Your <b>{{paymethods[0].name}}</b> is securely stored with <i>{{paymethods[0].type}}</i>.</p>
 
-    <p>Purchase credt now with <b>{{paymethods[0].name}}</b>:</p>
-
-    <ul>
-      <li><button class="btn" ng-click="buyFivehundred()">Buy $500 credit</button> (get $50 extra)</li>
-      <li><button class="btn" ng-click="buyThreeThousand()">Buy $3000 credit</button> (get $300 extra)</li>
-      <li><button class="btn" ng-click="buyFiveThousand()">Buy $5000 credit</button> (get $1000 extra)</li>
-    </ul>
 
   </div>
 

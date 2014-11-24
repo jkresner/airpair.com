@@ -19,7 +19,7 @@ angular.module("APPaymentDirectives", ['angularLoad','APSvcBilling'])
 
             $scope.client = new braintree.api.Client({clientToken});
 
-            console.log('setup', $scope.client)
+            // console.log('setup', $scope.client)
             $scope.card = {
               cardholderName: $scope.session.name,
               number:"4111111111111111",
@@ -44,6 +44,10 @@ angular.module("APPaymentDirectives", ['angularLoad','APSvcBilling'])
 
                   var err = (e) => console.log(e)
                   var suc = (r) => {
+                    console.log('$scope.creditAmount', $scope.creditAmount)
+                    if ($scope.creditAmount)
+                      BillingService.billing.orderCredit({total:parseInt($scope.creditAmount),paymethodId:r._id}, $scope.orderSuccess, err)
+
                     if (!$scope.paymethods) $scope.paymethods = [r]
                     else $scope.paymethods = _.union($scope.paymethods,[r])
                   }
@@ -58,4 +62,24 @@ angular.module("APPaymentDirectives", ['angularLoad','APSvcBilling'])
 
       }
     };
-  });
+  })
+
+
+  .directive('paymentCredit', function() {
+
+    return {
+      scope: false,
+      template: require('./paymentCredit.html'),
+      link(scope, element) {
+
+      },
+      controller($scope) {
+        $scope.$watch("creditAmount", (val) => {
+          // console.log('inner.creditAmount', val, $scope.setSubmitCardText)
+
+          if ($scope.setSubmitCardText) $scope.setSubmitCardText(val)
+        })
+      }
+    }
+  })
+
