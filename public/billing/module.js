@@ -14,6 +14,12 @@ angular.module("APBilling", ['ngRoute','APFormsDirectives','APPaymentDirectives'
       resolve: authd
     });
 
+    $routeProvider.when('/billing/top-up', {
+      template: require('./topup.html'),
+      controller: 'BillingTopUpCtrl',
+      resolve: authd
+    });
+
     $routeProvider.when('/billing/membership', {
       template: require('./membership.html'),
       controller: 'BillingMembershipCtrl',
@@ -22,7 +28,18 @@ angular.module("APBilling", ['ngRoute','APFormsDirectives','APPaymentDirectives'
 
   })
 
-  .controller('BillingCtrl', function($scope, SessionService, BillingService) {
+  .factory('submitPaymentText', function submitPaymentTextFactory() {
+    this.getText = (scope, val) => {
+      // console.log('SubmitPaymentText', val)
+      if (!val || val == "") scope.cardSubmitText = "Save card for later"
+      else if (val == "500") scope.cardSubmitText = "Pay $500, get $500 Credit"
+      else if (val == "3000") scope.cardSubmitText = "Pay $3000, get $3300 Credit"
+      else if (val == "5000") scope.cardSubmitText = "Pay $5000, get $6000 Credit"
+    }
+    return this
+  })
+
+  .controller('BillingCtrl', function($scope, BillingService, submitPaymentText) {
 
     var err = (r) => console.log('err', r)
 
@@ -33,41 +50,59 @@ angular.module("APBilling", ['ngRoute','APFormsDirectives','APPaymentDirectives'
 
     BillingService.billing.getMyOrders((r) => $scope.orders = r, err)
 
-    // console.log('on settings billing')
-    // this.submit = function(isValid, formData) {
-    //   if (!isValid) return
-    //   SessionService.login(formData,
-    //     () => $window.location = '',
-    //     (e) => $scope.signupFail = e.error
-    //   )
-    // }
-
-    var orderSuccess = (r) => {
+    $scope.orderSuccess = (r) => {
+      console.log('orderSuccess')
       $scope.orders = ($scope.orders) ? _.union($scope.orders,[r]) : [r]
     }
 
-    $scope.buyFivehundred = function() {
-      BillingService.billing.orderCredit({total:500,paymethodId:$scope.paymethods[0]._id}, orderSuccess, err)
-    }
-
-    $scope.buyThreeThousand = function() {
-      BillingService.billing.orderCredit({total:3000,paymethodId:$scope.paymethods[0]._id}, orderSuccess, err)
-    }
-
-    $scope.buyFiveThousand = function() {
-      BillingService.billing.orderCredit({total:5000,paymethodId:$scope.paymethods[0]._id, coupon: 'letspair'}, orderSuccess, err)
-    }
-
+    $scope.creditAmount = null
     $scope.setChoice = (val) => {
-      $scope.cardSubmitText = (val=='credit') ? "Puchase credit" : "Save card for later"
+      if (val == 'alacart')
+        $scope.creditAmount = null
+      else
+        $scope.creditAmount = "3000"
+
       $scope.choice = val
-      console.log('val', val, $scope.cardSubmitText)
     }
+
+    $scope.setSubmitCardText = function(val) { submitPaymentText.getText($scope, val) }
+
+    $scope.$watch("creditAmount", $scope.setSubmitCardText)
 
   })
 
+  .controller('BillingTopUpCtrl', function($scope, $location, BillingService, submitPaymentText) {
 
-  .controller('BillingMembershipCtrl', function($scope, SessionService) {
+    var err = (r) => console.log('err', r)
+
+    BillingService.billing.getPaymethods((r) => {
+      if (r.btoken) $location.path("/billing")
+      else {
+        $scope.paymethods = r
+        $scope.paymethodId = r[0]._id
+      }
+    }, err)
+
+
+    $scope.creditAmount = "3000"
+    $scope.coupon = ""
+    $scope.setSubmitCardText = function(val) { submitPaymentText.getText($scope, val) }
+    $scope.$watch("creditAmount", $scope.setSubmitCardText)
+
+    $scope.submit =  (formValid, data) => {
+      console.log('submit cred')
+      if (formValid)
+      {
+        var success = () => $location.path("/billing")
+
+        var {coupon,paymethodId} = $scope
+        BillingService.billing.orderCredit({total:parseInt($scope.creditAmount),paymethodId,coupon}, success, err)
+      }
+    }
+  })
+
+
+  .controller('BillingMembershipCtrl', function($scope, BillingService) {
 
     // console.log('in membership billing')
 

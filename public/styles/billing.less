@@ -17,6 +17,17 @@ section#billing {
     background-color:@lightblue
   }
 
+  .info {
+    .buy { background-color:@lightblue;
+      height:140px;
+      width:300px;
+      border-radius:5px;
+      float:right;
+      padding:50px 20px;
+      a { width:100%; }
+     }
+  }
+
   #cardinfoForm {
     text-align:left;
     max-width:480px;
@@ -37,8 +48,16 @@ section#billing {
     .btn { width:100% }
   }
 
+  #creditForm {
+    text-align:left;
+    hr { clear:both }
+    input { clear:left;float:left;margin-right:10px;display:block }
+    span { float:left;margin-right:10px;display:block  }
+    em { float:left;margin-right:10px;display:block  }
+  }
+
   .history {
-    .header { background-color:@lightblue }
+    .header { background-color:@lightblue;font-weight:bold }
     table td {
       padding:3px 5px
     }
@@ -46,6 +65,11 @@ section#billing {
     .minus { color:@orange }
   }
 
+}
+
+section#topup {
+  h1 { text-align:left; }
+  form { max-width:480px }
 }
 
 section#membership {
