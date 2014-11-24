@@ -42,7 +42,6 @@
   </div>
 
   <div class="history" ng-if="paymethods">
-
     <h2>Billing info</h2>
 
     <p>We have your billing info securely stored with {{paymethods[0].type}}</p>
@@ -55,7 +54,12 @@
       <li><button class="btn" ng-click="buyFiveThousand()">Buy $5000 credit</button> (get $1000 extra)</li>
     </ul>
 
-    <h2>Transaction history</h2>
+  </div>
+
+  <div class="history" ng-if="orders">
+
+
+    <h2>History</h2>
 
     <div transaction-list></div>
 

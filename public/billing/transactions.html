@@ -9,20 +9,18 @@
       <th>Total</th>
       <th style="text-align:right">Balance</th>
     </tr>
-  </thead>
-  <tfoot>
-    <tr>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
+    <tr class="header">
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td style="text-align:right">${{balance}}</td>
     </tr>
-  </tfoot>
+  </thead>
   <tbody>
     <tr ng-repeat="t in transactions">
-      <td>{{t._id | objectIdToDate : 'MM.DD.YYYY  hh:mmA' }}</td>
+      <td>{{t._id | objectIdToDate : 'MMM DD  HH:mm' }}</td>
       <td>
         <div ng-if="t.info">
           <div style="font-size:11px">{{t.info.name}}</div>
@@ -35,7 +33,7 @@
       <td>{{t.qty}}</td>
       <td style="{{ (t.unitPrice == 0) ? 'color:white': '' }}"> {{t.unitPrice}}</td>
       <td style="{{ (t.unitPrice == 0) ? 'color:white': '' }}"> {{t.total}}</td>
-      <td style="text-align:right">{{t.runningBalance}}</td>
+      <td style="text-align:right" ng-class="{'plus': t.balance > 0, 'minus': t.balance < 0}">${{t.runningBalance}}</td>
     </tr>
   </tbody>
 </table>
