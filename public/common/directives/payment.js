@@ -28,7 +28,7 @@ angular.module("APPaymentDirectives", ['angularLoad','APSvcBilling'])
               cardNickName: "Personal united visa"
             }
 
-            console.log('card', $scope.card)
+            // console.log('card', $scope.card)
 
           })
 

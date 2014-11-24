@@ -5,8 +5,6 @@ angular.module("APBillingDirectives", [])
 
 .directive('transactionList', function() {
 
-  console.log('transactionslist', ordersUtil)
-
   return {
     template: require('./transactions.html'),
     link(scope, element, attrs) {
@@ -14,6 +12,7 @@ angular.module("APBillingDirectives", [])
     controller($scope) {
       $scope.$watch('orders', function(val) {
         $scope.transactions = ordersUtil.ordersToLinesWithRunningBalance($scope.orders)
+        $scope.balance = $scope.transactions[$scope.transactions.length-1].runningBalance
       })
     }
   };
