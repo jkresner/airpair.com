@@ -19,8 +19,15 @@ module.exports = -> describe "Credit: ", ->
       POST "/billing/orders/credit/#{s.primaryPayMethodId}", o, {}, (r) ->
         threeMonth = moment(util.dateWithDayAccuracy(moment().add(3,'month'))).format('YYYY-MM-DD')
         expect(r._id).to.exist
+        expect(_.idsEqual(r.userId, s._id)).to.be.true
+        expect(_.idsEqual(r.by._id, s._id)).to.be.true
         expect(r.lineItems.length).to.equal(1)
-        expect(r.lineItems[0].info.amount).to.equal(500)
+        expect(r.lineItems[0].type).to.equal('credit')
+        expect(r.lineItems[0].unitPrice).to.equal(500)
+        expect(r.lineItems[0].qty).to.equal(1)
+        expect(r.lineItems[0].total).to.equal(500)
+        expect(r.lineItems[0].profit).to.equal(0)
+        expect(r.lineItems[0].balance).to.equal(500)
         expect(r.lineItems[0].info.expires.indexOf(threeMonth)).to.equal(0)
         expect(r.lineItems[0].info.remaining).to.equal(500)
         expect(r.lineItems[0].info.name).to.equal('$500 Credit')
@@ -46,7 +53,7 @@ module.exports = -> describe "Credit: ", ->
         expect(r.lineItems[1].info.name).to.equal('$300 Credit')
         expect(r.lineItems[1].info.source).to.equal('Credit Bonus (10% on $3000)')
         expect(r.total).to.equal(3000)
-        expect(r.profit).to.equal(-300)
+        expect(r.profit).to.equal(0)
         done()
 
 
@@ -54,13 +61,63 @@ module.exports = -> describe "Credit: ", ->
     addAndLoginLocalUserWithPayMethod 'kelf', (s) ->
       o = total: 5000, coupon: 'letspair'
       POST "/billing/orders/credit/#{s.primaryPayMethodId}", o, {}, (r) ->
+        threeMonth = moment(util.dateWithDayAccuracy(moment().add(3,'month'))).format('YYYY-MM-DD')
         expect(r._id).to.exist
         expect(r.lineItems.length).to.equal(3)
         expect(r.lineItems[0].type).to.equal('credit')
+        expect(r.lineItems[0].unitPrice).to.equal(5000)
+        expect(r.lineItems[0].qty).to.equal(1)
+        expect(r.lineItems[0].total).to.equal(5000)
+        expect(r.lineItems[0].profit).to.equal(0)
+        expect(r.lineItems[0].balance).to.equal(5000)
+        expect(r.lineItems[0].info.expires.indexOf(threeMonth)).to.equal(0)
+        expect(r.lineItems[0].info.remaining).to.equal(5000)
+        expect(r.lineItems[0].info.name).to.equal('$5000 Credit')
+        expect(r.lineItems[0].info.source).to.equal('$5000 Credit Purchase')
         expect(r.lineItems[1].type).to.equal('credit')
+        expect(r.lineItems[1].unitPrice).to.equal(0)
+        expect(r.lineItems[1].qty).to.equal(1)
+        expect(r.lineItems[1].total).to.equal(0)
+        expect(r.lineItems[1].profit).to.equal(0)
+        expect(r.lineItems[1].balance).to.equal(1000)
+        expect(r.lineItems[1].info.expires.indexOf(threeMonth)).to.equal(0)
+        expect(r.lineItems[1].info.remaining).to.equal(1000)
+        expect(r.lineItems[1].info.name).to.equal('$1000 Credit')
+        expect(r.lineItems[1].info.source).to.equal('Credit Bonus (20% on $5000)')
         expect(r.lineItems[2].type).to.equal('discount')
         expect(r.total).to.equal(4900)
-        expect(r.profit).to.equal(-1100)
+        expect(r.profit).to.equal(-100)
+        done()
+
+
+  it 'Admin can give unpaid credit', (done) ->
+    addAndLoginLocalUserWithPayMethod 'chup', (schup) ->
+      LOGIN 'admin', data.users.admin, (sadm) ->
+        o = total: 50, toUserId: schup._id, source: 'Angular Workshops Survey Promo'
+        POST "/adm/billing/orders/credit", o, {}, (r) ->
+          expect(r._id).to.exist
+          # $log('got r', r)
+          expect(_.idsEqual(r.userId, schup._id)).to.be.true
+          expect(_.idsEqual(r.by._id, sadm._id)).to.be.true
+          expect(r.lineItems.length).to.equal(1)
+          expect(r.lineItems[0].type).to.equal('credit')
+          expect(r.lineItems[0].unitPrice).to.equal(0)
+          expect(r.lineItems[0].qty).to.equal(1)
+          expect(r.lineItems[0].total).to.equal(0)
+          expect(r.lineItems[0].profit).to.equal(0)
+          expect(r.lineItems[0].balance).to.equal(50)
+          expect(r.lineItems[0].info.name).to.equal('$50 Credit')
+          expect(r.lineItems[0].info.remaining).to.equal(50)
+          expect(r.lineItems[0].info.source).to.equal('Angular Workshops Survey Promo')
+          expect(r.total).to.equal(0)
+          expect(r.profit).to.equal(0)
+          done()
+
+
+  it 'Non-admin can not give unpaid credit', (done) ->
+    addAndLoginLocalUserWithPayMethod 'chiu', (schiu) ->
+      o = total: 50, toUserId: schiu._id, source: 'Angular Workshops Survey Promo'
+      POST "/adm/billing/orders/credit", o, { status: 403 }, ->
         done()
 
 

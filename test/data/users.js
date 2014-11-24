@@ -31,6 +31,8 @@ module.exports = {
 	soik: { name:"Somik Rana",email:"somik@hotmail.com" },
 	kelf: { name:"Kelly Ford",email:"kelf@gmail.com" },
 	kfor: { name:"Kelly Ford",email:"kellyford@hotmail.com" },
+  chup: { name:"Chris Upton",email:"chrisupton@hotmail.com" },
+  chiu: { name:"Chris Upton",email:"chirsitup@gmail.com" },
 
 	cmck: { name:"Chris McKnight",email:"chrismcknight@gmail.com" },
 	ckni: { name:"Chris McKnight",email:"cknight@hotmail.com" },

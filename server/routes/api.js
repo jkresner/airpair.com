@@ -65,6 +65,7 @@ export default function(app) {
     .get('/users/role/:role', UsersAPI.getUsersInRole)
     .put('/users/:id/role/:role', UsersAPI.toggleUserInRole)
     .get('/users/search/:id', UsersAPI.search)
+    .post('/billing/orders/credit', OrdersAPI.giveCredit)
     .get('/redirects', RedirectsAPI.getAllRedirects)
     .post('/redirects', RedirectsAPI.createRedirect)
     .delete('/redirects/:id', RedirectsAPI.deleteRedirectById)

@@ -36,7 +36,7 @@ module.exports = {
       lines = _.sortBy(lines, (l) => l._id)
 
       lines.forEach(function(li){
-        runningBalance = runningBalance + li.info.amount
+        runningBalance = runningBalance + (li.balance || 0)
         li.runningBalance = runningBalance
       })
     }
