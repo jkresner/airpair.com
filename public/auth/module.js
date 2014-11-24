@@ -26,8 +26,7 @@ angular.module("APAuth", ['ngRoute','ngMessages','APFormsDirectives','APFilters'
   }])
 
 
-  .controller('LoginCtrl', ['$rootScope', '$scope', '$window', 'SessionService',
-      function($rootScope, $scope, $window, SessionService) {
+  .controller('LoginCtrl', function($rootScope, $scope, $window, $timeout, SessionService) {
     var self = this;
 
     $scope.data = {};
@@ -37,14 +36,16 @@ angular.module("APAuth", ['ngRoute','ngMessages','APFormsDirectives','APFilters'
       SessionService.login(formData,
         (result) => {
         	// $window.location = '',
+          $timeout(() => { window.location = '/me'}, 250)
         },
-        (e) => $scope.loginFail = e.error
+        (e) => {
+          $scope.loginFail = e.error
+        }
       )
     }
-  }])
+  })
 
-  .controller('SignupCtrl', ['$scope', '$window', 'SessionService',
-      function($scope, $window, SessionService) {
+  .controller('SignupCtrl', function($scope, $window, SessionService) {
 
     var self = this;
     this.submit = function(isValid, formData) {
@@ -54,6 +55,4 @@ angular.module("APAuth", ['ngRoute','ngMessages','APFormsDirectives','APFilters'
         (e) => $scope.signupFail = e.error
       )
     }
-  }])
-
-;
+  })

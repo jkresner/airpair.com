@@ -183,6 +183,7 @@ angular.module("APSideNav", ['ui.bootstrap','APSvcSession', 'APTagInput'])
         SessionService.signup(data,
           (result) => {
           //$modalInstance.close();
+          $timeout(() => { window.location = '/me'}, 250)
         },
           (e) => $scope.signupFail = e.error
         )
