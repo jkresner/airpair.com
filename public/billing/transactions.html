@@ -22,8 +22,16 @@
   </tfoot>
   <tbody>
     <tr ng-repeat="t in transactions">
-      <td>{{t._id | objectIdToDate : 'ddd, MMM Do HH:mm' }}</td>
-      <td> <div style="font-size:11px">{{t.info.name}}</div> <div style="font-size:9px">{{t.info.source}}</div></td>
+      <td>{{t._id | objectIdToDate : 'MM.DD.YYYY  hh:mmA' }}</td>
+      <td>
+        <div ng-if="t.info">
+          <div style="font-size:11px">{{t.info.name}}</div>
+          <div style="font-size:9px">{{t.info.source}}</div>
+        </div>
+        <div ng-if="t.suggestion">
+          <div style="font-size:11px">{{t.suggestion.expert.name}}</div>
+        </div>
+      </td>
       <td>{{t.qty}}</td>
       <td style="{{ (t.unitPrice == 0) ? 'color:white': '' }}"> {{t.unitPrice}}</td>
       <td style="{{ (t.unitPrice == 0) ? 'color:white': '' }}"> {{t.total}}</td>
