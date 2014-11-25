@@ -3,9 +3,14 @@ import Order from '../models/order'
 import * as PayMethodSvc from './paymethods'
 import * as UserSvc from './users'
 import * as Validate from '../../shared/validation/billing.js'
-var {linesWithCredit,getAvailableCredit} = require('../../shared/orders.js')
 var Data = require('./orders.data')
 var Util = require('../../shared/util')
+var OrderUtil = require('../../shared/orders.js')
+
+
+OrderUtil.calculateUnitPrice = (expert, type) => expert.rate + base[type]
+OrderUtil.calculateUnitProfit = (expert, type) => base[type] // TODO fix this for requests
+
 
 var logging = false
 var svc = new Svc(Order, logging)
@@ -17,21 +22,53 @@ var base = {
 }
 
 
+export function getMyOrders(cb)
+{
+  svc.searchMany({userId:this.user._id}, null, cb)
+}
+
+
+function getOrdersWithCredit(userId, cb)
+{
+  var query = Data.query.creditRemaining(userId)
+  query = {userId} // TODO fix query
+  svc.searchMany(query, { options: Data.options.ordersByDate }, cb)
+}
+
+
+export function getMyOrdersWithCredit(cb)
+{
+  getOrdersWithCredit(this.user._id, cb)
+}
+
+
+
+
 var newLine = (type, qty, unitPrice, total, balance, profit, info) => {
   return {_id: svc.newId(),type, qty, unitPrice, total, balance, profit, info}
 }
 
 
 var Lines = {
-  credit(paid, amount, expires, source)
+  credit(paid, total, expires, source)
   {
-    amount = parseInt(amount)
-    var info = { name: `$${amount} Credit`, source, remaining: amount, expires, redeemedLines: [] }
+    var info = { name: `$${total} Credit`, source, remaining: total, expires, redeemedLines: [] }
     //-- profit on credit is always 0 because it is calculated on future line items
     //-- When credit expires we add a new line item
-    var profit = 0       // ?? var profitAmount = (paid) ? 0 : -1*amount
-    var paidAmount = (paid) ? amount : 0
-    return newLine('credit',1,paidAmount,paidAmount,amount,profit,info)
+    var profit = 0       // ?? var profitAmount = (paid) ? 0 : -1*total
+    var paidAmount = (paid) ? total : 0
+    return newLine('credit',1,paidAmount,paidAmount,total,profit,info)
+  },
+  redeemedcredit(total, fromLineItem)
+  {
+    var info = { name: `$${total} Redeemed Credit`, source: fromLineItem._id }
+    return newLine('redeemedcredit',1,-1*total,-1*total,-1*total,0,info)
+  },
+  payg(amount)
+  {
+    //-- payg always has $0 total as it balances against an airpair line item which has a total
+    var info = { name: `$${amount} Paid` }
+    return newLine('payg',0,amount,0,0,0,info)
   },
   discount(coupon, amount, source, user)
   {
@@ -47,24 +84,29 @@ var Lines = {
     var total = qty*unitPrice
     var exp = { _id: expert._id, name: expert.name, avatar: expert.avatar }
     var info = { name: `${minutes} min (${expert.name})`, time, minutes, paidout: false, expert: exp }
-    return newLine('airpair',qty,unitPrice,total,-1*total,qty*unitProfit,info)
+    return newLine('airpair',qty,unitPrice,total,0,qty*unitProfit,info)
   }
 }
 
 
-function createOrder(lineItems, payMethod, forUserId, cb) {
+//-- Create the order object without saving anything
+//-- Use the lineItems, paymethod and who the orders is for
+function makeOrder(byUser, lineItems, payMethod, forUserId)
+{
+  var byUserId = svc.idFromString(byUser._id)
+
   var o = {
     _id: svc.newId(),
     utc: new Date(),
-    userId: forUserId, // May be different from the identity (which could be an admin)
+    userId: forUserId || byUserId, // May be different from the identity (which could be an admin)
     total: 0,
     profit: 0,
-    lineItems: lineItems
-  }
-  o.by = {
-    _id:  this.user._id,
-    name: this.user.name,
-    email: this.user.email
+    lineItems: lineItems,
+    by: {
+      _id:  byUserId,
+      name: byUser.name,
+      email: byUser.email
+    }
   }
 
   for (var li of o.lineItems)
@@ -73,15 +115,10 @@ function createOrder(lineItems, payMethod, forUserId, cb) {
     o.profit += li.profit
   }
 
-  if (o.total == 0)
-  {
-    o.payment = { type: '$0 order' }
-    if (logging) $log('createing $0', o)
-    svc.create(o, cb)
-  }
+  if (o.total == 0) o.payment = { type: '$0 order' }
   else
   {
-    o.payMethodId = payMethod._id // What if we delete a payMethod?
+    o.payMethodId = payMethod._id // TODO: consider/test what happens if we delete a payMethod?
 
     if (payMethod.companyId)
     {
@@ -91,19 +128,29 @@ function createOrder(lineItems, payMethod, forUserId, cb) {
       o.by.companyId = payMethod.companyId
       // o.by.company: payMethod.info
     }
+  }
 
-    if (logging) $log('orders.svc.create', o.lineItems)
+  return o
+}
+
+
+function chargeAndTrackOrder(o, payMethod, errorCB, saveCB)
+{
+  if (o.total == 0) saveCB(null, o)
+  else
+  {
+    if (logging) $log('orders.svc.charge', o.lineItems)
     PayMethodSvc.charge(o.total, o._id, payMethod, (e,r) => {
-      if (e) return cb(e)
+      if (e) return errorCB(e)
       if (logging) $log('payment.created', r)
-      // trackOrder.call(this, o)
-      var { id, status, amount, orderId, createdAt, processorAuthorizationCode} = r.transaction
-      o.payment = { id, status, amount, orderId, createdAt, processorAuthorizationCode}
-      svc.create(o, cb)
+      // trackOrderPayment.call(this, o)
+      var { id, status, total, orderId, createdAt, processorAuthorizationCode} = r.transaction
+      o.payment = { id, status, total, orderId, createdAt, processorAuthorizationCode}
+      saveCB(null, o)
     })
-
   }
 }
+
 
 //-- Assumes we have added the linesItems already
 function updateOrder(o, cb) {
@@ -116,41 +163,17 @@ function updateOrder(o, cb) {
     o.profit += li.profit
   }
 
-  if (logging) $log('orders.svc.update', o.lineItems)
+  logging = true
+  if (logging) $log('orders.svc.update', o.lineItems, o.total)
   // trackOrderUpdate.call(this, o)
   svc.update(o, cb)
 }
 
 
-export function buyMembership(length, coupon, payMethod, cb)
-{
-  var inValid = Validate.buyMembership(this.user, length)
-  if (inValid) return cb(svc.Forbidden(inValid))
-
-  var total = (length == 12) ? 500 : 300
-  var expires = Util.dateWithDayAccuracy(moment().add(6,'month'))
-
-  var lineItems = []
-
-  lineItems.push({ type : 'membership', unitPrice: total, qty: 1, total, profit: total,
-    info: { name: 'Membership (6 mth)', expires }} )
-
-  if (length == 12)
-    lineItems.push( Lines.credit(false, 500, expires, '12 Month Membership Promo') )
-
-  if (coupon == "bestpair")
-    lineItems.push( Lines.discount("bestpair", 50, 'Membership Announcement Promo', this.user) )
-
-  createOrder.call(this, lineItems, payMethod, this.user._id, (e,r) => {
-    if (e) return cb(e)
-    UserSvc.update.call(this, this.user._id, { membership: { expires } })
-    cb(null,r)
-  })
-}
-
 
 export function buyCredit(total, coupon, payMethod, cb)
 {
+  total = parseInt(total)
   var inValid = Validate.buyCredit(this.user, coupon, total)
   if (inValid) return cb(svc.Forbidden(inValid))
 
@@ -169,7 +192,8 @@ export function buyCredit(total, coupon, payMethod, cb)
   if (coupon == "letspair")
     lineItems.push( Lines.discount("letspair", 100, 'Credit Announcement Promo', this.user) )
 
-  createOrder.call(this, lineItems, payMethod, this.user._id, cb)
+  var order = makeOrder(this.user, lineItems, payMethod)
+  chargeAndTrackOrder(order, payMethod, cb, (e,o) => svc.create(o, cb))
 }
 
 
@@ -180,87 +204,123 @@ export function giveCredit(toUserId, total, source, cb)
   var lineItems = []
   lineItems.push(Lines.credit(false, total, expires, source))
 
-  createOrder.call(this, lineItems, null, toUserId, cb)
+  var order = makeOrder(this.user, lineItems, null, toUserId)
+  chargeAndTrackOrder(order, null, cb, (e,o) => svc.create(o, cb))
 }
 
 
-export function getMyOrders(cb)
+
+export function createBookingOrder(expert, time, minutes, type, credit, paymethodId, cb)
 {
-  svc.searchMany({userId:this.user._id}, null, cb)
+  var unitPrice = OrderUtil.calculateUnitPrice(expert,type)
+  var total = minutes/60 * unitPrice
+
+  if (!credit || credit==0) bookUsingPAYG.call(this, expert, time, minutes, type, paymethodId, cb)
+  else if (credit >= total) bookUsingCredit.call(this, expert, time, minutes, type, cb)
+  else {
+    // var unitProfit = calculateUnitProfit(expert)
+  }
 }
 
 
-function getOrdersWithCredit(userId, cb)
+export function bookUsingPAYG(expert, time, minutes, type, payMethodId, cb)
 {
-  var query = Data.query.creditRemaining(userId)
-  query = {userId} // TODO fix query
-  svc.searchMany(query, { options: Data.options.ordersByDate }, cb)
-}
+  PayMethodSvc.getById.call(this, payMethodId, (e,payMethod) => {
+    if (e || !payMethod) return cb(`Could not find paymethod ${payMethodId}`)
 
-export function getMyOrdersWithCredit(cb)
-{
-  getOrdersWithCredit(this.user._id, cb)
+    // console.log('expert', expert)
+    var profit = OrderUtil.calculateUnitProfit(expert, type)
+    var unitPrice = OrderUtil.calculateUnitPrice(expert,type)
+    var total = minutes/60 * unitPrice
+
+    var lineItems = []
+    lineItems.push(Lines.payg(total))
+    lineItems.push(Lines.airpair(expert, minutes, time, unitPrice, profit))
+
+    var order = makeOrder(this.user, lineItems, payMethod)
+    chargeAndTrackOrder(order, payMethod, cb, (e,o) => svc.create(o, cb))
+  })
 }
 
 
 export function bookUsingCredit(expert, time, minutes, type, cb)
 {
-  var unitPrice = expert.rate + base[type]
+  var profit = OrderUtil.calculateUnitProfit(expert, type)
+  var unitPrice = OrderUtil.calculateUnitPrice(expert,type)
   var total = minutes/60 * unitPrice
-  var profit = base[type] //-- Make this real
+
 
   getOrdersWithCredit(this.user._id, (e, orders) => {
-    var lines = linesWithCredit(orders)
-    var availablCredit = getAvailableCredit(lines)
+    var lines = OrderUtil.linesWithCredit(orders)
+    var availablCredit = OrderUtil.getAvailableCredit(lines)
     if (availablCredit < total)
       return cb(Error(`Not enough credit ${availablCredit} for booking ${expert.name} for ${minutes} minutes @ ${total}`))
 
     var need = total
     var ordersToUpdate = []
+    var lineItems = []
     for (var o of orders) {
       for (var li of o.lineItems) {
         if (need > 0 && li.type == 'credit' && li.info.remaining > 0)
         {
           var deducted = need
-          if (li.info.remaining > need) {
-            var orderIdWithLineItem = o._id
-            o.lineItems.push(Lines.airpair(expert, minutes, time, unitPrice, profit))
-          }
-          else
+          if (li.info.remaining < need)
             deducted = li.info.remaining
 
+          var redeemedLine = Lines.redeemedcredit(deducted, li)
+          lineItems.push(redeemedLine)
           li.info.remaining = li.info.remaining - deducted
-          li.info.redeemedLines.push({ lineItemId: li._id, amount: deducted, partial: deducted!=need })
+          li.info.redeemedLines.push({ lineItemId: redeemedLine._id, amount: deducted, partial: deducted!=need })
+
+          ordersToUpdate = _.union(ordersToUpdate,[o._id])
 
           need = need - deducted
-          ordersToUpdate = _.union(ordersToUpdate,[o._id])
+          if (need == 0)
+            lineItems.push(Lines.airpair(expert, minutes, time, unitPrice, profit))
         }
       }
     }
 
+    // console.log('bookUsingCredit', lineItems)
+    var order = makeOrder(this.user, lineItems, null)
+    // console.log('order', order)
     ordersToUpdate = _.map(ordersToUpdate, (id) => _.find(orders,(o)=> _.idsEqual(o._id, id) ) )
-    svc.updateBulk(ordersToUpdate, (e,r) => cb(e,orderIdWithLineItem))
+
+    chargeAndTrackOrder(order, null, cb, (e,o) => {
+      console.log('inserting', order.total, order._id, order.userId)
+      svc.updateAndInsertOneBulk(ordersToUpdate, o, (e,r) => cb(e,o))
+    })
+
   })
 }
 
 
-export function bookUsingPAYG(expert, time, minutes, type, payMethod, cb)
-{
-  var unitPrice = expert.rate + base[type]
-  var total = minutes/60 * unitPrice
-  var profit = base[type] //-- Make this real
+// export function buyMembership(length, coupon, payMethod, cb)
+// {
+//   var inValid = Validate.buyMembership(this.user, length)
+//   if (inValid) return cb(svc.Forbidden(inValid))
 
-  var lineItems = []
-  lineItems.push(Lines.airpair(expert, minutes, time, unitPrice, profit))
+//   var total = (length == 12) ? 500 : 300
+//   var expires = Util.dateWithDayAccuracy(moment().add(6,'month'))
 
-  createOrder.call(this, lineItems, payMethod, this.user._id, (e,r) => cb(e,(r)?r._id:null))
-}
+//   var lineItems = []
 
+//   lineItems.push({ type : 'membership', unitPrice: total, qty: 1, total, profit: total,
+//     info: { name: 'Membership (6 mth)', expires }} )
 
-export function addCouponToExistingOrder(orderId, coupon, cb)
-{
-  return cb('addCouponToExistingOrder not implemented')
-}
+//   if (length == 12)
+//     lineItems.push( Lines.credit(false, 500, expires, '12 Month Membership Promo') )
+
+//   if (coupon == "bestpair")
+//     lineItems.push( Lines.discount("bestpair", 50, 'Membership Announcement Promo', this.user) )
+
+//   createOrder.call(this, lineItems, payMethod, this.user._id, (e,r) => {
+//     if (e) return cb(e)
+//     UserSvc.update.call(this, this.user._id, { membership: { expires } })
+//     cb(null,r)
+//   })
+// }
+
 
 // function trackOrder(order) {
 // 	var props = {

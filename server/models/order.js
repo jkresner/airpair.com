@@ -3,14 +3,18 @@ var Schema = mongoose.Schema
 var ObjectId = Schema.Types.ObjectId
 
 var lineType = [
-  //-- By $1000, use it how you like before it expires
-  'credit',
-
   //-- Transaction that cosumes amount of transaction immediately
   'payg',
 
+  //-- By $1000, use it how you like before it expires
+  'credit',
+
+  'redeemedcredit',
+
   //-- Buy a block of hours with specific experts
   'package',
+
+  'redeemedhour',
 
   //-- Time with an expert, can be redeemed using credit or payg
   'airpair',
@@ -36,9 +40,11 @@ var LineItem = new Schema({
   type:             { required: true, type: String, enum: lineType },
   qty:              { required: true, type: Number },
   unitPrice:        { required: true, type: Number },  // Amount paid per unit
+
+  profit:           { required: true, type: Number },  // Margin taken by AirPair
+
   total:            { required: true, type: Number },  // Amount paid by customer
   balance:          { required: true, type: Number },  // Amount effecting customers balance
-  profit:           { required: true, type: Number },  // Margin taken by AirPair
 // balanceRemaining: { required: true, type: Number },  // Amount effecting customers balance
 
   info:             { required: true, type: {} }, // Amount effecting customers balance
@@ -49,6 +55,8 @@ var LineItem = new Schema({
 })
 
 module.exports = mongoose.model('Order', new Schema({
+
+  _id:            { required: true, type: ObjectId },
 
   // The user the order belongs to
   userId:         { required: true, type: ObjectId, ref: 'User' },

@@ -140,8 +140,12 @@ angular.module("APBilling", ['ngRoute','APFormsDirectives','APPaymentDirectives'
     $scope.calcSummary = function() {
       if (!$scope.expert) return
       var hrRate = $scope.expert.rate
-      if ($scope.type == "opensource") hrRate = hrRate - 20
+      if ($scope.booking.type == "opensource") hrRate = hrRate + 20
+      else if ($scope.booking.type == "private") hrRate = hrRate + 40
+      else if ($scope.booking.type == "nda") hrRate = hrRate + 90
+      $scope.hrRate = hrRate
       $scope.total = hrRate * $scope.booking.minutes/60
+      console.log('$scope.hrRate', $scope.hrRate, $scope.booking.type)
 
       if ($scope.credit > $scope.total) {
         $scope.owe = 0
