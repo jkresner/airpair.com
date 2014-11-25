@@ -19,7 +19,7 @@ angular.module('APSvcSession', [])
 
     var setScope = (successFn) => {
       return function(result) {
-        if (!result.emailVerified) notifications.add("Please <a href='/me'>verify your email</a>")
+        if (!result.emailVerified && result._id) notifications.add("Please <a href='/me'>verify your email</a>")
 
         $rootScope.session = result
         successFn(result)

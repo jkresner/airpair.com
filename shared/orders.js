@@ -2,12 +2,12 @@ module.exports = {
 
   linesWithCredit(orders) {
     var lines = []
-    for (var order of orders) {
-      for (var li of order.lineItems)
-      {
+    orders.forEach(function(order){
+      order.lineItems.forEach(function(li){
         if (li.type == 'credit' && li.info.remaining > 0) lines.push(li)
-      }
-    }
+      })
+    })
+
     // return _.sort(lines, (li) => li._id)
     return lines
   },
@@ -15,7 +15,11 @@ module.exports = {
   getAvailableCredit(lines) {
     if (lines.length == 0) return 0
     var remaining = []
-    for (var li of lines) remaining.push(li.info.remaining)
+
+    lines.forEach(function(li){
+      remaining.push(li.info.remaining)
+    })
+
     return _.reduce(remaining, function(memo, num){ return memo + num; }, 0)
   },
 

@@ -58,6 +58,9 @@ export default function(app) {
     .post('/bookings/credit/:expert', BookingsAPI.createWithCredit)
     .post('/bookings/payg/:expert/:paymethod', BookingsAPI.createWithPAYG)
 
+    .get('/experts/:id', ExpertsAPI.getById)
+    .get('/experts', ExpertsAPI.getForExpertsPage)
+
 
   var admrouter = require('express').Router()
     .use(adm)

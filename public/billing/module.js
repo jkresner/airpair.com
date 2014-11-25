@@ -1,8 +1,9 @@
-require('./directives.js');
-var resolver = require('./../common/routes/helpers.js').resolveHelper;
+require('./directives');
+var resolver = require('./../common/routes/helpers').resolveHelper
+var OrdersUtil = require('./../../shared/orders')
 
 angular.module("APBilling", ['ngRoute','APFormsDirectives','APPaymentDirectives','APAnalytics',
-  'APFilters','APSvcSession','APSvcBilling', 'APBillingDirectives'])
+  'APFilters','APSvcSession','APSvcBilling', 'APBillingDirectives','APExpertsDirectives'])
 
   .config(function($locationProvider, $routeProvider) {
 
@@ -26,6 +27,18 @@ angular.module("APBilling", ['ngRoute','APFormsDirectives','APPaymentDirectives'
       resolve: authd
     });
 
+    $routeProvider.when('/experts', {
+      template: require('./experts.html'),
+      controller: 'BillingExpertsCtrl',
+      resolve: authd
+    });
+
+    $routeProvider.when('/billing/book/:id', {
+      template: require('./book.html'),
+      controller: 'BillingBookExpertCtrl',
+      resolve: authd
+    });
+
   })
 
   .factory('submitPaymentText', function submitPaymentTextFactory() {
@@ -42,6 +55,7 @@ angular.module("APBilling", ['ngRoute','APFormsDirectives','APPaymentDirectives'
   .controller('BillingCtrl', function($scope, BillingService, submitPaymentText) {
 
     var err = (r) => console.log('err', r)
+    $scope.orders = []
 
     BillingService.billing.getPaymethods((r) => {
       if (r.btoken) $scope.btoken = r.btoken
@@ -51,8 +65,8 @@ angular.module("APBilling", ['ngRoute','APFormsDirectives','APPaymentDirectives'
     BillingService.billing.getMyOrders((r) => $scope.orders = r, err)
 
     $scope.orderSuccess = (r) => {
-      console.log('orderSuccess')
-      $scope.orders = ($scope.orders) ? _.union($scope.orders,[r]) : [r]
+      $scope.orders = _.union($scope.orders,[r])
+      console.log('orderSuccess', $scope.orders)
     }
 
     $scope.creditAmount = null
@@ -90,7 +104,6 @@ angular.module("APBilling", ['ngRoute','APFormsDirectives','APPaymentDirectives'
     $scope.$watch("creditAmount", $scope.setSubmitCardText)
 
     $scope.submit =  (formValid, data) => {
-      console.log('submit cred')
       if (formValid)
       {
         var success = () => $location.path("/billing")
@@ -108,5 +121,69 @@ angular.module("APBilling", ['ngRoute','APFormsDirectives','APPaymentDirectives'
 
   })
 
+  .controller('BillingExpertsCtrl', function($scope, BillingService) {
 
-;
+    BillingService.experts.getForExpertsPage((r) => {
+      $scope.experts = r.experts
+    }, () => {} )
+
+  })
+
+  .controller('BillingBookExpertCtrl', function($scope, $routeParams, BillingService) {
+
+    $scope.booking = {
+      minutes: 120,
+      type: "private",
+      time: moment().add(1, 'month')
+    }
+
+    $scope.calcSummary = function() {
+      if (!$scope.expert) return
+      var hrRate = $scope.expert.rate
+      if ($scope.type == "opensource") hrRate = hrRate - 20
+      $scope.total = hrRate * $scope.booking.minutes/60
+
+      if ($scope.credit > $scope.total) {
+        $scope.owe = 0
+        $scope.remainingCredit = $scope.credit - $scope.total
+      }
+      else {
+        $scope.owe = $scope.total - $scope.credit
+      }
+    }
+
+    BillingService.experts.getById({_id:$routeParams.id}, (r) => {
+      $scope.expert = r
+      $scope.booking.expertId = r._id
+      $scope.calcSummary()
+    }, () => {})
+
+    BillingService.billing.getMyOrdersWithCredit((r) => {
+      $scope.orders = r
+      // console.log(OrdersUtil.linesWithCredit(r))
+      $scope.credit = OrdersUtil.getAvailableCredit(OrdersUtil.linesWithCredit(r))
+
+      // console.log('$scope.credit', $scope.credit)
+      $scope.calcSummary()
+
+      if ($scope.credit == 0) {
+        BillingService.billing.getPaymethods((r) => {
+          if (r.btoken) $location.path("/billing")
+          else {
+            $scope.paymethods = r
+            $scope.booking.paymethodId = r[0]._id
+          }
+        }, () => {})
+      }
+    }, () => {})
+
+    $scope.$watch('booking.minutes', $scope.calcSummary)
+
+    $scope.submit = function() {
+      if ($scope.remainingCredit >= 0) {
+        BillingService.billing.bookExpertWithCredit($scope.booking, (r) => $location.path("/billing"), () => {})
+      }
+    }
+
+  })
+

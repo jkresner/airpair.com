@@ -18,14 +18,19 @@ section#billing {
   }
 
   .info {
-    .buy { background-color:@lightblue;
+    .buy {
+      background-color:@lightblue;
       height:140px;
       width:300px;
       border-radius:5px;
       float:right;
-      padding:50px 20px;
-      a { width:100%; }
+      padding:10px 20px;
+      a {
+        display:block;
+        width:100%;
+        margin:10px 0;
      }
+   }
   }
 
   #cardinfoForm {
@@ -48,7 +53,7 @@ section#billing {
     .btn { width:100% }
   }
 
-  #creditForm {
+  .creditChoice {
     text-align:left;
     hr { clear:both }
     input { clear:left;float:left;margin-right:10px;display:block }
@@ -80,5 +85,36 @@ section#membership {
   .option {
     min-height:140px;
     margin:4px 2px;
+  }
+}
+
+section#book {
+  form { max-width:480px;float:left }
+
+  hr { border-top:solid 1px @lightblue;border-bottom:none }
+
+  .satisfaction {
+    height:120px;margin-bottom:20px;
+    border-top:solid 1px @lightblue;
+    border-bottom:solid 1px @lightblue;
+    img { float:left;max-width:20%;padding-top:10px;margin-right:10px }
+    p { float:left;max-width:72%;padding-top:26px }
+  }
+
+  .bookSummary {
+    padding:5px 20px;
+    hr { border-top:solid 1px @bluegray;border-bottom:none;width:94% }
+    text-align:center;
+    margin-top:20px;
+    background:@lightblue;
+    float:right;
+    width:222px;
+    .btn { width:100%;margin-bottom:10px }
+    div {
+      span { display:block;float:right;font-size:17px }
+      label { float:left;clear:left;padding-top:4px;font-size:14px }
+      height:24px;
+    }
+    .owe { color:@orange;font-weight:bold }
   }
 }
