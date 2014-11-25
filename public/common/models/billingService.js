@@ -10,7 +10,7 @@ angular.module('APSvcBilling', [])
 
   .service('BillingService', function($http, API) {
 
-    var fns = {
+    var billingFns = {
       getPaymethods(success, error) {
         $http.get(`${API}/billing/paymethods`).success(success).error(error)
       },
@@ -28,9 +28,23 @@ angular.module('APSvcBilling', [])
       },
       orderCredit(data, success, error) {
         $http.post(`${API}/billing/orders/credit/${data.paymethodId}`, data).success(success).error(error)
+      },
+      bookExpertWithCredit(data, success, error) {
+        $http.post(`${API}/bookings/credit/${data.expertId}`, data).success(success).error(error)
       }
     }
 
-    this.billing = fns;
+    this.billing = billingFns;
+
+    var expertFns = {
+      getForExpertsPage(success, error) {
+        $http.get(`${API}/experts`).success(success).error(error)
+      },
+      getById(data, success, error) {
+        $http.get(`${API}/experts/${data._id}`).success(success).error(error)
+      }
+    }
+
+    this.experts = expertFns;
 
   })

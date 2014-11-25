@@ -60,6 +60,11 @@ module.exports = -> describe "Booking: ", ->
           expect(booking1.minutes).to.equal(120)
           expect(booking1.orderId).to.exist
           GET "/billing/orders", {}, (orders1) ->
+            expect(orders1.length).to.equal(1)
+            expect(orders1[0].lineItems.length).to.equal(2)
+            expect(orders1[0].lineItems[0].type).to.equal('credit')
+            expect(orders1[0].lineItems[1].type).to.equal('airpair')
+            expect(orders1[0].lineItems[1]._id).to.exist
             lines1 = ordersUtil.linesWithCredit(orders1)
             availableCredit1 = ordersUtil.getAvailableCredit(lines1)
             expect(lines1.length).to.equal(1)

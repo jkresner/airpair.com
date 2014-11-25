@@ -1,4 +1,3 @@
-var util = require('../../shared/util')
 import Svc from './_service'
 import Order from '../models/order'
 import * as PayMethodSvc from './paymethods'
@@ -6,6 +5,7 @@ import * as UserSvc from './users'
 import * as Validate from '../../shared/validation/billing.js'
 var {linesWithCredit,getAvailableCredit} = require('../../shared/orders.js')
 var Data = require('./orders.data')
+var Util = require('../../shared/util')
 
 var logging = false
 var svc = new Svc(Order, logging)
@@ -16,29 +16,39 @@ var base = {
   'nda': 90,
 }
 
-function credit(paid, amount, expires, source)
-{
-  amount = parseInt(amount)
-  var info = { name: `$${amount} Credit`, source, remaining: amount, expires, redeemedLines: [] }
-  //-- profit on credit is always 0 because it is calculated in future line items
-  var profitAmount = 0
-  // var profitAmount = (paid) ? 0 : -1*amount
-  var paidAmount = (paid) ? amount : 0
-  return { type : 'credit', balance: amount, unitPrice: paidAmount, qty: 1, total: paidAmount, profit: profitAmount, info }
+
+var newLine = (type, qty, unitPrice, total, balance, profit, info) => {
+  return {_id: svc.newId(),type, qty, unitPrice, total, balance, profit, info}
 }
 
-function discount(coupon, amount, source, user)
-{
-  var info = { name: `Discount ($${amount})`, amount, coupon, source, appliedBy: { _id: user._id, name: user.name } }
-  return { type : 'discount', balance: 0, unitPrice: -1*amount, qty: 1, total:  -1*amount, profit:  -1*amount, info }
-}
 
-function airpair(expert, minutes, time, unitPrice, unitProfit)
-{
-  var qty = minutes / 60
-  var exp = { _id: expert._id, name: expert.name, avatar: expert.avatar }
-  var info = { name: `${minutes} min (${expert.name})`, time, minutes, paidout: false, expert: exp }
-  return { type : 'airpair', unitPrice: unitPrice, qty, total: qty*unitPrice, profit: qty*unitProfit, info }
+var Lines = {
+  credit(paid, amount, expires, source)
+  {
+    amount = parseInt(amount)
+    var info = { name: `$${amount} Credit`, source, remaining: amount, expires, redeemedLines: [] }
+    //-- profit on credit is always 0 because it is calculated on future line items
+    //-- When credit expires we add a new line item
+    var profit = 0       // ?? var profitAmount = (paid) ? 0 : -1*amount
+    var paidAmount = (paid) ? amount : 0
+    return newLine('credit',1,paidAmount,paidAmount,amount,profit,info)
+  },
+  discount(coupon, amount, source, user)
+  {
+    var unitPrice = -1*amount // (how much less they paid, also how much less we get)
+    var profit = unitPrice
+    //-- not sure maybe profit should be 0 ?? TODO come back and check
+    var info = { name: `Discount ($${amount})`, amount, coupon, source, appliedBy: { _id: user._id, name: user.name } }
+    return newLine('discount',1,unitPrice,unitPrice,0,profit,info)
+  },
+  airpair(expert, minutes, time, unitPrice, unitProfit)
+  {
+    var qty = minutes / 60
+    var total = qty*unitPrice
+    var exp = { _id: expert._id, name: expert.name, avatar: expert.avatar }
+    var info = { name: `${minutes} min (${expert.name})`, time, minutes, paidout: false, expert: exp }
+    return newLine('airpair',qty,unitPrice,total,-1*total,qty*unitProfit,info)
+  }
 }
 
 
@@ -118,7 +128,7 @@ export function buyMembership(length, coupon, payMethod, cb)
   if (inValid) return cb(svc.Forbidden(inValid))
 
   var total = (length == 12) ? 500 : 300
-  var expires = util.dateWithDayAccuracy(moment().add(6,'month'))
+  var expires = Util.dateWithDayAccuracy(moment().add(6,'month'))
 
   var lineItems = []
 
@@ -126,10 +136,10 @@ export function buyMembership(length, coupon, payMethod, cb)
     info: { name: 'Membership (6 mth)', expires }} )
 
   if (length == 12)
-    lineItems.push( credit(false, 500, expires, '12 Month Membership Promo') )
+    lineItems.push( Lines.credit(false, 500, expires, '12 Month Membership Promo') )
 
   if (coupon == "bestpair")
-    lineItems.push( discount("bestpair", 50, 'Membership Announcement Promo', this.user) )
+    lineItems.push( Lines.discount("bestpair", 50, 'Membership Announcement Promo', this.user) )
 
   createOrder.call(this, lineItems, payMethod, this.user._id, (e,r) => {
     if (e) return cb(e)
@@ -144,20 +154,20 @@ export function buyCredit(total, coupon, payMethod, cb)
   var inValid = Validate.buyCredit(this.user, coupon, total)
   if (inValid) return cb(svc.Forbidden(inValid))
 
-  var expires = util.dateWithDayAccuracy(moment().add(3,'month'))
+  var expires = Util.dateWithDayAccuracy(moment().add(3,'month'))
 
   var lineItems = []
-  lineItems.push(credit(true, total, expires, `$${total} Credit Purchase`))
+  lineItems.push(Lines.credit(true, total, expires, `$${total} Credit Purchase`))
 
   if (total == 1000)
-    lineItems.push(credit(false, 50, expires, `Credit Bonus (5% on $${total})`))
+    lineItems.push(Lines.credit(false, 50, expires, `Credit Bonus (5% on $${total})`))
   if (total == 3000)
-    lineItems.push(credit(false, 300, expires, `Credit Bonus (10% on $${total})`))
+    lineItems.push(Lines.credit(false, 300, expires, `Credit Bonus (10% on $${total})`))
   if (total == 5000)
-    lineItems.push(credit(false, 1000, expires, `Credit Bonus (20% on $${total})`))
+    lineItems.push(Lines.credit(false, 1000, expires, `Credit Bonus (20% on $${total})`))
 
   if (coupon == "letspair")
-    lineItems.push( discount("letspair", 100, 'Credit Announcement Promo', this.user) )
+    lineItems.push( Lines.discount("letspair", 100, 'Credit Announcement Promo', this.user) )
 
   createOrder.call(this, lineItems, payMethod, this.user._id, cb)
 }
@@ -165,10 +175,10 @@ export function buyCredit(total, coupon, payMethod, cb)
 
 export function giveCredit(toUserId, total, source, cb)
 {
-  var expires = util.dateWithDayAccuracy(moment().add(3,'month'))
+  var expires = Util.dateWithDayAccuracy(moment().add(3,'month'))
 
   var lineItems = []
-  lineItems.push(credit(false, total, expires, source))
+  lineItems.push(Lines.credit(false, total, expires, source))
 
   createOrder.call(this, lineItems, null, toUserId, cb)
 }
@@ -214,7 +224,7 @@ export function bookUsingCredit(expert, time, minutes, type, cb)
           var deducted = need
           if (li.info.remaining > need) {
             var orderIdWithLineItem = o._id
-            o.lineItems.push(airpair(expert, minutes, time, unitPrice, profit))
+            o.lineItems.push(Lines.airpair(expert, minutes, time, unitPrice, profit))
           }
           else
             deducted = li.info.remaining
@@ -241,7 +251,7 @@ export function bookUsingPAYG(expert, time, minutes, type, payMethod, cb)
   var profit = base[type] //-- Make this real
 
   var lineItems = []
-  lineItems.push(airpair(expert, minutes, time, unitPrice, profit))
+  lineItems.push(Lines.airpair(expert, minutes, time, unitPrice, profit))
 
   createOrder.call(this, lineItems, payMethod, this.user._id, (e,r) => cb(e,(r)?r._id:null))
 }

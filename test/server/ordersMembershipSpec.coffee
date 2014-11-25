@@ -13,7 +13,7 @@ module.exports = -> describe "Membership: ", ->
     done()
 
 
-  it 'Can create 6 month membership order', (done) ->
+  it.skip 'Can create 6 month membership order', (done) ->
     addAndLoginLocalUser 'evan', (s) ->
       d = type: 'braintree', token: braintree.Test.Nonces.Transactable, name: 'Default Card', makeDefault: true
       POST '/billing/paymethods', d, {}, (pm) ->
@@ -29,7 +29,7 @@ module.exports = -> describe "Membership: ", ->
             done()
 
 
-  it 'Can create 6 month membership order with coupon', (done) ->
+  it.skip 'Can create 6 month membership order with coupon', (done) ->
     addAndLoginLocalUser 'ahas', (s) ->
       d = type: 'braintree', token: braintree.Test.Nonces.Transactable, name: 'Default Card', makeDefault: true
       POST '/billing/paymethods', d, {}, (pm) ->
@@ -44,7 +44,7 @@ module.exports = -> describe "Membership: ", ->
           done()
 
 
-  it 'Can create 12 month membership order', (done) ->
+  it.skip 'Can create 12 month membership order', (done) ->
     addAndLoginLocalUser 'usha', (s) ->
       d = type: 'braintree', token: braintree.Test.Nonces.Transactable, name: 'Default Card', makeDefault: true
       POST '/billing/paymethods', d, {}, (pm) ->
@@ -59,7 +59,7 @@ module.exports = -> describe "Membership: ", ->
           done()
 
 
-  it 'Can create 12 month membership order with coupon', (done) ->
+  it.skip 'Can create 12 month membership order with coupon', (done) ->
     addAndLoginLocalUser 'uris', (s) ->
       d = type: 'braintree', token: braintree.Test.Nonces.Transactable, name: 'Default Card', makeDefault: true
       POST '/billing/paymethods', d, {}, (pm) ->

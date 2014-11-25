@@ -11,8 +11,12 @@ angular.module("APBillingDirectives", [])
     },
     controller($scope) {
       $scope.$parent.$watch('orders', function(val) {
-        $scope.transactions = ordersUtil.ordersToLinesWithRunningBalance($scope.orders)
-        $scope.balance = $scope.transactions[0].runningBalance
+        console.log('tras.watch.orders', val)
+        if (val.length > 0)
+        {
+          $scope.transactions = ordersUtil.ordersToLinesWithRunningBalance($scope.orders)
+          $scope.balance = $scope.transactions[0].runningBalance
+        }
       })
     }
   };

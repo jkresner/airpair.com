@@ -46,7 +46,8 @@
 
     <p class="buy">
       <a href="/billing/top-up" class="btn">Top-up</a>
-
+      or
+      <a href="/experts">Book an expert</a>
     </p>
 
     <h2>Billing info</h2>
@@ -56,8 +57,7 @@
 
   </div>
 
-  <div class="history" ng-if="orders">
-
+  <div class="history" ng-if="orders && orders.length > 0">
 
     <h2>History</h2>
 

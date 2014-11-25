@@ -4,6 +4,7 @@ module.exports = [
   '/v1',
   '/about',
   '/posts*',
+  '/experts',
   '*/posts*',
   '*/workshops*',
   '/billing*',
