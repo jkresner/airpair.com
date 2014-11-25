@@ -395,14 +395,14 @@ function toggleSessionItem(type, item, maxAnon, maxAuthd, comparator, cb)
 
 export function toggleTag(tag, cb) {
 	var tagId = tag._id
-	tag = { _id: svc.newId(), tagId: tag._id, sort: 0 }
+	tag = { _id: svc.newId().toString(), tagId: tag._id, sort: 0 }
 	var tagCompator = (i) => _.idsEqual(i.tagId, tagId)
 	toggleSessionItem.call(this, 'tags', tag, 3, 6, tagCompator, cb)
 }
 
 export function toggleBookmark(type, id, cb) {
 	if (!type) $log('toggleBookmark.type', type, cb)
-	var	bookmark = { _id: svc.newId(), objectId: id, type, sort: 0 }
+	var	bookmark = { _id: svc.newId().toString(), objectId: id, type, sort: 0 }
 	var bookmarkComparator = (i) => _.idsEqual(i.objectId,id)
 	toggleSessionItem.call(this, 'bookmarks', bookmark, 3, 15, bookmarkComparator, cb)
 }

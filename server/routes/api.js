@@ -55,8 +55,7 @@ export default function(app) {
     .post('/billing/orders/membership/:paymethod', OrdersAPI.buyMembership)
     .post('/billing/orders/credit/:paymethod', OrdersAPI.buyCredit)
 
-    .post('/bookings/credit/:expert', BookingsAPI.createWithCredit)
-    .post('/bookings/payg/:expert/:paymethod', BookingsAPI.createWithPAYG)
+    .post('/bookings/:expert', BookingsAPI.createBooking)
 
     .get('/experts/:id', ExpertsAPI.getById)
     .get('/experts', ExpertsAPI.getForExpertsPage)
