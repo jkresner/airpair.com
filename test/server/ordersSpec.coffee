@@ -13,10 +13,10 @@ module.exports = -> describe "Credit: ", ->
     done()
 
 
-  it '$500 credit purchase', (done) ->
+  it '500 credit purchase', (done) ->
     addAndLoginLocalUserWithPayMethod 'somr', (s) ->
-      o = total: 500
-      POST "/billing/orders/credit/#{s.primaryPayMethodId}", o, {}, (r) ->
+      o = total: 500, payMethodId: s.primaryPayMethodId
+      POST "/billing/orders/credit", o, {}, (r) ->
         threeMonth = moment(util.dateWithDayAccuracy(moment().add(3,'month'))).format('YYYY-MM-DD')
         expect(r._id).to.exist
         expect(_.idsEqual(r.userId, s._id)).to.be.true
@@ -37,30 +37,33 @@ module.exports = -> describe "Credit: ", ->
         done()
 
 
-  it.skip '$500 credit purchase with stripe', (done) ->
+  it.skip '500 credit purchase with stripe', (done) ->
 
 
-  it '$3000 credit purchase with 10% extra', (done) ->
+  it '1000 credit purchase with 5% extra', (done) ->
     addAndLoginLocalUserWithPayMethod 'soik', (s) ->
-      o = total: 3000
-      POST "/billing/orders/credit/#{s.primaryPayMethodId}", o, {}, (r) ->
+      o = total: 1000, payMethodId: s.primaryPayMethodId
+      POST "/billing/orders/credit", o, {}, (r) ->
         expect(r._id).to.exist
         expect(r.lineItems.length).to.equal(2)
         expect(r.lineItems[0].type).to.equal('credit')
-        expect(r.lineItems[0].info.name).to.equal('$3000 Credit')
-        expect(r.lineItems[0].info.source).to.equal('$3000 Credit Purchase')
+        expect(r.lineItems[0].info.name).to.equal('$1000 Credit')
+        expect(r.lineItems[0].info.source).to.equal('$1000 Credit Purchase')
         expect(r.lineItems[1].type).to.equal('credit')
-        expect(r.lineItems[1].info.name).to.equal('$300 Credit')
-        expect(r.lineItems[1].info.source).to.equal('Credit Bonus (10% on $3000)')
-        expect(r.total).to.equal(3000)
+        expect(r.lineItems[1].info.name).to.equal('$50 Credit')
+        expect(r.lineItems[1].info.source).to.equal('Credit Bonus (5% on $1000)')
+        expect(r.total).to.equal(1000)
         expect(r.profit).to.equal(0)
         done()
 
 
-  it '$5000 credit purchase with 20% extra and coupon discount', (done) ->
+  it.skip '3000 credit purchase with declined card', (done) ->
+    addAndLoginLocalUserWithPayMethod 'acob', (s) ->
+
+  it '5000 credit purchase with 20% extra and coupon discount', (done) ->
     addAndLoginLocalUserWithPayMethod 'kelf', (s) ->
-      o = total: 5000, coupon: 'letspair'
-      POST "/billing/orders/credit/#{s.primaryPayMethodId}", o, {}, (r) ->
+      o = total: 5000, payMethodId: s.primaryPayMethodId, coupon: 'letspair'
+      POST "/billing/orders/credit", o, {}, (r) ->
         threeMonth = moment(util.dateWithDayAccuracy(moment().add(3,'month'))).format('YYYY-MM-DD')
         expect(r._id).to.exist
         expect(r.lineItems.length).to.equal(3)

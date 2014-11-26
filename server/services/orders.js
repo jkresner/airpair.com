@@ -24,7 +24,8 @@ var base = {
 
 export function getMyOrders(cb)
 {
-  svc.searchMany({userId:this.user._id}, null, cb)
+  var opts = { options: { sort: { 'utc': 1 } } }
+  svc.searchMany({userId:this.user._id}, opts, cb)
 }
 
 
@@ -78,7 +79,7 @@ var Lines = {
     var info = { name: `Discount ($${amount})`, amount, coupon, source, appliedBy: { _id: user._id, name: user.name } }
     return newLine('discount',1,unitPrice,unitPrice,0,profit,info)
   },
-  airpair(expert, minutes, time, unitPrice, unitProfit)
+  airpair(expert, time, minutes, unitPrice, unitProfit)
   {
     var qty = minutes / 60
     var total = qty*unitPrice
@@ -91,14 +92,15 @@ var Lines = {
 
 //-- Create the order object without saving anything
 //-- Use the lineItems, paymethod and who the orders is for
-function makeOrder(byUser, lineItems, payMethod, forUserId)
+function makeOrder(byUser, lineItems, payMethodId, forUserId, errorCB, cb)
 {
   var byUserId = svc.idFromString(byUser._id)
+  forUserId = (forUserId) ? svc.idFromString(forUserId) : byUserId
 
   var o = {
     _id: svc.newId(),
     utc: new Date(),
-    userId: forUserId || byUserId, // May be different from the identity (which could be an admin)
+    userId: forUserId, // May be different from the identity (which could be an admin)
     total: 0,
     profit: 0,
     lineItems: lineItems,
@@ -115,34 +117,42 @@ function makeOrder(byUser, lineItems, payMethod, forUserId)
     o.profit += li.profit
   }
 
-  if (o.total == 0) o.payment = { type: '$0 order' }
+  if (o.total == 0)
+  {
+    o.payment = { type: '$0 order' }
+    cb(null, o)
+  }
   else
   {
-    o.payMethodId = payMethod._id // TODO: consider/test what happens if we delete a payMethod?
+    PayMethodSvc.getById.call({user:byUser}, payMethodId, (e,payMethod) => {
+      if (e || !payMethod) return errorCB(e || `Could not find paymethod ${payMethodId}`)
 
-    if (payMethod.companyId)
-    {
-      //-- NOTE need to think through companyId meaning shared card?
-      //-- SHouldn't all cards have a companyId and be able to be shared
-      //-- theoretically
-      o.by.companyId = payMethod.companyId
-      // o.by.company: payMethod.info
-    }
+      o.payMethod = payMethod // only for passing around, the object won't get saved to db
+      o.payMethodId = payMethod._id // TODO: consider/test what happens if we delete a payMethod?
+      if (payMethod.companyId)
+      {
+        //-- NOTE need to think through companyId meaning shared card?
+        o.by.companyId = payMethod.companyId
+      }
+
+      cb(null, o)
+    })
   }
-
-  return o
 }
 
 
-function chargeAndTrackOrder(o, payMethod, errorCB, saveCB)
+function chargeAndTrackOrder(o, errorCB, saveCB)
 {
   if (o.total == 0) saveCB(null, o)
   else
   {
-    if (logging) $log('orders.svc.charge', o.lineItems)
-    PayMethodSvc.charge(o.total, o._id, payMethod, (e,r) => {
-      if (e) return errorCB(e)
-      if (logging) $log('payment.created', r)
+    if (logging) $log('orders.svc.charge', o)
+    PayMethodSvc.charge(o.total, o._id, o.payMethod, (e,r) => {
+      if (e) {
+        $log('e', e)
+        return errorCB(e)
+      }
+      // if (logging) $log('payment.created', r)
       // trackOrderPayment.call(this, o)
       var { id, status, total, orderId, createdAt, processorAuthorizationCode} = r.transaction
       o.payment = { id, status, total, orderId, createdAt, processorAuthorizationCode}
@@ -153,25 +163,24 @@ function chargeAndTrackOrder(o, payMethod, errorCB, saveCB)
 
 
 //-- Assumes we have added the linesItems already
-function updateOrder(o, cb) {
-  o.total = 0;
-  o.profit = 0;
+// function updateOrder(o, cb) {
+//   o.total = 0;
+//   o.profit = 0;
 
-  for (var li of o.lineItems)
-  {
-    o.total += li.total
-    o.profit += li.profit
-  }
+//   for (var li of o.lineItems)
+//   {
+//     o.total += li.total
+//     o.profit += li.profit
+//   }
 
-  logging = true
-  if (logging) $log('orders.svc.update', o.lineItems, o.total)
-  // trackOrderUpdate.call(this, o)
-  svc.update(o, cb)
-}
+//   logging = true
+//   if (logging) $log('orders.svc.update', o.lineItems, o.total)
+//   // trackOrderUpdate.call(this, o)
+//   svc.update(o, cb)
+// }
 
 
-
-export function buyCredit(total, coupon, payMethod, cb)
+export function buyCredit(total, coupon, payMethodId, cb)
 {
   total = parseInt(total)
   var inValid = Validate.buyCredit(this.user, coupon, total)
@@ -181,6 +190,7 @@ export function buyCredit(total, coupon, payMethod, cb)
 
   var lineItems = []
   lineItems.push(Lines.credit(true, total, expires, `$${total} Credit Purchase`))
+
 
   if (total == 1000)
     lineItems.push(Lines.credit(false, 50, expires, `Credit Bonus (5% on $${total})`))
@@ -192,8 +202,11 @@ export function buyCredit(total, coupon, payMethod, cb)
   if (coupon == "letspair")
     lineItems.push( Lines.discount("letspair", 100, 'Credit Announcement Promo', this.user) )
 
-  var order = makeOrder(this.user, lineItems, payMethod)
-  chargeAndTrackOrder(order, payMethod, cb, (e,o) => svc.create(o, cb))
+
+  makeOrder(this.user, lineItems, payMethodId, null, cb, (e, order) => {
+    // $log('buyCredit.order', order)
+    chargeAndTrackOrder(order, cb, (e,o) => svc.create(o, cb))
+  })
 }
 
 
@@ -204,61 +217,43 @@ export function giveCredit(toUserId, total, source, cb)
   var lineItems = []
   lineItems.push(Lines.credit(false, total, expires, source))
 
-  var order = makeOrder(this.user, lineItems, null, toUserId)
-  chargeAndTrackOrder(order, null, cb, (e,o) => svc.create(o, cb))
+  makeOrder(this.user, lineItems, null, toUserId, cb, (e, order) =>
+    chargeAndTrackOrder(order, cb, (e,o) => svc.create(o, cb))
+  )
 }
 
 
-
-export function createBookingOrder(expert, time, minutes, type, credit, paymethodId, cb)
+export function createBookingOrder(expert, time, minutes, type, credit, payMethodId, cb)
 {
   var unitPrice = OrderUtil.calculateUnitPrice(expert,type)
+  var unitProfit = OrderUtil.calculateUnitProfit(expert, type)
   var total = minutes/60 * unitPrice
+  var lineItems = [Lines.airpair(expert, time, minutes, unitPrice, unitProfit)]
 
-  if (!credit || credit==0) bookUsingPAYG.call(this, expert, time, minutes, type, paymethodId, cb)
-  else if (credit >= total) bookUsingCredit.call(this, expert, time, minutes, type, cb)
-  else {
-    // var unitProfit = calculateUnitProfit(expert)
+  if (credit && credit > 0)
+  {
+    bookUsingCredit.call(this, expert, minutes, total, lineItems, credit, payMethodId, cb)
+  }
+  else
+  {
+    lineItems.unshift(Lines.payg(total))
+    makeOrder(this.user, lineItems, payMethodId, null, cb, (e, order) => {
+      chargeAndTrackOrder(order, cb, (e,o) => svc.create(o, cb))
+    })
   }
 }
 
 
-export function bookUsingPAYG(expert, time, minutes, type, payMethodId, cb)
+export function bookUsingCredit(expert, minutes, total, lineItems, expectedCredit, payMethodId, cb)
 {
-  PayMethodSvc.getById.call(this, payMethodId, (e,payMethod) => {
-    if (e || !payMethod) return cb(`Could not find paymethod ${payMethodId}`)
-
-    // console.log('expert', expert)
-    var profit = OrderUtil.calculateUnitProfit(expert, type)
-    var unitPrice = OrderUtil.calculateUnitPrice(expert,type)
-    var total = minutes/60 * unitPrice
-
-    var lineItems = []
-    lineItems.push(Lines.payg(total))
-    lineItems.push(Lines.airpair(expert, minutes, time, unitPrice, profit))
-
-    var order = makeOrder(this.user, lineItems, payMethod)
-    chargeAndTrackOrder(order, payMethod, cb, (e,o) => svc.create(o, cb))
-  })
-}
-
-
-export function bookUsingCredit(expert, time, minutes, type, cb)
-{
-  var profit = OrderUtil.calculateUnitProfit(expert, type)
-  var unitPrice = OrderUtil.calculateUnitPrice(expert,type)
-  var total = minutes/60 * unitPrice
-
-
   getOrdersWithCredit(this.user._id, (e, orders) => {
     var lines = OrderUtil.linesWithCredit(orders)
     var availablCredit = OrderUtil.getAvailableCredit(lines)
-    if (availablCredit < total)
-      return cb(Error(`Not enough credit ${availablCredit} for booking ${expert.name} for ${minutes} minutes @ ${total}`))
+    if (expectedCredit != availablCredit)
+      return cb(Error(`ExpectedCredit $${expectedCredit}, not found. ${availablCredit} found.`))
 
     var need = total
     var ordersToUpdate = []
-    var lineItems = []
     for (var o of orders) {
       for (var li of o.lineItems) {
         if (need > 0 && li.type == 'credit' && li.info.remaining > 0)
@@ -268,29 +263,33 @@ export function bookUsingCredit(expert, time, minutes, type, cb)
             deducted = li.info.remaining
 
           var redeemedLine = Lines.redeemedcredit(deducted, li)
-          lineItems.push(redeemedLine)
+          lineItems.unshift(redeemedLine)
           li.info.remaining = li.info.remaining - deducted
           li.info.redeemedLines.push({ lineItemId: redeemedLine._id, amount: deducted, partial: deducted!=need })
 
           ordersToUpdate = _.union(ordersToUpdate,[o._id])
 
           need = need - deducted
-          if (need == 0)
-            lineItems.push(Lines.airpair(expert, minutes, time, unitPrice, profit))
         }
       }
     }
 
-    // console.log('bookUsingCredit', lineItems)
-    var order = makeOrder(this.user, lineItems, null)
-    // console.log('order', order)
+    if (need > 0) {
+      lineItems.unshift(Lines.payg(need))
+    }
+
     ordersToUpdate = _.map(ordersToUpdate, (id) => _.find(orders,(o)=> _.idsEqual(o._id, id) ) )
 
-    chargeAndTrackOrder(order, null, cb, (e,o) => {
-      console.log('inserting', order.total, order._id, order.userId)
-      svc.updateAndInsertOneBulk(ordersToUpdate, o, (e,r) => cb(e,o))
-    })
+    // $log('bookUsingCredit.payMethodId', payMethodId)
+    // $log('bookUsingCredit.lineItems', lineItems)
 
+    // console.log('bookUsingCredit', lineItems)
+    makeOrder(this.user, lineItems, payMethodId, null, cb, (e, order) => {
+      chargeAndTrackOrder(order, cb, (e,o) => {
+        // console.log('inserting cred redeemed order', order.total, order._id, order.userId)
+        svc.updateAndInsertOneBulk(ordersToUpdate, o, (e,r) => cb(e,o))
+      })
+    })
   })
 }
 

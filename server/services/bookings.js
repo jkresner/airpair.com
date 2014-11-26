@@ -38,7 +38,7 @@ function create(e, r, user, expert, time, minutes, type, cb) {
 
 export function createBooking(expert, time, minutes, type, credit, paymethodId, cb)
 {
-  var createCB = (e, r) => { $log('got order'.yellow); $log('got order', r._id); create(e, r, this.user, expert, time, minutes, type, cb) }
+  var createCB = (e, r) => create(e, r, this.user, expert, time, minutes, type, cb)
   OrdersSvc.createBookingOrder.call(this, expert, time, minutes, type, credit, paymethodId, createCB)
 }
 

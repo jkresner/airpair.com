@@ -21,7 +21,7 @@ module.exports = {
   },
 
   options: {
-    ordersByDate: { sort: { 'utc': -1 } }
+    ordersByDate: { sort: { 'utc': 1 } }
   }
 
 }
