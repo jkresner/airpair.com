@@ -176,7 +176,7 @@ module.exports = {
       if (!r) {
       	var {v1AirPair,migrateES6,sessionDeepDive,sessionDeepDive2} = data.posts
         var bulk = Post.collection.initializeOrderedBulkOp()
-	    	for (var t of [v1AirPair,migrateES6,sessionDeepDive,sessionDeepDive2]) { bulk.insert(t) }
+	    	for (var t of [v1AirPair,migrateES6,sessionDeepDive,]) { bulk.insert(t) }
 	    	bulk.execute(done)
 	    	cache.flush('posts')
       }
