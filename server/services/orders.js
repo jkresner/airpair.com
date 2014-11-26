@@ -53,6 +53,7 @@ var newLine = (type, qty, unitPrice, total, balance, profit, info) => {
 var Lines = {
   credit(paid, total, expires, source)
   {
+    total = parseInt(total)
     var info = { name: `$${total} Credit`, source, remaining: total, expires, redeemedLines: [] }
     //-- profit on credit is always 0 because it is calculated on future line items
     //-- When credit expires we add a new line item
@@ -182,7 +183,6 @@ function chargeAndTrackOrder(o, errorCB, saveCB)
 
 export function buyCredit(total, coupon, payMethodId, cb)
 {
-  total = parseInt(total)
   var inValid = Validate.buyCredit(this.user, coupon, total)
   if (inValid) return cb(svc.Forbidden(inValid))
 

@@ -44,12 +44,15 @@ angular.module("APPaymentDirectives", ['angularLoad','APSvcBilling'])
 
                   var err = (e) => console.log(e)
                   var suc = (r) => {
-                    console.log('$scope.creditAmount', $scope.creditAmount)
+                    // console.log('$scope.creditAmount', $scope.creditAmount)
                     if ($scope.creditAmount)
-                      BillingService.billing.orderCredit({total:parseInt($scope.creditAmount),paymethodId:r._id}, $scope.orderSuccess, err)
+                      BillingService.billing.orderCredit({total:parseInt($scope.creditAmount),payMethodId:r._id}, $scope.orderSuccess, err)
 
                     if (!$scope.paymethods) $scope.paymethods = [r]
                     else $scope.paymethods = _.union($scope.paymethods,[r])
+
+                    //-- Annoying why parent scope isn't picking up...
+                    if ($scope.setPayMethods) $scope.setPayMethods($scope.paymethods)
                   }
 
                   BillingService.billing.addPaymethod(pm, suc, err)

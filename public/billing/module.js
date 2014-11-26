@@ -74,10 +74,11 @@ angular.module("APBilling", ['ngRoute','APFormsDirectives','APPaymentDirectives'
       if (val == 'alacart')
         $scope.creditAmount = null
       else
-        $scope.creditAmount = "3000"
+        $scope.creditAmount = "1000"
 
       $scope.choice = val
     }
+    $scope.setPayMethods = function(val) { $scope.paymethods = val } // This is dumb
 
     $scope.setSubmitCardText = function(val) { submitPaymentText.getText($scope, val) }
 
@@ -93,12 +94,12 @@ angular.module("APBilling", ['ngRoute','APFormsDirectives','APPaymentDirectives'
       if (r.btoken) $location.path("/billing")
       else {
         $scope.paymethods = r
-        $scope.paymethodId = r[0]._id
+        $scope.payMethodId = r[0]._id
       }
     }, err)
 
 
-    $scope.creditAmount = "3000"
+    $scope.creditAmount = "1000"
     $scope.coupon = ""
     $scope.setSubmitCardText = function(val) { submitPaymentText.getText($scope, val) }
     $scope.$watch("creditAmount", $scope.setSubmitCardText)
@@ -108,8 +109,8 @@ angular.module("APBilling", ['ngRoute','APFormsDirectives','APPaymentDirectives'
       {
         var success = () => $location.path("/billing")
 
-        var {coupon,paymethodId} = $scope
-        BillingService.billing.orderCredit({total:parseInt($scope.creditAmount),paymethodId,coupon}, success, err)
+        var {coupon,payMethodId} = $scope
+        BillingService.billing.orderCredit({total:parseInt($scope.creditAmount),payMethodId,coupon}, success, err)
       }
     }
   })
@@ -129,7 +130,7 @@ angular.module("APBilling", ['ngRoute','APFormsDirectives','APPaymentDirectives'
 
   })
 
-  .controller('BillingBookExpertCtrl', function($scope, $routeParams, BillingService) {
+  .controller('BillingBookExpertCtrl', function($scope, $routeParams, $location, BillingService) {
 
     $scope.booking = {
       minutes: 120,
@@ -145,14 +146,14 @@ angular.module("APBilling", ['ngRoute','APFormsDirectives','APPaymentDirectives'
       else if ($scope.booking.type == "nda") hrRate = hrRate + 90
       $scope.hrRate = hrRate
       $scope.total = hrRate * $scope.booking.minutes/60
-      console.log('$scope.hrRate', $scope.hrRate, $scope.booking.type)
+      //console.log('$scope.hrRate', $scope.hrRate, $scope.booking.type)
 
-      if ($scope.credit > $scope.total) {
+      if ($scope.booking.credit > $scope.total) {
         $scope.owe = 0
-        $scope.remainingCredit = $scope.credit - $scope.total
+        $scope.remainingCredit = $scope.booking.credit - $scope.total
       }
       else {
-        $scope.owe = $scope.total - $scope.credit
+        $scope.owe = $scope.total - $scope.booking.credit
       }
     }
 
@@ -165,28 +166,25 @@ angular.module("APBilling", ['ngRoute','APFormsDirectives','APPaymentDirectives'
     BillingService.billing.getMyOrdersWithCredit((r) => {
       $scope.orders = r
       // console.log(OrdersUtil.linesWithCredit(r))
-      $scope.credit = OrdersUtil.getAvailableCredit(OrdersUtil.linesWithCredit(r))
+      $scope.booking.credit = OrdersUtil.getAvailableCredit(OrdersUtil.linesWithCredit(r))
 
-      // console.log('$scope.credit', $scope.credit)
+      // console.log('credit', $scope.booking.credit)
       $scope.calcSummary()
 
-      if ($scope.credit == 0) {
-        BillingService.billing.getPaymethods((r) => {
-          if (r.btoken) $location.path("/billing")
-          else {
-            $scope.paymethods = r
-            $scope.booking.paymethodId = r[0]._id
-          }
-        }, () => {})
-      }
+      BillingService.billing.getPaymethods((r) => {
+        if (r.btoken) $location.path("/billing")
+        else {
+          $scope.paymethods = r
+          $scope.booking.payMethodId = r[0]._id
+        }
+      }, () => {})
+
     }, () => {})
 
     $scope.$watch('booking.minutes', $scope.calcSummary)
 
     $scope.submit = function() {
-      if ($scope.remainingCredit >= 0) {
-        BillingService.billing.bookExpertWithCredit($scope.booking, (r) => $location.path("/billing"), () => {})
-      }
+      BillingService.billing.bookExpert($scope.booking, (r) => $location.path("/billing"), () => {})
     }
 
   })
