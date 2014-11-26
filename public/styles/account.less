@@ -27,31 +27,49 @@ section#account {
 
    span.verifyEmail { color:@error;font-size:11px;float:right }
 
-   section.email {
+  section.email {
     vertical-align:top;
     min-height:130px;
-   }
 
-   div.email-group {
-   	height:100px;
-   	float:left;
-   	width:300px;
-   	margin-right:50px;
-   }
+    form {
+      border-radius:5px;
+      width:100%;
+      hr { clear:both;border:none }
+    }
+    form.verify
+    {
+      padding:30px 20px;
+      background:@lightblue;
 
-   div.verifyEmail {
-   	height:90px;
-   	padding:10px 60px;
-   	background:@lightblue;
-   	border-radius:5px;
-   	float:left;
-   	width:400px;
-   	text-align:center;
-   }
+      div.email-group {
+       	float:left;
+       	width:320px;
+      }
 
-   .btn { width:280px }
+      div.verifyEmail {
+        height:90px;
+        padding:26px 5px;
+        float:left;
+        width:380px;
+        text-align:center;
+        a { width:340px }
+      }
 
-   .password .btn { margin-bottom:20px }
+      .alert-success {
+        height:100px;
+        padding:5px;
+        div {
+          padding:20px;
+        }
+      }
+
+    }
+
+
+    .btn { width:280px }
+
+    .password .btn { margin-bottom:20px }
+  }
 }
 
 
