@@ -109,7 +109,7 @@ module.exports = function(env, appdir) {
       publishedKey: process.env.PAYMENTS_STRIPE_PUBLISHEDKEY,
       secretKey: process.env.PAYMENTS_STRIPE_SECRETKEY
     }
-    cfg.braintree.braintree = {
+    cfg.payments.braintree = {
       environment: 'Production',
       verifyCards: false,
       merchantId: process.env.PAYMENTS_BRAINTREE_MERCHANTID,
