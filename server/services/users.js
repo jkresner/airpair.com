@@ -538,12 +538,14 @@ export function verifyEmail(hash, cb) {
 export function search(searchTerm, cb) {
   var opts = { options: { limit: 4 }, fields: UserData.select.search }
   var rex = new RegExp(searchTerm, "i")
-  var query = searchTerm ? { '$or' : [{name : rex},{'google.displayName' : rex}] } : null;
+  var query = searchTerm ? { '$or' : [{email : rex},{name : rex},{'google.displayName' : rex},{'google._json.email' : rex}] } : null;
   svc.searchMany(query, opts, (e,r) =>{
     for (var u of r)
     {
-      if (!u.email && u.google._json.email) u.email = u.google._json.email
-      if (!u.name && u.google.displayName) u.name = u.google.displayName
+      if (u.google) {
+        if (!u.email && u.google._json.email) u.email = u.google._json.email
+        if (!u.name && u.google.displayName) u.name = u.google.displayName
+      }
       u = setAvatar(u);
     }
     cb(e,r)
