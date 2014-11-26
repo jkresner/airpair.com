@@ -4,8 +4,7 @@ var resolver = require('./../common/routes/helpers.js').resolveHelper;
 
 angular.module("APProfile", ['ngRoute', 'APFilters', 'APSvcSession', 'APTagInput'])
 
-  .config(['$locationProvider', '$routeProvider',
-      function($locationProvider, $routeProvider) {
+  .config(function($locationProvider, $routeProvider) {
 
     var authd = resolver(['session']);
 
@@ -26,22 +25,22 @@ angular.module("APProfile", ['ngRoute', 'APFilters', 'APSvcSession', 'APTagInput
       resolve: authd
     });
 
-  }])
+  })
 
-  .run(['$rootScope', 'SessionService', function($rootScope, SessionService) {
+  .run(function($rootScope, SessionService) {
 
-  }])
+  })
 
 
-  .controller('AccountCtrl', ['$rootScope', '$scope', '$location', 'SessionService',
-    function($rootScope, $scope, $location, SessionService) {
+  .controller('AccountCtrl', function($rootScope, $scope, $location, SessionService) {
 
       var self = this;
 
       if ($location.search().verify)
       {
         SessionService.verifyEmail({hash:$location.search().verify}, function(result){
-          $scope.emailAlerts = [{ type: 'success', msg: `${$scope.session.email} verified !` }]
+          $scope.emailAlerts = [{ type: 'success', msg: `${$scope.session.email} verified ! <b>Next step, go to <a href="/billing">BILLING</a></b>` }]
+          $location.path("/billing")
         }, function(e){
           $scope.emailAlerts = [{ type: 'danger', msg: `${e} failed` }]
         })
@@ -101,11 +100,10 @@ angular.module("APProfile", ['ngRoute', 'APFilters', 'APSvcSession', 'APTagInput
       })
     };
 
-  }])
+  })
 
   //-- this will be refactored out of the posts module
-  .controller('ProfileCtrl', ['$scope', 'PostsService', '$routeParams',
-    function($scope, PostsService, $routeParams) {
+  .controller('ProfileCtrl', function($scope, PostsService, $routeParams) {
 
       $scope.username = $routeParams.username;
 
@@ -113,12 +111,11 @@ angular.module("APProfile", ['ngRoute', 'APFilters', 'APSvcSession', 'APTagInput
         $scope.posts = posts;
       });
 
-  }])
+  })
 
 
   //-- this will be refactored out of the posts module
-  .controller('PasswordCtrl', ['$scope', '$routeParams', '$location', 'SessionService',
-    function($scope, $routeParams, $location, SessionService) {
+  .controller('PasswordCtrl', function($scope, $routeParams, $location, SessionService) {
 
       $scope.alerts = []
 
@@ -136,6 +133,6 @@ angular.module("APProfile", ['ngRoute', 'APFilters', 'APSvcSession', 'APTagInput
       if (!$scope.data.hash)
         $scope.alerts.push({ type: 'danger', msg: `Password token expired` })
 
-  }])
+  })
 
 ;

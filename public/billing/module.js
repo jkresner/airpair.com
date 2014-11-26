@@ -46,6 +46,7 @@ angular.module("APBilling", ['ngRoute','APFormsDirectives','APPaymentDirectives'
       // console.log('SubmitPaymentText', val)
       if (!val || val == "") scope.cardSubmitText = "Save card for later"
       else if (val == "500") scope.cardSubmitText = "Pay $500, get $500 Credit"
+      else if (val == "1000") scope.cardSubmitText = "Pay $1000, get $1050 Credit"
       else if (val == "3000") scope.cardSubmitText = "Pay $3000, get $3300 Credit"
       else if (val == "5000") scope.cardSubmitText = "Pay $5000, get $6000 Credit"
     }
