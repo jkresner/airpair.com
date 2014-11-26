@@ -11,15 +11,19 @@ require('./../v1/lib/prism/prism.js');
 require('./../v1/lib/jquery-ui/jquery-ui.js');
 require('./../common/directives/share.js');
 require('./../common/directives/post.js');
+require('./../common/directives/experts.js');
 require('./../common/directives/tagInput.js');
 require('./../common/directives/userInput.js');
 require('./../common/directives/sideNav.js');
 require('./../common/directives/bookmarker.js');
 require('./../common/directives/analytics.js');
 require('./../common/directives/forms.js');
+require('./../common/directives/payment.js');
+require('./../common/directives/notifications.js');
 require('./../common/filters/filters.js');
 require('./../common/models/postsService.js');
 require('./../common/models/sessionService.js');
+require('./../common/models/billingService.js');
 require('./../common/pageHelpers.js');
 require('./../auth/module.js');
 require('./../posts/module.js');
@@ -27,7 +31,8 @@ require('./../workshops/module.js');
 require('./../billing/module.js');
 require('./../profile/module.js');
 
-angular.module("AP", ['ngRoute', 'APSideNav', 'APAuth', 'APPosts', 'APWorkshops', 'APProfile', 'APBilling'])
+angular.module("AP", ['ngRoute', 'APSideNav', 'APAuth', 'APPosts', 'APWorkshops', 'APProfile',
+  'APBilling', 'APNotifications'])
 
   .config(function($locationProvider, $routeProvider) {
 
@@ -43,6 +48,10 @@ angular.module("AP", ['ngRoute', 'APSideNav', 'APAuth', 'APPosts', 'APWorkshops'
 
     $routeProvider.when('/', {
       template: require('../about.html')
+    });
+
+    $routeProvider.when('/angularjs/pair-programming', {
+      template: require('../sales/angular.html')
     });
 
   })

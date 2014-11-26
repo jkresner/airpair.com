@@ -174,9 +174,9 @@ module.exports = {
   {
     Post.findOne({slug:'starting-a-mean-stack-app'}, function(e,r) {
       if (!r) {
-      	var {v1AirPair,migrateES6,sessionDeepDive} = data.posts
+      	var {v1AirPair,migrateES6,sessionDeepDive,sessionDeepDive2} = data.posts
         var bulk = Post.collection.initializeOrderedBulkOp()
-	    	for (var t of [v1AirPair,migrateES6,sessionDeepDive]) { bulk.insert(t) }
+	    	for (var t of [v1AirPair,migrateES6,sessionDeepDive,]) { bulk.insert(t) }
 	    	bulk.execute(done)
 	    	cache.flush('posts')
       }
