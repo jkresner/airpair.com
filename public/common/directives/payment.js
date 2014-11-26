@@ -22,10 +22,10 @@ angular.module("APPaymentDirectives", ['angularLoad','APSvcBilling'])
             // console.log('setup', $scope.client)
             $scope.card = {
               cardholderName: $scope.session.name,
-              number:"4111111111111111",
-              expirationMonth:"12",
-              expirationYear: 2016,
-              cardNickName: "Personal united visa"
+              number:"",//"4111111111111111",
+              expirationMonth:"", //"12",
+              expirationYear: 2015,
+              cardNickName: "" //"Personal united visa"
             }
 
             // console.log('card', $scope.card)

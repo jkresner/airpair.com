@@ -1,8 +1,9 @@
 import Svc from './_service'
 import * as Validate from '../../shared/validation/billing.js'
 import PayMethod from '../models/paymethod'
-import * as Braintree from './wrappers/braintree'
 import * as UserSvc from './users'
+import * as Braintree from './wrappers/braintree'
+var Stripe = require('./wrappers/stripe')
 var Settings = require('../models/v0').Settings
 
 
@@ -27,7 +28,7 @@ export function charge(amount, orderId, payMethod, cb) {
   if (payMethod.type == 'braintree')
     Braintree.chargeWithMethod(amount, orderId, payMethod.info.token, cb)
   else if (payMethod.type == 'stripe')
-    return cb(`stripe not yet implemented`)
+    Stripe.createCharge(amount, orderId, payMethod.info.id, cb)
   else
     return cb(`${payMethod.type} not supported a payment type`)
 }
