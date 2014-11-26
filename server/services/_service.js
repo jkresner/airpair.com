@@ -30,8 +30,11 @@ export default function(model, logging)
       return e
     },
     newId: () => {
-			return new require('mongoose').Types.ObjectId().toString()
-		},
+      return new require('mongoose').Types.ObjectId()
+    },
+    idFromString: (id) => {
+      return require('mongoose').Types.ObjectId(id.toString())
+    },
     searchMany: searchMany,
     searchOne: searchOne,
     getAll: (cb) => { searchMany({}, null, cb) },
@@ -55,17 +58,25 @@ export default function(model, logging)
       })
     },
     updateBulk: (list, cb) => {
-    	var bulk = model.collection.initializeOrderedBulkOp()
-    	for (var item of list) {
-				bulk.find({_id:item._id}).updateOne(item)
-    	}
-    	bulk.execute(cb)
+      var bulk = model.collection.initializeOrderedBulkOp()
+      for (var item of list) {
+        bulk.find({_id:item._id}).updateOne(item)
+      }
+      bulk.execute(cb)
+    },
+    updateAndInsertOneBulk: (updateList, insert, cb) => {
+      var bulk = model.collection.initializeOrderedBulkOp()
+      bulk.insert(insert)
+      for (var item of updateList) {
+        bulk.find({_id:item._id}).updateOne(item)
+      }
+      bulk.execute(cb)
     },
     deleteById: (id, cb) => {
       if (!id) return cb(new Error('Cannot delete object by null id'), null)
       model.findByIdAndRemove(id, (e) => {
         if (e) $log('svc.delete.error', id, e)
-				if (logging) $log('svc.delete', id)
+        if (logging) $log('svc.delete', id)
         if (cb) cb(e)
       })
     }

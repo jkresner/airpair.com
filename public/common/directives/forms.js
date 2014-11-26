@@ -1,7 +1,7 @@
 
 angular.module("APFormsDirectives", [])
 
-  .directive('formGroup', [function() {
+  .directive('formGroup', function() {
 
     return {
 
@@ -52,9 +52,9 @@ angular.module("APFormsDirectives", [])
       }
     };
 
-  }])
+  })
 
-  .directive('formControl', [function() {
+  .directive('formControl', function() {
 
     return {
 
@@ -93,6 +93,6 @@ angular.module("APFormsDirectives", [])
     //-- $viewValue vs $modelValue
     // -- $viewValue updates when you type,
     //-- $modelValue only update when all validations pass
-  }])
+  })
 
 ;

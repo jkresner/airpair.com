@@ -14,7 +14,7 @@ function storage(k, v) {
 
 angular.module("APSideNav", ['ui.bootstrap','APSvcSession', 'APTagInput'])
 
-  .directive('sideNav', ['$rootScope', '$modal', 'SessionService', function($rootScope, $modal, SessionService) {
+  .directive('sideNav', function($rootScope, $modal, SessionService) {
     return {
       template: require('./sideNav.html'),
       link: function(scope, element, attrs) {
@@ -99,10 +99,10 @@ angular.module("APSideNav", ['ui.bootstrap','APSvcSession', 'APTagInput'])
       }
     };
 
-  }])
+  })
 
 
-  .directive('sortable', ['SessionService', function(SessionService) {
+  .directive('sortable', function(SessionService) {
     return {
       link: function(scope, element, attrs) {
         $(element).sortable({
@@ -122,12 +122,10 @@ angular.module("APSideNav", ['ui.bootstrap','APSvcSession', 'APTagInput'])
         $(element).disableSelection();
       }
     }
-  }])
+  })
 
 
-  .controller('StackCtrl', ['$scope', '$modalInstance', '$window', 'SessionService',
-    function($scope, $modalInstance, $window, SessionService) {
-
+  .controller('StackCtrl', function($scope, $modalInstance, $window, SessionService) {
 
     $scope.sortSuccess = function() {}
     $scope.sortFail = function() {}
@@ -135,11 +133,10 @@ angular.module("APSideNav", ['ui.bootstrap','APSvcSession', 'APTagInput'])
     $scope.ok = () => $modalInstance.close();
     $scope.cancel = () => $modalInstance.dismiss('cancel');
 
-  }])
+  })
 
 
-  .controller('BookmarksCtrl', ['$scope', '$modalInstance', '$window', 'SessionService',
-    function($scope, $modalInstance, $window, SessionService) {
+  .controller('BookmarksCtrl', function($scope, $modalInstance, $window, SessionService) {
 
     $scope.sortSuccess = function() {}
     $scope.sortFail = function() {}
@@ -147,11 +144,10 @@ angular.module("APSideNav", ['ui.bootstrap','APSvcSession', 'APTagInput'])
     $scope.ok = () => $modalInstance.close();
     $scope.cancel = () => $modalInstance.dismiss('cancel');
 
-  }])
+  })
 
 
-  .controller('ProileCtrl', ['$scope', '$rootScope', '$modalInstance', '$window', '$timeout', 'SessionService',
-    function($scope, $rootScope, $modalInstance, $window, $timeout, SessionService) {
+  .controller('ProileCtrl', function($scope, $rootScope, $modalInstance, $window, $timeout, SessionService) {
 
     $scope.data = { email: $scope.session.email, name: $scope.session.name }
 
@@ -187,6 +183,7 @@ angular.module("APSideNav", ['ui.bootstrap','APSvcSession', 'APTagInput'])
         SessionService.signup(data,
           (result) => {
           //$modalInstance.close();
+          $timeout(() => { window.location = '/me'}, 250)
         },
           (e) => $scope.signupFail = e.error
         )
@@ -195,6 +192,6 @@ angular.module("APSideNav", ['ui.bootstrap','APSvcSession', 'APTagInput'])
 
     $scope.cancel = () => $modalInstance.dismiss('cancel');
 
-  }])
+  })
 
 ;

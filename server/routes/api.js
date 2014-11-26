@@ -15,7 +15,6 @@ export default function(app) {
   var router = require('express').Router()
 
     .param('tag', TagsAPI.paramFns.getBySlug)
-    .param('paymethod', PaymethodsAPI.paramFns.getById)
     .param('expert', ExpertsAPI.paramFns.getById)
 
     .get('/session/full', setAnonSessionData, UsersAPI.getSessionFull)
@@ -45,18 +44,20 @@ export default function(app) {
 
     .get('/workshops/', WorkshopsAPI.getAll)
     .get('/workshops/:id', WorkshopsAPI.getBySlug)
+    .get('/billing/paymethods', PaymethodsAPI.getMyPaymethods)
 
     .use(authd) //-- swap out for email verify or something
-    .get('/billing/paymethods', PaymethodsAPI.getMyPaymethods)
     .post('/billing/paymethods', PaymethodsAPI.addPaymethod)
     .delete('/billing/paymethods/:id', PaymethodsAPI.deletePaymethod)
     .get('/billing/orders', emailv, OrdersAPI.getMyOrders)
     .get('/billing/orders/credit', OrdersAPI.getMyOrdersWithCredit)
-    .post('/billing/orders/membership/:paymethod', OrdersAPI.buyMembership)
-    .post('/billing/orders/credit/:paymethod', OrdersAPI.buyCredit)
+    .post('/billing/orders/credit', OrdersAPI.buyCredit)
+    // .post('/billing/orders/membership/:paymethod', OrdersAPI.buyMembership)
 
-    .post('/bookings/credit/:expert', BookingsAPI.createWithCredit)
-    .post('/bookings/payg/:expert/:paymethod', BookingsAPI.createWithPAYG)
+    .post('/bookings/:expert', BookingsAPI.createBooking)
+
+    .get('/experts/:id', ExpertsAPI.getById)
+    .get('/experts', ExpertsAPI.getForExpertsPage)
 
 
   var admrouter = require('express').Router()
@@ -65,6 +66,7 @@ export default function(app) {
     .get('/users/role/:role', UsersAPI.getUsersInRole)
     .put('/users/:id/role/:role', UsersAPI.toggleUserInRole)
     .get('/users/search/:id', UsersAPI.search)
+    .post('/billing/orders/credit', OrdersAPI.giveCredit)
     .get('/redirects', RedirectsAPI.getAllRedirects)
     .post('/redirects', RedirectsAPI.createRedirect)
     .delete('/redirects/:id', RedirectsAPI.deleteRedirectById)

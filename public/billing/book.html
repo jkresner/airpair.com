@@ -1,0 +1,75 @@
+<header><a href="/billing">Billing</a> > <a href="/experts">Experts</a> > Book</header>
+
+<section id="book">
+
+  <section id="schedule">
+
+    <form id="bookForm" novalidate name="bookForm" ng-submit="submit(bookForm.$valid, data)">
+      <h2>Book {{expert.name}}</h2>
+      <hr />
+
+<!--       <div class="form-group">
+        <label class="control-label" for="paymethod">Pay with</label>
+        <select class="form-control" id="payMethodId" name="payMethodId" ng-model="payMethodId">
+          <option ng-repeat="p in paymethods" value="{{p._id}}">{{p.name}}</option>
+        </select>
+      </div> -->
+
+      <!-- <div class="form-group">
+        <input name="type" ng-model="booking.type" type="radio" value="private">
+        <span>Keep Private</span>
+        <em ng-if="booking.type == 'private'"></em>
+
+        <input name="type" ng-model="booking.type" type="radio" value="opensource">
+        <span>Open Source</span>
+        <em ng-if="booking.type == 'opensource'">$20 discount /hr</em>
+      </div>
+ -->
+      <div class="form-group">
+        <input name="type" ng-model="booking.minutes" type="radio" value="60">
+        <span>1 HR &nbsp &nbsp &nbsp &nbsp</span>
+
+        <input name="type" ng-model="booking.minutes" type="radio" value="120">
+        <span>2 HRS &nbsp &nbsp &nbsp &nbsp</span>
+
+        <input name="type" ng-model="booking.minutes" type="radio" value="180">
+        <span>3 HRS &nbsp &nbsp &nbsp &nbsp</span>
+
+        <input name="type" ng-model="booking.minutes" type="radio" value="300">
+        <span>5 HRS &nbsp &nbsp &nbsp &nbsp</span>
+      </div>
+
+      <div class="form-group">
+        <label class="control-label" for="when">When</label>
+        <p>We will try find a time to get you on AirPair with {{ expert.name }}</p>
+      </div>
+
+      <section class="satisfaction">
+        <img src="/v1/img/css/satisfaction.png" />
+        <p>Remember, you are covered by AirPair's satisfaction guarantee; if you aren't satisfied with your session, we will either make it right or give you a full refund.</p>
+      </section>
+
+      <a href="/experts" class="btn">Cancel</a>
+
+    </form>
+
+    <section class="bookSummary">
+      <h3>Your Order</h3>
+      <hr />
+      <div><label>HOURLY</label> <span>${{hrRate}}</span></div>
+      <div><label>HOURS</label> <span>{{booking.minutes/60}}</span></div>
+      <hr />
+      <div><label>TOTAL</label> <span>${{total}}</span></div>
+      <div><label>CREDIT</label> <span>${{booking.credit}}</span></div>
+      <hr />
+      <div><label>You Owe</label> <span class="owe">${{owe}}</span></div>
+      <hr />
+      <input type="submit" id="submit" value="Confirm" class="btn" ng-click="submit()">
+      <p ng-if="!remainingCredit">Your card will be ${{ owe}}</p>
+      <p ng-if="remainingCredit >= 0">Remaining credit will be ${{remainingCredit}}</p>
+    </section>
+
+  </section>
+
+</section>
+

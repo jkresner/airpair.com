@@ -132,9 +132,7 @@ angular.module("APPosts", ['ngRoute', 'APFilters','APShare',
   }])
 
 
-  .controller('PublishCtrl', ['$scope', 'PostsService', '$routeParams',
-    'session',
-    function($scope, PostsService, $routeParams, session) {
+  .controller('PublishCtrl', function($scope, PostsService, $routeParams, session) {
 
     $scope.post = { tags: [] };
 
@@ -229,11 +227,10 @@ angular.module("APPosts", ['ngRoute', 'APFilters','APShare',
       $scope.post.tags = _.without($scope.post.tags, tag);
     };
 
-  }])
+  })
 
 //-- this will be refactored out of the posts module
-.controller('ProfileCtrl', ['$scope', 'PostsService', '$routeParams', 'session',
-  function($scope, PostsService, $routeParams, session) {
+.controller('ProfileCtrl', function($scope, PostsService, $routeParams, session) {
 
     $scope.username = $routeParams.username;
 
@@ -241,6 +238,6 @@ angular.module("APPosts", ['ngRoute', 'APFilters','APShare',
       $scope.posts = posts;
     });
 
-  }])
+  })
 
 ;

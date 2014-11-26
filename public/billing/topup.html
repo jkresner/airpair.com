@@ -1,0 +1,34 @@
+<header><a href="/billing">Billing</a> > Top-up</header>
+
+<section id="billing">
+
+  <section id="topup">
+
+    <h1>Top-up</h1>
+
+    <form id="creditForm" novalidate name="creditForm" ng-submit="submit(creditForm.$valid, data)">
+
+      <div class="form-group">
+        <label class="control-label" for="payMethodId">Pay with</label>
+        <select class="form-control" id="payMethodId" name="payMethodId" ng-model="payMethodId">
+          <option ng-repeat="p in paymethods" value="{{p._id}}">{{p.name}}</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="control-label" for="topupCoupon">Coupon <i>* optional</i></label>
+        <input class="form-control" id="topupCoupon" name="topupCoupon" ng-model="coupon" type="text">
+      </div>
+
+      <br /><br />
+      <payment-credit></payment-credit>
+
+      <input type="submit" id="submit" value="{{cardSubmitText}}" class="btn">
+      <a href="/billing" class="btn">Cancel</a>
+
+    </form>
+
+  </section>
+
+
+</section>

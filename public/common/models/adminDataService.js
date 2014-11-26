@@ -38,4 +38,8 @@ angular.module('APSvcAdmin', [])
       $http.delete(`${APIAdm}/redirects/${id}`).success(success).error(lazyErrorCb);
     }
 
+    this.giveCredit = function(data, success, error) {
+      $http.post(`${APIAdm}/billing/orders/credit`, data).success(success).error(error)
+    }
+
   }])

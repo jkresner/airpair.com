@@ -58,6 +58,12 @@ angular.module('APFilters', [])
     }
   })
 
+  .filter('html', function ($sce) {
+    return (html) => {
+      return $sce.trustAsHtml(html)
+    }
+  })
+
   .filter('fancyTags', function () {
     return function(tags) {
       if (!tags) { return ''; }
