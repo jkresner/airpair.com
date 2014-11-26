@@ -153,7 +153,7 @@ module.exports = () => {
       })
     })
 
-    describe("Sssions are NOT stored and NO views are created", function() {
+    describe("Sessions are NOT stored and NO views are created", function() {
 
       describe("For known bots", function() {
 
