@@ -27,10 +27,10 @@ angular.module('APSvcBilling', [])
         $http.get(`${API}/billing/orders/credit`).success(success).error(lazyErrorCb);
       },
       orderCredit(data, success, error) {
-        $http.post(`${API}/billing/orders/credit/${data.paymethodId}`, data).success(success).error(error)
+        $http.post(`${API}/billing/orders/credit`, data).success(success).error(error)
       },
-      bookExpertWithCredit(data, success, error) {
-        $http.post(`${API}/bookings/credit/${data.expertId}`, data).success(success).error(error)
+      bookExpert(data, success, error) {
+        $http.post(`${API}/bookings/${data.expertId}`, data).success(success).error(error)
       }
     }
 

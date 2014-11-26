@@ -35,7 +35,7 @@
       <td>{{t.qty}}</td>
       <td style="{{ (t.unitPrice == 0) ? 'color:white': '' }}"> {{t.unitPrice}}</td>
       <td style="{{ (t.unitPrice == 0) ? 'color:white': '' }}"> {{t.total}}</td>
-      <td style="text-align:right" ng-class="{'plus': t.balance > 0, 'minus': t.balance < 0}">+ {{t.balance}}</td>
+      <td style="text-align:right" ng-class="{'plus': t.balance > 0, 'minus': t.balance < 0}"><span ng-if="t.balance>0">+</span>{{t.balance}}</td>
       <td style="text-align:right">${{t.runningBalance}}</td>
     </tr>
   </tbody>
