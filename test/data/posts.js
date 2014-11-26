@@ -1,6 +1,6 @@
 module.exports = {
 
-	v1AirPair: {
+  v1AirPair: {
     "_id" : "5418ce50cfe1720b004bd08b",
     "assetUrl" : "http://youtu.be/wLzS0YC4TXw",
     "by" : {
@@ -44,9 +44,9 @@ module.exports = {
     ],
     "title" : "Starting a Mean Stack App",
     "updated" : "2014-10-15T15:47:55.999Z"
-	},
+  },
 
-	migrateES6: {
+  migrateES6: {
     "_id" : "541a212ddada9a0b009c6356",
     "__v" : 0,
     "assetUrl" : "http://i.huffpost.com/gen/1164240/thumbs/o-GRUMPY-CAT-MOVIE-facebook.jpg",
@@ -86,9 +86,9 @@ module.exports = {
     ],
     "title" : "Migrating CoffeeScript to ES6 JavaScript",
     "updated" : "2014-09-23T19:15:34.035Z"
-	},
+  },
 
-	sessionDeepDive: {
+  sessionDeepDive: {
     "_id" : "541a36c3535a850b00b05697",
     "__v" : 0,
     "assetUrl" : "http://airpair.github.io/img/2014/10/passportjs.png",
@@ -135,7 +135,49 @@ module.exports = {
     ],
     "title" : "ExpressJS and PassportJS Sessions Deep Dive",
     "updated" : "2014-10-16T14:26:46.408Z"
-	}
+  },
 
+  sessionDeepDive2: {
+    "_id" : "541a36c3535a850b00b05698",
+    "assetUrl" : "http://airpair.github.io/img/2014/10/passportjs.png",
+    "by" : {
+        "userId" : "5175efbfa3802cc4d5a5e6ed",
+        "avatar" : "//0.gravatar.com/avatar/19183084115c4a79d34cdc3110adef37",
+        "twitter" : {},
+        "stack" : {},
+        "name" : "Jonathon Kresner",
+        "linkedin" : {},
+        "google" : {},
+        "github" : {},
+        "bitbucket" : {},
+        "bio" : "Jonathon Kresner is AirPair's CEO and Founder. He conceived AirPair to help developers build ideas faster and stay un-stuck. He's decided to put AirPair to the test, by rebuilding airpair.com from scratch in 90 days with daily help from the best AngularJS, NodeJS and MongoDB experts on the web.",
+        "username" : "hackerpreneur"
+    },
+    "created" : "2014-09-19T01:34:59.747Z",
+    "md" : "## Test",
+    "meta" : {
+        "title" : "ExpressJS and PassportJS Sessions Deep Dive",
+        "canonical" : "http://www.airpair.com/express/posts/expressjs-and-passportjs-sessions-deep-dive",
+        "ogType" : "article",
+        "ogTitle" : "ExpressJS and PassportJS Sessions Deep Dive",
+        "ogVideo" : null,
+        "ogUrl" : "http://www.airpair.com/express/posts/expressjs-and-passportjs-sessions-deep-dive",
+        "description" : "Misunderstanding ExpressJS Sessions and how PassportJS works can lead to millions of un-necessary database reads and writes. This deep time will keep you out of trouble.",
+        "ogDescription" : "Misunderstanding ExpressJS Sessions and how PassportJS works can lead to millions of un-necessary database reads and writes. This deep time will keep you out of trouble.",
+        "ogImage" : "http://airpair.github.io/img/2014/10/passportjs.png"
+    },
+    "published" : moment("2014-09-24T19:17:23.161Z").toDate(),
+    "publishedBy" : "5175efbfa3802cc4d5a5e6ed",
+    "slug" : "test-post",
+    "tags" : [
+        {
+            "_id" : "5181e12e66a6f999a465f282",
+            "name" : "passport",
+            "slug" : "passport"
+        }
+    ],
+    "title" : "PassportJS Sessions Deep Dive",
+    "updated" : "2014-10-16T14:26:46.408Z"
+  }
 
 }
