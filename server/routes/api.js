@@ -15,7 +15,6 @@ export default function(app) {
   var router = require('express').Router()
 
     .param('tag', TagsAPI.paramFns.getBySlug)
-    .param('paymethod', PaymethodsAPI.paramFns.getById)
     .param('expert', ExpertsAPI.paramFns.getById)
 
     .get('/session/full', setAnonSessionData, UsersAPI.getSessionFull)
@@ -52,8 +51,8 @@ export default function(app) {
     .delete('/billing/paymethods/:id', PaymethodsAPI.deletePaymethod)
     .get('/billing/orders', emailv, OrdersAPI.getMyOrders)
     .get('/billing/orders/credit', OrdersAPI.getMyOrdersWithCredit)
-    .post('/billing/orders/membership/:paymethod', OrdersAPI.buyMembership)
-    .post('/billing/orders/credit/:paymethod', OrdersAPI.buyCredit)
+    .post('/billing/orders/credit', OrdersAPI.buyCredit)
+    // .post('/billing/orders/membership/:paymethod', OrdersAPI.buyMembership)
 
     .post('/bookings/:expert', BookingsAPI.createBooking)
 

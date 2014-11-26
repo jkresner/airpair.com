@@ -34,6 +34,9 @@ module.exports = {
   chup: { name:"Chris Upton",email:"chrisupton@hotmail.com" },
   chiu: { name:"Chris Upton",email:"chirsitup@gmail.com" },
 
+  ajac: { name:"Adam Jacobs",email:"adamjay@hotmail.com" },
+  acob: { name:"Adam Jacobs",email:"adamcobbs@gmail.com" },
+
 	cmck: { name:"Chris McKnight",email:"chrismcknight@gmail.com" },
 	ckni: { name:"Chris McKnight",email:"cknight@hotmail.com" },
 	jpie: { name:"Jason Pierce ",email:"jasonpierce@gmail.com" },

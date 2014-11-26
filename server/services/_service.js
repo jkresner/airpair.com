@@ -66,7 +66,6 @@ export default function(model, logging)
     },
     updateAndInsertOneBulk: (updateList, insert, cb) => {
       var bulk = model.collection.initializeOrderedBulkOp()
-      console.log('updateAndInsertOneBulk', insert._id)
       bulk.insert(insert)
       for (var item of updateList) {
         bulk.find({_id:item._id}).updateOne(item)

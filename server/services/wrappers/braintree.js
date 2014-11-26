@@ -29,11 +29,12 @@ export function getClientToken(cb) {
 
 
 export function chargeWithMethod(amount, orderId, paymentMethodToken, cb) {
+  // $log('chargeWithMethod', amount, orderId, paymentMethodToken)
   gateway.transaction.sale({
     amount, //'10.00',
     orderId,
     paymentMethodToken
-  }, cb)
+  }, (e,r) => { cb(e,r) })
 }
 
 
