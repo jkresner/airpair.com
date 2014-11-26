@@ -1,4 +1,4 @@
-var session = require('express-session')
+var expressSession = require('express-session')
 var cookieParser = require('cookie-parser')
 var bodyParser = require('body-parser')
 var passport = require('passport')
@@ -8,7 +8,7 @@ var logging = false
 // takes a delegate to initalize a store that could be Mongo / Redis etc.x
 export default function(app, initSessionStore)
 {
-  initSessionStore( session, (sessionStore) => {
+  initSessionStore( expressSession, (sessionStore) => {
     // Passport does not directly manage your session, it only uses the session.
     // So you configure session attributes (e.g. life of your session) via express
     var sessionOpts = {

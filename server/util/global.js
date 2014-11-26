@@ -10,7 +10,7 @@ module.exports = function(config)
   global.$log           = console.log
   global.$error         = require('./logging').logError
 
-  global.sessions       = require('../identity/sessionMiddleware')
+  global.sessions       = require('../identity/session/middleware')
 
   if (config.analytics.on)
     global.analytics    = require('./../identity/analytics/analytics')

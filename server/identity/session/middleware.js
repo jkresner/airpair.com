@@ -1,4 +1,4 @@
-var util = require('../../shared/util')
+var util = require('../../../shared/util')
 var uid = require('uid-safe').sync
 
 var generateSessionID = () => {
