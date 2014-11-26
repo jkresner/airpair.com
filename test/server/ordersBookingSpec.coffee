@@ -64,6 +64,7 @@ module.exports = -> describe "Booking: ", ->
             expect(orders1.length).to.equal(2)
             expect(orders1[0].total).to.equal(500)
             expect(orders1[0].lineItems.length).to.equal(1)
+            expect(orders1[0].payment.type).to.equal('braintree')
             expect(orders1[0].payment.status).to.equal('authorized')
             expect(orders1[0].lineItems[0].type).to.equal('credit')
             expect(orders1[0].lineItems[0].total).to.equal(500)
