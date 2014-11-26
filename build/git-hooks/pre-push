@@ -1,0 +1,14 @@
+#!/bin/sh
+#test_port=$(coffee -e 'console.log require("./config").config.overrides.test.server.port')
+#test_pid=$(lsof -n -P -i "4TCP:${test_port}" -s TCP:LISTEN | tail -1 | awk '{print $2}')
+#if [[ -n "${test_pid}" ]]; then
+#  echo "Test app already running. Killing process ${test_pid} and restarting"
+#  kill "${test_pid}"
+#fi
+exec mocha test/server/bootstrap.coffee
+#success=$?
+# if [[ ${success} == "0" ]]; then
+  # mocha-phantomjs "http://localhost:${test_port}/test/index.html"
+  # success=$?
+# fi
+#exit "${success}"
