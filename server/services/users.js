@@ -188,6 +188,8 @@ export function tryLocalLogin(email, password, done) {
 	if (this.user && this.user._id)
 		done(Error(`Cannot login. Already signed in as ${user.name}. Logout first?`),null)
 
+  email = email.toLowerCase()
+
 	var search = { '$or': [{email:email},{'google._json.email':email}] }
 
 	svc.searchOne(search, null, (e, r) => {
