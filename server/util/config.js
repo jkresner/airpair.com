@@ -4,8 +4,8 @@ var cfg = {
   mongoUri: process.env.MONGOHQ_URL || "mongodb://localhost/airpair_dev",
   session: { secret: 'airyv1' },
   analytics: {
-		on: false,
-		segmentio: { writekey: '9793xyfxat' }
+    on: false,
+    segmentio: { writekey: '9793xyfxat' }
   },
   auth: {
     loginUrl: '/v1/auth/login',
@@ -20,8 +20,8 @@ var cfg = {
       clientID: '1019727294613-rjf83l9dl3rqb5courtokvdadaj2dlk5.apps.googleusercontent.com',
       clientSecret: 'Kd6ceFORVbABH7p5UbKURexZ',
       scope: [
-      	'profile',
-      	'email',
+        'profile',
+        'email',
         'https://www.googleapis.com/auth/plus.profile.emails.read'
       ]
     }
@@ -35,20 +35,24 @@ var cfg = {
   },
   log: {},
   mail: {
-  	on: false, // we don't send mail in dev
+    on: false, // we don't send mail in dev
     ses: {
       access_key: process.env.MAIL_SES_ACCESS_KEY || "none",
       secret_key: process.env.MAIL_SES_SECRET_KEY || "none"
     }
   },
   payments: {
-  	braintree: {
-  		environment: 'Sandbox',
-  		verifyCards: false,
-  		merchantId: 'chkr49r8yxk5y65p',
-  		publicKey: '3pwpby7rrfdr3x3m',
-  		privateKey: '7d5586d4be9ba9e36daebfa814f0584a'
-  	}
+    braintree: {
+      environment: 'Sandbox',
+      verifyCards: false,
+      merchantId: 'chkr49r8yxk5y65p',
+      publicKey: '3pwpby7rrfdr3x3m',
+      privateKey: '7d5586d4be9ba9e36daebfa814f0584a'
+    },
+    stripe: {
+      publishedKey: 'pk_test_aj305u5jk2uN1hrDQWdH0eyl',
+      secretKey: 'sk_test_8WOe71OlRWPyB3rDRcnthSCc'
+    }
   },
   redirects: { on: false }
 }
@@ -63,7 +67,7 @@ module.exports = function(env, appdir) {
   // cfg.analytics.segmentio. writekey = '0xxx5xrw5q'
 
   if (cfg.env == 'test') {
-  	cfg.mail.on = false   // always leave this off
+    cfg.mail.on = false   // always leave this off
     cfg.analytics.on = true
     cfg.analytics.segmentio. writekey = '9793xyfxat'
     cfg.port = 4444
@@ -100,7 +104,20 @@ module.exports = function(env, appdir) {
       sesTo:          process.env.LOG_EMAIL_RECEIVERS.split(','),
       sesSubject:     process.env.LOG_EMAIL_SUBJECT || 'aperror'
     }
+
+    cfg.payments.stripe = {
+      publishedKey: process.env.PAYMENTS_STRIPE_PUBLISHEDKEY,
+      secretKey: process.env.PAYMENTS_STRIPE_SECRETKEY
+    }
+    cfg.payments.braintree = {
+      environment: 'Production',
+      verifyCards: false,
+      merchantId: process.env.PAYMENTS_BRAINTREE_MERCHANTID,
+      publicKey: process.env.PAYMENTS_BRAINTREE_PUBLICKEY,
+      privateKey: process.env.PAYMENTS_BRAINTREE_PRIVATEKEY,
+    }
   }
+
 
   return cfg;
 }

@@ -49,7 +49,7 @@ export default function(app) {
     .use(authd) //-- swap out for email verify or something
     .post('/billing/paymethods', PaymethodsAPI.addPaymethod)
     .delete('/billing/paymethods/:id', PaymethodsAPI.deletePaymethod)
-    .get('/billing/orders', emailv, OrdersAPI.getMyOrders)
+    .get('/billing/orders', OrdersAPI.getMyOrders)  //emailv,
     .get('/billing/orders/credit', OrdersAPI.getMyOrdersWithCredit)
     .post('/billing/orders/credit', OrdersAPI.buyCredit)
     // .post('/billing/orders/membership/:paymethod', OrdersAPI.buyMembership)

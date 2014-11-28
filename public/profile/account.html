@@ -3,7 +3,7 @@
 
   <section class="email">
 
-  <form id="emailForm" novalidate name="emailForm" ng-submit="submit(emailForm.$valid, data)">
+  <form id="emailForm" novalidate name="emailForm" ng-submit="submit(emailForm.$valid, data)" ng-class="(session.emailVerified) ? '' : 'verify'">
 
     <div form-group class="email-group verified-{{session.emailVerified}}">
       <label class="control-label" for="sessionEmail">Contact email</label>
@@ -16,15 +16,14 @@
       <span class="verifyEmail" ng-if="session.emailVerified == false">{{session.email}} is unverified ...</span>
     </div>
     <div class="verifyEmail" ng-if="session.emailVerified == false">
-      Verify your email for billing
       <a href="#" ng-click="sendVerificationEmail()" class="btn">Send verification email</a>
     </div>
-    <div class="verifyEmail" style="background:white">
-      <alert ng-repeat="alert in emailAlerts" type="{{alert.type}}">{{alert.msg}}</alert>
+    <div>
+      <alert ng-repeat="alert in emailAlerts" type="{{alert.type}}"><span ng-bind-html="alert.msg | html"></span></alert>
     </div>
+    <hr />
   </form>
   </section>
-  <hr />
 
 
   <section class="avatar">
@@ -66,7 +65,8 @@
 
   </form>
 
-  <alert ng-repeat="alert in profileAlerts" type="{{alert.type}}">{{alert.msg}}</alert>
+  <alert ng-repeat="alert in profileAlerts" type="{{alert.type}}"><span ng-bind-html="alert.msg | html"></span></alert>
+
   </div>
 
   </section>
@@ -76,7 +76,7 @@
     <h3 style="margin-top:0">Password</h3>
     <p>To set your password, we will send an email to {{ session.email }}.</p>
     <a href="#" ng-click="sendPasswordChange()" class="btn">Send reset password email</a>
-    <alert ng-repeat="alert in passwordAlerts" type="{{alert.type}}">{{alert.msg}}</alert>
+    <alert ng-repeat="alert in passwordAlerts" type="{{alert.type}}"><span ng-bind-html="alert.msg | html"></span></alert>
   </section>
 
 </section>
