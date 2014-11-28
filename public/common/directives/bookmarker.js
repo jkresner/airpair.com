@@ -1,7 +1,7 @@
 angular.module("APBookmarker", ['APSvcSession'])
 
 
-.directive('bookmarkerlist', ['SessionService', function(SessionService) {
+.directive('bookmarkerlist', function(SessionService, bookmarkerAnimation) {
 
   return {
     link: function(scope, element, attrs) {
@@ -14,29 +14,28 @@ angular.module("APBookmarker", ['APSvcSession'])
         })
       });
 
-      alert('asd');
       window.toggleBookmark = function(e) {
-        var $elem = $(e)
-        var objectId = $elem.data('id')
-        var type = $elem.data('type')
+        var $elem = $(e);
+        var objectId = $elem.data('id');
+        var type = $elem.data('type');
 
-        var success = function(result) {
-          //-- Update the
-          if ($elem.attr('src') == "/v1/img/css/bookmarked.png")
-            $elem.attr('src', "/v1/img/css/bookmark.png")
-          else
-            $elem.attr('src', "/v1/img/css/bookmarked.png")
-
-        }
-        var error = function(result) {
-          console.log('bookmarked.error', result)
-        }
         SessionService.updateBookmark({ type:type, objectId:objectId }, success, error);
+
+        function success(result) {
+          if ($elem.attr('src') == "/v1/img/css/bookmarked.png") { //remove bookmark
+            $elem.attr('src', "/v1/img/css/bookmark.png");
+          } else { //add bookmark
+            $elem.attr('src', "/v1/img/css/bookmarked.png");
+            bookmarkerAnimation.active($elem);
+          }
+        }
+
+        function error() {}
       }
     }]
   };
 
-}])
+})
 
 .factory('BookmarkerService',
   ['SessionService', '$rootScope', function(SessionService, $rootScope) {
@@ -76,10 +75,39 @@ angular.module("APBookmarker", ['APSvcSession'])
   }
 }])
 
-.directive('bookmarker',
-         ['BookmarkerService', 'SessionService', '$document', '$animate',
-  function(BookmarkerService,   SessionService,   $document,   $animate) {
+.factory('bookmarkerAnimation', function($animate, $document, $rootScope) {
+  var body = angular.element($document[0].body);
+  return {
+    active : function(element) {
+      var node = element[0] ? element[0] : element;
+      element = angular.element(element);
+      var clone = angular.element(node.cloneNode(true));
+      body.append(clone);
 
+      var start = element.offset();
+
+      var destination = $('#navBookmarksToggle');
+      var end = destination.offset();
+
+      clone.addClass('bookmark-animation');
+      $animate.leave(clone, {
+        from : {
+          position: 'absolute',
+          left: start.left,
+          top: start.top
+        },
+        to: {
+          left: end.left,
+          top: end.top
+        }
+      });
+
+      !$rootScope.$$phase && $rootScope.$digest();
+    }
+  }
+})
+
+.directive('bookmarker', function(BookmarkerService, SessionService, bookmarkerAnimation) {
   return {
     restrict: 'EA',
     template:  require('./bookmarker.html'),
@@ -100,38 +128,17 @@ angular.module("APBookmarker", ['APSvcSession'])
       };
 
       ctrl.toggle = function(objectId, type) {
-        if (!authenticated) return;
         BookmarkerService.toggle(objectId, type, function(status) {
           $scope.$evalAsync(status ? ctrl.onActive : ctrl.onInactive);
         });
       }
     }],
     link : function(scope, element, attrs, bookmarker) {
-      var body = angular.element($document[0].body);
       bookmarker.onActive = function() {
-        var clone = angular.element(element[0].cloneNode(true));
-        body.append(clone);
-
-        var start = element.offset();
-
-        var destination = $('#navBookmarksToggle');
-        var end = destination.offset();
-
-        clone.addClass('bookmark-animation');
-        $animate.leave(clone, {
-          from : {
-            position: 'absolute',
-            left: start.left,
-            top: start.top
-          },
-          to: {
-            left: end.left,
-            top: end.top
-          }
-        });
+        bookmarkerAnimation.active(element);
       };
       bookmarker.onInactive = function() {};
     }
   };
 
-}]);
+});
