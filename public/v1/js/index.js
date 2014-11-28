@@ -438,6 +438,7 @@ angular.module("APBookmarker", ['APSvcSession']).directive('bookmarkerlist', ["S
       body.append(clone);
       var start = element.offset();
       var destination = $('#navBookmarksToggle');
+      var counter = destination.find('i');
       var end = destination.offset();
       clone.addClass('bookmark-animation');
       $animate.leave(clone, {
@@ -450,6 +451,9 @@ angular.module("APBookmarker", ['APSvcSession']).directive('bookmarkerlist', ["S
           left: end.left,
           top: end.top
         }
+      }).then(function() {
+        $animate.animate(counter, null, null, 'bounce');
+        !$rootScope.$$phase && $rootScope.$digest();
       });
       !$rootScope.$$phase && $rootScope.$digest();
     }};
