@@ -110,6 +110,68 @@ module.exports = {
 		}
   },
 
+  payMethods: {
+    testStripe: {
+      "_id" : "54761b10f624144898f94d7a",
+      "info" : {
+          "object" : "customer",
+          "created" : 1404415342,
+          "id" : "cus_4Kvew1gjYgXWZd",
+          "livemode" : true,
+          "description" : null,
+          "email" : "jk@airpair.com",
+          "delinquent" : false,
+          "subscriptions" : {
+              "object" : "list",
+              "total_count" : 0,
+              "has_more" : false,
+              "url" : "/v1/customers/cus_4Kvew1gjYgXWZd/subscriptions",
+              "data" : [],
+              "count" : 0
+          },
+          "discount" : null,
+          "account_balance" : 0,
+          "currency" : null,
+          "cards" : {
+              "object" : "list",
+              "total_count" : 1,
+              "has_more" : false,
+              "url" : "/v1/customers/cus_4Kvew1gjYgXWZd/cards",
+              "data" : [
+                  {
+                      "id" : "card_4KveLkAqT0rs0P",
+                      "object" : "card",
+                      "last4" : "4925",
+                      "brand" : "Visa",
+                      "funding" : "credit",
+                      "exp_month" : 4,
+                      "exp_year" : 2017,
+                      "fingerprint" : "MR0HO4NuvjtLvhjr",
+                      "country" : "US",
+                      "name" : null,
+                      "address_line1" : null,
+                      "address_line2" : null,
+                      "address_city" : null,
+                      "address_state" : null,
+                      "address_zip" : null,
+                      "address_country" : null,
+                      "cvc_check" : "pass",
+                      "address_line1_check" : null,
+                      "address_zip_check" : null,
+                      "customer" : "cus_4Kvew1gjYgXWZd",
+                      "type" : "Visa"
+                  }
+              ],
+              "count" : 1
+          },
+          "default_card" : "card_4KveLkAqT0rs0P",
+          "subscription" : null
+      },
+      "type" : "stripe",
+      "name" : "Test card",
+    }
+  },
+
   companys: {
   	urbn : {
 	    "name" : "Ubersense",

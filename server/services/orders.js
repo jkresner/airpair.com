@@ -155,8 +155,17 @@ function chargeAndTrackOrder(o, errorCB, saveCB)
       }
       // if (logging) $log('payment.created', r)
       // trackOrderPayment.call(this, o)
-      var { id, status, total, orderId, createdAt, processorAuthorizationCode} = r.transaction
-      o.payment = { id, status, total, orderId, createdAt, processorAuthorizationCode}
+      // $log('payment.type', r.type)
+      // if (logging) $log('payment.r', r.type, r)
+      if (r.type == "braintree") {
+        var { id, status, total, orderId, createdAt, processorAuthorizationCode} = r.transaction
+        o.payment = { id, type:'braintree', status, total, orderId, createdAt, processorAuthorizationCode}
+      }
+      else if (r.type == "stripe") {
+        var { id, type, amount, created } = r
+        o.payment = { id, type, status: "authorized", total:amount, orderId: o._id, created }
+      }
+
       saveCB(null, o)
     })
   }
