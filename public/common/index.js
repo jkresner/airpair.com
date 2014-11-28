@@ -69,7 +69,7 @@ angular.module("AP", ['ngRoute', 'ngAnimate', 'APSideNav', 'APAuth', 'APPosts', 
 ;
 
 
-angular.module("APLite", ['ngRoute', 'APSideNav', 'APAuth', 'APFilters', 'APAnalytics', 'APBookmarker'])
+angular.module("APLite", ['ngRoute', 'ngAnimate', 'APSideNav', 'APAuth', 'APFilters', 'APAnalytics', 'APBookmarker'])
 
   .config(function ($provide){
 
