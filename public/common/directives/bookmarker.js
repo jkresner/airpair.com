@@ -87,6 +87,7 @@ angular.module("APBookmarker", ['APSvcSession'])
       var start = element.offset();
 
       var destination = $('#navBookmarksToggle');
+      var counter = destination.find('i');
       var end = destination.offset();
 
       clone.addClass('bookmark-animation');
@@ -100,6 +101,9 @@ angular.module("APBookmarker", ['APSvcSession'])
           left: end.left,
           top: end.top
         }
+      }).then(function() {
+        $animate.animate(counter, null, null, 'bounce');
+        !$rootScope.$$phase && $rootScope.$digest();
       });
 
       !$rootScope.$$phase && $rootScope.$digest();
