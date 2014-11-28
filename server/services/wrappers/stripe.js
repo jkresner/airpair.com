@@ -17,7 +17,7 @@ module.exports = {
 
   createCharge(amount, orderId, customerId, cb) {
     var payload = {
-      customer: "cus_4eMmE5LQoSUB0X", // customerId,
+      customer: customerId,
       amount: amount * 100,
       currency: "usd"
     };
