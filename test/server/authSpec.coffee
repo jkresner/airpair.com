@@ -279,7 +279,7 @@ module.exports = -> describe "Signup: ", ->
           done()
 
 
-    it 'deny user if e-mail is not verified', (done) ->
+    it.skip 'deny user if e-mail is not verified', (done) ->
       d = getNewUserData('spur')
       addAndLoginLocalUser 'spur', (userKey) ->
         GET '/billing/orders', { status: 403 }, (err) ->
@@ -297,7 +297,7 @@ module.exports = -> describe "Signup: ", ->
           done()
 
 
-    it 'users can verify email for some features', (done) ->
+    it.skip 'users can verify email for some features', (done) ->
       spy = sinon.spy(mailman,'sendVerifyEmail')
       addAndLoginLocalUser 'stev', (s) ->
         GET '/billing/orders', { status: 403 }, (err) ->
