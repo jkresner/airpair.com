@@ -2,6 +2,7 @@ window.$ = window.jQuery = require('./../v1/lib/jquery/dist/jquery.js');
 window._ = require('./../v1/lib/lodash/dist/lodash.js');
 window.moment = require('./../v1/lib/moment/moment.js');
 require('./../v1/lib/angular/angular.js');
+require('./../v1/lib/angular-animate/angular-animate.js');
 require('./../v1/lib/angular-route/angular-route.js');
 require('./../v1/lib/angular-messages/angular-messages.js');
 require('./../v1/lib/angular-load/angular-load.js');
