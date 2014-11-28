@@ -17,11 +17,14 @@ angular.module('APSvcSession', [])
 
   .service('SessionService', function($rootScope, $http, API, Auth, $cacheFactory, notifications) {
 
-    var setScope = (successFn) => {
+    var setScope = (successFn, trackingData) => {
       return function(result) {
         if (!result.emailVerified && result._id) notifications.add("Please <a href='/me'>verify your email</a>")
 
         $rootScope.session = result
+
+        if (trackingData) analytics.track('Save', trackingData);
+
         successFn(result)
       }
     }
@@ -58,7 +61,8 @@ angular.module('APSvcSession', [])
 
     this.changeEmail = function(data, success, error)
     {
-      $http.put(`${API}/users/me/email`, data).success(setScope(success)).error(error);
+      var trackingData = { type:'email', email: data.email }
+      $http.put(`${API}/users/me/email`, data).success(setScope(success, trackingData)).error(error);
     }
 
     this.verifyEmail = function(data, success, error)

@@ -91,8 +91,8 @@ angular.module("APSideNav", ['ui.bootstrap','APSvcSession', 'APTagInput'])
         $rootScope.openProfile = function() {
 
           var modalInstance = $modal.open({
-            template: require('./profile.html'),
-            controller: 'ProileCtrl as ProileCtrl',
+            template: require('./signup.html'),
+            controller: 'SignupModalCtrl as SignupModalCtrl',
             size: 'lg'
           });
         }
@@ -147,7 +147,7 @@ angular.module("APSideNav", ['ui.bootstrap','APSvcSession', 'APTagInput'])
   })
 
 
-  .controller('ProileCtrl', function($scope, $rootScope, $modalInstance, $window, $timeout, SessionService) {
+  .controller('SignupModalCtrl', function($scope, $rootScope, $modalInstance, $window, $timeout, SessionService) {
 
     $scope.data = { email: $scope.session.email, name: $scope.session.name }
 
@@ -165,14 +165,13 @@ angular.module("APSideNav", ['ui.bootstrap','APSvcSession', 'APTagInput'])
 
       SessionService.changeEmail({ email: $scope.data.email },
         (result) => {
-          analytics.track('Save', { type:'email', email: result.email });
           $scope.data.email = result.email
           $timeout(() => { angular.element('#signupName').trigger('focus'); }, 40)
         }
         ,
         (e) => {
-        	$scope.emailChangeFailed = e.message
-        	$scope.data.email = null
+          $scope.emailChangeFailed = e.message
+          $scope.data.email = null
         }
       )
     }
