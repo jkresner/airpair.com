@@ -45,7 +45,13 @@ angular.module("APAuth", ['ngRoute','ngMessages','APFormsDirectives','APFilters'
     }
   })
 
-  .controller('SignupCtrl', function($scope, $window, SessionService) {
+  .controller('SignupCtrl', function($scope, $window, $location, SessionService) {
+
+    SessionService.onAuthenticated(function() {
+      if ($scope.session._id) $location.path('/me')
+    })
+
+
 
     var self = this;
     this.submit = function(isValid, formData) {
