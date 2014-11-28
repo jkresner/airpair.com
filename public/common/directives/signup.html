@@ -66,11 +66,11 @@
 
       <div form-group ng-if="data.name">
         <label class="control-label" for="signupPassword">Password </label>
-        <input id="signupPassword" name="password" form-control type="password" placeholder="Password" ng-model="data.password" required ng-minlength="5" ng-maxlength="10" tabindex="3">
+        <input id="signupPassword" name="password" form-control type="password" placeholder="Password" ng-model="data.password" required ng-minlength="5" ng-maxlength="40" tabindex="3">
         <div class="error" ng-if="formGroup.showError(profileForm.password)" ng-messages="profileForm.password.$error">
           <div ng-message="required">Password required</div>
           <div ng-message="minlength">Password min length 5 chars</div>
-          <div ng-message="maxlength">Password max length 10 chars</div>
+          <div ng-message="maxlength">Password max length 40 chars</div>
         </div>
       </div>
 
