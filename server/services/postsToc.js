@@ -1,6 +1,7 @@
 'use strict';
 
 var htmlparser = require('htmlparser2');
+var marked = require('marked');
 
 function addLinenos(lines, headers) {
   var current = 0, line;
@@ -70,36 +71,8 @@ function getHtmlHeaders(lines, maxHeaderNo) {
 }
 
 
-////////////----------------------------------------------
-
-
-export function getHashId(text, repetition) {
-  var id = text
-    .replace(/'\) /g,'-')
-    .replace(/`$/g,'-')
-    .replace(/\. /g,'-')
-    .replace(/ '/g,'-')
-    .replace(/ & /g,'-')
-    .replace(/ \/ /g,'-')
-    .replace(/\)/g,'-')
-    .replace(/[ \/\.\?';]/g,'-')
-    // single chars that are removed
-    .replace(/%([abcdef]|\d){2,2}/ig, '')
-    .replace(/[?:\[\]`,()*"';{}+<>\$&]/g,'');
-
-  // If no repetition, or if the repetition is 0 then ignore. Otherwise append '-' and the number.
-  if (repetition) {
-    id += '-' + repetition;
-  }
-
-  return id.trim().toLowerCase();
-}
-
-
 function anchor(header, repetition) {
-  var href = getHashId(header.trim().toLowerCase(), repetition);
-
-  return '[' + header + '](#' + href + ')';
+  return '[' + header + '](#' + marked(`##${header}`).split('"')[1] + ')';
 };
 
 

@@ -214,19 +214,4 @@ module.exports = () => describe("API: ", function() {
   })
 
 
-  it('Gets correct TOC hashId', function() {
-    expect(getHashId('4 Understanding $scope')).to.equal('4-understanding-scope')
-    expect(getHashId('11 Filters (Custom)')).to.equal('11-filters-custom-')
-    expect(getHashId('4.1 Launch the ElasticSearch Server')).to.equal('4-1-launch-the-elasticsearch-server')
-    expect(getHashId("8 Scoping $scope's")).to.equal('8-scoping-scope-s')
-    expect(getHashId("2 Single-page applications and 'modules'")).to.equal('2-single-page-applications-and-modules-')
-    expect(getHashId('3.3 Cypher expressions and scalar/collection functions')).to.equal('3-3-cypher-expressions-and-scalar-collection-functions')
-    expect(getHashId('TL;DR')).to.equal('tl-dr')
-		expect(getHashId('2 Python 2 vs. Python 3')).to.equal('2-python-2-vs-python-3')
-		expect(getHashId('3 Library & component compatibility with Python 3?')).to.equal('3-library-component-compatibility-with-python-3-')
-		expect(getHashId('2.2 Express `req.session`')).to.equal('2-2-express-req-session-')
-    expect(getHashId(`jQuery.prop('checked') vs. ng-checked`)).to.equal('jquery-prop-checked-vs-ng-checked')
-  })
-
-
 })
