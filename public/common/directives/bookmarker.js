@@ -40,36 +40,24 @@ angular.module("APBookmarker", ['APSvcSession'])
 .factory('BookmarkerService', function(SessionService, $rootScope) {
 
   var bookmarkLookup = {};
-  var bookmarksChanged = false;
   function populateBookmarkLookup() {
     bookmarkLookup = {};
-    bookmarksChanged = false;
     var bookmarks = $rootScope.session ? $rootScope.session.bookmarks : [];
     _.each(bookmarks, function(b) {
       bookmarkLookup[b.objectId] = true;
     });
   }
 
-  function lookup(objectId) {
-    if (bookmarksChanged) populateBookmarkLookup();
-    return bookmarkLookup[objectId];
-  }
-
-  SessionService.onAuthenticated(function() {
-    bookmarksChanged = true;
-  });
+  SessionService.onAuthenticated(populateBookmarkLookup);
 
   var self;
   return self = {
-    exists : lookup,
-    toggle : function(objectId, type, success, error) {
-      SessionService.updateBookmark({
-        objectId: objectId,
-        type: type
-      }, function(response) {
-        bookmarksChanged = true;
-        success(lookup(objectId));
-      }, error);
+    exists : (objectId) => bookmarkLookup[objectId],
+    toggle : function(data, success, error) {
+      SessionService.updateBookmark(data, function(response) {
+        populateBookmarkLookup()
+        success(bookmarkLookup[data.objectId]);
+      }, (e)=>{console.log('error', e)});
     }
   }
 })
@@ -110,30 +98,24 @@ angular.module("APBookmarker", ['APSvcSession'])
   }
 })
 
-.directive('bookmarker', function(BookmarkerService, SessionService, bookmarkerAnimation) {
+.directive('bookmarker', function(BookmarkerService, bookmarkerAnimation) {
   return {
     restrict: 'EA',
     template:  require('./bookmarker.html'),
     require: 'bookmarker',
     controllerAs: 'bookmarker',
     controller: function($scope, $attrs) {
-      $scope.type = $scope.$eval($attrs.type);
-      $scope.objectId = $scope.$eval($attrs.objectId);
-
-      var authenticated = false;
-      SessionService.onAuthenticated(function(e) {
-        authenticated = e && e._id && e._id.length;
-      });
+      $scope.data = {
+        type: $scope.$eval($attrs.type),
+        objectId: $scope.$eval($attrs.objectId)
+      }
 
       var ctrl = this;
-      ctrl.exists = BookmarkerService.exists
-
-      ctrl.toggle = function(objectId, type) {
-        console.log(objectId, type)
-        BookmarkerService.toggle(objectId, type, function(status) {
+      ctrl.exists = BookmarkerService.exists;
+      ctrl.toggle = () =>
+        BookmarkerService.toggle($scope.data, function(status) {
           $scope.$evalAsync(status ? ctrl.onActive : ctrl.onInactive);
         });
-      }
     },
     link : function(scope, element, attrs, bookmarker) {
       bookmarker.onActive = function() {
@@ -142,5 +124,33 @@ angular.module("APBookmarker", ['APSvcSession'])
       bookmarker.onInactive = function() {};
     }
   };
+})
 
-});
+.directive('bookmarkerserver', function(BookmarkerService, bookmarkerAnimation) {
+  return {
+    restrict: 'EA',
+    template:  require('./bookmarker.html'),
+    require: 'bookmarkerserver',
+    controllerAs: 'bookmarker',
+    scope: {},
+    controller: function($scope, $attrs) {
+      $scope.data = {
+        type: $scope.$eval($attrs.type),
+        objectId: $scope.$eval($attrs.objectId)
+      }
+
+      var ctrl = this;
+      ctrl.exists = BookmarkerService.exists;
+      ctrl.toggle = () =>
+        BookmarkerService.toggle($scope.data, function(status) {
+          $scope.$evalAsync(status ? ctrl.onActive : ctrl.onInactive);
+        });
+    },
+    link : function(scope, element, attrs, bookmarker) {
+      bookmarker.onActive = function() {
+        bookmarkerAnimation.active(element);
+      };
+      bookmarker.onInactive = function() {};
+    }
+  };
+})
