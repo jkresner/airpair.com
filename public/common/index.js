@@ -2,6 +2,7 @@ window.$ = window.jQuery = require('./../v1/lib/jquery/dist/jquery.js');
 window._ = require('./../v1/lib/lodash/dist/lodash.js');
 window.moment = require('./../v1/lib/moment/moment.js');
 require('./../v1/lib/angular/angular.js');
+require('./../v1/lib/angular-animate/angular-animate.js');
 require('./../v1/lib/angular-route/angular-route.js');
 require('./../v1/lib/angular-messages/angular-messages.js');
 require('./../v1/lib/angular-load/angular-load.js');
@@ -31,7 +32,8 @@ require('./../workshops/module.js');
 require('./../billing/module.js');
 require('./../profile/module.js');
 
-angular.module("AP", ['ngRoute', 'APSideNav', 'APAuth', 'APPosts', 'APWorkshops',
+
+angular.module("AP", ['ngRoute', 'ngAnimate', 'APSideNav', 'APAuth', 'APPosts', 'APWorkshops',
   'APProfile', 'APBilling', 'APNotifications'])
 
   .config(function($locationProvider, $routeProvider) {
@@ -64,16 +66,6 @@ angular.module("AP", ['ngRoute', 'APSideNav', 'APAuth', 'APPosts', 'APWorkshops'
     }
   })
 
-  .controller('ServerTemplateCtrl', function($scope) {
-
-    pageHlpr.fixNavs('#side');
-    pageHlpr.fixPostRail();
-    pageHlpr.highlightSyntax({ addCtrs: true });
-    pageHlpr.loadPoSt();
-    if (loadDisqus) loadDisqus();
-
-  })
-
   .run(function($rootScope,  $location, SessionService) {
 
     $rootScope.$on('$routeChangeSuccess', function() {
@@ -87,6 +79,17 @@ angular.module("AP", ['ngRoute', 'APSideNav', 'APAuth', 'APPosts', 'APWorkshops'
       if (window.viewData.expert) $rootScope.expert = window.viewData.expert
     }
 
+  })
+
+  .controller('ServerTemplateCtrl', function($scope) {
+
+    pageHlpr.fixNavs('#side');
+    pageHlpr.fixPostRail();
+    pageHlpr.highlightSyntax({ addCtrs: true });
+    pageHlpr.loadPoSt();
+    // console.log('dis', angular.element('#disqus_thread'))
+    if (viewData && angular.element('#disqus_thread').length>0)
+      pageHlpr.loadDisqus(viewData.canonical);
   })
 
 ;

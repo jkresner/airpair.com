@@ -29,7 +29,8 @@ function registerHelpers(hbs)
   })
 
   hbs.registerHelper('JSON', (o) =>
-    new hbs.handlebars.SafeString(JSON.stringify(_.pick(o,'_id'))) )
+    new hbs.handlebars.SafeString(JSON.stringify(_.pick(o,'_id')))
+  )
 
 }
 
@@ -62,7 +63,7 @@ export default function(app) {
       viewDataFn(req, (e,data) => {
         data[`${partialName}Render`] = true
         if (!data.meta) data.meta = pageMeta
-        res.status(200).render(`./baseServer.hbs`, combineBaseData(req, { viewData: data, partialName } ) )
+        res.status(200).render(`./baseServer.hbs`, combineBaseData(req, { viewData: data, partialName, canonical: data.meta.canonical } ) )
     	})
 	}
 }
