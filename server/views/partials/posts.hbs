@@ -1,0 +1,12 @@
+<header>Posts</header>
+
+<section id="posts">
+
+  <section id="allposts">
+    <h3>All posts<span><a href="/posts" target="_self">Recent posts</a></span></h3>
+    <div class="posts recent">
+      {{#each this}}{{> postListItem this}}{{/each}}
+    </div>
+  </section>
+
+</section>

@@ -10,14 +10,19 @@ var fields = {
 
 
 export function getAll(cb) {
-  var options = {sort:'time'}
+  var options = {sort: {'time' : -1 } }
   svc.searchMany({},{ fields: fields.listSelect, options: options }, (e, r) => {
     for (var w of r)
     {
       w.url = `${w.tags[0]}/workshops/${w.slug}`
+      w.speaker = w.speakers[0]
     }
     cb(e, r)
   })
+}
+
+export function getAllForCache(cb) {
+  getAll(cb)
 }
 
 

@@ -1,10 +1,7 @@
   <title>{{#if meta.title }}{{meta.title}}{{else}} {{ title }} | AirPair {{/if}}</title>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
   {{#if meta.description }}<meta name="description" content="{{ meta.description }}"/>{{/if}}
-  {{!-- {{#if meta.ogVideo }}<meta property="og:video" content="{{meta.ogVideo}}"/>{{/if}} --}}
   <meta property="og:locale" content="en_US"/>
-  <meta property="og:type" content="article"/>
+  {{#if meta.ogType }}<meta property="og:type" content="{{meta.ogType}}"/>{{else}}<meta property="og:type" content="article"/>{{/if}}
   {{#if meta.ogTitle }}<meta property="og:title" content="{{meta.ogTitle}}"/>{{/if}}
   {{#if meta.ogDescription }}<meta property="og:description" content="{{meta.ogDescription}}"/>{{/if}}
   {{#if meta.ogImage }}<meta property="og:image" content="{{meta.ogImage}}"/>{{/if}}

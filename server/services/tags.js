@@ -103,6 +103,7 @@ export function getTagPage(tag, cb) {
           tag,
           featured: {
             workshop: {
+              _id: "54502e8c58956202006075ed",
               url: '/angularjs/workshops/top-10-mistakes-angularjs-developers-make',
               title: 'The Top 10 Mistakes AngularJS Developers Make',
               speaker: { name: 'Mark Meyer', gravatar: '6c2f0695e0ca4445a223ce325c7fb970' }, //todo change to avatar
@@ -197,7 +198,7 @@ export function getTagPage(tag, cb) {
           posts: posts.posts
         }
 
-      d.workshops = _.sortBy(_.first(_.filter(d.workshops, (w) => w.time > new Date() ), 5), (w) => w.time)
+      d.workshops = _.sortBy(_.first(d.workshops, 5), (w) => w.time)
       d.posts = _.first(d.posts, 5)
       d.featured.pairing = d.experts[0];
 

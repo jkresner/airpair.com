@@ -1,4 +1,1 @@
-<a href="" ng-click="bookmarker.toggle(objectId, type)">
-  <img ng-hide="bookmarker.exists(objectId)" class="bookmark" ng-src="/v1/img/css/bookmark.png" />
-  <img ng-show="bookmarker.exists(objectId)" class="bookmark" ng-src="/v1/img/css/bookmarked.png" />
-</a>
+<img class="bookmark" ng-src="{{(bookmarker.exists(data.objectId)) ? '/v1/img/css/bookmarked.png' : '/v1/img/css/bookmark.png'}}" ng-click="bookmarker.toggle()" />

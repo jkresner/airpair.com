@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en-US" prefix="og: http://ogp.me/ns#" ng-app="AP" ng-strict-di>
+<head>
+{{#with viewData}}{{> pageMeta }}{{/with}}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <link rel='stylesheet' id='google-font-css'  href='//fonts.googleapis.com/css?family=Open+Sans%3A300%2C400%2C700&#038;ver=2.0.1' type='text/css' media='all' />
+  <link rel="stylesheet" href="{{ config.bundle.libCss}}" type="text/css" />
+  <link rel="stylesheet" href="{{ config.bundle.indexCss}}" type="text/css" />
+  <base href="/" />
+</head>
+<body>
+{{> siteHeader }}
+
+<div class="main-wrap">
+  <main ng-view>
+    <div id="serverTemplate">
+      {{#with viewData}}
+        {{#if postRender}}{{> post }}{{/if}}
+        {{#if postsRender}}{{> posts }}{{/if}}
+        {{#if workshopRender}}{{> workshop }}{{/if}}
+        {{#if workshopsRender}}{{> workshops }}{{/if}}
+        {{#if tagRender}}{{> tag }}{{/if}}
+      {{/with}}
+    </div>
+  </main>
+</div>
+
+<nav id="side" class="collapse" side-nav></nav>
+
+<script type="text/javascript" src="{{config.bundle.indexScript}}"></script>
+<script type="text/javascript">
+
+function bindTracking() {
+  ga('send', 'pageview')
+
+  $.each($('.trackPostCTA'), function(idx,el){
+    $(el).click(function (e) {
+      analytics.track('Click', { type: 'Post CTA', unit: 'code footer', idx: idx, text: el.innerHTML, location: window.location.pathname });
+
+      setTimeout(function () {
+        window.location.href = $(el).attr('href');
+      }, 350);
+
+      return false;
+    });
+  })
+
+  $.each($('.featured a.btn'), function(idx,el) {
+    $(el).click(function (e) {
+      analytics.track('Click', { type: 'Tag Feature', unit: 'featured', idx: idx, text: el.innerHTML, location: window.location.pathname });
+    });
+  })
+}
+
+window.viewData = { canonical: '{{ canonical }}', {{partialName}} : {{JSON viewData}} };
+
+</script>
+
+{{> initPage }}
+
+</body>
+</html>

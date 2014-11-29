@@ -32,7 +32,9 @@ require('./../workshops/module.js');
 require('./../billing/module.js');
 require('./../profile/module.js');
 
-angular.module("AP", ['ngRoute', 'ngAnimate', 'APSideNav', 'APAuth', 'APPosts', 'APWorkshops', 'APProfile', 'APBilling', 'APNotifications'])
+
+angular.module("AP", ['ngRoute', 'ngAnimate', 'APSideNav', 'APAuth', 'APPosts', 'APWorkshops',
+  'APProfile', 'APBilling', 'APNotifications'])
 
   .config(function($locationProvider, $routeProvider) {
 
@@ -54,30 +56,21 @@ angular.module("AP", ['ngRoute', 'ngAnimate', 'APSideNav', 'APAuth', 'APPosts', 
       template: require('../sales/angular.html')
     });
 
+    if (angular.element('#serverTemplate').length > 0)
+    {
+      var initialLocation = window.location.pathname;
+      $routeProvider.when(initialLocation, {
+        template: angular.element('#serverTemplate').html(),
+        controller: 'ServerTemplateCtrl'
+      });
+    }
   })
 
-  .run(function($rootScope, $location, SessionService) {
-
-    pageHlpr.fixNavs('#side');
+  .run(function($rootScope,  $location, SessionService) {
 
     $rootScope.$on('$routeChangeSuccess', function() {
       window.trackRoute($location.path());
     });
-
-  })
-
-;
-
-
-angular.module("APLite", ['ngRoute', 'ngAnimate', 'APSideNav', 'APAuth', 'APFilters', 'APAnalytics', 'APBookmarker'])
-
-  .config(function ($provide){
-
-  })
-
-  .run(function($rootScope, SessionService) {
-
-    pageHlpr.fixNavs('#side');
 
     if (window.viewData)
     {
@@ -86,6 +79,17 @@ angular.module("APLite", ['ngRoute', 'ngAnimate', 'APSideNav', 'APAuth', 'APFilt
       if (window.viewData.expert) $rootScope.expert = window.viewData.expert
     }
 
+  })
+
+  .controller('ServerTemplateCtrl', function($scope) {
+
+    pageHlpr.fixNavs('#side');
+    pageHlpr.fixPostRail();
+    pageHlpr.highlightSyntax({ addCtrs: true });
+    pageHlpr.loadPoSt();
+    // console.log('dis', angular.element('#disqus_thread'))
+    if (viewData && angular.element('#disqus_thread').length>0)
+      pageHlpr.loadDisqus(viewData.canonical);
   })
 
 ;
