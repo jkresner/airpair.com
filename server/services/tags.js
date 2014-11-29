@@ -197,7 +197,7 @@ export function getTagPage(tag, cb) {
           posts: posts.posts
         }
 
-      d.workshops = _.sortBy(_.first(_.filter(d.workshops, (w) => w.time > new Date() ), 5), (w) => w.time)
+      d.workshops = _.sortBy(_.first(d.workshops, 5), (w) => w.time)
       d.posts = _.first(d.posts, 5)
       d.featured.pairing = d.experts[0];
 

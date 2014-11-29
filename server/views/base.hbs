@@ -4,7 +4,9 @@
 	<title>AirPair</title>
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-  {{> siteCss }}
+  <link rel='stylesheet' id='google-font-css'  href='//fonts.googleapis.com/css?family=Open+Sans%3A300%2C400%2C700&#038;ver=2.0.1' type='text/css' media='all' />
+  <link rel="stylesheet" href="{{ config.bundle.libCss}}" type="text/css" />
+  <link rel="stylesheet" href="{{ config.bundle.indexCss}}" type="text/css" />
   <base href="/" />
 </head>
 <body>
@@ -18,7 +20,7 @@
 
 <nav id="side" class="collapse" side-nav></nav>
 
-{{> siteScripts }}
+<script type="text/javascript" src="{{config.bundle.indexScript}}"></script>
 <script type="text/javascript">
 
 function bindTracking() {}

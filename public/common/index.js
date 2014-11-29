@@ -31,8 +31,8 @@ require('./../workshops/module.js');
 require('./../billing/module.js');
 require('./../profile/module.js');
 
-angular.module("AP", ['ngRoute', 'APSideNav', 'APAuth', 'APPosts', 'APWorkshops', 'APProfile',
-  'APBilling', 'APNotifications'])
+angular.module("AP", ['ngRoute', 'APSideNav', 'APAuth', 'APPosts', 'APWorkshops',
+  'APProfile', 'APBilling', 'APNotifications'])
 
   .config(function($locationProvider, $routeProvider) {
 
@@ -54,30 +54,31 @@ angular.module("AP", ['ngRoute', 'APSideNav', 'APAuth', 'APPosts', 'APWorkshops'
       template: require('../sales/angular.html')
     });
 
+    if (angular.element('#serverTemplate').length > 0)
+    {
+      var initialLocation = window.location.pathname;
+      $routeProvider.when(initialLocation, {
+        template: angular.element('#serverTemplate').html(),
+        controller: 'ServerTemplateCtrl'
+      });
+    }
   })
 
-  .run(function($rootScope, $location, SessionService) {
+  .controller('ServerTemplateCtrl', function($scope) {
 
     pageHlpr.fixNavs('#side');
+    pageHlpr.fixPostRail();
+    pageHlpr.highlightSyntax({ addCtrs: true });
+    pageHlpr.loadPoSt();
+    if (loadDisqus) loadDisqus();
+
+  })
+
+  .run(function($rootScope,  $location, SessionService) {
 
     $rootScope.$on('$routeChangeSuccess', function() {
       window.trackRoute($location.path());
     });
-
-  })
-
-;
-
-
-angular.module("APLite", ['ngRoute', 'APSideNav', 'APAuth', 'APFilters', 'APAnalytics', 'APBookmarker'])
-
-  .config(function ($provide){
-
-  })
-
-  .run(function($rootScope, SessionService) {
-
-    pageHlpr.fixNavs('#side');
 
     if (window.viewData)
     {
