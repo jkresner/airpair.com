@@ -127,6 +127,8 @@ var fixRailElements = function(e)
 
 window.pageHlpr.fixPostRail = function()
 {
-  $(window).scroll(fixRailElements);
-  fixRailElements();
+  if ($('.rail1CTA').length > 0) {
+    $(window).scroll(fixRailElements);
+    fixRailElements();
+  }
 }

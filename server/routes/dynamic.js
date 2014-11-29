@@ -15,6 +15,17 @@ var angular = {
   soId: 'angularjs'
 }
 
+var angularPageMeta = {
+  title: "AngularJS Articles, Workshops & Developers ready to help. A top resource!",
+  description: "AngularJS Articles, Workshops & Developers ready to help. One of the web's top AngularJS resources - totally worth bookmarking!",
+  ogType: "website",
+  ogTitle: "AngularJS Articles, Workshops and Developers",
+  ogDescription: "One of the best collections of #AngularJS Articles, Live Workshops and Developers on the web",
+  ogImage: "http://www.airpair.com/v1/img/css/tags/angularjs-og.png",
+  ogUrl: "http://www.airpair.com/angularjs",
+  canonical: "http://www.airpair.com/angularjs"
+}
+
 var setTagForTrackView = (req, res, next) => { req.tag = angular; req.tag.title = req.tag.name; next() }
 
 
@@ -25,16 +36,22 @@ export default function(app) {
     .param('workshop', WorkshopsAPI.paramFns.getBySlug)
     .param('post', PostsAPI.paramFns.getBySlug)
 
-    .get('/angularjs', noTrailingSlash(), setTagForTrackView, trackView('tag'), app.renderHbsViewData('tag',
-      (req, cb) => TagsAPI.svc.getTagPage(req.tag, cb) ))
+    .get('/angularjs', noTrailingSlash(), setTagForTrackView,
+      trackView('tag'),
+      app.renderHbsViewData('tag', angularPageMeta,
+        (req, cb) => TagsAPI.svc.getTagPage(req.tag, cb) ))
 
-    .get('/posts/all', app.renderHbsViewData('postslist',
-      (req, cb) => PostsAPI.svc.getAllPublished(cb) ))
+    .get('/posts/all',
+      app.renderHbsViewData('posts', { title: "Software Posts, Tutorials & Articles" },
+        (req, cb) => PostsAPI.svc.getAllPublished(cb) ))
 
-    .get('/posts/airpair-v1', app.renderHbsViewData('postslist',
+    .get('/posts/airpair-v1',
+      app.renderHbsViewData('posts', null,
       (req, cb) => PostsAPI.svc.getUsersPublished('hackerpreneur', cb) ))
 
-    .get('/:tag/posts/:post', noTrailingSlash(), trackView('post'), app.renderHbsViewData('post',
+    .get('/:tag/posts/:post', noTrailingSlash(),
+      trackView('post'),
+      app.renderHbsViewData('post', null,
       function(req, cb) {
         req.post.primarytag = req.params.tag
         PostsAPI.svc.getSimilarPublished(req.post.primarytag, (e,r) => {
@@ -44,11 +61,14 @@ export default function(app) {
       })
     )
 
-    .get('/:tag/workshops/:workshop', noTrailingSlash(), trackView('workshop'), app.renderHbsViewData('workshop',
-      (req, cb) => { req.workshop.by = req.workshop.speakers[0]; cb(null,req.workshop) }))
+    .get('/:tag/workshops/:workshop', noTrailingSlash(), trackView('workshop'),
+      app.renderHbsViewData('workshop', null,
+        (req, cb) => { req.workshop.by = req.workshop.speakers[0]; cb(null,req.workshop) }))
 
-    .get('/workshops-slide/:workshop', app.renderHbsViewData('workshopsslide',
-      (req, cb) => cb(null,req.workshop) ))
+    .get('/workshops-slide/:workshop',
+      app.renderHbsViewData('workshopsslide', {},
+        (req, cb) => cb(null,req.workshop) ))
+
 
 
   return router
