@@ -28,6 +28,10 @@ function registerHelpers(hbs)
     return moment(date).format(format)
   })
 
+  hbs.registerHelper('JSON', (o) =>
+    new hbs.handlebars.SafeString(JSON.stringify(_.pick(o,'_id')))
+  )
+
 }
 
 export default function(app) {
@@ -54,10 +58,13 @@ export default function(app) {
       res.status(200).render(`./${fileName}.hbs`, combineBaseData(req,data))
     }
 
-  app.renderHbsViewData = (fileName, viewDataFn) =>
+  app.renderHbsViewData = (partialName, pageMeta, viewDataFn) =>
     (req, res) => {
       viewDataFn(req, (e,data) => {
-        res.status(200).render(`./${fileName}.hbs`, combineBaseData(req, { viewData: data } ) )
+        data[`${partialName}Render`] = true
+        if (!data.meta) data.meta = pageMeta
+        var canonical = (data.meta) ? data.meta.canonical : ""
+        res.status(200).render(`./baseServer.hbs`, combineBaseData(req, { viewData: data, partialName, canonical } ) )
     	})
 	}
 }

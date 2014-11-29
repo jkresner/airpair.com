@@ -1,79 +1,66 @@
 angular.module("APBookmarker", ['APSvcSession'])
 
 
-.directive('bookmarkerlist', function(SessionService, bookmarkerAnimation) {
+// .directive('bookmarkerlist', function(SessionService, bookmarkerAnimation) {
 
-  return {
-    link: function(scope, element, attrs) {
-    },
-    controller: ['$rootScope', '$scope', function($rootScope, $scope) {
+//   return {
+//     link: function(scope, element, attrs) {
+//     },
+//     controller: ['$rootScope', '$scope', function($rootScope, $scope) {
 
-      SessionService.onAuthenticated(function(session) {
-        _.each(session.bookmarks, function(bookmark) {
-          $(".bookmark"+bookmark.objectId).attr('src', "/v1/img/css/bookmarked.png")
-        })
-      });
+//       SessionService.onAuthenticated(function(session) {
+//         _.each(session.bookmarks, function(bookmark) {
+//           $(".bookmark"+bookmark.objectId).attr('src', "/v1/img/css/bookmarked.png")
+//         })
+//       });
 
-      window.toggleBookmark = function(e) {
-        var $elem = $(e);
-        var objectId = $elem.data('id');
-        var type = $elem.data('type');
+//       window.toggleBookmark = function(e) {
+//         var $elem = $(e);
+//         var objectId = $elem.data('id');
+//         var type = $elem.data('type');
 
-        SessionService.updateBookmark({ type:type, objectId:objectId }, success, error);
+//         SessionService.updateBookmark({ type:type, objectId:objectId }, success, error);
 
-        function success(result) {
-          if ($elem.attr('src') == "/v1/img/css/bookmarked.png") { //remove bookmark
-            $elem.attr('src', "/v1/img/css/bookmark.png");
-          } else { //add bookmark
-            $elem.attr('src', "/v1/img/css/bookmarked.png");
-            bookmarkerAnimation.active($elem);
-          }
-        }
+//         function success(result) {
+//           if ($elem.attr('src') == "/v1/img/css/bookmarked.png") { //remove bookmark
+//             $elem.attr('src', "/v1/img/css/bookmark.png");
+//           } else { //add bookmark
+//             $elem.attr('src', "/v1/img/css/bookmarked.png");
+//             bookmarkerAnimation.active($elem);
+//           }
+//         }
 
-        function error() {}
-      }
-    }]
-  };
+//         function error() {}
+//       }
+//     }]
+//   };
 
-})
+// })
 
-.factory('BookmarkerService',
-  ['SessionService', '$rootScope', function(SessionService, $rootScope) {
+.factory('BookmarkerService', function(SessionService, $rootScope) {
 
   var bookmarkLookup = {};
-  var bookmarksChanged = false;
   function populateBookmarkLookup() {
     bookmarkLookup = {};
-    bookmarksChanged = false;
     var bookmarks = $rootScope.session ? $rootScope.session.bookmarks : [];
     _.each(bookmarks, function(b) {
       bookmarkLookup[b.objectId] = true;
     });
   }
 
-  function lookup(objectId) {
-    if (bookmarksChanged) populateBookmarkLookup();
-    return bookmarkLookup[objectId];
-  }
-
-  SessionService.onAuthenticated(function() {
-    bookmarksChanged = true;
-  });
+  SessionService.onAuthenticated(populateBookmarkLookup);
 
   var self;
   return self = {
-    exists : lookup,
-    toggle : function(objectId, type, success, error) {
-      SessionService.updateBookmark({
-        objectId: objectId,
-        type: type
-      }, function(response) {
-        bookmarksChanged = true;
-        success(lookup(objectId));
-      }, error);
+    exists : (objectId) => bookmarkLookup[objectId],
+    toggle : function(data, success, error) {
+      SessionService.updateBookmark(data, function(response) {
+        populateBookmarkLookup()
+        success(bookmarkLookup[data.objectId]);
+      }, (e)=>{console.log('error', e)});
     }
   }
-}])
+})
 
 .factory('bookmarkerAnimation', function($animate, $document, $rootScope) {
   var body = angular.element($document[0].body);
@@ -111,32 +98,25 @@ angular.module("APBookmarker", ['APSvcSession'])
   }
 })
 
-.directive('bookmarker', function(BookmarkerService, SessionService, bookmarkerAnimation) {
+.directive('bookmarker', function(BookmarkerService, bookmarkerAnimation) {
   return {
     restrict: 'EA',
     template:  require('./bookmarker.html'),
     require: 'bookmarker',
     controllerAs: 'bookmarker',
-    controller: ['$scope', '$attrs', function($scope, $attrs) {
-      $scope.type = $scope.$eval($attrs.type);
-      $scope.objectId = $scope.$eval($attrs.objectId);
-
-      var authenticated = false;
-      SessionService.onAuthenticated(function(e) {
-        authenticated = e && e._id && e._id.length;
-      });
+    controller: function($scope, $attrs) {
+      $scope.data = {
+        type: $scope.$eval($attrs.type),
+        objectId: $scope.$eval($attrs.objectId)
+      }
 
       var ctrl = this;
-      ctrl.exists = function(objectId) {
-        return BookmarkerService.exists(objectId);
-      };
-
-      ctrl.toggle = function(objectId, type) {
-        BookmarkerService.toggle(objectId, type, function(status) {
+      ctrl.exists = BookmarkerService.exists;
+      ctrl.toggle = () =>
+        BookmarkerService.toggle($scope.data, function(status) {
           $scope.$evalAsync(status ? ctrl.onActive : ctrl.onInactive);
         });
-      }
-    }],
+    },
     link : function(scope, element, attrs, bookmarker) {
       bookmarker.onActive = function() {
         bookmarkerAnimation.active(element);
@@ -144,5 +124,33 @@ angular.module("APBookmarker", ['APSvcSession'])
       bookmarker.onInactive = function() {};
     }
   };
+})
 
-});
+.directive('bookmarkerserver', function(BookmarkerService, bookmarkerAnimation) {
+  return {
+    restrict: 'EA',
+    template:  require('./bookmarker.html'),
+    require: 'bookmarkerserver',
+    controllerAs: 'bookmarker',
+    scope: {},
+    controller: function($scope, $attrs) {
+      $scope.data = {
+        type: $scope.$eval($attrs.type),
+        objectId: $scope.$eval($attrs.objectId)
+      }
+
+      var ctrl = this;
+      ctrl.exists = BookmarkerService.exists;
+      ctrl.toggle = () =>
+        BookmarkerService.toggle($scope.data, function(status) {
+          $scope.$evalAsync(status ? ctrl.onActive : ctrl.onInactive);
+        });
+    },
+    link : function(scope, element, attrs, bookmarker) {
+      bookmarker.onActive = function() {
+        bookmarkerAnimation.active(element);
+      };
+      bookmarker.onInactive = function() {};
+    }
+  };
+})
