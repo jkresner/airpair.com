@@ -53,16 +53,7 @@ function bindTracking() {
   })
 }
 
-function loadDisqus()
-{
-  window.disqus_url = '{{viewData.meta.canonical}}';
-  var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-  dsq.src = 'https://airpairblog.disqus.com/embed.js';
-  var x = document.getElementsByTagName('script')[0];
-  x.parentNode.insertBefore(dsq, x);
-}
-
-window.viewData = { {{partialName}} : {{JSON viewData}} };
+window.viewData = { canonical: '{{ canonical }}', {{partialName}} : {{JSON viewData}} };
 
 </script>
 
