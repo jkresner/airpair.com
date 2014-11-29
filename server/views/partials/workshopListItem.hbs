@@ -8,12 +8,11 @@
     <div>
       <h2 class="entry-title">{{title}}</h2>
       <h5 class="entry-author">{{ speaker.name }}</h5>
-      <img src="//0.gravatar.com/avatar/{{speaker.gravatar}}?s=100">
+      <img src="//0.gravatar.com/avatar/{{speaker.gravatar}}?s=90">
     </div>
 
   </a>
   <footer class="entry-footer">
-    {{!-- <img class="bookmark" src="/v1/img/css/bookmark.png" />
-    <img class="bookmark" src="/v1/img/css/bookmarked.png" /> --}}
+    <bookmarkerserver type="'workshop'" object-id="'{{_id}}'"></bookmarkerserver>
   </footer>
 </article>

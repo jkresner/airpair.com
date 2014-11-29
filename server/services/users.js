@@ -297,7 +297,7 @@ function inflateTagsAndBookmarks(sessionData, cb) {
 		(!sessionData.tags && !sessionData.bookmarks) )
 		return cb(null, sessionData)
 
-	cache.ready(['tags','posts'], () => {
+	cache.ready(['tags','posts','workshops'], () => {
 		if (logging) $log('inflateTagsAndBookmarks.start')
 
 		var tags = []

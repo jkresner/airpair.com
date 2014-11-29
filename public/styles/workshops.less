@@ -6,6 +6,54 @@
 @one:@lightblue;
 @two:@lightblue;
 
+.workshops {
+  margin-left:-5px;
+  text-align:center;
+
+  @media screen and (max-width:640px) {
+    margin:auto;
+  }
+
+  article {
+    .tile;
+    text-align:left;
+    position:relative;
+    margin:6px;
+    padding:0px;
+    line-height:14px;
+    display:inline-block;
+
+    a > div {
+      padding:10px;
+      img { border-radius:50% }
+    }
+
+    header {
+      padding:60px 10px 10px 10px;
+      vertical-align:bottom;
+      float:right;
+      width:80px;
+      height:126px;
+      background:@lightblue;
+    }
+
+    .entry-title {
+      height:44px;
+      margin: 0 0 1px;
+      max-width:190px;
+    }
+
+    footer {
+      width:80px;
+      background:white;
+      height:50px;
+      padding:10px 2px 6px 2px;
+    }
+
+  }
+}
+
+
 section#workshops {
 
   #subscribe {

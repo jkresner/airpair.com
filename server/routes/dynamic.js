@@ -61,9 +61,19 @@ export default function(app) {
       })
     )
 
+    .get('/workshops',
+      app.renderHbsViewData('workshops', { title: "Software Workshops, Webinars & Screencasts" },
+        (req, cb) => WorkshopsAPI.svc.getAll(cb) ))
+
     .get('/:tag/workshops/:workshop', noTrailingSlash(), trackView('workshop'),
       app.renderHbsViewData('workshop', null,
-        (req, cb) => { req.workshop.by = req.workshop.speakers[0]; cb(null,req.workshop) }))
+        (req, cb) => {
+          req.workshop.meta = {
+            title: req.workshop.name,
+            canonical: `https://www.airpair.com/${req.workshop.url}`
+          }
+          req.workshop.by = req.workshop.speakers[0]; cb(null,req.workshop)
+        }))
 
     .get('/workshops-slide/:workshop',
       app.renderHbsViewData('workshopsslide', {},
