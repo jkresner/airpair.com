@@ -138,9 +138,3 @@ window.pageHlpr.fixPostRail = function()
     fixRailElements();
   }
 }
-
-window.pageHlpr.animateSelectedBookmark = function(bookmarkElm, destinationElm) {
-  bookmarkElm.css({
-
-  });
-}
