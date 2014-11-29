@@ -63,7 +63,8 @@ export default function(app) {
       viewDataFn(req, (e,data) => {
         data[`${partialName}Render`] = true
         if (!data.meta) data.meta = pageMeta
-        res.status(200).render(`./baseServer.hbs`, combineBaseData(req, { viewData: data, partialName, canonical: data.meta.canonical } ) )
+        var canonical = (data.meta) ? data.meta.canonical : ""
+        res.status(200).render(`./baseServer.hbs`, combineBaseData(req, { viewData: data, partialName, canonical } ) )
     	})
 	}
 }
