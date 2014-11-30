@@ -154,7 +154,7 @@ function chargeAndTrackOrder(o, errorCB, saveCB)
         return errorCB(e)
       }
       if (logging) $log('payment.created', r)
-      $log('***payment.created', e, r)
+      // $log('***payment.created', e, r)
       // trackOrderPayment.call(this, o)
       // $log('payment.type', r.type)
       // if (logging) $log('payment.r', r.type, r)
