@@ -20,13 +20,7 @@ angular.module("APWorkshops", ['ngRoute','APFilters','APShare'])
 
   .constant('API', '/v1/api')
 
-  .config(['$locationProvider', '$routeProvider',
-    function($locationProvider, $routeProvider) {
-
-    $routeProvider.when('/workshops', {
-      template: require('./list.html'),
-      controller: 'WorkshopsCtrl as workshops'
-    });
+  .config(function($locationProvider, $routeProvider) {
 
     $routeProvider.when('/workshops/subscribe', {
       template: require('./subscribe.html')
@@ -42,15 +36,15 @@ angular.module("APWorkshops", ['ngRoute','APFilters','APShare'])
       controller: 'WorkshopSignupConfirmedCtrl'
     });
 
-  }])
+  })
 
 
-  .run(['$rootScope', function($rootScope) {
+  .run(function($rootScope) {
     $rootScope.timeZoneOffset = moment().format('ZZ');
-  }])
+  })
 
 
-  .controller('WorkshopsCtrl', ['$scope', '$http', 'API', function($scope, $http, API) {
+  .controller('WorkshopsCtrl', function($scope, $http, API) {
     var self = this;
     var upcomingStart = moment(new Date());
     var upcomingEnd = moment(new Date()).add(14, 'days');
@@ -63,21 +57,19 @@ angular.module("APWorkshops", ['ngRoute','APFilters','APShare'])
        return _.contains(feautredSlugs, i.slug);
       });
     });
-  }])
+  })
 
 
-  .controller('WorkshopSignupCtrl', ['$scope', '$http', '$routeParams', 'API',
-    function($scope, $http, $routeParams, API) {
+  .controller('WorkshopSignupCtrl', function($scope, $http, $routeParams, API) {
 
     $scope.hasAccess = true;
 
     $http.get(API+'/workshops/'+$routeParams.id).success(function (data) {
       $scope.entry = data;
     });
-  }])
+  })
 
-  .controller('WorkshopSignupConfirmedCtrl', ['$scope', '$http', '$routeParams', '$location','API',
-    function($scope, $http, $routeParams, $location, API) {
+  .controller('WorkshopSignupConfirmedCtrl', function($scope, $http, $routeParams, $location, API) {
 
     $scope.later = false
     if ($location.search().later)
@@ -91,6 +83,6 @@ angular.module("APWorkshops", ['ngRoute','APFilters','APShare'])
       $scope.entry = data;
     });
 
-  }])
+  })
 
 ;
