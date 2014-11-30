@@ -1,4 +1,4 @@
-<header>
+<header ng-if="session.emailVerified">
   <ol class="entry-meta breadcrumb">
     <li>Account</li>
   </ol>
@@ -8,37 +8,33 @@
 
   <section class="email">
 
-  <form id="emailForm" novalidate name="emailForm" ng-submit="submit(emailForm.$valid, data)" ng-class="(session.emailVerified) ? '' : 'verify'">
+    <form id="emailForm" novalidate name="emailForm" ng-submit="submit(emailForm.$valid, data)" ng-class="(session.emailVerified) ? '' : 'verify'">
 
-    <div form-group class="email-group verified-{{session.emailVerified}}">
-      <label class="control-label" for="sessionEmail">Contact email</label>
-      <input id="sessionEmail" name="email" form-control type="email" placeholder="Primary contact email" ng-model="data.email" ng-blur="updateEmail(emailForm.email)" required tabindex="1">
-      <div class="error" ng-if="formGroup.showError(emailForm.email)" ng-messages="emailForm.email.$error">
-        <div ng-message="required">Field required</div>
-        <div ng-message="email">Invalid email</div>
+      <div form-group class="email-group verified-{{session.emailVerified}}">
+        <label class="control-label" for="sessionEmail">Contact email</label>
+        <span class="verifyEmail" ng-if="session.emailVerified == false">{{session.email}} is unverified ...</span>
+        <input id="sessionEmail" name="email" form-control type="email" placeholder="Primary contact email" ng-model="data.email" ng-blur="updateEmail(emailForm.email)" required tabindex="1">
+        <div class="error" ng-if="formGroup.showError(emailForm.email)" ng-messages="emailForm.email.$error">
+          <div ng-message="required">Field required</div>
+          <div ng-message="email">Invalid email</div>
+        </div>
+        <span class="error">{{ emailChangeFailed }}</span>
+
+        <div>
+          <alert ng-repeat="alert in emailAlerts" type="{{alert.type}}">
+            <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>
+            <span ng-bind-html="alert.msg | html"></span></alert>
+        </div>
       </div>
-      <span class="error">{{ emailChangeFailed }}</span>
-      <span class="verifyEmail" ng-if="session.emailVerified == false">{{session.email}} is unverified ...</span>
-    </div>
-    <div class="verifyEmail" ng-if="session.emailVerified == false">
-      <a href="#" ng-click="sendVerificationEmail()" class="btn">Send verification email</a>
-    </div>
-    <div>
-      <alert ng-repeat="alert in emailAlerts" type="{{alert.type}}"><span ng-bind-html="alert.msg | html"></span></alert>
-    </div>
-    <hr />
-  </form>
+      <div class="verifyEmail" ng-if="session.emailVerified == false">
+        <a href="#" ng-click="sendVerificationEmail()" class="btn">Send verification email</a>
+      </div>
+      <hr />
+    </form>
+
   </section>
 
-
-  <section class="avatar">
-    <img class="avatar" ng-src="{{session.avatar}}?s=280" title="Avatars are gravtars from your email." />
-    <p style="font-size:12px">
-    <span ng-if="session.email">Update the <b><a href="http://www.gravatar.com/" target="_blank">gravatar</a></b> for {{ session.email }}</span>
-    <span ng-if="!session.email">Enter an email address</span>
-      to change your pic.
-    </p>
-  </section>
+  <hr />
 
   <section class="info">
 
@@ -75,6 +71,16 @@
   </div>
 
   </section>
+
+  <section class="avatar">
+    <img class="avatar" ng-src="{{session.avatar}}?s=200" title="Avatars are gravtars from your email." />
+    <p style="font-size:12px">
+    <span ng-if="session.email">Update the <b><a href="http://www.gravatar.com/" target="_blank">gravatar</a></b> for {{ session.email }}</span>
+    <span ng-if="!session.email">Enter an email address</span>
+      to change your pic.
+    </p>
+  </section>
+
   <hr />
 
   <section class="password">

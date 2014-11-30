@@ -81,7 +81,6 @@ window.pageHlpr.loadPoSt = function()
 }
 
 
-
 window.pageHlpr.fixNavs = function(elmId)
 {
   var scrollingOn = $(document).width() > 900;
@@ -103,21 +102,30 @@ window.pageHlpr.fixNavs = function(elmId)
 var fixRailElements = function(e)
 {
   var scrollingOn = $(document).width() > 900;
-  var offset = $('.railCTA1Holder').offset().top;
+  var offset = $('.railMarker').offset().top;
+  var offsetLeft = $('.railMarker').offset().left;
+  var shareHeight = $('.share').height() + 20;
+  var cta1Height = $('.rail1CTA').height() + 20;
 
+  $('.share').css('left', offsetLeft);
+  $('.rail1CTA').css('left', offsetLeft);
+
+  console.log('scrollingOnr', offset)
   if (scrollingOn)
   {
-    if (window.scrollY < offset) {
-      $('.rail1CTA').css('top', offset - window.scrollY);
-      $('.share').css('top', 0);
-      $('#table-of-contents').css('top', 0);
-      $('#table-of-contents + ul').css('top', 0);
+    if (window.scrollY < offset)
+    {
+      $('.share').css('top', offset - window.scrollY);
+      $('.rail1CTA').css('top', offset - window.scrollY + shareHeight);
+      $('#table-of-contents').css('top', shareHeight+cta1Height);
+      $('#table-of-contents + ul').css('top', shareHeight+cta1Height);
     }
     else {
-      $('.rail1CTA').css('top', 0);
-      $('.share').css('top', window.scrollY - 170);
-      $('#table-of-contents').css('top', window.scrollY - 180);
-      $('#table-of-contents + ul').css('top', window.scrollY - 180);
+      var scrollSet = window.scrollY - offset
+      $('.share').css('top', 0);
+      $('.rail1CTA').css('top', shareHeight);
+      $('#table-of-contents').css('top', scrollSet + shareHeight + cta1Height);
+      $('#table-of-contents + ul').css('top', scrollSet + shareHeight + cta1Height);
     }
   }
   else
@@ -133,8 +141,11 @@ var fixRailElements = function(e)
 
 window.pageHlpr.fixPostRail = function()
 {
-  if ($('.rail1CTA').length > 0) {
+  if ($('.railMarker').length > 0) {
     $(window).scroll(fixRailElements);
     fixRailElements();
+    setTimeout(fixRailElements, 500)
+    setTimeout(fixRailElements, 1000)
+    setTimeout(fixRailElements, 3000)
   }
 }

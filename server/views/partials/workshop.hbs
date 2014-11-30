@@ -17,17 +17,17 @@
   <div id="show">
     <h1 class="entry-title">{{ title }}</h1>
 
-    <div class="railCTA">
-      <h6>Like this workshop?</h6>
-      <div>
-        {{#each speakers}}
-        <img src="//0.gravatar.com/avatar/{{ gravatar }}?s=100" />{{/each}}
-        <div bookmarkerserver type="'workshop'" object-id="'{{_id}}'"></div>
-        <p>Save it to your bookmarks</p>
-      </div>
-    </div>
 
     <div class="speakers">
+      <div class="rail1CTA railBookmarkCTA">
+        <h6>Like this workshop?</h6>
+        <div>
+          {{#each speakers}}
+          <img src="//0.gravatar.com/avatar/{{ gravatar }}?s=100" />{{/each}}
+          <div bookmarkerserver type="'workshop'" object-id="'{{_id}}'"></div>
+          <p>Save it to your bookmarks</p>
+        </div>
+      </div>
       <div class="share">
         <div class="pw-widget pw-counter-vertical" pw:twitter-via="airpair">
           <a class="pw-button-facebook pw-look-native"></a>
@@ -42,7 +42,7 @@
         {{#each speakers}}
         <li>
           <h3>{{ name }}</h3>
-          <img src="//0.gravatar.com/avatar/{{ gravatar }}?s=400" />
+          <img src="//0.gravatar.com/avatar/{{ gravatar }}?s=400" class="speaker" />
 
           {{ fullBio }}
         </li>

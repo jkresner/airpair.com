@@ -9,7 +9,7 @@ require('./../v1/lib/angular-load/angular-load.js');
 require('./../v1/lib/angular-bootstrap/ui-bootstrap-tpls.js');
 window.marked = require('./../v1/lib/marked/lib/marked.js');
 require('./../v1/lib/prism/prism.js');
-require('./../v1/lib/jquery-ui/jquery-ui.js');
+require('./../v1/lib/jquery-ui-custom/jquery-ui.js');
 require('./../common/directives/share.js');
 require('./../common/directives/post.js');
 require('./../common/directives/experts.js');
@@ -75,6 +75,7 @@ angular.module("AP", ['ngRoute', 'ngAnimate', 'APSideNav', 'APAuth', 'APPosts', 
     $rootScope.$on('$routeChangeSuccess', function() {
       window.trackRoute($location.path());
       $rootScope.serverErrors = [];
+      angular.element('.notify').toggle($location.path().indexOf('login') == -1)
     });
 
     if (window.viewData)
@@ -101,10 +102,9 @@ angular.module("AP", ['ngRoute', 'ngAnimate', 'APSideNav', 'APAuth', 'APPosts', 
   .controller('ServerTemplateCtrl', function($scope) {
 
     pageHlpr.fixNavs('#side');
-    pageHlpr.fixPostRail();
-    pageHlpr.highlightSyntax({ addCtrs: true });
     pageHlpr.loadPoSt();
-    // console.log('dis', angular.element('#disqus_thread'))
+    pageHlpr.highlightSyntax({ addCtrs: true });
+    pageHlpr.fixPostRail();
     if (viewData && angular.element('#disqus_thread').length>0)
       pageHlpr.loadDisqus(viewData.canonical);
   })
