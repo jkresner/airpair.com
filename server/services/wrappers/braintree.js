@@ -34,7 +34,7 @@ export function chargeWithMethod(amount, orderId, paymentMethodToken, cb) {
     amount, //'10.00',
     orderId,
     paymentMethodToken
-  }, (e,r) => { r.type = "braintree", cb(e,r) })
+  }, (e,r) => { if (r) { r.type = "braintree" }; $log('brain', e, r); cb(e,r) })
 }
 
 
