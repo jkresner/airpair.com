@@ -3,7 +3,7 @@
 </div>
 <div class="modal-body bookmarks bookmark-input-group">
 
-  <p>Collect your favorite <a href="/posts">posts</a>, <a href="/workshops">workshops</a> and experts.</p>
+  <p>Collect your favorite <a href="/posts">posts</a>, <a href="/workshops" target="_self">workshops</a> and experts.</p>
 
   <ul class="bookmarks" sortable get='bookmarks' set='updateBookmarks'>
     <li ng-repeat="b in bookmarks() | orderBy:'sort'" ng-attr-data-id="{{b._id}}">

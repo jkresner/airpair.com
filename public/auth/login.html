@@ -1,7 +1,12 @@
-<header>Login</header>
-<section id="auth" ng-controller="LoginCtrl as LoginCtrl">
+<!-- <header>
+  <ol class="entry-meta breadcrumb">
+    <li class="current">Welcome</li>
+  </ol>
+</header>
+ --><section id="auth" ng-controller="LoginCtrl as LoginCtrl">
 
-<h3>Welcome back.</h3>
+<p>New to AirPair? <o>Login with google below or <b><a href="#" ng-click="openProfile()">create an account</a></b> using an email and password.</p>
+
 
 <p ng-if="session._id"><br /><br />You are logged in as {{ session.email }}. <br /><br />Want to <a href="/v1/auth/logout">Logout</a>?</p>
 
@@ -14,7 +19,6 @@
     <a class="btn btn-error" href="/v1/auth/google" target="_self">Login with google</a>
   </p>
   <p style="font-size:12px;margin:20px 0 0 0">
-
   * You will be temporarily redirected to a google login page</p>
 
 </div>
@@ -42,13 +46,12 @@
 
     <button type="submit" class="btn btn-warning btn-lg">Login</button>
 
-    <div class="error" ng-if="loginFail">
-      <b>Login failed:</b> <span ng-if="loginFail">{{loginFail.message}}</span>
+    <div class="alert alert-danger" ng-if="loginFail">
+      <b>Login failed:</b> <span ng-if="loginFail">{{loginFail}}</span>.
+      <b><a href="#" ng-click="openProfile()">Create an account?</a></b></p>
     </div>
+
   </form>
-
-
-  <p>New? <a href="#" ng-click="openProfile()">Create an account</a>.</p>
 
 </div>
 </div>

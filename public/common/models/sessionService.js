@@ -12,20 +12,26 @@ angular.module('APSvcSession', [])
     this.remove = (msg) =>
       $rootScope.notifications = _.without($rootScope.notifications, msg)
 
+    this.calculateNextNotification = (usr) => {
+      if (!usr._id && usr.bookmarks && usr.bookmarks.length > 0) return { saveBookmarks: true }
+      else if (!usr.emailVerified && usr._id) return { verifyEmail: true }
+      return null
+    }
+
     return this;
   })
 
   .service('SessionService', function($rootScope, $http, API, Auth, $cacheFactory, notifications) {
 
     var setScope = (successFn, trackingData) => {
-      return function(result) {
-        if (!result.emailVerified && result._id) notifications.add("Please <a href='/me'>verify your email</a>")
+      return function(r) {
 
-        $rootScope.session = result
+        $rootScope.notifications = notifications.calculateNextNotification(r)
+        $rootScope.session = r
 
         if (trackingData) analytics.track('Save', trackingData);
 
-        successFn(result)
+        successFn(r)
       }
     }
 

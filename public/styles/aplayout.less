@@ -72,6 +72,22 @@ div.main-wrap {
   width:100%;
 }
 
+div.notify {
+  width:900px;
+  margin:0 auto;
+}
+
+.blueGradient {
+  background: white;
+  background: -moz-linear-gradient(left, white 0%, @lightblue 50%, white 100%);
+  background: -webkit-gradient(left top, right top, color-stop(0%, white), color-stop(50%, @lightblue), color-stop(100%, white));
+  background: -webkit-linear-gradient(left, white 0%, @lightblue 50%, white 100%);
+  background: -o-linear-gradient(left, white 0%, @lightblue 50%, white 100%);
+  background: -ms-linear-gradient(left, white 0%, @lightblue 50%, white 100%);
+  background: linear-gradient(to right, white 0%, @lightblue 50%, white 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ffffff', GradientType=1 );
+}
+
 main {
   width:900px;
   margin:0 auto;
@@ -80,22 +96,27 @@ main {
   a:hover { color:@gray }
 
   > header {
+    color:@gray;
+    // background:@palegray;
     height:35px;
     width:100%;
-    margin:0px auto;
-    padding:10px 0 0 0;
-    font-size:13px;
+    margin:0px auto 0px -1px;
+    padding:0px 5px 0 5px;
+    font-size:11px;
     line-height:13px;
     text-transform:uppercase;
-    background: rgba(255,255,255,1);
-    background: -moz-linear-gradient(left, rgba(255,255,255,1) 0%, rgba(223,242,239,1) 50%, rgba(255,255,255,1) 100%);
-    background: -webkit-gradient(left top, right top, color-stop(0%, rgba(255,255,255,1)), color-stop(50%, rgba(223,242,239,1)), color-stop(100%, rgba(255,255,255,1)));
-    background: -webkit-linear-gradient(left, rgba(255,255,255,1) 0%, rgba(223,242,239,1) 50%, rgba(255,255,255,1) 100%);
-    background: -o-linear-gradient(left, rgba(255,255,255,1) 0%, rgba(223,242,239,1) 50%, rgba(255,255,255,1) 100%);
-    background: -ms-linear-gradient(left, rgba(255,255,255,1) 0%, rgba(223,242,239,1) 50%, rgba(255,255,255,1) 100%);
-    background: linear-gradient(to right, rgba(255,255,255,1) 0%, rgba(223,242,239,1) 50%, rgba(255,255,255,1) 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ffffff', GradientType=1 );
     white-space:nowrap;
+
+    .breadcrumb {
+      background:none;
+      padding:10px 0 5px 0;
+      margin:none;
+
+      > li + li:before {
+        content: "> ";
+        padding:0px 4px;
+     }
+    }
   }
 
   @media only screen and (max-width: 900px) {
