@@ -24,6 +24,13 @@ var workshopsFeedOptions = {
   categories: []
 }
 
+var mixedFeedOptions = {
+  title: 'AirPair Posts & Workshops',
+  description: 'Posts & Workshops from AirPair',
+  feed_url: 'http://www.airpair.com/rss',
+  categories: []
+}
+
 function defineRssFeed(options) {
   return new RSS(_.extend(allFeedOptions, options));
 }
@@ -66,17 +73,19 @@ function rssRenderer() {
       catNames = _.union( catNames, feed_item.categories )
       the_feed.item(feed_item)
     }
-    the_feed.categories = _.unique( catNames )
+    the_feed.categories.push(_.unique( catNames ))
   }
 
   var feeds = {}
   feeds.posts = defineRssFeed( postsFeedOptions )
   feeds.workshops = defineRssFeed( workshopsFeedOptions )
+  feeds.mixed = defineRssFeed( mixedFeedOptions )
 
   return {
-    posts: function(res) {
+    posts: function(req, res) {
       PostsSvc.getRecentPublished((e, posts) => {
         feeds.posts.items = []
+        feeds.posts.categories = []
         if (e) {
           $log(('error retrieving posts for rss feed:' + e).red)
           return render(res, feeds.posts)
@@ -87,9 +96,10 @@ function rssRenderer() {
       })
     },
 
-    workshops: function(res) {
+    workshops: function(req, res) {
       WorkshopsSvc.getAllForRss((e,workshops) => {
         feeds.workshops.items = []
+        feeds.workshops.categories = []
         if (e) {
           $log(('error retrieving workshops for rss feed:' + e).red)
           return render(res, feeds.workshops)
@@ -97,6 +107,26 @@ function rssRenderer() {
 
         populate(feeds.workshops, workshops, generateWorkshopFeedItem)
         render(res, feeds.workshops)
+      })
+    },
+
+    mixed: function(req, res) {
+      PostsSvc.getRecentPublished((e, posts) => {
+        if (e) {
+          $log(('error retrieving posts for mixed rss feed:' + e).red)
+          return render(res, feeds.mixed)
+        }
+        WorkshopsSvc.getAllForRss((e, workshops) => {
+          if (e) {
+            $log(('error retrieving workshops for mixed rss feed:' + e).red)
+            return render(res, feeds.mixed)
+          }
+          feeds.mixed.items = []
+          feeds.mixed.categories = []
+          populate(feeds.mixed, posts, generatePostFeedItem)
+          populate(feeds.mixed, workshops, generateWorkshopFeedItem)
+          render(res, feeds.mixed)
+        })
       })
     }
   }
@@ -106,12 +136,9 @@ export default function(app) {
   var rss = rssRenderer()
   var router = require('express').Router()
 
-  .get('/posts', (req, res) => {
-    rss.posts(res)
-  })
+  .get('/', rss.mixed)
+  .get('/posts', rss.posts)
+  .get('/workshops', rss.workshops)
 
-  .get('/workshops', (req, res) => {
-    rss.workshops(res)
-  })
   return router
 }

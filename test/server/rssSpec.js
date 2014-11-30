@@ -16,12 +16,11 @@ module.exports = () => describe("Rss: ", function() {
     done()
   })
 
-
   var expectFeedWideFields = (text) => {
     expect(text).to.not.be.empty
     expect(text).to.match(/<title>.+<\/title>(?=.*<item>)/)
     expect(text).to.match(/<description>.+<\/description>(?=.*<item>)/)
-    expect(text).to.match(/<atom:link href="http:\/\/www.airpair.com\/rss\/(posts|workshops)(?=.*<item>)/)
+    expect(text).to.match(/<atom:link href="http:\/\/www.airpair.com\/rss\/{0,1}(posts|workshops){0,1}(?=.*<item>)/)
     expect(text).to.match(/<link>http:\/\/www.airpair.com<\/link>(?=.*<item>)/)
     expect(text).to.match(/<image><url>http:\/\/www.airpair.com\/v1\/img\/css\/airpair-circle.png<\/url>(?=.*<item>)/)
     expect(text).to.match(/<copyright>.+<\/copyright>(?=.*<item>)/)
@@ -75,6 +74,26 @@ module.exports = () => describe("Rss: ", function() {
           expectItemFields(r.text)
           expectAtLeast2OrderedItems(r.text)
           done()
+        })
+    })
+  })
+
+  describe("Mixed Feed", function() {
+    it('it contains the expected fields', (done) => {
+      GETXML('/rss')
+        .end( (e,r) => {
+          if (e) return done(e)
+          expectFeedWideFields(r.text)
+          expectItemFields(r.text)
+          done()
+        })
+    })
+
+    it.skip('it contains at least 1 workshop and at least 1 post', (done) => {
+      GETXML('/rss')
+        .get( (e,r) => {
+          if (e) return done(e)
+          // assert something
         })
     })
   })
