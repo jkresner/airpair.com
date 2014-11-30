@@ -49,8 +49,7 @@ module.exports = {
       var existing = _.find(array, comparator)
       if (existing) return _.without(array, existing)
       else {
-        array.push(item)
-        return array
+        return _.union(array,[item])
       }
     }
   },

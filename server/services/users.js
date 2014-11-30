@@ -204,7 +204,7 @@ export function tryLocalLogin(email, password, done) {
 			else if (!r.local || !r.local.password) {
 				failMsg = "try google login"; r = false }
 			else if (!validPassword(password, r.local.password)) {
-				failMsg = "wrong password"; r = false }
+				failMsg = "bad password"; r = false }
 		}
 
 		if (e || failMsg) return done(e, r, failMsg)
@@ -387,7 +387,7 @@ function toggleSessionItem(type, item, maxAnon, maxAuthd, comparator, cb)
 		var existing = this.session.anonData[type]
 
 		var list = util.toggleItemInArray(existing, item, comparator)
-		if (list.length > maxAnon) return cb(Error(`Max allowed ${type} reached`))
+		if (list.length > maxAnon) return cb(Error(`Max ${maxAnon} ${type} reached. <a href="/login">Login</a> to increase limit.`))
 		this.session.anonData[type] = list
 
 		getSession.call(this, cb)

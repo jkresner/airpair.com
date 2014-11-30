@@ -1,19 +1,19 @@
 <header class="entry-header">
-  <p class="entry-meta">
-    <a href="/posts">Posts</a>
-    &nbsp; > &nbsp;
-    <span class="entry-author" itemprop="author" itemscope="itemscope" itemtype="//schema.org/Person">
-    {{#if by.username}}
-      <a href="/me/{{by.username}}" class="entry-author-link" itemprop="url" rel="author" target="_self"><span class="entry-author-name" itemprop="name">{{by.name}}</span></a>
-    {{else}}
-      <span class="entry-author-name" itemprop="name">{{by.name}}</span>
-    {{/if}}
-    </span>
-    &nbsp; > &nbsp;
-    <time class="entry-time" itemprop="datePublished" datetime="{{ isoMoment published }}">{{ dateFormat published 'DD MMM, YYYY' }}
-    </time>
-  </p>
+  <ol class="entry-meta breadcrumb">
+    <li><a href="/learn">Learn</a></li>
+    <li><a href="/posts">Posts</a></li>
+    <li><span>{{ primarytag }}</li>
+    <li><span class="entry-author" itemprop="author" itemscope="itemscope" itemtype="//schema.org/Person">
+      {{#if by.username}}
+        <a href="/me/{{by.username}}" class="entry-author-link" itemprop="url" rel="author" target="_self"><span class="entry-author-name" itemprop="name">{{by.name}}</span></a>
+      {{else}}
+        <span class="entry-author-name" itemprop="name">{{by.name}}</span>
+      {{/if}}
+      </span>
+    </li>
+  </ol>
 </header>
+
 <article class="blogpost">
   <h1 class="entry-title" itemprop="headline">{{ title }}</h1>
   <div class="railCTA1Holder"></div>
@@ -22,6 +22,15 @@
       <a class="pw-button-facebook pw-look-native"></a>
       <a class="pw-button-twitter pw-look-native"></a>
       <a class="pw-button-linkedin pw-look-native"></a>
+    </div>
+  </div>
+
+  <div class="railCTA">
+    <h6>Like this article?</h6>
+    <div>
+      <img src="{{by.avatar}}?s=100" />
+      <div bookmarkerserver type="'post'" object-id="'{{_id}}'"></div>
+      <p>Save it to your bookmarks</p>
     </div>
   </div>
 
@@ -40,19 +49,6 @@
   {{/if}}
   <hr />
   {{{ html }}}
-
-  <div class="island">
-    <div class="rail">
-      <div class="rail1CTA railCTA">
-        <h6>Like this article?</h6>
-        <div>
-          <img src="{{by.avatar}}?s=100" />
-          <p>Save this post to your bookmarks</p>
-          <div bookmarkerserver type="'post'" object-id="'{{_id}}'"></div>
-        </div>
-      </div>
-    </div>
-  </div>
 
   <div class="bodyCTA1 bodyCTA">
     <h6>Want to keep track of more {{ primarytag }} posts on AirPair?</h6>
