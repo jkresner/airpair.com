@@ -25,11 +25,12 @@ describe 'Server: ', ->
     setTimeout(( -> testDb.init(done) ), 100)
 
 
-  describe('Session: ', require('./sessionSpec'))
+  # describe('Session: ', require('./sessionSpec'))
   describe('Tags: ', require('./tagsSpec'))
   describe('Auth: ', require('./authSpec'))
   describe('Authz: ', require('./authzSpec'))
   describe('Posts: ', require('./postsSpec'))
+  describe('Feeds: ', require('./rssSpec'))
   describe('Analytics: ', require('./analyticsSpec'))
   describe('Redirects: ', require('./redirectsSpec'))
   describe('Orders: ', require('./paymethodsSpec'))
