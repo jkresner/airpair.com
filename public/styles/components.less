@@ -102,31 +102,9 @@ h1.entry-title {
 .pw-popup-type_aftershare { display:none!important }
 
 
-.railCTA {
+.railBookmarkCTA {
   margin:10px 0 8px 0;
   position:relative;
-  > div {
-    position:relative;
-    background-color:@lightblue;
-    border-radius:4px;
-    max-height:95px;
-  }
-
-  > div > img { width:60px;
-    height:60px;
-    border-radius:50%;
-    display:inline-block;
-    vertical-align:top;
-    padding:10px;
- }
-
- p { float:right;
-    width:105px;
-    font-size:11px!important;
-    line-height:16px!important;
-    padding:13px 10px 0 0;
-    line-height:16px;
-  }
 
   h6 {
     font-weight:bold;
@@ -136,18 +114,27 @@ h1.entry-title {
     margin:0 0 10px 0;
   }
 
-  a {
-    margin-top:-15px;
-    display:block;
-    // background:@orange;
-    color:white;
-    border:none;
-    padding:5px 10px;
-    width:100%;
-    font-weight:bold;
-    background-position:90% center;
-    background-repeat:no-repeat;
-    text-align:right;
+  > div {
+    position:relative;
+    background-color:@lightblue;
+    border-radius:4px;
+    max-height:95px;
+  }
+
+  > div > img { width:60px!important;
+    height:60px!important;
+    border-radius:50%;
+    display:inline-block;
+    vertical-align:top;
+    padding:10px;
+ }
+
+ p { float:right!important;
+    width:100px!important;
+    font-size:11px!important;
+    line-height:16px!important;
+    padding:13px 10px 0 0!important;;
+    line-height:16px!important;
   }
 
   div > div {
@@ -232,6 +219,13 @@ input.form-control {
   }
   ul.bookmarks li {
     width: 600px;
+    padding:4px;
+    .order {
+      margin:5px
+    }
+    .remove {
+      margin:5px
+    }
   }
 
   .tagSelect

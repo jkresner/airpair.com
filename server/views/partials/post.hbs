@@ -16,27 +16,12 @@
 
 <article class="blogpost">
   <h1 class="entry-title" itemprop="headline">{{ title }}</h1>
-  <div class="railCTA1Holder"></div>
-  <div class="share">
-    <div class="pw-widget pw-counter-vertical" pw:twitter-via="airpair">
-      <a class="pw-button-facebook pw-look-native"></a>
-      <a class="pw-button-twitter pw-look-native"></a>
-      <a class="pw-button-linkedin pw-look-native"></a>
-    </div>
-  </div>
 
-  <div class="railCTA">
-    <h6>Like this article?</h6>
-    <div>
-      <img src="{{by.avatar}}?s=100" />
-      <div bookmarkerserver type="'post'" object-id="'{{_id}}'"></div>
-      <p>Save it to your bookmarks</p>
-    </div>
-  </div>
+  <div class="railMarker"></div>
 
   <h4 id="table-of-contents">Table of Contents</h4>
   {{{toc}}}
-  <div class="railCTA3Holder"></div>
+  <div class="rail2CTA"></div>
   <figure class="author">
     <img alt="{{by.name}}" src="{{by.avatar}}?s=100">
     <figcaption>
@@ -49,6 +34,23 @@
   {{/if}}
   <hr />
   {{{ html }}}
+
+  <div class="share">
+    <div class="pw-widget pw-counter-vertical" pw:twitter-via="airpair">
+      <a class="pw-button-facebook pw-look-native"></a>
+      <a class="pw-button-twitter pw-look-native"></a>
+      <a class="pw-button-linkedin pw-look-native"></a>
+    </div>
+  </div>
+
+  <div class="rail1CTA railBookmarkCTA">
+    <h6>Like this article?</h6>
+    <div>
+      <img src="{{by.avatar}}?s=100" />
+      <div bookmarkerserver type="'post'" object-id="'{{_id}}'"></div>
+      <p>Save it to your bookmarks</p>
+    </div>
+  </div>
 
   <div class="bodyCTA1 bodyCTA">
     <h6>Want to keep track of more {{ primarytag }} posts on AirPair?</h6>
