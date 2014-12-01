@@ -14,8 +14,8 @@ module.exports = {
     creditRemaining: function(userId) {
       return {  userId,
                 '$and': [
-                    {'info.remaining' : { '$exists': true }},
-                    {'info.remaining': { '$lt': new Date() }}
+                    {'lineItems.info' : { '$exists': true }},
+                    {'lineItems.info.remaining': { '$gt': 0 }}
                 ] }
     }
   },

@@ -191,8 +191,178 @@ module.exports = {
 	        }
 	    ]
 		}
+  },
+
+  orders: {
+    jkHist: [
+      {
+        "company" : {
+          "contacts" : [
+              {
+                  "_id" : "52702a2700a177020000001f",
+                  "timezone" : "GMT-0700 (PDT)",
+                  "twitter" : "jkresner",
+                  "pic" : "https://lh3.googleusercontent.com/-NKYL9eK5Gis/AAAAAAAAAAI/AAAAAAAAABY/291KLuvT0iI/photo.jpg",
+                  "userId" : "5175efbfa3802cc4d5a5e6ed",
+                  "phone" : "",
+                  "title" : "",
+                  "gmail" : "jk@airpair.com",
+                  "email" : "jk@airpair.com",
+                  "fullName" : "Jonathon Kresner"
+              }
+          ],
+          "name" : "airpair, inc.",
+          "_id" : "5181ed3e312c520200000004"
+        },
+        "lineItems" : [
+          {
+            "qty" : 1,
+            "suggestion" : {
+                "expert" : {
+                    "paymentMethod" : {
+                        "type" : "paypal",
+                        "info" : {
+                            "email" : "paypal@cloudspark.com.au"
+                        }
+                    },
+                    "pic" : "https://lh5.googleusercontent.com/-i29sTxvEDO8/AAAAAAAAAAI/AAAAAAAAABc/DMBwkJL645s/photo.jpg",
+                    "email" : "michael@cloudspark.com.au",
+                    "rate" : 110,
+                    "username" : "mjpearson",
+                    "name" : "Michael Pearson",
+                    "userId" : "520c1abe66a6f999a465f5f5",
+                    "_id" : "520c1b13b3e6350200000009"
+                },
+                "suggestedRate" : {
+                    "nda" : {
+                        "total" : 160,
+                        "expert" : 90
+                    },
+                    "private" : {
+                        "total" : 110,
+                        "expert" : 70
+                    },
+                    "opensource" : {
+                        "total" : 90,
+                        "expert" : 70
+                    }
+                },
+                "_id" : "526efa423a400f0200000023"
+            },
+            "total" : 90,
+            "type" : "opensource",
+            "unitPrice" : 90,
+            "redeemedCalls" : [
+              {
+                  "callId" : "538e3065cfefef0200c47ac7",
+                  "qtyRedeemed" : 1,
+                  "_id" : "538e3065cfefef0200c47ac8",
+                  "qtyCompleted" : 1
+              }
+            ]
+          }
+        ],
+        "marketingTags" : [],
+        "owner" : "jk",
+        "payment" : {
+          "paymentExecStatus" : "CREATED",
+        },
+        "paymentStatus" : "paidout",
+        "paymentType" : "paypal",
+        "profit" : 20,
+        "requestId" : "526ef8de3a400f0200000021",
+        "total" : 90,
+        "userId" : "5175efbfa3802cc4d5a5e6ed",
+        "utc" : "2013-10-30T06:00:44.000Z"
+      },
+      {
+        "company" : {
+          "contacts" : [
+              {
+                  "firstName" : "Jonathon",
+                  "_id" : "5401189005b4b202000f824b",
+                  "timezone" : "GMT-0700 (PDT)",
+                  "twitter" : "jkresner",
+                  "pic" : "https://lh3.googleusercontent.com/-NKYL9eK5Gis/AAAAAAAAAAI/AAAAAAAAABY/291KLuvT0iI/photo.jpg",
+                  "userId" : "5175efbfa3802cc4d5a5e6ed",
+                  "phone" : "",
+                  "title" : "",
+                  "gmail" : "jk@airpair.com",
+                  "email" : "jk@airpair.com",
+                  "fullName" : "Jonathon Kresner"
+              }
+          ],
+          "name" : "AirPair",
+          "_id" : "5181ed3e312c520200000004"
+        },
+        "lineItems" : [
+          {
+            "type" : "opensource",
+            "total" : 84,
+            "unitPrice" : 84,
+            "qty" : 1,
+            "suggestion" : {
+                "_id" : "54012c8505b4b202000f8252",
+                "suggestedRate" : {
+                    "opensource" : {
+                        "expert" : 52,
+                        "total" : 84
+                    },
+                    "private" : {
+                        "expert" : 52,
+                        "total" : 104
+                    },
+                    "nda" : {
+                        "expert" : 72,
+                        "total" : 154
+                    }
+                },
+                "expert" : {
+                    "_id" : "53fcd1e588b04602008451d3",
+                    "userId" : "53fcd18c8f8c80299bcc4477",
+                    "name" : "Lauren Bridges",
+                    "username" : "nikinash",
+                    "rate" : 40,
+                    "email" : "krush.art@gmail.com",
+                    "pic" : "https://pbs.twimg.com/profile_images/378800000099099216/4becf6265298df80896d3ad9ab51f9ea_normal.jpeg",
+                    "paymentMethod" : {
+                        "info" : {
+                            "email" : "krush.art@gmail.com"
+                        },
+                        "type" : "paypal"
+                    }
+                }
+            },
+            "redeemedCalls" : [{
+                  "callId" : "54038604c94d3d020003ddf5",
+                  "qtyRedeemed" : 1,
+                  "_id" : "54038604c94d3d020003ddf6",
+                  "qtyCompleted" : 1
+              }
+            ]
+          }
+        ],
+        "marketingTags" : [{"group" : "aoa", "type" : "channel","name" : "aoa", "_id" : "53b3697cdd88e60200970bd9"}],
+        "owner" : "jk",
+        "payment" : {
+          "receipt_email" : "jk@airpair.com",
+          "card" : { "id" : "card_4KveLkAqT0rs0P" },
+          "id" : "ch_4gm4ZcAPIKYbkJ"
+        },
+        "paymentStatus" : "paidout",
+        "paymentType" : "stripe",
+        "payouts" : [{
+              "type" : "paypal",
+              "status" : "success",
+          }
+        ],
+        "profit" : 32,
+        "requestId" : "540118ddedf8ec020097bb3f",
+        "total" : 84,
+        //"userId" : "5175efbfa3802cc4d5a5e6ed",
+        "utc" : "2014-08-31T02:56:54.000Z"
+      }
+    ]
   }
 
-
 }
-

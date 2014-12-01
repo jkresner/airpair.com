@@ -134,6 +134,7 @@ angular.module("APBilling", ['ngRoute','APFormsDirectives','APPaymentDirectives'
   .controller('BillingBookExpertCtrl', function($scope, $routeParams, $location, ServerErrors, BillingService) {
 
     $scope.booking = {
+      credit: 0,
       minutes: 120,
       type: "private",
       time: moment().add(1, 'month')
@@ -154,7 +155,7 @@ angular.module("APBilling", ['ngRoute','APFormsDirectives','APPaymentDirectives'
         $scope.remainingCredit = $scope.booking.credit - $scope.total
       }
       else {
-        $scope.remainingCredit = null
+        $scope.remainingCredit = 0
         $scope.owe = $scope.total - $scope.booking.credit
       }
     }
@@ -167,10 +168,8 @@ angular.module("APBilling", ['ngRoute','APFormsDirectives','APPaymentDirectives'
 
     BillingService.billing.getMyOrdersWithCredit((r) => {
       $scope.orders = r
-      // console.log(OrdersUtil.linesWithCredit(r))
+      console.log('orders', r)
       $scope.booking.credit = OrdersUtil.getAvailableCredit(OrdersUtil.linesWithCredit(r))
-
-      // console.log('credit', $scope.booking.credit)
       $scope.calcSummary()
 
       BillingService.billing.getPaymethods((r) => {

@@ -1,4 +1,10 @@
-<header><a href="/billing">Billing</a> > <a href="/experts">Experts</a> > Book</header>
+<header>
+  <ol class="entry-meta breadcrumb">
+    <li><a href="/billing">Billing</a></li>
+    <li><a href="/experts">Experts</a></li>
+    <li class="current">Book</li>
+  </ol>
+</header>
 
 <section id="book">
 
@@ -65,8 +71,8 @@
       <div><label>You Owe</label> <span class="owe">${{owe}}</span></div>
       <hr />
       <input type="submit" id="submit" value="Confirm" class="btn" ng-click="submit()">
-      <p ng-if="!remainingCredit">Your card will be ${{ owe}}</p>
-      <p ng-if="remainingCredit >= 0">Remaining credit will be ${{remainingCredit}}</p>
+      <p ng-if="remainingCredit == 0">Your card will be ${{owe}}</p>
+      <p ng-if="remainingCredit > 0">Remaining credit will be ${{remainingCredit}}</p>
     </section>
 
   </section>
