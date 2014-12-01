@@ -110,7 +110,7 @@ var fixRailElements = function(e)
   $('.share').css('left', offsetLeft);
   $('.rail1CTA').css('left', offsetLeft);
 
-  console.log('scrollingOnr', offset)
+  // console.log('scrollingOnr', offset)
   if (scrollingOn)
   {
     if (window.scrollY < offset)

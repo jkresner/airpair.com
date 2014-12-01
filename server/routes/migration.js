@@ -3,10 +3,10 @@ import {trackView} from '../identity/analytics/middleware'
 import {noTrailingSlash} from '../util/seo/middleware'
 
 function routeCanonicalPost(router, app, canonical, slug) {
-  router.get(canonical, noTrailingSlash(), app.renderHbsViewData('post', function (req, cb) {
+  router.get(canonical, noTrailingSlash(), app.renderHbsViewData('post', null, function (req, cb) {
       // $log('slug', slug)
       PostsAPI.svc.getBySlug(slug, (ee,post) => {
-        $log(`p ${slug}`, post)
+        // $log(`p ${slug}`, post)
         if (!post) {
           if (winston) winston.error(`Did not find migrated post ${canonical} for ${slug}`)
           return cb("Post not found")
