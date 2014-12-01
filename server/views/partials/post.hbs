@@ -33,7 +33,7 @@
   <p class="asset">{{ assetUrlToMedia assetUrl }}</p>
   {{/if}}
   <hr />
-  {{{ html }}}
+  <post no-compile>{{{ html }}}</post>
 
   <div class="share">
     <div class="pw-widget pw-counter-vertical" pw:twitter-via="airpair">
@@ -55,8 +55,6 @@
   <div class="bodyCTA1 bodyCTA">
     <h6>Want to keep track of more {{ primarytag }} posts on AirPair?</h6>
     <div>
-      {{!-- <p>Personalize AirPair >> <a href="#" ng-click="openStack()">Add <b>{{ primarytag }}</b> to your stack</a></p>
-      <h5>And of course ... </h5> --}}
       <a href="https://twitter.com/airpair" class="twitter-follow-button" data-show-count="true">Follow @airpair</a>
 
     </div>
