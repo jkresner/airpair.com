@@ -11,7 +11,7 @@ angular.module("APNotifications", ['APFilters'])
       },
 
       link : function(scope, element, attrs, ctrls) {
-
+        element.addClass('notify')
       }
 
     };

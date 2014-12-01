@@ -1,43 +1,7 @@
 angular.module("APBookmarker", ['APSvcSession'])
 
 
-// .directive('bookmarkerlist', function(SessionService, bookmarkerAnimation) {
-
-//   return {
-//     link: function(scope, element, attrs) {
-//     },
-//     controller: ['$rootScope', '$scope', function($rootScope, $scope) {
-
-//       SessionService.onAuthenticated(function(session) {
-//         _.each(session.bookmarks, function(bookmark) {
-//           $(".bookmark"+bookmark.objectId).attr('src', "/v1/img/css/bookmarked.png")
-//         })
-//       });
-
-//       window.toggleBookmark = function(e) {
-//         var $elem = $(e);
-//         var objectId = $elem.data('id');
-//         var type = $elem.data('type');
-
-//         SessionService.updateBookmark({ type:type, objectId:objectId }, success, error);
-
-//         function success(result) {
-//           if ($elem.attr('src') == "/v1/img/css/bookmarked.png") { //remove bookmark
-//             $elem.attr('src', "/v1/img/css/bookmark.png");
-//           } else { //add bookmark
-//             $elem.attr('src', "/v1/img/css/bookmarked.png");
-//             bookmarkerAnimation.active($elem);
-//           }
-//         }
-
-//         function error() {}
-//       }
-//     }]
-//   };
-
-// })
-
-.factory('BookmarkerService', function(SessionService, $rootScope) {
+.factory('BookmarkerService', function($rootScope, SessionService, ServerErrors) {
 
   var bookmarkLookup = {};
   function populateBookmarkLookup() {
@@ -57,7 +21,7 @@ angular.module("APBookmarker", ['APSvcSession'])
       SessionService.updateBookmark(data, function(response) {
         populateBookmarkLookup()
         success(bookmarkLookup[data.objectId]);
-      }, (e)=>{console.log('error', e)});
+      }, ServerErrors.add);
     }
   }
 })

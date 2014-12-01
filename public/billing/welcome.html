@@ -1,4 +1,8 @@
-<header>Billing</header>
+<header>
+  <ol class="entry-meta breadcrumb">
+    <li class="current">Billing</li>
+  </ol>
+</header>
 
 <section id="billing">
 
@@ -6,13 +10,13 @@
 
     <h1>Two ways to pay</h1>
 
-    <p>Before connecting you with experts, payment info must be provided. You have two options with payments.</p>
+    <p>Choose your payment preference to access real-time experts.</p>
 
     <div class="choice">
     <div class="{{ (choice == 'alacart') ? 'option selected' : 'option' }}">
 
       <h2>Pay as you go</h2>
-      <p>Pay for each AirPair session a la carte. We'll store your payment info now without charging your card.</p>
+      <p>Pay each time you connect with an expert. We'll store your payment info now without charging your card.</p>
 
       <button class="btn" ng-if="choice != 'alacart'" ng-click="setChoice('alacart')">Pay a la carte</button>
 
@@ -25,7 +29,7 @@
     <div class="{{ (choice == 'credit') ? 'option selected' : 'option' }}">
 
       <h2>Top-up</h2>
-      <p>Purchase $500 - $5000 credit at a time and receive up to 20% bonus credit.</p>
+      <p>Purchase $500 - $5000 credit at a time. Get up to 20% bonus credit.</p>
 
       <button class="btn" ng-if="choice != 'credit'" ng-click="setChoice('credit')">See Top-up Options</button>
 
