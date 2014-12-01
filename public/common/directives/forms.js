@@ -95,4 +95,12 @@ angular.module("APFormsDirectives", [])
     //-- $modelValue only update when all validations pass
   })
 
+
+  .directive('formErrors', function() {
+
+    return {
+      template: require('./formErrors.html')
+    }
+  })
+
 ;
