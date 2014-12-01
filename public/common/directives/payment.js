@@ -1,6 +1,6 @@
 angular.module("APPaymentDirectives", ['angularLoad','APSvcBilling'])
 
-  .directive('paymentInfo', function(angularLoad, BillingService) {
+  .directive('paymentInfo', function(angularLoad, BillingService, ServerErrors) {
 
     var src = 'https://js.braintreegateway.com/v2/braintree.js';
 
@@ -35,18 +35,16 @@ angular.module("APPaymentDirectives", ['angularLoad','APSvcBilling'])
           $scope.submit = (formValid, data) => {
             if (formValid)
             {
-              // console.log('isValid', $scope.card)
               $scope.client.tokenizeCard(_.pick($scope.card,'cardholderName','number','expirationMonth','expirationYear'), function (err, nonce) {
-                // console.log('isValid', err, nonce)
+                console.log('isValid', err, nonce)
                 if (nonce)
                 {
                   var pm = { type: 'braintree', token: nonce, name: $scope.card.cardNickName, makeDefault: true }
 
-                  var err = (e) => console.log(e)
                   var suc = (r) => {
                     // console.log('$scope.creditAmount', $scope.creditAmount)
                     if ($scope.creditAmount)
-                      BillingService.billing.orderCredit({total:parseInt($scope.creditAmount),payMethodId:r._id}, $scope.orderSuccess, err)
+                      BillingService.billing.orderCredit({total:parseInt($scope.creditAmount),payMethodId:r._id}, $scope.orderSuccess, ServerErrors.add)
 
                     if (!$scope.paymethods) $scope.paymethods = [r]
                     else $scope.paymethods = _.union($scope.paymethods,[r])
@@ -55,7 +53,7 @@ angular.module("APPaymentDirectives", ['angularLoad','APSvcBilling'])
                     if ($scope.setPayMethods) $scope.setPayMethods($scope.paymethods)
                   }
 
-                  BillingService.billing.addPaymethod(pm, suc, err)
+                  BillingService.billing.addPaymethod(pm, suc, ServerErrors.add)
                 }
               });
             }

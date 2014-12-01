@@ -164,11 +164,10 @@ angular.module("APBilling", ['ngRoute','APFormsDirectives','APPaymentDirectives'
       $scope.expert = r
       $scope.booking.expertId = r._id
       $scope.calcSummary()
-    }, () => {})
+    }, ServerErrors.add)
 
     BillingService.billing.getMyOrdersWithCredit((r) => {
       $scope.orders = r
-      console.log('orders', r)
       $scope.booking.credit = OrdersUtil.getAvailableCredit(OrdersUtil.linesWithCredit(r))
       $scope.calcSummary()
 
@@ -185,7 +184,7 @@ angular.module("APBilling", ['ngRoute','APFormsDirectives','APPaymentDirectives'
     $scope.$watch('booking.minutes', $scope.calcSummary)
 
     $scope.submit = function() {
-      BillingService.billing.bookExpert($scope.booking, (r) => $location.path("/billing"), () => {})
+      BillingService.billing.bookExpert($scope.booking, (r) => $location.path("/billing"), ServerErrors.add)
     }
 
   })
