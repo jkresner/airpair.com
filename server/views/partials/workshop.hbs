@@ -1,24 +1,33 @@
 <header class="entry-header">
-  <p class="entry-meta">
-    <a href="/workshops">Workshops</a>
-    &nbsp; > &nbsp;
-    <span class="entry-author" itemprop="author" itemscope="itemscope" itemtype="//schema.org/Person">
-    {{#if by.username}}
-      <a href="/book/{{by.username}}" class="entry-author-link" itemprop="url" rel="author" target="_self"><span class="entry-author-name" itemprop="name">{{by.name}}</span></a>
-    {{else}}
-      <span class="entry-author-name" itemprop="name">{{by.name}}</span>
-    {{/if}}
-    </span>
-    &nbsp; > &nbsp;
-    <span>{{ title }}</span>
-
-  </p>
+  <ol class="entry-meta breadcrumb">
+    <li><a href="/learn">Learn</a></li>
+    <li><a href="/workshops" target="_self">Workshops</a></li>
+{{!--     <li><span>{{ primarytag }}</li> --}}
+    <li><span class="entry-author" itemprop="author" itemscope="itemscope" itemtype="//schema.org/Person">
+      {{#if by.username}}
+        <a href="/me/{{by.username}}" class="entry-author-link" itemprop="url" rel="author" target="_self"><span class="entry-author-name" itemprop="name">{{by.name}}</span></a>
+      {{else}}
+        <span class="entry-author-name" itemprop="name">{{by.name}}</span>
+      {{/if}}
+      </span>
+    </li>
+  </ol>
 </header>
 <section id="workshops">
   <div id="show">
     <h1 class="entry-title">{{ title }}</h1>
 
+
     <div class="speakers">
+      <div class="rail1CTA railBookmarkCTA">
+        <h6>Like this workshop?</h6>
+        <div>
+          {{#each speakers}}
+          <img src="//0.gravatar.com/avatar/{{ gravatar }}?s=100" />{{/each}}
+          <div bookmarkerserver type="'workshop'" object-id="'{{_id}}'"></div>
+          <p>Save it to your bookmarks</p>
+        </div>
+      </div>
       <div class="share">
         <div class="pw-widget pw-counter-vertical" pw:twitter-via="airpair">
           <a class="pw-button-facebook pw-look-native"></a>
@@ -33,7 +42,7 @@
         {{#each speakers}}
         <li>
           <h3>{{ name }}</h3>
-          <img src="//0.gravatar.com/avatar/{{ gravatar }}?s=400" />
+          <img src="//0.gravatar.com/avatar/{{ gravatar }}?s=400" class="speaker" />
 
           {{ fullBio }}
         </li>

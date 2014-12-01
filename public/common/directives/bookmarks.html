@@ -3,15 +3,24 @@
 </div>
 <div class="modal-body bookmarks bookmark-input-group">
 
-  <p>Collect your favorite <a href="/posts">posts</a>, <a href="/workshops">workshops</a> and experts.</p>
+  <p style="font-size:15px">Collect your favorite <a href="/posts"> posts</a>, <a href="/workshops" target="_self">workshops</a> and experts using the bookmark icons <img src='/v1/img/css/bookmark.png' /></p>
+
+  <p style="font-size:15px">Drag and drop this list to order the way your bookmarks appear in the side menu.</p>
 
   <ul class="bookmarks" sortable get='bookmarks' set='updateBookmarks'>
     <li ng-repeat="b in bookmarks() | orderBy:'sort'" ng-attr-data-id="{{b._id}}">
+      <img src='/v1/img/css/bookmarked.png' />
       <a href="{{b.url}}" target="_self">{{b.title}}</a>
       <a class="remove" ng-click="deselectBookmark(b)">x</a>
       <a class="order"></a>
     </li>
  </ul>
+
+  <div class="alert alert-warning" ng-if="!session._id" style="padding:15px;margin:40px 0">
+    <span class="glyphicon glyphicon-warning-sign" aria-hidden="true"></span>
+    Your preferences eventually will disappear unless you <a href='/login'>Login</a>.
+  </div>
+
 </div>
 <div class="modal-footer">
   <button class="btn btn-primary" ng-click="ok()">Done</button>

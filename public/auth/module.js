@@ -6,6 +6,10 @@ angular.module("APAuth", ['ngRoute','ngMessages','APFormsDirectives','APFilters'
   .config(['$locationProvider', '$routeProvider',
       function($locationProvider, $routeProvider) {
 
+    $routeProvider.when('/login', {
+      template: require('./login.html')
+    });
+
     $routeProvider.when('/v1/auth/login', {
       template: require('./login.html')
     });
@@ -50,8 +54,6 @@ angular.module("APAuth", ['ngRoute','ngMessages','APFormsDirectives','APFilters'
     SessionService.onAuthenticated(function() {
       if ($scope.session._id) $location.path('/me')
     })
-
-
 
     var self = this;
     this.submit = function(isValid, formData) {

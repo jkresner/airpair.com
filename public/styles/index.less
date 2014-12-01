@@ -30,7 +30,7 @@ section#index {
 }
 
 section#auth {
-  padding-top:20px;
+  padding-top:40px;
   text-align:center;
   width:100%;
 
@@ -56,7 +56,12 @@ section#auth {
     // label { display:none }
   }
 
-  .error { color:@error }
+  .local {
+    form { margin-bottom:0 }
+    .alert-danger {
+      padding-bottom:10px;max-width:300px;margin:15px auto 0px auto
+    }
+  }
 
   p.help-text { margin:20px 0 0 0 }
 
