@@ -12,7 +12,7 @@ var doneBackup = null
 var buildPayload = (type, user, anonymousId, payload) => {
   if (user) payload.userId = user.email
   else payload.anonymousId = anonymousId
-  if (logging) $log(`analytics.${type}`.yellow, payload)
+  if (logging) { $log(`analytics.${type}`.yellow); $log(`analytics.${type}`, payload) }
   return payload;
 }
 
