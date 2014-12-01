@@ -32,8 +32,7 @@ export function getMyOrders(cb)
 function getOrdersWithCredit(userId, cb)
 {
   var query = Data.query.creditRemaining(userId)
-  query = {userId} // TODO fix query
-  svc.searchMany(query, { options: Data.options.ordersByDate }, cb)
+  svc.searchMany(_.extend(query,{userId}), { options: Data.options.ordersByDate }, cb)
 }
 
 
