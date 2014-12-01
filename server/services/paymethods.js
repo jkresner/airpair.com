@@ -37,6 +37,7 @@ export function addPaymethod(o, cb) {
   var user = this.user
   var customerId = (o.companyId != null) ? o.companyId : user._id
 
+  console.log('addPaymethod'.red)
   var savePayMethod = (ee, payMethodInfo) => {
     if (ee) return cb(ee)
     else {
@@ -46,9 +47,10 @@ export function addPaymethod(o, cb) {
       if (logging) $log('savePayMethod', payMethodInfo)
 
       svc.create(o, (e,r) => {
-        if (logging) $log('savePayMethod', o.makeDefault, user._id, o)
-        analytics.identify(user, {}, 'Save PayMethod', { type: o.type })
-        if (o.makeDefault) UserSvc.update.call(this, user._id, { primaryPayMethodId: r._id })
+        if (logging) $log('savedPayMethod', o.makeDefault, user._id, o)
+        analytics.track(user, {}, 'Save PayMethod', { type: o.type })
+        if (o.makeDefault)
+          UserSvc.update.call(this, user._id, { primaryPayMethodId: r._id })
         cb(e, r)
       })
     }
