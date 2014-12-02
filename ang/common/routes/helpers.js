@@ -29,16 +29,20 @@
   }
 
 
-  global.trackRoute = function(locationPath) {
+  global.trackRoute = function(locationPath, locationSearch) {
     if (analytics)
     {
-      if (locationPath == '/v1/auth/login') {
-        // console.log('tracking', 'login')
+
+      if (locationPath == '/v1/auth/login')
         analytics.track('Route',{ category: 'auth', name: 'login' })
-      }
-      else if (locationPath == '/v1/auth/signup') {
-        // console.log('tracking', 'signup')
+
+      else if (locationPath == '/v1/auth/signup')
         analytics.track('Route',{ category: 'auth', name: 'signup' })
+
+      else if (locationSearch && (locationSearch.utm_campaign || locationSearch.utm_source))
+      {
+        console.log('trackUtmRoute', locationSearch)
+        analytics.track('Route',{ category: 'utm', name: locationPath.substring(1,locationPath.length-1) })
       }
     }
   }
