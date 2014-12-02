@@ -58,6 +58,9 @@
 
     <p>Your <b>{{paymethods[0].name}}</b> is securely stored with <i>{{paymethods[0].type}}</i>.</p>
 
+    <p class="history" ng-if="!orders || orders.length == 0">
+    No transaction history yet.
+    </p>
 
   </div>
 

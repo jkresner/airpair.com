@@ -234,6 +234,9 @@ export function buyCredit(total, coupon, payMethodId, cb)
 
 export function giveCredit(toUserId, total, source, cb)
 {
+  var inValid = Validate.giveCredit(toUserId, total, source)
+  if (inValid) return cb(svc.Forbidden(inValid))
+
   var expires = Util.dateWithDayAccuracy(moment().add(3,'month'))
 
   var lineItems = []
