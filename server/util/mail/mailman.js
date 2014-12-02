@@ -2,10 +2,9 @@ var fs =          require('fs')
 var handlebars =  require('handlebars')
 var util =        require('../../../shared/util')
 // var async =       require('async')
-
+import {getUsersInRole} from '../../services/users'
 
 var templates = {}
-
 
 function initTemplates() {
   var filenames = fs.readdirSync(`${config.appdir}/shared/mail`)
@@ -19,6 +18,17 @@ function initTemplates() {
       templates[name] = handlebars.compile(template)
     }
   }
+}
+
+var receivers = {}
+function initReceivers() {
+  getUsersInRole('pipeliner', (e,r) => {
+    receivers.pipeliners = ""
+    for (var {name,email} of r) { receivers.pipeliners += `${name} <${email}>, ` }
+
+    receivers.pipeliners = receivers.pipeliners.substring(0, receivers.pipeliners.length-2)
+    // console.log('receivers.pipeliners', receivers.pipeliners)
+  })
 }
 
 
@@ -41,20 +51,28 @@ function renderEmail(templateName, templateData) {
 module.exports = function(mailProvider)
 {
   initTemplates()
-  var mailman = {}
+  initReceivers()
 
-  mailman.sendVerifyEmail = (toUser, hash, cb) =>
-    mailProvider.send(`${toUser.name} <${toUser.email}>`, renderEmail('verifyemail', {
-      firstName: util.firstName(toUser.name),
-      hash
-    }), cb)
-
-  mailman.sendChangePasswordEmail = (toUser, hash, cb) =>
-    mailProvider.send(`${toUser.name} <${toUser.email}>`, renderEmail('changepassword', {
-      firstName: util.firstName(toUser.name),
-      hash
-    }), cb)
-
+  var mailman = {
+    sendVerifyEmail(toUser, hash, cb) {
+      mailProvider.send(`${toUser.name} <${toUser.email}>`, renderEmail('verifyemail', {
+        firstName: util.firstName(toUser.name),
+        hash
+      }), cb)
+    },
+    sendChangePasswordEmail(toUser, hash, cb) {
+      mailProvider.send(`${toUser.name} <${toUser.email}>`, renderEmail('changepassword', {
+        firstName: util.firstName(toUser.name),
+        hash
+      }), cb)
+    },
+    sendPipelinerNotifyPurchaseEmail(byName, total, cb) {
+      mailProvider.send(receivers.pipeliners, renderEmail('pipelinernotifypurchase', {
+        fullName: byName,
+        total,
+      }), cb)
+    }
+  }
 
   return mailman
 }

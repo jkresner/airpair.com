@@ -87,9 +87,7 @@ angular.module("APBilling", ['ngRoute','APFormsDirectives','APPaymentDirectives'
 
   })
 
-  .controller('BillingTopUpCtrl', function($scope, $location, BillingService, submitPaymentText) {
-
-    var err = (r) => console.log('err', r)
+  .controller('BillingTopUpCtrl', function($scope, $location, BillingService, ServerErrors, submitPaymentText) {
 
     BillingService.billing.getPaymethods((r) => {
       if (r.btoken) $location.path("/billing")
@@ -97,7 +95,7 @@ angular.module("APBilling", ['ngRoute','APFormsDirectives','APPaymentDirectives'
         $scope.paymethods = r
         $scope.payMethodId = r[0]._id
       }
-    }, err)
+    }, ServerErrors.add)
 
 
     $scope.creditAmount = "1000"
@@ -111,7 +109,7 @@ angular.module("APBilling", ['ngRoute','APFormsDirectives','APPaymentDirectives'
         var success = () => $location.path("/billing")
 
         var {coupon,payMethodId} = $scope
-        BillingService.billing.orderCredit({total:parseInt($scope.creditAmount),payMethodId,coupon}, success, err)
+        BillingService.billing.orderCredit({total:parseInt($scope.creditAmount),payMethodId,coupon}, success, ServerErrors.add)
       }
     }
   })

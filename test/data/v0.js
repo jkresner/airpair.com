@@ -116,8 +116,8 @@ module.exports = {
       "info" : {
           "object" : "customer",
           "created" : 1404415342,
-          "id" : "cus_4Kvew1gjYgXWZd",
-          "livemode" : true,
+          "id" : "cus_4ehXDqE9ikiZHf",
+          "livemode" : false,
           "description" : null,
           "email" : "jk@airpair.com",
           "delinquent" : false,
@@ -125,7 +125,7 @@ module.exports = {
               "object" : "list",
               "total_count" : 0,
               "has_more" : false,
-              "url" : "/v1/customers/cus_4Kvew1gjYgXWZd/subscriptions",
+              "url" : "/v1/customers/cus_4ehXDqE9ikiZHf/subscriptions",
               "data" : [],
               "count" : 0
           },
@@ -136,10 +136,10 @@ module.exports = {
               "object" : "list",
               "total_count" : 1,
               "has_more" : false,
-              "url" : "/v1/customers/cus_4Kvew1gjYgXWZd/cards",
+              "url" : "/v1/customers/cus_4ehXDqE9ikiZHf/cards",
               "data" : [
                   {
-                      "id" : "card_4KveLkAqT0rs0P",
+                      "id" : "card_4ehXLqLP8yyR2D",
                       "object" : "card",
                       "last4" : "4925",
                       "brand" : "Visa",
@@ -158,13 +158,13 @@ module.exports = {
                       "cvc_check" : "pass",
                       "address_line1_check" : null,
                       "address_zip_check" : null,
-                      "customer" : "cus_4Kvew1gjYgXWZd",
+                      "customer" : "cus_4ehXDqE9ikiZHf",
                       "type" : "Visa"
                   }
               ],
               "count" : 1
           },
-          "default_card" : "card_4KveLkAqT0rs0P",
+          "default_card" : "card_4ehXLqLP8yyR2D",
           "subscription" : null
       },
       "type" : "stripe",
