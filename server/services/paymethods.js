@@ -47,7 +47,7 @@ export function addPaymethod(o, cb) {
 
       svc.create(o, (e,r) => {
         if (logging) $log('savedPayMethod', o.makeDefault, user._id, o)
-        analytics.track(user, {}, 'Save PayMethod', { type: o.type })
+        analytics.track(user, {}, 'Save', { type: 'paymethod', method: o.type })
         if (o.makeDefault)
           UserSvc.update.call(this, user._id, { primaryPayMethodId: r._id })
         cb(e, r)

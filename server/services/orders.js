@@ -181,6 +181,9 @@ function chargeAndTrackOrder(o, errorCB, saveCB)
 function trackOrderPayment(order) {
 
   mailman.sendPipelinerNotifyPurchaseEmail(order.by.name, order.total, ()=>{})
+
+  analytics.track(order.by, null, 'Order', order)
+
  // var props = {
  //   //timeFromVisit:, //revenue:, //visitedContent:
  // }
