@@ -1,5 +1,5 @@
 <label class="control-label">Amount</label>
-<div class="creditChoice" style="padding:5px 0 20px 0">
+<div class="creditChoice">
   <label class="control-label" for=""></label>
 
   <input name="creditAmount" ng-model="creditAmount" type="radio" value="500">
@@ -17,6 +17,6 @@
   <input name="creditAmount" ng-model="creditAmount" type="radio" value="5000">
   <span>$5000</span>
   <em ng-if="creditAmount == 5000">Bonus $1000 Credit (20% on $5000)</em>
-  <br /><br />
+  <div></div>
 </div>
 <hr />
