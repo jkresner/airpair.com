@@ -6,7 +6,7 @@ require('./../v1/lib/angular-route/angular-route.js');
 require('./../v1/lib/angular-messages/angular-messages.js');
 require('./../v1/lib/angular-load/angular-load.js');
 require('./../v1/lib/angular-bootstrap/ui-bootstrap-tpls.js');
-
+require('./../common/directives/forms.js');
 require('./../common/directives/post.js');
 require('./../common/directives/tagInput.js');
 require('./../common/directives/userInput.js');
@@ -17,28 +17,38 @@ require('./../common/models/adminDataService.js');
 require('./../adm/posts/module.js');
 require('./../adm/users/module.js');
 require('./../adm/redirects/module.js');
+require('./../adm/views/module.js');
+require('./../adm/orders/module.js');
 
 
-angular.module("ADM", [
+angular.module('ADM', [
   'ngRoute',
   'APSvcSession',
   'ADMPosts',
   'ADMUsers',
-  'ADMRedirects'])
+  'ADMRedirects',
+  'ADMViews',
+  'ADMOrders',
+  'APFormsDirectives'])
 
-  .config(['$locationProvider', '$routeProvider',
-      function($locationProvider, $routeProvider) {
+  .config(function($locationProvider, $routeProvider) {
 
     $locationProvider.html5Mode(true);
 
-  }])
+  })
 
-  .run(['$rootScope', '$location', 'SessionService',
-    function($rootScope, $location, SessionService) {
+  .run(function($rootScope, $location, SessionService) {
 
     SessionService.onAuthenticated( (session) => {
     });
 
-  }])
+  })
+
+  .factory('ServerErrors', function serverErrorsFactory($rootScope) {
+    this.add = (e) => $rootScope.serverErrors = _.union($rootScope.serverErrors, [e.message])
+    this.remove = (msg) => $rootScope.serverErrors = _.without($rootScope.serverErrors, msg)
+
+    return this;
+  })
 
 ;

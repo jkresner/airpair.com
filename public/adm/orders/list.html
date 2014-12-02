@@ -1,0 +1,21 @@
+<section id="orders">
+
+  <h2>Orders</h2>
+
+  <div user-input=""></div>
+
+  <table class="table table-condensed orders">
+    <tr>
+      <th style="width:80px">Time</th>
+      <th style="width:280px">By</th>
+      <th style="width:240px">Ref</th>
+      <th>Utm</th>
+    </tr>
+    <tr ng-repeat="o in orders">
+      <td>{{o.utc | publishedTime : 'MM.DD HH:mm' }}</td>
+      <td>{{o.by.name}}</td>
+      <td>{{o.total}}</td>
+      <td>{{o.owner}}</div>
+  </table>
+
+</section>

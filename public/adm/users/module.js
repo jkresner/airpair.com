@@ -1,18 +1,16 @@
 
 angular.module("ADMUsers", ['ngRoute', 'APSvcAdmin', 'APFilters','APUserInput'])
 
-  .config(['$locationProvider', '$routeProvider',
-      function($locationProvider, $routeProvider) {
+  .config(function($locationProvider, $routeProvider) {
 
     $routeProvider.when('/v1/adm/users', {
       template: require('./list.html'),
       controller: 'UsersCtrl as users'
     });
 
-  }])
+  })
 
-  .controller('UsersCtrl', ['$scope', 'AdmDataService',
-      function($scope, AdmDataService) {
+  .controller('UsersCtrl', function($scope, AdmDataService) {
 
     $scope.role = "editor";
     $scope.selectedUser = {}
@@ -47,4 +45,4 @@ angular.module("ADMUsers", ['ngRoute', 'APSvcAdmin', 'APFilters','APUserInput'])
     // $scope.user = () => { return $scope.post.by }
     $scope.selectUser = (user) => $scope.selectedUser = user
 
-  }])
+  })

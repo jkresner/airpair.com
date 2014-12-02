@@ -5,9 +5,9 @@ var logging = false
 var svc = new Svc(View, logging)
 
 
-export function getByUsersId(id, cb) {
-  var opts = {}
-  svc.searchMany({ userId: id}, opts, cb)
+export function getByUserId(userId, cb) {
+  var opts = { sort: { '_id': -1 } }
+  svc.searchMany({userId}, opts, cb)
 }
 
 

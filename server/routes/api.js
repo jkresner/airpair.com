@@ -7,6 +7,7 @@ import PaymethodsAPI from '../api/paymethods'
 import OrdersAPI from '../api/orders'
 import BookingsAPI from '../api/bookings'
 import ExpertsAPI from '../api/experts'
+import ViewsAPI from '../api/views'
 import {authd,adm,setAnonSessionData,emailv} from '../identity/auth/middleware'
 
 
@@ -63,10 +64,12 @@ export default function(app) {
   var admrouter = require('express').Router()
     .use(adm)
     .get('/posts', PostsAPI.getAllAdmin)
+    .get('/orders/:start/:end', OrdersAPI.getOrdersByDateRange)
     .get('/users/role/:role', UsersAPI.getUsersInRole)
     .put('/users/:id/role/:role', UsersAPI.toggleUserInRole)
     .get('/users/search/:id', UsersAPI.search)
     .post('/billing/orders/credit', OrdersAPI.giveCredit)
+    .get('/views/user/:id', ViewsAPI.getByUserId)
     .get('/redirects', RedirectsAPI.getAllRedirects)
     .post('/redirects', RedirectsAPI.createRedirect)
     .delete('/redirects/:id', RedirectsAPI.deleteRedirectById)

@@ -90,13 +90,8 @@ angular.module("AP", ['ngRoute', 'ngAnimate', 'APSideNav', 'APAuth', 'APPosts', 
   })
 
   .factory('ServerErrors', function serverErrorsFactory($rootScope) {
-    this.add = (e) => {
-      // console.log('e', e, e.message)
-      $rootScope.serverErrors = _.union($rootScope.serverErrors, [e.message])
-    }
-
-    this.remove = (msg) =>
-      $rootScope.serverErrors = _.without($rootScope.serverErrors, msg)
+    this.add = (e) => $rootScope.serverErrors = _.union($rootScope.serverErrors, [e.message])
+    this.remove = (msg) => $rootScope.serverErrors = _.without($rootScope.serverErrors, msg)
 
     return this;
   })
