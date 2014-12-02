@@ -5,7 +5,7 @@ var logging = false
 var svc = new Svc(Booking, logging)
 
 
-export function getByUsersId(id, cb) {
+export function getByUserId(id, cb) {
   var opts = {}
   svc.searchMany({ customerId: id }, opts, cb)
 }

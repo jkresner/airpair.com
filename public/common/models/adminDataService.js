@@ -42,4 +42,12 @@ angular.module('APSvcAdmin', [])
       $http.post(`${APIAdm}/billing/orders/credit`, data).success(success).error(error)
     }
 
+    this.getUsersViews = function(data, success, error) {
+      $http.get(`${APIAdm}/views/user/${data._id}`, data).success(success).error(error)
+    }
+
+    this.getOrders = function(data, success, error) {
+      $http.get(`${APIAdm}/orders/${data.start.format('x')}/${data.end.format('x')}`, data).success(success).error(error)
+    }
+
   }])

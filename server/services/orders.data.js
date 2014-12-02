@@ -12,11 +12,19 @@ module.exports = {
 
   query: {
     creditRemaining: function(userId) {
-      return {  userId,
-                '$and': [
-                    {'lineItems.info' : { '$exists': true }},
-                    {'lineItems.info.remaining': { '$gt': 0 }}
-                ] }
+      return {
+        userId,
+        '$and': [
+            {'lineItems.info' : { '$exists': true }},
+            {'lineItems.info.remaining': { '$gt': 0 }}
+        ] }
+    },
+    inRange: function(start, end) {
+     return {
+        '$and': [
+            {'utc': { '$gt': new Date(parseInt(start)) }},
+            {'utc': { '$lt': new Date(parseInt(end)) }}
+        ] }
     }
   },
 

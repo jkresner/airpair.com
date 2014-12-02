@@ -42,6 +42,13 @@ export function getMyOrdersWithCredit(cb)
 }
 
 
+export function getOrdersByDateRange(start, end, cb)
+{
+  var opts = { fields: Data.select.listAdmin, options: { sort: { 'utc': -1 } } }
+  var query = Data.query.inRange(start,end)
+  svc.searchMany(query, opts, cb)
+}
+
 
 
 var newLine = (type, qty, unitPrice, total, balance, profit, info) => {
