@@ -5,7 +5,7 @@
 </header>
  --><section id="auth" ng-controller="LoginCtrl as LoginCtrl">
 
-<p>New to AirPair? <o>Login with google below or <b><a href="#" ng-click="openProfile()">create an account</a></b> using an email and password.</p>
+<p>New to AirPair? <o>Login with google below or <b><a id="loginSignupTop" href="#" track-click="Login" ng-click="openProfile()">create an account</a></b> using an email and password.</p>
 
 
 <p ng-if="session._id"><br /><br />You are logged in as {{ session.email }}. <br /><br />Want to <a href="/v1/auth/logout">Logout</a>?</p>

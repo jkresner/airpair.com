@@ -29,10 +29,10 @@
   }
 
 
-  global.trackRoute = function(locationPath, locationSearch) {
+  window.trackRoute = function(locationPath, locationSearch) {
+    // console.log('trackRoute', analytics)
     if (analytics)
     {
-
       if (locationPath == '/v1/auth/login')
         analytics.track('Route',{ category: 'auth', name: 'login' })
 

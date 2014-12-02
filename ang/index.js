@@ -75,7 +75,6 @@ angular.module("AP", ['ngRoute', 'ngAnimate', 'APSideNav', 'APAuth', 'APPosts', 
   .run(function($rootScope, $location, SessionService, Notifications) {
 
     $rootScope.$on('$routeChangeSuccess', function() {
-      console.log('$routeChangeSuccess')
       window.trackRoute($location.path(),$location.search());
       $rootScope.serverErrors = [];
       $rootScope.notifications = Notifications.calculateNextNotification()
@@ -91,7 +90,10 @@ angular.module("AP", ['ngRoute', 'ngAnimate', 'APSideNav', 'APAuth', 'APPosts', 
   })
 
   .factory('ServerErrors', function serverErrorsFactory($rootScope) {
-    this.add = (e) => $rootScope.serverErrors = _.union($rootScope.serverErrors, [e.message])
+    this.add = (e) => {
+      if (e) $rootScope.serverErrors = _.union($rootScope.serverErrors, [e.message])
+      else $rootScope.serverErrors = _.union($rootScope.serverErrors, ["An error occured"])
+    }
     this.remove = (msg) => $rootScope.serverErrors = _.without($rootScope.serverErrors, msg)
 
     return this;
