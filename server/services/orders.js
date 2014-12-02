@@ -153,10 +153,8 @@ function chargeAndTrackOrder(o, errorCB, saveCB)
         return errorCB(e)
       }
       if (logging) $log('payment.created', r)
-      // $log('***payment.created', e, r)
-      // trackOrderPayment.call(this, o)
-      // $log('payment.type', r.type)
-      // if (logging) $log('payment.r', r.type, r)
+      trackOrderPayment.call(this, o)
+
       if (r.type == "braintree") {
         var { id, status, total, orderId, createdAt, processorAuthorizationCode} = r.transaction
         o.payment = { id, type:'braintree', status, total, orderId, createdAt, processorAuthorizationCode}
@@ -171,6 +169,21 @@ function chargeAndTrackOrder(o, errorCB, saveCB)
   }
 }
 
+
+
+function trackOrderPayment(order) {
+
+  mailman.sendPipelinerNotifyPurchaseEmail(order.by.name, order.total, ()=>{})
+ // var props = {
+ //   //timeFromVisit:, //revenue:, //visitedContent:
+ // }
+ // var context = {}
+  // analytics.track(this.user, null, 'Customer Payment', props, context)
+
+  // notifications.broadcast(`Customer Paid  ${order.total}`, this.user)
+
+  // requestSvc.getById order.requestId, (e, request) =>
+}
 
 //-- Assumes we have added the linesItems already
 // function updateOrder(o, cb) {
@@ -330,14 +343,3 @@ export function bookUsingCredit(expert, minutes, total, lineItems, expectedCredi
 // }
 
 
-// function trackOrder(order) {
-// 	var props = {
-// 		//timeFromVisit:, //revenue:, //visitedContent:
-// 	}
-// 	var context = {}
-//   analytics.track(this.user, null, 'Customer Payment', props, context)
-
-//   notifications.broadcast(`Customer Paid  ${order.total}`, this.user)
-
-//   requestSvc.getById order.requestId, (e, request) =>
-// }

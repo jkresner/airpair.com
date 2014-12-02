@@ -25,6 +25,10 @@ angular.module("ADMUsers", ['ngRoute', 'APSvcAdmin', 'APFilters','APUserInput'])
       $scope.editors = result;
     })
 
+    AdmDataService.getUsersInRole({role:'pipeliner'}, function (result) {
+      $scope.pipeliners = result;
+    })
+
     $scope.toggleRole = function() {
       AdmDataService.toggleRole({_id: $scope.selectedUser._id, role: $scope.role }, function (result) {
         AdmDataService.getUsersInRole({role:$scope.role}, function (result) {
