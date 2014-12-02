@@ -63,7 +63,8 @@ angular.module("AP", ['ngRoute', 'ngAnimate', 'APSideNav', 'APAuth', 'APPosts', 
 
     if (angular.element('#serverTemplate').length > 0)
     {
-      var initialLocation = window.location.pathname;
+                                        // '/c++/posts/preparing-for-cpp-interview'
+      var initialLocation = window.location.pathname.toString().replace(/\+/g,"\\\+");
       $routeProvider.when(initialLocation, {
         template: angular.element('#serverTemplate').html(),
         controller: 'ServerTemplateCtrl'
@@ -101,7 +102,6 @@ angular.module("AP", ['ngRoute', 'ngAnimate', 'APSideNav', 'APAuth', 'APPosts', 
   })
 
   .controller('ServerTemplateCtrl', function($scope) {
-
     pageHlpr.fixNavs('#side');
     pageHlpr.loadPoSt();
     pageHlpr.highlightSyntax({ addCtrs: true });
