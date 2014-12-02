@@ -51,12 +51,11 @@ section#billing {
     label i { font-weight:200;font-size:11px }
 
     .btn { width:100% }
-
   }
 
   .creditChoice {
     text-align:left;
-    hr { clear:both }
+    div { clear:both;height:10px }
     input { clear:left;float:left;margin-right:10px;display:block }
     span { float:left;margin-right:10px;display:block  }
     em { float:left;margin-right:10px;display:block;color:@orange  }
@@ -72,6 +71,13 @@ section#billing {
     .minus { color:@orange }
   }
 
+
+  #topupForm {
+    background-color:@lightblue;
+    border-radius:5px;
+    padding:20px;
+    hr { border-top:solid 1px @bluegray;height:0 }
+  }
 }
 
 section#topup {

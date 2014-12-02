@@ -11,7 +11,7 @@
 
     <h1>Top-up</h1>
 
-    <form id="creditForm" novalidate name="creditForm" ng-submit="submit(creditForm.$valid, data)">
+    <form id="topupForm" novalidate name="topupForm" ng-submit="submit(topupForm.$valid, data)">
 
       <div class="form-group">
         <label class="control-label" for="payMethodId">Pay with</label>
@@ -21,15 +21,16 @@
       </div>
 
       <div class="form-group">
-        <label class="control-label" for="topupCoupon">Coupon <i>* optional</i></label>
+        <label class="control-label" for="topupCoupon">Coupon <i style="font-weight:200">*optional</i></label>
         <input class="form-control" id="topupCoupon" name="topupCoupon" ng-model="coupon" type="text">
       </div>
 
-      <br /><br />
       <payment-credit></payment-credit>
 
       <input type="submit" id="submit" value="{{cardSubmitText}}" class="btn">
       <a href="/billing" class="btn">Cancel</a>
+
+      <div form-errors></div>
 
     </form>
 

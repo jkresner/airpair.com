@@ -5,29 +5,31 @@ angular.module('APSvcSession', [])
 
   .constant('Auth', '/v1/auth')
 
-  .factory('notifications', function notificationsFactory($rootScope) {
-    this.add = (msg) =>
-      $rootScope.notifications = _.union($rootScope.notifications, [msg])
+  .factory('Notifications', function NotificationsFactory($rootScope, $location) {
+    // this.add = (msg) =>
+    //   $rootScope.notifications = _.union($rootScope.notifications, [msg])
 
-    this.remove = (msg) =>
-      $rootScope.notifications = _.without($rootScope.notifications, msg)
+    // this.remove = (msg) =>
+    //   $rootScope.notifications = _.without($rootScope.notifications, msg)
 
-    this.calculateNextNotification = (usr) => {
-      if (!usr._id && usr.bookmarks && usr.bookmarks.length > 0) return { saveBookmarks: true }
-      else if (!usr.emailVerified && usr._id) return { verifyEmail: true }
+    this.calculateNextNotification = () => {
+      var usr = $rootScope.session
+      if ($location.path().indexOf('/login') == 0) return null
+      else if (!usr._id && usr.bookmarks && usr.bookmarks.length > 0) return { saveBookmarks: true }
+      else if (!usr.emailVerified && usr._id && $location.path().indexOf('/me') != 0) return { verifyEmail: true }
       return null
     }
 
     return this;
   })
 
-  .service('SessionService', function($rootScope, $http, API, Auth, $cacheFactory, notifications) {
+  .service('SessionService', function($rootScope, $http, API, Auth, $cacheFactory, Notifications) {
 
     var setScope = (successFn, trackingData) => {
       return function(r) {
 
-        $rootScope.notifications = notifications.calculateNextNotification(r)
         $rootScope.session = r
+        $rootScope.notifications = Notifications.calculateNextNotification()
 
         if (trackingData) analytics.track('Save', trackingData);
 

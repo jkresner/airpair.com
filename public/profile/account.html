@@ -85,8 +85,7 @@
 
   <section class="password">
     <h3 style="margin-top:0">Password</h3>
-    <p>To set your password, we will send an email to {{ session.email }}.</p>
-    <a href="#" ng-click="sendPasswordChange()" class="btn">Send reset password email</a>
+    <a href="#" ng-click="sendPasswordChange()" class="btn">Send password reset email</a>
     <alert ng-repeat="alert in passwordAlerts" type="{{alert.type}}"><span ng-bind-html="alert.msg | html"></span></alert>
   </section>
 

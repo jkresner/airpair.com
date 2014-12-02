@@ -72,12 +72,12 @@ angular.module("AP", ['ngRoute', 'ngAnimate', 'APSideNav', 'APAuth', 'APPosts', 
     }
   })
 
-  .run(function($rootScope, $location, SessionService) {
+  .run(function($rootScope, $location, SessionService, Notifications) {
 
     $rootScope.$on('$routeChangeSuccess', function() {
       window.trackRoute($location.path());
       $rootScope.serverErrors = [];
-      angular.element('.notify').toggle($location.path().indexOf('login') == -1)
+      $rootScope.notifications = Notifications.calculateNextNotification()
     });
 
     if (window.viewData)
@@ -91,7 +91,7 @@ angular.module("AP", ['ngRoute', 'ngAnimate', 'APSideNav', 'APAuth', 'APPosts', 
 
   .factory('ServerErrors', function serverErrorsFactory($rootScope) {
     this.add = (e) => {
-      console.log('e', e, e.message)
+      // console.log('e', e, e.message)
       $rootScope.serverErrors = _.union($rootScope.serverErrors, [e.message])
     }
 
