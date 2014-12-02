@@ -15,7 +15,7 @@ function applyBundleTransforms(bundler) {
 }
 
 module.exports = function(fileName) {
-  var bundler = browserify('./public/common/'+fileName);
+  var bundler = browserify('./ang/'+fileName);
 
   applyBundleTransforms(bundler);
 

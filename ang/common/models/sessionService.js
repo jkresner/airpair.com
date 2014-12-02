@@ -14,7 +14,7 @@ angular.module('APSvcSession', [])
 
     this.calculateNextNotification = () => {
       var usr = $rootScope.session
-      if ($location.path().indexOf('/login') == 0) return null
+      if ($location.path().indexOf('/login') == 0 || !usr) return null
       else if (!usr._id && usr.bookmarks && usr.bookmarks.length > 0) return { saveBookmarks: true }
       else if (!usr.emailVerified && usr._id && $location.path().indexOf('/me') != 0) return { verifyEmail: true }
       return null

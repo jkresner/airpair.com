@@ -18,10 +18,11 @@ angular.module("ADMViews", ['ngRoute', 'APSvcAdmin', 'APFilters','APUserInput'])
     $scope.selectUser = (user) => {
       $scope.selectedUser = user
       AdmDataService.getUsersViews($scope.selectedUser, function (result) {
-        console.log('v1', result[0].utc)
         $scope.views = result.reverse();
       },
       ServerErrors.add)
     }
+
+    $scope.selectUser({ _id: "5175efbfa3802cc4d5a5e6ed" })
 
   })
