@@ -37,7 +37,6 @@ export function addPaymethod(o, cb) {
   var user = this.user
   var customerId = (o.companyId != null) ? o.companyId : user._id
 
-  console.log('addPaymethod'.red)
   var savePayMethod = (ee, payMethodInfo) => {
     if (ee) return cb(ee)
     else {

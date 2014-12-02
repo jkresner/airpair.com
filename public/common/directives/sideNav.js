@@ -147,8 +147,9 @@ angular.module("APSideNav", ['ui.bootstrap','APSvcSession', 'APTagInput'])
   })
 
 
-  .controller('SignupModalCtrl', function($scope, $rootScope, $modalInstance, $window, $timeout, SessionService) {
+  .controller('SignupModalCtrl', function($scope, $rootScope, $modalInstance, $window, $location, $timeout, SessionService) {
 
+    $scope.returnTo = $location.search().returnTo;
     $scope.data = { email: $scope.session.email, name: $scope.session.name }
 
     if (!$scope.session.email)
@@ -182,7 +183,7 @@ angular.module("APSideNav", ['ui.bootstrap','APSvcSession', 'APTagInput'])
         SessionService.signup(data,
           (result) => {
           //$modalInstance.close();
-          $timeout(() => { window.location = '/me'}, 250)
+          $timeout(() => { window.location = $scope.returnTo || '/me' }, 250)
         },
           (e) => $scope.signupFail = e.error
         )
