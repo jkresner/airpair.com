@@ -14,7 +14,8 @@
             }
             else
             {
-              $location.path('/v1/auth/login')
+              var returnTo = $location.path()
+              $location.path(`/v1/auth/login`).search('returnTo', returnTo)
               return $q.reject();
             }
           },

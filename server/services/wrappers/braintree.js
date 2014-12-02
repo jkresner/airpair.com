@@ -29,7 +29,7 @@ export function getClientToken(cb) {
 
 
 export function chargeWithMethod(amount, orderId, paymentMethodToken, cb) {
-  $log('chargeWithMethod', amount, orderId, paymentMethodToken, cb)
+  // $log('chargeWithMethod', amount, orderId, paymentMethodToken, cb)
   var payload = { amount, orderId, paymentMethodToken }
 
   gateway.transaction.sale(payload, logCB('transaction.sale', payload, cb,
