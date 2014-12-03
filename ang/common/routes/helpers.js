@@ -42,7 +42,7 @@
       else if (locationSearch && (locationSearch.utm_campaign || locationSearch.utm_source))
       {
         console.log('trackUtmRoute', locationSearch)
-        analytics.track('Route',{ category: 'utm', name: locationPath.substring(1,locationPath.length-1) })
+        analytics.track('Route',{ category: 'utm', name: locationPath.substring(1,locationPath.length) })
       }
     }
   }

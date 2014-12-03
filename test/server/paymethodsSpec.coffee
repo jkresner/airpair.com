@@ -118,9 +118,7 @@ module.exports = -> describe "PayMethods", ->
     it 'Can add braintree payment method to new user with Analytics', (done) ->
       addAndLoginLocalUser 'evan', (s) ->
         d = type: 'braintree', token: braintree.Test.Nonces.Transactable, name: 'Default Card', makeDefault: true
-        $log('doing post')
         POST '/billing/paymethods', d, {}, (r) ->
-          $log('done post')
           expect(r).to.exist
           expect(r.type).to.equal('braintree')
           expect(r.name).to.equal('Default Card')

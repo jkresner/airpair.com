@@ -47,11 +47,11 @@ module.exports = ->describe "Tracking: ", ->
           expect(spy.args[0][3]).to.equal(postTitle)
           expect(spy.args[0][4].tags).to.exist
           expect(spy.args[0][5].referer).to.equal('http://airpair.com/posts')
-          expect(spy.args[0][5].campaign.source).to.equal('test1src')
-          expect(spy.args[0][5].campaign.content).to.equal('test1ctn')
-          expect(spy.args[0][5].campaign.medium).to.be.undefined
-          expect(spy.args[0][5].campaign.term).to.be.undefined
-          expect(spy.args[0][5].campaign.name).to.be.undefined
+          expect(spy.args[0][5].utms.utm_source).to.equal('test1src')
+          expect(spy.args[0][5].utms.utm_content).to.equal('test1ctn')
+          expect(spy.args[0][5].utms.utm_medium).to.be.undefined
+          expect(spy.args[0][5].utms.utm_term).to.be.undefined
+          expect(spy.args[0][5].utms.utm_campaign).to.be.undefined
           expect(spy.args[0][6]).to.be.undefined
           spy.restore()
   )
@@ -81,11 +81,11 @@ module.exports = ->describe "Tracking: ", ->
             expect(spy.args[0][3]).to.equal(postTitle)
             expect(spy.args[0][4].tags).to.exist
             expect(spy.args[0][5].referer).to.equal('http://www.airpair.com/posts')
-            expect(spy.args[0][5].campaign.source).to.be.undefined
-            expect(spy.args[0][5].campaign.content).to.be.undefined
-            expect(spy.args[0][5].campaign.medium).to.be.undefined
-            expect(spy.args[0][5].campaign.term).to.be.undefined
-            expect(spy.args[0][5].campaign.name).to.equal('test2nm')
+            expect(spy.args[0][5].utms.utm_source).to.be.undefined
+            expect(spy.args[0][5].utms.utm_content).to.be.undefined
+            expect(spy.args[0][5].utms.utm_medium).to.be.undefined
+            expect(spy.args[0][5].utms.utm_term).to.be.undefined
+            expect(spy.args[0][5].utms.utm_campaign).to.equal('test2nm')
             expect(spy.args[0][6]).to.be.undefined
             spy.restore()
 
@@ -185,11 +185,11 @@ module.exports = ->describe "Tracking: ", ->
             expect(spy.args[0][3]).to.equal('Breaking Up (with) Your Test Suite')
             expect(spy.args[0][4].tags).to.exist
             expect(spy.args[0][5].referer).to.equal('http://www.airpair.com/workshops')
-            expect(spy.args[0][5].campaign.source).to.be.undefined
-            expect(spy.args[0][5].campaign.content).to.be.undefined
-            expect(spy.args[0][5].campaign.medium).to.equal('test4md')
-            expect(spy.args[0][5].campaign.term).to.be.undefined
-            expect(spy.args[0][5].campaign.name).to.equal('test4nm')
+            expect(spy.args[0][5].utms.utm_source).to.be.undefined
+            expect(spy.args[0][5].utms.utm_content).to.be.undefined
+            expect(spy.args[0][5].utms.utm_medium).to.equal('test4md')
+            expect(spy.args[0][5].utms.utm_term).to.be.undefined
+            expect(spy.args[0][5].utms.utm_campaign).to.equal('test4nm')
             expect(spy.args[0][6]).to.be.undefined
             spy.restore()
 
