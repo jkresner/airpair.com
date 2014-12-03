@@ -6,6 +6,7 @@ var User = require('../../../server/models/user')
 var Expert = require('../../../server/models/expert')
 var PayMethod = require('../../../server/models/paymethod')
 var Post = require('../../../server/models/post')
+var Orders = require('../../../server/models/order')
 var {Settings,Company} = require('../../../server/models/v0')
 var util = require('../../../shared/util')
 
@@ -61,25 +62,25 @@ global.addLocalUser = function(userKey, opts, done)
     data.users[clone.userKey] = r
     if (opts && opts.emailVerified)
     {
-	    UserService.update.call(this, data.users[clone.userKey]._id, opts, function(err, user) {
-				data.users[clone.userKey] = user
-				done(clone.userKey)
-			})
-	  }
+      UserService.update.call(this, data.users[clone.userKey]._id, opts, function(err, user) {
+        data.users[clone.userKey] = user
+        done(clone.userKey)
+      })
+    }
     else done(clone.userKey)
   })
 }
 
 global.addAndLoginLocalUserWithEmailVerified = function(originalUserKey, done)
 {
-	addLocalUser(originalUserKey, {emailVerified: true}, function(userKey) {
-		LOGIN(userKey, data.users[userKey], function(resp) {
+  addLocalUser(originalUserKey, {emailVerified: true}, function(userKey) {
+    LOGIN(userKey, data.users[userKey], function(resp) {
       GET('/session/full', {}, function(s) {
         s.userKey = userKey
         done(s)
       })
     })
-	})
+  })
 }
 
 global.addAndLoginLocalUser = function(originalUserKey, done)
@@ -96,12 +97,12 @@ global.addAndLoginLocalUser = function(originalUserKey, done)
 
 global.addAndLoginLocalUserWithPayMethod = function(originalUserKey, done)
 {
-	addAndLoginLocalUserWithEmailVerified(originalUserKey, (s) =>{
-		new PayMethod( _.extend({userId: s._id}, data.paymethods.generic) ).save( (e,r) => {
-	    s.primaryPayMethodId = r._id
-	    done(s)
-		})
-	})
+  addAndLoginLocalUserWithEmailVerified(originalUserKey, (s) =>{
+    new PayMethod( _.extend({userId: s._id}, data.paymethods.generic) ).save( (e,r) => {
+      s.primaryPayMethodId = r._id
+      done(s)
+    })
+  })
 }
 
 global.createCountedDone = function(count, done)
@@ -141,8 +142,8 @@ function addUserWithRole(userKey, role, done)
 
 function ensureDocument(Model, doc, cb, refresh)
 {
-	//if (refresh) return
-	Model.findByIdAndRemove(doc._id, function(e, r) { new Model(doc).save((e,r)=> { r.toObject(); cb(e,r); } ); })
+  //if (refresh) return
+  Model.findByIdAndRemove(doc._id, function(e, r) { new Model(doc).save((e,r)=> { r.toObject(); cb(e,r); } ); })
   //Model.findOneAndUpdate({_id:doc._id}, doc, {upsert:true}, cb)  // problems in few places with upsert method
 }
 
@@ -150,7 +151,7 @@ module.exports = {
 
   init: function(done)
   {
-  	var _id = data.users.admin._id
+    var _id = data.users.admin._id
     User.findOneAndUpdate({_id}, data.users.admin, { upsert: true }, done)
   },
 
@@ -174,11 +175,11 @@ module.exports = {
   {
     Post.findOne({slug:'starting-a-mean-stack-app'}, function(e,r) {
       if (!r) {
-      	var {v1AirPair,migrateES6,sessionDeepDive,sessionDeepDive2} = data.posts
+        var {v1AirPair,migrateES6,sessionDeepDive,sessionDeepDive2} = data.posts
         var bulk = Post.collection.initializeOrderedBulkOp()
-	    	for (var t of [v1AirPair,migrateES6,sessionDeepDive,]) { bulk.insert(t) }
-	    	bulk.execute(done)
-	    	cache.flush('posts')
+        for (var t of [v1AirPair,migrateES6,sessionDeepDive,sessionDeepDive2]) { bulk.insert(t) }
+        bulk.execute(done)
+        cache.flush('posts')
       }
       else
         done()
@@ -242,32 +243,38 @@ module.exports = {
   },
 
   readUser: function(id, cb) {
-  	User.findOne({_id:id}, (e,r)=> { r.toObject(); cb(e,r); })
+    User.findOne({_id:id}, (e,r)=> { r.toObject(); cb(e,r); })
   },
 
   ensureUser: function(user, cb) {
-  	ensureDocument(User, user, cb, true)
+    ensureDocument(User, user, cb, true)
   },
 
   ensureExpert: function(user, expert, cb) {
-  	ensureDocument(User, user, () => {
-	  	ensureDocument(Expert, expert, cb)
-  	})
+    ensureDocument(User, user, () => {
+      ensureDocument(Expert, expert, cb)
+    })
   },
 
   ensureSettings: function(user, settings, cb) {
-  	settings.userId = user._id
+    settings.userId = user._id
     ensureDocument(Settings, settings, cb)
   },
 
   ensureCompany: function(user, company, cb) {
-  	company.contacts[0].fullName = user.name
-  	company.contacts[0].userId = user._id
+    company.contacts[0].fullName = user.name
+    company.contacts[0].userId = user._id
     ensureDocument(Company, company, cb)
   },
 
   ensurePost: function(post, cb) {
-  	ensureDocument(Post, post, cb)
+    ensureDocument(Post, post, cb)
+  },
+
+  ensureOrders: function(orders, cb) {
+    var bulk = Orders.collection.initializeOrderedBulkOp()
+    for (var o of orders) { bulk.insert(o) }
+    bulk.execute(cb)
   }
 
 }

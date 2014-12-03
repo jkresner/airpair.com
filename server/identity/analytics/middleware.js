@@ -20,13 +20,13 @@ var getContext = (req) => {
 
   var c = null
   var {utm_campaign,utm_source,utm_medium,utm_term,utm_content} = req.query
-  if (utm_campaign) (c) ? (c.name = utm_campaign) : (c = {name:utm_campaign})
-  if (utm_source) (c) ? (c.source = utm_source) : (c = {source:utm_source})
-  if (utm_medium) (c) ? (c.medium = utm_medium) : (c = {medium:utm_medium})
-  if (utm_term) (c) ? (c.term = utm_term) : (c = {term:utm_term})
-  if (utm_content) (c) ? (c.content = utm_content) : (c = {content:utm_content})
+  if (utm_campaign) (c) ? (c.utm_campaign = utm_campaign) : (c = {utm_campaign:utm_campaign})
+  if (utm_source) (c) ? (c.utm_source = utm_source) : (c = {utm_source:utm_source})
+  if (utm_medium) (c) ? (c.utm_medium = utm_medium) : (c = {utm_medium:utm_medium})
+  if (utm_term) (c) ? (c.utm_term = utm_term) : (c = {utm_term:utm_term})
+  if (utm_content) (c) ? (c.utm_content = utm_content) : (c = {utm_content:utm_content})
 
-  if (c) ctx.campaign = c
+  if (c) ctx.utms = c
 
 //   Recommended by segment for server-side GA tracking (which doesn't work.)
 //   if (req.cookies._ga) {
@@ -56,6 +56,7 @@ export var trackView = (type) => {
     var url = req.protocol + '://' + req.get('host') + req.originalUrl
 
     var properties = { title: obj.title, tags, url, path: req.path, objectId: obj._id, referrer: context.referer }
+
     analytics.view(req.user, anonymousId, type, obj.title, properties, context)
 
     if (logging) $log('trackView', type, properties)

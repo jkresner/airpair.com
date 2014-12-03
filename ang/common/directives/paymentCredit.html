@@ -1,0 +1,22 @@
+<label class="control-label">Amount</label>
+<div class="creditChoice">
+  <label class="control-label" for=""></label>
+
+  <input name="creditAmount" ng-model="creditAmount" type="radio" value="500">
+  <span>$500</span>
+  <em ng-if="creditAmount == 500"></em>
+
+  <input name="creditAmount" ng-model="creditAmount" type="radio" value="1000">
+  <span>$1000</span>
+  <em ng-if="creditAmount == 1000">Bonus $50 Credit (5% on $1000)</em>
+
+  <input name="creditAmount" ng-model="creditAmount" type="radio" value="3000">
+  <span>$3000</span>
+  <em ng-if="creditAmount == 3000">Bonus $300 Credit (10% on $3000)</em>
+
+  <input name="creditAmount" ng-model="creditAmount" type="radio" value="5000">
+  <span>$5000</span>
+  <em ng-if="creditAmount == 5000">Bonus $1000 Credit (20% on $5000)</em>
+  <div></div>
+</div>
+<hr />

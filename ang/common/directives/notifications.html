@@ -1,0 +1,19 @@
+<div ng-if="serverErrors.length > 0" class="alert alert-danger">
+  <label ng-repeat='e in serverErrors' ng-bind-html="e | html"></label>
+</div>
+<div ng-if="(!serverErrors || serverErrors.length==0) && notifications" class="alert alert-warning">
+  <section ng-if="notifications.saveBookmarks">
+    <div class="right">New?
+      <a id="notifyBookmarksSignup" track-click="signup" ng-click="openProfile()">Create an account</a>
+    </div>
+    <div class="left">
+      <a id="notifyBookmarksLoging" track-click="login" href='/login'>Login</a> to save your <a href='#' ng-click='openBookmarks()'>bookmarks</a>.
+    </div>
+  </section>
+  <section ng-if="notifications.verifyEmail">
+    <div class="left">
+      Please <a href='/me'>verify your email</a>
+    </div>
+  </section>
+  <hr />
+</div>

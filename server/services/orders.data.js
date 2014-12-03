@@ -6,17 +6,29 @@ module.exports = {
       'by': 1,
       'utc': 1,
       'total': 1,
-      'owner':1
+      'owner':1,
+      'profit':1,
+      'lineItems.type':1,
+      'company.contacts.fullName':1,
+      'company.contacts.email':1
     }
   },
 
   query: {
     creditRemaining: function(userId) {
-      return {  userId,
-                '$and': [
-                    {'info.remaining' : { '$exists': true }},
-                    {'info.remaining': { '$lt': new Date() }}
-                ] }
+      return {
+        userId,
+        '$and': [
+            {'lineItems.info' : { '$exists': true }},
+            {'lineItems.info.remaining': { '$gt': 0 }}
+        ] }
+    },
+    inRange: function(start, end) {
+     return {
+        '$and': [
+            {'utc': { '$gt': new Date(parseInt(start)) }},
+            {'utc': { '$lt': new Date(parseInt(end)) }}
+        ] }
     }
   },
 

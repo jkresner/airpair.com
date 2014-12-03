@@ -4,10 +4,18 @@ import * as md5     from '../util/md5'
 var util =          require('../../shared/util')
 var bcrypt =        require('bcrypt')
 var UserData =      require('./users.data')
-var Validate =			require('../../shared/validation/users.js')
+var Validate =      require('../../shared/validation/users.js')
 var logging         = false
 var svc             = new BaseSvc(User, logging)
 
+
+var cbTrackSave = (ctx, data, cb) =>
+  (e,r) => {
+    if (e) return cb(e)
+    // console.log('track save', ctx, data)
+    analytics.track(ctx.user, ctx.sessionID, 'Save', data, {}, ()=>{})
+    cb(null, r)
+  }
 
 
 var cbSession = (cb) =>
@@ -118,7 +126,7 @@ function upsertSmart(search, upsert, cb) {
         }
         else
           User.findOneAndUpdate(search, { 'cohort.aliases': aliases }, done)
-    	})
+      })
     })
   })
 }
@@ -129,23 +137,23 @@ var generateHash = (password) =>
 
 
 export function upsertProviderProfile(providerName, profile, done) {
-	var search = {}
-	search[providerName+'Id'] = profile.id
-	if (providerName == 'google')
-		search = { '$or': [{email:profile._json.email},search] }
-	if (this.user && this.user._id)
-		search = { '_id': this.user._id }
+  var search = {}
+  search[providerName+'Id'] = profile.id
+  if (providerName == 'google')
+    search = { '$or': [{email:profile._json.email},search] }
+  if (this.user && this.user._id)
+    search = { '_id': this.user._id }
 
-	var upsert = {}
-	upsert[providerName+'Id'] = profile.id
-	upsert[providerName] = profile
+  var upsert = {}
+  upsert[providerName+'Id'] = profile.id
+  upsert[providerName] = profile
 
-	if (!this.user && this.session.anonData)
-		upsert = _.extend(upsert, this.session.anonData)
+  if (!this.user && this.session.anonData)
+    upsert = _.extend(upsert, this.session.anonData)
 
-	delete upsert.email // gotcha, don't remove
+  delete upsert.email // gotcha, don't remove
 
-	upsertSmart.call(this, search, upsert, done)
+  upsertSmart.call(this, search, upsert, done)
 }
 
 
@@ -169,244 +177,247 @@ export function tryLocalSignup(email, password, name, done) {
         emailVerified: false,
         name: name,
         local: {
-					password: generateHash(password),
-					emailHash: '',
-					changePasswordHash: ''
+          password: generateHash(password),
+          emailHash: '',
+          changePasswordHash: ''
         }
-			}
+      }
 
-			if (this.session.anonData)
-				data = _.extend(this.session.anonData, data)
+      if (this.session.anonData)
+        data = _.extend(this.session.anonData, data)
 
-			upsertSmart.call(this, search, data, done)
-		}
-	})
+      upsertSmart.call(this, search, data, done)
+    }
+  })
 }
 
 
 export function tryLocalLogin(email, password, done) {
-	if (this.user && this.user._id)
-		done(Error(`Cannot login. Already signed in as ${user.name}. Logout first?`),null)
+  if (this.user && this.user._id)
+    done(Error(`Cannot login. Already signed in as ${user.name}. Logout first?`),null)
 
   email = email.toLowerCase()
 
-	var search = { '$or': [{email:email},{'google._json.email':email}] }
+  var search = { '$or': [{email:email},{'google._json.email':email}] }
 
-	svc.searchOne(search, null, (e, r) => {
-		var failMsg = null
-		if (!e)
-		{
-			var validPassword = (password, hash) =>
-				bcrypt.compareSync(password, hash)
+  svc.searchOne(search, null, (e, r) => {
+    var failMsg = null
+    if (!e)
+    {
+      var validPassword = (password, hash) =>
+        bcrypt.compareSync(password, hash)
 
-			if (!r)
-				failMsg = "no user found"
-			else if (!r.local || !r.local.password) {
-				failMsg = "try google login"; r = false }
-			else if (!validPassword(password, r.local.password)) {
-				failMsg = "bad password"; r = false }
-		}
+      if (!r)
+        failMsg = "no user found"
+      else if (!r.local || !r.local.password) {
+        failMsg = "try google login"; r = false }
+      else if (!validPassword(password, r.local.password)) {
+        failMsg = "bad password"; r = false }
+    }
 
-		if (e || failMsg) return done(e, r, failMsg)
-		else
-		{
-			//-- Want to update last login etc.
-			upsertSmart.call(this, {_id:r._id}, {}, done)
-		}
-	})
+    if (e || failMsg) return done(e, r, failMsg)
+    else
+    {
+      //-- Want to update last login etc.
+      upsertSmart.call(this, {_id:r._id}, {}, done)
+    }
+  })
 }
 
 
 //-- Not sure, but this will probably become intelligent
 export function update(id, data, cb) {
-	// o.updated = new Date() ??
-	// authorization etc.
-	svc.getById(id, (e,r) => {
-		if (e) return cb(e)
-		if (!r) return cb(Error(`Failed to update user with id: ${id}`))
-		var updated = _.extend(r, data)
-		svc.update(r._id, updated, (err, user) => {
-			if (err) $log('User.update.err', err && err.stack)
-			if (logging) $log('User.update', JSON.stringify(user))
-			if (cb) cb(err, user)
-		})
-	})
+  // o.updated = new Date() ??
+  // authorization etc.
+  svc.getById(id, (e,r) => {
+    if (e) return cb(e)
+    if (!r) return cb(Error(`Failed to update user with id: ${id}`))
+    var updated = _.extend(r, data)
+    svc.update(r._id, updated, (err, user) => {
+      if (err) $log('User.update.err', err && err.stack)
+      if (logging) $log('User.update', JSON.stringify(user))
+      if (cb) cb(err, user)
+    })
+  })
 }
 
 
 export function updateProfile(name, initials, username, cb) {
-	var userId = this.user._id
-	var ups = {name}
-	if (initials) ups.initials = initials
-	if (username) ups.username = username
+  var userId = this.user._id
+  var ups = {name}
+  if (initials) ups.initials = initials
+  if (username) ups.username = username
 
-	if (!username)
-		return update(userId, ups, cbSession(cb))
+  if (!username)
+    return update(userId, ups, cbSession(cb))
 
-	svc.searchOne({username}, null, function(e,r) {
-		if (r) {
-			return cb(svc.Forbidden(`username ${username} already taken`))
-		}
-		update(userId, ups, cbSession(cb))
-	})
+  svc.searchOne({username}, null, function(e,r) {
+    if (r) {
+      return cb(svc.Forbidden(`username ${username} already taken`))
+    }
+    update(userId, ups, cbSession(cb))
+  })
 }
 
 
 
 var VALID_ROLES = ['admin',       // Get access to all admin backend app
-									 'dev',         // Get application error notification
-									 'pipeliner',   // Get pipeline emails
-									 'editor',      // Can publish posts
-									 'matchmaker']  // Can make suggestions + schedule times
+                   'dev',         // Get application error notification
+                   'pipeliner',   // Get pipeline emails
+                   'editor',      // Can publish posts
+                   'matchmaker']  // Can make suggestions + schedule times
 
 export function toggleUserInRole(userId, role, cb) {
-	if (!_.contains(VALID_ROLES, role)) {
-		return cb(new Error('Invalid role'))
-	}
+  if (!_.contains(VALID_ROLES, role)) {
+    return cb(new Error('Invalid role'))
+  }
 
-	svc.searchOne({ _id:userId }, null, (e,r) => {
-		if (e || !r) return cb(e,r)
+  svc.searchOne({ _id:userId }, null, (e,r) => {
+    if (e || !r) return cb(e,r)
 
-		if (!r.roles)
-			r.roles = [role]
-		else if ( _.contains(r.roles, role) )
-			r.roles = _.without(r.roles, role)
-		else
-			r.roles.push(role)
+    if (!r.roles)
+      r.roles = [role]
+    else if ( _.contains(r.roles, role) )
+      r.roles = _.without(r.roles, role)
+    else
+      r.roles.push(role)
 
-		svc.update(userId, r, cb)
-	})
+    svc.update(userId, r, cb)
+  })
 }
 
 
 export function getUsersInRole(role, cb) {
-	svc.searchMany({ roles:role }, { fields: UserData.select.usersInRole }, cb)
+  svc.searchMany({ roles:role }, { fields: UserData.select.usersInRole }, cb)
 }
 
 
 
 export function setAvatar(user) {
-	if (user && user.email) user.avatar = md5.gravatarUrl(user.email)
-	else user.avatar = undefined
+  if (user && user.email) user.avatar = md5.gravatarUrl(user.email)
+  else user.avatar = undefined
 }
 
 
 //-- TODO, watch out for cache changing via adds and deletes of records
 function inflateTagsAndBookmarks(sessionData, cb) {
-	if (!sessionData ||
-		(!sessionData.tags && !sessionData.bookmarks) )
-		return cb(null, sessionData)
+  if (!sessionData ||
+    (!sessionData.tags && !sessionData.bookmarks) )
+    return cb(null, sessionData)
 
-	cache.ready(['tags','posts','workshops'], () => {
-		if (logging) $log('inflateTagsAndBookmarks.start')
+  cache.ready(['tags','posts','workshops'], () => {
+    if (logging) $log('inflateTagsAndBookmarks.start')
 
-		var tags = []
-		for (var t of (sessionData.tags || []))
-		{
-			var tt = cache['tags'][t.tagId]
-			if (tt) {
-				var {name,slug} = tt
-				tags.push( _.extend({name,slug},t) )
-			}
-			else
-				$log(`tag with Id ${t.tagId} not in cache`)
-				// return cb(Error(`tag with Id ${t.tagId} not in cache`))
-		}
+    var tags = []
+    for (var t of (sessionData.tags || []))
+    {
+      var tt = cache['tags'][t.tagId]
+      if (tt) {
+        var {name,slug} = tt
+        tags.push( _.extend({name,slug},t) )
+      }
+      else
+        $log(`tag with Id ${t.tagId} not in cache`)
+        // return cb(Error(`tag with Id ${t.tagId} not in cache`))
+    }
 
-		var bookmarks = []
-		for (var b of (sessionData.bookmarks || []))
-		{
-			var bb = cache[b.type+'s'][b.objectId]
-			if (bb) {
-				var {title,url} = bb
-				bookmarks.push( _.extend({title,url},b) )
-			}
-			else
-				$log(`${b.type} with Id ${b.objectId} not in cache`)
-				// return cb(Error(`${b.type} with Id ${b.objectId} not in cache`))
-		}
+    var bookmarks = []
+    for (var b of (sessionData.bookmarks || []))
+    {
+      var bb = cache[b.type+'s'][b.objectId]
+      if (bb) {
+        var {title,url} = bb
+        bookmarks.push( _.extend({title,url},b) )
+      }
+      else
+        $log(`${b.type} with Id ${b.objectId} not in cache`)
+        // return cb(Error(`${b.type} with Id ${b.objectId} not in cache`))
+    }
 
-		if (logging) $log('inflateTagsAndBookmarks.done', {tags, bookmarks})
-		cb(null, _.extend(sessionData, {tags, bookmarks}))
-	})
+    if (logging) $log('inflateTagsAndBookmarks.done', {tags, bookmarks})
+    cb(null, _.extend(sessionData, {tags, bookmarks}))
+  })
 }
 
 var anonAvatars = [
-	"/v1/img/css/sidenav/default-cat.png",
-	"/v1/img/css/sidenav/default-mario.png",
-	"/v1/img/css/sidenav/default-stormtrooper.png"
+  "/v1/img/css/sidenav/default-cat.png",
+  "/v1/img/css/sidenav/default-mario.png",
+  "/v1/img/css/sidenav/default-stormtrooper.png"
 ]
 
 export function getSession(cb) {
-	if (this.user == null)
-	{
-		var avatar = anonAvatars[_.random(1)]
+  if (this.user == null)
+  {
+    var avatar = anonAvatars[_.random(1)]
 
-		if (this.session.anonData && this.session.anonData.email)
-		{
-			setAvatar(this.session.anonData)
-			avatar = this.session.anonData.avatar
-		}
+    if (this.session.anonData && this.session.anonData.email)
+    {
+      setAvatar(this.session.anonData)
+      avatar = this.session.anonData.avatar
+    }
 
-		var session = _.extend({ authenticated:false,sessionID:this.sessionID, avatar }, this.session.anonData)
-		inflateTagsAndBookmarks(session, cb)
-	}
-	else
-	{
-		if (!this.user.avatar) setAvatar(this.user)
-		inflateTagsAndBookmarks(this.user, cb)
-	}
+    var session = _.extend({ authenticated:false,sessionID:this.sessionID, avatar }, this.session.anonData)
+    inflateTagsAndBookmarks(session, cb)
+  }
+  else
+  {
+    if (!this.user.avatar) setAvatar(this.user)
+    inflateTagsAndBookmarks(this.user, cb)
+  }
 }
 
 
 export function getSessionFull(cb) {
-	if (!this.user)
-		return getSession.call(this, cb)
+  if (!this.user)
+    return getSession.call(this, cb)
 
-	svc.searchOne({ _id:this.user._id },{ fields: UserData.select.sessionFull }, cbSession(cb))
+  svc.searchOne({ _id:this.user._id },{ fields: UserData.select.sessionFull }, cbSession(cb))
 }
 
 
 function toggleSessionItem(type, item, maxAnon, maxAuthd, comparator, cb)
 {
-	var self = this
-	if (this.user) {
-		var userId = this.user._id
-		svc.searchOne({ _id: userId }, null, (e,r) => {
-			if (e || !r) return cb(e,r)
-			var list = util.toggleItemInArray(r[type], item, comparator)
-			if (list.length > maxAuthd) return cb(Error(`Max allowed ${type} reached`))
+  var self = this
+  if (this.user) {
+    var userId = this.user._id
+    svc.searchOne({ _id: userId }, null, (e,r) => {
+      if (e || !r) return cb(e,r)
+      var list = util.toggleItemInArray(r[type], item, comparator)
+      if (list.length > maxAuthd) return cb(Error(`Max allowed ${type} reached`))
 
-			var up = {}
-			up[type] = list
+      var up = {}
+      up[type] = list
 
-			svc.update(userId, up, cbSession(cb))
-		})
-	}
-	else {
-		var existing = this.session.anonData[type]
+      svc.update(userId, up, cbSession(cb))
+    })
+  }
+  else {
+    var existing = this.session.anonData[type]
 
-		var list = util.toggleItemInArray(existing, item, comparator)
-		if (list.length > maxAnon) return cb(Error(`Max ${maxAnon} ${type} reached. <a href="/login">Login</a> to increase limit.`))
-		this.session.anonData[type] = list
+    var list = util.toggleItemInArray(existing, item, comparator)
+    if (list.length > maxAnon) return cb(Error(`Max ${maxAnon} ${type} reached. <a href="/login">Login</a> to increase limit.`))
+    this.session.anonData[type] = list
 
-		getSession.call(this, cb)
-	}
+    getSession.call(this, cb)
+  }
 }
 
-
 export function toggleTag(tag, cb) {
-	var tagId = tag._id
-	tag = { _id: svc.newId().toString(), tagId: tag._id, sort: 0 }
-	var tagCompator = (i) => _.idsEqual(i.tagId, tagId)
-	toggleSessionItem.call(this, 'tags', tag, 3, 6, tagCompator, cb)
+  var name = tag.name
+  var tagId = tag._id
+  tag = { _id: svc.newId().toString(), tagId: tag._id, sort: 0 }
+  var tagCompator = (i) => _.idsEqual(i.tagId, tagId)
+  var trackData = { type: 'tag', name }
+  toggleSessionItem.call(this, 'tags', tag, 3, 6, tagCompator, cbTrackSave(this, trackData, cb))
 }
 
 export function toggleBookmark(type, id, cb) {
-	if (!type) $log('toggleBookmark.type', type, cb)
-	var	bookmark = { _id: svc.newId().toString(), objectId: id, type, sort: 0 }
-	var bookmarkComparator = (i) => _.idsEqual(i.objectId,id)
-	toggleSessionItem.call(this, 'bookmarks', bookmark, 3, 15, bookmarkComparator, cb)
+  if (!type) $log('toggleBookmark.type', type, cb)
+  var bookmark = { _id: svc.newId().toString(), objectId: id, type, sort: 0 }
+  var bookmarkComparator = (i) => _.idsEqual(i.objectId,id)
+  var props = cache.bookmark(type,id)
+  var trackData = { type: 'bookmark', objectType: type, objectId: id, url: props.url, name: props.title }
+  toggleSessionItem.call(this, 'bookmarks', bookmark, 3, 15, bookmarkComparator, cbTrackSave(this, trackData, cb))
 }
 
 export function tags(tags, cb) {
@@ -430,46 +441,46 @@ export function bookmarks(bookmarks, cb) {
 }
 
 export function requestPasswordChange(email, cb) {
-	var inValid = Validate.changeEmail(email)
-	if (inValid) return cb(svc.Forbidden(inValid))
+  var inValid = Validate.changeEmail(email)
+  if (inValid) return cb(svc.Forbidden(inValid))
 
-	var search = { '$or': [{email:email},{'google._json.email':email}] }
-	var self = this
-	svc.searchOne(search, null, function(e,user) {
-		if (e||!user) {
-			return cb(svc.Forbidden(`${email} not found`))
-		}
+  var search = { '$or': [{email:email},{'google._json.email':email}] }
+  var self = this
+  svc.searchOne(search, null, function(e,user) {
+    if (e||!user) {
+      return cb(svc.Forbidden(`${email} not found`))
+    }
 
-		var update = { 'local.changePasswordHash': generateHash(email) }
-		svc.update(user._id, update, (e,r) => {
-			mailman.sendChangePasswordEmail(r, r.local.changePasswordHash)
-			return cbSession(cb)(e,r)
-		})
-	})
+    var update = { 'local.changePasswordHash': generateHash(email) }
+    svc.update(user._id, update, (e,r) => {
+      mailman.sendChangePasswordEmail(r, r.local.changePasswordHash)
+      return cbSession(cb)(e,r)
+    })
+  })
 }
 
 export function changePassword(hash, password, cb) {
-	var inValid = Validate.changePassword(hash, password)
-	if (inValid) return cb(svc.Forbidden(inValid))
+  var inValid = Validate.changePassword(hash, password)
+  if (inValid) return cb(svc.Forbidden(inValid))
 
-	var query = {'local.changePasswordHash': hash}
-	var self = this
-	svc.searchOne(query, null, (e,user) => {
-		if (e||!user) return cb(svc.Forbidden('hash not found'))
+  var query = {'local.changePasswordHash': hash}
+  var self = this
+  svc.searchOne(query, null, (e,user) => {
+    if (e||!user) return cb(svc.Forbidden('hash not found'))
 
-		// we've just received the hash that we sent to user.email
-		// so mark their email as verified
-		var update = {
-			'local.password': generateHash(password),
-			'local.changePasswordHash': '',
-			'emailVerified': true
-		}
+    // we've just received the hash that we sent to user.email
+    // so mark their email as verified
+    var update = {
+      'local.password': generateHash(password),
+      'local.changePasswordHash': '',
+      'emailVerified': true
+    }
 
-		svc.update(user._id, update, (e,r) => {
-			if (e || !r) return cb(e,r)
-			return getSession.call(this,cb)
-		});
-	});
+    svc.update(user._id, update, (e,r) => {
+      if (e || !r) return cb(e,r)
+      return getSession.call(this,cb)
+    });
+  });
 }
 
 
@@ -495,7 +506,7 @@ export function changeEmail(email, cb) {
 
     User.findOneAndUpdate({_id:user._id}, up, (e,r) => {
       if (e) {
-        if (e.message.indexOf('duplicate key error index') != -1)	return cb(Error('Email belongs to another account'))
+        if (e.message.indexOf('duplicate key error index') != -1) return cb(Error('Email belongs to another account'))
         return cb(e)
       }
 

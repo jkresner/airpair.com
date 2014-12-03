@@ -1,0 +1,57 @@
+<section id="users">
+
+  <h2>Roles</h2>
+
+  <div user-input="" style="width:48%;float:left"></div>
+
+  <div style="width:50%;float:left">
+    <img ng-src="{{selectedUser.avatar}}" />
+    {{selectedUser.name}}
+    <select ng-model="role">
+      <option>admin</option>
+      <option>editor</option>
+      <option>pipeliner</option>
+    </select>
+    <button class="btn" ng-click="toggleRole()">Toggle role</button>
+  </div>
+
+  <div style="width:25%;float:left;clear:both">
+    <h3>Admins</h3>
+    <ul class="users admin">
+      <li ng-repeat="user in admins">{{ user.name }}</li>
+    </ul>
+  </div>
+  <div style="width:25%;float:left">
+    <h3>Editors</h3>
+    <ul class="users editors">
+      <li ng-repeat="user in editors">{{ user.name }}</li>
+    </ul>
+  </div>
+  <div style="width:25%;float:left">
+    <h3>Pipeliners</h3>
+    <ul class="users pipeliners">
+      <li ng-repeat="user in pipeliners">{{ user.name }}</li>
+    </ul>
+  </div>
+
+
+  <hr style="clear:both" />
+
+
+  <h2>Credit</h2>
+
+  {{selectedUser.name}}
+  <img ng-src="{{selectedUser.avatar}}" />
+  <select ng-model="credit">
+    <option value="10">$10</option>
+    <option value="30">$30</option>
+    <option value="50">$50</option>
+  </select>
+  <select ng-model="source">
+    <option>Angular Workshops Feedback</option>
+    <option>Welcome Credit</option>
+  </select>
+  <button class="btn" ng-click="giveCredit()">Give credit</button>
+
+
+</section>

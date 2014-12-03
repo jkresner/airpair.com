@@ -4,7 +4,7 @@ module.exports = {
     var lines = []
     orders.forEach(function(order){
       order.lineItems.forEach(function(li){
-        if (li.type == 'credit' && li.info.remaining > 0) lines.push(li)
+        if (li.type == 'credit' && li.info && li.info.remaining > 0) lines.push(li)
       })
     })
 

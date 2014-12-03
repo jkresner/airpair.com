@@ -11,7 +11,7 @@ var applyBundleTransforms = require('./bundler').applyBundleTransforms;
 
 function watchifyer(fileName)
 {
-  var bundler = watchify(browserify('./public/common/'+fileName, watchify.args));
+  var bundler = watchify(browserify('./ang/'+fileName, watchify.args));
   applyBundleTransforms(bundler)
   bundler.on('update', rebundle);
 

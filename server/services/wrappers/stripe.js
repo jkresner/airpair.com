@@ -23,7 +23,7 @@ module.exports = {
     };
     // console.log('striping', payload, cb)
     stripe.charges.create(payload, function(err, charge) {
-      if (err) cb(err)
+      if (err) return cb(err)
       // if (winston) {
       //   winston.log("StripResponse: ", charge);
       // }

@@ -2,7 +2,7 @@
 
 
 section#billing {
-  h1 { text-align:center;margin-bottom:22px;font-size:42px }
+  h1 { text-align:center;margin-bottom:22px;margin-top:0;font-size:42px }
 
   .welcome {
     p { text-align:center;margin-bottom:20px }
@@ -10,6 +10,7 @@ section#billing {
     .choice {
       .btn { width:260px }
       h2 { font-size:28px }
+      hr { border-color:@lightblue;margin:5px }
     }
   }
 
@@ -55,7 +56,7 @@ section#billing {
 
   .creditChoice {
     text-align:left;
-    hr { clear:both }
+    div { clear:both;height:10px }
     input { clear:left;float:left;margin-right:10px;display:block }
     span { float:left;margin-right:10px;display:block  }
     em { float:left;margin-right:10px;display:block;color:@orange  }
@@ -71,6 +72,13 @@ section#billing {
     .minus { color:@orange }
   }
 
+
+  #topupForm {
+    background-color:@lightblue;
+    border-radius:5px;
+    padding:20px;
+    hr { border-top:solid 1px @bluegray;height:0 }
+  }
 }
 
 section#topup {
