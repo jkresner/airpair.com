@@ -1,0 +1,94 @@
+<header>
+  <ol class="entry-meta breadcrumb">
+    <li>Account</li>
+  </ol>
+</header>
+
+<section id="account">
+
+  <section class="email">
+
+    <h3 ng-if="!session.emailVerified" style="margin-top:0px">Please verify your email</h3>
+
+    <form id="emailForm" novalidate name="emailForm" ng-submit="submit(emailForm.$valid, data)" ng-class="(session.emailVerified) ? '' : 'verify'">
+
+      <div form-group class="email-group verified-{{session.emailVerified}}">
+        <label class="control-label" for="sessionEmail">Contact email</label>
+        <span class="verifyEmail" ng-if="session.emailVerified == false">{{session.email}} is unverified ...</span>
+        <input id="sessionEmail" name="email" form-control type="email" placeholder="Primary contact email" ng-model="data.email" ng-blur="updateEmail(emailForm.email)" required tabindex="1">
+        <div class="error" ng-if="formGroup.showError(emailForm.email)" ng-messages="emailForm.email.$error">
+          <div ng-message="required">Field required</div>
+          <div ng-message="email">Invalid email</div>
+        </div>
+        <span class="error">{{ emailChangeFailed }}</span>
+
+        <div>
+          <alert ng-repeat="alert in emailAlerts" type="{{alert.type}}">
+            <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>
+            <span ng-bind-html="alert.msg | html"></span></alert>
+        </div>
+      </div>
+      <div class="verifyEmail" ng-if="session.emailVerified == false">
+        <a href="#" ng-click="sendVerificationEmail()" class="btn">Send verification email</a>
+      </div>
+      <hr />
+    </form>
+
+  </section>
+
+  <hr />
+
+  <section class="info" ng-if="session.emailVerified">
+
+  <form id="profileForm" novalidate name="profileForm" ng-submit="submit(profileForm.$valid, data)">
+
+    <div form-group>
+      <label class="control-label" for="profileName">Full name </label>
+      <input id="profileName" name="name" form-control type="text" placeholder="Full name" ng-model="data.name" required ng-minlength="4" ng-minlength="60" ng-pattern="/\w+ \w+/" tabindex="2">
+      <div class="error" ng-if="formGroup.showError(profileForm.name)" ng-messages="profileForm.name.$error">
+        <div ng-message="required">Name required</div>
+        <div ng-message="minlength">Full name required (e.g. John Smith)</div>
+        <div ng-message="pattern">Full name required (e.g. John Smith)</div>
+        <div ng-message="maxlength">Full name max length 60 chars</div>
+      </div>
+    </div>
+
+    <div form-group>
+      <label for="profileInitials">Initials <span>used for IM/chat</span></label>
+      <input id="profileInitials" name="initials" type="text" form-control placeholder="Initials" ng-model="data.initials" tabindex="3">
+    </div>
+    <div form-group>
+      <label class="control-label" for="profileUsername">Username <span>shown on post you publish</span></label>
+      <input id="profileUsername" name="username" form-control type="text" placeholder="Username" ng-model="data.username" ng-minlength="2" ng-pattern="/^\w+$/" tabindex="4">
+      <div class="error" ng-if="formGroup.showError(profileForm.username)" ng-messages="profileForm.username.$error">
+        <div ng-message="minlength">Min 2 characters</div>
+        <div ng-message="pattern">Username must be letters only</div>
+      </div>
+    </div>
+
+  </form>
+
+  <alert ng-repeat="alert in profileAlerts" type="{{alert.type}}"><span ng-bind-html="alert.msg | html"></span></alert>
+
+  </div>
+
+  </section>
+
+  <section class="avatar" ng-if="session.emailVerified">
+    <img class="avatar" ng-src="{{session.avatar}}?s=200" title="Avatars are gravtars from your email." />
+    <p style="font-size:12px">
+    <span ng-if="session.email">Update the <b><a href="http://www.gravatar.com/" target="_blank">gravatar</a></b> for {{ session.email }}</span>
+    <span ng-if="!session.email">Enter an email address</span>
+      to change your pic.
+    </p>
+  </section>
+
+  <hr />
+
+  <section class="password">
+    <h3 style="margin-top:0">Change password</h3>
+    <a href="#" ng-click="sendPasswordChange()" class="btn">Send password reset email</a>
+    <alert ng-repeat="alert in passwordAlerts" type="{{alert.type}}"><span ng-bind-html="alert.msg | html"></span></alert>
+  </section>
+
+</section>

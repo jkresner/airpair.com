@@ -2,10 +2,12 @@
   <ol class="entry-meta breadcrumb">
     <li><a href="/learn">Learn</a></li>
     <li><a href="/posts">Posts</a></li>
-    <li><span>{{ primarytag }}</li>
-    <li><span class="entry-author" itemprop="author" itemscope="itemscope" itemtype="//schema.org/Person">
+    <li>{{ primarytag }}</li>
+    <li>
+      <span class="entry-author" itemprop="author" itemscope="itemscope" itemtype="//schema.org/Person">
       {{#if by.username}}
-        <a href="/me/{{by.username}}" class="entry-author-link" itemprop="url" rel="author" target="_self"><span class="entry-author-name" itemprop="name">{{by.name}}</span></a>
+        <a href="/me/{{by.username}}" class="entry-author-link" itemprop="url" rel="author" target="_self">
+        <span class="entry-author-name" itemprop="name">{{by.name}}</span></a>
       {{else}}
         <span class="entry-author-name" itemprop="name">{{by.name}}</span>
       {{/if}}
@@ -56,7 +58,6 @@
     <h6>Want to keep track of more {{ primarytag }} posts on AirPair?</h6>
     <div>
       <a href="https://twitter.com/airpair" class="twitter-follow-button" data-show-count="true">Follow @airpair</a>
-
     </div>
   </div>
 
@@ -74,4 +75,3 @@
   </section>
 
 </section>
-</div>

@@ -16,6 +16,15 @@
   }
 }
 
+.form-errors {
+  .alert-danger {
+    margin-top:15px;
+    padding:15px;
+    border:solid 1px #a94442!important;
+    label { display:inline!important }
+  }
+}
+
 .choice {
   text-align:center;
 
@@ -168,13 +177,16 @@ h1.entry-title {
     width:100%!important; }
 }
 
-input.form-control {
+.ap-form-control {
   border:solid 2px @bluegray;
   padding:10px;
   height:auto;
   color:@mediumgray;
 }
 
+input.form-control { .ap-form-control }
+select.form-control { .ap-form-control }
+textarea.form-control { .ap-form-control }
 
 .tag-input-group, .bookmark-input-group
 {

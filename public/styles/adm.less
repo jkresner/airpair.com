@@ -12,9 +12,20 @@ html, body{
 }
 
 body {
-  background-color:white;
+  background-color:#f5f5f5;
   color:@mediumgray;
-  font-family:Open Sans,Century Gothic
+  font-family:Open Sans,Century Gothic;
+  > header {
+    height:35px;
+    width:100%;
+    margin:0px auto;
+    padding:10px 5px 0 5px;
+    font-size:13px;
+    line-height:13px;
+    text-transform:uppercase;
+    white-space:nowrap;
+    background-color:black;
+  }
 }
 
 h1 { font-size:36px;line-height:60px;font-weight:300 }
@@ -34,38 +45,13 @@ a:hover { text-decoration:none }
 	font-size:18px }
 .btn:hover { font-weight:bold;color:white }
 
-.gradientfill {
-  background: rgba(255,255,255,1);
-  background: -moz-radial-gradient(left, white 0%, @lightblue 100%, white 50%);
-  background: radial-webkit-gradient(left top, right top, color-stop(0%, white), color-stop(10%, @lightblue), color-stop(50%, white));
-  background: -webkit-radial-gradient(left, white 0%, @lightblue 100%, white 50%);
-  background: -o-radial-gradient(left, white 0%, @lightblue 100%, white 50%);
-  background: -ms-radial-gradient(left, white 0%, @lightblue 100%, white 50%);
-  background: radial-gradient(to right, white 0%, @lightblue 100%, white 50%);
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ffffff', GradientType=1 );
-}
-
 main {
   width:100%;
   margin:0 auto;
   padding:0px 10px;
   a { color:@orange }
   a:hover { color:@gray }
-
-  > header {
-    .gradientfill;
-    height:35px;
-    width:100%;
-    margin:0px auto;
-    padding:10px 0 0 0;
-    font-size:13px;
-    line-height:13px;
-    text-transform:uppercase;
-    white-space:nowrap;
-  }
 }
-
-@import "posts.less";
 
 .posts {
   .entry-header { padding:10px 10px 5px 10px }
@@ -96,4 +82,21 @@ section#redirects {
   #btnCreateRedirect {
     padding:0px 20px;
   }
+}
+
+.userInput { max-width:350px }
+
+section#views {
+
+  table.views td { font-size:9px }
+}
+
+section#orders {
+
+  .userInput { float:right;margin-top:-60px; }
+  th { font-size:11px }
+  table.orders td { font-size:11px }
+  img { margin-right:10px }
+
+  .p { text-align:right }
 }

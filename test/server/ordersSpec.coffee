@@ -1,4 +1,5 @@
 util = require '../../shared/util'
+OrdersUtil = require '../../shared/orders'
 
 module.exports = -> describe "Credit: ", ->
 
@@ -99,7 +100,6 @@ module.exports = -> describe "Credit: ", ->
         o = total: 50, toUserId: schup._id, source: 'Angular Workshops Survey Promo'
         POST "/adm/billing/orders/credit", o, {}, (r) ->
           expect(r._id).to.exist
-          # $log('got r', r)
           expect(_.idsEqual(r.userId, schup._id)).to.be.true
           expect(_.idsEqual(r.by._id, sadm._id)).to.be.true
           expect(r.lineItems.length).to.equal(1)
@@ -124,10 +124,27 @@ module.exports = -> describe "Credit: ", ->
         done()
 
 
+  it 'GetMyOrdersWithCredit returns only orders with Credit', (done) ->
+    addAndLoginLocalUserWithPayMethod 'mcas', (mcas) ->
+      map = (o) ->
+        o.userId = require('mongoose').Types.ObjectId(mcas._id)
+        o
+      v0Orders = _.map(data.v0.orders.jkHist, map)
+      testDb.ensureOrders v0Orders, (e,r) ->
+        o = total: 1000, payMethodId: mcas.primaryPayMethodId
+        POST "/billing/orders/credit", o, {}, (credit) ->
+          expect(credit._id).to.exist
+          GET "/billing/orders/credit", {}, (orders) ->
+            expect(orders.length).to.equal(1)
+            linesWithCredit = OrdersUtil.linesWithCredit(orders)
+            expect(linesWithCredit.length).to.equal(2)
+            expect(OrdersUtil.getAvailableCredit(linesWithCredit)).to.equal(1050)
+            done()
+
+
   it.skip 'Signup with offer created credit order', (done) ->
 
 
-  it.skip 'GetMyOrdersWithCredit returns only orders with Credit', (done) ->
 
 
   it.skip 'Can expire credit', (done) ->

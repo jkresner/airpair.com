@@ -3,6 +3,7 @@ import Order from '../models/order'
 import * as PayMethodSvc from './paymethods'
 import * as UserSvc from './users'
 import * as Validate from '../../shared/validation/billing.js'
+import * as md5     from '../util/md5'
 var Data = require('./orders.data')
 var Util = require('../../shared/util')
 var OrderUtil = require('../../shared/orders.js')
@@ -32,8 +33,7 @@ export function getMyOrders(cb)
 function getOrdersWithCredit(userId, cb)
 {
   var query = Data.query.creditRemaining(userId)
-  query = {userId} // TODO fix query
-  svc.searchMany(query, { options: Data.options.ordersByDate }, cb)
+  svc.searchMany(_.extend(query,{userId}), { options: Data.options.ordersByDate }, cb)
 }
 
 
@@ -42,6 +42,20 @@ export function getMyOrdersWithCredit(cb)
   getOrdersWithCredit(this.user._id, cb)
 }
 
+
+export function getOrdersByDateRange(start, end, cb)
+{
+  var opts = { fields: Data.select.listAdmin, options: { sort: { 'utc': -1 } } }
+  var query = Data.query.inRange(start,end)
+  svc.searchMany(query, opts, (e,r) => {
+    for (var o of r) {
+      if (o.company)
+        o.by = { name: o.company.contacts[0].fullName, email: o.company.contacts[0].email }
+      o.by.avatar = md5.gravatarUrl(o.by.email)
+    }
+    cb(null, r)
+  })
+}
 
 
 
@@ -144,6 +158,7 @@ function makeOrder(byUser, lineItems, payMethodId, forUserId, errorCB, cb)
 
 function chargeAndTrackOrder(o, errorCB, saveCB)
 {
+  analytics.track(o.by, null, 'Order', o)
   if (o.total == 0) saveCB(null, o)
   else
   {
@@ -154,10 +169,8 @@ function chargeAndTrackOrder(o, errorCB, saveCB)
         return errorCB(e)
       }
       if (logging) $log('payment.created', r)
-      // $log('***payment.created', e, r)
-      // trackOrderPayment.call(this, o)
-      // $log('payment.type', r.type)
-      // if (logging) $log('payment.r', r.type, r)
+      trackOrderPayment.call(this, o)
+
       if (r.type == "braintree") {
         var { id, status, total, orderId, createdAt, processorAuthorizationCode} = r.transaction
         o.payment = { id, type:'braintree', status, total, orderId, createdAt, processorAuthorizationCode}
@@ -172,6 +185,24 @@ function chargeAndTrackOrder(o, errorCB, saveCB)
   }
 }
 
+
+
+function trackOrderPayment(order) {
+
+  mailman.sendPipelinerNotifyPurchaseEmail(order.by.name, order.total, ()=>{})
+
+  analytics.track(order.by, null, 'Payment', {orderId:order._id, total:order.total})
+
+ // var props = {
+ //   //timeFromVisit:, //revenue:, //visitedContent:
+ // }
+ // var context = {}
+  // analytics.track(this.user, null, 'Customer Payment', props, context)
+
+  // notifications.broadcast(`Customer Paid  ${order.total}`, this.user)
+
+  // requestSvc.getById order.requestId, (e, request) =>
+}
 
 //-- Assumes we have added the linesItems already
 // function updateOrder(o, cb) {
@@ -222,6 +253,9 @@ export function buyCredit(total, coupon, payMethodId, cb)
 
 export function giveCredit(toUserId, total, source, cb)
 {
+  var inValid = Validate.giveCredit(toUserId, total, source)
+  if (inValid) return cb(svc.Forbidden(inValid))
+
   var expires = Util.dateWithDayAccuracy(moment().add(3,'month'))
 
   var lineItems = []
@@ -331,14 +365,3 @@ export function bookUsingCredit(expert, minutes, total, lineItems, expectedCredi
 // }
 
 
-// function trackOrder(order) {
-// 	var props = {
-// 		//timeFromVisit:, //revenue:, //visitedContent:
-// 	}
-// 	var context = {}
-//   analytics.track(this.user, null, 'Customer Payment', props, context)
-
-//   notifications.broadcast(`Customer Paid  ${order.total}`, this.user)
-
-//   requestSvc.getById order.requestId, (e, request) =>
-// }

@@ -1,0 +1,22 @@
+<section id="views">
+
+  <h2>Views</h2>
+
+  <div user-input=""></div>
+
+  <table class="table table-condensed views">
+    <tr>
+      <th style="width:80px">Time</th>
+      <th style="width:280px">Url</th>
+      <th style="width:240px">Ref</th>
+      <th>Utm</th>
+    </tr>
+    <tr ng-repeat="v in views">
+      <td>{{v.utc | publishedTime : 'MM.DD HH:mm' }}</td>
+      <td><a href="{{v.url}}" target="_blank"><b>{{v.type}}</b>:{{v.url}}</a></td>
+      <td>{{ v.referer }}</td>
+      <td><div ng-if="v.campaign">{{ v.campaign.name }}, {{ v.campaign.content }}, {{ v.campaign.term }},
+        {{ v.campaign.source }}</div>
+  </table>
+
+</section>
