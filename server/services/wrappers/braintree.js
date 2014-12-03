@@ -11,8 +11,8 @@ var logging = false
 
 var logCB = (operation, payload, errorCB, cb) =>
   (e,r) => {
-    if (e) { $log(`braintree.${operation}.ERROR`, e, payload); errorCB(e) }
-    else if (!r.success) { $log(`braintree.${operation}.ERROR`, r.message, r, payload); errorCB(r) }
+    if (e) { $error(`braintree.${operation}.ERROR [${e}] ${JSON.stringify(payload)}`); errorCB(e) }
+    else if (!r.success) { $error(`braintree.${operation}.ERROR [${r.message}] ${JSON.stringify(payload)}`); errorCB(r) }
     else {
       if (logging) $log(`braintree.${operation}`, r)
       cb(null, r)
@@ -29,7 +29,7 @@ export function getClientToken(cb) {
 
 
 export function chargeWithMethod(amount, orderId, paymentMethodToken, cb) {
-  // $log('chargeWithMethod', amount, orderId, paymentMethodToken, cb)
+  orderId = orderId.toString() // braintree complains if we give it a mongo.ObjectId
   var payload = { amount, orderId, paymentMethodToken }
 
   gateway.transaction.sale(payload, logCB('transaction.sale', payload, cb,
@@ -58,7 +58,7 @@ export function addPaymentMethod(customerId, user, company, paymentMethodNonce, 
         lastName: util.lastName(user.name),
         email: user.email,
         customFields: {
-          createdByUserId: user._id
+          createdByUserId: user._id.toString()
         },
         paymentMethodNonce,
         // options
@@ -66,7 +66,7 @@ export function addPaymentMethod(customerId, user, company, paymentMethodNonce, 
 
       if (company) {
         payload.company = company.name
-        payload.customFields.companyId = company._id
+        payload.customFields.companyId = company._id.toString()
       }
 
       gateway.customer.create(payload, logCB('customer.create', payload, cb,

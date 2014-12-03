@@ -11,7 +11,6 @@ angular.module("ADMOrders", ['ngRoute', 'APSvcAdmin', 'APFilters','APUserInput']
   })
 
   .controller('OrdersCtrl', function($scope, AdmDataService) {
-    console.log('orders ctr')
 
     $scope.selectedUser = {}
     $scope.query = { start: moment().add(-30,'day'), end: moment() }
