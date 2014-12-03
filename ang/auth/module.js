@@ -1,7 +1,7 @@
 
 var resolver = require('./../common/routes/helpers.js');
 
-angular.module("APAuth", ['ngRoute','ngMessages','APFormsDirectives','APFilters','APSvcSession','APAnalytics'])
+angular.module("APAuth", ['ngRoute','ngMessages','APFormsDirectives','APFilters','APSvcSession'])
 
   .config(['$locationProvider', '$routeProvider',
       function($locationProvider, $routeProvider) {

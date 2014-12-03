@@ -21,7 +21,7 @@ angular.module("APSideNav", ['ui.bootstrap','APSvcSession', 'APTagInput'])
 
         // Only track menu behavior for anonymous users
         SessionService.onAuthenticated( (session) =>
-          scope.tracking = (session._id) ? false : true )
+          scope.tracking = (session._id && session.primaryPayMethodId) ? false : true )
 
       },
       controllerAs: 'sideNav',

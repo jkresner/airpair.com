@@ -3,9 +3,10 @@
     <li class="current">Welcome</li>
   </ol>
 </header>
- --><section id="auth" ng-controller="LoginCtrl as LoginCtrl">
+ -->
+ <section id="auth" ng-controller="LoginCtrl as LoginCtrl">
 
-<p>New to AirPair? <o>Login with google below or <b><a id="loginSignupTop" href="#" track-click="Login" ng-click="openProfile()">create an account</a></b> using an email and password.</p>
+<p>New to AirPair? <o>Login with google below or <b><a id="loginSignupTop" track-click="signUp" ng-click="openProfile()">create an account</a></b> using an email and password.</p>
 
 
 <p ng-if="session._id"><br /><br />You are logged in as {{ session.email }}. <br /><br />Want to <a href="/v1/auth/logout">Logout</a>?</p>
@@ -16,7 +17,7 @@
 
   <h2>One-click login</h2>
   <p>
-    <a class="btn btn-error" ng-href="{{'/v1/auth/google' + ((returnTo) ? '?returnTo='+returnTo : '') }}" target="_self">Login with google</a>
+    <a id="loginGoogleAuth" track-click="auth" class="btn btn-error" ng-href="{{'/v1/auth/google' + ((returnTo) ? '?returnTo='+returnTo : '') }}" target="_self">Login with google</a>
   </p>
   <p style="font-size:12px;margin:20px 0 0 0">
   * You will be temporarily redirected to a google login page</p>
@@ -44,7 +45,7 @@
       </div>
     </div>
 
-    <button type="submit" class="btn btn-warning btn-lg">Login</button>
+    <button id="loginPassowrdLogin" track-click="auth" type="submit" class="btn btn-warning btn-lg">Login</button>
 
     <div class="alert alert-danger" ng-if="loginFail">
       <b>Login failed:</b> <span ng-if="loginFail">{{loginFail}}</span>.
