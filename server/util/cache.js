@@ -48,11 +48,8 @@ cache.flush = function(key, cb)
 }
 
 
-// cache.tag = function(id)
-// {
-//  var tags = cache.get('tags')
-//  if (tags)
-//    return tags(id)
-//  else {
-//  }
-// }
+cache.bookmark = function(type, id)
+{
+  if (!cache[type+'s']) return { url: 'cache no loaded', title: '' }
+  return cache[type+'s'][id]
+}

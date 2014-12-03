@@ -415,8 +415,8 @@ export function toggleBookmark(type, id, cb) {
   if (!type) $log('toggleBookmark.type', type, cb)
   var bookmark = { _id: svc.newId().toString(), objectId: id, type, sort: 0 }
   var bookmarkComparator = (i) => _.idsEqual(i.objectId,id)
-  var url = (cache[type+'s']) ? cache[type+'s'][id].url : 'cache not loaded'
-  var trackData = { type: 'bookmark', objectType: type, objectId: id, url }
+  var props = cache.bookmark(type,id)
+  var trackData = { type: 'bookmark', objectType: type, objectId: id, url: props.url, name: props.title }
   toggleSessionItem.call(this, 'bookmarks', bookmark, 3, 15, bookmarkComparator, cbTrackSave(this, trackData, cb))
 }
 

@@ -19,7 +19,7 @@
   <div class="modal-body profile">
 
   <section>
-    <section style="height:40px">
+    <section class="motivate" style="height:40px">
      <p ng-if="!session.email"><i>{{ avatarQuestion }}</i> <span ng-if="!session.email">Enter your email address to fix your avatar.</span></p>
      <p ng-if="session.email">Save your name and password to get $10 credit.</p>
 
@@ -38,7 +38,7 @@
     </section>
 
     <section class="google">
-    	Hate signup forms and remembering passwords? <br /><br /><a href="/v1/auth/google" target="_self"><b>Sign in with your Google account instead</b></a>.
+    	Hate signup forms and remembering passwords? <br /><br /><a id="signupModalGoogleAuth" track-click="auth" href="/v1/auth/google" target="_self"><b>Sign in with your Google account instead</b></a>.
     </section>
 
     <section class="info">

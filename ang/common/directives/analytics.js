@@ -1,7 +1,6 @@
 angular.module("APAnalytics", [])
 
-  .directive('trackClick', ['$location', '$timeout', '$parse',
-    function($location, $timeout, $parse) {
+  .directive('trackClick', function($location, $timeout, $parse) {
 
     return {
       restrict: 'A',
@@ -11,7 +10,8 @@ angular.module("APAnalytics", [])
         var location = attrs.href;
         var type = attrs.trackClick;
 
-        element.click(function(){
+        element.click(function() {
+          console.log('track', scope.tracking)
           if (scope.tracking === false) return
 
           var props = {
@@ -26,11 +26,12 @@ angular.module("APAnalytics", [])
 
           if (window.analytics)
           {
+            // console.log('track', event)
             analytics.track(event, props);
-
             // delay redirect so tracking finishes properly
             if (target == '_blank' || target == '_self')
             {
+              var location = this.href
               $timeout(function () {
                 window.location.href = location;
               }, 250);
@@ -46,4 +47,4 @@ angular.module("APAnalytics", [])
       }
     };
 
-  }]);
+  });
