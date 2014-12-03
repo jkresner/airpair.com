@@ -23,11 +23,8 @@ function initTemplates() {
 var receivers = {}
 function initReceivers() {
   getUsersInRole('pipeliner', (e,r) => {
-    receivers.pipeliners = ""
-    for (var {name,email} of r) { receivers.pipeliners += `${name} <${email}>, ` }
-
-    receivers.pipeliners = receivers.pipeliners.substring(0, receivers.pipeliners.length-2)
-    // console.log('receivers.pipeliners', receivers.pipeliners)
+    receivers.pipeliners = []
+    for (var {name,email} of r) { receivers.pipeliners.push(`${name} <${email}>`) }
   })
 }
 

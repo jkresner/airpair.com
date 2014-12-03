@@ -11,7 +11,7 @@ angular.module("APAnalytics", [])
         var type = attrs.trackClick;
 
         element.click(function() {
-          console.log('track', scope.tracking)
+          //console.log('track', scope.tracking)
           if (scope.tracking === false) return
 
           var props = {

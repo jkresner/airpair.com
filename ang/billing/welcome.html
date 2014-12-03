@@ -10,7 +10,7 @@
 
     <h1>Two ways to pay</h1>
 
-    <p>Choose your payment preference to access real-time experts.</p>
+    <p>Choose your payment preference to access experts in real-time.</p>
 
     <div class="choice">
     <div class="{{ (choice == 'alacart') ? 'option selected' : 'option' }}">
@@ -59,7 +59,7 @@
     <p>Your <b>{{paymethods[0].name}}</b> is securely stored with <i>{{paymethods[0].type}}</i>.</p>
 
     <p class="history" ng-if="!orders || orders.length == 0">
-    No transaction history yet.
+    No transaction history yet. <a href="/experts">Book an expert</a> to get started.
     </p>
 
   </div>
