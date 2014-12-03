@@ -1,4 +1,4 @@
-<header ng-if="session.emailVerified">
+<header>
   <ol class="entry-meta breadcrumb">
     <li>Account</li>
   </ol>
@@ -7,6 +7,8 @@
 <section id="account">
 
   <section class="email">
+
+    <h3 ng-if="!session.emailVerified" style="margin-top:0px">Please verify your email</h3>
 
     <form id="emailForm" novalidate name="emailForm" ng-submit="submit(emailForm.$valid, data)" ng-class="(session.emailVerified) ? '' : 'verify'">
 
@@ -36,7 +38,7 @@
 
   <hr />
 
-  <section class="info">
+  <section class="info" ng-if="session.emailVerified">
 
   <form id="profileForm" novalidate name="profileForm" ng-submit="submit(profileForm.$valid, data)">
 
@@ -72,7 +74,7 @@
 
   </section>
 
-  <section class="avatar">
+  <section class="avatar" ng-if="session.emailVerified">
     <img class="avatar" ng-src="{{session.avatar}}?s=200" title="Avatars are gravtars from your email." />
     <p style="font-size:12px">
     <span ng-if="session.email">Update the <b><a href="http://www.gravatar.com/" target="_blank">gravatar</a></b> for {{ session.email }}</span>
@@ -84,7 +86,7 @@
   <hr />
 
   <section class="password">
-    <h3 style="margin-top:0">Password</h3>
+    <h3 style="margin-top:0">Change password</h3>
     <a href="#" ng-click="sendPasswordChange()" class="btn">Send password reset email</a>
     <alert ng-repeat="alert in passwordAlerts" type="{{alert.type}}"><span ng-bind-html="alert.msg | html"></span></alert>
   </section>

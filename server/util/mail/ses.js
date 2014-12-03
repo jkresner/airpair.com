@@ -13,7 +13,7 @@ module.exports = function() {
     TextCharset: 'UTF-8',
     HtmlCharset: 'UTF-8',
     SubjectCharset: 'UTF-8',
-    Source: 'team@airpair.com'
+    Source: 'AirPair <team@airpair.com>'
   }
 
   return {
