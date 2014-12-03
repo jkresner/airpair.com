@@ -6,16 +6,20 @@
 
   <table class="table table-condensed orders">
     <tr>
+      <th style="width:40px">Total</th>
       <th style="width:80px">Time</th>
       <th style="width:280px">By</th>
-      <th style="width:240px">Ref</th>
-      <th>Utm</th>
+      <th>Owner</th>
+      <th>Lines</th>
+      <th class="p">Profit</th>
     </tr>
     <tr ng-repeat="o in orders">
+      <td><b>${{o.total}}</b></td>
       <td>{{o.utc | publishedTime : 'MM.DD HH:mm' }}</td>
-      <td>{{o.by.name}}</td>
-      <td>{{o.total}}</td>
+      <td><img src="{{o.by.avatar}}?s=20"/><a href="mailto:{{o.by.email}}">{{o.by.name}}</a></td>
       <td>{{o.owner}}</div>
+      <td><span ng-repeat="l in o.lineItems">{{l.type}} | </span></div>
+      <td class="p">${{o.profit}}</div>
   </table>
 
 </section>

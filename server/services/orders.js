@@ -3,6 +3,7 @@ import Order from '../models/order'
 import * as PayMethodSvc from './paymethods'
 import * as UserSvc from './users'
 import * as Validate from '../../shared/validation/billing.js'
+import * as md5     from '../util/md5'
 var Data = require('./orders.data')
 var Util = require('../../shared/util')
 var OrderUtil = require('../../shared/orders.js')
@@ -46,7 +47,14 @@ export function getOrdersByDateRange(start, end, cb)
 {
   var opts = { fields: Data.select.listAdmin, options: { sort: { 'utc': -1 } } }
   var query = Data.query.inRange(start,end)
-  svc.searchMany(query, opts, cb)
+  svc.searchMany(query, opts, (e,r) => {
+    for (var o of r) {
+      if (o.company)
+        o.by = { name: o.company.contacts[0].fullName, email: o.company.contacts[0].email }
+      o.by.avatar = md5.gravatarUrl(o.by.email)
+    }
+    cb(null, r)
+  })
 }
 
 
