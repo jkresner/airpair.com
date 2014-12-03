@@ -64,7 +64,7 @@ angular.module("AP", ['ngRoute', 'ngAnimate', 'APSideNav', 'APAuth', 'APPosts', 
     if (angular.element('#serverTemplate').length > 0)
     {
                                         // '/c++/posts/preparing-for-cpp-interview'
-      var initialLocation = window.location.pathname.toString().replace(/\+/g,"\\\+");
+      window.initialLocation = window.location.pathname.toString().replace(/\+/g,"\\\+");
       $routeProvider.when(initialLocation, {
         template: angular.element('#serverTemplate').html(),
         controller: 'ServerTemplateCtrl'
@@ -75,7 +75,8 @@ angular.module("AP", ['ngRoute', 'ngAnimate', 'APSideNav', 'APAuth', 'APPosts', 
   .run(function($rootScope, $location, SessionService, Notifications) {
 
     $rootScope.$on('$routeChangeSuccess', function() {
-      window.trackRoute($location.path(),$location.search());
+      if ($location.path().indexOf(window.initialLocation) == -1)
+        window.trackRoute($location.path(),$location.search());
       $rootScope.serverErrors = [];
       $rootScope.notifications = Notifications.calculateNextNotification()
     });

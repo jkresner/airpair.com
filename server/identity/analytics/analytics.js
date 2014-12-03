@@ -2,11 +2,23 @@ var Analytics = require('analytics-node')
 var setDevSettings = (config.env == 'dev' || config.env == 'test')
 var segmentOpts = setDevSettings ? { flushAt: 1 } : {}
 var segment = new Analytics(config.analytics.segmentio.writekey, segmentOpts)
-var logging = false
+var logging = true
 var viewSvc = require('../../services/views')
-
-
 var doneBackup = null
+
+
+var convertToDumbSegmentCampaignSHIT = (utms) =>
+{
+  var c = null
+  var {utm_campaign,utm_source,utm_medium,utm_term,utm_content} = utms
+  if (utm_campaign) (c) ? (c.name = utm_campaign) : (c = {name:utm_campaign})
+  if (utm_source) (c) ? (c.source = utm_source) : (c = {source:utm_source})
+  if (utm_medium) (c) ? (c.medium = utm_medium) : (c = {medium:utm_medium})
+  if (utm_term) (c) ? (c.term = utm_term) : (c = {term:utm_term})
+  if (utm_content) (c) ? (c.content = utm_content) : (c = {content:utm_content})
+
+  return (c) ? c : null
+}
 
 //-- don't' want to send userId / anonymousId on the wire if null
 var buildPayload = (type, user, anonymousId, payload) => {
@@ -45,12 +57,15 @@ var view = (user, sessionID, type, name, properties, context, done) => {
 
   properties.url = properties.path
   var m = { event:'View', integrations: { 'All': false, 'Mixpanel': true }}
-  var mProperties = _.extend(properties, {type,name})
-  var mPayload = _.extend(m,buildPayload('mp.view', user,sessionID,{properties:mProperties,context}))
 
+  var mProperties = _.extend(properties, {type,name})
+  if (context.utms) _.extend(mProperties, context.utms)
+
+  var mPayload = _.extend(m,buildPayload('mp.view', user,sessionID,{properties:mProperties}))
+
+  // console.log('mPayload', mPayload)
   segment.track(mPayload, done || doneBackup)
 
-  // if (context.campaign) segment.identify(buildPayload(userId, anonymousId, {context}))
 
   // write to mongo
   var {objectId,url} = properties
@@ -93,7 +108,7 @@ var alias = (sessionID, user, aliasEvent, done) => {
 module.exports = {
 
   // used for testing
-  setCallback: (cb) => {
+  setCallback(cb) {
     doneBackup = (e, batch) => {
       if (logging) $log('**** analytics done'.yellow)
       doneBackup = null
@@ -105,8 +120,7 @@ module.exports = {
   // user = most up to date user
   // existingUser = not null if they are logging in, if it's a singup will be null
   // sessionID = the random Id of their current session
-  upsert: (user, existingUser, sessionID, cb) =>
-  {
+  upsert(user, existingUser, sessionID, cb) {
     var {aliases} = user.cohort
     var noAliases = !aliases || aliases.length == 0
 

@@ -9,6 +9,14 @@ var logging         = false
 var svc             = new BaseSvc(User, logging)
 
 
+var cbTrackSave = (ctx, data, cb) =>
+  (e,r) => {
+    if (e) return cb(e)
+    // console.log('track save', ctx, data)
+    analytics.track(ctx.user, ctx.sessionID, 'Save', data, {}, ()=>{})
+    cb(null, r)
+  }
+
 
 var cbSession = (cb) =>
   (e, r) => {
@@ -394,19 +402,22 @@ function toggleSessionItem(type, item, maxAnon, maxAuthd, comparator, cb)
   }
 }
 
-
 export function toggleTag(tag, cb) {
+  var name = tag.name
   var tagId = tag._id
   tag = { _id: svc.newId().toString(), tagId: tag._id, sort: 0 }
   var tagCompator = (i) => _.idsEqual(i.tagId, tagId)
-  toggleSessionItem.call(this, 'tags', tag, 3, 6, tagCompator, cb)
+  var trackData = { type: 'tag', name }
+  toggleSessionItem.call(this, 'tags', tag, 3, 6, tagCompator, cbTrackSave(this, trackData, cb))
 }
 
 export function toggleBookmark(type, id, cb) {
   if (!type) $log('toggleBookmark.type', type, cb)
   var bookmark = { _id: svc.newId().toString(), objectId: id, type, sort: 0 }
   var bookmarkComparator = (i) => _.idsEqual(i.objectId,id)
-  toggleSessionItem.call(this, 'bookmarks', bookmark, 3, 15, bookmarkComparator, cb)
+  var url = (cache[type+'s']) ? cache[type+'s'][id].url : 'cache not loaded'
+  var trackData = { type: 'bookmark', objectType: type, objectId: id, url }
+  toggleSessionItem.call(this, 'bookmarks', bookmark, 3, 15, bookmarkComparator, cbTrackSave(this, trackData, cb))
 }
 
 export function tags(tags, cb) {

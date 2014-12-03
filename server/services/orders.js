@@ -150,6 +150,7 @@ function makeOrder(byUser, lineItems, payMethodId, forUserId, errorCB, cb)
 
 function chargeAndTrackOrder(o, errorCB, saveCB)
 {
+  analytics.track(o.by, null, 'Order', o)
   if (o.total == 0) saveCB(null, o)
   else
   {
@@ -182,7 +183,7 @@ function trackOrderPayment(order) {
 
   mailman.sendPipelinerNotifyPurchaseEmail(order.by.name, order.total, ()=>{})
 
-  analytics.track(order.by, null, 'Order', order)
+  analytics.track(order.by, null, 'Payment', {orderId:order._id, total:order.total})
 
  // var props = {
  //   //timeFromVisit:, //revenue:, //visitedContent:
