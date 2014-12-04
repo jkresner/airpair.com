@@ -72,7 +72,7 @@ var view = (user, sessionID, type, name, properties, context, done) => {
   var {referer,campaign} = context
   var userId = (user) ? user._id: null
   viewSvc.create({userId,anonymousId:sessionID,url:properties.path,
-    type,objectId,campaign,referer}, (e,r)=>{})
+    type,objectId,campaign,referer}, (e,r) => {})
 }
 
 
