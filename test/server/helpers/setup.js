@@ -118,6 +118,8 @@ global.createCountedDone = function(count, done)
     })()
 }
 
+
+
 function addUserWithRole(userKey, role, done)
 {
   stubAnalytics()
@@ -185,6 +187,42 @@ module.exports = {
         done()
     })
   },
+
+  clearPosts: function(done)
+  {
+    Post.remove({}, (e,r) => {
+      if (e) done(e)
+      else done()
+    })
+  },
+
+  clearWorkshops: function(done)
+  {
+    Workshop.remove({}, (e,r) => {
+      if (e) done(e)
+      else done()
+    })
+  },
+
+  initWorkshops: function(done)
+  {
+    Workshop.findOne({slug:'simplifying-rails-tests'}, function(e,r) {
+      if (!r) {
+        var {railsTests, biggestFailsOnThePlayStore} = data.workshops
+        railsTests.time = moment().add(1,'day').format()
+        biggestFailsOnThePlayStore.time = moment().add(2,'day').format()
+        var bulk = Workshop.collection.initializeOrderedBulkOp()
+        for (var t of [railsTests,biggestFailsOnThePlayStore]) { bulk.insert(t) }
+        bulk.execute(done)
+        cache.flush('workshops')
+      }
+      else
+        done()
+    })
+  },
+
+
+
 
   upsertProviderProfile: function(provider, userKey, done)
   {

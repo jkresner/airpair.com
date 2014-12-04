@@ -70,10 +70,10 @@ module.exports = function(env, appdir) {
     cfg.mail.on = false   // always leave this off
     cfg.analytics.on = true
     cfg.analytics.segmentio. writekey = '9793xyfxat'
-    cfg.port = 4444
+    cfg.port = process.env.PORT || 4444
     cfg.mongoUri = "mongodb://localhost/airpair_test"
     cfg.testlogin = true
-    cfg.auth.oAuth.callbackHost = 'http://localhost:4444'
+    cfg.auth.oAuth.callbackHost = 'http://localhost:' + cfg.port
   }
 
   if (cfg.env == 'staging' || cfg.env == 'production') {

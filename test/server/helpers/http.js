@@ -59,6 +59,10 @@ global.GET = function(url, opts, cb) {
     })
 }
 
+global.GETXML = function(url) {
+  return GETP(url)
+    .expect('Content-Type', /application\/rss\+xml/)
+}
 
 global.POST = function(url, data, opts, cb) {
   var apiUrl = '/v1/api'+url
