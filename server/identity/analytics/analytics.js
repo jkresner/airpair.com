@@ -127,7 +127,9 @@ module.exports = {
     // This is a new user (easy peasy)
     if (noAliases && !existingUser) {
       aliases = [sessionID] // we make the assumption that we're going to alias on the update
-      analytics.alias(sessionID, user, 'Signup', () => {})
+      analytics.alias(sessionID, user, 'Signup', () =>
+        analytics.track(user, null, 'Login', {}, {sessionID}, () => {}))
+
       cb(aliases)
     }
     else
