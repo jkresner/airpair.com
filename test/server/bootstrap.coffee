@@ -26,11 +26,12 @@ describe 'Server: ', ->
 
 
   describe('Session: ', require('./sessionSpec'))
+  describe('Analytics: ', require('./analyticsSpec'))
+  describe('Bots: ', require('./botsSpec'))
   describe('Tags: ', require('./tagsSpec'))
   describe('Auth: ', require('./authSpec'))
   describe('Authz: ', require('./authzSpec'))
   describe('Posts: ', require('./postsSpec'))
-  describe('Analytics: ', require('./analyticsSpec'))
   describe('Redirects: ', require('./redirectsSpec'))
   describe('Orders: ', require('./paymethodsSpec'))
   describe('Orders: ', require('./ordersSpec'))
