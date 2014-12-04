@@ -69,7 +69,8 @@ var view = (user, sessionID, type, name, properties, context, done) => {
 
   // write to mongo
   var {objectId,url} = properties
-  var {referer,campaign} = context
+  var {referer} = context
+  var campaign = (context.utms) ? convertToDumbSegmentCampaignSHIT(context.utms) : undefined
   var userId = (user) ? user._id: null
   viewSvc.create({userId,anonymousId:sessionID,url:properties.path,
     type,objectId,campaign,referer}, (e,r) => {})

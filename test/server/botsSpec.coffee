@@ -55,6 +55,7 @@ module.exports = ->
             expect(views.length).to.equal(1)
             expect(views[0].url).to.equal('/angularjs')
             expect(views[0].type).to.equal('tag')
+            expect(views[0].campaign).to.be.undefined
             viewSpy2.restore()
             done()
 
@@ -77,6 +78,30 @@ module.exports = ->
       expect(cookie).to.be.undefined
       viewSpy.restore()
       expectSessionNotStored { sessionID: 'unNOwnSZ3Wi8bDEnaKzhygGG2a2RkjZ2' }, done
+
+
+  it 'Persists utms from a browser (FireFox)', (done) ->
+    viewSpy2 = sinon.spy(analytics, 'view')
+    GETP('/angularjs?utm_source=team-email&utm_medium=email&utm_term=angular-workshops&utm_content=nov14-workshops-ty&utm_campaign=wks14-4').set('user-agent', uaFirefox).end (err, resp) ->
+      global.cookie = resp.headers['set-cookie']
+      GET '/session/full', {}, (s) =>
+        expect(viewSpy2.calledOnce).to.be.true
+        expect(s.authenticated).to.equal(false)
+        expectSessionToBeStored s, ->
+          testDb.viewsByAnonymousId s.sessionID, (e, views) ->
+            expect(views.length).to.equal(1)
+            expect(views[0].url).to.equal('/angularjs')
+            expect(views[0].type).to.equal('tag')
+            expect(views[0].campaign).to.exist
+            expect(views[0].campaign.source).to.equal('team-email')
+            expect(views[0].campaign.medium).to.equal('email')
+            expect(views[0].campaign.term).to.equal('angular-workshops')
+            expect(views[0].campaign.content).to.equal('nov14-workshops-ty')
+            expect(views[0].campaign.name).to.equal('wks14-4')
+            viewSpy2.restore()
+            done()
+
+
 
 
   #   it 'Views from bots are not saved', (d) ->
