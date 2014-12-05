@@ -15,13 +15,13 @@
 
   <ul class="main">
     <li>
-      <a id="chatAbout" track-click="about" data="chatNav" href="/about">Learn about AirPair</a>
+      <a id="chatAbout" track-click="about" data="chatNav" href="/about" ng-click="chatNav.toggle()">Learn about AirPair</a>
     </li>
     <li>
       <a id="chatSignup" track-click="signup" data="chatNav" ng-click="openProfile()">Sign Up</a>
     </li>
     <li>
-      <a id="chatLogin" track-click="login" data="chatNav" href="/v1/auth/login">Login</a>
+      <a id="chatLogin" track-click="login" data="chatNav" href="/v1/auth/login" ng-click="chatNav.toggle()">Login</a>
     </li>
     <li><a id="chatHide" track-click="chatNav" data="Hide" ng-click="chatNav.toggle()">Hide menu</a></li>
 <!--     <li>
