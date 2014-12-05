@@ -2,7 +2,7 @@
   <ol class="entry-meta breadcrumb">
     <li><a href="/learn">Learn</a></li>
     <li><a href="/posts">Posts</a></li>
-    <li>{{ primarytag }}</li>
+    <li>{{ primarytag.slug }}</li>
     <li>
       <span class="entry-author" itemprop="author" itemscope="itemscope" itemtype="//schema.org/Person">
       {{#if by.username}}
@@ -35,6 +35,14 @@
   <p class="asset">{{ assetUrlToMedia assetUrl }}</p>
   {{/if}}
   <hr />
+
+  {{#if by.expertId }}
+  <div class="workshop-cta">
+    <b>Want help with your {{primarytag.name}}?</b> {{by.name}} is available for live {{primarytag.name}} pair programming on AirPair.
+    <a id="postTopBookAuthor" data="{{ by.userId }}" track-click="book" href="/billing/book/{{by.userId}}">&gt;&gt; Video chat with {{by.name}}</a>
+  </div>
+  {{/if}}
+
   <post no-compile>{{{ html }}}</post>
 
   <div class="share">
