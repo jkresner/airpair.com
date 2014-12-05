@@ -101,6 +101,8 @@ window.pageHlpr.fixNavs = function(elmId)
 
 var fixRailElements = function(e)
 {
+  if ($('.railMarker').length == 0) return
+
   var scrollingOn = $(document).width() > 900;
   var offset = $('.railMarker').offset().top;
   var offsetLeft = $('.railMarker').offset().left;

@@ -61,7 +61,7 @@ var view = (user, sessionID, type, name, properties, context, done) => {
   var mProperties = _.extend(properties, {type,name})
   if (context.utms) _.extend(mProperties, context.utms)
 
-  var mPayload = _.extend(m,buildPayload('mp.view', user,sessionID,{properties:mProperties}))
+  var mPayload = _.extend(m,buildPayload('mp.view', user, sessionID , {properties:mProperties}))
 
   // console.log('mPayload', mPayload)
   segment.track(mPayload, done || doneBackup)
