@@ -1,12 +1,18 @@
 var logging = false;
-
+var util = require('../../../shared/util')
 var isApiRequest = (req) => req.originalUrl.indexOf('/api/') > -1
 
 
 export function setAnonSessionData(req, res, next) {
+  if (util.isBot(req.header('user-agent'))) return next()
+
   if (!req.isAuthenticated || !req.isAuthenticated())
   {
     if (!req.session.anonData) req.session.anonData = {}
+    if (!req.session.firstRequest) {
+      analytics.track(null, req.sessionID, 'First', {}, {}, () => {})
+      req.session.firstRequest = 1
+    }
   }
   else
   {
