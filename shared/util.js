@@ -1,4 +1,4 @@
-var botPattern = /googlebot|gurujibot|twitterbot|yandexbot|slurp|msnbot|bingbot|QuerySeekerSpider|facebookexternalhit/i
+var botPattern = /googlebot|gurujibot|twitterbot|yandexbot|slurp|msnbot|bingbot|QuerySeekerSpider|AhrefsBot|facebookexternalhit/i
 
 var idsEqual = (id1, id2) =>
   id1.toString() == id2.toString()
