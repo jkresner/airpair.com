@@ -128,8 +128,16 @@ module.exports = {
     // This is a new user (easy peasy)
     if (noAliases && !existingUser) {
       aliases = [sessionID] // we make the assumption that we're going to alias on the update
-      analytics.alias(sessionID, user, 'Signup', () =>
-        analytics.track(user, null, 'Login', {}, {sessionID}, () => {}))
+
+      //Add an event to make tracking local vs google signups easier and more consistent
+      if (user.googleId)
+        analytics.track(user, null, 'Save', {type:'email',email:user.google._json.email}, {sessionID}, ()=>{
+          analytics.alias(sessionID, user, 'Signup', () =>
+            analytics.track(user, null, 'Login', {}, {sessionID}, () => {}))
+        })
+      else
+        analytics.alias(sessionID, user, 'Signup', () =>
+          analytics.track(user, null, 'Login', {}, {sessionID}, () => {}))
 
       cb(aliases)
     }
