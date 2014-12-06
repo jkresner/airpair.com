@@ -33,6 +33,13 @@ body > header {
     a:hover { color:@orange }
   }
 
+  #headerGetHelp {
+    width:104px;
+    padding:2px 6px;
+    font-size:11px;
+    margin-top:-2px;
+  }
+
   div {
     padding:8px;
     display:inline-block;
@@ -171,14 +178,24 @@ nav#side, nav#chat {
   margin:0;
 
   header {
-    background:@darkorange;
+    background:@blackgray;
     height:35px;
     padding:5px 8px;
     margin:0;
     color:white;
     font-size:16px;
     border-bottom:1px solid @gray;
+
+    img { cursor:pointer;
+      filter: brightness(1);
+      -webkit-filter: brightness(1);
+    }
+    img:hover {
+      filter: brightness(1.5);
+      -webkit-filter: brightness(1.5);
+    }
   }
+
 
   figure { text-align:center }
   figure img {
@@ -218,14 +235,6 @@ nav#side {
 
   header {
     text-align:right;
-    img { cursor:pointer;
-      filter: brightness(1);
-      -webkit-filter: brightness(1);
-    }
-    img:hover {
-      filter: brightness(1.5);
-      -webkit-filter: brightness(1.5);
-    }
   }
 
   section {
@@ -317,7 +326,6 @@ nav#side {
 }
 
 nav#side.collapse {
-  width:40px;
   section {
     text-align:center;
     padding:14px 1px;
@@ -354,7 +362,10 @@ nav#side.collapse {
   }
 
   #navAbout { margin-top:30px }
+}
 
+nav#side.collapse, nav#chat.collapse {
+  width:40px;
   section.main {
     display:none
   }
@@ -363,14 +374,24 @@ nav#side.collapse {
 nav#chat {
   font-size:13px;
   color:@gray;
-  background:#f5f5f5;
+  background:@reallypalegray;
   bottom:1;
   right:0;
   width:@sideChatWidth;
+  border-left:solid 1px @darkblue;
 
   .online {
     border:solid 1px green;
     padding:1px;
+  }
+
+  h4 {
+    text-align:center;
+  }
+
+  p {
+    text-align:center;
+    margin:20px;
   }
 
   header {
@@ -404,6 +425,21 @@ nav#chat {
    }
   }
 
+  ul {
+    text-align:center;
+    background:@lightblue;
+    margin:20px 0 0 0;
+    padding:0;
+    li {
+      a { color:#ce5424 }
+      padding:10px;
+      border-top:solid 2px white;
+      font-weight:bold;
+      list-style:none;
+      margin:0
+    }
+  }
+
   table {
     padding:0;margin:0;font-size:10px;
     color:black;
@@ -418,11 +454,30 @@ nav#chat {
     position:absolute;bottom:0;width:100%;
     height:40px;padding:5px
   }
+
+  @media only screen and (max-width: 734px) {
+    display:none;
+  }
 }
 
 
 nav#chat.collapse {
+  background:@palegray;
   width:40px;
+  border-left:none;
+  section {
+    text-align:center;
+    padding:14px 1px;
+    figure {
+      margin-top:10px;
+      img {
+        width:28px;
+        height:28px;
+        border:none;
+        margin:0;
+      }
+    }
+  }
 }
 
 

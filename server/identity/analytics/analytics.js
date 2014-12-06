@@ -61,7 +61,7 @@ var view = (user, sessionID, type, name, properties, context, done) => {
   var mProperties = _.extend(properties, {type,name})
   if (context.utms) _.extend(mProperties, context.utms)
 
-  var mPayload = _.extend(m,buildPayload('mp.view', user,sessionID,{properties:mProperties}))
+  var mPayload = _.extend(m,buildPayload('mp.view', user, sessionID , {properties:mProperties}))
 
   // console.log('mPayload', mPayload)
   segment.track(mPayload, done || doneBackup)
@@ -69,10 +69,11 @@ var view = (user, sessionID, type, name, properties, context, done) => {
 
   // write to mongo
   var {objectId,url} = properties
-  var {referer,campaign} = context
+  var {referer} = context
+  var campaign = (context.utms) ? convertToDumbSegmentCampaignSHIT(context.utms) : undefined
   var userId = (user) ? user._id: null
   viewSvc.create({userId,anonymousId:sessionID,url:properties.path,
-    type,objectId,campaign,referer}, (e,r)=>{})
+    type,objectId,campaign,referer}, (e,r) => {})
 }
 
 
@@ -127,7 +128,17 @@ module.exports = {
     // This is a new user (easy peasy)
     if (noAliases && !existingUser) {
       aliases = [sessionID] // we make the assumption that we're going to alias on the update
-      analytics.alias(sessionID, user, 'Signup', () => {})
+
+      //Add an event to make tracking local vs google signups easier and more consistent
+      if (user.googleId)
+        analytics.track(user, null, 'Save', {type:'email',email:user.google._json.email}, {sessionID}, ()=>{
+          analytics.alias(sessionID, user, 'Signup', () =>
+            analytics.track(user, null, 'Login', {}, {sessionID}, () => {}))
+        })
+      else
+        analytics.alias(sessionID, user, 'Signup', () =>
+          analytics.track(user, null, 'Login', {}, {sessionID}, () => {}))
+
       cb(aliases)
     }
     else

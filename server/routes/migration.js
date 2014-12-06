@@ -2,23 +2,31 @@ import PostsAPI from '../api/posts'
 import {trackView} from '../identity/analytics/middleware'
 import {noTrailingSlash} from '../util/seo/middleware'
 
+
+var getPostBySlug = (slug) =>
+  (req, res, next) => {
+    PostsAPI.svc.getBySlug(slug, (ee,post) => {
+      if (!post) {
+        if (winston) winston.error(`Did not find migrated post ${canonical} for ${slug}`)
+        return next("Post not found")
+      }
+      req.post = post
+      next()
+    })
+  }
+
+
 function routeCanonicalPost(router, app, canonical, slug) {
-  router.get(canonical, noTrailingSlash(), app.renderHbsViewData('post', null, function (req, cb) {
-      // $log('slug', slug)
-      PostsAPI.svc.getBySlug(slug, (ee,post) => {
-        // $log(`p ${slug}`, post)
-        if (!post) {
-          if (winston) winston.error(`Did not find migrated post ${canonical} for ${slug}`)
-          return cb("Post not found")
-        }
-        req.post = post
-        req.post.primarytag = post.tags[0]
-        PostsAPI.svc.getSimilarPublished(req.post.primarytag, (e,r) => {
+  router.get(canonical, noTrailingSlash(), getPostBySlug(slug), trackView('post'),
+    app.renderHbsViewData('post', null,
+      function(req, cb) {
+        req.post.primarytag = req.post.tags[0]
+        PostsAPI.svc.getSimilarPublished(req.post.primarytag.slug, (e,r) => {
           req.post.similar = r
           cb(null,req.post)
         })
       })
-    }), trackView('post'))
+    )
 }
 
 var postCanonicals = [

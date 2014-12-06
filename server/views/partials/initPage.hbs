@@ -35,7 +35,6 @@
     // If they didn't already identify their email and log out
     else if (mixId.indexOf("@") == -1 && anonymousId != mixId)
     {
-      mixpanel.alias(anonymousId)
       setTimeout(ident,200)
     }
 

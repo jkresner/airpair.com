@@ -16,6 +16,7 @@ require('./common/directives/experts.js');
 require('./common/directives/tagInput.js');
 require('./common/directives/userInput.js');
 require('./common/directives/sideNav.js');
+require('./common/directives/chatNav.js');
 require('./common/directives/bookmarker.js');
 require('./common/directives/analytics.js');
 require('./common/directives/forms.js');
@@ -34,7 +35,8 @@ require('./billing/module.js');
 require('./account/module.js');
 
 
-angular.module("AP", ['ngRoute', 'ngAnimate', 'APAnalytics', 'APSideNav', 'APAuth', 'APPosts', 'APWorkshops',
+angular.module("AP", ['ngRoute', 'ngAnimate', 'APAnalytics', 'APSideNav', 'APChatNav',
+  'APAuth', 'APPosts', 'APWorkshops',
   'APProfile', 'APBilling', 'APNotifications', 'APServerTemplates'])
 
   .config(function($locationProvider, $routeProvider) {
@@ -75,8 +77,12 @@ angular.module("AP", ['ngRoute', 'ngAnimate', 'APAnalytics', 'APSideNav', 'APAut
   .run(function($rootScope, $location, SessionService, Notifications) {
 
     $rootScope.$on('$routeChangeSuccess', function() {
-      if ($location.path().indexOf(window.initialLocation) == -1)
+      if ($location.path().indexOf(window.initialLocation) == -1) {
         window.trackRoute($location.path(),$location.search());
+        window.scrollTo(0,0)
+      }
+      else if (!window.initialLocation) window.scrollTo(0,0)
+
       $rootScope.serverErrors = [];
       $rootScope.notifications = Notifications.calculateNextNotification()
     });
@@ -88,6 +94,7 @@ angular.module("AP", ['ngRoute', 'ngAnimate', 'APAnalytics', 'APSideNav', 'APAut
       if (window.viewData.expert) $rootScope.expert = window.viewData.expert
     }
 
+    pageHlpr.fixNavs('#side,#chat');
   })
 
   .factory('ServerErrors', function serverErrorsFactory($rootScope) {
@@ -101,7 +108,6 @@ angular.module("AP", ['ngRoute', 'ngAnimate', 'APAnalytics', 'APSideNav', 'APAut
   })
 
   .controller('ServerTemplateCtrl', function($scope) {
-    pageHlpr.fixNavs('#side');
     pageHlpr.loadPoSt();
     pageHlpr.highlightSyntax({ addCtrs: true });
     pageHlpr.fixPostRail();

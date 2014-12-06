@@ -21,69 +21,6 @@ module.exports = () => describe("API: ", function() {
   })
 
 
-  describe("Bots:", (done) => {
-
-    var checkSessionIsNotAdded = (known_agent_string, done) => {
-      http(global.app)
-        .get('/v1/api/session/full')
-        .set('user-agent', known_agent_string)
-        .expect(200)
-        .end( (e, r) => {
-          if (e) return done(e)
-          expect(r.body.authenticated).to.be.false
-          expect(r.body.sessionID).to.not.exist
-          testDb.sessionBySessionId(r.body.sessionID, (e, s) => {
-            if (e) return done(e)
-            expect(s).to.be.empty
-            done()
-          })
-        })
-      }
-
-    var checkSessionIsAdded = (known_agent_string, done) => {
-      http(global.app)
-        .get('/v1/api/session/full')
-        .set('user-agent', known_agent_string)
-        .expect(200)
-        .end( (e, r) => {
-          if (e) return done(e)
-          expect(r.body.authenticated).to.be.false
-          expect(r.body.sessionID).to.exist
-          testDb.sessionBySessionId(r.body.sessionID, (e, s) => {
-            if (e) return done(e)
-            expect(s.length).to.be.greaterThan(0)
-            expect(s[0].id).to.equal(r.body.sessionID)
-            return done()
-          })
-        })
-    }
-
-    it.skip('Sessions are not saved for known bots', (d) => {
-      var done = createCountedDone(8, d)
-      checkSessionIsNotAdded('Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)', done)
-      checkSessionIsNotAdded('Mozilla/5.0 (compatible; GurujiBot/1.0; +http://www.guruji.com/en/WebmasterFAQ.html)', done)
-      checkSessionIsNotAdded('Twitterbot', done)
-      checkSessionIsNotAdded('Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)', done)
-      checkSessionIsNotAdded('Mozilla/5.0 (compatible; Yahoo! Slurp; http://help.yahoo.com/help/us/ysearch/slurp)', done)
-      checkSessionIsNotAdded('msnbot-media/1.1 (+http://search.msn.com/msnbot.htm)', done)
-      checkSessionIsNotAdded('Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)', done)
-      checkSessionIsNotAdded('facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)', done)
-    })
-
-    it.skip('Sessions are saved for firefox', (done) => {
-      checkSessionIsAdded('Mozilla/5.0 (Windows NT 5.1; rv:31.0) Gecko/20100101 Firefox/31.0', done)
-    })
-
-    it.skip('Sessions are saved for chrome', (done) => {
-      checkSessionIsAdded('Mozilla/5.0 (iPad; CPU OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5355d Safari/8536.25', done)
-    })
-
-    it.skip('Sessions are saved for safari', (done) => {
-      checkSessionIsAdded('Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2049.0 Safari/537.36', done)
-    })
-
-  })
-
   describe("Stack: ", function(done) {
 
     it('Can add tag data to anonymous session', function(done) {
