@@ -1,4 +1,4 @@
-var logging = false
+var logging = true
 var util = require('../../../shared/util')
 
 var getContext = (req) => {
@@ -12,10 +12,10 @@ var getContext = (req) => {
     // location:
     // network:
     // os:
-    referer: req.header('Referer')
+    referer: req.header('Referer'),
     // screen:
     // traits: ,
-    // userAgent:
+    userAgent: req.header('user-agent')
   }
 
   var c = null
@@ -41,7 +41,9 @@ var getContext = (req) => {
 
 export var trackView = (type) => {
   return (req, res, next) => {
-    if (req.header('user-agent') && util.isBot(req.header('user-agent'))) return next()
+    if (util.isBot(req.header('user-agent'))) return next()
+
+    console.log('trackView', req.url, req.header('user-agent'))
 
     var userId = null
     var anonymousId = null

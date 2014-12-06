@@ -52,13 +52,14 @@ export default function(app) {
     .get('/:tag/posts/:post', noTrailingSlash(),
       trackView('post'),
       app.renderHbsViewData('post', null,
-      function(req, cb) {
-        req.post.primarytag = req.params.tag
-        PostsAPI.svc.getSimilarPublished(req.post.primarytag, (e,r) => {
-          req.post.similar = r
-          cb(null,req.post)
+        function(req, cb) {
+          req.post.primarytag = (req.post.tags) ? req.post.tags[0] : null
+          if (!req.post.primarytag) return cb(null,req.post)
+          PostsAPI.svc.getSimilarPublished(req.post.primarytag.slug, (e,r) => {
+            req.post.similar = r
+            cb(null,req.post)
+          })
         })
-      })
     )
 
     .get('/workshops',

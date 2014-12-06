@@ -6,7 +6,7 @@
  -->
  <section id="auth" ng-controller="LoginCtrl as LoginCtrl">
 
-<p>New to AirPair? <o>Login with google below or <b><a id="loginSignupTop" track-click="signUp" ng-click="openProfile()">create an account</a></b> using an email and password.</p>
+<p>New to AirPair? <o>Login with google below or <b><a id="loginSignupTop" track-click="signup" ng-click="openProfile()">create an account</a></b> using an email and password.</p>
 
 
 <p ng-if="session._id"><br /><br />You are logged in as {{ session.email }}. <br /><br />Want to <a href="/v1/auth/logout">Logout</a>?</p>
@@ -45,7 +45,7 @@
       </div>
     </div>
 
-    <button id="loginPassowrdLogin" track-click="auth" type="submit" class="btn btn-warning btn-lg">Login</button>
+    <button id="loginPassowrdAuth" track-click="auth" type="submit" class="btn btn-warning btn-lg">Login</button>
 
     <div class="alert alert-danger" ng-if="loginFail">
       <b>Login failed:</b> <span ng-if="loginFail">{{loginFail}}</span>.

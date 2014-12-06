@@ -219,15 +219,7 @@ module.exports = {
   },
 
   sessionBySessionId: function (id, cb) {
-    Session.find({_id:id}, (e,r) => {
-      return cb(e,r)
-    })
-  },
-
-  countViews: function(cb) {
-    View.find({}, (e,r) => {
-      return cb(e, r.length)
-    })
+    Session.findOne({_id:id}, cb)
   },
 
   viewsById: function(id, cb) {
@@ -278,5 +270,3 @@ module.exports = {
   }
 
 }
-
-
