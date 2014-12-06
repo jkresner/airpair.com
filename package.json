@@ -74,6 +74,7 @@
     "passport": "^0.2.1",
     "passport-google-oauth": "^0.1.5",
     "passport-local": "^1.0.0",
+    "rss": "^1.0.1",
     "stripe": "3.0.0",
     "traceur": "0.0.61",
     "traceur-source-maps": "^1.0.2",
