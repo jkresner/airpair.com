@@ -99,6 +99,7 @@ angular.module("AP", ['ngRoute', 'ngAnimate', 'APAnalytics', 'APSideNav', 'APCha
 
   .factory('ServerErrors', function serverErrorsFactory($rootScope) {
     this.add = (e) => {
+      $rootScope.serverErrors = []
       if (e) $rootScope.serverErrors = _.union($rootScope.serverErrors, [e.message])
       else $rootScope.serverErrors = _.union($rootScope.serverErrors, ["An error occured"])
     }
