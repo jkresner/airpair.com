@@ -8,7 +8,7 @@
 
   <section class="email">
 
-    <h3 ng-if="!session.emailVerified" style="margin-top:0px">Please verify your email</h3>
+    <h3 ng-if="!session.emailVerified" style="margin-top:0px">Verify your email & mark <i>team@airpair.com</i> as not SPAM</h3>
 
     <form id="emailForm" novalidate name="emailForm" ng-submit="submit(emailForm.$valid, data)" ng-class="(session.emailVerified) ? '' : 'verify'">
 
@@ -85,7 +85,7 @@
 
   <hr />
 
-  <section class="password">
+  <section class="password" ng-if="session.emailVerified">
     <h3 style="margin-top:0">Change password</h3>
     <a href="#" ng-click="sendPasswordChange()" class="btn">Send password reset email</a>
     <alert ng-repeat="alert in passwordAlerts" type="{{alert.type}}"><span ng-bind-html="alert.msg | html"></span></alert>
