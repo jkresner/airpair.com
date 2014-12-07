@@ -23,6 +23,7 @@ require('./common/directives/forms.js');
 require('./common/directives/payment.js');
 require('./common/directives/notifications.js');
 require('./common/directives/serverTemplates.js');
+require('./common/directives/providers.js');
 require('./common/filters/filters.js');
 require('./common/models/postsService.js');
 require('./common/models/sessionService.js');
@@ -35,9 +36,8 @@ require('./billing/module.js');
 require('./account/module.js');
 
 
-angular.module("AP", ['ngRoute', 'ngAnimate', 'APAnalytics', 'APSideNav', 'APChatNav',
-  'APAuth', 'APPosts', 'APWorkshops',
-  'APProfile', 'APBilling', 'APNotifications', 'APServerTemplates'])
+angular.module("AP", ['Providers', 'ngRoute', 'ngAnimate', 'APAnalytics', 'APSideNav', 'APChatNav',
+  'APAuth', 'APPosts', 'APWorkshops', 'APProfile', 'APBilling', 'APNotifications', 'APServerTemplates'])
 
   .config(function($locationProvider, $routeProvider) {
 
