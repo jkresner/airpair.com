@@ -30,7 +30,7 @@ export function getClientToken(cb) {
 
 export function chargeWithMethod(amount, orderId, paymentMethodToken, cb) {
   orderId = orderId.toString() // braintree complains if we give it a mongo.ObjectId
-  var payload = { amount, orderId, paymentMethodToken }
+  var payload = { amount, orderId, paymentMethodToken, options : { submitForSettlement: true } }
 
   gateway.transaction.sale(payload, logCB('transaction.sale', payload, cb,
     (e,r) => { r.type = "braintree"; cb(e,r) }))
