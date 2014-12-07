@@ -20,6 +20,7 @@ export function init(app, cb) {
   app.get(/%20%E2%80%A6/, redirectWithQuery('%20%E2%80%A6',''))
   app.get(/%20\.\.\./, redirectWithQuery('%20...',''))
   app.get(/\.\.\./, redirectWithQuery('...',''))
+  app.get('/author/*', (req,res) => { res.redirect(301, '/posts/all')})
 
   RedirectsAPI.svc.getAllRedirects((e,all) =>{
     for (var r of all)
