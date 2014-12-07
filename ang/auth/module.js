@@ -3,8 +3,7 @@ var resolver = require('./../common/routes/helpers.js');
 
 angular.module("APAuth", ['ngRoute','ngMessages','APFormsDirectives','APFilters','APSvcSession'])
 
-  .config(['$locationProvider', '$routeProvider',
-      function($locationProvider, $routeProvider) {
+  .config(function($locationProvider, $routeProvider) {
 
     $routeProvider.when('/login', {
       template: require('./login.html')
@@ -18,16 +17,19 @@ angular.module("APAuth", ['ngRoute','ngMessages','APFormsDirectives','APFilters'
       template: require('./signup.html')
     });
 
-  }])
+    $routeProvider.when('/v1/auth/reset', {
+      template: require('./passwordreset.html'),
+    });
 
-  .run(['$rootScope', 'SessionService',
-    function($rootScope, SessionService) {
+  })
+
+  .run(function($rootScope, SessionService) {
 
     SessionService.onAuthenticated( (session) => {
       //console.log('setting root scope', $rootScope.session)
     })
 
-  }])
+  })
 
 
   .controller('LoginCtrl', function($rootScope, $scope, $window, $timeout, $location, SessionService) {
@@ -52,9 +54,7 @@ angular.module("APAuth", ['ngRoute','ngMessages','APFormsDirectives','APFilters'
 
   .controller('SignupCtrl', function($scope, $window, $location, SessionService) {
 
-    SessionService.onAuthenticated(function() {
-      if ($scope.session._id) $location.path('/me')
-    })
+    SessionService.onAuthenticated(() => { if ($scope.session._id) $location.path('/me')})
 
     var self = this;
     this.submit = function(isValid, formData) {
@@ -65,3 +65,19 @@ angular.module("APAuth", ['ngRoute','ngMessages','APFormsDirectives','APFilters'
       )
     }
   })
+
+  .controller('PasswordResetCtrl', function($scope, ServerErrors, SessionService) {
+
+    SessionService.onAuthenticated(() => { if ($scope.session._id) $location.path('/me')})
+
+    $scope.data = { email: "" }
+
+    var self = this;
+    self.submitReset = function(isValid, formData) {
+      if (!isValid) return
+      SessionService.requestPasswordChange(formData, function(result){
+        $scope.passwordAlerts = [{ type: 'success', msg: `Password reset sent to ${result.email}` }]
+      }, ServerErrors.add)
+    };
+  })
+

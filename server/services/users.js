@@ -454,7 +454,10 @@ export function requestPasswordChange(email, cb) {
     var update = { 'local.changePasswordHash': generateHash(email) }
     svc.update(user._id, update, (e,r) => {
       mailman.sendChangePasswordEmail(r, r.local.changePasswordHash)
-      return cbSession(cb)(e,r)
+
+      $log('self.user', self.user)
+      if (self.user) return cbSession(cb)(e,r)
+      else return cb(null, {email})
     })
   })
 }
@@ -466,7 +469,7 @@ export function changePassword(hash, password, cb) {
   var query = {'local.changePasswordHash': hash}
   var self = this
   svc.searchOne(query, null, (e,user) => {
-    if (e||!user) return cb(svc.Forbidden('hash not found'))
+    if (e||!user) return cb(svc.Forbidden('Valid reset hash not found. Your token could be used or expired. Try <a href="/v1/auth/reset">Reset your password</a> again?'))
 
     // we've just received the hash that we sent to user.email
     // so mark their email as verified

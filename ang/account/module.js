@@ -32,7 +32,7 @@ angular.module("APProfile", ['ngRoute', 'APFilters', 'APSvcSession', 'APTagInput
   })
 
 
-  .controller('AccountCtrl', function($rootScope, $scope, $location, SessionService) {
+  .controller('AccountCtrl', function($rootScope, $scope, $location, ServerErrors, SessionService) {
 
       var self = this;
 
@@ -95,9 +95,7 @@ angular.module("APProfile", ['ngRoute', 'APFilters', 'APSvcSession', 'APTagInput
     $scope.sendPasswordChange = function() {
       SessionService.requestPasswordChange({email:$scope.session.email}, function(result){
         $scope.passwordAlerts = [{ type: 'success', msg: `Password reset sent to ${$scope.session.email}` }]
-      }, function(e){
-        console.log('requestPasswordChange.failed', e)
-      })
+      }, ServerErrors.add)
     };
 
   })
@@ -115,7 +113,7 @@ angular.module("APProfile", ['ngRoute', 'APFilters', 'APSvcSession', 'APTagInput
 
 
   //-- this will be refactored out of the posts module
-  .controller('PasswordCtrl', function($scope, $routeParams, $location, SessionService) {
+  .controller('PasswordCtrl', function($scope, ServerErrors, SessionService) {
 
       $scope.alerts = []
 
@@ -123,11 +121,13 @@ angular.module("APProfile", ['ngRoute', 'APFilters', 'APSvcSession', 'APTagInput
 
       $scope.savePassword = function() {
         SessionService.changePassword($scope.data, function(result){
-          $scope.alerts = [{ type: 'success', msg: `New password set` }]
+          var msg = `New password set`
+          if (!$scope.session._id) msg = `New password set. Return to <a href="/login">Login</a>`
 
-        }, function(e){
-          $scope.alerts = [{ type: 'danger', msg: `Password change failed` }]
-        })
+          $scope.alerts = [{ type: 'success', msg }]
+          $scope.done = true
+
+        }, ServerErrors.add)
       }
 
       if (!$scope.data.hash)

@@ -25,7 +25,7 @@ angular.module("APFormsDirectives", [])
         element.addClass('form-group');
 
         var form = element.closest('form').on('submit', function() {
-          console.log('submit', ctrl.$fieldSubmitted)
+          // console.log('submit', ctrl.$fieldSubmitted)
           if (!ctrl.$fieldSubmitted)
           {
             ctrl.$fieldSubmitted = true
