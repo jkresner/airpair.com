@@ -43,13 +43,16 @@
   {{selectedUser.name}}
   <img ng-src="{{selectedUser.avatar}}" />
   <select ng-model="credit">
+    <option value="5">$5</option>
     <option value="10">$10</option>
     <option value="30">$30</option>
     <option value="50">$50</option>
   </select>
   <select ng-model="source">
-    <option>Angular Workshops Feedback</option>
+    <option>Session Feedback</option>
+    <option>Bug Report</option>
     <option>Welcome Credit</option>
+    <option>Angular Workshops Feedback</option>
   </select>
   <button class="btn" ng-click="giveCredit()">Give credit</button>
 
