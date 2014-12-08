@@ -23,8 +23,8 @@ angular.module('APSvcBilling', [])
       getMyOrders(success) {
         $http.get(`${API}/billing/orders`).success(success).error(lazyErrorCb)
       },
-      getMyOrdersWithCredit(success) {
-        $http.get(`${API}/billing/orders/credit`).success(success).error(lazyErrorCb);
+      getMyOrdersWithCredit(payMethodId, success) {
+        $http.get(`${API}/billing/orders/credit/${payMethodId}`).success(success).error(lazyErrorCb);
       },
       orderCredit(data, success, error) {
         $http.post(`${API}/billing/orders/credit`, data).success(success).error(error)

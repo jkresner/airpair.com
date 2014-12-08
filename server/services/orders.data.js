@@ -17,7 +17,7 @@ module.exports = {
   query: {
     creditRemaining: function(userId, payMethodId) {
       return {
-        '$or': [{payMethodId},{userId}],
+        '$or': [{payMethodId},{userId,payMethodId:null}],
         '$and': [
             {'lineItems.info' : { '$exists': true }},
             {'lineItems.info.remaining': { '$gt': 0 }}

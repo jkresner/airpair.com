@@ -53,9 +53,9 @@ export function migrate(id, type, cb) {
   getById(id, (e,company) => {
     if (!company || company.members) return cb("Company does not exist or already migrated")
     var ups = {type}
-    ups.adminId = company.contacts[0]._id
+    ups.adminId = company.contacts[0].userId
     ups.members = [{
-        userId: company.contacts[0]._id,
+        userId: company.contacts[0].userId,
         name: company.contacts[0].fullName,
         companyEmail: company.contacts[0].email
     }]

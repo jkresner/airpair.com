@@ -21,7 +21,8 @@ export function getById(id, cb) {
 
       // Otherwise double check if it's a company PayMethod
       getMyPaymethods.call({user}, (e,r) => {
-        if (r && _.find(r,(p)=>_.idsEqual(id,p._id))) return cb(null, r)
+        var rpm = _.find(r,(p)=>_.idsEqual(id,p._id))
+        if (rpm) return cb(null, rpm)
         else {
           $error(`Valid payMthod[${id}] for user not found`, user)
           cb(`Valid payment method not found`)
@@ -80,6 +81,7 @@ export function deletePaymethod(id, cb) {
       if (inValid) return cb(svc.Forbidden(inValid))
       svc.deleteById(id, cb)
       if (_.idsEqual(user.primaryPayMethodId,id))
+      Settings.remove({userId:this.user._id}, () => {})
       UserSvc.update.call(this, user._id, { primaryPayMethodId: null })
     })
   })
