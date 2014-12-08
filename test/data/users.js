@@ -54,8 +54,12 @@ module.exports = {
 
   mthm: { name:"Matt Humphrey",email:"matt@lendinghome.com" },
   math: { name:"Matt Humphrey",email:"zellunit@gmail.com" },
+  matt: { name:"Matt Humphrey",email:"zellunit@hotmail.com" },
   ktom: { name:"Kieth Tom",email:"kieth@lendinghome.com" },
   kiem: { name:"Kieth Tom",email:"ktom@gmail.com" },
+  edub: { name:"Eduardo Del Balso",email:"eduardo@lendinghome.com" },
+  eddb: { name:"Eduardo Del Balso",email:"eddb@hotmail.com" },
+
 
   shcl: { name: "Shane Cole", email: "shanecole@ap.com"},
   shan: { name: "Shane Cole", email: "shanecole@yahoo.com"},

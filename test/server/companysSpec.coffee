@@ -43,10 +43,6 @@ module.exports = -> describe "Companys", ->
                   expect(mc2.members.length).to.equal(2)
                   done()
 
-    # copy name, url, about
-    # require type
-
-
   it.skip 'Can buy credit for company', (done) ->
     addAndLoginLocalUser 'mthm', (smthm) ->
       comp = _.clone(data.v0.companys.ldhm)

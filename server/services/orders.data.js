@@ -15,9 +15,9 @@ module.exports = {
   },
 
   query: {
-    creditRemaining: function(userId) {
+    creditRemaining: function(userId, payMethodId) {
       return {
-        userId,
+        '$or': [{payMethodId},{userId}],
         '$and': [
             {'lineItems.info' : { '$exists': true }},
             {'lineItems.info.remaining': { '$gt': 0 }}
