@@ -29,6 +29,7 @@ export default function(app) {
     .put('/users/me/email', setAnonSessionData, UsersAPI.changeEmail)
     .put('/users/me/email-verify', authd, setAnonSessionData, UsersAPI.verifyEmail)
     .put('/users/me/bookmarks/:type/:id', setAnonSessionData, UsersAPI.toggleBookmark)
+    .get('/company', authd, CompanysAPI.getUsersCompany)
 
     .get('/tags/search/:id', TagsAPI.search)
     .get('/tags/:slug', authd, TagsAPI.getBySlug)
@@ -48,11 +49,12 @@ export default function(app) {
     .get('/workshops/:id', WorkshopsAPI.getBySlug)
     .get('/billing/paymethods', PaymethodsAPI.getMyPaymethods)
 
+
     .use(authd) //-- swap out for email verify or something
     .post('/billing/paymethods', PaymethodsAPI.addPaymethod)
     .delete('/billing/paymethods/:id', PaymethodsAPI.deletePaymethod)
     .get('/billing/orders', OrdersAPI.getMyOrders)  //emailv,
-    .get('/billing/orders/credit', OrdersAPI.getMyOrdersWithCredit)
+    .get('/billing/orders/credit/:id', OrdersAPI.getMyOrdersWithCredit)
     .post('/billing/orders/credit', OrdersAPI.buyCredit)
     // .post('/billing/orders/membership/:paymethod', OrdersAPI.buyMembership)
 

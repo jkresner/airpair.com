@@ -30,16 +30,13 @@ export function getMyOrders(cb)
 }
 
 
-function getOrdersWithCredit(userId, cb)
+export function getMyOrdersWithCredit(payMethodId, cb)
 {
-  var query = Data.query.creditRemaining(userId)
-  svc.searchMany(_.extend(query,{userId}), { options: Data.options.ordersByDate }, cb)
-}
-
-
-export function getMyOrdersWithCredit(cb)
-{
-  getOrdersWithCredit(this.user._id, cb)
+  PayMethodSvc.getById.call(this, payMethodId, (e,r) => {
+    if (e) return cb(e)
+    var query = Data.query.creditRemaining(this.user._id, payMethodId)
+    svc.searchMany(query, { options: Data.options.ordersByDate }, cb)
+  })
 }
 
 
@@ -290,7 +287,7 @@ export function createBookingOrder(expert, time, minutes, type, credit, payMetho
 
 export function bookUsingCredit(expert, minutes, total, lineItems, expectedCredit, payMethodId, cb)
 {
-  getOrdersWithCredit(this.user._id, (e, orders) => {
+  getMyOrdersWithCredit.call(this, payMethodId, (e, orders) => {
     var lines = OrderUtil.linesWithCredit(orders)
     var availablCredit = OrderUtil.getAvailableCredit(lines)
     if (expectedCredit != availablCredit)

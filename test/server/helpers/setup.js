@@ -226,6 +226,25 @@ module.exports = {
     })
   },
 
+  setupCompanyWithPayMethodAndTwoMembers(companyCode, adminCode, memberCode, done) {
+    addAndLoginLocalUser(memberCode, (sCompanyMember) => {
+      addAndLoginLocalUser(adminCode, (sCompanyAdmin) => {
+        var c = _.clone(data.v0.companys[companyCode])
+        c._id = new mongoose.Types.ObjectId()
+        c.contacts[0]._id = sCompanyAdmin._id
+        testDb.ensureDocs('Company', [c], (e,r) => {
+          var d = { type: 'braintree', token: braintree.Test.Nonces.Transactable, name: `${c.name} Company Card`, companyId: c._id }
+          POST('/billing/paymethods', d, {}, (pm) => {
+            LOGIN('admin', data.users.admin, () => {
+              PUT(`/adm/companys/migrate/${c._id}`, {type:'smb'}, {}, (r) => {
+                PUT(`/adm/companys/member/${c._id}`, {user:sCompanyMember}, {}, (rCompany) => {
+                  done(c._id, pm._id, sCompanyAdmin, sCompanyMember)
+          })})})})
+        })
+      })
+    })
+  },
+
   ModelById(modelName, id, cb) {
     Models[modelName].findOne({_id:id}, cb)
   },

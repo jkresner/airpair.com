@@ -89,8 +89,13 @@ module.exports = -> describe "PayMethods", ->
 
 
 
-    it.skip 'Company payment methods appear in getPayMethods', () ->
-      ## Need to impl company functionality first
+    it 'Company payment methods appear in getPayMethods', (done) ->
+      testDb.setupCompanyWithPayMethodAndTwoMembers 'ldhm', 'math', 'edub', (cid, pmid, cAdm, cMem) ->
+        LOGIN 'edub', cMem, () ->
+          GET '/billing/paymethods', {}, (cMemPMs) ->
+            expect(cMemPMs.length).to.equal(1)
+            expect(_.idsEqual(cMemPMs[0]._id,pmid)).to.be.true
+            done()
 
 
     it 'Can delete braintree payment method', (done) ->
@@ -106,6 +111,7 @@ module.exports = -> describe "PayMethods", ->
                 GET '/billing/paymethods', {}, (pms) ->
                   expect(pms.btoken).to.exist
                   done()
+
 
   describe 'With Analytics', ->
 

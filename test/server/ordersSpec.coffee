@@ -134,7 +134,7 @@ module.exports = -> describe "Credit: ", ->
         o = total: 1000, payMethodId: mcas.primaryPayMethodId
         POST "/billing/orders/credit", o, {}, (credit) ->
           expect(credit._id).to.exist
-          GET "/billing/orders/credit", {}, (orders) ->
+          GET "/billing/orders/credit/#{mcas.primaryPayMethodId}", {}, (orders) ->
             expect(orders.length).to.equal(1)
             linesWithCredit = OrdersUtil.linesWithCredit(orders)
             expect(linesWithCredit.length).to.equal(2)

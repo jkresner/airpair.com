@@ -16,6 +16,13 @@ export function getById(id, cb) {
 }
 
 
+
+export function getUsersCompany(cb) {
+  svc.searchOne({'members.userId':this.user._id,'members.enabled':true}, null, cb)
+}
+
+
+
 export function search(searchTerm, cb) {
   svc.searchMany({name: new RegExp(searchTerm, 'i')}, {}, cb)
 }
@@ -27,6 +34,8 @@ export function create(o, cb) {
 
 
 export function addMember(id, user, cb) {
+  // TODO CHECK user does not belong to another company that's enabled
+
   getById(id, (e,company) => {
     if (!company || !company.members) return cb("Company does not exist or is not migrated")
     var mem = [{
