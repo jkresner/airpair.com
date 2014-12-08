@@ -18,7 +18,7 @@ module.exports = ->
 
   expectSessionNotStored = (session, cb) ->
     expect(session.sessionID).to.match(a_uid)
-    testDb.sessionBySessionId session.sessionID, (e, s) ->
+    testDb.ModelById 'Session', session.sessionID, (e, s) ->
       expect(s).to.be.null
       testDb.viewsByAnonymousId session.sessionID, (e, views) ->
         expect(views.length).to.equal(0)
@@ -27,7 +27,7 @@ module.exports = ->
 
   expectSessionToBeStored = (session, cb) ->
     expect(session.sessionID).to.match(a_uid)
-    testDb.sessionBySessionId session.sessionID, (e, s) ->
+    testDb.ModelById 'Session', session.sessionID, (e, s) ->
       expect(s).to.exist
       cb()
 

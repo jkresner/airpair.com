@@ -30,16 +30,13 @@ export function getMyOrders(cb)
 }
 
 
-function getOrdersWithCredit(userId, cb)
+export function getMyOrdersWithCredit(payMethodId, cb)
 {
-  var query = Data.query.creditRemaining(userId)
-  svc.searchMany(_.extend(query,{userId}), { options: Data.options.ordersByDate }, cb)
-}
-
-
-export function getMyOrdersWithCredit(cb)
-{
-  getOrdersWithCredit(this.user._id, cb)
+  PayMethodSvc.getById.call(this, payMethodId, (e,r) => {
+    if (e) return cb(e)
+    var query = Data.query.creditRemaining(this.user._id, payMethodId)
+    svc.searchMany(query, { options: Data.options.ordersByDate }, cb)
+  })
 }
 
 
@@ -133,22 +130,23 @@ function makeOrder(byUser, lineItems, payMethodId, forUserId, errorCB, cb)
   }
 
   if (o.total == 0)
-  {
     o.payment = { type: '$0 order' }
-    cb(null, o)
-  }
+
+
+  if (!payMethodId && o.total == 0) cb(null, o)
   else
   {
     PayMethodSvc.getById.call({user:byUser}, payMethodId, (e,payMethod) => {
-      if (e || !payMethod) return errorCB(e || `Could not find paymethod ${payMethodId}`)
+      if (e || !payMethod || !payMethod.userId) return errorCB(e || `Could not find payMethod ${payMethodId}`)
 
       o.payMethod = payMethod // only for passing around, the object won't get saved to db
       o.payMethodId = payMethod._id // TODO: consider/test what happens if we delete a payMethod?
+
       if (payMethod.companyId)
-      {
-        //-- NOTE need to think through companyId meaning shared card?
         o.by.companyId = payMethod.companyId
-      }
+
+      //-- so when employees order it comes up in primary account
+      o.userId = payMethod.userId
 
       cb(null, o)
     })
@@ -290,7 +288,7 @@ export function createBookingOrder(expert, time, minutes, type, credit, payMetho
 
 export function bookUsingCredit(expert, minutes, total, lineItems, expectedCredit, payMethodId, cb)
 {
-  getOrdersWithCredit(this.user._id, (e, orders) => {
+  getMyOrdersWithCredit.call(this, payMethodId, (e, orders) => {
     var lines = OrderUtil.linesWithCredit(orders)
     var availablCredit = OrderUtil.getAvailableCredit(lines)
     if (expectedCredit != availablCredit)

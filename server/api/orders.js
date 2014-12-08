@@ -6,6 +6,6 @@ export default initAPI(Svc, {
   buyCredit: (req) => [req.body.total,req.body.coupon,req.body.payMethodId],
   giveCredit: (req) => [req.body.toUserId,req.body.total,req.body.source],
   getMyOrders: (req) => [],
-  getMyOrdersWithCredit: (req) => [],
+  getMyOrdersWithCredit: (req) => [req.params.id],
   getOrdersByDateRange: (req) => [req.params.start,req.params.end]
 })

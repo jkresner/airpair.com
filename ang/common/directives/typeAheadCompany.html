@@ -1,0 +1,23 @@
+<script type="text/ng-template" id="companyMatch.html">
+  <div>
+    <a class="companySelect">
+      <span bind-html-unsafe="match.model.name | typeaheadHighlight:query"></span>
+      <label>({{match.model.contacts[0].fullName}})</label>
+      <p bind-html-unsafe="match.model.about | typeaheadHighlight:query"></p>
+    </a>
+  </div>
+</script>
+
+
+<div class="form-group company-input-group">
+
+  <input type="text" class="companyInput form-control"
+    placeholder="type a company name"
+    ng-model="q"
+    typeahead="c as c for c in getCompanys($viewValue) | filter:$viewValue"
+    typeahead-editable="false"
+    typeahead-input-formatter="keypressSelect($model)"
+    typeahead-template-url="companyMatch.html">
+
+</div>
+

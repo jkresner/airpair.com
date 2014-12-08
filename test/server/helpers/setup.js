@@ -1,19 +1,23 @@
-var UserService = require('../../../server/services/users')
-var Tag = require('../../../server/models/tag')
-var Workshop = require('../../../server/models/workshop')
-var View = require('../../../server/models/view')
-var User = require('../../../server/models/user')
-var Expert = require('../../../server/models/expert')
-var PayMethod = require('../../../server/models/paymethod')
-var Post = require('../../../server/models/post')
-var Orders = require('../../../server/models/order')
-var {Settings,Company} = require('../../../server/models/v0')
+var mongoose = require('mongoose')
 var util = require('../../../shared/util')
+var UserService = require('../../../server/services/users')
+var {Settings} = require('../../../server/models/v0')
+var Models = {
+  Tag: require('../../../server/models/tag'),
+  Workshop: require('../../../server/models/workshop'),
+  View: require('../../../server/models/view'),
+  User: require('../../../server/models/user'),
+  Expert: require('../../../server/models/expert'),
+  PayMethod: require('../../../server/models/paymethod'),
+  Post: require('../../../server/models/post'),
+  Order: require('../../../server/models/order'),
+  Company: require('../../../server/models/company'),
+  Session: mongoose.model('Session', {_id: String, session: String, expires: Date}, 'v1sessions')
+}
+
 
 global.braintree = require('braintree')
 
-var mongoose = require('mongoose')
-var Session = mongoose.model('Session', {_id: String, session: String, expires: Date}, 'v1sessions')
 
 global.stubAnalytics = function()
 {
@@ -98,7 +102,7 @@ global.addAndLoginLocalUser = function(originalUserKey, done)
 global.addAndLoginLocalUserWithPayMethod = function(originalUserKey, done)
 {
   addAndLoginLocalUserWithEmailVerified(originalUserKey, (s) =>{
-    new PayMethod( _.extend({userId: s._id}, data.paymethods.generic) ).save( (e,r) => {
+    new Models.PayMethod( _.extend({userId: s._id}, data.paymethods.generic) ).save( (e,r) => {
       s.primaryPayMethodId = r._id
       done(s)
     })
@@ -144,24 +148,29 @@ function ensureDocument(Model, doc, cb, refresh)
 {
   //if (refresh) return
   Model.findByIdAndRemove(doc._id, function(e, r) { new Model(doc).save((e,r)=> { r.toObject(); cb(e,r); } ); })
-  //Model.findOneAndUpdate({_id:doc._id}, doc, {upsert:true}, cb)  // problems in few places with upsert method
 }
 
 module.exports = {
 
-  init: function(done)
+  init(done)
   {
     var _id = data.users.admin._id
-    User.findOneAndUpdate({_id}, data.users.admin, { upsert: true }, done)
+    Models.User.findOneAndUpdate({_id}, data.users.admin, { upsert: true }, done)
   },
 
   addUserWithRole: addUserWithRole,
 
-  initTags: function(done)
+  upsertProviderProfile(provider, userKey, done)
   {
-    Tag.findOne({slug:'angularjs'}, function(e,r) {
+    var user = data.oauth[userKey]
+    UserService.upsertProviderProfile(null, provider, user, done)
+  },
+
+  initTags(done)
+  {
+    Models.Tag.findOne({slug:'angularjs'}, function(e,r) {
       if (!r) {
-        var bulk = Tag.collection.initializeOrderedBulkOp()
+        var bulk = Models.Tag.collection.initializeOrderedBulkOp()
         for (var t in data.tags) { bulk.insert(data.tags[t]) }
         bulk.execute(done)
         cache.flush('tags')
@@ -171,12 +180,12 @@ module.exports = {
     })
   },
 
-  initPosts: function(done)
+  initPosts(done)
   {
-    Post.findOne({slug:'starting-a-mean-stack-app'}, function(e,r) {
+    Models.Post.findOne({slug:'starting-a-mean-stack-app'}, function(e,r) {
       if (!r) {
         var {v1AirPair,migrateES6,sessionDeepDive,sessionDeepDive2} = data.posts
-        var bulk = Post.collection.initializeOrderedBulkOp()
+        var bulk = Models.Post.collection.initializeOrderedBulkOp()
         for (var t of [v1AirPair,migrateES6,sessionDeepDive,sessionDeepDive2]) { bulk.insert(t) }
         bulk.execute(done)
         cache.flush('posts')
@@ -186,14 +195,14 @@ module.exports = {
     })
   },
 
-  initWorkshops: function(done)
+  initWorkshops(done)
   {
-    Workshop.findOne({slug:'simplifying-rails-tests'}, function(e,r) {
+    Models.Workshop.findOne({slug:'simplifying-rails-tests'}, function(e,r) {
       if (!r) {
         var {railsTests, biggestFailsOnThePlayStore} = data.workshops
         railsTests.time = moment().add(1,'day').format()
         biggestFailsOnThePlayStore.time = moment().add(2,'day').format()
-        var bulk = Workshop.collection.initializeOrderedBulkOp()
+        var bulk = Models.Workshop.collection.initializeOrderedBulkOp()
         for (var t of [railsTests,biggestFailsOnThePlayStore]) { bulk.insert(t) }
         bulk.execute(done)
         cache.flush('workshops')
@@ -203,13 +212,7 @@ module.exports = {
     })
   },
 
-  upsertProviderProfile: function(provider, userKey, done)
-  {
-    var user = data.oauth[userKey]
-    UserService.upsertProviderProfile(null, provider, user, done)
-  },
-
-  createAndPublishPost: function(by, postData, done) {
+  createAndPublishPost(by, postData, done) {
     var title = 'A test post '+moment().format('X')
     var slug = title.toLowerCase().replace(/ /g,'-')
     var tags = [data.tags.angular,data.tags.node]
@@ -223,67 +226,65 @@ module.exports = {
     })
   },
 
-  createWorkshop: function(workshop, done)
-  {
-    workshop.time = new Date()
-    Workshop.findOne({slug:workshop.slug}, function(e,r) {
-      if (!r) {
-        Workshop.create(workshop, done)
-      }
-      else
-        if (done) done()
+  setupCompanyWithPayMethodAndTwoMembers(companyCode, adminCode, memberCode, done) {
+    addAndLoginLocalUser(memberCode, (sCompanyMember) => {
+      addAndLoginLocalUser(adminCode, (sCompanyAdmin) => {
+        var c = _.clone(data.v0.companys[companyCode])
+        c._id = new mongoose.Types.ObjectId()
+        c.contacts[0]._id = sCompanyAdmin._id
+        testDb.ensureDocs('Company', [c], (e,r) => {
+          var d = { type: 'braintree', token: braintree.Test.Nonces.Transactable, name: `${c.name} Company Card`, companyId: c._id }
+          POST('/billing/paymethods', d, {}, (pm) => {
+            LOGIN('admin', data.users.admin, () => {
+              PUT(`/adm/companys/migrate/${c._id}`, {type:'smb'}, {}, (r) => {
+                PUT(`/adm/companys/member/${c._id}`, {user:sCompanyMember}, {}, (rCompany) => {
+                  done(c._id, pm._id, sCompanyAdmin, sCompanyMember)
+          })})})})
+        })
+      })
     })
   },
 
-  sessionBySessionId: function (id, cb) {
-    Session.findOne({_id:id}, cb)
+  ModelById(modelName, id, cb) {
+    Models[modelName].findOne({_id:id}, cb)
   },
 
-  viewsById: function(id, cb) {
-    View.find({_id:id}, cb)
+  viewsByUserId(userId, cb) {
+    Models.View.find({userId}, cb)
   },
 
-  viewsByUserId: function(userId, cb) {
-    View.find({userId}, cb)
+  viewsByAnonymousId(anonymousId, cb) {
+    Models.View.find({anonymousId}, cb)
   },
 
-  viewsByAnonymousId: function(anonymousId, cb) {
-    View.find({anonymousId}, cb)
+  readUser(id, cb) {
+    Models.User.findOne({_id:id}, (e,r)=> { r.toObject(); cb(e,r); })
   },
 
-  readUser: function(id, cb) {
-    User.findOne({_id:id}, (e,r)=> { r.toObject(); cb(e,r); })
-  },
-
-  ensureUser: function(user, cb) {
-    ensureDocument(User, user, cb, true)
-  },
-
-  ensureExpert: function(user, expert, cb) {
-    ensureDocument(User, user, () => {
-      ensureDocument(Expert, expert, cb)
+  ensureExpert(user, expert, cb) {
+    ensureDocument(Models.User, user, () => {
+      ensureDocument(Models.Expert, expert, cb)
     })
   },
 
-  ensureSettings: function(user, settings, cb) {
+  ensureSettings(user, settings, cb) {
     settings.userId = user._id
     ensureDocument(Settings, settings, cb)
   },
 
-  ensureCompany: function(user, company, cb) {
-    company.contacts[0].fullName = user.name
-    company.contacts[0].userId = user._id
-    ensureDocument(Company, company, cb)
+  ensurePost(post, cb) {
+    ensureDocument(Models.Post, post, cb)
   },
 
-  ensurePost: function(post, cb) {
-    ensureDocument(Post, post, cb)
+  ensureDoc(modelName, doc, cb) {
+    ensureDocument(Models[modelName], doc, cb)
   },
 
-  ensureOrders: function(orders, cb) {
-    var bulk = Orders.collection.initializeOrderedBulkOp()
-    for (var o of orders) { bulk.insert(o) }
+  ensureDocs(modelName, docs, cb) {
+    var bulk = Models[modelName].collection.initializeOrderedBulkOp()
+    for (var o of docs) { bulk.insert(o) }
     bulk.execute(cb)
   }
+
 
 }

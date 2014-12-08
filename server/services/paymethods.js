@@ -2,6 +2,7 @@ import Svc from './_service'
 import * as Validate from '../../shared/validation/billing.js'
 import PayMethod from '../models/paymethod'
 import * as UserSvc from './users'
+import * as CompanysSvc from './companys'
 import * as Braintree from './wrappers/braintree'
 var Stripe = require('./wrappers/stripe')
 var Settings = require('../models/v0').Settings
@@ -12,15 +13,24 @@ var svc = new Svc(PayMethod, logging)
 
 
 export function getById(id, cb) {
-  var userId = this.user._id
-  svc.getById(id, (e, r) => {
-    if (r)
+  var user = this.user
+  svc.getById(id, (ee, pm) => {
+    if (pm)
     {
-      var validPaymethodForUser = r.userId == userId  // TODO check company cards
-      if (validPaymethodForUser) return cb(null, r)
-    }
+      if (pm.userId == user._id) return cb(null, pm) // PayMethod added by user
 
-    cb(e,null)
+      // Otherwise double check if it's a company PayMethod
+      getMyPaymethods.call({user}, (e,r) => {
+        var rpm = _.find(r,(p)=>_.idsEqual(id,p._id))
+        if (rpm) return cb(null, rpm)
+        else {
+          $error(`Valid payMthod[${id}] for user not found`, user)
+          cb(`Valid payment method not found`)
+        }
+      })
+    }
+    else
+      cb(ee,null)
   })
 }
 
@@ -71,6 +81,7 @@ export function deletePaymethod(id, cb) {
       if (inValid) return cb(svc.Forbidden(inValid))
       svc.deleteById(id, cb)
       if (_.idsEqual(user.primaryPayMethodId,id))
+      Settings.remove({userId:this.user._id}, () => {})
       UserSvc.update.call(this, user._id, { primaryPayMethodId: null })
     })
   })
@@ -81,27 +92,33 @@ export function deletePaymethod(id, cb) {
 export function getMyPaymethods(cb) {
   if (!this.user) return Braintree.getClientToken(cb)
 
-  var companyIds = [] // TODO read companies user belongs too
-  svc.searchMany({$or: [{userId:this.user._id},{companyId: {$in:companyIds}}]}, null, (e,r) => {
-    if (e) return cb(e,r)
-    if (r.length > 0) return cb(e,r)
-    else {
-      Settings.findOne({userId:this.user._id}, (ee, s) => {
-        if (!s || !s.paymentMethods)
-          return Braintree.getClientToken(cb)
+  CompanysSvc.getUsersCompany.call( this, (e, company) => {
+    var companyIds = [] // TODO read companies user belongs too
+    if (company) companyIds.push(company._id)
 
-        var existing = _.find(s.paymentMethods, (pm) => pm.type == 'stripe')
-        if (!existing) return cb(e,r)
-        else {
-          var {info,type} = existing
-          addPaymethod.call(this, {info,type,userId:this.user._id,name:`${this.user.name}'s card`,makeDefault:true}, (eee, pm) => {
-            if (eee) return cb(eee)
-            cb(null,[pm])
-          })
-        }
-      })
-    }
+    svc.searchMany({$or: [{userId:this.user._id},{companyId: {$in:companyIds}}]}, null, (e,r) => {
+      if (e) return cb(e,r)
+      if (r.length > 0) return cb(e,r)
+      else {
+        Settings.findOne({userId:this.user._id}, (ee, s) => {
+          if (!s || !s.paymentMethods)
+            return Braintree.getClientToken(cb)
+
+          var existing = _.find(s.paymentMethods, (pm) => pm.type == 'stripe')
+          if (!existing) return cb(e,r)
+          else {
+            var {info,type} = existing
+            addPaymethod.call(this, {info,type,userId:this.user._id,name:`${this.user.name}'s card`,makeDefault:true}, (eee, pm) => {
+              if (eee) return cb(eee)
+              cb(null,[pm])
+            })
+          }
+        })
+      }
+    })
+
   })
+
 }
 
 

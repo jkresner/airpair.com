@@ -111,7 +111,7 @@ module.exports = -> describe "Signup: ", ->
   describe "Login", ->
 
     it 'Login of existing v0 user creates cohort', (done) ->
-      testDb.ensureUser data.v0.users.SoumyaAcharya, (e, sou) ->
+      testDb.ensureDoc 'User', data.v0.users.SoumyaAcharya, (e, sou) ->
         expect(_.idsEqual sou._id, "51a6668866a6f999a465f2fc").to.be.true
         expect(sou.email).to.be.undefined
         expect(sou.name).to.be.undefined
@@ -131,7 +131,7 @@ module.exports = -> describe "Signup: ", ->
 
 
     it 'Can signup with local credentials then login with google of same email', (done) ->
-      testDb.ensureUser data.users.aone, (e, aone) ->
+      testDb.ensureDoc 'User', data.users.aone, (e, aone) ->
         expect(aone.email).to.equal('airpairone001@gmail.com')
         expect(aone.google).to.be.undefined
         expect(aone.googleId).to.be.undefined
@@ -144,7 +144,7 @@ module.exports = -> describe "Signup: ", ->
 
 
     it 'Google login for existing v1 user works after played with singup form', (done) ->
-      testDb.ensureUser data.users.samt, (e, samt) ->
+      testDb.ensureDoc 'User', data.users.samt, (e, samt) ->
         expect(samt.email).to.equal('san.thanki@gmail.com')
         expect(samt.google).to.exist
         expect(samt.googleId).to.equal('107929348314160277508')
@@ -160,7 +160,7 @@ module.exports = -> describe "Signup: ", ->
 
 
     it 'Google login for existing v1 user doesnt blow up when tag not found', (done) ->
-      testDb.ensureUser data.users.bbe, (e, bbe) ->
+      testDb.ensureDoc 'User', data.users.bbe, (e, bbe) ->
         expect(bbe.email).to.equal('ben.beetle@gmail.com')
         expect(bbe.google).to.exist
         expect(bbe.googleId).to.equal('108341472603890720649')

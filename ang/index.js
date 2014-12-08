@@ -14,7 +14,7 @@ require('./common/directives/share.js');
 require('./common/directives/post.js');
 require('./common/directives/experts.js');
 require('./common/directives/tagInput.js');
-require('./common/directives/userInput.js');
+require('./common/directives/typeAheadInputs.js');
 require('./common/directives/sideNav.js');
 require('./common/directives/chatNav.js');
 require('./common/directives/bookmarker.js');
@@ -36,8 +36,9 @@ require('./billing/module.js');
 require('./account/module.js');
 
 
-angular.module("AP", ['Providers', 'ngRoute', 'ngAnimate', 'APAnalytics', 'APSideNav', 'APChatNav',
-  'APAuth', 'APPosts', 'APWorkshops', 'APProfile', 'APBilling', 'APNotifications', 'APServerTemplates'])
+angular.module("AP", ['Providers', 'ngRoute', 'ngAnimate',
+  'APAnalytics', 'APSideNav', 'APChatNav', 'APServerTemplates',
+  'APAuth', 'APPosts', 'APWorkshops', 'APProfile', 'APBilling', 'APNotifications'])
 
   .config(function($locationProvider, $routeProvider) {
 
