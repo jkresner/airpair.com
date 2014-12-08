@@ -13,10 +13,18 @@ angular.module("ADMCompanys", [])
   .controller('CompanysCtrl', function($scope, AdmDataService) {
 
     $scope.selectedCompany = {}
+    $scope.selectedUser = {}
 
-    // AdmDataService.getUsersInRole({role:'admin'}, function (result) {
-    //   $scope.admins = result;
-    // })
+    $scope.migrate = function() {
+      AdmDataService.companyMigrate($scope.selectedCompany, function (result) {
+        $scope.selectedCompany = result;
+      })
+    }
+
+    $scope.addMember = function() {
+      AdmDataService.companyAddMember($scope.selectedCompany, $scope.selectedUser,
+        function (result) { $scope.selectedCompany = result; })
+    }
 
     // AdmDataService.getUsersInRole({role:'editor'}, function (result) {
     //   $scope.editors = result;
@@ -36,5 +44,6 @@ angular.module("ADMCompanys", [])
 
 
     $scope.selectCompany = (company) => $scope.selectedCompany = company
+    $scope.selectUser = (user) => $scope.selectedUser = user
 
   })

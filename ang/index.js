@@ -36,8 +36,9 @@ require('./billing/module.js');
 require('./account/module.js');
 
 
-angular.module("AP", ['Providers', 'ngRoute', 'ngAnimate', 'APAnalytics', 'APSideNav', 'APChatNav',
-  'APAuth', 'APPosts', 'APWorkshops', 'APProfile', 'APBilling', 'APNotifications', 'APServerTemplates'])
+angular.module("AP", ['Providers', 'ngRoute', 'ngAnimate',
+  'APAnalytics', 'APSideNav', 'APChatNav', 'APServerTemplates',
+  'APAuth', 'APPosts', 'APWorkshops', 'APProfile', 'APBilling', 'APNotifications'])
 
   .config(function($locationProvider, $routeProvider) {
 
