@@ -9,7 +9,7 @@ require('./../public/v1/lib/angular-bootstrap/ui-bootstrap-tpls.js');
 require('./common/directives/forms.js');
 require('./common/directives/post.js');
 require('./common/directives/tagInput.js');
-require('./common/directives/userInput.js');
+require('./common/directives/typeAheadInputs.js');
 require('./common/filters/filters.js');
 require('./common/models/postsService.js');
 require('./common/models/sessionService.js');
@@ -19,17 +19,19 @@ require('./adm/users/module.js');
 require('./adm/redirects/module.js');
 require('./adm/views/module.js');
 require('./adm/orders/module.js');
+require('./adm/companys/module.js');
 
 
 angular.module('ADM', [
   'ngRoute',
-  'APSvcSession',
+  'APSvcSession', 'APSvcAdmin',
+  'APFilters', 'APFormsDirectives', 'APTypeAheadInputs',
   'ADMPosts',
   'ADMUsers',
   'ADMRedirects',
   'ADMViews',
   'ADMOrders',
-  'APFormsDirectives'])
+  'ADMCompanys'])
 
   .config(function($locationProvider, $routeProvider) {
 

@@ -1,18 +1,16 @@
 
-angular.module("ADMRedirects", ['ngRoute', 'APSvcAdmin', 'APFilters'])
+angular.module("ADMRedirects", [])
 
-  .config(['$locationProvider', '$routeProvider',
-      function($locationProvider, $routeProvider) {
+  .config(function($locationProvider, $routeProvider) {
 
     $routeProvider.when('/v1/adm/redirects', {
       template: require('./list.html'),
       controller: 'RedirectsCtrl as redirects'
     });
 
-  }])
+  })
 
-  .controller('RedirectsCtrl', ['$scope', 'AdmDataService',
-      function($scope, AdmDataService) {
+  .controller('RedirectsCtrl', function($scope, AdmDataService) {
 
     AdmDataService.getRedirects(function (result) {
       $scope.redirects = result;
@@ -32,4 +30,4 @@ angular.module("ADMRedirects", ['ngRoute', 'APSvcAdmin', 'APFilters'])
       })
     }
 
-  }])
+  })
