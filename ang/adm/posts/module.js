@@ -1,5 +1,5 @@
 
-angular.module("ADMPosts", ['ngRoute', 'APSvcAdmin', 'APSvcPosts', 'APFilters'])
+angular.module("ADMPosts", [])
 
   .config(function($locationProvider, $routeProvider) {
 

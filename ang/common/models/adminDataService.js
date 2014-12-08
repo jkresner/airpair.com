@@ -50,4 +50,14 @@ angular.module('APSvcAdmin', [])
       $http.get(`${APIAdm}/orders/${data.start.format('x')}/${data.end.format('x')}`, data).success(success).error(error)
     }
 
+    this.companyMigrate = function(data, success)
+    {
+      $http.put(`${APIAdm}/companys/migrate/${data._id}`, {type:data.type}).success(success).error(lazyErrorCb);
+    }
+
+    this.companyAddMember = function(company, user, success)
+    {
+      $http.put(`${APIAdm}/companys/member/${company._id}`, {user}).success(success).error(lazyErrorCb);
+    }
+
   }])

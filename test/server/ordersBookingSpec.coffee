@@ -54,7 +54,7 @@ module.exports = -> describe "Booking: ", ->
     addAndLoginLocalUserWithPayMethod 'ckni', (s) ->
       o = total: 500, payMethodId: s.primaryPayMethodId
       POST "/billing/orders/credit", o, {}, (r) ->
-        airpair1 = time: moment().add(2, 'day'), minutes: 120, type: 'opensource', credit: 500
+        airpair1 = time: moment().add(2, 'day'), minutes: 120, type: 'opensource', credit: 500, payMethodId: s.primaryPayMethodId
         POST "/bookings/#{data.experts.dros._id}", airpair1, {}, (booking1) ->
           expect(booking1._id).to.exist
           expect(booking1.minutes).to.equal(120)
@@ -100,7 +100,7 @@ module.exports = -> describe "Booking: ", ->
             availableCredit1 = ordersUtil.getAvailableCredit(lines1)
             expect(lines1.length).to.equal(1)
             expect(availableCredit1).to.equal(240)
-            airpair2 = time: moment().add(3, 'day'), minutes: 60, type: 'private', credit: 240
+            airpair2 = time: moment().add(3, 'day'), minutes: 60, type: 'private', credit: 240, payMethodId: s.primaryPayMethodId
             POST "/bookings/#{data.experts.dros._id}", airpair2, {}, (booking2) ->
               expect(booking2._id).to.exist
               expect(booking2.minutes).to.equal(60)
@@ -113,7 +113,7 @@ module.exports = -> describe "Booking: ", ->
                 expect(lines2.length).to.equal(1)
                 availableCredit2 = ordersUtil.getAvailableCredit(lines2)
                 expect(availableCredit2).to.equal(90)
-                airpair3 = time: moment().add(4, 'day'), minutes: 60, type: 'private', credit: 200
+                airpair3 = time: moment().add(4, 'day'), minutes: 60, type: 'private', credit: 200, payMethodId: s.primaryPayMethodId
                 POST "/bookings/#{data.experts.dros._id}", airpair3, { status: 400 }, (err) ->
                   expect(err.message.indexOf('ExpectedCredit $200')).to.equal(0)
                   done()
@@ -121,7 +121,7 @@ module.exports = -> describe "Booking: ", ->
 
   it 'Fail to Book 1 hour at 150 with no credit or payMethodId', (done) ->
     addAndLoginLocalUserWithPayMethod 'jasp', (s) ->
-      airpair = time: moment().add(1, 'day'), minutes: 60, type: 'private', credit: 150
+      airpair = time: moment().add(1, 'day'), minutes: 60, type: 'private', credit: 150, payMethodId: s.primaryPayMethodId
       POST "/bookings/#{data.experts.dros._id}", airpair, { status: 400 }, (err, resp) ->
         expect(err.message.indexOf('ExpectedCredit $150')).to.equal(0)
         done()
@@ -134,9 +134,7 @@ module.exports = -> describe "Booking: ", ->
         POST "/adm/billing/orders/credit", oCred, {}, (r) ->
           LOGIN 'ajac', s, (sajac) ->
             airpair1 = time: moment().add(2, 'day'), minutes: 90, type: 'private', credit: 50, payMethodId: s.primaryPayMethodId
-            # console.log('Tood Motto rate ', data.experts.tmot.rate)
             POST "/bookings/#{data.experts.tmot._id}", airpair1, {}, (booking1) ->
-              # $log('got booking', booking1)
               expect(booking1._id).to.exist
               expect(booking1.orderId).to.exist
               expect(_.idsEqual(booking1.expertId, data.experts.tmot._id)).to.be.true
@@ -173,6 +171,32 @@ module.exports = -> describe "Booking: ", ->
                 done()
 
 
+  it 'Team members can use company credit for order', (done) ->
+    testDb.setupCompanyWithPayMethodAndTwoMembers 'ldhm', 'matt', 'eddb', (cid, pmid, cAdm, cMem) ->
+      LOGIN 'matt', cAdm, (smatt) ->
+        GET '/billing/paymethods', {}, (mattPms) ->
+          expect(mattPms.length).to.equal(1)
+          expect(mattPms[0]._id).to.exist
+          o = total: 500, payMethodId: mattPms[0]._id
+          POST "/billing/orders/credit", o, {}, (oCredit) ->
+            expect(oCredit.total).to.equal(500)
+            expect(_.idsEqual(oCredit.payMethodId,pmid)).to.be.true
+            LOGIN 'eddb', cMem, (seddb) ->
+              GET '/billing/paymethods', {}, (eddbPms) ->
+                expect(eddbPms.length).to.equal(1)
+                airpair1 = time: moment().add(2, 'day'), minutes: 120, type: 'opensource', credit: 500, payMethodId: eddbPms[0]._id
+                POST "/bookings/#{data.experts.dros._id}", airpair1, {}, (booking1) ->
+                  expect(booking1._id).to.exist
+                  expect(booking1.minutes).to.equal(120)
+                  expect(booking1.orderId).to.exist
+                  expect(booking1.type).to.equal('opensource')
+                  done()
+
+
+  it.skip 'Team members can not user anther companys credit for order', (done) ->
+
+
+
   it.skip 'Book 3 hour from package', (done) ->
     $log('can deduct by quantity instead of credit')
 
@@ -181,4 +205,3 @@ module.exports = -> describe "Booking: ", ->
   it.skip 'With the multiple credit line items, first lineitem gets deducted', (done) ->
   it.skip 'Gets $5 off booking if member', (done) ->
   it.skip 'Can redeem membership credit', (done) ->
-  it.skip 'Team members can access credit from order', (done) ->

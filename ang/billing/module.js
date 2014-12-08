@@ -53,15 +53,20 @@ angular.module("APBilling", ['ngRoute','APFormsDirectives','APPaymentDirectives'
     return this
   })
 
-  .controller('BillingCtrl', function($scope, BillingService, submitPaymentText) {
+  .controller('BillingCtrl', function($scope, ServerErrors, BillingService, submitPaymentText) {
 
     var err = (r) => console.log('err', r)
     $scope.orders = []
 
-    BillingService.billing.getPaymethods((r) => {
-      if (r.btoken) $scope.btoken = r.btoken
-      else $scope.paymethods = r
-    }, err)
+    var getPayMethods = () =>
+      BillingService.billing.getPaymethods((r) => {
+        if (r.btoken) {
+          $scope.paymethods = null
+          $scope.btoken = r.btoken
+        }
+        else $scope.paymethods = r
+      }, err)
+    getPayMethods()
 
     BillingService.billing.getMyOrders((r) => $scope.orders = r, err)
 
@@ -85,6 +90,11 @@ angular.module("APBilling", ['ngRoute','APFormsDirectives','APPaymentDirectives'
 
     $scope.$watch("creditAmount", $scope.setSubmitCardText)
 
+    $scope.deletePayMethod = function(id) {
+      BillingService.billing.deletePaymethod(id, function(r) {
+        getPayMethods()
+      }, ServerErrors.add)
+    }
   })
 
   .controller('BillingTopUpCtrl', function($scope, $location, BillingService, ServerErrors, submitPaymentText) {
@@ -135,7 +145,8 @@ angular.module("APBilling", ['ngRoute','APFormsDirectives','APPaymentDirectives'
       credit: 0,
       minutes: 120,
       type: "private",
-      time: moment().add(1, 'month')
+      time: moment().add(1, 'month'),
+      payMethodId: null
     }
 
     $scope.calcSummary = function() {
@@ -164,20 +175,26 @@ angular.module("APBilling", ['ngRoute','APFormsDirectives','APPaymentDirectives'
       $scope.calcSummary()
     }, ServerErrors.add)
 
-    BillingService.billing.getMyOrdersWithCredit((r) => {
-      $scope.orders = r
-      $scope.booking.credit = OrdersUtil.getAvailableCredit(OrdersUtil.linesWithCredit(r))
-      $scope.calcSummary()
 
-      BillingService.billing.getPaymethods((r) => {
-        if (r.btoken) $location.path("/billing")
-        else {
-          $scope.paymethods = r
-          $scope.booking.payMethodId = r[0]._id
-        }
+    $scope.$watch('booking.payMethodId', function(val) {
+      if (!val) return
+      BillingService.billing.getMyOrdersWithCredit(val, (r) => {
+        $scope.orders = r
+        $scope.booking.credit = OrdersUtil.getAvailableCredit(OrdersUtil.linesWithCredit(r))
+        $scope.calcSummary()
       }, ServerErrors.add)
+    })
 
+    BillingService.billing.getPaymethods((r) => {
+      if (r.btoken) $location.path("/billing")
+      else {
+        $scope.paymethods = r
+        $scope.booking.payMethodId = r[0]._id
+      }
     }, ServerErrors.add)
+
+
+
 
     $scope.$watch('booking.minutes', $scope.calcSummary)
 

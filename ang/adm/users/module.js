@@ -1,5 +1,5 @@
 
-angular.module("ADMUsers", ['ngRoute', 'APSvcAdmin', 'APFilters','APUserInput'])
+angular.module("ADMUsers", [])
 
   .config(function($locationProvider, $routeProvider) {
 

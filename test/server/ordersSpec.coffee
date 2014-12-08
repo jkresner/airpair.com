@@ -130,11 +130,11 @@ module.exports = -> describe "Credit: ", ->
         o.userId = require('mongoose').Types.ObjectId(mcas._id)
         o
       v0Orders = _.map(data.v0.orders.jkHist, map)
-      testDb.ensureOrders v0Orders, (e,r) ->
+      testDb.ensureDocs 'Order', v0Orders, (e,r) ->
         o = total: 1000, payMethodId: mcas.primaryPayMethodId
         POST "/billing/orders/credit", o, {}, (credit) ->
           expect(credit._id).to.exist
-          GET "/billing/orders/credit", {}, (orders) ->
+          GET "/billing/orders/credit/#{mcas.primaryPayMethodId}", {}, (orders) ->
             expect(orders.length).to.equal(1)
             linesWithCredit = OrdersUtil.linesWithCredit(orders)
             expect(linesWithCredit.length).to.equal(2)
