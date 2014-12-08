@@ -1,3 +1,5 @@
+var ObjectId = require('mongoose').Schema.Types.ObjectId
+
 module.exports = {
 
   users: {
@@ -184,13 +186,34 @@ module.exports = {
 	            "gmail" : "amit.jardosh@gmail.com",
 	            "title" : "",
 	            "phone" : "",
-	            "userId" : "51a4c3f566a6f999a465f2ef",
+	            "userId" : ObjectId("51a4c3f566a6f999a465f2ef"),
 	            "pic" : "https://lh6.googleusercontent.com/-Nl10iDSmQfQ/AAAAAAAAAAI/AAAAAAAABuU/bXgQXuZgofc/photo.jpg",
 	            "twitter" : "",
 	            "timezone" : "GMT-0700 (PDT)",
 	        }
-	    ]
-		}
+	    ],
+      _id: ObjectId("51a4c3f566a6f999a465ffff")
+		},
+
+    ldhm: {
+      "name" : "LendingHome",
+      "url" : "lendinghome.com",
+      "about" : "We're the next generation online mortgage lender. Simple process. Fast close. Great customer experience. All online. We're already originating hundreds of millions annually and growing rapidly.",
+      "contacts" : [
+          {
+              "fullName" : "Matt Humphrey",
+              "email" : "matt@lendinghome.com",
+              "gmail" : "matt@lendinghome.com",
+              "title" : "",
+              "phone" : "",
+              "userId" : "5481212b8f8c80299bcc5381",
+              "pic" : "https://lh4.googleusercontent.com/-WRd5bJGGP0U/AAAAAAAAAAI/AAAAAAAAAGw/XNGfNOazfB0/photo.jpg",
+              "twitter" : "",
+              "timezone" : "GMT-0800 (PST)",
+              "_id" : "54812153bdaaca020044f710"
+          }
+      ],
+    }
   },
 
   orders: {

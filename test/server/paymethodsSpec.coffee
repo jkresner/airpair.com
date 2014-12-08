@@ -77,12 +77,14 @@ module.exports = -> describe "PayMethods", ->
 
     it 'Can add company payment method', (done) ->
       addAndLoginLocalUser 'abeh', (s) ->
-        testDb.ensureCompany s, data.v0.companys.urbn, (e,r) ->
-          d = type: 'braintree', token: braintree.Test.Nonces.Transactable, name: "#{r.name} Card", companyId: r._id
+        comp = data.v0.companys.urbn
+        testDb.ensureDocs 'Company', [comp], (e,r) ->
+          # $log('going yah', comp._id)
+          d = type: 'braintree', token: braintree.Test.Nonces.Transactable, name: "#{r.name} Card", companyId: comp._id
           POST '/billing/paymethods', d, {}, (pm) ->
             expect(pm._id).to.exist
-            expect(_.idsEqual(pm.companyId, r._id)).to.be.true
-            expect(_.idsEqual(pm.info.customerId, r._id)).to.be.true
+            expect(_.idsEqual(pm.companyId, comp._id)).to.be.true
+            expect(_.idsEqual(pm.info.customerId, comp._id)).to.be.true
             done()
 
 

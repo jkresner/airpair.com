@@ -17,8 +17,8 @@ module.exports = ->describe "Tracking: ", ->
     testDb.addUserWithRole 'jkap', 'editor', ->
       testDb.initTags ->
         LOGIN 'jkap', data.users['jkap'], (s) ->
-          testDb.createWorkshop(data.workshops.railsTests)
-          testDb.createAndPublishPost(s, {title: postTitle,slug:postSlug}, done)
+          testDb.initWorkshops ->
+            testDb.createAndPublishPost(s, {title: postTitle,slug:postSlug}, done)
 
 
   afterEach -> cookie = null

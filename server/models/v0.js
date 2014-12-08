@@ -11,13 +11,4 @@ module.exports = {
 
 	})),
 
-	Company: mongoose.model('Company', new mongoose.Schema({
-
-	  name:       String,
-	  url:        String,
-	  about:      String,
-	  contacts:   []
-
-	})),
-
 }

@@ -7,6 +7,7 @@ import PaymethodsAPI from '../api/paymethods'
 import OrdersAPI from '../api/orders'
 import BookingsAPI from '../api/bookings'
 import ExpertsAPI from '../api/experts'
+import CompanysAPI from '../api/companys'
 import ViewsAPI from '../api/views'
 import {authd,adm,setAnonSessionData,emailv} from '../identity/auth/middleware'
 
@@ -73,6 +74,9 @@ export default function(app) {
     .get('/redirects', RedirectsAPI.getAllRedirects)
     .post('/redirects', RedirectsAPI.createRedirect)
     .delete('/redirects/:id', RedirectsAPI.deleteRedirectById)
+    .get('/companys/search/:id', CompanysAPI.search)
+    .put('/companys/migrate/:id', CompanysAPI.migrate)
+    .put('/companys/member/:id', CompanysAPI.addMember)
 
 
   router.use('/adm',admrouter)
