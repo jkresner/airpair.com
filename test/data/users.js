@@ -52,6 +52,11 @@ module.exports = {
   nevk: { name:"Nevan King",email:"nevking@gmail.com" },
   nkig: { name:"Nevan King",email:"nevanking@hotmail.com" },
 
+  mthm: { name:"Matt Humphrey",email:"matt@lendinghome.com" },
+  math: { name:"Matt Humphrey",email:"zellunit@gmail.com" },
+  ktom: { name:"Kieth Tom",email:"kieth@lendinghome.com" },
+  kiem: { name:"Kieth Tom",email:"ktom@gmail.com" },
+
   shcl: { name: "Shane Cole", email: "shanecole@ap.com"},
   shan: { name: "Shane Cole", email: "shanecole@yahoo.com"},
   scol: { name: "Shane Cole", email: "shane.cole@yahoo.com"},
