@@ -1,0 +1,114 @@
+@import "ap.less";
+
+
+section#request {
+  form {
+
+    hr { margin:5px }
+
+    max-width:640px;
+
+    section {
+      border-bottom:solid 20px @mediumgray;
+      margin-bottom:20px;
+      background:@lightblue;
+      padding:20px 20px 15px 20px;
+      border-top-right-radius:5px;
+      border-top-left-radius:5px;
+    }
+
+    padding-top:30px;
+
+    .control-label {
+      display:block;
+      margin-bottom:20px;
+      font-size:22px;
+      font-weight:400;
+      color:@blackgray;
+    }
+
+    section.done {
+      border-bottom:solid 1px @bluegray;
+      padding:0 5px 5px 5px;
+      background:none;
+      label { font-size:14px;color:@gray }
+      .feedback { font-weight:normal }
+    }
+
+    input[type=radio] {
+      // margin:10px 10px 10px 30px;
+      // border:solid 1px @lightblue;
+      position:absolute;
+      z-index:-1000;
+      left:-1000px;
+      overflow:hidden;
+      clip: rect(0 0 0 0);
+      height:1px;
+      width:1px;
+      margin:-1px;
+      padding:0;
+      border:0;
+
+    }
+
+    input[type=radio] + label {
+      background-size:22px;
+      background-image:url(../img/css/radio.png);
+      background-repeat:no-repeat;
+      background-position:0px 6px;
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      padding-left:35px;
+      padding-top:6px;
+      height:28px;
+      display:inline-block;
+      line-height:20px;
+      font-size:16px;
+      font-weight:normal;
+      vertical-align:middle;
+      cursor:pointer;
+      margin-right:46px;
+      img { margin:-5px 10px 0 0 }
+      text-transform:uppercase;
+    }
+
+    input[type=radio]:checked + label {
+      padding-top:0px;
+      margin-top:6px;
+      height:22px;
+      background-position: 0 -22px;
+    }
+
+
+    textarea {
+      min-height:120px
+    }
+
+    .nomobile { display:none }
+    .tag-input-group {
+      width:610px;
+      .tagInput { max-width:260px }
+      label {
+        font-size:12px;
+        text-transform:uppercase;
+        font-weight:bold;
+      }
+    }
+
+    .feedback { float:right;font-weight:bold }
+    .types { padding-top:15px }
+    .rush { padding-top:8px }
+
+    .tags li { background:white }
+    .done .tags li { background:@lightblue }
+  }
+  #requestType {
+    max-width:280px;
+    display:inline;
+    margin-right:10px;
+  }
+}

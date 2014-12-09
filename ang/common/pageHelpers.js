@@ -1,5 +1,17 @@
 window.pageHlpr = {}
 
+window.storage = function(k, v) {
+  if (window.localStorage)
+  {
+    if (typeof v == 'undefined')
+    {
+      return localStorage[k];
+    }
+    localStorage[k] = v;
+    return v;
+  }
+}
+
 var getHighlightConfig = function(elm) {
   var cfg = {};
   var prevSibling = elm.previousSibling;

@@ -12,5 +12,6 @@ module.exports = [
   '*pair-programming*',
   '/v1/auth*',
   '/login',
-  '/me*'
+  '/me*',
+  '/help*'
 ]

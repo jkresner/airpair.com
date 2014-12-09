@@ -1,15 +1,3 @@
-function storage(k, v) {
-  if (window.localStorage)
-  {
-    if (typeof v == 'undefined')
-    {
-      return localStorage[k];
-    }
-    localStorage[k] = v;
-    return v;
-  }
-}
-
 angular.module("APChatNav", [])
 
   .directive('chatNav', function($rootScope, $modal, SessionService) {
