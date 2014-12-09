@@ -34,11 +34,12 @@ require('./posts/module.js');
 require('./workshops/module.js');
 require('./billing/module.js');
 require('./account/module.js');
+require('./requests/module.js');
 
 
 angular.module("AP", ['Providers', 'ngRoute', 'ngAnimate',
-  'APAnalytics', 'APSideNav', 'APChatNav', 'APServerTemplates',
-  'APAuth', 'APPosts', 'APWorkshops', 'APProfile', 'APBilling', 'APNotifications'])
+  'APAnalytics', 'APSideNav', 'APChatNav', 'APServerTemplates', 'APNotifications',
+  'APAuth', 'APPosts', 'APWorkshops', 'APProfile', 'APBilling', 'APRequests'])
 
   .config(function($locationProvider, $routeProvider) {
 
