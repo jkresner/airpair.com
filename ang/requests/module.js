@@ -1,5 +1,4 @@
 var resolver = require('./../common/routes/helpers.js').resolveHelper;
-require('./directives.js');
 
 angular.module("APRequests", ['APFilters', 'APSvcSession',
   'APRequestDirectives',
@@ -31,8 +30,19 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
 
   .run(function($rootScope, SessionService) {})
 
-  .controller('RequestCtrl', function($scope, SessionService) {
-    $scope.data = {}
+  .controller('RequestCtrl', function($rootScope, $scope, SessionService) {
+    angular.element('#sideNav').addClass('collapse')
+
+    SessionService.onAuthenticated(function() {
+      if (!$scope.request || !$scope.request.tags)
+        $scope.request = {
+          // time: 'rush',
+          // hours: '1',
+          // brief: "Mentoring me in JavaScript",
+          // type: "Mentoring",
+          // experience: 'beginner',
+          tags: $rootScope.session.tags };
+    })
 
   })
 

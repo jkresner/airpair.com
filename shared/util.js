@@ -36,12 +36,12 @@ module.exports = {
   idsEqual: idsEqual,
 
 
-  ObjectId2Date: (id) => {
+  ObjectId2Date(id) {
     return new Date(parseInt(id.toString().slice(0, 8), 16) * 1000)
   },
 
 
-  toggleItemInArray: (array, item, comparator) => {
+  toggleItemInArray(array, item, comparator) {
     if (!array) return [item]
     else
     {
@@ -55,7 +55,7 @@ module.exports = {
   },
 
 
-combineItems: (array1, array2, compareProp) => {
+  combineItems(array1, array2, compareProp) {
    if (!array1 && !array2) return []
    if (!array1 || array1.length == 0) return array2
    if (!array2 || array2.length == 0) return array1
@@ -71,37 +71,58 @@ combineItems: (array1, array2, compareProp) => {
   },
 
 
-  sessionCreatedAt: (session) => {
+  sessionCreatedAt(session) {
     return new moment(session.cookie._expires).subtract(session.cookie.originalMaxAge,'ms').toDate()
   },
 
 
-  dateWithDayAccuracy: (mom) => {
+  dateWithDayAccuracy(mom) {
     if (!mom) mom = moment()
     return moment(mom.format('YYYY-MM-DD'), 'YYYY-MM-DD').toDate()
   },
 
 
-  firstName: (name) => {
+  firstName(name) {
     return name.split(' ')[0]
   },
 
 
-  lastName: (name) => {
+  lastName(name) {
     return name.replace(name.split(' ')[0]+ '' , '')
   },
 
 
-  selectFromObject: (obj, selectList) => {
+  selectFromObject(obj, selectList) {
     if (!obj || !selectList) return obj
     else return nestedPick(obj, _.keys(selectList))
   },
 
 
-  isBot: (useragent) => {
+  isBot(useragent) {
     if (!useragent) return true // browser and even bots should have a defined user agent
     var source = useragent.replace(/^\s*/, '').replace(/\s*$/, '')
     return botPattern.test(source)
+  },
+
+  tagsString(tags,limit,braces) {
+    // if nobraces then return tagsStringNobraces tags, limit
+    var oBrace = '', cBrace = '';
+    if (braces) var oBrace = '{', cBrace = '}';
+
+    var t = tags
+    if (!t || t.length == 0) return
+    if (t.length == 1) return `${oBrace}${t[0].name}${cBrace}`
+
+    if (limit && t.length > limit) t = t.slice(0, limit)
+
+    var ts = `${oBrace}${t[0].name}${cBrace}`
+    for (var i=1;i<t.length;i++) {
+      if (i == t.length - 1)
+        ts += ` and ${oBrace}${t[i].name}${cBrace}` // and instead of & to fix urls
+      else
+        ts += `, ${oBrace}${t[i].name}${cBrace}`
+    }
+    return ts
   }
 
 }

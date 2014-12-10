@@ -52,9 +52,9 @@
                placeholder="Primary contact email"
                ng-model="data.email"
                ng-change="updateEmail(profileForm.email)"
-               ng-model-options="{debounce:{default:800, blur:0}}"
+               ng-model-options="{updateOn:'default blur',debounce:{default:800, blur:0}}"
                required
-               tabindex="1">
+               >
 
         <div class="error" ng-if="formGroup.showError(profileForm.email)" ng-messages="profileForm.email.$error">
           <div ng-message="required">Email required</div>

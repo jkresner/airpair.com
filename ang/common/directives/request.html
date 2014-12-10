@@ -1,0 +1,159 @@
+<form class="requestForm" novalidate name="requestForm" ng-submit="RequestFormCtrl.submit(requestForm.$valid, request)">
+
+<section class="budget" ng-if="request.time" ng-class=" (request.budget) ? 'done':'' ">
+
+  <div form-group>
+    <label class="control-label" for="requestTime">What is your hourly budget?</label>
+
+    <input id="requestBudget60" name="hours" ng-model="request.budget" type="radio" value="60">
+    <label for="requestBudget60">$60/hr</label>
+
+    <input id="requestBudget90" name="hours" ng-model="request.budget" type="radio" value="90">
+    <label for="requestBudget90">$90/hr</label>
+
+    <input id="requestBudget130" name="hours" ng-model="request.budget" type="radio" value="130">
+    <label for="requestBudget130">$130/hr</label>
+
+    <input id="requestBudget190" name="hours" ng-model="request.budget" type="radio" value="190">
+    <label for="requestBudget190">$190/hr</label>
+
+    <input id="requestBudget280" name="hours" ng-model="request.budget" type="radio" value="280">
+    <label for="requestBudget280">$280/hr</label>
+
+  </div>
+
+</section> 
+
+
+
+<section class="time" ng-if="request.hours" ng-class=" (request.time) ? 'done':'' ">
+
+  <div form-group>
+    <label class="control-label" for="requestTime">How soon would you like to speak to an expert?</label>
+
+    <span class="rush feedback" ng-if="request.time && request.time == 'rush'"><a href="#">+10/hr rush fee</a></span>
+
+    <input id="requestTimeRegular" name="time" ng-model="request.time" type="radio" value="regular">
+    <label for="requestTimeRegular"><img src="/v1/img/css/request/time-regular.png">In 1-2 Days</label>
+
+    <input id="requestTimeRush" name="time" ng-model="request.time" type="radio" value="rush">
+    <label for="requestTimeRush"><img src="/v1/img/css/request/time-rush.png">In 1-2 Hours</label>
+
+  </div>
+
+</section> 
+
+
+<section class="hours" ng-if="request.brief" ng-class=" (request.hours) ? 'done':'' ">
+
+  <div form-group>
+    <label class="control-label" for="requestHours">How many hours do you think you'll need?</label>
+
+    <input id="requestHours1" name="hours" ng-model="request.hours" type="radio" value="1">
+    <label for="requestHours1">1</label>
+
+    <input id="requestHours2" name="hours" ng-model="request.hours" type="radio" value="2">
+    <label for="requestHours2">2</label>
+
+    <input id="requestHours5" name="hours" ng-model="request.hours" type="radio" value="5">
+    <label for="requestHours5">5</label>
+
+    <input id="requestHours10" name="hours" ng-model="request.hours" type="radio" value="10">
+    <label for="requestHours10">10</label>
+
+    <input id="requestHoursMore" name="hours" ng-model="request.hours" type="radio" value="10+">
+    <label for="requestHoursMore">More</label>
+
+  </div>
+
+</section>
+
+ 
+<section class="brief" ng-if="request.experience" ng-class=" (request.brief) ? 'done':'' ">
+
+  <div form-group>
+    <label class="control-label" for="requestBrief">Specifically what do you need help with?</label>
+    <textarea id="requestBrief" form-control
+      placeholder="describe your requirements in as much detail as possible"
+      ng-model="request.brief"
+      ng-model-options="{updateOn: 'default blur', debounce:{default:5000, blur:0}}"
+      required>
+    </textarea>
+  </div>
+
+</section>
+
+
+
+<section class="experience" ng-if="doneTags" ng-class="(request.experience) ? 'done':'' ">
+
+  <div form-group ng-if="request.tags && request.tags.length > 0">
+
+    <label class="control-label" for="requestExperience" ng-if="request.tags.length == 1">What's your experience using {{request.tags[0].name}}?</label>
+    <label class="control-label" for="requestExperience" ng-if="request.tags.length > 1">What's your experience using {{tagsString()}} together?</label>
+
+     <div class="experienceOptions">
+      <span>
+        <input id="requestExperienceBeginner" name="experience" ng-model="request.experience" type="radio" value="beginner">
+        <label for="requestExperienceBeginner"><img src="v1/img/css/request/experience-beginner.png" style="padding-left:2px;padding-right:0px" /> Beginner</label>
+      </span>
+
+      <span>
+        <input id="requestExperienceProficient" name="experience" ng-model="request.experience" type="radio" value="proficient">
+        <label for="requestExperienceProficient"><img src="v1/img/css/request/experience-proficient.png" style="padding-right:1px" />Proficient</label>
+      </span>
+
+      <span>
+        <input id="requestExperienceAdvanced" name="experience" ng-model="request.experience" type="radio" value="advanced">
+        <label for="requestExperienceAdvanced"><img src="v1/img/css/request/experience-advanced.png" style="padding-left:3px;padding-right:1px" /> Advanced</label>
+      </span>
+    </div>  
+
+  </div>
+
+</section>
+
+<section class="tags" ng-if="request.type" ng-class="(doneTags) ? 'done':''">
+
+  <a ng-if="!doneTags" ng-if="request.tags && request.tags.length > 0" ng-click="setDoneTags()" class="btn">Done</a>
+
+  <div form-group>
+    <label class="control-label" for="requestTags">What technologies are you using?</label>
+    <i>Choose up to 3 tags</i>
+    <div class="form-group">
+      <div tag-input></div>
+    </div>
+  </div>
+  <hr />
+
+</section>
+
+<section class="type" ng-class="(request.type) ? 'done':''">
+
+  <div form-group>
+    <label class="control-label" for="requestType">What type of coding help could you use?</label>
+    <div class="requestTypes" ng-if="!request.type">
+      <a ng-click="setType('Troubleshooting')">Troubleshooting</a>
+      <a ng-click="setType('Mentoring')">Mentoring</a>
+      <a ng-click="setType('Code review')">Code review</a>
+      <a ng-click="setType('Extra resources')">Extra resources</a>
+      <a ng-click="setType('Advice')">Advice</a>
+<!--       <a ng-click="setType('Vetting')">Vetting</a> -->
+      <a ng-click="setType('Other')">Other</a>
+    </div>
+    <select ng-if="request.type"  id="requestType" form-control ng-model="request.type" ng-model="some.model">
+      <option value="Troubleshooting">Troubleshooting</option>
+      <option value="Mentoring">Mentoring</option>
+      <option value="Code review">Code review</option>
+      <option value="Extra resources">Extra resources</option>
+      <option value="Advice">Advice</option>
+      <!-- <option value="Vetting">Vetting</option> -->
+      <option value="Other">Other</option>
+    </select>
+
+    <a href="/help/types" class="feedback types">Not sure?</a>
+  </div>
+
+</section>
+
+
