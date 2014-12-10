@@ -2,7 +2,7 @@ var util = require('../../../shared/util')
 
 angular.module("APRequestDirectives", [])
 
-.directive('request', function() {
+.directive('request', function($timeout, ServerErrors, DataService) {
 
   return {
     template: require('./request.html'),
@@ -42,6 +42,14 @@ angular.module("APRequestDirectives", [])
       }
 
       // $scope.doneTags = true;
+
+      $scope.done = function() {
+        DataService.requests.create($scope.request, function() {
+          if ($rootScope.emailVerified) $timeout(() => { window.location = '/billing'}, 250)
+          else $timeout(() => { window.location = '/billing'}, 250)
+        }
+        , ServerErrors.add)
+      }
     }
   };
 

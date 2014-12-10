@@ -82,6 +82,9 @@ module.exports = {
   dysn: { name: "Dilys Sun", email: "dilys@hotmail.com"},
   dily: { name: "Dilys Sun", email: "dilys@gmail.com"},
 
+  josh: { name: "Josh Baylin", email: "jaybe@hotmail.com"},
+  joba: { name: "Josh Baylin", email: "josh.baylin@gmail.com"},
+
   admin: {
     "_id" : "54551be15f221efa174238d1",
     "googleId" : "199992380360999999999",

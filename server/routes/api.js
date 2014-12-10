@@ -9,6 +9,7 @@ import BookingsAPI from '../api/bookings'
 import ExpertsAPI from '../api/experts'
 import CompanysAPI from '../api/companys'
 import ViewsAPI from '../api/views'
+import RequestsAPI from '../api/requests'
 import {authd,adm,setAnonSessionData,emailv} from '../identity/auth/middleware'
 
 
@@ -44,6 +45,8 @@ export default function(app) {
     .put('/posts/:id', authd, PostsAPI.update)
     .put('/posts/publish/:id', authd, PostsAPI.publish)
     .delete('/posts/:id', authd, PostsAPI.deleteById)
+
+    .post('/requests', authd, RequestsAPI.create)
 
     .get('/workshops/', WorkshopsAPI.getAll)
     .get('/workshops/:id', WorkshopsAPI.getBySlug)

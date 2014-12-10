@@ -1,6 +1,6 @@
-angular.module("APPaymentDirectives", ['angularLoad','APSvcBilling'])
+angular.module("APPaymentDirectives", ['angularLoad','APDataSvc'])
 
-  .directive('paymentInfo', function(angularLoad, BillingService, ServerErrors) {
+  .directive('paymentInfo', function(angularLoad, DataService, ServerErrors) {
 
     var src = 'https://js.braintreegateway.com/v2/braintree.js';
 
@@ -44,7 +44,7 @@ angular.module("APPaymentDirectives", ['angularLoad','APSvcBilling'])
                   var suc = (r) => {
                     // console.log('$scope.creditAmount', $scope.creditAmount)
                     if ($scope.creditAmount)
-                      BillingService.billing.orderCredit({total:parseInt($scope.creditAmount),payMethodId:r._id}, $scope.orderSuccess, ServerErrors.add)
+                      DataService.billing.orderCredit({total:parseInt($scope.creditAmount),payMethodId:r._id}, $scope.orderSuccess, ServerErrors.add)
 
                     if (!$scope.paymethods) $scope.paymethods = [r]
                     else $scope.paymethods = _.union($scope.paymethods,[r])
@@ -53,7 +53,7 @@ angular.module("APPaymentDirectives", ['angularLoad','APSvcBilling'])
                     if ($scope.setPayMethods) $scope.setPayMethods($scope.paymethods)
                   }
 
-                  BillingService.billing.addPaymethod(pm, suc, ServerErrors.add)
+                  DataService.billing.addPaymethod(pm, suc, ServerErrors.add)
                 }
               });
             }

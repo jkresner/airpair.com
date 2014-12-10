@@ -1,5 +1,11 @@
 <form class="requestForm" novalidate name="requestForm" ng-submit="RequestFormCtrl.submit(requestForm.$valid, request)">
 
+<section class="submit" ng-if="request.budget">
+
+  <a ng-click="done()" class="btn">Submit</a>
+
+</section>
+
 <section class="budget" ng-if="request.time" ng-class=" (request.budget) ? 'done':'' ">
 
   <div form-group>
@@ -21,6 +27,7 @@
     <label for="requestBudget280">$280/hr</label>
 
   </div>
+  <hr />
 
 </section>
 
@@ -65,6 +72,7 @@
     <label for="requestHoursMore">More</label>
 
   </div>
+  <hr />
 
 </section>
 
@@ -80,6 +88,7 @@
       required>
     </textarea>
   </div>
+  <hr />
 
 </section>
 
@@ -134,26 +143,27 @@
   <div form-group>
     <label class="control-label" for="requestType">What type of coding help could you use?</label>
     <div class="requestTypes" ng-if="!request.type">
-      <a ng-click="setType('Troubleshooting')">Troubleshooting</a>
-      <a ng-click="setType('Mentoring')">Mentoring</a>
-      <a ng-click="setType('Code review')">Code review</a>
-      <a ng-click="setType('Extra resources')">Extra resources</a>
-      <a ng-click="setType('Advice')">Technology advice</a>
-<!--       <a ng-click="setType('Vetting')">Vetting</a> -->
-      <a ng-click="setType('Other')">Other</a>
+      <a ng-click="setType('troubleshooting')">Troubleshooting</a>
+      <a ng-click="setType('mentoring')">Mentoring</a>
+      <a ng-click="setType('code-review')">Code review</a>
+      <a ng-click="setType('resources')">Extra resources</a>
+      <a ng-click="setType('advice')">Technology advice</a>
+<!--       <a ng-click="setType('vetting')">Vetting</a> -->
+      <a ng-click="setType('other')">Other</a>
     </div>
     <select ng-if="request.type" id="requestType" form-control ng-model="request.type" ng-model="some.model">
-      <option value="Troubleshooting">Troubleshooting</option>
-      <option value="Mentoring">Mentoring</option>
-      <option value="Code review">Code review</option>
-      <option value="Extra resources">Extra resources</option>
-      <option value="Advice">Technology advice</option>
-      <!-- <option value="Vetting">Vetting</option> -->
-      <option value="Other">Other</option>
+      <option value="troubleshooting">Troubleshooting</option>
+      <option value="mentoring">Mentoring</option>
+      <option value="code-review">Code review</option>
+      <option value="resources">Extra resources</option>
+      <option value="advice">Technology advice</option>
+      <!-- <option value="vetting">Vetting</option> -->
+      <option value="other">Other</option>
     </select>
 
     <!-- <a href="/help/types" class="typesHelp">Need help choosing ?</a> -->
   </div>
+  <hr />
 
 </section>
 
