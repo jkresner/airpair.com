@@ -21,13 +21,14 @@ require('./common/directives/bookmarker.js');
 require('./common/directives/analytics.js');
 require('./common/directives/forms.js');
 require('./common/directives/payment.js');
+require('./common/directives/requests.js');
 require('./common/directives/notifications.js');
 require('./common/directives/serverTemplates.js');
 require('./common/directives/providers.js');
 require('./common/filters/filters.js');
 require('./common/models/postsService.js');
 require('./common/models/sessionService.js');
-require('./common/models/billingService.js');
+require('./common/models/dataService.js');
 require('./common/pageHelpers.js');
 require('./auth/module.js');
 require('./posts/module.js');
@@ -37,7 +38,7 @@ require('./account/module.js');
 require('./requests/module.js');
 
 
-angular.module("AP", ['Providers', 'ngRoute', 'ngAnimate',
+angular.module("AP", ['Providers', 'ngRoute', 'ngAnimate', 'APDataSvc',
   'APAnalytics', 'APSideNav', 'APChatNav', 'APServerTemplates', 'APNotifications',
   'APAuth', 'APPosts', 'APWorkshops', 'APProfile', 'APBilling', 'APRequests'])
 

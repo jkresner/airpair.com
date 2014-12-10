@@ -3,7 +3,7 @@ var resolver = require('./../common/routes/helpers').resolveHelper
 var OrdersUtil = require('./../../shared/orders')
 
 angular.module("APBilling", ['ngRoute','APFormsDirectives','APPaymentDirectives','APAnalytics',
-  'APFilters','APSvcSession','APSvcBilling', 'APBillingDirectives','APExpertsDirectives'])
+  'APFilters','APSvcSession','APBillingDirectives','APExpertsDirectives'])
 
   .config(function($locationProvider, $routeProvider) {
 
@@ -53,13 +53,13 @@ angular.module("APBilling", ['ngRoute','APFormsDirectives','APPaymentDirectives'
     return this
   })
 
-  .controller('BillingCtrl', function($scope, ServerErrors, BillingService, submitPaymentText) {
+  .controller('BillingCtrl', function($scope, ServerErrors, DataService, submitPaymentText) {
 
     var err = (r) => console.log('err', r)
     $scope.orders = []
 
     var getPayMethods = () =>
-      BillingService.billing.getPaymethods((r) => {
+      DataService.billing.getPaymethods((r) => {
         if (r.btoken) {
           $scope.paymethods = null
           $scope.btoken = r.btoken
@@ -68,7 +68,7 @@ angular.module("APBilling", ['ngRoute','APFormsDirectives','APPaymentDirectives'
       }, err)
     getPayMethods()
 
-    BillingService.billing.getMyOrders((r) => $scope.orders = r, err)
+    DataService.billing.getMyOrders((r) => $scope.orders = r, err)
 
     $scope.orderSuccess = (r) => {
       $scope.orders = _.union($scope.orders,[r])
@@ -91,15 +91,15 @@ angular.module("APBilling", ['ngRoute','APFormsDirectives','APPaymentDirectives'
     $scope.$watch("creditAmount", $scope.setSubmitCardText)
 
     $scope.deletePayMethod = function(id) {
-      BillingService.billing.deletePaymethod(id, function(r) {
+      DataService.billing.deletePaymethod(id, function(r) {
         getPayMethods()
       }, ServerErrors.add)
     }
   })
 
-  .controller('BillingTopUpCtrl', function($scope, $location, BillingService, ServerErrors, submitPaymentText) {
+  .controller('BillingTopUpCtrl', function($scope, $location, DataService, ServerErrors, submitPaymentText) {
 
-    BillingService.billing.getPaymethods((r) => {
+    DataService.billing.getPaymethods((r) => {
       if (r.btoken) $location.path("/billing")
       else {
         $scope.paymethods = r
@@ -119,27 +119,28 @@ angular.module("APBilling", ['ngRoute','APFormsDirectives','APPaymentDirectives'
         var success = () => $location.path("/billing")
 
         var {coupon,payMethodId} = $scope
-        BillingService.billing.orderCredit({total:parseInt($scope.creditAmount),payMethodId,coupon}, success, ServerErrors.add)
+        DataService.billing.orderCredit({total:parseInt($scope.creditAmount),payMethodId,coupon}, success, ServerErrors.add)
       }
     }
   })
 
 
-  .controller('BillingMembershipCtrl', function($scope, BillingService) {
+  .controller('BillingMembershipCtrl', function($scope, DataService) {
 
     // console.log('in membership billing')
 
   })
 
-  .controller('BillingExpertsCtrl', function($scope, BillingService) {
+  .controller('BillingExpertsCtrl', function($scope, DataService) {
 
-    BillingService.experts.getForExpertsPage((r) => {
+    DataService.experts.getForExpertsPage((r) => {
       $scope.experts = r.experts
     }, () => {} )
 
   })
 
-  .controller('BillingBookExpertCtrl', function($scope, $routeParams, $location, ServerErrors, BillingService) {
+  .controller('BillingBookExpertCtrl', function($scope, $routeParams, $location,
+    ServerErrors, DataService) {
 
     $scope.booking = {
       credit: 0,
@@ -169,7 +170,7 @@ angular.module("APBilling", ['ngRoute','APFormsDirectives','APPaymentDirectives'
       }
     }
 
-    BillingService.experts.getById({_id:$routeParams.id}, (r) => {
+    DataService.experts.getById({_id:$routeParams.id}, (r) => {
       $scope.expert = r
       $scope.booking.expertId = r._id
       $scope.calcSummary()
@@ -178,14 +179,14 @@ angular.module("APBilling", ['ngRoute','APFormsDirectives','APPaymentDirectives'
 
     $scope.$watch('booking.payMethodId', function(val) {
       if (!val) return
-      BillingService.billing.getMyOrdersWithCredit(val, (r) => {
+      DataService.billing.getMyOrdersWithCredit(val, (r) => {
         $scope.orders = r
         $scope.booking.credit = OrdersUtil.getAvailableCredit(OrdersUtil.linesWithCredit(r))
         $scope.calcSummary()
       }, ServerErrors.add)
     })
 
-    BillingService.billing.getPaymethods((r) => {
+    DataService.billing.getPaymethods((r) => {
       if (r.btoken) $location.path("/billing")
       else {
         $scope.paymethods = r
@@ -199,7 +200,7 @@ angular.module("APBilling", ['ngRoute','APFormsDirectives','APPaymentDirectives'
     $scope.$watch('booking.minutes', $scope.calcSummary)
 
     $scope.submit = function() {
-      BillingService.billing.bookExpert($scope.booking, (r) => $location.path("/billing"), ServerErrors.add)
+      DataService.billing.bookExpert($scope.booking, (r) => $location.path("/billing"), ServerErrors.add)
     }
 
   })

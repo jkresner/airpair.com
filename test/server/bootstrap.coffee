@@ -35,6 +35,7 @@ describe 'Server: ', ->
   describe('Companys: ', require('./companysSpec'))
   describe('Rss: ', require('./rssSpec'))
   describe('Redirects: ', require('./redirectsSpec'))
+  describe('Requests: ', require('./requestsSpec'))
   describe('Orders: ', require('./paymethodsSpec'))
   describe('Orders: ', require('./ordersSpec'))
   describe('Orders: ', require('./ordersMembershipSpec'))

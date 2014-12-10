@@ -30,8 +30,10 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
 
   .run(function($rootScope, SessionService) {})
 
+
   .controller('RequestCtrl', function($rootScope, $scope, SessionService) {
-    angular.element('#sideNav').addClass('collapse')
+
+    angular.element('#side').addClass('collapse')
 
     SessionService.onAuthenticated(function() {
       if (!$scope.request || !$scope.request.tags)
@@ -41,7 +43,8 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
           // brief: "Mentoring me in JavaScript",
           // type: "Mentoring",
           // experience: 'beginner',
-          tags: $rootScope.session.tags };
+          tags: $rootScope.session.tags
+        };
     })
 
   })

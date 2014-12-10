@@ -68,6 +68,14 @@ module.exports = function(mailProvider)
         fullName: byName,
         total,
       }), cb)
+    },
+    sendPipelinerNotifyBookingEmail(byName, expertName, bookingId, cb) {
+      mailProvider.send(receivers.pipeliners, renderEmail('pipelinernotifybooking',
+        { byName, expertName, bookingId }), cb)
+    },
+    sendPipelinerNotifyRequestEmail(byName, requestId, cb) {
+      mailProvider.send(receivers.pipeliners, renderEmail('pipelinernotifyrequest',
+        { byName, requestId }), cb)
     }
   }
 
