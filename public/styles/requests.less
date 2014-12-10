@@ -1,7 +1,6 @@
 @import "ap.less";
 
 
-
 .requests {
   margin-left:-5px;
   text-align:center;
@@ -75,13 +74,15 @@
 
 form.requestForm {
 
-  hr { margin:5px }
-
+  padding-top:30px;
   max-width:640px;
 
   section {
+    hr { margin:5px;clear:both }
+    position:relative;
     clear:left;
-    height:270px;
+    ming-height:270px;
+    max-height:270px;
     border-bottom:solid 20px @bluegray;
     margin-bottom:20px;
     background:@lightblue;
@@ -89,8 +90,6 @@ form.requestForm {
     border-top-right-radius:5px;
     border-top-left-radius:5px;
   }
-
-  padding-top:30px;
 
   .control-label {
     display:block;
@@ -153,28 +152,45 @@ form.requestForm {
     background-position: 0 -22px;
   }
 
-
   textarea {
     min-height:170px
   }
 
-  .nomobile { display:none }
-  .tag-input-group {
-    width:610px;
-    .tagInput { max-width:260px }
-    label {
-      display:none;
-      // font-size:12px;
-      // text-transform:uppercase;
-      // font-weight:bold;
+  .feedback { float:right;font-weight:bold }
+  .rush { padding-top:8px }
+
+  section.type {
+    // background:url(../img/css/bracket-left.png) no-repeat @lightblue right bottom;
+    // background-size:14%;
+    .requestTypes {
+      border:solid 2px @bluegray;
+      background:white;
+      padding:5px;
+      a { display:block;padding:3px;font-weight:bold }
+      a:hover { background:@bluegray }
+      width:260px;
+      float:left;
+      margin-right:10px
+    }
+    #requestType {
+      display:inline;
+      max-width:260px;
+      margin-right:10px;
     }
   }
 
-  .feedback { float:right;font-weight:bold }
-  .types { margin-top:-20px }
-  .rush { padding-top:8px }
-
   .tags {
+    .nomobile { display:none }
+    .tag-input-group {
+      width:610px;
+      .tagInput { max-width:260px }
+      label {
+        display:none;
+        // font-size:12px;
+        // text-transform:uppercase;
+        // font-weight:bold;
+      }
+    }
     .btn { min-width:94px;float:right;margin-top:5px;padding:2px }
     i { display:block;margin:-10px 0 4px 0;font-size:12px }
     li { background:white }
@@ -188,9 +204,8 @@ form.requestForm {
 
   .experience {
     .control-label { float:left;margin:10px 5px;width:280px }
-    div.experienceOptions { float:right;width:300px;padding-top:2px }
+    div.experienceOptions { float:right;width:300px;padding-top:5px }
     span { float:left;clear:left;width:280px;padding:8px 10px 10px 10px }
-
     label img { height:45px;margin:-10px 10px 0px 0px!important }
     // input[type=radio] { display:block }
     input[type=radio] + label {
@@ -225,18 +240,43 @@ form.requestForm {
     .feedback { font-weight:normal }
     margin-bottom:10px;
   }
-  .requestTypes {
-    border:solid 2px @bluegray;
-    background:white;
-    padding:5px;
-    a { display:block;padding:3px;font-weight:bold }
-    a:hover { background:@bluegray }
-    max-width:280px;
-  }
-  #requestType {
-    max-width:260px;
-    display:inline;
-    margin-right:10px;
+
+
+  @media only screen and (max-width: 640px) {
+    padding-top:10px;
+
+    section {
+      width:310px;
+      max-height:300px;
+    }
+
+    .control-label { font-size:14px }
+    section.type {
+      .requestTypes {
+        a { display:block;padding:4px;font-weight:bold }
+      }
+    }
+    .tags {
+      .tag-input-group {
+        .tagInput { max-width:280px }
+        max-width:100%;
+        ul.tags li { width:120px;font-size:10px;padding:11px }
+        .remove { font-size:12px;width:20px;height:20px }
+        .order { display:none }
+        .drag { display:none }
+        .selected {
+          margin-top:60px;
+          width:120px;
+          p { font-size:13px }
+        }
+      }
+      .btn { float:none;position:absolute;bottom:10px; }
+    }
+    .experience {
+      .control-label { margin:0 0 15px 0 }
+      div.experienceOptions { padding-top:0px }
+      span { padding:2px 0px 4px 30px }
+    }
   }
 }
 
@@ -245,5 +285,10 @@ article.blogpost { section.done { display:none} }
 
 
 section#request {
+  > header { display:none }
   .requests { float:right;width:250px;margin-top:50px }
+
+  @media only screen and (max-width: 900px) {
+    .requests { display:none }
+  }
 }

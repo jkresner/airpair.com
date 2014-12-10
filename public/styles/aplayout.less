@@ -71,6 +71,11 @@ body > header {
       padding:1px 3px;
     }
 
+    #headerGetHelp { position:absolute;
+      top:13px;
+      right:6px;
+    }
+
     div { display:none }
     .pp { display:none }
     .wk { display:none }
@@ -121,16 +126,16 @@ div.notify {
   }
 }
 
-.blueGradient {
-  background: white;
-  background: -moz-linear-gradient(left, white 0%, @lightblue 50%, white 100%);
-  background: -webkit-gradient(left top, right top, color-stop(0%, white), color-stop(50%, @lightblue), color-stop(100%, white));
-  background: -webkit-linear-gradient(left, white 0%, @lightblue 50%, white 100%);
-  background: -o-linear-gradient(left, white 0%, @lightblue 50%, white 100%);
-  background: -ms-linear-gradient(left, white 0%, @lightblue 50%, white 100%);
-  background: linear-gradient(to right, white 0%, @lightblue 50%, white 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ffffff', GradientType=1 );
-}
+// .blueGradient {
+//   background: white;
+//   background: -moz-linear-gradient(left, white 0%, @lightblue 50%, white 100%);
+//   background: -webkit-gradient(left top, right top, color-stop(0%, white), color-stop(50%, @lightblue), color-stop(100%, white));
+//   background: -webkit-linear-gradient(left, white 0%, @lightblue 50%, white 100%);
+//   background: -o-linear-gradient(left, white 0%, @lightblue 50%, white 100%);
+//   background: -ms-linear-gradient(left, white 0%, @lightblue 50%, white 100%);
+//   background: linear-gradient(to right, white 0%, @lightblue 50%, white 100%);
+//   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ffffff', GradientType=1 );
+// }
 
 main {
   width:900px;
@@ -138,10 +143,9 @@ main {
   padding:0;
   a { color:@orange }
   a:hover { color:@gray }
-
+  border:solid 1px white;
   > header {
     color:@gray;
-    // background:@palegray;
     height:35px;
     width:100%;
     margin:0px auto 0px -1px;
@@ -152,8 +156,9 @@ main {
     white-space:nowrap;
 
     .breadcrumb {
+      // border:solid 1px blue;
       background:none;
-      padding:10px 0 5px 0;
+      padding:10px 0 5px 0!important;
       margin:none;
 
       > li + li:before {
@@ -165,13 +170,18 @@ main {
 
   @media only screen and (max-width: 900px) {
     width:640px;
-    > header { padding:10px; }
+    > header { padding:0px; }
   }
 
   @media only screen and (max-width: 640px) {
     width:320px;
     > * { margin-left:3px }
-    > header { margin-left:0;width:320px;padding:10px 8px;overflow:hidden; }
+    > header {
+      // margin-left:0;
+      width:320px;
+      padding:0px 8px;
+      .breadcrumb { margin:0 auto;padding-top:5px }
+    }
   }
 }
 

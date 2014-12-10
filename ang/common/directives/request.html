@@ -22,7 +22,7 @@
 
   </div>
 
-</section> 
+</section>
 
 
 
@@ -41,7 +41,7 @@
 
   </div>
 
-</section> 
+</section>
 
 
 <section class="hours" ng-if="request.brief" ng-class=" (request.hours) ? 'done':'' ">
@@ -68,7 +68,7 @@
 
 </section>
 
- 
+
 <section class="brief" ng-if="request.experience" ng-class=" (request.brief) ? 'done':'' ">
 
   <div form-group>
@@ -107,15 +107,16 @@
         <input id="requestExperienceAdvanced" name="experience" ng-model="request.experience" type="radio" value="advanced">
         <label for="requestExperienceAdvanced"><img src="v1/img/css/request/experience-advanced.png" style="padding-left:3px;padding-right:1px" /> Advanced</label>
       </span>
-    </div>  
+    </div>
 
   </div>
+  <hr />
 
 </section>
 
 <section class="tags" ng-if="request.type" ng-class="(doneTags) ? 'done':''">
 
-  <a ng-if="!doneTags" ng-if="request.tags && request.tags.length > 0" ng-click="setDoneTags()" class="btn">Done</a>
+  <a ng-if="!doneTags && request.tags && request.tags.length > 0" ng-click="setDoneTags()" class="btn">Done</a>
 
   <div form-group>
     <label class="control-label" for="requestTags">What technologies are you using?</label>
@@ -137,21 +138,21 @@
       <a ng-click="setType('Mentoring')">Mentoring</a>
       <a ng-click="setType('Code review')">Code review</a>
       <a ng-click="setType('Extra resources')">Extra resources</a>
-      <a ng-click="setType('Advice')">Advice</a>
+      <a ng-click="setType('Advice')">Technology advice</a>
 <!--       <a ng-click="setType('Vetting')">Vetting</a> -->
       <a ng-click="setType('Other')">Other</a>
     </div>
-    <select ng-if="request.type"  id="requestType" form-control ng-model="request.type" ng-model="some.model">
+    <select ng-if="request.type" id="requestType" form-control ng-model="request.type" ng-model="some.model">
       <option value="Troubleshooting">Troubleshooting</option>
       <option value="Mentoring">Mentoring</option>
       <option value="Code review">Code review</option>
       <option value="Extra resources">Extra resources</option>
-      <option value="Advice">Advice</option>
+      <option value="Advice">Technology advice</option>
       <!-- <option value="Vetting">Vetting</option> -->
       <option value="Other">Other</option>
     </select>
 
-    <a href="/help/types" class="feedback types">Not sure?</a>
+    <!-- <a href="/help/types" class="typesHelp">Need help choosing ?</a> -->
   </div>
 
 </section>
