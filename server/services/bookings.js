@@ -21,16 +21,19 @@ function create(e, r, user, expert, time, minutes, type, cb) {
   if (e) return cb(e)
 
   var booking = {
+    _id: svc.newId(),
+    createdById: user._id,
     customerId: user._id, // consider use case of expert creating booking
     expertId: expert._id,
     type,
     minutes,
-    createdById: user._id,
     status: 'pending',
     datetime: time,
     gcal: {},
     orderId: r._id
   }
+
+  mailman.sendPipelinerNotifyBookingEmail(user.name, expert.name, booking._id, ()=>{})
 
   svc.create(booking, cb)
 }
