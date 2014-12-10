@@ -16,7 +16,7 @@
       <li ng-repeat="tag in tags() | orderBy:'sort'" ng-attr-data-id="{{tag._id}}">
         {{tag.slug}}
         <a class="remove" ng-click="deselectMatch(tag)">x</a>
-        <a class="order" href="#"></a>
+        <a ng-if="tags().length > 1" class="order"></a>
       </li>
     </ul>
 
