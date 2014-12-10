@@ -13,7 +13,7 @@
 
   <div form-group>
     <label class="control-label" for="cardNumber">Card number</label>
-    <input form-control id="cardNumber" name="number" data-braintree-name="number" ng-model="card.number" type="text" placeholder="Credit card number" required ng-minlength="16" ng-minlength="20" tabindex="1202" ng-pattern="/\d+/">
+    <input form-control id="cardNumber" name="number" data-braintree-name="number" ng-model="card.number" type="text" placeholder="Credit card number" required ng-minlength="15" ng-minlength="20" tabindex="1202" ng-pattern="/\d+/">
     <div class="error" ng-if="formGroup.showError(cardinfoForm.number)" ng-messages="cardinfoForm.number.$error">
       <div ng-message="required">Number required</div>
       <div ng-message="minlength">Invalid card number</div>
