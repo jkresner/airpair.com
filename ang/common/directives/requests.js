@@ -34,7 +34,10 @@ angular.module("APRequestDirectives", [])
       }
 
       $scope.setType = function(val) {
-        $scope.request.type = val
+        if ($scope.request)
+          $scope.request.type = val
+        else
+          $scope.request = { type: val }
       }
 
       $scope.tagsString = function() {

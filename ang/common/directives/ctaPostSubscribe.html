@@ -1,0 +1,53 @@
+<form ng-if="!session._id" id="postSubscribeForm" novalidate name="subscribeForm" ng-submit="submit(subscribeForm.$valid, data)">
+
+  <h3><b>Like this post?</b> Get {{tagName}} content like this by email</h3>
+
+  <div ng-if="data.email" form-group>
+    <input id="postSubscribeName" name="name"
+      form-control type="text" placeholder="Enter full name (e.g. John Smith)"
+      ng-model="data.name"
+      ng-model-options="{updateOn:'default blur',debounce:{default:1100, blur:0}}"
+      required
+      ng-minlength="4"
+      ng-minlength="60"
+      ng-pattern="/\w+ \w+/"
+      tabindex="33212"
+      style="width:45%;display:inline"
+      >
+    <span><{{data.email}}> <a id="postSubscribeRemoveEmail" ng-click="data.email = '' ">x</a> </span>
+
+    <div class="error" ng-if="formGroup.showError(subscribeForm.name)" ng-messages="subscribeForm.name.$error">
+      <div ng-message="required">Full name required to send to your email</div>
+      <div ng-message="minlength">Full name required (e.g. John Smith)</div>
+      <div ng-message="pattern">Full name required (e.g. John Smith)</div>
+      <div ng-message="maxlength">Full name max length 60 chars</div>
+    </div>
+  </div>
+
+  <div ng-if="!data.email" form-group>
+    <input id="postSubscribeEmail"
+         form-control
+         name="email"
+         type="email"
+         placeholder="Enter your email address"
+         ng-model="data.email"
+         ng-model-options="{updateOn:'default blur',debounce:{default:1000, blur:0}}"
+         ng-change="updateEmail(subscribeForm.email)"
+         required
+         tabindex="33211"
+         track-focus="subscribe"
+         track-data="email"
+         >
+    <div class="error" ng-if="formGroup.showError(subscribeForm.email)" ng-messages="subscribeForm.email.$error">
+      <div ng-message="required">Email required</div>
+      <div ng-message="email">Invalid email address</div>
+    </div>
+  </div>
+
+  <div ng-if="updateFailed" class="error">** <b ng-bind-html="updateFailed | html"></b></div>
+
+  <button track-click="auth" data="subscribe" ng-class="data.email ? '' : 'blue'" type="submit" class="btn btn-primary" tabindex="33214"><b>Send to</b> &nbsp; "{{data.name || 'Your Name'}} <{{data.email}}>"</button>
+
+  <hr />
+
+</form>

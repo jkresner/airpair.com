@@ -23,7 +23,7 @@ angular.module('APSvcSession', [])
     return this;
   })
 
-  .service('SessionService', function($rootScope, $http, API, Auth, $cacheFactory, Notifications) {
+  .service('SessionService', function($rootScope, $http, $q, API, Auth, $cacheFactory, Notifications) {
 
     var setScope = (successFn, trackingData) => {
       return function(r) {
@@ -37,17 +37,15 @@ angular.module('APSvcSession', [])
       }
     }
 
-    var cache;
     this.getSession = function() {
-      cache = cache || $cacheFactory();
-      return $http.get(`${API}/session/full`, { cache : cache }).then(
-          function(response) { return response.data; }
-        );
+      if (!$rootScope.session) {
+        return $http.get(`${API}/session/full`).then(
+          function(response) { return response.data; },
+          function(err) { window.location = '/v1/auth/logout'; }
+            );
+      }
+      else return $q((r)=>r($rootScope.session))
     }
-
-    this.flushCache = function() {
-      cache = null;
-    };
 
     this.onAuthenticated = function(fn) {
       return this.getSession().then(setScope(fn));
@@ -67,10 +65,21 @@ angular.module('APSvcSession', [])
       $http.post(`${Auth}/signup`, data).success(setScope(success)).error(error);
     }
 
+    this.subscribe = function(data, success, error)
+    {
+      $http.post(`${Auth}/subscribe`, data).success(setScope(success)).error(error);
+    }
+
     this.changeEmail = function(data, success, error)
     {
       var trackingData = { type:'email', email: data.email }
       $http.put(`${API}/users/me/email`, data).success(setScope(success, trackingData)).error(error);
+    }
+
+    this.changeName= function(data, success, error)
+    {
+      var trackingData = { type:'name', name: data.name }
+      $http.put(`${API}/users/me/name`, data).success(setScope(success, trackingData)).error(error);
     }
 
     this.verifyEmail = function(data, success, error)

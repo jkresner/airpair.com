@@ -177,16 +177,19 @@ export function tryLocalSignup(email, password, name, done) {
         emailVerified: false,
         name: name,
         local: {
-          password: generateHash(password),
+          password: generateHash(password), //-- Forsubscrber sign ups
           emailHash: '',
-          changePasswordHash: ''
+          changePasswordHash: generateHash(email)
         }
       }
 
       if (this.session.anonData)
         data = _.extend(this.session.anonData, data)
 
-      upsertSmart.call(this, search, data, done)
+      upsertSmart.call(this, search, data, (e,r) => {
+        if (password == 'fast-ap-signup' && !e) mailman.subscriberWelcomeEmail(r, data.local.changePasswordHash)
+        done(e,r)
+      })
     }
   })
 }
@@ -486,6 +489,18 @@ export function changePassword(hash, password, cb) {
   });
 }
 
+
+export function changeName(name, cb) {
+  var inValid = Validate.changeName(name)
+  if (inValid) return cb(svc.Forbidden(inValid))
+
+  if (this.user)
+    User.findOneAndUpdate({_id:this.user._id}, { '$set': { name } }, cbSession(cb))
+  else {
+    this.session.anonData.name = name
+    return getSession.call(this, cb)
+  }
+}
 
 // Change email can be used both to change an email
 // and to set and send a new email hash for verification

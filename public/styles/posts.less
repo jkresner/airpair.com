@@ -237,8 +237,29 @@
   }
 
   .bodyCTA {
+    padding-top:20px;
     width:640px;
     h6 { text-transform:uppercase;font-weight:bold }
+    .error {
+      padding:5px
+    }
+
+    #postSubscribeForm {
+      position:relative;
+      height:202px;
+      .lightblueForm;
+      .flatLeftForm;
+      .form-group { margin-bottom:0 }
+      h3 { margin:10px 0px 15px 1px;font-size:20px;color:@blackgray; }
+      input::-webkit-input-placeholder { font-size:15px;color:@lightorange }
+      input::-moz-placeholder { font-size:15px;color:@lightorange; }
+      input:-ms-input-placeholder { font-size:15px;color:@lightorange }
+      span { font-size:16px;color:#B4C1BE;padding-top:16px;font-weight:bold;box-shadow:gray }
+      #postSubscribeName { margin-right:10px }
+      button { position:absolute;bottom:10px;width:94%;font-weight:normal;font-size:15px;b { font-size:18px } }
+      button.blue { background:@lightblue;color:@lightblue;padding:0 }
+    }
+
   }
 
   #disqus_thread {

@@ -3,14 +3,20 @@
   var self = {};
 
   self.resolveSession = function(args) {
-    return ['SessionService', '$window', '$location', '$q',
-      function(SessionService, $window, $location, $q) {
+    return ['SessionService', '$rootScope', '$window', '$location', '$q',
+      function(SessionService, $rootScope, $window, $location, $q) {
         return SessionService.getSession().then(
           function(data) {
-            // console.log('data', data)
             if (data._id)
             {
+              console.log('resolving with data', data)
               return data;
+            }
+            else if ($rootScope.session && $rootScope.session._id)
+            {
+              console.log('resolving with', $rootScope.session)
+              // SessionService.flushCache();
+              return $rootScope.session;
             }
             else
             {

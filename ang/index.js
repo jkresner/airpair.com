@@ -10,6 +10,7 @@ require('./../public/v1/lib/angular-bootstrap/ui-bootstrap-tpls.js');
 require('./../public/v1/lib/prism/prism.js');
 require('./../public/v1/lib/jquery-ui-custom/jquery-ui.js');
 window.marked = require('./../public/v1/lib/marked/lib/marked.js');
+require('./common/directives/ctas.js');
 require('./common/directives/share.js');
 require('./common/directives/post.js');
 require('./common/directives/experts.js');
@@ -38,7 +39,7 @@ require('./account/module.js');
 require('./requests/module.js');
 
 
-angular.module("AP", ['Providers', 'ngRoute', 'ngAnimate', 'APDataSvc',
+angular.module("AP", ['Providers', 'ngRoute', 'ngAnimate', 'APDataSvc', 'APCTAs',
   'APAnalytics', 'APSideNav', 'APChatNav', 'APServerTemplates', 'APNotifications',
   'APAuth', 'APPosts', 'APWorkshops', 'APProfile', 'APBilling', 'APRequests'])
 

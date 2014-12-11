@@ -17,6 +17,7 @@
 </header>
 
 <article class="blogpost">
+
   <h1 class="entry-title" itemprop="headline">{{ title }}</h1>
 
   <div class="railMarker"></div>
@@ -63,7 +64,13 @@
   </div>
 
   <div class="bodyCTA1 bodyCTA">
-    <div request></div>
+    <div ng-if="!session._id">
+      <div cta-post-subscribe
+        tag-name="'{{primarytag.name}}'"
+        tag-slug="'{{primarytag.slug}}'"
+      ></div>
+    </div>
+    <div ng-if="session._id" request></div>
   </div>
 
   <div id="disqus_thread"></div>
