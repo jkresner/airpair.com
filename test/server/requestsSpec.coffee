@@ -10,6 +10,9 @@ module.exports = -> describe "API", ->
     done()
 
 
+  beforeEach -> global.cookie = null
+
+
   it '401 for non authenticated request', (done) ->
     opts = status: 401
     d = type: 'mentoring', experience: 'beginner', brief: 'this is a test yo', hours: "1", time: 'rush', budget: 90
