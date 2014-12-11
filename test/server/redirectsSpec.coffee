@@ -9,6 +9,7 @@ module.exports = -> describe "API", ->
     resotreAnalytics()
     done()
 
+  afterEach -> cookie = null
 
   it '403 for non admin on get redirects', (done) ->
     opts = status: 403

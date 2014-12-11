@@ -1,4 +1,4 @@
-var logging = true
+var logging = false
 var util = require('../../../shared/util')
 
 var getContext = (req) => {
@@ -42,8 +42,6 @@ var getContext = (req) => {
 export var trackView = (type) => {
   return (req, res, next) => {
     if (util.isBot(req.header('user-agent'))) return next()
-
-    console.log('trackView', req.url, req.header('user-agent'))
 
     var userId = null
     var anonymousId = null
