@@ -6,6 +6,12 @@ var validateEmail = (email) =>
 
 module.exports = {
 
+  changeName: (name) =>
+  {
+    if (!name) return "Name required"
+    if (name.indexOf(' ')==-1) return "Full name (e.g. 'John Smith') required"
+  },
+
   changeEmail: (email) =>
   {
     return validateEmail(email)

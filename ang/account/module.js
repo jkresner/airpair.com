@@ -100,6 +100,7 @@ angular.module("APProfile", ['ngRoute', 'APFilters', 'APSvcSession', 'APTagInput
 
   })
 
+
   //-- this will be refactored out of the posts module
   .controller('ProfileCtrl', function($scope, PostsService, $routeParams) {
 
@@ -112,8 +113,7 @@ angular.module("APProfile", ['ngRoute', 'APFilters', 'APSvcSession', 'APTagInput
   })
 
 
-  //-- this will be refactored out of the posts module
-  .controller('PasswordCtrl', function($scope, ServerErrors, SessionService) {
+  .controller('PasswordCtrl', function($scope, $location, ServerErrors, SessionService) {
 
       $scope.alerts = []
 

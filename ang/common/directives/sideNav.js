@@ -5,7 +5,7 @@ angular.module("APSideNav", ['ui.bootstrap','APSvcSession', 'APTagInput'])
   .directive('sideNav', function($rootScope, $modal, SessionService) {
     return {
       template: require('./sideNav.html'),
-      link: function(scope, element, attrs) {
+      link(scope, element, attrs) {
 
         // Only track menu behavior for anonymous users
         SessionService.onAuthenticated( (session) =>
@@ -13,7 +13,7 @@ angular.module("APSideNav", ['ui.bootstrap','APSvcSession', 'APTagInput'])
 
       },
       controllerAs: 'sideNav',
-      controller: function($scope, $element, $attrs) {
+      controller($scope, $element, $attrs) {
 
         this.toggle = function() {
           if (storage('sideNavOpen') == 'true') storage('sideNavOpen', 'false');
