@@ -53,5 +53,6 @@ export default function(app, initSessionStore)
       done(null, sessionUser)
     })
 
+    // $log(`session store initialized`.white)
   })
 }
