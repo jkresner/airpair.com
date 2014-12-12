@@ -11,8 +11,10 @@ angular.module("APRequestDirectives", [])
 
     },
     controllerAs: 'RequestFormCtrl',
-    controller($rootScope, $scope) {
+    controller($rootScope, $scope, $element) {
 
+      $scope.sortSuccess = function() { console.log('sort success') }
+      $scope.sortFail = function() {}
       $scope.tags = () => $scope.request.tags ? $scope.request.tags : null;
       $scope.updateTags = (scope, newTags) =>
         $scope.request.tags = newTags;
@@ -23,6 +25,9 @@ angular.module("APRequestDirectives", [])
         if ( _.contains(tags, tag) ) updated = _.without(tags, tag)
         else updated = _.union(tags, [tag])
         if (updated.length > 3) return alert('You are allowed up to 3 tags for a request.')
+        else
+          for (var i=0;i<updated.length;i++) { updated[i].sort = i }
+
         $scope.request.tags = updated
       };
 
@@ -47,11 +52,17 @@ angular.module("APRequestDirectives", [])
       // $scope.doneTags = true;
 
       $scope.done = function() {
-        DataService.requests.create($scope.request, function() {
-          if ($rootScope.emailVerified) $timeout(() => { window.location = '/billing'}, 250)
-          else $timeout(() => { window.location = '/billing'}, 250)
+        if ($scope.request._id) {
+          DataService.requests.update($scope.request, function() {
+            $timeout(() => { window.location = '/help/requests'}, 250)
+          }, ServerErrors.add)
+        } else {
+          DataService.requests.create($scope.request, function() {
+            if ($rootScope.emailVerified) $timeout(() => { window.location = '/billing'}, 250)
+            else $timeout(() => { window.location = '/billing'}, 250)
+          }
+          , ServerErrors.add)
         }
-        , ServerErrors.add)
       }
     }
   };

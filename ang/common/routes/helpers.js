@@ -9,12 +9,10 @@
           function(data) {
             if (data._id)
             {
-              console.log('resolving with data', data)
               return data;
             }
             else if ($rootScope.session && $rootScope.session._id)
             {
-              console.log('resolving with', $rootScope.session)
               // SessionService.flushCache();
               return $rootScope.session;
             }

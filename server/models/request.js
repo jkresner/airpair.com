@@ -53,7 +53,7 @@ var REQUEST_TIME = [
 module.exports = mongoose.model('Request', new mongoose.Schema({
 
   userId:           { required: true, type: ObjectId, ref: 'User', index: true },
-
+  by:               {},
   type:             { required: true, type: String, enum: REQUEST_TYPE },
   tags:             [TagSlim],
   experience:       { required: true, type: String, enum: REQUEST_EXPERIENCE },
@@ -63,7 +63,7 @@ module.exports = mongoose.model('Request', new mongoose.Schema({
   budget:           { required: true, type: Number   },
 
   status:           { required: true, type: String, enum: V0_REQUEST_STATUS },
-  // suggested:        [Suggestion]
+  suggested:        [], //Suggestion
 
   // New v1
 

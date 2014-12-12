@@ -55,6 +55,12 @@ angular.module('APDataSvc', [])
       },
       update(data, success, error) {
         $http.put(`${API}/requests/${data._id}`, data).success(success).error(error)
+      },
+      getMyRequests(success, error) {
+        $http.get(`${API}/requests`).success(success).error(error)
+      },
+      getById(id, success, error) {
+        $http.get(`${API}/requests/${id}`).success(success).error(error)
       }
     }
 

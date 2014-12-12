@@ -1,5 +1,5 @@
 <article>
-  <a href="/help/request/{{ r._id }">
+  <a href="/help/request/{{ r._id }}">
     <header class="entry-header">
 
       <span class="entry-categories">
@@ -20,9 +20,9 @@
       <p>{{r.brief}}</p>
 
     </div>
-
+    {{ r.by.name }}
     <!-- <span class="entry-author-name" itemprop="name">Jonathon</span> -->
-    <img class="entry-author-image" itemprop="image" ng-src="http://0.gravatar.com/avatar/19183084115c4a79d34cdc3110adef37?s=120?s=50" align="left" />
+    <img class="entry-author-image" itemprop="image" ng-src="{{ r.by.avatar }}?s=50" align="left" />
 
   </a>
 <!--   <footer class="entry-footer">

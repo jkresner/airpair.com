@@ -29,5 +29,6 @@ module.exports = -> describe "API", ->
         expect(_.idsEqual(s._id,r.userId)).to.be.true
         expect(r.type).to.equal('mentoring')
         expect(r.tags.length).to.equal(1)
+        expect(r.budget).to.equal(90)
         expect(r.tags[0].short).to.be.undefined
         done()
