@@ -1,13 +1,16 @@
 var mongoose = require('mongoose')
 
-export function connect()
+export function connect(callback)
 {
   mongoose.connect(config.mongoUri)
 
   var db = mongoose.connection
 
   db.on('error', (e) => $log(('mongo connection error:' + e).red) )
-  db.once('open', () => $log(`connected to db ${config.mongoUri}`.white) )
+  db.once('open', () => {
+    $log(`connected to db ${config.mongoUri}`.white)
+    callback()
+  })
 
   return db
 }
