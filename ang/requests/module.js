@@ -8,13 +8,21 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
 
     var authd = resolver(['session']);
 
+    $routeProvider.when('/help/requests', {
+      template: require('./list.html'),
+      controller: 'RequestListCtrl',
+      resolve: authd
+    });
+
+
     $routeProvider.when('/help/request', {
       template: require('./new.html'),
       controller: 'RequestCtrl',
       resolve: authd
     });
 
-    $routeProvider.when('/get-help/:id', {
+
+    $routeProvider.when('/help/request/:id', {
       template: require('./edit.html'),
       controller: 'RequestEditCtrl',
       resolve: authd
@@ -29,6 +37,15 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
   })
 
   .run(function($rootScope, SessionService) {})
+
+
+  .controller('RequestListCtrl', function($scope, $window, DataService) {
+
+    DataService.requests.getMyRequests(function(result) {
+      $scope.requests = result
+    })
+
+  })
 
 
   .controller('RequestCtrl', function($rootScope, $scope, SessionService) {
@@ -49,8 +66,12 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
 
   })
 
-  .controller('RequestEditCtrl', function($scope, $routeParams) {
+  .controller('RequestEditCtrl', function($scope, $routeParams, DataService) {
     $scope.requestId = $routeParams.id;
+
+    DataService.requests.getById($scope.requestId, function(result) {
+      $scope.request = result
+    })
 
   })
 

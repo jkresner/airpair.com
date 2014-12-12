@@ -37,14 +37,17 @@ angular.module('APSvcSession', [])
       }
     }
 
+    var cache;
     this.getSession = function() {
-      if (!$rootScope.session) {
-        return $http.get(`${API}/session/full`).then(
-          function(response) { return response.data; },
-          function(err) { window.location = '/v1/auth/logout'; }
-            );
-      }
-      else return $q((r)=>r($rootScope.session))
+      if ($rootScope.session) return $q((r)=>r($rootScope.session))
+      cache = cache || $cacheFactory();
+      return $http.get(`${API}/session/full`, {cache:cache}).then(
+        function(response) {
+          $rootScope.session = response.data;
+          return response.data;
+        },
+        function(err) { window.location = '/v1/auth/logout'; }
+      );
     }
 
     this.onAuthenticated = function(fn) {

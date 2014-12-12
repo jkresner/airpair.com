@@ -47,6 +47,9 @@ export default function(app) {
     .put('/posts/publish/:id', authd, PostsAPI.publish)
     .delete('/posts/:id', authd, PostsAPI.deleteById)
 
+    .get('/requests', authd, RequestsAPI.getMyRequests)
+    .get('/requests/:id', authd, RequestsAPI.getById)
+    .put('/requests/:id', authd, RequestsAPI.update)
     .post('/requests', authd, RequestsAPI.create)
 
     .get('/workshops/', WorkshopsAPI.getAll)
