@@ -6,7 +6,7 @@
 
 <section id="billing">
 
-  <div class="welcome" ng-if="!paymethods">
+  <div class="welcome" ng-if="!paymethods || paymethods.length == 0">
 
     <h1>Two ways to pay</h1>
 
@@ -46,7 +46,7 @@
 
   </div>
 
-  <div class="info" ng-if="paymethods">
+  <div class="info" ng-if="paymethods && paymethods.length > 0">
 
     <p class="buy">
       <a href="/help/request" class="btn">Get expert help</a>
