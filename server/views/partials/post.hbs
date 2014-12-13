@@ -2,7 +2,9 @@
   <ol class="entry-meta breadcrumb">
     <li><a href="/learn">Learn</a></li>
     <li><a href="/posts">Posts</a></li>
-    <li>{{ primarytag.slug }}</li>
+    <li>
+      <a href="{{ primarytag.postsUrl }}">{{ primarytag.slug }}</a>
+    </li>
     <li>
       <span class="entry-author" itemprop="author" itemscope="itemscope" itemtype="//schema.org/Person">
       {{#if by.username}}
@@ -79,6 +81,12 @@
 
 <section id="posts" class="similar">
   <hr />
+  <h5>This post is categorized under</h5>
+  <ul>{{#each tags}}
+    <li><a href="/posts/tag/{{ slug }}">{{ name }}</a></li>
+  {{/each}}
+  </ul>
+
   <section id="allposts">
     <h3>Similar posts<span><a href="/posts" target="_self">Recent posts</a></span></h3>
     <div class="posts recent">
