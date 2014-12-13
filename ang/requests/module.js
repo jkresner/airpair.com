@@ -8,7 +8,13 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
 
     var authd = resolver(['session']);
 
-    $routeProvider.when('/help/requests', {
+    $routeProvider.when('/', {
+      template: require('./list.html'),
+      controller: 'RequestListCtrl',
+      resolve: authd
+    });
+
+    $routeProvider.when('/dashboard', {
       template: require('./list.html'),
       controller: 'RequestListCtrl',
       resolve: authd
