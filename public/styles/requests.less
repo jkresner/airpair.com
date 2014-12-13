@@ -27,25 +27,20 @@
       top:0;
       bottom:48px;
       em { display:block;font-style:normal;
-        margin:2px 0 4px 0;color:@darkblue;font-size:10px; }
+        margin:2px 0 4px 0;color:@orange;font-size:10px; }
       time {
         text-align:center;
-        position:absolute;
-        bottom:5px;
         color:@gray;
       }
     }
 
-    img.image-time { height:34px;position:absolute;bottom:6px;left:45px }
-    img.image-experience { height:34px;position:absolute;bottom:6px;left:5px }
-    .entry-author-name {
-      position:absolute;bottom:15px;right:40px
-    }
+    img.image-time { height:34px;position:absolute;top:6px;left:85px }
+    img.image-experience { height:34px;position:absolute;bottom:6px;left:45px }
     .entry-author-image {
-      position:absolute;bottom:4px;right:5px;
-      height:36px;
-      border-radius:50%;
-    }
+      position:absolute;bottom:4px;left:5px;
+      height:36px;border-radius:50%; }
+    // .entry-author-name { position:absolute;bottom:15px;right:40px
+    // }
 
     .entry-content {
       .entry-header-image { max-width:100%;height:20px;margin:5px }
@@ -59,15 +54,31 @@
       overflow:hidden;
     }
 
+    ul.suggested {
+      margin:0;
+      padding:0;
+      position:absolute;
+      bottom:4px;
+      left:80px;
+      li { list-style:none;width:24px;float:left;
+        img { height:36px;border-radius:50%;
+          opacity:0.6;
+       }
+      }
+    }
+
     footer {
       position:absolute;
       bottom:0;
       right:0;
-      font-size:9px;
+      font-size:10px;
+      font-weight:bold;
       text-align:right;
       width:40%;
       height:40px;
+      padding:10px 6px;
     }
+
   }
 }
 

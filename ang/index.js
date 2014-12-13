@@ -55,10 +55,6 @@ angular.module("AP", ['Providers', 'ngRoute', 'ngAnimate', 'APDataSvc', 'APCTAs'
       template: require('./sales/about.html')
     });
 
-    $routeProvider.when('/', {
-      template: require('./sales/about.html')
-    });
-
     $routeProvider.when('/learn', {
       template: require('./learn.html')
     });
