@@ -25,7 +25,7 @@
 
   <label for="tagInput">Search technologies</label>
   <input type="text" class="tagInput form-control"
-    placeholder="type a technology (e.g. javascript)"
+    placeholder="Type a technology (e.g. javascript)"
     ng-model="q"
     typeahead="t as t for t in getTags($viewValue) | filter:$viewValue"
     typeahead-editable="false"
