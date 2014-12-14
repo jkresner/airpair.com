@@ -40,7 +40,19 @@ angular.module("APRequestDirectives", [])
       var setDone = (step) => $scope.done[step] = true
       var setCurrent = (step) => $scope.done.current = step
       var setDoneAndCurrent = (done, current) => {
-        setDone(done); setCurrent(current); }
+        if (!$scope.done[done]) {
+          var props = {
+            type: 'request',
+            step: done,
+            location: window.location.pathname // $location.path() no good...
+          };
+          analytics.track('Save', props);
+          setDone(done);
+        }
+        if (done == $scope.done.current) {
+          setCurrent(current);
+        }
+      }
 
       $scope.setCurrent = setCurrent;
 
@@ -66,10 +78,18 @@ angular.module("APRequestDirectives", [])
       // $timeout(() => {
       //   $scope.setType('mentoring')
       //   $scope.doneTags()
+      //   $scope.request.experience = "beginner"
       //   $scope.setExperience()
+      //   $scope.request.brief = "beginner"
       //   $scope.doneBrief()
+      //   $scope.request.hours = "1"
       //   $scope.setHours()
+      //   $scope.request.time = "rush"
+      //   $scope.setTime()
+      //   $scope.request.budget = "90"
+      //   $scope.setBuget()
       // }, 300)
+
       $scope.$watch('request._id', function(val) {
         var done = (val) ? true : false
         $scope.done = {
@@ -87,10 +107,12 @@ angular.module("APRequestDirectives", [])
       $scope.save = function() {
         if ($scope.request._id) {
           DataService.requests.update($scope.request, function() {
-            $timeout(() => { window.location = '/help/requests'}, 250)
+            analytics.track('Save', { type:'request', step: 'update' });
+            $timeout(() => { window.location = '/dashboard'}, 250)
           }, ServerErrors.add)
         } else {
           DataService.requests.create($scope.request, function() {
+            analytics.track('Save', { type:'request', step: 'submit' });
             if ($rootScope.emailVerified) $timeout(() => { window.location = '/billing'}, 250)
             else $timeout(() => { window.location = '/billing'}, 250)
           }
