@@ -144,12 +144,14 @@ var fixRailElements = function(e)
   }
   else
   {
-    if (window.scrollY < (offset + 100)) {
-      $('.rail1CTA').css('top', offset+10 - window.scrollY);
-      $('.rail1CTA').toggle(true)
-    }
-    else
-      $('.rail1CTA').toggle(false)
+    $('.railBookmarkCTA').hide()
+    $('.share').hide()
+    // if (window.scrollY < (offset + 100)) {
+      // $('.rail1CTA').css('top', offset+10 - window.scrollY);
+      // $('.rail1CTA').toggle(true)
+    // }
+    // else
+      // $('.rail1CTA').toggle(false)
   }
 }
 

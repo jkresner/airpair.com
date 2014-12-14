@@ -79,5 +79,23 @@ section#account {
 
 
 section#password {
-  padding:40px;
+  padding:40px 0;
+  h2 { font-size:32px }
+  .reset {
+    min-width:310px;
+    input { max-width:300px;margin:auto }
+  }
+
+  .option { margin-bottom:5px }
+
+  .alert-success { margin:0 auto 30px auto;max-width:600px }
+
+  @media only screen and (max-width:900px) {
+    h2 { font-size:22px; }
+    .reset {
+      input { max-width:240px; }
+    }
+
+    .btn { font-size:16px;width:90% }
+  }
 }

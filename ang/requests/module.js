@@ -11,7 +11,11 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
     $routeProvider.when('/', {
       template: require('./list.html'),
       controller: 'RequestListCtrl',
-      resolve: authd
+    });
+
+    $routeProvider.when('/dashboard', {
+      template: require('./list.html'),
+      controller: 'RequestListCtrl',
     });
 
     $routeProvider.when('/dashboard', {
@@ -45,7 +49,11 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
   .run(function($rootScope, SessionService) {})
 
 
-  .controller('RequestListCtrl', function($scope, $window, DataService) {
+  .controller('RequestListCtrl', function($scope, $location, DataService, SessionService) {
+
+    SessionService.onAuthenticated(function() {
+      if (!$scope.session._id) $location.path(`/about`)
+    })
 
     DataService.requests.getMyRequests(function(result) {
       $scope.requests = result

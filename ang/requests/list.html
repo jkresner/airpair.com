@@ -6,10 +6,21 @@
 
 <section id="dashboard">
 
+  <section id="stack" ng-if="!session || !session.tags || session.tags.length == 0">
+    <h2>Stack</h2>
+    <div>
+      <p>You haven't customized AirPair to your stack. <a ng-click="openStack()"><b>Add technolgoies</b></a> to personalize the content you see on airpair.com</p>
+    </div>
+  </section>
+
   <section id="requests">
-    <h2>Your requests</h2>
+    <h3>Requests</h3>
     <div class="requests">
       <request-list-item  ng-repeat="r in requests" req="r"></request-list-item>
+    </div>
+
+    <div ng-if="!requests || requests.length == 0">
+      <p>You don't have any requests yet. <a href="/help/request"><b>Get started</b></a>.</p>
     </div>
   </section>
 
