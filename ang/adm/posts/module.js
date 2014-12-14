@@ -1,5 +1,5 @@
 
-angular.module("ADMPosts", [])
+angular.module("ADMPosts", ["APSvcPosts"])
 
   .config(function($locationProvider, $routeProvider) {
 
