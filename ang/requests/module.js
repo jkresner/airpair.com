@@ -64,9 +64,9 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
           // time: 'rush',
           // hours: '1',
           // brief: "Mentoring me in JavaScript",
-          // type: "Mentoring",
+          // type: "mentoring",
           // experience: 'beginner',
-          tags: $rootScope.session.tags
+          tags: _.first($rootScope.session.tags,3)
         };
     })
 

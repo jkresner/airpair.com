@@ -11,7 +11,8 @@ export function getById(id, cb) {
 }
 
 export function getByUserId(userId, cb) {
-  svc.searchMany({userId}, {}, cb)
+  var opts = { options: { sort: { '_id': -1 } } }
+  svc.searchMany({userId}, opts, cb)
 }
 
 export function getMyRequests(cb) {

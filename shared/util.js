@@ -111,16 +111,16 @@ module.exports = {
 
     var t = tags
     if (!t || t.length == 0) return
-    if (t.length == 1) return `${oBrace}${t[0].name}${cBrace}`
+    if (t.length == 1) return `${oBrace}${t[0].slug}${cBrace}`
 
     if (limit && t.length > limit) t = t.slice(0, limit)
 
-    var ts = `${oBrace}${t[0].name}${cBrace}`
+    var ts = `${oBrace}${t[0].slug}${cBrace}`
     for (var i=1;i<t.length;i++) {
       if (i == t.length - 1)
-        ts += ` and ${oBrace}${t[i].name}${cBrace}` // and instead of & to fix urls
+        ts += ` and ${oBrace}${t[i].slug}${cBrace}` // and instead of & to fix urls
       else
-        ts += `, ${oBrace}${t[i].name}${cBrace}`
+        ts += `, ${oBrace}${t[i].slug}${cBrace}`
     }
     return ts
   }

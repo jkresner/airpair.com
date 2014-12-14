@@ -13,7 +13,7 @@ angular.module("APRequestDirectives", [])
     controllerAs: 'RequestFormCtrl',
     controller($rootScope, $scope, $element) {
 
-      $scope.sortSuccess = function() { console.log('sort success') }
+      $scope.sortSuccess = function() {}
       $scope.sortFail = function() {}
       $scope.tags = () => $scope.request.tags ? $scope.request.tags : null;
       $scope.updateTags = (scope, newTags) =>
@@ -34,24 +34,57 @@ angular.module("APRequestDirectives", [])
       $scope.deselectTag = (tag) =>
         $scope.request.tags = _.without($scope.request.tags, tag);
 
-      $scope.setDoneTags = function() {
-        $scope.doneTags = true;
+      $scope.tagsString = () =>
+        util.tagsString($scope.request.tags)
+
+      var setDone = (step) => $scope.done[step] = true
+      var setCurrent = (step) => $scope.done.current = step
+      var setDoneAndCurrent = (done, current) => {
+        setDone(done); setCurrent(current); }
+
+      $scope.setCurrent = setCurrent;
+
+      $scope.stepClass = (step) => {
+        if ($scope.done.current == step) return `${step} current`
+        else if ($scope.done[step]) return `${step} done`
+        return step
       }
 
       $scope.setType = function(val) {
-        if ($scope.request)
-          $scope.request.type = val
-        else
-          $scope.request = { type: val }
+        if ($scope.request) $scope.request.type = val
+        else $scope.request = { type: val }
+        setDoneAndCurrent('type', 'tags')
       }
 
-      $scope.tagsString = function() {
-        return util.tagsString($scope.request.tags)
-      }
+      $scope.setTime = () => setDoneAndCurrent('time', 'budget')
+      $scope.setHours = () => setDoneAndCurrent('hours', 'time')
+      $scope.setBuget = () => setDoneAndCurrent('budget', 'submit')
+      $scope.setExperience = () => setDoneAndCurrent('experience', 'brief')
+      $scope.doneTags = () => setDoneAndCurrent('tags', 'experience')
+      $scope.doneBrief = () => setDoneAndCurrent('brief', 'hours')
 
-      // $scope.doneTags = true;
+      // $timeout(() => {
+      //   $scope.setType('mentoring')
+      //   $scope.doneTags()
+      //   $scope.setExperience()
+      //   $scope.doneBrief()
+      //   $scope.setHours()
+      // }, 300)
+      $scope.$watch('request._id', function(val) {
+        var done = (val) ? true : false
+        $scope.done = {
+          type: done,
+          tags: done,
+          brief: done,
+          experience: done,
+          hours: done,
+          time: done,
+          budget: done,
+          current: (val) ? 'submit' : 'type'
+        }
+      })
 
-      $scope.done = function() {
+      $scope.save = function() {
         if ($scope.request._id) {
           DataService.requests.update($scope.request, function() {
             $timeout(() => { window.location = '/help/requests'}, 250)
