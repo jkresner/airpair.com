@@ -74,7 +74,7 @@ angular.module("AP", ['Providers', 'ngRoute', 'ngAnimate', 'APDataSvc', 'APCTAs'
     }
   })
 
-  .run(function($rootScope, $location, SessionService, Notifications) {
+  .run(function($rootScope, $location, Notifications) {
 
     $rootScope.$on('$routeChangeSuccess', function() {
       if ($location.path().indexOf(window.initialLocation) == -1) {
@@ -108,14 +108,18 @@ angular.module("AP", ['Providers', 'ngRoute', 'ngAnimate', 'APDataSvc', 'APCTAs'
     return this;
   })
 
-  .controller('ServerTemplateCtrl', function($scope) {
+  .controller('ServerTemplateCtrl', function($scope, SessionService) {
     pageHlpr.loadPoSt();
     pageHlpr.highlightSyntax({ addCtrs: true });
     pageHlpr.fixPostRail();
     if (viewData && angular.element('#disqus_thread').length>0)
       pageHlpr.loadDisqus(viewData.canonical);
 
-    $scope.request = { tags: _.first($scope.session.tags,3) }; // for cta widget
+    SessionService.onAuthenticated(function() {
+      if (!$scope.request || !$scope.request.tags)
+        $scope.request = { tags: _.first($scope.session.tags,3) };
+    })
+
   })
 
 ;

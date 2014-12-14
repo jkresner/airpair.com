@@ -58,7 +58,7 @@ angular.module("APBilling", ['ngRoute','APFormsDirectives','APPaymentDirectives'
     var err = (r) => console.log('err', r)
     $scope.orders = []
 
-    var getPayMethods = () =>
+    var getPayMethods = function() {
       DataService.billing.getPaymethods((r) => {
         if (r.btoken) {
           $scope.paymethods = null
@@ -66,6 +66,7 @@ angular.module("APBilling", ['ngRoute','APFormsDirectives','APPaymentDirectives'
         }
         else $scope.paymethods = r
       }, err)
+    }
     getPayMethods()
 
     DataService.billing.getMyOrders((r) => $scope.orders = r, err)
