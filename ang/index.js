@@ -114,6 +114,8 @@ angular.module("AP", ['Providers', 'ngRoute', 'ngAnimate', 'APDataSvc', 'APCTAs'
     pageHlpr.fixPostRail();
     if (viewData && angular.element('#disqus_thread').length>0)
       pageHlpr.loadDisqus(viewData.canonical);
+
+    $scope.request = {}; // for cta widget
   })
 
 ;

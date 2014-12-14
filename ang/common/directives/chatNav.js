@@ -20,10 +20,10 @@ angular.module("APChatNav", [])
         $element.toggleClass('collapse', storage('chatNavOpen') != 'true')
         $scope.toggleAction = (storage('chatNavOpen') != 'true') ? 'Show' : 'Hide';
 
-        if (!storage('chatOpenedOnce'))
-        {
-          $timeout(this.toggle, 20000)
-        }
+        // if (!storage('chatOpenedOnce'))
+        // {
+        //   $timeout(this.toggle, 20000)
+        // }
       }
     };
 

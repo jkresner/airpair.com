@@ -481,11 +481,11 @@ export function changePassword(hash, password, cb) {
       'local.changePasswordHash': '',
       'emailVerified': true
     }
-
-    svc.update(user._id, update, (e,r) => {
+    var trackData = { type: 'password', hash }
+    svc.update(user._id, update, cbTrackSave(this, trackData, (e,r) => {
       if (e || !r) return cb(e,r)
       return getSession.call(this,cb)
-    });
+    }));
   });
 }
 
