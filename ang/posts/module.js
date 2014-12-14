@@ -4,7 +4,7 @@ require('./editor.js');
 var resolver = require('./../common/routes/helpers.js').resolveHelper;
 
 
-angular.module("APPosts", ['ngRoute', 'APFilters','APShare',
+angular.module("APPosts", ['APFilters','APShare',
   'APMyPostsList','APPostEditor','APPost', 'APBookmarker','APSvcSession',
   'APSvcPosts', 'APTagInput', 'APTypeAheadInputs'])
 
@@ -52,7 +52,6 @@ angular.module("APPosts", ['ngRoute', 'APFilters','APShare',
 
 
   .controller('IndexCtrl', function($scope, PostsService, SessionService) {
-    var self = this;
 
     PostsService.getRecentPosts(function (result) {
       $scope.recent = result;
@@ -78,8 +77,6 @@ angular.module("APPosts", ['ngRoute', 'APFilters','APShare',
 
   .controller('NewCtrl', function($scope, PostsService, $location, session) {
 
-    var self = this;
-
     $scope.preview = { mode: 'edit' };
     $scope.post = { md: "Save post to start authoring markdown ... ", by: $scope.session };
 
@@ -103,7 +100,6 @@ angular.module("APPosts", ['ngRoute', 'APFilters','APShare',
 
   .controller('EditCtrl', function($scope, PostsService, $routeParams, $location, session) {
 
-    var self = this;
     $scope.preview = { mode: 'edit' };
 
     PostsService.getById($routeParams.id, (r) => {

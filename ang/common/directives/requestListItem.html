@@ -1,0 +1,40 @@
+<article>
+  <a ng-href="/review/{{ r._id }}" target="_self">
+    <header class="entry-header">
+
+      <time ng-if="r._id" class="entry-time" itemprop="datePublished" datetime="{{ request.published }}">{{ r._id | objectIdToDate }}
+        <label>{{r.status}}</label>
+      </time>
+
+      <span class="entry-categories">
+        <em ng-repeat="t in r.tags | orderBy:'sort' | limitTo : 3">{{t.slug || t.short }}</em>
+      </span>
+
+
+    </header>
+    <img ng-if="r.experience" class="image-experience" ng-src="/v1/img/css/request/experience-{{r.experience}}.png" />
+    <img ng-if="r.time" class="image-time" ng-src="/v1/img/css/request/time-{{r.time}}.png" align="left" />
+
+
+    <div class="entry-content" itemprop="text">
+      <h2 class="entry-title" itemprop="headline">{{r.type || "Request" }}</h2>
+
+      <p>{{r.brief}}</p>
+
+    </div>
+
+    <img class="entry-author-image" itemprop="image" ng-src="{{ (r.by) ? r.by.avatar : r.company.contacts[0].pic }}?s=50" align="left" />
+
+    <ul class="suggested">
+      <li ng-repeat="s in r.suggested | limitTo : 3"><img ng-src="{{s.expert.pic}}" /></li>
+    </ul>
+
+
+  </a>
+  <footer class="entry-footer">
+
+    <a ng-if="r.type" href="/help/request/{{r._id}}" class="edit">Edit</a>
+    <a ng-if="!r.type" target="_self" href="/find-an-expert/edit/{{r._id}}" class="edit">Edit</a>
+
+  </footer>
+</article>

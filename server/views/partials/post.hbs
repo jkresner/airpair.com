@@ -2,7 +2,9 @@
   <ol class="entry-meta breadcrumb">
     <li><a href="/learn">Learn</a></li>
     <li><a href="/posts">Posts</a></li>
-    <li>{{ primarytag.slug }}</li>
+    <li>
+      <a href="{{ primarytag.postsUrl }}">{{ primarytag.slug }}</a>
+    </li>
     <li>
       <span class="entry-author" itemprop="author" itemscope="itemscope" itemtype="//schema.org/Person">
       {{#if by.username}}
@@ -17,6 +19,7 @@
 </header>
 
 <article class="blogpost">
+
   <h1 class="entry-title" itemprop="headline">{{ title }}</h1>
 
   <div class="railMarker"></div>
@@ -63,10 +66,13 @@
   </div>
 
   <div class="bodyCTA1 bodyCTA">
-    <h6>Want to keep track of more {{ primarytag }} posts on AirPair?</h6>
-    <div>
-      <a href="https://twitter.com/airpair" class="twitter-follow-button" data-show-count="true">Follow @airpair</a>
+    <div ng-if="!session._id">
+      <div cta-post-subscribe
+        tag-name="'{{primarytag.name}}'"
+        tag-slug="'{{primarytag.slug}}'"
+      ></div>
     </div>
+    <div ng-if="session._id" request></div>
   </div>
 
   <div id="disqus_thread"></div>
@@ -75,6 +81,12 @@
 
 <section id="posts" class="similar">
   <hr />
+  <h5>This post is categorized under</h5>
+  <ul>{{#each tags}}
+    <li><a href="/posts/tag/{{ slug }}">{{ name }}</a></li>
+  {{/each}}
+  </ul>
+
   <section id="allposts">
     <h3>Similar posts<span><a href="/posts" target="_self">Recent posts</a></span></h3>
     <div class="posts recent">

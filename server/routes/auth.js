@@ -13,6 +13,7 @@ export default function(app) {
     .get('/logout', logout(config.auth))
     .post('/login', local.login)
     .post('/signup', local.signup)
+    .post('/subscribe', (req,r,n) => { req.body.password = 'fast-ap-signup'; n() }, local.signup)
     .get('/google', google.oAuth)
     .get('/google/callback', google.oAuth, authDone)
 

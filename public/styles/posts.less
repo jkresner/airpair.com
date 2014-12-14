@@ -5,7 +5,6 @@
 @mainElmPad:0px;
 
 //-- A list (tile grid) of posts
-
 .posts {
   margin-left:-5px;
   text-align:center;
@@ -32,7 +31,6 @@
       position:absolute;
       top:0;
       bottom:0;
-      background-color:@lightblue;
       .entry-header-image { max-width:100%; }
       p.entry-meta {
         width:100%;
@@ -101,8 +99,9 @@
       width:40%;
       height:40px;
     }
-	}
+  }
 }
+
 
 //-- A single full post view
 
@@ -238,14 +237,29 @@
   }
 
   .bodyCTA {
+    padding-top:20px;
     width:640px;
     h6 { text-transform:uppercase;font-weight:bold }
-    div > {
-      background:@lightblue;
-      height:110px;
-      border-radius:5px;
-      padding:10px;
+    .error {
+      padding:5px
     }
+
+    #postSubscribeForm {
+      position:relative;
+      height:202px;
+      .lightblueForm;
+      .flatLeftForm;
+      .form-group { margin-bottom:0 }
+      h3 { margin:10px 0px 15px 1px;font-size:20px;color:@blackgray; }
+      input::-webkit-input-placeholder { font-size:15px;color:@lightorange }
+      input::-moz-placeholder { font-size:15px;color:@lightorange; }
+      input:-ms-input-placeholder { font-size:15px;color:@lightorange }
+      span { font-size:16px;color:#B4C1BE;padding-top:16px;font-weight:bold;box-shadow:gray }
+      #postSubscribeName { margin-right:10px }
+      button { position:absolute;bottom:10px;width:94%;font-weight:normal;font-size:15px;b { font-size:18px } }
+      button.blue { background:@lightblue;color:@lightblue;padding:0 }
+    }
+
   }
 
   #disqus_thread {

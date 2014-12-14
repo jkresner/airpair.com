@@ -1,0 +1,216 @@
+<form ng-if="request" class="requestForm" novalidate name="requestForm" ng-submit="RequestFormCtrl.submit(requestForm.$valid, request)">
+
+<div id="requestProgress">
+  <div ng-class="stepClass('type')">
+    <label>Help</label>
+    <a ng-click="setCurrent('type')">Help</a>
+  </div>
+  <div ng-class="stepClass('tags')">
+    <label>Tags</label>
+    <a ng-click="setCurrent('tags')">Tags</a>
+  </div>
+  <div ng-class="stepClass('experience')">
+    <label>Experience</label>
+    <a ng-click="setCurrent('experience')">Experience</a>
+  </div>
+  <div ng-class="stepClass('brief')">
+    <label>Brief</label>
+    <a ng-click="setCurrent('brief')">Brief</a>
+  </div>
+
+  <div ng-class="stepClass('hours')">
+    <label>Hours</label>
+    <a ng-click="setCurrent('hours')">Hours</a>
+  </div>
+  <div ng-class="stepClass('time')">
+    <label>Time</label>
+    <a ng-click="setCurrent('time')">Time</a>
+  </div>
+  <div ng-class="stepClass('budget')">
+    <label>Budget</label>
+    <a ng-click="setCurrent('budget')">Budget</a>
+  </div>
+</div>
+
+
+<section ng-class="stepClass('submit')">
+
+  <div ng-if="request._id">
+    <label class="control-label">Update your request</label>
+  </div>
+
+  <div ng-if="!request._id">
+    <label class="control-label">Good to go?</label>
+    <p>If you're happy with you're request, we'll broadcast it to selected experts.</p>
+  </div>
+
+  <a ng-click="save()" class="btn">Submit</a>
+
+</section>
+
+
+<section ng-class="stepClass('budget')">
+
+  <div form-group>
+    <label class="control-label" for="requestTime">What is your hourly budget?</label>
+
+    <input id="requestBudget60" name="budget" ng-model="request.budget" type="radio" value="60" ng-click="setBuget()">
+    <label for="requestBudget60">$80<span>/hr</span></label>
+
+    <input id="requestBudget90" name="budget" ng-model="request.budget" type="radio" value="90" ng-click="setBuget()">
+    <label for="requestBudget90">$110<span>/hr</span></label>
+
+    <input id="requestBudget130" name="budget" ng-model="request.budget" type="radio" value="130" ng-click="setBuget()">
+    <label for="requestBudget130">$150<span>/hr</span></label>
+
+    <input id="requestBudget190" name="budget" ng-model="request.budget" type="radio" value="190" ng-click="setBuget()">
+    <label for="requestBudget190">$190<span>/hr</span></label>
+
+    <input id="requestBudget280" name="budget" ng-model="request.budget" type="radio" value="280" ng-click="setBuget()">
+    <label for="requestBudget280">$300<span>/hr</span></label>
+
+  </div>
+  <hr />
+
+</section>
+
+<section ng-class="stepClass('time')">
+
+  <div form-group>
+    <label class="control-label" for="requestTime">How soon would you like to speak to an expert?</label>
+
+    <input id="requestTimeRegular" name="time" ng-model="request.time" type="radio" value="regular" ng-click="setTime()">
+    <label for="requestTimeRegular"><img src="/v1/img/css/request/time-regular.png">In 1-2 Days</label>
+
+    <input id="requestTimeRush" name="time" ng-model="request.time" type="radio" value="rush" ng-click="setTime()">
+    <label for="requestTimeRush"><img src="/v1/img/css/request/time-rush.png">In 1-2 Hours <i>+10/hr rush fee paid to expert</i></label>
+
+  </div>
+
+</section>
+
+
+<section ng-class="stepClass('hours')">
+
+  <div form-group>
+    <label class="control-label" for="requestHours">How many hours do you think you'll need?</label>
+
+    <input id="requestHours1" name="hours" ng-model="request.hours" type="radio" value="1" ng-click="setHours()">
+    <label for="requestHours1">1</label>
+
+    <input id="requestHours2" name="hours" ng-model="request.hours" type="radio" value="2" ng-click="setHours()">
+    <label for="requestHours2">2</label>
+
+    <input id="requestHours5" name="hours" ng-model="request.hours" type="radio" value="5" ng-click="setHours()">
+    <label for="requestHours5">5</label>
+
+    <input id="requestHours10" name="hours" ng-model="request.hours" type="radio" value="10" ng-click="setHours()">
+    <label for="requestHours10">10</label>
+
+    <input id="requestHoursMore" name="hours" ng-model="request.hours" type="radio" value="10+" ng-click="setHours()">
+    <label for="requestHoursMore">More</label>
+
+  </div>
+  <hr />
+
+</section>
+
+
+<section ng-class="stepClass('brief')">
+
+  <a ng-if="done.current == 'brief' && (request.brief && request.brief.length > 20)" ng-click="doneBrief()" class="btn">Continue</a>
+
+  <div form-group>
+    <label class="control-label" for="requestBrief">Specifically what do you need help with?</label>
+    <textarea id="requestBrief" form-control
+      placeholder="describe your requirements in as much detail as possible"
+      ng-model="request.brief"
+      required>
+    </textarea>
+  </div>
+  <hr />
+
+</section>
+
+
+<section ng-class="stepClass('experience')">
+
+  <div form-group ng-if="request.tags && request.tags.length > 0">
+
+    <label class="control-label" for="requestExperience" ng-if="request.tags.length == 1">What's your experience using {{request.tags[0].name}}?</label>
+    <label class="control-label" for="requestExperience" ng-if="request.tags.length > 1">What's your experience using {{tagsString()}} together?</label>
+
+    <i>Well make sure to match you with an equal or more experienced expert.</i>
+
+     <div class="experienceOptions">
+      <span>
+        <input id="requestExperienceBeginner" name="experience" ng-model="request.experience" type="radio" value="beginner"
+        ng-change="setExperience()"
+        >
+        <label for="requestExperienceBeginner"><img src="v1/img/css/request/experience-beginner.png" style="padding-left:2px;padding-right:0px" /> Beginner</label>
+      </span>
+
+      <span>
+        <input id="requestExperienceProficient" name="experience" ng-model="request.experience" type="radio" value="proficient"
+        ng-change="setExperience()"
+        >
+        <label for="requestExperienceProficient"><img src="v1/img/css/request/experience-proficient.png" style="padding-right:1px" />Proficient</label>
+      </span>
+
+      <span>
+        <input id="requestExperienceAdvanced" name="experience" ng-model="request.experience" type="radio" value="advanced"
+        ng-change="setExperience()"
+        >
+        <label for="requestExperienceAdvanced"><img src="v1/img/css/request/experience-advanced.png" style="padding-left:3px;padding-right:1px" /> Advanced</label>
+      </span>
+    </div>
+
+  </div>
+  <hr />
+
+</section>
+
+<section ng-class="stepClass('tags')">
+
+  <a ng-if="done && done.current == 'tags' && request.tags && request.tags.length > 0" ng-click="doneTags()" class="btn">Continue</a>
+
+  <div form-group>
+    <label class="control-label" for="requestTags">What technologies are you using?</label>
+    <div class="form-group">
+      <div tag-input></div>
+    </div>
+    <i>* Choose up to 3 tags</i>
+  </div>
+  <hr />
+
+</section>
+
+<section ng-class="stepClass('type')">
+
+  <div form-group>
+    <label class="control-label" for="requestType">What type of coding help could you use?</label>
+    <div class="requestTypes">
+      <a ng-click="setType('troubleshooting')">Troubleshooting</a>
+      <a ng-click="setType('mentoring')">Mentoring</a>
+      <a ng-click="setType('code-review')">Code review</a>
+      <a ng-click="setType('resources')">Extra resources</a>
+      <a ng-click="setType('advice')">Technology advice</a>
+      <a ng-click="setType('other')">Other</a>
+    </div>
+    <select id="requestType" form-control ng-model="request.type">
+      <option value="troubleshooting">Troubleshooting</option>
+      <option value="mentoring">Mentoring</option>
+      <option value="code-review">Code review</option>
+      <option value="resources">Extra resources</option>
+      <option value="advice">Technology advice</option>
+      <option value="other">Other</option>
+    </select>
+
+    <!-- <a href="/help/types" class="typesHelp">Need help choosing ?</a> -->
+  </div>
+  <hr />
+
+</section>
+
+
+

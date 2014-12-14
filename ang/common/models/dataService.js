@@ -4,11 +4,11 @@ var lazyErrorCb = function(resp) {
 }
 
 
-angular.module('APSvcBilling', [])
+angular.module('APDataSvc', [])
 
   .constant('API', '/v1/api')
 
-  .service('BillingService', function($http, API) {
+  .service('DataService', function($http, API) {
 
     var billingFns = {
       getPaymethods(success, error) {
@@ -36,6 +36,7 @@ angular.module('APSvcBilling', [])
 
     this.billing = billingFns;
 
+
     var expertFns = {
       getForExpertsPage(success, error) {
         $http.get(`${API}/experts`).success(success).error(error)
@@ -46,5 +47,23 @@ angular.module('APSvcBilling', [])
     }
 
     this.experts = expertFns;
+
+
+    var requestFns = {
+      create(data, success, error) {
+        $http.post(`${API}/requests`, data).success(success).error(error)
+      },
+      update(data, success, error) {
+        $http.put(`${API}/requests/${data._id}`, data).success(success).error(error)
+      },
+      getMyRequests(success, error) {
+        $http.get(`${API}/requests`).success(success).error(error)
+      },
+      getById(id, success, error) {
+        $http.get(`${API}/requests/${id}`).success(success).error(error)
+      }
+    }
+
+    this.requests = requestFns;
 
   })

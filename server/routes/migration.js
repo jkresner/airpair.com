@@ -31,7 +31,14 @@ function routeCanonicalPost(router, app, canonical, slug) {
 
 var postCanonicals = [
   {o:'/twotap', c:'two-tap-support-and-api-integration-help'},
-
+  {o:'/mailjet', c:'mailjet-support-and-api-integration-help'},
+  {o:'/evernote', c:'evernote-support-api-integration-help'},
+  {o:'/pubnub', c:'pubnub-support-and-api-integration-help'},
+  {o:'/sinch', c:'sinch-support-and-api-integration-help'},
+  {o:'/algolia', c:'algolia-support-api-integration-help'},
+  {o:'/twilio', c:'support-and-api-integration-help-with-twilio'},
+  {o:'/keen-io', c:'keen-io-api-integration-data-science-help'},
+  {o:'/stripe', c:'stripe-support-api-integration-help'},
   {o:'/actionscript-expert-jason-sturges', c:'actionscript-expert-jason-sturges-1'},
   {o:'/agile-software/coach-and-trainer-ron-lichty/', c:'coach-and-trainer-ron-lichty-1'},
   {o:'/algolia/algolia-search-expert-sylvain-utard', c:'algolia-search-expert-sylvain-utard-1'},

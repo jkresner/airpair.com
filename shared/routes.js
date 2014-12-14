@@ -2,6 +2,7 @@ module.exports = [
   '/',
   '/angularjs',
   '/v1',
+  '/dashboard',
   '/about',
   '/posts*',
   '/experts',
@@ -12,5 +13,6 @@ module.exports = [
   '*pair-programming*',
   '/v1/auth*',
   '/login',
-  '/me*'
+  '/me*',
+  '/help*'
 ]
