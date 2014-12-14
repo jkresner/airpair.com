@@ -68,23 +68,19 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
 
     SessionService.onAuthenticated(function() {
       if (!$scope.request || !$scope.request.tags)
-        $scope.request = {
-          // time: 'rush',
-          // hours: '1',
-          // brief: "Mentoring me in JavaScript",
-          // type: "mentoring",
-          // experience: 'beginner',
-          tags: _.first($rootScope.session.tags,3)
-        };
+        $scope.request = { tags: _.first($rootScope.session.tags,3) };
     })
 
   })
 
-  .controller('RequestEditCtrl', function($scope, $routeParams, DataService) {
+  .controller('RequestEditCtrl', function($scope, $routeParams, $location, DataService) {
     $scope.requestId = $routeParams.id;
 
     DataService.requests.getById($scope.requestId, function(result) {
-      $scope.request = result
+      if (result.userId != $scope.session._id) $location.path('/dashboard')
+      else $scope.request = result
+    }, function(er) {
+      $location.path('/help/request')
     })
 
   })
