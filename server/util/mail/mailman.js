@@ -63,11 +63,25 @@ module.exports = function(mailProvider)
         hash
       }), cb)
     },
+    subscriberWelcomeEmail(toUser, hash, cb) {
+      mailProvider.send(`${toUser.name} <${toUser.email}>`, renderEmail('subscriberwelcome', {
+        firstName: util.firstName(toUser.name),
+        hash
+      }), cb)
+    },
     sendPipelinerNotifyPurchaseEmail(byName, total, cb) {
       mailProvider.send(receivers.pipeliners, renderEmail('pipelinernotifypurchase', {
         fullName: byName,
         total,
       }), cb)
+    },
+    sendPipelinerNotifyBookingEmail(byName, expertName, bookingId, cb) {
+      mailProvider.send(receivers.pipeliners, renderEmail('pipelinernotifybooking',
+        { byName, expertName, bookingId }), cb)
+    },
+    sendPipelinerNotifyRequestEmail(byName, requestId, cb) {
+      mailProvider.send(receivers.pipeliners, renderEmail('pipelinernotifyrequest',
+        { byName, requestId }), cb)
     }
   }
 

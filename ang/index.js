@@ -10,6 +10,7 @@ require('./../public/v1/lib/angular-bootstrap/ui-bootstrap-tpls.js');
 require('./../public/v1/lib/prism/prism.js');
 require('./../public/v1/lib/jquery-ui-custom/jquery-ui.js');
 window.marked = require('./../public/v1/lib/marked/lib/marked.js');
+require('./common/directives/ctas.js');
 require('./common/directives/share.js');
 require('./common/directives/post.js');
 require('./common/directives/experts.js');
@@ -21,24 +22,26 @@ require('./common/directives/bookmarker.js');
 require('./common/directives/analytics.js');
 require('./common/directives/forms.js');
 require('./common/directives/payment.js');
+require('./common/directives/requests.js');
 require('./common/directives/notifications.js');
 require('./common/directives/serverTemplates.js');
 require('./common/directives/providers.js');
 require('./common/filters/filters.js');
 require('./common/models/postsService.js');
 require('./common/models/sessionService.js');
-require('./common/models/billingService.js');
+require('./common/models/dataService.js');
 require('./common/pageHelpers.js');
 require('./auth/module.js');
 require('./posts/module.js');
 require('./workshops/module.js');
 require('./billing/module.js');
 require('./account/module.js');
+require('./requests/module.js');
 
 
-angular.module("AP", ['Providers', 'ngRoute', 'ngAnimate',
-  'APAnalytics', 'APSideNav', 'APChatNav', 'APServerTemplates',
-  'APAuth', 'APPosts', 'APWorkshops', 'APProfile', 'APBilling', 'APNotifications'])
+angular.module("AP", ['Providers', 'ngRoute', 'ngAnimate', 'APDataSvc', 'APCTAs',
+  'APAnalytics', 'APSideNav', 'APChatNav', 'APServerTemplates', 'APNotifications',
+  'APAuth', 'APPosts', 'APWorkshops', 'APProfile', 'APBilling', 'APRequests'])
 
   .config(function($locationProvider, $routeProvider) {
 
@@ -49,10 +52,6 @@ angular.module("AP", ['Providers', 'ngRoute', 'ngAnimate',
     });
 
     $routeProvider.when('/about', {
-      template: require('./sales/about.html')
-    });
-
-    $routeProvider.when('/', {
       template: require('./sales/about.html')
     });
 
@@ -75,7 +74,7 @@ angular.module("AP", ['Providers', 'ngRoute', 'ngAnimate',
     }
   })
 
-  .run(function($rootScope, $location, SessionService, Notifications) {
+  .run(function($rootScope, $location, Notifications) {
 
     $rootScope.$on('$routeChangeSuccess', function() {
       if ($location.path().indexOf(window.initialLocation) == -1) {
@@ -109,12 +108,18 @@ angular.module("AP", ['Providers', 'ngRoute', 'ngAnimate',
     return this;
   })
 
-  .controller('ServerTemplateCtrl', function($scope) {
+  .controller('ServerTemplateCtrl', function($scope, SessionService) {
     pageHlpr.loadPoSt();
     pageHlpr.highlightSyntax({ addCtrs: true });
     pageHlpr.fixPostRail();
     if (viewData && angular.element('#disqus_thread').length>0)
       pageHlpr.loadDisqus(viewData.canonical);
+
+    SessionService.onAuthenticated(function() {
+      if (!$scope.request || !$scope.request.tags)
+        $scope.request = { tags: _.first($scope.session.tags,3) };
+    })
+
   })
 
 ;

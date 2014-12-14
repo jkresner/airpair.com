@@ -1,15 +1,3 @@
-function storage(k, v) {
-  if (window.localStorage)
-  {
-    if (typeof v == 'undefined')
-    {
-      return localStorage[k];
-    }
-    localStorage[k] = v;
-    return v;
-  }
-}
-
 angular.module("APChatNav", [])
 
   .directive('chatNav', function($rootScope, $modal, SessionService) {
@@ -32,10 +20,10 @@ angular.module("APChatNav", [])
         $element.toggleClass('collapse', storage('chatNavOpen') != 'true')
         $scope.toggleAction = (storage('chatNavOpen') != 'true') ? 'Show' : 'Hide';
 
-        if (!storage('chatOpenedOnce'))
-        {
-          $timeout(this.toggle, 20000)
-        }
+        // if (!storage('chatOpenedOnce'))
+        // {
+        //   $timeout(this.toggle, 20000)
+        // }
       }
     };
 

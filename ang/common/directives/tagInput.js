@@ -9,14 +9,14 @@ angular.module('APTagInput', ['ui.bootstrap'])
     return searchBad;
   })
 
-  .directive('tagInput', ['badTagsSearchQuery', function(badTagsSearchQuery) {
+  .directive('tagInput', function(badTagsSearchQuery) {
 
     return {
       restrict: 'EA',
       template: require('./tagInput.html'),
       scope: {
       },
-      controller: ['$scope', '$attrs', '$http', function($scope, $attrs, $http) {
+      controller: function($scope, $attrs, $http) {
 
         $scope.tags = $scope.$parent.tags
         $scope.selectTag = $scope.$parent.selectTag
@@ -60,8 +60,8 @@ angular.module('APTagInput', ['ui.bootstrap'])
           $scope.deselectTag(match)
         };
 
-      }]
+      }
     }
-  }])
+  })
 
 ;

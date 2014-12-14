@@ -9,6 +9,7 @@ import BookingsAPI from '../api/bookings'
 import ExpertsAPI from '../api/experts'
 import CompanysAPI from '../api/companys'
 import ViewsAPI from '../api/views'
+import RequestsAPI from '../api/requests'
 import {authd,adm,setAnonSessionData,emailv} from '../identity/auth/middleware'
 
 
@@ -20,15 +21,16 @@ export default function(app) {
     .param('expert', ExpertsAPI.paramFns.getById)
 
     .get('/session/full', setAnonSessionData, UsersAPI.getSessionFull)
-    .put('/users/me/tag/:tag', setAnonSessionData, UsersAPI.toggleTag)
-    .put('/users/me', authd, UsersAPI.updateProfile)
-    .put('/users/me/password-change', UsersAPI.requestPasswordChange)
     .put('/users/me/password', UsersAPI.changePassword)
+    .put('/users/me/password-change', UsersAPI.requestPasswordChange)
+    .put('/users/me/tag/:tag', setAnonSessionData, UsersAPI.toggleTag)
     .put('/users/me/tags', setAnonSessionData, UsersAPI.tags)
     .put('/users/me/bookmarks', setAnonSessionData, UsersAPI.bookmarks)
-    .put('/users/me/email', setAnonSessionData, UsersAPI.changeEmail)
-    .put('/users/me/email-verify', authd, setAnonSessionData, UsersAPI.verifyEmail)
     .put('/users/me/bookmarks/:type/:id', setAnonSessionData, UsersAPI.toggleBookmark)
+    .put('/users/me/email', setAnonSessionData, UsersAPI.changeEmail)
+    .put('/users/me/name', setAnonSessionData, UsersAPI.changeName)
+    .put('/users/me/email-verify', authd, setAnonSessionData, UsersAPI.verifyEmail)
+    .put('/users/me', authd, UsersAPI.updateProfile)
     .get('/company', authd, CompanysAPI.getUsersCompany)
 
     .get('/tags/search/:id', TagsAPI.search)
@@ -44,6 +46,11 @@ export default function(app) {
     .put('/posts/:id', authd, PostsAPI.update)
     .put('/posts/publish/:id', authd, PostsAPI.publish)
     .delete('/posts/:id', authd, PostsAPI.deleteById)
+
+    .get('/requests', authd, RequestsAPI.getMyRequests)
+    .get('/requests/:id', authd, RequestsAPI.getById)
+    .put('/requests/:id', authd, RequestsAPI.update)
+    .post('/requests', authd, RequestsAPI.create)
 
     .get('/workshops/', WorkshopsAPI.getAll)
     .get('/workshops/:id', WorkshopsAPI.getBySlug)

@@ -2,7 +2,7 @@ var Analytics = require('analytics-node')
 var setDevSettings = (config.env == 'dev' || config.env == 'test')
 var segmentOpts = setDevSettings ? { flushAt: 1 } : {}
 var segment = new Analytics(config.analytics.segmentio.writekey, segmentOpts)
-var logging = true
+var logging = false
 var viewSvc = require('../../services/views')
 var doneBackup = null
 

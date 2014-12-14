@@ -1,23 +1,11 @@
 var Validate = require('../../../shared/validation/users.js')
 
-function storage(k, v) {
-  if (window.localStorage)
-  {
-    if (typeof v == 'undefined')
-    {
-      return localStorage[k];
-    }
-    localStorage[k] = v;
-    return v;
-  }
-}
-
 angular.module("APSideNav", ['ui.bootstrap','APSvcSession', 'APTagInput'])
 
   .directive('sideNav', function($rootScope, $modal, SessionService) {
     return {
       template: require('./sideNav.html'),
-      link: function(scope, element, attrs) {
+      link(scope, element, attrs) {
 
         // Only track menu behavior for anonymous users
         SessionService.onAuthenticated( (session) =>
@@ -25,7 +13,7 @@ angular.module("APSideNav", ['ui.bootstrap','APSvcSession', 'APTagInput'])
 
       },
       controllerAs: 'sideNav',
-      controller: function($scope, $element, $attrs) {
+      controller($scope, $element, $attrs) {
 
         this.toggle = function() {
           if (storage('sideNavOpen') == 'true') storage('sideNavOpen', 'false');
@@ -53,14 +41,6 @@ angular.module("APSideNav", ['ui.bootstrap','APSvcSession', 'APTagInput'])
           SessionService.tags(newTags, scope.sortSuccess, scope.sortFail);
         };
 
-        $scope.bookmarks = () => $scope.session ? $scope.session.bookmarks : null;
-        $scope.updateBookmarks = (scope, newBookmarks) => {
-          if (!$scope.session) return;
-
-          $scope.session.bookmarks = newBookmarks;
-          SessionService.bookmarks(newBookmarks, scope.sortSuccess, scope.sortFail);
-        }
-
         $scope.selectTag = function(tag) {
           var tags = $scope.session.tags;
           if ( _.contains(tags, tag) ) $scope.session.tags = _.without(tags, tag)
@@ -73,6 +53,14 @@ angular.module("APSideNav", ['ui.bootstrap','APSvcSession', 'APTagInput'])
           $scope.session.tags = _.without($scope.session.tags, tag);
           SessionService.updateTag(tag, angular.noop, (e) => alert(e.message));
         };
+
+        $scope.bookmarks = () => $scope.session ? $scope.session.bookmarks : null;
+        $scope.updateBookmarks = (scope, newBookmarks) => {
+          if (!$scope.session) return;
+
+          $scope.session.bookmarks = newBookmarks;
+          SessionService.bookmarks(newBookmarks, scope.sortSuccess, scope.sortFail);
+        }
 
         $scope.deselectBookmark = (bookmark) => {
           $scope.session.bookmarks = _.without($scope.session.bookmarks, bookmark);

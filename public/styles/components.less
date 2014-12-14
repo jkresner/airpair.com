@@ -51,6 +51,14 @@
 
     a.btn { width:60%;margin-top:10px }
   }
+
+  @media only screen and (max-width:640px) {
+    .option {
+      display:block;
+      width:300px;
+      margin-bottom:20px;
+    }
+  }
 }
 
 .tile {
@@ -85,6 +93,32 @@
   }
 }
 
+.tileSmall {
+  .tile;
+  width:200px;
+}
+
+
+.lightblueForm {
+  background:@lightblue;
+  border-radius:5px;
+  padding:15px;
+  hr { clear:both;border:1px solid @lightblue;margin:0;padding:0 }
+}
+
+.flatBottomForm {
+  border-bottom-left-radius:0;
+  border-bottom-right-radius:0;
+  border-bottom:solid 10px @orange;
+}
+
+.flatLeftForm {
+  border-bottom-left-radius:0;
+  border-top-left-radius:0;
+  border-left:solid 10px @orange;
+  padding-right:21px;
+  padding-left:18px;
+}
 
 h1.entry-title {
   text-align:left;
@@ -191,7 +225,8 @@ textarea.form-control { .ap-form-control }
 .tag-input-group, .bookmark-input-group
 {
   width:640px;
-  .drag { float:right;width:120px;padding:10px 20px;font-size:11px }
+  .drag { float:right;width:120px;padding:0px 20px 10px 20px; }
+  .drag p { font-size:11px!important;line-height:18px }
   .selected { float:right;width:200px; }
   label { display:block;text-transform:uppercase; }
   input { width:280px; }
@@ -208,7 +243,7 @@ textarea.form-control { .ap-form-control }
     margin:8px 0;
     .remove, .order {
       cursor:pointer;
-      margin-top:-2px;
+      margin:-2px 0px 0px 5px;
       line-height:18px;
       font-size:18px;
       font-weight:bold;
@@ -220,9 +255,11 @@ textarea.form-control { .ap-form-control }
       width:22px;
       height:22px;
       text-align:center;
+      padding-left:1px;
     }
+    .remove:not(*:root) { padding-left:0px; }
     .order {
-      background: url('../img/css/sidenav/toggle.png') top no-repeat;
+      background: url('../img/css/sort-arrows.png') top no-repeat;
       border-radius: 4px;
       margin-right: 0.5rem;
       padding-bottom: 0.5rem;

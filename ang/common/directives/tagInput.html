@@ -2,9 +2,11 @@
   <div class="nomobile">This feature is not available on mobile</div>
 
   <div class="drag">
-    <p>
-      <b>drag in order of importance</b>
+    <p ng-if="tags() && tags().length > 1">
+      <img src="/v1/img/css/sort-arrows.png" style="margin:0px 0px 7px 0px" />
+      <br /><b>drag in order of importance</b>
       <br />place most used first
+      <br />
     </p>
   </div>
   <div class="selected">
@@ -14,7 +16,7 @@
       <li ng-repeat="tag in tags() | orderBy:'sort'" ng-attr-data-id="{{tag._id}}">
         {{tag.slug}}
         <a class="remove" ng-click="deselectMatch(tag)">x</a>
-        <a class="order" href="#"></a>
+        <a ng-if="tags().length > 1" class="order"></a>
       </li>
     </ul>
 
@@ -23,7 +25,7 @@
 
   <label for="tagInput">Search technologies</label>
   <input type="text" class="tagInput form-control"
-    placeholder="type a technology (e.g. javascript)"
+    placeholder="Type a technology (e.g. javascript)"
     ng-model="q"
     typeahead="t as t for t in getTags($viewValue) | filter:$viewValue"
     typeahead-editable="false"
