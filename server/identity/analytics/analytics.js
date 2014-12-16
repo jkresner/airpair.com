@@ -2,7 +2,7 @@ var Analytics = require('analytics-node')
 var setDevSettings = (config.env == 'dev' || config.env == 'test')
 var segmentOpts = setDevSettings ? { flushAt: 1 } : {}
 var segment = new Analytics(config.analytics.segmentio.writekey, segmentOpts)
-var logging = false
+var logging = true
 var viewSvc = require('../../services/views')
 var doneBackup = null
 
@@ -98,7 +98,10 @@ var alias = (sessionID, user, aliasEvent, done) => {
 
   segment.alias({ previousId: sessionID, userId: user.email }, (e, b) => {
     if (logging) $log('**** aliased'.yellow)
-    identify(user, {}, aliasEvent, {sessionID}, done)
+    track(user, null, aliasEvent, {sessionID}, null, () => {
+      if (logging) $log(`**** ${aliasEvent}`.yellow)
+      done()
+    })
   })
   segment.flush()
 

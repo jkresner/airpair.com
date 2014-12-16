@@ -2,7 +2,7 @@ var util = require('../../../shared/util')
 
 angular.module("APRequestDirectives", [])
 
-.directive('request', function($timeout, ServerErrors, DataService) {
+.directive('request', function($timeout, ServerErrors, DataService, SessionService) {
 
   return {
     template: require('./request.html'),
@@ -46,7 +46,9 @@ angular.module("APRequestDirectives", [])
             step: done,
             location: window.location.pathname // $location.path() no good...
           };
-          analytics.track('Save', props);
+          var trackEventName = 'Save'
+          if (done == 'type' || done == 'submit') { trackEventName = "Request" }
+          analytics.track(trackEventName, props);
           setDone(done);
         }
         if (done == $scope.done.current) {
@@ -72,8 +74,12 @@ angular.module("APRequestDirectives", [])
       $scope.setHours = () => setDoneAndCurrent('hours', 'time')
       $scope.setBuget = () => setDoneAndCurrent('budget', 'submit')
       $scope.setExperience = () => setDoneAndCurrent('experience', 'brief')
-      $scope.doneTags = () => setDoneAndCurrent('tags', 'experience')
       $scope.doneBrief = () => setDoneAndCurrent('brief', 'hours')
+      $scope.doneTags = () => {
+        setDoneAndCurrent('tags', 'experience')
+        if (!$rootScope.session.tags || $rootScope.session.tags.length == 0)
+          SessionService.tags($scope.request.tags, ()=>{},()=>{});
+      }
 
       // $timeout(() => {
       //   $scope.setType('mentoring')

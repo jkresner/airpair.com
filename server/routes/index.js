@@ -7,7 +7,7 @@ import migrationRouter from './migration'
 import * as redirects from './redirects'
 import UsersAPI from '../api/users'
 var whiteListedRoutes = require('../../shared/routes')
-
+import {setAnonSessionData} from '../identity/auth/middleware'
 
 export default function(app, cb)
 {
@@ -20,6 +20,11 @@ export default function(app, cb)
     app.use(migrationRouter(app))
     app.use(dynamicRouter(app))
     app.get( whiteListedRoutes, app.renderHbs('base') )
+    app.get('/', setAnonSessionData, (req,res,next) => {
+      if (req.user && req.user._id) { res.redirect('/dashboard'); return res.end() }
+      req.user = _.extend( req.session.anonData, {sessionID: req.sessionID })
+      next()
+    }, app.renderHbs('home') )
 
     cb()
   })
