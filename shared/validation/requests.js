@@ -3,20 +3,20 @@ export function create(user, o)
   if (!user || !user._id || !user.name || ! user.email)
     return 'Request user details required'
 
-  if (!o.tags || !(o.tags.length > 0) )
-    return 'Request must include at least one technology'
-
   if (!o.type) return 'Request type required'
 
-  if (!o.experience) return 'Request experience required'
+  // if (!o.tags || !(o.tags.length > 0) )
+    // return 'Request must include at least one technology'
 
-  if (!o.brief) return 'Request brief required'
+  // if (!o.experience) return 'Request experience required'
 
-  if (!o.hours) return 'Request hours required'
+  // if (!o.brief) return 'Request brief required'
 
-  if (!o.time) return 'Request turn around time required'
+  // if (!o.hours) return 'Request hours required'
 
-  if (!o.budget) return 'Request turn around time required'
+  // if (!o.time) return 'Request turn around time required'
+
+  // if (!o.budget) return 'Request budget required'
 }
 
 
@@ -30,18 +30,18 @@ export function update(user, original, update)
   if ( !isOwner )
     return 'Request can only be updated by owner'
 
+  if (!update.type) return 'Request type required'
+
   if (!update.tags || !(update.tags.length > 0) )
     return 'Request must include at least one technology'
 
-  if (!update.type) return 'Request type required'
+  if (original.experience && !update.experience) return 'Request experience required'
 
-  if (!update.experience) return 'Request experience required'
+  if (original.brief && !update.brief) return 'Request brief required'
 
-  if (!update.brief) return 'Request brief required'
+  if (original.hours && !update.hours) return 'Request hours required'
 
-  if (!update.hours) return 'Request hours required'
+  if (original.time && !update.time) return 'Request turn around time required'
 
-  if (!update.time) return 'Request turn around time required'
-
-  if (!update.budget) return 'Request turn around time required'
+  if (original.budget && !update.budget) return 'Request budget required'
 }

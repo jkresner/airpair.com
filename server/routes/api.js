@@ -79,6 +79,7 @@ export default function(app) {
     .put('/users/:id/role/:role', UsersAPI.toggleUserInRole)
     .get('/users/search/:id', UsersAPI.search)
     .post('/billing/orders/credit', OrdersAPI.giveCredit)
+    .get('/billing/paymethods/:id', PaymethodsAPI.getUserPaymethodsByAdmin)
     .get('/views/user/:id', ViewsAPI.getByUserId)
     .get('/redirects', RedirectsAPI.getAllRedirects)
     .post('/redirects', RedirectsAPI.createRedirect)
@@ -86,6 +87,8 @@ export default function(app) {
     .get('/companys/search/:id', CompanysAPI.search)
     .put('/companys/migrate/:id', CompanysAPI.migrate)
     .put('/companys/member/:id', CompanysAPI.addMember)
+    .get('/requests/:id', authd, RequestsAPI.getByIdForAdmin)
+
 
 
   router.use('/adm',admrouter)
