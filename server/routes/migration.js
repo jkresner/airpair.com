@@ -39,6 +39,7 @@ var postCanonicals = [
   {o:'/twilio', c:'support-and-api-integration-help-with-twilio'},
   {o:'/keen-io', c:'keen-io-api-integration-data-science-help'},
   {o:'/stripe', c:'stripe-support-api-integration-help'},
+  {o:'/vero', c:'vero-support-and-api-integration-help'},
   {o:'/actionscript-expert-jason-sturges', c:'actionscript-expert-jason-sturges-1'},
   {o:'/agile-software/coach-and-trainer-ron-lichty/', c:'coach-and-trainer-ron-lichty-1'},
   {o:'/algolia/algolia-search-expert-sylvain-utard', c:'algolia-search-expert-sylvain-utard-1'},
