@@ -29,6 +29,7 @@ var cfg = {
   bundle: {
     indexScript: '/v1/js/index.js',
     admScript: '/v1/js/adm.js',
+    homeScript: '/v1/js/home.js',
     indexCss: '/v1/styles/index.css',
     admCss: '/v1/styles/adm.css',
     libCss: '/styles/libs.css'
@@ -83,6 +84,7 @@ module.exports = function(env, appdir) {
     cfg.bundle.admScript = `/v1/${dist['js/adm.js']}`
     cfg.bundle.admCss = `/v1/${dist['styles/adm.css']}`
     cfg.bundle.libCss = `/v1/${dist['styles/libs.css']}`
+    cfg.bundle.homeScript = `/v1/${dist['js/home.js']}`
     cfg.mail.on = true
     cfg.analytics.on = true
     cfg.analytics.segmentio.writekey = process.env.ANALYTICS_SEGMENTIO_WRITEKEY
