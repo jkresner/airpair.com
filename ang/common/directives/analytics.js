@@ -10,7 +10,7 @@ angular.module("APAnalytics", [])
         var location = attrs.href;
         var type = attrs.trackClick;
 
-        element.click(function() {
+        element.on('click', function() {
           if (scope.tracking === false) return
 
           var props = {

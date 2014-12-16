@@ -1,0 +1,68 @@
+<ul>
+  <li><img src="//0.gravatar.com/avatar/b56bb22b3a4b83c6b534b4c114671380?s=100" /></li>
+  <li><img src="//0.gravatar.com/avatar/c01ef7584331527e1c600b85ba6a75f3?s=100" /></li>
+  <li><img src="//0.gravatar.com/avatar/892cdc57a3a64ea0ad59827bc6d1ddf7?s=100" /></li>
+  <li class="you nomob">
+    <b ng-if="!session || !session.email">Hello</b>
+    <img ng-if="session.email" class="avatar" ng-src="{{ session.avatar }}" />
+  </li>
+  <li><img src="//0.gravatar.com/avatar/b988f05edd27e18eb63b0c5abfdc113c?s=100" /></li>
+  <li><img src="//0.gravatar.com/avatar/f524745bb9975ba777b5c4a9922eb614?s=100" /></li>
+  <li><img src="//0.gravatar.com/avatar/fbf41c66afb1e3807b7b330c2d8fcc28?s=100" /></li>
+</ul>
+
+
+<h3>Get introduced to over 2,000 of the <b>best software experts</b> on the web</h3>
+
+<form id="joinForm" novalidate name="joinForm" ng-submit="submit(joinForm.$valid, data)">
+
+  <div class="homeNameDiv" ng-if="data.email" form-group>
+    <input id="homeJoinName" name="name"
+      form-control type="text" placeholder="Enter full name (e.g. John Smith)"
+      ng-model="data.name"
+      required
+      ng-minlength="4"
+      ng-minlength="60"
+      ng-pattern="/\w+ \w+/"
+      tabindex="33212"
+      ng-focus="focusInput(this)"
+      ng-blur="blurInput(this)"
+      >
+
+    <div class="error" ng-if="formGroup.showError(joinForm.name)" ng-messages="joinForm.name.$error">
+      <div ng-message="required">Full name required</div>
+      <div ng-message="minlength">Full name required (e.g. John Smith)</div>
+      <div ng-message="pattern">Full name required (e.g. John Smith)</div>
+      <div ng-message="maxlength">Full name max length 60 chars</div>
+    </div>
+    <div ng-if="updateFailed" class="error">* <b ng-bind-html="updateFailed | html"></b></div>
+  </div>
+
+  <div class="homeEmailDiv" ng-if="!data.email" form-group>
+    <input id="homeJoinEmail"
+         form-control
+         name="email"
+         type="email"
+         placeholder="Enter your email to get started ..."
+         ng-model="data.email"
+         ng-model-options="{updateOn:'default blur',debounce:{default:1000, blur:0}}"
+         ng-change="updateEmail(joinForm.email)"
+         required
+         tabindex="33211"
+         track-focus="signup"
+         track-data="email"
+         ng-focus="focusInput(this)"
+         ng-blur="blurInput(this)"
+         >
+    <div class="error" ng-if="formGroup.showError(joinForm.email)" ng-messages="joinForm.email.$error">
+      <div ng-message="required">Email required</div>
+      <div ng-message="email">Invalid email address</div>
+    </div>
+    <div ng-if="updateFailed" class="error">* <b ng-bind-html="updateFailed | html"></b></div>
+  </div>
+
+  <button track-click="auth" data="subscribe" ng-class="data.email ? '' : 'focushide'" type="submit" class="btn btn-primary" tabindex="33214" ng-focus="focusInput(this)"><b>Join</b></button>
+
+  <span ng-if="data.email">{{data.email}} <a id="homeRemoveEmail" ng-click="data.email = '' ">x</a> </span>
+
+</form>

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html ng-app="AP" ng-strict-di>
+<head>
+  <title>Software Micro-Consulting via Video Chat | AirPair</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, follow">
+  <link rel="stylesheet" href="{{ config.bundle.libCss}}" type="text/css" />
+  <link rel="stylesheet" href="{{ config.bundle.indexCss}}" type="text/css" />
+  <link rel="alternate" type="application/rss+xml" href="https://www.airpair.com/rss" title="AirPair Rss" />
+  <link rel="alternate" type="application/rss+xml" href="https://www.airpair.com/rss/posts" title="AirPair Posts" />
+  <link rel="alternate" type="application/rss+xml" href="https://www.airpair.com/rss/workshops" title="AirPair Workshops" />
+  <base href="/" />
+</head>
+<body>
+
+<header>
+  <a onclick="angular.element('#join input').focus()" tile="airpair.com pair programming"></a>
+
+  <ul>
+    <li><b><a id="headerLogin" href="/login" track-click="login">Login</a></b></li>
+    <li><b><a id="headerGetHelp" onclick="angular.element('#join input').focus()" class="btn">Live Coding Help</a></b></li>
+  </ul>
+</header>
+
+
+<div class="main-wrap">
+  <div notifications></div>
+  <main ng-view id="home">
+
+  <section class="header">
+    <img src="/v1/img/pages/about/airpair.png" />
+    <table>
+      <tr>
+        <td><span>{</span></td>
+        <td><h2><br />
+      AirPair is a <b>community</b> of <b>world class developers</b>
+      <a onclick="angular.element('#join input').focus()">available for <b>micro-consulting</b> through video chat</a>
+    </h2></td>
+        <td><span>}</span></td>
+      </tr>
+    </table>
+  </section>
+
+ <!--   <section class="expertise">
+
+    <a onclick="$('#teamJoinEmail').focus()" class="block">start pairing.</a>
+    <div class="vr" style="margin-top:-30px"></div>
+
+   <p>The average senior developer makes <em>$124,131</em> a year + benefits</p>
+    <p>For less than <em>$10,000</em> (or $100/hr) you can have that person in a little as 20 minutes.</p>
+
+  </section> -->
+
+  <section id="join">
+
+    <div cta-home-join></div>
+
+  </section>
+
+  <section class="how">
+
+    <div class="vr"></div>
+
+    <h2>How can you use AirPair?</h2>
+    <br />
+
+    <div class="row">
+      <div class="col-md-4">
+        <h3>Troubleshooting</h3>
+        <p>AirPair attracts experts with eagle eyes to point out the problems.
+        Our experts are topnots in their stack.</p>
+      </div>
+      <div class="col-md-4">
+        <h3>Mentorship</h3>
+        <p>Having a mentor is precious, especially when it comes to sorting out
+        complex problems and learning new technologies.</p>
+      </div>
+      <div class="col-md-4">
+        <h3>Code Review</h3>
+        <p>Everyone can use a second set of eyes
+            with tons of experience to improve
+          their code base.</p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4">
+        <h3>Vetting</h3>
+        <p>Building a team is hard - boost your
+          confidence by having an expert on
+          your side to vet potential candidates</p>
+      </div>
+      <div class="col-md-4">
+        <h3>Advice</h3>
+        <p>Enable your team to adopt new
+          technologies that improve the
+          long-term capabilities of your product.</p>
+      </div>
+      <div class="col-md-4">
+        <h3>And More!</h3>
+        <p>AirPair is your go-to platform when
+            you need to get unstuck without
+            wasting time and resources.</p>
+      </div>
+    </div>
+  </section>
+
+<!-- <div class="vr"></div>
+<section class="gaurantee">
+
+  <div class="block">try it out, risk free</div>
+  <div class="vr" style="margin-top:-30px"></div>
+
+  <p>We have a 100% satisfaction guarantee</p>
+
+  <label>Warning AirPairing can become addictive once you realized how awesome it is.</label>
+
+</section> -->
+
+  <br /><br /><br />
+    <br /><br /><br />
+
+
+<!-- <div class="vr"></div>
+<section class="customers">
+
+  <div class="block">Recent customers</div>
+  <div class="vr" style="margin-top:-30px"></div>
+
+  <p>We have a 100% satisfaction guarantee</p>
+
+  <label>Warning AirPairing can become addictive once you realized how awesome it is.</label>
+
+</section> -->
+
+
+  </main>
+</div>
+
+
+
+
+
+<footer>
+  <ul>
+    <li><a href="/rss" target="_self" class="rss">Rss</a></li>
+    <li><a href="/privacy" target="_blank" class="pp">Privacy</a></li>
+    <li><a href="/workshops" target="_self" class="wks">Workshops</a></li>
+    <li><a href="/posts" target="_blank" class="pts">Posts</a></li>
+    <li>&copy; 2015 airpair, inc.</li>
+  </ul>
+</footer>
+
+<script type="text/javascript" src="{{config.bundle.homeScript}}"></script>
+<script type="text/javascript">
+
+  var user = {{ JSON user }};
+  function bindTracking() {}
+
+</script>
+
+<style type="text/css">
+body.focus { background-color:#f9f9f9 }
+body.focus main { border-color:#f9f9f9 }
+body.focus > header { opacity:0.2 }
+body.focus > footer { opacity:0.2 }
+body.focus section.header { opacity:0.2 }
+body.focus section.how { opacity:0.2 }
+body.focus section#join img { opacity:0.6 }
+body.focus section#join form { opacity:1;background-color:white }
+body.focus section#join .you { background-color:#90d1cc!important }
+</style>
+
+{{> initPage }}
+
+</body>
+</html>

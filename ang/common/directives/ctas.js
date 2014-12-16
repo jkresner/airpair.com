@@ -1,49 +1,73 @@
 angular.module("APCTAs", ['ngMessages','APAnalytics'])
 
-  .directive('ctaPostSubscribe', function($timeout, SessionService) {
+  .factory('CtaHelper', function CtaHelperFactory($rootScope, $timeout, $location, SessionService) {
+
+    this.updateEmail = function(scope, model, success) {
+      if (!model.$valid) return
+      scope.updateFailed = ""
+
+      SessionService.changeEmail({ email: scope.data.email },
+        (result) => {
+          scope.data.email = result.email
+          scope.session = result
+          $timeout(success, 200)
+        }
+        , (e) => {
+          scope.updateFailed = e.message || e.error
+          scope.data.email = null
+          if (scope.updateFailed.indexOf("already") != -1)
+            scope.updateFailed += ". Try <a href='/v1/auth/login'>LOGIN instead?</a>"
+        }
+      )
+    }
+
+    this.submit = function(scope, formValid, data, success) {
+      if (formValid)
+        SessionService.subscribe(scope.data,
+          (result) => $timeout(success, 200),
+          (e) => {
+            $scope.updateFailed = e.message || e.error
+            if ($scope.updateFailed.indexOf("already") != -1)
+              $scope.updateFailed += ". Try <a href='/v1/auth/login'>LOGIN instead?</a>"
+          }
+        )
+    }
+
+    return this;
+  })
+
+  .directive('ctaPostSubscribe', function(SessionService, CtaHelper) {
     return {
       template: require('./ctaPostSubscribe.html'),
       scope: {
         tagName: '=tagName',
         tagSlug: '=tagSlug'
       },
-      link(scope, element) { },
       controller($scope, $element, $attrs) {
 
-        SessionService.onAuthenticated( (session) =>
-          $scope.data = { email: session.email, name: session.name }
-        )
+        SessionService.onAuthenticated( (s) => $scope.data = { email: s.email, name: s.name } )
 
-        $scope.updateEmail = function(model) {
-          if (!model.$valid) return
-          $scope.updateFailed = ""
+        $scope.updateEmail = (model) => CtaHelper.updateEmail($scope, model,
+          () => { angular.element('#postSubscribeName').focus(); })
 
-          SessionService.changeEmail({ email: $scope.data.email },
-            (result) => {
-              $scope.data.email = result.email
-              $timeout(() => { angular.element('#postSubscribeName').focus(); }, 200)
-            }
-            , (e) => {
-              $scope.updateFailed = e.message || e.error
-              $scope.data.email = null
-              if ($scope.updateFailed.indexOf("already") != -1)
-                $scope.updateFailed += ". Try <a href='/v1/auth/login'>LOGIN instead?</a>"
-            }
-          )
-        }
+        $scope.submit = (formValid, data) => CtaHelper.submit($scope, formValid, data,
+          () => {})
+      }
+    };
+  })
 
-        $scope.submit = function(formValid, data) {
-          if (formValid)
-            SessionService.subscribe($scope.data,
-              (result) => {},
-              (e) => {
-                $scope.updateFailed = e.message || e.error
-                if ($scope.updateFailed.indexOf("already") != -1)
-                  $scope.updateFailed += ". Try <a href='/v1/auth/login'>LOGIN instead?</a>"
-              }
-            )
-        }
+  .directive('ctaHomeJoin', function(SessionService, CtaHelper) {
+    return {
+      template: require('./ctaHomeJoin.html'),
+      controller($scope) {
 
+        SessionService.onAuthenticated( (s) => $scope.data = { email: s.email, name: s.name } )
+
+        $scope.updateEmail = (model) => CtaHelper.updateEmail($scope, model,
+          () => { angular.element('#teamJoinName').focus() })
+
+        $scope.submit = (formValid, data) => CtaHelper.submit($scope, formValid, data,
+          () => { window.location = '/meet-experts' })
       }
     };
 

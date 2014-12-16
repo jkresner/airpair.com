@@ -10,7 +10,7 @@ module.exports = {
     builtJS: '/v1/js',
     builtCss: '/v1/styles'
   },
-  jsBundles: ['index.js', 'adm.js'],
+  jsBundles: ['index.js', 'adm.js', 'home.js'],
   styleBundles: [
     'public/styles/index.less',
     'public/styles/adm.less',
