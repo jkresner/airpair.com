@@ -32,6 +32,13 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
     });
 
 
+    $routeProvider.when('/meet-experts', {
+      template: require('./new.html'),
+      controller: 'RequestCtrl',
+      resolve: authd
+    });
+
+
     $routeProvider.when('/help/request/:id', {
       template: require('./edit.html'),
       controller: 'RequestEditCtrl',

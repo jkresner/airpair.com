@@ -25,7 +25,7 @@
 
     var ident = function() {
       //console.log('identify', email || anonymousId)  //-- could be from a different session.
-      window.analytics.identify(email || anonymousId, { id: email || anonymousId });
+      window.analytics.identify(email || anonymousId, { id: email || anonymousId, name: '{{ user.name }}' });
     }
 
 
