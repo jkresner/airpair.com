@@ -424,6 +424,7 @@ export function toggleBookmark(type, id, cb) {
 }
 
 export function tags(tags, cb) {
+  for (var t of tags) { if (!t.tagId) t.tagId = t._id } // if you pass in normal tags it breaks
   if (this.user) {
     svc.update(this.user._id, {tags}, cbSession(cb));
   }

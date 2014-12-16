@@ -116,11 +116,11 @@ angular.module('APSvcSession', [])
     }
 
     this.tags = function(data, success, error) {
-      $http.put(`${API}/users/me/tags`, data).success(success).error(error);
+      $http.put(`${API}/users/me/tags`, data).success(setScope(success)).error(error);
     }
 
     this.bookmarks = function(data, success, error) {
-      $http.put(`${API}/users/me/bookmarks`, data).success(success).error(error);
+      $http.put(`${API}/users/me/bookmarks`, data).success(setScope(success)).error(error);
     }
 
   })
