@@ -56,11 +56,11 @@ module.exports = mongoose.model('Request', new mongoose.Schema({
   by:               {},
   type:             { required: true, type: String, enum: REQUEST_TYPE },
   tags:             [TagSlim],
-  experience:       { required: true, type: String, enum: REQUEST_EXPERIENCE },
-  brief:            { required: true, type: String   },
-  hours:            { required: true, type: String   },
-  time:             { required: true, type: String, enum: REQUEST_TIME },
-  budget:           { required: true, type: Number   },
+  experience:       { type: String, enum: REQUEST_EXPERIENCE },
+  brief:            { type: String   },
+  hours:            { type: String   },
+  time:             { type: String, enum: REQUEST_TIME },
+  budget:           { type: Number   },
 
   status:           { required: true, type: String, enum: V0_REQUEST_STATUS },
   suggested:        [], //Suggestion

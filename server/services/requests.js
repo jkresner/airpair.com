@@ -6,6 +6,10 @@ var logging = false
 var svc = new Svc(Request, logging)
 
 
+export function getByIdForAdmin(id, cb) {
+  svc.getById(id, cb)
+}
+
 export function getById(id, cb) {
   svc.getById(id, cb)
 }

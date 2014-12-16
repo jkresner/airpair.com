@@ -51,9 +51,18 @@ angular.module('APDataSvc', [])
 
     var requestFns = {
       create(data, success, error) {
+        analytics.track('Request', { type:'request', step: 'start' });
         $http.post(`${API}/requests`, data).success(success).error(error)
       },
-      update(data, success, error) {
+      update(data, step, success, error) {
+        var trackEventName = 'Save'
+        var props = {
+          type: 'request',
+          step: step,
+          location: window.location.pathname // $location.path() no good...
+        };
+        if (step == 'submit') { trackEventName = "Request" }
+        analytics.track(trackEventName, props);
         $http.put(`${API}/requests/${data._id}`, data).success(success).error(error)
       },
       getMyRequests(success, error) {

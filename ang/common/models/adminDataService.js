@@ -60,4 +60,20 @@ angular.module('APSvcAdmin', [])
       $http.put(`${APIAdm}/companys/member/${company._id}`, {user}).success(success).error(lazyErrorCb);
     }
 
+    var pipelineFns = {
+      getRequest(_id, success, error) {
+        $http.get(`${APIAdm}/requests/${_id}`).success(success).error(error)
+      },
+    }
+
+    this.pipeline = pipelineFns
+
+    var billingFns = {
+      getUserPaymethods(_id, success, error) {
+        $http.get(`${APIAdm}/billing/paymethods/${_id}`).success(success).error(error)
+      },
+    }
+
+    this.billing = billingFns
+
   }])
