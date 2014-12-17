@@ -84,6 +84,13 @@ module.exports = {
 
   josh: { name: "Josh Baylin", email: "jaybe@hotmail.com"},
   joba: { name: "Josh Baylin", email: "josh.baylin@gmail.com"},
+  johb: { name: "Josh Baylin", email: "josh.baylin@hotmail.com"},
+  mfly: { name: "Michael Flynn", email: "michael.flynn@hotmail.com"},
+  mfln: { name: "Michael Flynn", email: "michael.flynn@gmail.com"},
+  mikf: { name: "Michael Flynn", email: "michael.flynn@test.com"},
+  pcor: { name: "Peter Corcoran", email: "peter.corcoran@test.com"},
+  peco: { name: "Peter Corcoran", email: "peter.corcoran@hotmail.com"},
+  petc: { name: "Peter Corcoran", email: "peter.corcoran@live.com"},
 
   admin: {
     "_id" : "54551be15f221efa174238d1",
@@ -338,6 +345,26 @@ module.exports = {
     "tags":[{"_id":"54551ba50af48b0b00403feb","tagId":"5181d0a966a6f999a465ec4e","sort":0},{"_id":"54551ba50af48b0b00403feb","tagId":"5181d0a966a6f999a465ec4e","sort":0},{"_id":"54551ba50af48b0b00403feb","tagId":"5181d0a966a6f999a465ec4e","sort":0},{"_id":"54551ba50af48b0b00403feb","tagId":"5181d0a966a6f999a465ec4e","sort":0},{"_id":"54551ba50af48b0b00403feb","tagId":"5181d0a966a6f999a465ec4e","sort":0},{"_id":"54551ba50af48b0b00403feb","tagId":"5181d0a966a6f999a465ec4e","sort":0}],
     "twitter":{"provider":"twitter","id":31477063,"username":"BenBeetle","displayName":"Ben Beetle","photos":[{"value":"https://abs.twimg.com/sticky/default_profile_images/default_profile_2_normal.png"}],"_json":{"id":31477063,"id_str":"31477063","name":"Ben Beetle","screen_name":"BenBeetle","location":"","description":"","url":null,"entities":{"description":{"urls":[]}},"protected":false,"followers_count":3,"friends_count":1,"listed_count":0,"created_at":"Wed Apr 15 18:30:17 +0000 2009","favourites_count":0,"utc_offset":null,"time_zone":null,"geo_enabled":false,"verified":false,"statuses_count":1,"lang":"en","status":{"created_at":"Wed Apr 15 18:36:20 +0000 2009","id":1527296246,"id_str":"1527296246","text":"@bbeetle I'm just curious...  :-) where do you get the name bbeetle from?  I've never seen that name taken before. Is your last name Beetle?","source":"Twitter Web Client","truncated":false,"in_reply_to_status_id":null,"in_reply_to_status_id_str":null,"in_reply_to_user_id":9145222,"in_reply_to_user_id_str":"9145222","in_reply_to_screen_name":"bbeetle","geo":null,"coordinates":null,"place":null,"contributors":null,"retweet_count":0,"favorite_count":0,"entities":{"hashtags":[],"symbols":[],"urls":[],"user_mentions":[{"screen_name":"bbeetle","name":"bbeetle","id":9145222,"id_str":"9145222","indices":[0,8]}]},"favorited":false,"retweeted":false,"lang":"en"},"contributors_enabled":false,"is_translator":false,"is_translation_enabled":false,"profile_background_color":"C0DEED","profile_background_image_url":"http://abs.twimg.com/images/themes/theme1/bg.png","profile_background_image_url_https":"https://abs.twimg.com/images/themes/theme1/bg.png","profile_background_tile":false,"profile_image_url":"http://abs.twimg.com/sticky/default_profile_images/default_profile_2_normal.png","profile_image_url_https":"https://abs.twimg.com/sticky/default_profile_images/default_profile_2_normal.png","profile_link_color":"0084B4","profile_sidebar_border_color":"C0DEED","profile_sidebar_fill_color":"DDEEF6","profile_text_color":"333333","profile_use_background_image":true,"default_profile":true,"default_profile_image":true,"following":false,"follow_request_sent":false,"notifications":false,"suspended":false,"needs_phone_verification":false},"token":{}},
     "twitterId":31477063
+  },
+
+  abha: {
+    "__v" : 0,
+    "_id" : "53336a211c67d1a4859d2a04",
+    "cohort" : {
+        "engagement" : {
+            "visit_first" : "2014-03-27T00:00:33.000Z",
+            "visit_signup" : "2014-03-27T00:00:33.000Z",
+            "visit_last" : "2014-12-17T00:05:08.606Z",
+            "visits" : ["2014-11-13T00:00:00.000Z"]
+        },
+        "aliases" : [
+            "9bSMPH56FSLl78boK48wphzFp13ey5Hf"
+        ]
+    },
+    "email" : "abeisgreat@abeisgreat.com",
+    "emailVerified" : true,
+    "local" : {},
+    "name" : "Abe Haskins",
   }
 
 }

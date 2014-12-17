@@ -35,18 +35,27 @@ function resolveParamFn(Svc, svcFnName, paramaName) {
 }
 
 
-export function serve(Svc, svcFnName, argsFn) {
+export function serve(Svc, svcFnName, argsFn, Validation) {
   return (req, res, next) => {
     var thisSvc = { user: req.user, sessionID: req.sessionID, session: req.session }
     if (logging) $log('thisSvc', svcFnName, argsFn, Svc, thisSvc)
+    var callback = cbSend(req.method,res,next)
     var args = argsFn(req)
-    args.push(cbSend(req.method,res,next))
+    if (Validation && req.method != 'GET') {
+      var inValid = Validation[svcFnName].apply(thisSvc, args)
+      if (inValid) {
+        var e = new Error(inValid)
+        e.status = 403
+        return callback(e)
+      }
+    }
+    args.push(callback)
     Svc[svcFnName].apply(thisSvc, args)
   }
 }
 
 
-export var initAPI = (Svc, custom, paramFns) => {
+export var initAPI = (Svc, custom, paramFns, Validation) => {
   var base = {
     getAll: (req) => [],
     getById: (req) => [req.params.id],
@@ -58,7 +67,7 @@ export var initAPI = (Svc, custom, paramFns) => {
   var api = { paramFns: {} }
 
   for (var name of Object.keys(argsFns))
-    api[name] = serve(Svc, name, argsFns[name])
+    api[name] = serve(Svc, name, argsFns[name], Validation)
 
   if (paramFns)
     for (var paramName of Object.keys(paramFns))
@@ -71,3 +80,40 @@ export var initAPI = (Svc, custom, paramFns) => {
 
   return api;
 }
+
+
+
+// export var initAPI2 = (Svc, argsFns, paramFns) => {
+//   for (var fnName of Object.keys(apiDefs)) {
+//     var params = argsFns[fnName];
+//     argsFns[fnName] = function(req) {
+//       var reqParams = []
+//       for (var path of params) {
+//         var p = null
+//         var props = path.split('.')
+//         for (var prop of props) {
+//           p = req[prop]
+//         }
+//         reqParams.push(p)
+//       }
+//       return reqParams;
+//     }
+//   }
+
+//   var api = { paramFns: {} }
+
+//   for (var name of Object.keys(argsFns))
+//     api[name] = serve(Svc, name, argsFns[name], Validation)
+
+//   if (paramFns)
+//     for (var paramName of Object.keys(paramFns))
+//     {
+//       var svcFn = paramFns[paramName]
+//       api.paramFns[svcFn] = resolveParamFn(Svc,svcFn,paramName)
+//     }
+
+//   api.svc = Svc
+
+//   return api;
+// }
+
