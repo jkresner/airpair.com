@@ -91,7 +91,15 @@ export function authDone(req, res, next) {
     delete req.session.returnTo
   }
   res.redirect(redirectUrl)
+  res.end()
 }
+
+export function alreadyAuthd(req, res, next) {
+  if (req.user)
+    return authDone(req, res, next)
+  next()
+}
+
 
 
 export var adm = authorizeRole('admin')
