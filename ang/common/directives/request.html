@@ -1,50 +1,15 @@
 <form ng-if="request" class="requestForm" novalidate name="requestForm" ng-submit="RequestFormCtrl.submit(requestForm.$valid, request)">
 
-<div id="requestProgress">
-  <div ng-class="stepClass('type')">
-    <label>Help</label>
-    <a ng-click="setCurrent('type')">Help</a>
-  </div>
-  <div ng-class="stepClass('tags')">
-    <label>Tags</label>
-    <a ng-click="setCurrent('tags')">Tags</a>
-  </div>
-  <div ng-class="stepClass('experience')">
-    <label>Experience</label>
-    <a ng-click="setCurrent('experience')">Experience</a>
-  </div>
-  <div ng-class="stepClass('brief')">
-    <label>Brief</label>
-    <a ng-click="setCurrent('brief')">Brief</a>
-  </div>
-
-  <div ng-class="stepClass('hours')">
-    <label>Hours</label>
-    <a ng-click="setCurrent('hours')">Hours</a>
-  </div>
-  <div ng-class="stepClass('time')">
-    <label>Time</label>
-    <a ng-click="setCurrent('time')">Time</a>
-  </div>
-  <div ng-class="stepClass('budget')">
-    <label>Budget</label>
-    <a ng-click="setCurrent('budget')">Budget</a>
-  </div>
-</div>
-
+  <request-progress></request-progress>
 
 <section ng-class="stepClass('submit')">
 
   <div ng-if="request._id">
-    <label class="control-label">Update your request</label>
-  </div>
-
-  <div ng-if="!request._id">
     <label class="control-label">Good to go?</label>
     <p>If you're happy with you're request, we'll broadcast it to selected experts.</p>
   </div>
 
-  <a ng-click="save()" class="btn">Submit</a>
+  <a ng-click="submit()" class="btn">Submit</a>
 
 </section>
 

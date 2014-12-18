@@ -10,7 +10,9 @@ require('./common/directives/forms.js');
 require('./common/directives/post.js');
 require('./common/directives/tagInput.js');
 require('./common/directives/typeAheadInputs.js');
+require('./common/directives/requests.js');
 require('./common/filters/filters.js');
+require('./common/models/dataService.js');
 require('./common/models/postsService.js');
 require('./common/models/sessionService.js');
 require('./common/models/adminDataService.js');
@@ -20,12 +22,13 @@ require('./adm/redirects/module.js');
 require('./adm/views/module.js');
 require('./adm/orders/module.js');
 require('./adm/companys/module.js');
-
+require('./adm/pipeline/module.js');
 
 angular.module('ADM', [
   'ngRoute',
-  'APSvcSession', 'APSvcAdmin',
+  'APSvcSession', 'APSvcAdmin', 'APDataSvc',
   'APFilters', 'APFormsDirectives', 'APTypeAheadInputs',
+  'ADMPipeline',
   'ADMPosts',
   'ADMUsers',
   'ADMRedirects',

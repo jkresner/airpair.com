@@ -23,7 +23,7 @@ var Bookme = {
 
 module.exports = mongoose.model('Expert', new Schema({
 
-  userId:         { required: true, type: ObjectId, ref: 'User' },
+  userId:         { unique: true, required: true, type: ObjectId, ref: 'User' },
   name:           { required: true, type: String },
   username:       { required: true, type: String },
   email:          { required: true, type: String },
