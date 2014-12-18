@@ -61,6 +61,12 @@ angular.module('APSvcAdmin', [])
     }
 
     var pipelineFns = {
+      getActive(success, error) {
+        $http.get(`${APIAdm}/requests/active`).success(success).error(error)
+      },
+      getIncomplete(success, error) {
+        $http.get(`${APIAdm}/requests/incomplete`).success(success).error(error)
+      },
       getRequest(_id, success, error) {
         $http.get(`${APIAdm}/requests/${_id}`).success(success).error(error)
       },

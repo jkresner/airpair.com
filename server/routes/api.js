@@ -92,6 +92,8 @@ export default function(app) {
     .get('/companys/search/:id', CompanysAPI.search)
     .put('/companys/migrate/:id', CompanysAPI.migrate)
     .put('/companys/member/:id', CompanysAPI.addMember)
+    .get('/requests/active', RequestsAPI.getActiveForAdmin)
+    .get('/requests/incomplete', RequestsAPI.getIncompleteForAdmin)
     .get('/requests/:id', RequestsAPI.getByIdForAdmin)
 
 

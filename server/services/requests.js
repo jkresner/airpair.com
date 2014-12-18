@@ -69,6 +69,12 @@ var get = {
       if (!suggestion) return cb(Error(`No available expert[${expertId}] on request[${r._id}] not found`))
       cb(null, r)
     }))
+  },
+  getActiveForAdmin(cb) {
+    svc.searchMany(Data.query.active, { fields: Data.select.pipeline}, cb)
+  },
+  getIncompleteForAdmin(cb) {
+    svc.searchMany(Data.query.incomplete, { fields: Data.select.pipeline}, cb)
   }
 }
 
