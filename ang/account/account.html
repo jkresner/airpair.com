@@ -44,7 +44,9 @@
 
     <div form-group>
       <label class="control-label" for="profileName">Full name </label>
-      <input id="profileName" name="name" form-control type="text" placeholder="Full name" ng-model="data.name" required ng-minlength="4" ng-minlength="60" ng-pattern="/\w+ \w+/" tabindex="2">
+      <input id="profileName" name="name" form-control type="text" placeholder="Full name" ng-model="data.name" required ng-minlength="4" ng-minlength="60" ng-pattern="/\w+ \w+/" tabindex="2"
+        ng-blur="updateInfo('name')"
+      >
       <div class="error" ng-if="formGroup.showError(profileForm.name)" ng-messages="profileForm.name.$error">
         <div ng-message="required">Name required</div>
         <div ng-message="minlength">Full name required (e.g. John Smith)</div>
@@ -55,11 +57,15 @@
 
     <div form-group>
       <label for="profileInitials">Initials <span>used for IM/chat</span></label>
-      <input id="profileInitials" name="initials" type="text" form-control placeholder="Initials" ng-model="data.initials" tabindex="3">
+      <input id="profileInitials" name="initials" type="text" form-control placeholder="Initials" ng-model="data.initials" tabindex="3"
+        ng-blur="updateInfo('initials')"
+      >
     </div>
     <div form-group>
       <label class="control-label" for="profileUsername">Username <span>shown on post you publish</span></label>
-      <input id="profileUsername" name="username" form-control type="text" placeholder="Username" ng-model="data.username" ng-minlength="2" ng-pattern="/^\w+$/" tabindex="4">
+      <input id="profileUsername" name="username" form-control type="text" placeholder="Username" ng-model="data.username" ng-minlength="2" ng-pattern="/^\w+$/" tabindex="4"
+        ng-blur="updateInfo('username')"
+      >
       <div class="error" ng-if="formGroup.showError(profileForm.username)" ng-messages="profileForm.username.$error">
         <div ng-message="minlength">Min 2 characters</div>
         <div ng-message="pattern">Username must be letters only</div>

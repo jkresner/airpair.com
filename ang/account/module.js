@@ -34,17 +34,14 @@ angular.module("APProfile", ['ngRoute', 'APFilters', 'APSvcSession', 'APTagInput
 
   .controller('AccountCtrl', function($rootScope, $scope, $location, ServerErrors, SessionService) {
 
-      var self = this;
-
-      if ($location.search().verify)
-      {
-        SessionService.verifyEmail({hash:$location.search().verify}, function(result){
-          $scope.emailAlerts = [{ type: 'success', msg: `${$scope.session.email} verified ! <b>Next step, go to <a href="/billing">BILLING</a></b>` }]
-          $location.path("/billing")
-        }, function(e){
-          $scope.emailAlerts = [{ type: 'danger', msg: `${e} failed` }]
-        })
-      }
+    if ($location.search().verify)
+    {
+      SessionService.verifyEmail({hash:$location.search().verify}, function(result){
+        $scope.emailAlerts = [{ type: 'success', msg: `${$scope.session.email} verified ! <b>Next step, go to <a href="/billing">BILLING</a></b>` }]
+      }, function(e){
+        $scope.emailAlerts = [{ type: 'danger', msg: `${e} failed` }]
+      })
+    }
 
     SessionService.onAuthenticated( (session) =>
       $scope.data = _.pick(session, 'name','email','initials','username')  )
@@ -52,21 +49,21 @@ angular.module("APProfile", ['ngRoute', 'APFilters', 'APSvcSession', 'APTagInput
     if ($scope.session)
       $scope.data = _.pick($scope.session, 'name','email','initials','username')
 
-    angular.element('#profileForm input').on('blur', function(event) {
-      $scope.profileAlerts = []
 
+    $scope.updateInfo = function(targetName) {
+      $scope.profileAlerts = []
       if ($scope.session.name != $scope.data.name ||
         $scope.session.initials != $scope.data.initials ||
         $scope.session.username != $scope.data.username)
       {
         SessionService.updateProfile($scope.data, function(result){
-          $scope.profileAlerts.push({ type: 'success', msg: `${event.target.name} updated` })
+          $scope.profileAlerts.push({ type: 'success', msg: `${targetName} updated` })
         }, function(e){
           $scope.data.username = $scope.session.username
           $scope.profileAlerts.push({ type: 'danger', msg: e.message })
         })
       }
-    })
+    }
 
     $scope.updateEmail = function(model) {
       if (!model.$valid || $scope.data.email == $scope.session.email) return
