@@ -104,7 +104,7 @@ var Lines = {
 
 //-- Create the order object without saving anything
 //-- Use the lineItems, paymethod and who the orders is for
-function makeOrder(byUser, lineItems, payMethodId, forUserId, errorCB, cb)
+function makeOrder(byUser, lineItems, payMethodId, forUserId, requestId, errorCB, cb)
 {
   var byUserId = svc.idFromString(byUser._id)
   forUserId = (forUserId) ? svc.idFromString(forUserId) : byUserId
@@ -128,6 +128,9 @@ function makeOrder(byUser, lineItems, payMethodId, forUserId, errorCB, cb)
     o.total += li.total
     o.profit += li.profit
   }
+
+  if (requestId)
+    o.requestId = requestId
 
   if (o.total == 0)
     o.payment = { type: '$0 order' }
@@ -242,7 +245,7 @@ export function buyCredit(total, coupon, payMethodId, cb)
     lineItems.push( Lines.discount("letspair", 100, 'Credit Announcement Promo', this.user) )
 
 
-  makeOrder(this.user, lineItems, payMethodId, null, cb, (e, order) => {
+  makeOrder(this.user, lineItems, payMethodId, null, null, cb, (e, order) => {
     // $log('buyCredit.order', order)
     chargeAndTrackOrder(order, cb, (e,o) => svc.create(o, cb))
   })
@@ -259,14 +262,21 @@ export function giveCredit(toUserId, total, source, cb)
   var lineItems = []
   lineItems.push(Lines.credit(false, total, expires, source))
 
-  makeOrder(this.user, lineItems, null, toUserId, cb, (e, order) =>
+  makeOrder(this.user, lineItems, null, toUserId, null, cb, (e, order) =>
     chargeAndTrackOrder(order, cb, (e,o) => svc.create(o, cb))
   )
 }
 
 
-export function createBookingOrder(expert, time, minutes, type, credit, payMethodId, requestId, cb)
+export function createBookingOrder(expert, time, minutes, type, credit, payMethodId, requestSuggestion, cb)
 {
+  /// MEGA TODOS, validate requestSuggestion
+  var requestId = (requestSuggestion) ? requestSuggestion.requestId : null
+  if (requestSuggestion) {
+    expert = requestSuggestion.suggestion.expert
+    expert.rate = requestSuggestion.suggestion.suggestedRate[type].expert
+  }
+
   var unitPrice = OrderUtil.calculateUnitPrice(expert,type)
   var unitProfit = OrderUtil.calculateUnitProfit(expert, type)
   var total = minutes/60 * unitPrice
@@ -274,19 +284,19 @@ export function createBookingOrder(expert, time, minutes, type, credit, payMetho
 
   if (credit && credit > 0)
   {
-    bookUsingCredit.call(this, expert, minutes, total, lineItems, credit, payMethodId, cb)
+    bookUsingCredit.call(this, expert, minutes, total, lineItems, credit, payMethodId, requestId, cb)
   }
   else
   {
     lineItems.unshift(Lines.payg(total))
-    makeOrder(this.user, lineItems, payMethodId, null, cb, (e, order) => {
+    makeOrder(this.user, lineItems, payMethodId, null, requestId, cb, (e, order) => {
       chargeAndTrackOrder(order, cb, (e,o) => svc.create(o, cb))
     })
   }
 }
 
 
-export function bookUsingCredit(expert, minutes, total, lineItems, expectedCredit, payMethodId, cb)
+export function bookUsingCredit(expert, minutes, total, lineItems, expectedCredit, payMethodId, requestId, cb)
 {
   getMyOrdersWithCredit.call(this, payMethodId, (e, orders) => {
     var lines = OrderUtil.linesWithCredit(orders)
@@ -326,7 +336,8 @@ export function bookUsingCredit(expert, minutes, total, lineItems, expectedCredi
     // $log('bookUsingCredit.lineItems', lineItems)
 
     // console.log('bookUsingCredit', lineItems)
-    makeOrder(this.user, lineItems, payMethodId, null, cb, (e, order) => {
+    makeOrder(this.user, lineItems, payMethodId, null, requestId, cb, (e, order) => {
+
       chargeAndTrackOrder(order, cb, (e,o) => {
         // console.log('inserting cred redeemed order', order.total, order._id, order.userId)
         svc.updateAndInsertOneBulk(ordersToUpdate, o, (e,r) => cb(e,o))

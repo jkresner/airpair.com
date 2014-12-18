@@ -11,20 +11,22 @@ var svc =                 new Svc(Request, logging)
 var {isCustomer,isExpert} = require('../../shared/roles.js').request
 
 
-function selectByRoleCB(ctx, cb) {
+function selectByRoleCB(ctx, errorCb, cb) {
   return (e, r) => {
-    if (e || !r) return cb(e, r)
+    if (e || !r) return errorCb(e, r)
 
     if (!ctx.user) return cb(null, util.selectFromObject(r, Data.select.anon))
     else if (isCustomer(ctx.user, r)) {
       var request = util.selectFromObject(r, Data.select.customer)
       Rates.addRequestSuggestedRates(request, true)
+      for (var s of request.suggested) s.expert.avatar = md5.gravatarUrl(s.expert.email)
       cb(null, request)
     } else {
       Rates.addRequestSuggestedRates(r, false)
       var request = util.selectFromObject(r, Data.select.review)
       request.suggested = Data.select.meSuggested(r, ctx.user._id)
       if (request.suggested.length == 1) {
+        for (var s of request.suggested) s.expert.avatar = md5.gravatarUrl(s.expert.email)
         return cb(null, request)
       }
 
@@ -35,6 +37,7 @@ function selectByRoleCB(ctx, cb) {
           Rates.addRequestSuggestedRates(request, false)
           delete request.budget
         }
+        for (var s of request.suggested) s.expert.avatar = md5.gravatarUrl(s.expert.email)
         cb(null, request)
       })
     }
@@ -54,18 +57,19 @@ var get = {
     })
   },
   getByIdForReview(id, cb) {
-    svc.getById(id, selectByRoleCB(this,cb))
+    svc.getById(id, selectByRoleCB(this,cb,cb))
   },
   getUsers(userId, cb) {
     var opts = { options: { sort: { '_id': -1 } } }
     svc.searchMany({userId}, opts, cb)
   },
   getMy(cb) {
-    getByUserId(this.user._id, cb)
+    var opts = { options: { sort: { '_id': -1 } }, fields: Data.select.customer }
+    svc.searchMany({userId:this.user._id}, opts, cb)
   },
   getRequestForBookingExpert(id, expertId, cb) {
     var {user} = this
-    svc.getById(id, selectByRoleCB(this,(e,r) => {
+    svc.getById(id, selectByRoleCB(this, cb, (e,r) => {
       if (!isCustomer(user,r)) return cb(Error(`Could not find request[${id}] belonging to user[${user._id}]`))
       var suggestion = _.find(r.suggested,(s) => _.idsEqual(s.expert._id,expertId) && s.expertStatus == 'available')
       if (!suggestion) return cb(Error(`No available expert[${expertId}] on request[${r._id}] not found`))
@@ -114,7 +118,7 @@ var save = {
     // sug.expert.paymentMethod = type: 'paypal', info: { email: eR.payPalEmail }
 
     // var ups = _.extend(request,{suggested})
-    svc.update(request._id, request, selectByRoleCB(this,cb))
+    svc.update(request._id, request, selectByRoleCB(this,cb,cb))
   }
 }
 

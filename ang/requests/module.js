@@ -24,24 +24,15 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
       resolve: authd
     });
 
-
     $routeProvider.when('/help/request', {
       template: require('./new.html'),
       controller: 'RequestCtrl',
       resolve: authd
     });
 
-
     $routeProvider.when('/meet-experts', {
       template: require('./new.html'),
       controller: 'RequestCtrl',
-      resolve: authd
-    });
-
-
-    $routeProvider.when('/help/request/:id', {
-      template: require('./edit.html'),
-      controller: 'RequestEditCtrl',
       resolve: authd
     });
 
@@ -50,6 +41,17 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
       controller: 'RequestTypesCtrl'
     });
 
+    $routeProvider.when('/help/request/:id', {
+      template: require('./edit.html'),
+      controller: 'RequestEditCtrl',
+      resolve: authd
+    });
+
+    $routeProvider.when('/review/:id', {
+      template: require('./review.html'),
+      controller: 'ReviewCtrl',
+      resolve: authd
+    });
 
   })
 
@@ -95,10 +97,60 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
 
   .controller('RequestTypesCtrl', function($scope, $window) {
 
-    $scope.back = function() {
-      $window.history.back();
+  })
+
+  .controller('ReviewCtrl', function($scope, $routeParams, $location, DataService, Shared, ServerErrors) {
+    $scope.requestId = $routeParams.id;
+    DataService.requests.getReviewById($scope.requestId, function(r) {
+      $scope.r = r
+      $scope.isCustomer = Shared.roles.request.isCustomer($scope.session,r)
+
+      if ($scope.isCustomer) {
+        $scope.displayRate = r.budget
+      }
+      else
+      {
+        $scope.isExpert = Shared.roles.request.isExpert($scope.session,r)
+        if ($scope.isExpert) {
+          var sug = r.suggested[0]
+          $scope.displayRate = sug.suggestedRate.private.expert
+          $scope.notYetReplied = !sug.expertStatus
+          if ($scope.notYetReplied)
+          {
+            $scope.data = {expertStatus:"",expertComment:"",expertAvailability:""}
+            $scope.expertEdit = true;
+          }
+          else {
+            var {expertStatus,expertComment,expertAvailability} = sug
+            $scope.data = {expertStatus,expertComment,expertAvailability}
+            $scope.expertEdit = false;
+          }
+          // console.log('$scope', $scope.isExpert, $scope.expertEdit, $scope.data)
+        }
+      }
+    }, function(er) {
+      console.log('request not found')
+    })
+
+    $scope.setExpertEdit = () => $scope.expertEdit = true
+
+
+    $scope.submit = (formValid, data) => {
+      if (formValid)
+      {
+        if ($scope.data.expertStatus != 'available')
+          $scope.data.expertAvailability = "Not available"
+
+        var expertId = $scope.r.suggested[0].expert._id
+        DataService.requests.replyByExpert($scope.r._id, expertId, $scope.data,
+          (result) => {
+            $scope.r = result;
+            $scope.expertEdit = false;
+        }, ServerErrors.add)
+      }
     }
 
   })
+
 
 ;

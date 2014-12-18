@@ -122,7 +122,7 @@ angular.module("APRequestDirectives", [])
             $scope.request = r
             if (step == "submit") {
               if ($rootScope.emailVerified) window.location = '/billing'
-              else window.location = '/dashboard'
+              else window.location = `/review/${r._id}`
             }
           }, ServerErrors.add)
         } else {
@@ -175,6 +175,20 @@ angular.module("APRequestDirectives", [])
     scope: {
         r: '=req'
     },
+    link(scope, element, attrs) {
+    },
+    controller($scope, $attrs) {
+    }
+  };
+
+})
+
+
+
+.directive('requestReviewSummary', function() {
+
+  return {
+    template: require('./requestReviewSummary.html'),
     link(scope, element, attrs) {
     },
     controller($scope, $attrs) {

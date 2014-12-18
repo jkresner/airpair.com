@@ -164,7 +164,7 @@ module.exports = -> describe "API", ->
                 done()
 
 
-  it 'Can book expert rate on request', (done) ->
+  it 'Can get data to book expert on request rate', (done) ->
     addAndLoginLocalUserWithPayMethod 'pcor', (spcor) ->
       d = tags: [data.tags.angular], type: 'resources', experience: 'proficient', brief: 'bah bah anglaur test yo4', hours: "1", time: 'rush', budget: 300
       POST '/requests', d, {}, (r) ->
@@ -177,7 +177,7 @@ module.exports = -> describe "API", ->
               PUT "/requests/#{r._id}/reply/#{expertId}", reply, {}, (r1) ->
                 expect(r1.status).to.equal('received')
                 LOGIN 'pcor', spcor, (sCustomer) ->
-                  GET "/requests/book/#{r._id}/#{expertId}", { status: 400 }, (freview) ->
+                  GET "/requests/#{r._id}/book/#{expertId}", { status: 400 }, (freview) ->
                     expect(freview.message.indexOf('No available expert')).to.equal(0)
                     callback()
 
@@ -189,7 +189,7 @@ module.exports = -> describe "API", ->
               PUT "/requests/#{r._id}/reply/#{expertId}", reply, {}, (r2) ->
                 expect(r2.status).to.equal('review')
                 LOGIN 'pcor', spcor, (sCustomer) ->
-                  GET "/requests/book/#{r._id}/#{expertId}", {}, (review) ->
+                  GET "/requests/#{r._id}/book/#{expertId}", {}, (review) ->
                     expect(review.status).to.equal('review')
                     expect(review.suggested.length).to.equal(1)
                     expect(_.idsEqual(review.suggested[0]._id,review.suggested[0]._id)).to.be.true
@@ -202,4 +202,6 @@ module.exports = -> describe "API", ->
 
         testNotAvailable testAvailable
 
+
+  it.skip 'Cannot reply to customers own request', (done) ->
 

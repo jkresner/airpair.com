@@ -12,7 +12,8 @@ export default initAPI(
   updateByCustomer: (req) => [req.request,req.body],
   replyByExpert: (req) => [req.request,req.expert,req.body]
 }, {
-  request:'getByIdForAdmin'
+  request:'getByIdForAdmin',
+  review:'getByIdForReview'
 },
   require('../../shared/validation/requests.js')
 )
