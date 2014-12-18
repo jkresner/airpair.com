@@ -39,10 +39,10 @@ function create(e, r, user, expert, time, minutes, type, cb) {
 }
 
 
-export function createBooking(expert, time, minutes, type, credit, payMethodId, cb)
+export function createBooking(expert, time, minutes, type, credit, payMethodId, requestId, cb)
 {
   var createCB = (e, r) => create(e, r, this.user, expert, time, minutes, type, cb)
-  OrdersSvc.createBookingOrder.call(this, expert, time, minutes, type, credit, payMethodId, createCB)
+  OrdersSvc.createBookingOrder.call(this, expert, time, minutes, type, credit, payMethodId, requestId, createCB)
 }
 
 

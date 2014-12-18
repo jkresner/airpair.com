@@ -1,0 +1,45 @@
+<form ng-if="request" class="requestForm" novalidate name="requestForm" ng-submit="RequestFormCtrl.submit(requestForm.$valid, request)">
+
+  <request-progress></request-progress>
+  <br />
+
+  <select id="requestType" ng-model="request.type">
+    <option value="troubleshooting">Troubleshooting</option>
+    <option value="mentoring">Mentoring</option>
+    <option value="code-review">Code review</option>
+    <option value="resources">Extra resources</option>
+    <option value="advice">Technology advice</option>
+    <option value="other">Other</option>
+  </select>
+  <br />
+  <div ng-repeat="t in request.tags">{{t.slug}}</div>
+  <br />
+  <select id="requestExperience" ng-model="request.experience" ng-if="request.experience">
+    <option value="beginner">beginner</option>
+    <option value="proficient">proficient</option>
+    <option value="advanced">advanced</option>
+  </select>
+  <br />
+  <textarea id="requestBrief" ng-model="request.brief" ng-if="request.brief">
+  </textarea>
+  <br />
+  <select id="requestHours" ng-model="request.hours" ng-if="request.hours">
+    <option value="1">1</option>
+    <option value="2">2</option>
+    <option value="5">5</option>
+    <option value="10">10</option>
+    <option value="more">more</option>
+  </select>
+  <br />
+  <select id="requestTime" ng-model="request.time" ng-if="request.time">
+    <option value="regular">regular</option>
+    <option value="rush">rush</option>
+  </select>
+  <br />
+
+  <input type="text" ng-model="request.budget" ng-if="request.budget" />
+
+</section>
+
+
+
