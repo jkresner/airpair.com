@@ -17,7 +17,10 @@ angular.module("ADMPipeline", ["APRequestDirectives"])
     AdmDataService.pipeline.getRequest($routeParams.id, function (r) {
       $scope.request = r;
       AdmDataService.billing.getUserPaymethods(r.userId, function (pms) {
-        $scope.paymethods = pms;
+        $scope.paymethods = (pms.btoken) ? [] : pms;
+      })
+      AdmDataService.getUsersViews({_id:r.userId}, function (views) {
+        $scope.views = views
       })
     })
 

@@ -43,10 +43,8 @@ angular.module('ADM', [
   })
 
   .run(function($rootScope, $location, SessionService) {
-
-    SessionService.onAuthenticated( (session) => {
-    });
-
+    $rootScope.session = _.extend(window.viewData.session,{primaryPayMethodId:'adm'});
+    SessionService.onAuthenticated( (session) => {});
   })
 
   .factory('ServerErrors', function serverErrorsFactory($rootScope) {

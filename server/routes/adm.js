@@ -7,7 +7,7 @@ export default function(app) {
 
     .use(adm)
 
-    .get( ['/*'], app.renderHbs('adm/admin') )
+    .get( ['/*'], app.renderHbsAdmin('adm/admin') )
 
   return router
 
