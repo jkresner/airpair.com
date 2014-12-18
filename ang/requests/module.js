@@ -101,7 +101,7 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
     $scope.r = $scope.request
     $scope.isAnon = true
     $scope.r.by.name = "Login to view more detail"
-    console.log('returning')
+    $scope.returnTo = window.location.pathname
     return
   }
 
