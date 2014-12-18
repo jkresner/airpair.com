@@ -22,7 +22,9 @@ module.exports = {
       'by.avatar': 1,
       'type': 1,
       'brief': 1,
-      'tags': 1
+      'tags': 1,
+      'time': 1,
+      'experience': 1
     },
     review,
     customer: {
