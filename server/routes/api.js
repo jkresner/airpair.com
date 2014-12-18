@@ -51,7 +51,7 @@ export default function(app) {
     .get('/requests', authd, RequestsAPI.getMy)
     .get('/requests/:id', authd, RequestsAPI.getByIdForUser)
     .get('/requests/review/:id', RequestsAPI.getByIdForReview)
-    .get('/requests/book/:id/:expertId', authd, RequestsAPI.getRequestForBookingExpert)
+    .get('/requests/:id/book/:expertId', authd, RequestsAPI.getRequestForBookingExpert)
     .put('/requests/:request', authd, RequestsAPI.updateByCustomer)
     .put('/requests/:request/reply/:expert', authd, RequestsAPI.replyByExpert)
     .post('/requests', authd, RequestsAPI.create)

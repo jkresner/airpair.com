@@ -39,6 +39,12 @@ angular.module("APBilling", ['ngRoute','APFormsDirectives','APPaymentDirectives'
       resolve: authd
     });
 
+    $routeProvider.when('/billing/book/:id/:rid', {
+      template: require('./book.html'),
+      controller: 'BillingBookExpertCtrl',
+      resolve: authd
+    });
+
   })
 
   .factory('submitPaymentText', function submitPaymentTextFactory() {
@@ -153,7 +159,11 @@ angular.module("APBilling", ['ngRoute','APFormsDirectives','APPaymentDirectives'
 
     $scope.calcSummary = function() {
       if (!$scope.expert) return
-      var hrRate = $scope.expert.rate
+
+      var hrRate = ($scope.suggestion)
+        ? $scope.suggestion.suggestedRate[$scope.booking.type].expert
+        : $scope.expert.rate
+
       if ($scope.booking.type == "opensource") hrRate = hrRate + 20
       else if ($scope.booking.type == "private") hrRate = hrRate + 40
       else if ($scope.booking.type == "nda") hrRate = hrRate + 90
@@ -171,12 +181,25 @@ angular.module("APBilling", ['ngRoute','APFormsDirectives','APPaymentDirectives'
       }
     }
 
-    DataService.experts.getById({_id:$routeParams.id}, (r) => {
-      $scope.expert = r
-      $scope.booking.expertId = r._id
-      $scope.calcSummary()
-    }, ServerErrors.add)
-
+    if ($routeParams.rid)
+    {
+      var expertId = $routeParams.id.toString()
+      DataService.requests.getRequestForBookingExpert($routeParams.rid,expertId, (r) => {
+        $scope.suggestion = _.find(r.suggested,(s)=>s.expert._id==expertId)
+        $scope.expert = $scope.suggestion.expert
+        $scope.booking.request = { requestId: r._id, suggestion: $scope.suggestion }
+        $scope.booking.expertId = $scope.expert._id
+        $scope.calcSummary()
+      }, ServerErrors.add)
+    }
+    else
+    {
+      DataService.experts.getById({_id:$routeParams.id}, (r) => {
+        $scope.expert = r
+        $scope.booking.expertId = r._id
+        $scope.calcSummary()
+      }, ServerErrors.add)
+    }
 
     $scope.$watch('booking.payMethodId', function(val) {
       if (!val) return
@@ -194,9 +217,6 @@ angular.module("APBilling", ['ngRoute','APFormsDirectives','APPaymentDirectives'
         $scope.booking.payMethodId = r[0]._id
       }
     }, ServerErrors.add)
-
-
-
 
     $scope.$watch('booking.minutes', $scope.calcSummary)
 

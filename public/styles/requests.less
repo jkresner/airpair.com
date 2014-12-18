@@ -428,3 +428,70 @@ section#request {
     .requests { display:none }
   }
 }
+
+
+section#review {
+
+  > section {
+    margin-top:0px;
+    width:640px;
+    position:relative;
+  }
+
+  #info {
+    margin-bottom:60px;
+    border-bottom:solid 1px @lightblue;
+    img { height:30px;display:inline-block; }
+    article { border-top:solid 2px @lightblue; h6 { font-weight:bold;text-transform:uppercase; } }
+    article > * { display:inline-block;width:22%;vertical-align:top }
+    time label { padding:7px }
+    .entry-categories {
+      ul { display:inline-block;list-style:none;padding-left:5px; li { display:inline-block; } }
+    }
+    span { display:inline-block;background:@turquoise;font-weight:bold;color:white;
+       padding:4px 8px;border:solid 1px @lightblue }
+    .requestExperts { .ulNoStyle }
+  }
+
+  #replies {
+    ul { .ulNoStyle }
+    li { border-bottom:solid 1px @lightblue;margin-bottom:10px }
+    .message { width:360px;
+      > img { top:0 }
+      h4 { margin-top:0 }
+    }
+    section { position:absolute;right:0;top:0;width:180px;
+      .btn { width:100% }
+      strong { font-size:36px;font-weight:normal;display:block;text-align:center; }
+    }
+  }
+
+
+  .message {
+    > img { position:absolute;top:10px;left:0;width:100px;height:100px;padding:0 }
+    vertical-align:top;
+    display:inline-block;
+    padding:5px 30px 10px 40px;
+    margin-left:80px;
+    width:560px;
+    min-height:180px;
+    h4 { margin-bottom:10px;padding:0;line-height:20px; }
+    h4 + div { border-top:solid 1px white;padding-top:10px }
+  }
+
+  #brief {
+    .message {
+      background:@palegray; }
+  }
+
+  form#replyForm {
+    h3 { margin-top:0 }
+    margin:-30px 0 30px 0;
+    .lightblueForm;
+    .expertStatus {
+      padding-top:10px;
+      input { width:inherit;display:inline;margin:0px 10px 0 15px }
+    }
+  }
+
+}

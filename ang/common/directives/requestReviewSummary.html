@@ -1,0 +1,32 @@
+<article>
+
+  <time style="width:18%" ng-if="r._id" class="entry-time" itemprop="datePublished" datetime="{{ request.published }}"><h6>Submitted</h6>
+    <img ng-if="r.time" class="image-time" ng-src="/v1/img/css/request/time-{{r.time}}.png" align="left" />
+    <label>{{ r._id | objectIdToDate }}</label>
+    <!-- <label>{{r.status}}</label> -->
+  </time>
+
+  <div class="entry-categories" style="width:28%">
+    <h6>Technologies</h6>
+    <img ng-if="r.experience" class="image-experience" ng-src="/v1/img/css/request/experience-{{r.experience}}.png" />
+    <ul class="tags">
+      <li ng-repeat="t in r.tags | orderBy:'sort' | limitTo : 3">{{t.slug || t.short }}</li>
+    </ul>
+  </div>
+
+  <div ng-if="displayRate" class="entry-content" itemprop="text" style="width:25%">
+    <h6>Rate</h6>
+    <span>{{r.hours}}</span> hr @ <span>${{displayRate}}</span></p>
+  </div>
+
+  <div class="entry-author" style="width:10%">
+    <h6>Customer</h6>
+    <img class="entry-author-image user" itemprop="image" ng-src="{{ (r.by) ? r.by.avatar : r.company.contacts[0].pic }}?s=30" />
+  </div>
+
+  <ul class="requestExperts" ng-if="isCustomer || isExpert && r.suggested.lengh > 0" class="suggested" style="width:15%">
+    <h6>Experts</h6>
+    <li ng-repeat="s in r.suggested | limitTo : 3"><img ng-src="{{s.expert.avatar}}" class="user" /></li>
+  </ul>
+
+</article>

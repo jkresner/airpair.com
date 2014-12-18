@@ -70,6 +70,15 @@ angular.module('APDataSvc', [])
       },
       getById(id, success, error) {
         $http.get(`${API}/requests/${id}`).success(success).error(error)
+      },
+      getReviewById(id, success, error) {
+        $http.get(`${API}/requests/review/${id}`).success(success).error(error)
+      },
+      replyByExpert(requestId, expertId, data, success, error) {
+        $http.put(`${API}/requests/${requestId}/reply/${expertId}`, data).success(success).error(error)
+      },
+      getRequestForBookingExpert(requestId, expertId, success, error) {
+        $http.get(`${API}/requests/${requestId}/book/${expertId}`).success(success).error(error)
       }
     }
 

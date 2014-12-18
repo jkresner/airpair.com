@@ -1,9 +1,11 @@
 import WorkshopsAPI from '../api/workshops'
 import PostsAPI from '../api/posts'
 import TagsAPI from '../api/tags'
+import RequestsApi from '../api/requests'
 import {trackView} from '../identity/analytics/middleware'
 import {noTrailingSlash} from '../util/seo/middleware'
 var postCanonicals = "./migration"
+var util = require("../../shared/util")
 
 //-- TODO move into database evetuall
 var angular = {
@@ -35,6 +37,7 @@ export default function(app) {
 
     .param('workshop', WorkshopsAPI.paramFns.getBySlug)
     .param('post', PostsAPI.paramFns.getBySlug)
+    .param('review', RequestsApi.paramFns.getByIdForReview)
 
     .get('/angularjs', noTrailingSlash(), setTagForTrackView,
       trackView('tag'),
@@ -83,6 +86,15 @@ export default function(app) {
         (req, cb) => cb(null,req.workshop) ))
 
 
+    .get('/review/:review', noTrailingSlash(), //trackView('request'),
+      app.renderHbsViewData('review', null,
+        (req, cb) => {
+          req.review.meta = {
+            title: `AirPair | ${util.tagsString(req.review.tags)} Request`,
+            canonical: `https://www.airpair.com/review/${req.review._id}`
+          }
+          cb(null,req.review)
+        }))
 
   return router
 
