@@ -8,7 +8,7 @@
 
   <section class="email">
 
-    <h3 ng-if="!session.emailVerified" style="margin-top:0px">Verify your email & mark <i>team@airpair.com</i> as not SPAM</h3>
+    <h3 ng-if="!session.emailVerified" style="margin-top:0px">Verify your email to continue</h3>
 
     <form id="emailForm" novalidate name="emailForm" ng-submit="submit(emailForm.$valid, data)" ng-class="(session.emailVerified) ? '' : 'verify'">
 

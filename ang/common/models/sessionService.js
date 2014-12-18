@@ -39,7 +39,12 @@ angular.module('APSvcSession', [])
 
     var cache;
     this.getSession = function() {
-      if ($rootScope.session) return $q((r)=>r($rootScope.session))
+
+      if ($rootScope.session && (
+        $rootScope.session.authenticated == false ||
+        $rootScope.session.primaryPayMethodId
+        )) return $q((r)=>r($rootScope.session))
+
       cache = cache || $cacheFactory();
       return $http.get(`${API}/session/full`, {cache:cache}).then(
         function(response) {

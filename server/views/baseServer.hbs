@@ -24,6 +24,7 @@
         {{#if workshopRender}}{{> workshop }}{{/if}}
         {{#if workshopsRender}}{{> workshops }}{{/if}}
         {{#if tagRender}}{{> tag }}{{/if}}
+        {{#if reviewRender}}{{> review }}{{/if}}
       {{/with}}
     </div>
   </main>
@@ -58,7 +59,7 @@ function bindTracking() {
   })
 }
 
-window.viewData = { canonical: '{{ canonical }}', {{partialName}} : {{JSONID viewData}} };
+window.viewData = { canonical: '{{ canonical }}', {{partialName}} : {{JSONID viewData}}, session: {{ JSON session }} };
 
 </script>
 
