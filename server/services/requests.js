@@ -1,10 +1,10 @@
 import Svc                from '../services/_service'
 import Rates              from '../services/requests.rates'
 import * as ExpertsSvc    from './experts'
-import * as md5           from '../util/md5'
 import * as Validate      from '../../shared/validation/requests.js'
 import Request            from '../models/request'
 import User               from '../models/user'
+import * as md5           from '../util/md5'
 var util =                require('../../shared/util')
 var Data =                require('./requests.data')
 var logging =             false
@@ -16,30 +16,17 @@ function selectByRoleCB(ctx, errorCb, cb) {
   return (e, r) => {
     if (e || !r) return errorCb(e, r)
 
-    if (!ctx.user) return cb(null, util.selectFromObject(r, Data.select.anon))
-    else if (isCustomer(ctx.user, r)) {
-      var request = util.selectFromObject(r, Data.select.customer)
-      Rates.addRequestSuggestedRates(request, true)
-      for (var s of request.suggested) s.expert.avatar = md5.gravatarUrl(s.expert.email)
-      cb(null, request)
-    } else {
-      Rates.addRequestSuggestedRates(r, false)
-      var request = util.selectFromObject(r, Data.select.review)
-      request.suggested = Data.select.meSuggested(r, ctx.user._id)
-      if (request.suggested.length == 1) {
-        for (var s of request.suggested) s.expert.avatar = md5.gravatarUrl(s.expert.email)
-        return cb(null, request)
-      }
+    if (!ctx.user) return cb(null, Data.select.byView(r, 'anon'))
+    else if (isCustomer(ctx.user, r)) cb(null, Data.select.byView(r, 'customer'))
+    else {
+      // -- we don't want experts to see other reviews
+      r.suggested = Data.select.meSuggested(r, ctx.user._id)
+      if (r.suggested.length == 1)
+        return cb(null, Data.select.byView(r, 'review'))
 
       ExpertsSvc.getMe.call(ctx, (ee,expert) => {
-        if (expert && expert.rate) {
-          request.budget = r.budget
-          request.suggested.push({expert})
-          Rates.addRequestSuggestedRates(request, false)
-          delete request.budget
-        }
-        for (var s of request.suggested) s.expert.avatar = md5.gravatarUrl(s.expert.email)
-        cb(null, request)
+        if (expert && expert.rate) r.suggested.push({expert})
+        cb(null, Data.select.byView(r, 'review'))
       })
     }
   }
@@ -60,7 +47,7 @@ var get = {
     svc.getById(id, (e,r) => {
       if (e || !r) return cb(e,r)
       if (!_.idsEqual(userId,r.userId)) return cb(Error(`Could not find request[${id}] belonging to user[${userId}]`))
-      cb (null, util.selectFromObject(r, Data.select.customer))
+      cb (null, Data.select.byView(r, 'customer'))
     })
   },
   getByIdForReview(id, cb) {
