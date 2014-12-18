@@ -38,6 +38,19 @@ var selectFields = {
     'status': 1,
     'budget': 1,
     'suggested': 1
+  },
+  pipeline: {
+    '_id': 1,
+    'userId': 1,
+    'by': 1,
+    'type': 1,
+    'tags.slug': 1,
+    'time': 1,
+    // 'hours': 1,
+    // 'experience': 1,
+    'status': 1,
+    'budget': 1,
+    'suggested.expert.email': 1
   }
 }
 
@@ -78,16 +91,25 @@ module.exports = {
   },
 
   query: {
-    submitted: function(andCondition) {
-      var query = [
-        {'budget' : { '$exists': true }} //,
-        //{'published': { '$lt': new Date() }}
-      ]
+    // submitted: function(andCondition) {
+    //   var query = [
+    //     {'budget' : { '$exists': true }} //,
+    //     //{'published': { '$lt': new Date() }}
+    //   ]
 
-      if (andCondition) query.push(andCondition)
+    //   if (andCondition) query.push(andCondition)
 
-      return { '$and': query }
+    //   return { '$and': query }
+    // },
+
+    incomplete: {
+      'budget' : { '$exists': false }, status: { $in: ['received'] }
+    },
+
+    active: {
+      'budget' : { '$exists': true }, status: { $in: ['received','waiting','review','scheduled','consumed'] }
     }
+
   }
 
 }

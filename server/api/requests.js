@@ -5,6 +5,8 @@ export default initAPI(
 ,{
   getByIdForUser: (req) => [req.params.id],
   getByIdForAdmin: (req) => [req.params.id],
+  getActiveForAdmin: (req) => [],
+  getIncompleteForAdmin: (req) => [],
   getByUserId: (req) => [req.params.id],
   getByIdForReview: (req) => [req.params.id],
   getMy: (req) => [],
