@@ -51,16 +51,27 @@
   </form>
 
   </section>
+
+
+  <section class="replies" ng-if="isAnon">
+    <form>
+      <h3>Want this AirPair?</h3>
+      <a id="loginGoogleAuth" track-click="auth" class="btn btn-error" ng-href="{{'/v1/auth/google' + ((returnTo) ? '?returnTo='+returnTo : '') }}" target="_self">Login with google to reply</a>
+    </form>
+  </section>
+
+
   <!-- [[{{session.emailVerified}}::{{isCustomer}}]] -->
-  <section class="replies" ng-if="!session.emailVerified">
+  <section class="replies" ng-if="!isAnon && !session.emailVerified">
     <div>
       <div class="message noexperts">
         <img class="user" itemprop="image" src="/v1/img/css/chat/pairy.png" />
         <h4>Pairy</h4>
         <div><p ng-if="isCustomer">You must verify your email to see responses.</p></div>
+        <div><p ng-if="!isCustomer">You must verify your email before replying.</p></div>
       </div>
       <section>
-        <a href="/help/request/{{r._id}}" class="btn">Verify Email</a>
+        <a href="/me" class="btn">Verify Email</a>
       </section>
     </div>
   </section>
