@@ -88,8 +88,6 @@ var save = {
     o.userId = _id
     o.status = 'received'
 
-    mailman.sendPipelinerNotifyRequestEmail(this.user.name, o._id, ()=>{})
-
     svc.create(o, cb)
   },
   updateByCustomer(original, update, cb) {
@@ -97,6 +95,8 @@ var save = {
     if (ups.tags.length == 1) ups.tags[0].sort = 0
 
     // o.updated = new Date()
+    if (update.budget && !original.budget) // new fully completed request
+      mailman.sendPipelinerNotifyRequestEmail(this.user.name, o._id, ()=>{})
 
     svc.update(original._id, ups, cb)
   },
