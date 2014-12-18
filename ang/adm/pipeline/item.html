@@ -1,15 +1,56 @@
 <section id="pipeline">
 
-  <section class="user" style="float:right;width:200px;padding:20px">
-    <img src="{{request.by.avatar}}" />
-    <br />{{request.by.name}}
+  <div request-admin req="request"></div>
+
+  <section class="actions">
+    <hr />
+    Status: <b>{{ request.status }}</b>
+    <br /><br /><br />
+    <a href="javascript:alert('towrite')" class="btn">Send incomplete</a>
+  </section>
+
+  <section class="user" style="">
+    <img ng-src="{{request.by.avatar}}" />
+    {{request.by.name}}
     <br />{{request.by.email}}
 
-    <div ng-repeat="pm in paymethods"><b>{{pm.name}}</b></div>
+    <div style="color:green" ng-repeat="pm in paymethods"><b>{{pm.name}}</b></div>
+    <div ng-if="!paymethods || paymethods.length == 0" class="nopaymethods"><b>No pay methods</b></div>
+
+    <div style="color:green" ng-if="request.user.emailVerified">Email Verified</div>
+    <div ng-if="!request.user.emailVerified" class="nopaymethods"><b>Email not verified</b></div>
+    <div style="color:green" ng-if="request.user.googleId">G+ {{request.user.googleId}}</div>
+    <div ng-if="!request.user.googleId" class="nopaymethods"><b>No google login</b></div>
+
+
+    First seen: {{request.user.cohort.engagement.visit_first}}
+    <br />Signed up: {{request.user.cohort.engagement.visit_signup}}
+
+
+
 
   </section>
 
-  <div request-admin req="request"></div>
+  <section class="views">
+    <table class="table table-condensed">
+      <tr>
+        <th style="width:80px">Time</th>
+        <th style="width:280px">Url</th>
+        <th style="width:240px">Ref</th>
+        <th>Utm</th>
+      </tr>
+      <tr ng-repeat="v in views">
+        <td>{{v.utc | publishedTime : 'MM.DD HH:mm' }}</td>
+        <td><a href="{{v.url}}" target="_blank"><b>{{v.type}}</b>:{{v.url}}</a></td>
+        <td>{{ v.referer }}</td>
+        <td><div ng-if="v.campaign">{{ v.campaign.name }}, {{ v.campaign.content }}, {{ v.campaign.term }},
+          {{ v.campaign.source }}</div>
+      </td>
+    </tr>
+    </table>
+
+  </section>
+
 
 
 </section>

@@ -4,6 +4,7 @@ import * as ExpertsSvc    from './experts'
 import * as md5           from '../util/md5'
 import * as Validate      from '../../shared/validation/requests.js'
 import Request            from '../models/request'
+import User               from '../models/user'
 var util =                require('../../shared/util')
 var Data =                require('./requests.data')
 var logging =             false
@@ -46,7 +47,13 @@ function selectByRoleCB(ctx, errorCb, cb) {
 
 var get = {
   getByIdForAdmin(id, cb) {
-    svc.getById(id, cb)
+    svc.getById(id, (e,r) => {
+      if (e || !r) return cb(e,r)
+      User.findOne({_id:r.userId}, (ee,user) => {
+        r.user = user
+        return cb(ee,r)
+      })
+    })
   },
   getByIdForUser(id, cb) {  // for updating
     var userId = this.user._id

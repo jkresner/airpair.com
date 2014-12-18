@@ -247,8 +247,8 @@ section#pipeline {
   #requestProgress {
     height:32px;
     position:absolute;
-    top:280px;
-    width:100%;
+    top:50px;
+    width:640px;
     padding:3px 0px 1px 5px;
     background:@lightblue;
 
@@ -278,11 +278,6 @@ section#pipeline {
       border-bottom-right-radius:16px;
       label { display:inline-block;padding:0 10px;color:@bluegray;font-weight:normal }
     }
-    div.current {
-      background:@bluegray;
-      opacity:1;
-      label { color:@darkorange;font-weight:bold }
-    }
     div.done {
       label { display:none }
       a { display:inline-block;width:100% }
@@ -290,5 +285,25 @@ section#pipeline {
     }
     // div:hover { opacity:0.8 }
     div.done:hover { opacity:1 }
+  }
+
+  table { margin-top:50px;vertical-align:top }
+  td { vertical-align:top;padding:6px;
+    select { width:140px }
+    span { color:@error }
+  }
+
+  section.actions {
+    width:640px;
+  }
+
+  section.user {
+    position:absolute;top:50px;left:700px;padding-left:90px;
+    img { position:absolute;top:0;left:0;border-radius:50% }
+    .nopaymethods { color:@error }
+  }
+  section.views {
+    position:absolute;top:150px;left:700px;right:10px;
+    td { font-size:10px }
   }
 }

@@ -48,6 +48,13 @@ angular.module('APFilters', [])
     }
   })
 
+  .filter('objectIdToAgoTime', function() {
+    return (id) => {
+      return moment(util.ObjectId2Date(id)).fromNow();
+    }
+  })
+
+
   .filter('trustUrl', function ($sce) {
     return (url) => $sce.trustAsResourceUrl(url)
   })
