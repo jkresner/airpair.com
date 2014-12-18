@@ -51,9 +51,18 @@ angular.module('APDataSvc', [])
 
     var requestFns = {
       create(data, success, error) {
+        analytics.track('Request', { type:'request', step: 'start' });
         $http.post(`${API}/requests`, data).success(success).error(error)
       },
-      update(data, success, error) {
+      update(data, step, success, error) {
+        var trackEventName = 'Save'
+        var props = {
+          type: 'request',
+          step: step,
+          location: window.location.pathname // $location.path() no good...
+        };
+        if (step == 'submit') { trackEventName = "Request" }
+        analytics.track(trackEventName, props);
         $http.put(`${API}/requests/${data._id}`, data).success(success).error(error)
       },
       getMyRequests(success, error) {
@@ -61,6 +70,15 @@ angular.module('APDataSvc', [])
       },
       getById(id, success, error) {
         $http.get(`${API}/requests/${id}`).success(success).error(error)
+      },
+      getReviewById(id, success, error) {
+        $http.get(`${API}/requests/review/${id}`).success(success).error(error)
+      },
+      replyByExpert(requestId, expertId, data, success, error) {
+        $http.put(`${API}/requests/${requestId}/reply/${expertId}`, data).success(success).error(error)
+      },
+      getRequestForBookingExpert(requestId, expertId, success, error) {
+        $http.get(`${API}/requests/${requestId}/book/${expertId}`).success(success).error(error)
       }
     }
 

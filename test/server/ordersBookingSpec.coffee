@@ -9,8 +9,8 @@ module.exports = -> describe "Booking: ", ->
   before (done) ->
     stubAnalytics()
     testDb.ensureExpert data.users.dros, data.experts.dros, ->
-      testDb.ensureExpert data.users.dros, data.experts.tmot, done
-
+      testDb.ensureExpert data.users.dros, data.experts.tmot, ->
+        testDb.ensureExpert data.users.abha, data.experts.abha, done
 
   after (done) ->
     resotreAnalytics()
@@ -185,7 +185,7 @@ module.exports = -> describe "Booking: ", ->
               GET '/billing/paymethods', {}, (eddbPms) ->
                 expect(eddbPms.length).to.equal(1)
                 airpair1 = time: moment().add(2, 'day'), minutes: 120, type: 'opensource', credit: 500, payMethodId: eddbPms[0]._id
-                POST "/bookings/#{data.experts.dros._id}", airpair1, {}, (booking1) ->
+                POST "/bookings/#{data.experts.dros._id}", airpair1, {}, (booking1)  ->
                   expect(booking1._id).to.exist
                   expect(booking1.minutes).to.equal(120)
                   expect(booking1.orderId).to.exist
@@ -196,11 +196,35 @@ module.exports = -> describe "Booking: ", ->
   it.skip 'Team members can not user anther companys credit for order', (done) ->
 
 
+  it 'Book 2 hour with pay as you go off request', (done) ->
+    addAndLoginLocalUserWithPayMethod 'petc', (s) ->
+      d = tags: [data.tags.angular], type: 'resources', experience: 'proficient', brief: 'bah bah anglaur test yo4', hours: "1", time: 'rush', budget: 300
+      POST '/requests', d, {}, (r) ->
+        LOGIN 'abha', data.users.abha, (sAbha) ->
+          GET "/requests/review/#{r._id}", {}, (rAbha) ->
+            reply = expertComment: "good", expertAvailability: "ok", expertStatus: "available"
+            expertId = rAbha.suggested[0].expert._id
+            PUT "/requests/#{r._id}/reply/#{expertId}", reply, {}, (r2) ->
+              LOGIN 'petc', s, (sCustomer) ->
+                GET "/requests/#{r._id}/book/#{expertId}", {}, (review) ->
+                  suggestion = _.find(review.suggested,(s)=> _.idsEqual(s.expert._id,expertId))
+                  airpair1 = time: moment().add(2, 'day'), minutes: 60, type: 'private', payMethodId: s.primaryPayMethodId, request: { requestId: review._id, suggestion }
+                  POST "/bookings/#{expertId}", airpair1, {}, (booking1) ->
+                    expect(booking1._id).to.exist
+                    expect(booking1.minutes).to.equal(60)
+                    expect(booking1.orderId).to.exist
+                    expect(booking1.type).to.equal('private')
+                    GET "/billing/orders", {}, (orders1) ->
+                      expect(orders1.length).to.equal(1)
+                      expect(_.idsEqual(orders1[0].requestId,r._id)).to.be.true
+                      done()
+
+
+
 
   it.skip 'Book 3 hour from package', (done) ->
     $log('can deduct by quantity instead of credit')
 
-  it.skip 'Book 2 hour with pay as you go off request', (done) ->
   it.skip 'Can book another hour after buying more credit', (done) ->
   it.skip 'With the multiple credit line items, first lineitem gets deducted', (done) ->
   it.skip 'Gets $5 off booking if member', (done) ->

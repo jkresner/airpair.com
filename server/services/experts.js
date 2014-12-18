@@ -2,15 +2,28 @@ import Svc from '../services/_service'
 import * as Validate from '../../shared/validation/experts.js'
 import Expert from '../models/expert'
 // var Data = require('./experts.data')
-
+import * as md5           from '../util/md5'
 var logging = false
 var svc = new Svc(Expert, logging)
 
 
+
+
 export function getById(id, cb) {
-  svc.getById(id, cb)
+  svc.getById(id, (e,r) => {
+    if (e || !r) return cb(e,r)
+    r.avatar = md5.gravatarUrl(r.email)
+    cb(null,r)
+  })
 }
 
+export function getMe(cb) {
+  svc.searchOne({userId:this.user._id}, null, (e,r) => {
+    if (e || !r) return cb(e,r)
+    r.avatar = md5.gravatarUrl(r.email)
+    cb(null,r)
+  })
+}
 
 export function deleteById(id, cb) {
   svc.getById(id, (e, r) => {

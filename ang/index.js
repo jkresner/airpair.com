@@ -108,6 +108,15 @@ angular.module("AP", ['Providers', 'ngRoute', 'ngAnimate', 'APDataSvc', 'APCTAs'
     return this;
   })
 
+  .factory('Shared', function sharedFactory() {
+    var shared = {
+      util: require('../shared/util.js'),
+      roles: require('../shared/roles.js')
+    }
+    _.idsEqual = shared.util.idsEqual
+    return shared;
+  })
+
   .controller('ServerTemplateCtrl', function($scope, SessionService) {
     pageHlpr.loadPoSt();
     pageHlpr.highlightSyntax({ addCtrs: true });
