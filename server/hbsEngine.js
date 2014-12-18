@@ -63,7 +63,6 @@ export default function(app) {
 
   app.renderHbsAdmin = (fileName, data) =>
     (req,res) => {
-      $log('renderHbsAdmin', req.user)
       res.status(200).render(`./${fileName}.hbs`, combineBaseData(req,{session:req.user}))
     }
 
