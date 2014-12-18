@@ -89,10 +89,7 @@ module.exports = mongoose.model('Order', new Schema({
   //-- Membership are calculated at time of purchase
   //-- Package orders always start with 0 and update as experts are booked or expires
   //-- Credit orders always 0 and updated as experts are booked or expires
-  profit:         { required: true, type: Number },
-
-  // Optionally link order to request
-  requestId:      { type: ObjectId, ref: 'Request' }
+  profit:         { required: true, type: Number }
 
   // legacy from v0
   // paymentStatus:  { required: true, type: String, default: 'pending' } # pending, received, paidout

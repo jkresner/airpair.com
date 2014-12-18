@@ -118,10 +118,7 @@ export function getMyPaymethods(cb) {
     })
 
   })
+
 }
 
-
-export function getUserPaymethodsByAdmin(userId, cb) {
-  getMyPaymethods.call({user: {_id:userId}}, cb)
-}
 

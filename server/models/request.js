@@ -1,39 +1,8 @@
 var mongoose = require('mongoose')
-var Schema = mongoose.Schema
-var {ObjectId} = Schema
+var {ObjectId} = mongoose.Schema
 
 
-var REPLY_STATUS = ['waiting','opened','busy','abstained','underpriced','available','chosen','released']
-
-
-var Suggestion = new Schema({
-  // events:             [{}]
-  expert: {
-    _id:         { required: true, type: ObjectId, ref: 'Expert' },
-    userId:      { required: true, type: ObjectId, ref: 'User' },
-    name:        { required: true, type: String },
-    email:       { required: true, type: String },
-    gmail:       { required: true, type: String },
-    rate:        { required: true, type: Number },
-    gh:          { username: String },
-    so:          { link: String },
-    bb:          { id: String },
-    in:          { id: String },
-    tw:          { username: String }
-  },
-  expertStatus:       { required: true, enum: REPLY_STATUS, type: String, default: 'waiting' },
-  // expertRating:       Number,
-  // expertFeedback:     String
-  expertComment:      String,
-  expertAvailability: String,    // todo change to dates
-  // suggestedRate:      Number,    // can be altered by admin or expert
-  // customerRating:     Number,    // Survey customer on qaulity of rating
-  // customerFeedback:   String,
-  matchedBy:          {}
-})
-
-
-var TagSlim = new Schema({
+var TagSlim = new mongoose.Schema({
   _id:          { required: true, type: ObjectId, ref: 'Tag'},
   slug:         { type: String, required: true },
   sort:         { type: Number, required: true },
@@ -76,26 +45,25 @@ var REQUEST_EXPERIENCE = [
 
 var REQUEST_TIME = [
   'regular',
-  'rush',
-  'later'
+  'rush'
 ]
 
 
 
-module.exports = mongoose.model('Request', new Schema({
+module.exports = mongoose.model('Request', new mongoose.Schema({
 
   userId:           { required: true, type: ObjectId, ref: 'User', index: true },
   by:               {},
   type:             { required: true, type: String, enum: REQUEST_TYPE },
   tags:             [TagSlim],
-  experience:       { type: String, enum: REQUEST_EXPERIENCE },
-  brief:            { type: String   },
-  hours:            { type: String   },
-  time:             { type: String, enum: REQUEST_TIME },
-  budget:           { type: Number   },
+  experience:       { required: true, type: String, enum: REQUEST_EXPERIENCE },
+  brief:            { required: true, type: String   },
+  hours:            { required: true, type: String   },
+  time:             { required: true, type: String, enum: REQUEST_TIME },
+  budget:           { required: true, type: Number   },
 
   status:           { required: true, type: String, enum: V0_REQUEST_STATUS },
-  suggested:        [Suggestion],
+  suggested:        [], //Suggestion
 
   // New v1
 

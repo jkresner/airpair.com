@@ -11,9 +11,6 @@ export function getById(id, cb) {
   svc.getById(id, cb)
 }
 
-export function getMe(cb) {
-  svc.searchOne({userId:this.user._id}, null, cb)
-}
 
 export function deleteById(id, cb) {
   svc.getById(id, (e, r) => {

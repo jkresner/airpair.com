@@ -19,7 +19,6 @@ export default function(app) {
 
     .param('tag', TagsAPI.paramFns.getBySlug)
     .param('expert', ExpertsAPI.paramFns.getById)
-    .param('request', RequestsAPI.paramFns.getByIdForAdmin)
 
     .get('/session/full', setAnonSessionData, UsersAPI.getSessionFull)
     .put('/users/me/password', UsersAPI.changePassword)
@@ -48,12 +47,9 @@ export default function(app) {
     .put('/posts/publish/:id', authd, PostsAPI.publish)
     .delete('/posts/:id', authd, PostsAPI.deleteById)
 
-    .get('/requests', authd, RequestsAPI.getMy)
-    .get('/requests/:id', authd, RequestsAPI.getByIdForUser)
-    .get('/requests/review/:id', RequestsAPI.getByIdForReview)
-    .get('/requests/book/:id/:expertId', authd, RequestsAPI.getRequestForBookingExpert)
-    .put('/requests/:request', authd, RequestsAPI.updateByCustomer)
-    .put('/requests/:request/reply/:expert', authd, RequestsAPI.replyByExpert)
+    .get('/requests', authd, RequestsAPI.getMyRequests)
+    .get('/requests/:id', authd, RequestsAPI.getById)
+    .put('/requests/:id', authd, RequestsAPI.update)
     .post('/requests', authd, RequestsAPI.create)
 
     .get('/workshops/', WorkshopsAPI.getAll)
@@ -71,7 +67,6 @@ export default function(app) {
 
     .post('/bookings/:expert', BookingsAPI.createBooking)
 
-    .get('/experts/me', ExpertsAPI.getMe)
     .get('/experts/:id', ExpertsAPI.getById)
     .get('/experts', ExpertsAPI.getForExpertsPage)
 
@@ -84,7 +79,6 @@ export default function(app) {
     .put('/users/:id/role/:role', UsersAPI.toggleUserInRole)
     .get('/users/search/:id', UsersAPI.search)
     .post('/billing/orders/credit', OrdersAPI.giveCredit)
-    .get('/billing/paymethods/:id', PaymethodsAPI.getUserPaymethodsByAdmin)
     .get('/views/user/:id', ViewsAPI.getByUserId)
     .get('/redirects', RedirectsAPI.getAllRedirects)
     .post('/redirects', RedirectsAPI.createRedirect)
@@ -92,8 +86,6 @@ export default function(app) {
     .get('/companys/search/:id', CompanysAPI.search)
     .put('/companys/migrate/:id', CompanysAPI.migrate)
     .put('/companys/member/:id', CompanysAPI.addMember)
-    .get('/requests/:id', RequestsAPI.getByIdForAdmin)
-
 
 
   router.use('/adm',admrouter)

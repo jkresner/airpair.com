@@ -265,7 +265,7 @@ export function giveCredit(toUserId, total, source, cb)
 }
 
 
-export function createBookingOrder(expert, time, minutes, type, credit, payMethodId, requestId, cb)
+export function createBookingOrder(expert, time, minutes, type, credit, payMethodId, cb)
 {
   var unitPrice = OrderUtil.calculateUnitPrice(expert,type)
   var unitProfit = OrderUtil.calculateUnitProfit(expert, type)
