@@ -61,6 +61,14 @@
   </section>
 
 
+  <section ng-if="!isExpert && !isCustomer && !isAnon" class="replies" ng-if="isAnon">
+    <form>
+      <h3>Want this AirPair?</h3>
+      <a href="/be-an-expert" target="_self" class="btn">Apply to be an AirPair expert</a>
+    </form>
+  </section>
+
+
   <!-- [[{{session.emailVerified}}::{{isCustomer}}]] -->
   <section class="replies" ng-if="!isAnon && !session.emailVerified">
     <div>
