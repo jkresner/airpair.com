@@ -119,7 +119,7 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
       if ($scope.isExpert) {
         var sug = r.suggested[0]
         $scope.displayRate = sug.suggestedRate.private.expert
-        $scope.notYetReplied = !sug.expertStatus
+        $scope.notYetReplied = !sug.expertStatus || sug.expertStatus == 'waiting'
         if ($scope.notYetReplied)
         {
           $scope.data = {expertStatus:"",expertComment:"",expertAvailability:""}
@@ -130,7 +130,7 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
           $scope.data = {expertStatus,expertComment,expertAvailability}
           $scope.expertEdit = false;
         }
-        // console.log('$scope', $scope.isExpert, $scope.expertEdit, $scope.data)
+        // console.log('$scope', $scope.isExpert, $scope.expertEdit, $scope.data, sug)
       }
     }
 

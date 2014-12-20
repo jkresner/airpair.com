@@ -79,9 +79,14 @@ module.exports = function(mailProvider)
       mailProvider.send(receivers.pipeliners, renderEmail('pipelinernotifybooking',
         { byName, expertName, bookingId }), cb)
     },
-    sendPipelinerNotifyRequestEmail(byName, requestId, cb) {
+    sendPipelinerNotifyRequestEmail(byName, requestId, time, budget, tags, cb) {
+      var tagsString = util.tagsString(tags)
       mailProvider.send(receivers.pipeliners, renderEmail('pipelinernotifyrequest',
-        { byName, requestId }), cb)
+        { byName, requestId, time, budget, tags: tagsString }), cb)
+    },
+    sendPipelinerNotifyReplyEmail(byName, requestId, expertStatus, cb) {
+      mailProvider.send(receivers.pipeliners, renderEmail('pipelinernotifyreply',
+        { byName, requestId, expertStatus }), cb)
     }
   }
 

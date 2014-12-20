@@ -52,11 +52,11 @@ angular.module("APProfile", ['ngRoute', 'APFilters', 'APSvcSession', 'APTagInput
 
     $scope.updateInfo = function(targetName) {
       $scope.profileAlerts = []
-      if ($scope.session.name != $scope.data.name ||
-        $scope.session.initials != $scope.data.initials ||
-        $scope.session.username != $scope.data.username)
+      if ($scope.session[targetName] != $scope.data[targetName])
       {
-        SessionService.updateProfile($scope.data, function(result){
+        var up = { name: $scope.data.name }
+        up[targetName] = $scope.data[targetName]
+        SessionService.updateProfile(up, function(result){
           $scope.profileAlerts.push({ type: 'success', msg: `${targetName} updated` })
         }, function(e){
           $scope.data.username = $scope.session.username
