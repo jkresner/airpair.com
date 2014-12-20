@@ -73,9 +73,9 @@ var get = {
   getActiveForAdmin(cb) {
     svc.searchMany(Data.query.active, { fields: Data.select.pipeline}, cb)
   },
-  getIncompleteForAdmin(cb) {
-    svc.searchMany(Data.query.incomplete, { fields: Data.select.pipeline}, cb)
-  }
+  // getIncompleteForAdmin(cb) {
+  //   svc.searchMany(Data.query.incomplete, { fields: Data.select.pipeline}, cb)
+  // }
 }
 
 var save = {
@@ -91,12 +91,14 @@ var save = {
     svc.create(o, cb)
   },
   updateByCustomer(original, update, cb) {
+    if (update.budget && !original.budget) // new fully completed request
+      mailman.sendPipelinerNotifyRequestEmail(this.user.name, original._id, update.time.toUpperCase(),
+        update.budget, update.tags, ()=>{})
+
     var ups = _.extend(original, update)
     if (ups.tags.length == 1) ups.tags[0].sort = 0
 
     // o.updated = new Date()
-    if (update.budget && !original.budget) // new fully completed request
-      mailman.sendPipelinerNotifyRequestEmail(this.user.name, o._id, ()=>{})
 
     svc.update(original._id, ups, cb)
   },
@@ -116,6 +118,8 @@ var save = {
 
     // sug.events.push @newEvent "expert updated"
     // sug.expert.paymentMethod = type: 'paypal', info: { email: eR.payPalEmail }
+
+    mailman.sendPipelinerNotifyReplyEmail(this.user.name, request._id, reply.expertStatus, ()=>{})
 
     // var ups = _.extend(request,{suggested})
     svc.update(request._id, request, selectByRoleCB(this,cb,cb))

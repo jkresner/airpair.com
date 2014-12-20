@@ -244,11 +244,8 @@ section#orders {
 
 
 section#pipeline {
-  #requestProgress {
+  .requestProgress {
     height:32px;
-    position:absolute;
-    top:50px;
-    width:640px;
     padding:3px 0px 1px 5px;
     background:@lightblue;
 
@@ -287,6 +284,12 @@ section#pipeline {
     div.done:hover { opacity:1 }
   }
 
+  .item .requestProgress {
+    position:absolute;
+    top:50px;
+    width:640px;
+  }
+
   table { margin-top:50px;vertical-align:top }
   td { vertical-align:top;padding:6px;
     select { width:140px }
@@ -305,5 +308,14 @@ section#pipeline {
   section.views {
     position:absolute;top:150px;left:700px;right:10px;
     td { font-size:10px }
+  }
+
+  section.active {
+    width:46%;display:inline-block;
+  }
+
+  section.incomplete {
+    width:46%;display:inline-block;
+    vertical-align:top;
   }
 }
