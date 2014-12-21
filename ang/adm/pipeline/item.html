@@ -1,37 +1,54 @@
-<section id="pipeline">
+<section id="pipelineReq">
 
-  <div class="item" request-admin req="request"></div>
 
-  <section class="actions">
-    <hr />
-    Status: <b>{{ request.status }}</b>
-    <br /><br /><br />
-    <a href="javascript:alert('towrite')" class="btn">Send incomplete</a>
+  <section class="nav left">
+    <a ng-href="/review/{{request._id}}" target="_blank">Review</a>
+    | <a ng-href="/v1/adm/farm/{{request._id}}">Farm</a>
+    | <a ng-href="/help/request/{{request._id}}" target="_self">Edit</a>
+    | <a ng-href="https://mail.google.com/mail/u/0/?shva=1#search/%22{{request.by.name | urlEncode }}%22+OR+{{ request.by.email | urlEncode  }}" target="_blank">Mail</a>
+    | <a ng-href="https://mixpanel.com/report/271245/explore/#list/filter:(conjunction:and,filters:!((filter:(operand:{{request.by.name | urlEncode }},operator:in),property:%27$name%27,selected_property_type:string,type:string))),sort_order:descending,sort_property:%27$created%27,sort_property_type:datetime">Mix</a>
   </section>
 
-  <section class="user" style="">
-    <img ng-src="{{request.by.avatar}}" />
-    {{request.by.name}}
-    <br />{{request.by.email}}
 
-    <div style="color:green" ng-repeat="pm in paymethods"><b>{{pm.name}}</b></div>
+  <section class="user right">
+    <img ng-src="{{request.by.avatar}}" />
+    <b>{{request.by.name}}</b> : {{request.by.email}}
+
+    <div class="has" ng-repeat="pm in paymethods"><b>{{pm.name}}</b></div>
     <div ng-if="!paymethods || paymethods.length == 0" class="nopaymethods"><b>No pay methods</b></div>
 
-    <div style="color:green" ng-if="request.user.emailVerified">Email Verified</div>
-    <div ng-if="!request.user.emailVerified" class="nopaymethods"><b>Email not verified</b></div>
-    <div style="color:green" ng-if="request.user.googleId">G+ {{request.user.googleId}}</div>
-    <div ng-if="!request.user.googleId" class="nopaymethods"><b>No google login</b></div>
+    <div>
+      <span class="has" ng-if="request.user.emailVerified">Email Verified</span>
+      <span ng-if="!request.user.emailVerified" class="nopaymethods"><b>Email not verified</b></span>
+      (<span class="has" ng-if="request.user.googleId">G+ {{request.user.googleId}}</span><span ng-if="!request.user.googleId">No google login</span>)
 
-
-    First seen: {{request.user.cohort.engagement.visit_first}}
-    <br />Signed up: {{request.user.cohort.engagement.visit_signup}}
-
-
-
+    </div>
+    
+    <div class="cohort">
+      <div><label>First seen</label> {{request.user.cohort.engagement.visit_first | agoTime}}</div>
+      <div><label>Joined</label> {{request.user.cohort.engagement.visit_signup | agoTime }}</div>
+    </div>
 
   </section>
 
-  <section class="views">
+
+  <section class="info left" request-admin req="request"></section>
+
+  <section ng-if="request" class="actions left">
+    <label>Submitted</label>
+      <span ng-if="request && request._id">{{ request._id | objectIdToAgoTime }}</span>
+    <br /><label>Status</label>      
+    <span>{{ request.status }}</span>
+    <br /><label>Quality</label>      
+    <span ng-if="meta.shortBrief">short breif</span>
+
+    <hr />
+    <mail-link name="'received'" to="request.by.email" req="request" meta="meta">
+
+  </section>
+
+
+  <section class="views right">
     <table class="table table-condensed">
       <tr>
         <th style="width:80px">Time</th>

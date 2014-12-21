@@ -13,5 +13,6 @@ module.exports = [
   '/v1/auth*',
   '/login',
   '/me*',
-  '/help*'
+  '/help*',
+  '/adm*'
 ]
