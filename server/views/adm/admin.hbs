@@ -1,31 +1,29 @@
 <!DOCTYPE html>
 <html ng-app="ADM">
 <head>
-  <title>Admin | AirPair</title>
+  <title>Adm | AirPair</title>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0;">
-  <link rel='stylesheet' id='google-font-css'  href='//fonts.googleapis.com/css?family=Open+Sans%3A300%2C400%2C700&#038;ver=2.0.1' type='text/css' media='all' />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="{{ config.bundle.libCss}}" type="text/css" />
   <link rel="stylesheet" href="{{ config.bundle.admCss}}" type="text/css" />
   <base href="/" />
 </head>
 <body>
 <header>
+  <a href="/v1/adm/pipeline">Pipeline</a> |
   <a href="/v1/adm/orders">Orders</a> |
   <a href="/v1/adm/users">Users</a> |
-  <a href="/v1/adm/companys">Companys</a> |
-  <a href="/v1/adm/views">Views</a> |
-  <a href="/v1/adm/posts">Posts</a> |
+  <a class="nomob" href="/v1/adm/companys">Companys</a> |
+  <a class="nomob" href="/v1/adm/views">Views</a> |
+  <a class="nomob" href="/v1/adm/posts">Posts</a> |
   Tags |
   Chat |
-  <a href="/v1/adm/redirects">Redirects</a>
+  <a class="nomob" href="/v1/adm/redirects">Redirects</a>
 </header>
 
-<div class="main-wrap">
-  <main>
-    <div ng-view></div>
-  </main>
-</div>
+<main>
+  <div ng-view></div>
+</main>
 
 <script type="text/javascript" src="{{ config.bundle.admScript }}"></script>
 <script type="text/javascript">

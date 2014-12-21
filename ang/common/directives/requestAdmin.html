@@ -1,81 +1,41 @@
 <form ng-if="request" class="requestForm" novalidate name="requestForm" ng-submit="RequestFormCtrl.submit(requestForm.$valid, request)">
 
-  <request-progress></request-progress>
-  <br />
+  <request-progress-admin ng-if="!request.budget" req="request"></request-progress-admin>
 
-  <table>
-    <tr>
-      <td>Type</td>
-      <td>
-        <select id="requestType" ng-model="request.type">
-          <option value="troubleshooting">Troubleshooting</option>
-          <option value="mentoring">Mentoring</option>
-          <option value="code-review">Code review</option>
-          <option value="resources">Extra resources</option>
-          <option value="advice">Technology advice</option>
-          <option value="other">Other</option>
-        </select>
-      </td>
-      <td>Submitted</td>
-      <td><label ng-if="request && request._id">{{ request._id | objectIdToAgoTime }}</label>
-      </td>
-    </tr>
-    <tr>
-      <td>Budget</td>
-      <td>
-        <input type="text" ng-model="request.budget" ng-if="request.budget" />
-        <span ng-if="!request.budget">-</span>
-      </td>
-      <td>Time</td>
-      <td>
-        <select id="requestTime" ng-model="request.time" ng-if="request.time">
-          <option value="regular">regular</option>
-          <option value="rush">rush</option>
-        </select>
+  <div class="left">
+    <div>
+      <label>Type</label>
+      <span>
         <span ng-if="!request.time">-</span>
-      </td>
-    </tr>
-    <tr>
-      <td>Tags</td>
-      <td colspan="3">
-        <div ng-repeat="t in request.tags">{{t.slug}}</div>
-        <span ng-if="request.tags.length == 0">-</span>
-      </td>
-    </tr>
-    <tr>
-      <td>Experience</td>
-      <td>
-        <select id="requestExperience" ng-model="request.experience" ng-if="request.experience">
-          <option value="beginner">beginner</option>
-          <option value="proficient">proficient</option>
-          <option value="advanced">advanced</option>
-        </select>
-        <span ng-if="!request.experience">-</span>
-      </td>
-    </tr>
-    <tr>
-      <td>Brief</td>
-      <td colspan="3">
-        <textarea id="requestBrief" ng-model="request.brief" ng-if="request.brief"
-          style="width:540px;height:100px;">
-        </textarea>
-      </td>
-      <span ng-if="!request.brief">-</span>
-    </tr>
-    <tr>
-      <td>Hours</td>
-      <td>
-        <select id="requestHours" ng-model="request.hours" ng-if="request.hours">
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="5">5</option>
-          <option value="10">10</option>
-          <option value="more">more</option>
-        </select>
+        <time ng-if="request.time">{{request.time}}</time>
+
         <span ng-if="!request.hours">-</span>
-      </td>
-    </tr>
-  </table>
+        <span ng-if="request.hours">{{request.hours}} hrs</span>
+
+        {{request.type}}
+      </span>
+    </div>
+    <div>
+      <label>Budget</label>
+      <input type="text" ng-model="request.budget" ng-if="request.budget" />
+      <span ng-if="!request.budget">-</span>
+    </div>
+    <div>
+      <label>Tags</label>
+      <span ng-if="!request.experience">-</span>
+      <span ng-if="request.experience">{{request.experience}}</span>
+      <ul>
+        <li ng-repeat="t in request.tags">{{t.slug}}</li>
+      </ul>
+      <span ng-if="request.tags.length == 0">-</span>
+    </div>
+  </div>
+
+  <div class="right">
+    <section id="requestBrief" ng-model="request.brief" ng-if="request.brief">
+      {{request.brief}}
+    </section>
+  </div>
 
 </section>
 

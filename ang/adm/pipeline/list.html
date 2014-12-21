@@ -1,27 +1,38 @@
 <section id="pipeline">
 
 <section class="today">
-  <h6>Today <b>{{requests.todays.length}}</b> <span>{{today.format("DD MMM")}}</span></h6>
-  <span ng-repeat="r in requests.todays"><img src="{{r.by.avatar}}?s=20" class="user"></span>
-  <div>
-    <span>Created: {{todays.typeCount}}</span>
-    <span>Tags: {{todays.tagsCount}}</span>
-    <span>Brief: {{todays.briefCount}}</span>
-    <span>Budget: {{todays.budgetCount}}</span>
+  <h4> Today
+    <span>{{today.format("DD MMM")}}</span> >>
+    <span>{{todays.typeCount}}</span> >>
+    Tags: <span>{{todays.tagsCount}}</span> >>
+    Brief: <span>{{todays.briefCount}}</span> >>
+    Budget: <span>{{todays.budgetCount}}</span>
  </div>
 </section>
 
 <section class="active">
-  <h6>Active</h6>
-  <div ng-repeat="r in requests.complete">{{r._id}}</div>
+  <div ng-repeat="r in requests.complete">
+
+    <label>
+      <a href="/v1/adm/request/{{r._id}}">{{r.status}}</a>
+      {{r._id | objectIdToAgoTime }}
+    </label>
+    <label>{{r.owner}}</label>
+    <span>{{r.by.name}}</span>
+    <span><img src="{{r.by.avatar}}?s=20"></span>
+
+
+  </div>
+
+
 </section>
 
-<section class="incomplete">
+<!-- <section class="incomplete">
   <h6>Incomplete</h6>
   <div ng-repeat="request in requests.incomplete">
     <span>{{request.by.name}}</span>
     <request-progress></request-progress>
   </div>
-</section>
+</section> -->
 
 </section>

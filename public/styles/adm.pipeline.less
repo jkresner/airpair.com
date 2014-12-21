@@ -1,0 +1,136 @@
+@import "adm.less";
+
+.reqProgress {
+  height:32px;
+  padding:5px 0px 1px 5px;
+  background:@lightblue;
+  > div {
+    display:inline-block;
+    height:22px;
+    width:85px;
+    padding:3px 0px 3px 0px;
+    margin:0 2px 0 0;
+    background:@lightorange;
+    font-size:11px;
+    border-top-right-radius:16px;
+    border-bottom-right-radius:16px;
+    label { display:inline-block;padding:0 10px;color:white;font-weight:normal }
+  }
+}
+
+
+
+#pipeline {
+
+  section.today {
+    background:white;
+    padding:1px 10px;
+    h4 { font-size:14px; }
+    span { font-weight:bold }
+    margin-bottom:10px;
+  }
+
+  section.views {
+    position:absolute;top:150px;left:700px;right:10px;
+    td { font-size:10px }
+  }
+
+  section.active {
+    width:46%;display:inline-block;
+  }
+
+  section.incomplete {
+    width:46%;display:inline-block;
+    vertical-align:top;
+  }
+}
+
+#pipelineReq {
+
+  > section {
+    position:relative;
+    margin-top:10px;
+    width:49%;
+    border-top:solid 5px black;
+    padding-top:4px;
+    &.left { float:left;clear:left }
+    &.right { float:right;clear:right }
+  }
+
+  .btn {
+    background:@paleyellow;
+    color:@darkyellow;
+    border:solid 1px @darkyellow;
+    padding:2px 4px;
+    width:100px;
+    font-size:10px;
+    text-align:left;
+    border-radius:2px;
+  }
+
+  .btn:hover {
+    font-weight:normal;
+    background:@lightyellow;
+  }
+
+  .fieldLabel {
+    font-weight:normal;font-size:9px;width:60px;
+    display:inline-block;margin-top:-2px;
+    text-transform:uppercase;
+  }
+
+  section.nav {
+    background:white;
+    padding:5px;
+  }
+
+  section.info {
+    time { text-transform:uppercase; }
+    padding-top:10px;
+    > div { clear:both }
+    label { padding-bottom:5px;.fieldLabel }
+    span { padding-top:4px;display:inline-block;color:black }
+    div.left { width:44%;float:left;clear:left;vertical-align:top }
+    div.right { width:56%;float:right;clear:right }
+    ul { display:block;padding-left:90px }
+    #requestBrief { background:white;padding:3px 5px;min-height:180px;font-size:13px }
+  }
+
+  section.actions {
+    label { padding-bottom:5px;.fieldLabel }
+    textarea { width:100%;height:200px;font-size:12px;color:black }
+    pre { display:none }
+  }
+
+  section.user {
+    padding:5px 0 10px 90px;
+    img { position:absolute;top:5px;left:0;border-radius:50% }
+    .nopaymethods { color:@error }
+    .has { color:green }
+    .cohort {
+      label { .fieldLabel }
+    }
+  }
+
+  table { margin-top:10px;vertical-align:top }
+  td { vertical-align:top;padding:6px;
+    select { width:140px }
+    span { color:@error }
+  }
+
+
+  @media only screen and (max-width:640px) {
+    > section {
+      width:100%;
+      .left { float:none }
+      .right { float:none }
+    }
+
+    section.info { div.left { float:none;width:100% } div.right { float:none;width:100% } }
+  }
+
+
+
+}
+
+

@@ -1,20 +1,5 @@
-@orange:#ce5424;
-@turquoise:#90d1cc;
-@darkblue:#151821;
-@darkorange:#211A15;
-@blue:#232835;
-@lightblue:#dff2ef;
-@blackgray:#232323;
-@gray:#4d4e4e;
-@mediumgray:#7e7f7f;
-@lightgray:#d3d3d3;
-@palegray:#eee;
-@reallypalegray:#f9f9f9;
-@bluegray:#c8d6d3;
-@error:#a94442;
-@paleyellow:#fcf8e3;
-@lightyellow:#faebcc;
-@darkyellow:#8a6d3b;
+@import "ap.less";
+@import "adm.pipeline.less";
 
 html, body{
   height:100%;
@@ -55,8 +40,9 @@ a:hover { text-decoration:none }
 .btn:hover { font-weight:bold;color:white }
 
 main {
+  clear:both;
   width:100%;
-  margin:0 auto;
+  margin:0px auto 0 auto;
   padding:0px 10px;
   a { color:@orange }
   a:hover { color:@gray }
@@ -239,83 +225,5 @@ section#orders {
       width:40%;
       height:40px;
     }
-  }
-}
-
-
-section#pipeline {
-  .requestProgress {
-    height:32px;
-    padding:3px 0px 1px 5px;
-    background:@lightblue;
-
-    // > div { display:none }
-
-    .tags { opacity:0.2 }
-    .experience { opacity:0.2 }
-    .brief { opacity:0.2 }
-    .hours { opacity:0.2 }
-    .time { opacity:0.2 }
-    .budget { opacity:0.2 }
-    .broadcast { opacity:0.2 }
-
-    > div.done { opacity:0.5;display:inline-block; }
-
-    > div {
-      display:inline-block;
-      height:22px;
-      width:85px;
-      padding:3px 0px 3px 0px;
-      margin:0 2px 0 0;
-      background:@bluegray;
-      font-size:11px;
-      a { display:none;padding:0 10px;color:white;font-weight:bold; }
-      a:hover { color:white  }
-      border-top-right-radius:16px;
-      border-bottom-right-radius:16px;
-      label { display:inline-block;padding:0 10px;color:@bluegray;font-weight:normal }
-    }
-    div.done {
-      label { display:none }
-      a { display:inline-block;width:100% }
-      background:@orange;
-    }
-    // div:hover { opacity:0.8 }
-    div.done:hover { opacity:1 }
-  }
-
-  .item .requestProgress {
-    position:absolute;
-    top:50px;
-    width:640px;
-  }
-
-  table { margin-top:50px;vertical-align:top }
-  td { vertical-align:top;padding:6px;
-    select { width:140px }
-    span { color:@error }
-  }
-
-  section.actions {
-    width:640px;
-  }
-
-  section.user {
-    position:absolute;top:50px;left:700px;padding-left:90px;
-    img { position:absolute;top:0;left:0;border-radius:50% }
-    .nopaymethods { color:@error }
-  }
-  section.views {
-    position:absolute;top:150px;left:700px;right:10px;
-    td { font-size:10px }
-  }
-
-  section.active {
-    width:46%;display:inline-block;
-  }
-
-  section.incomplete {
-    width:46%;display:inline-block;
-    vertical-align:top;
   }
 }

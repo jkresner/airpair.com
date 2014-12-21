@@ -1,0 +1,18 @@
+Hi {{firstName}},
+
+My name is {{accountManager.firstName}}, I'm your personal account manager assigned to help you with your << {{tagsString}} >> request. So I can start introducing you to experts:
+
+<div ng-if="meta.shortBrief">  Do you have more detail about what you need help with?
+  You can update your request here:
+  https://www.airpair.com/help/request/{{r._id}}
+</div>
+<div ng-if="meta.noPaymethod">  Please add your credit card, it is required before messaging potential experts:
+  https://www.airpair.com/billing
+</div>
+Best,
+
+{{accountManager.firstName}}
+
+--
+{{accountManager.name}}
+twitter.com/airpair

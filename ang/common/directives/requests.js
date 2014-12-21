@@ -23,8 +23,8 @@ angular.module("APRequestDirectives", [])
       scope.done.current = 'submit'
       scope.done.type = (r.type) ? true : false,
       scope.done.tags = (r.tags && r.tags.length > 0) ? true : false,
-      scope.done.brief = (r.brief) ? true : false,
       scope.done.experience = (r.experience) ? true : false,
+      scope.done.brief = (r.brief) ? true : false,
       scope.done.hours = (r.hours) ? true : false,
       scope.done.time = (r.time) ? true : false,
       scope.done.budget = (r.budget) ? true : false
@@ -52,6 +52,16 @@ angular.module("APRequestDirectives", [])
       }
 
     }
+  }
+})
+
+
+.directive('requestProgressAdmin', function() {
+  return {
+    template: require('./requestProgressAdmin.html'),
+    scope: { r: '=req' },
+    link(scope, element, attrs) {},
+    controller($scope, $attrs) {}
   }
 })
 
@@ -172,13 +182,9 @@ angular.module("APRequestDirectives", [])
 
   return {
     template: require('./requestListItem.html'),
-    scope: {
-        r: '=req'
-    },
-    link(scope, element, attrs) {
-    },
-    controller($scope, $attrs) {
-    }
+    scope: { r: '=req' },
+    link(scope, element, attrs) {},
+    controller($scope, $attrs) {}
   };
 
 })

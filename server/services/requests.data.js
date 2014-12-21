@@ -107,7 +107,9 @@ module.exports = {
     },
 
     active: {
-      'budget' : { '$exists': true }, status: { $in: ['received','waiting','review','scheduled','consumed'] }
+      // 'budget' : { '$exists': true },
+      // status: { $in: ['received','waiting','review','scheduled','consumed'] }
+      'adm.active': true
     }
 
   }

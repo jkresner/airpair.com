@@ -55,6 +55,10 @@ angular.module('APFilters', [])
   })
 
 
+  .filter('urlEncode', function ($sce) {
+    return (string) => encodeURIComponent(string)
+  })
+
   .filter('trustUrl', function ($sce) {
     return (url) => $sce.trustAsResourceUrl(url)
   })

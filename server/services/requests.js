@@ -71,7 +71,7 @@ var get = {
     }))
   },
   getActiveForAdmin(cb) {
-    svc.searchMany(Data.query.active, { fields: Data.select.pipeline}, cb)
+    svc.searchMany(Data.query.active, { options: { sort: { '_id': -1 }}, fields: Data.select.pipeline }, cb)
   },
   // getIncompleteForAdmin(cb) {
   //   svc.searchMany(Data.query.incomplete, { fields: Data.select.pipeline}, cb)
@@ -87,13 +87,20 @@ var save = {
     o._id = svc.newId()
     o.userId = _id
     o.status = 'received'
+    o.adm = { active:true }
 
     svc.create(o, cb)
   },
   updateByCustomer(original, update, cb) {
-    if (update.budget && !original.budget) // new fully completed request
+
+    // new fully completed request
+    if (update.budget && !original.budget) {
       mailman.sendPipelinerNotifyRequestEmail(this.user.name, original._id, update.time.toUpperCase(),
         update.budget, update.tags, ()=>{})
+
+      original.adm = { active:true, submitted: new Date() }
+    }
+
 
     var ups = _.extend(original, update)
     if (ups.tags.length == 1) ups.tags[0].sort = 0
