@@ -49,12 +49,32 @@
     <label>Submitted</label>
       <span ng-if="request && request._id">{{ request._id | objectIdToAgoTime }}</span>
     <br /><label>Status</label>
-    <span>{{ request.status }}</span>
+    <span>
+      <select ng-model="request.status"
+        ng-change="update()">
+        <option>received</option>
+        <option>waiting</option>
+        <option>review</option>
+        <option>scheduled</option>
+        <option>completed</option>
+        <option>canceled</option>
+      </select>
+    </span>
+    <br /><label>Last touch</label>
+    <span>{{ request.adm.lastTouch | agoTime }}</span>
+    <br /><label>Owner</label>
+    <span>
+      <select ng-model="request.adm.owner"
+        ng-change="update()">
+        <option>pg</option>
+        <option>jk</option>
+      </select>
+    </span>
     <br /><label>Quality</label>
     <span ng-if="meta.shortBrief">short breif</span>
 
     <hr />
-    <mail-link name="'received'" to="request.by.email" req="request" meta="meta">
+    <mail-link name="'received'" to="request.by.email" req="request" meta="meta" send-callback="receivedCallback">
 
   </section>
 

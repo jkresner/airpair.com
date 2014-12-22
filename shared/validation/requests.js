@@ -55,6 +55,14 @@ export function updateByCustomer(original, update)
 }
 
 
+export function updateByAdmin(original, update)
+{
+  if (!update.status) return 'Request status required'
+  if (!update.adm.owner) return 'Request adm owner required'
+  if (!update.adm.submitted && original.adm.submitted) return 'Request submitted cannot be over-written'
+  // if (!update.newcustomer) return 'Request new customer required'
+}
+
 export function replyByExpert(request, expert, reply)
 {
   var userId = this.user._id

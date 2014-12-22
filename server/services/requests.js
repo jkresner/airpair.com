@@ -97,7 +97,7 @@ var save = {
       mailman.sendPipelinerNotifyRequestEmail(this.user.name, original._id, update.time.toUpperCase(),
         update.budget, update.tags, ()=>{})
 
-      original.adm = { active:true, submitted: new Date() }
+      update.adm = { active:true, submitted: new Date() }
     }
 
 
@@ -108,9 +108,17 @@ var save = {
 
     svc.update(original._id, ups, cb)
   },
+  updateByAdmin(original, update, cb) {
+    var {adm,status} = update
+    adm.lastTouch = new Date()
+    var ups = _.extend(original, {adm,status})
+
+    svc.update(original._id, ups, cb)
+  },
   replyByExpert(request, expert, reply, cb) {
     var {suggested} = request
     // data.events.push @newEvent "expert reviewed", eR
+    reply.reply = { time: new Date() }
     var existing = _.find(suggested, (s) => _.idsEqual(s.expert._id, expert._id))
     if (!existing) suggested.push(_.extend(reply, { expert }))
     else {
@@ -126,6 +134,8 @@ var save = {
     // sug.expert.paymentMethod = type: 'paypal', info: { email: eR.payPalEmail }
 
     mailman.sendPipelinerNotifyReplyEmail(this.user.name, request._id, reply.expertStatus, ()=>{})
+
+    if (!request.adm.reviewable) request.adm.reviewable = new Date()
 
     // var ups = _.extend(request,{suggested})
     svc.update(request._id, request, selectByRoleCB(this,cb,cb))
