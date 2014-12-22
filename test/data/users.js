@@ -94,6 +94,7 @@ module.exports = {
 
   kyla: { name: "Kyle Aungst", email: "kyle.aungst@test.com"},
   kyau: { name: "Kyle Aungst", email: "kyle.aungst@hotmail.com"},
+  kaun: { name: "Kyle Aungst", email: "kyle.aungst@ghotmail.com"},
   auka: { name: "Aungst Kyle", email: "aungst.aungst@hotmail.com"},
 
   admin: {

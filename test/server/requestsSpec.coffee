@@ -202,6 +202,10 @@ module.exports = -> describe "API", ->
         testNotAvailable testAvailable
 
 
+
+  it.skip 'Cannot reply to customers own request', (done) ->
+
+
   it 'Can delete an incomplete request as owner', (done) ->
     addAndLoginLocalUser 'kyla', (s) ->
       d = type: 'mentoring'
@@ -229,5 +233,18 @@ module.exports = -> describe "API", ->
                     done()
 
 
-  it.skip 'Cannot reply to customers own request', (done) ->
-
+  it 'Admin can suggest and remove experts', (done) ->
+    addAndLoginLocalUser 'kaun', (s) ->
+      d = tags: [data.tags.angular], type: 'resources', experience: 'proficient', brief: 'bah bah anglaur test yo4', hours: "1", time: 'rush', budget: 300
+      POST '/requests', d, {}, (r) ->
+        LOGIN 'admin', data.users.admin, (sAdmin) ->
+          GET "/adm/requests/user/#{s._id}", {}, (reqs1) ->
+            expect(reqs1.length).to.equal(1)
+            expect(reqs1[0].suggested.length).to.equal(0)
+            PUT "/adm/requests/#{r._id}/add/#{data.experts.abha._id}", {}, {}, (reqWexp) ->
+              GET "/adm/requests/user/#{s._id}", {}, (reqs2) ->
+                expect(reqs2.length).to.equal(1)
+                expect(reqs2[0].suggested.length).to.equal(1)
+                PUT "/adm/requests/#{r._id}/remove/#{data.experts.abha._id}", {}, {}, (reqRexp) ->
+                  expect(reqRexp.suggested.length).to.equal(0)
+                  done()

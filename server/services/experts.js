@@ -3,6 +3,7 @@ import * as Validate from '../../shared/validation/experts.js'
 import Expert from '../models/expert'
 // var Data = require('./experts.data')
 import * as md5           from '../util/md5'
+var Data =                require('./experts.data')
 var logging = false
 var svc = new Svc(Expert, logging)
 
@@ -22,6 +23,30 @@ export function getMe(cb) {
     if (e || !r) return cb(e,r)
     r.avatar = md5.gravatarUrl(r.email)
     cb(null,r)
+  })
+}
+
+export function getMatchesForRequest(request, cb) {
+  // todo protect with owner of request?
+  var query = {
+    tags: { $elemMatch: { _id: { $in: _.pluck(request.tags,'_id') } } },
+    // rate: { $lt: request.budget }
+  }
+  var existingExpertIds = []
+  for (var s of request.suggested) existingExpertIds.push(s.expert._id)
+
+  svc.searchMany(query, {fields:Data.select.matches}, (e,r) => {
+    if (e || !r || r.length == 0) return cb(e,r)
+    var existing = []
+    for (var exp of r) {
+      exp.avatar = md5.gravatarUrl(exp.email)
+      if (_.find(existingExpertIds,(id)=>_.idsEqual(id,exp._id)))
+        existing.push(exp)
+    }
+    $log('existing', r.length, existing.length)
+    var unique = _.difference(r, existing)
+    $log('unique', unique.length)
+    cb(null,unique)
   })
 }
 

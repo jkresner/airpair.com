@@ -75,3 +75,20 @@ export function deleteById(original)
   if (original.suggested.length > 0)
     return 'Cannot delete request with suggestions'
 }
+
+
+export function addSuggestion(original, expert)
+{
+  var existing = _.find(original.suggested, (s) => _.idsEqual(s.expert._id,expert._id) )
+  if (existing)
+    return 'Cannot suggest the same expert twice'
+}
+
+export function removeSuggestion(original, expert)
+{
+  var existing = _.find(original.suggested, (s) => _.idsEqual(s.expert._id,expert._id) )
+  if (!existing)
+    return 'Cannot remove expert not on request'
+}
+
+

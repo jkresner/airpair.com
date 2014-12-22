@@ -131,6 +131,23 @@ var save = {
     // var ups = _.extend(request,{suggested})
     svc.update(request._id, request, selectByRoleCB(this,cb,cb))
   },
+  addSuggestion(request, expert, body, cb)
+  {
+    var suggested = request.suggested
+    suggested.push({
+      matchedBy: { userId: this.user._id, initials: 'pg' },
+      expertStatus: "waiting",
+      expert
+    })
+    svc.update(request._id, {suggested}, cb)
+  },
+  removeSuggestion(request, expert, cb)
+  {
+    var suggested = request.suggested
+    var existing = _.find(suggested, (s) => _.idsEqual(s.expert._id,expert._id) )
+    suggested = _.without(suggested,existing)
+    svc.update(request._id, {suggested}, cb)
+  },
   deleteById(o, cb)
   {
     svc.deleteById(o._id, cb)

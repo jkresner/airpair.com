@@ -34,16 +34,34 @@ angular.module("ADMPipeline", ["APRequestDirectives"])
       AdmDataService.getUsersViews({_id:r.userId}, function (views) {
         $scope.views = views.reverse()
       })
+      AdmDataService.pipeline.getRequestMatches(r._id, function (experts) {
+        $scope.matches = experts;
+      })
     },
       () => $location.path('/adm/pipeline')
     )
 
     $scope.delete = () =>
-    {
       AdmDataService.pipeline.deleteRequest($routeParams.id, function (r) {
         $location.path('/adm/pipeline')
       }, ServerErrors.add)
+
+
+    $scope.addSuggestion = (expertId) => {
+      var expert = _.find($scope.matches, (e) => e._id == expertId)
+      AdmDataService.pipeline.addSuggestion({_id:$scope.request._id, expertId}, function (r) {
+        $scope.request = r
+        $scope.meta.okToDelete = r.suggested.length == 0
+        $scope.matches = _.without($scope.matches, expert)
+      }, ServerErrors.add)
     }
+
+    $scope.removeSuggestion = (expertId) =>
+      AdmDataService.pipeline.removeSuggestion({_id:$scope.request._id, expertId}, function (r) {
+        $scope.request = r
+        $scope.meta.okToDelete = r.suggested.length == 0
+      }, ServerErrors.add)
+
 
   })
 
