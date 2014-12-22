@@ -19,25 +19,24 @@
 <table class="table table-striped">
   <tr ng-repeat="r in requests.complete">
     <td>
-      <label>
+      <span>
         <a href="/adm/pipeline/{{r._id}}">{{r.status}}</a>
         <time>{{r._id | objectIdToAgoTime }}</time>
         {{r.time}}
-      </label>
-      <label>{{r.num}}
+      </span>
+      <span>{{r.num}}
         <div class="{{r.adm.owner}}">{{r.adm.owner}}</div>
         <time>{{r.adm.lastTouch | agoTime }}</time>
-      </label>
+      </span>
       <label>
-        <div ng-repeat="t in r.tags">{{t.slug}}</div>
+        <i ng-repeat="t in r.tags">{{t.slug}}</i>
       </label>
       <span><img ng-src="{{r.by.avatar}}?s=30"></span>
-      <span>{{r.by.name}}</span>
-
+      <label>{{r.by.name}}</label>
       <label>
         <ul>
           <li ng-repeat="s in r.suggested">
-            <img ng-src="{{s.expert.pic}}?s=20" />
+            <img ng-src="{{s.expert.avatar}}?s=20" />
           </li>
         </ul>
 

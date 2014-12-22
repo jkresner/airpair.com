@@ -71,7 +71,10 @@ var get = {
     }))
   },
   getActiveForAdmin(cb) {
-    svc.searchMany(Data.query.active, { options: { sort: { '_id': -1 }}, fields: Data.select.pipeline }, cb)
+    svc.searchMany(Data.query.active, { options: { sort: { '_id': -1 }}, fields: Data.select.pipeline }, (e,r)=>{
+      for (var req of r) req = Data.select.byView(req, 'admin')
+      return cb(e,r)
+    })
   },
   // getIncompleteForAdmin(cb) {
   //   svc.searchMany(Data.query.incomplete, { fields: Data.select.pipeline}, cb)
