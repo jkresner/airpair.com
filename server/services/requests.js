@@ -111,8 +111,10 @@ var save = {
   updateByAdmin(original, update, cb) {
     var {adm,status} = update
     adm.lastTouch = new Date()
-    var ups = _.extend(original, {adm,status})
+    if (original.adm.active && !update.adm.active)
+      adm.closed = new Date()
 
+    var ups = _.extend(original, {adm,status})
     svc.update(original._id, ups, cb)
   },
   replyByExpert(request, expert, reply, cb) {

@@ -27,17 +27,18 @@
     <div ng-if="!paymethods || paymethods.length == 0" class="nopaymethods"><b>No pay methods</b></div>
 
     <div>
-      <span class="has" ng-if="request.user.emailVerified">Email Verified</span>
-      <span ng-if="!request.user.emailVerified" class="nopaymethods"><b>Email not verified</b></span>
-      (<span class="has" ng-if="request.user.googleId">G+ {{request.user.googleId}}</span><span ng-if="!request.user.googleId">No google login</span>)
+      <span class="has" ng-if="user.emailVerified">Email Verified</span>
+      <span ng-if="!user.emailVerified" class="nopaymethods"><b>Email not verified</b></span>
+      (<span class="has" ng-if="user.googleId">G+ {{user.googleId}}</span><span ng-if="!user.googleId">No google login</span>)
 
     </div>
 
     <div class="cohort">
-      <div><label>First seen</label> {{request.user.cohort.engagement.visit_first | agoTime}}</div>
-      <div><label>Joined</label> {{request.user.cohort.engagement.visit_signup | agoTime }}</div>
+      <div><label>First seen</label> {{user.cohort.engagement.visit_first | agoTime}}</div>
+      <div><label>Joined</label> {{user.cohort.engagement.visit_signup | agoTime }}</div>
       <div><label>Started</label> {{request._id | objectIdToDate : 'HH:mm:ss' }}</div>
       <div><label>Submitted</label> {{request.adm.submitted | locaTime : 'HH:mm:ss' }}</div>
+      <div><label>Closed</label> {{request.adm.closed | locaTime : 'HH:mm:ss' }}</div>
     </div>
 
   </section>
