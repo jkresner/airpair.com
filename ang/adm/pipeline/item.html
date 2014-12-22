@@ -82,12 +82,31 @@
 
   <section class="experts left">
 
-    <div ng-repeat="s in request.suggested">
-      <img src="{{s.expert.pic}}" class="user" />
-      {{s.expert.name}}
-    </div>
-
-    {{request.suggested.length }}
+    <section class="suggested">
+      <div ng-repeat="s in request.suggested">
+        <img ng-src="{{s.expert.pic}}" class="user" />
+        {{s.expertStatus}}
+        <!-- {{s.suggestedRate.private.expert}} -->
+        {{s.expert.name}}
+        <a ng-click="removeSuggestion(s.expert._id)" class="delete">Remove</a>
+      </div>
+    </section>
+    <hr />
+    <section class="matches">
+      <span ng-repeat="t in request.tags">
+        <label>{{t.slug}}</label> <input type="checkbox" value="t._id" />
+      </span>
+      <div>
+        <ul>
+          <li ng-repeat="m in matches">
+            <img ng-src="{{m.avatar}}?s=30" class="user" /> {{m.name}}
+            [<a ng-click="addSuggestion(m._id)">add</a>]
+            &nbsp;
+          </li>
+            }
+        </ul>
+      </div>
+    </section>
 
   </section>
 

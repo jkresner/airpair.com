@@ -75,9 +75,12 @@ export default function(app) {
     .get('/experts/me', ExpertsAPI.getMe)
     .get('/experts/:id', ExpertsAPI.getById)
     .get('/experts', ExpertsAPI.getForExpertsPage)
-
+    .get('/experts/match/:request', authd, ExpertsAPI.getMatchesForRequest)
 
   var admrouter = require('express').Router()
+    .param('expert', ExpertsAPI.paramFns.getById)
+    .param('request', RequestsAPI.paramFns.getByIdForAdmin)
+
     .use(adm)
     .get('/posts', PostsAPI.getAllAdmin)
     .get('/orders/:start/:end', OrdersAPI.getOrdersByDateRange)
@@ -97,7 +100,8 @@ export default function(app) {
     .get('/requests/incomplete', RequestsAPI.getIncompleteForAdmin)
     .get('/requests/:id', RequestsAPI.getByIdForAdmin)
     .get('/requests/user/:id', RequestsAPI.getByUserIdForAdmin)
-
+    .put('/requests/:request/add/:expert', RequestsAPI.addSuggestion)
+    .put('/requests/:request/remove/:expert', RequestsAPI.removeSuggestion)
 
   router.use('/adm',admrouter)
 

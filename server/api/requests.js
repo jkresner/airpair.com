@@ -13,6 +13,8 @@ export default initAPI(
   getRequestForBookingExpert: (req) => [req.params.id,req.params.expertId],
   updateByCustomer: (req) => [req.request,req.body],
   replyByExpert: (req) => [req.request,req.expert,req.body],
+  addSuggestion: (req) => [req.request,req.expert,req.body],
+  removeSuggestion: (req) => [req.request,req.expert],
   deleteById: (req) => [req.request],
 }, {
   request:'getByIdForAdmin',
