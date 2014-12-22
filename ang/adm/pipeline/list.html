@@ -11,19 +11,33 @@
 </section>
 
 <section class="active">
-  <div ng-repeat="r in requests.complete">
 
-    <label>
-      <a href="/v1/adm/request/{{r._id}}">{{r.status}}</a>
-      {{r._id | objectIdToAgoTime }}
-    </label>
-    <label>{{r.owner}}</label>
-    <span>{{r.by.name}}</span>
-    <span><img src="{{r.by.avatar}}?s=20"></span>
+<table class="table table-striped">
+  <tr ng-repeat="r in requests.complete">
+    <td>
+      <label>
+        <a href="/adm/pipeline/{{r._id}}">{{r.status}}</a>
+        {{r._id | objectIdToAgoTime }}
+        <label>{{r.time}}</label>
+      </label>
+      <label>{{r.owner}}</label>
+      <label>
+        <div ng-repeat="t in r.tags">{{t.slug}}</div>
+      </label>
+      <span><img ng-src="{{r.by.avatar}}?s=30"></span>
+      <span>{{r.by.name}}</span>
 
+      <label>
+        <ul>
+          <li ng-repeat="s in r.suggested">
+            <img ng-src="{{s.expert.pic}}?s=20" />
+          </li>
+        </ul>
 
-  </div>
-
+      </label>
+    </td>
+  </tr>
+</table>
 
 </section>
 

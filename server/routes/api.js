@@ -55,6 +55,7 @@ export default function(app) {
     .put('/requests/:request', authd, RequestsAPI.updateByCustomer)
     .put('/requests/:request/reply/:expert', authd, RequestsAPI.replyByExpert)
     .post('/requests', authd, RequestsAPI.create)
+    .delete('/requests/:request', RequestsAPI.deleteById)
 
     .get('/workshops/', WorkshopsAPI.getAll)
     .get('/workshops/:id', WorkshopsAPI.getBySlug)
@@ -95,7 +96,7 @@ export default function(app) {
     .get('/requests/active', RequestsAPI.getActiveForAdmin)
     .get('/requests/incomplete', RequestsAPI.getIncompleteForAdmin)
     .get('/requests/:id', RequestsAPI.getByIdForAdmin)
-
+    .get('/requests/user/:id', RequestsAPI.getByUserIdForAdmin)
 
 
   router.use('/adm',admrouter)

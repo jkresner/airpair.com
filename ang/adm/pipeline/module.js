@@ -5,35 +5,45 @@ angular.module("ADMPipeline", ["APRequestDirectives"])
 
   .config(function($locationProvider, $routeProvider) {
 
-    $routeProvider.when('/v1/adm/pipeline', {
+    $routeProvider.when('/adm/pipeline', {
       template: require('./list.html'),
       controller: 'PipelineCtrl'
     });
 
-    $routeProvider.when('/v1/adm/request/:id', {
+    $routeProvider.when('/adm/pipeline/:id', {
       template: require('./item.html'),
       controller: 'RequestCtrl'
     });
 
   })
 
-  .controller('RequestCtrl', function($scope, $routeParams, AdmDataService) {
+  .controller('RequestCtrl', function($scope, $routeParams, $location, AdmDataService, ServerErrors) {
 
     $scope.request = {}
 
     AdmDataService.pipeline.getRequest($routeParams.id, function (r) {
       $scope.request = r;
       $scope.meta = {
-        shortBrief: r.brief.length < 250
+        shortBrief: r.brief.length < 250,
+        okToDelete: r.suggested.length == 0
       }
       AdmDataService.billing.getUserPaymethods(r.userId, function (pms) {
         $scope.paymethods = (pms.btoken) ? [] : pms;
         $scope.meta.noPaymethod = $scope.paymethods.length < 1
       })
       AdmDataService.getUsersViews({_id:r.userId}, function (views) {
-        $scope.views = views
+        $scope.views = views.reverse()
       })
-    })
+    },
+      () => $location.path('/adm/pipeline')
+    )
+
+    $scope.delete = () =>
+    {
+      AdmDataService.pipeline.deleteRequest($routeParams.id, function (r) {
+        $location.path('/adm/pipeline')
+      }, ServerErrors.add)
+    }
 
   })
 
