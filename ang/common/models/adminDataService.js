@@ -6,7 +6,7 @@ angular.module('APSvcAdmin', [])
 
   .constant('APIAdm', '/v1/api/adm')
 
-  .service('AdmDataService', ['$http', 'APIAdm', function($http, APIAdm) {
+  .service('AdmDataService', function($http, $cacheFactory, APIAdm) {
 
     this.getPosts = function(success)
     {
@@ -61,8 +61,28 @@ angular.module('APSvcAdmin', [])
     }
 
     var pipelineFns = {
+      cache: $cacheFactory('pipelineFns'),
+      updateItemInCache(cb) {
+        return (data) => {
+          if (pipelineFns.cache) {
+            var existing = _.find(pipelineFns.cache.get('active'),(r)=>r._id==data._id)
+            if (existing) {
+              var updated = _.union(_.without(pipelineFns.cache.get('active'),existing), [data])
+              pipelineFns.cache.put('active',updated)
+              console.log('updated...', existing.status, data.status)
+            }
+          }
+          cb(data)
+        }
+      },
       getActive(success, error) {
-        $http.get(`${APIAdm}/requests/active`).success(success).error(error)
+        if (pipelineFns.cache.get('active'))
+          return success(pipelineFns.cache.get('active'))
+
+        $http.get(`${APIAdm}/requests/active`).success(function(data) {
+          pipelineFns.cache.put('active',data);
+          success(data);
+        }).error(error)
       },
       getIncomplete(success, error) {
         $http.get(`${APIAdm}/requests/incomplete`).success(success).error(error)
@@ -78,15 +98,15 @@ angular.module('APSvcAdmin', [])
       },
       updateRequest(data, success, error)
       {
-        $http.put(`${APIAdm}/requests/${data._id}`, data).success(success).error(error)
+        $http.put(`${APIAdm}/requests/${data._id}`, data).success(pipelineFns.updateItemInCache(success)).error(error)
       },
       addSuggestion(data, success, error)
       {
-        $http.put(`${APIAdm}/requests/${data._id}/add/${data.expertId}`, data).success(success).error(error)
+        $http.put(`${APIAdm}/requests/${data._id}/add/${data.expertId}`, data).success(pipelineFns.updateItemInCache(success)).error(error)
       },
       removeSuggestion(data, success, error)
       {
-        $http.put(`${APIAdm}/requests/${data._id}/remove/${data.expertId}`).success(success).error(error)
+        $http.put(`${APIAdm}/requests/${data._id}/remove/${data.expertId}`).success(pipelineFns.updateItemInCache(success)).error(error)
       },
       deleteRequest(_id, success, error) {
         $http.delete(`/v1/api/requests/${_id}`).success(success).error(error)
@@ -103,4 +123,4 @@ angular.module('APSvcAdmin', [])
 
     this.billing = billingFns
 
-  }])
+  })

@@ -35,6 +35,7 @@ var get = {
   getByIdForAdmin(id, cb) {
     svc.getById(id, (e,r) => {
       if (e || !r) return cb(e,r)
+      r = Data.select.byView(r, 'admin')
       User.findOne({_id:r.userId}, (ee,user) => {
         r.user = user
         return cb(ee,r)
@@ -113,9 +114,14 @@ var save = {
     adm.lastTouch = new Date()
     if (original.adm.active && !update.adm.active)
       adm.closed = new Date()
+    if (original.status == "received" && update.status == "waiting")
+      adm.received = new Date()
 
     var ups = _.extend(original, {adm,status})
-    svc.update(original._id, ups, cb)
+    svc.update(original._id, ups, (e,r)=>{
+      r = Data.select.byView(r, 'admin')
+      cb(e,r)
+    })
   },
   replyByExpert(request, expert, reply, cb) {
     var {suggested} = request
@@ -135,7 +141,8 @@ var save = {
     // sug.events.push @newEvent "expert updated"
     // sug.expert.paymentMethod = type: 'paypal', info: { email: eR.payPalEmail }
 
-    mailman.sendPipelinerNotifyReplyEmail(this.user.name, request._id, reply.expertStatus, ()=>{})
+    mailman.sendPipelinerNotifyReplyEmail(this.user.name, reply.expertStatus, request._id,
+        request.by.name, ()=>{})
 
     if (!request.adm.reviewable) request.adm.reviewable = new Date()
 
@@ -150,6 +157,10 @@ var save = {
       expertStatus: "waiting",
       expert
     })
+
+    mailman.sendExpertSuggestedEmail(expert, request.by.name, request._id,
+      this.user.name, request.tags, ()=>{})
+
     svc.update(request._id, {suggested}, cb)
   },
   removeSuggestion(request, expert, cb)

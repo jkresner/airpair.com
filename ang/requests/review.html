@@ -109,7 +109,7 @@
             <strong>${{s.suggestedRate.private.expert}} /hr</strong>
             <a ng-click="setExpertEdit()" class="btn">Edit reply</a>
           </section>
-          <section ng-if="isCustomer || isAdmin">
+          <section ng-if="(isCustomer || isAdmin) && s.expertStatus == 'available'">
             <strong>${{s.suggestedRate.private.total}} /hr</strong>
             <a href="/billing/book/{{s.expert._id}}/{{r._id}}" class="btn">Book</a>
           </section>

@@ -35,9 +35,10 @@ angular.module("ADMPipeline", ["APRequestDirectives"])
       AdmDataService.getUsersViews({_id:r.userId}, function (views) {
         $scope.views = views.reverse()
       })
-      // AdmDataService.pipeline.getRequestMatches(r._id, function (experts) {
-      //   $scope.matches = experts;
-      // })
+      AdmDataService.pipeline.getRequestMatches(r._id, function (experts) {
+        $scope.matches = experts;
+        console.log('$scope.matches', $scope.matches.length)
+      })
     },
       () => $location.path('/adm/pipeline')
     )
@@ -84,17 +85,35 @@ angular.module("ADMPipeline", ["APRequestDirectives"])
 
 
   .controller('PipelineCtrl', function($scope, AdmDataService) {
+
+    $scope.filterByLastTouch = function() {
+      var sorted = _.sortBy($scope.requests.complete,(r)=>r.adm.lastTouch)
+      // console.log('filterByLastTouch', sorted[0].adm.lastTouch, sorted[1].adm.lastTouch)
+      $scope.requests.complete = sorted
+    }
+
     $scope.today = moment().startOf('day')
     $scope.tomorrow = moment().startOf('day').add(1,'days')
 
     var start = moment()
     AdmDataService.pipeline.getActive((requests) => {
+      var count = 1;
       var todays = [], incomplete = [], complete = [];
       _.each(requests, (r) => {
         r.created = moment(util.ObjectId2Date(r._id))
+
+        //-- Deal gracefully with v0
+        if (!r.adm.owner && r.owner) r.adm.owner = r.owner
+        if (!r.adm.lastTouch) r.adm.lastTouch = moment().add(-1, 'days').format()
+
         // console.log('r.created', r.created.format(), util.dateInRange(r.created, $scope.today, $scope.tomorrow))
         if (util.dateInRange(r.created, $scope.today, $scope.tomorrow)) todays.push(r)
-        if (r.budget) complete.push(r)
+        if (r.budget) {
+          count = count+1
+          r.num = count
+          // console.log('complete', count, r._id, r.budget, r.adm.lastTouch)
+          complete.push(r)
+        }
         else incomplete.push(r)
       })
 
@@ -110,6 +129,8 @@ angular.module("ADMPipeline", ["APRequestDirectives"])
       $scope.todays = { budgetCount, briefCount, tagsCount, typeCount }
       $scope.requests = { todays, incomplete, complete }
 
-      console.log('setScope', moment().diff(start,'milliseconds'))
+      console.log('setScope', requests.length, $scope.requests.complete.length, moment().diff(start,'milliseconds'))
+      $scope.filterByLastTouch()
     })
+
   })
