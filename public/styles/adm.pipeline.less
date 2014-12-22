@@ -30,13 +30,17 @@
     margin-bottom:10px;
   }
 
-  section.views {
-    position:absolute;top:150px;left:700px;right:10px;
-    td { font-size:10px }
-  }
-
   section.active {
-    width:46%;display:inline-block;
+    width:80%;display:inline-block;
+    table {
+      td { padding:2px }
+      label { display:inline-block;width:100px;font-size:12px;
+        a { display:block }
+      }
+      ul { .ulNoStyle;
+        img { width:20px;height:20px;border-radius:50% }
+      }
+    }
   }
 
   section.incomplete {
@@ -80,8 +84,8 @@
   }
 
   section.nav {
-    background:white;
-    padding:5px;
+    background:@lightblue;
+    padding:5px 10px 10px 10px;
   }
 
   section.info {
@@ -105,11 +109,19 @@
   section.user {
     padding:5px 0 10px 90px;
     img { position:absolute;top:5px;left:0;border-radius:50% }
+    div.history { position:absolute;top:5px;left:5px;
+      top:100px;
+      a { display:block;width:68px;margin:4px 2px }
+    }
     .nopaymethods { color:@error }
     .has { color:green }
     .cohort {
       label { .fieldLabel }
     }
+  }
+
+  section.views {
+    td { font-size:10px }
   }
 
   table { margin-top:10px;vertical-align:top }

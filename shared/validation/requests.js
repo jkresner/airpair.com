@@ -63,3 +63,15 @@ export function replyByExpert(request, expert, reply)
   if (!reply.expertStatus) return 'Reply status required'
   if (!reply.expertAvailability) return  'Reply availability required'
 }
+
+export function deleteById(original)
+{
+  var isAdmin = _.contains(this.user.roles, 'admin')
+  var isOwner = _.idsEqual(original.userId, this.user._id)
+
+  if ( !isAdmin && !isOwner )
+    return 'Request must be deleted by owner'
+
+  if (original.suggested.length > 0)
+    return 'Cannot delete request with suggestions'
+}

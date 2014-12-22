@@ -21,24 +21,27 @@ angular.module('APFilters', [])
 
   .filter('locaTime', function() {
     return (utc, displayFormat) => {
-      var offset = moment().format('ZZ')
-      if (utc!='') {
+      if (utc && utc!='') {
+        var offset = moment().format('ZZ')
         var timeString = utc.split('GMT')[0]
-      displayFormat = displayFormat || 'ddd, MMM Do ha'
+        displayFormat = displayFormat || 'ddd, MMM Do ha'
         var result = moment(timeString, 'YYYY-MM-DDTHH:mm:ss:SSSZ').format(displayFormat)
         return result.replace(offset,'')
       }
       else
       {
-        return 'Confirming time';
+        return 'Unknown time';
       }
     }
   })
 
   .filter('objectIdToDate', function() {
     return (id, displayFormat) => {
-      displayFormat = displayFormat || 'MMM DD'
-      return moment(util.ObjectId2Date(id)).format(displayFormat);
+      if (id) {
+        displayFormat = displayFormat || 'MMM DD'
+        return moment(util.ObjectId2Date(id)).format(displayFormat);
+      }
+      return "Unknown time"
     }
   })
 

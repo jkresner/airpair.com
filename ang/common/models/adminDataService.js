@@ -70,6 +70,12 @@ angular.module('APSvcAdmin', [])
       getRequest(_id, success, error) {
         $http.get(`${APIAdm}/requests/${_id}`).success(success).error(error)
       },
+      getUsersRequests(_id, success, error) {
+        $http.get(`${APIAdm}/requests/user/${_id}`).success(success).error(error)
+      },
+      deleteRequest(_id, success, error) {
+        $http.delete(`/v1/api/requests/${_id}`).success(success).error(error)
+      },
     }
 
     this.pipeline = pipelineFns

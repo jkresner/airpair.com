@@ -53,7 +53,7 @@ var get = {
   getByIdForReview(id, cb) {
     svc.getById(id, selectByRoleCB(this,cb,cb))
   },
-  getUsers(userId, cb) {
+  getByUserIdForAdmin(userId, cb) {
     var opts = { options: { sort: { '_id': -1 } } }
     svc.searchMany({userId}, opts, cb)
   },
@@ -130,6 +130,10 @@ var save = {
 
     // var ups = _.extend(request,{suggested})
     svc.update(request._id, request, selectByRoleCB(this,cb,cb))
+  },
+  deleteById(o, cb)
+  {
+    svc.deleteById(o._id, cb)
   }
 }
 

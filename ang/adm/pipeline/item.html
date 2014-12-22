@@ -1,17 +1,26 @@
-<section id="pipelineReq">
+<section id="pipelineReq" ng-if="request">
 
 
   <section class="nav left">
     <a ng-href="/review/{{request._id}}" target="_blank">Review</a>
-    | <a ng-href="/v1/adm/farm/{{request._id}}">Farm</a>
+    <!-- | <a ng-href="/v1/adm/farm/{{request._id}}">Farm</a> -->
     | <a ng-href="/help/request/{{request._id}}" target="_self">Edit</a>
-    | <a ng-href="https://mail.google.com/mail/u/0/?shva=1#search/%22{{request.by.name | urlEncode }}%22+OR+{{ request.by.email | urlEncode  }}" target="_blank">Mail</a>
-    | <a ng-href="https://mixpanel.com/report/271245/explore/#list/filter:(conjunction:and,filters:!((filter:(operand:{{request.by.name | urlEncode }},operator:in),property:%27$name%27,selected_property_type:string,type:string))),sort_order:descending,sort_property:%27$created%27,sort_property_type:datetime">Mix</a>
+    | <a ng-if="meta.okToDelete" class="delete" ng-click="delete()">Delete</a>
   </section>
 
 
   <section class="user right">
     <img ng-src="{{request.by.avatar}}" />
+
+    <div class="history">
+      <a class="btn" ng-href="https://mail.google.com/mail/u/0/?shva=1#search/%22{{request.by.name | urlEncode }}%22+OR+{{ request.by.email | urlEncode  }}" target="_blank">
+        <i class="glyphicon glyphicon-envelope"></i> Mail
+      </a>
+      <a class="btn" ng-href="https://mixpanel.com/report/271245/explore/#list/filter:(conjunction:and,filters:!((filter:(operand:{{request.by.name | urlEncode }},operator:in),property:%27$name%27,selected_property_type:string,type:string))),sort_order:descending,sort_property:%27$created%27,sort_property_type:datetime">
+        <i class="glyphicon glyphicon-sort-by-attributes-alt"></i>
+        Mixpanel</a>
+    </div>
+
     <b>{{request.by.name}}</b> : {{request.by.email}}
 
     <div class="has" ng-repeat="pm in paymethods"><b>{{pm.name}}</b></div>
@@ -23,10 +32,12 @@
       (<span class="has" ng-if="request.user.googleId">G+ {{request.user.googleId}}</span><span ng-if="!request.user.googleId">No google login</span>)
 
     </div>
-    
+
     <div class="cohort">
       <div><label>First seen</label> {{request.user.cohort.engagement.visit_first | agoTime}}</div>
       <div><label>Joined</label> {{request.user.cohort.engagement.visit_signup | agoTime }}</div>
+      <div><label>Started</label> {{request._id | objectIdToDate : 'HH:mm:ss' }}</div>
+      <div><label>Submitted</label> {{request.adm.submitted | locaTime : 'HH:mm:ss' }}</div>
     </div>
 
   </section>
@@ -37,9 +48,9 @@
   <section ng-if="request" class="actions left">
     <label>Submitted</label>
       <span ng-if="request && request._id">{{ request._id | objectIdToAgoTime }}</span>
-    <br /><label>Status</label>      
+    <br /><label>Status</label>
     <span>{{ request.status }}</span>
-    <br /><label>Quality</label>      
+    <br /><label>Quality</label>
     <span ng-if="meta.shortBrief">short breif</span>
 
     <hr />
@@ -57,7 +68,7 @@
         <th>Utm</th>
       </tr>
       <tr ng-repeat="v in views">
-        <td>{{v.utc | publishedTime : 'MM.DD HH:mm' }}</td>
+        <td>{{v.utc | publishedTime : 'MMM DD HH:mm' }}</td>
         <td><a href="{{v.url}}" target="_blank"><b>{{v.type}}</b>:{{v.url}}</a></td>
         <td>{{ v.referer }}</td>
         <td><div ng-if="v.campaign">{{ v.campaign.name }}, {{ v.campaign.content }}, {{ v.campaign.term }},
@@ -69,5 +80,15 @@
   </section>
 
 
+  <section class="experts left">
+
+    <div ng-repeat="s in request.suggested">
+      <img src="{{s.expert.pic}}" class="user" />
+      {{s.expert.name}}
+    </div>
+
+    {{request.suggested.length }}
+
+  </section>
 
 </section>

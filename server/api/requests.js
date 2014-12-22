@@ -7,12 +7,13 @@ export default initAPI(
   getByIdForAdmin: (req) => [req.params.id],
   getActiveForAdmin: (req) => [],
   getIncompleteForAdmin: (req) => [],
-  getByUserId: (req) => [req.params.id],
+  getByUserIdForAdmin: (req) => [req.params.id],
   getByIdForReview: (req) => [req.params.id],
   getMy: (req) => [],
   getRequestForBookingExpert: (req) => [req.params.id,req.params.expertId],
   updateByCustomer: (req) => [req.request,req.body],
-  replyByExpert: (req) => [req.request,req.expert,req.body]
+  replyByExpert: (req) => [req.request,req.expert,req.body],
+  deleteById: (req) => [req.request],
 }, {
   request:'getByIdForAdmin',
   review:'getByIdForReview'
