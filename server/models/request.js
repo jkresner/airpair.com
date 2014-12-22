@@ -108,6 +108,7 @@ var Request = new Schema({
     booked:         { type: Date },
     paired:         { type: Date },
     feedback:       { type: Date },
+    closed:         { type: Date },
     lastTouch:      { type: Date }
   },
 

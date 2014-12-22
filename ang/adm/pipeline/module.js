@@ -22,7 +22,8 @@ angular.module("ADMPipeline", ["APRequestDirectives"])
     $scope.request = {}
 
     AdmDataService.pipeline.getRequest($routeParams.id, function (r) {
-      $scope.request = r;
+      $scope.request = r
+      $scope.user = r.user
       $scope.meta = {
         shortBrief: r.brief.length < 100,
         okToDelete: r.suggested.length == 0
@@ -62,11 +63,16 @@ angular.module("ADMPipeline", ["APRequestDirectives"])
         $scope.meta.okToDelete = r.suggested.length == 0
       }, ServerErrors.add)
 
-    $scope.update = () =>
+    $scope.update = () => {
+      var status = $scope.request.status
+      if (status == 'canceled' || status == 'completed')
+        delete $scope.request.adm.active
+
       AdmDataService.pipeline.updateRequest($scope.request, function (r) {
         $scope.request = r
         $scope.meta.okToDelete = r.suggested.length == 0
       }, ServerErrors.add)
+    }
 
     $scope.receivedCallback = () => {
       $scope.request.adm.owner = $scope.session.email.substring(0,2)
