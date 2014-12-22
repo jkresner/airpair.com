@@ -16,7 +16,7 @@ function selectByRoleCB(ctx, errorCb, cb) {
     if (e || !r) return errorCb(e, r)
 
     if (!ctx.user) return cb(null, Data.select.byView(r, 'anon'))
-    else if (isCustomer(ctx.user, r)) cb(null, Data.select.byView(r, 'customer'))
+    else if (isCustomerOrAdmin(ctx.user, r)) cb(null, Data.select.byView(r, 'customer'))
     else {
       // -- we don't want experts to see other reviews
       r.suggested = Data.select.meSuggested(r, ctx.user._id)

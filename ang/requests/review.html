@@ -16,7 +16,7 @@
 
     <form ng-if="data" id="replyForm" class="expertReplyForm" novalidate name="replyForm" ng-submit="submit(replyForm.$valid, data)">
 
-    <h3>Do you want this AirPair?</h3>
+    <h3>Do you want this AirPair? {{isAdmin}}</h3>
 
     <div form-group class="expertStatus">
       <input form-control id="expertAvailable" name="expertStatus" ng-model="data.expertStatus" type="radio" value="available" required>
@@ -61,7 +61,7 @@
   </section>
 
 
-  <section ng-if="!isExpert && !isCustomer && !isAnon" class="replies" ng-if="isAnon">
+  <section ng-if="!isExpert && !isCustomer && !isAnon && !isAdmin" class="replies" ng-if="isAnon">
     <form>
       <h3>Want this AirPair?</h3>
       <a href="/be-an-expert" target="_self" class="btn">Apply to be an AirPair expert</a>
@@ -84,9 +84,9 @@
     </div>
   </section>
 
-  <section class="replies" ng-if="(isCustomer || (isExpert && !expertEdit)) && session.emailVerified">
+  <section class="replies" ng-if="(isCustomer || isAdmin || (isExpert && !expertEdit)) && session.emailVerified">
 
-    <div ng-if="isCustomer && r.suggested.length == 0">
+    <div ng-if="(isCustomer || isAdmin) && replies == 0">
       <div class="message noexperts">
         <img class="user" itemprop="image" src="/v1/img/css/chat/pairy.png" />
         <h4>Pairy</h4>
@@ -98,8 +98,8 @@
     </div>
 
     <ul>
-      <li ng-repeat="s in r.suggested">
-        <div ng-if="s.expertStatus == 'available'">
+      <li ng-repeat="s in replies">
+        <div>
           <div class="message noexperts">
             <img class="user" itemprop="image" ng-src="{{s.expert.avatar}}?s=100" />
             <h4>{{s.expert.name}}</h4>
@@ -109,7 +109,7 @@
             <strong>${{s.suggestedRate.private.expert}} /hr</strong>
             <a ng-click="setExpertEdit()" class="btn">Edit reply</a>
           </section>
-          <section ng-if="isCustomer">
+          <section ng-if="isCustomer || isAdmin">
             <strong>${{s.suggestedRate.private.total}} /hr</strong>
             <a href="/billing/book/{{s.expert._id}}/{{r._id}}" class="btn">Book</a>
           </section>

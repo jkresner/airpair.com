@@ -109,10 +109,11 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
 
   DataService.requests.getReviewById($scope.requestId, function(r) {
     $scope.r = r
-    // console.log('r.userId', r.userId, $scope.session)
+    $scope.isAdmin = Shared.roles.isAdmin($scope.session)
     $scope.isCustomer = Shared.roles.request.isCustomer($scope.session,r)
+    $scope.replies = _.where(r.suggested,(s)=>s.expertComment!=null)
 
-    if ($scope.isCustomer) {
+    if ($scope.isCustomer || $scope.isAdmin) {
       $scope.displayRate = r.budget
     }
     else

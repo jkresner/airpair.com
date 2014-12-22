@@ -1,6 +1,6 @@
 module.exports = {
-  isAdmin(ctx) {
-    return ctx.user ? _.contains(ctx.user.roles, 'admin') : false
+  isAdmin(user) {
+    return user ? _.contains(user.roles, 'admin') : false
   },
   order: {
     isCustomer(user, o) {
