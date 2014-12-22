@@ -27,16 +27,22 @@ export function getMe(cb) {
 }
 
 export function getMatchesForRequest(request, cb) {
+  var tagIds = _.map(request.tags,(t) => t._id.toString())
   // todo protect with owner of request?
   var query = {
-    tags: { $elemMatch: { _id: { $in: _.pluck(request.tags,'_id') } } },
+    // tags: { $elemMatch: { _id: { $in: tagIds } } },
+    'tags._id': { $in: tagIds }
     // rate: { $lt: request.budget }
   }
-  var existingExpertIds = []
-  for (var s of request.suggested) existingExpertIds.push(s.expert._id)
+  // $log('query', query, tagIds)
+  var opts = {fields:Data.select.matches, options: { limit: 200 } }
 
-  svc.searchMany(query, {fields:Data.select.matches}, (e,r) => {
+  svc.searchMany(query, opts, (e,r) => {
     if (e || !r || r.length == 0) return cb(e,r)
+
+    var existingExpertIds = []
+    for (var s of request.suggested) existingExpertIds.push(s.expert._id)
+    // $log('r.lenght', r.length)
     var existing = []
     for (var exp of r) {
       exp.avatar = md5.gravatarUrl(exp.email)

@@ -50,20 +50,25 @@ var selectFields = {
     // 'experience': 1,
     'status': 1,
     'budget': 1,
-    'suggested.expert.email': 1
+    'suggested.expert.email': 1,
+    'adm': 1
   }
 }
 
 
 function migrateV0(r) {
-  if (!r.by && r.company)
+  if (r.budget)
   {
-    var c = r.company.contacts[0]
-    r.by = { name:c.fullName, email:c.gmail, avatar: md5.gravatarUrl(c.gmail) }
-    for (var t of r.tags) t.slug = t.short
+    if (!r.by && r.company && r.company.contacts)
+    {
+      var c = r.company.contacts[0]
+      r.by = { name:c.fullName, email:c.gmail, avatar: md5.gravatarUrl(c.gmail) }
+      for (var t of r.tags) t.slug = t.short
+    }
+    if (!r.time) r.time = 'regular'
+    if (!r.experience) r.experience = 'proficient'
+    if (!r.adm || !r.adm.owner && r.owner) r.adm = { owner: r.owner }
   }
-  if (!r.time) r.time = 'regular'
-  if (!r.experience) r.experience = 'proficient'
 
   return r
 }
@@ -84,7 +89,8 @@ module.exports = {
       if (r.suggested)
         for (var s of r.suggested) s.expert.avatar = md5.gravatarUrl(s.expert.email)
       Rates.addRequestSuggestedRates(r, true)
-      r = util.selectFromObject(r, selectFields[view])
+      if (view != 'admin')
+        r = util.selectFromObject(r, selectFields[view])
       // $log('selected', view, request.suggested, r)
       return r
     }
@@ -107,9 +113,9 @@ module.exports = {
     },
 
     active: {
-      // 'budget' : { '$exists': true },
+      //
       // status: { $in: ['received','waiting','review','scheduled','consumed'] }
-      'adm.active': true
+      'budget' : { '$exists': true }, 'adm.active': true
     }
 
   }
