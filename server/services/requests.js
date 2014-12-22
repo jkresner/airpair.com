@@ -9,8 +9,7 @@ var util =                require('../../shared/util')
 var Data =                require('./requests.data')
 var logging =             false
 var svc =                 new Svc(Request, logging)
-var {isCustomer,isExpert} = require('../../shared/roles.js').request
-
+var {isCustomer,isCustomerOrAdmin,isExpert} = require('../../shared/roles.js').request
 
 function selectByRoleCB(ctx, errorCb, cb) {
   return (e, r) => {
@@ -46,7 +45,7 @@ var get = {
     var userId = this.user._id
     svc.getById(id, (e,r) => {
       if (e || !r) return cb(e,r)
-      if (!_.idsEqual(userId,r.userId)) return cb(Error(`Could not find request[${id}] belonging to user[${userId}]`))
+      if (!isCustomerOrAdmin(this.user,r)) return cb(Error(`Could not find request[${id}] belonging to user[${userId}]`))
       cb (null, Data.select.byView(r, 'customer'))
     })
   },

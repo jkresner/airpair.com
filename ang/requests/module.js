@@ -76,12 +76,14 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
 
 })
 
-.controller('RequestEditCtrl', function($scope, $routeParams, $location, DataService) {
+.controller('RequestEditCtrl', function($scope, $routeParams, $location, DataService, Shared, ServerErrors) {
   $scope.requestId = $routeParams.id;
 
   DataService.requests.getById($scope.requestId, function(result) {
-    if (result.userId != $scope.session._id) $location.path('/dashboard')
-    else $scope.request = result
+    if (!Shared.roles.request.isCustomerOrAdmin($scope.session, result))
+      $location.path('/dashboard')
+    else
+      $scope.request = result
   }, function(er) {
     $location.path('/help/request')
   })
