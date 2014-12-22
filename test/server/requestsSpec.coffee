@@ -68,7 +68,13 @@ module.exports = -> describe "API", ->
                   r6.budget = all.budget
                   PUT putUrl, r6, {}, (r7) ->
                     expect(r7.budget).to.equal(all.budget)
-                    done()
+                    LOGIN 'admin', data.users.admin, (sAdmin) ->
+                      GET "/adm/requests/user/#{s._id}", {}, (reqs1) ->
+                        expect(reqs1.length).to.equal(1)
+                        expect(reqs1[0].suggested.length).to.equal(0)
+                        expect(reqs1[0].adm.active).to.be.true
+                        expect(reqs1[0].adm.submitted).to.exist
+                        done()
 
 
   it 'Can review a request as anon, customer and other', (done) ->
@@ -160,6 +166,7 @@ module.exports = -> describe "API", ->
                 expect(r2.suggested[0].expertStatus).to.equal("available")
                 expect(r2.suggested[0].expertAvailability).to.equal("Now")
                 expect(r2.suggested[0].expertComment).to.equal("Actually I've got an hour")
+                expect(r2.suggested[0].reply.time).to.exist
                 done()
 
 

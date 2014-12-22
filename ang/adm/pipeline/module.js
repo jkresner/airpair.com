@@ -24,7 +24,7 @@ angular.module("ADMPipeline", ["APRequestDirectives"])
     AdmDataService.pipeline.getRequest($routeParams.id, function (r) {
       $scope.request = r;
       $scope.meta = {
-        shortBrief: r.brief.length < 250,
+        shortBrief: r.brief.length < 100,
         okToDelete: r.suggested.length == 0
       }
       AdmDataService.billing.getUserPaymethods(r.userId, function (pms) {
@@ -34,9 +34,9 @@ angular.module("ADMPipeline", ["APRequestDirectives"])
       AdmDataService.getUsersViews({_id:r.userId}, function (views) {
         $scope.views = views.reverse()
       })
-      AdmDataService.pipeline.getRequestMatches(r._id, function (experts) {
-        $scope.matches = experts;
-      })
+      // AdmDataService.pipeline.getRequestMatches(r._id, function (experts) {
+      //   $scope.matches = experts;
+      // })
     },
       () => $location.path('/adm/pipeline')
     )
@@ -62,6 +62,17 @@ angular.module("ADMPipeline", ["APRequestDirectives"])
         $scope.meta.okToDelete = r.suggested.length == 0
       }, ServerErrors.add)
 
+    $scope.update = () =>
+      AdmDataService.pipeline.updateRequest($scope.request, function (r) {
+        $scope.request = r
+        $scope.meta.okToDelete = r.suggested.length == 0
+      }, ServerErrors.add)
+
+    $scope.receivedCallback = () => {
+      $scope.request.adm.owner = $scope.session.email.substring(0,2)
+      $scope.request.status = 'waiting'
+      $scope.update()
+    }
 
   })
 

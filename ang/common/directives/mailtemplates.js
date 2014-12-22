@@ -17,7 +17,8 @@ angular.module("APMailTemplates", [])
       r: '=req',
       to: '=to',
       meta: '=meta',
-      templateName: '=name'
+      templateName: '=name',
+      sendCallback: '=sendCallback'
     },
     link(scope, element, attrs) {
       var type = scope.$eval(attrs.name)
@@ -25,6 +26,8 @@ angular.module("APMailTemplates", [])
       scope.body = tmpls[type].text
     },
     controller($scope, $rootScope, $element) {
+      if (!$scope.sendCallback) $scope.sendCallback = () => {}
+
       $scope.$watch('meta.noPaymethod', function() {
         if (!$scope.r || !$scope.r.by) return
 

@@ -76,6 +76,10 @@ angular.module('APSvcAdmin', [])
       getRequestMatches(_id, success, error) {
         $http.get(`/v1/api/experts/match/${_id}`).success(success).error(error)
       },
+      updateRequest(data, success, error)
+      {
+        $http.put(`${APIAdm}/requests/${data._id}`, data).success(success).error(error)
+      },
       addSuggestion(data, success, error)
       {
         $http.put(`${APIAdm}/requests/${data._id}/add/${data.expertId}`, data).success(success).error(error)

@@ -100,6 +100,7 @@ export default function(app) {
     .get('/requests/incomplete', RequestsAPI.getIncompleteForAdmin)
     .get('/requests/:id', RequestsAPI.getByIdForAdmin)
     .get('/requests/user/:id', RequestsAPI.getByUserIdForAdmin)
+    .put('/requests/:request', RequestsAPI.updateByAdmin)
     .put('/requests/:request/add/:expert', RequestsAPI.addSuggestion)
     .put('/requests/:request/remove/:expert', RequestsAPI.removeSuggestion)
 

@@ -21,11 +21,15 @@ var Suggestion = new Schema({
     in:          { id: String },
     tw:          { username: String }
   },
-  expertStatus:       { required: true, enum: REPLY_STATUS, type: String, default: 'waiting' },
   // expertRating:       Number,
   // expertFeedback:     String
-  expertComment:      String,
+  reply:         {
+    time:        Date
+  },
+  //-- TODO, move these guys into the reply object
+  expertStatus:       { required: true, enum: REPLY_STATUS, type: String, default: 'waiting' },
   expertAvailability: String,    // todo change to dates
+  expertComment:      String,
   // suggestedRate:      Number,    // can be altered by admin or expert
   // customerRating:     Number,    // Survey customer on qaulity of rating
   // customerFeedback:   String,
@@ -97,13 +101,14 @@ var Request = new Schema({
   adm:              {
     active:         { type: Boolean, index: true, sparse: true },
     owner:          String,
-    newcustomer:    String,
+    // newcustomer:    String,
     submitted:      { type: Date },
     received:       { type: Date },
-    reviewed:       { type: Date },
+    reviewable:     { type: Date },
     booked:         { type: Date },
     paired:         { type: Date },
     feedback:       { type: Date },
+    lastTouch:      { type: Date }
   },
 
   // New v1
