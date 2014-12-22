@@ -57,6 +57,8 @@ var V0_REQUEST_STATUS = [
   'complete',       //: transaction final and time to archive
   'canceled',       //: company has canceled the request
   'deferred',       //: customer indicated they need more time
+
+  'junk'
 ]
 
 

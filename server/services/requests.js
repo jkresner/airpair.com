@@ -31,6 +31,20 @@ function selectByRoleCB(ctx, errorCb, cb) {
   }
 }
 
+var admCB = (cb) =>
+  (e,r) => {
+    if (e) return cb(e)
+    if (r.length) {
+      for (var req of r) req = Data.select.byView(req, 'admin')
+    }
+    else
+      r = Data.select.byView(r, 'admin')
+
+    cb(null,r)
+  }
+
+
+
 var get = {
   getByIdForAdmin(id, cb) {
     svc.getById(id, (e,r) => {
@@ -71,10 +85,7 @@ var get = {
     }))
   },
   getActiveForAdmin(cb) {
-    svc.searchMany(Data.query.active, { options: { sort: { '_id': -1 }}, fields: Data.select.pipeline }, (e,r)=>{
-      for (var req of r) req = Data.select.byView(req, 'admin')
-      return cb(e,r)
-    })
+    svc.searchMany(Data.query.active, { options: { sort: { '_id': -1 }}, fields: Data.select.pipeline }, admCB(cb))
   },
   // getIncompleteForAdmin(cb) {
   //   svc.searchMany(Data.query.incomplete, { fields: Data.select.pipeline}, cb)
@@ -121,10 +132,7 @@ var save = {
       adm.received = new Date()
 
     var ups = _.extend(original, {adm,status})
-    svc.update(original._id, ups, (e,r)=>{
-      r = Data.select.byView(r, 'admin')
-      cb(e,r)
-    })
+    svc.update(original._id, ups, admCB(cb))
   },
   replyByExpert(request, expert, reply, cb) {
     var {suggested} = request
@@ -154,7 +162,7 @@ var save = {
   },
   addSuggestion(request, expert, body, cb)
   {
-    var suggested = request.suggested
+    var {adm,suggested} = request
     suggested.push({
       matchedBy: { userId: this.user._id, initials: 'pg' },
       expertStatus: "waiting",
@@ -164,14 +172,17 @@ var save = {
     mailman.sendExpertSuggestedEmail(expert, request.by.name, request._id,
       this.user.name, request.tags, ()=>{})
 
-    svc.update(request._id, {suggested}, cb)
+    adm.lastTouch = new Date()
+    svc.update(request._id, {suggested,adm}, admCB(cb))
   },
   removeSuggestion(request, expert, cb)
   {
-    var suggested = request.suggested
+    var {adm,suggested} = request
     var existing = _.find(suggested, (s) => _.idsEqual(s.expert._id,expert._id) )
     suggested = _.without(suggested,existing)
-    svc.update(request._id, {suggested}, cb)
+
+    adm.lastTouch = new Date()
+    svc.update(request._id, {suggested,adm}, admCB(cb))
   },
   deleteById(o, cb)
   {

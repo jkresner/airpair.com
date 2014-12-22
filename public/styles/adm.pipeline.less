@@ -64,6 +64,14 @@
 
 #pipelineReq {
 
+  .expertStatus {
+    img.user { padding:5px;background:white;border:solid 1px @lightgray; }
+    img.available { background:#5CE65C }
+    img.opened { background:@palegray }
+    img.busy { background:@error }
+  }
+
+
   > section {
     position:relative;
     margin-top:10px;
@@ -138,7 +146,52 @@
   }
 
   section.matches {
-    ul { .ulNoStyle }
+    ul { .ulNoStyle;
+      li { width:32%;margin:2px 8px 12px 0 }
+    }
+
+    div { text-align:right}
+    .icon { width:20px;height:20px;display:inline-block;
+      background-size:20px;
+     }
+
+    .gh-white {
+      background-image:url('../img/icons/gh-white.png');
+      background-color: #3B3B3B;
+    }
+
+    .tw-white {
+      background-image: url('../img/icons/tw-white.png');
+      background-color: #00AFEA;
+    }
+
+    .bb-white {
+      background-image: url('../img/icons/bb-white.png');
+      background-color: #1A4F7E;
+    }
+
+    .in-white {
+      background-image: url('../img/icons/in-white.png');
+      background-color: #0081AF;
+    }
+
+    .so-white {
+      background-image: url('../img/icons/so-white.png');
+      background-color: #FFA43C;
+    }
+
+    .hm-white {
+      background-image: url('../img/iconss/hm-white.png');
+      background-color: #25DBBF;
+    }
+  }
+
+  section.suggested {
+    line-height:12px;
+    label { display:block;padding-top:0 }
+    img.user { display:inline-block;  }
+    > div { vertical-align:top }
+    > div > div { display:inline-block;padding-top:15px }
   }
 
   table { margin-top:10px;vertical-align:top }
@@ -146,7 +199,6 @@
     select { width:140px }
     span { color:@error }
   }
-
 
   @media only screen and (max-width:640px) {
     > section {

@@ -5,6 +5,7 @@
     <a ng-href="/review/{{request._id}}" target="_blank">Review</a>
     <!-- | <a ng-href="/v1/adm/farm/{{request._id}}">Farm</a> -->
     | <a ng-href="/help/request/{{request._id}}" target="_self">Edit</a>
+    | <a ng-if="meta.okToDelete" class="junk" ng-click="junk()">JUNK</a>
     | <a ng-if="meta.okToDelete" class="delete" ng-click="delete()">Delete</a>
   </section>
 
@@ -23,6 +24,7 @@
 
     <b>{{request.by.name}}</b> : {{request.by.email}}
 
+
     <div class="has" ng-repeat="pm in paymethods"><b>{{pm.name}}</b></div>
     <div ng-if="!paymethods || paymethods.length == 0" class="nopaymethods"><b>No pay methods</b></div>
 
@@ -34,6 +36,7 @@
     </div>
 
     <div class="cohort">
+      <div><label>Trust</label> Level {{meta.trustedLevel}}</div>
       <div><label>First seen</label> {{user.cohort.engagement.visit_first | agoTime}}</div>
       <div><label>Joined</label> {{user.cohort.engagement.visit_signup | agoTime }}</div>
       <div><label>Started</label> {{request._id | objectIdToDate : 'DD MMM HH:mm:ss' }}</div>
@@ -59,6 +62,7 @@
         <option>scheduled</option>
         <option>completed</option>
         <option>canceled</option>
+        <option>junk</option>
       </select>
     </span>
     <br /><label>Last touch</label>
@@ -106,12 +110,15 @@
   <section class="experts left">
 
     <section class="suggested">
-      <div ng-repeat="s in request.suggested">
-        <img ng-src="{{s.expert.avatar}}" class="user" />
-        {{s.expertStatus}}
-        <!-- {{s.suggestedRate.private.expert}} -->
-        {{s.expert.name}}
-        <a ng-click="removeSuggestion(s.expert._id)" class="delete">Remove</a>
+      <div ng-repeat="s in request.suggested" class="expertStatus">
+        <img ng-src="{{s.expert.avatar}}?s=60" class="user {{s.expertStatus}}" />
+        <div>
+          <label>{{s.suggestedRate.private.total}} /
+          {{s.suggestedRate.private.expert}}</label>
+          <label>{{s.expert.name}}</label>
+          <span class="{{s.expertStatus}}">{{s.expertStatus}}</span>
+          <a ng-click="removeSuggestion(s.expert._id)" class="delete">x</a>
+        </div>
       </div>
     </section>
     <hr />
@@ -119,15 +126,28 @@
       <span ng-repeat="t in request.tags">
         <label>{{t.slug}}</label> <input type="checkbox" value="t._id" />
       </span>
-      <div>
-        <ul>
-          <li ng-repeat="m in matches">
-            <img ng-src="{{m.avatar}}?s=30" class="user" /> {{m.name}}
-            [<a ng-click="addSuggestion(m._id)">add</a>]
-            &nbsp;
-          </li>
-        </ul>
-      </div>
+
+      <a ng-click="getMatches()">Show matches</a>
+      <hr />
+      <ul>
+        <li ng-repeat="m in matches">
+          <img ng-src="{{m.avatar}}?s=30" class="user" />
+          <a href="/adm/experts/edit/{{m._id}}" target="_blank">{{m.name}}</a>
+          <div>
+            <a ng-if="m.gh" href="//github.com/{{ m.gh.username }}" target="_blank" class="gh-white icon"></a>
+
+            <a ng-if="m.so" href="//stackoverflow.com/users/{{ m.so.link }}" target="_blank" class="so-white icon"></a>
+
+            <a ng-if="m.bb" href="//bitbucket.org/{{ m.bb.id }}" target="_blank" class="bb-white icon"></a>
+
+            <a ng-if="m.in" href="//linkedin.com/x/profile/sy5n2q8o2i49/{{ m.in.id }}" target="_blank" class="in-white icon"></a>
+
+            <a ng-if="m.tw" href="//twitter.com/{{ m.tw.username }}" target="_blank" class="tw-white icon"></a>
+          </div>
+          [<a ng-click="addSuggestion(m._id)">add</a>]
+          &nbsp;
+        </li>
+      </ul>
     </section>
 
   </section>
