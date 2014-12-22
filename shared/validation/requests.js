@@ -26,14 +26,17 @@ export function updateByCustomer(original, update)
 {
   var user = this.user
 
-  if (!user || !user._id || !user.name || ! user.email)
+  if (!user || !user._id || !user.name || !user.email)
     return 'Request user details required'
 
   if (!_.idsEqual(original._id,update._id))
     return 'Updating request must have the same Id ad the original'
 
   var isOwner = _.idsEqual(original.userId, user._id)
-  if ( !isOwner ) return 'Request can only be updated by owner'
+  var isAdmin = _.contains(user.roles, 'admin')
+  if ( !isOwner && !isAdmin ) return 'Request can only be updated by owner'
+
+  if ( !isOwner && !original.budget ) return 'Admin can only update completed requests'
 
   if (!update.type) return 'Request type required'
 

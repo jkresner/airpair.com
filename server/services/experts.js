@@ -43,9 +43,7 @@ export function getMatchesForRequest(request, cb) {
       if (_.find(existingExpertIds,(id)=>_.idsEqual(id,exp._id)))
         existing.push(exp)
     }
-    $log('existing', r.length, existing.length)
     var unique = _.difference(r, existing)
-    $log('unique', unique.length)
     cb(null,unique)
   })
 }
