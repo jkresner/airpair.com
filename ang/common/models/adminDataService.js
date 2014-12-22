@@ -62,14 +62,24 @@ angular.module('APSvcAdmin', [])
 
     var pipelineFns = {
       cache: $cacheFactory('pipelineFns'),
-      updateItemInCache(cb) {
+      updateItemInCacheList(cb) {
         return (data) => {
           if (pipelineFns.cache) {
             var existing = _.find(pipelineFns.cache.get('active'),(r)=>r._id==data._id)
             if (existing) {
               var updated = _.union(_.without(pipelineFns.cache.get('active'),existing), [data])
               pipelineFns.cache.put('active',updated)
-              console.log('updated...', existing.status, data.status)
+            }
+          }
+          cb(data)
+        }
+      },
+      removeItemInCacheList(id, cb) {
+        return (data) => {
+          if (pipelineFns.cache) {
+            var existing = _.find(pipelineFns.cache.get('active'),(r)=>r._id==id)
+            if (existing) {
+              pipelineFns.cache.put('active',_.without(pipelineFns.cache.get('active'),existing))
             }
           }
           cb(data)
@@ -98,18 +108,18 @@ angular.module('APSvcAdmin', [])
       },
       updateRequest(data, success, error)
       {
-        $http.put(`${APIAdm}/requests/${data._id}`, data).success(pipelineFns.updateItemInCache(success)).error(error)
+        $http.put(`${APIAdm}/requests/${data._id}`, data).success(pipelineFns.updateItemInCacheList(success)).error(error)
       },
       addSuggestion(data, success, error)
       {
-        $http.put(`${APIAdm}/requests/${data._id}/add/${data.expertId}`, data).success(pipelineFns.updateItemInCache(success)).error(error)
+        $http.put(`${APIAdm}/requests/${data._id}/add/${data.expertId}`, data).success(pipelineFns.updateItemInCacheList(success)).error(error)
       },
       removeSuggestion(data, success, error)
       {
-        $http.put(`${APIAdm}/requests/${data._id}/remove/${data.expertId}`).success(pipelineFns.updateItemInCache(success)).error(error)
+        $http.put(`${APIAdm}/requests/${data._id}/remove/${data.expertId}`).success(pipelineFns.updateItemInCacheList(success)).error(error)
       },
       deleteRequest(_id, success, error) {
-        $http.delete(`/v1/api/requests/${_id}`).success(success).error(error)
+        $http.delete(`/v1/api/requests/${_id}`).success(pipelineFns.removeItemInCacheList(_id, success)).error(error)
       },
     }
 

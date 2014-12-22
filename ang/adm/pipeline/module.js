@@ -21,23 +21,34 @@ angular.module("ADMPipeline", ["APRequestDirectives"])
 
     $scope.request = {}
 
+    $scope.getMatches = () => {
+      AdmDataService.pipeline.getRequestMatches($scope.request._id, function (experts) {
+        $scope.matches = experts;
+        console.log('$scope.matches', $scope.matches.length)
+      })
+    }
+
+    $scope.$watch('request.status', function() {
+      if ($scope.request.status == 'waiting') $scope.getMatches()
+    })
+
     AdmDataService.pipeline.getRequest($routeParams.id, function (r) {
       $scope.request = r
       $scope.user = r.user
       $scope.meta = {
         shortBrief: r.brief.length < 100,
-        okToDelete: r.suggested.length == 0
+        okToDelete: r.suggested.length == 0,
+        trustedLevel: (r.user.emailVerified) ?  1 : 0
       }
+      $scope.meta.trustedLevel += (r.user.googleId) ? 1 : 0
+
       AdmDataService.billing.getUserPaymethods(r.userId, function (pms) {
         $scope.paymethods = (pms.btoken) ? [] : pms;
         $scope.meta.noPaymethod = $scope.paymethods.length < 1
+        $scope.meta.trustedLevel += ($scope.meta.noPaymethod) ? 0 : 1
       })
       AdmDataService.getUsersViews({_id:r.userId}, function (views) {
         $scope.views = views.reverse()
-      })
-      AdmDataService.pipeline.getRequestMatches(r._id, function (experts) {
-        $scope.matches = experts;
-        console.log('$scope.matches', $scope.matches.length)
       })
     },
       () => $location.path('/adm/pipeline')
@@ -66,7 +77,7 @@ angular.module("ADMPipeline", ["APRequestDirectives"])
 
     $scope.update = () => {
       var status = $scope.request.status
-      if (status == 'canceled' || status == 'completed')
+      if (status == 'canceled' || status == 'completed' || status == 'junk')
         delete $scope.request.adm.active
 
       AdmDataService.pipeline.updateRequest($scope.request, function (r) {
@@ -77,10 +88,16 @@ angular.module("ADMPipeline", ["APRequestDirectives"])
 
     $scope.receivedCallback = () => {
       $scope.request.adm.owner = $scope.session.email.substring(0,2)
-      $scope.request.status = 'waiting'
+      if ($scope.meta.trustedLevel > 1)
+        $scope.request.status = 'waiting'
       $scope.update()
     }
 
+    $scope.junk = () => {
+      $scope.request.adm.owner = $scope.session.email.substring(0,2)
+      $scope.request.status = 'junk'
+      $scope.update()
+    }
   })
 
 

@@ -67,7 +67,11 @@ function migrateV0(r) {
     }
     if (!r.time) r.time = 'regular'
     if (!r.experience) r.experience = 'proficient'
-    if (!r.adm || !r.adm.owner && r.owner) r.adm = { owner: r.owner }
+    if (r.owner && !r.adm.owner)
+    {
+      if (!r.adm) r.adm = { owner: r.owner }
+      else r.adm.owner = r.owner
+    }
   }
 
   return r
