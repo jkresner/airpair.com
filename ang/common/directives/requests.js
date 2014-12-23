@@ -2,6 +2,21 @@ var util = require('../../../shared/util')
 
 angular.module("APRequestDirectives", [])
 
+.factory('RequestHelper', function requestHelperFactory(SessionService) {
+  this.setRequestTagsFromSession = ($scope) =>
+    SessionService.onAuthenticated(() => {
+      if (!$scope.request || !$scope.request.tags) {
+        $scope.request = {
+          tags: _.first(_.map($scope.session.tags,(t)=>{
+            t._id = t.tagId
+            return t
+        }),3) };
+      }
+    })
+
+  return this
+})
+
 .factory('StepHelper', function StepHelper() {
 
   this.setDefaultState = (scope) => {

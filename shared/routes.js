@@ -14,5 +14,6 @@ module.exports = [
   '/login',
   '/me*',
   '/help*',
-  '/adm*'
+  '/adm*',
+  '/review*'
 ]

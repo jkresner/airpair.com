@@ -42,6 +42,11 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
     resolve: authd
   });
 
+  $routeProvider.when('/reviews', {
+    template: require('./review.html'),
+    controller: 'ReviewsCtrl',
+  });
+
   $routeProvider.when('/review/:id', {
     template: require('./review.html'),
     controller: 'ReviewCtrl',
@@ -65,15 +70,11 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
 })
 
 
-.controller('RequestCtrl', function($rootScope, $scope, SessionService) {
+.controller('RequestCtrl', function($rootScope, $scope, RequestHelper) {
 
   angular.element('#side').addClass('collapse')
 
-  SessionService.onAuthenticated(function() {
-    if (!$scope.request || !$scope.request.tags)
-      $scope.request = { tags: _.first($rootScope.session.tags,3) };
-  })
-
+  RequestHelper.setRequestTagsFromSession($scope)
 })
 
 .controller('RequestEditCtrl', function($scope, $routeParams, $location, DataService, Shared, ServerErrors) {
@@ -95,8 +96,9 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
 
 })
 
-.controller('ReviewCtrl', function($scope, $routeParams, $location, DataService, Shared, ServerErrors) {
+.controller('ReviewsCtrl', ($location) => $location.path('/') )
 
+.controller('ReviewCtrl', function($scope, $routeParams, $location, DataService, Shared, ServerErrors) {
   $scope.requestId = $routeParams.id;
 
   if ($scope.session && $scope.session.authenticated == false) {

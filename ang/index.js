@@ -111,17 +111,14 @@ angular.module("AP", ['Providers', 'ngRoute', 'ngAnimate', 'APViewData', 'APData
     return shared;
   })
 
-  .controller('ServerTemplateCtrl', function($scope, ViewData, SessionService) {
+  .controller('ServerTemplateCtrl', function($scope, ViewData, SessionService, RequestHelper) {
     pageHlpr.loadPoSt();
     pageHlpr.highlightSyntax({ addCtrs: true });
     pageHlpr.fixPostRail();
     if ($scope.viewData && angular.element('#disqus_thread').length>0)
       pageHlpr.loadDisqus($scope.viewData.canonical);
 
-    SessionService.onAuthenticated(function() {
-      if (!$scope.request || !$scope.request.tags)
-        $scope.request = { tags: _.first($scope.session.tags,3) };
-    })
+    RequestHelper.setRequestTagsFromSession($scope)
 
   })
 
