@@ -24,6 +24,7 @@ require('./adm/views/module.js');
 require('./adm/orders/module.js');
 require('./adm/companys/module.js');
 require('./adm/pipeline/module.js');
+require('./adm/bookings/module.js');
 
 angular.module('ADM', [
   'ngRoute',
@@ -35,6 +36,7 @@ angular.module('ADM', [
   'ADMRedirects',
   'ADMViews',
   'ADMOrders',
+  'ADMBookings',
   'ADMCompanys'])
 
   .config(function($locationProvider, $routeProvider) {

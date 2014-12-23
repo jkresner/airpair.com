@@ -1,0 +1,31 @@
+<section id="bookings">
+
+  <h2>Bookings</h2>
+
+<!--   <div user-input=""></div> -->
+
+  <table class="table table-condensed bookings">
+    <tr>
+      <th style="width:100px">Time</th>
+      <th style="width:100px">Type</th>
+      <th style="width:80px">Customer</th>
+      <th style="width:80px">Expert</th>
+      <th>Status</th>
+      <th>Recordings</th>
+      <th class="p"></th>
+    </tr>
+    <tr ng-repeat="b in bookings">
+      <td>
+        <a href="/adm/bookings/{{b._id}}">
+          <b>{{b.datetime | locaTime : 'MM.DD HH:mm' }}</b><br /><time>{{b.minutes}} minutes</time>
+        </a>
+      </td>
+      <td>{{b.type}}</td>
+      <td>{{b.customerId}}</td>
+      <td>{{b.expertId}}</td>
+      <td>{{b.status}}</div>
+      <td></div>
+      <td class="p"></div>
+  </table>
+
+</section>
