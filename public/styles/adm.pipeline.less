@@ -64,6 +64,8 @@
 
 #pipelineReq {
 
+  time { font-weight:normal;font-size:9px;display:block }
+
   .expertStatus {
     img.user { padding:5px;background:white;border:solid 1px @lightgray; }
     img.available { background:#5CE65C }
@@ -188,10 +190,13 @@
 
   section.suggested {
     line-height:12px;
-    label { display:block;padding-top:0 }
-    img.user { display:inline-block;  }
+    margin-bottom:20px;
+    label { display:block;padding-top:0;width:100px }
+    img.user { display:inline-block;vertical-align:top  }
     > div { vertical-align:top }
-    > div > div { display:inline-block;padding-top:15px }
+    > div > div { display:inline-block;padding-top:5px }
+    p { float:right;width:60%;font-size:11px }
+    hr { margin:5px}
   }
 
   table { margin-top:10px;vertical-align:top }

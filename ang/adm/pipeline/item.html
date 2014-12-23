@@ -5,7 +5,7 @@
     <a ng-href="/review/{{request._id}}" target="_blank">Review</a>
     <!-- | <a ng-href="/v1/adm/farm/{{request._id}}">Farm</a> -->
     | <a ng-href="/help/request/{{request._id}}" target="_self">Edit</a>
-    | <a ng-if="meta.okToDelete" class="junk" ng-click="junk()">JUNK</a>
+    | <a ng-if="meta.okToDelete" class="delete" ng-click="junk()">JUNK</a>
     | <a ng-if="meta.okToDelete" class="delete" ng-click="delete()">Delete</a>
   </section>
 
@@ -113,15 +113,20 @@
       <div ng-repeat="s in request.suggested" class="expertStatus">
         <img ng-src="{{s.expert.avatar}}?s=60" class="user {{s.expertStatus}}" />
         <div>
-          <label>{{s.suggestedRate.private.total}} /
-          {{s.suggestedRate.private.expert}}</label>
-          <label>{{s.expert.name}}</label>
+          <label>${{s.suggestedRate.private.total}} /
+          ${{s.suggestedRate.private.expert}}</label>
+          <label><a href="/adm/experts/edit/{{s.expert._id}}" target="_blank">{{s.expert.name}}</a></label>
           <span class="{{s.expertStatus}}">{{s.expertStatus}}</span>
+
           <a ng-click="removeSuggestion(s.expert._id)" class="delete">x</a>
         </div>
+        <p ng-if="s.expertComment">
+          <time>{{s.reply.time | agoTime }}</time>
+          {{s.expertComment }}
+        </p>
+        <hr />
       </div>
     </section>
-    <hr />
     <section class="matches">
       <span ng-repeat="t in request.tags">
         <label>{{t.slug}}</label> <input type="checkbox" value="t._id" />
