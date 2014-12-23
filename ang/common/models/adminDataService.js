@@ -6,7 +6,7 @@ angular.module('APSvcAdmin', [])
 
   .constant('APIAdm', '/v1/api/adm')
 
-  .service('AdmDataService', ['$http', 'APIAdm', function($http, APIAdm) {
+  .service('AdmDataService', function($http, $cacheFactory, APIAdm) {
 
     this.getPosts = function(success)
     {
@@ -61,8 +61,65 @@ angular.module('APSvcAdmin', [])
     }
 
     var pipelineFns = {
+      cache: $cacheFactory('pipelineFns'),
+      updateItemInCacheList(cb) {
+        return (data) => {
+          if (pipelineFns.cache) {
+            var existing = _.find(pipelineFns.cache.get('active'),(r)=>r._id==data._id)
+            if (existing) {
+              var updated = _.union(_.without(pipelineFns.cache.get('active'),existing), [data])
+              pipelineFns.cache.put('active',updated)
+            }
+          }
+          cb(data)
+        }
+      },
+      removeItemInCacheList(id, cb) {
+        return (data) => {
+          if (pipelineFns.cache) {
+            var existing = _.find(pipelineFns.cache.get('active'),(r)=>r._id==id)
+            if (existing) {
+              pipelineFns.cache.put('active',_.without(pipelineFns.cache.get('active'),existing))
+            }
+          }
+          cb(data)
+        }
+      },
+      getActive(success, error) {
+        if (pipelineFns.cache.get('active'))
+          return success(pipelineFns.cache.get('active'))
+
+        $http.get(`${APIAdm}/requests/active`).success(function(data) {
+          pipelineFns.cache.put('active',data);
+          success(data);
+        }).error(error)
+      },
+      getIncomplete(success, error) {
+        $http.get(`${APIAdm}/requests/incomplete`).success(success).error(error)
+      },
       getRequest(_id, success, error) {
         $http.get(`${APIAdm}/requests/${_id}`).success(success).error(error)
+      },
+      getUsersRequests(_id, success, error) {
+        $http.get(`${APIAdm}/requests/user/${_id}`).success(success).error(error)
+      },
+      getRequestMatches(_id, success, error) {
+        $http.get(`/v1/api/experts/match/${_id}`).success(success).error(error)
+      },
+      updateRequest(data, success, error)
+      {
+        $http.put(`${APIAdm}/requests/${data._id}`, data).success(pipelineFns.updateItemInCacheList(success)).error(error)
+      },
+      addSuggestion(data, success, error)
+      {
+        $http.put(`${APIAdm}/requests/${data._id}/add/${data.expertId}`, data).success(pipelineFns.updateItemInCacheList(success)).error(error)
+      },
+      removeSuggestion(data, success, error)
+      {
+        $http.put(`${APIAdm}/requests/${data._id}/remove/${data.expertId}`).success(pipelineFns.updateItemInCacheList(success)).error(error)
+      },
+      deleteRequest(_id, success, error) {
+        $http.delete(`/v1/api/requests/${_id}`).success(pipelineFns.removeItemInCacheList(_id, success)).error(error)
       },
     }
 
@@ -76,4 +133,4 @@ angular.module('APSvcAdmin', [])
 
     this.billing = billingFns
 
-  }])
+  })

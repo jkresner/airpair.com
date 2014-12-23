@@ -1,4 +1,7 @@
 module.exports = {
+  isAdmin(user) {
+    return user ? _.contains(user.roles, 'admin') : false
+  },
   order: {
     isCustomer(user, o) {
       return user ? _.idsEqual(o.userId, user._id) : false
@@ -8,6 +11,12 @@ module.exports = {
     isCustomer(user, o) {
       if (!o.userId) return false
       return user ? _.idsEqual(o.userId, user._id) : false
+    },
+    isCustomerOrAdmin(user, o) {
+      if (!o.userId) return false
+      return user
+        ? _.idsEqual(o.userId, user._id) || _.contains(user.roles, 'admin')
+        : false
     },
     isExpert(user, request) {
       if (!user) return false

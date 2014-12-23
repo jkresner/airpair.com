@@ -55,6 +55,7 @@ export default function(app) {
     .put('/requests/:request', authd, RequestsAPI.updateByCustomer)
     .put('/requests/:request/reply/:expert', authd, RequestsAPI.replyByExpert)
     .post('/requests', authd, RequestsAPI.create)
+    .delete('/requests/:request', RequestsAPI.deleteById)
 
     .get('/workshops/', WorkshopsAPI.getAll)
     .get('/workshops/:id', WorkshopsAPI.getBySlug)
@@ -74,9 +75,12 @@ export default function(app) {
     .get('/experts/me', ExpertsAPI.getMe)
     .get('/experts/:id', ExpertsAPI.getById)
     .get('/experts', ExpertsAPI.getForExpertsPage)
-
+    .get('/experts/match/:request', authd, ExpertsAPI.getMatchesForRequest)
 
   var admrouter = require('express').Router()
+    .param('expert', ExpertsAPI.paramFns.getById)
+    .param('request', RequestsAPI.paramFns.getByIdForAdmin)
+
     .use(adm)
     .get('/posts', PostsAPI.getAllAdmin)
     .get('/orders/:start/:end', OrdersAPI.getOrdersByDateRange)
@@ -92,9 +96,13 @@ export default function(app) {
     .get('/companys/search/:id', CompanysAPI.search)
     .put('/companys/migrate/:id', CompanysAPI.migrate)
     .put('/companys/member/:id', CompanysAPI.addMember)
+    .get('/requests/active', RequestsAPI.getActiveForAdmin)
+    .get('/requests/incomplete', RequestsAPI.getIncompleteForAdmin)
     .get('/requests/:id', RequestsAPI.getByIdForAdmin)
-
-
+    .get('/requests/user/:id', RequestsAPI.getByUserIdForAdmin)
+    .put('/requests/:request', RequestsAPI.updateByAdmin)
+    .put('/requests/:request/add/:expert', RequestsAPI.addSuggestion)
+    .put('/requests/:request/remove/:expert', RequestsAPI.removeSuggestion)
 
   router.use('/adm',admrouter)
 

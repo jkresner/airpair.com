@@ -52,6 +52,8 @@ function calcSuggestedRates(requestBudget, expert)
     // subtract margin from total budget to get what's left for the expert
     var expertBudget = relativeBudget - baseMargin
 
+    if (expertBudget < 40 && e.rate >= 40) expertBudget = 40
+
     if (expertBudget > e.rate) {
       // split the difference with expert
       var extra = expertBudget - e.rate

@@ -21,11 +21,15 @@ var Suggestion = new Schema({
     in:          { id: String },
     tw:          { username: String }
   },
-  expertStatus:       { required: true, enum: REPLY_STATUS, type: String, default: 'waiting' },
   // expertRating:       Number,
   // expertFeedback:     String
-  expertComment:      String,
+  reply:         {
+    time:        Date
+  },
+  //-- TODO, move these guys into the reply object
+  expertStatus:       { required: true, enum: REPLY_STATUS, type: String, default: 'waiting' },
   expertAvailability: String,    // todo change to dates
+  expertComment:      String,
   // suggestedRate:      Number,    // can be altered by admin or expert
   // customerRating:     Number,    // Survey customer on qaulity of rating
   // customerFeedback:   String,
@@ -53,6 +57,8 @@ var V0_REQUEST_STATUS = [
   'complete',       //: transaction final and time to archive
   'canceled',       //: company has canceled the request
   'deferred',       //: customer indicated they need more time
+
+  'junk'
 ]
 
 
@@ -80,9 +86,7 @@ var REQUEST_TIME = [
   'later'
 ]
 
-
-
-module.exports = mongoose.model('Request', new Schema({
+var Request = new Schema({
 
   userId:           { required: true, type: ObjectId, ref: 'User', index: true },
   by:               {},
@@ -96,16 +100,30 @@ module.exports = mongoose.model('Request', new Schema({
 
   status:           { required: true, type: String, enum: V0_REQUEST_STATUS },
   suggested:        [Suggestion],
+  adm:              {
+    active:         { type: Boolean, index: true, sparse: true },
+    owner:          String,
+    // newcustomer:    String,
+    submitted:      { type: Date },
+    received:       { type: Date },
+    reviewable:     { type: Date },
+    booked:         { type: Date },
+    paired:         { type: Date },
+    feedback:       { type: Date },
+    closed:         { type: Date },
+    lastTouch:      { type: Date }
+  },
 
   // New v1
 
   //company:          { required: true, type: {} }
   // contacts { userId, fullName, email }
 
-  owner:            String,
   marketingTags:    { type: [{}], default: [] }
 
-}))
+})
+
+module.exports = mongoose.model('Request', Request)
 
 
 // v0 attrs

@@ -1,65 +1,73 @@
 import Svc                from '../services/_service'
 import Rates              from '../services/requests.rates'
 import * as ExpertsSvc    from './experts'
-import * as md5           from '../util/md5'
 import * as Validate      from '../../shared/validation/requests.js'
 import Request            from '../models/request'
+import User               from '../models/user'
+import * as md5           from '../util/md5'
 var util =                require('../../shared/util')
 var Data =                require('./requests.data')
 var logging =             false
 var svc =                 new Svc(Request, logging)
-var {isCustomer,isExpert} = require('../../shared/roles.js').request
-
+var {isCustomer,isCustomerOrAdmin,isExpert} = require('../../shared/roles.js').request
 
 function selectByRoleCB(ctx, errorCb, cb) {
   return (e, r) => {
     if (e || !r) return errorCb(e, r)
 
-    if (!ctx.user) return cb(null, util.selectFromObject(r, Data.select.anon))
-    else if (isCustomer(ctx.user, r)) {
-      var request = util.selectFromObject(r, Data.select.customer)
-      Rates.addRequestSuggestedRates(request, true)
-      for (var s of request.suggested) s.expert.avatar = md5.gravatarUrl(s.expert.email)
-      cb(null, request)
-    } else {
-      Rates.addRequestSuggestedRates(r, false)
-      var request = util.selectFromObject(r, Data.select.review)
-      request.suggested = Data.select.meSuggested(r, ctx.user._id)
-      if (request.suggested.length == 1) {
-        for (var s of request.suggested) s.expert.avatar = md5.gravatarUrl(s.expert.email)
-        return cb(null, request)
-      }
+    if (!ctx.user) return cb(null, Data.select.byView(r, 'anon'))
+    else if (isCustomerOrAdmin(ctx.user, r)) cb(null, Data.select.byView(r, 'customer'))
+    else {
+      // -- we don't want experts to see other reviews
+      r.suggested = Data.select.meSuggested(r, ctx.user._id)
+      if (r.suggested.length == 1)
+        return cb(null, Data.select.byView(r, 'review'))
 
       ExpertsSvc.getMe.call(ctx, (ee,expert) => {
-        if (expert && expert.rate) {
-          request.budget = r.budget
-          request.suggested.push({expert})
-          Rates.addRequestSuggestedRates(request, false)
-          delete request.budget
-        }
-        for (var s of request.suggested) s.expert.avatar = md5.gravatarUrl(s.expert.email)
-        cb(null, request)
+        if (expert && expert.rate) r.suggested.push({expert})
+        cb(null, Data.select.byView(r, 'review'))
       })
     }
   }
 }
 
+var admCB = (cb) =>
+  (e,r) => {
+    if (e) return cb(e)
+    if (r.length) {
+      for (var req of r) req = Data.select.byView(req, 'admin')
+    }
+    else
+      r = Data.select.byView(r, 'admin')
+
+    cb(null,r)
+  }
+
+
+
 var get = {
   getByIdForAdmin(id, cb) {
-    svc.getById(id, cb)
+    svc.getById(id, (e,r) => {
+      if (e || !r) return cb(e,r)
+      r = Data.select.byView(r, 'admin')
+      User.findOne({_id:r.userId}, (ee,user) => {
+        r.user = user
+        return cb(ee,r)
+      })
+    })
   },
   getByIdForUser(id, cb) {  // for updating
     var userId = this.user._id
     svc.getById(id, (e,r) => {
       if (e || !r) return cb(e,r)
-      if (!_.idsEqual(userId,r.userId)) return cb(Error(`Could not find request[${id}] belonging to user[${userId}]`))
-      cb (null, util.selectFromObject(r, Data.select.customer))
+      if (!isCustomerOrAdmin(this.user,r)) return cb(Error(`Could not find request[${id}] belonging to user[${userId}]`))
+      cb (null, Data.select.byView(r, 'customer'))
     })
   },
   getByIdForReview(id, cb) {
     svc.getById(id, selectByRoleCB(this,cb,cb))
   },
-  getUsers(userId, cb) {
+  getByUserIdForAdmin(userId, cb) {
     var opts = { options: { sort: { '_id': -1 } } }
     svc.searchMany({userId}, opts, cb)
   },
@@ -75,7 +83,13 @@ var get = {
       if (!suggestion) return cb(Error(`No available expert[${expertId}] on request[${r._id}] not found`))
       cb(null, r)
     }))
-  }
+  },
+  getActiveForAdmin(cb) {
+    svc.searchMany(Data.query.active, { options: { sort: { '_id': -1 }}, fields: Data.select.pipeline }, admCB(cb))
+  },
+  // getIncompleteForAdmin(cb) {
+  //   svc.searchMany(Data.query.incomplete, { fields: Data.select.pipeline}, cb)
+  // }
 }
 
 var save = {
@@ -87,12 +101,21 @@ var save = {
     o._id = svc.newId()
     o.userId = _id
     o.status = 'received'
-
-    mailman.sendPipelinerNotifyRequestEmail(this.user.name, o._id, ()=>{})
+    o.adm = { active:true }
 
     svc.create(o, cb)
   },
   updateByCustomer(original, update, cb) {
+
+    // new fully completed request
+    if (update.budget && !original.budget) {
+      mailman.sendPipelinerNotifyRequestEmail(this.user.name, original._id, update.time.toUpperCase(),
+        update.budget, update.tags, ()=>{})
+
+      update.adm = { active:true, submitted: new Date() }
+    }
+
+
     var ups = _.extend(original, update)
     if (ups.tags.length == 1) ups.tags[0].sort = 0
 
@@ -100,9 +123,21 @@ var save = {
 
     svc.update(original._id, ups, cb)
   },
+  updateByAdmin(original, update, cb) {
+    var {adm,status} = update
+    adm.lastTouch = new Date()
+    if (original.adm.active && !update.adm.active)
+      adm.closed = new Date()
+    if (original.status == "received" && update.status == "waiting")
+      adm.received = new Date()
+
+    var ups = _.extend(original, {adm,status})
+    svc.update(original._id, ups, admCB(cb))
+  },
   replyByExpert(request, expert, reply, cb) {
     var {suggested} = request
     // data.events.push @newEvent "expert reviewed", eR
+    reply.reply = { time: new Date() }
     var existing = _.find(suggested, (s) => _.idsEqual(s.expert._id, expert._id))
     if (!existing) suggested.push(_.extend(reply, { expert }))
     else {
@@ -117,8 +152,41 @@ var save = {
     // sug.events.push @newEvent "expert updated"
     // sug.expert.paymentMethod = type: 'paypal', info: { email: eR.payPalEmail }
 
+    mailman.sendPipelinerNotifyReplyEmail(this.user.name, reply.expertStatus, request._id,
+        request.by.name, ()=>{})
+
+    if (!request.adm.reviewable) request.adm.reviewable = new Date()
+
     // var ups = _.extend(request,{suggested})
     svc.update(request._id, request, selectByRoleCB(this,cb,cb))
+  },
+  addSuggestion(request, expert, body, cb)
+  {
+    var {adm,suggested} = request
+    suggested.push({
+      matchedBy: { userId: this.user._id, initials: 'pg' },
+      expertStatus: "waiting",
+      expert
+    })
+
+    mailman.sendExpertSuggestedEmail(expert, request.by.name, request._id,
+      this.user.name, request.tags, ()=>{})
+
+    adm.lastTouch = new Date()
+    svc.update(request._id, {suggested,adm}, admCB(cb))
+  },
+  removeSuggestion(request, expert, cb)
+  {
+    var {adm,suggested} = request
+    var existing = _.find(suggested, (s) => _.idsEqual(s.expert._id,expert._id) )
+    suggested = _.without(suggested,existing)
+
+    adm.lastTouch = new Date()
+    svc.update(request._id, {suggested,adm}, admCB(cb))
+  },
+  deleteById(o, cb)
+  {
+    svc.deleteById(o._id, cb)
   }
 }
 

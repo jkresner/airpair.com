@@ -10,6 +10,10 @@ require('./../public/v1/lib/angular-bootstrap/ui-bootstrap-tpls.js');
 require('./../public/v1/lib/prism/prism.js');
 require('./../public/v1/lib/jquery-ui-custom/jquery-ui.js');
 window.marked = require('./../public/v1/lib/marked/lib/marked.js');
+require('./common/models/viewDataService.js');
+require('./common/models/postsService.js');
+require('./common/models/sessionService.js');
+require('./common/models/dataService.js');
 require('./common/directives/ctas.js');
 require('./common/directives/share.js');
 require('./common/directives/post.js');
@@ -27,9 +31,6 @@ require('./common/directives/notifications.js');
 require('./common/directives/serverTemplates.js');
 require('./common/directives/providers.js');
 require('./common/filters/filters.js');
-require('./common/models/postsService.js');
-require('./common/models/sessionService.js');
-require('./common/models/dataService.js');
 require('./common/pageHelpers.js');
 require('./auth/module.js');
 require('./posts/module.js');
@@ -39,7 +40,7 @@ require('./account/module.js');
 require('./requests/module.js');
 
 
-angular.module("AP", ['Providers', 'ngRoute', 'ngAnimate', 'APDataSvc', 'APCTAs',
+angular.module("AP", ['Providers', 'ngRoute', 'ngAnimate', 'APViewData', 'APDataSvc', 'APCTAs',
   'APAnalytics', 'APSideNav', 'APChatNav', 'APServerTemplates', 'APNotifications',
   'APAuth', 'APPosts', 'APWorkshops', 'APProfile', 'APBilling', 'APRequests'])
 
@@ -65,7 +66,7 @@ angular.module("AP", ['Providers', 'ngRoute', 'ngAnimate', 'APDataSvc', 'APCTAs'
 
     if (angular.element('#serverTemplate').length > 0)
     {
-                                        // '/c++/posts/preparing-for-cpp-interview'
+      // '/c++/posts/preparing-for-cpp-interview'
       window.initialLocation = window.location.pathname.toString().replace(/\+/g,"\\\+");
       $routeProvider.when(initialLocation, {
         template: angular.element('#serverTemplate').html(),
@@ -86,13 +87,6 @@ angular.module("AP", ['Providers', 'ngRoute', 'ngAnimate', 'APDataSvc', 'APCTAs'
       $rootScope.serverErrors = [];
       $rootScope.notifications = Notifications.calculateNextNotification()
     });
-
-    if (window.viewData)
-    {
-      if (window.viewData.post) $rootScope.post = window.viewData.post
-      if (window.viewData.workshop) $rootScope.workshop = window.viewData.workshop
-      if (window.viewData.expert) $rootScope.expert = window.viewData.expert
-    }
 
     pageHlpr.fixNavs('#side,#chat');
   })
@@ -117,17 +111,14 @@ angular.module("AP", ['Providers', 'ngRoute', 'ngAnimate', 'APDataSvc', 'APCTAs'
     return shared;
   })
 
-  .controller('ServerTemplateCtrl', function($scope, SessionService) {
+  .controller('ServerTemplateCtrl', function($scope, ViewData, SessionService, RequestHelper) {
     pageHlpr.loadPoSt();
     pageHlpr.highlightSyntax({ addCtrs: true });
     pageHlpr.fixPostRail();
-    if (viewData && angular.element('#disqus_thread').length>0)
-      pageHlpr.loadDisqus(viewData.canonical);
+    if ($scope.viewData && angular.element('#disqus_thread').length>0)
+      pageHlpr.loadDisqus($scope.viewData.canonical);
 
-    SessionService.onAuthenticated(function() {
-      if (!$scope.request || !$scope.request.tags)
-        $scope.request = { tags: _.first($scope.session.tags,3) };
-    })
+    RequestHelper.setRequestTagsFromSession($scope)
 
   })
 

@@ -11,6 +11,7 @@ require('./common/directives/post.js');
 require('./common/directives/tagInput.js');
 require('./common/directives/typeAheadInputs.js');
 require('./common/directives/requests.js');
+require('./common/directives/mailtemplates.js');
 require('./common/filters/filters.js');
 require('./common/models/dataService.js');
 require('./common/models/postsService.js');
@@ -27,7 +28,7 @@ require('./adm/pipeline/module.js');
 angular.module('ADM', [
   'ngRoute',
   'APSvcSession', 'APSvcAdmin', 'APDataSvc',
-  'APFilters', 'APFormsDirectives', 'APTypeAheadInputs',
+  'APFilters', 'APFormsDirectives', 'APTypeAheadInputs', 'APMailTemplates',
   'ADMPipeline',
   'ADMPosts',
   'ADMUsers',
@@ -43,10 +44,8 @@ angular.module('ADM', [
   })
 
   .run(function($rootScope, $location, SessionService) {
-
-    SessionService.onAuthenticated( (session) => {
-    });
-
+    $rootScope.session = _.extend(window.viewData.session,{primaryPayMethodId:'adm'});
+    SessionService.onAuthenticated( (session) => {});
   })
 
   .factory('ServerErrors', function serverErrorsFactory($rootScope) {
