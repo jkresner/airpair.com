@@ -24,7 +24,7 @@ var convertToDumbSegmentCampaignSHIT = (utms) =>
 var buildPayload = (type, user, anonymousId, payload) => {
   if (user) payload.userId = user.email
   else payload.anonymousId = anonymousId
-  $log(`analytics.${type}`.yellow);
+  $log(`analytics.${type}:${JSON.stringify(payload)}`.yellow)
   if (logging) { $log(`analytics.${type}`, payload) }
   return payload;
 }
