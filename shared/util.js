@@ -1,7 +1,5 @@
-var botPattern = /googlebot|gurujibot|twitterbot|yandexbot|slurp|msnbot|bingbot|rogerbot|Hatena|PaperLiBot|QuerySeekerSpider|AhrefsBot|EmailMarketingRobot|ShowyouBot|facebookexternalhit/i
+var botPattern = /googlebot|gurujibot|twitterbot|yandexbot|slurp|msnbot|bingbot|rogerbot|MetaURI|Hatena|PaperLiBot|QuerySeekerSpider|AhrefsBot|EmailMarketingRobot|ShowyouBot|facebookexternalhit/i
 
-var idsEqual = (id1, id2) =>
-  id1.toString() == id2.toString()
 
 var nestedPick = (object, keys) => {
   if (!object) return null
@@ -30,10 +28,19 @@ var nestedPick = (object, keys) => {
 }
 
 
-module.exports = {
+var util = {
+
+  dateInRange(date, start, end)
+  {
+    var isAfterStart = (start) ? date.isAfter(start) : true
+    var isBeforeEnd = (end) ? date.isBefore(end) : true
+    return isAfterStart && isBeforeEnd
+  },
 
 
-  idsEqual: idsEqual,
+  idsEqual(id1, id2) {
+    return id1.toString() == id2.toString()
+  },
 
 
   ObjectId2Date(id) {
@@ -41,11 +48,23 @@ module.exports = {
   },
 
 
+  ObjectCreatedInRange(obj, start, end) {
+    var created = util.ObjectId2Date(obj._id)
+    return dateInRange(created, start, end)
+  },
+
+
+  ObjectCreatedToday(obj) {
+    var today = moment().startOf('day')
+    return util.ObjectCreatedInRange(obj, today, today.add(1, 'days'))
+  },
+
+
   toggleItemInArray(array, item, comparator) {
     if (!array) return [item]
     else
     {
-      if (!comparator) { comparator = (i) => idsEqual(i._id,item._id) }
+      if (!comparator) { comparator = (i) => util.idsEqual(i._id,item._id) }
       var existing = _.find(array, comparator)
       if (existing) return _.without(array, existing)
       else {
@@ -126,3 +145,5 @@ module.exports = {
   }
 
 }
+
+module.exports = util

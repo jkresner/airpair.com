@@ -92,6 +92,11 @@ module.exports = {
   peco: { name: "Peter Corcoran", email: "peter.corcoran@hotmail.com"},
   petc: { name: "Peter Corcoran", email: "peter.corcoran@live.com"},
 
+  kyla: { name: "Kyle Aungst", email: "kyle.aungst@test.com"},
+  kyau: { name: "Kyle Aungst", email: "kyle.aungst@hotmail.com"},
+  kaun: { name: "Kyle Aungst", email: "kyle.aungst@ghotmail.com"},
+  auka: { name: "Aungst Kyle", email: "aungst.aungst@hotmail.com"},
+
   admin: {
     "_id" : "54551be15f221efa174238d1",
     "googleId" : "199992380360999999999",

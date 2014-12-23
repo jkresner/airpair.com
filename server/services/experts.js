@@ -3,6 +3,7 @@ import * as Validate from '../../shared/validation/experts.js'
 import Expert from '../models/expert'
 // var Data = require('./experts.data')
 import * as md5           from '../util/md5'
+var Data =                require('./experts.data')
 var logging = false
 var svc = new Svc(Expert, logging)
 
@@ -22,6 +23,34 @@ export function getMe(cb) {
     if (e || !r) return cb(e,r)
     r.avatar = md5.gravatarUrl(r.email)
     cb(null,r)
+  })
+}
+
+export function getMatchesForRequest(request, cb) {
+  var tagIds = _.map(request.tags,(t) => t._id.toString())
+  // todo protect with owner of request?
+  var query = {
+    // tags: { $elemMatch: { _id: { $in: tagIds } } },
+    'tags._id': { $in: tagIds }
+    // rate: { $lt: request.budget }
+  }
+  // $log('query', query, tagIds)
+  var opts = {fields:Data.select.matches, options: { limit: 200 } }
+
+  svc.searchMany(query, opts, (e,r) => {
+    if (e || !r || r.length == 0) return cb(e,r)
+
+    var existingExpertIds = []
+    for (var s of request.suggested) existingExpertIds.push(s.expert._id)
+    // $log('r.lenght', r.length)
+    var existing = []
+    for (var exp of r) {
+      exp.avatar = md5.gravatarUrl(exp.email)
+      if (_.find(existingExpertIds,(id)=>_.idsEqual(id,exp._id)))
+        existing.push(exp)
+    }
+    var unique = _.difference(r, existing)
+    cb(null,unique)
   })
 }
 

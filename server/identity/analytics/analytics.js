@@ -2,7 +2,7 @@ var Analytics = require('analytics-node')
 var setDevSettings = (config.env == 'dev' || config.env == 'test')
 var segmentOpts = setDevSettings ? { flushAt: 1 } : {}
 var segment = new Analytics(config.analytics.segmentio.writekey, segmentOpts)
-var logging = true
+var logging = false
 var viewSvc = require('../../services/views')
 var doneBackup = null
 
@@ -24,7 +24,8 @@ var convertToDumbSegmentCampaignSHIT = (utms) =>
 var buildPayload = (type, user, anonymousId, payload) => {
   if (user) payload.userId = user.email
   else payload.anonymousId = anonymousId
-  if (logging) { $log(`analytics.${type}`.yellow); $log(`analytics.${type}`, payload) }
+  $log(`analytics.${type}`.yellow);
+  if (logging) { $log(`analytics.${type}`, payload) }
   return payload;
 }
 

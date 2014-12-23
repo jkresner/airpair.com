@@ -1,6 +1,7 @@
 import {google,local} from '../identity/auth/providers/index'
 import {logout,setTestLogin} from '../identity/auth/actions'
-import {setReturnTo,authDone} from '../identity/auth/middleware'
+import {setReturnTo,authDone,alreadyAuthd} from '../identity/auth/middleware'
+
 
 
 export default function(app) {
@@ -11,9 +12,9 @@ export default function(app) {
     .use(setReturnTo)
 
     .get('/logout', logout(config.auth))
-    .post('/login', local.login)
-    .post('/signup', local.signup)
-    .post('/subscribe', (req,r,n) => { req.body.password = 'fast-ap-signup'; n() }, local.signup)
+    .post('/login', alreadyAuthd, local.login)
+    .post('/signup', alreadyAuthd, local.signup)
+    .post('/subscribe', alreadyAuthd, (req,r,n) => { req.body.password = 'fast-ap-signup'; n() }, local.signup)
     .get('/google', google.oAuth)
     .get('/google/callback', google.oAuth, authDone)
 

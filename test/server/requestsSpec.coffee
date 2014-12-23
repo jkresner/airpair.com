@@ -31,7 +31,6 @@ module.exports = -> describe "API", ->
 
   it 'Can post an unfished request as logged in user', (done) ->
     addAndLoginLocalUser 'josh', (s) ->
-      tag = _.extend({sort:1}, data.tags.node)
       d = type: 'mentoring'
       POST '/requests', d, {}, (r) ->
         expect(r._id).to.exist
@@ -69,7 +68,13 @@ module.exports = -> describe "API", ->
                   r6.budget = all.budget
                   PUT putUrl, r6, {}, (r7) ->
                     expect(r7.budget).to.equal(all.budget)
-                    done()
+                    LOGIN 'admin', data.users.admin, (sAdmin) ->
+                      GET "/adm/requests/user/#{s._id}", {}, (reqs1) ->
+                        expect(reqs1.length).to.equal(1)
+                        expect(reqs1[0].suggested.length).to.equal(0)
+                        expect(reqs1[0].adm.active).to.be.true
+                        expect(reqs1[0].adm.submitted).to.exist
+                        done()
 
 
   it 'Can review a request as anon, customer and other', (done) ->
@@ -161,6 +166,7 @@ module.exports = -> describe "API", ->
                 expect(r2.suggested[0].expertStatus).to.equal("available")
                 expect(r2.suggested[0].expertAvailability).to.equal("Now")
                 expect(r2.suggested[0].expertComment).to.equal("Actually I've got an hour")
+                expect(r2.suggested[0].reply.time).to.exist
                 done()
 
 
@@ -203,5 +209,49 @@ module.exports = -> describe "API", ->
         testNotAvailable testAvailable
 
 
+
   it.skip 'Cannot reply to customers own request', (done) ->
 
+
+  it 'Can delete an incomplete request as owner', (done) ->
+    addAndLoginLocalUser 'kyla', (s) ->
+      d = type: 'mentoring'
+      POST '/requests', d, {}, (r) ->
+        expect(r._id).to.exist
+        DELETE "/requests/#{r._id}", {}, (rDel) ->
+          GET "/requests", {}, (requests) ->
+            expect(requests.length).to.equal(0)
+            done()
+
+
+  it 'Cannot delete a request unless owner or admin', (done) ->
+    addAndLoginLocalUser 'kyau', (s) ->
+      d = type: 'code-review'
+      POST '/requests', d, {}, (r) ->
+        expect(r._id).to.exist
+        addAndLoginLocalUser 'auka', (s2) ->
+          DELETE "/requests/#{r._id}", { status: 403 }, (rDel) ->
+            LOGIN 'admin', data.users.admin, (sAdmin) ->
+              GET "/adm/requests/user/#{s._id}", {}, (reqs1) ->
+                expect(reqs1.length).to.equal(1)
+                DELETE "/requests/#{r._id}", {}, (rDel2) ->
+                  GET "/adm/requests/user/#{s._id}", {}, (reqs2) ->
+                    expect(reqs2.length).to.equal(0)
+                    done()
+
+
+  it 'Admin can suggest and remove experts', (done) ->
+    addAndLoginLocalUser 'kaun', (s) ->
+      d = tags: [data.tags.angular], type: 'resources', experience: 'proficient', brief: 'bah bah anglaur test yo4', hours: "1", time: 'rush', budget: 300
+      POST '/requests', d, {}, (r) ->
+        LOGIN 'admin', data.users.admin, (sAdmin) ->
+          GET "/adm/requests/user/#{s._id}", {}, (reqs1) ->
+            expect(reqs1.length).to.equal(1)
+            expect(reqs1[0].suggested.length).to.equal(0)
+            PUT "/adm/requests/#{r._id}/add/#{data.experts.abha._id}", {}, {}, (reqWexp) ->
+              GET "/adm/requests/user/#{s._id}", {}, (reqs2) ->
+                expect(reqs2.length).to.equal(1)
+                expect(reqs2[0].suggested.length).to.equal(1)
+                PUT "/adm/requests/#{r._id}/remove/#{data.experts.abha._id}", {}, {}, (reqRexp) ->
+                  expect(reqRexp.suggested.length).to.equal(0)
+                  done()

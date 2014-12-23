@@ -1,0 +1,59 @@
+<section id="pipeline">
+
+<section class="today">
+  <h4> Today
+    <span>{{today.format("DD MMM")}}</span> >>
+    <span>{{todays.typeCount}}</span> >>
+    Tags: <span>{{todays.tagsCount}}</span> >>
+    Brief: <span>{{todays.briefCount}}</span> >>
+    Budget: <span>{{todays.budgetCount}}</span>
+ </div>
+</section>
+
+<section class="controls">
+  <!-- <a ng-click="filterByLastTouch()">Last touch</a> -->
+</section>
+
+<section class="active">
+
+<table class="table table-striped">
+  <tr ng-repeat="r in requests.complete">
+    <td>
+      <span>
+        <a href="/adm/pipeline/{{r._id}}">{{r.status}}</a>
+        <time>{{r._id | objectIdToAgoTime }}</time>
+        {{r.time}}
+      </span>
+      <span>{{r.num}}
+        <div class="{{r.adm.owner}}">{{r.adm.owner}}</div>
+        <time>{{r.adm.lastTouch | agoTime }}</time>
+      </span>
+      <label>
+        <i ng-repeat="t in r.tags">{{t.slug}}</i>
+      </label>
+      <span><img ng-src="{{r.by.avatar}}?s=30"></span>
+      <label>{{r.by.name}}</label>
+      <label>
+        <ul>
+          <li ng-repeat="s in r.suggested">
+            <img ng-src="{{s.expert.avatar}}?s=20" />
+          </li>
+        </ul>
+
+      </label>
+    </td>
+  </tr>
+</table>
+
+</section>
+
+<!-- <section class="incomplete">
+  <h6>Incomplete</h6>
+  <div ng-repeat="request in requests.incomplete">
+    <span>{{request.by.name}}</span>
+    <request-progress></request-progress>
+  </div>
+</section> -->
+
+</section>
+

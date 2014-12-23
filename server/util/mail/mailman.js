@@ -79,9 +79,20 @@ module.exports = function(mailProvider)
       mailProvider.send(receivers.pipeliners, renderEmail('pipelinernotifybooking',
         { byName, expertName, bookingId }), cb)
     },
-    sendPipelinerNotifyRequestEmail(byName, requestId, cb) {
+    sendPipelinerNotifyRequestEmail(byName, requestId, time, budget, tags, cb) {
+      var tagsString = util.tagsString(tags)
       mailProvider.send(receivers.pipeliners, renderEmail('pipelinernotifyrequest',
-        { byName, requestId }), cb)
+        { byName, requestId, time, budget, tags: tagsString }), cb)
+    },
+    sendPipelinerNotifyReplyEmail(byName, expertStatus, requestId, requestByName, cb) {
+      mailProvider.send(receivers.pipeliners, renderEmail('pipelinernotifyreply',
+        { byName, requestId, expertStatus, requestByName }), cb)
+    },
+    sendExpertSuggestedEmail(toUser, requestByFullName, requestId, accountManagerName, tags, cb) {
+      var tagsString = util.tagsString(tags)
+      var expertFirstName = util.firstName(toUser.name)
+      mailProvider.send(`${toUser.name} <${toUser.email}>`, renderEmail('expertsuggested',
+        { expertFirstName, requestByFullName, requestId, accountManagerName, tagsString }), cb)
     }
   }
 

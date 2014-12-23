@@ -1,7 +1,7 @@
 var fs 				= require('fs')
 var marked 		= require('marked')
 var hbs 			= require('express-hbs')
-
+import {getSession} from './services/users'
 
 function registerHelpers(hbs)
 {
@@ -50,8 +50,7 @@ export default function(app) {
   var combineBaseData = (req, data) => {
     if (!data) { data = {} }
     data.build = config.build
-    data.authenticated = req.user && req.user._id
-    data.user = req.user || { sessionID: req.sessionID }
+    data.authenticated = !!(req.user && req.user._id)
     data.config = { analytics: config.analytics, bundle: config.bundle }
     data.campPeriod = moment().format('MMMYY').toLowerCase()
     return data;
@@ -62,13 +61,22 @@ export default function(app) {
       res.status(200).render(`./${fileName}.hbs`, combineBaseData(req,data))
     }
 
+  app.renderHbsAdmin = (fileName, data) =>
+    (req,res) => {
+      res.status(200).render(`./${fileName}.hbs`, combineBaseData(req,{session:req.user}))
+    }
+
+
   app.renderHbsViewData = (partialName, pageMeta, viewDataFn) =>
     (req, res) => {
-      viewDataFn(req, (e,data) => {
-        data[`${partialName}Render`] = true
-        if (!data.meta) data.meta = pageMeta
-        var canonical = (data.meta) ? data.meta.canonical : ""
-        res.status(200).render(`./baseServer.hbs`, combineBaseData(req, { viewData: data, partialName, canonical } ) )
-    	})
+      getSession.call(req,(e,session)=>
+        viewDataFn(req, (e,data) => {
+          data[`${partialName}Render`] = true
+          if (!data.meta) data.meta = pageMeta
+          var canonical = (data.meta) ? data.meta.canonical : ""
+          res.status(200).render(`./baseServer.hbs`,
+            combineBaseData(req, { viewData: data, partialName, canonical, session } ) )
+        })
+      )
 	}
 }

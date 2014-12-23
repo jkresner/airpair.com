@@ -159,7 +159,7 @@ export function upsertProviderProfile(providerName, profile, done) {
 
 export function tryLocalSignup(email, password, name, done) {
   if (this.user && this.user._id)
-    done(Error(`Cannot signup. Already signed in as ${user.email}. Logout first?`),null)
+    done(Error(`Cannot signup. Already signed in as ${this.user.email}. Logout first?`),null)
 
   var search = { '$or': [{email:email},{'google._json.email':email}] }
   svc.searchOne(search, null, (e, r) => {

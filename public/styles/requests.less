@@ -88,7 +88,7 @@ form.requestForm {
   padding-top:340px;
   max-width:640px;
 
-  #requestProgress {
+  .requestProgress {
     height:32px;
     position:absolute;
     top:280px;
@@ -446,16 +446,18 @@ section#review {
     article > * { display:inline-block;width:22%;vertical-align:top }
     time label { padding:7px }
     .entry-categories {
-      ul { display:inline-block;list-style:none;padding-left:5px; li { display:inline-block; } }
+      ul { display:inline-block;list-style:none;padding-left:5px; li { display:block; } }
+      vertical-align:top;
+      img { vertical-align:top; }
     }
     span { display:inline-block;background:@turquoise;font-weight:bold;color:white;
        padding:4px 8px;border:solid 1px @lightblue }
     .requestExperts { .ulNoStyle }
   }
 
-  #replies {
+  .replies {
     ul { .ulNoStyle }
-    li { border-bottom:solid 1px @lightblue;margin-bottom:10px }
+    li { position:relative;border-bottom:solid 1px @lightblue;margin-bottom:10px;width:100% }
     .message { width:360px;
       > img { top:0 }
       h4 { margin-top:0 }
@@ -484,7 +486,7 @@ section#review {
       background:@palegray; }
   }
 
-  form#replyForm {
+  form {
     h3 { margin-top:0 }
     margin:-30px 0 30px 0;
     .lightblueForm;

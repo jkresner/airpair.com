@@ -4,136 +4,142 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
   'APRequestDirectives',
   'APTagInput', 'APTypeAheadInputs'])
 
-  .config(function($locationProvider, $routeProvider) {
+.config(function($locationProvider, $routeProvider) {
 
-    var authd = resolver(['session']);
+  var authd = resolver(['session']);
 
-    $routeProvider.when('/', {
-      template: require('./list.html'),
-      controller: 'RequestListCtrl',
-    });
+  $routeProvider.when('/', {
+    template: require('./list.html'),
+    controller: 'RequestListCtrl',
+  });
 
-    $routeProvider.when('/dashboard', {
-      template: require('./list.html'),
-      controller: 'RequestListCtrl',
-    });
+  $routeProvider.when('/dashboard', {
+    template: require('./list.html'),
+    controller: 'RequestListCtrl',
+  });
 
-    $routeProvider.when('/dashboard', {
-      template: require('./list.html'),
-      controller: 'RequestListCtrl',
-      resolve: authd
-    });
 
-    $routeProvider.when('/help/request', {
-      template: require('./new.html'),
-      controller: 'RequestCtrl',
-      resolve: authd
-    });
+  $routeProvider.when('/help/request', {
+    template: require('./new.html'),
+    controller: 'RequestCtrl',
+    resolve: authd
+  });
 
-    $routeProvider.when('/meet-experts', {
-      template: require('./new.html'),
-      controller: 'RequestCtrl',
-      resolve: authd
-    });
+  $routeProvider.when('/meet-experts', {
+    template: require('./new.html'),
+    controller: 'RequestCtrl',
+    resolve: authd
+  });
 
-    $routeProvider.when('/help/types', {
-      template: require('./types.html'),
-      controller: 'RequestTypesCtrl'
-    });
+  $routeProvider.when('/help/types', {
+    template: require('./types.html'),
+    controller: 'RequestTypesCtrl'
+  });
 
-    $routeProvider.when('/help/request/:id', {
-      template: require('./edit.html'),
-      controller: 'RequestEditCtrl',
-      resolve: authd
-    });
+  $routeProvider.when('/help/request/:id', {
+    template: require('./edit.html'),
+    controller: 'RequestEditCtrl',
+    resolve: authd
+  });
 
-    $routeProvider.when('/review/:id', {
-      template: require('./review.html'),
-      controller: 'ReviewCtrl',
-      resolve: authd
-    });
+  $routeProvider.when('/reviews', {
+    template: require('./review.html'),
+    controller: 'ReviewsCtrl',
+  });
 
+  $routeProvider.when('/review/:id', {
+    template: require('./review.html'),
+    controller: 'ReviewCtrl',
+  });
+
+})
+
+.run(function($rootScope, SessionService) {})
+
+
+.controller('RequestListCtrl', function($scope, $location, DataService, SessionService) {
+
+  SessionService.onAuthenticated(function() {
+    if (!$scope.session._id) $location.path(`/about`)
   })
 
-  .run(function($rootScope, SessionService) {})
-
-
-  .controller('RequestListCtrl', function($scope, $location, DataService, SessionService) {
-
-    SessionService.onAuthenticated(function() {
-      if (!$scope.session._id) $location.path(`/about`)
-    })
-
-    DataService.requests.getMyRequests(function(result) {
-      $scope.requests = result
-    })
-
+  DataService.requests.getMyRequests(function(result) {
+    $scope.requests = result
   })
 
+})
 
-  .controller('RequestCtrl', function($rootScope, $scope, SessionService) {
 
-    angular.element('#side').addClass('collapse')
+.controller('RequestCtrl', function($rootScope, $scope, RequestHelper) {
 
-    SessionService.onAuthenticated(function() {
-      if (!$scope.request || !$scope.request.tags)
-        $scope.request = { tags: _.first($rootScope.session.tags,3) };
-    })
+  angular.element('#side').addClass('collapse')
 
+  RequestHelper.setRequestTagsFromSession($scope)
+})
+
+.controller('RequestEditCtrl', function($scope, $routeParams, $location, DataService, Shared, ServerErrors) {
+  $scope.requestId = $routeParams.id;
+
+  DataService.requests.getById($scope.requestId, function(result) {
+    if (!Shared.roles.request.isCustomerOrAdmin($scope.session, result))
+      $location.path('/dashboard')
+    else
+      $scope.request = result
+  }, function(er) {
+    $location.path('/help/request')
   })
 
-  .controller('RequestEditCtrl', function($scope, $routeParams, $location, DataService) {
-    $scope.requestId = $routeParams.id;
-
-    DataService.requests.getById($scope.requestId, function(result) {
-      if (result.userId != $scope.session._id) $location.path('/dashboard')
-      else $scope.request = result
-    }, function(er) {
-      $location.path('/help/request')
-    })
-
-  })
+})
 
 
-  .controller('RequestTypesCtrl', function($scope, $window) {
+.controller('RequestTypesCtrl', function($scope, $window) {
 
-  })
+})
 
-  .controller('ReviewCtrl', function($scope, $routeParams, $location, DataService, Shared, ServerErrors) {
-    $scope.requestId = $routeParams.id;
-    DataService.requests.getReviewById($scope.requestId, function(r) {
-      $scope.r = r
-      $scope.isCustomer = Shared.roles.request.isCustomer($scope.session,r)
+.controller('ReviewsCtrl', ($location) => $location.path('/') )
 
-      if ($scope.isCustomer) {
-        $scope.displayRate = r.budget
-      }
-      else
-      {
-        $scope.isExpert = Shared.roles.request.isExpert($scope.session,r)
-        if ($scope.isExpert) {
-          var sug = r.suggested[0]
-          $scope.displayRate = sug.suggestedRate.private.expert
-          $scope.notYetReplied = !sug.expertStatus
-          if ($scope.notYetReplied)
-          {
-            $scope.data = {expertStatus:"",expertComment:"",expertAvailability:""}
-            $scope.expertEdit = true;
-          }
-          else {
-            var {expertStatus,expertComment,expertAvailability} = sug
-            $scope.data = {expertStatus,expertComment,expertAvailability}
-            $scope.expertEdit = false;
-          }
-          // console.log('$scope', $scope.isExpert, $scope.expertEdit, $scope.data)
+.controller('ReviewCtrl', function($scope, $routeParams, $location, DataService, Shared, ServerErrors) {
+  $scope.requestId = $routeParams.id;
+
+  if ($scope.session && $scope.session.authenticated == false) {
+    $scope.r = $scope.request
+    $scope.isAnon = true
+    $scope.r.by.name = "Login to view more detail"
+    $scope.returnTo = window.location.pathname
+    return
+  }
+
+  DataService.requests.getReviewById($scope.requestId, function(r) {
+    $scope.r = r
+    $scope.isAdmin = Shared.roles.isAdmin($scope.session)
+    $scope.isCustomer = Shared.roles.request.isCustomer($scope.session,r)
+    $scope.replies = _.where(r.suggested,(s)=>s.expertComment!=null)
+
+    if ($scope.isCustomer || $scope.isAdmin) {
+      $scope.displayRate = r.budget
+    }
+    else
+    {
+      $scope.isExpert = Shared.roles.request.isExpert($scope.session,r)
+      if ($scope.isExpert) {
+        var sug = r.suggested[0]
+        $scope.displayRate = sug.suggestedRate.private.expert
+        $scope.notYetReplied = !sug.expertStatus || sug.expertStatus == 'waiting'
+        if ($scope.notYetReplied)
+        {
+          $scope.data = {expertStatus:"",expertComment:"",expertAvailability:""}
+          $scope.expertEdit = true;
         }
+        else {
+          var {expertStatus,expertComment,expertAvailability} = sug
+          $scope.data = {expertStatus,expertComment,expertAvailability}
+          $scope.expertEdit = false;
+        }
+        // console.log('$scope', $scope.isExpert, $scope.expertEdit, $scope.data, sug)
       }
-    }, function(er) {
-      console.log('request not found')
-    })
+    }
 
     $scope.setExpertEdit = () => $scope.expertEdit = true
-
 
     $scope.submit = (formValid, data) => {
       if (formValid)
@@ -148,9 +154,15 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
             $scope.expertEdit = false;
         }, ServerErrors.add)
       }
+
     }
 
+  }, function(er) {
+    console.log('request not found')
   })
+
+
+})
 
 
 ;
