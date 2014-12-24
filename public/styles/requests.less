@@ -88,6 +88,12 @@ form.requestForm {
   padding-top:340px;
   max-width:640px;
 
+  .verifyEmail {
+    padding:10px;
+    width:65%;
+    .important { color:red }
+  }
+
   .requestProgress {
     height:32px;
     position:absolute;
@@ -177,9 +183,11 @@ form.requestForm {
   }
 
   section.done {
-    // display:none;
     display:block;
     background:white;
+    .info {
+      display:none
+    }
   }
 
   select[multiple=multiple] {
@@ -188,8 +196,6 @@ form.requestForm {
   }
 
   input[type=radio] {
-    // margin:10px 10px 10px 30px;
-    // border:solid 1px @lightblue;
     position:absolute;
     z-index:-1000;
     left:-1000px;
@@ -200,7 +206,6 @@ form.requestForm {
     margin:-1px;
     padding:0;
     border:0;
-
   }
 
   input[type=radio] + label {
@@ -217,10 +222,10 @@ form.requestForm {
     padding-left:35px;
     padding-top:6px;
     height:28px;
-    display:inline-block;
     line-height:20px;
     font-size:16px;
     font-weight:normal;
+    display:inline-block;
     vertical-align:middle;
     cursor:pointer;
     margin-right:46px;
@@ -254,6 +259,19 @@ form.requestForm {
       display:none;
       max-width:260px;
       margin-right:10px;
+    }
+    .info {
+      float:right;
+      margin:5px 30px 30px 28px;
+      height:145px;
+      width:220px;
+      position:relative;
+      background:white;
+      border-top-left-radius:50%;
+      img { position:absolute;bottom:-28px;right:-35px;width:90px;height:90px }
+      p { font-size:11px;width:200px;padding:34px 0px 0px 36px }
+      b { font-size:12px;display:block }
+      span { display:block;width:128px;margin-top:5px }
     }
   }
 
@@ -335,7 +353,8 @@ form.requestForm {
   }
 
   .budget.done, .hours.done, .time.done {
-    input[type=radio]+label { display:inline-block;margin-right:28px }
+    input[type=radio]+label { display:inline-block;margin-right:26px }
+    i { display:none }
   }
 
   section.time {
@@ -348,14 +367,39 @@ form.requestForm {
   }
 
   section.budget {
-    input[type=radio]+label span { font-size:12px;color:@mediumgray }
+    .control-label { margin-bottom:7px }
+    b { font-weight:400;display:inline-block;width:62px;
+      span { padding-left:2px;display:inline-block; }
+    }
+    i { text-transform:none;font-size:12px;font-style:normal;margin-left:10px;
+      color:@mediumgray;
+      em { font-weight:bold;color:@lightorange }
+    }
+    input[type=radio]+label { margin-bottom:9px;line-height:22px }
+    input[type=radio]+label span { font-size:12px;color:@mediumgray; }
+    input[type=radio]:checked + label {
+      margin-top:16px;
+      margin-bottom:0px;line-height:22px;
+      padding-top:2px;
+      height:30px;
+      line-height:20px;
+      img { margin:-5px 10px 0 0 }
+      background-position: 0 -22px;
+    }
+
+    .info { position:absolute;top:25px;right:20px;border-radius:50%;
+      width:150px;height:150px;background:@darkblue;text-align:center;
+      color:white;line-height:15px;
+      b { font-weight:bold;margin-top:18px }
+      p { padding:2px 18px;font-size:13px;margin-top:5px }
+    }
   }
 
   @media only screen and (max-width: 640px) {
     padding-top:0px;
     max-width:310px;
 
-    #requestProgress {
+    .requestProgress {
       height:90px;padding-left:20px;
       div { margin-bottom:5px; }
     }
@@ -413,6 +457,13 @@ form.requestForm {
       input[type=radio]+label { margin-top:30px }
       i { color:@mediumgray;font-size:11px;padding-left:35px;display:block;width:140px;line-height:14px }
     }
+    section.budget {
+      .control-label { margin-bottom:15px }
+      label { margin:0 }
+      i { float:right;width:150px;margin:0;line-height:12px;font-size:11px;
+        em { display:none }
+      }
+    }
   }
 }
 
@@ -429,8 +480,14 @@ section#request {
   }
 }
 
+section#review.verifyEmail {
+  #info { opacity:0.4 }
+  #brief { opacity:0.4 }
+}
 
 section#review {
+
+  .important { font-weight:bold;color:@error;font-size:17px }
 
   > section {
     margin-top:0px;
@@ -443,13 +500,18 @@ section#review {
     border-bottom:solid 1px @lightblue;
     img { height:30px;display:inline-block; }
     article { border-top:solid 2px @lightblue; h6 { font-weight:bold;text-transform:uppercase; } }
-    article > * { display:inline-block;width:22%;vertical-align:top }
+    article > * { display:inline-block;vertical-align:top }
     time label { padding:7px }
     .entry-categories {
+      width:26%;
       ul { display:inline-block;list-style:none;padding-left:5px; li { display:block; } }
       vertical-align:top;
       img { vertical-align:top; }
     }
+    time { width:18% }
+    .entry-content { width:26% }
+    .entry-author { width:10% }
+    .suggested { width:15% }
     span { display:inline-block;background:@turquoise;font-weight:bold;color:white;
        padding:4px 8px;border:solid 1px @lightblue }
     .requestExperts { .ulNoStyle }
@@ -458,16 +520,17 @@ section#review {
   .replies {
     ul { .ulNoStyle }
     li { position:relative;border-bottom:solid 1px @lightblue;margin-bottom:10px;width:100% }
-    .message { width:360px;
+    .message { max-width:360px;
       > img { top:0 }
       h4 { margin-top:0 }
     }
     section { position:absolute;right:0;top:0;width:180px;
       .btn { width:100% }
-      strong { font-size:36px;font-weight:normal;display:block;text-align:center; }
+      strong { font-size:36px;font-weight:normal;display:block;text-align:center;
+        span { font-size:16px;padding-left:2px  }
+      }
     }
   }
-
 
   .message {
     > img { position:absolute;top:10px;left:0;width:100px;height:100px;padding:0 }
@@ -496,4 +559,34 @@ section#review {
     }
   }
 
+
+  @media only screen and (max-width:640px) {
+    > section { width:310px }
+
+    #info {
+      margin:20px 0 30px 0;
+      h5 { display:none }
+      max-width:310px;
+      padding:0 0 10px 0;
+      time { width:35% }
+      .entry-categories { width:60% }
+      .entry-content { width:60% }
+      .entry-author { width:20% }
+      .suggested { display:none }
+    }
+
+    .replies {
+      img.user { width:50px;height:50px }
+      section { display:block;position:inherit;margin:0px 0px 10px 55px;
+        padding-bottom:20px }
+    }
+
+    .message { padding:5px 15px 10px 25px;margin:-5px 0 10px 40px;width:270px;min-height:inherit; }
+
+    #brief {
+      width:310px;
+      padding-top:20px;
+      img.user { width:50px;height:50px }
+    }
+  }
 }

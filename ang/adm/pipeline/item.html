@@ -113,8 +113,8 @@
       <div ng-repeat="s in request.suggested" class="expertStatus">
         <img ng-src="{{s.expert.avatar}}?s=60" class="user {{s.expertStatus}}" />
         <div>
-          <label>${{s.suggestedRate.private.total}} /
-          ${{s.suggestedRate.private.expert}}</label>
+          <label>${{s.suggestedRate.total}} /
+          ${{s.suggestedRate.expert}}</label>
           <label><a href="/adm/experts/edit/{{s.expert._id}}" target="_blank">{{s.expert.name}}</a></label>
           <span class="{{s.expertStatus}}">{{s.expertStatus}}</span>
 
@@ -128,16 +128,27 @@
       </div>
     </section>
     <section class="matches">
-      <span ng-repeat="t in request.tags">
-        <label>{{t.slug}}</label> <input type="checkbox" value="t._id" />
-      </span>
 
-      <a ng-click="getMatches()">Show matches</a>
+      <section class="matchControls">
+        <div class="expertInput" expert-input=""></div>
+        <div ng-repeat="t in request.tags">
+          <input type="checkbox" value="t._id" disabled="" />
+          <label>{{t.slug}}</label>
+        </div>
+        <div>
+          <a ng-click="getMatches()">Show matches</a>
+        </div>
+      </section>
       <hr />
+
       <ul>
-        <li ng-repeat="m in matches">
+        <li class="match" ng-repeat="m in matches">
           <img ng-src="{{m.avatar}}?s=30" class="user" />
+          {{m.rate}}|{{m.minRate}}
           <a href="/adm/experts/edit/{{m._id}}" target="_blank">{{m.name}}</a>
+          <div>
+            <em ng-repeat="t in m.tags">{{t.short}}</em>
+          </div>
           <div>
             <a ng-if="m.gh" href="//github.com/{{ m.gh.username }}" target="_blank" class="gh-white icon"></a>
 

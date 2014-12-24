@@ -70,9 +70,11 @@ export default function(app) {
     .post('/billing/orders/credit', OrdersAPI.buyCredit)
     // .post('/billing/orders/membership/:paymethod', OrdersAPI.buyMembership)
 
+    .get('/bookings/:id', BookingsAPI.getById)
     .post('/bookings/:expert', BookingsAPI.createBooking)
 
     .get('/experts/me', ExpertsAPI.getMe)
+    .get('/experts/search/:id', ExpertsAPI.search)
     .get('/experts/:id', ExpertsAPI.getById)
     .get('/experts', ExpertsAPI.getForExpertsPage)
     .get('/experts/match/:request', authd, ExpertsAPI.getMatchesForRequest)
@@ -84,6 +86,7 @@ export default function(app) {
     .use(adm)
     .get('/posts', PostsAPI.getAllAdmin)
     .get('/orders/:start/:end', OrdersAPI.getOrdersByDateRange)
+    .get('/bookings/:start/:end', BookingsAPI.getByDateRangeForAdmin)
     .get('/users/role/:role', UsersAPI.getUsersInRole)
     .put('/users/:id/role/:role', UsersAPI.toggleUserInRole)
     .get('/users/search/:id', UsersAPI.search)

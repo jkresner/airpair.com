@@ -98,6 +98,12 @@ angular.module("ADMPipeline", ["APRequestDirectives"])
       $scope.request.status = 'junk'
       $scope.update()
     }
+
+    $scope.selectExpert = (expert) =>
+    {
+      var existing = _.find($scope.request.suggested, (s)=>expert._id == s._id)
+      if (!existing) $scope.addSuggestion(expert._id)
+    }
   })
 
 

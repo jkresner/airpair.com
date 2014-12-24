@@ -67,7 +67,7 @@ function migrateV0(r) {
     }
     if (!r.time) r.time = 'regular'
     if (!r.experience) r.experience = 'proficient'
-    if (r.owner && !r.adm.owner)
+    if (r.owner && (!r.adm || !r.adm.owner))
     {
       if (!r.adm) r.adm = { owner: r.owner }
       else r.adm.owner = r.owner
@@ -91,8 +91,12 @@ module.exports = {
     byView(request, view) {
       var r = migrateV0(request)
       if (r.suggested)
-        for (var s of r.suggested) s.expert.avatar = md5.gravatarUrl(s.expert.email)
-      Rates.addRequestSuggestedRates(r, true)
+        for (var s of r.suggested) {
+          s.expert.avatar = md5.gravatarUrl(s.expert.email)
+          if (!s.suggestedRate)
+            Rates.addSuggestedRate(r, s, true)
+        }
+
       if (view != 'admin')
         r = util.selectFromObject(r, selectFields[view])
       // $log('selected', view, request.suggested, r)

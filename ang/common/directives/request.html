@@ -7,34 +7,60 @@
   <div ng-if="request._id">
     <label class="control-label">Good to go?</label>
     <p>If you're happy with you're request, we'll broadcast it to selected experts.</p>
+
   </div>
 
   <a ng-click="submit()" class="btn">Submit</a>
 
 </section>
 
-
 <section ng-class="stepClass('budget')">
 
   <div form-group>
-    <label class="control-label" for="requestTime">What is your hourly budget?</label>
+    <label class="control-label" for="requestTime">What is your max hourly budget?</label>
 
     <input id="requestBudget300" name="budget" ng-model="request.budget" type="radio" value="300" ng-click="setBuget()">
-    <label for="requestBudget300">$300<span>/hr</span></label>
+    <label for="requestBudget300">
+      <b>$300<span>/hr</span></b>
+      <i>Our best experts, the fastest responses.</i>
+    </label>
 
     <input id="requestBudget210" name="budget" ng-model="request.budget" type="radio" value="210" ng-click="setBuget()">
-    <label for="requestBudget210">$210<span>/hr</span></label>
+    <label for="requestBudget210">
+      <b>$210<span>/hr</span></b>
+      <i>Our best experts, normal response times.</i>
+    </label>
 
-    <input id="requestBudget150" name="budget" ng-model="request.budget" type="radio" value="150" ng-click="setBuget()">
-    <label for="requestBudget150">$150<span>/hr</span></label>
+    <input ng-if="!nonCurrentBudget" id="requestBudget150" name="budget" ng-model="request.budget" type="radio" value="150" ng-click="setBuget()">
+    <label ng-if="!nonCurrentBudget" for="requestBudget150">
+      <b>$150<span>/hr</span></b>
+      <i>Proven experts, fast responses <em>* Most popular</em>.</i>
+    </label>
 
     <input id="requestBudget100" name="budget" ng-model="request.budget" type="radio" value="100" ng-click="setBuget()">
-    <label for="requestBudget100">$100<span>/hr</span></label>
+    <label for="requestBudget100">
+      <b>$100<span>/hr</span></b>
+      <i>Proven experts, normal response times.</i>
+    </label>
 
-    <input id="requestBudget60" name="budget" ng-model="request.budget" type="radio" value="60" ng-click="setBuget()">
-    <label for="requestBudget60">$60<span>/hr</span></label>
+    <input id="requestBudget70" name="budget" ng-model="request.budget" type="radio" value="70" ng-click="setBuget()">
+    <label for="requestBudget70">
+      <b>$70<span>/hr</span></b>
+      <i>Available experts, normal response times.</i>
+    </label>
+
+    <other ng-if="nonCurrentBudget">
+      <input id="requestBudgetOther" name="budget" ng-model="request.budget" type="radio" value="{{ existingBudget }}" ng-click="setBuget()">
+      <label for="requestBudgetOther">
+        <b>${{ existingBudget }}</b><span>/hr</span></label>
+    </other>
+
   </div>
   <hr />
+
+  <div class="info nomob"><b>$10/hr Discount</b>
+    <p>Off these rates, <br />if you choose to <em>open source</em> your video recording.</p>
+  </div>
 
 </section>
 
@@ -101,7 +127,7 @@
 
   <div form-group ng-if="request.tags && request.tags.length > 0">
 
-    <label class="control-label" for="requestExperience" ng-if="request.tags.length == 1">What's your experience using {{request.tags[0].name}}?</label>
+    <label class="control-label" for="requestExperience" ng-if="request.tags.length == 1">What's your experience with {{request.tags[0].slug}}?</label>
     <label class="control-label" for="requestExperience" ng-if="request.tags.length > 1">What's your experience using {{tagsString()}} together?</label>
 
     <i>Well make sure to match you with an equal or more experienced expert.</i>
@@ -170,7 +196,13 @@
       <option value="other">Other</option>
     </select>
 
-    <!-- <a href="/help/types" class="typesHelp">Need help choosing ?</a> -->
+    <div class="nomob info">
+      <img class="user" ng-src="/v1/img/css/chat/pairy.png" />
+      <p><b>Want live programming help over video chat?</b>
+        <span>Tell us what you need and get matched with an expert in
+        as little as 30 minutes.</span>
+      </p>
+    </div>
   </div>
   <hr />
 

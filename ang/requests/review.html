@@ -5,7 +5,7 @@
   </ol>
 </header>
 
-<section id="review">
+<section id="review" class="{{reviewClass}}">
 
   <section id="info">
     <h5>Spec</h5>
@@ -16,7 +16,7 @@
 
     <form ng-if="data" id="replyForm" class="expertReplyForm" novalidate name="replyForm" ng-submit="submit(replyForm.$valid, data)">
 
-    <h3>Do you want this AirPair? {{isAdmin}}</h3>
+    <h3>Do you want this AirPair?</h3>
 
     <div form-group class="expertStatus">
       <input form-control id="expertAvailable" name="expertStatus" ng-model="data.expertStatus" type="radio" value="available" required>
@@ -75,11 +75,13 @@
       <div class="message noexperts">
         <img class="user" itemprop="image" src="/v1/img/css/chat/pairy.png" />
         <h4>Pairy</h4>
-        <div><p ng-if="isCustomer">You must verify your email to see responses.</p></div>
-        <div><p ng-if="!isCustomer">You must verify your email before replying.</p></div>
+        <div><p ng-if="isCustomer" class="important">You must verify your email before experts can see this request.</p></div>
+        <div><p ng-if="!isCustomer" class="important">You must verify your email before replying.</p></div>
       </div>
       <section>
+        <strong>*</strong>
         <a href="/me" class="btn">Verify Email</a>
+
       </section>
     </div>
   </section>
@@ -90,7 +92,7 @@
       <div class="message noexperts">
         <img class="user" itemprop="image" src="/v1/img/css/chat/pairy.png" />
         <h4>Pairy</h4>
-        <div><p>No experts have replied to your request yet. Consider uping the rate?</p></div>
+        <div><p>No experts have replied yet. <!-- Consider uping the rate? --></p></div>
       </div>
       <section>
         <a href="/help/request/{{r._id}}" class="btn">Edit request</a>
@@ -106,11 +108,11 @@
             <div><p>{{s.expertComment}}</p><p>{{s.expertAvailability}}</p></div>
           </div>
           <section ng-if="isExpert">
-            <strong>${{s.suggestedRate.private.expert}} /hr</strong>
+            <strong ng-if="s.expertStatus == 'available'">${{s.suggestedRate.expert}}<span>/hr</span></strong>
             <a ng-click="setExpertEdit()" class="btn">Edit reply</a>
           </section>
           <section ng-if="(isCustomer || isAdmin) && s.expertStatus == 'available'">
-            <strong>${{s.suggestedRate.private.total}} /hr</strong>
+            <strong>${{s.suggestedRate.total}}<span>/hr</span></strong>
             <a href="/billing/book/{{s.expert._id}}/{{r._id}}" class="btn">Book</a>
           </section>
         </div>

@@ -274,7 +274,7 @@ export function createBookingOrder(expert, time, minutes, type, credit, payMetho
   var requestId = (requestSuggestion) ? requestSuggestion.requestId : null
   if (requestSuggestion) {
     expert = requestSuggestion.suggestion.expert
-    expert.rate = requestSuggestion.suggestion.suggestedRate[type].expert
+    expert.rate = requestSuggestion.suggestion.suggestedRate.expert
   }
 
   var unitPrice = OrderUtil.calculateUnitPrice(expert,type)

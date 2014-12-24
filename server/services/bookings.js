@@ -1,9 +1,14 @@
 import Svc from '../services/_service'
 import * as OrdersSvc from '../services/orders'
 import Booking from '../models/booking'
+var Data = require('./bookings.data')
 var logging = false
 var svc = new Svc(Booking, logging)
 
+
+export function getById(id, cb) {
+  svc.getById(id, cb)
+}
 
 export function getByUserId(id, cb) {
   var opts = {}
@@ -14,6 +19,22 @@ export function getByUserId(id, cb) {
 export function getByExpertId(id, cb) {
   var opts = {}
   svc.searchMany({ expertId: id }, opts, cb)
+}
+
+
+export function getByDateRangeForAdmin(start, end, cb)
+{
+  var opts = { fields: Data.select.listAdmin, options: Data.options.orderByDate }
+  var query = Data.query.inRange(start,end)
+  svc.searchMany(query, opts, cb)
+  //   (e,r) => {
+  //   for (var o of r) {
+  //     if (o.company)
+  //       o.by = { name: o.company.contacts[0].fullName, email: o.company.contacts[0].email }
+  //     o.by.avatar = md5.gravatarUrl(o.by.email)
+  //   }
+  //   cb(null, r)
+  // })
 }
 
 

@@ -2,30 +2,26 @@ var higherSplit = 0.6
 var lowerSplit = 0.5
 
 var base = {
-  opensource: 20,
-  private: 40,
-  nda: 90
+  // opensource: 20,
+  private: 30
 }
 
-var weight = {
-  opensource: { opensource:0, private:20, nda:70 },
-  private: { opensource:-20, private:0, nda:50 },
-  nda: { opensource:-70, private:-50, nda:0 },
-}
+// var weight = {
+//   // opensource: { opensource:0, private:20 },
+//   private: { opensource:-20, private:0 },
+// }
 
 var fns = {
-  getRelativeBudget(budget, requestPricing, pricing) {
-    return budget - (base[requestPricing]-base[pricing])
-  },
-  getMaxExpertRate(budget, pricing) {
-    return budget - base[pricing]
-  },
-  addRequestSuggestedRates(request, isCust) {
-    if (request.suggested)
-      for (var s of request.suggested)
-        s.suggestedRate = calcSuggestedRates(request.budget, s.expert)
+  // getRelativeBudget(budget, requestPricing, pricing) {
+  //   return budget - (base[requestPricing]-base[pricing])
+  // },
+  // getMaxExpertRate(budget, pricing) {
+  //   return budget - base[pricing]
+  // },
+  addSuggestedRate(request, suggestion) {
+    suggestion.suggestedRate = calcSuggestedRate(request.budget, suggestion.expert)
 
-    if (isCust) request.base = base
+    // if (isCust) request.base = base
   }
 }
 
@@ -34,51 +30,51 @@ var fns = {
 // pricing:
 // NOTE suggestedRate is the developers rate
 // not including airpair's margin
-function calcSuggestedRates(requestBudget, expert)
+function calcSuggestedRate(requestBudget, expert)
 {
   var e = expert
-  var r = {}
-  for (var pricing of ['opensource','private','nda'])
-  {
+  // var r = {}
+  // for (var pricing of ['opensource','private','nda'])
+  // {
     // get the base margin for the type of pricing
-    var baseMargin = base[pricing]
+    var baseMargin = base['private']
 
     // if the user was to change their choice between opensource / private
-    var relativeBudget = fns.getRelativeBudget(requestBudget, 'private', pricing)
+    // var relativeBudget = fns.getRelativeBudget(requestBudget, 'private', pricing)
 
     // start with defaults rate
-    var pr = { expert: e.rate, total: relativeBudget }
+    var r = { expert: e.rate, total: requestBudget }
 
     // subtract margin from total budget to get what's left for the expert
-    var expertBudget = relativeBudget - baseMargin
+    var expertBudget = requestBudget - baseMargin
 
-    if (expertBudget < 40 && e.rate >= 40) expertBudget = 40
+    // if (expertBudget < 40 && e.rate >= 40) expertBudget = 40
 
     if (expertBudget > e.rate) {
       // split the difference with expert
       var extra = expertBudget - e.rate
       var split = extra*higherSplit
-      pr.expert = e.rate + split*.5
-      pr.total = pr.expert + baseMargin + split*.5
+      r.expert = e.rate + split*.5
+      r.total = r.expert + baseMargin + split*.5
     }
 
     if (expertBudget < e.rate) {
       // split the difference with expert
       // difference = e.rate - expertBudget
-      pr.expert = expertBudget //- difference*lowerSplit
-      pr.total = pr.expert + baseMargin
+      r.expert = expertBudget //- difference*lowerSplit
+      r.total = r.expert + baseMargin
     }
 
     // we could do more complex things on the split between
     // the expert and airpair
-    if (pricing == 'nda') {
-      // give the expert $20 more p.h. for nda
-      pr.expert += 20
-    }
+    // if (pricing == 'nda') {
+    //   // give the expert $20 more p.h. for nda
+    //   pr.expert += 20
+    // }
 
-    r[pricing] = pr
+    // r[pricing] = pr
     // $log 'baseMargin', baseMargin, 'expertBudget', expertBudget, 'expertRate', e.rate, 'suggestedExpertRate', pr.expert, 'suggestedTotal', pr.total
-  }
+  // }
 
   return  r
 }
