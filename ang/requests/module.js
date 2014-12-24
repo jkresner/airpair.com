@@ -80,11 +80,20 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
 .controller('RequestEditCtrl', function($scope, $routeParams, $location, DataService, Shared, ServerErrors) {
   $scope.requestId = $routeParams.id;
 
-  DataService.requests.getById($scope.requestId, function(result) {
-    if (!Shared.roles.request.isCustomerOrAdmin($scope.session, result))
+  DataService.requests.getById($scope.requestId, function(r) {
+    if (r.budget)
+    {
+      var currentBudgets = [300,210,150,100,70]
+      if (!_.find(currentBudgets,(b)=> r.budget==b)) {
+        $scope.existingBudget = r.budget
+        $scope.nonCurrentBudget = true
+      }
+    }
+
+    if (!Shared.roles.request.isCustomerOrAdmin($scope.session, r))
       $location.path('/dashboard')
     else
-      $scope.request = result
+      $scope.request = r
   }, function(er) {
     $location.path('/help/request')
   })
@@ -104,6 +113,7 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
   if ($scope.session && $scope.session.authenticated == false) {
     $scope.r = $scope.request
     $scope.isAnon = true
+    $scope.reviewClass = 'anon'
     $scope.r.by.name = "Login to view more detail"
     $scope.returnTo = window.location.pathname
     return
@@ -117,13 +127,19 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
 
     if ($scope.isCustomer || $scope.isAdmin) {
       $scope.displayRate = r.budget
+
+      console.log('$scope.session.primaryPayMethodId', $scope.session.primaryPayMethodId)
+      if (!$scope.session.emailVerified)
+        $scope.reviewClass = 'verifyEmail'
+      // else (!$scope.session.primaryPayMethodId)
+        // $scope.reviewClass = 'addPayMethod'
     }
     else
     {
       $scope.isExpert = Shared.roles.request.isExpert($scope.session,r)
       if ($scope.isExpert) {
         var sug = r.suggested[0]
-        $scope.displayRate = sug.suggestedRate.private.expert
+        $scope.displayRate = sug.suggestedRate.expert
         $scope.notYetReplied = !sug.expertStatus || sug.expertStatus == 'waiting'
         if ($scope.notYetReplied)
         {

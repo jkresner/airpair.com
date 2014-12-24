@@ -149,10 +149,12 @@
 
   section.matches {
     ul { .ulNoStyle;
-      li { width:32%;margin:2px 8px 12px 0 }
+      li.match { width:32%;margin:2px 8px 12px 0 }
+
+      em { display:block;font-style:normal;font-size:9px}
     }
 
-    div { text-align:right}
+    div { text-align:right;float:right;width:60% }
     .icon { width:20px;height:20px;display:inline-block;
       background-size:20px;
      }
@@ -188,6 +190,15 @@
     }
   }
 
+  section.matchControls {
+    min-height:100px;
+    > div { width:300px;text-align:left;float:none }
+    .expertInput {
+      float:right;width:240px;
+      .form-group { width:100% }
+    }
+  }
+
   section.suggested {
     line-height:12px;
     margin-bottom:20px;
@@ -196,7 +207,7 @@
     > div { vertical-align:top }
     > div > div { display:inline-block;padding-top:5px }
     p { float:right;width:60%;font-size:11px }
-    hr { margin:5px}
+    hr { margin:5px;clear:both }
   }
 
   table { margin-top:10px;vertical-align:top }

@@ -1,15 +1,16 @@
 import Svc                from '../services/_service'
 import Rates              from '../services/requests.rates'
-import * as ExpertsSvc    from './experts'
 import * as Validate      from '../../shared/validation/requests.js'
 import Request            from '../models/request'
 import User               from '../models/user'
 import * as md5           from '../util/md5'
+var ExpertsSvc =          require('./experts')
 var util =                require('../../shared/util')
 var Data =                require('./requests.data')
 var logging =             false
 var svc =                 new Svc(Request, logging)
 var {isCustomer,isCustomerOrAdmin,isExpert} = require('../../shared/roles.js').request
+
 
 function selectByRoleCB(ctx, errorCb, cb) {
   return (e, r) => {
@@ -103,7 +104,7 @@ var save = {
     o.status = 'received'
     o.adm = { active:true }
 
-    svc.create(o, cb)
+    svc.create(o, selectByRoleCB(this,cb,cb))
   },
   updateByCustomer(original, update, cb) {
 
@@ -139,10 +140,15 @@ var save = {
     // data.events.push @newEvent "expert reviewed", eR
     reply.reply = { time: new Date() }
     var existing = _.find(suggested, (s) => _.idsEqual(s.expert._id, expert._id))
-    if (!existing) suggested.push(_.extend(reply, { expert }))
+    if (!existing) {
+      var newSuggestion = _.extend(reply, { expert })
+      Rates.addSuggestedRate(request, newSuggestion)
+      suggested.push(newSuggestion)
+    }
     else {
       existing.expert = expert
       existing = _.extend(existing, reply)
+      Rates.addSuggestedRate(request, existing)
     }
 
     if (reply.expertStatus == 'available' &&

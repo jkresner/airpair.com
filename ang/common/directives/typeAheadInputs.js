@@ -85,4 +85,44 @@ angular.module('APTypeAheadInputs', ['ui.bootstrap'])
     }
   })
 
+
+  .directive('expertInput', function(badUserSearchQuery) {
+
+    return {
+      restrict: 'EA',
+      template: require('./typeAheadExpert.html'),
+      scope: {},
+      controller: function($scope, $attrs, $http) {
+        console.log('expertInput')
+
+        //-- stupid broken angular ui, this fixes it though
+        $scope.templateUrl = "expertMatch.html"
+
+        $scope.selectExpert = $scope.$parent.selectExpert
+
+        $scope.getsExperts = function(q) {
+          if (badUserSearchQuery(q,'.user-input-group')) return [];
+
+          return $http.get('/v1/api/experts/search/'+q).then(function(res){
+            var results = [];
+            angular.forEach(res.data, (item) => results.push(item));
+            $scope.matches = results;
+            return results;
+          });
+        };
+
+        $scope.selectMatch = function (index) {
+          var m = $scope.matches[index];
+          $scope.selectExpert(m);
+          // $scope.q = user.name;
+        };
+
+        $scope.keypressSelect = function(val) {
+          if (!val || $scope.matches.length == 0) return null;
+          $scope.selectMatch(val);
+        }
+      }
+    }
+  })
+
 ;

@@ -30,7 +30,7 @@ var Suggestion = new Schema({
   expertStatus:       { required: true, enum: REPLY_STATUS, type: String, default: 'waiting' },
   expertAvailability: String,    // todo change to dates
   expertComment:      String,
-  // suggestedRate:      Number,    // can be altered by admin or expert
+  suggestedRate:      {},           // can be altered by admin or expert
   // customerRating:     Number,    // Survey customer on qaulity of rating
   // customerFeedback:   String,
   matchedBy:          {}
