@@ -29,7 +29,9 @@ angular.module("ADMPipeline", ["APRequestDirectives"])
     }
 
     $scope.$watch('request.status', function() {
-      if ($scope.request.status == 'waiting') $scope.getMatches()
+      if ($scope.request.status == 'waiting'
+        && $scope.user.emailVerified)
+        $scope.getMatches()
     })
 
     AdmDataService.pipeline.getRequest($routeParams.id, function (r) {

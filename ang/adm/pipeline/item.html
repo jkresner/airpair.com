@@ -106,7 +106,6 @@
 
   </section>
 
-
   <section class="experts left">
 
     <section class="suggested">
@@ -127,7 +126,12 @@
         <hr />
       </div>
     </section>
-    <section class="matches">
+
+    <section ng-if="!user.emailVerified" class="experts left">
+      <p>Cannot suggest experts until user verifies email.</p>
+    </section>
+
+    <section ng-if="user.emailVerified" class="matches">
 
       <section class="matchControls">
         <div class="expertInput" expert-input=""></div>

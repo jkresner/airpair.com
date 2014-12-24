@@ -1,13 +1,14 @@
 Hi {{firstName}},
 
-My name is {{accountManager.firstName}}, I'm your personal account manager assigned to help you with your << {{tagsString}} >> request. So I can start introducing you to experts:
+My name is {{accountManager.firstName}}, I'm your personal AirPair Matchmaker assigned to help find you the perfect {{tagsString}} expert. I'm also available to answer questions and to make sure your experience is smooth from now through to getting your challenges solved. So I can start introducing you to experts:
+<div ng-if="meta.shortBrief">
+Do you have more detail about what you need help with? You can update your request here:
 
-<div ng-if="meta.shortBrief">  Do you have more detail about what you need help with?
-  You can update your request here:
-  https://www.airpair.com/help/request/{{r._id}}
-</div>
-<div ng-if="meta.noPaymethod">  Please add your credit card, it is required before messaging potential experts:
-  https://www.airpair.com/billing
+https://www.airpair.com/help/request/{{r._id}}
+</div><div ng-if="meta.noPaymethod">
+When you get a sec, please add your credit card to our billing system and let me know if you need anything else:
+
+https://www.airpair.com/billing
 </div>
 Best,
 
