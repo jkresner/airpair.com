@@ -1,3 +1,19 @@
+function tokenize(term, wildcardStart, wildcardEnd) {
+  if (!term) return '.*';
+
+  var regex = '';
+  if (wildcardStart) regex += '.*';
+
+  var tokens = term.split(' ');
+  if (tokens) regex += tokens.join('.*');
+  else regex += term;
+
+  if (wildcardEnd) regex += '.*';
+
+  return regex;
+}
+
+
 export default function(model, logging)
 {
 
@@ -40,7 +56,21 @@ export default function(model, logging)
     getAll: (cb) => { searchMany({}, null, cb) },
     getById: (id, cb) => { searchOne({_id:id}, null, cb) },
     getByUseId: (id, cb) => { searchOne({userId:id}, null, cb) },
-    create: (o, cb) => {
+    search(term, fields, limit, select, andQuery, cb) {
+      var encodedTerm = term.replace(/[-\/\\^$*+?.()|[\]{}+]/g, '\\$&');
+      var query = { '$or': [] }
+      if (andQuery) query = _.extend(query, andQuery)
+      var regex = new RegExp(tokenize(encodedTerm, true, true), 'i');
+      for (var f of fields) {
+        var match = {}
+        match[f] = regex
+        query['$or'].push(match)
+      }
+      var opts = { options: { limit } }
+      if (select) opts.fields = select
+      searchMany(query, opts, cb)
+    },
+    create(o, cb) {
       new model( o ).save( (e,r) => {
         if (e) $log('svc.create.error', e)
         if (logging) $log('svc.create', o)
@@ -48,7 +78,7 @@ export default function(model, logging)
         if (cb) cb(e, r)
       })
     },
-    update: (id, data, cb) => {
+    update(id, data, cb) {
       if (!id) return cb(new Error('Cannot update object by null id'), null)
       var ups = _.omit(data, '_id') // so mongo doesn't complain
       model.findByIdAndUpdate(id, ups).lean().exec( (e, r) => {
@@ -57,14 +87,14 @@ export default function(model, logging)
         if (cb) cb(e, r)
       })
     },
-    updateBulk: (list, cb) => {
+    updateBulk(list, cb) {
       var bulk = model.collection.initializeOrderedBulkOp()
       for (var item of list) {
         bulk.find({_id:item._id}).updateOne(item)
       }
       bulk.execute(cb)
     },
-    updateAndInsertOneBulk: (updateList, insert, cb) => {
+    updateAndInsertOneBulk(updateList, insert, cb) {
       var bulk = model.collection.initializeOrderedBulkOp()
       bulk.insert(insert)
       for (var item of updateList) {
@@ -72,7 +102,7 @@ export default function(model, logging)
       }
       bulk.execute(cb)
     },
-    deleteById: (id, cb) => {
+    deleteById(id, cb) {
       if (!id) return cb(new Error('Cannot delete object by null id'), null)
       model.findByIdAndRemove(id, (e) => {
         if (e) $log('svc.delete.error', id, e)
