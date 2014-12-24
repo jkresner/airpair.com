@@ -2,7 +2,7 @@ var Analytics = require('analytics-node')
 var setDevSettings = (config.env == 'dev' || config.env == 'test')
 var segmentOpts = setDevSettings ? { flushAt: 1 } : {}
 var segment = new Analytics(config.analytics.segmentio.writekey, segmentOpts)
-var logging = false
+var logging = true
 var viewSvc = require('../../services/views')
 var doneBackup = null
 
@@ -24,8 +24,18 @@ var convertToDumbSegmentCampaignSHIT = (utms) =>
 var buildPayload = (type, user, anonymousId, payload) => {
   if (user) payload.userId = user.email
   else payload.anonymousId = anonymousId
-  $log(`analytics.${type}:${JSON.stringify(payload)}`.yellow)
-  if (logging) { $log(`analytics.${type}`, payload) }
+
+  {
+    if (type == 'mp.view')
+      var payloadString = payload.properties.url
+    else if (type == 'track')
+      var payloadString = `${payload.event}:${JSON.stringify(payload.properties)}`
+    else
+      var payloadString = JSON.stringify(payload)
+    $log(`analytics.${type}:${payloadString}`.yellow)
+  }
+  // if (logging) { $log(`analytics.${type}`, payload) }
+
   return payload;
 }
 
@@ -98,9 +108,9 @@ var alias = (sessionID, user, aliasEvent, done) => {
   var userId = user._id.toString()
 
   segment.alias({ previousId: sessionID, userId: user.email }, (e, b) => {
-    if (logging) $log('**** aliased'.yellow)
+    if (logging) $log('**** aliased'.blue)
     track(user, null, aliasEvent, {sessionID}, null, () => {
-      if (logging) $log(`**** ${aliasEvent}`.yellow)
+      if (logging) $log(`**** ${aliasEvent}`.blue)
       done()
     })
   })

@@ -14,18 +14,18 @@
     var mixId = mixpanel.get_distinct_id()
 
 {{#if authenticated}}
-    var email = '{{ user.email }}';
+    var email = '{{ session.email }}';
     var anonymousId = null;
 {{else}}
     var email = null;
-    var anonymousId = '{{ user.sessionID }}';
+    var anonymousId = '{{ session.sessionID }}';
 {{/if}}
 
     //console.log('userEmail', email, 'mixId', mixId, 'anonymousId', anonymousId)
 
     var ident = function() {
       //console.log('identify', email || anonymousId)  //-- could be from a different session.
-      window.analytics.identify(email || anonymousId, { id: email || anonymousId, name: '{{ user.name }}' });
+      window.analytics.identify(email || anonymousId, { id: email || anonymousId, name: '{{ session.name }}' });
     }
 
 

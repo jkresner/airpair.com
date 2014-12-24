@@ -44,31 +44,33 @@ export function charge(amount, orderId, payMethod, cb) {
 }
 
 export function addPaymethod(o, cb) {
-  var user = this.user
-  var customerId = (o.companyId != null) ? o.companyId : user._id
+  var customerId = (o.companyId != null) ? o.companyId : this.user._id
 
-  var savePayMethod = (ee, payMethodInfo) => {
-    if (ee) return cb(ee)
-    else {
-      o.userId = user._id
-      o.companyId = o.companyId
-      o.info = payMethodInfo
-      if (logging) $log('savePayMethod', payMethodInfo)
+  var savePayMethod = (ctx) =>
+    (ee, payMethodInfo) => {
+      if (ee) return cb(ee)
+      else {
+        $log(`savePayMethod ${payMethodInfo.cardType || payMethodInfo.id} by ${ctx.user._id}`.blue)
+        o.userId = ctx.user._id
+        o.companyId = o.companyId
+        o.info = payMethodInfo
+        if (logging) $log('savePayMethod', payMethodInfo)
 
-      svc.create(o, (e,r) => {
-        if (logging) $log('savedPayMethod', o.makeDefault, user._id, o)
-        analytics.track(user, null, 'Save', { type: 'paymethod', method: o.type })
-        if (o.makeDefault)
-          UserSvc.update.call(this, user._id, { primaryPayMethodId: r._id })
-        cb(e, r)
-      })
+        svc.create(o, (e,r) => {
+          if (true) $log('savedPayMethod', o.makeDefault, ctx.user, r._id)
+          analytics.track(ctx.user, null, 'Save', { type: 'paymethod', method: o.type })
+          if (o.makeDefault)
+            UserSvc.update.call(ctx, ctx.user._id, { primaryPayMethodId: r._id })
+          cb(e, r)
+        })
+      }
     }
-  }
+
 
   if (o.type == 'braintree')
-    Braintree.addPaymentMethod(customerId, user, null, o.token, savePayMethod)
+    Braintree.addPaymentMethod(customerId, this.user, null, o.token, savePayMethod(this))
   else if (o.type == 'stripe')
-    savePayMethod(null, o.info)
+    savePayMethod(this)(null, o.info)
   else
     return cb(`${o.type} not supported a payment type`)
 }
@@ -91,16 +93,17 @@ export function deletePaymethod(id, cb) {
 
 export function getMyPaymethods(cb) {
   if (!this.user) return Braintree.getClientToken(cb)
+  var ctx = this
 
-  CompanysSvc.getUsersCompany.call( this, (e, company) => {
+  CompanysSvc.getUsersCompany.call(ctx, (e, company) => {
     var companyIds = [] // TODO read companies user belongs too
     if (company) companyIds.push(company._id)
 
-    svc.searchMany({$or: [{userId:this.user._id},{companyId: {$in:companyIds}}]}, null, (e,r) => {
+    svc.searchMany({$or: [{userId:ctx.user._id},{companyId: {$in:companyIds}}]}, null, (e,r) => {
       if (e) return cb(e,r)
       if (r.length > 0) return cb(e,r)
       else {
-        Settings.findOne({userId:this.user._id}, (ee, s) => {
+        Settings.findOne({userId:ctx.user._id}, (ee, s) => {
           if (!s || !s.paymentMethods)
             return Braintree.getClientToken(cb)
 
@@ -108,7 +111,7 @@ export function getMyPaymethods(cb) {
           if (!existing) return cb(e,r)
           else {
             var {info,type} = existing
-            addPaymethod.call(this, {info,type,userId:this.user._id,name:`${this.user.name}'s card`,makeDefault:true}, (eee, pm) => {
+            addPaymethod.call(ctx, {info,type,userId:ctx.user._id,name:`${ctx.user.name}'s card`,makeDefault:true}, (eee, pm) => {
               if (eee) return cb(eee)
               cb(null,[pm])
             })
