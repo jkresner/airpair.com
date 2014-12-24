@@ -49,17 +49,18 @@ export function search(searchTerm, cb) {
   var encodedTerm = encode(searchTerm)
 
   var regex = new RegExp(tokenize(encodedTerm, true, true), 'i');
-  var exactMatch = new RegExp('^' + encodedTerm + '$', 'i');
-  var startsWith = new RegExp('^' + encodedTerm + '[^-]', 'i');
 
   var query = { $or: [{name: regex},{short: regex},{tokens: regex}] };
-	var opts = { fields: fields.search, limit: 10 }
+  var opts = { fields: fields.search, options: { limit: 10 } }
 
-	svc.searchMany(query, opts, function(err, result) {
+  svc.searchMany(query, opts, function(err, result) {
     if (err) {
       cb(err, result);
       return;
     }
+
+    var exactMatch = new RegExp('^' + encodedTerm + '$', 'i');
+    var startsWith = new RegExp('^' + encodedTerm + '[^-]', 'i');
 
     for (var i = 0; i < result.length; i++) {
       var tag = result[i];

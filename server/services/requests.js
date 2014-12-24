@@ -1,15 +1,16 @@
 import Svc                from '../services/_service'
 import Rates              from '../services/requests.rates'
-import * as ExpertsSvc    from './experts'
 import * as Validate      from '../../shared/validation/requests.js'
 import Request            from '../models/request'
 import User               from '../models/user'
 import * as md5           from '../util/md5'
+var ExpertsSvc =          require('./experts')
 var util =                require('../../shared/util')
 var Data =                require('./requests.data')
 var logging =             false
 var svc =                 new Svc(Request, logging)
 var {isCustomer,isCustomerOrAdmin,isExpert} = require('../../shared/roles.js').request
+
 
 function selectByRoleCB(ctx, errorCb, cb) {
   return (e, r) => {

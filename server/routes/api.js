@@ -74,6 +74,7 @@ export default function(app) {
     .post('/bookings/:expert', BookingsAPI.createBooking)
 
     .get('/experts/me', ExpertsAPI.getMe)
+    .get('/experts/search/:id', ExpertsAPI.search)
     .get('/experts/:id', ExpertsAPI.getById)
     .get('/experts', ExpertsAPI.getForExpertsPage)
     .get('/experts/match/:request', authd, ExpertsAPI.getMatchesForRequest)
