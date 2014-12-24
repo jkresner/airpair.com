@@ -113,8 +113,8 @@
       <div ng-repeat="s in request.suggested" class="expertStatus">
         <img ng-src="{{s.expert.avatar}}?s=60" class="user {{s.expertStatus}}" />
         <div>
-          <label>${{s.suggestedRate.private.total}} /
-          ${{s.suggestedRate.private.expert}}</label>
+          <label>${{s.suggestedRate.total}} /
+          ${{s.suggestedRate.expert}}</label>
           <label><a href="/adm/experts/edit/{{s.expert._id}}" target="_blank">{{s.expert.name}}</a></label>
           <span class="{{s.expertStatus}}">{{s.expertStatus}}</span>
 

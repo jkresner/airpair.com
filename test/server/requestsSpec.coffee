@@ -115,15 +115,18 @@ module.exports = -> describe "API", ->
       POST '/requests', d, {}, (r) ->
         expect(r.status).to.equal('received')
         expect(r.suggested.length).to.equal(0)
+        expect(r.adm).to.be.undefined
         LOGIN 'abha', data.users.abha, (sAbha) ->
           GET "/requests/review/#{r._id}", {}, (rAbha) ->
+            expect(rAbha.adm).to.be.undefined
             expect(rAbha.status).to.equal('received')
             expect(rAbha.tags.length).to.equal(1)
             expect(rAbha.brief).to.exist
             expect(rAbha.suggested.length).to.equal(1)
             expect(rAbha.suggested[0].expert.minRate).to.equal(70)
             expect(rAbha.suggested[0].expert.email).to.equal("abeisgreat@abeisgreat.com")
-            expect(rAbha.suggested[0].suggestedRate.opensource.expert).to.equal(110)
+            expect(rAbha.suggested[0].suggestedRate.expert).to.equal(113)
+            expect(rAbha.suggested[0].suggestedRate.total).to.equal(146)
             reply = expertComment: "I'll take it", expertAvailability: "Real-time", expertStatus: "available"
             PUT "/requests/#{r._id}/reply/#{rAbha.suggested[0].expert._id}", reply, {}, (r1) ->
               expect(r1.status).to.equal('review')
@@ -200,10 +203,8 @@ module.exports = -> describe "API", ->
                     expect(review.suggested.length).to.equal(1)
                     expect(_.idsEqual(review.suggested[0]._id,review.suggested[0]._id)).to.be.true
                     expect(review.suggested[0].suggestedRate).to.exist
-                    expect(review.suggested[0].suggestedRate.opensource.expert).to.equal(155)
-                    expect(review.suggested[0].suggestedRate.opensource.total).to.equal(220)
-                    expect(review.suggested[0].suggestedRate.private.expert).to.equal(155)
-                    expect(review.suggested[0].suggestedRate.private.total).to.equal(240)
+                    expect(review.suggested[0].suggestedRate.expert).to.equal(158)
+                    expect(review.suggested[0].suggestedRate.total).to.equal(236)
                     done()
 
         testNotAvailable testAvailable
