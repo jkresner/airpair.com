@@ -104,7 +104,7 @@ var save = {
     o.status = 'received'
     o.adm = { active:true }
 
-    svc.create(o, cb)
+    svc.create(o, selectByRoleCB(this,cb,cb))
   },
   updateByCustomer(original, update, cb) {
 
@@ -140,10 +140,15 @@ var save = {
     // data.events.push @newEvent "expert reviewed", eR
     reply.reply = { time: new Date() }
     var existing = _.find(suggested, (s) => _.idsEqual(s.expert._id, expert._id))
-    if (!existing) suggested.push(_.extend(reply, { expert }))
+    if (!existing) {
+      var newSuggestion = _.extend(reply, { expert })
+      Rates.addSuggestedRate(request, newSuggestion)
+      suggested.push(newSuggestion)
+    }
     else {
       existing.expert = expert
       existing = _.extend(existing, reply)
+      Rates.addSuggestedRate(request, existing)
     }
 
     if (reply.expertStatus == 'available' &&
