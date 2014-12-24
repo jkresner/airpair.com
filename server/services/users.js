@@ -105,6 +105,13 @@ function upsertSmart(search, upsert, cb) {
         upsert.tags = util.combineItems(r.tags, upsert.tags, 'tagId')
       if (r.bookmarks)
         upsert.bookmarks = util.combineItems(r.bookmarks, upsert.bookmarks, 'objectId')
+
+      if (!r.email && !upsert.google)
+      {
+        upsert.email = r.google._json.email
+        upsert.name = r.google.displayName
+        upsert.emailVerified = true
+      }
     }
 
     User.findOneAndUpdate(search, upsert, { upsert: true }, (err, user) => {
@@ -457,9 +464,15 @@ export function requestPasswordChange(email, cb) {
 
     var update = { 'local.changePasswordHash': generateHash(email) }
     svc.update(user._id, update, (e,r) => {
+
+      //-- Previously had a google login without a v1 upsert migrate
+      if (!r.email) {
+        r.email = r.google._json.email
+        r.name = r.google.displayName || 'there noname'
+      }
+
       mailman.sendChangePasswordEmail(r, r.local.changePasswordHash)
 
-      $log('self.user', self.user)
       if (self.user) return cbSession(cb)(e,r)
       else return cb(null, {email})
     })
