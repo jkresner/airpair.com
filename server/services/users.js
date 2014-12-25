@@ -34,7 +34,7 @@ var cbSession = (cb) =>
 
 //-- TODO, consider analytics context ?
 
-function getUpsertEngagementProperties(existingUser, sessionID, sessionCreatedAt, done)
+function getUpsertEngagementProperties(existingUser, sessionID, sessionCreatedAt, firstRequest, done)
 {
   //-- Default engagement
   var visit_first = sessionCreatedAt
@@ -42,6 +42,7 @@ function getUpsertEngagementProperties(existingUser, sessionID, sessionCreatedAt
   var visit_last = new Date()
   var visits = [util.dateWithDayAccuracy()]
   var aliases = null
+  var firstRequest = firstRequest
 
   // This is a new user (easy peasy)
   if (existingUser)
@@ -62,10 +63,11 @@ function getUpsertEngagementProperties(existingUser, sessionID, sessionCreatedAt
       visit_signup = cohort.engagement.visit_signup
       visits = cohort.engagement.visits
       aliases = cohort.aliases
+      firstRequest = cohort.firstRequest || firstRequest
     }
   }
 
-  return {engagement:{visit_first,visit_signup,visit_last,visits},aliases}
+  return {engagement:{visit_first,visit_signup,visit_last,visits},aliases,firstRequest}
 }
 
 // upsertSmart
@@ -76,11 +78,12 @@ function upsertSmart(search, upsert, cb) {
 
   //-- Session is their cookie, which may or may not have been their first visit
   var sessionCreatedAt = util.sessionCreatedAt(this.session)
+  var firstRequest = this.session.firstRequest
   var {sessionID} = this
 
   svc.searchOne(search, null, (e, r) => {
     if (e) { return cb(e) }
-    upsert.cohort = getUpsertEngagementProperties(r,sessionID,sessionCreatedAt)
+    upsert.cohort = getUpsertEngagementProperties(r,sessionID,sessionCreatedAt,firstRequest)
 
     if (upsert.google)
     {
