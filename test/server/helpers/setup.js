@@ -80,6 +80,7 @@ global.addAndLoginLocalUserWithEmailVerified = function(originalUserKey, done)
   addLocalUser(originalUserKey, {emailVerified: true}, function(userKey) {
     LOGIN(userKey, data.users[userKey], function(resp) {
       GET('/session/full', {}, function(s) {
+        expect(s.emailVerified).to.be.true
         s.userKey = userKey
         done(s)
       })

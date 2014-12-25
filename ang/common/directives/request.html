@@ -125,7 +125,7 @@
 
 <section ng-class="stepClass('experience')">
 
-  <div form-group ng-if="request.tags && request.tags.length > 0">
+  <div form-group ng-if="request.tags && request.tags.length > 0 && session.emailVerified">
 
     <label class="control-label" for="requestExperience" ng-if="request.tags.length == 1">What's your experience with {{request.tags[0].slug}}?</label>
     <label class="control-label" for="requestExperience" ng-if="request.tags.length > 1">What's your experience using {{tagsString()}} together?</label>
@@ -154,6 +154,38 @@
         <label for="requestExperienceAdvanced"><img src="v1/img/css/request/experience-advanced.png" style="padding-left:3px;padding-right:1px" /> Advanced</label>
       </span>
     </div>
+
+  </div>
+
+ <div class="verifyEmail" ng-if="request.tags && request.tags.length > 0 && !session.emailVerified">
+
+    <label class="control-label">Verify your email</label>
+
+      <div form-group class="email-group" ng-if="!verificationSent">
+
+        <p>You will need a confirmed address to receive replies from experts.</p>
+
+        <input id="sessionEmail" name="email" form-control type="email" placeholder="Primary contact email" ng-model="request.by.email" ng-blur="updateEmail(requestForm.email)" required tabindex="1">
+        <div class="error" ng-if="formGroup.showError(requestForm.email)" ng-messages="requestForm.email.$error">
+          <div ng-message="required">Field required</div>
+          <div ng-message="email">Invalid email</div>
+        </div>
+        <div>
+          <alert ng-repeat="alert in emailAlerts" type="{{alert.type}}">
+            <i class="glyphicon glyphicon-envelope" aria-hidden="true"></i>
+            <p ng-bind-html="alert.msg | html"></p>
+          </alert>
+          <a ng-if="!verificationSent" ng-click="sendVerificationEmail()" class="btn">Send verification email</a>
+        </div>
+      </div>
+
+      <alert ng-repeat="alert in emailAlerts" type="{{alert.type}}">
+        <i class="glyphicon glyphicon-envelope" aria-hidden="true"></i>
+        <p ng-bind-html="alert.msg | html"></p>
+      </alert>
+
+      <hr />
+      </div>
 
   </div>
   <hr />

@@ -1,4 +1,5 @@
 var mongoose = require('mongoose')
+var Shared = require('./_shared')
 var Schema = mongoose.Schema
 var {ObjectId} = Schema
 
@@ -111,9 +112,10 @@ var Request = new Schema({
     paired:         { type: Date },
     feedback:       { type: Date },
     closed:         { type: Date },
-    lastTouch:      { type: Date }
+    lastTouch:      Shared.Touch
   },
-
+  canceledDetail:   String,
+  lastTouch:        Shared.Touch,
   // New v1
 
   //company:          { required: true, type: {} }
@@ -130,7 +132,5 @@ module.exports = mongoose.model('Request', Request)
 // availability:     String
 // timezone:         String
 // calls:            [Call]
-// canceledDetail:   String
 // incompleteDetail: String
-// events:           { required: true, type: [{}]     }
 // pricing:          { required: true, type: String, enum: VALID_CALL_TYPES   }

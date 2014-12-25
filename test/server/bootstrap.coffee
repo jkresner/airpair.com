@@ -15,6 +15,8 @@ global.data     = require('./../data/data')
 global.sinon    = require('sinon')
 global.chai     = require('chai')
 global.expect   = chai.expect
+global.expectIdsEqual = (id1, id2) -> expect(_.idsEqual(id1,id2)).to.be.true
+
 
 describe 'Server: ', ->
 

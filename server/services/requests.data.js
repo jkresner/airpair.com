@@ -73,6 +73,7 @@ function migrateV0(r) {
       else r.adm.owner = r.owner
     }
   }
+  if (r.adm && r.adm.lastTouch && !r.adm.lastTouch.utc) r.adm.lastTouch = { utc: r.adm.lastTouch }
 
   return r
 }
