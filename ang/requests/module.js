@@ -42,6 +42,12 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
     resolve: authd
   });
 
+  $routeProvider.when('/meet-experts/:id', {
+    template: require('./edit.html'),
+    controller: 'RequestEditCtrl',
+    resolve: authd
+  });
+
   $routeProvider.when('/reviews', {
     template: require('./review.html'),
     controller: 'ReviewsCtrl',
@@ -77,8 +83,16 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
   RequestHelper.setRequestTagsFromSession($scope)
 })
 
-.controller('RequestEditCtrl', function($scope, $routeParams, $location, DataService, Shared, ServerErrors) {
+.controller('RequestEditCtrl', function($scope, $routeParams, $location, DataService, SessionService, Shared, ServerErrors) {
   $scope.requestId = $routeParams.id;
+
+  if ($location.search().verify)
+  {
+    SessionService.verifyEmail({hash:$location.search().verify}, function(r) {
+      if ($scope.request && r.email != $scope.request.by.email)
+        $scope.request.by.email = r.email
+    }, ServerErrors.add)
+  }
 
   DataService.requests.getById($scope.requestId, function(r) {
     if (r.budget)

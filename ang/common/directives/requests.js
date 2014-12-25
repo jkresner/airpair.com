@@ -35,7 +35,6 @@ angular.module("APRequestDirectives", [])
   this.setUpdatedState = (scope, r) => {
     if (scope.done.current == 'type' && r && r._id)
     {
-      scope.done.current = 'submit'
       scope.done.type = (r.type) ? true : false,
       scope.done.tags = (r.tags && r.tags.length > 0) ? true : false,
       scope.done.experience = (r.experience) ? true : false,
@@ -43,6 +42,15 @@ angular.module("APRequestDirectives", [])
       scope.done.hours = (r.hours) ? true : false,
       scope.done.time = (r.time) ? true : false,
       scope.done.budget = (r.budget) ? true : false
+
+      var current = 'submit'
+      if (!scope.done.tags) current = 'tags'
+      else if (!scope.done.experience) current = 'experience'
+      else if (!scope.done.brief) current = 'brief'
+      else if (!scope.done.hours) current = 'hours'
+      else if (!scope.done.time) current = 'time'
+      else if (!scope.done.budget) current = 'budget'
+      scope.done.current = current
     }
   }
 
@@ -157,6 +165,16 @@ angular.module("APRequestDirectives", [])
             ServerErrors.add)
         }
       }
+
+      $scope.sendVerificationEmail = () =>
+        DataService.requests.sendVerifyEmailByCustomer($scope.request,
+          (r) => {
+            $scope.emailAlerts = [{ type: 'success', msg: `To continue, use the verification link sent to ${r.by.email}` }]
+            $scope.verificationSent = true
+        },
+          (e) => $scope.emailAlerts = [{ type: 'danger', msg: `${e.message}` }]
+        )
+
 
       // $timeout(() => {
       //   $scope.setType('mentoring')

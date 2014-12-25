@@ -42,7 +42,7 @@ export function serve(Svc, svcFnName, argsFn, Validation) {
     var callback = cbSend(req.method,res,next)
     var args = argsFn(req)
     if (Validation && req.method != 'GET') {
-      var inValid = Validation[svcFnName].apply(thisSvc, args)
+      var inValid = Validation[svcFnName].apply(thisSvc, _.union([req.user],args))
       if (inValid) {
         var e = new Error(inValid)
         e.status = 403

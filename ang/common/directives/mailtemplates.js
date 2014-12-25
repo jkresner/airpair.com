@@ -38,8 +38,11 @@ angular.module("APMailTemplates", [])
           name: $rootScope.session.name
         }
 
+        $element.find('b').html(
+          $compile('<span>'+$scope.subject+'</span>')($scope).contents())
+
         $element.find('pre').html(
-          $compile('<div>'+$scope.body+'<div>')($scope).contents())
+          $compile('<div>'+$scope.body+'</div>')($scope).contents())
         $timeout(()=>$scope.message = $element.find('pre').text(),100)
       })
 

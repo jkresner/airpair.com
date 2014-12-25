@@ -26,7 +26,7 @@ module.exports = function() {
       data = _.defaults(data, emailDefaults)
 
       if (config.mail.on) {
-        $log('mail.send ${data.Subject}', to)
+        $log(`mail.send ${data.Subject}`, to)
         ses.SendEmail(data, callback)
       }
       else {
