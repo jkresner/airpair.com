@@ -97,6 +97,11 @@ module.exports = {
   kaun: { name: "Kyle Aungst", email: "kyle.aungst@ghotmail.com"},
   auka: { name: "Aungst Kyle", email: "aungst.aungst@hotmail.com"},
 
+  bhur: { name: "Brian Hur", email: "brian.hur@test.com"},
+  brhu: { name: "Brian Hur", email: "brian.hur@hotmail.com"},
+  // brih: { name: "Brian Hur", email: "brian.hur@ghotmail.com"},
+  // hbri: { name: "Hur Brian", email: "brian.hurts@hotmail.com"},
+
   admin: {
     "_id" : "54551be15f221efa174238d1",
     "googleId" : "199992380360999999999",

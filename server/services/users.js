@@ -34,7 +34,7 @@ var cbSession = (cb) =>
 
 //-- TODO, consider analytics context ?
 
-function getUpsertEngagementProperties(existingUser, sessionID, sessionCreatedAt, done)
+function getUpsertEngagementProperties(existingUser, sessionID, sessionCreatedAt, firstRequest, done)
 {
   //-- Default engagement
   var visit_first = sessionCreatedAt
@@ -42,6 +42,7 @@ function getUpsertEngagementProperties(existingUser, sessionID, sessionCreatedAt
   var visit_last = new Date()
   var visits = [util.dateWithDayAccuracy()]
   var aliases = null
+  var firstRequest = firstRequest
 
   // This is a new user (easy peasy)
   if (existingUser)
@@ -62,10 +63,11 @@ function getUpsertEngagementProperties(existingUser, sessionID, sessionCreatedAt
       visit_signup = cohort.engagement.visit_signup
       visits = cohort.engagement.visits
       aliases = cohort.aliases
+      firstRequest = cohort.firstRequest || firstRequest
     }
   }
 
-  return {engagement:{visit_first,visit_signup,visit_last,visits},aliases}
+  return {engagement:{visit_first,visit_signup,visit_last,visits},aliases,firstRequest}
 }
 
 // upsertSmart
@@ -76,11 +78,12 @@ function upsertSmart(search, upsert, cb) {
 
   //-- Session is their cookie, which may or may not have been their first visit
   var sessionCreatedAt = util.sessionCreatedAt(this.session)
+  var firstRequest = this.session.firstRequest
   var {sessionID} = this
 
   svc.searchOne(search, null, (e, r) => {
     if (e) { return cb(e) }
-    upsert.cohort = getUpsertEngagementProperties(r,sessionID,sessionCreatedAt)
+    upsert.cohort = getUpsertEngagementProperties(r,sessionID,sessionCreatedAt,firstRequest)
 
     if (upsert.google)
     {
@@ -105,6 +108,13 @@ function upsertSmart(search, upsert, cb) {
         upsert.tags = util.combineItems(r.tags, upsert.tags, 'tagId')
       if (r.bookmarks)
         upsert.bookmarks = util.combineItems(r.bookmarks, upsert.bookmarks, 'objectId')
+
+      if (!r.email && !upsert.google)
+      {
+        upsert.email = r.google._json.email
+        upsert.name = r.google.displayName
+        upsert.emailVerified = true
+      }
     }
 
     User.findOneAndUpdate(search, upsert, { upsert: true }, (err, user) => {
@@ -457,9 +467,15 @@ export function requestPasswordChange(email, cb) {
 
     var update = { 'local.changePasswordHash': generateHash(email) }
     svc.update(user._id, update, (e,r) => {
+
+      //-- Previously had a google login without a v1 upsert migrate
+      if (!r.email) {
+        r.email = r.google._json.email
+        r.name = r.google.displayName || 'there noname'
+      }
+
       mailman.sendChangePasswordEmail(r, r.local.changePasswordHash)
 
-      $log('self.user', self.user)
       if (self.user) return cbSession(cb)(e,r)
       else return cb(null, {email})
     })
@@ -503,41 +519,40 @@ export function changeName(name, cb) {
   }
 }
 
+export function updateEmailToBeVerified(email, errorCB, cb) {
+  email = email.toLowerCase()
+  var up = { '$set': {
+    'email': email,
+    'emailVerified': false,
+    'local.emailHash': generateHash(email)
+  }}
+
+  User.findOneAndUpdate({_id:this.user._id}, up, (e,r) => {
+    if (e) {
+      if (e.message.indexOf('duplicate key error index') != -1) return errorCB(Error('Email belongs to another account'))
+      return errorCB(e)
+    }
+    cb(null, r)
+  })
+}
+
 // Change email can be used both to change an email
 // and to set and send a new email hash for verification
 export function changeEmail(email, cb) {
   var inValid = Validate.changeEmail(email)
   if (inValid) return cb(svc.Forbidden(inValid))
-  email = email.toLowerCase()
-
-  self = this
 
   var {user} = this
-  if (user)
-  {
-    var up = { '$set': {
-      'email': email,
-      'emailVerified': false,
-      'local.emailHash': generateHash(email)
-    }}
-
-    var previousEmail = user.email
-
-    User.findOneAndUpdate({_id:user._id}, up, (e,r) => {
-      if (e) {
-        if (e.message.indexOf('duplicate key error index') != -1) return cb(Error('Email belongs to another account'))
-        return cb(e)
-      }
-
+  if (user) {
+    updateEmailToBeVerified.call(this, email, cb, (e,r) => {
       if (user.email == email)
-        mailman.sendVerifyEmail(r, r.local.emailHash) // only send if the user explicitly is verifying
-      else
-        self.user.email = email // update the session object
+        mailman.sendVerifyEmail(r, r.local.emailHash)
 
       cbSession(cb)(e,r)
     })
   }
   else {
+    email = email.toLowerCase()
     var search = { '$or': [{email:email},{'google._json.email':email}] }
     var self = this
     svc.searchOne(search, null, function(e,r) {

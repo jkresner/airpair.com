@@ -1,15 +1,17 @@
 import Svc                from '../services/_service'
 import Rates              from '../services/requests.rates'
 import * as Validate      from '../../shared/validation/requests.js'
+import * as md5           from '../util/md5'
 import Request            from '../models/request'
 import User               from '../models/user'
-import * as md5           from '../util/md5'
+import * as UserSvc       from '../services/users'
 var ExpertsSvc =          require('./experts')
 var util =                require('../../shared/util')
 var Data =                require('./requests.data')
 var logging =             false
 var svc =                 new Svc(Request, logging)
-var {isCustomer,isCustomerOrAdmin,isExpert} = require('../../shared/roles.js').request
+var Roles =               require('../../shared/roles.js')
+var {isCustomer,isCustomerOrAdmin,isExpert} = Roles.request
 
 
 function selectByRoleCB(ctx, errorCb, cb) {
@@ -93,6 +95,10 @@ var get = {
   // }
 }
 
+var admSet = (request, properties) =>
+  (request.adm) ? _.extend(request.adm, properties) : properties
+
+
 var save = {
   create(o, cb) {
     var {_id,name,email} = this.user
@@ -102,35 +108,67 @@ var save = {
     o._id = svc.newId()
     o.userId = _id
     o.status = 'received'
-    o.adm = { active:true }
+    // o.adm = { active:true }
+
+    analytics.track(o.by, null, 'Request', {_id:o._id,action:'start'})
+
+    if (this.user.emailVerified) {
+      // Send here's a link to update your request.
+      $log('******* Should impl request started email')
+    }
 
     svc.create(o, selectByRoleCB(this,cb,cb))
   },
+  sendVerifyEmailByCustomer(original, email, cb) {
+    UserSvc.updateEmailToBeVerified.call(this, email, cb, (e,r)=>{
+      if (e) return cb(e)
+      mailman.sendVerifyEmailForRequest(r, r.local.emailHash, original._id)
+      selectByRoleCB(this,cb,cb)(null, original)
+    })
+  },
   updateByCustomer(original, update, cb) {
+    // todo posibily revise submitted to the submit action
+    var submitted = update.budget && !original.budget
 
-    // new fully completed request
-    if (update.budget && !original.budget) {
+    if (submitted)
+    {
       mailman.sendPipelinerNotifyRequestEmail(this.user.name, original._id, update.time.toUpperCase(),
         update.budget, update.tags, ()=>{})
 
-      update.adm = { active:true, submitted: new Date() }
-    }
+      update.adm = admSet(original,{active:true,submitted:new Date()})
 
+      analytics.track(original.by, null, 'Request', {_id:original._id,action:'complete'})
+    }
 
     var ups = _.extend(original, update)
     if (ups.tags.length == 1) ups.tags[0].sort = 0
 
-    // o.updated = new Date()
+    if (isCustomer(this.user, original)) {
+      ups.lastTouch = svc.newTouch.call(this, 'updateByCustomer')
+      if (this.user.emailVerified)
+        ups.adm = admSet(ups,{active:true})
+    }
 
-    svc.update(original._id, ups, cb)
+    svc.update(original._id, ups, selectByRoleCB(this,cb,cb))
   },
   updateByAdmin(original, update, cb) {
+    var action = 'update'
     var {adm,status} = update
-    adm.lastTouch = new Date()
-    if (original.adm.active && !update.adm.active)
+    if (original.adm.active && !update.adm.active) {
+      action = `closed:${update.status}`
       adm.closed = new Date()
-    if (original.status == "received" && update.status == "waiting")
+    }
+    else if (original.status == "received" && update.status == "waiting") {
+      action = `received`
       adm.received = new Date()
+    }
+
+    //-- Reopen a closed request for various possible reasons
+    if (!original.adm.active && update.status == "review") {
+      update.adm.active = true
+    }
+
+    adm.lastTouch = svc.newTouch.call(this, action)
 
     var ups = _.extend(original, {adm,status})
     svc.update(original._id, ups, admCB(cb))
@@ -161,7 +199,9 @@ var save = {
     mailman.sendPipelinerNotifyReplyEmail(this.user.name, reply.expertStatus, request._id,
         request.by.name, ()=>{})
 
-    if (!request.adm.reviewable) request.adm.reviewable = new Date()
+    request.lastTouch = svc.newTouch.call(this, `replyByExpert:${reply.expertStatus}`)
+    if (!request.adm.reviewable)
+      request.adm = admSet(request,{reviewable:new Date()})
 
     // var ups = _.extend(request,{suggested})
     svc.update(request._id, request, selectByRoleCB(this,cb,cb))
@@ -178,7 +218,7 @@ var save = {
     mailman.sendExpertSuggestedEmail(expert, request.by.name, request._id,
       this.user.name, request.tags, ()=>{})
 
-    adm.lastTouch = new Date()
+    adm.lastTouch = svc.newTouch.call(this, `suggest:${expert.name}`)
     svc.update(request._id, {suggested,adm}, admCB(cb))
   },
   removeSuggestion(request, expert, cb)
@@ -187,7 +227,7 @@ var save = {
     var existing = _.find(suggested, (s) => _.idsEqual(s.expert._id,expert._id) )
     suggested = _.without(suggested,existing)
 
-    adm.lastTouch = new Date()
+    adm.lastTouch = svc.newTouch.call(this, `remove:${expert.name}`)
     svc.update(request._id, {suggested,adm}, admCB(cb))
   },
   deleteById(o, cb)

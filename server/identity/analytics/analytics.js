@@ -26,15 +26,27 @@ var buildPayload = (type, user, anonymousId, payload) => {
   else payload.anonymousId = anonymousId
 
   {
+    var ident = (user) ? user.email : anonymousId.substring(0,16)
+
     if (type == 'mp.view')
-      var payloadString = payload.properties.url
+        $log(`VIEW    ${ident} > ${payload.properties.url}`.yellow)
     else if (type == 'track')
-      var payloadString = `${payload.event}:${JSON.stringify(payload.properties)}`
+    {
+      var ev = payload.event
+      if (ev == 'First') {
+        var ref = (payload.properties.ref) ? ` <<< ${payload.properties.ref}` : ''
+        $log(`FIRST   ${ident} > ${payload.properties.url}${ref}`.yellow)
+      }
+      else if (ev == 'Request') {
+        $log(`REQUEST ${ident} > ${payload.properties.action} https://www.airpair.com/adm/pipeline/${payload.properties._id}`.blue)
+      }
+      else {
+        $log(`${payload.event.toUpperCase()}  ${ident} > ${JSON.stringify(payload.properties)}`.yellow)
+      }
+    }
     else
-      var payloadString = JSON.stringify(payload)
-    $log(`analytics.${type}:${payloadString}`.yellow)
+        $log(`analytics.${type} ${ident} > ${JSON.stringify(payload)}`.yellow)
   }
-  // if (logging) { $log(`analytics.${type}`, payload) }
 
   return payload;
 }

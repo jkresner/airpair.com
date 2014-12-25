@@ -88,12 +88,6 @@ form.requestForm {
   padding-top:340px;
   max-width:640px;
 
-  .verifyEmail {
-    padding:10px;
-    width:65%;
-    .important { color:red }
-  }
-
   .requestProgress {
     height:32px;
     position:absolute;
@@ -268,8 +262,8 @@ form.requestForm {
       position:relative;
       background:white;
       border-top-left-radius:50%;
-      img { position:absolute;bottom:-28px;right:-35px;width:90px;height:90px }
-      p { font-size:11px;width:200px;padding:34px 0px 0px 36px }
+      img { position:absolute;bottom:-28px;right:-35px;width:90px;height:90px; }
+      p { font-size:11px;width:200px;padding:34px 0px 0px 36px;line-height:16px }
       b { font-size:12px;display:block }
       span { display:block;width:128px;margin-top:5px }
     }
@@ -319,6 +313,20 @@ form.requestForm {
       margin:0px 15px 30px 0;
     }
     .tags li { background:@lightblue;font-size:12px }
+
+    .verifyEmail {
+      .control-label { position:inherit;width:100% }
+      p {padding:5px }
+      .btn { padding:8px 12px;min-width:260px  }
+      .alert {
+        font-size:13px;
+        position:relative;
+        width:310px;height:50px;display:inline-block;margin:6px;
+        i { position:absolute;top:0px;left:5px }
+        p { margin:-6px 10px 5px 15px;display:inline-block; }
+      }
+    }
+
   }
 
   section.experience.done {

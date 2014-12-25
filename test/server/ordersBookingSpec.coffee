@@ -198,26 +198,27 @@ module.exports = -> describe "Booking: ", ->
 
   it 'Book 2 hour with pay as you go off request', (done) ->
     addAndLoginLocalUserWithPayMethod 'petc', (s) ->
-      d = tags: [data.tags.angular], type: 'resources', experience: 'proficient', brief: 'bah bah anglaur test yo4', hours: "1", time: 'rush', budget: 300
-      POST '/requests', d, {}, (r) ->
-        LOGIN 'abha', data.users.abha, (sAbha) ->
-          GET "/requests/review/#{r._id}", {}, (rAbha) ->
-            reply = expertComment: "good", expertAvailability: "ok", expertStatus: "available"
-            expertId = rAbha.suggested[0].expert._id
-            PUT "/requests/#{r._id}/reply/#{expertId}", reply, {}, (r2) ->
-              LOGIN 'petc', s, (sCustomer) ->
-                GET "/requests/#{r._id}/book/#{expertId}", {}, (review) ->
-                  suggestion = _.find(review.suggested,(s)=> _.idsEqual(s.expert._id,expertId))
-                  airpair1 = time: moment().add(2, 'day'), minutes: 60, type: 'private', payMethodId: s.primaryPayMethodId, request: { requestId: review._id, suggestion }
-                  POST "/bookings/#{expertId}", airpair1, {}, (booking1) ->
-                    expect(booking1._id).to.exist
-                    expect(booking1.minutes).to.equal(60)
-                    expect(booking1.orderId).to.exist
-                    expect(booking1.type).to.equal('private')
-                    GET "/billing/orders", {}, (orders1) ->
-                      expect(orders1.length).to.equal(1)
-                      expect(_.idsEqual(orders1[0].requestId,r._id)).to.be.true
-                      done()
+      d = tags: [data.tags.angular], type: 'resources', experience: 'proficient', brief: 'bah bah anglaur test yo4', hours: "1", time: 'rush'
+      POST '/requests', d, {}, (r0) ->
+        PUT "/requests/#{r0._id}", _.extend(r0,{budget: 300}), {}, (r) ->
+          LOGIN 'abha', data.users.abha, (sAbha) ->
+            GET "/requests/review/#{r._id}", {}, (rAbha) ->
+              reply = expertComment: "good", expertAvailability: "ok", expertStatus: "available"
+              expertId = rAbha.suggested[0].expert._id
+              PUT "/requests/#{r._id}/reply/#{expertId}", reply, {}, (r2) ->
+                LOGIN 'petc', s, (sCustomer) ->
+                  GET "/requests/#{r._id}/book/#{expertId}", {}, (review) ->
+                    suggestion = _.find(review.suggested,(s)=> _.idsEqual(s.expert._id,expertId))
+                    airpair1 = time: moment().add(2, 'day'), minutes: 60, type: 'private', payMethodId: s.primaryPayMethodId, request: { requestId: review._id, suggestion }
+                    POST "/bookings/#{expertId}", airpair1, {}, (booking1) ->
+                      expect(booking1._id).to.exist
+                      expect(booking1.minutes).to.equal(60)
+                      expect(booking1.orderId).to.exist
+                      expect(booking1.type).to.equal('private')
+                      GET "/billing/orders", {}, (orders1) ->
+                        expect(orders1.length).to.equal(1)
+                        expect(_.idsEqual(orders1[0].requestId,r._id)).to.be.true
+                        done()
 
 
 

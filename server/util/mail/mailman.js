@@ -57,6 +57,13 @@ module.exports = function(mailProvider)
         hash
       }), cb)
     },
+    sendVerifyEmailForRequest(toUser, hash, requestId, cb) {
+      mailProvider.send(`${toUser.name} <${toUser.email}>`, renderEmail('verifyemailforrequest', {
+        firstName: util.firstName(toUser.name),
+        hash,
+        requestId,
+      }), cb)
+    },
     sendChangePasswordEmail(toUser, hash, cb) {
       mailProvider.send(`${toUser.name} <${toUser.email}>`, renderEmail('changepassword', {
         firstName: util.firstName(toUser.name),
