@@ -39,6 +39,19 @@ export default function(app, initSessionStore)
     app.use(passport.initialize())
     app.use(passport.session())
 
+    app.use((req, res, next) => {
+      if (!util.isBot(req.get('user-agent')) &&
+        (!req.isAuthenticated || !req.isAuthenticated()))
+      {
+        if (!req.session.firstRequest) {
+          req.session.firstRequest = { url: req.url }
+          if (req.header('Referer')) { req.session.firstRequest.ref = req.header('Referer') }
+          analytics.track(null, req.sessionID, 'First', req.session.firstRequest, {}, () => {})
+        }
+      }
+      next()
+    })
+
     passport.serializeUser( (user, done) => {
       // The user object comes from UserService.upsertSmart
       var sessionUser = { _id: user._id, name: user.name, emailVerified: user.emailVerified, email: user.email, roles: user.roles }

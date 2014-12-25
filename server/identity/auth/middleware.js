@@ -9,10 +9,6 @@ export function setAnonSessionData(req, res, next) {
   if (!req.isAuthenticated || !req.isAuthenticated())
   {
     if (!req.session.anonData) req.session.anonData = {}
-    if (!req.session.firstRequest) {
-      analytics.track(null, req.sessionID, 'First', { url: req.url }, {}, () => {})
-      req.session.firstRequest = 1
-    }
   }
   else
   {

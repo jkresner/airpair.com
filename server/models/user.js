@@ -26,7 +26,8 @@ var Cohort = {
     visit_signup:         { type: Date },
     visits:               { type: [Date] },  // array of dates the user came to the site
   },
-  aliases:      { type: [String] }
+  aliases:                { type: [String] },
+  firstRequest:           {}
   // requests:     Get by query from Requests
   // orders:       Get by query from Order
   // spend:        Get by query from Orders

@@ -57,7 +57,7 @@ export function addPaymethod(o, cb) {
         if (logging) $log('savePayMethod', payMethodInfo)
 
         svc.create(o, (e,r) => {
-          if (true) $log('savedPayMethod', o.makeDefault, ctx.user, r._id)
+          if (logging) $log('savedPayMethod', o.makeDefault, ctx.user, r._id)
 
           if (ctx.user.email) //-- When admin looks at request, don't trigger analtyics
             analytics.track(ctx.user, null, 'Save', { type: 'paymethod', method: o.type })
