@@ -11,6 +11,7 @@ export default initAPI(
   getByIdForReview: (req) => [req.params.id],
   getMy: (req) => [],
   getRequestForBookingExpert: (req) => [req.params.id,req.params.expertId],
+  sendVerifyEmailByCustomer: (req) => [req.request,req.body.email],
   updateByCustomer: (req) => [req.request,req.body],
   updateByAdmin: (req) => [req.request,req.body],
   replyByExpert: (req) => [req.request,req.expert,req.body],

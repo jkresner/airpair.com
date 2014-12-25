@@ -16,7 +16,6 @@ function tokenize(term, wildcardStart, wildcardEnd) {
 
 export default function(model, logging)
 {
-
   var searchOne = (query, opts, cb) => {
     if (!opts) { opts = { fields:null, options:null } }
     var {fields,options} = opts
@@ -44,6 +43,13 @@ export default function(model, logging)
       var e = new Error(message)
       e.status = 403
       return e
+    },
+    newTouch(action) {
+      return {
+        action,
+        utc: new Date(),
+        by: { _id: this.user._id, name: this.user.name }
+      }
     },
     newId: () => {
       return new require('mongoose').Types.ObjectId()
