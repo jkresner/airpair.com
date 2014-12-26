@@ -1,6 +1,6 @@
 import {initAPI} from './_api'
-import * as Svc from '../services/views'
+import {SvcViews} from '../services/analytics'
 
-export default initAPI(Svc, {
+export default initAPI(SvcViews, {
   getByUserId: (req) => [req.params.id]
 })

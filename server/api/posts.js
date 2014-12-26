@@ -11,5 +11,5 @@ export default initAPI(Svc, {
   getUsersPublished: (req) => [req.params.id],
   getByTag: (req) => [req.tag]
 }, {
-  'post':'getBySlug'
+  'post':'getBySlugWithSimilar'
 })

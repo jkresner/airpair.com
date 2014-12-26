@@ -21,7 +21,7 @@ module.exports = ->describe "Tracking: ", ->
             testDb.createAndPublishPost(s, {title: postTitle,slug:postSlug}, done)
 
 
-  afterEach -> cookie = null
+  afterEach -> global.cookie = null
 
 
   it('Can track an anonymous post view', (done) ->

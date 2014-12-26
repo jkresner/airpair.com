@@ -38,6 +38,27 @@ export function getBySlug(slug, cb) {
   svc.searchOne(query, null, inflateHtml(cb))
 }
 
+export function getBySlugWithSimilar(slug, cb) {
+  var topTapPages = ['angularjs']
+
+  var query = _.extend(Data.query.published(),{slug})
+  svc.searchOne(query, null, inflateHtml((e,r) => {
+    if (e || !r) return cb(e,r)
+    if (!r.tags || r.tags.length == 0) {
+      $log(`post [{r._id}] has no tags`.red)
+      cb(null,r)
+    }
+
+    r.primarytag = _.find(r.tags,(t) => t.sort==0) || r.tags[0]
+    var topTagPage = _.find(topTapPages,(s) => r.primarytag.slug==s)
+    r.primarytag.postsUrl = (topTagPage) ? '/{slug}' : `/posts/tag/${slug}`
+
+    getSimilarPublished(r.primarytag.slug, (ee,similar) => {
+      r.similar = similar
+      cb(null,r)
+    })
+  }))
+}
 
 export function getPublishedById(_id, cb) { //-- used for todd-motto
   var query = _.extend(Data.query.published(),{_id})

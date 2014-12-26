@@ -12,8 +12,7 @@ module.exports = ->
   after (done) ->
     done()
 
-  afterEach () ->
-    global.cookie = null
+  afterEach -> global.cookie = null
 
 
   expectSessionNotStored = (session, cb) ->
@@ -37,6 +36,7 @@ module.exports = ->
     GETP('/about').set('user-agent', uaFirefox).end (err, resp) ->
       global.cookie = resp.headers['set-cookie']
       GET '/session/full', {}, (s) =>
+        $log('s', s)
         expect(viewSpy1.callCount).to.equal(0)
         expect(s.authenticated).to.equal(false)
         expectSessionToBeStored(s, done)
