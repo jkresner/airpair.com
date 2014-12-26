@@ -20,6 +20,7 @@
     <div id="serverTemplate">
       {{#with viewData}}
         {{#if postRender}}{{> post }}{{/if}}
+        {{#if postblankRender}}{{> postblank }}{{/if}}
         {{#if postsRender}}{{> posts }}{{/if}}
         {{#if workshopRender}}{{> workshop }}{{/if}}
         {{#if workshopsRender}}{{> workshops }}{{/if}}

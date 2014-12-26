@@ -74,7 +74,7 @@ export default function(app) {
       getSession.call(req,(e,session)=>
         viewDataFn(req, (e,data) => {
           if (data.tmpl && data.tmpl != 'default')
-            data[`${partialName}${data.tmp}Render`] = true
+            data[`${partialName}${data.tmpl}Render`] = true
           else
             data[`${partialName}Render`] = true
 
