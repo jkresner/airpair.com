@@ -30,6 +30,7 @@ require('./common/directives/requests.js');
 require('./common/directives/notifications.js');
 require('./common/directives/serverTemplates.js');
 require('./common/directives/providers.js');
+require('./common/directives/profiles.js');
 require('./common/filters/filters.js');
 require('./common/pageHelpers.js');
 require('./auth/module.js');
@@ -42,6 +43,7 @@ require('./requests/module.js');
 
 angular.module("AP", ['Providers', 'ngRoute', 'ngAnimate', 'APViewData', 'APDataSvc', 'APCTAs',
   'APAnalytics', 'APSideNav', 'APChatNav', 'APServerTemplates', 'APNotifications',
+  'APProfileDirectives',
   'APAuth', 'APPosts', 'APWorkshops', 'APProfile', 'APBilling', 'APRequests'])
 
   .config(function($locationProvider, $routeProvider) {

@@ -12,6 +12,7 @@ require('./common/directives/tagInput.js');
 require('./common/directives/typeAheadInputs.js');
 require('./common/directives/requests.js');
 require('./common/directives/mailtemplates.js');
+require('./common/directives/profiles.js');
 require('./common/filters/filters.js');
 require('./common/models/dataService.js');
 require('./common/models/postsService.js');
