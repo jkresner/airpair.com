@@ -1,7 +1,7 @@
 var util = require('../../../shared/util.js');
 
 
-angular.module("ADMPipeline", ["APRequestDirectives"])
+angular.module("ADMPipeline", ["APRequestDirectives","APProfileDirectives"])
 
   .config(function($locationProvider, $routeProvider) {
 

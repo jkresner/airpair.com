@@ -104,7 +104,8 @@
         <div>
           <div class="message noexperts">
             <img class="user" itemprop="image" ng-src="{{s.expert.avatar}}?s=100" />
-            <h4>{{s.expert.name}}</h4>
+            <h3>{{s.expert.name}}</h3>
+            <social-links profile="s.expert"></social-links>
             <div><p>{{s.expertComment}}</p><p>{{s.expertAvailability}}</p></div>
           </div>
           <section ng-if="isExpert">

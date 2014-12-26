@@ -153,17 +153,7 @@
           <div>
             <em ng-repeat="t in m.tags">{{t.short}}</em>
           </div>
-          <div>
-            <a ng-if="m.gh" href="//github.com/{{ m.gh.username }}" target="_blank" class="gh-white icon"></a>
-
-            <a ng-if="m.so" href="//stackoverflow.com/users/{{ m.so.link }}" target="_blank" class="so-white icon"></a>
-
-            <a ng-if="m.bb" href="//bitbucket.org/{{ m.bb.id }}" target="_blank" class="bb-white icon"></a>
-
-            <a ng-if="m.in" href="//linkedin.com/x/profile/sy5n2q8o2i49/{{ m.in.id }}" target="_blank" class="in-white icon"></a>
-
-            <a ng-if="m.tw" href="//twitter.com/{{ m.tw.username }}" target="_blank" class="tw-white icon"></a>
-          </div>
+          <social-links profile="m"></social-links>
           [<a ng-click="addSuggestion(m._id)">add</a>]
           &nbsp;
         </li>
