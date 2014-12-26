@@ -19,7 +19,7 @@ function watchifyer(fileName)
     return bundler.bundle()
       .on('error', gutil.log.bind(gutil, 'Browserify Error')) // log errors if they happen
       .pipe(source(fileName))
-      .pipe(gulp.dest('./public/v1/js'));
+      .pipe(gulp.dest('./public/static/js'));
   }
 
   return rebundle();

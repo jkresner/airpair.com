@@ -1,4 +1,4 @@
-var exampleImageUrl = 'http://www.airpair.com/v1/img/css/blog/example2.jpg';
+var exampleImageUrl = 'http://www.airpair.com/static/img/css/blog/example2.jpg';
 var exampleYoutubeUrl = 'http://youtu.be/qlOAbrvjMBo';
 
 angular.module("APPostEditor", [])
