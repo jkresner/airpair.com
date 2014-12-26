@@ -1,5 +1,6 @@
   <title>{{#if meta.title }}{{meta.title}}{{else}} {{ title }} | AirPair {{/if}}</title>
   {{#if meta.description }}<meta name="description" content="{{ meta.description }}"/>{{/if}}
+  {{#if meta.noindex }}<meta name="robots" content="noindex, follow">{{/if}}
   <meta property="og:locale" content="en_US"/>
   {{#if meta.ogType }}<meta property="og:type" content="{{meta.ogType}}"/>{{else}}<meta property="og:type" content="article"/>{{/if}}
   {{#if meta.ogTitle }}<meta property="og:title" content="{{meta.ogTitle}}"/>{{/if}}
