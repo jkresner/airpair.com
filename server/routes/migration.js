@@ -1,35 +1,4 @@
-import PostsAPI from '../api/posts'
-import {trackView} from '../identity/analytics/middleware'
-import {noTrailingSlash} from '../util/seo/middleware'
-
-
-var getPostBySlug = (slug) =>
-  (req, res, next) => {
-    PostsAPI.svc.getBySlug(slug, (ee,post) => {
-      if (!post) {
-        if (winston) winston.error(`Did not find migrated post ${canonical} for ${slug}`)
-        return next("Post not found")
-      }
-      req.post = post
-      next()
-    })
-  }
-
-
-function routeCanonicalPost(router, app, canonical, slug) {
-  router.get(canonical, noTrailingSlash(), getPostBySlug(slug), trackView('post'),
-    app.renderHbsViewData('post', null,
-      function(req, cb) {
-        req.post.primarytag = req.post.tags[0]
-        PostsAPI.svc.getSimilarPublished(req.post.primarytag.slug, (e,r) => {
-          req.post.similar = r
-          cb(null,req.post)
-        })
-      })
-    )
-}
-
-var postCanonicals = [
+module.exports = [
   {o:'/twotap', c:'two-tap-support-and-api-integration-help'},
   {o:'/mailjet', c:'mailjet-support-and-api-integration-help'},
   {o:'/evernote', c:'evernote-support-api-integration-help'},
@@ -232,18 +201,3 @@ var postCanonicals = [
   {o:'/angularjs/code-mentor-tony-childs', c:'angularjs-code-mentor-tony-childs-1'}
 
 ];
-
-
-export default function(app) {
-
-  var router = require('express').Router()
-
-  for (var p of postCanonicals) {
-    var slug = p.c
-    routeCanonicalPost(router, app, p.o, slug)
-  }
-
-  return router
-
-}
-

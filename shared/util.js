@@ -90,8 +90,8 @@ var util = {
   },
 
 
-  sessionCreatedAt(session) {
-    return new moment(session.cookie._expires).subtract(session.cookie.originalMaxAge,'ms').toDate()
+  momentSessionCreated(session) {
+    return new moment(session.cookie._expires).subtract(session.cookie.originalMaxAge,'ms')
   },
 
 
@@ -122,6 +122,7 @@ var util = {
     var source = useragent.replace(/^\s*/, '').replace(/\s*$/, '')
     return botPattern.test(source)
   },
+
 
   tagsString(tags,limit,braces) {
     // if nobraces then return tagsStringNobraces tags, limit

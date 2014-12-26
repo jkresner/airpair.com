@@ -1,7 +1,7 @@
 var mongoose = require('mongoose')
 
 
-var redirectType = ['301','302','410']
+var redirectType = ['301','302','410','canonical-post']
 
 
 module.exports = mongoose.model('Redirect', new mongoose.Schema({

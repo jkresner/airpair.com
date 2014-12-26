@@ -33,6 +33,10 @@ var Author = {
   gp:           { type: String },
 };
 
+
+var tmplType = ['post','blank'] //,'customsidebar']
+
+
 module.exports = mongoose.model('Post', new mongoose.Schema({
 
   by:           Author,
@@ -45,6 +49,6 @@ module.exports = mongoose.model('Post', new mongoose.Schema({
   md:           { required: true, type: String },
   assetUrl:     { type: String, trim: true },
   tags:         { type: [TagSlim], 'default': [] },
-  meta:         Meta
-
+  meta:         Meta,
+  tmpl:         { type: String, enum:tmplType }
 }))

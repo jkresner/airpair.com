@@ -2,9 +2,7 @@ import WorkshopsAPI from '../api/workshops'
 import PostsAPI from '../api/posts'
 import TagsAPI from '../api/tags'
 import RequestsApi from '../api/requests'
-import {trackView} from '../identity/analytics/middleware'
-import {noTrailingSlash} from '../util/seo/middleware'
-var postCanonicals = "./migration"
+var {trackView} = require('../middleware/analytics')
 var util = require("../../shared/util")
 
 //-- TODO move into database evetuall
@@ -23,7 +21,7 @@ var angularPageMeta = {
   ogType: "website",
   ogTitle: "AngularJS Articles, Workshops and Developers",
   ogDescription: "One of the best collections of #AngularJS Articles, Live Workshops and Developers on the web",
-  ogImage: "http://www.airpair.com/v1/img/css/tags/angularjs-og.png",
+  ogImage: "http://www.airpair.com/static/img/css/tags/angularjs-og.png",
   ogUrl: "http://www.airpair.com/angularjs",
   canonical: "http://www.airpair.com/angularjs"
 }
@@ -36,10 +34,10 @@ export default function(app) {
   var router = require('express').Router()
 
     .param('workshop', WorkshopsAPI.paramFns.getBySlug)
-    .param('post', PostsAPI.paramFns.getBySlug)
+    .param('post', PostsAPI.paramFns.getBySlugWithSimilar)
     .param('review', RequestsApi.paramFns.getByIdForReview)
 
-    .get('/angularjs', noTrailingSlash(), setTagForTrackView,
+    .get('/angularjs', setTagForTrackView,
       trackView('tag'),
       app.renderHbsViewData('tag', angularPageMeta,
         (req, cb) => TagsAPI.svc.getTagPage(req.tag, cb) ))
@@ -52,26 +50,16 @@ export default function(app) {
       app.renderHbsViewData('posts', null,
       (req, cb) => PostsAPI.svc.getUsersPublished('hackerpreneur', cb) ))
 
-    .get('/:tag/posts/:post', noTrailingSlash(),
+    .get('/:tag/posts/:post',
       trackView('post'),
-      app.renderHbsViewData('post', null,
-        function(req, cb) {
-          req.post.primarytag = (req.post.tags) ? req.post.tags[0] : null
-          var {slug} = req.post.primarytag
-          req.post.primarytag.postsUrl = (slug=='angularjs') ? '/angularjs' : `/posts/tag/${slug}`
-          if (!req.post.primarytag) return cb(null,req.post)
-          PostsAPI.svc.getSimilarPublished(req.post.primarytag.slug, (e,r) => {
-            req.post.similar = r
-            cb(null,req.post)
-          })
-        })
+      app.renderHbsViewData('post', null, (req, cb) => { cb(null, req.post) })
     )
 
     .get('/workshops',
       app.renderHbsViewData('workshops', { title: "Software Workshops, Webinars & Screencasts" },
         (req, cb) => WorkshopsAPI.svc.getAll(cb) ))
 
-    .get('/:tag/workshops/:workshop', noTrailingSlash(), trackView('workshop'),
+    .get('/:tag/workshops/:workshop', trackView('workshop'),
       app.renderHbsViewData('workshop', null,
         (req, cb) => {
           req.workshop.meta = {
@@ -86,7 +74,7 @@ export default function(app) {
         (req, cb) => cb(null,req.workshop) ))
 
 
-    .get('/review/:review', noTrailingSlash(), //trackView('request'),
+    .get('/review/:review', //trackView('request'),
       app.renderHbsViewData('review', null,
         (req, cb) => {
           req.review.meta = {

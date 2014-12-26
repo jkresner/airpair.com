@@ -50,7 +50,6 @@ export function addPaymethod(o, cb) {
     (ee, payMethodInfo) => {
       if (ee) return cb(ee)
       else {
-        $log(`savePayMethod ${payMethodInfo.cardType || payMethodInfo.id} by ${ctx.user._id}`.blue)
         o.userId = ctx.user._id
         o.companyId = o.companyId
         o.info = payMethodInfo
@@ -59,8 +58,10 @@ export function addPaymethod(o, cb) {
         svc.create(o, (e,r) => {
           if (logging) $log('savedPayMethod', o.makeDefault, ctx.user, r._id)
 
-          if (ctx.user.email) //-- When admin looks at request, don't trigger analtyics
-            analytics.track(ctx.user, null, 'Save', { type: 'paymethod', method: o.type })
+          if (ctx.user.email) { //-- When admin looks at request, don't trigger analtyics
+            var cardType = payMethodInfo.cardType || payMethodInfo.id
+            analytics.track(ctx.user, null, 'Save', { type: 'paymethod', method: o.type, cardType })
+          }
 
           if (o.makeDefault)
             UserSvc.update.call(ctx, ctx.user._id, { primaryPayMethodId: r._id })

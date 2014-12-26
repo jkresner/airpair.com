@@ -12,7 +12,7 @@ module.exports = function(config)
 
 
   if (config.analytics.on)
-    global.analytics    = require('./../identity/analytics/analytics')
+    global.analytics    = require('./../services/analytics').analytics
   else
     global.analytics    = { track: ()=>{}, view: ()=>{}, alias: ()=>{}, identify: ()=>{} }
 
@@ -24,6 +24,7 @@ module.exports = function(config)
 
   if (config.log.email)
   {
+    $log('configuring winston', config.log.email)
     global.winston      = require('winston')
     winston.remove(winston.transports.Console)
     winston.add(require('winston-ses').Ses, config.log.email)
