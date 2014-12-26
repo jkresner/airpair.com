@@ -132,3 +132,17 @@ export function getUserPaymethodsByAdmin(userId, cb) {
   getMyPaymethods.call({user: {_id:userId}}, cb)
 }
 
+
+
+
+export function hasPaymethods(userId, cb) {
+  CompanysSvc.getUsersCompany.call({user: {_id:userId}}, (e, company) => {
+    var companyIds = [] // TODO read companies user belongs too
+    if (company) companyIds.push(company._id)
+    svc.searchMany({$or: [{userId},{companyId: {$in:companyIds}}]}, null, (e,r) => {
+      if (e) return cb(e,r)
+      if (r.length > 0) return cb(null,true)
+      else cb(null,false)
+    })
+  })
+}

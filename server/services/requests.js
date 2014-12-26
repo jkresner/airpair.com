@@ -5,6 +5,7 @@ import * as md5           from '../util/md5'
 import Request            from '../models/request'
 import User               from '../models/user'
 import * as UserSvc       from '../services/users'
+import * as PaymethodsSvc from '../services/paymethods'
 var ExpertsSvc =          require('./experts')
 var util =                require('../../shared/util')
 var Data =                require('./requests.data')
@@ -178,6 +179,11 @@ var save = {
     // data.events.push @newEvent "expert reviewed", eR
     reply.reply = { time: new Date() }
     var existing = _.find(suggested, (s) => _.idsEqual(s.expert._id, expert._id))
+
+    var previouslyNotAvailable = (existing)
+      ? existing.expertStatus != 'available'
+      : true
+
     if (!existing) {
       var newSuggestion = _.extend(reply, { expert })
       Rates.addSuggestedRate(request, newSuggestion)
@@ -192,6 +198,12 @@ var save = {
     if (reply.expertStatus == 'available' &&
       (request.status == 'received' ||
       request.status == 'waiting')) request.status = 'review'
+
+    if (previouslyNotAvailable && reply.expertStatus == 'available') {
+      PaymethodsSvc.hasPaymethods(request.userId,(e,hasPaymethods)=>{
+        mailman.sendExpertAvailable(request.by, expert.name, request._id, !hasPaymethods, ()=>{})
+      })
+    }
 
     // sug.events.push @newEvent "expert updated"
     // sug.expert.paymentMethod = type: 'paypal', info: { email: eR.payPalEmail }
