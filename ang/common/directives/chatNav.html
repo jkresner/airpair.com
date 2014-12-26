@@ -1,10 +1,10 @@
 <header>
-  <img id="chatNavToggle" track-click="chatNav" data="{{ toggleAction }}" track-click-if="!session._id" ng-click="chatNav.toggle()" src="/v1/img/css/chat/toggle.png" />
+  <img id="chatNavToggle" track-click="chatNav" data="{{ toggleAction }}" track-click-if="!session._id" ng-click="chatNav.toggle()" src="/static/img/css/chat/toggle.png" />
 </header>
 
 <section class="welcome">
 
-  <figure><a id="navChatAvatar" track-click="chatNav" ng-click="openProfile()"><img class="avatar" ng-src="/v1/img/css/chat/pairy.png" /></a></figure>
+  <figure><a id="navChatAvatar" track-click="chatNav" ng-click="openProfile()"><img class="avatar" ng-src="/static/img/css/chat/pairy.png" /></a></figure>
 
 </section>
 
@@ -24,13 +24,6 @@
       <a id="chatLogin" track-click="login" data="chatNav" href="/v1/auth/login" ng-click="chatNav.toggle()">Login</a>
     </li>
     <li><a id="chatHide" track-click="chatNav" data="Hide" ng-click="chatNav.toggle()">Hide menu</a></li>
-<!--     <li>
-      <p style="margin:5px">Follow</p>
-      <a id="chatTwFollow" track-click="social" data="twitter" href="http://twitter.com/airpair" target="_blank"><img src="/v1/img/icons/tw.png" /></a>
-      <a id="chatFbollow" track-click="social" data="facebok" href="https://www.facebook.com/airpair" target="_blank"><img src="/v1/img/icons/fb.png" /></a>
-      <a id="chatInFollow" track-click="social" data="linkedin" href="https://www.linkedin.com/company/3267255" target="_blank"><img src="/v1/img/icons/in.png" /></a>
-      <a id="chatGpFollow" track-click="social" data="gplus" href="https://google.com/+AirPair" target="_blank"><img src="/v1/img/icons/gp.png" /></a>
-    </li> -->
   </ul>
 
 </section>

@@ -73,7 +73,7 @@
   <section class="replies" ng-if="!isAnon && !session.emailVerified">
     <div>
       <div class="message noexperts">
-        <img class="user" itemprop="image" src="/v1/img/css/chat/pairy.png" />
+        <img class="user" itemprop="image" src="/static/img/css/chat/pairy.png" />
         <h4>Pairy</h4>
         <div><p ng-if="isCustomer" class="important">You must verify your email before experts can see this request.</p></div>
         <div><p ng-if="!isCustomer" class="important">You must verify your email before replying.</p></div>
@@ -90,7 +90,7 @@
 
     <div ng-if="(isCustomer || isAdmin) && replies == 0">
       <div class="message noexperts">
-        <img class="user" itemprop="image" src="/v1/img/css/chat/pairy.png" />
+        <img class="user" itemprop="image" src="/static/img/css/chat/pairy.png" />
         <h4>Pairy</h4>
         <div><p>No experts have replied yet. <!-- Consider uping the rate? --></p></div>
       </div>

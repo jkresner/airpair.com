@@ -1,14 +1,14 @@
 <article>
 
   <time ng-if="r._id" class="entry-time" itemprop="datePublished" datetime="{{ request.published }}"><h6>Submitted</h6>
-    <img ng-if="r.time" class="image-time" ng-src="/v1/img/css/request/time-{{r.time}}.png" align="left" />
+    <img ng-if="r.time" class="image-time" ng-src="/static/img/css/request/time-{{r.time}}.png" align="left" />
     <label>{{ r._id | objectIdToDate }}</label>
     <!-- <label>{{r.status}}</label> -->
   </time>
 
   <div class="entry-categories">
     <h6>Technologies</h6>
-    <img ng-if="r.experience" class="image-experience" ng-src="/v1/img/css/request/experience-{{r.experience}}.png" />
+    <img ng-if="r.experience" class="image-experience" ng-src="/static/img/css/request/experience-{{r.experience}}.png" />
     <ul class="tags">
       <li ng-repeat="t in r.tags | orderBy:'sort' | limitTo : 3">{{t.slug || t.short }}</li>
     </ul>

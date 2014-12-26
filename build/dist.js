@@ -21,6 +21,6 @@ module.exports = () =>
     lessBundler()
   )
     .pipe(rev())
-    .pipe(gulp.dest('./dist/v1'))
+    .pipe(gulp.dest('./dist/static'))
     .pipe(rev.manifest())
     .pipe(gulp.dest('./dist'))
