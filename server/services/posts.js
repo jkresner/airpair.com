@@ -51,7 +51,7 @@ export function getBySlugWithSimilar(slug, cb) {
 
     r.primarytag = _.find(r.tags,(t) => t.sort==0) || r.tags[0]
     var topTagPage = _.find(topTapPages,(s) => r.primarytag.slug==s)
-    r.primarytag.postsUrl = (topTagPage) ? '/{slug}' : `/posts/tag/${slug}`
+    r.primarytag.postsUrl = (topTagPage) ? `/${r.primarytag.slug}` : `/posts/tag/${r.primarytag.slug}`
 
     getSimilarPublished(r.primarytag.slug, (ee,similar) => {
       r.similar = similar

@@ -79,7 +79,8 @@ export default function(app) {
         (req, cb) => {
           req.review.meta = {
             title: `AirPair | ${util.tagsString(req.review.tags)} Request`,
-            canonical: `https://www.airpair.com/review/${req.review._id}`
+            canonical: `https://www.airpair.com/review/${req.review._id}`,
+            noindex: true
           }
           cb(null,req.review)
         }))

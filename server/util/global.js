@@ -24,7 +24,6 @@ module.exports = function(config)
 
   if (config.log.email)
   {
-    $log('configuring winston', config.log.email)
     global.winston      = require('winston')
     winston.remove(winston.transports.Console)
     winston.add(require('winston-ses').Ses, config.log.email)
