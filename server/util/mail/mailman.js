@@ -95,6 +95,11 @@ module.exports = function(mailProvider)
       mailProvider.send(receivers.pipeliners, renderEmail('pipelinernotifyreply',
         { byName, requestId, expertStatus, requestByName }), cb)
     },
+    sendExpertAvailable(toCustomer, expertName, requestId, noPaymethods, cb) {
+      mailProvider.send(`${toCustomer.name} <${toCustomer.email}>`, renderEmail('expertavailable', {
+        firstName: util.firstName(toCustomer.name),
+        expertName, requestId, noPaymethods }), cb)
+    },
     sendExpertSuggestedEmail(toUser, requestByFullName, requestId, accountManagerName, tags, cb) {
       var tagsString = util.tagsString(tags)
       var expertFirstName = util.firstName(toUser.name)
