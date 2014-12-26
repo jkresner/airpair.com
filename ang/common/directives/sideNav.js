@@ -143,7 +143,7 @@ angular.module("APSideNav", ['ui.bootstrap','APSvcSession', 'APTagInput'])
     if (!$scope.session.email)
     {
       $scope.avatarQuestion = "Aren't you a little short for a storm trooper?";
-      var avatar = $scope.session.avatar.replace('/v1/img/css/sidenav/default-','').replace('.png','')
+      var avatar = $scope.session.avatar.replace('/static/img/css/sidenav/default-','').replace('.png','')
       if (avatar == 'cat') $scope.avatarQuestion = "That's a nice hair tie...";
       if (avatar == 'mario') $scope.avatarQuestion = "Eating a little too many mushrooms aren't we?";
     }

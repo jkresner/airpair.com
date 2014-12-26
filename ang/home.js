@@ -1,7 +1,7 @@
-window.$ = window.jQuery = require('./../public/v1/lib/jquery/dist/jquery.js');
-require('./../public/v1/lib/angular/angular.js');
-require('./../public/v1/lib/angular-animate/angular-animate.js');
-require('./../public/v1/lib/angular-messages/angular-messages.js');
+window.$ = window.jQuery = require('./../public/lib/jquery/dist/jquery.js');
+require('./../public/lib/angular/angular.js');
+require('./../public/lib/angular-animate/angular-animate.js');
+require('./../public/lib/angular-messages/angular-messages.js');
 require('./common/directives/ctas.js');
 require('./common/directives/analytics.js');
 require('./common/directives/forms.js');
@@ -16,7 +16,7 @@ angular.module("AP", ['ngAnimate', 'APCTAs', 'APSvcSession', 'APFilters',
 
   .run(function($rootScope, $location, $anchorScroll) {
 
-    $rootScope.session = window.user;
+    $rootScope.session = window.session;
 
     $rootScope.focusInput = function(elem) {
       angular.element('body').addClass('focus')

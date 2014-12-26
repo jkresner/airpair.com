@@ -4,7 +4,7 @@ var RSS  = require('rss')
 
 var allFeedOptions = {
   site_url: 'https://www.airpair.com',
-  image_url: 'https://www.airpair.com/v1/img/css/airpair-circle.png',
+  image_url: 'https://www.airpair.com/static/img/css/airpair-circle.png',
   copyright: '2014 AirPair Inc',
   language: 'en',
   ttl: '60'

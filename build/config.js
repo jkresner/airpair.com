@@ -7,8 +7,8 @@ module.exports = {
     less: 'public/styles/*.{css,less}',
     views: 'server/views/**',
     devAssets: './public/**/*.{css,html,js}',
-    builtJS: '/v1/js',
-    builtCss: '/v1/styles'
+    builtJS: '/static/js',
+    builtCss: '/static/styles'
   },
   jsBundles: ['index.js', 'adm.js', 'home.js'],
   styleBundles: [

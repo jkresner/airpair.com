@@ -10,7 +10,8 @@ import ExpertsAPI from '../api/experts'
 import CompanysAPI from '../api/companys'
 import ViewsAPI from '../api/views'
 import RequestsAPI from '../api/requests'
-import {authd,adm,setAnonSessionData,emailv} from '../identity/auth/middleware'
+var {authd,setAnonSessionData} = require('../middleware/auth')
+var {adm,emailv} = require('../middleware/authz')
 
 
 export default function(app) {

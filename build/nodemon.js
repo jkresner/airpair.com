@@ -5,5 +5,5 @@ module.exports = () =>
       ignore: ['public/*','ang/*','test/*','dist/*','node_modules/*'] })
     .on('change', ['lint'])
     .on('restart', function () {
-      console.log('>> node restart');
+      //console.log('>> node restart');
     })

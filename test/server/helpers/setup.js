@@ -55,7 +55,7 @@ global.newUserSession = function(userKey)
     originalMaxAge: 2419200000,
     _expires: moment().add(2419200000, 'ms').subtract(1,'s') }
   }
-  cookieCreatedAt = util.sessionCreatedAt(session)
+  cookieCreatedAt = util.momentSessionCreated(session)
   return {user:null,sessionID:`test${userKey}${suffix}`,session}
 }
 

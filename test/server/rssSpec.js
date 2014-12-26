@@ -22,7 +22,7 @@ module.exports = () => describe("Rss: ", function() {
     expect(text).to.match(/<description>.+<\/description>(?=.*<item>)/)
     expect(text).to.match(/<atom:link href="https:\/\/www.airpair.com\/rss\/{0,1}(posts|workshops){0,1}(?=.*<item>)/)
     expect(text).to.match(/<link>https:\/\/www.airpair.com<\/link>(?=.*<item>)/)
-    expect(text).to.match(/<image><url>https:\/\/www.airpair.com\/v1\/img\/css\/airpair-circle.png<\/url>(?=.*<item>)/)
+    expect(text).to.match(/<image><url>https:\/\/www.airpair.com\/static\/img\/css\/airpair-circle.png<\/url>(?=.*<item>)/)
     expect(text).to.match(/<copyright>.+<\/copyright>(?=.*<item>)/)
     expect(text).to.match(/<language>.+<\/language>(?=.*<item>)/)
     expect(text).to.match(/<category>.+<\/category>(?=.*<item>)/)
