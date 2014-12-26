@@ -77,7 +77,7 @@ function upsertSmart(search, upsert, cb) {
   if (logging) $log('upsertSmart', JSON.stringify(search), JSON.stringify(upsert))
 
   //-- Session is their cookie, which may or may not have been their first visit
-  var sessionCreatedAt = util.sessionCreatedAt(this.session)
+  var sessionCreatedAt = util.momentSessionCreated(this.session).toDate()
   var firstRequest = this.session.firstRequest
   var {sessionID} = this
 
@@ -353,9 +353,9 @@ function inflateTagsAndBookmarks(sessionData, cb) {
 }
 
 var anonAvatars = [
-  "/v1/img/css/sidenav/default-cat.png",
-  "/v1/img/css/sidenav/default-mario.png",
-  "/v1/img/css/sidenav/default-stormtrooper.png"
+  "/static/img/css/sidenav/default-cat.png",
+  "/static/img/css/sidenav/default-mario.png",
+  "/static/img/css/sidenav/default-stormtrooper.png"
 ]
 
 export function getSession(cb) {
@@ -567,6 +567,7 @@ export function changeEmail(email, cb) {
 }
 
 export function verifyEmail(hash, cb) {
+  var ctx = this
   svc.searchOne({ email:this.user.email }, null, (e,r) => {
     if (e || !r) {
       $log(e,r)
@@ -574,7 +575,8 @@ export function verifyEmail(hash, cb) {
     }
     if (r.local.emailHash == hash) {
       this.user.emailVerified = true
-      svc.update(this.user._id, { emailVerified: true }, cb)
+      var trackData = { type: 'emailVerified', email: this.user.email }
+      svc.update(this.user._id, { emailVerified: true }, cbSession(cbTrackSave(ctx,trackData,cb)))
     }
     else
       cb(Error("e-mail verification failed"))

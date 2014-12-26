@@ -12,7 +12,7 @@ module.exports = function(config)
 
 
   if (config.analytics.on)
-    global.analytics    = require('./../identity/analytics/analytics')
+    global.analytics    = require('./../services/analytics').analytics
   else
     global.analytics    = { track: ()=>{}, view: ()=>{}, alias: ()=>{}, identify: ()=>{} }
 

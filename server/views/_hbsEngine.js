@@ -1,7 +1,7 @@
 var fs 				= require('fs')
 var marked 		= require('marked')
 var hbs 			= require('express-hbs')
-import {getSession} from './services/users'
+import {getSession} from './../services/users'
 
 function registerHelpers(hbs)
 {
@@ -48,7 +48,7 @@ export default function(app) {
   app.engine('hbs', hbsEngine);
 
   var combineBaseData = (req, data) => {
-    if (!data) { data = {} }
+    if (!data) data = {}
     data.build = config.build
     data.authenticated = !!(req.user && req.user._id)
     data.config = { analytics: config.analytics, bundle: config.bundle }
@@ -58,7 +58,9 @@ export default function(app) {
 
   app.renderHbs = (fileName, data) =>
     (req,res) => {
-      res.status(200).render(`./${fileName}.hbs`, combineBaseData(req,data))
+      getSession.call(req, (e,session) => {
+        res.status(200).render(`./${fileName}.hbs`, combineBaseData(req,{viewData:data,session}))
+      })
     }
 
   app.renderHbsAdmin = (fileName, data) =>
@@ -71,7 +73,11 @@ export default function(app) {
     (req, res) => {
       getSession.call(req,(e,session)=>
         viewDataFn(req, (e,data) => {
-          data[`${partialName}Render`] = true
+          if (data.tmpl && data.tmpl != 'default')
+            data[`${partialName}${data.tmpl}Render`] = true
+          else
+            data[`${partialName}Render`] = true
+
           if (!data.meta) data.meta = pageMeta
           var canonical = (data.meta) ? data.meta.canonical : ""
           res.status(200).render(`./baseServer.hbs`,

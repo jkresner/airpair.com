@@ -5,7 +5,7 @@ var cfg = {
   session: { secret: 'airyv1' },
   analytics: {
     on: false,
-    segmentio: { writekey: '9793xyfxat' }
+    segmentio: { writekey: '9793xyfxat', options: { flushAt: 1 } }
   },
   auth: {
     loginUrl: '/v1/auth/login',
@@ -27,11 +27,11 @@ var cfg = {
     }
   },
   bundle: {
-    indexScript: '/v1/js/index.js',
-    admScript: '/v1/js/adm.js',
-    homeScript: '/v1/js/home.js',
-    indexCss: '/v1/styles/index.css',
-    admCss: '/v1/styles/adm.css',
+    indexScript: '/static/js/index.js',
+    admScript: '/static/js/adm.js',
+    homeScript: '/static/js/home.js',
+    indexCss: '/static/styles/index.css',
+    admCss: '/static/styles/adm.css',
     libCss: '/styles/libs.css'
   },
   log: {},
@@ -70,7 +70,7 @@ module.exports = function(env, appdir) {
   if (cfg.env == 'test') {
     cfg.mail.on = false   // always leave this off
     cfg.analytics.on = true
-    cfg.analytics.segmentio. writekey = '9793xyfxat'
+    cfg.analytics.segmentio.writekey = '9793xyfxat'
     cfg.port = 4444
     cfg.mongoUri = "mongodb://localhost/airpair_test"
     cfg.testlogin = true
@@ -79,15 +79,16 @@ module.exports = function(env, appdir) {
 
   if (cfg.env == 'staging' || cfg.env == 'production') {
     var dist = require('../../dist/rev-manifest.json')
-    cfg.bundle.indexScript = `/v1/${dist['js/index.js']}`
-    cfg.bundle.indexCss = `/v1/${dist['styles/index.css']}`
-    cfg.bundle.admScript = `/v1/${dist['js/adm.js']}`
-    cfg.bundle.admCss = `/v1/${dist['styles/adm.css']}`
-    cfg.bundle.libCss = `/v1/${dist['styles/libs.css']}`
-    cfg.bundle.homeScript = `/v1/${dist['js/home.js']}`
+    cfg.bundle.indexScript = `/static/${dist['js/index.js']}`
+    cfg.bundle.indexCss = `/static/${dist['styles/index.css']}`
+    cfg.bundle.admScript = `/static/${dist['js/adm.js']}`
+    cfg.bundle.admCss = `/static/${dist['styles/adm.css']}`
+    cfg.bundle.libCss = `/static/${dist['styles/libs.css']}`
+    cfg.bundle.homeScript = `/static/${dist['js/home.js']}`
     cfg.mail.on = true
     cfg.analytics.on = true
     cfg.analytics.segmentio.writekey = process.env.ANALYTICS_SEGMENTIO_WRITEKEY
+    cfg.analytics.segmentio.options = {}
 
     cfg.auth.oAuth.callbackHost = process.env.AUTH_OAUTH_CALLBACKHOST
     cfg.auth.google.clientID = process.env.AUTH_GOOGLE_CLIENTID
@@ -102,7 +103,7 @@ module.exports = function(env, appdir) {
       level:          process.env.LOG_EMAIL_LEVEL || 'error',
       sesAccessKey:   cfg.mail.ses.access_key,
       sesSecretKey:   cfg.mail.ses.secret_key,
-      sesFrom:        process.env.LOG_EMAIL_FROM || '<jk@airpair.com>',
+      sesFrom:        process.env.LOG_EMAIL_FROM || 'AP <jk@airpair.com>',
       sesTo:          process.env.LOG_EMAIL_RECEIVERS.split(','),
       sesSubject:     process.env.LOG_EMAIL_SUBJECT || 'aperror'
     }

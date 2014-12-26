@@ -1,5 +1,5 @@
 <header>
-  <img id="sideNavToggle" track-click="sideNav" data="{{ toggleAction }}" track-click-if="!session._id" ng-click="sideNav.toggle()" src="/v1/img/css/sidenav/toggle.png" />
+  <img id="sideNavToggle" track-click="sideNav" data="{{ toggleAction }}" track-click-if="!session._id" ng-click="sideNav.toggle()" src="/static/img/css/sidenav/toggle.png" />
 </header>
 
 <section class="welcome" ng-if="session.authenticated == false">
@@ -16,7 +16,7 @@
     <li>Why join?</li>
   </ul>
   <a id="navAbout" track-click="sideNav" href="/about" class="icon">
-    <span>Read about AirPair</span><img src="/v1/img/css/sidenav/airpair.png" />
+    <span>Read about AirPair</span><img src="/static/img/css/sidenav/airpair.png" />
   </a>
 </section>
 
@@ -47,7 +47,7 @@
     </li>
   </ul>
   <a id="navStackToggle" track-click="sideNav" href="#" ng-click="openStack()" class="icon">
-    <span>Customize</span><img src="/v1/img/css/sidenav/stack.png" /><i>{{ session.tags.length || 0 }}</i>
+    <span>Customize</span><img src="/static/img/css/sidenav/stack.png" /><i>{{ session.tags.length || 0 }}</i>
   </a>
 </section>
 
@@ -58,7 +58,7 @@
       <a href="{{bookmark.url}}" target="_self">{{bookmark.title}}</a>
     </li>
   </ul>
-  <a id="navBookmarksToggle" track-click="sideNav" href="#" ng-click="openBookmarks()" class="icon"><span> Manage </span> <img src="/v1/img/css/sidenav/bookmark.png" /><i>{{ session.bookmarks.length || 0 }}</i></a>
+  <a id="navBookmarksToggle" track-click="sideNav" href="#" ng-click="openBookmarks()" class="icon"><span> Manage </span> <img src="/static/img/css/sidenav/bookmark.png" /><i>{{ session.bookmarks.length || 0 }}</i></a>
 </section>
 
 <div stack></div>
