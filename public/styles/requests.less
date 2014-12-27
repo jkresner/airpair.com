@@ -493,9 +493,19 @@ section#review.verifyEmail {
   #brief { opacity:0.4 }
 }
 
+section#review.inactive {
+  #info { opacity:0.4 }
+  #brief { opacity:0.4 }
+  .inactiveMSG { display:block;background:@paleyellow;
+      padding:5px 20px 15px 20px;border-radius:10px;margin-top:-10px }
+  #reply { display:none }
+}
+
+
 section#review {
 
   .important { font-weight:bold;color:@error;font-size:17px }
+  .inactiveMSG { display:none }
 
   > section {
     margin-top:0px;
