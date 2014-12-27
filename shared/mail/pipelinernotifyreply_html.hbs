@@ -1,5 +1,8 @@
-Time to close?
+{{#if isAvailable}}<p>Time to close?</p>
+{{else}}<p>Plenty o' fish in the sea ...</p>{{/if}}
 
-<p>{{byName}} just replied {{expertStatus}}:</p>
+<p>{{byName}} replied {{expertStatus}} to {{requestByName}}:</p>
 
-<p>Details => https://www.airpair.com/review/{{requestId}}</p>
+<p>Adm => https://www.airpair.com/adm/pipeline/{{requestId}}</p>
+
+<p>As customer => https://www.airpair.com/review/{{requestId}}</p>
