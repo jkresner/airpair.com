@@ -74,7 +74,7 @@ module.exports = -> describe "API", ->
 
 
   it 'Can update a request after verifying email', (done) ->
-    addAndLoginLocalUser 'brhu', (s) ->
+    addAndLoginLocalUser 'narv', (s) ->
       expect(s.emailVerified).to.be.false
       d = type: 'troubleshooting', tags: [data.tags.node]
       POST '/requests', d, {}, (r1) ->
@@ -82,6 +82,7 @@ module.exports = -> describe "API", ->
         PUT "/requests/#{r1._id}/verify", {email:s.email}, {}, (v) ->
           expect(spy.callCount).to.equal(1)
           expect(spy.args[0][1]).to.exist
+          spy.restore()
           expectIdsEqual(spy.args[0][2], r1._id)
           PUT '/users/me/email-verify', { hash: spy.args[0][1] }, {}, (s1) ->
             expect(s1.emailVerified).to.be.true
@@ -93,10 +94,29 @@ module.exports = -> describe "API", ->
                   expect(rAdm.length).to.equal(1)
                   expect(rAdm[0].lastTouch.utc).to.exist
                   expect(rAdm[0].lastTouch.action).to.equal('updateByCustomer')
-                  expect(rAdm[0].lastTouch.by.name.indexOf("Brian Hur")).to.equal(0)
+                  expectStartsWith(rAdm[0].lastTouch.by.name,"Vikram Narayan")
                   expect(rAdm[0].adm.active).to.be.true
                   expect(rAdm[0].adm.submitted).to.be.undefined
                   done()
+
+
+  it 'Can update a request after verify email if logged in with google', (done) ->
+    testDb.ensureDoc 'User', data.users.narv, (e) ->
+      LOGIN 'narv', data.users.narv, (snarv) ->
+        d = type: 'troubleshooting', tags: [data.tags.node]
+        POST '/requests', d, {}, (r1) ->
+          spy = sinon.spy(mailman,'sendVerifyEmailForRequest')
+          PUT "/requests/#{r1._id}/verify", {email:snarv.email}, {}, (v) ->
+            expect(spy.callCount).to.equal(1)
+            expect(spy.args[0][1]).to.exist
+            spy.restore()
+            expectIdsEqual(spy.args[0][2], r1._id)
+            PUT '/users/me/email-verify', { hash: spy.args[0][1] }, {}, (s1) ->
+              expect(s1.emailVerified).to.be.true
+              r1.experience = 'proficient'
+              PUT "/requests/#{r1._id}", r1, {}, (r2) ->
+                expect(r2.experience).to.equal('proficient')
+                done()
 
 
   it 'Can submit a full request with emailVerified', (done) ->

@@ -1,7 +1,32 @@
+GET /v1/api/posts/tag/partners << https://www.airpair.com/posts/tag/partners || isBot:false:Mozilla/5.0 (compatible; Baiduspider/2.0; +http://www.baidu.com/search/spider.html)
+tag not found. Back to tags
+Error: tag not found. Back to tags
+
+
+2014-12-26T22:34:32.302616+00:00 app[web.1]:
+PUT /v1/api/users/me/tag/f << https://www.airpair.com/review/549c7bf540b48b0b00e8945e || isBot:false:Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36
+tag not found. Back to <a href="/tags">tags</a>
+ Error: tag not found. Back to <a href="/tags">tags</a>
+     at /app/_api.js:30:25
+     at Promise.searchOne (/app/_service.js:26:9)
+     at Promise.<anonymous> (/app/node_modules/mongoose/node_modules/mpromise/lib/promise.js:177:8)
+     at Promise.emit (events.js:95:17)
 
 
 
-2014-12-23T19:41:43.996879+00:00 app[web.2]: svc.update.error 54616e1e8f8c80299bcc4f98 { [CastError: Cast to string failed for value "undefined" at path "name"]
+GET /v1/api/posts/tag/C++ << https://www.airpair.com/posts/tag/C++ || isBot:false:Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36
+tag not found. Back to tags
+Error: tag not found. Back to tags
+    at /app/_api.js:30:25
+    at Promise.searchOne (/app/_service.js:11:9)
+    at Promise. (/app/node_modules/mongoose/node_modules/mpromise/lib/promise.js:177:8)
+    at Promise.emit (events.js:95:17)
+    at Promise.emit (/app/node_modules/mongoose/node_modules/mpromise/lib/promise.js
+
+
+
+2014-12-23T19:41:43.996879+00:00 app[web.2]:
+svc.update.error 54616e1e8f8c80299bcc4f98 { [CastError: Cast to string failed for value "undefined" at path "name"]
   message: 'Cast to string failed for value "undefined" at path "name"',
   name: 'CastError',
   type: 'string',

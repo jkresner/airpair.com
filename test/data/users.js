@@ -375,6 +375,50 @@ module.exports = {
     "emailVerified" : true,
     "local" : {},
     "name" : "Abe Haskins",
+  },
+
+  narv :{
+    "_id" : "5421793a8f8c80299bcc4852",
+    "__v" : 0,
+    "cohort" : {
+        "engagement" : {
+            "visit_first" : "2014-09-23T13:44:26.000Z",
+            "visit_signup" : "2014-09-23T13:44:26.000Z",
+            "visit_last" : "2014-11-14T06:04:33.646Z",
+            "visits" : [
+                "2014-11-03T00:00:00.000Z"
+            ]
+        },
+        "aliases" : [
+            "CCdYw13SgbW4QuwcyoBYhRca79hK9fmx"
+        ]
+    },
+    "email" : "vikram@freado.com",
+    "emailVerified" : false,
+    "google" : {
+        "provider" : "google",
+        "id" : "103447198283237700854",
+        "displayName" : "Vikram Narayan",
+        "name" : {
+            "familyName" : "Narayan",
+            "givenName" : "Vikram"
+        },
+        "emails" : [
+            {
+                "value" : "vikram@freado.com"
+            }
+        ],
+        "_json" : {
+            "id" : "103447198283237700854",
+            "email" : "vikram@freado.com",
+            "name" : "Vikram Narayan",
+            "given_name" : "Vikram",
+            "family_name" : "Narayan",
+        },
+        "token" : {}
+    },
+    "googleId" : "103447198283237700854",
+    "name" : "Vikram Narayan"
   }
 
 }
