@@ -1,6 +1,11 @@
-Time to close?
+{{#if isAvailable}}Time to close?
 
-{{byName}} just replied {{expertStatus}}:
+{{else}}Plenty o' fish in the sea ...
 
-Details => https://www.airpair.com/review/{{requestId}}
+{{/if}}
 
+{{byName}} replied {{expertStatus}} to {{requestByName}}:
+
+Adm => https://www.airpair.com/adm/pipeline/{{requestId}}
+
+As customer => https://www.airpair.com/review/{{requestId}}

@@ -11,6 +11,8 @@
       ng-minlength="4"
       ng-minlength="60"
       ng-pattern="/\w+ \w+/"
+      ng-focus="focusInputAttention()"
+      ng-blur="blurInputAttention()"
       tabindex="33212"
       style="width:45%;display:inline"
       >
@@ -33,6 +35,8 @@
          ng-model="data.email"
          ng-model-options="{updateOn:'default blur',debounce:{default:1000, blur:0}}"
          ng-change="updateEmail(subscribeForm.email)"
+         ng-focus="focusInputAttention()"
+         ng-blur="blurInputAttention()"
          required
          tabindex="33211"
          track-focus="subscribe"

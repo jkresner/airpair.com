@@ -12,6 +12,13 @@
     <request-review-summary></request-review-summary>
   </section>
 
+  <section class="inactiveMSG">
+    <h3>Too late ...</h3>
+    <p>This request is no longer active. It's already been fulfiled, or solved.
+    Gotta be fast these days, I tell ya :p
+    </p>
+  </section>
+
   <section ng-if="isExpert && expertEdit" id="reply">
 
     <form ng-if="data" id="replyForm" class="expertReplyForm" novalidate name="replyForm" ng-submit="submit(replyForm.$valid, data)">
@@ -104,7 +111,8 @@
         <div>
           <div class="message noexperts">
             <img class="user" itemprop="image" ng-src="{{s.expert.avatar}}?s=100" />
-            <h4>{{s.expert.name}}</h4>
+            <h3>{{s.expert.name}}</h3>
+            <social-links profile="s.expert"></social-links>
             <div><p>{{s.expertComment}}</p><p>{{s.expertAvailability}}</p></div>
           </div>
           <section ng-if="isExpert">

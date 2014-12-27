@@ -43,6 +43,14 @@ angular.module("APCTAs", ['ngMessages','APAnalytics'])
         tagName: '=tagName',
         tagSlug: '=tagSlug'
       },
+      link(scope, element) {
+        scope.focusInputAttention = function(elem) {
+          angular.element('body').addClass('attentionfocus')
+        }
+        scope.blurInputAttention = function(elem) {
+          angular.element('body').removeClass('attentionfocus')
+        }
+      },
       controller($scope, $element, $attrs) {
 
         SessionService.onAuthenticated( (s) => $scope.data = { email: s.email, name: s.name } )

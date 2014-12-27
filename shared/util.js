@@ -1,4 +1,4 @@
-var botPattern = /googlebot|gurujibot|twitterbot|yandexbot|slurp|msnbot|bingbot|rogerbot|MetaURI|Hatena|PaperLiBot|QuerySeekerSpider|AhrefsBot|EmailMarketingRobot|ShowyouBot|facebookexternalhit/i
+var botPattern = /googlebot|gurujibot|twitterbot|yandexbot|slurp|msnbot|bingbot|rogerbot|MetaURI|Hatena|PaperLiBot|QuerySeekerSpider|AhrefsBot|EmailMarketingRobot|ShowyouBot|Baiduspider|facebookexternalhit/i
 
 
 var nestedPick = (object, keys) => {
@@ -45,6 +45,11 @@ var util = {
 
   ObjectId2Date(id) {
     return new Date(parseInt(id.toString().slice(0, 8), 16) * 1000)
+  },
+
+
+  ObjectId2Moment(id) {
+    return moment(util.ObjectId2Date(id))
   },
 
 

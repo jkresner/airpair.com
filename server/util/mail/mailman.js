@@ -93,7 +93,13 @@ module.exports = function(mailProvider)
     },
     sendPipelinerNotifyReplyEmail(byName, expertStatus, requestId, requestByName, cb) {
       mailProvider.send(receivers.pipeliners, renderEmail('pipelinernotifyreply',
-        { byName, requestId, expertStatus, requestByName }), cb)
+        { byName, requestId, requestByName, isAvailable: expertStatus == 'available',
+          expertStatus: expertStatus.toUpperCase() }), cb)
+    },
+    sendExpertAvailable(toCustomer, expertName, requestId, noPaymethods, cb) {
+      mailProvider.send(`${toCustomer.name} <${toCustomer.email}>`, renderEmail('expertavailable', {
+        firstName: util.firstName(toCustomer.name),
+        expertName, requestId, noPaymethods }), cb)
     },
     sendExpertSuggestedEmail(toUser, requestByFullName, requestId, accountManagerName, tags, cb) {
       var tagsString = util.tagsString(tags)

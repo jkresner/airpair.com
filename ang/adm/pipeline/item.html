@@ -2,11 +2,14 @@
 
 
   <section class="nav left">
-    <a ng-href="/review/{{request._id}}" target="_blank">Review</a>
+    <a ng-href="/adm/pipeline">Back</a>
+    | <a ng-href="/review/{{request._id}}" target="_blank">Review</a>
     <!-- | <a ng-href="/v1/adm/farm/{{request._id}}">Farm</a> -->
     | <a ng-href="/help/request/{{request._id}}" target="_self">Edit</a>
-    | <a ng-if="meta.okToDelete" class="delete" ng-click="junk()">JUNK</a>
-    | <a ng-if="meta.okToDelete" class="delete" ng-click="delete()">Delete</a>
+    <span ng-if="meta.okToDelete">
+    | <a class="delete" ng-click="junk()">JUNK</a>
+    | <a class="delete" ng-click="delete()">Delete</a>
+    </span>
   </section>
 
 
@@ -35,13 +38,18 @@
 
     </div>
 
-    <div class="cohort">
+    <div class="cohort" ng-if="request._id">
       <div><label>Trust</label> Level {{meta.trustedLevel}}</div>
-      <div><label>First seen</label> {{user.cohort.engagement.visit_first | agoTime}}</div>
-      <div><label>Joined</label> {{user.cohort.engagement.visit_signup | agoTime }}</div>
-      <div><label>Started</label> {{request._id | objectIdToDate : 'DD MMM HH:mm:ss' }}</div>
-      <div><label>Submitted</label> {{request.adm.submitted | locaTime : 'HH:mm:ss' }}</div>
-      <div><label>Closed</label> {{request.adm.closed | locaTime : 'HH:mm:ss' }}</div>
+       <div><label>First seen</label> {{user.cohort.engagement.visit_first | locaTime : 'DD MMM HH:mm:ss' }} <span>{{user.cohort.engagement.visit_first | agoTime}}</span></div>
+      <div><label>Joined</label> {{user.cohort.engagement.visit_signup | locaTime : 'DD MMM HH:mm:ss' }} <span>{{user.cohort.engagement.visit_signup | agoTime }}</span></div>
+      <div>
+        <label>Prevs</label> <i>JK To build</i>
+      </div>
+    <div><label>Started</label> {{request._id | objectIdToDate : 'DD MMM HH:mm:ss' }} <span>{{request._id | objectIdToAgoTime }}</span></div>
+     <div ng-if="meta.timeToSubmit"><label>Submitted</label> {{ request.adm.submitted | locaTime : 'DD MMM HH:mm:ss' }} <span>{{ request.adm.submitted | agoTime }} |  ({{meta.timeToSubmit}} to complete)</span></div>
+     <div ng-if="meta.timeToReceived"><label>Replied</label> after {{ meta.timeToReceived }} </div>
+     <div ng-if="meta.timeToReviewable"><label>Reviewable</label> after {{ meta.timeToReviewable }}</div>
+
     </div>
 
   </section>
@@ -49,9 +57,13 @@
 
   <section class="info left" request-admin req="request"></section>
 
-  <section ng-if="request" class="actions left">
+  <section ng-if="request && request._id" class="actions left">
     <label>Submitted</label>
-      <span ng-if="request && request._id">{{ request._id | objectIdToAgoTime }}</span>
+      <span>{{ request.adm.submitted | locaTime : 'DD MMM HH:mm:ss' }}</span>
+      <span ng-if="meta.moreThan2DayOld" style="color:red">more than 2 days old</span>
+      <span ng-if="meta.moreThan1DayOld && !meta.moreThan2DayOld" style="color:#a94442">more than 1 days old</span>
+      <span ng-if="meta.moreThan2HourOld && !meta.moreThan1DayOld" style="color:#DD8766">more than 2 hours old</span>
+      <span ng-if="meta.moreThan1HourOld && !meta.moreThan2HourOld" style="color:#8a6d3b">more than 1 hour old</span>
     <br /><label>Status</label>
     <span>
       <select ng-model="request.status"
@@ -79,9 +91,14 @@
     </span>
     <br /><label>Quality</label>
     <span ng-if="meta.shortBrief">short breif</span>
+    <div ng-if="request.adm.closed"><label>Closed</label> {{request.adm.closed | locaTime : 'DD MMM HH:mm:ss' }}</div>
 
     <hr />
-    <mail-link ng-if="request.status=='received'" name="'received'" to="request.by.email" req="request" meta="meta" send-callback="receivedCallback">
+    <mail-link ng-if="request.status=='received'" name="'received'" to="request.by.email" req="request" meta="meta" send-callback="sentReceivedCallback"></mail-link>
+
+    <mail-link ng-if="request.status=='review'" name="'review'" to="request.by.email" req="request" meta="meta" send-callback="sentReviewCallback"></mail-link>
+
+    <mail-link ng-if="meta.timeToCancelFromWaiting" name="'cancelfromwaiting'" to="request.by.email" req="request" meta="meta" send-callback="sentCancelFromWaitingCallback"></mail-link>
 
   </section>
 
@@ -153,17 +170,7 @@
           <div>
             <em ng-repeat="t in m.tags">{{t.short}}</em>
           </div>
-          <div>
-            <a ng-if="m.gh" href="//github.com/{{ m.gh.username }}" target="_blank" class="gh-white icon"></a>
-
-            <a ng-if="m.so" href="//stackoverflow.com/users/{{ m.so.link }}" target="_blank" class="so-white icon"></a>
-
-            <a ng-if="m.bb" href="//bitbucket.org/{{ m.bb.id }}" target="_blank" class="bb-white icon"></a>
-
-            <a ng-if="m.in" href="//linkedin.com/x/profile/sy5n2q8o2i49/{{ m.in.id }}" target="_blank" class="in-white icon"></a>
-
-            <a ng-if="m.tw" href="//twitter.com/{{ m.tw.username }}" target="_blank" class="tw-white icon"></a>
-          </div>
+          <social-links profile="m"></social-links>
           [<a ng-click="addSuggestion(m._id)">add</a>]
           &nbsp;
         </li>
