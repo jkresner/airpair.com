@@ -6,11 +6,6 @@ angular.module('APSvcSession', [])
   .constant('Auth', '/v1/auth')
 
   .factory('Notifications', function NotificationsFactory($rootScope, $location) {
-    // this.add = (msg) =>
-    //   $rootScope.notifications = _.union($rootScope.notifications, [msg])
-
-    // this.remove = (msg) =>
-    //   $rootScope.notifications = _.without($rootScope.notifications, msg)
 
     this.calculateNextNotification = () => {
       var usr = $rootScope.session
