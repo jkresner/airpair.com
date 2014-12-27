@@ -12,6 +12,13 @@
     <request-review-summary></request-review-summary>
   </section>
 
+  <section class="inactiveMSG">
+    <h3>Too late ...</h3>
+    <p>This request is no longer active. It's already been fulfiled, or solved.
+    Gotta be fast these days, I tell ya :p
+    </p>
+  </section>
+
   <section ng-if="isExpert && expertEdit" id="reply">
 
     <form ng-if="data" id="replyForm" class="expertReplyForm" novalidate name="replyForm" ng-submit="submit(replyForm.$valid, data)">
