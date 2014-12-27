@@ -493,9 +493,19 @@ section#review.verifyEmail {
   #brief { opacity:0.4 }
 }
 
+section#review.inactive {
+  #info { opacity:0.4 }
+  #brief { opacity:0.4 }
+  .inactiveMSG { display:block;background:@paleyellow;
+      padding:5px 20px 15px 20px;border-radius:10px;margin-top:-10px }
+  #reply { display:none }
+}
+
+
 section#review {
 
   .important { font-weight:bold;color:@error;font-size:17px }
+  .inactiveMSG { display:none }
 
   > section {
     margin-top:0px;
@@ -530,7 +540,7 @@ section#review {
     li { position:relative;border-bottom:solid 1px @lightblue;margin-bottom:10px;width:100% }
     .message { max-width:360px;
       > img { top:0 }
-      h4 { margin-top:0 }
+      h3 { margin-top:0;color:@darkblue;line-height:22px }
     }
     section { position:absolute;right:0;top:0;width:180px;
       .btn { width:100% }
@@ -538,13 +548,16 @@ section#review {
         span { font-size:16px;padding-left:2px  }
       }
     }
+    .sociallinks {
+      .icon { background-color:@orange; }
+    }
   }
 
   .message {
     > img { position:absolute;top:10px;left:0;width:100px;height:100px;padding:0 }
     vertical-align:top;
     display:inline-block;
-    padding:5px 30px 10px 40px;
+    padding:0px 30px 10px 40px;
     margin-left:80px;
     width:560px;
     min-height:180px;

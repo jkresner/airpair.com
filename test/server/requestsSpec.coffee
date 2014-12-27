@@ -74,7 +74,7 @@ module.exports = -> describe "API", ->
 
 
   it 'Can update a request after verifying email', (done) ->
-    addAndLoginLocalUser 'brhu', (s) ->
+    addAndLoginLocalUser 'narv', (s) ->
       expect(s.emailVerified).to.be.false
       d = type: 'troubleshooting', tags: [data.tags.node]
       POST '/requests', d, {}, (r1) ->
@@ -82,6 +82,7 @@ module.exports = -> describe "API", ->
         PUT "/requests/#{r1._id}/verify", {email:s.email}, {}, (v) ->
           expect(spy.callCount).to.equal(1)
           expect(spy.args[0][1]).to.exist
+          spy.restore()
           expectIdsEqual(spy.args[0][2], r1._id)
           PUT '/users/me/email-verify', { hash: spy.args[0][1] }, {}, (s1) ->
             expect(s1.emailVerified).to.be.true
@@ -93,10 +94,29 @@ module.exports = -> describe "API", ->
                   expect(rAdm.length).to.equal(1)
                   expect(rAdm[0].lastTouch.utc).to.exist
                   expect(rAdm[0].lastTouch.action).to.equal('updateByCustomer')
-                  expect(rAdm[0].lastTouch.by.name.indexOf("Brian Hur")).to.equal(0)
+                  expectStartsWith(rAdm[0].lastTouch.by.name,"Vikram Narayan")
                   expect(rAdm[0].adm.active).to.be.true
                   expect(rAdm[0].adm.submitted).to.be.undefined
                   done()
+
+
+  it 'Can update a request after verify email if logged in with google', (done) ->
+    testDb.ensureDoc 'User', data.users.narv, (e) ->
+      LOGIN 'narv', data.users.narv, (snarv) ->
+        d = type: 'troubleshooting', tags: [data.tags.node]
+        POST '/requests', d, {}, (r1) ->
+          spy = sinon.spy(mailman,'sendVerifyEmailForRequest')
+          PUT "/requests/#{r1._id}/verify", {email:snarv.email}, {}, (v) ->
+            expect(spy.callCount).to.equal(1)
+            expect(spy.args[0][1]).to.exist
+            spy.restore()
+            expectIdsEqual(spy.args[0][2], r1._id)
+            PUT '/users/me/email-verify', { hash: spy.args[0][1] }, {}, (s1) ->
+              expect(s1.emailVerified).to.be.true
+              r1.experience = 'proficient'
+              PUT "/requests/#{r1._id}", r1, {}, (r2) ->
+                expect(r2.experience).to.equal('proficient')
+                done()
 
 
   it 'Can submit a full request with emailVerified', (done) ->
@@ -188,6 +208,7 @@ module.exports = -> describe "API", ->
               expect(rAbha.suggested[0].suggestedRate.expert).to.equal(113)
               expect(rAbha.suggested[0].suggestedRate.total).to.equal(146)
               reply = expertComment: "I'll take it", expertAvailability: "Real-time", expertStatus: "available"
+              customerMailSpy = sinon.spy(mailman, 'sendExpertAvailable')
               PUT "/requests/#{r._id}/reply/#{rAbha.suggested[0].expert._id}", reply, {}, (r1) ->
                 expect(r1.status).to.equal('review')
                 expect(r1.suggested.length).to.equal(1)
@@ -211,6 +232,12 @@ module.exports = -> describe "API", ->
                     expect(rAdm[0].adm.active).to.be.true
                     expect(rAdm[0].adm.submitted).to.exist
                     expect(rAdm[0].adm.reviewable).to.exist
+                    expect(customerMailSpy.callCount).to.equal(1)
+                    expectStartsWith(customerMailSpy.args[0][0].name,"Michael Flynn")
+                    expect(customerMailSpy.args[0][1]).to.equal("Abe Haskins")
+                    expectIdsEqual(customerMailSpy.args[0][2],r1._id)
+                    expect(customerMailSpy.args[0][3]).to.be.true
+                    customerMailSpy.restore()
                     done()
 
 
@@ -241,6 +268,36 @@ module.exports = -> describe "API", ->
                   expect(r2.suggested[0].expertComment).to.equal("Actually I've got an hour")
                   expect(r2.suggested[0].reply.time).to.exist
                   done()
+
+
+  it 'Double available reply does not trigger a second customer email', (done) ->
+    addAndLoginLocalUserWithPayMethod 'brih', (sbrih) ->
+      d = tags: [data.tags.angular], type: 'resources', experience: 'proficient', brief: 'bah bah anglaur test yo4', hours: "1", time: 'rush'
+      POST '/requests', d, {}, (r0) ->
+        PUT "/requests/#{r0._id}", _.extend(r0,{budget:300}), {}, (r) ->
+          LOGIN 'abha', data.users.abha, (sAbha) ->
+            GET "/requests/review/#{r._id}", {}, (rAbha) ->
+              customerMailSpy = sinon.spy(mailman, 'sendExpertAvailable')
+              reply = expertComment: "I'm available one", expertAvailability: "Yes", expertStatus: "available"
+              PUT "/requests/#{r._id}/reply/#{rAbha.suggested[0].expert._id}", reply, {}, (r1) ->
+                expect(r1.status).to.equal('review')
+                update = expertComment: "Still available", expertAvailability: "Y", expertStatus: "available"
+                PUT "/requests/#{r._id}/reply/#{rAbha.suggested[0].expert._id}", update, {}, (r2) ->
+                  LOGIN 'admin', data.users.admin, ->
+                    GET "/adm/requests/user/#{sbrih._id}", {}, (rAdm) ->
+                      expect(rAdm.length).to.equal(1)
+                      expect(rAdm[0].lastTouch.utc).to.exist
+                      expect(rAdm[0].lastTouch.action).to.equal('replyByExpert:available')
+                      expect(rAdm[0].lastTouch.by.name.indexOf("Abe Haskins")).to.equal(0)
+                      expect(rAdm[0].adm.active).to.be.true
+                      expect(rAdm[0].adm.reviewable).to.exist
+                      expect(customerMailSpy.callCount).to.equal(1)
+                      expectStartsWith(customerMailSpy.args[0][0].name,"Brian Hur")
+                      expect(customerMailSpy.args[0][1]).to.equal("Abe Haskins")
+                      expectIdsEqual(customerMailSpy.args[0][2],r._id)
+                      expect(customerMailSpy.args[0][3]).to.be.false
+                      customerMailSpy.restore()
+                      done()
 
 
   it 'Can get data to book expert on request rate', (done) ->

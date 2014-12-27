@@ -30,18 +30,20 @@ require('./common/directives/requests.js');
 require('./common/directives/notifications.js');
 require('./common/directives/serverTemplates.js');
 require('./common/directives/providers.js');
+require('./common/directives/profiles.js');
 require('./common/filters/filters.js');
-require('./common/pageHelpers.js');
 require('./auth/module.js');
 require('./posts/module.js');
 require('./workshops/module.js');
 require('./billing/module.js');
 require('./account/module.js');
 require('./requests/module.js');
+require('./common/pageHelpers.js');
 
 
 angular.module("AP", ['Providers', 'ngRoute', 'ngAnimate', 'APViewData', 'APDataSvc', 'APCTAs',
   'APAnalytics', 'APSideNav', 'APChatNav', 'APServerTemplates', 'APNotifications',
+  'APProfileDirectives', 'APPageHelpers',
   'APAuth', 'APPosts', 'APWorkshops', 'APProfile', 'APBilling', 'APRequests'])
 
   .config(function($locationProvider, $routeProvider) {
@@ -75,7 +77,7 @@ angular.module("AP", ['Providers', 'ngRoute', 'ngAnimate', 'APViewData', 'APData
     }
   })
 
-  .run(function($rootScope, $location, Notifications) {
+  .run(function($rootScope, $location, PageHlpr, Notifications) {
 
     $rootScope.$on('$routeChangeSuccess', function() {
       if ($location.path().indexOf(window.initialLocation) == -1) {
@@ -88,7 +90,7 @@ angular.module("AP", ['Providers', 'ngRoute', 'ngAnimate', 'APViewData', 'APData
       $rootScope.notifications = Notifications.calculateNextNotification()
     });
 
-    pageHlpr.fixNavs('#side,#chat');
+    PageHlpr.fixNavs('#side,#chat');
   })
 
   .factory('ServerErrors', function serverErrorsFactory($rootScope) {
@@ -111,12 +113,12 @@ angular.module("AP", ['Providers', 'ngRoute', 'ngAnimate', 'APViewData', 'APData
     return shared;
   })
 
-  .controller('ServerTemplateCtrl', function($scope, ViewData, SessionService, RequestHelper) {
-    pageHlpr.loadPoSt();
-    pageHlpr.highlightSyntax({ addCtrs: true });
-    pageHlpr.fixPostRail();
+  .controller('ServerTemplateCtrl', function($scope, ViewData, SessionService, RequestHelper, PageHlpr) {
+    PageHlpr.loadPoSt();
+    PageHlpr.highlightSyntax({ addCtrs: true });
+    PageHlpr.fixPostRail();
     if ($scope.viewData && angular.element('#disqus_thread').length>0)
-      pageHlpr.loadDisqus($scope.viewData.canonical);
+      PageHlpr.loadDisqus($scope.viewData.canonical);
 
     RequestHelper.setRequestTagsFromSession($scope)
 

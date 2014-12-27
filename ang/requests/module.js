@@ -139,10 +139,13 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
     $scope.isCustomer = Shared.roles.request.isCustomer($scope.session,r)
     $scope.replies = _.where(r.suggested,(s)=>s.expertComment!=null)
 
-    if ($scope.isCustomer || $scope.isAdmin) {
+    if (r.status == 'canceled' || r.status == 'completed')
+      $scope.reviewClass = 'inactive'
+    // console.log('$scope.session.primaryPayMethodId', $scope.session.primaryPayMethodId)
+
+    if ($scope.isCustomer) { // || $scope.isAdmin
       $scope.displayRate = r.budget
 
-      console.log('$scope.session.primaryPayMethodId', $scope.session.primaryPayMethodId)
       if (!$scope.session.emailVerified)
         $scope.reviewClass = 'verifyEmail'
       // else (!$scope.session.primaryPayMethodId)
