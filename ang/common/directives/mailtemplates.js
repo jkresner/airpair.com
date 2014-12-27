@@ -4,7 +4,15 @@ var tmpls = {
   received: {
     subject: require('../../../shared/mail/pipelinereceived_subject.html'),
     text: require('../../../shared/mail/pipelinereceived_text.html')
-  }
+  },
+  review: {
+    subject: require('../../../shared/mail/pipelinereview_subject.html'),
+    text: require('../../../shared/mail/pipelinereview_text.html')
+  },
+  cancelfromwaiting: {
+    subject: require('../../../shared/mail/pipelinecancelfromwaiting_subject.html'),
+    text: require('../../../shared/mail/pipelinecancelfromwaiting_text.html')
+  },
 }
 
 angular.module("APMailTemplates", [])
@@ -38,12 +46,14 @@ angular.module("APMailTemplates", [])
           name: $rootScope.session.name
         }
 
-        $element.find('b').html(
+        $element.find('code').html(
           $compile('<span>'+$scope.subject+'</span>')($scope).contents())
 
         $element.find('pre').html(
           $compile('<div>'+$scope.body+'</div>')($scope).contents())
+
         $timeout(()=>$scope.message = $element.find('pre').text(),100)
+        $timeout(()=>$scope.subject = $element.find('code').text(),100)
       })
 
     }
