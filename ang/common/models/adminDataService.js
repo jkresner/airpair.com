@@ -103,14 +103,8 @@ angular.module('APSvcAdmin', [])
       getUsersRequests(_id, success, error) {
         $http.get(`${APIAdm}/requests/user/${_id}`).success(success).error(error)
       },
-      getRequestMatches(_id, success, error) {
-        $http.get(`/v1/api/experts/match/${_id}`).success(success).error(error)
-      },
       updateRequest(data, success, error) {
         $http.put(`${APIAdm}/requests/${data._id}`, data).success(pipelineFns.updateItemInCacheList(success)).error(error)
-      },
-      addSuggestion(data, success, error) {
-        $http.put(`${APIAdm}/requests/${data._id}/add/${data.expertId}`, data).success(pipelineFns.updateItemInCacheList(success)).error(error)
       },
       removeSuggestion(data, success, error) {
         $http.put(`${APIAdm}/requests/${data._id}/remove/${data.expertId}`).success(pipelineFns.updateItemInCacheList(success)).error(error)

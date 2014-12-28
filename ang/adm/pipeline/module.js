@@ -36,7 +36,7 @@ angular.module("ADMPipeline", ["APRequestDirectives","APProfileDirectives"])
 
   this.shouldSend = {
     received:(r) => r.status == 'received' && !_.find(r.messages,(msg) => msg.type == 'received'),
-    review:(r) => r.status == 'review' && _.find(r.suggested,(s)=>s.expertStats=='available') && !_.find(r.messages,(msg) => msg.type == 'review'),
+    review:(r) => r.status == 'review' && _.find(r.suggested,(s)=>s.expertStatus=='available') && !_.find(r.messages,(msg) => msg.type == 'review'),
     cancelfromwaiting:(r,m) => r.status == 'waiting' && m.timeToCancelFromWaiting && !_.find(r.messages,(msg) => msg.type == 'cancelfromwaiting'),
   }
 
@@ -49,18 +49,15 @@ angular.module("ADMPipeline", ["APRequestDirectives","APProfileDirectives"])
 
   $scope.request = {}
 
-  $scope.getMatches = () => {
-    AdmDataService.pipeline.getRequestMatches($scope.request._id, function (experts) {
-      $scope.matches = experts;
-      console.log('$scope.matches', $scope.matches.length)
-    })
+  $scope.highlightedTag = (tagId) => {
+    return _.find($scope.focusTagIds,(id)=>id==tagId)
   }
 
-  $scope.$watch('request.status', function() {
-    if ($scope.request.status == 'waiting'
-      && $scope.user.emailVerified)
-      $scope.getMatches()
-  })
+  $scope.updateExpertMatching = (expertId) => {
+    AdmDataService.pipeline.matchifyExpert(expertId, function (expert) {
+      console.log('expert', expert.name, expert.matching)
+    })
+  }
 
   $scope.$watch('request', function(r) {
     if (!$scope.user || !$scope.paymethods) return
@@ -88,6 +85,7 @@ angular.module("ADMPipeline", ["APRequestDirectives","APProfileDirectives"])
     meta.noPaymethod = $scope.paymethods.length < 1
     meta.trustedLevel += (meta.noPaymethod) ? 0 : 1
     $scope.meta = meta
+    $scope.focusTagIds = _.pluck(r.tags,'_id')
   })
 
 

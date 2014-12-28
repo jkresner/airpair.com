@@ -42,6 +42,7 @@ export function run()
     app.use('/v1/api', routes.api(app))
     app.use('/v1/adm/*', mw.authz.adm, app.renderHbsAdmin('adm/admin'))
     app.use('/adm/*', mw.authz.adm, app.renderHbsAdmin('adm/admin'))
+    app.use('/matchmaking*', mw.authz.adm, app.renderHbsAdmin('adm/admin'))
 
     app.use(mw.seo.noTrailingSlash) // Must be after root '/' route
     app.use(mw.analytics.trackFirstRequest)
@@ -64,6 +65,9 @@ export function run()
 
       var server = app.listen(config.port, function() {
         $log(`          Listening after ${new Date().getTime()-start}ms on port ${server.address().port}`.white)
+
+        // require('./server/services/experts').update50MatchingStats()
+        // require('./server/services/requests').updateMigrateAll()
       })
     })
   })

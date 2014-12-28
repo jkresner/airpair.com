@@ -50,6 +50,25 @@ module.exports = mongoose.model('Expert', new Schema({
   bookMe:         { required: false, type: Bookme },
   busyUntil:      { type: Date, default: Date },
   updatedAt:      { type: Date, default: Date },
-  karma:          { required: true, type: Number, default: 0 }
+  karma:          { required: true, type: Number, default: 0 },
+  matching:       {
+    replies:      {
+      suggested:  Number,
+      replied:    Number,
+      lastSuggest:Date,
+      lastReply:  Date,
+      last10:     [{replied:Date,status:String,comment:String,requestId:ObjectId}]
+    },
+    experience:   {
+      hours:      Number,
+      customers:  Number,
+      workshops:  [{workshopId:ObjectId,url:String}],
+      posts:      [{postId:ObjectId,url:String}]
+    },
+    internal:     {
+      weight:     Number, // allow staff to boost experts
+      incident:   [{requestId:ObjectId,comment:String,severity:Number}]
+    }
+  }
 
 }))

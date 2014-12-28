@@ -125,6 +125,11 @@ module.exports = {
       //
       // status: { $in: ['received','waiting','review','scheduled','consumed'] }
       'budget' : { '$exists': true }, 'adm.active': true
+    },
+
+    waiting: {
+      'budget' : { '$exists': true }, 'adm.submitted': { '$exists': true },
+      status: 'waiting'
     }
 
   }

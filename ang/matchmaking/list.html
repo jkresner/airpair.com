@@ -1,0 +1,35 @@
+<section id="pipeline">
+
+<section class="today">
+
+</section>
+
+<section class="controls">
+  <!-- <a ng-click="filterByLastTouch()">Last touch</a> -->
+</section>
+
+<section class="active">
+
+<table class="table table-striped">
+  <tr ng-repeat="r in requests">
+    <td>
+      <span>
+        <a href="/matchmaking/{{r._id}}">{{r.by.name}}</a>
+        <time>{{r.adm.submitted | agoTime }}</time>
+      </span>
+      <span>{{r.num}}</span>
+      <label>
+        <i ng-repeat="t in r.tags">{{t.slug}}</i>
+      </label>
+      <span><img ng-src="{{r.by.avatar}}?s=30"></span>
+      <label>
+        <ul>
+          <li ng-repeat="s in r.suggested">
+            <img ng-src="{{s.expert.avatar}}?s=20" />
+          </li>
+        </ul>
+
+      </label>
+    </td>
+  </tr>
+</table>
