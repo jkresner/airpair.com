@@ -1,7 +1,11 @@
 <div class="mailTo">
 <input type="text" ng-model="subject" name="subject" class="form-control">
 <textarea ng-model="message" class="form-control"></textarea>
-<a id="send-{{templateName}}" class="btn" href="https://mail.google.com/mail/?view=cm&fs=1&tf=1&to={{to}}&su={{subject}}&body={{message | urlEncode}}" target="_blank" ng-click="sendCallback()"><i class="glyphicon glyphicon-envelope"></i> Send {{templateName}}</a></a>
+<a id="send-{{templateName}}" class="btn" ng-click="send()"><i class="glyphicon glyphicon-envelope"></i> Send {{templateName}}</a></a>
 <pre></pre>
 <code></code>
 </div>
+
+
+<!-- href="https://mail.google.com/mail/?view=cm&fs=1&tf=1&to={{to}}&su={{subject}}&body={{message | urlEncode}}" target="_blank"
+ -->

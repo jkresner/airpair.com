@@ -4,7 +4,6 @@
   <section class="nav left">
     <a ng-href="/adm/pipeline">Back</a>
     | <a ng-href="/review/{{request._id}}" target="_blank">Review</a>
-    <!-- | <a ng-href="/v1/adm/farm/{{request._id}}">Farm</a> -->
     | <a ng-href="/help/request/{{request._id}}" target="_self">Edit</a>
     <span ng-if="meta.okToDelete">
     | <a class="delete" ng-click="junk()">JUNK</a>
@@ -92,13 +91,19 @@
     <br /><label>Quality</label>
     <span ng-if="meta.shortBrief">short breif</span>
     <div ng-if="request.adm.closed"><label>Closed</label> {{request.adm.closed | locaTime : 'DD MMM HH:mm:ss' }}</div>
+    <br /><label>Messaged {{request.messages.length}}</label>
+    <span ng-repeat="m in request.messages">{{m.type}}: {{m.subject}}</span>
 
     <hr />
-    <mail-link ng-if="request.status=='received'" name="'received'" to="request.by.email" req="request" meta="meta" send-callback="sentReceivedCallback"></mail-link>
+    <mail-link ng-if="shouldSend.received(request)" name="'received'" to="request.by.email" req="request" meta="meta"></mail-link>
 
-    <mail-link ng-if="request.status=='review'" name="'review'" to="request.by.email" req="request" meta="meta" send-callback="sentReviewCallback"></mail-link>
+    <mail-link ng-if="shouldSend.review(request)" name="'review'" to="request.by.email" req="request" meta="meta"></mail-link>
 
-    <mail-link ng-if="meta.timeToCancelFromWaiting" name="'cancelfromwaiting'" to="request.by.email" req="request" meta="meta" send-callback="sentCancelFromWaitingCallback"></mail-link>
+    <mail-link ng-if="shouldSend.cancelfromwaiting(request, meta)" name="'cancelfromwaiting'" to="request.by.email" req="request" meta="meta"></mail-link>
+
+    <div ng-if="!request.adm.farmed && request.status=='waiting'">
+      <textarea class="form-control" ng-model="farmTweet"></textarea><a ng-click="farm()" class="btn">Tweet</a>
+    </div>
 
   </section>
 

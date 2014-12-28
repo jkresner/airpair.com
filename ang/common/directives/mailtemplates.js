@@ -28,13 +28,14 @@ angular.module("APMailTemplates", [])
       templateName: '=name',
       sendCallback: '=sendCallback'
     },
-    link(scope, element, attrs) {
-      var type = scope.$eval(attrs.name)
-      scope.subject = tmpls[type].subject
-      scope.body = tmpls[type].text
-    },
-    controller($scope, $rootScope, $element) {
-      if (!$scope.sendCallback) $scope.sendCallback = () => {}
+    // link(scope, element, attrs) {
+    //   scope.type = scope.$eval(attrs.name)
+    // },
+    controller($scope, $rootScope, $element, $attrs) {
+      var type = $scope.$eval($attrs.name)
+
+      $scope.send = () =>
+        $scope.$parent.send[type]($scope.subject, $scope.message, type)
 
       $scope.$watch('meta.noPaymethod', function() {
         if (!$scope.r || !$scope.r.by) return
@@ -47,10 +48,10 @@ angular.module("APMailTemplates", [])
         }
 
         $element.find('code').html(
-          $compile('<span>'+$scope.subject+'</span>')($scope).contents())
+          $compile('<span>'+tmpls[type].subject+'</span>')($scope).contents())
 
         $element.find('pre').html(
-          $compile('<div>'+$scope.body+'</div>')($scope).contents())
+          $compile('<div>'+tmpls[type].text+'</div>')($scope).contents())
 
         $timeout(()=>$scope.message = $element.find('pre').text(),100)
         $timeout(()=>$scope.subject = $element.find('code').text(),100)

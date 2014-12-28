@@ -73,31 +73,31 @@ function $$log(action, data, user, sessionID) {
   switch (action) {
     case 'First':
       var ref = (data.ref) ? ` <<< ${data.ref}` : ''
-      $log(`FIRST   ${uid} > ${data.url}${ref}`.yellow)
+      $log(`FIRST   ${uid} > ${data.url}${ref}`.cyan)
       break
     case 'View':
-      $log(`VIEW    ${uid} > ${data.url}`.yellow)
+      $log(`VIEW    ${uid} > ${data.url}`.cyan)
       break
     case 'Login':
-      $log(`Login   ${uid} > ${data._id}`.blue)
+      $log(`Login   ${uid} > ${data._id}`.green)
       break
     case 'Signup':
-      $log(`Singup  ${uid} > ${data._id}`.blue)
+      $log(`Singup  ${uid} > ${data._id}`.green)
       break
     case 'Request':
-      $log(`REQUEST ${uid} > ${data.action} https://www.airpair.com/adm/pipeline/${data._id}`.blue)
+      $log(`REQUEST ${uid} > ${data.action}`, `https://www.airpair.com/adm/pipeline/${data._id}`.white)
       break
     case 'Order':
-      $log(`ORDER   ${uid} > $${data.total} https://www.airpair.com/adm/orders/${data.id}`.yellow)
+      $log(`ORDER   ${uid} > $${data.total}`, `https://www.airpair.com/adm/orders/${data.id}`.white)
       break
     case 'Payment':
-      $log(`PAYMENT ${uid} > $${data.total} https://www.airpair.com/adm/orders/${data.orderId}`.magenta)
+      $log(`PAYMENT ${uid} > $${data.total}`, `https://www.airpair.com/adm/orders/${data.orderId}`.white)
       break
     case 'Save':
       if (data.type == 'paymethod')
-        $log(`PAYM    ${uid} > ${data.method} ${data.cardType}`.blue)
-      if (data.type == 'emailVerified')
-        $log(`EMAILV  ${uid} > ${data.email}`.blue)
+        $log(`PAYM    ${uid} > ${data.method} ${data.cardType}`.yellow)
+      else if (data.type == 'emailVerified')
+        $log(`EMAILV  ${uid} > ${data.email}`.green)
       else
         $log(`${action.toUpperCase()}  ${uid} > ${JSON.stringify(data)}`.yellow)
       break
