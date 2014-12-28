@@ -15,6 +15,8 @@ export default initAPI(
   updateByCustomer: (req) => [req.request,req.body],
   updateByAdmin: (req) => [req.request,req.body],
   replyByExpert: (req) => [req.request,req.expert,req.body],
+  farmByAdmin: (req) => [req.request,req.body.tweet],
+  sendMessageByAdmin: (req) => [req.request,req.body],
   addSuggestion: (req) => [req.request,req.expert,req.body],
   removeSuggestion: (req) => [req.request,req.expert],
   deleteById: (req) => [req.request],

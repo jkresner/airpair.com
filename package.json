@@ -76,8 +76,10 @@
     "passport-local": "^1.0.0",
     "rss": "^1.0.1",
     "stripe": "3.0.0",
+    "superagent": "^0.21.0",
     "traceur": "0.0.61",
     "traceur-source-maps": "^1.0.2",
+    "twit": "^1.1.18",
     "winston": "^0.8.0",
     "winston-ses": "0.0.4"
   }

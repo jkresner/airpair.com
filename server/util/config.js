@@ -1,8 +1,4 @@
 var cfg = {
-  build:  { version: '1.09', deployed: 'Oct 17' },
-  port:     process.env.PORT || 3333,
-  mongoUri: process.env.MONGOHQ_URL || "mongodb://localhost/airpair_dev",
-  session: { secret: 'airyv1' },
   analytics: {
     on: false,
     segmentio: { writekey: '9793xyfxat', options: { flushAt: 1 } }
@@ -24,8 +20,18 @@ var cfg = {
         'email',
         'https://www.googleapis.com/auth/plus.profile.emails.read'
       ]
+    },
+    twitter: {
+      consumer_key: 'Tfw8PWs5LcxqrWlFJWUhXf8i8',
+      consumer_secret: 'yoA38VC94a2gcxJ7ewCyNn8nPu7bHVVVMTauZTanlvkgXBWNOE',
+      access_token: 'test',
+      access_token_secret: 'test'
     }
   },
+  bitly:  {
+    shortDomain: 'http://airpa.ir/',
+    accessToken: 'b93731e13c8660c7700aca6c3934660ea16fbd5f' },
+  build:  { version: '1.09', deployed: 'Oct 17' },
   bundle: {
     indexScript: '/static/js/index.js',
     admScript: '/static/js/adm.js',
@@ -42,6 +48,8 @@ var cfg = {
       secret_key: process.env.MAIL_SES_SECRET_KEY || "none"
     }
   },
+  mongoUri: process.env.MONGOHQ_URL || "mongodb://localhost/airpair_dev",
+  port:     process.env.PORT || 3333,
   payments: {
     braintree: {
       environment: 'Sandbox',
@@ -55,7 +63,8 @@ var cfg = {
       secretKey: 'sk_test_8WOe71OlRWPyB3rDRcnthSCc'
     }
   },
-  redirects: { on: false }
+  redirects: { on: false },
+  session: { secret: 'airyv1' }
 }
 
 module.exports = function(env, appdir) {
@@ -118,6 +127,13 @@ module.exports = function(env, appdir) {
       merchantId: process.env.PAYMENTS_BRAINTREE_MERCHANTID,
       publicKey: process.env.PAYMENTS_BRAINTREE_PUBLICKEY,
       privateKey: process.env.PAYMENTS_BRAINTREE_PRIVATEKEY,
+    }
+
+    cfg.auth.twitter = {
+      consumer_key: process.env.AUTH_TWITTER_CONSUMER_KEY,
+      consumer_secret: process.env.AUTH_TWITTER_CONSUMER_SECRET,
+      access_token: process.env.AUTH_TWITTER_ACCESS_TOKEN,
+      access_token_secret: process.env.AUTH_TWITTER_ACCESS_TOKEN_SECRET
     }
   }
 

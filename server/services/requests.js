@@ -13,7 +13,8 @@ var logging =             false
 var svc =                 new Svc(Request, logging)
 var Roles =               require('../../shared/roles.js')
 var {isCustomer,isCustomerOrAdmin,isExpert} = Roles.request
-
+var BitlySvc =            require('./wrappers/bitly')
+var TwitterSvc =            require('./wrappers/twitter')
 
 function selectByRoleCB(ctx, errorCb, cb) {
   return (e, r) => {
@@ -152,28 +153,6 @@ var save = {
 
     svc.update(original._id, ups, selectByRoleCB(this,cb,cb))
   },
-  updateByAdmin(original, update, cb) {
-    var action = 'update'
-    var {adm,status} = update
-    if (original.adm.active && !update.adm.active) {
-      action = `closed:${update.status}`
-      adm.closed = new Date()
-    }
-    else if (original.status == "received" && update.status == "waiting") {
-      action = `received`
-      adm.received = new Date()
-    }
-
-    //-- Reopen a closed request for various possible reasons
-    if (!original.adm.active && update.status == "review") {
-      update.adm.active = true
-    }
-
-    adm.lastTouch = svc.newTouch.call(this, action)
-
-    var ups = _.extend(original, {adm,status})
-    svc.update(original._id, ups, admCB(cb))
-  },
   replyByExpert(request, expert, reply, cb) {
     var {suggested} = request
     // data.events.push @newEvent "expert reviewed", eR
@@ -218,6 +197,68 @@ var save = {
     // var ups = _.extend(request,{suggested})
     svc.update(request._id, request, selectByRoleCB(this,cb,cb))
   },
+  deleteById(o, cb)
+  {
+    svc.deleteById(o._id, cb)
+  }
+}
+
+var admin = {
+  updateByAdmin(original, update, cb) {
+    var action = 'update'
+    var {adm,status} = update
+    if (original.adm.active && !update.adm.active) {
+      action = `closed:${update.status}`
+      adm.closed = new Date()
+    }
+    else if (original.status == "received" && update.status == "waiting") {
+      action = `received`
+      adm.received = new Date()
+    }
+
+    //-- Reopen a closed request for various possible reasons
+    if (!original.adm.active && update.status == "review") {
+      update.adm.active = true
+    }
+
+    adm.lastTouch = svc.newTouch.call(this, action)
+
+    var ups = _.extend(original, {adm,status})
+    svc.update(original._id, ups, admCB(cb))
+  },
+  farmByAdmin(request, tweet, cb) {
+    //TODO Mote url genertion to analyticsSvc ?
+    var campPeriod = new moment().format("MMMYY").toLowerCase()
+    var term = encodeURIComponent(util.tagsString(request.tags))
+    var url = `/review/${request._id}?utm_medium=farm-link&utm_campaign=farm-${campPeriod}&utm_term=${term}`
+
+    var {adm} = request
+    BitlySvc.shorten(url, (e,shortLink) => {
+      adm.farmed = new Date
+      adm.lastTouch = svc.newTouch.call(this, 'farm')
+      TwitterSvc.postTweet(`${tweet} ${shortLink}`, (e,r) => {
+        svc.update(request._id, _.extend(request, {adm}), admCB(cb))
+      })
+    })
+  },
+  sendMessageByAdmin(request, message, cb)
+  {
+    var {status,adm} = request
+    var messages = request.messages || []
+
+    if (message.type == 'received') {
+      status = 'waiting'
+      adm.owner = this.user.email.substring(0,2)
+      adm.received = new Date
+    }
+
+    mailman.sendRawTextEmail(request.by, message.subject, message.body, ()=>{})
+
+    adm.lastTouch = svc.newTouch.call(this, `sent:${message.type}`)
+    messages.push(_.extend(message,{fromId:this.user._id,toId:request.userId}))
+
+    svc.update(request._id, {status,adm,messages}, admCB(cb))
+  },
   addSuggestion(request, expert, body, cb)
   {
     var {adm,suggested} = request
@@ -241,12 +282,8 @@ var save = {
 
     adm.lastTouch = svc.newTouch.call(this, `remove:${expert.name}`)
     svc.update(request._id, {suggested,adm}, admCB(cb))
-  },
-  deleteById(o, cb)
-  {
-    svc.deleteById(o._id, cb)
   }
 }
 
 
-module.exports = _.extend(get, save)
+module.exports = _.extend(get, _.extend(save,admin))

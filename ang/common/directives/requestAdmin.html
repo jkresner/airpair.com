@@ -25,7 +25,7 @@
       <span ng-if="!request.experience">-</span>
       <span ng-if="request.experience">{{request.experience}}</span>
       <ul>
-        <li ng-repeat="t in request.tags">{{t.slug}}</li>
+        <li ng-repeat="t in request.tags">{{t.sort}} {{t.slug}}</li>
       </ul>
       <span ng-if="request.tags.length == 0">-</span>
     </div>

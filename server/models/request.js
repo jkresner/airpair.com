@@ -104,16 +104,18 @@ var Request = new Schema({
   adm:              {
     active:         { type: Boolean, index: true, sparse: true },
     owner:          String,
+    lastTouch:      Shared.Touch,
     // newcustomer:    String,
     submitted:      { type: Date },
     received:       { type: Date },
+    farmed:         { type: Date },
     reviewable:     { type: Date },
     booked:         { type: Date },
     paired:         { type: Date },
     feedback:       { type: Date },
     closed:         { type: Date },
-    lastTouch:      Shared.Touch
   },
+  messages:        [Shared.Message],  // TODO, un-nest this
   canceledDetail:   String,
   lastTouch:        Shared.Touch,
   // New v1

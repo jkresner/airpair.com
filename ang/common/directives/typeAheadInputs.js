@@ -93,8 +93,6 @@ angular.module('APTypeAheadInputs', ['ui.bootstrap'])
       template: require('./typeAheadExpert.html'),
       scope: {},
       controller: function($scope, $attrs, $http) {
-        console.log('expertInput')
-
         //-- stupid broken angular ui, this fixes it though
         $scope.templateUrl = "expertMatch.html"
 
