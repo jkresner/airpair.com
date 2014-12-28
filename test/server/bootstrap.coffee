@@ -38,6 +38,7 @@ describe 'Server: ', ->
   describe('Rss: ', require('./rssSpec'))
   describe('Redirects: ', require('./redirectsSpec'))
   describe('Requests: ', require('./requestsSpec'))
+  describe('Pipeline: ', require('./requestsAdminSpec'))
   describe('Orders: ', require('./paymethodsSpec'))
   describe('Orders: ', require('./ordersSpec'))
   describe('Orders: ', require('./ordersMembershipSpec'))

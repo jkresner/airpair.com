@@ -8,55 +8,24 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
 
   var authd = resolver(['session']);
 
-  $routeProvider.when('/', {
-    template: require('./list.html'),
-    controller: 'RequestListCtrl',
-  });
+  var actions = {
+    list:   { template: require('./list.html'), controller: 'RequestListCtrl' },
+    create: { resolve: authd, template: require('./new.html'), controller: 'RequestCtrl' },
+    edit: { resolve: authd, template: require('./edit.html'), controller: 'RequestEditCtrl' },
+    help: { resolve: authd, template: require('./types.html'), controller: 'RequestTypesCtrl' },
+    review: { template: require('./review.html'), controller: 'ReviewCtrl' }
+  };
 
-  $routeProvider.when('/dashboard', {
-    template: require('./list.html'),
-    controller: 'RequestListCtrl',
-  });
-
-
-  $routeProvider.when('/help/request', {
-    template: require('./new.html'),
-    controller: 'RequestCtrl',
-    resolve: authd
-  });
-
-  $routeProvider.when('/meet-experts', {
-    template: require('./new.html'),
-    controller: 'RequestCtrl',
-    resolve: authd
-  });
-
-  $routeProvider.when('/help/types', {
-    template: require('./types.html'),
-    controller: 'RequestTypesCtrl'
-  });
-
-  $routeProvider.when('/help/request/:id', {
-    template: require('./edit.html'),
-    controller: 'RequestEditCtrl',
-    resolve: authd
-  });
-
-  $routeProvider.when('/meet-experts/:id', {
-    template: require('./edit.html'),
-    controller: 'RequestEditCtrl',
-    resolve: authd
-  });
-
-  $routeProvider.when('/reviews', {
-    template: require('./review.html'),
-    controller: 'ReviewsCtrl',
-  });
-
-  $routeProvider.when('/review/:id', {
-    template: require('./review.html'),
-    controller: 'ReviewCtrl',
-  });
+  $routeProvider
+    .when('/', actions.list)
+    .when('/dashboard', actions.list)
+    .when('/help/request', actions.create)
+    .when('/meet-experts', actions.create)
+    .when('/help/types', actions.help)
+    .when('/help/request/:id', actions.edit)
+    .when('/meet-experts/:id', actions.edit)
+    .when('/reviews', actions.review)
+    .when('/review/:id', actions.review)
 
 })
 
@@ -115,14 +84,16 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
 })
 
 
-.controller('RequestTypesCtrl', function($scope, $window) {
+.controller('RequestTypesCtrl', function($scope) {
 
 })
 
-.controller('ReviewsCtrl', ($location) => $location.path('/') )
+
 
 .controller('ReviewCtrl', function($scope, $routeParams, $location, DataService, Shared, ServerErrors) {
   $scope.requestId = $routeParams.id;
+
+  if (!$scope.requestId) return $location.path('/')
 
   if ($scope.session && $scope.session.authenticated == false) {
     $scope.r = $scope.request

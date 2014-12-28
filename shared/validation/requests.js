@@ -57,6 +57,25 @@ var validation = {
     if (!update.adm.submitted && original.adm.submitted) return 'Request submitted cannot be over-written'
     // if (!update.newcustomer) return 'Request new customer required'
   },
+  farmByAdmin(user, request, tweet) {
+    var isAdmin = _.contains(user.roles, 'admin')
+    if ( !isAdmin && !isOwner )
+      return 'Request must shared by owner or admin'
+
+    if (!request.adm || !request.adm.active) return 'Cannot share request as it is not active'
+    if (!request.adm.submitted) return 'Can not share an incompleted request'
+    if (request.status != 'waiting') return 'Can not share request while waiting for experts'
+    if (request.adm.farmed) return 'Can not share request once'
+    if (!tweet) return 'Tweet required for farming'
+  },
+  sendMessageByAdmin(user, request, message) {
+    if (!message.type) return 'Message type required'
+    if (!message.subject) return 'Message subject required'
+    if (!message.body) return 'Message body required'
+
+    var existing = _.find(request.messages,(m)=>m.type==message.type)
+    if (existing) return 'Can not send the same message type once'
+  },
   replyByExpert(user, request, expert, reply)
   {
     if (!_.idsEqual(expert.userId,user._id))
