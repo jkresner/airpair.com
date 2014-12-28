@@ -13,6 +13,7 @@ require('./common/directives/typeAheadInputs.js');
 require('./common/directives/requests.js');
 require('./common/directives/mailtemplates.js');
 require('./common/directives/profiles.js');
+require('./common/directives/notifications.js');
 require('./common/filters/filters.js');
 require('./common/models/dataService.js');
 require('./common/models/postsService.js');
@@ -29,7 +30,7 @@ require('./adm/bookings/module.js');
 
 angular.module('ADM', [
   'ngRoute',
-  'APSvcSession', 'APSvcAdmin', 'APDataSvc',
+  'APSvcSession', 'APSvcAdmin', 'APDataSvc', 'APNotifications',
   'APFilters', 'APFormsDirectives', 'APTypeAheadInputs', 'APMailTemplates',
   'ADMPipeline',
   'ADMPosts',

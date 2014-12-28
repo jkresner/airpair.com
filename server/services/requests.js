@@ -237,6 +237,7 @@ var admin = {
       adm.farmed = new Date
       adm.lastTouch = svc.newTouch.call(this, 'farm')
       TwitterSvc.postTweet(`${tweet} ${shortLink}`, (e,r) => {
+        if (e) return cb(e)
         svc.update(request._id, _.extend(request, {adm}), admCB(cb))
       })
     })

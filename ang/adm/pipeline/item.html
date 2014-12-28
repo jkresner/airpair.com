@@ -102,7 +102,7 @@
     <mail-link ng-if="shouldSend.cancelfromwaiting(request, meta)" name="'cancelfromwaiting'" to="request.by.email" req="request" meta="meta"></mail-link>
 
     <div ng-if="!request.adm.farmed && request.status=='waiting'">
-      <textarea class="form-control" ng-model="farmTweet"></textarea><a ng-click="farm()" class="btn">Tweet</a>
+      <textarea class="form-control" ng-model="farmTweet"></textarea><a ng-click="farm(farmTweet)" class="btn">Tweet</a>
     </div>
 
   </section>
