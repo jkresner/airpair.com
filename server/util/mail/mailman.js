@@ -51,6 +51,11 @@ module.exports = function(mailProvider)
   initReceivers()
 
   var mailman = {
+    sendRawTextEmail(toUser, subject, body, cb) {
+      mailProvider.send(`${toUser.name} <${toUser.email}>`, {
+        Subject: subject, Text: body
+      }, cb)
+    },
     sendVerifyEmail(toUser, hash, cb) {
       mailProvider.send(`${toUser.name} <${toUser.email}>`, renderEmail('verifyemail', {
         firstName: util.firstName(toUser.name),

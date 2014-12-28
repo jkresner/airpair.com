@@ -368,24 +368,3 @@ module.exports = -> describe "API", ->
                   GET "/adm/requests/user/#{s._id}", {}, (reqs2) ->
                     expect(reqs2.length).to.equal(0)
                     done()
-
-
-  it 'Admin can suggest and remove experts', (done) ->
-    addAndLoginLocalUserWithEmailVerified 'kaun', (s) ->
-      d = tags: [data.tags.angular], type: 'resources', experience: 'proficient', brief: 'bah bah anglaur test yo4', hours: "1", time: 'rush'
-      POST '/requests', d, {}, (r0) ->
-        PUT "/requests/#{r0._id}", _.extend(r0,{budget:300}), {}, (r) ->
-          LOGIN 'admin', data.users.admin, (sAdmin) ->
-            GET "/adm/requests/user/#{s._id}", {}, (reqs1) ->
-              expect(reqs1.length).to.equal(1)
-              expect(reqs1[0].suggested.length).to.equal(0)
-              reqs1[0].status = 'waiting'
-              reqs1[0].adm.owner = 'ad'
-              PUT "/adm/requests/#{r._id}", reqs1[0], {}, (reqWexp) ->
-                PUT "/adm/requests/#{r._id}/add/#{data.experts.abha._id}", {}, {}, (reqWexp) ->
-                  GET "/adm/requests/user/#{s._id}", {}, (reqs2) ->
-                    expect(reqs2.length).to.equal(1)
-                    expect(reqs2[0].suggested.length).to.equal(1)
-                    PUT "/adm/requests/#{r._id}/remove/#{data.experts.abha._id}", {}, {}, (reqRexp) ->
-                      expect(reqRexp.suggested.length).to.equal(0)
-                      done()
