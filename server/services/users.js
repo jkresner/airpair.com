@@ -542,17 +542,20 @@ export function changeEmail(email, cb) {
   var inValid = Validate.changeEmail(email)
   if (inValid) return cb(svc.Forbidden(inValid))
 
+  email = email.trim().toLowerCase()
   var {user} = this
   if (user) {
-    updateEmailToBeVerified.call(this, email, cb, (e,r) => {
-      if (user.email == email)
+    var data = { type: 'email', email, previous: user.email, previousVerified: user.emailVerified }
+    analytics.track(user, this.sessionID, 'Save', data, {}, ()=>{})
+    if (user.email == email && user.emailVerified) return getSessionFull.call(this, cb)
+    else {
+      updateEmailToBeVerified.call(this, email, cb, (e,r) => {
         mailman.sendVerifyEmail(r, r.local.emailHash)
-
-      cbSession(cb)(e,r)
-    })
+        cbSession(cb)(e,r)
+      })
+    }
   }
   else {
-    email = email.toLowerCase()
     var search = { '$or': [{email:email},{'google._json.email':email}] }
     var self = this
     svc.searchOne(search, null, function(e,r) {
