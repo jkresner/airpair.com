@@ -61,6 +61,17 @@ var get = {
       })
     })
   },
+  getByIdForMatchmaker(id, cb) {
+    $log('** getByIdForMatchmaker should filter a bit..')
+    svc.getById(id, (e,r) => {
+      if (e || !r) return cb(e,r)
+      r = Data.select.byView(r, 'admin')
+      User.findOne({_id:r.userId}, (ee,user) => {
+        r.user = user
+        return cb(ee,r)
+      })
+    })
+  },
   getByIdForUser(id, cb) {  // for updating
     var userId = this.user._id
     svc.getById(id, (e,r) => {
@@ -91,6 +102,9 @@ var get = {
   },
   getActiveForAdmin(cb) {
     svc.searchMany(Data.query.active, { options: { sort: { '_id': -1 }}, fields: Data.select.pipeline }, admCB(cb))
+  },
+  getWaitingForMatchmaker(cb) {
+    svc.searchMany(Data.query.waiting, { options: { sort: { 'adm.submitted': -1 }}, fields: Data.select.pipeline }, admCB(cb))
   },
   // getIncompleteForAdmin(cb) {
   //   svc.searchMany(Data.query.incomplete, { fields: Data.select.pipeline}, cb)
@@ -204,6 +218,22 @@ var save = {
 }
 
 var admin = {
+  // updateMigrateAll() {
+  //   var count = 0
+  //   $log(`updateMigrateAll`)
+  //   Request.find({},{_id:1,suggested:1}, (e, all) => {
+  //     $log(`updateMigrateAll ${all.length}`)
+  //     for (var req of all) {
+  //       if (req.suggested && req.suggested.length > 0) {
+  //         $log(`findOneAndUpdate ${req._id} set ${req.suggested.length} suggested`)
+  //         Request.findOneAndUpdate({_id:req._id}, { $set: { suggested: req.suggested }}, (ee,r) => {
+  //           count = count + 1
+  //           $log(`update ${count} ${r._id}`)
+  //         })
+  //       }
+  //     }
+  //   })
+  // },
   updateByAdmin(original, update, cb) {
     var action = 'update'
     var {adm,status} = update
@@ -258,7 +288,7 @@ var admin = {
     adm.lastTouch = svc.newTouch.call(this, `sent:${message.type}`)
     messages.push(_.extend(message,{fromId:this.user._id,toId:request.userId}))
 
-    svc.update(request._id, {status,adm,messages}, admCB(cb))
+    svc.update(request._id, _.extend(request, {status,adm,messages}), admCB(cb))
   },
   addSuggestion(request, expert, body, cb)
   {
@@ -273,7 +303,7 @@ var admin = {
       this.user.name, request.tags, ()=>{})
 
     adm.lastTouch = svc.newTouch.call(this, `suggest:${expert.name}`)
-    svc.update(request._id, {suggested,adm}, admCB(cb))
+    svc.update(request._id, _.extend(request, {suggested,adm}), admCB(cb))
   },
   removeSuggestion(request, expert, cb)
   {
@@ -282,7 +312,7 @@ var admin = {
     suggested = _.without(suggested,existing)
 
     adm.lastTouch = svc.newTouch.call(this, `remove:${expert.name}`)
-    svc.update(request._id, {suggested,adm}, admCB(cb))
+    svc.update(request._id, _.extend(request, {suggested,adm}), admCB(cb))
   }
 }
 

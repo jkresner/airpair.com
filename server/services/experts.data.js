@@ -12,10 +12,16 @@ var select = {
     'rate': 1,
     'minRate': 1,
     'gh.username': 1,
+    'gh.followers': 1,
     'so.link': 1,
+    'so.reputation': 1,
     'bb.id': 1,
+    'bb.followers': 1,
     'in.id': 1,
-    'tw.username': 1
+    'in.endorsements': 1,
+    'tw.username': 1,
+    'tw.followers': 1,
+    'matching': 1
   },
   search: {
     '_id': 1,

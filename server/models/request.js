@@ -35,6 +35,9 @@ var Suggestion = new Schema({
   // customerRating:     Number,    // Survey customer on qaulity of rating
   // customerFeedback:   String,
   matchedBy:          {}
+
+  // v0 should migrate for experts algorithm
+  //events:            [{}]
 })
 
 
@@ -123,7 +126,10 @@ var Request = new Schema({
   //company:          { required: true, type: {} }
   // contacts { userId, fullName, email }
 
-  marketingTags:    { type: [{}], default: [] }
+  marketingTags:    { type: [{}], default: [] },
+
+  // v0 used for expert stats need to migrate to booking
+  calls:            [{}]
 
 })
 

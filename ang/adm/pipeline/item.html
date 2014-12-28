@@ -12,6 +12,7 @@
   </section>
 
 
+
   <section class="user right">
     <img ng-src="{{request.by.avatar}}" />
 
@@ -105,6 +106,10 @@
       <textarea class="form-control" ng-model="farmTweet"></textarea><a ng-click="farm(farmTweet)" class="btn">Tweet</a>
     </div>
 
+    <div ng-if="request.status == 'waiting' || request.status=='review'">
+      <a href="/matchmaking/{{request._id}}" class="btn">Match experts</a>
+    </div>
+
   </section>
 
 
@@ -170,13 +175,22 @@
       <ul>
         <li class="match" ng-repeat="m in matches">
           <img ng-src="{{m.avatar}}?s=30" class="user" />
-          {{m.rate}}|{{m.minRate}}
+          <b>{{m.score}}</b> {{m.rate}}|{{m.minRate}}
           <a href="/adm/experts/edit/{{m._id}}" target="_blank">{{m.name}}</a>
+          <span ng-if="m.matching">
+            Cust: {{m.matching.experience.customers}} /
+            hr {{m.matching.experience.hours}} /
+            Sug {{m.matching.replies.suggested}} /
+            Rep {{m.matching.replies.replied}} /
+          </span>
           <div>
-            <em ng-repeat="t in m.tags">{{t.short}}</em>
+            <em ng-repeat="t in m.tags"
+              ng-class="(highlightedTag(t._id)) ? 'highlight':''"
+              >{{t.short}}</em>
           </div>
           <social-links profile="m"></social-links>
           [<a ng-click="addSuggestion(m._id)">add</a>]
+          [<a ng-click="updateExpertMatching(m._id)">matchify</a>]
           &nbsp;
         </li>
       </ul>

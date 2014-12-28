@@ -1,7 +1,9 @@
 import Svc                from '../services/_service'
 import * as Validate      from '../../shared/validation/experts.js'
 import Expert             from '../models/expert'
+import Request            from '../models/request'
 import * as md5           from '../util/md5'
+var util =                require('../../shared/util')
 var Data =                require('./experts.data')
 var logging = false
 var svc = new Svc(Expert, logging)
@@ -30,22 +32,25 @@ var get = {
       // rate: { $lt: request.budget }
     }
     // $log('query', query, tagIds)
-    var opts = {fields:Data.select.matches, options: { limit: 200 } }
+    var opts = {fields:Data.select.matches, options: { limit: 1000 } }
 
-    svc.searchMany(query, opts, (e,r) => {
-      if (e || !r || r.length == 0) return cb(e,r)
+    svc.searchMany(query, opts, (e,experts) => {
+      if (e || !experts || experts.length == 0) return cb(e,experts)
 
       var existingExpertIds = []
-      for (var s of request.suggested) existingExpertIds.push(s.expert._id)
-      // $log('r.lenght', r.length)
+      for (var s of request.suggested)
+        existingExpertIds.push(s.expert._id)
+
       var existing = []
-      for (var exp of r) {
+      for (var exp of experts) {
+        exp.score = get.calcExpertScore(exp,request.tags)
         exp.avatar = md5.gravatarUrl(exp.email)
         if (_.find(existingExpertIds,(id)=>_.idsEqual(id,exp._id)))
           existing.push(exp)
       }
-      var unique = _.difference(r, existing)
-      cb(null,unique)
+      var unique = _.difference(experts, existing)
+
+      cb(null, _.take(_.sortBy(unique,(u)=>u.score).reverse(),50))
     })
   },
   getForExpertsPage(cb) {
@@ -66,10 +71,121 @@ var get = {
       }
       cb(e,r)
     })
+  },
+  calcExpertScore:(expert, tagsToScore) => {
+    var tagScore = 0
+    var tagMatchCount = 0
+    var expertTags = _.where(expert.tags,(t)=>t._id)
+    // $log('exper tags', expertTags)
+    for (var tag of tagsToScore) {
+      // $log('tagToScore', tag._id)
+      var match = _.find(expertTags,(t)=>_.idsEqual(t._id,tag._id))
+      if (match) {
+        tagMatchCount = tagMatchCount+1
+        tagScore = tagScore + (5 - tag.sort)*2
+      }
+    }
+    tagScore = (tagScore + tagMatchCount * 2)*100
+
+    var matchingScore = 0
+    if (expert.matching)
+    {
+      // $log('matching', expert.matching.replies.replied, expert.matching.experience.customers)
+      matchingScore = expert.matching.replies.replied + expert.matching.experience.customers
+    }
+    matchingScore = matchingScore*200
+
+    var socialScore = 0;
+    if (expert.gh) socialScore = socialScore + (expert.gh.followers/10)
+    if (expert.tw) socialScore = socialScore + expert.tw.followers
+    if (expert.so) socialScore = socialScore + (expert.so.reputation/100)
+
+    // $log('expert', expert.name, tagScore, matchingScore)
+    return tagScore + matchingScore + socialScore
   }
 }
 
 var save = {
+  update50MatchingStats() {
+    $log('updateAllMatchingStats')
+    var count = 0
+    var opts = {fields:{ '_id':1, 'rate': 1}, limit: 50 }
+    svc.searchMany({rate:{$gt:0},'matching':{'$exists':false}}, opts, (e,r)=>{
+      for (var expert of r) {
+        // $log('expert', expert._id, expert.rate)
+        save.updateMatchingStats(expert._id,(ee,rr) => {
+          // if (ee) $log('ee', ee)
+          // else $log('updated', rr.name, rr.matching)
+        })
+      }
+    })
+  },
+  updateMatchingStats(expertId, cb) {
+    get.getById(expertId, (e,expert) => {
+      if (e || !expert) cb(e)
+      //-- TODO migrate request.calls to bookings
+      // var q = { '$or': [{'suggested.expert._id':expertId},{'calls.expertId':expertId}]}
+        // .elemMatch('suggested', { 'expert._id': expertId })
+      Request
+        .find({'suggested.expert._id':expertId},{_id:1,userId:1,suggested:1,calls:1}, (e,requests) => {
+          $log('expertsRequest', requests.length)
+          var expertSuggestions = []
+          var expertCalls = []
+          var replied = 0
+          var lastSuggest = null
+          var lastReply = null
+          var hours = 0
+          var customerIds = []
+          for (var r of requests) {
+            var expertSuggestion = _.find(r.suggested,(s)=>_.idsEqual(s.expert._id,expertId))
+            expertSuggestions.push(_.extend(expertSuggestion,{requestId:r._id}))
+            if (!lastSuggest || expertSuggestion._id > lastSuggest._id)
+              lastSuggest = util.ObjectId2Date(expertSuggestion._id)
+            if (expertSuggestion.expertStatus != 'waiting') {
+              replied = replied + 1
+              if (!lastReply || expertSuggestion._id > lastReply._id) lastReply =
+                util.ObjectId2Date(expertSuggestion._id)
+            }
+
+            var calls = _.where(r.calls,(c)=>_.idsEqual(c.expertId,expertId))
+            for (var call of calls) {
+              customerIds = _.union(customerIds, [r.userId])
+              expertCalls.push(_.extend(call,{requestId:r._id}))
+              hours = hours + call.duration
+            }
+          }
+
+          var map = function(s) { var d =
+            {
+              replied:util.ObjectId2Date(s._id),
+              status:s.expertStatus,
+              comment:s.expertComment,
+              requestId:s.requestId
+            };
+            return d
+          }
+
+          var last10 = _.map(_.take(_.sortBy(expertSuggestions,(s)=>s._id).reverse(), 10), map)
+          var customers = _.unique(_.pluck(expertCalls,''))
+
+          var matching = {
+            replies: {
+              suggested: requests.length,
+              replied, lastSuggest, lastReply, last10
+            },
+            experience: {
+              hours, customers: customerIds.length
+            }
+          }
+
+          // $log('updaing', expert._id, matching)
+          svc.update(expert._id, _.extend(expert, {matching}), (e,r)=>{
+            if (r) r.avatar = md5.gravatarUrl(r.email)
+            cb(e,r)
+          })
+        })
+    })
+  },
   deleteById(id, cb) {
     svc.getById(id, (e, r) => {
       var inValid = Validate.deleteById(this.user, r)
