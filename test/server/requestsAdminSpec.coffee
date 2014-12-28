@@ -94,7 +94,7 @@ module.exports = -> describe "Api", ->
           expect(adm1.closed).to.be.undefined
           expect(r1.messages.length).to.equal(1)
           PUT "/adm/requests/#{r._id}/farm", { tweet }, {status:403}, (rFail) ->
-            expectStartsWith(rFail.message,'Can on share request once')
+            expectStartsWith(rFail.message,'Can not share request once')
             done()
 
 

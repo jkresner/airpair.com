@@ -88,12 +88,12 @@ angular.module("ADMPipeline", ["APRequestDirectives","APProfileDirectives"])
     meta.noPaymethod = $scope.paymethods.length < 1
     meta.trustedLevel += (meta.noPaymethod) ? 0 : 1
     $scope.meta = meta
-    $scope.farmTweet = requestsUtil.buildDefaultFarmTweet(r)
   })
 
 
   AdmDataService.pipeline.getRequest($routeParams.id, function (r) {
     $scope.user = r.user
+    $scope.farmTweet = requestsUtil.buildDefaultFarmTweet(r)
 
     AdmDataService.billing.getUserPaymethods(r.userId, function (pms) {
       $scope.paymethods = (pms.btoken) ? [] : pms;
@@ -147,8 +147,9 @@ angular.module("ADMPipeline", ["APRequestDirectives","APProfileDirectives"])
     if (!existing) $scope.addSuggestion(expert._id)
   }
 
-  $scope.farm = () =>
-    AdmDataService.pipeline.farm({requestId:$scope.request._id,tweet:$scope.farmTweet}, updateScope, errCB)
+  $scope.farm = (tweet) => {
+    AdmDataService.pipeline.farm({requestId:$scope.request._id,tweet}, updateScope, errCB)
+  }
 })
 
 
