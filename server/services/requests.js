@@ -21,7 +21,10 @@ function selectByRoleCB(ctx, errorCb, cb) {
     if (e || !r) return errorCb(e, r)
 
     if (!ctx.user) return cb(null, Data.select.byView(r, 'anon'))
-    else if (isCustomerOrAdmin(ctx.user, r)) cb(null, Data.select.byView(r, 'customer'))
+    else if (isCustomerOrAdmin(ctx.user, r)) {
+      if (ctx.machineCall) cb(null, Data.select.byView(r, 'admin'))
+      else cb(null, Data.select.byView(r, 'customer'))
+    }
     else {
       // -- we don't want experts to see other reviews
       r.suggested = Data.select.meSuggested(r, ctx.user._id)
@@ -166,6 +169,14 @@ var save = {
     }
 
     svc.update(original._id, ups, selectByRoleCB(this,cb,cb))
+  },
+  updateWithBookingByCustomer(request, order, cb) {
+    request.status = 'booked'
+    request.lastTouch = svc.newTouch.call(this, 'booked')
+    if (!request.adm.booked)
+      request.adm.booked = new Date
+
+    svc.update(request._id, request, selectByRoleCB(this,cb,cb))
   },
   replyByExpert(request, expert, reply, cb) {
     var {suggested} = request

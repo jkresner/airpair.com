@@ -148,13 +148,15 @@ angular.module("ADMPipeline", ["APRequestDirectives","APProfileDirectives"])
   $scope.farm = (tweet) => {
     AdmDataService.pipeline.farm({requestId:$scope.request._id,tweet}, updateScope, errCB)
   }
+
+  $scope.alertMessage = (msg) => alert(msg)
 })
 
 
 .controller('PipelineCtrl', function($scope, AdmDataService) {
 
   $scope.filterByLastTouch = function() {
-    var sorted = _.sortBy($scope.requests.complete,(r)=>r.adm.lastTouch)
+    var sorted = _.sortBy($scope.requests.complete,(r)=>r.adm.lastTouch.utc)
     // console.log('filterByLastTouch', sorted[0].adm.lastTouch, sorted[1].adm.lastTouch)
     $scope.requests.complete = sorted
   }
@@ -168,7 +170,8 @@ angular.module("ADMPipeline", ["APRequestDirectives","APProfileDirectives"])
     var todays = [], incomplete = [], complete = [];
     _.each(requests, (r) => {
       r.created = util.ObjectId2Moment(r._id)
-
+      r.submitted = r.adm.submitted||r.created.format()
+      // console.log('r.submitted', r.submitted)
       //-- Deal gracefully with v0
       if (!r.adm.owner && r.owner) r.adm.owner = r.owner
       if (!r.adm.lastTouch) r.adm.lastTouch = moment().add(-1, 'days').format()

@@ -36,11 +36,15 @@
       td { padding:2px;
         > * { vertical-align:top }
       }
-      label { display:inline-block;width:150px;font-size:12px;
+      label { display:inline-block;width:160px;font-size:12px;
         a { display:block }
       }
-      span { display:inline-block;width:70px;font-size:11px;font-weight:bold;
+      span {
+        position:relative;
+        height:60px;
+        display:inline-block;width:85px;font-size:11px;font-weight:bold;
         img { display:inline-block;margin:3px 0px 0px 30px }
+        time { position:absolute;bottom:0;height:27px;width:100%;overflow:hidden; }
       }
       ul { .ulNoStyle;
         img { width:20px;height:20px;border-radius:50% }
@@ -53,7 +57,11 @@
     .initials { color:white;width:22px;height:22px;padding:2px;border-radius:3px;text-align:center; }
     .pg { background:green;.initials }
     .jk { background:orange;.initials }
-    time { font-weight:normal;font-size:9px;display:block }
+    time {
+      display:block;
+      font-size:9px;
+      span { font-size:9px;font-weight:normal;display:block; }
+    }
   }
 
   section.incomplete {
@@ -86,7 +94,8 @@
     div.left { width:30%;float:left;clear:left;vertical-align:top }
     div.right { width:69%;float:right;clear:right }
     ul { display:block;padding-left:90px }
-    #requestBrief { background:white;padding:3px 5px;min-height:150px;font-size:13px }
+    #requestBrief { background:white;padding:3px 5px;min-height:150px;font-size:13px;
+     max-height:180px;overflow-y:scroll; }
   }
 
   section.suggested {
@@ -109,6 +118,20 @@
     }
   }
 
+  em { display:inline-block;font-style:normal;font-size:9px;padding:2px 3px;margin:1px;
+  border-radius:3px }
+  em.highlight { background:@lightorange;color:white }
+
+
+  section.selected {
+    div { text-align:right;float:right;width:30% }
+    .replies {
+      font-size:11px;
+      .waiting { color:@error }
+      .available { color:green }
+    }
+  }
+
   section.matches {
     ul { .ulNoStyle;
       vertical-align:top;
@@ -120,8 +143,6 @@
         > b { margin-left:40px;display:block;font-size:11px }
         > a { margin-left:40px;display:block;font-size:11px }
       }
-
-      em { display:inline-block;font-style:normal;font-size:9px;padding:2px }
     }
 
     div { text-align:right;float:right;width:60% }
@@ -138,7 +159,7 @@
        }
     }
 
-    .highlight { background:@lightorange;color:white }
+
   }
 }
 
@@ -199,7 +220,8 @@
     div.left { width:44%;float:left;clear:left;vertical-align:top }
     div.right { width:56%;float:right;clear:right }
     ul { display:block;padding-left:90px }
-    #requestBrief { background:white;padding:3px 5px;min-height:180px;font-size:13px }
+    #requestBrief { background:white;padding:3px 5px;min-height:180px;font-size:13px;
+      max-height:180px;overflow-y:scroll; }
   }
 
   section.actions {
@@ -211,6 +233,9 @@
       code { display:none }
       pre { display:none }
       .btn { width:160px }
+    }
+    .lastTouch {
+      i { font-size:10px;font-style:normal; }
     }
   }
 

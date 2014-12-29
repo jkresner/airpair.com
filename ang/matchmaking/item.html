@@ -4,6 +4,7 @@
   <section class="nav left">
     <a ng-href="/matchmaking">Back</a>
     | <a ng-href="/review/{{request._id}}" target="_blank">Review</a>
+    | <a ng-href="/adm/pipeline/{{request._id}}" target="_self">Pipeline View</a>
   </section>
 
 
@@ -45,33 +46,42 @@
     Select an expert below to see if they are a good fit.
   </section>
   <section ng-if="selected" class="selected left">
-    [<a ng-click="addSuggestion(selected._id)">add</a>]
+    <div>
+      <social-links profile="selected"></social-links>
+      <em ng-repeat="t in selected.tags"
+        ng-class="(highlightedTag(t._id)) ? 'highlight':''"
+        >{{t.short}}</em>
+    </div>
     <br /><img ng-src="{{selected.avatar}}?s=50" class="user" />
-    <br /><b>{{selected.score}}</b> {{selected.rate}}|{{selected.minRate}}
+    <b>{{selected.score}}</b>${{selected.rate}}|${{selected.minRate}}
     <br /><a href="/adm/experts/edit/{{m._id}}" target="_blank">{{selected.name}}</a>
     <br />Customers: {{selected.matching.experience.customers}}
     <br />Hours: {{selected.matching.experience.hours}}
     <br />Suggested: {{selected.matching.replies.suggested}}
     <br />Replied: {{selected.matching.replies.replied}}
-    <div>
-      <em ng-repeat="t in selected.tags"
-        ng-class="(highlightedTag(t._id)) ? 'highlight':''"
-        >{{t.short}}</em>
-    </div>
-    <social-links profile="selected"></social-links>
+
+
+    <h6>Replies</h6><span ng-if="!selected.matching.replies.last10">Never been suggested</span>
+    <ul class="replies" ng-if="selected.matching.replies.last10">
+      <li ng-repeat="reply in selected.matching.replies.last10" class="{{reply.status}}">
+        {{reply.replied | locaTime : 'DD MMM' }} {{reply.status}}
+      </li>
+    </ul>
+    <br /><a ng-click="addSuggestion(selected._id)" class="btn">Suggest</a>
+
     <hr />
   </section>
 
 
   <section class="matchControls left">
     <div class="expertInput" expert-input=""></div>
-    <div ng-repeat="t in request.tags">
+    <!-- <div ng-repeat="t in request.tags">
       <input type="checkbox" value="t._id" disabled="" />
       <label>{{t.slug}}</label>
     </div>
     <div>
       <a ng-click="getMatches()">Show matches</a>
-    </div>
+    </div> -->
   </section>
 
   <section class="experts" style="clear:both">
