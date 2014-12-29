@@ -51,6 +51,7 @@ var selectFields = {
     'status': 1,
     'budget': 1,
     'suggested.expert.email': 1,
+    'lastTouch':1,
     'adm': 1
   }
 }

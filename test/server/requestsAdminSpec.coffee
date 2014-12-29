@@ -129,7 +129,7 @@ module.exports = -> describe "Api", ->
                       done()
 
 
-  it 'Pipeliner can update expert matching stats', (done) ->
+  it.skip 'Pipeliner can update expert matching stats', (done) ->
     d = type: 'other', tags: [data.tags.node]
     newCompleteRequestForAdmin 'hubi', d, (r) ->
       LOGIN 'abha', data.users.abha, (sAbha) ->

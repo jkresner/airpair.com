@@ -24,6 +24,25 @@ var get = {
       cb(null,r)
     })
   },
+  getForExpertsPage(cb) {
+    var d = Data.data.getForExpertsPage
+    d.experts.forEach(function(exp) { exp.rate = exp.rate + 40 })
+    cb(null, d)
+  },
+  search(term, cb) {
+    var searchFields = ['name','email','username','gh.username','tw.username']
+    var and = { rate: { '$gt': 0 } }
+    svc.search(term, searchFields, 5, Data.select.search, and, (e,r) => {
+      if (r) {
+        for (var exp of r) {
+          exp.avatar = md5.gravatarUrl(exp.email)
+          // if (exp.bookMe && exp.bookMe.urlSlug && !exp.username)
+          //   exp.username = exp.bookMe.urlSlug
+        }
+      }
+      cb(e,r)
+    })
+  },
   getMatchesForRequest(request, cb) {
     // todo protect with owner of request?
     var tagIds = _.map(request.tags,(t) => t._id.toString())
@@ -53,25 +72,6 @@ var get = {
       cb(null, _.take(_.sortBy(unique,(u)=>u.score).reverse(),50))
     })
   },
-  getForExpertsPage(cb) {
-    var d = Data.data.getForExpertsPage
-    d.experts.forEach(function(exp) { exp.rate = exp.rate + 40 })
-    cb(null, d)
-  },
-  search(term, cb) {
-    var searchFields = ['name','email','username','gh.username','tw.username']
-    var and = { rate: { '$gt': 0 } }
-    svc.search(term, searchFields, 5, Data.select.search, and, (e,r) => {
-      if (r) {
-        for (var exp of r) {
-          exp.avatar = md5.gravatarUrl(exp.email)
-          // if (exp.bookMe && exp.bookMe.urlSlug && !exp.username)
-          //   exp.username = exp.bookMe.urlSlug
-        }
-      }
-      cb(e,r)
-    })
-  },
   calcExpertScore:(expert, tagsToScore) => {
     var tagScore = 0
     var tagMatchCount = 0
@@ -96,31 +96,33 @@ var get = {
     matchingScore = matchingScore*200
 
     var socialScore = 0;
-    if (expert.gh) socialScore = socialScore + (expert.gh.followers/10)
-    if (expert.tw) socialScore = socialScore + expert.tw.followers
-    if (expert.so) socialScore = socialScore + (expert.so.reputation/100)
+    if (expert.gh) socialScore += Math.floor(expert.gh.followers/10)
+    if (expert.so) socialScore += socialScore + Math.floor(expert.so.reputation/100)
+    // if (expert.tw) socialScore += socialScore + Math.floor(expert.tw.followers)
+    // if (expert.in) socialScore += socialScore + Math.floor(expert.in.endorsements)
+    // if (expert.bb) socialScore += socialScore + Math.floor(expert.bb.followers)
 
-    // $log('expert', expert.name, tagScore, matchingScore)
+    // $log('expert', expert.name, tagScore, matchingScore, socialScore)
     return tagScore + matchingScore + socialScore
   }
 }
 
 var save = {
-  update50MatchingStats() {
-    $log('updateAllMatchingStats')
-    var count = 0
-    var opts = {fields:{ '_id':1, 'rate': 1}, limit: 50 }
-    svc.searchMany({rate:{$gt:0},'matching':{'$exists':false}}, opts, (e,r)=>{
-      for (var expert of r) {
-        // $log('expert', expert._id, expert.rate)
-        save.updateMatchingStats(expert._id,(ee,rr) => {
-          // if (ee) $log('ee', ee)
-          // else $log('updated', rr.name, rr.matching)
-        })
-      }
-    })
-  },
-  updateMatchingStats(expertId, cb) {
+  // update50MatchingStats() {
+  //   $log('updateAllMatchingStats')
+  //   var count = 0
+  //   var opts = {fields:{ '_id':1, 'rate': 1}, limit: 50 }
+  //   svc.searchMany({rate:{$gt:0},'matching':{'$exists':false}}, opts, (e,r)=>{
+  //     for (var expert of r) {
+  //       // $log('expert', expert._id, expert.rate)
+  //       save.updateMatchingStats(expert._id,(ee,rr) => {
+  //         // if (ee) $log('ee', ee)
+  //         // else $log('updated', rr.name, rr.matching)
+  //       })
+  //     }
+  //   })
+  // },
+  updateMatchingStats(expertId, request, cb) {
     get.getById(expertId, (e,expert) => {
       if (e || !expert) cb(e)
       //-- TODO migrate request.calls to bookings
@@ -128,7 +130,6 @@ var save = {
         // .elemMatch('suggested', { 'expert._id': expertId })
       Request
         .find({'suggested.expert._id':expertId},{_id:1,userId:1,suggested:1,calls:1}, (e,requests) => {
-          $log('expertsRequest', requests.length)
           var expertSuggestions = []
           var expertCalls = []
           var replied = 0
@@ -155,7 +156,8 @@ var save = {
             }
           }
 
-          var map = function(s) { var d =
+          var map = function(s) {
+            var d =
             {
               replied:util.ObjectId2Date(s._id),
               status:s.expertStatus,
@@ -178,9 +180,10 @@ var save = {
             }
           }
 
-          // $log('updaing', expert._id, matching)
+          // $log('updaing', expert._id, matching.replies.last10, matching)
           svc.update(expert._id, _.extend(expert, {matching}), (e,r)=>{
             if (r) r.avatar = md5.gravatarUrl(r.email)
+            r.score = get.calcExpertScore(r,request.tags)
             cb(e,r)
           })
         })

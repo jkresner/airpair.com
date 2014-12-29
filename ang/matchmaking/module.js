@@ -81,7 +81,7 @@ angular.module("APMatchmaking", ["APProfileDirectives","APSvcMM"])
 
   $scope.selectExpert = (expert) =>
   {
-    MMDataService.pipeline.matchifyExpert(expert._id, function(r) {
+    MMDataService.pipeline.matchifyExpert({expertId:expert._id,requestId:$scope.request._id}, function(r) {
       $scope.selected = r
     })
   }

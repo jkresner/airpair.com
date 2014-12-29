@@ -40,8 +40,8 @@ angular.module('APSvcMM', [])
       addSuggestion(data, success, error) {
         $http.put(`/v1/api/matchmaking/requests/${data._id}/add/${data.expertId}`, data).success(pipelineFns.updateItemInCacheList(success)).error(error)
       },
-      matchifyExpert(_id, success, error) {
-        $http.put(`/v1/api/matchmaking/experts/${_id}/matchify`).success(success).error(error)
+      matchifyExpert(data, success, error) {
+        $http.put(`/v1/api/matchmaking/experts/${data.expertId}/matchify/${data.requestId}`).success(success).error(error)
       }
     }
 

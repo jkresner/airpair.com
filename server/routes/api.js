@@ -90,7 +90,7 @@ export default function(app) {
     .get('/requests/waiting', RequestsAPI.getWaitingForMatchmaker)
     .get('/requests/:id', RequestsAPI.getByIdForMatchmaker)
     .put('/requests/:request/add/:expert', RequestsAPI.addSuggestion)
-    .put('/experts/:id/matchify', ExpertsAPI.updateMatchingStats)
+    .put('/experts/:id/matchify/:request', ExpertsAPI.updateMatchingStats)
 
 
   router.use('/matchmaking',matchmakerrouter)

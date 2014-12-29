@@ -49,20 +49,24 @@ var TagSlim = new Schema({
 
 
 var V0_REQUEST_STATUS = [
+
+  //v1
   'received',       //: requires review by airpair
-  'incomplete',     //: more detail required
-  'holding',        //: waiting for go ahead by customer
   'waiting',        //: no experts available yet
-  'pending',        //: [bookme] customer put in request and expert has to confirm
   'review',         //: customer must review & choose one or more experts
-  'scheduling',     //: call needs to be scheduled
-  'scheduled',      //: one or more calls already scheduled
+  'booked',      //: one or more calls already scheduled
   'consumed',       //: feedback on all calls collected, but lead still warm for up-sell
   'complete',       //: transaction final and time to archive
   'canceled',       //: company has canceled the request
   'deferred',       //: customer indicated they need more time
+  'junk',
 
-  'junk'
+  //v0
+  'holding',        //: waiting for go ahead by customer
+  'scheduling',     //: call needs to be scheduled
+  'scheduled',      //: one or more calls already scheduled
+  'incomplete',     //: more detail required
+  'pending',        //: [bookme] customer put in request and expert has to confirm
 ]
 
 
