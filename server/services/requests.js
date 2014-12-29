@@ -92,7 +92,7 @@ var get = {
   },
   getMy(cb) {
     var opts = { options: { sort: { '_id': -1 } }, fields: Data.select.customer }
-    svc.searchMany({userId:this.user._id}, opts, cb)
+    svc.searchMany({userId:this.user._id}, opts, admCB(cb))
   },
   getRequestForBookingExpert(id, expertId, cb) {
     var {user} = this
