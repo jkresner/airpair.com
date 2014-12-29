@@ -1,8 +1,8 @@
 <article>
-  <a ng-href="{{(request.budget) ? '/review/'+r._id : '/meet-experts/'+r._id }}" target="_self">
+  <a ng-href="{{(r.budget) ? '/review/'+r._id : '/meet-experts/'+r._id }}" target="_self">
     <header class="entry-header">
 
-      <time ng-if="r._id" class="entry-time" itemprop="datePublished" datetime="{{ request.published }}">{{ r._id | objectIdToDate }}
+      <time ng-if="r._id" class="entry-time" itemprop="datePublished" datetime="{{ r._id }}">{{ r._id | objectIdToDate }}
         <label ng-if="r.budget">{{r.status}}</label>
         <label ng-if="!r.budget">incomplete</label>
       </time>
@@ -27,7 +27,7 @@
     <img class="entry-author-image" itemprop="image" ng-src="{{ (r.by) ? r.by.avatar : r.company.contacts[0].pic }}?s=50" align="left" />
 
     <ul class="suggested">
-      <li ng-repeat="s in r.suggested | limitTo : 3"><img ng-src="{{s.expert.pic}}" /></li>
+      <li ng-repeat="s in r.suggested | limitTo : 3"><img ng-src="{{s.expert.avatar}}" class="{{s.expertStatus}}" /></li>
     </ul>
 
 

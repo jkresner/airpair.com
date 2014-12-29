@@ -86,6 +86,7 @@
           <option value="incomplete">(v0) incomplete</option>
           <option value="scheduling">(v0) scheduling</option>
           <option value="scheduled">(v0) scheduled</option>
+          <option value="consumed">(v0) consumed</option>
         </select>
       </span>
     </div>
@@ -159,6 +160,7 @@
           <label>${{s.suggestedRate.total}} /
           ${{s.suggestedRate.expert}}</label>
           <label><a href="/adm/experts/edit/{{s.expert._id}}" target="_blank">{{s.expert.name}}</a></label>
+          <b>{{s.expert.email}}</b>
           <span class="{{s.expertStatus}}">{{s.expertStatus}}</span>
 
           <a ng-click="removeSuggestion(s.expert._id)" class="delete">x</a>
