@@ -21,7 +21,10 @@ function selectByRoleCB(ctx, errorCb, cb) {
     if (e || !r) return errorCb(e, r)
 
     if (!ctx.user) return cb(null, Data.select.byView(r, 'anon'))
-    else if (isCustomerOrAdmin(ctx.user, r)) cb(null, Data.select.byView(r, 'customer'))
+    else if (isCustomerOrAdmin(ctx.user, r)) {
+      if (ctx.machineCall) cb(null, Data.select.byView(r, 'admin'))
+      else cb(null, Data.select.byView(r, 'customer'))
+    }
     else {
       // -- we don't want experts to see other reviews
       r.suggested = Data.select.meSuggested(r, ctx.user._id)
@@ -61,6 +64,17 @@ var get = {
       })
     })
   },
+  getByIdForMatchmaker(id, cb) {
+    $log('** getByIdForMatchmaker should filter a bit..')
+    svc.getById(id, (e,r) => {
+      if (e || !r) return cb(e,r)
+      r = Data.select.byView(r, 'admin')
+      User.findOne({_id:r.userId}, (ee,user) => {
+        r.user = user
+        return cb(ee,r)
+      })
+    })
+  },
   getByIdForUser(id, cb) {  // for updating
     var userId = this.user._id
     svc.getById(id, (e,r) => {
@@ -78,7 +92,7 @@ var get = {
   },
   getMy(cb) {
     var opts = { options: { sort: { '_id': -1 } }, fields: Data.select.customer }
-    svc.searchMany({userId:this.user._id}, opts, cb)
+    svc.searchMany({userId:this.user._id}, opts, admCB(cb))
   },
   getRequestForBookingExpert(id, expertId, cb) {
     var {user} = this
@@ -91,6 +105,9 @@ var get = {
   },
   getActiveForAdmin(cb) {
     svc.searchMany(Data.query.active, { options: { sort: { '_id': -1 }}, fields: Data.select.pipeline }, admCB(cb))
+  },
+  getWaitingForMatchmaker(cb) {
+    svc.searchMany(Data.query.waiting, { options: { sort: { 'adm.submitted': -1 }}, fields: Data.select.pipeline }, admCB(cb))
   },
   // getIncompleteForAdmin(cb) {
   //   svc.searchMany(Data.query.incomplete, { fields: Data.select.pipeline}, cb)
@@ -152,6 +169,14 @@ var save = {
     }
 
     svc.update(original._id, ups, selectByRoleCB(this,cb,cb))
+  },
+  updateWithBookingByCustomer(request, order, cb) {
+    request.status = 'booked'
+    request.lastTouch = svc.newTouch.call(this, 'booked')
+    if (!request.adm.booked)
+      request.adm.booked = new Date
+
+    svc.update(request._id, request, selectByRoleCB(this,cb,cb))
   },
   replyByExpert(request, expert, reply, cb) {
     var {suggested} = request
@@ -258,7 +283,7 @@ var admin = {
     adm.lastTouch = svc.newTouch.call(this, `sent:${message.type}`)
     messages.push(_.extend(message,{fromId:this.user._id,toId:request.userId}))
 
-    svc.update(request._id, {status,adm,messages}, admCB(cb))
+    svc.update(request._id, _.extend(request, {status,adm,messages}), admCB(cb))
   },
   addSuggestion(request, expert, body, cb)
   {
@@ -273,7 +298,7 @@ var admin = {
       this.user.name, request.tags, ()=>{})
 
     adm.lastTouch = svc.newTouch.call(this, `suggest:${expert.name}`)
-    svc.update(request._id, {suggested,adm}, admCB(cb))
+    svc.update(request._id, _.extend(request, {suggested,adm}), admCB(cb))
   },
   removeSuggestion(request, expert, cb)
   {
@@ -282,7 +307,7 @@ var admin = {
     suggested = _.without(suggested,existing)
 
     adm.lastTouch = svc.newTouch.call(this, `remove:${expert.name}`)
-    svc.update(request._id, {suggested,adm}, admCB(cb))
+    svc.update(request._id, _.extend(request, {suggested,adm}), admCB(cb))
   }
 }
 

@@ -1,5 +1,4 @@
 import {initAPI} from './_api'
-import * as Svc from '../services/experts'
 
 export default initAPI(
   require('../services/experts')
@@ -7,7 +6,8 @@ export default initAPI(
   getMe: (req) => [],
   getForExpertsPage: (req) => [],
   search: (req) => [req.params.id],
-  getMatchesForRequest: (req) => [req.request]
+  getMatchesForRequest: (req) => [req.request],
+  updateMatchingStats: (req) => [req.params.id,req.request],
 }, {
   'expert':'getById'
 })

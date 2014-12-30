@@ -218,8 +218,16 @@ module.exports = -> describe "Booking: ", ->
                       GET "/billing/orders", {}, (orders1) ->
                         expect(orders1.length).to.equal(1)
                         expect(_.idsEqual(orders1[0].requestId,r._id)).to.be.true
-                        done()
-
+                        LOGIN 'admin', data.users.admin, ->
+                          GET "/adm/requests/user/#{s._id}", {}, (rAdm) ->
+                            expect(rAdm.length).to.equal(1)
+                            expect(rAdm[0].suggested.length).to.equal(1)
+                            expect(rAdm[0].adm.active).to.be.true
+                            expect(rAdm[0].adm.submitted).to.exist
+                            expect(rAdm[0].adm.reviewable).to.exist
+                            expect(rAdm[0].adm.booked).to.exist
+                            expect(rAdm[0].status).to.equal('booked')
+                            done()
 
 
 

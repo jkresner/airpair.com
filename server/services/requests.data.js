@@ -51,6 +51,8 @@ var selectFields = {
     'status': 1,
     'budget': 1,
     'suggested.expert.email': 1,
+    'suggested.expertStatus': 1,
+    'lastTouch':1,
     'adm': 1
   }
 }
@@ -78,6 +80,10 @@ function migrateV0(r) {
   return r
 }
 
+var statusHash =
+  {'available':1,'underpriced':2,'busy':3,'abstained':4,'opened':5,'waiting':6 }
+//chosen , // released
+
 
 module.exports = {
 
@@ -91,12 +97,14 @@ module.exports = {
     },
     byView(request, view) {
       var r = migrateV0(request)
-      if (r.suggested)
+      if (r.suggested) {
+        r.suggested = _.sortBy(r.suggested, (s)=>statusHash[s.expertStatus])
         for (var s of r.suggested) {
           s.expert.avatar = md5.gravatarUrl(s.expert.email)
           if (!s.suggestedRate)
             Rates.addSuggestedRate(r, s, true)
         }
+      }
 
       if (view != 'admin')
         r = util.selectFromObject(r, selectFields[view])
@@ -125,6 +133,11 @@ module.exports = {
       //
       // status: { $in: ['received','waiting','review','scheduled','consumed'] }
       'budget' : { '$exists': true }, 'adm.active': true
+    },
+
+    waiting: {
+      'budget' : { '$exists': true }, 'adm.submitted': { '$exists': true },
+      status: 'waiting'
     }
 
   }

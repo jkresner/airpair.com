@@ -36,7 +36,7 @@ angular.module("ADMPipeline", ["APRequestDirectives","APProfileDirectives"])
 
   this.shouldSend = {
     received:(r) => r.status == 'received' && !_.find(r.messages,(msg) => msg.type == 'received'),
-    review:(r) => r.status == 'review' && _.find(r.suggested,(s)=>s.expertStats=='available') && !_.find(r.messages,(msg) => msg.type == 'review'),
+    review:(r) => r.status == 'review' && _.find(r.suggested,(s)=>s.expertStatus=='available') && !_.find(r.messages,(msg) => msg.type == 'review'),
     cancelfromwaiting:(r,m) => r.status == 'waiting' && m.timeToCancelFromWaiting && !_.find(r.messages,(msg) => msg.type == 'cancelfromwaiting'),
   }
 
@@ -49,18 +49,15 @@ angular.module("ADMPipeline", ["APRequestDirectives","APProfileDirectives"])
 
   $scope.request = {}
 
-  $scope.getMatches = () => {
-    AdmDataService.pipeline.getRequestMatches($scope.request._id, function (experts) {
-      $scope.matches = experts;
-      console.log('$scope.matches', $scope.matches.length)
-    })
+  $scope.highlightedTag = (tagId) => {
+    return _.find($scope.focusTagIds,(id)=>id==tagId)
   }
 
-  $scope.$watch('request.status', function() {
-    if ($scope.request.status == 'waiting'
-      && $scope.user.emailVerified)
-      $scope.getMatches()
-  })
+  $scope.updateExpertMatching = (expertId) => {
+    AdmDataService.pipeline.matchifyExpert(expertId, function (expert) {
+      console.log('expert', expert.name, expert.matching)
+    })
+  }
 
   $scope.$watch('request', function(r) {
     if (!$scope.user || !$scope.paymethods) return
@@ -88,6 +85,7 @@ angular.module("ADMPipeline", ["APRequestDirectives","APProfileDirectives"])
     meta.noPaymethod = $scope.paymethods.length < 1
     meta.trustedLevel += (meta.noPaymethod) ? 0 : 1
     $scope.meta = meta
+    $scope.focusTagIds = _.pluck(r.tags,'_id')
   })
 
 
@@ -150,13 +148,15 @@ angular.module("ADMPipeline", ["APRequestDirectives","APProfileDirectives"])
   $scope.farm = (tweet) => {
     AdmDataService.pipeline.farm({requestId:$scope.request._id,tweet}, updateScope, errCB)
   }
+
+  $scope.alertMessage = (msg) => alert(msg)
 })
 
 
 .controller('PipelineCtrl', function($scope, AdmDataService) {
 
   $scope.filterByLastTouch = function() {
-    var sorted = _.sortBy($scope.requests.complete,(r)=>r.adm.lastTouch)
+    var sorted = _.sortBy($scope.requests.complete,(r)=>r.adm.lastTouch.utc)
     // console.log('filterByLastTouch', sorted[0].adm.lastTouch, sorted[1].adm.lastTouch)
     $scope.requests.complete = sorted
   }
@@ -170,7 +170,8 @@ angular.module("ADMPipeline", ["APRequestDirectives","APProfileDirectives"])
     var todays = [], incomplete = [], complete = [];
     _.each(requests, (r) => {
       r.created = util.ObjectId2Moment(r._id)
-
+      r.submitted = r.adm.submitted||r.created.format()
+      // console.log('r.submitted', r.submitted)
       //-- Deal gracefully with v0
       if (!r.adm.owner && r.owner) r.adm.owner = r.owner
       if (!r.adm.lastTouch) r.adm.lastTouch = moment().add(-1, 'days').format()

@@ -42,6 +42,7 @@ export function run()
     app.use('/v1/api', routes.api(app))
     app.use('/v1/adm/*', mw.authz.adm, app.renderHbsAdmin('adm/admin'))
     app.use('/adm/*', mw.authz.adm, app.renderHbsAdmin('adm/admin'))
+    app.use('/matchmaking*', mw.authz.adm, app.renderHbsAdmin('adm/admin'))
 
     app.use(mw.seo.noTrailingSlash) // Must be after root '/' route
     app.use(mw.analytics.trackFirstRequest)

@@ -88,7 +88,7 @@ function $$log(action, data, user, sessionID) {
       $log(`REQUEST ${uid} > ${data.action}`, `https://www.airpair.com/adm/pipeline/${data._id}`.white)
       break
     case 'Order':
-      $log(`ORDER   ${uid} > $${data.total}`, `https://www.airpair.com/adm/orders/${data.id}`.white)
+      $log(`ORDER   ${uid} > $${data.total}`, `https://www.airpair.com/adm/orders/${data._id}`.white)
       break
     case 'Payment':
       $log(`PAYMENT ${uid} > $${data.total}`, `https://www.airpair.com/adm/orders/${data.orderId}`.white)
@@ -96,6 +96,8 @@ function $$log(action, data, user, sessionID) {
     case 'Save':
       if (data.type == 'paymethod')
         $log(`PAYM    ${uid} > ${data.method} ${data.cardType}`.yellow)
+      else if (data.type == 'email')
+        $log(`EMAILC  ${uid} > ${data.email} << ${data.previous}[${data.previousVerified}] `.green)
       else if (data.type == 'emailVerified')
         $log(`EMAILV  ${uid} > ${data.email}`.green)
       else

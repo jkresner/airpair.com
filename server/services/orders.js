@@ -4,6 +4,7 @@ import * as PayMethodSvc from './paymethods'
 import * as UserSvc from './users'
 import * as Validate from '../../shared/validation/billing.js'
 import * as md5     from '../util/md5'
+var RequestsSvc = require('./requests')
 var Data = require('./orders.data')
 var Util = require('../../shared/util')
 var OrderUtil = require('../../shared/orders.js')
@@ -268,15 +269,9 @@ export function giveCredit(toUserId, total, source, cb)
 }
 
 
-export function createBookingOrder(expert, time, minutes, type, credit, payMethodId, requestSuggestion, cb)
+function _createBookingOrder(expert, time, minutes, type, credit, payMethodId, request, cb)
 {
-  /// MEGA TODOS, validate requestSuggestion
-  var requestId = (requestSuggestion) ? requestSuggestion.requestId : null
-  if (requestSuggestion) {
-    expert = requestSuggestion.suggestion.expert
-    expert.rate = requestSuggestion.suggestion.suggestedRate.expert
-  }
-
+  var requestId = (request) ? request._id : null
   var unitPrice = OrderUtil.calculateUnitPrice(expert,type)
   var unitProfit = OrderUtil.calculateUnitProfit(expert, type)
   var total = minutes/60 * unitPrice
@@ -290,10 +285,33 @@ export function createBookingOrder(expert, time, minutes, type, credit, payMetho
   {
     lineItems.unshift(Lines.payg(total))
     makeOrder(this.user, lineItems, payMethodId, null, requestId, cb, (e, order) => {
-      chargeAndTrackOrder(order, cb, (e,o) => svc.create(o, cb))
+      chargeAndTrackOrder(order, cb, (e,o) => {
+        if (request)
+          RequestsSvc.updateWithBookingByCustomer.call(this, request, o, () => { $log('booking off request') })
+        svc.create(o, cb)
+      })
     })
   }
 }
+
+
+export function createBookingOrder(expert, time, minutes, type, credit, payMethodId, requestSuggestion, cb)
+{
+  if (requestSuggestion) {
+    this.machineCall = true // so we get back all data for the request
+    RequestsSvc.getRequestForBookingExpert.call(this, requestSuggestion.requestId, expert._id, (e, request) => {
+      if (e) return cb(e)
+      //-- TODO look at the data from db instead of being passed from client
+      expert = requestSuggestion.suggestion.expert
+      expert.rate = requestSuggestion.suggestion.suggestedRate.expert
+      _createBookingOrder.call(this, expert, time, minutes, type, credit, payMethodId, request, cb)
+    })
+  }
+  else {
+    _createBookingOrder.call(this, expert, time, minutes, type, credit, payMethodId, null, cb)
+  }
+}
+
 
 
 export function bookUsingCredit(expert, minutes, total, lineItems, expectedCredit, payMethodId, requestId, cb)
