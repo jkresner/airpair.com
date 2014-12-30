@@ -229,22 +229,6 @@ var save = {
 }
 
 var admin = {
-  // updateMigrateAll() {
-  //   var count = 0
-  //   $log(`updateMigrateAll`)
-  //   Request.find({},{_id:1,suggested:1}, (e, all) => {
-  //     $log(`updateMigrateAll ${all.length}`)
-  //     for (var req of all) {
-  //       if (req.suggested && req.suggested.length > 0) {
-  //         $log(`findOneAndUpdate ${req._id} set ${req.suggested.length} suggested`)
-  //         Request.findOneAndUpdate({_id:req._id}, { $set: { suggested: req.suggested }}, (ee,r) => {
-  //           count = count + 1
-  //           $log(`update ${count} ${r._id}`)
-  //         })
-  //       }
-  //     }
-  //   })
-  // },
   updateByAdmin(original, update, cb) {
     var action = 'update'
     var {adm,status} = update

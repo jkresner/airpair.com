@@ -90,7 +90,6 @@ var get = {
     var matchingScore = 0
     if (expert.matching)
     {
-      // $log('matching', expert.matching.replies.replied, expert.matching.experience.customers)
       matchingScore = expert.matching.replies.replied + expert.matching.experience.customers
     }
     matchingScore = matchingScore*200
@@ -108,20 +107,6 @@ var get = {
 }
 
 var save = {
-  // update50MatchingStats() {
-  //   $log('updateAllMatchingStats')
-  //   var count = 0
-  //   var opts = {fields:{ '_id':1, 'rate': 1}, limit: 50 }
-  //   svc.searchMany({rate:{$gt:0},'matching':{'$exists':false}}, opts, (e,r)=>{
-  //     for (var expert of r) {
-  //       // $log('expert', expert._id, expert.rate)
-  //       save.updateMatchingStats(expert._id,(ee,rr) => {
-  //         // if (ee) $log('ee', ee)
-  //         // else $log('updated', rr.name, rr.matching)
-  //       })
-  //     }
-  //   })
-  // },
   updateMatchingStats(expertId, request, cb) {
     get.getById(expertId, (e,expert) => {
       if (e || !expert) cb(e)

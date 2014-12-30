@@ -65,9 +65,6 @@ export function run()
 
       var server = app.listen(config.port, function() {
         $log(`          Listening after ${new Date().getTime()-start}ms on port ${server.address().port}`.white)
-
-        // require('./server/services/experts').update50MatchingStats()
-        // require('./server/services/requests').updateMigrateAll()
       })
     })
   })
