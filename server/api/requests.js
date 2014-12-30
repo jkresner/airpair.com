@@ -6,6 +6,8 @@ export default initAPI(
   getByIdForUser: (req) => [req.params.id],
   getByIdForAdmin: (req) => [req.params.id],
   getActiveForAdmin: (req) => [],
+  getByIdForMatchmaker: (req) => [req.params.id],
+  getWaitingForMatchmaker: (req) => [],
   getIncompleteForAdmin: (req) => [],
   getByUserIdForAdmin: (req) => [req.params.id],
   getByIdForReview: (req) => [req.params.id],

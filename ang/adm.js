@@ -19,6 +19,7 @@ require('./common/models/dataService.js');
 require('./common/models/postsService.js');
 require('./common/models/sessionService.js');
 require('./common/models/adminDataService.js');
+require('./common/models/mmDataService.js');
 require('./adm/posts/module.js');
 require('./adm/users/module.js');
 require('./adm/redirects/module.js');
@@ -27,6 +28,8 @@ require('./adm/orders/module.js');
 require('./adm/companys/module.js');
 require('./adm/pipeline/module.js');
 require('./adm/bookings/module.js');
+require('./matchmaking/module.js');
+
 
 angular.module('ADM', [
   'ngRoute',
@@ -39,7 +42,9 @@ angular.module('ADM', [
   'ADMViews',
   'ADMOrders',
   'ADMBookings',
-  'ADMCompanys'])
+  'ADMCompanys',
+  'APMatchmaking'
+  ])
 
   .config(function($locationProvider, $routeProvider) {
 

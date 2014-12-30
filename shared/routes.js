@@ -15,5 +15,6 @@ module.exports = [
   '/me*',
   '/help*',
   '/adm*',
+  '/matchmaking*',
   '/review*'
 ]

@@ -10,3 +10,15 @@ angular.module("APProfileDirectives", [])
   };
 
 })
+
+
+.directive('socialScores', function() {
+
+  return {
+    template: require('./socialScores.html'),
+    scope: { p: '=profile' },
+    link(scope, element, attrs) { },
+    controller($scope, $attrs) { }
+  };
+
+})

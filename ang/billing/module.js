@@ -158,10 +158,10 @@ angular.module("APBilling", ['ngRoute','APFormsDirectives','APPaymentDirectives'
     }
 
     $scope.calcSummary = function() {
-      if (!$scope.expert) return
+      if (!$scope.expert || !$scope.booking) return
 
       var hrRate = ($scope.suggestion)
-        ? $scope.suggestion.suggestedRate[$scope.booking.type].expert
+        ? $scope.suggestion.suggestedRate.expert
         : $scope.expert.rate
 
       if ($scope.booking.type == "opensource") hrRate = hrRate + 20

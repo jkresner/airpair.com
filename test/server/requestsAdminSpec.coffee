@@ -101,6 +101,7 @@ module.exports = -> describe "Api", ->
 
   it 'Pipeliner can suggest and remove experts', (done) ->
     addAndLoginLocalUserWithEmailVerified 'kaun', (s) ->
+      spy = sinon.spy(mailman,'sendExpertSuggestedEmail')
       d = tags: [data.tags.angular], type: 'resources', experience: 'proficient', brief: 'bah bah anglaur test yo4', hours: "1", time: 'rush'
       POST '/requests', d, {}, (r0) ->
         PUT "/requests/#{r0._id}", _.extend(r0,{budget:300}), {}, (r) ->
@@ -111,10 +112,32 @@ module.exports = -> describe "Api", ->
               reqs1[0].status = 'waiting'
               reqs1[0].adm.owner = 'ad'
               PUT "/adm/requests/#{r._id}", reqs1[0], {}, (reqWexp) ->
-                PUT "/adm/requests/#{r._id}/add/#{data.experts.abha._id}", {}, {}, (reqWexp) ->
+                PUT "/matchmaking/requests/#{r._id}/add/#{data.experts.abha._id}", {}, {}, (reqWexp) ->
                   GET "/adm/requests/user/#{s._id}", {}, (reqs2) ->
                     expect(reqs2.length).to.equal(1)
                     expect(reqs2[0].suggested.length).to.equal(1)
                     PUT "/adm/requests/#{r._id}/remove/#{data.experts.abha._id}", {}, {}, (reqRexp) ->
                       expect(reqRexp.suggested.length).to.equal(0)
+                      expect(spy.callCount).to.equal(1)
+                      expectStartsWith(spy.args[0][0].name,"Abe Haskins")
+                      expectStartsWith(spy.args[0][0].email,"abeisgreat@abeisgreat.com")
+                      expectStartsWith(spy.args[0][1],"Kyle Aungst")
+                      expectIdsEqual(spy.args[0][2],r._id)
+                      expectStartsWith(spy.args[0][3],"Admin Daemon")
+                      expect(spy.args[0][4].length).to.equal(1)
+                      expect(spy.args[0][4][0].slug).to.equal('angularjs')
                       done()
+
+
+  it.skip 'Pipeliner can update expert matching stats', (done) ->
+    d = type: 'other', tags: [data.tags.node]
+    newCompleteRequestForAdmin 'hubi', d, (r) ->
+      LOGIN 'abha', data.users.abha, (sAbha) ->
+        reply = expertComment: "I'll take it", expertAvailability: "Real-time", expertStatus: "available"
+        PUT "/requests/#{r._id}/reply/#{data.experts.abha._id}", reply, {}, (r1) ->
+          LOGIN 'admin', data.users.admin, ->
+            PUT "/matchmaking/experts/#{data.experts.abha._id}/matchify", {}, {}, (eAbha) ->
+              expect(eAbha.matching).to.exist
+              done()
+
+

@@ -1,0 +1,119 @@
+<section id="matchingReq" ng-if="request">
+
+
+  <section class="nav left">
+    <a ng-href="/matchmaking">Back</a>
+    | <a ng-href="/review/{{request._id}}" target="_blank">Review</a>
+    | <a ng-href="/adm/pipeline/{{request._id}}" target="_self">Pipeline</a>
+  </section>
+
+
+  <section class="info right" request-admin req="request"></section>
+
+  <section class="user left">
+    <img ng-src="{{request.by.avatar}}" />
+
+    <b>{{request.by.name}}</b>
+
+    <label>Submitted</label>
+      <span>{{ request.adm.submitted | locaTime : 'DD MMM HH:mm:ss' }}</span>
+    <br /><label>Quality</label>
+    <span ng-if="meta.shortBrief">short breif</span>
+    <div ng-if="request.adm.closed"><label>Closed</label> {{request.adm.closed | locaTime : 'DD MMM HH:mm:ss' }}</div>
+
+    <br /><label>Other</label>
+  </section>
+
+  <section class="suggested right">
+    <div ng-repeat="s in request.suggested" class="expertStatus">
+      <img ng-src="{{s.expert.avatar}}?s=50" class="user {{s.expertStatus}}" />
+      <div>
+        <label>${{s.suggestedRate.total}} /
+        ${{s.suggestedRate.expert}}</label>
+        <label><a href="/adm/experts/edit/{{s.expert._id}}" target="_blank">{{s.expert.name}}</a></label>
+        <span class="{{s.expertStatus}}">{{s.expertStatus}}</span>
+      </div>
+      <p ng-if="s.expertComment">
+        <time>{{s.reply.time | agoTime }}</time>
+        {{s.expertComment }}
+      </p>
+      <hr />
+    </div>
+  </section>
+
+
+  <section ng-if="!selected" class="selected left">
+    Select an expert below to see if they are a good fit.
+  </section>
+  <section ng-if="selected" class="selected left">
+    <div>
+      <social-links profile="selected"></social-links>
+      <em ng-repeat="t in selected.tags"
+        ng-class="(highlightedTag(t._id)) ? 'highlight':''"
+        >{{t.short}}</em>
+    </div>
+    <br /><img ng-src="{{selected.avatar}}?s=50" class="user" />
+    <b>{{selected.score}}</b>${{selected.rate}}|${{selected.minRate}}
+    <br /><a href="/adm/experts/edit/{{m._id}}" target="_blank">{{selected.name}}</a>
+    <br />Customers: {{selected.matching.experience.customers}}
+    <br />Hours: {{selected.matching.experience.hours}}
+    <br />Suggested: {{selected.matching.replies.suggested}}
+    <br />Replied: {{selected.matching.replies.replied}}
+
+
+    <h6>Replies</h6><span ng-if="!selected.matching.replies.last10">Never been suggested</span>
+    <ul class="replies" ng-if="selected.matching.replies.last10">
+      <li ng-repeat="reply in selected.matching.replies.last10" class="{{reply.status}}">
+        {{reply.replied | locaTime : 'DD MMM' }} {{reply.status}}
+      </li>
+    </ul>
+    <br /><a ng-click="addSuggestion(selected._id)" class="btn">Suggest</a>
+
+    <hr />
+  </section>
+
+
+  <section class="matchControls left">
+    <div class="expertInput" expert-input=""></div>
+    <!-- <div ng-repeat="t in request.tags">
+      <input type="checkbox" value="t._id" disabled="" />
+      <label>{{t.slug}}</label>
+    </div>
+    <div>
+      <a ng-click="getMatches()">Show matches</a>
+    </div> -->
+  </section>
+
+  <section class="experts" style="clear:both">
+    <section class="matches">
+      <hr />
+
+      <ul>
+        <li class="match" ng-repeat="m in matches">
+          <a ng-click="selectExpert(m)">
+            <img ng-src="{{m.avatar}}?s=40" class="user" /></a>
+          <social-links profile="m"></social-links>
+          <social-scores profile="m"></social-scores>
+          <div>{{gh}}</div>
+          <b>Score: {{m.score}}</b>
+          <a href="/adm/experts/edit/{{m._id}}" target="_blank">{{m.name}}</a>
+
+          <br />Rates: {{m.rate}}|{{m.minRate}} (min)
+          <span ng-if="m.matching">
+            Cust: {{m.matching.experience.customers}} /
+            hr {{m.matching.experience.hours}} /
+            Sug {{m.matching.replies.suggested}} /
+            Rep {{m.matching.replies.replied}} /
+          </span>
+          <div>
+            <em ng-repeat="t in m.tags"
+              ng-class="(highlightedTag(t._id)) ? 'highlight':''"
+              >{{t.short}}</em>
+          </div>
+        </li>
+      </ul>
+    </section>
+
+  </section>
+
+</section>

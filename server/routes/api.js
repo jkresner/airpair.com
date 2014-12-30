@@ -81,6 +81,21 @@ export default function(app) {
     .get('/experts', ExpertsAPI.getForExpertsPage)
     .get('/experts/match/:request', authd, ExpertsAPI.getMatchesForRequest)
 
+
+  var matchmakerrouter = require('express').Router()
+    .param('expert', ExpertsAPI.paramFns.getById)
+    .param('request', RequestsAPI.paramFns.getByIdForAdmin)
+    .use(adm) //-- Todo change to match maker permissions
+    .get('/requests', RequestsAPI.getWaitingForMatchmaker)
+    .get('/requests/waiting', RequestsAPI.getWaitingForMatchmaker)
+    .get('/requests/:id', RequestsAPI.getByIdForMatchmaker)
+    .put('/requests/:request/add/:expert', RequestsAPI.addSuggestion)
+    .put('/experts/:id/matchify/:request', ExpertsAPI.updateMatchingStats)
+
+
+  router.use('/matchmaking',matchmakerrouter)
+
+
   var admrouter = require('express').Router()
     .param('expert', ExpertsAPI.paramFns.getById)
     .param('request', RequestsAPI.paramFns.getByIdForAdmin)
@@ -108,8 +123,8 @@ export default function(app) {
     .put('/requests/:request', RequestsAPI.updateByAdmin)
     .put('/requests/:request/message', RequestsAPI.sendMessageByAdmin)
     .put('/requests/:request/farm', RequestsAPI.farmByAdmin)
-    .put('/requests/:request/add/:expert', RequestsAPI.addSuggestion)
     .put('/requests/:request/remove/:expert', RequestsAPI.removeSuggestion)
+
 
   router.use('/adm',admrouter)
 

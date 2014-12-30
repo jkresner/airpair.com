@@ -102,6 +102,7 @@ module.exports = {
   brih: { name: "Brian Hur", email: "brian.hur@ghotmail.com"},
   hbri: { name: "Hur Brian", email: "hurts.hurts@hotmail.com"},
   hubr: { name: "Hur Brian", email: "hurts.brian@hotmail.com"},
+  hubi: { name: "Hur Brian", email: "hurts.brian@mail.com"},
 
   admin: {
     "_id" : "54551be15f221efa174238d1",
