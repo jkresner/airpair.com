@@ -9,6 +9,11 @@ var Data = require('./orders.data')
 var Util = require('../../shared/util')
 var OrderUtil = require('../../shared/orders.js')
 
+var base = {
+  'opensource': 20,
+  'private': 30
+}
+
 
 OrderUtil.calculateUnitPrice = (expert, type) => expert.rate + base[type]
 OrderUtil.calculateUnitProfit = (expert, type) => base[type] // TODO fix this for requests
@@ -17,11 +22,6 @@ OrderUtil.calculateUnitProfit = (expert, type) => base[type] // TODO fix this fo
 var logging = false
 var svc = new Svc(Order, logging)
 
-var base = {
-  'opensource': 20,
-  'private': 40,
-  'nda': 90,
-}
 
 
 export function getMyOrders(cb)
