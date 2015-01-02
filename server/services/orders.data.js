@@ -9,6 +9,9 @@ module.exports = {
       'owner':1,
       'profit':1,
       'lineItems.type':1,
+      'lineItems.info.name':1,
+      'lineItems.info.type':1,
+      'lineItems.total' :1,
       'company.contacts.fullName':1,
       'company.contacts.email':1
     }
