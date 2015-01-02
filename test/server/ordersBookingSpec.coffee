@@ -44,6 +44,7 @@ module.exports = -> describe "Booking: ", ->
           expect(order.lineItems[1].qty).to.equal(2)
           expect(order.lineItems[1].unitPrice).to.equal(140)
           expect(order.lineItems[1].info.paidout).to.equal(false)
+          expect(order.lineItems[1].info.type).to.equal('private')
           expect(_.idsEqual(order.lineItems[1].info.expert._id, data.experts.dros._id)).to.be.true
           expect(order.total).to.equal(280)
           expect(order.profit).to.equal(60)
@@ -95,6 +96,7 @@ module.exports = -> describe "Booking: ", ->
             expect(orders1[1].lineItems[1].balance).to.equal(0)
             expect(orders1[1].lineItems[1].profit).to.equal(40)
             expect(orders1[1].lineItems[1].info.expert.name).to.equal("Daniel Roseman")
+            expect(orders1[1].lineItems[1].info.type).to.equal('opensource')
 
             lines1 = ordersUtil.linesWithCredit(orders1)
             availableCredit1 = ordersUtil.getAvailableCredit(lines1)
