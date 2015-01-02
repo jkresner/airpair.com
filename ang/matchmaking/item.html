@@ -97,6 +97,9 @@
           <div>{{gh}}</div>
           <b>Score: {{m.score}}</b>
           <a href="/adm/experts/edit/{{m._id}}" target="_blank">{{m.name}}</a>
+          <a class="btn hist" ng-href="https://mail.google.com/mail/u/0/?shva=1#search/%22{{m.name | urlEncode }}%22+OR+{{ m.email | urlEncode  }}" target="_blank">
+            <i class="glyphicon glyphicon-envelope"></i> history
+          </a>
 
           <br />Rates: {{m.rate}}|{{m.minRate}} (min)
           <span ng-if="m.matching">
