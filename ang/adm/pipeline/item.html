@@ -55,7 +55,7 @@
 
       <div>
         <label>Last touch</label>
-        <span>{{ request.lastTouch | agoTime }} {{ request.lastTouch.action }}</span>
+        <span>{{ request.lastTouch.utc | agoTime }} {{ request.lastTouch.action }}</span>
       </div>
     </div>
 
@@ -104,14 +104,18 @@
     <div class="lastTouch">
       <label>Last touch</label>
       <span>{{ request.adm.lastTouch.action }}
-      <i>{{ request.adm.lastTouch | agoTime }} by
+      <i>{{ request.adm.lastTouch.utc | agoTime }} by
         {{ request.adm.lastTouch.by.name }}</i></span>
     </div>
     <label>Quality</label>
     <span ng-if="meta.shortBrief">short breif</span>
     <div ng-if="request.adm.closed"><label>Closed</label> {{request.adm.closed | locaTime : 'DD MMM HH:mm:ss' }}</div>
-    <br /><label>Messaged {{request.messages.length}}</label>
-    <span ng-repeat="m in request.messages"><br />{{m.type}}: <a ng-click="alertMessage(m.body)">{{m.subject}}</a></span>
+    <div>
+      <label>Messaged </label>
+      <ul class="messages">
+        <li ng-repeat="m in request.messages"><time>{{m._id |  objectIdToDate : 'DD MMM HH:mm'}}</time> <b>{{m.type}}</b> <a ng-click="alertMessage(m.body)">{{m.subject}}</a></li>
+      </ul>
+    </div>
 
     <hr />
     <mail-link ng-if="shouldSend.received(request)" name="'received'" to="request.by.email" req="request" meta="meta"></mail-link>
