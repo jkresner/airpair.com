@@ -64,6 +64,7 @@ module.exports = -> describe "Api", ->
         expect(adm1.feedback).to.be.undefined
         expect(adm1.closed).to.be.undefined
         expect(r1.messages.length).to.equal(1)
+        expect(r1.messages[0]._id).to.exist
         expect(r1.messages[0].type).to.equal('received')
         expect(r1.messages[0].subject).to.equal("test subject")
         expect(r1.messages[0].body).to.equal("test body")

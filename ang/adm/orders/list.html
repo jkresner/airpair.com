@@ -17,9 +17,14 @@
       <td><b>${{o.total}}</b></td>
       <td>{{o.utc | publishedTime : 'MM.DD HH:mm' }}</td>
       <td><img src="{{o.by.avatar}}?s=20"/><a href="mailto:{{o.by.email}}">{{o.by.name}}</a></td>
-      <td>{{o.owner}}</div>
-      <td><span ng-repeat="l in o.lineItems">{{l.type}} | </span></div>
-      <td class="p">${{o.profit}}</div>
+      <td>{{o.owner}}</td>
+      <td>
+        <div ng-repeat="l in o.lineItems">
+          <span>{{l.total}}</span> <em>{{l.type}}</em> {{ l.info.name }} {{ l.info.type }}
+        </div>
+      </td>
+      <td class="p">${{o.profit}}</td>
+    </tr>
   </table>
 
 </section>

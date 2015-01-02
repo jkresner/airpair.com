@@ -18,7 +18,6 @@ var MESSAGE_TYPE = [
 
 
 var Message = new Schema({
-  _id:          { type: ObjectId },
   type:         { require:true, type: String, enum: [MESSAGE_TYPE] },
   subject:      { require:true, type: String },
   body:         { require:true, type: String },
