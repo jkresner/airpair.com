@@ -9,6 +9,11 @@ var Data = require('./orders.data')
 var Util = require('../../shared/util')
 var OrderUtil = require('../../shared/orders.js')
 
+var base = {
+  'opensource': 20,
+  'private': 30
+}
+
 
 OrderUtil.calculateUnitPrice = (expert, type) => expert.rate + base[type]
 OrderUtil.calculateUnitProfit = (expert, type) => base[type] // TODO fix this for requests
@@ -17,11 +22,6 @@ OrderUtil.calculateUnitProfit = (expert, type) => base[type] // TODO fix this fo
 var logging = false
 var svc = new Svc(Order, logging)
 
-var base = {
-  'opensource': 20,
-  'private': 40,
-  'nda': 90,
-}
 
 
 export function getMyOrders(cb)
@@ -92,12 +92,12 @@ var Lines = {
     var info = { name: `Discount ($${amount})`, amount, coupon, source, appliedBy: { _id: user._id, name: user.name } }
     return newLine('discount',1,unitPrice,unitPrice,0,profit,info)
   },
-  airpair(expert, time, minutes, unitPrice, unitProfit)
+  airpair(expert, time, minutes, type, unitPrice, unitProfit)
   {
     var qty = minutes / 60
     var total = qty*unitPrice
     var exp = { _id: expert._id, name: expert.name, avatar: expert.avatar }
-    var info = { name: `${minutes} min (${expert.name})`, time, minutes, paidout: false, expert: exp }
+    var info = { name: `${minutes} min (${expert.name})`, type, time, minutes, paidout: false, expert: exp }
     return newLine('airpair',qty,unitPrice,total,0,qty*unitProfit,info)
   }
 }
@@ -275,7 +275,7 @@ function _createBookingOrder(expert, time, minutes, type, credit, payMethodId, r
   var unitPrice = OrderUtil.calculateUnitPrice(expert,type)
   var unitProfit = OrderUtil.calculateUnitProfit(expert, type)
   var total = minutes/60 * unitPrice
-  var lineItems = [Lines.airpair(expert, time, minutes, unitPrice, unitProfit)]
+  var lineItems = [Lines.airpair(expert, time, minutes, type, unitPrice, unitProfit)]
 
   if (credit && credit > 0)
   {

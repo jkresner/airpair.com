@@ -8,7 +8,7 @@
 
 <section id="book">
 
-  <section id="schedule">
+  <section id="schedule" ng-if="booking">
 
     <form id="bookForm" novalidate name="bookForm" ng-submit="submit(bookForm.$valid, data)">
       <h2>Book {{expert.name}}</h2>
@@ -24,29 +24,32 @@
       <hr />
 
       <div class="form-group">
-        <input name="type" ng-model="booking.minutes" type="radio" value="60">
+        <input name="minutes" ng-model="booking.minutes" type="radio" value="60">
         <span>1 HR &nbsp &nbsp &nbsp &nbsp</span>
 
-        <input name="type" ng-model="booking.minutes" type="radio" value="120">
+        <input name="minutes" ng-model="booking.minutes" type="radio" value="120">
         <span>2 HRS &nbsp &nbsp &nbsp &nbsp</span>
 
-        <input name="type" ng-model="booking.minutes" type="radio" value="180">
+        <input name="minutes" ng-model="booking.minutes" type="radio" value="180">
         <span>3 HRS &nbsp &nbsp &nbsp &nbsp</span>
 
-        <input name="type" ng-model="booking.minutes" type="radio" value="300">
+        <input name="minutes" ng-model="booking.minutes" type="radio" value="300">
         <span>5 HRS &nbsp &nbsp &nbsp &nbsp</span>
       </div>
-<!--       <br />
+       <br />
       <div class="form-group">
-        <input name="type" ng-model="booking.type" type="radio" value="private">
-        <span>Keep Private</span>
+        <input id="typePrivate" name="type" ng-model="booking.type" type="radio" value="private" ng-change="calcSummary()">
+        <label for="typePrivate"><span>Keep Private</span></label>
         <em ng-if="booking.type == 'private'"></em>
         &nbsp &nbsp &nbsp &nbsp
-        <input name="type" ng-model="booking.type" type="radio" value="opensource">
+        <input id="typeOpensource" name="type" ng-model="booking.type" type="radio" value="opensource" ng-change="calcSummary()">
         <span>Open Source</span>
-        <em ng-if="booking.type == 'opensource'">$20 discount /hr</em>
+        <em ng-if="booking.type == 'opensource'" style="color:#DD8766">$10 discount /hr</em>
+
+        <p ng-if="booking.type == 'opensource'" style="padding-top:15px;font-size:12px">Open sourced recordings are accessible on expert profiles to help them promote themselves. Do not open source your recording if you have any sensitive information you do not want others to see.</p>
       </div>
 
+<!--
       <div class="form-group">
         <label class="control-label" for="when">When</label>
         <p>We will try find a time to get you on AirPair with {{ expert.name }}</p>

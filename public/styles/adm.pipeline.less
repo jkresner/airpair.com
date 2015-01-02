@@ -93,7 +93,7 @@
     span { padding-top:4px;display:inline-block;color:black }
     div.left { width:30%;float:left;clear:left;vertical-align:top }
     div.right { width:69%;float:right;clear:right }
-    ul { display:block;padding-left:90px }
+    ul { display:block;.ulNoStyle; li { padding-left:64px;display:block } }
     #requestBrief { background:white;padding:3px 5px;min-height:150px;font-size:13px;
      max-height:180px;overflow-y:scroll; }
   }
@@ -138,6 +138,7 @@
       li.match {
         position:relative;
         vertical-align:top;
+        min-height:150px;
         width:24%;margin:2px 8px 12px 0;border:solid 1px @palegray;background:white;padding:2px;
         img.user { position:absolute;top:-5px;left:-5px; }
         > b { margin-left:40px;display:block;font-size:11px }
@@ -146,6 +147,11 @@
     }
 
     div { text-align:right;float:right;width:60% }
+
+    .hist {
+      position:absolute;bottom:5px;left:5px;
+      width:58px;font-size:9px;padding:1px 4px;margin:0!important;
+    }
 
     .sociallinks {
       height:23px;
@@ -158,8 +164,17 @@
         background-image:none;color:white;text-align:center;font-size:9px
        }
     }
+  }
 
-
+  .btn {
+    background:@paleyellow;
+    color:@darkyellow;
+    border:solid 1px @palegray;
+    padding:2px 4px;
+    width:100px;
+    font-size:10px;
+    text-align:left;
+    border-radius:2px;
   }
 }
 
@@ -219,7 +234,7 @@
     span { padding-top:4px;display:inline-block;color:black }
     div.left { width:44%;float:left;clear:left;vertical-align:top }
     div.right { width:56%;float:right;clear:right }
-    ul { display:block;padding-left:90px }
+    ul { display:block;.ulNoStyle; li { padding-left:64px;display:block } }
     #requestBrief { background:white;padding:3px 5px;min-height:180px;font-size:13px;
       max-height:180px;overflow-y:scroll; }
   }
@@ -236,6 +251,14 @@
     }
     .lastTouch {
       i { font-size:10px;font-style:normal; }
+    }
+    ul {
+      .ulNoStyle;
+      font-size:11px;
+      padding-left:66px;
+      margin-top:-25px;
+      time { font-size:11px;display:inline }
+      b { display:inline-block;width:105px }
     }
   }
 
