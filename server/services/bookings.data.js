@@ -1,3 +1,5 @@
+import * as md5         from '../util/md5'
+
 module.exports = {
 
   select: {
@@ -11,7 +13,13 @@ module.exports = {
       'datetime':1,
       // 'gcal':1,
       'recordings':1,
+      'participants':1,
       // 'orderId':1
+    },
+    setAvatars: (booking) => {
+      if (booking && booking.participants)
+        for (var p of booking.participants)
+          p.info.avatar = md5.gravatarUrl(p.info.email)
     }
   },
 

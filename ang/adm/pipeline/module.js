@@ -79,6 +79,10 @@ angular.module("ADMPipeline", ["APRequestDirectives","APProfileDirectives"])
       meta.timeToReceived = moment.duration(submitted.diff(r.adm.received)).humanize()
     if (submitted && r.adm.reviewable)
       meta.timeToReviewable = moment.duration(submitted.diff(r.adm.reviewable)).humanize()
+    if (submitted && r.adm.booked)
+      meta.timeToBook = moment.duration(submitted.diff(r.adm.booked)).humanize()
+
+
 
     meta.timeToCancelFromWaiting = r.status == 'waiting' && meta.moreThan1DayOld
     meta.trustedLevel += ($scope.user.googleId) ? 1 : 0

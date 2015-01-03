@@ -21,6 +21,7 @@ export default function(app) {
     .param('tag', TagsAPI.paramFns.getBySlug)
     .param('expert', ExpertsAPI.paramFns.getById)
     .param('request', RequestsAPI.paramFns.getByIdForAdmin)
+    .param('booking', BookingsAPI.paramFns.getById)
 
     .get('/session/full', setAnonSessionData, UsersAPI.getSessionFull)
     .put('/users/me/password', UsersAPI.changePassword)
@@ -99,11 +100,13 @@ export default function(app) {
   var admrouter = require('express').Router()
     .param('expert', ExpertsAPI.paramFns.getById)
     .param('request', RequestsAPI.paramFns.getByIdForAdmin)
+    .param('booking', BookingsAPI.paramFns.getById)
 
     .use(adm)
     .get('/posts', PostsAPI.getAllAdmin)
     .get('/orders/:start/:end', OrdersAPI.getOrdersByDateRange)
-    .get('/bookings/:start/:end', BookingsAPI.getByDateRangeForAdmin)
+    .get('/bookings/:start/:end/:userId?', BookingsAPI.getByQueryForAdmin)
+    .put('/bookings/:booking', BookingsAPI.updateByAdmin)
     .get('/users/role/:role', UsersAPI.getUsersInRole)
     .put('/users/:id/role/:role', UsersAPI.toggleUserInRole)
     .get('/users/search/:id', UsersAPI.search)

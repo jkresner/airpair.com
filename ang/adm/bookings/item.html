@@ -1,9 +1,75 @@
 <section id="booking" ng-if="booking">
 
-<h2>Booking</h2>
+  <h2>Booking</h2>
 
-{{booking._id}}
+    <span>{{booking.minutes}} MINUTES </span>
+    <br /><span>{{booking.type}} </span>
+    <br />
+    <div class="dropdown" ng-if="data.datetime">
+      <a class="dropdown-toggle start-toggle-select" id="dropdownStart" role="button" data-toggle="dropdown" data-target="#" href="#">
+        <div class="input-group"><input type="text" class="form-control" value="{{data.datetime.format('YYYY MMM DD HH:mm ZZ')}}"><span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+        </div>
+      </a>
+      <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+        <datetimepicker data-ng-model="data.datetime" data-datetimepicker-config="{  startView:'day',minuteStep:30}" data-on-set-time="onTimeSet('start', newDate, oldDate)" ></datetimepicker>
+      </ul>
+    </div>
+    <a ng-if="datetimeChanged(data.datetime)" ng-click="updateTime(data.datetime)">Update time</a>
 
-{{booking.datetime}}
+    <section class="gcal">
+      <div ng-if="!data.gcal">No google invitation
+        <br />
+        <br /><a ng-click="addGcal()">Create gcal event for <br /> {{previousDatetime.format('YYYY MMM DD HH:mm ZZ')}}</a>
+        <br /><input name="gcalNotify" type="checkbox" ng-model="data.notify"> Send notifications
+      </div>
+    </section>
+
+
+  <br />
+  <div>
+    <select class="form-control" ng-model="data.status" ng-change="updateStatus()">
+      <option>pending</option>
+      <option>confirmed</option>
+      <option>followup</option>
+      <option>complete</option>
+      <option>canceled</option>
+    </select>
+    <br />
+    <select class="form-control" ng-model="data.type">
+      <option>private</option>
+      <option>opensource</option>
+      <option>offline</option>
+    </select>
+  </div>
+
+  <div class="customer">
+    <h3>Customer</h3>
+    <div ng-repeat="p in customers">
+      <img ng-src="{{p.info.avatar}}" class="user">
+      <span>{{p.info.name}} </span>
+      <span>{{p.info.email}} </span>
+    </div>
+  </div>
+
+
+  <div class="expert">
+    <h3>Expert</h3>
+    <div ng-repeat="p in experts">
+      <img ng-src="{{p.info.avatar}}" class="user">
+      <span>{{p.info.name}} </span>
+      <span>{{p.info.email}} </span>
+    </div>
+  </div>
+
+
+
+  <div class="recodings">
+    <h3>Recordings</h3>
+    <input type="text" class="form-control" placeholder="Paste you tube link" />
+    <div ng-repeat="r in booking.recordings">
+      <span>{{r.url}}</span>
+    </div>
+  </div>
+
 
 </section>

@@ -160,7 +160,7 @@ function ensureDocument(Model, doc, cb, refresh)
 }
 
 
-module.exports = {
+var setup = {
 
   init(done)
   {
@@ -216,6 +216,20 @@ module.exports = {
         for (var t of [railsTests,biggestFailsOnThePlayStore]) { bulk.insert(t) }
         bulk.execute(done)
         cache.flush('workshops')
+      }
+      else
+        done()
+    })
+  },
+
+  initExperts(done)
+  {
+    Models.Expert.findOne({_id:data.experts.admb._id}, function(e,r) {
+      if (!r) {
+        setup.ensureExpert(data.users.dros, data.experts.dros, () =>
+          setup.ensureExpert(data.users.tmot, data.experts.tmot, () =>
+            setup.ensureExpert(data.users.abha, data.experts.abha, () =>
+              setup.ensureExpert(data.users.admb, data.experts.admb, done ))))
       }
       else
         done()
@@ -302,3 +316,6 @@ module.exports = {
 
 
 }
+
+
+module.exports = setup
