@@ -1,12 +1,14 @@
 window.$ = window.jQuery = require('./../public/lib/jquery/dist/jquery.js');
 window._ = require('./../public/lib/lodash/dist/lodash.js');
 window.moment = require('./../public/lib/moment/moment.js');
+window.moment.tz = require('./../public/lib/moment-timezone/builds/moment-timezone-with-data-2010-2020.js');
 require('./../public/lib/angular/angular.js');
 require('./../public/lib/angular-animate/angular-animate.js');
 require('./../public/lib/angular-route/angular-route.js');
 require('./../public/lib/angular-messages/angular-messages.js');
 require('./../public/lib/angular-load/angular-load.js');
 require('./../public/lib/angular-bootstrap/ui-bootstrap-tpls.js');
+require('./../public/lib/angular-bootstrap-datetimepicker/src/js/datetimepicker.js');
 require('./../public/lib/prism/prism.js');
 require('./../public/lib/jquery-ui-custom/jquery-ui.js');
 window.marked = require('./../public/lib/marked/lib/marked.js');
@@ -41,7 +43,8 @@ require('./requests/module.js');
 require('./common/pageHelpers.js');
 
 
-angular.module("AP", ['Providers', 'ngRoute', 'ngAnimate', 'APViewData', 'APDataSvc', 'APCTAs',
+angular.module("AP", ['Providers', 'ngRoute', 'ngAnimate', 'ui.bootstrap.datetimepicker',
+  'APViewData', 'APDataSvc', 'APCTAs',
   'APAnalytics', 'APSideNav', 'APChatNav', 'APServerTemplates', 'APNotifications',
   'APProfileDirectives', 'APPageHelpers',
   'APAuth', 'APPosts', 'APWorkshops', 'APProfile', 'APBilling', 'APRequests'])
