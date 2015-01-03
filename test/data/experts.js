@@ -308,6 +308,77 @@ module.exports = {
     "updatedAt" : "2014-10-16T04:50:59.701Z",
     "userId" : "53336a211c67d1a4859d2a04",
     "username" : "abeisgreat"
+  },
+
+  admb: {
+    "_id" : "51a6cc55960c490200000006",
+    "__v" : 1,
+    "availability" : "",
+    "bookMe" : {
+        "rate" : "200",
+        "rake" : "20",
+        "urlSlug" : "abliss",
+        "urlBlog" : "",
+        "enabled" : true,
+        "coupons" : [
+            {
+                "code" : "kewang",
+                "rate" : "160"
+            }
+        ]
+    },
+    "brief" : "Equally pleased to help newbies or dig deep on difficult problems.",
+    "email" : "abliss@gmail.com",
+    "gh" : {
+        "id" : 215283,
+        "username" : "abliss",
+        "gravatar_id" : "13122bc0c7b33d9720caf821b4165136",
+        "followers" : 3
+    },
+    "gmail" : "abliss@gmail.com",
+    "homepage" : "",
+    "hours" : "3-5",
+    "in" : {
+        "id" : "o2928bHLan",
+        "displayName" : "Adam Bliss"
+    },
+    "karma" : 0,
+    "minRate" : 40,
+    "name" : "Adam Bliss",
+    "pic" : "//0.gravatar.com/avatar/13122bc0c7b33d9720caf821b4165136",
+    "rate" : 70,
+    "so" : {
+        "id" : 1239095,
+        "website_url" : "http://google.com/profiles/abliss",
+        "link" : "1239095/adam-bliss",
+        "reputation" : 336,
+        "profile_image" : "https://www.gravatar.com/avatar/13122bc0c7b33d9720caf821b4165136?s=128&d=identicon&r=PG"
+    },
+    "status" : "ready",
+    "tags" : [
+        {
+            "_id" : "514825fa2a26ea0200000006",
+            "name" : "Android",
+            "short" : "android",
+            "soId" : "android",
+            "levels" : [
+                "beginner",
+                "intermediate",
+                "expert"
+            ]
+        }
+    ],
+    "timezone" : "GMT+0700 (ICT)",
+    "tw" : {
+        "id" : 12958622,
+        "username" : "abliss",
+        "pic" : {
+            "value" : "https://si0.twimg.com/profile_images/2489434659/6hin9qAg_normal"
+        }
+    },
+    "updatedAt" : "2013-05-30T03:49:41.000Z",
+    "userId" : "51a6c65e66a6f999a465f30b",
+    "username" : "abliss"
   }
 
 }

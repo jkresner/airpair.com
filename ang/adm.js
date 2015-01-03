@@ -1,11 +1,13 @@
 window.$ = window.jQuery = require('./../public/lib/jquery/dist/jquery.js');
 window._ = require('./../public/lib/lodash/dist/lodash.js');
 window.moment = require('./../public/lib/moment/moment.js');
+window.moment.tz = require('./../public/lib/moment-timezone/builds/moment-timezone-with-data-2010-2020.js');
 require('./../public/lib/angular/angular.js');
 require('./../public/lib/angular-route/angular-route.js');
 require('./../public/lib/angular-messages/angular-messages.js');
 require('./../public/lib/angular-load/angular-load.js');
 require('./../public/lib/angular-bootstrap/ui-bootstrap-tpls.js');
+require('./../public/lib/angular-bootstrap-datetimepicker/src/js/datetimepicker.js');
 require('./common/directives/forms.js');
 require('./common/directives/post.js');
 require('./common/directives/tagInput.js');
@@ -32,7 +34,7 @@ require('./matchmaking/module.js');
 
 
 angular.module('ADM', [
-  'ngRoute',
+  'ngRoute', 'ui.bootstrap.datetimepicker',
   'APSvcSession', 'APSvcAdmin', 'APDataSvc', 'APNotifications',
   'APFilters', 'APFormsDirectives', 'APTypeAheadInputs', 'APMailTemplates',
   'ADMPipeline',

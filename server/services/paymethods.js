@@ -108,7 +108,7 @@ export function getMyPaymethods(cb) {
       if (r.length > 0) return cb(e,r)
       else {
         Settings.findOne({userId:ctx.user._id}, (ee, s) => {
-          if (!s || !s.paymentMethods)
+          if (!s || !s.paymentMethods || s.paymentMethods.length == 0 || !_.find(s.paymentMethods,(pm)=>pm.type == 'stripe'))
             return Braintree.getClientToken(cb)
 
           var existing = _.find(s.paymentMethods, (pm) => pm.type == 'stripe')
