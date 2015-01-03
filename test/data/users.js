@@ -104,6 +104,10 @@ module.exports = {
   hubr: { name: "Hur Brian", email: "hurts.brian@hotmail.com"},
   hubi: { name: "Hur Brian", email: "hurts.brian@mail.com"},
 
+  cher: { name: "Chelsea Rustrum", email: "chelsea@rustrum.com"},
+  // chru: { name: "Chelsea Rustrum", email: "chelsearustrum@rustrum.com"},
+  // crus: { name: "Chelsea Rustrum", email: "chelsea.rustrum@rustrum.com"},
+
   admin: {
     "_id" : "54551be15f221efa174238d1",
     "googleId" : "199992380360999999999",
@@ -421,6 +425,121 @@ module.exports = {
     },
     "googleId" : "103447198283237700854",
     "name" : "Vikram Narayan"
+  },
+
+  tmot: {
+    "_id" : "527280b766a6f999a465fa9e",
+    "__v" : 0,
+    "email" : "todd@toddmotto.com",
+    "emailVerified" : false,
+    "google" : {
+        "provider" : "google",
+        "id" : "104675806858920385950",
+        "displayName" : "Todd Motto",
+        "name" : {
+            "familyName" : "Motto",
+            "givenName" : "Todd"
+        },
+        "emails" : [   { "value" : "todd@toddmotto.com"  } ],
+        "_json" : {
+            "id" : "104675806858920385950",
+            "email" : "todd@toddmotto.com",
+            "verified_email" : true,
+            "name" : "Todd Motto",
+            "given_name" : "Todd",
+            "family_name" : "Motto",
+            "link" : "https://plus.google.com/+ToddMotto",
+            "picture" : "https://lh4.googleusercontent.com/-ezhx3pwSklU/AAAAAAAAAAI/AAAAAAAAAQE/ABoiiB9n-c8/photo.jpg",
+            "gender" : "male",
+            "locale" : "en",
+            "hd" : "toddmotto.com"
+        },
+        "token" : {
+            "token" : "ya29.kwBOaqwCrDMR6IgXFyh6DUdiHkwSiMbVBLpCXYlSvPCgoa-9ILZ6oYaP",
+            "attributes" : {
+                "refreshToken" : null
+            }
+        }
+    },
+    "googleId" : "104675806858920385950",
+    "name" : "Todd Motto",
+    "twitter" : {
+        "provider" : "twitter",
+        "id" : 222638700,
+        "username" : "toddmotto",
+        "displayName" : "Todd Motto",
+        "photos" : [
+            {
+                "value" : "https://pbs.twimg.com/profile_images/378800000571258964/614a9d5f3785ba8452f186d91d3018ff_normal.jpeg"
+            }
+        ],
+        "_json" : {
+            "id" : 222638700,
+            "id_str" : "222638700",
+            "name" : "Todd Motto",
+            "screen_name" : "toddmotto",
+            "location" : "Chippenham, England, UK",
+            "description" : "Lead front-end engineer @appsbroker. JavaScript and HTML5 developer. @conditionizr creator. AngularJS lover. Engaged to @StaceyLVincent.",
+            "url" : "http://t.co/gNX03x9Vri",
+            "entities" : {
+                "url" : {
+                    "urls" : [
+                        {
+                            "url" : "http://t.co/gNX03x9Vri",
+                            "expanded_url" : "http://toddmot.to",
+                            "display_url" : "toddmot.to",
+                            "indices" : [
+                                0,
+                                22
+                            ]
+                        }
+                    ]
+                },
+                "description" : {
+                    "urls" : []
+                }
+            },
+            "protected" : false,
+            "followers_count" : 12827,
+            "friends_count" : 294,
+            "listed_count" : 433,
+            "created_at" : "Sat Dec 04 00:31:42 +0000 2010",
+            "favourites_count" : 2,
+            "utc_offset" : 0,
+            "time_zone" : "Casablanca",
+            "geo_enabled" : true,
+            "verified" : false,
+            "statuses_count" : 16809,
+            "lang" : "en",
+            "status" : {},
+            "contributors_enabled" : false,
+            "is_translator" : false,
+            "profile_background_color" : "333333",
+            "profile_background_image_url" : "http://a0.twimg.com/profile_background_images/588278060/6viy7pszdedjdjjqn6dc.jpeg",
+            "profile_background_image_url_https" : "https://si0.twimg.com/profile_background_images/588278060/6viy7pszdedjdjjqn6dc.jpeg",
+            "profile_background_tile" : false,
+            "profile_image_url" : "http://pbs.twimg.com/profile_images/378800000571258964/614a9d5f3785ba8452f186d91d3018ff_normal.jpeg",
+            "profile_image_url_https" : "https://pbs.twimg.com/profile_images/378800000571258964/614a9d5f3785ba8452f186d91d3018ff_normal.jpeg",
+            "profile_banner_url" : "https://pbs.twimg.com/profile_banners/222638700/1381935739",
+            "profile_link_color" : "04A4CC",
+            "profile_sidebar_border_color" : "000000",
+            "profile_sidebar_fill_color" : "FFFFFF",
+            "profile_text_color" : "706E70",
+            "profile_use_background_image" : false,
+            "default_profile" : false,
+            "default_profile_image" : false,
+            "following" : false,
+            "follow_request_sent" : false,
+            "notifications" : false
+        },
+        "token" : {
+            "token" : "222638700-FiFSpZJVv5mqMQxZNI3t8tgrIHwOjkzWvoZhbUAj",
+            "attributes" : {
+                "tokenSecret" : "nrja7E8RxorQxyR5AT0Hb5ViZM5UotqKPcXzCv5HUwILW"
+            }
+        }
+    },
+    "twitterId" : 222638700
   },
 
   aril: {

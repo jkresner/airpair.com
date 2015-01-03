@@ -52,6 +52,7 @@
       <div ng-if="meta.timeToSubmit"><label>Submitted</label> {{ request.adm.submitted | locaTime : 'DD MMM HH:mm:ss' }} <span>{{ request.adm.submitted | agoTime }} |  ({{meta.timeToSubmit}} to complete)</span></div>
       <div ng-if="meta.timeToReceived"><label>Replied</label> after {{ meta.timeToReceived }} </div>
       <div ng-if="meta.timeToReviewable"><label>Reviewable</label> after {{ meta.timeToReviewable }}</div>
+      <div ng-if="meta.timeToBook"><label>Booked</label> after {{ meta.timeToBook }}</div>
 
       <div>
         <label>Last touch</label>
@@ -79,7 +80,7 @@
           <option value="waiting">waiting</option>
           <option value="review">review</option>
           <option value="booked">booked</option>
-          <option value="completed">completed</option>
+          <option value="complete">complete</option>
           <option value="canceled">canceled</option>
           <option value="junk">junk</option>
           <option value="holding">(v0) holding</option>

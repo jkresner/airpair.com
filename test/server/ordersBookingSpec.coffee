@@ -4,14 +4,11 @@ ordersUtil = require '../../shared/orders'
 
 module.exports = -> describe "Booking: ", ->
 
-  @timeout 5000
+  @timeout 4000
 
   before (done) ->
     stubAnalytics()
-    testDb.ensureExpert data.users.dros, data.experts.dros, ->
-      testDb.ensureExpert data.users.dros, data.experts.tmot, ->
-        testDb.ensureExpert data.users.abha, data.experts.abha, ->
-          testDb.ensureExpert data.users.admb, data.experts.admb, done
+    testDb.initExperts done
 
 
   after (done) ->
@@ -256,7 +253,6 @@ module.exports = -> describe "Booking: ", ->
                   POST "/bookings/#{adamB._id}", airpair1, {}, (booking1) ->
                     expect(booking1._id).to.exist
                     GET "/billing/orders", {}, (orders) ->
-                      $log('orders')
                       expect(orders.length).to.equal(1)
                       expect(orders[0].total).to.equal(130)
                       expect(orders[0].profit).to.equal(45)
