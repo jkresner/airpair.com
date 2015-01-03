@@ -82,10 +82,10 @@ var get = {
       var match = _.find(expertTags,(t)=>_.idsEqual(t._id,tag._id))
       if (match) {
         tagMatchCount = tagMatchCount+1
-        tagScore = tagScore + (5 - tag.sort)*2
+        tagScore = tagScore + (5 - tag.sort)*20
       }
     }
-    tagScore = (tagScore + tagMatchCount * 2)*100
+    tagScore = (tagScore + tagMatchCount * 30)*200
 
     var matchingScore = 0
     if (expert.matching)
@@ -95,8 +95,8 @@ var get = {
     matchingScore = matchingScore*200
 
     var socialScore = 0;
-    if (expert.gh) socialScore += Math.floor(expert.gh.followers/10)
-    if (expert.so) socialScore += socialScore + Math.floor(expert.so.reputation/100)
+    if (expert.gh) socialScore += Math.floor(expert.gh.followers/20)
+    if (expert.so) socialScore += socialScore + Math.floor(expert.so.reputation/150)
     // if (expert.tw) socialScore += socialScore + Math.floor(expert.tw.followers)
     // if (expert.in) socialScore += socialScore + Math.floor(expert.in.endorsements)
     // if (expert.bb) socialScore += socialScore + Math.floor(expert.bb.followers)
