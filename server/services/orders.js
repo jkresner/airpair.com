@@ -19,8 +19,7 @@ var svc = new Svc(Order, logging)
 
 var base = {
   'opensource': 20,
-  'private': 40,
-  'nda': 90,
+  'private': 30
 }
 
 
@@ -92,12 +91,12 @@ var Lines = {
     var info = { name: `Discount ($${amount})`, amount, coupon, source, appliedBy: { _id: user._id, name: user.name } }
     return newLine('discount',1,unitPrice,unitPrice,0,profit,info)
   },
-  airpair(expert, time, minutes, unitPrice, unitProfit)
+  airpair(expert, time, minutes, type, unitPrice, unitProfit)
   {
     var qty = minutes / 60
     var total = qty*unitPrice
     var exp = { _id: expert._id, name: expert.name, avatar: expert.avatar }
-    var info = { name: `${minutes} min (${expert.name})`, time, minutes, paidout: false, expert: exp }
+    var info = { name: `${minutes} min (${expert.name})`, type, time, minutes, paidout: false, expert: exp }
     return newLine('airpair',qty,unitPrice,total,0,qty*unitProfit,info)
   }
 }
@@ -269,14 +268,9 @@ export function giveCredit(toUserId, total, source, cb)
 }
 
 
-function _createBookingOrder(expert, time, minutes, type, credit, payMethodId, request, cb)
+function _createBookingOrder(expert, time, minutes, type, credit, payMethodId, request, lineItems, total, cb)
 {
   var requestId = (request) ? request._id : null
-  var unitPrice = OrderUtil.calculateUnitPrice(expert,type)
-  var unitProfit = OrderUtil.calculateUnitProfit(expert, type)
-  var total = minutes/60 * unitPrice
-  var lineItems = [Lines.airpair(expert, time, minutes, unitPrice, unitProfit)]
-
   if (credit && credit > 0)
   {
     bookUsingCredit.call(this, expert, minutes, total, lineItems, credit, payMethodId, requestId, cb)
@@ -304,11 +298,19 @@ export function createBookingOrder(expert, time, minutes, type, credit, payMetho
       //-- TODO look at the data from db instead of being passed from client
       expert = requestSuggestion.suggestion.expert
       expert.rate = requestSuggestion.suggestion.suggestedRate.expert
-      _createBookingOrder.call(this, expert, time, minutes, type, credit, payMethodId, request, cb)
+      var unitPrice = requestSuggestion.suggestion.suggestedRate.total
+      var unitProfit = requestSuggestion.suggestion.suggestedRate.total - expert.rate
+      var total = minutes/60 * unitPrice
+      var lineItems = [Lines.airpair(expert, time, minutes, type, unitPrice, unitProfit)]
+      _createBookingOrder.call(this, expert, time, minutes, type, credit, payMethodId, request, lineItems, total, cb)
     })
   }
   else {
-    _createBookingOrder.call(this, expert, time, minutes, type, credit, payMethodId, null, cb)
+    var unitPrice = OrderUtil.calculateUnitPrice(expert,type)
+    var unitProfit = OrderUtil.calculateUnitProfit(expert, type)
+    var total = minutes/60 * unitPrice
+    var lineItems = [Lines.airpair(expert, time, minutes, type, unitPrice, unitProfit)]
+    _createBookingOrder.call(this, expert, time, minutes, type, credit, payMethodId, null, lineItems, total, cb)
   }
 }
 
