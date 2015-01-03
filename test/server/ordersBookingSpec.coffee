@@ -38,17 +38,18 @@ module.exports = -> describe "Booking: ", ->
           expect(order.lineItems.length).to.equal(2)
           expect(order.lineItems[0].type).to.equal('payg')
           expect(order.lineItems[0].total).to.equal(0)
-          expect(order.lineItems[0].unitPrice).to.equal(300)
+          expect(order.lineItems[0].unitPrice).to.equal(280)
           expect(order.lineItems[0].qty).to.equal(0)
-          expect(order.lineItems[0].info.name).to.equal('$300 Paid')
+          expect(order.lineItems[0].info.name).to.equal('$280 Paid')
           expect(order.lineItems[1].type).to.equal('airpair')
-          expect(order.lineItems[1].total).to.equal(300)
+          expect(order.lineItems[1].total).to.equal(280)
           expect(order.lineItems[1].qty).to.equal(2)
-          expect(order.lineItems[1].unitPrice).to.equal(150)
+          expect(order.lineItems[1].unitPrice).to.equal(140)
           expect(order.lineItems[1].info.paidout).to.equal(false)
+          expect(order.lineItems[1].info.type).to.equal('private')
           expect(_.idsEqual(order.lineItems[1].info.expert._id, data.experts.dros._id)).to.be.true
-          expect(order.total).to.equal(300)
-          expect(order.profit).to.equal(80)
+          expect(order.total).to.equal(280)
+          expect(order.profit).to.equal(60)
           done()
 
 
@@ -97,6 +98,7 @@ module.exports = -> describe "Booking: ", ->
             expect(orders1[1].lineItems[1].balance).to.equal(0)
             expect(orders1[1].lineItems[1].profit).to.equal(40)
             expect(orders1[1].lineItems[1].info.expert.name).to.equal("Daniel Roseman")
+            expect(orders1[1].lineItems[1].info.type).to.equal('opensource')
 
             lines1 = ordersUtil.linesWithCredit(orders1)
             availableCredit1 = ordersUtil.getAvailableCredit(lines1)
@@ -114,7 +116,7 @@ module.exports = -> describe "Booking: ", ->
                 lines2 = ordersUtil.linesWithCredit(orders2)
                 expect(lines2.length).to.equal(1)
                 availableCredit2 = ordersUtil.getAvailableCredit(lines2)
-                expect(availableCredit2).to.equal(90)
+                expect(availableCredit2).to.equal(100)
                 airpair3 = time: moment().add(4, 'day'), minutes: 60, type: 'private', credit: 200, payMethodId: s.primaryPayMethodId
                 POST "/bookings/#{data.experts.dros._id}", airpair3, { status: 400 }, (err) ->
                   expect(err.message.indexOf('ExpectedCredit $200')).to.equal(0)
@@ -148,15 +150,15 @@ module.exports = -> describe "Booking: ", ->
               GET "/billing/orders", {}, (orders) ->
                 expect(orders.length).to.equal(2)
                 order = _.find(orders, (o) -> _.idsEqual(o._id,booking1.orderId))
-                expect(order.total).to.equal(250)
-                expect(order.profit).to.equal(60)
+                expect(order.total).to.equal(235)
+                expect(order.profit).to.equal(45)
                 expect(order.payment.status).to.equal('submitted_for_settlement')
                 expect(order.lineItems.length).to.equal(3)
                 expect(order.lineItems[0].type).to.equal('payg')
                 expect(order.lineItems[0].total).to.equal(0)
-                expect(order.lineItems[0].unitPrice).to.equal(250)
+                expect(order.lineItems[0].unitPrice).to.equal(235)
                 expect(order.lineItems[0].qty).to.equal(0)
-                expect(order.lineItems[0].info.name).to.equal('$250 Paid')
+                expect(order.lineItems[0].info.name).to.equal('$235 Paid')
                 expect(order.lineItems[1].type).to.equal('redeemedcredit')
                 expect(order.lineItems[1].total).to.equal(-50)
                 expect(order.lineItems[1].unitPrice).to.equal(-50)
@@ -165,9 +167,9 @@ module.exports = -> describe "Booking: ", ->
                 expect(order.lineItems[1].info.name).to.equal('$50 Redeemed Credit')
                 expect(_.idsEqual(order.lineItems[1]._id, orders[0].lineItems[0].info.redeemedLines[0].lineItemId)).to.be.true
                 expect(order.lineItems[2].type).to.equal('airpair')
-                expect(order.lineItems[2].total).to.equal(300)
+                expect(order.lineItems[2].total).to.equal(285)
                 expect(order.lineItems[2].qty).to.equal(1.5)
-                expect(order.lineItems[2].unitPrice).to.equal(200)
+                expect(order.lineItems[2].unitPrice).to.equal(190)
                 expect(order.lineItems[2].info.paidout).to.equal(false)
                 expect(_.idsEqual(order.lineItems[2].info.expert._id, data.experts.tmot._id)).to.be.true
                 done()
