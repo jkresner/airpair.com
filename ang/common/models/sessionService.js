@@ -43,7 +43,7 @@ angular.module('APSvcSession', [])
       cache = cache || $cacheFactory();
       return $http.get(`${API}/session/full`, {cache:cache}).then(
         function(response) {
-          if ($rootScope.session && $rootScope.session._id) {
+          if ($rootScope.session && $rootScope.session.tags) {
             return $rootScope.session
           } else {
             setScope(()=>{})(response.data);

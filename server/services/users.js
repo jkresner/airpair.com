@@ -492,7 +492,7 @@ export function updateEmailToBeVerified(email, errorCB, cb) {
       r.local.emailHashGenerated = new Date
     }
 
-    User.findOneAndUpdate({_id:this.user._id}, r, (e,user) => {
+    svc.update(this.user._id, r, (e,user) => {
       if (e) {
         if (e.message.indexOf('duplicate key error index') != -1) return errorCB(Error('Email belongs to another account'))
         return errorCB(e)
