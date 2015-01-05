@@ -365,7 +365,6 @@ module.exports = -> describe "Signup: ", ->
                 expect(spy.callCount).to.equal(1)
                 expect(spy.args[0][0].email).to.equal("vikram@test.com")
                 hash = spy.args[0][1]
-                $log('going'.blue, hash)
                 spy.restore()
                 PUT "/users/me/email-verify", { hash }, {}, (sVerified) ->
                   expect(sVerified.emailVerified).to.be.true
