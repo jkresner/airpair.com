@@ -72,7 +72,7 @@ angular.module("APCTAs", ['ngMessages','APAnalytics'])
         SessionService.onAuthenticated( (s) => $scope.data = { email: s.email, name: s.name } )
 
         $scope.updateEmail = (model) => CtaHelper.updateEmail($scope, model,
-          () => { angular.element('#teamJoinName').focus() })
+          () => { angular.element('#homeJoinName').focus() })
 
         $scope.submit = (formValid, data) => CtaHelper.submit($scope, formValid, data,
           () => { window.location = '/meet-experts' })
