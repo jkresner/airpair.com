@@ -5,15 +5,8 @@
     <span>{{booking.minutes}} MINUTES </span>
     <br /><span>{{booking.type}} </span>
     <br />
-    <div class="dropdown" ng-if="data.datetime">
-      <a class="dropdown-toggle start-toggle-select" id="dropdownStart" role="button" data-toggle="dropdown" data-target="#" href="#">
-        <div class="input-group"><input type="text" class="form-control" value="{{data.datetime.format('YYYY MMM DD HH:mm ZZ')}}"><span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
-        </div>
-      </a>
-      <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-        <datetimepicker data-ng-model="data.datetime" data-datetimepicker-config="{  startView:'day',minuteStep:30}" data-on-set-time="onTimeSet('start', newDate, oldDate)" ></datetimepicker>
-      </ul>
-    </div>
+    <div datetime-input id="bookingDatetime" datetime="data.datetime" min-view="minute" date-format="YYYY MMM DD HH:mm Z"></div>
+
     <a ng-if="datetimeChanged(data.datetime)" ng-click="updateTime(data.datetime)">Update time</a>
 
     <section class="gcal">

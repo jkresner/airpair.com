@@ -1,5 +1,4 @@
 import Svc from './_service'
-import * as Validate from '../../shared/validation/billing.js'
 import PayMethod from '../models/paymethod'
 import * as UserSvc from './users'
 import * as CompanysSvc from './companys'
@@ -42,57 +41,6 @@ export function charge(amount, orderId, payMethod, cb) {
   else
     return cb(`${payMethod.type} not supported a payment type`)
 }
-
-export function addPaymethod(o, cb) {
-  var customerId = (o.companyId != null) ? o.companyId : this.user._id
-
-  var savePayMethod = (ctx) =>
-    (ee, payMethodInfo) => {
-      if (ee) return cb(ee)
-      else {
-        o.userId = ctx.user._id
-        o.companyId = o.companyId
-        o.info = payMethodInfo
-        if (logging) $log('savePayMethod', payMethodInfo)
-
-        svc.create(o, (e,r) => {
-          if (logging) $log('savedPayMethod', o.makeDefault, ctx.user, r._id)
-
-          if (ctx.user.email) { //-- When admin looks at request, don't trigger analtyics
-            var cardType = payMethodInfo.cardType || payMethodInfo.id
-            analytics.track(ctx.user, null, 'Save', { type: 'paymethod', method: o.type, cardType })
-          }
-
-          if (o.makeDefault)
-            UserSvc.update.call(ctx, ctx.user._id, { primaryPayMethodId: r._id })
-          cb(e, r)
-        })
-      }
-    }
-
-
-  if (o.type == 'braintree')
-    Braintree.addPaymentMethod(customerId, this.user, null, o.token, savePayMethod(this))
-  else if (o.type == 'stripe')
-    savePayMethod(this)(null, o.info)
-  else
-    return cb(`${o.type} not supported a payment type`)
-}
-
-
-export function deletePaymethod(id, cb) {
-  UserSvc.getSessionFull.call(this, (e, user) => {
-    svc.getById(id, (e, r) => {
-      var inValid = Validate.deletePayMethodById(this.user, r)
-      if (inValid) return cb(svc.Forbidden(inValid))
-      svc.deleteById(id, cb)
-      if (_.idsEqual(user.primaryPayMethodId,id))
-      Settings.remove({userId:this.user._id}, () => {})
-      UserSvc.update.call(this, user._id, { primaryPayMethodId: null })
-    })
-  })
-}
-
 
 
 export function getMyPaymethods(cb) {
@@ -146,3 +94,53 @@ export function hasPaymethods(userId, cb) {
     })
   })
 }
+
+
+
+export function addPaymethod(o, cb) {
+  var customerId = (o.companyId != null) ? o.companyId : this.user._id
+
+  var savePayMethod = (ctx) =>
+    (ee, payMethodInfo) => {
+      if (ee) return cb(ee)
+      else {
+        o.userId = ctx.user._id
+        o.companyId = o.companyId
+        o.info = payMethodInfo
+        if (logging) $log('savePayMethod', payMethodInfo)
+
+        svc.create(o, (e,r) => {
+          if (logging) $log('savedPayMethod', o.makeDefault, ctx.user, r._id)
+
+          if (ctx.user.email) { //-- When admin looks at request, don't trigger analtyics
+            var cardType = payMethodInfo.cardType || payMethodInfo.id
+            analytics.track(ctx.user, null, 'Save', { type: 'paymethod', method: o.type, cardType })
+          }
+
+          if (o.makeDefault)
+            UserSvc.update.call(ctx, ctx.user._id, { primaryPayMethodId: r._id })
+          cb(e, r)
+        })
+      }
+    }
+
+
+  if (o.type == 'braintree')
+    Braintree.addPaymentMethod(customerId, this.user, null, o.token, savePayMethod(this))
+  else if (o.type == 'stripe')
+    savePayMethod(this)(null, o.info)
+  else
+    return cb(`${o.type} not supported a payment type`)
+}
+
+
+
+export function deletePaymethod(paymethod, cb) {
+  UserSvc.getSessionFull.call(this, (e, user) => {
+    if (_.idsEqual(user.primaryPayMethodId,paymethod._id))
+      UserSvc.update.call(this, user._id, { primaryPayMethodId: null })
+    Settings.remove({userId:this.user._id}, () => {})
+    svc.deleteById(paymethod._id, cb)
+  })
+}
+

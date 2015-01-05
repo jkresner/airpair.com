@@ -81,6 +81,13 @@ module.exports = function(mailProvider)
         hash
       }), cb)
     },
+    sendGotCreditEmail(toUser, credit, fromUser, cb) {
+      mailProvider.send(`${toUser.name} <${toUser.email}>`, renderEmail('gotcredit', {
+        firstName: util.firstName(toUser.name),
+        fromName: fromUser.name,
+        credit
+      }), cb)
+    },
     sendPipelinerNotifyPurchaseEmail(byName, total, cb) {
       mailProvider.send(receivers.pipeliners, renderEmail('pipelinernotifypurchase', {
         fullName: byName,
