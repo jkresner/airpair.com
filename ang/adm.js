@@ -16,6 +16,7 @@ require('./common/directives/requests.js');
 require('./common/directives/mailtemplates.js');
 require('./common/directives/profiles.js');
 require('./common/directives/notifications.js');
+require('./common/directives/hangouts.js');
 require('./common/filters/filters.js');
 require('./common/models/dataService.js');
 require('./common/models/postsService.js');
@@ -36,7 +37,7 @@ require('./matchmaking/module.js');
 angular.module('ADM', [
   'ngRoute', 'ui.bootstrap.datetimepicker',
   'APSvcSession', 'APSvcAdmin', 'APDataSvc', 'APNotifications',
-  'APFilters', 'APFormsDirectives', 'APInputs', 'APMailTemplates',
+  'APFilters', 'APFormsDirectives', 'APInputs', 'APMailTemplates', 'APHangouts',
   'ADMPipeline',
   'ADMPosts',
   'ADMUsers',

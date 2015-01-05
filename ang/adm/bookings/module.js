@@ -23,6 +23,8 @@ angular.module("ADMBookings", [])
     $scope.data = {}
 
     $scope.$watch('booking', function(r) {
+      if (!r.participants) return
+
       $scope.previousDatetime = moment(r.datetime)
       $scope.data = {
         type: r.type,
@@ -32,6 +34,15 @@ angular.module("ADMBookings", [])
       }
       $scope.customers = _.where(r.participants, (p)=> p.role == 'customer')
       $scope.experts = _.where(r.participants, (p)=> p.role == 'expert')
+
+      var customerFirst = util.firstName($scope.customers[0].info.name)
+      var expertFirst = util.firstName($scope.experts[0].info.name)
+      $scope.hangoutName = `AirPair ${customerFirst} + ${expertFirst}`
+      $scope.hangoutParticipants = []
+      r.participants.forEach(function(p){
+        $scope.hangoutParticipants.push({id:p.gmail||p.info.email,invite_type:'EMAIL'})
+      })
+
     })
 
 
@@ -65,18 +76,7 @@ angular.module("ADMBookings", [])
       $scope.update()
     }
 
-    // $scope.spinHangouts = () => {
-      // require('/scripts/providers/gapi')()
-      // renderHangoutBtn: (c) =>
-      //   var hData =
-      //     topic: @model.roomName(c.expert._id)
-      //     render: 'createhangout'
-      //     hangout_type: 'onair'
-      //     invites: [{id:c.expert.email,invite_type:'EMAIL'},{'id':@model.contact(0).gmail,invite_type:'EMAIL'}]
-      //     initial_apps: [{'app_id' : '140030887085', 'app_type' : 'LOCAL_APP' }]
-      //     widget_size: 72
-      //   // $log 'hData', hData
-      //   gapi.hangout.render "#{c._id}", hData
+
 
   })
 

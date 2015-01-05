@@ -107,6 +107,7 @@ export default function(app) {
     .get('/posts', PostsAPI.getAllAdmin)
     .get('/orders/:start/:end/:userId?', OrdersAPI.getByQueryForAdmin)
     .get('/bookings/:start/:end/:userId?', BookingsAPI.getByQueryForAdmin)
+    .get('/bookings/:id', BookingsAPI.getByIdForAdmin)
     .put('/bookings/:booking', BookingsAPI.updateByAdmin)
     .get('/users/role/:role', UsersAPI.getUsersInRole)
     .put('/users/:id/role/:role', UsersAPI.toggleUserInRole)
