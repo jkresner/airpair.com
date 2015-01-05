@@ -11,6 +11,7 @@ module.exports = {
       'lineItems.type':1,
       'lineItems.info.name':1,
       'lineItems.info.type':1,
+      'lineItems.info.source':1,
       'lineItems.total' :1,
       'company.contacts.fullName':1,
       'company.contacts.email':1
@@ -36,7 +37,7 @@ module.exports = {
   },
 
   options: {
-    ordersByDate: { sort: { 'utc': 1 } }
+    orderByDate: { sort: { 'utc': -1 } }
   }
 
 }

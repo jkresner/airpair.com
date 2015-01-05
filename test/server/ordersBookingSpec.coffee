@@ -131,7 +131,7 @@ module.exports = -> describe "Booking: ", ->
   it 'Book 90 mins at 270 from 50 credit and 220 payg', (done) ->
     addAndLoginLocalUserWithPayMethod 'ajac', (s) ->
       LOGIN 'admin', data.users.admin, (sadm) ->
-        oCred = total: 50, toUserId: s._id, source: 'Test'
+        oCred = total: 50, toUser: s, source: 'Test'
         POST "/adm/billing/orders/credit", oCred, {}, (r) ->
           LOGIN 'ajac', s, (sajac) ->
             airpair1 = time: moment().add(2, 'day'), minutes: 90, type: 'private', credit: 50, payMethodId: s.primaryPayMethodId

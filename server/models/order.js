@@ -1,4 +1,5 @@
 var mongoose = require('mongoose')
+var Shared = require('./_shared')
 var Schema = mongoose.Schema
 var ObjectId = Schema.Types.ObjectId
 
@@ -62,7 +63,7 @@ module.exports = mongoose.model('Order', new Schema({
   userId:         { required: true, type: ObjectId, ref: 'User' },
 
   // The user that create the order (often same as userId, but can be an admin)
-  by:             { required: true, type: {} },
+  by:             { required: true, type: Shared.UserByte },
 
   //
   lineItems:      { type: [LineItem] },

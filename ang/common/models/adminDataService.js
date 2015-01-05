@@ -38,16 +38,8 @@ angular.module('APSvcAdmin', [])
       $http.delete(`${APIAdm}/redirects/${id}`).success(success).error(lazyErrorCb);
     }
 
-    this.giveCredit = function(data, success, error) {
-      $http.post(`${APIAdm}/billing/orders/credit`, data).success(success).error(error)
-    }
-
     this.getUsersViews = function(data, success, error) {
       $http.get(`${APIAdm}/views/user/${data._id}`, data).success(success).error(error)
-    }
-
-    this.getOrders = function(data, success, error) {
-      $http.get(`${APIAdm}/orders/${data.start.format('x')}/${data.end.format('x')}`, data).success(success).error(error)
     }
 
     this.companyMigrate = function(data, success)
@@ -131,14 +123,20 @@ angular.module('APSvcAdmin', [])
     this.billing = billingFns
 
     var bookingFns = {
+      getOrders(data, success, error) {
+        $http.get(`${APIAdm}/orders/${data.start.format('x')}/${data.end.format('x')}/${data.user._id}`, data).success(success).error(error)
+      },
       getBookings(data, success, error) {
-        $http.get(`${APIAdm}/bookings/${data.start.format('x')}/${data.end.format('x')}/${data.userId}`, data).success(success).error(error)
+        $http.get(`${APIAdm}/bookings/${data.start.format('x')}/${data.end.format('x')}/${data.user._id}`, data).success(success).error(error)
       },
       getBooking(_id, success, error) {
         $http.get(`/v1/api/bookings/${_id}`).success(success).error(error)
       },
       updateBooking(data, success, error) {
         $http.put(`${APIAdm}/bookings/${data._id}`, data).success(success).error(error)
+      },
+      giveCredit(data, success, error) {
+        $http.post(`${APIAdm}/billing/orders/credit`, data).success(success).error(error)
       }
     }
 

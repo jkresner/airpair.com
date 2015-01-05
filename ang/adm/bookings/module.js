@@ -52,11 +52,6 @@ angular.module("ADMBookings", [])
       $scope.update()
     }
 
-    $scope.onTimeSet = function (queryVar, newDate, oldDate) {
-      $scope.data.datetime = moment(newDate)
-      angular.element('.dropdown').removeClass('open')
-    }
-
     $scope.datetimeChanged = (datetime) =>
       (datetime) ? !datetime.isSame($scope.previousDatetime) : true
 
@@ -70,38 +65,39 @@ angular.module("ADMBookings", [])
       $scope.update()
     }
 
+    // $scope.spinHangouts = () => {
+      // require('/scripts/providers/gapi')()
+      // renderHangoutBtn: (c) =>
+      //   var hData =
+      //     topic: @model.roomName(c.expert._id)
+      //     render: 'createhangout'
+      //     hangout_type: 'onair'
+      //     invites: [{id:c.expert.email,invite_type:'EMAIL'},{'id':@model.contact(0).gmail,invite_type:'EMAIL'}]
+      //     initial_apps: [{'app_id' : '140030887085', 'app_type' : 'LOCAL_APP' }]
+      //     widget_size: 72
+      //   // $log 'hData', hData
+      //   gapi.hangout.render "#{c._id}", hData
+
   })
 
   .controller('BookingsCtrl', function($scope, AdmDataService) {
 
-    $scope.selectedUser = {}
+    $scope.query = {
+      start: moment().add(-15,'day'),
+      end: moment().add(45,'day'),
+      user: { _id: '' }
+    }
 
-    $scope.query = { start: moment().add(-15,'day'), end: moment().add(45,'day'),
-      userId: '' }
-
-    var setScope = (bookings) => {
-      $scope.bookings = bookings
+    var setScope = (r) => {
+      $scope.bookings = r
       var start = moment().add(-1,'hours')
       var end = moment().add(48, 'hours')
-      $scope.upcoming = _.where(bookings, (b) => util.dateInRange(moment(b.datetime), start, end))
+      $scope.upcoming = _.where(r, (b) => util.dateInRange(moment(b.datetime), start, end))
     }
 
-    $scope.refresh = () => {
-       // console.log('refresh', $scope.query)
-      AdmDataService.bookings.getBookings($scope.query,setScope)
-    }
+    $scope.fetch = () => AdmDataService.bookings.getBookings($scope.query,setScope)
+    $scope.selectUser = (user) => $scope.query.user = user
 
-    $scope.onTimeSet = function (queryVar, newDate, oldDate) {
-      $scope.query[queryVar] = moment(newDate)
-      angular.element('.dropdown').removeClass('open')
-    }
-
-    console.log('get', $scope.query, $scope.query.start.format('x'))
-    AdmDataService.bookings.getBookings($scope.query, setScope)
-
-    $scope.selectUser = (user) => {
-      $scope.selectedUser = user
-      $scope.query.userId = user._id
-    }
-
+    // console.log('get', $scope.query, $scope.query.start.format('x'))
+    $scope.fetch()
   })

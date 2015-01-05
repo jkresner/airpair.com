@@ -1,32 +1,16 @@
 <section id="bookings">
 
   <div class="query">
-    <div class="dropdown">
-      <a class="dropdown-toggle start-toggle-select" id="dropdownStart" role="button" data-toggle="dropdown" data-target="#" href="#">
-        <div class="input-group"><input type="text" class="form-control" value="{{query.start.format('YYYY MMM DD')}}" ><span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
-        </div>
-      </a>
-      <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-        <datetimepicker data-ng-model="query.start" data-datetimepicker-config="{ minView:'day', startView:'day'}" data-on-set-time="onTimeSet('start', newDate, oldDate)" ></datetimepicker>
-      </ul>
-    </div>
-    <div class="dropdown">
-      <a class="dropdown-toggle end-toggle-select" id="dropdownEnd" role="button" data-toggle="dropdown" data-target="#" href="#">
-        <div class="input-group"><input type="text" class="form-control" value="{{query.end.format('YYYY MMM DD')}}"><span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
-        </div>
-      </a>
-      <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-        <datetimepicker data-ng-model="query.end" data-datetimepicker-config="{ minView:'day', startView:'day', }" data-on-set-time="onTimeSet('end', newDate, oldDate)"></datetimepicker>
-      </ul>
-    </div>
-    <div user-input=""></div>
-    <a ng-click="refresh()" class="btn">Search</a>
+    <div datetime-input id="queryStart" datetime="query.start"></div>
+    <div datetime-input id="queryEnd" datetime="query.end"></div>
+    <div user-input></div>
+    <a ng-click="fetch()" class="btn">Search</a>
   </div>
 
-  <h2>Bookings</h2>
+  <h3>Bookings</h3>
 
   <section class="upcoming" ng-if="upcoming">
-    <h3>Upcoming</h3>
+    <h4>Upcoming</h4>
     <p ng-if="upcoming.length == 0">No AirPairs Scheduled in the next 48 hours.</p>
     <ul ng-if="upcoming.length > 0">
       <li ng-repeat="b in upcoming">
