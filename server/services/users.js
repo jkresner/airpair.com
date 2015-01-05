@@ -521,18 +521,27 @@ export function changeName(name, cb) {
 
 export function updateEmailToBeVerified(email, errorCB, cb) {
   email = email.toLowerCase()
-  var up = { '$set': {
-    'email': email,
-    'emailVerified': false,
-    'local.emailHash': generateHash(email)
-  }}
-
-  User.findOneAndUpdate({_id:this.user._id}, up, (e,r) => {
-    if (e) {
-      if (e.message.indexOf('duplicate key error index') != -1) return errorCB(Error('Email belongs to another account'))
-      return errorCB(e)
+  svc.searchOne({_id:this.user._id}, {}, (ee, r) => {
+    if (r.email != email) {
+      r.email = email
+      r.emailVerified = false
     }
-    cb(null, r)
+
+    r.local = r.local || {}
+    if (!r.local.emailHash || !r.local.emailHashGenerated
+      || !moment(r.local.emailHashGenerated).isAfter(moment().add(-3,'hours')))
+    {
+      r.local.emailHash = generateHash(email)
+      r.local.emailHashGenerated = new Date
+    }
+
+    User.findOneAndUpdate({_id:this.user._id}, r, (e,user) => {
+      if (e) {
+        if (e.message.indexOf('duplicate key error index') != -1) return errorCB(Error('Email belongs to another account'))
+        return errorCB(e)
+      }
+      cb(null, user)
+    })
   })
 }
 
@@ -544,10 +553,14 @@ export function changeEmail(email, cb) {
 
   email = email.trim().toLowerCase()
   var {user} = this
-  if (user) {
+  if (user)
+  {
     var data = { type: 'email', email, previous: user.email, previousVerified: user.emailVerified }
     analytics.track(user, this.sessionID, 'Save', data, {}, ()=>{})
-    if (user.email == email && user.emailVerified) return getSessionFull.call(this, cb)
+
+    if (user.email == email && user.emailVerified)
+      return getSessionFull.call(this, cb)
+
     else {
       updateEmailToBeVerified.call(this, email, cb, (e,r) => {
         mailman.sendVerifyEmail(r, r.local.emailHash)

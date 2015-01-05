@@ -263,6 +263,27 @@ module.exports = -> describe "Signup: ", ->
           done()
 
 
+    it 'sending verify multiple times sends the same hash', (done) ->
+      spy = sinon.spy(mailman,'sendVerifyEmail')
+      addAndLoginLocalUser 'chru', (uChru) ->
+        PUT '/users/me/email', { email: uChru.email }, {status:200}, (session) ->
+          expect(session.emailVerified).to.be.false
+          expect(spy.callCount).to.equal(1)
+          hash1 = spy.args[0][1]
+          expect(hash1).to.exist
+          PUT '/users/me/email', { email: uChru.email }, {status:200}, (session2) ->
+            expect(session2.emailVerified).to.be.false
+            expect(spy.callCount).to.equal(2)
+            hash2 = spy.args[1][1]
+            expect(hash2).to.exist
+            expect(hash2).to.equal(hash1)
+            PUT '/users/me/email', { email: uChru.email }, {status:200}, (session3) ->
+              expect(spy.callCount).to.equal(3)
+              expect(spy.args[2][1]).to.equal(hash1)
+              spy.restore()
+              done()
+
+
     it 'Cannot change email with empty string', (done) ->
       addAndLoginLocalUserWithEmailVerified 'scol', (s) ->
         expect(s.emailVerified).to.be.true

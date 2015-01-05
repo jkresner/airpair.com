@@ -56,15 +56,21 @@ var User = new Schema({
     lowercase: true
   },
 
-  roles:           { type: [String] },
-  tags:            { type: [TagSlim], 'default': [] },   //-- Stack of the user
-  bookmarks:       { type: [Bookmark], 'default': [] },
+  roles:                { type: [String] },
+  tags:                 { type: [TagSlim], 'default': [] },   //-- Stack of the user
+  bookmarks:            { type: [Bookmark], 'default': [] },
 
-  cohort:          Cohort,
+  cohort:               Cohort,
 
   bio: String, // Used for blog posts
 
-  local :               { password : String, emailHash: String, changePasswordHash: String },
+  local :
+  {
+    emailHash:          String,
+    emailHashGenerated: Date,
+    password :          String,
+    changePasswordHash: String
+  },
   googleId:             { type: String, sparse: true, unique: true, dropDups: true },
   google: {},
   githubId: Number,
