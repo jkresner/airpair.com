@@ -518,7 +518,7 @@ export function changeEmail(email, cb) {
     analytics.track(user, this.sessionID, 'Save', data, {}, ()=>{})
 
     if (user.email == email && user.emailVerified)
-      return cb(`Email ${user.email} already verified... try log out and back in again?`)
+      return cb(`Email ${user.email} already verified... try refresh the page or log out and back in again?`)
 
     else {
       updateEmailToBeVerified.call(this, email, cb, (e,r) => {

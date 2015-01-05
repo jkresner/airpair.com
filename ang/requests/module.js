@@ -124,6 +124,9 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
     }
     else
     {
+      if (r.status == 'booked')
+        $scope.reviewClass = 'inactive booked'
+
       $scope.isExpert = Shared.roles.request.isExpert($scope.session,r)
       if ($scope.isExpert) {
         var sug = r.suggested[0]
