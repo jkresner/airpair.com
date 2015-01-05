@@ -4,14 +4,11 @@ ordersUtil = require '../../shared/orders'
 
 module.exports = -> describe "Booking: ", ->
 
-  @timeout 5000
+  @timeout 4000
 
   before (done) ->
     stubAnalytics()
-    testDb.ensureExpert data.users.dros, data.experts.dros, ->
-      testDb.ensureExpert data.users.dros, data.experts.tmot, ->
-        testDb.ensureExpert data.users.abha, data.experts.abha, ->
-          testDb.ensureExpert data.users.admb, data.experts.admb, done
+    testDb.initExperts done
 
 
   after (done) ->
@@ -134,7 +131,7 @@ module.exports = -> describe "Booking: ", ->
   it 'Book 90 mins at 270 from 50 credit and 220 payg', (done) ->
     addAndLoginLocalUserWithPayMethod 'ajac', (s) ->
       LOGIN 'admin', data.users.admin, (sadm) ->
-        oCred = total: 50, toUserId: s._id, source: 'Test'
+        oCred = total: 50, toUser: s, source: 'Test'
         POST "/adm/billing/orders/credit", oCred, {}, (r) ->
           LOGIN 'ajac', s, (sajac) ->
             airpair1 = time: moment().add(2, 'day'), minutes: 90, type: 'private', credit: 50, payMethodId: s.primaryPayMethodId
@@ -256,7 +253,6 @@ module.exports = -> describe "Booking: ", ->
                   POST "/bookings/#{adamB._id}", airpair1, {}, (booking1) ->
                     expect(booking1._id).to.exist
                     GET "/billing/orders", {}, (orders) ->
-                      $log('orders')
                       expect(orders.length).to.equal(1)
                       expect(orders[0].total).to.equal(130)
                       expect(orders[0].profit).to.equal(45)

@@ -1,5 +1,33 @@
 
-angular.module('APTypeAheadInputs', ['ui.bootstrap'])
+angular.module('APInputs', ['ui.bootstrap'])
+
+  .directive('datetimeInput', function() {
+    return {
+      restrict: 'EA',
+      template: require('./datetimepicker.html'),
+      scope: {
+        datetime: '=datetime',
+        setCallback: '=setCallback'
+      },
+      link: function(scope, element, attrs) {
+        scope.id = attrs.id
+        scope.minView = attrs.minView || 'day'
+        scope.startView = attrs.startView || 'day'
+        scope.minuteStep = attrs.minuteStep || 30
+        scope.dateFormat = attrs.dateFormat || 'YYYY MMM DD'
+      },
+      controller: function($scope, $element, $attrs) {
+
+        $scope.onSetTime = (newDate, oldDate) => {
+          if ($scope.setTimeCallback)
+            scope.setTimeCallback(newDate, oldDate)
+          $element.find('.dropdown').removeClass('open')
+          $scope.datetime = moment(newDate)
+        }
+
+      }
+    };
+  })
 
   .value('badUserSearchQuery', function(value, elementSelector) {
     var lengthOk = value && (value.length >= 3);

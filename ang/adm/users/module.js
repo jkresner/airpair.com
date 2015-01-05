@@ -36,9 +36,9 @@ angular.module("ADMUsers", [])
     }
 
     $scope.giveCredit = function() {
-      AdmDataService.giveCredit({ total: $scope.credit, toUserId: $scope.selectedUser._id, source: $scope.source },
-        function (result) { alert('credit applied') },
-        function (err) { alert(err.message) }
+      AdmDataService.bookings.giveCredit({ total: $scope.credit, toUser: $scope.selectedUser, source: $scope.source },
+        function (result) { alert(`${$scope.credit} credit applied and emailed to ${$scope.selectedUser.email}`) },
+        function (err) { alert(err) }
       )
     }
 

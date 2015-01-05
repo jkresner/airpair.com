@@ -97,7 +97,7 @@ module.exports = -> describe "Credit: ", ->
   it 'Admin can give unpaid credit', (done) ->
     addAndLoginLocalUserWithPayMethod 'chup', (schup) ->
       LOGIN 'admin', data.users.admin, (sadm) ->
-        o = total: 50, toUserId: schup._id, source: 'Angular Workshops Survey Promo'
+        o = total: 50, toUser: schup, source: 'Angular Workshops Survey Promo'
         POST "/adm/billing/orders/credit", o, {}, (r) ->
           expect(r._id).to.exist
           expect(_.idsEqual(r.userId, schup._id)).to.be.true
@@ -111,7 +111,7 @@ module.exports = -> describe "Credit: ", ->
           expect(r.lineItems[0].balance).to.equal(50)
           expect(r.lineItems[0].info.name).to.equal('$50 Credit')
           expect(r.lineItems[0].info.remaining).to.equal(50)
-          expect(r.lineItems[0].info.source).to.equal('Angular Workshops Survey Promo')
+          expect(r.lineItems[0].info.source).to.equal('Angular Workshops Survey Promo from Admin Daemon')
           expect(r.total).to.equal(0)
           expect(r.profit).to.equal(0)
           done()

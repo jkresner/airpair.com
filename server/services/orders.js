@@ -28,6 +28,10 @@ var base = {
   'private': 30
 }
 
+export function getByIdForAdmin(id, cb)
+{
+  svc.getById(id, cb)
+}
 
 export function getMyOrders(cb)
 {
@@ -46,10 +50,11 @@ export function getMyOrdersWithCredit(payMethodId, cb)
 }
 
 
-export function getOrdersByDateRange(start, end, cb)
+export function getByQueryForAdmin(start, end, userId, cb)
 {
-  var opts = { fields: Data.select.listAdmin, options: { sort: { 'utc': -1 } } }
+  var opts = { fields: Data.select.listAdmin, options: Data.options.orderByDate }
   var query = Data.query.inRange(start,end)
+  if (userId) query.userId = userId
   svc.searchMany(query, opts, (e,r) => {
     for (var o of r) {
       if (o.company)
@@ -231,9 +236,6 @@ function trackOrderPayment(order) {
 
 export function buyCredit(total, coupon, payMethodId, cb)
 {
-  var inValid = Validate.buyCredit(this.user, coupon, total)
-  if (inValid) return cb(svc.Forbidden(inValid))
-
   var expires = Util.dateWithDayAccuracy(moment().add(3,'month'))
 
   var lineItems = []
@@ -258,17 +260,22 @@ export function buyCredit(total, coupon, payMethodId, cb)
 }
 
 
-export function giveCredit(toUserId, total, source, cb)
+export function giveCredit(toUser, total, source, cb)
 {
-  var inValid = Validate.giveCredit(toUserId, total, source)
-  if (inValid) return cb(svc.Forbidden(inValid))
-
   var expires = Util.dateWithDayAccuracy(moment().add(3,'month'))
 
+  var fullSource = `${source} from ${this.user.name}`
   var lineItems = []
-  lineItems.push(Lines.credit(false, total, expires, source))
+  lineItems.push(Lines.credit(false, total, expires, fullSource))
 
-  makeOrder(this.user, lineItems, null, toUserId, null, cb, (e, order) =>
+  var forUser = {
+    _id: this.user._id, // airpair account manager
+    name: toUser.name,
+    email: toUser.email
+  }
+
+  mailman.sendGotCreditEmail(toUser, total, this.user, ()=>{})
+  makeOrder(forUser, lineItems, null, toUser._id, null, cb, (e, order) =>
     chargeAndTrackOrder(order, cb, (e,o) => svc.create(o, cb))
   )
 }

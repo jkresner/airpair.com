@@ -40,6 +40,16 @@ var cfg = {
     admCss: '/static/styles/adm.css',
     libCss: '/styles/libs.css'
   },
+  calendar: {
+    on: false,
+    google: {
+      access_token: 'ya29.8ADODKBNyChHf2aDOSx98nFnPB1zA43dpJ4BRM0K4p57_y0ZCZJ7uJ4H',
+      calendarId: 'experts@airpair.com',
+      clientId: '',
+      clientSecret: '',
+      redirectUrl: "https://www.airpair.com/oauth2callback"
+    }
+  },
   log: {},
   mail: {
     on: false, // we don't send mail in dev
@@ -135,8 +145,13 @@ module.exports = function(env, appdir) {
       access_token: process.env.AUTH_TWITTER_ACCESS_TOKEN,
       access_token_secret: process.env.AUTH_TWITTER_ACCESS_TOKEN_SECRET
     }
-  }
 
+    cfg.calendar.on = true
+    cfg.calendar.google.clientId = process.env.CALENDAR_GOOGLE_CLIENTID
+    cfg.calendar.google.clientSecret = process.env.CALENDAR_GOOGLE_CLIENTSECRET
+    cfg.calendar.google.calendarId = process.env.CALENDAR_GOOGLE_CALENDARID
+    cfg.calendar.google.access_token = process.env.CALENDAR_GOOGLE_ACCESS_TOKEN
+  }
 
   return cfg;
 }

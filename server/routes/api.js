@@ -21,6 +21,8 @@ export default function(app) {
     .param('tag', TagsAPI.paramFns.getBySlug)
     .param('expert', ExpertsAPI.paramFns.getById)
     .param('request', RequestsAPI.paramFns.getByIdForAdmin)
+    .param('booking', BookingsAPI.paramFns.getById)
+    .param('paymethod', PaymethodsAPI.paramFns.getById)
 
     .get('/session/full', setAnonSessionData, UsersAPI.getSessionFull)
     .put('/users/me/password', UsersAPI.changePassword)
@@ -66,7 +68,7 @@ export default function(app) {
 
     .use(authd) //-- swap out for email verify or something
     .post('/billing/paymethods', PaymethodsAPI.addPaymethod)
-    .delete('/billing/paymethods/:id', PaymethodsAPI.deletePaymethod)
+    .delete('/billing/paymethods/:paymethod', PaymethodsAPI.deletePaymethod)
     .get('/billing/orders', OrdersAPI.getMyOrders)  //emailv,
     .get('/billing/orders/credit/:id', OrdersAPI.getMyOrdersWithCredit)
     .post('/billing/orders/credit', OrdersAPI.buyCredit)
@@ -99,11 +101,14 @@ export default function(app) {
   var admrouter = require('express').Router()
     .param('expert', ExpertsAPI.paramFns.getById)
     .param('request', RequestsAPI.paramFns.getByIdForAdmin)
+    .param('booking', BookingsAPI.paramFns.getById)
 
     .use(adm)
     .get('/posts', PostsAPI.getAllAdmin)
-    .get('/orders/:start/:end', OrdersAPI.getOrdersByDateRange)
-    .get('/bookings/:start/:end', BookingsAPI.getByDateRangeForAdmin)
+    .get('/orders/:start/:end/:userId?', OrdersAPI.getByQueryForAdmin)
+    .get('/bookings/:start/:end/:userId?', BookingsAPI.getByQueryForAdmin)
+    .get('/bookings/:id', BookingsAPI.getByIdForAdmin)
+    .put('/bookings/:booking', BookingsAPI.updateByAdmin)
     .get('/users/role/:role', UsersAPI.getUsersInRole)
     .put('/users/:id/role/:role', UsersAPI.toggleUserInRole)
     .get('/users/search/:id', UsersAPI.search)
