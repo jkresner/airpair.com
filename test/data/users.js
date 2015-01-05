@@ -106,7 +106,7 @@ module.exports = {
 
   cher: { name: "Chelsea Rustrum", email: "chelsea@rustrum.com"},
   chru: { name: "Chelsea Rustrum", email: "chelsearustrum@rustrum.com"},
-  // crus: { name: "Chelsea Rustrum", email: "chelsea.rustrum@rustrum.com"},
+  crus: { name: "Chelsea Rustrum", email: "chelsea.rustrum@rustrum.com"},
 
   admin: {
     "_id" : "54551be15f221efa174238d1",

@@ -294,7 +294,7 @@ function _createBookingOrder(expert, time, minutes, type, credit, payMethodId, r
     makeOrder(this.user, lineItems, payMethodId, null, requestId, cb, (e, order) => {
       chargeAndTrackOrder(order, cb, (e,o) => {
         if (request)
-          RequestsSvc.updateWithBookingByCustomer.call(this, request, o, () => { $log('booking off request') })
+          RequestsSvc.updateWithBookingByCustomer.call(this, request, o, () => {})
         svc.create(o, cb)
       })
     })
@@ -312,7 +312,8 @@ export function createBookingOrder(expert, time, minutes, type, credit, payMetho
       expert = requestSuggestion.suggestion.expert
       expert.rate = requestSuggestion.suggestion.suggestedRate.expert
       var unitPrice = requestSuggestion.suggestion.suggestedRate.total
-      var unitProfit = requestSuggestion.suggestion.suggestedRate.total - expert.rate
+      if (type == 'opensource') unitPrice = unitPrice - 10
+      var unitProfit = unitPrice - expert.rate
       var total = minutes/60 * unitPrice
       var lineItems = [Lines.airpair(expert, time, minutes, type, unitPrice, unitProfit)]
       _createBookingOrder.call(this, expert, time, minutes, type, credit, payMethodId, request, lineItems, total, cb)

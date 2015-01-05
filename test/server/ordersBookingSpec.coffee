@@ -4,7 +4,7 @@ ordersUtil = require '../../shared/orders'
 
 module.exports = -> describe "Booking: ", ->
 
-  @timeout 4000
+  @timeout 5000
 
   before (done) ->
     stubAnalytics()
@@ -18,7 +18,7 @@ module.exports = -> describe "Booking: ", ->
   afterEach -> cookie = null
 
 
-  it 'Book 2 hour with pay as you go', (done) ->
+  it 'Book 2 hour with pay as you go private', (done) ->
     addAndLoginLocalUserWithPayMethod 'jpie', (s) ->
       airpair1 = time: moment().add(2, 'day'), minutes: 120, type: 'private', payMethodId: s.primaryPayMethodId
       POST "/bookings/#{data.experts.dros._id}", airpair1, {}, (booking1) ->
@@ -48,6 +48,31 @@ module.exports = -> describe "Booking: ", ->
           expect(order.total).to.equal(280)
           expect(order.profit).to.equal(60)
           done()
+
+
+
+  it 'Book 2 hour with pay as you go opensource', (done) ->
+    addAndLoginLocalUserWithPayMethod 'crus', (s) ->
+      airpair1 = time: moment().add(2, 'day'), minutes: 120, type: 'opensource', payMethodId: s.primaryPayMethodId
+      POST "/bookings/#{data.experts.dros._id}", airpair1, {}, (booking1) ->
+        GET "/billing/orders", {}, (orders) ->
+          order = _.find(orders, (o) -> _.idsEqual(o._id,booking1.orderId))
+          expect(order.lineItems.length).to.equal(2)
+          expect(order.lineItems[0].type).to.equal('payg')
+          expect(order.lineItems[0].total).to.equal(0)
+          expect(order.lineItems[0].unitPrice).to.equal(260)
+          expect(order.lineItems[0].qty).to.equal(0)
+          expect(order.lineItems[0].info.name).to.equal('$260 Paid')
+          expect(order.lineItems[1].type).to.equal('airpair')
+          expect(order.lineItems[1].total).to.equal(260)
+          expect(order.lineItems[1].qty).to.equal(2)
+          expect(order.lineItems[1].unitPrice).to.equal(130)
+          expect(order.lineItems[1].info.paidout).to.equal(false)
+          expect(order.lineItems[1].info.type).to.equal('opensource')
+          expect(order.total).to.equal(260)
+          expect(order.profit).to.equal(40)
+          done()
+
 
 
   it 'Book 3 hour at 150 from 500 credit', (done) ->
@@ -261,6 +286,34 @@ module.exports = -> describe "Booking: ", ->
                       expect(orders[0].lineItems[1].type).to.equal('airpair')
                       expect(orders[0].lineItems[1].unitPrice).to.equal(130)
                       # expect(orders[0].lineItems[1].unitProfit).to.equal(45)
+                      done()
+
+
+  it 'Book 1 opensource hour of Adam Bliss by Ari Lerner', (done) ->
+    testDb.ensureDoc 'User', data.users.aril, ->
+      testDb.ensureDoc 'Request', data.requests.ariwadam, (e, request) ->
+        testDb.findAndRemove 'Order', { userId: data.users.aril._id }, ->
+          LOGIN 'aril', data.users.aril, (sarli) ->
+            d = type: 'braintree', token: braintree.Test.Nonces.Transactable, name: 'Default Card', makeDefault: true
+            POST '/billing/paymethods', d, {}, (pm) ->
+              GET "/requests/review/#{request._id}", {}, (r) ->
+                expect(r.suggested.length).to.equal(3)
+                expect(r.suggested[0].suggestedRate.total).to.equal(130)
+                adamB = r.suggested[0].expert
+                GET "/requests/#{request._id}/book/#{adamB._id}", {}, (r2) ->
+                  expect(r2.suggested[0].expert.name).to.equal('Adam Bliss')
+                  expect(r2.suggested[0].suggestedRate.total).to.equal(130)
+                  suggestion = r2.suggested[0]
+                  airpair1 = time: moment().add(2, 'day'), minutes: 60, type: 'opensource', payMethodId: pm._id, request: { requestId: r._id, suggestion }
+                  POST "/bookings/#{adamB._id}", airpair1, {}, (booking1) ->
+                    GET "/billing/orders", {}, (orders) ->
+                      expect(orders.length).to.equal(1)
+                      expect(orders[0].total).to.equal(120)
+                      expect(orders[0].profit).to.equal(35)
+                      expect(orders[0].lineItems.length).to.equal(2)
+                      expect(orders[0].lineItems[0].type).to.equal('payg')
+                      expect(orders[0].lineItems[1].type).to.equal('airpair')
+                      expect(orders[0].lineItems[1].unitPrice).to.equal(120)
                       done()
 
 
