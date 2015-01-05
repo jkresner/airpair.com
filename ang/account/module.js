@@ -27,24 +27,23 @@ angular.module("APProfile", ['ngRoute', 'APFilters', 'APSvcSession', 'APTagInput
 
   })
 
-  .run(function($rootScope, SessionService) {
-
-  })
-
 
   .controller('AccountCtrl', function($rootScope, $scope, $location, ServerErrors, SessionService) {
+
+    console.log('AccountCtrl', $scope.session, $rootScope.session)
 
     if ($location.search().verify)
     {
       SessionService.verifyEmail({hash:$location.search().verify}, function(result){
         $scope.emailAlerts = [{ type: 'success', msg: `${$scope.session.email} verified ! <b>Next step, go to <a href="/billing">BILLING</a></b>` }]
       }, function(e){
-        $scope.emailAlerts = [{ type: 'danger', msg: `${e} failed` }]
+        $scope.emailAlerts = [{ type: 'danger', msg: `${e.message}` }]
       })
     }
 
-    SessionService.onAuthenticated( (session) =>
-      $scope.data = _.pick(session, 'name','email','initials','username')  )
+    $rootScope.$watch('session', (session) =>
+      $scope.data = _.pick(session, 'name','email','initials','username')
+    )
 
     if ($scope.session)
       $scope.data = _.pick($scope.session, 'name','email','initials','username')
