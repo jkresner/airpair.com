@@ -13,7 +13,8 @@ var Touch = {
 
 
 var MESSAGE_TYPE = [
-  'adm_received'
+  'received',
+  'review'
 ]
 
 
@@ -26,4 +27,12 @@ var Message = new Schema({
 })
 
 
-module.exports = {Touch,Message}
+var UserByte = {
+  _id:        { type: ObjectId, ref: 'User' },
+  name:       String,
+  email:      { type: String, lowercase: true } // We can use the email to infalte the avatar
+}
+
+
+
+module.exports = {Touch,Message,UserByte}

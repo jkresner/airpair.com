@@ -4,7 +4,7 @@ require('./../public/lib/angular-animate/angular-animate.js');
 require('./../public/lib/angular-messages/angular-messages.js');
 require('./common/directives/ctas.js');
 require('./common/directives/analytics.js');
-require('./common/directives/forms.js');
+require('./common/directives/forms/forms.js');
 require('./common/filters/filters.js');
 require('./common/models/sessionService.js');
 

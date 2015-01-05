@@ -6,7 +6,7 @@ var resolver = require('./../common/routes/helpers.js').resolveHelper;
 
 angular.module("APPosts", ['APFilters','APShare',
   'APMyPostsList','APPostEditor','APPost', 'APBookmarker','APSvcSession',
-  'APSvcPosts', 'APTagInput', 'APTypeAheadInputs'])
+  'APSvcPosts', 'APTagInput'])
 
   .config(function($locationProvider, $routeProvider) {
 

@@ -72,6 +72,12 @@ angular.module('APFilters', [])
     }
   })
 
+  .filter('addNameBreak', function ($sce) {
+    return (text) => {
+      return $sce.trustAsHtml(text.replace(' ','<br>'))
+    }
+  })
+
   .filter('html', function ($sce) {
     return (html) => {
       return $sce.trustAsHtml(html)
