@@ -1,11 +1,14 @@
 var logging = false
 
 
-var cbSend = (httpMethod, res, next) => {
+var cbSend = (req, res, next) => {
+  var httpMethod = req.method
   return (e, r) => {
     if (logging) { $log('cbSend', e, r) }
     if (e)
     {
+      var uid = (req.user) ? req.user.email : req.sessoinID
+      $log(`cbSend.400 ${uid} ${req.url}`.red, JSON.stringify(req.body).white, e)
       return res.status(e.status || 400).json({message:e.message})
     }
     if (httpMethod != 'DELETE')
@@ -39,7 +42,7 @@ export function serve(Svc, svcFnName, argsFn, Validation) {
   return (req, res, next) => {
     var thisSvc = { user: req.user, sessionID: req.sessionID, session: req.session }
     if (logging) $log('thisSvc', svcFnName, argsFn, Svc, thisSvc)
-    var callback = cbSend(req.method,res,next)
+    var callback = cbSend(req,res,next)
     var args = argsFn(req)
     if (Validation && req.method != 'GET') {
       var inValid = Validation[svcFnName].apply(thisSvc, _.union([req.user],args))

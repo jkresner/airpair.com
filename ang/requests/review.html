@@ -62,16 +62,26 @@
 
   <section class="replies" ng-if="isAnon">
     <form>
-      <h3>Want this AirPair?</h3>
-      <a id="loginGoogleAuth" track-click="auth" class="btn btn-error" ng-href="{{'/v1/auth/google' + ((returnTo) ? '?returnTo='+returnTo : '') }}" target="_self">Login with google to reply</a>
+      <h3>Want AirPairs like this?</h3>
+      <ul>
+        <li>- Get paid to help people</li>
+        <li>- Sharpen your communication skills</li>
+        <li>- Build your online developer cred</li>
+      </ul>
+      <a id="loginGoogleAuth" track-click="auth" class="btn btn-error" ng-href="{{'/v1/auth/google' + ((returnTo) ? '?returnTo='+returnTo : '') }}" target="_self" style="width:100%">Login with google to reply</a>
     </form>
   </section>
 
 
   <section ng-if="!isExpert && !isCustomer && !isAnon && !isAdmin" class="replies" ng-if="isAnon">
     <form>
-      <h3>Want this AirPair?</h3>
-      <a href="/be-an-expert" target="_self" class="btn">Apply to be an AirPair expert</a>
+      <h3>Want AirPairs like this?</h3>
+      <ul>
+        <li>- Get paid to help people</li>
+        <li>- Sharpen your communication skills</li>
+        <li>- Build your online developer cred</li>
+      </ul>
+      <a href="/be-an-expert" target="_self" class="btn" style="width:100%">Apply to be an AirPair expert</a>
     </form>
   </section>
 

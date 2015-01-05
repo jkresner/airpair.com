@@ -22,8 +22,11 @@ angular.module('APSvcSession', [])
 
     var setScope = (successFn, trackingData) => {
       return function(r) {
+        if (r._id && window._)
+          $rootScope.session = _.extend($rootScope.session||{}, r)
+        else
+          $rootScope.session = r
 
-        $rootScope.session = r
         $rootScope.notifications = Notifications.calculateNextNotification()
 
         if (trackingData) analytics.track('Save', trackingData);
@@ -34,24 +37,25 @@ angular.module('APSvcSession', [])
 
     var cache;
     this.getSession = function() {
-
-      if ($rootScope.session && (
-        $rootScope.session.authenticated == false ||
-        $rootScope.session.primaryPayMethodId
-        )) return $q((r)=>r($rootScope.session))
+      if ($rootScope.session && $rootScope.session.authenticated == false)
+        return $q((r)=>r($rootScope.session))
 
       cache = cache || $cacheFactory();
       return $http.get(`${API}/session/full`, {cache:cache}).then(
         function(response) {
-          $rootScope.session = response.data;
-          return response.data;
+          if ($rootScope.session && $rootScope.session.tags) {
+            return $rootScope.session
+          } else {
+            setScope(()=>{})(response.data);
+            return response.data;
+          }
         },
         function(err) { window.location = '/v1/auth/logout'; }
       );
     }
 
     this.onAuthenticated = function(fn) {
-      return this.getSession().then(setScope(fn));
+      return this.getSession().then(fn);
     }
 
     this.onUnauthenticated = function(fn) {
@@ -107,12 +111,12 @@ angular.module('APSvcSession', [])
 
     this.requestPasswordChange = function(data, success, error)
     {
-      $http.put(`${API}/users/me/password-change`, data).success(success).error(error)
+      $http.put(`${API}/users/me/password-change`, data).success(setScope(success)).error(error)
     }
 
     this.changePassword = function(data, success, error)
     {
-      $http.put(`${API}/users/me/password`, data).success(success).error(error)
+      $http.put(`${API}/users/me/password`, data).success(setScope(success)).error(error)
     }
 
     this.tags = function(data, success, error) {
