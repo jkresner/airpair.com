@@ -23,7 +23,7 @@ module.exports = {
      payroll: 'Unknown',
      prepaid: 'No',
      subscriptions: [],
-     token: 'hd7vf6',
+     token: 'f2xwmw',
      uniqueNumberIdentifier: 'e623ae0b9612707c948eb19a377b978b',
      updatedAt: '2014-10-20T23:58:59Z',
      venmoSdk: false,
