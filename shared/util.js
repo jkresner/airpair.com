@@ -1,4 +1,4 @@
-var botPattern = /googlebot|gurujibot|twitterbot|yandexbot|slurp|msnbot|bingbot|rogerbot|MetaURI|Hatena|PaperLiBot|QuerySeekerSpider|AhrefsBot|EmailMarketingRobot|ShowyouBot|Baiduspider|facebookexternalhit/i
+var botPattern = /googlebot|gurujibot|twitterbot|yandexbot|slurp|msnbot|bingbot|rogerbot|MetaURI|Hatena|PaperLiBot|QuerySeekerSpider|AhrefsBot|EmailMarketingRobot|ShowyouBot|Baiduspider|YisouSpider|facebookexternalhit/i
 
 
 var nestedPick = (object, keys) => {
@@ -148,7 +148,26 @@ var util = {
         ts += `, ${oBrace}${t[i].slug}${cBrace}`
     }
     return ts
-  }
+  },
+
+
+  // parseYoutubeId(str) {
+  //   str = str.trim()
+  //   var variable = '([a-zA-Z0-9_-]*)'
+
+  //   // e.g. http://www.youtube.com/watch?v=aANmpDSTcXI&otherjunkparams
+  //   var id = str.match("v=#{variable}")?[1]
+  //   if (id) return id
+
+  //   // e.g. youtu.be/aANmpDSTcXI
+  //   id = str.match("youtu\.be/#{variable}")?[1]
+  //   if (id) return id
+
+  //   // e.g. aANmpDSTcXI
+  //   return str.match("^#{variable}$")?[1]
+  // }
+
+
 
 }
 

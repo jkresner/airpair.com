@@ -130,7 +130,7 @@ angular.module('APSvcAdmin', [])
         $http.get(`${APIAdm}/bookings/${data.start.format('x')}/${data.end.format('x')}/${data.user._id}`, data).success(success).error(error)
       },
       getBooking(_id, success, error) {
-        $http.get(`/v1/api/bookings/${_id}`).success(success).error(error)
+        $http.get(`${APIAdm}/bookings/${_id}`).success(success).error(error)
       },
       updateBooking(data, success, error) {
         $http.put(`${APIAdm}/bookings/${data._id}`, data).success(success).error(error)

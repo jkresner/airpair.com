@@ -28,6 +28,10 @@ var base = {
   'private': 30
 }
 
+export function getByIdForAdmin(id, cb)
+{
+  svc.getById(id, cb)
+}
 
 export function getMyOrders(cb)
 {

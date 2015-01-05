@@ -37,6 +37,14 @@ var get = {
   getById(id, cb) {
     svc.getById(id, setAvatarsCB(cb))
   },
+  getByIdForAdmin(id, cb) {
+    svc.getById(id, (e,r) => {
+      OrdersSvc.getByIdForAdmin(r.orderId, (ee,order) => {
+        r.order = order
+        setAvatarsCB(cb)(e,r)
+      })
+    })
+  },
   getByUserId(id, cb) {
     var opts = {}
     svc.searchMany({ customerId: id }, opts, cb)
