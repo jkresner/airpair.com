@@ -2,7 +2,7 @@ var resolver = require('./../common/routes/helpers.js').resolveHelper;
 
 angular.module("APRequests", ['APFilters', 'APSvcSession',
   'APRequestDirectives',
-  'APTagInput', 'APTypeAheadInputs'])
+  'APTagInput', 'APInputs'])
 
 .config(function($locationProvider, $routeProvider) {
 

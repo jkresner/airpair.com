@@ -241,16 +241,14 @@ module.exports = -> describe "Signup: ", ->
 
   describe "Change and verify e-mail", ->
 
-    # it.skip 'send a verification email to new users'
-
     it 'Local user can change their email', (done) ->
-      the_new_email = "hello" + moment().format('X').toString() + "@mydomain.com"
       addAndLoginLocalUserWithEmailVerified 'spgo', (s) ->
         expect(s.emailVerified).to.be.true
+        the_new_email = "hello" + moment().format('x') + "@mydomain.com"
         PUT '/users/me/email', {email: the_new_email}, {}, ->
-          GET '/session/full', {}, (s) ->
-            expect(s.email).to.equal(the_new_email)
-            expect(s.emailVerified).to.be.false
+          GET '/session/full', {}, (s2) ->
+            expect(s2.email).to.equal(the_new_email)
+            expect(s2.emailVerified).to.be.false
             done()
 
 
@@ -304,7 +302,7 @@ module.exports = -> describe "Signup: ", ->
       d = getNewUserData('spur')
       addAndLoginLocalUser 'spur', (userKey) ->
         GET '/billing/orders', { status: 403 }, (err) ->
-          expect(err.message).to.equal('e-mail not verified')
+          expectStartsWith(err.message,'e-mail not verified')
           done()
 
 
@@ -353,9 +351,33 @@ module.exports = -> describe "Signup: ", ->
                     done()
 
 
+
+    it 'google login can verify different email for some features if logged in with google', (done) ->
+      spy = sinon.spy(mailman,'sendVerifyEmail')
+      testDb.ensureDoc 'User', data.users.narv, (e) ->
+        LOGIN 'narv', data.users.narv, (snarv) ->
+          POST '/requests', { type: 'troubleshooting', tags: [data.tags.node] }, {}, (r1) ->
+            PUT "/requests/#{r1._id}", _.extend(r1,{experience:'beginner'}), {status:403}, (rFail) ->
+              expectStartsWith(rFail.message,'Email verification required')
+              PUT '/users/me/email', { email: "vikram@test.com" }, {}, (s2) ->
+                expect(s2.emailVerified).to.be.false
+                expect(s2.email).to.equal("vikram@test.com")
+                expect(spy.callCount).to.equal(1)
+                expect(spy.args[0][0].email).to.equal("vikram@test.com")
+                hash = spy.args[0][1]
+                $log('going'.blue, hash)
+                spy.restore()
+                PUT "/users/me/email-verify", { hash }, {}, (sVerified) ->
+                  expect(sVerified.emailVerified).to.be.true
+                  expect(sVerified.email).to.equal("vikram@test.com")
+                  PUT "/requests/#{r1._id}", _.extend(r1,{experience:'beginner'}), {}, (r2) ->
+                    r2.experience = 'proficient'
+                    done()
+
+
     it 'bad verification link does not verify the user', (done) ->
       addAndLoginLocalUser 'step', (s) ->
         fakeHash = 'ABCDEF1234567'
         PUT "/users/me/email-verify", { hash: fakeHash }, { status: 400 }, (r) ->
-          expect(r.message).to.equal("e-mail verification failed")
+          expectStartsWith(r.message,"e-mail verification failed")
           done()

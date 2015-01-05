@@ -3,6 +3,7 @@ var cookieParser = require('cookie-parser')
 var bodyParser = require('body-parser')
 var passport = require('passport')
 var middleware = require('../middleware/auth')
+var UserData = require('../services/users.data')
 var logging = false
 
 // takes a delegate to initalize a store that could be Mongo / Redis etc.x
@@ -32,7 +33,7 @@ export default function(app, initSessionStore)
 
     passport.serializeUser( (user, done) => {
       // The user object comes from UserService.upsertSmart
-      var sessionUser = { _id: user._id, name: user.name, emailVerified: user.emailVerified, email: user.email, roles: user.roles }
+      var sessionUser = UserData.select.sessionFromUser(user)
       if (logging) $log('serializeUser', sessionUser)
       done(null, sessionUser)
     })

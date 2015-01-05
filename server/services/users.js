@@ -1,9 +1,8 @@
 import BaseSvc      from '../services/_service'
 import User         from '../models/user'
-import * as md5     from '../util/md5'
 var util =          require('../../shared/util')
 var bcrypt =        require('bcrypt')
-var UserData =      require('./users.data')
+var Data =          require('./users.data')
 var Validate =      require('../../shared/validation/users.js')
 var logging         = false
 var svc             = new BaseSvc(User, logging)
@@ -18,17 +17,18 @@ var cbTrackSave = (ctx, data, cb) =>
   }
 
 
-var cbSession = (cb) =>
+var cbSession = (ctx, cb) =>
   (e, r) => {
     if (e || !r) {
       if (logging) $log('cbSession', e, r)
       return cb(e, r)
     }
-    var obj = util.selectFromObject(r, UserData.select.sessionFull)
+    var obj = util.selectFromObject(r, Data.select.sessionFull)
     if (obj.roles && obj.roles.length == 0) delete obj.roles
-    setAvatar(obj)
-    //if (logging) $log('cbSession.before.inflateTagsAndBookmarks', obj)
-    inflateTagsAndBookmarks(obj, cb)
+    Data.select.setAvatar(obj)
+    if (ctx.user)
+      ctx.session.passport.user = Data.select.sessionFromUser(obj)
+    Data.select.inflateTagsAndBookmarks(obj, cb)
   }
 
 
@@ -76,6 +76,7 @@ function getUpsertEngagementProperties(existingUser, sessionID, sessionCreatedAt
 function upsertSmart(search, upsert, cb) {
   if (logging) $log('upsertSmart', JSON.stringify(search), JSON.stringify(upsert))
 
+  var done = cbSession(this, cb)
   //-- Session is their cookie, which may or may not have been their first visit
   var sessionCreatedAt = util.momentSessionCreated(this.session).toDate()
   var firstRequest = this.session.firstRequest
@@ -124,7 +125,6 @@ function upsertSmart(search, upsert, cb) {
         return cb(err)
       }
 
-      var done = cbSession(cb)
       if (!analytics.upsert) return done(null, user)
 
       analytics.upsert(user, r, sessionID, (aliases) => {
@@ -260,15 +260,15 @@ export function updateProfile(name, initials, username, cb) {
   var ups = {name}
   if (initials) ups.initials = initials
   if (username) ups.username = username
-
+  var done = cbSession(this, cb)
   if (!username)
-    return update(userId, ups, cbSession(cb))
+    return update(userId, ups, done)
 
   svc.searchOne({username}, null, function(e,r) {
     if (r) {
       return cb(svc.Forbidden(`username ${username} already taken`))
     }
-    update(userId, ups, cbSession(cb))
+    update(userId, ups, done)
   })
 }
 
@@ -301,56 +301,9 @@ export function toggleUserInRole(userId, role, cb) {
 
 
 export function getUsersInRole(role, cb) {
-  svc.searchMany({ roles:role }, { fields: UserData.select.usersInRole }, cb)
+  svc.searchMany({ roles:role }, { fields: Data.select.usersInRole }, cb)
 }
 
-
-
-export function setAvatar(user) {
-  if (user && user.email) user.avatar = md5.gravatarUrl(user.email)
-  else user.avatar = undefined
-}
-
-
-//-- TODO, watch out for cache changing via adds and deletes of records
-function inflateTagsAndBookmarks(sessionData, cb) {
-  if (!sessionData ||
-    (!sessionData.tags && !sessionData.bookmarks) )
-    return cb(null, sessionData)
-
-  cache.ready(['tags','posts','workshops'], () => {
-    if (logging) $log('inflateTagsAndBookmarks.start')
-
-    var tags = []
-    for (var t of (sessionData.tags || []))
-    {
-      var tt = cache['tags'][t.tagId]
-      if (tt) {
-        var {name,slug} = tt
-        tags.push( _.extend({name,slug},t) )
-      }
-      else
-        $log(`tag with Id ${t.tagId} not in cache`)
-        // return cb(Error(`tag with Id ${t.tagId} not in cache`))
-    }
-
-    var bookmarks = []
-    for (var b of (sessionData.bookmarks || []))
-    {
-      var bb = cache[b.type+'s'][b.objectId]
-      if (bb) {
-        var {title,url} = bb
-        bookmarks.push( _.extend({title,url},b) )
-      }
-      else
-        $log(`${b.type} with Id ${b.objectId} not in cache`)
-        // return cb(Error(`${b.type} with Id ${b.objectId} not in cache`))
-    }
-
-    if (logging) $log('inflateTagsAndBookmarks.done', {tags, bookmarks})
-    cb(null, _.extend(sessionData, {tags, bookmarks}))
-  })
-}
 
 var anonAvatars = [
   "/static/img/css/sidenav/default-cat.png",
@@ -365,17 +318,17 @@ export function getSession(cb) {
 
     if (this.session.anonData && this.session.anonData.email)
     {
-      setAvatar(this.session.anonData)
+      Data.select.setAvatar(this.session.anonData)
       avatar = this.session.anonData.avatar
     }
 
     var session = _.extend({ authenticated:false,sessionID:this.sessionID, avatar }, this.session.anonData)
-    inflateTagsAndBookmarks(session, cb)
+    Data.select.inflateTagsAndBookmarks(session, cb)
   }
   else
   {
-    if (!this.user.avatar) setAvatar(this.user)
-    inflateTagsAndBookmarks(this.user, cb)
+    if (!this.user.avatar) Data.select.setAvatar(this.user)
+    Data.select.inflateTagsAndBookmarks(this.user, cb)
   }
 }
 
@@ -384,7 +337,7 @@ export function getSessionFull(cb) {
   if (!this.user)
     return getSession.call(this, cb)
 
-  svc.searchOne({ _id:this.user._id },{ fields: UserData.select.sessionFull }, cbSession(cb))
+  svc.searchOne({ _id:this.user._id },{ fields: Data.select.sessionFull }, cbSession(this, cb))
 }
 
 
@@ -401,7 +354,7 @@ function toggleSessionItem(type, item, maxAnon, maxAuthd, comparator, cb)
       var up = {}
       up[type] = list
 
-      svc.update(userId, up, cbSession(cb))
+      svc.update(userId, up, cbSession(self, cb))
     })
   }
   else {
@@ -436,7 +389,7 @@ export function toggleBookmark(type, id, cb) {
 export function tags(tags, cb) {
   for (var t of tags) { if (!t.tagId) t.tagId = t._id } // if you pass in normal tags it breaks
   if (this.user) {
-    svc.update(this.user._id, {tags}, cbSession(cb));
+    svc.update(this.user._id, {tags}, cbSession(this, cb));
   }
   else {
     this.session.anonData.tags = tags
@@ -446,7 +399,7 @@ export function tags(tags, cb) {
 
 export function bookmarks(bookmarks, cb) {
   if (this.user) {
-    svc.update(this.user._id, {bookmarks}, cbSession(cb));
+    svc.update(this.user._id, {bookmarks}, cbSession(this, cb));
   }
   else {
     this.session.anonData.bookmarks = bookmarks
@@ -476,7 +429,7 @@ export function requestPasswordChange(email, cb) {
 
       mailman.sendChangePasswordEmail(r, r.local.changePasswordHash)
 
-      if (self.user) return cbSession(cb)(e,r)
+      if (self.user) return cbSession(self, cb)(e,r)
       else return cb(null, {email})
     })
   })
@@ -501,7 +454,7 @@ export function changePassword(hash, password, cb) {
     var trackData = { type: 'password', hash }
     svc.update(user._id, update, cbTrackSave(this, trackData, (e,r) => {
       if (e || !r) return cb(e,r)
-      return getSession.call(this,cb)
+      getSessionFull.call(this,cb)
     }));
   });
 }
@@ -512,7 +465,7 @@ export function changeName(name, cb) {
   if (inValid) return cb(svc.Forbidden(inValid))
 
   if (this.user)
-    User.findOneAndUpdate({_id:this.user._id}, { '$set': { name } }, cbSession(cb))
+    User.findOneAndUpdate({_id:this.user._id}, { '$set': { name } }, cbSession(this, cb))
   else {
     this.session.anonData.name = name
     return getSession.call(this, cb)
@@ -521,7 +474,11 @@ export function changeName(name, cb) {
 
 export function updateEmailToBeVerified(email, errorCB, cb) {
   email = email.toLowerCase()
+  var self = this
+
   svc.searchOne({_id:this.user._id}, {}, (ee, r) => {
+    if (r.email == email && r.emailVerified) return cb(null, r)
+
     if (r.email != email) {
       r.email = email
       r.emailVerified = false
@@ -540,6 +497,7 @@ export function updateEmailToBeVerified(email, errorCB, cb) {
         if (e.message.indexOf('duplicate key error index') != -1) return errorCB(Error('Email belongs to another account'))
         return errorCB(e)
       }
+      self.session.passport.user = Data.select.sessionFromUser(user)
       cb(null, user)
     })
   })
@@ -552,6 +510,7 @@ export function changeEmail(email, cb) {
   if (inValid) return cb(svc.Forbidden(inValid))
 
   email = email.trim().toLowerCase()
+  var self = this
   var {user} = this
   if (user)
   {
@@ -559,18 +518,17 @@ export function changeEmail(email, cb) {
     analytics.track(user, this.sessionID, 'Save', data, {}, ()=>{})
 
     if (user.email == email && user.emailVerified)
-      return getSessionFull.call(this, cb)
+      return cb(`Email ${user.email} already verified... try log out and back in again?`)
 
     else {
       updateEmailToBeVerified.call(this, email, cb, (e,r) => {
         mailman.sendVerifyEmail(r, r.local.emailHash)
-        cbSession(cb)(e,r)
+        cbSession(self, cb)(e,r)
       })
     }
   }
   else {
     var search = { '$or': [{email:email},{'google._json.email':email}] }
-    var self = this
     svc.searchOne(search, null, function(e,r) {
       if (r) {
         delete self.session.anonData.email
@@ -586,22 +544,22 @@ export function verifyEmail(hash, cb) {
   var ctx = this
   svc.searchOne({ email:this.user.email }, null, (e,r) => {
     if (e || !r) {
-      $log(e,r)
+      $log('verifyEmail', e, r)
       return cb(e,r)
     }
     if (r.local.emailHash == hash) {
       this.user.emailVerified = true
       var trackData = { type: 'emailVerified', email: this.user.email }
-      svc.update(this.user._id, { emailVerified: true }, cbSession(cbTrackSave(ctx,trackData,cb)))
+      svc.update(this.user._id, { emailVerified: true }, cbSession(this, cbTrackSave(ctx,trackData,cb)))
     }
     else
-      cb(Error("e-mail verification failed"))
+      cb(Error("e-mail verification failed, hash is not valid"))
   })
 }
 
 
 export function search(searchTerm, cb) {
-  var opts = { options: { limit: 4 }, fields: UserData.select.search }
+  var opts = { options: { limit: 4 }, fields: Data.select.search }
   var rex = new RegExp(searchTerm, "i")
   var query = searchTerm ? { '$or' : [{email : rex},{name : rex},{'google.displayName' : rex},{'google._json.email' : rex}] } : null;
   svc.searchMany(query, opts, (e,r) =>{
@@ -611,7 +569,7 @@ export function search(searchTerm, cb) {
         if (!u.email && u.google._json.email) u.email = u.google._json.email
         if (!u.name && u.google.displayName) u.name = u.google.displayName
       }
-      u = setAvatar(u);
+      u = Data.select.setAvatar(u);
     }
     cb(e,r)
   })
