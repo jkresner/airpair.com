@@ -106,6 +106,9 @@ var get = {
   getActiveForAdmin(cb) {
     svc.searchMany(Data.query.active, { options: { sort: { '_id': -1 }}, fields: Data.select.pipeline }, admCB(cb))
   },
+  get2015ForAdmin(cb) {
+    svc.searchMany(Data.query['2015'], { options: { sort: { '_id': -1 }}, fields: Data.select.pipeline }, admCB(cb))
+  },
   getWaitingForMatchmaker(cb) {
     svc.searchMany(Data.query.waiting, { options: { sort: { 'adm.submitted': -1 }}, fields: Data.select.pipeline }, admCB(cb))
   },

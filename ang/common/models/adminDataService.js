@@ -86,6 +86,15 @@ angular.module('APSvcAdmin', [])
           success(data);
         }).error(error)
       },
+      get2015(success, error) {
+        if (pipelineFns.cache.get('2015'))
+          return success(pipelineFns.cache.get('2015'))
+
+        $http.get(`${APIAdm}/requests/2015`).success(function(data) {
+          pipelineFns.cache.put('2015',data);
+          success(data);
+        }).error(error)
+      },
       getIncomplete(success, error) {
         $http.get(`${APIAdm}/requests/incomplete`).success(success).error(error)
       },

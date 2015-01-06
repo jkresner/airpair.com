@@ -122,6 +122,7 @@ export default function(app) {
     .put('/companys/migrate/:id', CompanysAPI.migrate)
     .put('/companys/member/:id', CompanysAPI.addMember)
     .get('/requests/active', RequestsAPI.getActiveForAdmin)
+    .get('/requests/2015', RequestsAPI.get2015ForAdmin)
     .get('/requests/incomplete', RequestsAPI.getIncompleteForAdmin)
     .get('/requests/:id', RequestsAPI.getByIdForAdmin)
     .get('/requests/user/:id', RequestsAPI.getByUserIdForAdmin)
