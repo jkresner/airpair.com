@@ -1,6 +1,8 @@
 var fs =          require('fs')
 var handlebars =  require('handlebars')
 var util =        require('../../../shared/util')
+var marked =      require('marked')
+
 // var async =       require('async')
 import {getUsersInRole} from '../../services/users'
 
@@ -53,7 +55,7 @@ module.exports = function(mailProvider)
   var mailman = {
     sendRawTextEmail(toUser, subject, body, cb) {
       mailProvider.send(`${toUser.name} <${toUser.email}>`, {
-        Subject: subject, Text: body
+        Subject: subject, Text: body, Html: marked(body)
       }, cb)
     },
     sendVerifyEmail(toUser, hash, cb) {
