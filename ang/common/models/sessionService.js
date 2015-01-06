@@ -96,7 +96,7 @@ angular.module('APSvcSession', [])
 
     this.updateTag = function(data, success, error)
     {
-      $http.put(`${API}/users/me/tag/${data.slug}`, {}).success(setScope(success)).error(error)
+      $http.put(`${API}/users/me/tag/${encodeURIComponent(data.slug)}`, {}).success(setScope(success)).error(error)
     }
 
     this.updateBookmark = function(data, success, error)

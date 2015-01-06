@@ -10,7 +10,7 @@ var svc = new Svc(Tag, logging)
 
 var fields = {
 	listCache: { '_id':1, name: 1, slug: 1 },
-	search: { '_id': 1, 'name': 1, 'slug': 1, 'desc': 1, 'tokens': 1, 'short': 1 }
+	search: { '_id': 1, 'name': 1, 'slug': 1, 'desc': 1, 'short': 1, score: { $meta: "textScore" } }
 }
 
 
@@ -45,13 +45,10 @@ function isMatchOnWeightedFields(tag, regex) {
 
 
 export function search(searchTerm, cb) {
-  if (searchTerm) searchTerm = searchTerm.replace(/-/g, ' ');
-  var encodedTerm = encode(searchTerm)
+  var encodedTerm = '\"'+searchTerm+'\"'
 
-  var regex = new RegExp(tokenize(encodedTerm, true, true), 'i');
-
-  var query = { $or: [{name: regex},{short: regex},{tokens: regex}] };
-  var opts = { fields: fields.search, options: { limit: 10 } }
+  var query = { $text: { $search: encodedTerm } }
+  var opts = { fields: fields.search }
 
   svc.searchMany(query, opts, function(err, result) {
     if (err) {
@@ -59,25 +56,10 @@ export function search(searchTerm, cb) {
       return;
     }
 
-    var exactMatch = new RegExp('^' + encodedTerm + '$', 'i');
-    var startsWith = new RegExp('^' + encodedTerm + '[^-]', 'i');
+    result = _.first(_.sortBy(result, (r) => -1*r.score),4)
+    // $log('result',result)
 
-    for (var i = 0; i < result.length; i++) {
-      var tag = result[i];
-      tag.weight = 0;
-
-      // if it's an exact match: -
-      if (isMatchOnWeightedFields(tag, exactMatch)) {
-        tag.weight -= 2;
-      }
-      // if starts with: -
-      if (isMatchOnWeightedFields(tag, startsWith)) {
-        tag.weight -= 1;
-      }
-    }
-
-    var retVal = _.sortBy(result, (x) => x.weight).splice(0, 3);
-    cb(err, retVal);
+    cb(err, result);
   });
 }
 
@@ -93,6 +75,7 @@ export function getAllForCache(cb) {
 
 
 export function getBySlug(slug, cb) {
+  if (slug.indexOf('#') != -1) slug = encodeURIComponent(slug)
 	svc.searchOne({slug:slug},null, cb)
 }
 
