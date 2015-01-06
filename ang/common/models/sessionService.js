@@ -31,6 +31,8 @@ angular.module('APSvcSession', [])
 
         if (trackingData) analytics.track('Save', trackingData);
 
+        console.log(r);
+        window.firebaseToken = r.firebaseToken;
         successFn(r)
       }
     }

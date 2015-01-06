@@ -10,7 +10,7 @@ import ExpertsAPI from '../api/experts'
 import CompanysAPI from '../api/companys'
 import ViewsAPI from '../api/views'
 import RequestsAPI from '../api/requests'
-var {authd,setAnonSessionData} = require('../middleware/auth')
+var {authd,setAnonSessionData,setFirebaseTokenOnSession} = require('../middleware/auth')
 var {adm,emailv} = require('../middleware/authz')
 
 
@@ -24,15 +24,15 @@ export default function(app) {
     .param('booking', BookingsAPI.paramFns.getById)
     .param('paymethod', PaymethodsAPI.paramFns.getById)
 
-    .get('/session/full', setAnonSessionData, UsersAPI.getSessionFull)
+    .get('/session/full', setAnonSessionData, setFirebaseTokenOnSession, UsersAPI.getSessionFull)
     .put('/users/me/password', UsersAPI.changePassword)
     .put('/users/me/password-change', UsersAPI.requestPasswordChange)
     .put('/users/me/tag/:tag', setAnonSessionData, UsersAPI.toggleTag)
     .put('/users/me/tags', setAnonSessionData, UsersAPI.tags)
     .put('/users/me/bookmarks', setAnonSessionData, UsersAPI.bookmarks)
     .put('/users/me/bookmarks/:type/:id', setAnonSessionData, UsersAPI.toggleBookmark)
-    .put('/users/me/email', setAnonSessionData, UsersAPI.changeEmail)
-    .put('/users/me/name', setAnonSessionData, UsersAPI.changeName)
+    .put('/users/me/email', setAnonSessionData, setFirebaseTokenOnSession, UsersAPI.changeEmail)
+    .put('/users/me/name', setAnonSessionData, setFirebaseTokenOnSession, UsersAPI.changeName)
     .put('/users/me/email-verify', authd, setAnonSessionData, UsersAPI.verifyEmail)
     .put('/users/me', authd, UsersAPI.updateProfile)
     .get('/company', authd, CompanysAPI.getUsersCompany)

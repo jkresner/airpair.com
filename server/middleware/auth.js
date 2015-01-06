@@ -1,5 +1,7 @@
+var FirebaseTokenGenerator = require('firebase-token-generator')
+var JWT = require('jwt-simple')
 var {isBot}   = require('../../shared/util')
-var logging   = false
+var logging   = true
 
 var setSessionVarFromQuery = (varName) =>
   (req, res, next) => {
@@ -99,8 +101,54 @@ var middleware = {
   },
 
 
-  setReturnTo: setSessionVarFromQuery('returnTo')
+  setReturnTo: setSessionVarFromQuery('returnTo'),
 
+  setFirebaseTokenOnSession(req, res, next) {
+    if (logging) $log(`mw.setFirebaseTokenOnSession ${req.sessionID} ${req.user}`.cyan)
+    var tokenGenerator = new FirebaseTokenGenerator(config.auth.firebase.secret)
+    var tokenData, trues, existingToken = req.session.firebaseToken, existingTokenData;
+    
+    if (existingToken) {
+      existingTokenData = JWT.decode(existingToken,  config.auth.firebase.secret).d;
+    }
+    
+    console.log('Current token data>', existingTokenData);
+        
+    $log('fb-tok', config.auth.firebase.secret)
+    if (req.user) {
+      var uid = req.user._id.toString()
+      
+      trues = _.map(req.user.roles, function () {return true});
+      tokenData = {
+        uid: uid,
+        //name: req.user.name,
+        //avatar: req.user.avatar,
+        type: "user",
+        // Convert roles to an object for easy lookup in Firebase security rules
+        roles: _.object(req.user.roles, trues)
+      }
+      
+      $log('logged in', tokenData)
+    } else {
+      $log('anonyous', req.session)
+      
+      // Generate firebase token using req.sessionID
+      tokenData = {
+        uid: req.sessionID,
+        //name: req.session.name || "Visitor " + req.sessionID.substring(0, 6),
+        //avatar: req.session.avatar,
+        type: "session"
+      }
+    }
+  
+    if (!existingTokenData || existingTokenData.uid != tokenData.uid) {
+      req.session.firebaseToken = tokenGenerator.createToken(tokenData);
+    }
+  
+    $log('firebaseToken in setFirebaseTokenOnSession', req.session.firebaseToken)
+    console.log('session >', req.sessionID, req.session );
+    next()
+  }
 }
 
 
