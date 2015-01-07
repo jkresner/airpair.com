@@ -46,7 +46,7 @@ angular.module("ADMBookings", [])
     })
 
 
-    AdmDataService.bookings.getBooking($routeParams.id, (r) =>
+    AdmDataService.bookings.getBooking({_id:$routeParams.id}, (r) =>
       $scope.booking = r,
       () => $location.path('/adm/bookings')
     )

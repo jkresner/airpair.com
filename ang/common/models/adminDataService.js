@@ -8,6 +8,14 @@ angular.module('APSvcAdmin', [])
 
   .service('AdmDataService', function($http, $cacheFactory, APIAdm) {
 
+    var GET = (urlFn) =>
+      (data, success, error) => {
+        if (!success) alert('need to pass success for ' + url)
+        if (!error) error = (resp) => console.log('error:', resp);
+        $http.get(APIAdm+urlFn(data)).success(success).error(error)
+      }
+
+
     this.getPosts = function(success)
     {
       $http.get(`${APIAdm}/posts`).success(success).error(lazyErrorCb);
@@ -132,15 +140,10 @@ angular.module('APSvcAdmin', [])
     this.billing = billingFns
 
     var bookingFns = {
-      getOrders(data, success, error) {
-        $http.get(`${APIAdm}/orders/${data.start.format('x')}/${data.end.format('x')}/${data.user._id}`, data).success(success).error(error)
-      },
-      getBookings(data, success, error) {
-        $http.get(`${APIAdm}/bookings/${data.start.format('x')}/${data.end.format('x')}/${data.user._id}`, data).success(success).error(error)
-      },
-      getBooking(_id, success, error) {
-        $http.get(`${APIAdm}/bookings/${_id}`).success(success).error(error)
-      },
+      getOrders: GET((d)=>`/orders/${d.start.format('x')}/${d.end.format('x')}/${d.user._id}`),
+      getOrder: GET((d)=>`/billing/orders/${d._id}`),
+      getBookings: GET((d)=>`/bookings/${d.start.format('x')}/${d.end.format('x')}/${d.user._id}`),
+      getBooking: GET((d)=>`/bookings/${d._id}`),
       updateBooking(data, success, error) {
         $http.put(`${APIAdm}/bookings/${data._id}`, data).success(success).error(error)
       },

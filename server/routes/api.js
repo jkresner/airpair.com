@@ -112,6 +112,7 @@ export default function(app) {
     .get('/users/role/:role', UsersAPI.getUsersInRole)
     .put('/users/:id/role/:role', UsersAPI.toggleUserInRole)
     .get('/users/search/:id', UsersAPI.search)
+    .get('/billing/orders/:id', OrdersAPI.getByIdForAdmin)
     .post('/billing/orders/credit', OrdersAPI.giveCredit)
     .get('/billing/paymethods/:id', PaymethodsAPI.getUserPaymethodsByAdmin)
     .get('/views/user/:id', ViewsAPI.getByUserId)

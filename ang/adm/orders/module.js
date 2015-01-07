@@ -1,44 +1,55 @@
+angular.module("ADMOrders", ['APRoutes'])
 
-angular.module("ADMOrders", [])
+.config(function(apRouteProvider) {
 
-  .config(function($locationProvider, $routeProvider) {
+  var route = apRouteProvider.route
+  route('/v1/adm/orders', 'Orders', require('./list.html'))
+  route('/v1/adm/orders/:id', 'Order', require('./item.html'))
 
-    $routeProvider.when('/v1/adm/orders', {
-      template: require('./list.html'),
-      controller: 'OrdersCtrl as orders'
-    });
+})
 
-  })
+.controller('OrdersCtrl', function($scope, AdmDataService) {
 
-  .controller('OrdersCtrl', function($scope, AdmDataService) {
+  var start = moment(moment().format('YYYY MMM'), 'YYYY MMM')
+  $scope.query = {
+    start:    start,
+    end:      moment(start).add(1,'months'),
+    user:     { _id: '' }
+  }
 
-    var startQuery = moment(moment().format('YYYY MMM'), 'YYYY MMM')
-    var endQuery = moment(startQuery).add(1,'months')
+  var setScope = (r) => {
+    $scope.orders = r
 
-    $scope.selectedUser = {}
-    $scope.query = {
-      start: startQuery,
-      end: endQuery,
-      user: { _id: '' }
-    }
-
-    var setScope = (r) => {
-      $scope.orders = r
-      var summary = { total: 0, byCount: 0, profit: 0, count: r.length }
-      var customers = {}
-      for (var i = 0;i<r.length;i++) {
-        summary.total += r[i].total
-        summary.profit += r[i].profit
-        if (!customers[r[i].userId]) {
-          summary.byCount += 1
-          customers[r.userId] = true
-        }
-        // summary.time += r[i].minutes
+    var summary = { total: 0, byCount: 0, profit: 0, count: r.length }
+    var customers = {}
+    for (var i = 0;i<r.length;i++) {
+      summary.total += r[i].total
+      summary.profit += r[i].profit
+      if (!customers[r[i].userId]) {
+        summary.byCount += 1
+        customers[r.userId] = true
       }
-      $scope.summary = summary
     }
 
-    $scope.fetch = () => AdmDataService.bookings.getOrders($scope.query,setScope)
-    $scope.selectUser = (user) => $scope.query.user = user
-    $scope.fetch()
-  })
+    $scope.summary = summary
+  }
+
+  $scope.selectUser = (user) => $scope.query.user = user
+  $scope.fetch = () => AdmDataService.bookings.getOrders($scope.query,setScope)
+  $scope.fetch()
+
+})
+
+
+.controller('OrderCtrl', function($scope, $routeParams, ServerErrors, AdmDataService) {
+
+  var setScope = (r) =>
+    $scope.order = r
+
+  $scope.fetch = () =>
+    AdmDataService.bookings.getOrder({_id:$routeParams.id}, setScope,
+      ServerErrors.fetchFailRedirect('/v1/adm/orders'))
+
+  $scope.fetch()
+
+})
