@@ -93,11 +93,11 @@ angular.module("ADMPipeline", ["APRequestDirectives","APProfileDirectives"])
 
   $scope.statusCss = (request) => {
     var css = ''
-    if (moment(request.adm.lastTouch).isBefore(request.lastTouch))
-      css += ' nonadmtouch'
-    else if (moment(request.adm.lastTouch).isBefore(moment().add(-3,'hours')))
+    if (moment(request.adm.lastTouch.utc).isBefore(moment().add(-5,'hours')))
       css += ' threehr'
-    else if (moment(request.submitted).isBefore(moment().add(54,'hours')))
+    if (moment(request.adm.lastTouch.utc).isBefore(request.lastTouch.utc))
+      css += ' nonadmtouch'
+    if (moment(request.submitted).isBefore(moment().add(-96,'hours')))
       css += ' stale'
     return css
   }
@@ -109,20 +109,22 @@ angular.module("ADMPipeline", ["APRequestDirectives","APProfileDirectives"])
       r.submitted = r.adm.submitted||r.created.format()
       //-- Deal gracefully with v0
       if (!r.adm.owner && r.owner) r.adm.owner = r.owner
-      if (!r.adm.lastTouch) r.adm.lastTouch = moment().add(-1, 'days').format()
+      if (!r.adm.lastTouch) r.adm.lastTouch = { utc: moment().add(-1, 'days').format() }
       if (!r.lastTouch) r.lastTouch = { utc: r.submitted }
 
-      if (moment(r.adm.lastTouch).isBefore(r.lastTouch))
+      if (moment(r.adm.lastTouch.utc).isBefore(r.lastTouch.utc))
         results.nonadmtouch.push(r)
-      else if (moment(r.adm.lastTouch).isBefore(moment().add(-3,'hours')))
+      else if (moment(r.adm.lastTouch.utc).isBefore(moment().add(-3,'hours')))
         results.threehr.push(r)
       else
         results.other.push(r)
     })
 
-    results.nonadmtouch = _.sortBy(results.nonadmtouch,(rr)=>rr.lastTouch)
-    results.threehr = _.sortBy(results.threehr,(rr)=>rr.adm.lastTouch)
-    results.other = _.sortBy(results.other,(rr)=>rr.adm.lastTouch)
+    results.nonadmtouch = _.sortBy(results.nonadmtouch,(rr)=>rr.lastTouch.utc)
+    results.threehr = _.sortBy(results.threehr,(rr)=>rr.adm.lastTouch.utc)
+    results.other = _.sortBy(results.other,(rr)=>rr.adm.lastTouch.utc)
+
+    // console.log('results', results)
 
     $scope.requests = results
   })
