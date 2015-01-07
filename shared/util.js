@@ -31,6 +31,7 @@ var nestedPick = (object, keys) => {
 var util = {
 
   datetime: {
+    dawn: () => moment('20121225','YYYYMMDD'),
     anHourAgo: () => moment().add(-1,'hour'),
     today: () => moment(moment().format('YYYY MMM DD'), 'YYYY MMM DD'),
     now: () => moment(),
