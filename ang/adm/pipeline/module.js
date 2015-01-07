@@ -15,7 +15,7 @@ angular.module("ADMPipeline", ["APRequestDirectives","APProfileDirectives"])
 )
 
 
-.controller('RequestCtrl', function($scope, $routeParams, $location, AdmDataService, RequestsUtil) {
+.controller('RequestCtrl', function($scope, $routeParams, $location, AdmDataService, RequestsUtil, DateTime) {
   var _id = $routeParams.id
   $scope.composeGeneric = false
 
@@ -51,6 +51,16 @@ angular.module("ADMPipeline", ["APRequestDirectives","APProfileDirectives"])
     })
     AdmDataService.getUsersViews({_id:r.userId}, function (views) {
       $scope.views = views.reverse()
+    })
+
+    var orderQuery = { user:r.user, start: DateTime.dawn(), end: moment() }
+    AdmDataService.bookings.getOrders(orderQuery, (orders) =>
+      $scope.orders = orders
+    )
+
+    AdmDataService.pipeline.getUsersRequests({userId:r.userId}, (requests) => {
+      var thisRequest = _.find(requests,(rr)=>rr._id==r._id)
+      $scope.requests = _.difference(requests,[thisRequest])
     })
   },
     () => $location.path('/adm/pipeline')
