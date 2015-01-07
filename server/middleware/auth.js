@@ -140,6 +140,8 @@ var middleware = {
         type: "session"
       }
     }
+    
+    console.log("token data>", tokenData)
   
     if (!existingTokenData || existingTokenData.uid != tokenData.uid) {
       req.session.firebaseToken = tokenGenerator.createToken(tokenData);
