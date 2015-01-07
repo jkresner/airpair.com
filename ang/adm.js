@@ -8,6 +8,7 @@ require('./../public/lib/angular-messages/angular-messages.js');
 require('./../public/lib/angular-load/angular-load.js');
 require('./../public/lib/angular-bootstrap/ui-bootstrap-tpls.js');
 require('./../public/lib/angular-bootstrap-datetimepicker/src/js/datetimepicker.js');
+require('./common/util.js');
 require('./common/directives/forms/forms.js');
 require('./common/directives/forms/inputs.js');
 require('./common/directives/forms/tagInput.js');
@@ -37,7 +38,7 @@ require('./matchmaking/module.js');
 
 angular.module('ADM', [
   'ngRoute', 'ui.bootstrap.datetimepicker',
-  'APSvcSession', 'APSvcAdmin', 'APDataSvc', 'APNotifications', 'APRoutes',
+  'APSvcSession', 'APSvcAdmin', 'APDataSvc', 'APNotifications', 'APRoutes', 'APUtil',
   'APFilters', 'APFormsDirectives', 'APInputs', 'APMailTemplates', 'APHangouts',
   'ADMPipeline',
   'ADMPosts',

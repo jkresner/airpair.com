@@ -30,6 +30,17 @@ var nestedPick = (object, keys) => {
 
 var util = {
 
+  datetime: {
+    anHourAgo: () => moment().add(-1,'hour'),
+    today: () => moment(moment().format('YYYY MMM DD'), 'YYYY MMM DD'),
+    now: () => moment(),
+    in48hours: () => moment().add(48,'hours'),
+    firstOfMonth: (add) => moment(moment().format('YYYY MMM'), 'YYYY MMM').add(add,'months'),
+    inRange: (datetime, start, end) =>
+      util.dateInRange(moment(datetime),util.datetime[start](),util.datetime[end]())
+  },
+
+
   dateInRange(date, start, end)
   {
     var isAfterStart = (start) ? date.isAfter(start) : true

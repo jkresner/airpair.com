@@ -6,15 +6,10 @@ angular.module('APSvcAdmin', [])
 
   .constant('APIAdm', '/v1/api/adm')
 
-  .service('AdmDataService', function($http, $cacheFactory, APIAdm) {
-
-    var GET = (urlFn) =>
-      (data, success, error) => {
-        if (!success) alert('need to pass success for ' + url)
-        if (!error) error = (resp) => console.log('error:', resp);
-        $http.get(APIAdm+urlFn(data)).success(success).error(error)
-      }
-
+  .service('AdmDataService', function($http, $cacheFactory, APIRoute, APIAdm) {
+    var GET = APIRoute.GET
+    var PUT = APIRoute.PUT
+    var POST = APIRoute.POST
 
     this.getPosts = function(success)
     {
@@ -139,19 +134,12 @@ angular.module('APSvcAdmin', [])
 
     this.billing = billingFns
 
-    var bookingFns = {
-      getOrders: GET((d)=>`/orders/${d.start.format('x')}/${d.end.format('x')}/${d.user._id}`),
-      getOrder: GET((d)=>`/billing/orders/${d._id}`),
-      getBookings: GET((d)=>`/bookings/${d.start.format('x')}/${d.end.format('x')}/${d.user._id}`),
-      getBooking: GET((d)=>`/bookings/${d._id}`),
-      updateBooking(data, success, error) {
-        $http.put(`${APIAdm}/bookings/${data._id}`, data).success(success).error(error)
-      },
-      giveCredit(data, success, error) {
-        $http.post(`${APIAdm}/billing/orders/credit`, data).success(success).error(error)
-      }
+    this.bookings = {
+      getOrders: GET((d)=>`/adm/orders/${d.start.format('x')}/${d.end.format('x')}/${d.user._id}`),
+      getOrder: GET((d)=>`/adm/billing/orders/${d._id}`),
+      getBookings: GET((d)=>`/adm/bookings/${d.start.format('x')}/${d.end.format('x')}/${d.user._id}`),
+      getBooking: GET((d)=>`/adm/bookings/${d._id}`),
+      updateBooking: PUT((d)=>`/adm/bookings/${d._id}`),
+      giveCredit: POST((d)=>`/adm/billing/orders/credit`)
     }
-
-    this.bookings = bookingFns
-
   })

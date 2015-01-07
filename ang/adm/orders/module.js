@@ -8,12 +8,11 @@ angular.module("ADMOrders", ['APRoutes'])
 
 })
 
-.controller('OrdersCtrl', function($scope, AdmDataService) {
+.controller('OrdersCtrl', function($scope, AdmDataService, DateTime) {
 
-  var start = moment(moment().format('YYYY MMM'), 'YYYY MMM')
   $scope.query = {
-    start:    start,
-    end:      moment(start).add(1,'months'),
+    start:    DateTime.firstOfMonth(0),
+    end:      DateTime.firstOfMonth(1),
     user:     { _id: '' }
   }
 
@@ -39,7 +38,6 @@ angular.module("ADMOrders", ['APRoutes'])
   $scope.fetch()
 
 })
-
 
 .controller('OrderCtrl', function($scope, $routeParams, ServerErrors, AdmDataService) {
 
