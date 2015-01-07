@@ -12,19 +12,18 @@ angular.module('APSvcAdmin', [])
      POST = APIRoute.POST,
      DELETE = APIRoute.DELETE;
 
+    this.users = {
+      getInRole: GET((d)=>`/adm/users/role/${d.role}`),
+      toggleRole: PUT((d)=>`/adm/users/${d._id}/role/${d.role}`),
+    }
+
+    this.getUsersViews = function(data, success, error) {
+      $http.get(`${APIAdm}/views/user/${data._id}`, data).success(success).error(error)
+    }
+
     this.getPosts = function(success)
     {
       $http.get(`${APIAdm}/posts`).success(success).error(lazyErrorCb);
-    }
-
-    this.getUsersInRole = function(data, success)
-    {
-      $http.get(`${APIAdm}/users/role/${data.role}`).success(success).error(lazyErrorCb);
-    }
-
-    this.toggleRole = function(data, success)
-    {
-      $http.put(`${APIAdm}/users/${data._id}/role/${data.role}`, data).success(success).error(lazyErrorCb);
     }
 
     this.getRedirects = function(success)
@@ -40,10 +39,6 @@ angular.module('APSvcAdmin', [])
     this.deleteRedirect = function(id, success)
     {
       $http.delete(`${APIAdm}/redirects/${id}`).success(success).error(lazyErrorCb);
-    }
-
-    this.getUsersViews = function(data, success, error) {
-      $http.get(`${APIAdm}/views/user/${data._id}`, data).success(success).error(error)
     }
 
     this.companyMigrate = function(data, success)
