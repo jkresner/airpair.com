@@ -27,9 +27,13 @@
       <th class="p">${{summary.profit}}</th>
     </tr>
     <tr ng-repeat="o in orders">
-      <td><b>${{o.total}}</b></td>
+      <td>
+        <a href="/v1/adm/orders/{{o._id}}">
+          <b>${{o.total}}</b>
+        </a>
+      </td>
       <td><time>{{o.utc | publishedTime : 'MM/DD HH:mm' }}</time></td>
-      <td><img src="{{o.by.avatar}}?s=30"/><a href="mailto:{{o.by.email}}" ng-bind-html="o.by.name | addNameBreak"></a>
+      <td><img src="{{o.by.avatar}}?s=30"/><a href="/adm/users/{{o.by._id}}" ng-bind-html="o.by.name | addNameBreak" target="_blank"></a>
       </td>
       <td>
         <div ng-repeat="l in o.lineItems">

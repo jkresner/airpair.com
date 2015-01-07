@@ -3,6 +3,7 @@ import * as Svc from '../services/orders'
 
 export default initAPI(Svc, {
   // buyMembership: (req) => [req.body.length,req.body.coupon,req.paymethod],
+  getByIdForAdmin: (req) => [req.params.id],
   buyCredit: (req) => [req.body.total,req.body.coupon,req.body.payMethodId],
   giveCredit: (req) => [req.body.toUser,req.body.total,req.body.source],
   getMyOrders: (req) => [],
