@@ -44,7 +44,17 @@
       </div>
       <div><label>Joined</label> {{user.cohort.engagement.visit_signup | locaTime : 'DD MMM HH:mm:ss' }} <span>{{user.cohort.engagement.visit_signup | agoTime }}</span></div>
       <div>
-        <label>Prevs</label> <i>JK To build</i>
+        <label>Prevs</label>
+        <span ng-if="orders && orders.length == 0">No orders</span>
+        <ul ng-if="orders && orders.length > 0">
+          <li>ORDERS</li>
+          <li ng-repeat="o in orders"><a href="/v1/adm/orders/{{o._id}}" target="_blank">{{o.utc | locaTime : 'YYYY DD MMM' }}</a> ${{o.total}}</li>
+        </ul>
+        <span ng-if="requests && requests.length == 0">No requests</span>
+        <ul ng-if="requests && requests.length > 0">
+          <li>REQUESTS</li>
+          <li ng-repeat="r in requests"><a href="/adm/pipeline/{{r._id}}" target="_blank">{{r._id |objectIdToDate : 'YYYY DD MMM' }}</a>  {{r._id}}</li>
+        </ul>
       </div>
       <div>
         <label>Started</label> {{request._id | objectIdToDate : 'DD MMM HH:mm:ss' }} <span>{{request._id | objectIdToAgoTime }}</span>
@@ -115,19 +125,27 @@
       <label>Messaged </label>
       <ul class="messages">
         <li ng-repeat="m in request.messages"><time>{{m._id |  objectIdToDate : 'DD MMM HH:mm'}}</time> <b>{{m.type}}</b> <a ng-click="alertMessage(m.body)">{{m.subject}}</a></li>
+        <li><time><a ng-click="toggleComposeGeneric()">compose generic</a></time></li>
       </ul>
     </div>
 
     <hr />
-    <mail-link ng-if="shouldSend.received(request)" name="'received'" to="request.by.email" req="request" meta="meta"></mail-link>
+    <div ng-if="!composeGeneric">
+      <mail-link ng-if="shouldSend.received(request)" name="'received'" to="request.by.email" req="request" meta="meta"></mail-link>
 
-    <mail-link ng-if="shouldSend.review(request)" name="'review'" to="request.by.email" req="request" meta="meta"></mail-link>
+      <mail-link ng-if="shouldSend.review(request)" name="'review'" to="request.by.email" req="request" meta="meta"></mail-link>
 
-    <mail-link ng-if="shouldSend.cancelfromwaiting(request, meta)" name="'cancelfromwaiting'" to="request.by.email" req="request" meta="meta"></mail-link>
-
-    <div ng-if="!request.adm.farmed && request.status=='waiting'">
-      <textarea class="form-control" ng-model="farmTweet"></textarea><a ng-click="farm(farmTweet)" class="btn">Tweet</a>
+      <mail-link ng-if="shouldSend.cancelfromwaiting(request, meta)" name="'cancelfromwaiting'" to="request.by.email" req="request" meta="meta"></mail-link>
     </div>
+    <div ng-if="composeGeneric">
+      <mail-link ng-if="shouldSend.generic(request, meta)" name="'generic'" to="request.by.email" req="request" meta="meta"></mail-link>
+    </div>
+    <div class="mailTo" ng-if="!request.adm.farmed && request.status=='waiting'">
+      <textarea class="form-control" ng-model="farmTweet" style="height:50px"></textarea>
+      <p><a ng-click="farm(farmTweet)" class="btn">Tweet</a></p>
+    </div>
+
+    <hr />
 
     <div ng-if="request.status == 'waiting' || request.status=='review'">
       <a href="/matchmaking/{{request._id}}" class="btn">Match experts</a>
@@ -176,10 +194,6 @@
         </p>
         <hr />
       </div>
-    </section>
-
-    <section ng-if="!user.emailVerified" class="experts left">
-      <p>Cannot suggest experts until user verifies email.</p>
     </section>
 
   </section>

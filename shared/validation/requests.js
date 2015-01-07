@@ -73,8 +73,10 @@ var validation = {
     if (!message.subject) return 'Message subject required'
     if (!message.body) return 'Message body required'
 
-    var existing = _.find(request.messages,(m)=>m.type==message.type)
-    if (existing) return 'Can not send the same message type once'
+    if (message.type != 'generic') {
+      var existing = _.find(request.messages,(m)=>m.type==message.type)
+      if (existing) return 'Can not send the same message type once'
+    }
   },
   replyByExpert(user, request, expert, reply)
   {

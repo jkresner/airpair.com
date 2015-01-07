@@ -6,21 +6,24 @@ angular.module('APSvcAdmin', [])
 
   .constant('APIAdm', '/v1/api/adm')
 
-  .service('AdmDataService', function($http, $cacheFactory, APIAdm) {
+  .service('AdmDataService', function($http, $cacheFactory, APIRoute, APIAdm) {
+    var GET = APIRoute.GET,
+     PUT = APIRoute.PUT,
+     POST = APIRoute.POST,
+     DELETE = APIRoute.DELETE;
+
+    this.users = {
+      getInRole: GET((d)=>`/adm/users/role/${d.role}`),
+      toggleRole: PUT((d)=>`/adm/users/${d._id}/role/${d.role}`),
+    }
+
+    this.getUsersViews = function(data, success, error) {
+      $http.get(`${APIAdm}/views/user/${data._id}`, data).success(success).error(error)
+    }
 
     this.getPosts = function(success)
     {
       $http.get(`${APIAdm}/posts`).success(success).error(lazyErrorCb);
-    }
-
-    this.getUsersInRole = function(data, success)
-    {
-      $http.get(`${APIAdm}/users/role/${data.role}`).success(success).error(lazyErrorCb);
-    }
-
-    this.toggleRole = function(data, success)
-    {
-      $http.put(`${APIAdm}/users/${data._id}/role/${data.role}`, data).success(success).error(lazyErrorCb);
     }
 
     this.getRedirects = function(success)
@@ -36,10 +39,6 @@ angular.module('APSvcAdmin', [])
     this.deleteRedirect = function(id, success)
     {
       $http.delete(`${APIAdm}/redirects/${id}`).success(success).error(lazyErrorCb);
-    }
-
-    this.getUsersViews = function(data, success, error) {
-      $http.get(`${APIAdm}/views/user/${data._id}`, data).success(success).error(error)
     }
 
     this.companyMigrate = function(data, success)
@@ -66,16 +65,16 @@ angular.module('APSvcAdmin', [])
           cb(data)
         }
       },
-      removeItemInCacheList(id, cb) {
-        return (data) => {
-          if (pipelineFns.cache) {
-            var existing = _.find(pipelineFns.cache.get('active'),(r)=>r._id==id)
-            if (existing) {
-              pipelineFns.cache.put('active',_.without(pipelineFns.cache.get('active'),existing))
+      removeItemInCacheList(_id) {
+        return (cb) =>
+          (resp) => {
+            if (pipelineFns.cache) {
+              var existing = _.find(pipelineFns.cache.get('active'),(r)=>r._id==_id)
+              if (existing)
+                pipelineFns.cache.put('active',_.without(pipelineFns.cache.get('active'),existing))
             }
+            cb(resp)
           }
-          cb(data)
-        }
       },
       getActive(success, error) {
         if (pipelineFns.cache.get('active'))
@@ -85,34 +84,20 @@ angular.module('APSvcAdmin', [])
           pipelineFns.cache.put('active',data);
           success(data);
         }).error(error)
-      },
-      getIncomplete(success, error) {
-        $http.get(`${APIAdm}/requests/incomplete`).success(success).error(error)
-      },
-      getRequest(_id, success, error) {
-        $http.get(`${APIAdm}/requests/${_id}`).success(success).error(error)
-      },
-      getUsersRequests(_id, success, error) {
-        $http.get(`${APIAdm}/requests/user/${_id}`).success(success).error(error)
-      },
-      updateRequest(data, success, error) {
-        $http.put(`${APIAdm}/requests/${data._id}`, data).success(pipelineFns.updateItemInCacheList(success)).error(error)
-      },
-      removeSuggestion(data, success, error) {
-        $http.put(`${APIAdm}/requests/${data._id}/remove/${data.expertId}`).success(pipelineFns.updateItemInCacheList(success)).error(error)
-      },
-      sendMesssage(data, success, error) {
-        $http.put(`${APIAdm}/requests/${data.requestId}/message`,data).success(pipelineFns.updateItemInCacheList(success)).error(error)
-      },
-      farm(data, success, error) {
-        $http.put(`${APIAdm}/requests/${data.requestId}/farm`,data).success(pipelineFns.updateItemInCacheList(success)).error(error)
-      },
-      deleteRequest(_id, success, error) {
-        $http.delete(`/v1/api/requests/${_id}`).success(pipelineFns.removeItemInCacheList(_id, success)).error(error)
-      },
+      }
     }
 
-    this.pipeline = pipelineFns
+    this.pipeline = _.extend(pipelineFns, {
+      getIncomplete: GET((d)=>`/adm/requests/incomplete`),
+      get2015: GET((d)=>`/adm/requests/2015`),
+      getRequest: GET((d)=>`/adm/requests/${d._id}`),
+      getUsersRequests: GET((d)=>`/adm/requests/user/${d.userId}`),
+      updateRequest: PUT((d)=>`/adm/requests/${d._id}`, pipelineFns.updateItemInCacheList),
+      removeSuggestion: PUT((d)=>`/adm/requests/${d._id}/remove/${d.expertId}`, pipelineFns.updateItemInCacheList),
+      sendMesssage: PUT((d)=>`/adm/requests/${d._id}/message`, pipelineFns.updateItemInCacheList),
+      farm: PUT((d)=>`/adm/requests/${d._id}/farm`, pipelineFns.updateItemInCacheList),
+      deleteRequest: DELETE((d)=>`/requests/${d._id}`, (d)=>pipelineFns.removeItemInCacheList(d._id)),
+    })
 
     var billingFns = {
       getUserPaymethods(_id, success, error) {
@@ -122,24 +107,12 @@ angular.module('APSvcAdmin', [])
 
     this.billing = billingFns
 
-    var bookingFns = {
-      getOrders(data, success, error) {
-        $http.get(`${APIAdm}/orders/${data.start.format('x')}/${data.end.format('x')}/${data.user._id}`, data).success(success).error(error)
-      },
-      getBookings(data, success, error) {
-        $http.get(`${APIAdm}/bookings/${data.start.format('x')}/${data.end.format('x')}/${data.user._id}`, data).success(success).error(error)
-      },
-      getBooking(_id, success, error) {
-        $http.get(`${APIAdm}/bookings/${_id}`).success(success).error(error)
-      },
-      updateBooking(data, success, error) {
-        $http.put(`${APIAdm}/bookings/${data._id}`, data).success(success).error(error)
-      },
-      giveCredit(data, success, error) {
-        $http.post(`${APIAdm}/billing/orders/credit`, data).success(success).error(error)
-      }
+    this.bookings = {
+      getOrders: GET((d)=>`/adm/orders/${d.start.format('x')}/${d.end.format('x')}/${d.user._id}`),
+      getOrder: GET((d)=>`/adm/billing/orders/${d._id}`),
+      getBookings: GET((d)=>`/adm/bookings/${d.start.format('x')}/${d.end.format('x')}/${d.user._id}`),
+      getBooking: GET((d)=>`/adm/bookings/${d._id}`),
+      updateBooking: PUT((d)=>`/adm/bookings/${d._id}`),
+      giveCredit: POST((d)=>`/adm/billing/orders/credit`)
     }
-
-    this.bookings = bookingFns
-
   })

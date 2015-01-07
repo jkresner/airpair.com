@@ -106,6 +106,9 @@ var get = {
   getActiveForAdmin(cb) {
     svc.searchMany(Data.query.active, { options: { sort: { '_id': -1 }}, fields: Data.select.pipeline }, admCB(cb))
   },
+  get2015ForAdmin(cb) {
+    svc.searchMany(Data.query['2015'], { options: { sort: { '_id': -1 }}, fields: Data.select.pipeline }, admCB(cb))
+  },
   getWaitingForMatchmaker(cb) {
     svc.searchMany(Data.query.waiting, { options: { sort: { 'adm.submitted': -1 }}, fields: Data.select.pipeline }, admCB(cb))
   },
@@ -232,8 +235,11 @@ var admin = {
   updateByAdmin(original, update, cb) {
     var action = 'update'
     var {adm,status} = update
-    if (original.adm.active && !update.adm.active) {
-      action = `closed:${update.status}`
+    if (original.adm.active &&
+      (status == 'canceled' || status == 'completed' || status == 'junk')
+    ) {
+      delete adm.active
+      action = `closed:${status}`
       adm.closed = new Date()
     }
     else if (original.status == "received" && update.status == "waiting") {
