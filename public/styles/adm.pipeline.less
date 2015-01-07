@@ -21,52 +21,65 @@
 
 
 #pipeline {
+  padding-top:20px;
 
+  table {
+    width:85%;display:inline-block;
+    td { padding:3px;
+      > * { vertical-align:top }
+    }
+    div {
+      padding-right:10px;
+      display:inline-block;width:160px;font-size:12px;
+      a { display:block }
+    }
+    span {
+      position:relative;
+      height:64px;
+      display:inline-block;width:120px;font-size:11px;font-weight:bold;
+      padding-right:10px;
+      img { display:inline-block;margin:3px 0px 0px 30px }
+      time {
+        position:absolute;bottom:0;height:40px;width:100%;overflow:hidden;
+        font-weight:normal;font-size:10px;
+        i { font-size:9px }
+        label {
+          font-size:11px;font-weight:bold;padding:0;margin:0;
+          display:block;max-width:85px;overflow:hidden;height:14px;
+        }
+      }
+    }
+    ul { .ulNoStyle;
+      img { width:20px;height:20px;border-radius:50% }
+    }
+    i {
+      display:block;font-style:normal;
+    }
+  }
+
+  .nonadm {
+    figure { font-size:10px;font-weight:normal;margin-top:2px }
+  }
+
+  .cust {
+    img { display:inline;vertical-align:top;margin:2px 4px 2px 0px  }
+    a { display:inline-block;vertical-align:top }
+  }
+
+  time {
+    display:block;
+    font-size:9px;
+    span { font-size:9px;font-weight:normal;display:block; }
+  }
+}
+
+#pipelineMetrics {
   section.today {
     background:white;
     padding:1px 10px;
     h4 { font-size:14px; }
     span { font-weight:bold }
     margin-bottom:10px;
-  }
-
-  section.active {
-    width:80%;display:inline-block;
-    table {
-      td { padding:2px;
-        > * { vertical-align:top }
-      }
-      label { display:inline-block;width:160px;font-size:12px;
-        a { display:block }
-      }
-      span {
-        position:relative;
-        height:60px;
-        display:inline-block;width:85px;font-size:11px;font-weight:bold;
-        img { display:inline-block;margin:3px 0px 0px 30px }
-        time { position:absolute;bottom:0;height:27px;width:100%;overflow:hidden; }
-      }
-      ul { .ulNoStyle;
-        img { width:20px;height:20px;border-radius:50% }
-      }
-      i {
-        display:block;font-style:normal;
-      }
-    }
-
-    .initials { color:white;width:22px;height:22px;padding:2px;border-radius:3px;text-align:center; }
-    .pg { background:green;.initials }
-    .jk { background:orange;.initials }
-    time {
-      display:block;
-      font-size:9px;
-      span { font-size:9px;font-weight:normal;display:block; }
-    }
-  }
-
-  section.incomplete {
-    width:46%;display:inline-block;
-    vertical-align:top;
   }
 }
 
@@ -247,13 +260,15 @@
       input { width:100%;padding:3px 5px;display:block }
       code { display:none }
       pre { display:none }
-      .btn { width:160px }
+      p { text-align:right }
+      .btn { width:160px;margin:1px 0px 0px 0px;padding:4px 8px  }
     }
     .lastTouch {
       i { font-size:10px;font-style:normal; }
     }
     ul {
       .ulNoStyle;
+      li { display:block }
       font-size:11px;
       padding-left:66px;
       margin-top:-25px;
