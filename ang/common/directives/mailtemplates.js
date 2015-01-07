@@ -13,6 +13,10 @@ var tmpls = {
     subject: require('../../../shared/mail/pipelinecancelfromwaiting_subject.html'),
     text: require('../../../shared/mail/pipelinecancelfromwaiting_text.html')
   },
+  generic: {
+    subject: require('../../../shared/mail/pipelinegeneric_subject.html'),
+    text: require('../../../shared/mail/pipelinegeneric_text.html')
+  },
 }
 
 angular.module("APMailTemplates", [])
@@ -28,14 +32,11 @@ angular.module("APMailTemplates", [])
       templateName: '=name',
       sendCallback: '=sendCallback'
     },
-    // link(scope, element, attrs) {
-    //   scope.type = scope.$eval(attrs.name)
-    // },
     controller($scope, $rootScope, $element, $attrs) {
       var type = $scope.$eval($attrs.name)
 
       $scope.send = () =>
-        $scope.$parent.send[type]($scope.subject, $scope.message, type)
+        $scope.$parent.send($scope.subject, $scope.message, type)
 
       $scope.$watch('meta.noPaymethod', function() {
         if (!$scope.r || !$scope.r.by) return

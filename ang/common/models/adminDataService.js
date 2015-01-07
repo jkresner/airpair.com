@@ -7,9 +7,10 @@ angular.module('APSvcAdmin', [])
   .constant('APIAdm', '/v1/api/adm')
 
   .service('AdmDataService', function($http, $cacheFactory, APIRoute, APIAdm) {
-    var GET = APIRoute.GET
-    var PUT = APIRoute.PUT
-    var POST = APIRoute.POST
+    var GET = APIRoute.GET,
+     PUT = APIRoute.PUT,
+     POST = APIRoute.POST,
+     DELETE = APIRoute.DELETE;
 
     this.getPosts = function(success)
     {
@@ -69,16 +70,16 @@ angular.module('APSvcAdmin', [])
           cb(data)
         }
       },
-      removeItemInCacheList(id, cb) {
-        return (data) => {
-          if (pipelineFns.cache) {
-            var existing = _.find(pipelineFns.cache.get('active'),(r)=>r._id==id)
-            if (existing) {
-              pipelineFns.cache.put('active',_.without(pipelineFns.cache.get('active'),existing))
+      removeItemInCacheList(_id) {
+        return (cb) =>
+          (resp) => {
+            if (pipelineFns.cache) {
+              var existing = _.find(pipelineFns.cache.get('active'),(r)=>r._id==_id)
+              if (existing)
+                pipelineFns.cache.put('active',_.without(pipelineFns.cache.get('active'),existing))
             }
+            cb(resp)
           }
-          cb(data)
-        }
       },
       getActive(success, error) {
         if (pipelineFns.cache.get('active'))
@@ -88,43 +89,20 @@ angular.module('APSvcAdmin', [])
           pipelineFns.cache.put('active',data);
           success(data);
         }).error(error)
-      },
-      get2015(success, error) {
-        if (pipelineFns.cache.get('2015'))
-          return success(pipelineFns.cache.get('2015'))
-
-        $http.get(`${APIAdm}/requests/2015`).success(function(data) {
-          pipelineFns.cache.put('2015',data);
-          success(data);
-        }).error(error)
-      },
-      getIncomplete(success, error) {
-        $http.get(`${APIAdm}/requests/incomplete`).success(success).error(error)
-      },
-      getRequest(_id, success, error) {
-        $http.get(`${APIAdm}/requests/${_id}`).success(success).error(error)
-      },
-      getUsersRequests(_id, success, error) {
-        $http.get(`${APIAdm}/requests/user/${_id}`).success(success).error(error)
-      },
-      updateRequest(data, success, error) {
-        $http.put(`${APIAdm}/requests/${data._id}`, data).success(pipelineFns.updateItemInCacheList(success)).error(error)
-      },
-      removeSuggestion(data, success, error) {
-        $http.put(`${APIAdm}/requests/${data._id}/remove/${data.expertId}`).success(pipelineFns.updateItemInCacheList(success)).error(error)
-      },
-      sendMesssage(data, success, error) {
-        $http.put(`${APIAdm}/requests/${data.requestId}/message`,data).success(pipelineFns.updateItemInCacheList(success)).error(error)
-      },
-      farm(data, success, error) {
-        $http.put(`${APIAdm}/requests/${data.requestId}/farm`,data).success(pipelineFns.updateItemInCacheList(success)).error(error)
-      },
-      deleteRequest(_id, success, error) {
-        $http.delete(`/v1/api/requests/${_id}`).success(pipelineFns.removeItemInCacheList(_id, success)).error(error)
-      },
+      }
     }
 
-    this.pipeline = pipelineFns
+    this.pipeline = _.extend(pipelineFns, {
+      getIncomplete: GET((d)=>`/adm/requests/incomplete`),
+      get2015: GET((d)=>`/adm/requests/2015`),
+      getRequest: GET((d)=>`/adm/requests/${d._id}`),
+      getUsersRequests: GET((d)=>`/adm/requests/user/${d.userId}`),
+      updateRequest: PUT((d)=>`/adm/requests/${d._id}`, pipelineFns.updateItemInCacheList),
+      removeSuggestion: PUT((d)=>`/adm/requests/${d._id}/remove/${d.expertId}`, pipelineFns.updateItemInCacheList),
+      sendMesssage: PUT((d)=>`/adm/requests/${d._id}/message`, pipelineFns.updateItemInCacheList),
+      farm: PUT((d)=>`/adm/requests/${d._id}/farm`, pipelineFns.updateItemInCacheList),
+      deleteRequest: DELETE((d)=>`/requests/${d._id}`, (d)=>pipelineFns.removeItemInCacheList(d._id)),
+    })
 
     var billingFns = {
       getUserPaymethods(_id, success, error) {

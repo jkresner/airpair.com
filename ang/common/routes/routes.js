@@ -18,7 +18,7 @@ angular.module("APRoutes", [])
 
 .factory('APIRoute', function apiRouteFactory($http, ServerErrors) {
 
-  var logging = true
+  var logging = false
 
   this.GET = (urlFn) =>
     (data, success, error) => {
@@ -27,22 +27,34 @@ angular.module("APRoutes", [])
       $http.get('/v1/api'+urlFn(data)).success(success).error(error)
     }
 
-  this.PUT = (urlFn) =>
+  this.POST = (urlFn, successWrapper) =>
     (data, success, error) => {
-      if (!success) alert('need to pass success for ' + url)
+      if (!success) alert('need to pass success for POST ' + url)
+      if (successWrapper) success = successWrapper(success)
+      if (!error) error = ServerErrors.add
+      var url = '/v1/api'+urlFn(data)
+      if (logging) console.log('POST.url', url, data)
+      $http.post(url, data).success(success).error(error)
+    }
+
+  this.PUT = (urlFn, successWrapper) =>
+    (data, success, error) => {
+      if (!success) alert('need to pass success for PUT ' + url)
+      if (successWrapper) success = successWrapper(success)
       if (!error) error = ServerErrors.add
       var url = '/v1/api'+urlFn(data)
       if (logging) console.log('PUT.url', url, data)
       $http.put(url, data).success(success).error(error)
     }
 
-  this.POST = (urlFn) =>
+  this.DELETE = (urlFn, successWrapper) =>
     (data, success, error) => {
-      if (!success) alert('need to pass success for ' + url)
+      if (!success) alert('need to pass success for DELETE ' + url)
+      if (successWrapper) success = successWrapper(data)(success)
       if (!error) error = ServerErrors.add
       var url = '/v1/api'+urlFn(data)
-      if (logging) console.log('POST.url', url, data)
-      $http.post(url, data).success(success).error(error)
+      if (logging) console.log('DELETE.url', url, data)
+      $http.delete(url).success(success).error(error)
     }
 
   return this

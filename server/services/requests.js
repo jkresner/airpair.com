@@ -235,8 +235,11 @@ var admin = {
   updateByAdmin(original, update, cb) {
     var action = 'update'
     var {adm,status} = update
-    if (original.adm.active && !update.adm.active) {
-      action = `closed:${update.status}`
+    if (original.adm.active &&
+      (status == 'canceled' || status == 'completed' || status == 'junk')
+    ) {
+      delete adm.active
+      action = `closed:${status}`
       adm.closed = new Date()
     }
     else if (original.status == "received" && update.status == "waiting") {

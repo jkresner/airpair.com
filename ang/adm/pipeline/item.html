@@ -115,19 +115,27 @@
       <label>Messaged </label>
       <ul class="messages">
         <li ng-repeat="m in request.messages"><time>{{m._id |  objectIdToDate : 'DD MMM HH:mm'}}</time> <b>{{m.type}}</b> <a ng-click="alertMessage(m.body)">{{m.subject}}</a></li>
+        <li><time><a ng-click="toggleComposeGeneric()">compose generic</a></time></li>
       </ul>
     </div>
 
     <hr />
-    <mail-link ng-if="shouldSend.received(request)" name="'received'" to="request.by.email" req="request" meta="meta"></mail-link>
+    <div ng-if="!composeGeneric">
+      <mail-link ng-if="shouldSend.received(request)" name="'received'" to="request.by.email" req="request" meta="meta"></mail-link>
 
-    <mail-link ng-if="shouldSend.review(request)" name="'review'" to="request.by.email" req="request" meta="meta"></mail-link>
+      <mail-link ng-if="shouldSend.review(request)" name="'review'" to="request.by.email" req="request" meta="meta"></mail-link>
 
-    <mail-link ng-if="shouldSend.cancelfromwaiting(request, meta)" name="'cancelfromwaiting'" to="request.by.email" req="request" meta="meta"></mail-link>
-
-    <div ng-if="!request.adm.farmed && request.status=='waiting'">
-      <textarea class="form-control" ng-model="farmTweet"></textarea><a ng-click="farm(farmTweet)" class="btn">Tweet</a>
+      <mail-link ng-if="shouldSend.cancelfromwaiting(request, meta)" name="'cancelfromwaiting'" to="request.by.email" req="request" meta="meta"></mail-link>
     </div>
+    <div ng-if="composeGeneric">
+      <mail-link ng-if="shouldSend.generic(request, meta)" name="'generic'" to="request.by.email" req="request" meta="meta"></mail-link>
+    </div>
+    <div class="mailTo" ng-if="!request.adm.farmed && request.status=='waiting'">
+      <textarea class="form-control" ng-model="farmTweet" style="height:50px"></textarea>
+      <p><a ng-click="farm(farmTweet)" class="btn">Tweet</a></p>
+    </div>
+
+    <hr />
 
     <div ng-if="request.status == 'waiting' || request.status=='review'">
       <a href="/matchmaking/{{request._id}}" class="btn">Match experts</a>
@@ -176,10 +184,6 @@
         </p>
         <hr />
       </div>
-    </section>
-
-    <section ng-if="!user.emailVerified" class="experts left">
-      <p>Cannot suggest experts until user verifies email.</p>
     </section>
 
   </section>
