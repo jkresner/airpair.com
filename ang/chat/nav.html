@@ -1,0 +1,35 @@
+<div ng-show="!corechat.selfmember.loggedIn">
+   <input type="text" placeholder="Token" ng-model="token"/>
+   <button ng-click="corechat.login(token)">Login</button>
+</div>
+
+<div ng-show="corechat.selfmember.loggedIn">
+   <b>Status:</b> {{corechat.selfmember.status}}<br />
+   <div>
+       <b>Notifications:</b> {{corechat.selfmember.notificationsCount}}<br />
+       <div ng-repeat="notification in corechat.selfmember.notifications">
+           {{notification.type}} - {{notification.info}} - <button ng-click="notification.acknowledge()">remove</button>
+       </div>
+   </div>
+   <div>
+       <b>Rooms:</b><br />
+       <div ng-repeat="(room, _) in corechat.selfmember.rooms">
+           <button ng-click="corechat.setActiveRoom(room)">{{room}}</button>
+       </div>
+       <br />
+       <b>New Chat</b><br />
+       <input type="text" ng-model="newRoom.to" placeholder="To"/>
+       <input type="text" ng-model="newRoom.body" placeholder="Body"/>
+       <button ng-click="corechat.sendMessageToRoom(newRoom.to, newRoom.body)">Send</button>
+   </div>
+   <br />
+   <div ng-show="corechat.activeRoom">
+       <b>Current Room: {{activeRoom}}</b>
+        <div ng-repeat="message in corechat.selfmember.rooms[corechat.activeRoom].history">
+            {{message.body}}
+        </div><br />
+        <input type="text" ng-model="newMessage.body">
+        {{corechat.activeRoom}} <
+        <button ng-click="corechat.sendMessageToRoom(corechat.activeRoom, newMessage.body); newMessage.body=''">Send</button>
+    </div>
+</div>
