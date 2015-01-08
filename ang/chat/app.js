@@ -2,6 +2,9 @@
     var app = angular.module("chat-widget", []),
         ref = new Firebase("https://airpair-chat-dev.firebaseio.com/"),
         cc = new CoreChat(ref);
+        
+    window.cc = cc;
+
     app.config(function($logProvider){
         $logProvider.debugEnabled(false);
     });
