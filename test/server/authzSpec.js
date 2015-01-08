@@ -4,13 +4,16 @@ module.exports = () => describe("Authorization: ", function() {
 
 
   before(function(done) {
-    stubAnalytics()
-    testDb.initTags(done)
+    SETUP.analytics.stub()
+    SETUP.initTags(done)
   })
 
-  after(function(done) {
-    resotreAnalytics()
-    done()
+  after(function() {
+    SETUP.analytics.restore()
+  })
+
+  beforeEach(function() {
+    SETUP.clearIdentity()
   })
 
 

@@ -7,15 +7,14 @@ module.exports = -> describe "Booking: ", ->
   @timeout 5000
 
   before (done) ->
-    stubAnalytics()
-    testDb.initExperts done
+    SETUP.analytics.stub()
+    SETUP.initExperts done
 
+  after ->
+    SETUP.analytics.restore()
 
-  after (done) ->
-    resotreAnalytics()
-    done()
-
-  afterEach -> cookie = null
+  beforeEach ->
+    SETUP.clearIdentity()
 
 
   it 'Book 2 hour with pay as you go private', (done) ->
