@@ -6,17 +6,15 @@ module.exports = -> describe "Signup: ", ->
   @timeout(6000)
 
   before (done) ->
-    stubAnalytics()
-    testDb.initPosts () ->
-      testDb.initTags(done)
+    SETUP.analytics.stub()
+    SETUP.initPosts ->
+      SETUP.initTags(done)
 
+  after ->
+    SETUP.analytics.restore()
 
-  after (done) ->
-    resotreAnalytics()
-    global.cookie = null
-    global.cookieCreatedAt = null
-    done()
-
+  beforeEach ->
+    SETUP.clearIdentity()
 
   it 'Can sign up as new user with local credentials', (done) ->
     d = getNewUserData('jkap')

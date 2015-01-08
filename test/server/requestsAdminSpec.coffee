@@ -33,15 +33,15 @@ newCompleteRequestForAdmin = (userKey, requestData, cb) ->
 module.exports = -> describe "Api", ->
 
   before (done) ->
-    stubAnalytics()
-    testDb.initTags ->
-      testDb.ensureExpert data.users.abha, data.experts.abha, done
+    SETUP.analytics.stub()
+    SETUP.initTags ->
+      SETUP.ensureExpert 'abha', done
 
-  after (done) ->
-    resotreAnalytics()
-    done()
+  after ->
+    SETUP.analytics.restore()
 
-  beforeEach -> global.cookie = null
+  beforeEach ->
+    SETUP.clearIdentity()
 
 
   it 'Pipeliner can reply to a new request', (done) ->
@@ -141,4 +141,8 @@ module.exports = -> describe "Api", ->
               expect(eAbha.matching).to.exist
               done()
 
+
+  it.skip 'Pipeliner can junk request', (done) ->
+  it.skip 'Pipeliner setting to cancel closes request', (done) ->
+  it.skip 'Pipeliner setting to complete closes request', (done) ->
 

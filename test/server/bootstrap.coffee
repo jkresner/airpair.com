@@ -24,6 +24,7 @@ describe 'Server: ', ->
     global.logging = false
     global.app = require('../../index').run()
     global.testDb = require('./helpers/setup')
+    global.SETUP = global.testDb
     setTimeout(( -> testDb.init(done) ), 100)
 
 
@@ -33,7 +34,6 @@ describe 'Server: ', ->
   describe('Tags: ', require('./tagsSpec'))
   describe('Auth: ', require('./authSpec'))
   describe('Authz: ', require('./authzSpec'))
-  describe('Posts: ', require('./postsSpec'))
   describe('Companys: ', require('./companysSpec'))
   describe('Rss: ', require('./rssSpec'))
   describe('Redirects: ', require('./redirectsSpec'))
@@ -43,5 +43,6 @@ describe 'Server: ', ->
   describe('Orders: ', require('./ordersSpec'))
   describe('Orders: ', require('./ordersMembershipSpec'))
   describe('Orders: ', require('./ordersBookingSpec'))
+  describe('Posts: ', require('./postsSpec'))
   describe('Bookings: ', require('./bookingsSpec'))
 

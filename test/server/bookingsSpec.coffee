@@ -7,15 +7,14 @@ module.exports = -> describe "API: ", ->
   @timeout 40000
 
   before (done) ->
-    stubAnalytics()
-    testDb.initExperts done
+    SETUP.analytics.stub()
+    SETUP.initExperts done
 
+  after ->
+    SETUP.analytics.restore()
 
-  after (done) ->
-    resotreAnalytics()
-    done()
-
-  afterEach -> cookie = null
+  beforeEach ->
+    SETUP.clearIdentity()
 
 
   it.skip 'Can confirm booking by expert', (done) ->

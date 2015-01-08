@@ -1,17 +1,15 @@
 module.exports = -> describe "API", ->
 
   before (done) ->
-    stubAnalytics()
-    testDb.initTags ->
-      testDb.ensureExpert data.users.abha, data.experts.abha, done
+    SETUP.analytics.stub()
+    SETUP.initTags ->
+      SETUP.ensureExpert 'abha', done
 
+  after ->
+    SETUP.analytics.restore()
 
-  after (done) ->
-    resotreAnalytics()
-    done()
-
-
-  beforeEach -> global.cookie = null
+  beforeEach ->
+    SETUP.clearIdentity()
 
 
   it '401 for non authenticated request', (done) ->
