@@ -53,6 +53,23 @@
 			return new Room(this, roomId);
 		};
 		
+		this.getMembersByTag = function (tag) {
+			var members = {},
+				self = this;
+			
+			this._ref
+				.child("members/byTag")
+				.child(tag)
+				.on("child_added", function (snapshot) {
+					self._callbackWrap(function () {
+						var memberId = snapshot.key();
+						members[memberId] = new Member(self, memberId);	
+					});
+				});
+				
+			return members;
+		}
+		
 		this._watchForTokenOnWindow = function () {
 			// Hackssss
 			var checkToken = (function () {
@@ -279,6 +296,7 @@
 			this.email = memberData.email;
 			this.name = memberData.name;
 			this.avatar = memberData.avatar;
+			this.tags = memberData.tags || {};
 		}).bind(this));
 		
 		this.join = function (rid) {
@@ -294,6 +312,18 @@
 				.child(this.id)
 				.set(true);
 		};
+		
+		this.tags = {
+			add: function (tag) {
+				this._ref.child('tags').child(tag).set(true)
+			},
+			remove: function (tag) {
+				this._ref.child('tags').child(tag).set(false);
+			},
+			has: function (tag) {
+				return this.tags[tag] || false;
+			}
+		}
 	};
 	
 	var Member = function (cc) {
