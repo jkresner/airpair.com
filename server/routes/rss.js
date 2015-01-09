@@ -5,7 +5,7 @@ var RSS  = require('rss')
 var allFeedOptions = {
   site_url: 'https://www.airpair.com',
   image_url: 'https://www.airpair.com/static/img/css/airpair-circle.png',
-  copyright: '2014 AirPair Inc',
+  copyright: '2015 AirPair Inc',
   language: 'en',
   ttl: '60'
 }
@@ -42,7 +42,7 @@ function generatePostFeedItem(data) {
     description: (data.meta) ? data.meta.description : 'No meta',
     author: data.by.name,
     date: data.published,
-    url: `https:\/\/www.airpair.com\/${data.url}`,
+    url: data.url,
     categories: _.pluck(data.tags, 'name')
   }
 }
@@ -53,7 +53,7 @@ function generateWorkshopFeedItem(data) {
     description: data.description,
     date: data.time,
     author: data.speakers[0].name,
-    url: `https:\/\/www.airpair.com\/${data.url}`,
+    url: data.url,
     categories: data.tags
   }
 }
@@ -70,6 +70,8 @@ function rssRenderer() {
     the_feed.pubDate = moment().toDate(); // whenever we regenerate the feed
     var catNames = []
     for (var item of items) {
+      if (!item.url) $log('feed_item_URL_PROBLEM'.red, item.title.white)
+      if (!item.tags.length == 0) $log('feed_item_TAGS_PROBLEM'.red, item.title.white)
       var feed_item = generateFeedItem(item);
       catNames = _.union( catNames, feed_item.categories )
       the_feed.item(feed_item)

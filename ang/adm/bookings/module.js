@@ -41,7 +41,7 @@ angular.module("ADMBookings", [])
   var updateBooking = (ups) =>
     AdmDataService.bookings.updateBooking(_.extend($scope.booking,ups), setScope)
 
-  $scope.updateTime = (vak) => updateBooking({datetime:val})
+  $scope.updateTime = (val) => updateBooking({datetime:val})
   $scope.updateStatus = (val) => updateBooking({status:val})
   $scope.addGcal = (val) => updateBooking({ sendGCal: { notify: val } })
 
