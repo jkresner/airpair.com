@@ -1,5 +1,39 @@
 module.exports = {
 
+  expertPayoutSummary(orders) {
+    var lines = []
+    var result = {
+      pending: { count:0, total:0 },
+      owed: { count:0, total:0 },
+      paid: { count:0, total:0 }
+    }
+    orders.forEach(function(order){
+      order.lineItems.forEach(function(li){
+        if (li.type == 'airpair' && li.info) lines.push(li)
+      })
+    })
+
+    lines.forEach(function(line) {
+      if (line.info.paidout) {
+        result.paid.count += 1
+        result.paid.total += line.owed
+      }
+      else
+      {
+        if (line.info.released) {
+          result.owed.count += 1
+          result.owed.total += line.owed
+        }
+        else {
+          result.pending.count += 1
+          result.pending.total += line.owed
+        }
+      }
+    })
+
+    return result
+  },
+
   linesWithCredit(orders) {
     var lines = []
     orders.forEach(function(order){
