@@ -6,6 +6,7 @@ var nestedPick = (object, keys) => {
 
   // Pick out elements marked as pick
   var copy  = {}
+  var arrayKeys = {}
   for (var key of keys)
   {
     var props = key.split('.')
@@ -15,12 +16,36 @@ var nestedPick = (object, keys) => {
       if (typeof object[key] !== "undefined" && object[key] !== null)
         copy[key] = object[key]
     }
-    else
+    else if (object[props[0]])
     {
+      var nestedKey = key.replace(`${props[0]}.`,'')
       // Pick recursively and apply only if something was picked
-      var result = nestedPick(object[props[0]], [key.replace(`${props[0]}.`,'')])
+      if (object[props[0]].constructor === Array) {
+        arrayKeys[props[0]] = arrayKeys[props[0]] || {}
+        arrayKeys[props[0]][nestedKey] = 1
+      }
+      else
+      {
+        //-- If an array
+        var result = nestedPick(object[props[0]], [nestedKey])
+          // $log('result'.yellow, props[0].yellow, result)
+        if (!_.isEmpty(result)) {
+          copy[props[0]] = (copy[props[0]]) ? _.extend(copy[props[0]],result) : result
+        }
+      }
+    }
+  }
+  for (var arrayKey of _.keys(arrayKeys))
+  {
+    copy[arrayKey] = []
+    // $log('arrayKeys[arrayKey]'.cyan, object[arrayKey], _.keys(arrayKeys[arrayKey]))
+    for (var i=0;i<object[arrayKey].length;i++) {
+      // $log('array item nestedKey'.red, arrayKeys[arrayKey], i, arrayKeys[arrayKey])
+      // $log('blue'.blue, object[arrayKey][i], _.keys(arrayKeys[arrayKey]))
+      var result = nestedPick(object[arrayKey][i], _.keys(arrayKeys[arrayKey]))
+      // $log('result'.red, result)
       if (!_.isEmpty(result))
-        copy[props[0]] = result
+        copy[arrayKey][i] = result
     }
   }
 
