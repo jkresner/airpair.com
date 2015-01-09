@@ -57,6 +57,9 @@
         
         $scope.setActiveRoom = function (roomId) {
             $scope.activeRoom = roomId;  
+            angular.forEach(cc._member.notificationsByRoom[roomId], function (notification) {
+               notification.acknowledge();
+            });
         };
         
         $scope.sendMessageToRoom = function (roomId, body) {
@@ -98,8 +101,6 @@
             }
             
             $scope.isAdmin = typeof cc.admin !== "undefined";
-            $scope.selfmember.loggedIn = true;
-            $scope.selfmember.id = member.id;
             
             if ($scope.isAdmin) {
                 $scope.admin = cc.admin;
@@ -110,18 +111,14 @@
             $scope.selfmember.loggedIn = true;
             $scope.selfmember.rooms = member.rooms;
             $scope.selfmember.notifications = member.notifications;
+            $scope.selfmember.id = member.id;
+            $scope.selfmember.notificationsByRoom = cc._member.notificationsByRoom;
+            $scope.selfmember.notificationsCountByRoom = cc._member.notificationsCountByRoom;
+
             
             member.on("status_change", function (err, status) {
                 $log.log("You are flagged as", status);
                 $scope.selfmember.status = status;
-            });
-            
-            member.on("recieved_notification", function (err, notification) {
-                $scope.selfmember.notificationsCount += 1;
-            });
-            
-            member.on("removed_notification", function (err, notification) {
-                $scope.selfmember.notificationsCount -= 1;             
             });
             
             member.on("join_room", function (err, room) {

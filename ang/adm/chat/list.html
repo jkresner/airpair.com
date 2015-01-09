@@ -29,7 +29,7 @@
     <h2>Current User: {{currentUser.id || "None"}}</h2>
     <div ng-show="corechat.activeRoom">
         <div ng-repeat="message in corechat.selfmember.rooms[corechat.activeRoom].history">
-            <b member-info="{{message.from}}">{{member.name}}</b> {{message.body}}
+            <b member-info="{{message.from}}">{{member.name || "Anonymous"}}</b> {{message.body}}
         </div><br />
         <input type="text" ng-model="newMessage.body">
         <button ng-click="corechat.sendMessageToRoom(corechat.activeRoom, newMessage.body); newMessage.body=''">Send</button>

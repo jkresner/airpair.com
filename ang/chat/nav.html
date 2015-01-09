@@ -1,6 +1,5 @@
 <div ng-show="!corechat.selfmember.loggedIn">
-   <input type="text" placeholder="Token" ng-model="token"/>
-   <button ng-click="corechat.login(token)">Login</button>
+    Chat not logged in.
 </div>
 
 <div ng-show="corechat.selfmember.loggedIn">
@@ -14,13 +13,8 @@
    <div>
        <b>Rooms:</b><br />
        <div ng-repeat="(room, _) in corechat.selfmember.rooms">
-           <button ng-click="corechat.setActiveRoom(room)">{{room}}</button>
+           <button ng-click="corechat.setActiveRoom(room)">{{room}} ({{corechat.selfmember.notificationsCountByRoom[room]}})</button>
        </div>
-       <br />
-       <b>New Chat</b><br />
-       <input type="text" ng-model="newRoom.to" placeholder="To"/>
-       <input type="text" ng-model="newRoom.body" placeholder="Body"/>
-       <button ng-click="corechat.sendMessageToRoom(newRoom.to, newRoom.body)">Send</button>
    </div>
    <br />
    <div ng-show="corechat.activeRoom">
@@ -29,7 +23,6 @@
             {{message.body}}
         </div><br />
         <input type="text" ng-model="newMessage.body">
-        {{corechat.activeRoom}} <
         <button ng-click="corechat.sendMessageToRoom(corechat.activeRoom, newMessage.body); newMessage.body=''">Send</button>
     </div>
 </div>

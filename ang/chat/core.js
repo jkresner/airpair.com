@@ -17,6 +17,7 @@
 		this.login = function (token) {
 			this._ref.authWithCustomToken(token, (function(error, member) {
 				console.log(member)
+				console.log(member)
 				if (error) {
 					this.trigger("login", error);
 				} else {
@@ -156,6 +157,7 @@
 		}).bind(this);
 		
 		this._updateMember = (function (memberSnapshot) {
+			console.log(memberSnapshot.name())
 			var memberId = memberSnapshot.key(),
 				memberRaw = memberSnapshot.val(),
 				memberPage = memberRaw.page? 
@@ -163,6 +165,7 @@
 				lastMemberRaw = this._lastMembers[memberId],
 				lastMemberPage;
 			
+			console.log(memberId)
 			this.members.byId[memberId] = new Member(cc, memberId); 
 			
 			if (lastMemberRaw) {
@@ -208,8 +211,10 @@
 	// SelfMember(uid, auth)
 	
 	var SelfMemberBase = function (cc, auth) {
-		this._events = this._events.concat(["join_room", "recieved_notification", "removed_notification"])
-		this.notifications = {}
+		this._events = this._events.concat(["join_room", "recieved_notification", "removed_notification"]);
+		this.notifications = {};
+		this.notificationsByRoom = {};
+		this.notificationsCountByRoom = {};
 		this.rooms = {};
 		this.auth = auth;
 		
@@ -225,6 +230,14 @@
 						rawNotification.info);
 						
 				this.notifications[notification.id] = notification;
+				
+				(this.notificationsByRoom[rawNotification.info.to] || (this.notificationsByRoom[rawNotification.info.to] = {})
+				)[notification.id] = notification; 
+				
+				if (!this.notificationsCountByRoom[notification.info.to])
+					this.notificationsCountByRoom[notification.info.to] = 1;
+				else 
+					this.notificationsCountByRoom[notification.info.to] += 1;
 					
 				this.trigger("recieved_notification", null, notification);
 			}).bind(this));
@@ -240,6 +253,9 @@
 						rawNotification.type, 
 						rawNotification.info);
 						
+				this.notificationsCountByRoom[notification.info.to] -= 1;
+						
+				delete this.notificationsByRoom[notification.info.to][notification.id];
 				delete this.notifications[notification.id];
 					
 				this.trigger("removed_notification", null, notification);
@@ -293,23 +309,18 @@
 			var memberData = memberSnapshot.val();
 			this.exists = !!memberData;
 			
-			this.email = memberData.email;
-			this.name = memberData.name;
-			this.avatar = memberData.avatar;
-			this.tags = memberData.tags || {};
+			if (this.exists) {
+				this.email = memberData.email;
+				this.name = memberData.name;
+				this.avatar = memberData.avatar;
+				this.tags = memberData.tags || {};
+			}
 		}).bind(this));
 		
 		this.join = function (rid) {
 			this._ref
 				.child("rooms")
 				.child(rid)
-				.set(true);
-				
-			cc._ref
-				.child("rooms/byRID")
-				.child(rid)
-				.child("members")
-				.child(this.id)
 				.set(true);
 		};
 		
