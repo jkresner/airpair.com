@@ -2,6 +2,7 @@ var db = require('./setup.db')
 var dataHelpers = require('./setup.data')
 var stories = require('./setup.stories')
 
+
 global.braintree = require('braintree')
 
 // "resotreAnalytics"
@@ -13,7 +14,6 @@ var analyticsSetup = {
   stub()
   {
     if (analyticsSetup.stubbed) return
-    $log('stubbing analytics'.yellow)
     global.trackStub = sinon.stub(analytics,'track', (p1,p2,p3,p4,p5,cb) => { if (cb) cb() })
     global.viewStub = sinon.stub(analytics,'view', (p1,p2,p3,p4,p5,p6,cb) => { if (cb) cb() })
     global.identifyStub = sinon.stub(analytics,'identify', (p1,p2,p3,p4,cb) => { if (cb) cb() })
@@ -23,7 +23,6 @@ var analyticsSetup = {
 
   restore()
   {
-    $log('restoring analytics'.yellow)
     global.trackStub.restore()
     global.identifyStub.restore()
     global.aliasStub.restore()
@@ -38,14 +37,12 @@ var analyticsSetup = {
       var done = args.pop()
       var doneWithStub = (e,r) => {
         analyticsSetup.restore()
-        // $log('restored', e, r)
         done(e,r)
       }
       args.push(doneWithStub)
       analyticsSetup.stub()
     }
 
-    // $log('stubed', args, fn)
     fn.apply({}, args)
   },
 

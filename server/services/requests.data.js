@@ -1,8 +1,8 @@
-import Rates  from '../services/requests.rates'
+import Rates              from '../services/requests.rates'
 import * as md5           from '../util/md5'
-var util =    require('../../shared/util')
-var Roles =   require('../../shared/roles.js')
-var {ObjectId} = require('mongoose').Schema
+var Roles =               require('../../shared/roles.js')
+var {selectFromObject} =  require('../../shared/util')
+var {ObjectId} =          require('mongoose').Schema
 
 
 var selectFields = {
@@ -112,7 +112,7 @@ module.exports = {
       }
 
       if (view != 'admin')
-        r = util.selectFromObject(r, selectFields[view])
+        r = selectFromObject(r, selectFields[view])
       // $log('selected', view, request.suggested, r)
       return r
     }
