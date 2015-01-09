@@ -106,10 +106,11 @@ var middleware = {
   setFirebaseTokenOnSession(req, res, next) {
     if (logging) $log(`mw.setFirebaseTokenOnSession ${req.sessionID} ${req.user}`.cyan)
     var tokenGenerator = new FirebaseTokenGenerator(config.auth.firebase.secret)
-    var tokenData, trues, existingToken = req.session.firebaseToken, existingTokenData;
+    var tokenData, trues, existingToken = req.session.firebaseToken, existingTokenData, existingTokenMetadata;
     
     if (existingToken) {
-      existingTokenData = JWT.decode(existingToken,  config.auth.firebase.secret).d;
+      existingTokenMetadata = JWT.decode(existingToken,  config.auth.firebase.secret);
+      existingTokenData =  existingTokenMetadata.d;
     }
     
     console.log('Current token data>', existingTokenData);
@@ -143,7 +144,7 @@ var middleware = {
     
     console.log("token data>", tokenData)
   
-    if (!existingTokenData || existingTokenData.uid != tokenData.uid) {
+    if (!existingTokenData || existingTokenData.uid != tokenData.uid || existingTokenMetadata.iat < new Date().getTime()) {
       req.session.firebaseToken = tokenGenerator.createToken(tokenData);
     }
   
