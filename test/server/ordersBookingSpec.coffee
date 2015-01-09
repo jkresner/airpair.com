@@ -256,64 +256,53 @@ module.exports = -> describe "Booking: ", ->
 
 
   it 'Book 1 hour of Adam Bliss by Ari Lerner', (done) ->
-    testDb.ensureDoc 'User', data.users.aril, ->
-      testDb.ensureDoc 'Request', data.requests.ariwadam, (e, request) ->
-        testDb.findAndRemove 'Order', { userId: data.users.aril._id }, ->
-          LOGIN 'aril', data.users.aril, (sarli) ->
-            d = type: 'braintree', token: braintree.Test.Nonces.Transactable, name: 'Default Card', makeDefault: true
-            POST '/billing/paymethods', d, {}, (pm) ->
-              GET "/requests/review/#{request._id}", {}, (r) ->
-                expect(r.suggested.length).to.equal(3)
-                expect(r.suggested[0].suggestedRate.total).to.equal(130)
-                adamB = r.suggested[0].expert
-                expect(adamB._id).to.exist
-                expect(adamB.name).to.equal('Adam Bliss')
-                GET "/requests/#{request._id}/book/#{adamB._id}", {}, (r2) ->
-                  expect(r2.suggested.length).to.equal(3)
-                  expect(r2.suggested[0].expert.name).to.equal('Adam Bliss')
-                  expect(r2.suggested[0].suggestedRate.total).to.equal(130)
-                  suggestion = r2.suggested[0]
-                  airpair1 = time: moment().add(2, 'day'), minutes: 60, type: 'private', payMethodId: pm._id, request: { requestId: r._id, suggestion }
-                  POST "/bookings/#{adamB._id}", airpair1, {}, (booking1) ->
-                    expect(booking1._id).to.exist
-                    GET "/billing/orders", {}, (orders) ->
-                      expect(orders.length).to.equal(1)
-                      expect(orders[0].total).to.equal(130)
-                      expect(orders[0].profit).to.equal(45)
-                      expect(orders[0].lineItems.length).to.equal(2)
-                      expect(orders[0].lineItems[0].type).to.equal('payg')
-                      expect(orders[0].lineItems[1].type).to.equal('airpair')
-                      expect(orders[0].lineItems[1].unitPrice).to.equal(130)
-                      # expect(orders[0].lineItems[1].unitProfit).to.equal(45)
-                      done()
+    SETUP.newCompleteRequest 'aril', data.requests.ariwadam, (request, sAril) ->
+      GET "/requests/review/#{request._id}", {}, (r) ->
+        expect(r.suggested.length).to.equal(3)
+        expect(r.suggested[0].suggestedRate.total).to.equal(130)
+        adamB = r.suggested[0].expert
+        expect(adamB._id).to.exist
+        expect(adamB.name).to.equal('Adam Bliss')
+        GET "/requests/#{request._id}/book/#{adamB._id}", {}, (r2) ->
+          expect(r2.suggested.length).to.equal(3)
+          expect(r2.suggested[0].expert.name).to.equal('Adam Bliss')
+          expect(r2.suggested[0].suggestedRate.total).to.equal(130)
+          suggestion = r2.suggested[0]
+          airpair1 = time: moment().add(2, 'day'), minutes: 60, type: 'private', payMethodId: sAril.primaryPayMethodId, request: { requestId: r._id, suggestion }
+          POST "/bookings/#{adamB._id}", airpair1, {}, (booking1) ->
+            expect(booking1._id).to.exist
+            GET "/billing/orders", {}, (orders) ->
+              expect(orders.length).to.equal(1)
+              expect(orders[0].total).to.equal(130)
+              expect(orders[0].profit).to.equal(45)
+              expect(orders[0].lineItems.length).to.equal(2)
+              expect(orders[0].lineItems[0].type).to.equal('payg')
+              expect(orders[0].lineItems[1].type).to.equal('airpair')
+              expect(orders[0].lineItems[1].unitPrice).to.equal(130)
+              done()
 
 
   it 'Book 1 opensource hour of Adam Bliss by Ari Lerner', (done) ->
-    testDb.ensureDoc 'User', data.users.aril, ->
-      testDb.ensureDoc 'Request', data.requests.ariwadam, (e, request) ->
-        testDb.findAndRemove 'Order', { userId: data.users.aril._id }, ->
-          LOGIN 'aril', data.users.aril, (sarli) ->
-            d = type: 'braintree', token: braintree.Test.Nonces.Transactable, name: 'Default Card', makeDefault: true
-            POST '/billing/paymethods', d, {}, (pm) ->
-              GET "/requests/review/#{request._id}", {}, (r) ->
-                expect(r.suggested.length).to.equal(3)
-                expect(r.suggested[0].suggestedRate.total).to.equal(130)
-                adamB = r.suggested[0].expert
-                GET "/requests/#{request._id}/book/#{adamB._id}", {}, (r2) ->
-                  expect(r2.suggested[0].expert.name).to.equal('Adam Bliss')
-                  expect(r2.suggested[0].suggestedRate.total).to.equal(130)
-                  suggestion = r2.suggested[0]
-                  airpair1 = time: moment().add(2, 'day'), minutes: 60, type: 'opensource', payMethodId: pm._id, request: { requestId: r._id, suggestion }
-                  POST "/bookings/#{adamB._id}", airpair1, {}, (booking1) ->
-                    GET "/billing/orders", {}, (orders) ->
-                      expect(orders.length).to.equal(1)
-                      expect(orders[0].total).to.equal(120)
-                      expect(orders[0].profit).to.equal(35)
-                      expect(orders[0].lineItems.length).to.equal(2)
-                      expect(orders[0].lineItems[0].type).to.equal('payg')
-                      expect(orders[0].lineItems[1].type).to.equal('airpair')
-                      expect(orders[0].lineItems[1].unitPrice).to.equal(120)
-                      done()
+    SETUP.newCompleteRequest 'aril', data.requests.ariwadam, (request, sAril) ->
+      GET "/requests/review/#{request._id}", {}, (r) ->
+        expect(r.suggested.length).to.equal(3)
+        expect(r.suggested[0].suggestedRate.total).to.equal(130)
+        adamB = r.suggested[0].expert
+        GET "/requests/#{request._id}/book/#{adamB._id}", {}, (r2) ->
+          expect(r2.suggested[0].expert.name).to.equal('Adam Bliss')
+          expect(r2.suggested[0].suggestedRate.total).to.equal(130)
+          suggestion = r2.suggested[0]
+          airpair1 = time: moment().add(2, 'day'), minutes: 60, type: 'opensource', payMethodId: sAril.primaryPayMethodId, request: { requestId: r._id, suggestion }
+          POST "/bookings/#{adamB._id}", airpair1, {}, (booking1) ->
+            GET "/billing/orders", {}, (orders) ->
+              expect(orders.length).to.equal(1)
+              expect(orders[0].total).to.equal(120)
+              expect(orders[0].profit).to.equal(35)
+              expect(orders[0].lineItems.length).to.equal(2)
+              expect(orders[0].lineItems[0].type).to.equal('payg')
+              expect(orders[0].lineItems[1].type).to.equal('airpair')
+              expect(orders[0].lineItems[1].unitPrice).to.equal(120)
+              done()
 
 
   it.skip 'Should be shaping order data from users view', (done) ->
