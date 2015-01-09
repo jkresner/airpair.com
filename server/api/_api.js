@@ -46,12 +46,15 @@ export function serve(Svc, svcFnName, argsFn, Validation) {
     if (logging) $log('thisSvc', svcFnName, argsFn, Svc, thisSvc)
     var callback = cbSend(req,res,next)
     var args = argsFn(req)
-    if (Validation && req.method != 'GET') {
-      var inValid = Validation[svcFnName].apply(thisSvc, _.union([req.user],args))
-      if (inValid) {
-        var e = new Error(inValid)
-        e.status = 403
-        return callback(e)
+    if (Validation) {
+      if (req.method != 'GET' || Validation[svcFnName])
+      {
+        var inValid = Validation[svcFnName].apply(thisSvc, _.union([req.user],args))
+        if (inValid) {
+          var e = new Error(inValid)
+          e.status = 403
+          return callback(e)
+        }
       }
     }
     args.push(callback)
