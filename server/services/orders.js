@@ -66,6 +66,12 @@ export function getByQueryForAdmin(start, end, userId, cb)
 }
 
 
+export function getOrdersToPayout(expert, cb)
+{
+  var query = { 'lineItems.info.expert._id' : expert._id.toString() }
+  svc.searchMany(query, {}, Data.select.forPayout(cb))
+}
+
 
 var newLine = (type, qty, unitPrice, total, balance, profit, info) => {
   return {_id: svc.newId(),type, qty, unitPrice, total, balance, profit, info}

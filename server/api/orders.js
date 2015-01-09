@@ -8,6 +8,7 @@ export default initAPI(Svc, {
   giveCredit: (req) => [req.body.toUser,req.body.total,req.body.source],
   getMyOrders: (req) => [],
   getMyOrdersWithCredit: (req) => [req.params.id],
+  getOrdersToPayout: (req) => [req.expert],
   getByQueryForAdmin: (req) => [req.params.start,req.params.end,req.params.userId]
 },
  {}

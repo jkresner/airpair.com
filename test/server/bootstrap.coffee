@@ -45,4 +45,5 @@ describe 'Server: ', ->
   describe('Orders: ', require('./ordersBookingSpec'))
   describe('Posts: ', require('./postsSpec'))
   describe('Bookings: ', require('./bookingsSpec'))
+  describe('Payouts: ', require('./payoutsSpec'))
 

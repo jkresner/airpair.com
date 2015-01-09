@@ -1,3 +1,4 @@
+{expertPayoutSummary} = require('../../shared/orders')
 
 module.exports = -> describe "API: ", ->
 
@@ -31,7 +32,6 @@ module.exports = -> describe "API: ", ->
     SETUP.newBookedRequest 'rusc', {}, 'admb', (request, booking, customerSession, expertSession) ->
       LOGIN expertSession.userKey, expertSession, ->
         GET "/billing/orders/payouts/#{booking.expertId}", {}, (orders) ->
-          $log('orders', orders[0].lineItems)
           expect(orders.length).to.equal(1)
           expect(orders[0].total).to.be.undefined
           expect(orders[0].profit).to.be.undefined
@@ -40,16 +40,25 @@ module.exports = -> describe "API: ", ->
           expect(orders[0].lineItems.length).to.equal(1)
           expect(orders[0].lineItems[0].type).to.equal('airpair')
           expect(orders[0].lineItems[0].info.expert._id).to.equal(booking.expertId)
-          $log('inf', orders[0].lineItems[0].info)
           expect(orders[0].lineItems[0].info.paidout).to.equal(false)
-          # expect(orders[0].lineItems[0].info.released).to.be.undefined
-          # expect(orders[0].lineItems[0].owed).to.exist
-          # expect(orders[0].lineItems[0].total).to.be.undefined
-          # expect(orders[0].lineItems[0].profit).to.be.undefined
+          expect(orders[0].lineItems[0].info.released).to.be.undefined
+          expect(orders[0].lineItems[0].owed).to.equal(70)
+          expect(orders[0].lineItems[0].total).to.be.undefined
+          expect(orders[0].lineItems[0].profit).to.be.undefined
+          summary = expertPayoutSummary(orders)
+          expect(summary.owed.count).to.equal(0)
+          expect(summary.owed.total).to.equal(0)
+          expect(summary.paid.count).to.equal(0)
+          expect(summary.paid.total).to.equal(0)
+          expect(summary.pending.count).to.equal(1)
+          expect(summary.pending.total).to.equal(70)
           done()
 
 
   it.skip 'Expert can see single transaction released', (done) ->
+    SETUP.newBookedRequest 'rusc', {}, 'admb', (request, booking, customerSession, expertSession) ->
+      LOGIN expertSession.userKey, expertSession, ->
+        GET "/billing/orders/payouts/#{booking.expertId}", {}, (orders) ->
 
 
   it.skip 'Expert can see multiple transactions pending', (done) ->

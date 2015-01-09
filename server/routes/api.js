@@ -65,7 +65,6 @@ export default function(app) {
     .get('/workshops/:id', WorkshopsAPI.getBySlug)
     .get('/billing/paymethods', PaymethodsAPI.getMyPaymethods)
 
-
     .use(authd) //-- swap out for email verify or something
     .post('/billing/paymethods', PaymethodsAPI.addPaymethod)
     .delete('/billing/paymethods/:paymethod', PaymethodsAPI.deletePaymethod)
@@ -73,6 +72,7 @@ export default function(app) {
     .get('/billing/orders/credit/:id', OrdersAPI.getMyOrdersWithCredit)
     .post('/billing/orders/credit', OrdersAPI.buyCredit)
     // .post('/billing/orders/membership/:paymethod', OrdersAPI.buyMembership)
+    .get('/billing/orders/payouts/:expert', OrdersAPI.getOrdersToPayout)
 
     .get('/bookings/:id', BookingsAPI.getById)
     .post('/bookings/:expert', BookingsAPI.createBooking)
