@@ -219,7 +219,7 @@ var save = {
         request.by.name, ()=>{})
 
     request.lastTouch = svc.newTouch.call(this, `replyByExpert:${reply.expertStatus}`)
-    if (!request.adm.reviewable)
+    if (!request.adm.reviewable && reply.expertStatus == 'available')
       request.adm = admSet(request,{reviewable:new Date()})
 
     // var ups = _.extend(request,{suggested})
@@ -236,7 +236,7 @@ var admin = {
     var action = 'update'
     var {adm,status} = update
     if (original.adm.active &&
-      (status == 'canceled' || status == 'completed' || status == 'junk')
+      (status == 'canceled' || status == 'complete' || status == 'junk')
     ) {
       delete adm.active
       action = `closed:${status}`
