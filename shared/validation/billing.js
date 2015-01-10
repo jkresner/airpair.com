@@ -44,6 +44,20 @@ var validation = {
 
     if ( !isAdmin && !isOwner )
       return 'PayMethod must be deleted by owner'
+  },
+
+  releasePayout(user, order)
+  {
+    var isAdmin = _.contains(user.roles, 'admin')
+
+    if ( !isAdmin )
+      return 'Payouts are controlled by admins'
+
+    var payoutLines = _.where(order.lineItems, (l) =>
+      l.info && l.info.paidout === false)
+
+    if (payoutLines.length != 1) return `[{payoutLines.length}] Payout lines is invalid for releasing a payout`
+    if (payoutLines[0].by) return `Order has already been released`
   }
 
 }

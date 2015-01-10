@@ -102,6 +102,7 @@ export default function(app) {
     .param('expert', ExpertsAPI.paramFns.getById)
     .param('request', RequestsAPI.paramFns.getByIdForAdmin)
     .param('booking', BookingsAPI.paramFns.getById)
+    .param('order', OrdersAPI.paramFns.getByIdForAdmin)
 
     .use(adm)
     .get('/posts', PostsAPI.getAllAdmin)
@@ -114,6 +115,7 @@ export default function(app) {
     .get('/users/search/:id', UsersAPI.search)
     .get('/billing/orders/:id', OrdersAPI.getByIdForAdmin)
     .post('/billing/orders/credit', OrdersAPI.giveCredit)
+    .put('/billing/orders/:order/release', OrdersAPI.releasePayout)
     .get('/billing/paymethods/:id', PaymethodsAPI.getUserPaymethodsByAdmin)
     .get('/views/user/:id', ViewsAPI.getByUserId)
     .get('/redirects', RedirectsAPI.getAllRedirects)

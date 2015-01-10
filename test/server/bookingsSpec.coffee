@@ -16,6 +16,7 @@ module.exports = -> describe "API: ", ->
   beforeEach ->
     SETUP.clearIdentity()
 
+  it.skip 'Expert gets a notification that they have been booked', (done) ->
 
   it.skip 'Can confirm booking by expert', (done) ->
     # addAndLoginLocalUserWithPayMethod 'jpie', (s) ->

@@ -1,7 +1,8 @@
 import {initAPI} from './_api'
-import * as Svc from '../services/orders'
 
-export default initAPI(Svc, {
+export default initAPI(
+  require('../services/orders')
+, {
   // buyMembership: (req) => [req.body.length,req.body.coupon,req.paymethod],
   getByIdForAdmin: (req) => [req.params.id],
   buyCredit: (req) => [req.body.total,req.body.coupon,req.body.payMethodId],
@@ -9,9 +10,10 @@ export default initAPI(Svc, {
   getMyOrders: (req) => [],
   getMyOrdersWithCredit: (req) => [req.params.id],
   getOrdersToPayout: (req) => [req.expert],
-  getByQueryForAdmin: (req) => [req.params.start,req.params.end,req.params.userId]
+  getByQueryForAdmin: (req) => [req.params.start,req.params.end,req.params.userId],
+  releasePayout: (req) => [req.order],
+}, {
+  order:'getByIdForAdmin',
 },
- {}
-,
   require('../../shared/validation/billing.js')
 )
