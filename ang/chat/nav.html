@@ -22,7 +22,8 @@
    </div>
    <br />
    <div ng-show="corechat.activeRoom">
-       <b>Current Room: {{activeRoom}}</b>
+       <b>Current Room: {{corechat.getRoom(corechat.activeRoom).info.name}}</b>
+       <br />
         <div ng-repeat="message in corechat.selfmember.rooms[corechat.activeRoom].history">
             <div member-info="{{message.from}}">
                 <img ng-src="{{member.avatar}}" width="16"/>

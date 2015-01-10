@@ -45,7 +45,6 @@ require('./account/module.js');
 require('./requests/module.js');
 require('./common/pageHelpers.js');
 
-
 angular.module("AP", ['Providers', 'ngRoute', 'ngAnimate', 'ui.bootstrap.datetimepicker',
   'APViewData', 'APDataSvc', 'APCTAs', 'APInputs',
   'APAnalytics', 'APSideNav', 'APChatNav', 'APServerTemplates', 'APNotifications',

@@ -429,7 +429,7 @@
 					members[memberId] = cc.getMember(memberId);
 				}
 			}
-			
+
 			for (memberId in members) {
 				if (memberId !== cc._member.id) {
 					nonSelfMembers[memberId] = members[memberId];
@@ -442,7 +442,6 @@
 					var member = members[memberId];
 					break;
 				}
-				
 				return member;
 			} else if (nonSelfMembersCount > 1) {
 				return {name: "Group Chat", avatar: "2"};
@@ -450,6 +449,8 @@
 				return {name: name, avatar: "3"};
 			}
 		};
+		
+		this.info = this.getMetadata();
 	};
 	
 	var Room = function (cc) {
