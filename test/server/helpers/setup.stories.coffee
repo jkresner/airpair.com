@@ -28,6 +28,14 @@ global.addLocalUser = (userKey, opts, done) ->
   )
 
 
+global.addAndLoginLocalUser = (originalUserKey, done) ->
+  addLocalUser originalUserKey, {}, (userKey) ->
+    LOGIN userKey, data.users[userKey], ->
+      GET '/session/full', {}, (s) ->
+        s.userKey = userKey
+        done(s)
+
+
 global.addAndLoginLocalUserWithEmailVerified = (originalUserKey, done) ->
   addLocalUser originalUserKey, {emailVerified: true}, (userKey) ->
     LOGIN userKey, data.users[userKey], (resp) ->
@@ -36,13 +44,6 @@ global.addAndLoginLocalUserWithEmailVerified = (originalUserKey, done) ->
         s.userKey = userKey
         done(s)
 
-
-global.addAndLoginLocalUser = (originalUserKey, done) ->
-  addLocalUser originalUserKey, {}, (userKey) ->
-    LOGIN userKey, data.users[userKey], ->
-      GET '/session/full', {}, (s) ->
-        s.userKey = userKey
-        done(s)
 
 
 global.addAndLoginLocalUserWithPayMethod = (originalUserKey, done) ->
@@ -55,6 +56,7 @@ global.addAndLoginLocalUserWithPayMethod = (originalUserKey, done) ->
 stories = {
 
   addLocalUser,
+  addAndLoginLocalUser,
 
   addUserWithRole: (userKey, role, done) ->
     session = newUserSession()
