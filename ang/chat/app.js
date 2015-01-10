@@ -62,6 +62,12 @@
             });
         };
         
+        $scope.setActiveRoomAsMember = function (member) {
+            var RID = getMemberToMemberRID(member.id, cc._member.id);
+            $scope.setActiveRoom(RID);
+            cc._member.join(RID);
+        };
+        
         $scope.sendMessageToRoom = function (roomId, body) {
             cc.send("room", roomId, body);
         };
@@ -72,7 +78,15 @@
         
         $scope.getMember = function (memberId) {
             return cc.getMember(memberId);
-        }
+        };
+        
+        $scope.getMembersByTag = function (tag) {
+            return cc.getMembersByTag(tag);
+        };
+        
+        $scope.getRoom = function (roomId) {
+            return cc.getRoom(roomId);
+        };
         
         $scope.login = function (token) {
             cc.login(token);
@@ -84,7 +98,7 @@
         
         $scope.join = function (RID) {
             cc._member.join(RID)
-        }
+        };
     
         cc.on("online", function () {
             $log.log("connected to chat server!")
@@ -92,7 +106,7 @@
         
         cc.on("offline", function () {
             $log.log("disconnected from chat server!")
-        })
+        });
             
         cc.on("login", function (err, member) {
             if (err) {
@@ -126,7 +140,11 @@
                 room.on("message", function (err, message) {
                     $log.log("Got a message", message, room.id); 
                 });
-            })
+            });
+            
+            member.on("recieved_notification", function (err, notification) {
+               if (notification.info.to == $scope.activeRoom) notification.acknowledge();
+            });
             
             //member.join("amazing-chat");
         });
@@ -134,6 +152,28 @@
         cc.on("logout", function () {
             $scope.selfmember = {}; 
         });
+        
+        $rootScope.$watch('session', function (session) {
+            if (!session) return;
+            
+            var user = {
+              email: session.email || "",
+              name: session.name || "",
+              avatar: session.avatar || ""
+            };
+            
+            console.log("user>", user)
+            
+            cc.on("login", function (err, member) {
+                member._ref.update(user);
+            });
+    
+            window.firebaseToken = session.firebaseToken;
+        });
+                
+        function getMemberToMemberRID () {
+    		return Array.prototype.slice.call(arguments).sort().join('^^v^^')
+    	}
         
         return $scope;
     });

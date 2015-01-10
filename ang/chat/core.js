@@ -5,6 +5,9 @@
 		this._outboxRef = this._ref.child("outbox");
 		this._events = this._events.concat(["login", "logout", "online", "offline"]);
 		this._member;
+		this._rooms = {};
+		this._members = {};
+		this._membersByTag = {};
 		this.admin;
 		
 		// A helpful callback wrapper for integrating with Angular's digestion
@@ -16,8 +19,6 @@
 		
 		this.login = function (token) {
 			this._ref.authWithCustomToken(token, (function(error, member) {
-				console.log(member)
-				console.log(member)
 				if (error) {
 					this.trigger("login", error);
 				} else {
@@ -47,28 +48,46 @@
 		};
 		
 		this.getMember = function (memberId) {
-			return new Member(this, memberId);
+			if (!this._members[memberId]) 
+				this._members[memberId] = new Member(this, memberId);
+			
+			return this._members[memberId];
 		};
 		
 		this.getRoom = function (roomId) {
-			return new Room(this, roomId);
+			if (!this._rooms[roomId]) 
+				this._rooms[roomId] = new Room(this, roomId);
+			
+			return this._rooms[roomId];
 		};
 		
 		this.getMembersByTag = function (tag) {
-			var members = {},
-				self = this;
-			
-			this._ref
-				.child("members/byTag")
-				.child(tag)
-				.on("child_added", function (snapshot) {
-					self._callbackWrap(function () {
-						var memberId = snapshot.key();
-						members[memberId] = new Member(self, memberId);	
-					});
-				});
+			if (!this._membersByTag[tag]) {
+	 			var members = {},
+					tagRef = this._ref
+						.child("members/byTag")
+						.child(tag);
 				
-			return members;
+				tagRef
+					.on("child_added", (function (snapshot) {
+						this._callbackWrap((function () {
+							var memberId = snapshot.key();
+							members[memberId] = cc.getMember(memberId);
+							console.log("adding admin", memberId)
+						}).bind(this));
+					}).bind(this));
+					
+				tagRef
+					.on("child_removed", (function (snapshot) {
+						this._callbackWrap((function () {
+							var memberId = snapshot.key();
+							delete members[memberId];
+						}).bind(this));
+					}).bind(this));
+					
+				this._membersByTag[tag] = members;
+			}
+			return this._membersByTag[tag];
 		}
 		
 		this._watchForTokenOnWindow = function () {
@@ -151,13 +170,12 @@
 		this._addRoom = (function (roomSnapshot) {
 			var roomId = roomSnapshot.key();
 				
-			this.rooms.byId[roomId] = new Room(cc, roomId);
+			this.rooms.byId[roomId] = cc.getRoom(roomId);
 			this._lastRooms[roomId] = {};
 			this.trigger("rooms_updated", null, this.rooms);
 		}).bind(this);
 		
 		this._updateMember = (function (memberSnapshot) {
-			console.log(memberSnapshot.name())
 			var memberId = memberSnapshot.key(),
 				memberRaw = memberSnapshot.val(),
 				memberPage = memberRaw.page? 
@@ -165,8 +183,7 @@
 				lastMemberRaw = this._lastMembers[memberId],
 				lastMemberPage;
 			
-			console.log(memberId)
-			this.members.byId[memberId] = new Member(cc, memberId); 
+			this.members.byId[memberId] = cc.getMember(memberId); 
 			
 			if (lastMemberRaw) {
 				lastMemberPage = lastMemberRaw.page? 
@@ -265,7 +282,7 @@
 			.child('rooms')
 			.on("child_added", (function (roomSnapshot) {
 				var roomId = roomSnapshot.key(),
-					room = new Room(cc, roomId);
+					room = cc.getRoom(roomId);
 					
 				this.rooms[roomId] = room;
 					
@@ -273,12 +290,12 @@
 			}).bind(this));
 		
 		this.sendMessageToRoom = function (roomId, body) {
-			var room = new Room(cc, roomId);
+			var room = cc.getRoom(roomId);
 			room.send(body);
 		};
 		
 		this.sendMessageToMember = function (memberId, body) {
-			var member = new Member(cc, memberId);
+			var member = cc.getMember(memberId);
 			member.send(body);
 		}
 	};
@@ -361,6 +378,14 @@
 			.child(this.id);
 			
 		this._ref
+			.child("name")
+			.on("value", (function (nameSnapshot) {
+				var name = nameSnapshot.val();
+				
+				this.info = this.getMetadata();
+			}).bind(this));
+			
+		this._ref
 			.child("history")
 			.on("child_added", (function (messageSnapshot) {
 				var rawMessage = messageSnapshot.val(),
@@ -380,12 +405,51 @@
 			.child("members")
 			.on("child_added", (function (memberSnapshot) {
 				var memberId = memberSnapshot.key(),
-					member = new Member(cc, memberId);
+					member = cc.getMember(memberId),
+					metadata;
 				
 				this.members[memberId] = member;
 				
 				this.trigger("member_joined", null, member);
+				
+				this.info = this.getMetadata();
 			}).bind(this));
+			
+		this.getMetadata = function () {
+			var members = this.members,
+				name = this.info? this.info.name : "",
+				nonSelfMembers = {},
+				nonSelfMembersCount = 0,
+				memberId;
+				
+			if (this.id.split("^^v^^").length > 1) {
+				var implicitMembers = this.id.split("^^v^^");
+				for (var index in implicitMembers) {
+					memberId = implicitMembers[index];
+					members[memberId] = cc.getMember(memberId);
+				}
+			}
+			
+			for (memberId in members) {
+				if (memberId !== cc._member.id) {
+					nonSelfMembers[memberId] = members[memberId];
+					nonSelfMembersCount += 1;
+				}
+			}
+			
+			if (nonSelfMembersCount == 1) {
+				for (memberId in nonSelfMembers) {
+					var member = members[memberId];
+					break;
+				}
+				
+				return member;
+			} else if (nonSelfMembersCount > 1) {
+				return {name: "Group Chat", avatar: "2"};
+			} else {
+				return {name: name, avatar: "3"};
+			}
+		};
 	};
 	
 	var Room = function (cc) {
@@ -579,6 +643,11 @@
 		
 		return d;
 	};
+	
+	// Generate 1:1 Room Name
+	function getMemberToMemberRID () {
+		return Array.prototype.slice.call(arguments).sort().join('^^v^^')
+	}
 
 	// Multiple Inheritance Helper
 
