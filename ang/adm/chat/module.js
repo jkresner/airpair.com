@@ -14,23 +14,6 @@ angular.module("ADMChat", ["chat-widget"])
 })
 
 .controller('ChatCtrl', function($scope, corechat) {
-  // Magic
-  $scope.$watch('session', function (session) {
-    if (!session) return;
-    
-    var user = {
-      email: session.email || "",
-      name: session.name || "",
-      avatar: session.avatar || ""
-    };
-    
-    corechat.cc.on("login", function (err, member) {
-      member._ref.update(user);
-    });
-    
-    window.firebaseToken = session.firebaseToken;
-  });
-  
   $scope.setCurrentUser = function (memberId) {
     var RID = getMemberToMemberRID(memberId, corechat.selfmember.id);
     $scope.currentUser = corechat.getMember(memberId);

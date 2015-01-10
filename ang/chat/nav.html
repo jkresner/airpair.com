@@ -11,18 +11,25 @@
        </div>
    </div>
    <div>
-       <b>Rooms:</b><br />
-       <div ng-repeat="(room, _) in corechat.selfmember.rooms">
-           <button ng-click="corechat.setActiveRoom(room)">{{room}} ({{corechat.selfmember.notificationsCountByRoom[room]}})</button>
+       <b>Admins</b>
+       <button ng-repeat="admin in corechat.getMembersByTag('admin')" ng-click="corechat.setActiveRoomAsMember(admin)">{{admin.name}}</button>
+   </div>
+   <div>
+       <b>Chats:</b><br />
+       <div ng-repeat="(roomId, _) in corechat.selfmember.rooms">
+           <button ng-click="corechat.setActiveRoom(roomId)">{{corechat.getRoom(roomId).info.name || "Anonymous User"}} ({{corechat.selfmember.notificationsCountByRoom[roomId] || 0}})</button>
        </div>
    </div>
    <br />
    <div ng-show="corechat.activeRoom">
        <b>Current Room: {{activeRoom}}</b>
         <div ng-repeat="message in corechat.selfmember.rooms[corechat.activeRoom].history">
-            {{message.body}}
+            <div member-info="{{message.from}}">
+                <img ng-src="{{member.avatar}}" width="16"/>
+                {{member.name || "Anonymous User"}}:
+            </div> {{message.body}}
         </div><br />
-        <input type="text" ng-model="newMessage.body">
-        <button ng-click="corechat.sendMessageToRoom(corechat.activeRoom, newMessage.body); newMessage.body=''">Send</button>
+        <input type="text" ng-model="newMessage.body" style="float: left; width: 60%;" />
+        <button ng-click="corechat.sendMessageToRoom(corechat.activeRoom, newMessage.body); newMessage.body=''" style="width: 40%; float: right;">Send</button>
     </div>
 </div>
