@@ -86,40 +86,42 @@ module.exports = -> describe "Booking: ", ->
           expect(booking1.type).to.equal('opensource')
           GET "/billing/orders", {}, (orders1) ->
             expect(orders1.length).to.equal(2)
-            expect(orders1[0].total).to.equal(500)
-            expect(orders1[0].lineItems.length).to.equal(1)
-            expect(orders1[0].payment.type).to.equal('braintree')
-            expect(orders1[0].payment.status).to.equal('submitted_for_settlement')
-            expect(orders1[0].lineItems[0].type).to.equal('credit')
-            expect(orders1[0].lineItems[0].total).to.equal(500)
-            expect(orders1[0].lineItems[0].qty).to.equal(1)
-            expect(orders1[0].lineItems[0].unitPrice).to.equal(500)
-            expect(orders1[0].lineItems[0].balance).to.equal(500)
-            expect(orders1[0].lineItems[0].info.remaining).to.equal(240)
-            expect(orders1[0].lineItems[0].info.redeemedLines.length).to.equal(1)
+            creditOrder = orders1[0]
+            redeemOrder = orders1[1]
+            expect(creditOrder.total).to.equal(500)
+            expect(creditOrder.lineItems.length).to.equal(1)
+            expect(creditOrder.payment.type).to.equal('braintree')
+            expect(creditOrder.payment.status).to.equal('submitted_for_settlement')
+            expect(creditOrder.lineItems[0].type).to.equal('credit')
+            expect(creditOrder.lineItems[0].total).to.equal(500)
+            expect(creditOrder.lineItems[0].qty).to.equal(1)
+            expect(creditOrder.lineItems[0].unitPrice).to.equal(500)
+            expect(creditOrder.lineItems[0].balance).to.equal(500)
+            expect(creditOrder.lineItems[0].info.remaining).to.equal(240)
+            expect(creditOrder.lineItems[0].info.redeemedLines.length).to.equal(1)
 
-            expect(_.idsEqual(orders1[1]._id,booking1.orderId)).to.be.true
-            expect(orders1[1].payment.type).to.equal('$0 order')
-            redeemedLineId = orders1[1].lineItems[0]._id
-            expect(_.idsEqual(redeemedLineId, orders1[0].lineItems[0].info.redeemedLines[0].lineItemId)).to.be.true
+            expect(_.idsEqual(redeemOrder._id,booking1.orderId)).to.be.true
+            expect(redeemOrder.payment.type).to.equal('$0 order')
+            redeemedLineId = redeemOrder.lineItems[0]._id
+            expect(_.idsEqual(redeemedLineId, creditOrder.lineItems[0].info.redeemedLines[0].lineItemId)).to.be.true
 
-            expect(orders1[1].total).to.equal(0)
-            expect(orders1[1].profit).to.equal(40)
-            expect(orders1[1].lineItems.length).to.equal(2)
-            expect(orders1[1].lineItems[0].type).to.equal('redeemedcredit')
-            expect(orders1[1].lineItems[0].total).to.equal(-260)
-            expect(orders1[1].lineItems[0].unitPrice).to.equal(-260)
-            expect(orders1[1].lineItems[0].qty).to.equal(1)
-            expect(orders1[1].lineItems[0].balance).to.equal(-260)
-            expect(orders1[1].lineItems[1].type).to.equal('airpair')
-            expect(orders1[1].lineItems[1]._id).to.exist
-            expect(orders1[1].lineItems[1].total).to.equal(260)
-            expect(orders1[1].lineItems[1].qty).to.equal(2)
-            expect(orders1[1].lineItems[1].unitPrice).to.equal(130)
-            expect(orders1[1].lineItems[1].balance).to.equal(0)
-            expect(orders1[1].lineItems[1].profit).to.equal(40)
-            expect(orders1[1].lineItems[1].info.expert.name).to.equal("Daniel Roseman")
-            expect(orders1[1].lineItems[1].info.type).to.equal('opensource')
+            expect(redeemOrder.total).to.equal(0)
+            expect(redeemOrder.profit).to.equal(40)
+            expect(redeemOrder.lineItems.length).to.equal(2)
+            expect(redeemOrder.lineItems[0].type).to.equal('redeemedcredit')
+            expect(redeemOrder.lineItems[0].total).to.equal(-260)
+            expect(redeemOrder.lineItems[0].unitPrice).to.equal(-260)
+            expect(redeemOrder.lineItems[0].qty).to.equal(1)
+            expect(redeemOrder.lineItems[0].balance).to.equal(-260)
+            expect(redeemOrder.lineItems[1].type).to.equal('airpair')
+            expect(redeemOrder.lineItems[1]._id).to.exist
+            expect(redeemOrder.lineItems[1].total).to.equal(260)
+            expect(redeemOrder.lineItems[1].qty).to.equal(2)
+            expect(redeemOrder.lineItems[1].unitPrice).to.equal(130)
+            expect(redeemOrder.lineItems[1].balance).to.equal(0)
+            expect(redeemOrder.lineItems[1].profit).to.equal(40)
+            expect(redeemOrder.lineItems[1].info.expert.name).to.equal("Daniel Roseman")
+            expect(redeemOrder.lineItems[1].info.type).to.equal('opensource')
 
             lines1 = ordersUtil.linesWithCredit(orders1)
             availableCredit1 = ordersUtil.getAvailableCredit(lines1)
@@ -186,7 +188,8 @@ module.exports = -> describe "Booking: ", ->
                 expect(order.lineItems[1].qty).to.equal(1)
                 expect(order.lineItems[1].balance).to.equal(-50)
                 expect(order.lineItems[1].info.name).to.equal('$50 Redeemed Credit')
-                expect(_.idsEqual(order.lineItems[1]._id, orders[0].lineItems[0].info.redeemedLines[0].lineItemId)).to.be.true
+                oldestOrder = orders[0]
+                expect(_.idsEqual(order.lineItems[1]._id, oldestOrder.lineItems[0].info.redeemedLines[0].lineItemId)).to.be.true
                 expect(order.lineItems[2].type).to.equal('airpair')
                 expect(order.lineItems[2].total).to.equal(285)
                 expect(order.lineItems[2].qty).to.equal(1.5)

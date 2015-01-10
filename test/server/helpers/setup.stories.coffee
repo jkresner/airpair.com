@@ -111,9 +111,9 @@ stories = {
     data.experts[user.userKey] = seedExpert
 
     db.ensureExpert user.userKey, (e,expert) ->
-      # // $log('got exper', r)
       LOGIN user.userKey, data.users[user.userKey], (expertSession) ->
         expertSession.userKey = user.userKey
+        expertSession.expertId = expert._id
         done(expert, expertSession)
 
 
@@ -147,6 +147,19 @@ stories = {
               POST "/bookings/#{expert._id}", airpair1, {}, (booking) ->
                 expect(booking._id).to.exist
                 cb(request, booking, customerSession, expertSession)
+
+
+  newBookedRequestWithExistingExpert: (customerUserKey, requestData, expertSession, cb) ->
+    SETUP.newCompleteRequest customerUserKey, {}, (request, customerSession) ->
+      LOGIN expertSession.userKey, expertSession, () ->
+        reply = expertComment: "I'll take it", expertAvailability: "Real-time", expertStatus: "available"
+        PUT "/requests/#{request._id}/reply/#{expertSession.expertId}", reply, {}, (r1) ->
+          LOGIN customerSession.userKey, customerSession, ->
+            GET "/requests/#{request._id}/book/#{expertSession.expertId}", {}, (r2) ->
+              airpair1 = time: moment().add(2, 'day'), minutes: 60, type: 'private', payMethodId: customerSession.primaryPayMethodId, request: { requestId: request._id, suggestion: r2.suggested[0] }
+              POST "/bookings/#{expertSession.expertId}", airpair1, {}, (booking) ->
+                cb(request, booking, customerSession, expertSession)
+
 
 }
 

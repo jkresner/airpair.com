@@ -110,6 +110,8 @@ module.exports = {
   rusc: { name: "Rustrum Rustrum", email: "rustrum.chelsea@rustrum.com"},
 
   bfie: { name: "Brian Fiester", email: "brian@dreamstarstudios.com"},
+  brfi: { name: "Brian Fiester", email: "brian@testtest.com"},
+  brif: { name: "Brian Fiester", email: "brian@airtest.com"},
 
   admin: {
     "_id" : "54551be15f221efa174238d1",
