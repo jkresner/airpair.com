@@ -32,7 +32,7 @@ module.exports = -> describe "PayMethods", ->
 
 
     it 'Gets migrated stripe result for v0 user from settings', (done) ->
-      addAndLoginLocalUser 'jmel', (s) ->
+      SETUP.addAndLoginLocalUser 'jmel', (s) ->
         testDb.ensureSettings s, data.v0.settings.jk, ->
           GET '/billing/paymethods', {}, (r) ->
             expect(r).to.exist
@@ -46,7 +46,7 @@ module.exports = -> describe "PayMethods", ->
 
 
     it 'Can add braintree payment method to new user', (done) ->
-      addAndLoginLocalUser 'evan', (s) ->
+      SETUP.addAndLoginLocalUser 'evan', (s) ->
         d = type: 'braintree', token: braintree.Test.Nonces.Transactable, name: 'Default Card', makeDefault: true
         POST '/billing/paymethods', d, {}, (r) ->
           expect(r).to.exist
@@ -64,7 +64,7 @@ module.exports = -> describe "PayMethods", ->
 
 
     it 'Can add multiple braintree payment methods to new user', (done) ->
-      addAndLoginLocalUser 'elld', (s) ->
+      SETUP.addAndLoginLocalUser 'elld', (s) ->
         d = type: 'braintree', token: braintree.Test.Nonces.Transactable, name: 'Default Card', makeDefault: true
         POST '/billing/paymethods', d, {}, (r1) ->
           d2 = type: 'braintree', token: braintree.Test.Nonces.Transactable, name: 'Backup Card'
@@ -77,7 +77,7 @@ module.exports = -> describe "PayMethods", ->
 
 
     it 'Can add company payment method', (done) ->
-      addAndLoginLocalUser 'abeh', (s) ->
+      SETUP.addAndLoginLocalUser 'abeh', (s) ->
         comp = data.v0.companys.urbn
         testDb.ensureDocs 'Company', [comp], (e,r) ->
           # $log('going yah', comp._id)
@@ -91,7 +91,7 @@ module.exports = -> describe "PayMethods", ->
 
 
     it 'Company payment methods appear in getPayMethods', (done) ->
-      testDb.setupCompanyWithPayMethodAndTwoMembers 'ldhm', 'math', 'edub', (cid, pmid, cAdm, cMem) ->
+      SETUP.setupCompanyWithPayMethodAndTwoMembers 'ldhm', 'math', 'edub', (cid, pmid, cAdm, cMem) ->
         LOGIN 'edub', cMem, () ->
           GET '/billing/paymethods', {}, (cMemPMs) ->
             expect(cMemPMs.length).to.equal(1)
@@ -100,7 +100,7 @@ module.exports = -> describe "PayMethods", ->
 
 
     it 'Can delete braintree payment method', (done) ->
-      addAndLoginLocalUser 'edud', (s) ->
+      SETUP.addAndLoginLocalUser 'edud', (s) ->
         d = type: 'braintree', token: braintree.Test.Nonces.Transactable, name: 'Default Card', makeDefault: true
         POST '/billing/paymethods', d, {}, (r) ->
           expect(r._id).to.exist
@@ -112,6 +112,23 @@ module.exports = -> describe "PayMethods", ->
                 GET '/billing/paymethods', {}, (pms) ->
                   expect(pms.btoken).to.exist
                   done()
+
+
+    it 'Can get expert payout methods', (done) ->
+      SETUP.newLoggedInExpert 'abha', (expert, sAbha) ->
+        GET '/billing/payoutmethods', {}, (pms) ->
+          expect(pms.length).to.equal(0)
+          d = type: 'payout_paypal', name: 'PayPal jk@airpair.com', info: { email: 'jk@airpair.com' }
+          POST '/billing/paymethods', d, {}, (pm) ->
+            expect(pm._id).to.exist
+            expect(pm.type).to.equal('payout_paypal')
+            GET '/billing/payoutmethods', {}, (pms2) ->
+              expect(pms2.length).to.equal(1)
+              done()
+
+
+    it.skip 'doesnt screw up billing page', (done) ->
+      done()
 
 
   describe 'With Analytics', ->
