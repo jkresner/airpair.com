@@ -167,6 +167,7 @@ module.exports = {
 
   dros :{
     "_id" : "52cd929666a6f999a465fee8",
+    "email": "daniel@roseman.org.uk",
     "github" : {
         "provider" : "github",
         "id" : 131395,

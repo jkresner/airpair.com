@@ -8,9 +8,6 @@ module.exports = -> describe "API", ->
   after ->
     SETUP.analytics.restore()
 
-  beforeEach ->
-    SETUP.clearIdentity()
-
 
   it '401 for non authenticated request', (done) ->
     opts = status: 401

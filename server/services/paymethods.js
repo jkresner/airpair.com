@@ -4,6 +4,7 @@ import * as UserSvc from './users'
 import * as CompanysSvc from './companys'
 import * as Braintree from './wrappers/braintree'
 var Stripe = require('./wrappers/stripe')
+var PayPal = require('./wrappers/paypal')
 var {Settings} = require('../models/v0')
 var logging = false
 var svc = new Svc(PayMethod, logging)
@@ -18,7 +19,7 @@ var get = {
         if (pm.userId == user._id) return cb(null, pm) // PayMethod added by user
 
         // Otherwise double check if it's a company PayMethod
-        getMyPaymethods.call({user}, (e,r) => {
+        get.getMyPaymethods.call({user}, (e,r) => {
           var rpm = _.find(r,(p)=>_.idsEqual(id,p._id))
           if (rpm) return cb(null, rpm)
           else {
@@ -87,7 +88,7 @@ var get = {
       if (company) companyIds.push(company._id)
       svc.searchMany({$or: [{userId},{companyId: {$in:companyIds}}]}, null, (e,r) => {
         if (e) return cb(e,r)
-        if (r.length > 0) return cb(null,true)
+        if (_.where(r,(pm)=>pm.type.indexOf('payout')==-1).length > 0) return cb(null,true)
         else cb(null,false)
       })
     })
@@ -135,10 +136,24 @@ var save = {
       Braintree.addPaymentMethod(customerId, this.user, null, o.token, savePayMethod(this))
     else if (o.type == 'stripe')
       savePayMethod(this)(null, o.info)
-    else if (o.type == 'payout_paypal')
+    else if (o.type == 'payout_paypal' && o.info.verified_account)
       savePayMethod(this)(null, o.info)
     else
       return cb(`${o.type} not supported a payment type`)
+  },
+  addOAuthPayoutmethod(provider, oAuthProfileInfo, oAuthTokenInfo, cb) {
+    var pm = { type: `payout_${provider}`, info: oAuthProfileInfo }
+    if (provider == 'paypal')
+    {
+      if (oAuthProfileInfo.verified_account != 'true')
+        return cb(Error(`${oAuthProfileInfo.email} paypal account not verified. Please go to paypal.com and verify your account.`))
+
+      pm.name = `Paypal ${oAuthProfileInfo.email}`
+    }
+    else {
+      return cb(Error(`${provider} not a valid payout provider`))
+    }
+    save.addPaymethod.call(this, pm, cb)
   },
   deletePaymethod(paymethod, cb) {
     UserSvc.getSessionFull.call(this, (e, user) => {

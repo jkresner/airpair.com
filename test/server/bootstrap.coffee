@@ -27,6 +27,8 @@ describe 'Server: ', ->
     global.SETUP = global.testDb
     setTimeout(( -> testDb.init(done) ), 100)
 
+  beforeEach ->
+    SETUP.clearIdentity()
 
   describe('Session: ', require('./sessionSpec'))
   describe('Analytics: ', require('./analyticsSpec'))
