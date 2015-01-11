@@ -7,7 +7,7 @@ export default initAPI(
   deletePaymethod: (req) => [req.paymethod],
   getMyPaymethods: (req) => [],
   getMyPayoutmethods: (req) => [],
-  getUserPaymethodsByAdmin: (req) => [req.params.id],
+  getUserPaymethodsByAdmin: (req) => [req.params.id]
 }, {
   'paymethod':'getById'
 },

@@ -11,11 +11,9 @@ module.exports = -> describe "Credit: ", ->
   after ->
     SETUP.analytics.restore()
 
-  beforeEach ->
-    SETUP.clearIdentity()
 
   it '500 credit purchase', (done) ->
-    addAndLoginLocalUserWithPayMethod 'somr', (s) ->
+    SETUP.addAndLoginLocalUserWithPayMethod 'somr', (s) ->
       o = total: 500, payMethodId: s.primaryPayMethodId
       POST "/billing/orders/credit", o, {}, (r) ->
         threeMonth = moment(util.dateWithDayAccuracy(moment().add(3,'month'))).format('YYYY-MM-DD')
@@ -42,7 +40,7 @@ module.exports = -> describe "Credit: ", ->
 
 
   it '1000 credit purchase with 5% extra', (done) ->
-    addAndLoginLocalUserWithPayMethod 'soik', (s) ->
+    SETUP.addAndLoginLocalUserWithPayMethod 'soik', (s) ->
       o = total: 1000, payMethodId: s.primaryPayMethodId
       POST "/billing/orders/credit", o, {}, (r) ->
         expect(r._id).to.exist
@@ -62,7 +60,7 @@ module.exports = -> describe "Credit: ", ->
     addAndLoginLocalUserWithPayMethod 'acob', (s) ->
 
   it '5000 credit purchase with 20% extra and coupon discount', (done) ->
-    addAndLoginLocalUserWithPayMethod 'kelf', (s) ->
+    SETUP.addAndLoginLocalUserWithPayMethod 'kelf', (s) ->
       o = total: 5000, payMethodId: s.primaryPayMethodId, coupon: 'letspair'
       POST "/billing/orders/credit", o, {}, (r) ->
         threeMonth = moment(util.dateWithDayAccuracy(moment().add(3,'month'))).format('YYYY-MM-DD')
@@ -95,7 +93,7 @@ module.exports = -> describe "Credit: ", ->
 
 
   it 'Admin can give unpaid credit', (done) ->
-    addAndLoginLocalUserWithPayMethod 'chup', (schup) ->
+    SETUP.addAndLoginLocalUserWithPayMethod 'chup', (schup) ->
       LOGIN 'admin', data.users.admin, (sadm) ->
         o = total: 50, toUser: schup, source: 'Angular Workshops Survey Promo'
         POST "/adm/billing/orders/credit", o, {}, (r) ->
@@ -118,14 +116,14 @@ module.exports = -> describe "Credit: ", ->
 
 
   it 'Non-admin can not give unpaid credit', (done) ->
-    addAndLoginLocalUserWithPayMethod 'chiu', (schiu) ->
+    SETUP.addAndLoginLocalUserWithPayMethod 'chiu', (schiu) ->
       o = total: 50, toUserId: schiu._id, source: 'Angular Workshops Survey Promo'
       POST "/adm/billing/orders/credit", o, { status: 403 }, ->
         done()
 
 
   it 'GetMyOrdersWithCredit returns only orders with Credit', (done) ->
-    addAndLoginLocalUserWithPayMethod 'mcas', (mcas) ->
+    SETUP.addAndLoginLocalUserWithPayMethod 'mcas', (mcas) ->
       map = (o) ->
         o.userId = require('mongoose').Types.ObjectId(mcas._id)
         o

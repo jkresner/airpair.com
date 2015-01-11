@@ -166,6 +166,11 @@ var util = {
   },
 
 
+  stringToJson(content) {
+    return (typeof content == 'string') ? JSON.parse(content) : content
+  },
+
+
   tagsString(tags,limit,braces) {
     // if nobraces then return tagsStringNobraces tags, limit
     var oBrace = '', cBrace = '';

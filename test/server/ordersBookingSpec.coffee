@@ -285,8 +285,8 @@ module.exports = -> describe "Booking: ", ->
               done()
 
 
-  it 'Book 1 opensource hour of Adam Bliss by Ari Lerner', (done) ->
-    SETUP.newCompleteRequest 'aril', data.requests.ariwadam, (request, sAril) ->
+  it 'Book 1 opensource hour of Adam Bliss', (done) ->
+    SETUP.newCompleteRequest 'rusc', data.requests.ariwadam, (request, sAril) ->
       GET "/requests/review/#{request._id}", {}, (r) ->
         expect(r.suggested.length).to.equal(3)
         expect(r.suggested[0].suggestedRate.total).to.equal(130)

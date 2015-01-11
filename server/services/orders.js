@@ -1,7 +1,7 @@
 import Svc from './_service'
 import Order from '../models/order'
-import * as PayMethodSvc from './paymethods'
 import * as UserSvc from './users'
+var PayMethodSvc = require('./paymethods')
 var RequestsSvc = require('./requests')
 var Data = require('./orders.data')
 var Util = require('../../shared/util')
@@ -21,7 +21,6 @@ var get = {
   },
   getMyOrders(cb) {
     var opts = { options: Data.opts.orderByNewest }
-    $log('getMyOrders', opts)
     svc.searchMany({userId:this.user._id}, opts, cb)
   },
   getMyOrdersWithCredit(payMethodId, cb) {
@@ -241,9 +240,6 @@ function bookUsingCredit(expert, minutes, total, lineItems, expectedCredit, payM
 
     ordersToUpdate = _.map(ordersToUpdate, (id) => _.find(orders,(o)=> _.idsEqual(o._id, id) ) )
 
-    // $log('bookUsingCredit.payMethodId', payMethodId)
-    // $log('bookUsingCredit.lineItems', lineItems)
-
     // console.log('bookUsingCredit', lineItems)
     makeOrder(this.user, lineItems, payMethodId, null, requestId, cb, (e, order) => {
 
@@ -274,8 +270,7 @@ var save = {
       lineItems.push(Lines.credit(false, 1000, expires, `Credit Bonus (20% on $${total})`))
 
     if (coupon == "letspair")
-      lineItems.push( Lines.discount("letspair", 100, 'Credit Announcement Promo', this.user) )
-
+      lineItems.push(Lines.discount("letspair", 100, 'Credit Announcement Promo', this.user) )
 
     makeOrder(this.user, lineItems, payMethodId, null, null, cb, (e, order) => {
       // $log('buyCredit.order', order)

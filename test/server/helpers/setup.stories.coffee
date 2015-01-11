@@ -2,6 +2,7 @@
 db = require('./setup.db')
 dataHelpers = require('./setup.data')
 UserService = require('../../../server/services/users')
+PaymethodsService = require('../../../server/services/paymethods')
 
 """
 // Stories are use cases that take multiple steps that are often precursors
@@ -57,6 +58,7 @@ stories = {
 
   addLocalUser,
   addAndLoginLocalUser,
+  addAndLoginLocalUserWithPayMethod,
 
   addUserWithRole: (userKey, role, done) ->
     session = newUserSession()
@@ -162,6 +164,9 @@ stories = {
               POST "/bookings/#{expertSession.expertId}", airpair1, {}, (booking) ->
                 cb(request, booking, customerSession, expertSession)
 
+  injectOAuthPayoutMethod: (user, providerName,pmKey,cb) ->
+    PaymethodsService.addOAuthPayoutmethod.call({user},
+      providerName, data.paymethods[pmKey],{},(e,r)->cb(r))
 
 }
 

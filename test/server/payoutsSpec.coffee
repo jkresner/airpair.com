@@ -2,7 +2,7 @@
 
 module.exports = -> describe "API: ", ->
 
-  @timeout 40000
+  @timeout 10000
 
   before (done) ->
     SETUP.analytics.stub()
@@ -10,9 +10,6 @@ module.exports = -> describe "API: ", ->
 
   after ->
     SETUP.analytics.restore()
-
-  beforeEach ->
-    SETUP.clearIdentity()
 
 
   it 'New expert sees empty orders list to be paid out', (done) ->
@@ -29,7 +26,7 @@ module.exports = -> describe "API: ", ->
 
 
   it 'Booked expert can see single transaction pending', (done) ->
-    SETUP.newBookedRequest 'rusc', {}, 'admb', (request, booking, customerSession, expertSession) ->
+    SETUP.newBookedRequest 'rusc', {}, 'abha', (request, booking, customerSession, expertSession) ->
       LOGIN expertSession.userKey, expertSession, ->
         GET "/billing/orders/payouts/#{booking.expertId}", {}, (orders) ->
           expect(orders.length).to.equal(1)
@@ -56,7 +53,7 @@ module.exports = -> describe "API: ", ->
 
 
   it 'Expert can see multiple transactions pending', (done) ->
-    SETUP.newBookedRequest 'rusc', {}, 'admb', (request1, booking1, customerSession1, expertSession) ->
+    SETUP.newBookedRequest 'dros', {}, 'tmot', (request1, booking1, customerSession1, expertSession) ->
       SETUP.newBookedRequestWithExistingExpert 'brfi', {}, expertSession, (request2, booking2, customerSession2, expertSession) ->
         LOGIN expertSession.userKey, expertSession, ->
           GET "/billing/orders/payouts/#{expertSession.expertId}", {}, (orders) ->
@@ -72,7 +69,7 @@ module.exports = -> describe "API: ", ->
 
 
   it 'Expert can see single transaction released', (done) ->
-    SETUP.newBookedRequest 'rusc', {}, 'admb', (request, booking, customerSession, expertSession) ->
+    SETUP.newBookedRequest 'kyau', {}, 'admb', (request, booking, customerSession, expertSession) ->
       LOGIN 'admin', data.users.admin, ->
         PUT "/adm/billing/orders/#{booking.orderId}/release", {}, {}, (released) ->
           expect(released.lineItems.length).to.equal(2)
@@ -103,7 +100,7 @@ module.exports = -> describe "API: ", ->
 
 
   it 'Expert can see multiple transactions owed', (done) ->
-    SETUP.newBookedRequest 'rusc', {}, 'admb', (request1, booking1, customerSession1, expertSession) ->
+    SETUP.newBookedRequest 'brif', {}, 'tmot', (request1, booking1, customerSession1, expertSession) ->
       SETUP.newBookedRequestWithExistingExpert 'brfi', {}, expertSession, (request2, booking2, customerSession2, expertSession) ->
         LOGIN 'admin', data.users.admin, ->
           PUT "/adm/billing/orders/#{booking1.orderId}/release", {}, {}, (released1) ->
@@ -123,7 +120,7 @@ module.exports = -> describe "API: ", ->
 
 
   it 'Expert can see multiple transactions of mixed status', (done) ->
-    SETUP.newBookedRequest 'rusc', {}, 'admb', (request1, booking1, customerSession1, expertSession) ->
+    SETUP.newBookedRequest 'hubi', {}, 'admb', (request1, booking1, customerSession1, expertSession) ->
       SETUP.newBookedRequestWithExistingExpert 'brfi', {}, expertSession, (request2, booking2, customerSession2, expertSession) ->
         SETUP.newBookedRequestWithExistingExpert 'brif', {}, expertSession, (request3, booking3, customerSession3, expertSession) ->
           LOGIN 'admin', data.users.admin, ->
@@ -141,13 +138,6 @@ module.exports = -> describe "API: ", ->
                     expect(summary.pending.total).to.equal(140)
                     done()
 
-
-
-  it 'Expert can verify paypal payout account', (done) ->
-    # d = type: 'other', tags: [data.tags.node]
-    # newCompleteRequestForAdmin 'hubr', d, (r) ->
-      # msg = type: 'received', subject: "test subject", body: "test body"
-      # PUT "/adm/requests/#{r._id}/message", msg, {}, (r1) ->
 
 
   it.skip 'Expert can pay out single released transaction to their verified payout account', (done) ->
