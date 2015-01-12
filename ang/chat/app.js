@@ -128,6 +128,8 @@
             $scope.selfmember.id = member.id;
             $scope.selfmember.notificationsByRoom = cc._member.notificationsByRoom;
             $scope.selfmember.notificationsCountByRoom = cc._member.notificationsCountByRoom;
+            
+            console.log($scope.selfmember.rooms)
 
             
             member.on("status_change", function (err, status) {
@@ -162,7 +164,7 @@
               avatar: session.avatar || ""
             };
             
-            console.log("user>", user)
+            //console.log("user>", session)
             
             cc.on("login", function (err, member) {
                 member._ref.update(user);

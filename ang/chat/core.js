@@ -55,6 +55,7 @@
 		};
 		
 		this.getRoom = function (roomId) {
+			console.log(roomId)
 			if (!this._rooms[roomId]) 
 				this._rooms[roomId] = new Room(this, roomId);
 			
@@ -377,6 +378,41 @@
 			.child("rooms/byRID")
 			.child(this.id);
 			
+		this.getMetadata = function () {
+			var members = this.members,
+				name = this.info? this.info.name : "",
+				nonSelfMembers = {},
+				nonSelfMembersCount = 0,
+				memberId;
+				
+			if (this.id.split("^^v^^").length > 1) {
+				var implicitMembers = this.id.split("^^v^^");
+				for (var index in implicitMembers) {
+					memberId = implicitMembers[index];
+					members[memberId] = cc.getMember(memberId);
+				}
+			}
+
+			for (memberId in members) {
+				if (memberId !== cc._member.id) {
+					nonSelfMembers[memberId] = members[memberId];
+					nonSelfMembersCount += 1;
+				}
+			}
+			
+			if (nonSelfMembersCount == 1) {
+				for (memberId in nonSelfMembers) {
+					var member = members[memberId];
+					break;
+				}
+				return member;
+			} else if (nonSelfMembersCount > 1) {
+				return {name: "Group Chat", avatar: "2"};
+			} else {
+				return {name: name, avatar: "3"};
+			}
+		};
+		
 		this._ref
 			.child("name")
 			.on("value", (function (nameSnapshot) {
@@ -415,40 +451,6 @@
 				this.info = this.getMetadata();
 			}).bind(this));
 			
-		this.getMetadata = function () {
-			var members = this.members,
-				name = this.info? this.info.name : "",
-				nonSelfMembers = {},
-				nonSelfMembersCount = 0,
-				memberId;
-				
-			if (this.id.split("^^v^^").length > 1) {
-				var implicitMembers = this.id.split("^^v^^");
-				for (var index in implicitMembers) {
-					memberId = implicitMembers[index];
-					members[memberId] = cc.getMember(memberId);
-				}
-			}
-
-			for (memberId in members) {
-				if (memberId !== cc._member.id) {
-					nonSelfMembers[memberId] = members[memberId];
-					nonSelfMembersCount += 1;
-				}
-			}
-			
-			if (nonSelfMembersCount == 1) {
-				for (memberId in nonSelfMembers) {
-					var member = members[memberId];
-					break;
-				}
-				return member;
-			} else if (nonSelfMembersCount > 1) {
-				return {name: "Group Chat", avatar: "2"};
-			} else {
-				return {name: name, avatar: "3"};
-			}
-		};
 		
 		this.info = this.getMetadata();
 	};
