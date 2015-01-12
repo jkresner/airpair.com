@@ -21,6 +21,7 @@ export default function(app) {
     .post('/signup', mw.authAlreadyDone, local.signup)
     .post('/subscribe', mw.authAlreadyDone, mw.setFastSingupPassword, local.signup)
     .get('/google', google.oAuth)
+    .get('/google/callback', google.oAuth, mw.authDone)
 
     .get('/paypal-loginurl', mw.authd, (req,res) =>
       { res.json({url:pp.loginUrl(req)}) })

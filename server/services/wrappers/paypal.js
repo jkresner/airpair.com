@@ -1,5 +1,6 @@
 var paypal = require('paypal-rest-sdk')
 var openIdConnect = paypal.openIdConnect
+var {stringToJson}  = require('../../../shared/util')
 
 paypal.configure({
   'mode': config.auth.paypal.mode,
@@ -49,7 +50,10 @@ var pp = {
         if (e) return error(e)
         if (!userinfo) return error("no user info")
         // console.log('tokeninfo', tokeninfo, 'userinfo', userinfo)
-        req.authInfo = { userinfo, tokeninfo }
+        req.authInfo = {
+          userinfo: stringToJson(userinfo),
+          tokeninfo: stringToJson(tokeninfo)
+        }
         next()
       })
     })

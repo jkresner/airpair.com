@@ -811,6 +811,48 @@ module.exports = {
     ],
     "twitterId" : 12958622,
     "username" : "abliss"
+  },
+
+  dces: {
+    "_id" : "5359bd0e1c67d1a4859d2f74",
+    "email" : "dcestari@gmail.com",
+    "emailVerified" : true,
+    "google" : {
+        "provider" : "google",
+        "id" : "107946246039966851979",
+        "displayName" : "Daniel Cestari",
+        "name" : {
+            "familyName" : "Cestari",
+            "givenName" : "Daniel"
+        },
+        "emails" : [
+            {
+                "value" : "dcestari@gmail.com"
+            }
+        ],
+        "_json" : {
+            "id" : "107946246039966851979",
+            "email" : "dcestari@gmail.com",
+            "verified_email" : true,
+            "name" : "Daniel Cestari",
+            "given_name" : "Daniel",
+            "family_name" : "Cestari",
+            "link" : "https://plus.google.com/107946246039966851979",
+            "picture" : "https://lh4.googleusercontent.com/-DxP-LDK4QNc/AAAAAAAAAAI/AAAAAAAACeM/_QwsHFEXoRE/photo.jpg",
+            "gender" : "male",
+            "locale" : "en"
+        },
+        "token" : {
+            "token" : "ya29.4wDdlJ14TTnMY5un3xmcHGlTNfXVBH7yC7X8epyYKuHMutMyrQ_B4UXQstOjkGmEWEdHBPg05_tXuA",
+            "attributes" : {
+                "refreshToken" : null
+            }
+        }
+    },
+    "googleId" : "107946246039966851979",
+    "initials" : "DC",
+    "name" : "Daniel Cestari",
   }
+
 
 }

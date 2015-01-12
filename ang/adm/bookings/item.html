@@ -91,10 +91,23 @@
 
     <div class="payout">
       <h3>Payout</h3>
-      <p>JK still to build</p>
-
       Order:
-      ${{ booking.order.total }} {{ booking.order._id }}
+      ${{ booking.order.total }}
+
+      <a href="/v1/adm/orders/{{ booking.order._id }}">{{ booking.order._id }}</a>
+
+      <div ng-if="lineForPayout.info.paidout">
+        <span style="color:green">paidout</span>
+      </div>
+
+      <div ng-if="!lineForPayout.info.paidout">
+        <div ng-if="!lineForPayout.info.released">
+          <a ng-click="releasePayout()">Release payment</a>
+        </div>
+        <div ng-if="lineForPayout.info.released">
+          <span style="color:blue">Waiting for expert to collect</span>
+        </div>
+      </div>
     </div>
 
   </div>

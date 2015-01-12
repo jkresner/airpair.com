@@ -63,7 +63,7 @@ export default function(app) {
     .get('/billing/orders/credit/:id', API.Orders.getMyOrdersWithCredit)
     .post('/billing/orders/credit', API.Orders.buyCredit)
 
-    .get('/billing/orders/payouts/:expert', API.Orders.getOrdersToPayout)
+    .get('/billing/orders/payouts', API.Orders.getOrdersForPayouts)
     .get('/payouts/me', API.Payouts.getPayouts)
     .post('/payouts/:paymethod', bodyParam('orders'), API.Payouts.payoutOrders)
 

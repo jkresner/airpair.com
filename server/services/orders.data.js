@@ -31,10 +31,7 @@ var select = {
     'utc': 1,
     'lineItems._id':1,
     'lineItems.type':1,
-    'lineItems.info.source':1,
-    'lineItems.info.paidout':1,
-    'lineItems.info.expert':1,
-    'lineItems.info.released':1,
+    'lineItems.info':1,
     'lineItems.owed':1,
   },
   forPayout(cb) {
