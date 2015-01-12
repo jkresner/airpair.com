@@ -54,6 +54,9 @@ var cfg = {
       redirectUrl: "https://www.airpair.com/oauth2callback"
     }
   },
+  chat: {
+    on: true,
+  },
   log: {},
   mail: {
     on: false, // we don't send mail in dev
