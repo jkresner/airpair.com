@@ -16,12 +16,12 @@
    </div>
    <div>
        <b>Chats:</b><br />
-       <div ng-repeat="(roomId, _) in corechat.selfmember.rooms">
-           <button ng-click="corechat.setActiveRoom(roomId)">{{corechat.getRoom(roomId).info.name || "Anonymous User"}} ({{corechat.selfmember.notificationsCountByRoom[roomId] || 0}})</button>
+       <div ng-repeat="(roomId, room) in corechat.selfmember.rooms">
+           <button ng-click="corechat.setActiveRoom(roomId)">{{room.info.name || "Anonymous User"}} ({{corechat.selfmember.notificationsCountByRoom[roomId] || 0}})</button>
        </div>
    </div>
    <br />
-   <div ng-show="corechat.activeRoom">
+   <div ng-if="corechat.activeRoom">
        <b>Current Room: {{corechat.getRoom(corechat.activeRoom).info.name}}</b>
        <br />
         <div ng-repeat="message in corechat.selfmember.rooms[corechat.activeRoom].history">
