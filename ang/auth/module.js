@@ -26,7 +26,8 @@ angular.module("APAuth", ['ngRoute','ngMessages','APFormsDirectives','APFilters'
   .run(function($rootScope, SessionService) {
 
     SessionService.onAuthenticated( (session) => {
-      //console.log('setting root scope', $rootScope.session)
+      console.log('setting root scope', session);
+      window.firebaseToken = session.firebaseToken;
     })
 
   })

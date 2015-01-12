@@ -83,6 +83,8 @@
     "traceur-source-maps": "^1.0.2",
     "twit": "^1.1.18",
     "winston": "^0.8.0",
-    "winston-ses": "0.0.4"
+    "winston-ses": "0.0.4",
+    "firebase-token-generator": "~2.0.0",
+    "jwt-simple": "~0.2.0"
   }
 }

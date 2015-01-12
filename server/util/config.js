@@ -12,6 +12,10 @@ var cfg = {
       usernameField : 'email',
       passwordField : 'password'
     },
+    firebase: {
+      url: 'https://airpair-chat-dev.firebaseio.com/',
+      secret: 'BKE9PP6DP4k06Es10nD6Rvh9443Fz7XBstb6fg54'
+    },
     google: {
       clientID: '1019727294613-rjf83l9dl3rqb5courtokvdadaj2dlk5.apps.googleusercontent.com',
       clientSecret: 'Kd6ceFORVbABH7p5UbKURexZ',
@@ -61,6 +65,9 @@ var cfg = {
       clientSecret: '',
       redirectUrl: "https://www.airpair.com/oauth2callback"
     }
+  },
+  chat: {
+    on: false,
   },
   log: {},
   mail: {
@@ -157,6 +164,11 @@ module.exports = function(env, appdir) {
       access_token: process.env.AUTH_TWITTER_ACCESS_TOKEN,
       access_token_secret: process.env.AUTH_TWITTER_ACCESS_TOKEN_SECRET
     }
+    
+    cfg.auth.firebase = {
+      url: process.env.FIRBEASE_URL,
+      secret: process.env.FIREBASE_SECRET
+    };
 
     cfg.auth.paypal.mode = 'live'
     cfg.auth.paypal.clientID = process.env.AUTH_PAYPAL_CLIENTID,

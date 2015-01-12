@@ -33,7 +33,9 @@
 </div>
 
 <nav id="side" class="collapse" side-nav></nav>
+{{#if config.chat.on}}
 <nav id="chat" class="collapse" chat-nav ng-if="session.authenticated == false"></nav>
+{{/if}}
 
 <script type="text/javascript" src="{{config.bundle.indexScript}}"></script>
 <script type="text/javascript">

@@ -1,0 +1,38 @@
+<section id="chat">
+
+  <h3>Chat </h3>
+    <div chat-widget ng-hide="true"></div>
+    <h2>Users by Page</h2>
+    <div ng-repeat="(page, members) in corechat.admin.members.byPage">
+        <div ng-show="members">
+            <b>{{page}}</b><br />
+            <div ng-repeat="(memberId, _) in members">
+                <a ng-click="setCurrentUser(memberId)" member-info="{{memberId}}">{{member.name || "Anonymous User"}}</a>
+            </div>
+        </div> 
+    </div>
+    
+    <h2>Rooms by Last Message</h2>
+    <div ng-repeat="(timestamp, room) in corechat.admin.rooms.byLastMessage">
+        <span ng-show="getRoomType(room) == 'pair'">
+            <b>1:1 Chat:</b>
+            <span ng-repeat="member in room.members">
+                {{member.name || "Anonymous"}}
+            </span>
+        </span>
+        <span ng-show="getRoomType(room) == 'group'">
+            <b>Group Chat:</b>
+            {{room.id}}
+        </span>
+    </div>
+    
+    <h2>Current User: {{currentUser.id || "None"}}</h2>
+    <div ng-show="corechat.activeRoom">
+        <div ng-repeat="message in corechat.selfmember.rooms[corechat.activeRoom].history">
+            <b member-info="{{message.from}}">{{member.name || "Anonymous"}}</b> {{message.body}}
+        </div><br />
+        <input type="text" ng-model="newMessage.body">
+        <button ng-click="corechat.sendMessageToRoom(corechat.activeRoom, newMessage.body); newMessage.body=''">Send</button>
+    </div>
+    
+</section>

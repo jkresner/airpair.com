@@ -4,7 +4,6 @@ var mw = require('../middleware/auth')
 var pp = require('../services/wrappers/paypal')
 var {addOAuthPayoutmethod} = require('../services/paymethods')
 
-
 export default function(app) {
 
   var router = require('express').Router()
@@ -17,11 +16,11 @@ export default function(app) {
     .use(mw.setReturnTo)
 
     .get('/logout', logout(config.auth))
-    .post('/login', mw.authAlreadyDone, local.login)
-    .post('/signup', mw.authAlreadyDone, local.signup)
-    .post('/subscribe', mw.authAlreadyDone, mw.setFastSingupPassword, local.signup)
+    .post('/login', mw.authAlreadyDone, local.login, mw.setFirebaseTokenOnSession)
+    .post('/signup', mw.authAlreadyDone, local.signup, mw.setFirebaseTokenOnSession)
+    .post('/subscribe', mw.authAlreadyDone, mw.setFastSingupPassword, local.signup, mw.setFirebaseTokenOnSession)
     .get('/google', google.oAuth)
-    .get('/google/callback', google.oAuth, mw.authDone)
+    .get('/google/callback', google.oAuth, mw.setFirebaseTokenOnSession, mw.authDone)
 
     .get('/paypal-loginurl', mw.authd, (req,res) =>
       { res.json({url:pp.loginUrl(req)}) })
