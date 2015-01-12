@@ -165,6 +165,14 @@ module.exports = {
     emailVerified: false
   },
 
+  dymo: {
+    "_id" : "534d3e5d1c67d1a4859d2d5b",
+    "email" : "alex@alexdymo.com",
+    "emailVerified" : true,
+    "name" : "Alexander Dymo",
+  },
+
+
   dros :{
     "_id" : "52cd929666a6f999a465fee8",
     "email": "daniel@roseman.org.uk",

@@ -26,7 +26,7 @@ module.exports = -> describe "API: ", ->
 
 
   it 'Booked expert can see single transaction pending', (done) ->
-    SETUP.newBookedRequest 'rusc', {}, 'abha', (request, booking, customerSession, expertSession) ->
+    SETUP.newBookedRequest 'rusc', {}, 'dymo', (request, booking, customerSession, expertSession) ->
       LOGIN expertSession.userKey, expertSession, ->
         GET "/billing/orders/payouts/#{booking.expertId}", {}, (orders) ->
           expect(orders.length).to.equal(1)
@@ -122,7 +122,7 @@ module.exports = -> describe "API: ", ->
   it 'Expert can see multiple transactions of mixed status', (done) ->
     SETUP.newBookedRequest 'hubi', {}, 'admb', (request1, booking1, customerSession1, expertSession) ->
       SETUP.newBookedRequestWithExistingExpert 'brfi', {}, expertSession, (request2, booking2, customerSession2, expertSession) ->
-        SETUP.newBookedRequestWithExistingExpert 'brif', {}, expertSession, (request3, booking3, customerSession3, expertSession) ->
+        SETUP.newBookedRequestWithExistingExpert 'acob', {}, expertSession, (request3, booking3, customerSession3, expertSession) ->
           LOGIN 'admin', data.users.admin, ->
             PUT "/adm/billing/orders/#{booking1.orderId}/release", {}, {}, (released1) ->
               # PUT "/adm/billing/orders/#{booking2.orderId}/release", {}, {}, (released2) ->
@@ -139,36 +139,135 @@ module.exports = -> describe "API: ", ->
                     done()
 
 
-
-  it.skip 'Expert can pay out single released transaction to their verified payout account', (done) ->
-
-  it.skip 'Expert can not pay out single released transaction with no paymethod', (done) ->
-
-  it.skip 'Expert can not pay out single pending transaction to their verified payout account', (done) ->
-    # d = type: 'other', tags: [data.tags.node]
-    # newCompleteRequestForAdmin 'hubr', d, (r) ->
-      # msg = type: 'received', subject: "test subject", body: "test body"
-      # PUT "/adm/requests/#{r._id}/message", msg, {}, (r1) ->
+  # it.skip 'Paypal sandbox works', (done) ->
+  #   pp = require('../../server/services/wrappers/paypal')
+  #   payoutId = newId()
+  #   $log(payoutId)
+  #   pp.payout "expert_engb_verified@airpair.com",90,payoutId,'note', (e,p) ->
+  #     $log('e', e, 'p', p)
+  #     done()
 
 
-  it.skip 'Expert can pay out combined transaction to their payout account', (done) ->
+  it 'Expert can collect a single released transaction to their verified paypal account', (done) ->
+    SETUP.newLoggedInExpertWithPayoutmethod 'admb', (expert, expertSession, payoutmethod) ->
+      SETUP.newBookedRequestWithExistingExpert 'brfi', {}, expertSession, (request, booking, customerSession, expertSession) ->
+        SETUP.releaseOrderAndLogExpertBackIn booking.orderId, expertSession, ->
+          GET "/billing/orders/payouts/#{expertSession.expertId}", {}, (orders) ->
+            expect(orders.length).to.equal(1)
+            lineToPayout = orders[0].lineItems[0]
+            expect(lineToPayout.info.paidout).to.equal(false)
+            expect(lineToPayout.info.released.utc).to.exist
+            summary = expertPayoutSummary(orders)
+            expect(summary.owed.count).to.equal(1)
+            expect(summary.owed.total).to.equal(70)
+            d = orders: _.pluck(orders,'_id')
+            POST "/payouts/#{payoutmethod._id}", d, {}, (payout) ->
+              expect(payout._id).to.exist
+              expectIdsEqual(payout.userId, expertSession._id)
+              expect(payout.total).to.equal(70)
+              expect(payout.payment).to.exist
+              expectIdsEqual(payout.payMethodId, payoutmethod._id)
+              expect(payout.lines.length).to.equal(1)
+              expect(payout.lines[0]._id).to.exist
+              expectIdsEqual(payout.lines[0].order._id, orders[0]._id)
+              expect(payout.lines[0].order.by.email).to.equal(customerSession.email)
+              expectIdsEqual(payout.lines[0].order.lineItemId, lineToPayout._id)
+              expect(payout.lines[0].total).to.equal(70)
+              expect(payout.lines[0].type).to.equal('airpair')
+              GET "/billing/orders/payouts/#{expertSession.expertId}", {}, (orders2) ->
+                expect(orders2.length).to.equal(1)
+                paidoutLine = orders2[0].lineItems[0]
+                expect(paidoutLine.info.paidout).to.equal(payout._id)
+                expect(paidoutLine.info.released.utc).to.exist
+                summary2 = expertPayoutSummary(orders2)
+                expect(summary2.owed.count).to.equal(0)
+                expect(summary2.owed.total).to.equal(0)
+                expect(summary2.paid.count).to.equal(1)
+                expect(summary2.paid.total).to.equal(70)
+                expect(summary2.pending.count).to.equal(0)
+                expect(summary2.pending.total).to.equal(0)
+                POST "/payouts/#{payoutmethod._id}", d, {status:403}, (error) ->
+                  expect(error.message.indexOf('Cannot payout.')).to.equal(0)
+                  done()
 
 
 
-  it.skip 'Expert can verify venmo account', (done) ->
+  it 'Expert can not collect single released transaction with no paymethod', (done) ->
+    SETUP.newLoggedInExpert 'tmot', (expert, expertSession) ->
+      SETUP.newBookedRequestWithExistingExpert 'brfi', {}, expertSession, (request, booking, customerSession, expertSession) ->
+        SETUP.releaseOrderAndLogExpertBackIn booking.orderId, expertSession, ->
+          GET "/billing/orders/payouts/#{expertSession.expertId}", {}, (orders) ->
+            d = orders: _.pluck(orders,'_id')
+            fakePayoutmethodId = newId()
+            POST "/payouts/#{fakePayoutmethodId}", d, {status:404}, (error) ->
+              done()
 
 
-  it.skip 'Expert can pay out single transaction to their venmo account', (done) ->
+
+  it 'Expert can not pay out single pending transaction to their verified payout account', (done) ->
+    SETUP.newLoggedInExpertWithPayoutmethod 'dymo', (expert, expertSession, payoutmethod) ->
+      SETUP.newBookedRequestWithExistingExpert 'chup', {}, expertSession, (request, booking, customerSession, expertSession) ->
+        LOGIN expertSession.userKey, expertSession, ->
+          GET "/billing/orders/payouts/#{expertSession.expertId}", {}, (orders) ->
+            d = orders: _.pluck(orders,'_id')
+            POST "/payouts/#{payoutmethod._id}", d, {status:403}, (error) ->
+              expect(error.message.indexOf('Cannot payout. Order')).to.equal(0)
+              done()
 
 
+  it 'Expert can pay out combined transaction to their payout account', (done) ->
+    SETUP.newLoggedInExpertWithPayoutmethod 'admb', (expert, expertSession, payoutmethod) ->
+      SETUP.newBookedRequestWithExistingExpert 'hubi', {}, expertSession, (request1, booking1, customerSession1, expertSession) ->
+        SETUP.newBookedRequestWithExistingExpert 'brfi', {}, expertSession, (request2, booking2, customerSession2, expertSession) ->
+          SETUP.newBookedRequestWithExistingExpert 'acob', {}, expertSession, (request3, booking3, customerSession3, expertSession) ->
+            LOGIN 'admin', data.users.admin, ->
+              PUT "/adm/billing/orders/#{booking1.orderId}/release", {}, {}, (released1) ->
+                PUT "/adm/billing/orders/#{booking2.orderId}/release", {}, {}, (released2) ->
+                  PUT "/adm/billing/orders/#{booking3.orderId}/release", {}, {}, (released3) ->
+                    LOGIN expertSession.userKey, expertSession, ->
+                      GET "/billing/orders/payouts/#{expertSession.expertId}", {}, (orders) ->
+                        expect(orders.length).to.equal(3)
+                        summary = expertPayoutSummary(orders)
+                        expect(summary.owed.count).to.equal(3)
+                        expect(summary.owed.total).to.equal(210)
+                        d = orders: _.pluck(orders,'_id')
+                        POST "/payouts/#{payoutmethod._id}", d, {}, (payout) ->
+                          expect(payout._id).to.exist
+                          expectIdsEqual(payout.userId, expertSession._id)
+                          expect(payout.total).to.equal(210)
+                          expect(payout.lines.length).to.equal(3)
+                          done()
 
-  it.skip 'Expert can verify bitcoin account', (done) ->
 
-
-  it.skip 'Expert can pay out single transaction to their bitcoin account', (done) ->
-
-
-  it.skip 'Expert can see payout history', (done) ->
+  it 'Expert can see payout history', (done) ->
+    SETUP.newLoggedInExpertWithPayoutmethod 'tmot', (expert, expertSession, payoutmethod) ->
+      SETUP.newBookedRequestWithExistingExpert 'hubi', {}, expertSession, (request1, booking1, customerSession1, expertSession) ->
+        SETUP.newBookedRequestWithExistingExpert 'brfi', {}, expertSession, (request2, booking2, customerSession2, expertSession) ->
+          SETUP.newBookedRequestWithExistingExpert 'acob', {}, expertSession, (request3, booking3, customerSession3, expertSession) ->
+            LOGIN 'admin', data.users.admin, ->
+              PUT "/adm/billing/orders/#{booking1.orderId}/release", {}, {}, (released1) ->
+                PUT "/adm/billing/orders/#{booking2.orderId}/release", {}, {}, (released2) ->
+                  PUT "/adm/billing/orders/#{booking3.orderId}/release", {}, {}, (released3) ->
+                    LOGIN expertSession.userKey, expertSession, ->
+                      GET "/billing/orders/payouts/#{expertSession.expertId}", {}, (orders) ->
+                        d1 = orders: [orders[0]._id,orders[1]._id]
+                        POST "/payouts/#{payoutmethod._id}", d1, {}, (payout1) ->
+                          expect(payout1.total).to.equal(140)
+                          expectIdsEqual(payout1.lines[0].order._id,orders[0]._id)
+                          expectIdsEqual(payout1.lines[1].order._id,orders[1]._id)
+                          d2 = orders: [orders[2]._id]
+                          POST "/payouts/#{payoutmethod._id}", d2, {}, (payout2) ->
+                            GET "/payouts/me", {}, (payouts) ->
+                              expect(payouts.length).to.equal(2)
+                              expect(payouts[0].total).to.equal(140)
+                              expect(payouts[1].total).to.equal(70)
+                              done()
 
 
   it.skip 'Expert can see payout history including v0 payouts', (done) ->
+
+
+  # it.skip 'Expert can verify venmo account', (done) ->
+  # it.skip 'Expert can pay out single transaction to their venmo account', (done) ->
+  # it.skip 'Expert can verify bitcoin account', (done) ->
+  # it.skip 'Expert can pay out single transaction to their bitcoin account', (done) ->

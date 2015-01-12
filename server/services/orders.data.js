@@ -9,6 +9,7 @@ var base = {
 
 var select = {
   listAdmin: {
+    '_id': 1,
     'userId': 1,
     'by': 1,
     'utc': 1,
@@ -24,9 +25,11 @@ var select = {
     'company.contacts.email':1
   },
   listPayout: {
+    '_id': 1,
     'userId': 1,
     'by': 1,
     'utc': 1,
+    'lineItems._id':1,
     'lineItems.type':1,
     'lineItems.info.source':1,
     'lineItems.info.paidout':1,

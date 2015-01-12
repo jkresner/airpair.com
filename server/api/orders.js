@@ -14,6 +14,7 @@ export default initAPI(
   releasePayout: (req) => [req.order],
 }, {
   order:'getByIdForAdmin',
+  orders: 'getMultipleOrdersById'
 },
   require('../../shared/validation/billing.js')
 )

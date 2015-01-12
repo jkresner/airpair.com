@@ -379,6 +379,139 @@ module.exports = {
     "updatedAt" : "2013-05-30T03:49:41.000Z",
     "userId" : "51a6c65e66a6f999a465f30b",
     "username" : "abliss"
+  },
+
+  dymo: {
+    "_id" : "534d3e8e4d26f30200000024",
+    "availability" : "",
+    "bookMe" : {
+        "rate" : "90",
+        "rake" : "20",
+        "urlSlug" : "adymo",
+        "urlBlog" : "",
+        "noIndex" : false,
+        "enabled" : true,
+        "coupons" : [],
+        "creditRequestIds" : [
+            "53ce8a703441d602008095b6"
+        ]
+    },
+    "brief" : "I help people optimize Ruby and Ruby on Rails applications. I enjoy digging into the code and finding simple fixes to solve complex performance problems.",
+    "email" : "alex@alexdymo.com",
+    "gh" : {
+        "id" : 5263,
+        "username" : "adymo",
+        "location" : "Chicago, USA",
+        "blog" : "http://www.alexdymo.com",
+        "gravatar_id" : "990f1e2f3c6871d4305d3a316902b1bf",
+        "followers" : 11
+    },
+    "gmail" : "alex@alexdymo.com",
+    "homepage" : "www.alexdymo.com",
+    "hours" : "5-10",
+    "in" : {
+        "id" : "1KB9BDtDYm",
+        "displayName" : "Alexander Dymo"
+    },
+    "karma" : 0,
+    "matching" : {
+        "replies" : {},
+        "experience" : {}
+    },
+    "minRate" : 70,
+    "name" : "Alexander Dymo",
+    "pic" : "https://secure.gravatar.com/avatar/990f1e2f3c6871d4305d3a316902b1bf",
+    "rate" : 110,
+    "stats" : {},
+    "status" : "ready",
+    "tags" : [
+        {
+            "_id" : "514825fa2a26ea0200000031",
+            "name" : "ruby",
+            "short" : "ruby",
+            "soId" : "ruby",
+            "levels" : [
+                "beginner",
+                "intermediate",
+                "expert"
+            ],
+            "subscription" : {
+                "auto" : [],
+                "custom" : []
+            }
+        },
+        {
+            "_id" : "514825fa2a26ea020000002f",
+            "name" : "ruby-on-rails",
+            "short" : "ruby-on-rails",
+            "soId" : "ruby-on-rails",
+            "levels" : [
+                "beginner",
+                "intermediate",
+                "expert"
+            ],
+            "subscription" : {
+                "auto" : [],
+                "custom" : []
+            }
+        },
+        {
+            "_id" : "5148ace09820900200000009",
+            "name" : "Performance",
+            "short" : "Performance",
+            "soId" : "performance",
+            "levels" : [
+                "beginner",
+                "intermediate",
+                "expert"
+            ],
+            "subscription" : {
+                "auto" : [],
+                "custom" : []
+            }
+        },
+        {
+            "_id" : "5181d0a966a6f999a465ebb1",
+            "name" : "optimization",
+            "short" : "optimization",
+            "soId" : "optimization",
+            "levels" : [
+                "beginner",
+                "intermediate",
+                "expert"
+            ],
+            "subscription" : {
+                "auto" : [],
+                "custom" : []
+            }
+        },
+        {
+            "_id" : "5181d0aa66a6f999a465edb1",
+            "name" : "profiling",
+            "short" : "profiling",
+            "soId" : "profiling",
+            "levels" : [
+                "beginner",
+                "intermediate",
+                "expert"
+            ],
+            "subscription" : {
+                "auto" : [],
+                "custom" : []
+            }
+        }
+    ],
+    "timezone" : "GMT-0500 (CDT)",
+    "tw" : {
+        "id" : 12546142,
+        "username" : "alexander_dymo",
+        "pic" : {
+            "value" : "https://pbs.twimg.com/profile_images/2363282175/rvgpjxu04gr72kf09xlh_normal.png"
+        }
+    },
+    "updatedAt" : "2015-01-07T18:38:26.875Z",
+    "userId" : "534d3e5d1c67d1a4859d2d5b",
+    "username" : "adymo"
   }
 
 }
