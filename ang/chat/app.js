@@ -128,10 +128,7 @@
             $scope.selfmember.id = member.id;
             $scope.selfmember.notificationsByRoom = cc._member.notificationsByRoom;
             $scope.selfmember.notificationsCountByRoom = cc._member.notificationsCountByRoom;
-            
-            console.log($scope.selfmember.rooms)
 
-            
             member.on("status_change", function (err, status) {
                 $log.log("You are flagged as", status);
                 $scope.selfmember.status = status;
@@ -159,15 +156,33 @@
             if (!session) return;
             
             var user = {
-              email: session.email || "",
-              name: session.name || "",
-              avatar: session.avatar || ""
-            };
+                  email: session.email || "",
+                  name: session.name || "",
+                  avatar: session.avatar || ""
+                }, 
+                lastUID = localStorage.getItem("corechat:lastUID"),
+                lastMode;
             
-            //console.log("user>", session)
+            if (session.sessionID) {
+                console.log("Anonymous user!")
+                localStorage.setItem("corechat:mode", "anonymous");
+            } else {
+                console.log("Authed user!");
+                lastMode = localStorage.getItem("corechat:mode");
+                localStorage.setItem("airchat:mode", "user");
+            }
             
             cc.on("login", function (err, member) {
                 member._ref.update(user);
+
+            
+                if (lastMode == "anonymous" && lastUID) {
+                    console.log("requesitng account merge with", lastUID)
+                    member._ref.child("transferFrom").set(localStorage.getItem("corechat:lastUID")); 
+                } else {
+                    localStorage.setItem("corechat:lastUID", '');
+                }
+
             });
     
             window.firebaseToken = session.firebaseToken;
