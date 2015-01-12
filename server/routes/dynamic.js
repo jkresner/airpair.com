@@ -42,7 +42,7 @@ export default function(app) {
       app.renderHbsViewData('tag', angularPageMeta,
         (req, cb) => TagsAPI.svc.getTagPage(req.tag, cb) ))
 
-    .get('/posts/all',
+    .get('/blog',
       app.renderHbsViewData('posts', { title: "Software Posts, Tutorials & Articles" },
         (req, cb) => PostsAPI.svc.getAllPublished(cb) ))
 
