@@ -18,6 +18,7 @@
 		// CoreChat Methods
 		
 		this.login = function (token) {
+			console.log("logging in")
 			this._ref.authWithCustomToken(token, (function(error, member) {
 				if (error) {
 					this.trigger("login", error);
@@ -26,7 +27,15 @@
 						this.admin = new AdminInterface(this);
 					}
 					this._member = new SelfMember(this, member.uid, member);
+					
+					var lastUID = localStorage.getItem("corechat:uid");
+					
+					if (lastUID) {
+						localStorage.setItem("corechat:lastUID", lastUID);
+					}
+					
 					localStorage.setItem("corechat:firebaseToken", token);
+					localStorage.setItem("corechat:uid", member.uid);
 					this.trigger("login", null, this._member);
 				}
 			}).bind(this));
@@ -93,15 +102,14 @@
 		
 		this._watchForTokenOnWindow = function () {
 			// Hackssss
-			var checkToken = (function () {
+			var checkLogin;
+			(checkLogin=function () {
 				var token = window.firebaseToken;
 				if (token)
-					this.login(token);
+					cc.login(token);
 				else
-					setTimeout(checkToken, 500);
-			}).bind(this);
-			
-			checkToken();
+					setTimeout(checkLogin, 500);
+			})();
 		};
 		
 		this._attemptLoginFromLocalstorage = function () {
