@@ -4,4 +4,5 @@ module.exports = {
   authz:      require('./authz'),
   seo:        require('./seo'),
   analytics:  require('./analytics'),
+  data:       require('./data'),
 }
