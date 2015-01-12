@@ -1,3 +1,4 @@
+var {authd,setAnonSessionData,setFirebaseTokenOnSession} = require('../middleware/auth')
 var API = require('../api/_all')
 var {authd,setAnonSessionData} = require('../middleware/auth')
 var {adm,emailv} = require('../middleware/authz')
@@ -6,22 +7,21 @@ var {bodyParam} = require('../middleware/data')
 export default function(app) {
 
   var router = require('express').Router()
-
     .param('tag', API.Tags.paramFns.getBySlug)
     .param('expert', API.Experts.paramFns.getById)
     .param('request', API.Requests.paramFns.getByIdForAdmin)
     .param('booking', API.Bookings.paramFns.getById)
     .param('paymethod', API.Paymethods.paramFns.getById)
 
-    .get('/session/full', setAnonSessionData, API.Users.getSessionFull)
+    .get('/session/full', setAnonSessionData, setFirebaseTokenOnSession, API.Users.getSessionFull)
     .put('/users/me/password', API.Users.changePassword)
     .put('/users/me/password-change', API.Users.requestPasswordChange)
     .put('/users/me/tag/:tag', setAnonSessionData, API.Users.toggleTag)
     .put('/users/me/tags', setAnonSessionData, API.Users.tags)
     .put('/users/me/bookmarks', setAnonSessionData, API.Users.bookmarks)
     .put('/users/me/bookmarks/:type/:id', setAnonSessionData, API.Users.toggleBookmark)
-    .put('/users/me/email', setAnonSessionData, API.Users.changeEmail)
-    .put('/users/me/name', setAnonSessionData, API.Users.changeName)
+    .put('/users/me/email', setAnonSessionData, setFirebaseTokenOnSession, API.Users.changeEmail)
+    .put('/users/me/name', setAnonSessionData, setFirebaseTokenOnSession, API.Users.changeName)
     .put('/users/me/email-verify', authd, setAnonSessionData, API.Users.verifyEmail)
     .put('/users/me', authd, API.Users.updateProfile)
     .get('/company', authd, API.Companys.getUsersCompany)
@@ -52,7 +52,6 @@ export default function(app) {
 
     .get('/workshops/', API.Workshops.getAll)
     .get('/workshops/:id', API.Workshops.getBySlug)
-
 
     .use(authd) //-- swap out for email verify or something
     .get('/billing/payoutmethods', API.Paymethods.getMyPayoutmethods)

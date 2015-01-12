@@ -1,5 +1,6 @@
 export function logout(options) {
   return (req, res, next) => {
+    if (req.session.firebaseToken) delete req.session.firebaseToken
     req.logout()
     res.redirect(options.loginUrl)
   }
