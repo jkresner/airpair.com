@@ -1,24 +1,22 @@
-module.exports = -> describe "PayMethods", ->
+module.exports = -> describe "API", ->
+
+  @timeout(6000)
+
+
+  # double think if it's necessary to allow people to add cars when anonymous
+  describe 'Anonymous', ->
+
+    it.skip 'Gets braintree token on new anonymous get-paymethods', (done) ->
+    it.skip 'Can create anonymous paymethod and migrate paymethod to new account creation', (done) ->
+
 
   describe 'No Analytics', ->
 
-    @timeout(6000)
+    before ->
+      SETUP.analytics.stub()
 
-    before (done) ->
-      stubAnalytics()
-      done()
-
-    after (done) ->
-      resotreAnalytics()
-      done()
-
-
-    it 'Gets braintree token on new anonymous get-paymethods', (done) ->
-      opts = status: 200, unauthenticated: true
-      GET '/billing/paymethods', opts, (r) ->
-        expect(r.btoken).to.exist
-        done()
-
+    after ->
+      SETUP.analytics.restore()
 
     it 'Gets braintree token on new loggedin user get-paymethods', (done) ->
       addAndLoginLocalUser 'nkig', (s) ->
@@ -27,11 +25,8 @@ module.exports = -> describe "PayMethods", ->
           done()
 
 
-    it.skip 'Can create anonymous paymethod and migrate paymethod to new account creation', (done) ->
-
-
     it 'Gets migrated stripe result for v0 user from settings', (done) ->
-      addAndLoginLocalUser 'jmel', (s) ->
+      SETUP.addAndLoginLocalUser 'jmel', (s) ->
         testDb.ensureSettings s, data.v0.settings.jk, ->
           GET '/billing/paymethods', {}, (r) ->
             expect(r).to.exist
@@ -45,7 +40,7 @@ module.exports = -> describe "PayMethods", ->
 
 
     it 'Can add braintree payment method to new user', (done) ->
-      addAndLoginLocalUser 'evan', (s) ->
+      SETUP.addAndLoginLocalUser 'evan', (s) ->
         d = type: 'braintree', token: braintree.Test.Nonces.Transactable, name: 'Default Card', makeDefault: true
         POST '/billing/paymethods', d, {}, (r) ->
           expect(r).to.exist
@@ -63,7 +58,7 @@ module.exports = -> describe "PayMethods", ->
 
 
     it 'Can add multiple braintree payment methods to new user', (done) ->
-      addAndLoginLocalUser 'elld', (s) ->
+      SETUP.addAndLoginLocalUser 'elld', (s) ->
         d = type: 'braintree', token: braintree.Test.Nonces.Transactable, name: 'Default Card', makeDefault: true
         POST '/billing/paymethods', d, {}, (r1) ->
           d2 = type: 'braintree', token: braintree.Test.Nonces.Transactable, name: 'Backup Card'
@@ -76,7 +71,7 @@ module.exports = -> describe "PayMethods", ->
 
 
     it 'Can add company payment method', (done) ->
-      addAndLoginLocalUser 'abeh', (s) ->
+      SETUP.addAndLoginLocalUser 'abeh', (s) ->
         comp = data.v0.companys.urbn
         testDb.ensureDocs 'Company', [comp], (e,r) ->
           # $log('going yah', comp._id)
@@ -90,7 +85,7 @@ module.exports = -> describe "PayMethods", ->
 
 
     it 'Company payment methods appear in getPayMethods', (done) ->
-      testDb.setupCompanyWithPayMethodAndTwoMembers 'ldhm', 'math', 'edub', (cid, pmid, cAdm, cMem) ->
+      SETUP.setupCompanyWithPayMethodAndTwoMembers 'ldhm', 'math', 'edub', (cid, pmid, cAdm, cMem) ->
         LOGIN 'edub', cMem, () ->
           GET '/billing/paymethods', {}, (cMemPMs) ->
             expect(cMemPMs.length).to.equal(1)
@@ -99,7 +94,7 @@ module.exports = -> describe "PayMethods", ->
 
 
     it 'Can delete braintree payment method', (done) ->
-      addAndLoginLocalUser 'edud', (s) ->
+      SETUP.addAndLoginLocalUser 'edud', (s) ->
         d = type: 'braintree', token: braintree.Test.Nonces.Transactable, name: 'Default Card', makeDefault: true
         POST '/billing/paymethods', d, {}, (r) ->
           expect(r._id).to.exist
@@ -114,14 +109,6 @@ module.exports = -> describe "PayMethods", ->
 
 
   describe 'With Analytics', ->
-
-    @timeout(6000)
-
-    before (done) ->
-      done()
-
-    after (done) ->
-      done()
 
     it 'Can add braintree payment method to new user with Analytics', (done) ->
       addAndLoginLocalUser 'evan', (s) ->
@@ -139,4 +126,34 @@ module.exports = -> describe "PayMethods", ->
             GET '/session/full', {}, (s1) ->
               expect(s1.primaryPayMethodId).to.equal(pms[0]._id)
               done()
+
+
+  describe 'Payouts', ->
+
+    before ->
+      SETUP.analytics.stub()
+
+    after ->
+      SETUP.analytics.restore()
+
+
+    it 'Can get expert payout methods', (done) ->
+      SETUP.newLoggedInExpert 'abha', (expert, sAbha) ->
+        GET '/billing/payoutmethods', {}, (pms) ->
+          expect(pms.length).to.equal(0)
+          SETUP.injectOAuthPayoutMethod sAbha,'paypal','payout_paypal_enus_verified', (pm) ->
+            expect(pm._id).to.exist
+            expect(pm.type).to.equal('payout_paypal')
+            expect(pm.info.verified_account).to.equal('true')
+            GET '/billing/payoutmethods', {}, (pms2) ->
+              expect(pms2.length).to.equal(1)
+              done()
+
+
+    it 'Fail to add unverified paypal payout method', (done) ->
+      SETUP.newLoggedInExpert 'admb', (expert, sTmot) ->
+        SETUP.injectOAuthPayoutMethod sTmot,'paypal','payout_paypal_enus_unverified', (pm) ->
+          expect(pm).to.be.undefined
+          done()
+
 

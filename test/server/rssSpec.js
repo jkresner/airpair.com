@@ -1,19 +1,18 @@
 module.exports = () => describe("Rss: ", function() {
 
   before( (done) => {
-    stubAnalytics()
-    // testDb.clearPosts( () => {
+    SETUP.analytics.stub()
     testDb.initPosts( () => {
-      // testDb.clearWorkshops( () => {
       testDb.initWorkshops(done)
-      // })
     })
-    // })
   })
 
-  after( (done) => {
-    resotreAnalytics()
-    done()
+  after(function() {
+    SETUP.analytics.restore()
+  })
+
+  beforeEach(function() {
+    SETUP.clearIdentity()
   })
 
   var expectFeedWideFields = (text) => {

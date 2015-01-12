@@ -26,6 +26,18 @@ var cfg = {
       consumer_secret: 'yoA38VC94a2gcxJ7ewCyNn8nPu7bHVVVMTauZTanlvkgXBWNOE',
       access_token: 'test',
       access_token_secret: 'test'
+    },
+    paypal: {
+      mode: 'sandbox',
+      clientID: 'AVk7JRBmL3kzKnxrLC8Ze98l2rg__gK1PhASloHmd0wsDvsvkSJd_QnWx3xE',
+      clientSecret: 'EGLE0xD3MJO4dY6GxGVngdU8ssl5cHke1vVmuCzmmS0KD4QFjvHEpmb2YgRT',
+      scope: [
+        'https://uri.paypal.com/services/paypalattributes',
+        'profile',
+        'email',
+        'address',
+        'openid'
+      ]
     }
   },
   bitly:  {
@@ -145,6 +157,10 @@ module.exports = function(env, appdir) {
       access_token: process.env.AUTH_TWITTER_ACCESS_TOKEN,
       access_token_secret: process.env.AUTH_TWITTER_ACCESS_TOKEN_SECRET
     }
+
+    cfg.auth.paypal.mode = 'production'
+    cfg.auth.paypal.clientID = process.env.AUTH_PAYPAL_CLIENTID,
+    cfg.auth.paypal.clientSecret = process.env.AUTH_PAYPAL_CLIENTSECRET
 
     cfg.calendar.on = true
     cfg.calendar.google.clientId = process.env.CALENDAR_GOOGLE_CLIENTID

@@ -8,5 +8,6 @@ module.exports = {
   paymethods: require('./paymethods'),
   posts:      require('./posts'),
   requests:   require('./requests'),
+  wrappers:   require('./wrappers'),
   sessions:   {}
 }

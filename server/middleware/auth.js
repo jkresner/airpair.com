@@ -1,4 +1,4 @@
-var {isBot}   = require('../../shared/util')
+var {isBot,stringToJson}   = require('../../shared/util')
 var logging   = false
 
 var setSessionVarFromQuery = (varName) =>
@@ -92,6 +92,25 @@ var middleware = {
   },
 
 
+  handleOAuthSuccess(providerName, svcFn) {
+    return (req, res, next) => {
+      if (logging) $log(`mw.handleOAuthSuccess ${req.authInfo.userinfo}`.cyan)
+      var {userinfo,tokeninfo} = req.authInfo
+      svcFn.call({user:req.user}, providerName, userinfo, tokeninfo, (e,r) => {
+        var redirectQuery = "success=true"
+        if (e) {
+          $log('handleOAuthSucces.error: '.red, e)
+          redirectQuery = `fail=${e.message||e.toString()}`
+        }
+
+        delete req.session.doneOAuthReturnToUrl
+        res.redirect(`${req.session.returnTo}?${redirectQuery}`)
+        res.end()
+      })
+    }
+  },
+
+
   setFastSingupPassword(req, res, next) {
     if (logging) $log('mw.setFastSingupPassword'.cyan)
     req.body.password = 'fast-ap-signup'
@@ -99,7 +118,7 @@ var middleware = {
   },
 
 
-  setReturnTo: setSessionVarFromQuery('returnTo')
+  setReturnTo: setSessionVarFromQuery('returnTo'),
 
 }
 

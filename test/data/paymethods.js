@@ -1,6 +1,6 @@
 module.exports = {
 
-	generic: {
+	braintree_visa: {
 		type: 'braintree',
 		name: 'Default Card',
 		info: { cardType: 'Visa',
@@ -31,6 +31,66 @@ module.exports = {
      maskedNumber: '401288******1881',
      expirationDate: '12/2020'
     }
-  }
+  },
+
+  payout_paypal_enus_verified: {
+    "family_name":"LaPair",
+    "name":"Peppy LaPair",
+    "account_type":"PERSONAL",
+    "given_name":"Peppy",
+    "user_id":"https://www.paypal.com/webapps/auth/identity/user/J9_A8Cv86AMu71nUATVOU-rrW-PaybL3IeEw-kTWJVM",
+    "address":{"postal_code":"95131","locality":"San Jose","region":"CA","country":"US","street_address":"1 Main St"},
+    "verified_account":"true",
+    "language":"en_US",
+    "zoneinfo":"America/Los_Angeles",
+    "locale":"en_US",
+    "email":"pppair_verified@airpair.com",
+    "account_creation_date":"2015-01-10","age_range":"36-40",
+    "birthday":"1975-10-10"
+  },
+
+  payout_paypal_enuk_unverified: {
+    family_name: 'Verified',
+    name: 'Expertgb Verified',
+    account_type: 'PERSONAL',
+    given_name: 'Expertgb',
+    user_id: 'https://www.paypal.com/webapps/auth/identity/user/Vbw9ycW0l9uqYKaZZRqS5oIQ1qJsKbBCeTE4-WY4v0U',
+    address:
+     { postal_code: 'W12 4LQ',
+       locality: 'Wolverhampton',
+       region: 'West Midlands',
+       country: 'GB',
+       street_address: '1 Main Terrace' },
+    verified_account: 'true',
+    language: 'en_GB',
+    zoneinfo: 'Europe/London',
+    locale: 'en_GB',
+    email: 'expert_engb_verified@airpair.com',
+    account_creation_date: '2015-01-10',
+    age_range: '36-40',
+    birthday: '1975-10-10'
+  },
+
+  payout_paypal_enus_unverified: {
+    family_name: 'Unverified',
+    name: 'Expertus Unverified',
+    account_type: 'PERSONAL',
+    given_name: 'Expertus',
+    user_id: 'https://www.paypal.com/webapps/auth/identity/user/ec1fVef9zeK80Ht9LLaFKM-7D8PuUaLXSzNESLFreJg',
+    address:
+     { postal_code: '95131',
+       locality: 'San Jose',
+       region: 'CA',
+       country: 'US',
+       street_address: '1 Main St' },
+    verified_account: 'false',
+    language: 'en_US',
+    zoneinfo: 'America/Los_Angeles',
+    locale: 'en_US',
+    email: 'expert_enus_unverified@airpair.com',
+    account_creation_date: '2015-01-10',
+    age_range: '36-40',
+    birthday: '1975-10-10'
+  },
 
 }

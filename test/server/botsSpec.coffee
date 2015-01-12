@@ -5,14 +5,11 @@ a_uid = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[\,\-_]*).{24,}/
 
 module.exports = ->
 
-
   before (done) ->
-    testDb.initTags(done)
+    SETUP.initTags(done)
 
-  after (done) ->
-    done()
-
-  afterEach -> global.cookie = null
+  beforeEach ->
+    SETUP.clearIdentity()
 
 
   expectSessionNotStored = (session, cb) ->
@@ -31,12 +28,16 @@ module.exports = ->
       cb()
 
 
+  it.skip 'Does not exec analytics first on 404', (done) ->
+    expect('/feed').to.fail
+    expect('/apple-precompose').to.fail
+
+
   it 'Persists a session for a browser (FireFox)', (done) ->
     viewSpy1 = sinon.spy(analytics, 'view')
     GETP('/about').set('user-agent', uaFirefox).end (err, resp) ->
       global.cookie = resp.headers['set-cookie']
       GET '/session/full', {}, (s) =>
-        $log('s', s)
         expect(viewSpy1.callCount).to.equal(0)
         expect(s.authenticated).to.equal(false)
         expectSessionToBeStored(s, done)
