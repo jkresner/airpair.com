@@ -1,6 +1,14 @@
 var logging = false
 
 
+var Error404 = (msg, fromApi) => {
+  var e = new Error(msg)
+  e.status = 404
+  e.fromApi = fromApi
+  return e
+}
+
+
 var cbSend = (req, res, next) => {
   var httpMethod = req.method
   return (e, r) => {
@@ -26,14 +34,17 @@ var cbSend = (req, res, next) => {
 }
 
 
-function resolveParamFn(Svc, svcFnName, paramaName) {
+function resolveParamFn(Svc, svcFnName, paramName) {
   return (req, res, next, id) => {
     var thisSvc = { user: req.user, sessionID: req.sessionID, session: req.session }
-    if (logging) $log('paramFn', paramaName, id)
+    if (logging) $log('paramFn', paramName, id)
     if (id) id = id.trim()
     Svc[svcFnName].call(thisSvc, id, function(e, r) {
-      if (!r && !e) e = new Error(`${paramaName} not found. Back to <a href="/${paramaName}s">${paramaName}s</a>`)
-      req[paramaName] = r
+      if (!r && !e) {
+        e = new Error404(`${paramName} not found.`,
+          paramName != 'post'&& paramName != 'workshop')
+      }
+      req[paramName] = r
       next(e, r)
     })
   }
