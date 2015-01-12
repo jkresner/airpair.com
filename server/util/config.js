@@ -158,7 +158,7 @@ module.exports = function(env, appdir) {
       access_token_secret: process.env.AUTH_TWITTER_ACCESS_TOKEN_SECRET
     }
 
-    cfg.auth.paypal.mode = 'production'
+    cfg.auth.paypal.mode = 'live'
     cfg.auth.paypal.clientID = process.env.AUTH_PAYPAL_CLIENTID,
     cfg.auth.paypal.clientSecret = process.env.AUTH_PAYPAL_CLIENTSECRET
 
