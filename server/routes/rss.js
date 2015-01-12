@@ -36,7 +36,7 @@ function defineRssFeed(options) {
 }
 
 function generatePostFeedItem(data) {
-  // console.log('rss.data', data)
+  // $log('generatePostFeedItem',data)
   return {
     title: data.title,
     description: (data.meta) ? data.meta.description : 'No meta',
@@ -48,15 +48,18 @@ function generatePostFeedItem(data) {
 }
 
 function generateWorkshopFeedItem(data) {
+  // $log('generateWorkshopFeedItem',_.pluck(data.tags, 'name'))
   return {
     title: data.title,
     description: data.description,
     date: data.time,
     author: data.speakers[0].name,
     url: data.url,
-    categories: data.tags
+    categories: _.pluck(data.tags, 'name')
   }
 }
+
+var rssCache = {}
 
 function rssRenderer() {
 
@@ -70,9 +73,9 @@ function rssRenderer() {
     the_feed.pubDate = moment().toDate(); // whenever we regenerate the feed
     var catNames = []
     for (var item of items) {
-      if (!item.url) $log('feed_item_URL_PROBLEM'.red, item.title.white)
-      if (!item.tags.length == 0) $log('feed_item_TAGS_PROBLEM'.red, item.title.white)
       var feed_item = generateFeedItem(item);
+      if (!feed_item.url) $log('feed_item_URL_PROBLEM'.red, item.title.white, item.categories)
+      if (feed_item.categories.length == 0) $log('feed_item_TAGS_PROBLEM'.red, item.title.white)
       catNames = _.union( catNames, feed_item.categories )
       the_feed.item(feed_item)
     }
@@ -86,6 +89,13 @@ function rssRenderer() {
 
   return {
     posts(req, res) {
+      if (rssCache.posts)
+      {
+        // $log('render posts from cache', rssCache.posts.length)
+        populate(feeds.mixed, rssCache.posts, generatePostFeedItem)
+        return render(res, feeds.posts)
+      }
+
       PostsSvc.getRecentPublished((e, posts) => {
         feeds.posts.items = []
         feeds.posts.categories = []
@@ -94,13 +104,23 @@ function rssRenderer() {
           return render(res, feeds.posts)
         }
 
+        // $log('render posts from db', posts.length)
+        rssCache = _.extend(rssCache,{posts})
         populate(feeds.posts, posts, generatePostFeedItem)
         render(res, feeds.posts)
       })
     },
 
     workshops(req, res) {
+      if (rssCache.workshops)
+      {
+        // $log('render workshops from cache', rssCache.workshops.length)
+        populate(feeds.workshops, rssCache.workshops, generateWorkshopFeedItem)
+        return render(res, feeds.workshops)
+      }
+
       WorkshopsSvc.getAllForRss((e,workshops) => {
+        $log('data access workshops')
         feeds.workshops.items = []
         feeds.workshops.categories = []
         if (e) {
@@ -108,12 +128,21 @@ function rssRenderer() {
           return render(res, feeds.workshops)
         }
 
+        rssCache = _.extend(rssCache,{workshops})
         populate(feeds.workshops, workshops, generateWorkshopFeedItem)
         render(res, feeds.workshops)
       })
     },
 
     mixed(req, res) {
+      if (rssCache.posts && rssCache.workshops)
+      {
+        // $log('render mixed from cache')
+        populate(feeds.mixed, rssCache.posts, generatePostFeedItem)
+        populate(feeds.mixed, rssCache.workshops, generateWorkshopFeedItem)
+        return render(res, feeds.mixed)
+      }
+
       PostsSvc.getRecentPublished((e, posts) => {
         if (e) {
           $log(('error retrieving posts for mixed rss feed:' + e).red)
@@ -126,6 +155,7 @@ function rssRenderer() {
           }
           feeds.mixed.items = []
           feeds.mixed.categories = []
+          rssCache = _.extend(rssCache,{posts,workshops})
           populate(feeds.mixed, posts, generatePostFeedItem)
           populate(feeds.mixed, workshops, generateWorkshopFeedItem)
           render(res, feeds.mixed)
