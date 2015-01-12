@@ -3,26 +3,18 @@ tag not found. Back to tags
 Error: tag not found. Back to tags
 
 
-2014-12-26T22:34:32.302616+00:00 app[web.1]:
-PUT /v1/api/users/me/tag/f << https://www.airpair.com/review/549c7bf540b48b0b00e8945e || isBot:false:Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36
-tag not found. Back to <a href="/tags">tags</a>
- Error: tag not found. Back to <a href="/tags">tags</a>
-     at /app/_api.js:30:25
-     at Promise.searchOne (/app/_service.js:26:9)
-     at Promise.<anonymous> (/app/node_modules/mongoose/node_modules/mpromise/lib/promise.js:177:8)
-     at Promise.emit (events.js:95:17)
+cbSend.400 deansofer@gmail.com /users/me/email-verify {"hash":"$2a$08$hTgcLeyCjbK4919KHmaM0OmtcaI17/QI1FMpKuGK625S8P/JeqHC"} [Error: e-mail verification failed, hash is not valid]
+2015-01-07T06:27:20.005545+00:00 app[web.1]: Please make sure to verify your email using the following link:
+2015-01-07T06:27:20.005547+00:00 app[web.1]:
+2015-01-07T06:27:20.005549+00:00 app[web.1]: https://www.airpair.com/me?verify=$2a$08$hTgcLeyCjbK4919KHmaM0OmtcaI17/QI1FMpKuGK625S8P/JeqHC.
 
 
 
-GET /v1/api/posts/tag/C++ << https://www.airpair.com/posts/tag/C++ || isBot:false:Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36
-tag not found. Back to tags
-Error: tag not found. Back to tags
-    at /app/_api.js:30:25
-    at Promise.searchOne (/app/_service.js:11:9)
-    at Promise. (/app/node_modules/mongoose/node_modules/mpromise/lib/promise.js:177:8)
-    at Promise.emit (events.js:95:17)
-    at Promise.emit (/app/node_modules/mongoose/node_modules/mpromise/lib/promise.js
+cbSend.400 mattlo.developer@gmail.com /requests/54acabf07389cf0b00eb8254 {"_id":"54acabf07389cf0b00eb8254","userId":"546678e78f8c80299bcc506a","by":{"avatar":"//0.gravatar.com/avatar/26b312fb15048201616ab0c2115f8ebc","email":"mattlo.developer@gmail.com","name":"Matt Lo"},"type":"other","tags":[],"status":"received","suggested":[]} { [Error: Request must include at least one technology] status: 403 }
 
+
+cbSend.400 patrickmgarman@gmail.com /requests/54aba41abef06b0b007ffbde {"_id":"54aba41abef06b0b007ffbde","by":{"avatar":"//0.gravatar.com/avatar/35b913bda9f12817929e61571b913354","email":"gjavaxishvili@list.ru","name":"goga javaxishvili"},"type":"code-review","brief":"I need a web page review to see the problems or bugs, if there is a  a week points and get a full list of this problems","tags":[{"_id":"514825fa2a26ea020000002b","slug":"php","sort":0}],"time":"regular","hours":"1","experience":"advanced","status":"received","suggested":[{"expert":{"__v":1,"_id":"5321ad9db976900200000036","availability":"","brief":"I am a backend PHP developer specializing in WordPress, and I work regularly with WooCommerce, Easy Digital Downloads, AppPresser, and other commonly used premium plugins (many of which I have contributed to!).","email":"patrickmgarman@gmail.com","gh":{"id":502720,"username":"pmgarman","location":"Cuba, IL","blog":"http://pmgarman.me","gravatar_id":"25301bdb527e5665782958948a627b65","followers":19},"gmail":"patrickmgarman@gmail.com","homepage":"pmgarman.me","hours":"5-10","in":{"id":"v-4N4oATfu","displayName":"Patrick Garman"},"karma":0,"minRate":70,"name":"Patrick Garman","pic":"https://secure.gravatar.com/avatar/25301bdb527e5665782958948a627b65","rate":110,"stats":{},"status":"ready","tags":[{"soId":"wordpress","short":"wordpress","name":"wordpress","_id"
+:"514825fa2a26ea0200000010","levels":["beginner","intermediate","expert"]},{"soId":"wordpress-plugin","short":"wordpress-plugin","name":"wordpress-plugin","_id":"5181d0aa66a6f999a465ed64","levels":["beginner","intermediate","expert"]},{"soId":"wordpress-theming","short":"wordpress-theming","name":"wordpress-theming","_id":"5181d0aa66a6f999a465ee4c","levels":["beginner","intermediate","expert"]},{"soId":"woocommerce","short":"woocommerce","name":"woocommerce","_id":"5321adc61c67d1a4859d2785","levels":["beginner","intermediate","expert"]},{"soId":"node.js","short":"node.js","name":"node.js","_id":"514825fa2a26ea0200000028","levels":["beginner","intermediate","expert"]},{"soId":"balanced-payments","short":"balanced-payments","name":"balanced-payments","_id":"51cb57e266a6f999a465f3ff","levels":["beginner","intermediate","expert"]}],"timezone":"GMT-0500 (CDT)","tw":{"id":86899265,"username":"pmgarman","pic":{"value":"https://pbs.twimg.com/profile_images/436687818778091521/-p5vmYYV_normal.jpeg"}},"updatedAt":"2014-10-08T19:12:05.182Z","userId":"5321ad721c67d1a4859d2784","username":"pmgarman","avatar":"//0.gravatar.com/avatar/c787a39e8e15ac31f2f442737742829c"},"suggestedRate":{"expert":113,"total":146}}],"meta":{"title":"AirPair | php Request","canonical":"https://www.airpair.com/review/54aba41abef06b0b007ffbde","noindex":true},"reviewRender":true} { [Error: Request can only be updated by owner] status: 403 }
 
 
 2014-12-23T19:41:43.996879+00:00 app[web.2]:

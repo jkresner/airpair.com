@@ -2,46 +2,41 @@ requestUtil = require('../../shared/requests')
 
 
 newCompleteRequestForAdmin = (userKey, requestData, cb) ->
-  budget = requestData.budget || 100
-  addAndLoginLocalUserWithPayMethod userKey, (sessionCustomer) ->
-    request = type: 'mentoring', tags: [data.tags.angular], experience: 'beginner', brief: 'this is a test yo', hours: "1", time: 'rush'
-    request = _.extend(request, requestData)
-    POST '/requests', request, {}, (r0) ->
-      PUT "/requests/#{r0._id}", _.extend(r0,{budget}), {}, (r) ->
-        LOGIN 'admin', data.users.admin, ->
-          GET "/adm/requests/user/#{r.userId}", {}, (rAdm) ->
-            expect(r.status).to.equal('received')
-            expect(rAdm.length).to.equal(1)
-            expect(rAdm[0].lastTouch.utc).to.exist
-            expectStartsWith(rAdm[0].lastTouch.by.name,data.users[userKey].name)
-            expect(rAdm[0].adm.active).to.be.true
-            expect(rAdm[0].adm.owner).to.be.undefined
-            expect(rAdm[0].adm.lastTouch).to.be.undefined
-            expect(rAdm[0].adm.submitted).to.exist
-            expect(rAdm[0].adm.received).to.be.undefined
-            expect(rAdm[0].adm.farmed).to.be.undefined
-            expect(rAdm[0].adm.reviewable).to.be.undefined
-            expect(rAdm[0].adm.booked).to.be.undefined
-            expect(rAdm[0].adm.paired).to.be.undefined
-            expect(rAdm[0].adm.feedback).to.be.undefined
-            expect(rAdm[0].adm.closed).to.be.undefined
-            expect(rAdm[0].messages.length).to.equal(0)
-            cb(r)
+  SETUP.newCompleteRequest userKey, requestData, (r) ->
+    LOGIN 'admin', data.users.admin, ->
+      GET "/adm/requests/user/#{r.userId}", {}, (rAdm) ->
+        expect(r.status).to.equal('received')
+        expect(rAdm.length).to.equal(1)
+        expect(rAdm[0].lastTouch.utc).to.exist
+        expectStartsWith(rAdm[0].lastTouch.by.name,data.users[userKey].name)
+        expect(rAdm[0].adm.active).to.be.true
+        expect(rAdm[0].adm.owner).to.be.undefined
+        expect(rAdm[0].adm.lastTouch).to.be.undefined
+        expect(rAdm[0].adm.submitted).to.exist
+        expect(rAdm[0].adm.received).to.be.undefined
+        expect(rAdm[0].adm.farmed).to.be.undefined
+        expect(rAdm[0].adm.reviewable).to.be.undefined
+        expect(rAdm[0].adm.booked).to.be.undefined
+        expect(rAdm[0].adm.paired).to.be.undefined
+        expect(rAdm[0].adm.feedback).to.be.undefined
+        expect(rAdm[0].adm.closed).to.be.undefined
+        expect(rAdm[0].messages.length).to.equal(0)
+        cb(r)
 
 
 
 module.exports = -> describe "Api", ->
 
   before (done) ->
-    stubAnalytics()
-    testDb.initTags ->
-      testDb.ensureExpert data.users.abha, data.experts.abha, done
+    SETUP.analytics.stub()
+    SETUP.initTags ->
+      SETUP.ensureExpert 'abha', done
 
-  after (done) ->
-    resotreAnalytics()
-    done()
+  after ->
+    SETUP.analytics.restore()
 
-  beforeEach -> global.cookie = null
+  beforeEach ->
+    SETUP.clearIdentity()
 
 
   it 'Pipeliner can reply to a new request', (done) ->
@@ -141,4 +136,8 @@ module.exports = -> describe "Api", ->
               expect(eAbha.matching).to.exist
               done()
 
+
+  it.skip 'Pipeliner can junk request', (done) ->
+  it.skip 'Pipeliner setting to cancel closes request', (done) ->
+  it.skip 'Pipeliner setting to complete closes request', (done) ->
 

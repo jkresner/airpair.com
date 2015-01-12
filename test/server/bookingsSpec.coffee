@@ -7,16 +7,16 @@ module.exports = -> describe "API: ", ->
   @timeout 40000
 
   before (done) ->
-    stubAnalytics()
-    testDb.initExperts done
+    SETUP.analytics.stub()
+    SETUP.initExperts done
 
+  after ->
+    SETUP.analytics.restore()
 
-  after (done) ->
-    resotreAnalytics()
-    done()
+  beforeEach ->
+    SETUP.clearIdentity()
 
-  afterEach -> cookie = null
-
+  it.skip 'Expert gets a notification that they have been booked', (done) ->
 
   it.skip 'Can confirm booking by expert', (done) ->
     # addAndLoginLocalUserWithPayMethod 'jpie', (s) ->

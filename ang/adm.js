@@ -8,6 +8,7 @@ require('./../public/lib/angular-messages/angular-messages.js');
 require('./../public/lib/angular-load/angular-load.js');
 require('./../public/lib/angular-bootstrap/ui-bootstrap-tpls.js');
 require('./../public/lib/angular-bootstrap-datetimepicker/src/js/datetimepicker.js');
+require('./common/util.js');
 require('./common/directives/forms/forms.js');
 require('./common/directives/forms/inputs.js');
 require('./common/directives/forms/tagInput.js');
@@ -23,6 +24,7 @@ require('./common/models/postsService.js');
 require('./common/models/sessionService.js');
 require('./common/models/adminDataService.js');
 require('./common/models/mmDataService.js');
+require('./common/routes/routes.js');
 require('./adm/posts/module.js');
 require('./adm/users/module.js');
 require('./adm/redirects/module.js');
@@ -37,7 +39,7 @@ require('./matchmaking/module.js');
 
 angular.module('ADM', [
   'ngRoute', 'ui.bootstrap.datetimepicker',
-  'APSvcSession', 'APSvcAdmin', 'APDataSvc', 'APNotifications',
+  'APSvcSession', 'APSvcAdmin', 'APDataSvc', 'APNotifications', 'APRoutes', 'APUtil',
   'APFilters', 'APFormsDirectives', 'APInputs', 'APMailTemplates', 'APHangouts',
   'ADMPipeline',
   'ADMPosts',
@@ -62,9 +64,14 @@ angular.module('ADM', [
     SessionService.onAuthenticated( (session) => {});
   })
 
-  .factory('ServerErrors', function serverErrorsFactory($rootScope) {
+  .factory('ServerErrors', function serverErrorsFactory($rootScope, $location) {
     this.add = (e) => $rootScope.serverErrors = _.union($rootScope.serverErrors, [e.message])
     this.remove = (msg) => $rootScope.serverErrors = _.without($rootScope.serverErrors, msg)
+    this.fetchFailRedirect = (redirectUrl) =>
+      (e) => {
+        console.log('fetch.fail', e)
+        $location.path(redirectUrl)
+      }
 
     return this;
   })

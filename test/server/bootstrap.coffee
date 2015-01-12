@@ -24,8 +24,11 @@ describe 'Server: ', ->
     global.logging = false
     global.app = require('../../index').run()
     global.testDb = require('./helpers/setup')
+    global.SETUP = global.testDb
     setTimeout(( -> testDb.init(done) ), 100)
 
+  beforeEach ->
+    SETUP.clearIdentity()
 
   describe('Session: ', require('./sessionSpec'))
   describe('Analytics: ', require('./analyticsSpec'))
@@ -33,15 +36,16 @@ describe 'Server: ', ->
   describe('Tags: ', require('./tagsSpec'))
   describe('Auth: ', require('./authSpec'))
   describe('Authz: ', require('./authzSpec'))
-  describe('Posts: ', require('./postsSpec'))
   describe('Companys: ', require('./companysSpec'))
   describe('Rss: ', require('./rssSpec'))
   describe('Redirects: ', require('./redirectsSpec'))
   describe('Requests: ', require('./requestsSpec'))
   describe('Pipeline: ', require('./requestsAdminSpec'))
-  describe('Orders: ', require('./paymethodsSpec'))
+  describe('Paymethods: ', require('./paymethodsSpec'))
   describe('Orders: ', require('./ordersSpec'))
-  describe('Orders: ', require('./ordersMembershipSpec'))
+  # describe('Orders: ', require('./ordersMembershipSpec'))
   describe('Orders: ', require('./ordersBookingSpec'))
+  describe('Posts: ', require('./postsSpec'))
   describe('Bookings: ', require('./bookingsSpec'))
+  describe('Payouts: ', require('./payoutsSpec'))
 

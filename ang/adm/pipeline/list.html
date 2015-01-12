@@ -1,75 +1,51 @@
 <section id="pipeline">
 
-<section class="today">
-  <h4> Today
-    <span>{{today.format("DD MMM")}}</span> >>
-    <span>{{todays.typeCount}}</span> >>
-    Tags: <span>{{todays.tagsCount}}</span> >>
-    Brief: <span>{{todays.briefCount}}</span> >>
-    Budget: <span>{{todays.budgetCount}}</span>
- </div>
-</section>
+  <style>
+    .stale { background:#FFB2B2!important; }
+    .nonadmtouch { background:#E6F0E6; }
+    .threehr { background:#FFE6E6; }
+  </style>
 
-<section class="controls">
-  <!-- <a ng-click="filterByLastTouch()">Last touch</a> -->
-</section>
+  <div style="float:right;width:150px;background:white;padding:15px">
+    <ul>
+      <li><a href="/adm/pipeline-2015">2015</a></li>
+      <li><a href="/adm/pipeline-metrics">Metrics</a></li>
+    </ul>
 
-<section class="active">
+    <span><b>{{attentionCount}}</b> Requests require attention</span>
 
-<table class="table table-striped">
-  <tr ng-repeat="r in requests.complete">
-    <td>
-      <span>
-        <a href="/adm/pipeline/{{r._id}}">
-          {{r.time.toUpperCase()}}<br />
-          {{r.status}}
-        </a>
-        <time>
-          {{r.submitted | locaTime : 'MMM DD HH:mm' }}
-          <span>{{r.submitted | agoTime }}</span>
-        </time>
-      </span>
-      <span>
-        <div class="{{r.adm.owner}}">{{r.adm.owner}}</div>
-        <time>
-          {{r.adm.lastTouch.utc | locaTime : 'MMM DD HH:mm' }}
-          <span>{{r.adm.lastTouch.utc | agoTime }}</span>
-        </time>
-      </span>
-      <span>
-        <div class="">{{r.lastTouch.name}}</div>
-        <time>
-          {{r.lastTouch.action}}
-          {{r.lastTouch.utc | locaTime : 'MMM DD HH:mm' }}
-          <span>{{r.lastTouch.utc | agoTime }}</span>
-        </time>
-      </span>
-      <label>
-        <i ng-repeat="t in r.tags">{{t.slug}}</i>
-      </label>
-      <span><img ng-src="{{r.by.avatar}}?s=30"></span>
-      <label>{{r.by.name}}</label>
-      <label>
-        <ul>
-          <li ng-repeat="s in r.suggested">
-            <img ng-src="{{s.expert.avatar}}?s=20" />
-          </li>
-        </ul>
+    <div ng-if="isOrganized">
+      <p style="color:green;margin-top:10px"><b>You're doing a GREAT job! Pipeline is looking organized!</b></p>
 
-      </label>
-    </td>
-  </tr>
-</table>
+      <p>Ask jk to add $5 to the whisky fund as soon as:</p>
 
-</section>
+      <ul>
+        <li>
+          <a href="https://mail.google.com/mail/u/0/#inbox" target="_blank"><b>team@airpair.com</b></a> inbox is cleared
+        </li>
+        <li>
+          All <a href="/adm/bookings" target="_blank"><b>bookings</b></a> are confirmed and spinned
+        </li>
+        <li>
+          All <a href="/matchmaking" target="_blank"><b>waiting</b></a> requests have enough suggestions
+        </li>
+      </ul>
 
-<!-- <section class="incomplete">
-  <h6>Incomplete</h6>
-  <div ng-repeat="request in requests.incomplete">
-    <span>{{request.by.name}}</span>
-    <request-progress></request-progress>
+    </div>
+
   </div>
-</section> -->
+
+  <table class="table">
+    <tr request-row ng-repeat="r in requests.nonadmtouch" ng-class="statusCss(r)" r='r'></tr>
+  </table>
+
+  <table class="table">
+    <tr request-row ng-repeat="r in requests.threehr" ng-class="statusCss(r)" r='r'></tr>
+  </table>
+
+  <table class="table table-striped">
+    <tr request-row ng-repeat="r in requests.other" ng-class="statusCss(r)" r='r'></tr>
+  </table>
 
 </section>
 

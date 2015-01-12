@@ -5,7 +5,7 @@ import * as md5           from '../util/md5'
 import Request            from '../models/request'
 import User               from '../models/user'
 import * as UserSvc       from '../services/users'
-import * as PaymethodsSvc from '../services/paymethods'
+var PaymethodsSvc =       require('../services/paymethods')
 var ExpertsSvc =          require('./experts')
 var util =                require('../../shared/util')
 var Data =                require('./requests.data')
@@ -105,6 +105,9 @@ var get = {
   },
   getActiveForAdmin(cb) {
     svc.searchMany(Data.query.active, { options: { sort: { '_id': -1 }}, fields: Data.select.pipeline }, admCB(cb))
+  },
+  get2015ForAdmin(cb) {
+    svc.searchMany(Data.query['2015'], { options: { sort: { '_id': -1 }}, fields: Data.select.pipeline }, admCB(cb))
   },
   getWaitingForMatchmaker(cb) {
     svc.searchMany(Data.query.waiting, { options: { sort: { 'adm.submitted': -1 }}, fields: Data.select.pipeline }, admCB(cb))
@@ -216,7 +219,7 @@ var save = {
         request.by.name, ()=>{})
 
     request.lastTouch = svc.newTouch.call(this, `replyByExpert:${reply.expertStatus}`)
-    if (!request.adm.reviewable)
+    if (!request.adm.reviewable && reply.expertStatus == 'available')
       request.adm = admSet(request,{reviewable:new Date()})
 
     // var ups = _.extend(request,{suggested})
@@ -232,8 +235,11 @@ var admin = {
   updateByAdmin(original, update, cb) {
     var action = 'update'
     var {adm,status} = update
-    if (original.adm.active && !update.adm.active) {
-      action = `closed:${update.status}`
+    if (original.adm.active &&
+      (status == 'canceled' || status == 'complete' || status == 'junk')
+    ) {
+      delete adm.active
+      action = `closed:${status}`
       adm.closed = new Date()
     }
     else if (original.status == "received" && update.status == "waiting") {

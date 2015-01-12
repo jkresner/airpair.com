@@ -29,4 +29,10 @@ module.exports = function(config)
     winston.add(require('winston-ses').Ses, config.log.email)
   }
 
+  //-- Services we want to stub can be set on global here
+  if (config.env == 'test')
+  {
+    global.paypal      = require('paypal-rest-sdk')
+    global.Braintree   = require('../services/wrappers/braintree')
+  }
 }

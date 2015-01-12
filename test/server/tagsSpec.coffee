@@ -1,13 +1,15 @@
 module.exports = -> describe "API", ->
 
   before (done) ->
-    stubAnalytics()
-    testDb.initTags(done)
+    SETUP.analytics.stub()
+    SETUP.initTags(done)
 
+  after ->
+    SETUP.analytics.restore()
 
-  after (done) ->
-    resotreAnalytics()
-    done()
+  beforeEach ->
+    SETUP.clearIdentity()
+
 
 
   it '401 on unauthenticated getByTagSlug', (done) ->
@@ -24,7 +26,7 @@ module.exports = -> describe "API", ->
         expect(t.short).to.equal('Angular')
         done()
 
-  it 'Search tags when anonymous', (done) ->
+  it.skip 'Search tags when anonymous', (done) ->
     opts = { unauthenticated: true }
     GET '/tags/search/mon', opts, (s) ->
       expect(s.length).to.equal(3)
@@ -36,7 +38,7 @@ module.exports = -> describe "API", ->
       expect(s[2].name).to.equal('mongoid')
       done()
 
-  it 'Search tags for ios', (done) ->
+  it.skip 'Search tags for ios', (done) ->
     opts = { unauthenticated: true }
     GET '/tags/search/ios', opts, (s1) ->
       GET '/tags/search/ios simulator', opts, (s2) ->
@@ -48,7 +50,7 @@ module.exports = -> describe "API", ->
           expect(s2[0].name).to.equal('ios-simulator')
           done()
 
-  it 'Search tags for c++', (done) ->
+  it.skip 'Search tags for c++', (done) ->
     opts = { unauthenticated: true }
     GET '/tags/search/c++', opts, (s1) ->
       GET '/tags/search/c+', opts, (s2) ->
@@ -57,7 +59,7 @@ module.exports = -> describe "API", ->
         expect(s2[0].name).to.equal('c++')
         done()
 
-  it 'Search tags for c#', (done) ->
+  it.skip 'Search tags for c#', (done) ->
     opts = { unauthenticated: true }
     GET '/tags/search/c%23', opts, (s) ->
       expect(s.length).to.equal(3)
@@ -66,7 +68,7 @@ module.exports = -> describe "API", ->
       expect(s[2].name).to.equal('c#-3.0')
       done()
 
-  it 'Search tags for android', (done) ->
+  it.skip 'Search tags for android', (done) ->
     opts = { unauthenticated: true }
     GET '/tags/search/android', opts, (s1) ->
       GET '/tags/search/droid', opts, (s2) ->
@@ -76,7 +78,7 @@ module.exports = -> describe "API", ->
           expect(s3[0].slug).to.equal('android-x86')
           done()
 
-  it 'Search tags for angularjs', (done) ->
+  it.skip 'Search tags for angularjs', (done) ->
     opts = { unauthenticated: true }
     GET '/tags/search/angularjs', opts, (s1) ->
       GET '/tags/search/angular', opts, (s2) ->
@@ -92,7 +94,7 @@ module.exports = -> describe "API", ->
                 expect(s6[0].slug).to.equal('angularjs-1.2')
                 done()
 
-  it 'Search tags for ruby on rails', (done) ->
+  it.skip 'Search tags for ruby on rails', (done) ->
     opts = { unauthenticated: true }
     GET '/tags/search/ruby on rails', opts, (s1) ->
       GET '/tags/search/RoR', opts, (s2) ->

@@ -1,119 +1,117 @@
 <section id="booking" ng-if="booking && booking.participants">
 
-  <h3>Booking</h3>
+<h3>Booking</h3>
 
 
-  <div class="row">
+<div class="row">
 
-    <div class="col-md-4">
+  <div class="col-md-4">
 
-    <span>{{booking.minutes}} MINS </span>
-    <span>{{booking.type}} </span>
+  <span>{{booking.minutes}} MINS </span>
+  <span>{{booking.type}} </span>
 
-    <div>
-      <br />
-      <span>Status</span>
-      <select class="form-control" ng-model="data.status" ng-change="updateStatus()">
-        <option>pending</option>
-        <option>confirmed</option>
-        <option>followup</option>
-        <option>complete</option>
-        <option>canceled</option>
-      </select>
-    </div>
+  <div>
+    <br />
+    <span>Status</span>
+    <select class="form-control" ng-model="data.status" ng-change="updateStatus(data.status)">
+      <option>pending</option>
+      <option>confirmed</option>
+      <option>followup</option>
+      <option>complete</option>
+      <option>canceled</option>
+    </select>
+  </div>
 
-    <section class="datetime">
-      <br />
-      <div datetime-input id="bookingDatetime" datetime="data.datetime" min-view="minute" date-format="YYYY MMM DD HH:mm Z"></div>
+  <section class="datetime">
+    <br />
+    <div datetime-input id="bookingDatetime" datetime="data.datetime" min-view="minute" date-format="YYYY MMM DD HH:mm Z"></div>
 
-      <a ng-if="datetimeChanged(data.datetime)" ng-click="updateTime(data.datetime)">Update time</a>
+    <a ng-if="datetimeChanged(data.datetime)" ng-click="updateTime(data.datetime)">Update time</a>
 
 <!--       <br /><br />
-      <section class="gcal">
-        <div ng-if="!data.gcal">No google invitations sent
-          <br />
-          <br /><a ng-click="addGcal()">Create gcal event for <br /> {{previousDatetime.format('YYYY MMM DD HH:mm ZZ')}}</a>
-          <br /><input name="gcalNotify" type="checkbox" ng-model="data.notify">
-          Notify participants
+    <section class="gcal">
+      <div ng-if="!data.gcal">No google invitations sent
+        <br />
+        <br /><a ng-click="addGcal(data.notify)">Create gcal event for <br /> {{previousDatetime.format('YYYY MMM DD HH:mm ZZ')}}</a>
+        <br /><input name="gcalNotify" type="checkbox" ng-model="data.notify">
+        Notify participants
+      </div>
+    </section> -->
+
+  </section>
+
+  <br />
+<div class="spin">
+  <ap-hangout-spinner
+    hangout-id="booking._id"
+    booking="booking"></ap-hangout-spinner>
+</div>
+
+  </div>
+
+  <div class="col-md-3">
+
+<div class="customer">
+  <h3>Customer</h3>
+  <div class="participant" ng-repeat="p in customers">
+    <img ng-src="{{p.info.avatar}}" class="user">
+    <span>{{p.info.name}} </span>
+    <span>{{p.info.email}} </span>
+  </div>
+</div>
+
+
+<div class="expert">
+  <h3>Expert</h3>
+  <div class="participant" ng-repeat="p in experts">
+    <img ng-src="{{p.info.avatar}}" class="user">
+    <span>{{p.info.name}} </span>
+    <span>{{p.info.email}} </span>
+  </div>
+</div>
+
+  </div>
+
+  <div class="col-md-4">
+
+    <div class="recodings">
+      <h3>Recordings</h3>
+      <!-- <input type="text" class="form-control" placeholder="Paste you tube link" />
+      <div ng-repeat="r in booking.recordings">
+        <span>{{r.url}}</span>
+      </div> -->
+      <p>JK still to build</p>
+    </div>
+
+    <div class="feedback">
+      <h3>Feedback</h3>
+      <p>JK still to build</p>
+    </div>
+
+
+    <div class="payout">
+      <h3>Payout</h3>
+      Order:
+      ${{ booking.order.total }}
+
+      <a href="/v1/adm/orders/{{ booking.order._id }}">{{ booking.order._id }}</a>
+
+      <div ng-if="lineForPayout.info.paidout">
+        <span style="color:green">paidout</span>
+      </div>
+
+      <div ng-if="!lineForPayout.info.paidout">
+        <div ng-if="!lineForPayout.info.released">
+          <a ng-click="releasePayout()">Release payment</a>
         </div>
-      </section> -->
-
-    </section>
-
-
-
-    <br />
-<!--     <select class="form-control" ng-model="data.type">
-      <option>private</option>
-      <option>opensource</option>
-      <option>offline</option>
-    </select>
- -->
-
-
-  <div class="spin">
-    <ap-hangout-spinner
-      hangout-id="booking._id"
-      hangout-name="{{hangoutName}}"
-      participants="hangoutParticipants"></ap-hangout-spinner>
-  </div>
-
-    </div>
-
-    <div class="col-md-3">
-
-  <div class="customer">
-    <h3>Customer</h3>
-    <div class="participant" ng-repeat="p in customers">
-      <img ng-src="{{p.info.avatar}}" class="user">
-      <span>{{p.info.name}} </span>
-      <span>{{p.info.email}} </span>
-    </div>
-  </div>
-
-
-  <div class="expert">
-    <h3>Expert</h3>
-    <div class="participant" ng-repeat="p in experts">
-      <img ng-src="{{p.info.avatar}}" class="user">
-      <span>{{p.info.name}} </span>
-      <span>{{p.info.email}} </span>
-    </div>
-  </div>
-
-    </div>
-
-    <div class="col-md-4">
-
-      <div class="recodings">
-        <h3>Recordings</h3>
-        <!-- <input type="text" class="form-control" placeholder="Paste you tube link" />
-        <div ng-repeat="r in booking.recordings">
-          <span>{{r.url}}</span>
-        </div> -->
-        <p>JK still to build</p>
+        <div ng-if="lineForPayout.info.released">
+          <span style="color:blue">Waiting for expert to collect</span>
+        </div>
       </div>
-
-      <div class="feedback">
-        <h3>Feedback</h3>
-        <p>JK still to build</p>
-      </div>
-
-
-      <div class="payout">
-        <h3>Payout</h3>
-        <p>JK still to build</p>
-
-        Order:
-        ${{ booking.order.total }} {{ booking.order._id }}
-      </div>
-
     </div>
 
   </div>
 
-
-
-
+</div>
 
 </section>

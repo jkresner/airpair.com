@@ -14,15 +14,14 @@ module.exports = ->describe "Tracking: ", ->
   @timeout(10000)
 
   before (done) ->
-    testDb.addUserWithRole 'jkap', 'editor', ->
-      testDb.initTags ->
+    SETUP.addUserWithRole 'jkap', 'editor', ->
+      SETUP.initTags ->
         LOGIN 'jkap', data.users['jkap'], (s) ->
-          testDb.initWorkshops ->
-            testDb.createAndPublishPost(s, {title: postTitle,slug:postSlug}, done)
+          SETUP.initWorkshops ->
+            SETUP.createAndPublishPost(s, {title: postTitle,slug:postSlug}, done)
 
-
-  afterEach -> global.cookie = null
-
+  beforeEach ->
+    SETUP.clearIdentity()
 
   it('Can track an anonymous post view', (done) ->
     ANONSESSION (s) ->

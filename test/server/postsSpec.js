@@ -3,13 +3,17 @@ import {getHashId} from '../../server/services/postsToc'
 module.exports = () => describe("API: ", function() {
 
   before(function(done) {
-    testDb.addUserWithRole('edap', 'editor', stubAnalytics)
+    SETUP.analytics.stub()
+    SETUP.addUserWithRole('edap', 'editor', ()=>{})
     testDb.initTags(done)
   })
 
-  after(function(done) {
-    resotreAnalytics()
-    done()
+  after(function() {
+    SETUP.analytics.restore()
+  })
+
+  beforeEach(function() {
+    SETUP.clearIdentity()
   })
 
   it('401 on unauthenticated session for creating a post', function(done) {

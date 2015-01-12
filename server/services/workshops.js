@@ -29,8 +29,12 @@ export function getAllForCache(cb) {
 export function getAllForRss(cb) {
   var options = {sort: {'time': -1}}
   svc.searchMany({},{ fields: fields.rssSelect, options }, (e, r) => {
-    for (var w of r)
-      w.url = `${w.tags[0]}/workshops/${w.slug}`
+    for (var w of r) {
+      w.url = `https://www.airpair.com/${w.tags[0]}/workshops/${w.slug}`
+      var betterTags = []
+      for (var t of w.tags) betterTags.push({name:t})
+      w.tags = betterTags
+    }
     cb(e, r)
   })
 }

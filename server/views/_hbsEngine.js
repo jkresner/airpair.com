@@ -56,6 +56,13 @@ export default function(app) {
     return data;
   }
 
+  app.renderErrorPage = (error) =>
+    (req,res) => {
+      getSession.call(req, (e,session) => {
+        res.status(error.status||400).render(`./error.hbs`, combineBaseData(req,{error,session}))
+      })
+    }
+
   app.renderHbs = (fileName, data) =>
     (req,res) => {
       getSession.call(req, (e,session) => {
@@ -67,7 +74,6 @@ export default function(app) {
     (req,res) => {
       res.status(200).render(`./${fileName}.hbs`, combineBaseData(req,{session:req.user}))
     }
-
 
   app.renderHbsViewData = (partialName, pageMeta, viewDataFn) =>
     (req, res) => {

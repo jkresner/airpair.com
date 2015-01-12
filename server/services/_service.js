@@ -1,3 +1,6 @@
+var ObjectId = require('mongoose').Types.ObjectId
+
+
 function tokenize(term, wildcardStart, wildcardEnd) {
   if (!term) return '.*';
 
@@ -52,16 +55,17 @@ export default function(model, logging)
       }
     },
     newId: () => {
-      return new require('mongoose').Types.ObjectId()
+      return new ObjectId()
     },
     idFromString: (id) => {
-      return require('mongoose').Types.ObjectId(id.toString())
+      return ObjectId(id.toString())
     },
     searchMany: searchMany,
     searchOne: searchOne,
     getAll: (cb) => { searchMany({}, null, cb) },
     getById: (id, cb) => { searchOne({_id:id}, null, cb) },
     getByUseId: (id, cb) => { searchOne({userId:id}, null, cb) },
+    getManyById: (ids, cb) => { searchMany({_id:{$in:ids}}, null, cb) },
     search(term, fields, limit, select, andQuery, cb) {
       var encodedTerm = term.replace(/[-\/\\^$*+?.()|[\]{}+]/g, '\\$&');
       var query = { '$or': [] }
