@@ -59,51 +59,37 @@ var pp = {
     })
   },
 
-  payout(toEmail, amount, payoutId, note, cb) {
-    return cb (null, {success:true})
-    // var payload = {
-    //   "sender_batch_header": {
-    //     "email_subject": "You have an AirPair payment",
-    //     "sender_batch_id": payoutId.toString().substring(0,9)
-    //   },
-    //   "items": [{
-    //     "recipient_type": "EMAIL",
-    //     "receiver": "expert_engb_verified@airpair.com", //toEmail,
-    //     "amount": {
-    //       "value": "10.90",
-    //       "currency": "USD"
-    //     },
-    //     "note": "thank you.", // note,
-    //     "sender_item_id": payoutId.toString()
-    //   }]
-    // }
-
-    var sender_batch_id = Math.random().toString(36).substring(9);
+  payout(receiver, amount, payoutId, note, cb) {
 
     var payload = {
-        "sender_batch_header": {
-            "sender_batch_id": sender_batch_id,
-            "email_subject": "You have a payment"
-        },
-        "items": [
-            {
-                "recipient_type": "EMAIL",
-                "amount": {
-                    "value": 0.90,
-                    "currency": "USD"
-                },
-                "receiver": "shirt-supplier-three@mail.com",
-                "note": "Thank you.",
-                "sender_item_id": "item_3"
-            }
-        ]
+      "sender_batch_header": {
+        "email_subject": "You have an AirPair payment"
+      },
+      "items": [{
+          "recipient_type": "EMAIL",
+          "amount": {
+              "value": amount,
+              "currency": "USD"
+          },
+          receiver,
+          note,
+          "sender_item_id": payoutId.toString()
+      }]
     };
 
     paypal.payout.create(payload, 'true', (e, payout) => {
       if (e)
-        $log(`paypal.payout.error`.red, JSON.stringify(e).red, JSON.stringify(payload).white);
-      else
+        $log(`paypal.payout.error`.red, JSON.stringify(e).red, JSON.stringify(payload).white)
+      else if (payout && payout.items && payout.items[0].errors) {
+        $log(`paypal.payout.failed`.red, JSON.stringify(payout).red, JSON.stringify(payload).white)
+        e = payout.items[0].errors
+      }
+      else {
+        delete payout.items[0].links
+        delete payout.links
+        delete payout.httpStatusCode
         $log(`paypal.payout`.yellow, JSON.stringify(payload).white)
+      }
 
       cb(e, payout)
     })

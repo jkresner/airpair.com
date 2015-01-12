@@ -139,13 +139,24 @@ module.exports = -> describe "API: ", ->
                     done()
 
 
-  # it.skip 'Paypal sandbox works', (done) ->
-  #   pp = require('../../server/services/wrappers/paypal')
-  #   payoutId = newId()
-  #   $log(payoutId)
-  #   pp.payout "expert_engb_verified@airpair.com",90,payoutId,'note', (e,p) ->
-  #     $log('e', e, 'p', p)
-  #     done()
+  it 'Paypal sandbox works', (done) ->
+    pp = require('../../server/services/wrappers/paypal')
+    payoutId = newId()
+    pp.payout "expert_engb_verified@airpair.com",90,payoutId,'note', (e,p) ->
+      $log('e', e, 'p', JSON.stringify(p))
+      expect(e).to.be.undefined
+      expect(p.items[0].transaction_status).to.equal("SUCCESS")
+      done()
+
+
+  it 'Paypal sandbox passes back error for non existing address', (done) ->
+    pp = require('../../server/services/wrappers/paypal')
+    payoutId = newId()
+    pp.payout "expert_nonexisting@airpair.com",90,payoutId,'note', (e,p) ->
+      $log('e', e, 'p', JSON.stringify(p))
+      expect(e).to.exist
+      expect(p.items[0].transaction_status).to.equal("UNCLAIMED")
+      done()
 
 
   it 'Expert can collect a single released transaction to their verified paypal account', (done) ->
