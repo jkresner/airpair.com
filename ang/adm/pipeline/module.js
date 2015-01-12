@@ -125,9 +125,7 @@ angular.module("ADMPipeline", ["APRequestDirectives","APProfileDirectives"])
     results.other = _.sortBy(results.other,(rr)=>rr.adm.lastTouch.utc)
 
     $scope.attentionCount = results.nonadmtouch.length + results.threehr.length
-    $scope.isOrganized = $scope.attentionCount < 5
-
-    console.log('results', results)
+    $scope.isOrganized = $scope.attentionCount < 6
 
     $scope.requests = results
   })
