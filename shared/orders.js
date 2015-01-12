@@ -1,6 +1,11 @@
 module.exports = {
 
-  expertPayoutSummary(orders) {
+  lineForPayout(order) {
+    return _.find(order.lineItems,(l) => l.info &&
+        l.info.expert && l.info.paidout != null)
+  },
+
+  payoutSummary(orders) {
     var lines = []
     var result = {
       pending: { count:0, total:0 },

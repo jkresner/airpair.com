@@ -28,7 +28,7 @@ var save = {
     // migrated old paidout lines to payouts, remove extra expertId query
     // and use the userId
     ExpertsSvc.getMe.call(this, (eee, expert)=>{
-      if (eee || !expert) return cb(ee,expert)
+      if (eee || !expert) return cb(eee,expert)
 
       for (var order of orders) {
 

@@ -8,7 +8,11 @@ angular.module('APDataSvc', [])
 
   .constant('API', '/v1/api')
 
-  .service('DataService', function($http, API) {
+  .service('DataService', function($http, APIRoute, API) {
+    var GET = APIRoute.GET,
+     PUT = APIRoute.PUT,
+     POST = APIRoute.POST,
+     DELETE = APIRoute.DELETE;
 
     var billingFns = {
       getPaymethods(success, error) {
@@ -16,9 +20,6 @@ angular.module('APDataSvc', [])
       },
       addPaymethod(data, success, error) {
         $http.post(`${API}/billing/paymethods`, data).success(success).error(error)
-      },
-      deletePaymethod(_id, success) {
-        $http.delete(`${API}/billing/paymethods/${_id}`).success(success).error(lazyErrorCb)
       },
       getMyOrders(success) {
         $http.get(`${API}/billing/orders`).success(success).error(lazyErrorCb)
@@ -34,8 +35,12 @@ angular.module('APDataSvc', [])
       }
     }
 
-    this.billing = billingFns;
-
+    this.billing = _.extend(billingFns, {
+      getPayoutmethods: GET((d)=>`/billing/payoutmethods`),
+      getOrdersForPayouts: GET((d)=>`/billing/orders/payouts`),
+      deletePaymethod: DELETE((d)=>`/billing/payoutmethods/${d._id}`),
+      payoutOrders: POST((d)=>`/payouts/${d.payoutmethodId}`)
+    })
 
     var expertFns = {
       getForExpertsPage(success, error) {

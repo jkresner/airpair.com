@@ -1,4 +1,4 @@
-{expertPayoutSummary} = require('../../shared/orders')
+{payoutSummary} = require('../../shared/orders')
 
 module.exports = -> describe "API: ", ->
 
@@ -14,21 +14,21 @@ module.exports = -> describe "API: ", ->
 
   it 'New expert sees empty orders list to be paid out', (done) ->
     SETUP.newLoggedInExpert 'tmot', (expert, expertSession) ->
-      GET "/billing/orders/payouts/#{expert._id}", {}, (orders) ->
+      GET "/billing/orders/payouts", {}, (orders) ->
         expect(orders.length).to.equal(0)
         done()
 
 
   it 'Non expert gets 403 on orders to payout', (done) ->
     SETUP.addLocalUser 'bfie', {}, (s) ->
-      GET "/billing/orders/payouts/#{data.experts.tmot._id}", { status: 401 }, (orders) ->
+      GET "/billing/orders/payouts", { status: 401 }, (orders) ->
         done()
 
 
   it 'Booked expert can see single transaction pending', (done) ->
     SETUP.newBookedRequest 'rusc', {}, 'dymo', (request, booking, customerSession, expertSession) ->
       LOGIN expertSession.userKey, expertSession, ->
-        GET "/billing/orders/payouts/#{booking.expertId}", {}, (orders) ->
+        GET "/billing/orders/payouts", {}, (orders) ->
           expect(orders.length).to.equal(1)
           expect(orders[0].total).to.be.undefined
           expect(orders[0].profit).to.be.undefined
@@ -42,7 +42,7 @@ module.exports = -> describe "API: ", ->
           expect(orders[0].lineItems[0].total).to.be.undefined
           expect(orders[0].lineItems[0].profit).to.be.undefined
           expect(orders[0].lineItems[0].info.released).to.be.undefined
-          summary = expertPayoutSummary(orders)
+          summary = payoutSummary(orders)
           expect(summary.owed.count).to.equal(0)
           expect(summary.owed.total).to.equal(0)
           expect(summary.paid.count).to.equal(0)
@@ -53,12 +53,12 @@ module.exports = -> describe "API: ", ->
 
 
   it 'Expert can see multiple transactions pending', (done) ->
-    SETUP.newBookedRequest 'dros', {}, 'tmot', (request1, booking1, customerSession1, expertSession) ->
+    SETUP.newBookedRequest 'dros', {}, 'dces', (request1, booking1, customerSession1, expertSession) ->
       SETUP.newBookedRequestWithExistingExpert 'brfi', {}, expertSession, (request2, booking2, customerSession2, expertSession) ->
         LOGIN expertSession.userKey, expertSession, ->
-          GET "/billing/orders/payouts/#{expertSession.expertId}", {}, (orders) ->
+          GET "/billing/orders/payouts", {}, (orders) ->
             expect(orders.length).to.equal(2)
-            summary = expertPayoutSummary(orders)
+            summary = payoutSummary(orders)
             expect(summary.owed.count).to.equal(0)
             expect(summary.owed.total).to.equal(0)
             expect(summary.paid.count).to.equal(0)
@@ -78,7 +78,7 @@ module.exports = -> describe "API: ", ->
           expect(released.lineItems[1].info.released.by).to.exist
           expect(released.lineItems[1].info.released.action).to.equal('release')
           LOGIN expertSession.userKey, expertSession, ->
-            GET "/billing/orders/payouts/#{booking.expertId}", {}, (orders) ->
+            GET "/billing/orders/payouts", {}, (orders) ->
               expect(orders.length).to.equal(1)
               expect(orders[0].lineItems.length).to.equal(1)
               expect(orders[0].lineItems[0].type).to.equal('airpair')
@@ -89,7 +89,7 @@ module.exports = -> describe "API: ", ->
               expect(orders[0].lineItems[0].info.released).to.exist
               expect(orders[0].lineItems[0].info.released.utc).to.exist
               expect(orders[0].lineItems[0].info.released.by._id).to.equal(data.users.admin._id)
-              summary = expertPayoutSummary(orders)
+              summary = payoutSummary(orders)
               expect(summary.owed.count).to.equal(1)
               expect(summary.owed.total).to.equal(70)
               expect(summary.paid.count).to.equal(0)
@@ -106,9 +106,9 @@ module.exports = -> describe "API: ", ->
           PUT "/adm/billing/orders/#{booking1.orderId}/release", {}, {}, (released1) ->
             PUT "/adm/billing/orders/#{booking2.orderId}/release", {}, {}, (released2) ->
               LOGIN expertSession.userKey, expertSession, ->
-                GET "/billing/orders/payouts/#{expertSession.expertId}", {}, (orders) ->
+                GET "/billing/orders/payouts", {}, (orders) ->
                   expect(orders.length).to.equal(2)
-                  summary = expertPayoutSummary(orders)
+                  summary = payoutSummary(orders)
                   expect(summary.owed.count).to.equal(2)
                   expect(summary.owed.total).to.equal(140)
                   expect(summary.paid.count).to.equal(0)
@@ -120,16 +120,16 @@ module.exports = -> describe "API: ", ->
 
 
   it 'Expert can see multiple transactions of mixed status', (done) ->
-    SETUP.newBookedRequest 'hubi', {}, 'admb', (request1, booking1, customerSession1, expertSession) ->
+    SETUP.newBookedRequest 'hubi', {}, 'dymo', (request1, booking1, customerSession1, expertSession) ->
       SETUP.newBookedRequestWithExistingExpert 'brfi', {}, expertSession, (request2, booking2, customerSession2, expertSession) ->
         SETUP.newBookedRequestWithExistingExpert 'acob', {}, expertSession, (request3, booking3, customerSession3, expertSession) ->
           LOGIN 'admin', data.users.admin, ->
             PUT "/adm/billing/orders/#{booking1.orderId}/release", {}, {}, (released1) ->
               # PUT "/adm/billing/orders/#{booking2.orderId}/release", {}, {}, (released2) ->
                 LOGIN expertSession.userKey, expertSession, ->
-                  GET "/billing/orders/payouts/#{expertSession.expertId}", {}, (orders) ->
+                  GET "/billing/orders/payouts", {}, (orders) ->
                     expect(orders.length).to.equal(3)
-                    summary = expertPayoutSummary(orders)
+                    summary = payoutSummary(orders)
                     expect(summary.owed.count).to.equal(1)
                     expect(summary.owed.total).to.equal(70)
                     expect(summary.paid.count).to.equal(0)
@@ -152,12 +152,12 @@ module.exports = -> describe "API: ", ->
     SETUP.newLoggedInExpertWithPayoutmethod 'admb', (expert, expertSession, payoutmethod) ->
       SETUP.newBookedRequestWithExistingExpert 'brfi', {}, expertSession, (request, booking, customerSession, expertSession) ->
         SETUP.releaseOrderAndLogExpertBackIn booking.orderId, expertSession, ->
-          GET "/billing/orders/payouts/#{expertSession.expertId}", {}, (orders) ->
+          GET "/billing/orders/payouts", {}, (orders) ->
             expect(orders.length).to.equal(1)
             lineToPayout = orders[0].lineItems[0]
             expect(lineToPayout.info.paidout).to.equal(false)
             expect(lineToPayout.info.released.utc).to.exist
-            summary = expertPayoutSummary(orders)
+            summary = payoutSummary(orders)
             expect(summary.owed.count).to.equal(1)
             expect(summary.owed.total).to.equal(70)
             d = orders: _.pluck(orders,'_id')
@@ -174,12 +174,12 @@ module.exports = -> describe "API: ", ->
               expectIdsEqual(payout.lines[0].order.lineItemId, lineToPayout._id)
               expect(payout.lines[0].total).to.equal(70)
               expect(payout.lines[0].type).to.equal('airpair')
-              GET "/billing/orders/payouts/#{expertSession.expertId}", {}, (orders2) ->
+              GET "/billing/orders/payouts", {}, (orders2) ->
                 expect(orders2.length).to.equal(1)
                 paidoutLine = orders2[0].lineItems[0]
                 expect(paidoutLine.info.paidout).to.equal(payout._id)
                 expect(paidoutLine.info.released.utc).to.exist
-                summary2 = expertPayoutSummary(orders2)
+                summary2 = payoutSummary(orders2)
                 expect(summary2.owed.count).to.equal(0)
                 expect(summary2.owed.total).to.equal(0)
                 expect(summary2.paid.count).to.equal(1)
@@ -193,10 +193,10 @@ module.exports = -> describe "API: ", ->
 
 
   it 'Expert can not collect single released transaction with no paymethod', (done) ->
-    SETUP.newLoggedInExpert 'tmot', (expert, expertSession) ->
+    SETUP.newLoggedInExpert 'abha', (expert, expertSession) ->
       SETUP.newBookedRequestWithExistingExpert 'brfi', {}, expertSession, (request, booking, customerSession, expertSession) ->
         SETUP.releaseOrderAndLogExpertBackIn booking.orderId, expertSession, ->
-          GET "/billing/orders/payouts/#{expertSession.expertId}", {}, (orders) ->
+          GET "/billing/orders/payouts", {}, (orders) ->
             d = orders: _.pluck(orders,'_id')
             fakePayoutmethodId = newId()
             POST "/payouts/#{fakePayoutmethodId}", d, {status:404}, (error) ->
@@ -205,10 +205,10 @@ module.exports = -> describe "API: ", ->
 
 
   it 'Expert can not pay out single pending transaction to their verified payout account', (done) ->
-    SETUP.newLoggedInExpertWithPayoutmethod 'dymo', (expert, expertSession, payoutmethod) ->
+    SETUP.newLoggedInExpertWithPayoutmethod 'tmot', (expert, expertSession, payoutmethod) ->
       SETUP.newBookedRequestWithExistingExpert 'chup', {}, expertSession, (request, booking, customerSession, expertSession) ->
         LOGIN expertSession.userKey, expertSession, ->
-          GET "/billing/orders/payouts/#{expertSession.expertId}", {}, (orders) ->
+          GET "/billing/orders/payouts", {}, (orders) ->
             d = orders: _.pluck(orders,'_id')
             POST "/payouts/#{payoutmethod._id}", d, {status:403}, (error) ->
               expect(error.message.indexOf('Cannot payout. Order')).to.equal(0)
@@ -216,7 +216,7 @@ module.exports = -> describe "API: ", ->
 
 
   it 'Expert can pay out combined transaction to their payout account', (done) ->
-    SETUP.newLoggedInExpertWithPayoutmethod 'admb', (expert, expertSession, payoutmethod) ->
+    SETUP.newLoggedInExpertWithPayoutmethod 'dymo', (expert, expertSession, payoutmethod) ->
       SETUP.newBookedRequestWithExistingExpert 'hubi', {}, expertSession, (request1, booking1, customerSession1, expertSession) ->
         SETUP.newBookedRequestWithExistingExpert 'brfi', {}, expertSession, (request2, booking2, customerSession2, expertSession) ->
           SETUP.newBookedRequestWithExistingExpert 'acob', {}, expertSession, (request3, booking3, customerSession3, expertSession) ->
@@ -225,9 +225,9 @@ module.exports = -> describe "API: ", ->
                 PUT "/adm/billing/orders/#{booking2.orderId}/release", {}, {}, (released2) ->
                   PUT "/adm/billing/orders/#{booking3.orderId}/release", {}, {}, (released3) ->
                     LOGIN expertSession.userKey, expertSession, ->
-                      GET "/billing/orders/payouts/#{expertSession.expertId}", {}, (orders) ->
+                      GET "/billing/orders/payouts", {}, (orders) ->
                         expect(orders.length).to.equal(3)
-                        summary = expertPayoutSummary(orders)
+                        summary = payoutSummary(orders)
                         expect(summary.owed.count).to.equal(3)
                         expect(summary.owed.total).to.equal(210)
                         d = orders: _.pluck(orders,'_id')
@@ -240,7 +240,7 @@ module.exports = -> describe "API: ", ->
 
 
   it 'Expert can see payout history', (done) ->
-    SETUP.newLoggedInExpertWithPayoutmethod 'tmot', (expert, expertSession, payoutmethod) ->
+    SETUP.newLoggedInExpertWithPayoutmethod 'admb', (expert, expertSession, payoutmethod) ->
       SETUP.newBookedRequestWithExistingExpert 'hubi', {}, expertSession, (request1, booking1, customerSession1, expertSession) ->
         SETUP.newBookedRequestWithExistingExpert 'brfi', {}, expertSession, (request2, booking2, customerSession2, expertSession) ->
           SETUP.newBookedRequestWithExistingExpert 'acob', {}, expertSession, (request3, booking3, customerSession3, expertSession) ->
@@ -249,7 +249,7 @@ module.exports = -> describe "API: ", ->
                 PUT "/adm/billing/orders/#{booking2.orderId}/release", {}, {}, (released2) ->
                   PUT "/adm/billing/orders/#{booking3.orderId}/release", {}, {}, (released3) ->
                     LOGIN expertSession.userKey, expertSession, ->
-                      GET "/billing/orders/payouts/#{expertSession.expertId}", {}, (orders) ->
+                      GET "/billing/orders/payouts", {}, (orders) ->
                         d1 = orders: [orders[0]._id,orders[1]._id]
                         POST "/payouts/#{payoutmethod._id}", d1, {}, (payout1) ->
                           expect(payout1.total).to.equal(140)

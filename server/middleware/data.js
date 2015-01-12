@@ -1,4 +1,6 @@
+var logging = false
 var API = require('../api/_all')
+
 
 var resolver = {
   fnLookup: {},

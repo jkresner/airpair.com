@@ -40,10 +40,16 @@ var get = {
     if (userId) query.userId = userId
     svc.searchMany(query, opts, Data.select.forAdmin(cb))
   },
-  getOrdersToPayout(expert, cb)
+  getOrdersForPayouts(cb)
   {
-    var query = { 'lineItems.info.expert._id' : expert._id.toString() }
-    svc.searchMany(query, {}, Data.select.forPayout(cb))
+    // TODO, after we've paid out all the new orders and
+    // migrated old paidout lines to payouts, remove extra expertId query
+    // and use the userId
+    require('./experts').getMe.call(this, (e, expert)=>{
+      if (e || !expert) return cb(e,expert)
+      var query = { 'lineItems.info.expert._id' : expert._id.toString() }
+      svc.searchMany(query, {}, Data.select.forPayout(cb))
+    })
   }
 }
 

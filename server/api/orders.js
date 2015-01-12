@@ -9,7 +9,7 @@ export default initAPI(
   giveCredit: (req) => [req.body.toUser,req.body.total,req.body.source],
   getMyOrders: (req) => [],
   getMyOrdersWithCredit: (req) => [req.params.id],
-  getOrdersToPayout: (req) => [req.expert],
+  getOrdersForPayouts: (req) => [],
   getByQueryForAdmin: (req) => [req.params.start,req.params.end,req.params.userId],
   releasePayout: (req) => [req.order],
 }, {

@@ -16,6 +16,7 @@ require('./common/models/viewDataService.js');
 require('./common/models/postsService.js');
 require('./common/models/sessionService.js');
 require('./common/models/dataService.js');
+require('./common/util.js');
 require('./common/directives/forms/forms.js');
 require('./common/directives/forms/inputs.js');
 require('./common/directives/forms/tagInput.js');
@@ -33,18 +34,20 @@ require('./common/directives/notifications.js');
 require('./common/directives/serverTemplates.js');
 require('./common/directives/providers.js');
 require('./common/directives/profiles.js');
+require('./common/directives/paypal.js');
 require('./common/filters/filters.js');
+require('./common/pageHelpers.js');
+require('./common/routes/routes.js');
 require('./auth/module.js');
 require('./posts/module.js');
 require('./workshops/module.js');
 require('./billing/module.js');
 require('./account/module.js');
 require('./requests/module.js');
-require('./common/pageHelpers.js');
 
 
 angular.module("AP", ['Providers', 'ngRoute', 'ngAnimate', 'ui.bootstrap.datetimepicker',
-  'APViewData', 'APDataSvc', 'APCTAs', 'APInputs',
+  'APRoutes', 'APUtil', 'APViewData', 'APDataSvc', 'APCTAs', 'APInputs',
   'APAnalytics', 'APSideNav', 'APChatNav', 'APServerTemplates', 'APNotifications',
   'APProfileDirectives', 'APPageHelpers',
   'APAuth', 'APPosts', 'APWorkshops', 'APProfile', 'APBilling', 'APRequests'])

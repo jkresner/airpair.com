@@ -512,6 +512,225 @@ module.exports = {
     "updatedAt" : "2015-01-07T18:38:26.875Z",
     "userId" : "534d3e5d1c67d1a4859d2d5b",
     "username" : "adymo"
-  }
+  },
+
+  dces: {
+    "_id" : "5359bef3c558c2020000002f",
+    "availability" : "",
+    "bb" : {
+        "id" : "dcestari"
+    },
+    "brief" : "I like to help out other programmers solve weird problems and getting \"unstuck\". This is what I do in my current job, I'm a catalyzer to the work of others.\n\nI also like to share my experience with others, share my knowledge as others did for me as I was starting in the industry.",
+    "email" : "dcestari@gmail.com",
+    "gh" : {
+        "id" : 216160,
+        "username" : "dcestari",
+        "location" : "Venezuela",
+        "blog" : "http://neno-tu.com",
+        "gravatar_id" : "d81fcc68490ea265c3d85b5af2581ea4",
+        "followers" : 5
+    },
+    "gmail" : "dcestari@gmail.com",
+    "homepage" : "neno-tu.com",
+    "hours" : "3-5",
+    "in" : {
+        "id" : "2EAxYvhnal",
+        "displayName" : "Daniel Cestari"
+    },
+    "karma" : 0,
+    "minRate" : 10,
+    "name" : "Daniel Cestari",
+    "pic" : "https://secure.gravatar.com/avatar/d81fcc68490ea265c3d85b5af2581ea4",
+    "rate" : 230,
+    "so" : {
+        "id" : 452964,
+        "website_url" : "http://dcestari.github.com",
+        "link" : "452964/dcestari",
+        "reputation" : 333,
+        "profile_image" : "https://www.gravatar.com/avatar/d81fcc68490ea265c3d85b5af2581ea4?s=128&d=identicon&r=PG"
+    },
+    "stats" : {},
+    "status" : "ready",
+    "tags" : [
+        {
+            "soId" : "ruby-on-rails",
+            "short" : "ruby-on-rails",
+            "name" : "ruby-on-rails",
+            "_id" : "514825fa2a26ea020000002f",
+            "levels" : [
+                "beginner",
+                "intermediate",
+                "expert"
+            ]
+        },
+        {
+            "soId" : "php",
+            "short" : "php",
+            "name" : "php",
+            "_id" : "514825fa2a26ea020000002b",
+            "levels" : [
+                "beginner",
+                "intermediate",
+                "expert"
+            ]
+        },
+        {
+            "soId" : "symfony-1.4",
+            "short" : "symfony-1.4",
+            "name" : "symfony-1.4",
+            "_id" : "5181d0ab66a6f999a465ee97",
+            "levels" : [
+                "beginner",
+                "intermediate",
+                "expert"
+            ]
+        },
+        {
+            "soId" : "objective-c",
+            "short" : "objectiveC",
+            "name" : "Objective-C",
+            "_id" : "514825fa2a26ea0200000029",
+            "levels" : [
+                "beginner",
+                "intermediate",
+                "expert"
+            ]
+        },
+        {
+            "soId" : "objective-c-blocks",
+            "short" : "objective-c-blocks",
+            "name" : "objective-c-blocks",
+            "_id" : "5181d0ad66a6f999a465f13b",
+            "levels" : [
+                "beginner",
+                "intermediate",
+                "expert"
+            ]
+        },
+        {
+            "soId" : "iphone",
+            "short" : "iphone",
+            "name" : "iphone",
+            "_id" : "514825fa2a26ea020000001c",
+            "levels" : [
+                "beginner",
+                "intermediate",
+                "expert"
+            ]
+        },
+        {
+            "soId" : "linux",
+            "short" : "linux",
+            "name" : "Linux",
+            "_id" : "514825fa2a26ea0200000023",
+            "levels" : [
+                "beginner",
+                "intermediate",
+                "expert"
+            ]
+        },
+        {
+            "soId" : "nginx",
+            "short" : "nginx",
+            "name" : "nginx",
+            "_id" : "5153f494d96db10200000011",
+            "levels" : [
+                "beginner",
+                "intermediate",
+                "expert"
+            ]
+        },
+        {
+            "soId" : "rspec",
+            "short" : "rspec",
+            "name" : "rspec",
+            "_id" : "5181d0a966a6f999a465ec4a",
+            "levels" : [
+                "beginner",
+                "intermediate",
+                "expert"
+            ]
+        },
+        {
+            "soId" : "json",
+            "short" : "json",
+            "name" : "json",
+            "_id" : "5181d0a966a6f999a465eb37",
+            "levels" : [
+                "beginner",
+                "intermediate",
+                "expert"
+            ]
+        },
+        {
+            "soId" : "javascript",
+            "short" : "javascript",
+            "name" : "javascript",
+            "_id" : "514825fa2a26ea020000001f",
+            "levels" : [
+                "beginner",
+                "intermediate",
+                "expert"
+            ]
+        },
+        {
+            "soId" : "rest",
+            "short" : "rest",
+            "name" : "rest",
+            "_id" : "5181d0a966a6f999a465eb76",
+            "levels" : [
+                "beginner",
+                "intermediate",
+                "expert"
+            ]
+        },
+        {
+            "soId" : "api",
+            "short" : "api",
+            "name" : "api",
+            "_id" : "5181d0a966a6f999a465eb47",
+            "levels" : [
+                "beginner",
+                "intermediate",
+                "expert"
+            ]
+        },
+        {
+            "_id" : "514825fa2a26ea0200000006",
+            "name" : "Android",
+            "short" : "android",
+            "soId" : "android"
+        },
+        {
+            "_id" : "514825fa2a26ea0200000007",
+            "name" : "AWS",
+            "short" : "aws",
+            "soId" : "aws"
+        },
+        {
+            "_id" : "514825fa2a26ea020000001e",
+            "name" : "java",
+            "short" : "java",
+            "soId" : "java"
+        },
+        {
+            "_id" : "5181d0ad66a6f999a465f1d3",
+            "name" : "junit4",
+            "short" : "junit4",
+            "soId" : "junit4"
+        }
+    ],
+    "timezone" : "GMT-0430 (VET)",
+    "tw" : {
+        "id" : 42958815,
+        "username" : "dcestari",
+        "pic" : {
+            "value" : "https://pbs.twimg.com/profile_images/2690606847/f1ba5726e16d719417254429beb1b46a_normal.jpeg"
+        }
+    },
+    "updatedAt" : "2014-10-16T16:05:59.071Z",
+    "userId" : "5359bd0e1c67d1a4859d2f74",
+    "username" : "dcestari"
+}
 
 }
