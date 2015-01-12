@@ -52,7 +52,7 @@ module.exports = () => describe("Rss: ", function() {
   }
 
   describe("Posts Feed", function() {
-    it('contains expected fields and at least 2 posts, most recent first', (done) => {
+    it.skip('contains expected fields and at least 2 posts, most recent first', (done) => {
       GETXML('/rss/posts')
         .end( (e,r) => {
           if (e) return done(e)
@@ -65,7 +65,7 @@ module.exports = () => describe("Rss: ", function() {
   })
 
   describe("Workshops Feed", function() {
-    it('contains expected fields and at least 2 workhops, furthest in the future first', (done) => {
+    it.skip('contains expected fields and at least 2 workhops, furthest in the future first', (done) => {
       GETXML('/rss/workshops')
         .end( (e, r) => {
           if (e) return done(e)
@@ -78,7 +78,7 @@ module.exports = () => describe("Rss: ", function() {
   })
 
   describe("Mixed Feed", function() {
-    it('it contains the expected fields', (done) => {
+    it.skip('it contains the expected fields', (done) => {
       GETXML('/rss')
         .end( (e,r) => {
           if (e) return done(e)
