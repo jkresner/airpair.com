@@ -121,6 +121,17 @@ stories = {
         done(expert, expertSession)
 
 
+  injectOAuthPayoutMethod: (user, providerName,pmKey,cb) ->
+    PaymethodsService.addOAuthPayoutmethod.call({user},
+      providerName, data.paymethods[pmKey],{},(e,r)->cb(r))
+
+
+  newLoggedInExpertWithPayoutmethod: (userKey, done) ->
+    stories.newLoggedInExpert userKey, (expert, expertSession) ->
+      stories.injectOAuthPayoutMethod expertSession, 'paypal', 'payout_paypal_enus_verified', (payoutmethod) ->
+        done expert, expertSession, payoutmethod
+
+
   newCompleteRequest: (userKey, requestData, cb) ->
     budget = requestData.budget || 100
     addAndLoginLocalUserWithPayMethod userKey, (sessionCustomer) ->
@@ -164,9 +175,10 @@ stories = {
               POST "/bookings/#{expertSession.expertId}", airpair1, {}, (booking) ->
                 cb(request, booking, customerSession, expertSession)
 
-  injectOAuthPayoutMethod: (user, providerName,pmKey,cb) ->
-    PaymethodsService.addOAuthPayoutmethod.call({user},
-      providerName, data.paymethods[pmKey],{},(e,r)->cb(r))
+  releaseOrderAndLogExpertBackIn: (orderId, expertSession, cb) ->
+    LOGIN 'admin', data.users.admin, ->
+      PUT "/adm/billing/orders/#{orderId}/release", {}, {}, (released) ->
+        LOGIN expertSession.userKey, expertSession, cb
 
 }
 

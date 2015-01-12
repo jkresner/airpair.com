@@ -19,6 +19,9 @@ var get = {
   getByIdForAdmin(id, cb) {
     svc.getById(id, cb)
   },
+  getMultipleOrdersById(ids, cb) {
+    svc.getManyById(ids, cb)
+  },
   getMyOrders(cb) {
     var opts = { options: Data.opts.orderByNewest }
     svc.searchMany({userId:this.user._id}, opts, cb)
@@ -82,7 +85,7 @@ var Lines = {
   {
     var qty = minutes / 60
     var total = qty*unitPrice
-    var exp = { _id: expert._id, name: expert.name, avatar: expert.avatar }
+    var exp = { _id: expert._id, name: expert.name, avatar: expert.avatar, userId: expert.userId }
     var info = { name: `${minutes} min (${expert.name})`, type, time, minutes, paidout: false, expert: exp }
     return Lines._new('airpair',qty,unitPrice,total,0,qty*unitProfit,info)
   }

@@ -97,14 +97,6 @@ var get = {
 
 
 var save = {
-  charge(amount, orderId, payMethod, cb) {
-    if (payMethod.type == 'braintree')
-      Braintree.chargeWithMethod(amount, orderId, payMethod.info.token, cb)
-    else if (payMethod.type == 'stripe')
-      Stripe.createCharge(amount, orderId, payMethod.info.id, cb)
-    else
-      return cb(`${payMethod.type} not supported a payment type`)
-  },
   addPaymethod(o, cb) {
     var customerId = (o.companyId != null) ? o.companyId : this.user._id
 
@@ -162,7 +154,28 @@ var save = {
       Settings.remove({userId:this.user._id}, () => {})
       svc.deleteById(paymethod._id, cb)
     })
-  }
+  },
+  charge(amount, orderId, payMethod, cb) {
+    if (payMethod.type == 'braintree')
+      Braintree.chargeWithMethod(amount, orderId, payMethod.info.token, cb)
+    else if (payMethod.type == 'stripe')
+      Stripe.createCharge(amount, orderId, payMethod.info.id, cb)
+    else
+      return cb(`${payMethod.type} not supported a payment type`)
+  },
+  payout(amount, payoutId, payMethod, cb) {
+    var note =
+`Thank you.
+
+Full detail of this payment can be found at:
+
+https://www.airpair.com/payouts/${payoutId}
+`
+    if (payMethod.type == 'payout_paypal')
+      PayPal.payout(payMethod.info.email, amount, payoutId, note, cb)
+    else
+      return cb(`${payMethod.type} not supported a payment type`)
+  },
 }
 
 

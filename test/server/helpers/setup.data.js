@@ -2,6 +2,10 @@ var util = require('../../../shared/util')
 var mongoose = require('mongoose')
 var ObjectId = mongoose.Types.ObjectId
 
+global.newId = function() {
+  return new ObjectId()
+}
+
 
 global.getNewUserData = function(userKey)
 {
@@ -28,6 +32,8 @@ global.newUserSession = function(userKey)
 
 
 var dataHelpers = {
+
+  newId,
 
   getNewExpertUserData(userKey) {
     var seed = _.clone(data.users[userKey])
