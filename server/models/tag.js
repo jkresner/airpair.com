@@ -1,7 +1,7 @@
 var mongoose = require('mongoose')
 
 
-module.exports = mongoose.model('Tag', new mongoose.Schema({
+var tagSchema = new mongoose.Schema({
 
   name: { required: true, type: String, trim: true },  // E.g. Ruby on Rails
   short: {              // E.g. Rails
@@ -36,4 +36,26 @@ module.exports = mongoose.model('Tag', new mongoose.Schema({
   gh: {},
   tokens: String,       // Extra comma separated strings to assist filter search
 
-}))
+})
+
+
+tagSchema.index(
+ {
+   tokens: "text",
+   name: "text",
+   short: "text",
+   desc: "text",
+ },
+ {
+   weights: {
+      tokens: 20,
+      name: 10,
+      short: 9,
+      desc: 1,
+    },
+    name: "TagTextIndex"
+  }
+)
+
+
+module.exports = mongoose.model('Tag', tagSchema)

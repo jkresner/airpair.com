@@ -1,7 +1,9 @@
-import Rates  from '../services/requests.rates'
+import Rates              from '../services/requests.rates'
 import * as md5           from '../util/md5'
-var util =    require('../../shared/util')
-var Roles =   require('../../shared/roles.js')
+var Roles =               require('../../shared/roles.js')
+var {selectFromObject} =  require('../../shared/util')
+var {ObjectId} =          require('mongoose').Schema
+
 
 var selectFields = {
   anon: {
@@ -85,6 +87,9 @@ var statusHash =
 //chosen , // released
 
 
+var hexSeconds = Math.floor(moment('20141220','YYYYMMDD')/1000).toString(16)
+var id2015 = new ObjectId(hexSeconds + "0000000000000000").path
+
 module.exports = {
 
   select: {
@@ -107,7 +112,7 @@ module.exports = {
       }
 
       if (view != 'admin')
-        r = util.selectFromObject(r, selectFields[view])
+        r = selectFromObject(r, selectFields[view])
       // $log('selected', view, request.suggested, r)
       return r
     }
@@ -133,6 +138,10 @@ module.exports = {
       //
       // status: { $in: ['received','waiting','review','scheduled','consumed'] }
       'budget' : { '$exists': true }, 'adm.active': true
+    },
+
+    '2015': {
+      'budget' : { '$exists': true }, '_id' : { '$gt': id2015 }
     },
 
     waiting: {

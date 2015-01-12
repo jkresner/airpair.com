@@ -9,6 +9,7 @@ module.exports = [
   '*/posts*',
   '*/workshops*',
   '/billing*',
+  '/payouts*',
   '*pair-programming*',
   '/v1/auth*',
   '/login',

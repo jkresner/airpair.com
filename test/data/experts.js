@@ -379,6 +379,408 @@ module.exports = {
     "updatedAt" : "2013-05-30T03:49:41.000Z",
     "userId" : "51a6c65e66a6f999a465f30b",
     "username" : "abliss"
+  },
+
+  dymo: {
+    "_id" : "534d3e8e4d26f30200000024",
+    "availability" : "",
+    "bookMe" : {
+        "rate" : "90",
+        "rake" : "20",
+        "urlSlug" : "adymo",
+        "urlBlog" : "",
+        "noIndex" : false,
+        "enabled" : true,
+        "coupons" : [],
+        "creditRequestIds" : [
+            "53ce8a703441d602008095b6"
+        ]
+    },
+    "brief" : "I help people optimize Ruby and Ruby on Rails applications. I enjoy digging into the code and finding simple fixes to solve complex performance problems.",
+    "email" : "alex@alexdymo.com",
+    "gh" : {
+        "id" : 5263,
+        "username" : "adymo",
+        "location" : "Chicago, USA",
+        "blog" : "http://www.alexdymo.com",
+        "gravatar_id" : "990f1e2f3c6871d4305d3a316902b1bf",
+        "followers" : 11
+    },
+    "gmail" : "alex@alexdymo.com",
+    "homepage" : "www.alexdymo.com",
+    "hours" : "5-10",
+    "in" : {
+        "id" : "1KB9BDtDYm",
+        "displayName" : "Alexander Dymo"
+    },
+    "karma" : 0,
+    "matching" : {
+        "replies" : {},
+        "experience" : {}
+    },
+    "minRate" : 70,
+    "name" : "Alexander Dymo",
+    "pic" : "https://secure.gravatar.com/avatar/990f1e2f3c6871d4305d3a316902b1bf",
+    "rate" : 110,
+    "stats" : {},
+    "status" : "ready",
+    "tags" : [
+        {
+            "_id" : "514825fa2a26ea0200000031",
+            "name" : "ruby",
+            "short" : "ruby",
+            "soId" : "ruby",
+            "levels" : [
+                "beginner",
+                "intermediate",
+                "expert"
+            ],
+            "subscription" : {
+                "auto" : [],
+                "custom" : []
+            }
+        },
+        {
+            "_id" : "514825fa2a26ea020000002f",
+            "name" : "ruby-on-rails",
+            "short" : "ruby-on-rails",
+            "soId" : "ruby-on-rails",
+            "levels" : [
+                "beginner",
+                "intermediate",
+                "expert"
+            ],
+            "subscription" : {
+                "auto" : [],
+                "custom" : []
+            }
+        },
+        {
+            "_id" : "5148ace09820900200000009",
+            "name" : "Performance",
+            "short" : "Performance",
+            "soId" : "performance",
+            "levels" : [
+                "beginner",
+                "intermediate",
+                "expert"
+            ],
+            "subscription" : {
+                "auto" : [],
+                "custom" : []
+            }
+        },
+        {
+            "_id" : "5181d0a966a6f999a465ebb1",
+            "name" : "optimization",
+            "short" : "optimization",
+            "soId" : "optimization",
+            "levels" : [
+                "beginner",
+                "intermediate",
+                "expert"
+            ],
+            "subscription" : {
+                "auto" : [],
+                "custom" : []
+            }
+        },
+        {
+            "_id" : "5181d0aa66a6f999a465edb1",
+            "name" : "profiling",
+            "short" : "profiling",
+            "soId" : "profiling",
+            "levels" : [
+                "beginner",
+                "intermediate",
+                "expert"
+            ],
+            "subscription" : {
+                "auto" : [],
+                "custom" : []
+            }
+        }
+    ],
+    "timezone" : "GMT-0500 (CDT)",
+    "tw" : {
+        "id" : 12546142,
+        "username" : "alexander_dymo",
+        "pic" : {
+            "value" : "https://pbs.twimg.com/profile_images/2363282175/rvgpjxu04gr72kf09xlh_normal.png"
+        }
+    },
+    "updatedAt" : "2015-01-07T18:38:26.875Z",
+    "userId" : "534d3e5d1c67d1a4859d2d5b",
+    "username" : "adymo"
+  },
+
+  dces: {
+    "_id" : "5359bef3c558c2020000002f",
+    "availability" : "",
+    "bb" : {
+        "id" : "dcestari"
+    },
+    "brief" : "I like to help out other programmers solve weird problems and getting \"unstuck\". This is what I do in my current job, I'm a catalyzer to the work of others.\n\nI also like to share my experience with others, share my knowledge as others did for me as I was starting in the industry.",
+    "email" : "dcestari@gmail.com",
+    "gh" : {
+        "id" : 216160,
+        "username" : "dcestari",
+        "location" : "Venezuela",
+        "blog" : "http://neno-tu.com",
+        "gravatar_id" : "d81fcc68490ea265c3d85b5af2581ea4",
+        "followers" : 5
+    },
+    "gmail" : "dcestari@gmail.com",
+    "homepage" : "neno-tu.com",
+    "hours" : "3-5",
+    "in" : {
+        "id" : "2EAxYvhnal",
+        "displayName" : "Daniel Cestari"
+    },
+    "karma" : 0,
+    "minRate" : 10,
+    "name" : "Daniel Cestari",
+    "pic" : "https://secure.gravatar.com/avatar/d81fcc68490ea265c3d85b5af2581ea4",
+    "rate" : 230,
+    "so" : {
+        "id" : 452964,
+        "website_url" : "http://dcestari.github.com",
+        "link" : "452964/dcestari",
+        "reputation" : 333,
+        "profile_image" : "https://www.gravatar.com/avatar/d81fcc68490ea265c3d85b5af2581ea4?s=128&d=identicon&r=PG"
+    },
+    "stats" : {},
+    "status" : "ready",
+    "tags" : [
+        {
+            "soId" : "ruby-on-rails",
+            "short" : "ruby-on-rails",
+            "name" : "ruby-on-rails",
+            "_id" : "514825fa2a26ea020000002f",
+            "levels" : [
+                "beginner",
+                "intermediate",
+                "expert"
+            ]
+        },
+        {
+            "soId" : "php",
+            "short" : "php",
+            "name" : "php",
+            "_id" : "514825fa2a26ea020000002b",
+            "levels" : [
+                "beginner",
+                "intermediate",
+                "expert"
+            ]
+        },
+        {
+            "soId" : "symfony-1.4",
+            "short" : "symfony-1.4",
+            "name" : "symfony-1.4",
+            "_id" : "5181d0ab66a6f999a465ee97",
+            "levels" : [
+                "beginner",
+                "intermediate",
+                "expert"
+            ]
+        },
+        {
+            "soId" : "objective-c",
+            "short" : "objectiveC",
+            "name" : "Objective-C",
+            "_id" : "514825fa2a26ea0200000029",
+            "levels" : [
+                "beginner",
+                "intermediate",
+                "expert"
+            ]
+        },
+        {
+            "soId" : "objective-c-blocks",
+            "short" : "objective-c-blocks",
+            "name" : "objective-c-blocks",
+            "_id" : "5181d0ad66a6f999a465f13b",
+            "levels" : [
+                "beginner",
+                "intermediate",
+                "expert"
+            ]
+        },
+        {
+            "soId" : "iphone",
+            "short" : "iphone",
+            "name" : "iphone",
+            "_id" : "514825fa2a26ea020000001c",
+            "levels" : [
+                "beginner",
+                "intermediate",
+                "expert"
+            ]
+        },
+        {
+            "soId" : "linux",
+            "short" : "linux",
+            "name" : "Linux",
+            "_id" : "514825fa2a26ea0200000023",
+            "levels" : [
+                "beginner",
+                "intermediate",
+                "expert"
+            ]
+        },
+        {
+            "soId" : "nginx",
+            "short" : "nginx",
+            "name" : "nginx",
+            "_id" : "5153f494d96db10200000011",
+            "levels" : [
+                "beginner",
+                "intermediate",
+                "expert"
+            ]
+        },
+        {
+            "soId" : "rspec",
+            "short" : "rspec",
+            "name" : "rspec",
+            "_id" : "5181d0a966a6f999a465ec4a",
+            "levels" : [
+                "beginner",
+                "intermediate",
+                "expert"
+            ]
+        },
+        {
+            "soId" : "json",
+            "short" : "json",
+            "name" : "json",
+            "_id" : "5181d0a966a6f999a465eb37",
+            "levels" : [
+                "beginner",
+                "intermediate",
+                "expert"
+            ]
+        },
+        {
+            "soId" : "javascript",
+            "short" : "javascript",
+            "name" : "javascript",
+            "_id" : "514825fa2a26ea020000001f",
+            "levels" : [
+                "beginner",
+                "intermediate",
+                "expert"
+            ]
+        },
+        {
+            "soId" : "rest",
+            "short" : "rest",
+            "name" : "rest",
+            "_id" : "5181d0a966a6f999a465eb76",
+            "levels" : [
+                "beginner",
+                "intermediate",
+                "expert"
+            ]
+        },
+        {
+            "soId" : "api",
+            "short" : "api",
+            "name" : "api",
+            "_id" : "5181d0a966a6f999a465eb47",
+            "levels" : [
+                "beginner",
+                "intermediate",
+                "expert"
+            ]
+        },
+        {
+            "_id" : "514825fa2a26ea0200000006",
+            "name" : "Android",
+            "short" : "android",
+            "soId" : "android"
+        },
+        {
+            "_id" : "514825fa2a26ea0200000007",
+            "name" : "AWS",
+            "short" : "aws",
+            "soId" : "aws"
+        },
+        {
+            "_id" : "514825fa2a26ea020000001e",
+            "name" : "java",
+            "short" : "java",
+            "soId" : "java"
+        },
+        {
+            "_id" : "5181d0ad66a6f999a465f1d3",
+            "name" : "junit4",
+            "short" : "junit4",
+            "soId" : "junit4"
+        }
+    ],
+    "timezone" : "GMT-0430 (VET)",
+    "tw" : {
+        "id" : 42958815,
+        "username" : "dcestari",
+        "pic" : {
+            "value" : "https://pbs.twimg.com/profile_images/2690606847/f1ba5726e16d719417254429beb1b46a_normal.jpeg"
+        }
+    },
+    "updatedAt" : "2014-10-16T16:05:59.071Z",
+    "userId" : "5359bd0e1c67d1a4859d2f74",
+    "username" : "dcestari"
+  },
+
+  mper: {
+    "_id" : "53cfe315a60ad902009c5954",
+    "availability" : "",
+    "bb" : {
+        "id" : "michael_perrenoud"
+    },
+    "bookMe" : {
+        "rate" : "130",
+        "rake" : "20",
+        "urlSlug" : "michaelp",
+        "urlBlog" : "",
+        "noIndex" : false,
+        "enabled" : true,
+        "coupons" : [],
+        "creditRequestIds" : []
+    },
+    "brief" : "I just love teaching, simple! I feel that if I can give back to the community by bringing knowledge to others, overall we produce greater solutions to today's complex problems.",
+    "email" : "mperren@gmail.com",
+    "gh" : {
+        "id" : 2049534,
+        "username" : "mperrenoud",
+        "location" : "Virginia",
+        "blog" : "",
+        "gravatar_id" : "1fe14bf08188abd443168eefb0349ec1",
+        "followers" : 0
+    },
+    "gmail" : "mperren@gmail.com",
+    "homepage" : "",
+    "hours" : "3-5",
+    "in" : {
+        "id" : "mT5mywxZ4D",
+        "displayName" : "Michael Perrenoud"
+    },
+    "minRate" : 40,
+    "name" : "Michael Perrenoud",
+    "pic" : "https://secure.gravatar.com/avatar/1fe14bf08188abd443168eefb0349ec1",
+    "rate" : 120,
+    "so" : {
+        "id" : 1195080,
+        "website_url" : "",
+        "link" : "1195080/michael-perrenoud",
+        "reputation" : 37789,
+        "profile_image" : "https://www.gravatar.com/avatar/1fe14bf08188abd443168eefb0349ec1?s=128&d=identicon&r=PG"
+    },
+    "status" : "ready",
+    "updatedAt" : "2014-12-03T21:40:56.136Z",
+    "userId" : "53cfe2ba8f8c80299bcc3af8",
+    "username" : "mperrenoud"
   }
 
 }

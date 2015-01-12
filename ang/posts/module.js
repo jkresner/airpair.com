@@ -65,7 +65,7 @@ angular.module("APPosts", ['APFilters','APShare',
   })
 
   .controller('TagIndexCtrl', function($scope, PostsService, $routeParams) {
-		$scope.tagslug = $routeParams.tagslug;
+    $scope.tagslug = $routeParams.tagslug;
 
     PostsService.getTagsPosts($scope.tagslug, function (result) {
       $scope.tag = result.tag;

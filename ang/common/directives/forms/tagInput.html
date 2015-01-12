@@ -40,7 +40,7 @@
 <script type="text/ng-template" id="tagMatch.html">
   <div>
     <a class="tagSelect">
-      <span bind-html-unsafe="match.model.slug | typeaheadHighlight:query"></span>
+      <span bind-html-unsafe="match.model.name | typeaheadHighlight:query"></span>
       <p bind-html-unsafe="match.model.desc | typeaheadHighlight:query"></p>
     </a>
   </div>

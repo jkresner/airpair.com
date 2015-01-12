@@ -1,6 +1,6 @@
 var FirebaseTokenGenerator = require('firebase-token-generator')
 var JWT = require('jwt-simple')
-var {isBot}   = require('../../shared/util')
+var {isBot,stringToJson}   = require('../../shared/util')
 var logging   = true
 
 var setSessionVarFromQuery = (varName) =>
@@ -91,6 +91,25 @@ var middleware = {
     if (logging) $log(`mw.authAlreadyDone ${req.isAuthenticated()}`.cyan)
     if (req.isAuthenticated()) { $log('authAlreadyDONE'.red); middleware.authDone(req, res, next) }
     else { next() }
+  },
+
+
+  handleOAuthSuccess(providerName, svcFn) {
+    return (req, res, next) => {
+      if (logging) $log(`mw.handleOAuthSuccess ${req.authInfo.userinfo}`.cyan)
+      var {userinfo,tokeninfo} = req.authInfo
+      svcFn.call({user:req.user}, providerName, userinfo, tokeninfo, (e,r) => {
+        var redirectQuery = "success=true"
+        if (e) {
+          $log('handleOAuthSucces.error: '.red, e)
+          redirectQuery = `fail=${e.message||e.toString()}`
+        }
+
+        delete req.session.doneOAuthReturnToUrl
+        res.redirect(`${req.session.returnTo}?${redirectQuery}`)
+        res.end()
+      })
+    }
   },
 
 

@@ -1,14 +1,24 @@
 var logging = false
 
 
+var Error404 = (msg, fromApi) => {
+  var e = new Error(msg)
+  e.status = 404
+  e.fromApi = fromApi
+  return e
+}
+
+
 var cbSend = (req, res, next) => {
   var httpMethod = req.method
   return (e, r) => {
     if (logging) { $log('cbSend', e, r) }
     if (e)
     {
-      var uid = (req.user) ? req.user.email : req.sessoinID
-      $log(`cbSend.400 ${uid} ${req.url}`.red, JSON.stringify(req.body).white, e)
+      if (config.env != 'test') {
+        var uid = (req.user) ? req.user.email : req.sessoinID
+        $log(`cbSend.400 ${uid} ${req.url}`.red, JSON.stringify(req.body).white, e)
+      }
       return res.status(e.status || 400).json({message:e.message})
     }
     if (httpMethod != 'DELETE')
@@ -24,14 +34,17 @@ var cbSend = (req, res, next) => {
 }
 
 
-function resolveParamFn(Svc, svcFnName, paramaName) {
+function resolveParamFn(Svc, svcFnName, paramName) {
   return (req, res, next, id) => {
     var thisSvc = { user: req.user, sessionID: req.sessionID, session: req.session }
-    if (logging) $log('paramFn', paramaName, id)
+    if (logging) $log('paramFn', paramName, id)
     if (id) id = id.trim()
     Svc[svcFnName].call(thisSvc, id, function(e, r) {
-      if (!r && !e) e = new Error(`${paramaName} not found. Back to <a href="/${paramaName}s">${paramaName}s</a>`)
-      req[paramaName] = r
+      if (!r && !e) {
+        e = new Error404(`${paramName} not found.`,
+          paramName != 'post'&& paramName != 'workshop')
+      }
+      req[paramName] = r
       next(e, r)
     })
   }
@@ -44,12 +57,15 @@ export function serve(Svc, svcFnName, argsFn, Validation) {
     if (logging) $log('thisSvc', svcFnName, argsFn, Svc, thisSvc)
     var callback = cbSend(req,res,next)
     var args = argsFn(req)
-    if (Validation && req.method != 'GET') {
-      var inValid = Validation[svcFnName].apply(thisSvc, _.union([req.user],args))
-      if (inValid) {
-        var e = new Error(inValid)
-        e.status = 403
-        return callback(e)
+    if (Validation) {
+      if (req.method != 'GET' || Validation[svcFnName])
+      {
+        var inValid = Validation[svcFnName].apply(thisSvc, _.union([req.user],args))
+        if (inValid) {
+          var e = new Error(inValid)
+          e.status = 403
+          return callback(e)
+        }
       }
     }
     args.push(callback)

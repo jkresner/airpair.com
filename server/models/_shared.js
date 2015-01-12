@@ -14,7 +14,9 @@ var Touch = {
 
 var MESSAGE_TYPE = [
   'received',
-  'review'
+  'review',
+  'generic',
+  'cancelfromwaiting'
 ]
 
 

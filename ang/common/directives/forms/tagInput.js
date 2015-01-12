@@ -2,7 +2,7 @@
 angular.module('APTagInput', ['ui.bootstrap'])
 
   .value('badTagsSearchQuery', function(value) {
-    var lengthOk = value && (value.length >= 2 || /r/i.test(value));
+    var lengthOk = value && (value.length >= 2 || /r|c/i.test(value));
     var regexMatch = /\[|\]|\{|\}/g.test(value);
     var searchBad = !lengthOk || regexMatch;
     angular.element('.tag-input-group').toggleClass('has-error',searchBad)

@@ -1,103 +1,80 @@
-var util = require('../../../shared/util')
-
-
 angular.module("ADMBookings", [])
 
-  .config(function($locationProvider, $routeProvider) {
+.config(function(apRouteProvider) {
 
-    $routeProvider.when('/adm/bookings', {
-      template: require('./list.html'),
-      controller: 'BookingsCtrl'
-    });
+  var route = apRouteProvider.route
+  route('/adm/bookings', 'Bookings', require('./list.html'))
+  route('/adm/bookings/:id', 'Booking', require('./item.html'))
 
-    $routeProvider.when('/adm/bookings/:id', {
-      template: require('./item.html'),
-      controller: 'BookingCtrl'
-    });
+})
 
-  })
+.controller('BookingCtrl', ($scope, $routeParams, AdmDataService, ServerErrors, BookingsUtil, OrdersUtil) => {
+  $scope.data = {}
+  $scope.util = BookingsUtil
 
+  var setScope = function(r) {
+    if (!r.participants) return
+    if (r.sendGCal) delete r.sendGCal
 
-  .controller('BookingCtrl', function($scope, $routeParams, $location, AdmDataService, ServerErrors) {
-    $scope.booking = {}
-    $scope.data = {}
-
-    $scope.$watch('booking', function(r) {
-      if (!r.participants) return
-
-      $scope.previousDatetime = moment(r.datetime)
-      $scope.data = {
+    var scope = {
+      previousDatetime: moment(r.datetime),
+      data: {
         type: r.type,
         datetime: moment(r.datetime),
         status: r.status,
         notify: false
-      }
-      $scope.customers = _.where(r.participants, (p)=> p.role == 'customer')
-      $scope.experts = _.where(r.participants, (p)=> p.role == 'expert')
+      },
+      customers: BookingsUtil.customers(r),
+      experts: BookingsUtil.experts(r),
+      booking: r,
+      lineForPayout: OrdersUtil.lineForPayout(r.order)
+    }
 
-      var customerFirst = util.firstName($scope.customers[0].info.name)
-      var expertFirst = util.firstName($scope.experts[0].info.name)
-      $scope.hangoutName = `AirPair ${customerFirst} + ${expertFirst}`
-      $scope.hangoutParticipants = []
-      r.participants.forEach(function(p){
-        $scope.hangoutParticipants.push({id:p.gmail||p.info.email,invite_type:'EMAIL'})
-      })
+    angular.extend($scope, scope)
+  }
 
+  AdmDataService.bookings.getBooking({_id:$routeParams.id}, setScope,
+    ServerErrors.fetchFailRedirect('/adm/bookings'))
+
+  $scope.datetimeChanged = (datetime) =>
+    (datetime) ? !datetime.isSame($scope.previousDatetime) : true
+
+  var updateBooking = (ups) =>
+    AdmDataService.bookings.updateBooking(_.extend($scope.booking,ups), setScope)
+
+  $scope.updateTime = (val) => updateBooking({datetime:val})
+  $scope.updateStatus = (val) => updateBooking({status:val})
+  $scope.addGcal = (val) => updateBooking({ sendGCal: { notify: val } })
+
+  $scope.releasePayout = () =>
+    AdmDataService.bookings.releasePayout({_id:$scope.booking.order._id},(r) => {
+      console.log('r.order?', r)
+      $scope.booking.order = r
+      $scope.lineForPayout = OrdersUtil.lineForPayout(r)
     })
 
+})
 
-    AdmDataService.bookings.getBooking($routeParams.id, (r) =>
-      $scope.booking = r,
-      () => $location.path('/adm/bookings')
-    )
+.controller('BookingsCtrl', ($scope, AdmDataService, DateTime, BookingsUtil) => {
+  $scope.util = BookingsUtil
 
-    $scope.update = () =>
-      AdmDataService.bookings.updateBooking($scope.booking, function (r) {
-        $scope.booking = r
-        delete $scope.booking.sendGCal
-      }, ServerErrors.add)
+  $scope.query = {
+    start: moment().add(-15,'day'),
+    end: moment().add(45,'day'),
+    user: { _id: '' }
+  }
 
+  var setScope = (r) => {
+    var bs = { upcoming: [], pending: [], other: [] }
+    r.forEach((b)=>{
+      if (DateTime.inRange(b.datetime, 'anHourAgo', 'in48hours')) bs.upcoming.push(b)
+      if (b.status == 'pending') bs.pending.push(b)
+      else bs.other.push(b)
+    })
+    $scope.bookings = bs
+  }
 
-    $scope.updateTime = (datetime) => {
-      $scope.booking.datetime = datetime
-      $scope.update()
-    }
-
-    $scope.datetimeChanged = (datetime) =>
-      (datetime) ? !datetime.isSame($scope.previousDatetime) : true
-
-    $scope.updateStatus = () => {
-      $scope.booking.status = $scope.data.status
-      $scope.update()
-    }
-
-    $scope.addGcal = () => {
-      $scope.booking.sendGCal = { notify: $scope.data.notify }
-      $scope.update()
-    }
-
-
-
-  })
-
-  .controller('BookingsCtrl', function($scope, AdmDataService) {
-
-    $scope.query = {
-      start: moment().add(-15,'day'),
-      end: moment().add(45,'day'),
-      user: { _id: '' }
-    }
-
-    var setScope = (r) => {
-      $scope.bookings = r
-      var start = moment().add(-1,'hours')
-      var end = moment().add(48, 'hours')
-      $scope.upcoming = _.where(r, (b) => util.dateInRange(moment(b.datetime), start, end))
-    }
-
-    $scope.fetch = () => AdmDataService.bookings.getBookings($scope.query,setScope)
-    $scope.selectUser = (user) => $scope.query.user = user
-
-    // console.log('get', $scope.query, $scope.query.start.format('x'))
-    $scope.fetch()
-  })
+  $scope.selectUser = (user) => $scope.query.user = user
+  $scope.fetch = () => AdmDataService.bookings.getBookings($scope.query,setScope)
+  $scope.fetch()
+})

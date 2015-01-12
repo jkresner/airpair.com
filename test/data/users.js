@@ -107,6 +107,11 @@ module.exports = {
   cher: { name: "Chelsea Rustrum", email: "chelsea@rustrum.com"},
   chru: { name: "Chelsea Rustrum", email: "chelsearustrum@rustrum.com"},
   crus: { name: "Chelsea Rustrum", email: "chelsea.rustrum@rustrum.com"},
+  rusc: { name: "Rustrum Rustrum", email: "rustrum.chelsea@rustrum.com"},
+
+  bfie: { name: "Brian Fiester", email: "brian@dreamstarstudios.com"},
+  brfi: { name: "Brian Fiester", email: "brian@testtest.com"},
+  brif: { name: "Brian Fiester", email: "brian@airtest.com"},
 
   admin: {
     "_id" : "54551be15f221efa174238d1",
@@ -160,8 +165,17 @@ module.exports = {
     emailVerified: false
   },
 
+  dymo: {
+    "_id" : "534d3e5d1c67d1a4859d2d5b",
+    "email" : "alex@alexdymo.com",
+    "emailVerified" : true,
+    "name" : "Alexander Dymo",
+  },
+
+
   dros :{
     "_id" : "52cd929666a6f999a465fee8",
+    "email": "daniel@roseman.org.uk",
     "github" : {
         "provider" : "github",
         "id" : 131395,
@@ -797,6 +811,126 @@ module.exports = {
     ],
     "twitterId" : 12958622,
     "username" : "abliss"
+  },
+
+  dces: {
+    "_id" : "5359bd0e1c67d1a4859d2f74",
+    "email" : "dcestari@gmail.com",
+    "emailVerified" : true,
+    "google" : {
+        "provider" : "google",
+        "id" : "107946246039966851979",
+        "displayName" : "Daniel Cestari",
+        "name" : {
+            "familyName" : "Cestari",
+            "givenName" : "Daniel"
+        },
+        "emails" : [
+            {
+                "value" : "dcestari@gmail.com"
+            }
+        ],
+        "_json" : {
+            "id" : "107946246039966851979",
+            "email" : "dcestari@gmail.com",
+            "verified_email" : true,
+            "name" : "Daniel Cestari",
+            "given_name" : "Daniel",
+            "family_name" : "Cestari",
+            "link" : "https://plus.google.com/107946246039966851979",
+            "picture" : "https://lh4.googleusercontent.com/-DxP-LDK4QNc/AAAAAAAAAAI/AAAAAAAACeM/_QwsHFEXoRE/photo.jpg",
+            "gender" : "male",
+            "locale" : "en"
+        },
+        "token" : {
+            "token" : "ya29.4wDdlJ14TTnMY5un3xmcHGlTNfXVBH7yC7X8epyYKuHMutMyrQ_B4UXQstOjkGmEWEdHBPg05_tXuA",
+            "attributes" : {
+                "refreshToken" : null
+            }
+        }
+    },
+    "googleId" : "107946246039966851979",
+    "initials" : "DC",
+    "name" : "Daniel Cestari",
+  },
+
+  mper: {
+    "_id" : "53cfe2ba8f8c80299bcc3af8",
+    "email" : "mperren@gmail.com",
+    "emailVerified" : true,
+    "github" : {
+        "provider" : "github",
+        "id" : 2049534,
+        "displayName" : "Michael Perrenoud",
+        "username" : "mperrenoud",
+        "profileUrl" : "https://github.com/mperrenoud",
+        "emails" : [ { "value" : "mperren@gmail.com" }
+        ],
+        "_json" : {
+            "login" : "mperrenoud",
+            "id" : 2049534,
+            "avatar_url" : "https://avatars.githubusercontent.com/u/2049534?",
+            "gravatar_id" : "1fe14bf08188abd443168eefb0349ec1",
+            "url" : "https://api.github.com/users/mperrenoud",
+            "html_url" : "https://github.com/mperrenoud",
+            "followers_url" : "https://api.github.com/users/mperrenoud/followers",
+            "following_url" : "https://api.github.com/users/mperrenoud/following{/other_user}",
+            "gists_url" : "https://api.github.com/users/mperrenoud/gists{/gist_id}",
+            "starred_url" : "https://api.github.com/users/mperrenoud/starred{/owner}{/repo}",
+            "subscriptions_url" : "https://api.github.com/users/mperrenoud/subscriptions",
+            "organizations_url" : "https://api.github.com/users/mperrenoud/orgs",
+            "repos_url" : "https://api.github.com/users/mperrenoud/repos",
+            "events_url" : "https://api.github.com/users/mperrenoud/events{/privacy}",
+            "received_events_url" : "https://api.github.com/users/mperrenoud/received_events",
+            "type" : "User",
+            "site_admin" : false,
+            "name" : "Michael Perrenoud",
+            "company" : "",
+            "blog" : "",
+            "location" : "Virginia",
+            "email" : "mperren@gmail.com",
+            "hireable" : true,
+            "bio" : null,
+            "public_repos" : 2,
+            "public_gists" : 0,
+            "followers" : 0,
+            "following" : 1,
+            "created_at" : "2012-07-27T01:39:56Z",
+            "updated_at" : "2014-07-23T16:29:23Z"
+        },
+        "token" : {}
+    },
+    "githubId" : 2049534,
+    "google" : {
+        "provider" : "google",
+        "id" : "116808585840043693419",
+        "displayName" : "Michael Perrenoud",
+        "name" : {
+            "familyName" : "Perrenoud",
+            "givenName" : "Michael"
+        },
+        "emails" : [
+            {
+                "value" : "mperren@gmail.com"
+            }
+        ],
+        "_json" : {
+            "id" : "116808585840043693419",
+            "email" : "mperren@gmail.com",
+            "verified_email" : true,
+            "name" : "Michael Perrenoud",
+            "given_name" : "Michael",
+            "family_name" : "Perrenoud",
+            "link" : "https://plus.google.com/+MichaelPerrenoud",
+            "picture" : "https://lh5.googleusercontent.com/-JfW1lp3qu98/AAAAAAAAAAI/AAAAAAAAAD8/TdH5KVLuPJo/photo.jpg",
+            "gender" : "male",
+            "locale" : "en"
+        },
+        "token" : {}
+    },
+    "googleId" : "116808585840043693419",
+    "initials" : "MJP",
+    "name" : "Michael Perrenoud"
   }
 
 }
