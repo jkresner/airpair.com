@@ -1,29 +1,13 @@
 import Svc              from '../services/_service'
-import * as OrdersSvc   from '../services/orders'
 import Booking          from '../models/booking'
 import User from '../models/user'
 import Expert from '../models/expert'
+var OrdersSvc =         require('../services/orders')
 var Data =              require('./bookings.data')
 var logging =           false
 var svc =               new Svc(Booking, logging)
 var GCal =              require('./wrappers/gcal')
 var util =              require('../../shared/util')
-
-var addParticipants = function(bookingId, customerId, expertId) {
-  $log('migrate', bookingId)
-  Expert.findOne({_id:expertId}, (eExpert, expert) => {
-    $log(`migrate.expert[${expertId}]`, expertId, expert.name)
-      User.findOne({_id:customerId}, (eUser, user) => {
-        if (!user) return $log(`user not found ${customerId} for booking[${bookingId}](${expert.name}) by [${customerId}]`.red)
-        $log(`migrate.customer[${bookingId}]`, customerId, user.name)
-        var participants = [
-          {role:"customer",info: { _id: user._id, name: user.name, email: user.email } },
-          {role:"expert",info: { _id: expert.userId, name: expert.name, email: expert.email } }
-        ]
-        svc.update(bookingId, {participants}, (ee, rr) => { $log('added particiaptns', bookingId) } )
-      })
-    })
-}
 
 var setAvatarsCB = (cb) =>
   (e, booking) => {
@@ -60,9 +44,6 @@ var get = {
     if (userId) query.customerId = userId
     svc.searchMany(query, opts, (e,r) => {
       for (var o of r) {
-        if (!o.participants || o.participants.length == 0)
-          addParticipants(o._id, o.customerId, o.expertId)
-
         Data.select.setAvatars(o)
       }
       cb(null, r)

@@ -2,7 +2,14 @@ var mongoose = require('mongoose')
 var Schema = mongoose.Schema
 var ObjectId = Schema.Types.ObjectId
 
-var methodType = ['stripe','braintree','paypal']
+var methodType = [
+  'stripe',
+  'braintree',
+  'paypal',
+  'payout_paypal',
+  'payout_veno',
+  'payout_coinbase'
+]
 
 
 module.exports = mongoose.model('PayMethod', new mongoose.Schema({

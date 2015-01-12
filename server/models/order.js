@@ -55,6 +55,9 @@ var LineItem = new Schema({
 
 })
 
+LineItem.index({'info.expert._id': 1},{name: "ExpertPayoutsIndex"})
+
+
 module.exports = mongoose.model('Order', new Schema({
 
   _id:            { required: true, type: ObjectId },

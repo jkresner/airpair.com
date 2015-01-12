@@ -1,0 +1,72 @@
+<header>
+  <ol class="entry-meta breadcrumb">
+    <li>Account</li>
+    <li>Payouts</li>
+  </ol>
+</header>
+
+<section id="payouts">
+
+  <section class="payoutmethods" ng-if="payoutmethods">
+
+    <h3>Verified payment methods</h3>
+
+    <p ng-if="payoutmethods.length == 0">
+      Please login with one of the supported
+      payment providers so we can verify your ability to accept payments. We <b>will not</b> store your login (token), only use it for a one off verification.
+    </p>
+
+    <p ng-if="payoutmethods.length > 0" style="color:green">
+      You're good to receive payments using:
+    </p>
+
+    <ul>
+      <li ng-repeat='pm in payoutmethods'><img ng-src="{{'/static/img/icons/'+ pm.type.replace('payout_','') + '.png'}}"/> {{ pm.name }}
+      [<a ng-click="deletePaymethod(pm._id)" class="delete">delete</a>]
+      </li>
+    </ul>
+
+    <div ng-if="!has.paypal">
+      <paypal-login></paypal-login>
+    </div>
+
+  </section>
+
+  <hr />
+
+  <section class="payoutOrders" ng-if="payoutOrders && payoutmethods.length > 0">
+    <h3>Payments you've earned</h3>
+
+    <p ng-if="payoutOrders.length == 0">No payments to report. Better start AirPairing!</p>
+    <div ng-if="payoutOrders.length > 0">
+
+      <table class="table table-striped">
+        <tr>
+          <th>Amount</th>
+          <th>For</th>
+          <th>With</th>
+          <th>Minutes</th>
+          <th style="text-align:right">Status</th>
+        </tr>
+        <tr ng-repeat="o in payoutOrders">
+          <td>${{o.lineItems[0].owed}}</td>
+          <td>{{o.lineItems[0].type}}</td>
+          <td>{{o.by.name}}</td>
+          <td>{{o.lineItems[0].info.minutes}}</td>
+          <td style="text-align:right">
+            <span class="paidout" ng-if="o.lineItems[0].info.paidout">paidout</span>
+            <span class="pending" ng-if="!o.lineItems[0].info.released">pending</span>
+            <span ng-if="o.lineItems[0].info.released && !o.lineItems[0].info.paidout">
+              <input id="{{o._id}}" type="checkbox" ng-model="checkedOrders[o._id]" ng-click="watchOrdersToPayout()" /> <label for="{{o._id}}">Collect</label>
+            </span>
+          </td>
+        </tr>
+      </table>
+
+      <a class="btn" ng-if="checkedOrders.total > 0" ng-click="collectPayment()">
+        Collect ${{checkedOrders.total}}</a>
+    </div>
+
+  </section>
+
+</section>

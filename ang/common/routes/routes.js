@@ -1,3 +1,5 @@
+var resolver = require('./helpers.js').resolveHelper;
+
 angular.module("APRoutes", [])
 
 .provider('apRoute', function apRouteProvider($routeProvider) {
@@ -11,6 +13,8 @@ angular.module("APRoutes", [])
     $routeProvider.when(url, routeDef)
   }
 
+  this.resolver = resolver;
+
   this.$get = function apRouteFactory() {};
 
   return this
@@ -22,9 +26,10 @@ angular.module("APRoutes", [])
 
   this.GET = (urlFn) =>
     (data, success, error) => {
+      var url = '/v1/api'+urlFn(data)
       if (!success) alert('need to pass success for ' + url)
       if (!error) error = (resp) => console.log('error:', resp);
-      $http.get('/v1/api'+urlFn(data)).success(success).error(error)
+      $http.get(url).success(success).error(error)
     }
 
   this.POST = (urlFn, successWrapper) =>

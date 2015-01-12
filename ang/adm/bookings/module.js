@@ -8,7 +8,7 @@ angular.module("ADMBookings", [])
 
 })
 
-.controller('BookingCtrl', ($scope, $routeParams, AdmDataService, ServerErrors, BookingsUtil) => {
+.controller('BookingCtrl', ($scope, $routeParams, AdmDataService, ServerErrors, BookingsUtil, OrdersUtil) => {
   $scope.data = {}
   $scope.util = BookingsUtil
 
@@ -26,7 +26,8 @@ angular.module("ADMBookings", [])
       },
       customers: BookingsUtil.customers(r),
       experts: BookingsUtil.experts(r),
-      booking: r
+      booking: r,
+      lineForPayout: OrdersUtil.lineForPayout(r.order)
     }
 
     angular.extend($scope, scope)
@@ -44,6 +45,13 @@ angular.module("ADMBookings", [])
   $scope.updateTime = (val) => updateBooking({datetime:val})
   $scope.updateStatus = (val) => updateBooking({status:val})
   $scope.addGcal = (val) => updateBooking({ sendGCal: { notify: val } })
+
+  $scope.releasePayout = () =>
+    AdmDataService.bookings.releasePayout({_id:$scope.booking.order._id},(r) => {
+      console.log('r.order?', r)
+      $scope.booking.order = r
+      $scope.lineForPayout = OrdersUtil.lineForPayout(r)
+    })
 
 })
 

@@ -1,15 +1,15 @@
 module.exports = -> describe "API", ->
 
   before (done) ->
-    stubAnalytics()
-    testDb.initTags(done)
+    SETUP.analytics.stub()
+    SETUP.initTags(done)
 
+  after ->
+    SETUP.analytics.restore()
 
-  after (done) ->
-    resotreAnalytics()
-    done()
+  beforeEach ->
+    SETUP.clearIdentity()
 
-  afterEach -> cookie = null
 
   it '403 for non admin on get redirects', (done) ->
     opts = status: 403

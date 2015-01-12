@@ -1,9 +1,9 @@
+require('colors')
 import mw from './server/middleware/_middleware'
 import mongo from './server/util/mongoInit'
 import session from './server/identity/session'
 import hbsEngine from './server/views/_hbsEngine'
 import routes from './server/routes/index'
-require('colors')
 require('./server/util/cache')
 var start = new Date().getTime()
 
@@ -52,9 +52,13 @@ export function run()
       app.get(routes.whiteList, app.renderHbs('base') )
 
       app.use( (err, req, res, next) => {
-        $log('Express handler exception'.red)
-        $error(err, req.user, req)
-        res.status(400).send(err.message)
+        if (config.env != 'test') {
+          $log('Express handler exception'.red)
+          $error(err, req.user, req)
+        }
+        res.status(err.status || 400)
+        if (err.fromApi) res.json({error:err.message})
+        else app.renderErrorPage(err)(req,res)
       })
 
       process.on('uncaughtException', (err) => {

@@ -5,7 +5,7 @@ import * as md5           from '../util/md5'
 import Request            from '../models/request'
 import User               from '../models/user'
 import * as UserSvc       from '../services/users'
-import * as PaymethodsSvc from '../services/paymethods'
+var PaymethodsSvc =       require('../services/paymethods')
 var ExpertsSvc =          require('./experts')
 var util =                require('../../shared/util')
 var Data =                require('./requests.data')

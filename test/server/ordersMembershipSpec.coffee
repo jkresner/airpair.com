@@ -4,13 +4,14 @@ module.exports = -> describe "Membership: ", ->
 
   @timeout 10000
 
-  before (done) ->
-    stubAnalytics()
-    done()
+  before ->
+    SETUP.analytics.stub()
 
-  after (done) ->
-    resotreAnalytics()
-    done()
+  after ->
+    SETUP.analytics.restore()
+
+  beforeEach ->
+    SETUP.clearIdentity()
 
 
   it.skip 'Can create 6 month membership order', (done) ->

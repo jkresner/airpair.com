@@ -2,14 +2,14 @@ ObjectId = require('mongoose').Schema.Types.ObjectId
 
 module.exports = -> describe "Companys", ->
 
-  before (done) ->
-    stubAnalytics()
-    done()
+  before () ->
+    SETUP.analytics.stub()
 
+  after ->
+    SETUP.analytics.restore()
 
-  after (done) ->
-    resotreAnalytics()
-    done()
+  beforeEach ->
+    SETUP.clearIdentity()
 
 
   it.skip 'Can create a company', (done) ->

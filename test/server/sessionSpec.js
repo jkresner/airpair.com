@@ -1,14 +1,17 @@
 module.exports = () => describe("API: ", function() {
 
   before(function(done) {
-    stubAnalytics()
-    testDb.initPosts( () => {
-      testDb.initTags(done) })
+    SETUP.analytics.stub()
+    SETUP.initPosts( () => {
+      SETUP.initTags(done) })
   })
 
-  after(function(done) {
-    resotreAnalytics()
-    done()
+  after(function() {
+    SETUP.analytics.restore()
+  })
+
+  beforeEach(function() {
+    SETUP.clearIdentity()
   })
 
   it('Gets sessionId on anonymous session', function(done) {
