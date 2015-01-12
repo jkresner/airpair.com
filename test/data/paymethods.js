@@ -1,6 +1,6 @@
 module.exports = {
 
-	generic: {
+	braintree_visa: {
 		type: 'braintree',
 		name: 'Default Card',
 		info: { cardType: 'Visa',

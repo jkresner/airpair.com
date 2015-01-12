@@ -35,6 +35,39 @@ var dataHelpers = {
 
   newId,
 
+  // stubBraintreeAddCustomer() {
+  //   return sinon.stub(Braintree,'addPaymentMethod', (customerId,cb) => {
+  //     resp = _.clone(data.paymethods.braintree_visa)
+  //     resp.info.customerId = customerId
+  //     cb(null, resp)
+  //   })
+  // },
+
+  stubBraintreeChargeWithMethod() {
+    return sinon.stub(Braintree,'chargeWithMethod', (amount, orderId, pToken, cb) => {
+      var resp = _.clone(data.wrappers.braintree_charge_success)
+      resp.type = "braintree"
+      resp.transaction.amount = amount.toString()
+      resp.transaction.orderId = orderId.toString()
+      // resp.transaction.customer.id = userId.toString()
+      // resp.transaction.customer.firstName = userId.toString()
+      // resp.transaction.customer.lastName = userId.toString()
+      // resp.transaction.customer.email = userId.toString()
+      // $log('brain stub'.yellow, resp)
+      cb(null, resp)
+    })
+  },
+
+  stubPayPalPayout() {
+    return sinon.stub(paypal.payout,'create', (payload,syncmode,cb) => {
+      var resp = _.clone(data.wrappers.paypal_single_payout_success)
+      resp.items[0].payout_item.receiver = payload.items[0].receiver
+      resp.items[0].payout_item.amount = payload.items[0].amount.toString()
+      cb(null, resp)
+    })
+  },
+
+
   getNewExpertUserData(userKey) {
     var seed = _.clone(data.users[userKey])
     if (!seed || !seed.email) $log('getNewExpertUserData failed need seed user with email'.red)

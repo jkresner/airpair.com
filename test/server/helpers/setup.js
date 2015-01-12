@@ -112,6 +112,7 @@ var setup = {
 }
 
 setup = _.extend(setup,db)
+setup = _.extend(setup,dataHelpers)
 
 for (var story of _.keys(stories)) {
   setup[story] = analyticsSetup.storyWithNoAnalytics(story)

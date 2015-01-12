@@ -1,4 +1,4 @@
-var paypal = require('paypal-rest-sdk')
+var paypal = global.paypal || require('paypal-rest-sdk')
 var openIdConnect = paypal.openIdConnect
 var {stringToJson}  = require('../../../shared/util')
 
@@ -78,17 +78,19 @@ var pp = {
     };
 
     paypal.payout.create(payload, 'true', (e, payout) => {
-      if (e)
-        $log(`paypal.payout.error`.red, JSON.stringify(e).red, JSON.stringify(payload).white)
+      var logging = config.env != 'test'
+      if (e) {
+        if (logging) $log(`paypal.payout.error`.red, JSON.stringify(e).red, JSON.stringify(payload).white)
+      }
       else if (payout && payout.items && payout.items[0].errors) {
-        $log(`paypal.payout.failed`.red, JSON.stringify(payout).red, JSON.stringify(payload).white)
+        if (logging) $log(`paypal.payout.failed`.red, JSON.stringify(payout).red, JSON.stringify(payload).white)
         e = payout.items[0].errors
       }
       else {
         delete payout.items[0].links
         delete payout.links
         delete payout.httpStatusCode
-        $log(`paypal.payout`.yellow, JSON.stringify(payload).white)
+        if (logging) $log(`paypal.payout`.yellow, JSON.stringify(payload).white)
       }
 
       cb(e, payout)
