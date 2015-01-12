@@ -20,7 +20,7 @@ var logCB = (operation, payload, errorCB, cb) =>
   }
 
 
-export function getClientToken(cb) {
+function getClientToken(cb) {
   gateway.clientToken.generate({}, (e, response) => {
     if (e) return cb(e)
     cb(null, { btoken: response.clientToken })
@@ -28,16 +28,19 @@ export function getClientToken(cb) {
 }
 
 
-export function chargeWithMethod(amount, orderId, paymentMethodToken, cb) {
+function chargeWithMethod(amount, orderId, paymentMethodToken, cb) {
   orderId = orderId.toString() // braintree complains if we give it a mongo.ObjectId
   var payload = { amount, orderId, paymentMethodToken, options : { submitForSettlement: true } }
 
   gateway.transaction.sale(payload, logCB('transaction.sale', payload, cb,
-    (e,r) => { r.type = "braintree"; cb(e,r) }))
+    (e,r) => {
+      r.type = "braintree"; cb(e,r)
+    })
+  )
 }
 
 
-export function addPaymentMethod(customerId, user, company, paymentMethodNonce, cb) {
+function addPaymentMethod(customerId, user, company, paymentMethodNonce, cb) {
   var options = {}; // {
     // verifyCard: config.payments.braintree.verifyCards
     // verificationMerchantAccountId: "theMerchantAccountId"
@@ -74,3 +77,5 @@ export function addPaymentMethod(customerId, user, company, paymentMethodNonce, 
     }
   })
 }
+
+module.exports = { getClientToken, chargeWithMethod, addPaymentMethod }

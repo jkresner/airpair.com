@@ -49,7 +49,7 @@ global.addAndLoginLocalUserWithEmailVerified = (originalUserKey, done) ->
 
 global.addAndLoginLocalUserWithPayMethod = (originalUserKey, done) ->
   addAndLoginLocalUserWithEmailVerified originalUserKey, (s) ->
-    new db.Models.PayMethod( _.extend({userId: s._id}, data.paymethods.generic) ).save (e,r) ->
+    new db.Models.PayMethod( _.extend({userId: s._id}, data.paymethods.braintree_visa) ).save (e,r) ->
       s.primaryPayMethodId = r._id
       done(s)
 

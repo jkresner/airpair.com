@@ -852,7 +852,85 @@ module.exports = {
     "googleId" : "107946246039966851979",
     "initials" : "DC",
     "name" : "Daniel Cestari",
-  }
+  },
 
+  mper: {
+    "_id" : "53cfe2ba8f8c80299bcc3af8",
+    "email" : "mperren@gmail.com",
+    "emailVerified" : true,
+    "github" : {
+        "provider" : "github",
+        "id" : 2049534,
+        "displayName" : "Michael Perrenoud",
+        "username" : "mperrenoud",
+        "profileUrl" : "https://github.com/mperrenoud",
+        "emails" : [ { "value" : "mperren@gmail.com" }
+        ],
+        "_json" : {
+            "login" : "mperrenoud",
+            "id" : 2049534,
+            "avatar_url" : "https://avatars.githubusercontent.com/u/2049534?",
+            "gravatar_id" : "1fe14bf08188abd443168eefb0349ec1",
+            "url" : "https://api.github.com/users/mperrenoud",
+            "html_url" : "https://github.com/mperrenoud",
+            "followers_url" : "https://api.github.com/users/mperrenoud/followers",
+            "following_url" : "https://api.github.com/users/mperrenoud/following{/other_user}",
+            "gists_url" : "https://api.github.com/users/mperrenoud/gists{/gist_id}",
+            "starred_url" : "https://api.github.com/users/mperrenoud/starred{/owner}{/repo}",
+            "subscriptions_url" : "https://api.github.com/users/mperrenoud/subscriptions",
+            "organizations_url" : "https://api.github.com/users/mperrenoud/orgs",
+            "repos_url" : "https://api.github.com/users/mperrenoud/repos",
+            "events_url" : "https://api.github.com/users/mperrenoud/events{/privacy}",
+            "received_events_url" : "https://api.github.com/users/mperrenoud/received_events",
+            "type" : "User",
+            "site_admin" : false,
+            "name" : "Michael Perrenoud",
+            "company" : "",
+            "blog" : "",
+            "location" : "Virginia",
+            "email" : "mperren@gmail.com",
+            "hireable" : true,
+            "bio" : null,
+            "public_repos" : 2,
+            "public_gists" : 0,
+            "followers" : 0,
+            "following" : 1,
+            "created_at" : "2012-07-27T01:39:56Z",
+            "updated_at" : "2014-07-23T16:29:23Z"
+        },
+        "token" : {}
+    },
+    "githubId" : 2049534,
+    "google" : {
+        "provider" : "google",
+        "id" : "116808585840043693419",
+        "displayName" : "Michael Perrenoud",
+        "name" : {
+            "familyName" : "Perrenoud",
+            "givenName" : "Michael"
+        },
+        "emails" : [
+            {
+                "value" : "mperren@gmail.com"
+            }
+        ],
+        "_json" : {
+            "id" : "116808585840043693419",
+            "email" : "mperren@gmail.com",
+            "verified_email" : true,
+            "name" : "Michael Perrenoud",
+            "given_name" : "Michael",
+            "family_name" : "Perrenoud",
+            "link" : "https://plus.google.com/+MichaelPerrenoud",
+            "picture" : "https://lh5.googleusercontent.com/-JfW1lp3qu98/AAAAAAAAAAI/AAAAAAAAAD8/TdH5KVLuPJo/photo.jpg",
+            "gender" : "male",
+            "locale" : "en"
+        },
+        "token" : {}
+    },
+    "googleId" : "116808585840043693419",
+    "initials" : "MJP",
+    "name" : "Michael Perrenoud"
+  }
 
 }

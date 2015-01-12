@@ -11,6 +11,14 @@ module.exports = -> describe "API: ", ->
   after ->
     SETUP.analytics.restore()
 
+  beforeEach ->
+    @payoutStub = SETUP.stubPayPalPayout()
+    @braintreepaymentStub = SETUP.stubBraintreeChargeWithMethod()
+
+  afterEach ->
+    @payoutStub.restore()
+    @braintreepaymentStub.restore()
+
 
   it 'New expert sees empty orders list to be paid out', (done) ->
     SETUP.newLoggedInExpert 'tmot', (expert, expertSession) ->
@@ -100,8 +108,8 @@ module.exports = -> describe "API: ", ->
 
 
   it 'Expert can see multiple transactions owed', (done) ->
-    SETUP.newBookedRequest 'brif', {}, 'tmot', (request1, booking1, customerSession1, expertSession) ->
-      SETUP.newBookedRequestWithExistingExpert 'brfi', {}, expertSession, (request2, booking2, customerSession2, expertSession) ->
+    SETUP.newBookedRequest 'mikf', {}, 'mper', (request1, booking1, customerSession1, expertSession) ->
+      SETUP.newBookedRequestWithExistingExpert 'mfly', {}, expertSession, (request2, booking2, customerSession2, expertSession) ->
         LOGIN 'admin', data.users.admin, ->
           PUT "/adm/billing/orders/#{booking1.orderId}/release", {}, {}, (released1) ->
             PUT "/adm/billing/orders/#{booking2.orderId}/release", {}, {}, (released2) ->
@@ -120,9 +128,9 @@ module.exports = -> describe "API: ", ->
 
 
   it 'Expert can see multiple transactions of mixed status', (done) ->
-    SETUP.newBookedRequest 'hubi', {}, 'dymo', (request1, booking1, customerSession1, expertSession) ->
-      SETUP.newBookedRequestWithExistingExpert 'brfi', {}, expertSession, (request2, booking2, customerSession2, expertSession) ->
-        SETUP.newBookedRequestWithExistingExpert 'acob', {}, expertSession, (request3, booking3, customerSession3, expertSession) ->
+    SETUP.newBookedRequest 'hubi', {}, 'tmot', (request1, booking1, customerSession1, expertSession) ->
+      SETUP.newBookedRequestWithExistingExpert 'kaun', {}, expertSession, (request2, booking2, customerSession2, expertSession) ->
+        SETUP.newBookedRequestWithExistingExpert 'brhu', {}, expertSession, (request3, booking3, customerSession3, expertSession) ->
           LOGIN 'admin', data.users.admin, ->
             PUT "/adm/billing/orders/#{booking1.orderId}/release", {}, {}, (released1) ->
               # PUT "/adm/billing/orders/#{booking2.orderId}/release", {}, {}, (released2) ->
@@ -140,20 +148,24 @@ module.exports = -> describe "API: ", ->
 
 
   it 'Paypal sandbox works', (done) ->
+    # These can start failing with 500 INTERNAL ERROR if there isn't enough
+    # balance in the test account (really annoying)
+    @payoutStub.restore()
     pp = require('../../server/services/wrappers/paypal')
     payoutId = newId()
     pp.payout "expert_engb_verified@airpair.com",90,payoutId,'note', (e,p) ->
-      $log('e', e, 'p', JSON.stringify(p))
-      expect(e).to.be.undefined
+      # $log('e', e, 'p', JSON.stringify(p))
+      expect(e).to.be.null
       expect(p.items[0].transaction_status).to.equal("SUCCESS")
       done()
 
 
   it 'Paypal sandbox passes back error for non existing address', (done) ->
+    @payoutStub.restore()
     pp = require('../../server/services/wrappers/paypal')
     payoutId = newId()
     pp.payout "expert_nonexisting@airpair.com",90,payoutId,'note', (e,p) ->
-      $log('e', e, 'p', JSON.stringify(p))
+      # $log('e', e, 'p', JSON.stringify(p))
       expect(e).to.exist
       expect(p.items[0].transaction_status).to.equal("UNCLAIMED")
       done()
@@ -161,7 +173,7 @@ module.exports = -> describe "API: ", ->
 
   it 'Expert can collect a single released transaction to their verified paypal account', (done) ->
     SETUP.newLoggedInExpertWithPayoutmethod 'admb', (expert, expertSession, payoutmethod) ->
-      SETUP.newBookedRequestWithExistingExpert 'brfi', {}, expertSession, (request, booking, customerSession, expertSession) ->
+      SETUP.newBookedRequestWithExistingExpert 'josh', {}, expertSession, (request, booking, customerSession, expertSession) ->
         SETUP.releaseOrderAndLogExpertBackIn booking.orderId, expertSession, ->
           GET "/billing/orders/payouts", {}, (orders) ->
             expect(orders.length).to.equal(1)
@@ -205,7 +217,7 @@ module.exports = -> describe "API: ", ->
 
   it 'Expert can not collect single released transaction with no paymethod', (done) ->
     SETUP.newLoggedInExpert 'abha', (expert, expertSession) ->
-      SETUP.newBookedRequestWithExistingExpert 'brfi', {}, expertSession, (request, booking, customerSession, expertSession) ->
+      SETUP.newBookedRequestWithExistingExpert 'joba', {}, expertSession, (request, booking, customerSession, expertSession) ->
         SETUP.releaseOrderAndLogExpertBackIn booking.orderId, expertSession, ->
           GET "/billing/orders/payouts", {}, (orders) ->
             d = orders: _.pluck(orders,'_id')
@@ -217,7 +229,7 @@ module.exports = -> describe "API: ", ->
 
   it 'Expert can not pay out single pending transaction to their verified payout account', (done) ->
     SETUP.newLoggedInExpertWithPayoutmethod 'tmot', (expert, expertSession, payoutmethod) ->
-      SETUP.newBookedRequestWithExistingExpert 'chup', {}, expertSession, (request, booking, customerSession, expertSession) ->
+      SETUP.newBookedRequestWithExistingExpert 'peco', {}, expertSession, (request, booking, customerSession, expertSession) ->
         LOGIN expertSession.userKey, expertSession, ->
           GET "/billing/orders/payouts", {}, (orders) ->
             d = orders: _.pluck(orders,'_id')
@@ -227,7 +239,7 @@ module.exports = -> describe "API: ", ->
 
 
   it 'Expert can pay out combined transaction to their payout account', (done) ->
-    SETUP.newLoggedInExpertWithPayoutmethod 'dymo', (expert, expertSession, payoutmethod) ->
+    SETUP.newLoggedInExpertWithPayoutmethod 'mper', (expert, expertSession, payoutmethod) ->
       SETUP.newBookedRequestWithExistingExpert 'hubi', {}, expertSession, (request1, booking1, customerSession1, expertSession) ->
         SETUP.newBookedRequestWithExistingExpert 'brfi', {}, expertSession, (request2, booking2, customerSession2, expertSession) ->
           SETUP.newBookedRequestWithExistingExpert 'acob', {}, expertSession, (request3, booking3, customerSession3, expertSession) ->
@@ -251,10 +263,10 @@ module.exports = -> describe "API: ", ->
 
 
   it 'Expert can see payout history', (done) ->
-    SETUP.newLoggedInExpertWithPayoutmethod 'admb', (expert, expertSession, payoutmethod) ->
-      SETUP.newBookedRequestWithExistingExpert 'hubi', {}, expertSession, (request1, booking1, customerSession1, expertSession) ->
-        SETUP.newBookedRequestWithExistingExpert 'brfi', {}, expertSession, (request2, booking2, customerSession2, expertSession) ->
-          SETUP.newBookedRequestWithExistingExpert 'acob', {}, expertSession, (request3, booking3, customerSession3, expertSession) ->
+    SETUP.newLoggedInExpertWithPayoutmethod 'dymo', (expert, expertSession, payoutmethod) ->
+      SETUP.newBookedRequestWithExistingExpert 'dysn', {}, expertSession, (request1, booking1, customerSession1, expertSession) ->
+        SETUP.newBookedRequestWithExistingExpert 'dily', {}, expertSession, (request2, booking2, customerSession2, expertSession) ->
+          SETUP.newBookedRequestWithExistingExpert 'chuc', {}, expertSession, (request3, booking3, customerSession3, expertSession) ->
             LOGIN 'admin', data.users.admin, ->
               PUT "/adm/billing/orders/#{booking1.orderId}/release", {}, {}, (released1) ->
                 PUT "/adm/billing/orders/#{booking2.orderId}/release", {}, {}, (released2) ->

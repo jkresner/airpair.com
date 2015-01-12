@@ -2,7 +2,7 @@ import Svc from './_service'
 import PayMethod from '../models/paymethod'
 import * as UserSvc from './users'
 import * as CompanysSvc from './companys'
-import * as Braintree from './wrappers/braintree'
+var Braintree = global.Braintree || require('./wrappers/braintree')
 var Stripe = require('./wrappers/stripe')
 var PayPal = require('./wrappers/paypal')
 var {Settings} = require('../models/v0')

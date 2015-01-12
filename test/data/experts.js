@@ -731,6 +731,56 @@ module.exports = {
     "updatedAt" : "2014-10-16T16:05:59.071Z",
     "userId" : "5359bd0e1c67d1a4859d2f74",
     "username" : "dcestari"
-}
+  },
+
+  mper: {
+    "_id" : "53cfe315a60ad902009c5954",
+    "availability" : "",
+    "bb" : {
+        "id" : "michael_perrenoud"
+    },
+    "bookMe" : {
+        "rate" : "130",
+        "rake" : "20",
+        "urlSlug" : "michaelp",
+        "urlBlog" : "",
+        "noIndex" : false,
+        "enabled" : true,
+        "coupons" : [],
+        "creditRequestIds" : []
+    },
+    "brief" : "I just love teaching, simple! I feel that if I can give back to the community by bringing knowledge to others, overall we produce greater solutions to today's complex problems.",
+    "email" : "mperren@gmail.com",
+    "gh" : {
+        "id" : 2049534,
+        "username" : "mperrenoud",
+        "location" : "Virginia",
+        "blog" : "",
+        "gravatar_id" : "1fe14bf08188abd443168eefb0349ec1",
+        "followers" : 0
+    },
+    "gmail" : "mperren@gmail.com",
+    "homepage" : "",
+    "hours" : "3-5",
+    "in" : {
+        "id" : "mT5mywxZ4D",
+        "displayName" : "Michael Perrenoud"
+    },
+    "minRate" : 40,
+    "name" : "Michael Perrenoud",
+    "pic" : "https://secure.gravatar.com/avatar/1fe14bf08188abd443168eefb0349ec1",
+    "rate" : 120,
+    "so" : {
+        "id" : 1195080,
+        "website_url" : "",
+        "link" : "1195080/michael-perrenoud",
+        "reputation" : 37789,
+        "profile_image" : "https://www.gravatar.com/avatar/1fe14bf08188abd443168eefb0349ec1?s=128&d=identicon&r=PG"
+    },
+    "status" : "ready",
+    "updatedAt" : "2014-12-03T21:40:56.136Z",
+    "userId" : "53cfe2ba8f8c80299bcc3af8",
+    "username" : "mperrenoud"
+  }
 
 }

@@ -100,6 +100,28 @@ module.exports = {
       "rel":"self",
       "method":"GET"}]
       ,"httpStatusCode":201
-    }
+    },
+
+  braintree_charge_success: {
+    "transaction":{
+      "id":"5fkkvj",
+      "status":"submitted_for_settlement",
+      "type":"sale",
+      "currencyIsoCode":"USD",
+      "amount":"100.00",
+      "merchantAccountId":"g3fw8yfbwkhxfpbc",
+      "orderId":"54b417c51a83c69b49458d2b",
+      "createdAt":"2015-01-12T18:51:50Z",
+      "updatedAt":"2015-01-12T18:51:50Z",
+      "customer":{
+        "id":"54aafb08701dedeb9fce7e98",
+        "firstName":"Evan",
+        "lastName":"Richards1420491528",
+        "company":null,
+        "email":"evengoldfish1420491528@gmail.com",
+        "website":null,
+        "phone":null,
+        "fax":null
+      },"billing":{"id":"sy","firstName":null,"lastName":null,"company":null,"streetAddress":null,"extendedAddress":null,"locality":null,"region":null,"postalCode":"94107","countryName":null,"countryCodeAlpha2":null,"countryCodeAlpha3":null,"countryCodeNumeric":null},"refundId":null,"refundIds":[],"refundedTransactionId":null,"settlementBatchId":null,"shipping":{"id":null,"firstName":null,"lastName":null,"company":null,"streetAddress":null,"extendedAddress":null,"locality":null,"region":null,"postalCode":null,"countryName":null,"countryCodeAlpha2":null,"countryCodeAlpha3":null,"countryCodeNumeric":null},"customFields":{"createdByUserId":"54aafb08701dedeb9fce7e98"},"avsErrorResponseCode":null,"avsPostalCodeResponseCode":"M","avsStreetAddressResponseCode":"I","cvvResponseCode":"I","gatewayRejectionReason":null,"processorAuthorizationCode":"WXTB64","processorResponseCode":"1000","processorResponseText":"Approved","additionalProcessorResponse":null,"voiceReferralNumber":null,"purchaseOrderNumber":null,"taxAmount":null,"taxExempt":false,"creditCard":{"token":"f2xwmw","bin":"401288","last4":"1881","cardType":"Visa","expirationMonth":"12","expirationYear":"2020","customerLocation":"US","cardholderName":null,"imageUrl":"https://assets.braintreegateway.com/payment_method_logo/visa.png?environment=sandbox","uniqueNumberIdentifier":"e623ae0b9612707c948eb19a377b978b","prepaid":"No","healthcare":"Unknown","debit":"Unknown","durbinRegulated":"Unknown","commercial":"Unknown","payroll":"Unknown","issuingBank":"Unknown","countryOfIssuance":"USA","productId":"Unknown","venmoSdk":false,"maskedNumber":"401288******1881","expirationDate":"12/2020"},"statusHistory":[{"timestamp":"2015-01-12T18:51:50Z","status":"authorized","amount":"100.00","user":"airpair","transactionSource":"api"},{"timestamp":"2015-01-12T18:51:50Z","status":"submitted_for_settlement","amount":"100.00","user":"airpair","transactionSource":"api"}],"planId":null,"subscriptionId":null,"subscription":{"billingPeriodEndDate":null,"billingPeriodStartDate":null},"addOns":[],"discounts":[],"descriptor":{"name":null,"phone":null,"url":null},"recurring":false,"channel":null,"serviceFeeAmount":null,"escrowStatus":null,"disbursementDetails":{"disbursementDate":null,"settlementAmount":null,"settlementCurrencyIsoCode":null,"settlementCurrencyExchangeRate":null,"fundsHeld":null,"success":null},"disputes":[],"paymentInstrumentType":"credit_card","processorSettlementResponseCode":"","processorSettlementResponseText":"","paypalAccount":{},"applePayCard":{}},"success":true}
 
 }
