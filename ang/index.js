@@ -49,7 +49,7 @@ require('./account/module.js');
 require('./requests/module.js');
 
 angular.module("AP", ['Providers', 'ngRoute', 'ngAnimate', 'ui.bootstrap.datetimepicker',
-  'APRoutes', 'APUtil', 'APViewData', 'APDataSvc', 'APCTAs', 'APInputs',
+  'APRoutes', 'APUtil', 'APViewData', 'APDataSvc', 'APCTAs', 'APFormsDirectives', 'APInputs',
   'APAnalytics', 'APSideNav', 'APChatNav', 'APServerTemplates', 'APNotifications',
   'APProfileDirectives', 'APPageHelpers',
   'APAuth', 'APPosts', 'APWorkshops', 'APProfile', 'APBilling', 'APRequests',
