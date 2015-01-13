@@ -113,7 +113,7 @@ angular.module("APProfile", ['ngRoute', 'APFilters', 'APSvcSession', 'APTagInput
 })
 
 
-.controller('PayoutsCtrl', ($scope, $location, DataService, ServerErrors, OrdersUtil) => {
+.controller('PayoutsCtrl', ($scope, $location, $q, DataService, ServerErrors, OrdersUtil) => {
 
   if ($location.search().fail)
     ServerErrors.add({message:$location.search().fail})
@@ -148,19 +148,31 @@ angular.module("APProfile", ['ngRoute', 'APFilters', 'APSvcSession', 'APTagInput
 
   $scope.watchOrdersToPayout = () => {
     var total = 0
-    $scope.data.orders = _.difference(_.keys($scope.checkedOrders),['total'])
-    $scope.data.orders.forEach((oId) => {
-      total += _.find($scope.payoutOrders,(o)=>o._id==oId).lineItems[0].owed
+  
+    $scope.data.orders = _.map(_.keys($scope.checkedOrders),(key) => {
+      console.log('$scope.checkedOrders[key])', $scope.checkedOrders[key])
+      if (key != 'total' && $scope.checkedOrders[key]) 
+      {
+        var o = _.find($scope.payoutOrders,(o)=>o._id==key)
+        total += o.lineItems[0].owed
+        return key
+      }
     })
+    console.log('checkedOrders', $scope.checkedOrders)
     $scope.checkedOrders.total = total
   }
 
-  $scope.collectPayment = () => {
+
+  $scope.collectPaymentDeferred = () => {
+    var deferred = $q.defer()
+    console.log('*****clicked', $scope.data)
     DataService.billing.payoutOrders($scope.data, (r) => {
-      //-- super hacky!
       window.location = window.location
-    })
+      deferred.resolve(r)
+    },
+    deferred.reject)
+
+    return deferred.promise
   }
+
 })
-
-
