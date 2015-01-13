@@ -19,6 +19,7 @@ var cfg = {
     google: {
       clientID: '1019727294613-rjf83l9dl3rqb5courtokvdadaj2dlk5.apps.googleusercontent.com',
       clientSecret: 'Kd6ceFORVbABH7p5UbKURexZ',
+      redirectUrl: 'http://localhost:3333/auth/google/callback',
       scope: [
         'profile',
         'email',
