@@ -52,10 +52,10 @@ export function run()
       app.get(routes.whiteList, app.renderHbs('base') )
 
       app.use( (err, req, res, next) => {
-        if (config.env != 'test') {
-          $log('Express handler exception'.red)
-          $error(err, req.user, req)
-        }
+        // if (config.env != 'test') {
+        $log('Express handler exception'.white)
+        $error(err, req.user, req)
+        // }
         res.status(err.status || 400)
         if (err.fromApi) res.json({error:err.message})
         else app.renderErrorPage(err)(req,res)
