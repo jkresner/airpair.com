@@ -67,7 +67,7 @@ var cfg = {
     }
   },
   chat: {
-    on: false,
+    on: true,
   },
   log: {},
   mail: {
