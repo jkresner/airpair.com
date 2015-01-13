@@ -29,7 +29,7 @@ module.exports = -> describe "API: ", ->
         # expect(booking1.type).to.equal('private')
 
 
-  it 'Can update booking and send invitations as admin', (done) ->
+  it.skip 'Can update booking and send invitations as admin', (done) ->
     addAndLoginLocalUserWithPayMethod 'cher', (s) ->
       airpair1 = time: moment().add(2, 'day'), minutes: 120, type: 'private', payMethodId: s.primaryPayMethodId
       POST "/bookings/#{data.experts.dros._id}", airpair1, {}, (booking1) ->
