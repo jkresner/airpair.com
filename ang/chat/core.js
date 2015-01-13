@@ -64,7 +64,6 @@
 		};
 		
 		this.getRoom = function (roomId) {
-			console.log(roomId)
 			if (!this._rooms[roomId]) 
 				this._rooms[roomId] = new Room(this, roomId);
 			
@@ -83,7 +82,6 @@
 						this._callbackWrap((function () {
 							var memberId = snapshot.key();
 							members[memberId] = cc.getMember(memberId);
-							console.log("adding admin", memberId)
 						}).bind(this));
 					}).bind(this));
 					
@@ -187,16 +185,16 @@
 		this._updateMember = (function (memberSnapshot) {
 			var memberId = memberSnapshot.key(),
 				memberRaw = memberSnapshot.val(),
-				memberPage = memberRaw.page? 
-					memberRaw.page.replace(/-/g, '/').replace(/\^/g, '#') : "Unknown",
+				memberPage = memberRaw.page && memberRaw.page.url? 
+					memberRaw.page.url.replace(/-/g, '/').replace(/\^/g, '#') : "Unknown",
 				lastMemberRaw = this._lastMembers[memberId],
 				lastMemberPage;
 			
 			this.members.byId[memberId] = cc.getMember(memberId); 
 			
 			if (lastMemberRaw) {
-				lastMemberPage = lastMemberRaw.page? 
-					lastMemberRaw.page.replace(/-/g, '/').replace(/\^/g, '#') : "Unknown";
+				lastMemberPage = lastMemberRaw.page && lastMemberRaw.page? 
+					lastMemberRaw.page.url.replace(/-/g, '/').replace(/\^/g, '#') : "Unknown";
 					
 				delete this.members.byPage[lastMemberPage][memberId];
 				delete this.members.byStatus[lastMemberRaw.status][memberId];
@@ -330,6 +328,7 @@
 			.child("members/byMID")
 			.child(this.id);
 		this.rooms = fdata(this, 'rooms');
+		this.page = fdata(this, 'page');
 			
 		this._ref.on("value", (function (memberSnapshot) {
 			var memberData = memberSnapshot.val();
@@ -579,6 +578,8 @@
 		this._lastEvent = (new Date()).getTime();
 		this._status = "offline"; // offline, online, away
 		
+		var lastPage;
+		
 		this._initializeStatusCheck = function () {
 			this._changeStatus("online");
 			
@@ -610,7 +611,13 @@
 				.replace(/\//g, '-')
 				.replace(/#/g, '^');
 			
-			this._ref.child('page').set(page);
+			if (page !== lastPage) {
+				lastPage = page;
+				this._ref.child('page').set({
+					url: page,
+					timestamp: Firebase.ServerValue.TIMESTAMP
+				});	
+			}
 		};
 		
 		this._registerEvent = function () {

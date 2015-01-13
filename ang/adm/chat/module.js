@@ -1,8 +1,10 @@
 require('../../../public/lib/firebase/firebase.js');
+require('../../../public/lib/moment/moment.js');
+require('../../../public/lib/angular-moment/angular-moment.js');
 require('../../chat/core.js');
 require('../../chat/app.js');
 
-angular.module("ADMChat", ["chat-widget"])
+angular.module("ADMChat", ["chat-widget", "angularMoment"])
 
 .config(function($locationProvider, $routeProvider) {
 
@@ -15,6 +17,7 @@ angular.module("ADMChat", ["chat-widget"])
 
 .controller('ChatCtrl', function($scope, corechat) {
   $scope.setCurrentUser = function (memberId) {
+    console.log("mid>", memberId)
     var RID = getMemberToMemberRID(memberId, corechat.selfmember.id);
     $scope.currentUser = corechat.getMember(memberId);
     $scope.currentUser.join(RID);
