@@ -25,8 +25,8 @@ var cbSession = (ctx, cb) =>
     }
     var obj = util.selectFromObject(r, Data.select.sessionFull)
     if (obj.roles && obj.roles.length == 0) delete obj.roles
-    console.log("firebase token in cbSession>", ctx.sessionID, ctx.session)
-    obj.firebaseToken = ctx.session.firebaseToken
+    // console.log("firebase token in cbSession>", ctx.sessionID, ctx.session)
+    if (config.chat.ong) obj.firebaseToken = ctx.session.firebaseToken
     Data.select.setAvatar(obj)
     if (ctx.user)
       ctx.session.passport.user = Data.select.sessionFromUser(obj)
@@ -326,11 +326,11 @@ export function getSession(cb) {
 
     var session = _.extend({
         authenticated: false,
-        sessionID: this.sessionID, 
+        sessionID: this.sessionID,
         firebaseToken: this.session.firebaseToken,
         avatar
       }, this.session.anonData)
-      
+
     Data.select.inflateTagsAndBookmarks(session, cb)
   }
   else

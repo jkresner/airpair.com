@@ -19,7 +19,7 @@ var authFn = (provider) => {
         req.logIn(user, function(eerr) {
           if (eerr) return next(eerr)
           res.json(user)
-          console.log('in authFn > ', next)
+          // console.log('in authFn > ', next)
           if (next)
             next();
           else
