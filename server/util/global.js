@@ -29,5 +29,4 @@ module.exports = function(config)
     winston.add(require('winston-ses').Ses, config.log.email)
   }
 
-
 }
