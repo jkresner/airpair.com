@@ -57,13 +57,8 @@ var cfg = {
     libCss: '/styles/libs.css'
   },
   calendar: {
-    on: false,
+    on: true,
     google: {
-      access_token: 'ya29.8ADODKBNyChHf2aDOSx98nFnPB1zA43dpJ4BRM0K4p57_y0ZCZJ7uJ4H',
-      calendarId: 'experts@airpair.com',
-      clientId: '',
-      clientSecret: '',
-      redirectUrl: "https://www.airpair.com/oauth2callback"
     }
   },
   chat: {
@@ -181,5 +176,20 @@ module.exports = function(env, appdir) {
     cfg.calendar.google.access_token = process.env.CALENDAR_GOOGLE_ACCESS_TOKEN
   }
 
+  if (cfg.calendar.on){
+    // example AUTH_GOOGLE_REFRESH_TOKEN
+    // "mike@madeye.io:1/eljaJDHqLRqI5z81h3PcAeFOG9Te2f7OAQhPkX8azRAMEudVrK5jSpoR30zcRFq6"
+    var refreshTokenUsersString = process.env.AUTH_GOOGLE_REFRESH_TOKEN;
+    cfg.auth.google.refreshTokenUsers = [];
+    cfg.auth.google.refreshTokens = {};
+    for (var pair of refreshTokenUsersString.split('::'))
+    {
+      var email = pair.split(":")[0];
+      var token = pair.split(":")[1];
+      cfg.auth.google.refreshTokens[email] = token;
+      cfg.auth.google.refreshTokenUsers.push(email);
+    }
+    cfg.calendar.google.calendarId = cfg.auth.google.refreshTokenUsers[0];
+  }
   return cfg;
 }
