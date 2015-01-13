@@ -343,7 +343,7 @@ export function getSession(cb) {
 
 export function getSessionFull(cb) {
   if (!this.user)
-    return getSession.call(this, cb)
+    return $callSvc(getSession,this)(cb)
 
   svc.searchOne({ _id:this.user._id },{ fields: Data.select.sessionFull }, cbSession(this, cb))
 }

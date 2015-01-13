@@ -73,7 +73,8 @@ module.exports = {
 
     //-- TODO, watch out for cache changing via adds and deletes of records
     inflateTagsAndBookmarks(user, cb) {
-      if (!user || (!user.tags && !user.bookmarks) ) return cb(null, user)
+      var noInflate = !user || (!user.tags && !user.bookmarks)
+      if (noInflate) return cb(null, user)
 
       cache.ready(['tags','posts','workshops'], () => {
         // if (logging) $log('inflateTagsAndBookmarks.start')
@@ -113,6 +114,9 @@ module.exports = {
   },
 
   query: {
+    existing: function(email) {
+      return { '$or': [{email:email},{'google._json.email':email}] }
+    }
   }
 
 }

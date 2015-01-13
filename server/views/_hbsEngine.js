@@ -58,14 +58,14 @@ export default function(app) {
 
   app.renderErrorPage = (error) =>
     (req,res) => {
-      getSession.call(req, (e,session) => {
-        res.status(error.status||400).render(`./error.hbs`, combineBaseData(req,{error,session}))
-      })
+      // $callSvc(getSession,req)((e,session) => {
+      res.status(error.status||400).render(`./error.hbs`, {error})
+      // })
     }
 
   app.renderHbs = (fileName, data) =>
     (req,res) => {
-      getSession.call(req, (e,session) => {
+      $callSvc(getSession,req)((e,session) => {
         res.status(200).render(`./${fileName}.hbs`, combineBaseData(req,{viewData:data,session}))
       })
     }
@@ -77,7 +77,7 @@ export default function(app) {
 
   app.renderHbsViewData = (partialName, pageMeta, viewDataFn) =>
     (req, res) => {
-      getSession.call(req,(e,session)=>
+      $callSvc(getSession,req)((e,session)=>
         viewDataFn(req, (e,data) => {
           if (data.tmpl && data.tmpl != 'default')
             data[`${partialName}${data.tmpl}Render`] = true
