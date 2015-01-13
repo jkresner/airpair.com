@@ -89,7 +89,7 @@ var script = function(){
         }
       });
       console.log("Add the following line to your ~/.bashrc:");
-      console.log("EXPORT AUTH_GOOGLE_REFRESH_TOKEN=" + emailAddress + ":" + refreshToken);
+      console.log("export AUTH_GOOGLE_REFRESH_TOKEN='" + emailAddress + ":" + refreshToken + "'");
     });
   });
 }
