@@ -129,7 +129,10 @@ Booking: https://airpair.com/booking/${original._id}`
       }
     }
     else
-      svc.update(original._id, original, setAvatarsCB(cb))
+      svc.update(original._id, original, (e,r) => {
+        if (e || !r) return cb(e,r)
+        get.getByIdForAdmin(r._id,cb)
+      })
   },
   confirmBooking()
   {

@@ -22,36 +22,8 @@ var owner2colorIndex = {
 
 var cfg = config.calendar.google
 var calendarId = cfg.calendarId
-var auth = new OAuth2Client(cfg.clientId, cfg.clientSecret, cfg.redirectUrl)
-auth.setCredentials({ access_token: cfg.access_token })
-
-
-// var readline = require('readline');
-// var rl = readline.createInterface({ input: process.stdin, output: process.stdout })
-
-// function getAccessToken(oauth2Client, callback) {
-//   // generate consent page url
-//   var url = auth.generateAuthUrl({
-//     access_type: 'offline', // will return a refresh token
-//     scope: 'https://www.googleapis.com/auth/calendar'
-//   });
-
-//   console.log('Visit the url: ', url);
-//   rl.question('Enter the code here:', function(code) {
-//     // request access token
-//     auth.getToken(code, function(err, tokens) {
-//       // set tokens to the client
-//       // TODO: tokens should be set by OAuth2 client.
-//       $log('tokens'.white, tokens)
-//       auth.setCredentials(tokens);
-//       callback();
-//     });
-//   });
-// }
-
-// getAccessToken(auth, function() {
-// })
-
+var auth = new OAuth2Client(config.auth.google.clientID, config.auth.google.clientSecret);
+auth.setCredentials({ refresh_token: config.auth.google.refreshTokens[cfg.calendarId]});
 
 var calFns = {
   // listCalendars(cb) {
@@ -78,6 +50,7 @@ var calFns = {
     var colorId = (admInitials) ? owner2colorIndex[admInitials] : undefined
     var hangoutLink = null
     var resource = { summary, start, end, attendees, description, colorId, hangoutLink }
+
     gcal.events.insert({ auth, calendarId, sendNotifications, resource }, function(err, data) {
       if (err) return cb(err)
       cb(null, data)
