@@ -27,3 +27,4 @@ var googleOAuth = OAuthProvider.init('google', (req, provider, profile, done) =>
 
 
 export var local = { login: localLogin, signup: localSignup }
+export var google = { oAuth: googleOAuth }
