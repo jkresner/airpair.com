@@ -20,10 +20,10 @@ var owner2colorIndex = {
 }
 
 
-var cfg = config.calendar.google
-var calendarId = cfg.calendarId
+var {calendarId,owner,ownerRefreshToken} = config.calendar.google
+
 var auth = new OAuth2Client(config.auth.google.clientID, config.auth.google.clientSecret);
-auth.setCredentials({ refresh_token: config.auth.google.refreshTokens[cfg.calendarId]});
+auth.setCredentials({ refresh_token: ownerRefreshToken });
 
 var calFns = {
   // listCalendars(cb) {
