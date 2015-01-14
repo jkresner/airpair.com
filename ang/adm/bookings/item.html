@@ -36,6 +36,16 @@
         <br /><input name="gcalNotify" type="checkbox" ng-model="data.notify">
         Notify participants
       </div>
+      <div ng-if="data.gcal">
+        <p><a href="{{data.gcal.htmlLink}}">{{data.gcal.summary}}</a></p>
+        <p><strong>Last Updated</strong><br />{{data.gcal.updated}}</p>
+        <p><strong>Attendees</strong></p>
+        <ul>
+          <li ng-repeat="attendee in data.gcal.attendees">
+            {{attendee.displayName}}
+            ({{attendee.email}})
+          </li>
+      </div>
     </section>
 
   </section>
