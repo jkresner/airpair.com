@@ -55,6 +55,11 @@ var nestedPick = (object, keys) => {
 
 var util = {
 
+  endsWith(str, suffix) {
+    return str.indexOf(suffix, str.length - suffix.length) !== -1;
+  },
+
+
   datetime: {
     dawn: () => moment('20121225','YYYYMMDD'),
     anHourAgo: () => moment().add(-1,'hour'),

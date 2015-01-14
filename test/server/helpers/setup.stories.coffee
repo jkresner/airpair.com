@@ -17,7 +17,7 @@ PaymethodsService = require('../../../server/services/paymethods')
 
 global.addLocalUser = (userKey, opts, done) ->
   clone = getNewUserData(userKey)
-  UserService.tryLocalSignup.call(newUserSession(userKey), clone.email, clone.password, clone.name, (e, r) ->
+  UserService.localSignup.call(newUserSession(userKey), clone.email, clone.password, clone.name, (e, r) ->
     data.users[clone.userKey] = r
     if (opts && opts.emailVerified)
       UserService.update.call(this, data.users[clone.userKey]._id, opts, (err, user) ->

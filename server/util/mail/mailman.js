@@ -1,10 +1,8 @@
-var fs =          require('fs')
-var handlebars =  require('handlebars')
-var util =        require('../../../shared/util')
-var marked =      require('marked')
-
-// var async =       require('async')
-import {getUsersInRole} from '../../services/users'
+var fs               = require('fs')
+var handlebars       = require('handlebars')
+var util             = require('../../../shared/util')
+var marked           = require('marked')
+var {getUsersInRole} = require('../../services/users')
 
 var templates = {}
 

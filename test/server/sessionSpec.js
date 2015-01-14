@@ -102,23 +102,31 @@ module.exports = () => describe("API: ", function() {
             var singup = getNewUserData('ramo')
             http(global.app).post('/v1/auth/signup').send(singup)
               .set('cookie',cookie)
-              .end( (err, resp) =>
+              .end( (err, resp) => {
+                var newUser = resp.body
+                expect(newUser._id).to.exist
+                expect(newUser.name).to.equal(singup.name)
+                expect(newUser.tags).to.exist
+                expect(newUser.tags.length).to.equal(1)
+                expect(newUser.tags[0].name).to.equal('MongoDB')
+                expect(newUser.emailVerified).to.equal(false)
                 GET('/session/full', {}, (sFull) => {
                   expect(sFull._id).to.exist
                   expect(sFull.name).to.equal(singup.name)
                   expect(sFull.tags).to.exist
                   expect(sFull.tags.length).to.equal(1)
                   expect(sFull.tags[0].name).to.equal('MongoDB')
+                  expect(sFull.emailVerified).to.equal(false)
                   done()
                 })
-              )
+              })
           })
         })
     )
 
 
     it('Can add and remove tags to authenticated session', function(done) {
-      addAndLoginLocalUser('arys', function(s) {
+      SETUP.addAndLoginLocalUser('arys', function(s) {
         PUT('/users/me/tag/node.js', {}, {}, function(s1) {
           expect(s1.tags.length).to.equal(1)
           expect(s1.tags[0].name).to.equal('Node.JS')
