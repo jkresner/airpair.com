@@ -137,6 +137,10 @@ Booking: https://airpair.com/booking/${original._id}`
         get.getByIdForAdmin(r._id,cb)
       })
   },
+  addYoutubeData(youTubeId){
+    console.log("adding youTube data", youTubeId);
+  },
+
   confirmBooking()
   {
     cb(Error('confirmBooking not implemented'))
