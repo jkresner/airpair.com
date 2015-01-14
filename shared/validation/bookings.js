@@ -14,7 +14,7 @@ var validation = {
     if (!update.datetime) return 'Booking datetime required'
     if (!update.orderId) return 'Booking orderId required'
 
-    if (original.gcal && update.sendGCal) cb("Updating gCAL events not yet supported")
+    if (original.gcal && update.sendGCal) return ("Updating gCAL events not yet supported")
 
   },
   confirmBooking(user, original, update)
