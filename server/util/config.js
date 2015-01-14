@@ -69,7 +69,9 @@ var cfg = {
   chat: {
     on: false,
   },
-  log: {},
+  log: {
+    auth: false
+  },
   mail: {
     on: false, // we don't send mail in dev
     ses: {
@@ -137,6 +139,8 @@ module.exports = function(env, appdir) {
   }
 
   if (cfg.env == 'production') {
+
+    cfg.log.auth = (process.env.LOG_AUTH) ? process.env.LOG_AUTH == 'true' : false
     cfg.log.email = {
       level:          process.env.LOG_EMAIL_LEVEL || 'error',
       sesAccessKey:   cfg.mail.ses.access_key,
@@ -164,7 +168,7 @@ module.exports = function(env, appdir) {
       access_token: process.env.AUTH_TWITTER_ACCESS_TOKEN,
       access_token_secret: process.env.AUTH_TWITTER_ACCESS_TOKEN_SECRET
     }
-    
+
     cfg.auth.firebase = {
       url: process.env.FIRBEASE_URL,
       secret: process.env.FIREBASE_SECRET
