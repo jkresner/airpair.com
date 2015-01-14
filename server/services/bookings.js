@@ -124,7 +124,10 @@ Booking: https://airpair.com/booking/${original._id}`
           $log('event created', e, r)
           if (e) return cb(e)
           original.gcal = r
-          svc.update(original._id, original, setAvatarsCB(cb))
+          svc.update(original._id, original, (e,r) => {
+            if (e || !r) return cb(e,r)
+            get.getByIdForAdmin(r._id,cb)
+          })
         })
       }
     }
