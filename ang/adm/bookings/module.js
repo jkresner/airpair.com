@@ -50,7 +50,6 @@ angular.module("ADMBookings", [])
   $scope.addGcal = (val) => updateBooking({ sendGCal: { notify: val } })
   $scope.addYouTubeData = function(val){
     var youTubeId = util.parseYouTubeId(val);
-    console.log("PARSED ID", youTubeId);
     AdmDataService.bookings.addYouTubeData({_id: $scope.booking._id, youTubeId}, setScope)
   }
 
