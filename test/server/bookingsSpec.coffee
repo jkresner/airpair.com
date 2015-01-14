@@ -1,3 +1,4 @@
+youtube = require "../../server/services/wrappers/youtube.js"
 util = require '../../shared/util'
 ordersUtil = require '../../shared/orders'
 
@@ -15,6 +16,13 @@ module.exports = -> describe "API: ", ->
 
   beforeEach ->
     SETUP.clearIdentity()
+
+  it.only "given a YouTube ID, allows a booking to be annotated with YouTube data", (done)->
+    videoInfo = youtube.getVideoInfo 'MEv4SuSJgwk', (err, results)->
+      console.error "ERR", err
+      console.log "RESULT", results.items[0].snippet
+
+
 
   it.skip 'Expert gets a notification that they have been booked', (done) ->
 
