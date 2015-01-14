@@ -22,7 +22,8 @@ angular.module("ADMBookings", [])
         type: r.type,
         datetime: moment(r.datetime),
         status: r.status,
-        notify: false
+        notify: false,
+        gcal: r.gcal
       },
       customers: BookingsUtil.customers(r),
       experts: BookingsUtil.experts(r),

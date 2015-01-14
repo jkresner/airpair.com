@@ -177,7 +177,7 @@ module.exports = function(env, appdir) {
     cfg.calendar.google.access_token = process.env.CALENDAR_GOOGLE_ACCESS_TOKEN
   }
 
-  if (cfg.calendar.on){
+  if (cfg.calendar.on && process.env.AUTH_GOOGLE_REFRESH_TOKEN){
     // example AUTH_GOOGLE_REFRESH_TOKEN
     // "mike@madeye.io:1/eljaJDHqLRqI5z81h3PcAeFOG9Te2f7OAQhPkX8azRAMEudVrK5jSpoR30zcRFq6"
     var refreshTokenUsersString = process.env.AUTH_GOOGLE_REFRESH_TOKEN;
