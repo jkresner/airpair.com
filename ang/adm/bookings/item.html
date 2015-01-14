@@ -36,6 +36,17 @@
         <br /><input name="gcalNotify" type="checkbox" ng-model="data.notify">
         Notify participants
       </div>
+      <div ng-if="data.gcal">
+        <p><a href="{{data.gcal.htmlLink}}">{{data.gcal.summary}}</a></p>
+        {{data.gcal.start.dateTime | date:'MM/dd/yyyy'}}<br/>
+        {{data.gcal.start.dateTime | date:'h:mma'}} to {{data.gcal.end.dateTime | date:'h:mma'}}<br /><br />
+        <p><strong>Attendees</strong></p>
+        <ul>
+          <li ng-repeat="attendee in data.gcal.attendees">
+            {{attendee.displayName}}
+            ({{attendee.email}})
+          </li>
+      </div>
     </section>
 
   </section>
