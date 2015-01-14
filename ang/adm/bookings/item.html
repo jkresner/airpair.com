@@ -87,11 +87,11 @@
 
     <div class="recodings">
       <h3>Recordings</h3>
-      <!-- <input type="text" class="form-control" placeholder="Paste you tube link" />
       <div ng-repeat="r in booking.recordings">
-        <span>{{r.url}}</span>
-      </div> -->
-      <p>JK still to build</p>
+      <span><a target="youTubePreview" href="http://youtube.com/watch?v={{r.data.youTubeId}}">{{r.data.title}}</a></span><br />
+      </div><br /><br />
+      <input type="text" id="newYouTubeLink" class="form-control" placeholder="Paste YouTube link" ng-model="data.youTubeId"/>
+      <input type="submit" ng-click="addYouTubeData(data.youTubeId)" value="Add Recording" /><br /><br />
     </div>
 
     <div class="feedback">

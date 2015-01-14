@@ -137,6 +137,7 @@ Booking: https://airpair.com/booking/${original._id}`
     youTube.getVideoInfo(youTubeId, function(err, data){
       original.status = "followup"
       delete(data.thumbnails) //can be derived from YouTube ID
+      data.youTubeId = youTubeId
       original.recordings.push({data})
       svc.update(original._id, original, (e,r) => {
         if (e || !r) return cb(e,r)
