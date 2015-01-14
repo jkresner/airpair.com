@@ -35,7 +35,7 @@ var script = function(){
   // https://code.google.com/apis/console
   var CLIENT_ID = config.auth.google.clientID;
   var CLIENT_SECRET = config.auth.google.clientSecret;
-  var REDIRECT_URL = 'http://localhost:3333/auth/google/callback';
+  var REDIRECT_URL = 'http://localhost:3333/dev/setup/google/callback';
 
   var oauth2Client = new OAuth2Client(CLIENT_ID, CLIENT_SECRET, REDIRECT_URL);
 
