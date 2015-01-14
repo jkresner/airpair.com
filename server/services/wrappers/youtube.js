@@ -12,7 +12,10 @@ auth.setCredentials({ refresh_token: refreshToken});
 var callFns = {
   getVideoInfo(id, cb) {
     youtube.videos.list({auth, id, part:"snippet"}, function(err, results){
-      cb(err, results);
+      if (results && results.items){
+        var info = results.items[0].snippet;
+      }
+      cb(err, info);
     })
   }
 }

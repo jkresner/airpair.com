@@ -18,11 +18,22 @@ module.exports = -> describe "API: ", ->
     SETUP.clearIdentity()
 
   it.only "given a YouTube ID, allows a booking to be annotated with YouTube data", (done)->
-    videoInfo = youtube.getVideoInfo 'MEv4SuSJgwk', (err, results)->
-      console.error "ERR", err
-      console.log "RESULT", results.items[0].snippet
-
-
+    addAndLoginLocalUserWithPayMethod 'cher', (s) ->
+      airpair1 = time: moment().add(2, 'day'), minutes: 120, type: 'private', payMethodId: s.primaryPayMethodId
+      POST "/bookings/#{data.experts.dros._id}", airpair1, {}, (booking1) ->
+        expect(booking1._id).to.exist
+        expect(booking1.customerId).to.exist
+        expect(booking1.minutes).to.equal(120)
+        expect(booking1.orderId).to.exist
+        expect(booking1.type).to.exist
+        expect(booking1.participants.length).to.equal(2)
+        LOGIN 'admin', data.users.admin, (sadm) ->
+          url = "/adm/bookings/#{booking1._id}/recording"
+          PUT url, {youTubeId: "MEv4SuSJgwk"}, {}, (booking) ->
+            expect(booking.status).to.equal("followup")
+            expect(booking.recordings.length).to.equal(1)
+            expect(booking.recordings[0].data.title).to.equal("Online Rails Code Review with RoR Expert Edward Anderson - AirPair")
+            done()
 
   it.skip 'Expert gets a notification that they have been booked', (done) ->
 
@@ -56,7 +67,3 @@ module.exports = -> describe "API: ", ->
             expect(bs1.gcal).to.exist
             expect(bs1.gcal.attendees.length).to.equal(2)
             done()
-
-
-  # it.skip 'Can save youtube recording as admin', (done) ->
-

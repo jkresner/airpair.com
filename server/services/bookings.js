@@ -7,6 +7,7 @@ var Data =              require('./bookings.data')
 var logging =           false
 var svc =               new Svc(Booking, logging)
 var GCal =              require('./wrappers/gcal')
+var youTube =           require('./wrappers/youtube')
 var util =              require('../../shared/util')
 
 var setAvatarsCB = (cb) =>
@@ -95,11 +96,6 @@ var save = {
     }
 
     original.status = update.status
-    if ((update.recordings||[]).length > (original.recordings||[]).length) {
-      $log('adding a recording')
-      if (original.status == 'confirmed')
-        original.status = 'followup'
-    }
 
     if (update.sendGCal) {
       var attenddees = []
@@ -137,8 +133,16 @@ Booking: https://airpair.com/booking/${original._id}`
         get.getByIdForAdmin(r._id,cb)
       })
   },
-  addYoutubeData(youTubeId){
-    console.log("adding youTube data", youTubeId);
+  addYouTubeData(original, youTubeId, cb){
+    youTube.getVideoInfo(youTubeId, function(err, data){
+      original.status = "followup"
+      delete(data.thumbnails) //can be derived from YouTube ID
+      original.recordings.push({data})
+      svc.update(original._id, original, (e,r) => {
+        if (e || !r) return cb(e,r)
+          get.getByIdForAdmin(r._id,cb)
+      })
+    });
   },
 
   confirmBooking()
