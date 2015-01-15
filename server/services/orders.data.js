@@ -83,8 +83,8 @@ var query = {
 }
 
 var opts = {
-  orderByNewest: { sort: { 'utc': 1 } },
-  orderByOldest: { sort: { 'utc': -1 } }
+  orderByNewest: { sort: { 'utc': -1 } },
+  orderByOldest: { sort: { 'utc': 1 } }
 }
 
 module.exports = {base,select,query,opts}
