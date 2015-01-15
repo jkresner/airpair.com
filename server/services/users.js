@@ -14,7 +14,7 @@ var get = {
     var opts = { options: { limit: 4 }, fields: Data.select.search }
     var rex = new RegExp(searchTerm, "i")
     var query = searchTerm ? { '$or' : [{email : rex},{name : rex},{'google.displayName' : rex},{'google._json.email' : rex}] } : null;
-    svc.searchMany(query, opts, Data.select.cb.searchResults)
+    svc.searchMany(query, opts, Data.select.cb.searchResults(cb))
   },
 
   getUsersInRole(role, cb) {

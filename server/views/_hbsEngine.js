@@ -71,13 +71,15 @@ export default function(app) {
   app.renderHbs = (fileName, data) =>
     (req,res) => {
       $callSvc(getSession,req)((e,session) => {
+        if (e) { req.logout(); return res.redirect('/login') }
         res.status(200).render(`./${fileName}.hbs`, combineBaseData(req,{viewData:data,session}))
       })
     }
 
   app.renderHbsViewData = (partialName, pageMeta, viewDataFn) =>
     (req, res) => {
-      $callSvc(getSession,req)((e,session)=>
+      $callSvc(getSession,req)((e,session)=> {
+        if (e) { req.logout(); return res.redirect('/login') }
         viewDataFn(req, (e,data) => {
           if (data.tmpl && data.tmpl != 'default')
             data[`${partialName}${data.tmpl}Render`] = true
@@ -89,6 +91,6 @@ export default function(app) {
           res.status(200).render(`./baseServer.hbs`,
             combineBaseData(req, { viewData: data, partialName, canonical, session } ) )
         })
-      )
+      })
 	}
 }

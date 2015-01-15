@@ -1,6 +1,7 @@
 import * as md5     from '../util/md5'
 var util            = require('../../shared/util')
-var bcrypt          =        require('bcrypt')
+var bcrypt          = require('bcrypt')
+var logging         = config.log.auth || false
 
 var select = {
   session: {
@@ -114,9 +115,9 @@ var data = {
     cb: {
       session(ctx, cb) {
         return (e, r) => {
-          // $log('cbSession'.red, e, r)
-          if (e || !r) {
-            if (logging) $log('cbSession'.red, e, r)
+          if (e || r == null) {
+            if (!e && r == null) { e = Error('Session user does not exist') }
+            if (logging) { $log('cbSession'.red, e, r) }
             return cb(e, r)
           }
 
@@ -139,6 +140,7 @@ var data = {
             }
             u = data.select.setAvatar(u);
           }
+          cb(e,r)
         }
       }
     }
