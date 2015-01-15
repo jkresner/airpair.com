@@ -20,6 +20,11 @@ var validation = {
   confirmBooking(user, original, update)
   {
 
+  },
+
+  addYouTubeData(user, original, youTubeId)
+  {
+    if (!youTubeId) return "YouTube ID Required"
   }
 }
 

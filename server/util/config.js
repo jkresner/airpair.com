@@ -190,6 +190,5 @@ module.exports = function(env, appdir) {
       cfg.auth.google.refreshTokens[email] = token;
     }
   }
-
   return cfg;
 }

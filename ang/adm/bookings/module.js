@@ -1,3 +1,5 @@
+var util = require('../../../shared/util');
+
 angular.module("ADMBookings", [])
 
 .config(function(apRouteProvider) {
@@ -46,6 +48,10 @@ angular.module("ADMBookings", [])
   $scope.updateTime = (val) => updateBooking({datetime:val})
   $scope.updateStatus = (val) => updateBooking({status:val})
   $scope.addGcal = (val) => updateBooking({ sendGCal: { notify: val } })
+  $scope.addYouTubeData = function(val){
+    var youTubeId = util.parseYouTubeId(val);
+    AdmDataService.bookings.addYouTubeData({_id: $scope.booking._id, youTubeId}, setScope)
+  }
 
   $scope.releasePayout = () =>
     AdmDataService.bookings.releasePayout({_id:$scope.booking.order._id},(r) => {
