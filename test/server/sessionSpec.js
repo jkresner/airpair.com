@@ -220,7 +220,7 @@ module.exports = () => describe("API: ", function() {
 
 
     it('Can add and remove bookmarks to authenticated session', function(done) {
-      addAndLoginLocalUser('alys', function(s) {
+      SETUP.addAndLoginLocalUser('alys', function(s) {
         PUT(`/users/me/bookmarks/post/${data.posts.v1AirPair._id}`, {}, {}, function(s1) {
           expect(s1.bookmarks.length).to.equal(1)
           expect(s1.bookmarks[0].title).to.equal("Starting a Mean Stack App")
@@ -242,7 +242,7 @@ module.exports = () => describe("API: ", function() {
 
 
   it('Can login and get previous sessions bookmarks', function(done) {
-    addAndLoginLocalUser('wilm', function(s) {
+    SETUP.addAndLoginLocalUser('wilm', function(s) {
       PUT(`/users/me/bookmarks/post/${data.posts.v1AirPair._id}`, {}, {}, function(s1) {
         expect(s1.bookmarks.length).to.equal(1)
         expect(s1.bookmarks[0].title).to.equal("Starting a Mean Stack App")
@@ -263,7 +263,7 @@ module.exports = () => describe("API: ", function() {
 
 
   it('Does not wipe existing local login data with anonymous tags and bookmarks data', function(done) {
-    addAndLoginLocalUser('wlmo', function(s) {
+    SETUP.addAndLoginLocalUser('wlmo', function(s) {
       PUT(`/users/me/bookmarks/post/${data.posts.v1AirPair._id}`, {}, {}, function(s1) {
         expect(s1.bookmarks.length).to.equal(1)
         expect(s1.bookmarks[0].title).to.equal("Starting a Mean Stack App")
@@ -298,26 +298,102 @@ module.exports = () => describe("API: ", function() {
   it.skip('Not gonna impl: Merges anonymous session data to local LOGIN user', () => {})
 
 
-  describe("Profile: ", function(done) {
+  describe("Profile: anonymous", function(done) {
 
-    before(function(done) { done() })
+    it('Can update email', function(done) {
+      var clone = getNewUserData('kfor')
+      http(global.app)
+        .put('/v1/api/users/me/email')
+        .send({email:clone.email})
+        .expect(200)
+        .expect('Content-Type', /json/)
+        .end(function(err, resp){
+          cookie = resp.headers['set-cookie']
+          expect(resp.body.email).to.equal(clone.email)
+          expect(resp.body.authenticated).to.equal(false)
+          expect(resp.body.avatar).to.exist
+          expect(resp.body.sessionID).to.exist
+          GET('/session/full', {}, function(s) {
+            expect(s.email).to.equal(clone.email)
+            expect(s.authenticated).to.equal(false)
+            expect(s.avatar).to.exist
+            expect(s.sessionID).to.exist
+            done()
+          })
+        })
+    })
 
-    it('Can update profile', function(done) {
-      addAndLoginLocalUser('sctm', function(s) {
-        GET('/session/full', {}, (s1) => {
-          var originalName = s1.name
-          var username = originalName.toLowerCase().replace(/ /g,'')
-          expect(s1.initials).to.be.undefined
-          expect(s1.username).to.be.undefined
-          PUT('/users/me', { name: 'testUP', initials: 'IN', username }, {}, function(r) {
-            expect(r.initials).to.equal('IN')
-            expect(r.name).to.equal('testUP')
-            GET('/session/full', {}, (s2) => {
-              expect(s2.initials).to.equal('IN')
-              expect(s2.name).to.equal('testUP')
-              expect(s2.username).to.equal(username)
+    it('Can update name', function(done) {
+      var clone = getNewUserData('mthm')
+      http(global.app)
+        .put('/v1/api/users/me/name')
+        .send({name:clone.name})
+        .expect(200)
+        .expect('Content-Type', /json/)
+        .end(function(err, resp){
+          cookie = resp.headers['set-cookie']
+          expect(resp.body.name).to.equal(clone.name)
+          expect(resp.body.authenticated).to.equal(false)
+          expect(resp.body.avatar).to.exist
+          expect(resp.body.sessionID).to.exist
+          GET('/session/full', {}, function(s) {
+            expect(s.name).to.equal(clone.name)
+            expect(s.authenticated).to.equal(false)
+            expect(s.avatar).to.exist
+            expect(s.sessionID).to.exist
+            done()
+          })
+        })
+    })
+
+
+    it('Can update email and name', function(done) {
+      var clone = getNewUserData('cmck')
+      http(global.app)
+        .put('/v1/api/users/me/email')
+        .send({email:clone.email})
+        .expect(200)
+        .expect('Content-Type', /json/)
+        .end(function(err, resp){
+          cookie = resp.headers['set-cookie']
+          expect(resp.body.email).to.equal(clone.email)
+          expect(resp.body.name).to.be.undefined
+          PUT('/users/me/name', {name:clone.name}, {}, (s2) => {
+            expect(s2.email).to.equal(clone.email)
+            expect(s2.name).to.equal(clone.name)
+            GET('/session/full', {}, function(s) {
+              expect(s.name).to.equal(clone.name)
+              expect(s.email).to.equal(clone.email)
               done()
             })
+          })
+        })
+    })
+
+  })
+
+
+  describe("Profile: authenticated", function(done) {
+
+    it('Can update name', function(done) {
+      SETUP.addAndLoginLocalUserWithEmailVerified('sctm', function(s) {
+        expect(s._id).to.exist
+        expect(s.email).to.exist
+        expect(s.name).to.exist
+        expect(s.avatar).to.exist
+        expect(s.emailVerified).to.equal(true)
+        expect(s.initials).to.be.undefined
+        expect(s.username).to.be.undefined
+
+        var originalName = s.name
+        //var username = originalName.toLowerCase().replace(/ /g,'')
+
+        PUT('/users/me/name', { name: 'test UP' }, {}, function(s2) {
+          // expect(r.initials).to.equal('IN')
+          expect(s2.name).to.equal('test UP')
+          GET('/session/full', {}, (s2) => {
+            expect(s2.name).to.equal('test UP')
+            done()
           })
         })
       })
