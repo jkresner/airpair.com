@@ -207,7 +207,7 @@ var save = {
   // and to set and send a new email hash for verification
   changeEmail(email, cb) {
     email = email.trim().toLowerCase()
-    var {user} = this
+    var {user,session} = this
     if (user)
       updateEmailToBeVerified.call(this, email, cb, (e, user, hash) => {
         if (!e && hash && user)
