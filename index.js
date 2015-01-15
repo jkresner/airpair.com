@@ -53,9 +53,9 @@ export function run()
 
       app.use( (err, req, res, next) => {
         // if (config.env != 'test') {
-        $log('Express handler exception'.white)
+        $log('Express handler exception'.magenta)
         $error(err, req.user, req)
-        // }
+        //}
         res.status(err.status || 400)
         if (err.fromApi) res.json({error:err.message})
         else app.renderErrorPage(err)(req,res)
