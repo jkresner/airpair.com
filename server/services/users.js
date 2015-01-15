@@ -82,12 +82,19 @@ function updateAsIdentity(data, trackData, cb) {
       //-- belongs in middleware ?
       // if (ctxUser)
         // ctx.session.passport.user = data.select.sessionFromUser(r)
+      //this.user.emailVerified = true
+
+      //-- Very magic important line
+      if (!_.isEqual(this.session.passport.user, Data.select.sessionFromUser(user)))
+        this.session.passport.user = Data.select.sessionFromUser(user)
 
       // $log('going to return', user)
       done(null, user)
     })
   }
   else {
+
+    // $log('in updateAsIdentity: anon', data)
 
     this.session.anonData = _.extend(this.session.anonData, data)
     get.getSession.call(this, cb)
@@ -221,10 +228,9 @@ var save = {
         $log('verifyEmail.error'.red, e, r)
         return cb(e,r)
       }
-      if (r.local.emailHash == hash) {
-        this.user.emailVerified = true
+      if (r.local.changeEmailHash == hash) {
         var trackData = { type: 'emailVerified', email: this.user.email }
-        updateAsIdentity(this, { emailVerified: true }, trackData, cb)
+        updateAsIdentity.call(this, { emailVerified: true }, trackData, cb)
       }
       else
         cb(Error("e-mail verification failed, hash is not valid"))
@@ -238,19 +244,19 @@ var save = {
       if (e || !user) return cb(svc.Forbidden(`${email} not found`))
 
       var update = { local: _.extend(user.local || {}, {
-        passwordHash: Data.data.generateHash(email),
+        changePasswordHash: Data.data.generateHash(email),
         passowrdHashGenerated: new Date()
       })}
 
       //-- Previously had a google login without a v1 upsert migrate
-      if (!user.email) {
+      if (!user.email && user.google) {
         update.email = user.google._json.email
         update.name = user.google.displayName || 'there noname'
       }
 
-      var trackData = { type: 'change-password-request', email, anonymous: this.user==null }
-      updateAsIdentity.call(this, update, trackData, (e,r) => {
-        mailman.sendChangePasswordEmail(r, update.passwordHash)
+      var trackData = { type: 'change-password-request', email, anonymous: self.user==null }
+      updateAsIdentity.call(self, update, trackData, (e,r) => {
+        mailman.sendChangePasswordEmail(user, update.local.changePasswordHash)
         return cb(null, {email})
       })
     })
@@ -262,8 +268,9 @@ var save = {
 
       // we've just received the hash that we sent to user.email
       // so mark their email as verified
-      delete user.local.passwordHash
+      delete user.local.changePasswordHash
       delete user.local.passowrdHashGenerated
+      user.local.password = Data.data.generateHash(password)
 
       var update = {
         'emailVerified': true,
@@ -271,6 +278,8 @@ var save = {
       }
 
       var trackData = { type: 'password', hash }
+      $log('goin'.blue, trackData, update)
+      this.user = user
       updateAsIdentity.call(this, update, trackData, cb)
     })
   }
@@ -280,32 +289,32 @@ var save = {
 
 function updateEmailToBeVerified(email, errorCB, successCB) {
   email = email.toLowerCase()
+  var {user} = this
 
-  var data = { type: 'email', email, previous: user.email, previousVerified: user.emailVerified }
-  analytics.track(user, this.sessionID, 'Save', data, {}, ()=>{})
+  var trackData = { type: 'email', email, previous: user.email, previousVerified: user.emailVerified }
 
   svc.searchOne({_id:this.user._id}, {}, (ee, r) => {
     if (r.email == email && r.emailVerified) return cb(`${email} already verified`)
 
-    ups = { local: r.local || {} }
+    var ups = { local: r.local || {} }
 
     if (r.email != email) {
       ups.email = email
       ups.emailVerified = false
     }
 
-    if (!r.local.emailHash || !r.local.emailHashGenerated
+    if (!r.local.changeEmailHash || !r.local.emailHashGenerated
       || !moment(r.local.emailHashGenerated).isAfter(moment().add(-3,'hours')))
     {
-      ups.local.emailHash = Data.data.generateHash(email)
+      ups.local.changeEmailHash = Data.data.generateHash(email)
       ups.local.emailHashGenerated = new Date
     }
 
-    updateAsIdentity.call(this, ups, (e,user) => {
+    updateAsIdentity.call(this, ups, trackData, (e,user) => {
       if (e) {
         if (e.message.indexOf('duplicate key error index') != -1) return errorCB(Error('Email belongs to another account'))
       }
-      cb(e, user)
+      successCB(e, user, ups.local.changeEmailHash)
     })
   })
 }
@@ -317,7 +326,7 @@ function callAuthSvcFn(thisCtx, fnName, args) {
   // $log(cbSessioned, cbSessioned())
   args.push(cbSessioned)
   // $log('going'.white, fnName, 'args', args)
-  // $log('callAuthSvcFn'.yellow, args)
+  // $log('callAuthSvcFn'.yellow, args, thisCtx)
   UserAuth[fnName].apply(thisCtx, args)
 }
 
