@@ -1,3 +1,4 @@
+db = require('./helpers/setup.db')
 postTitle = "Analytics Tests "+moment().format('X')
 postSlug = postTitle.toLowerCase().replace /\ /g, '-'
 postUrl = "/v1/posts/#{postSlug}"
@@ -28,7 +29,7 @@ module.exports = ->describe "Tracking: ", ->
       anonymousId = s.sessionID
       spy = sinon.spy(analytics,'view')
       analytics.setCallback =>
-        testDb.viewsByAnonymousId anonymousId, (e,r) ->
+        db.viewsByAnonymousId anonymousId, (e,r) ->
           expect(r.length).to.equal(1)
           expect(r[0].userId).to.be.null
           expect(r[0].anonymousId).to.equal(anonymousId)

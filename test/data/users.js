@@ -13,6 +13,9 @@ module.exports = {
   mcas: { name:"Moises Cassab",email:"moises.cassab@gmail.com" },
   mois: { name:"Moises Cassab",email:"moises.cassab@hotmail.com" },
 
+  mris: { name:"Mike Risse",email:"mike@madeye.io" },
+  mirs: { name:"Mike Risse",email:"mike.risse@hotmail.com" },
+
   jmel: { name:"Joe Mellin",email:"joemellin@gmail.com" },
   joem: { name:"Joe Mellin",email:"joe@mellin.com" },
   ramo: { name:"Ramon Porter",email:"sierra@test.com" },
@@ -931,6 +934,144 @@ module.exports = {
     "googleId" : "116808585840043693419",
     "initials" : "MJP",
     "name" : "Michael Perrenoud"
-  }
+  },
+
+  mkod: {
+    "_id" : "52f229b71c67d1a4859d2065",
+    "cohort" : {
+        "engagement" : {
+            "visit_first" : "2014-02-05T12:08:23.000Z",
+            "visit_signup" : "2014-02-05T12:08:23.000Z",
+            "visit_last" : "2015-01-12T13:19:39.818Z",
+            "visits" : [ "2014-10-16T00:00:00.000Z" ]
+        },
+        "aliases" : [
+            "KO_QotE5GU2H9nCwIGbeUilaZPmbqQs8"
+        ],
+        "firstRequest" : {
+            "url" : "/review/549ff5b24f96dc0b00a23cd3"
+        }
+    },
+    "email" : "pentium10@gmail.com",
+    "emailVerified" : true,
+    "google" : {
+        "provider" : "google",
+        "id" : "111187629502324536557",
+        "displayName" : "Marton Kodok",
+        "name" : {
+            "familyName" : "Kodok",
+            "givenName" : "Marton"
+        },
+        "emails" : [{ "value" : "pentium10@gmail.com" }],
+        "_json" : {
+            "id" : "111187629502324536557",
+            "email" : "pentium10@gmail.com",
+            "verified_email" : true,
+            "name" : "Marton Kodok",
+            "given_name" : "Marton",
+            "family_name" : "Kodok",
+            "link" : "https://plus.google.com/+MartonKodok",
+            "picture" : "https://lh4.googleusercontent.com/-zHuP1iWEDI8/AAAAAAAAAAI/AAAAAAAAAoI/3-6aSdo1W5I/photo.jpg",
+            "gender" : "male",
+            "locale" : "en"
+        },
+        "token" : {}
+    },
+    "googleId" : "111187629502324536557",
+    "local" : {},
+    "name" : "Marton Kodok",
+    "primaryPayMethodId" : "54904cc620ecd50b001013d8",
+    "referrer" : {},
+    "stack" : {
+        "badge_counts" : { "bronze" : 324, "silver" : 227, "gold" : 46 },
+        "account_id" : 88036,
+        "is_employee" : false,
+        "last_modified_date" : 1391569656,
+        "last_access_date" : 1391598669,
+        "reputation_change_year" : 1672,
+        "reputation_change_quarter" : 1672,
+        "reputation_change_month" : 285,
+        "reputation_change_week" : 235,
+        "reputation_change_day" : 40,
+        "reputation" : 61211,
+        "creation_date" : 1262684260,
+        "user_type" : "registered",
+        "user_id" : 243782,
+        "age" : 29,
+        "accept_rate" : 94,
+        "location" : "Transylvania, LA",
+        "website_url" : "http://www.kodokmarton.eu",
+        "link" : "http://stackoverflow.com/users/243782/pentium10",
+        "display_name" : "Pentium10",
+        "profile_image" : "https://www.gravatar.com/avatar/4a682874e7a4757dc02a9823e277e235?s=128&d=identicon&r=PG",
+        "provider" : "stackexchange",
+        "id" : 243782,
+        "token" : {}
+    },
+    "stackId" : 243782,
+    "tags" : [{ "_id" : "5493479e1f354d0b00b49ad5",
+            "tagId" : "514825fa2a26ea020000002b",
+            "sort" : 0 },
+        {  "_id" : "549347a11f354d0b00b49ad6",
+            "tagId" : "514825fa2a26ea0200000027",
+            "sort" : 0  },
+        {  "_id" : "549347a91f354d0b00b49ad8",
+            "tagId" : "514825fa2a26ea020000001f",
+            "sort" : 0 }
+    ],
+    "twitter" : {
+        "provider" : "twitter",
+        "id" : 46473071,
+        "username" : "MartonKodok",
+        "displayName" : "Kodok Marton",
+        "photos" : [],
+        "_json" : {
+            "id" : 46473071,
+            "id_str" : "46473071",
+            "name" : "Kodok Marton",
+            "screen_name" : "MartonKodok",
+            "location" : "Targu Mures",
+            "description" : "http://t.co/FFjFBtkz",
+            "url" : "http://t.co/76YFY8Myvp",
+            "entities" : {},
+            "protected" : false,
+            "followers_count" : 253,
+            "friends_count" : 120,
+            "listed_count" : 4,
+            "created_at" : "Thu Jun 11 19:51:07 +0000 2009",
+            "favourites_count" : 157,
+            "utc_offset" : 7200,
+            "time_zone" : "Bucharest",
+            "geo_enabled" : true,
+            "verified" : false,
+            "statuses_count" : 5669,
+            "lang" : "en",
+            "status" : {},
+            "contributors_enabled" : false,
+            "is_translator" : false,
+            "is_translation_enabled" : false,
+            "profile_background_color" : "EBEBEB",
+            "profile_background_image_url" : "http://abs.twimg.com/images/themes/theme7/bg.gif",
+            "profile_background_image_url_https" : "https://abs.twimg.com/images/themes/theme7/bg.gif",
+            "profile_background_tile" : false,
+            "profile_image_url" : "http://pbs.twimg.com/profile_images/270915543/martonProfilJo_normal.jpg",
+            "profile_image_url_https" : "https://pbs.twimg.com/profile_images/270915543/martonProfilJo_normal.jpg",
+            "profile_link_color" : "990000",
+            "profile_sidebar_border_color" : "DFDFDF",
+            "profile_sidebar_fill_color" : "F3F3F3",
+            "profile_text_color" : "333333",
+            "profile_use_background_image" : true,
+            "default_profile" : false,
+            "default_profile_image" : false,
+            "following" : false,
+            "follow_request_sent" : false,
+            "notifications" : false,
+            "suspended" : false,
+            "needs_phone_verification" : false
+        },
+        "token" : { }
+    },
+    "twitterId" : 46473071
+}
 
 }

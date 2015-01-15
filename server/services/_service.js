@@ -97,6 +97,14 @@ export default function(model, logging)
         if (cb) cb(e, r)
       })
     },
+    updateWithSet(id, data, cb) {
+      if (!id) return cb(new Error('Cannot update object by null id'), null)
+      model.findByIdAndUpdate(id, { $set: data }).lean().exec( (e, r) => {
+        if (e || !r) $log('svc.updateWithSet.error'.red, id, e, data)
+        if (logging) $log('svc.updated', r)
+        if (cb) cb(e, r)
+      })
+    },
     updateBulk(list, cb) {
       var bulk = model.collection.initializeOrderedBulkOp()
       for (var item of list) {

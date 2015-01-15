@@ -20,6 +20,8 @@ global.expectStartsWith = (str,start) -> expect(str.indexOf(start)).to.equal(0)
 
 describe 'Server: ', ->
 
+  @timeout(4000)
+
   before (done) ->
     global.logging = false
     global.app = require('../../index').run()
@@ -31,11 +33,12 @@ describe 'Server: ', ->
     SETUP.clearIdentity()
 
   describe('Session: ', require('./sessionSpec'))
-  describe('Analytics: ', require('./analyticsSpec'))
   describe('Bots: ', require('./botsSpec'))
-  describe('Tags: ', require('./tagsSpec'))
   describe('Auth: ', require('./authSpec'))
   describe('Authz: ', require('./authzSpec'))
+  describe('Users: ', require('./usersSpec'))
+  describe('Analytics: ', require('./analyticsSpec'))
+  describe('Tags: ', require('./tagsSpec'))
   describe('Companys: ', require('./companysSpec'))
   describe('Rss: ', require('./rssSpec'))
   describe('Redirects: ', require('./redirectsSpec'))

@@ -4,7 +4,7 @@ import * as Validate      from '../../shared/validation/requests.js'
 import * as md5           from '../util/md5'
 import Request            from '../models/request'
 import User               from '../models/user'
-import * as UserSvc       from '../services/users'
+var UserSvc               = require('../services/users')
 var PaymethodsSvc =       require('../services/paymethods')
 var ExpertsSvc =          require('./experts')
 var util =                require('../../shared/util')
@@ -142,9 +142,9 @@ var save = {
     svc.create(o, selectByRoleCB(this,cb,cb))
   },
   sendVerifyEmailByCustomer(original, email, cb) {
-    UserSvc.updateEmailToBeVerified.call(this, email, cb, (e,r)=>{
+    UserSvc.updateEmailToBeVerified.call(this, email, cb, (e,r, hash)=>{
       if (e) return cb(e)
-      mailman.sendVerifyEmailForRequest(r, r.local.emailHash, original._id)
+      mailman.sendVerifyEmailForRequest(r, hash, original._id)
       selectByRoleCB(this,cb,cb)(null, original)
     })
   },

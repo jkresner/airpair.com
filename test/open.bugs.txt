@@ -1,3 +1,20 @@
+meyers.drew@gmail.com
+2015-01-14T18:45:28.068292+00:00 app[web.2]: /app/node_modules/lodash/dist/lodash.js:3216
+           if (callback(value, index, collection)) {
+               ^
+ ReferenceError: idsEqual is not defined
+     at /app/util.js:126:15
+     at Function.find (/app/node_modules/lodash/dist/lodash.js:3216:15)
+     at Object.util.combineItems (/app/util.js:125:21)
+     at /app/users.js:113:31
+     at Promise.searchOne (/app/_service.js:29:9)
+     at Promise.<anonymous> (/app/node_modules/mongoose/node_modules/mpromise/lib/promise.js:177:8)
+     at Promise.emit (events.js:95:17)
+     at Promise.emit (/app/node_modules/mongoose/node_modules/mpromise/lib/promise.js:84:38)
+     at Promise.fulfill (/app/node_modules/mongoose/node_modules/mpromise/lib/promise.js:97:20)
+     at Promise.resolve (/app/node_modules/mongoose/lib/promise.js:114:23)
+
+
 GET /v1/api/posts/tag/partners << https://www.airpair.com/posts/tag/partners || isBot:false:Mozilla/5.0 (compatible; Baiduspider/2.0; +http://www.baidu.com/search/spider.html)
 tag not found. Back to tags
 Error: tag not found. Back to tags
