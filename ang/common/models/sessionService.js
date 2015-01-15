@@ -39,7 +39,7 @@ angular.module('APSvcSession', [])
 
     var cache;
     this.getSession = function() {
-      if ($rootScope.session && $rootScope.session.authenticated == false)
+      if ($rootScope.session)
         return $q((r)=>r($rootScope.session))
 
       cache = cache || $cacheFactory();
@@ -64,29 +64,29 @@ angular.module('APSvcSession', [])
       return this.getSession().then(null, fn);
     }
 
-    this.login = function(data, success, error)
-    {
+
+    this.login = function(data, success, error) {
       $http.post(`${Auth}/login`, data).success(setScope(success)).error(error);
     }
 
-    this.signup = function(data, success, error)
-    {
+    this.signup = function(data, success, error) {
       $http.post(`${Auth}/signup`, data).success(setScope(success)).error(error);
     }
 
-    this.subscribe = function(data, success, error)
-    {
+    this.subscribe = function(data, success, error) {
       $http.post(`${Auth}/subscribe`, data).success(setScope(success)).error(error);
     }
 
-    this.changeEmail = function(data, success, error)
-    {
+    this.homeSignup = function(data, success, error) {
+      $http.post(`${Auth}/signup-home`, data).success(setScope(success)).error(error);
+    }
+
+    this.changeEmail = function(data, success, error) {
       var trackingData = { type:'email', email: data.email }
       $http.put(`${API}/users/me/email`, data).success(setScope(success, trackingData)).error(error);
     }
 
-    this.changeName= function(data, success, error)
-    {
+    this.changeName= function(data, success, error) {
       var trackingData = { type:'name', name: data.name }
       $http.put(`${API}/users/me/name`, data).success(setScope(success, trackingData)).error(error);
     }
@@ -110,17 +110,6 @@ angular.module('APSvcSession', [])
     {
       $http.put(`${API}/users/me`, data).success(setScope(success)).error(error)
     }
-
-    this.requestPasswordChange = function(data, success, error)
-    {
-      $http.put(`${API}/users/me/password-change`, data).success(success).error(error)
-    }
-
-    this.changePassword = function(data, success, error)
-    {
-      $http.put(`${API}/users/me/password`, data).success(success).error(error)
-    }
-
     this.tags = function(data, success, error) {
       $http.put(`${API}/users/me/tags`, data).success(setScope(success)).error(error);
     }
@@ -128,5 +117,15 @@ angular.module('APSvcSession', [])
     this.bookmarks = function(data, success, error) {
       $http.put(`${API}/users/me/bookmarks`, data).success(setScope(success)).error(error);
     }
+
+
+    this.requestPasswordChange = function(data, success, error) {
+      $http.put(`${API}/users/me/password-change`, data).success(success).error(error)
+    }
+
+    this.changePassword = function(data, success, error) {
+      $http.put(`${API}/users/me/password`, data).success(setScope(success)).error(error)
+    }
+
 
   })
