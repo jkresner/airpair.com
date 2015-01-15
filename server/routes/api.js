@@ -101,6 +101,7 @@ export default function(app) {
     .get('/orders/:start/:end/:userId?', API.Orders.getByQueryForAdmin)
     .get('/bookings/:start/:end/:userId?', API.Bookings.getByQueryForAdmin)
     .get('/bookings/:id', API.Bookings.getByIdForAdmin)
+    .put('/bookings/:booking/recording', API.Bookings.addYouTubeData)
     .put('/bookings/:booking', API.Bookings.updateByAdmin)
     .get('/payouts/:userId', API.Payouts.getPayouts)
     .get('/users/role/:role', API.Users.getUsersInRole)

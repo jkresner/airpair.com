@@ -1,3 +1,4 @@
+youtube = require "../../server/services/wrappers/youtube.js"
 util = require '../../shared/util'
 ordersUtil = require '../../shared/orders'
 
@@ -15,6 +16,74 @@ module.exports = -> describe "API: ", ->
 
   beforeEach ->
     SETUP.clearIdentity()
+
+  it "given a YouTube ID, allows a booking to be annotated with YouTube data", (done)->
+    addAndLoginLocalUserWithPayMethod 'cher', (s) ->
+      airpair1 = time: moment().add(2, 'day'), minutes: 120, type: 'private', payMethodId: s.primaryPayMethodId
+      POST "/bookings/#{data.experts.dros._id}", airpair1, {}, (booking1) ->
+        expect(booking1._id).to.exist
+        expect(booking1.customerId).to.exist
+        expect(booking1.minutes).to.equal(120)
+        expect(booking1.orderId).to.exist
+        expect(booking1.type).to.exist
+        expect(booking1.participants.length).to.equal(2)
+        LOGIN 'admin', data.users.admin, (sadm) ->
+          url = "/adm/bookings/#{booking1._id}/recording"
+          PUT url, {youTubeId: "MEv4SuSJgwk"}, {}, (booking) ->
+            expect(booking.status).to.equal("followup")
+            expect(booking.recordings.length).to.equal(1)
+            expect(booking.recordings[0].data.title).to.equal("Online Rails Code Review with RoR Expert Edward Anderson - AirPair")
+            expect(booking.recordings[0].type).to.equal("YouTube")
+            done()
+
+  it "fails gracefully with a bogus YouTube id", (done)->
+    addAndLoginLocalUserWithPayMethod 'cher', (s) ->
+      airpair1 = time: moment().add(2, 'day'), minutes: 120, type: 'private', payMethodId: s.primaryPayMethodId
+      POST "/bookings/#{data.experts.dros._id}", airpair1, {}, (booking1) ->
+        expect(booking1._id).to.exist
+        expect(booking1.customerId).to.exist
+        expect(booking1.minutes).to.equal(120)
+        expect(booking1.orderId).to.exist
+        expect(booking1.type).to.exist
+        expect(booking1.participants.length).to.equal(2)
+        LOGIN 'admin', data.users.admin, (sadm) ->
+          url = "/adm/bookings/#{booking1._id}/recording"
+          PUT url, {youTubeId: "MEv4SuSJgw"}, {status: 400}, (booking) ->
+            expect(booking.message).to.equal("No YouTube video found")
+            done()
+
+  it "fails gracefully with a private YouTube id that it does not own", (done)->
+    addAndLoginLocalUserWithPayMethod 'cher', (s) ->
+      airpair1 = time: moment().add(2, 'day'), minutes: 120, type: 'private', payMethodId: s.primaryPayMethodId
+      POST "/bookings/#{data.experts.dros._id}", airpair1, {}, (booking1) ->
+        expect(booking1._id).to.exist
+        expect(booking1.customerId).to.exist
+        expect(booking1.minutes).to.equal(120)
+        expect(booking1.orderId).to.exist
+        expect(booking1.type).to.exist
+        expect(booking1.participants.length).to.equal(2)
+        LOGIN 'admin', data.users.admin, (sadm) ->
+          url = "/adm/bookings/#{booking1._id}/recording"
+          PUT url, {youTubeId: "VfA4ELOHjmk"}, {status: 400}, (booking) ->
+            expect(booking.message).to.equal("No YouTube video found")
+            done()
+
+  #owner of VfA4ELOHjmk is experts@airpair.com
+  it.skip "works with a private YouTube id if the owner is in process.env.AUTH_GOOGLE_REFRESH_TOKEN" , (done)->
+    addAndLoginLocalUserWithPayMethod 'cher', (s) ->
+      airpair1 = time: moment().add(2, 'day'), minutes: 120, type: 'private', payMethodId: s.primaryPayMethodId
+      POST "/bookings/#{data.experts.dros._id}", airpair1, {}, (booking1) ->
+        expect(booking1._id).to.exist
+        expect(booking1.customerId).to.exist
+        expect(booking1.minutes).to.equal(120)
+        expect(booking1.orderId).to.exist
+        expect(booking1.type).to.exist
+        expect(booking1.participants.length).to.equal(2)
+        LOGIN 'admin', data.users.admin, (sadm) ->
+          url = "/adm/bookings/#{booking1._id}/recording"
+          PUT url, {youTubeId: "VfA4ELOHjmk"}, {}, (booking) ->
+            expect(booking.message).to.equal("No YouTube video found")
+            done()
 
   it.skip 'Expert gets a notification that they have been booked', (done) ->
 
@@ -48,7 +117,3 @@ module.exports = -> describe "API: ", ->
             expect(bs1.gcal).to.exist
             expect(bs1.gcal.attendees.length).to.equal(2)
             done()
-
-
-  # it.skip 'Can save youtube recording as admin', (done) ->
-
