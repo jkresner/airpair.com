@@ -93,26 +93,32 @@ angular.module('APSvcSession', [])
       $http.put(`${API}/users/me/email-verify`, data).success(setScope(success)).error(error);
     }
 
-    this.updateTag = function(data, success, error)
-    {
+
+    this.updateTag = function(data, success, error) {
       $http.put(`${API}/users/me/tag/${encodeURIComponent(data.slug)}`, {}).success(setScope(success)).error(error)
     }
-
-    this.updateBookmark = function(data, success, error)
-    {
+    this.updateBookmark = function(data, success, error) {
       $http.put(`${API}/users/me/bookmarks/${data.type}/${data.objectId}`, {}).success(setScope(success)).error(error)
-    }
-
-    this.updateProfile = function(data, success, error)
-    {
-      $http.put(`${API}/users/me`, data).success(setScope(success)).error(error)
     }
     this.tags = function(data, success, error) {
       $http.put(`${API}/users/me/tags`, data).success(setScope(success)).error(error);
     }
-
     this.bookmarks = function(data, success, error) {
       $http.put(`${API}/users/me/bookmarks`, data).success(setScope(success)).error(error);
+    }
+
+
+    this.updateBio = function(data, success, error) {
+      $http.put(`${API}/users/me/bio`, data).success(setScope(success)).error(error)
+    }
+    this.updateName = function(data, success, error) {
+      $http.put(`${API}/users/me/name`, data).success(setScope(success)).error(error)
+    }
+    this.updateInitials = function(data, success, error) {
+      $http.put(`${API}/users/me/initials`, data).success(setScope(success)).error(error)
+    }
+    this.updateUsername = function(data, success, error) {
+      $http.put(`${API}/users/me/username`, data).success(setScope(success)).error(error)
     }
 
 

@@ -67,6 +67,31 @@ module.exports = () => describe("API: ", function() {
         })
     })
 
+    it('Can sort 2 tags on anonymous session', function(done) {
+      http(global.app)
+        .put('/v1/api/users/me/tag/node.js')
+        .end(function(err, resp){
+          cookie = resp.headers['set-cookie']
+          PUT('/users/me/tag/angularjs', {}, {}, function(s2) {
+            var tags = s2.tags
+            expect(tags).to.exist
+            expect(tags.length).to.equal(2)
+            expect(tags[0].sort).to.equal(0)
+            expect(tags[1].sort).to.equal(0)
+            tags[0].sort = 1
+            tags[1].sort = 0
+            PUT('/users/me/tags', tags, {}, function(s3) {
+              expect(s3.authenticated).to.be.false
+              expect(s3.sessionID).to.exist
+              expect(s3.tags).to.exist
+              expect(s3.tags.length).to.equal(2)
+              expect(s3.tags[0].sort).to.equal(1)
+              expect(s3.tags[1].sort).to.equal(0)
+              done()
+            })
+          })
+        })
+    })
 
     it('Can remove tag from anonymous session', function(done) {
       http(global.app)

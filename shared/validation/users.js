@@ -54,6 +54,14 @@ module.exports = {
     //-- Can set the username to nothing
   },
 
+  changeInitials(user, initials) {
+    //-- Can set the username to nothing
+  },
+
+  changeBio(user, bio) {
+    //-- Can set the username to nothing
+  },
+
   requestPasswordChange(user, email) {
     return validateEmail(email)
   },
@@ -81,9 +89,17 @@ module.exports = {
     if (!tag.name) return "tag name required"
   },
 
+  updateTags(user, tags) {
+    if (!tags || tags.constructor !== Array) return "tags array required to sort"
+  },
+
   toggleBookmark(user, type, id) {
     if (!id) return "bookmark id required"
     if (!type) return "bookmark type required"
+  },
+
+  updateBookarks(user, bookmarks) {
+    if (!bookmarks || tags.bookmarks !== Array) return "bookmarks array required to sort"
   },
 
   verifyEmail(user, hash) {
