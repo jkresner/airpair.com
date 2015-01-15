@@ -14,10 +14,11 @@ export default initAPI(
   getUsersInRole: (req) => [req.params.role],
   changeName: (req) => [req.body.name],
   changeEmail: (req) => [req.body.email],
+  changeInitials: (req) => [req.body.initials],
+  changeUsername: (req) => [req.body.username],
   verifyEmail: (req) => [req.body.hash],
   requestPasswordChange: (req) => [req.body.email],
-  changePassword: (req) => [req.body.hash, req.body.password],
-  updateProfile: (req) => [req.body.name, req.body.initials, req.body.username],
+  changePassword: (req) => [req.body.hash, req.body.password]
 }, {
 
 },

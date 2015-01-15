@@ -20,8 +20,9 @@ global.addLocalUser = (userKey, opts, done) ->
   UserService.localSignup.call(newUserSession(userKey), clone.email, clone.password, clone.name, (e, r) ->
     data.users[clone.userKey] = r
     if (opts && opts.emailVerified)
-      UserService.update.call(this, data.users[clone.userKey]._id, opts, (err, user) ->
-        data.users[clone.userKey] = user
+      db.Models.User.findOneAndUpdate({_id:r._id},{emailVerified:true},{upsert:true}, (err, user) ->
+        r.emailVerified = true
+        data.users[clone.userKey] = r
         done(clone.userKey)
       )
     else
@@ -58,6 +59,7 @@ stories = {
 
   addLocalUser,
   addAndLoginLocalUser,
+  addAndLoginLocalUserWithEmailVerified,
   addAndLoginLocalUserWithPayMethod,
 
   addUserWithRole: (userKey, role, done) ->

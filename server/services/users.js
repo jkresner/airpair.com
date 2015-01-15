@@ -192,8 +192,46 @@ var save = {
     updateAsIdentity.call(this, {initials}, null, cb)
   },
 
-  //-------- Account email
+  // Change email can be used both to change an email
+  // and to set and send a new email hash for verification
+  changeEmail(email, cb) {
+    email = email.trim().toLowerCase()
+    var self = this
+    var {user} = this
 
+    if (user)
+      updateEmailToBeVerified.call(this, email, cb, (e, user, hash) => {
+        if (!e && hash && user)
+          mailman.sendVerifyEmail(user, hash)
+        cb(e, user)
+      })
+    else
+      svc.searchOne(Data.query.existing(email), null, function(e,r) {
+        if (r) {
+          delete session.anonData.email
+          return cb(svc.Forbidden(`${email} already registered`))
+        }
+        updateAsIdentity.call(self, {email}, null, cb)
+      })
+  },
+
+  verifyEmail(hash, cb) {
+    svc.searchOne({ email:this.user.email }, null, (e,r) => {
+      if (e || !r) {
+        $log('verifyEmail.error'.red, e, r)
+        return cb(e,r)
+      }
+      if (r.local.emailHash == hash) {
+        this.user.emailVerified = true
+        var trackData = { type: 'emailVerified', email: this.user.email }
+        updateAsIdentity(this, { emailVerified: true }, trackData, cb)
+      }
+      else
+        cb(Error("e-mail verification failed, hash is not valid"))
+    })
+  },
+
+  //-------- Account email
   requestPasswordChange(email, cb) {
     var self = this
     svc.searchOne(Data.query.existing(email), null, function(e,user) {
@@ -234,45 +272,6 @@ var save = {
 
       var trackData = { type: 'password', hash }
       updateAsIdentity.call(this, update, trackData, cb)
-    })
-  },
-
-
-  // Change email can be used both to change an email
-  // and to set and send a new email hash for verification
-  changeEmail(email, cb) {
-    email = email.trim().toLowerCase()
-    var {user} = this
-
-    if (user)
-      updateEmailToBeVerified.call(this, email, cb, (e, user, hash) => {
-        if (!e && hash && user)
-          mailman.sendVerifyEmail(user, hash)
-        cb(e, user)
-      })
-    else
-      svc.searchOne(Data.query.existing(email), null, function(e,r) {
-        if (!r) {
-          delete self.session.anonData.email
-          return cb(svc.Forbidden(`${email} already registered`))
-        }
-        updateAsIdentity.call(this, {email}, null, cb)
-      })
-  },
-
-  verifyEmail(hash, cb) {
-    svc.searchOne({ email:this.user.email }, null, (e,r) => {
-      if (e || !r) {
-        $log('verifyEmail.error'.red, e, r)
-        return cb(e,r)
-      }
-      if (r.local.emailHash == hash) {
-        this.user.emailVerified = true
-        var trackData = { type: 'emailVerified', email: this.user.email }
-        updateAsIdentity(this, { emailVerified: true }, trackData, cb)
-      }
-      else
-        cb(Error("e-mail verification failed, hash is not valid"))
     })
   }
 
