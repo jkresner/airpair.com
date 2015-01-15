@@ -18,7 +18,8 @@ export default function(app) {
     .get('/logout', logout(config.auth))
     .post('/login', mw.authAlreadyDone, local.login, mw.setFirebaseTokenOnSession)
     .post('/signup', mw.authAlreadyDone, local.signup, mw.setFirebaseTokenOnSession)
-    .post('/subscribe', mw.authAlreadyDone, mw.setFastSingupPassword, local.signup, mw.setFirebaseTokenOnSession)
+    .post('/signup-home', mw.authAlreadyDone, mw.setFastSingupPassword('home'), local.signup, mw.setFirebaseTokenOnSession)
+    .post('/subscribe', mw.authAlreadyDone, mw.setFastSingupPassword('subscribe'), local.signup, mw.setFirebaseTokenOnSession)
     .get('/google', google.oAuth)
     .get('/google/callback', google.oAuth, mw.setFirebaseTokenOnSession, mw.authDone)
 

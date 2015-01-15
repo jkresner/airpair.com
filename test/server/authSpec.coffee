@@ -239,7 +239,6 @@ module.exports = -> describe "Signup: ", ->
             expect(emailTo.email).to.equal(d.email)
             expect(emailTo.name).to.equal(d.name)
             expect(generated_hash).to.not.be.empty
-            # $log('generated_hash', generated_hash)
             db.readUser d._id, (e,r) ->
               expect(r.local.changePasswordHash).to.equal(generated_hash)
               old_password_hash = r.local.password
@@ -248,7 +247,6 @@ module.exports = -> describe "Signup: ", ->
                 UserService.localLogin.call newUserSession(), d.email, new_password, (e,r) ->
                   if (e) then return done(e)
                   db.readUser d._id, (e,r) ->
-                    # $log('db.readUser', e, r)
                     if (e) then return done(e)
                     expect(r.local.password).to.exist
                     expect(old_password_hash).to.not.equal(r.local.password)

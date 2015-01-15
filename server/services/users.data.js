@@ -11,7 +11,7 @@ var select = {
     'roles': 1,
   },
   sessionFull: {
-    '__v': 1,
+    // '__v': 1,
     '_id': 1,
     'roles': 1,
     'bitbucket.username': 1,
