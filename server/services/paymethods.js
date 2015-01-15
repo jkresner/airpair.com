@@ -1,7 +1,7 @@
 import Svc from './_service'
 import PayMethod from '../models/paymethod'
-import * as UserSvc from './users'
 import * as CompanysSvc from './companys'
+var UserSvc         = require('./users')
 var Braintree = global.Braintree || require('./wrappers/braintree')
 var Stripe = require('./wrappers/stripe')
 var PayPal = require('./wrappers/paypal')
@@ -118,7 +118,7 @@ var save = {
             }
 
             if (o.makeDefault)
-              UserSvc.update.call(ctx, ctx.user._id, { primaryPayMethodId: r._id })
+              UserSvc.changePrimaryPayMethodId.call(ctx, r._id, () => {})
             cb(e, r)
           })
         }
@@ -148,9 +148,9 @@ var save = {
     save.addPaymethod.call(this, pm, cb)
   },
   deletePaymethod(paymethod, cb) {
-    UserSvc.getSessionFull.call(this, (e, user) => {
+    UserSvc.getSession.call(this, (e, user) => {
       if (_.idsEqual(user.primaryPayMethodId,paymethod._id))
-        UserSvc.update.call(this, user._id, { primaryPayMethodId: null })
+        UserSvc.changePrimaryPayMethodId.call(this, null, () => {})
       Settings.remove({userId:this.user._id}, () => {})
       svc.deleteById(paymethod._id, cb)
     })

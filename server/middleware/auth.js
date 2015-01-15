@@ -113,10 +113,12 @@ var middleware = {
   },
 
 
-  setFastSingupPassword(req, res, next) {
-    if (logging) $log('mw.setFastSingupPassword'.cyan)
-    req.body.password = 'fast-ap-signup'
-    next()
+  setFastSingupPassword(password) {
+    return (req, res, next) => {
+      if (logging) $log('mw.setFastSingupPassword'.cyan)
+      req.body.password = password || 'fast-ap-signup'
+      next()
+    }
   },
 
 
