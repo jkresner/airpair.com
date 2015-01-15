@@ -22,13 +22,18 @@ export default function(app) {
     .put('/users/me/email', setAnonSessionData, setFirebaseTokenOnSession, API.Users.changeEmail)
     .put('/users/me/name', setAnonSessionData, setFirebaseTokenOnSession, API.Users.changeName)
     .put('/users/me/password', (req, res, next) => {
-      API.Users.changePassword(req, res, (e,r) => {
+      var inValid = API.Users.validation.changePassword(req.user, req.body.hash, req.body.password)
+      if (inValid) return res.status(403).json({message:inValid})
+
+      // $log('trying to change pass'.magenta, req.body.hash, req.body.password)
+      $callSvc(API.Users.svc.changePassword,req)(req.body.hash, req.body.password, (e,r) => {
         if (e) return next(e)
-        req.login(r, ()=>{
+        req.login(r, (err) => {
+          if (err) return next(err)
+          res.json(r)
+          // $log('change success loggedin'.magenta, r)
           next()
-          $log('change success loggedin'.magenta, r)
         })
-        // next()
       })
     })
 
@@ -47,8 +52,8 @@ export default function(app) {
     .use(authd) //-- swap out for email verify or something
 
     .post('/posts', API.Posts.create)
-    .get('/posts/:id', API.Posts.getById)
     .get('/posts/me', API.Posts.getUsersPosts)
+    .get('/posts/:id', API.Posts.getById)
     .post('/posts-toc',API.Posts.getTableOfContents)
     .put('/posts/:id', authd, API.Posts.update)
     .put('/posts/publish/:id', authd, API.Posts.publish)

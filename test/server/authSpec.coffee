@@ -2,7 +2,7 @@ db = require('./helpers/setup.db')
 UserService = require('../../server/services/users')
 util = require('../../shared/util')
 
-module.exports = -> describe.only "Signup: ", ->
+module.exports = -> describe "Signup: ", ->
 
   @timeout(6000)
 
@@ -49,7 +49,6 @@ module.exports = -> describe.only "Signup: ", ->
     checkCohort = (userId) ->
       ->
         db.readUser userId, (e,r) ->
-          $log('second test'.yellow, r)
           {cohort} = r
           expect(moment(cohort.engagement.visit_first).unix()).to.equal(moment(cookieCreatedAt).unix())
           expect(cohort.engagement.visit_signup).to.be.exist
@@ -62,7 +61,6 @@ module.exports = -> describe.only "Signup: ", ->
 
     SETUP.addLocalUser 'dysn', {}, (userKey) ->
       userId = data.users[userKey]._id
-      $log('second test'.blue)
       setTimeout checkCohort(userId), 50
 
 
@@ -202,33 +200,100 @@ module.exports = -> describe.only "Signup: ", ->
 
     it.skip 'Change password as anonymous user logs user in'
 
+    it 'Can request password change as anonymous user, and set a new local password', (done) ->
+      new_password = 'sellsellsell'
+      spy = sinon.spy(mailman,'sendChangePasswordEmail')
+      SETUP.addLocalUser 'adap', {}, (userKey) ->
+        adap = data.users[userKey]
+        PUT '/users/me/password-change', {email: adap.email}, {}, ->
+          expect(spy.callCount).to.equal(1)
+          emailTo = spy.args[0][0]
+          generated_hash = spy.args[0][1]
+          expect(emailTo.email).to.equal(adap.email)
+          expect(emailTo.name).to.equal(adap.name)
+          expect(generated_hash).to.not.be.empty
+          db.readUser adap._id, (eee,rrr) ->
+            expect(rrr.local.changePasswordHash).to.equal(generated_hash)
+            old_password_hash = rrr.local.password
+            data = { hash: generated_hash, password: new_password }
+            PUT "/users/me/password", data, {unauthenticated: true}, (s) ->
+              UserService.localLogin.call newUserSession(), adap.email, new_password, (e,r) ->
+                db.readUser adap._id, (e,r) ->
+                  expect(r.local.password).to.exist
+                  expect(old_password_hash).to.not.equal(r.local.password)
+                  expect(r.local.changePasswordHash).to.be.empty
+                  spy.restore()
+                  done()
+
+
     it 'Can request a password change, and set a new local password', (done) ->
       new_password = 'drowssap'
       spy = sinon.spy(mailman,'sendChangePasswordEmail')
-      d = getNewUserData('prak')
-      SETUP.addAndLoginLocalUser 'prak', (user) ->
-        PUT '/users/me/password-change', {email: d.email}, {}, ->
-          expect(spy.callCount).to.equal(1)
-          emailTo = spy.args[0][0]
-          expect(emailTo.email).to.equal(d.email)
-          expect(emailTo.name).to.equal(d.name)
-          generated_hash = spy.args[0][1]
-          expect(generated_hash).to.not.be.empty
-          # $log('generated_hash', generated_hash)
-          db.readUser user._id, (e,r) ->
-            expect(r.local.changePasswordHash).to.equal(generated_hash)
-            old_password_hash = r.local.password
-            data = { hash: generated_hash, password: new_password }
-            # $log('yoyo'.magenta, '/users/me/password')
-            PUT "/users/me/password", data, {unauthenticated: true}, (s) ->
-              $log('yoyo'.magenta, 'updated', s._id)
-              UserService.localLogin.call newUserSession(), d.email, new_password, (e,r) ->
-                if (e) then return done(e)
-                db.readUser user._id, (e,r) ->
+      SETUP.addAndLoginLocalUser 'prak', (d) ->
+        db.readUser d._id, (eeee,rrrr) ->
+          expect(rrrr.local.changePasswordHash).to.be.undefined
+          PUT '/users/me/password-change', {email: d.email}, {}, ->
+            expect(spy.callCount).to.equal(1)
+            emailTo = spy.args[0][0]
+            generated_hash = spy.args[0][1]
+            expect(emailTo.email).to.equal(d.email)
+            expect(emailTo.name).to.equal(d.name)
+            expect(generated_hash).to.not.be.empty
+            # $log('generated_hash', generated_hash)
+            db.readUser d._id, (e,r) ->
+              expect(r.local.changePasswordHash).to.equal(generated_hash)
+              old_password_hash = r.local.password
+              data = { hash: generated_hash, password: new_password }
+              PUT "/users/me/password", data, {unauthenticated: true}, (s) ->
+                UserService.localLogin.call newUserSession(), d.email, new_password, (e,r) ->
                   if (e) then return done(e)
-                  expect(old_password_hash).to.not.equal(r.local.password)
-                  expect(r.local.changePasswordHash).to.be.empty
-                  done()
+                  db.readUser d._id, (e,r) ->
+                    # $log('db.readUser', e, r)
+                    if (e) then return done(e)
+                    expect(r.local.password).to.exist
+                    expect(old_password_hash).to.not.equal(r.local.password)
+                    expect(r.local.changePasswordHash).to.be.empty
+                    spy.restore()
+                    done()
+
+
+    it 'Can try to request password change multiple, and set a new local password', (done) ->
+      new_password = 'chessmac'
+      spy = sinon.spy(mailman,'sendChangePasswordEmail')
+      SETUP.addAndLoginLocalUser 'arys', (user) ->
+        db.readUser user._id, (eeee,rrrr) ->
+          expect(rrrr.local.changePasswordHash).to.be.undefined
+          PUT '/users/me/password-change', {email: user.email}, {}, ->
+            expect(spy.callCount).to.equal(1)
+            emailTo = spy.args[0][0]
+            generated_hash = spy.args[0][1]
+            expect(emailTo.email).to.equal(user.email)
+            expect(emailTo.name).to.equal(user.name)
+            expect(generated_hash).to.not.be.empty
+            # $log('generated_hash', generated_hash)
+            db.readUser user._id, (eee,rrr) ->
+              expect(rrr.local.changePasswordHash).to.equal(generated_hash)
+              PUT '/users/me/password-change', {email: user.email}, {}, ->
+                expect(spy.callCount).to.equal(2)
+                emailTo2 = spy.args[1][0]
+                generated_hash2 = spy.args[1][1]
+                expect(emailTo2.email).to.equal(user.email)
+                expect(emailTo2.name).to.equal(user.name)
+                expect(generated_hash2).to.not.be.empty
+                expect(generated_hash2).to.not.equal(generated_hash)
+                # $log('generated_hash2', generated_hash2)
+                db.readUser user._id, (ee,rr) ->
+                  expect(rr.local.changePasswordHash).to.equal(generated_hash2)
+                  data = { hash: generated_hash2, password: new_password }
+                  # $log('data', data)
+                  PUT "/users/me/password", data, {unauthenticated: true}, (s) ->
+                    UserService.localLogin.call newUserSession(), user.email, new_password, (e,r) ->
+                      db.readUser user._id, (eeeee,rrrrr) ->
+                        expect(rrrrr.local.password).to.exist
+                        expect(rrrrr.local.changePasswordHash).to.be.empty
+                        spy.restore()
+                        done()
+
 
 
     it 'must supply a valid email when requesting a password change', (done) ->
@@ -344,17 +409,15 @@ module.exports = -> describe.only "Signup: ", ->
 
     it 'users can verify email for some features if logged in with google', (done) ->
       spy = sinon.spy(mailman,'sendVerifyEmail')
-      testDb.ensureDoc 'User', data.users.narv, (e) ->
+      db.ensureDoc 'User', data.users.narv, (e) ->
         LOGIN 'narv', data.users.narv, (snarv) ->
           POST '/requests', { type: 'troubleshooting', tags: [data.tags.node] }, {}, (r1) ->
             PUT "/requests/#{r1._id}", _.extend(r1,{experience:'beginner'}), {status:403}, (rFail) ->
               expectStartsWith(rFail.message,'Email verification required')
-              $log('still going'.blue)
               PUT '/users/me/email', { email: data.users.narv.email }, {}, (s2) ->
                 expect(spy.callCount).to.equal(1)
                 hash = spy.args[0][1]
                 spy.restore()
-                $log('still going'.magenta)
                 PUT "/users/me/email-verify", { hash }, {}, (sVerified) ->
                   expect(sVerified.emailVerified).to.be.true
                   PUT "/requests/#{r1._id}", _.extend(r1,{experience:'beginner'}), {}, (r2) ->
@@ -365,7 +428,7 @@ module.exports = -> describe.only "Signup: ", ->
 
     it 'google login can verify different email for some features if logged in with google', (done) ->
       spy = sinon.spy(mailman,'sendVerifyEmail')
-      testDb.ensureDoc 'User', data.users.narv, (e) ->
+      db.ensureDoc 'User', data.users.narv, (e) ->
         LOGIN 'narv', data.users.narv, (snarv) ->
           POST '/requests', { type: 'troubleshooting', tags: [data.tags.node] }, {}, (r1) ->
             PUT "/requests/#{r1._id}", _.extend(r1,{experience:'beginner'}), {status:403}, (rFail) ->
@@ -386,7 +449,7 @@ module.exports = -> describe.only "Signup: ", ->
 
 
     it 'bad verification link does not verify the user', (done) ->
-      addAndLoginLocalUser 'step', (s) ->
+      SETUP.addAndLoginLocalUser 'step', (s) ->
         fakeHash = 'ABCDEF1234567'
         PUT "/users/me/email-verify", { hash: fakeHash }, { status: 400 }, (r) ->
           expectStartsWith(r.message,"e-mail verification failed")

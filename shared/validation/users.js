@@ -59,10 +59,10 @@ module.exports = {
   },
 
   changePassword(user, hash, password) {
-    if (!hash || hash.match(/\s/))
-      return "Invalid hash"
     if (!password || !password.match(/.{5,40}/))
       return "Invalid password (need min 5, max 40 chars)"
+    if (!hash || hash.match(/\s/))
+      return "Invalid hash"
   },
 
   toggleUserInRole(user, userId, role) {

@@ -69,7 +69,7 @@ stories = {
     session.sessionID = 'test'+userKey
 
     # Add an administrator
-    UserService.upsertProviderProfile.call session, 'google', data.oauth[userKey], (e,r) ->
+    UserService.googleLogin.call session, data.oauth[userKey], (e,r) ->
       if (!r.roles || !r.roles.length)
         UserService.toggleUserInRole.call {user:r}, r._id, role, (ee,rr) ->
           data.users[userKey] = rr;

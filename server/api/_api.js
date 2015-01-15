@@ -30,7 +30,6 @@ var cbSend = (req, res, next) => {
     {
       res.status(200).json({})
     }
-    next(e, r)
   }
 }
 
@@ -96,6 +95,7 @@ export var initAPI = (Svc, custom, paramFns, Validation) => {
     }
 
   api.svc = Svc
+  api.validation = Validation
 
   return api;
 }
