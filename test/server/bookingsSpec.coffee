@@ -3,7 +3,7 @@ util = require '../../shared/util'
 ordersUtil = require '../../shared/orders'
 
 
-module.exports = -> describe.only "API: ", ->
+module.exports = -> describe "API: ", ->
 
   @timeout 40000
 
