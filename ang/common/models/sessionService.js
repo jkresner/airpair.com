@@ -22,11 +22,8 @@ angular.module('APSvcSession', [])
 
     var setScope = (successFn, trackingData) => {
       return function(r) {
-        if (r._id && window._)
-          $rootScope.session = _.extend($rootScope.session||{}, r)
-        else
-          $rootScope.session = r
-
+        r.unauthenticated = (r.authenticated!=null && r.authenticated == false)
+        $rootScope.session = r
         $rootScope.notifications = Notifications.calculateNextNotification()
 
         if (trackingData) analytics.track('Save', trackingData);
@@ -40,7 +37,7 @@ angular.module('APSvcSession', [])
     var cache;
     this.getSession = function() {
       if ($rootScope.session)
-        return $q((r)=>r($rootScope.session))
+        return $q((r)=> { return r($rootScope.session) })
 
       cache = cache || $cacheFactory();
       return $http.get(`${API}/session/full`, {cache:cache}).then(

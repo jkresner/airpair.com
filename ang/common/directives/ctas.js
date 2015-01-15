@@ -59,7 +59,7 @@ angular.module("APCTAs", ['ngMessages','APAnalytics'])
         $scope.updateEmail = (model) => CtaHelper.updateEmail($scope, model,
           () => { angular.element('#postSubscribeName').focus(); })
 
-        $scope.submit = (formValid, data) => CtaHelper.submit($scope, 'subscripe', formValid, data,
+        $scope.submit = (formValid, data) => CtaHelper.submit($scope, 'subscribe', formValid, data,
           () => {})
       }
     };

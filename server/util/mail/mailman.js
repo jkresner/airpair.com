@@ -75,7 +75,7 @@ module.exports = function(mailProvider)
         hash
       }), cb)
     },
-    subscriberWelcomeEmail(toUser, hash, cb) {
+    singupSubscribeEmail(toUser, hash, cb) {
       mailProvider.send(`${toUser.name} <${toUser.email}>`, renderEmail('subscriberwelcome', {
         firstName: util.firstName(toUser.name),
         hash

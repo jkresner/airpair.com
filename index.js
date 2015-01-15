@@ -38,7 +38,7 @@ export function run()
     hbsEngine(app)
 
     app.get('/', mw.analytics.trackFirstRequest, mw.auth.authdRedirect('/dashboard'), app.renderHbs('home') )
-    app.use('/v1/auth', routes.auth(app))
+    app.use('/auth', routes.auth(app))
     app.use('/v1/api', routes.api(app))
     app.use('/v1/adm/*', mw.authz.adm, app.renderHbsAdmin('adm/admin'))
     app.use('/adm/*', mw.authz.adm, app.renderHbsAdmin('adm/admin'))
