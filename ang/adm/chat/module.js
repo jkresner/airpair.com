@@ -15,7 +15,7 @@ angular.module("ADMChat", ["chat-widget", "angularMoment"])
 
 })
 
-.controller('ChatCtrl', function($scope, corechat) {
+.controller('ChatCtrl', function($scope, $timeout, corechat) {
   $scope.setCurrentUser = function (memberId) {
     console.log("mid>", memberId)
     var RID = getMemberToMemberRID(memberId, corechat.selfmember.id);
@@ -29,6 +29,22 @@ angular.module("ADMChat", ["chat-widget", "angularMoment"])
     if (!room || !room.id) return;
     return room.id.split("^^v^^").length > 1? "pair":"group";
   };
+  
+  $scope.allRooms = {};
+  
+  corechat.ref.child("rooms/byRID").on("child_added", function (snapshot) {
+    $timeout(function () {
+      var RID = snapshot.name();
+      $scope.allRooms[RID] = corechat.getRoom(RID);
+    });
+  });
+  
+  corechat.ref.child("rooms/byRID").on("child_removed", function (snapshot) {
+    $timeout(function () {
+      var RID = snapshot.name();
+      delete $scope.allRooms[RID];
+    });
+  });
 })
 
 function getMemberToMemberRID () {

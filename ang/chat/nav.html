@@ -27,7 +27,7 @@
         <div ng-repeat="message in corechat.selfmember.rooms[corechat.activeRoom].history">
             <div member-info="{{message.from}}">
                 <img ng-src="{{member.avatar}}" width="16"/>
-                {{member.name || "Anonymous User"}}:
+                {{member.name || message.from}}:
             </div> {{message.body}}
         </div><br />
         <input type="text" ng-model="newMessage.body" style="float: left; width: 60%;" />
