@@ -113,12 +113,12 @@ angular.module('APSvcSession', [])
 
     this.requestPasswordChange = function(data, success, error)
     {
-      $http.put(`${API}/users/me/password-change`, data).success(setScope(success)).error(error)
+      $http.put(`${API}/users/me/password-change`, data).success(success).error(error)
     }
 
     this.changePassword = function(data, success, error)
     {
-      $http.put(`${API}/users/me/password`, data).success(setScope(success)).error(error)
+      $http.put(`${API}/users/me/password`, data).success(success).error(error)
     }
 
     this.tags = function(data, success, error) {

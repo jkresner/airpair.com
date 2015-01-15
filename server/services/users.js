@@ -71,12 +71,10 @@ function updateAsIdentity(data, trackData, cb) {
 
     // o.updated = new Date() ??
     // authorization etc.
-    // $log('in updateAsIdentity', data, id)
 
     svc.updateWithSet(id, data, (e,user) => {
       if (e) return cb(e)
       if (!user) return cb(Error(`Failed to update user with id: ${id}`))
-      // $log('in updateAsIdentity'.blue, user)
 
       // console.log('track save', ctx, data)
       //-- belongs in middleware ?
@@ -85,6 +83,8 @@ function updateAsIdentity(data, trackData, cb) {
       //this.user.emailVerified = true
 
       //-- Very magic important line
+
+      // $log('in updateAsIdentity'.blue, user)
       if (!_.isEqual(this.session.passport.user, Data.select.sessionFromUser(user)))
         this.session.passport.user = Data.select.sessionFromUser(user)
 
@@ -108,13 +108,11 @@ function toggleSessionItem(type, item, maxAnon, maxAuthd, comparator, trackData,
 {
   var up = {}
   if (this.user) {
-    // $log('toggleSessionItemm', type, item, maxAnon, maxAuthd, cb)
     return svc.searchOne({ _id: this.user._id }, null, (e,r) => {
       if (e || !r) return cb(e,r)
       var list = util.toggleItemInArray(r[type], item, comparator)
       if (list.length > maxAuthd) return cb(Error(`Max allowed ${type} reached`))
       up[type] = list
-      // $log('toggleSessionItemm.updateAsIdentity', up, trackData)
       updateAsIdentity.call(this, up, trackData, cb)
     })
   }
@@ -133,7 +131,6 @@ var save = {
   //-------- Tags and bookmarks
 
   toggleTag(tag, cb) {
-    // $log('toggleTag'.cyan, tag)
     var name = tag.name
     var tagId = tag._id
     tag = { _id: svc.newId().toString(), tagId: tag._id, sort: 0 }
@@ -180,6 +177,10 @@ var save = {
 
   //-------- User Info
 
+  changeBio(bio, cb) {
+    updateAsIdentity.call(this, {bio}, null, cb)
+  },
+
   changeName(name, cb) {
     updateAsIdentity.call(this, {name}, null, cb)
   },
@@ -195,6 +196,10 @@ var save = {
     })
   },
 
+  changePrimaryPayMethodId(primaryPayMethodId, cb) {
+    updateAsIdentity.call(this, {primaryPayMethodId}, null, cb)
+  },
+
   changeInitials(initials, cb) {
     updateAsIdentity.call(this, {initials}, null, cb)
   },
@@ -203,9 +208,7 @@ var save = {
   // and to set and send a new email hash for verification
   changeEmail(email, cb) {
     email = email.trim().toLowerCase()
-    var self = this
     var {user} = this
-
     if (user)
       updateEmailToBeVerified.call(this, email, cb, (e, user, hash) => {
         if (!e && hash && user)
@@ -213,12 +216,12 @@ var save = {
         cb(e, user)
       })
     else
-      svc.searchOne(Data.query.existing(email), null, function(e,r) {
+      svc.searchOne(Data.query.existing(email), null, (e,r) => {
         if (r) {
           delete session.anonData.email
           return cb(svc.Forbidden(`${email} already registered`))
         }
-        updateAsIdentity.call(self, {email}, null, cb)
+        updateAsIdentity.call(this, {email}, null, cb)
       })
   },
 
@@ -239,24 +242,28 @@ var save = {
 
   //-------- Account email
   requestPasswordChange(email, cb) {
-    var self = this
-    svc.searchOne(Data.query.existing(email), null, function(e,user) {
+    var anonymous = this.user == null
+    svc.searchOne(Data.query.existing(email), null, (e,user) => {
       if (e || !user) return cb(svc.Forbidden(`${email} not found`))
 
-      var update = { local: _.extend(user.local || {}, {
+      var ups = { local: _.extend(user.local || {}, {
         changePasswordHash: Data.data.generateHash(email),
         passowrdHashGenerated: new Date()
       })}
 
       //-- Previously had a google login without a v1 upsert migrate
       if (!user.email && user.google) {
-        update.email = user.google._json.email
-        update.name = user.google.displayName || 'there noname'
+        ups.email = user.google._json.email
+        ups.name = user.google.displayName || 'there noname'
       }
 
-      var trackData = { type: 'change-password-request', email, anonymous: self.user==null }
-      updateAsIdentity.call(self, update, trackData, (e,r) => {
-        mailman.sendChangePasswordEmail(user, update.local.changePasswordHash)
+      var trackData = { type: 'change-password-request', email, anonymous }
+      analytics.track(this.user, this.sessionID, 'Save', trackData, {}, ()=>{})
+      // self.user = user
+      //-- Update the user record regardless if anonymous or authenticated
+      svc.updateWithSet(user._id, ups, (e,r) => {
+        if (e) return cb(e)
+        mailman.sendChangePasswordEmail(user, ups.local.changePasswordHash)
         return cb(null, {email})
       })
     })
@@ -278,7 +285,6 @@ var save = {
       }
 
       var trackData = { type: 'password', hash }
-      $log('goin'.blue, trackData, update)
       this.user = user
       updateAsIdentity.call(this, update, trackData, cb)
     })
@@ -290,7 +296,6 @@ var save = {
 function updateEmailToBeVerified(email, errorCB, successCB) {
   email = email.toLowerCase()
   var {user} = this
-
   var trackData = { type: 'email', email, previous: user.email, previousVerified: user.emailVerified }
 
   svc.searchOne({_id:this.user._id}, {}, (ee, r) => {
@@ -303,7 +308,7 @@ function updateEmailToBeVerified(email, errorCB, successCB) {
       ups.emailVerified = false
     }
 
-    if (!r.local.changeEmailHash || !r.local.emailHashGenerated
+    if (!r.local || !r.local.changeEmailHash || !r.local.emailHashGenerated
       || !moment(r.local.emailHashGenerated).isAfter(moment().add(-3,'hours')))
     {
       ups.local.changeEmailHash = Data.data.generateHash(email)
@@ -319,14 +324,13 @@ function updateEmailToBeVerified(email, errorCB, successCB) {
   })
 }
 
+save.updateEmailToBeVerified = updateEmailToBeVerified
+
 function callAuthSvcFn(thisCtx, fnName, args) {
   var cb = args[args.length-1]
   args = [].slice.call(args)
   var cbSessioned = cbSession(thisCtx,cb)
-  // $log(cbSessioned, cbSessioned())
   args.push(cbSessioned)
-  // $log('going'.white, fnName, 'args', args)
-  // $log('callAuthSvcFn'.yellow, args, thisCtx)
   UserAuth[fnName].apply(thisCtx, args)
 }
 
@@ -336,7 +340,6 @@ var authWraps = {
   localLogin() { callAuthSvcFn(this,'localLogin',arguments) },
 }
 
-// $log('authWraps', authWraps)
 
 save = _.extend(save, authWraps)
 module.exports = _.extend(get,save)

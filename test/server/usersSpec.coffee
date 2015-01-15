@@ -1,7 +1,7 @@
 module.exports = -> describe "API: ", ->
 
 
-  before (done) ->
+  before () ->
     SETUP.analytics.stub()
 
   after ->

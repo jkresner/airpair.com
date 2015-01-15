@@ -19,7 +19,7 @@ module.exports = -> describe "API", ->
       SETUP.analytics.restore()
 
     it 'Gets braintree token on new loggedin user get-paymethods', (done) ->
-      addAndLoginLocalUser 'nkig', (s) ->
+      SETUP.addAndLoginLocalUser 'nkig', (s) ->
         GET '/billing/paymethods', {}, (r) ->
           expect(r.btoken).to.exist
           done()

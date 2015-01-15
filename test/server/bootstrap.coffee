@@ -20,6 +20,8 @@ global.expectStartsWith = (str,start) -> expect(str.indexOf(start)).to.equal(0)
 
 describe 'Server: ', ->
 
+  @timeout(4000)
+
   before (done) ->
     global.logging = false
     global.app = require('../../index').run()
@@ -48,5 +50,5 @@ describe 'Server: ', ->
   describe('Orders: ', require('./ordersBookingSpec'))
   describe('Posts: ', require('./postsSpec'))
   describe('Bookings: ', require('./bookingsSpec'))
-  describe('Payouts: ', require('./payoutsSpec'))
+  describe.only('Payouts: ', require('./payoutsSpec'))
 
