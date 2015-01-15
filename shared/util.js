@@ -55,6 +55,11 @@ var nestedPick = (object, keys) => {
 
 var util = {
 
+  endsWith(str, suffix) {
+    return str.indexOf(suffix, str.length - suffix.length) !== -1;
+  },
+
+
   datetime: {
     dawn: () => moment('20121225','YYYYMMDD'),
     anHourAgo: () => moment().add(-1,'hour'),
@@ -192,22 +197,22 @@ var util = {
     return ts
   },
 
+  parseYouTubeId(str) {
+    str = str.trim()
+    var variable = '([a-zA-Z0-9_-]*)'
 
-  // parseYoutubeId(str) {
-  //   str = str.trim()
-  //   var variable = '([a-zA-Z0-9_-]*)'
-
-  //   // e.g. http://www.youtube.com/watch?v=aANmpDSTcXI&otherjunkparams
-  //   var id = str.match("v=#{variable}")?[1]
-  //   if (id) return id
-
-  //   // e.g. youtu.be/aANmpDSTcXI
-  //   id = str.match("youtu\.be/#{variable}")?[1]
-  //   if (id) return id
-
-  //   // e.g. aANmpDSTcXI
-  //   return str.match("^#{variable}$")?[1]
-  // }
+    // e.g. http://www.youtube.com/watch?v=aANmpDSTcXI&otherjunkparams
+    var match = str.match("v="+variable);
+    // e.g. youtu.be/aANmpDSTcXI
+    if (!match)
+      match = str.match("youtu\.be/" + variable)
+    // e.g. aANmpDSTcXI
+    if (!match)
+      match = str.match(variable)
+    if (!match)
+      return null
+    return match[1]
+  }
 
 
 

@@ -1,10 +1,8 @@
-var fs =          require('fs')
-var handlebars =  require('handlebars')
-var util =        require('../../../shared/util')
-var marked =      require('marked')
-
-// var async =       require('async')
-import {getUsersInRole} from '../../services/users'
+var fs               = require('fs')
+var handlebars       = require('handlebars')
+var util             = require('../../../shared/util')
+var marked           = require('marked')
+var {getUsersInRole} = require('../../services/users')
 
 var templates = {}
 
@@ -77,8 +75,14 @@ module.exports = function(mailProvider)
         hash
       }), cb)
     },
-    subscriberWelcomeEmail(toUser, hash, cb) {
+    singupSubscribeEmail(toUser, hash, cb) {
       mailProvider.send(`${toUser.name} <${toUser.email}>`, renderEmail('subscriberwelcome', {
+        firstName: util.firstName(toUser.name),
+        hash
+      }), cb)
+    },
+    signupHomeWelcomeEmail(toUser, hash, cb) {
+      mailProvider.send(`${toUser.name} <${toUser.email}>`, renderEmail('signuphomewelcome', {
         firstName: util.firstName(toUser.name),
         hash
       }), cb)

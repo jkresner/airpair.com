@@ -31,8 +31,7 @@ var middleware = {
       if (!param) return next(ErrorApi404(`${paramName} not specified.`))
       if (logging) $log('bodyParamFn', paramName, req.body[paramName])
       var svcFn = resolver.fnLookup[paramName]
-      var thisSvcCtx = { user: req.user, sessionID: req.sessionID, session: req.session }
-      svcFn.call(thisSvcCtx, param, function(e, r) {
+      $callSvc(svcFn,req)(param, function(e, r) {
         if (!e && !r)
           e = ErrorApi404(`${paramName} not found.`)
         else if (!e && typeof param == 'array' && param.length != r.length)

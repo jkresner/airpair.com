@@ -59,7 +59,7 @@ global.GET = function(url, opts, cb) {
     .expect(opts.status||200)
     .end(function(err, resp){
       if (err) {
-      	$log(resp.text.red)
+        $log( ((resp) ? resp.text : err.message ).red )
       	throw err
       }
       else cb(resp.body)
@@ -83,8 +83,8 @@ global.POST = function(url, data, opts, cb) {
     .expect('Content-Type', /json/)
     .end(function(err, resp){
       if (err) {
-      	$log(resp.text.red)
-      	throw err
+        $log( ((resp) ? resp.text : err.message ).red )
+        throw err
       }
       else cb(resp.body, resp)
     })
@@ -108,7 +108,7 @@ global.PUT = function(url, data, opts, cb) {
     .expect('Content-Type', /json/)
     .end(function(err, resp){
       if (err) {
-      	$log(resp.text.red)
+        $log( ((resp) ? resp.text : err.message ).red )
       	throw err
       }
       else cb(resp.body, resp)
@@ -132,7 +132,7 @@ global.DELETE = function(url, opts, cb) {
     .expect('Content-Type', /json/)
     .end(function(err, resp){
       if (err) {
-      	$log(resp.text.red)
+        $log( ((resp) ? resp.text : err.message ).red )
       	throw err
       }
       else cb(resp.body, resp)

@@ -36,10 +36,9 @@ var cbSend = (req, res, next) => {
 
 function resolveParamFn(Svc, svcFnName, paramName) {
   return (req, res, next, id) => {
-    var thisSvc = { user: req.user, sessionID: req.sessionID, session: req.session }
     if (logging) $log('paramFn', paramName, id)
     if (id) id = id.trim()
-    Svc[svcFnName].call(thisSvc, id, function(e, r) {
+    $callSvc(Svc[svcFnName],req)(id, function(e, r) {
       if (!r && !e) {
         e = new Error404(`${paramName} not found.`,
           paramName != 'post'&& paramName != 'workshop')
@@ -53,14 +52,13 @@ function resolveParamFn(Svc, svcFnName, paramName) {
 
 export function serve(Svc, svcFnName, argsFn, Validation) {
   return (req, res, next) => {
-    var thisSvc = { user: req.user, sessionID: req.sessionID, session: req.session }
-    if (logging) $log('thisSvc', svcFnName, argsFn, Svc, thisSvc)
+    if (logging) $log('serve.Svc', svcFnName, argsFn, Svc)
     var callback = cbSend(req,res,next)
     var args = argsFn(req)
     if (Validation) {
       if (req.method != 'GET' || Validation[svcFnName])
       {
-        var inValid = Validation[svcFnName].apply(thisSvc, _.union([req.user],args))
+        var inValid = Validation[svcFnName].apply({}, _.union([req.user],args))
         if (inValid) {
           var e = new Error(inValid)
           e.status = 403
@@ -69,7 +67,8 @@ export function serve(Svc, svcFnName, argsFn, Validation) {
       }
     }
     args.push(callback)
-    Svc[svcFnName].apply(thisSvc, args)
+
+    $callSvc(Svc[svcFnName],req).apply(this, args)
   }
 }
 
@@ -96,6 +95,7 @@ export var initAPI = (Svc, custom, paramFns, Validation) => {
     }
 
   api.svc = Svc
+  api.validation = Validation
 
   return api;
 }

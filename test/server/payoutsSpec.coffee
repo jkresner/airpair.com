@@ -228,7 +228,7 @@ module.exports = -> describe "API: ", ->
 
 
   it 'Expert can not pay out single pending transaction to their verified payout account', (done) ->
-    SETUP.newLoggedInExpertWithPayoutmethod 'tmot', (expert, expertSession, payoutmethod) ->
+    SETUP.newLoggedInExpertWithPayoutmethod 'mkod', (expert, expertSession, payoutmethod) ->
       SETUP.newBookedRequestWithExistingExpert 'peco', {}, expertSession, (request, booking, customerSession, expertSession) ->
         LOGIN expertSession.userKey, expertSession, ->
           GET "/billing/orders/payouts", {}, (orders) ->

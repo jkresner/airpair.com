@@ -21,9 +21,10 @@ angular.module("APCTAs", ['ngMessages','APAnalytics'])
       )
     }
 
-    this.submit = function(scope, formValid, data, success) {
+    this.submit = function(scope, singuptype, formValid, data, success) {
+      console.log('singuptype', singuptype)
       if (formValid)
-        SessionService.subscribe(scope.data,
+        SessionService[singuptype](scope.data,
           (result) => $timeout(success, 200),
           (e) => {
             $scope.updateFailed = e.message || e.error
@@ -58,7 +59,7 @@ angular.module("APCTAs", ['ngMessages','APAnalytics'])
         $scope.updateEmail = (model) => CtaHelper.updateEmail($scope, model,
           () => { angular.element('#postSubscribeName').focus(); })
 
-        $scope.submit = (formValid, data) => CtaHelper.submit($scope, formValid, data,
+        $scope.submit = (formValid, data) => CtaHelper.submit($scope, 'subscribe', formValid, data,
           () => {})
       }
     };
@@ -74,7 +75,7 @@ angular.module("APCTAs", ['ngMessages','APAnalytics'])
         $scope.updateEmail = (model) => CtaHelper.updateEmail($scope, model,
           () => { angular.element('#homeJoinName').focus() })
 
-        $scope.submit = (formValid, data) => CtaHelper.submit($scope, formValid, data,
+        $scope.submit = (formValid, data) => CtaHelper.submit($scope, 'homeSignup', formValid, data,
           () => { window.location = '/meet-experts' })
       }
     };
