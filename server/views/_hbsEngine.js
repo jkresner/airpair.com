@@ -63,16 +63,16 @@ export default function(app) {
       // })
     }
 
+  app.renderHbsAdmin = (fileName, data) =>
+    (req,res) => {
+      res.status(200).render(`./${fileName}.hbs`, combineBaseData(req,{session:req.user}))
+    }
+
   app.renderHbs = (fileName, data) =>
     (req,res) => {
       $callSvc(getSession,req)((e,session) => {
         res.status(200).render(`./${fileName}.hbs`, combineBaseData(req,{viewData:data,session}))
       })
-    }
-
-  app.renderHbsAdmin = (fileName, data) =>
-    (req,res) => {
-      res.status(200).render(`./${fileName}.hbs`, combineBaseData(req,{session:req.user}))
     }
 
   app.renderHbsViewData = (partialName, pageMeta, viewDataFn) =>
