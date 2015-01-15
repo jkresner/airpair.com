@@ -1,3 +1,4 @@
+db = require('./helpers/setup.db')
 uaFirefox = 'Mozilla/5.0 (Windows NT 5.1; rv:31.0) Gecko/20100101 Firefox/31.0'
 uaGooglebot = 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)'
 a_uid = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[\,\-_]*).{24,}/
@@ -8,13 +9,10 @@ module.exports = ->
   before (done) ->
     SETUP.initTags(done)
 
-  beforeEach ->
-    SETUP.clearIdentity()
-
 
   expectSessionNotStored = (session, cb) ->
     expect(session.sessionID).to.match(a_uid)
-    testDb.ModelById 'Session', session.sessionID, (e, s) ->
+    db.Models.Session.findOne { _id: session.sessionID }, (e, s) ->
       expect(s).to.be.null
       testDb.viewsByAnonymousId session.sessionID, (e, views) ->
         expect(views.length).to.equal(0)
@@ -23,7 +21,7 @@ module.exports = ->
 
   expectSessionToBeStored = (session, cb) ->
     expect(session.sessionID).to.match(a_uid)
-    testDb.ModelById 'Session', session.sessionID, (e, s) ->
+    db.Models.Session.findOne { _id: session.sessionID }, (e, s) ->
       expect(s).to.exist
       cb()
 
