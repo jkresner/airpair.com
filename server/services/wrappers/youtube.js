@@ -1,7 +1,6 @@
 var google = require('googleapis');
 var OAuth2Client = google.auth.OAuth2;
 var youtube = google.youtube('v3');
-var _ = require("lodash");
 
 var oauthClients = [];
 _.values(config.auth.google.refreshTokens).forEach(function(token){
@@ -17,6 +16,7 @@ var fetchVideoInfo = function(clientIndex, id, callback){
     if (err || result.items.length == 0){
       if(clientIndex < oauthClients.length - 1){
         clientIndex += 1;
+        //retry with the next client
         fetchVideoInfo(clientIndex, id, callback);
       } else{
         console.error("all oauth clients failed");
