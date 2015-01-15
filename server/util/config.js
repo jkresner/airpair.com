@@ -91,11 +91,7 @@ var cfg = {
     }
   },
   redirects: { on: false },
-  session: { secret: 'airyv1' },
-
-  youtube: {
-    email: "fill_me_in"
-  }
+  session: { secret: 'airyv1' }
 }
 
 module.exports = function(env, appdir) {
@@ -193,11 +189,6 @@ module.exports = function(env, appdir) {
       var token = pair.split(":")[1];
       cfg.auth.google.refreshTokens[email] = token;
     }
-
-    //youtube email is first access token or YOUTUBE_EMAIL env variable
   }
-
-  cfg.youtube.email = process.env.YOUTUBE_EMAIL || process.env.AUTH_GOOGLE_REFRESH_TOKEN.split(":")[0];
-
   return cfg;
 }

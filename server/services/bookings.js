@@ -134,11 +134,16 @@ Booking: https://airpair.com/booking/${original._id}`
       })
   },
   addYouTubeData(original, youTubeId, cb){
-    youTube.getVideoInfo(youTubeId, function(err, data){
+    youTube.getVideoInfo(youTubeId, function(err, response){
+      if (err){
+        return cb(Error(err),data)
+      }
       original.status = "followup"
+      var data = {}
+      data = response.snippet;
+      data.youTubeId = response.id;
       delete(data.thumbnails) //can be derived from YouTube ID
-      data.youTubeId = youTubeId
-      original.recordings.push({data})
+      original.recordings.push({type: "YouTube", data})
       svc.update(original._id, original, (e,r) => {
         if (e || !r) return cb(e,r)
           get.getByIdForAdmin(r._id,cb)
