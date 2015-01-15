@@ -170,7 +170,7 @@ function localSignup(email, password, name, errorCB, done) {
         if (password == 'home')
           mailman.signupHomeWelcomeEmail(r, upsert.local.changePasswordHash)
         if (password == 'subscribe')
-          mailman.subscriberWelcomeEmail(r, upsert.local.changePasswordHash)
+          mailman.singupSubscribeEmail(r, upsert.local.changePasswordHash)
       }
       done(e,r)
     })

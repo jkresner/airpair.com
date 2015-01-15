@@ -6,6 +6,8 @@ var {addOAuthPayoutmethod} = require('../services/paymethods')
 
 export default function(app) {
 
+
+
   var router = require('express').Router()
 
     //-- Don't want returnTo over ridden on oauth callbacks
@@ -25,6 +27,9 @@ export default function(app) {
 
     .get('/paypal-loginurl', mw.authd, (req,res) =>
       { res.json({url:pp.loginUrl(req)}) })
+
+  app.use('/v1/auth', router)
+  app.get('/logout', mw.setReturnTo, logout(config.auth))
 
   if (config.testlogin) app.get('/test/setlogin/:id', setTestLogin)
 
