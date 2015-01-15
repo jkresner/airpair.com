@@ -25,6 +25,19 @@
             {{room.id}}
         </span>
     </div>
+    
+    <h2>All Rooms</h2>
+    <div ng-repeat="room in allRooms">
+        <button ng-click="toggleHistory=!toggleHistory">{{room.info.name}}</button>
+        <div ng-if="toggleHistory">
+            <div ng-repeat="message in room.history">
+                <b member-info="{{message.to}}">{{member.name || "Anonymous User"}}</b>: {{message.body}}
+            </div>
+            <div ng-show="!room.history.length">
+                No messages :(
+            </div>
+        </div>
+    </div>
 
     <div id="chat-widget" style="border:solid 1px green; position: fixed; top: 0px; right: 0px; width: 300px; background-color: #ccc" chat-widget></div>    
 </section>

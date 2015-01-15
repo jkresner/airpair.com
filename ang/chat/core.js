@@ -19,6 +19,9 @@
 		
 		this.login = function (token) {
 			console.log("logging in")
+			if (this._member) {
+				this.logout();
+			}
 			this._ref.authWithCustomToken(token, (function(error, member) {
 				if (error) {
 					this.trigger("login", error);
@@ -43,6 +46,7 @@
 	
 		this.logout = function () {
 			this._ref.unauth();
+			this._member.detach();
 			this._member = {};
 			localStorage.setItem("corechat:firebaseToken", '');
 			this.trigger("logout", null);
@@ -305,6 +309,15 @@
 			var member = cc.getMember(memberId);
 			member.send(body);
 		}
+		
+		this.detach = function () {
+			this._ref.child("notifications").off();	
+			this.off();
+			for (var intervalIndex in this._intervals) {
+				var interval = this._intervals[intervalIndex];
+				clearInterval(interval);
+			}
+		}
 	};
 	
 	var SelfMember = function (cc, uid, auth) {
@@ -554,7 +567,10 @@
 		};
 	
 		this.off = function (event) {
-			this._bindings[event] = [];
+			if (event)
+				this._bindings[event] = [];
+			else 
+				this._bindings = {};
 		};
 	};
 
@@ -577,6 +593,7 @@
 		this._timeout = 10e3;
 		this._lastEvent = (new Date()).getTime();
 		this._status = "offline"; // offline, online, away
+		this._intervals = [];
 		
 		var lastPage;
 		
@@ -595,8 +612,12 @@
 			body.addEventListener("mousemove", this._registerEvent.bind(this));
 			body.addEventListener("keydown", this._registerEvent.bind(this));
 			
-			setInterval(this._performStatusCheck.bind(this), this._timeout);
-			setInterval(this._performHashCheck.bind(this), 1e3);
+			this._intervals.push(
+				setInterval(this._performStatusCheck.bind(this), this._timeout)
+			);
+			this._intervals.push(
+				setInterval(this._performHashCheck.bind(this), 1e3)	
+			);
 		};
 		
 		this._performStatusCheck = function () {
