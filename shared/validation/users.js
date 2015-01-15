@@ -84,6 +84,10 @@ module.exports = {
   toggleBookmark(user, type, id) {
     if (!id) return "bookmark id required"
     if (!type) return "bookmark type required"
+  },
+
+  verifyEmail(user, hash) {
+    if (!hash) return "email verify hash required"
   }
 
 }

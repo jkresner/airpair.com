@@ -100,8 +100,7 @@ export default function(model, logging)
     updateWithSet(id, data, cb) {
       if (!id) return cb(new Error('Cannot update object by null id'), null)
       model.findByIdAndUpdate(id, { $set: data }).lean().exec( (e, r) => {
-        if (e) $log('svc.updateWithSet.error', id, e, data)
-        if (!r) $log('svc.updateWithSet.error'.red, `Object with id[${id}] does not exist`)
+        if (e || !r) $log('svc.updateWithSet.error'.red, id, e, data)
         if (logging) $log('svc.updated', r)
         if (cb) cb(e, r)
       })

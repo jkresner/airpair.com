@@ -107,16 +107,15 @@ function googleLogin(profile, errorCB, done) {
 
   // Stop logged in users hitting this endpoint
   // var loggedInUser = this.user
-  // $log('glogin')
+  // $log('glogin', profile)
   // //-- stop user clobbering user.google details
   // if (r && r.googleId && (r.googleId != upsert.google.id))
   //   return cb(Error(`Cannot overwrite google login ${r.google._json.email} with ${upsert.google._json.email}. <a href="/v1/auth/logout">Logout</a> first?`),null)
-
   User.findOne(Data.query.existing(profile._json.email),
     wrap(`googleLogin.existing ${profile._json.email}`, errorCB, (existing) => {
 
-    var upsert = { googleId: profile.id, google: profile }
 
+    var upsert = { googleId: profile.id, google: profile }
     //-- copy google details to top level users details
     if (!existing || !existing.email)
     {
@@ -129,7 +128,9 @@ function googleLogin(profile, errorCB, done) {
       upsert.email = existing.email
     }
 
-    // ????? delete upsert.email // gotcha, don't remove
+    // gotcha, don't remove
+    // 'Google login for existing v1 user works after played with singup form'
+    if (this.session.anonData) delete this.session.anonData.email
 
     upsertSmart.call(this, upsert, existing, done)
 

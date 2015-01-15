@@ -30,6 +30,7 @@ var cbSend = (req, res, next) => {
     {
       res.status(200).json({})
     }
+    next(e, r)
   }
 }
 

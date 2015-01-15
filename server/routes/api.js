@@ -14,7 +14,6 @@ export default function(app) {
     .param('paymethod', API.Paymethods.paramFns.getById)
 
     .get('/session/full', setAnonSessionData, setFirebaseTokenOnSession, API.Users.getSession)
-    .put('/users/me/password', API.Users.changePassword)
     .put('/users/me/password-change', API.Users.requestPasswordChange)
     .put('/users/me/tag/:tag', setAnonSessionData, API.Users.toggleTag)
     .put('/users/me/tags', setAnonSessionData, API.Users.updateTags)
@@ -22,6 +21,16 @@ export default function(app) {
     .put('/users/me/bookmarks/:type/:id', setAnonSessionData, API.Users.toggleBookmark)
     .put('/users/me/email', setAnonSessionData, setFirebaseTokenOnSession, API.Users.changeEmail)
     .put('/users/me/name', setAnonSessionData, setFirebaseTokenOnSession, API.Users.changeName)
+    .put('/users/me/password', (req, res, next) => {
+      API.Users.changePassword(req, res, (e,r) => {
+        if (e) return next(e)
+        req.login(r, ()=>{
+          next()
+          $log('change success loggedin'.magenta, r)
+        })
+        // next()
+      })
+    })
 
     .get('/tags/search/:id', API.Tags.search)
     .get('/tags/:slug', authd, API.Tags.getBySlug)
