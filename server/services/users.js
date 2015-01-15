@@ -93,8 +93,7 @@ function updateAsIdentity(data, trackData, cb) {
     })
   }
   else {
-
-    // $log('in updateAsIdentity: anon', data)
+    // $log('in updateAsIdentity: anon', data, this)
 
     this.session.anonData = _.extend(this.session.anonData, data)
     get.getSession.call(this, cb)
@@ -187,8 +186,8 @@ var save = {
 
   changeUsername(username, cb) {
     var userId = this.user._id
-    if (!username) return updateAsIdentity.call(this, {username}, cb)
-    svc.searchOne({username}, null, function(e,r) {
+    if (!username) return updateAsIdentity.call(this, {username}, null, cb)
+    svc.searchOne({username}, null, (e,r) => {
       if (r && !_.idsEqual(userId,r._id)) {
         return cb(svc.Forbidden(`username ${username} already taken`))
       }
