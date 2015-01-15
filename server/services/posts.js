@@ -1,6 +1,6 @@
 import Svc from '../services/_service'
 import * as Validate from '../../shared/validation/post.js'
-import * as UserSvc from '../services/users'
+var UserSvc         = require('../services/users')
 import Post from '../models/post'
 import generateToc from './postsToc'
 var marked = require('marked')
@@ -122,7 +122,7 @@ export function create(o, cb) {
   o.created = new Date()
   o.by.userId = this.user._id
   svc.create(o, cb)
-  UserSvc.update(o.by.userId, {bio: o.by.bio},() => {})
+  UserSvc.changeBio.call(this, {bio: o.by.bio},() => {})
 }
 
 export function getTableOfContents(markdown, cb) {

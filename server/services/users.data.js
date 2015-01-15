@@ -1,5 +1,6 @@
 import * as md5     from '../util/md5'
-var util =    require('../../shared/util')
+var util            = require('../../shared/util')
+var bcrypt          =        require('bcrypt')
 
 var select = {
   session: {
@@ -10,7 +11,7 @@ var select = {
     'roles': 1,
   },
   sessionFull: {
-    '__v': 1,
+    // '__v': 1,
     '_id': 1,
     'roles': 1,
     'bitbucket.username': 1,
@@ -54,7 +55,7 @@ var select = {
   }
 }
 
-module.exports = {
+var data = {
 
   select: {
     session: select.session,
@@ -73,7 +74,8 @@ module.exports = {
 
     //-- TODO, watch out for cache changing via adds and deletes of records
     inflateTagsAndBookmarks(user, cb) {
-      if (!user || (!user.tags && !user.bookmarks) ) return cb(null, user)
+      var noInflate = !user || (!user.tags && !user.bookmarks)
+      if (noInflate) return cb(null, user)
 
       cache.ready(['tags','posts','workshops'], () => {
         // if (logging) $log('inflateTagsAndBookmarks.start')
@@ -107,12 +109,68 @@ module.exports = {
         // if (logging) $log('inflateTagsAndBookmarks.done', {tags, bookmarks})
         cb(null, _.extend(user, {tags, bookmarks}))
       })
+    },
+
+    cb: {
+      session(ctx, cb) {
+        return (e, r) => {
+          // $log('cbSession'.red, e, r)
+          if (e || !r) {
+            if (logging) $log('cbSession'.red, e, r)
+            return cb(e, r)
+          }
+
+          var obj = util.selectFromObject(r, data.select.sessionFull)
+          if (obj.roles && obj.roles.length == 0) delete obj.roles
+          if (config.chat.on) obj.firebaseToken = ctx.session.firebaseToken
+          data.select.setAvatar(obj)
+          data.select.inflateTagsAndBookmarks(obj, cb)
+          // if (ctx.user)
+            // ctx.session.passport.user = data.select.sessionFromUser(obj)
+        }
+      },
+      searchResults(cb) {
+        return (e, r) => {
+          for (var u of r)
+          {
+            if (u.google) {
+              if (!u.email && u.google._json.email) u.email = u.google._json.email
+              if (!u.name && u.google.displayName) u.name = u.google.displayName
+            }
+            u = data.select.setAvatar(u);
+          }
+        }
+      }
     }
-
-
   },
 
   query: {
-  }
+    existing: function(email) {
+      email = email.toLowerCase()
+      return { '$or': [{email:email},{'google._json.email':email}] }
+    }
+  },
+
+  data: {
+    anonAvatars: [
+      "/static/img/css/sidenav/default-cat.png",
+      "/static/img/css/sidenav/default-mario.png",
+      "/static/img/css/sidenav/default-stormtrooper.png"
+    ],
+
+    generateHash(seedString) {
+      var hash = bcrypt.hashSync(seedString, bcrypt.genSaltSync(8))
+      while (util.endsWith(hash,'.'))
+      {
+        hash = bcrypt.hashSync(seedString, bcrypt.genSaltSync(8))
+      }
+      return hash
+    }
+  },
+
+
 
 }
+
+
+module.exports = data

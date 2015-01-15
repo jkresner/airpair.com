@@ -66,10 +66,11 @@ var User = new Schema({
 
   local :
   {
-    emailHash:          String,
-    emailHashGenerated: Date,
-    password :          String,
-    changePasswordHash: String
+    changeEmailHash:        String,
+    emailHashGenerated:     Date,
+    password :              String,
+    changePasswordHash:     String,
+    passowrdHashGenerated:  Date
   },
   googleId:             { type: String, sparse: true, unique: true, dropDups: true },
   google: {},

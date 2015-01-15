@@ -17,11 +17,12 @@ PaymethodsService = require('../../../server/services/paymethods')
 
 global.addLocalUser = (userKey, opts, done) ->
   clone = getNewUserData(userKey)
-  UserService.tryLocalSignup.call(newUserSession(userKey), clone.email, clone.password, clone.name, (e, r) ->
+  UserService.localSignup.call(newUserSession(userKey), clone.email, clone.password, clone.name, (e, r) ->
     data.users[clone.userKey] = r
     if (opts && opts.emailVerified)
-      UserService.update.call(this, data.users[clone.userKey]._id, opts, (err, user) ->
-        data.users[clone.userKey] = user
+      db.Models.User.findOneAndUpdate({_id:r._id},{emailVerified:true},{upsert:true}, (err, user) ->
+        r.emailVerified = true
+        data.users[clone.userKey] = r
         done(clone.userKey)
       )
     else
@@ -58,6 +59,7 @@ stories = {
 
   addLocalUser,
   addAndLoginLocalUser,
+  addAndLoginLocalUserWithEmailVerified,
   addAndLoginLocalUserWithPayMethod,
 
   addUserWithRole: (userKey, role, done) ->
@@ -67,7 +69,7 @@ stories = {
     session.sessionID = 'test'+userKey
 
     # Add an administrator
-    UserService.upsertProviderProfile.call session, 'google', data.oauth[userKey], (e,r) ->
+    UserService.googleLogin.call session, data.oauth[userKey], (e,r) ->
       if (!r.roles || !r.roles.length)
         UserService.toggleUserInRole.call {user:r}, r._id, role, (ee,rr) ->
           data.users[userKey] = rr;

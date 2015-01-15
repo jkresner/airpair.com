@@ -1,7 +1,7 @@
-var fs 				= require('fs')
-var marked 		= require('marked')
-var hbs 			= require('express-hbs')
-import {getSession} from './../services/users'
+var fs 				     = require('fs')
+var marked 		     = require('marked')
+var hbs 			     = require('express-hbs')
+var {getSession}   = require('./../services/users')
 
 function registerHelpers(hbs)
 {
@@ -58,16 +58,9 @@ export default function(app) {
 
   app.renderErrorPage = (error) =>
     (req,res) => {
-      getSession.call(req, (e,session) => {
-        res.status(error.status||400).render(`./error.hbs`, combineBaseData(req,{error,session}))
-      })
-    }
-
-  app.renderHbs = (fileName, data) =>
-    (req,res) => {
-      getSession.call(req, (e,session) => {
-        res.status(200).render(`./${fileName}.hbs`, combineBaseData(req,{viewData:data,session}))
-      })
+      // $callSvc(getSession,req)((e,session) => {
+      res.status(error.status||400).render(`./error.hbs`, {error})
+      // })
     }
 
   app.renderHbsAdmin = (fileName, data) =>
@@ -75,9 +68,16 @@ export default function(app) {
       res.status(200).render(`./${fileName}.hbs`, combineBaseData(req,{session:req.user}))
     }
 
+  app.renderHbs = (fileName, data) =>
+    (req,res) => {
+      $callSvc(getSession,req)((e,session) => {
+        res.status(200).render(`./${fileName}.hbs`, combineBaseData(req,{viewData:data,session}))
+      })
+    }
+
   app.renderHbsViewData = (partialName, pageMeta, viewDataFn) =>
     (req, res) => {
-      getSession.call(req,(e,session)=>
+      $callSvc(getSession,req)((e,session)=>
         viewDataFn(req, (e,data) => {
           if (data.tmpl && data.tmpl != 'default')
             data[`${partialName}${data.tmpl}Render`] = true

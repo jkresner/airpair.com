@@ -781,6 +781,49 @@ module.exports = {
     "updatedAt" : "2014-12-03T21:40:56.136Z",
     "userId" : "53cfe2ba8f8c80299bcc3af8",
     "username" : "mperrenoud"
-  }
+  },
 
+
+  mkod: {
+    "_id" : "52f229e990df5e0200000076",
+    "availability" : "",
+    "bookMe" : {
+        "rate" : "120",
+        "rake" : "20",
+        "urlSlug" : "martonkodok",
+        "urlBlog" : "/php/expert-marton-kodok",
+        "enabled" : true,
+        "coupons" : []
+    },
+    "brief" : "I would like to help more in scalability, mysql optimization, system optimization, programming in PHP and mostly in Yii Framework. Anything related to Beanstalkd, Redis, Riak, Graphite.",
+    "email" : "pentium10@gmail.com",
+    "gh" : {
+        "id" : 465691,
+        "username" : "pentium10",
+        "location" : null,
+        "blog" : null,
+        "gravatar_id" : "4a682874e7a4757dc02a9823e277e235",
+        "followers" : 2
+    },
+    "gmail" : "pentium10@gmail.com",
+    "homepage" : "",
+    "hours" : "10-20",
+    "minRate" : 40,
+    "name" : "Marton Kodok",
+    "pic" : "https://secure.gravatar.com/avatar/4a682874e7a4757dc02a9823e277e235",
+    "rate" : 70,
+    "so" : {
+        "id" : 243782,
+        "website_url" : "http://www.kodokmarton.eu",
+        "link" : "243782/pentium10",
+        "reputation" : 61211,
+        "profile_image" : "https://www.gravatar.com/avatar/4a682874e7a4757dc02a9823e277e235?s=128&d=identicon&r=PG"
+    },
+    "status" : "ready",
+    "tags" : [],
+    "timezone" : "GMT+0200 (GTB Standa",
+    "updatedAt" : "2014-02-05T12:09:13.000Z",
+    "userId" : "52f229b71c67d1a4859d2065",
+    "username" : "pentium10"
+  }
 }

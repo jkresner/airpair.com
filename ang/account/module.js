@@ -29,14 +29,14 @@ angular.module("APProfile", ['ngRoute', 'APFilters', 'APSvcSession', 'APTagInput
   if ($scope.session)
     $scope.data = _.pick($scope.session, 'name','email','initials','username')
 
-
-  $scope.updateInfo = function(targetName) {
+  var updateInfo = function(targetName) {
     $scope.profileAlerts = []
-    if ($scope.session[targetName] != $scope.data[targetName])
+    var propName = targetName.toLowerCase()
+    if ($scope.session[propName] != $scope.data[propName])
     {
-      var up = { name: $scope.data.name }
-      up[targetName] = $scope.data[targetName]
-      SessionService.updateProfile(up, function(result){
+      var up = {}
+      up[propName] = $scope.data[propName]
+      SessionService[`update${targetName}`](up, function(result){
         $scope.profileAlerts.push({ type: 'success', msg: `${targetName} updated` })
       }, function(e){
         $scope.data.username = $scope.session.username
@@ -44,6 +44,12 @@ angular.module("APProfile", ['ngRoute', 'APFilters', 'APSvcSession', 'APTagInput
       })
     }
   }
+
+  $scope.updateBio = () => updateInfo('Bio')
+  $scope.updateName = () => updateInfo('Name')
+  $scope.updateInitials = () => updateInfo('Initials')
+  $scope.updateUsername = () => updateInfo('Username')
+
 
   $scope.updateEmail = function(model) {
     if (!model.$valid || $scope.data.email == $scope.session.email) return
@@ -148,10 +154,10 @@ angular.module("APProfile", ['ngRoute', 'APFilters', 'APSvcSession', 'APTagInput
 
   $scope.watchOrdersToPayout = () => {
     var total = 0
-  
+
     $scope.data.orders = _.map(_.keys($scope.checkedOrders),(key) => {
       console.log('$scope.checkedOrders[key])', $scope.checkedOrders[key])
-      if (key != 'total' && $scope.checkedOrders[key]) 
+      if (key != 'total' && $scope.checkedOrders[key])
       {
         var o = _.find($scope.payoutOrders,(o)=>o._id==key)
         total += o.lineItems[0].owed

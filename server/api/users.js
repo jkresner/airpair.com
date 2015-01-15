@@ -1,19 +1,26 @@
 import {initAPI} from './_api'
-import * as Svc from '../services/users'
 
-export default initAPI(Svc, {
-  getSessionFull: (req) => [],
+
+export default initAPI(
+  require('../services/users')
+, {
+  getSession: (req) => [],
   toggleUserInRole: (req) => [req.params.id,req.params.role],
   toggleTag: (req) => [req.tag],
+  updateTags: (req) => [req.body],
   toggleBookmark: (req) => [req.params.type,req.params.id],
+  updateBookmarks: (req) => [req.body],
+  search: (req) => [req.params.id],
   getUsersInRole: (req) => [req.params.role],
   changeName: (req) => [req.body.name],
   changeEmail: (req) => [req.body.email],
+  changeInitials: (req) => [req.body.initials],
+  changeUsername: (req) => [req.body.username],
   verifyEmail: (req) => [req.body.hash],
   requestPasswordChange: (req) => [req.body.email],
-  changePassword: (req) => [req.body.hash, req.body.password],
-  updateProfile: (req) => [req.body.name, req.body.initials, req.body.username],
-  tags: (req) => [req.body],
-  search: (req) => [req.params.id],
-  bookmarks: (req) => [req.body]
-})
+  changePassword: (req) => [req.body.hash, req.body.password]
+}, {
+
+},
+  require('../../shared/validation/users.js')
+)
