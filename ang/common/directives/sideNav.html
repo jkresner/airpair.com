@@ -2,7 +2,7 @@
   <img id="sideNavToggle" track-click="sideNav" data="{{ toggleAction }}" track-click-if="!session._id" ng-click="sideNav.toggle()" src="/static/img/css/sidenav/toggle.png" />
 </header>
 
-<section class="welcome" ng-if="session.authenticated == false">
+<section class="welcome" ng-if="session.unauthenticated">
 
   <figure><a id="navWelcomeAvatar" track-click="sideNav" ng-click="openProfile()"><img class="avatar" ng-src="{{ session.avatar }}" /></a></figure>
 

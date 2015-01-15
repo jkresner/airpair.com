@@ -10,6 +10,14 @@ module.exports = function(config)
   global.$log           = console.log
   global.$error         = require('./logging').logError
 
+  //-- Consistent way to call services from a function with request context
+  global.$callSvc       = (fn, ctx) =>
+    function() {
+      var thisCtx = { user: ctx.user, sessionID: ctx.sessionID, session: ctx.session }
+      // $log('fn', fn, thisCtx, arguments)
+      fn.apply(thisCtx, arguments)
+    }
+
 
   if (config.analytics.on)
     global.analytics    = require('./../services/analytics').analytics
@@ -17,7 +25,7 @@ module.exports = function(config)
     global.analytics    = { track: ()=>{}, view: ()=>{}, alias: ()=>{}, identify: ()=>{} }
 
 
-  var {mailProvider} = config //-- only set in test
+  var {mailProvider}    = config //-- only set in test
   if (!mailProvider) mailProvider = require('./mail/ses')()
   global.mailman 			  =	require('./mail/mailman')(mailProvider)
 

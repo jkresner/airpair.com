@@ -57,14 +57,14 @@
             <span class="paidout" ng-if="o.lineItems[0].info.paidout">paidout</span>
             <span class="pending" ng-if="!o.lineItems[0].info.released">pending</span>
             <span ng-if="o.lineItems[0].info.released && !o.lineItems[0].info.paidout">
-              <input id="{{o._id}}" type="checkbox" ng-model="checkedOrders[o._id]" ng-click="watchOrdersToPayout()" /> <label for="{{o._id}}">Collect</label>
+              <input id="{{o._id}}" type="checkbox" ng-model="checkedOrders[o._id]" ng-change="watchOrdersToPayout()" /> <label for="{{o._id}}">Collect</label>
             </span>
           </td>
         </tr>
       </table>
 
-      <a class="btn" ng-if="checkedOrders.total > 0" ng-click="collectPayment()">
-        Collect ${{checkedOrders.total}}</a>
+      <single-submit ng-if="checkedOrders.total > 0" button-text="'Collect $' + checkedOrders.total" wait-text="Processing ..." on-single-click="collectPaymentDeferred">
+      </single-submit>
     </div>
 
   </section>

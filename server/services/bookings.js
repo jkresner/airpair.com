@@ -7,6 +7,7 @@ var Data =              require('./bookings.data')
 var logging =           false
 var svc =               new Svc(Booking, logging)
 var GCal =              require('./wrappers/gcal')
+var youTube =           require('./wrappers/youtube')
 var util =              require('../../shared/util')
 
 var setAvatarsCB = (cb) =>
@@ -95,11 +96,6 @@ var save = {
     }
 
     original.status = update.status
-    if ((update.recordings||[]).length > (original.recordings||[]).length) {
-      $log('adding a recording')
-      if (original.status == 'confirmed')
-        original.status = 'followup'
-    }
 
     if (update.sendGCal) {
       var attenddees = []
@@ -124,13 +120,37 @@ Booking: https://airpair.com/booking/${original._id}`
           $log('event created', e, r)
           if (e) return cb(e)
           original.gcal = r
-          svc.update(original._id, original, setAvatarsCB(cb))
+          svc.update(original._id, original, (e,r) => {
+            if (e || !r) return cb(e,r)
+            get.getByIdForAdmin(r._id,cb)
+          })
         })
       }
     }
     else
-      svc.update(original._id, original, setAvatarsCB(cb))
+      svc.update(original._id, original, (e,r) => {
+        if (e || !r) return cb(e,r)
+        get.getByIdForAdmin(r._id,cb)
+      })
   },
+  addYouTubeData(original, youTubeId, cb){
+    youTube.getVideoInfo(youTubeId, function(err, response){
+      if (err){
+        return cb(Error(err),data)
+      }
+      original.status = "followup"
+      var data = {}
+      data = response.snippet;
+      data.youTubeId = response.id;
+      delete(data.thumbnails) //can be derived from YouTube ID
+      original.recordings.push({type: "YouTube", data})
+      svc.update(original._id, original, (e,r) => {
+        if (e || !r) return cb(e,r)
+          get.getByIdForAdmin(r._id,cb)
+      })
+    });
+  },
+
   confirmBooking()
   {
     cb(Error('confirmBooking not implemented'))

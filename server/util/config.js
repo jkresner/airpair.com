@@ -57,19 +57,19 @@ var cfg = {
     libCss: '/styles/libs.css'
   },
   calendar: {
-    on: false,
+    on: true,
     google: {
-      access_token: 'ya29.8ADODKBNyChHf2aDOSx98nFnPB1zA43dpJ4BRM0K4p57_y0ZCZJ7uJ4H',
-      calendarId: 'experts@airpair.com',
-      clientId: '',
-      clientSecret: '',
-      redirectUrl: "https://www.airpair.com/oauth2callback"
+      ownerRefreshToken: 'setyourenvironentvarible',
+      owner: 'setyourenvironentvarible@airpair.com',
+      calendarId: 'setyourenvironentvarible@airpair.com'
     }
   },
   chat: {
     on: true,
   },
-  log: {},
+  log: {
+    auth: false
+  },
   mail: {
     on: false, // we don't send mail in dev
     ses: {
@@ -137,6 +137,8 @@ module.exports = function(env, appdir) {
   }
 
   if (cfg.env == 'production') {
+
+    cfg.log.auth = (process.env.LOG_AUTH) ? process.env.LOG_AUTH == 'true' : false
     cfg.log.email = {
       level:          process.env.LOG_EMAIL_LEVEL || 'error',
       sesAccessKey:   cfg.mail.ses.access_key,
@@ -164,7 +166,7 @@ module.exports = function(env, appdir) {
       access_token: process.env.AUTH_TWITTER_ACCESS_TOKEN,
       access_token_secret: process.env.AUTH_TWITTER_ACCESS_TOKEN_SECRET
     }
-    
+
     cfg.auth.firebase = {
       url: process.env.FIRBEASE_URL,
       secret: process.env.FIREBASE_SECRET
@@ -175,11 +177,22 @@ module.exports = function(env, appdir) {
     cfg.auth.paypal.clientSecret = process.env.AUTH_PAYPAL_CLIENTSECRET
 
     cfg.calendar.on = true
-    cfg.calendar.google.clientId = process.env.CALENDAR_GOOGLE_CLIENTID
-    cfg.calendar.google.clientSecret = process.env.CALENDAR_GOOGLE_CLIENTSECRET
+    cfg.calendar.google.ownerRefreshToken = process.env.CALENDAR_GOOGLE_OWNER_REFRESHTOKEN
+    cfg.calendar.google.owner = process.env.CALENDAR_GOOGLE_OWNER
     cfg.calendar.google.calendarId = process.env.CALENDAR_GOOGLE_CALENDARID
-    cfg.calendar.google.access_token = process.env.CALENDAR_GOOGLE_ACCESS_TOKEN
   }
 
+  if (cfg.calendar.on && process.env.AUTH_GOOGLE_REFRESH_TOKEN) {
+    // example AUTH_GOOGLE_REFRESH_TOKEN
+    // "mike@madeye.io:1/eljaJDHqLRqI5z81h3PcAeFOG9Te2f7OAQhPkX8azRAMEudVrK5jSpoR30zcRFq6"
+    var refreshTokenUsersString = process.env.AUTH_GOOGLE_REFRESH_TOKEN;
+    cfg.auth.google.refreshTokens = {};
+    for (var pair of refreshTokenUsersString.split('::'))
+    {
+      var email = pair.split(":")[0];
+      var token = pair.split(":")[1];
+      cfg.auth.google.refreshTokens[email] = token;
+    }
+  }
   return cfg;
 }
