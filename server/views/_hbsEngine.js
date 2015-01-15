@@ -1,7 +1,7 @@
-var fs 				= require('fs')
-var marked 		= require('marked')
-var hbs 			= require('express-hbs')
-import {getSession} from './../services/users'
+var fs 				     = require('fs')
+var marked 		     = require('marked')
+var hbs 			     = require('express-hbs')
+var {getSession}   = require('./../services/users')
 
 function registerHelpers(hbs)
 {
