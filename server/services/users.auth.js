@@ -157,16 +157,21 @@ function localSignup(email, password, name, errorCB, done) {
     var upsert = { name, email, emailVerified: false,
       local: {
         password: Data.data.generateHash(password), // password is hased in the db
-        passwordHash: Data.data.generateHash(email),
-        passwordHashGenerated: new Date
       }
     }
 
+    if (password == 'home' || password == 'subscribe') {
+      upsert.local.changePasswordHash = Data.data.generateHash(email)
+      upsert.local.passwordHashGenerated = new Date
+    }
+
     upsertSmart.call(this, upsert, null, (e,r) => {
-      if (password == 'fast-ap-signup' && !e)
-        mailman.subscriberWelcomeEmail(r, data.local.changePasswordHash)
-      // else if (password == 'fast-ap-subscribe' && !e)
-      // mailman.subscriberWelcomeEmail(r, data.local.changePasswordHash)
+      if (!e) {
+        if (password == 'home')
+          mailman.signupHomeWelcomeEmail(r, upsert.local.changePasswordHash)
+        if (password == 'subscribe')
+          mailman.subscriberWelcomeEmail(r, upsert.local.changePasswordHash)
+      }
       done(e,r)
     })
 
