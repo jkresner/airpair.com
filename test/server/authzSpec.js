@@ -46,8 +46,8 @@ module.exports = () => describe("Authorization: ", function() {
   it('Cannot grant invalid role as admin', function(done) {
     addLocalUser('adap', {}, function(userKey) {
       LOGIN('admin', data.users.admin, function() {
-        PUT(`/adm/users/${data.users[userKey]._id}/role/goodlookin`, {}, {status:400}, function(s) {
-          expect(s.message).to.equal('Invalid role')
+        PUT(`/adm/users/${data.users[userKey]._id}/role/goodlookin`, {}, {status:403}, function(s) {
+          expect(s.message).to.equal('goodlookin is not a valid role')
           done()
         })
       })

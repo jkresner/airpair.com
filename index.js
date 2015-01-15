@@ -38,7 +38,7 @@ export function run()
     hbsEngine(app)
 
     app.get('/', mw.analytics.trackFirstRequest, mw.auth.authdRedirect('/dashboard'), app.renderHbs('home') )
-    app.use('/v1/auth', routes.auth(app))
+    app.use('/auth', routes.auth(app))
     app.use('/v1/api', routes.api(app))
     app.use('/v1/adm/*', mw.authz.adm, app.renderHbsAdmin('adm/admin'))
     app.use('/adm/*', mw.authz.adm, app.renderHbsAdmin('adm/admin'))
@@ -52,8 +52,10 @@ export function run()
       app.get(routes.whiteList, app.renderHbs('base') )
 
       app.use( (err, req, res, next) => {
-        $log('Express handler exception'.red)
+        // if (config.env != 'test') {
+        $log('Express handler exception'.magenta)
         $error(err, req.user, req)
+        //}
         res.status(err.status || 400)
         if (err.fromApi) res.json({error:err.message})
         else app.renderErrorPage(err)(req,res)
