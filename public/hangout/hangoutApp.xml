@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Module>
+<!-- Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License
+
+ * Instructions *
+
+ For local development you need to server your server over https
+ and point the iFrame below to localhost (uncomment line ..
+-->
+<ModulePrefs title="Hangout Starter">
+  <Require feature="rpc" />
+  <Require feature="views" />
+  <Require feature="locked-domain" />
+</ModulePrefs>
+<Content type="html"><![CDATA[
+
+<html>
+</style>
+<body style="background-color:#181818">
+<iframe style="border: 0px;" id="iFrame"></iframe>
+<script src="//plus.google.com/hangouts/_/api/v1/hangout.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+<script>
+function init() {
+  // When API is ready...
+  gapi.hangout.onApiReady.add(
+    function(eventObj) {
+      if (!eventObj.isApiReady) {
+  	   console.log("api is not ready")
+  	   return
+      }
+    	var youTubeId = gapi.hangout.onair.getYouTubeLiveId();
+    	console.log("YouTube Live ID", gapi.hangout.onair.getYouTubeLiveId());
+    	console.log("is on air hangout", gapi.hangout.onair.isOnAirHangout());
+    	console.log("is broadcasting?", gapi.hangout.onair.isBroadcasting());
+
+    	$(document).ready(function(){
+        var appData = gadgets.views.getParams()['appData'];
+        var theIFrame = document.getElementById("iFrame");
+        //TODO probably need to set the iFrame to 100%
+        theIFrame.src = "https://localhost:9001/hangout/index.html?appData=" + appData + "&youTubeId=" + youTubeId;
+
+        $("body").css("height", "100%");
+        $("html").css("height", "100%");
+        $("#iFrame").width("100%");
+        $("#iFrame").height("100%");
+    	});
+  });
+}
+
+// Wait for gadget to load.
+gadgets.util.registerOnLoadHandler(init);
+</script>
+</body>
+]]>
+</Content>
+</Module>
