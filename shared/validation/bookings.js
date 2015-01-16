@@ -25,6 +25,15 @@ var validation = {
   addYouTubeData(user, original, youTubeId)
   {
     if (!youTubeId) return "YouTube ID Required"
+    var existing = _.find(original.recordings, (r) => r.data.youTubeId == youTubeId)
+    if (existing)
+      return "YouTube ID already exists"
+  },
+
+  addHangout(user, original, youTubeId, youTubeAccount, hangoutUrl){
+    if (!youTubeAccount) return "YouTube Account Required"
+    if (!hangoutUrl) return "Hangout URL Required"
+    return validation.addYouTubeData(user, original, youTubeId)
   }
 }
 
