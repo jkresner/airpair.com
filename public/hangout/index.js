@@ -3,22 +3,41 @@ var appData = JSON.parse(decodeURI(
   /appData=(.*?)(&|$)/.exec(document.location.href)[1]
 ));
 
-var youTubeId = /youTubeId=(.*?)(&|$)/.exec(document.location.href)[1]
-var addYouTubeIdUrl = "/v1/api/bookings/" + appData.bookingId + "/hangoutRecording"
-$.ajax({
-  url: addYouTubeIdUrl,
-  method: "PUT",
-  data: {
-    hash: appData.hash,
-    youTubeId: youTubeId
-  }
-}).done(function(data, status){
-  // console.log("GOT DATA", data);
-}).fail(function(jqXHR, status){
-  console.error("STATUS", status);
-});
+var youTubeId = /youTubeId=(.*?)(&|$)/.exec(document.location.href)[1];
+var addHangoutUrl = "/v1/api/adm/bookings/" + appData.bookingId + "/hangout";
+var hangoutUrl = /hangoutUrl=(.*?)(&|$)/.exec(document.location.href)[1];
+var participant = JSON.parse(decodeURI(/participant=(.*?)(&|$)/.exec(document.location.href)[1]));
 
-//TODO send PUT request to associate youTubeId with booking
+var invalidAccount = false;
+//TODO would be cleaner to rely on some immutable ID, unfortunately email isn't available
+if (appData.admin && !(participant.person.displayName === "AirPair Experts" ||
+      participant.person.displayName === "AirPair")){
+  invalidAccount = true;
+  alert("We cannot start the hangout recording. You must be logged in with" +
+    "the experts@airpair.com team@airpair.com or nda@airpair.com account. "
+
+  );
+}
+
+invalidAccount = false;
+
+if (!invalidAccount && appData.admin){
+  $.ajax({
+    url: addHangoutUrl,
+    method: "PUT",
+    data: {
+      youTubeId: youTubeId,
+      hangoutUrl: hangoutUrl,
+      youTubeAccount: participant.person.displayName
+    }
+  }).done(function(data, status){
+    console.log("GOT DATA", data);
+  }).fail(function(jqXHR, status){
+    console.error("STATUS", status);
+  });
+
+  //TODO send PUT request to associate youTubeId with booking
+}
 
 $(document).ready(function(){
   $("#minutes").html(appData.minutes);

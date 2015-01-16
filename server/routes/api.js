@@ -14,7 +14,6 @@ export default function(app) {
     .param('paymethod', API.Paymethods.paramFns.getById)
 
     .get('/session/full', setAnonSessionData, setFirebaseTokenOnSession, API.Users.getSession)
-    .put('/bookings/:booking/hangoutRecording', API.Bookings.addYouTubeDataFromHangout)
     .put('/users/me/password-change', API.Users.requestPasswordChange)
     .put('/users/me/tag/:tag', setAnonSessionData, API.Users.toggleTag)
     .put('/users/me/tags', setAnonSessionData, API.Users.updateTags)
@@ -122,6 +121,7 @@ export default function(app) {
     .get('/bookings/:start/:end/:userId?', API.Bookings.getByQueryForAdmin)
     .get('/bookings/:id', API.Bookings.getByIdForAdmin)
     .put('/bookings/:booking/recording', API.Bookings.addYouTubeData)
+    .put('/bookings/:booking/hangout', API.Bookings.addHangout)
     .put('/bookings/:booking', API.Bookings.updateByAdmin)
     .get('/payouts/:userId', API.Payouts.getPayouts)
     .get('/users/role/:role', API.Users.getUsersInRole)
