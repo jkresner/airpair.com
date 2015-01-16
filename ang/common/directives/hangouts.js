@@ -29,6 +29,7 @@ angular.module("APHangouts", ['angularLoad'])
       hangoutInputData['bookingId'] = scope.booking._id;
       hangoutInputData['participants'] = participants;
       hangoutInputData['hangoutName'] = hangoutName;
+      hangoutInputData['admin'] = true;
 
       var hData = {
         topic: hangoutName,

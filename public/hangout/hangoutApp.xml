@@ -52,6 +52,12 @@ function init() {
     	var youTubeId = gapi.hangout.onair.getYouTubeLiveId();
     	console.log("is on air hangout", gapi.hangout.onair.isOnAirHangout());
     	console.log("is broadcasting?", gapi.hangout.onair.isBroadcasting());
+      var participant = gapi.hangout.getLocalParticipant();
+      var hangoutUrl = gapi.hangout.getHangoutUrl();
+      var hangoutId = gapi.hangout.getHangoutId();
+      // console.log("partipant", participant);
+      // console.log("hangout URL", hangoutUrl);
+      // console.log("hangout ID", hangoutId);
 
     	$(document).ready(function(){
         var intervalId = setInterval(function(){
@@ -59,7 +65,9 @@ function init() {
           if (youTubeId){
             clearInterval(intervalId);
             var appData = gadgets.views.getParams()['appData'];
-            var url = "https://localhost:9001/hangout/index.html?appData=" + appData + "&youTubeId=" + youTubeId;
+            var url = "https://localhost:9001/hangout/index.html?appData=" +
+              appData + "&youTubeId=" + youTubeId + "&participant=" + JSON.stringify(participant) +
+              "&hangoutUrl=" + hangoutUrl + "&hangoutId=" + hangoutId;
             loadIFrame(url);
           }
         }, 250);

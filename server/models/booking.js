@@ -6,9 +6,10 @@ var {ObjectId} = mongoose.Schema
 
 var Recording = {
   type: { required: true, type: String },
+  hangoutUrl: {required: false, type: String},
+  youTubeAccount: {required: false, type: String},
   data: { required: true, type: {} } // YouTube's API response
 }
-
 
 var ATTENDEE_TYPES = ['expert','customer']
 
@@ -52,5 +53,3 @@ module.exports = mongoose.model('Booking', new mongoose.Schema({
   // postId:           {}   # title, transcript, expertMeta, customerMeta
   // airpairRating:    { type: Number }  # How we sort session by awesomeness
 }))
-
-

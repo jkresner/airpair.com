@@ -151,8 +151,23 @@ Booking: https://airpair.com/booking/${original._id}`
     });
   },
 
-  addYouTubeDataFromHangout(original, youTubeId, hash, cb){
-    save.addYouTubeData(original, youTubeId, cb);
+  addHangout(original, youTubeId, youTubeAccount, hangoutUrl, cb){
+    youTube.getVideoInfo(youTubeId, function(err, response){
+      //TODO mark video as private if booking.type is private
+      if (err){
+        return cb(Error(err),data)
+      }
+      original.status = "followup"
+      var data = {}
+      data = response.snippet;
+      data.youTubeId = response.id;
+      delete(data.thumbnails) //can be derived from YouTube ID
+      original.recordings.push({type: "YouTube", data, hangoutUrl, youTubeAccount})
+      svc.update(original._id, original, (e,r) => {
+        if (e || !r) return cb(e,r)
+          get.getByIdForAdmin(r._id,cb)
+        })
+      });
   },
 
   confirmBooking()

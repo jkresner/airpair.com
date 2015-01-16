@@ -27,10 +27,10 @@ var validation = {
     if (!youTubeId) return "YouTube ID Required"
   },
 
-  addYouTubeDataFromHangout(user, original, youTubeId, hash)
-  {
-    //TODO compare hash to original.hash or something like that
-    console.log("HASH", hash)
+  addHangout(original, youTubeId, youTubeAccount, hangoutUrl){
+    if (!youTubeId) return "YouTube ID Required"
+    if (!youTubeAccount) return "YouTube Account Required"
+    if (!hangoutUrl) return "Hangout URL Required"
   }
 }
 
