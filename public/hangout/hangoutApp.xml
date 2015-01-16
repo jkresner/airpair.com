@@ -65,7 +65,7 @@ function init() {
           if (youTubeId){
             clearInterval(intervalId);
             var appData = gadgets.views.getParams()['appData'];
-            var url = "https://localhost:9001/hangout/index.html?appData=" +
+            var url = "https://www.airpair.com/hangout/index.html?appData=" +
               appData + "&youTubeId=" + youTubeId + "&participant=" + JSON.stringify(participant) +
               "&hangoutUrl=" + hangoutUrl + "&hangoutId=" + hangoutId;
             loadIFrame(url);
