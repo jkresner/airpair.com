@@ -4,7 +4,19 @@ var appData = JSON.parse(decodeURI(
 ));
 
 var youTubeId = /youTubeId=(.*?)(&|$)/.exec(document.location.href)[1]
-console.log("YouTube ID = ", youTubeId);
+var addYouTubeIdUrl = "/v1/api/bookings/" + appData.bookingId + "/hangoutRecording"
+$.ajax({
+  url: addYouTubeIdUrl,
+  method: "PUT",
+  data: {
+    hash: appData.hash,
+    youTubeId: youTubeId
+  }
+}).done(function(data, status){
+  // console.log("GOT DATA", data);
+}).fail(function(jqXHR, status){
+  console.error("STATUS", status);
+});
 
 //TODO send PUT request to associate youTubeId with booking
 
