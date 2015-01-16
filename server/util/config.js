@@ -72,7 +72,7 @@ var cfg = {
   },
   hangout:{
     //140030887085 == production AirPair app
-    appId: process.env.AIRPAIR_HANGOUT_APP_ID || "140030887085"
+    appId: process.env.HANGOUT_APPID || "140030887085"
   },
   mail: {
     on: false, // we don't send mail in dev

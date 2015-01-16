@@ -143,7 +143,7 @@ Booking: https://airpair.com/booking/${original._id}`
       data = response.snippet;
       data.youTubeId = response.id;
       delete(data.thumbnails) //can be derived from YouTube ID
-      original.recordings.push({type: "YouTube", data})
+      original.recordings.push({type: "youTube", data})
       svc.update(original._id, original, (e,r) => {
         if (e || !r) return cb(e,r)
           get.getByIdForAdmin(r._id,cb)

@@ -5,7 +5,7 @@ var {ObjectId} = mongoose.Schema
 
 
 var Recording = {
-  type: { required: true, type: String },
+  type: { required: true, lowercase: true, trim:true, type: String },
   hangoutUrl: {required: false, type: String},
   youTubeAccount: {required: false, type: String},
   data: { required: true, type: {} } // YouTube's API response
