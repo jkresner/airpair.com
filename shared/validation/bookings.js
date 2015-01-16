@@ -25,6 +25,12 @@ var validation = {
   addYouTubeData(user, original, youTubeId)
   {
     if (!youTubeId) return "YouTube ID Required"
+  },
+
+  addYouTubeDataFromHangout(user, original, youTubeId, hash)
+  {
+    //TODO compare hash to original.hash or something like that
+    console.log("HASH", hash)
   }
 }
 

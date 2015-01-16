@@ -151,6 +151,10 @@ Booking: https://airpair.com/booking/${original._id}`
     });
   },
 
+  addYouTubeDataFromHangout(original, youTubeId, hash, cb){
+    save.addYouTubeData(original, youTubeId, cb);
+  },
+
   confirmBooking()
   {
     cb(Error('confirmBooking not implemented'))
