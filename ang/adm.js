@@ -19,6 +19,7 @@ require('./common/directives/profiles.js');
 require('./common/directives/notifications.js');
 require('./common/directives/hangouts.js');
 require('./common/filters/filters.js');
+require('./common/models/viewDataService.js');
 require('./common/models/dataService.js');
 require('./common/models/postsService.js');
 require('./common/models/sessionService.js');
@@ -38,7 +39,7 @@ require('./matchmaking/module.js');
 
 
 angular.module('ADM', [
-  'ngRoute', 'ui.bootstrap.datetimepicker',
+  'ngRoute', 'ui.bootstrap.datetimepicker', 'APViewData',
   'APSvcSession', 'APSvcAdmin', 'APDataSvc', 'APNotifications', 'APRoutes', 'APUtil',
   'APFilters', 'APFormsDirectives', 'APInputs', 'APMailTemplates', 'APHangouts',
   'ADMPipeline',
@@ -59,8 +60,8 @@ angular.module('ADM', [
 
   })
 
-  .run(function($rootScope, $location, SessionService) {
-    $rootScope.session = _.extend(window.viewData.session,{primaryPayMethodId:'adm'});
+  .run(function($rootScope, $location, SessionService, ViewData) {
+    $rootScope.session.primaryPayMethodId='adm';
     SessionService.onAuthenticated( (session) => {});
   })
 

@@ -14,10 +14,13 @@ angular.module('APViewData', [])
     if (vd.workshop) $rootScope.workshop = vd.workshop
     if (vd.expert) $rootScope.expert = vd.expert
     if (vd.review) $rootScope.request = window.request
+    if (vd.hangoutAppId) $rootScope.hangoutAppId = vd.hangoutAppId
 
-    vd.session.unauthenticated = (vd.session.authenticated!=null
-      && vd.session.authenticated == false)
-    if (vd.session) $rootScope.session = vd.session
+    if (vd.session) {
+      vd.session.unauthenticated = (vd.session.authenticated!=null
+        && vd.session.authenticated == false)
+      $rootScope.session = vd.session
+    }
 
     delete window.viewData
 
@@ -29,4 +32,3 @@ angular.module('APViewData', [])
 .run(function(ViewData) {
   // console.log('APViewData run sets up the factory before anything else')
 })
-

@@ -1,6 +1,6 @@
 angular.module("APHangouts", ['angularLoad'])
 
-.directive('apHangoutSpinner', function(angularLoad, BookingsUtil) {
+.directive('apHangoutSpinner', function($rootScope, angularLoad, BookingsUtil) {
 
   var src = 'https://apis.google.com/js/plusone.js'
   var ngLoadPromise = angularLoad.loadScript(src);
@@ -22,12 +22,20 @@ angular.module("APHangouts", ['angularLoad'])
           hangoutName = BookingsUtil.hangoutName(scope.booking)
       }
 
+      var hangoutInputData = {}
+      hangoutInputData['hash'] = "ABC";
+      hangoutInputData['datetime'] = scope.booking.datetime
+      hangoutInputData['minutes'] = scope.booking.minutes
+      hangoutInputData['bookingId'] = scope.booking._id;
+      hangoutInputData['participants'] = participants;
+      hangoutInputData['hangoutName'] = hangoutName;
+
       var hData = {
         topic: hangoutName,
         render: 'createhangout',
         hangout_type: 'onair',
         invites: participants,
-        initial_apps: [{'app_id' : '140030887085', 'app_type' : 'LOCAL_APP' }]
+        initial_apps: [{'app_id' : $rootScope.hangoutAppId, 'app_type' : 'LOCAL_APP', 'start_data':JSON.stringify(hangoutInputData) }]
       }
 
       ngLoadPromise.then(function(){

@@ -51,7 +51,7 @@ export default function(app) {
     if (!data) data = {}
     data.build = config.build
     data.authenticated = !!(req.user && req.user._id)
-    data.config = { analytics: config.analytics, bundle: config.bundle, chat: config.chat }
+    data.config = { analytics: config.analytics, bundle: config.bundle, chat: config.chat, hangout: config.hangout }
     data.campPeriod = moment().format('MMMYY').toLowerCase()
     return data;
   }
