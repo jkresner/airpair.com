@@ -23,7 +23,6 @@ angular.module("APHangouts", ['angularLoad'])
       }
 
       var hangoutInputData = {}
-      hangoutInputData['hash'] = "ABC";
       hangoutInputData['datetime'] = scope.booking.datetime
       hangoutInputData['minutes'] = scope.booking.minutes
       hangoutInputData['bookingId'] = scope.booking._id;
