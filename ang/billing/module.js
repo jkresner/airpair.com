@@ -97,8 +97,8 @@ angular.module("APBilling", ['ngRoute','APFormsDirectives','APPaymentDirectives'
 
     $scope.$watch("creditAmount", $scope.setSubmitCardText)
 
-    $scope.deletePayMethod = function(id) {
-      DataService.billing.deletePaymethod(id, function(r) {
+    $scope.deletePayMethod = function(_id) {
+      DataService.billing.deletePaymethod({_id}, function(r) {
         getPayMethods()
       }, ServerErrors.add)
     }
