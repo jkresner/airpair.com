@@ -1,82 +1,61 @@
 <section id="booking" ng-if="booking && booking.participants">
 
-<h3>Booking</h3>
-
+<h3 style="border-bottom: 1px solid gray">{{booking.gcal.summary}}</h3>
 
 <div class="row">
 
   <div class="col-md-4">
+    <h3>Details</h3>
+    <div>{{ booking.datetime | date:'medium'}}</div>
+    <div>{{booking.minutes}} minutes </div>
+    <div>Privacy: {{booking.type | uppercase}} </div>
+    <!-- <div>{{booking.status}}</div> -->
 
-  <span>{{booking.minutes}} MINS </span>
-  <span>{{booking.type}} </span>
-
-  <div>
-    <br />
-    <span>Status</span>
-    {{ booking.status}}
-  </div>
-
-  <section class="datetime">
-    {{ booking.datetime}}
-
-    <br /><br />
-    <!-- <section class="gcal">
-      <div ng-if="!data.gcal">No google invitations sent
-        <br />
-        <br /><a ng-click="addGcal(data.notify)">Create gcal event for <br /> {{previousDatetime.format('YYYY MMM DD HH:mm ZZ')}}</a>
-        <br /><input name="gcalNotify" type="checkbox" ng-model="data.notify">
-        Notify participants
-      </div>
-      <div ng-if="data.gcal">
-        <p><a href="{{data.gcal.htmlLink}}">{{data.gcal.summary}}</a></p>
-        {{data.gcal.start.dateTime | date:'MM/dd/yyyy'}}<br/>
-        {{data.gcal.start.dateTime | date:'h:mma'}} to {{data.gcal.end.dateTime | date:'h:mma'}}<br /><br />
-        <p><strong>Attendees</strong></p>
-        <ul>
-          <li ng-repeat="attendee in data.gcal.attendees">
-            {{attendee.displayName}}
-            ({{attendee.email}})
-          </li>
-      </div>
-    </section> -->
-    <p>
-      Participants: (Mike to finish)
-    </p>
-  </section>
-  <br />
+    <section class="datetime">
+      <!-- <p>
+        Participants: (Mike to finish)
+      </p> -->
+    </section>
   </div>
 
   <div class="col-md-3">
+    <div class="customer">
+      <h3>Customer</h3>
+      <div class="participant" ng-repeat="p in customers">
+        <img ng-src="{{p.info.avatar}}" class="user">
+        <span>{{p.info.name}} </span>
+        <span>{{p.info.email}} </span>
+      </div>
+    </div>
 
-<div class="customer">
-  <h3>Customer</h3>
-  <div class="participant" ng-repeat="p in customers">
-    <img ng-src="{{p.info.avatar}}" class="user">
-    <span>{{p.info.name}} </span>
-    <span>{{p.info.email}} </span>
-  </div>
-</div>
-
-
-<div class="expert">
-  <h3>Expert</h3>
-  <div class="participant" ng-repeat="p in experts">
-    <img ng-src="{{p.info.avatar}}" class="user">
-    <span>{{p.info.name}} </span>
-    <span>{{p.info.email}} </span>
-  </div>
-</div>
-
+    <div class="expert">
+      <h3>Expert</h3>
+      <div class="participant" ng-repeat="p in experts">
+        <img ng-src="{{p.info.avatar}}" class="user">
+        <span>{{p.info.name}} </span>
+        <span>{{p.info.email}} </span>
+      </div>
+    </div>
   </div>
 
   <div class="col-md-4">
-    Consumer hangout link sometimes
     <div class="recordings">
-      <h3>Recordings</h3>
-      <div ng-repeat="r in booking.recordings">
-      <span><a target="youTubePreview" href="http://youtube.com/watch?v={{r.data.youTubeId}}">{{r.data.title}}</a></span><br />
+      <h3>Hangout</h3>
+      <div ng-if="hangoutState.none">
+        No Hangout. Come back at {{ booking.datetime | date:'medium'}}
+      </div>
+      <div ng-if="hangoutState.inProgress">
+        Hangout started. Join at {{ booking.recordings[booking.recordings.length-1].hangoutUrl }}
+      </div>
+      <div ng-if="hangoutState.complete">
+        <ul>
+          Watch your AirPair session at
+          <li ng-repeat="recording in booking.recordings">
+            <a target="youTubePreview" href="http://youtube.com/watch?v={{recording.data.youTubeId}}">{{recording.data.description}}</a>
+          </li>
+        </ul>
+      </div>
     </div>
-    Youtube link sometimes
   </div>
 
 </div>
