@@ -63,6 +63,7 @@ var util = {
   datetime: {
     dawn: () => moment('20121225','YYYYMMDD'),
     anHourAgo: () => moment().add(-1,'hour'),
+    tenMinutesAgo: () => moment().add(-10,'minutes'),
     today: () => moment(moment().format('YYYY MMM DD'), 'YYYY MMM DD'),
     now: () => moment(),
     in48hours: () => moment().add(48,'hours'),

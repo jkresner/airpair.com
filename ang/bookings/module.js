@@ -5,17 +5,31 @@ angular.module("APBookings", [])
   var route = apRouteProvider.route
   route('/bookings', 'Bookings', require('./list.html'))
   route('/bookings/:id', 'Booking', require('./item.html'))
-
 })
 
 .controller('BookingCtrl', ($scope, $routeParams, DataService, ServerErrors, BookingsUtil, OrdersUtil, Util) => {
+  console.log($scope)
   $scope.data = {}
   $scope.util = BookingsUtil
 
   var setScope = function(r) {
     if (!r.participants) return
 
+    var hangoutReadyDate = Util.datetime.tenMinutesAgo()
+    var endDate = moment(r.datetime).add(r.minutes,'minutes')
+    debugger
+    var hangoutState = {};
+    if (Util.dateInRange(hangoutReadyDate, endDate)){
+      hangoutState.inProgress = true
+    } else if (currentDate.isBefore(startDate)){
+      hangoutState.none = true
+    } else {
+      console.log("HANGOUT COMPLETE")
+      hangoutState.complete = true
+    }
+
     var scope = {
+      hangoutState: hangoutState,
       previousDatetime: moment(r.datetime),
       data: {
         type: r.type,
