@@ -5,11 +5,18 @@ export function logError(e, user, req)
 {
   if (!e) return
 
-  var userInfo = (user && user.name) ?
-    `${user.name} ${user.email} ${user._id}` : 'anonymous'
+  var uid = (req.user) ? req.user.email : req.sessoinID
 
-  var reqInfo = req ?
-    `${req.method} ${req.url}` : ''
+  var userInfo = (user && user.name) ?
+    `${user.name} ${user.email} ${user._id}` : `anonymous ${uid}`
+
+  var reqInfo = 'no request context'
+  if (req)
+  {
+    reqInfo = `${req.method} ${req.url}`
+    if (req.body)
+      reqInfo += ` ${JSON.stringify(req.body)}`
+  }
 
   if (reqInfo != '')
   {
