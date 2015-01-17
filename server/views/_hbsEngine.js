@@ -59,7 +59,7 @@ export default function(app) {
   app.renderErrorPage = (error) =>
     (req,res) => {
       // $callSvc(getSession,req)((e,session) => {
-      res.status(error.status||400).render(`./error.hbs`, {error})
+      res.status(error.status||400).render(`./error.hbs`, {error,build:config.build,config:{bundle: config.bundle}})
       // })
     }
 
