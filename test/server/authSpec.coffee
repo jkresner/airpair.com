@@ -427,23 +427,26 @@ module.exports = -> describe "Signup: ", ->
     it 'google login can verify different email for some features if logged in with google', (done) ->
       spy = sinon.spy(mailman,'sendVerifyEmail')
       db.ensureDoc 'User', data.users.narv, (e) ->
+        expect(data.users.narv.email).to.equal('vikram@freado.com')
         LOGIN 'narv', data.users.narv, (snarv) ->
           POST '/requests', { type: 'troubleshooting', tags: [data.tags.node] }, {}, (r1) ->
             PUT "/requests/#{r1._id}", _.extend(r1,{experience:'beginner'}), {status:403}, (rFail) ->
               expectStartsWith(rFail.message,'Email verification required')
               PUT '/users/me/email', { email: "vikram@test.com" }, {}, (s2) ->
-                expect(s2.emailVerified).to.be.false
-                expect(s2.email).to.equal("vikram@test.com")
-                expect(spy.callCount).to.equal(1)
-                expect(spy.args[0][0].email).to.equal("vikram@test.com")
-                hash = spy.args[0][1]
-                spy.restore()
-                PUT "/users/me/email-verify", { hash }, {}, (sVerified) ->
-                  expect(sVerified.emailVerified).to.be.true
-                  expect(sVerified.email).to.equal("vikram@test.com")
-                  PUT "/requests/#{r1._id}", _.extend(r1,{experience:'beginner'}), {}, (r2) ->
-                    r2.experience = 'proficient'
-                    done()
+                # second put forces verify mode
+                PUT '/users/me/email', { email: "vikram@test.com" }, {}, (s2) ->
+                  expect(s2.emailVerified).to.be.false
+                  expect(s2.email).to.equal("vikram@test.com")
+                  expect(spy.callCount).to.equal(1)
+                  expect(spy.args[0][0].email).to.equal("vikram@test.com")
+                  hash = spy.args[0][1]
+                  spy.restore()
+                  PUT "/users/me/email-verify", { hash }, {}, (sVerified) ->
+                    expect(sVerified.emailVerified).to.be.true
+                    expect(sVerified.email).to.equal("vikram@test.com")
+                    PUT "/requests/#{r1._id}", _.extend(r1,{experience:'beginner'}), {}, (r2) ->
+                      r2.experience = 'proficient'
+                      done()
 
 
     it 'bad verification link does not verify the user', (done) ->

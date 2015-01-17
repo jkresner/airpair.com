@@ -18,7 +18,7 @@ angular.module("APProfile", ['ngRoute', 'APFilters', 'APSvcSession', 'APTagInput
     SessionService.verifyEmail({hash:$location.search().verify}, function(result){
       $scope.emailAlerts = [{ type: 'success', msg: `${$scope.session.email} verified ! <b>Next step, go to <a href="/billing">BILLING</a></b>` }]
     }, function(e){
-      $scope.emailAlerts = [{ type: 'danger', msg: `${e.message}` }]
+      $scope.emailAlerts = [{ type: 'danger', msg: `${e.message||e}` }]
     })
   }
 
@@ -71,7 +71,8 @@ angular.module("APProfile", ['ngRoute', 'APFilters', 'APSvcSession', 'APTagInput
     SessionService.changeEmail({email:$scope.session.email}, function(result){
       $scope.emailAlerts = [{ type: 'success', msg: `Verification email sent to ${$scope.session.email}` }]
     }, function(e){
-      $scope.emailAlerts = [{ type: 'danger', msg: `${e} failed` }]
+      console.log('sendVerificationEmail.back', e, e.message)
+      $scope.emailAlerts = [{ type: 'danger', msg: `${e.message||e} failed` }]
     })
   };
 

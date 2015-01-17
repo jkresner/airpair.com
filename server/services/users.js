@@ -207,17 +207,17 @@ var save = {
   // and to set and send a new email hash for verification
   changeEmail(email, cb) {
     email = email.trim().toLowerCase()
-    var {user,session} = this
-    if (user)
+    if (this.user) {
+      var isVerifyRequest = this.user.email == email
       updateEmailToBeVerified.call(this, email, cb, (e, user, hash) => {
-        if (!e && hash && user)
+        if (!e && hash && isVerifyRequest)
           mailman.sendVerifyEmail(user, hash)
         cb(e, user)
       })
-    else
+    } else
       svc.searchOne(Data.query.existing(email), null, (e,r) => {
         if (r) {
-          delete session.anonData.email
+          delete this.session.anonData.email
           return cb(svc.Forbidden(`${email} already registered`))
         }
         updateAsIdentity.call(this, {email}, null, cb)
@@ -262,7 +262,7 @@ var save = {
       //-- Update the user record regardless if anonymous or authenticated
       svc.updateWithSet(user._id, ups, (e,r) => {
         if (e) return cb(e)
-        mailman.sendChangePasswordEmail(user, ups.local.changePasswordHash)
+        mailman.sendChangePasswordEmail(r, ups.local.changePasswordHash)
         return cb(null, {email})
       })
     })
@@ -298,7 +298,7 @@ function updateEmailToBeVerified(email, errorCB, successCB) {
   var trackData = { type: 'email', email, previous: user.email, previousVerified: user.emailVerified }
 
   svc.searchOne({_id:this.user._id}, {}, (ee, r) => {
-    if (r.email == email && r.emailVerified) return cb(`${email} already verified`)
+    if (r.email == email && r.emailVerified) return errorCB(Error(`${email} already verified`))
 
     var ups = { local: r.local || {} }
 
