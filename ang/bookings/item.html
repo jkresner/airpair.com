@@ -1,0 +1,84 @@
+<section id="booking" ng-if="booking && booking.participants">
+
+<h3>Booking</h3>
+
+
+<div class="row">
+
+  <div class="col-md-4">
+
+  <span>{{booking.minutes}} MINS </span>
+  <span>{{booking.type}} </span>
+
+  <div>
+    <br />
+    <span>Status</span>
+    {{ booking.status}}
+  </div>
+
+  <section class="datetime">
+    {{ booking.datetime}}
+
+    <br /><br />
+    <!-- <section class="gcal">
+      <div ng-if="!data.gcal">No google invitations sent
+        <br />
+        <br /><a ng-click="addGcal(data.notify)">Create gcal event for <br /> {{previousDatetime.format('YYYY MMM DD HH:mm ZZ')}}</a>
+        <br /><input name="gcalNotify" type="checkbox" ng-model="data.notify">
+        Notify participants
+      </div>
+      <div ng-if="data.gcal">
+        <p><a href="{{data.gcal.htmlLink}}">{{data.gcal.summary}}</a></p>
+        {{data.gcal.start.dateTime | date:'MM/dd/yyyy'}}<br/>
+        {{data.gcal.start.dateTime | date:'h:mma'}} to {{data.gcal.end.dateTime | date:'h:mma'}}<br /><br />
+        <p><strong>Attendees</strong></p>
+        <ul>
+          <li ng-repeat="attendee in data.gcal.attendees">
+            {{attendee.displayName}}
+            ({{attendee.email}})
+          </li>
+      </div>
+    </section> -->
+    <p>
+      Participants: (Mike to finish)
+    </p>
+  </section>
+  <br />
+  </div>
+
+  <div class="col-md-3">
+
+<div class="customer">
+  <h3>Customer</h3>
+  <div class="participant" ng-repeat="p in customers">
+    <img ng-src="{{p.info.avatar}}" class="user">
+    <span>{{p.info.name}} </span>
+    <span>{{p.info.email}} </span>
+  </div>
+</div>
+
+
+<div class="expert">
+  <h3>Expert</h3>
+  <div class="participant" ng-repeat="p in experts">
+    <img ng-src="{{p.info.avatar}}" class="user">
+    <span>{{p.info.name}} </span>
+    <span>{{p.info.email}} </span>
+  </div>
+</div>
+
+  </div>
+
+  <div class="col-md-4">
+    Consumer hangout link sometimes
+    <div class="recordings">
+      <h3>Recordings</h3>
+      <div ng-repeat="r in booking.recordings">
+      <span><a target="youTubePreview" href="http://youtube.com/watch?v={{r.data.youTubeId}}">{{r.data.title}}</a></span><br />
+    </div>
+    Youtube link sometimes
+  </div>
+
+</div>
+
+</section>

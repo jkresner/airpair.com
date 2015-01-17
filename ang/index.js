@@ -47,12 +47,13 @@ require('./workshops/module.js');
 require('./billing/module.js');
 require('./account/module.js');
 require('./requests/module.js');
+require('./bookings/module.js');
 
 angular.module("AP", ['Providers', 'ngRoute', 'ngAnimate', 'ui.bootstrap.datetimepicker',
   'APRoutes', 'APUtil', 'APViewData', 'APDataSvc', 'APCTAs', 'APFormsDirectives', 'APInputs',
   'APAnalytics', 'APSideNav', 'APChatNav', 'APServerTemplates', 'APNotifications',
   'APProfileDirectives', 'APPageHelpers',
-  'APAuth', 'APPosts', 'APWorkshops', 'APProfile', 'APBilling', 'APRequests'])
+  'APAuth', 'APPosts', 'APWorkshops', 'APProfile', 'APBilling', 'APRequests', 'APBookings'])
   // 'chat-widget'])
 
   .config(function($locationProvider, $routeProvider) {

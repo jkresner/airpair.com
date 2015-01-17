@@ -37,6 +37,8 @@ angular.module('APDataSvc', [])
 
     this.billing = _.extend(billingFns, {
       getPayoutmethods: GET((d)=>`/billing/payoutmethods`),
+      getBookings: GET((d)=>`/bookings`),
+      getBooking: GET((d)=>`/bookings/${d._id}`),
       getOrdersForPayouts: GET((d)=>`/billing/orders/payouts`),
       deletePaymethod: DELETE((d)=>`/billing/payoutmethods/${d._id}`),
       payoutOrders: POST((d)=>`/payouts/${d.payoutmethodId}`)
