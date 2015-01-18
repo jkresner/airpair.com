@@ -23,6 +23,7 @@ global.ANONSESSION = function(cb) {
   return http(global.app).get('/v1/api/session/full').set('user-agent', uaFirefox).end(function(e,resp){
     if (e) return done(err)
     cookie = resp.headers['set-cookie']
+    cookieCreatedAt = moment()
     cb(resp.body)
   })
 }
