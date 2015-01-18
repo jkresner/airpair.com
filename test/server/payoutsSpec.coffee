@@ -1,6 +1,6 @@
 {payoutSummary} = require('../../shared/orders')
 
-module.exports = -> describe.only "API: ", ->
+module.exports = -> describe "API: ", ->
 
   @timeout 10000
 

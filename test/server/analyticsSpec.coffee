@@ -10,7 +10,7 @@ postUrl = "/v1/posts/#{postSlug}"
 # (3) Alias the users email against the sessionId on user creation
 
 
-module.exports = ->describe "Tracking: ", ->
+module.exports = -> describe "Tracking: ", ->
 
   @timeout(10000)
 
