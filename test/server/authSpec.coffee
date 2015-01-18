@@ -45,25 +45,6 @@ module.exports = -> describe "Signup: ", ->
           done()
 
 
-  it 'New user has correct cohort information', (done) ->
-    checkCohort = (userId) ->
-      ->
-        db.readUser userId, (e,r) ->
-          {cohort} = r
-          expect(moment(cohort.engagement.visit_first).unix()).to.equal(moment(cookieCreatedAt).unix())
-          expect(cohort.engagement.visit_signup).to.be.exist
-          expect(cohort.engagement.visit_last).to.be.exist
-          expect(cohort.engagement.visits.length).to.equal(1)
-          expect(moment(cohort.engagement.visits[0]).unix()).to.equal(moment(util.dateWithDayAccuracy()).unix())
-          expect(cohort.aliases.length).to.equal(1)
-          expect(cohort.aliases[0].indexOf("testdysn")).to.equal(0)
-          done()
-
-    SETUP.addLocalUser 'dysn', {}, (userKey) ->
-      userId = data.users[userKey]._id
-      setTimeout checkCohort(userId), 50
-
-
   it 'Can sign up as new user with google', (done) ->
     UserService.googleLogin.call newUserSession(), data.oauth.rbrw, (e,usr) ->
       LOGIN 'rbrw', usr, ->
@@ -103,10 +84,6 @@ module.exports = -> describe "Signup: ", ->
             if (err) then return done(err)
             expect(res.body.error).to.equal('Cannot signup, user already exists')
             done()
-
-
-
-
 
 
   describe "Login", ->
@@ -455,3 +432,33 @@ module.exports = -> describe "Signup: ", ->
         PUT "/users/me/email-verify", { hash: fakeHash }, { status: 400 }, (r) ->
           expectStartsWith(r.message,"e-mail verification failed")
           done()
+
+
+
+describe "With analytics: ", ->
+
+
+  it 'New user has correct cohort information', (done) ->
+    checkCohort = (userId) ->
+      ->
+        db.readUser userId, (e,r) ->
+          {cohort} = r
+          expect(moment(cohort.engagement.visit_first).unix()).to.equal(moment(cookieCreatedAt).unix())
+          expect(cohort.engagement.visit_signup).to.be.exist
+          expect(cohort.engagement.visit_last).to.be.exist
+          expect(cohort.engagement.visit_last).to.be.exist
+          expect(cohort.firstRequest).to.exist
+          expect(moment(cohort.engagement.visits[0]).unix()).to.equal(moment(util.dateWithDayAccuracy()).unix())
+          expect(cohort.aliases.length).to.equal(1)
+          # expect(cohort.aliases[0].indexOf("testdysn")).to.equal(0)
+          done()
+
+    clone = getNewUserData('dysn')
+    ANONSESSION (r) ->
+      GETP('/').end (e, rr) ->
+        # $log 'page', page
+        http(global.app).post('/v1/auth/signup').send(clone)
+        .set('cookie',cookie)
+        .end (err, resp) ->
+          newUser = resp.body
+          setTimeout checkCohort(newUser._id), 50

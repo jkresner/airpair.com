@@ -247,7 +247,7 @@ var save = {
 
       var ups = { local: _.extend(user.local || {}, {
         changePasswordHash: Data.data.generateHash(email),
-        passowrdHashGenerated: new Date()
+        passwordHashGenerated: new Date()
       })}
 
       //-- Previously had a google login without a v1 upsert migrate
@@ -275,7 +275,7 @@ var save = {
       // we've just received the hash that we sent to user.email
       // so mark their email as verified
       delete user.local.changePasswordHash
-      delete user.local.passowrdHashGenerated
+      delete user.local.passwordHashGenerated
       user.local.password = Data.data.generateHash(password)
 
       var update = {

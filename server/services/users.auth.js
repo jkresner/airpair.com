@@ -30,7 +30,7 @@ function getCohortProperties(existingUser, session, done)
   var visit_last = new Date()
   var visits = [util.dateWithDayAccuracy()]
   var aliases = []  // we add the aliases after successful sign up
-  var firstRequest = firstRequest
+  var firstRequest = session.firstRequest
 
   // This is a new user (easy peasy)
   if (existingUser)
