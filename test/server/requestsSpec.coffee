@@ -68,6 +68,19 @@ module.exports = -> describe "API", ->
                 done()
 
 
+  it 'Can update request type with no technology tags', (done) ->
+    addAndLoginLocalUser 'scol', (s) ->
+      expect(s.emailVerified).to.be.false
+      d = type: 'code-review'
+      POST '/requests', d, {}, (r1) ->
+        expect(r1._id).to.exist
+        r1.type = 'mentoring'
+        PUT "/requests/#{r1._id}", r1, {}, (r2) ->
+          expectIdsEqual(r1._id,r2._id)
+          expect(r2.type).to.equal('mentoring')
+          done()
+
+
   it 'Can update a request after verifying email', (done) ->
     addAndLoginLocalUser 'narv', (s) ->
       expect(s.emailVerified).to.be.false
