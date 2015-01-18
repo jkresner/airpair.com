@@ -1,6 +1,7 @@
-import * as PostsSvc from '../services/posts'
-import * as WorkshopsSvc from '../services/workshops'
-var RSS  = require('rss')
+var logging               = true
+import * as PostsSvc      from '../services/posts'
+import * as WorkshopsSvc  from '../services/workshops'
+var RSS                   = require('rss')
 
 var allFeedOptions = {
   site_url: 'https://www.airpair.com',
@@ -83,22 +84,23 @@ function rssRenderer() {
   }
 
   var feeds = {}
-  feeds.posts = defineRssFeed( postsFeedOptions )
-  feeds.workshops = defineRssFeed( workshopsFeedOptions )
-  feeds.mixed = defineRssFeed( mixedFeedOptions )
+
 
   return {
+
     posts(req, res) {
+      feeds.posts = defineRssFeed( postsFeedOptions )
+      feeds.posts.items = []
+      feeds.posts.categories = []
+
       if (rssCache.posts)
       {
-        // $log('render posts from cache', rssCache.posts.length)
-        populate(feeds.mixed, rssCache.posts, generatePostFeedItem)
+        if (logging) $log(`render ${rssCache.posts.length} posts from cache`, rssCache.posts.length)
+        populate(feeds.posts, rssCache.posts, generatePostFeedItem)
         return render(res, feeds.posts)
       }
 
       PostsSvc.getRecentPublished((e, posts) => {
-        feeds.posts.items = []
-        feeds.posts.categories = []
         if (e) {
           $log(('error retrieving posts for rss feed:' + e).red)
           return render(res, feeds.posts)
@@ -112,6 +114,10 @@ function rssRenderer() {
     },
 
     workshops(req, res) {
+      feeds.workshops = defineRssFeed( workshopsFeedOptions )
+      feeds.workshops.items = []
+      feeds.workshops.categories = []
+
       if (rssCache.workshops)
       {
         // $log('render workshops from cache', rssCache.workshops.length)
@@ -121,8 +127,6 @@ function rssRenderer() {
 
       WorkshopsSvc.getAllForRss((e,workshops) => {
         $log('data access workshops')
-        feeds.workshops.items = []
-        feeds.workshops.categories = []
         if (e) {
           $log(('error retrieving workshops for rss feed:' + e).red)
           return render(res, feeds.workshops)
@@ -135,9 +139,13 @@ function rssRenderer() {
     },
 
     mixed(req, res) {
+      feeds.mixed = defineRssFeed( mixedFeedOptions )
+      feeds.mixed.items = []
+      feeds.mixed.categories = []
+
       if (rssCache.posts && rssCache.workshops)
       {
-        // $log('render mixed from cache')
+        if (logging) $log(`render ${rssCache.posts.length + rssCache.workshops.length} mixed from cache`)
         populate(feeds.mixed, rssCache.posts, generatePostFeedItem)
         populate(feeds.mixed, rssCache.workshops, generateWorkshopFeedItem)
         return render(res, feeds.mixed)
@@ -153,9 +161,8 @@ function rssRenderer() {
             $log(('error retrieving workshops for mixed rss feed:' + e).red)
             return render(res, feeds.mixed)
           }
-          feeds.mixed.items = []
-          feeds.mixed.categories = []
           rssCache = _.extend(rssCache,{posts,workshops})
+          if (logging) $log(`render ${rssCache.posts.length + rssCache.workshops.length} mixed from data access`)
           populate(feeds.mixed, posts, generatePostFeedItem)
           populate(feeds.mixed, workshops, generateWorkshopFeedItem)
           render(res, feeds.mixed)
