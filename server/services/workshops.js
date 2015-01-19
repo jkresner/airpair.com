@@ -27,7 +27,7 @@ export function getAllForCache(cb) {
 }
 
 export function getAllForRss(cb) {
-  var options = {sort: {'time': -1}}
+  var options = {sort: {'time': -1}, limit: 9}
   svc.searchMany({},{ fields: fields.rssSelect, options }, (e, r) => {
     for (var w of r) {
       w.url = `https://www.airpair.com/${w.tags[0]}/workshops/${w.slug}`

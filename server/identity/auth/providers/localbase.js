@@ -7,8 +7,11 @@ var authFn = (provider) => {
   return (req, res, next) => {
     passport.authenticate(provider, (err, user, info) => {
 
-      if (err)
+      if (err || info)
       {
+        if (!err && info) err = Error(info)
+        else if (!err && !user) err = Error(`No user found with email ${req.body.email}`)
+        err.fromApi = true
         next(err)
       }
       else if (user)
@@ -25,11 +28,6 @@ var authFn = (provider) => {
           else
             res.end()
         })
-      }
-      else
-      {
-        // `${config.auth.loginUrl}?fail=${provider}&info=${info}`
-        res.status(400).json({ provider: provider, error: info })
       }
 
     })(req, res, next)

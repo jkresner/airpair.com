@@ -5,6 +5,7 @@ module.exports = {
   jkap: { _id:"5175efbfa3802cc4d5a5e6ed",name:"Jonathon Kresner",email:"jk@airpair.com" },
   pgap: { name:"Prateek Gupta",email:"pg@airpair.com" },
   prat: { name:"Prateek Gupta",email:"prateek@gupta.com" },
+  pgup: { name:"Prateek Gupta",email:"prateek@gup.com" },
   adap: { name:"Ajay Desai",email:"ad@airpair.com" },
   ajde: { name:"Ajay Desai",email:"ajay@desai.com" },
   arys: { name:"Alyssa Reese",email:"aresse@apr.com" },
@@ -1072,6 +1073,79 @@ module.exports = {
         "token" : { }
     },
     "twitterId" : 46473071
-}
+  },
+
+  phlf: {
+    "_id" : "527d21f266a6f999a465fb1e",
+    "email" : "philfreo@gmail.com",
+    "emailVerified" : true,
+    "google" : {
+        "provider" : "google",
+        "id" : "103737476744834482789",
+        "displayName" : "Phil Freo",
+        "name" : {
+            "familyName" : "Freo",
+            "givenName" : "Phil"
+        },
+        "emails" : [
+            {
+                "value" : "philfreo@gmail.com"
+            }
+        ],
+        "_json" : {
+            "id" : "103737476744834482789",
+            "email" : "philfreo@gmail.com",
+            "verified_email" : true,
+            "name" : "Phil Freo",
+            "given_name" : "Phil",
+            "family_name" : "Freo",
+            "link" : "https://plus.google.com/+PhilFreo",
+            "picture" : "https://lh6.googleusercontent.com/-G8ceDL9VsFc/AAAAAAAAAAI/AAAAAAAAB0w/0d-QvkfLEVk/photo.jpg",
+            "gender" : "male",
+            "locale" : "en"
+        },
+        "token" : {
+            "token" : "ya29.9wCSjXftdQ_yTygtGwAZQje_y_CayNtWW7jokDCMgQSHmXd-eVnN0ZMKGw3Zlm0id3XCRSoEKvRw2A",
+            "attributes" : {
+                "refreshToken" : null
+            }
+        }
+    },
+    "googleId" : "103737476744834482789",
+    "initials" : "PF",
+    "name" : "Phil Freo",
+    "stack" : {
+        "badge_counts" : {
+            "gold" : 8,
+            "silver" : 49,
+            "bronze" : 85
+        },
+        "profile_image" : "https://www.gravatar.com/avatar/529a6049c4ad4483dbc62add6da06e1a?s=128&d=identicon&r=PG",
+        "display_name" : "philfreo",
+        "link" : "http://stackoverflow.com/users/137067/philfreo",
+        "website_url" : "http://philfreo.com",
+        "location" : "Jacksonville, FL",
+        "accept_rate" : 79,
+        "age" : 26,
+        "user_id" : 137067,
+        "user_type" : "registered",
+        "creation_date" : 1247419824,
+        "reputation" : 9890,
+        "reputation_change_day" : 10,
+        "reputation_change_week" : 48,
+        "reputation_change_month" : 83,
+        "reputation_change_quarter" : 350,
+        "reputation_change_year" : 2802,
+        "last_access_date" : 1383874065,
+        "last_modified_date" : 1381107928,
+        "is_employee" : false,
+        "account_id" : 46401,
+        "provider" : "stackexchange",
+        "id" : 137067,
+        "token" : {}
+    },
+    "stackId" : 137067,
+    "username" : "philfreo"
+  }
 
 }

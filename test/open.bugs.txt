@@ -1,3 +1,19 @@
+Sean Bamforth sean.bamforth@gmail.com 54baeeb5af34e30900d1dcfa
+GET /requests/54a7cc9dc8e5b50b00f3b38c {} << https://www.airpair.com/meet-experts/54a7cc9dc8e5b50b00f3b38c || isBot:false:Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36
+Could not find request[54a7cc9dc8e5b50b00f3b38c] belonging to user[54baeeb5af34e30900d1dcfa]
+Error: Could not find request[54a7cc9dc8e5b50b00f3b38c] belonging to user[54baeeb5af34e30900d1dcfa]
+    at Error ()
+    at /app/requests.js:82:54
+    at Promise.searchOne (/app/_service.js:29:9)
+    at Promise. (/app/node_modules/mongoose/node_modules/mpromise/lib/promise.js:177:8)
+    at Promise.emit (events.js:95:17)
+    at Promise.emit (/app/node_modules/mongoose/node_modules/mpromise/lib/promise.js:84:38)
+    at Promise.fulfill (/app/node_modules/mongoose/node_modules/mpromise/lib/promise.js:97:20)
+    at Promise.resolve (/app/node_modules/mongoose/lib/promise.js:114:23)
+    at Promise. (/app/node_modules/mongoose/node_modules/mpromise/lib/promise.js:177:8)
+    at Promise.emit (events.js:95:17)
+
+
 Kiran Patchigolla kiran@jolata.com 54b716077b1047516695d5e9
 PUT /v1/api/requests/54b7167a759ef409005c6a67 << https://www.airpair.com/help/request || isBot:false:Mozilla/5.0 (iPhone; CPU iPhone OS 8_1 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) Version/8.0 Mobile/12B411 Safari/600.1.4
 Cannot call method 'toString' of undefined
@@ -12,24 +28,6 @@ TypeError: Cannot call method 'toString' of undefined
     at next (/app/node_modules/express/lib/router/route.js:100:13)
     at Route.dispatch (/app/node_modules/express/lib/router/route.js:81:3)
     at Layer.handle [as handle_request] (/app/node_modules/express/lib/router/layer.js:82:5)
-
-
-
-meyers.drew@gmail.com
-2015-01-14T18:45:28.068292+00:00 app[web.2]: /app/node_modules/lodash/dist/lodash.js:3216
-           if (callback(value, index, collection)) {
-               ^
- ReferenceError: idsEqual is not defined
-     at /app/util.js:126:15
-     at Function.find (/app/node_modules/lodash/dist/lodash.js:3216:15)
-     at Object.util.combineItems (/app/util.js:125:21)
-     at /app/users.js:113:31
-     at Promise.searchOne (/app/_service.js:29:9)
-     at Promise.<anonymous> (/app/node_modules/mongoose/node_modules/mpromise/lib/promise.js:177:8)
-     at Promise.emit (events.js:95:17)
-     at Promise.emit (/app/node_modules/mongoose/node_modules/mpromise/lib/promise.js:84:38)
-     at Promise.fulfill (/app/node_modules/mongoose/node_modules/mpromise/lib/promise.js:97:20)
-     at Promise.resolve (/app/node_modules/mongoose/lib/promise.js:114:23)
 
 
 
@@ -64,10 +62,6 @@ cbSend.400 avi@kensodev.com /requests {"tags":[{"desc":"Go, also called golang, 
 GET /v1/api/posts/tag/partners << https://www.airpair.com/posts/tag/partners || isBot:false:Mozilla/5.0 (compatible; Baiduspider/2.0; +http://www.baidu.com/search/spider.html)
 tag not found. Back to tags
 Error: tag not found. Back to tags
-
-
-
-cbSend.400 mattlo.developer@gmail.com /requests/54acabf07389cf0b00eb8254 {"_id":"54acabf07389cf0b00eb8254","userId":"546678e78f8c80299bcc506a","by":{"avatar":"//0.gravatar.com/avatar/26b312fb15048201616ab0c2115f8ebc","email":"mattlo.developer@gmail.com","name":"Matt Lo"},"type":"other","tags":[],"status":"received","suggested":[]} { [Error: Request must include at least one technology] status: 403 }
 
 
 cbSend.400 patrickmgarman@gmail.com /requests/54aba41abef06b0b007ffbde {"_id":"54aba41abef06b0b007ffbde","by":{"avatar":"//0.gravatar.com/avatar/35b913bda9f12817929e61571b913354","email":"gjavaxishvili@list.ru","name":"goga javaxishvili"},"type":"code-review","brief":"I need a web page review to see the problems or bugs, if there is a  a week points and get a full list of this problems","tags":[{"_id":"514825fa2a26ea020000002b","slug":"php","sort":0}],"time":"regular","hours":"1","experience":"advanced","status":"received","suggested":[{"expert":{"__v":1,"_id":"5321ad9db976900200000036","availability":"","brief":"I am a backend PHP developer specializing in WordPress, and I work regularly with WooCommerce, Easy Digital Downloads, AppPresser, and other commonly used premium plugins (many of which I have contributed to!).","email":"patrickmgarman@gmail.com","gh":{"id":502720,"username":"pmgarman","location":"Cuba, IL","blog":"http://pmgarman.me","gravatar_id":"25301bdb527e5665782958948a627b65","followers":19},"gmail":"patrickmgarman@gmail.com","homepage":"pmgarman.me","hours":"5-10","in":{"id":"v-4N4oATfu","displayName":"Patrick Garman"},"karma":0,"minRate":70,"name":"Patrick Garman","pic":"https://secure.gravatar.com/avatar/25301bdb527e5665782958948a627b65","rate":110,"stats":{},"status":"ready","tags":[{"soId":"wordpress","short":"wordpress","name":"wordpress","_id"
