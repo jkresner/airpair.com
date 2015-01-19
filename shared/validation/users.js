@@ -99,7 +99,7 @@ module.exports = {
   },
 
   updateBookmarks(user, bookmarks) {
-    if (!bookmarks || tags.bookmarks !== Array) return "bookmarks array required to sort"
+    if (!bookmarks || bookmarks.bookmarks !== Array) return "bookmarks array required to sort"
   },
 
   verifyEmail(user, hash) {

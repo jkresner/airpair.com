@@ -12,7 +12,7 @@ export function logError(e, user, req)
 
     var uid = (req.user) ? req.user.email : req.sessionID
     var userInfo = (user && user.name) ?
-      `\n${user.name} ${user.email} ${user._id}` : `anonymous ${uid}`
+      `\n${user.name} ${user.email} ${user._id}` : `\nanonymous ${uid}`
 
     msg += userInfo
 
