@@ -15,22 +15,17 @@ var cbSend = (req, res, next) => {
     if (logging) { $log('cbSend', e, r) }
     if (e)
     {
-      if (config.env != 'test') {
-        var uid = (req.user) ? req.user.email : req.sessoinID
-        $log(`cbSend.400 ${uid} ${req.method} ${req.url}`.red, JSON.stringify(req.body).white, e)
-        $error(e, req.user, req)
-      }
-
-      return res.status(e.status || 400).json({message:e.message||e})
+      e.fromApi = true
+      return next(e)
     }
-    if (httpMethod != 'DELETE')
+    else if (httpMethod != 'DELETE')
     {
       if (!r) { return res.status(404).json({}) }
-      res.json(r)
+      return res.json(r)
     }
     else
     {
-      res.status(200).json({})
+      return res.status(200).json({})
     }
   }
 }

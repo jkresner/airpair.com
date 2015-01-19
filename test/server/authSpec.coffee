@@ -66,12 +66,13 @@ module.exports = -> describe "Signup: ", ->
 
     UserService.googleLogin.call newUserSession(), data.oauth.exap, (e,usr) ->
       expect(usr._id).to.exist
+      expect(usr.email).to.equal("experts@airpair.com")
       http(global.app).post('/v1/auth/signup').send(d)
         .expect(400)
         .expect('Content-Type', /json/)
         .end (err, res) ->
           if (err) then return done(err)
-          expect(res.body.error).to.equal('Cannot signup, you previously created an account with your google login')
+          expect(res.body.message).to.equal('Cannot signup, you previously created an account with your google login')
           done()
 
 
@@ -82,7 +83,7 @@ module.exports = -> describe "Signup: ", ->
         http(global.app).post('/v1/auth/signup').send(d).expect(400)
           .end (err, res) ->
             if (err) then return done(err)
-            expect(res.body.error).to.equal('Cannot signup, user already exists')
+            expect(res.body.message).to.equal('Cannot signup, user already exists')
             done()
 
 
