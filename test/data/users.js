@@ -5,6 +5,7 @@ module.exports = {
   jkap: { _id:"5175efbfa3802cc4d5a5e6ed",name:"Jonathon Kresner",email:"jk@airpair.com" },
   pgap: { name:"Prateek Gupta",email:"pg@airpair.com" },
   prat: { name:"Prateek Gupta",email:"prateek@gupta.com" },
+  pgup: { name:"Prateek Gupta",email:"prateek@gup.com" },
   adap: { name:"Ajay Desai",email:"ad@airpair.com" },
   ajde: { name:"Ajay Desai",email:"ajay@desai.com" },
   arys: { name:"Alyssa Reese",email:"aresse@apr.com" },

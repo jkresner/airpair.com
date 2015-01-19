@@ -40,6 +40,8 @@ var middleware = {
       if (config.env != 'test') {
         $log(`errorHandle ${uid} ${req.method} ${req.url}`.red, JSON.stringify(req.body).white, (e.message || e).magenta)
         $error(e, req.user, req)
+      } else {
+        $log((e.message || e).magenta)
       }
 
       if (e.fromApi)
