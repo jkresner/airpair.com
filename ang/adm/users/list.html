@@ -7,7 +7,6 @@
 
   <section class="roles">
 
-
   <h2>Roles</h2>
 
     <div ng-if="selectedUser.name">
@@ -19,7 +18,7 @@
         <option>editor</option>
         <option>pipeliner</option>
       </select>
-      <button class="btn" ng-click="toggleRole()">Toggle role</button>
+      <button class="btn" ng-click="toggleRole(selectedUser._id, role)">Toggle role</button>
     </div>
 
     <div>
@@ -69,7 +68,7 @@
         <option>Happy New Year</option>
         <option>Expert Thanks You</option>
       </select>
-      <button class="btn" ng-click="giveCredit()">Give credit</button>
+      <button class="btn" ng-click="giveCredit(credit, source)">Give credit</button>
     </div>
     <p ng-if="!selectedUser.name">Select a user</p>
 
