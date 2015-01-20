@@ -29,6 +29,7 @@
 					if (member.auth.roles && member.auth.roles.admin == true) {
 						this.admin = new AdminInterface(this);
 					}
+					console.log("Logged in as", member.uid)
 					this._member = new SelfMember(this, member.uid, member);
 					
 					var lastUID = localStorage.getItem("corechat:uid");

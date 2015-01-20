@@ -36,7 +36,7 @@
     
     app.service("corechat", function ($rootScope, $log, $timeout) {
         var $scope = $rootScope.$new(true),
-            initialized,
+            initialized, sessionID,
             cc, ref, transferFrom, lastSession;
         
         $timeout(function () {
@@ -54,10 +54,18 @@
         
             
         $rootScope.$watch('session', function (session) {
-            console.log(session)
             if (!session) return;
             
-            if (lastSession && lastSession.unauthenticated)
+            if (sessionID && (session._id !== sessionID && session.sessionID !== sessionID)) {
+                $log.log("SessionID", sessionID, "doesn't match", session._id || session.sessionID)
+                cc? cc.login(session.firebaseToken) : null;
+                window.firebaseToken = session.firebaseToken;
+                sessionID = session._id || session.sessionID;
+            }
+            
+            sessionID = session._id || session.sessionID;
+            
+            if (lastSession && lastSession.unauthenticated && session._id)
                 cc._ref.child("transfers").push({
                    to: session._id,
                    from: lastSession.sessionID
@@ -168,6 +176,8 @@
                 $log.log("Logged in as", member);
                 
                 $scope.selfmember.loggedIn = true;
+                $scope.selfmember.name = cc._member.name;
+                $scope.selfmember.avatar = cc._member.avatar;
                 $scope.selfmember.rooms = member.rooms;
                 $scope.selfmember.notifications = member.notifications;
                 $scope.selfmember.id = member.id;
@@ -190,9 +200,13 @@
                    if (notification.info.to == $scope.activeRoom) notification.acknowledge();
                 });
                 
-                $rootScope.$watch('session', function (session) {
-                    if (!session || session._id !== id) return;
-                    
+                var unwatch = $rootScope.$watch('session', function (session) {
+                    $log.log("insess>", session, id);
+                    if (!session || (session._id !== id && session.sessionID !== id)) {
+                        unwatch();
+                        return;
+                    }
+                    $log.log("Updating")
                     var user = {
                       email: session.email || "",
                       name: session.name || "",
@@ -205,7 +219,7 @@
             });
             
             cc.on("logout", function () {
-                console.log("logout");
+                $log.log("logout");
                 $scope.selfmember = {}; 
             });
        
