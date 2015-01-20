@@ -11,10 +11,20 @@ angular.module("APSideNav", ['ui.bootstrap','APSvcSession', 'APTagInput'])
         SessionService.onAuthenticated( (session) =>
           scope.tracking = (session._id && session.primaryPayMethodId) ? false : true )
 
+        element.bind('mouseenter', function() {
+          element.removeClass('collapse');
+          storage('sideNavOpen', 'true');
+        });
+        element.bind('mouseleave', function() {
+          element.addClass('collapse');
+          storage('sideNavOpen', 'false');
+        });
+
       },
       controllerAs: 'sideNav',
       controller($scope, $element, $attrs) {
 
+        // leave for mobile/tablet taps (no mouseenter)
         this.toggle = function() {
           if (storage('sideNavOpen') == 'true') storage('sideNavOpen', 'false');
           else storage('sideNavOpen', 'true');
@@ -22,6 +32,8 @@ angular.module("APSideNav", ['ui.bootstrap','APSvcSession', 'APTagInput'])
           $element.toggleClass('collapse', storage('sideNavOpen') == 'false')
           $scope.toggleAction = (storage('sideNavOpen') != 'true') ? 'Show' : 'Hide';
         }
+
+        // set init state
         $element.toggleClass('collapse', storage('sideNavOpen') != 'true')
         $scope.toggleAction = (storage('sideNavOpen') != 'true') ? 'Show' : 'Hide';
 
