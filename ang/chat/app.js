@@ -54,6 +54,7 @@
         
             
         $rootScope.$watch('session', function (session) {
+            $log.log(session)
             if (!session) return;
             
             if (sessionID && (session._id !== sessionID && session.sessionID !== sessionID)) {
@@ -228,7 +229,6 @@
         	}
         };
         
-        $scope.initialize()
         return $scope;
     });
     

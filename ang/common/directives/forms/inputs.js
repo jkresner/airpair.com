@@ -1,5 +1,52 @@
 
-angular.module('APInputs', ['ui.bootstrap'])
+angular.module('APInputs', ['ui.bootstrap','angularLoad'])
+
+  .directive('locationInput', function(angularLoad) {
+
+    var src = 'https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places&callback=mapInitialize';
+    var ngLoadPromise = angularLoad.loadScript(src);
+
+    return {
+      restrict: 'EA',
+      template: require('./locationInput.html'),
+      scope: {
+        onSelect: '=onSelect',
+        data: '=data',
+        ngModel: '=',
+        details: '=?'
+      },
+      link: function(scope, element, attrs) {
+        var options = {
+            types: ['(cities)'],
+            componentRestrictions: {}
+        }
+
+        var mapInitialize = function ()
+        {
+          var input = element.find('input')[0]
+
+          scope.gPlace = new google.maps.places.Autocomplete(input, options);
+
+          google.maps.event.addListener(scope.gPlace, 'place_changed', function() {
+            scope.$apply(function() {
+              scope.details = scope.gPlace.getPlace()
+              scope.data.location = $(input).val()
+
+              if (scope.onSelect)
+                scope.onSelect(scope.details)
+
+            })
+          })
+
+          delete window.mapInitialize
+        }
+
+        window.mapInitialize = mapInitialize
+
+        ngLoadPromise.then(() => {})
+      }
+    }
+  })
 
   .directive('datetimeInput', function() {
     return {

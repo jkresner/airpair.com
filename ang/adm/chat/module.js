@@ -17,7 +17,6 @@ angular.module("ADMChat", ["chat-widget", "angularMoment"])
 
 .controller('ChatCtrl', function($scope, $timeout, corechat) {
   $scope.setCurrentUser = function (memberId) {
-    console.log("mid>", memberId)
     var RID = getMemberToMemberRID(memberId, corechat.selfmember.id);
     $scope.currentUser = corechat.getMember(memberId);
     $scope.currentUser.join(RID);

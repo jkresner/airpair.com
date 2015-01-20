@@ -62,6 +62,13 @@ module.exports = {
     //-- Can set the username to nothing
   },
 
+  changeLocationTimezone(user, locationData) {
+    if (!locationData) return "locationData required"
+    if (!locationData.geometry || !locationData.geometry.location)
+      return "locationData geometry required"
+    if (!locationData.formatted_address) return "locationData address required"
+  },
+
   requestPasswordChange(user, email) {
     return validateEmail(email)
   },
@@ -99,7 +106,7 @@ module.exports = {
   },
 
   updateBookmarks(user, bookmarks) {
-    if (!bookmarks || tags.bookmarks !== Array) return "bookmarks array required to sort"
+    if (!bookmarks || bookmarks.constructor !== Array) return "bookmarks array required to sort"
   },
 
   verifyEmail(user, hash) {

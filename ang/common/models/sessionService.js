@@ -88,6 +88,10 @@ angular.module('APSvcSession', [])
       $http.put(`${API}/users/me/name`, data).success(setScope(success, trackingData)).error(error);
     }
 
+    this.changeLocationTimezone= function(data, success, error) {
+      $http.put(`${API}/users/me/location`, data).success(setScope(success)).error(error);
+    }
+
     this.verifyEmail = function(data, success, error)
     {
       $http.put(`${API}/users/me/email-verify`, data).success(setScope(success)).error(error);

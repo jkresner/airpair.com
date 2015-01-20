@@ -22,9 +22,14 @@ angular.module("APProfile", ['ngRoute', 'APFilters', 'APSvcSession', 'APTagInput
     })
   }
 
-  $rootScope.$watch('session', (session) =>
+  $rootScope.$watch('session', (session) => {
     $scope.data = _.pick(session, 'name','email','initials','username')
-  )
+    if (session.localization)
+    {
+      $scope.data.location = session.localization.location
+      $scope.data.timezone = session.localization.timezone
+    }
+  })
 
   if ($scope.session)
     $scope.data = _.pick($scope.session, 'name','email','initials','username')
@@ -50,6 +55,9 @@ angular.module("APProfile", ['ngRoute', 'APFilters', 'APSvcSession', 'APTagInput
   $scope.updateInitials = () => updateInfo('Initials')
   $scope.updateUsername = () => updateInfo('Username')
 
+  $scope.updateLocation = (locationData) => {
+    SessionService.changeLocationTimezone(locationData, (r)=> {})
+  }
 
   $scope.updateEmail = function(model) {
     if (!model.$valid || $scope.data.email == $scope.session.email) return

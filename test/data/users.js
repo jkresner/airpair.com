@@ -39,6 +39,7 @@ module.exports = {
   kfor: { name:"Kelly Ford",email:"kellyford@hotmail.com" },
   chup: { name:"Chris Upton",email:"chrisupton@hotmail.com" },
   chiu: { name:"Chris Upton",email:"chirsitup@gmail.com" },
+  chri: { name:"Chris Upton",email:"chirsitup@ap.com" },
 
   ajac: { name:"Adam Jacobs",email:"adamjay@hotmail.com" },
   acob: { name:"Adam Jacobs",email:"adamcobbs@gmail.com" },

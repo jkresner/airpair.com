@@ -185,5 +185,50 @@ module.exports = {
    channelTitle: 'Air Pair',
    categoryId: '24',
    liveBroadcastContent: 'none'
-   }
+  },
+
+  gplaces_succcessful_place: {
+    "address_components":[
+      {
+        "long_name":"Bengaluru",
+        "short_name":"Bengaluru",
+        "types":["locality","political"]
+      },
+      {
+        "long_name":"Bangalore Urban",
+        "short_name":"Bangalore Urban",
+        "types":["administrative_area_level_2","political"]
+      },
+      {
+        "long_name":"Karnataka",
+        "short_name":"KA",
+        "types":["administrative_area_level_1","political"]
+      },
+      {
+        "long_name":"India",
+        "short_name":"IN",
+        "types":["country","political"]
+      }
+    ],
+    "adr_address":"<span class=\"locality\">Bengaluru</span>, <span class=\"region\">Karnataka</span>, <span class=\"country-name\">India</span>",
+    "formatted_address":"Bengaluru, Karnataka, India",
+    "geometry":{
+      "location":{"k":12.9715987,"D":77.59456269999998},
+      "viewport":{
+        "Ea":{"k":12.7342888,"j":13.173706},
+        "wa":{"j":77.37919809999994,"k":77.88268089999997}
+      }
+    },
+    "icon":"http://maps.gstatic.com/mapfiles/place_api/icons/geocode-71.png",
+    "id":"0862832923832bfb1e46cbe843cdaa03a9ee8aa1",
+    "name":"Bengaluru",
+    "place_id":"ChIJbU60yXAWrjsR4E9-UejD3_g",
+    "reference":"CoQBfgAAAIRmBX2Xvp4YcWlMUWPv8EVgn0-K0B_n79UTUJI-oaU-8IKM7i8zL4r2ukpkZZUJJ8vLhzdDScsOPQwn--ReuRF6F_8VJPhAIWpQJyXr-9eTRmCp9-_K5PJ2ZRQEM_UUd3g3_G6u3m80KpOTFrRFB0TxIqqx3d1z3qyppBs759TTEhCu7IXuxn1urC3PqouYZF_DGhRKqXCSlfD_l7WSSj_VvOmOdJ3mTQ",
+    "scope":"GOOGLE",
+    "types":["locality","political"],
+    "url":"https://maps.google.com/maps/place?q=Bengaluru,+Karnataka,+India&ftid=0x3bae1670c9b44e6d:0xf8dfc3e8517e4fe0",
+    "vicinity":"Bengaluru",
+    "html_attributions":[]
+  }
+
 }
