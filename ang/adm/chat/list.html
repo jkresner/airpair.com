@@ -7,7 +7,7 @@
         <div ng-show="members">
             <b>{{page}}</b><br />
             <div ng-repeat="(memberId, _) in members">
-                <a ng-click="setCurrentUser(memberId)" member-info="{{memberId}}">{{member.name || "Anonymous User"}}</a>
+                <span member-info="{{memberId}}">{{member.name || "Anonymous User"}} <span am-time-ago="member.page.timestamp"></span></span><button ng-click="setCurrentUser(memberId)">Start Chatting</button>
             </div>
         </div> 
     </div>
@@ -26,13 +26,18 @@
         </span>
     </div>
     
-    <h2>Current User: {{currentUser.id || "None"}}</h2>
-    <div ng-show="corechat.activeRoom">
-        <div ng-repeat="message in corechat.selfmember.rooms[corechat.activeRoom].history">
-            <b member-info="{{message.from}}">{{member.name || "Anonymous"}}</b> {{message.body}}
-        </div><br />
-        <input type="text" ng-model="newMessage.body">
-        <button ng-click="corechat.sendMessageToRoom(corechat.activeRoom, newMessage.body); newMessage.body=''">Send</button>
+    <h2>All Rooms</h2>
+    <div ng-repeat="room in allRooms">
+        <button ng-click="toggleHistory=!toggleHistory">{{room.info.name}}</button>
+        <div ng-if="toggleHistory">
+            <div ng-repeat="message in room.history">
+                <b member-info="{{message.to}}">{{member.name || "Anonymous User"}}</b>: {{message.body}}
+            </div>
+            <div ng-show="!room.history.length">
+                No messages :(
+            </div>
+        </div>
     </div>
-    
+
+    <div id="chat-widget" style="border:solid 1px green; position: fixed; top: 0px; right: 0px; width: 300px; background-color: #ccc" chat-widget></div>    
 </section>
