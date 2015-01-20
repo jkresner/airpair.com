@@ -54,7 +54,7 @@
         
             
         $rootScope.$watch('session', function (session) {
-            console.log(session)
+            $log.log(session)
             if (!session) return;
             
             if (lastSession && lastSession.unauthenticated)
@@ -205,7 +205,7 @@
             });
             
             cc.on("logout", function () {
-                console.log("logout");
+                $log.log("logout");
                 $scope.selfmember = {}; 
             });
        
@@ -214,7 +214,6 @@
         	}
         };
         
-        $scope.initialize()
         return $scope;
     });
     
