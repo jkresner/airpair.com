@@ -70,7 +70,7 @@ var User = new Schema({
     emailHashGenerated:     Date,
     password :              String,
     changePasswordHash:     String,
-    passowrdHashGenerated:  Date
+    passwordHashGenerated:  Date
   },
   googleId:             { type: String, sparse: true, unique: true, dropDups: true },
   google: {},

@@ -128,7 +128,7 @@ var util = {
 
    for (var item of array2) {
      var existing = _.find(array1,
-       (i) => idsEqual(i[compareProp],item[compareProp]))
+       (i) => util.idsEqual(i[compareProp],item[compareProp]))
 
      if (!existing) array1.push(item)
    }

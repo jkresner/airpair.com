@@ -86,8 +86,8 @@ module.exports = -> describe "Booking: ", ->
           expect(booking1.type).to.equal('opensource')
           GET "/billing/orders", {}, (orders1) ->
             expect(orders1.length).to.equal(2)
-            creditOrder = orders1[0]
-            redeemOrder = orders1[1]
+            creditOrder = orders1[1]
+            redeemOrder = orders1[0]
             expect(creditOrder.total).to.equal(500)
             expect(creditOrder.lineItems.length).to.equal(1)
             expect(creditOrder.payment.type).to.equal('braintree')
@@ -134,8 +134,8 @@ module.exports = -> describe "Booking: ", ->
               expect(booking2.type).to.equal('private')
               GET "/billing/orders", {}, (orders2) ->
                 expect(orders2.length).to.equal(3)
-                expect(orders2[2].total).to.equal(0)
-                expect(orders2[2].payment.type).to.equal('$0 order')
+                expect(orders2[1].total).to.equal(0)
+                expect(orders2[1].payment.type).to.equal('$0 order')
                 lines2 = ordersUtil.linesWithCredit(orders2)
                 expect(lines2.length).to.equal(1)
                 availableCredit2 = ordersUtil.getAvailableCredit(lines2)
@@ -188,7 +188,7 @@ module.exports = -> describe "Booking: ", ->
                 expect(order.lineItems[1].qty).to.equal(1)
                 expect(order.lineItems[1].balance).to.equal(-50)
                 expect(order.lineItems[1].info.name).to.equal('$50 Redeemed Credit')
-                oldestOrder = orders[0]
+                oldestOrder = orders[1]
                 expect(_.idsEqual(order.lineItems[1]._id, oldestOrder.lineItems[0].info.redeemedLines[0].lineItemId)).to.be.true
                 expect(order.lineItems[2].type).to.equal('airpair')
                 expect(order.lineItems[2].total).to.equal(285)

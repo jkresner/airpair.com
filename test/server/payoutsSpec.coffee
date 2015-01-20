@@ -128,9 +128,9 @@ module.exports = -> describe "API: ", ->
 
 
   it 'Expert can see multiple transactions of mixed status', (done) ->
-    SETUP.newBookedRequest 'hubi', {}, 'tmot', (request1, booking1, customerSession1, expertSession) ->
-      SETUP.newBookedRequestWithExistingExpert 'kaun', {}, expertSession, (request2, booking2, customerSession2, expertSession) ->
-        SETUP.newBookedRequestWithExistingExpert 'brhu', {}, expertSession, (request3, booking3, customerSession3, expertSession) ->
+    SETUP.newBookedRequest 'hubi', {}, 'phlf', (request1, booking1, customerSession1, expertSession) ->
+      SETUP.newBookedRequestWithExistingExpert 'mois', {}, expertSession, (request2, booking2, customerSession2, expertSession) ->
+        SETUP.newBookedRequestWithExistingExpert 'prak', {}, expertSession, (request3, booking3, customerSession3, expertSession) ->
           LOGIN 'admin', data.users.admin, ->
             PUT "/adm/billing/orders/#{booking1.orderId}/release", {}, {}, (released1) ->
               # PUT "/adm/billing/orders/#{booking2.orderId}/release", {}, {}, (released2) ->

@@ -5,41 +5,43 @@ export function logError(e, user, req)
 {
   if (!e) return
 
-  var userInfo = (user && user.name) ?
-    `${user.name} ${user.email} ${user._id}` : 'anonymous'
+  var msg = e.message || e
 
-  var reqInfo = req ?
-    `${req.method} ${req.url}` : ''
+  if (req) {
+    msg += `\n${req.method} ${req.url}`
 
-  if (reqInfo != '')
-  {
+    var uid = (req.user) ? req.user.email : req.sessionID
+    var userInfo = (user && user.name) ?
+      `\n${user.name} ${user.email} ${user._id}` : `anonymous ${uid}`
+
+    msg += userInfo
+
     if (req.header('Referer'))
-      reqInfo = `${reqInfo} << ${req.header('Referer')}`
+      msg += `\n << ${req.header('Referer')}`
 
     if (req.header('user-agent'))
     {
       var isBot = (util.isBot(req.header('user-agent'))) ? 'true' : 'false'
-      reqInfo = `${reqInfo} || isBot:${isBot}:${req.header('user-agent')}`
+      msg += `\nisBot:${isBot}:${req.header('user-agent')}`
     }
+
+    if (req.method != 'GET' && req.body)
+      msg += `\n\n ${JSON.stringify(req.body)}`
   }
-
-  if (!user && req) { userInfo += ` ${req.sessionID}` }
-
-  console.log(userInfo.red)
-  console.log(reqInfo.red)
+  else if (user)
+  {
+    msg += `\nNo request context`
+    msg += `\n${user.name} ${user.email} ${user._id}`
+  }
 
   if (e.stack) {
-    console.log(e.message.red)
-    console.log(e.stack.grey)
+    msg += `\n\n ${e.stack}`
   }
-  else
-  {
-    console.log(e.toString().red)
-  }
+
+  console.log(msg.red)
 
   if (config.log.email)
   {
-    var errorInfo = (e.stack) ? `${e.message}\n${e.stack}` : e.toString()
-    winston.error(`${userInfo}\n${reqInfo}\n${errorInfo}`)
+    winston.error(`${msg}`)
   }
 }

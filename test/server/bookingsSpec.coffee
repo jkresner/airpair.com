@@ -33,7 +33,7 @@ module.exports = -> describe "API: ", ->
             expect(booking.status).to.equal("followup")
             expect(booking.recordings.length).to.equal(1)
             expect(booking.recordings[0].data.title).to.equal("Online Rails Code Review with RoR Expert Edward Anderson - AirPair")
-            expect(booking.recordings[0].type).to.equal("YouTube")
+            expect(booking.recordings[0].type).to.equal("youtube")
             done()
 
   it "fails gracefully with a bogus YouTube id", (done)->
