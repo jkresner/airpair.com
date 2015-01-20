@@ -207,7 +207,7 @@
                         unwatch();
                         return;
                     }
-                    $log.log("Updating")
+                    $log.log("Updating");
                     var user = {
                       email: session.email || "",
                       name: session.name || "",
@@ -215,7 +215,12 @@
                       transferFrom: transferFrom || ""
                     };
                     
-                    cc._member._ref.update(user);
+                    cc._member._ref.update(user, function () {
+                        $timeout(function () {
+                            $scope.selfmember.name = cc._member.name;
+                            $scope.selfmember.avatar = cc._member.avatar; 
+                        });
+                    });
                 });
             });
             
@@ -228,6 +233,8 @@
         		return Array.prototype.slice.call(arguments).sort().join('^^v^^')
         	}
         };
+        
+        $scope.initialize();
         
         return $scope;
     });
