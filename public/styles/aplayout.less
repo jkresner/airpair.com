@@ -186,7 +186,6 @@ main {
 }
 
 nav#side, nav#chat {
-  overflow-y: scroll;
   display:block;
   position:fixed;
   height:auto;
@@ -333,10 +332,6 @@ nav#side {
     }
   }
 
-  @media only screen and (max-width:1200px) {
-    opacity:0.9;
-  }
-
   @media only screen and (max-width: 734px) {
     display:none;
   }
@@ -358,7 +353,7 @@ nav#side.collapse {
   }
   ul { display:none }
   label { display:none }
-  opacity:1.0;
+  opacity:.9;
 
   a.icon {
     text-align:center;
