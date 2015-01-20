@@ -61,13 +61,19 @@
 		};
 		
 		this.getMember = function (memberId) {
+			if (!memberId)
+				return {};
+				
 			if (!this._members[memberId]) 
 				this._members[memberId] = new Member(this, memberId);
-			
+				
 			return this._members[memberId];
 		};
 		
 		this.getRoom = function (roomId) {
+			if (!roomId)
+				return {};
+				
 			if (!this._rooms[roomId]) 
 				this._rooms[roomId] = new Room(this, roomId);
 			
@@ -85,7 +91,7 @@
 					.on("child_added", (function (snapshot) {
 						this._callbackWrap((function () {
 							var memberId = snapshot.key();
-							members[memberId] = cc.getMember(memberId);
+							members[memberId] = this.getMember(memberId);
 						}).bind(this));
 					}).bind(this));
 					
@@ -103,15 +109,17 @@
 		}
 		
 		this._watchForTokenOnWindow = function () {
-			// Hackssss
 			var checkLogin;
-			(checkLogin=function () {
+			
+			checkLogin = (function () {
 				var token = window.firebaseToken;
 				if (token)
-					cc.login(token);
+					this.login(token);
 				else
 					setTimeout(checkLogin, 500);
-			})();
+			}).bind(this);
+			
+			checkLogin();
 		};
 		
 		this._attemptLoginFromLocalstorage = function () {
@@ -400,18 +408,11 @@
 			
 		this.getMetadata = function () {
 			var members = this.members,
+				implicitMembers = {},
 				name = this.info? this.info.name : "",
 				nonSelfMembers = {},
 				nonSelfMembersCount = 0,
 				memberId;
-				
-			if (this.id.split("^^v^^").length > 1) {
-				var implicitMembers = this.id.split("^^v^^");
-				for (var index in implicitMembers) {
-					memberId = implicitMembers[index];
-					members[memberId] = cc.getMember(memberId);
-				}
-			}
 
 			for (memberId in members) {
 				if (memberId !== cc._member.id) {
@@ -429,6 +430,16 @@
 			} else if (nonSelfMembersCount > 1) {
 				return {name: "Group Chat", avatar: "2"};
 			} else {
+				if (this.id.split("^^v^^").length > 1) {
+					var implicitMemberIds = this.id.split("^^v^^");
+					for (var index in implicitMemberIds) {
+						var memberId;
+						memberId = implicitMemberIds[index];
+						if (memberId !== cc._member.id) {
+							return cc.getMember(memberId);
+						}
+					}
+				}
 				return {name: name, avatar: "3"};
 			}
 		};
