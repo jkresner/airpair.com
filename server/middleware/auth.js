@@ -162,11 +162,12 @@ var middleware = {
     }
 
     if (!existingTokenData || existingTokenData.uid != tokenData.uid || existingTokenMetadata.iat < new Date().getTime()) {
-      var expires = parseInt('1' + (new Date().getTime()), 10);
+      var expires = parseInt(new moment(req.session.cookie._expires).format('x'), 10);
+      console.log(expires);
       req.session.firebaseToken = tokenGenerator.createToken(tokenData, {expires:expires});
     }
 
-     $log('firebaseToken in setFirebaseTokenOnSession', req.session.firebaseToken)
+     //$log('firebaseToken in setFirebaseTokenOnSession', req.session.firebaseToken)
     // console.log('session >', req.sessionID, req.session );
     next()
   }
