@@ -18,7 +18,8 @@ export default initAPI(
   changeUsername: (req) => [req.body.username],
   verifyEmail: (req) => [req.body.hash],
   requestPasswordChange: (req) => [req.body.email],
-  changePassword: (req) => [req.body.hash, req.body.password]
+  changePassword: (req) => [req.body.hash, req.body.password],
+  changeLocationTimezone: (req) => [req.body],
 }, {
 
 },

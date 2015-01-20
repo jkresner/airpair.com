@@ -6,6 +6,8 @@ var User =          require('../models/user')
 import BaseSvc      from '../services/_service'
 var svc             = new BaseSvc(User, logging)
 var cbSession       = Data.select.cb.session
+var Timezone        = require('node-google-timezone')
+Timezone.key(config.timezone.google.apiKey)
 
 
 var get = {
@@ -287,7 +289,23 @@ var save = {
       this.user = user
       updateAsIdentity.call(this, update, trackData, cb)
     })
-  }
+  },
+
+  changeLocationTimezone(locationData, cb) {
+    var { k, D } = locationData.geometry.location
+    Timezone.data(k, D, 1402629305, (e,r) => {
+      if (e) return cb(e)
+
+      var localization = {
+        location: locationData.formatted_address,
+        locationData: _.pick(locationData, 'address_components', 'geometry', 'name'),
+        timezone: r.raw_response.timeZoneName,
+        timezoneData: r.raw_response,
+      }
+
+      updateAsIdentity.call(this, {localization}, null, cb)
+    })
+  },
 
 }
 

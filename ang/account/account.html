@@ -44,7 +44,7 @@
 
     <div form-group>
       <label class="control-label" for="profileName">Full name </label>
-      <input id="profileName" name="name" form-control type="text" placeholder="Full name" ng-model="data.name" required ng-minlength="4" ng-minlength="60" ng-pattern="/\w+ \w+/" tabindex="2"
+      <input id="profileName" name="name" form-control type="text" placeholder="Full name" ng-model="data.name" required ng-minlength="4" ng-maxlength="60" ng-pattern="/\w+ \w+/" tabindex="2"
         ng-blur="updateName()"
       >
       <div class="error" ng-if="formGroup.showError(profileForm.name)" ng-messages="profileForm.name.$error">
@@ -87,6 +87,15 @@
     <span ng-if="!session.email">Enter an email address</span>
       to change your pic.
     </p>
+  </section>
+
+  <hr />
+
+  <section class="localization" ng-if="session.emailVerified">
+
+    <location-input data="data" on-select="updateLocation"></location-input>
+    {{data.timezone}}
+
   </section>
 
   <hr />

@@ -106,7 +106,7 @@ module.exports = {
   },
 
   updateBookmarks(user, bookmarks) {
-    if (!bookmarks || bookmarks !== Array) return "bookmarks array required to sort"
+    if (!bookmarks || bookmarks.constructor !== Array) return "bookmarks array required to sort"
   },
 
   verifyEmail(user, hash) {
