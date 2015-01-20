@@ -18,7 +18,7 @@
 		// CoreChat Methods
 		
 		this.login = function (token) {
-			console.log("logging in")
+			//console.log("logging in")
 			if (this._member) {
 				this.logout();
 			}
