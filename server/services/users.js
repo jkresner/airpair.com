@@ -220,7 +220,7 @@ var save = {
       svc.searchOne(Data.query.existing(email), null, (e,r) => {
         if (r) {
           delete this.session.anonData.email
-          return cb(svc.Forbidden(`${email} already registered`))
+          return cb(svc.Forbidden(`${email} already registered. Try password reset or google login?`))
         }
         updateAsIdentity.call(this, {email}, null, cb)
       })

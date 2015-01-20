@@ -1,9 +1,24 @@
 var util = require('../../shared/util')
 
+var knownNonErrors = [
+  'try google login',
+  'already registered',
+  'Max allowed tags reached',
+  'Max allowed bookmarks reached',
+  'Invalid email address',
+  'no user found',
+  'wrong password'
+]
+
 
 export function logError(e, user, req)
 {
   if (!e) return
+  if (e.message) {
+    for (var known of knownNonErrors) {
+      if (e.message.indexOf(known) != -1) return
+    }
+  }
 
   var msg = e.message || e
 
