@@ -8,7 +8,11 @@
     app.directive('memberInfo', function () {
         return {
             link: function ($scope, elem, attrs) {
-                $scope.member = cc.getMember(attrs.memberInfo);  
+                var unwatch = $scope.$watch("cc", function (cc) {
+                    if (!cc) return;
+                    $scope.member = cc.getMember(attrs.memberInfo);  
+                    unwatch();
+                }, true);
             }     
         };
     });
@@ -33,7 +37,7 @@
     app.service("corechat", function ($rootScope, $log, $timeout) {
         var $scope = $rootScope.$new(true),
             initialized,
-            cc, ref, transferFrom;
+            cc, ref, transferFrom, lastSession;
         
         $timeout(function () {
             $scope.initialize();
@@ -50,33 +54,25 @@
         
             
         $rootScope.$watch('session', function (session) {
+            console.log(session)
             if (!session) return;
             
-            var lastUID = localStorage.getItem("corechat:lastUID"),
-                lastMode = localStorage.getItem("corechat:mode");
-                
-            if (session.sessionID) localStorage.setItem("corechat:mode", "anonymous");
-            else {
-                localStorage.setItem("corechat:mode", "user");
-                localStorage.setItem("corechat:lastMode", lastMode);
-                localStorage.setItem("corechat:lastUID", "");
-            }
-                
-            if (lastUID && lastMode == "anonymous") {
-                transferFrom = lastUID;
-                localStorage.setItem("corechat:lastUID", "");
-            }
+            if (lastSession && lastSession.unauthenticated)
+                cc._ref.child("transfers").push({
+                   to: session._id,
+                   from: lastSession.sessionID
+                });
+            lastSession = session;
         });
         
         $scope.initialize = function () {
             if (initialized) return false;
             initialized = true
             
-            ref = new Firebase("https://airpair-chat-dev.firebaseio.com/"),
+            ref = new Firebase($rootScope.chatSettings.firebaseUrl),
             cc = new CoreChat(ref);
-            window.cc = cc;
-                
-            $scope.cc = cc;
+
+            $rootScope.cc = cc;
             $scope.ref = cc._ref;
             
             cc._watchForTokenOnWindow();    
@@ -195,7 +191,7 @@
                 });
                 
                 $rootScope.$watch('session', function (session) {
-                    if (!session || session.id !== id) return;
+                    if (!session || session._id !== id) return;
                     
                     var user = {
                       email: session.email || "",

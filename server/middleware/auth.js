@@ -125,16 +125,18 @@ var middleware = {
   setReturnTo: setSessionVarFromQuery('returnTo'),
 
   setFirebaseTokenOnSession(req, res, next) {
-    if (logging) $log(`mw.setFirebaseTokenOnSession ${req.sessionID} ${req.user}`.cyan)
+    if (logging) $log(`mw.setFirebaseTokenOnSession ${req.sessionID} ${req.user==null}`.cyan)
     if (!config.chat.on) return next()
-    var tokenGenerator = new FirebaseTokenGenerator(config.auth.firebase.secret)
+    if (isBot(req.header('user-agent'))) return next()
+
+    var tokenGenerator = new FirebaseTokenGenerator(config.chat.firebase.secret)
     var tokenData, trues, existingToken = req.session.firebaseToken, existingTokenData, existingTokenMetadata;
 
     if (existingToken) {
-      existingTokenMetadata = JWT.decode(existingToken,  config.auth.firebase.secret);
+      existingTokenMetadata = JWT.decode(existingToken, config.chat.firebase.secret);
       existingTokenData =  existingTokenMetadata.d;
     }
-
+    
     if (req.user) {
       var uid = req.user._id.toString()
 
@@ -160,10 +162,11 @@ var middleware = {
     }
 
     if (!existingTokenData || existingTokenData.uid != tokenData.uid || existingTokenMetadata.iat < new Date().getTime()) {
-      req.session.firebaseToken = tokenGenerator.createToken(tokenData);
+      var expires = parseInt('1' + (new Date().getTime()), 10);
+      req.session.firebaseToken = tokenGenerator.createToken(tokenData, {expires:expires});
     }
 
-    // $log('firebaseToken in setFirebaseTokenOnSession', req.session.firebaseToken)
+     $log('firebaseToken in setFirebaseTokenOnSession', req.session.firebaseToken)
     // console.log('session >', req.sessionID, req.session );
     next()
   }

@@ -124,6 +124,7 @@ var data = {
           var obj = util.selectFromObject(r, data.select.sessionFull)
           if (obj.roles && obj.roles.length == 0) delete obj.roles
           if (config.chat.on) obj.firebaseToken = ctx.session.firebaseToken
+          console.log("firebase tokens>", obj.firebaseToken, ctx.session.firebaseToken)
           data.select.setAvatar(obj)
           data.select.inflateTagsAndBookmarks(obj, cb)
           // if (ctx.user)
