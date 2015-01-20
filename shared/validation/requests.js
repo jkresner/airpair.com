@@ -29,6 +29,12 @@ var validation = {
 
     if (!update.type) return 'Request type required'
 
+    //-- Case when user comes back to edit a request without having put in tags yet
+    if (original.tags.length == 0 && update.tags.length == 0
+      && update.type
+      && !update.experience
+      && !update.brief) return
+
     if (!update.tags || !(update.tags.length > 0) )
       return 'Request must include at least one technology'
 

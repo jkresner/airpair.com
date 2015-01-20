@@ -825,5 +825,74 @@ module.exports = {
     "updatedAt" : "2014-02-05T12:09:13.000Z",
     "userId" : "52f229b71c67d1a4859d2065",
     "username" : "pentium10"
+  },
+
+
+  phlf: {
+    "_id" : "527d222f890b070200000030",
+    "availability" : "",
+    "bookMe" : {
+        "rate" : "120",
+        "rake" : "30",
+        "urlSlug" : "philfreo",
+        "urlBlog" : "http://philfreo.com/",
+        "noIndex" : false,
+        "enabled" : true,
+        "coupons" : [],
+        "creditRequestIds" : []
+    },
+    "brief" : "Depending on the language... would be interested in expert-level challenges or just helping beginners.",
+    "email" : "philfreo@gmail.com",
+    "gh" : {
+        "id" : 97612,
+        "username" : "philfreo",
+        "location" : "Mountain View, CA",
+        "blog" : "http://philfreo.com/",
+        "gravatar_id" : "529a6049c4ad4483dbc62add6da06e1a",
+        "followers" : 44
+    },
+    "gmail" : "philfreo@gmail.com",
+    "homepage" : "philfreo.com/",
+    "hours" : "3-5",
+    "in" : {
+        "id" : "45Qtrmu4IG",
+        "displayName" : "Phil Freo"
+    },
+    "karma" : 0,
+    "minRate" : 70,
+    "name" : "Phil Freo",
+    "pic" : "https://secure.gravatar.com/avatar/529a6049c4ad4483dbc62add6da06e1a",
+    "rate" : 110,
+    "so" : {
+        "id" : 137067,
+        "website_url" : "http://philfreo.com",
+        "link" : "137067/philfreo",
+        "reputation" : 9890,
+        "profile_image" : "https://www.gravatar.com/avatar/529a6049c4ad4483dbc62add6da06e1a?s=128&d=identicon&r=PG"
+    },
+    "stats" : {},
+    "status" : "ready",
+    "tags" : [
+        {
+            "_id" : "5149d9d37bc6da020000000a",
+            "name" : "Backbone.js",
+            "short" : "Backbone.js",
+            "soId" : "backbone.js",
+            "levels" : [
+                "beginner",
+                "intermediate",
+                "expert"
+            ],
+            "subscription" : {
+                "auto" : [],
+                "custom" : []
+            }
+        }
+    ],
+    "timezone" : "GMT-0800 (PST)",
+    "updatedAt" : "2014-12-04T16:34:01.094Z",
+    "userId" : "527d21f266a6f999a465fb1e",
+    "username" : "philfreo"
   }
+
 }

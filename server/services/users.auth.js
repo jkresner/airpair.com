@@ -30,7 +30,7 @@ function getCohortProperties(existingUser, session, done)
   var visit_last = new Date()
   var visits = [util.dateWithDayAccuracy()]
   var aliases = []  // we add the aliases after successful sign up
-  var firstRequest = firstRequest
+  var firstRequest = session.firstRequest
 
   // This is a new user (easy peasy)
   if (existingUser)
@@ -103,7 +103,7 @@ function upsertSmart(upsert, existing, cb) {
 
 function googleLogin(profile, errorCB, done) {
   if (this.user)
-    return errorCB(Error("You are already signed in with {this.user.email}. Not you <a href='/auth/logout'>logout</a>?"))
+    return errorCB(Error(`You are already signed in with ${this.user.email}. Not you <a href='/auth/logout'>logout</a>?`))
 
   // Stop logged in users hitting this endpoint
   // var loggedInUser = this.user

@@ -98,7 +98,7 @@ module.exports = {
     if (!type) return "bookmark type required"
   },
 
-  updateBookarks(user, bookmarks) {
+  updateBookmarks(user, bookmarks) {
     if (!bookmarks || tags.bookmarks !== Array) return "bookmarks array required to sort"
   },
 

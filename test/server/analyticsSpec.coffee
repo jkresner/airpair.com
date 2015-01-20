@@ -10,7 +10,7 @@ postUrl = "/v1/posts/#{postSlug}"
 # (3) Alias the users email against the sessionId on user creation
 
 
-module.exports = ->describe "Tracking: ", ->
+module.exports = -> describe "Tracking: ", ->
 
   @timeout(10000)
 
@@ -124,7 +124,7 @@ module.exports = ->describe "Tracking: ", ->
         .set('referer', 'http://twitter.co')
         .end (err, resp) ->
           spy = sinon.spy(analytics,'alias')
-          singup = getNewUserData('pgap')
+          singup = getNewUserData('pgup')
           http(global.app).post('/v1/auth/signup').send(singup)
             .set('cookie',cookie)
             .end (err, resp) ->
