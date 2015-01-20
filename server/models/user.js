@@ -64,6 +64,14 @@ var User = new Schema({
 
   bio: String, // Used for blog posts
 
+  localization:
+  {
+    location:           String,
+    locationData:       {},
+    timezone:           String,
+    timezoneData:       {}
+  },
+
   local :
   {
     changeEmailHash:        String,
