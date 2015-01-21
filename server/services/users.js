@@ -188,7 +188,7 @@ var save = {
 
   changeUsername(username, cb) {
     var userId = this.user._id
-    if (!username) return updateAsIdentity.call(this, {username}, null, cb)
+    if (!username || username == '') return updateAsIdentity.call(this, {username:null}, null, cb)
     svc.searchOne({username}, null, (e,r) => {
       if (r && !_.idsEqual(userId,r._id)) {
         return cb(svc.Forbidden(`username ${username} already taken`))

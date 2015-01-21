@@ -20,3 +20,13 @@ module.exports = -> describe "API: ", ->
           expect(user.localization.location).to.equal('Bengaluru, Karnataka, India')
           expect(user.localization.timezone).to.equal('India Standard Time')
           done()
+
+
+    it.only 'Can set and unset username', (done) ->
+      SETUP.addAndLoginLocalUserWithEmailVerified 'tybr', (tybr) ->
+        expect(tybr.username).to.be.undefined
+        PUT '/users/me/username', { username: "tybr#{timeSeed()}" }, {}, (u1) ->
+          expect(u1.username).to.exist
+          PUT '/users/me/username', { username: "" }, {}, (u2) ->
+            expect(u2.username).to.be.undefined
+            done()

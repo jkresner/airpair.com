@@ -118,6 +118,8 @@ module.exports = {
   brfi: { name: "Brian Fiester", email: "brian@testtest.com"},
   brif: { name: "Brian Fiester", email: "brian@airtest.com"},
 
+  tybr: { name: "Tyler Baur", email: "tb@airtest.com"},
+
   admin: {
     "_id" : "54551be15f221efa174238d1",
     "googleId" : "199992380360999999999",
