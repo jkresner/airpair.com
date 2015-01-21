@@ -16,6 +16,14 @@ angular.module('APInputs', ['ui.bootstrap','angularLoad'])
         details: '=?'
       },
       link: function(scope, element, attrs) {
+        var keymap = [
+          9, //tab:
+          13, //enter:
+          27, //esc:
+          38, //up:
+          40 //down:
+        ];
+
         var options = {
             types: ['(cities)'],
             componentRestrictions: {}
@@ -23,20 +31,36 @@ angular.module('APInputs', ['ui.bootstrap','angularLoad'])
 
         var mapInitialize = function ()
         {
+          var previousLocation = scope.data.location
           var input = element.find('input')[0]
 
-          scope.gPlace = new google.maps.places.Autocomplete(input, options);
+          scope.gPlace = new google.maps.places.Autocomplete(input, options)
 
-          google.maps.event.addListener(scope.gPlace, 'place_changed', function() {
-            scope.$apply(function() {
-              scope.details = scope.gPlace.getPlace()
+          var selectPlace = function() {
+            scope.details = scope.gPlace.getPlace()
+
+            // console.log('details', scope.details)
+            if (!scope.details || !scope.details.geometry) {
+              // var suggestion_selected = $(".pac-item-selected").length > 0
+              // var first_text = $(".pac-container .pac-item:first").text()
+              alert('Please click on an option from the list that appears as you type to save timezone')
+            }
+            else
+            {
               scope.data.location = $(input).val()
-
+              previousLocation = scope.data.location
               if (scope.onSelect)
                 scope.onSelect(scope.details)
+            }
+          }
 
-            })
-          })
+          google.maps.event.addListener(scope.gPlace, 'place_changed', () => scope.$apply(selectPlace))
+
+          scope.onKeydown = function($event) {
+            // console.log('onKeydown', $event.keyCode, $(input).val(), scope.data, previousLocation)
+            if ($event.keyCode == 9 && $(input).val() != previousLocation)
+              alert('Please click on an option from the list that appears as you type to save timezone')
+          }
 
           delete window.mapInitialize
         }
