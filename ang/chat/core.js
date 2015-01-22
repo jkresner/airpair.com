@@ -388,6 +388,7 @@
 					this.name = memberData.name;
 					this.avatar = memberData.avatar;
 					this.tags = memberData.tags || {};	
+					this.status = memberData.status;
 				}).bind(this));
 			}
 		}).bind(this));
@@ -492,6 +493,7 @@
 						rawMessage.to, 
 						rawMessage.from, 
 						rawMessage.body,
+						rawMessage.timestamp,
 						"room");
 						
 				this.history.push(message);
@@ -533,11 +535,12 @@
 	
 	// Message(to, from, body)
 
-	var MessageBase = function (cc, to, from, body, type) {
+	var MessageBase = function (cc, to, from, body, timestamp, type) {
 		this.to = to
 		this.from = from;
 		this.body = body;
 		this.type = type;
+		this.timestamp = timestamp || "";
 		
 		this._save = function () {
 			cc._outboxRef
@@ -627,7 +630,7 @@
 		
 		this.send = function (body) {
 			var message;
-			message = new Message(cc, this.id, cc._member.id, body, this.type);
+			message = new Message(cc, this.id, cc._member.id, body, "", this.type);
 			message._save();
 		};
 	};
