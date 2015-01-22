@@ -199,11 +199,14 @@
                     room.on("message", function (err, message) {
                         $log.log("Got a message", message, room.id);
                     });
+
                 });
 
                 member.on("recieved_notification", function (err, notification) {
                     // don't increment notificationsCount if the notification is in this room
-                   if (notification.info.to == $scope.activeRoom) {
+                    var chatNavOpen = angular.element("nav#chat").hasClass('collapsed');
+                    console.log( 'recieved_notification', chatNavOpen);
+                    if (notification.info.to == $scope.activeRoom && chatNavOpen) {
                       notification.acknowledge();
                     } else {
                       $scope.selfmember.notificationsCount++;
