@@ -1,7 +1,8 @@
 <header>
   <a track-click="chatNav" class="icon">
     <img id="chatNavToggle" track-click="chatNav" data="{{ toggleAction }}" track-click-if="!session._id" ng-click="chatNav.toggle()" src="/static/img/css/chat/toggle.png" />
-    <i>{{corechat.selfmember.notificationsCount || 0}}</i>
+    <i ng-show="corechat.selfmember.notificationsCount>0">{{corechat.selfmember.notificationsCount}}</i>
+    <!-- {{corechat.selfmember.notificationsCount}} -->
   </a>
   <span ng-if="corechat.activeRoom">
     {{corechat.getRoom(corechat.activeRoom).info.name}}
@@ -11,6 +12,7 @@
   </span>
 </header>
 
+<!-- main is hidden with .collapse on nav#chat -->
 <section class="main">
-  <div id="chat-widget" chat-widget></div>
+  <chat-widget></chat-widget>
 </section>

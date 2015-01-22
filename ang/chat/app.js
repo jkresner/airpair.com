@@ -1,26 +1,23 @@
 ;(function () {
-    var cc, ref, app = angular.module("chat-widget", []);
+    require('../../public/lib/angular-scroll-glue/src/scrollglue.js');
+    var cc, ref, app = angular.module("chat-widget", ['luegg.directives']);
 
     app.config(function($logProvider){
         $logProvider.debugEnabled(false);
     });
 
-    app.directive('memberInfo', function () {
+    app.directive('memberInfo', function (corechat) {
         return {
             link: function ($scope, elem, attrs) {
-                var unwatch = $scope.$watch("cc", function (cc) {
-                    if (!cc) return;
-                    $scope.member = cc.getMember(attrs.memberInfo);
-                    unwatch();
-                }, true);
+                $scope.member = corechat.getMember(attrs.memberInfo);
             }
         };
     });
 
-    app.directive('roomInfo', function () {
+    app.directive('roomInfo', function (corechat) {
         return {
             link: function ($scope, elem, attrs) {
-                $scope.room = cc.getRoom(attrs.roomInfo);
+                $scope.room = corechat.getRoom(attrs.roomInfo);
             }
         };
     });
@@ -34,7 +31,7 @@
         };
     });
 
-    app.service("corechat", function ($rootScope, $log, $timeout) {
+    app.service('corechat', function ($rootScope, $log, $timeout) {
         var $scope = $rootScope.$new(true),
             initialized,
             cc, ref, transferFrom, lastSession;
@@ -87,6 +84,7 @@
                 $scope.activeRoom = roomId;
                 angular.forEach(cc._member.notificationsByRoom[roomId], function (notification) {
                    notification.acknowledge();
+                   --$scope.selfmember.notificationsCount;
                 });
             };
 
@@ -187,7 +185,12 @@
                 });
 
                 member.on("recieved_notification", function (err, notification) {
-                   if (notification.info.to == $scope.activeRoom) notification.acknowledge();
+                    // don't increment notificationsCount if the notification is in this room
+                   if (notification.info.to == $scope.activeRoom) {
+                      notification.acknowledge();
+                    } else {
+                      $scope.selfmember.notificationsCount++;
+                    }
                 });
 
                 $rootScope.$watch('session', function (session) {
@@ -214,6 +217,7 @@
         	}
         };
 
+        $scope.initialize();
         return $scope;
     });
 

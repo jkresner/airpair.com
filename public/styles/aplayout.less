@@ -185,7 +185,7 @@ main {
   }
 }
 
-nav#side, nav#chat {
+nav#side {
   display:block;
   position:fixed;
   height:auto;
@@ -376,121 +376,13 @@ nav#side.collapse {
   #navAbout { margin-top:30px }
 }
 
-nav#side.collapse, nav#chat.collapse {
+nav#side.collapse {
   width:40px;
   section.main {
     display:none
   }
 }
 
-nav#chat {
-  font-size:13px;
-  color:@gray;
-  background:@reallypalegray;
-  bottom:1;
-  right:0;
-  width:@sideChatWidth;
-  border-left:solid 1px @darkblue;
-
-  .online {
-    border:solid 1px green;
-    padding:1px;
-  }
-
-  h4 {
-    text-align:center;
-  }
-
-  p {
-    text-align:center;
-    margin:20px;
-  }
-
-  header {
-    img {
-      cursor:pointer;
-      -webkit-filter:brightness(1.5);
-    }
-    img:hover { -webkit-filter:brightness(2.5); }
-
-    span {
-      border-left:1px solid @gray;
-      padding-left:8px;
-      margin-left:4px;
-      display:inline-block;
-    }
-
-   div {
-    position:absolute;
-    margin-top:-2;
-    margin-left:12;
-    background:@orange;
-    color:white;
-    border-radius:7;
-    width:15;
-    height:15;
-    text-align:center;
-    font-size:10px;
-    font-weight:bold;
-    cursor:pointer;
-    z-index:10
-   }
-  }
-
-  ul {
-    text-align:center;
-    background:@lightblue;
-    margin:20px 0 0 0;
-    padding:0;
-    li {
-      a { color:#ce5424 }
-      padding:10px;
-      border-top:solid 2px white;
-      font-weight:bold;
-      list-style:none;
-      margin:0
-    }
-  }
-
-  table {
-    padding:0;margin:0;font-size:10px;
-    color:black;
-
-    tr td:first-child { font-weight:bold }
-    td { padding:6px 2px 4px 7px }
-    time { font-size:8px;float:right;
-      color:gray;padding-top:2px }
-  }
-
-  input {
-    // position:absolute;bottom:0;width:100%;
-    // height:40px;padding:5px
-  }
-
-  @media only screen and (max-width: 734px) {
-    display:none;
-  }
-}
-
-
-nav#chat.collapse {
-  background:@palegray;
-  width:40px;
-  border-left:none;
-  section {
-    text-align:center;
-    padding:14px 1px;
-    figure {
-      margin-top:10px;
-      img {
-        width:28px;
-        height:28px;
-        border:none;
-        margin:0;
-      }
-    }
-  }
-}
 
 
 .modal-dialog {

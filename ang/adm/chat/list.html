@@ -1,7 +1,6 @@
 <section id="chat">
 
   <h3>Chat </h3>
-    <div chat-widget ng-hide="true"></div>
     <h2>Users by Page</h2>
     <div ng-repeat="(page, members) in corechat.admin.members.byPage">
         <div ng-show="members">
@@ -9,9 +8,9 @@
             <div ng-repeat="(memberId, _) in members">
                 <span member-info="{{memberId}}">{{member.name || "Anonymous User"}} <span am-time-ago="member.page.timestamp"></span></span><button ng-click="setCurrentUser(memberId)">Start Chatting</button>
             </div>
-        </div> 
+        </div>
     </div>
-    
+
     <h2>Rooms by Last Message</h2>
     <div ng-repeat="(timestamp, room) in corechat.admin.rooms.byLastMessage">
         <span ng-show="getRoomType(room) == 'pair'">
@@ -25,7 +24,7 @@
             {{room.id}}
         </span>
     </div>
-    
+
     <h2>All Rooms</h2>
     <div ng-repeat="room in allRooms">
         <button ng-click="toggleHistory=!toggleHistory">{{room.info.name}}</button>
@@ -39,5 +38,4 @@
         </div>
     </div>
 
-    <div id="chat-widget" style="border:solid 1px green; position: fixed; top: 0px; right: 200px; width: 300px; background-color: #ccc" chat-widget></div>    
 </section>

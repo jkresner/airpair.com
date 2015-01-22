@@ -1,46 +1,60 @@
+<!-- This is the chat widget directive template -->
+
+
+
 <!-- when not logged in / connecting -->
-<div ng-show="!corechat.selfmember.loggedIn">
+<div ng-if="!corechat.selfmember.loggedIn" style="white-space:nowrap;">
   logging in...
 </div>
 
 <!-- connected -->
-<div ng-show="corechat.selfmember.loggedIn">
+<div ng-if="corechat.selfmember.loggedIn">
 
-    <!-- list out rooms/conversations when activeRoom is empty -->
-    <div ng-if="!corechat.activeRoom" ng-repeat="(roomId, room) in corechat.selfmember.rooms">
+  <!-- list out rooms/conversations when activeRoom is empty -->
+  <div ng-if="!corechat.activeRoom" style="overflow:auto">
 
-        <button ng-click="corechat.setActiveRoom(roomId)">{{room.info.name || "Anonymous User"}} ({{corechat.selfmember.notificationsCountByRoom[roomId] || 0}})</button>
+    <div id="roomList">
 
+      <!-- item here -->
+      <div class="item" ng-repeat="(roomId, room) in corechat.selfmember.rooms" ng-click="corechat.setActiveRoom(roomId)" ng-class="{green:corechat.selfmember.notificationsCountByRoom[roomId]>0}" ng-class-odd="odd">
+        <div class="left">
+            <img class="avatar" ng-src="{{member.avatar}}" ng-if="member.avatar" />
+            <span class="initials" ng-show="!member.avatar">ABC</span>
+        </div>
+        <div class="right" member-info="{{message.from}}">
+          <b>{{room.info.name || "Anonymous User"}}</b><br />{{message.body}}
+        </div>
+      </div>
     </div>
 
+  </div>
 
 
-
-
-    <!-- list out messages when in a room -->
-    <div ng-if="corechat.activeRoom" style="overflow:auto">
-        <!-- container for overflow -->
-        <div id="chatMessages">
-            <!-- message item here -->
-            <div class="message" ng-repeat="message in corechat.selfmember.rooms[corechat.activeRoom].history">
-              <div class="left">
-                  <img class="avatar" ng-src="{{member.avatar}}" ng-if="member.avatar" />
-              </div>
-              <div class="right" member-info="{{message.from}}">
-                  <b>{{member.name || "Anonymous User"}}:</b><br />
-                  {{message.body}}
-              </div>
-            </div>
+  <!-- list out messages when in a room -->
+  <div ng-if="corechat.activeRoom" style="overflow:auto">
+    <!-- container for overflow -->
+    <div id="chatMessages" scroll-glue="true">
+      <!-- message item here -->
+      <div class="item" ng-repeat="message in corechat.selfmember.rooms[corechat.activeRoom].history" ng-class-odd="odd">
+        <div class="left">
+            <img class="avatar" ng-src="{{member.avatar}}" ng-if="member.avatar" />
+            <span class="initials" ng-show="!member.avatar">ABC</span>
         </div>
-
-        <!-- input mechanism for new message -->
-        <div id="chatInput">
-            <form name="newMessage">
-                <input type="text" ng-model="newMessage.body" placeholder="ask a question" />
-                <button type="submit" ng-show="newMessage.body" ng-click="corechat.sendMessageToRoom(corechat.activeRoom, newMessage.body); newMessage.body=''">Send</button>
-            </form>
+        <div class="right" member-info="{{message.from}}">
+          <!-- <b>{{member.name || "Anonymous User"}}:</b><br /> -->
+          {{message.body}}
         </div>
+      </div>
     </div>
+
+    <!-- input mechanism for new message -->
+    <div id="chatInput">
+      <form name="newMessage">
+        <input type="text" ng-model="newMessage.body" placeholder="ask a question" />
+        <button type="submit" ng-show="newMessage.body" ng-click="corechat.sendMessageToRoom(corechat.activeRoom, newMessage.body); newMessage.body=''">Send</button>
+      </form>
+    </div>
+  </div>
 
 </div>
 
@@ -51,11 +65,6 @@
 
 
 <!--
-
-
-  - what are admins?
-  - what are notifications?
-
 
 <div ng-show="!corechat.selfmember.loggedIn">
     Chat not logged in.

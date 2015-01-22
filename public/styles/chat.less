@@ -1,83 +1,279 @@
+@sideChatWidth:220px; // this is duplicated in aplayout.less (used in div.main-wrap)
+@headerHeight:40px; // same here
 
+nav#chat {
 
-
-
-nav#chat header {
-  white-space: nowrap;
-  height: 38px;
-}
-
-
-#chatMessages {
-  overflow: auto;
-  width: 100%;
-
-  position: absolute;
-  top: 38px;
-  left: 0;
+  display:block;
+  position:fixed;
+  height:auto;
+  top:@headerHeight;
+  bottom:0;
+  margin:0;
   right: 0;
-  bottom: 30px;
 
-  .message {
-    clear: both;
-    border-bottom: 1px solid #ececec;
+  background-color: #fff;
+  header {
+    white-space: nowrap;
+    height: 38px;
+  }
 
-    .left {
 
-      border-right: 1px solid #ececec;
-      width: 55px;
-      padding: 10px 7px;
-      float: left;
+  font-size:13px;
+  color:@gray;
+  // background:@reallypalegray;
+  bottom:1;
+  right:0;
+  width:@sideChatWidth;
+  border-left:solid 1px @darkblue;
 
-      .avatar {
-        height: 40px;
-        width: 40px;
-        border-radius: 20px;
-      }
+  .online {
+    border:solid 1px green;
+    padding:1px;
+  }
+
+  h4 {
+    text-align:center;
+  }
+
+  p {
+    text-align:center;
+    margin:20px;
+  }
+
+  header {
+    background:@blackgray;
+    height:35px;
+    padding:5px 8px;
+    margin:0;
+    color:white;
+    font-size:16px;
+    border-bottom:1px solid @gray;
+
+    img { cursor:pointer;
+      filter: brightness(1);
+      -webkit-filter: brightness(1);
     }
-    .right {
-      float: left;
-      padding: 10px;
-
+    img:hover {
+      filter: brightness(1.5);
+      -webkit-filter: brightness(1.5);
     }
 
+    span {
+      border-left:1px solid @gray;
+      padding-left:8px;
+      margin-left:4px;
+      display:inline-block;
+      text-transform:uppercase;
+      font-size: 12px;
+      font-weight: normal;
+    }
 
+   // div {
+   //  position:absolute;
+   //  margin-top:-2;
+   //  margin-left:12;
+   //  background:@orange;
+   //  color:white;
+   //  border-radius:7;
+   //  width:15;
+   //  height:15;
+   //  text-align:center;
+   //  font-size:10px;
+   //  font-weight:bold;
+   //  cursor:pointer;
+   //  z-index:10
+   // }
 
   }
-}
 
-#chatInput {
-  clear: both;
+  ul {
+    text-align:center;
+    background:@lightblue;
+    margin:20px 0 0 0;
+    padding:0;
+    li {
+      a { color:#ce5424 }
+      padding:10px;
+      border-top:solid 2px white;
+      font-weight:bold;
+      list-style:none;
+      margin:0
+    }
+  }
+
+  table {
+    padding:0;margin:0;font-size:10px;
+    color:black;
+
+    tr td:first-child { font-weight:bold }
+    td { padding:6px 2px 4px 7px }
+    time { font-size:8px;float:right;
+      color:gray;padding-top:2px }
+  }
 
   input {
-    border: solid 1px #ececec;
-    border-width: 1px 0 0 0;
-    margin-left: -10px; // #fix: not sure where this 10px left margin/padding is coming from
+    // position:absolute;bottom:0;width:100%;
+    // height:40px;padding:5px
+  }
 
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    padding: 0px 50px 0 5px;
-    height: 30px;
-    float: left;
-    width: 100%;
-
-    &:focus {
-      outline: none;
+  // for badge icon
+  a.icon {
+    i {
+      position: absolute;
+      top: 2px;
+      left: 24px;
+      opacity: 0.9;
+      background: @orange;
+      border-radius: 7px;
+      /* width: 14px; */
+      height: 14px;
+      line-height: 12px;
+      float: right;
+      font-style: normal;
+      font-size: 9px;
+      font-weight: bold;
+      color: white;
+      text-align: center;
+      border: 1px solid #ccc;
+      padding: 0px 4px 0px 4px;
     }
   }
-  button {
-    float: right;
-    position: absolute;
-    bottom: 3px;
-    right: 5px;
-    background: none;
-    border: none;
-    font-weight: bold;
 
-    &:focus {
-      outline: none;
+  // media queries
+  @media only screen and (max-width: 734px) {
+    display:none;
+  }
+
+  #roomList {
+    .item {
+      width: @sideChatWidth;
+      min-height: 50px;
+      clear: both;
+      white-space: nowrap;
+      border-bottom: 1px solid #ececec;
+      cursor: pointer;
+
+      .left {
+        min-height: 50px;
+        border-right: 1px solid #ececec;
+        width: 55px;
+        padding: 10px 7px;
+        float: left;
+
+        .avatar {
+
+          height: 40px;
+          width: 40px;
+          border-radius: 20px;
+        }
+      }
+      .right {
+        float: left;
+        padding: 10px;
+
+      }
+    }
+    .item.green {
+      background-color: #EAF4F2;
+    }
+    .item.odd {
+      background-color: #fcfcfc;
+    }
+
+  }
+
+  // container for messages
+  #chatMessages {
+    overflow: auto;
+    width: 100%;
+
+    position: absolute;
+    top: 35px;
+    left: 0;
+    right: 0;
+    bottom: 30px;
+
+    .item {
+      width: @sideChatWidth;
+      white-space: nowrap;
+      clear: both;
+      border-bottom: 1px solid #ececec;
+
+      .left {
+        min-height: 50px;
+        border-right: 1px solid #ececec;
+        width: 55px;
+        padding: 10px 7px;
+        float: left;
+
+        .avatar {
+
+          height: 40px;
+          width: 40px;
+          border-radius: 20px;
+        }
+      }
+      .right {
+        float: left;
+        padding: 10px;
+
+      }
+
+
+
+    }
+    .item.odd {
+      background-color: #fcfcfc;
     }
   }
+
+  // container for input mechanism
+  #chatInput {
+    clear: both;
+    width: @sideChatWidth;
+
+    input {
+      border: solid 1px #ececec;
+      border-width: 1px 0 0 0;
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      padding: 0px 50px 0 5px;
+      height: 30px;
+      float: left;
+      width: 100%;
+
+      &:focus {
+        outline: none;
+      }
+    }
+
+    // submit 'button'
+    button {
+      float: right;
+      position: absolute;
+      bottom: 3px;
+      right: 5px;
+      background: none;
+      border: none;
+      font-weight: bold;
+
+      &:focus {
+        outline: none;
+      }
+    }
+  }
+
+}
+
+nav#chat.collapse {
+  background:@palegray;
+  width:40px;
+  border-left:none;
+
+  // // hide main section while .collapse'd
+  // section.main {
+  //   display: none;
+  // }
 
 }
