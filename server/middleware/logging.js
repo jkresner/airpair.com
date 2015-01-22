@@ -41,7 +41,7 @@ var middleware = {
         $log(`errorHandle ${uid} ${req.method} ${req.url}`.red, JSON.stringify(req.body).white, (e.message || e).magenta)
         $error(e, req.user, req)
       } else {
-        $log((e.message || e).magenta)
+        $log(req.url.white + ' ' +(e.message || e).magenta)
       }
 
       if (e.fromApi)

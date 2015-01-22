@@ -31,16 +31,14 @@
 
 <p>Thanks to you wonderful 3000 experts that applied to help folks over AirPair in 2014 and welcome if you are new to AirPair!</p>
 
-<p>Applications to become an expert in 2015 are opening in the 2nd week of February. At that, we'll also be re-releasing many of the expert parts of AirPair.com re-imagined for a more awesome experience than ever before.</p>
+<p>Applications to become an expert in 2015 are opening in the 2nd week of February. At that time, we'll also be re-releasing many of the expert parts of AirPair.com re-imagined for a more awesome experience than ever before.</p>
 
 
 <h2>Join the AirPair Expert Maillist</h2>
 
-<p>We listened to your feedback, and to make things even more relevant, will no longer be sending mass emails to both customers and experts. Hence the create of our experts only only mail list. We have many updates to share through February and March about site features that will help you be more successful on the AirPair platform and ultimately work with more customers.</p>
+<p>We listened to your feedback, and to make things even more relevant, will no longer be sending mass emails to both customers and experts. Hence the creation of our experts only only mail list. We have many updates to share through February and March about site features that will help you be more successful on the AirPair platform and ultimately work with more customers.</p>
 
-<h3>Steps to join the AirPair Expert Maillist</h3>
-
-To join, simply provide a short bio and verify your email address. We will email you early in Feb inviting you back to create your full profile.
+<p>To join, simply provide a short bio and verify your email address. We will email you early in Feb inviting you back to create your full profile.</p>
 
 <div class="form">
 
@@ -58,6 +56,10 @@ To join, simply provide a short bio and verify your email address. We will email
           <div ng-message="required">Required</div>
           <div ng-message="minlength">Minimum 120 characters</div>
           <div ng-message="maxlength">Maximum 255 characters</div>
+        </div>
+        <div style="width:100px;float:right;margin:0 0 10px 0">
+          <span ng-if="bioForm.bio.$viewValue.length < 120 || bioForm.bio.$viewValue.length > 255" style="color:red">{{ bioForm.bio.$viewValue.length}} Characters</span>
+          <span ng-if="data.bio.length > 120 && data.bio.length < 255" style="color:green">{{ data.bio.length}} Characters</span>
         </div>
       </div>
       <alert ng-repeat="alert in profileAlerts" type="{{alert.type}}"><span ng-bind-html="alert.msg | html"></span></alert>
@@ -100,3 +102,6 @@ To join, simply provide a short bio and verify your email address. We will email
 </section>
 
 </div>
+
+<br /><br />
+<p>** If you want to be pushed to the top of the queue, please post issues you notice with the site on our <a href="https://github.com/airpair/airpair-com-v1-issue-tracker/issues" target="_blank">issue tracking github repo</a></p>

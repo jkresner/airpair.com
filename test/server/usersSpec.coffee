@@ -22,7 +22,7 @@ module.exports = -> describe "API: ", ->
           done()
 
 
-    it.only 'Can set and unset username', (done) ->
+    it 'Can set and unset username', (done) ->
       SETUP.addAndLoginLocalUserWithEmailVerified 'tybr', (tybr) ->
         expect(tybr.username).to.be.undefined
         PUT '/users/me/username', { username: "tybr#{timeSeed()}" }, {}, (u1) ->
