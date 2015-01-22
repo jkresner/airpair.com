@@ -9,6 +9,13 @@ angular.module("APChatNav", [])
         element.bind('mouseenter', function() {
           element.removeClass('collapse');
           storage('chatNavOpen', 'true');
+          // if( corechat.activeRoom ) {
+          //   console.log( 'opening with a activeRoom, clearing notifications' );
+          //   angular.forEach(corechat._member.notificationsByRoom[corechat.activeRoom], function (notification) {
+          //      notification.acknowledge();
+          //      // --$scope.selfmember.notificationsCount;
+          //   });
+          // }
         });
         element.bind('mouseleave', function() {
           element.addClass('collapse');

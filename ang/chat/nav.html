@@ -15,14 +15,26 @@
 
     <div id="roomList">
 
-      <!-- item here -->
+      <!-- don't show dupe admins in user rooms -->
+      <div class="item" ng-repeat="admin in corechat.getMembersByTag('admin')" ng-click="corechat.setActiveRoomAsMember(admin)" ng-class-odd="'odd'">
+        <div class="left">
+          <img class="avatar" ng-src="{{admin.avatar || 'http://0.gravatar.com/avatar/'}}" ng-if="admin.avatar" />
+        </div>
+        <div class="right">
+          <b>{{admin.name || ""}}</b><br />
+          {{message.body}}
+          <!-- most message -->
+          <!-- most recent message timestamp -->
+        </div>
+      </div>
+
       <div class="item" ng-repeat="(roomId, room) in corechat.selfmember.rooms" ng-click="corechat.setActiveRoom(roomId)" ng-class="{green:corechat.selfmember.notificationsCountByRoom[roomId]>0}" ng-class-odd="'odd'">
         <div class="left">
-            <img class="avatar" ng-src="{{member.avatar}}" ng-if="member.avatar" />
-            <span class="initials" ng-show="!member.avatar">AP</span>
+          <img class="avatar" ng-src="{{member.avatar}}" ng-if="member.avatar" />
+          <span class="initials" ng-show="!member.avatar"></span>
         </div>
         <div class="right" member-info="{{message.from}}">
-          <b>{{room.info.name || "Anonymous User"}}</b><br />{{message.body}}
+          <b>{{room.info.name || ""}}</b><br />{{message.body}}
         </div>
       </div>
     </div>
@@ -37,8 +49,8 @@
       <!-- message item here -->
       <div class="item" ng-repeat="message in corechat.selfmember.rooms[corechat.activeRoom].history" ng-class-odd="'odd'">
         <div class="left">
-            <img class="avatar" ng-src="{{member.avatar}}" ng-if="member.avatar" />
-            <span class="initials" ng-show="!member.avatar">AP</span>
+          <img class="avatar" ng-src="{{member.avatar}}" ng-if="member.avatar" />
+          <span class="initials" ng-show="!member.avatar">AP</span>
         </div>
         <div class="right" member-info="{{message.from}}">
           <!-- <b>{{member.name || "Anonymous User"}}:</b><br /> -->
