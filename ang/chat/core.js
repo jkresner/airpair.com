@@ -196,6 +196,8 @@
 			this.trigger("rooms_updated", null, this.rooms);
 		}).bind(this);
 		
+		// The following is now done server-side
+		/*
 		this._updateMember = (function (memberSnapshot) {
 			var memberId = memberSnapshot.key(),
 				memberRaw = memberSnapshot.val(),
@@ -212,8 +214,6 @@
 					
 				delete this.members.byStatus[lastMemberRaw.status][memberId];
 			}
-				
-			//this.members.byPage[memberPage][memberId] = true;
 					
 			if (!this.members.byStatus[memberRaw.status])
 				this.members.byStatus[memberRaw.status] = {};
@@ -222,7 +222,7 @@
 			
 			this._lastMembers[memberId] = memberRaw;
 			this.trigger("members_updated", null, this.members);
-		}).bind(this);
+		}).bind(this);*/
 		
 		this._updateByPage = (function (action, pageSnapshot) {
 			pageSnapshot.forEach((function (memberSnapshot) {
@@ -251,8 +251,8 @@
 		
 		roomsByRidRef.on("child_added", this._addRoom);
 	
-		membersByMidRef.on("child_added", this._updateMember);
-		membersByMidRef.on("child_changed", this._updateMember);
+		//membersByMidRef.on("child_added", this._updateMember);
+		//membersByMidRef.on("child_changed", this._updateMember);
 		
 		roomsByLastMessage.on("child_added", this._updateRoom);
 		roomsByLastMessage.on("child_moved", this._updateRoom);
