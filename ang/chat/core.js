@@ -29,6 +29,7 @@
 					if (member.auth.roles && member.auth.roles.admin == true) {
 						this.admin = new AdminInterface(this);
 					}
+					console.log("Logged in as", member.uid)
 					this._member = new SelfMember(this, member.uid, member);
 					
 					var lastUID = localStorage.getItem("corechat:uid");
@@ -155,6 +156,7 @@
 		this._events = this._events.concat(["members_updated", "rooms_updated"]);
 		
 		var membersByMidRef = cc._ref.child("members/byMID"),
+			membersByPage = cc._ref.child("members/byPage"),
 			roomsByRidRef = cc._ref.child("rooms/byRID"),
 			roomsByLastMessage = cc._ref.child("rooms/byLastMessage");
 			
@@ -208,14 +210,10 @@
 				lastMemberPage = lastMemberRaw.page && lastMemberRaw.page? 
 					lastMemberRaw.page.url.replace(/-/g, '/').replace(/\^/g, '#') : "Unknown";
 					
-				delete this.members.byPage[lastMemberPage][memberId];
 				delete this.members.byStatus[lastMemberRaw.status][memberId];
 			}
-			
-			if (!this.members.byPage[memberPage])
-				this.members.byPage[memberPage] = {};
 				
-			this.members.byPage[memberPage][memberId] = true;
+			//this.members.byPage[memberPage][memberId] = true;
 					
 			if (!this.members.byStatus[memberRaw.status])
 				this.members.byStatus[memberRaw.status] = {};
@@ -226,6 +224,31 @@
 			this.trigger("members_updated", null, this.members);
 		}).bind(this);
 		
+		this._updateByPage = (function (action, pageSnapshot) {
+			pageSnapshot.forEach((function (memberSnapshot) {
+				memberSnapshot.ref().on("value", this._updateMemberByPage.bind(this, action, pageSnapshot))	
+			}).bind(this));
+		}).bind(this);
+		
+		this._updateMemberByPage = (function (action, pageSnapshot, memberSnapshot) {
+			var page = pageSnapshot.key(),
+				memberId = memberSnapshot.key();
+				
+			cc._callbackWrap((function () {
+				if (action == "set") {
+					if (!this.members.byPage[page])
+						this.members.byPage[page] = {};
+						
+					this.members.byPage[page][memberId] = cc.getMember(memberId);
+				} else {
+					delete this.members.byPage[page][memberId];
+					
+					if (!Object.keys(this.members.byPage[page]).length)
+						delete this.members.byPage[page];
+				}
+			}).bind(this));
+		}).bind(this);
+		
 		roomsByRidRef.on("child_added", this._addRoom);
 	
 		membersByMidRef.on("child_added", this._updateMember);
@@ -233,6 +256,9 @@
 		
 		roomsByLastMessage.on("child_added", this._updateRoom);
 		roomsByLastMessage.on("child_moved", this._updateRoom);
+		
+		membersByPage.on("child_added", this._updateByPage.bind(this, "set"));
+		membersByPage.on("child_removed", this._updateByPage.bind(this, "remove"));
 	}
 	
 	var AdminInterface = function (cc) {
@@ -356,10 +382,12 @@
 			this.exists = !!memberData;
 			
 			if (this.exists) {
-				this.email = memberData.email;
-				this.name = memberData.name;
-				this.avatar = memberData.avatar;
-				this.tags = memberData.tags || {};
+				cc._callbackWrap((function () {
+					this.email = memberData.email;
+					this.name = memberData.name;
+					this.avatar = memberData.avatar;
+					this.tags = memberData.tags || {};	
+				}).bind(this));
 			}
 		}).bind(this));
 		
@@ -449,7 +477,9 @@
 			.on("value", (function (nameSnapshot) {
 				var name = nameSnapshot.val();
 				
-				this.info = this.getMetadata();
+				cc._callbackWrap((function () {
+					this.info = this.getMetadata();
+				}).bind(this));
 			}).bind(this));
 			
 		this._ref
@@ -479,11 +509,15 @@
 				
 				this.trigger("member_joined", null, member);
 				
-				this.info = this.getMetadata();
+				cc._callbackWrap((function () {
+					this.info = this.getMetadata();
+				}).bind(this));
 			}).bind(this));
 			
 		
-		this.info = this.getMetadata();
+		cc._callbackWrap((function () {
+			this.info = this.getMetadata();
+		}).bind(this));
 	};
 	
 	var Room = function (cc) {
@@ -609,14 +643,14 @@
 		var lastPage;
 		
 		this._initializeStatusCheck = function () {
-			this._changeStatus("online");
-			
 			cc._ref
 				.child("members/byMID")
 				.child(this.id)
 				.child("status")
 				.onDisconnect()
 				.set("offline");
+				
+			this._changeStatus("online");
 			
 			var body = document.getElementsByTagName("body")[0];
 			
