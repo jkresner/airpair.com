@@ -16,7 +16,7 @@
     <div id="roomList">
 
       <!-- item here -->
-      <div class="item" ng-repeat="(roomId, room) in corechat.selfmember.rooms" ng-click="corechat.setActiveRoom(roomId)" ng-class="{green:corechat.selfmember.notificationsCountByRoom[roomId]>0}" ng-class-odd="odd">
+      <div class="item" ng-repeat="(roomId, room) in corechat.selfmember.rooms" ng-click="corechat.setActiveRoom(roomId)" ng-class="{green:corechat.selfmember.notificationsCountByRoom[roomId]>0}" ng-class-odd="'odd'">
         <div class="left">
             <img class="avatar" ng-src="{{member.avatar}}" ng-if="member.avatar" />
             <span class="initials" ng-show="!member.avatar">AP</span>
@@ -35,7 +35,7 @@
     <!-- container for overflow -->
     <div id="chatMessages" scroll-glue="true">
       <!-- message item here -->
-      <div class="item" ng-repeat="message in corechat.selfmember.rooms[corechat.activeRoom].history" ng-class-odd="odd">
+      <div class="item" ng-repeat="message in corechat.selfmember.rooms[corechat.activeRoom].history" ng-class-odd="'odd'">
         <div class="left">
             <img class="avatar" ng-src="{{member.avatar}}" ng-if="member.avatar" />
             <span class="initials" ng-show="!member.avatar">AP</span>

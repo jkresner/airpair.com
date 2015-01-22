@@ -145,7 +145,10 @@ nav#chat {
   }
 
   #roomList {
+    overflow-x: hidden;
+
     .item {
+      overflow: auto;
       width: @sideChatWidth;
       min-height: 50px;
       clear: both;
@@ -195,10 +198,12 @@ nav#chat {
     bottom: 30px;
 
     .item {
+      overflow: auto;
       width: @sideChatWidth;
       white-space: nowrap;
       clear: both;
       border-bottom: 1px solid #ececec;
+      background-color: #fff;
 
       .left {
         min-height: 50px;
@@ -217,11 +222,7 @@ nav#chat {
       .right {
         float: left;
         padding: 10px;
-
       }
-
-
-
     }
     .item.odd {
       background-color: #fcfcfc;
@@ -256,7 +257,8 @@ nav#chat {
     button {
       float: right;
       position: relative;
-      bottom: 3px;
+      bottom: 0;
+      height: 30px;
       right: 5px;
       background: none;
       border: none;
