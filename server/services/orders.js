@@ -47,7 +47,8 @@ var get = {
     // and use the userId
     require('./experts').getMe.call(this, (e, expert)=>{
       if (e || !expert) return cb(e,expert)
-      var query = { 'lineItems.info.expert._id' : expert._id.toString() }
+      var query = { '$or': [{'lineItems.info.expert._id' : expert._id},{'lineItems.info.expert._id' : expert._id.toString()}] }
+      // console.log('expert.query', query)
       svc.searchMany(query, {}, Data.select.forPayout(cb))
     })
   }

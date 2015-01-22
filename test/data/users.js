@@ -16,6 +16,10 @@ module.exports = {
 
   mris: { name:"Mike Risse",email:"mike@madeye.io" },
   mirs: { name:"Mike Risse",email:"mike.risse@hotmail.com" },
+  miks: { name:"Mike Risse",email:"miks.ri@hotmail.com" },
+  mrik: { name:"Mike Risse",email:"miks.rie@hotmail.com" },
+  misr: { name:"Mike Risse",email:"miks.rsse@hotmail.com" },
+  mkis: { name:"Mike Risse",email:"miks.re@hotmail.com" },
 
   jmel: { name:"Joe Mellin",email:"joemellin@gmail.com" },
   joem: { name:"Joe Mellin",email:"joe@mellin.com" },
@@ -64,7 +68,6 @@ module.exports = {
   kiem: { name:"Kieth Tom",email:"ktom@gmail.com" },
   edub: { name:"Eduardo Del Balso",email:"eduardo@lendinghome.com" },
   eddb: { name:"Eduardo Del Balso",email:"eddb@hotmail.com" },
-
 
   shcl: { name: "Shane Cole", email: "shanecole@ap.com"},
   shan: { name: "Shane Cole", email: "shanecole@yahoo.com"},
