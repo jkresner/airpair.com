@@ -92,7 +92,8 @@
 					.on("child_added", (function (snapshot) {
 						this._callbackWrap((function () {
 							var memberId = snapshot.key();
-							members[memberId] = this.getMember(memberId);
+							if (snapshot.val())
+								members[memberId] = this.getMember(memberId);
 						}).bind(this));
 					}).bind(this));
 					

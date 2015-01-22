@@ -45,6 +45,7 @@
         }, 90e3);
         
         var unwatchSession = $rootScope.$watch('session', function (session) {
+            console.log("ere", session)
             if (!session) return;
             
             if (session.name || session.email) {
@@ -235,7 +236,7 @@
         	}
         };
         
-        $scope.initialize();
+       // $scope.initialize();
         
         return $scope;
     });
