@@ -1,19 +1,17 @@
 <section id="chat">
 
   <h3>Chat </h3>
-    <h2>Users by Page</h2>
 
     <!-- show -help-request page first -->
-    <div ng-repeat="(page, members) in corechat.admin.members.byPage['-help-request']" style="margin-bottom:50px;background-color:#EAF4F2;">
-        <div ng-show="members">
-            <b>{{page}}</b><br />
-            <div ng-repeat="(memberId, _) in members">
-                <span member-info="{{memberId}}">{{member.name || "Anonymous User"}} <span am-time-ago="member.page.timestamp"></span></span><button ng-click="setCurrentUser(memberId)">Start Chatting</button>
-            </div>
-        </div>
+    <h2>Users on -help-request</h2>
+    <div style="margin-bottom:50px;background-color:#EAF4F2;">
+      <div ng-repeat="(memberId, _) in corechat.admin.members.byPage['-help-request']">
+          <span member-info="{{memberId}}">{{member.name || "Anonymous User"}} <span am-time-ago="member.page.timestamp"></span></span> <button ng-click="setCurrentUser(memberId)">Start Chatting</button>
+      </div>
     </div>
 
-    <div ng-repeat="(page, members) in corechat.admin.members.byPage" ng-hide="page === '-help-request'" style="margin-bottom:10px;">
+    <h2>Users by Page</h2>
+    <div ng-repeat="(page, members) in corechat.admin.members.byPage" style="margin-bottom:10px;" ng-hide="page === '-help-request'">
         <div ng-show="members">
             <b>{{page}}</b><br />
             <div ng-repeat="(memberId, _) in members">
