@@ -6,16 +6,16 @@ angular.module("APChatNav", [])
       transclude: true,
       link: function(scope, element, attrs) {
 
-        // element.bind('mouseenter', function() {
-        //   element.removeClass('collapse');
-        //   storage('chatNavOpen', 'true');
-        // });
-        // element.bind('mouseleave', function() {
-        //   element.addClass('collapse');
-        //   storage('chatNavOpen', 'false');
-        // });
+        element.bind('mouseenter', function() {
+          element.removeClass('collapse');
+          storage('chatNavOpen', 'true');
+        });
+        element.bind('mouseleave', function() {
+          element.addClass('collapse');
+          storage('chatNavOpen', 'false');
+        });
 
-        // focus the input on open
+        // focus the input when the chatNav is clicked
         element.bind('click', function(e) {
           element.removeClass('collapse');
           angular.element("#chatInput input").focus();

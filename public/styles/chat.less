@@ -170,7 +170,7 @@ nav#chat {
       .right {
         float: left;
         padding: 10px;
-
+        font-size: 12px;
       }
     }
     .item.green {
@@ -185,6 +185,7 @@ nav#chat {
   // container for messages
   #chatMessages {
     overflow: auto;
+    overflow-x: hidden;
     width: 100%;
 
     position: absolute;
@@ -231,8 +232,11 @@ nav#chat {
   #chatInput {
     clear: both;
     width: @sideChatWidth;
+    position: absolute;
+    bottom: 0;
 
     input {
+      background-color: #fff;
       border: solid 1px #ececec;
       border-width: 1px 0 0 0;
       position: absolute;
@@ -251,7 +255,7 @@ nav#chat {
     // submit 'button'
     button {
       float: right;
-      position: absolute;
+      position: relative;
       bottom: 3px;
       right: 5px;
       background: none;
@@ -267,9 +271,9 @@ nav#chat {
 }
 
 nav#chat.collapse {
-  background:@palegray;
+  // background:@palegray;
   width:40px;
-  border-left:none;
+  // border-left:none;
 
   // // hide main section while .collapse'd
   // section.main {
