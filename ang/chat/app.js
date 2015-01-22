@@ -5,14 +5,15 @@
         $logProvider.debugEnabled(false);
     });
     
-    app.directive('memberInfo', function () {
+    app.directive('memberInfo', function (corechat) {
         return {
             link: function ($scope, elem, attrs) {
-                var unwatch = $scope.$watch("cc", function (cc) {
+                /*var unwatch = $scope.$watch("cc", function (cc) {
                     if (!cc) return;
                     $scope.member = cc.getMember(attrs.memberInfo);  
                     unwatch();
-                }, true);
+                }, true);*/
+                $scope.member = corechat.getMember(attrs.memberInfo);
             }     
         };
     });
