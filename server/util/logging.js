@@ -7,7 +7,8 @@ var knownNonErrors = [
   'Max allowed bookmarks reached',
   'Invalid email address',
   'no user found',
-  'wrong password'
+  'wrong password',
+  'failed to obtain access token'
 ]
 
 

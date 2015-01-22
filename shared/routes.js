@@ -5,6 +5,7 @@ module.exports = [
   '/about',
   '/posts*',
   '/experts',
+  '/expert-applications',
   '/learn',
   '*/posts*',
   '*/workshops*',
