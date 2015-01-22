@@ -95,6 +95,7 @@
             };
 
             $scope.sendMessageToRoom = function (roomId, body) {
+                if( !body ) return false;
                 cc.send("room", roomId, body);
             };
 
