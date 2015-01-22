@@ -16,10 +16,10 @@ angular.module("APChatNav", [])
         });
 
         // focus the input when the chatNav is clicked
-        element.bind('click', function(e) {
-          element.removeClass('collapse');
-          angular.element("#chatInput input").focus();
-        });
+        // element.bind('click', function(e) {
+        //   element.removeClass('collapse');
+        //   angular.element("#chatInput input").focus();
+        // });
 
       },
       controllerAs: 'chatNav',
