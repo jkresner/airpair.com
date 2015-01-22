@@ -73,7 +73,7 @@ function updateAsIdentity(data, trackData, cb) {
 
     // o.updated = new Date() ??
     // authorization etc.
-
+    // $log('update', data)
     svc.updateWithSet(id, data, (e,user) => {
       if (e) return cb(e)
       if (!user) return cb(Error(`Failed to update user with id: ${id}`))
@@ -179,7 +179,14 @@ var save = {
   //-------- User Info
 
   changeBio(bio, cb) {
-    updateAsIdentity.call(this, {bio}, null, cb)
+    var ups = {bio}
+
+    //temporary for expert applications
+    User.findOne({_id:this.user._id}, (e,r) => {
+      ups.cohort = _.extend(r.cohort, { expert: { applied: new Date } })
+
+      updateAsIdentity.call(this, ups, {type:'expertBio', by: r.email}, cb)
+    })
   },
 
   changeName(name, cb) {

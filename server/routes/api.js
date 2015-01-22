@@ -70,6 +70,7 @@ export default function(app) {
     .put('/users/me/email-verify', setAnonSessionData, API.Users.verifyEmail)
     .put('/users/me/initials', API.Users.changeInitials)
     .put('/users/me/username', API.Users.changeUsername)
+    .put('/users/me/bio', API.Users.changeBio)
     .put('/users/me/location', API.Users.changeLocationTimezone)
 
     .get('/company', API.Companys.getUsersCompany)
