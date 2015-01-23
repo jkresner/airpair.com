@@ -73,7 +73,7 @@ function updateAsIdentity(data, trackData, cb) {
 
     // o.updated = new Date() ??
     // authorization etc.
-
+    // $log('update', data)
     svc.updateWithSet(id, data, (e,user) => {
       if (e) return cb(e)
       if (!user) return cb(Error(`Failed to update user with id: ${id}`))
@@ -179,7 +179,14 @@ var save = {
   //-------- User Info
 
   changeBio(bio, cb) {
-    updateAsIdentity.call(this, {bio}, null, cb)
+    var ups = {bio}
+
+    //temporary for expert applications
+    User.findOne({_id:this.user._id}, (e,r) => {
+      ups.cohort = _.extend(r.cohort, { expert: { applied: new Date } })
+
+      updateAsIdentity.call(this, ups, {type:'expertBio', by: r.email}, cb)
+    })
   },
 
   changeName(name, cb) {
@@ -188,13 +195,17 @@ var save = {
 
   changeUsername(username, cb) {
     var userId = this.user._id
-    if (!username) return updateAsIdentity.call(this, {username}, null, cb)
-    svc.searchOne({username}, null, (e,r) => {
-      if (r && !_.idsEqual(userId,r._id)) {
-        return cb(svc.Forbidden(`username ${username} already taken`))
-      }
-      updateAsIdentity.call(this, {username}, null, cb)
-    })
+    if (!username || username == '') {
+      User.findOneAndUpdate({_id:this.user._id}, { $unset: { username: '' } } , cbSession(this, cb))
+    }
+    else {
+      svc.searchOne({username}, null, (e,r) => {
+        if (r && !_.idsEqual(userId,r._id)) {
+          return cb(svc.Forbidden(`username ${username} already taken`))
+        }
+        updateAsIdentity.call(this, {username}, null, cb)
+      })
+    }
   },
 
   changePrimaryPayMethodId(primaryPayMethodId, cb) {
@@ -220,7 +231,7 @@ var save = {
       svc.searchOne(Data.query.existing(email), null, (e,r) => {
         if (r) {
           delete this.session.anonData.email
-          return cb(svc.Forbidden(`${email} already registered`))
+          return cb(svc.Forbidden(`${email} already registered. Try password reset or google login?`))
         }
         updateAsIdentity.call(this, {email}, null, cb)
       })
