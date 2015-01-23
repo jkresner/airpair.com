@@ -125,11 +125,9 @@ var middleware = {
   setReturnTo: setSessionVarFromQuery('returnTo'),
 
   setFirebaseTokenOnSession(req, res, next) {
-    console.log("Starting setFirebaseTokenOnSession")
     if (logging) $log(`mw.setFirebaseTokenOnSession ${req.sessionID} ${req.user==null}`.cyan)
     if (!config.chat.on) return next()
     if (isBot(req.header('user-agent'))) return next()
-    console.log("middle of setFirebaseTokenOnSession")
 
     var token = middleware.setFirebaseToken(req.user, req.session, req.sessionID);
     
@@ -186,7 +184,7 @@ var middleware = {
       return existingToken;
     }
     
-    console.log("Running setFirebaseTokenOnSession", session.firebaseToken)
+    //console.log("Running setFirebaseTokenOnSession", session.firebaseToken)
   }
 }
 
