@@ -178,7 +178,7 @@ angular.module("APSideNav", ['ui.bootstrap','APSvcSession', 'APTagInput'])
     }
 
     $scope.submit = (formValid, data) => {
-      if (formValid)
+      if (formValid & data.password)
       {
         SessionService.signup(data,
           (result) => {
