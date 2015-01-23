@@ -16,9 +16,9 @@
     <div id="roomList">
 
       <!-- don't show dupe admins in user rooms -->
-      <div class="item" ng-repeat="admin in corechat.getMembersByTag('admin')" ng-click="corechat.setActiveRoomAsMember(admin)" ng-class-odd="'odd'">
+      <div class="item" ng-repeat="admin in corechat.getMembersByTag('admin')" ng-click="corechat.setActiveRoomAsMember(admin)" ng-class-odd="'odd'" ng-show="!admin.openChat().exists">
         <div class="left">
-          <img class="avatar" ng-src="{{admin.avatar || 'http://0.gravatar.com/avatar/'}}" ng-if="admin.avatar" />
+          <img class="avatar" ng-src="{{admin.avatar || 'http://0.gravatar.com/avatar/'}}" />
         </div>
         <div class="right">
           <b>{{admin.name || ""}}</b><br />
@@ -30,11 +30,13 @@
 
       <div class="item" ng-repeat="(roomId, room) in corechat.selfmember.rooms" ng-click="corechat.setActiveRoom(roomId)" ng-class="{green:corechat.selfmember.notificationsCountByRoom[roomId]>0}" ng-class-odd="'odd'">
         <div class="left">
-          <img class="avatar" ng-src="{{member.avatar}}" ng-if="member.avatar" />
-          <span class="initials" ng-show="!member.avatar"></span>
+          {{member.status || 'none'}}
+          <img class="avatar" ng-src="{{member.avatar || 'http://0.gravatar.com/avatar/'}}" />
         </div>
         <div class="right" member-info="{{message.from}}">
           <b>{{room.info.name || ""}}</b><br />{{message.body}}
+          {{room.history[room.history.length-1].body}}<br/>
+          <span class="time" am-time-ago="room.history[room.history.length-1].timestamp"></span>
         </div>
       </div>
     </div>
@@ -49,12 +51,12 @@
       <!-- message item here -->
       <div class="item" ng-repeat="message in corechat.selfmember.rooms[corechat.activeRoom].history" ng-class-odd="'odd'">
         <div class="left">
-          <img class="avatar" ng-src="{{member.avatar}}" ng-if="member.avatar" />
-          <span class="initials" ng-show="!member.avatar">AP</span>
+          <img class="avatar" ng-src="{{member.avatar || 'http://0.gravatar.com/avatar/'}}" />
         </div>
         <div class="right" member-info="{{message.from}}">
           <!-- <b>{{member.name || "Anonymous User"}}:</b><br /> -->
-          {{message.body}}
+          {{message.body}}<br/>
+          <span class="time" am-time-ago="message.timestamp"></span>  <!-- ng-show="$last" -->
         </div>
       </div>
     </div>

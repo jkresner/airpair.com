@@ -1,6 +1,7 @@
 ;(function () {
+    require('../../public/lib/angular-moment/angular-moment.min.js');
     require('../../public/lib/angular-scroll-glue/src/scrollglue.js');
-    var cc, ref, app = angular.module("chat-widget", ['luegg.directives']);
+    var cc, ref, app = angular.module("chat-widget", ['luegg.directives', 'angularMoment']);
 
     app.config(function($logProvider){
         $logProvider.debugEnabled(false);
@@ -46,6 +47,7 @@
         }, 90e3);
 
         var unwatchSession = $rootScope.$watch('session', function (session) {
+            console.log("ere", session)
             if (!session) return;
 
             if (session.name || session.email) {
@@ -246,7 +248,7 @@
         	}
         };
 
-        $scope.initialize();
+        // $scope.initialize();
         return $scope;
     });
 

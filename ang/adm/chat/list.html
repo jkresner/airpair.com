@@ -4,9 +4,14 @@
 
     <!-- show -help-request page first -->
     <h2>Users on -help-request</h2>
-    <div style="margin-bottom:50px;background-color:#EAF4F2;">
+    <div style="margin-bottom:50px;background-color:#B7F4A3;">
       <div ng-repeat="(memberId, _) in corechat.admin.members.byPage['-help-request']">
-          <span member-info="{{memberId}}">{{member.name || "Anonymous User"}} <span am-time-ago="member.page.timestamp"></span></span> <button ng-click="setCurrentUser(memberId)">Start Chatting</button>
+        <a href="#"><img src="/static/img/css/chat/toggle.png" ng-click="setCurrentUser(memberId)" /></a>
+
+        <span member-info="{{memberId}}">{{member.name || "Anonymous User"}} <span am-time-ago="member.page.timestamp"></span></span>
+
+           <!-- <button ng-click="setCurrentUser(memberId)">Start Chatting</button> -->
+
       </div>
     </div>
 
@@ -15,7 +20,12 @@
         <div ng-show="members">
             <b>{{page}}</b><br />
             <div ng-repeat="(memberId, _) in members">
-                <span member-info="{{memberId}}">{{member.name || "Anonymous User"}} <span am-time-ago="member.page.timestamp"></span></span> <button ng-click="setCurrentUser(memberId)">Start Chatting</button>
+              <a href="#"><img src="/static/img/css/chat/toggle.png" ng-click="setCurrentUser(memberId)" /></a>
+
+              <span member-info="{{memberId}}">{{member.name || "Anonymous User"}} <span am-time-ago="member.page.timestamp"></span></span>
+
+                 <!-- <button ng-click="setCurrentUser(memberId)">Start Chatting</button> -->
+
             </div>
         </div>
     </div>
