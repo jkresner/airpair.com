@@ -1,7 +1,7 @@
 <form id="locationForm" novalidate name="locationForm" ng-submit="submit(locationForm.$valid, data)">
   <div form-group>
     <label class="control-label" for="location">Location / timezone </label>
-    <input id="location" name="location" form-control type="text" placeholder="Type your city" ng-model="data.location" required ng-minlength="2" ng-maxlength="60" tabindex="5">
+    <input id="location" name="location" form-control type="text" placeholder="Type your city" ng-model="data.location" required ng-minlength="2" ng-maxlength="60" tabindex="5" ng-keydown="onKeydown($event)">
     <div class="error" ng-if="formGroup.showError(locationForm.location)" ng-messages="locationForm.name.$error">
       <div ng-message="required">Location required</div>
       <div ng-message="minlength">Location required</div>
