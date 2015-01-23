@@ -466,7 +466,9 @@
 						var memberId;
 						memberId = implicitMemberIds[index];
 						if (memberId !== cc._member.id) {
-							return cc.getMember(memberId);
+							var member = cc.getMember(memberId);
+							member.hasChat = true;
+							return member;
 						}
 					}
 				}

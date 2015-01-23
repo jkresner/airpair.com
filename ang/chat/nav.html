@@ -13,7 +13,7 @@
    </div>
    <div>
        <b>Admins</b>
-       <button ng-repeat="admin in corechat.getMembersByTag('admin')" ng-click="corechat.setActiveRoomAsMember(admin)">{{admin.name}}</button>
+       <button ng-repeat="admin in corechat.getMembersByTag('admin')" ng-click="corechat.setActiveRoomAsMember(admin)" ng-show="!admin.hasChat">{{admin.name}}</button>
    </div>
    <div>
        <b>Chats:</b><br />
