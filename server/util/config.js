@@ -176,7 +176,7 @@ module.exports = function(env, appdir) {
       access_token_secret: process.env.AUTH_TWITTER_ACCESS_TOKEN_SECRET
     }
 
-    cfg.auth.firebase = {
+    cfg.chat.firebase = {
       url: process.env.FIRBEASE_URL,
       secret: process.env.FIREBASE_SECRET
     };
