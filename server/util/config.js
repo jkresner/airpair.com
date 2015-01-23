@@ -66,7 +66,7 @@ var cfg = {
     }
   },
   chat: {
-    on: false,
+    on: true,
     firebase: {
       url: 'https://airpair-chat-dev.firebaseio.com/',
       secret: 'BKE9PP6DP4k06Es10nD6Rvh9443Fz7XBstb6fg54'
@@ -176,7 +176,7 @@ module.exports = function(env, appdir) {
       access_token_secret: process.env.AUTH_TWITTER_ACCESS_TOKEN_SECRET
     }
 
-    cfg.auth.firebase = {
+    cfg.chat.firebase = {
       url: process.env.FIRBEASE_URL,
       secret: process.env.FIREBASE_SECRET
     };

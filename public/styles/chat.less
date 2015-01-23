@@ -1,0 +1,334 @@
+@sideChatWidth:220px; // this is duplicated in aplayout.less (used in div.main-wrap)
+@headerHeight:40px; // same here
+
+nav#chat {
+
+  display:block;
+  position:fixed;
+  height:auto;
+  top:@headerHeight;
+  bottom:0;
+  margin:0;
+  right: 0;
+
+  background-color: #fff;
+  header {
+    white-space: nowrap;
+    height: 38px;
+  }
+
+
+  font-size:13px;
+  color:@gray;
+  // background:@reallypalegray;
+  bottom:1;
+  right:0;
+  width:@sideChatWidth;
+  border-left:solid 1px @darkblue;
+
+  .online {
+    border:solid 1px green;
+    padding:1px;
+  }
+
+  h4 {
+    text-align:center;
+  }
+
+  p {
+    text-align:center;
+    margin:20px;
+  }
+
+  header {
+    background:@blackgray;
+    height:35px;
+    padding:5px 8px;
+    margin:0;
+    color:white;
+    font-size:16px;
+    border-bottom:1px solid @gray;
+
+    img { cursor:pointer;
+      filter: brightness(1);
+      -webkit-filter: brightness(1);
+    }
+    img:hover {
+      filter: brightness(1.5);
+      -webkit-filter: brightness(1.5);
+    }
+
+    span {
+      border-left:1px solid @gray;
+      padding-left:8px;
+      margin-left:4px;
+      display:inline-block;
+      text-transform:uppercase;
+      font-size: 12px;
+      font-weight: normal;
+    }
+
+   // div {
+   //  position:absolute;
+   //  margin-top:-2;
+   //  margin-left:12;
+   //  background:@orange;
+   //  color:white;
+   //  border-radius:7;
+   //  width:15;
+   //  height:15;
+   //  text-align:center;
+   //  font-size:10px;
+   //  font-weight:bold;
+   //  cursor:pointer;
+   //  z-index:10
+   // }
+
+  }
+
+  ul {
+    text-align:center;
+    background:@lightblue;
+    margin:20px 0 0 0;
+    padding:0;
+    li {
+      a { color:#ce5424 }
+      padding:10px;
+      border-top:solid 2px white;
+      font-weight:bold;
+      list-style:none;
+      margin:0
+    }
+  }
+
+  table {
+    padding:0;margin:0;font-size:10px;
+    color:black;
+
+    tr td:first-child { font-weight:bold }
+    td { padding:6px 2px 4px 7px }
+    time { font-size:8px;float:right;
+      color:gray;padding-top:2px }
+  }
+
+  input {
+    // position:absolute;bottom:0;width:100%;
+    // height:40px;padding:5px
+  }
+
+  // for badge icon
+  a.icon {
+    i {
+      position: absolute;
+      top: 2px;
+      left: 24px;
+      opacity: 0.9;
+      background: @orange;
+      border-radius: 7px;
+      /* width: 14px; */
+      height: 14px;
+      line-height: 12px;
+      float: right;
+      font-style: normal;
+      font-size: 9px;
+      font-weight: bold;
+      color: white;
+      text-align: center;
+      border: 1px solid #ccc;
+      padding: 0px 4px 0px 4px;
+    }
+  }
+
+  // media queries
+  @media only screen and (max-width: 734px) {
+    display:none;
+  }
+
+  #roomList {
+    overflow: auto;
+    overflow-x: hidden;
+    width: 100%;
+    position: absolute;
+    top: 35px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    .item {
+      &:hover {
+        background-color: #f8f8f8;
+      }
+      overflow: auto;
+      width: @sideChatWidth;
+      min-height: 50px;
+      clear: both;
+      // white-space: nowrap;
+      border-bottom: 1px solid #ececec;
+      cursor: pointer;
+
+      .left {
+        min-height: 50px;
+        // border-right: 1px solid #ececec;
+        width: 55px;
+        padding: 10px 7px;
+        float: left;
+        position: relative;
+
+        .onlineDot {
+          width: 10px;
+          height: 10px;
+          background-color: #7EFD9C;
+          border-radius: 5px;
+          position: absolute;
+          left: 7px;
+          top: 8px;
+        }
+
+        .avatar {
+          height: 40px;
+          width: 40px;
+          border-radius: 20px;
+        }
+      }
+      .right {
+        float: left;
+        padding: 10px;
+        font-size: 12px;
+        width: 165px;
+        min-height: 60px;
+        border-left: 1px solid #ececec;
+
+        .time {
+          font-size: 11px;
+          color: #ccc;
+        }
+      }
+    }
+    .item.green {
+      background-color: #EAF4F2 !important;
+    }
+    .item.odd {
+      background-color: #fcfcfc;
+    }
+
+  }
+
+  // container for messages
+  #chatMessages {
+    overflow: auto;
+    overflow-x: hidden;
+    width: 100%;
+    position: absolute;
+    top: 35px;
+    left: 0;
+    right: 0;
+    bottom: 30px;
+
+    .item {
+      overflow: auto;
+      width: @sideChatWidth;
+      // white-space: nowrap;
+      clear: both;
+      border-bottom: 1px solid #ececec;
+      background-color: #fff;
+      position: relative;
+
+      .left {
+        min-height: 50px;
+        width: 55px;
+        padding: 10px 7px;
+        float: left;
+
+        .onlineDot {
+          width: 10px;
+          height: 10px;
+          background-color: #7EFD9C;
+          border-radius: 5px;
+          position: absolute;
+          left: 7px;
+          top: 8px;
+        }
+
+        .avatar {
+          height: 40px;
+          width: 40px;
+          border-radius: 20px;
+        }
+      }
+      .right {
+        float: left;
+        padding: 10px;
+        font-size: 12px;
+        width: 165px;
+        min-height: 60px;
+        border-left: 1px solid #ececec;
+
+        .time {
+          font-size: 11px;
+          color: #ccc;
+        }
+      }
+
+      &:hover {
+        background-color: #f8f8f8;
+      }
+    }
+    .item.odd {
+      background-color: #fcfcfc;
+    }
+  }
+
+  // container for input mechanism
+  #chatInput {
+    clear: both;
+    width: @sideChatWidth;
+    position: absolute;
+    bottom: 0;
+
+    input {
+      background-color: #fff;
+      border: solid 1px #ececec;
+      border-width: 1px 0 0 0;
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      padding: 0px 50px 0 5px;
+      height: 30px;
+      float: left;
+      width: 100%;
+
+      &:focus {
+        outline: none;
+      }
+    }
+
+    // submit 'button'
+    button {
+      float: right;
+      position: relative;
+      bottom: 0;
+      height: 30px;
+      right: 5px;
+      background: none;
+      border: none;
+      font-weight: bold;
+
+      &:focus {
+        outline: none;
+      }
+    }
+  }
+
+}
+
+nav#chat.collapse {
+  // background:@palegray;
+  width:40px;
+  // border-left:none;
+
+  // // hide main section while .collapse'd
+  // section.main {
+  //   display: none;
+  // }
+
+}

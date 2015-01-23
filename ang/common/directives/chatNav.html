@@ -1,31 +1,18 @@
 <header>
-  <img id="chatNavToggle" track-click="chatNav" data="{{ toggleAction }}" track-click-if="!session._id" ng-click="chatNav.toggle()" src="/static/img/css/chat/toggle.png" />
+  <a track-click="chatNav" class="icon">
+    <img id="chatNavToggle" track-click="chatNav" data="{{ toggleAction }}" track-click-if="!session._id" ng-click="chatNav.toggle()" src="/static/img/css/chat/toggle.png" />
+    <i ng-show="corechat.selfmember.notificationsCount>0">{{corechat.selfmember.notificationsCount}}</i>
+    <!-- {{corechat.selfmember.notificationsCount}} -->
+  </a>
+  <span ng-if="corechat.activeRoom">
+    {{corechat.getRoom(corechat.activeRoom).info.name}}
+  </span>
+  <span ng-show="!corechat.activeRoom">
+    All Chats
+  </span>
 </header>
 
-<section class="welcome">
-
-  <figure><a id="navChatAvatar" track-click="chatNav" ng-click="openProfile()"><img class="avatar" ng-src="/static/img/css/chat/pairy.png" /></a></figure>
-
-</section>
-
+<!-- main is hidden with .collapse on nav#chat -->
 <section class="main">
-  <h4>Merry Holidays Season and a Happy New Year!</h4>
-
-  <p>Pairy and the AirPair Team are looking forward to seeing you lots in 2015.</p>
-
-  <ul class="main">
-    <li>
-      <a id="chatAbout" track-click="about" data="chatNav" href="/about" ng-click="chatNav.toggle()">Learn about AirPair</a>
-    </li>
-    <li>
-      <a id="chatSignup" track-click="signup" data="chatNav" ng-click="openProfile()">Sign Up</a>
-    </li>
-    <li>
-      <a id="chatLogin" track-click="login" data="chatNav" href="/v1/auth/login" ng-click="chatNav.toggle()">Login</a>
-    </li>
-    <li><a id="chatHide" track-click="chatNav" data="Hide" ng-click="chatNav.toggle()">Hide menu</a></li>
-  </ul>
-
+  <chat-widget></chat-widget>
 </section>
-
-<div id="chat-widget" style="border:solid 1px green; position: fixed; top: 0px; right: 0px; width: 300px; background-color: #ccc" chat-widget></div>

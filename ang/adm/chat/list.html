@@ -1,17 +1,35 @@
 <section id="chat">
 
   <h3>Chat </h3>
-    <div chat-widget ng-hide="true"></div>
+
+    <!-- show -help-request page first -->
+    <h2>Users on -help-request</h2>
+    <div style="margin-bottom:50px;background-color:#B7F4A3;">
+      <div ng-repeat="(memberId, _) in corechat.admin.members.byPage['-help-request']">
+        <a href="#"><img src="/static/img/css/chat/toggle.png" ng-click="setCurrentUser(memberId)" /></a>
+
+        <span member-info="{{memberId}}">{{member.name || "Anonymous User"}} <span am-time-ago="member.page.timestamp"></span></span>
+
+           <!-- <button ng-click="setCurrentUser(memberId)">Start Chatting</button> -->
+
+      </div>
+    </div>
+
     <h2>Users by Page</h2>
-    <div ng-repeat="(page, members) in corechat.admin.members.byPage">
+    <div ng-repeat="(page, members) in corechat.admin.members.byPage" style="margin-bottom:10px;" ng-hide="page === '-help-request'">
         <div ng-show="members">
             <b>{{page}}</b><br />
             <div ng-repeat="(memberId, _) in members">
-                <span member-info="{{memberId}}">{{member.name || "Anonymous User"}} <span am-time-ago="member.page.timestamp"></span></span><button ng-click="setCurrentUser(memberId)">Start Chatting</button>
+              <a href="#"><img src="/static/img/css/chat/toggle.png" ng-click="setCurrentUser(memberId)" /></a>
+
+              <span member-info="{{memberId}}">{{member.name || "Anonymous User"}} <span am-time-ago="member.page.timestamp"></span></span>
+
+                 <!-- <button ng-click="setCurrentUser(memberId)">Start Chatting</button> -->
+
             </div>
-        </div> 
+        </div>
     </div>
-    
+
     <h2>Rooms by Last Message</h2>
     <div ng-repeat="(timestamp, room) in corechat.admin.rooms.byLastMessage">
         <span ng-show="getRoomType(room) == 'pair'">
@@ -25,7 +43,7 @@
             {{room.id}}
         </span>
     </div>
-    
+
     <h2>All Rooms</h2>
     <div ng-repeat="room in allRooms">
         <button ng-click="toggleHistory=!toggleHistory">{{room.info.name}}</button>
@@ -39,5 +57,4 @@
         </div>
     </div>
 
-    <div id="chat-widget" style="border:solid 1px green; position: fixed; top: 0px; right: 0px; width: 300px; background-color: #ccc" chat-widget></div>    
 </section>
