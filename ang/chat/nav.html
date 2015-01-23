@@ -18,7 +18,7 @@
       <!-- don't show dupe admins in user rooms -->
       <div class="item" ng-repeat="admin in corechat.getMembersByTag('admin')" ng-click="corechat.setActiveRoomAsMember(admin)" ng-class-odd="'odd'" ng-show="!admin.hasChat">
         <div class="left">
-          <div class="onlineDot" ng-show="admin.status == 'online'">&nbsp;</div>
+          <div class="onlineDot" ng-show="admin.status != 'offline'">&nbsp;</div>
           <img class="avatar" ng-src="{{admin.avatar || 'https://0.gravatar.com/avatar/'}}" />
         </div>
         <div class="right">
@@ -30,7 +30,7 @@
       <!-- members -->
       <div class="item" ng-repeat="(roomId, room) in corechat.selfmember.rooms" ng-click="corechat.setActiveRoom(roomId)" ng-class="{green:corechat.selfmember.notificationsCountByRoom[roomId]>0}" ng-class-odd="'odd'">
         <div class="left">
-          <div class="onlineDot" ng-show="room.info.status == 'online'">&nbsp;</div>
+          <div class="onlineDot" ng-show="room.info.status != 'offline'">&nbsp;</div>
           <img class="avatar" ng-src="{{room.info.avatar || 'https://0.gravatar.com/avatar/'}}" />
         </div>
         <div class="right" member-info="{{message.from}}">
@@ -51,7 +51,7 @@
       <!-- message item here -->
       <div class="item" ng-repeat="message in corechat.selfmember.rooms[corechat.activeRoom].history" ng-class-odd="'odd'">
         <div class="left">
-          <div class="onlineDot" ng-show="member.status == 'online'">&nbsp;</div>
+          <div class="onlineDot" ng-show="member.status != 'offline'">&nbsp;</div>
           <img class="avatar" ng-src="{{member.avatar || 'https://0.gravatar.com/avatar/'}}" />
         </div>
         <div class="right" member-info="{{message.from}}">
