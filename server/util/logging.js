@@ -5,6 +5,8 @@ var knownNonErrors = [
   'already registered',
   'Max allowed tags reached',
   'Max allowed bookmarks reached',
+  'Max 3 bookmarks reached',
+  'Max 3 tags reached',
   'Invalid email address',
   'no user found',
   'wrong password',
