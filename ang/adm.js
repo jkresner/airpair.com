@@ -36,7 +36,7 @@ require('./adm/pipeline/module.js');
 require('./adm/bookings/module.js');
 require('./adm/chat/module.js');
 require('./matchmaking/module.js');
-
+require('./common/directives/chatNav.js');
 
 angular.module('ADM', [
   'ngRoute', 'ui.bootstrap.datetimepicker', 'APViewData',
@@ -51,7 +51,7 @@ angular.module('ADM', [
   'ADMBookings',
   'ADMCompanys',
   'APMatchmaking',
-  'ADMChat'
+  'ADMChat', 'APChatNav'
   ])
 
   .config(function($locationProvider, $routeProvider) {

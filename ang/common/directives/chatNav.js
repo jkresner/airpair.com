@@ -8,7 +8,7 @@ angular.module("APChatNav", [])
 
         element.bind('mouseenter', function() {
           element.removeClass('collapse');
-          storage('chatNavOpen', 'true');
+          // storage('chatNavOpen', 'true');
           // if( corechat.activeRoom ) {
           //   console.log( 'opening with a activeRoom, clearing notifications' );
           //   angular.forEach(corechat._member.notificationsByRoom[corechat.activeRoom], function (notification) {
@@ -19,7 +19,7 @@ angular.module("APChatNav", [])
         });
         element.bind('mouseleave', function() {
           element.addClass('collapse');
-          storage('chatNavOpen', 'false');
+          // storage('chatNavOpen', 'false');
         });
 
         // focus the input when the chatNav is clicked
@@ -33,7 +33,7 @@ angular.module("APChatNav", [])
       controller: function($scope, $element, $attrs, $timeout) {
 
         this.toggle = function() {
-          console.log('toggling', storage('chatNavOpen'));
+          // console.log('toggling', storage('chatNavOpen'));
           // if there's an activeRoom, clear it and let chat stay open
           if( corechat.activeRoom ) {
             console.log('activeRoom true');
@@ -41,19 +41,19 @@ angular.module("APChatNav", [])
             return false;
           }
 
-          if (storage('chatNavOpen') == 'true') storage('chatNavOpen', 'false');
-          else storage('chatNavOpen', 'true');
+          // if (storage('chatNavOpen') == 'true') storage('chatNavOpen', 'false');
+          // else storage('chatNavOpen', 'true');
 
-          console.log('toggling', storage('chatNavOpen'));
+          // console.log('toggling', storage('chatNavOpen'));
 
-          $element.toggleClass('collapse', storage('chatNavOpen') != 'true');
-          $scope.toggleAction = (storage('chatNavOpen') != 'true') ? 'Show' : 'Hide';
+          // $element.toggleClass('collapse', storage('chatNavOpen') != 'true');
+          // $scope.toggleAction = (storage('chatNavOpen') != 'true') ? 'Show' : 'Hide';
 
-          storage('chatOpenedOnce', 'true');
+          // storage('chatOpenedOnce', 'true');
         }
 
-        $element.toggleClass('collapse', storage('chatNavOpen') != 'true');
-        $scope.toggleAction = (storage('chatNavOpen') != 'true') ? 'Show' : 'Hide';
+        // $element.toggleClass('collapse', storage('chatNavOpen') != 'true');
+        // $scope.toggleAction = (storage('chatNavOpen') != 'true') ? 'Show' : 'Hide';
 
         // if (!storage('chatOpenedOnce'))
         // {

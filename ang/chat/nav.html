@@ -27,9 +27,11 @@
         </div>
       </div>
 
+      <!-- members -->
       <div class="item" ng-repeat="(roomId, room) in corechat.selfmember.rooms" ng-click="corechat.setActiveRoom(roomId)" ng-class="{green:corechat.selfmember.notificationsCountByRoom[roomId]>0}" ng-class-odd="'odd'">
         <div class="left">
-          <img class="avatar" ng-src="{{member.avatar || 'http://0.gravatar.com/avatar/'}}" />
+          <div class="onlineDot" ng-show="room.info.status == 'online'">&nbsp;</div>
+          <img class="avatar" ng-src="{{room.info.avatar || 'http://0.gravatar.com/avatar/'}}" />
         </div>
         <div class="right" member-info="{{message.from}}">
           <b>{{room.info.name || ""}}</b><br />{{message.body}}
@@ -49,6 +51,7 @@
       <!-- message item here -->
       <div class="item" ng-repeat="message in corechat.selfmember.rooms[corechat.activeRoom].history" ng-class-odd="'odd'">
         <div class="left">
+          <div class="onlineDot" ng-show="member.status == 'online'">&nbsp;</div>
           <img class="avatar" ng-src="{{member.avatar || 'http://0.gravatar.com/avatar/'}}" />
         </div>
         <div class="right" member-info="{{message.from}}">

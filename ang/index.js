@@ -52,8 +52,7 @@ angular.module("AP", ['Providers', 'ngRoute', 'ngAnimate', 'ui.bootstrap.datetim
   'APRoutes', 'APUtil', 'APViewData', 'APDataSvc', 'APCTAs', 'APFormsDirectives', 'APInputs',
   'APAnalytics', 'APSideNav', 'APChatNav', 'APServerTemplates', 'APNotifications',
   'APProfileDirectives', 'APPageHelpers',
-  'APAuth', 'APPosts', 'APWorkshops', 'APProfile', 'APBilling', 'APRequests',//])
-  'chat-widget'])
+  'APAuth', 'APPosts', 'APWorkshops', 'APProfile', 'APBilling', 'APRequests','chat-widget'])
 
   .config(function($locationProvider, $routeProvider) {
 

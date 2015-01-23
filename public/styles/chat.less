@@ -145,7 +145,14 @@ nav#chat {
   }
 
   #roomList {
+    overflow: auto;
     overflow-x: hidden;
+    width: 100%;
+    position: absolute;
+    top: 35px;
+    left: 0;
+    right: 0;
+    bottom: 0;
 
     .item {
       &:hover {
@@ -198,7 +205,7 @@ nav#chat {
       }
     }
     .item.green {
-      background-color: #EAF4F2;
+      background-color: #EAF4F2 !important;
     }
     .item.odd {
       background-color: #fcfcfc;
@@ -211,7 +218,6 @@ nav#chat {
     overflow: auto;
     overflow-x: hidden;
     width: 100%;
-
     position: absolute;
     top: 35px;
     left: 0;
@@ -225,12 +231,23 @@ nav#chat {
       clear: both;
       border-bottom: 1px solid #ececec;
       background-color: #fff;
+      position: relative;
 
       .left {
         min-height: 50px;
         width: 55px;
         padding: 10px 7px;
         float: left;
+
+        .onlineDot {
+          width: 10px;
+          height: 10px;
+          background-color: #7EFD9C;
+          border-radius: 5px;
+          position: absolute;
+          left: 7px;
+          top: 8px;
+        }
 
         .avatar {
           height: 40px;
