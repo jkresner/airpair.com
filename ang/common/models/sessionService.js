@@ -124,6 +124,9 @@ angular.module('APSvcSession', [])
     this.updateUsername = function(data, success, error) {
       $http.put(`${API}/users/me/username`, data).success(setScope(success)).error(error)
     }
+    this.updateBio = function(data, success, error) {
+      $http.put(`${API}/users/me/bio`, data).success(setScope(success)).error(error)
+    }
 
 
     this.requestPasswordChange = function(data, success, error) {

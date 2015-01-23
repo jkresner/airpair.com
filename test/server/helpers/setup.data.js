@@ -6,6 +6,9 @@ global.newId = function() {
   return new ObjectId()
 }
 
+global.timeSeed = function() {
+  return moment().format('X')
+}
 
 global.getNewUserData = function(userKey)
 {
