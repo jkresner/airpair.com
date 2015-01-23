@@ -177,8 +177,8 @@ module.exports = function(env, appdir) {
     }
 
     cfg.chat.firebase = {
-      url: process.env.FIRBEASE_URL,
-      secret: process.env.FIREBASE_SECRET
+      url: process.env.CHAT_FIREBASE_URL,
+      secret: process.env.CHAT_FIREBASE_SECRET
     };
 
     cfg.auth.paypal.mode = 'live'
