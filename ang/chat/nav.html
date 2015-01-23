@@ -18,19 +18,17 @@
       <!-- don't show dupe admins in user rooms -->
       <div class="item" ng-repeat="admin in corechat.getMembersByTag('admin')" ng-click="corechat.setActiveRoomAsMember(admin)" ng-class-odd="'odd'" ng-show="!admin.openChat().exists">
         <div class="left">
+          <div class="onlineDot" ng-show="admin.status == 'online'">&nbsp;</div>
           <img class="avatar" ng-src="{{admin.avatar || 'http://0.gravatar.com/avatar/'}}" />
         </div>
         <div class="right">
           <b>{{admin.name || ""}}</b><br />
           {{message.body}}
-          <!-- most message -->
-          <!-- most recent message timestamp -->
         </div>
       </div>
 
       <div class="item" ng-repeat="(roomId, room) in corechat.selfmember.rooms" ng-click="corechat.setActiveRoom(roomId)" ng-class="{green:corechat.selfmember.notificationsCountByRoom[roomId]>0}" ng-class-odd="'odd'">
         <div class="left">
-          {{member.status || 'none'}}
           <img class="avatar" ng-src="{{member.avatar || 'http://0.gravatar.com/avatar/'}}" />
         </div>
         <div class="right" member-info="{{message.from}}">
