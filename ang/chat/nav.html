@@ -4,7 +4,7 @@
 
 <!-- when not logged in / connecting -->
 <div ng-if="!corechat.selfmember.loggedIn" style="white-space:nowrap;padding:5px">
-  logging in...
+  <!-- logging in... -->
 </div>
 
 <!-- connected -->
@@ -19,7 +19,7 @@
       <div class="item" ng-repeat="admin in corechat.getMembersByTag('admin')" ng-click="corechat.setActiveRoomAsMember(admin)" ng-class-odd="'odd'" ng-show="!admin.hasChat">
         <div class="left">
           <div class="onlineDot" ng-show="admin.status == 'online'">&nbsp;</div>
-          <img class="avatar" ng-src="{{admin.avatar || 'http://0.gravatar.com/avatar/'}}" />
+          <img class="avatar" ng-src="{{admin.avatar || 'https://0.gravatar.com/avatar/'}}" />
         </div>
         <div class="right">
           <b>{{admin.name || ""}}</b><br />
@@ -31,7 +31,7 @@
       <div class="item" ng-repeat="(roomId, room) in corechat.selfmember.rooms" ng-click="corechat.setActiveRoom(roomId)" ng-class="{green:corechat.selfmember.notificationsCountByRoom[roomId]>0}" ng-class-odd="'odd'">
         <div class="left">
           <div class="onlineDot" ng-show="room.info.status == 'online'">&nbsp;</div>
-          <img class="avatar" ng-src="{{room.info.avatar || 'http://0.gravatar.com/avatar/'}}" />
+          <img class="avatar" ng-src="{{room.info.avatar || 'https://0.gravatar.com/avatar/'}}" />
         </div>
         <div class="right" member-info="{{message.from}}">
           <b>{{room.info.name || ""}}</b><br />{{message.body}}
@@ -52,7 +52,7 @@
       <div class="item" ng-repeat="message in corechat.selfmember.rooms[corechat.activeRoom].history" ng-class-odd="'odd'">
         <div class="left">
           <div class="onlineDot" ng-show="member.status == 'online'">&nbsp;</div>
-          <img class="avatar" ng-src="{{member.avatar || 'http://0.gravatar.com/avatar/'}}" />
+          <img class="avatar" ng-src="{{member.avatar || 'https://0.gravatar.com/avatar/'}}" />
         </div>
         <div class="right" member-info="{{message.from}}">
           <!-- <b>{{member.name || "Anonymous User"}}:</b><br /> -->
