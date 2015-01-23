@@ -36,7 +36,7 @@ angular.module("APChatNav", [])
           // console.log('toggling', storage('chatNavOpen'));
           // if there's an activeRoom, clear it and let chat stay open
           if( corechat.activeRoom ) {
-            console.log('activeRoom true');
+            // console.log('activeRoom true');
             corechat.activeRoom = null;
             return false;
           }
