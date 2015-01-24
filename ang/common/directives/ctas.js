@@ -80,4 +80,23 @@ angular.module("APCTAs", ['ngMessages','APAnalytics'])
       }
     };
 
-  });
+  })
+
+
+  .directive('ctaRequestSignup', function(SessionService, CtaHelper) {
+    return {
+      template: require('./ctaRequestSignup.html'),
+      controller($scope) {
+
+        SessionService.onAuthenticated( (s) => $scope.data = { email: s.email, name: s.name } )
+
+        $scope.updateEmail = (model) => CtaHelper.updateEmail($scope, model,
+          () => { angular.element('#requestSignupName').focus() })
+
+        $scope.submit = (formValid, data) => CtaHelper.submit($scope, 'homeSignup', formValid, data,
+          () => { })
+      }
+    };
+
+  })
+
