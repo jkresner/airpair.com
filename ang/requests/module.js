@@ -1,8 +1,7 @@
 var resolver = require('./../common/routes/helpers.js').resolveHelper;
 
 angular.module("APRequests", ['APFilters', 'APSvcSession',
-  'APRequestDirectives',
-  'APTagInput', 'APInputs'])
+  'APRequestDirectives', 'APTagInput', 'APInputs'])
 
 .config(function($locationProvider, $routeProvider) {
 
@@ -10,7 +9,7 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
 
   var actions = {
     list:   { template: require('./list.html'), controller: 'RequestListCtrl' },
-    create: { resolve: authd, template: require('./new.html'), controller: 'RequestCtrl' },
+    create: { template: require('./new.html'), controller: 'RequestCtrl' },
     edit: { resolve: authd, template: require('./edit.html'), controller: 'RequestEditCtrl' },
     help: { resolve: authd, template: require('./types.html'), controller: 'RequestTypesCtrl' },
     review: { template: require('./review.html'), controller: 'ReviewCtrl' }
@@ -38,7 +37,7 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
     if (!$scope.session._id) $location.path(`/about`)
   })
 
-  DataService.requests.getMyRequests(function(result) {
+  DataService.requests.getMyRequests({}, function(result) {
     $scope.requests = result
   })
 
@@ -53,7 +52,7 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
 })
 
 .controller('RequestEditCtrl', function($scope, $routeParams, $location, DataService, SessionService, Shared, ServerErrors) {
-  $scope.requestId = $routeParams.id;
+  var _id = $routeParams.id;
 
   if ($location.search().verify)
   {
@@ -63,7 +62,7 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
     }, ServerErrors.add)
   }
 
-  DataService.requests.getById($scope.requestId, function(r) {
+  DataService.requests.getById({_id}, function(r) {
     if (r.budget)
     {
       var currentBudgets = [300,210,150,100,70]

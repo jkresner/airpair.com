@@ -1,5 +1,101 @@
 @import "ap.less";
 
+  section#join {
+    text-align:center;
+    background:@lightblue;
+    border-radius:5px;
+    padding:30px 10px 20px 10px;
+    height:320px;
+
+    .circle {
+      border-radius:50%;
+      background:@bluegray;
+      width:100px;height:100px;
+      margin:0 10px;
+      display:block;
+      font-size:32px;
+      font-weight:bold;
+      color:white;
+      padding-top:2px;
+    }
+    img, .you { .circle; }
+    .you {
+      b { padding-top:24px;display:block; }
+      display:inline-block;
+      img { margin:0;opacity:1;padding:0 }
+    }
+
+    h3 { margin:25px 0 0 0px;padding-bottom:0px }
+
+    ul { .ulNoStyle }
+    li { position:relative;width:120px;height:100px;vertical-align:top }
+
+    form {
+      height:120px;
+      background:white;
+      position:relative;
+      vertical-align:top;
+      .lightblueForm;
+      padding:5px;
+
+
+      .requestEmailDiv { margin:5px auto;width:90%  }
+      .requestNameDiv {
+        position:absolute;
+        top:10px;
+        left:30px;
+        right:310px;
+        display:inline-block;
+        margin:0;
+        padding:0;
+        height:100px;
+      }
+
+      .error {
+        padding-top:2px;
+        text-align:right
+      }
+
+      input {
+        margin-top:5px;
+        border-radius:2px;
+        border-top:none;border-left:none;border-right:none;box-shadow:none;
+        border-bottom:solid 2px @turquoise;
+        width:100%;
+        font-size:24px;
+        padding:16px 0px 15px 10px;
+      }
+
+      .has-error input {
+        border-bottom:solid 2px @error;
+      }
+
+      .inputPlaceholder { color:@lightorange;font-size:20px }
+      input::-webkit-input-placeholder { .inputPlaceholder }
+      input::-moz-placeholder { .inputPlaceholder }
+      input:-ms-input-placeholder { .inputPlaceholder }
+
+      button {
+        position:absolute;
+        top:15px;
+        right:30px;
+        width:30%;
+        padding:20px;
+        text-transform:uppercase;
+
+        &.focushide {
+          width:1px;opacity:0;
+          font-size:1px;
+        }
+      }
+
+      span {
+        position:absolute;
+        top:82px;
+        right:35px;
+      }
+    }
+  }
 
 .requests {
   margin-left:-5px;
@@ -90,10 +186,46 @@ form.requestForm {
   padding-top:340px;
   max-width:640px;
 
+  .controls {
+    position:absolute;
+    top:52px;
+    right:15px;
+    z-index:10;
+    img { background:none }
+
+    a {
+      height:22px;
+      width:46px;
+      font-weight:bold;
+      display:inline-block;
+      text-align:center;
+      margin:0px 2px;
+    }
+
+    a.forward {
+      background-color:@orange;
+    }
+
+    a.wait {
+      cursor:inherit;
+    }
+
+    > :first-child {
+      background-color:@lightorange;
+      border-top-left-radius:10px;
+      border-bottom-left-radius:10px;
+    }
+    > :last-child {
+      background-color:@lightgray;
+      border-top-right-radius:10px;
+      border-bottom-right-radius:10px;
+    }
+  }
+
   .requestProgress {
     height:32px;
     position:absolute;
-    top:280px;
+    top:290px;
     width:100%;
     padding:3px 0px 1px 5px;
     background:@lightblue;
@@ -107,13 +239,14 @@ form.requestForm {
     .time { opacity:0.2 }
     .budget { opacity:0.2 }
     .broadcast { opacity:0.2 }
+    .submit { opacity:0.2 }
 
     > div.done { opacity:0.5;display:inline-block; }
 
     > div {
       display:inline-block;
       height:22px;
-      width:85px;
+      width:74px;
       padding:3px 0px 3px 0px;
       margin:0 2px 0 0;
       background:@bluegray;
@@ -163,11 +296,11 @@ form.requestForm {
     top:30px;
     display:block;
     hr { border:solid 1px @lightblue }
-    min-height:250px;
-    max-height:250px;
+    min-height:260px;
+    max-height:260px;
     margin:0 0 50px 0;
     background:@lightblue;
-    padding:18px 20px 15px 20px;
+    padding:16px 20px 15px 20px;
     border-top-right-radius:5px;
     border-top-left-radius:5px;
     .btn { min-width:94px;float:right;margin-top:5px;padding:2px }
@@ -178,69 +311,28 @@ form.requestForm {
     }
   }
 
-  section.done {
-    display:block;
-    background:white;
-    .info {
-      display:none
-    }
+  section.done { display:none }
+
+  .mainLabel {
+    // position:absolute;top:17px;left:20px;
+    width:480px;
+    font-size:22px;
   }
 
-  select[multiple=multiple] {
-    height:160px;
-    padding:10px;
-  }
-
-  input[type=radio] {
-    position:absolute;
-    z-index:-1000;
-    left:-1000px;
-    overflow:hidden;
-    clip: rect(0 0 0 0);
-    height:1px;
-    width:1px;
-    margin:-1px;
-    padding:0;
-    border:0;
-  }
-
-  input[type=radio] + label {
-    background-size:22px;
-    background-image:url(../img/css/radio.png);
-    background-repeat:no-repeat;
-    background-position:0px 6px;
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    padding-left:35px;
-    padding-top:6px;
-    height:28px;
-    line-height:20px;
-    font-size:16px;
-    font-weight:normal;
-    display:inline-block;
-    vertical-align:middle;
-    cursor:pointer;
-    margin-right:46px;
-    img { margin:-5px 10px 0 0 }
-    text-transform:uppercase;
-  }
-
-  input[type=radio]:checked + label {
-    padding-top:0px;
-    margin-top:6px;
-    height:22px;
-    background-position: 0 -22px;
+  .detail { color:@mediumgray;
+    position:absolute;top:14px;
+    font-size:13px;padding-left:5px
   }
 
   .rush { padding-top:8px }
 
   section.type {
-    // background:url(../img/css/bracket-left.png) no-repeat @lightblue right bottom;
-    // background-size:14%;
+
+    select[multiple=multiple] {
+      height:160px;
+      padding:10px;
+    }
+
     .requestTypes {
       border:solid 2px @bluegray;
       background:white;
@@ -258,22 +350,17 @@ form.requestForm {
     }
     .info {
       float:right;
-      margin:5px 30px 30px 28px;
+      margin:0px 44px 30px 28px;
       height:145px;
       width:220px;
       position:relative;
       background:white;
       border-top-left-radius:50%;
-      img { position:absolute;bottom:-28px;right:-35px;width:90px;height:90px; }
+      img { position:absolute;bottom:-30px;right:-37px;width:90px;height:90px; }
       p { font-size:11px;width:200px;padding:34px 0px 0px 36px;line-height:16px }
       b { font-size:12px;display:block }
       span { display:block;width:128px;margin-top:5px }
     }
-  }
-
-  section.type.done {
-    .requestTypes { display:none; }
-    #requestType { display:block }
   }
 
   section.tags {
@@ -293,111 +380,74 @@ form.requestForm {
     hr { margin:0;cborder-color:@lightblue }
   }
 
-  section.tags.done {
-    li { background:@lightblue }
-    hr { border:solid 1px white }
-  }
-
   section.experience {
     .control-label {
-      position:absolute;top:20px;left:20px;margin:10px 5px;width:280px
+      .mainLabel;line-height:28px;
     }
-    i  {
-      position:absolute;top:150px;left:20px;margin:10px 5px;width:280px
+    span {
+      position:relative;
+      display:block;
+      padding:5px 10px 17px 10px;
+      label { width:200px;
+        margin:0!important
+      }
     }
-    div.experienceOptions { float:right;width:300px;padding-top:10px }
-    span { float:left;clear:left;width:280px;padding:8px 10px 4px 10px }
-    label img { height:45px;margin:-10px 10px 0px 0px!important }
-    // input[type=radio] { display:block }
-    input[type=radio] + label {
-      height:31px;
-      background-position:0px 9px;
-      margin:0px 15px 30px 0;
-    }
-    .tags li { background:@lightblue;font-size:12px }
+
+    i { .detail;display:inline-block; }
 
     .verifyEmail {
       .control-label { position:inherit;width:100% }
       p {padding:5px }
       .btn { padding:8px 12px;min-width:260px  }
       .alert {
+        margin-left:0!important;
         font-size:13px;
         position:relative;
-        width:310px;height:50px;display:inline-block;margin:6px;
-        i { position:absolute;top:0px;left:5px }
-        p { margin:-6px 10px 5px 15px;display:inline-block; }
+        width:100%;height:40px;display:inline-block;margin:6px;
+        i { position:absolute;top:12px;left:3px }
+        p { margin:-6px 10px 5px 20px;display:inline-block; }
       }
     }
 
   }
 
-  section.experience.done {
-    position:relative;
-    .control-label { float:none;margin:0;width:100%;position:inherit; }
-    i { display:none }
-    div.experienceOptions { float:none;width:100%;padding-top:35px  }
-    span { float:none;padding:8px 20px 10px 0px;maring-top:10px }
-    label img { height:40px;padding-top:2px }
-    input[type=radio] {
-      display:inline;
-    }
-    input[type=radio] + label {
-      padding-top:0px;
-      height:24px;
-      margin:0 20px 0px 0;
-      background-position:0 2px;
-    }
-    input[type=radio]:checked + label {
-      background-position:0 -22px;
-    }
-    .tags { display:none }
-  }
-
   section.brief {
-    textarea { height:160px }
+    textarea { height:150px }
     .btn { margin-top:2px }
+    .md {
+      margin:-12px 4px 0 0 ;
+      display:block;text-align:right;font-style:italic;color:@mediumgray
+    }
   }
 
   .budget, .hours, .time {
-    input[type=radio]+label { display:block }
+    // input[type=radio]+label { display:block }
   }
 
   .budget.done, .hours.done, .time.done {
-    input[type=radio]+label { display:inline-block;margin-right:26px }
-    i { display:none }
+    // input[type=radio]+label { display:inline-block;margin-right:26px }
+    // i { display:none }
   }
 
   section.time {
-    input[type=radio]+label { margin-top:40px }
-    i { color:@mediumgray;font-size:13px;padding-left:10px }
-  }
-
-  section.time.done {
-    input[type=radio]+label { margin-top:10px }
+    .radios { position:relative;padding-top:6px }
+    .control-label { margin-bottom:20px }
+    // input[type=radio]+label { margin-top:40px }
+    // i { .detail }
+    i { display:none }
   }
 
   section.budget {
     .control-label { margin-bottom:7px }
-    b { font-weight:400;display:inline-block;width:62px;
+    b { font-weight:400;display:inline-block;width:82px;
       span { padding-left:2px;display:inline-block; }
     }
     i { text-transform:none;font-size:12px;font-style:normal;margin-left:10px;
       color:@mediumgray;
       em { font-weight:bold;color:@lightorange }
     }
-    input[type=radio]+label { margin-bottom:9px;line-height:22px }
-    input[type=radio]+label span { font-size:12px;color:@mediumgray; }
-    input[type=radio]:checked + label {
-      margin-top:16px;
-      margin-bottom:0px;line-height:22px;
-      padding-top:2px;
-      height:30px;
-      line-height:20px;
-      img { margin:-5px 10px 0 0 }
-      background-position: 0 -22px;
-    }
-
-    .info { position:absolute;top:25px;right:20px;border-radius:50%;
+    label { margin-bottom:7px }
+    .info { position:absolute;top:75px;right:20px;border-radius:50%;
       width:150px;height:150px;background:@darkblue;text-align:center;
       color:white;line-height:15px;
       b { font-weight:bold;margin-top:18px }
@@ -422,10 +472,6 @@ form.requestForm {
       min-width:310px;
       max-width:310px;
       .control-label { font-size:13px }
-    }
-
-    section.done {
-      display:none
     }
 
     section.type {
@@ -465,7 +511,7 @@ form.requestForm {
     }
     section.time {
       input[type=radio]+label { margin-top:30px }
-      i { color:@mediumgray;font-size:11px;padding-left:35px;display:block;width:140px;line-height:14px }
+      // i { color:@mediumgray;font-size:11px;padding-left:35px;display:block;width:140px;line-height:14px }
     }
     section.budget {
       .control-label { margin-bottom:15px }
@@ -478,7 +524,6 @@ form.requestForm {
 }
 
 article.blogpost { section.done { display:none} }
-
 
 
 section#request {

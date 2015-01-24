@@ -19,14 +19,64 @@ angular.module("APRequestDirectives", [])
 
 .factory('StepHelper', function StepHelper() {
 
+  var order = [
+    'type',
+    'tags',
+    'experience',
+    'brief',
+    'time',
+    'hours',
+    'budget',
+    'submit'  ]
+
+  this.stepBack = (scope) => {
+    var currentIdx = order.indexOf(scope.done.current)
+    // console.log('current.back', scope.done.current, currentIdx, order[currentIdx-1])
+    if (currentIdx > 0)
+      scope.done.current = order[currentIdx-1]
+  }
+
+  this.canForward = (scope) => {
+    // console.log('can.forward', scope.done.current)
+    var c = scope.done.current
+    if (c == 'type') return scope.done.type
+    if (c == 'tags') return scope.request.tags && scope.request.tags.length > 0
+    if (c == 'experience') return scope.request.experience
+    if (c == 'brief') return scope.request.brief && scope.request.brief.length > 10
+    if (c == 'time') return scope.request.time
+    if (c == 'hours') return scope.request.hours
+    if (c == 'budget') return scope.request.budget
+    if (c == 'submit') return true
+    return false
+  }
+
+  this.setDone = (scope, step) => {
+    // console.log('setDone', step, scope.done.current)
+    if (!scope.done[step])
+      scope.done[step] = true
+
+    // console.log('step', step)
+    if (step == 'submit')
+      window.location = `/review/${scope.request._id}`
+    if (step == scope.done.current) {
+      var currentIdx = order.indexOf(scope.done.current)
+      if (this.canForward(scope))
+        scope.done.current = order[currentIdx+1]
+    }
+  }
+
+  this.stepForward = (scope) => {
+    this.setDone(scope, scope.done.current)
+  }
+
   this.setDefaultState = (scope) => {
     scope.done = {
       type: false,
       tags: false,
       brief: false,
       experience: false,
-      hours: false,
       time: false,
+      hours: false,
       budget: false,
       current: 'type'
     }
@@ -95,76 +145,82 @@ angular.module("APRequestDirectives", [])
     scope: true,
     controllerAs: 'RequestFormCtrl',
     controller($rootScope, $scope) {
+
       $scope.sortSuccess = function() {}
       $scope.sortFail = function() {}
       $scope.tags = () => $scope.request.tags ? $scope.request.tags : null;
-      $scope.updateTags = (scope, newTags) =>
-        $scope.request.tags = newTags;
-
+      $scope.updateTags = (scope, newTags) => $scope.request.tags = newTags;
+      $scope.deselectTag = (tag) => $scope.request.tags = _.without($scope.request.tags, tag);
+      $scope.tagsString = () => util.tagsString($scope.request.tags)
       $scope.selectTag = function(tag) {
-        var tags = $scope.request.tags;
+        var tags = $scope.request.tags
         var updated = []
         if ( _.contains(tags, tag) ) updated = _.without(tags, tag)
         else updated = _.union(tags, [tag])
         if (updated.length > 3) return alert('You are allowed up to 3 tags for a request.')
         else
           for (var i=0;i<updated.length;i++) { updated[i].sort = i }
-
         $scope.request.tags = updated
-      };
+      }
 
-      $scope.deselectTag = (tag) =>
-        $scope.request.tags = _.without($scope.request.tags, tag);
+      $scope.save = function(step) {
+        if ($scope.request._id)
+          DataService.requests.update(_.extend({step:step}, _.clone($scope.request)), setScope)
+        else
+          DataService.requests.create($scope.request, setScope)
+      }
 
-      $scope.tagsString = () =>
-        util.tagsString($scope.request.tags)
+      $scope.stepBack = () => StepHelper.stepBack($scope)
+      $scope.canForward = () => StepHelper.canForward($scope)
+      var stepForward = function(currentStep) {
+        var update = currentStep!=null || !$scope.done[$scope.done.current]
+        if (!currentStep) currentStep = $scope.done.current
+        if (update || currentStep == 'brief')
+          $scope.save(currentStep)
+        StepHelper.setDone($scope, currentStep)
+      }
+      $scope.stepForward = stepForward
 
-      var setDoneCurrent = function(done, current) {
-        $scope.save(done);
-        if (!$scope.done[done])
-          $scope.done[done] = true
+      $scope.$watch('request', (r) => StepHelper.setUpdatedState($scope,r) )
 
-        if (done == $scope.done.current)
-          $scope.done.current = current
+      var setScope = function(r) {
+        $scope.request = r
       }
 
       $scope.setType = function(val) {
         if ($scope.request) $scope.request.type = val
         else $scope.request = { type: val }
-        setDoneCurrent('type', 'tags')
+        stepForward('type')
       }
 
-      $scope.setTime = () => setDoneCurrent('time', 'budget')
-      $scope.setHours = () => setDoneCurrent('hours', 'time')
-      $scope.setBuget = () => setDoneCurrent('budget', 'submit')
-      $scope.setExperience = () => setDoneCurrent('experience', 'brief')
-      $scope.doneBrief = () => setDoneCurrent('brief', 'hours')
+      $scope.setTime = () => stepForward('time')
+      $scope.setHours = () => stepForward('hours')
+      $scope.setBuget = () => stepForward('budget')
+      $scope.setExperience = () => stepForward('experience')
+
       $scope.doneTags = () => {
-        setDoneCurrent('tags', 'experience')
+        stepForward('tags')
         if (!$rootScope.session.tags || $rootScope.session.tags.length == 0)
           SessionService.tags($scope.request.tags, ()=>{},()=>{});
       }
-      $scope.submit = () => setDoneCurrent('submit', 'submit')
+      $scope.submit = () => stepForward('submit')
 
-      StepHelper.setDefaultState($scope);
-      $scope.$watch('request', (r) => StepHelper.setUpdatedState($scope,r) );
+      StepHelper.setDefaultState($scope)
 
-      $scope.save = function(step) {
-        if ($scope.request._id) {
-          DataService.requests.update($scope.request, step, function(r) {
-            $scope.request = r
-            if (step == "submit") {
-              if ($rootScope.emailVerified) window.location = '/billing'
-              else window.location = `/review/${r._id}`
-            }
-          }, ServerErrors.add)
-        } else {
-          DataService.requests.create($scope.request, function(r) {
-            $scope.request = r
-          },
-            ServerErrors.add)
-        }
-      }
+      // $timeout(() => {
+      //   $scope.setType('mentoring')
+      //   $scope.doneTags()
+      //   $scope.request.experience = "beginner"
+      //   $scope.setExperience()
+      //   $scope.request.brief = "beginner troubles yo"
+      //   $scope.stepForward()
+      //   $scope.request.time = "rush"
+      //   $scope.setTime()
+      //   $scope.request.hours = "1"
+      //   $scope.setHours()
+        // $scope.request.budget = "90"
+        // $scope.setBuget()
+      // }, 300)
 
       $scope.sendVerificationEmail = () =>
         DataService.requests.sendVerifyEmailByCustomer($scope.request,
@@ -174,23 +230,6 @@ angular.module("APRequestDirectives", [])
         },
           (e) => $scope.emailAlerts = [{ type: 'danger', msg: `${e.message}` }]
         )
-
-
-      // $timeout(() => {
-      //   $scope.setType('mentoring')
-      //   $scope.doneTags()
-      //   $scope.request.experience = "beginner"
-      //   $scope.setExperience()
-      //   $scope.request.brief = "beginner"
-      //   $scope.doneBrief()
-      //   $scope.request.hours = "1"
-      //   $scope.setHours()
-      //   $scope.request.time = "rush"
-      //   $scope.setTime()
-      //   $scope.request.budget = "90"
-      //   $scope.setBuget()
-      // }, 300)
-
     }
   };
 
@@ -221,7 +260,6 @@ angular.module("APRequestDirectives", [])
   };
 
 })
-
 
 
 .directive('requestReviewSummary', function() {
