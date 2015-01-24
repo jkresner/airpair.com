@@ -1,6 +1,12 @@
 <form ng-if="request" class="requestForm" novalidate name="requestForm" ng-submit="RequestFormCtrl.submit(requestForm.$valid, request)">
 
-  <request-progress></request-progress>
+<div class="controls" ng-if="request.type">
+  <a ng-if="done.current != 'type'" ng-click="stepBack()"><img src="/static/img/css/request/prev.png"></a>
+  <a ng-if="canForward()" ng-click="stepForward()" class="forward"><img src="/static/img/css/request/next.png"></a>
+  <a ng-if="!canForward()" class="wait"><img src="/static/img/css/request/next.png"></a>
+</div>
+
+<request-progress></request-progress>
 
 <section ng-class="stepClass('submit')">
 
@@ -16,7 +22,7 @@
 
 <section ng-class="stepClass('budget')">
 
-  <div form-group>
+  <div form-group class="radios">
     <label class="control-label" for="requestTime">What is your max hourly budget?</label>
 
     <input id="requestBudget300" name="budget" ng-model="request.budget" type="radio" value="300" ng-click="setBuget()">
@@ -69,11 +75,20 @@
   <div form-group>
     <label class="control-label" for="requestTime">How soon would you like to speak to an expert?</label>
 
-    <input id="requestTimeRegular" name="time" ng-model="request.time" type="radio" value="regular" ng-click="setTime()">
-    <label for="requestTimeRegular"><img src="/static/img/css/request/time-regular.png">In 1-2 Days</label>
+    <div class="radios">
+      <input id="requestTimeRegular" name="time" ng-model="request.time" type="radio" value="regular" ng-click="setTime()">
+      <label for="requestTimeRegular"><img src="/static/img/css/request/time-regular.png">In 1-2 Days</label>
+    </div>
 
-    <input id="requestTimeRush" name="time" ng-model="request.time" type="radio" value="rush" ng-click="setTime()">
-    <label for="requestTimeRush"><img src="/static/img/css/request/time-rush.png">In 1-2 Hours <i>+10/hr rush fee paid to expert</i></label>
+    <div class="radios">
+      <input id="requestTimeRush" name="time" ng-model="request.time" type="radio" value="rush" ng-click="setTime()">
+      <label for="requestTimeRush"><img src="/static/img/css/request/time-rush.png">In 1-2 Hours <i>+10/hr rush fee paid to expert</i></label>
+    </div>
+
+    <div class="radios">
+      <input id="requestTimeLater" name="time" ng-model="request.time" type="radio" value="later" ng-click="setTime()">
+      <label for="requestTimeLater"><img src="/static/img/css/request/time-later.png">I don't know yet
+    </div>
 
   </div>
 
@@ -82,7 +97,7 @@
 
 <section ng-class="stepClass('hours')">
 
-  <div form-group>
+  <div form-group class="radios">
     <label class="control-label" for="requestHours">How many hours do you think you'll need?</label>
 
     <input id="requestHours1" name="hours" ng-model="request.hours" type="radio" value="1" ng-click="setHours()">
@@ -108,8 +123,6 @@
 
 <section ng-class="stepClass('brief')">
 
-  <a ng-if="done.current == 'brief' && (request.brief && request.brief.length > 20)" ng-click="doneBrief()" class="btn">Continue</a>
-
   <div form-group>
     <label class="control-label" for="requestBrief">Specifically what do you need help with?</label>
     <textarea id="requestBrief" form-control
@@ -118,6 +131,10 @@
       required>
     </textarea>
   </div>
+  <a href="https://guides.github.com/features/mastering-markdown/" target="_blank" class="md">
+    <img src="/static/img/css/request/markdown.png" />
+    markdown supported
+  </a>
   <hr />
 
 </section>
@@ -130,28 +147,28 @@
     <label class="control-label" for="requestExperience" ng-if="request.tags.length == 1">What's your experience with {{request.tags[0].slug}}?</label>
     <label class="control-label" for="requestExperience" ng-if="request.tags.length > 1">What's your experience using {{tagsString()}} together?</label>
 
-    <i>Well make sure to match you with an equal or more experienced expert.</i>
+    <!-- <i>Well make sure to match you with an equal or more experienced expert.</i> -->
 
-     <div class="experienceOptions">
+     <div class="experienceOptions radios">
       <span>
         <input id="requestExperienceBeginner" name="experience" ng-model="request.experience" type="radio" value="beginner"
         ng-change="setExperience()"
         >
-        <label for="requestExperienceBeginner"><img src="/static/img/css/request/experience-beginner.png" style="padding-left:2px;padding-right:0px" /> Beginner</label>
+        <label for="requestExperienceBeginner"><img src="/static/img/css/request/experience-beginner.png" /> Beginner</label> <i>Basic setup and functionality</i>
       </span>
 
       <span>
         <input id="requestExperienceProficient" name="experience" ng-model="request.experience" type="radio" value="proficient"
         ng-change="setExperience()"
         >
-        <label for="requestExperienceProficient"><img src="/static/img/css/request/experience-proficient.png" style="padding-right:1px" />Proficient</label>
+        <label for="requestExperienceProficient"><img src="/static/img/css/request/experience-proficient.png" /> Proficient</label> <i>Typical development issues</i>
       </span>
 
       <span>
         <input id="requestExperienceAdvanced" name="experience" ng-model="request.experience" type="radio" value="advanced"
         ng-change="setExperience()"
         >
-        <label for="requestExperienceAdvanced"><img src="/static/img/css/request/experience-advanced.png" style="padding-left:3px;padding-right:1px" /> Advanced</label>
+        <label for="requestExperienceAdvanced"><img src="/static/img/css/request/experience-advanced.png" /> Advanced</label> <i>Trying to do something crazy here</i>
       </span>
     </div>
 
@@ -194,8 +211,6 @@
 
 <section ng-class="stepClass('tags')">
 
-  <a ng-if="done && done.current == 'tags' && request.tags && request.tags.length > 0" ng-click="doneTags()" class="btn">Continue</a>
-
   <div form-group>
     <label class="control-label" for="requestTags">What technologies are you using?</label>
     <div class="form-group">
@@ -229,8 +244,8 @@
     </select>
 
     <div class="nomob info">
-      <img class="user" ng-src="/static/img/css/chat/pairy.png" />
-      <p><b>Want live programming help over video chat?</b>
+      <img class="user" ng-src="/static/img/css/request/ap-circle-mediumm.png" />
+      <p><b>Get live programming help over video chat</b>
         <span>Tell us what you need and get matched with an expert in
         as little as 30 minutes.</span>
       </p>
