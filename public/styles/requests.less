@@ -1,101 +1,101 @@
 @import "ap.less";
 
-  section#join {
-    text-align:center;
-    background:@lightblue;
-    border-radius:5px;
-    padding:30px 10px 20px 10px;
-    height:320px;
+section#join {
+  text-align:center;
+  background:@lightblue;
+  border-radius:5px;
+  padding:30px 10px 20px 10px;
+  height:320px;
 
-    .circle {
-      border-radius:50%;
-      background:@bluegray;
-      width:100px;height:100px;
-      margin:0 10px;
-      display:block;
-      font-size:32px;
-      font-weight:bold;
-      color:white;
-      padding-top:2px;
-    }
-    img, .you { .circle; }
-    .you {
-      b { padding-top:24px;display:block; }
+  .circle {
+    border-radius:50%;
+    background:@bluegray;
+    width:100px;height:100px;
+    margin:0 10px;
+    display:block;
+    font-size:32px;
+    font-weight:bold;
+    color:white;
+    padding-top:2px;
+  }
+  img, .you { .circle; }
+  .you {
+    b { padding-top:24px;display:block; }
+    display:inline-block;
+    img { margin:0;opacity:1;padding:0 }
+  }
+
+  h3 { margin:25px 0 0 0px;padding-bottom:0px }
+
+  ul { .ulNoStyle }
+  li { position:relative;width:120px;height:100px;vertical-align:top }
+
+  form {
+    height:120px;
+    background:white;
+    position:relative;
+    vertical-align:top;
+    .lightblueForm;
+    padding:5px;
+
+
+    .requestEmailDiv { margin:5px auto;width:90%  }
+    .requestNameDiv {
+      position:absolute;
+      top:10px;
+      left:30px;
+      right:310px;
       display:inline-block;
-      img { margin:0;opacity:1;padding:0 }
+      margin:0;
+      padding:0;
+      height:100px;
     }
 
-    h3 { margin:25px 0 0 0px;padding-bottom:0px }
+    .error {
+      padding-top:2px;
+      text-align:right
+    }
 
-    ul { .ulNoStyle }
-    li { position:relative;width:120px;height:100px;vertical-align:top }
+    input {
+      margin-top:5px;
+      border-radius:2px;
+      border-top:none;border-left:none;border-right:none;box-shadow:none;
+      border-bottom:solid 2px @turquoise;
+      width:100%;
+      font-size:24px;
+      padding:16px 0px 15px 10px;
+    }
 
-    form {
-      height:120px;
-      background:white;
-      position:relative;
-      vertical-align:top;
-      .lightblueForm;
-      padding:5px;
+    .has-error input {
+      border-bottom:solid 2px @error;
+    }
 
+    .inputPlaceholder { color:@lightorange;font-size:20px }
+    input::-webkit-input-placeholder { .inputPlaceholder }
+    input::-moz-placeholder { .inputPlaceholder }
+    input:-ms-input-placeholder { .inputPlaceholder }
 
-      .requestEmailDiv { margin:5px auto;width:90%  }
-      .requestNameDiv {
-        position:absolute;
-        top:10px;
-        left:30px;
-        right:310px;
-        display:inline-block;
-        margin:0;
-        padding:0;
-        height:100px;
+    button {
+      position:absolute;
+      top:15px;
+      right:30px;
+      width:30%;
+      padding:20px;
+      text-transform:uppercase;
+
+      &.focushide {
+        width:1px;opacity:0;
+        font-size:1px;
       }
+    }
 
-      .error {
-        padding-top:2px;
-        text-align:right
-      }
-
-      input {
-        margin-top:5px;
-        border-radius:2px;
-        border-top:none;border-left:none;border-right:none;box-shadow:none;
-        border-bottom:solid 2px @turquoise;
-        width:100%;
-        font-size:24px;
-        padding:16px 0px 15px 10px;
-      }
-
-      .has-error input {
-        border-bottom:solid 2px @error;
-      }
-
-      .inputPlaceholder { color:@lightorange;font-size:20px }
-      input::-webkit-input-placeholder { .inputPlaceholder }
-      input::-moz-placeholder { .inputPlaceholder }
-      input:-ms-input-placeholder { .inputPlaceholder }
-
-      button {
-        position:absolute;
-        top:15px;
-        right:30px;
-        width:30%;
-        padding:20px;
-        text-transform:uppercase;
-
-        &.focushide {
-          width:1px;opacity:0;
-          font-size:1px;
-        }
-      }
-
-      span {
-        position:absolute;
-        top:82px;
-        right:35px;
-      }
+    span {
+      position:absolute;
+      top:82px;
+      right:35px;
     }
   }
+}
 
 .requests {
   margin-left:-5px;
@@ -184,6 +184,43 @@
   }
 }
 
+article.requestWidget {
+  z-index:2;
+  position:relative;
+  float:right;
+  margin:32px 60px 0 0;
+  height:289px;
+  width:200px;
+  border:solid 2px @lightblue;
+  text-transform:uppercase;
+  font-size:11px;
+  h5 { text-align:center;font-size:11px;}
+  h4 { text-align:center;font-size:14px;font-weight:bold;line-height:16px }
+  ul {
+    width:100%;
+    height:130px;
+    position:absolute;
+    bottom:10px;
+    .ulNoStyle;
+    padding:10px;
+    li {
+      text-align:center;width:49%;margin-bottom:12px;
+      img { display:block;margin:0px auto 6px auto  }
+      em { font-style:normal;font-size:24px;display:block;maring-bottom:5px }
+    }
+  }
+  ul.tags
+  {
+    padding:0px 10px;
+    font-size:15px;
+    position:inherit;
+    margin-top:20px;
+    li {
+      margin:3px 0;display:block;text-align:center;text-transform:none;
+      color:@lightorange;width:100%;
+    }
+  }
+}
 
 form.requestForm {
   position:relative;
@@ -549,6 +586,20 @@ section#request {
 
   @media only screen and (max-width: 900px) {
     .requests { display:none }
+  }
+}
+
+section.happy {
+  float:left;
+  max-width:640px;
+  h3 { border-bottom:solid 1px @lightblue;padding-bottom:5px; }
+  ul {
+    li { padding:20px 0;width:100% }
+    .ulNoStyle;
+    img.user { width:100px;height:100px;margin-right:20px;float:left }
+    img.recording { float:right;margin-top:3px }
+    p { display:inline-block;max-width:370px;text-align:justify; }
+    label { color:@lightorange;display:block;float:right;padding:10px 5px 0px 5px }
   }
 }
 

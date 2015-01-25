@@ -239,6 +239,16 @@ angular.module("APRequestDirectives", [])
 })
 
 
+.directive('requestWidget', function() {
+  return {
+    template: require('./requestWidget.html'),
+    scope: { r: '=req' },
+    controller($rootScope, $scope, StepHelper) {
+    }
+  }
+})
+
+
 .directive('requestAdmin', function() {
   return {
     template: require('./requestAdmin.html'),

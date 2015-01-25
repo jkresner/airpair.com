@@ -23,4 +23,34 @@
 
   <div request></div>
 
+
 </section>
+
+<section class="happy nomob">
+
+  <h3>Happy customers this month</h3>
+
+  <ul>
+    <li ng-repeat="c in customers">
+      <img class="user" src="{{c.avatar}}" />
+      <p>{{c.review}}
+        <label>- {{c.name}}</label>
+      </p>
+      <img class="recording" src="https://i.ytimg.com/vi/{{c.youtubeId}}/default.jpg">
+    </li>
+  </ul>
+
+
+  <h3>Expert reviews this month</h3>
+
+  <ul>
+    <li ng-repeat="r in reviews">
+      <img class="user" src="{{r.avatar}}" />
+      <p>{{r.review}}
+        <label>- {{r.name}}</label>
+      </p>
+    </li>
+  </ul>
+
+</section>
+
