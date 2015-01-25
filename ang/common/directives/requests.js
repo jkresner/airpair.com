@@ -155,7 +155,8 @@ angular.module("APRequestDirectives", [])
       $scope.selectTag = function(tag) {
         var tags = $scope.request.tags
         var updated = []
-        if ( _.contains(tags, tag) ) updated = _.without(tags, tag)
+        var existing = _.find(tags, (t) => t._id == tag._id)
+        if (existing) updated = _.without(tags, existing)
         else updated = _.union(tags, [tag])
         if (updated.length > 3) return alert('You are allowed up to 3 tags for a request.')
         else
@@ -194,9 +195,11 @@ angular.module("APRequestDirectives", [])
       }
 
       $scope.setTime = () => stepForward('time')
-      $scope.setHours = () => stepForward('hours')
       $scope.setBuget = () => stepForward('budget')
       $scope.setExperience = () => stepForward('experience')
+      $scope.setHours = () => {
+        stepForward('hours')
+      }
 
       $scope.doneTags = () => {
         stepForward('tags')
@@ -250,13 +253,19 @@ angular.module("APRequestDirectives", [])
 })
 
 
-.directive('requestListItem', function() {
+.directive('requestListItem', function(DataService) {
 
   return {
     template: require('./requestListItem.html'),
     scope: { r: '=req' },
     link(scope, element, attrs) {},
-    controller($scope, $attrs) {}
+    controller($scope, $element, $attrs) {
+      $scope.deleteRequest = function(_id) {
+        DataService.requests.deleteRequest({_id}, (r) =>
+          $element.remove()
+        )
+      }
+    }
   };
 
 })
