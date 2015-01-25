@@ -177,6 +177,10 @@
       padding:10px 6px;
     }
 
+    .entry-footer {
+      a { display:inline-block;margin-left:3px }
+    }
+
   }
 }
 
@@ -324,7 +328,10 @@ form.requestForm {
     font-size:13px;padding-left:5px
   }
 
-  .rush { padding-top:8px }
+  .radios input {
+    display:block;
+  }
+
 
   section.type {
 
@@ -420,39 +427,49 @@ form.requestForm {
     }
   }
 
-  .budget, .hours, .time {
-    // input[type=radio]+label { display:block }
-  }
-
-  .budget.done, .hours.done, .time.done {
-    // input[type=radio]+label { display:inline-block;margin-right:26px }
-    // i { display:none }
-  }
-
   section.time {
     .radios { position:relative;padding-top:6px }
     .control-label { margin-bottom:20px }
-    // input[type=radio]+label { margin-top:40px }
-    // i { .detail }
-    i { display:none }
+    i { .detail;margin-left:200px }
+  }
+
+  section.hours {
+    .radios input[type=radio] + label {
+     margin-bottom:5px;
+     background-position:0 5px;
+   }
+
+   .onrush { position:absolute;height:100px;z-index:2;
+      padding:5px 0px 0 120px;
+   }
+   .rush {
+    opacity:0.5;
+   }
   }
 
   section.budget {
-    .control-label { margin-bottom:7px }
-    b { font-weight:400;display:inline-block;width:82px;
-      span { padding-left:2px;display:inline-block; }
+    b {
+      font-weight:400;width:82px;display:inline-block;
+      span { padding-left:2px;color:gray;font-size:12px }
     }
     i { text-transform:none;font-size:12px;font-style:normal;margin-left:10px;
       color:@mediumgray;
       em { font-weight:bold;color:@lightorange }
     }
-    label { margin-bottom:7px }
+    label { margin-bottom:8px;background-position:0 5px; }
     .info { position:absolute;top:75px;right:20px;border-radius:50%;
       width:150px;height:150px;background:@darkblue;text-align:center;
-      color:white;line-height:15px;
-      b { font-weight:bold;margin-top:18px }
+      color:white;line-height:15px;padding-top:18px;
+      b { font-weight:bold }
       p { padding:2px 18px;font-size:13px;margin-top:5px }
     }
+
+     .onrush { position:absolute;height:50px;z-index:2;width:90%
+        // padding:5px 0px 0 120px;
+     }
+     .rush {
+      opacity:0.5;
+     }
   }
 
   @media only screen and (max-width: 640px) {

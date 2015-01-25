@@ -256,7 +256,7 @@ var save = {
   requestPasswordChange(email, cb) {
     var anonymous = this.user == null
     svc.searchOne(Data.query.existing(email), null, (e,user) => {
-      if (e || !user) return cb(svc.Forbidden(`${email} not found`))
+      if (e || !user) return cb(svc.Forbidden(`No user found with email ${email}`))
 
       var ups = { local: _.extend(user.local || {}, {
         changePasswordHash: Data.data.generateHash(email),
