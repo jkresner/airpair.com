@@ -13,22 +13,17 @@ nav#chat {
   top:@headerHeight;
   bottom:0;
   margin:0;
-  right: 0;
-
+  right:0;
   background-color: #fff;
+  font-size:13px;
+  color:@gray;
+  width:@sideChatWidth;
+  border-left:solid 1px @darkblue;
+
   header {
     white-space: nowrap;
     height: 38px;
   }
-
-
-  font-size:13px;
-  color:@gray;
-  // background:@reallypalegray;
-  bottom:1;
-  right:0;
-  width:@sideChatWidth;
-  border-left:solid 1px @darkblue;
 
   .online {
     border:solid 1px green;
@@ -122,23 +117,23 @@ nav#chat {
 
   // for badge icon
   a.icon {
+    position: relative;
     i {
       position: absolute;
-      top: 2px;
-      left: 24px;
+      top: -2px;
+      right: -1px;
       opacity: 0.9;
       background: @orange;
       border-radius: 7px;
-      /* width: 14px; */
-      height: 14px;
+      
+      height: 16px;
       line-height: 12px;
-      float: right;
       font-style: normal;
       font-size: 9px;
       font-weight: bold;
       color: white;
       text-align: center;
-      border: 1px solid #ccc;
+      border: 2px solid #151821;
       padding: 0px 4px 0px 4px;
     }
   }
@@ -192,6 +187,7 @@ nav#chat {
           height: 30px;
           width: 30px;
           border-radius: 15px;
+          background-color: @orange;
         }
       }
       .right {
@@ -208,22 +204,47 @@ nav#chat {
         }
       }
     }
-    .item.green {
-      background-color: #EAF4F2 !important;
+    .item.unread {
+      background-color: #DFF2EF;
     }
     .item.odd {
       background-color: #fcfcfc;
     }
 
   }
+  
+  #chatHeader {
+    height: 200px;
+    overflow: auto;
+    border-bottom: 2px solid #DEE8E6;
+    width: 224px;
+  }
+  
+  #chatAvatar {
+    border-radius: 100%;
+    width: 80px;
+    height: 80px;
+    margin: 0 auto;
+    display: block;
+    margin-top: 48px;
+    background-color: @orange;
+  }
+  
+  #chatStatus {
+    font-size: 10px;
+    color: #D87D59;
+    width: 100px;
+    text-align: center;
+    margin: 10px auto;
+  }
 
   // container for messages
   #chatMessages {
     overflow: auto;
     overflow-x: hidden;
-    width: 100%;
+    width: 220px;
     position: absolute;
-    top: 35px;
+    top: 235px;
     left: 0;
     right: 0;
     bottom: 30px;
@@ -257,6 +278,7 @@ nav#chat {
           height: 30px;
           width: 30px;
           border-radius: 15px;
+          background-color: @orange;
         }
       }
       .right {
@@ -277,8 +299,8 @@ nav#chat {
         background-color: #f8f8f8;
       }
     }
-    .item.odd {
-      background-color: #fcfcfc;
+    .item.fromOther {
+      background-color: #f5f5f5;
     }
   }
 
