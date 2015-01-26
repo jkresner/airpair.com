@@ -66,7 +66,7 @@ var cfg = {
     }
   },
   chat: {
-    on: false,
+    on: true,
     firebase: {
       url: 'https://airpair-chat-dev.firebaseio.com/',
       secret: 'BKE9PP6DP4k06Es10nD6Rvh9443Fz7XBstb6fg54'
