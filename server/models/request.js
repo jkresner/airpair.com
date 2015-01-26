@@ -123,6 +123,7 @@ var Request = new Schema({
     closed:         { type: Date },
   },
   messages:        [Shared.Message],  // TODO, un-nest this
+  title:            String,
   canceledDetail:   String,
   lastTouch:        Shared.Touch,
   // New v1

@@ -58,6 +58,7 @@ angular.module('APDataSvc', [])
       update: PUT((d)=>`/requests/${d._id}`,null,(d)=>{ return{type:'request',step:d.step}}),
       getMyRequests: GET((d)=>`/requests`),
       getById: GET((d)=>`/requests/${d._id}`),
+      deleteRequest: DELETE((d)=>`/requests/${d._id}`),
       getReviewById(id, success, error) {
         $http.get(`${API}/requests/review/${id}`).success(success).error(error)
       },

@@ -17,7 +17,18 @@ angular.module("APRequestDirectives", [])
   return this
 })
 
-.factory('StepHelper', function StepHelper() {
+.factory('StepHelper', function StepHelper(DataService) {
+
+  var getPayMethods = function(scope) {
+    DataService.billing.getPaymethods((r) => {
+      // console.log('getPayMethods', r)
+      if (r.btoken) {
+        scope.paymethods = null
+        scope.btoken = r.btoken
+      }
+      else scope.paymethods = r
+    })
+  }
 
   var order = [
     'type',
@@ -37,16 +48,17 @@ angular.module("APRequestDirectives", [])
   }
 
   this.canForward = (scope) => {
-    // console.log('can.forward', scope.done.current)
     var c = scope.done.current
     if (c == 'type') return scope.done.type
     if (c == 'tags') return scope.request.tags && scope.request.tags.length > 0
     if (c == 'experience') return scope.request.experience
     if (c == 'brief') return scope.request.brief && scope.request.brief.length > 10
-    if (c == 'time') return scope.request.time
     if (c == 'hours') return scope.request.hours
     if (c == 'budget') return scope.request.budget
-    if (c == 'submit') return true
+    if (c == 'submit') return false
+    if (c == 'time') return scope.request.time &&
+      (scope.request.time != 'rush' ||
+      (scope.request.time == 'rush' && scope.paymethods && scope.paymethods.length > 0))
     return false
   }
 
@@ -60,8 +72,18 @@ angular.module("APRequestDirectives", [])
       window.location = `/review/${scope.request._id}`
     if (step == scope.done.current) {
       var currentIdx = order.indexOf(scope.done.current)
-      if (this.canForward(scope))
+      if (this.canForward(scope)) {
         scope.done.current = order[currentIdx+1]
+        scope.entercard = false
+        if (scope.done.current == 'time')
+          getPayMethods(scope)
+      }
+      else if (step == 'time') {
+        if (scope.btoken != null) {
+          scope.entercard = true
+          scope.cardSubmitText = 'Save'
+        }
+      }
     }
   }
 
@@ -92,6 +114,7 @@ angular.module("APRequestDirectives", [])
       scope.done.hours = (r.hours) ? true : false,
       scope.done.time = (r.time) ? true : false,
       scope.done.budget = (r.budget) ? true : false
+      scope.done.submit = (r.title) ? true : false
 
       var current = 'submit'
       if (!scope.done.tags) current = 'tags'
@@ -100,6 +123,7 @@ angular.module("APRequestDirectives", [])
       else if (!scope.done.hours) current = 'hours'
       else if (!scope.done.time) current = 'time'
       else if (!scope.done.budget) current = 'budget'
+      else if (!scope.done.submit) current = 'submit'
       scope.done.current = current
     }
   }
@@ -139,13 +163,14 @@ angular.module("APRequestDirectives", [])
 })
 
 
-.directive('request', function($timeout, ServerErrors, DataService, SessionService, StepHelper) {
+.directive('request', function($timeout, ServerErrors, DataService,
+  SessionService, StepHelper, RequestsUtil) {
+
   return {
     template: require('./request.html'),
     scope: true,
     controllerAs: 'RequestFormCtrl',
     controller($rootScope, $scope) {
-
       $scope.sortSuccess = function() {}
       $scope.sortFail = function() {}
       $scope.tags = () => $scope.request.tags ? $scope.request.tags : null;
@@ -155,7 +180,8 @@ angular.module("APRequestDirectives", [])
       $scope.selectTag = function(tag) {
         var tags = $scope.request.tags
         var updated = []
-        if ( _.contains(tags, tag) ) updated = _.without(tags, tag)
+        var existing = _.find(tags, (t) => t._id == tag._id)
+        if (existing) updated = _.without(tags, existing)
         else updated = _.union(tags, [tag])
         if (updated.length > 3) return alert('You are allowed up to 3 tags for a request.')
         else
@@ -181,10 +207,13 @@ angular.module("APRequestDirectives", [])
       }
       $scope.stepForward = stepForward
 
-      $scope.$watch('request', (r) => StepHelper.setUpdatedState($scope,r) )
+      $scope.$watch('request', (r) =>
+        StepHelper.setUpdatedState($scope,r) )
 
       var setScope = function(r) {
         $scope.request = r
+        if ($scope.done.current == 'submit' && $scope.request.title == null)
+          $scope.request.title = RequestsUtil.defaultTitle($scope.request)
       }
 
       $scope.setType = function(val) {
@@ -194,9 +223,11 @@ angular.module("APRequestDirectives", [])
       }
 
       $scope.setTime = () => stepForward('time')
-      $scope.setHours = () => stepForward('hours')
       $scope.setBuget = () => stepForward('budget')
       $scope.setExperience = () => stepForward('experience')
+      $scope.setHours = () => {
+        stepForward('hours')
+      }
 
       $scope.doneTags = () => {
         stepForward('tags')
@@ -214,13 +245,25 @@ angular.module("APRequestDirectives", [])
       //   $scope.setExperience()
       //   $scope.request.brief = "beginner troubles yo"
       //   $scope.stepForward()
-      //   $scope.request.time = "rush"
+      //   $scope.request.time = "regular"
       //   $scope.setTime()
       //   $scope.request.hours = "1"
       //   $scope.setHours()
-        // $scope.request.budget = "90"
-        // $scope.setBuget()
+      //   // $scope.request.budget = "90"
+      //   // $scope.setBuget()
       // }, 300)
+
+      $scope.setPayMethods = function(val) {
+        // console.log('setPayMethods', val)
+        $scope.paymethods = [val]
+        $scope.entercard = false
+        this.stepForward()
+      }
+
+      $scope.exitcard = () => {
+        $scope.entercard = false
+        $scope.request.time = null
+      }
 
       $scope.sendVerificationEmail = () =>
         DataService.requests.sendVerifyEmailByCustomer($scope.request,
@@ -233,6 +276,16 @@ angular.module("APRequestDirectives", [])
     }
   };
 
+})
+
+
+.directive('requestWidget', function() {
+  return {
+    template: require('./requestWidget.html'),
+    scope: { r: '=req' },
+    controller($rootScope, $scope, StepHelper) {
+    }
+  }
 })
 
 
@@ -250,13 +303,19 @@ angular.module("APRequestDirectives", [])
 })
 
 
-.directive('requestListItem', function() {
+.directive('requestListItem', function(DataService) {
 
   return {
     template: require('./requestListItem.html'),
     scope: { r: '=req' },
     link(scope, element, attrs) {},
-    controller($scope, $attrs) {}
+    controller($scope, $element, $attrs) {
+      $scope.deleteRequest = function(_id) {
+        DataService.requests.deleteRequest({_id}, (r) =>
+          $element.remove()
+        )
+      }
+    }
   };
 
 })
