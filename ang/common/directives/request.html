@@ -2,7 +2,7 @@
 
 <form ng-if="request" class="requestForm" novalidate name="requestForm" ng-submit="RequestFormCtrl.submit(requestForm.$valid, request)">
 
-<div class="controls" ng-if="request.type">
+<div class="controls" ng-if="request.type && !entercard">
   <a ng-if="done.current != 'type'" ng-click="stepBack()"><img src="/static/img/css/request/prev.png"></a>
   <a ng-if="canForward()" ng-click="stepForward()" class="forward"><img src="/static/img/css/request/next.png"></a>
   <a ng-if="!canForward()" class="wait"><img src="/static/img/css/request/next.png"></a>
@@ -130,7 +130,7 @@
 
 <section ng-class="stepClass('time')">
 
-  <div form-group>
+  <div form-group ng-if="!entercard">
     <label class="control-label" for="requestTime">How soon would you like to speak to an expert?</label>
 
     <div class="radios">
@@ -140,7 +140,7 @@
 
     <div class="radios">
       <input id="requestTimeRush" name="time" ng-model="request.time" type="radio" value="rush" ng-click="setTime()">
-      <label for="requestTimeRush"><img src="/static/img/css/request/time-rush.png">In 1-2 Hours <i>+10/hr rush fee paid to expert</i></label>
+      <label for="requestTimeRush"><img src="/static/img/css/request/time-rush.png">In 1-2 Hours <i>+ $20/hr rush fee paid to expert</i></label>
     </div>
 
     <div class="radios">
@@ -148,6 +148,19 @@
       <label for="requestTimeLater"><img src="/static/img/css/request/time-later.png">I don't know yet
     </div>
 
+  </div>
+
+  <div class="entercard" ng-if="entercard">
+    <a class="exitcard" ng-click="exitcard()">x</a>
+    <label class="control-label" for="requestTime">Add your card for fast help</label>
+    <div class="radios">
+      <input id="requestTimeRush" name="time2" value="rush" checked="true" type="radio">
+      <label for="requestTimeRush"><img src="/static/img/css/request/time-rush.png">In 1-2 Hours </label>
+    </div>
+
+    <payment-info hide-card-nickname="true"></payment-info>
+
+    <p>Your Card will not be charged yet</p>
   </div>
 
 </section>
@@ -284,6 +297,61 @@
     </div>
   </div>
   <hr />
+
+</section>
+
+</form>
+
+<section class="happy nomob">
+
+  <section ng-if="done.current == 'type' || done.current == 'tags'" class="customers">
+
+    <h3>Happy customers this month</h3>
+
+    <ul>
+      <li ng-repeat="c in customers">
+        <img class="user" ng-src="{{c.avatar}}" />
+        <p>{{c.review}}
+          <label>- {{c.name}}</label>
+        </p>
+        <img class="recording" ng-src="https://i.ytimg.com/vi/{{c.youtubeId}}/default.jpg">
+      </li>
+    </ul>
+
+  </section>
+
+  <section ng-if="done.current == 'experience' || done.current == 'brief'"
+   class="expertReviews">
+
+    <h3>Expert reviews this month</h3>
+
+    <ul>
+      <li ng-repeat="r in reviews">
+        <img class="user" ng-src="{{r.avatar}}" />
+        <p>{{r.review}}
+          <label>- {{r.name}}</label>
+        </p>
+      </li>
+    </ul>
+
+  </section>
+
+
+  <section ng-if="done.current == 'time' || done.current == 'hours'"
+   class="expertReviews">
+
+    <h3>Customer service feedback</h3>
+
+    <ul>
+      <li ng-repeat="r in reviews">
+        <img class="user" ng-src="{{r.avatar}}" />
+        <p>{{r.review}}
+          <label>- {{r.name}}</label>
+        </p>
+      </li>
+    </ul>
+
+  </section>
 
 </section>
 
