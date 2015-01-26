@@ -228,7 +228,7 @@ module.exports = -> describe "Booking: ", ->
     addAndLoginLocalUserWithPayMethod 'petc', (s) ->
       d = tags: [data.tags.angular], type: 'resources', experience: 'proficient', brief: 'bah bah anglaur test yo4', hours: "1", time: 'rush'
       POST '/requests', d, {}, (r0) ->
-        PUT "/requests/#{r0._id}", _.extend(r0,{budget: 300}), {}, (r) ->
+        PUT "/requests/#{r0._id}", _.extend(r0,{budget: 300,title:'test'}), {}, (r) ->
           LOGIN 'abha', data.users.abha, (sAbha) ->
             GET "/requests/review/#{r._id}", {}, (rAbha) ->
               reply = expertComment: "good", expertAvailability: "ok", expertStatus: "available"

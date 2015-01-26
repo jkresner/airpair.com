@@ -21,7 +21,7 @@ angular.module("APRequestDirectives", [])
 
   var getPayMethods = function(scope) {
     DataService.billing.getPaymethods((r) => {
-      console.log('getPayMethods', r)
+      // console.log('getPayMethods', r)
       if (r.btoken) {
         scope.paymethods = null
         scope.btoken = r.btoken
@@ -55,7 +55,7 @@ angular.module("APRequestDirectives", [])
     if (c == 'brief') return scope.request.brief && scope.request.brief.length > 10
     if (c == 'hours') return scope.request.hours
     if (c == 'budget') return scope.request.budget
-    if (c == 'submit') return true
+    if (c == 'submit') return false
     if (c == 'time') return scope.request.time &&
       (scope.request.time != 'rush' ||
       (scope.request.time == 'rush' && scope.paymethods && scope.paymethods.length > 0))
@@ -114,6 +114,7 @@ angular.module("APRequestDirectives", [])
       scope.done.hours = (r.hours) ? true : false,
       scope.done.time = (r.time) ? true : false,
       scope.done.budget = (r.budget) ? true : false
+      scope.done.submit = (r.title) ? true : false
 
       var current = 'submit'
       if (!scope.done.tags) current = 'tags'
@@ -122,6 +123,7 @@ angular.module("APRequestDirectives", [])
       else if (!scope.done.hours) current = 'hours'
       else if (!scope.done.time) current = 'time'
       else if (!scope.done.budget) current = 'budget'
+      else if (!scope.done.submit) current = 'submit'
       scope.done.current = current
     }
   }
@@ -161,13 +163,14 @@ angular.module("APRequestDirectives", [])
 })
 
 
-.directive('request', function($timeout, ServerErrors, DataService, SessionService, StepHelper) {
+.directive('request', function($timeout, ServerErrors, DataService,
+  SessionService, StepHelper, RequestsUtil) {
+
   return {
     template: require('./request.html'),
     scope: true,
     controllerAs: 'RequestFormCtrl',
     controller($rootScope, $scope) {
-
       $scope.sortSuccess = function() {}
       $scope.sortFail = function() {}
       $scope.tags = () => $scope.request.tags ? $scope.request.tags : null;
@@ -204,10 +207,13 @@ angular.module("APRequestDirectives", [])
       }
       $scope.stepForward = stepForward
 
-      $scope.$watch('request', (r) => StepHelper.setUpdatedState($scope,r) )
+      $scope.$watch('request', (r) =>
+        StepHelper.setUpdatedState($scope,r) )
 
       var setScope = function(r) {
         $scope.request = r
+        if ($scope.done.current == 'submit' && $scope.request.title == null)
+          $scope.request.title = RequestsUtil.defaultTitle($scope.request)
       }
 
       $scope.setType = function(val) {
@@ -232,20 +238,20 @@ angular.module("APRequestDirectives", [])
 
       StepHelper.setDefaultState($scope)
 
-      $timeout(() => {
-        $scope.setType('mentoring')
-        $scope.doneTags()
-        $scope.request.experience = "beginner"
-        $scope.setExperience()
-        $scope.request.brief = "beginner troubles yo"
-        $scope.stepForward()
-        $scope.request.time = "regular"
-        $scope.setTime()
-        $scope.request.hours = "1"
-        $scope.setHours()
-        $scope.request.budget = "90"
-        $scope.setBuget()
-      }, 300)
+      // $timeout(() => {
+      //   $scope.setType('mentoring')
+      //   $scope.doneTags()
+      //   $scope.request.experience = "beginner"
+      //   $scope.setExperience()
+      //   $scope.request.brief = "beginner troubles yo"
+      //   $scope.stepForward()
+      //   $scope.request.time = "regular"
+      //   $scope.setTime()
+      //   $scope.request.hours = "1"
+      //   $scope.setHours()
+      //   // $scope.request.budget = "90"
+      //   // $scope.setBuget()
+      // }, 300)
 
       $scope.setPayMethods = function(val) {
         // console.log('setPayMethods', val)

@@ -52,6 +52,15 @@ var reqFns = {
       cancelfromwaiting:(r,m) => r.status == 'waiting' && m.timeToCancelFromWaiting && !_.find(r.messages,(msg) => msg.type == 'cancelfromwaiting'),
       generic:(r,m) => true,
     }
+  },
+
+  defaultTitle(r) {
+    var tagsString = util.tagsString(r.tags)
+    var hourString = (r.hours > 1) ? 'hours' : 'hour of'
+    if (r.type != 'other')
+      return `${r.hours} hour ${tagsString} ${r.type}`
+    else
+      return `${r.hours} ${hourString} ${tagsString} help`
   }
 
 }
