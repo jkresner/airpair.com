@@ -26,10 +26,7 @@
 				if (error) {
 					this.trigger("login", error);
 				} else {
-					if (member.auth.roles && member.auth.roles.admin == true) {
-						this.admin = new AdminInterface(this);
-					}
-					console.log("Logged in as", member.uid)
+					//console.log("Logged in as", member.uid)
 					this._member = new SelfMember(this, member.uid, member);
 
 					var lastUID = localStorage.getItem("corechat:uid");
@@ -108,6 +105,10 @@
 				this._membersByTag[tag] = members;
 			}
 			return this._membersByTag[tag];
+		}
+		
+		this.getAdminInterface = function () {
+			return new AdminInterface(this);
 		}
 
 		this._watchForTokenOnWindow = function () {
@@ -197,34 +198,6 @@
 			this.trigger("rooms_updated", null, this.rooms);
 		}).bind(this);
 
-		// The following is now done server-side
-		/*
-		this._updateMember = (function (memberSnapshot) {
-			var memberId = memberSnapshot.key(),
-				memberRaw = memberSnapshot.val(),
-				memberPage = memberRaw.page && memberRaw.page.url?
-					memberRaw.page.url.replace(/-/g, '/').replace(/\^/g, '#') : "Unknown",
-				lastMemberRaw = this._lastMembers[memberId],
-				lastMemberPage;
-
-			this.members.byId[memberId] = cc.getMember(memberId);
-
-			if (lastMemberRaw) {
-				lastMemberPage = lastMemberRaw.page && lastMemberRaw.page?
-					lastMemberRaw.page.url.replace(/-/g, '/').replace(/\^/g, '#') : "Unknown";
-
-				delete this.members.byStatus[lastMemberRaw.status][memberId];
-			}
-
-			if (!this.members.byStatus[memberRaw.status])
-				this.members.byStatus[memberRaw.status] = {};
-
-			this.members.byStatus[memberRaw.status][memberId] = true;
-
-			this._lastMembers[memberId] = memberRaw;
-			this.trigger("members_updated", null, this.members);
-		}).bind(this);*/
-
 		this._updateByPage = (function (action, pageSnapshot) {
 			pageSnapshot.forEach((function (memberSnapshot) {
 				memberSnapshot.ref().on("value", this._updateMemberByPage.bind(this, action, pageSnapshot))
@@ -232,8 +205,10 @@
 		}).bind(this);
 
 		this._updateMemberByPage = (function (action, pageSnapshot, memberSnapshot) {
-			var page = pageSnapshot.key(),
+			var page = pageSnapshot.key().replace(/-/g, '/'),
 				memberId = memberSnapshot.key();
+				
+			if (memberId == cc._member.id) return;
 
 			cc._callbackWrap((function () {
 				if (action == "set") {
@@ -280,6 +255,8 @@
 		this.notificationsCountByRoom = {};
 		this.rooms = {};
 		this.auth = auth;
+		this.roles = auth.auth.roles || {};
+		this._ref.child('roles').set(this.roles);
 
 		this._ref
 			.child('notifications')
@@ -371,6 +348,7 @@
 	var MemberBase = function (cc, uid) {
 		this.id = uid;
 		this.type = "member";
+		this._events = this._events.concat(["ready"])
 		this.exists = false;
 		this._ref = cc._ref
 			.child("members/byMID")
@@ -389,6 +367,8 @@
 					this.avatar = memberData.avatar;
 					this.tags = memberData.tags || {};
 					this.status = memberData.status;
+					this.roles = memberData.roles;
+					this.trigger("ready", null, this);
 				}).bind(this));
 			}
 		}).bind(this));
@@ -436,7 +416,7 @@
 			.child("rooms/byRID")
 			.child(this.id);
 
-		this.getMetadata = function () {
+		this.getMetadata = (function () {
 			var members = this.members,
 				implicitMembers = {},
 				name = this.info? this.info.name : "",
@@ -450,31 +430,48 @@
 					nonSelfMembersCount += 1;
 				}
 			}
+			
+			//console.log(this.id, this.members, nonSelfMembers)
 
 			if (nonSelfMembersCount == 1) {
 				for (memberId in nonSelfMembers) {
 					var member = members[memberId];
 					break;
 				}
-				return member;
+				this.info = member;
 			} else if (nonSelfMembersCount > 1) {
-				return {name: "Group Chat", avatar: "2"};
+				var memberNames = [];
+				Object.keys(nonSelfMembers).forEach(function (memberIndex) {
+					var member = nonSelfMembers[memberIndex];
+					var waitingOnName = setInterval(function () {
+						if (!member.name) return;
+						memberNames.push(member.name);
+						clearInterval(waitingOnName);
+						finish();
+					});
+				});
+				
+				var finish = (function () {
+					if (memberNames.length == nonSelfMembersCount) {
+						this.info = {name: memberNames.join(', '), avatar: ""};
+					}	
+				}).bind(this);	
 			} else {
 				if (this.id.split("^^v^^").length > 1) {
 					var implicitMemberIds = this.id.split("^^v^^");
 					for (var index in implicitMemberIds) {
-						var memberId;
 						memberId = implicitMemberIds[index];
 						if (memberId !== cc._member.id) {
-							var member = cc.getMember(memberId);
+							member = cc.getMember(memberId);
 							member.hasChat = true;
-							return member;
+							this.info = member;
+							return;
 						}
 					}
 				}
-				return {name: name, avatar: "3"};
+				this.info = {name: name, avatar: ""};
 			}
-		};
+		}).bind(this);
 
 		this._ref
 			.child("name")
@@ -482,7 +479,7 @@
 				var name = nameSnapshot.val();
 
 				cc._callbackWrap((function () {
-					this.info = this.getMetadata();
+					this.getMetadata();
 				}).bind(this));
 			}).bind(this));
 
@@ -515,13 +512,13 @@
 				this.trigger("member_joined", null, member);
 
 				cc._callbackWrap((function () {
-					this.info = this.getMetadata();
+					this.getMetadata();
 				}).bind(this));
 			}).bind(this));
 
 
 		cc._callbackWrap((function () {
-			this.info = this.getMetadata();
+			this.getMetadata();
 		}).bind(this));
 	};
 
@@ -641,7 +638,7 @@
 
 	var Statusable = function (cc) {
 		this._events = this._events.concat(["status_change"]);
-		this._timeout = 10e3;
+		this._timeout = 60e3;
 		this._lastEvent = (new Date()).getTime();
 		this._status = "offline"; // offline, online, away
 		this._intervals = [];

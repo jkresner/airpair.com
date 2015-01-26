@@ -3,18 +3,10 @@
     require('../../public/lib/angular-scroll-glue/src/scrollglue.js');
     var cc, ref, app = angular.module("chat-widget", ['luegg.directives', 'angularMoment']);
 
-    app.config(function($logProvider){
-        $logProvider.debugEnabled(false);
-    });
 
     app.directive('memberInfo', function (corechat) {
         return {
             link: function ($scope, elem, attrs) {
-                /*var unwatch = $scope.$watch("cc", function (cc) {
-                    if (!cc) return;
-                    $scope.member = cc.getMember(attrs.memberInfo);
-                    unwatch();
-                }, true);*/
                 $scope.member = corechat.getMember(attrs.memberInfo);
             }
         };
@@ -36,51 +28,35 @@
             }
         };
     });
+    
+    app.directive('timestamp', function () {
+       return {
+           scope: {
+               "timestamp": "=timestamp"
+           },
+           template: '<span am-time-ago="timestamp_valid"></span><span ng-show="timestamp_invalid">a few seconds ago...</span>',
+           controller: function ($scope, $interval) {
+                var stop = $interval(function () {
+                    if ($scope.timestamp < new Date().getTime()) {
+                        $scope.timestamp_valid = $scope.timestamp;
+                        $scope.timestamp_invalid = false;
+                        $interval.cancel(stop);
+                    } else {
+                        $scope.timestamp_invalid = true;
+                    }
+                }, 100);
+                
+           }
+       } 
+    });
 
-    app.service('corechat', function ($rootScope, $log, $timeout) {
-        var $scope = $rootScope.$new(true),
-            initialized, sessionID,
+    app.service('corechat', function ($rootScope, $log, $timeout, $interval) {
+        var $scope = $rootScope.$new(true), sessionID,
             cc, ref, transferFrom, lastSession;
 
-        $timeout(function () {
-            $scope.initialize();
-        }, 90e3);
-
-        var unwatchSession = $rootScope.$watch('session', function (session) {
-            console.log("ere", session)
-            if (!session) return;
-
-            if (session.name || session.email) {
-                $scope.initialize();
-                unwatchSession();
-            }
-        });
-
-
-        $rootScope.$watch('session', function (session) {
-            $log.log(session)
-            if (!session) return;
-
-            if (sessionID && (session._id !== sessionID && session.sessionID !== sessionID)) {
-                $log.log("SessionID", sessionID, "doesn't match", session._id || session.sessionID)
-                cc? cc.login(session.firebaseToken) : null;
-                window.firebaseToken = session.firebaseToken;
-                sessionID = session._id || session.sessionID;
-            }
-
-            sessionID = session._id || session.sessionID;
-
-            if (lastSession && lastSession.unauthenticated && session._id)
-                cc._ref.child("transfers").push({
-                   to: session._id,
-                   from: lastSession.sessionID
-                });
-            lastSession = session;
-        });
-
         $scope.initialize = function () {
-            if (initialized) return false;
-            initialized = true
+            if ($scope.initialized) return false;
+            $scope.initialized = true
 
             ref = new Firebase($rootScope.chatSettings.firebaseUrl),
             cc = new CoreChat(ref);
@@ -97,7 +73,8 @@
             };
 
             $scope.setActiveRoom = function (roomId) {
-                $scope.activeRoom = roomId;
+                $scope.activeRoomId = roomId;
+                $scope.activeRoom = $scope.selfmember.rooms[$scope.activeRoomId];
                 angular.forEach(cc._member.notificationsByRoom[roomId], function (notification) {
                    notification.acknowledge();
                    --$scope.selfmember.notificationsCount;
@@ -130,6 +107,10 @@
             $scope.getRoom = function (roomId) {
                 return cc.getRoom(roomId);
             };
+            
+            $scope.getActiveRoom = function () {
+                return $scope.selfmember.rooms[$scope.activeRoomId]  
+            };
 
             $scope.login = function (token) {
                 cc.login(token);
@@ -142,18 +123,23 @@
             $scope.join = function (RID) {
                 cc._member.join(RID)
             };
+            
+            $scope.leaveActiveRoom = function () {
+                delete $scope.activeRoomId;
+                delete $scope.activeRoom;
+            };
 
             cc.on("online", function () {
-                $log.log("connected to chat server!")
+                //$log.log("connected to chat server!")
             });
 
             cc.on("offline", function () {
-                $log.log("disconnected from chat server!")
+                //$log.log("disconnected from chat server!")
             });
 
             cc.on("login", function (err, member) {
                 if (err) {
-                    $log.log(err);
+                    //$log.log(err);
                     return;
                 }
 
@@ -173,14 +159,11 @@
                     loggedIn: false
 
                 };
-
-                $scope.isAdmin = typeof cc.admin !== "undefined";
-
-                if ($scope.isAdmin) {
-                    $scope.admin = cc.admin;
+                
+                if (cc._member && cc._member.roles.admin) {
+                    $scope.isAdmin = true;
+                    $scope.admin = cc.getAdminInterface();
                 }
-
-                $log.log("Logged in as", member);
 
                 $scope.selfmember.loggedIn = true;
                 $scope.selfmember.name = cc._member.name;
@@ -192,23 +175,13 @@
                 $scope.selfmember.notificationsCountByRoom = cc._member.notificationsCountByRoom;
 
                 member.on("status_change", function (err, status) {
-                    $log.log("You are flagged as", status);
+                    //$log.log("You are flagged as", status);
                     $scope.selfmember.status = status;
-                });
-
-                member.on("join_room", function (err, room) {
-                    $log.log("You joined room", room)
-                    room.on("message", function (err, message) {
-                        $log.log("Got a message", message, room.id);
-                    });
-
                 });
 
                 member.on("recieved_notification", function (err, notification) {
                     // don't increment notificationsCount if the notification is in this room
-                    var chatNavOpen = angular.element("nav#chat").hasClass('collapsed');
-                    console.log( 'recieved_notification', chatNavOpen);
-                    if (notification.info.to == $scope.activeRoom && chatNavOpen) {
+                    if (notification.info.to == $scope.activeRoomId) {
                       notification.acknowledge();
                     } else {
                       $scope.selfmember.notificationsCount++;
@@ -216,18 +189,17 @@
                 });
 
                 var unwatch = $rootScope.$watch('session', function (session) {
-                    $log.log("insess>", session, id);
                     if (!session || (session._id !== id && session.sessionID !== id)) {
                         unwatch();
                         return;
                     }
-                    $log.log("Updating");
-                    var user = {
-                      email: session.email || "",
-                      name: session.name || "",
-                      avatar: session.avatar || "",
-                      transferFrom: transferFrom || ""
-                    };
+                    
+                    var user = {};
+                    if (session.email) user.email = session.email
+                    if (session.name) user.name = session.name
+                    if (session.avatar) user.avatar = session.avatar
+                    if (session.transferFrom) user.avatar = session.transferFrom
+
 
                     cc._member._ref.update(user, function () {
                         $timeout(function () {
@@ -239,14 +211,55 @@
             });
 
             cc.on("logout", function () {
-                $log.log("logout");
-                $scope.selfmember = {};
+                //$log.log("logout");
+                $scope.selfmember = {}; 
             });
 
             function getMemberToMemberRID () {
         		return Array.prototype.slice.call(arguments).sort().join('^^v^^')
         	}
         };
+        
+        if (localStorage.getItem("timeoutInitialize"))
+            $scope.initialize();
+
+        $timeout(function () {
+            $scope.initialize();
+            localStorage.setItem("timeoutInitialize", true);
+        }, 90e3);
+
+        var unwatchSession = $rootScope.$watch('session', function (session) {
+            if (!session) return;
+
+            if (session.name || session.email) {
+                $scope.initialize();
+                unwatchSession();
+            }
+        });
+
+
+        $rootScope.$watch('session', function (session) {
+            //$log.log(session)
+            if (!session) return;
+            
+            if (!session.sessionID) localStorage.setItem("timeoutInitialize", "");
+
+            if (sessionID && (session._id !== sessionID && session.sessionID !== sessionID)) {
+                //$log.log("SessionID", sessionID, "doesn't match", session._id || session.sessionID)
+                cc? cc.login(session.firebaseToken) : null;
+                window.firebaseToken = session.firebaseToken;
+                sessionID = session._id || session.sessionID;
+            }
+
+            sessionID = session._id || session.sessionID;
+
+            if (lastSession && lastSession.unauthenticated && session._id)
+                cc._ref.child("transfers").push({
+                   to: session._id,
+                   from: lastSession.sessionID
+                });
+            lastSession = session;
+        });
 
         // $scope.initialize();
         return $scope;
