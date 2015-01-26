@@ -1,6 +1,6 @@
 <form id="cardinfoForm" novalidate name="cardinfoForm" ng-submit="submit(cardinfoForm.$valid, data)">
 
-  <div form-group>
+  <div class="cardName" form-group>
     <label class="control-label" for="cardholderName">Name on Card</label>
     <input form-control id="cardholderName" name="cardholderName" data-braintree-name="cardholderName" ng-model="card.cardholderName" type="text" placeholder="Full name on card" required ng-minlength="4" ng-minlength="60" ng-pattern="/\w+ \w+/" tabindex="1201">
     <div class="error" ng-if="formGroup.showError(cardinfoForm.cardholderName)" ng-messages="cardinfoForm.cardholderName.$error">
@@ -11,7 +11,7 @@
     </div>
   </div>
 
-  <div form-group>
+  <div class="cardNumber" form-group>
     <label class="control-label" for="cardNumber">Card number</label>
     <input form-control id="cardNumber" name="number" data-braintree-name="number" ng-model="card.number" type="text" placeholder="Credit card number" required ng-minlength="15" ng-minlength="20" tabindex="1202" ng-pattern="/\d+/">
     <div class="error" ng-if="formGroup.showError(cardinfoForm.number)" ng-messages="cardinfoForm.number.$error">
@@ -22,7 +22,7 @@
     </div>
   </div>
 
-  <div form-group>
+  <div class="cardExpiration" form-group>
     <label class="control-label" for="cardExpirationMonth">Expiration</label>
     <select form-control id="cardExpirationMonth" name="expirationMonth" data-braintree-name="expirationMonth" ng-model="card.expirationMonth" required tabindex="1203">
       <option value="01">Jan</option>
@@ -39,20 +39,20 @@
       <option value="12">Dec</option>
     </select>
 
+    <input form-control name="expirationYear" id="cardExpirationYear" data-braintree-name="expirationYear" ng-model="card.expirationYear" type="number" placeholder="Year" required tabindex="1204" min="2014" max="2022">
+
     <div class="error" ng-if="formGroup.showError(cardinfoForm.expirationMonth)" ng-messages="cardinfoForm.expirationMonth.$error">
       <div ng-message="required">Month required</div>
     </div>
 
-    <input form-control name="expirationYear" id="cardExpirationYear" data-braintree-name="expirationYear" ng-model="card.expirationYear" type="number" placeholder="Year" required tabindex="1204" min="2014" max="2022">
-
-      <div class="error" ng-if="formGroup.showError(cardinfoForm.expirationYear)" ng-messages="cardinfoForm.expirationYear.$error">
+    <div class="error" ng-if="formGroup.showError(cardinfoForm.expirationYear)" ng-messages="cardinfoForm.expirationYear.$error">
       <div ng-message="required">Year required</div>
       <div ng-message="min">Invalid year</div>
       <div ng-message="max">Invalid year</div>
     </div>
   </div>
 
-  <div form-group>
+  <div ng-if="!hideCardNickname" class="cardNickname" form-group>
     <label class="control-label" for="cardNickName">Card nickname <i>* to help you distiguide between differen cards</i></label>
     <input form-control id="cardNickName" name="cardNickName" data-braintree-name="cardNickName" ng-model="card.cardNickName" type="text" placeholder="Nick name for card (e.g. personal visa)" required ng-minlength="4" ng-minlength="60" tabindex="1205">
     <div class="error" ng-if="formGroup.showError(cardinfoForm.cardNickName)" ng-messages="cardinfoForm.cardNickName.$error">

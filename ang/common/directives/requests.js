@@ -17,7 +17,18 @@ angular.module("APRequestDirectives", [])
   return this
 })
 
-.factory('StepHelper', function StepHelper() {
+.factory('StepHelper', function StepHelper(DataService) {
+
+  var getPayMethods = function(scope) {
+    DataService.billing.getPaymethods((r) => {
+      console.log('getPayMethods', r)
+      if (r.btoken) {
+        scope.paymethods = null
+        scope.btoken = r.btoken
+      }
+      else scope.paymethods = r
+    })
+  }
 
   var order = [
     'type',
@@ -37,16 +48,17 @@ angular.module("APRequestDirectives", [])
   }
 
   this.canForward = (scope) => {
-    // console.log('can.forward', scope.done.current)
     var c = scope.done.current
     if (c == 'type') return scope.done.type
     if (c == 'tags') return scope.request.tags && scope.request.tags.length > 0
     if (c == 'experience') return scope.request.experience
     if (c == 'brief') return scope.request.brief && scope.request.brief.length > 10
-    if (c == 'time') return scope.request.time
     if (c == 'hours') return scope.request.hours
     if (c == 'budget') return scope.request.budget
     if (c == 'submit') return true
+    if (c == 'time') return scope.request.time &&
+      (scope.request.time != 'rush' ||
+      (scope.request.time == 'rush' && scope.paymethods && scope.paymethods.length > 0))
     return false
   }
 
@@ -60,8 +72,18 @@ angular.module("APRequestDirectives", [])
       window.location = `/review/${scope.request._id}`
     if (step == scope.done.current) {
       var currentIdx = order.indexOf(scope.done.current)
-      if (this.canForward(scope))
+      if (this.canForward(scope)) {
         scope.done.current = order[currentIdx+1]
+        scope.entercard = false
+        if (scope.done.current == 'time')
+          getPayMethods(scope)
+      }
+      else if (step == 'time') {
+        if (scope.btoken != null) {
+          scope.entercard = true
+          scope.cardSubmitText = 'Save'
+        }
+      }
     }
   }
 
@@ -210,20 +232,32 @@ angular.module("APRequestDirectives", [])
 
       StepHelper.setDefaultState($scope)
 
-      // $timeout(() => {
-      //   $scope.setType('mentoring')
-      //   $scope.doneTags()
-      //   $scope.request.experience = "beginner"
-      //   $scope.setExperience()
-      //   $scope.request.brief = "beginner troubles yo"
-      //   $scope.stepForward()
-      //   $scope.request.time = "rush"
-      //   $scope.setTime()
-      //   $scope.request.hours = "1"
-      //   $scope.setHours()
-        // $scope.request.budget = "90"
-        // $scope.setBuget()
-      // }, 300)
+      $timeout(() => {
+        $scope.setType('mentoring')
+        $scope.doneTags()
+        $scope.request.experience = "beginner"
+        $scope.setExperience()
+        $scope.request.brief = "beginner troubles yo"
+        $scope.stepForward()
+        $scope.request.time = "regular"
+        $scope.setTime()
+        $scope.request.hours = "1"
+        $scope.setHours()
+        $scope.request.budget = "90"
+        $scope.setBuget()
+      }, 300)
+
+      $scope.setPayMethods = function(val) {
+        // console.log('setPayMethods', val)
+        $scope.paymethods = [val]
+        $scope.entercard = false
+        this.stepForward()
+      }
+
+      $scope.exitcard = () => {
+        $scope.entercard = false
+        $scope.request.time = null
+      }
 
       $scope.sendVerificationEmail = () =>
         DataService.requests.sendVerifyEmailByCustomer($scope.request,
