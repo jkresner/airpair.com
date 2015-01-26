@@ -25,7 +25,8 @@ var selectFields = {
     'hours': 1,
     'experience': 1,
     'status': 1,
-    'suggested': 1
+    'suggested': 1,
+    'title': 1
   },
   customer: {
     '_id': 1,
@@ -39,7 +40,8 @@ var selectFields = {
     'experience': 1,
     'status': 1,
     'budget': 1,
-    'suggested': 1
+    'suggested': 1,
+    'title': 1
   },
   pipeline: {
     '_id': 1,

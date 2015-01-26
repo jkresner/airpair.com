@@ -14,11 +14,22 @@
 
   <div ng-if="request._id">
     <label class="control-label">Good to go?</label>
-    <p>If you're happy with you're request, we'll broadcast it to selected experts.</p>
+    <p>Submit your request and we'll broadcast to experts who meet or exceed your requirements.</p>
 
+    <div class="requestTitle" form-group>
+      <label class="control-label" for="requestTitle">Request title</label>
+      <input form-control id="requestTitle" name="title" ng-model="request.title" type="text" placeholder="Title your request to help you recognise it" required ng-minlength="10" ng-minlength="100">
+      <div class="error" ng-if="formGroup.showError(requestForm.title)" ng-messages="requestForm.title.$error">
+        <div ng-message="required">Title required</div>
+        <div ng-message="minlength">Min title length 10 chars</div>
+        <div ng-message="maxlength">Max title length 100 chars</div>
+      </div>
+    </div>
   </div>
 
-  <a ng-click="submit()" class="btn">Submit</a>
+  <a ng-click="submit()" class="btn">Submit request with max budget of <b>${{request.budget}}</b>/Hr</a>
+
+  <i>An AirPair Matchmaker will email you within 5-15 minutes if you haven't already spoken with one.</i>
 
 </section>
 
@@ -302,7 +313,7 @@
 
 </form>
 
-<section class="happy nomob">
+<section ng-if="customers" class="happy nomob">
 
   <section ng-if="done.current == 'type' || done.current == 'tags'" class="customers">
 

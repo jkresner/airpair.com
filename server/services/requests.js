@@ -150,7 +150,7 @@ var save = {
   },
   updateByCustomer(original, update, cb) {
     // todo posibily revise submitted to the submit action
-    var submitted = update.budget && !original.budget
+    var submitted = update.title && !original.title
 
     if (submitted)
     {
@@ -159,7 +159,7 @@ var save = {
 
       update.adm = admSet(original,{active:true,submitted:new Date()})
 
-      analytics.track(original.by, null, 'Request', {_id:original._id,action:'complete'})
+      analytics.track(original.by, null, 'Request', {_id:original._id,action:'submit'})
     }
 
     var ups = _.extend(original, update)
