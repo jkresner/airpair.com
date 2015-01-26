@@ -55,6 +55,11 @@ var validation = {
     if (original.time && !update.time) return 'Request turn around time required'
 
     if (original.budget && !update.budget) return 'Request budget required'
+
+    if (original.time && original.time == 'rush') {
+      if (update.hours && update.hours > 2) return 'Rush requests can be for 2 hours max'
+      if (update.budget <= 70) return 'Rush requests not available for $70 or less'
+    }
   },
   updateByAdmin(user, original, update)
   {

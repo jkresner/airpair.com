@@ -147,7 +147,7 @@ stories = {
       }
       request = _.extend(request, requestData)
       POST '/requests', request, {}, (r0) ->
-        PUT "/requests/#{r0._id}", _.extend(r0,{budget}), {}, (r) ->
+        PUT "/requests/#{r0._id}", _.extend(r0,{budget,title:'test'}), {}, (r) ->
           cb(r,sessionCustomer)
 
 

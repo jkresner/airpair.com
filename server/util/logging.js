@@ -10,7 +10,8 @@ var knownNonErrors = [
   'Invalid email address',
   'no user found',
   'wrong password',
-  'failed to obtain access token'
+  'failed to obtain access token',
+  'No user found with email'
 ]
 
 

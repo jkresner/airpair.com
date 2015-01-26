@@ -1,3 +1,38 @@
+var customers = [
+  {
+    name: 'Nigel Tunnacliffe',
+    review: 'Very knowledgable expert that could quickly get to the bottom of what I was trying to figure out. I\'ve asked for help from colleagues before, and it usually takes a lot longer to get to a solution.',
+    avatar: '//pbs.twimg.com/profile_images/1107452397/For_twitter.jpg',
+    youtubeId: '3Hb5WtvAK3c'
+  },
+  {
+    name: 'Nicholas Jayanty',
+    review: 'We got a lot done in a short amount of time.  I wish I had spent the money I spent on the Swift class I\'m taking at Art Center College of Design on AirPair.  Much better use of time and money.',
+    avatar: '//0.gravatar.com/avatar/ae0ecff35e8b1e2e8f0caf1f638097bes?s=100',
+    youtubeId: 'lI_JoAooPSo'
+  },
+  { name: 'David Anderton',
+    review: 'I was paired with someone who could understand the issues I was facing and come alongside me to work out a solution together. At first I was a little concerned that it would just be handing over the controls to a pro, I couldn\'t have been more wrong. This was the perfect match of empathy and expert. Thanks guys.',
+    avatar: '//media.licdn.com/mpr/mpr/shrink_200_200/p/4/005/05f/32d/21aecb1.jpg',
+    youtubeId: 'WvCk9bG1OUw'
+  },
+]
+
+var reviews = [
+  {
+    name: 'Timothy O\'Reilly',
+    review: 'Exactly what I wanted and more. Michael Perranord is patient, great at explaining and didn\'t my mind dumb questions.',
+    avatar: '//0.gravatar.com/avatar/03d7c69330facea80a0109b9154bceee?s=100',
+    expertId: '53cfe315a60ad902009c5954'
+  },
+  {
+    name: 'Nathan Clark',
+    review: 'I had several ember.js question to which Michael Grassotti was able to help answer in a single hour. That\'s golden to me.',
+    avatar: '//0.gravatar.com/avatar/b4ec694f9d955bee753559037aa1805a?s=100',
+    expertId: '52267f2a7087f90200000008'
+  }
+]
+
 var resolver = require('./../common/routes/helpers.js').resolveHelper;
 
 angular.module("APRequests", ['APFilters', 'APSvcSession',
@@ -48,7 +83,11 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
 
   angular.element('#side').addClass('collapse')
 
+  $scope.customers = customers;
+  $scope.reviews = reviews;
+
   RequestHelper.setRequestTagsFromSession($scope)
+
 })
 
 .controller('RequestEditCtrl', function($scope, $routeParams, $location, DataService, SessionService, Shared, ServerErrors) {

@@ -8,11 +8,9 @@ angular.module("APPaymentDirectives", ['angularLoad','APDataSvc'])
 
     return {
       template: require('./paymentInfo.html'),
-      link(scope, element) {
-
-      },
-      controller($scope) {
+      controller($scope, $attrs) {
         ngLoadPromise.then(function(){
+          if ($attrs.hideCardNickname) $scope.hideCardNickname = true
 
           $scope.$watch('btoken', function(clientToken) {
             if (!clientToken || !braintree) return
@@ -28,15 +26,20 @@ angular.module("APPaymentDirectives", ['angularLoad','APDataSvc'])
               cardNickName: "" //"Personal united visa"
             }
 
-            // console.log('card', $scope.card)
+            if ($scope.hideCardNickname) {
+              $scope.card.cardholderName = ''
+            }
 
+            $scope.$watch('card.cardholderName', () =>
+              $scope.card.cardNickName = `${$scope.card.cardholderName}'s Card`
+            )
           })
 
           $scope.submit = (formValid, data) => {
             if (formValid)
             {
               $scope.client.tokenizeCard(_.pick($scope.card,'cardholderName','number','expirationMonth','expirationYear'), function (err, nonce) {
-                console.log('isValid', err, nonce)
+                // console.log('isValid', err, nonce)
                 if (nonce)
                 {
                   var pm = { type: 'braintree', token: nonce, name: $scope.card.cardNickName, makeDefault: true }
