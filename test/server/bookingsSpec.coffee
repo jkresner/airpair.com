@@ -18,7 +18,7 @@ module.exports = -> describe "API: ", ->
     SETUP.clearIdentity()
 
   it "given a YouTube ID, allows a booking to be annotated with YouTube data", (done)->
-    addAndLoginLocalUserWithPayMethod 'cher', (s) ->
+    addAndLoginLocalUserWithPayMethod 'miks', (s) ->
       airpair1 = time: moment().add(2, 'day'), minutes: 120, type: 'private', payMethodId: s.primaryPayMethodId
       POST "/bookings/#{data.experts.dros._id}", airpair1, {}, (booking1) ->
         expect(booking1._id).to.exist
@@ -37,7 +37,7 @@ module.exports = -> describe "API: ", ->
             done()
 
   it "fails gracefully with a bogus YouTube id", (done)->
-    addAndLoginLocalUserWithPayMethod 'cher', (s) ->
+    addAndLoginLocalUserWithPayMethod 'mrik', (s) ->
       airpair1 = time: moment().add(2, 'day'), minutes: 120, type: 'private', payMethodId: s.primaryPayMethodId
       POST "/bookings/#{data.experts.dros._id}", airpair1, {}, (booking1) ->
         expect(booking1._id).to.exist
@@ -53,7 +53,7 @@ module.exports = -> describe "API: ", ->
             done()
 
   it "fails gracefully with a private YouTube id that it does not own", (done)->
-    addAndLoginLocalUserWithPayMethod 'cher', (s) ->
+    addAndLoginLocalUserWithPayMethod 'misr', (s) ->
       airpair1 = time: moment().add(2, 'day'), minutes: 120, type: 'private', payMethodId: s.primaryPayMethodId
       POST "/bookings/#{data.experts.dros._id}", airpair1, {}, (booking1) ->
         expect(booking1._id).to.exist
@@ -99,7 +99,7 @@ module.exports = -> describe "API: ", ->
 
 
   it.skip 'Can update booking and send invitations as admin', (done) ->
-    addAndLoginLocalUserWithPayMethod 'cher', (s) ->
+    addAndLoginLocalUserWithPayMethod 'mkis', (s) ->
       airpair1 = time: moment().add(2, 'day'), minutes: 120, type: 'private', payMethodId: s.primaryPayMethodId
       POST "/bookings/#{data.experts.dros._id}", airpair1, {}, (booking1) ->
         expect(booking1._id).to.exist

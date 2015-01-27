@@ -14,11 +14,13 @@ export default initAPI(
   getUsersInRole: (req) => [req.params.role],
   changeName: (req) => [req.body.name],
   changeEmail: (req) => [req.body.email],
+  changeBio: (req) => [req.body.bio],
   changeInitials: (req) => [req.body.initials],
   changeUsername: (req) => [req.body.username],
   verifyEmail: (req) => [req.body.hash],
   requestPasswordChange: (req) => [req.body.email],
-  changePassword: (req) => [req.body.hash, req.body.password]
+  changePassword: (req) => [req.body.hash, req.body.password],
+  changeLocationTimezone: (req) => [req.body],
 }, {
 
 },

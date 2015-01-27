@@ -65,13 +65,16 @@
     "express": "^4.8.5",
     "express-hbs": "^0.7.11",
     "express-session": "^1.9.1",
+    "firebase-token-generator": "~2.0.0",
     "googleapis": "^1.0.22",
     "handlebars": "^2.0.0",
     "htmlparser2": "^3.7.3",
+    "jwt-simple": "~0.2.0",
     "lodash": "^2.4.1",
     "marked": "^0.3.2",
     "moment": "2.8.4",
     "mongoose": "^3.8.18",
+    "node-google-timezone": "0.0.2",
     "passport": "^0.2.1",
     "passport-google-oauth": "^0.1.5",
     "passport-local": "^1.0.0",
@@ -83,8 +86,6 @@
     "traceur-source-maps": "^1.0.2",
     "twit": "^1.1.18",
     "winston": "^0.8.0",
-    "winston-ses": "0.0.4",
-    "firebase-token-generator": "~2.0.0",
-    "jwt-simple": "~0.2.0"
+    "winston-ses": "0.0.4"
   }
 }

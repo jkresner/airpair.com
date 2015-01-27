@@ -5,6 +5,7 @@ module.exports = {
   jkap: { _id:"5175efbfa3802cc4d5a5e6ed",name:"Jonathon Kresner",email:"jk@airpair.com" },
   pgap: { name:"Prateek Gupta",email:"pg@airpair.com" },
   prat: { name:"Prateek Gupta",email:"prateek@gupta.com" },
+  pgup: { name:"Prateek Gupta",email:"prateek@gup.com" },
   adap: { name:"Ajay Desai",email:"ad@airpair.com" },
   ajde: { name:"Ajay Desai",email:"ajay@desai.com" },
   arys: { name:"Alyssa Reese",email:"aresse@apr.com" },
@@ -15,6 +16,10 @@ module.exports = {
 
   mris: { name:"Mike Risse",email:"mike@madeye.io" },
   mirs: { name:"Mike Risse",email:"mike.risse@hotmail.com" },
+  miks: { name:"Mike Risse",email:"miks.ri@hotmail.com" },
+  mrik: { name:"Mike Risse",email:"miks.rie@hotmail.com" },
+  misr: { name:"Mike Risse",email:"miks.rsse@hotmail.com" },
+  mkis: { name:"Mike Risse",email:"miks.re@hotmail.com" },
 
   jmel: { name:"Joe Mellin",email:"joemellin@gmail.com" },
   joem: { name:"Joe Mellin",email:"joe@mellin.com" },
@@ -38,6 +43,7 @@ module.exports = {
   kfor: { name:"Kelly Ford",email:"kellyford@hotmail.com" },
   chup: { name:"Chris Upton",email:"chrisupton@hotmail.com" },
   chiu: { name:"Chris Upton",email:"chirsitup@gmail.com" },
+  chri: { name:"Chris Upton",email:"chirsitup@ap.com" },
 
   ajac: { name:"Adam Jacobs",email:"adamjay@hotmail.com" },
   acob: { name:"Adam Jacobs",email:"adamcobbs@gmail.com" },
@@ -62,7 +68,6 @@ module.exports = {
   kiem: { name:"Kieth Tom",email:"ktom@gmail.com" },
   edub: { name:"Eduardo Del Balso",email:"eduardo@lendinghome.com" },
   eddb: { name:"Eduardo Del Balso",email:"eddb@hotmail.com" },
-
 
   shcl: { name: "Shane Cole", email: "shanecole@ap.com"},
   shan: { name: "Shane Cole", email: "shanecole@yahoo.com"},
@@ -115,6 +120,8 @@ module.exports = {
   bfie: { name: "Brian Fiester", email: "brian@dreamstarstudios.com"},
   brfi: { name: "Brian Fiester", email: "brian@testtest.com"},
   brif: { name: "Brian Fiester", email: "brian@airtest.com"},
+
+  tybr: { name: "Tyler Baur", email: "tb@airtest.com"},
 
   admin: {
     "_id" : "54551be15f221efa174238d1",
@@ -1072,6 +1079,79 @@ module.exports = {
         "token" : { }
     },
     "twitterId" : 46473071
-}
+  },
+
+  phlf: {
+    "_id" : "527d21f266a6f999a465fb1e",
+    "email" : "philfreo@gmail.com",
+    "emailVerified" : true,
+    "google" : {
+        "provider" : "google",
+        "id" : "103737476744834482789",
+        "displayName" : "Phil Freo",
+        "name" : {
+            "familyName" : "Freo",
+            "givenName" : "Phil"
+        },
+        "emails" : [
+            {
+                "value" : "philfreo@gmail.com"
+            }
+        ],
+        "_json" : {
+            "id" : "103737476744834482789",
+            "email" : "philfreo@gmail.com",
+            "verified_email" : true,
+            "name" : "Phil Freo",
+            "given_name" : "Phil",
+            "family_name" : "Freo",
+            "link" : "https://plus.google.com/+PhilFreo",
+            "picture" : "https://lh6.googleusercontent.com/-G8ceDL9VsFc/AAAAAAAAAAI/AAAAAAAAB0w/0d-QvkfLEVk/photo.jpg",
+            "gender" : "male",
+            "locale" : "en"
+        },
+        "token" : {
+            "token" : "ya29.9wCSjXftdQ_yTygtGwAZQje_y_CayNtWW7jokDCMgQSHmXd-eVnN0ZMKGw3Zlm0id3XCRSoEKvRw2A",
+            "attributes" : {
+                "refreshToken" : null
+            }
+        }
+    },
+    "googleId" : "103737476744834482789",
+    "initials" : "PF",
+    "name" : "Phil Freo",
+    "stack" : {
+        "badge_counts" : {
+            "gold" : 8,
+            "silver" : 49,
+            "bronze" : 85
+        },
+        "profile_image" : "https://www.gravatar.com/avatar/529a6049c4ad4483dbc62add6da06e1a?s=128&d=identicon&r=PG",
+        "display_name" : "philfreo",
+        "link" : "http://stackoverflow.com/users/137067/philfreo",
+        "website_url" : "http://philfreo.com",
+        "location" : "Jacksonville, FL",
+        "accept_rate" : 79,
+        "age" : 26,
+        "user_id" : 137067,
+        "user_type" : "registered",
+        "creation_date" : 1247419824,
+        "reputation" : 9890,
+        "reputation_change_day" : 10,
+        "reputation_change_week" : 48,
+        "reputation_change_month" : 83,
+        "reputation_change_quarter" : 350,
+        "reputation_change_year" : 2802,
+        "last_access_date" : 1383874065,
+        "last_modified_date" : 1381107928,
+        "is_employee" : false,
+        "account_id" : 46401,
+        "provider" : "stackexchange",
+        "id" : 137067,
+        "token" : {}
+    },
+    "stackId" : 137067,
+    "username" : "philfreo"
+  }
 
 }

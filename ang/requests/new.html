@@ -5,7 +5,18 @@
   </ol>
 </header>
 
-<section id="request">
+
+<section ng-if="session.unauthenticated">
+
+  <h1>Get started</h1>
+
+  <section id="join">
+    <div cta-request-signup></div>
+  </section>
+
+</section>
+
+<section id="request" ng-if="session._id">
   <div class="requests" style="display:none">
     <div request-list-item req="request"></div>
   </div>
@@ -13,3 +24,4 @@
   <div request></div>
 
 </section>
+

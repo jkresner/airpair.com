@@ -6,6 +6,8 @@ var User =          require('../models/user')
 import BaseSvc      from '../services/_service'
 var svc             = new BaseSvc(User, logging)
 var cbSession       = Data.select.cb.session
+var Timezone        = require('node-google-timezone')
+Timezone.key(config.timezone.google.apiKey)
 
 
 var get = {
@@ -71,7 +73,7 @@ function updateAsIdentity(data, trackData, cb) {
 
     // o.updated = new Date() ??
     // authorization etc.
-
+    // $log('update', data)
     svc.updateWithSet(id, data, (e,user) => {
       if (e) return cb(e)
       if (!user) return cb(Error(`Failed to update user with id: ${id}`))
@@ -177,7 +179,14 @@ var save = {
   //-------- User Info
 
   changeBio(bio, cb) {
-    updateAsIdentity.call(this, {bio}, null, cb)
+    var ups = {bio}
+
+    //temporary for expert applications
+    User.findOne({_id:this.user._id}, (e,r) => {
+      ups.cohort = _.extend(r.cohort, { expert: { applied: new Date } })
+
+      updateAsIdentity.call(this, ups, {type:'expertBio', by: r.email}, cb)
+    })
   },
 
   changeName(name, cb) {
@@ -186,13 +195,17 @@ var save = {
 
   changeUsername(username, cb) {
     var userId = this.user._id
-    if (!username) return updateAsIdentity.call(this, {username}, null, cb)
-    svc.searchOne({username}, null, (e,r) => {
-      if (r && !_.idsEqual(userId,r._id)) {
-        return cb(svc.Forbidden(`username ${username} already taken`))
-      }
-      updateAsIdentity.call(this, {username}, null, cb)
-    })
+    if (!username || username == '') {
+      User.findOneAndUpdate({_id:this.user._id}, { $unset: { username: '' } } , cbSession(this, cb))
+    }
+    else {
+      svc.searchOne({username}, null, (e,r) => {
+        if (r && !_.idsEqual(userId,r._id)) {
+          return cb(svc.Forbidden(`username ${username} already taken`))
+        }
+        updateAsIdentity.call(this, {username}, null, cb)
+      })
+    }
   },
 
   changePrimaryPayMethodId(primaryPayMethodId, cb) {
@@ -207,18 +220,18 @@ var save = {
   // and to set and send a new email hash for verification
   changeEmail(email, cb) {
     email = email.trim().toLowerCase()
-    var {user,session} = this
-    if (user)
+    if (this.user) {
+      var isVerifyRequest = this.user.email == email
       updateEmailToBeVerified.call(this, email, cb, (e, user, hash) => {
-        if (!e && hash && user)
+        if (!e && hash && isVerifyRequest)
           mailman.sendVerifyEmail(user, hash)
         cb(e, user)
       })
-    else
+    } else
       svc.searchOne(Data.query.existing(email), null, (e,r) => {
         if (r) {
-          delete session.anonData.email
-          return cb(svc.Forbidden(`${email} already registered`))
+          delete this.session.anonData.email
+          return cb(svc.Forbidden(`${email} already registered. Try password reset or google login?`))
         }
         updateAsIdentity.call(this, {email}, null, cb)
       })
@@ -243,11 +256,11 @@ var save = {
   requestPasswordChange(email, cb) {
     var anonymous = this.user == null
     svc.searchOne(Data.query.existing(email), null, (e,user) => {
-      if (e || !user) return cb(svc.Forbidden(`${email} not found`))
+      if (e || !user) return cb(svc.Forbidden(`No user found with email ${email}`))
 
       var ups = { local: _.extend(user.local || {}, {
         changePasswordHash: Data.data.generateHash(email),
-        passowrdHashGenerated: new Date()
+        passwordHashGenerated: new Date()
       })}
 
       //-- Previously had a google login without a v1 upsert migrate
@@ -262,7 +275,7 @@ var save = {
       //-- Update the user record regardless if anonymous or authenticated
       svc.updateWithSet(user._id, ups, (e,r) => {
         if (e) return cb(e)
-        mailman.sendChangePasswordEmail(user, ups.local.changePasswordHash)
+        mailman.sendChangePasswordEmail(r, ups.local.changePasswordHash)
         return cb(null, {email})
       })
     })
@@ -275,7 +288,7 @@ var save = {
       // we've just received the hash that we sent to user.email
       // so mark their email as verified
       delete user.local.changePasswordHash
-      delete user.local.passowrdHashGenerated
+      delete user.local.passwordHashGenerated
       user.local.password = Data.data.generateHash(password)
 
       var update = {
@@ -287,7 +300,23 @@ var save = {
       this.user = user
       updateAsIdentity.call(this, update, trackData, cb)
     })
-  }
+  },
+
+  changeLocationTimezone(locationData, cb) {
+    var { k, D } = locationData.geometry.location
+    Timezone.data(k, D, 1402629305, (e,r) => {
+      if (e) return cb(e)
+
+      var localization = {
+        location: locationData.formatted_address,
+        locationData: _.pick(locationData, 'address_components', 'geometry', 'name'),
+        timezone: r.raw_response.timeZoneName,
+        timezoneData: r.raw_response,
+      }
+
+      updateAsIdentity.call(this, {localization}, null, cb)
+    })
+  },
 
 }
 
@@ -298,7 +327,7 @@ function updateEmailToBeVerified(email, errorCB, successCB) {
   var trackData = { type: 'email', email, previous: user.email, previousVerified: user.emailVerified }
 
   svc.searchOne({_id:this.user._id}, {}, (ee, r) => {
-    if (r.email == email && r.emailVerified) return cb(`${email} already verified`)
+    if (r.email == email && r.emailVerified) return errorCB(Error(`${email} already verified`))
 
     var ups = { local: r.local || {} }
 

@@ -10,7 +10,6 @@ angular.module("ADMUsers", [])
 
 .controller('UsersCtrl', function($scope, AdmDataService) {
 
-  $scope.role = "editor";
   $scope.selectedUser = {}
 
   AdmDataService.users.getInRole({role:'admin'}, (result) =>
@@ -22,23 +21,21 @@ angular.module("ADMUsers", [])
   AdmDataService.users.getInRole({role:'pipeliner'}, (result) =>
     $scope.pipeliners = result)
 
-  $scope.toggleRole = function() {
-    AdmDataService.users.toggleRole({_id: $scope.selectedUser._id, role: $scope.role }, function (result) {
-      AdmDataService.users.getInRole({role:$scope.role}, function (result) {
-        $scope[$scope.role+'s'] = result;
+  $scope.toggleRole = function(_id, role) {
+    AdmDataService.users.toggleRole({_id,role}, function (r) {
+      AdmDataService.users.getInRole({role}, function (result) {
+        $scope[role+'s'] = result;
       })
     })
   }
 
-  $scope.giveCredit = function() {
-    AdmDataService.bookings.giveCredit({ total: $scope.credit, toUser: $scope.selectedUser, source: $scope.source },
-      function (result) { alert(`${$scope.credit} credit applied and emailed to ${$scope.selectedUser.email}`) }
+  $scope.giveCredit = function(total, source) {
+    AdmDataService.bookings.giveCredit({ total, source, toUser: $scope.selectedUser },
+      function (result) { alert(`${total} credit applied and emailed to ${$scope.selectedUser.email}`) }
     )
   }
 
-  // $scope.user = () => { return $scope.post.by }
   $scope.selectUser = (user) => $scope.selectedUser = user
-
 })
 
 

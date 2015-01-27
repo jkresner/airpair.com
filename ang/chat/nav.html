@@ -1,18 +1,118 @@
+<!-- This is the chat widget directive template -->
+
+<header>
+  <a track-click="chatNav" class="icon">
+    <img id="chatNavToggle" track-click="chatNav" data="{{ toggleAction }}" track-click-if="!session._id" ng-click="chatNav.toggle()" src="/static/img/css/chat/toggle.png" />
+    <i ng-show="corechat.selfmember.notificationsCount > 0">{{corechat.selfmember.notificationsCount}}</i>
+  </a>
+  <span ng-if="corechat.activeRoomId">
+    {{corechat.activeRoom.info.name || "Anonymous User"}}
+  </span>
+  <span ng-show="!corechat.activeRoomId">
+    All Chats
+  </span>
+</header>
+
+<!-- when not logged in / connecting -->
+<div ng-if="!corechat.selfmember.loggedIn">
+  <!-- logging in... -->
+</div>
+
+<!-- connected -->
+<div ng-if="corechat.selfmember.loggedIn">
+
+  <!-- list out rooms/conversations when activeRoom is empty -->
+  <div ng-if="!corechat.activeRoom" style="overflow:auto">
+
+    <div id="roomList">
+
+      <!-- don't show dupe admins in user rooms -->
+      <div class="item" ng-repeat="admin in corechat.getMembersByTag('admin')" ng-click="corechat.setActiveRoomAsMember(admin)" ng-show="!admin.hasChat && admin.id !== corechat.selfmember.id">
+        <div class="left">
+          <div class="onlineDot" ng-show="admin.status != 'offline'">&nbsp;</div>
+          <img class="avatar" ng-src="{{admin.avatar || '/static/img/css/sidenav/default-mario.png'}}" />
+        </div>
+        <div class="right">
+          <b>{{admin.name}}</b><br />
+          {{message.body}}
+        </div>
+      </div>
+
+      <!-- members -->
+      <div class="item" ng-repeat="(roomId, room) in corechat.selfmember.rooms" ng-click="corechat.setActiveRoom(roomId)" ng-class="{unread: corechat.selfmember.notificationsCountByRoom[roomId] > 0}">
+        <div class="left">
+          <div class="onlineDot" ng-show="room.info.status != 'offline'">&nbsp;</div>
+          <img class="avatar" ng-src="{{room.info.avatar || '/static/img/css/sidenav/default-mario.png'}}" />
+        </div>
+        <div class="right" member-info="{{message.from}}">
+          <b>{{room.info.name || "Anonymous User"}}</b><br />{{message.body}}
+          {{room.history[room.history.length-1].body}}<br/>
+          <i class="time" am-time-ago="room.history[room.history.length-1].timestamp"></i>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+
+  <!-- list out messages when in a room -->
+  <div ng-if="corechat.activeRoom" id="chatContainer">
+    <!-- container for overflow -->
+    <div id="chatHeader">
+      <img id="chatAvatar" ng-src="{{corechat.activeRoom.info.avatar || 'https://0.gravatar.com/avatar/'}}" />
+      <div id="chatSubtitle"></div>
+      <div id="chatStatus">{{corechat.activeRoom.info.status}}</div>
+    </div>
+    <div id="chatMessages" scroll-glue="true">
+      <!-- message item here -->
+      <div class="item" ng-repeat="message in corechat.activeRoom.history" member-info="{{message.from}}" ng-class="{fromOther: member.id !== corechat.selfmember.id}">
+        <div class="left">
+          <div class="onlineDot" ng-show="member.status != 'offline'">&nbsp;</div>
+          <img class="avatar" ng-src="{{member.avatar || 'https://0.gravatar.com/avatar/'}}" />
+        </div>
+        <div class="right"> 
+          <!-- <b>{{member.name || "Anonymous User"}}:</b><br /> -->
+          {{message.body}}<br/>
+          <i class="time" timestamp="message.timestamp" ng-if="$last"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- input mechanism for new message -->
+    <div id="chatInput">
+      <form name="newMessage">
+        <input type="text" ng-model="newMessage.body" placeholder="ask a question" />
+        <button type="submit" ng-show="newMessage.body" ng-click="corechat.sendMessageToRoom(corechat.activeRoomId, newMessage.body); newMessage.body=''">Send</button>
+      </form>
+    </div>
+  </div>
+
+</div>
+
+
+
+
+
+
+
+<!--
+
 <div ng-show="!corechat.selfmember.loggedIn">
     Chat not logged in.
 </div>
 
 <div ng-show="corechat.selfmember.loggedIn">
+   <img src="{{corechat.selfmember.avatar}}" style="width: 50px;" ng-show="corechat.selfmember.avatar"/>
    <b>Status:</b> {{corechat.selfmember.status}}<br />
    <div>
-       <b>Notifications:</b> {{corechat.selfmember.notificationsCount}}<br />
+       <b>Notifications:</b> <br />
        <div ng-repeat="notification in corechat.selfmember.notifications">
            {{notification.type}} - {{notification.info}} - <button ng-click="notification.acknowledge()">remove</button>
        </div>
    </div>
    <div>
        <b>Admins</b>
-       <button ng-repeat="admin in corechat.getMembersByTag('admin')" ng-click="corechat.setActiveRoomAsMember(admin)">{{admin.name}}</button>
+       <button ng-repeat="admin in corechat.getMembersByTag('admin')" ng-click="corechat.setActiveRoomAsMember(admin)" ng-show="!admin.hasChat">{{admin.name}}</button>
    </div>
    <div>
        <b>Chats:</b><br />
@@ -26,11 +126,11 @@
        <br />
         <div ng-repeat="message in corechat.selfmember.rooms[corechat.activeRoom].history">
             <div member-info="{{message.from}}">
-                <img ng-src="{{member.avatar}}" width="16"/>
-                {{member.name || "Anonymous User"}}:
+                <img ng-src="{{member.avatar}}" ng-if="member.avatar" width="16"/>
+                <b>{{member.name || "Anonymous User"}}:</b>
             </div> {{message.body}}
         </div><br />
-        <input type="text" ng-model="newMessage.body" style="float: left; width: 60%;" />
+        <input type="text" ng-model="newMessage.body" style="float: left; width: 100%;" placeholder="ask a question" />
         <button ng-click="corechat.sendMessageToRoom(corechat.activeRoom, newMessage.body); newMessage.body=''" style="width: 40%; float: right;">Send</button>
     </div>
 </div>

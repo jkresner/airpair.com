@@ -46,7 +46,7 @@ angular.module("APAuth", ['ngRoute','ngMessages','APFormsDirectives','APFilters'
           $timeout(() => { window.location = $scope.returnTo || '/me'}, 250)
         },
         (e) => {
-          $scope.loginFail = e.error
+          $scope.loginFail = e.message || e
         }
       )
     }
@@ -61,7 +61,7 @@ angular.module("APAuth", ['ngRoute','ngMessages','APFormsDirectives','APFilters'
       if (!isValid) return
       SessionService.signup(formData,
         () => $window.location = '',
-        (e) => $scope.signupFail = e.error
+        (e) => $scope.signupFail = e.message || e
       )
     }
   })

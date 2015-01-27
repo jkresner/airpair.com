@@ -1,4 +1,3 @@
-var {authd,setAnonSessionData,setFirebaseTokenOnSession} = require('../middleware/auth')
 var API = require('../api/_all')
 var {authd,setAnonSessionData} = require('../middleware/auth')
 var {adm,emailv} = require('../middleware/authz')
@@ -13,14 +12,14 @@ export default function(app) {
     .param('booking', API.Bookings.paramFns.getById)
     .param('paymethod', API.Paymethods.paramFns.getById)
 
-    .get('/session/full', setAnonSessionData, setFirebaseTokenOnSession, API.Users.getSession)
+    .get('/session/full', setAnonSessionData, API.Users.getSession)
     .put('/users/me/password-change', API.Users.requestPasswordChange)
     .put('/users/me/tag/:tag', setAnonSessionData, API.Users.toggleTag)
     .put('/users/me/tags', setAnonSessionData, API.Users.updateTags)
     .put('/users/me/bookmarks', setAnonSessionData, API.Users.updateBookmarks)
     .put('/users/me/bookmarks/:type/:id', setAnonSessionData, API.Users.toggleBookmark)
-    .put('/users/me/email', setAnonSessionData, setFirebaseTokenOnSession, API.Users.changeEmail)
-    .put('/users/me/name', setAnonSessionData, setFirebaseTokenOnSession, API.Users.changeName)
+    .put('/users/me/email', setAnonSessionData, API.Users.changeEmail)
+    .put('/users/me/name', setAnonSessionData, API.Users.changeName)
     .put('/users/me/password', (req, res, next) => {
       var inValid = API.Users.validation.changePassword(req.user, req.body.hash, req.body.password)
       if (inValid) return res.status(403).json({message:inValid})
@@ -71,6 +70,9 @@ export default function(app) {
     .put('/users/me/email-verify', setAnonSessionData, API.Users.verifyEmail)
     .put('/users/me/initials', API.Users.changeInitials)
     .put('/users/me/username', API.Users.changeUsername)
+    .put('/users/me/bio', API.Users.changeBio)
+    .put('/users/me/location', API.Users.changeLocationTimezone)
+
     .get('/company', API.Companys.getUsersCompany)
 
     .get('/billing/payoutmethods', API.Paymethods.getMyPayoutmethods)

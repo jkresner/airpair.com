@@ -29,6 +29,12 @@ var validation = {
 
     if (!update.type) return 'Request type required'
 
+    //-- Case when user comes back to edit a request without having put in tags yet
+    if (original.tags.length == 0 && update.tags.length == 0
+      && update.type
+      && !update.experience
+      && !update.brief) return
+
     if (!update.tags || !(update.tags.length > 0) )
       return 'Request must include at least one technology'
 
@@ -49,6 +55,11 @@ var validation = {
     if (original.time && !update.time) return 'Request turn around time required'
 
     if (original.budget && !update.budget) return 'Request budget required'
+
+    if (original.time && original.time == 'rush') {
+      if (update.hours && update.hours > 2) return 'Rush requests can be for 2 hours max'
+      if (update.budget <= 70) return 'Rush requests not available for $70 or less'
+    }
   },
   updateByAdmin(user, original, update)
   {

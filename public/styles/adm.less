@@ -1,6 +1,7 @@
 @import "ap.less";
 @import "adm.pipeline.less";
 @import "adm.chat.less";
+@import "chat.less";
 
 html, body{
   height:100%;
@@ -100,6 +101,17 @@ div.query {
   width:140px!important;height:34px!important;
   position:relative;
   margin-top:5px!important;
+}
+
+section#users {
+  padding-top:20px;
+  .btn { padding:3px 5px;font-size:12px;width:110px }
+  .roles { width:300px;float:right;clear:right }
+  .left { max-width:600px;float:left }
+  .credit { .left;min-width:300px;clear:left }
+  .info { .left;min-width:300px;clear:left }
+  .info { .left }
+  pre { margin:30px 0;font-size:11px;background:white }
 }
 
 section#bookings {

@@ -68,6 +68,19 @@ module.exports = -> describe "API", ->
                 done()
 
 
+  it 'Can update request type with no technology tags', (done) ->
+    addAndLoginLocalUser 'scol', (s) ->
+      expect(s.emailVerified).to.be.false
+      d = type: 'code-review'
+      POST '/requests', d, {}, (r1) ->
+        expect(r1._id).to.exist
+        r1.type = 'mentoring'
+        PUT "/requests/#{r1._id}", r1, {}, (r2) ->
+          expectIdsEqual(r1._id,r2._id)
+          expect(r2.type).to.equal('mentoring')
+          done()
+
+
   it 'Can update a request after verifying email', (done) ->
     addAndLoginLocalUser 'narv', (s) ->
       expect(s.emailVerified).to.be.false
@@ -141,14 +154,17 @@ module.exports = -> describe "API", ->
                   r6.budget = all.budget
                   PUT putUrl, r6, {}, (r7) ->
                     expect(r7.budget).to.equal(all.budget)
-                    LOGIN 'admin', data.users.admin, ->
-                      GET "/adm/requests/user/#{s._id}", {}, (rAdm) ->
-                        expect(rAdm.length).to.equal(1)
-                        expect(rAdm[0].suggested.length).to.equal(0)
-                        expect(rAdm[0].adm.active).to.be.true
-                        expect(rAdm[0].adm.submitted).to.exist
-                        expect(rAdm[0].adm.reviewable).to.be.undefined
-                        done()
+                    r7.title = 'A test title'
+                    PUT putUrl, r7, {}, (r8) ->
+                      expect(r8.title).to.equal('A test title')
+                      LOGIN 'admin', data.users.admin, ->
+                        GET "/adm/requests/user/#{s._id}", {}, (rAdm) ->
+                          expect(rAdm.length).to.equal(1)
+                          expect(rAdm[0].suggested.length).to.equal(0)
+                          expect(rAdm[0].adm.active).to.be.true
+                          expect(rAdm[0].adm.submitted).to.exist
+                          expect(rAdm[0].adm.reviewable).to.be.undefined
+                          done()
 
 
   it 'Can review a request as anon, customer and other', (done) ->
@@ -187,7 +203,7 @@ module.exports = -> describe "API", ->
     addAndLoginLocalUserWithEmailVerified 'mfln', (s) ->
       d = tags: [data.tags.angular], type: 'code-review', experience: 'advanced', brief: 'another anglaur test yo3', hours: "5", time: 'regular'
       POST '/requests', d, {}, (r0) ->
-        PUT "/requests/#{r0._id}", _.extend(r0,{budget:150}), {}, (r) ->
+        PUT "/requests/#{r0._id}", _.extend(r0,{budget:150,title:'test test'}), {}, (r) ->
           expect(r.status).to.equal('received')
           expect(r.suggested.length).to.equal(0)
           expect(r.adm).to.be.undefined

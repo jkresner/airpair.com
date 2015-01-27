@@ -176,7 +176,6 @@ module.exports = -> describe "Booking: ", ->
                 expect(order.total).to.equal(235)
                 expect(order.profit).to.equal(45)
                 expect(order.payment.status).to.equal('submitted_for_settlement')
-                $log('going'.blue)
                 expect(order.lineItems.length).to.equal(3)
                 expect(order.lineItems[0].type).to.equal('payg')
                 expect(order.lineItems[0].total).to.equal(0)
@@ -189,7 +188,6 @@ module.exports = -> describe "Booking: ", ->
                 expect(order.lineItems[1].qty).to.equal(1)
                 expect(order.lineItems[1].balance).to.equal(-50)
                 expect(order.lineItems[1].info.name).to.equal('$50 Redeemed Credit')
-                $log('going'.blue, orders)
                 oldestOrder = orders[1]
                 expect(_.idsEqual(order.lineItems[1]._id, oldestOrder.lineItems[0].info.redeemedLines[0].lineItemId)).to.be.true
                 expect(order.lineItems[2].type).to.equal('airpair')
@@ -230,7 +228,7 @@ module.exports = -> describe "Booking: ", ->
     addAndLoginLocalUserWithPayMethod 'petc', (s) ->
       d = tags: [data.tags.angular], type: 'resources', experience: 'proficient', brief: 'bah bah anglaur test yo4', hours: "1", time: 'rush'
       POST '/requests', d, {}, (r0) ->
-        PUT "/requests/#{r0._id}", _.extend(r0,{budget: 300}), {}, (r) ->
+        PUT "/requests/#{r0._id}", _.extend(r0,{budget: 300,title:'test'}), {}, (r) ->
           LOGIN 'abha', data.users.abha, (sAbha) ->
             GET "/requests/review/#{r._id}", {}, (rAbha) ->
               reply = expertComment: "good", expertAvailability: "ok", expertStatus: "available"

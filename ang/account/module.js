@@ -7,9 +7,35 @@ angular.module("APProfile", ['ngRoute', 'APFilters', 'APSvcSession', 'APTagInput
   route('/me/password', 'Password', require('./password.html'))
   route('/me', 'Account', require('./account.html'),{resolve: authd})
   route('/payouts', 'Payouts', require('./payouts.html'),{resolve: authd})
+  route('/expert-applications', 'ExpertApplication', require('./expertapplication.html'))
 
 })
 
+.controller('ExpertApplicationCtrl', ($scope, $location, $q, SessionService) => {
+
+  $scope.data = { email: $scope.session.email, bio: $scope.session.bio }
+
+  console.log('$scope.data', $scope.data)
+
+  $scope.updateBio = (valid, bio) => {
+    $scope.profileAlerts = []
+    if (valid) {
+     SessionService.updateBio({bio}, function(result){
+        $scope.profileAlerts.push({ type: 'success', msg: `Bio saved` })
+      })
+    }
+  }
+
+  $scope.sendVerificationEmail = function() {
+    SessionService.changeEmail({email:$scope.session.email}, function(result){
+      $scope.emailAlerts = [{ type: 'success', msg: `Verification email sent to ${$scope.session.email}` }]
+    }, function(e){
+      console.log('sendVerificationEmail.back', e, e.message)
+      $scope.emailAlerts = [{ type: 'danger', msg: `${e.message||e} failed` }]
+    })
+  };
+
+})
 
 .controller('AccountCtrl', function($rootScope, $scope, $location, ServerErrors, SessionService) {
 
@@ -18,13 +44,18 @@ angular.module("APProfile", ['ngRoute', 'APFilters', 'APSvcSession', 'APTagInput
     SessionService.verifyEmail({hash:$location.search().verify}, function(result){
       $scope.emailAlerts = [{ type: 'success', msg: `${$scope.session.email} verified ! <b>Next step, go to <a href="/billing">BILLING</a></b>` }]
     }, function(e){
-      $scope.emailAlerts = [{ type: 'danger', msg: `${e.message}` }]
+      $scope.emailAlerts = [{ type: 'danger', msg: `${e.message||e}` }]
     })
   }
 
-  $rootScope.$watch('session', (session) =>
+  $rootScope.$watch('session', (session) => {
     $scope.data = _.pick(session, 'name','email','initials','username')
-  )
+    if (session.localization)
+    {
+      $scope.data.location = session.localization.location
+      $scope.data.timezone = session.localization.timezone
+    }
+  })
 
   if ($scope.session)
     $scope.data = _.pick($scope.session, 'name','email','initials','username')
@@ -50,6 +81,9 @@ angular.module("APProfile", ['ngRoute', 'APFilters', 'APSvcSession', 'APTagInput
   $scope.updateInitials = () => updateInfo('Initials')
   $scope.updateUsername = () => updateInfo('Username')
 
+  $scope.updateLocation = (locationData) => {
+    SessionService.changeLocationTimezone(locationData, (r)=> {})
+  }
 
   $scope.updateEmail = function(model) {
     if (!model.$valid || $scope.data.email == $scope.session.email) return
@@ -71,7 +105,8 @@ angular.module("APProfile", ['ngRoute', 'APFilters', 'APSvcSession', 'APTagInput
     SessionService.changeEmail({email:$scope.session.email}, function(result){
       $scope.emailAlerts = [{ type: 'success', msg: `Verification email sent to ${$scope.session.email}` }]
     }, function(e){
-      $scope.emailAlerts = [{ type: 'danger', msg: `${e} failed` }]
+      console.log('sendVerificationEmail.back', e, e.message)
+      $scope.emailAlerts = [{ type: 'danger', msg: `${e.message||e} failed` }]
     })
   };
 
