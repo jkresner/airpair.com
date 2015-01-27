@@ -21,7 +21,6 @@ angular.module("APChatNav", [])
           element.addClass('collapse');
           if (corechat.initialized) {
             $timeout(function () {
-              console.log('here')
               corechat.leaveActiveRoom()
             }, 10);
           }
@@ -46,7 +45,6 @@ angular.module("APChatNav", [])
           // console.log('activeRoom true');
           if (corechat.initialized) {
             $timeout(function () {
-              console.log('there')
               corechat.leaveActiveRoom()
             }, 10);
           }
