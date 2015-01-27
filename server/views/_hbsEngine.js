@@ -48,10 +48,14 @@ export default function(app) {
   app.engine('hbs', hbsEngine);
 
   var combineBaseData = (req, data) => {
+    var chatSettings = {
+      on: config.chat.on,
+      firebaseUrl: config.chat.firebase.url
+    };
     if (!data) data = {}
     data.build = config.build
     data.authenticated = !!(req.user && req.user._id)
-    data.config = { analytics: config.analytics, bundle: config.bundle, chat: config.chat, hangout: config.hangout }
+    data.config = { analytics: config.analytics, bundle: config.bundle, chatSettings, hangout: config.hangout }
     data.campPeriod = moment().format('MMMYY').toLowerCase()
     return data;
   }
@@ -59,7 +63,7 @@ export default function(app) {
   app.renderErrorPage = (error) =>
     (req,res) => {
       // $callSvc(getSession,req)((e,session) => {
-      res.status(error.status||400).render(`./error.hbs`, {error})
+      res.status(error.status||400).render(`./error.hbs`, {error,build:config.build,config:{bundle: config.bundle}})
       // })
     }
 

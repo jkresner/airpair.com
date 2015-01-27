@@ -37,6 +37,7 @@ export function run()
 
     hbsEngine(app)
 
+    app.use(mw.logging.domainWrap)
     app.get('/', mw.analytics.trackFirstRequest, mw.auth.authdRedirect('/dashboard'), app.renderHbs('home') )
     app.use('/auth', routes.auth(app))
     app.use('/v1/api', routes.api(app))
@@ -46,30 +47,18 @@ export function run()
 
     app.use(mw.seo.noTrailingSlash) // Must be after root '/' route
     app.use(mw.analytics.trackFirstRequest)
+    app.use(mw.auth.setFirebaseTokenOnSession) 
 
     routes.redirects.init(app, () => {
+
       app.use(routes.dynamic(app))
       app.get(routes.whiteList, app.renderHbs('base') )
-
-      app.use( (err, req, res, next) => {
-        // if (config.env != 'test') {
-        $log('Express handler exception'.magenta)
-        $error(err, req.user, req)
-        //}
-        res.status(err.status || 400)
-        if (err.fromApi) res.json({error:err.message})
-        else app.renderErrorPage(err)(req,res)
-      })
-
-      process.on('uncaughtException', (err) => {
-        $log('uncaughtException'.red)
-        $error(err, {name:'uncaught',_id:'',email:''}, null)
-        process.exit(1)
-      })
-
+      app.use(mw.logging.errorHandler(app))
+      
       var server = app.listen(config.port, function() {
         $log(`          Listening after ${new Date().getTime()-start}ms on port ${server.address().port}`.white)
       })
+
     })
   })
 

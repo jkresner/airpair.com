@@ -42,13 +42,14 @@ var get = {
 
       svc.searchMany({$or: [{userId:ctx.user._id},{companyId: {$in:companyIds}}]}, null, (e,r) => {
         if (e) return cb(e,r)
+        var nonPayoutMethods = []
         if (r.length > 0) {
-          var nonPayoutMethods = []
           for (var pm of r) {
             if (pm.type.indexOf('payout') == -1) nonPayoutMethods.push(pm)
           }
-          return cb(e,nonPayoutMethods)
         }
+
+        if (nonPayoutMethods.length > 0) return cb(e,nonPayoutMethods)
         else {
           Settings.findOne({userId:ctx.user._id}, (ee, s) => {
             if (!s || !s.paymentMethods || s.paymentMethods.length == 0 || !_.find(s.paymentMethods,(pm)=>pm.type == 'stripe'))

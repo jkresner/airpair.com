@@ -13,7 +13,7 @@ angular.module("APCTAs", ['ngMessages','APAnalytics'])
           $timeout(success, 200)
         }
         , (e) => {
-          scope.updateFailed = e.message || e.error
+          scope.updateFailed = e.message || e.error || e
           scope.data.email = null
           if (scope.updateFailed.indexOf("already") != -1)
             scope.updateFailed += ". Try <a href='/v1/auth/login'>LOGIN instead?</a>"
@@ -27,7 +27,7 @@ angular.module("APCTAs", ['ngMessages','APAnalytics'])
         SessionService[singuptype](scope.data,
           (result) => $timeout(success, 200),
           (e) => {
-            $scope.updateFailed = e.message || e.error
+            $scope.updateFailed = e.message || e.error || e
             if ($scope.updateFailed.indexOf("already") != -1)
               $scope.updateFailed += ". Try <a href='/v1/auth/login'>LOGIN instead?</a>"
           }
@@ -80,4 +80,23 @@ angular.module("APCTAs", ['ngMessages','APAnalytics'])
       }
     };
 
-  });
+  })
+
+
+  .directive('ctaRequestSignup', function(SessionService, CtaHelper) {
+    return {
+      template: require('./ctaRequestSignup.html'),
+      controller($scope) {
+
+        SessionService.onAuthenticated( (s) => $scope.data = { email: s.email, name: s.name } )
+
+        $scope.updateEmail = (model) => CtaHelper.updateEmail($scope, model,
+          () => { angular.element('#requestSignupName').focus() })
+
+        $scope.submit = (formValid, data) => CtaHelper.submit($scope, 'homeSignup', formValid, data,
+          () => { })
+      }
+    };
+
+  })
+

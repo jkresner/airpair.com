@@ -32,10 +32,11 @@
 
 
   </a>
-  <footer class="entry-footer">
+  <footer class="entry-footer" ng-if="session._id == request.userId">
 
     <a ng-if="r.type" href="/help/request/{{r._id}}" class="edit">Edit</a>
     <a ng-if="!r.type" target="_self" href="/find-an-expert/edit/{{r._id}}" class="edit">Edit</a>
+    <a ng-if="!r.budget" ng-click="deleteRequest(r._id)" class="del">Delete</a>
 
   </footer>
 </article>

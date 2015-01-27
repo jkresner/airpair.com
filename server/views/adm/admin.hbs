@@ -27,10 +27,21 @@
   <div ng-view></div>
 </main>
 
+{{#if config.chatSettings.on}}
+  <!-- <nav id="chat" chat-nav></nav> -->
+  <!-- <div style="border-left:solid 1px red; position: fixed; top: 0px; height: 100%; right: 0; width: 300px;"> -->
+
+  <nav id="chat" chat-nav>
+    <!-- <chat-widget></chat-widget> -->
+  </nav>
+
+  <!-- </div> -->
+{{/if}}
+
 <script type="text/javascript" src="{{ config.bundle.admScript }}"></script>
 <script type="text/javascript">
 
-window.viewData = { session: {{ JSON session }}, hangoutAppId: "{{ config.hangout.appId }}"}
+window.viewData = { session: {{ JSON session }}, chatSettings: {{ JSON config.chatSettings }}, hangoutAppId: "{{ config.hangout.appId }}"}
 
 </script>
 

@@ -33,8 +33,8 @@
 </div>
 
 <nav id="side" class="collapse" side-nav></nav>
-{{#if config.chat.on}}
-<nav id="chat" class="collapse" chat-nav ng-if="session.authenticated == false"></nav>
+{{#if config.chatSettings.on}}
+<nav id="chat" class="collapse" chat-nav></nav>
 {{/if}}
 
 <script type="text/javascript" src="{{config.bundle.indexScript}}"></script>
@@ -62,7 +62,7 @@ function bindTracking() {
   })
 }
 
-window.viewData = { canonical: '{{ canonical }}', {{partialName}} : {{JSONID viewData}}, session: {{ JSON session }} };
+window.viewData = { canonical: '{{ canonical }}', {{partialName}} : {{JSONID viewData}}, session: {{ JSON session }}, chatSettings: {{ JSON config.chatSettings }} };
 
 </script>
 

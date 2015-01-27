@@ -68,6 +68,26 @@ angular.module("APPageHelpers", [])
     }
   }
 
+  this.headerMenu = function()
+  {
+    var countdown = 3000
+    var timer =  null
+    $('body > header .more').mouseover(function() {
+      if (timer) {
+        window.clearTimeout(timer)
+        timer = null
+      }
+      $('body > header ul.more').show()
+    }).mouseout(function() {
+      var hide = function() {
+        $('body > header ul.more').hide()
+      }
+      timer = window.setTimeout(hide,countdown)
+    })
+  }
+  this.headerMenu()
+
+
   this.loadDisqus = function(canonical)
   {
     if (window.disqus_initialized) return

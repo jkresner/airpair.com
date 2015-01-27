@@ -40,7 +40,7 @@ angular.module('APDataSvc', [])
       getBookings: GET((d)=>`/bookings`),
       getBooking: GET((d)=>`/bookings/${d._id}`),
       getOrdersForPayouts: GET((d)=>`/billing/orders/payouts`),
-      deletePaymethod: DELETE((d)=>`/billing/payoutmethods/${d._id}`),
+      deletePaymethod: DELETE((d)=>`/billing/paymethods/${d._id}`),
       payoutOrders: POST((d)=>`/payouts/${d.payoutmethodId}`)
     })
 
@@ -55,30 +55,12 @@ angular.module('APDataSvc', [])
 
     this.experts = expertFns;
 
-
     var requestFns = {
-      create(data, success, error) {
-        $http.post(`${API}/requests`, data).success((d) => {
-          analytics.track('Save', { type:'request', step: 'type' });
-          success(d)
-        }).error(error)
-      },
-      update(data, step, success, error) {
-        var trackEventName = 'Save'
-        var props = {
-          type: 'request',
-          step: step,
-          location: window.location.pathname // $location.path() no good...
-        };
-        analytics.track(trackEventName, props);
-        $http.put(`${API}/requests/${data._id}`, data).success(success).error(error)
-      },
-      getMyRequests(success, error) {
-        $http.get(`${API}/requests`).success(success).error(error)
-      },
-      getById(id, success, error) {
-        $http.get(`${API}/requests/${id}`).success(success).error(error)
-      },
+      create: POST((d)=>`/requests`,null,(d)=>{return{type:'request',step:'type',value:d.type}}),
+      update: PUT((d)=>`/requests/${d._id}`,null,(d)=>{ return{type:'request',step:d.step}}),
+      getMyRequests: GET((d)=>`/requests`),
+      getById: GET((d)=>`/requests/${d._id}`),
+      deleteRequest: DELETE((d)=>`/requests/${d._id}`),
       getReviewById(id, success, error) {
         $http.get(`${API}/requests/review/${id}`).success(success).error(error)
       },

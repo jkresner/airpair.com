@@ -27,7 +27,8 @@ var Cohort = {
     visits:               { type: [Date] },  // array of dates the user came to the site
   },
   aliases:                { type: [String] },
-  firstRequest:           {}
+  firstRequest:           {},
+  expert:                 {}
   // requests:     Get by query from Requests
   // orders:       Get by query from Order
   // spend:        Get by query from Orders
@@ -52,8 +53,11 @@ var User = new Schema({
 
   username: {
     type: String,
-    index: { sparse: true, unique: true, dropDups: true },
-    lowercase: true
+    unique: true,
+    dropDups: true,
+    lowercase: true,
+    sparse: true,
+    required: false
   },
 
   roles:                { type: [String] },
@@ -64,13 +68,21 @@ var User = new Schema({
 
   bio: String, // Used for blog posts
 
+  localization:
+  {
+    location:           String,
+    locationData:       {},
+    timezone:           String,
+    timezoneData:       {}
+  },
+
   local :
   {
     changeEmailHash:        String,
     emailHashGenerated:     Date,
     password :              String,
     changePasswordHash:     String,
-    passowrdHashGenerated:  Date
+    passwordHashGenerated:  Date
   },
   googleId:             { type: String, sparse: true, unique: true, dropDups: true },
   google: {},
