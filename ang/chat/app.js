@@ -261,14 +261,14 @@
             $log.log(session)
             if (!session) return;
             
-            if (!session.sessionID) localStorage.setItem("timeoutInitialize", "");
-
+            if (!session.sessionID) {
+                localStorage.setItem("timeoutInitialize", "");
+            }
             /*if (sessionID && (session._id !== sessionID && session.sessionID !== sessionID)) {
                 //$log.log("SessionID", sessionID, "doesn't match", session._id || session.sessionID)
                 sessionID = session._id || session.sessionID;
             }*/
             
-            console.log(session)
             cc && session.firebaseToken? cc.login(session.firebaseToken) : null;
             
             //sessionID = session._id || session.sessionID;
