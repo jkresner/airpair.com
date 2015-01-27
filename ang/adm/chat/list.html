@@ -22,7 +22,7 @@
         <div ng-repeat="(page, members) in corechat.admin.members.byPage" ng-hide="page == '/help/request'">
             <div ng-show="members">
                 <h4>{{page}}</h4>
-                <div ng-repeat="(memberId, _) in members" ng-click="setCurrentUser(memberId)" class="member">
+                <div ng-repeat="(memberId, _) in members" ng-click="corechat.findOrCallback(memberId, setCurrentUser)" class="member">
                   <img src="/static/img/css/chat/toggle.png" />
                   <span member-info="{{memberId}}">{{member.name || "Anonymous User"}} <span am-time-ago="member.page.timestamp" class="timestamp"></span></span>
                 </div>
@@ -35,9 +35,9 @@
 
     <div class="section">
         <h3>Rooms by Last Message</h3>
-        <div ng-repeat="(timestamp, room) in corechat.admin.rooms.byLastMessage">
-            <div class="member" ng-click="toggleHistory=!toggleHistory" ng-show="room.info.name">
-                [{{toggleHistory? "-" : "+"}}] {{room.info.name}} <span am-time-ago="timestamp" class="timestamp"></span>
+        <div ng-repeat="(timestamp, room) in corechat.admin.rooms.byLastMessage | orderBy:'$index':true">
+            <div class="member" ng-click="toggleHistory=!toggleHistory">
+                [{{toggleHistory? "-" : "+"}}] {{room.info.name || 'You, Anonymous User'}} <span am-time-ago="timestamp" class="timestamp"></span>
             </div>
             <div ng-if="toggleHistory">
                 <div ng-repeat="message in room.history">
@@ -54,7 +54,7 @@
         <h3>All Rooms</h3>
         <div ng-repeat="room in allRooms">
             <div class="member" ng-click="toggleHistory=!toggleHistory" ng-show="room.info.name">
-                [{{toggleHistory? "-" : "+"}}] {{room.info.name}}
+                [{{toggleHistory? "-" : "+"}}] {{room.info.name || 'You, Anonymous User'}}
             </div>
             <div ng-if="toggleHistory">
                 <div ng-repeat="message in room.history">

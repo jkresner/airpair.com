@@ -7,7 +7,8 @@
 		this._member;
 		this._rooms = {};
 		this._members = {};
-		this._membersByTag = {};
+		this._membersByRole = {};
+		this._membersByRoleFlag = {};
 		this.admin;
 
 		// A helpful callback wrapper for integrating with Angular's digestion
@@ -28,15 +29,7 @@
 				} else {
 					//console.log("Logged in as", member.uid)
 					this._member = new SelfMember(this, member.uid, member);
-
-					var lastUID = localStorage.getItem("corechat:uid");
-
-					if (lastUID) {
-						localStorage.setItem("corechat:lastUID", lastUID);
-					}
-
 					localStorage.setItem("corechat:firebaseToken", token);
-					localStorage.setItem("corechat:uid", member.uid);
 					this.trigger("login", null, this._member);
 				}
 			}).bind(this));
@@ -46,7 +39,7 @@
 			this._ref.unauth();
 			this._member.detach();
 			this._member = {};
-			localStorage.setItem("corechat:firebaseToken", '');
+			localStorage.setItem("corechat:firebaseToken", "");
 			this.trigger("logout", null);
 		};
 
@@ -78,33 +71,37 @@
 			return this._rooms[roomId];
 		};
 
-		this.getMembersByTag = function (tag) {
-			if (!this._membersByTag[tag]) {
+		this.getMembersByRole = function (role) {
+			if (!this._membersByRole[role]) {
 	 			var members = {},
-					tagRef = this._ref
-						.child("members/byTag")
-						.child(tag);
-
-				tagRef
-					.on("child_added", (function (snapshot) {
-						this._callbackWrap((function () {
-							var memberId = snapshot.key();
-							if (snapshot.val())
-								members[memberId] = this.getMember(memberId);
-						}).bind(this));
-					}).bind(this));
-
-				tagRef
-					.on("child_removed", (function (snapshot) {
-						this._callbackWrap((function () {
-							var memberId = snapshot.key();
+					roleRef = this._ref
+						.child("members/byRole")
+						.child(role);
+						
+				roleRef
+					.on("value", (function (membersSnapshot) {
+						var hasMembers = false;
+						for (var memberId in members) {
 							delete members[memberId];
+							this._membersByRoleFlag[role] = false;
+						}
+						membersSnapshot.forEach((function (memberSnapshot) {
+							var memberId = memberSnapshot.key();
+							if (memberSnapshot.val())
+								members[memberId] = this.getMember(memberId);
+							else
+								memberSnapshot.ref().remove();
+							hasMembers = true;
+						}).bind(this))	
+						
+						this._callbackWrap((function () {
+							this._membersByRoleFlag[role] = hasMembers;
 						}).bind(this));
-					}).bind(this));
+					}).bind(this))
 
-				this._membersByTag[tag] = members;
+				this._membersByRole[role] = members;
 			}
-			return this._membersByTag[tag];
+			return this._membersByRole[role];
 		}
 		
 		this.getAdminInterface = function () {
@@ -124,7 +121,7 @@
 
 			checkLogin();
 		};
-
+		
 		this._attemptLoginFromLocalstorage = function () {
 			var token = localStorage.getItem("corechat:firebaseToken");
 			if (token)
@@ -139,7 +136,7 @@
 			else
 				this.trigger("offline");
 		}).bind(this));
-
+		
 		this._attemptLoginFromLocalstorage();
 	};
 
@@ -362,10 +359,11 @@
 
 			if (this.exists) {
 				cc._callbackWrap((function () {
+					//console.log(this.id, memberData)
 					this.email = memberData.email;
 					this.name = memberData.name;
 					this.avatar = memberData.avatar;
-					this.tags = memberData.tags || {};
+					this.roles = memberData.roles || {};
 					this.status = memberData.status;
 					this.roles = memberData.roles;
 					this.trigger("ready", null, this);
@@ -380,15 +378,15 @@
 				.set(true);
 		};
 
-		this.tags = {
-			add: function (tag) {
-				this._ref.child('tags').child(tag).set(true)
+		this.roles = {
+			add: function (role) {
+				this._ref.child('roles').child(role).set(true)
 			},
-			remove: function (tag) {
-				this._ref.child('tags').child(tag).set(false);
+			remove: function (role) {
+				this._ref.child('roles').child(role).set(false)
 			},
-			has: function (tag) {
-				return this.tags[tag] || false;
+			has: function (role) {
+				return this.roles[role] || false
 			}
 		}
 	};
@@ -436,6 +434,7 @@
 			if (nonSelfMembersCount == 1) {
 				for (memberId in nonSelfMembers) {
 					var member = members[memberId];
+					if (member.id !== cc._member.id) member.hasChat = true;
 					break;
 				}
 				this.info = member;
@@ -443,6 +442,7 @@
 				var memberNames = [];
 				Object.keys(nonSelfMembers).forEach(function (memberIndex) {
 					var member = nonSelfMembers[memberIndex];
+					if (member.id !== cc._member.id) member.hasChat = true;
 					var waitingOnName = setInterval(function () {
 						if (!member.name) return;
 						memberNames.push(member.name);
@@ -485,34 +485,44 @@
 
 		this._ref
 			.child("history")
-			.on("child_added", (function (messageSnapshot) {
-				var rawMessage = messageSnapshot.val(),
-					message = new Message(
-						cc,
-						rawMessage.to,
-						rawMessage.from,
-						rawMessage.body,
-						rawMessage.timestamp,
-						"room");
-
-				this.history.push(message);
-
-				this.trigger("message", null, message)
+			.on("value", (function (historySnapshot) {
+				this.history = [];
+				historySnapshot.forEach((function (messageSnapshot) {
+					var rawMessage = messageSnapshot.val(),
+						message = new Message(
+							cc,
+							rawMessage.to,
+							rawMessage.from,
+							rawMessage.body,
+							rawMessage.timestamp,
+							"room");
+	
+					this.history.push(message);
+	
+					this.trigger("message", null, message)	
+				}).bind(this));
+				
+				cc._callbackWrap((function () {
+					this.getMetadata();
+				}).bind(this));
 			}).bind(this));
 
 		this._ref
 			.child("members")
-			.on("child_added", (function (memberSnapshot) {
-				var memberId = memberSnapshot.key(),
-					member = cc.getMember(memberId),
-					metadata;
-
-				this.members[memberId] = member;
-
-				this.trigger("member_joined", null, member);
-
-				cc._callbackWrap((function () {
-					this.getMetadata();
+			.on("value", (function (membersSnapshot) {
+				this.members = {};
+				membersSnapshot.forEach((function (memberSnapshot) {
+					var memberId = memberSnapshot.key(),
+						member = cc.getMember(memberId),
+						metadata;
+	
+					this.members[memberId] = member;
+	
+					this.trigger("member_joined", null, member);
+	
+					cc._callbackWrap((function () {
+						this.getMetadata();
+					}).bind(this));
 				}).bind(this));
 			}).bind(this));
 
