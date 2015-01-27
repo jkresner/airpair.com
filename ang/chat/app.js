@@ -258,7 +258,7 @@
 
 
         $rootScope.$watch('session', function (session) {
-            $log.log(session)
+            //$log.log(session)
             if (!session) return;
             
             if (!session.sessionID) {
