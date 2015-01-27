@@ -19,9 +19,11 @@ angular.module("APChatNav", [])
         });
         element.bind('mouseleave', function() {
           element.addClass('collapse');
-          $timeout(function () {
-            corechat.leaveActiveRoom()
-          }, 10);
+          if (corechat.initialized) {
+            $timeout(function () {
+              corechat.leaveActiveRoom()
+            }, 10);
+          }
          
           // storage('chatNavOpen', 'false');
         });
@@ -41,9 +43,11 @@ angular.module("APChatNav", [])
           // if there's an activeRoom, clear it and let chat stay open
     
           // console.log('activeRoom true');
-          $timeout(function () {
-            corechat.leaveActiveRoom()
-          }, 10);
+          if (corechat.initialized) {
+            $timeout(function () {
+              corechat.leaveActiveRoom()
+            }, 10);
+          }
 
           // if (storage('chatNavOpen') == 'true') storage('chatNavOpen', 'false');
           // else storage('chatNavOpen', 'true');

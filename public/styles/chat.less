@@ -5,6 +5,8 @@ nav#chat {
 
   section.main {
     height: 100%;
+    background-color: #fff;
+    border-left:solid 1px @darkblue;
   }
 
   display:block;
@@ -14,11 +16,10 @@ nav#chat {
   bottom:0;
   margin:0;
   right:0;
-  background-color: #fff;
   font-size:13px;
   color:@gray;
   width:@sideChatWidth;
-  border-left:solid 1px @darkblue;
+  z-index: 100;
 
   header {
     white-space: nowrap;
@@ -149,7 +150,7 @@ nav#chat {
     width: 100%;
     position: absolute;
     top: 35px;
-    left: 0;
+    left: 2px;
     right: 0;
     bottom: 0;
 
@@ -245,7 +246,7 @@ nav#chat {
     width: 220px;
     position: absolute;
     top: 235px;
-    left: 0;
+    left: 2px;
     right: 0;
     bottom: 30px;
 

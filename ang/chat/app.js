@@ -63,8 +63,10 @@
 
             $rootScope.cc = cc;
             $scope.ref = cc._ref;
-
-            cc._watchForTokenOnWindow();
+            
+            if ($rootScope.session && $rootScope.session.firebaseToken) {
+                cc.login($rootScope.session.firebaseToken);
+            }
 
             cc._callbackWrap = function (func, args) {
                 $timeout(function () {
@@ -83,8 +85,9 @@
 
             $scope.setActiveRoomAsMember = function (member) {
                 var RID = getMemberToMemberRID(member.id, cc._member.id);
+ 
+                $scope.join(RID);
                 $scope.setActiveRoom(RID);
-                cc._member.join(RID);
             };
 
             $scope.sendMessageToRoom = function (roomId, body) {
@@ -100,8 +103,8 @@
                 return cc.getMember(memberId);
             };
 
-            $scope.getMembersByTag = function (tag) {
-                return cc.getMembersByTag(tag);
+            $scope.getMembersByRole = function (role) {
+                return cc.getMembersByRole(role);
             };
 
             $scope.getRoom = function (roomId) {
@@ -111,6 +114,10 @@
             $scope.getActiveRoom = function () {
                 return $scope.selfmember.rooms[$scope.activeRoomId]  
             };
+            
+            $scope.getMembersByRoleFlag = function () {
+                return cc._membersByRoleFlag || {};
+            }
 
             $scope.login = function (token) {
                 cc.login(token);
@@ -122,6 +129,18 @@
 
             $scope.join = function (RID) {
                 cc._member.join(RID)
+            };
+            
+            $scope.findOrCallback = function (memberId, callback) {
+                for (var RID in $scope.selfmember.rooms) {
+                    var room = $scope.getRoom(RID);
+                    if (room.info.id == memberId) {
+                        console.log('setitng active room')
+                        $scope.setActiveRoom(RID);
+                        return;
+                    }
+                }
+                callback(memberId);
             };
             
             $scope.leaveActiveRoom = function () {
@@ -160,7 +179,7 @@
 
                 };
                 
-                if (cc._member && cc._member.roles.admin) {
+                if (cc._member && cc._member.roles && cc._member.roles.admin) {
                     $scope.isAdmin = true;
                     $scope.admin = cc.getAdminInterface();
                 }
@@ -226,7 +245,7 @@
         $timeout(function () {
             $scope.initialize();
             localStorage.setItem("timeoutInitialize", true);
-        }, 90e3);
+        }, 10e3);
 
         var unwatchSession = $rootScope.$watch('session', function (session) {
             if (!session) return;
@@ -242,16 +261,17 @@
             //$log.log(session)
             if (!session) return;
             
-            if (!session.sessionID) localStorage.setItem("timeoutInitialize", "");
-
-            if (sessionID && (session._id !== sessionID && session.sessionID !== sessionID)) {
-                //$log.log("SessionID", sessionID, "doesn't match", session._id || session.sessionID)
-                cc? cc.login(session.firebaseToken) : null;
-                window.firebaseToken = session.firebaseToken;
-                sessionID = session._id || session.sessionID;
+            if (!session.sessionID) {
+                localStorage.setItem("timeoutInitialize", "");
             }
-
-            sessionID = session._id || session.sessionID;
+            /*if (sessionID && (session._id !== sessionID && session.sessionID !== sessionID)) {
+                //$log.log("SessionID", sessionID, "doesn't match", session._id || session.sessionID)
+                sessionID = session._id || session.sessionID;
+            }*/
+            
+            cc && session.firebaseToken? cc.login(session.firebaseToken) : null;
+            
+            //sessionID = session._id || session.sessionID;
 
             if (lastSession && lastSession.unauthenticated && session._id)
                 cc._ref.child("transfers").push({
