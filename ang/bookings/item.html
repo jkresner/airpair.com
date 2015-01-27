@@ -10,12 +10,6 @@
     <div>{{booking.minutes}} minutes </div>
     <div>Privacy: {{booking.type | uppercase}} </div>
     <!-- <div>{{booking.status}}</div> -->
-
-    <section class="datetime">
-      <!-- <p>
-        Participants: (Mike to finish)
-      </p> -->
-    </section>
   </div>
 
   <div class="col-md-3">
@@ -45,7 +39,7 @@
         No Hangout. Come back at {{ booking.datetime | date:'medium'}}
       </div>
       <div ng-if="hangoutState.inProgress">
-        Hangout started. Join at {{ booking.recordings[booking.recordings.length-1].hangoutUrl }}
+        <a href="{{ booking.recordings[booking.recordings.length-1].hangoutUrl }}">Join Hangout</a>
       </div>
       <div ng-if="hangoutState.complete">
         <ul>

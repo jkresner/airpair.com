@@ -15,16 +15,14 @@ angular.module("APBookings", [])
   var setScope = function(r) {
     if (!r.participants) return
 
-    var hangoutReadyDate = Util.datetime.tenMinutesAgo()
+    var hangoutReadyDate = moment(r.datetime).add(-10,"minutes")
     var endDate = moment(r.datetime).add(r.minutes,'minutes')
-    debugger
     var hangoutState = {};
-    if (Util.dateInRange(hangoutReadyDate, endDate)){
+    if (Util.dateInRange(moment(), hangoutReadyDate, endDate)){
       hangoutState.inProgress = true
-    } else if (currentDate.isBefore(startDate)){
+    } else if (moment().isBefore(hangoutReadyDate)){
       hangoutState.none = true
     } else {
-      console.log("HANGOUT COMPLETE")
       hangoutState.complete = true
     }
 
