@@ -78,6 +78,10 @@ angular.module('APSvcSession', [])
       $http.post(`${Auth}/signup-home`, data).success(setScope(success)).error(error);
     }
 
+    this.soSignup = function(data, success, error) {
+      $http.post(`${Auth}/signup-so`, data).success(setScope(success)).error(error);
+    }
+
     this.changeEmail = function(data, success, error) {
       var trackingData = { type:'email', email: data.email }
       $http.put(`${API}/users/me/email`, data).success(setScope(success, trackingData)).error(error);
