@@ -100,3 +100,52 @@ angular.module("APCTAs", ['ngMessages','APAnalytics'])
 
   })
 
+  .directive('ctaSowelcome', function(SessionService, StaticDataService, CtaHelper) {
+    return {
+      template: require('./ctaSOWelcome.html'),
+      controller($scope) {
+
+        var validSO201501Slugs = [
+          'ruby-on-rails',
+          'python',
+          'angularjs',
+          'ios',
+          'android',
+          'ember.js',
+          'node.js'
+        ]
+
+        if (validSO201501Slugs.indexOf($scope.tag.slug) == -1)
+          return window.location = '/help/request'
+
+        var setScope = (s) => {
+          var tags = $scope.session.tags
+          var bookmarks = $scope.session.bookmarks
+          $scope.data = {
+            hasTag: tags != null && tags.length > 0,
+            hasBookmark: bookmarks != null && bookmarks.length > 0,
+          }
+          $scope.posts = StaticDataService.getWelcomePosts($scope.tag.slug)
+        }
+
+        SessionService.onAuthenticated(setScope)
+
+        $scope.addTag = (tag) =>
+          SessionService.updateTag(tag, setScope, (e) => alert(e.message))
+
+
+        $scope.addBookmark = (post) =>
+          SessionService.updateBookmark({type:'post',objectId:post._id}, setScope, (e) => alert(e.message))
+
+
+        // $scope.updateEmail = (model) => CtaHelper.updateEmail($scope, model,
+        //   () => { angular.element('#requestSignupName').focus() })
+
+        // $scope.submit = (formValid, data) => CtaHelper.submit($scope, 'homeSignup', formValid, data,
+        //   () => { })
+
+      }
+    };
+
+  })
+

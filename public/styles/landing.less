@@ -1,0 +1,167 @@
+section#landing.SOWelcome {
+
+  .vr {
+    border-left:2px solid @bluegray;
+    height:50px;
+    width:1px;
+    margin:-10px 0 0 50%;
+    position:relative;
+    z-index:5;
+  }
+
+  .logo {
+    display:block;
+    width:200px;
+    margin:50px auto 20px auto;
+    padding-top:50px
+  }
+
+  .fold {
+    position:relative;
+    background:@lightblue;
+    margin-top:20px;
+    text-align:center;
+    border-radius:5px;
+    h2 { font-size:32px;color:@gray;margin-bottom:40px }
+    margin-bottom:10px;
+  }
+
+  .stack {
+    height:460px;
+    .fold;
+    .ari {
+      width:91%;
+      position:absolute;
+      top:0;
+      right:0px;
+      // border-bottom-left-radius:60%;
+      opacity:0.05;
+    }
+
+    .tag.angularjs {
+      height:46px;
+    }
+
+    .btn {
+      position:relative;
+      width:600px;
+      font-size:32px;
+      margin-bottom:30px;
+      padding-right:64px;
+      // cursor:url("../img/pages/sowelcome/add-tostack.png"), auto;
+      // img.stack {
+      //   border-radius:2px;
+      //   margin-top:0;
+      //   right:4px;
+      //   top:5px;
+      //   height:58px;
+      //   background:white;
+      //   position:absolute;
+      // }
+    }
+
+    p { padding:20px;font-size:16px }
+
+  }
+
+  .bookmark {
+    .fold;
+    height:600px;
+    .logo {
+      margin:40px auto 10px auto;
+      padding:20px 0 0px 0;
+    }
+    h4 {
+      margin:0
+    }
+    article {
+      height:300px;
+      display:inline-block;
+      background:white;
+      width:29%;
+      text-align:left;
+      margin:-10px 8px 0 8px;
+      header {
+        height:130px;overflow:hidden;
+        img { max-width:100%; }
+      }
+      .entry-content {
+        padding:20px 15px;
+        .entry-title { height:60px;width:80%;margin:0 }
+        h2 { font-weight:bold;font-size:14px;line-height:18px; }
+        img { float:right;border-radius:50% }
+        .entry-author-name { color:@orange;font-weight:bold;margin-top:12px;display:block }
+      }
+    }
+
+    a.bookmark {
+      cursor:url("../img/pages/sowelcome/bookmark.png"), auto;
+    }
+
+    a:hover article {
+      // background:@orangehighlight;
+      border:solid 2px @orangehighlight;
+      h2 { color:@orange }
+      .entry-author-name { color:@gray }
+    }
+
+    p { padding:20px;font-size:18px }
+  }
+
+  .experts {
+    hr {
+      border-top:solid 2px @bluegray;
+      margin-top:-45px;
+      max-width:890px;
+      opacity:0.4;
+    }
+    .mask {
+      opacity:0.1
+    }
+  }
+  .experts ul {
+    z-index:2;
+    position:relative;
+    .ulNoStyle;
+    li {
+      // border:solid 1px white;
+      position:relative;
+      width:95px;height:90px;
+      vertical-align:top;
+      padding:0 2px;
+    }
+    .circle {
+      border-radius:50%;
+      background:@bluegray;
+      width:90px;height:90px;
+      // margin:0 10px;
+      display:block;
+      font-size:32px;
+      font-weight:bold;
+      color:white;
+      padding-top:2px;
+    }
+    img, .you { .circle; }
+    img {
+      position:relative;
+      -webkit-filter: grayscale(100%);
+      filter: grayscale(100%);
+    }
+    div.mask {
+      position:absolute;
+      height:90px;width:90px;
+      background:@bluegray;
+      opacity:0.85;
+      z-index:2;
+      border-radius:50%;
+    }
+    .you {
+      margin:0 9px;
+      b { padding:21px 0 0 5px;display:block;font-size:28px }
+      display:inline-block;
+      img { margin:0;opacity:1;padding:0 }
+    }
+
+  }
+
+}

@@ -47,14 +47,15 @@ export function run()
 
     app.use(mw.seo.noTrailingSlash) // Must be after root '/' route
     app.use(mw.analytics.trackFirstRequest)
-    app.use(mw.auth.setFirebaseTokenOnSession) 
+    app.use(mw.auth.setFirebaseTokenOnSession)
 
     routes.redirects.init(app, () => {
 
+      app.use(routes.landing(app))
       app.use(routes.dynamic(app))
       app.get(routes.whiteList, app.renderHbs('base') )
       app.use(mw.logging.errorHandler(app))
-      
+
       var server = app.listen(config.port, function() {
         $log(`          Listening after ${new Date().getTime()-start}ms on port ${server.address().port}`.white)
       })
