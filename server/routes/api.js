@@ -95,6 +95,7 @@ export default function(app) {
     .get('/payouts/me', API.Payouts.getPayouts)
     .post('/payouts/:paymethod', bodyParam('orders'), API.Payouts.payoutOrders)
 
+    .get('/bookings', API.Bookings.getByUserId)
     .get('/bookings/:id', API.Bookings.getById)
     .post('/bookings/:expert', API.Bookings.createBooking)
 

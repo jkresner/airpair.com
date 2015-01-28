@@ -135,7 +135,7 @@
                 for (var RID in $scope.selfmember.rooms) {
                     var room = $scope.getRoom(RID);
                     if (room.info.id == memberId) {
-                        console.log('setitng active room')
+                        //console.log('setitng active room')
                         $scope.setActiveRoom(RID);
                         return;
                     }
