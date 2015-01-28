@@ -76,12 +76,8 @@
 <div class="form-actions">
 
   <button class="btn" ng-click="save()" ng-disabled="(!post.title && !post.by.bio) || post.saved">Save</button>
-  <!-- || post.published todo: put back to stop users editing their own posts -->
-
-<!--   <button class="btn btnPreview" ng-click="previewToggle()" ng-disabled="!post._id || (preview.mode == 'publish')">{{preview.mode == 'edit' && 'Preview' || 'Edit' }}</button>
- -->
- <a class="btn" target="_blank" ng-click="submitForReview()" ng-disabled="(!post.title && !post.by.bio) || !post.saved || (preview.mode == 'publish')">Submit for Review</a>
- <a class="btn" target="_blank" ng-click="submitForPublication()" ng-disabled="(!post.title && !post.by.bio) || !post.saved || (preview.mode == 'publish')">Submit for Publication</a>
+  <a class="btn" target="_blank" ng-click="submitForReview()" ng-disabled="!post._id || (!post.title && !post.by.bio) || !post.saved">Submit for Review</a>
+  <a class="btn" target="_blank" ng-click="submitForPublication()" ng-disabled="!post._id || (!post.title && !post.by.bio) || !post.saved">Submit for Publication</a>
 
   <button class="btn" ng-click="delete()" ng-disabled="(!(preview.mode == 'edit') || post.published) || !post._id">Delete</button>
 </div>
