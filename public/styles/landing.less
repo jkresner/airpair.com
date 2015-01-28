@@ -1,4 +1,6 @@
 section#landing.SOWelcome {
+  margin-top:0;
+  padding-top:20px;
 
   .vr {
     border-left:2px solid @bluegray;
@@ -19,7 +21,6 @@ section#landing.SOWelcome {
   .fold {
     position:relative;
     background:@lightblue;
-    margin-top:20px;
     text-align:center;
     border-radius:5px;
     h2 { font-size:32px;color:@gray;margin-bottom:40px }
@@ -98,8 +99,13 @@ section#landing.SOWelcome {
       }
     }
 
+
     a.bookmark {
       cursor:url("../img/pages/sowelcome/bookmark.png"), auto;
+    }
+
+    a article {
+      border:solid 2px white;
     }
 
     a:hover article {
@@ -166,6 +172,20 @@ section#landing.SOWelcome {
       img { margin:0;opacity:1;padding:0 }
     }
 
+  }
+
+  section#join {
+    margin-top:-20px;
+    padding-top:40px;
+  }
+  section.happy {
+    // .customers { max-width:640px; }
+    ul p { max-width:500px }
+    section.stats { float:right;width:200px;
+      li { padding:2px 0;
+        b { float:right; }
+      }
+    }
   }
 
 }

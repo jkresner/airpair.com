@@ -169,6 +169,8 @@ function localSignup(email, password, name, errorCB, done) {
       if (!e) {
         if (password == 'home')
           mailman.signupHomeWelcomeEmail(r, upsert.local.changePasswordHash)
+        if (password == 'so')
+          mailman.signupHomeWelcomeEmail(r, upsert.local.changePasswordHash)
         if (password == 'subscribe')
           mailman.singupSubscribeEmail(r, upsert.local.changePasswordHash)
       }

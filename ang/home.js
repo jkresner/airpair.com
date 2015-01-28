@@ -1,4 +1,5 @@
 window.$ = window.jQuery = require('./../public/lib/jquery/dist/jquery.js');
+window._ = require('./../public/lib/lodash/dist/lodash.js');
 require('./../public/lib/angular/angular.js');
 require('./../public/lib/angular-animate/angular-animate.js');
 require('./../public/lib/angular-messages/angular-messages.js');
