@@ -5,71 +5,37 @@ angular.module("APChatNav", [])
       template: require('./chatNav.html'),
       transclude: true,
       link: function(scope, element, attrs) {
-
+        var lastActiveRoom;
+        
         element.bind('mouseenter', function() {
-          element.removeClass('collapse');
-          // storage('chatNavOpen', 'true');
-          // if( corechat.activeRoom ) {
-          //   console.log( 'opening with a activeRoom, clearing notifications' );
-          //   angular.forEach(corechat._member.notificationsByRoom[corechat.activeRoom], function (notification) {
-          //      notification.acknowledge();
-          //      // --$scope.selfmember.notificationsCount;
-          //   });
-          // }
+          if (!corechat.activeRoomId && corechat.lastActiveRoom) {
+            $timeout(function () {
+              corechat.setActiveRoom(corechat.lastActiveRoom);
+              element.removeClass('collapse');
+            });
+            
+            // Slight delay to allow Angular to render widget
+            $timeout(function () {
+              angular.element("input#chatInput").focus();
+            }, 10);
+          } else {
+            element.removeClass('collapse');
+          }
         });
+        
         element.bind('mouseleave', function() {
           element.addClass('collapse');
           if (corechat.initialized) {
             $timeout(function () {
+              corechat.lastActiveRoom = corechat.activeRoomId;
               corechat.leaveActiveRoom()
-            }, 10);
+            }, 10)
           }
-         
-          // storage('chatNavOpen', 'false');
         });
-
-        // focus the input when the chatNav is clicked
-        // element.bind('click', function(e) {
-        //   element.removeClass('collapse');
-        //   angular.element("#chatInput input").focus();
-        // });
-
       },
       controllerAs: 'chatNav',
-      controller: function($scope, $element, $attrs, $timeout) {
-
-        this.toggle = function() {
-          // console.log('toggling', storage('chatNavOpen'));
-          // if there's an activeRoom, clear it and let chat stay open
-    
-          // console.log('activeRoom true');
-          if (corechat.initialized) {
-            $timeout(function () {
-              corechat.leaveActiveRoom()
-            }, 10);
-          }
-
-          // if (storage('chatNavOpen') == 'true') storage('chatNavOpen', 'false');
-          // else storage('chatNavOpen', 'true');
-
-          // console.log('toggling', storage('chatNavOpen'));
-
-          // $element.toggleClass('collapse', storage('chatNavOpen') != 'true');
-          // $scope.toggleAction = (storage('chatNavOpen') != 'true') ? 'Show' : 'Hide';
-
-          // storage('chatOpenedOnce', 'true');
-        }
-
-        // $element.toggleClass('collapse', storage('chatNavOpen') != 'true');
-        // $scope.toggleAction = (storage('chatNavOpen') != 'true') ? 'Show' : 'Hide';
-
-        // if (!storage('chatOpenedOnce'))
-        // {
-        //   $timeout(this.toggle, 20000)
-        // }
-      }
+      controller: function($scope, $element, $attrs, $timeout) {}
     };
-
   })
 
 ;

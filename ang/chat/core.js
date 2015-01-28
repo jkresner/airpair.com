@@ -196,14 +196,16 @@
 		}).bind(this);
 
 		this._updateByPage = (function (action, pageSnapshot) {
-			pageSnapshot.forEach((function (memberSnapshot) {
-				memberSnapshot.ref().on("value", this._updateMemberByPage.bind(this, action, pageSnapshot))
-			}).bind(this));
+			pageSnapshot.ref().on("child_added", this._updateMemberByPage.bind(this, action, pageSnapshot))
+			pageSnapshot.ref().on("child_changed", this._updateMemberByPage.bind(this, action, pageSnapshot))
+			pageSnapshot.ref().on("child_removed", this._updateMemberByPage.bind(this, "delete", pageSnapshot))
 		}).bind(this);
 
 		this._updateMemberByPage = (function (action, pageSnapshot, memberSnapshot) {
-			var page = pageSnapshot.key().replace(/-/g, '/'),
+			var page = decodeURIComponent(pageSnapshot.key()),
 				memberId = memberSnapshot.key();
+				
+			console.log(memberId)
 				
 			if (memberId == cc._member.id) return;
 
@@ -214,11 +216,14 @@
 
 					this.members.byPage[page][memberId] = cc.getMember(memberId);
 				} else {
-					delete this.members.byPage[page][memberId];
+					if (this.members.byPage[page]) {
+						delete this.members.byPage[page][memberId];
 
-					if (!Object.keys(this.members.byPage[page]).length)
-						delete this.members.byPage[page];
+						if (!Object.keys(this.members.byPage[page]).length)
+							delete this.members.byPage[page];
+					}
 				}
+				console.log(this.members.byPage[page])
 			}).bind(this));
 		}).bind(this);
 
@@ -367,6 +372,8 @@
 					this.status = memberData.status;
 					this.roles = memberData.roles;
 					this.trigger("ready", null, this);
+					this.type = memberData.type;
+					this.page = memberData.page;
 				}).bind(this));
 			}
 		}).bind(this));
@@ -676,6 +683,15 @@
 			this._intervals.push(
 				setInterval(this._performHashCheck.bind(this), 1e3)
 			);
+			this._intervals.push(
+				setInterval(this._performPing.bind(this), 59e3)
+			);
+			
+			this._performPing()
+		};
+		
+		this._performPing = function () {
+			this._ref.child("ping/seen").set(Firebase.ServerValue.TIMESTAMP);
 		};
 
 		this._performStatusCheck = function () {
@@ -686,9 +702,7 @@
 		};
 
 		this._performHashCheck = function () {
-			var page = (document.location.pathname + document.location.hash)
-				.replace(/\//g, '-')
-				.replace(/#/g, '^');
+			var page = encodeURIComponent(document.location.pathname + document.location.hash)
 
 			if (page !== lastPage) {
 				lastPage = page;
