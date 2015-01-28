@@ -205,7 +205,7 @@
 			var page = decodeURIComponent(pageSnapshot.key()),
 				memberId = memberSnapshot.key();
 				
-			console.log(memberId)
+			//console.log(memberId)
 				
 			if (memberId == cc._member.id) return;
 
@@ -223,7 +223,7 @@
 							delete this.members.byPage[page];
 					}
 				}
-				console.log(this.members.byPage[page])
+				//console.log(this.members.byPage[page])
 			}).bind(this));
 		}).bind(this);
 

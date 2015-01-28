@@ -84,10 +84,37 @@
             return result;
         }
     })
+    
+    /*app.filter('pageSort', function () {
+        return function (pages) {
+            var priority = {"/": {}},
+                others = {},
+                result = [];
+                
+            angular.forEach(pages, function (members, pageURL) {
+                if (pageURL == '/help/request' || pageURL.indexOf('/adm/') !== -1) return;
+                
+                if (pageURL == "/" || pageURL.indexOf("/dashboard") == 0) {
+                    angular.forEach(members, function (member, id) {
+                        priority['/'][id] = member;  
+                    });
+                } else {
+                    others[pageURL] = page;
+                }
+            });
+            
+            result.push(priority);
+            result.push(others);
+            console.log(re)
+            return result;
+        }
+    })*/
 
     app.service('corechat', function ($rootScope, $log, $timeout, $interval, chatPingNoise) {
         var $scope = $rootScope.$new(true), sessionID,
             cc, ref, transferFrom, lastSession;
+            
+        $scope.collapsed = true;
 
         $scope.initialize = function () {
             if ($scope.initialized) return false;
@@ -185,6 +212,12 @@
                 delete $scope.activeRoomId;
                 delete $scope.activeRoom;
             };
+            
+            $scope.onCollapsed = function (func, arg) {
+                if ($scope.collapsed) {
+                    func(arg);
+                }
+            }
 
             cc.on("online", function () {
                 //$log.log("connected to chat server!")

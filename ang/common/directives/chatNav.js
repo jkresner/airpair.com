@@ -5,32 +5,58 @@ angular.module("APChatNav", [])
       template: require('./chatNav.html'),
       transclude: true,
       link: function(scope, element, attrs) {
-        var lastActiveRoom;
+        var lastActiveRoom,
+            active;
         
         element.bind('mouseenter', function() {
-          if (!corechat.activeRoomId && corechat.lastActiveRoom) {
+          active = true;
+         /* if (!corechat.activeRoomId && corechat.lastActiveRoom) {
             $timeout(function () {
               corechat.setActiveRoom(corechat.lastActiveRoom);
               element.removeClass('collapse');
             });
             
+            corechat.collapsed = false;
+            
             // Slight delay to allow Angular to render widget
             $timeout(function () {
-              angular.element("input#chatInput").focus();
+              element.removeClass('collapse');
             }, 10);
+            $timeout(function () {
+              angular.element("input#chatInput").focus();
+            }, 20);
           } else {
-            element.removeClass('collapse');
-          }
+            //element.removeClass('collapse');
+            corechat.collapsed = false;
+          }*/
+          
+            $timeout(function () {
+              element.removeClass('collapse');
+              //console.log('collapsed')
+              corechat.collapsed = false;
+            }, 20);
+            
+            $timeout(function () {
+              angular.element("input#chatInput").focus();
+            }, 20);
         });
         
         element.bind('mouseleave', function() {
-          element.addClass('collapse');
-          if (corechat.initialized) {
-            $timeout(function () {
-              corechat.lastActiveRoom = corechat.activeRoomId;
-              corechat.leaveActiveRoom()
-            }, 10)
-          }
+          $timeout(function () {
+            if (!active) {
+              element.addClass('collapse');
+              //console.log('setting colapsed')
+              corechat.collapsed = true;
+              
+              if (corechat.initialized) {
+                $timeout(function () {
+                  corechat.lastActiveRoom = corechat.activeRoomId;
+                  corechat.leaveActiveRoom()
+                }, 10)
+              }
+            }
+          }, 3000);
+          active = false;
         });
       },
       controllerAs: 'chatNav',
