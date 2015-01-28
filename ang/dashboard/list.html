@@ -1,19 +1,19 @@
 <header>
   <ol class="entry-meta breadcrumb">
-    <li class="current">Requests</li>
+    <li class="current">Dashboard</li>
   </ol>
 </header>
 
 <section id="dashboard">
 
-  <section id="stack" ng-if="!session || !session.tags || session.tags.length == 0">
+<!--   <section id="stack" ng-if="!session || !session.tags || session.tags.length == 0">
     <h2>Stack</h2>
     <div>
       <p>You haven't customized AirPair to your stack. <a ng-click="openStack()"><b>Add technologies</b></a> to personalize the content you see on airpair.com</p>
     </div>
-  </section>
+  </section> -->
 
-  <section id="requests">
+  <section id="requests" style="max-width:640px">
     <h3>Requests</h3>
     <div class="requests">
       <request-list-item  ng-repeat="r in requests" req="r"></request-list-item>

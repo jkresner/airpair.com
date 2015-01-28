@@ -1,5 +1,3 @@
-
-
 var resolver = require('./../common/routes/helpers.js').resolveHelper;
 
 angular.module("APRequests", ['APFilters', 'APSvcSession',
@@ -18,8 +16,7 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
   };
 
   $routeProvider
-    .when('/', actions.list)
-    .when('/dashboard', actions.list)
+    .when('/requests', actions.list)
     .when('/help/request', actions.create)
     .when('/meet-experts', actions.create)
     .when('/help/types', actions.help)
@@ -173,6 +170,3 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
 
 
 })
-
-
-;
