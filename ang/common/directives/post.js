@@ -1,32 +1,43 @@
-
 angular.module("APPost", [])
 
-  .directive('apPostListItem', ['$parse', function($parse) {
+.directive('apPostListItem', function($parse) {
 
-    return {
-      restrict: 'E',
-      template: require('./postListItem.html'),
-      link: function(scope, element, attrs) {
-        scope.post = scope.$eval(attrs.post)
-      }
-    };
+  return {
+    restrict: 'E',
+    template: require('./postListItem.html'),
+    link(scope, element, attrs) {
+      scope.post = scope.$eval(attrs.post)
+    }
+  }
 
-  }])
+})
 
-  .directive('apPost', function() {
+.directive('welcomePostItem', function($parse) {
 
-    return {
-      template: require('./post.html'),
-      controller: function($scope,  $timeout, PostsService) {
-        $timeout(function () {
-          // Refactor this into a nicer angularjs way
-          // console.log('DOM has finished rendering')
-          pageHlpr.highlightSyntax();
-        }, 100);
+  return {
+    restrict: 'E',
+    template: require('./postListItem2.html'),
+    link(scope, element, attrs) {
+      scope.post = scope.$eval(attrs.post)
+    }
+  }
 
-      }
-    };
+})
 
-  })
+.directive('apPost', function() {
 
-;
+  return {
+    template: require('./post.html'),
+    controller($scope,  $timeout, PostsService) {
+      $timeout(function () {
+        // Refactor this into a nicer angularjs way
+        // console.log('DOM has finished rendering')
+        pageHlpr.highlightSyntax();
+      }, 100);
+
+    }
+  }
+
+})
+
+

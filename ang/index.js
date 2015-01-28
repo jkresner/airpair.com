@@ -70,10 +70,10 @@ angular.module("AP", ['Providers', 'ngRoute', 'ngAnimate', 'ui.bootstrap.datetim
       template: require('./learn.html')
     });
 
-    $routeProvider.when('/angularjs/pair-programming', {
-      template: require('./sales/angular.html')
-    });
-
+    // $routeProvider.when('/angularjs/pair-programming', {
+    //   template: require('./sales/angular.html')
+    // });
+3
     if (angular.element('#serverTemplate').length > 0)
     {
       // '/c++/posts/preparing-for-cpp-interview'

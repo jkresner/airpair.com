@@ -1,25 +1,10 @@
 
+// angular.module("APTags", ['ngRoute', 'APFilters', 'APShare', 'APBookmarker', 'APSvcSession'])
 
-angular.module("APPosts", ['ngRoute', 'APFilters','APShare',
-  'APMyPostsList','APPostEditor','APPost', 'APBookmarker','APSvcSession', 'APSvcPosts','APTagInput'])
+//   .config(function(apRouteProvider) {
 
-  .config(function($locationProvider, $routeProvider) {
+//     var route = apRouteProvider.route
+//     // route('/angularjs', null, require('./angularjs.html'))
+//     // route('/:slug/so-welcome', 'SOWelcome', require('./sowelcome.html'))
 
-    $routeProvider.when('/angularjs', {
-      template: require('./angularjs.html'),
-      controller: 'IndexCtrl'
-    });
-
-  })
-
-  .controller(function($scope, PostsService, SessionService) {
-
-      // self.upcoming = selectByDateRange(data, 0, 9);
-      // self.month = selectByDateRange(data, 0, 45);
-      // self.past = selectByDateRange(data, -365, 0).reverse();
-      // self.featured = _.where(data, function(i) {
-
-  })
-
-
-;
+//   })

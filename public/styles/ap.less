@@ -50,12 +50,21 @@ a:hover { text-decoration:none }
 
 .error { color:@error }
 
-.btn { background:@orange;
+.btn {
+  background:@orange;
   color:white;
   border:none;
   padding:8px 20px;
-  font-size:18px }
-.btn:hover { font-weight:bold;color:white }
+  // padding: 9px 20px;
+  font-size:16px;
+  letter-spacing:1px;
+  text-transform:uppercase;
+}
+.btn:hover {
+  color:white;
+  background: @orangehighlight;
+  transition: background 0.1s;
+}
 
 .gradientfill {
   background: -moz-radial-gradient(left, white 0%, @lightblue 100%, white 50%);

@@ -80,6 +80,8 @@ export default function(app) {
       })
     }
 
+  var landingPartials = ['sowelcome']
+
   app.renderHbsViewData = (partialName, pageMeta, viewDataFn) =>
     (req, res) => {
       $callSvc(getSession,req)((e,session)=> {
@@ -92,7 +94,9 @@ export default function(app) {
 
           if (!data.meta) data.meta = pageMeta
           var canonical = (data.meta) ? data.meta.canonical : ""
-          res.status(200).render(`./baseServer.hbs`,
+          var viewName = './baseServer.hbs'
+          if (_.contains(landingPartials,partialName)) viewName = './baseLanding.hbs' // hacky yuk
+          res.status(200).render(viewName,
             combineBaseData(req, { viewData: data, partialName, canonical, session } ) )
         })
       })
