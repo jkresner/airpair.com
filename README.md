@@ -25,6 +25,11 @@ Runs in node with mocha
 
     mocha test/server/bootstrap.js
 
+For git pre-push hook to ensure tests pass before pushing, do this:
+
+    cd .git/hooks
+    ln -nsf ../../build/git-hooks/pre-push
+
 Hangout Info
 ============
 
