@@ -1,0 +1,146 @@
+
+<section id="landing" data-ctrl="SOWelcome" class="SOWelcome">
+
+
+  <div ng-if="data && !data.hasTag" class="stack">
+
+    <img class="logo" src="/static/img/pages/about/airpair.png" />
+    <img class="ari" src="/static/img/pages/sowelcome/arilerner.jpg" />
+
+    <h2>Customize AirPair to see the best {{tag.name}} Experts</h2>
+
+    <a ng-click="addTag(tag)" class="btn">
+
+      Add
+      <img class="tag {{tag.slug.replace('.','')}}" ng-src="/static/img/pages/sowelcome/{{tag.slug}}.png" />
+     to my stack
+    </a>
+
+    <p>(by telling AirPair what technologies make up your stack, we can show you the best
+    matches.)</p>
+
+  </div>
+
+
+  <div ng-if="data && data.hasTag && !data.hasBookmark" class="bookmark">
+
+    <img class="logo" src="/static/img/pages/about/airpair.png" />
+
+    <h4><b>Great start!</b> Let's continue personalizing your expert matches.</h4>
+
+    <h2>Which of these articles sounds most interesting to you?</h2>
+
+    <a ng-click="addBookmark(p)" ng-repeat="p in posts" class="bookmark">
+      <welcome-post-item post="p"></welcome-post-item>
+    </a>
+
+    <p>(We'll add it to your bookmarks list, to further customzie the site to you.)</p>
+
+  </div>
+
+
+  <div ng-if="data && !data.hasBookmark" class="vr"></div>
+
+  <div class="experts">
+
+    <ul>
+      <li>
+        <div ng-if="!data.hasTag" class="mask"></div>
+        <img src="//0.gravatar.com/avatar/b56bb22b3a4b83c6b534b4c114671380?s=70" /></li>
+      <li>
+        <div ng-if="!data.hasTag" class="mask"></div>
+        <img src="//0.gravatar.com/avatar/c01ef7584331527e1c600b85ba6a75f3?s=70" /></li>
+      <li>
+        <div ng-if="!data.hasBookmark" class="mask"></div>
+        <img src="//0.gravatar.com/avatar/892cdc57a3a64ea0ad59827bc6d1ddf7?s=70" /></li>
+      <li>
+        <img src="//0.gravatar.com/avatar/fbf41c66afb1e3807b7b330c2d8fcc28?s=70" /></li>
+      <li class="you nomob">
+        <b ng-if="!session || !session.email">Hello</b>
+        <img ng-if="session.email" class="avatar" ng-src="{{ session.avatar }}" />
+      </li>
+      <li>
+        <div ng-if="!data.hasTag" class="mask"></div>
+        <img src="//0.gravatar.com/avatar/b988f05edd27e18eb63b0c5abfdc113c?s=70" /></li>
+      <li>
+        <img src="//0.gravatar.com/avatar/f524745bb9975ba777b5c4a9922eb614?s=70" /></li>
+      <li>
+        <div ng-if="!data.hasTag" class="mask"></div>
+        <img src="//0.gravatar.com/avatar/1fe14bf08188abd443168eefb0349ec1?s=70" /></li>
+      <li>
+        <div ng-if="!data.hasBookmark" class="mask"></div>
+        <img src="//0.gravatar.com/avatar/13a0bcca035366b4b348326417e1747c?s=70" /></li>
+    </ul>
+
+    <hr />
+
+  </div>
+
+  <section id="join" ng-if="data && data.hasTag && data.hasBookmark" class="join">
+
+  <h1>Your customized help awaits</h1>
+
+<p>Put in your email to see your custom experts and get $20 off your
+first hour of video chat.
+</p>
+
+<form id="joinForm" novalidate name="joinForm" ng-submit="submit(joinForm.$valid, data)">
+
+  <div class="requestNameDiv" ng-if="data.email" form-group>
+    <input id="requestSignupName" name="name"
+      form-control type="text" placeholder="Enter full name (e.g. John Smith)"
+      ng-model="data.name"
+      required
+      ng-minlength="4"
+      ng-minlength="60"
+      ng-pattern="/\w+ \w+/"
+      tabindex="33212"
+      ng-focus="focusInput(this)"
+      ng-blur="blurInput(this)"
+      >
+
+    <div class="error" ng-if="formGroup.showError(joinForm.name)" ng-messages="joinForm.name.$error">
+      <div ng-message="required">Full name required</div>
+      <div ng-message="minlength">Full name required (e.g. John Smith)</div>
+      <div ng-message="pattern">Full name required (e.g. John Smith)</div>
+      <div ng-message="maxlength">Full name max length 60 chars</div>
+    </div>
+    <div ng-if="updateFailed" class="error">* <b ng-bind-html="updateFailed | html"></b></div>
+  </div>
+
+  <div class="requestEmailDiv" ng-if="!data.email" form-group>
+    <input id="requestSignupEmail"
+         form-control
+         name="email"
+         type="email"
+         placeholder="Enter your email to get started ..."
+         ng-model="data.email"
+         ng-model-options="{updateOn:'default blur',debounce:{default:1000, blur:0}}"
+         ng-change="updateEmail(joinForm.email)"
+         required
+         tabindex="33211"
+         track-focus="signup"
+         track-data="email"
+         ng-focus="focusInput(this)"
+         ng-blur="blurInput(this)"
+         >
+    <div class="error" ng-if="formGroup.showError(joinForm.email)" ng-messages="joinForm.email.$error">
+      <div ng-message="required">Email required</div>
+      <div ng-message="email">Invalid email address</div>
+    </div>
+    <div ng-if="updateFailed" class="error">* <b ng-bind-html="updateFailed | html"></b></div>
+  </div>
+
+  <button track-click="auth" data="subscribe" ng-class="data.email ? '' : 'focushide'" type="submit" class="btn btn-primary" tabindex="33214" ng-focus="focusInput(this)"><b>VIEW</b></button>
+
+  <span ng-if="data.email">{{data.email}} <a id="requestRemoveEmail" ng-click="data.email = '' ">x</a> </span>
+
+</form>
+
+
+  </section>
+
+<recent-customers ng-if="data && data.hasTag && data.hasBookmark"></recent-customers>
+
+
+</section>

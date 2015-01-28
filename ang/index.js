@@ -19,6 +19,7 @@ require('./common/models/viewDataService.js');
 require('./common/models/postsService.js');
 require('./common/models/sessionService.js');
 require('./common/models/dataService.js');
+require('./common/models/staticDataService.js');
 require('./common/util.js');
 require('./common/directives/forms/forms.js');
 require('./common/directives/forms/inputs.js');
@@ -50,7 +51,8 @@ require('./requests/module.js');
 require('./bookings/module.js');
 
 angular.module("AP", ['Providers', 'ngRoute', 'ngAnimate', 'ui.bootstrap.datetimepicker',
-  'APRoutes', 'APUtil', 'APViewData', 'APDataSvc', 'APCTAs', 'APFormsDirectives', 'APInputs',
+  'APRoutes', 'APUtil', 'APViewData', 'APDataSvc', 'APSvcStatic', 'APCTAs',
+  'APFormsDirectives', 'APInputs',
   'APAnalytics', 'APSideNav', 'APChatNav', 'APServerTemplates', 'APNotifications',
   'APProfileDirectives', 'APPageHelpers',
   'APAuth', 'APPosts', 'APWorkshops', 'APProfile', 'APBilling', 'APRequests','APBookings', 'chat-widget'])
@@ -71,9 +73,9 @@ angular.module("AP", ['Providers', 'ngRoute', 'ngAnimate', 'ui.bootstrap.datetim
       template: require('./learn.html')
     });
 
-    $routeProvider.when('/angularjs/pair-programming', {
-      template: require('./sales/angular.html')
-    });
+    // $routeProvider.when('/angularjs/pair-programming', {
+    //   template: require('./sales/angular.html')
+    // });
 
     if (angular.element('#serverTemplate').length > 0)
     {
