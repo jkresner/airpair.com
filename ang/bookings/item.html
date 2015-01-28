@@ -1,0 +1,57 @@
+<section id="booking" ng-if="booking && booking.participants">
+
+<h3 style="border-bottom: 1px solid gray">{{booking.gcal.summary}}</h3>
+
+<div class="row">
+
+  <div class="col-md-4">
+    <h3>Details</h3>
+    <div>{{ booking.datetime | date:'medium'}}</div>
+    <div>{{booking.minutes}} minutes </div>
+    <div>Privacy: {{booking.type | uppercase}} </div>
+    <!-- <div>{{booking.status}}</div> -->
+  </div>
+
+  <div class="col-md-3">
+    <div class="customer">
+      <h3>Customer</h3>
+      <div class="participant" ng-repeat="p in customers">
+        <img ng-src="{{p.info.avatar}}" class="user">
+        <span>{{p.info.name}} </span>
+        <span>{{p.info.email}} </span>
+      </div>
+    </div>
+
+    <div class="expert">
+      <h3>Expert</h3>
+      <div class="participant" ng-repeat="p in experts">
+        <img ng-src="{{p.info.avatar}}" class="user">
+        <span>{{p.info.name}} </span>
+        <span>{{p.info.email}} </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="recordings">
+      <h3>Hangout</h3>
+      <div ng-if="hangoutState.none">
+        No Hangout. Come back at {{ booking.datetime | date:'medium'}}
+      </div>
+      <div ng-if="hangoutState.inProgress">
+        <a href="{{ booking.recordings[booking.recordings.length-1].hangoutUrl }}">Join Hangout</a>
+      </div>
+      <div ng-if="hangoutState.complete">
+        <ul>
+          Watch your AirPair session at
+          <li ng-repeat="recording in booking.recordings">
+            <a target="youTubePreview" href="http://youtube.com/watch?v={{recording.data.youTubeId}}">{{recording.data.description}}</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</section>
