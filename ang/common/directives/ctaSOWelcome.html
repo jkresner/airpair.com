@@ -12,7 +12,7 @@
       <a class="btn">
 
         Add
-        <img ng-click="addTag(tag)" class="tag {{tag.slug}}" ng-src="/static/img/pages/sowelcome/{{tag.slug}}.png" />
+        <img ng-click="addTag(tag)" class="tag {{tag.slug.replace('.','')}}" ng-src="/static/img/pages/sowelcome/{{tag.slug}}.png" />
        to my stack
       </a>
 
