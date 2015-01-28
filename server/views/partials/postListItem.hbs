@@ -1,4 +1,4 @@
-<article itemscope="itemscope" itemtype="http://schema.org/BlogPosting" itemprop="blogPost">
+<article itemscope="itemscope" itemtype="http://schema.org/BlogPosting" itemprop="blogPost" class="{{#if reviewReady}}reviewReady{{/if}}">
   <a href="{{ url }}" title="{{ title }}" target="_self" rel="bookmark">
     <header class="entry-header">
       <img class="entry-header-image" itemprop="image" src="{{ meta.ogImage }}" align="left" />
@@ -8,14 +8,16 @@
         {{/each}}
       </span>
 
+
       <p class="entry-meta">
-
-
         <span class="entry-author" itemprop="author" itemscope="itemscope" itemtype="http://schema.org/Person">
           <span class="entry-author-name" itemprop="name">{{ by.name }}</span>
           <img class="entry-author-image" itemprop="image" src="{{ by.avatar }}?s=50" align="left" />
+          {{#if published}}
           <time class="entry-time" itemprop="datePublished" datetime="{{ isoMoment published }}">{{ dateFormat published 'DD MMM, YYYY' }}</time>
-
+          {{else}}
+          <time>Unpublished</time>
+          {{/if}}
         </span>
       </p>
     </header>

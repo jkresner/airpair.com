@@ -1,3 +1,4 @@
+
 import WorkshopsAPI from '../api/workshops'
 import PostsAPI from '../api/posts'
 import TagsAPI from '../api/tags'
@@ -44,7 +45,9 @@ export default function(app) {
 
     .get('/blog',
       app.renderHbsViewData('posts', { title: "Software Posts, Tutorials & Articles" },
-        (req, cb) => PostsAPI.svc.getAllPublished(cb) ))
+        (req, cb) => {
+          PostsAPI.svc.getAllVisible(req.user, cb)
+        }))
 
     .get('/posts/airpair-v1',
       app.renderHbsViewData('posts', null,

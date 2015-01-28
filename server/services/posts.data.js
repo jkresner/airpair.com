@@ -11,6 +11,7 @@ module.exports = {
       'slug': 1,
       'created': 1,
       'published': 1,
+      'reviewReady': 1,
       'tags': 1,
     },
     listAdmin: {
@@ -45,6 +46,18 @@ module.exports = {
 
       return { '$and': query }
     },
+
+    //posts published before now or readyForReview
+    publishedReviewReady: function(){
+      var query = {$or: [
+        {'reviewReady' : {'$exists': true}},
+        {$and:
+          [{'published' : { '$exists': true }},
+          {'published': { '$lt': new Date() }}]}]}
+
+      return query
+    },
+
     updated: {
       'updated' : { '$exists': true }
     }
