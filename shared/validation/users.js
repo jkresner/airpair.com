@@ -3,7 +3,7 @@ var validRoles = [
     'dev',         // Get application error notification
     'pipeliner',   // Get pipeline emails
     'editor',      // Can publish posts
-    'reviewer',    // Can see unpublish posts
+    'reviewer',    // Can see unpublished posts
     'matchmaker']  // Can make suggestions + schedule times
 
 

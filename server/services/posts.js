@@ -86,9 +86,18 @@ export function getRecentPublished(cb) {
 }
 
 
-export function getAllPublished(cb) {
-  var opts = { fields: Data.select.list, options: { sort: { 'published': -1 } } };
-  svc.searchMany(Data.query.published(), opts, addUrl(cb))
+export function getAllVisible(user, cb) {
+  if (user)
+    console.log("USER ROLES", user.roles)
+  if (user && _.contains(user.roles, "reviewer")){
+    console.log("SPECIAL");
+    var opts = { fields: Data.select.list, options: { sort: '-reviewReady -published'} }
+    svc.searchMany(Data.query.publishedReviewReady(), opts, addUrl(cb));//, function(e,r) {
+  }
+  else {
+    var opts = { fields: Data.select.list, options: { sort: { 'published': -1 } } };
+    svc.searchMany(Data.query.published(), opts, addUrl(cb))
+  }
 }
 
 
@@ -165,7 +174,6 @@ export function publish(id, o, cb) {
 export function submitForReview(id, o, cb){
   var inValid = Validate.submitForReview(this.user, null, o)
   if (inValid) return cb(svc.Forbidden(inValid))
-  $log(`submitted for review ${id}, ${JSON.stringify(o)}`)
   o.reviewReady = new Date()
   svc.update(id, o, cb)
 }
