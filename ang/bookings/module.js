@@ -8,7 +8,6 @@ angular.module("APBookings", [])
 })
 
 .controller('BookingCtrl', ($scope, $routeParams, DataService, ServerErrors, BookingsUtil, OrdersUtil, Util) => {
-  console.log($scope)
   $scope.data = {}
   $scope.util = BookingsUtil
 
