@@ -1,7 +1,7 @@
 var mongoose = require('mongoose')
 var {ObjectId} = mongoose.Schema
 
-var objectType = ['post','workshop','expert','tag']
+var objectType = ['post','workshop','expert','tag','landing']
 
 
 module.exports = mongoose.model('View', new mongoose.Schema({

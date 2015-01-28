@@ -35,9 +35,43 @@ var data = {
       {"_id":"5421d7952eb2640b00f95d75","by":{"name":"Nevan King","avatar":"//0.gravatar.com/avatar/241eed9ce95f87bdfec6751b40d29f3d"},"created":"2014-09-23T20:27:01.738Z","meta":{"canonical":"http://www.airpair.com/ios/posts/three-new-features-in-ios-8-that-all-developers-should-know","ogImage":"http://i.imgur.com/U6lVJAa.png","description":"AirPair iOS expert Nevan King guides developers through the biggest new features in iOS 8, including extensibility, size classes, and alert views."},"published":"2014-09-24T08:27:01.171Z","slug":"three-new-features-in-ios-8-that-all-developers-should-know","tags":[{"_id":"514825fa2a26ea020000001b","name":"iOS","slug":"ios"}],"title":"Three New Features in iOS 8 That All Developers Should Know","url":"http://www.airpair.com/ios/posts/three-new-features-in-ios-8-that-all-developers-should-know"},
       {"_id":"545a997b8e39920b002f3976","by":{"name":"Rony Rozen","avatar":"//0.gravatar.com/avatar/892cdc57a3a64ea0ad59827bc6d1ddf7"},"created":"2014-11-05T21:41:15.505Z","meta":{"canonical":"https://www.airpair.com/swift/complete-guide-to-swift","ogImage":"https://airpair-blog.s3.amazonaws.com/wp-content/uploads/2014/07/swift.png","description":"Swift developer Rony Rozen walks through Swift's syntax, ways to use Swift and Obj-C together, and the structure of apps built with Apple's new language."},"published":"2014-08-05T22:44:06.000Z","slug":"ultimate-guide-to-learning-swift-in-one-day","tags":[{"_id":"52ffea1a1c67d1a4859d2333","name":"swift","slug":"swift"},{"_id":"514825fa2a26ea020000001b","name":"ios","slug":"ios"}],"title":"Ultimate Guide to Learning Swift in One Day","url":"https://www.airpair.com/swift/complete-guide-to-swift"}
     ]
+  },
+  recent: {
+    customers: [
+      {
+        name: 'Nigel Tunnacliffe',
+        review: 'Very knowledgable expert that could quickly get to the bottom of what I was trying to figure out. I\'ve asked for help from colleagues before, and it usually takes a lot longer to get to a solution.',
+        avatar: '//pbs.twimg.com/profile_images/1107452397/For_twitter.jpg',
+        youtubeId: '3Hb5WtvAK3c'
+      },
+      {
+        name: 'Nicholas Jayanty',
+        review: 'We got a lot done in a short amount of time.  I wish I had spent the money I spent on the Swift class I\'m taking at Art Center College of Design on AirPair.  Much better use of time and money.',
+        avatar: '//0.gravatar.com/avatar/ae0ecff35e8b1e2e8f0caf1f638097bes?s=100',
+        youtubeId: 'lI_JoAooPSo'
+      },
+      { name: 'David Anderton',
+        review: 'I was paired with someone who could understand the issues I was facing and come alongside me to work out a solution together. At first I was a little concerned that it would just be handing over the controls to a pro, I couldn\'t have been more wrong. This was the perfect match of empathy and expert. Thanks guys.',
+        avatar: '//media.licdn.com/mpr/mpr/shrink_200_200/p/4/005/05f/32d/21aecb1.jpg',
+        youtubeId: 'WvCk9bG1OUw'
+      },
+    ],
+    reviews: [
+      {
+        name: 'Timothy O\'Reilly',
+        review: 'Exactly what I wanted and more. Michael Perranord is patient, great at explaining and didn\'t my mind dumb questions.',
+        avatar: '//0.gravatar.com/avatar/03d7c69330facea80a0109b9154bceee?s=100',
+        expertId: '53cfe315a60ad902009c5954'
+      },
+      {
+        name: 'Nathan Clark',
+        review: 'I had several ember.js question to which Michael Grassotti was able to help answer in a single hour. That\'s golden to me.',
+        avatar: '//0.gravatar.com/avatar/b4ec694f9d955bee753559037aa1805a?s=100',
+        expertId: '52267f2a7087f90200000008'
+      }
+    ]
   }
 }
-
 
 
 
@@ -46,9 +80,9 @@ angular.module('APSvcStatic', [])
 
 .service('StaticDataService', function() {
 
-  this.getWelcomePosts = (tagSlug) => {
-    return data.welcomePosts[tagSlug]
-  }
+  this.getWelcomePosts = (tagSlug) => data.welcomePosts[tagSlug]
+  this.getRecentCustomers = () => data.recent.customers
+  this.getRecentReviews = () => data.recent.reviews
 
   return this
 

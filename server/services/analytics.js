@@ -1,5 +1,6 @@
 import Svc from '../services/_service'
 import View from '../models/view'
+import Landing from '../models/landing'
 var logging = false
 var _viewSvc = new Svc(View, logging)
 var Segment = require('analytics-node')
