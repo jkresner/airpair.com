@@ -9,7 +9,14 @@ export default initAPI(Svc, {
   getAllPublished: (req) => [],  //-- For indexable page
   getAllAdmin: (req) => [],
   getUsersPublished: (req) => [req.params.id],
-  getByTag: (req) => [req.tag]
+  getByTag: (req) => [req.tag],
+  submitForReview: (req) => [req.params.id, req.body],
+  submitForPublication: (req) => [req.params.id, req.body],
+
+  suggestEdit: (req) => [req.params.id, req.body],
+  acceptEdit: (req) => [req.params.id, req.body],
+
+  addReview: (req) => [req.params.id, req.body]
 }, {
   'post':'getBySlugWithSimilar'
 })

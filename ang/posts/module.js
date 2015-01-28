@@ -119,6 +119,20 @@ angular.module("APPosts", ['APFilters','APShare',
       });
     }
 
+    $scope.submitForReview = () => {
+      console.log("submit post for review");
+      PostsService.submitForReview($scope.post, (r)=> {
+        $scope.post = _.extend(r, {submittedForReview: true});
+      })
+    }
+
+    $scope.submitForPublication = () => {
+      console.log("submit post for publication");
+      PostsService.submitForPublication($scope.post, (r)=> {
+        $scope.post = _.extend(r, {submittedForPublication: true});
+      })
+
+    }
   })
 
 

@@ -43,6 +43,10 @@ module.exports = mongoose.model('Post', new mongoose.Schema({
   created:      { required: true, type: Date, 'default': Date },
   updated:      { required: true, type: Date, 'default': Date },
   published:    { type: Date },
+  reviewReady:  {type: Date},
+  publishReady: {type: Date},
+  reviews:      {type: Array},
+  
   publishedBy:  { type: ObjectId, ref: 'User' },
   slug:         { type: String, unique: true, sparse: true, lowercase: true, trim: true },
   title:        { required: true, type: String, trim: true },

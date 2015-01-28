@@ -71,6 +71,20 @@ angular.module('APSvcPosts', [])
     {
       $http.put(`${API}/posts/publish/${data._id}`, data).success(success).error(lazyErrorCb);
     }
+    this.submitForReview = function(data, success)
+    {
+      $http.put(`${API}/posts/submitForReview/${data._id}`, data).success(success).error(lazyErrorCb);
+    }
+    this.submitForPublication = function(data, success)
+    {
+      $http.put(`${API}/posts/submitForPublication/${data._id}`, data).success(success).error(lazyErrorCb);
+    }
+
+    this.addReview = function(data, success)
+    {
+      $http.put(`${API}/posts/addReview/${data._id}`, data).success(success).error(lazyErrorCb);
+    }
+    
     this.delete = function(_id, success)
     {
       $http.delete(`${API}/posts/${_id}`).success(success).error(lazyErrorCb);

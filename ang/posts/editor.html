@@ -80,9 +80,10 @@
 
 <!--   <button class="btn btnPreview" ng-click="previewToggle()" ng-disabled="!post._id || (preview.mode == 'publish')">{{preview.mode == 'edit' && 'Preview' || 'Edit' }}</button>
  -->
-  <a class="btn" target="_blank" href="mailto:team@airpair.com?subject=Post%20Submission%20-%20{{post.title}}&body=Can%20you%20look%20at%20and%20publish%20my%20post:%0A%0Ahttps://www.airpair.com/posts/publish/{{ post._id }}%0A%0A{{post.by.name}}" ng-disabled="(!post.title && !post.by.bio) || !post.saved || (preview.mode == 'publish')">Submit</a>
-
-  <button class="btn" ng-click="save()" ng-disabled="!(preview.mode == 'publish')">Publish</button>
+ <a class="btn" target="_blank" ng-click="submitForReview()" ng-disabled="(!post.title && !post.by.bio) || !post.saved || (preview.mode == 'publish')">Submit for Review</a>
+ <a class="btn" target="_blank" ng-click="submitForPublication()" ng-disabled="(!post.title && !post.by.bio) || !post.saved || (preview.mode == 'publish')">Submit for Publication</a>
 
   <button class="btn" ng-click="delete()" ng-disabled="(!(preview.mode == 'edit') || post.published) || !post._id">Delete</button>
 </div>
+
+<!--MIKE TODO link to suggested edits -->
