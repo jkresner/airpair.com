@@ -5,24 +5,33 @@
     <!-- show -help-request page first -->
     <div class="section">
         <h3>Users on /help/request</h3>
-        <div ng-repeat="member in corechat.admin.members.byPage['/help/request'] | memberSort" ng-click="setCurrentUser(member.id)" class="member">
-            <img class="avatar" ng-src="{{member.avatar}}" /
-            <span>
-                {{member.name || "Anonymous User"}} 
-                <span am-time-ago="member.page.timestamp" class="timestamp"></span>
-            </span>
-        </div>
-        <div ng-show="!corechat.admin.members.byPage['/help/request']">
-            No users on /help/request
+        <div ng-repeat="(page, members) in corechat.admin.members.byPage" ng-show="page.indexOf('/meet-experts') !== -1 || page.indexOf('/help/request') !== -1">
+            <div ng-repeat="member in members | memberSort" ng-click="setCurrentUser(member.id)" class="member">
+                <img class="avatar" ng-src="{{member.avatar}}" />
+                <span>
+                    {{member.name || "Anonymous User"}} 
+                    <span am-time-ago="member.page.timestamp" class="timestamp"></span>
+                </span>
+            </div>
         </div>
     </div>
 
     <div class="section">
         <h3>Users On Other Pages</h3>
-        <div ng-repeat="(page, members) in corechat.admin.members.byPage" ng-hide="page == '/help/request'">
+        <h4>/</h4>
+        <div ng-repeat="(page, members) in corechat.admin.members.byPage" ng-show="page == '/' || page.indexOf('/dashboard') == 0">
+            <div ng-show="members">
+                <div ng-repeat="member in members | memberSort" ng-click="corechat.findOrCallback(member.id, setCurrentUser)" ng-class="{isMember: member.type=='member', isAnonymous: member.type=='anonymous'}" class="member">
+                  <img class="avatar" ng-src="{{member.avatar}}" />
+                  <span>{{member.name || "Anonymous User"}} <span am-time-ago="member.page.timestamp" class="timestamp"></span></span>
+                </div>
+            </div>
+        </div>
+        
+        <div ng-repeat="(page, members) in corechat.admin.members.byPage" ng-hide="page == '/help/request' || page.indexOf('/adm/') !== -1 || page == '/' || page.indexOf('/dashboard') == 0">
             <div ng-show="members">
                 <h4>{{page}}</h4>
-                <div ng-repeat="member in members | memberSort" ng-click="corechat.findOrCallback(member.id, setCurrentUser)" ng-class="{isMember: member.type=='isMember', isAnonymous: member.type=='anonymous'}" class="member">
+                <div ng-repeat="member in members | memberSort" ng-click="corechat.findOrCallback(member.id, setCurrentUser)" ng-class="{isMember: member.type=='member', isAnonymous: member.type=='anonymous'}" class="member">
                   <img class="avatar" ng-src="{{member.avatar}}" />
                   <span>{{member.name || "Anonymous User"}} <span am-time-ago="member.page.timestamp" class="timestamp"></span></span>
                 </div>
