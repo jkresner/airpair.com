@@ -5,11 +5,11 @@
     <!-- show -help-request page first -->
     <div class="section">
         <h3>Users on /help/request</h3>
-        <div ng-repeat="(memberId, _) in corechat.admin.members.byPage['/help/request']" ng-click="setCurrentUser(memberId)" class="member">
-            <img src="/static/img/css/chat/toggle.png" />
-            <span member-info="{{memberId}}">
+        <div ng-repeat="member in corechat.admin.members.byPage['/help/request'] | memberSort" ng-click="setCurrentUser(member.id)" class="member">
+            <img class="avatar" ng-src="{{member.avatar}}" /
+            <span>
                 {{member.name || "Anonymous User"}} 
-                <span am-time-ago="member.page.timestamp"></span>
+                <span am-time-ago="member.page.timestamp" class="timestamp"></span>
             </span>
         </div>
         <div ng-show="!corechat.admin.members.byPage['/help/request']">
@@ -22,9 +22,9 @@
         <div ng-repeat="(page, members) in corechat.admin.members.byPage" ng-hide="page == '/help/request'">
             <div ng-show="members">
                 <h4>{{page}}</h4>
-                <div ng-repeat="(memberId, _) in members" ng-click="corechat.findOrCallback(memberId, setCurrentUser)" class="member">
-                  <img src="/static/img/css/chat/toggle.png" />
-                  <span member-info="{{memberId}}">{{member.name || "Anonymous User"}} <span am-time-ago="member.page.timestamp" class="timestamp"></span></span>
+                <div ng-repeat="member in members | memberSort" ng-click="corechat.findOrCallback(member.id, setCurrentUser)" ng-class="{isMember: member.type=='isMember', isAnonymous: member.type=='anonymous'}" class="member">
+                  <img class="avatar" ng-src="{{member.avatar}}" />
+                  <span>{{member.name || "Anonymous User"}} <span am-time-ago="member.page.timestamp" class="timestamp"></span></span>
                 </div>
             </div>
         </div>
