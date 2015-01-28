@@ -3,7 +3,6 @@
     require('../../public/lib/angular-scroll-glue/src/scrollglue.js');
     var cc, ref, app = angular.module("chat-widget", ['luegg.directives', 'angularMoment']);
 
-
     app.directive('memberInfo', function (corechat) {
         return {
             link: function ($scope, elem, attrs) {
@@ -49,8 +48,44 @@
            }
        } 
     });
+    
+    app.service('chatPingNoise', function () {
+        return {
+            play: function () {
+                document.getElementById("chatAudio").play();
+            }
+        };
+    });
+    
+    app.filter('memberSort', function () {
+        return function (members) {
+            var membersArr = [],
+                anonymousArr= [],
+                result = [];
+                
+            angular.forEach(members, function (member) {
+                if (member.type == 'user') membersArr.push(member)
+                else anonymousArr.push(member);
+            });
+            
+            membersArr.sort(function (a, b) {
+                if (a.page.timestamp < b.page.timestamp) {
+                    return -1;
+                }
+                if (a.page.timestamp > b.page.timestamp) {
+                        return 1;
+                }
+                return 0;
+            })
+            
+            result = result.concat(membersArr);
+            result = result.concat(anonymousArr);
+            
+            return result;
+        }
+    })
 
-    app.service('corechat', function ($rootScope, $log, $timeout, $interval) {
+    app.service('corechat', function ($rootScope, $log, $timeout, $interval, chatPingNoise) {
         var $scope = $rootScope.$new(true), sessionID,
             cc, ref, transferFrom, lastSession;
 
@@ -77,6 +112,9 @@
             $scope.setActiveRoom = function (roomId) {
                 $scope.activeRoomId = roomId;
                 $scope.activeRoom = $scope.selfmember.rooms[$scope.activeRoomId];
+                
+                delete $scope.lastActiveRoom;
+                
                 angular.forEach(cc._member.notificationsByRoom[roomId], function (notification) {
                    notification.acknowledge();
                    --$scope.selfmember.notificationsCount;
@@ -162,7 +200,8 @@
                     return;
                 }
 
-                var id = member.id;
+                var id = member.id,
+                    muted = true;
 
                 if (transferFrom && transferFrom !== member.id) {
                     cc._ref.child("transfers").push({
@@ -200,10 +239,12 @@
 
                 member.on("recieved_notification", function (err, notification) {
                     // don't increment notificationsCount if the notification is in this room
+                    if (!muted)
+                        chatPingNoise.play();
                     if (notification.info.to == $scope.activeRoomId) {
-                      notification.acknowledge();
+                        notification.acknowledge();
                     } else {
-                      $scope.selfmember.notificationsCount++;
+                        $scope.selfmember.notificationsCount++;
                     }
                 });
 
@@ -215,9 +256,14 @@
                     
                     var user = {};
                     if (session.email) user.email = session.email
-                    if (session.name) user.name = session.name
                     if (session.avatar) user.avatar = session.avatar
                     if (session.transferFrom) user.avatar = session.transferFrom
+                    
+                    if (session.name) user.name = session.name
+                    else user.name = "Anon:" + session.sessionID.substr(-5)
+                    
+                    if (session.sessionID) user.type = "anonymous"
+                    else user.type = "user"
 
 
                     cc._member._ref.update(user, function () {
@@ -227,10 +273,13 @@
                         });
                     });
                 });
+                
+                $timeout(function () {
+                    muted = false;
+                }, 1000);
             });
 
             cc.on("logout", function () {
-                //$log.log("logout");
                 $scope.selfmember = {}; 
             });
 
@@ -264,20 +313,15 @@
             if (!session.sessionID) {
                 localStorage.setItem("timeoutInitialize", "");
             }
-            /*if (sessionID && (session._id !== sessionID && session.sessionID !== sessionID)) {
-                //$log.log("SessionID", sessionID, "doesn't match", session._id || session.sessionID)
-                sessionID = session._id || session.sessionID;
-            }*/
-            
+
             cc && session.firebaseToken? cc.login(session.firebaseToken) : null;
-            
-            //sessionID = session._id || session.sessionID;
 
             if (lastSession && lastSession.unauthenticated && session._id)
                 cc._ref.child("transfers").push({
                    to: session._id,
                    from: lastSession.sessionID
                 });
+                
             lastSession = session;
         });
 
