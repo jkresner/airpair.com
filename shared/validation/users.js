@@ -111,6 +111,11 @@ module.exports = {
 
   verifyEmail(user, hash) {
     if (!hash) return "email verify hash required"
-  }
+  },
+
+  toggleSiteNotification(user, name) {
+    if (!name) return "site notification name required"
+    if (name != 'hello') return `${name} unknown site notification`
+  },
 
 }

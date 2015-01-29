@@ -48,6 +48,10 @@ var get = {
     {
       svc.searchOne({ _id:this.user._id },{ fields: Data.select.sessionFull }, cbSession(this, cb))
     }
+  },
+
+  getSiteNotifications(cb) {
+    svc.searchOne({ _id:this.user._id }, {}, Data.select.siteNotificationsCB(cb))
   }
 
 }
@@ -157,6 +161,20 @@ var save = {
 
   updateBookmarks(bookmarks, cb) {
     updateAsIdentity.call(this, {bookmarks}, null, cb)
+  },
+
+  toggleSiteNotification(name, cb) {
+    svc.searchOne({ _id:this.user._id }, null, (e,r) => {
+      var existing = _.find(r.siteNotifications, (n) => n.name == name)
+      if (!r.siteNotifications)
+        r.siteNotifications = [{name}]
+      else if (existing)
+        r.siteNotifications = _.without(r.siteNotifications, existing)
+      else
+        r.siteNotifications.push({name})
+
+      svc.update(this.user._id, r, Data.select.siteNotificationsCB(cb))
+    })
   },
 
   //-------- Admin user updates
