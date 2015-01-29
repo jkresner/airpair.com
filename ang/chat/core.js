@@ -15,6 +15,17 @@
 		this._callbackWrap = function (func, args) {
 			func.apply(func, args);
 		};
+		
+		this.setWrapper = function (wrapper) {
+			var render = debounce(wrapper, this, 50);
+			this._callbackWrap = function (func, args) {
+				if (func)
+					setTimeout(function () {
+						func.apply(func, args);	
+					})
+				render();
+			}
+		};
 
 		// CoreChat Methods
 
@@ -181,6 +192,7 @@
 			if (lastRoom) {
 				delete this.rooms.byLastMessage[lastRoom.last_message];
 			}
+			
 			this.rooms.byLastMessage[last_message] = this.rooms.byId[roomId];
 			lastRoom.last_message = last_message;
 			this._lastRooms[roomId] = lastRoom;
@@ -307,11 +319,30 @@
 			.child('rooms')
 			.on("child_added", (function (roomSnapshot) {
 				var roomId = roomSnapshot.key(),
+					roomIsActive = roomSnapshot.val(),
+					room;
+					
+				if (roomIsActive) {
 					room = cc.getRoom(roomId);
-
-				this.rooms[roomId] = room;
+					this.rooms[roomId] = room;
+				}
 
 				this.trigger("join_room", null, room);
+			}).bind(this));
+
+		this._ref
+			.child('rooms')
+			.on("child_changed", (function (roomSnapshot) {
+				var roomId = roomSnapshot.key(),
+					roomIsActive = roomSnapshot.val(),
+					room;
+					
+				if (roomIsActive) {
+					room = cc.getRoom(roomId);
+					this.rooms[roomId] = room;
+				} else {
+					delete this.rooms[roomId];
+				}
 			}).bind(this));
 
 		this.sendMessageToRoom = function (roomId, body) {
@@ -322,6 +353,13 @@
 		this.sendMessageToMember = function (memberId, body) {
 			var member = cc.getMember(memberId);
 			member.send(body);
+		}
+		
+		this.leave = function (roomId) {
+			this._ref
+				.child("rooms")
+				.child(roomId)
+				.set(false);
 		}
 
 		this.detach = function () {
@@ -358,25 +396,17 @@
 		this.rooms = fdata(this, 'rooms');
 		this.page = fdata(this, 'page');
 
-		this._ref.on("value", (function (memberSnapshot) {
-			var memberData = memberSnapshot.val();
-			this.exists = !!memberData;
-
-			if (this.exists) {
+		// Cherry pick fields we need to avoid wasted bandwidth on pings and such
+		["name", "email", "avatar", "roles", "status", "type"]
+			.forEach((function (field) {
 				cc._callbackWrap((function () {
-					//console.log(this.id, memberData)
-					this.email = memberData.email;
-					this.name = memberData.name;
-					this.avatar = memberData.avatar;
-					this.roles = memberData.roles || {};
-					this.status = memberData.status;
-					this.roles = memberData.roles;
-					this.trigger("ready", null, this);
-					this.type = memberData.type;
-					this.page = memberData.page;
+					this._ref.child(field).on("value", this._setField);
 				}).bind(this));
-			}
-		}).bind(this));
+			}).bind(this));
+
+		this._setField = (function (snapshot) {
+			this[snapshot.key()] = snapshot.val();
+		}).bind(this);
 
 		this.join = function (rid) {
 			this._ref
@@ -655,7 +685,8 @@
 
 	var Statusable = function (cc) {
 		this._events = this._events.concat(["status_change"]);
-		this._timeout = 60e3;
+		this._timeout = 60e3; // 1 min
+		this._offlineTimeout = 60*60e3; // 15 min
 		this._lastEvent = (new Date()).getTime();
 		this._status = "offline"; // offline, online, away
 		this._intervals = [];
@@ -699,6 +730,10 @@
 			if (currentTime > this._lastEvent+this._timeout) {
 				this._changeStatus("away");
 			}
+			
+			if (currentTime > this._lastEvent+this._offlineTimeout) {
+				Firebase.goOffline();
+			}
 		};
 
 		this._performHashCheck = function () {
@@ -718,6 +753,7 @@
 			this._lastEvent = currentTime;
 
 			this._changeStatus("online");
+			Firebase.goOnline();
 		};
 
 		this._changeStatus = function (newStatus) {
@@ -775,6 +811,18 @@
 			source.apply(obj, args);
 		}
 		return obj;
+	};
+	
+	function debounce (func, ctx, time) {
+		return function (args) {
+			var id = Math.random();
+			debounce.prototype._last = id;
+			setTimeout(function () {
+				if (debounce.prototype._last == id) {
+					func.apply(ctx, args);
+				}
+			}, time);
+		}
 	};
 
 	// Expose CoreChat

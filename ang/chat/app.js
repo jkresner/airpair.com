@@ -130,11 +130,11 @@
                 cc.login($rootScope.session.firebaseToken);
             }
 
-            cc._callbackWrap = function (func, args) {
+            cc.setWrapper(function (func, args) {
                 $timeout(function () {
-                    func.apply(func, args);
-                });
-            };
+                    // Digest
+                })
+            });
 
             $scope.setActiveRoom = function (roomId) {
                 $scope.activeRoomId = roomId;
@@ -213,6 +213,11 @@
                 delete $scope.activeRoom;
             };
             
+            $scope.closeActiveRoom = function () {
+                cc._member.leave($scope.activeRoomId);  
+                $scope.leaveActiveRoom();
+            };
+            
             $scope.onCollapsed = function (func, arg) {
                 if ($scope.collapsed) {
                     func(arg);
@@ -248,7 +253,6 @@
                     notifications: {},
                     notificationsCount: 0,
                     loggedIn: false
-
                 };
                 
                 if (cc._member && cc._member.roles && cc._member.roles.admin) {
@@ -278,6 +282,10 @@
                         notification.acknowledge();
                     } else {
                         $scope.selfmember.notificationsCount++;
+                    }
+                    
+                    if (!$scope.selfmember.rooms[notification.info.to]) {
+                        $scope.join(notification.info.to);
                     }
                 });
 
