@@ -17,11 +17,20 @@ angular.module("APDashboard", ['APFilters', 'APSvcSession',
 
   SessionService.onAuthenticated(function() {
     if (!$scope.session._id) $location.path(`/about`)
+
+    if ($scope.session.tags && $scope.session.tags.length > 0) {
+      DataService.experts.getForDashboard({}, function(r) {
+        $scope.experts = r
+      })
+    }
   })
+
 
   DataService.requests.getMyRequests({}, function(result) {
     $scope.requests = result
   })
+
+
 
   var setSeen = (siteNotifications) => {
     $scope.seen = []
@@ -36,24 +45,23 @@ angular.module("APDashboard", ['APFilters', 'APSvcSession',
 
 
 .directive('dashboardStack', function() {
-
-  return {
-    restrict: 'E',
-    template: require('./stack.html'),
-    link(scope, element, attrs) {
-    }
-  }
-
+  return { template: require('./stack.html') }
 })
 
 
-.directive('dashboardRequests', function() {
+.directive('dashboardBookmarks', function() {
+  return { template: require('./bookmarks.html') }
+})
 
+.directive('dashboardExperts', function() {
+  return { template: require('./experts.html') }
+})
+
+.directive('dashboardRequests', function() {
   return {
     restrict: 'E',
     template: require('./requests.html'),
     link(scope, element, attrs) {
     }
   }
-
 })
