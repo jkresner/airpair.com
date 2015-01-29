@@ -23,4 +23,37 @@ angular.module("APDashboard", ['APFilters', 'APSvcSession',
     $scope.requests = result
   })
 
+  var setSeen = (siteNotifications) => {
+    $scope.seen = []
+    siteNotifications.forEach((n)=>$scope.seen[n.name] = true)
+  }
+
+  SessionService.getSiteNotifications({}, setSeen)
+
+  $scope.closeNotification = (name) =>
+    SessionService.toggleSiteNotification({name}, setSeen)
+})
+
+
+.directive('dashboardStack', function() {
+
+  return {
+    restrict: 'E',
+    template: require('./stack.html'),
+    link(scope, element, attrs) {
+    }
+  }
+
+})
+
+
+.directive('dashboardRequests', function() {
+
+  return {
+    restrict: 'E',
+    template: require('./requests.html'),
+    link(scope, element, attrs) {
+    }
+  }
+
 })

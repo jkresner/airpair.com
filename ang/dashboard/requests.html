@@ -1,0 +1,10 @@
+<section id="requests">
+  <h3>Requests</h3>
+  <div class="requests">
+    <request-list-item  ng-repeat="r in requests" req="r"></request-list-item>
+  </div>
+
+  <div ng-if="!requests || requests.length == 0">
+    <p>You don't have any requests yet. <a href="/help/request"><b>Get started</b></a>.</p>
+  </div>
+</section>

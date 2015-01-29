@@ -41,6 +41,14 @@ var Membership = {
 }
 
 
+//-- messages at the top of dashboard or other places
+//-- _id can be used to see when the user saw the notification
+//-- and even not show a new one until a determined time later
+var SiteNotifications = new Schema({
+  name:   { type: String, lowercase: true, trim: true, required: true }
+})
+
+
 var User = new Schema({
 
   email:                { type: String, unique: true, sparse: true, trim: true, lowercase: true },
@@ -84,6 +92,9 @@ var User = new Schema({
     changePasswordHash:     String,
     passwordHashGenerated:  Date
   },
+
+  siteNotifications:    [SiteNotifications],
+
   googleId:             { type: String, sparse: true, unique: true, dropDups: true },
   google: {},
   githubId: Number,

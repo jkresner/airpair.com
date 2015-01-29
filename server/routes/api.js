@@ -67,6 +67,8 @@ export default function(app) {
     .post('/requests', API.Requests.create)
     .delete('/requests/:request', API.Requests.deleteById)
 
+    .get('/users/me/site-notifications', API.Users.getSiteNotifications)
+    .put('/users/me/site-notifications', API.Users.toggleSiteNotification)
     .put('/users/me/email-verify', setAnonSessionData, API.Users.verifyEmail)
     .put('/users/me/initials', API.Users.changeInitials)
     .put('/users/me/username', API.Users.changeUsername)

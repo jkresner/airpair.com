@@ -55,6 +55,10 @@ var select = {
     'google': 1,
     'cohort': 1,
     'membership': 1
+  },
+  siteNotifications: {
+    '_id': 0,
+    'siteNotifications': 1
   }
 }
 
@@ -65,6 +69,13 @@ var data = {
     sessionFull: select.sessionFull,
     usersInRole: select.usersInRole,
     search: select.search,
+    siteNotificationsCB(cb) {
+      return (e,r) => {
+        if (e) return cb(e)
+        r = util.selectFromObject(r, select.siteNotifications)
+        cb(null, r.siteNotifications || [])
+      }
+    },
 
     sessionFromUser(user) {
       return util.selectFromObject(user, select.session)
