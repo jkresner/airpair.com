@@ -6,7 +6,7 @@ module.exports = {
     "name" : "AngularJS",
     "short" : "Angular",
     "soId" : "angularjs",
-    "tokens" : "",
+    "tokens" : "angular",
     "slug" : "angularjs"
   },
   angularonetwo: {
@@ -46,7 +46,8 @@ module.exports = {
     "name" : "MongoDB",
     "short" : "mongodb",
     "soId" : "mongodb",
-    "slug" : "mongodb"
+    "slug" : "mongodb",
+    "tokens" : "mon,mong,mongo"
   },
   mongoengine: {
     "_id" : "5369a5b21c67d1a4859d311a",
@@ -54,7 +55,8 @@ module.exports = {
     "name" : "mongoengine",
     "short" : "mongoengine",
     "soId" : "mongoengine",
-    "slug" : "mongoengine"
+    "slug" : "mongoengine",
+    "tokens" : "mon,mongo"
   },
   mongoid: {
     "_id" : "5181d0aa66a6f999a465ee0c",
@@ -62,7 +64,8 @@ module.exports = {
     "name" : "mongoid",
     "short" : "mongoid",
     "soId" : "mongoid",
-    "slug" : "mongoid"
+    "slug" : "mongoid",
+    "tokens" : "mon"
   },
   mean: {
     "_id" : "53c54f5e8f8c80299bcc39bf",
@@ -79,11 +82,11 @@ module.exports = {
     "name" : "Ruby on Rails",
     "short" : "Rails",
     "soId" : "ruby-on-rails",
-    "tokens" : "ror, rrr",
+    "tokens" : "ruby,ror, rrr",
     "slug" : "ruby-on-rails"
   },
   ios: {
-    "_id" : "514825fa2a26ea020000001b", 
+    "_id" : "514825fa2a26ea020000001b",
     "desc" : "iOS is Apple&#39;s operating system for mobile devices, such as the iPhone, iPod touch, iPad and Apple TV (2nd generation and up). Much is shared with OS X, but iOS is optimized for touch-based interfaces.",
     "name" : "ios",
     "short" : "ios",
@@ -146,7 +149,8 @@ module.exports = {
     "name" : "c#",
     "short" : "c#",
     "soId" : "c#",
-    "slug" : "c#"
+    "slug" : "c#",
+    "tokens" : "c#",
   },
   csharptwo: {
     "_id" : "5181d0ab66a6f999a465effa",

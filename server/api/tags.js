@@ -1,7 +1,8 @@
 import {initAPI} from './_api'
-import * as Svc from '../services/tags'
 
-export default initAPI(Svc, {
+export default initAPI(
+  require('../services/tags')
+,{
   search: (req) => [req.params.id],
   getBySlug: (req) => [req.params.slug]
 }, {
