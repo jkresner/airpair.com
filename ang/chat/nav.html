@@ -57,7 +57,7 @@
       <!-- container for overflow -->
       <div id="chatHeader">
         <img id="chatAvatar" ng-src="{{corechat.activeRoom.info.avatar || '/static/img/css/sidenav/default-mario.png'}}" />
-        <div id="chatSubtitle"></div>
+        <div id="chatSubtitle" ng-show="corechat.isAdmin" ng-click="corechat.closeActiveRoom()">[ Close Chat ]</div>
         <div id="chatStatus">{{corechat.activeRoom.info.status}}</div>
       </div>
       <div id="chatMessages" scroll-glue="true">
