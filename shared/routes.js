@@ -21,5 +21,6 @@ module.exports = [
   '/adm*',
   '/matchmaking*',
   '/review*',
+  '/requests*',
   '/angularjs',
 ]

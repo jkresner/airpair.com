@@ -1,0 +1,10 @@
+<h3>My Stack <a ng-click="openStack()">edit</a></h3>
+<ul class="tags">
+  <li ng-repeat="tag in session.tags | orderBy:'sort'" ng-attr-data-id="{{tag._id}}">
+    {{tag.slug}}
+  </li>
+</ul>
+
+<p ng-if="!session.tags || session.tags.length == 0">No technologies added to your stack yet.
+
+<br /><br /><a ng-click="openStack()"><b>Add technologies</b></a> to personalize AirPair.</p>
