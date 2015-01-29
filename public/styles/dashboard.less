@@ -1,0 +1,56 @@
+section#dashboard {
+
+  .headingUnderline {
+    border-bottom:solid 2px @bluegray;padding-bottom:5px;
+    margin-bottom:20px;
+  }
+
+  section.notifications {
+    > div {
+      h1 { margin-top:10px }
+      background:@lightblue;text-align:center;padding:20px;
+      .close { float:right;color:@darkblue }
+    }
+
+    #hello {
+      h1 img { height:48px;margin-top:-8px }
+    }
+  }
+
+  section.main {
+    float:left;
+    width:640px;
+    h3 {
+      .headingUnderline
+    }
+
+    .experts {
+      // .entry-meta { display:none }
+    }
+  }
+
+
+  section.side {
+    float:right;
+    width:200px;
+
+    .tags { padding-top:14px }
+
+    .bookmarks {
+      ul { margin:0;padding:0 }
+      li { width:200px;overflow:hidden; }
+      h3 {
+        .headingUnderline
+      }
+    }
+  }
+
+  h3 {
+    a { float:right;font-size:14px;padding-top:4px }
+  }
+
+
+
+}
+
+

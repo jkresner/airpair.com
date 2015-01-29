@@ -45,12 +45,9 @@ angular.module('APDataSvc', [])
     })
 
     var expertFns = {
-      getForExpertsPage(success, error) {
-        $http.get(`${API}/experts`).success(success).error(error)
-      },
-      getById(data, success, error) {
-        $http.get(`${API}/experts/${data._id}`).success(success).error(error)
-      }
+      getForExpertsPage: GET((d)=>`/experts`),
+      getById: GET((d)=>`/experts/${d._id}`),
+      getForDashboard: GET((d)=>`/experts/dashboard`)
     }
 
     this.experts = expertFns;

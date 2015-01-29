@@ -55,6 +55,10 @@ var select = {
     'google': 1,
     'cohort': 1,
     'membership': 1
+  },
+  siteNotifications: {
+    '_id': 0,
+    'siteNotifications': 1
   }
 }
 
@@ -144,7 +148,14 @@ var data = {
           }
           cb(e,r)
         }
-      }
+      },
+      siteNotifications(cb) {
+        return (e,r) => {
+          if (e) return cb(e)
+          r = util.selectFromObject(r, select.siteNotifications)
+          cb(null, r.siteNotifications || [])
+        }
+      },
     }
   },
 
