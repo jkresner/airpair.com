@@ -1,10 +1,11 @@
 <section id="requests">
-  <h3>Requests</h3>
+  <h3>Requests <a href="/requests">see all</a></h3>
   <div class="requests">
-    <request-list-item  ng-repeat="r in requests" req="r"></request-list-item>
+    <request-list-item  ng-repeat="r in requests | limitTo : 3" req="r"></request-list-item>
   </div>
 
   <div ng-if="!requests || requests.length == 0">
-    <p>You don't have any requests yet. <a href="/help/request"><b>Get started</b></a>.</p>
+    <p>You don't have any requests yet.</p>
+    <a href="/help/request" class="btn"><b>Get started</b></a>
   </div>
 </section>

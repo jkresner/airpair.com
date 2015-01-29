@@ -95,6 +95,7 @@ export default function(app) {
 
     .get('/experts/me', API.Experts.getMe)
     .get('/experts/search/:id', API.Experts.search)
+    .get('/experts/dashboard', API.Experts.getMatchesForDashboard)
     .get('/experts/:id', API.Experts.getById)
     .get('/experts', API.Experts.getForExpertsPage)
     .get('/experts/match/:request', authd, API.Experts.getMatchesForRequest)

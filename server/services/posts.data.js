@@ -29,8 +29,11 @@ module.exports = {
     },
     listCache: {
       '_id': 1,
+      'by.name': 1,
+      'by.avatar': 1,
       'title': 1,
-      'meta.canonical': 1
+      'meta.canonical': 1,
+      'meta.ogImage': 1
     }
   },
 

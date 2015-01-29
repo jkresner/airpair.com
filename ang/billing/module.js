@@ -140,9 +140,9 @@ angular.module("APBilling", ['ngRoute','APFormsDirectives','APPaymentDirectives'
 
   .controller('BillingExpertsCtrl', function($scope, DataService) {
 
-    DataService.experts.getForExpertsPage((r) => {
+    DataService.experts.getForExpertsPage({}, (r) => {
       $scope.experts = r.experts
-    }, () => {} )
+    })
 
   })
 
