@@ -69,13 +69,6 @@ var data = {
     sessionFull: select.sessionFull,
     usersInRole: select.usersInRole,
     search: select.search,
-    siteNotificationsCB(cb) {
-      return (e,r) => {
-        if (e) return cb(e)
-        r = util.selectFromObject(r, select.siteNotifications)
-        cb(null, r.siteNotifications || [])
-      }
-    },
 
     sessionFromUser(user) {
       return util.selectFromObject(user, select.session)
@@ -155,7 +148,14 @@ var data = {
           }
           cb(e,r)
         }
-      }
+      },
+      siteNotifications(cb) {
+        return (e,r) => {
+          if (e) return cb(e)
+          r = util.selectFromObject(r, select.siteNotifications)
+          cb(null, r.siteNotifications || [])
+        }
+      },
     }
   },
 

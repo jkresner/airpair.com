@@ -51,7 +51,7 @@ var get = {
   },
 
   getSiteNotifications(cb) {
-    svc.searchOne({ _id:this.user._id }, {}, Data.select.siteNotificationsCB(cb))
+    svc.searchOne({ _id:this.user._id }, {}, Data.select.cb.siteNotifications(cb))
   }
 
 }
@@ -173,7 +173,7 @@ var save = {
       else
         r.siteNotifications.push({name})
 
-      svc.update(this.user._id, r, Data.select.siteNotificationsCB(cb))
+      svc.update(this.user._id, r, Data.select.cb.siteNotifications(cb))
     })
   },
 
