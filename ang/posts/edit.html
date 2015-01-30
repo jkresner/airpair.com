@@ -1,0 +1,71 @@
+<header>
+  <ol class="entry-meta breadcrumb">
+    <li><a href="/posts">Posts</a></li>
+    <li class="current">Author</li>
+  </ol>
+</header>
+
+<section class="editornotsupported">
+  <h3>You'll need a bigger screen...</h3>
+  <p>Authoring posts on AirPair requires minimum resolution of 1200px.</p>
+</section>
+
+
+<section id="posteditor">
+
+
+<div ng-if="post" class="editor-wrap">
+
+  <section ng-if="aceLoaded" id="editor">
+    <div ui-ace="{
+      useWrapMode:true,
+      theme:'solarized_light',
+      mode:'markdown',
+      onLoad: aceLoaded,
+      onChange: aceChanged
+    }"
+    ng-model="post.md">
+  </section>
+
+  <section id="post">
+    <div id="preview" ap-post=""></div>
+  </section>
+
+<!--
+    ng-model-options="{
+      updateOn: 'default blur',
+      debounce: { blur: 0, default: (post.md.length * 10) }}" -->
+
+
+
+  <div class="form-actions">
+
+    <button class="btn" ng-click="save()" ng-disabled="post.saved">Save</button>
+
+    <a class="btn" target="_blank" href="mailto:team@airpair.com?subject=Post%20Submission%20-%20{{post.title}}&body=Can%20you%20look%20at%20and%20publish%20my%20post:%0A%0Ahttps://www.airpair.com/posts/publish/{{ post._id }}%0A%0A{{post.by.name}}" ng-disabled="(!post.title && !post.by.bio) || !post.saved || (preview.mode == 'publish')">Submit for review</a>
+
+    <button class="btn" ng-click="delete()" ng-if="!post.published">Delete</button>
+
+  </div>
+  <hr />
+
+  <div id="tips">
+    <h6>Tips</h6>
+    <label>Markdown
+      <span>see <a href="http://daringfireball.net/projects/markdown/syntax" target="_blank">markdown guide</a><span></label>
+    <div ng-if="post._id">
+      <ul>
+        <li>Use h2 (##) and lower (###) for headings in your markdown (title is already the h1).</li>
+        <li>Prefix your headings with number like 1 1.1 1.2 2 etc.</li>
+        <li>Code blocks require a comments (e.g. <code>&lt;!--code lang=coffeescript linenums=true--&gt;</code> followed by a line break, to indicate language and optionally show line numbers.
+        </li>
+        <li>escape characters with <code>\</code> to render them non markdown, e.g. for a list bullet you might <code>- \-</code></li>
+      </ul>
+    </div>
+  </div>
+
+
+</div>
+
+
+</section>

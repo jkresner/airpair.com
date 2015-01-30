@@ -113,16 +113,27 @@ export function getUsersPublished(username, cb) {
   svc.searchMany(query, opts, addUrl(cb))
 }
 
-export function getUsersPosts(id, cb) {
-  var opts = { fields: Data.select.list, options: { sort: { 'created':-1, 'published':1  } } };
-  svc.searchMany({'by.userId':id},opts, cb)
+
+// This now combines users interest posts and self authors
+export function getUsersPosts(cb) {
+  $callSvc(getRecentPublished,this)((e,r) => {
+    if (!this.user) cb(e,r)
+    else {
+      r = _.first(r, 3)
+      var opts = { fields: Data.select.list, options: { sort: { 'created':-1, 'published':1  } } };
+      svc.searchMany({'by.userId':this.user._id},opts, (ee,rr) => {
+        if (e || ee) return cb(e||ee)
+        cb(null, _.union(r,rr))
+      })
+    }
+  })
 }
 
 export function create(o, cb) {
   o.created = new Date()
   o.by.userId = this.user._id
   svc.create(o, cb)
-  UserSvc.changeBio.call(this, {bio: o.by.bio},() => {})
+  UserSvc.changeBio.call(this, o.by.bio,() => {})
 }
 
 export function getTableOfContents(markdown, cb) {

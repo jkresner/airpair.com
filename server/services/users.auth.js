@@ -213,8 +213,22 @@ function localLogin(email, password, errorCB, done) {
   }))
 }
 
+
+function connectProvider(provider, profile, errorCB, done) {
+  var ups = {}
+  ups[provider+'Id'] = profile.id
+  ups[provider] = profile
+
+  User.findOneAndUpdate({_id:this.user._id}, { $set: ups }, (e,r) => {
+    if (e || !r) errorCB(e||'connectProvider, no user found.',r)
+    $log('updated', this.user._id, provider, profile)
+    $log('TODO '.red)
+    done(e, r)
+  })
+}
+
+
+
 module.exports = {
-  googleLogin:googleLogin,
-  localSignup:localSignup,
-  localLogin:localLogin
+  googleLogin, localSignup, localLogin, connectProvider
 }
