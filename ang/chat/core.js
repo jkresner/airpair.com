@@ -17,7 +17,7 @@
 		};
 		
 		this.setWrapper = function (wrapper) {
-			var render = debounce(wrapper, this, 50);
+			var render = throttle(wrapper, this, 50);
 			this._callbackWrap = function (func, args) {
 				if (func)
 					setTimeout(function () {
@@ -396,16 +396,10 @@
 		this.rooms = fdata(this, 'rooms');
 		this.page = fdata(this, 'page');
 
-		// Cherry pick fields we need to avoid wasted bandwidth on pings and such
-		["name", "email", "avatar", "roles", "status", "type"]
-			.forEach((function (field) {
-				cc._callbackWrap((function () {
-					this._ref.child(field).on("value", this._setField);
-				}).bind(this));
-			}).bind(this));
-
 		this._setField = (function (snapshot) {
-			this[snapshot.key()] = snapshot.val();
+			cc._callbackWrap((function () {
+				this[snapshot.key()] = snapshot.val();
+			}).bind(this));
 		}).bind(this);
 
 		this.join = function (rid) {
@@ -425,7 +419,13 @@
 			has: function (role) {
 				return this.roles[role] || false
 			}
-		}
+		};
+		
+		// Cherry pick fields we need to avoid wasted bandwidth on pings and such
+		["name", "email", "avatar", "roles", "status", "type"]
+			.forEach((function (field) {
+				this._ref.child(field).on("value", this._setField);
+			}).bind(this));
 	};
 
 	var Member = function (cc) {
@@ -813,17 +813,41 @@
 		return obj;
 	};
 	
-	function debounce (func, ctx, time) {
-		return function (args) {
-			var id = Math.random();
-			debounce.prototype._last = id;
-			setTimeout(function () {
-				if (debounce.prototype._last == id) {
-					func.apply(ctx, args);
-				}
-			}, time);
-		}
-	};
+	function throttle(func, wait, options) {
+		/*.
+		_.throttle from Underscore.js 1.7.0
+		http://underscorejs.org
+		(c) 2009-2014 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+		Underscore may be freely distributed under the MIT license.
+		*/
+	    var context, args, result;
+	    var timeout = null;
+	    var previous = 0;
+	    if (!options) options = {};
+	    var later = function() {
+	      previous = options.leading === false ? 0 : (new Date().getTime());
+	      timeout = null;
+	      result = func.apply(context, args);
+	      if (!timeout) context = args = null;
+	    };
+	    return function() {
+	      var now = (new Date().getTime());
+	      if (!previous && options.leading === false) previous = now;
+	      var remaining = wait - (now - previous);
+	      context = this;
+	      args = arguments;
+	      if (remaining <= 0 || remaining > wait) {
+	        clearTimeout(timeout);
+	        timeout = null;
+	        previous = now;
+	        result = func.apply(context, args);
+	        if (!timeout) context = args = null;
+	      } else if (!timeout && options.trailing !== false) {
+	        timeout = setTimeout(later, remaining);
+	      }
+	      return result;
+	    };
+	  };
 
 	// Expose CoreChat
 	window.CoreChat = CoreChat;
