@@ -22,10 +22,19 @@ var localSignup = LocalProvider.init('local-singup', (req, email, password, done
   $callSvc(UserService.localSignup,req)(email, password, req.body.name, fbTokenWrapper(req,done))
 })
 
-var googleOAuth = OAuthProvider.init('google', (req, provider, profile, done) => {
+var googleOAuth = OAuthProvider.init('google', require('passport-google-oauth').OAuth2Strategy, (req, provider, profile, done) => {
   $callSvc(UserService.googleLogin,req)(profile, fbTokenWrapper(req,done))
 })
 
+var githubOAuth = OAuthProvider.init('github', require('passport-github').Strategy, (req, provider, profile, done) => {
+  $callSvc(UserService.connectProvider,req)('github', profile, done)
+})
+
+var twitterOAuth = OAuthProvider.init('twitter', require('passport-twitter').Strategy, (req, provider, profile, done) => {
+  $callSvc(UserService.connectProvider,req)('twitter', profile, done)
+})
 
 export var local = { login: localLogin, signup: localSignup }
 export var google = { oAuth: googleOAuth }
+export var github = { oAuth: githubOAuth }
+export var twitter = { oAuth: twitterOAuth }

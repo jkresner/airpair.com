@@ -100,6 +100,13 @@
 
   <hr />
 
+  <section class="connect" ng-if="session.emailVerified">
+    <br /><a href="/auth/github" target="_self">Connect Github</a>
+    <br /><a href="/auth/twitter" target="_self">Connect Twitter</a>
+  </section>
+
+  <hr />
+
   <section class="password" ng-if="session.emailVerified">
     <h3 style="margin-top:0">Change password</h3>
     <a href="#" ng-click="sendPasswordChange()" class="btn">Send password reset email</a>

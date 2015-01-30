@@ -22,10 +22,17 @@ var cfg = {
       ]
     },
     twitter: {
+      consumerKey: '8eIvjnVbj0BkMiUVQP0ZQ',
+      consumerSecret: 'OwrnjqCz3BeRswKLuDJqdzMQlgdDZi9F3hFZPIbxgVM',
       consumer_key: 'Tfw8PWs5LcxqrWlFJWUhXf8i8',
       consumer_secret: 'yoA38VC94a2gcxJ7ewCyNn8nPu7bHVVVMTauZTanlvkgXBWNOE',
       access_token: 'test',
       access_token_secret: 'test'
+    },
+    github: {
+      clientID: '378dac2743563e96c747',
+      clientSecret: 'f52d233259426f769850a13c95bfc3dbe7e3dbf2',
+      scope: [ 'user', 'repo' ]
     },
     paypal: {
       mode: 'sandbox',
@@ -205,5 +212,9 @@ module.exports = function(env, appdir) {
       cfg.auth.google.refreshTokens[email] = token;
     }
   }
+
+  // cfg.auth.twitter.consumer_key = cfg.auth.twitter.consumerKey
+  // cfg.auth.twitter.consumer_secret = cfg.auth.twitter.consumerSecret
+
   return cfg;
 }
