@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="{{ config.bundle.indexCss}}" type="text/css" />
   <base href="/" />
 </head>
-<body>
+<body class="landing">
 <header>
   <a tile="airpair.com pair programming" style="cursor:default"></a>
 </header>
@@ -20,6 +20,7 @@
     <div id="serverTemplate">
       {{#with viewData}}
         {{#if sowelcomeRender}}<cta-sowelcome></cta-sowelcome>{{/if}}
+        {{#if postscompRender}}{{> postscomp }}{{/if}}
       {{/with}}
     </div>
   </main>
