@@ -9,7 +9,7 @@
             <div ng-repeat="member in members | memberSort" ng-click="setCurrentUser(member.id)" class="member">
                 <img class="avatar" ng-src="{{member.avatar}}" />
                 <span>
-                    {{member.name || "Anonymous User"}} 
+                    {{member.name || "loading..."}} 
                     <span am-time-ago="member.page.timestamp" class="timestamp"></span>
                 </span>
             </div>
@@ -23,7 +23,7 @@
             <div ng-show="members">
                 <div ng-repeat="member in members | memberSort" ng-click="corechat.findOrCallback(member.id, setCurrentUser)" ng-class="{isMember: member.type=='member', isAnonymous: member.type=='anonymous'}" class="member">
                   <img class="avatar" ng-src="{{member.avatar}}" />
-                  <span>{{member.name || "Anonymous User"}} <span am-time-ago="member.page.timestamp" class="timestamp"></span></span>
+                  <span>{{member.name || "loading..."}} <span am-time-ago="member.page.timestamp" class="timestamp"></span></span>
                 </div>
             </div>
         </div>
@@ -33,7 +33,7 @@
                 <h4>{{page}}</h4>
                 <div ng-repeat="member in members | memberSort" ng-click="corechat.findOrCallback(member.id, setCurrentUser)" ng-class="{isMember: member.type=='member', isAnonymous: member.type=='anonymous'}" class="member">
                   <img class="avatar" ng-src="{{member.avatar}}" />
-                  <span>{{member.name || "Anonymous User"}} <span am-time-ago="member.page.timestamp" class="timestamp"></span></span>
+                  <span>{{member.name || "loading..."}} <span am-time-ago="member.page.timestamp" class="timestamp"></span></span>
                 </div>
             </div>
         </div>

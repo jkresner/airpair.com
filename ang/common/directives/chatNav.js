@@ -7,32 +7,25 @@ angular.module("APChatNav", [])
       link: function(scope, element, attrs) {
         var lastActiveRoom,
             active;
+            
+        corechat.$watch('collapsed', function (isCollapsed) {
+          if (!isCollapsed) {
+            active = true;
+            element.removeClass('collapse');
+          } else {
+              element.addClass('collapse');
+              
+              if (corechat.initialized) {
+                $timeout(function () {
+                  corechat.lastActiveRoom = corechat.activeRoomId;
+                  corechat.leaveActiveRoom()
+                }, 10)
+              }
+          }
+        });
         
         element.bind('mouseenter', function() {
-          active = true;
-         /* if (!corechat.activeRoomId && corechat.lastActiveRoom) {
             $timeout(function () {
-              corechat.setActiveRoom(corechat.lastActiveRoom);
-              element.removeClass('collapse');
-            });
-            
-            corechat.collapsed = false;
-            
-            // Slight delay to allow Angular to render widget
-            $timeout(function () {
-              element.removeClass('collapse');
-            }, 10);
-            $timeout(function () {
-              angular.element("input#chatInput").focus();
-            }, 20);
-          } else {
-            //element.removeClass('collapse');
-            corechat.collapsed = false;
-          }*/
-          
-            $timeout(function () {
-              element.removeClass('collapse');
-              //console.log('collapsed')
               corechat.collapsed = false;
             }, 20);
             
@@ -42,21 +35,12 @@ angular.module("APChatNav", [])
         });
         
         element.bind('mouseleave', function() {
-          $timeout(function () {
-            if (!active) {
-              element.addClass('collapse');
-              //console.log('setting colapsed')
-              corechat.collapsed = true;
-              
-              if (corechat.initialized) {
-                $timeout(function () {
-                  corechat.lastActiveRoom = corechat.activeRoomId;
-                  corechat.leaveActiveRoom()
-                }, 10)
+            active = false;
+            $timeout(function () {
+              if (!active) {
+                corechat.collapsed = true; 
               }
-            }
-          }, 3000);
-          active = false;
+            }, 3000);
         });
       },
       controllerAs: 'chatNav',
