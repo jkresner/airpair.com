@@ -1,5 +1,5 @@
 
-angular.module("ADMPosts", ["APSvcPosts"])
+angular.module("ADMPosts", [])
 
   .config(function($locationProvider, $routeProvider) {
 
@@ -19,7 +19,7 @@ angular.module("ADMPosts", ["APSvcPosts"])
     };
   })
 
-  .controller('PostsCtrl', function($scope, PostsService, AdmDataService) {
+  .controller('PostsCtrl', function($scope, AdmDataService) {
 
     AdmDataService.getPosts(function (result) {
       $scope.recent = result;
