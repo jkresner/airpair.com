@@ -23,7 +23,7 @@
       <div id="roomList">
   
         <!-- don't show dupe admins in user rooms -->
-        <div class="item" ng-repeat="admin in corechat.getMembersByRole('admin')" ng-mouseover="corechat.onCollapsed(corechat.setActiveRoomAsMember, admin)" ng-click="corechat.setActiveRoomAsMember(admin)" ng-hide="admin.hasChat || admin.id == corechat.selfmember.id">
+        <div class="item" ng-repeat="admin in corechat.getMembersByRole('admin') | sortByNotifications" ng-mouseover="corechat.onCollapsed(corechat.setActiveRoomAsMember, admin)" ng-click="corechat.setActiveRoomAsMember(admin)" ng-hide="admin.hasChat || admin.id == corechat.selfmember.id">
           {{admin.hasChat}}
           <div class="left">
             <div class="onlineDot" ng-show="admin.status != 'offline'">&nbsp;</div>
@@ -36,7 +36,7 @@
         </div>
   
         <!-- members -->
-        <div class="item" ng-repeat="(roomId, room) in corechat.selfmember.rooms" ng-mouseover="corechat.onCollapsed(corechat.setActiveRoom, roomId)" ng-click="corechat.setActiveRoom(roomId)" ng-class="{unread: corechat.selfmember.notificationsCountByRoom[roomId] > 0, active: corechat.lastActiveRoom == roomId }">
+        <div class="item" ng-repeat="room in corechat.selfmember.rooms | sortByNotifications" ng-mouseover="corechat.onCollapsed(corechat.setActiveRoom, room.id)" ng-click="corechat.setActiveRoom(room.id)" ng-class="{unread: corechat.selfmember.notificationsCountByRoom[room.id] > 0, active: corechat.lastActiveRoom == room.id }">
           <div class="left">
             <div class="onlineDot" ng-show="room.info.status != 'offline'">&nbsp;</div>
             <img class="avatar" ng-src="{{room.info.avatar || '/static/img/css/sidenav/default-mario.png'}}" />
@@ -78,7 +78,7 @@
       <!-- input mechanism for new message -->
       <div id="chatInputWrapper">
         <form name="newMessage">
-          <input id="chatInput" type="text" ng-model="newMessage.body" placeholder="ask a question"/>
+          <input id="chatInput" type="text" ng-model="newMessage.body" placeholder="ask a question" autofocus/>
           <button type="submit" ng-show="newMessage.body" ng-click="corechat.sendMessageToRoom(corechat.activeRoomId, newMessage.body); newMessage.body=''">Send</button>
         </form>
       </div>
