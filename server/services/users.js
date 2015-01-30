@@ -384,6 +384,7 @@ var authWraps = {
   googleLogin() { callAuthSvcFn(this,'googleLogin',arguments) },
   localSignup() { callAuthSvcFn(this,'localSignup',arguments) },
   localLogin() { callAuthSvcFn(this,'localLogin',arguments) },
+  connectProvider() { callAuthSvcFn(this,'connectProvider',arguments) }
 }
 
 

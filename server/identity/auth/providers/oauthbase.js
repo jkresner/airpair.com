@@ -40,8 +40,7 @@ var oauthFn = (provider, scope) => {
 }
 
 
-export function init(provider, successfulShakeDelegate) {
-  var Strategy = require(`passport-${provider}-oauth`).OAuth2Strategy
+export function init(provider, Strategy, successfulShakeDelegate) {
   var oauthConfig = authConfig.getEnvConfig(provider)
 
   var verifyCallback = (req, accessToken, refreshToken, profile, done) =>
