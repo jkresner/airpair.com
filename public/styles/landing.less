@@ -1,12 +1,20 @@
+body.landing {
+  .main-wrap { width:100% }
+  main { width:100% }
+}
+
+
 section#landing.SOWelcome {
-  margin-top:0;
+  min-width:900px;
+  width:90%;
+  margin:0 auto;
   padding-top:20px;
 
   .vr {
     border-left:2px solid @bluegray;
     height:50px;
     width:1px;
-    margin:-10px 0 0 50%;
+    margin:-spin(color, 10)px 0 0 50%;
     position:relative;
     z-index:5;
   }
@@ -23,7 +31,7 @@ section#landing.SOWelcome {
     background:@lightblue;
     text-align:center;
     border-radius:5px;
-    h2 { font-size:32px;color:@gray;margin-bottom:40px }
+    h2 { font-size:30px;color:@darkblue;margin-bottom:40px;font-weight:bold }
     margin-bottom:10px;
   }
 
@@ -31,7 +39,7 @@ section#landing.SOWelcome {
     height:460px;
     .fold;
     .ari {
-      width:91%;
+      width:96%;
       position:absolute;
       top:0;
       right:0px;
@@ -65,7 +73,7 @@ section#landing.SOWelcome {
       // }
     }
 
-    p { padding:20px;font-size:16px }
+    p { padding:10px;font-size:18px }
 
   }
 
@@ -77,34 +85,19 @@ section#landing.SOWelcome {
       padding:20px 0 0px 0;
     }
     h4 {
-      margin:0
+      font-size:18px;
+      margin:20px 0 0 0;padding-bottom:0;
     }
-    article {
-      height:300px;
-      display:inline-block;
-      background:white;
-      width:29%;
-      text-align:left;
-      margin:-10px 8px 0 8px;
-      header {
-        height:130px;overflow:hidden;
-        img { max-width:100%; }
-      }
-      .entry-content {
-        padding:20px 15px;
-        .entry-title { height:60px;width:80%;margin:0 }
-        h2 { font-weight:bold;font-size:14px;line-height:18px; }
-        img { float:right;border-radius:50% }
-        .entry-author-name { color:@orange;font-weight:bold;margin-top:12px;display:block }
-      }
+    > h2 {
+      margin:0px 0 40px 0;
     }
-
 
     a.bookmark {
       cursor:url("../img/pages/sowelcome/bookmark.png"), auto;
     }
 
     a article {
+      width:29%;
       border:solid 2px white;
     }
 
@@ -115,10 +108,12 @@ section#landing.SOWelcome {
       .entry-author-name { color:@gray }
     }
 
-    p { padding:20px;font-size:18px }
+    p { padding:30px;font-size:16px }
   }
 
   .experts {
+    max-width:900px;
+    margin:auto;
     hr {
       border-top:solid 2px @bluegray;
       margin-top:-45px;
@@ -186,6 +181,26 @@ section#landing.SOWelcome {
         b { float:right; }
       }
     }
+  }
+
+}
+
+
+#postscomp {
+  .fold {
+    height:300px;
+    background:url('../img/pages/postscomp/banner-bg.png');
+    background-size: 100%;
+    text-align:center;
+    img.banner {
+      max-width:800px;
+      margin:60px auto;
+    }
+  }
+
+  .details {
+    max-width:900px;
+    margin:auto;
   }
 
 }

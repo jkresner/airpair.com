@@ -74,13 +74,13 @@ function $$log(action, data, user, sessionID) {
   switch (action) {
     case 'First':
       var ref = (data.ref) ? ` <<< ${data.ref}` : ''
-      if (data.url.indexOf('so-welcome'))
+      if (data.url.indexOf('so-welcome') != -1)
         $log(`FIRST   ${uid} > ${data.url}${ref}`.yellow)
       else
         $log(`FIRST   ${uid} > ${data.url}${ref}`.cyan)
       break
     case 'View':
-      if (data.url.indexOf('so-welcome'))
+      if (data.url.indexOf('so-welcome') != -1)
         $log(`VIEW    ${uid} > ${data.url}`.yellow)
       else
         $log(`VIEW    ${uid} > ${data.url}`.cyan)

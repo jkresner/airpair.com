@@ -39,6 +39,7 @@ export default function(app) {
     .get('/tags/search/:id', API.Tags.search)
     .get('/tags/:slug', authd, API.Tags.getBySlug)
 
+    .get('/posts/me', API.Posts.getUsersPosts)
     .get('/posts/recent', API.Posts.getRecentPublished)
     .get('/posts/by/:id', API.Posts.getUsersPublished)
     .get('/posts/tag/:tag', API.Posts.getByTag)
@@ -51,7 +52,6 @@ export default function(app) {
     .use(authd) //-- swap out for email verify or something
 
     .post('/posts', API.Posts.create)
-    .get('/posts/me', API.Posts.getUsersPosts)
     .get('/posts/:id', API.Posts.getById)
     .post('/posts-toc',API.Posts.getTableOfContents)
     .put('/posts/:id', authd, API.Posts.update)
