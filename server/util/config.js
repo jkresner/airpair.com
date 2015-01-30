@@ -1,6 +1,6 @@
 var cfg = {
   analytics: {
-    on: true,
+    on: false,
     segmentio: { writekey: '9793xyfxat', options: { flushAt: 1 } }
   },
   auth: {

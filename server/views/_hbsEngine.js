@@ -80,7 +80,7 @@ export default function(app) {
       })
     }
 
-  var landingPartials = ['sowelcome']
+  var landingPartials = ['sowelcome','postscomp']
 
   app.renderHbsViewData = (partialName, pageMeta, viewDataFn) =>
     (req, res) => {
