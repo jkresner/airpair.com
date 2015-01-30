@@ -14,6 +14,20 @@ angular.module('APDataSvc', [])
      POST = APIRoute.POST,
      DELETE = APIRoute.DELETE;
 
+    this.posts = {
+      getById: GET((d)=>`/posts/${d._id}`),
+      getMyPosts: GET((d)=>`/posts/me`),
+      getRecentPosts: GET((d)=>`/posts/recent`),
+      getTagsPosts: GET((d)=>`/posts/tag/${d.tagSlug}`),
+      create: POST((d)=>`/posts`),
+      update: PUT((d)=>`/posts/${d._id}`),
+      publish: PUT((d)=>`/posts/publish/${d._id}`),
+      deletePost: DELETE((d)=>`/posts/${d._id}`)
+      // getByUsername: GET((d)=>`/posts/by/${d.username}`),
+      // getToc: GET((d)=>`/posts-toc`)
+    }
+
+
     var billingFns = {
       getPaymethods(success, error) {
         $http.get(`${API}/billing/paymethods`).success(success).error(error)

@@ -7,14 +7,14 @@ require('./common/models/viewDataService.js');
 require('./common/models/staticDataService.js');
 require('./common/models/sessionService.js');
 require('./common/directives/ctas.js');
-require('./common/directives/post.js');
+require('./common/directives/posts.js');
 require('./common/directives/analytics.js');
 require('./common/directives/forms/forms.js');
 require('./common/filters/filters.js');
 
 
 angular.module("AP", ['ngAnimate',
-  'APViewData', 'APPost',
+  'APViewData', 'APPostsDirectives',
   'APSvcSession', 'APSvcStatic', 'APFilters', 'APCTAs',
   'APAnalytics', 'APFormsDirectives'])
 
