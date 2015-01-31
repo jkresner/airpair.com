@@ -1,218 +1,179 @@
-import Svc from '../services/_service'
-import * as Validate from '../../shared/validation/post.js'
-var UserSvc         = require('../services/users')
-import Post from '../models/post'
-import generateToc from './postsToc'
-var marked = require('marked')
-var Data = require('./posts.data')
+var logging             = false
+var UserSvc              = require('../services/users')
+import Svc              from '../services/_service'
+var Post                = require('../models/post')
+var Data                = require('./posts.data')
+var svc                 = new Svc(Post, logging)
+var {inflateHtml, addUrl} = Data.select.cb
 
-var logging = false
-var svc = new Svc(Post, logging)
+var get = {
 
-var addUrl = (cb) =>
-  (e,r) => {
-    for (var p of r) {
-      if (p.meta) p.url = p.meta.canonical
-    }
-    cb(e,r)
-  }
+  getById(id, cb) {
+    svc.getById(id, cb)
+  },
 
-export var inflateHtml = (cb) =>
-  (e,r) => {
-    if (r)
-    {
-      r.html = marked(r.md)
-      r.toc = marked(generateToc(r.md))
-    }
-    cb(e,r)
-  }
+  getBySlug(slug, cb) {
+    var query = _.extend(Data.query.published(),{slug})
+    svc.searchOne(query, null, inflateHtml(cb))
+  },
 
+  getBySlugWithSimilar(slug, cb) {
+    var topTapPages = ['angularjs']
 
-export function getById(id, cb) {
-  svc.getById(id, cb)
-}
+    var query = _.extend(Data.query.published(),{slug})
+    svc.searchOne(query, null, inflateHtml((e,r) => {
+      if (e || !r) return cb(e,r)
+      if (!r.tags || r.tags.length == 0) {
+        $log(`post [{r._id}] has no tags`.red)
+        cb(null,r)
+      }
 
+      r.primarytag = _.find(r.tags,(t) => t.sort==0) || r.tags[0]
+      var topTagPage = _.find(topTapPages,(s) => r.primarytag.slug==s)
+      r.primarytag.postsUrl = (topTagPage) ? `/${r.primarytag.slug}` : `/posts/tag/${r.primarytag.slug}`
 
-export function getBySlug(slug, cb) {
-  var query = _.extend(Data.query.published(),{slug})
-  svc.searchOne(query, null, inflateHtml(cb))
-}
+      get.getSimilarPublished(r.primarytag.slug, (ee,similar) => {
+        r.similar = similar
+        cb(null,r)
+      })
+    }))
+  },
 
-export function getBySlugWithSimilar(slug, cb) {
-  var topTapPages = ['angularjs']
+  //-- used for todd-motto
+  getPublishedById(_id, cb) {
+    var query = _.extend(Data.query.published(),{_id})
+    svc.searchOne(query, null, inflateHtml(cb))
+  },
 
-  var query = _.extend(Data.query.published(),{slug})
-  svc.searchOne(query, null, inflateHtml((e,r) => {
-    if (e || !r) return cb(e,r)
-    if (!r.tags || r.tags.length == 0) {
-      $log(`post [{r._id}] has no tags`.red)
-      cb(null,r)
-    }
+  getAllAdmin(cb) {
+    var opts = { fields: Data.select.listAdmin, options: { sort: { 'updated': -1 } } };
+    svc.searchMany(Data.query.updated, opts, addUrl(cb))
+  },
 
-    r.primarytag = _.find(r.tags,(t) => t.sort==0) || r.tags[0]
-    var topTagPage = _.find(topTapPages,(s) => r.primarytag.slug==s)
-    r.primarytag.postsUrl = (topTagPage) ? `/${r.primarytag.slug}` : `/posts/tag/${r.primarytag.slug}`
+  getAllForCache(cb) {
+    svc.searchMany(Data.query.published(), { fields: Data.select.listCache }, addUrl(cb))
+  },
 
-    getSimilarPublished(r.primarytag.slug, (ee,similar) => {
-      r.similar = similar
-      cb(null,r)
-    })
-  }))
-}
+  getPublished(cb) {
+    svc.searchMany(Data.query.published(), { field: Data.select.list }, cb)
+  },
 
-export function getPublishedById(_id, cb) { //-- used for todd-motto
-  var query = _.extend(Data.query.published(),{_id})
-  svc.searchOne(query, null, inflateHtml(cb))
-}
+  getRecentPublished(cb) {
+    var opts = { fields: Data.select.list, options: { sort: { 'published': -1 }, limit: 9 } };
+    svc.searchMany(Data.query.published(), opts, addUrl(cb))
+  },
 
-
-export function getAllAdmin(cb) {
-  var opts = { fields: Data.select.listAdmin, options: { sort: { 'updated': -1 } } };
-  svc.searchMany(Data.query.updated, opts, addUrl(cb))
-}
-
-export function getAllForCache(cb) {
-  svc.searchMany(Data.query.published(), { fields: Data.select.listCache }, addUrl(cb))
-}
-
-export function getPublished(cb) {
-  svc.searchMany(Data.query.published(), { field: Data.select.list }, cb)
-}
-
-
-export function getRecentPublished(cb) {
-  var opts = { fields: Data.select.list, options: { sort: { 'published': -1 }, limit: 9 } };
-  svc.searchMany(Data.query.published(), opts, addUrl(cb))
-}
-
-export function getAllPublished(cb) {
-  var opts = { fields: Data.select.list, options: { sort: { 'published': -1 } } };
-  svc.searchMany(Data.query.published(), opts, addUrl(cb))
-}
-
-export function getAllVisible(user, cb) {
-  if (user && _.contains(user.roles, "reviewer")){
-    var opts = { fields: Data.select.list, options: { sort: '-reviewReady -published'} }
-    svc.searchMany(Data.query.publishedReviewReady(), opts, addUrl(cb));//, function(e,r) {
-  }
-  else {
+  getAllPublished(cb) {
     var opts = { fields: Data.select.list, options: { sort: { 'published': -1 } } };
     svc.searchMany(Data.query.published(), opts, addUrl(cb))
+  },
+
+  getAllVisible(user, cb) {
+    if (user && _.contains(user.roles, "reviewer")){
+      var opts = { fields: Data.select.list, options: { sort: '-reviewReady -published'} }
+      svc.searchMany(Data.query.publishedReviewReady(), opts, addUrl(cb));//, function(e,r) {
+    }
+    else {
+      var opts = { fields: Data.select.list, options: { sort: { 'published': -1 } } };
+      svc.searchMany(Data.query.published(), opts, addUrl(cb))
+    }
+  },
+
+  getByTag(tag, cb) {
+    var opts = { fields: Data.select.list, options: { sort: { 'published': -1 } } };
+    var query = Data.query.published({'tags._id': tag._id})
+    svc.searchMany(query, opts, addUrl((e,r) => cb(null, {tag,posts:r}) ))
+  },
+
+
+  //-- Placeholder for showing similar posts to a currently displayed post
+  getSimilarPublished(tagSlug, cb) {
+    var opts = { fields: Data.select.list, options: { sort: { 'published': -1 }, limit: 3 } };
+    var query = { '$and': [{'tags.slug':tagSlug}, Data.query.published()] }
+    svc.searchMany(query, opts, addUrl(cb))
+  },
+
+  getUsersPublished(username, cb) {
+    var opts = { fields: Data.select.list, options: { sort: { 'published': -1 } } };
+    var query = _.extend({ 'by.username': username }, Data.query.published())
+    svc.searchMany(query, opts, addUrl(cb))
+  },
+
+  // This now combines users interest posts and self authors
+  getUsersPosts(cb) {
+    $callSvc(get.getRecentPublished,this)((e,r) => {
+      if (!this.user) cb(e,r)
+      else {
+        r = _.first(r, 3)
+        var opts = { fields: Data.select.list, options: { sort: { 'created':-1, 'published':1  } } };
+        svc.searchMany({'by.userId':this.user._id},opts, (ee,rr) => {
+          if (e || ee) return cb(e||ee)
+          cb(null, _.union(rr,_.where(r,(p)=>!_.idsEqual(p.by.userId,this.user._id))))
+        })
+      }
+    })
+  },
+
+  getTableOfContents(markdown, cb) {
+    return cb(null, {toc:Data.generateToc(markdown)})
   }
 }
 
+var save = {
 
-export function getByTag(tag, cb) {
-  var opts = { fields: Data.select.list, options: { sort: { 'published': -1 } } };
-  var query = Data.query.published({'tags._id': tag._id})
-  svc.searchMany(query, opts, addUrl((e,r) => cb(null, {tag,posts:r}) ))
-}
+  create(o, cb) {
+    o.created = new Date()
+    o.by.userId = this.user._id
+    svc.create(o, cb)
+    UserSvc.changeBio.call(this, o.by.bio,() => {})
+  },
 
+  update(original, o, cb) {
+    original = _.extend(original, o)
+    original.updated = new Date()
+    svc.update(original._id, original, cb)
+  },
 
-//-- Placeholder for showing similar posts to a currently displayed post
-export function getSimilarPublished(tagSlug, cb) {
-  var opts = { fields: Data.select.list, options: { sort: { 'published': -1 }, limit: 3 } };
-  var query = { '$and': [{'tags.slug':tagSlug}, Data.query.published()] }
-  svc.searchMany(query, opts, addUrl(cb))
-}
-
-
-export function getUsersPublished(username, cb) {
-  var opts = { fields: Data.select.list, options: { sort: { 'published': -1 } } };
-  var query = _.extend({ 'by.username': username }, Data.query.published())
-  svc.searchMany(query, opts, addUrl(cb))
-}
-
-
-// This now combines users interest posts and self authors
-export function getUsersPosts(cb) {
-  $callSvc(getRecentPublished,this)((e,r) => {
-    if (!this.user) cb(e,r)
-    else {
-      r = _.first(r, 3)
-      var opts = { fields: Data.select.list, options: { sort: { 'created':-1, 'published':1  } } };
-      svc.searchMany({'by.userId':this.user._id},opts, (ee,rr) => {
-        if (e || ee) return cb(e||ee)
-        cb(null, _.union(r,rr))
-      })
-    }
-  })
-}
-
-export function create(o, cb) {
-  o.created = new Date()
-  o.by.userId = this.user._id
-  svc.create(o, cb)
-  UserSvc.changeBio.call(this, o.by.bio,() => {})
-}
-
-export function getTableOfContents(markdown, cb) {
-  var toc = generateToc(markdown)
-  return cb(null, {toc:toc})
-}
-
-
-export function update(id, o, cb) {
-  svc.getById(id, (e, r) => {
-    var inValid = Validate.update(this.user, r, o)
-    if (inValid) return cb(svc.Forbidden(inValid))
-
+  publish(original, o, cb) {
+    if (o.slug.indexOf('/') != 0) { o.slug.replace('/',''); }
     o.updated = new Date()
 
-    svc.update(id, o, cb)
-  })
-}
+    if (o.publishedOverride)
+      o.published = o.publishedOverride
+    else if (!o.published)
+      o.published = new Date()
 
+    o.publishedBy = this.user._id
 
-export function publish(id, o, cb) {
-  var inValid = Validate.publish(this.user, null, o)
-  if (inValid) return cb(svc.Forbidden(inValid))
+    svc.update(original._id, o, cb)
+    if (cache) cache.flush('posts')
+  },
 
-  if (o.slug.indexOf('/') != 0) { o.slug.replace('/',''); }
-  o.updated = new Date()
+  submitForReview(original, o, cb){
+    o.reviewReady = new Date()
+    svc.update(original._id, o, cb)
+  },
 
-  if (o.publishedOverride)
-    o.published = o.publishedOverride
-  else if (!o.published)
-    o.published = new Date()
+  submitForPublication(original, o, cb){
+    if (o.reviews < 5)
+      return cb(svc.Forbidden("Must have at least 5 reviews"))
+    o.publishReady = new Date()
+    svc.update(original._id, o, cb)
+  },
 
-
-  o.publishedBy = this.user._id
-
-  svc.update(id, o, cb)
-  if (cache) cache.flush('posts')
-}
-
-export function submitForReview(id, o, cb){
-  var inValid = Validate.submitForReview(this.user, null, o)
-  if (inValid) return cb(svc.Forbidden(inValid))
-  o.reviewReady = new Date()
-  svc.update(id, o, cb)
-}
-
-export function submitForPublication(id, o, cb){
-  var inValid = Validate.submitForPublication(this.user, null, o)
-  if (inValid) return cb(svc.Forbidden(inValid))
-  if (o.reviews < 5)
-    return cb(svc.Forbidden("Must have at least 5 reviews"))
-  o.publishReady = new Date()
-  svc.update(id, o, cb)
-}
-
-export function addReview(id, review, cb){
-  review.userId = this.user._id
-  getById(id, function(err, post){
+  addReview(post, review, cb){
+    review.userId = this.user._id
     if (!post.reviews)
       post.reviews = []
     post.reviews.push(review)
-    svc.update(id, post, cb)
-  })
+    svc.update(post._id, post, cb)
+  },
+
+  deleteById(post, cb) {
+    svc.deleteById(post._id, cb)
+  }
+
 }
 
-export function deleteById(id, cb) {
-  svc.getById(id, (e, r) => {
-    var inValid = Validate.deleteById(this.user, r)
-    if (inValid) return cb(svc.Forbidden(inValid))
-    svc.deleteById(id, cb)
-  })
-}
+
+module.exports = _.extend(get, save)
