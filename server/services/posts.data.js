@@ -1,3 +1,6 @@
+var marked              = require('marked')
+import generateToc      from './postsToc'
+
 module.exports = {
 
   select: {
@@ -36,6 +39,29 @@ module.exports = {
       'title': 1,
       'meta.canonical': 1,
       'meta.ogImage': 1
+    },
+    generateToc(md) {
+      marked(generateToc(md))
+    },
+    cb: {
+      addUrl(cb) {
+        return (e,r) => {
+          for (var p of r) {
+            if (p.meta) p.url = p.meta.canonical
+          }
+          cb(e,r)
+        }
+      },
+      inflateHtml(cb) {
+        return (e,r) => {
+          if (r)
+          {
+            r.html = marked(r.md)
+            r.toc = marked(generateToc(r.md))
+          }
+          cb(e,r)
+        }
+      }
     }
   },
 

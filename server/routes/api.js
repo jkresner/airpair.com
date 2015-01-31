@@ -11,6 +11,7 @@ export default function(app) {
     .param('request', API.Requests.paramFns.getByIdForAdmin)
     .param('booking', API.Bookings.paramFns.getById)
     .param('paymethod', API.Paymethods.paramFns.getById)
+    .param('postobj', API.Posts.paramFns.getById)
 
     .get('/session/full', setAnonSessionData, API.Users.getSession)
     .put('/users/me/password-change', API.Users.requestPasswordChange)
@@ -51,17 +52,15 @@ export default function(app) {
 
     .use(authd) //-- swap out for email verify or something
 
-    .post('/posts', API.Posts.create)
     .get('/posts/:id', API.Posts.getById)
+    .post('/posts', API.Posts.create)
+    .put('/posts/:postobj', authd, API.Posts.update)
+    .put('/posts/publish/:postobj', authd, API.Posts.publish)
+    .put('/posts/submitForReview/:postobj', authd, API.Posts.submitForReview)
+    .put('/posts/submitForPublication/:postobj', authd, API.Posts.submitForPublication)
+    .put('/posts/addReview/:postobj', API.Posts.addReview)
+    .delete('/posts/:postobj', authd, API.Posts.deleteById)
     .post('/posts-toc',API.Posts.getTableOfContents)
-    .put('/posts/:id', authd, API.Posts.update)
-    .put('/posts/publish/:id', authd, API.Posts.publish)
-    .put('/posts/submitForReview/:id', authd, API.Posts.submitForReview)
-    .put('/posts/submitForPublication/:id', authd, API.Posts.submitForPublication)
-
-    .put('/posts/addReview/:id', API.Posts.addReview)
-
-    .delete('/posts/:id', authd, API.Posts.deleteById)
 
     .get('/requests', API.Requests.getMy)
     .get('/requests/:id', API.Requests.getByIdForUser)
