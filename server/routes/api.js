@@ -61,9 +61,6 @@ export default function(app) {
 
     .put('/posts/addReview/:id', API.Posts.addReview)
 
-    .put('/posts/suggestEdit/:id', API.Posts.suggestEdit)
-    .put('/posts/acceptEdit/:id', API.Posts.acceptEdit)
-
     .delete('/posts/:id', authd, API.Posts.deleteById)
 
     .get('/requests', API.Requests.getMy)
