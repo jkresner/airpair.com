@@ -2,15 +2,25 @@
 
   <h2>Chat </h2>
 
+    <div class="query">
+      <div class="openchat" user-input></div>
+    </div>
+    <div class="section" ng-if="selectedUser">
+      <div id="{{selectedUser._id}}" ng-click="setCurrentUser(selectedUser._id)" class="member openchat">
+        <img class="avatar openchat" ng-src="{{selectedUser.avatar}}" />
+        <span class="openchat">{{selectedUser.name}}</span>
+      </div>
+    </div>
+
     <!-- show -help-request page first -->
     <div class="section">
         <h3>Users on /help/request</h3>
         <div ng-repeat="(page, members) in corechat.admin.members.byPage" ng-show="page.indexOf('/meet-experts') !== -1 || page.indexOf('/help/request') !== -1">
-            <div ng-repeat="member in members | memberSort" ng-click="setCurrentUser(member.id)" class="member">
-                <img class="avatar" ng-src="{{member.avatar}}" />
-                <span>
-                    {{member.name || "loading..."}} 
-                    <span am-time-ago="member.page.timestamp" class="timestamp"></span>
+            <div ng-repeat="member in members | memberSort" ng-click="setCurrentUser(member.id)" class="member openchat">
+                <img class="avatar openchat" ng-src="{{member.avatar}}" />
+                <span class="openchat">
+                    {{member.name || "loading..."}}
+                    <span am-time-ago="member.page.timestamp" class="timestamp openchat"></span>
                 </span>
             </div>
         </div>
@@ -21,19 +31,19 @@
         <h4>/</h4>
         <div ng-repeat="(page, members) in corechat.admin.members.byPage" ng-show="page == '/' || page.indexOf('/dashboard') == 0">
             <div ng-show="members">
-                <div ng-repeat="member in members | memberSort" ng-click="corechat.findOrCallback(member.id, setCurrentUser)" ng-class="{isMember: member.type=='member', isAnonymous: member.type=='anonymous'}" class="member">
-                  <img class="avatar" ng-src="{{member.avatar}}" />
-                  <span>{{member.name || "loading..."}} <span am-time-ago="member.page.timestamp" class="timestamp"></span></span>
+                <div ng-repeat="member in members | memberSort" ng-click="corechat.findOrCallback(member.id, setCurrentUser)" ng-class="{isMember: member.type=='member', isAnonymous: member.type=='anonymous'}" class="member openchat">
+                  <img class="avatar openchat" ng-src="{{member.avatar}}" />
+                  <span class="openchat">{{member.name || "loading..."}} <span am-time-ago="member.page.timestamp" class="timestamp openchat"></span></span>
                 </div>
             </div>
         </div>
-        
+
         <div ng-repeat="(page, members) in corechat.admin.members.byPage" ng-hide="page == '/help/request' || page.indexOf('/adm/') !== -1 || page == '/' || page.indexOf('/dashboard') == 0">
             <div ng-show="members">
                 <h4>{{page}}</h4>
-                <div ng-repeat="member in members | memberSort" ng-click="corechat.findOrCallback(member.id, setCurrentUser)" ng-class="{isMember: member.type=='member', isAnonymous: member.type=='anonymous'}" class="member">
-                  <img class="avatar" ng-src="{{member.avatar}}" />
-                  <span>{{member.name || "loading..."}} <span am-time-ago="member.page.timestamp" class="timestamp"></span></span>
+                <div ng-repeat="member in members | memberSort" ng-click="corechat.findOrCallback(member.id, setCurrentUser)" ng-class="{isMember: member.type=='member', isAnonymous: member.type=='anonymous'}" class="member openchat">
+                  <img class="avatar openchat" ng-src="{{member.avatar}}" />
+                  <span class="openchat">{{member.name || "loading..."}} <span am-time-ago="member.page.timestamp" class="timestamp openchat"></span></span>
                 </div>
             </div>
         </div>
@@ -45,8 +55,8 @@
     <div class="section">
         <h3>Rooms by Last Message</h3>
         <div ng-repeat="(timestamp, room) in corechat.admin.rooms.byLastMessage | orderBy:'$index':true">
-            <div class="member" ng-click="toggleHistory=!toggleHistory">
-                [{{toggleHistory? "-" : "+"}}] {{room.info.name || 'You, Anonymous User'}} <span am-time-ago="timestamp" class="timestamp"></span>
+            <div class="member openchat" ng-click="toggleHistory=!toggleHistory">
+                [{{toggleHistory? "-" : "+"}}] {{room.info.name || 'You, Anonymous User'}} <span am-time-ago="timestamp" class="timestamp openchat"></span>
             </div>
             <div ng-if="toggleHistory">
                 <div ng-repeat="message in room.history">
