@@ -132,6 +132,7 @@
           <section ng-if="(isCustomer || isAdmin) && s.expertStatus == 'available'">
             <strong>${{s.suggestedRate.total}}<span>/hr</span></strong>
             <a href="/billing/book/{{s.expert._id}}/{{r._id}}" class="btn">Book</a>
+            <a class="openchat" ng-click="openChat(s.expert.userId)">Chat with {{s.expert.name}}</a>
           </section>
         </div>
       </li>

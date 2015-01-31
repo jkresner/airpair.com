@@ -17,6 +17,7 @@ var selectFields = {
   },
   review: {
     '_id': 1,
+    'userId': 1,
     'by': 1,
     'type': 1,
     'brief': 1,
