@@ -43,7 +43,10 @@ angular.module("APChatNav", [])
           if (openChatElemClicked(e)) return open()
           collapse()
         })
-        $(element).click((e) => e.stopPropagation())
+        $(element).click((e) => {
+          e.stopPropagation()
+          focus()
+        })
       },
       controllerAs: 'chatNav',
       controller: function($scope, $element, $attrs, $timeout) {}
