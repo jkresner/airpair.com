@@ -85,10 +85,20 @@ export function getRecentPublished(cb) {
   svc.searchMany(Data.query.published(), opts, addUrl(cb))
 }
 
-
 export function getAllPublished(cb) {
   var opts = { fields: Data.select.list, options: { sort: { 'published': -1 } } };
   svc.searchMany(Data.query.published(), opts, addUrl(cb))
+}
+
+export function getAllVisible(user, cb) {
+  if (user && _.contains(user.roles, "reviewer")){
+    var opts = { fields: Data.select.list, options: { sort: '-reviewReady -published'} }
+    svc.searchMany(Data.query.publishedReviewReady(), opts, addUrl(cb));//, function(e,r) {
+  }
+  else {
+    var opts = { fields: Data.select.list, options: { sort: { 'published': -1 } } };
+    svc.searchMany(Data.query.published(), opts, addUrl(cb))
+  }
 }
 
 
@@ -173,6 +183,31 @@ export function publish(id, o, cb) {
   if (cache) cache.flush('posts')
 }
 
+export function submitForReview(id, o, cb){
+  var inValid = Validate.submitForReview(this.user, null, o)
+  if (inValid) return cb(svc.Forbidden(inValid))
+  o.reviewReady = new Date()
+  svc.update(id, o, cb)
+}
+
+export function submitForPublication(id, o, cb){
+  var inValid = Validate.submitForPublication(this.user, null, o)
+  if (inValid) return cb(svc.Forbidden(inValid))
+  if (o.reviews < 5)
+    return cb(svc.Forbidden("Must have at least 5 reviews"))
+  o.publishReady = new Date()
+  svc.update(id, o, cb)
+}
+
+export function addReview(id, review, cb){
+  review.userId = this.user._id
+  getById(id, function(err, post){
+    if (!post.reviews)
+      post.reviews = []
+    post.reviews.push(review)
+    svc.update(id, post, cb)
+  })
+}
 
 export function deleteById(id, cb) {
   svc.getById(id, (e, r) => {
@@ -181,4 +216,3 @@ export function deleteById(id, cb) {
     svc.deleteById(id, cb)
   })
 }
-

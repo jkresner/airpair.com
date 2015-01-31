@@ -66,6 +66,7 @@
     "express-hbs": "^0.7.11",
     "express-session": "^1.9.1",
     "firebase-token-generator": "~2.0.0",
+    "github": "git://github.com/rissem/node-github.git#teamMembership",
     "googleapis": "^1.0.22",
     "handlebars": "^2.0.0",
     "htmlparser2": "^3.7.3",

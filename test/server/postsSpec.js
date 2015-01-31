@@ -145,7 +145,7 @@ module.exports = () => describe("API: ", function() {
   it('Not publish post as non-editor', (done) => {
     addAndLoginLocalUser('rapo', function(s) {
       var by = { userId: s._id, name: s.name, bio: 'auth test', avatar: s.avatar }
-      var d1 = { title: "test not publish", by: by, md: 'Test auths 1', assetUrl: '/v1/img/css/blog/example2.jpg' }
+      var d1 = { title: "test not publish", by: by, md: 'Test auths 1', assetUrl: '/v1/img/css/blog/example2.jpg'}
       POST('/posts', d1, {}, function(p1) {
         expect(p1.slug).to.be.undefined
         expect(p1.publish).to.be.undefined
@@ -165,7 +165,7 @@ module.exports = () => describe("API: ", function() {
   it('Publish post as editor', function(done) {
     addAndLoginLocalUser('obie', function(s) {
       var by = { userId: s._id, name: s.name, bio: 'auth test', avatar: s.avatar }
-      var d1 = { title: "test publish as editor", by: by, md: 'Test auths 1', assetUrl: '/v1/img/css/blog/example2.jpg' }
+      var d1 = { title: "test publish as editor", by: by, md: 'Test auths 1', assetUrl: '/v1/img/css/blog/example2.jpg', publishReady: new Date()}
       POST('/posts', d1, {}, function(p1) {
         expect(p1.slug).to.be.undefined
         expect(p1.publish).to.be.undefined
@@ -199,6 +199,7 @@ module.exports = () => describe("API: ", function() {
         POST('/posts', d2, {}, function(p2) {
           expect(p2.published).to.be.undefined
           p2.slug = "test-2-pub-"+moment().format('X')
+          p2.publishReady = new Date()
           POST('/posts', d3, {}, function(p3) {
             LOGIN('edap', data.users.edap, function() {
               PUT('/posts/publish/'+p2._id, p2, {}, function(p2pub, resp) {
@@ -218,4 +219,79 @@ module.exports = () => describe("API: ", function() {
   })
 
 
+
+  /* New Review Flow */
+
+  it('submit for review', function(done) {
+    addAndLoginLocalUser('mris', function(s) {
+      var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
+      var d1 = { title: "test 1", by: by, md: 'Test 1', assetUrl: 'http://youtu.be/qlOAbrvjMBo' }
+      POST('/posts', d1, {}, function(p1) {
+        PUT(`/posts/submitForReview/${p1._id}`, p1, {}, function(resp){
+          expect(resp.reviewReady).to.exist
+          done()
+        })
+      })
+    })
+  })
+
+  it('allows reviews to be added to reviewReady posts', function(done) {
+    addAndLoginLocalUser('mirs', function(s) {
+      var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
+      var d1 = { title: "test 1", by: by, md: 'Test 1', assetUrl: 'http://youtu.be/qlOAbrvjMBo', reviewReady:new Date()}
+      POST('/posts', d1, {}, function(p1) {
+        PUT(`/posts/addReview/${p1._id}`, {body: "this post is great", stars: 4}, {}, function(resp){
+          expect(resp.reviews[0].body).to.equal("this post is great")
+          done()
+        })
+      })
+    })
+  })
+
+  it('does not allow submission for publication w/ <5 reviews', function(done) {
+    addAndLoginLocalUser('mrik', function(s) {
+      var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
+      var d1 = { title: "test 1", by: by, md: 'Test 1', assetUrl: 'http://youtu.be/qlOAbrvjMBo' }
+      POST('/posts', d1, {}, function(p1) {
+        PUT(`/posts/submitForPublication/${p1._id}`, p1, {status: 403}, function(resp){
+          expect(resp.message).to.equal("Must have at least 5 reviews")
+          done()
+        })
+      })
+    })
+  })
+
+  it('allows submission for publication w/ 5 reviews', function(done) {
+    addAndLoginLocalUser('misr', function(s) {
+      var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
+      var d1 = { title: "test 1", by: by, md: 'Test 1', assetUrl: 'http://youtu.be/qlOAbrvjMBo', reviews: [
+        {body: "this post is great", stars: 4},
+        {body: "this post is great", stars: 4},
+        {body: "this post is great", stars: 4},
+        {body: "this post is great", stars: 4},
+        {body: "this post is great", stars: 4}
+      ]}
+      POST('/posts', d1, {}, function(p1) {
+        PUT(`/posts/submitForPublication/${p1._id}`, p1, {}, function(resp){
+          expect(resp.publishReady).to.exist
+          done()
+        })
+      })
+    })
+  })
+
+  it("does not allow publishing of posts w/o a publishReady timestamp", function(done){
+    addAndLoginLocalUser('ilap', function(s) {
+      var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
+      var d1 = { title: "test 1", by: by, md: 'Test 1', assetUrl: 'http://youtu.be/qlOAbrvjMBo', slug: `no-publish-ready-${moment().format('X')}` }
+      POST('/posts', d1, {}, function(p1) {
+        LOGIN('edap', data.users.edap, function() {
+          PUT('/posts/publish/'+p1._id, p1, {status: 403}, function(resp) {
+            expect(resp.message).to.equal("Post must be marked publishReady by author")
+            done()
+          })
+        })
+      })
+    })
+  })
 })
