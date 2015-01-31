@@ -10,7 +10,7 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
   var route = apRouteProvider.route
   route('/posts', 'PostsList', require('./list.html'))
   route('/posts/new', 'PostNew', require('./info.html'), { resolve: authd })
-  // route('/posts/info/:id', 'PostInfo', require('./info.html'), { resolve: authd })
+  route('/posts/info/:id', 'PostInfo', require('./info.html'), { resolve: authd })
   route('/posts/edit/:id', 'PostEdit', require('./edit.html'), { resolve: authd })
   route('/posts/tag/:tagslug', 'PostsTagList', require('./listTag.html'))
   route('/posts/publish/:id', 'PostPublish', require('./publish.html'), { resolve: authd })
@@ -47,6 +47,56 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
     DataService.posts.create($scope.post, (result) => {
       $location.path('/posts/edit/'+result._id)
     })
+
+})
+
+.controller('PostInfoCtrl', function($scope, $routeParams, $location, DataService) {
+  var exampleImageUrl = 'http://www.airpair.com/static/img/css/blog/example2.jpg';
+  var exampleYoutubeUrl = 'http://youtu.be/qlOAbrvjMBo';
+  var _id = $routeParams.id
+
+  $scope.save = () =>
+    DataService.posts.update($scope.post, (result) => {
+      $location.path('/posts/edit/'+result._id)
+    })
+
+  $scope.tags = () => $scope.post ? $scope.post.tags : null;
+  $scope.updateTags = (scope, newTags) => {
+    if (!$scope.post) return
+    $scope.post.tags = newTags;
+  }
+
+  $scope.selectTag = function(tag) {
+    var tags = $scope.post.tags;
+    if ( _.contains(tags, tag) ) $scope.post.tags = _.without(tags, tag)
+    else $scope.post.tags = _.union(tags, [tag])
+  };
+
+  $scope.deselectTag = (tag) => $scope.post.tags = _.without($scope.post.tags, tag)
+
+  $scope.$watch('post.assetUrl', function(value) {
+    $scope.preview = {}
+    if (!value)
+    {
+      $scope.preview.asset = `<span>Paste an image url or short link to a youtube movie<br /><br />Example<br /> ${exampleYoutubeUrl}<br /> ${exampleImageUrl}</span>`
+    }
+    else if (value.indexOf('http://youtu.be/') == 0) {
+      var youTubeId = value.replace('http://youtu.be/', '');
+      $scope.preview.asset = `<iframe width="640" height="360" frameborder="0" allowfullscreen="" src="//www.youtube-nocookie.com/embed/${youTubeId}"></iframe>`
+    }
+    else
+    {
+      $scope.preview.asset = `<img src="${value}" />`;
+    }
+  });
+
+  $scope.exampleImage = function() { $scope.post.assetUrl = exampleImageUrl }
+  $scope.exampleYouTube = function() { $scope.post.assetUrl = exampleYoutubeUrl }
+
+  DataService.posts.getById({_id}, (r) => {
+    $scope.post = r
+    console.log('$scope.post', $scope.post)
+  })
 
 })
 

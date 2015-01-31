@@ -37,12 +37,13 @@
       debounce: { blur: 0, default: (post.md.length * 10) }}" -->
 
 
-
   <div class="form-actions">
 
-    <button class="btn" ng-click="save()" ng-disabled="post.saved">Save</button>
+    <button class="btn" ng-click="save()" ng-disabled="post.saved">Save MD</button>
 
-    <a class="btn" target="_blank" href="mailto:team@airpair.com?subject=Post%20Submission%20-%20{{post.title}}&body=Can%20you%20look%20at%20and%20publish%20my%20post:%0A%0Ahttps://www.airpair.com/posts/publish/{{ post._id }}%0A%0A{{post.by.name}}" ng-disabled="(!post.title && !post.by.bio) || !post.saved || (preview.mode == 'publish')">Submit for review</a>
+    <a class="btn" href="/posts/info/{{post._id}}" ng-disabled="!post.saved">Edit info</a>
+
+    <a class="btn" target="_blank" href="mailto:team@airpair.com?subject=Post%20Submission%20-%20{{post.title}}&body=Can%20you%20look%20at%20and%20publish%20my%20post:%0A%0Ahttps://www.airpair.com/posts/publish/{{ post._id }}%0A%0A{{post.by.name}}" ng-disabled="(!post.title && !post.by.bio) || !post.saved">Submit for review</a>
 
     <button class="btn" ng-click="delete()" ng-if="!post.published">Delete</button>
 
