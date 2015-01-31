@@ -2,6 +2,16 @@
 
   <h2>Chat </h2>
 
+    <div class="query">
+      <div class="openchat" user-input></div>
+    </div>
+    <div class="section" ng-if="selectedUser">
+      <div id="{{selectedUser._id}}" ng-click="setCurrentUser(selectedUser._id)" class="member openchat">
+        <img class="avatar openchat" ng-src="{{selectedUser.avatar}}" />
+        <span class="openchat">{{selectedUser.name}}</span>
+      </div>
+    </div>
+
     <!-- show -help-request page first -->
     <div class="section">
         <h3>Users on /help/request</h3>

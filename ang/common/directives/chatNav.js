@@ -17,7 +17,6 @@ angular.module("APChatNav", [])
             }, 20);
 
         var collapse = () => $timeout(() => {
-            console.log('collapsing')
             corechat.collapsed = true
             element.addClass('collapse')
             if (closeTimer != null) $timeout.cancel(closeTimer)
