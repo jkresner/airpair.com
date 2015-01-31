@@ -45,7 +45,25 @@ var cfg = {
         'address',
         'openid'
       ]
-    }
+    },
+    linkedin: {
+      consumerKey: 'sy5n2q8o2i49',
+      consumerSecret: 'lcKjdbFSNG3HfZsd',
+    },
+    bitbucket: {
+      consumerKey: 'QNw3HsMSKzM6ptP4G4',
+      consumerSecret: 'Cx5pvK2ZEjsymVxME42hSffkzkaQ9Buf',
+    },
+    stackexchange: {
+      clientID: '1451',
+      clientSecret: 'CCkJpq3BY3e)lZFNsgkCkA((',
+      key: 'dTtlx1WL0TJvOKPfoU88yg((',
+    },
+    angellist: {
+      clientID: 'b6e2b75a1e20367c9b2bd267dbbd06269193814b83c2a492',
+      clientSecret: 'e702b47dca92523fd99a3cc8f8262acfea8a52b19c5809cd',
+      scope: ['email','talent']
+    },
   },
   bitly:  {
     shortDomain: 'http://airpa.ir/',
@@ -177,6 +195,8 @@ module.exports = function(env, appdir) {
     }
 
     cfg.auth.twitter = {
+      consumerKey: process.env.AUTH_TWITTER_CONSUMER_KEY,
+      consumerSecret: process.env.AUTH_TWITTER_CONSUMER_SECRET,
       consumer_key: process.env.AUTH_TWITTER_CONSUMER_KEY,
       consumer_secret: process.env.AUTH_TWITTER_CONSUMER_SECRET,
       access_token: process.env.AUTH_TWITTER_ACCESS_TOKEN,
@@ -191,6 +211,17 @@ module.exports = function(env, appdir) {
     cfg.auth.paypal.mode = 'live'
     cfg.auth.paypal.clientID = process.env.AUTH_PAYPAL_CLIENTID,
     cfg.auth.paypal.clientSecret = process.env.AUTH_PAYPAL_CLIENTSECRET
+    cfg.auth.github.clientID = process.env.AUTH_GITHUB_CLIENTID
+    cfg.auth.github.clientSecret = process.env.AUTH_GITHUB_CLIENTSECRET
+    cfg.auth.linkedin.consumerKey = process.env.AUTH_LINKEDIN_CONSUMERKEY
+    cfg.auth.linkedin.consumerSecret = process.env.AUTH_LINKEDIN_CONSUMERSECRET
+    cfg.auth.bitbucket.consumerKey = process.env.AUTH_BITBUCKET_CONSUMERKEY
+    cfg.auth.bitbucket.consumerSecret = process.env.AUTH_BITBUCKET_CONSUMERSECRET
+    cfg.auth.stackexchange.clientID = process.env.AUTH_STACKEXCHANGE_CLIENTID
+    cfg.auth.stackexchange.clientSecret = process.env.AUTH_STACKEXCHANGE_CLIENTSECRET
+    cfg.auth.stackexchange.key = process.env.AUTH_STACKEXCHANGE_KEY
+    cfg.auth.angellist.clientID = process.env.AUTH_ANGELLIST_CLIENTID
+    cfg.auth.angellist.clientSecret = process.env.AUTH_ANGELLIST_CLIENTSECRET
 
     cfg.calendar.on = true
     cfg.calendar.google.ownerRefreshToken = process.env.CALENDAR_GOOGLE_OWNER_REFRESHTOKEN
@@ -212,9 +243,6 @@ module.exports = function(env, appdir) {
       cfg.auth.google.refreshTokens[email] = token;
     }
   }
-
-  // cfg.auth.twitter.consumer_key = cfg.auth.twitter.consumerKey
-  // cfg.auth.twitter.consumer_secret = cfg.auth.twitter.consumerSecret
 
   return cfg;
 }

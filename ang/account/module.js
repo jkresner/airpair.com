@@ -55,6 +55,12 @@ angular.module("APProfile", ['ngRoute', 'APFilters', 'APSvcSession', 'APTagInput
       $scope.data.location = session.localization.location
       $scope.data.timezone = session.localization.timezone
     }
+    if (session.social.gh) $scope.data.gh = session.social.gh.username
+    if (session.social.tw) $scope.data.tw = session.social.tw.username
+    if (session.social.so) $scope.data.so = session.social.so.link
+    if (session.social.in) $scope.data.in = session.social.in.id
+    if (session.social.bb) $scope.data.bb = session.social.bb.username
+    if (session.social.al) $scope.data.al = session.social.al.username
   })
 
   if ($scope.session)

@@ -48,5 +48,14 @@ var UserByte = {
   email:      { type: String, lowercase: true } // We can use the email to infalte the avatar
 }
 
+var SocialAccounts = {
+  tw: {},
+  so: {},
+  gh: {},
+  in: {},
+  bb: {},
+  al: {},
+}
 
-module.exports = {Touch,Message,UserByte,PageMeta}
+
+module.exports = {Touch,Message,UserByte,PageMeta,SocialAccounts}
