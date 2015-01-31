@@ -1,19 +1,27 @@
 import {initAPI} from './_api'
-import * as Svc from '../services/posts'
 
-export default initAPI(Svc, {
+export default initAPI(
+  require('../services/posts')
+, {
+
   getUsersPosts: (req) => [],
   getTableOfContents: (req) => [req.body.md],
-  publish: (req) => [req.params.id,req.body],
   getRecentPublished: (req) => [],
   getAllPublished: (req) => [],  //-- For indexable page
   getAllAdmin: (req) => [],
-  getUsersPublished: (req) => [req.params.id],
   getByTag: (req) => [req.tag],
-  submitForReview: (req) => [req.params.id, req.body],
-  submitForPublication: (req) => [req.params.id, req.body],
+  getUsersPublished: (req) => [req.params.id],
 
-  addReview: (req) => [req.params.id, req.body]
+  update: (req) => [req.postobj,req.body],
+  publish: (req) => [req.postobj,req.body],
+  submitForReview: (req) => [req.postobj, req.body],
+  submitForPublication: (req) => [req.postobj, req.body],
+  addReview: (req) => [req.postobj, req.body],
+  deleteById: (req) => [req.postobj]
+
 }, {
-  'post':'getBySlugWithSimilar'
-})
+  'post':'getBySlugWithSimilar',
+  'postobj':'getById'
+},
+  require('../../shared/validation/posts.js')
+)

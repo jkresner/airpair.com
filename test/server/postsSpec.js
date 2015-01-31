@@ -109,7 +109,8 @@ module.exports = () => describe("API: ", function() {
           expect(e2.slug).to.equal(p1.slug)
           DELETE(`/posts/${p1._id}`, { status: 200 }, function(r) {
             GET('/posts/me', {}, function(posts) {
-              expect(posts.length).to.equal(0)
+              var myposts = _.where(posts,(p)=>_.idsEqual(p.by.userId,s._id))
+              expect(myposts.length).to.equal(0)
               done()
             })
           })
@@ -131,7 +132,8 @@ module.exports = () => describe("API: ", function() {
             expect(e2.slug).to.equal(p1.slug)
             DELETE(`/posts/${p1._id}`, { status: 200 }, function(r) {
               GET('/posts/me', {}, function(posts) {
-                expect(posts.length).to.equal(0)
+                var myposts = _.where(posts,(p)=>_.idsEqual(p.by.userId,s._id))
+                expect(myposts.length).to.equal(0)
                 done()
               })
             })
@@ -183,12 +185,6 @@ module.exports = () => describe("API: ", function() {
   })
 
 
-  it('401 on unauthenticated for users own posts', function(done) {
-    var opts = { status: 401, unauthenticated: true }
-    GET('/posts/me', opts, function() { done() })
-  })
-
-
   it('Users own posts returns published and unpublished posts', function(done) {
     addAndLoginLocalUser('jkre', function(s) {
       var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
@@ -206,7 +202,8 @@ module.exports = () => describe("API: ", function() {
                 expect(p2pub.published).to.exist
                 LOGIN(s.userKey, data.users[s.userKey], function() {
                   GET('/posts/me', {}, function(posts) {
-                    expect(posts.length).to.equal(3)
+                    var myposts = _.where(posts,(p)=>_.idsEqual(p.by.userId,s._id))
+                    expect(myposts.length).to.equal(3)
                     done()
                   })
                 })
