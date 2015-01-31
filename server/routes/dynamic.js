@@ -45,9 +45,7 @@ export default function(app) {
 
     .get('/blog',
       app.renderHbsViewData('posts', { title: "Software Posts, Tutorials & Articles" },
-        (req, cb) => {
-          PostsAPI.svc.getAllVisible(req.user, cb)
-        }))
+        (req, cb) => PostsAPI.svc.getAllPublished(cb) ))
 
     .get('/posts/airpair-v1',
       app.renderHbsViewData('posts', null,

@@ -85,12 +85,13 @@ export function getRecentPublished(cb) {
   svc.searchMany(Data.query.published(), opts, addUrl(cb))
 }
 
+export function getAllPublished(cb) {
+  var opts = { fields: Data.select.list, options: { sort: { 'published': -1 } } };
+  svc.searchMany(Data.query.published(), opts, addUrl(cb))
+}
 
 export function getAllVisible(user, cb) {
-  if (user)
-    console.log("USER ROLES", user.roles)
   if (user && _.contains(user.roles, "reviewer")){
-    console.log("SPECIAL");
     var opts = { fields: Data.select.list, options: { sort: '-reviewReady -published'} }
     svc.searchMany(Data.query.publishedReviewReady(), opts, addUrl(cb));//, function(e,r) {
   }

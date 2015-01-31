@@ -13,9 +13,6 @@ export default initAPI(Svc, {
   submitForReview: (req) => [req.params.id, req.body],
   submitForPublication: (req) => [req.params.id, req.body],
 
-  suggestEdit: (req) => [req.params.id, req.body],
-  acceptEdit: (req) => [req.params.id, req.body],
-
   addReview: (req) => [req.params.id, req.body]
 }, {
   'post':'getBySlugWithSimilar'
