@@ -78,6 +78,10 @@ angular.module('APSvcSession', [])
       $http.post(`${Auth}/signup-home`, data).success(setScope(success)).error(error);
     }
 
+    this.soSignup = function(data, success, error) {
+      $http.post(`${Auth}/signup-so`, data).success(setScope(success)).error(error);
+    }
+
     this.changeEmail = function(data, success, error) {
       var trackingData = { type:'email', email: data.email }
       $http.put(`${API}/users/me/email`, data).success(setScope(success, trackingData)).error(error);
@@ -128,6 +132,12 @@ angular.module('APSvcSession', [])
       $http.put(`${API}/users/me/bio`, data).success(setScope(success)).error(error)
     }
 
+    this.getSiteNotifications = function(data, success, error) {
+      $http.get(`${API}/users/me/site-notifications`).success(success).error(error)
+    }
+    this.toggleSiteNotification = function(data, success, error) {
+      $http.put(`${API}/users/me/site-notifications`, data).success(setScope(success)).error(error)
+    }
 
     this.requestPasswordChange = function(data, success, error) {
       $http.put(`${API}/users/me/password-change`, data).success(success).error(error)

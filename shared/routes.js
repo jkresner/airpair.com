@@ -1,11 +1,11 @@
 module.exports = [
-  '/angularjs',
   '/v1',
   '/bookings',
   '/bookings/*',
   '/dashboard',
   '/about',
   '/posts*',
+  '*/so-welcome',
   '/experts',
   '/expert-applications',
   '/learn',
@@ -20,5 +20,8 @@ module.exports = [
   '/help*',
   '/adm*',
   '/matchmaking*',
-  '/review*'
+  '/review*',
+  '/requests*',
+  '/angularjs',
+  '/100k-writing-competition'
 ]

@@ -21,6 +21,8 @@ export default initAPI(
   requestPasswordChange: (req) => [req.body.email],
   changePassword: (req) => [req.body.hash, req.body.password],
   changeLocationTimezone: (req) => [req.body],
+  getSiteNotifications: (req) => [],
+  toggleSiteNotification: (req) => [req.body.name],
 }, {
 
 },

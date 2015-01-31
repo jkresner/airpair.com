@@ -6,9 +6,11 @@ angular.module("APRoutes", [])
 
   this.route = function(url, controllerName, template, data) {
     var routeDef =_.extend({
-      template: template,
-      controller: `${controllerName}Ctrl` },
+      template: template },
       data || {})
+
+    if (controllerName != null)
+      routeDef.controller = `${controllerName}Ctrl`
 
     $routeProvider.when(url, routeDef)
   }

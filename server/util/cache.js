@@ -1,6 +1,6 @@
-import * as TagSvc from '../services/tags'
 import * as PostsSvc from '../services/posts'
 import * as WorkshopsSvc from '../services/workshops'
+var TagSvc               = require('../services/tags')
 
 var svcs = {
   tags: TagSvc,

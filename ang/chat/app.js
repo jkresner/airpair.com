@@ -3,7 +3,6 @@
     require('../../public/lib/angular-scroll-glue/src/scrollglue.js');
     var cc, ref, app = angular.module("chat-widget", ['luegg.directives', 'angularMoment']);
 
-
     app.directive('memberInfo', function (corechat) {
         return {
             link: function ($scope, elem, attrs) {
@@ -49,10 +48,114 @@
            }
        } 
     });
+    
+    app.service('chatPingNoise', function () {
+        return {
+            play: function () {
+                document.getElementById("chatAudio").play();
+            }
+        };
+    });
 
-    app.service('corechat', function ($rootScope, $log, $timeout, $interval) {
-        var $scope = $rootScope.$new(true), sessionID,
+    /*
+    app.service('browserNotifications', function () {
+        var service = {};
+        
+        if (!window.Notification) service.enabled = false;
+        else {
+            if (Notification.permission == "auto") Notification.requestPermission();
+            console.log('here')
+        }
+        
+        return service;
+    });
+    */
+
+    app.filter('memberSort', function () {
+        return function (members) {
+            var membersArr = [],
+                anonymousArr= [],
+                result = [];
+                
+            angular.forEach(members, function (member) {
+                if (member.type == 'user') membersArr.push(member)
+                else anonymousArr.push(member);
+            });
+            
+            membersArr.sort(function (a, b) {
+                if (a.page.timestamp < b.page.timestamp) {
+                    return -1;
+                }
+                if (a.page.timestamp > b.page.timestamp) {
+                    return 1;
+                }
+                return 0;
+            })
+            
+            result = result.concat(membersArr);
+            result = result.concat(anonymousArr);
+            
+            return result;
+        }
+    });
+    
+    app.filter('sortByNotifications', function (corechat) {
+        return function (rooms) {
+            var roomArr = [];
+            
+            angular.forEach(rooms, function (room) {
+                roomArr.push(room);
+            });
+            
+            roomArr.sort(function (a, b) {
+                if (!corechat.selfmember.notificationsCountByRoom) return 1;
+                
+                var aNotifications = corechat.selfmember.notificationsCountByRoom[a.id] || 0,
+                    bNotifications = corechat.selfmember.notificationsCountByRoom[b.id] || 0; 
+
+                if (aNotifications < bNotifications) {
+                    return 1;
+                }
+                if (aNotifications > bNotifications) {
+                    return -1;
+                }
+                return 0
+            });
+            
+            return roomArr;
+        };
+    });
+    
+    /*app.filter('pageSort', function () {
+        return function (pages) {
+            var priority = {"/": {}},
+                others = {},
+                result = [];
+                
+            angular.forEach(pages, function (members, pageURL) {
+                if (pageURL == '/help/request' || pageURL.indexOf('/adm/') !== -1) return;
+                
+                if (pageURL == "/" || pageURL.indexOf("/dashboard") == 0) {
+                    angular.forEach(members, function (member, id) {
+                        priority['/'][id] = member;  
+                    });
+                } else {
+                    others[pageURL] = page;
+                }
+            });
+            
+            result.push(priority);
+            result.push(others);
+            console.log(re)
+            return result;
+        }
+    })*/
+
+    app.service('corechat', function ($rootScope, $log, $timeout, $interval, chatPingNoise) {
+        var $scope = $rootScope.$new(true), notFresh = localStorage.getItem('corechat:notfresh'), sessionID,
             cc, ref, transferFrom, lastSession;
+            
+        $scope.collapsed = true;
 
         $scope.initialize = function () {
             if ($scope.initialized) return false;
@@ -68,15 +171,18 @@
                 cc.login($rootScope.session.firebaseToken);
             }
 
-            cc._callbackWrap = function (func, args) {
+            cc.setWrapper(function (func, args) {
                 $timeout(function () {
-                    func.apply(func, args);
-                });
-            };
+                    // Digest
+                })
+            });
 
             $scope.setActiveRoom = function (roomId) {
                 $scope.activeRoomId = roomId;
                 $scope.activeRoom = $scope.selfmember.rooms[$scope.activeRoomId];
+                
+                delete $scope.lastActiveRoom;
+                
                 angular.forEach(cc._member.notificationsByRoom[roomId], function (notification) {
                    notification.acknowledge();
                    --$scope.selfmember.notificationsCount;
@@ -147,6 +253,17 @@
                 delete $scope.activeRoomId;
                 delete $scope.activeRoom;
             };
+            
+            $scope.closeActiveRoom = function () {
+                cc._member.leave($scope.activeRoomId);  
+                $scope.leaveActiveRoom();
+            };
+            
+            $scope.onCollapsed = function (func, arg) {
+                if ($scope.collapsed) {
+                    func(arg);
+                }
+            }
 
             cc.on("online", function () {
                 //$log.log("connected to chat server!")
@@ -162,7 +279,8 @@
                     return;
                 }
 
-                var id = member.id;
+                var id = member.id,
+                    muted = true;
 
                 if (transferFrom && transferFrom !== member.id) {
                     cc._ref.child("transfers").push({
@@ -176,13 +294,7 @@
                     notifications: {},
                     notificationsCount: 0,
                     loggedIn: false
-
                 };
-                
-                if (cc._member && cc._member.roles && cc._member.roles.admin) {
-                    $scope.isAdmin = true;
-                    $scope.admin = cc.getAdminInterface();
-                }
 
                 $scope.selfmember.loggedIn = true;
                 $scope.selfmember.name = cc._member.name;
@@ -199,11 +311,23 @@
                 });
 
                 member.on("recieved_notification", function (err, notification) {
-                    // don't increment notificationsCount if the notification is in this room
+                    if (!notFresh) {
+                        $scope.collapsed = false;
+                        $scope.setActiveRoom(notification.info.to);
+                        notFresh = true;
+                        localStorage.setItem('corechat:notfresh', true);
+                    }
+                    
+                    if (!muted)
+                        chatPingNoise.play();
                     if (notification.info.to == $scope.activeRoomId) {
-                      notification.acknowledge();
+                        notification.acknowledge();
                     } else {
-                      $scope.selfmember.notificationsCount++;
+                        $scope.selfmember.notificationsCount++;
+                    }
+                    
+                    if (!$scope.selfmember.rooms[notification.info.to]) {
+                        $scope.join(notification.info.to);
                     }
                 });
 
@@ -215,9 +339,15 @@
                     
                     var user = {};
                     if (session.email) user.email = session.email
-                    if (session.name) user.name = session.name
                     if (session.avatar) user.avatar = session.avatar
                     if (session.transferFrom) user.avatar = session.transferFrom
+                    if (session.initials) user.initials = session.initials;
+                    
+                    if (session.name) user.name = session.name
+                    else user.name = "Anon:" + session.sessionID.substr(-5)
+                    
+                    if (session.sessionID) user.type = "anonymous"
+                    else user.type = "user"
 
 
                     cc._member._ref.update(user, function () {
@@ -227,10 +357,13 @@
                         });
                     });
                 });
+                
+                $timeout(function () {
+                    muted = false;
+                }, 1000);
             });
 
             cc.on("logout", function () {
-                //$log.log("logout");
                 $scope.selfmember = {}; 
             });
 
@@ -245,7 +378,7 @@
         $timeout(function () {
             $scope.initialize();
             localStorage.setItem("timeoutInitialize", true);
-        }, 10e3);
+        }, 90e3);
 
         var unwatchSession = $rootScope.$watch('session', function (session) {
             if (!session) return;
@@ -264,20 +397,15 @@
             if (!session.sessionID) {
                 localStorage.setItem("timeoutInitialize", "");
             }
-            /*if (sessionID && (session._id !== sessionID && session.sessionID !== sessionID)) {
-                //$log.log("SessionID", sessionID, "doesn't match", session._id || session.sessionID)
-                sessionID = session._id || session.sessionID;
-            }*/
-            
+
             cc && session.firebaseToken? cc.login(session.firebaseToken) : null;
-            
-            //sessionID = session._id || session.sessionID;
 
             if (lastSession && lastSession.unauthenticated && session._id)
                 cc._ref.child("transfers").push({
                    to: session._id,
                    from: lastSession.sessionID
                 });
+                
             lastSession = session;
         });
 

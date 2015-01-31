@@ -43,6 +43,20 @@ var get = {
       cb(e,r)
     })
   },
+
+  /// VERY TEMPORARY SOLUTIOn
+  getMatchesForDashboard(cb) {
+    //tags, bookmarks, requests,
+    require('../models/user').findOne({_id:this.user._id}, (e,user) =>{
+        var tags = _.map(user.tags,(t)=>{return { _id: t.tagId } })
+        get.getMatchesForRequest({tags,suggested:[]}, (e,r) => {
+          r = _.take(r, 2)
+          if (r[0]) r[0].tags = _.take(_.pluck(r[0].tags,'short'), 3)
+          if (r[1]) r[1].tags = _.take(_.pluck(r[1].tags,'short'), 3)
+          cb(null, r)
+        })
+      })
+  },
   getMatchesForRequest(request, cb) {
     // todo protect with owner of request?
     var tagIds = _.map(request.tags,(t) => t._id.toString())
@@ -50,9 +64,8 @@ var get = {
       'tags._id': { $in: tagIds }
       // rate: { $lt: request.budget }
     }
-    // $log('query', query, tagIds)
+    // $log('query', query)
     var opts = {fields:Data.select.matches, options: { limit: 1000 } }
-
     svc.searchMany(query, opts, (e,experts) => {
       if (e || !experts || experts.length == 0) return cb(e,experts)
 

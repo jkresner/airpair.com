@@ -1,16 +1,19 @@
 #admChat {
     padding-right: 40px;
+    width: 640px;
+    
     h3 {
         padding: 0px;
         margin: 0px 0px 10px 0px;
         color: #999;
     }
     h4 {
-        background-color: #bbb;
         font-size: 15px;
         padding: 4px;
         margin: 0px;
         color: black;
+        clear: both;
+        font-weight: bold;
     }
     .section {
         background-color: #ddd;
@@ -19,12 +22,39 @@
         color: black;
         user-select: none;
         -webkit-user-select: none;
+        overflow: auto;
+        clear: both;
     }
     
     .member {
         cursor: pointer;
-        background-color: #B7F4A3;
-        padding: 5px;
+        padding: 0px;
+        width: 250px;
+        float: left;
+        clear: left;
+        
+        .avatar {
+            width: 20px;
+            background-color: #ce5424;
+            border-radius: 100%;
+            margin-right: 6px;
+        }
+        
+        &.isMember {
+            float: left;
+            clear: left;
+        }
+        
+        &.isAnonymous {
+            float: right;
+            clear: right;
+            
+            .avatar {
+                width: 16px;
+                font-size: 12px;
+                padding: 0px;
+            }
+        }
         
         &:hover {
             text-decoration: underline;
