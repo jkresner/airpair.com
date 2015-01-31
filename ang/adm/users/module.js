@@ -21,6 +21,10 @@ angular.module("ADMUsers", [])
   AdmDataService.users.getInRole({role:'pipeliner'}, (result) =>
     $scope.pipeliners = result)
 
+  AdmDataService.users.getInRole({role:'reviewer'}, (result) =>
+    $scope.reviewers = result)
+
+
   $scope.toggleRole = function(_id, role) {
     AdmDataService.users.toggleRole({_id,role}, function (r) {
       AdmDataService.users.getInRole({role}, function (result) {

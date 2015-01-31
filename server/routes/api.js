@@ -56,6 +56,11 @@ export default function(app) {
     .post('/posts-toc',API.Posts.getTableOfContents)
     .put('/posts/:id', authd, API.Posts.update)
     .put('/posts/publish/:id', authd, API.Posts.publish)
+    .put('/posts/submitForReview/:id', authd, API.Posts.submitForReview)
+    .put('/posts/submitForPublication/:id', authd, API.Posts.submitForPublication)
+
+    .put('/posts/addReview/:id', API.Posts.addReview)
+
     .delete('/posts/:id', authd, API.Posts.deleteById)
 
     .get('/requests', API.Requests.getMy)

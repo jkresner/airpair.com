@@ -39,6 +39,7 @@ var middleware = {
   pipeliner:    authorizeRole('pipeliner'),
   mm:           authorizeRole('matchmaker'),
   editor:       authorizeRole('editor'),
+  reviewer:     authorizeRole('reviewer'),
 
 
   emailv(req, res, next) {
