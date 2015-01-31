@@ -46,6 +46,11 @@ angular.module("ADMChat", ["chat-widget", "angularMoment"])
     corechat.collapsed = false;
   };
 
+  $scope.selectUser = (user) => {
+    $scope.selectedUser = user
+    $timeout(() => $(`#${user._id}`).click(), 50)
+  }
+
   $scope.getRoomType = function (room) {
     if (!room || !room.id) return;
     return room.id.split("^^v^^").length > 1? "pair":"group";
