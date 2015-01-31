@@ -7,6 +7,7 @@ export default initAPI(
   getForExpertsPage: (req) => [],
   search: (req) => [req.params.id],
   getMatchesForRequest: (req) => [req.request],
+  getMatchesForDashboard: (req) => [],
   updateMatchingStats: (req) => [req.params.id,req.request],
 }, {
   'expert':'getById'

@@ -1,5 +1,6 @@
 import Svc from '../services/_service'
 import View from '../models/view'
+import Landing from '../models/landing'
 var logging = false
 var _viewSvc = new Svc(View, logging)
 var Segment = require('analytics-node')
@@ -73,10 +74,16 @@ function $$log(action, data, user, sessionID) {
   switch (action) {
     case 'First':
       var ref = (data.ref) ? ` <<< ${data.ref}` : ''
-      $log(`FIRST   ${uid} > ${data.url}${ref}`.cyan)
+      if (data.url.indexOf('so-welcome') != -1)
+        $log(`FIRST   ${uid} > ${data.url}${ref}`.yellow)
+      else
+        $log(`FIRST   ${uid} > ${data.url}${ref}`.cyan)
       break
     case 'View':
-      $log(`VIEW    ${uid} > ${data.url}`.cyan)
+      if (data.url.indexOf('so-welcome') != -1)
+        $log(`VIEW    ${uid} > ${data.url}`.yellow)
+      else
+        $log(`VIEW    ${uid} > ${data.url}`.cyan)
       break
     case 'Login':
       $log(`Login   ${uid} > ${data._id}`.green)

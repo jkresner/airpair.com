@@ -15,6 +15,17 @@
 		this._callbackWrap = function (func, args) {
 			func.apply(func, args);
 		};
+		
+		this.setWrapper = function (wrapper) {
+			var render = throttle(wrapper, this, 50);
+			this._callbackWrap = function (func, args) {
+				if (func)
+					setTimeout(function () {
+						func.apply(func, args);	
+					})
+				render();
+			}
+		};
 
 		// CoreChat Methods
 
@@ -181,6 +192,7 @@
 			if (lastRoom) {
 				delete this.rooms.byLastMessage[lastRoom.last_message];
 			}
+			
 			this.rooms.byLastMessage[last_message] = this.rooms.byId[roomId];
 			lastRoom.last_message = last_message;
 			this._lastRooms[roomId] = lastRoom;
@@ -196,14 +208,16 @@
 		}).bind(this);
 
 		this._updateByPage = (function (action, pageSnapshot) {
-			pageSnapshot.forEach((function (memberSnapshot) {
-				memberSnapshot.ref().on("value", this._updateMemberByPage.bind(this, action, pageSnapshot))
-			}).bind(this));
+			pageSnapshot.ref().on("child_added", this._updateMemberByPage.bind(this, action, pageSnapshot))
+			pageSnapshot.ref().on("child_changed", this._updateMemberByPage.bind(this, action, pageSnapshot))
+			pageSnapshot.ref().on("child_removed", this._updateMemberByPage.bind(this, "delete", pageSnapshot))
 		}).bind(this);
 
 		this._updateMemberByPage = (function (action, pageSnapshot, memberSnapshot) {
-			var page = pageSnapshot.key().replace(/-/g, '/'),
+			var page = decodeURIComponent(pageSnapshot.key()),
 				memberId = memberSnapshot.key();
+				
+			//console.log(memberId)
 				
 			if (memberId == cc._member.id) return;
 
@@ -214,11 +228,14 @@
 
 					this.members.byPage[page][memberId] = cc.getMember(memberId);
 				} else {
-					delete this.members.byPage[page][memberId];
+					if (this.members.byPage[page]) {
+						delete this.members.byPage[page][memberId];
 
-					if (!Object.keys(this.members.byPage[page]).length)
-						delete this.members.byPage[page];
+						if (!Object.keys(this.members.byPage[page]).length)
+							delete this.members.byPage[page];
+					}
 				}
+				//console.log(this.members.byPage[page])
 			}).bind(this));
 		}).bind(this);
 
@@ -302,11 +319,30 @@
 			.child('rooms')
 			.on("child_added", (function (roomSnapshot) {
 				var roomId = roomSnapshot.key(),
+					roomIsActive = roomSnapshot.val(),
+					room;
+					
+				if (roomIsActive) {
 					room = cc.getRoom(roomId);
-
-				this.rooms[roomId] = room;
+					this.rooms[roomId] = room;
+				}
 
 				this.trigger("join_room", null, room);
+			}).bind(this));
+
+		this._ref
+			.child('rooms')
+			.on("child_changed", (function (roomSnapshot) {
+				var roomId = roomSnapshot.key(),
+					roomIsActive = roomSnapshot.val(),
+					room;
+					
+				if (roomIsActive) {
+					room = cc.getRoom(roomId);
+					this.rooms[roomId] = room;
+				} else {
+					delete this.rooms[roomId];
+				}
 			}).bind(this));
 
 		this.sendMessageToRoom = function (roomId, body) {
@@ -317,6 +353,13 @@
 		this.sendMessageToMember = function (memberId, body) {
 			var member = cc.getMember(memberId);
 			member.send(body);
+		}
+		
+		this.leave = function (roomId) {
+			this._ref
+				.child("rooms")
+				.child(roomId)
+				.set(false);
 		}
 
 		this.detach = function () {
@@ -353,23 +396,11 @@
 		this.rooms = fdata(this, 'rooms');
 		this.page = fdata(this, 'page');
 
-		this._ref.on("value", (function (memberSnapshot) {
-			var memberData = memberSnapshot.val();
-			this.exists = !!memberData;
-
-			if (this.exists) {
-				cc._callbackWrap((function () {
-					//console.log(this.id, memberData)
-					this.email = memberData.email;
-					this.name = memberData.name;
-					this.avatar = memberData.avatar;
-					this.roles = memberData.roles || {};
-					this.status = memberData.status;
-					this.roles = memberData.roles;
-					this.trigger("ready", null, this);
-				}).bind(this));
-			}
-		}).bind(this));
+		this._setField = (function (snapshot) {
+			cc._callbackWrap((function () {
+				this[snapshot.key()] = snapshot.val();
+			}).bind(this));
+		}).bind(this);
 
 		this.join = function (rid) {
 			this._ref
@@ -388,7 +419,13 @@
 			has: function (role) {
 				return this.roles[role] || false
 			}
-		}
+		};
+		
+		// Cherry pick fields we need to avoid wasted bandwidth on pings and such
+		["name", "email", "avatar", "roles", "status", "type"]
+			.forEach((function (field) {
+				this._ref.child(field).on("value", this._setField);
+			}).bind(this));
 	};
 
 	var Member = function (cc) {
@@ -648,7 +685,8 @@
 
 	var Statusable = function (cc) {
 		this._events = this._events.concat(["status_change"]);
-		this._timeout = 60e3;
+		this._timeout = 60e3; // 1 min
+		this._offlineTimeout = 60*60e3; // 15 min
 		this._lastEvent = (new Date()).getTime();
 		this._status = "offline"; // offline, online, away
 		this._intervals = [];
@@ -676,6 +714,15 @@
 			this._intervals.push(
 				setInterval(this._performHashCheck.bind(this), 1e3)
 			);
+			this._intervals.push(
+				setInterval(this._performPing.bind(this), 59e3)
+			);
+			
+			this._performPing()
+		};
+		
+		this._performPing = function () {
+			this._ref.child("ping/seen").set(Firebase.ServerValue.TIMESTAMP);
 		};
 
 		this._performStatusCheck = function () {
@@ -683,12 +730,14 @@
 			if (currentTime > this._lastEvent+this._timeout) {
 				this._changeStatus("away");
 			}
+			
+			if (currentTime > this._lastEvent+this._offlineTimeout) {
+				Firebase.goOffline();
+			}
 		};
 
 		this._performHashCheck = function () {
-			var page = (document.location.pathname + document.location.hash)
-				.replace(/\//g, '-')
-				.replace(/#/g, '^');
+			var page = encodeURIComponent(document.location.pathname + document.location.hash)
 
 			if (page !== lastPage) {
 				lastPage = page;
@@ -704,6 +753,7 @@
 			this._lastEvent = currentTime;
 
 			this._changeStatus("online");
+			Firebase.goOnline();
 		};
 
 		this._changeStatus = function (newStatus) {
@@ -762,6 +812,42 @@
 		}
 		return obj;
 	};
+	
+	function throttle(func, wait, options) {
+		/*.
+		_.throttle from Underscore.js 1.7.0
+		http://underscorejs.org
+		(c) 2009-2014 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+		Underscore may be freely distributed under the MIT license.
+		*/
+	    var context, args, result;
+	    var timeout = null;
+	    var previous = 0;
+	    if (!options) options = {};
+	    var later = function() {
+	      previous = options.leading === false ? 0 : (new Date().getTime());
+	      timeout = null;
+	      result = func.apply(context, args);
+	      if (!timeout) context = args = null;
+	    };
+	    return function() {
+	      var now = (new Date().getTime());
+	      if (!previous && options.leading === false) previous = now;
+	      var remaining = wait - (now - previous);
+	      context = this;
+	      args = arguments;
+	      if (remaining <= 0 || remaining > wait) {
+	        clearTimeout(timeout);
+	        timeout = null;
+	        previous = now;
+	        result = func.apply(context, args);
+	        if (!timeout) context = args = null;
+	      } else if (!timeout && options.trailing !== false) {
+	        timeout = setTimeout(later, remaining);
+	      }
+	      return result;
+	    };
+	  };
 
 	// Expose CoreChat
 	window.CoreChat = CoreChat;

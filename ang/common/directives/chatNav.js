@@ -5,71 +5,47 @@ angular.module("APChatNav", [])
       template: require('./chatNav.html'),
       transclude: true,
       link: function(scope, element, attrs) {
-
-        element.bind('mouseenter', function() {
-          element.removeClass('collapse');
-          // storage('chatNavOpen', 'true');
-          // if( corechat.activeRoom ) {
-          //   console.log( 'opening with a activeRoom, clearing notifications' );
-          //   angular.forEach(corechat._member.notificationsByRoom[corechat.activeRoom], function (notification) {
-          //      notification.acknowledge();
-          //      // --$scope.selfmember.notificationsCount;
-          //   });
-          // }
-        });
-        element.bind('mouseleave', function() {
-          element.addClass('collapse');
-          if (corechat.initialized) {
-            $timeout(function () {
-              corechat.leaveActiveRoom()
-            }, 10);
+        var lastActiveRoom,
+            active;
+            
+        corechat.$watch('collapsed', function (isCollapsed) {
+          if (!isCollapsed) {
+            active = true;
+            element.removeClass('collapse');
+          } else {
+              element.addClass('collapse');
+              
+              if (corechat.initialized) {
+                $timeout(function () {
+                  corechat.lastActiveRoom = corechat.activeRoomId;
+                  corechat.leaveActiveRoom()
+                }, 10)
+              }
           }
-         
-          // storage('chatNavOpen', 'false');
         });
-
-        // focus the input when the chatNav is clicked
-        // element.bind('click', function(e) {
-        //   element.removeClass('collapse');
-        //   angular.element("#chatInput input").focus();
-        // });
-
+        
+        element.bind('mouseenter', function() {
+            $timeout(function () {
+              corechat.collapsed = false;
+            }, 20);
+            
+            $timeout(function () {
+              angular.element("input#chatInput").focus();
+            }, 20);
+        });
+        
+        element.bind('mouseleave', function() {
+            active = false;
+            $timeout(function () {
+              if (!active) {
+                corechat.collapsed = true; 
+              }
+            }, 3000);
+        });
       },
       controllerAs: 'chatNav',
-      controller: function($scope, $element, $attrs, $timeout) {
-
-        this.toggle = function() {
-          // console.log('toggling', storage('chatNavOpen'));
-          // if there's an activeRoom, clear it and let chat stay open
-    
-          // console.log('activeRoom true');
-          if (corechat.initialized) {
-            $timeout(function () {
-              corechat.leaveActiveRoom()
-            }, 10);
-          }
-
-          // if (storage('chatNavOpen') == 'true') storage('chatNavOpen', 'false');
-          // else storage('chatNavOpen', 'true');
-
-          // console.log('toggling', storage('chatNavOpen'));
-
-          // $element.toggleClass('collapse', storage('chatNavOpen') != 'true');
-          // $scope.toggleAction = (storage('chatNavOpen') != 'true') ? 'Show' : 'Hide';
-
-          // storage('chatOpenedOnce', 'true');
-        }
-
-        // $element.toggleClass('collapse', storage('chatNavOpen') != 'true');
-        // $scope.toggleAction = (storage('chatNavOpen') != 'true') ? 'Show' : 'Hide';
-
-        // if (!storage('chatOpenedOnce'))
-        // {
-        //   $timeout(this.toggle, 20000)
-        // }
-      }
+      controller: function($scope, $element, $attrs, $timeout) {}
     };
-
   })
 
 ;

@@ -111,6 +111,34 @@
 }
 
 
+article.postclean {
+  height:280px;
+  display:inline-block;
+  background:white;
+  max-width:360px;
+  text-align:left;
+  margin:-10px 8px 0 8px;
+  border:solid 2px @lightblue;
+  header {
+    height:130px;overflow:hidden;
+    img { max-width:100%; }
+  }
+  .entry-content {
+    padding:20px 15px;
+    .entry-title {
+      color:@darkblue;font-weight:bold;
+      height:60px;width:80%;margin:0;
+      font-size:14px!important;line-height:18px!important;
+      margin-bottom:10px!important;
+    }
+    img { float:right;border-radius:50% }
+    .entry-author-name {
+      color:@orange;font-weight:bold;margin-top:16px;display:block
+    }
+  }
+}
+
+
 //-- A single full post view
 
 .blogpost {
@@ -213,6 +241,7 @@
 
 
   .author {
+    max-width:640px;
     margin:22px 0 24px 0;
     hr { height:0;padding:0;margin:0;color:white;border:none }
 
@@ -351,7 +380,81 @@
 }
 
 
-//-- For posts module (create / edit / publish)
+section.editornotsupported {
+  text-align:center;
+  width:300px;
+  margin:auto;
+  display:none;
+  @media screen and (max-width:1200px) {
+    display:block;
+  }
+}
+
+section#posteditor {
+  position:absolute;
+  left:0;
+  width:100%;
+
+  margin:auto;
+
+  .editor-wrap {
+    position:relative;
+    min-width:1120px;
+    width:90%;
+    margin:auto;
+    margin-bottom:30px;
+  }
+
+  #preview {
+    border-top:solid 2px @bluegray;
+    height:700px;
+    width:650px;
+    display:inline-block;
+    margin-right:0px;
+    padding-right:0px;
+    overflow-y:scroll;
+  }
+
+  #editor {
+    position:absolute;
+    left:650px;
+    right:0;
+    .ace_editor {
+      height:700px;
+      width:100%;
+      border-top:solid 2px @bluegray;
+      border-right:solid 2px @bluegray;
+    }
+  }
+
+
+  .form-actions {
+    background:@lightblue;
+    padding:20px;
+    .btn { width:220px }
+  }
+
+  #tips {
+    background:@palegray;
+    padding:20px
+  }
+
+  hr { clear:both;margin-bottom:0 }
+
+  @media screen and (max-width:1200px) {
+    display:none;
+  }
+}
+
+section#postslist {
+  section > h3 {
+    width:100%;
+    margin-bottom:10px;
+    font-size:18px;
+    padding:5px 0;
+    span { display:block;float:right }
+  }
+}
 
 section#posts {
 
@@ -359,21 +462,40 @@ section#posts {
     width:100%;
     margin-bottom:10px;
     font-size:18px;
+    padding:5px 0;
     span { display:block;float:right }
+    border-bottom:solid 2px @bluegray;
   }
 
-  .myposts {
-    width:640px;
+  #myposts {
+    width:620px;float:left;
+    h3 { margin-bottom:20px }
+    .editOptions {
+      text-align:right;
+      float:right;
+      width:180px;
+      a.btn { width:180px;padding:3px }
+    }
   }
 
-  .editOptions {
-    text-align:right;
-    float:right;
-    margin-right:10px;
-    width:200px;
-
-    a.btn { width:200px; }
+  #contributions {
+    width:620px;float:left;
   }
+
+
+  #recent {
+    width:240px;float:right;
+    article { padding:0;margin:10px 0 }
+
+    a:hover article {
+      // background:@orangehighlight;
+      border:solid 2px @orangehighlight;
+      h2 { color:@orange }
+      .entry-author-name { color:@gray }
+    }
+  }
+
+
 
   #author { padding-top:10px }
 
@@ -462,4 +584,16 @@ section#posts {
     //-- don't show myposts UI on mobile. might even be worth disabling xhr in angular
     section#myposts { display:none }
   }
+}
+
+
+section#postinfo {
+
+  .form { background:@lightblue;padding:30px;border-radius:10px;
+    hr { clear:both }
+    .btn { width:100% }
+  }
+
+
+
 }

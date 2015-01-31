@@ -1,12 +1,10 @@
-import {google,local} from '../identity/auth/providers/index'
+import {google,twitter,github,local} from '../identity/auth/providers/index'
 import {logout,setTestLogin} from '../identity/auth/actions'
 var mw = require('../middleware/auth')
 var pp = require('../services/wrappers/paypal')
 var {addOAuthPayoutmethod} = require('../services/paymethods')
 
 export default function(app) {
-
-
 
   var router = require('express').Router()
 
@@ -21,6 +19,7 @@ export default function(app) {
     .post('/login', mw.authAlreadyDone, local.login, mw.setFirebaseTokenOnSession)
     .post('/signup', mw.authAlreadyDone, local.signup, mw.setFirebaseTokenOnSession)
     .post('/signup-home', mw.authAlreadyDone, mw.setFastSingupPassword('home'), local.signup, mw.setFirebaseTokenOnSession)
+    .post('/signup-so', mw.authAlreadyDone, mw.setFastSingupPassword('so'), local.signup, mw.setFirebaseTokenOnSession)
     .post('/subscribe', mw.authAlreadyDone, mw.setFastSingupPassword('subscribe'), local.signup, mw.setFirebaseTokenOnSession)
     .get('/google', google.oAuth)
     .get('/google/callback', google.oAuth, mw.setFirebaseTokenOnSession, mw.authDone)
@@ -29,6 +28,19 @@ export default function(app) {
       { res.json({url:pp.loginUrl(req)}) })
 
   app.use('/v1/auth', router)
+
+
+  var connect = require('express').Router()
+    .get('/google', google.oAuth)
+    .get('/google/callback', google.oAuth, mw.setFirebaseTokenOnSession, mw.authDone)
+    .get('/github', mw.authd, github.oAuth)
+    .get('/github/callback', mw.authd, github.oAuth, mw.authDone)
+    .get('/twitter', mw.authd, twitter.oAuth)
+    .get('/twitter/callback', mw.authd, twitter.oAuth, mw.authDone)
+
+  app.use('/auth', connect)
+
+
   app.get('/logout', mw.setReturnTo, logout(config.auth))
 
   if (config.testlogin) app.get('/test/setlogin/:id', setTestLogin)

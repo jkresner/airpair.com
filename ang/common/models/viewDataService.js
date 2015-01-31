@@ -4,12 +4,12 @@ angular.module('APViewData', [])
 
 .factory('ViewData', function aViewDataFactory($rootScope) {
 
-
   if (window.viewData)
   {
     var vd = window.viewData
     $rootScope.viewData = { canonical: vd.canonical }
 
+    if (vd.tag) $rootScope.tag = vd.tag
     if (vd.post) $rootScope.post = vd.post
     if (vd.workshop) $rootScope.workshop = vd.workshop
     if (vd.expert) $rootScope.expert = vd.expert
@@ -21,9 +21,8 @@ angular.module('APViewData', [])
       vd.session.unauthenticated = (vd.session.authenticated!=null
         && vd.session.authenticated == false)
       $rootScope.session = vd.session
+      delete window.viewData.session
     }
-
-    delete window.viewData
 
   }
 

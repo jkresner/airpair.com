@@ -2,7 +2,7 @@ import {initAPI} from './_api'
 import * as Svc from '../services/posts'
 
 export default initAPI(Svc, {
-  getUsersPosts: (req) => [req.user._id],
+  getUsersPosts: (req) => [],
   getTableOfContents: (req) => [req.body.md],
   publish: (req) => [req.params.id,req.body],
   getRecentPublished: (req) => [],

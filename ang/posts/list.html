@@ -1,6 +1,6 @@
 <header>
   <ol class="entry-meta breadcrumb">
-    <li><a href="/learn">Learn</a></li>
+    <li><a href="/blog" target="_self">Blog</a></li>
     <li class="current">Posts</li>
   </ol>
 </header>
@@ -8,19 +8,56 @@
 <section id="posts">
 
   <section id="recent">
-    <h3>Recent posts<span><a href="/blog" target="_self">All posts</a></span></h3>
-    <div class="posts recent">
-      <ap-post-list-item post="p" ng-repeat="p in recent"></ap-post-list-item>
-    </div>
+    <h3>Newest posts<span><a href="/blog" target="_self">See all</a></span></h3>
+    <a ng-href="{{p.url}}" target="_self" ng-repeat="p in recent">
+      <welcome-post-item post="p" ></welcome-post-item>
+    </a>
   </section>
 
   <section id="myposts">
-    <h3>My Posts</h3>
-    <br />
-    <div class="editOptions">
-      <a href="/posts/new" class="btn">Create new post</a>
+
+    <h3>Posts by me
+
+      <div class="editOptions">
+        <a href="/posts/new" class="btn">Create new post</a>
+      </div>
+    </h3>
+
+
+    <p ng-if="myposts && myposts == 0">
+    You have not created any posts yet.
+    </p>
+
+    <div ng-if="myposts && myposts.length > 0" class="myposts">
+      <table class="table table-striped">
+        <tr>
+          <th>Created</th>
+          <th>Published</th>
+          <th>Title</th>
+          <th></th>
+        </tr>
+        <tr ng-repeat="p in myposts">
+          <td>{{ p.created | publishedTime: 'MM.DD' }}</td>
+          <td>
+            {{ p.published | publishedTime: 'MM.DD' }}
+          </td>
+          <td>
+            <a href="/v1/posts/{{p.slug}}" target="_blank" ng-if="p.published">{{ p.title }}</a>
+            <span ng-if="!p.published">{{ p.title }}</span>
+          </td>
+          <td>
+            <a href="/posts/edit/{{p._id}}" target="_blank">edit</a>
+          </td>
+        </tr>
+      </table>
     </div>
-    <div class="myposts" ap-my-posts-list=""></div>
   </section>
+
+  <section id="contributions">
+    <h3>Posts I've contributing to</h3>
+    <br />
+    <o>You have not suggested edits for anyone else's posts.</o>
+  </section>
+
 
 </section>

@@ -12,20 +12,25 @@ require('./../public/lib/angular-bootstrap-datetimepicker/src/js/datetimepicker.
 require('./../public/lib/prism/prism.js');
 require('./../public/lib/jquery-ui-custom/jquery-ui.js');
 window.marked = require('./../public/lib/marked/lib/marked.js');
+require('./../public/lib/ace-builds/src-min-noconflict/ace.js');
+require('./../public/lib/angular-ui-ace/ui-ace.js');
+require('./../public/lib/ace-builds/src-min-noconflict/ext-language_tools.js');
+require('./../public/lib/ace-builds/src-min-noconflict/mode-markdown.js');
+require('./../public/lib/ace-builds/src-min-noconflict/theme-solarized_light.js');
 require('../public/lib/firebase/firebase.js');
 require('./chat/core.js');
 require('./chat/app.js');
 require('./common/models/viewDataService.js');
-require('./common/models/postsService.js');
 require('./common/models/sessionService.js');
 require('./common/models/dataService.js');
+require('./common/models/staticDataService.js');
 require('./common/util.js');
 require('./common/directives/forms/forms.js');
 require('./common/directives/forms/inputs.js');
 require('./common/directives/forms/tagInput.js');
 require('./common/directives/ctas.js');
 require('./common/directives/share.js');
-require('./common/directives/post.js');
+require('./common/directives/posts.js');
 require('./common/directives/experts.js');
 require('./common/directives/sideNav.js');
 require('./common/directives/chatNav.js');
@@ -48,12 +53,20 @@ require('./billing/module.js');
 require('./account/module.js');
 require('./requests/module.js');
 require('./bookings/module.js');
+require('./dashboard/module.js');
 
-angular.module("AP", ['Providers', 'ngRoute', 'ngAnimate', 'ui.bootstrap.datetimepicker',
-  'APRoutes', 'APUtil', 'APViewData', 'APDataSvc', 'APCTAs', 'APFormsDirectives', 'APInputs',
-  'APAnalytics', 'APSideNav', 'APChatNav', 'APServerTemplates', 'APNotifications',
-  'APProfileDirectives', 'APPageHelpers',
-  'APAuth', 'APPosts', 'APWorkshops', 'APProfile', 'APBilling', 'APRequests','APBookings', 'chat-widget'])
+
+angular.module("AP", ['ngRoute', 'ngAnimate',
+  'ui.bootstrap.datetimepicker', 'ui.ace',
+  'Providers',
+  'APRoutes', 'APServerTemplates', 'APPageHelpers',
+  'APFilters', 'APUtil', 'APFormsDirectives', 'APInputs',
+  'APViewData', 'APSvcSession', 'APDataSvc', 'APSvcStatic',
+  'APCTAs', 'APAnalytics', 'APNotifications', 'APBookmarker',
+  'APProfileDirectives', 'APPostsDirectives',
+  'APSideNav', 'APChatNav', 'chat-widget',
+  'APAuth', 'APPosts', 'APWorkshops', 'APProfile', 'APBilling',
+  'APRequests','APBookings', 'APDashboard'])
 
   .config(function($locationProvider, $routeProvider) {
 
@@ -71,9 +84,9 @@ angular.module("AP", ['Providers', 'ngRoute', 'ngAnimate', 'ui.bootstrap.datetim
       template: require('./learn.html')
     });
 
-    $routeProvider.when('/angularjs/pair-programming', {
-      template: require('./sales/angular.html')
-    });
+    // $routeProvider.when('/angularjs/pair-programming', {
+    //   template: require('./sales/angular.html')
+    // });
 
     if (angular.element('#serverTemplate').length > 0)
     {

@@ -150,7 +150,7 @@ nav#chat {
     width: 100%;
     position: absolute;
     top: 35px;
-    left: 2px;
+    left: 0px;
     right: 0;
     bottom: 0;
 
@@ -165,6 +165,7 @@ nav#chat {
       // white-space: nowrap;
       border-bottom: 1px solid #ececec;
       cursor: pointer;
+      border-left: 1px solid #ececec;
 
       .left {
         min-height: 50px;
@@ -205,11 +206,17 @@ nav#chat {
         }
       }
     }
+    
     .item.unread {
       background-color: #DFF2EF;
     }
+    
     .item.odd {
       background-color: #fcfcfc;
+    }
+    
+    .item.active {
+      background-color: #fcefe6;
     }
 
   }
@@ -237,6 +244,14 @@ nav#chat {
     width: 100px;
     text-align: center;
     margin: 10px auto;
+  }
+  
+  #chatSubtitle {
+    text-align: center;
+    font-size: 12px;
+    margin-top: 4px;
+    color: red;
+    cursor: pointer;
   }
 
   // container for messages
@@ -306,7 +321,7 @@ nav#chat {
   }
 
   // container for input mechanism
-  #chatInput {
+  #chatInputWrapper {
     clear: both;
     width: @sideChatWidth;
     position: absolute;
@@ -355,6 +370,10 @@ nav#chat.collapse {
 
   #roomList .item .right {
     display: none;
+  }
+  
+  .item.unread {
+    padding: 10px 0px; 
   }
 
 

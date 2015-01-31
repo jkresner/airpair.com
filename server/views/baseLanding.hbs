@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en-US" prefix="og: http://ogp.me/ns#" ng-app="AP" ng-strict-di>
+<head>
+{{#with viewData}}{{> pageMeta }}{{/with}}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <link rel="stylesheet" href="{{ config.bundle.libCss}}" type="text/css" />
+  <link rel="stylesheet" href="{{ config.bundle.indexCss}}" type="text/css" />
+  <base href="/" />
+</head>
+<body class="landing">
+<header>
+  <a tile="airpair.com pair programming" style="cursor:default"></a>
+</header>
+
+
+<div class="main-wrap">
+  <div notifications></div>
+  <main ng-view>
+    <div id="serverTemplate">
+      {{#with viewData}}
+        {{#if sowelcomeRender}}<cta-sowelcome></cta-sowelcome>{{/if}}
+        {{#if postscompRender}}{{> postscomp }}{{/if}}
+      {{/with}}
+    </div>
+  </main>
+</div>
+
+<script type="text/javascript" src="{{config.bundle.homeScript}}"></script>
+<script type="text/javascript">
+
+function bindTracking() {
+  ga('send', 'pageview')
+}
+
+window.viewData = { {{partialName}} : {{JSONID viewData}}, session: {{ JSON session }}, chatSettings: {{ JSON config.chatSettings }} };
+
+{{#if viewData.tag}}
+  window.viewData.tag = {{ JSON viewData.tag }}
+{{/if}}
+
+</script>
+
+{{> initPage }}
+
+</body>
+</html>

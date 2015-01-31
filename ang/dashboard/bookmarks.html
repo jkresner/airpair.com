@@ -1,0 +1,11 @@
+<h3>Bookmarks <a ng-click="openBookmarks()">edit</a></h3>
+<ul class="bookmarks">
+  <li ng-repeat="bookmark in session.bookmarks | orderBy:'sort'" ng-attr-data-id="{{bookmark._id}}">
+    <a href="{{bookmark.url}}">
+      {{bookmark.title}}
+    </a>
+  </li>
+</ul>
+
+<p ng-if="!session.tags || session.tags.length == 0">No bookmarks in your list.
+
