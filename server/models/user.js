@@ -1,7 +1,7 @@
 var mongoose = require('mongoose')
 var Schema = mongoose.Schema
 var ObjectId = Schema.Types.ObjectId
-
+var Shared = require('./_shared')
 
 var objectType = ['post','workshop','expert']
 
@@ -107,6 +107,8 @@ var User = new Schema({
   stack: {},
   bitbucketId: String,
   bitbucket: {},
+
+  social:               Shared.SocialAccounts
 
 });
 

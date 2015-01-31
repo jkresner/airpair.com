@@ -101,8 +101,33 @@
   <hr />
 
   <section class="connect" ng-if="session.emailVerified">
-    <br /><a href="/auth/github" target="_self">Connect Github</a>
-    <br /><a href="/auth/twitter" target="_self">Connect Twitter</a>
+
+    <h4 style="margin-top:0">Connected social accounts</h4>
+
+    <div class="oauth">
+      <a ng-if="!data.gh" href="/auth/github?returnTo=/me" target="_self">Connect Github</a>
+      <a ng-if="data.gh" href="/auth/github?returnTo=/me" target="_self">Refresh Github</a>
+    </div>
+    <div class="oauth">
+      <a ng-if="!data.gh" href="/auth/twitter?returnTo=/me" target="_self">Connect Twitter</a>
+      <a ng-if="data.gh" href="/auth/twitter?returnTo=/me" target="_self">Refresh Twitter</a>
+    </div>
+    <div class="oauth">
+      <a ng-if="!data.so" href="/auth/stackexchange?returnTo=/me" target="_self">Connect Stackoverflow</a>
+      <a ng-if="data.so" href="/auth/stackexchange?returnTo=/me" target="_self">Refresh Stackoverflow</a>
+    </div>
+    <div class="oauth">
+      <a ng-if="!data.in" href="/auth/linkedin?returnTo=/me" target="_self">Connect LinkedIn</a>
+      <a ng-if="data.in" href="/auth/linkedin?returnTo=/me" target="_self">Refresh LinkedIn</a>
+    </div>
+    <div class="oauth">
+      <a ng-if="!data.bb" href="/auth/bitbucket?returnTo=/me" target="_self">Connect BitBucket</a>
+      <a ng-if="data.bb" href="/auth/bitbucket?returnTo=/me" target="_self">Refresh BitBucket</a>
+    </div>
+    <div class="oauth">
+      <a ng-if="!data.al" href="/auth/angellist?returnTo=/me" target="_self">Connect AngelList</a>
+      <a ng-if="data.al" href="/auth/angellist?returnTo=/me" target="_self">Refresh AngelList</a>
+    </div>
   </section>
 
   <hr />

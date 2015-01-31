@@ -214,15 +214,17 @@ function localLogin(email, password, errorCB, done) {
 }
 
 
-function connectProvider(provider, profile, errorCB, done) {
-  var ups = {}
-  ups[provider+'Id'] = profile.id
-  ups[provider] = profile
+function connectProvider(provider, short, profile, errorCB, done) {
+  var ups = { $set : { } }
+  ups['$set'][`social.${short}`] = profile
 
-  User.findOneAndUpdate({_id:this.user._id}, { $set: ups }, (e,r) => {
+  if (short == 'al')
+    profile.username = profile._json.angellist_url.replace('https://angel.co/','')
+
+  User.findOneAndUpdate({_id:this.user._id}, ups, (e,r) => {
     if (e || !r) errorCB(e||'connectProvider, no user found.',r)
-    $log('updated', this.user._id, provider, profile)
-    $log('TODO '.red)
+    var trackData = { type: 'oauth', provider, id: profile.id }
+    analytics.track(this.user, this.sessionID, 'Save', trackData, {}, ()=>{})
     done(e, r)
   })
 }
