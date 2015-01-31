@@ -445,6 +445,7 @@ section#postslist {
     font-size:18px;
     padding:5px 0;
     span { display:block;float:right }
+    .btn { padding:5px;width:180px }
   }
 }
 
@@ -586,6 +587,31 @@ section#postinfo {
     .btn { width:100% }
   }
 
+  .tag-input-group {
+    .nomobile { display:none }
+    label { display:none }
+    .drag { display:none }
+    .selected {
+      width:280px;
+      display:block;
+      float:none;
+      li { display:inline;background:none;border:none }
+      .remove { float:none;background:none;color:red;display:inline;font-size:12px }
+      .order { display: none; }
+    }
+  }
 
+  .form-actions {
+    p { text-align:center;margin-top:5px }
+  }
+
+  #preview {
+    max-width:900px;margin-top:40px;
+    #body {
+      display:none;
+    }
+  }
+
+  .posts { background:white; }
 
 }

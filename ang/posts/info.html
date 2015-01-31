@@ -1,7 +1,7 @@
 <header>
   <ol class="entry-meta breadcrumb">
     <li><a href="/posts">Posts</a></li>
-    <li class="current">Create</li>
+    <li class="current">Author</li>
   </ol>
 </header>
 
@@ -13,6 +13,8 @@
 
 <section id="postinfo">
 
+  <h3>Author a post</h3>
+
   <div class="form">
     <div class="form-group">
       <label>Title</label>
@@ -23,20 +25,39 @@
       <textarea ng-model="post.by.bio" type="text" class="form-control"></textarea>
     </div>
 
+    <div class="form-group">
+      <label>Feature media <span ng-show="post.title && post.by.bio">
+      <a href ng-click="exampleImage()">image url</a>
+      or <a href ng-click="exampleYouTube()">youtu.be url</a></span></label>
+      <input ng-model="post.assetUrl" type="text" class="form-control" />
+    </div>
+
     <div class="form-group" ng-if="post._id">
       <label>Tags </label>
       <div tag-input=""></div>
+    </div>
+
+    <div class="publishMeta">
+      <div class="form-group">
+        <label>Slug url</label>
+        <input ng-model="post.slug" type="text" class="form-control" />
+      </div>
+
+      <div class="posts"><ap-post-list-item post="post"></ap-post-list-item></div>
     </div>
 
     <hr />
 
   <div class="form-actions">
 
-    <button class="btn" ng-click="save()" ng-disabled="(!post.title || !post.by.bio)">Create</button>
+    <button class="btn" ng-click="save()" ng-disabled="(!post.title || !post.by.bio)">Save</button>
+    <p>Until you submit your post for review, it will not be visible to anyone other than you.</p>
 
   </div>
 
   </div>
 
+  <div id="preview" ap-post=""></div>
 
 </section>
+
