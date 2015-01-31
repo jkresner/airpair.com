@@ -36,7 +36,13 @@ var select = {
     'cohort.engagement': 1,
     'membership': 1,
     'localization.location': 1,
-    'localization.timezone': 1
+    'localization.timezone': 1,
+    'social.gh.username': 1,
+    'social.so.link': 1,
+    'social.bb.username': 1,
+    'social.in.id': 1,
+    'social.tw.username': 1,
+    'social.al.username': 1
   },
   usersInRole: {
     '_id': 1,
