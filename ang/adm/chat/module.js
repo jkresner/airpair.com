@@ -50,7 +50,7 @@ angular.module("ADMChat", ["chat-widget", "angularMoment"])
     if (!room || !room.id) return;
     return room.id.split("^^v^^").length > 1? "pair":"group";
   };
-  
+
 
   corechat.admin = $scope.cc.getAdminInterface();
   corechat.isAdmin = true;

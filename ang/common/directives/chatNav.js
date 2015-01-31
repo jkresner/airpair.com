@@ -6,42 +6,45 @@ angular.module("APChatNav", [])
       transclude: true,
       link: function(scope, element, attrs) {
         var lastActiveRoom,
-            active;
-            
-        corechat.$watch('collapsed', function (isCollapsed) {
-          if (!isCollapsed) {
-            active = true;
-            element.removeClass('collapse');
-          } else {
-              element.addClass('collapse');
-              
-              if (corechat.initialized) {
+          closeTimer;
+
+        var openChatElemClicked = (e) =>
+          $(e.target).hasClass('openchat') ||
+          $(e.target).parent('.openchat').length > 0
+
+        var focus = () => $timeout(function () {
+              angular.element("input#chatInput").focus();
+            }, 20);
+
+        var collapse = () => $timeout(() => {
+            console.log('collapsing')
+            corechat.collapsed = true
+            element.addClass('collapse')
+            if (closeTimer != null) $timeout.cancel(closeTimer)
+            if (corechat.initialized) {
                 $timeout(function () {
                   corechat.lastActiveRoom = corechat.activeRoomId;
                   corechat.leaveActiveRoom()
                 }, 10)
               }
-          }
-        });
-        
-        element.bind('mouseenter', function() {
-            $timeout(function () {
-              corechat.collapsed = false;
-            }, 20);
-            
-            $timeout(function () {
-              angular.element("input#chatInput").focus();
-            }, 20);
-        });
-        
-        element.bind('mouseleave', function() {
-            active = false;
-            $timeout(function () {
-              if (!active) {
-                corechat.collapsed = true; 
-              }
-            }, 3000);
-        });
+          }, 20)
+
+        var open = () => {
+          if (closeTimer != null) $timeout.cancel(closeTimer)
+          element.removeClass('collapse')
+          corechat.collapsed = false
+          focus()
+        }
+
+        element.bind('mouseenter', open)
+        element.bind('mouseleave', () => closeTimer = $timeout(collapse, 3000))
+
+        //-- Allow users to click out of chat being open
+        $('html').click((e) => {
+          if (openChatElemClicked(e)) return open()
+          collapse()
+        })
+        $(element).click((e) => e.stopPropagation())
       },
       controllerAs: 'chatNav',
       controller: function($scope, $element, $attrs, $timeout) {}
