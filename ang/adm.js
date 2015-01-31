@@ -62,6 +62,11 @@ angular.module('ADM', [
   .run(function($rootScope, $location, SessionService, ViewData) {
     $rootScope.session.primaryPayMethodId='adm';
     SessionService.onAuthenticated( (session) => {});
+
+    $rootScope.$on('$routeChangeSuccess', function() {
+      var path = $location.path()
+      $('#chat').toggle(path.indexOf('orders') == -1 && path.indexOf('bookings') == -1)
+    })
   })
 
   .factory('ServerErrors', function serverErrorsFactory($rootScope, $location) {
