@@ -155,12 +155,14 @@ var save = {
       return cb(Error("User must authorize GitHub for repo access"))
     }
     else {
-      //TODO compute this from post title
-      var repoName = "just-a-test-repo"
+      //TODO compute this from post title (slug?)
+      var repoName = original.title
       var githubOwner = this.user.social.gh.username
       github.setupRepo(repoName, githubOwner, function(err, result){
         //set reviewer team id
         o.reviewReady = new Date()
+        o.meta = o.meta || {};
+        o.meta.reviewTeamId = result.reviewTeamId
         svc.update(original._id, o, cb)
       })
     }

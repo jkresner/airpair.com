@@ -34,6 +34,7 @@ var cfg = {
       clientID: '378dac2743563e96c747',
       clientSecret: 'f52d233259426f769850a13c95bfc3dbe7e3dbf2',
       adminAccessToken: '32b66786591dc6de25eed215d8827fcf11a11c8b',
+      adminUsername: "airpairtest",
       org: 'JustASimpleTestOrg',
       scope: [ 'user', 'repo' ]
     },
