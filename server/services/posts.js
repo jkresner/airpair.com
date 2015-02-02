@@ -158,8 +158,7 @@ var save = {
       //TODO compute this from post title (slug?)
       var repoName = original.title
       var githubOwner = this.user.social.gh.username
-      github.setupRepo(repoName, githubOwner, function(err, result){
-        //set reviewer team id
+      github.setupRepo(repoName, githubOwner, original.md, function(err, result){
         o.reviewReady = new Date()
         o.meta = o.meta || {};
         o.meta.reviewTeamId = result.reviewTeamId
