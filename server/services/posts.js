@@ -182,6 +182,23 @@ var save = {
     svc.update(post._id, post, cb)
   },
 
+  addEditor(post, o, cb){
+    if (!github.isAuthed(this.user)){
+      return cb(Error("User must authorize GitHub to become an editor"))
+    } else {
+      post.contributors = post.contributors || []
+      var githubUser = this.user.social.gh.username
+      post.contributors.push({id: this.user._id, github: githubUser})
+      github.addToTeam(githubUser, post.meta.reviewTeamId, function(err, res){
+        if (err){
+          cb(err)
+        } else {
+          svc.update(post._id, post, cb)
+        }
+      })
+    }
+  },
+
   deleteById(post, cb) {
     svc.deleteById(post._id, cb)
   }

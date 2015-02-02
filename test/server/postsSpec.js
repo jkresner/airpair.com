@@ -231,7 +231,7 @@ module.exports = () => describe("API: ", function() {
     })
   })
 
-  it.only("submit for review creates a repo with a README.md and a post.md file", function(done){
+  it("submit for review creates a repo with a README.md and a post.md file", function(done){
     addAndLoginLocalGithubUser("mris", function(s) {
       var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
       var title = "test" + Math.floor(Math.random() * 100000000)
@@ -253,6 +253,22 @@ module.exports = () => describe("API: ", function() {
       POST('/posts', d1, {}, function(p1) {
         PUT(`/posts/addReview/${p1._id}`, {body: "this post is great", stars: 4}, {}, function(resp){
           expect(resp.reviews[0].body).to.equal("this post is great")
+          done()
+        })
+      })
+    })
+  })
+
+  it.only("allows editors to be added to reviewReady posts", function(done){
+    addAndLoginLocalGithubUser("mris", function(s) {
+      var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
+      var d1 = { title: "test1", by: by, md: 'Test 1',
+        assetUrl: 'http://youtu.be/qlOAbrvjMBo', reviewReady:new Date(),
+        meta: {reviewTeamId: 1268728}}
+      POST('/posts', d1, {}, function(p1) {
+        PUT(`/posts/addEditor/${p1._id}`, {}, {}, function(resp){
+          expect(resp.contributors[0].id).to.equal(s._id)
+          console.log(resp)
           done()
         })
       })

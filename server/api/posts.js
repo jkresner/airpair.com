@@ -17,6 +17,7 @@ export default initAPI(
   submitForReview: (req) => [req.postobj, req.body],
   submitForPublication: (req) => [req.postobj, req.body],
   addReview: (req) => [req.postobj, req.body],
+  addEditor: (req) => [req.postobj, req.body],
   deleteById: (req) => [req.postobj]
 
 }, {
