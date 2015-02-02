@@ -56,6 +56,10 @@ var validation = {
   addReview(user, postId, review)
   {
     console.log("(validation) addReview", user, postId, review)
+  },
+
+  addEditor(user, postId){
+    // console.log("(validation)", user, postId)
   }
 
 }

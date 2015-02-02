@@ -47,6 +47,7 @@ module.exports = mongoose.model('Post', new mongoose.Schema({
   reviewReady:  {type: Date},
   publishReady: {type: Date},
   reviews:      {type: Array},
+  contributors: {type: Array},
 
   publishedBy:  { type: ObjectId, ref: 'User' },
   slug:         { type: String, unique: true, sparse: true, lowercase: true, trim: true },
