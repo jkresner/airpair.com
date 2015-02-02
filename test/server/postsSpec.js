@@ -234,9 +234,12 @@ module.exports = () => describe("API: ", function() {
   it.only("submit for review creates a repo with a README.md and a post.md file", function(done){
     addAndLoginLocalGithubUser("mris", function(s) {
       var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
-      var d1 = { title: "test 1", by: by, md: 'Test 1', assetUrl: 'http://youtu.be/qlOAbrvjMBo' }
+      var title = "test" + Math.floor(Math.random() * 100000000)
+      var d1 = { title: title, by: by, md: 'Test 1', assetUrl: 'http://youtu.be/qlOAbrvjMBo' }
       POST('/posts', d1, {}, function(p1) {
-        PUT(`/posts/submitForReview/${p1._id}`, p1, {status: 400}, function(resp){
+        PUT(`/posts/submitForReview/${p1._id}`, p1, {}, function(resp){
+          expect(resp.reviewReady).to.exist
+          expect(resp.meta.reviewTeamId).to.exist
           done()
         })
       })

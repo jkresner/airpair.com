@@ -17,7 +17,8 @@ var Meta = {
   ogDescription:{ type: String },
   ogImage:      { type: String, trim: true },
   ogVideo:      { type: String, trim: true },
-  ogUrl:        { type: String, lowercase: true, trim: true }
+  ogUrl:        { type: String, lowercase: true, trim: true },
+  reviewTeamId: { type: String }
 };
 
 var Author = {
@@ -46,7 +47,7 @@ module.exports = mongoose.model('Post', new mongoose.Schema({
   reviewReady:  {type: Date},
   publishReady: {type: Date},
   reviews:      {type: Array},
-  
+
   publishedBy:  { type: ObjectId, ref: 'User' },
   slug:         { type: String, unique: true, sparse: true, lowercase: true, trim: true },
   title:        { required: true, type: String, trim: true },

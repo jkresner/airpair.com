@@ -9,7 +9,7 @@ var api = new GitHubApi({
   // required
   version: "3.0.0",
   // optional
-  debug: true,
+  // debug: true,
   protocol: "https",
   timeout: 5000,
   headers: {
@@ -44,12 +44,12 @@ var github = {
   },
 
   //create a team w/ write access to a repo (name after repo)
-  createRepoWriteTeam(repo, cb){
+  createRepoAuthorTeam(repo, cb){
     _authenticateAdmin()
     api.orgs.createTeam({
       org: org,
-      name: repo,
-      repo_names: [`${org}/${repo}-author`],
+      name: `${repo}-author`,
+      repo_names: [`${org}/${repo}`],
       permission: 'push'
     }, cb);
   },
@@ -58,8 +58,8 @@ var github = {
     _authenticateAdmin()
     api.orgs.createTeam({
       org: org,
-      name: repo,
-      repo_names: [`${org}/${repo}-review`],
+      name: `${repo}-review`,
+      repo_names: [`${org}/${repo}`],
       permission: 'pull'
     }, cb);
   },
@@ -100,19 +100,49 @@ var github = {
   events(cb){
     _authenticateAdmin()
     api.events.getFromUserOrg({
-      user: "rissem",
+      user: config.auth.github.username,
       org: org
     }, cb)
   },
 
-  addCustomREADME(cb){
-
+  addFile(repo, path, content, msg, cb){
+    _authenticateAdmin()
+    api.repos.createFile({
+      user: org,
+      repo: repo,
+      path: path,
+      message: msg,
+      content: new Buffer(content).toString('base64')
+    }, cb);
   },
 
   setupRepo(repo, githubOwner, cb){
-    console.log(`creating repo ${repo} for ${githubOwner}`)
+    // console.log(`setting up repo ${repo} for ${githubOwner}`)
+    var _this = this
     this.createRepo(repo, function(err, result){
-      cb(err, result)
+      //TODO Better error handling
+
+      if (err){console.error("ERR", err); return}
+      _this.addFile(repo, "README.md", "Please read me", "Add README.md", function(err, result){
+        if (err){console.error("ERR", err); return}
+        _this.addFile(repo, "post.md", "Your Post Here", "Initial Post", function(err, result){
+          if (err){console.error("ERR", err); return}
+          _this.createRepoReviewTeam(repo, function(err, result){
+            if (err){console.error("ERR", err); return}
+            var reviewTeamId = result.id
+            _this.createRepoAuthorTeam(repo, function(err, result){
+              if (err){
+                console.error("ERR", err); return
+              } else  {
+                var authorTeamId = result.id
+                _this.addToTeam(githubOwner, authorTeamId, function(err, result){
+                  cb(null, {reviewTeamId})
+                })
+              }
+            })
+          })
+        })
+      })
     })
   }
 }
