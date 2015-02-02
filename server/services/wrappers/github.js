@@ -1,9 +1,9 @@
 var GitHubApi = require("github");
 
-var accessToken = '91889a94f9898088ccf4b762fb31eb2a070151a2';
-var reviewerTeamId = '1263797';
+//this token must belong to an owner of the organization
+var adminAccessToken = config.auth.github.adminAccessToken
 //var org = "airpair"
-var org = "JustASimpleTestOrg";
+var org = config.auth.github.org
 
 var api = new GitHubApi({
   // required
@@ -20,11 +20,20 @@ var api = new GitHubApi({
 var _authenticateAdmin = function(){
   api.authenticate({
     type: "oauth",
-    token: accessToken
+    token: adminAccessToken
   });
 }
 
 var github = {
+  isAuthed(user) {
+    if (user.social && user.social.gh && user.social.gh.username &&
+      user.social.gh.token.token){
+      return true
+    } else {
+      return false
+    }
+  },
+
   createRepo(repo, cb) {
     _authenticateAdmin();
     api.repos.createFromOrg({
@@ -35,13 +44,23 @@ var github = {
   },
 
   //create a team w/ write access to a repo (name after repo)
-  createRepoTeam(repo, cb){
+  createRepoWriteTeam(repo, cb){
     _authenticateAdmin()
     api.orgs.createTeam({
       org: org,
       name: repo,
-      repo_names: [`${org}/${repo}`],
+      repo_names: [`${org}/${repo}-author`],
       permission: 'push'
+    }, cb);
+  },
+
+  createRepoReviewTeam(repo, cb){
+    _authenticateAdmin()
+    api.orgs.createTeam({
+      org: org,
+      name: repo,
+      repo_names: [`${org}/${repo}-review`],
+      permission: 'pull'
     }, cb);
   },
 
@@ -53,31 +72,12 @@ var github = {
   },
 
   //grant user write access
-  addToRepoTeam(user, teamId, cb){
-    //TODO get github username from user object
-    var githubUser = "rissem"
+  addToTeam(githubUser, teamId, cb){
     _authenticateAdmin();
     api.orgs.addTeamMembership({
       id: teamId,
       user: githubUser
     }, cb)
-  },
-
-  addReviewerTeamToRepo(repo, cb){
-    _authenticateAdmin()
-    api.orgs.addTeamRepo({
-      id: reviewerTeamId,
-      user: org,
-      repo: repo
-    }, cb)
-  },
-
-  addUserToReviewerTeam(username, cb){
-    _authenticateAdmin()
-    api.orgs.addTeamMembership({
-      id: reviewerTeamId,
-      user: username
-    })
   },
 
   deleteTeam(teamId, cb){
@@ -107,6 +107,13 @@ var github = {
 
   addCustomREADME(cb){
 
+  },
+
+  setupRepo(repo, githubOwner, cb){
+    console.log(`creating repo ${repo} for ${githubOwner}`)
+    this.createRepo(repo, function(err, result){
+      cb(err, result)
+    })
   }
 }
 

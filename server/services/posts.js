@@ -4,6 +4,7 @@ import Svc              from '../services/_service'
 var Post                = require('../models/post')
 var Data                = require('./posts.data')
 var svc                 = new Svc(Post, logging)
+var github              = require("../services/wrappers/github")
 var {inflateHtml, addUrl} = Data.select.cb
 
 var get = {
@@ -150,8 +151,19 @@ var save = {
   },
 
   submitForReview(original, o, cb){
-    o.reviewReady = new Date()
-    svc.update(original._id, o, cb)
+    if (!github.isAuthed(this.user)){
+      return cb(Error("User must authorize GitHub for repo access"))
+    }
+    else {
+      //TODO compute this from post title
+      var repoName = "just-a-test-repo"
+      var githubOwner = this.user.social.gh.username
+      github.setupRepo(repoName, githubOwner, function(err, result){
+        //set reviewer team id
+        o.reviewReady = new Date()
+        svc.update(original._id, o, cb)
+      })
+    }
   },
 
   submitForPublication(original, o, cb){
