@@ -29,6 +29,18 @@ global.addLocalUser = (userKey, opts, done) ->
       done(clone.userKey)
   )
 
+global.addLocalGithubUser = (userKey, opts, done) ->
+  clone = getNewUserData(userKey)
+  UserService.localSignup.call(newUserSession(userKey), clone.email, clone.password, clone.name, (e, r) ->
+    data.users[clone.userKey] = r
+    db.Models.User.findOneAndUpdate({_id:r._id},{social: {gh: {username: "airpairtest", token: {token: "7d61d7fdd6e6553912e6dfbb4af6e9526dadce57"}}}},{upsert:true}, (err, user) ->
+      r.emailVerified = true
+      r.social = {gh: {username: "airpairtest", token: {token: "7d61d7fdd6e6553912e6dfbb4af6e9526dadce57"}}}
+      data.users[clone.userKey] = r
+      done(clone.userKey)
+    )
+  )
+
 
 global.addAndLoginLocalUser = (originalUserKey, done) ->
   addLocalUser originalUserKey, {}, (userKey) ->
@@ -54,11 +66,20 @@ global.addAndLoginLocalUserWithPayMethod = (originalUserKey, done) ->
       s.primaryPayMethodId = r._id
       done(s)
 
+global.addAndLoginLocalGithubUser = (originalUserKey, done) ->
+  addLocalGithubUser originalUserKey, {}, (userKey) ->
+    LOGIN userKey, data.users[userKey], ->
+      GET '/session/full', {}, (s) ->
+        s.userKey = userKey
+        done(s)
+
 
 stories = {
 
   addLocalUser,
+  addLocalGithubUser,
   addAndLoginLocalUser,
+  addAndLoginLocalGithubUser,
   addAndLoginLocalUserWithEmailVerified,
   addAndLoginLocalUserWithPayMethod,
 
