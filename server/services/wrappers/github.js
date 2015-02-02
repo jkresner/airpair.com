@@ -37,9 +37,10 @@ var github = {
   createRepo(repo, cb) {
     _authenticateAdmin();
     api.repos.createFromOrg({
+      // private: true,
       name: repo,
       org: org,
-      description: "Mike's Test Repo"
+      description: ""
     }, cb)
   },
 
@@ -116,33 +117,36 @@ var github = {
     }, cb);
   },
 
-  setupRepo(repo, githubOwner, cb){
+  setupRepo(repo, githubOwner, postContents, cb){
     // console.log(`setting up repo ${repo} for ${githubOwner}`)
     var _this = this
     this.createRepo(repo, function(err, result){
       //TODO Better error handling
-
-      if (err){console.error("ERR", err); return}
-      _this.addFile(repo, "README.md", "Please read me", "Add README.md", function(err, result){
+      //without a timeout repo is often not found immediately after creation
+      //should figure out a better way to handle this...
+      setTimeout(function(){
         if (err){console.error("ERR", err); return}
-        _this.addFile(repo, "post.md", "Your Post Here", "Initial Post", function(err, result){
+        _this.addFile(repo, "README.md", "Please read me", "Add README.md", function(err, result){
           if (err){console.error("ERR", err); return}
-          _this.createRepoReviewTeam(repo, function(err, result){
+          _this.addFile(repo, "post.md", "Your Post Here", postContents, function(err, result){
             if (err){console.error("ERR", err); return}
-            var reviewTeamId = result.id
-            _this.createRepoAuthorTeam(repo, function(err, result){
-              if (err){
-                console.error("ERR", err); return
-              } else  {
-                var authorTeamId = result.id
-                _this.addToTeam(githubOwner, authorTeamId, function(err, result){
-                  cb(null, {reviewTeamId})
-                })
-              }
+            _this.createRepoReviewTeam(repo, function(err, result){
+              if (err){console.error("ERR", err); return}
+              var reviewTeamId = result.id
+              _this.createRepoAuthorTeam(repo, function(err, result){
+                if (err){
+                  console.error("ERR", err); return
+                } else  {
+                  var authorTeamId = result.id
+                  _this.addToTeam(githubOwner, authorTeamId, function(err, result){
+                    cb(null, {reviewTeamId})
+                  })
+                }
+              })
             })
           })
         })
-      })
+      }, 2000)
     })
   }
 }

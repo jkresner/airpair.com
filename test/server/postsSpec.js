@@ -244,7 +244,7 @@ module.exports = () => describe("API: ", function() {
         })
       })
     })
-  })
+  }).timeout(20000) // 6 serial GitHub API calls
 
   it('allows reviews to be added to reviewReady posts', function(done) {
     addAndLoginLocalUser('mirs', function(s) {
