@@ -127,21 +127,19 @@ var github = {
       setTimeout(function(){
         if (err){console.error("ERR", err); return}
         _this.addFile(repo, "README.md", "Please read me", "Add README.md", function(err, result){
-          if (err){console.error("ERR", err); return}
+          if (err) return cb(e)
           _this.addFile(repo, "post.md", "Your Post Here", postContents, function(err, result){
-            if (err){console.error("ERR", err); return}
+            if (err) return cb(e)
             _this.createRepoReviewTeam(repo, function(err, result){
-              if (err){console.error("ERR", err); return}
+              if (err) return cb(e)
               var reviewTeamId = result.id
               _this.createRepoAuthorTeam(repo, function(err, result){
-                if (err){
-                  console.error("ERR", err); return
-                } else  {
-                  var authorTeamId = result.id
-                  _this.addToTeam(githubOwner, authorTeamId, function(err, result){
-                    cb(null, {reviewTeamId})
-                  })
-                }
+                if (err) return cb(e)
+                var authorTeamId = result.id
+                _this.addToTeam(githubOwner, authorTeamId, function(err, result){
+                  if (err) return cb(e)                  
+                  cb(null, {reviewTeamId})
+                })
               })
             })
           })

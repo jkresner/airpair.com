@@ -59,7 +59,7 @@ export default function(app) {
     .put('/posts/submitForReview/:postobj', authd, populateUser, API.Posts.submitForReview)
     .put('/posts/submitForPublication/:postobj', authd, API.Posts.submitForPublication)
     .put('/posts/addReview/:postobj', API.Posts.addReview)
-    .put('/posts/addEditor/:postobj', populateUser, API.Posts.addEditor)
+    .put('/posts/add-contributor/:postobj', populateUser, API.Posts.addContributor)
     .delete('/posts/:postobj', authd, API.Posts.deleteById)
     .post('/posts-toc',API.Posts.getTableOfContents)
 

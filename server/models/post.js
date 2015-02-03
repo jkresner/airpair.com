@@ -18,7 +18,7 @@ var Meta = {
   ogImage:      { type: String, trim: true },
   ogVideo:      { type: String, trim: true },
   ogUrl:        { type: String, lowercase: true, trim: true },
-  reviewTeamId: { type: String }
+  reviewTeamId: { type: String, unique: true, sparse: true}
 };
 
 var Author = {

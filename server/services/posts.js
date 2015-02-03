@@ -156,7 +156,7 @@ var save = {
     }
     else {
       //TODO compute this from post title (slug?)
-      var repoName = original.title
+      var repoName = original.slug
       var githubOwner = this.user.social.gh.username
       github.setupRepo(repoName, githubOwner, original.md, function(err, result){
         o.reviewReady = new Date()
@@ -182,7 +182,7 @@ var save = {
     svc.update(post._id, post, cb)
   },
 
-  addEditor(post, o, cb){
+  addContributor(post, o, cb){
     if (!github.isAuthed(this.user)){
       return cb(Error("User must authorize GitHub to become an editor"))
     } else {
