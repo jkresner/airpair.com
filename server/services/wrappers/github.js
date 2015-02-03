@@ -24,6 +24,13 @@ var _authenticateAdmin = function(){
   });
 }
 
+var _authenticateUser = function(user){
+  api.authenticate({
+    type: "oauth",
+    token: user.social.gh.token.token
+  })
+}
+
 var github = {
   isAuthed(user) {
     if (user.social && user.social.gh && user.social.gh.username &&
@@ -72,13 +79,20 @@ var github = {
     },cb)
   },
 
-  //grant user write access
   addToTeam(githubUser, teamId, cb){
     _authenticateAdmin();
     api.orgs.addTeamMembership({
       id: teamId,
       user: githubUser
     }, cb)
+  },
+
+  addContributor(user, repo, reviewerTeamId, cb){
+    var _this = this;
+    this.addToTeam(user.social.gh.username, reviewerTeamId, function(err, result){
+      if (err) return cb(err)
+      _this.fork(repo, user, cb)
+    })
   },
 
   deleteTeam(teamId, cb){
@@ -88,9 +102,10 @@ var github = {
      });
   },
 
-  fork(repo, cb){
-    _authenticateAdmin()
-    //TODO should be authenticating with user, not our acocunt
+  fork(repo, user, cb){
+    console.log("FORKING!")
+    _authenticateUser(user)
+    //TODO should be authenticating with user, not our account
     api.repos.fork({
       user: org,
       repo: repo
