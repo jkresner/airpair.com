@@ -1,5 +1,5 @@
 var logging               = true
-import * as PostsSvc      from '../services/posts'
+var PostsSvc              = require('../services/posts')
 import * as WorkshopsSvc  from '../services/workshops'
 var RSS                   = require('rss')
 

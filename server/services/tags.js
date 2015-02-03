@@ -4,7 +4,7 @@ var Tag                   = require('../models/tag')
 import BaseSvc            from '../services/_service'
 var svc                   = new BaseSvc(Tag, logging)
 import * as WorkshopsSvc  from './workshops'
-import * as PostsSvc      from './posts'
+var PostsSvc              = require('./posts')
 
 
 // function encode(term) {
