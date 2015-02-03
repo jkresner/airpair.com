@@ -261,20 +261,24 @@ module.exports = () => describe("API: ", function() {
     })
   })
 
-  it("allows editors to be added to reviewReady posts", function(done){
-    addAndLoginLocalGithubUser("robot4", function(s) {
+  it.only("allows editors to be added to reviewReady posts", function(done){
+    addAndLoginLocalGithubUser("robot4", function(s){
       var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
-      var d1 = { title: "test1", by: by, md: 'Test 1',
-        assetUrl: 'http://youtu.be/qlOAbrvjMBo', reviewReady:new Date(),
-        meta: {reviewTeamId: 1268728}}
+      var title = "test" + Math.floor(Math.random() * 100000000)
+      var d1 = { title: title, slug:title, by: by, md: 'Test 1', assetUrl: 'http://youtu.be/qlOAbrvjMBo' }
       POST('/posts', d1, {}, function(p1) {
-        PUT(`/posts/add-contributor/${p1._id}`, {}, {}, function(resp){
-          expect(resp.contributors[0].id).to.equal(s._id)
-          done()
+        PUT(`/posts/submitForReview/${p1._id}`, p1, {}, function(resp){
+          PUT(`/posts/${p1._id}`, p1, {}, function(resp){
+            PUT(`/posts/add-contributor/${p1._id}`, {}, {}, function(resp){
+              expect(resp.contributors[0].id).to.equal(s._id)
+              done()
+            })
+          })
         })
       })
     })
-  })
+  }).timeout(20*1000)
+
 
   it("allows contents to be updated from GitHub", function(done){
     addAndLoginLocalGithubUser("robot5", function(s){
@@ -295,7 +299,7 @@ module.exports = () => describe("API: ", function() {
     })
   }).timeout(20*1000)
 
-  it.only("allows GitHub to be updated from db", function(done){
+  it("allows GitHub to be updated from db", function(done){
     addAndLoginLocalGithubUser("robot6", function(s){
       var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
       var title = "test" + Math.floor(Math.random() * 100000000)

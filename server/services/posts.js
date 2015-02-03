@@ -204,7 +204,7 @@ var save = {
       post.contributors = post.contributors || []
       var githubUser = this.user.social.gh.username
       post.contributors.push({id: this.user._id, github: githubUser})
-      github.addToTeam(githubUser, post.meta.reviewTeamId, function(err, res){
+      github.addContributor(this.user, post.slug, post.meta.reviewTeamId, function(err, res){
         if (err){
           cb(err)
         } else {
