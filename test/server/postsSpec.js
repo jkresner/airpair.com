@@ -1,4 +1,5 @@
 import {getHashId} from '../../server/services/postsToc'
+var github = require("../../server/services/wrappers/github.js")
 
 module.exports = () => describe("API: ", function() {
 
@@ -269,7 +270,6 @@ module.exports = () => describe("API: ", function() {
       POST('/posts', d1, {}, function(p1) {
         PUT(`/posts/add-contributor/${p1._id}`, {}, {}, function(resp){
           expect(resp.contributors[0].id).to.equal(s._id)
-          console.log(resp)
           done()
         })
       })
@@ -295,7 +295,7 @@ module.exports = () => describe("API: ", function() {
     })
   }).timeout(20*1000)
 
-  it("allows GitHub to be updated from db", function(done){
+  it.only("allows GitHub to be updated from db", function(done){
     addAndLoginLocalGithubUser("robot6", function(s){
       var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
       var title = "test" + Math.floor(Math.random() * 100000000)
@@ -305,9 +305,10 @@ module.exports = () => describe("API: ", function() {
           p1.md = "New content for GitHub"
           PUT(`/posts/${p1._id}`, p1, {}, function(resp){
             PUT(`/posts/updateGithubFromDb/${p1._id}`, p1, {}, function(resp){
-              //TODO add assertions
-              //been manually checking GitHub so far..
-              done()
+              github.getFile(p1.slug, "post.md", function(err, resp){
+                expect(resp.string).to.equal("New content for GitHub")
+                done()
+              })
             })
           })
         })
