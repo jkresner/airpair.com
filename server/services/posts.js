@@ -167,6 +167,21 @@ var save = {
     }
   },
 
+  updateFromGithub(user, original, cb){
+    github.getFile(original.slug, "/post.md", function(err, result){
+      original.md = result.string
+      svc.update(original._id, original, cb)
+    })
+  },
+
+  updateGithubFromDb(user, original, cb){
+    //TODO mabye allow a message from the user?
+    github.updateFile(original.slug, "post.md", original.md, "Update post from AirPair.com", function(err, result){
+      if (err) return cb(err)
+      svc.update(original._id, original, cb)
+    })
+  },
+
   submitForPublication(original, o, cb){
     if (o.reviews < 5)
       return cb(svc.Forbidden("Must have at least 5 reviews"))

@@ -60,6 +60,8 @@ export default function(app) {
     .put('/posts/submitForPublication/:postobj', authd, API.Posts.submitForPublication)
     .put('/posts/addReview/:postobj', API.Posts.addReview)
     .put('/posts/add-contributor/:postobj', populateUser, API.Posts.addContributor)
+    .put('/posts/updateFromGithub/:postobj', API.Posts.updateFromGithub)
+    .put('/posts/updateGithubFromDb/:postobj', API.Posts.updateGithubFromDb)
     .delete('/posts/:postobj', authd, API.Posts.deleteById)
     .post('/posts-toc',API.Posts.getTableOfContents)
 

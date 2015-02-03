@@ -276,6 +276,45 @@ module.exports = () => describe("API: ", function() {
     })
   })
 
+  it("allows contents to be updated from GitHub", function(done){
+    addAndLoginLocalGithubUser("misr", function(s){
+      var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
+      var title = "test" + Math.floor(Math.random() * 100000000)
+      var d1 = { title: title, slug:title, by: by, md: 'Test 1', assetUrl: 'http://youtu.be/qlOAbrvjMBo' }
+      POST('/posts', d1, {}, function(p1) {
+        PUT(`/posts/submitForReview/${p1._id}`, p1, {}, function(resp){
+          p1.contents = "New content that will be erased when we update from GitHub"
+          PUT(`/posts/${p1._id}`, p1, {}, function(resp){
+            PUT(`/posts/updateFromGithub/${p1._id}`, p1, {}, function(resp){
+              expect(resp.md).to.equal("Your Post Here")
+              done()
+            })
+          })
+        })
+      })
+    })
+  }).timeout(20*1000)
+
+  it("allows GitHub to be updated from db", function(done){
+    addAndLoginLocalGithubUser("misr", function(s){
+      var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
+      var title = "test" + Math.floor(Math.random() * 100000000)
+      var d1 = { title: title, slug:title, by: by, md: 'Test 1', assetUrl: 'http://youtu.be/qlOAbrvjMBo' }
+      POST('/posts', d1, {}, function(p1) {
+        PUT(`/posts/submitForReview/${p1._id}`, p1, {}, function(resp){
+          p1.md = "New content for GitHub"
+          PUT(`/posts/${p1._id}`, p1, {}, function(resp){
+            PUT(`/posts/updateGithubFromDb/${p1._id}`, p1, {}, function(resp){
+              //TODO add assertions
+              //been manually checking GitHub so far..
+              done()
+            })
+          })
+        })
+      })
+    })
+  }).timeout(20*1000)
+
   it('does not allow submission for publication w/ <5 reviews', function(done) {
     addAndLoginLocalUser('misr', function(s) {
       var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }

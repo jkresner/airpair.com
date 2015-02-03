@@ -117,6 +117,38 @@ var github = {
     }, cb);
   },
 
+  updateFile(repo, path, content, msg, cb){
+    this.getFile(repo, path, function(err, result){
+      if (err) return cb(err)
+      // console.log("RESULT", result)
+      //TODO should use user's account
+      _authenticateAdmin()
+      api.repos.updateFile({
+        sha: result.sha,
+        user: org,
+        repo: repo,
+        path: path,
+        message: msg,
+        content: new Buffer(content).toString('base64')
+      }, cb)
+    })
+  },
+
+  conributedRepos(user){
+
+  },
+
+  getFile(repo, path, cb){
+    api.repos.getContent({
+      user: org,
+      repo: repo,
+      path: path
+    }, function (err, resp){
+      resp.string = new Buffer(resp.content, 'base64').toString('utf8');
+      cb(err, resp)
+    })
+  },
+
   setupRepo(repo, githubOwner, postContents, cb){
     // console.log(`setting up repo ${repo} for ${githubOwner}`)
     var _this = this
@@ -137,7 +169,7 @@ var github = {
                 if (err) return cb(e)
                 var authorTeamId = result.id
                 _this.addToTeam(githubOwner, authorTeamId, function(err, result){
-                  if (err) return cb(e)                  
+                  if (err) return cb(e)
                   cb(null, {reviewTeamId})
                 })
               })
