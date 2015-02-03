@@ -232,7 +232,7 @@ module.exports = () => describe("API: ", function() {
   })
 
   it("submit for review creates a repo with a README.md and a post.md file", function(done){
-    addAndLoginLocalGithubUser("mris", function(s) {
+    addAndLoginLocalGithubUser("mirs", function(s) {
       var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
       var title = "test" + Math.floor(Math.random() * 100000000)
       var d1 = { title: title, by: by, md: 'Test 1', assetUrl: 'http://youtu.be/qlOAbrvjMBo' }
@@ -247,7 +247,7 @@ module.exports = () => describe("API: ", function() {
   }).timeout(20000) // 6 serial GitHub API calls
 
   it('allows reviews to be added to reviewReady posts', function(done) {
-    addAndLoginLocalUser('mirs', function(s) {
+    addAndLoginLocalUser('miks', function(s) {
       var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
       var d1 = { title: "test 1", by: by, md: 'Test 1', assetUrl: 'http://youtu.be/qlOAbrvjMBo', reviewReady:new Date()}
       POST('/posts', d1, {}, function(p1) {
@@ -259,8 +259,8 @@ module.exports = () => describe("API: ", function() {
     })
   })
 
-  it.only("allows editors to be added to reviewReady posts", function(done){
-    addAndLoginLocalGithubUser("mris", function(s) {
+  it("allows editors to be added to reviewReady posts", function(done){
+    addAndLoginLocalGithubUser("mrik", function(s) {
       var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
       var d1 = { title: "test1", by: by, md: 'Test 1',
         assetUrl: 'http://youtu.be/qlOAbrvjMBo', reviewReady:new Date(),
@@ -276,7 +276,7 @@ module.exports = () => describe("API: ", function() {
   })
 
   it('does not allow submission for publication w/ <5 reviews', function(done) {
-    addAndLoginLocalUser('mrik', function(s) {
+    addAndLoginLocalUser('misr', function(s) {
       var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
       var d1 = { title: "test 1", by: by, md: 'Test 1', assetUrl: 'http://youtu.be/qlOAbrvjMBo' }
       POST('/posts', d1, {}, function(p1) {
@@ -289,7 +289,7 @@ module.exports = () => describe("API: ", function() {
   })
 
   it('allows submission for publication w/ 5 reviews', function(done) {
-    addAndLoginLocalUser('misr', function(s) {
+    addAndLoginLocalUser('mkis', function(s) {
       var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
       var d1 = { title: "test 1", by: by, md: 'Test 1', assetUrl: 'http://youtu.be/qlOAbrvjMBo', reviews: [
         {body: "this post is great", stars: 4},
@@ -308,7 +308,7 @@ module.exports = () => describe("API: ", function() {
   })
 
   it("does not allow publishing of posts w/o a publishReady timestamp", function(done){
-    addAndLoginLocalUser('ilap', function(s) {
+    addAndLoginLocalUser('elld', function(s) {
       var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
       var d1 = { title: "test 1", by: by, md: 'Test 1', assetUrl: 'http://youtu.be/qlOAbrvjMBo', slug: `no-publish-ready-${moment().format('X')}` }
       POST('/posts', d1, {}, function(p1) {
