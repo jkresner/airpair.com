@@ -46,19 +46,23 @@ var validation = {
     var isOwner = _.idsEqual(update.by.userId, user._id)
     if (!isOwner)
       return 'Post can only be submitted for review by its owner'
+    if (!update.slug)
+      return 'Slug cannot be null'
+    if (update.reviewReady)
+      return "This post has already been submitted for review"
   },
 
   submitForPublication()
   {
-    console.log("(validation) submitForPublication")
+    // console.log("(validation) submitForPublication")
   },
 
   addReview(user, postId, review)
   {
-    console.log("(validation) addReview", user, postId, review)
+    // console.log("(validation) addReview", user, postId, review)
   },
 
-  addEditor(user, postId){
+  addContributor(user, postId){
     // console.log("(validation)", user, postId)
   }
 

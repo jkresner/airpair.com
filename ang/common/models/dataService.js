@@ -24,7 +24,7 @@ angular.module('APDataSvc', [])
       publish: PUT((d)=>`/posts/publish/${d._id}`),
       deletePost: DELETE((d)=>`/posts/${d._id}`),
       submitForReview: PUT((d)=>`/posts/submitForReview/${d._id}`),
-      addEditor: PUT((d)=>`/posts/addEditor/${d._id}`)
+      addContributor: PUT((d)=>`/posts/add-contributor/${d._id}`)
       // getByUsername: GET((d)=>`/posts/by/${d.username}`),
       // getToc: GET((d)=>`/posts-toc`)
     }

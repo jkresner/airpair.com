@@ -220,8 +220,9 @@ module.exports = () => describe("API: ", function() {
   /* New Review Flow */
   it('submit for review fails without an authenticated GitHub account', function(done) {
     addAndLoginLocalUser('mris', function(s) {
+      var title = "test" + Math.floor(Math.random() * 100000000)
       var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
-      var d1 = { title: "test 1", by: by, md: 'Test 1', assetUrl: 'http://youtu.be/qlOAbrvjMBo' }
+      var d1 = { title: title, slug:title, by: by, md: 'Test 1', assetUrl: 'http://youtu.be/qlOAbrvjMBo' }
       POST('/posts', d1, {}, function(p1) {
         PUT(`/posts/submitForReview/${p1._id}`, p1, {status: 400}, function(resp){
           expect(resp.message).to.equal("User must authorize GitHub for repo access")
@@ -235,7 +236,7 @@ module.exports = () => describe("API: ", function() {
     addAndLoginLocalGithubUser("mirs", function(s) {
       var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
       var title = "test" + Math.floor(Math.random() * 100000000)
-      var d1 = { title: title, by: by, md: 'Test 1', assetUrl: 'http://youtu.be/qlOAbrvjMBo' }
+      var d1 = { title: title, slug:title, by: by, md: 'Test 1', assetUrl: 'http://youtu.be/qlOAbrvjMBo' }
       POST('/posts', d1, {}, function(p1) {
         PUT(`/posts/submitForReview/${p1._id}`, p1, {}, function(resp){
           expect(resp.reviewReady).to.exist
@@ -266,7 +267,7 @@ module.exports = () => describe("API: ", function() {
         assetUrl: 'http://youtu.be/qlOAbrvjMBo', reviewReady:new Date(),
         meta: {reviewTeamId: 1268728}}
       POST('/posts', d1, {}, function(p1) {
-        PUT(`/posts/addEditor/${p1._id}`, {}, {}, function(resp){
+        PUT(`/posts/add-contributor/${p1._id}`, {}, {}, function(resp){
           expect(resp.contributors[0].id).to.equal(s._id)
           console.log(resp)
           done()
