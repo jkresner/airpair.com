@@ -218,22 +218,37 @@ module.exports = () => describe("API: ", function() {
 
 
   /* New Review Flow */
-
-  it('submit for review', function(done) {
+  it('submit for review fails without an authenticated GitHub account', function(done) {
     addAndLoginLocalUser('mris', function(s) {
+      var title = "test" + Math.floor(Math.random() * 100000000)
       var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
-      var d1 = { title: "test 1", by: by, md: 'Test 1', assetUrl: 'http://youtu.be/qlOAbrvjMBo' }
+      var d1 = { title: title, slug:title, by: by, md: 'Test 1', assetUrl: 'http://youtu.be/qlOAbrvjMBo' }
       POST('/posts', d1, {}, function(p1) {
-        PUT(`/posts/submitForReview/${p1._id}`, p1, {}, function(resp){
-          expect(resp.reviewReady).to.exist
+        PUT(`/posts/submitForReview/${p1._id}`, p1, {status: 400}, function(resp){
+          expect(resp.message).to.equal("User must authorize GitHub for repo access")
           done()
         })
       })
     })
   })
 
+  it("submit for review creates a repo with a README.md and a post.md file", function(done){
+    addAndLoginLocalGithubUser("mirs", function(s) {
+      var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
+      var title = "test" + Math.floor(Math.random() * 100000000)
+      var d1 = { title: title, slug:title, by: by, md: 'Test 1', assetUrl: 'http://youtu.be/qlOAbrvjMBo' }
+      POST('/posts', d1, {}, function(p1) {
+        PUT(`/posts/submitForReview/${p1._id}`, p1, {}, function(resp){
+          expect(resp.reviewReady).to.exist
+          expect(resp.meta.reviewTeamId).to.exist
+          done()
+        })
+      })
+    })
+  }).timeout(20000) // 6 serial GitHub API calls
+
   it('allows reviews to be added to reviewReady posts', function(done) {
-    addAndLoginLocalUser('mirs', function(s) {
+    addAndLoginLocalUser('miks', function(s) {
       var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
       var d1 = { title: "test 1", by: by, md: 'Test 1', assetUrl: 'http://youtu.be/qlOAbrvjMBo', reviewReady:new Date()}
       POST('/posts', d1, {}, function(p1) {
@@ -245,8 +260,24 @@ module.exports = () => describe("API: ", function() {
     })
   })
 
+  it("allows editors to be added to reviewReady posts", function(done){
+    addAndLoginLocalGithubUser("mrik", function(s) {
+      var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
+      var d1 = { title: "test1", by: by, md: 'Test 1',
+        assetUrl: 'http://youtu.be/qlOAbrvjMBo', reviewReady:new Date(),
+        meta: {reviewTeamId: 1268728}}
+      POST('/posts', d1, {}, function(p1) {
+        PUT(`/posts/add-contributor/${p1._id}`, {}, {}, function(resp){
+          expect(resp.contributors[0].id).to.equal(s._id)
+          console.log(resp)
+          done()
+        })
+      })
+    })
+  })
+
   it('does not allow submission for publication w/ <5 reviews', function(done) {
-    addAndLoginLocalUser('mrik', function(s) {
+    addAndLoginLocalUser('misr', function(s) {
       var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
       var d1 = { title: "test 1", by: by, md: 'Test 1', assetUrl: 'http://youtu.be/qlOAbrvjMBo' }
       POST('/posts', d1, {}, function(p1) {
@@ -259,7 +290,7 @@ module.exports = () => describe("API: ", function() {
   })
 
   it('allows submission for publication w/ 5 reviews', function(done) {
-    addAndLoginLocalUser('misr', function(s) {
+    addAndLoginLocalUser('mkis', function(s) {
       var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
       var d1 = { title: "test 1", by: by, md: 'Test 1', assetUrl: 'http://youtu.be/qlOAbrvjMBo', reviews: [
         {body: "this post is great", stars: 4},
@@ -278,7 +309,7 @@ module.exports = () => describe("API: ", function() {
   })
 
   it("does not allow publishing of posts w/o a publishReady timestamp", function(done){
-    addAndLoginLocalUser('ilap', function(s) {
+    addAndLoginLocalUser('elld', function(s) {
       var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
       var d1 = { title: "test 1", by: by, md: 'Test 1', assetUrl: 'http://youtu.be/qlOAbrvjMBo', slug: `no-publish-ready-${moment().format('X')}` }
       POST('/posts', d1, {}, function(p1) {

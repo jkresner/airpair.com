@@ -165,6 +165,11 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
     });
   }
 
+  $scope.githubAuthed = () => {
+    return $scope.session.social && $scope.session.social.gh &&
+      $scope.session.social.gh.username
+  }
+
   $scope.aceChanged = function(e) {
     if ($scope.post.md == $scope.renderedMD) return
     console.log('aceChanged', $scope.post.md)
@@ -172,19 +177,19 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
     // $scope.previewMarkdown()
   };
 
+  $scope.loginGithubToSubmit = () => {
+    document.location.href = `/auth/github?returnTo=/posts/edit/${$scope.post._id}`
+  }
+
   $scope.submitForReview = () => {
-    console.log("submit post for review");
-    PostsService.submitForReview($scope.post, (r)=> {
+    //TODO handle GitHub redirect
+    DataService.posts.submitForReview($scope.post, (r)=> {
       $scope.post = _.extend(r, {submittedForReview: true});
     })
   }
 
   $scope.submitForPublication = () => {
     console.log("submit post for publication");
-    PostsService.submitForPublication($scope.post, (r)=> {
-      $scope.post = _.extend(r, {submittedForPublication: true});
-    })
-
   }
 })
 

@@ -4,6 +4,7 @@ import Svc              from '../services/_service'
 var Post                = require('../models/post')
 var Data                = require('./posts.data')
 var svc                 = new Svc(Post, logging)
+var github              = require("../services/wrappers/github")
 var {inflateHtml, addUrl} = Data.select.cb
 
 var get = {
@@ -150,8 +151,20 @@ var save = {
   },
 
   submitForReview(original, o, cb){
-    o.reviewReady = new Date()
-    svc.update(original._id, o, cb)
+    if (!github.isAuthed(this.user)){
+      return cb(Error("User must authorize GitHub for repo access"))
+    }
+    else {
+      //TODO compute this from post title (slug?)
+      var repoName = original.slug
+      var githubOwner = this.user.social.gh.username
+      github.setupRepo(repoName, githubOwner, original.md, function(err, result){
+        o.reviewReady = new Date()
+        o.meta = o.meta || {};
+        o.meta.reviewTeamId = result.reviewTeamId
+        svc.update(original._id, o, cb)
+      })
+    }
   },
 
   submitForPublication(original, o, cb){
@@ -167,6 +180,23 @@ var save = {
       post.reviews = []
     post.reviews.push(review)
     svc.update(post._id, post, cb)
+  },
+
+  addContributor(post, o, cb){
+    if (!github.isAuthed(this.user)){
+      return cb(Error("User must authorize GitHub to become an editor"))
+    } else {
+      post.contributors = post.contributors || []
+      var githubUser = this.user.social.gh.username
+      post.contributors.push({id: this.user._id, github: githubUser})
+      github.addToTeam(githubUser, post.meta.reviewTeamId, function(err, res){
+        if (err){
+          cb(err)
+        } else {
+          svc.update(post._id, post, cb)
+        }
+      })
+    }
   },
 
   deleteById(post, cb) {
