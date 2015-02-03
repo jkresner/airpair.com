@@ -45,8 +45,24 @@ var middleware = {
         }
       })
     }
-  }
+  },
 
+  populateUser(req, res, next) {
+    // if (logging) $log('bodyParamFn', paramName, req.body[paramName])
+
+    $callSvc(API.Users.svc.getById,req)(null, function(e, r) {
+      // if (!e && !r)
+      //   e = ErrorApi404(`${paramName} not found.`)
+      // else if (!e && typeof param == 'array' && param.length != r.length)
+      //   e = (`Not all ${paramName} found.`)
+      if (e) return next(e)
+      else {
+        req.user = r
+        // $log(`req.${paramName}`, req[paramName])
+        next()
+      }
+    })
+  }
 }
 
 module.exports = middleware

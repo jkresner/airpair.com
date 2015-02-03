@@ -23,6 +23,10 @@ var get = {
     svc.searchMany({ roles:role }, { fields: Data.select.usersInRole }, cb)
   },
 
+  getById(id, cb){
+    svc.searchOne({ _id:this.user._id },{}, cb)
+  },
+
   getSession(cb) {
     // $log('getSession anonymous'.magenta, this.user == null)
     if (this.user == null)

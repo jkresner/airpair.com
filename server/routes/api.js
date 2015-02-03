@@ -1,7 +1,7 @@
 var API = require('../api/_all')
 var {authd,setAnonSessionData} = require('../middleware/auth')
 var {adm,emailv} = require('../middleware/authz')
-var {bodyParam} = require('../middleware/data')
+var {bodyParam,populateUser} = require('../middleware/data')
 
 export default function(app) {
 
@@ -56,9 +56,10 @@ export default function(app) {
     .post('/posts', API.Posts.create)
     .put('/posts/:postobj', authd, API.Posts.update)
     .put('/posts/publish/:postobj', authd, API.Posts.publish)
-    .put('/posts/submitForReview/:postobj', authd, API.Posts.submitForReview)
+    .put('/posts/submitForReview/:postobj', authd, populateUser, API.Posts.submitForReview)
     .put('/posts/submitForPublication/:postobj', authd, API.Posts.submitForPublication)
     .put('/posts/addReview/:postobj', API.Posts.addReview)
+    .put('/posts/add-contributor/:postobj', populateUser, API.Posts.addContributor)
     .delete('/posts/:postobj', authd, API.Posts.deleteById)
     .post('/posts-toc',API.Posts.getTableOfContents)
 

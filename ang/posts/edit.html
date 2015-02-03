@@ -43,7 +43,15 @@
 
     <a class="btn" href="/posts/info/{{post._id}}" ng-disabled="!post.saved">Edit info</a>
 
-    <a class="btn" target="_blank" href="mailto:team@airpair.com?subject=Post%20Submission%20-%20{{post.title}}&body=Can%20you%20look%20at%20and%20publish%20my%20post:%0A%0Ahttps://www.airpair.com/posts/publish/{{ post._id }}%0A%0A{{post.by.name}}" ng-disabled="(!post.title && !post.by.bio) || !post.saved">Submit for review</a>
+    <a class="btn" target="_blank" href="mailto:team@airpair.com?subject=Post%20Submission%20-%20{{post.title}}&body=Can%20you%20look%20at%20and%20publish%20my%20post:%0A%0Ahttps://www.airpair.com/posts/publish/{{ post._id }}%0A%0A{{post.by.name}}" ng-disabled="(!post.title && !post.by.bio) || !post.saved">Submit for review</a>    
+
+    <!-- <a ng-if="!githubAuthed() && !post.reviewReady" class="btn" target="_blank" href=""
+      ng-disabled="(!post.title && !post.by.bio) || !post.saved"
+      ng-click="loginGithubToSubmit()">Login to Submit</a>
+
+    <a ng-if="githubAuthed() && !post.reviewReady" class="btn" target="_blank" href=""
+      ng-disabled="(!post.title && !post.by.bio) || !post.saved"
+      ng-click="submitForReview()">Submit for review</a> -->
 
     <button class="btn" ng-click="delete()" ng-if="!post.published">Delete</button>
 

@@ -1,15 +1,15 @@
 var GitHubApi = require("github");
 
-var accessToken = '91889a94f9898088ccf4b762fb31eb2a070151a2';
-var reviewerTeamId = '1263797';
+//this token must belong to an owner of the organization
+var adminAccessToken = config.auth.github.adminAccessToken
 //var org = "airpair"
-var org = "JustASimpleTestOrg";
+var org = config.auth.github.org
 
 var api = new GitHubApi({
   // required
   version: "3.0.0",
   // optional
-  debug: true,
+  // debug: true,
   protocol: "https",
   timeout: 5000,
   headers: {
@@ -20,28 +20,48 @@ var api = new GitHubApi({
 var _authenticateAdmin = function(){
   api.authenticate({
     type: "oauth",
-    token: accessToken
+    token: adminAccessToken
   });
 }
 
 var github = {
+  isAuthed(user) {
+    if (user.social && user.social.gh && user.social.gh.username &&
+      user.social.gh.token.token){
+      return true
+    } else {
+      return false
+    }
+  },
+
   createRepo(repo, cb) {
     _authenticateAdmin();
     api.repos.createFromOrg({
+      // private: true,
       name: repo,
       org: org,
-      description: "Mike's Test Repo"
+      description: ""
     }, cb)
   },
 
   //create a team w/ write access to a repo (name after repo)
-  createRepoTeam(repo, cb){
+  createRepoAuthorTeam(repo, cb){
     _authenticateAdmin()
     api.orgs.createTeam({
       org: org,
-      name: repo,
+      name: `${repo}-author`,
       repo_names: [`${org}/${repo}`],
       permission: 'push'
+    }, cb);
+  },
+
+  createRepoReviewTeam(repo, cb){
+    _authenticateAdmin()
+    api.orgs.createTeam({
+      org: org,
+      name: `${repo}-review`,
+      repo_names: [`${org}/${repo}`],
+      permission: 'pull'
     }, cb);
   },
 
@@ -53,31 +73,12 @@ var github = {
   },
 
   //grant user write access
-  addToRepoTeam(user, teamId, cb){
-    //TODO get github username from user object
-    var githubUser = "rissem"
+  addToTeam(githubUser, teamId, cb){
     _authenticateAdmin();
     api.orgs.addTeamMembership({
       id: teamId,
       user: githubUser
     }, cb)
-  },
-
-  addReviewerTeamToRepo(repo, cb){
-    _authenticateAdmin()
-    api.orgs.addTeamRepo({
-      id: reviewerTeamId,
-      user: org,
-      repo: repo
-    }, cb)
-  },
-
-  addUserToReviewerTeam(username, cb){
-    _authenticateAdmin()
-    api.orgs.addTeamMembership({
-      id: reviewerTeamId,
-      user: username
-    })
   },
 
   deleteTeam(teamId, cb){
@@ -100,13 +101,51 @@ var github = {
   events(cb){
     _authenticateAdmin()
     api.events.getFromUserOrg({
-      user: "rissem",
+      user: config.auth.github.username,
       org: org
     }, cb)
   },
 
-  addCustomREADME(cb){
+  addFile(repo, path, content, msg, cb){
+    _authenticateAdmin()
+    api.repos.createFile({
+      user: org,
+      repo: repo,
+      path: path,
+      message: msg,
+      content: new Buffer(content).toString('base64')
+    }, cb);
+  },
 
+  setupRepo(repo, githubOwner, postContents, cb){
+    // console.log(`setting up repo ${repo} for ${githubOwner}`)
+    var _this = this
+    this.createRepo(repo, function(err, result){
+      //TODO Better error handling
+      //without a timeout repo is often not found immediately after creation
+      //should figure out a better way to handle this...
+      setTimeout(function(){
+        if (err){console.error("ERR", err); return}
+        _this.addFile(repo, "README.md", "Please read me", "Add README.md", function(err, result){
+          if (err) return cb(e)
+          _this.addFile(repo, "post.md", "Your Post Here", postContents, function(err, result){
+            if (err) return cb(e)
+            _this.createRepoReviewTeam(repo, function(err, result){
+              if (err) return cb(e)
+              var reviewTeamId = result.id
+              _this.createRepoAuthorTeam(repo, function(err, result){
+                if (err) return cb(e)
+                var authorTeamId = result.id
+                _this.addToTeam(githubOwner, authorTeamId, function(err, result){
+                  if (err) return cb(e)                  
+                  cb(null, {reviewTeamId})
+                })
+              })
+            })
+          })
+        })
+      }, 2000)
+    })
   }
 }
 
