@@ -37,7 +37,7 @@ var github = {
   createRepo(repo, cb) {
     _authenticateAdmin();
     api.repos.createFromOrg({
-      // private: true,
+      private: config.auth.github.privateRepos,
       name: repo,
       org: org,
       description: ""

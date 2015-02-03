@@ -36,6 +36,7 @@ var cfg = {
       adminAccessToken: '7d61d7fdd6e6553912e6dfbb4af6e9526dadce57',
       adminUsername: "airpairtest",
       org: 'JustASimpleTestOrg',
+      privateRepos: false,
       scope: [ 'user', 'repo' ]
     },
     paypal: {
