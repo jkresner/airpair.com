@@ -197,12 +197,25 @@ section#landing.SOWelcome {
       opacity:0.9;
       background:white;
       float:right;
-      li { margin:8px 12px }
+      li { margin:0px 12px;
+        height:38px;
+        vertical-align:middle;
+        padding-top:10px;
+        .pw-widget {
+          margin-top:-4px
+        }
+      }
 
       @media only screen and (max-width:640px) {
-        padding-right:4px;
-        li { margin:10px 4px;font-size:13px }
+        padding-right:0px;
+        li {
+          height:35px;
+          margin:2px 4px 2px 4px;font-size:13px }
       }
+    }
+
+    .pw-widget {
+      adding-top:2px
     }
   }
 
@@ -277,7 +290,8 @@ section#landing.SOWelcome {
     // }
 
     @media only screen and (max-width:640px) {
-      p { margin-top:10px;font-size:16px }
+      height:240px;
+      p { margin-top:6px;font-size:15px }
     }
   }
 
@@ -307,7 +321,7 @@ section#landing.SOWelcome {
 
       @media only screen and (max-width:640px) {
         p { font-size:10px }
-        img { width:40px;height:40px;margin-top:-20px }
+        img { width:35px;height:35px;margin-top:-20px }
       }
     }
 
@@ -317,20 +331,17 @@ section#landing.SOWelcome {
       b { text-align:right;display:block;padding-right:65px }
     }
     .why {
-      img { max-width:100%;border:solid 2px @lightblue;margin:20px 0 20px 0 }
+      img { max-width:100%;border:solid 2px @lightblue;
+        margin:10px 0 10px 0;padding:5px 0px;
+      }
       li {
-        margin:20px 0
+        margin:10px 0 20px 0
       }
     }
 
     margin-bottom:20px;
 
     .prizes {
-      h3 {
-        font-size:20px;
-        color:@darkblue;
-      }
-
       .top-prizes {
         .ulNoStyle;
         li { background:@lightorange;border-radius:50%;margin:10px auto;
@@ -360,24 +371,35 @@ section#landing.SOWelcome {
       b { display:block }
       span { color:@lightorange }
       padding-bottom:50px;
+      .btn { width:100% }
     }
   }
 
+  .colA { width:46%;float:left;margin-right:55px;margin-bottom:30px;
 
+    h3 { font-size:20px; color:@darkblue;  }
+  }
+  .colB { width:47%;float:left;margin:auto;margin-bottom:30px }
 
   @media only screen and (max-width:640px) {
     .colA { width:95%;float:none;margin:auto }
     .colB { width:95%;float:none;margin:auto }
+
+    .pw-button-tumblr { display:none!important }
+    .pw-button-reddit { display:none!important }
   }
 
   .cta2 {
     clear:both;
-    height:100px;
+    height:120px;
     background:@darkblue;
     margin:20px 0;
-    padding:30px;
+    padding:20px;
     text-align:center;
-    .btn { margin:auto;width:300px; }
+    .btn { margin:0 auto 5px auto;width:280px; }
+    p { text-transform:uppercase;color:@lightorange;
+      margin:2px auto }
+    b { color:white }
   }
 
   .share {
@@ -385,10 +407,10 @@ section#landing.SOWelcome {
     clear:both;
     float:none;
     width:100%;
-    margin:20px auto 0 auto;
+    margin:40px auto 0 auto;
     padding:20px 0;
     height:100px;
-    // border-bottom:solid 1px @lightorange;
+    border-bottom:none;
   }
 }
 
