@@ -102,7 +102,7 @@ module.exports = -> describe "API", ->
                 done()
 
 
-  it 'Search tags for ruby on rails', (done) ->
+  it.skip 'Search tags for ruby on rails', (done) ->
     opts = { unauthenticated: true }
     GET '/tags/search/ruby on rails', opts, (s1) ->
       # expect(s1[0].slug).to.equal('ruby-on-rails')
