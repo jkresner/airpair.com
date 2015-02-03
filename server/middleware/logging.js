@@ -38,10 +38,10 @@ var middleware = {
       var uid = (req.user) ? req.user.email : req.sessionID
 
       if (config.env != 'test') {
-        $log(`errorHandle ${uid} ${req.method} ${req.url}`.red, JSON.stringify(req.body).white, (e.message || e).magenta)
+        $log(`errorHandle ${uid} ${req.method} ${req.url}`.red, JSON.stringify(req.body), (e.message || e).magenta)
         $error(e, req.user, req)
       } else {
-        $log(req.url.white + ' ' +(e.message || e).magenta)
+        $log(req.url + ' ' +(e.message || e).magenta)
       }
 
       if (e.fromApi)
