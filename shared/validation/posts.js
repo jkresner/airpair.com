@@ -82,7 +82,7 @@ var validation = {
 
   getUserContributions(cb){
     //TODO
-    console.log("validation")
+    // console.log("validation")
   }
 
 }
