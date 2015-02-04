@@ -63,13 +63,15 @@ var validation = {
 
   updateFromGithub(user, original, update){
     //TODO
+    if (! _.idsEqual(original.by.userId, user._id))
+      return "Not authorized"
     var isOwner = _.idsEqual(original.by.userId, user._id)
   },
 
-  updateGithubFromDb(user, original, update){
-    //TODO
-    console.log("TODO updateGithubFromDB Validation")
-    //only allow user to do this?
+  updateGithubHead(user, original, update){
+    if (! _.idsEqual(original.by.userId, user._id))
+      return "Not authorized"
+    //maybe allow editors as well?
   },
 
   submitForPublication()

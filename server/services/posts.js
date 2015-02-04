@@ -190,10 +190,11 @@ var save = {
     })
   },
 
-  updateGithubFromDb(user, original, cb){
+  updateGithubHead(user, original, cb){
     //TODO mabye allow a message from the user?
     github.updateFile(original.slug, "post.md", original.md, "Update post from AirPair.com", function(err, result){
       if (err) return cb(err)
+      //TODO record history
       svc.update(original._id, original, cb)
     })
   },

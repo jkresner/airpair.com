@@ -64,7 +64,7 @@ export default function(app) {
     .put('/posts/review/:postobj', API.Posts.addReview)
     .put('/posts/add-contributor/:postobj', populateUser, API.Posts.addContributor)
     .put('/posts/propagate-github/:postobj', API.Posts.updateFromGithub)
-    // .put('/posts/updateGithubFromDb/:postobj', API.Posts.updateGithubFromDb)
+    .put('/posts/updateGithubHead/:postobj', API.Posts.updateGithubHead)
     .delete('/posts/:postobj', authd, API.Posts.deleteById)
     .post('/posts-toc',API.Posts.getTableOfContents)
 
