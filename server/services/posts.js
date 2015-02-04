@@ -158,13 +158,29 @@ var save = {
       //TODO compute this from post title (slug?)
       var repoName = original.slug
       var githubOwner = this.user.social.gh.username
-      github.setupRepo(repoName, githubOwner, original.md, function(err, result){
+      github.setupRepo(repoName, githubOwner, original.md, this.user, function(err, result){
+        if (err) return cb(err)
         o.reviewReady = new Date()
         o.meta = o.meta || {};
         o.meta.reviewTeamId = result.reviewTeamId
         svc.update(original._id, o, cb)
       })
     }
+  },
+
+  updateFromGithub(user, original, cb){
+    github.getFile(original.slug, "/post.md", function(err, result){
+      original.md = result.string
+      svc.update(original._id, original, cb)
+    })
+  },
+
+  updateGithubFromDb(user, original, cb){
+    //TODO mabye allow a message from the user?
+    github.updateFile(original.slug, "post.md", original.md, "Update post from AirPair.com", function(err, result){
+      if (err) return cb(err)
+      svc.update(original._id, original, cb)
+    })
   },
 
   submitForPublication(original, o, cb){
@@ -189,7 +205,7 @@ var save = {
       post.contributors = post.contributors || []
       var githubUser = this.user.social.gh.username
       post.contributors.push({id: this.user._id, github: githubUser})
-      github.addToTeam(githubUser, post.meta.reviewTeamId, function(err, res){
+      github.addContributor(this.user, post.slug, post.meta.reviewTeamId, function(err, res){
         if (err){
           cb(err)
         } else {
@@ -201,8 +217,14 @@ var save = {
 
   deleteById(post, cb) {
     svc.deleteById(post._id, cb)
-  }
+  },
 
+  getUserContributions(cb){
+    github.getReviewRepos(this.user, function(err,resp){
+      if (err) return cb(err, null)
+      cb(null, resp)
+    })
+  }
 }
 
 

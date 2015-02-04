@@ -52,6 +52,8 @@ export default function(app) {
 
     .use(authd) //-- swap out for email verify or something
 
+
+    .get('/post-contributions', populateUser, API.Posts.getUserContributions)
     .get('/posts/:id', API.Posts.getById)
     .post('/posts', API.Posts.create)
     .put('/posts/:postobj', authd, API.Posts.update)
@@ -60,6 +62,8 @@ export default function(app) {
     .put('/posts/submitForPublication/:postobj', authd, API.Posts.submitForPublication)
     .put('/posts/addReview/:postobj', API.Posts.addReview)
     .put('/posts/add-contributor/:postobj', populateUser, API.Posts.addContributor)
+    .put('/posts/updateFromGithub/:postobj', API.Posts.updateFromGithub)
+    .put('/posts/updateGithubFromDb/:postobj', API.Posts.updateGithubFromDb)
     .delete('/posts/:postobj', authd, API.Posts.deleteById)
     .post('/posts-toc',API.Posts.getTableOfContents)
 
