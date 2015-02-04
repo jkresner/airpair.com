@@ -1,47 +1,5 @@
 var resolver = require('./../common/routes/helpers.js').resolveHelper;
 
-var defaultMD = `## Markdown authoring
-
-Type markdown to author your post...
-
-You will see your post update as you make changes. Don't forget to save your MD as you go!
-
-## Headings
-
-- Use h2 for headings
-- h1 is already reserved for your posts title.
-
-### h3 are good for sub-headings
-
-They will appear in your Table of contents.
-
-## Code blocks
-
-Code blocks are the same as github flavored fenced code blocks. You can
-
-\`\`\`
-No language specified
-\`\`\`
-
-\`\`\`coffeescript
-#Code blocks with language
-\`\`\`
-
-\`\`\`coffeescript,linenums=true
-#Code blocks with language and linenums
-() ->
-  coolness = true
-\`\`\`
-
-\`\`\`javascript,linenums=true
-//Code blocks for javascript
-function() {
-  var coolness = true
-}
-\`\`\`
-
-`
-
 angular.module("APPosts", ['APShare', 'APTagInput'])
 
 .config(function(apRouteProvider) {
@@ -108,9 +66,9 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
 
 })
 
-.controller('PostNewCtrl', function($scope, $location, DataService) {
+.controller('PostNewCtrl', function($scope, $location, DataService, StaticDataService) {
 
-  $scope.post = { md: defaultMD, by: $scope.session }
+  $scope.post = { md: StaticDataService.defaultPostMarkdown, by: $scope.session }
 
   $scope.save = () =>
     DataService.posts.create($scope.post, (result) => {
