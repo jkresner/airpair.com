@@ -218,10 +218,18 @@ var save = {
     if (!github.isAuthed(this.user)){
       return cb(Error("User must authorize GitHub to become a contributor"))
     } else {
-      post.contributors = post.contributors || []
       var githubUser = this.user.social.gh.username
-      post.contributors.push({id: this.user._id, github: githubUser})
-      github.addContributor(this.user, post.slug, post.github.reviewTeamId, function(err, res){
+      var _this = this
+      github.addContributor(_this.user, post.slug, post.github.reviewTeamId, function(err, res){
+        post.forkers = post.github.forkers || []
+        post.forkers.push({
+          userId: _this.user._id,
+          userAirPair: {_id: _this.user._id, name: _this.user.name, email: _this.email},
+          userGitHub: {
+            id: _this.user.social.gh.id,
+            username: _this.user.social.gh.username
+          }
+        })
         if (err){
           cb(err)
         } else {
@@ -236,10 +244,8 @@ var save = {
   },
 
   getUserContributions(cb){
-    github.getReviewRepos(this.user, function(err,resp){
-      if (err) return cb(err, null)
-      cb(null, resp)
-    })
+    //all the posts where the user is a forker
+    svc.searchMany(Data.query.forker(this.user._id), { field: Data.select.list }, cb)
   }
 }
 

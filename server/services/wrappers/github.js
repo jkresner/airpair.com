@@ -177,8 +177,14 @@ var github = {
     })
   },
 
-  conributedRepos(user){
-
+  //NOT WORKING, only returns meta info
+  getStats(repo, cb){
+    api.repos.getStatsCommitActivity({
+      user: org,
+      repo: repo
+    }, function(err, res){
+      cb(err, res)
+    })
   },
 
   getFile(repo, path, cb){

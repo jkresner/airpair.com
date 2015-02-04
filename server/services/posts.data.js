@@ -95,6 +95,16 @@ module.exports = {
 
     updated: {
       'updated' : { '$exists': true }
+    },
+
+    forker: function(userId){
+      return {
+        forkers: {
+          $elemMatch: {
+            userId: userId
+          }
+        }
+      }
     }
   }
 

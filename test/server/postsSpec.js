@@ -277,7 +277,7 @@ module.exports = () => describe.only("API: ", function() {
   })
 
   //TODO test with new contributor code
-  it.skip("allows editors to be added to reviewReady posts", function(done){
+  it("allows forkers to be added to reviewReady posts", function(done){
     addAndLoginLocalGithubUser("robot4", function(s){
       var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
       var title = "test" + Math.floor(Math.random() * 100000000)
@@ -287,9 +287,14 @@ module.exports = () => describe.only("API: ", function() {
         PUT(`/posts/submit/${p1._id}`, p1, {}, function(resp){
           PUT(`/posts/${p1._id}`, p1, {}, function(resp){
             PUT(`/posts/add-contributor/${p1._id}`, {}, {}, function(resp){
-              expect(resp.contributors[0].id).to.equal(s._id)
+              expect(resp.forkers.length).to.equal(1)
+              expect(resp.forkers[0].userAirPair.name).to.exist
+              expect(resp.forkers[0].userGitHub.username).to.exist
               GET(`/post-contributions`, {}, function(resp){
-                expect(resp).to.include(title)
+                // console.log("RESP", resp)
+                //return the user's one contribution
+                expect(resp.length).to.equal(1)
+                expect(resp[0].title).to.equal(title)
                 done()
               })
             })
@@ -297,7 +302,7 @@ module.exports = () => describe.only("API: ", function() {
         })
       })
     })
-  })//.timeout(20*1000)
+  }).timeout(20*1000)
 
 
   //store on last update
