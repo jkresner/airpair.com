@@ -1,6 +1,6 @@
 angular.module("APPostsDirectives", [])
 
-.directive('apPostListItem', function($parse) {
+.directive('apPostListItem', function() {
 
   return {
     restrict: 'E',
@@ -12,7 +12,7 @@ angular.module("APPostsDirectives", [])
 
 })
 
-.directive('welcomePostItem', function($parse) {
+.directive('welcomePostItem', function() {
 
   return {
     restrict: 'E',
@@ -23,6 +23,11 @@ angular.module("APPostsDirectives", [])
   }
 
 })
+
+.directive('bannerPostcomp', function() {
+  return { template: require('./bannerPostcomp.html') }
+})
+
 
 .directive('apPost', function(PageHlpr) {
 

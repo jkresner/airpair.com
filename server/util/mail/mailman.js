@@ -87,6 +87,12 @@ module.exports = function(mailProvider)
         hash
       }), cb)
     },
+    signupPostcompEmail(toUser, hash, cb) {
+      mailProvider.send(`${toUser.name} <${toUser.email}>`, renderEmail('signuppostcomp', {
+        firstName: util.firstName(toUser.name),
+        hash
+      }), cb)
+    },
     sendGotCreditEmail(toUser, credit, fromUser, cb) {
       mailProvider.send(`${toUser.name} <${toUser.email}>`, renderEmail('gotcredit', {
         firstName: util.firstName(toUser.name),

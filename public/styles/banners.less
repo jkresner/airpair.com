@@ -1,0 +1,51 @@
+
+.banner {
+  position:relative;
+  border:solid 1px white;
+}
+.banner:hover {
+  border:solid 1px @orange;
+  .btn { background:@orangehighlight; }
+}
+
+.banner-top {
+  display:block;
+  margin:20px 0;
+  width:902px;
+  height:90px;
+}
+
+.banner-100kpostcomp {
+  background:url('../img/pages/postscomp/banner.jpg');
+  text-align:right;
+  .btn {
+    font-size:13px;
+    padding:5px;
+    position:absolute;
+    top:35%;
+    right:15px;
+  }
+}
+
+@media only screen and (max-width:900px) {
+  .banner-top {
+    width:640px;
+  }
+
+  .banner-100kpostcomp {
+    background:url('../img/pages/postscomp/banner-640.png');
+    .btn {
+      font-size:12px;
+      padding:5px;
+      position:absolute;
+      top:35%;
+      right:-5px;
+    }
+  }
+}
+
+@media only screen and (max-width:640px) {
+  .banner-top {
+    display:none;
+  }
+}

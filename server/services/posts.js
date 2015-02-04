@@ -94,9 +94,9 @@ var get = {
     svc.searchMany(query, opts, addUrl(cb))
   },
 
-  getUsersPublished(username, cb) {
+  getUsersPublished(userId, cb) {
     var opts = { fields: Data.select.list, options: { sort: { 'published': -1 } } };
-    var query = _.extend({ 'by.username': username }, Data.query.published())
+    var query = _.extend({ 'by.userId': userId }, Data.query.published())
     svc.searchMany(query, opts, addUrl(cb))
   },
 

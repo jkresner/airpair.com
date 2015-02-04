@@ -43,13 +43,17 @@ export default function(app) {
       app.renderHbsViewData('tag', angularPageMeta,
         (req, cb) => TagsAPI.svc.getTagPage(req.tag, cb) ))
 
-    .get('/blog',
+    .get('/posts',
       app.renderHbsViewData('posts', { title: "Software Posts, Tutorials & Articles" },
         (req, cb) => PostsAPI.svc.getAllPublished(cb) ))
 
     .get('/posts/airpair-v1',
       app.renderHbsViewData('posts', null,
       (req, cb) => PostsAPI.svc.getUsersPublished('hackerpreneur', cb) ))
+
+    .get('/blog',
+      app.renderHbsViewData('posts', null,
+      (req, cb) => PostsAPI.svc.getUsersPublished('52ad320166a6f999a465fdc5', cb) ))
 
     .get('/:tag/posts/:post',
       trackView('post'),
