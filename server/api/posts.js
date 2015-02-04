@@ -5,6 +5,7 @@ export default initAPI(
 , {
 
   getUsersPosts: (req) => [],
+  getUserContributions: (req) => [],
   getTableOfContents: (req) => [req.body.md],
   getRecentPublished: (req) => [],
   getAllPublished: (req) => [],  //-- For indexable page

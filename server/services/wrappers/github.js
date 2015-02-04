@@ -1,8 +1,6 @@
 var GitHubApi = require("github");
 
-//this token must belong to an owner of the organization
 var adminAccessToken = config.auth.github.adminAccessToken
-//var org = "airpair"
 var org = config.auth.github.org
 
 var api = new GitHubApi({
@@ -79,19 +77,45 @@ var github = {
     },cb)
   },
 
-  addToTeam(githubUser, teamId, cb){
+  addToTeam(githubUser, teamId, user, cb){
     _authenticateAdmin();
     api.orgs.addTeamMembership({
       id: teamId,
       user: githubUser
-    }, cb)
+    }, function(err,res){
+      _authenticateUser(user)
+      api.user.editOrganizationMembership({
+        "org": org,
+        "state": 'active'
+      }, function(err, response){
+        if (err) return cb(err)
+        cb(null, response)
+      })
+    })
   },
 
   addContributor(user, repo, reviewerTeamId, cb){
     var _this = this;
-    this.addToTeam(user.social.gh.username, reviewerTeamId, function(err, result){
+    this.addToTeam(user.social.gh.username, reviewerTeamId, user, function(err, result){
       if (err) return cb(err)
       _this.fork(repo, user, cb)
+    })
+  },
+
+  getReviewRepos(user, cb){
+    _authenticateUser(user)
+
+    //TODO handle pagination
+    //will show all repos which it belongs to
+    api.repos.getFromOrg({
+      per_page: 100,
+      org: org,
+      type: "member" // [all,member or public]
+    }, function(err, res){
+      if (err) return cb(err)
+      cb(null, _.map(res, function(repo){
+        return repo.name
+      }))
     })
   },
 
@@ -103,7 +127,6 @@ var github = {
   },
 
   fork(repo, user, cb){
-    console.log("FORKING!")
     _authenticateUser(user)
     //TODO should be authenticating with user, not our account
     api.repos.fork({
@@ -121,7 +144,12 @@ var github = {
     }, cb)
   },
 
-  addFile(repo, path, content, msg, cb){
+  addFile(repo, path, content, msg, user, cb){
+    //TODO uncomment once invites are properly working
+    // if (user)
+    //   _authenticateUser(user)
+    // else
+    //   _authenticateAdmin()
     _authenticateAdmin()
     api.repos.createFile({
       user: org,
@@ -164,27 +192,27 @@ var github = {
     })
   },
 
-  setupRepo(repo, githubOwner, postContents, cb){
+  setupRepo(repo, githubOwner, postContents, user, cb){
     // console.log(`setting up repo ${repo} for ${githubOwner}`)
     var _this = this
     this.createRepo(repo, function(err, result){
       //TODO Better error handling
       //without a timeout repo is often not found immediately after creation
       //should figure out a better way to handle this...
+      if (err) return cb(err)
       setTimeout(function(){
-        if (err){console.error("ERR", err); return}
-        _this.addFile(repo, "README.md", "Please read me", "Add README.md", function(err, result){
-          if (err) return cb(e)
-          _this.addFile(repo, "post.md", "Your Post Here", postContents, function(err, result){
-            if (err) return cb(e)
-            _this.createRepoReviewTeam(repo, function(err, result){
-              if (err) return cb(e)
-              var reviewTeamId = result.id
-              _this.createRepoAuthorTeam(repo, function(err, result){
-                if (err) return cb(e)
-                var authorTeamId = result.id
-                _this.addToTeam(githubOwner, authorTeamId, function(err, result){
-                  if (err) return cb(e)
+        _this.addFile(repo, "README.md", "Please read me", "Add README.md", null, function(err, result){
+          if (err) return cb(err)
+          _this.createRepoReviewTeam(repo, function(err, result){
+            if (err) return cb(err)
+            var reviewTeamId = result.id
+            _this.createRepoAuthorTeam(repo, function(err, result){
+              if (err) return cb(err)
+              var authorTeamId = result.id
+              _this.addToTeam(githubOwner, authorTeamId, user, function(err, result){
+                if (err) return cb(err)
+                _this.addFile(repo, "post.md", "Your Post Here", postContents, user, function(err, result){
+                  if (err) return cb(err)
                   cb(null, {reviewTeamId})
                 })
               })

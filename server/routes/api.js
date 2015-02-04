@@ -52,6 +52,8 @@ export default function(app) {
 
     .use(authd) //-- swap out for email verify or something
 
+
+    .get('/post-contributions', populateUser, API.Posts.getUserContributions)
     .get('/posts/:id', API.Posts.getById)
     .post('/posts', API.Posts.create)
     .put('/posts/:postobj', authd, API.Posts.update)
