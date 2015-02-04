@@ -17,15 +17,28 @@ They will appear in your Table of contents.
 
 ## Code blocks
 
-    Code blocks start with 4 spaces.
+Code blocks are the same as github flavored fenced code blocks. You can
 
-To render code of a certain language, comments (e.g. <code>&lt;!--code lang=coffeescript linenums=true--&gt;</code>
-  followed by a line break, to indicate language and optionally show line numbers.
+\`\`\`
+No language specified
+\`\`\`
 
-<!--code lang=coffeescript linenums=true-->
+\`\`\`coffeescript
+#Code blocks with language
+\`\`\`
 
-    class NobodyWritesInCoffeeScriptAnymoreAnyway
-      truth: true
+\`\`\`coffeescript,linenums=true
+#Code blocks with language and linenums
+() ->
+  coolness = true
+\`\`\`
+
+\`\`\`javascript,linenums=true
+//Code blocks for javascript
+function() {
+  var coolness = true
+}
+\`\`\`
 
 `
 
