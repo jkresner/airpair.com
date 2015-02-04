@@ -1,0 +1,13 @@
+<div ng-if="p && p.md">
+  <p ng-if="calcReviewStep()">
+    <i>Next step:</i> To submit a draft for review by the community,
+    <span ng-if="wordcountTooLow">it must be at least 500 words. You've got about {{wordstogo}} to go.</span>
+    <a href="/posts/info/{{p._id}}" ng-if="needInfo">
+      <span ng-if="needTags">Tag your post.</span>
+      <span ng-if="needAssetUrl">Provide a featured media asset.</span>
+    </a>
+    <span ng-if="needGithub">Connect your github account so we can create a repo for you to accept pull request to.</span>
+    <span ng-if="submitForReview">Click Submit for Review!</span>
+  </p>
+</div>
+

@@ -23,3 +23,7 @@ angular.module("APUtil", [])
 .factory('OrdersUtil', function ordersUtilFactory() {
   return require('../../shared/orders.js')
 })
+
+.factory('PostsUtil', function postsUtilFactory() {
+  return require('../../shared/posts.js')
+})
