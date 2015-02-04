@@ -51,9 +51,7 @@ var Forker = new mongoose.Schema({
   userId:       { required: true, type: ObjectId, ref: 'User', index: true },
   userAirPair: {type: Shared.UserByte},
   userGitHub: {
-    id: {type: String},
-    username: {type: String},
-    gravatar: {type: String}
+    username: {type: String}
     //more?
   }
 })
@@ -80,7 +78,7 @@ module.exports = mongoose.model('Post', new mongoose.Schema({
   lastUpdated:  { type: Date }, // lasttime timestamp of update
 
   reviews:      { type: Array },
-  forkers:       { type: [Forker] },
+  forkers:      { type: [Forker] },
   github:       Github,
   slug:         { type: String, unique: true, sparse: true, lowercase: true, trim: true },
   title:        { required: true, type: String, trim: true },
