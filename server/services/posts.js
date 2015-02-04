@@ -94,9 +94,9 @@ var get = {
     svc.searchMany(query, opts, addUrl(cb))
   },
 
-  getUsersPublished(username, cb) {
+  getUsersPublished(userId, cb) {
     var opts = { fields: Data.select.list, options: { sort: { 'published': -1 } } };
-    var query = _.extend({ 'by.username': username }, Data.query.published())
+    var query = _.extend({ 'by.userId': userId }, Data.query.published())
     svc.searchMany(query, opts, addUrl(cb))
   },
 
@@ -106,10 +106,14 @@ var get = {
       if (!this.user) cb(e,r)
       else {
         r = _.first(r, 3)
-        var opts = { fields: Data.select.list, options: { sort: { 'created':-1, 'published':1  } } };
+        var opts = { options: { sort: { 'created':-1, 'published':1  } } };
         svc.searchMany({'by.userId':this.user._id},opts, (ee,rr) => {
           if (e || ee) return cb(e||ee)
-          cb(null, _.union(rr,_.where(r,(p)=>!_.idsEqual(p.by.userId,this.user._id))))
+          var posts = rr.slice()
+          for (var p of r) {
+            if (!_.idsEqual(p.by.userId,this.user._id)) posts.push(p)
+          }
+          cb(null, posts)
         })
       }
     })
@@ -150,20 +154,20 @@ var save = {
     if (cache) cache.flush('posts')
   },
 
-  submitForReview(original, o, cb){
+  submitForReview(post, cb){
     if (!github.isAuthed(this.user)){
       return cb(Error("User must authorize GitHub for repo access"))
     }
     else {
       //TODO compute this from post title (slug?)
-      var repoName = original.slug
+      var repoName = post.slug
       var githubOwner = this.user.social.gh.username
-      github.setupRepo(repoName, githubOwner, original.md, this.user, function(err, result){
-        if (err) return cb(err)
-        o.reviewReady = new Date()
-        o.meta = o.meta || {};
-        o.meta.reviewTeamId = result.reviewTeamId
-        svc.update(original._id, o, cb)
+      github.setupRepo(repoName, githubOwner, post.md, this.user, function(e, result){
+        if (e) return cb(e)
+        post.reviewReady = new Date()
+        post.meta = post.meta || {};
+        post.meta.reviewTeamId = result.reviewTeamId
+        svc.update(post._id, post, cb)
       })
     }
   },
@@ -200,7 +204,7 @@ var save = {
 
   addContributor(post, o, cb){
     if (!github.isAuthed(this.user)){
-      return cb(Error("User must authorize GitHub to become an editor"))
+      return cb(Error("User must authorize GitHub to become a contributor"))
     } else {
       post.contributors = post.contributors || []
       var githubUser = this.user.social.gh.username

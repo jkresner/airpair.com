@@ -1,6 +1,6 @@
 angular.module("APPostsDirectives", [])
 
-.directive('apPostListItem', function($parse) {
+.directive('apPostListItem', function() {
 
   return {
     restrict: 'E',
@@ -12,7 +12,7 @@ angular.module("APPostsDirectives", [])
 
 })
 
-.directive('welcomePostItem', function($parse) {
+.directive('welcomePostItem', function() {
 
   return {
     restrict: 'E',
@@ -24,17 +24,21 @@ angular.module("APPostsDirectives", [])
 
 })
 
+.directive('bannerPostcomp', function() {
+  return { template: require('./bannerPostcomp.html') }
+})
+
+
 .directive('apPost', function(PageHlpr) {
 
   return {
     template: require('./post.html'),
-    controller($scope,  $timeout, DataService) {
-      $timeout(function () {
-        // Refactor this into a nicer angularjs way
-        // console.log('DOM has finished rendering')
-        PageHlpr.highlightSyntax();
-      }, 100);
-
+    controller($scope, $timeout, DataService) {
+      $scope.$watch('preview.body', () =>{
+        $timeout(function() {
+          PageHlpr.highlightSyntax();
+        }, 10)
+      })
     }
   }
 

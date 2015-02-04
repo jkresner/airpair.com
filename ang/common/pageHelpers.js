@@ -10,12 +10,32 @@ window.storage = function(k, v) {
   }
 }
 
+var getHighlightConfigNew = function(elm) {
+  var cfg = {};
+  // console.log('getHighlightConfigNEW', elm)
+  var codeClass = $(elm).attr('class')
+  if (codeClass)
+  {
+    var lang = codeClass.match(/lang-\w+/i)
+    if (lang) {
+      cfg.lang = lang[0].replace('lang-','');
+    }
+    var linenums = (codeClass.match(/linenums=true+/i)||[])[0];
+    if (linenums)
+    {
+      cfg.linenums = true;
+    }
+  }
+  return cfg;
+}
+
+
 var getHighlightConfig = function(elm) {
   var cfg = {};
   var prevSibling = elm.previousSibling;
   var nodeValue = null;
   while (prevSibling && prevSibling.nodeType!==1) {
-      if (prevSibling.nodeType === 8) {
+      if (prevSibling.nodeType === 8 || prevSibling.nodeType === 3) {
           nodeValue = prevSibling.nodeValue;
       }
       prevSibling = prevSibling.previousSibling;
@@ -42,12 +62,11 @@ angular.module("APPageHelpers", [])
 
 .factory('PageHlpr', function NotificationsFactory($rootScope) {
 
-  this.highlightSyntax = function(opts) {
-    var elements = document.querySelectorAll('pre > code')
-    // console.log('Prism.highlightElement', elements);
-    for (var i=0, element; element = elements[i++];) {
-      var config = getHighlightConfig(element.parentNode);
-      if (!config || !config.lang) { return }
+  var highlightBlock = function(element, opts) {
+    var config = getHighlightConfig(element.parentNode);
+      if (!config || !config.lang)
+        config = getHighlightConfigNew(element);
+      if (!config || !config.lang) return
 
       if (config.linenums)
       {
@@ -65,6 +84,13 @@ angular.module("APPageHelpers", [])
             element.outerHTML+='<footer>Like learning from posts like this? <a onclick="$(\'#postSubscribeEmail\').focus()"><b>Subscribe for more!</b></a></footer>';
         }
       });
+  }
+
+  this.highlightSyntax = function(opts) {
+    var elements = document.querySelectorAll('pre > code')
+    // console.log('Prism.highlightElement', elements);
+    for (var i=0, element; element = elements[i++];) {
+      highlightBlock(element, opts)
     }
   }
 

@@ -44,12 +44,11 @@ module.exports = mongoose.model('Post', new mongoose.Schema({
   created:      { required: true, type: Date, 'default': Date },
   updated:      { required: true, type: Date, 'default': Date },
   published:    { type: Date },
-  reviewReady:  {type: Date},
-  publishReady: {type: Date},
-  reviews:      {type: Array},
-  contributors: {type: Array},
-
+  reviewReady:  { type: Date },
+  publishReady: { type: Date },
   publishedBy:  { type: ObjectId, ref: 'User' },
+  reviews:      { type: Array },
+  contributors: { type: Array },
   slug:         { type: String, unique: true, sparse: true, lowercase: true, trim: true },
   title:        { required: true, type: String, trim: true },
   md:           { required: true, type: String },
@@ -57,4 +56,5 @@ module.exports = mongoose.model('Post', new mongoose.Schema({
   tags:         { type: [TagSlim], 'default': [] },
   meta:         Meta,
   tmpl:         { type: String, enum:tmplType }
+
 }))
