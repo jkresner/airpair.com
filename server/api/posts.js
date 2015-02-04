@@ -19,7 +19,7 @@ export default initAPI(
   submitForReview: (req) => [req.postobj],
   submitForPublication: (req) => [req.postobj, req.body],
   updateFromGithub: (req) => [req.postobj, req.body],
-  updateGithubFromDb: (req) => [req.postobj, req.body],
+  updateGithubHead: (req) => [req.postobj, req.body],
   addReview: (req) => [req.postobj, req.body],
   addContributor: (req) => [req.postobj, req.body],
   deleteById: (req) => [req.postobj]

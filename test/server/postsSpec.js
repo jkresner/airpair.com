@@ -321,7 +321,7 @@ module.exports = () => describe.only("API: ", function() {
     })
   }).timeout(20*1000)
 
-  it.skip("allows GitHub to be updated from db", function(done){
+  it("allows an author to update HEAD", function(done){
     addAndLoginLocalGithubUser("robot6", function(s){
       var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
       var title = "test" + Math.floor(Math.random() * 100000000)
@@ -330,7 +330,7 @@ module.exports = () => describe.only("API: ", function() {
         PUT(`/posts/submit/${p1._id}`, p1, {}, function(resp){
           p1.md = "New content for GitHub"
           PUT(`/posts/${p1._id}`, p1, {}, function(resp){
-            PUT(`/posts/propagate-github/${p1._id}`, p1, {}, function(resp){
+            PUT(`/posts/updateGithubHead/${p1._id}`, p1, {}, function(resp){
               github.getFile(p1.slug, "post.md", function(err, resp){
                 expect(resp.string).to.equal("New content for GitHub")
                 done()
@@ -340,7 +340,7 @@ module.exports = () => describe.only("API: ", function() {
         })
       })
     })
-  })
+  }).timeout(10000)
 
   it.skip("allows author to update HEAD when a repository has does not exist", function(done){
     //create a post that is in review (or published), but has no repo
