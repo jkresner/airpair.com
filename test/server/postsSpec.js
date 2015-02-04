@@ -247,7 +247,13 @@ module.exports = () => describe("API: ", function() {
         PUT(`/posts/submit/${p1._id}`, p1, {}, function(resp){
           expect(resp.reviewReady).to.exist
           expect(resp.meta.reviewTeamId).to.exist
-          done()
+          GET(`/posts/review`, {}, function(resp){
+            var post = _.find(resp, function(post){
+              return post.title === title
+            })
+            expect(post).to.exist
+            done()
+          })
         })
       })
     })

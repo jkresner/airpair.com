@@ -119,6 +119,12 @@ var get = {
     })
   },
 
+  getPostsInReview(cb) {
+    var opts = { fields: Data.select.list, options: { sort: { 'created': -1 } } }
+    var query = Data.query.reviewReady()
+    svc.searchMany(query, opts, cb)
+  },
+
   getTableOfContents(markdown, cb) {
     return cb(null, {toc:Data.generateToc(markdown)})
   }

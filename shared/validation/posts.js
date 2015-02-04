@@ -92,8 +92,11 @@ var validation = {
   getUserContributions(cb){
     //TODO
     // console.log("validation")
-  }
+  },
 
+  getPostsInReview(cb){
+    //TODO
+  }
 }
 
 module.exports = validation
