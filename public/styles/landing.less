@@ -188,6 +188,8 @@ section#landing.SOWelcome {
 
 #postscomp {
   header {
+    a { color:black }
+    a:hover { color:orange }
     position:fixed;top:0px;
     right:0px;
     width:100%;z-index:1;
@@ -208,37 +210,40 @@ section#landing.SOWelcome {
 
       @media only screen and (max-width:640px) {
         padding-right:0px;
+        ul { padding-right:0px; }
         li {
           height:35px;
-          margin:2px 4px 2px 4px;font-size:13px }
+          margin:2px 3px 2px 5px;font-size:13px;
+        }
       }
     }
 
     .pw-widget {
-      adding-top:2px
+      background:white;
+      padding-top:2px;margin-left:-20px
     }
   }
 
   .fold {
-    height:320px;
+    height:360px;
     background:url('../img/pages/postscomp/banner-bg.png');
     // background:@lightblue;
     background-size:100%;
     text-align:center;
     hr { margin:0 }
     img.logo { margin:50px 0 10px 0;max-width:600px }
-    img.plus { margin:0px auto; }
-    img.typewriter { margin:0px 20px 0 0;width:130px }
-    img.github { margin:0px 35px;width:100px; }
-    img.hundred { margin:-20px 0 0 30px;width:200px }
+    img.plus { margin:0px 20px;width:40px  }
+    img.typewriter { margin:10px 10px 0 0;width:160px }
+    img.github { margin:10px 35px;width:120px; }
+    img.hundred { margin:-20px 0 0 30px;width:190px }
 
     @media only screen and (max-width:640px) {
-      height:180px;
+      height:160px;
       img.logo { margin:20px 0 16px 0;max-width:80% }
-      img.typewriter { margin:0px 10px 0 10px;width:50px }
-      img.plus { width:20px}
-      img.github { margin:0px 15px;width:50px }
-      img.hundred { margin:-10px 0 0 10px;width:90px }
+      img.typewriter { margin:0px 10px 0 10px;width:60px }
+      img.plus { margin:0px;width:20px }
+      img.github { margin:0px 10px;width:50px }
+      img.hundred { margin:-10px 10px 0 5px;width:86px }
     }
 
   }
@@ -261,12 +266,49 @@ section#landing.SOWelcome {
   }
 
   section.about {
-    // overflow:hidden;
-    height:250px;
+    height:520px;
     position:relative;
     color:white;
     background:@darkblue;
-    p { max-width:700px;margin:42px auto 0 auto;padding:20px;text-align:center;font-size:20px }
+    p { max-width:900px;
+      margin:22px auto 0 auto;
+      padding:36px 20px 0 20px;
+      text-align:center;
+      font-size:20px }
+    span { max-width:800px;
+      margin:2px auto 0 auto;padding:2px;
+      text-align:center;font-size:16px;color:@mediumgray;
+      display:block;
+      b { color:@turquoise;font-weight:normal; }
+    }
+    ul.stats {
+      .ulNoStyle;
+      // background:@darkblue;
+      opacity:0.9;
+      height:100px;
+      max-width:800px;
+      border:solid 1px @orange;
+      margin:30px auto 10px auto;
+      li {
+        h5 {
+          font-size:26px;text-transform:none;
+          color:white;
+        }
+        color:@mediumgray;
+        font-size:11px;
+        text-transform:uppercase;
+        padding:16px;
+        width:24%;
+        text-align:center;
+      }
+    }
+
+
+    img.flow {
+      max-width:840px;
+      margin:10px auto;
+      display:block;
+    }
 
     // .parallax {
       perspective: 1px;
@@ -277,21 +319,33 @@ section#landing.SOWelcome {
     .parallax__layer {
       // border:solid 1px red;
       img.viewsbg {
-        opacity:0.1;width:100%;
+        opacity:0.05;width:100%;
         position: absolute;
         top: 0;
       }
     }
-    // .parallax__layer--base {
-    //   transform: translateZ(0);
-    // }
-    // .parallax__layer--back {
-    //   transform: translateZ(-1px) scale(2);
-    // }
 
     @media only screen and (max-width:640px) {
-      height:240px;
-      p { margin-top:6px;font-size:15px }
+      .viewsbg { display:none }
+      height:340px;
+      p {  max-width:90%;margin-top:6px;font-size:14px;
+        padding:16px 5px 0 5px; }
+      ul.stats {
+        border:none;
+        margin-top:0;
+        li {
+          color:@turquoise;
+          width:32%;
+          h5 { font-size:16px; }
+          font-size:10px;
+        }
+      }
+      img.flow {
+        max-width:100%;
+        position:absolute;
+        bottom:0;
+        left:0;
+      }
     }
   }
 
@@ -372,6 +426,10 @@ section#landing.SOWelcome {
       span { color:@lightorange }
       padding-bottom:50px;
       .btn { width:100% }
+    }
+
+    .sponsors {
+      img { max-width:160px;margin:20px }
     }
   }
 
