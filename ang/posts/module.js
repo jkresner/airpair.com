@@ -1,5 +1,33 @@
 var resolver = require('./../common/routes/helpers.js').resolveHelper;
 
+var defaultMD = `## Markdown authoring
+
+Type markdown to author your post...
+
+You will see your post update as you make changes. Don't forget to save your MD as you go!
+
+## Headings
+
+- Use h2 for headings
+- h1 is already reserved for your posts title.
+
+### h3 are good for sub-headings
+
+They will appear in your Table of contents.
+
+## Code blocks
+
+    Code blocks start with 4 spaces.
+
+To render code of a certain language, comments (e.g. <code>&lt;!--code lang=coffeescript linenums=true--&gt;</code>
+  followed by a line break, to indicate language and optionally show line numbers.
+
+<!--code lang=coffeescript linenums=true-->
+
+    class NobodyWritesInCoffeeScriptAnymoreAnyway
+      truth: true
+
+`
 
 angular.module("APPosts", ['APShare', 'APTagInput'])
 
@@ -15,6 +43,36 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
   route('/posts/tag/:tagslug', 'PostsTagList', require('./listTag.html'))
   route('/posts/publish/:id', 'PostPublish', require('./publish.html'), { resolve: authd })
 
+})
+
+
+.directive('postStepHelper', function(PostsUtil) {
+  return {
+    template: require('./postStepHelper.html'),
+    scope: { p: '=post' },
+    controller($rootScope, $scope) {
+
+      $scope.calcReviewStep = () => {
+        if ($scope.p.reviewReady) return false
+
+        $scope.wordcount = PostsUtil.wordcount($scope.p.md)
+        $scope.wordstogo = PostsUtil.wordsTogoForReview($scope.wordcount)
+        if ($scope.wordcount < 500)
+          return $scope.wordcountTooLow = true
+
+        if (!$scope.p.assetUrl) $scope.needAssetUrl = true
+        if (!$scope.p.tags || $scope.p.tags.length == 0) $scope.needTags = true
+        if ($scope.needAssetUrl || $scope.needTags)
+          return $scope.needInfo = true
+
+        var social = $rootScope.session.social
+        if (!(social && social.gh && social.gh.username))
+          return $scope.needGithub = true
+
+        return $scope.submitForReview = true
+      }
+    }
+  }
 })
 
 
@@ -37,11 +95,9 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
 
 })
 
-
 .controller('PostNewCtrl', function($scope, $location, DataService) {
 
-  $scope.post = { md: "Type markdown ...", by: $scope.session }
-  console.log('post', $scope.post)
+  $scope.post = { md: defaultMD, by: $scope.session }
 
   $scope.save = () =>
     DataService.posts.create($scope.post, (result) => {
@@ -50,8 +106,8 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
 
 })
 
-.controller('PostInfoCtrl', function($scope, $routeParams, $location, DataService) {
-  var exampleImageUrl = 'http://www.airpair.com/static/img/css/blog/example2.jpg';
+.controller('PostInfoCtrl', function($scope, $routeParams, $location, DataService, PostsUtil) {
+  var exampleImageUrl = '//www.airpair.com/static/img/css/blog/example2.jpg';
   var exampleYoutubeUrl = 'http://youtu.be/qlOAbrvjMBo';
   var _id = $routeParams.id
 
@@ -79,6 +135,7 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
     if (!value)
     {
       $scope.preview.asset = `<span>Paste an image url or short link to a youtube movie<br /><br />Example<br /> ${exampleYoutubeUrl}<br /> ${exampleImageUrl}</span>`
+      return
     }
     else if (value.indexOf('http://youtu.be/') == 0) {
       var youTubeId = value.replace('http://youtu.be/', '');
@@ -88,21 +145,73 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
     {
       $scope.preview.asset = `<img src="${value}" />`;
     }
+
+    $scope.post.meta.ogImage = value;
+    if (value.indexOf('http://youtu.be/') == 0) {
+      var youTubeId = value.replace('http://youtu.be/','');
+      $scope.post.meta.ogImage = `https://img.youtube.com/vi/${youTubeId}/hqdefault.jpg`;
+      // ogVideo = `https://www.youtube-nocookie.com/v/${youTubeId}`;
+    }
+
   });
 
   $scope.exampleImage = function() { $scope.post.assetUrl = exampleImageUrl }
   $scope.exampleYouTube = function() { $scope.post.assetUrl = exampleYoutubeUrl }
 
   DataService.posts.getById({_id}, (r) => {
+
+    if (!r.slug)
+      r.slug = r.title.toLowerCase().replace(/ /g, '_').replace(/\W+/g, '').replace(/_/g, '-')
+
+    if (r.meta)
+    {
+      // if (r.meta.canonical) r.meta.canonical = r.meta.canonical.replace('http://','https://')
+      if (r.meta.ogImage) r.meta.ogImage = r.meta.ogImage.replace('http://','https://')
+
+      // $scope.canonical = r.meta.canonical;
+      // r.url = r.meta.canonical;
+    }
+    else
+    {
+      r.meta = {
+        title: r.title,
+        canonical: '',
+        ogType: 'article',
+        ogTitle: r.title,
+        ogImage: (r.assetUrl) ? r.assetUrl.replace('http://','https://') : null,
+        ogVideo: null,  // we don't want facebook to point to the original moview, but the post instead
+        ogUrl: ''
+      };
+    }
+
+    if (r.assetUrl)
+    {
+      if (r.assetUrl.indexOf('http://youtu.be/') == 0) {
+        var youTubeId = r.assetUrl.replace('http://youtu.be/','');
+        r.meta.ogImage = `https://img.youtube.com/vi/${youTubeId}/hqdefault.jpg`;
+        // ogVideo = `https://www.youtube-nocookie.com/v/${youTubeId}`;
+      }
+    }
+
     $scope.post = r
-    console.log('$scope.post', $scope.post)
+    // console.log('$scope.post', $scope.post)
   })
 
 })
 
-.controller('PostEditCtrl', function($scope, $routeParams, $location, DataService) {
+
+.controller('PostEditCtrl', function($scope, $routeParams, $location, $timeout, DataService, mdHelper, PostsUtil) {
   var _id = $routeParams.id
-  var firstRender = true
+
+  $scope.notReviewReady = function(post) {
+    if (!$scope.preview.wordcount) return false
+    console.log('readyForReview', post._id, $scope.preview.wordcount < 500
+      || !post.tags || post.tags.length == 0
+      || !post.assetUrl
+      || !$scope.githubAuthed())
+    return
+
+  }
 
   // var social = {}
   // if (session.github) social.gh = session.github.username
@@ -111,74 +220,74 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
   // if (session.twitter) social.tw = session.twitter.username
   // if (session.google) social.gp = session.google.id
   // $scope.post.by = _.extend(session, social)
+  // PostsService.getToc(md, function (tocMd) {
+  //   if (tocMd.toc)
+  //   {
+  //     marked(tocMd.toc, function (err, tocHtml) {
+  //       if (err) throw err;
 
-  var previewMarkdown = function(md, e) {
-    if ($scope.post)
-    {
-      if (firstRender) firstRender = false
-      else $scope.post.saved = false
+  //       tocHtml = tocHtml.substring(4, tocHtml.length-6)
+  //       $scope.preview.toc = tocHtml;
+  //     });
+  //   }
+  // });
+
+  var timer = null
+
+  var previewMarkdown = function() {
+    if (timer) {
+      $timeout.cancel(timer)
+      timer = null
     }
-    console.log('previewMarkdown', $scope.post.saved, md)
 
-    if (md)
-    {
-      $scope.renderedMD = md
-      marked(md, function (err, postHtml) {
-        if (err) throw err;
-        $scope.preview.body = postHtml;
-        // console.log('preview', $scope.preview.body)
-      })
+    var md = window.ace.edit($('#aceeditor')[0]).getSession().getValue()
+    if (!$scope.post) return
+    $scope.post.saved = $scope.savedMD == md
+    if ($scope.post.saved && $scope.preview.body) return
 
-      // PostsService.getToc(md, function (tocMd) {
-      //   if (tocMd.toc)
-      //   {
-      //     marked(tocMd.toc, function (err, tocHtml) {
-      //       if (err) throw err;
+    marked(md, function (err, postHtml) {
+      if (err) throw err;
+      $scope.post.md = md
+      $scope.preview.body = postHtml
+      $scope.preview.wordcount = PostsUtil.wordcount($scope.post.md)
 
-      //       tocHtml = tocHtml.substring(4, tocHtml.length-6)
-      //       $scope.preview.toc = tocHtml;
-      //     });
-      //   }
-      // });
+      $scope.notReviewReady = $scope.preview.wordcount < 500
+        || !$scope.post.tags || $scope.post.tags.length == 0
+        || !$scope.post.assetUrl
+        || !$scope.githubAuthed()
+    })
+  }
+  $scope.previewMarkdown = previewMarkdown
+
+  var setPostScope = (r) => {
+    $scope.post = r
+    $scope.savedMD = r.md
+    if (!$scope.aceLoaded) {
+      $scope.aceMD = r.md
+      $scope.preview = { }
+      $scope.aceLoaded = function(_editor) { }
     }
+    $timeout(previewMarkdown, 20)
+
+    $scope.throttleMS = r.md.length * 5
   }
 
-  DataService.posts.getById({_id}, (r) => {
-
-    $scope.post = _.extend(r, { saved: true })
-    $scope.preview = {}
-
-    $scope.aceLoaded = function(_editor) {
-      $scope.previewMarkdown = previewMarkdown
-
-    // $scope.$watch('post.md', $scope.previewMarkdown)
-    }
-  })
+  DataService.posts.getById({_id}, setPostScope)
 
   $scope.delete = () =>
-    DataService.posts.deletePost({_id}, (r) => $location.path('/posts'))
+    DataService.posts.deletePost({_id}, (r) => $location.path('/posts/me'))
 
-  $scope.save = () => {
-    // $scope.post.md = angular.element(document.querySelector( '#markdownTextarea' ) ).val(),
-    DataService.posts.update($scope.post, (r) => {
-      $scope.post = _.extend(r, { saved: true});
-    });
-  }
+  $scope.save = () =>
+    DataService.posts.update($scope.post, setPostScope)
+
+  $scope.aceChanged = function(e) {
+    if (timer == null)
+      timer = $timeout(previewMarkdown, $scope.throttleMS)
+  };
 
   $scope.githubAuthed = () => {
     return $scope.session.social && $scope.session.social.gh &&
       $scope.session.social.gh.username
-  }
-
-  $scope.aceChanged = function(e) {
-    if ($scope.post.md == $scope.renderedMD) return
-    console.log('aceChanged', $scope.post.md)
-    $scope.previewMarkdown($scope.post.md)
-    // $scope.previewMarkdown()
-  };
-
-  $scope.loginGithubToSubmit = () => {
-    document.location.href = `/auth/github?returnTo=/posts/edit/${$scope.post._id}`
   }
 
   $scope.submitForReview = () => {
@@ -193,9 +302,10 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
   }
 })
 
-  .controller('PostPublish', function($scope, PostsService, $routeParams) {
 
-    $scope.post = { tags: [] };
+.controller('PostPublish', function($scope, PostsService, $routeParams) {
+
+  $scope.post = { tags: [] };
 
 //     $scope.setPublishedOverride = () => {
 //       if (!$scope.post.publishedOverride)
@@ -216,42 +326,10 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
 
 //     PostsService.getById($routeParams.id, (r) => {
 
-//       if (!r.slug) r.slug = r.title.toLowerCase().replace(/ /g, '-');
-
-//       if (r.meta)
-//       {
-//         if (r.meta.canonical) r.meta.canonical = r.meta.canonical.replace('http://','https://')
-//         if (r.meta.ogImage) r.meta.ogImage = r.meta.ogImage.replace('http://','https://')
-
-//         $scope.canonical = r.meta.canonical;
-//         r.url = r.meta.canonical;
-//       }
-//       else
-//       {
-//         r.meta = {
-//           title: r.title,
-//           canonical: '',
-//           ogType: 'article',
-//           ogTitle: r.title,
-//           ogImage: r.assetUrl.replace('http://','https://'),
-//           ogVideo: null,  // we don't want facebook to point to the original moview, but the post instead
-//           ogUrl: ''
-//         };
-//       }
-
-//       if (r.assetUrl)
-//       {
-//         if (r.assetUrl.indexOf('http://youtu.be/') == 0) {
-//           var youTubeId = r.assetUrl.replace('http://youtu.be/','');
-//           r.meta.ogImage = `https://img.youtube.com/vi/${youTubeId}/hqdefault.jpg`;
-//           // ogVideo = `https://www.youtube-nocookie.com/v/${youTubeId}`;
-//         }
-//       }
-
-//       $scope.post = _.extend(r, { saved: false });
+      // $scope.post = _.extend(r, { saved: false });
 
 
-//       $scope.$watch('post.meta.canonical', (value) => $scope.post.meta.ogUrl = value );
+      // $scope.$watch('post.meta.canonical', (value) => $scope.post.meta.ogUrl = value );
 //     });
 
 
@@ -288,7 +366,7 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
 //       $scope.post.tags = _.without($scope.post.tags, tag);
 //     };
 
-  })
+})
 
 // //-- this will be refactored out of the posts module
 // .controller('ProfileCtrl', function($scope, PostsService, $routeParams, session) {

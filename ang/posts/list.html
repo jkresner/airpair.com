@@ -10,13 +10,6 @@
 
 <section id="posts" class="nomob">
 
-  <section id="recent">
-    <h3>Newest posts<span><a href="/blog" target="_self">See all</a></span></h3>
-    <a ng-href="{{p.url}}" target="_self" ng-repeat="p in recent">
-      <welcome-post-item post="p" ></welcome-post-item>
-    </a>
-  </section>
-
   <section id="myposts">
 
     <h3>Posts by me
@@ -26,10 +19,12 @@
       </div>
     </h3>
 
-
     <p ng-if="myposts && myposts == 0">
-    You have not created any posts yet.
+      You have not created any posts yet. Authoring posts on AirPair follow the following flow:
+
+      <img src="/static/img/pages/posts/post-authoring-flow.png" />
     </p>
+
 
     <div ng-if="myposts && myposts.length > 0" class="myposts">
       <table class="table table-striped">
@@ -37,6 +32,7 @@
           <th>Created</th>
           <th>Published</th>
           <th>Title</th>
+          <th></th>
           <th></th>
         </tr>
         <tr ng-repeat="p in myposts">
@@ -51,15 +47,25 @@
           <td>
             <a href="/posts/edit/{{p._id}}" target="_blank">edit</a>
           </td>
+          <td><post-step-helper post="p"></post-step-helper></td>
         </tr>
       </table>
     </div>
+
   </section>
+
+  <section id="recent">
+    <h3>Newest posts<span><a href="/blog" target="_self">See all</a></span></h3>
+    <a ng-href="{{p.url}}" target="_self" ng-repeat="p in recent">
+      <welcome-post-item post="p" ></welcome-post-item>
+    </a>
+  </section>
+
 
   <section id="contributions">
     <h3>Posts I'm contributing to</h3>
     <br />
-    <o>You have not suggested edits for anyone else's posts.</o>
+    <o>You have not forked anyone else's posts.</o>
   </section>
 
 

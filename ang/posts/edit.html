@@ -1,13 +1,15 @@
 <header>
   <ol class="entry-meta breadcrumb">
-    <li><a href="/posts">Posts</a></li>
+    <li><a href="/posts" target="_self">Posts</a></li>
+    <li><a href="/posts/me">My Posts</a></li>
     <li class="current">Author</li>
   </ol>
 </header>
 
+
 <section class="editornotsupported">
   <h3>You'll need a bigger screen...</h3>
-  <p>Authoring posts on AirPair requires minimum resolution of 1200px.</p>
+  <p>Authoring posts on AirPair requires a minimum resolution of 1200px.</p>
 </section>
 
 
@@ -17,14 +19,16 @@
 <div ng-if="post" class="editor-wrap">
 
   <section ng-if="aceLoaded" id="editor">
-    <div ui-ace="{
+    <div id="aceeditor" ui-ace="{
       useWrapMode:true,
       theme:'solarized_light',
       mode:'markdown',
       onLoad: aceLoaded,
-      onChange: aceChanged
+      onChange: aceChanged,
+      onBlur: previewMarkdown
     }"
-    ng-model="post.md">
+    ng-model="aceMD"
+    >
   </section>
 
   <section id="post">
@@ -41,28 +45,32 @@
 
     <button class="btn" ng-click="save()" ng-disabled="post.saved">Save MD</button>
 
-    <a class="btn" href="/posts/info/{{post._id}}" ng-disabled="!post.saved">Edit info</a>
+    <a class="btn" href="/posts/info/{{post._id}}" ng-disabled="preview.wordcount < 500">Edit info</a>
 
-    <a class="btn" target="_blank" href="mailto:team@airpair.com?subject=Post%20Submission%20-%20{{post.title}}&body=Can%20you%20look%20at%20and%20publish%20my%20post:%0A%0Ahttps://www.airpair.com/posts/publish/{{ post._id }}%0A%0A{{post.by.name}}" ng-disabled="(!post.title && !post.by.bio) || !post.saved">Submit for review</a>    
+    <a class="btn"
+      ng-if="!post.reviewReady"
+      ng-disabled="notReviewReady">Submit for review</a>
 
-    <!-- <a ng-if="!githubAuthed() && !post.reviewReady" class="btn" target="_blank" href=""
+    <a ng-if="!githubAuthed()" class="btn" target="_self" ng-href="/auth/github?returnTo=/posts/edit/{{post._id}}">Connect github</a>
+
+<!--     <a ng-if="githubAuthed() && !post.reviewReady" class="btn" target="_blank" href=""
       ng-disabled="(!post.title && !post.by.bio) || !post.saved"
-      ng-click="loginGithubToSubmit()">Login to Submit</a>
-
-    <a ng-if="githubAuthed() && !post.reviewReady" class="btn" target="_blank" href=""
-      ng-disabled="(!post.title && !post.by.bio) || !post.saved"
-      ng-click="submitForReview()">Submit for review</a> -->
-
+      ng-click="submitForReview()">Submit for review</a>
+ -->
     <button class="btn" ng-click="delete()" ng-if="!post.published">Delete</button>
 
   </div>
   <hr />
 
   <div id="tips">
-    <h6>Tips</h6>
-    <label>Markdown
-      <span>see <a href="http://daringfireball.net/projects/markdown/syntax" target="_blank">markdown guide</a><span></label>
-    <div ng-if="post._id">
+
+    <post-step-helper post="post"></post-step-helper>
+
+    <label ng-if="!post.reviewReady">
+      <span>Also see the <a href="http://daringfireball.net/projects/markdown/syntax" target="_blank">Markdown guide</a><span> and read our <a href="/posts/authoring-faq" target="_blank">Post authoring tips & faq</a>.
+    </label>
+
+    <!-- <div ng-if="post._id">
       <ul>
         <li>Use h2 (##) and lower (###) for headings in your markdown (title is already the h1).</li>
         <li>Prefix your headings with number like 1 1.1 1.2 2 etc.</li>
@@ -70,7 +78,7 @@
         </li>
         <li>escape characters with <code>\</code> to render them non markdown, e.g. for a list bullet you might <code>- \-</code></li>
       </ul>
-    </div>
+    </div> -->
   </div>
 
 
