@@ -65,6 +65,7 @@ angular.module("APCTAs", ['ngMessages','APAnalytics'])
   };
 })
 
+
 .directive('ctaHomeJoin', function(SessionService, CtaHelper) {
   return {
     template: require('./ctaHomeJoin.html'),
@@ -79,8 +80,25 @@ angular.module("APCTAs", ['ngMessages','APAnalytics'])
         () => { window.location = '/meet-experts' })
     }
   };
-
 })
+
+
+.directive('ctaPostCompJoin', function(SessionService, CtaHelper) {
+  return {
+    template: require('./ctaPostCompJoin.html'),
+    controller($scope) {
+
+      SessionService.onAuthenticated( (s) => $scope.data = { email: s.email, name: s.name } )
+
+      $scope.updateEmail = (model) => CtaHelper.updateEmail($scope, model,
+        () => { angular.element('#postCompJoinName').focus() })
+
+      $scope.submit = (formValid, data) => CtaHelper.submit($scope, 'postCompSignup', formValid, data,
+        () => {})
+    }
+  };
+})
+
 
 
 .directive('ctaRequestSignup', function(SessionService, CtaHelper) {

@@ -1,15 +1,17 @@
 <header>
   <ol class="entry-meta breadcrumb">
-    <li><a href="/learn">Learn</a></li>
+    <!-- <li><a href="/learn">Learn</a></li> -->
     <li><a href="/posts">Posts</a></li>
     <li class="current">{{ tag.name }}</li>
   </ol>
 </header>
 
+<banner-postcomp></banner-postcomp>
+
 <section id="postslist">
 
   <section id="recent">
-    <h3>{{ tag.name }} posts<span><a href="/posts" target="_self">Recent posts</a></span></h3>
+    <h3>{{ tag.name }} posts<span><a href="/posts" target="_self">All posts</a></span></h3>
     <div class="posts recent">
       <ap-post-list-item post="p" ng-repeat="p in tagposts"></ap-post-list-item>
     </div>

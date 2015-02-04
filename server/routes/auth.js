@@ -22,6 +22,7 @@ export default function(app) {
     .post('/signup', mw.authAlreadyDone, auth.local.signup, mw.setFirebaseTokenOnSession)
     .post('/signup-home', mw.authAlreadyDone, mw.setFastSingupPassword('home'), auth.local.signup, mw.setFirebaseTokenOnSession)
     .post('/signup-so', mw.authAlreadyDone, mw.setFastSingupPassword('so'), auth.local.signup, mw.setFirebaseTokenOnSession)
+    .post('/signup-postcomp', mw.authAlreadyDone, mw.setFastSingupPassword('postcomp'), auth.local.signup, mw.setFirebaseTokenOnSession)
     .post('/subscribe', mw.authAlreadyDone, mw.setFastSingupPassword('subscribe'), auth.local.signup, mw.setFirebaseTokenOnSession)
     .get('/google', auth.google.oAuth)
     .get('/google/callback', auth.google.oAuth, mw.setFirebaseTokenOnSession, mw.authDone)

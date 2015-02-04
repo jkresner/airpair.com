@@ -3,9 +3,6 @@ angular.module('APInputs', ['ui.bootstrap','angularLoad'])
 
   .directive('locationInput', function(angularLoad) {
 
-    var src = 'https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places&callback=mapInitialize';
-    var ngLoadPromise = angularLoad.loadScript(src);
-
     return {
       restrict: 'EA',
       template: require('./locationInput.html'),
@@ -16,6 +13,10 @@ angular.module('APInputs', ['ui.bootstrap','angularLoad'])
         details: '=?'
       },
       link: function(scope, element, attrs) {
+
+        var src = 'https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places&callback=mapInitialize';
+        var ngLoadPromise = angularLoad.loadScript(src);
+
         var keymap = [
           9, //tab:
           13, //enter:

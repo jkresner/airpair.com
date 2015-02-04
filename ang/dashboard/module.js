@@ -13,7 +13,7 @@ angular.module("APDashboard", ['APFilters', 'APSvcSession',
 })
 
 
-.controller('DashboardCtrl', function($scope, $location, DataService, SessionService) {
+.controller('DashboardCtrl', function($scope, $location, DataService, SessionService, StaticDataService) {
 
   SessionService.onAuthenticated(function() {
     if (!$scope.session._id) $location.path(`/about`)
@@ -25,12 +25,11 @@ angular.module("APDashboard", ['APFilters', 'APSvcSession',
     }
   })
 
+  $scope.posts = { newest: [StaticDataService.getNewestPost()] }
 
   DataService.requests.getMyRequests({}, function(result) {
     $scope.requests = result
   })
-
-
 
   var setSeen = (siteNotifications) => {
     $scope.seen = []
@@ -51,6 +50,10 @@ angular.module("APDashboard", ['APFilters', 'APSvcSession',
 
 .directive('dashboardBookmarks', function() {
   return { template: require('./bookmarks.html') }
+})
+
+.directive('dashboardPosts', function() {
+  return { template: require('./posts.html') }
 })
 
 .directive('dashboardExperts', function() {
