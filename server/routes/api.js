@@ -41,6 +41,7 @@ export default function(app) {
     .get('/tags/:slug', authd, API.Tags.getBySlug)
 
     .get('/posts/me', API.Posts.getUsersPosts)
+    .get('/posts/review', API.Posts.getPostsInReview)
     .get('/posts/recent', API.Posts.getRecentPublished)
     .get('/posts/by/:id', API.Posts.getUsersPublished)
     .get('/posts/tag/:tag', API.Posts.getByTag)

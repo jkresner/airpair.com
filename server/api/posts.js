@@ -5,6 +5,7 @@ export default initAPI(
 , {
 
   getUsersPosts: (req) => [],
+  getPostsInReview: (req) => [],
   getUserContributions: (req) => [],
   getTableOfContents: (req) => [req.body.md],
   getRecentPublished: (req) => [],

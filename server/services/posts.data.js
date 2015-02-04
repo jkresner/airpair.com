@@ -88,6 +88,10 @@ module.exports = {
       return query
     },
 
+    reviewReady: function(){
+      return {'reviewReady': {'$exists': true}}
+    },
+
     updated: {
       'updated' : { '$exists': true }
     }
