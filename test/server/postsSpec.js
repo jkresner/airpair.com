@@ -265,13 +265,17 @@ module.exports = () => describe("API: ", function() {
     addAndLoginLocalGithubUser("robot4", function(s){
       var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
       var title = "test" + Math.floor(Math.random() * 100000000)
+      // console.log("TITLE", title)
       var d1 = { title: title, slug:title, by: by, md: 'Test 1', assetUrl: 'http://youtu.be/qlOAbrvjMBo' }
       POST('/posts', d1, {}, function(p1) {
         PUT(`/posts/submitForReview/${p1._id}`, p1, {}, function(resp){
           PUT(`/posts/${p1._id}`, p1, {}, function(resp){
             PUT(`/posts/add-contributor/${p1._id}`, {}, {}, function(resp){
               expect(resp.contributors[0].id).to.equal(s._id)
-              done()
+              GET(`/post-contributions`, {}, function(resp){
+                expect(resp).to.include(title)
+                done()
+              })
             })
           })
         })

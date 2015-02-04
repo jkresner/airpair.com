@@ -158,7 +158,8 @@ var save = {
       //TODO compute this from post title (slug?)
       var repoName = original.slug
       var githubOwner = this.user.social.gh.username
-      github.setupRepo(repoName, githubOwner, original.md, function(err, result){
+      github.setupRepo(repoName, githubOwner, original.md, this.user, function(err, result){
+        if (err) return cb(err)
         o.reviewReady = new Date()
         o.meta = o.meta || {};
         o.meta.reviewTeamId = result.reviewTeamId
@@ -216,8 +217,14 @@ var save = {
 
   deleteById(post, cb) {
     svc.deleteById(post._id, cb)
-  }
+  },
 
+  getUserContributions(cb){
+    github.getReviewRepos(this.user, function(err,resp){
+      if (err) return cb(err, null)
+      cb(null, resp)
+    })
+  }
 }
 
 
