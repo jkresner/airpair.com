@@ -33,9 +33,9 @@ global.addLocalGithubUser = (userKey, opts, done) ->
   clone = getNewUserData(userKey)
   UserService.localSignup.call(newUserSession(userKey), clone.email, clone.password, clone.name, (e, r) ->
     data.users[clone.userKey] = r
-    db.Models.User.findOneAndUpdate({_id:r._id},{social: {gh: {username: "airpairtest", token: {token: "7d61d7fdd6e6553912e6dfbb4af6e9526dadce57"}}}},{upsert:true}, (err, user) ->
+    db.Models.User.findOneAndUpdate({_id:r._id},{social: {gh: {username: "airpairtestreviewer", token: {token: "bc9a4b0e5ca18b5ee39bc8cbecb07586c4fbe9c4"}}}},{upsert:true}, (err, user) ->
       r.emailVerified = true
-      r.social = {gh: {username: "airpairtest", token: {token: "7d61d7fdd6e6553912e6dfbb4af6e9526dadce57"}}}
+      r.social = {gh: {username: "airpairtestreviewer", token: {token: "bc9a4b0e5ca18b5ee39bc8cbecb07586c4fbe9c4"}}}
       data.users[clone.userKey] = r
       done(clone.userKey)
     )

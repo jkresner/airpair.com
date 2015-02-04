@@ -123,6 +123,25 @@ module.exports = {
 
   tybr: { name: "Tyler Baur", email: "tb@airtest.com"},
 
+  robot1 : { name: "Robot1", email: "robot1@hotmail.com"},
+  robot2 : { name: "Robot2", email: "robot2@hotmail.com"},
+  robot3 : { name: "Robot3", email: "robot3@hotmail.com"},
+  robot4 : { name: "Robot4", email: "robot4@hotmail.com"},
+  robot5 : { name: "Robot5", email: "robot5@hotmail.com"},
+  robot6 : { name: "Robot6", email: "robot6@hotmail.com"},
+  robot7 : { name: "Robot7", email: "robot7@hotmail.com"},
+  robot8 : { name: "Robot8", email: "robot8@hotmail.com"},
+  robot9 : { name: "Robot9", email: "robot9@hotmail.com"},
+  robot10 : { name: "Robot10", email: "robot10@hotmail.com"},
+  robot11 : { name: "Robot11", email: "robot11@hotmail.com"},
+  robot12 : { name: "Robot12", email: "robot12@hotmail.com"},
+  robot13 : { name: "Robot13", email: "robot13@hotmail.com"},
+  robot14 : { name: "Robot14", email: "robot14@hotmail.com"},
+  robot15 : { name: "Robot15", email: "robot15@hotmail.com"},
+  robot16 : { name: "Robot16", email: "robot16@hotmail.com"},
+  robot17 : { name: "Robot17", email: "robot17@hotmail.com"},
+  robot18 : { name: "Robot18", email: "robot18@hotmail.com"},
+
   admin: {
     "_id" : "54551be15f221efa174238d1",
     "googleId" : "199992380360999999999",

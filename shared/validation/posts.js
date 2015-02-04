@@ -52,18 +52,37 @@ var validation = {
       return "This post has already been submitted for review"
   },
 
+  updateFromGithub(user, original, update){
+    //TODO
+    var isOwner = _.idsEqual(original.by.userId, user._id)
+  },
+
+  updateGithubFromDb(user, original, update){
+    //TODO
+    console.log("TODO updateGithubFromDB Validation")
+    //only allow user to do this?
+  },
+
   submitForPublication()
   {
+    //TODO
     // console.log("(validation) submitForPublication")
   },
 
   addReview(user, postId, review)
   {
+    //TODO
     // console.log("(validation) addReview", user, postId, review)
   },
 
   addContributor(user, postId){
+    //TODO
     // console.log("(validation)", user, postId)
+  },
+
+  getUserContributions(cb){
+    //TODO
+    // console.log("validation")
   }
 
 }
