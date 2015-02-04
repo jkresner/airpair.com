@@ -238,7 +238,7 @@ module.exports = () => describe.only("API: ", function() {
     })
   })
 
-  it.only("submit for review creates a repo with a README.md and a post.md file", function(done){
+  it("submit for review creates a repo with a README.md and a post.md file", function(done){
     addAndLoginLocalGithubUser("robot2", function(s) {
       var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
       var title = "test" + Math.floor(Math.random() * 100000000)
@@ -302,7 +302,7 @@ module.exports = () => describe.only("API: ", function() {
 
   //store on last update
   //TODO maybe store a history soon..
-  it("allows contents to be updated from GitHub", function(done){
+  it("allows contents to be updated from GitHub as author when in review", function(done){
     addAndLoginLocalGithubUser("robot5", function(s){
       var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
       var title = "test" + Math.floor(Math.random() * 100000000)
@@ -313,6 +313,7 @@ module.exports = () => describe.only("API: ", function() {
           PUT(`/posts/${p1._id}`, p1, {}, function(resp){
             PUT(`/posts/propagate-github/${p1._id}`, p1, {}, function(resp){
               expect(resp.md).to.equal(lotsOfWords)
+              //also check that event data is present here
               done()
             })
           })
@@ -320,6 +321,43 @@ module.exports = () => describe.only("API: ", function() {
       })
     })
   }).timeout(20*1000)
+
+  it("allows contents to be updated from GitHub as editor", function(done){
+    addAndLoginLocalGithubUser("robot10", function(s){
+      var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
+      var title = "test" + Math.floor(Math.random() * 100000000)
+      var d1 = { title: title, slug:title, by: by, md: lotsOfWords, assetUrl: 'http://youtu.be/qlOAbrvjMBo' }
+      POST('/posts', d1, {}, function(p1) {
+        PUT(`/posts/submit/${p1._id}`, p1, {}, function(resp){
+          p1.contents = "New content that will be erased when we update from GitHub"
+          PUT(`/posts/${p1._id}`, p1, {}, function(resp){
+            LOGIN('edap', data.users.edap, function() {
+              PUT(`/posts/propagate-github/${p1._id}`, p1, {}, function(resp){
+                expect(resp.md).to.equal(lotsOfWords)
+                done()
+              })
+            })
+          })
+        })
+      })
+    })
+  }).timeout(20*1000)
+
+  it("does not allow contents to be updated from GitHub as author once published", function(done){
+    addAndLoginLocalGithubUser("robot11", function(s){
+      var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
+      var title = "test" + Math.floor(Math.random() * 100000000)
+      var d1 = { title: title, slug:title, by: by, md: lotsOfWords, assetUrl: 'http://youtu.be/qlOAbrvjMBo',  published: Date.now()}
+      POST('/posts', d1, {}, function(p1) {
+        PUT(`/posts/submit/${p1._id}`, p1, {}, function(resp){
+          PUT(`/posts/propagate-github/${p1._id}`, p1, {status: 403}, function(resp){
+            done()
+          })
+        })
+      })
+    })
+  }).timeout(20*1000)
+
 
   it("allows an author to update HEAD", function(done){
     addAndLoginLocalGithubUser("robot6", function(s){

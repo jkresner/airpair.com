@@ -62,10 +62,12 @@ var validation = {
   },
 
   updateFromGithub(user, original, update){
-    //TODO
-    if (! _.idsEqual(original.by.userId, user._id))
+    var isEditor = user.roles && _.contains(user.roles, "editor")
+    var isAuthor =  _.idsEqual(original.by.userId, user._id)
+    if (! isAuthor && !isEditor)
       return "Not authorized"
-    var isOwner = _.idsEqual(original.by.userId, user._id)
+    if (original.published && isAuthor)
+      return "Only AirPair editors can update a published post"
   },
 
   updateGithubHead(user, original, update){
