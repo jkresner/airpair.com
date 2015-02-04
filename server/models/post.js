@@ -1,5 +1,6 @@
 var mongoose = require('mongoose')
 var {ObjectId} = mongoose.Schema
+var Shared = require("./_shared")
 
 var TagSlim = {
   _id:          { required: true, type: ObjectId, ref: 'Tag'},
@@ -34,21 +35,53 @@ var Author = {
   gp:           { type: String },
 };
 
+var Github = {
+  repoInfo: {
+    reviewTeamId: {type: String},
+    authorTeamId: {type: String},
+    owner: {type: String},
+    author: {type: String},
+    url: {type:String, lowercase: true}
+  },
+  events: Array,
+  stats: Array //Object?
+};
+
+var Forker = new mongoose.Schema({
+  userId:       { required: true, type: ObjectId, ref: 'User', index: true },
+  userAirPair: {type: Shared.UserByte},
+  userGitHub: {
+    id: {type: String},
+    username: {type: String},
+    gravatar: {type: String}
+    //more?
+  }
+})
+
 
 var tmplType = ['post','blank'] //,'customsidebar']
 
+
+// var PublishEvent = {
+//   publishedBy:  { type: ObjectId, ref: 'User' },
+//   publishedCommit: { type: {} }, // revised timestamp
+// }
 
 module.exports = mongoose.model('Post', new mongoose.Schema({
 
   by:           Author,
   created:      { required: true, type: Date, 'default': Date },
   updated:      { required: true, type: Date, 'default': Date },
-  published:    { type: Date },
   reviewReady:  { type: Date },
-  publishReady: { type: Date },
+
+  published:    { type: Date }, // first time
   publishedBy:  { type: ObjectId, ref: 'User' },
+  publishedCommit: { type: {} }, // revised timestamp
+  lastUpdated:  { type: Date }, // lasttime timestamp of update
+
   reviews:      { type: Array },
-  contributors: { type: Array },
+  forkers:       { type: [Forker] },
+  github:       Github,
   slug:         { type: String, unique: true, sparse: true, lowercase: true, trim: true },
   title:        { required: true, type: String, trim: true },
   md:           { required: true, type: String },

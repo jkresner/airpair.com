@@ -192,6 +192,7 @@ var github = {
     })
   },
 
+  //TODO add readme string as parameter
   setupRepo(repo, githubOwner, postContents, user, cb){
     // console.log(`setting up repo ${repo} for ${githubOwner}`)
     var _this = this
@@ -200,6 +201,8 @@ var github = {
       //without a timeout repo is often not found immediately after creation
       //should figure out a better way to handle this...
       if (err) return cb(err)
+      var githubUrl = result.url
+
       setTimeout(function(){
         _this.addFile(repo, "README.md", "Please read me", "Add README.md", null, function(err, result){
           if (err) return cb(err)
@@ -213,7 +216,7 @@ var github = {
                 if (err) return cb(err)
                 _this.addFile(repo, "post.md", postContents, "Initial Commit", user, function(err, result){
                   if (err) return cb(err)
-                  cb(null, {reviewTeamId})
+                  cb(null, {reviewTeamId, authorTeamId, githubOwner, githubUrl, author: user.social.gh.username})
                 })
               })
             })
