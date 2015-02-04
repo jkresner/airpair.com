@@ -8,7 +8,7 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
   var authd = resolver(['session']);
 
   var route = apRouteProvider.route
-  route('/posts', 'PostsList', require('./list.html'))
+  route('/posts/me', 'PostsList', require('./list.html'))
   route('/posts/new', 'PostNew', require('./info.html'), { resolve: authd })
   route('/posts/info/:id', 'PostInfo', require('./info.html'), { resolve: authd })
   route('/posts/edit/:id', 'PostEdit', require('./edit.html'), { resolve: authd })

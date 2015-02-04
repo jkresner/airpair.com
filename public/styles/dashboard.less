@@ -1,7 +1,7 @@
 section#dashboard {
 
   .headingUnderline {
-    border-bottom:solid 2px @bluegray;padding-bottom:5px;
+    border-bottom:solid 2px @bluegray;padding-bottom:10px;
     margin-bottom:20px;
   }
 
@@ -32,15 +32,20 @@ section#dashboard {
 
   section.side {
     float:right;
-    width:200px;
+    width:220px;
 
     .tags { padding-top:14px }
 
     .bookmarks {
       ul { margin:0;padding:0 }
       li { width:200px;overflow:hidden; }
-      h3 {
-        .headingUnderline
+      h3 { .headingUnderline }
+    }
+
+    .dash-posts {
+      h3 { .headingUnderline }
+      article { margin:0;
+        .entry-content { padding:5px 10px }
       }
     }
   }

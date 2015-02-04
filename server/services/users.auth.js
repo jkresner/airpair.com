@@ -160,7 +160,11 @@ function localSignup(email, password, name, errorCB, done) {
       }
     }
 
-    if (password == 'home' || password == 'subscribe') {
+    if (password == 'home'
+      || password == 'subscribe'
+      || password == 'postcomp'
+      || password == 'so')
+    {
       upsert.local.changePasswordHash = Data.data.generateHash(email)
       upsert.local.passwordHashGenerated = new Date
     }
@@ -169,6 +173,10 @@ function localSignup(email, password, name, errorCB, done) {
       if (!e) {
         if (password == 'home')
           mailman.signupHomeWelcomeEmail(r, upsert.local.changePasswordHash)
+        if (password == 'postcomp') {
+          //-- TODO Subscribe user to post complist
+          mailman.signupPostcompEmail(r, upsert.local.changePasswordHash)
+        }
         if (password == 'so')
           mailman.signupHomeWelcomeEmail(r, upsert.local.changePasswordHash)
         if (password == 'subscribe')

@@ -391,6 +391,83 @@ section#landing.SOWelcome {
 
   .cta2 {
     clear:both;
+    height:160px;
+    background:@darkblue;
+    > div { max-width:900px;margin:auto }
+    h3 { font-size:20px;margin:5px 0 0 0 }
+    margin:20px 0;
+    padding:10px;
+    text-align:center;
+    // .btn { margin:0 auto 5px auto;width:280px; }
+    p { text-transform:uppercase;color:@lightorange;
+      margin:2px auto }
+    b { color:white }
+    form {
+      height:120px;
+      position:relative;
+      vertical-align:top;
+      .postCompEmailDiv { margin:2px auto;width:90%  }
+      .postCompNameDiv {
+        position:absolute;
+        top:35px;
+        left:30px;
+        right:310px;
+        display:inline-block;
+        margin:0;
+        padding:0;
+        height:100px;
+      }
+
+      .error {
+        max-width:90%;
+        margin:auto;
+        padding-top:2px;
+        text-align:right
+      }
+
+      input {
+        margin-top:5px;
+        border-radius:2px;
+        border-top:none;border-left:none;border-right:none;box-shadow:none;
+        border-bottom:solid 2px @turquoise;
+        width:100%;
+        font-size:24px;
+        padding:16px 0px 15px 10px;
+      }
+
+      .has-error input {
+        border-bottom:solid 2px @error;
+      }
+
+      .inputPlaceholder { color:@lightorange;font-size:20px }
+      input::-webkit-input-placeholder { .inputPlaceholder }
+      input::-moz-placeholder { .inputPlaceholder }
+      input:-ms-input-placeholder { .inputPlaceholder }
+
+      button {
+        position:absolute;
+        top:40px;
+        right:30px;
+        width:30%;
+        padding:20px;
+        text-transform:uppercase;
+
+        &.focushide {
+          width:1px;opacity:0;
+          font-size:1px;
+        }
+      }
+
+      span {
+        position:absolute;
+        top:102px;
+        right:35px;
+      }
+    }
+  }
+
+  .cta3 {
+    clear:both;
     height:120px;
     background:@darkblue;
     margin:20px 0;
