@@ -211,7 +211,7 @@ var github = {
               var authorTeamId = result.id
               _this.addToTeam(githubOwner, authorTeamId, user, function(err, result){
                 if (err) return cb(err)
-                _this.addFile(repo, "post.md", "Your Post Here", postContents, user, function(err, result){
+                _this.addFile(repo, "post.md", postContents, "Initial Commit", user, function(err, result){
                   if (err) return cb(err)
                   cb(null, {reviewTeamId})
                 })

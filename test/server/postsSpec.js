@@ -6,7 +6,7 @@ for (var i = 0; i < 501; i++){
   lotsOfWords += "stuff ";
 }
 
-module.exports = () => describe("API: ", function() {
+module.exports = () => describe.only("API: ", function() {
 
   before(function(done) {
     SETUP.analytics.stub()
@@ -305,7 +305,7 @@ module.exports = () => describe("API: ", function() {
           p1.contents = "New content that will be erased when we update from GitHub"
           PUT(`/posts/${p1._id}`, p1, {}, function(resp){
             PUT(`/posts/propagate-github/${p1._id}`, p1, {}, function(resp){
-              expect(resp.md).to.equal("Your Post Here")
+              expect(resp.md).to.equal(lotsOfWords)
               done()
             })
           })
