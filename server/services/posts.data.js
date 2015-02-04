@@ -11,6 +11,7 @@ module.exports = {
       'meta.canonical': 1,
       'meta.description': 1,
       'meta.ogImage': 1,
+      'github': 1,
       'title':1,
       'slug': 1,
       'created': 1,

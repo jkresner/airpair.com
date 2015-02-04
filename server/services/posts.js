@@ -171,8 +171,13 @@ var save = {
       github.setupRepo(repoName, githubOwner, post.md, this.user, function(e, result){
         if (e) return cb(e)
         post.reviewReady = new Date()
-        post.meta = post.meta || {};
-        post.meta.reviewTeamId = result.reviewTeamId
+        post.github = post.github || {}
+        post.github.repoInfo = post.github.repoInfo || {}
+        post.github.repoInfo.reviewTeamId = result.reviewTeamId
+        post.github.repoInfo.authorTeamId = result.authorTeamId
+        post.github.repoInfo.owner = result.githubOwner
+        post.github.repoInfo.author = result.author
+        post.github.repoInfo.url = result.githubUrl
         svc.update(post._id, post, cb)
       })
     }
@@ -215,7 +220,7 @@ var save = {
       post.contributors = post.contributors || []
       var githubUser = this.user.social.gh.username
       post.contributors.push({id: this.user._id, github: githubUser})
-      github.addContributor(this.user, post.slug, post.meta.reviewTeamId, function(err, res){
+      github.addContributor(this.user, post.slug, post.github.reviewTeamId, function(err, res){
         if (err){
           cb(err)
         } else {
