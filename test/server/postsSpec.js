@@ -1,7 +1,12 @@
 import {getHashId} from '../../server/services/postsToc'
 var github = require("../../server/services/wrappers/github.js")
 
-module.exports = () => describe.only("API: ", function() {
+var lotsOfWords = ""
+for (var i = 0; i < 501; i++){
+  lotsOfWords += "stuff ";
+}
+
+module.exports = () => describe("API: ", function() {
 
   before(function(done) {
     SETUP.analytics.stub()
@@ -223,7 +228,7 @@ module.exports = () => describe.only("API: ", function() {
     addAndLoginLocalUser('robot1', function(s) {
       var title = "test" + Math.floor(Math.random() * 100000000)
       var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
-      var d1 = { title: title, slug:title, by: by, md: 'Test 1', assetUrl: 'http://youtu.be/qlOAbrvjMBo' }
+      var d1 = { title: title, slug:title, by: by, md: lotsOfWords, assetUrl: 'http://youtu.be/qlOAbrvjMBo' }
       POST('/posts', d1, {}, function(p1) {
         PUT(`/posts/submit/${p1._id}`, p1, {status: 400}, function(resp){
           expect(resp.message).to.equal("User must authorize GitHub for repo access")
@@ -237,7 +242,7 @@ module.exports = () => describe.only("API: ", function() {
     addAndLoginLocalGithubUser("robot2", function(s) {
       var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
       var title = "test" + Math.floor(Math.random() * 100000000)
-      var d1 = { title: title, slug:title, by: by, md: 'Test 1', assetUrl: 'http://youtu.be/qlOAbrvjMBo' }
+      var d1 = { title: title, slug:title, by: by, md: lotsOfWords, assetUrl: 'http://youtu.be/qlOAbrvjMBo' }
       POST('/posts', d1, {}, function(p1) {
         PUT(`/posts/submit/${p1._id}`, p1, {}, function(resp){
           expect(resp.reviewReady).to.exist
@@ -266,7 +271,7 @@ module.exports = () => describe.only("API: ", function() {
       var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
       var title = "test" + Math.floor(Math.random() * 100000000)
       // console.log("TITLE", title)
-      var d1 = { title: title, slug:title, by: by, md: 'Test 1', assetUrl: 'http://youtu.be/qlOAbrvjMBo' }
+      var d1 = { title: title, slug:title, by: by, md: lotsOfWords, assetUrl: 'http://youtu.be/qlOAbrvjMBo' }
       POST('/posts', d1, {}, function(p1) {
         PUT(`/posts/submit/${p1._id}`, p1, {}, function(resp){
           PUT(`/posts/${p1._id}`, p1, {}, function(resp){
@@ -288,7 +293,7 @@ module.exports = () => describe.only("API: ", function() {
     addAndLoginLocalGithubUser("robot5", function(s){
       var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
       var title = "test" + Math.floor(Math.random() * 100000000)
-      var d1 = { title: title, slug:title, by: by, md: 'Test 1', assetUrl: 'http://youtu.be/qlOAbrvjMBo' }
+      var d1 = { title: title, slug:title, by: by, md: lotsOfWords, assetUrl: 'http://youtu.be/qlOAbrvjMBo' }
       POST('/posts', d1, {}, function(p1) {
         PUT(`/posts/submit/${p1._id}`, p1, {}, function(resp){
           p1.contents = "New content that will be erased when we update from GitHub"
@@ -307,7 +312,7 @@ module.exports = () => describe.only("API: ", function() {
     addAndLoginLocalGithubUser("robot6", function(s){
       var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
       var title = "test" + Math.floor(Math.random() * 100000000)
-      var d1 = { title: title, slug:title, by: by, md: 'Test 1', assetUrl: 'http://youtu.be/qlOAbrvjMBo' }
+      var d1 = { title: title, slug:title, by: by, md: lotsOfWords, assetUrl: 'http://youtu.be/qlOAbrvjMBo' }
       POST('/posts', d1, {}, function(p1) {
         PUT(`/posts/submit/${p1._id}`, p1, {}, function(resp){
           p1.md = "New content for GitHub"
@@ -327,7 +332,7 @@ module.exports = () => describe.only("API: ", function() {
   it('does not allow submission for publication w/ <5 reviews', function(done) {
     addAndLoginLocalUser('robot7', function(s) {
       var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
-      var d1 = { title: "test 1", by: by, md: 'Test 1', assetUrl: 'http://youtu.be/qlOAbrvjMBo' }
+      var d1 = { title: "test 1", by: by, md: lotsOfWords, assetUrl: 'http://youtu.be/qlOAbrvjMBo' }
       POST('/posts', d1, {}, function(p1) {
         PUT(`/posts/publish/${p1._id}`, p1, {status: 403}, function(resp){
           expect(resp.message).to.equal("Must have at least 5 reviews")
@@ -340,7 +345,7 @@ module.exports = () => describe.only("API: ", function() {
   it('allows submission for publication w/ 5 reviews', function(done) {
     addAndLoginLocalUser('robot8', function(s) {
       var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
-      var d1 = { title: "test 1", by: by, md: 'Test 1', assetUrl: 'http://youtu.be/qlOAbrvjMBo', reviews: [
+      var d1 = { title: "test 1", by: by, md: lotsOfWords, assetUrl: 'http://youtu.be/qlOAbrvjMBo', reviews: [
         {body: "this post is great", stars: 4},
         {body: "this post is great", stars: 4},
         {body: "this post is great", stars: 4},
@@ -359,7 +364,7 @@ module.exports = () => describe.only("API: ", function() {
   it.skip("does not allow publishing of posts w/o a publishReady timestamp", function(done){
     addAndLoginLocalUser('robot9', function(s) {
       var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
-      var d1 = { title: "test 1", by: by, md: 'Test 1', assetUrl: 'http://youtu.be/qlOAbrvjMBo', slug: `no-publish-ready-${moment().format('X')}` }
+      var d1 = { title: "test 1", by: by, md: lotsOfWords, assetUrl: 'http://youtu.be/qlOAbrvjMBo', slug: `no-publish-ready-${moment().format('X')}` }
       POST('/posts', d1, {}, function(p1) {
         LOGIN('edap', data.users.edap, function() {
           PUT('/posts/publish/'+p1._id, p1, {status: 403}, function(resp) {
