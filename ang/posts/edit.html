@@ -48,6 +48,7 @@
     <a class="btn" href="/posts/info/{{post._id}}" ng-disabled="preview.wordcount < 500">Edit info</a>
 
     <a class="btn"
+      ng-click="submitForReview()"
       ng-if="!post.reviewReady"
       ng-disabled="notReviewReady">Submit for review</a>
 

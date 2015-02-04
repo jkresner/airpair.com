@@ -13,7 +13,6 @@
   <section id="myposts">
 
     <h3>Posts by me
-
       <div class="editOptions">
         <a href="/posts/new" class="btn">Start a post</a>
       </div>
@@ -30,7 +29,7 @@
       <table class="table table-striped">
         <tr>
           <th>Created</th>
-          <th>Published</th>
+          <th>Status</th>
           <th>Title</th>
           <th></th>
           <th></th>
@@ -38,7 +37,9 @@
         <tr ng-repeat="p in myposts">
           <td>{{ p.created | publishedTime: 'MM.DD' }}</td>
           <td>
-            {{ p.published | publishedTime: 'MM.DD' }}
+            <span ng-if="!p.reviewReady">-</span>
+            <span ng-if="p.reviewReady">in review</span>
+            <span ng-if="p.publishReady">published</span>
           </td>
           <td>
             <a href="/v1/posts/{{p.slug}}" target="_blank" ng-if="p.published">{{ p.title }}</a>

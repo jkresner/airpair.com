@@ -1,3 +1,5 @@
+var postsUtil = require('../posts')
+
 var validation = {
 
   create(user, post)
@@ -39,17 +41,24 @@ var validation = {
       return 'Post must be deleted by owner'
     if (original.published && !isEditor)
       return 'Must be editor to delete a published post'
+    if (original.reviewReady != null)
+      return 'Must be editor to delete a post in review'
   },
 
-  submitForReview(user, original, update)
+  submitForReview(user, post)
   {
-    var isOwner = _.idsEqual(update.by.userId, user._id)
+    var isOwner = _.idsEqual(post.by.userId, user._id)
     if (!isOwner)
       return 'Post can only be submitted for review by its owner'
-    if (!update.slug)
-      return 'Slug cannot be null'
-    if (update.reviewReady)
-      return "This post has already been submitted for review"
+    if (!post.slug)
+      return 'Must provide a slug'
+    if (post.reviewReady)
+      return `This post has already been submitted for review`
+    if (!post.md)
+      return `Posts markdown required`
+    var wordcount = postsUtil.wordcount(post.md)
+    if (postsUtil.wordsTogoForReview(wordcount) > 0)
+      return `Post word count [${wordcount}] too short for review`
   },
 
   updateFromGithub(user, original, update){
