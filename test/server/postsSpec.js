@@ -249,7 +249,6 @@ module.exports = () => describe("API: ", function() {
       var title = "test" + Math.floor(Math.random() * 100000000)
       var d1 = { title: title, slug:title, by: by, md: lotsOfWords, assetUrl: 'http://youtu.be/qlOAbrvjMBo'}
       POST('/posts', d1, {}, function(p1) {
-        $log('p1.git', p1.github)
         PUT(`/posts/submit/${p1._id}`, d1, {}, function(resp){
           expect(resp.submitted).to.exist
           expect(resp.github.repoInfo.reviewTeamId, "reviewTeamId").to.exist

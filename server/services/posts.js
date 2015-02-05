@@ -43,7 +43,7 @@ var get = {
 
   getByIdForReview(id, cb) {
     var query = Data.query.inReview()
-    query['$and']._id = id
+    query['$and'].push({_id: id})
     svc.searchOne(query, null, inflateHtml((e,r) => {
       if (e || !r) return cb(e,r)
       if (!r.tags || r.tags.length == 0) {
@@ -54,7 +54,6 @@ var get = {
       var topTagPage = _.find(topTapPages,(s) => r.primarytag.slug==s)
       r.primarytag.postsUrl = (topTagPage) ? `/${r.primarytag.slug}` : `/posts/tag/${r.primarytag.slug}`
       r.forkers = r.forkers || []
-
       cb(null,r)
     }))
   },
@@ -261,7 +260,7 @@ var save = {
 
   addForker(post, cb){
     var githubUser = this.user.social.gh.username
-    github.addContributor(this.user, post.slug, post.github.reviewTeamId, (e, res) => {
+    github.addContributor(this.user, post.slug, post.github.repoInfo.reviewTeamId, (e, res) => {
       if (e) return cb(e)
       var { name, email, social } = this.user
       post.forkers = post.forkers || []

@@ -11,7 +11,7 @@
 <section ng-if="forked" class="notifications">
   <div id="forked">
     <h1><img ng-src="/static/img/css/airpair-author.png" /> Mother Forker!</h1>
-    <h3><b><a href="https://github.com/{{session.social.gh.username}}/{{forked.title}}" target="_blank">{{ forked.title }}</a></b> has been forked to your github account.</h3>
+    <h3><b><a href="https://github.com/{{session.social.gh.username}}/{{forked.slug}}" target="_blank">{{ forked.title }}</a></b> has been forked to your github account.</h3>
     <p>Make edits like you would normal code, then submit a pull request to get your contributions incorpated.</p>
     <p></p>
   </div>
@@ -102,7 +102,7 @@
             <a href="/posts/review/{{p._id}}" target="_blank" ng-if="!p.published">{{ p.title }}</a>
           </td>
           <td>
-            <a href="https://github.com/{{session.social.gh.username}}/{{forked.title}}" target="_blank">edit</a>
+            <a href="https://github.com/{{session.social.gh.username}}/{{p.slug}}" target="_blank">edit</a>
           </td>
         </tr>
       </table>
