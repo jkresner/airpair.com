@@ -11,6 +11,7 @@ module.exports = {
       'meta.canonical': 1,
       'meta.description': 1,
       'meta.ogImage': 1,
+      'github.repoInfo': 1,
       'title':1,
       'slug': 1,
       'created': 1,
@@ -88,8 +89,22 @@ module.exports = {
       return query
     },
 
+    reviewReady: function(){
+      return {'reviewReady': {'$exists': true}}
+    },
+
     updated: {
       'updated' : { '$exists': true }
+    },
+
+    forker: function(userId){
+      return {
+        forkers: {
+          $elemMatch: {
+            userId: userId
+          }
+        }
+      }
     }
   }
 
