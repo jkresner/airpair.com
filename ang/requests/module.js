@@ -160,8 +160,8 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
             $scope.r = result;
             $scope.expertEdit = false;
             if ($scope.data.expertStatus == 'available') {
-              $scope.openChat($scope.r.userId)
-              corechat.sendMessageToRoom(corechat.activeRoomId, $scope.data.expertComment);
+              // $scope.openChat($scope.r.userId)
+              // corechat.sendMessageToRoom(corechat.activeRoomId, $scope.data.expertComment);
             }
 
         }, ServerErrors.add)
