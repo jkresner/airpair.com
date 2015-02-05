@@ -72,15 +72,15 @@
   </div>
   {{/if}}
 
-  <div class="rail1CTA railBookmarkCTA">
-    {{#if github }}
+  {{#if github }}
+      <div class="rail1CTA railBookmarkCTA">
       <h6>Make this post better!</h6>
       <div class="fork">
         <a href="/posts/fork/{{_id}}" class="btn">Fork this post!</a>
         <p>Forked <b>{{forkers.length}}</b> times so far.</p>
       </div>
-    {{/if}}
   </div>
+  {{/if}}
 
   <div class="rail1CTA railBookmarkCTA">
     {{#if published }}
