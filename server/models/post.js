@@ -58,7 +58,7 @@ var tmplType = ['post','blank','landing','faq'] //,'customsidebar']
 
 var PublishEvent = new mongoose.Schema({
   touch:        { type: Shared.Touch },
-  commit:       { type: String }, // sha hash
+  commit:       { type: {} }, // sha hash
 })
 
 
@@ -75,7 +75,7 @@ module.exports = mongoose.model('Post', new mongoose.Schema({
 
   published:        { type: Date }, // first time
   publishedBy:      { type: Shared.UserByte },
-  publishedCommit:  { type: String }, // sha hash
+  publishedCommit:  { type: {} }, // sha hash or whole commit object
   publishedUpdated: { type: Date }, // lasttime timestamp of update
 
   reviews:          { type: Array },

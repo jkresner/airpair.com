@@ -1,9 +1,9 @@
-
 import WorkshopsAPI from '../api/workshops'
 import PostsAPI from '../api/posts'
 import TagsAPI from '../api/tags'
 import RequestsApi from '../api/requests'
 var {trackView} = require('../middleware/analytics')
+var {authd} = require('../middleware/auth')
 var util = require("../../shared/util")
 
 //-- TODO move into database evetuall
@@ -36,6 +36,7 @@ export default function(app) {
 
     .param('workshop', WorkshopsAPI.paramFns.getBySlug)
     .param('post', PostsAPI.paramFns.getBySlugWithSimilar)
+    .param('postforreview', PostsAPI.paramFns.getByIdForReview)
     .param('review', RequestsApi.paramFns.getByIdForReview)
 
     .get('/angularjs', setTagForTrackView,
@@ -58,6 +59,10 @@ export default function(app) {
     .get('/:tag/posts/:post',
       trackView('post'),
       app.renderHbsViewData('post', null, (req, cb) => { cb(null, req.post) })
+    )
+
+    .get('/posts/review/:postforreview', authd,
+      app.renderHbsViewData('post', null, (req, cb) => { cb(null, req.postforreview) })
     )
 
     .get('/workshops',

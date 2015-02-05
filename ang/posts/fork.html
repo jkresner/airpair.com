@@ -1,0 +1,42 @@
+<header>
+  <ol class="entry-meta breadcrumb">
+    <li><a href="/posts">Posts</a></li>
+    <li>{{post.title}}</li>
+    <li class="current">Fork</li>
+  </ol>
+</header>
+
+
+<section id="postfork">
+
+  <section id="recent">
+    <div class="posts recent">
+      <ap-post-list-item post="p" ng-repeat="p in tofork"></ap-post-list-item>
+    </div>
+  </section>
+
+  <section id="forkinfo">
+
+    <h2>This post will be forked to your Github account*</h2>
+
+    <h3>Why does AirPair use Github?</h3>
+
+    <p>All posts created on AirPair are backed by github repositories. This
+    enables community members to work together leveraging all the great Github tools
+    you know and love like commit logs, pull requests, issues, comments and more.
+    These features make writing great content easier and a more social experience.</p>
+
+    <img src="/static/img/pages/posts/post-authoring-flow.png" />
+
+    <section class="notice">
+      <h3>We need to authenticate with your Github account.</h3>
+      <p>You will be redirected to a github login page requesting repository permissions, so we can fork this post to your account.</p>
+    </section>
+
+    <hr />
+
+    <a ng-href="/auth/github?returnTo=/posts/me?fork={{post._id}}" class="btn" target="_self">Connect Github Account & Fork Repository</a>
+    <p>Your forked repo will be private, but will not count against your private repo allotment on Github</p>
+  </section>
+
+</section>

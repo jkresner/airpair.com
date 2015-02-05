@@ -93,10 +93,10 @@ var validation = {
 
   propagateMDfromGithub(user, post){
     var isEditor = user.roles && _.contains(user.roles, "editor")
-    var isAuthor =  _.idsEqual(post.by.userId, user._id)
-    if (!isAuthor && !isEditor)
+    var isOwner =  _.idsEqual(post.by.userId, user._id)
+    if (!isOwner && !isEditor)
       return `Not authorized`
-    if (post.published && isAuthor)
+    if (post.published && isOwner)
       return `Only editors can update published posts`
   },
 
@@ -105,7 +105,7 @@ var validation = {
     if (!isOwner)
       return `Post head can only be updated by its owner`
     if (!user.social || !user.social.gh)
-      return `User must authorize GitHub to become a contributor`
+      return `User must authorize GitHub to update HEAD`
     if (!commitMessage)
       return `Commit Message required`
     if (!postMD)
@@ -120,14 +120,22 @@ var validation = {
   },
 
   addForker(user, post){
+    var isOwner = _.idsEqual(post.by.userId, user._id)
+    if (isOwner)
+      return `Cannot fork your own post - ${post.title}. Please edit your post via the AirPair editor.`
     if (!user.social || !user.social.gh)
-      return `User must authorize GitHub to become a contributor`
+      return `User must <a href="/auth/github?returnTo=/posts/me?fork=${post._id}" target="_self">authorize GitHub</a> to fork repository`
     if (!post.github)
       return `Can not fork post as it has no git repo`
     if (!post.submitted)
-      return `Can not fork post not yet submitted for review`
-    //TODO
-    // console.log("(validation)", user, postId)
+      return `Can not fork post that is not yet submitted for review`
+  },
+
+  getGitHEAD(user, post){
+    var isOwner = _.idsEqual(post.by.userId, user._id)
+    var isEditor = user.roles && _.contains(user.roles, "editor")
+    if (!isOwner && !isEditor)
+      return `Not authorized to getGitHEAD`
   }
 }
 
