@@ -18,6 +18,7 @@ angular.module('APDataSvc', [])
       getById: GET((d)=>`/posts/${d._id}`),
       getMyPosts: GET((d)=>`/posts/me`),
       getRecentPosts: GET((d)=>`/posts/recent`),
+      getInReview: GET((d)=>`/posts/review`),
       getTagsPosts: GET((d)=>`/posts/tag/${d.tagSlug}`),
       create: POST((d)=>`/posts`),
       update: PUT((d)=>`/posts/${d._id}`),
