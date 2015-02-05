@@ -105,7 +105,7 @@
     <h4 style="margin-top:0">Connected social accounts</h4>
 
     <div class="oauth">
-      <a ng-if="!data.gh" href="/auth/github?returnTo=/me" target="_self">Connect Github</a>
+      <a ng-if="!data.gh" href="/auth/github?returnTo=/me&scope=user" target="_self">Connect Github</a>
       <a ng-if="data.gh" href="/auth/github?returnTo=/me" target="_self">Refresh Github</a>
     </div>
     <div class="oauth">

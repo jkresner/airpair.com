@@ -18,6 +18,7 @@ var oauthFn = (provider, scope) => {
     }
 
     if (opts.assignProperty) delete opts.assignProperty
+    if (req.query.scope) opts.scope = req.query.scope.split(',')
 
     if ( req.isAuthenticated() )
     {

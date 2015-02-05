@@ -1,7 +1,6 @@
 <header class="entry-header">
   <ol class="entry-meta breadcrumb">
-{{!--     <li><a href="/learn">Learn</a></li> --}}
-    <li><a href="/posts">Posts</a></li>
+    <li><a href="/posts" target="_self">Posts</a></li>
     <li>
       <a href="{{ primarytag.postsUrl }}" target="_self">{{ primarytag.slug }}</a>
     </li>
@@ -18,7 +17,20 @@
   </ol>
 </header>
 
+{{#if published }}
 <banner-postcomp></banner-postcomp>
+{{/if}}
+
+{{#unless published}}
+  <section class="notifications">
+    <div id="postinreview">
+      <h1><img ng-src="/static/img/css/airpair-author.png" /> This post is under community review</h1>
+      <p>The author is waiting for community feedback and a minimum of 5 reviews and an average rating of at least 3.5/5, before this post can be published.</p>
+      <p>Review this post down the bottom, or fork and submit a pull request if
+      you spot a typo or have suggestions to improve it before it is published for publish consumption.</p>
+    </div>
+  </section>
+{{/unless}}
 
 <article class="blogpost">
 
@@ -50,6 +62,7 @@
 
   <post no-compile>{{{ html }}}</post>
 
+  {{#if published }}
   <div class="share">
     <div class="pw-widget pw-counter-vertical" pw:twitter-via="airpair">
       <a class="pw-button-facebook pw-look-native"></a>
@@ -57,16 +70,30 @@
       <a class="pw-button-linkedin pw-look-native"></a>
     </div>
   </div>
+  {{/if}}
+
+  {{#if github }}
+      <div class="rail1CTA railBookmarkCTA">
+      <h6>Make this post better!</h6>
+      <div class="fork">
+        <a href="/posts/fork/{{_id}}" class="btn">Fork this post!</a>
+        <p>Forked <b>{{forkers.length}}</b> times so far.</p>
+      </div>
+  </div>
+  {{/if}}
 
   <div class="rail1CTA railBookmarkCTA">
+    {{#if published }}
     <h6>Like this article?</h6>
     <div>
       <img src="{{by.avatar}}?s=100" />
       <div bookmarkerserver type="'post'" object-id="'{{_id}}'"></div>
       <p>Save it to your bookmarks</p>
     </div>
+    {{/if}}
   </div>
 
+  {{#if published }}
   <div id="bodyCTA1" class="bodyCTA1 bodyCTA">
     <div ng-if="!session._id">
       <div cta-post-subscribe
@@ -76,8 +103,11 @@
     </div>
     <div ng-if="session._id" request></div>
   </div>
+  {{/if}}
 
+  {{#if published }}
   <div id="disqus_thread"></div>
+  {{/if}}
 
 </article>
 
@@ -89,11 +119,13 @@
   {{/each}}
   </ul>
 
+  {{#if published }}
   <section id="allposts">
     <h3>Similar posts<span><a href="/posts" target="_self">Recent posts</a></span></h3>
     <div class="posts recent">
       {{#each similar}}{{> postListItem this}}{{/each}}
     </div>
   </section>
+  {{/if}}
 
 </section>

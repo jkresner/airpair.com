@@ -8,6 +8,7 @@
     <li class="nomob"><a href="/expert-applications"><b>Expert Applications</b></a></li>
     <li class="more"><a>More</a>
       <ul class="more">
+        {{#unless authenticated}}<li><a href="/login" target="_self">Login</a></li>{{/unless}}
         <li><a href="/about" target="_self" class="about">About</a></li>
         <li><a href="/blog" target="_self" class="blog">AirPair Blog</a></li>
         <li class="nomob"><a href="/workshops" target="_self" class="wk">Workshops</a></li>

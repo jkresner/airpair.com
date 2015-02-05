@@ -27,65 +27,69 @@ var Author = {
   name:         { required: true, type: String },
   avatar:       { required: true, type: String },
   bio:          { required: true, type: String },
-  username:     { type: String, lowercase: true }, // if they are an expert
-  tw:           { type: String },
-  gh:           { type: String },
-  in:           { type: String },
-  so:           { type: String },
-  gp:           { type: String },
-};
+  username:     { type: String, lowercase: true },
+  social:       { type: Shared.SocialAccounts }
+}
 
-var Github = {
-  repoInfo: {
-    reviewTeamId: {type: String},
-    authorTeamId: {type: String},
-    owner: {type: String},
-    author: {type: String},
-    url: {type:String, lowercase: true}
+var Github =    {
+  repoInfo:     {
+    reviewTeamId:   { type: String },
+    authorTeamId:   { type: String },
+    owner:          { type: String },
+    author:         { type: String },
+    url:            { type: String, lowercase: true}
   },
   events: Array,
   stats: Array //Object?
-};
+}
 
 var Forker = new mongoose.Schema({
   userId:       { required: true, type: ObjectId, ref: 'User', index: true },
-  userAirPair: {type: Shared.UserByte},
-  userGitHub: {
-    username: {type: String}
-    //more?
+  name:         { type: String, trim: true },
+  email:        { type: String, trim: true, lowercase: true },
+  social:       {
+    gh:         { username: { type: String } }
   }
 })
 
 
-var tmplType = ['post','blank'] //,'customsidebar']
+var tmplType = ['post','blank','landing','faq'] //,'customsidebar']
 
 
-// var PublishEvent = {
-//   publishedBy:  { type: ObjectId, ref: 'User' },
-//   publishedCommit: { type: {} }, // revised timestamp
-// }
+var PublishEvent = new mongoose.Schema({
+  touch:        { type: Shared.Touch },
+  commit:       { type: {} }, // sha hash
+})
+
 
 module.exports = mongoose.model('Post', new mongoose.Schema({
 
-  by:           Author,
-  created:      { required: true, type: Date, 'default': Date },
-  updated:      { required: true, type: Date, 'default': Date },
-  reviewReady:  { type: Date },
+  by:               Author,
+  created:          { required: true, type: Date, 'default': Date },
 
-  published:    { type: Date }, // first time
-  publishedBy:  { type: ObjectId, ref: 'User' },
-  publishedCommit: { type: {} }, // revised timestamp
-  lastUpdated:  { type: Date }, // lasttime timestamp of update
+  lastTouch:        Shared.Touch,
+  //-- consider removing 'updated' as supersceded by lastTouch
+  updated:          { required: true, type: Date, 'default': Date },
 
-  reviews:      { type: Array },
-  forkers:      { type: [Forker] },
-  github:       Github,
-  slug:         { type: String, unique: true, sparse: true, lowercase: true, trim: true },
-  title:        { required: true, type: String, trim: true },
-  md:           { required: true, type: String },
-  assetUrl:     { type: String, trim: true },
-  tags:         { type: [TagSlim], 'default': [] },
-  meta:         Meta,
-  tmpl:         { type: String, enum:tmplType }
+  submitted:        { type: Date },
+
+  published:        { type: Date }, // first time
+  publishedBy:      { type: Shared.UserByte },
+  publishedCommit:  { type: {} }, // sha hash or whole commit object
+  publishedUpdated: { type: Date }, // lasttime timestamp of update
+
+  reviews:          { type: Array },
+  forkers:          { type: [Forker] },
+  github:           { required: false, type: Github },
+  slug:             { type: String, unique: true, sparse: true, lowercase: true, trim: true },
+  title:            { required: true, type: String, trim: true },
+  md:               { required: true, type: String },
+  assetUrl:         { type: String, trim: true },
+  tags:             { type: [TagSlim], 'default': [] },
+  meta:             Meta,
+  tmpl:             { type: String, enum: tmplType },
+
+  editHistory:     [Shared.Touch],
+  publishHistory:  [PublishEvent],
 
 }))

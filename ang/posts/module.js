@@ -9,6 +9,9 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
   var route = apRouteProvider.route
   route('/posts/me', 'PostsList', require('./list.html'))
   route('/posts/new', 'PostNew', require('./info.html'), { resolve: authd })
+  route('/posts/review', 'PostsInReview', require('./inreview.html'), { resolve: authd })
+  route('/posts/in-community-review', 'PostsInReview', require('./inreview.html'), { resolve: authd })
+  route('/posts/fork/:id', 'PostFork', require('./fork.html'), { resolve: authd })
   route('/posts/info/:id', 'PostInfo', require('./info.html'), { resolve: authd })
   route('/posts/edit/:id', 'PostEdit', require('./edit.html'), { resolve: authd })
   route('/posts/tag/:tagslug', 'PostsTagList', require('./listTag.html'))
@@ -24,7 +27,7 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
     controller($rootScope, $scope) {
 
       $scope.calcReviewStep = () => {
-        if ($scope.p.reviewReady) return false
+        if ($scope.p.submitted) return false
 
         $scope.wordcount = PostsUtil.wordcount($scope.p.md)
         $scope.wordstogo = PostsUtil.wordsTogoForReview($scope.wordcount)
@@ -47,12 +50,26 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
 })
 
 
-.controller('PostsListCtrl', function($scope, DataService, SessionService) {
+.controller('PostsListCtrl', function($scope, $location, DataService, SessionService) {
 
   DataService.posts.getMyPosts({}, function (r) {
     $scope.myposts = _.where(r, (p)=> p.by.userId == $scope.session._id)
     $scope.recent = _.difference(r, $scope.myposts)
   })
+
+  if ($location.search().fork && $scope.session._id)
+  {
+    DataService.posts.addForker({_id:$location.search().fork}, function (r) {
+      $scope.forked = r
+    })
+  }
+
+  if ($scope.session._id && $scope.session.social && $scope.session.social.gh)
+  {
+    DataService.posts.getMyForks({}, function (r) {
+      $scope.forks = r
+    })
+  }
 
 })
 
@@ -62,6 +79,15 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
   DataService.posts.getTagsPosts({tagSlug:$scope.tagslug}, function (result) {
     $scope.tag = result.tag;
     $scope.tagposts = result.posts;
+  })
+
+})
+
+
+.controller('PostsInReviewCtrl', function($scope, DataService) {
+
+  DataService.posts.getInReview({}, function (r) {
+    $scope.inreview = r;
   })
 
 })
@@ -232,6 +258,7 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
 
   var setPostScope = (r) => {
     $scope.post = r
+    $scope.post.commitMessage = ""
     $scope.savedMD = r.md
     if (!$scope.aceLoaded) {
       $scope.aceMD = r.md
@@ -243,13 +270,27 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
     $scope.throttleMS = r.md.length * 5
   }
 
-  DataService.posts.getById({_id}, setPostScope)
+  DataService.posts.getById({_id}, (r) => {
+    if (!r.github) return setPostScope(r)
+    DataService.posts.getGitHEAD({_id}, (h) => {
+      $scope.head = h
+      r.md = h.string
+      setPostScope(r)
+    })
+  })
 
   $scope.delete = () =>
     DataService.posts.deletePost({_id}, (r) => $location.path('/posts/me'))
 
-  $scope.save = () =>
-    DataService.posts.update($scope.post, setPostScope)
+  $scope.save = () => {
+    if (!$scope.post.submitted)
+      DataService.posts.update($scope.post, setPostScope)
+    else {
+      if ($scope.post.commitMessage == "") return alert('Commit message required')
+      DataService.posts.updateGitHEAD($scope.post, setPostScope)
+    }
+  }
+
 
   $scope.aceChanged = function(e) {
     if (timer == null)
@@ -339,13 +380,17 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
 
 })
 
-// //-- this will be refactored out of the posts module
-// .controller('ProfileCtrl', function($scope, PostsService, $routeParams, session) {
+.controller('PostForkCtrl', function($scope, $routeParams, $location, DataService, PostsUtil) {
+  var _id = $routeParams.id
 
-//     $scope.username = $routeParams.username;
+  $scope.fork = () =>
+    DataService.posts.fork($scope.post, (result) => {
+      $location.path('/posts/me?forked='+result._id)
+    })
 
-//     PostsService.getByUsername($routeParams.username, (posts) => {
-//       $scope.posts = posts;
-//     });
+  DataService.posts.getById({_id}, (r) => {
+    $scope.post = r
+    $scope.tofork = [r]
+  })
 
-//   })
+})

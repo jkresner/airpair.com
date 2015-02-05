@@ -13,20 +13,21 @@ export default initAPI(
   getAllAdmin: (req) => [],
   getByTag: (req) => [req.tag],
   getUsersPublished: (req) => [req.params.id],
+  getGitHEAD: (req) => [req.postobj],
 
   update: (req) => [req.postobj,req.body],
-  publish: (req) => [req.postobj,req.body],
+  publish: (req) => [req.postobj,req.body.publishedOverride],
   submitForReview: (req) => [req.postobj],
-  submitForPublication: (req) => [req.postobj, req.body],
-  updateFromGithub: (req) => [req.postobj, req.body],
-  updateGithubHead: (req) => [req.postobj, req.body],
+  propagateMDfromGithub: (req) => [req.postobj],
+  updateGithubHead: (req) => [req.postobj, req.body.md, req.body.commitMessage],
   addReview: (req) => [req.postobj, req.body],
-  addForker: (req) => [req.postobj, req.body],
+  addForker: (req) => [req.postobj],
   deleteById: (req) => [req.postobj]
 
 }, {
   'post':'getBySlugWithSimilar',
-  'postobj':'getById'
+  'postobj':'getById',
+  'postforreview':'getByIdForReview',
 },
   require('../../shared/validation/posts.js')
 )
