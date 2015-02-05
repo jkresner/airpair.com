@@ -137,10 +137,14 @@ var get = {
 
 function updateWithEditTouch(post, action, cb) {
   post.updated = new Date() //-- think about removing this
-  var previousAction = post.lastTouch.action
+  var previousAction = (post.lastTouch) ? post.lastTouch.action : null
   post.lastTouch = svc.newTouch.call(this, action)
-  if (action == 'updateByAuthor' && !post.submitted && previousAction == 'updateByAuthor')
-    $log('not storing author draft edits, but could debounce for some history...')
+  post.editHistory = post.editHistory || []
+  if (action == 'updateByAuthor' &&
+      previousAction == 'updateByAuthor' &&
+      !post.submitted) {
+    $log(`${post.title}:updateByAuthor) not storing author draft edits, but could debounce for some history...`)
+  }
   else
     post.editHistory.push(post.lastTouch)
   svc.update(post._id, post, cb)

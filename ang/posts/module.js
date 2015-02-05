@@ -9,6 +9,7 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
   var route = apRouteProvider.route
   route('/posts/me', 'PostsList', require('./list.html'))
   route('/posts/new', 'PostNew', require('./info.html'), { resolve: authd })
+  route('/posts/review', 'PostsInReview', require('./inreview.html'), { resolve: authd })
   route('/posts/info/:id', 'PostInfo', require('./info.html'), { resolve: authd })
   route('/posts/edit/:id', 'PostEdit', require('./edit.html'), { resolve: authd })
   route('/posts/tag/:tagslug', 'PostsTagList', require('./listTag.html'))
@@ -62,6 +63,15 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
   DataService.posts.getTagsPosts({tagSlug:$scope.tagslug}, function (result) {
     $scope.tag = result.tag;
     $scope.tagposts = result.posts;
+  })
+
+})
+
+
+.controller('PostsInReviewCtrl', function($scope, DataService) {
+
+  DataService.posts.getInReview({}, function (r) {
+    $scope.inreview = r;
   })
 
 })
