@@ -54,7 +54,7 @@ export default function(app) {
     .use(authd) //-- swap out for email verify or something
 
 
-    .get('/post-contributions', populateUser, API.Posts.getUserContributions)
+    .get('/posts/forks/me', populateUser, API.Posts.getUserForks)
     .get('/posts/:id', API.Posts.getById)
     .post('/posts', API.Posts.create)
     .put('/posts/:postobj', authd, API.Posts.update)
@@ -62,9 +62,9 @@ export default function(app) {
     .put('/posts/submit/:postobj', authd, populateUser, API.Posts.submitForReview)
     .put('/posts/publish/:postobj', authd, API.Posts.submitForPublication)
     .put('/posts/review/:postobj', API.Posts.addReview)
-    .put('/posts/add-contributor/:postobj', populateUser, API.Posts.addContributor)
+    .put('/posts/add-forker/:postobj', populateUser, API.Posts.addForker)
     .put('/posts/propagate-github/:postobj', API.Posts.updateFromGithub)
-    .put('/posts/updateGithubHead/:postobj', API.Posts.updateGithubHead)
+    .put('/posts/update-github-head/:postobj', populateUser, API.Posts.updateGithubHead)
     .delete('/posts/:postobj', authd, API.Posts.deleteById)
     .post('/posts-toc',API.Posts.getTableOfContents)
 

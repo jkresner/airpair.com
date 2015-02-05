@@ -183,17 +183,18 @@ var save = {
     }
   },
 
-  updateFromGithub(user, original, cb){
+  updateFromGithub(original, update, cb){
     github.getFile(original.slug, "/post.md", function(err, result){
       original.md = result.string
       svc.update(original._id, original, cb)
     })
   },
 
-  updateGithubHead(user, original, cb){
-    //TODO mabye allow a message from the user?
-    github.updateFile(original.slug, "post.md", original.md, "Update post from AirPair.com", function(err, result){
+  updateGithubHead(original, update, cb){
+    console.log(original.slug, update)
+    github.updateFile(original.slug, "post.md", update.md, update.commitMessage, this.user, function(err, result){
       if (err) return cb(err)
+      $log("record history")
       //TODO record history
       svc.update(original._id, original, cb)
     })
@@ -214,7 +215,7 @@ var save = {
     svc.update(post._id, post, cb)
   },
 
-  addContributor(post, o, cb){
+  addForker(post, o, cb){
     if (!github.isAuthed(this.user)){
       return cb(Error("User must authorize GitHub to become a contributor"))
     } else {
@@ -243,7 +244,7 @@ var save = {
     svc.deleteById(post._id, cb)
   },
 
-  getUserContributions(cb){
+  getUserForks(cb){
     //all the posts where the user is a forker
     svc.searchMany(Data.query.forker(this.user._id), { field: Data.select.list }, cb)
   }

@@ -6,7 +6,7 @@ for (var i = 0; i < 501; i++){
   lotsOfWords += "stuff ";
 }
 
-module.exports = () => describe("API: ", function() {
+module.exports = () => describe.only("API: ", function() {
 
   before(function(done) {
     SETUP.analytics.stub()
@@ -242,9 +242,9 @@ module.exports = () => describe("API: ", function() {
     addAndLoginLocalGithubUser("robot2", function(s) {
       var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
       var title = "test" + Math.floor(Math.random() * 100000000)
-      var d1 = { title: title, slug:title, by: by, md: lotsOfWords, assetUrl: 'http://youtu.be/qlOAbrvjMBo' }
+      var d1 = { title: title, slug:title, by: by, md: lotsOfWords, assetUrl: 'http://youtu.be/qlOAbrvjMBo'}
       POST('/posts', d1, {}, function(p1) {
-        PUT(`/posts/submit/${p1._id}`, p1, {}, function(resp){
+        PUT(`/posts/submit/${p1._id}`, d1, {}, function(resp){
           expect(resp.reviewReady).to.exist
           expect(resp.github.repoInfo.reviewTeamId, "reviewTeamId").to.exist
           expect(resp.github.repoInfo.authorTeamId, "authorTeamId").to.exist
@@ -286,11 +286,11 @@ module.exports = () => describe("API: ", function() {
       POST('/posts', d1, {}, function(p1) {
         PUT(`/posts/submit/${p1._id}`, p1, {}, function(resp){
           PUT(`/posts/${p1._id}`, p1, {}, function(resp){
-            PUT(`/posts/add-contributor/${p1._id}`, {}, {}, function(resp){
+            PUT(`/posts/add-forker/${p1._id}`, {}, {}, function(resp){
               expect(resp.forkers.length).to.equal(1)
               expect(resp.forkers[0].userAirPair.name).to.exist
               expect(resp.forkers[0].userGitHub.username).to.exist
-              GET(`/post-contributions`, {}, function(resp){
+              GET(`/posts/forks/me`, {}, function(resp){
                 // console.log("RESP", resp)
                 //return the user's one contribution
                 expect(resp.length).to.equal(1)
@@ -307,25 +307,49 @@ module.exports = () => describe("API: ", function() {
 
   //store on last update
   //TODO maybe store a history soon..
-  it("allows contents to be updated from GitHub as author when in review", function(done){
+  it("allows contents to be propagated from GitHub as author when in review", function(done){
     addAndLoginLocalGithubUser("robot5", function(s){
       var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
       var title = "test" + Math.floor(Math.random() * 100000000)
       var d1 = { title: title, slug:title, by: by, md: lotsOfWords, assetUrl: 'http://youtu.be/qlOAbrvjMBo' }
       POST('/posts', d1, {}, function(p1) {
         PUT(`/posts/submit/${p1._id}`, p1, {}, function(resp){
-          p1.contents = "New content that will be erased when we update from GitHub"
-          PUT(`/posts/${p1._id}`, p1, {}, function(resp){
-            PUT(`/posts/propagate-github/${p1._id}`, p1, {}, function(resp){
-              expect(resp.md).to.equal(lotsOfWords)
-              //also check that event data is present here
-              done()
+          p1.md = "New content that will be erased when we update from GitHub"
+          PUT(`/posts/${p1._id}`, p1, {status: 403}, function(resp){
+            //expect(resp.err).to.equal("Updating markdown must happen through git flow")
+            var update = {commitMessage: "Test update", md: p1.md + " and a bit more"}
+            PUT(`/posts/update-github-head/${p1._id}`, update, {}, function(resp){
+              github.getCommits(p1.slug, function(err,resp){
+                expect(resp.length).to.equal(3)
+
+                var initialCommit = _.find(resp, function(x){
+                  return x.commit.message == "Initial Commit"
+                })
+                var readmeCommit = _.find(resp, function(x){
+                  return x.commit.message == "Add README.md"
+                })
+                var updateCommit = _.find(resp, function(x){
+                  return x.commit.message == "Test update"
+                })
+
+                //airpairtest is admin account
+                //airpairtestreviewer is test user account
+
+                expect(readmeCommit.author.login).to.equal("airpairtest")
+                expect(updateCommit.author.login).to.equal("airpairtestreviewer")
+                expect(initialCommit.author.login).to.equal("airpairtestreviewer")
+
+                PUT(`/posts/propagate-github/${p1._id}`, {}, {}, function(resp){
+                  expect(resp.md).to.equal(p1.md + " and a bit more")
+                  done()
+                })
+              })
             })
           })
         })
       })
     })
-  }).timeout(20*1000)
+  }).timeout(40*1000)
 
   it("allows contents to be updated from GitHub as editor", function(done){
     addAndLoginLocalGithubUser("robot10", function(s){
@@ -362,28 +386,6 @@ module.exports = () => describe("API: ", function() {
       })
     })
   }).timeout(20*1000)
-
-
-  it("allows an author to update HEAD", function(done){
-    addAndLoginLocalGithubUser("robot6", function(s){
-      var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
-      var title = "test" + Math.floor(Math.random() * 100000000)
-      var d1 = { title: title, slug:title, by: by, md: lotsOfWords, assetUrl: 'http://youtu.be/qlOAbrvjMBo' }
-      POST('/posts', d1, {}, function(p1) {
-        PUT(`/posts/submit/${p1._id}`, p1, {}, function(resp){
-          p1.md = "New content for GitHub"
-          PUT(`/posts/${p1._id}`, p1, {}, function(resp){
-            PUT(`/posts/updateGithubHead/${p1._id}`, p1, {}, function(resp){
-              github.getFile(p1.slug, "post.md", function(err, resp){
-                expect(resp.string).to.equal("New content for GitHub")
-                done()
-              })
-            })
-          })
-        })
-      })
-    })
-  }).timeout(10000)
 
   it.skip("allows author to update HEAD when a repository has does not exist", function(done){
     //create a post that is in review (or published), but has no repo
