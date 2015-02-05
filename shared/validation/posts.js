@@ -1,4 +1,5 @@
-var postsUtil = require('../posts')
+var {validSlug,wordcount,wordsTogoForReview} = require('../posts')
+
 
 var validation = {
 
@@ -14,11 +15,16 @@ var validation = {
     var isEditor = _.contains(user.roles, 'editor')
     var isOwner = _.idsEqual(original.by.userId, user._id)
 
+    //-- Consider if editors should be allowed to update posts
+    //-- Rather than fork like everyone else...
+
     if ( !isEditor && !isOwner )
       return 'Post must be updated by owner'
     if (original.published && !isEditor)
       return 'Must be editor to update a published post'
-    if (original.reviewReady){
+    if (!validSlug(update.slug))
+      return '${post.slug} not a valid post slug'
+    if (original.submitted){
       if (original.md !== update.md)
         return "Updating markdown must happen through git flow"
       if (original.slug !== update.slug)
@@ -26,16 +32,28 @@ var validation = {
     }
   },
 
-  publish(user, original, update)
+  publish(user, post, publishedOverride)
   {
     var isEditor = _.contains(user.roles, 'editor')
+    var isOwner = _.idsEqual(post.by.userId, user._id)
 
-    if (!isEditor)
-      return 'Post must be published by an editor'
-    if (!update.publishReady)
-      return "Post must be marked publishReady by author"
-    if (!update.slug)
-      return 'Post must have slug to be published'
+    if (!isEditor && !isOwner)
+      return `Cannot publish post not belonging to you`
+    if (!isEditor && post.reviews < 5)
+      return `Must have at least 5 reviews to be published`
+
+    // if (!update.publishReady)
+    // return "Post must be marked publishReady by author"
+    if (!post.submitted)
+      return `Post must be submitted for review before being published`
+    if (!post.publishedCommit)
+      return `Post must have propogated commit to be published`
+    if (post.published && !publishedOverride)
+      return `Post already published...`
+    if (!post.slug)
+      return `Post must have a slug to be published`
+    if (!validSlug(post.slug))
+      return `${post.slug} not a valid post slug to publish`
   },
 
   deleteById(user, original)
@@ -44,52 +62,55 @@ var validation = {
     var isOwner = _.idsEqual(original.by.userId, user._id)
 
     if ( !isEditor && !isOwner )
-      return 'Post must be deleted by owner'
+      return `Post must be deleted by owner`
     if (original.published && !isEditor)
-      return 'Must be editor to delete a published post'
-    if (original.reviewReady != null)
-      return 'Must be editor to delete a post in review'
+      return `Must be editor to delete a published post`
+    if (original.submitted != null)
+      return `Must be editor to delete a post in review`
   },
 
   submitForReview(user, post)
   {
     var isOwner = _.idsEqual(post.by.userId, user._id)
     if (!isOwner)
-      return 'Post can only be submitted for review by its owner'
+      return `Post can only be submitted for review by its owner`
+    if (!user.social || !user.social.gh)
+      return `User must authorize GitHub to submit post for review`
     if (!post.slug)
-      return 'Must provide a slug'
-    if (post.reviewReady)
+      return `Post must have slug to submit for review`
+    if (!validSlug(post.slug))
+      return `${post.slug} not a valid post slug to publish`
+    if (post.submitted)
       return `This post has already been submitted for review`
     if (!post.md)
       return `Posts markdown required`
-    var wordcount = postsUtil.wordcount(post.md)
-    if (postsUtil.wordsTogoForReview(wordcount) > 0)
+    if (post.github)
+      return `Post already has associated git repo`
+    var wcount = wordcount(post.md)
+    if (wordsTogoForReview(wcount) > 0)
       return `Post word count [${wordcount}] too short for review`
   },
 
-  updateFromGithub(user, original, update){
+  propagateMDfromGithub(user, post){
     var isEditor = user.roles && _.contains(user.roles, "editor")
-    var isAuthor =  _.idsEqual(original.by.userId, user._id)
-    if (! isAuthor && !isEditor)
-      return "Not authorized"
-    if (original.published && isAuthor)
-      return "Only AirPair editors can update a published post"
+    var isAuthor =  _.idsEqual(post.by.userId, user._id)
+    if (!isAuthor && !isEditor)
+      return `Not authorized`
+    if (post.published && isAuthor)
+      return `Only editors can update published posts`
   },
 
-  updateGithubHead(user, original, update){
-    if (! _.idsEqual(original.by.userId, user._id))
-      return "Not authorized"
-    if (!update.commitMessage)
-      return "Commit Message required"
-    if (!update.md)
-      return "MarkDown empty"
+  updateGithubHead(user, original, postMD, commitMessage){
+    var isOwner = _.idsEqual(original.by.userId, user._id)
+    if (!isOwner)
+      return `Post head can only be updated by its owner`
+    if (!user.social || !user.social.gh)
+      return `User must authorize GitHub to become a contributor`
+    if (!commitMessage)
+      return `Commit Message required`
+    if (!postMD)
+      return `MarkDown empty`
     //maybe allow editors as well?
-  },
-
-  submitForPublication()
-  {
-    //TODO
-    // console.log("(validation) submitForPublication")
   },
 
   addReview(user, postId, review)
@@ -98,7 +119,13 @@ var validation = {
     // console.log("(validation) addReview", user, postId, review)
   },
 
-  addForker(user, postId){
+  addForker(user, post){
+    if (!user.social || !user.social.gh)
+      return `User must authorize GitHub to become a contributor`
+    if (!post.github)
+      return `Can not fork post as it has no git repo`
+    if (!post.submitted)
+      return `Can not fork post not yet submitted for review`
     //TODO
     // console.log("(validation)", user, postId)
   }

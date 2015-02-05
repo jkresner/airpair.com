@@ -105,11 +105,11 @@ stories = {
     slug = title.toLowerCase().replace(/\ /g, '-')
     tags = [data.tags.angular,data.tags.node]
     b = { userId: author._id, name: author.name, bio: 'yo yo', avatar: author.avatar }
-    d = { tags, title, by:b, slug,  md: 'Test', assetUrl: 'http://youtu.be/qlOAbrvjMBo', publishReady: new Date() }
+    d = { tags, title, by:b, slug, md: 'Test', assetUrl: 'http://youtu.be/qlOAbrvjMBo', submitted: new Date, published: new Date() }
     d = _.extend(d, postData)
     POST '/posts', d, {}, (p) ->
-      PUT '/posts/publish/'+p._id, p, {}, (ppub) ->
-        done()
+      #PUT '/posts/publish/'+p._id, p, {}, (ppub) ->
+      done()
 
 
   setupCompanyWithPayMethodAndTwoMembers: (companyCode, adminCode, memberCode, done) ->

@@ -37,8 +37,8 @@
         <tr ng-repeat="p in myposts">
           <td>{{ p.created | publishedTime: 'MM.DD' }}</td>
           <td>
-            <span ng-if="!p.reviewReady">-</span>
-            <span ng-if="p.reviewReady">in review</span>
+            <span ng-if="!p.submitted">-</span>
+            <span ng-if="p.submitted">in review</span>
             <span ng-if="p.publishReady">published</span>
           </td>
           <td>
