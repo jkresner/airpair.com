@@ -6,7 +6,7 @@ export default initAPI(
 
   getUsersPosts: (req) => [],
   getPostsInReview: (req) => [],
-  getUserContributions: (req) => [],
+  getUserForks: (req) => [],
   getTableOfContents: (req) => [req.body.md],
   getRecentPublished: (req) => [],
   getAllPublished: (req) => [],  //-- For indexable page
@@ -21,7 +21,7 @@ export default initAPI(
   updateFromGithub: (req) => [req.postobj, req.body],
   updateGithubHead: (req) => [req.postobj, req.body],
   addReview: (req) => [req.postobj, req.body],
-  addContributor: (req) => [req.postobj, req.body],
+  addForker: (req) => [req.postobj, req.body],
   deleteById: (req) => [req.postobj]
 
 }, {
