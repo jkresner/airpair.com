@@ -6,7 +6,9 @@ for (var i = 0; i < 501; i++){
   lotsOfWords += "stuff ";
 }
 
-module.exports = () => describe.only("API: ", function() {
+module.exports = () => describe("API: ", function() {
+
+  this.timeout(10000)
 
   before(function(done) {
     SETUP.analytics.stub()
@@ -55,11 +57,13 @@ module.exports = () => describe.only("API: ", function() {
     addAndLoginLocalUser('ajde', function(s) {
       var by = { userId: s._id, name: s.name, bio: 'yes test', avatar: s.avatar }
       by.username = 'ajayD'
-      by.tw = 'ajaytw'
-      by.gh = 'ajaygh'
-      by.in = 'ajayin'
-      by.so = 'ajay/1231so'
-      by.gp = 'ajaygp'
+      by.social = {
+        tw: { username: 'ajaytw' },
+        gh: { username: 'ajaygh' },
+        in: { id: 'ajayin' },
+        so: { link: 'ajay/1231so' },
+        gp: { id: 'ajaygp' }
+      }
       var d = { title: "test", by: by, md: 'Test', assetUrl: 'http://youtu.be/qlOAbrvjMBo' }
       POST('/posts', d, {}, function(post) {
         expect(post.by.userId).to.equal(s._id)
@@ -67,13 +71,14 @@ module.exports = () => describe.only("API: ", function() {
         expect(post.by.bio).to.equal('yes test')
         expect(post.by.avatar).to.equal(s.avatar)
         expect(post.by.username).to.equal('ajayd')
-        expect(post.by.tw).to.equal('ajaytw')
-        expect(post.by.gh).to.equal('ajaygh')
-        expect(post.by.in).to.equal('ajayin')
-        expect(post.by.so).to.equal('ajay/1231so')
-        expect(post.by.gp).to.equal('ajaygp')
+        expect(post.by.social.tw.username).to.equal('ajaytw')
+        expect(post.by.social.gh.username).to.equal('ajaygh')
+        expect(post.by.social.in.id).to.equal('ajayin')
+        expect(post.by.social.so.link).to.equal('ajay/1231so')
+        expect(post.by.social.gp.id).to.equal('ajaygp')
         expect(post.created).to.exist
         expect(post.updated).to.exist
+        expect(post.submitted).to.be.undefined
         expect(post.published).to.be.undefined
         expect(post.assetUrl).to.equal(d.assetUrl)
         expect(post.title).to.equal(d.title)
@@ -230,8 +235,8 @@ module.exports = () => describe.only("API: ", function() {
       var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
       var d1 = { title: title, slug:title, by: by, md: lotsOfWords, assetUrl: 'http://youtu.be/qlOAbrvjMBo' }
       POST('/posts', d1, {}, function(p1) {
-        PUT(`/posts/submit/${p1._id}`, p1, {status: 400}, function(resp){
-          expect(resp.message).to.equal("User must authorize GitHub for repo access")
+        PUT(`/posts/submit/${p1._id}`, p1, {status: 403}, function(resp){
+          expect(resp.message).to.equal("User must authorize GitHub to submit post for review")
           done()
         })
       })
@@ -244,8 +249,9 @@ module.exports = () => describe.only("API: ", function() {
       var title = "test" + Math.floor(Math.random() * 100000000)
       var d1 = { title: title, slug:title, by: by, md: lotsOfWords, assetUrl: 'http://youtu.be/qlOAbrvjMBo'}
       POST('/posts', d1, {}, function(p1) {
+        $log('p1.git', p1.github)
         PUT(`/posts/submit/${p1._id}`, d1, {}, function(resp){
-          expect(resp.reviewReady).to.exist
+          expect(resp.submitted).to.exist
           expect(resp.github.repoInfo.reviewTeamId, "reviewTeamId").to.exist
           expect(resp.github.repoInfo.authorTeamId, "authorTeamId").to.exist
           expect(resp.github.repoInfo.owner, "githubOwner").to.exist
@@ -261,12 +267,12 @@ module.exports = () => describe.only("API: ", function() {
         })
       })
     })
-  }).timeout(20000) // 6 serial GitHub API calls
+  })
 
-  it('allows reviews to be added to reviewReady posts', function(done) {
+  it('allows reviews to be added to submitted posts', function(done) {
     addAndLoginLocalUser('robot3', function(s) {
       var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
-      var d1 = { title: "test 1", by: by, md: 'Test 1', assetUrl: 'http://youtu.be/qlOAbrvjMBo', reviewReady:new Date()}
+      var d1 = { title: "test 1", by: by, md: 'Test 1', assetUrl: 'http://youtu.be/qlOAbrvjMBo', submitted:new Date()}
       POST('/posts', d1, {}, function(p1) {
         PUT(`/posts/review/${p1._id}`, {body: "this post is great", stars: 4}, {}, function(resp){
           expect(resp.reviews[0].body).to.equal("this post is great")
@@ -277,22 +283,19 @@ module.exports = () => describe.only("API: ", function() {
   })
 
   //TODO test with new contributor code
-  it("allows forkers to be added to reviewReady posts", function(done){
+  it("allows forkers to be added to submitted posts", function(done){
     addAndLoginLocalGithubUser("robot4", function(s){
       var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
       var title = "test" + Math.floor(Math.random() * 100000000)
-      // console.log("TITLE", title)
       var d1 = { title: title, slug:title, by: by, md: lotsOfWords, assetUrl: 'http://youtu.be/qlOAbrvjMBo' }
       POST('/posts', d1, {}, function(p1) {
         PUT(`/posts/submit/${p1._id}`, p1, {}, function(resp){
           PUT(`/posts/${p1._id}`, p1, {}, function(resp){
             PUT(`/posts/add-forker/${p1._id}`, {}, {}, function(resp){
               expect(resp.forkers.length).to.equal(1)
-              expect(resp.forkers[0].userAirPair.name).to.exist
-              expect(resp.forkers[0].userGitHub.username).to.exist
+              expect(resp.forkers[0].name).to.exist
+              expect(resp.forkers[0].social.gh.username).to.exist
               GET(`/posts/forks/me`, {}, function(resp){
-                // console.log("RESP", resp)
-                //return the user's one contribution
                 expect(resp.length).to.equal(1)
                 expect(resp[0].title).to.equal(title)
                 done()
@@ -302,8 +305,7 @@ module.exports = () => describe.only("API: ", function() {
         })
       })
     })
-  }).timeout(20*1000)
-
+  })
 
   //store on last update
   //TODO maybe store a history soon..
@@ -349,7 +351,7 @@ module.exports = () => describe.only("API: ", function() {
         })
       })
     })
-  }).timeout(40*1000)
+  })
 
   it("allows contents to be updated from GitHub as editor", function(done){
     addAndLoginLocalGithubUser("robot10", function(s){
@@ -370,7 +372,7 @@ module.exports = () => describe.only("API: ", function() {
         })
       })
     })
-  }).timeout(20*1000)
+  })
 
   it("does not allow contents to be updated from GitHub as author once published", function(done){
     addAndLoginLocalGithubUser("robot11", function(s){
@@ -385,19 +387,8 @@ module.exports = () => describe.only("API: ", function() {
         })
       })
     })
-  }).timeout(20*1000)
-
-  it.skip("allows author to update HEAD when a repository has does not exist", function(done){
-    //create a post that is in review (or published), but has no repo
-    //OR
-    //normal flow and remove using github api
-
-    //try to propagate to HEAD, try to add contributor, any GitHub changes
-
-    //fail gracefully for addContributor on post w/o github object
-
-    //on failure delete github property from post
   })
+
 
   it('does not allow submission for publication w/ <5 reviews', function(done) {
     addAndLoginLocalUser('robot7', function(s) {
@@ -405,7 +396,7 @@ module.exports = () => describe.only("API: ", function() {
       var d1 = { title: "test 1", by: by, md: lotsOfWords, assetUrl: 'http://youtu.be/qlOAbrvjMBo' }
       POST('/posts', d1, {}, function(p1) {
         PUT(`/posts/publish/${p1._id}`, p1, {status: 403}, function(resp){
-          expect(resp.message).to.equal("Must have at least 5 reviews")
+          expectStartsWith(resp.message, "Must have at least 5 reviews")
           done()
         })
       })
@@ -413,10 +404,12 @@ module.exports = () => describe.only("API: ", function() {
   })
 
   //TODO fix (publishReady no longer exists)
-  it.skip('allows submission for publication w/ 5 reviews', function(done) {
-    addAndLoginLocalUser('robot8', function(s) {
+  it('allows author self publish w/ 5 reviews', function(done) {
+    addAndLoginLocalGithubUser('robot8', function(s) {
       var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
-      var d1 = { title: "test 1", by: by, md: lotsOfWords, assetUrl: 'http://youtu.be/qlOAbrvjMBo', reviews: [
+      var d1 = { title: "test 1", by: by, md: lotsOfWords,
+          slug: `test-1-${timeSeed()}`, assetUrl: 'http://youtu.be/qlOAbrvjMBo',
+        reviews: [
         {body: "this post is great", stars: 4},
         {body: "this post is great", stars: 4},
         {body: "this post is great", stars: 4},
@@ -424,22 +417,27 @@ module.exports = () => describe.only("API: ", function() {
         {body: "this post is great", stars: 4}
       ]}
       POST('/posts', d1, {}, function(p1) {
-        PUT(`/posts/publish/${p1._id}`, p1, {}, function(resp){
-          expect(resp.publishReady).to.exist
-          done()
+        PUT(`/posts/submit/${p1._id}`, p1, {}, function(){
+          PUT(`/posts/propagate-github/${p1._id}`, p1, {}, function(resp){
+            expect(resp.published).to.be.undefined
+            PUT(`/posts/publish/${p1._id}`, p1, {}, function(resp){
+              expect(resp.published).to.exist
+              done()
+            })
+          })
         })
       })
     })
   })
 
-  it.skip("does not allow publishing of posts w/o a publishReady timestamp", function(done){
+  it("does not allow publishing of posts w/o a submitted for review timestamp", function(done){
     addAndLoginLocalUser('robot9', function(s) {
       var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
       var d1 = { title: "test 1", by: by, md: lotsOfWords, assetUrl: 'http://youtu.be/qlOAbrvjMBo', slug: `no-publish-ready-${moment().format('X')}` }
       POST('/posts', d1, {}, function(p1) {
         LOGIN('edap', data.users.edap, function() {
           PUT('/posts/publish/'+p1._id, p1, {status: 403}, function(resp) {
-            expect(resp.message).to.equal("Post must be marked publishReady by author")
+            expect(resp.message).to.equal("Post must be submitted for review before being published")
             done()
           })
         })

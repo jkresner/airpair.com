@@ -1,11 +1,9 @@
 import * as WorkshopsSvc from '../services/workshops'
-var PostsSvc             = require('../services/posts')
-var TagSvc               = require('../services/tags')
 
 var svcs = {
-  tags: TagSvc,
-  workshops: WorkshopsSvc,
-  posts: PostsSvc
+  tags: require('../services/tags'),
+  posts: require('../services/posts'),
+  workshops: WorkshopsSvc
 }
 
 global.cache = {}

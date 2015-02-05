@@ -24,7 +24,7 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
     controller($rootScope, $scope) {
 
       $scope.calcReviewStep = () => {
-        if ($scope.p.reviewReady) return false
+        if ($scope.p.submitted) return false
 
         $scope.wordcount = PostsUtil.wordcount($scope.p.md)
         $scope.wordstogo = PostsUtil.wordsTogoForReview($scope.wordcount)

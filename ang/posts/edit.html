@@ -49,12 +49,12 @@
 
     <a class="btn"
       ng-click="submitForReview()"
-      ng-if="!post.reviewReady"
+      ng-if="!post.submitted"
       ng-disabled="notReviewReady">Submit for review</a>
 
     <a ng-if="!githubAuthed()" class="btn" target="_self" ng-href="/auth/github?returnTo=/posts/edit/{{post._id}}">Connect github</a>
 
-<!--     <a ng-if="githubAuthed() && !post.reviewReady" class="btn" target="_blank" href=""
+<!--     <a ng-if="githubAuthed() && !post.submitted" class="btn" target="_blank" href=""
       ng-disabled="(!post.title && !post.by.bio) || !post.saved"
       ng-click="submitForReview()">Submit for review</a>
  -->
@@ -67,7 +67,7 @@
 
     <post-step-helper post="post"></post-step-helper>
 
-    <label ng-if="!post.reviewReady">
+    <label ng-if="!post.submitted">
       <span>Also see the <a href="http://daringfireball.net/projects/markdown/syntax" target="_blank">Markdown guide</a><span> and read our <a href="/posts/authoring-faq" target="_blank">Post authoring tips & faq</a>.
     </label>
 

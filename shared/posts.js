@@ -1,5 +1,9 @@
 module.exports = {
 
+  validSlug(slug) {
+    return /^[a-z0-9]+([a-z0-9\-]+)*$/.test(slug)
+  },
+
   wordcount(md) {
     var s = md.replace(/(^\s*)|(\s*$)/gi,"");
     s = s.replace(/[ ]{2,}/gi," ");

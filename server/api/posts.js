@@ -15,13 +15,12 @@ export default initAPI(
   getUsersPublished: (req) => [req.params.id],
 
   update: (req) => [req.postobj,req.body],
-  publish: (req) => [req.postobj,req.body],
+  publish: (req) => [req.postobj,req.body.publishedOverride],
   submitForReview: (req) => [req.postobj],
-  submitForPublication: (req) => [req.postobj, req.body],
-  updateFromGithub: (req) => [req.postobj, req.body],
-  updateGithubHead: (req) => [req.postobj, req.body],
+  propagateMDfromGithub: (req) => [req.postobj],
+  updateGithubHead: (req) => [req.postobj, req.body.md, req.body.commitMessage],
   addReview: (req) => [req.postobj, req.body],
-  addForker: (req) => [req.postobj, req.body],
+  addForker: (req) => [req.postobj],
   deleteById: (req) => [req.postobj]
 
 }, {
