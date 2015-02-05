@@ -18,6 +18,12 @@ var validation = {
       return 'Post must be updated by owner'
     if (original.published && !isEditor)
       return 'Must be editor to update a published post'
+    if (original.reviewReady){
+      if (original.md !== update.md)
+        return "Updating markdown must happen through git flow"
+      if (original.slug !== update.slug)
+        return "Cannot change slug after post is in review"
+    }
   },
 
   publish(user, original, update)
@@ -62,14 +68,22 @@ var validation = {
   },
 
   updateFromGithub(user, original, update){
-    //TODO
-    var isOwner = _.idsEqual(original.by.userId, user._id)
+    var isEditor = user.roles && _.contains(user.roles, "editor")
+    var isAuthor =  _.idsEqual(original.by.userId, user._id)
+    if (! isAuthor && !isEditor)
+      return "Not authorized"
+    if (original.published && isAuthor)
+      return "Only AirPair editors can update a published post"
   },
 
-  updateGithubFromDb(user, original, update){
-    //TODO
-    console.log("TODO updateGithubFromDB Validation")
-    //only allow user to do this?
+  updateGithubHead(user, original, update){
+    if (! _.idsEqual(original.by.userId, user._id))
+      return "Not authorized"
+    if (!update.commitMessage)
+      return "Commit Message required"
+    if (!update.md)
+      return "MarkDown empty"
+    //maybe allow editors as well?
   },
 
   submitForPublication()
@@ -84,16 +98,10 @@ var validation = {
     // console.log("(validation) addReview", user, postId, review)
   },
 
-  addContributor(user, postId){
+  addForker(user, postId){
     //TODO
     // console.log("(validation)", user, postId)
-  },
-
-  getUserContributions(cb){
-    //TODO
-    // console.log("validation")
   }
-
 }
 
 module.exports = validation

@@ -119,6 +119,12 @@ var get = {
     })
   },
 
+  getPostsInReview(cb) {
+    var opts = { fields: Data.select.list, options: { sort: { 'created': -1 } } }
+    var query = Data.query.reviewReady()
+    svc.searchMany(query, opts, cb)
+  },
+
   getTableOfContents(markdown, cb) {
     return cb(null, {toc:Data.generateToc(markdown)})
   }
@@ -165,24 +171,31 @@ var save = {
       github.setupRepo(repoName, githubOwner, post.md, this.user, function(e, result){
         if (e) return cb(e)
         post.reviewReady = new Date()
-        post.meta = post.meta || {};
-        post.meta.reviewTeamId = result.reviewTeamId
+        post.github = post.github || {}
+        post.github.repoInfo = post.github.repoInfo || {}
+        post.github.repoInfo.reviewTeamId = result.reviewTeamId
+        post.github.repoInfo.authorTeamId = result.authorTeamId
+        post.github.repoInfo.owner = result.githubOwner
+        post.github.repoInfo.author = result.author
+        post.github.repoInfo.url = result.githubUrl
         svc.update(post._id, post, cb)
       })
     }
   },
 
-  updateFromGithub(user, original, cb){
+  updateFromGithub(original, update, cb){
     github.getFile(original.slug, "/post.md", function(err, result){
       original.md = result.string
       svc.update(original._id, original, cb)
     })
   },
 
-  updateGithubFromDb(user, original, cb){
-    //TODO mabye allow a message from the user?
-    github.updateFile(original.slug, "post.md", original.md, "Update post from AirPair.com", function(err, result){
+  updateGithubHead(original, update, cb){
+    console.log(original.slug, update)
+    github.updateFile(original.slug, "post.md", update.md, update.commitMessage, this.user, function(err, result){
       if (err) return cb(err)
+      $log("record history")
+      //TODO record history
       svc.update(original._id, original, cb)
     })
   },
@@ -202,14 +215,22 @@ var save = {
     svc.update(post._id, post, cb)
   },
 
-  addContributor(post, o, cb){
+  addForker(post, o, cb){
     if (!github.isAuthed(this.user)){
       return cb(Error("User must authorize GitHub to become a contributor"))
     } else {
-      post.contributors = post.contributors || []
       var githubUser = this.user.social.gh.username
-      post.contributors.push({id: this.user._id, github: githubUser})
-      github.addContributor(this.user, post.slug, post.meta.reviewTeamId, function(err, res){
+      var _this = this
+      github.addContributor(_this.user, post.slug, post.github.reviewTeamId, function(err, res){
+        post.forkers = post.github.forkers || []
+        post.forkers.push({
+          userId: _this.user._id,
+          userAirPair: {_id: _this.user._id, name: _this.user.name, email: _this.email},
+          userGitHub: {
+            id: _this.user.social.gh.id,
+            username: _this.user.social.gh.username
+          }
+        })
         if (err){
           cb(err)
         } else {
@@ -223,11 +244,9 @@ var save = {
     svc.deleteById(post._id, cb)
   },
 
-  getUserContributions(cb){
-    github.getReviewRepos(this.user, function(err,resp){
-      if (err) return cb(err, null)
-      cb(null, resp)
-    })
+  getUserForks(cb){
+    //all the posts where the user is a forker
+    svc.searchMany(Data.query.forker(this.user._id), { field: Data.select.list }, cb)
   }
 }
 

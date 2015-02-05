@@ -1,6 +1,11 @@
 import {getHashId} from '../../server/services/postsToc'
 var github = require("../../server/services/wrappers/github.js")
 
+var lotsOfWords = ""
+for (var i = 0; i < 501; i++){
+  lotsOfWords += "stuff ";
+}
+
 module.exports = () => describe.only("API: ", function() {
 
   before(function(done) {
@@ -223,7 +228,7 @@ module.exports = () => describe.only("API: ", function() {
     addAndLoginLocalUser('robot1', function(s) {
       var title = "test" + Math.floor(Math.random() * 100000000)
       var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
-      var d1 = { title: title, slug:title, by: by, md: 'Test 1', assetUrl: 'http://youtu.be/qlOAbrvjMBo' }
+      var d1 = { title: title, slug:title, by: by, md: lotsOfWords, assetUrl: 'http://youtu.be/qlOAbrvjMBo' }
       POST('/posts', d1, {}, function(p1) {
         PUT(`/posts/submit/${p1._id}`, p1, {status: 400}, function(resp){
           expect(resp.message).to.equal("User must authorize GitHub for repo access")
@@ -237,12 +242,22 @@ module.exports = () => describe.only("API: ", function() {
     addAndLoginLocalGithubUser("robot2", function(s) {
       var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
       var title = "test" + Math.floor(Math.random() * 100000000)
-      var d1 = { title: title, slug:title, by: by, md: 'Test 1', assetUrl: 'http://youtu.be/qlOAbrvjMBo' }
+      var d1 = { title: title, slug:title, by: by, md: lotsOfWords, assetUrl: 'http://youtu.be/qlOAbrvjMBo'}
       POST('/posts', d1, {}, function(p1) {
-        PUT(`/posts/submit/${p1._id}`, p1, {}, function(resp){
+        PUT(`/posts/submit/${p1._id}`, d1, {}, function(resp){
           expect(resp.reviewReady).to.exist
-          expect(resp.meta.reviewTeamId).to.exist
-          done()
+          expect(resp.github.repoInfo.reviewTeamId, "reviewTeamId").to.exist
+          expect(resp.github.repoInfo.authorTeamId, "authorTeamId").to.exist
+          expect(resp.github.repoInfo.owner, "githubOwner").to.exist
+          expect(resp.github.repoInfo.author, "author").to.exist
+          expect(resp.github.repoInfo.url, "github url").to.exist
+          GET(`/posts/review`, {}, function(resp){
+            var post = _.find(resp, function(post){
+              return post.title === title
+            })
+            expect(post).to.exist
+            done()
+          })
         })
       })
     })
@@ -261,19 +276,25 @@ module.exports = () => describe.only("API: ", function() {
     })
   })
 
-  it("allows editors to be added to reviewReady posts", function(done){
+  //TODO test with new contributor code
+  it("allows forkers to be added to reviewReady posts", function(done){
     addAndLoginLocalGithubUser("robot4", function(s){
       var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
       var title = "test" + Math.floor(Math.random() * 100000000)
       // console.log("TITLE", title)
-      var d1 = { title: title, slug:title, by: by, md: 'Test 1', assetUrl: 'http://youtu.be/qlOAbrvjMBo' }
+      var d1 = { title: title, slug:title, by: by, md: lotsOfWords, assetUrl: 'http://youtu.be/qlOAbrvjMBo' }
       POST('/posts', d1, {}, function(p1) {
         PUT(`/posts/submit/${p1._id}`, p1, {}, function(resp){
           PUT(`/posts/${p1._id}`, p1, {}, function(resp){
-            PUT(`/posts/add-contributor/${p1._id}`, {}, {}, function(resp){
-              expect(resp.contributors[0].id).to.equal(s._id)
-              GET(`/post-contributions`, {}, function(resp){
-                expect(resp).to.include(title)
+            PUT(`/posts/add-forker/${p1._id}`, {}, {}, function(resp){
+              expect(resp.forkers.length).to.equal(1)
+              expect(resp.forkers[0].userAirPair.name).to.exist
+              expect(resp.forkers[0].userGitHub.username).to.exist
+              GET(`/posts/forks/me`, {}, function(resp){
+                // console.log("RESP", resp)
+                //return the user's one contribution
+                expect(resp.length).to.equal(1)
+                expect(resp[0].title).to.equal(title)
                 done()
               })
             })
@@ -284,37 +305,64 @@ module.exports = () => describe.only("API: ", function() {
   }).timeout(20*1000)
 
 
-  it("allows contents to be updated from GitHub", function(done){
+  //store on last update
+  //TODO maybe store a history soon..
+  it("allows contents to be propagated from GitHub as author when in review", function(done){
     addAndLoginLocalGithubUser("robot5", function(s){
       var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
       var title = "test" + Math.floor(Math.random() * 100000000)
-      var d1 = { title: title, slug:title, by: by, md: 'Test 1', assetUrl: 'http://youtu.be/qlOAbrvjMBo' }
+      var d1 = { title: title, slug:title, by: by, md: lotsOfWords, assetUrl: 'http://youtu.be/qlOAbrvjMBo' }
+      POST('/posts', d1, {}, function(p1) {
+        PUT(`/posts/submit/${p1._id}`, p1, {}, function(resp){
+          p1.md = "New content that will be erased when we update from GitHub"
+          PUT(`/posts/${p1._id}`, p1, {status: 403}, function(resp){
+            //expect(resp.err).to.equal("Updating markdown must happen through git flow")
+            var update = {commitMessage: "Test update", md: p1.md + " and a bit more"}
+            PUT(`/posts/update-github-head/${p1._id}`, update, {}, function(resp){
+              github.getCommits(p1.slug, function(err,resp){
+                expect(resp.length).to.equal(3)
+
+                var initialCommit = _.find(resp, function(x){
+                  return x.commit.message == "Initial Commit"
+                })
+                var readmeCommit = _.find(resp, function(x){
+                  return x.commit.message == "Add README.md"
+                })
+                var updateCommit = _.find(resp, function(x){
+                  return x.commit.message == "Test update"
+                })
+
+                //airpairtest is admin account
+                //airpairtestreviewer is test user account
+
+                expect(readmeCommit.author.login).to.equal("airpairtest")
+                expect(updateCommit.author.login).to.equal("airpairtestreviewer")
+                expect(initialCommit.author.login).to.equal("airpairtestreviewer")
+
+                PUT(`/posts/propagate-github/${p1._id}`, {}, {}, function(resp){
+                  expect(resp.md).to.equal(p1.md + " and a bit more")
+                  done()
+                })
+              })
+            })
+          })
+        })
+      })
+    })
+  }).timeout(40*1000)
+
+  it("allows contents to be updated from GitHub as editor", function(done){
+    addAndLoginLocalGithubUser("robot10", function(s){
+      var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
+      var title = "test" + Math.floor(Math.random() * 100000000)
+      var d1 = { title: title, slug:title, by: by, md: lotsOfWords, assetUrl: 'http://youtu.be/qlOAbrvjMBo' }
       POST('/posts', d1, {}, function(p1) {
         PUT(`/posts/submit/${p1._id}`, p1, {}, function(resp){
           p1.contents = "New content that will be erased when we update from GitHub"
           PUT(`/posts/${p1._id}`, p1, {}, function(resp){
-            PUT(`/posts/propagate-github/${p1._id}`, p1, {}, function(resp){
-              expect(resp.md).to.equal("Your Post Here")
-              done()
-            })
-          })
-        })
-      })
-    })
-  }).timeout(20*1000)
-
-  it.skip("allows GitHub to be updated from db", function(done){
-    addAndLoginLocalGithubUser("robot6", function(s){
-      var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
-      var title = "test" + Math.floor(Math.random() * 100000000)
-      var d1 = { title: title, slug:title, by: by, md: 'Test 1', assetUrl: 'http://youtu.be/qlOAbrvjMBo' }
-      POST('/posts', d1, {}, function(p1) {
-        PUT(`/posts/submit/${p1._id}`, p1, {}, function(resp){
-          p1.md = "New content for GitHub"
-          PUT(`/posts/${p1._id}`, p1, {}, function(resp){
-            PUT(`/posts/propagate-github/${p1._id}`, p1, {}, function(resp){
-              github.getFile(p1.slug, "post.md", function(err, resp){
-                expect(resp.string).to.equal("New content for GitHub")
+            LOGIN('edap', data.users.edap, function() {
+              PUT(`/posts/propagate-github/${p1._id}`, p1, {}, function(resp){
+                expect(resp.md).to.equal(lotsOfWords)
                 done()
               })
             })
@@ -322,12 +370,39 @@ module.exports = () => describe.only("API: ", function() {
         })
       })
     })
+  }).timeout(20*1000)
+
+  it("does not allow contents to be updated from GitHub as author once published", function(done){
+    addAndLoginLocalGithubUser("robot11", function(s){
+      var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
+      var title = "test" + Math.floor(Math.random() * 100000000)
+      var d1 = { title: title, slug:title, by: by, md: lotsOfWords, assetUrl: 'http://youtu.be/qlOAbrvjMBo',  published: Date.now()}
+      POST('/posts', d1, {}, function(p1) {
+        PUT(`/posts/submit/${p1._id}`, p1, {}, function(resp){
+          PUT(`/posts/propagate-github/${p1._id}`, p1, {status: 403}, function(resp){
+            done()
+          })
+        })
+      })
+    })
+  }).timeout(20*1000)
+
+  it.skip("allows author to update HEAD when a repository has does not exist", function(done){
+    //create a post that is in review (or published), but has no repo
+    //OR
+    //normal flow and remove using github api
+
+    //try to propagate to HEAD, try to add contributor, any GitHub changes
+
+    //fail gracefully for addContributor on post w/o github object
+
+    //on failure delete github property from post
   })
 
   it('does not allow submission for publication w/ <5 reviews', function(done) {
     addAndLoginLocalUser('robot7', function(s) {
       var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
-      var d1 = { title: "test 1", by: by, md: 'Test 1', assetUrl: 'http://youtu.be/qlOAbrvjMBo' }
+      var d1 = { title: "test 1", by: by, md: lotsOfWords, assetUrl: 'http://youtu.be/qlOAbrvjMBo' }
       POST('/posts', d1, {}, function(p1) {
         PUT(`/posts/publish/${p1._id}`, p1, {status: 403}, function(resp){
           expect(resp.message).to.equal("Must have at least 5 reviews")
@@ -337,10 +412,11 @@ module.exports = () => describe.only("API: ", function() {
     })
   })
 
-  it('allows submission for publication w/ 5 reviews', function(done) {
+  //TODO fix (publishReady no longer exists)
+  it.skip('allows submission for publication w/ 5 reviews', function(done) {
     addAndLoginLocalUser('robot8', function(s) {
       var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
-      var d1 = { title: "test 1", by: by, md: 'Test 1', assetUrl: 'http://youtu.be/qlOAbrvjMBo', reviews: [
+      var d1 = { title: "test 1", by: by, md: lotsOfWords, assetUrl: 'http://youtu.be/qlOAbrvjMBo', reviews: [
         {body: "this post is great", stars: 4},
         {body: "this post is great", stars: 4},
         {body: "this post is great", stars: 4},
@@ -359,7 +435,7 @@ module.exports = () => describe.only("API: ", function() {
   it.skip("does not allow publishing of posts w/o a publishReady timestamp", function(done){
     addAndLoginLocalUser('robot9', function(s) {
       var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
-      var d1 = { title: "test 1", by: by, md: 'Test 1', assetUrl: 'http://youtu.be/qlOAbrvjMBo', slug: `no-publish-ready-${moment().format('X')}` }
+      var d1 = { title: "test 1", by: by, md: lotsOfWords, assetUrl: 'http://youtu.be/qlOAbrvjMBo', slug: `no-publish-ready-${moment().format('X')}` }
       POST('/posts', d1, {}, function(p1) {
         LOGIN('edap', data.users.edap, function() {
           PUT('/posts/publish/'+p1._id, p1, {status: 403}, function(resp) {

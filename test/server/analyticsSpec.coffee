@@ -19,7 +19,7 @@ module.exports = -> describe "Tracking: ", ->
       SETUP.initTags ->
         LOGIN 'jkap', data.users['jkap'], (s) ->
           SETUP.initWorkshops ->
-            SETUP.createAndPublishPost(s, {title: postTitle,slug:postSlug}, done)
+            SETUP.createAndPublishPost(s, {title: postTitle,slug:postSlug, reviews: [{}, {}, {}, {}, {}]}, done)
 
   beforeEach ->
     SETUP.clearIdentity()

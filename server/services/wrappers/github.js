@@ -145,12 +145,10 @@ var github = {
   },
 
   addFile(repo, path, content, msg, user, cb){
-    //TODO uncomment once invites are properly working
-    // if (user)
-    //   _authenticateUser(user)
-    // else
-    //   _authenticateAdmin()
-    _authenticateAdmin()
+    if (user)
+      _authenticateUser(user)
+    else
+      _authenticateAdmin()
     api.repos.createFile({
       user: org,
       repo: repo,
@@ -160,12 +158,10 @@ var github = {
     }, cb);
   },
 
-  updateFile(repo, path, content, msg, cb){
+  updateFile(repo, path, content, msg, user, cb){
     this.getFile(repo, path, function(err, result){
       if (err) return cb(err)
-      // console.log("RESULT", result)
-      //TODO should use user's account
-      _authenticateAdmin()
+      _authenticateUser(user)
       api.repos.updateFile({
         sha: result.sha,
         user: org,
@@ -177,21 +173,39 @@ var github = {
     })
   },
 
-  conributedRepos(user){
-
+  //NOT WORKING, only returns meta info
+  getStats(repo, cb){
+    api.repos.getStatsCommitActivity({
+      user: org,
+      repo: repo
+    }, function(err, res){
+      cb(err, res)
+    })
   },
 
+  //TODO needs to work with user auth as well as admin
   getFile(repo, path, cb){
+    // _authenticateAdmin()
     api.repos.getContent({
       user: org,
       repo: repo,
       path: path
     }, function (err, resp){
+      if (err) return cb(err)
       resp.string = new Buffer(resp.content, 'base64').toString('utf8');
       cb(err, resp)
     })
   },
 
+  getCommits(repo, cb){
+    _authenticateAdmin()
+    api.repos.getCommits({
+      user: org,
+      repo: repo
+    }, cb)
+  },
+
+  //TODO add readme string as parameter
   setupRepo(repo, githubOwner, postContents, user, cb){
     // console.log(`setting up repo ${repo} for ${githubOwner}`)
     var _this = this
@@ -200,6 +214,8 @@ var github = {
       //without a timeout repo is often not found immediately after creation
       //should figure out a better way to handle this...
       if (err) return cb(err)
+      var githubUrl = result.url
+
       setTimeout(function(){
         _this.addFile(repo, "README.md", "Please read me", "Add README.md", null, function(err, result){
           if (err) return cb(err)
@@ -211,9 +227,9 @@ var github = {
               var authorTeamId = result.id
               _this.addToTeam(githubOwner, authorTeamId, user, function(err, result){
                 if (err) return cb(err)
-                _this.addFile(repo, "post.md", "Your Post Here", postContents, user, function(err, result){
+                _this.addFile(repo, "post.md", postContents, "Initial Commit", user, function(err, result){
                   if (err) return cb(err)
-                  cb(null, {reviewTeamId})
+                  cb(null, {reviewTeamId, authorTeamId, githubOwner, githubUrl, author: user.social.gh.username})
                 })
               })
             })
