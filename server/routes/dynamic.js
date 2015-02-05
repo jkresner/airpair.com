@@ -62,7 +62,10 @@ export default function(app) {
     )
 
     .get('/posts/review/:postforreview', authd,
-      app.renderHbsViewData('post', null, (req, cb) => { cb(null, req.postforreview) })
+      app.renderHbsViewData('post', null, (req, cb) => {
+        req.postforreview.meta = { noindex: true }
+        cb(null, req.postforreview)
+      })
     )
 
     .get('/workshops',
