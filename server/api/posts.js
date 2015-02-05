@@ -13,6 +13,7 @@ export default initAPI(
   getAllAdmin: (req) => [],
   getByTag: (req) => [req.tag],
   getUsersPublished: (req) => [req.params.id],
+  getGitHEAD: (req) => [req.postobj],
 
   update: (req) => [req.postobj,req.body],
   publish: (req) => [req.postobj,req.body.publishedOverride],
@@ -25,7 +26,8 @@ export default initAPI(
 
 }, {
   'post':'getBySlugWithSimilar',
-  'postobj':'getById'
+  'postobj':'getById',
+  'postforreview':'getByIdForReview',
 },
   require('../../shared/validation/posts.js')
 )

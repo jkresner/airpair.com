@@ -19,13 +19,16 @@ angular.module('APDataSvc', [])
       getMyPosts: GET((d)=>`/posts/me`),
       getRecentPosts: GET((d)=>`/posts/recent`),
       getInReview: GET((d)=>`/posts/review`),
+      getMyForks: GET((d)=>`/posts/forks/me`),
       getTagsPosts: GET((d)=>`/posts/tag/${d.tagSlug}`),
       create: POST((d)=>`/posts`),
       update: PUT((d)=>`/posts/${d._id}`),
+      getGitHEAD: GET((d)=>`/posts/head/${d._id}`),
+      updateGitHEAD: PUT((d)=>`/posts/update-github-head/${d._id}`),
       publish: PUT((d)=>`/posts/publish/${d._id}`),
       deletePost: DELETE((d)=>`/posts/${d._id}`),
       submitForReview: PUT((d)=>`/posts/submit/${d._id}`),
-      addContributor: PUT((d)=>`/posts/add-contributor/${d._id}`)
+      addForker: PUT((d)=>`/posts/add-forker/${d._id}`)
       // getByUsername: GET((d)=>`/posts/by/${d.username}`),
       // getToc: GET((d)=>`/posts-toc`)
     }

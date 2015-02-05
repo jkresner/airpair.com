@@ -8,6 +8,15 @@
 <p class="onmob">My posts is not supported on mobile.
   <br />Return to <a href="/posts" target="_self">All posts</a>?</p>
 
+<section ng-if="forked" class="notifications">
+  <div id="forked">
+    <h1><img ng-src="/static/img/css/airpair-author.png" /> Mother Forker!</h1>
+    <h3><b><a href="https://github.com/{{session.social.gh.username}}/{{forked.title}}" target="_blank">{{ forked.title }}</a></b> has been forked to your github account.</h3>
+    <p>Make edits like you would normal code, then submit a pull request to get your contributions incorpated.</p>
+    <p></p>
+  </div>
+</section>
+
 <section id="posts" class="nomob">
 
   <section id="myposts">
@@ -37,13 +46,13 @@
         <tr ng-repeat="p in myposts">
           <td>{{ p.created | publishedTime: 'MM.DD' }}</td>
           <td>
-            <span ng-if="!p.submitted">in draft</span>
+            <span ng-if="!p.submitted && !p.published">draft</span>
             <span ng-if="p.submitted">in review</span>
-            <span ng-if="p.publishReady">published</span>
+            <span ng-if="p.published">published</span>
           </td>
           <td>
-            <a href="/v1/posts/{{p.slug}}" target="_blank" ng-if="p.published">{{ p.title }}</a>
-            <span ng-if="!p.published">{{ p.title }}</span>
+            <a href="{{p.url}}" target="_blank" ng-if="p.submitted || p.published">{{ p.title }}</a>
+            <span ng-if="!(p.published || p.submitted)">{{ p.title }}</span>
           </td>
           <td>
             <a href="/posts/edit/{{p._id}}" target="_blank">edit</a>
@@ -71,7 +80,34 @@
       </span>
     </h3>
     <br />
-    <o>You have not forked anyone else's posts.</o>
+    <p ng-if="!forks || forks.length == 0">You have not forked anyone else's posts.</p>
+
+    <div ng-if="forks && forks.length > 0" class="forks">
+      <table class="table table-striped">
+        <tr>
+          <th>By</th>
+          <th>Status</th>
+          <th>Title</th>
+          <th></th>
+        </tr>
+        <tr ng-repeat="p in forks">
+          <td>{{ p.by.name }}</td>
+          <td>
+            <span ng-if="!p.submitted">in draft</span>
+            <span ng-if="p.submitted">in review</span>
+            <span ng-if="p.publishReady">published</span>
+          </td>
+          <td>
+            <a href="{{p.url}}" target="_blank" ng-if="p.published">{{ p.title }}</a>
+            <a href="/posts/review/{{p._id}}" target="_blank" ng-if="!p.published">{{ p.title }}</a>
+          </td>
+          <td>
+            <a href="https://github.com/{{session.social.gh.username}}/{{forked.title}}" target="_blank">edit</a>
+          </td>
+        </tr>
+      </table>
+    </div>
+
   </section>
 
 

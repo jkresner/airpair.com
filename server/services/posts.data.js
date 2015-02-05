@@ -48,7 +48,10 @@ module.exports = {
       addUrl(cb) {
         return (e,r) => {
           for (var p of r) {
-            if (p.meta) p.url = p.meta.canonical
+            if (p.submitted && !p.published)
+              p.url = `/posts/review/${p._id}`
+            else if (p.meta)
+              p.url = p.meta.canonical
           }
           cb(e,r)
         }

@@ -4,6 +4,16 @@
 @mainElmWidth:640px;
 @mainElmPad:0px;
 
+section.notifications {
+  > #postinreview {
+    h1 { font-size:42px;margin-top:0;
+      img { height:48px;margin-top:-8px }
+    }
+    p { font-size:16px;max-width:80%;margin:10px auto }
+  }
+}
+
+
 //-- A list (tile grid) of posts
 .posts {
   margin-left:-5px;
@@ -204,6 +214,16 @@ article.postclean {
   .rail1CTA {
     .rail;
     position:fixed;
+  }
+
+  .fork {
+    a {
+      background:@orange no-repeat url('../img/icons/gh-white.png');
+      background-size:21%;
+      width:100%;
+      padding-left:45px;
+    }
+    p { width:100%!important }
   }
 
   .share {
@@ -425,6 +445,11 @@ section#posteditor {
     background:@lightblue;
     padding:20px;
     .btn { width:220px }
+    .commitmsg {
+      margin:10px 0;
+      label { display:block;font-size:12px }
+      input { width:440px }
+    }
   }
 
   #tips {
@@ -618,5 +643,24 @@ section#postinfo {
   }
 
   .posts { background:white; }
+
+}
+
+#postfork {
+
+  #forkinfo {
+    text-align:center;
+    margin-top:20px;
+    border:solid 2px @darkblue;
+    h2 { margin-top:0;background:@darkblue;color:white;font-size:24px;
+      font-weight:bold;
+     }
+    h3 { font-weight:bold;color:@gray;font-size:16px;margin-top:10px }
+    p { padding:10px 10% 20px 10% }
+    .notice {
+      background:@lightblue;margin:15px 80px;padding-top:1px
+    }
+    .btn { margin:0px 40px;width:740px }
+  }
 
 }
