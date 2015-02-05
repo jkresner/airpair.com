@@ -15,8 +15,6 @@ angular.module("APProfile", ['ngRoute', 'APFilters', 'APSvcSession', 'APTagInput
 
   $scope.data = { email: $scope.session.email, bio: $scope.session.bio }
 
-  console.log('$scope.data', $scope.data)
-
   $scope.updateBio = (valid, bio) => {
     $scope.profileAlerts = []
     if (valid) {

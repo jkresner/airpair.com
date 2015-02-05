@@ -15,9 +15,7 @@ var cfg = {
     google: {
       clientID: '1019727294613-rjf83l9dl3rqb5courtokvdadaj2dlk5.apps.googleusercontent.com',
       clientSecret: 'Kd6ceFORVbABH7p5UbKURexZ',
-      scope: [
-        'profile',
-        'email',
+      scope: [ 'profile', 'email',
         'https://www.googleapis.com/auth/plus.profile.emails.read'
       ]
     },
@@ -30,7 +28,6 @@ var cfg = {
       access_token_secret: 'test'
     },
     github: {
-      //currently
       clientID: '378dac2743563e96c747',
       clientSecret: 'f52d233259426f769850a13c95bfc3dbe7e3dbf2',
       adminAccessToken: '7d61d7fdd6e6553912e6dfbb4af6e9526dadce57',
@@ -43,12 +40,8 @@ var cfg = {
       mode: 'sandbox',
       clientID: 'AVk7JRBmL3kzKnxrLC8Ze98l2rg__gK1PhASloHmd0wsDvsvkSJd_QnWx3xE',
       clientSecret: 'EGLE0xD3MJO4dY6GxGVngdU8ssl5cHke1vVmuCzmmS0KD4QFjvHEpmb2YgRT',
-      scope: [
-        'https://uri.paypal.com/services/paypalattributes',
-        'profile',
-        'email',
-        'address',
-        'openid'
+      scope: [ 'profile', 'email', 'address', 'openid',
+        'https://uri.paypal.com/services/paypalattributes'
       ]
     },
     linkedin: {
@@ -96,7 +89,7 @@ var cfg = {
     }
   },
   chat: {
-    on: true,
+    on: false,
     firebase: {
       url: 'https://airpair-chat-dev.firebaseio.com/',
       secret: 'BKE9PP6DP4k06Es10nD6Rvh9443Fz7XBstb6fg54'
@@ -216,8 +209,6 @@ module.exports = function(env, appdir) {
     cfg.auth.paypal.mode = 'live'
     cfg.auth.paypal.clientID = process.env.AUTH_PAYPAL_CLIENTID,
     cfg.auth.paypal.clientSecret = process.env.AUTH_PAYPAL_CLIENTSECRET
-    cfg.auth.github.clientID = process.env.AUTH_GITHUB_CLIENTID
-    cfg.auth.github.clientSecret = process.env.AUTH_GITHUB_CLIENTSECRET
     cfg.auth.linkedin.consumerKey = process.env.AUTH_LINKEDIN_CONSUMERKEY
     cfg.auth.linkedin.consumerSecret = process.env.AUTH_LINKEDIN_CONSUMERSECRET
     cfg.auth.bitbucket.consumerKey = process.env.AUTH_BITBUCKET_CONSUMERKEY
@@ -227,6 +218,13 @@ module.exports = function(env, appdir) {
     cfg.auth.stackexchange.key = process.env.AUTH_STACKEXCHANGE_KEY
     cfg.auth.angellist.clientID = process.env.AUTH_ANGELLIST_CLIENTID
     cfg.auth.angellist.clientSecret = process.env.AUTH_ANGELLIST_CLIENTSECRET
+
+    cfg.auth.github.clientID = process.env.AUTH_GITHUB_CLIENTID
+    cfg.auth.github.clientSecret = process.env.AUTH_GITHUB_CLIENTSECRET
+    cfg.auth.github.adminUsername = process.env.AUTH_GITHUB_ADMIN_USERNAME
+    cfg.auth.github.adminAccessToken = process.env.AUTH_GITHUB_ADMIN_ACCESSTOKEN
+    cfg.auth.github.org = process.env.AUTH_GITHUB_ORG
+    cfg.auth.github.privateRepos = true
 
     cfg.calendar.on = true
     cfg.calendar.google.ownerRefreshToken = process.env.CALENDAR_GOOGLE_OWNER_REFRESHTOKEN

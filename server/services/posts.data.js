@@ -16,7 +16,7 @@ module.exports = {
       'slug': 1,
       'created': 1,
       'published': 1,
-      'reviewReady': 1,
+      'submitted': 1,
       'tags': 1,
     },
     listAdmin: {
@@ -48,7 +48,10 @@ module.exports = {
       addUrl(cb) {
         return (e,r) => {
           for (var p of r) {
-            if (p.meta) p.url = p.meta.canonical
+            if (p.submitted && !p.published)
+              p.url = `/posts/review/${p._id}`
+            else if (p.meta)
+              p.url = p.meta.canonical
           }
           cb(e,r)
         }
@@ -81,7 +84,7 @@ module.exports = {
     //posts published before now or readyForReview
     publishedReviewReady: function(){
       var query = {$or: [
-        {'reviewReady' : {'$exists': true}},
+        {'submitted' : {'$exists': true}},
         {$and:
           [{'published' : { '$exists': true }},
           {'published': { '$lt': new Date() }}]}]}
@@ -89,8 +92,11 @@ module.exports = {
       return query
     },
 
-    reviewReady: function(){
-      return {'reviewReady': {'$exists': true}}
+    inReview() {
+      return { $and:[
+        { 'submitted': {'$exists': true } },
+        { 'published': {'$exists': false } }
+        ]}
     },
 
     updated: {

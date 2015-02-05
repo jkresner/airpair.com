@@ -170,7 +170,6 @@ var util = {
     return botPattern.test(source)
   },
 
-
   stringToJson(content) {
     return (typeof content == 'string') ? JSON.parse(content) : content
   },

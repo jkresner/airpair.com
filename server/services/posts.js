@@ -1,11 +1,12 @@
-var logging             = false
-var UserSvc              = require('../services/users')
-import Svc              from '../services/_service'
-var Post                = require('../models/post')
-var Data                = require('./posts.data')
-var svc                 = new Svc(Post, logging)
-var github              = require("../services/wrappers/github")
+import Svc                from '../services/_service'
+var logging               = false
+var UserSvc               = require('../services/users')
+var Post                  = require('../models/post')
+var Data                  = require('./posts.data')
+var svc                   = new Svc(Post, logging)
+var github                = require("../services/wrappers/github")
 var {inflateHtml, addUrl} = Data.select.cb
+var topTapPages = ['angularjs']
 
 var get = {
 
@@ -19,7 +20,6 @@ var get = {
   },
 
   getBySlugWithSimilar(slug, cb) {
-    var topTapPages = ['angularjs']
 
     var query = _.extend(Data.query.published(),{slug})
     svc.searchOne(query, null, inflateHtml((e,r) => {
@@ -32,11 +32,30 @@ var get = {
       r.primarytag = _.find(r.tags,(t) => t.sort==0) || r.tags[0]
       var topTagPage = _.find(topTapPages,(s) => r.primarytag.slug==s)
       r.primarytag.postsUrl = (topTagPage) ? `/${r.primarytag.slug}` : `/posts/tag/${r.primarytag.slug}`
+      r.forkers = r.forkers || []
 
       get.getSimilarPublished(r.primarytag.slug, (ee,similar) => {
         r.similar = similar
         cb(null,r)
       })
+    }))
+  },
+
+  getByIdForReview(id, cb) {
+    var query = Data.query.inReview()
+    query['$and']._id = id
+    svc.searchOne(query, null, inflateHtml((e,r) => {
+      if (e || !r) return cb(e,r)
+      if (!r.tags || r.tags.length == 0) {
+        $log(`post [{r._id}] has no tags`.red)
+        cb(null,r)
+      }
+      r.primarytag = _.find(r.tags,(t) => t.sort==0) || r.tags[0]
+      var topTagPage = _.find(topTapPages,(s) => r.primarytag.slug==s)
+      r.primarytag.postsUrl = (topTagPage) ? `/${r.primarytag.slug}` : `/posts/tag/${r.primarytag.slug}`
+      r.forkers = r.forkers || []
+
+      cb(null,r)
     }))
   },
 
@@ -71,7 +90,7 @@ var get = {
 
   getAllVisible(user, cb) {
     if (user && _.contains(user.roles, "reviewer")){
-      var opts = { fields: Data.select.list, options: { sort: '-reviewReady -published'} }
+      var opts = { fields: Data.select.list, options: { sort: '-submitted -published'} }
       svc.searchMany(Data.query.publishedReviewReady(), opts, addUrl(cb));//, function(e,r) {
     }
     else {
@@ -107,104 +126,129 @@ var get = {
       else {
         r = _.first(r, 3)
         var opts = { options: { sort: { 'created':-1, 'published':1  } } };
-        svc.searchMany({'by.userId':this.user._id},opts, (ee,rr) => {
+        svc.searchMany({'by.userId':this.user._id},opts, addUrl((ee,rr) => {
           if (e || ee) return cb(e||ee)
           var posts = rr.slice()
           for (var p of r) {
             if (!_.idsEqual(p.by.userId,this.user._id)) posts.push(p)
           }
           cb(null, posts)
-        })
+        }))
       }
     })
   },
 
   getPostsInReview(cb) {
-    var opts = { fields: Data.select.list, options: { sort: { 'created': -1 } } }
-    var query = Data.query.reviewReady()
-    svc.searchMany(query, opts, cb)
+    var opts = { fields: Data.select.list, options: { sort: { 'submitted': -1 } } }
+    svc.searchMany(Data.query.inReview(), opts, Data.select.cb.addUrl(cb))
   },
 
   getTableOfContents(markdown, cb) {
     return cb(null, {toc:Data.generateToc(markdown)})
-  }
+  },
+
+  getUserForks(cb){
+    //all the posts where the user is a forker
+    svc.searchMany(Data.query.forker(this.user._id), { field: Data.select.list }, cb)
+  },
+
+  getGitHEAD(post, cb){
+    github.getFile(post.slug, "/post.md", cb)
+  },
 }
+
+
+function updateWithEditTouch(post, action, cb) {
+  post.updated = new Date() //-- think about removing this
+  var previousAction = (post.lastTouch) ? post.lastTouch.action : null
+  post.lastTouch = svc.newTouch.call(this, action)
+  post.editHistory = post.editHistory || []
+  if (action == 'updateByAuthor' &&
+      previousAction == 'updateByAuthor' &&
+      !post.submitted) {
+    $log(`${post.title}:updateByAuthor) not storing author draft edits, but could debounce for some history...`)
+  }
+  else
+    post.editHistory.push(post.lastTouch)
+  svc.update(post._id, post, cb)
+}
+
 
 var save = {
 
   create(o, cb) {
     o.created = new Date()
     o.by.userId = this.user._id
+    o.lastTouch = svc.newTouch.call(this, 'createByAuthor')
+    o.editHistory = [o.lastTouch]
     svc.create(o, cb)
     UserSvc.changeBio.call(this, o.by.bio,() => {})
   },
 
   update(original, o, cb) {
     original = _.extend(original, o)
-    original.updated = new Date()
-    svc.update(original._id, original, cb)
+    updateWithEditTouch.call(this, original, 'updateByAuthor', cb)
   },
 
-  publish(original, o, cb) {
-    if (o.slug.indexOf('/') != 0) { o.slug.replace('/',''); }
-    o.updated = new Date()
+  publish(post, publishedOverride, cb) {
+    // publishedCommit = already comes from updateFromGithub
+    post.publishHistory.push({
+      commit: post.publishedCommit,
+      touch: svc.newTouch.call(this, 'publish')})
+    post.publishedBy = this.user
+    post.publishedUpdated = new Date()
+    if (publishedOverride)
+      post.published = publishedOverride
+    else
+      post.published = new Date()
 
-    if (o.publishedOverride)
-      o.published = o.publishedOverride
-    else if (!o.published)
-      o.published = new Date()
-
-    o.publishedBy = this.user._id
-
-    svc.update(original._id, o, cb)
+    updateWithEditTouch.call(this, post, 'publish', cb)
     if (cache) cache.flush('posts')
   },
 
   submitForReview(post, cb){
-    if (!github.isAuthed(this.user)){
-      return cb(Error("User must authorize GitHub for repo access"))
-    }
-    else {
-      //TODO compute this from post title (slug?)
-      var repoName = post.slug
-      var githubOwner = this.user.social.gh.username
-      github.setupRepo(repoName, githubOwner, post.md, this.user, function(e, result){
-        if (e) return cb(e)
-        post.reviewReady = new Date()
-        post.github = post.github || {}
-        post.github.repoInfo = post.github.repoInfo || {}
-        post.github.repoInfo.reviewTeamId = result.reviewTeamId
-        post.github.repoInfo.authorTeamId = result.authorTeamId
-        post.github.repoInfo.owner = result.githubOwner
-        post.github.repoInfo.author = result.author
-        post.github.repoInfo.url = result.githubUrl
-        svc.update(post._id, post, cb)
+    var repoName = post.slug
+    var githubOwner = this.user.social.gh.username
+    $log('creating post repo for'.yellow, post._id, post.by.name, post.url)
+    $log('*** TODO, set readme contents'.yellow)
+    var readmeMD = `This repo is for ${post.title} by ${post.by.name}. And it's one of the first ever git backed AirPair posts :{}`
+    github.setupPostRepo(repoName, githubOwner, post.md, readmeMD, this.user, (e, result) => {
+      if (e) return cb(e)
+      post.submitted = new Date()
+      post.github = { repoInfo: result }
+      updateWithEditTouch.call(this, post, 'submittedForReview', cb)
+    })
+  },
+
+  propagateMDfromGithub(post, cb){
+    github.getFile(post.slug, "/post.md", (err, result) => {
+      var commit = result.sha
+      post.md = result.string
+      post.publishedCommit = commit
+      if (post.published) {
+        post.publishHistory.push({
+          commit, touch: svc.newTouch.call(this, 'publish')})
+        post.publishedBy = this.user
+        post.publishedCommit = commit
+        post.publishedUpdated = new Date()
+      }
+      updateWithEditTouch.call(this, post, 'updateFromGithub', cb)
+    })
+  },
+
+  updateGithubHead(original, postMD, commitMessage, cb){
+    github.updateFile(original.slug, "post.md", postMD, commitMessage, this.user, (ee, result) => {
+      if (ee) return cb(ee)
+      if (!original.published) {
+        original.md = postMD
+        original.publishedCommit = result.commit
+      }
+      updateWithEditTouch.call(this, original, 'updateGitHEAD', (e,r) => {
+        if (e || !r) return cb(e,r)
+        r.md = postMD // hack for front-end
+        cb(null, r)
       })
-    }
-  },
-
-  updateFromGithub(original, update, cb){
-    github.getFile(original.slug, "/post.md", function(err, result){
-      original.md = result.string
-      svc.update(original._id, original, cb)
     })
-  },
-
-  updateGithubHead(original, update, cb){
-    console.log(original.slug, update)
-    github.updateFile(original.slug, "post.md", update.md, update.commitMessage, this.user, function(err, result){
-      if (err) return cb(err)
-      $log("record history")
-      //TODO record history
-      svc.update(original._id, original, cb)
-    })
-  },
-
-  submitForPublication(original, o, cb){
-    if (o.reviews < 5)
-      return cb(svc.Forbidden("Must have at least 5 reviews"))
-    o.publishReady = new Date()
-    svc.update(original._id, o, cb)
   },
 
   addReview(post, review, cb){
@@ -215,38 +259,19 @@ var save = {
     svc.update(post._id, post, cb)
   },
 
-  addForker(post, o, cb){
-    if (!github.isAuthed(this.user)){
-      return cb(Error("User must authorize GitHub to become a contributor"))
-    } else {
-      var githubUser = this.user.social.gh.username
-      var _this = this
-      github.addContributor(_this.user, post.slug, post.github.reviewTeamId, function(err, res){
-        post.forkers = post.github.forkers || []
-        post.forkers.push({
-          userId: _this.user._id,
-          userAirPair: {_id: _this.user._id, name: _this.user.name, email: _this.email},
-          userGitHub: {
-            id: _this.user.social.gh.id,
-            username: _this.user.social.gh.username
-          }
-        })
-        if (err){
-          cb(err)
-        } else {
-          svc.update(post._id, post, cb)
-        }
-      })
-    }
+  addForker(post, cb){
+    var githubUser = this.user.social.gh.username
+    github.addContributor(this.user, post.slug, post.github.reviewTeamId, (e, res) => {
+      if (e) return cb(e)
+      var { name, email, social } = this.user
+      post.forkers = post.forkers || []
+      post.forkers.push({ userId: this.user._id, name, email, social })
+      svc.update(post._id, post, cb)
+    })
   },
 
   deleteById(post, cb) {
     svc.deleteById(post._id, cb)
-  },
-
-  getUserForks(cb){
-    //all the posts where the user is a forker
-    svc.searchMany(Data.query.forker(this.user._id), { field: Data.select.list }, cb)
   }
 }
 

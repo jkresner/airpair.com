@@ -205,8 +205,7 @@ var github = {
     }, cb)
   },
 
-  //TODO add readme string as parameter
-  setupRepo(repo, githubOwner, postContents, user, cb){
+  setupPostRepo(repo, githubOwner, postMD, readmeMD, user, cb){
     // console.log(`setting up repo ${repo} for ${githubOwner}`)
     var _this = this
     this.createRepo(repo, function(err, result){
@@ -217,7 +216,7 @@ var github = {
       var githubUrl = result.url
 
       setTimeout(function(){
-        _this.addFile(repo, "README.md", "Please read me", "Add README.md", null, function(err, result){
+        _this.addFile(repo, "README.md", readmeMD, "Add README.md", null, function(err, result){
           if (err) return cb(err)
           _this.createRepoReviewTeam(repo, function(err, result){
             if (err) return cb(err)
@@ -227,9 +226,9 @@ var github = {
               var authorTeamId = result.id
               _this.addToTeam(githubOwner, authorTeamId, user, function(err, result){
                 if (err) return cb(err)
-                _this.addFile(repo, "post.md", postContents, "Initial Commit", user, function(err, result){
+                _this.addFile(repo, "post.md", postMD, "Initial Commit", user, function(err, result){
                   if (err) return cb(err)
-                  cb(null, {reviewTeamId, authorTeamId, githubOwner, githubUrl, author: user.social.gh.username})
+                  cb(null, {reviewTeamId, authorTeamId, owner:githubOwner, url:githubUrl, author: user.social.gh.username})
                 })
               })
             })

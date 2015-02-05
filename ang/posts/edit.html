@@ -49,16 +49,17 @@
 
     <a class="btn"
       ng-click="submitForReview()"
-      ng-if="!post.reviewReady"
+      ng-if="!post.submitted"
       ng-disabled="notReviewReady">Submit for review</a>
 
     <a ng-if="!githubAuthed()" class="btn" target="_self" ng-href="/auth/github?returnTo=/posts/edit/{{post._id}}">Connect github</a>
 
-<!--     <a ng-if="githubAuthed() && !post.reviewReady" class="btn" target="_blank" href=""
-      ng-disabled="(!post.title && !post.by.bio) || !post.saved"
-      ng-click="submitForReview()">Submit for review</a>
- -->
-    <button class="btn" ng-click="delete()" ng-if="!post.published">Delete</button>
+    <button class="btn" ng-click="delete()" ng-if="!post.submitted">Delete</button>
+
+    <div class="commitmsg" ng-if="post.submitted">
+      <label>Commit message</label>
+      <input type="text" ng-disabled="post.saved" ng-model="post.commitMessage" placeholder="Enter a commit message" class="form-control" />
+    </div>
 
   </div>
   <hr />
@@ -67,16 +68,12 @@
 
     <post-step-helper post="post"></post-step-helper>
 
-    <label ng-if="!post.reviewReady">
+    <label ng-if="!post.submitted">
       <span>Also see the <a href="http://daringfireball.net/projects/markdown/syntax" target="_blank">Markdown guide</a><span> and read our <a href="/posts/authoring-faq" target="_blank">Post authoring tips & faq</a>.
     </label>
 
     <!-- <div ng-if="post._id">
       <ul>
-        <li>Use h2 (##) and lower (###) for headings in your markdown (title is already the h1).</li>
-        <li>Prefix your headings with number like 1 1.1 1.2 2 etc.</li>
-        <li>Code blocks require a comments (e.g. <code>&lt;!--code lang=coffeescript linenums=true--&gt;</code> followed by a line break, to indicate language and optionally show line numbers.
-        </li>
         <li>escape characters with <code>\</code> to render them non markdown, e.g. for a list bullet you might <code>- \-</code></li>
       </ul>
     </div> -->
