@@ -16,23 +16,30 @@
 
   <h3>Author a post</h3>
 
+
   <div class="form">
+    <p ng-if="!post._id" style="color:black;font-size:18px;margin-bottom:20px">This is exciting! A blank canvas. You'll be able to edit these detail later, so don't be too serious.</p>
+
+    <div class="form-group">
+      <label>Author bio <i style="font-weight:normal">up to 255 characters</i></label>
+      <div social-connect class="connect-icons"></div>
+      <textarea ng-model="post.by.bio" type="text" class="form-control"></textarea>
+    </div>
     <div class="form-group">
       <label>Title</label>
       <input ng-model="post.title" type="text" class="form-control" placeholder="Type post title ..." />
     </div>
-    <div class="form-group">
-      <label>Author bio <i style="font-weight:normal">* up to 255 characters (you can edit it later)</i></label>
-      <textarea ng-model="post.by.bio" type="text" class="form-control"></textarea>
-    </div>
-
     <div ng-if="post._id">
 
-      <div class="form-group">
+      <div ng-if="post.submitted" class="form-group">
         <label>Slug url</label>
         <input ng-model="post.slug" type="text" class="form-control" ng-disabled="post.submitted" />
       </div>
 
+      <div class="form-group">
+        <label>Tags </label>
+        <div tag-input=""></div>
+      </div>
 
       <div class="form-group">
         <label>Feature media <span ng-show="post.title && post.by.bio">
@@ -41,14 +48,6 @@
         <input ng-model="post.assetUrl" type="text" class="form-control" />
       </div>
 
-      <div class="form-group">
-        <label>Tags </label>
-        <div tag-input=""></div>
-      </div>
-
-      <div class="publishMeta">
-        <div class="posts"><ap-post-list-item post="post"></ap-post-list-item></div>
-      </div>
     </div>
 
     <hr />
@@ -56,7 +55,7 @@
   <div class="form-actions">
 
     <button class="btn" ng-click="save()" ng-disabled="(!post.title || !post.by.bio)">Save</button>
-    <p ng-if="!post._id">Until you submit your post for review and we store it on github, it will not be visible to anyone other than you.</p>
+    <p ng-if="!post._id">Your draft will not be visible to anyone until you submit it to the community for review.</p>
     <img ng-if="!post._id" src="/static/img/pages/posts/post-authoring-flow.png" />
 
   </div>

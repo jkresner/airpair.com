@@ -22,6 +22,7 @@
 {{/if}}
 
 {{#unless published}}
+  {{#if submitted }}
   <section class="notifications">
     <div id="postinreview">
       <h1><img ng-src="/static/img/css/airpair-author.png" /> This post is under community review</h1>
@@ -30,6 +31,7 @@
       you spot a typo or have suggestions to improve it before it is published for publish consumption.</p>
     </div>
   </section>
+  {{/if}}
 {{/unless}}
 
 <article class="blogpost">
@@ -40,14 +42,21 @@
 
   <h4 id="table-of-contents">Table of Contents</h4>
   {{{toc}}}
-  <div class="rail2CTA"></div>
+  {{!-- <div class="rail2CTA"></div> --}}
+
   <figure class="author">
     <img alt="{{by.name}}" src="{{by.avatar}}?s=100">
-    <figcaption>
-      {{by.bio}}
-    </figcaption>
+    <hr />
+    <div>
+      <label>{{ by.name }}</label>
+      <social-links profile='{{ JSON by.social }}'></social-links>
+      <figcaption>
+        {{by.bio}}
+      </figcaption>
+    </div>
     <hr />
   </figure>
+
   {{#if assetUrl }}
   <p class="asset">{{ assetUrlToMedia assetUrl }}</p>
   {{/if}}

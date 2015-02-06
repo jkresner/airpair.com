@@ -51,12 +51,12 @@ export default function(app) {
     .get('/workshops/', API.Workshops.getAll)
     .get('/workshops/:id', API.Workshops.getBySlug)
 
-    .use(authd) //-- swap out for email verify or something
-
+    .use(authd)
 
     .get('/posts/forks/me', populateUser, API.Posts.getUserForks)
     .get('/posts/:id', API.Posts.getById)
     .get('/posts/head/:postobj', populateUser, API.Posts.getGitHEAD)
+    .get('/posts/check-slug/:slug', API.Posts.checkSlugAvailable)
     .post('/posts', API.Posts.create)
     .put('/posts/:postobj', API.Posts.update)
     .put('/posts/publish/:postobj', API.Posts.publish)
@@ -66,7 +66,7 @@ export default function(app) {
     .put('/posts/propagate-github/:postobj', populateUser, API.Posts.propagateMDfromGithub)
     .put('/posts/update-github-head/:postobj', populateUser, API.Posts.updateGithubHead)
     .delete('/posts/:postobj', API.Posts.deleteById)
-    .post('/posts-toc',API.Posts.getTableOfContents)
+    .post('/posts-toc', API.Posts.getTableOfContents)
 
     .get('/requests', API.Requests.getMy)
     .get('/requests/:id', API.Requests.getByIdForUser)

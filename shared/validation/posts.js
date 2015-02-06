@@ -69,17 +69,17 @@ var validation = {
       return `Must be editor to delete a post in review`
   },
 
-  submitForReview(user, post)
+  submitForReview(user, post, slug)
   {
     var isOwner = _.idsEqual(post.by.userId, user._id)
     if (!isOwner)
       return `Post can only be submitted for review by its owner`
     if (!user.social || !user.social.gh)
       return `User must authorize GitHub to submit post for review`
-    if (!post.slug)
-      return `Post must have slug to submit for review`
-    if (!validSlug(post.slug))
-      return `${post.slug} not a valid post slug to publish`
+    if (!slug)
+      return `Must have slug to submit for review`
+    if (!validSlug(slug))
+      return `${post.slug} not a valid post slug to submit for review`
     if (post.submitted)
       return `This post has already been submitted for review`
     if (!post.md)

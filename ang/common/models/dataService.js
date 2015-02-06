@@ -21,6 +21,7 @@ angular.module('APDataSvc', [])
       getInReview: GET((d)=>`/posts/review`),
       getMyForks: GET((d)=>`/posts/forks/me`),
       getTagsPosts: GET((d)=>`/posts/tag/${d.tagSlug}`),
+      checkSlugAvailable: GET((d)=>`/posts/check-slug/${d.slug}`),
       create: POST((d)=>`/posts`),
       update: PUT((d)=>`/posts/${d._id}`),
       getGitHEAD: GET((d)=>`/posts/head/${d._id}`),
