@@ -43,41 +43,34 @@
 
   <div class="form-actions">
 
-    <button class="btn" ng-click="save()" ng-disabled="post.saved">Save MD</button>
+    <button class="btn" ng-click="save()" ng-disabled="post.saved">Save</button>
 
-    <a class="btn" href="/posts/info/{{post._id}}" ng-disabled="preview.wordcount < 500">Edit info</a>
+    <a class="btn" href="/posts/info/{{post._id}}" ng-disabled="preview.wordcount < 500 || !post.saved">Edit info</a>
+
+    <a class="btn" href="/posts/preview/{{post._id}}" target="_blank"
+      ng-disabled="!post.saved || !post.assetUrl || !post.tags || post.tags.length == 0">Preview</a>
 
     <a class="btn"
-      ng-click="submitForReview()"
+      href="/posts/submit/{{post._id}}"
       ng-if="!post.submitted"
       ng-disabled="notReviewReady">Submit for review</a>
-
-    <a ng-if="!githubAuthed()" class="btn" target="_self" ng-href="/auth/github?returnTo=/posts/edit/{{post._id}}">Connect github</a>
-
-    <button class="btn" ng-click="delete()" ng-if="!post.submitted">Delete</button>
 
     <div class="commitmsg" ng-if="post.submitted">
       <label>Commit message</label>
       <input type="text" ng-disabled="post.saved" ng-model="post.commitMessage" placeholder="Enter a commit message" class="form-control" />
     </div>
 
+    <post-step-helper post="post"></post-step-helper>
+
   </div>
   <hr />
 
-  <div id="tips">
-
-    <post-step-helper post="post"></post-step-helper>
-
-    <label ng-if="!post.submitted">
-      <span>Also see the <a href="http://daringfireball.net/projects/markdown/syntax" target="_blank">Markdown guide</a><span> and read our <a href="/posts/authoring-faq" target="_blank">Post authoring tips & faq</a>.
-    </label>
 
     <!-- <div ng-if="post._id">
       <ul>
         <li>escape characters with <code>\</code> to render them non markdown, e.g. for a list bullet you might <code>- \-</code></li>
       </ul>
     </div> -->
-  </div>
 
 
 </div>

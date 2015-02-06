@@ -56,7 +56,7 @@ var middleware = {
       // save url user is trying to access for graceful redirect after login
       if (req.session) req.session.returnTo = req.url
       res.redirect(config.auth.loginUrl)
-      next()
+      // next()
     }
   },
 
@@ -130,7 +130,7 @@ var middleware = {
     if (isBot(req.header('user-agent'))) return next()
 
     var token = middleware.setFirebaseToken(req.user, req.session, req.sessionID);
-    
+
     if (req.session.firebaseToken !== token) {
       req.session.firebaseToken = token;
     }
@@ -139,7 +139,7 @@ var middleware = {
     // console.log('session >', req.sessionID, req.session );
     next()
   },
-  
+
   setFirebaseToken(user, session, sessionID) {
     var tokenGenerator = new FirebaseTokenGenerator(config.chat.firebase.secret)
     var tokenData, trues, existingToken = session.firebaseToken, existingTokenData, existingTokenMetadata;
@@ -148,7 +148,7 @@ var middleware = {
       existingTokenMetadata = JWT.decode(existingToken, config.chat.firebase.secret);
       existingTokenData =  existingTokenMetadata.d;
     }
-    
+
     if (user) {
       var uid = user._id.toString()
 
@@ -183,7 +183,7 @@ var middleware = {
     } else {
       return existingToken;
     }
-    
+
     //console.log("Running setFirebaseTokenOnSession", session.firebaseToken)
   }
 }

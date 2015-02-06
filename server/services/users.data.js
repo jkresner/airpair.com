@@ -20,6 +20,7 @@ var select = {
     'github.username': 1,
     'github.displayName': 1,
     'google.id':1,
+    'google._json.link':1,
     'linkedin.id': 1,
     'stack.user_id': 1,
     'stack.link': 1,
@@ -42,7 +43,8 @@ var select = {
     'social.bb.username': 1,
     'social.in.id': 1,
     'social.tw.username': 1,
-    'social.al.username': 1
+    'social.al.username': 1,
+    'social.gp.link': 1,
   },
   usersInRole: {
     '_id': 1,
@@ -131,6 +133,11 @@ var data = {
             if (!e && r == null) { e = Error('Session user does not exist') }
             if (logging) { $log('cbSession'.red, e, r) }
             return cb(e, r)
+          }
+
+          if (r.google) {
+            r.social = r.social || {}
+            r.social.gp = { link: r.google._json.link }
           }
 
           var obj = util.selectFromObject(r, data.select.sessionFull)

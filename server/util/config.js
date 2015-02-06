@@ -103,7 +103,7 @@ var cfg = {
     appId: process.env.HANGOUT_APPID || "140030887085"
   },
   mail: {
-    on: false, // we don't send mail in dev
+    smtpProvider: require('./mail/devSMTPprovider')(true),
     ses: {
       access_key: process.env.MAIL_SES_ACCESS_KEY || "none",
       secret_key: process.env.MAIL_SES_SECRET_KEY || "none"
@@ -135,16 +135,16 @@ module.exports = function(env, appdir) {
 
   //-- Temp for testing prod setting locally
   // cfg.analytics.on = true
-  // cfg.analytics.segmentio. writekey = '0xxx5xrw5q'
+  // cfg.analytics.segmentio.writekey = '0xxx5xrw5q'
 
   if (cfg.env == 'test') {
-    cfg.mail.on = false   // always leave this off
+    cfg.auth.oAuth.callbackHost = 'http://localhost:4444'
     cfg.analytics.on = true
     cfg.analytics.segmentio.writekey = '9793xyfxat'
     cfg.port = 4444
     cfg.mongoUri = "mongodb://localhost/airpair_test"
     cfg.testlogin = true
-    cfg.auth.oAuth.callbackHost = 'http://localhost:4444'
+    cfg.mail.smtpProvider = require('./mail/devSMTPprovider')(false)
   }
 
   if (cfg.env == 'staging' || cfg.env == 'production') {
@@ -155,7 +155,7 @@ module.exports = function(env, appdir) {
     cfg.bundle.admCss = `/static/${dist['styles/adm.css']}`
     cfg.bundle.libCss = `/static/${dist['styles/libs.css']}`
     cfg.bundle.homeScript = `/static/${dist['js/home.js']}`
-    cfg.mail.on = true
+
     cfg.analytics.on = true
     cfg.analytics.segmentio.writekey = process.env.ANALYTICS_SEGMENTIO_WRITEKEY
     cfg.analytics.segmentio.options = {}
@@ -179,6 +179,8 @@ module.exports = function(env, appdir) {
       sesTo:          process.env.LOG_EMAIL_RECEIVERS.split(','),
       sesSubject:     process.env.LOG_EMAIL_SUBJECT || 'aperror'
     }
+
+    cfg.mail.smtpProvider = require('./mail/ses')
 
     cfg.payments.stripe = {
       publishedKey: process.env.PAYMENTS_STRIPE_PUBLISHEDKEY,

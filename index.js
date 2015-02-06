@@ -27,39 +27,44 @@ export function run()
 
   mongo.connect(() => {
 
+    // requires db for users in roles, so execute after mongo.connect
+    mailman.init()
+
     // Don't persist or track sessions for rss
     app.use('/rss', routes.rss(app))
 
-    session(app, mongo.initSessionStore)
+    session(app, mongo.initSessionStore, () => {
+      $log(`          SessionStoreReady   ${new Date().getTime()-start}`.white)
+      //-- Do not move connect-livereload before session middleware
+      if (config.livereload) app.use(require('connect-livereload')({ port: 35729 }))
 
-    //-- Do not move connect-livereload before session middleware
-    if (config.livereload) app.use(require('connect-livereload')({ port: 35729 }))
+      hbsEngine(app)
 
-    hbsEngine(app)
+      app.use(mw.logging.domainWrap)
+      app.get('/', mw.analytics.trackFirstRequest, mw.auth.authdRedirect('/dashboard'), app.renderHbs('home') )
+      app.use('/auth', routes.auth(app))
+      app.use('/v1/api', routes.api(app))
+      app.use('/v1/adm/*', mw.authz.adm, app.renderHbsAdmin('adm/admin'))
+      app.use('/adm/*', mw.authz.adm, app.renderHbsAdmin('adm/admin'))
+      app.use('/matchmaking*', mw.authz.adm, app.renderHbsAdmin('adm/admin'))
 
-    app.use(mw.logging.domainWrap)
-    app.get('/', mw.analytics.trackFirstRequest, mw.auth.authdRedirect('/dashboard'), app.renderHbs('home') )
-    app.use('/auth', routes.auth(app))
-    app.use('/v1/api', routes.api(app))
-    app.use('/v1/adm/*', mw.authz.adm, app.renderHbsAdmin('adm/admin'))
-    app.use('/adm/*', mw.authz.adm, app.renderHbsAdmin('adm/admin'))
-    app.use('/matchmaking*', mw.authz.adm, app.renderHbsAdmin('adm/admin'))
+      app.use(mw.auth.setFirebaseTokenOnSession)
+      app.use(mw.seo.noTrailingSlash) // Must be after root '/' route
+      routes.redirects.addPatterns(app)
 
-    app.use(mw.seo.noTrailingSlash) // Must be after root '/' route
-    app.use(mw.analytics.trackFirstRequest)
-    app.use(mw.auth.setFirebaseTokenOnSession)
+      app.use(mw.analytics.trackFirstRequest)
+      routes.redirects.addRoutesFromDb(app, () => {
 
-    routes.redirects.init(app, () => {
+        app.use(routes.landing(app))
+        app.use(routes.dynamic(app))
+        app.get(routes.whiteList, app.renderHbs('base') )
+        app.use(mw.logging.errorHandler(app))
 
-      app.use(routes.landing(app))
-      app.use(routes.dynamic(app))
-      app.get(routes.whiteList, app.renderHbs('base') )
-      app.use(mw.logging.errorHandler(app))
+        var server = app.listen(config.port, function() {
+          $log(`          Listening after ${new Date().getTime()-start}ms on port ${server.address().port}`.white)
+        })
 
-      var server = app.listen(config.port, function() {
-        $log(`          Listening after ${new Date().getTime()-start}ms on port ${server.address().port}`.white)
       })
-
     })
   })
 

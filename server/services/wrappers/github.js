@@ -15,6 +15,11 @@ var api = new GitHubApi({
   }
 });
 
+var verboseErrorCB = (cb, err, fn, dataString) => {
+  $log('github.error'.red, fn.white, dataString, err)
+  cb(err)
+}
+
 var _authenticateAdmin = function(){
   api.authenticate({
     type: "oauth",
@@ -77,18 +82,27 @@ var github = {
     },cb)
   },
 
+  getRepo(repoName, cb){
+    _authenticateAdmin()
+    api.repos.one({
+      org: org,
+      id: repoName
+    },cb)
+  },
+
   addToTeam(githubUser, teamId, user, cb){
     _authenticateAdmin();
     api.orgs.addTeamMembership({
       id: teamId,
       user: githubUser
     }, function(err,res){
+      if (err) return verboseErrorCB(cb, err, 'addTeamMembership', `${githubUser} ${teamId}`)
       _authenticateUser(user)
       api.user.editOrganizationMembership({
         "org": org,
         "state": 'active'
       }, function(err, response){
-        if (err) return cb(err)
+        if (err) return verboseErrorCB(cb, err, 'editOrganizationMembership', `${githubUser} ${org}`)
         cb(null, response)
       })
     })
@@ -96,8 +110,9 @@ var github = {
 
   addContributor(user, repo, reviewerTeamId, cb){
     var _this = this;
+    $log(`addContributor ${repo} ${reviewerTeamId}`, repo)
     this.addToTeam(user.social.gh.username, reviewerTeamId, user, function(err, result){
-      if (err) return cb(err)
+      if (err) return verboseErrorCB(cb, err, 'addToTeam', `${user.social.gh.username} ${reviewerTeamId}`)
       _this.fork(repo, user, cb)
     })
   },
@@ -112,7 +127,7 @@ var github = {
       org: org,
       type: "member" // [all,member or public]
     }, function(err, res){
-      if (err) return cb(err)
+      if (err) return verboseErrorCB(cb, err, 'getFromOrg', `${user.social.gh.username} ${org}`)
       cb(null, _.map(res, function(repo){
         return repo.name
       }))
@@ -128,11 +143,13 @@ var github = {
 
   fork(repo, user, cb){
     _authenticateUser(user)
-    //TODO should be authenticating with user, not our account
     api.repos.fork({
       user: org,
       repo: repo
-    }, cb)
+    }, (err,r)=>{
+      if (err) return verboseErrorCB(cb, err, 'addToTeam', `${repo} ${user.email} ${user.id}`)
+      cb(err, r)
+    })
   },
 
   //return events across all repos
@@ -160,7 +177,7 @@ var github = {
 
   updateFile(repo, path, content, msg, user, cb){
     this.getFile(repo, path, function(err, result){
-      if (err) return cb(err)
+      if (err) return verboseErrorCB(cb, err, 'updateFile', `${user.social.gh.username} ${repo} ${path}`)
       _authenticateUser(user)
       api.repos.updateFile({
         sha: result.sha,
@@ -175,23 +192,25 @@ var github = {
 
   //NOT WORKING, only returns meta info
   getStats(repo, cb){
+    _authenticateAdmin()
     api.repos.getStatsCommitActivity({
       user: org,
       repo: repo
     }, function(err, res){
+      if (err) return verboseErrorCB(cb, err, 'getStats', `${org} ${repo}`)
       cb(err, res)
     })
   },
 
   //TODO needs to work with user auth as well as admin
   getFile(repo, path, cb){
-    // _authenticateAdmin()
+    _authenticateAdmin()
     api.repos.getContent({
       user: org,
       repo: repo,
       path: path
     }, function (err, resp){
-      if (err) return cb(err)
+      if (err) return verboseErrorCB(cb, err, 'getFile', `${repo} ${path}`)
       resp.string = new Buffer(resp.content, 'base64').toString('utf8');
       cb(err, resp)
     })
@@ -212,22 +231,22 @@ var github = {
       //TODO Better error handling
       //without a timeout repo is often not found immediately after creation
       //should figure out a better way to handle this...
-      if (err) return cb(err)
+      if (err) return verboseErrorCB(cb, err, 'createRepo', `${repo} ${githubOwner}`)
       var githubUrl = result.url
 
       setTimeout(function(){
         _this.addFile(repo, "README.md", readmeMD, "Add README.md", null, function(err, result){
-          if (err) return cb(err)
+          if (err) return verboseErrorCB(cb, err, 'addFile', `${repo} README.md`)
           _this.createRepoReviewTeam(repo, function(err, result){
-            if (err) return cb(err)
+            if (err) return verboseErrorCB(cb, err, 'createRepoReviewTeam', `${repo} review team`)
             var reviewTeamId = result.id
             _this.createRepoAuthorTeam(repo, function(err, result){
-              if (err) return cb(err)
+              if (err) return verboseErrorCB(cb, err, 'createRepoAuthorTeam', `${repo} author team`)
               var authorTeamId = result.id
               _this.addToTeam(githubOwner, authorTeamId, user, function(err, result){
-                if (err) return cb(err)
+                if (err) return verboseErrorCB(cb, err, 'addToTeam', `${repo} author team ${authorTeamId}`)
                 _this.addFile(repo, "post.md", postMD, "Initial Commit", user, function(err, result){
-                  if (err) return cb(err)
+                  if (err) return verboseErrorCB(cb, err, 'addFile', `${repo} post.md`)
                   cb(null, {reviewTeamId, authorTeamId, owner:githubOwner, url:githubUrl, author: user.social.gh.username})
                 })
               })
