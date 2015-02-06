@@ -30,9 +30,7 @@ var mw = {
 }
 
 
-export function init(app, cb) {
-  if (!config.redirects.on) return cb()
-
+export function addPatterns(app) {
   //-- Express routes don't handle spaces, so always put in %20
   //-- More so for some reason it's important to test the fully encoded
   //-- Version of the url first
@@ -44,6 +42,13 @@ export function init(app, cb) {
   app.get(/\.\.\./, mw.redirectWithQuery('...',''))
   app.get('/author/*', (req,res) => { res.redirect(301, '/posts/all')})
   app.get("/c\\+\\+", mw.redirectWithQuery("/c++","/posts/tag/c++", "302") )
+
+  return app
+}
+
+
+export function addRoutesFromDb(app, cb) {
+  if (!config.redirects.on) return cb()
 
   RedirectsAPI.svc.getAllRedirects((e,all) =>{
     var tempMigrates = require('./migration')

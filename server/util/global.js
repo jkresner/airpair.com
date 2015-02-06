@@ -25,10 +25,9 @@ module.exports = function(config)
     global.analytics    = { track: ()=>{}, view: ()=>{}, alias: ()=>{}, identify: ()=>{} }
 
 
-  var {mailProvider}    = config //-- only set in test
-  if (!mailProvider) mailProvider = require('./mail/ses')()
-  global.mailman 			  =	require('./mail/mailman')(mailProvider)
-
+  global.mailman = {
+    init() { global.mailman = require('./mail/mailman')(config.mail.smtpProvider()) }
+  }
 
   if (config.log.email)
   {
@@ -43,4 +42,5 @@ module.exports = function(config)
     global.paypal      = require('paypal-rest-sdk')
     global.Braintree   = require('../services/wrappers/braintree')
   }
+
 }

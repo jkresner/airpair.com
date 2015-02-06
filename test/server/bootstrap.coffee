@@ -7,7 +7,6 @@ setGlobals = require('./../../server/util/global')
 initConfig = require('./../../server/util/config')
 appdir = __dirname.replace('/test/server','').replace('\\test\\server','')
 config = initConfig('test', appdir)
-config.mailProvider = { send: ()=>{} }
 setGlobals(config)
 
 require('./helpers/http')

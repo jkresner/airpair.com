@@ -20,6 +20,7 @@ function tokenize(term, wildcardStart, wildcardEnd) {
 export default function(model, logging)
 {
   var searchOne = (query, opts, cb) => {
+    // $log('searchOne'.yellow, query)
     if (!opts) { opts = { fields:null, options:null } }
     var {fields,options} = opts
     model.findOne(query,fields,options)
@@ -31,6 +32,7 @@ export default function(model, logging)
   }
 
   var searchMany = (query, opts, cb) => {
+    // $log('searchMany'.yellow, query)
     if (!opts) { opts = { fields:null, options:null } }
     var {fields,options} = opts
     model.find(query,fields,options)
@@ -81,6 +83,7 @@ export default function(model, logging)
       searchMany(query, opts, cb)
     },
     create(o, cb) {
+      // $log('create'.yellow, o)
       new model( o ).save( (e,r) => {
         if (e) $log('svc.create.error', e)
         if (logging) $log('svc.create', o)
@@ -89,6 +92,7 @@ export default function(model, logging)
       })
     },
     update(id, data, cb) {
+      // $log('update'.yellow, data)
       if (!id) return cb(new Error('Cannot update object by null id'), null)
       var ups = _.omit(data, '_id') // so mongo doesn't complain
       model.findByIdAndUpdate(id, ups).lean().exec( (e, r) => {
@@ -98,6 +102,7 @@ export default function(model, logging)
       })
     },
     updateWithSet(id, data, cb) {
+      // $log('updateWithSet'.yellow, data)
       if (!id) return cb(new Error('Cannot update object by null id'), null)
       model.findByIdAndUpdate(id, { $set: data }).lean().exec( (e, r) => {
         if (e || !r) $log('svc.updateWithSet.error'.red, id, e, data)
@@ -106,6 +111,7 @@ export default function(model, logging)
       })
     },
     updateBulk(list, cb) {
+      // $log('updateBulk'.yellow, list)
       var bulk = model.collection.initializeOrderedBulkOp()
       for (var item of list) {
         bulk.find({_id:item._id}).updateOne(item)
@@ -113,6 +119,7 @@ export default function(model, logging)
       bulk.execute(cb)
     },
     updateAndInsertOneBulk(updateList, insert, cb) {
+      // $log('updateAndInsertOneBulk'.yellow, updateList)
       var bulk = model.collection.initializeOrderedBulkOp()
       bulk.insert(insert)
       for (var item of updateList) {
@@ -121,6 +128,7 @@ export default function(model, logging)
       bulk.execute(cb)
     },
     deleteById(id, cb) {
+      // $log('deleteById'.yellow, id)
       if (!id) return cb(new Error('Cannot delete object by null id'), null)
       model.findByIdAndRemove(id, (e) => {
         if (e) $log('svc.delete.error', id, e)
