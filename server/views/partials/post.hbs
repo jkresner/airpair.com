@@ -42,7 +42,6 @@
 
   <h4 id="table-of-contents">Table of Contents</h4>
   {{{toc}}}
-  {{!-- <div class="rail2CTA"></div> --}}
 
   <figure class="author">
     <img alt="{{by.name}}" src="{{by.avatar}}?s=100">
@@ -73,25 +72,26 @@
 
   {{#if published }}
   <div class="share">
-    <div class="pw-widget pw-counter-vertical" pw:twitter-via="airpair">
-      <a class="pw-button-facebook pw-look-native"></a>
-      <a class="pw-button-twitter pw-look-native"></a>
-      <a class="pw-button-linkedin pw-look-native"></a>
+    <div class="pw-widget pw-size-medium pw-counter-show" pw:twitter-via="airpair">
+      <a class="pw-button-facebook"></a>
+      <a class="pw-button-twitter"></a>
+      <a class="pw-button-linkedin"></a>
+      <a class="pw-button-googleplus"></a>
+      <a class="pw-button-reddit"></a>
+      <a class="pw-button-post"></a>
     </div>
   </div>
   {{/if}}
 
-  {{#if github }}
-      <div class="rail1CTA railBookmarkCTA">
-      <h6>Make this post better!</h6>
-      <div class="fork">
-        <a href="/posts/fork/{{_id}}" class="btn">Fork this post!</a>
-        <p>Forked <b>{{forkers.length}}</b> times so far.</p>
-      </div>
-  </div>
-  {{/if}}
 
   <div class="rail1CTA railBookmarkCTA">
+    {{#if github }}
+    <h6>Make this post better!</h6>
+    <div class="fork">
+      <a href="/posts/fork/{{_id}}" class="btn">Fork this post!</a>
+      <p>Forked <b>{{forkers.length}}</b> times so far.</p>
+    </div>
+    {{/if}}
     {{#if published }}
     <h6>Like this article?</h6>
     <div>

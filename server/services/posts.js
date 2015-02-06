@@ -131,9 +131,12 @@ var get = {
     github.getFile(post.slug, "/post.md", cb)
   },
 
-  checkSlugAvailable(slug, cb){
+  checkSlugAvailable(post, slug, cb){
     svc.searchOne({slug}, null, (e,r) => {
-      if (r) return cb(null, { unavailable: `The slug ${slug} alredy belongs to another post.` })
+      if (r)
+        if (!_.idsEqual(post._id,r._id))  //-- for posts that were published before the git authoring stuff
+          return cb(null, { unavailable: `The slug ${slug} alredy belongs to another post.` })
+
       github.getRepo(slug, (e,repo) => {
         if (repo) return cb(null, { unavailable: `The repo ${slug} already exist on the airpair org, try another name.` })
         cb(null, { available: `The repo name ${slug} is available.` })
