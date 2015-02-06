@@ -56,7 +56,7 @@ export default function(app) {
     .get('/posts/forks/me', populateUser, API.Posts.getUserForks)
     .get('/posts/:id', API.Posts.getById)
     .get('/posts/head/:postobj', populateUser, API.Posts.getGitHEAD)
-    .get('/posts/check-slug/:slug', API.Posts.checkSlugAvailable)
+    .get('/posts/check-slug/:postobj/:slug', API.Posts.checkSlugAvailable)
     .post('/posts', API.Posts.create)
     .put('/posts/:postobj', API.Posts.update)
     .put('/posts/publish/:postobj', API.Posts.publish)

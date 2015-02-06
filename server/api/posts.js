@@ -15,7 +15,7 @@ export default initAPI(
   getUsersPublished: (req) => [req.params.id],
   getGitHEAD: (req) => [req.postobj],
 
-  checkSlugAvailable: (req) => [req.params.slug],
+  checkSlugAvailable: (req) => [req.postobj, req.params.slug],
   update: (req) => [req.postobj,req.body],
   publish: (req) => [req.postobj,req.body.publishedOverride],
   submitForReview: (req) => [req.postobj, req.body.slug],

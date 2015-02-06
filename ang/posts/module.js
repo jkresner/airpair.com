@@ -300,7 +300,7 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
     $scope.post = r
 
     $scope.$watch('post.slug', function(slug) {
-      DataService.posts.checkSlugAvailable({slug}, (r) => $scope.slugStatus = r )
+      DataService.posts.checkSlugAvailable({_id,slug}, (r) => $scope.slugStatus = r )
     })
 
     if (!$scope.post.slug)
