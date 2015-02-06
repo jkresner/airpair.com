@@ -11,11 +11,20 @@
 <section ng-if="forked" class="notifications">
   <div id="forked">
     <h1><img ng-src="/static/img/css/airpair-author.png" /> Mother Forker!</h1>
-    <h3><b><a href="https://github.com/{{session.social.gh.username}}/{{forked.title}}" target="_blank">{{ forked.title }}</a></b> has been forked to your github account.</h3>
+    <h3><b><a href="https://github.com/{{session.social.gh.username}}/{{forked.slug}}" target="_blank">{{ forked.title }}</a></b> has been forked to your github account.</h3>
     <p>Make edits like you would normal code, then submit a pull request to get your contributions incorpated.</p>
     <p></p>
   </div>
 </section>
+
+<section ng-if="submitted" class="notifications">
+  <div id="postsubmitted">
+    <h1><img ng-src="/static/img/css/airpair-author.png" /> Post submitted!</h1>
+    <h3>The repo <b><a href="https://github.com/airpair/{{submitted.slug}}" target="_blank">{{ submitted.slug }}</a></b> has been created. From this point on, all edits will be tracked in git. You can also accept pull requests from community reviewers.</h3>
+    <p>When you have 5 or more reviews with a rating of 3.5/5 or higher, you can publish your post.</p>
+  </div>
+</section>
+
 
 <section id="posts" class="nomob">
 
@@ -40,7 +49,7 @@
           <th>Created</th>
           <th>Status</th>
           <th>Title</th>
-          <th></th>
+          <th>Tip</th>
           <th></th>
         </tr>
         <tr ng-repeat="p in myposts">
@@ -54,10 +63,11 @@
             <a href="{{p.url}}" target="_blank" ng-if="p.submitted || p.published">{{ p.title }}</a>
             <span ng-if="!(p.published || p.submitted)">{{ p.title }}</span>
           </td>
+          <td><post-step-helper post="p"></post-step-helper></td>
           <td>
             <a href="/posts/edit/{{p._id}}" target="_blank">edit</a>
+            <a ng-click="delete(p._id)" ng-if="!(p.submitted || p.published)" style='color:red'>delete</a>
           </td>
-          <td><post-step-helper post="p"></post-step-helper></td>
         </tr>
       </table>
     </div>
@@ -102,7 +112,7 @@
             <a href="/posts/review/{{p._id}}" target="_blank" ng-if="!p.published">{{ p.title }}</a>
           </td>
           <td>
-            <a href="https://github.com/{{session.social.gh.username}}/{{forked.title}}" target="_blank">edit</a>
+            <a href="https://github.com/{{session.social.gh.username}}/{{p.slug}}" target="_blank">edit</a>
           </td>
         </tr>
       </table>

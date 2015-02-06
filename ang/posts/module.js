@@ -11,6 +11,7 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
   route('/posts/new', 'PostNew', require('./info.html'), { resolve: authd })
   route('/posts/review', 'PostsInReview', require('./inreview.html'), { resolve: authd })
   route('/posts/in-community-review', 'PostsInReview', require('./inreview.html'), { resolve: authd })
+  route('/posts/submit/:id', 'PostSubmit', require('./submit.html'), { resolve: authd })
   route('/posts/fork/:id', 'PostFork', require('./fork.html'), { resolve: authd })
   route('/posts/info/:id', 'PostInfo', require('./info.html'), { resolve: authd })
   route('/posts/edit/:id', 'PostEdit', require('./edit.html'), { resolve: authd })
@@ -26,7 +27,7 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
     scope: { p: '=post' },
     controller($rootScope, $scope) {
 
-      $scope.calcReviewStep = () => {
+      $scope.calcDraftStep = () => {
         if ($scope.p.submitted) return false
 
         $scope.wordcount = PostsUtil.wordcount($scope.p.md)
@@ -34,16 +35,19 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
         if ($scope.wordcount < 500)
           return $scope.wordcountTooLow = true
 
-        if (!$scope.p.assetUrl) $scope.needAssetUrl = true
-        if (!$scope.p.tags || $scope.p.tags.length == 0) $scope.needTags = true
-        if ($scope.needAssetUrl || $scope.needTags)
-          return $scope.needInfo = true
-
-        var social = $rootScope.session.social
-        if (!(social && social.gh && social.gh.username))
-          return $scope.needGithub = true
+        if (!$scope.p.assetUrl || !$scope.p.tags || $scope.p.tags.length == 0) {
+          $scope.needInfo = true
+          if (!$scope.p.tags || $scope.p.tags.length == 0) return $scope.needTags = true
+          if (!$scope.p.assetUrl) return $scope.needAssetUrl = true
+        }
 
         return $scope.submitForReview = true
+      }
+
+      $scope.calcReviewStep = () => {
+        if ($scope.p.published || !$scope.p.submitted) return false
+
+        return $scope.getReviews = true
       }
     }
   }
@@ -55,6 +59,12 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
   DataService.posts.getMyPosts({}, function (r) {
     $scope.myposts = _.where(r, (p)=> p.by.userId == $scope.session._id)
     $scope.recent = _.difference(r, $scope.myposts)
+
+    if ($location.search().submitted && $scope.session._id)
+    {
+      $scope.submitted = _.find(r, (p)=> p._id == $location.search().submitted)
+      console.log('$scope.submitted', $scope.submitted.slug, $scope.submitted)
+    }
   })
 
   if ($location.search().fork && $scope.session._id)
@@ -70,6 +80,9 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
       $scope.forks = r
     })
   }
+
+  $scope.delete = (_id) =>
+    DataService.posts.deletePost({_id}, (r) => window.location = '/posts/me')
 
 })
 
@@ -157,9 +170,6 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
 
   DataService.posts.getById({_id}, (r) => {
 
-    if (!r.slug)
-      r.slug = r.title.toLowerCase().replace(/ /g, '_').replace(/\W+/g, '').replace(/_/g, '-')
-
     if (r.meta)
     {
       // if (r.meta.canonical) r.meta.canonical = r.meta.canonical.replace('http://','https://')
@@ -194,29 +204,7 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
     // console.log('$scope.post', $scope.post)
   })
 
-})
 
-
-.controller('PostEditCtrl', function($scope, $routeParams, $location, $timeout, DataService, mdHelper, PostsUtil) {
-  var _id = $routeParams.id
-
-  $scope.notReviewReady = function(post) {
-    if (!$scope.preview.wordcount) return false
-    console.log('readyForReview', post._id, $scope.preview.wordcount < 500
-      || !post.tags || post.tags.length == 0
-      || !post.assetUrl
-      || !$scope.githubAuthed())
-    return
-
-  }
-
-  // var social = {}
-  // if (session.github) social.gh = session.github.username
-  // if (session.linkedin) social.in = session.linkedin.d9YFKgZ7rY
-  // if (session.stack) social.so = session.stack.link.replace('http://stackoverflow.com','')
-  // if (session.twitter) social.tw = session.twitter.username
-  // if (session.google) social.gp = session.google.id
-  // $scope.post.by = _.extend(session, social)
   // PostsService.getToc(md, function (tocMd) {
   //   if (tocMd.toc)
   //   {
@@ -228,6 +216,12 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
   //     });
   //   }
   // });
+
+})
+
+
+.controller('PostEditCtrl', function($scope, $routeParams, $location, $timeout, DataService, mdHelper, PostsUtil) {
+  var _id = $routeParams.id
 
   var timer = null
 
@@ -251,7 +245,6 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
       $scope.notReviewReady = $scope.preview.wordcount < 500
         || !$scope.post.tags || $scope.post.tags.length == 0
         || !$scope.post.assetUrl
-        || !$scope.githubAuthed()
     })
   }
   $scope.previewMarkdown = previewMarkdown
@@ -279,9 +272,6 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
     })
   })
 
-  $scope.delete = () =>
-    DataService.posts.deletePost({_id}, (r) => $location.path('/posts/me'))
-
   $scope.save = () => {
     if (!$scope.post.submitted)
       DataService.posts.update($scope.post, setPostScope)
@@ -291,33 +281,59 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
     }
   }
 
-
   $scope.aceChanged = function(e) {
     if (timer == null)
       timer = $timeout(previewMarkdown, $scope.throttleMS)
   };
+
+})
+
+.controller('PostSubmitCtrl', function($scope, $q, $routeParams, $location, $timeout, DataService, mdHelper, PostsUtil) {
+  var _id = $routeParams.id
+
+  $scope.slugStatus = { checking: true }
+
+  DataService.posts.getById({_id}, (r) => {
+    if (r.submitted)
+      $location.path('/posts/me?submitted='+_id)
+
+    $scope.post = r
+
+    $scope.$watch('post.slug', function(slug) {
+      DataService.posts.checkSlugAvailable({slug}, (r) => $scope.slugStatus = r )
+    })
+
+    if (!$scope.post.slug)
+      $scope.post.slug = r.title.toLowerCase().replace(/ /g, '_').replace(/\W+/g, '').replace(/_/g, '-')
+
+  })
 
   $scope.githubAuthed = () => {
     return $scope.session.social && $scope.session.social.gh &&
       $scope.session.social.gh.username
   }
 
-  $scope.submitForReview = () => {
-    //TODO handle GitHub redirect
-    DataService.posts.submitForReview($scope.post, (r)=> {
-      $scope.post = _.extend(r, {submittedForReview: true});
-    })
+  $scope.submitForReviewDeferred = () => {
+    var deferred = $q.defer()
+
+    DataService.posts.submitForReview($scope.post, (r) => {
+      window.location = '/posts/me?submitted='+r._id
+      deferred.resolve(r)
+    },
+    deferred.reject)
+
+    return deferred.promise
   }
 
-  $scope.submitForPublication = () => {
-    console.log("submit post for publication");
-  }
 })
-
 
 .controller('PostPublish', function($scope, PostsService, $routeParams) {
 
   $scope.post = { tags: [] };
+
+  $scope.submitForPublication = () => {
+    console.log("submit post for publication");
+  }
 
 //     $scope.setPublishedOverride = () => {
 //       if (!$scope.post.publishedOverride)

@@ -1,6 +1,19 @@
 var marked              = require('marked')
 import generateToc      from './postsToc'
 
+var topTapPages = ['angularjs']
+
+var inflateHtml = function(cb) {
+  return (e,r) => {
+    if (r)
+    {
+      r.html = marked(r.md)
+      r.toc = marked(generateToc(r.md))
+    }
+    cb(e,r)
+  }
+};
+
 module.exports = {
 
   select: {
@@ -56,15 +69,26 @@ module.exports = {
           cb(e,r)
         }
       },
-      inflateHtml(cb) {
-        return (e,r) => {
-          if (r)
-          {
-            r.html = marked(r.md)
-            r.toc = marked(generateToc(r.md))
+      inflateHtml,
+      displayView(cb, similarFn) {
+        return inflateHtml((e,r) => {
+          if (e || !r) return cb(e,r)
+          if (!r.tags || r.tags.length == 0) {
+            $log(`post [{r._id}] has no tags`.red)
+            cb(null,r)
           }
-          cb(e,r)
-        }
+
+          r.primarytag = _.find(r.tags,(t) => t.sort==0) || r.tags[0]
+          var topTagPage = _.find(topTapPages,(s) => r.primarytag.slug==s)
+          r.primarytag.postsUrl = (topTagPage) ? `/${r.primarytag.slug}` : `/posts/tag/${r.primarytag.slug}`
+          r.forkers = r.forkers || []
+
+          if (!r.published) r.meta = { noindex: true }
+          similarFn(r.primarytag.slug, (ee,similar) => {
+            r.similar = similar
+            cb(null,r)
+          })
+        })
       }
     }
   },
@@ -92,11 +116,23 @@ module.exports = {
       return query
     },
 
-    inReview() {
-      return { $and:[
+    inReview(_id) {
+      var query = { $and:[
         { 'submitted': {'$exists': true } },
         { 'published': {'$exists': false } }
-        ]}
+      ]}
+      if (_id)
+        query['$and'].push({_id})
+      return query
+    },
+
+    inDraft(_id, userId) {
+      return { $and:[
+        { _id },
+        { 'tags': {'$exists': true } },
+        { 'assetUrl': {'$exists': true } },
+        { 'by.userId': userId }
+      ]}
     },
 
     updated: {

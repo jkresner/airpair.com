@@ -1,12 +1,12 @@
 import Svc                from '../services/_service'
 var logging               = false
-var UserSvc               = require('../services/users')
 var Post                  = require('../models/post')
-var Data                  = require('./posts.data')
 var svc                   = new Svc(Post, logging)
+var UserSvc               = require('../services/users')
 var github                = require("../services/wrappers/github")
+var Data                  = require('./posts.data')
 var {inflateHtml, addUrl} = Data.select.cb
-var topTapPages = ['angularjs']
+var {displayView}         = Data.select.cb
 
 var get = {
 
@@ -20,43 +20,18 @@ var get = {
   },
 
   getBySlugWithSimilar(slug, cb) {
-
     var query = _.extend(Data.query.published(),{slug})
-    svc.searchOne(query, null, inflateHtml((e,r) => {
-      if (e || !r) return cb(e,r)
-      if (!r.tags || r.tags.length == 0) {
-        $log(`post [{r._id}] has no tags`.red)
-        cb(null,r)
-      }
-
-      r.primarytag = _.find(r.tags,(t) => t.sort==0) || r.tags[0]
-      var topTagPage = _.find(topTapPages,(s) => r.primarytag.slug==s)
-      r.primarytag.postsUrl = (topTagPage) ? `/${r.primarytag.slug}` : `/posts/tag/${r.primarytag.slug}`
-      r.forkers = r.forkers || []
-
-      get.getSimilarPublished(r.primarytag.slug, (ee,similar) => {
-        r.similar = similar
-        cb(null,r)
-      })
-    }))
+    svc.searchOne(query, null, displayView(cb,get.getSimilarPublished))
   },
 
   getByIdForReview(id, cb) {
-    var query = Data.query.inReview()
-    query['$and']._id = id
-    svc.searchOne(query, null, inflateHtml((e,r) => {
-      if (e || !r) return cb(e,r)
-      if (!r.tags || r.tags.length == 0) {
-        $log(`post [{r._id}] has no tags`.red)
-        cb(null,r)
-      }
-      r.primarytag = _.find(r.tags,(t) => t.sort==0) || r.tags[0]
-      var topTagPage = _.find(topTapPages,(s) => r.primarytag.slug==s)
-      r.primarytag.postsUrl = (topTagPage) ? `/${r.primarytag.slug}` : `/posts/tag/${r.primarytag.slug}`
-      r.forkers = r.forkers || []
+    var query = Data.query.inReview(id)
+    svc.searchOne(query, null, displayView(cb,(tagSlug, callback)=>callback(null,[])))
+  },
 
-      cb(null,r)
-    }))
+  getByIdForPreview(id, cb) {
+    var query = Data.query.inDraft(id, this.user._id)
+    svc.searchOne(query, null, displayView(cb,(tagSlug, callback)=>callback(null,[])))
   },
 
   //-- used for todd-motto
@@ -155,6 +130,17 @@ var get = {
   getGitHEAD(post, cb){
     github.getFile(post.slug, "/post.md", cb)
   },
+
+  checkSlugAvailable(slug, cb){
+    svc.searchOne({slug}, null, (e,r) => {
+      if (r) return cb(null, { unavailable: `The slug ${slug} alredy belongs to another post.` })
+      github.getRepo(slug, (e,repo) => {
+        if (repo) return cb(null, { unavailable: `The repo ${slug} already exist on the airpair org, try another name.` })
+        cb(null, { available: `The repo name ${slug} is available.` })
+      })
+    })
+  }
+
 }
 
 
@@ -206,16 +192,17 @@ var save = {
     if (cache) cache.flush('posts')
   },
 
-  submitForReview(post, cb){
-    var repoName = post.slug
+  submitForReview(post, slug, cb){
+    var repoName = slug
     var githubOwner = this.user.social.gh.username
-    $log('creating post repo for'.yellow, post._id, post.by.name, post.url)
+    $log('creating post repo for'.yellow, post._id, post.by.name)
     $log('*** TODO, set readme contents'.yellow)
     var readmeMD = `This repo is for ${post.title} by ${post.by.name}. And it's one of the first ever git backed AirPair posts :{}`
     github.setupPostRepo(repoName, githubOwner, post.md, readmeMD, this.user, (e, result) => {
       if (e) return cb(e)
       post.submitted = new Date()
       post.github = { repoInfo: result }
+      post.slug = slug
       updateWithEditTouch.call(this, post, 'submittedForReview', cb)
     })
   },
@@ -261,7 +248,7 @@ var save = {
 
   addForker(post, cb){
     var githubUser = this.user.social.gh.username
-    github.addContributor(this.user, post.slug, post.github.reviewTeamId, (e, res) => {
+    github.addContributor(this.user, post.slug, post.github.repoInfo.reviewTeamId, (e, res) => {
       if (e) return cb(e)
       var { name, email, social } = this.user
       post.forkers = post.forkers || []

@@ -7,9 +7,10 @@ var UserData = require('../services/users.data')
 var logging = false
 
 // takes a delegate to initalize a store that could be Mongo / Redis etc.x
-export default function(app, initSessionStore)
+export default function(app, initSessionStore, done)
 {
   initSessionStore( session, (sessionStore) => {
+
     // Passport does not directly manage your session, it only uses the session.
     // So you configure session attributes (e.g. life of your session) via express
     var sessionOpts = {
@@ -45,5 +46,6 @@ export default function(app, initSessionStore)
       done(null, sessionUser)
     })
 
+    done()
   })
 }

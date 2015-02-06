@@ -40,7 +40,7 @@ angular.module("APProfile", ['ngRoute', 'APFilters', 'APSvcSession', 'APTagInput
   if ($location.search().verify)
   {
     SessionService.verifyEmail({hash:$location.search().verify}, function(result){
-      $scope.emailAlerts = [{ type: 'success', msg: `${$scope.session.email} verified ! <b>Next step, go to <a href="/billing">BILLING</a></b>` }]
+      $scope.emailAlerts = [{ type: 'success', msg: `${$scope.session.email} verified ! Next step, <a href="/posts/new">Start authoring post</a> or setup your <a href="/billing">Billing info</a>.` }]
     }, function(e){
       $scope.emailAlerts = [{ type: 'danger', msg: `${e.message||e}` }]
     })
@@ -52,14 +52,6 @@ angular.module("APProfile", ['ngRoute', 'APFilters', 'APSvcSession', 'APTagInput
     {
       $scope.data.location = session.localization.location
       $scope.data.timezone = session.localization.timezone
-    }
-    if (session.emailVerified && session.social) {
-      if (session.social.gh) $scope.data.gh = session.social.gh.username
-      if (session.social.tw) $scope.data.tw = session.social.tw.username
-      if (session.social.so) $scope.data.so = session.social.so.link
-      if (session.social.in) $scope.data.in = session.social.in.id
-      if (session.social.bb) $scope.data.bb = session.social.bb.username
-      if (session.social.al) $scope.data.al = session.social.al.username
     }
   })
 
@@ -123,18 +115,6 @@ angular.module("APProfile", ['ngRoute', 'APFilters', 'APSvcSession', 'APTagInput
   };
 
 })
-
-
-  //-- this will be refactored out of the posts module
-  // .controller('ProfileCtrl', function($scope, PostsService, $routeParams) {
-
-  //     $scope.username = $routeParams.username;
-
-  //     PostsService.getByUsername($routeParams.username, (posts) => {
-  //       $scope.posts = posts;
-  //     });
-
-  // })
 
 
 .controller('PasswordCtrl', function($scope, $location, ServerErrors, SessionService) {
