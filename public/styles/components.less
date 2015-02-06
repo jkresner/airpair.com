@@ -65,30 +65,51 @@ section.notifications {
   background-image:url('../img/icons/gh-white.png');
   background-color: #3B3B3B;
 }
-
 .tw-white {
   background-image: url('../img/icons/tw-white.png');
   background-color: #00AFEA;
 }
-
 .bb-white {
   background-image: url('../img/icons/bb-white.png');
   background-color: #1A4F7E;
 }
-
 .in-white {
   background-image: url('../img/icons/in-white.png');
   background-color: #0081AF;
 }
-
 .so-white {
   background-image: url('../img/icons/so-white.png');
   background-color: #FFA43C;
 }
-
+.gp-white {
+  background-image: url('../img/icons/gp-white.png');
+  background-color: #FF4747;
+}
+.al-white {
+  background-image: url('../img/icons/al-white.png');
+  background-color:black;
+}
 .hm-white {
-  background-image: url('../img/iconss/hm-white.png');
+  background-image: url('../img/icons/hm-white.png');
   background-color: #25DBBF;
+}
+
+.connect-icons {
+  .oauth { width:210px;display:inline-block;margin:5px }
+  .oauth a { width:100%;height:50px;display:block;color:white;
+    background-repeat:no-repeat;
+    background-size:40%;
+    padding:15px 0 0 88px;
+    font-size:15px }
+  .oauth a.none { background-color:@lightgray!important;color:@orange }
+  .oauth a:hover { background-color:@orangehighlight!important;color:white }
+  .oauth.gh a { .gh-white }
+  .oauth.tw a { .tw-white }
+  .oauth.bb a { .bb-white }
+  .oauth.in a { .in-white }
+  .oauth.so a { .so-white }
+  .oauth.gp a { .gp-white }
+  .oauth.al a { .al-white }
 }
 
 body.attentionfocus {

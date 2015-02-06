@@ -6,6 +6,7 @@ var {trackView} = require('../middleware/analytics')
 var {authd} = require('../middleware/auth')
 var util = require("../../shared/util")
 
+
 //-- TODO move into database evetuall
 var angular = {
   _id: "5149dccb5fc6390200000013",
@@ -35,38 +36,13 @@ export default function(app) {
   var router = require('express').Router()
 
     .param('workshop', WorkshopsAPI.paramFns.getBySlug)
-    .param('post', PostsAPI.paramFns.getBySlugWithSimilar)
-    .param('postforreview', PostsAPI.paramFns.getByIdForReview)
     .param('review', RequestsApi.paramFns.getByIdForReview)
+    .param('post', PostsAPI.paramFns.getBySlugWithSimilar)
 
     .get('/angularjs', setTagForTrackView,
       trackView('tag'),
       app.renderHbsViewData('tag', angularPageMeta,
         (req, cb) => TagsAPI.svc.getTagPage(req.tag, cb) ))
-
-    .get('/posts',
-      app.renderHbsViewData('posts', { title: "Software Posts, Tutorials & Articles" },
-        (req, cb) => PostsAPI.svc.getAllPublished(cb) ))
-
-    .get('/posts/airpair-v1',
-      app.renderHbsViewData('posts', null,
-      (req, cb) => PostsAPI.svc.getUsersPublished('hackerpreneur', cb) ))
-
-    .get('/blog',
-      app.renderHbsViewData('posts', null,
-      (req, cb) => PostsAPI.svc.getUsersPublished('52ad320166a6f999a465fdc5', cb) ))
-
-    .get('/:tag/posts/:post',
-      trackView('post'),
-      app.renderHbsViewData('post', null, (req, cb) => { cb(null, req.post) })
-    )
-
-    .get('/posts/review/:postforreview', authd,
-      app.renderHbsViewData('post', null, (req, cb) => {
-        req.postforreview.meta = { noindex: true }
-        cb(null, req.postforreview)
-      })
-    )
 
     .get('/workshops',
       app.renderHbsViewData('workshops', { title: "Software Workshops, Webinars & Screencasts" },
@@ -97,6 +73,39 @@ export default function(app) {
           }
           cb(null,req.review)
         }))
+
+
+    .get('/posts',
+      app.renderHbsViewData('posts', { title: "Software Posts, Tutorials & Articles" },
+        (req, cb) => PostsAPI.svc.getAllPublished(cb) ))
+
+    .get('/:tag/posts/:post',
+      trackView('post'),
+      app.renderHbsViewData('post', null, (req, cb) => cb(null, req.post)))
+
+    .get('/posts/airpair-v1',
+      app.renderHbsViewData('posts', null,
+      (req, cb) => PostsAPI.svc.getUsersPublished('hackerpreneur', cb) ))
+
+    .get('/blog',
+      app.renderHbsViewData('posts', null,
+      (req, cb) => PostsAPI.svc.getUsersPublished('52ad320166a6f999a465fdc5', cb) ))
+
+    .get('/posts/review/:id', authd, function(req, res, next) {
+      $callSvc(PostsAPI.svc.getByIdForReview, req)(req.params.id, (e,r) => {
+        if (!r) return res.redirect('/posts/me')
+        req.post = r
+        next()
+      })},
+      app.renderHbsViewData('post', null, (req, cb) => cb(null, req.post)))
+
+    .get('/posts/preview/:id', authd, function(req, res, next) {
+      $callSvc(PostsAPI.svc.getByIdForPreview, req)(req.params.id, (e,r) => {
+        if (!r) return res.redirect('/posts/me')
+        req.post = r
+        next()
+      })},
+      app.renderHbsViewData('post', null, (req, cb) => cb(null, req.post)))
 
   return router
 

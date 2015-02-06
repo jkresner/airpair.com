@@ -15,9 +15,10 @@ export default initAPI(
   getUsersPublished: (req) => [req.params.id],
   getGitHEAD: (req) => [req.postobj],
 
+  checkSlugAvailable: (req) => [req.params.slug],
   update: (req) => [req.postobj,req.body],
   publish: (req) => [req.postobj,req.body.publishedOverride],
-  submitForReview: (req) => [req.postobj],
+  submitForReview: (req) => [req.postobj, req.body.slug],
   propagateMDfromGithub: (req) => [req.postobj],
   updateGithubHead: (req) => [req.postobj, req.body.md, req.body.commitMessage],
   addReview: (req) => [req.postobj, req.body],
@@ -26,8 +27,7 @@ export default initAPI(
 
 }, {
   'post':'getBySlugWithSimilar',
-  'postobj':'getById',
-  'postforreview':'getByIdForReview',
+  'postobj':'getById'
 },
   require('../../shared/validation/posts.js')
 )

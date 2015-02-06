@@ -74,20 +74,27 @@ var data = {
   newestPost: {
     "_id":"54afe4c7a9dc630b00b8685d","title":"Build a Real Time Hybrid App with Ionic & Firebase","tags":[{"_id":"5149dccb5fc6390200000013","name":"angularjs","slug":"angularjs"},{"_id":"52fd77591c67d1a4859d2308","name":"ionic-framework","slug":"ionic-framework"},{"_id":"51db00fc66a6f999a465f440","name":"firebase","slug":"firebase"}],"created":"2015-01-09T14:25:11.153Z","by":{"userId":"5474a0138f8c80299bcc5243","name":"Rahat Khanna (mappmechanic)","avatar":"//0.gravatar.com/avatar/fc32c68209e5ca8e610f12da9ed91f6f"},"slug":"build-a-real-time-hybrid-app-with-ionic-firebase","meta":{"canonical":"https://www.airpair.com/angularjs/posts/build-a-real-time-hybrid-app-with-ionic-firebase","ogImage":"//imgur.com/aR62OFI.png","description":"In this in depth tutorial, Rahat builds a real time hybrid multi person chat app in iOS & Android using Phonegap/Cordova, Ionic and Firebase."},"published":"2015-01-23T02:04:51.000Z","url":"https://www.airpair.com/angularjs/posts/build-a-real-time-hybrid-app-with-ionic-firebase"
   },
-  defaultPostMarkdown: `## Markdown authoring
+  defaultPostMarkdown: `## AirPair Editor Tips
 
-Type markdown to author your post...
+As you type you'll see the preview pane update. The longer your posts gets, the less frequently it will refresh.
 
-You will see your post update as you make changes. Don't forget to save your MD as you go!
+To show the latest content immediately, click anywhere (*i.e. blur*) out of the editor.
 
-## Headings
+\* Note that you still need to click **SAVE** to save your changes. If the **SAVE** button is disabled, it means your Markdown is saved.
 
-- Use h2 for headings
-- h1 is already reserved for your posts title.
+\* Note to use special Markdown characters escape them with a backslash
+
+## Markdown authoring snippits
+
+### Headings
+
+## Use h2 for headings
+
+- h1 is already reserved for your posts title, so don't use a single # heading
 
 ### h3 are good for sub-headings
 
-They will appear in your Table of contents.
+Headings will appear automatically in your Table of contents. You'll be able to see them later when you click **PREVIEW**.
 
 ## Code blocks
 

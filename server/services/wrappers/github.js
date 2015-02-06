@@ -82,6 +82,14 @@ var github = {
     },cb)
   },
 
+  getRepo(repoName, cb){
+    _authenticateAdmin()
+    api.repos.one({
+      org: org,
+      id: repoName
+    },cb)
+  },
+
   addToTeam(githubUser, teamId, user, cb){
     _authenticateAdmin();
     api.orgs.addTeamMembership({

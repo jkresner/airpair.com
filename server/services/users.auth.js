@@ -101,16 +101,36 @@ function upsertSmart(upsert, existing, cb) {
 }
 
 
-function googleLogin(profile, errorCB, done) {
-  if (this.user)
-    return errorCB(Error(`You are already signed in with ${this.user.email}. Not you <a href='/auth/logout'>logout</a>?`))
+function connectGoogle(profile, errorCB, done) {
+  User.findOne({_id: this.user._id}, (err, loggedInUser) => {
+    if (err || !loggedInUser) return errorCB(err || 'Failed to googleConnect, loggedInUser not found', loggedInUser)
 
-  // Stop logged in users hitting this endpoint
-  // var loggedInUser = this.user
-  // $log('glogin', profile)
-  // //-- stop user clobbering user.google details
-  // if (r && r.googleId && (r.googleId != upsert.google.id))
-  //   return cb(Error(`Cannot overwrite google login ${r.google._json.email} with ${upsert.google._json.email}. <a href="/v1/auth/logout">Logout</a> first?`),null)
+    //-- stop user clobbering user.google details
+    if (loggedInUser.googleId && loggedInUser.googleId != profile.id)
+      return errorCB(Error(`Cannot overwrite existing google login ${loggedInUser.google._json.email} with ${profile._json.email}. Try <a href='/auth/logout'>Logout</a> and log back in with that google account?`))
+
+    User.findOne({googleId: profile.id}, (ee, existingGoogleUser) => {
+
+      if ( (loggedInUser && !existingGoogleUser) ||
+        _.idsEqual(loggedInUser._id, existingGoogleUser._id) )
+
+        User.findOneAndUpdate({_id:this.user._id}, { googleId: profile.id, google: profile }, (e,r) => {
+          if (e || !r) errorCB(e||'connectGoogle, no user found.',r)
+          var trackData = { type: 'oauth', provider: 'google', id: profile.id }
+          analytics.track(this.user, this.sessionID, 'Save', trackData, {}, ()=>{})
+          done(e, r)
+        })
+
+      else
+        return errorCB(Error(`Another user account already has the ${profile._json.email} google account connected with it. Try <a href='/auth/logout'>Logout</a> and log back in with google?`))
+    })
+  })
+}
+
+
+function googleLogin(profile, errorCB, done) {
+  if (this.user) return connectGoogle.call(this, profile, errorCB, done)
+
   User.findOne(Data.query.existing(profile._json.email),
     wrap(`googleLogin.existing ${profile._json.email}`, errorCB, (existing) => {
 
