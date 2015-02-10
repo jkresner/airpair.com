@@ -168,10 +168,10 @@ angular.module("APPageHelpers", [])
     var cta1Height = $('.rail1CTA').height() + 20;
     var tocH3Height = 50;
 
-    $('.share').css('left', offsetLeft);
-    $('.rail1CTA').css('left', offsetLeft);
-    $('#table-of-contents').css('left', offsetLeft);
-    $('#table-of-contents + ul').css('left', offsetLeft);
+    $('.share').css('position', 'fixed').css('left', offsetLeft);
+    $('.rail1CTA').css('position', 'fixed').css('left', offsetLeft);
+    $('#table-of-contents').css('position', 'fixed').css('left', offsetLeft);
+    $('#table-of-contents + ul').css('position', 'fixed').css('left', offsetLeft);
 
     // console.log('scrollingOnr', offset)
     if (scrollingOn)

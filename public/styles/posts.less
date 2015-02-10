@@ -13,7 +13,6 @@ section.notifications {
   }
 }
 
-
 //-- A list (tile grid) of posts
 .posts {
   margin-left:-5px;
@@ -112,6 +111,9 @@ section.notifications {
   }
 }
 
+.posts.inreview {
+  article { .tileInactive; }
+}
 
 article.postclean {
   height:280px;
@@ -208,15 +210,12 @@ article.postclean {
     float:right;
     clear:right;
     width:@sideRailWidth;
-    position:fixed;
-    // right:0;
   }
 
 
  .railMarker {
   position:absolute;
   right:0;
-  border:solid 1px green;
   height:1px;
  }
 
@@ -466,6 +465,8 @@ section#posteditor {
     width:90%;
     margin:auto;
     margin-bottom:30px;
+
+    h1 { border-bottom:none }
   }
 
   #preview {
@@ -545,7 +546,7 @@ section#posts {
       text-align:right;
       float:right;
       width:180px;
-      a.btn { width:180px;padding:3px }
+      a.btn { width:180px }
     }
     > p { text-align:center }
     label { display:none }
@@ -567,8 +568,6 @@ section#posts {
       .entry-author-name { color:@gray }
     }
   }
-
-
 
   #author { padding-top:10px }
 

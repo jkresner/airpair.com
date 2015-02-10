@@ -67,17 +67,19 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
     }
   })
 
-  if ($location.search().fork && $scope.session._id)
-  {
-    DataService.posts.addForker({_id:$location.search().fork}, function (r) {
-      $scope.forked = r
-    })
-  }
-
   if ($scope.session._id && $scope.session.social && $scope.session.social.gh)
   {
-    DataService.posts.getMyForks({}, function (r) {
-      $scope.forks = r
+    DataService.posts.getMyForks({}, function (forks) {
+      $scope.forks = forks
+
+      var toForkId = $location.search().fork
+      if (toForkId && !_.find(forks, (f) => toForkId == f._id))
+      {
+        DataService.posts.addForker({_id:$location.search().fork}, function (r) {
+          $scope.forked = r
+          $scope.forks = _.union($scope.forked, [r])
+        })
+      }
     })
   }
 

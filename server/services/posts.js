@@ -115,7 +115,7 @@ var get = {
 
   getPostsInReview(cb) {
     var opts = { fields: Data.select.list, options: { sort: { 'submitted': -1 } } }
-    svc.searchMany(Data.query.inReview(), opts, Data.select.cb.addUrl(cb))
+    svc.searchMany(Data.query.inReview(), opts, addUrl(cb))
   },
 
   getTableOfContents(markdown, cb) {
@@ -124,7 +124,7 @@ var get = {
 
   getUserForks(cb){
     //all the posts where the user is a forker
-    svc.searchMany(Data.query.forker(this.user._id), { field: Data.select.list }, cb)
+    svc.searchMany(Data.query.forker(this.user._id), { field: Data.select.list }, addUrl(cb))
   },
 
   getGitHEAD(post, cb){
