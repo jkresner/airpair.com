@@ -17,13 +17,13 @@ angular.module('APSvcAdmin', [])
       toggleRole: PUT((d)=>`/adm/users/${d._id}/role/${d.role}`),
     }
 
-    this.getUsersViews = function(data, success, error) {
-      $http.get(`${APIAdm}/views/user/${data._id}`, data).success(success).error(error)
+    this.posts = {
+      getNewlyTouched: GET((d)=>`/adm/posts`),
+      getAll: GET((d)=>`/adm/posts/all`)
     }
 
-    this.getPosts = function(success)
-    {
-      $http.get(`${APIAdm}/posts`).success(success).error(lazyErrorCb);
+    this.getUsersViews = function(data, success, error) {
+      $http.get(`${APIAdm}/views/user/${data._id}`, data).success(success).error(error)
     }
 
     this.getRedirects = function(success)

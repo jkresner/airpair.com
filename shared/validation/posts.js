@@ -3,6 +3,14 @@ var {validSlug,wordcount,wordsTogoForReview} = require('../posts')
 
 var validation = {
 
+  getByIdForPreview(user, post) {
+    var isAdmin = _.contains(user.roles, 'admin')
+    var isEditor = _.contains(user.roles, 'editor')
+    var isOwner = _.idsEqual(user._id, post.by.userId)
+
+    if (!isAdmin && !isEditor && !isOwner) return "Post not available for preview"
+  },
+
   create(user, post)
   {
     if (!post.title) return 'Post title required'

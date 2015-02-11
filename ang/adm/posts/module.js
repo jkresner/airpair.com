@@ -1,28 +1,35 @@
-
 angular.module("ADMPosts", [])
 
-  .config(function($locationProvider, $routeProvider) {
+.config(function(apRouteProvider) {
 
-    $routeProvider.when('/v1/adm/posts', {
-      template: require('./list.html'),
-      controller: 'PostsCtrl as posts'
-    });
+  var route = apRouteProvider.route
+  route('/adm/posts', 'Posts', require('./list.html'))
+  route('/adm/posts/all', 'AllPosts', require('./list.html'))
 
+})
+
+.directive('apPostListItem', function($parse) {
+  return {
+    template: require('./item.html'),
+    link: function(scope, element, attrs) {
+      scope.post = scope.$eval(attrs.post)
+    }
+  };
+})
+
+.controller('PostsCtrl', function($scope, AdmDataService) {
+
+  AdmDataService.posts.getNewlyTouched({}, function (result) {
+    $scope.recent = result;
   })
 
-  .directive('apPostListItem', function($parse) {
-    return {
-      template: require('./item.html'),
-      link: function(scope, element, attrs) {
-        scope.post = scope.$eval(attrs.post)
-      }
-    };
+})
+
+
+.controller('AllPostsCtrl', function($scope, AdmDataService) {
+
+  AdmDataService.posts.getAll({}, function (result) {
+    $scope.recent = result;
   })
 
-  .controller('PostsCtrl', function($scope, AdmDataService) {
-
-    AdmDataService.getPosts(function (result) {
-      $scope.recent = result;
-    })
-
-  })
+})

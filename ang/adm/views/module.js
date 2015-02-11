@@ -3,7 +3,7 @@ angular.module("ADMViews", [])
 
   .config(function($locationProvider, $routeProvider) {
 
-    $routeProvider.when('/v1/adm/views', {
+    $routeProvider.when('/adm/views', {
       template: require('./list.html'),
       controller: 'ViewsCtrl as views'
     });

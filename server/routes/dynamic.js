@@ -37,7 +37,7 @@ export default function(app) {
 
     .param('workshop', WorkshopsAPI.paramFns.getBySlug)
     .param('review', RequestsApi.paramFns.getByIdForReview)
-    .param('post', PostsAPI.paramFns.getBySlugWithSimilar)
+    .param('post', PostsAPI.paramFns.getBySlugForPublishedView)
 
     .get('/angularjs', setTagForTrackView,
       trackView('tag'),
@@ -83,9 +83,6 @@ export default function(app) {
       trackView('post'),
       app.renderHbsViewData('post', null, (req, cb) => cb(null, req.post)))
 
-    .get('/posts/airpair-v1',
-      app.renderHbsViewData('posts', null,
-      (req, cb) => PostsAPI.svc.getUsersPublished('hackerpreneur', cb) ))
 
     .get('/blog',
       app.renderHbsViewData('posts', null,

@@ -5,8 +5,10 @@ var svc                   = new Svc(Post, logging)
 var UserSvc               = require('../services/users')
 var github                = require("../services/wrappers/github")
 var Data                  = require('./posts.data')
+var {query, select, opts} = Data
 var {inflateHtml, addUrl} = Data.select.cb
 var {displayView}         = Data.select.cb
+
 
 var get = {
 
@@ -14,87 +16,78 @@ var get = {
     svc.getById(id, cb)
   },
 
+  //-- used for api param fn
   getBySlug(slug, cb) {
-    var query = _.extend(Data.query.published(),{slug})
-    svc.searchOne(query, null, inflateHtml(cb))
+    svc.searchOne(query.published({slug}), null, inflateHtml(cb))
   },
 
-  getBySlugWithSimilar(slug, cb) {
-    var query = _.extend(Data.query.published(),{slug})
-    svc.searchOne(query, null, displayView(cb,get.getSimilarPublished))
+  getBySlugForPublishedView(slug, cb) {
+    svc.searchOne(query.published({slug}), null, displayView(cb, get.getSimilar))
   },
 
-  getByIdForReview(id, cb) {
-    var query = Data.query.inReview(id)
-    svc.searchOne(query, null, displayView(cb,(tagSlug, callback)=>callback(null,[])))
+  getByIdForPreview(_id, cb) {
+    svc.searchOne({_id}, null, displayView(cb))
   },
 
-  getByIdForPreview(id, cb) {
-    var query = Data.query.inDraft(id, this.user._id)
-    svc.searchOne(query, null, displayView(cb,(tagSlug, callback)=>callback(null,[])))
-  },
-
-  //-- used for todd-motto
-  getPublishedById(_id, cb) {
-    var query = _.extend(Data.query.published(),{_id})
-    svc.searchOne(query, null, inflateHtml(cb))
-  },
-
-  getAllAdmin(cb) {
-    var opts = { fields: Data.select.listAdmin, options: { sort: { 'updated': -1 } } };
-    svc.searchMany(Data.query.updated, opts, addUrl(cb))
+  getByIdForReview(_id, cb) {
+    svc.searchOne(query.inReview({_id}), null, displayView(cb))
   },
 
   getAllForCache(cb) {
-    svc.searchMany(Data.query.published(), { fields: Data.select.listCache }, addUrl(cb))
-  },
-
-  getPublished(cb) {
-    svc.searchMany(Data.query.published(), { field: Data.select.list }, cb)
+    svc.searchMany(query.published(), { fields: select.listCache }, addUrl(cb))
   },
 
   getRecentPublished(cb) {
-    var opts = { fields: Data.select.list, options: { sort: { 'published': -1 }, limit: 9 } };
-    svc.searchMany(Data.query.published(), opts, addUrl(cb))
+    svc.searchMany(query.published(), { field: select.list, options: opts.publishedNewest(9) }, cb)
   },
 
-  getAllPublished(cb) {
-    var opts = { fields: Data.select.list, options: { sort: { 'published': -1 } } };
-    svc.searchMany(Data.query.published(), opts, addUrl(cb))
-  },
-
-  getAllVisible(user, cb) {
-    if (user && _.contains(user.roles, "reviewer")){
-      var opts = { fields: Data.select.list, options: { sort: '-submitted -published'} }
-      svc.searchMany(Data.query.publishedReviewReady(), opts, addUrl(cb));//, function(e,r) {
-    }
-    else {
-      var opts = { fields: Data.select.list, options: { sort: { 'published': -1 } } };
-      svc.searchMany(Data.query.published(), opts, addUrl(cb))
-    }
+  //-- Placeholder for showing similar posts to a currently displayed post
+  getSimilar(original, cb) {
+    var tagId = original.primarytag._id
+    var options = { fields: select.list, options: opts.publishedNewest(3) }
+    svc.searchMany(query.published({'tags._id':tagId}), options, addUrl(cb))
   },
 
   getByTag(tag, cb) {
-    var opts = { fields: Data.select.list, options: { sort: { 'published': -1 } } };
-    var query = Data.query.published({'tags._id': tag._id})
-    svc.searchMany(query, opts, addUrl((e,r) => cb(null, {tag,posts:r}) ))
+    var options = { fields: select.list, options: opts.publishedNewest() }
+    var query = query.published({'tags._id': tag._id})
+    svc.searchMany(query, options, addUrl((e,r) => cb(null, {tag,posts:r}) ))
   },
 
+  //-- used for todd-motto
+  // getPublishedById(_id, cb) {
+  //   var query = _.extend(,)
+  //   svc.searchOne(Data.query.published({_id}), null, inflateHtml(cb))
+  // },
 
-  //-- Placeholder for showing similar posts to a currently displayed post
-  getSimilarPublished(tagSlug, cb) {
-    var opts = { fields: Data.select.list, options: { sort: { 'published': -1 }, limit: 3 } };
-    var query = { '$and': [{'tags.slug':tagSlug}, Data.query.published()] }
-    svc.searchMany(query, opts, addUrl(cb))
-  },
+
+  // getPublished(cb) {
+  //   svc.searchMany(query.published(), { field: select.list, options: opts.publishedByNewest() }, cb)
+  // },
+
+  // getAllPublished(cb) {
+  //   var opts = { fields: Data.select.list, options: { sort: { 'published': -1 } } };
+  //   svc.searchMany(Data.query.published(), opts, addUrl(cb))
+  // },
+
+  // getAllVisible(user, cb) {
+  //   if (user && _.contains(user.roles, "reviewer")){
+  //     var opts = { fields: Data.select.list, options: { sort: '-submitted -published'} }
+  //     svc.searchMany(Data.query.publishedReviewReady(), opts, addUrl(cb));//, function(e,r) {
+  //   }
+  //   else {
+  //     var opts = { fields: Data.select.list, options: { sort: { 'published': -1 } } };
+  //     svc.searchMany(Data.query.published(), opts, addUrl(cb))
+  //   }
+  // },
+
 
   getUsersPublished(userId, cb) {
-    var opts = { fields: Data.select.list, options: { sort: { 'published': -1 } } };
-    var query = _.extend({ 'by.userId': userId }, Data.query.published())
-    svc.searchMany(query, opts, addUrl(cb))
+    var opts = { fields: select.list, options: opts.publishedNewest() }
+    svc.searchMany(query.published({ 'by.userId': userId }), opts, addUrl(cb))
   },
 
-  // This now combines users interest posts and self authors
+  // getUsersPosts combines users interest posts and self authors
   getUsersPosts(cb) {
     $callSvc(get.getRecentPublished,this)((e,r) => {
       if (!this.user) cb(e,r)
@@ -114,17 +107,13 @@ var get = {
   },
 
   getPostsInReview(cb) {
-    var opts = { fields: Data.select.list, options: { sort: { 'submitted': -1 } } }
-    svc.searchMany(Data.query.inReview(), opts, addUrl(cb))
-  },
-
-  getTableOfContents(markdown, cb) {
-    return cb(null, {toc:Data.generateToc(markdown)})
+    var options = { fields: select.list, options: { sort: { 'submitted': -1 } } }
+    svc.searchMany(query.inReview(), options, addUrl(cb))
   },
 
   getUserForks(cb){
-    //all the posts where the user is a forker
-    svc.searchMany(Data.query.forker(this.user._id), { field: Data.select.list }, addUrl(cb))
+    // all posts where the user is a forker
+    svc.searchMany(query.forker(this.user._id), { field: Data.select.list }, addUrl(cb))
   },
 
   getGitHEAD(post, cb){
@@ -142,7 +131,25 @@ var get = {
         cb(null, { available: `The repo name ${slug} is available.` })
       })
     })
-  }
+  },
+
+  // getTableOfContents(markdown, cb) {
+  //   return cb(null, {toc:Data.generateToc(markdown)})
+  // },
+}
+
+
+var getAdmin = {
+
+  getAllForAdmin(cb) {
+    var options = { fields: select.listAdmin, options: { sort: { 'updated': -1 } } }
+    svc.searchMany(query.updated, options, addUrl(cb))
+  },
+
+  getNewFoAdmin(cb) {
+    var options = { fields: select.listAdmin, options: { sort: { 'updated': -1 }, limit: 20 } }
+    svc.searchMany(query.updated, options, addUrl(cb))
+  },
 
 }
 
@@ -266,4 +273,4 @@ var save = {
 }
 
 
-module.exports = _.extend(get, save)
+module.exports = _.extend(_.extend(get, getAdmin), save)
