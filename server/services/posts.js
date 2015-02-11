@@ -3,6 +3,7 @@ var logging               = false
 var Post                  = require('../models/post')
 var svc                   = new Svc(Post, logging)
 var UserSvc               = require('../services/users')
+var ExpertSvc               = require('../services/experts')
 var github                = require("../services/wrappers/github")
 var Data                  = require('./posts.data')
 var {query, select, opts} = Data
@@ -25,6 +26,27 @@ var get = {
     cb(null, post)
   },
 
+  getByIdForPublishing(post, cb) {
+    ExpertSvc.getMe.call({user:{_id:post.by.userId}}, (e, expert) => {
+      if (expert) {
+        post.by.expertId = expert._id
+        post.by.username = expert.username
+      }
+
+      if (!post.tmpl)
+        post.tmpl = 'default'
+
+      if (!post.meta || !post.meta.canonical)
+      {
+        var primarytag = _.find(post.tags,(t) => t.sort==0 || post.tags[0])
+        post.meta = post.meta || {}
+        post.meta.canonical = `/${primarytag.slug}/posts/${post.slug}`
+      }
+
+      cb(null, post)
+    })
+  },
+
   //-- used for api param fn
   getBySlug(slug, cb) {
     svc.searchOne(query.published({slug}), null, selectCB.inflateHtml(cb))
@@ -35,7 +57,15 @@ var get = {
   },
 
   getByIdForPreview(_id, cb) {
-    svc.searchOne({_id}, null, selectCB.displayView(cb))
+    svc.searchOne({_id}, null, (e,r) => {
+      if (e || !r) return cb(e,r)
+      if (!r.submitted || !r.github) return cb(e, r)
+      get.getGitHEAD(r, (ee, head) => {
+        if (head.string)
+          r.md = head.string
+        selectCB.displayView(cb)(null, r)
+      })
+    })
   },
 
   getByIdForReview(_id, cb) {
@@ -63,20 +93,19 @@ var get = {
     svc.searchMany(query, options, selectCB.addUrl((e,r) => cb(null, {tag,posts:r}) ))
   },
 
+  getAllPublished(cb) {
+    var opts = { fields: Data.select.list, options: { sort: { 'published': -1 } } };
+    svc.searchMany(Data.query.published(), opts, selectCB.addUrl(cb))
+  },
+
   //-- used for todd-motto
   // getPublishedById(_id, cb) {
   //   var query = _.extend(,)
   //   svc.searchOne(Data.query.published({_id}), null, inflateHtml(cb))
   // },
 
-
   // getPublished(cb) {
   //   svc.searchMany(query.published(), { field: select.list, options: opts.publishedByNewest() }, cb)
-  // },
-
-  // getAllPublished(cb) {
-  //   var opts = { fields: Data.select.list, options: { sort: { 'published': -1 } } };
-  //   svc.searchMany(Data.query.published(), opts, addUrl(cb))
   // },
 
   // getAllVisible(user, cb) {
@@ -157,7 +186,8 @@ var getAdmin = {
 
   getNewFoAdmin(cb) {
     var options = { fields: select.listAdmin, options: { sort: { 'updated': -1 }, limit: 20 } }
-    svc.searchMany(query.updated, options, selectCB.addUrl(cb))
+    var q = { 'assetUrl': {'$exists': true }, updated : { '$exists': true } }
+    svc.searchMany(q, options, selectCB.addUrl(cb))
   },
 
 }
@@ -195,17 +225,31 @@ var save = {
     updateWithEditTouch.call(this, original, 'updateByAuthor', cb)
   },
 
-  publish(post, publishedOverride, cb) {
+  publish(post, publishData, cb) {
     // publishedCommit = already comes from updateFromGithub
+
+    post.publishHistory = post.publishHistory || []
     post.publishHistory.push({
-      commit: post.publishedCommit,
+      commit: post.publishedCommit || 'Not yet propagated',
       touch: svc.newTouch.call(this, 'publish')})
-    post.publishedBy = this.user
+
+    post.publishedBy = _.pick(this.user, '_id', 'name', 'email')
     post.publishedUpdated = new Date()
-    if (publishedOverride)
-      post.published = publishedOverride
-    else
+
+    if (publishData.publishedOverride)
+      post.published = publishData.publishedOverride
+    else if (!post.published)
       post.published = new Date()
+
+    post.by = publishData.by
+    post.tmpl = publishData.tmpl
+    post.meta = publishData.meta
+    post.meta.ogType = 'article'
+    post.meta.ogUrl = post.meta.canonical
+
+    // if (post.by.expertId)
+    // To link expert we are required to publish twice, which a bit awkward,
+    // but a very infrequent case
 
     updateWithEditTouch.call(this, post, 'publish', cb)
     if (cache) cache.flush('posts')
@@ -243,6 +287,7 @@ var save = {
   },
 
   updateGithubHead(original, postMD, commitMessage, cb){
+    $log('updateGithubHead'.cyan, original.slug, commitMessage)
     github.updateFile(original.slug, "post.md", postMD, commitMessage, this.user, (ee, result) => {
       if (ee) return cb(ee)
       if (!original.published) {

@@ -56,7 +56,7 @@
           <td>{{ p.created | publishedTime: 'MM.DD' }}</td>
           <td>
             <span ng-if="!p.submitted && !p.published">draft</span>
-            <span ng-if="p.submitted">in review</span>
+            <span ng-if="p.submitted && !p.published">in review</span>
             <span ng-if="p.published">published</span>
           </td>
           <td>

@@ -1,18 +1,16 @@
 <section id="posts">
-  <div id="author" class="publish">
-  <div class="editor">
+<div id="author" class="publish">
 
-
-  <!-- <div class="posts" style="float:right;width:300px">
+  <div class="posts" style="float:right;width:300px">
     <ap-post-list-item post="post"></ap-post-list-item>
   </div>
 
-  <div class="form-group" style="width:540px;float:left">
-    <label>Title</label>
-    <input ng-model="post.title" type="text" class="form-control" placeholder="Type post title ..." />
-  </div>
+
 
   <div class="author" style="width:540px;float:left">
+    <span ng-if="post.by.expertId" style="float:right;display:block">
+      <a href="/billing/book/{{post.by.expertId}}" target="_blank">Expert profile</a> linked.
+    </span>
 
     <div class="form-group">
       <label for="userInput">Author</label>
@@ -25,17 +23,15 @@
 
   </div>
 
-<hr style="clear:both" />
-
+  <hr style="clear:both" />
   <div class="form-group">
-    <label>Slug url</label>
-    <input ng-model="post.slug" type="text" class="form-control" />
-  </div>
-
-
-  <div class="form-group" style="width:540px;float:left">
-    <label>Tags </label>
-    <div tag-input=""></div>
+    <label>Template</label>
+    <select ng-model="post.tmpl" class="form-control">
+      <option value="default">default</option>
+      <option value="blank">blank</option>
+      <option value="landing">landing (airpair content only)</option>
+      <option value="faq">faq (airpair content only)</option>
+    </select>
   </div>
 
   <hr style="clear:both" />
@@ -44,112 +40,40 @@
     <label>Meta</label>
     <input ng-model="post.meta.canonical" type="text" class="form-control" placeholder="canonical url" />
     <input ng-model="post.meta.title" type="text" class="form-control" placeholder="title" />
-    <input ng-model="post.meta.description" type="text" class="form-control" placeholder="description" />
+    <textarea ng-model="post.meta.description" class="form-control" placeholder="description"></textarea>
   </div>
   <div class="form-group">
     <label>Open Graph</label>
-    <input ng-model="post.meta.ogUrl" type="text" class="form-control" placeholder="url" disabled="disabled" />
+    <!-- <input ng-model="post.meta.ogUrl" type="text" class="form-control" placeholder="url" disabled="disabled" /> -->
     <input ng-model="post.meta.ogTitle" type="text" class="form-control" placeholder="title" />
-    <input ng-model="post.meta.ogDescription" type="text" class="form-control" placeholder="description" />
-    <input ng-model="post.meta.ogType" type="text" class="form-control" placeholder="type"/>
     <input ng-model="post.meta.ogImage" type="text" class="form-control" placeholder="image" />
-<!--     <input ng-model="post.meta.ogVideo" type="text" class="form-control" placeholder="video" />
+    <textarea ng-model="post.meta.ogDescription" class="form-control" placeholder="description"></textarea>
   </div>
 
-  <div class="form-group">
+
+
+  <div ng-if="post.published" class="form-group">
     <label>Override Publish Date</label>
     <input ng-model="post.publishedOverride" type="text" class="form-control" ng-click="setPublishedOverride()" />
-  </div>
-
-  <section>
-    <label>Created</label> <span>{{ post.created | publishedTime }}</span>
-    <label>Updated</label> <span>{{ post.updated | publishedTime }}</span>
-    <label>Published</label> <span>{{ post.published | publishedTime }}</span>
-    <label>By</label> <span>{{ post.publishedBy }}</span>
-  </section>
-
-  <hr style="clear:both" />
-
-
-
-<div class="form-actions">
-
-  <a href="/posts/edit/{{_id}}" class="btn">Edit</a>
-
-  <a href="{{post.url}}" class="btn" ng-disabled="!post.published" target="_blank">View</a>
-
-  <button class="btn" ng-click="save()">Publish</button>
-
-  <button class="btn" ng-click="delete()" ng-disabled="(!(preview.mode == 'edit') || post.published) || !post._id">Delete</button>
-</div>
-
-
-  </div>
-
-</div>
-
-<div class="meta">
-  <div class="form-group">
-    <label>Title</label>
-    <input ng-model="post.title" type="text" class="form-control" placeholder="Type post title ..." />
-  </div>
-  <div class="form-group">
-    <label>Author bio</label>
-    <input ng-model="post.by.bio" type="text" class="form-control" />
-  </div>
-
-
-  <div class="publishMeta" ng-if="preview.mode == 'publish'">
-    <div class="form-group">
-      <label>Author username</label>
-      <input ng-model="post.by.username" type="text" class="form-control" />
-    </div>
-    <div class="form-group">
-      <label>Meta</label>
-      <input ng-model="post.meta.title" type="text" class="form-control" placeholder="title" />
-      <input ng-model="post.meta.description" type="text" class="form-control" placeholder="description" />
-      <input ng-model="post.meta.canonical" type="text" class="form-control" placeholder="canonical url" />
-    </div>
-    <div class="form-group">
-      <label>Open Graph</label>
-      <input ng-model="post.meta.ogTitle" type="text" class="form-control" placeholder="title" />
-      <input ng-model="post.meta.ogDescription" type="text" class="form-control" placeholder="description" />
-      <input ng-model="post.meta.ogType" type="text" class="form-control" placeholder="type"/>
-      <input ng-model="post.meta.ogImage" type="text" class="form-control" placeholder="image" />
-      <input ng-model="post.meta.ogVideo" type="text" class="form-control" placeholder="video" />
-      <input ng-model="post.meta.ogUrl" type="text" class="form-control" placeholder="url" />
-    </div>
-  </div>
-
-  <div class="dates" ng-if="post.created">
-    <div class="form-group" ng-if="preview.mode == 'publish'">
-      <label>Override Publish Date</label>
-      <input ng-model="post.publishedOverride" type="text" class="form-control" ng-click="setPublishedOverride()" />
-    </div>
-
     <section>
-      <label>Created</label> <span>{{ post.created | publishedTime }}</span>
-      <label>Updated</label> <span>{{ post.updated | publishedTime }}</span>
       <label>Published</label> <span>{{ post.published | publishedTime }}</span>
-      <label></label> <span>{{ post.publishedBy }}</span>
+      <label>By</label> <span>{{ post.publishedBy }}</span>
     </section>
   </div>
 
-</div>
 
-<div class="form-actions">
+  <hr style="clear:both" />
 
-  <button class="btn" ng-click="save()" ng-disabled="(!post.title && !post.by.bio) || post.saved">Save</button>
-  <a class="btn" target="_blank" ng-click="submitForReview()" ng-disabled="!post._id || (!post.title && !post.by.bio) || !post.saved">Submit for Review</a>
-  <a class="btn" target="_blank" ng-click="submitForPublication()" ng-disabled="!post._id || (!post.title && !post.by.bio) || !post.saved">Submit for Publication</a>
+  <div class="form-actions">
 
-  <button class="btn" ng-click="delete()" ng-disabled="(!(preview.mode == 'edit') || post.published) || !post._id">Delete</button>
-</div>
+    <!-- <a ng-if="!post.publishedCommit" class="btn" ng-click="propagate">Propagate Git HEAD</a> -->
 
+    <a href="{{post.url}}" class="btn" ng-disabled="!post.published" target="_blank">View</a>
 
--->
-<h1>Page under construction again.</h1>
-<br /><br />
+    <button class="btn" ng-click="publish()">Publish</button>
+
   </div>
+
 </div>
+
 </section>

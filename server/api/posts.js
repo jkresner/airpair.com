@@ -4,8 +4,9 @@ export default initAPI(
   require('../services/posts')
 , {
 
-  getByIdForForking: (req) => [req.post],
   getByIdForEditing: (req) => [req.post],
+  getByIdForForking: (req) => [req.post],
+  getByIdForPublishing: (req) => [req.post],
   getUsersPosts: (req) => [],
   getPostsInReview: (req) => [],
   getUserForks: (req) => [],
@@ -21,7 +22,7 @@ export default initAPI(
 
   checkSlugAvailable: (req) => [req.post, req.params.slug],
   update: (req) => [req.post,req.body],
-  publish: (req) => [req.post,req.body.publishedOverride],
+  publish: (req) => [req.post,req.body],
   submitForReview: (req) => [req.post, req.body.slug],
   propagateMDfromGithub: (req) => [req.post],
   updateGithubHead: (req) => [req.post, req.body.md, req.body.commitMessage],
