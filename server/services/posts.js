@@ -287,7 +287,6 @@ var save = {
   },
 
   updateGithubHead(original, postMD, commitMessage, cb){
-    $log('updateGithubHead'.cyan, original.slug, commitMessage)
     github.updateFile(original.slug, "post.md", postMD, commitMessage, this.user, (ee, result) => {
       if (ee) return cb(ee)
       if (!original.published) {
