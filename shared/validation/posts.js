@@ -3,6 +3,14 @@ var {validSlug,wordcount,wordsTogoForReview} = require('../posts')
 
 var validation = {
 
+  getByIdForEditing(user, post) {
+    var isOwner = _.idsEqual(user._id, post.by.userId)
+    var isForker = _.find(post.forkers, (f)=>_.idsEqual(user._id, f.userId))
+
+    if (!isOwner && !isForker)
+      return "Post cannot be edited by you, did you fork it already?"
+  },
+
   getByIdForPreview(user, post) {
     var isAdmin = _.contains(user.roles, 'admin')
     var isEditor = _.contains(user.roles, 'editor')
@@ -141,10 +149,12 @@ var validation = {
 
   getGitHEAD(user, post){
     var isOwner = _.idsEqual(post.by.userId, user._id)
-    var isEditor = user.roles && _.contains(user.roles, "editor")
-    if (!isOwner && !isEditor)
-      return `Not authorized to getGitHEAD`
+    // var isEditor = user.roles && _.contains(user.roles, "editor")
+
+    if (!isOwner)
+      return "Editing your fork via the AirPair editor is coming soon. For now, please edit your fork using your own tools."
   }
+
 }
 
 module.exports = validation
