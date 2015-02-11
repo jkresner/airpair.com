@@ -1,21 +1,34 @@
-<article itemscope="itemscope" itemtype="http://schema.org/BlogPosting" itemprop="blogPost">
+<article>
  <header class="entry-header">
     <img class="entry-header-image" itemprop="image" ng-src="{{ post.meta.ogImage }}" align="left" />
 
+    <div ng-if="!post.meta || !post.meta.ogImage" class="emptyOgImage">
+      <p>Image not yet supplied.</p>
+    </div>
+
     <span class="entry-categories">
-      <a ng-repeat='tag in post.tags' href="#" title="View all posts in {{ tag.name }}" rel="category tag">{{ '{'+tag.slug+'}' }}</a>
+      <em ng-repeat='tag in post.tags'>{{ '{'+tag.slug+'}' }}</em>
     </span>
+
+    <div class="publish-meta">
+      <hr />
+
+      <span ng-if="post.lastTouch">
+        - {{ post.lastTouch.by.name }}
+        <i>{{ post.lastTouch.action }}</i>
+        <b>{{ post.lastTouch.utc | agoTime }}</b>
+      </span>
+
+      <span ng-if="post.published">,
+        - Published <b>{{ post.published | agoTime }}</b></span>
+      <time class="entry-time" itemprop="datePublished" datetime="{{ post.published }}">{{ post.publishedFormat }}</time>
+    </div>
 
     <p class="entry-meta">
       <span class="entry-author" itemprop="author" itemscope="itemscope" itemtype="http://schema.org/Person">
         <span class="entry-author-name" itemprop="name">{{ post.by.name }}</span>
+        <img class="entry-author-image" itemprop="image" ng-src="{{ post.by.avatar }}?s=50" align="left" />
       </span>
-    <img class="entry-author-image" itemprop="image" ng-src="{{ post.by.avatar }}?s=50" align="left" />
-      <br />Updated
-      {{ post.updated | agoTime }}
-      <span ng-if="post.published">,
-      Published {{ post.published | agoTime }}</span>
-      <time class="entry-time" itemprop="datePublished" datetime="{{ post.published }}">{{ post.publishedFormat }}</time>
     </p>
   </header>
   <div class="entry-content" itemprop="text">
@@ -25,9 +38,14 @@
 
   <footer class="entry-footer" style="width:50%">
     <ul>
-      <li><a href="/posts/edit/{{ post._id }}" target="_blank">Edit</a></li>
-      <li><a href="/posts/publish/{{ post._id }}" target="_blank">Publish</a></li>
+      <li ng-if="!post.github && !post.submitted && !post.published"><a ng-click="delete(post._id)">Delete</a></li>
+      <li ng-if="post.github"><a href="/posts/edit/{{ post._id }}" target="_blank">Edit</a></li>
+      <li ng-if="post.submitted"><a href="/posts/publish/{{ post._id }}" target="_blank">Publish</a></li>
+      <li ng-if="post.tags && post.tags.length > 0"><a href="/posts/preview/{{ post._id }}" target="_blank">Preiew</a></li>
       <li ng-if="post.published"><a href="{{ post.url }}" target="_blank">View</a></li>
+      <li ng-if="post.github">
+        <a class="repo" href="//github.com/airpair/{{ post.slug }}" target="_blank" class="repo">Repo</a>
+      </li>
     </ul>
 
     <p class="entry-meta">

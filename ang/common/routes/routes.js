@@ -35,7 +35,7 @@ angular.module("APRoutes", [])
   this.GET = (urlFn) =>
     (data, success, error) => {
       var url = '/v1/api'+urlFn(data)
-      if (!error) error = (resp) => console.log('error:', resp);
+      if (!error) error = ServerErrors.add
       if (!success) alert('need to pass success for ' + url)
       $http.get(url).success(success).error(error)
     }

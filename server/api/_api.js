@@ -31,7 +31,7 @@ var cbSend = (req, res, next) => {
 }
 
 
-function resolveParamFn(Svc, svcFnName, paramName) {
+function resolveParamFn(Svc, svcFnName, paramName, objectName) {
   return (req, res, next, id) => {
     if (logging) $log('paramFn', paramName, id)
     if (id) id = id.trim()
@@ -40,7 +40,7 @@ function resolveParamFn(Svc, svcFnName, paramName) {
         e = new Error404(`${paramName} not found.`,
           paramName != 'post'&& paramName != 'workshop')
       }
-      req[paramName] = r
+      req[objectName||paramName] = r
       next(e, r)
     })
   }
@@ -70,7 +70,7 @@ export function serve(Svc, svcFnName, argsFn, Validation) {
 }
 
 
-export var initAPI = (Svc, custom, paramFns, Validation) => {
+export var initAPI = (Svc, custom, paramFns, Validation, reqObjectName) => {
   var base = {
     getAll: (req) => [],
     getById: (req) => [req.params.id],
@@ -88,7 +88,7 @@ export var initAPI = (Svc, custom, paramFns, Validation) => {
     for (var paramName of Object.keys(paramFns))
     {
       var svcFn = paramFns[paramName]
-      api.paramFns[svcFn] = resolveParamFn(Svc,svcFn,paramName)
+      api.paramFns[svcFn] = resolveParamFn(Svc,svcFn,paramName,reqObjectName)
     }
 
   api.svc = Svc

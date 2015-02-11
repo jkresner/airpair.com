@@ -3,6 +3,22 @@ var {validSlug,wordcount,wordsTogoForReview} = require('../posts')
 
 var validation = {
 
+  getByIdForEditing(user, post) {
+    var isOwner = _.idsEqual(user._id, post.by.userId)
+    var isForker = _.find(post.forkers, (f)=>_.idsEqual(user._id, f.userId))
+
+    if (!isOwner && !isForker)
+      return "Post cannot be edited by you, did you fork it already?"
+  },
+
+  getByIdForPreview(user, post) {
+    var isAdmin = _.contains(user.roles, 'admin')
+    var isEditor = _.contains(user.roles, 'editor')
+    var isOwner = _.idsEqual(user._id, post.by.userId)
+
+    if (!isAdmin && !isEditor && !isOwner) return "Post not available for preview"
+  },
+
   create(user, post)
   {
     if (!post.title) return 'Post title required'
@@ -32,28 +48,46 @@ var validation = {
     }
   },
 
-  publish(user, post, publishedOverride)
+  publish(user, post, publishData)
   {
     var isEditor = _.contains(user.roles, 'editor')
+    var isAdmin =  _.contains(user.roles, 'admin')
     var isOwner = _.idsEqual(post.by.userId, user._id)
 
-    if (!isEditor && !isOwner)
+    if (!isEditor && !isAdmin && !isOwner)
       return `Cannot publish post not belonging to you`
     if (!isEditor && post.reviews < 5)
       return `Must have at least 5 reviews to be published`
+
+    if (!_.idsEqual(post.by.userId, publishData.by.userId) &&
+      !isAdmin)
+      return `Only admins can change post authors`
 
     // if (!update.publishReady)
     // return "Post must be marked publishReady by author"
     if (!post.submitted)
       return `Post must be submitted for review before being published`
-    if (!post.publishedCommit)
-      return `Post must have propogated commit to be published`
-    if (post.published && !publishedOverride)
-      return `Post already published...`
+    // if (!post.publishedCommit)
+      // return `Post must have propogated commit to be published`
+    // if (post.published && !publishedOverride)
+    //   return `Post already published...`
     if (!post.slug)
       return `Post must have a slug to be published`
     if (!validSlug(post.slug))
       return `${post.slug} not a valid post slug to publish`
+
+    if (!publishData.tmpl)
+      return `Post template name must be provided`
+    if (!publishData.meta)
+      return `Post meta data required`
+    if (!publishData.meta.title ||
+        !publishData.meta.canonical ||
+        !publishData.meta.description)
+      return `Post meta title, canonical & description required`
+    if (!publishData.meta.ogTitle ||
+        !publishData.meta.ogImage ||
+        !publishData.meta.ogDescription)
+      return `Post open graph title, image & description required`
   },
 
   deleteById(user, original)
@@ -133,10 +167,12 @@ var validation = {
 
   getGitHEAD(user, post){
     var isOwner = _.idsEqual(post.by.userId, user._id)
-    var isEditor = user.roles && _.contains(user.roles, "editor")
-    if (!isOwner && !isEditor)
-      return `Not authorized to getGitHEAD`
+    // var isEditor = user.roles && _.contains(user.roles, "editor")
+
+    if (!isOwner)
+      return "Editing your fork via the AirPair editor is coming soon. For now, please edit your fork using your own tools."
   }
+
 }
 
 module.exports = validation

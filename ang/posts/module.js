@@ -63,21 +63,22 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
     if ($location.search().submitted && $scope.session._id)
     {
       $scope.submitted = _.find(r, (p)=> p._id == $location.search().submitted)
-      console.log('$scope.submitted', $scope.submitted.slug, $scope.submitted)
     }
   })
 
-  if ($location.search().fork && $scope.session._id)
-  {
-    DataService.posts.addForker({_id:$location.search().fork}, function (r) {
-      $scope.forked = r
-    })
-  }
-
   if ($scope.session._id && $scope.session.social && $scope.session.social.gh)
   {
-    DataService.posts.getMyForks({}, function (r) {
-      $scope.forks = r
+    DataService.posts.getMyForks({}, function (forks) {
+      $scope.forks = forks
+
+      var toForkId = $location.search().fork
+      if (toForkId && !_.find(forks, (f) => toForkId == f._id))
+      {
+        DataService.posts.addForker({_id:$location.search().fork}, function (r) {
+          $scope.forked = r
+          $scope.forks = _.union($scope.forked, [r])
+        })
+      }
     })
   }
 
@@ -172,11 +173,7 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
 
     if (r.meta)
     {
-      // if (r.meta.canonical) r.meta.canonical = r.meta.canonical.replace('http://','https://')
       if (r.meta.ogImage) r.meta.ogImage = r.meta.ogImage.replace('http://','https://')
-
-      // $scope.canonical = r.meta.canonical;
-      // r.url = r.meta.canonical;
     }
     else
     {
@@ -201,9 +198,7 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
     }
 
     $scope.post = r
-    // console.log('$scope.post', $scope.post)
   })
-
 
   // PostsService.getToc(md, function (tocMd) {
   //   if (tocMd.toc)
@@ -269,7 +264,13 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
       $scope.head = h
       r.md = h.string
       setPostScope(r)
+    }, (e) => {
+      $scope.editErr = e.message;
+      $scope.fork = `${$scope.session.social.gh.username}/${r.slug}`
     })
+  }, (e) => {
+    $scope.editErr = e.message;
+    $scope._id = _id
   })
 
   $scope.save = () => {
@@ -300,7 +301,7 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
     $scope.post = r
 
     $scope.$watch('post.slug', function(slug) {
-      DataService.posts.checkSlugAvailable({slug}, (r) => $scope.slugStatus = r )
+      DataService.posts.checkSlugAvailable({_id,slug}, (r) => $scope.slugStatus = r )
     })
 
     if (!$scope.post.slug)
@@ -327,74 +328,6 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
 
 })
 
-.controller('PostPublish', function($scope, PostsService, $routeParams) {
-
-  $scope.post = { tags: [] };
-
-  $scope.submitForPublication = () => {
-    console.log("submit post for publication");
-  }
-
-//     $scope.setPublishedOverride = () => {
-//       if (!$scope.post.publishedOverride)
-//         $scope.post.publishedOverride = $scope.post.published || moment().format()
-//     }
-
-//     //-- TODO also figure out to add social later
-//     // $scope.user = () => { return $scope.post.by }
-//     $scope.selectUser = (user) => {
-//       $scope.post.by = {
-//         userId: user._id,
-//         name: user.name,
-//         avatar: user.avatar,
-//         bio: user.bio,
-//         username: user.username
-//       };
-//     }
-
-//     PostsService.getById($routeParams.id, (r) => {
-
-      // $scope.post = _.extend(r, { saved: false });
-
-
-      // $scope.$watch('post.meta.canonical', (value) => $scope.post.meta.ogUrl = value );
-//     });
-
-
-//     $scope.$watch('post.tags', function(value) {
-//       // console.log('post.tags.changed', value)
-//       if (value.length > 0 && !$scope.post.published)
-//         $scope.post.meta.canonical = `https://www.airpair.com/${$scope.post.tags[0].slug}/posts/${$scope.post.slug}`;
-//     })
-
-//     $scope.save = () => {
-//       $scope.post.meta.ofUrl = $scope.post.meta.canonical
-//       PostsService.publish($scope.post, (r) => {
-//         r.url = r.meta.canonical
-//         $scope.post = _.extend(r, { saved: true});
-//       });
-//     }
-
-//     $scope.tags = () => $scope.post ? $scope.post.tags : null;
-//     $scope.updateTags = (scope, newTags) => {
-//       if (!$scope.post) {
-//         return;
-//       }
-
-//       $scope.post.tags = newTags;
-//     }
-
-//     $scope.selectTag = function(tag) {
-//       var tags = $scope.post.tags;
-//       if ( _.contains(tags, tag) ) $scope.post.tags = _.without(tags, tag)
-//       else $scope.post.tags = _.union(tags, [tag])
-//     };
-
-//     $scope.deselectTag = (tag) => {
-//       $scope.post.tags = _.without($scope.post.tags, tag);
-//     };
-
-})
 
 .controller('PostForkCtrl', function($scope, $routeParams, $location, DataService, PostsUtil) {
   var _id = $routeParams.id
@@ -404,9 +337,41 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
       $location.path('/posts/me?forked='+result._id)
     })
 
-  DataService.posts.getById({_id}, (r) => {
+  DataService.posts.getByIdForForking({_id}, (r) => {
     $scope.post = r
     $scope.tofork = [r]
   })
 
 })
+
+
+.controller('PostPublishCtrl', function($scope, DataService, $routeParams) {
+  var _id = $routeParams.id
+
+  $scope.setPublishedOverride = () => {
+    if (!$scope.post.publishedOverride)
+      $scope.post.publishedOverride = $scope.post.published || moment().format()
+  }
+
+  //-- TODO also figure out to add social later
+  $scope.user = () => { return $scope.post.by }
+  $scope.selectUser = (user) => {
+    $scope.post.by = {
+      userId: user._id,
+      name: user.name,
+      avatar: user.avatar,
+      bio: user.bio,
+      username: user.username
+    };
+  }
+
+  DataService.posts.getByIdForPubishing({_id}, (r) => {
+    $scope.post = r
+    $scope.$watch('post.meta.description', (value) => $scope.post.meta.ogDescription = value )
+  });
+
+  $scope.publish = () =>
+    DataService.posts.publish($scope.post, (r) => window.location = r.meta.canonical)
+
+})
+

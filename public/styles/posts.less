@@ -13,7 +13,6 @@ section.notifications {
   }
 }
 
-
 //-- A list (tile grid) of posts
 .posts {
   margin-left:-5px;
@@ -112,6 +111,9 @@ section.notifications {
   }
 }
 
+.posts.inreview {
+  article { .tileInactive; }
+}
 
 article.postclean {
   height:280px;
@@ -144,14 +146,10 @@ article.postclean {
 //-- A single full post view
 
 .blogpost {
-  .rail {
-    float:right;
-    clear:right;
-    width:@sideRailWidth;
-  }
 
   clear:both;
   padding:0 0px;
+  position:relative;
 
   header { border-bottom:solid 1px @lightgray;margin-bottom:20px }
 
@@ -208,13 +206,21 @@ article.postclean {
     }
  }
 
+  .rail {
+    float:right;
+    clear:right;
+    width:@sideRailWidth;
+  }
+
+
  .railMarker {
-  .rail;
+  position:absolute;
+  right:0;
+  height:1px;
  }
 
   .rail1CTA {
     .rail;
-    position:fixed;
   }
 
   .fork {
@@ -224,13 +230,12 @@ article.postclean {
       width:100%;
       padding-left:45px;
     }
-    p { width:100%!important }
+    p { width:100%!important;text-align:right;margin:0 0 20px 0;padding-top:5px!important }
   }
 
   .share {
     .rail;
     margin:14px 0;
-    position:fixed;
     top:0;
   }
 
@@ -238,15 +243,15 @@ article.postclean {
     .rail;
     margin:10px 0 8px 0;
     font-size:24px;
-    position:relative;
   }
   #table-of-contents + ul {
     .rail;
     list-style:none;
     padding-left:0;
     font-size:12px;
-    position:relative;
     z-index:0;
+    max-height:540px;
+    overflow-y:auto;
 
     ul { list-style:none;margin-top:4px;padding-left:0px }
     li { padding:1px 0 2px 0; }
@@ -311,17 +316,17 @@ article.postclean {
     }
   }
 
-  div.island {
-    width:100%;
-    height:60px;
+  // div.island {
+  //   width:100%;
+  //   height:60px;
 
-    div.rail {
-      float:right;
-      clear:right;
-      width:@sideRailWidth;
-      position:relative;
-    }
-  }
+  //   div.rail {
+  //     float:right;
+  //     clear:right;
+  //     width:@sideRailWidth;
+  //     position:relative;
+  //   }
+  // }
 
   .bodyCTA {
     padding-top:20px;
@@ -394,8 +399,8 @@ article.postclean {
     }
 
     > h1 { font-size:32px;line-height:48px;margin:10px 0 }
-    #table-of-contents { float:left;clear:left; }
-    #table-of-contents + ul { float:left;clear:left; }
+    #table-of-contents { display:none;float:left;clear:left; }
+    #table-of-contents + ul { display:none;float:left;clear:left; }
     .author { float:none }
     figure { clear:both;padding-top:20px }
   }
@@ -410,6 +415,12 @@ article.postclean {
     #table-of-contents + ul { margin:0px 20px }
     figure.author {
       float:none;
+      label { margin-left:60px }
+      figcaption {
+        max-height:inherit;
+        margin-left:60px;
+        max-width:80%;
+      }
       hr { clear:both }
     }
     .author > img { width:60px;height:60px; }
@@ -448,12 +459,26 @@ section#posteditor {
   width:100%;
   margin:auto;
 
+  .editor-error-wrap {
+    max-width:640px;
+    width:90%;
+    margin:auto;
+    margin-bottom:30px;
+    h2 {
+      background-color:@lightblue;
+      padding:10px 50px;
+      border-radius:20px;
+    }
+  }
+
   .editor-wrap {
     position:relative;
     min-width:1120px;
     width:90%;
     margin:auto;
     margin-bottom:30px;
+
+    h1 { border-bottom:none }
   }
 
   #preview {
@@ -533,7 +558,7 @@ section#posts {
       text-align:right;
       float:right;
       width:180px;
-      a.btn { width:180px;padding:3px }
+      a.btn { width:180px }
     }
     > p { text-align:center }
     label { display:none }
@@ -541,6 +566,22 @@ section#posts {
 
   #contributions {
     width:620px;float:left;
+    td { position:relative; }
+    td.edit {
+      padding-right:22px;
+      .gh-white {
+        background-color:@orange;
+        position:absolute;
+        right:2px;
+        height:18px;width:18px;
+        display:inline-block;
+        background-size:100%;
+        border-radius:50%;
+      }
+      .gh-white:hover {
+        background-color:@orangehighlight;
+      }
+    }
   }
 
 
@@ -555,8 +596,6 @@ section#posts {
       .entry-author-name { color:@gray }
     }
   }
-
-
 
   #author { padding-top:10px }
 

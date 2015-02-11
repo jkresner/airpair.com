@@ -26,9 +26,9 @@
   <section class="notifications">
     <div id="postinreview">
       <h1><img ng-src="/static/img/css/airpair-author.png" /> This post is under community review</h1>
-      <p>The author is waiting for community feedback and a minimum of 5 reviews and an average rating of at least 3.5/5, before this post can be published.</p>
+      <p>The author is waiting for community feedback. Posts need a minimum of 5 reviews with an average 3.5/5 star rating or better, before being published.</p>
       <p>Review this post down the bottom, or fork and submit a pull request if
-      you spot a typo or have suggestions to improve it before it is published for publish consumption.</p>
+      you spot a typo or have suggestions to improve it before it is published for public consumption.</p>
     </div>
   </section>
   {{/if}}
@@ -42,7 +42,6 @@
 
   <h4 id="table-of-contents">Table of Contents</h4>
   {{{toc}}}
-  {{!-- <div class="rail2CTA"></div> --}}
 
   <figure class="author">
     <img alt="{{by.name}}" src="{{by.avatar}}?s=100">
@@ -73,25 +72,26 @@
 
   {{#if published }}
   <div class="share">
-    <div class="pw-widget pw-counter-vertical" pw:twitter-via="airpair">
-      <a class="pw-button-facebook pw-look-native"></a>
-      <a class="pw-button-twitter pw-look-native"></a>
-      <a class="pw-button-linkedin pw-look-native"></a>
+    <div class="pw-widget pw-size-medium pw-counter-show" pw:twitter-via="airpair">
+      <a class="pw-button-facebook"></a>
+      <a class="pw-button-twitter"></a>
+      <a class="pw-button-linkedin"></a>
+      <a class="pw-button-googleplus"></a>
+      <a class="pw-button-reddit"></a>
+      <a class="pw-button-post"></a>
     </div>
   </div>
   {{/if}}
 
-  {{#if github }}
-      <div class="rail1CTA railBookmarkCTA">
-      <h6>Make this post better!</h6>
-      <div class="fork">
-        <a href="/posts/fork/{{_id}}" class="btn">Fork this post!</a>
-        <p>Forked <b>{{forkers.length}}</b> times so far.</p>
-      </div>
-  </div>
-  {{/if}}
 
   <div class="rail1CTA railBookmarkCTA">
+    {{#if github }}
+    <h6>Make this post better!</h6>
+    <div class="fork">
+      <a href="/posts/fork/{{_id}}" class="btn">Fork this post!</a>
+      <p>Forked <b>{{forkers.length}}</b> times so far.</p>
+    </div>
+    {{/if}}
     {{#if published }}
     <h6>Like this article?</h6>
     <div>

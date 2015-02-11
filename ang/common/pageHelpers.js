@@ -129,7 +129,7 @@ angular.module("APPageHelpers", [])
 
   this.loadPoSt = function()
   {
-    window.pwidget_config = { shareQuote: false, afterShare: false };
+    window.pwidget_config = { shareQuote: false, afterShare: false, counter: true };
     var p = document.createElement('script');
     p.type = 'text/javascript';
     p.async = true;
@@ -162,13 +162,16 @@ angular.module("APPageHelpers", [])
     if ($('.railMarker').length == 0) return
 
     var scrollingOn = $(document).width() > 900;
+    var offsetLeft = $('.railMarker').offset().left - 212;
     var offset = $('.railMarker').offset().top;
-    var offsetLeft = $('.railMarker').offset().left;
     var shareHeight = $('.share').height() + 20;
     var cta1Height = $('.rail1CTA').height() + 20;
+    var tocH3Height = 50;
 
-    $('.share').css('left', offsetLeft);
-    $('.rail1CTA').css('left', offsetLeft);
+    $('.share').css('position', 'fixed').css('left', offsetLeft);
+    $('.rail1CTA').css('position', 'fixed').css('left', offsetLeft);
+    $('#table-of-contents').css('position', 'fixed').css('left', offsetLeft);
+    $('#table-of-contents + ul').css('position', 'fixed').css('left', offsetLeft);
 
     // console.log('scrollingOnr', offset)
     if (scrollingOn)
@@ -177,15 +180,15 @@ angular.module("APPageHelpers", [])
       {
         $('.share').css('top', offset - window.scrollY);
         $('.rail1CTA').css('top', offset - window.scrollY + shareHeight);
-        $('#table-of-contents').css('top', shareHeight+cta1Height);
-        $('#table-of-contents + ul').css('top', shareHeight+cta1Height);
+        $('#table-of-contents').css('top', offset - window.scrollY + shareHeight + cta1Height);
+        $('#table-of-contents + ul').css('top', offset - window.scrollY + shareHeight + cta1Height + tocH3Height);
       }
       else {
-        var scrollSet = window.scrollY - offset
+        var scrollSet = 10 // offset // window.scrollY - offset
         $('.share').css('top', 0);
         $('.rail1CTA').css('top', shareHeight);
         $('#table-of-contents').css('top', scrollSet + shareHeight + cta1Height);
-        $('#table-of-contents + ul').css('top', scrollSet + shareHeight + cta1Height);
+        $('#table-of-contents + ul').css('top', scrollSet + shareHeight + cta1Height + tocH3Height);
       }
     }
     else
