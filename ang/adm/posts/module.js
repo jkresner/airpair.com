@@ -26,10 +26,13 @@ angular.module("ADMPosts", [])
 })
 
 
-.controller('AllPostsCtrl', function($scope, AdmDataService) {
+.controller('AllPostsCtrl', function($scope, AdmDataService, DataService) {
 
   AdmDataService.posts.getAll({}, function (result) {
     $scope.recent = result;
   })
+
+  $scope.delete = (_id) =>
+    DataService.posts.deletePost({_id}, (r) => window.location = '/adm/posts/all')
 
 })

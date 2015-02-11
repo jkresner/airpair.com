@@ -18,12 +18,13 @@ var Meta = {
   ogDescription:{ type: String },
   ogImage:      { type: String, trim: true },
   ogVideo:      { type: String, trim: true },
-  ogUrl:        { type: String, lowercase: true, trim: true },
-  reviewTeamId: { type: String, unique: true, sparse: true}
+  ogUrl:        { type: String, lowercase: true, trim: true }
+  // reviewTeamId: { type: String, unique: true, sparse: true}
 };
 
 var Author = {
   userId:       { required: true, type: ObjectId, ref: 'User', index: true },
+  expertId:     { type: ObjectId, ref: 'Expert' },
   name:         { required: true, type: String },
   avatar:       { required: true, type: String },
   bio:          { required: true, type: String },

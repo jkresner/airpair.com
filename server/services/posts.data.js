@@ -68,6 +68,7 @@ var select = {
     'published': 1,
     'submitted': 1,
     'tags': 1,
+    'assetUrl': 1,
     'md': 1
   },
   generateToc(md) {

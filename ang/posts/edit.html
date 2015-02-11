@@ -46,7 +46,7 @@
 
     <button class="btn" ng-click="save()" ng-disabled="post.saved">Save</button>
 
-    <a class="btn" href="/posts/info/{{post._id}}" ng-disabled="preview.wordcount < 500 || !post.saved">Edit info</a>
+    <a class="btn" href="/posts/info/{{post._id}}" ng-if="!post.published" ng-disabled="preview.wordcount < 500 || !post.saved">Edit info</a>
 
     <a class="btn" href="/posts/preview/{{post._id}}" target="_blank"
       ng-disabled="!post.saved || !post.assetUrl || !post.tags || post.tags.length == 0">Preview</a>
