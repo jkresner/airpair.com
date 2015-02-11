@@ -16,12 +16,14 @@ angular.module('APDataSvc', [])
 
     this.posts = {
       getById: GET((d)=>`/posts/${d._id}`),
+      getByIdForForking: GET((d)=>`/posts/${d._id}/fork`),
+      getByIdForPubishing: GET((d)=>`/posts/${d._id}/publish`),
       getMyPosts: GET((d)=>`/posts/me`),
       getRecentPosts: GET((d)=>`/posts/recent`),
       getInReview: GET((d)=>`/posts/review`),
       getMyForks: GET((d)=>`/posts/forks/me`),
       getTagsPosts: GET((d)=>`/posts/tag/${d.tagSlug}`),
-      checkSlugAvailable: GET((d)=>`/posts/check-slug/${d.slug}`),
+      checkSlugAvailable: GET((d)=>`/posts/check-slug/${d._id}/${d.slug}`),
       create: POST((d)=>`/posts`),
       update: PUT((d)=>`/posts/${d._id}`),
       getGitHEAD: GET((d)=>`/posts/head/${d._id}`),

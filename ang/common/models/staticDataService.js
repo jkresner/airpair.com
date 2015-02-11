@@ -44,12 +44,12 @@ var data = {
         avatar: '//pbs.twimg.com/profile_images/1107452397/For_twitter.jpg',
         youtubeId: '3Hb5WtvAK3c'
       },
-      {
-        name: 'Nicholas Jayanty',
-        review: 'We got a lot done in a short amount of time.  I wish I had spent the money I spent on the Swift class I\'m taking at Art Center College of Design on AirPair.  Much better use of time and money.',
-        avatar: '//0.gravatar.com/avatar/ae0ecff35e8b1e2e8f0caf1f638097bes?s=100',
-        youtubeId: 'lI_JoAooPSo'
-      },
+      // {
+      //   name: 'Nicholas Jayanty',
+      //   review: 'We got a lot done in a short amount of time.  I wish I had spent the money I spent on the Swift class I\'m taking at Art Center College of Design on AirPair.  Much better use of time and money.',
+      //   avatar: '//0.gravatar.com/avatar/ae0ecff35e8b1e2e8f0caf1f638097bes?s=100',
+      //   youtubeId: 'lI_JoAooPSo'
+      // },
       { name: 'David Anderton',
         review: 'I was paired with someone who could understand the issues I was facing and come alongside me to work out a solution together. At first I was a little concerned that it would just be handing over the controls to a pro, I couldn\'t have been more wrong. This was the perfect match of empathy and expert. Thanks guys.',
         avatar: '//media.licdn.com/mpr/mpr/shrink_200_200/p/4/005/05f/32d/21aecb1.jpg',
@@ -82,19 +82,19 @@ To show the latest content immediately, click anywhere (*i.e. blur*) out of the 
 
 \* Note that you still need to click **SAVE** to save your changes. If the **SAVE** button is disabled, it means your Markdown is saved.
 
-\* Note to use special Markdown characters escape them with a backslash
+\* Note to use reserved Markdown characters escape them with a backslash
 
-## Markdown authoring snippits
+## Handy Markdown snippits
 
 ### Headings
 
 ## Use h2 for headings
 
-- h1 is already reserved for your posts title, so don't use a single # heading
+- h1 is already taken by your post's title, so don't use single # h1 headings
 
 ### h3 are good for sub-headings
 
-Headings will appear automatically in your Table of contents. You'll be able to see them later when you click **PREVIEW**.
+Together H1s and H2s will appear automatically in your Table of contents. You'll be able to see them later when you click **PREVIEW**.
 
 ## Code blocks
 

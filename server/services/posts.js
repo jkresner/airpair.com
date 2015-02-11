@@ -3,10 +3,12 @@ var logging               = false
 var Post                  = require('../models/post')
 var svc                   = new Svc(Post, logging)
 var UserSvc               = require('../services/users')
+var ExpertSvc               = require('../services/experts')
 var github                = require("../services/wrappers/github")
 var Data                  = require('./posts.data')
-var {inflateHtml, addUrl} = Data.select.cb
-var {displayView}         = Data.select.cb
+var {query, select, opts} = Data
+var selectCB              = select.cb
+var {selectFromObject}    = require('../../shared/util')
 
 var get = {
 
@@ -14,94 +16,123 @@ var get = {
     svc.getById(id, cb)
   },
 
+  getByIdForEditing(post, cb) {
+    post = selectFromObject(post, select.edit)
+    cb(null, post)
+  },
+
+  getByIdForForking(post, cb) {
+    post = selectFromObject(post, select.edit)
+    cb(null, post)
+  },
+
+  getByIdForPublishing(post, cb) {
+    ExpertSvc.getMe.call({user:{_id:post.by.userId}}, (e, expert) => {
+      if (expert) {
+        post.by.expertId = expert._id
+        post.by.username = expert.username
+      }
+
+      if (!post.tmpl)
+        post.tmpl = 'default'
+
+      if (!post.meta || !post.meta.canonical)
+      {
+        var primarytag = _.find(post.tags,(t) => t.sort==0 || post.tags[0])
+        post.meta = post.meta || {}
+        post.meta.canonical = `/${primarytag.slug}/posts/${post.slug}`
+      }
+
+      cb(null, post)
+    })
+  },
+
+  //-- used for api param fn
   getBySlug(slug, cb) {
-    var query = _.extend(Data.query.published(),{slug})
-    svc.searchOne(query, null, inflateHtml(cb))
+    svc.searchOne(query.published({slug}), null, selectCB.inflateHtml(cb))
   },
 
-  getBySlugWithSimilar(slug, cb) {
-    var query = _.extend(Data.query.published(),{slug})
-    svc.searchOne(query, null, displayView(cb,get.getSimilarPublished))
+  getBySlugForPublishedView(slug, cb) {
+    svc.searchOne(query.published({slug}), null, selectCB.displayView(cb, get.getSimilar))
   },
 
-  getByIdForReview(id, cb) {
-    var query = Data.query.inReview(id)
-    svc.searchOne(query, null, displayView(cb,(tagSlug, callback)=>callback(null,[])))
+  getByIdForPreview(_id, cb) {
+    svc.searchOne({_id}, null, (e,r) => {
+      if (e || !r) return cb(e,r)
+      if (!r.submitted || !r.github) return cb(e, r)
+      get.getGitHEAD(r, (ee, head) => {
+        if (head.string)
+          r.md = head.string
+        selectCB.displayView(cb)(null, r)
+      })
+    })
   },
 
-  getByIdForPreview(id, cb) {
-    var query = Data.query.inDraft(id, this.user._id)
-    svc.searchOne(query, null, displayView(cb,(tagSlug, callback)=>callback(null,[])))
-  },
-
-  //-- used for todd-motto
-  getPublishedById(_id, cb) {
-    var query = _.extend(Data.query.published(),{_id})
-    svc.searchOne(query, null, inflateHtml(cb))
-  },
-
-  getAllAdmin(cb) {
-    var opts = { fields: Data.select.listAdmin, options: { sort: { 'updated': -1 } } };
-    svc.searchMany(Data.query.updated, opts, addUrl(cb))
+  getByIdForReview(_id, cb) {
+    svc.searchOne(query.inReview({_id}), null, selectCB.displayView(cb))
   },
 
   getAllForCache(cb) {
-    svc.searchMany(Data.query.published(), { fields: Data.select.listCache }, addUrl(cb))
-  },
-
-  getPublished(cb) {
-    svc.searchMany(Data.query.published(), { field: Data.select.list }, cb)
+    svc.searchMany(query.published(), { fields: select.listCache }, selectCB.addUrl(cb))
   },
 
   getRecentPublished(cb) {
-    var opts = { fields: Data.select.list, options: { sort: { 'published': -1 }, limit: 9 } };
-    svc.searchMany(Data.query.published(), opts, addUrl(cb))
+    svc.searchMany(query.published(), { field: select.list, options: opts.publishedNewest(9) }, cb)
+  },
+
+  //-- Placeholder for showing similar posts to a currently displayed post
+  getSimilar(original, cb) {
+    var tagId = original.primarytag._id
+    var options = { fields: select.list, options: opts.publishedNewest(3) }
+    svc.searchMany(query.published({'tags._id':tagId}), options, selectCB.addUrl(cb))
+  },
+
+  getByTag(tag, cb) {
+    var options = { fields: select.list, options: opts.publishedNewest() }
+    var query = query.published({'tags._id': tag._id})
+    svc.searchMany(query, options, selectCB.addUrl((e,r) => cb(null, {tag,posts:r}) ))
   },
 
   getAllPublished(cb) {
     var opts = { fields: Data.select.list, options: { sort: { 'published': -1 } } };
-    svc.searchMany(Data.query.published(), opts, addUrl(cb))
+    svc.searchMany(Data.query.published(), opts, selectCB.addUrl(cb))
   },
 
-  getAllVisible(user, cb) {
-    if (user && _.contains(user.roles, "reviewer")){
-      var opts = { fields: Data.select.list, options: { sort: '-submitted -published'} }
-      svc.searchMany(Data.query.publishedReviewReady(), opts, addUrl(cb));//, function(e,r) {
-    }
-    else {
-      var opts = { fields: Data.select.list, options: { sort: { 'published': -1 } } };
-      svc.searchMany(Data.query.published(), opts, addUrl(cb))
-    }
-  },
+  //-- used for todd-motto
+  // getPublishedById(_id, cb) {
+  //   var query = _.extend(,)
+  //   svc.searchOne(Data.query.published({_id}), null, inflateHtml(cb))
+  // },
 
-  getByTag(tag, cb) {
-    var opts = { fields: Data.select.list, options: { sort: { 'published': -1 } } };
-    var query = Data.query.published({'tags._id': tag._id})
-    svc.searchMany(query, opts, addUrl((e,r) => cb(null, {tag,posts:r}) ))
-  },
+  // getPublished(cb) {
+  //   svc.searchMany(query.published(), { field: select.list, options: opts.publishedByNewest() }, cb)
+  // },
 
+  // getAllVisible(user, cb) {
+  //   if (user && _.contains(user.roles, "reviewer")){
+  //     var opts = { fields: Data.select.list, options: { sort: '-submitted -published'} }
+  //     svc.searchMany(Data.query.publishedReviewReady(), opts, addUrl(cb));//, function(e,r) {
+  //   }
+  //   else {
+  //     var opts = { fields: Data.select.list, options: { sort: { 'published': -1 } } };
+  //     svc.searchMany(Data.query.published(), opts, addUrl(cb))
+  //   }
+  // },
 
-  //-- Placeholder for showing similar posts to a currently displayed post
-  getSimilarPublished(tagSlug, cb) {
-    var opts = { fields: Data.select.list, options: { sort: { 'published': -1 }, limit: 3 } };
-    var query = { '$and': [{'tags.slug':tagSlug}, Data.query.published()] }
-    svc.searchMany(query, opts, addUrl(cb))
-  },
 
   getUsersPublished(userId, cb) {
-    var opts = { fields: Data.select.list, options: { sort: { 'published': -1 } } };
-    var query = _.extend({ 'by.userId': userId }, Data.query.published())
-    svc.searchMany(query, opts, addUrl(cb))
+    var opts = { fields: select.list, options: opts.publishedNewest() }
+    svc.searchMany(query.published({ 'by.userId': userId }), opts, selectCB.addUrl(cb))
   },
 
-  // This now combines users interest posts and self authors
+  // getUsersPosts combines users interest posts and self authors
   getUsersPosts(cb) {
     $callSvc(get.getRecentPublished,this)((e,r) => {
       if (!this.user) cb(e,r)
       else {
         r = _.first(r, 3)
         var opts = { options: { sort: { 'created':-1, 'published':1  } } };
-        svc.searchMany({'by.userId':this.user._id},opts, addUrl((ee,rr) => {
+        svc.searchMany({'by.userId':this.user._id},opts, selectCB.addUrl((ee,rr) => {
           if (e || ee) return cb(e||ee)
           var posts = rr.slice()
           for (var p of r) {
@@ -114,32 +145,50 @@ var get = {
   },
 
   getPostsInReview(cb) {
-    var opts = { fields: Data.select.list, options: { sort: { 'submitted': -1 } } }
-    svc.searchMany(Data.query.inReview(), opts, Data.select.cb.addUrl(cb))
-  },
-
-  getTableOfContents(markdown, cb) {
-    return cb(null, {toc:Data.generateToc(markdown)})
+    var options = { fields: select.list, options: { sort: { 'submitted': -1 } } }
+    svc.searchMany(query.inReview(), options, selectCB.addUrl(cb))
   },
 
   getUserForks(cb){
-    //all the posts where the user is a forker
-    svc.searchMany(Data.query.forker(this.user._id), { field: Data.select.list }, cb)
+    // all posts where the user is a forker
+    svc.searchMany(query.forker(this.user._id), { field: Data.select.list }, selectCB.addUrl(cb))
   },
 
   getGitHEAD(post, cb){
     github.getFile(post.slug, "/post.md", cb)
   },
 
-  checkSlugAvailable(slug, cb){
+  checkSlugAvailable(post, slug, cb){
     svc.searchOne({slug}, null, (e,r) => {
-      if (r) return cb(null, { unavailable: `The slug ${slug} alredy belongs to another post.` })
+      if (r)
+        if (!_.idsEqual(post._id,r._id))  //-- for posts that were published before the git authoring stuff
+          return cb(null, { unavailable: `The slug ${slug} alredy belongs to another post.` })
+
       github.getRepo(slug, (e,repo) => {
         if (repo) return cb(null, { unavailable: `The repo ${slug} already exist on the airpair org, try another name.` })
         cb(null, { available: `The repo name ${slug} is available.` })
       })
     })
-  }
+  },
+
+  // getTableOfContents(markdown, cb) {
+  //   return cb(null, {toc:Data.generateToc(markdown)})
+  // },
+}
+
+
+var getAdmin = {
+
+  getAllForAdmin(cb) {
+    var options = { fields: select.listAdmin, options: { sort: { 'updated': -1 } } }
+    svc.searchMany(query.updated, options, selectCB.addUrl(cb))
+  },
+
+  getNewFoAdmin(cb) {
+    var options = { fields: select.listAdmin, options: { sort: { 'updated': -1 }, limit: 20 } }
+    var q = { 'assetUrl': {'$exists': true }, updated : { '$exists': true } }
+    svc.searchMany(q, options, selectCB.addUrl(cb))
+  },
 
 }
 
@@ -176,17 +225,31 @@ var save = {
     updateWithEditTouch.call(this, original, 'updateByAuthor', cb)
   },
 
-  publish(post, publishedOverride, cb) {
+  publish(post, publishData, cb) {
     // publishedCommit = already comes from updateFromGithub
+
+    post.publishHistory = post.publishHistory || []
     post.publishHistory.push({
-      commit: post.publishedCommit,
+      commit: post.publishedCommit || 'Not yet propagated',
       touch: svc.newTouch.call(this, 'publish')})
-    post.publishedBy = this.user
+
+    post.publishedBy = _.pick(this.user, '_id', 'name', 'email')
     post.publishedUpdated = new Date()
-    if (publishedOverride)
-      post.published = publishedOverride
-    else
+
+    if (publishData.publishedOverride)
+      post.published = publishData.publishedOverride
+    else if (!post.published)
       post.published = new Date()
+
+    post.by = publishData.by
+    post.tmpl = publishData.tmpl
+    post.meta = publishData.meta
+    post.meta.ogType = 'article'
+    post.meta.ogUrl = post.meta.canonical
+
+    // if (post.by.expertId)
+    // To link expert we are required to publish twice, which a bit awkward,
+    // but a very infrequent case
 
     updateWithEditTouch.call(this, post, 'publish', cb)
     if (cache) cache.flush('posts')
@@ -263,4 +326,4 @@ var save = {
 }
 
 
-module.exports = _.extend(get, save)
+module.exports = _.extend(_.extend(get, getAdmin), save)

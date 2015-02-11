@@ -37,7 +37,7 @@ export default function(app) {
 
     .param('workshop', WorkshopsAPI.paramFns.getBySlug)
     .param('review', RequestsApi.paramFns.getByIdForReview)
-    .param('post', PostsAPI.paramFns.getBySlugWithSimilar)
+    .param('post', PostsAPI.paramFns.getBySlugForPublishedView)
 
     .get('/angularjs', setTagForTrackView,
       trackView('tag'),
@@ -75,21 +75,21 @@ export default function(app) {
         }))
 
 
+
     .get('/posts',
       app.renderHbsViewData('posts', { title: "Software Posts, Tutorials & Articles" },
         (req, cb) => PostsAPI.svc.getAllPublished(cb) ))
+
 
     .get('/:tag/posts/:post',
       trackView('post'),
       app.renderHbsViewData('post', null, (req, cb) => cb(null, req.post)))
 
-    .get('/posts/airpair-v1',
-      app.renderHbsViewData('posts', null,
-      (req, cb) => PostsAPI.svc.getUsersPublished('hackerpreneur', cb) ))
 
     .get('/blog',
       app.renderHbsViewData('posts', null,
       (req, cb) => PostsAPI.svc.getUsersPublished('52ad320166a6f999a465fdc5', cb) ))
+
 
     .get('/posts/review/:id', authd, function(req, res, next) {
       $callSvc(PostsAPI.svc.getByIdForReview, req)(req.params.id, (e,r) => {
@@ -99,13 +99,32 @@ export default function(app) {
       })},
       app.renderHbsViewData('post', null, (req, cb) => cb(null, req.post)))
 
-    .get('/posts/preview/:id', authd, function(req, res, next) {
-      $callSvc(PostsAPI.svc.getByIdForPreview, req)(req.params.id, (e,r) => {
-        if (!r) return res.redirect('/posts/me')
+
+    .get('/preview/draft/jk-git-authoring-annoucement', function(req, res, next) {
+      $callSvc(PostsAPI.svc.getByIdForPreview, req)('54d52d45ee3c760a005e544e', (e,r) => {
         req.post = r
         next()
       })},
       app.renderHbsViewData('post', null, (req, cb) => cb(null, req.post)))
+
+
+    .get('/posts/preview/:id', authd, function(req, res, next) {
+      $callSvc(PostsAPI.svc.getByIdForPreview, req)(req.params.id, (e,r) => {
+        if (!r) return res.redirect('/posts/me')
+        if (!_.idsEqual(r.by.userId,req.user._id) &&
+            !_.contains(req.user.roles,'admin') &&
+            !_.find(r.forkers,(f)=>_.idsEqual(f.userId,req.user._id))
+          )
+          return next(Error("Post unavailable for you to preview, did you fork it already?"))
+
+        req.post = r
+        next()
+      })},
+      app.renderHbsViewData('post', null, (req, cb) => cb(null, req.post)))
+
+
+
+
 
   return router
 

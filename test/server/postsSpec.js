@@ -401,7 +401,7 @@ module.exports = () => describe("API: ", function() {
     })
   })
 
-  //TODO fix (publishReady no longer exists)
+
   it('allows author self publish w/ 5 reviews', function(done) {
     addAndLoginLocalGithubUser('robot8', function(s) {
       var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
@@ -418,7 +418,14 @@ module.exports = () => describe("API: ", function() {
         PUT(`/posts/submit/${p1._id}`, p1, {}, function(){
           PUT(`/posts/propagate-github/${p1._id}`, p1, {}, function(resp){
             expect(resp.published).to.be.undefined
-            PUT(`/posts/publish/${p1._id}`, p1, {}, function(resp){
+            expect(resp.by.userId).to.exist
+            var publishData = {
+              by: p1.by,
+              tmpl: 'default',
+              meta: { title: p1.title, description: 'Desc', canonical: `/tag/posts/${p1.slug}`,
+                ogTitle: p1.title, ogDescription: 'Desc OG', ogImage: p1.assetUrl }
+            }
+            PUT(`/posts/publish/${p1._id}`, publishData, {}, function(resp){
               expect(resp.published).to.exist
               done()
             })

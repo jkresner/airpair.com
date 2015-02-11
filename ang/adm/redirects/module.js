@@ -3,7 +3,7 @@ angular.module("ADMRedirects", [])
 
   .config(function($locationProvider, $routeProvider) {
 
-    $routeProvider.when('/v1/adm/redirects', {
+    $routeProvider.when('/adm/redirects', {
       template: require('./list.html'),
       controller: 'RedirectsCtrl as redirects'
     });
