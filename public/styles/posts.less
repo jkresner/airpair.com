@@ -459,6 +459,18 @@ section#posteditor {
   width:100%;
   margin:auto;
 
+  .editor-error-wrap {
+    max-width:640px;
+    width:90%;
+    margin:auto;
+    margin-bottom:30px;
+    h2 {
+      background-color:@lightblue;
+      padding:10px 50px;
+      border-radius:20px;
+    }
+  }
+
   .editor-wrap {
     position:relative;
     min-width:1120px;
@@ -554,6 +566,22 @@ section#posts {
 
   #contributions {
     width:620px;float:left;
+    td { position:relative; }
+    td.edit {
+      padding-right:22px;
+      .gh-white {
+        background-color:@orange;
+        position:absolute;
+        right:2px;
+        height:18px;width:18px;
+        display:inline-block;
+        background-size:100%;
+        border-radius:50%;
+      }
+      .gh-white:hover {
+        background-color:@orangehighlight;
+      }
+    }
   }
 
 

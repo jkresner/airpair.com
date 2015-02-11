@@ -6,9 +6,8 @@ var UserSvc               = require('../services/users')
 var github                = require("../services/wrappers/github")
 var Data                  = require('./posts.data')
 var {query, select, opts} = Data
-var {inflateHtml, addUrl} = Data.select.cb
-var {displayView}         = Data.select.cb
-
+var selectCB              = select.cb
+var {selectFromObject}    = require('../../shared/util')
 
 var get = {
 
@@ -16,25 +15,35 @@ var get = {
     svc.getById(id, cb)
   },
 
+  getByIdForEditing(post, cb) {
+    post = selectFromObject(post, select.edit)
+    cb(null, post)
+  },
+
+  getByIdForForking(post, cb) {
+    post = selectFromObject(post, select.edit)
+    cb(null, post)
+  },
+
   //-- used for api param fn
   getBySlug(slug, cb) {
-    svc.searchOne(query.published({slug}), null, inflateHtml(cb))
+    svc.searchOne(query.published({slug}), null, selectCB.inflateHtml(cb))
   },
 
   getBySlugForPublishedView(slug, cb) {
-    svc.searchOne(query.published({slug}), null, displayView(cb, get.getSimilar))
+    svc.searchOne(query.published({slug}), null, selectCB.displayView(cb, get.getSimilar))
   },
 
   getByIdForPreview(_id, cb) {
-    svc.searchOne({_id}, null, displayView(cb))
+    svc.searchOne({_id}, null, selectCB.displayView(cb))
   },
 
   getByIdForReview(_id, cb) {
-    svc.searchOne(query.inReview({_id}), null, displayView(cb))
+    svc.searchOne(query.inReview({_id}), null, selectCB.displayView(cb))
   },
 
   getAllForCache(cb) {
-    svc.searchMany(query.published(), { fields: select.listCache }, addUrl(cb))
+    svc.searchMany(query.published(), { fields: select.listCache }, selectCB.addUrl(cb))
   },
 
   getRecentPublished(cb) {
@@ -45,13 +54,13 @@ var get = {
   getSimilar(original, cb) {
     var tagId = original.primarytag._id
     var options = { fields: select.list, options: opts.publishedNewest(3) }
-    svc.searchMany(query.published({'tags._id':tagId}), options, addUrl(cb))
+    svc.searchMany(query.published({'tags._id':tagId}), options, selectCB.addUrl(cb))
   },
 
   getByTag(tag, cb) {
     var options = { fields: select.list, options: opts.publishedNewest() }
     var query = query.published({'tags._id': tag._id})
-    svc.searchMany(query, options, addUrl((e,r) => cb(null, {tag,posts:r}) ))
+    svc.searchMany(query, options, selectCB.addUrl((e,r) => cb(null, {tag,posts:r}) ))
   },
 
   //-- used for todd-motto
@@ -84,7 +93,7 @@ var get = {
 
   getUsersPublished(userId, cb) {
     var opts = { fields: select.list, options: opts.publishedNewest() }
-    svc.searchMany(query.published({ 'by.userId': userId }), opts, addUrl(cb))
+    svc.searchMany(query.published({ 'by.userId': userId }), opts, selectCB.addUrl(cb))
   },
 
   // getUsersPosts combines users interest posts and self authors
@@ -94,7 +103,7 @@ var get = {
       else {
         r = _.first(r, 3)
         var opts = { options: { sort: { 'created':-1, 'published':1  } } };
-        svc.searchMany({'by.userId':this.user._id},opts, addUrl((ee,rr) => {
+        svc.searchMany({'by.userId':this.user._id},opts, selectCB.addUrl((ee,rr) => {
           if (e || ee) return cb(e||ee)
           var posts = rr.slice()
           for (var p of r) {
@@ -108,12 +117,12 @@ var get = {
 
   getPostsInReview(cb) {
     var options = { fields: select.list, options: { sort: { 'submitted': -1 } } }
-    svc.searchMany(query.inReview(), options, addUrl(cb))
+    svc.searchMany(query.inReview(), options, selectCB.addUrl(cb))
   },
 
   getUserForks(cb){
     // all posts where the user is a forker
-    svc.searchMany(query.forker(this.user._id), { field: Data.select.list }, addUrl(cb))
+    svc.searchMany(query.forker(this.user._id), { field: Data.select.list }, selectCB.addUrl(cb))
   },
 
   getGitHEAD(post, cb){
@@ -143,12 +152,12 @@ var getAdmin = {
 
   getAllForAdmin(cb) {
     var options = { fields: select.listAdmin, options: { sort: { 'updated': -1 } } }
-    svc.searchMany(query.updated, options, addUrl(cb))
+    svc.searchMany(query.updated, options, selectCB.addUrl(cb))
   },
 
   getNewFoAdmin(cb) {
     var options = { fields: select.listAdmin, options: { sort: { 'updated': -1 }, limit: 20 } }
-    svc.searchMany(query.updated, options, addUrl(cb))
+    svc.searchMany(query.updated, options, selectCB.addUrl(cb))
   },
 
 }

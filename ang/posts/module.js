@@ -271,7 +271,13 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
       $scope.head = h
       r.md = h.string
       setPostScope(r)
+    }, (e) => {
+      $scope.editErr = e.message;
+      $scope.fork = `${$scope.session.social.gh.username}/${r.slug}`
     })
+  }, (e) => {
+    $scope.editErr = e.message;
+    $scope._id = _id
   })
 
   $scope.save = () => {
@@ -406,7 +412,7 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
       $location.path('/posts/me?forked='+result._id)
     })
 
-  DataService.posts.getById({_id}, (r) => {
+  DataService.posts.getByIdForForking({_id}, (r) => {
     $scope.post = r
     $scope.tofork = [r]
   })

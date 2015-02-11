@@ -54,7 +54,8 @@ export default function(app) {
     .use(authd)
 
     .get('/posts/forks/me', populateUser, API.Posts.getUserForks)
-    .get('/posts/:id', API.Posts.getById)
+    .get('/posts/:post', API.Posts.getByIdForEditing)
+    .get('/posts/:post/fork', API.Posts.getByIdForForking)
     .get('/posts/head/:post', populateUser, API.Posts.getGitHEAD)
     .get('/posts/check-slug/:post/:slug', API.Posts.checkSlugAvailable)
     .post('/posts', API.Posts.create)

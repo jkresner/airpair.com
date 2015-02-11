@@ -1,7 +1,9 @@
 var marked              = require('marked')
 import generateToc      from './postsToc'
+var {selectFromObject}  = require('../../shared/util')
 
 var topTapPages = ['angularjs']
+
 
 var inflateHtml = function(cb) {
   return (e,r) => {
@@ -40,6 +42,7 @@ var select = {
     'github.repoInfo': 1,
     'github.stats': 1,
     'created': 1,
+    'submitted': 1,
     'published': 1,
     'publishedBy': 1,
     'updated': 1,
@@ -53,6 +56,19 @@ var select = {
     'title': 1,
     'meta.canonical': 1,
     'meta.ogImage': 1
+  },
+  edit: {
+    '_id': 1,
+    'by': 1,
+    'meta': 1,
+    'github.repoInfo': 1,
+    'title':1,
+    'slug': 1,
+    'created': 1,
+    'published': 1,
+    'submitted': 1,
+    'tags': 1,
+    'md': 1
   },
   generateToc(md) {
     marked(generateToc(md))
@@ -68,6 +84,13 @@ var select = {
             p.url = p.meta.canonical
         }
         cb(e,r)
+      }
+    },
+    editView(cb) {
+      return (e,r) => {
+        if (e || !r) return cb(e,r)
+        r = selectFromObject(r, select.edit)
+        cb(null,r)
       }
     },
     displayView(cb, similarFn) {

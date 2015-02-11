@@ -4,6 +4,8 @@ export default initAPI(
   require('../services/posts')
 , {
 
+  getByIdForForking: (req) => [req.post],
+  getByIdForEditing: (req) => [req.post],
   getUsersPosts: (req) => [],
   getPostsInReview: (req) => [],
   getUserForks: (req) => [],
