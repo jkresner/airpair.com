@@ -16,7 +16,7 @@ var mw = {
   routeCanonicalPost:(app, canonical, slug) =>
     app.get(canonical,
       (req, res, next) =>
-        PostsAPI.svc.getBySlugWithSimilar(slug, (e,post) => {
+        PostsAPI.svc.getBySlugForPublishedView(slug, (e,post) => {
           if (!post) {
             if (winston) winston.error(`Did not find migrated post ${canonical} for ${slug}`)
             return next(`Post with slug[${slug}] not found`)
