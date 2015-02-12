@@ -59,7 +59,7 @@ var get = {
   getByIdForPreview(_id, cb) {
     svc.searchOne({_id}, null, (e,r) => {
       if (e || !r) return cb(e,r)
-      if (!r.submitted || !r.github) return cb(e, r)
+      if (!r.submitted || !r.github) return selectCB.displayView(cb)(null, r)
       get.getGitHEAD(r, (ee, head) => {
         if (head.string)
           r.md = head.string
@@ -77,7 +77,7 @@ var get = {
   },
 
   getRecentPublished(cb) {
-    svc.searchMany(query.published(), { field: select.list, options: opts.publishedNewest(9) }, cb)
+    svc.searchMany(query.published(), { field: select.list, options: opts.publishedNewest(9) }, selectCB.addUrl(cb))
   },
 
   //-- Placeholder for showing similar posts to a currently displayed post
@@ -89,13 +89,13 @@ var get = {
 
   getByTag(tag, cb) {
     var options = { fields: select.list, options: opts.publishedNewest() }
-    var query = query.published({'tags._id': tag._id})
-    svc.searchMany(query, options, selectCB.addUrl((e,r) => cb(null, {tag,posts:r}) ))
+    var q = query.published({'tags._id': tag._id})
+    svc.searchMany(q, options, selectCB.addUrl((e,r) => cb(null, {tag,posts:r}) ))
   },
 
   getAllPublished(cb) {
-    var opts = { fields: Data.select.list, options: { sort: { 'published': -1 } } };
-    svc.searchMany(Data.query.published(), opts, selectCB.addUrl(cb))
+    var options = { fields: Data.select.list, options: { sort: { 'published': -1 } } };
+    svc.searchMany(Data.query.published(), options, selectCB.addUrl(cb))
   },
 
   //-- used for todd-motto
@@ -121,8 +121,8 @@ var get = {
 
 
   getUsersPublished(userId, cb) {
-    var opts = { fields: select.list, options: opts.publishedNewest() }
-    svc.searchMany(query.published({ 'by.userId': userId }), opts, selectCB.addUrl(cb))
+    var options = { fields: select.list, options: opts.publishedNewest() }
+    svc.searchMany(query.published({ 'by.userId': userId }), options, selectCB.addUrl(cb))
   },
 
   // getUsersPosts combines users interest posts and self authors

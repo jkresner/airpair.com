@@ -35,7 +35,7 @@ var getHighlightConfig = function(elm) {
   var prevSibling = elm.previousSibling;
   var nodeValue = null;
   while (prevSibling && prevSibling.nodeType!==1) {
-      if (prevSibling.nodeType === 8 || prevSibling.nodeType === 3) {
+      if (prevSibling.nodeType === 8) {
           nodeValue = prevSibling.nodeValue;
       }
       prevSibling = prevSibling.previousSibling;
