@@ -133,6 +133,86 @@ Booking: https://airpair.com/booking/${original._id}`
         get.getByIdForAdmin(r._id,cb)
       })
   },
+  // cheatSwapAnExpert(original, newExpert, requestId, cb){
+
+    //-- If there was a calendar invite, cancel and delete
+    //-- Grab the expert details from the expert or optional requestId
+
+    //-- We have to go to the order
+    //-- Change the airpair lineItem for the booking
+    //-- Adjust
+    //---- profit
+    //---- as the difference of
+    //--   (unitPrice - expertRate) * profit
+    //--
+    //---- expert
+    //--
+    //---- name
+
+    // {
+    //   "_id": "54c952a3f2c7f80900554313",
+    //   "type": "airpair",
+    //   "qty": 1,
+    //   "unitPrice": 106,
+    //   "total": 106,
+    //   "balance": 0,
+    //   "profit": 33,
+    //   "info": {
+    //     "expert": {
+    //       "userId": "53640d621c67d1a4859d3090",
+    //       "avatar": "//0.gravatar.com/avatar/9257dbb2fdd9d164711aa191420ef621",
+    //       "name": "Dominic Barnes",
+    //       "_id": "53640d81c1acca0200000021"
+    //     },
+    //     "paidout": false,
+    //     "minutes": "60",
+    //     "time": "2015-02-28T21:20:22.266Z",
+    //     "type": "private",
+    //     "name": "60 min (Dominic Barnes)"
+    //   }
+    // }
+
+    //-- After updating order, change booking
+    //---- expertId
+    //----
+    //---- Find and update expert participant
+
+    // {
+    //     "_id" : ObjectId("54c952a4f2c7f80900554316"),
+    //     "createdById" : ObjectId("53a75e911c67d1a4859d3636"),
+    //     "customerId" : ObjectId("53a75e911c67d1a4859d3636"),
+    //     "expertId" : ObjectId("53640d81c1acca0200000021"),
+    //     "type" : "private",
+    //     "minutes" : 60,
+    //     "status" : "pending",
+    //     "datetime" : ISODate("2015-02-28T21:20:22.266Z"),
+    //     "orderId" : ObjectId("54c952a3f2c7f80900554315"),
+    //     "recordings" : [],
+    //     "participants" : [
+    //         {
+    //             "role" : "customer",
+    //             "_id" : ObjectId("54c952a4f2c7f80900554318"),
+    //             "info" : {
+    //                 "_id" : ObjectId("53a75e911c67d1a4859d3636"),
+    //                 "name" : "Leslie Pound",
+    //                 "email" : "lesliedpound@gmail.com"
+    //             }
+    //         },
+    //         {
+    //             "role" : "expert",
+    //             "_id" : ObjectId("54c952a4f2c7f80900554317"),
+    //             "info" : {
+    //                 "_id" : ObjectId("53640d621c67d1a4859d3090"),
+    //                 "name" : "Dominic Barnes",
+    //                 "email" : "dominic@dbarnes.info"
+    //             }
+    //         }
+    //     ],
+    //     "__v" : 0
+    // }
+
+  // },
+
   addYouTubeData(original, youTubeId, cb){
     youTube.getVideoInfo(youTubeId, function(err, response){
       if (err){
