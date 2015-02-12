@@ -365,10 +365,18 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
     };
   }
 
-  DataService.posts.getByIdForPubishing({_id}, (r) => {
+  var setScope = (r) => {
     $scope.post = r
     $scope.$watch('post.meta.description', (value) => $scope.post.meta.ogDescription = value )
-  });
+    $scope.canPublish = r.reviews && r.reviews.length > 0 || _.contains($scope.session.roles, 'admin')
+    $scope.canPropagate = _.contains($scope.session.roles, 'admin') || !r.published
+    $scope.headPropagated = (r.mdHEAD) ? r.md == r.mdHEAD : true
+  }
+
+  DataService.posts.getByIdForPubishing({_id}, setScope)
+
+  $scope.propagate = () =>
+    DataService.posts.propagateFromHEAD($scope.post, setScope)
 
   $scope.publish = () =>
     DataService.posts.publish($scope.post, (r) => window.location = r.meta.canonical)

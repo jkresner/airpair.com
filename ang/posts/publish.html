@@ -1,24 +1,60 @@
-<section id="posts">
-<div id="author" class="publish">
+<header>
+  <ol class="entry-meta breadcrumb">
+    <li><a href="/posts" target="_self">Posts</a></li>
+    <li><a href="/posts/me">My Posts</a></li>
+    <li><a ng-href="/posts/edit/{{post._id}}">Edit Post</a></li>
+    <li class="current">Publish</li>
+  </ol>
+</header>
+
+<section id="publish">
+
+<section class="notifications" ng-if="!headPropagated && !post.published">
+  <div class="propagateHEAD">
+    <h3>Sync Required</h3>
+    <p>HEAD on github has changes not
+    <a href="/posts/review/{{post._id}}" target="_blank">being displayed</a> while your post is in review.</p>
+    <a ng-if="canPropagate" ng-click="propagate()" class="btn">Update my post from github</a>
+  </div>
+</section>
+
+<section class="notifications" ng-if="!headPropagated && post.published">
+  <div class="propagateHEAD">
+    <p>HEAD on github is more up to do than the one
+    <a href="{{post.meta.canonical}}" target="_blank">published live on AirPair</a>.
+      <span ng-if="!canPropagate">Request an editor to propagate your changes</p>.
+
+    <a ng-if="canPropagate" ng-click="propagate()" class="btn">Update post from github</a>
+  </div>
+</section>
+
+
+<section class="notifications" ng-if="headPropagated && !canPublish && !post.published">
+  <div class="postReviewsNeeded">
+    <p>Your post needs 5 reviews and a rating of 4 stars or above before you can publish it.</p>
+  </div>
+</section>
+
+
+
+<div ng-if="canPublish" id="publish-meta" class="publish">
 
   <div class="posts" style="float:right;width:300px">
     <ap-post-list-item post="post"></ap-post-list-item>
   </div>
-
-
 
   <div class="author" style="width:540px;float:left">
     <span ng-if="post.by.expertId" style="float:right;display:block">
       <a href="/billing/book/{{post.by.expertId}}" target="_blank">Expert profile</a> linked.
     </span>
 
-    <div class="form-group">
+    <div class="form-group" ng-if="session._id != post.by.userId">
       <label for="userInput">Author</label>
       <div user-input=""></div>
     </div>
     <div class="form-group">
       <label>Author bio</label>
-      <input ng-model="post.by.bio" type="text" class="form-control" />
+      <textarea ng-model="post.by.bio" class="form-control"></textarea>
     </div>
 
   </div>

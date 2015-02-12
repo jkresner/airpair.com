@@ -43,7 +43,14 @@ var get = {
         post.meta.canonical = `/${primarytag.slug}/posts/${post.slug}`
       }
 
-      cb(null, post)
+      if (!post.github) return cb(null, post)
+
+      get.getGitHEAD(post, (ee, head) => {
+        if (head.string)
+          post.mdHEAD = head.string
+        cb(ee, post)
+      })
+
     })
   },
 
@@ -77,7 +84,8 @@ var get = {
   },
 
   getRecentPublished(cb) {
-    svc.searchMany(query.published(), { field: select.list, options: opts.publishedNewest(9) }, selectCB.addUrl(cb))
+    var q = query.published()
+    svc.searchMany(q, { field: select.list, options: opts.publishedNewest(9) }, selectCB.addUrl(cb))
   },
 
   //-- Placeholder for showing similar posts to a currently displayed post
@@ -278,11 +286,11 @@ var save = {
       if (post.published) {
         post.publishHistory.push({
           commit, touch: svc.newTouch.call(this, 'publish')})
-        post.publishedBy = this.user
+        post.publishedBy = _.pick(this.user, '_id', 'name', 'email')
         post.publishedCommit = commit
         post.publishedUpdated = new Date()
       }
-      updateWithEditTouch.call(this, post, 'updateFromGithub', cb)
+      updateWithEditTouch.call(this, post, 'propagateMDfromGithub', cb)
     })
   },
 
