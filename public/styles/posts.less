@@ -458,6 +458,8 @@ section#posteditor {
   left:0;
   width:100%;
   margin:auto;
+  top:80px;
+  bottom:0;
 
   .editor-error-wrap {
     max-width:640px;
@@ -472,19 +474,24 @@ section#posteditor {
   }
 
   .editor-wrap {
-    position:relative;
+    position:absolute;
     min-width:1120px;
     width:90%;
     margin:auto;
     margin-bottom:30px;
+    bottom:20px;
+    top:0;
+    left:40px;
+    right:40px;
 
     h1 { border-bottom:none }
   }
 
   #preview {
+    position:absolute;
+    left:0;top:0;bottom:115px;
     .author { display:none }
     border-top:solid 2px @bluegray;
-    height:750px;
     width:650px;
     display:inline-block;
     margin-right:0px;
@@ -496,8 +503,11 @@ section#posteditor {
     position:absolute;
     left:650px;
     right:0;
+    top:0;
+    bottom:115px;
     .ace_editor {
-      height:750px;
+      position:absolute;
+      top:0;left:0;right:0;bottom:0;
       width:100%;
       border-top:solid 2px @bluegray;
       border-right:solid 2px @bluegray;
@@ -506,12 +516,18 @@ section#posteditor {
 
 
   .form-actions {
+    height:110px;
+    position:absolute;
+    bottom:0;left:0;right:0;
+    hr { border-color:@lightblue }
     background:@lightblue;
     padding:10px 5px 10px 10px;
     .btn { width:190px;margin:0px 5px;font-size:14px;float:right }
     .commitmsg {
-      margin:10px 0;
-      input { width:440px }
+      float:right;
+      clear:right;
+      margin:5px 5px 10px 5px;
+      input { width:390px }
     }
     span { font-weight:bold }
     label { display:block;font-size:12px;padding-top:5px;font-weight:normal }
