@@ -19,6 +19,14 @@ var validation = {
     if (!isAdmin && !isEditor && !isOwner) return "Post not available for preview"
   },
 
+  getByIdForPublish(user, post) {
+    var isAdmin = _.contains(user.roles, 'admin')
+    var isEditor = _.contains(user.roles, 'editor')
+    var isOwner = _.idsEqual(user._id, post.by.userId)
+
+    if (!isAdmin && !isEditor && !isOwner) return "Post not available for publishing by you"
+  },
+
   create(user, post)
   {
     if (!post.title) return 'Post title required'
@@ -130,7 +138,7 @@ var validation = {
     var isOwner =  _.idsEqual(post.by.userId, user._id)
     if (!isOwner && !isEditor)
       return `Not authorized`
-    if (post.published && isOwner)
+    if (post.published && !isEditor)
       return `Only editors can update published posts`
   },
 

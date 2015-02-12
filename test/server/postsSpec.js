@@ -339,7 +339,7 @@ module.exports = () => describe("API: ", function() {
                 expect(updateCommit.author.login).to.equal("airpairtestreviewer")
                 expect(initialCommit.author.login).to.equal("airpairtestreviewer")
 
-                PUT(`/posts/propagate-github/${p1._id}`, {}, {}, function(resp){
+                PUT(`/posts/propagate-head/${p1._id}`, {}, {}, function(resp){
                   expect(resp.md).to.equal(p1.md + " and a bit more")
                   done()
                 })
@@ -361,7 +361,7 @@ module.exports = () => describe("API: ", function() {
           p1.contents = "New content that will be erased when we update from GitHub"
           PUT(`/posts/${p1._id}`, p1, {}, function(resp){
             LOGIN('edap', data.users.edap, function() {
-              PUT(`/posts/propagate-github/${p1._id}`, p1, {}, function(resp){
+              PUT(`/posts/propagate-head/${p1._id}`, p1, {}, function(resp){
                 expect(resp.md).to.equal(lotsOfWords)
                 done()
               })
@@ -379,7 +379,7 @@ module.exports = () => describe("API: ", function() {
       var d1 = { title: title, slug:title, by: by, md: lotsOfWords, assetUrl: 'http://youtu.be/qlOAbrvjMBo',  published: Date.now()}
       POST('/posts', d1, {}, function(p1) {
         PUT(`/posts/submit/${p1._id}`, p1, {}, function(resp){
-          PUT(`/posts/propagate-github/${p1._id}`, p1, {status: 403}, function(resp){
+          PUT(`/posts/propagate-head/${p1._id}`, p1, {status: 403}, function(resp){
             done()
           })
         })
@@ -416,7 +416,7 @@ module.exports = () => describe("API: ", function() {
       ]}
       POST('/posts', d1, {}, function(p1) {
         PUT(`/posts/submit/${p1._id}`, p1, {}, function(){
-          PUT(`/posts/propagate-github/${p1._id}`, p1, {}, function(resp){
+          PUT(`/posts/propagate-head/${p1._id}`, p1, {}, function(resp){
             expect(resp.published).to.be.undefined
             expect(resp.by.userId).to.exist
             var publishData = {

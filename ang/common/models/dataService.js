@@ -28,6 +28,7 @@ angular.module('APDataSvc', [])
       update: PUT((d)=>`/posts/${d._id}`),
       getGitHEAD: GET((d)=>`/posts/head/${d._id}`),
       updateGitHEAD: PUT((d)=>`/posts/update-github-head/${d._id}`),
+      propagateFromHEAD: PUT((d)=>`/posts/propagate-head/${d._id}`),
       publish: PUT((d)=>`/posts/publish/${d._id}`),
       deletePost: DELETE((d)=>`/posts/${d._id}`),
       submitForReview: PUT((d)=>`/posts/submit/${d._id}`),
