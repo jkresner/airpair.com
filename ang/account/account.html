@@ -98,7 +98,7 @@
 
   </section>
 
-  <hr />
+  <hr ng-if="session.emailVerified" />
 
   <section class="connect" ng-if="session.emailVerified">
 
@@ -108,7 +108,7 @@
 
   </section>
 
-  <hr />
+  <hr ng-if="session.emailVerified" />
 
   <section class="password" ng-if="session.emailVerified">
     <h3 style="margin-top:0">Change password</h3>

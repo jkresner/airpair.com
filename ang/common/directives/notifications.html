@@ -1,19 +1,19 @@
-<div ng-if="serverErrors.length > 0" class="alert alert-danger">
-  <label ng-repeat='e in serverErrors' ng-bind-html="e | html"></label>
+<div ng-if="serverErrors.length > 0" class="alert alert-danger alert-notification">
+  <h4 ng-repeat='e in serverErrors' ng-bind-html="e | html"></h4>
+  <p>Err... sorry about this. Please <a href="https://github.com/airpair/airpair-com-v1-issue-tracker/issues" target="_blank" style="text-decoration:uppercase">tell us what happened</a>.</p>
 </div>
-<div ng-if="(!serverErrors || serverErrors.length==0) && notifications" class="alert alert-warning">
+<div ng-if="(!serverErrors || serverErrors.length==0) && notifications" class="alert alert-warning alert-notification">
   <section ng-if="notifications.saveBookmarks">
-    <div class="right">New?
-      <a id="notifyBookmarksSignup" track-click="signup" ng-click="openProfile()">Create an account</a>
-    </div>
-    <div class="left">
+    <h3>
       <a id="notifyBookmarksLoging" track-click="login" href='/login'>Login</a> to save your <a href='#' ng-click='openBookmarks()'>bookmarks</a>.
-    </div>
+    </h3>
+    <p>New to AirPair?
+      <a id="notifyBookmarksSignup" track-click="signup" ng-click="openProfile()">Create an account</a>
+    </p>
   </section>
   <section ng-if="notifications.verifyEmail">
-    <div class="left">
-      Please <a href='/me'>verify your email</a>
-    </div>
+    <h3>Please <a href='/me'>verify your email</a>.</h3>
+    <p>To un-lock features, with a confirmed address.</p>
   </section>
   <hr />
 </div>
