@@ -8,7 +8,7 @@ for (var i = 0; i < 501; i++){
 
 module.exports = () => describe("API: ", function() {
 
-  this.timeout(10000)
+  this.timeout(30000)
 
   before(function(done) {
     SETUP.analytics.stub()
@@ -451,4 +451,128 @@ module.exports = () => describe("API: ", function() {
       })
     })
   })
+
+  it("correctly publishes a post when the repo already exists", function(done){
+    addAndLoginLocalGithubUser("robot12", function(s) {
+      var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
+      var title = "test" + Math.floor(Math.random() * 100000000)
+      var d1 = { title: title, slug:title, by: by, md: lotsOfWords, assetUrl: 'http://youtu.be/qlOAbrvjMBo'}
+      github.createRepo(title, function(err, result){
+        if (err)
+          done(err)
+        POST('/posts', d1, {}, function(p1) {
+          PUT(`/posts/submit/${p1._id}`, d1, {}, function(resp){
+            done()
+          })
+        })
+      })
+    })
+  })
+
+  it("correctly publishes if README has been added", function(done){
+    addAndLoginLocalGithubUser("robot13", function(s) {
+      var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
+      var title = "test" + Math.floor(Math.random() * 100000000)
+      var d1 = { title: title, slug:title, by: by, md: lotsOfWords, assetUrl: 'http://youtu.be/qlOAbrvjMBo'}
+      github.createRepo(title, function(err, result){
+        if (err) done(err)
+        setTimeout(function(){
+          github.addFile(title, "README.md", "fake markdown", "Add README.md", null, function(err, result){
+            if (err) return done(err)
+            POST('/posts', d1, {}, function(p1) {
+              PUT(`/posts/submit/${p1._id}`, d1, {}, function(resp){
+                done()
+              })
+            })
+          })
+        }, 2000)
+      })
+    })
+  })
+
+  it("correctly publishes if review team is already added", function(done){
+    addAndLoginLocalGithubUser("robot14", function(s) {
+      var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
+      var title = "test" + Math.floor(Math.random() * 100000000)
+      var d1 = { title: title, slug:title, by: by, md: lotsOfWords, assetUrl: 'http://youtu.be/qlOAbrvjMBo'}
+      github.createRepo(title, function(err, result){
+        if (err) done(err)
+        setTimeout(function(){
+          github.createRepoReviewTeam(title, function(err, result){
+            if (err) return done(err)
+            POST('/posts', d1, {}, function(p1) {
+              PUT(`/posts/submit/${p1._id}`, d1, {}, function(resp){
+                done()
+              })
+            })
+          })
+        }, 2000)
+      })
+    })
+  })
+
+  it("correctly publishes if author team is already added", function(done){
+    addAndLoginLocalGithubUser("robot15", function(s) {
+      var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
+      var title = "test" + Math.floor(Math.random() * 100000000)
+      var d1 = { title: title, slug:title, by: by, md: lotsOfWords, assetUrl: 'http://youtu.be/qlOAbrvjMBo'}
+      github.createRepo(title, function(err, result){
+        if (err) done(err)
+        setTimeout(function(){
+          github.createRepoAuthorTeam(title, function(err, result){
+            if (err) return done(err)
+            POST('/posts', d1, {}, function(p1) {
+              PUT(`/posts/submit/${p1._id}`, d1, {}, function(resp){
+                done()
+              })
+            })
+          })
+        }, 2000)
+      })
+    })
+  })
+
+  it("proceeds when author has already been added to author team", function(done){
+    addAndLoginLocalGithubUser("robot16", function(s) {
+      var user = s
+      user.social.gh.token = {token:"bc9a4b0e5ca18b5ee39bc8cbecb07586c4fbe9c4"}
+      var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
+      var title = "test" + Math.floor(Math.random() * 100000000)
+      var d1 = { title: title, slug:title, by: by, md: lotsOfWords, assetUrl: 'http://youtu.be/qlOAbrvjMBo'}
+      github.createRepo(title, function(err, result){
+        if (err) done(err)
+        //without a timeout repo is often not found immediately after creation
+        setTimeout(function(){
+          github.createRepoAuthorTeam(title, function(err, result){
+            if (err) return done(err)
+            var authorTeamId = result.id;
+            github.addToTeam(s.social.gh.username, authorTeamId, user, function(err, result){
+              if (err) return done(err)
+              POST('/posts', d1, {}, function(p1) {
+                PUT(`/posts/submit/${p1._id}`, d1, {}, function(resp){
+                  done()
+                })
+              })
+            })
+          })
+        }, 2000)
+      })
+    })
+  })
+
+  it("does not allow publish post to be invoked twice", function(done){
+    addAndLoginLocalGithubUser("robot17", function(s) {
+      var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
+      var title = "test" + Math.floor(Math.random() * 100000000)
+      var d1 = { title: title, slug:title, by: by, md: lotsOfWords, assetUrl: 'http://youtu.be/qlOAbrvjMBo'}
+      POST('/posts', d1, {}, function(p1) {
+        PUT(`/posts/submit/${p1._id}`, d1, {}, function(resp){
+          PUT(`/posts/submit/${p1._id}`, d1, {status: 403}, function(resp){
+            done()
+          })
+        })
+      })
+    })
+  })
+
 })
