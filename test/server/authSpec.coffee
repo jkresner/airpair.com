@@ -9,7 +9,8 @@ module.exports = -> describe "Signup: ", ->
   before (done) ->
     SETUP.analytics.stub()
     SETUP.initPosts ->
-      SETUP.initTags(done)
+      SETUP.initTags ->
+        SETUP.initTemplates(done)
 
   after ->
     SETUP.analytics.restore()
@@ -85,6 +86,17 @@ module.exports = -> describe "Signup: ", ->
             if (err) then return done(err)
             expect(res.body.message).to.equal('Cannot signup, user already exists')
             done()
+
+
+
+  it 'Can sign up via post comp', (done) ->
+    d = _.pick(getNewUserData('jkya'), ['name','email'])
+    http(global.app).post('/v1/auth/signup-postcomp').send(d).expect(200)
+      .end (e, resp) ->
+        r = resp.body
+        expect(r._id).to.exist
+        expect(r.email).to.equal(d.email)
+        done()
 
 
   describe "Login", ->

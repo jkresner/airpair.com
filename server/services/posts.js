@@ -3,7 +3,8 @@ var logging               = false
 var Post                  = require('../models/post')
 var svc                   = new Svc(Post, logging)
 var UserSvc               = require('../services/users')
-var ExpertSvc               = require('../services/experts')
+var ExpertSvc             = require('../services/experts')
+var TemplateSvc           = require('../services/templates')
 var github                = require("../services/wrappers/github")
 var Data                  = require('./posts.data')
 var {query, select, opts} = Data
@@ -271,16 +272,19 @@ var save = {
   submitForReview(post, slug, cb){
     var repoName = slug
     var githubOwner = this.user.social.gh.username
-    $log('creating post repo for'.yellow, post._id, post.by.name)
-    $log('*** TODO, set readme contents'.yellow)
-    var readmeMD = `This repo is for ${post.title} by ${post.by.name}. And it's one of the first ever git backed AirPair posts :{}`
-    github.setupPostRepo(repoName, githubOwner, post.md, readmeMD, this.user, (e, result) => {
-      if (e) return cb(e)
-      post.submitted = new Date()
-      post.github = { repoInfo: result }
-      post.slug = slug
-      updateWithEditTouch.call(this, post, 'submittedForReview', cb)
+    TemplateSvc.mdFile('post-repo-readme', post, (readmeMD) => {
+      var trackData = { type: 'post-submit', name: post.title, postId: post._id, author: post.by.name }
+      analytics.track(this.user, this.sessionID, 'Save', trackData, {}, ()=>{})
+
+      github.setupPostRepo(repoName, githubOwner, post.md, readmeMD, this.user, (e, result) => {
+        if (e) return cb(e)
+        post.submitted = new Date()
+        post.github = { repoInfo: result }
+        post.slug = slug
+        updateWithEditTouch.call(this, post, 'submittedForReview', cb)
+      })
     })
+
   },
 
   propagateMDfromGithub(post, cb){

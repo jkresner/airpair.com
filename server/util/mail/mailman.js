@@ -2,6 +2,7 @@ var fs               = require('fs')
 var handlebars       = require('handlebars')
 var util             = require('../../../shared/util')
 var marked           = require('marked')
+var TemplateSvc      = require('../../services/templates')
 var {getUsersInRole} = require('../../services/users')
 
 var templates = {}
@@ -50,6 +51,12 @@ module.exports = function(mailProvider)
   initTemplates()
   initReceivers()
 
+  function sendTemplateEmail(templateName, templateData, toUser, cb) {
+    TemplateSvc.mail(templateName, templateData, (e, renderedEmail) =>
+      mailProvider.send(`${toUser.name} <${toUser.email}>`, renderedEmail, cb)
+    )
+  }
+
   var mailman = {
     sendRawTextEmail(toUser, subject, body, cb) {
       mailProvider.send(`${toUser.name} <${toUser.email}>`, {
@@ -88,10 +95,8 @@ module.exports = function(mailProvider)
       }), cb)
     },
     signupPostcompEmail(toUser, hash, cb) {
-      mailProvider.send(`${toUser.name} <${toUser.email}>`, renderEmail('signuppostcomp', {
-        firstName: util.firstName(toUser.name),
-        hash
-      }), cb)
+      var firstName = util.firstName(toUser.name)
+      sendTemplateEmail('signup-100k-post-comp', { firstName, hash }, toUser, cb)
     },
     sendGotCreditEmail(toUser, credit, fromUser, cb) {
       mailProvider.send(`${toUser.name} <${toUser.email}>`, renderEmail('gotcredit', {

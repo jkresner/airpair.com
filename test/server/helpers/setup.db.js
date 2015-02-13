@@ -12,6 +12,7 @@ var Models = {
   Request: require('../../../server/models/request'),
   Order: require('../../../server/models/order'),
   Company: require('../../../server/models/company'),
+  Template: require('../../../server/models/template'),
   Session: mongoose.model('Session', {_id: String, session: String, expires: Date}, 'v1sessions')
 }
 
