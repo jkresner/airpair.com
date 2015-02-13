@@ -7,6 +7,7 @@
 @blue:#232835;
 @lightblue:#dff2ef;
 @blackgray:#232323;
+@darkgray:#4D4D57;
 @gray:#4d4e4e;
 @mediumgray:#7e7f7f;
 @lightgray:#d3d3d3;
@@ -45,6 +46,15 @@ section.notifications {
   a {
     font-weight:bold;
   }
+}
+
+.alert-notification {
+  position:relative;
+  height:100px;
+  text-align:center;
+  p { text-align:center;display:block }
+  h3 { font-size:18px;margin-top:5px }
+  h4 { font-size:16px;margin-top:5px }
 }
 
 .form-errors {
@@ -123,6 +133,38 @@ body.attentionfocus {
   }
   section#posts { opacity:0.2 }
 }
+
+
+// --- Prism customization
+pre {
+  code {
+    font-size:12px;
+    overflow:visible!important;
+  }
+  overflow:auto!important;
+  border:none;padding:6px!important;max-width:640px;
+  max-height:360px;
+}
+pre + footer {
+  text-align:right;border-top:solid 1px @lightblue;
+  margin:0px 0 30px 0;padding-top:3px;max-width:640px;
+}
+
+pre.line-numbers {
+  code {
+    padding-left:30px;
+  }
+  // .line-numbers .line-numbers-rows { width:1.9em;left:0 }
+  // .line-numbers-rows > span:before { padding-right:0.6em }
+  .line-numbers-rows {
+    width:1.9em;left:0;
+    > span:before { padding-right:0.6em }
+  }
+}
+
+.blogpost pre { margin:30px 0 0 0!important }
+// ---End Prism customization
+
 
 .choice {
   text-align:center;
@@ -578,3 +620,16 @@ ul.dropdown-menu {
 
 }
 
+article.faq {
+  img { max-width:640px }
+  p { max-width:640px }
+  h4 { color:@lightorange;font-weight:bold;font-size:14px;margin-bottom:0 }
+  .fork { float:right;width:220px;
+    a { width:100%;background:@orange no-repeat url('../img/icons/gh-white.png');
+      background-size:21%;
+      width:100%;
+      padding-left:45px; }
+    a:hover { background-color:@orangehighlight }
+    p { text-align:right }
+  }
+}

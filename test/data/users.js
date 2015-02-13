@@ -55,6 +55,7 @@ module.exports = {
 
   jkre: { name:"Jonathon Kresner",email:"jkresner@gmail.com" },
   krez: { name:"Jonathon Krezner",email:"krez@hotmail.com" },
+  jkya: { name:"Jonathon Krezner",email:"jkresner@yahooo.com.au" },
   igor: { name:"Igor Lebovic",email:"igorlebovic@gmail.com" },
   evnr: { name:"Evan Richards",email:"goldfish@gmail.com" },
   evan: { name:"Evan Richards",email:"evengoldfish@gmail.com" },

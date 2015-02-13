@@ -3,8 +3,10 @@ import * as WorkshopsSvc from '../services/workshops'
 var svcs = {
   tags: require('../services/tags'),
   posts: require('../services/posts'),
+  templates: require('../services/templates'),
   workshops: WorkshopsSvc
 }
+
 
 global.cache = {}
 
@@ -31,6 +33,7 @@ function itemReady(key, cb)
   }
 }
 
+
 cache.ready = function(keys, cb)
 {
   itemReady('tags', () => {
@@ -39,6 +42,7 @@ cache.ready = function(keys, cb)
     })
   })
 }
+
 
 cache.flush = function(key, cb)
 {
@@ -50,4 +54,12 @@ cache.bookmark = function(type, id)
 {
   if (!cache[type+'s']) return { url: 'cache no loaded', title: '' }
   return cache[type+'s'][id]
+}
+
+
+cache.tmpl = function(type, key, cb)
+{
+  itemReady('templates', () =>
+    cb( cache['templates'][`${type}:${key}`] )
+  )
 }
