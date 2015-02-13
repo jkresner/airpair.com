@@ -96,6 +96,16 @@ To show the latest content immediately, click anywhere (*i.e. blur*) out of the 
 
 Together H1s and H2s will appear automatically in your Table of contents. You'll be able to see them later when you click **PREVIEW**.
 
+## Links
+
+Links are easy! Here's link to your posts [AirPair posts section](/posts/me). Here's an absolute link to the [AirPair posts section with a title attribute](https://airpair.com/posts "AirPair Posts").
+
+## Images
+
+Images are similar to links, but with a ! infront:
+
+![AirPair Logo](/static/img/css/airpair-author.png)
+
 ## Code blocks
 
 Code blocks are the same as github flavored fenced code blocks. You can

@@ -133,6 +133,36 @@ body.attentionfocus {
   section#posts { opacity:0.2 }
 }
 
+
+// --- Prism customization
+pre {
+  code {
+    font-size:12px;
+    overflow:auto!important;
+  }
+  border:none;padding:6px!important;max-width:640px;
+  max-height:100px;
+
+  footer { text-align:right;border-top:solid 1px @lightgray;
+    margin-top:4px;padding-top:3px }
+}
+
+pre.line-numbers {
+  code {
+    padding-left:30px;
+    font-size:12px;
+    overflow:auto!important;
+  }
+  // .line-numbers .line-numbers-rows { width:1.9em;left:0 }
+  // .line-numbers-rows > span:before { padding-right:0.6em }
+  .line-numbers-rows {
+    width:1.9em;left:0;
+    > span:before { padding-right:0.6em }
+  }
+}
+// ---End Prism customization
+
+
 .choice {
   text-align:center;
 
