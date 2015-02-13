@@ -46,7 +46,7 @@ var get = {
       if (!post.github) return cb(null, post)
 
       get.getGitHEAD(post, (ee, head) => {
-        if (head.string)
+        if (!ee && head.string)
           post.mdHEAD = head.string
         cb(ee, post)
       })
@@ -83,8 +83,18 @@ var get = {
     svc.searchMany(query.published(), { fields: select.listCache }, selectCB.addUrl(cb))
   },
 
+  getAllPublished(cb) {
+    var q = query.published()
+    q['$and'].push({'tmpl' : { '$ne': 'blank' }})
+    q['$and'].push({'tmpl' : { '$ne': 'faq' }})
+    var options = { fields: Data.select.list, options: { sort: { 'published': -1 } } };
+    svc.searchMany(q, options, selectCB.addUrl(cb))
+  },
+
   getRecentPublished(cb) {
     var q = query.published()
+    q['$and'].push({'tmpl' : { '$ne': 'blank' }})
+    q['$and'].push({'tmpl' : { '$ne': 'faq' }})
     svc.searchMany(q, { field: select.list, options: opts.publishedNewest(9) }, selectCB.addUrl(cb))
   },
 
@@ -99,11 +109,6 @@ var get = {
     var options = { fields: select.list, options: opts.publishedNewest() }
     var q = query.published({'tags._id': tag._id})
     svc.searchMany(q, options, selectCB.addUrl((e,r) => cb(null, {tag,posts:r}) ))
-  },
-
-  getAllPublished(cb) {
-    var options = { fields: Data.select.list, options: { sort: { 'published': -1 } } };
-    svc.searchMany(Data.query.published(), options, selectCB.addUrl(cb))
   },
 
   //-- used for todd-motto

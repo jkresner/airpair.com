@@ -60,8 +60,6 @@ export default function(app) {
         cb(null, req.landing) })
     )
 
-    .get('/100k-writing-competition/faq', app.renderHbsViewData('postscompfaq',
-      null, (req, cb) => cb(null, {})))
 
   return router
 }
