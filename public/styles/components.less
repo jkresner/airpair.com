@@ -7,6 +7,7 @@
 @blue:#232835;
 @lightblue:#dff2ef;
 @blackgray:#232323;
+@darkgray:#4D4D57;
 @gray:#4d4e4e;
 @mediumgray:#7e7f7f;
 @lightgray:#d3d3d3;
@@ -138,20 +139,20 @@ body.attentionfocus {
 pre {
   code {
     font-size:12px;
-    overflow:auto!important;
+    overflow:visible!important;
   }
+  overflow:auto!important;
   border:none;padding:6px!important;max-width:640px;
-  max-height:100px;
-
-  footer { text-align:right;border-top:solid 1px @lightgray;
-    margin-top:4px;padding-top:3px }
+  max-height:360px;
+}
+pre + footer {
+  text-align:right;border-top:solid 1px @lightblue;
+  margin:0px 0 30px 0;padding-top:3px;max-width:640px;
 }
 
 pre.line-numbers {
   code {
     padding-left:30px;
-    font-size:12px;
-    overflow:auto!important;
   }
   // .line-numbers .line-numbers-rows { width:1.9em;left:0 }
   // .line-numbers-rows > span:before { padding-right:0.6em }
@@ -160,6 +161,8 @@ pre.line-numbers {
     > span:before { padding-right:0.6em }
   }
 }
+
+.blogpost pre { margin:30px 0 0 0!important }
 // ---End Prism customization
 
 

@@ -158,23 +158,31 @@ article.postclean {
     margin:10px 0
   }
   h1 { padding-left:@mainElmPad }
-  h2 { max-width:@mainElmWidth;text-align:left;font-size:28px;margin:40px 0 30px 0;padding-left:@mainElmPad;line-height:35px }
+  h2 { max-width:@mainElmWidth;text-align:left;font-size:28px;margin:40px 0 20px 0;padding-left:@mainElmPad;line-height:35px }
   h3 { max-width:@mainElmWidth;text-align:left }
-  p { margin-top:0;
+  p { margin-top:20px;
+    margin-bottom:5px;
     max-width:@mainElmWidth;
     vertical-align:top;
     padding-left:@mainElmPad;
-    color:#4D4D57;
+    color:@darkgray;
     font-size: 16px;
     line-height: 26px;
   }
 
   ol { max-width:620px;padding-left:30px }
-  ul { max-width:620px;margin:0;padding-left:15px }
+  ul { max-width:620px;margin:10px 0 15px 10px;
+    padding-left:15px;color:@mediumgray;font-size:15px }
   ul ul { margin-left:12px } // nested lists
 
   iframe { margin:0px 0px 0px 0px }
   img { max-width:100% }
+  blockquote {
+    padding-top:0px;
+    padding-bottom:0px;
+    margin-top:10px;
+    p { margin:0 }
+  }
 
   p.asset {
     clear:left;
@@ -193,6 +201,7 @@ article.postclean {
     float:right;
     clear:right;
     width:@sideRailWidth;
+    p { margin:0 }
   }
 
 
@@ -229,6 +238,7 @@ article.postclean {
   }
   #table-of-contents + ul {
     .rail;
+    margin:0;
     list-style:none;
     padding-left:0;
     font-size:13px;
@@ -236,7 +246,7 @@ article.postclean {
     max-height:540px;
     overflow-y:auto;
 
-    ul { list-style:none;margin-top:4px;padding-left:0px;font-size:10px;line-height:14px }
+    ul { list-style:none;margin-top:4px;margin-bottom:0;padding-left:0px;font-size:10px;line-height:14px }
     li { padding:1px 0 2px 0; }
   }
 
@@ -352,14 +362,6 @@ article.postclean {
     position:relative;
   }
 
-  .similar {
-    padding:20px 0;
-    position:relative;
-    background:white;
-    z-index:3;
-    margin-top:-150px;
-  }
-
   @media only screen and (max-width:900px) {
     .island {
       width:100%;
@@ -424,6 +426,13 @@ article.postclean {
   }
 }
 
+#posts.similar {
+  padding:20px 0;
+  position:relative;
+  background:white;
+  z-index:3;
+  margin-top:-150px;
+}
 
 section.editornotsupported {
   h3 { font-size:20px }
