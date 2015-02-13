@@ -359,7 +359,6 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
       $scope.post.publishedOverride = $scope.post.published || moment().format()
   }
 
-  //-- TODO also figure out to add social later
   $scope.user = () => { return $scope.post.by }
   $scope.selectUser = (user) => {
     $scope.post.by = {
@@ -372,10 +371,13 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
   }
 
   var setScope = (r) => {
+    var isAdmin =  _.contains($scope.session.roles, 'admin')
+    var isEditor =  _.contains($scope.session.roles, 'editor')
     $scope.post = r
     $scope.$watch('post.meta.description', (value) => $scope.post.meta.ogDescription = value )
-    $scope.canPublish = r.reviews && r.reviews.length > 0 || _.contains($scope.session.roles, 'admin')
-    $scope.canPropagate = _.contains($scope.session.roles, 'admin') || !r.published
+    $scope.canPublish = r.reviews && r.reviews.length > 0 || isAdmin || isEditor
+    $scope.canPropagate = isAdmin || isEditor || !r.published
+    $scope.canChangeAuthor = isAdmin
     $scope.headPropagated = (r.mdHEAD) ? r.md == r.mdHEAD : true
   }
 

@@ -2,12 +2,14 @@
   <ol class="entry-meta breadcrumb">
     <li><a href="/posts" target="_self">Posts</a></li>
     <li><a href="/posts/me">My Posts</a></li>
-    <li><a ng-href="/posts/edit/{{post._id}}">Edit Post</a></li>
+    <li ng-if="post"><a ng-href="/posts/edit/{{post._id}}">Edit Post</a></li>
     <li class="current">Publish</li>
   </ol>
 </header>
 
 <section id="publish">
+
+<div ng-if="post">
 
 <section class="notifications" ng-if="!headPropagated && !post.published">
   <div class="propagateHEAD">
@@ -35,7 +37,7 @@
   </div>
 </section>
 
-
+</div>
 
 <div ng-if="canPublish" id="publish-meta" class="publish">
 
@@ -48,7 +50,7 @@
       <a href="/billing/book/{{post.by.expertId}}" target="_blank">Expert profile</a> linked.
     </span>
 
-    <div class="form-group" ng-if="session._id != post.by.userId">
+    <div class="form-group" ng-if="canChangeAuthor">
       <label for="userInput">Author</label>
       <div user-input=""></div>
     </div>
