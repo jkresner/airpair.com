@@ -6,7 +6,7 @@ for (var i = 0; i < 501; i++){
   lotsOfWords += "stuff ";
 }
 
-module.exports = () => describe.only("API: ", function() {
+module.exports = () => describe("API: ", function() {
 
   this.timeout(10000)
 
