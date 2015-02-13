@@ -215,7 +215,7 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
 })
 
 
-.controller('PostEditCtrl', function($scope, $routeParams, $location, $timeout, DataService, mdHelper, PostsUtil) {
+.controller('PostEditCtrl', function($scope, $routeParams, $location, $timeout, $window, DataService, mdHelper, PostsUtil) {
   var _id = $routeParams.id
 
   var timer = null
@@ -256,6 +256,12 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
     $timeout(previewMarkdown, 20)
 
     $scope.throttleMS = r.md.length * 5
+
+    $window.onbeforeunload = function() {
+      var md = window.ace.edit($('#aceeditor')[0]).getSession().getValue()
+      var saved = $scope.savedMD == md
+      if (!saved) return `It looks like haven't saved some changes...`
+    }
   }
 
   DataService.posts.getById({_id}, (r) => {
@@ -353,7 +359,6 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
       $scope.post.publishedOverride = $scope.post.published || moment().format()
   }
 
-  //-- TODO also figure out to add social later
   $scope.user = () => { return $scope.post.by }
   $scope.selectUser = (user) => {
     $scope.post.by = {
@@ -365,10 +370,21 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
     };
   }
 
-  DataService.posts.getByIdForPubishing({_id}, (r) => {
+  var setScope = (r) => {
+    var isAdmin =  _.contains($scope.session.roles, 'admin')
+    var isEditor =  _.contains($scope.session.roles, 'editor')
     $scope.post = r
     $scope.$watch('post.meta.description', (value) => $scope.post.meta.ogDescription = value )
-  });
+    $scope.canPublish = r.reviews && r.reviews.length > 0 || isAdmin || isEditor
+    $scope.canPropagate = isAdmin || isEditor || !r.published
+    $scope.canChangeAuthor = isAdmin
+    $scope.headPropagated = (r.mdHEAD) ? r.md == r.mdHEAD : true
+  }
+
+  DataService.posts.getByIdForPubishing({_id}, setScope)
+
+  $scope.propagate = () =>
+    DataService.posts.propagateFromHEAD($scope.post, setScope)
 
   $scope.publish = () =>
     DataService.posts.publish($scope.post, (r) => window.location = r.meta.canonical)

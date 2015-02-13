@@ -35,7 +35,7 @@ var getHighlightConfig = function(elm) {
   var prevSibling = elm.previousSibling;
   var nodeValue = null;
   while (prevSibling && prevSibling.nodeType!==1) {
-      if (prevSibling.nodeType === 8 || prevSibling.nodeType === 3) {
+      if (prevSibling.nodeType === 8) {
           nodeValue = prevSibling.nodeValue;
       }
       prevSibling = prevSibling.previousSibling;
@@ -79,9 +79,9 @@ angular.module("APPageHelpers", [])
         if (opts && opts.addCtrs)
         {
           if ($rootScope.session._id)
-            element.outerHTML+='<footer>Get expert <a class="trackPostCTA" href="/meet-experts">'+config.lang+' help</a></footer>';
+            element.parentNode.outerHTML+='<footer>Get expert <a class="trackPostCTA" href="/meet-experts">'+config.lang+' help</a></footer>';
           else
-            element.outerHTML+='<footer>Like learning from posts like this? <a onclick="$(\'#postSubscribeEmail\').focus()"><b>Subscribe for more!</b></a></footer>';
+            element.parentNode.outerHTML+='<footer>Like learning from posts like this? <a onclick="$(\'#postSubscribeEmail\').focus()"><b>Subscribe for more!</b></a></footer>';
         }
       });
   }

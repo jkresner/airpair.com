@@ -3,7 +3,8 @@ var logging               = false
 var Post                  = require('../models/post')
 var svc                   = new Svc(Post, logging)
 var UserSvc               = require('../services/users')
-var ExpertSvc               = require('../services/experts')
+var ExpertSvc             = require('../services/experts')
+var TemplateSvc           = require('../services/templates')
 var github                = require("../services/wrappers/github")
 var Data                  = require('./posts.data')
 var {query, select, opts} = Data
@@ -43,7 +44,14 @@ var get = {
         post.meta.canonical = `/${primarytag.slug}/posts/${post.slug}`
       }
 
-      cb(null, post)
+      if (!post.github) return cb(null, post)
+
+      get.getGitHEAD(post, (ee, head) => {
+        if (!ee && head.string)
+          post.mdHEAD = head.string
+        cb(ee, post)
+      })
+
     })
   },
 
@@ -59,7 +67,7 @@ var get = {
   getByIdForPreview(_id, cb) {
     svc.searchOne({_id}, null, (e,r) => {
       if (e || !r) return cb(e,r)
-      if (!r.submitted || !r.github) return cb(e, r)
+      if (!r.submitted || !r.github) return selectCB.displayView(cb)(null, r)
       get.getGitHEAD(r, (ee, head) => {
         if (head.string)
           r.md = head.string
@@ -76,8 +84,19 @@ var get = {
     svc.searchMany(query.published(), { fields: select.listCache }, selectCB.addUrl(cb))
   },
 
+  getAllPublished(cb) {
+    var q = query.published()
+    q['$and'].push({'tmpl' : { '$ne': 'blank' }})
+    q['$and'].push({'tmpl' : { '$ne': 'faq' }})
+    var options = { fields: Data.select.list, options: { sort: { 'published': -1 } } };
+    svc.searchMany(q, options, selectCB.addUrl(cb))
+  },
+
   getRecentPublished(cb) {
-    svc.searchMany(query.published(), { field: select.list, options: opts.publishedNewest(9) }, cb)
+    var q = query.published()
+    q['$and'].push({'tmpl' : { '$ne': 'blank' }})
+    q['$and'].push({'tmpl' : { '$ne': 'faq' }})
+    svc.searchMany(q, { field: select.list, options: opts.publishedNewest(9) }, selectCB.addUrl(cb))
   },
 
   //-- Placeholder for showing similar posts to a currently displayed post
@@ -89,13 +108,8 @@ var get = {
 
   getByTag(tag, cb) {
     var options = { fields: select.list, options: opts.publishedNewest() }
-    var query = query.published({'tags._id': tag._id})
-    svc.searchMany(query, options, selectCB.addUrl((e,r) => cb(null, {tag,posts:r}) ))
-  },
-
-  getAllPublished(cb) {
-    var opts = { fields: Data.select.list, options: { sort: { 'published': -1 } } };
-    svc.searchMany(Data.query.published(), opts, selectCB.addUrl(cb))
+    var q = query.published({'tags._id': tag._id})
+    svc.searchMany(q, options, selectCB.addUrl((e,r) => cb(null, {tag,posts:r}) ))
   },
 
   //-- used for todd-motto
@@ -121,8 +135,8 @@ var get = {
 
 
   getUsersPublished(userId, cb) {
-    var opts = { fields: select.list, options: opts.publishedNewest() }
-    svc.searchMany(query.published({ 'by.userId': userId }), opts, selectCB.addUrl(cb))
+    var options = { fields: select.list, options: opts.publishedNewest() }
+    svc.searchMany(query.published({ 'by.userId': userId }), options, selectCB.addUrl(cb))
   },
 
   // getUsersPosts combines users interest posts and self authors
@@ -258,16 +272,19 @@ var save = {
   submitForReview(post, slug, cb){
     var repoName = slug
     var githubOwner = this.user.social.gh.username
-    $log('creating post repo for'.yellow, post._id, post.by.name)
-    $log('*** TODO, set readme contents'.yellow)
-    var readmeMD = `This repo is for ${post.title} by ${post.by.name}. And it's one of the first ever git backed AirPair posts :{}`
-    github.setupPostRepo(repoName, githubOwner, post.md, readmeMD, this.user, (e, result) => {
-      if (e) return cb(e)
-      post.submitted = new Date()
-      post.github = { repoInfo: result }
-      post.slug = slug
-      updateWithEditTouch.call(this, post, 'submittedForReview', cb)
+    TemplateSvc.mdFile('post-repo-readme', post, (readmeMD) => {
+      var trackData = { type: 'post-submit', name: post.title, postId: post._id, author: post.by.name }
+      analytics.track(this.user, this.sessionID, 'Save', trackData, {}, ()=>{})
+
+      github.setupPostRepo(repoName, githubOwner, post.md, readmeMD, this.user, (e, result) => {
+        if (e) return cb(e)
+        post.submitted = new Date()
+        post.github = { repoInfo: result }
+        post.slug = slug
+        updateWithEditTouch.call(this, post, 'submittedForReview', cb)
+      })
     })
+
   },
 
   propagateMDfromGithub(post, cb){
@@ -278,11 +295,11 @@ var save = {
       if (post.published) {
         post.publishHistory.push({
           commit, touch: svc.newTouch.call(this, 'publish')})
-        post.publishedBy = this.user
+        post.publishedBy = _.pick(this.user, '_id', 'name', 'email')
         post.publishedCommit = commit
         post.publishedUpdated = new Date()
       }
-      updateWithEditTouch.call(this, post, 'updateFromGithub', cb)
+      updateWithEditTouch.call(this, post, 'propagateMDfromGithub', cb)
     })
   },
 

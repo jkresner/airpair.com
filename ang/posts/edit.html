@@ -13,7 +13,7 @@
 </section>
 
 
-<section id="posteditor">
+<section id="posteditor" ng-if="session.emailVerified">
 
 <div ng-if="editErr" class="editor-error-wrap" style="text-align:center">
   <h3>{{editErr}}</h3>
@@ -51,20 +51,25 @@
     <a class="btn" href="/posts/preview/{{post._id}}" target="_blank"
       ng-disabled="!post.saved || !post.assetUrl || !post.tags || post.tags.length == 0">Preview</a>
 
+    <a class="btn" href="/posts/publish/{{post._id}}" ng-if="post.submitted"
+      ng-disabled="!post.saved">Publish</a>
+
     <a class="btn"
       href="/posts/submit/{{post._id}}"
       ng-if="!post.submitted"
       ng-disabled="notReviewReady">Submit for review</a>
 
-    <div class="commitmsg" ng-if="post.submitted">
-      <label>Commit message</label>
-      <input type="text" ng-disabled="post.saved" ng-model="post.commitMessage" placeholder="Enter a commit message" class="form-control" />
-    </div>
 
     <post-step-helper post="post"></post-step-helper>
 
+
+    <div class="commitmsg" ng-if="post.submitted">
+      <input type="text" ng-disabled="post.saved" ng-model="post.commitMessage" placeholder="Enter a commit message" class="form-control" />
+    </div>
+
+    <hr />
+
   </div>
-  <hr />
 
 
     <!-- <div ng-if="post._id">
