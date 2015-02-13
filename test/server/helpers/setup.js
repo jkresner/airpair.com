@@ -79,6 +79,11 @@ var setup = {
     db.initCollectionData('Tag', {slug:'angularjs'}, _.values(data.tags), done)
   },
 
+  initTemplates(done)
+  {
+    db.initCollectionData('Template', {key:'post-repo-readme'}, data.templates, done)
+  },
+
   initPosts(done)
   {
     var {v1AirPair,migrateES6,sessionDeepDive,sessionDeepDive2} = data.posts

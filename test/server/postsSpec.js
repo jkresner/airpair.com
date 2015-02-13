@@ -6,14 +6,16 @@ for (var i = 0; i < 501; i++){
   lotsOfWords += "stuff ";
 }
 
-module.exports = () => describe("API: ", function() {
+module.exports = () => describe.only("API: ", function() {
 
   this.timeout(10000)
 
   before(function(done) {
     SETUP.analytics.stub()
     SETUP.addUserWithRole('edap', 'editor', ()=>{})
-    testDb.initTags(done)
+    SETUP.initTags(() => {
+      SETUP.initTemplates(done)
+    })
   })
 
   after(function() {
