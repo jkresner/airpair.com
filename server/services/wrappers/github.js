@@ -56,23 +56,51 @@ var github = {
 
   //create a team w/ write access to a repo (name after repo)
   createRepoAuthorTeam(repo, cb){
+    var _this = this;
     _authenticateAdmin()
     api.orgs.createTeam({
       org: org,
       name: `${repo}-author`,
       repo_names: [`${org}/${repo}`],
       permission: 'push'
-    }, cb);
+    }, function(err, resp){
+      if (!err) return cb(err,resp);
+      var parsedError = JSON.parse(err.message)
+      var errors = parsedError.errors
+      if (errors.length == 1 && errors[0].code === "already_exists"){
+        //team is already created, list teams and send that back
+        _this.getTeamId(repo, `${repo}-author`, function(err, result){
+          if (err) return cb(err)
+          cb(null, {id: result})
+        })
+      } else {
+        return cb(err,resp);
+      }
+    });
   },
 
   createRepoReviewTeam(repo, cb){
+    var _this = this;
     _authenticateAdmin()
     api.orgs.createTeam({
       org: org,
       name: `${repo}-review`,
       repo_names: [`${org}/${repo}`],
       permission: 'pull'
-    }, cb);
+    }, function(err, resp){
+      if (!err) return cb(err,resp);
+      var parsedError = JSON.parse(err.message)
+      var errors = parsedError.errors
+      if (errors.length == 1 && errors[0].code === "already_exists"){
+        //team is already created, list teams and send that back
+        _this.getTeamId(repo, `${repo}-review`, function(err, result){
+          if (err) return cb(err)
+          cb(null, {id: result})
+        })
+      } else {
+        return cb(err,resp);
+      }
+    });
   },
 
   listTeams(cb){
@@ -80,6 +108,21 @@ var github = {
     api.orgs.getTeams({
       org: org
     },cb)
+  },
+
+  getTeamId(repo, teamName, cb){
+    _authenticateAdmin()
+    api.repos.getTeams({
+      user: org,
+      repo: repo
+    }, function(err,resp){
+      if (err) return cb(err);
+      var teamId = _.find(resp, function(team){
+        if (team.name === teamName)
+          return true
+      }).id
+      cb(null,teamId);
+    })
   },
 
   getRepo(repoName, cb){
@@ -92,12 +135,14 @@ var github = {
 
   addToTeam(githubUser, teamId, user, cb){
     _authenticateAdmin();
+    //first invite the user
     api.orgs.addTeamMembership({
       id: teamId,
       user: githubUser
     }, function(err,res){
       if (err) return verboseErrorCB(cb, err, 'addTeamMembership', `${githubUser} ${teamId}`)
       _authenticateUser(user)
+      //then accept the invite
       api.user.editOrganizationMembership({
         "org": org,
         "state": 'active'
@@ -172,7 +217,14 @@ var github = {
       path: path,
       message: msg,
       content: new Buffer(content).toString('base64')
-    }, cb);
+    }, function(err, result){
+      if (!err) return cb(err,result)
+      var parsedError = JSON.parse(err.message);
+      if (/Missing required keys.*sha/.test(parsedError.message)){
+        return cb("file already exists", null)
+      }
+      cb(err,result)
+    });
   },
 
   updateFile(repo, path, content, msg, user, cb){
@@ -227,16 +279,23 @@ var github = {
   setupPostRepo(repo, githubOwner, postMD, readmeMD, user, cb){
     // console.log(`setting up repo ${repo} for ${githubOwner}`)
     var _this = this
+
     this.createRepo(repo, function(err, result){
-      //TODO Better error handling
-      //without a timeout repo is often not found immediately after creation
-      //should figure out a better way to handle this...
-      if (err) return verboseErrorCB(cb, err, 'createRepo', `${repo} ${githubOwner}`)
-      var githubUrl = result.url
+      if (err){
+        var parsedError = JSON.parse(err.message);
+        var errors = parsedError.errors
+        if (errors.length == 1 && errors[0].message === "name already exists on this account")
+          $log("repo already created");
+        else
+          return verboseErrorCB(cb, err, 'createRepo', `${repo} ${githubOwner}`)
+      }
+      var githubUrl = `https://github.com/${config.auth.github.org}/${repo}`
 
       setTimeout(function(){
         _this.addFile(repo, "README.md", readmeMD, "Add README.md", null, function(err, result){
-          if (err) return verboseErrorCB(cb, err, 'addFile', `${repo} README.md`)
+          if (err && err === "file already exists")
+            console.warn("README.md already exists on this repo")
+          else if (err) return verboseErrorCB(cb, err, 'addFile', `${repo} README.md`)
           _this.createRepoReviewTeam(repo, function(err, result){
             if (err) return verboseErrorCB(cb, err, 'createRepoReviewTeam', `${repo} review team`)
             var reviewTeamId = result.id
