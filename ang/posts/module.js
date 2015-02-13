@@ -215,7 +215,7 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
 })
 
 
-.controller('PostEditCtrl', function($scope, $routeParams, $location, $timeout, DataService, mdHelper, PostsUtil) {
+.controller('PostEditCtrl', function($scope, $routeParams, $location, $timeout, $window, DataService, mdHelper, PostsUtil) {
   var _id = $routeParams.id
 
   var timer = null
@@ -256,6 +256,12 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
     $timeout(previewMarkdown, 20)
 
     $scope.throttleMS = r.md.length * 5
+
+    $window.onbeforeunload = function() {
+      var md = window.ace.edit($('#aceeditor')[0]).getSession().getValue()
+      var saved = $scope.savedMD == md
+      if (!saved) return `It looks like haven't saved some changes...`
+    }
   }
 
   DataService.posts.getById({_id}, (r) => {
