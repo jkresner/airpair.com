@@ -262,6 +262,15 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
       var saved = $scope.savedMD == md
       if (!saved) return `It looks like haven't saved some changes...`
     }
+
+    $scope.$on("$locationChangeStart", function(event) {
+      var md = window.ace.edit($('#aceeditor')[0]).getSession().getValue()
+      var saved = $scope.savedMD == md
+      if (!saved) {
+        alert(`It looks like you have unsaved changes...`)
+        event.preventDefault();
+      }
+    })
   }
 
   DataService.posts.getById({_id}, (r) => {
