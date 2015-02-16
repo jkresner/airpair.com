@@ -27,6 +27,10 @@ var get = {
     cb(null, post)
   },
 
+  getGithubScopes(cb){
+    github.getScopes(this.user, cb)
+  },
+
   getByIdForPublishing(post, cb) {
     ExpertSvc.getMe.call({user:{_id:post.by.userId}}, (e, expert) => {
       if (expert) {
@@ -220,6 +224,12 @@ function updateWithEditTouch(post, action, cb) {
   else
     post.editHistory.push(post.lastTouch)
   svc.update(post._id, post, cb)
+}
+
+function githubScopes(cb){
+  github.getScopes(this.user, function(err,resp){
+    cb(err,resp)
+  })
 }
 
 

@@ -53,6 +53,7 @@ export default function(app) {
 
     .use(authd)
 
+    .get('/posts/githubScopes', populateUser, API.Posts.getGithubScopes)
     .get('/posts/forks/me', populateUser, API.Posts.getUserForks)
     .get('/posts/:post', API.Posts.getByIdForEditing)
     .get('/posts/:post/fork', API.Posts.getByIdForForking)
