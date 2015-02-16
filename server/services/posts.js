@@ -276,7 +276,7 @@ var save = {
       var trackData = { type: 'post-submit', name: post.title, postId: post._id, author: post.by.name }
       analytics.track(this.user, this.sessionID, 'Save', trackData, {}, ()=>{})
 
-      github.setupPostRepo(repoName, githubOwner, post.md, readmeMD, this.user, (e, result) => {
+      github.setupPostRepo(repoName, githubOwner, post, readmeMD, this.user, (e, result) => {
         if (e) return cb(e)
         post.submitted = new Date()
         post.github = { repoInfo: result }
