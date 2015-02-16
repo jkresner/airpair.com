@@ -206,11 +206,20 @@ var github = {
     }, cb)
   },
 
+  getScopes(user, cb){
+    _authenticateUser(user)
+    api.user.get({}, function(err, result){
+      if (err) return verboseErrorCB(cb, err, 'checkScopes', `${user.social.gh.username}`)
+      cb(null, result.meta['x-oauth-scopes'].split(/,\W*/))
+    })
+  },
+
   addFile(repo, path, content, msg, user, cb){
     if (user)
       _authenticateUser(user)
     else
       _authenticateAdmin()
+
     api.repos.createFile({
       user: org,
       repo: repo,
@@ -282,9 +291,10 @@ var github = {
 
     this.createRepo(repo, function(err, result){
       if (err){
+        console.log("ERRRRRRRRR", err)
         var parsedError = JSON.parse(err.message);
         var errors = parsedError.errors
-        if (errors.length == 1 && errors[0].message === "name already exists on this account")
+        if (errors && errors.length == 1 && errors[0].message === "name already exists on this account")
           $log("repo already created");
         else
           return verboseErrorCB(cb, err, 'createRepo', `${repo} ${githubOwner}`)
