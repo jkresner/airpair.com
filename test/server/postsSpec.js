@@ -575,4 +575,15 @@ module.exports = () => describe("API: ", function() {
     })
   })
 
+  it.only("should show the correct scopes", function(done){
+    addAndLoginLocalGithubUser("robot18", function(user) {
+      user.social.gh.token = {token:"bc9a4b0e5ca18b5ee39bc8cbecb07586c4fbe9c4"}
+      github.getScopes(user, function(err,result){
+        expect(result).to.contain("repo")
+        expect(result).to.contain("user")
+        done()
+      })
+    })
+  })
+
 })
