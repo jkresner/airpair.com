@@ -16,6 +16,7 @@ export default initAPI(
   getByTag: (req) => [req.tag],
   getUsersPublished: (req) => [req.params.id],
   getGitHEAD: (req) => [req.post],
+  getGithubScopes: (req) => [],
 
   getAllForAdmin: (req) => [],
   getNewFoAdmin: (req) => [],
