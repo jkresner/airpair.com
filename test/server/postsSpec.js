@@ -575,6 +575,60 @@ module.exports = () => describe("API: ", function() {
     })
   })
 
+  it("allows a post to be deleted and recreated w/ github repo still standing", function(done){
+    addAndLoginLocalGithubUser("robot19", function(s) {
+      var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
+      var title = "test" + Math.floor(Math.random() * 100000000)
+      var d1 = { title: title, slug:title, by: by, md: lotsOfWords, assetUrl: 'http://youtu.be/qlOAbrvjMBo'}
+      POST('/posts', d1, {}, function(p1) {
+        PUT(`/posts/submit/${p1._id}`, d1, {}, function(resp){
+          LOGIN('edap', data.users['edap'], function(editor) {
+            DELETE(`/posts/${p1._id}`, {}, function(){
+              addAndLoginLocalGithubUser("robot19", function(user){
+                POST('/posts', d1, {}, function(p1) {
+                  PUT(`/posts/submit/${p1._id}`, d1, {}, function(resp){
+                    console.log("DONE!")
+                    done()
+                  })
+                })
+              })
+            })
+          })
+        })
+      })
+    })
+  })
+
+  it("allows a post to be deleted and recreated w/ github repo destroyed", function(done){
+    addAndLoginLocalGithubUser("robot20", function(s) {
+      var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
+      var title = "test" + Math.floor(Math.random() * 100000000)
+      var d1 = { title: title, slug:title, by: by, md: lotsOfWords, assetUrl: 'http://youtu.be/qlOAbrvjMBo'}
+      POST('/posts', d1, {}, function(p1) {
+        PUT(`/posts/submit/${p1._id}`, d1, {}, function(resp){
+          LOGIN('edap', data.users['edap'], function(editor) {
+            DELETE(`/posts/${p1._id}`, {}, function(){
+              github.deleteRepo(d1.slug, function(err,res){
+                console.log('???')
+                if (err) return done(err);
+                addAndLoginLocalGithubUser("robot20", function(user){
+                  POST('/posts', d1, {}, function(p1) {
+                    console.log("!!!!")
+                    PUT(`/posts/submit/${p1._id}`, d1, {}, function(resp){
+                      console.log("DONE!")
+                      done()
+                    })
+                  })
+                })
+              })
+            })
+          })
+        })
+      })
+    })
+  })
+
+
   it("should show the correct scopes", function(done){
     addAndLoginLocalGithubUser("robot18", function(user) {
       user.social.gh.token = {token:"bc9a4b0e5ca18b5ee39bc8cbecb07586c4fbe9c4"}

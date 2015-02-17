@@ -142,6 +142,13 @@ module.exports = {
   robot16 : { name: "Robot16", email: "robot16@hotmail.com"},
   robot17 : { name: "Robot17", email: "robot17@hotmail.com"},
   robot18 : { name: "Robot18", email: "robot18@hotmail.com"},
+  robot19 : { name: "Robot19", email: "robot19@hotmail.com"},
+  robot20 : { name: "Robot20", email: "robot20@hotmail.com"},
+  robot21 : { name: "Robot21", email: "robot21@hotmail.com"},
+  robot22 : { name: "Robot22", email: "robot22@hotmail.com"},
+  robot23 : { name: "Robot23", email: "robot23@hotmail.com"},
+  robot24 : { name: "Robot24", email: "robot24@hotmail.com"},
+
 
   admin: {
     "_id" : "54551be15f221efa174238d1",

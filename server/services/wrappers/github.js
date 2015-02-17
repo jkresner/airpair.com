@@ -193,6 +193,16 @@ var github = {
      });
   },
 
+  //DANGEROUS
+  deleteRepo(repo, cb){
+    _authenticateAdmin()
+    console.log("DELETING REPO", org, repo)
+    api.repos.delete({
+      user: org,
+      repo: repo
+    }, cb)
+  },
+
   fork(repo, user, cb){
     _authenticateUser(user)
     api.repos.fork({
@@ -321,8 +331,15 @@ var github = {
               _this.addToTeam(githubOwner, authorTeamId, user, function(err, result){
                 if (err) return verboseErrorCB(cb, err, 'addToTeam', `${repo} author team ${authorTeamId}`)
                 _this.addFile(repo, "post.md", post.md, "Initial Commit", user, function(err, result){
-                  if (err) return verboseErrorCB(cb, err, 'addFile', `${repo} post.md`)
-                  cb(null, {reviewTeamId, authorTeamId, owner:githubOwner, url:githubUrl, author: user.social.gh.username})
+                  if (err && err === "file already exists"){
+                    _this.updateFile(repo, "post.md", post.md, "Reinitialize", user, function(err,result){
+                      if (err) return verboseErrorCB(cb, err, 'updateFile [reinitialize]', `${repo} post.md`)
+                      cb(null, {reviewTeamId, authorTeamId, owner:githubOwner, url:githubUrl, author: user.social.gh.username})
+                    })
+                  } else {
+                    if (err) return verboseErrorCB(cb, err, 'addFile', `${repo} post.md`)
+                    cb(null, {reviewTeamId, authorTeamId, owner:githubOwner, url:githubUrl, author: user.social.gh.username})
+                  }
                 })
               })
             })

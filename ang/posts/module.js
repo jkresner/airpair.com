@@ -329,12 +329,12 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
       $scope.session.social.gh.username
   }
 
-  $scope.githubAuthorized = false
+  $scope.repoAuthorized = false
   //
   if(($scope.session.social && $scope.session.social.gh &&
    $scope.session.social.gh.username)){
     DataService.posts.getGithubScopes({}, (r)=> {
-      $scope.githubAuthorized = _.contains(r, "repo")
+      $scope.repoAuthorized = _.contains(r, "repo")
       $scope.scopesFetched = true
     })
   }
