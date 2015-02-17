@@ -222,13 +222,6 @@ function updateWithEditTouch(post, action, cb) {
   svc.update(post._id, post, cb)
 }
 
-function githubScopes(cb){
-  github.getScopes(this.user, function(err,resp){
-    cb(err,resp)
-  })
-}
-
-
 var save = {
 
   create(o, cb) {
