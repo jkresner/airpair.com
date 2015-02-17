@@ -23,7 +23,7 @@ angular.module('APDataSvc', [])
       getInReview: GET((d)=>`/posts/review`),
       getMyForks: GET((d)=>`/posts/forks/me`),
       getTagsPosts: GET((d)=>`/posts/tag/${d.tagSlug}`),
-      getGithubScopes: GET((d)=>`/posts/githubScopes`),
+      getProviderScopes: GET((d)=>`/users/me/provider-scopes`),
       checkSlugAvailable: GET((d)=>`/posts/check-slug/${d._id}/${d.slug}`),
       create: POST((d)=>`/posts`),
       update: PUT((d)=>`/posts/${d._id}`),
