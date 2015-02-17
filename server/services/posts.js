@@ -170,7 +170,7 @@ var get = {
 
   getGitHEAD(post, cb){
     var owner = null
-    if (post.by.userId !== this.user._id){
+    if (! _.idsEqual(post.by.userId, this.user._id)){
       owner = this.user.social.gh.username
     }
     github.getFile(post.slug, "/post.md", owner, this.user, cb)

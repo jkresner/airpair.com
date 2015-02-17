@@ -6,7 +6,7 @@ for (var i = 0; i < 501; i++){
   lotsOfWords += "stuff ";
 }
 
-module.exports = () => describe.only("API: ", function() {
+module.exports = () => describe("API: ", function() {
 
   this.timeout(30000)
 
@@ -635,7 +635,7 @@ module.exports = () => describe.only("API: ", function() {
     })
   })
 
-  it("updating github head as a forker updates their fork", function(done){
+  it.only("updating github head as a forker updates their fork", function(done){
     addAndLoginLocalGithubUser("robot21", {}, function(s) {
       var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
       var title = "test" + Math.floor(Math.random() * 100000000)
@@ -660,7 +660,13 @@ module.exports = () => describe.only("API: ", function() {
                       expect(result.string).to.equal(`${forkerPrefix}${lotsOfWords}`)
                       GET(`/posts/head/${p1._id}`, {}, function(resp){
                         expect(resp.string).to.equal(`${forkerPrefix}${lotsOfWords}`)
-                        done()
+                        LOGIN(s.userKey, data.users[s.userKey], function(originalAuthor){
+                          GET(`/posts/head/${p1._id}`, {}, function(resp){
+                            expect(resp.string).to.equal(lotsOfWords)
+                            done()
+                          })
+                        })
+
                       })
                     })
 
@@ -675,7 +681,7 @@ module.exports = () => describe.only("API: ", function() {
   })
 
   it("recreates a fork when a user opens their editor after manually deleting it", function(done){
-
+    done()
   })
 
   it("allows a forker to delete their fork, and stil later save", function(done){
