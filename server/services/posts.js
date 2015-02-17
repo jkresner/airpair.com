@@ -68,7 +68,7 @@ var get = {
     svc.searchOne({_id}, null, (e,r) => {
       if (e || !r) return cb(e,r)
       if (!r.submitted || !r.github) return selectCB.displayView(cb)(null, r)
-      get.getGitHEAD(r, (ee, head) => {
+      $callSvc(get.getGitHEAD, this)(r, (ee, head) => {
         if (head.string)
           r.md = head.string
         selectCB.displayView(cb)(null, r)
@@ -173,7 +173,29 @@ var get = {
     if (! _.idsEqual(post.by.userId, this.user._id)){
       owner = this.user.social.gh.username
     }
-    github.getFile(post.slug, "/post.md", owner, this.user, cb)
+    github.getFile(post.slug, "/post.md", owner, this.user, (err,resp)=>{
+      if (!err){
+        return cb(err,resp);
+      }
+      //if not found and repo is missing then refork it
+      if (err.code === 404){
+        github.getRepo(owner, post.slug, (err,response) =>{
+          if (err.code === 404){
+            github.fork(post.slug, this.user, (err, response)=>{
+              if (err) return cb(err)
+              setTimeout(function(){
+                github.getFile(post.slug, "/post.md", owner, this.user, cb)
+              }, 2000)
+            })
+          } else if (err){
+            console.log("UNKNOWN ERROR")
+            cb(err, response)
+          } else {
+            cb("post.md is missing, but fork exists")
+          }
+        })
+      }
+    })
   },
 
   checkSlugAvailable(post, slug, cb){
@@ -182,7 +204,7 @@ var get = {
         if (!_.idsEqual(post._id,r._id))  //-- for posts that were published before the git authoring stuff
           return cb(null, { unavailable: `The slug ${slug} alredy belongs to another post.` })
 
-      github.getRepo(slug, (e,repo) => {
+      github.getRepo(null, slug, (e,repo) => {
         if (repo) return cb(null, { unavailable: `The repo ${slug} already exist on the airpair org, try another name.` })
         cb(null, { available: `The repo name ${slug} is available.` })
       })
