@@ -642,7 +642,7 @@ module.exports = () => describe("API: ", function() {
       var d1 = { title: title, slug:title, by: by, md: lotsOfWords, assetUrl: 'http://youtu.be/qlOAbrvjMBo'}
       POST('/posts', d1, {}, function(p1) {
         PUT(`/posts/submit/${p1._id}`, d1, {}, function(resp){
-          var token = "d703977ebd941ec285550aca51d5b48a457b4be1"
+          var token = "fd65392d8926f164755061e70a852d4ebe139e09"
           var username = "airpairtester45"
           addAndLoginLocalGithubUser("robot22", {token,username}, function(user){
             expect(user.social.gh.username).to.equal("airpairtester45")
@@ -687,7 +687,7 @@ module.exports = () => describe("API: ", function() {
       var d1 = { title: title, slug:title, by: by, md: lotsOfWords, assetUrl: 'http://youtu.be/qlOAbrvjMBo'}
       POST('/posts', d1, {}, function(p1) {
         PUT(`/posts/submit/${p1._id}`, d1, {}, function(resp){
-          var token = "d703977ebd941ec285550aca51d5b48a457b4be1"
+          var token = "fd65392d8926f164755061e70a852d4ebe139e09"
           var username = "airpairtester45"
           addAndLoginLocalGithubUser("robot24", {token,username}, function(user){
             expect(user.social.gh.username).to.equal("airpairtester45")
