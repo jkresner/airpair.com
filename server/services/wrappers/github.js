@@ -267,15 +267,6 @@ var github = {
     this.getFile(repo, path, owner, user, function(err, result){
       if (err) return verboseErrorCB(cb, err, 'updateFile/getFile', `${user.social.gh.username} ${repo} ${path}`)
       _authenticateUser(user)
-      var update = {
-        sha: result.sha,
-        user: owner || org,
-        repo: repo,
-        path: path,
-        message: msg,
-        content: new Buffer(content).toString('base64')
-      }
-
       api.repos.updateFile({
         sha: result.sha,
         user: owner || org,

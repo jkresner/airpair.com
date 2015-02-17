@@ -188,12 +188,15 @@ var get = {
               }, 2000)
             })
           } else if (err){
-            console.log("UNKNOWN ERROR")
+            $log("error retrieving repo in getGitHead")
             cb(err, response)
           } else {
             cb("post.md is missing, but fork exists")
           }
         })
+      } else {
+        $log("unkown error getting file", err)
+        cb(err,resp)
       }
     })
   },
