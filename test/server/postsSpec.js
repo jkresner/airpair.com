@@ -607,7 +607,7 @@ module.exports = () => describe("API: ", function() {
         PUT(`/posts/submit/${p1._id}`, d1, {}, function(resp){
           LOGIN('edap', data.users['edap'], function(editor) {
             DELETE(`/posts/${p1._id}`, {}, function(){
-              github.deleteRepo(d1.slug, function(err,res){
+              github.deleteRepo(null, d1.slug, null, function(err,res){
                 if (err) return done(err);
                 addAndLoginLocalGithubUser("robot20", {}, function(user){
                   POST('/posts', d1, {}, function(p1) {
@@ -635,14 +635,14 @@ module.exports = () => describe("API: ", function() {
     })
   })
 
-  it.only("updating github head as a forker updates their fork", function(done){
+  it("updating github head as a forker updates their fork", function(done){
     addAndLoginLocalGithubUser("robot21", {}, function(s) {
       var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
       var title = "test" + Math.floor(Math.random() * 100000000)
       var d1 = { title: title, slug:title, by: by, md: lotsOfWords, assetUrl: 'http://youtu.be/qlOAbrvjMBo'}
       POST('/posts', d1, {}, function(p1) {
         PUT(`/posts/submit/${p1._id}`, d1, {}, function(resp){
-          var token = "b0faaea2c1789a2059261237ff8f78832dc71998"
+          var token = "d703977ebd941ec285550aca51d5b48a457b4be1"
           var username = "airpairtester45"
           addAndLoginLocalGithubUser("robot22", {token,username}, function(user){
             expect(user.social.gh.username).to.equal("airpairtester45")
@@ -681,10 +681,39 @@ module.exports = () => describe("API: ", function() {
   })
 
   it("recreates a fork when a user opens their editor after manually deleting it", function(done){
-    done()
-  })
-
-  it("allows a forker to delete their fork, and stil later save", function(done){
-    done()
+    addAndLoginLocalGithubUser("robot23", {}, function(s) {
+      var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
+      var title = "test" + Math.floor(Math.random() * 100000000)
+      var d1 = { title: title, slug:title, by: by, md: lotsOfWords, assetUrl: 'http://youtu.be/qlOAbrvjMBo'}
+      POST('/posts', d1, {}, function(p1) {
+        PUT(`/posts/submit/${p1._id}`, d1, {}, function(resp){
+          var token = "d703977ebd941ec285550aca51d5b48a457b4be1"
+          var username = "airpairtester45"
+          addAndLoginLocalGithubUser("robot24", {token,username}, function(user){
+            expect(user.social.gh.username).to.equal("airpairtester45")
+            PUT(`/posts/add-forker/${p1._id}`, {}, {}, function(resp){
+              expect(resp.forkers.length).to.equal(1)
+              expect(_.idsEqual(resp.forkers[0].userId, user._id))
+              setTimeout(function(){
+                user.social.gh.token = {token}
+                github.deleteRepo(user.social.gh.username, d1.slug, user, function(err,res){
+                  if (err) return done(err)
+                  github.getRepo(user.social.gh.username, title, function(err, response){
+                    expect(err.code).to.equal(404)
+                    GET(`/posts/head/${p1._id}`, {}, function(resp){
+                      expect(resp.string).to.equal(lotsOfWords)
+                      github.getRepo(user.social.gh.username, title, function(err, response){
+                        expect(response.owner.login).to.equal("airpairtester45")
+                        done()
+                      })
+                    })
+                  })
+                })
+              }, 2000)
+            })
+          })
+        })
+      })
+    })
   })
 })

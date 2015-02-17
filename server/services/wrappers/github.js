@@ -135,9 +135,12 @@ var github = {
   getRepo(owner, repo, cb){
     _authenticateAdmin()
     api.repos.get({
-      user: owner,
+      user: owner || org,
       repo: repo
-    },cb)
+    }, function(err, response){
+      if (err) return verboseErrorCB(cb, err, 'getRepo')
+      cb(err, response)
+    })
   },
 
   addToTeam(githubUser, teamId, user, cb){
@@ -162,7 +165,7 @@ var github = {
 
   addContributor(user, repo, reviewerTeamId, cb){
     var _this = this;
-    $log(`addContributor ${repo} ${reviewerTeamId}`, repo)
+    // $log(`addContributor ${repo} ${reviewerTeamId}`, repo)
     this.addToTeam(user.social.gh.username, reviewerTeamId, user, function(err, result){
       if (err) return verboseErrorCB(cb, err, 'addToTeam', `${user.social.gh.username} ${reviewerTeamId}`)
       _this.fork(repo, user, cb)
@@ -194,11 +197,13 @@ var github = {
   },
 
   //DANGEROUS
-  deleteRepo(repo, cb){
-    _authenticateAdmin()
-    console.log("DELETING REPO", org, repo)
+  deleteRepo(owner, repo, user, cb){
+    if (user)
+      _authenticateUser(user)
+    else
+      _authenticateAdmin()
     api.repos.delete({
-      user: org,
+      user: owner || org,
       repo: repo
     }, cb)
   },
