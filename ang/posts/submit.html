@@ -28,9 +28,9 @@
 
     <img src="/static/img/pages/posts/post-authoring-flow.png" />
 
-    <div ng-if="!session.social.gh">
+    <div ng-if="!session.social.gh || (scopesFetched && !repoAuthorized)">
 
-      <section class="notice" ng-if="!session.social.gh">
+      <section class="notice">
         <h3>We need to authenticate with your Github account.</h3>
         <p>You will be redirected to a github login page requesting repository permissions,
         so we can fork this post to your account.</p>
@@ -40,7 +40,7 @@
       <p>You will be added to the airpair organization on github, so that you have write access to the repo</p>
     </div>
 
-    <div ng-if="session.social.gh">
+    <div ng-if="session.social.gh && repoAuthorized ">
       <hr />
 
       <div class="form-group">

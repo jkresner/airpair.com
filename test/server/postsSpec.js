@@ -498,9 +498,9 @@ module.exports = () => describe("API: ", function() {
       github.createRepo(title, function(err, result){
         if (err) done(err)
         setTimeout(function(){
-          github.createRepoReviewTeam(title, function(err, result){
-            if (err) return done(err)
-            POST('/posts', d1, {}, function(p1) {
+          POST('/posts', d1, {}, function(p1) {
+            github.createRepoReviewTeam(title, p1._id, function(err, result){
+              if (err) return done(err)
               PUT(`/posts/submit/${p1._id}`, d1, {}, function(resp){
                 done()
               })
@@ -519,9 +519,9 @@ module.exports = () => describe("API: ", function() {
       github.createRepo(title, function(err, result){
         if (err) done(err)
         setTimeout(function(){
-          github.createRepoAuthorTeam(title, function(err, result){
-            if (err) return done(err)
-            POST('/posts', d1, {}, function(p1) {
+          POST('/posts', d1, {}, function(p1) {
+            github.createRepoAuthorTeam(title, p1._id, function(err, result){
+              if (err) return done(err)
               PUT(`/posts/submit/${p1._id}`, d1, {}, function(resp){
                 done()
               })
@@ -543,12 +543,12 @@ module.exports = () => describe("API: ", function() {
         if (err) done(err)
         //without a timeout repo is often not found immediately after creation
         setTimeout(function(){
-          github.createRepoAuthorTeam(title, function(err, result){
-            if (err) return done(err)
-            var authorTeamId = result.id;
-            github.addToTeam(s.social.gh.username, authorTeamId, user, function(err, result){
+          POST('/posts', d1, {}, function(p1) {
+            github.createRepoAuthorTeam(title, p1._id, function(err, result){
               if (err) return done(err)
-              POST('/posts', d1, {}, function(p1) {
+              var authorTeamId = result.id;
+              github.addToTeam(s.social.gh.username, authorTeamId, user, function(err, result){
+                if (err) return done(err)
                 PUT(`/posts/submit/${p1._id}`, d1, {}, function(resp){
                   done()
                 })
@@ -575,4 +575,68 @@ module.exports = () => describe("API: ", function() {
     })
   })
 
+  it("allows a post to be deleted and recreated w/ github repo still standing", function(done){
+    addAndLoginLocalGithubUser("robot19", function(s) {
+      var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
+      var title = "test" + Math.floor(Math.random() * 100000000)
+      var d1 = { title: title, slug:title, by: by, md: lotsOfWords, assetUrl: 'http://youtu.be/qlOAbrvjMBo'}
+      POST('/posts', d1, {}, function(p1) {
+        PUT(`/posts/submit/${p1._id}`, d1, {}, function(resp){
+          LOGIN('edap', data.users['edap'], function(editor) {
+            DELETE(`/posts/${p1._id}`, {}, function(){
+              addAndLoginLocalGithubUser("robot19", function(user){
+                POST('/posts', d1, {}, function(p1) {
+                  PUT(`/posts/submit/${p1._id}`, d1, {}, function(resp){
+                    console.log("DONE!")
+                    done()
+                  })
+                })
+              })
+            })
+          })
+        })
+      })
+    })
+  })
+
+  it("allows a post to be deleted and recreated w/ github repo destroyed", function(done){
+    addAndLoginLocalGithubUser("robot20", function(s) {
+      var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
+      var title = "test" + Math.floor(Math.random() * 100000000)
+      var d1 = { title: title, slug:title, by: by, md: lotsOfWords, assetUrl: 'http://youtu.be/qlOAbrvjMBo'}
+      POST('/posts', d1, {}, function(p1) {
+        PUT(`/posts/submit/${p1._id}`, d1, {}, function(resp){
+          LOGIN('edap', data.users['edap'], function(editor) {
+            DELETE(`/posts/${p1._id}`, {}, function(){
+              github.deleteRepo(d1.slug, function(err,res){
+                console.log('???')
+                if (err) return done(err);
+                addAndLoginLocalGithubUser("robot20", function(user){
+                  POST('/posts', d1, {}, function(p1) {
+                    console.log("!!!!")
+                    PUT(`/posts/submit/${p1._id}`, d1, {}, function(resp){
+                      console.log("DONE!")
+                      done()
+                    })
+                  })
+                })
+              })
+            })
+          })
+        })
+      })
+    })
+  })
+
+
+  it("should show the correct scopes", function(done){
+    addAndLoginLocalGithubUser("robot18", function(user) {
+      user.social.gh.token = {token:"bc9a4b0e5ca18b5ee39bc8cbecb07586c4fbe9c4"}
+      GET('/users/me/provider-scopes', {}, function(result){
+        expect(result.github).to.contain("repo")
+        expect(result.github).to.contain("user")
+        done()
+      })
+    })
+  })
 })

@@ -55,21 +55,22 @@ var github = {
   },
 
   //create a team w/ write access to a repo (name after repo)
-  createRepoAuthorTeam(repo, cb){
+  createRepoAuthorTeam(repo, id, cb){
     var _this = this;
+    var teamName = `${repo}-${id.toString().slice(-8)}-author`
     _authenticateAdmin()
     api.orgs.createTeam({
       org: org,
-      name: `${repo}-author`,
+      name: teamName,
       repo_names: [`${org}/${repo}`],
       permission: 'push'
     }, function(err, resp){
       if (!err) return cb(err,resp);
       var parsedError = JSON.parse(err.message)
       var errors = parsedError.errors
-      if (errors.length == 1 && errors[0].code === "already_exists"){
+      if (errors && errors.length == 1 && errors[0].code === "already_exists"){
         //team is already created, list teams and send that back
-        _this.getTeamId(repo, `${repo}-author`, function(err, result){
+        _this.getTeamId(repo, teamName, function(err, result){
           if (err) return cb(err)
           cb(null, {id: result})
         })
@@ -79,21 +80,24 @@ var github = {
     });
   },
 
-  createRepoReviewTeam(repo, cb){
+  createRepoReviewTeam(repo, id, cb){
     var _this = this;
+    var teamName = `${repo}-${id.toString().slice(-8)}-review`
+
     _authenticateAdmin()
     api.orgs.createTeam({
       org: org,
-      name: `${repo}-review`,
+      name: teamName,
       repo_names: [`${org}/${repo}`],
+      description: `Review team for ${repo} (read-only)`,
       permission: 'pull'
     }, function(err, resp){
       if (!err) return cb(err,resp);
       var parsedError = JSON.parse(err.message)
       var errors = parsedError.errors
-      if (errors.length == 1 && errors[0].code === "already_exists"){
+      if (errors && errors.length == 1 && errors[0].code === "already_exists"){
         //team is already created, list teams and send that back
-        _this.getTeamId(repo, `${repo}-review`, function(err, result){
+        _this.getTeamId(repo, teamName, function(err, result){
           if (err) return cb(err)
           cb(null, {id: result})
         })
@@ -117,11 +121,14 @@ var github = {
       repo: repo
     }, function(err,resp){
       if (err) return cb(err);
-      var teamId = _.find(resp, function(team){
+      var team = _.find(resp, function(team){
         if (team.name === teamName)
           return true
-      }).id
-      cb(null,teamId);
+      });
+      if (team)
+        cb(null,team.id);
+      else
+        cb("failed to find team", teamName)
     })
   },
 
@@ -186,6 +193,16 @@ var github = {
      });
   },
 
+  //DANGEROUS
+  deleteRepo(repo, cb){
+    _authenticateAdmin()
+    console.log("DELETING REPO", org, repo)
+    api.repos.delete({
+      user: org,
+      repo: repo
+    }, cb)
+  },
+
   fork(repo, user, cb){
     _authenticateUser(user)
     api.repos.fork({
@@ -206,11 +223,20 @@ var github = {
     }, cb)
   },
 
+  getScopes(user, cb){
+    _authenticateUser(user)
+    api.user.get({}, function(err, result){
+      if (err) return verboseErrorCB(cb, err, 'checkScopes', `${user.social.gh.username}`)
+      cb(null, result.meta['x-oauth-scopes'].split(/,\W*/))
+    })
+  },
+
   addFile(repo, path, content, msg, user, cb){
     if (user)
       _authenticateUser(user)
     else
       _authenticateAdmin()
+
     api.repos.createFile({
       user: org,
       repo: repo,
@@ -276,7 +302,7 @@ var github = {
     }, cb)
   },
 
-  setupPostRepo(repo, githubOwner, postMD, readmeMD, user, cb){
+  setupPostRepo(repo, githubOwner, post, readmeMD, user, cb){
     // console.log(`setting up repo ${repo} for ${githubOwner}`)
     var _this = this
 
@@ -284,7 +310,7 @@ var github = {
       if (err){
         var parsedError = JSON.parse(err.message);
         var errors = parsedError.errors
-        if (errors.length == 1 && errors[0].message === "name already exists on this account")
+        if (errors && errors.length == 1 && errors[0].message === "name already exists on this account")
           $log("repo already created");
         else
           return verboseErrorCB(cb, err, 'createRepo', `${repo} ${githubOwner}`)
@@ -296,17 +322,24 @@ var github = {
           if (err && err === "file already exists")
             console.warn("README.md already exists on this repo")
           else if (err) return verboseErrorCB(cb, err, 'addFile', `${repo} README.md`)
-          _this.createRepoReviewTeam(repo, function(err, result){
+          _this.createRepoReviewTeam(repo, post._id, function(err, result){
             if (err) return verboseErrorCB(cb, err, 'createRepoReviewTeam', `${repo} review team`)
             var reviewTeamId = result.id
-            _this.createRepoAuthorTeam(repo, function(err, result){
+            _this.createRepoAuthorTeam(repo, post._id, function(err, result){
               if (err) return verboseErrorCB(cb, err, 'createRepoAuthorTeam', `${repo} author team`)
               var authorTeamId = result.id
               _this.addToTeam(githubOwner, authorTeamId, user, function(err, result){
                 if (err) return verboseErrorCB(cb, err, 'addToTeam', `${repo} author team ${authorTeamId}`)
-                _this.addFile(repo, "post.md", postMD, "Initial Commit", user, function(err, result){
-                  if (err) return verboseErrorCB(cb, err, 'addFile', `${repo} post.md`)
-                  cb(null, {reviewTeamId, authorTeamId, owner:githubOwner, url:githubUrl, author: user.social.gh.username})
+                _this.addFile(repo, "post.md", post.md, "Initial Commit", user, function(err, result){
+                  if (err && err === "file already exists"){
+                    _this.updateFile(repo, "post.md", post.md, "Reinitialize", user, function(err,result){
+                      if (err) return verboseErrorCB(cb, err, 'updateFile [reinitialize]', `${repo} post.md`)
+                      cb(null, {reviewTeamId, authorTeamId, owner:githubOwner, url:githubUrl, author: user.social.gh.username})
+                    })
+                  } else {
+                    if (err) return verboseErrorCB(cb, err, 'addFile', `${repo} post.md`)
+                    cb(null, {reviewTeamId, authorTeamId, owner:githubOwner, url:githubUrl, author: user.social.gh.username})
+                  }
                 })
               })
             })
