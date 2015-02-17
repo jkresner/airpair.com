@@ -629,7 +629,7 @@ module.exports = () => describe("API: ", function() {
   })
 
 
-  it.only("should show the correct scopes", function(done){
+  it("should show the correct scopes", function(done){
     addAndLoginLocalGithubUser("robot18", function(user) {
       user.social.gh.token = {token:"bc9a4b0e5ca18b5ee39bc8cbecb07586c4fbe9c4"}
       GET('/users/me/provider-scopes', {}, function(result){
