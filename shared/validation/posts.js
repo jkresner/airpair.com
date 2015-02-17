@@ -107,7 +107,7 @@ var validation = {
       return `Post must be deleted by owner`
     if (original.published && !isEditor)
       return `Must be editor to delete a published post`
-    if (original.submitted != null)
+    if (original.submitted != null && !isEditor)
       return `Must be editor to delete a post in review`
   },
 

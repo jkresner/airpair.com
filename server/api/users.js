@@ -23,6 +23,7 @@ export default initAPI(
   changeLocationTimezone: (req) => [req.body],
   getSiteNotifications: (req) => [],
   toggleSiteNotification: (req) => [req.body.name],
+  getProviderScopes: (req) => [],
 }, {
 
 },

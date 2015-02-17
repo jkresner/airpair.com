@@ -329,6 +329,16 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
       $scope.session.social.gh.username
   }
 
+  $scope.repoAuthorized = false
+  //
+  if(($scope.session.social && $scope.session.social.gh &&
+   $scope.session.social.gh.username)){
+    DataService.posts.getProviderScopes({}, (r)=> {
+      $scope.repoAuthorized = _.contains(r.github, "repo")
+      $scope.scopesFetched = true
+    })
+  }
+
   $scope.submitForReviewDeferred = () => {
     var deferred = $q.defer()
 
@@ -399,4 +409,3 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
     DataService.posts.publish($scope.post, (r) => window.location = r.meta.canonical)
 
 })
-

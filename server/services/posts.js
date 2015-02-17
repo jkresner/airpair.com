@@ -222,6 +222,12 @@ function updateWithEditTouch(post, action, cb) {
   svc.update(post._id, post, cb)
 }
 
+function githubScopes(cb){
+  github.getScopes(this.user, function(err,resp){
+    cb(err,resp)
+  })
+}
+
 
 var save = {
 
@@ -276,7 +282,7 @@ var save = {
       var trackData = { type: 'post-submit', name: post.title, postId: post._id, author: post.by.name }
       analytics.track(this.user, this.sessionID, 'Save', trackData, {}, ()=>{})
 
-      github.setupPostRepo(repoName, githubOwner, post.md, readmeMD, this.user, (e, result) => {
+      github.setupPostRepo(repoName, githubOwner, post, readmeMD, this.user, (e, result) => {
         if (e) return cb(e)
         post.submitted = new Date()
         post.github = { repoInfo: result }
