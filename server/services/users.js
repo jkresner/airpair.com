@@ -7,6 +7,7 @@ import BaseSvc      from '../services/_service'
 var svc             = new BaseSvc(User, logging)
 var cbSession       = Data.select.cb.session
 var Timezone        = require('node-google-timezone')
+var github          = require("../services/wrappers/github")
 Timezone.key(config.timezone.google.apiKey)
 
 
@@ -25,6 +26,13 @@ var get = {
 
   getById(id, cb){
     svc.searchOne({ _id:this.user._id },{}, cb)
+  },
+
+  getProviderScopes(cb){
+    github.getScopes(this.user, function(err,resp){
+      if(err) return cb(err)
+      cb(err, {github: resp})
+    })
   },
 
   getSession(cb) {

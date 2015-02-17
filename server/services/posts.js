@@ -27,10 +27,6 @@ var get = {
     cb(null, post)
   },
 
-  getGithubScopes(cb){
-    github.getScopes(this.user, cb)
-  },
-
   getByIdForPublishing(post, cb) {
     ExpertSvc.getMe.call({user:{_id:post.by.userId}}, (e, expert) => {
       if (expert) {

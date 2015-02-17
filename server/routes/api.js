@@ -53,7 +53,6 @@ export default function(app) {
 
     .use(authd)
 
-    .get('/posts/githubScopes', populateUser, API.Posts.getGithubScopes)
     .get('/posts/forks/me', populateUser, API.Posts.getUserForks)
     .get('/posts/:post', API.Posts.getByIdForEditing)
     .get('/posts/:post/fork', API.Posts.getByIdForForking)
@@ -80,6 +79,7 @@ export default function(app) {
     .post('/requests', API.Requests.create)
     .delete('/requests/:request', API.Requests.deleteById)
 
+    .get('/users/me/provider-scopes', populateUser, API.Users.getProviderScopes)
     .get('/users/me/site-notifications', API.Users.getSiteNotifications)
     .put('/users/me/site-notifications', API.Users.toggleSiteNotification)
     .put('/users/me/email-verify', setAnonSessionData, API.Users.verifyEmail)
@@ -87,6 +87,7 @@ export default function(app) {
     .put('/users/me/username', API.Users.changeUsername)
     .put('/users/me/bio', API.Users.changeBio)
     .put('/users/me/location', API.Users.changeLocationTimezone)
+
 
     .get('/company', API.Companys.getUsersCompany)
 
