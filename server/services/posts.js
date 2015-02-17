@@ -169,7 +169,11 @@ var get = {
   },
 
   getGitHEAD(post, cb){
-    github.getFile(post.slug, "/post.md", cb)
+    var owner = null
+    if (post.by.userId !== this.user._id){
+      owner = this.user.social.gh.username
+    }
+    github.getFile(post.slug, "/post.md", owner, this.user, cb)
   },
 
   checkSlugAvailable(post, slug, cb){
@@ -287,7 +291,7 @@ var save = {
   },
 
   propagateMDfromGithub(post, cb){
-    github.getFile(post.slug, "/post.md", (err, result) => {
+    github.getFile(post.slug, "/post.md", null, null, (err, result) => {
       var commit = result.sha
       post.md = result.string
       post.publishedCommit = commit
@@ -303,7 +307,8 @@ var save = {
   },
 
   updateGithubHead(original, postMD, commitMessage, cb){
-    github.updateFile(original.slug, "post.md", postMD, commitMessage, this.user, (ee, result) => {
+    var fork = !(_.idsEqual(original.by.userId, this.user._id))
+    github.updateFile(original.slug, "post.md", postMD, commitMessage, this.user, fork, (ee, result) => {
       if (ee) return cb(ee)
       if (!original.published) {
         original.md = postMD

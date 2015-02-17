@@ -33,9 +33,9 @@ global.addLocalGithubUser = (userKey, opts, done) ->
   clone = getNewUserData(userKey)
   UserService.localSignup.call(newUserSession(userKey), clone.email, clone.password, clone.name, (e, r) ->
     data.users[clone.userKey] = r
-    db.Models.User.findOneAndUpdate({_id:r._id},{social: {gh: {username: "airpairtestreviewer", token: {token: "bc9a4b0e5ca18b5ee39bc8cbecb07586c4fbe9c4"}}}},{upsert:true}, (err, user) ->
+    db.Models.User.findOneAndUpdate({_id:r._id},{social: {gh: {username: (opts.username || "airpairtestreviewer"), token: {token: (opts.token || "bc9a4b0e5ca18b5ee39bc8cbecb07586c4fbe9c4")}}}},{upsert:true}, (err, user) ->
       r.emailVerified = true
-      r.social = {gh: {username: "airpairtestreviewer", token: {token: "bc9a4b0e5ca18b5ee39bc8cbecb07586c4fbe9c4"}}}
+      r.social = {gh: {username: (opts.username || "airpairtestreviewer"), token: {token: (opts.token || "bc9a4b0e5ca18b5ee39bc8cbecb07586c4fbe9c4")}}}
       data.users[clone.userKey] = r
       done(clone.userKey)
     )
@@ -66,8 +66,8 @@ global.addAndLoginLocalUserWithPayMethod = (originalUserKey, done) ->
       s.primaryPayMethodId = r._id
       done(s)
 
-global.addAndLoginLocalGithubUser = (originalUserKey, done) ->
-  addLocalGithubUser originalUserKey, {}, (userKey) ->
+global.addAndLoginLocalGithubUser = (originalUserKey, options, done) ->
+  addLocalGithubUser originalUserKey, options, (userKey) ->
     LOGIN userKey, data.users[userKey], ->
       GET '/session/full', {}, (s) ->
         s.userKey = userKey
