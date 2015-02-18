@@ -32,7 +32,7 @@ var deleteRepo = function(owner, repo, token, cb){
 
 module.exports = () => describe("API: ", function() {
 
-  this.timeout(30000)
+  this.timeout(60000)
 
   before(function(done) {
     SETUP.analytics.stub()
@@ -764,4 +764,36 @@ module.exports = () => describe("API: ", function() {
       })
     })
   })
+
+
+  it.only("allows a fork to be clobbered with the latest from master", function(done){
+    addAndLoginLocalGithubUser("robot25", {}, function(s) {
+      var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
+      var title = "test" + Math.floor(Math.random() * 100000000)
+      var d1 = { title: title, slug:title, by: by, md: lotsOfWords, assetUrl: 'http://youtu.be/qlOAbrvjMBo'}
+      POST('/posts', d1, {}, function(p1) {
+        PUT(`/posts/submit/${p1._id}`, d1, {}, function(resp){
+          var token = "fd65392d8926f164755061e70a852d4ebe139e09"
+          var username = "airpairtester45"
+          addAndLoginLocalGithubUser("robot26", {token,username}, function(user){
+            expect(user.social.gh.username).to.equal("airpairtester45")
+            PUT(`/posts/add-forker/${p1._id}`, {}, {}, function(resp){
+              LOGIN(s.userKey, data.users[s.userKey], function(originalAuthor){
+                var authorPrefix = "a new addition by the author"
+                PUT(`/posts/update-github-head/${p1._id}`, {md: `${authorPrefix}${lotsOfWords}`, commitMessage: "a small revision"}, {}, function(resp){
+                  LOGIN(user.userKey, data.users[user.userKey], function(forker){
+                    PUT(`/posts/clobber-fork/${p1._id}`, {}, {}, function(resp){
+                      console.log("clobbering response", resp)
+                      done()
+                    })
+                  })
+                })
+              })
+            })
+          })
+        })
+      })
+    })
+  })
+
 })

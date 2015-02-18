@@ -28,6 +28,7 @@ export default initAPI(
   updateGithubHead: (req) => [req.post, req.body.md, req.body.commitMessage],
   addReview: (req) => [req.post, req.body],
   addForker: (req) => [req.post],
+  clobberFork: (req) => [req.post],
   deleteById: (req) => [req.post]
 
 }, {
