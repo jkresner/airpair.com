@@ -764,4 +764,32 @@ module.exports = () => describe("API: ", function() {
       })
     })
   })
+
+  it("sends back event stats when propagated from github", function(done){
+    addAndLoginLocalGithubUser("robot23", {}, function(s) {
+      var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
+      var title = "test" + Math.floor(Math.random() * 100000000)
+      var d1 = { title: title, slug:title, by: by, md: lotsOfWords, assetUrl: 'http://youtu.be/qlOAbrvjMBo'}
+      POST('/posts', d1, {}, function(p1) {
+        PUT(`/posts/submit/${p1._id}`, d1, {}, function(resp){
+          PUT(`/posts/propagate-head/${p1._id}`, {}, {}, function(resp){
+            var stats = resp.github.stats;
+            var author = _.find(stats, function(stat){
+              return stat.author === "airpairtestreviewer"
+            });
+            expect(author).to.exist()
+            //author has one total commit (for the post)
+            expect(author.total).to.equal(1)
+            var admin = _.find(stats, function(stat){
+              return stat.author === "airpairtest"
+            });
+            expect(admin).to.exist()
+            //admin has one total commit (for the README)
+            expect(admin.total).to.equal(1)
+            done()
+          })
+        })
+      })
+    })
+  })
 })

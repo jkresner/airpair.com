@@ -325,18 +325,22 @@ var save = {
   },
 
   propagateMDfromGithub(post, cb){
-    github.getFile(org, post.slug, "/post.md", null, (err, result) => {
-      var commit = result.sha
-      post.md = result.string
-      post.publishedCommit = commit
-      if (post.published) {
-        post.publishHistory.push({
-          commit, touch: svc.newTouch.call(this, 'publish')})
-        post.publishedBy = _.pick(this.user, '_id', 'name', 'email')
+    github.getStats(org, post.slug, this.user, null, (err,resp)=>{
+      if(err) return cb(err)
+      post.github.stats = resp
+      github.getFile(org, post.slug, "/post.md", null, (err, result) => {
+        var commit = result.sha
+        post.md = result.string
         post.publishedCommit = commit
-        post.publishedUpdated = new Date()
-      }
-      updateWithEditTouch.call(this, post, 'propagateMDfromGithub', cb)
+        if (post.published) {
+          post.publishHistory.push({
+            commit, touch: svc.newTouch.call(this, 'publish')})
+          post.publishedBy = _.pick(this.user, '_id', 'name', 'email')
+          post.publishedCommit = commit
+          post.publishedUpdated = new Date()
+        }
+        updateWithEditTouch.call(this, post, 'propagateMDfromGithub', cb)
+      })
     })
   },
 
