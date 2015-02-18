@@ -65,6 +65,7 @@ export default function(app) {
     .put('/posts/submit/:post', populateUser, API.Posts.submitForReview)
     .put('/posts/review/:post', API.Posts.addReview)
     .put('/posts/add-forker/:post', populateUser, API.Posts.addForker)
+    .put('/posts/clobber-fork/:post', populateUser, API.Posts.clobberFork)
     .put('/posts/propagate-head/:post', populateUser, API.Posts.propagateMDfromGithub)
     .put('/posts/update-github-head/:post', populateUser, API.Posts.updateGithubHead)
     .delete('/posts/:post', API.Posts.deleteById)

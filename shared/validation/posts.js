@@ -170,6 +170,11 @@ var validation = {
       return `Can not fork post that is not yet submitted for review`
   },
 
+  clobberFork(user, post){
+    console.log("clobbering validation")
+    //TODO handle the case where the user isn't a forker
+  },
+
   getGitHEAD(user, post){
     var isOwner = _.idsEqual(post.by.userId, user._id)
     // var isEditor = user.roles && _.contains(user.roles, "editor")

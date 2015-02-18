@@ -379,6 +379,11 @@ var save = {
     })
   },
 
+  clobberFork(post, cb){
+    console.log("clobber fork")
+    cb(null, "clobbered")
+  },
+
   deleteById(post, cb) {
     svc.deleteById(post._id, cb)
   }
