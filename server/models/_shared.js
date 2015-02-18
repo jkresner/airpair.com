@@ -34,7 +34,7 @@ var PageMeta = {
 
 
 var Message = new Schema({
-  type:         { require:true, type: String, enum: [MESSAGE_TYPE] },
+  type:         { require:true, type: String, enum: MESSAGE_TYPE },
   subject:      { require:true, type: String },
   body:         { require:true, type: String },
   fromId:       { require:true, type: ObjectId, ref: 'User' },
@@ -59,4 +59,27 @@ var SocialAccounts = {
 }
 
 
-module.exports = {Touch,Message,UserByte,PageMeta,SocialAccounts}
+var Survey = new Schema({
+  type:         { require:true, type: String, enum: [''] },
+  by:           { require:true, type: UserByte },
+  questions:    { require:true, type: [{
+      idx:            { require:true, type: Number },
+      key:            { require:true, type: String, lowercase:true },
+      prompt:         { require:true, type: String },
+      answer:         { require:true, type: {} }
+    }]
+  },
+  replies:      { require:true, type: [new Schema({
+      by:             { require:true, type: UserByte },
+      comment:        { require:true, type: String }
+    })]
+  },
+  votes:        { require:true, type: [new Schema({
+      by:             { require:true, type: UserByte },
+      val:            { require:true, type: Number }
+    })]
+  }
+})
+
+
+module.exports = {Touch,Message,UserByte,PageMeta,SocialAccounts,Survey}

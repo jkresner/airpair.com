@@ -294,19 +294,6 @@ module.exports = () => describe("API: ", function() {
     })
   })
 
-  it('allows reviews to be added to submitted posts', function(done) {
-    addAndLoginLocalUser('robot3', function(s) {
-      var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
-      var d1 = { title: "test 1", by: by, md: 'Test 1', assetUrl: 'http://youtu.be/qlOAbrvjMBo', submitted:new Date()}
-      POST('/posts', d1, {}, function(p1) {
-        PUT(`/posts/review/${p1._id}`, {body: "this post is great", stars: 4}, {}, function(resp){
-          expect(resp.reviews[0].body).to.equal("this post is great")
-          done()
-        })
-      })
-    })
-  })
-
   it.skip("allows forkers to be added to submitted posts", function(done){
     addAndLoginLocalGithubUser("robot4", {}, function(s){
       var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }

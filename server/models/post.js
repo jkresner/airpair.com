@@ -79,7 +79,7 @@ module.exports = mongoose.model('Post', new mongoose.Schema({
   publishedCommit:  { type: {} }, // sha hash or whole commit object
   publishedUpdated: { type: Date }, // lasttime timestamp of update
 
-  reviews:          { type: Array },
+  reviews:          { type: [Shared.Survey] },
   forkers:          { type: [Forker] },
   github:           { required: false, type: Github },
   slug:             { type: String, unique: true, sparse: true, lowercase: true, trim: true },

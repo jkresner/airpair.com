@@ -12,6 +12,7 @@ export default function(app) {
     .param('booking', API.Bookings.paramFns.getById)
     .param('paymethod', API.Paymethods.paramFns.getById)
     .param('post', API.Posts.paramFns.getById)
+    .param('postreview', API.Posts.reviewParamFn)
 
     .get('/session/full', setAnonSessionData, API.Users.getSession)
     .put('/users/me/password-change', API.Users.requestPasswordChange)
@@ -63,12 +64,17 @@ export default function(app) {
     .put('/posts/:post', API.Posts.update)
     .put('/posts/publish/:post', API.Posts.publish)
     .put('/posts/submit/:post', populateUser, API.Posts.submitForReview)
-    .put('/posts/review/:post', API.Posts.addReview)
     .put('/posts/add-forker/:post', populateUser, API.Posts.addForker)
     .put('/posts/propagate-head/:post', populateUser, API.Posts.propagateMDfromGithub)
     .put('/posts/update-github-head/:post', populateUser, API.Posts.updateGithubHead)
     .delete('/posts/:post', API.Posts.deleteById)
-    .post('/posts-toc', API.Posts.getTableOfContents)
+    // .post('/posts-toc', API.Posts.getTableOfContents)
+
+    .post('/posts/:post/review', API.Posts.review)
+    .put('/posts/:post/review/:postreview', API.Posts.reviewUpdate)
+    .put('/posts/:post/review/:postreview/reply', API.Posts.reviewReply)
+    .put('/posts/:post/review/:postreview/upvote', API.Posts.reviewUpvote)
+    .delete('/posts/:post/review/:postreview', API.Posts.reviewDelete)
 
     .get('/requests', API.Requests.getMy)
     .get('/requests/:id', API.Requests.getByIdForUser)
@@ -87,7 +93,6 @@ export default function(app) {
     .put('/users/me/username', API.Users.changeUsername)
     .put('/users/me/bio', API.Users.changeBio)
     .put('/users/me/location', API.Users.changeLocationTimezone)
-
 
     .get('/company', API.Companys.getUsersCompany)
 

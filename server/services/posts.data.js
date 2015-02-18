@@ -1,5 +1,6 @@
 var marked              = require('marked')
 import generateToc      from './postsToc'
+import * as md5         from '../util/md5'
 var {selectFromObject}  = require('../../shared/util')
 
 var topTapPages = ['angularjs']
@@ -15,6 +16,9 @@ var inflateHtml = function(cb) {
     cb(e,r)
   }
 };
+
+var userCommentByte = (byte) =>
+  _.extend(_.pick(byte,'_id','name'), {avatar: md5.gravatarUrl(byte.email)})
 
 
 var select = {
@@ -71,6 +75,24 @@ var select = {
     'assetUrl': 1,
     'md': 1
   },
+  stats: {
+    '_id': 1,
+    'by': 1,
+    'meta': 1,
+    'github': 1,
+    'forkers':1,
+    'reviews._id': 1,
+    'reviews.by': 1,
+    'reviews.replies': 1,
+    'reviews.votes': 1,
+    'reviews.questions.key': 1,
+    'reviews.questions.answer': 1,
+    'created': 1,
+    'published': 1,
+    'submitted': 1,
+    'tags': 1,
+    'assetUrl': 1
+  },
   generateToc(md) {
     marked(generateToc(md))
   },
@@ -91,6 +113,21 @@ var select = {
       return (e,r) => {
         if (e || !r) return cb(e,r)
         r = selectFromObject(r, select.edit)
+        cb(null,r)
+      }
+    },
+    statsView(cb) {
+      return (e,r) => {
+        if (e || !r) return cb(e,r)
+        r = selectFromObject(r, select.stats)
+        r.reviews = _.map(r.reviews, (rev) => {
+          rev.by = userCommentByte(rev.by)
+          rev.votes = _.map(rev.votes || [], (vote) =>
+            _.extend(vote, {by: userCommentByte(vote.by)}) )
+          rev.replies = _.map(rev.replies || [], (reply) =>
+            _.extend(reply, {by: userCommentByte(reply.by)}) )
+          return rev
+        })
         cb(null,r)
       }
     },

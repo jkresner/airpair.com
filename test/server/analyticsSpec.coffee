@@ -21,8 +21,6 @@ module.exports = -> describe "Tracking: ", ->
           SETUP.initWorkshops ->
             SETUP.createAndPublishPost(s, {title: postTitle,slug:postSlug, reviews: [{}, {}, {}, {}, {}]}, done)
 
-  beforeEach ->
-    SETUP.clearIdentity()
 
   it('Can track an anonymous post view', (done) ->
     ANONSESSION (s) ->

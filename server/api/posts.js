@@ -1,7 +1,20 @@
 import {initAPI} from './_api'
+var svc = require('../services/posts')
 
-export default initAPI(
-  require('../services/posts')
+function reviewParamFn(req, res, next, id) {
+  $callSvc(svc.getReview,req)(req.post, id, function(e, r) {
+    if (!r && !e) {
+      e = new Error404(`${paramName} not found.`,
+        paramName != 'post'&& paramName != 'workshop')
+    }
+    req.postreview = r
+    next(e, r)
+  })
+}
+
+
+var api = initAPI(
+  svc
 , {
 
   getByIdForEditing: (req) => [req.post],
@@ -26,15 +39,24 @@ export default initAPI(
   submitForReview: (req) => [req.post, req.body.slug],
   propagateMDfromGithub: (req) => [req.post],
   updateGithubHead: (req) => [req.post, req.body.md, req.body.commitMessage],
-  addReview: (req) => [req.post, req.body],
   addForker: (req) => [req.post],
-  deleteById: (req) => [req.post]
+  deleteById: (req) => [req.post],
+
+  review: (req) => [req.post, req.body],
+  reviewUpdate: (req) => [req.post, req.postreview, req.body],
+  reviewReply: (req) => [req.post, req.postreview, req.body],
+  reviewUpvote: (req) => [req.post, req.postreview],
+  reviewDelete: (req) => [req.post, req.postreview]
 
 }, {
   'post':'getById',
-  'postpublished':'getBySlugForPublishedView'
+  'postpublished':'getBySlugForPublishedView',
+  'postreview': 'getReview'
 },
   require('../../shared/validation/posts.js')
 ,
   'post'
 )
+
+
+export default _.extend(api, {reviewParamFn})

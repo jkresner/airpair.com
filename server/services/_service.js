@@ -56,6 +56,12 @@ export default function(model, logging)
         by: { _id: this.user._id, name: this.user.name }
       }
     },
+    userByte(withAvatar) {
+      var byte = _.pick(this.user, '_id', 'name', 'email')
+      // if (withAvatar)
+        // byte.avatar = md5Magic
+      return byte
+    },
     newId: () => {
       return new ObjectId()
     },
