@@ -172,23 +172,27 @@ var get = {
 
   getGitHEAD(post, cb){
     var owner = org
+    var forker = false
     if (! _.idsEqual(post.by.userId, this.user._id)){
       owner = this.user.social.gh.username
+      forker = true
     }
     github.getFile(post.slug, "/post.md", owner, this.user, (err,resp)=>{
       if (!err){
         return cb(err,resp);
       }
-      //if not found and repo is missing then refork it
+      if (!forker){
+        return cb(err,resp);
+      }
+
+      //for forker handle the case where they have deleted the fork
       if (err.code === 404){
         github.getRepo(owner, post.slug, (err,response) =>{
+          //the fork is gone
           if (err.code === 404){
-            github.fork(post.slug, this.user, (err, response)=>{
-              if (err) return cb(err)
-              setTimeout(function(){
-                github.getFile(post.slug, "/post.md", owner, this.user, cb)
-              }, 2000)
-            })
+            //redirect user to the create fork page
+            // /posts/fork/${post._id}
+            cb(Error(`No fork present. Create one <a href='/posts/fork/${post._id}'>here</a>`))
           } else if (err){
             $log("error retrieving repo in getGitHead")
             cb(err, response)

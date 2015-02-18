@@ -723,12 +723,9 @@ module.exports = () => describe("API: ", function() {
                   if (err) return done(err)
                   github.getRepo(user.social.gh.username, title, function(err, response){
                     expect(err.code).to.equal(404)
-                    GET(`/posts/head/${p1._id}`, {}, function(resp){
-                      expect(resp.string).to.equal(lotsOfWords)
-                      github.getRepo(user.social.gh.username, title, function(err, response){
-                        expect(response.owner.login).to.equal("airpairtester45")
-                        done()
-                      })
+                    GET(`/posts/head/${p1._id}`, {status: 400}, function(resp){
+                      expect(resp.message).to.match(/No fork present. Create one/)
+                      done()
                     })
                   })
                 })
