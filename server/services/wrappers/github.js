@@ -207,14 +207,14 @@ var github = {
     })
   },
 
-  addFile(repo, path, content, msg, user, cb){
+  addFile(owner, repo, path, content, msg, user, cb){
     if (user)
       _authenticateUser(user)
     else
       _authenticateAdmin()
 
     api.repos.createFile({
-      user: org,
+      user: owner,
       repo: repo,
       path: path,
       message: msg,
@@ -230,7 +230,7 @@ var github = {
   },
 
   updateFile(owner, repo, path, content, msg, user, cb){
-    this.getFile(repo, path, owner, user, function(err, result){
+    this.getFile(owner, repo, path, user, function(err, result){
       if (err) return verboseErrorCB(cb, err, 'updateFile/getFile', `${user.social.gh.username} ${repo} ${path}`)
       _authenticateUser(user)
       api.repos.updateFile({
@@ -256,7 +256,7 @@ var github = {
     })
   },
 
-  getFile(repo, path, owner, user, cb){
+  getFile(owner, repo, path, user, cb){
     if (!user){
       _authenticateAdmin()
     }
@@ -298,7 +298,7 @@ var github = {
       var githubUrl = `https://github.com/${config.auth.github.org}/${repo}`
 
       setTimeout(function(){
-        _this.addFile(repo, "README.md", readmeMD, "Add README.md", null, function(err, result){
+        _this.addFile(org, repo, "README.md", readmeMD, "Add README.md", null, function(err, result){
           if (err && err === "file already exists")
             console.warn("README.md already exists on this repo")
           else if (err) return verboseErrorCB(cb, err, 'addFile', `${repo} README.md`)
@@ -310,7 +310,7 @@ var github = {
               var authorTeamId = result.id
               _this.addToTeam(githubOwner, authorTeamId, user, function(err, result){
                 if (err) return verboseErrorCB(cb, err, 'addToTeam', `${repo} author team ${authorTeamId}`)
-                _this.addFile(repo, "post.md", post.md, "Initial Commit", user, function(err, result){
+                _this.addFile(org, repo, "post.md", post.md, "Initial Commit", user, function(err, result){
                   if (err && err === "file already exists"){
                     _this.updateFile(org, repo, "post.md", post.md, "Reinitialize", user, function(err,result){
                       if (err) return verboseErrorCB(cb, err, 'updateFile [reinitialize]', `${repo} post.md`)

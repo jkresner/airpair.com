@@ -12,6 +12,7 @@ var githubApi = new GitHubApi({
   }
 });
 var github = require("../../server/services/wrappers/github.js")
+var org = config.auth.github.org
 
 var lotsOfWords = ""
 for (var i = 0; i < 501; i++){
@@ -500,7 +501,7 @@ module.exports = () => describe("API: ", function() {
       github.createRepo(title, function(err, result){
         if (err) done(err)
         setTimeout(function(){
-          github.addFile(title, "README.md", "fake markdown", "Add README.md", null, function(err, result){
+          github.addFile(org, title, "README.md", "fake markdown", "Add README.md", null, function(err, result){
             if (err) return done(err)
             POST('/posts', d1, {}, function(p1) {
               PUT(`/posts/submit/${p1._id}`, d1, {}, function(resp){
@@ -679,7 +680,7 @@ module.exports = () => describe("API: ", function() {
                   var forkerPrefix = "a nice introduction"
                   PUT(`/posts/update-github-head/${p1._id}`, {md: `${forkerPrefix}${lotsOfWords}`, commitMessage:"suggested change"}, {}, function(resp){
                     user.social.gh.token = {token}
-                    github.getFile(title, "post.md", user.social.gh.username, user, function(err,result){
+                    github.getFile(user.social.gh.username, title, "post.md", user, function(err,result){
                       expect(result.string).to.equal(`${forkerPrefix}${lotsOfWords}`)
                       GET(`/posts/head/${p1._id}`, {}, function(resp){
                         expect(resp.string).to.equal(`${forkerPrefix}${lotsOfWords}`)
@@ -762,5 +763,9 @@ module.exports = () => describe("API: ", function() {
         })
       })
     })
+  })
+
+  it("allows a fork to be recreated from the latest on master", function(done){
+
   })
 })
