@@ -764,8 +764,4 @@ module.exports = () => describe("API: ", function() {
       })
     })
   })
-
-  it("allows a fork to be recreated from the latest on master", function(done){
-
-  })
 })
