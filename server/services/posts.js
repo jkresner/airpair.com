@@ -179,8 +179,6 @@ var get = {
     else if ( !Roles.post.isOwnerOrEditor(this.user, post) )
       return cb(`Cannot get git HEAD. You have not forked ${post.slug}`)
 
-    $log('getGitHEAD', owner, post.slug)
-
     github.getFile(owner, post.slug, "/post.md", this.user, (e,resp) => {
       //for forker check the case where they have deleted the fork
       if (e && e.code === 404 && owner != org)
@@ -214,6 +212,11 @@ var get = {
       })
     })
   },
+
+  getReview(post, reviewId, cb) {
+    return cb(null, _.find(post.reviews,(r)=>_.idsEqual(r._id,reviewId)))
+  },
+
 
   // getTableOfContents(markdown, cb) {
   //   return cb(null, {toc:Data.generateToc(markdown)})
@@ -276,7 +279,7 @@ var save = {
       commit: post.publishedCommit || 'Not yet propagated',
       touch: svc.newTouch.call(this, 'publish')})
 
-    post.publishedBy = _.pick(this.user, '_id', 'name', 'email')
+    post.publishedBy = svc.userByte.call(this)
     post.publishedUpdated = new Date()
 
     if (publishData.publishedOverride)
@@ -324,7 +327,7 @@ var save = {
       if (post.published) {
         post.publishHistory.push({
           commit, touch: svc.newTouch.call(this, 'publish')})
-        post.publishedBy = _.pick(this.user, '_id', 'name', 'email')
+        post.publishedBy = svc.userByte.call(this)
         post.publishedCommit = commit
         post.publishedUpdated = new Date()
       }
@@ -352,15 +355,7 @@ var save = {
     })
   },
 
-  addReview(post, review, cb){
-    review.userId = this.user._id
-    if (!post.reviews)
-      post.reviews = []
-    post.reviews.push(review)
-    svc.update(post._id, post, cb)
-  },
-
-  addForker(post, cb){
+  addForker(post, cb) {
     var githubUser = this.user.social.gh.username
     github.addContributor(this.user, post.slug, post.github.repoInfo.reviewTeamId, (e, res) => {
       if (e) return cb(e)
@@ -374,7 +369,43 @@ var save = {
   deleteById(post, cb) {
     svc.deleteById(post._id, cb)
   }
+
 }
 
 
-module.exports = _.extend(_.extend(get, getAdmin), save)
+var saveReviews = {
+
+  review(post, review, cb) {
+    review.by = svc.userByte.call(this)
+    review.type = `post-survey-inreview`
+    if (post.published) review.type.replace('inreview','published')
+
+    post.reviews.push(review)
+    svc.update(post._id, post, selectCB.statsView(cb))
+  },
+
+  reviewUpdate(post, original, reviewUpdated, cb) {
+
+  },
+
+  reviewReply(post, original, reply, cb) {
+    var review = _.find(post.reviews,(r)=>_.idsEqual(r._id,original._id))
+    reply.by = svc.userByte.call(this)
+    review.replies.push(reply)
+    svc.update(post._id, post, selectCB.statsView(cb))
+  },
+
+  reviewUpvote(post, original, cb) {
+    var review = _.find(post.reviews,(r)=>_.idsEqual(r._id,original._id))
+    var vote = { val: 1, by: svc.userByte.call(this) }
+    review.votes.push(vote)
+    svc.update(post._id, post, selectCB.statsView(cb))
+  },
+
+  reviewDelete(post, original, cb) {
+
+  },
+
+}
+
+module.exports = _.extend(_.extend(get, getAdmin), _.extend(save,saveReviews))

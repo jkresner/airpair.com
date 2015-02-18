@@ -16,6 +16,7 @@ global.chai     = require('chai')
 global.expect   = chai.expect
 global.expectIdsEqual = (id1, id2) -> expect(_.idsEqual(id1,id2)).to.be.true
 global.expectStartsWith = (str,start) -> expect(str.indexOf(start)).to.equal(0)
+global.expectContains = (str,start) -> expect(str.indexOf(start)).not.equal(-1)
 
 describe 'Server: ', ->
 
@@ -49,6 +50,7 @@ describe 'Server: ', ->
   # describe('Orders: ', require('./ordersMembershipSpec'))
   describe('Orders: ', require('./ordersBookingSpec'))
   describe('Posts: ', require('./postsSpec'))
+  describe('Post Reviews: ', require('./postsReviewsSpec'))
   describe('Bookings: ', require('./bookingsSpec'))
   describe('Payouts: ', require('./payoutsSpec'))
 

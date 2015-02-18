@@ -149,12 +149,6 @@ var validation = {
     //maybe allow editors as well?
   },
 
-  addReview(user, postId, review)
-  {
-    //TODO
-    // console.log("(validation) addReview", user, postId, review)
-  },
-
   addForker(user, post){
     var isOwner = _.idsEqual(post.by.userId, user._id)
     if (isOwner)
@@ -167,11 +161,61 @@ var validation = {
       return `Can not fork post that is not yet submitted for review`
   },
 
-  getGitHEAD(user, post){
-    var isOwner = _.idsEqual(post.by.userId, user._id)
+  getGitHEAD(user, post)
+  {
+    // var isOwner = _.idsEqual(post.by.userId, user._id)
     // var isEditor = user.roles && _.contains(user.roles, "editor")
     if (!user.social || !user.social.gh)
       return `User must <a href="/auth/github?returnTo=/posts/edit/${post._id}" target="_self">authorize GitHub</a> to pull from GitHub`
+  },
+
+  review(user, post, review)
+  {
+    var existing = _.find(post.reviews, (r)=>_.idsEqual(user._id, r.by_id))
+    if (existing)
+      return `You have already reviewed ${post.title}`
+
+    if (_.idsEqual(user._id,post.by.userId))
+      return `Cannot review your own post.`
+
+    if (!post.published && !post.submitted)
+      return `Cannot review. Post [${post._id}] has not been submitted or published`
+
+    var rating = _.find(review.questions, (q)=> q.key == 'rating')
+    if (!rating || !(rating.answer > 0 && rating.answer < 6) )
+      return `5 star rating required`
+
+    var feedback = _.find(review.questions, (q)=> q.key == 'feedback')
+    if (!feedback || !feedback.answer)
+      return `5 star feedback required`
+  },
+
+  reviewUpdate(user, post, original, update)
+  {
+    return "reviewUpdate validation not implemented"
+  },
+
+  reviewReply(user, post, original, reply)
+  {
+    // $log('valid.reviewReply'.yellow, post._id, original, reply)
+    if (!reply.comment)
+      return `Reply comment required`
+  },
+
+  reviewUpvote(user, post, original, reply)
+  {
+    var existing = _.find(original.votes, (v)=>_.idsEqual(user._id, v.by._id))
+    if (existing)
+      return `You already voted on this review[${original}]`
+  },
+
+  reviewDelete(user, post, original)
+  {
+    var isEditor = _.contains(user.roles, 'editor')
+    var isAdmin =  _.contains(user.roles, 'admin')
+    var isOwner = _.idsEqual(original.by._id, user._id)
+
+    if (!isAdmin && !isEditor && !isOwner) return `Cannot delete review[${original._id}] not belonging to you`
   }
 
 }
