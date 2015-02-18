@@ -196,18 +196,6 @@ var github = {
      });
   },
 
-  //DANGEROUS
-  deleteRepo(owner, repo, user, cb){
-    if (user)
-      _authenticateUser(user)
-    else
-      _authenticateAdmin()
-    api.repos.delete({
-      user: owner || org,
-      repo: repo
-    }, cb)
-  },
-
   fork(repo, user, cb){
     _authenticateUser(user)
     api.repos.fork({

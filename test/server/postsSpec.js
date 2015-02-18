@@ -1,4 +1,16 @@
 import {getHashId} from '../../server/services/postsToc'
+var GitHubApi = require("github")
+var githubApi = new GitHubApi({
+  // required
+  version: "3.0.0",
+  // optional
+  // debug: true,
+  protocol: "https",
+  timeout: 5000,
+  headers: {
+    "user-agent": "AirPair"
+  }
+});
 var github = require("../../server/services/wrappers/github.js")
 
 var lotsOfWords = ""
@@ -6,7 +18,18 @@ for (var i = 0; i < 501; i++){
   lotsOfWords += "stuff ";
 }
 
-module.exports = () => describe("API: ", function() {
+var deleteRepo = function(owner, repo, token, cb){
+  githubApi.authenticate({
+    type:"oauth",
+    token: token
+  })
+  githubApi.repos.delete({
+    user: owner,
+    repo: repo
+  }, cb)
+}
+
+module.exports = () => describe.only("API: ", function() {
 
   this.timeout(30000)
 
@@ -607,7 +630,7 @@ module.exports = () => describe("API: ", function() {
         PUT(`/posts/submit/${p1._id}`, d1, {}, function(resp){
           LOGIN('edap', data.users['edap'], function(editor) {
             DELETE(`/posts/${p1._id}`, {}, function(){
-              github.deleteRepo(null, d1.slug, null, function(err,res){
+              deleteRepo(config.auth.github.org, d1.slug, config.auth.github.adminAccessToken, function(err,res){
                 if (err) return done(err);
                 addAndLoginLocalGithubUser("robot20", {}, function(user){
                   POST('/posts', d1, {}, function(p1) {
@@ -696,7 +719,7 @@ module.exports = () => describe("API: ", function() {
               expect(_.idsEqual(resp.forkers[0].userId, user._id))
               setTimeout(function(){
                 user.social.gh.token = {token}
-                github.deleteRepo(user.social.gh.username, d1.slug, user, function(err,res){
+                deleteRepo(user.social.gh.username, d1.slug, user.social.gh.token.token, function(err,res){
                   if (err) return done(err)
                   github.getRepo(user.social.gh.username, title, function(err, response){
                     expect(err.code).to.equal(404)
@@ -710,6 +733,33 @@ module.exports = () => describe("API: ", function() {
                   })
                 })
               }, 2000)
+            })
+          })
+        })
+      })
+    })
+  })
+
+  it.skip("correctly displays 'out of sync' message when fork is behind master", function(done){
+    addAndLoginLocalGithubUser("robot23", {}, function(s) {
+      var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
+      var title = "test" + Math.floor(Math.random() * 100000000)
+      var d1 = { title: title, slug:title, by: by, md: lotsOfWords, assetUrl: 'http://youtu.be/qlOAbrvjMBo'}
+      POST('/posts', d1, {}, function(p1) {
+        PUT(`/posts/submit/${p1._id}`, d1, {}, function(resp){
+          var token = "fd65392d8926f164755061e70a852d4ebe139e09"
+          var username = "airpairtester45"
+          addAndLoginLocalGithubUser("robot24", {token,username}, function(user){
+            expect(user.social.gh.username).to.equal("airpairtester45")
+            PUT(`/posts/add-forker/${p1._id}`, {}, {}, function(resp){
+              expect(resp.forkers.length).to.equal(1)
+              expect(_.idsEqual(resp.forkers[0].userId, user._id))
+              LOGIN(s.userKey, data.users[s.userKey], function(originalAuthor){
+                var masterPrefix = "I AM YOUR MASTER"
+                PUT(`/posts/update-github-head/${p1._id}`, {md: `${masterPrefix}${lotsOfWords}`}, function(resp){
+                  github.behindMaster(user)
+                })
+              })
             })
           })
         })
