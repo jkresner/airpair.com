@@ -29,7 +29,7 @@ var deleteRepo = function(owner, repo, token, cb){
   }, cb)
 }
 
-module.exports = () => describe.only("API: ", function() {
+module.exports = () => describe("API: ", function() {
 
   this.timeout(30000)
 

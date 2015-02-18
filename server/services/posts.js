@@ -11,6 +11,8 @@ var {query, select, opts} = Data
 var selectCB              = select.cb
 var {selectFromObject}    = require('../../shared/util')
 
+var org = config.auth.github.org
+
 var get = {
 
   getById(id, cb) {
@@ -169,7 +171,7 @@ var get = {
   },
 
   getGitHEAD(post, cb){
-    var owner = null
+    var owner = org
     if (! _.idsEqual(post.by.userId, this.user._id)){
       owner = this.user.social.gh.username
     }
@@ -207,9 +209,12 @@ var get = {
         if (!_.idsEqual(post._id,r._id))  //-- for posts that were published before the git authoring stuff
           return cb(null, { unavailable: `The slug ${slug} alredy belongs to another post.` })
 
-      github.getRepo(null, slug, (e,repo) => {
+      github.getRepo(org, slug, (e,repo) => {
         if (repo) return cb(null, { unavailable: `The repo ${slug} already exist on the airpair org, try another name.` })
-        cb(null, { available: `The repo name ${slug} is available.` })
+        if (e.code == 404)
+          cb(null, { available: `The repo name ${slug} is available.` })
+        else
+          cb(e,repo)
       })
     })
   },
@@ -316,7 +321,7 @@ var save = {
   },
 
   propagateMDfromGithub(post, cb){
-    github.getFile(post.slug, "/post.md", null, null, (err, result) => {
+    github.getFile(post.slug, "/post.md", org, null, (err, result) => {
       var commit = result.sha
       post.md = result.string
       post.publishedCommit = commit
@@ -333,7 +338,11 @@ var save = {
 
   updateGithubHead(original, postMD, commitMessage, cb){
     var fork = !(_.idsEqual(original.by.userId, this.user._id))
-    github.updateFile(original.slug, "post.md", postMD, commitMessage, this.user, fork, (ee, result) => {
+    if (fork)
+      var owner = this.user.social.gh.username
+    else
+      owner = org
+    github.updateFile(owner, original.slug, "post.md", postMD, commitMessage, this.user, (ee, result) => {
       if (ee) return cb(ee)
       if (!original.published) {
         original.md = postMD

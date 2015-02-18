@@ -135,7 +135,7 @@ var github = {
   getRepo(owner, repo, cb){
     _authenticateAdmin()
     api.repos.get({
-      user: owner || org,
+      user: owner,
       repo: repo
     }, function(err, response){
       if (err) return verboseErrorCB(cb, err, 'getRepo')
@@ -169,23 +169,6 @@ var github = {
     this.addToTeam(user.social.gh.username, reviewerTeamId, user, function(err, result){
       if (err) return verboseErrorCB(cb, err, 'addToTeam', `${user.social.gh.username} ${reviewerTeamId}`)
       _this.fork(repo, user, cb)
-    })
-  },
-
-  getReviewRepos(user, cb){
-    _authenticateUser(user)
-
-    //TODO handle pagination
-    //will show all repos which it belongs to
-    api.repos.getFromOrg({
-      per_page: 100,
-      org: org,
-      type: "member" // [all,member or public]
-    }, function(err, res){
-      if (err) return verboseErrorCB(cb, err, 'getFromOrg', `${user.social.gh.username} ${org}`)
-      cb(null, _.map(res, function(repo){
-        return repo.name
-      }))
     })
   },
 
@@ -246,18 +229,13 @@ var github = {
     });
   },
 
-  updateFile(repo, path, content, msg, user, fork, cb){
-    //who is the org? airpair or user's account
-    if (fork)
-      var owner = user.social.gh.username
-    else
-      var owner = null //airpair or proper test account
+  updateFile(owner, repo, path, content, msg, user, cb){
     this.getFile(repo, path, owner, user, function(err, result){
       if (err) return verboseErrorCB(cb, err, 'updateFile/getFile', `${user.social.gh.username} ${repo} ${path}`)
       _authenticateUser(user)
       api.repos.updateFile({
         sha: result.sha,
-        user: owner || org,
+        user: owner,
         repo: repo,
         path: path,
         message: msg,
@@ -285,10 +263,8 @@ var github = {
     else {
       _authenticateUser(user)
     }
-
-
     api.repos.getContent({
-      user: owner || org,
+      user: owner,
       repo: repo,
       path: path
     }, function (err, resp){
@@ -336,7 +312,7 @@ var github = {
                 if (err) return verboseErrorCB(cb, err, 'addToTeam', `${repo} author team ${authorTeamId}`)
                 _this.addFile(repo, "post.md", post.md, "Initial Commit", user, function(err, result){
                   if (err && err === "file already exists"){
-                    _this.updateFile(repo, "post.md", post.md, "Reinitialize", user, false, function(err,result){
+                    _this.updateFile(org, repo, "post.md", post.md, "Reinitialize", user, function(err,result){
                       if (err) return verboseErrorCB(cb, err, 'updateFile [reinitialize]', `${repo} post.md`)
                       cb(null, {reviewTeamId, authorTeamId, owner:githubOwner, url:githubUrl, author: user.social.gh.username})
                     })
