@@ -190,15 +190,6 @@ var github = {
     })
   },
 
-  //return events across all repos
-  events(cb){
-    _authenticateAdmin()
-    api.events.getFromUserOrg({
-      user: config.auth.github.username,
-      org: org
-    }, cb)
-  },
-
   getScopes(user, cb){
     _authenticateUser(user)
     api.user.get({}, function(err, result){
@@ -271,6 +262,18 @@ var github = {
         cb(err, trimmedResults)
       }
     })
+  },
+
+  //only 90 days of data supported or 300 events
+  //see GitHub Docs https://developer.github.com/v3/activity/events/
+
+  //TODO should probably support pagination here..
+  repoEvents(owner, repo, cb){
+    _authenticateAdmin()
+    api.events.getFromRepo({
+      user: owner,
+      repo: repo,
+    }, cb)
   },
 
   getFile(owner, repo, path, user, cb){
