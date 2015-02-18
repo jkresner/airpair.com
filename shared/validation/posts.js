@@ -173,9 +173,8 @@ var validation = {
   getGitHEAD(user, post){
     var isOwner = _.idsEqual(post.by.userId, user._id)
     // var isEditor = user.roles && _.contains(user.roles, "editor")
-    //TODO fix this URL
     if (!user.social || !user.social.gh)
-      return `User must <a href="/auth/github?returnTo=/posts/me?fork=${post._id}" target="_self">authorize GitHub</a> to fork repository`
+      return `User must <a href="/auth/github?returnTo=/posts/edit/${post._id}" target="_self">authorize GitHub</a> to pull from GitHub`
   }
 
 }
