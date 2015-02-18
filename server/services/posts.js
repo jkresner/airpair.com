@@ -11,6 +11,8 @@ var {query, select, opts} = Data
 var selectCB              = select.cb
 var {selectFromObject}    = require('../../shared/util')
 
+var org = config.auth.github.org
+
 var get = {
 
   getById(id, cb) {
@@ -68,7 +70,7 @@ var get = {
     svc.searchOne({_id}, null, (e,r) => {
       if (e || !r) return cb(e,r)
       if (!r.submitted || !r.github) return selectCB.displayView(cb)(null, r)
-      get.getGitHEAD(r, (ee, head) => {
+      $callSvc(get.getGitHEAD, this)(r, (ee, head) => {
         if (head.string)
           r.md = head.string
         selectCB.displayView(cb)(null, r)
@@ -169,7 +171,40 @@ var get = {
   },
 
   getGitHEAD(post, cb){
-    github.getFile(post.slug, "/post.md", cb)
+    var owner = org
+    var forker = false
+    if (! _.idsEqual(post.by.userId, this.user._id)){
+      owner = this.user.social.gh.username
+      forker = true
+    }
+    github.getFile(owner, post.slug, "/post.md", this.user, (err,resp)=>{
+      if (!err){
+        return cb(null,resp);
+      }
+      if (!forker){
+        return cb(err,resp);
+      }
+
+      //for forker handle the case where they have deleted the fork
+      if (err.code === 404){
+        github.getRepo(owner, post.slug, (err,response) =>{
+          //the fork is gone
+          if (err.code === 404){
+            //redirect user to the create fork page
+            // /posts/fork/${post._id}
+            cb(Error(`No fork present. Create one <a href='/posts/fork/${post._id}'>here</a>`))
+          } else if (err){
+            $log("error retrieving repo in getGitHead")
+            cb(err, response)
+          } else {
+            cb(Error("post.md is missing, but fork exists"))
+          }
+        })
+      } else {
+        $log("unkown error getting file", err)
+        cb(err,resp)
+      }
+    })
   },
 
   checkSlugAvailable(post, slug, cb){
@@ -178,9 +213,12 @@ var get = {
         if (!_.idsEqual(post._id,r._id))  //-- for posts that were published before the git authoring stuff
           return cb(null, { unavailable: `The slug ${slug} alredy belongs to another post.` })
 
-      github.getRepo(slug, (e,repo) => {
+      github.getRepo(org, slug, (e,repo) => {
         if (repo) return cb(null, { unavailable: `The repo ${slug} already exist on the airpair org, try another name.` })
-        cb(null, { available: `The repo name ${slug} is available.` })
+        if (e.code == 404)
+          cb(null, { available: `The repo name ${slug} is available.` })
+        else
+          cb(Error(e),repo)
       })
     })
   },
@@ -221,13 +259,6 @@ function updateWithEditTouch(post, action, cb) {
     post.editHistory.push(post.lastTouch)
   svc.update(post._id, post, cb)
 }
-
-function githubScopes(cb){
-  github.getScopes(this.user, function(err,resp){
-    cb(err,resp)
-  })
-}
-
 
 var save = {
 
@@ -294,7 +325,7 @@ var save = {
   },
 
   propagateMDfromGithub(post, cb){
-    github.getFile(post.slug, "/post.md", (err, result) => {
+    github.getFile(org, post.slug, "/post.md", null, (err, result) => {
       var commit = result.sha
       post.md = result.string
       post.publishedCommit = commit
@@ -310,7 +341,12 @@ var save = {
   },
 
   updateGithubHead(original, postMD, commitMessage, cb){
-    github.updateFile(original.slug, "post.md", postMD, commitMessage, this.user, (ee, result) => {
+    var fork = !(_.idsEqual(original.by.userId, this.user._id))
+    if (fork)
+      var owner = this.user.social.gh.username
+    else
+      owner = org
+    github.updateFile(owner, original.slug, "post.md", postMD, commitMessage, this.user, (ee, result) => {
       if (ee) return cb(ee)
       if (!original.published) {
         original.md = postMD

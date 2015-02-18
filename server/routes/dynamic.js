@@ -4,8 +4,8 @@ import TagsAPI from '../api/tags'
 import RequestsApi from '../api/requests'
 var {trackView} = require('../middleware/analytics')
 var {authd} = require('../middleware/auth')
+var {populateUser} = require('../middleware/data')
 var util = require("../../shared/util")
-
 
 //-- TODO move into database evetuall
 var angular = {
@@ -108,7 +108,7 @@ export default function(app) {
       app.renderHbsViewData('post', null, (req, cb) => cb(null, req.post)))
 
 
-    .get('/posts/preview/:id', authd, function(req, res, next) {
+    .get('/posts/preview/:id', authd, populateUser, function(req, res, next) {
       $callSvc(PostsAPI.svc.getByIdForPreview, req)(req.params.id, (e,r) => {
         if (!r) return res.redirect('/posts/me')
         if (!_.idsEqual(r.by.userId,req.user._id) &&
