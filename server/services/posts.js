@@ -177,12 +177,12 @@ var get = {
       owner = this.user.social.gh.username
       forker = true
     }
-    github.getFile(post.slug, "/post.md", owner, this.user, (err,resp)=>{
+    github.getFile(owner, post.slug, "/post.md", this.user, (err,resp)=>{
       if (!err){
-        return cb(Error(err),resp);
+        return cb(null,resp);
       }
       if (!forker){
-        return cb(Error(err),resp);
+        return cb(err,resp);
       }
 
       //for forker handle the case where they have deleted the fork
@@ -195,14 +195,14 @@ var get = {
             cb(Error(`No fork present. Create one <a href='/posts/fork/${post._id}'>here</a>`))
           } else if (err){
             $log("error retrieving repo in getGitHead")
-            cb(Error(err), response)
+            cb(err, response)
           } else {
             cb(Error("post.md is missing, but fork exists"))
           }
         })
       } else {
         $log("unkown error getting file", err)
-        cb(Error(err),resp)
+        cb(err,resp)
       }
     })
   },
@@ -325,7 +325,7 @@ var save = {
   },
 
   propagateMDfromGithub(post, cb){
-    github.getFile(post.slug, "/post.md", org, null, (err, result) => {
+    github.getFile(org, post.slug, "/post.md", null, (err, result) => {
       var commit = result.sha
       post.md = result.string
       post.publishedCommit = commit
