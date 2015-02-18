@@ -357,6 +357,21 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
 .controller('PostForkCtrl', function($scope, $routeParams, $location, DataService, PostsUtil) {
   var _id = $routeParams.id
 
+  $scope.githubAuthed = () => {
+    return $scope.session.social && $scope.session.social.gh &&
+      $scope.session.social.gh.username
+  }
+
+  $scope.repoAuthorized = false
+  //
+  if(($scope.session.social && $scope.session.social.gh &&
+   $scope.session.social.gh.username)){
+    DataService.posts.getProviderScopes({}, (r)=> {
+      $scope.repoAuthorized = _.contains(r.github, "repo")
+      $scope.scopesFetched = true
+    })
+  }
+
   $scope.fork = () =>
     DataService.posts.fork($scope.post, (result) => {
       $location.path('/posts/me?forked='+result._id)

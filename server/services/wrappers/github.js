@@ -132,12 +132,15 @@ var github = {
     })
   },
 
-  getRepo(repoName, cb){
+  getRepo(owner, repo, cb){
     _authenticateAdmin()
-    api.repos.one({
-      org: org,
-      id: repoName
-    },cb)
+    api.repos.get({
+      user: owner,
+      repo: repo
+    }, function(err, response){
+      if (err) return verboseErrorCB(cb, err, 'getRepo')
+      cb(err, response)
+    })
   },
 
   addToTeam(githubUser, teamId, user, cb){
@@ -162,27 +165,10 @@ var github = {
 
   addContributor(user, repo, reviewerTeamId, cb){
     var _this = this;
-    $log(`addContributor ${repo} ${reviewerTeamId}`, repo)
+    // $log(`addContributor ${repo} ${reviewerTeamId}`, repo)
     this.addToTeam(user.social.gh.username, reviewerTeamId, user, function(err, result){
       if (err) return verboseErrorCB(cb, err, 'addToTeam', `${user.social.gh.username} ${reviewerTeamId}`)
       _this.fork(repo, user, cb)
-    })
-  },
-
-  getReviewRepos(user, cb){
-    _authenticateUser(user)
-
-    //TODO handle pagination
-    //will show all repos which it belongs to
-    api.repos.getFromOrg({
-      per_page: 100,
-      org: org,
-      type: "member" // [all,member or public]
-    }, function(err, res){
-      if (err) return verboseErrorCB(cb, err, 'getFromOrg', `${user.social.gh.username} ${org}`)
-      cb(null, _.map(res, function(repo){
-        return repo.name
-      }))
     })
   },
 
@@ -191,16 +177,6 @@ var github = {
      api.orgs.deleteTeam({
        id: teamId
      });
-  },
-
-  //DANGEROUS
-  deleteRepo(repo, cb){
-    _authenticateAdmin()
-    console.log("DELETING REPO", org, repo)
-    api.repos.delete({
-      user: org,
-      repo: repo
-    }, cb)
   },
 
   fork(repo, user, cb){
@@ -231,14 +207,14 @@ var github = {
     })
   },
 
-  addFile(repo, path, content, msg, user, cb){
+  addFile(owner, repo, path, content, msg, user, cb){
     if (user)
       _authenticateUser(user)
     else
       _authenticateAdmin()
 
     api.repos.createFile({
-      user: org,
+      user: owner,
       repo: repo,
       path: path,
       message: msg,
@@ -253,13 +229,13 @@ var github = {
     });
   },
 
-  updateFile(repo, path, content, msg, user, cb){
-    this.getFile(repo, path, function(err, result){
-      if (err) return verboseErrorCB(cb, err, 'updateFile', `${user.social.gh.username} ${repo} ${path}`)
+  updateFile(owner, repo, path, content, msg, user, cb){
+    this.getFile(owner, repo, path, user, function(err, result){
+      if (err) return verboseErrorCB(cb, err, 'updateFile/getFile', `${user.social.gh.username} ${repo} ${path}`)
       _authenticateUser(user)
       api.repos.updateFile({
         sha: result.sha,
-        user: org,
+        user: owner,
         repo: repo,
         path: path,
         message: msg,
@@ -280,11 +256,15 @@ var github = {
     })
   },
 
-  //TODO needs to work with user auth as well as admin
-  getFile(repo, path, cb){
-    _authenticateAdmin()
+  getFile(owner, repo, path, user, cb){
+    if (!user){
+      _authenticateAdmin()
+    }
+    else {
+      _authenticateUser(user)
+    }
     api.repos.getContent({
-      user: org,
+      user: owner,
       repo: repo,
       path: path
     }, function (err, resp){
@@ -318,7 +298,7 @@ var github = {
       var githubUrl = `https://github.com/${config.auth.github.org}/${repo}`
 
       setTimeout(function(){
-        _this.addFile(repo, "README.md", readmeMD, "Add README.md", null, function(err, result){
+        _this.addFile(org, repo, "README.md", readmeMD, "Add README.md", null, function(err, result){
           if (err && err === "file already exists")
             console.warn("README.md already exists on this repo")
           else if (err) return verboseErrorCB(cb, err, 'addFile', `${repo} README.md`)
@@ -330,9 +310,9 @@ var github = {
               var authorTeamId = result.id
               _this.addToTeam(githubOwner, authorTeamId, user, function(err, result){
                 if (err) return verboseErrorCB(cb, err, 'addToTeam', `${repo} author team ${authorTeamId}`)
-                _this.addFile(repo, "post.md", post.md, "Initial Commit", user, function(err, result){
+                _this.addFile(org, repo, "post.md", post.md, "Initial Commit", user, function(err, result){
                   if (err && err === "file already exists"){
-                    _this.updateFile(repo, "post.md", post.md, "Reinitialize", user, function(err,result){
+                    _this.updateFile(org, repo, "post.md", post.md, "Reinitialize", user, function(err,result){
                       if (err) return verboseErrorCB(cb, err, 'updateFile [reinitialize]', `${repo} post.md`)
                       cb(null, {reviewTeamId, authorTeamId, owner:githubOwner, url:githubUrl, author: user.social.gh.username})
                     })

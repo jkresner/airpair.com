@@ -143,9 +143,6 @@ var validation = {
   },
 
   updateGithubHead(user, original, postMD, commitMessage){
-    var isOwner = _.idsEqual(original.by.userId, user._id)
-    if (!isOwner)
-      return `Post head can only be updated by its owner`
     if (!user.social || !user.social.gh)
       return `User must authorize GitHub to update HEAD`
     if (!commitMessage)
@@ -176,9 +173,8 @@ var validation = {
   getGitHEAD(user, post){
     var isOwner = _.idsEqual(post.by.userId, user._id)
     // var isEditor = user.roles && _.contains(user.roles, "editor")
-
-    if (!isOwner)
-      return "Editing your fork via the AirPair editor is coming soon. For now, please edit your fork using your own tools."
+    if (!user.social || !user.social.gh)
+      return `User must <a href="/auth/github?returnTo=/posts/edit/${post._id}" target="_self">authorize GitHub</a> to pull from GitHub`
   }
 
 }
