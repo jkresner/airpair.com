@@ -179,10 +179,10 @@ var get = {
     }
     github.getFile(post.slug, "/post.md", owner, this.user, (err,resp)=>{
       if (!err){
-        return cb(err,resp);
+        return cb(Error(err),resp);
       }
       if (!forker){
-        return cb(err,resp);
+        return cb(Error(err),resp);
       }
 
       //for forker handle the case where they have deleted the fork
@@ -195,14 +195,14 @@ var get = {
             cb(Error(`No fork present. Create one <a href='/posts/fork/${post._id}'>here</a>`))
           } else if (err){
             $log("error retrieving repo in getGitHead")
-            cb(err, response)
+            cb(Error(err), response)
           } else {
-            cb("post.md is missing, but fork exists")
+            cb(Error("post.md is missing, but fork exists"))
           }
         })
       } else {
         $log("unkown error getting file", err)
-        cb(err,resp)
+        cb(Error(err),resp)
       }
     })
   },
@@ -218,7 +218,7 @@ var get = {
         if (e.code == 404)
           cb(null, { available: `The repo name ${slug} is available.` })
         else
-          cb(e,repo)
+          cb(Error(e),repo)
       })
     })
   },
