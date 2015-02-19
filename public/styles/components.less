@@ -637,7 +637,16 @@ article.faq {
 
 ul.stars {
   .ulNoStyle;
-  li { background:@lightorange;color:white;font-weight:bold;border-radius:50%;
-    width:20px;height:20px;text-align:center;font-size:13px;display:inline-block!important;
+  li {
+    background:url('../img/css/sm-icon-star.png');
+    background-size:100%;
+    background-repeat:no-repeat;
+    font-weight:bold;
+    border-radius:50%;
+    width:21px;height:21px;text-align:center;
+    font-size:13px;display:inline-block;
+  }
+  li.half {
+    width:12px;overflow:hidden;
   }
 }

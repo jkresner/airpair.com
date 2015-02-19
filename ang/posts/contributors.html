@@ -1,0 +1,14 @@
+<header>
+  <ol class="entry-meta breadcrumb">
+    <li><a href="/posts" target="_self">Posts</a></li>
+    <li><a href="/posts/me">My Posts</a></li>
+    <li class="current">Contributors</li>
+  </ol>
+</header>
+
+<section ng-if="post" id="contributors">
+
+    <div id="reviews" post-reviews reviews="post.reviews" byid="post.by.userId"></div>
+
+</section>
+

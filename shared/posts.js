@@ -15,6 +15,22 @@ module.exports = {
     var remainder = wordcount%50;
     var countWithoutRemainder = wordcount - remainder;
     return 500 - countWithoutRemainder;
+  },
+
+
+  extendWithReviewsSummary(post) {
+    post.stars = { total: 0 }
+    post.reviews= _.map(post.reviews, (r) => {
+      r.rating = _.find(r.questions,(q)=>q.key == 'rating').answer
+      r.feedback = _.find(r.questions,(q)=>q.key == 'feedback').answer
+      post.stars.total += parseInt(r.rating)
+      return r
+    })
+    if (post.stars.total > 0) {
+      post.stars.avg = post.stars.total/post.reviews.length
+    }
+
+    return post
   }
 
 }

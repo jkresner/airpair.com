@@ -26,100 +26,91 @@
 </section>
 
 
-<section id="posts" class="nomob">
+<section id="myposts">
 
-  <section id="myposts">
+  <section ng-if="contributions" id="contributions" class="nomob">
 
-    <h3>Posts by me
-      <div class="editOptions">
-        <a href="/posts/new" class="btn btn-sm">Start a post</a>
-      </div>
+    <h3 class="underline">My contributions
+      <a href="/posts/new" class="btn btn-sm">Start a post</a>
     </h3>
 
-    <p ng-if="myposts && myposts == 0">
-      You have not created any posts yet. Authoring posts on AirPair follow the following flow:
-
-      <img src="/static/img/pages/posts/post-authoring-flow.png" />
+    <p ng-if="contributions == 0">
+      <img src="/static/img/pages/posts/social-authoring.png" />
     </p>
 
 
-    <div ng-if="myposts && myposts.length > 0" class="myposts">
+    <div ng-if="contributions.length > 0" class="myposts">
       <table class="table table-striped">
-        <tr>
-          <th>Created</th>
-          <th>Status</th>
-          <th>Title</th>
-          <th>Tip</th>
-          <th></th>
-        </tr>
-        <tr ng-repeat="p in myposts">
-          <td>{{ p.created | publishedTime: 'MM.DD' }}</td>
-          <td>
-            <span ng-if="!p.submitted && !p.published">draft</span>
-            <span ng-if="p.submitted && !p.published">in review</span>
-            <span ng-if="p.published">published</span>
-          </td>
-          <td>
-            <a href="{{p.url}}" target="_blank" ng-if="p.submitted || p.published">{{ p.title }}</a>
-            <span ng-if="!(p.published || p.submitted)">{{ p.title }}</span>
-          </td>
-          <td><post-step-helper post="p"></post-step-helper></td>
-          <td>
-            <a href="/posts/edit/{{p._id}}" target="_blank">edit</a>
-            <a ng-click="delete(p._id)" ng-if="!(p.submitted || p.published)" style='color:red'>delete</a>
-          </td>
-        </tr>
+        <tbody>
+          <tr ng-repeat="p in contributions">
+            <td class="contributors">
+              <img ng-src="{{p.by.avatar}}?s=30" class="user">
+              <div class="forks" ng-if="p.forkers.length > 0">
+                + {{p.forkers.length}} fork<span ng-if="p.forks.length > 1">s</span>
+              </div>
+            </td>
+            <td class="title">
+              {{ p.title }}
+            </td>
+            <td class="status">
+              <label class="words">{{p.wordcount}} words</label>
+              <span ng-if="!p.submitted && !p.published">
+                <a href="/posts/edit/{{p._id}}" target="_self">draft
+                </a>
+              </span>
+              <span ng-if="p.submitted && !p.published">
+                <a href="/posts/review/{{p._id}}" target="_target">in review</a>
+              </span>
+              <span ng-if="p.published">
+                <a href="{{p.url}}" target="_target">published</a>
+              </span>
+              <div ng-if="p.submitted && p.reviews.length > 0">
+                <stars val="p.stars.avg"></stars>
+                <label>by {{p.reviews.length}}<span ng-if="p.reviews.length > 1">s</span></label>
+              </div>
+            </td>
+            <td class="edit">
+
+              <a ng-if="p.mine && p.github" href="https://github.com/airpair/{{p.slug}}" target="_blank" class="gh-white"></a>
+
+              <a ng-if="p.forked" href="https://github.com/{{session.social.gh.username}}/{{p.slug}}" target="_blank" class="gh-white fork"></a>
+
+              <a ng-if="p.mine && !p.submitted && !p.published" ng-click="delete(p._id)" title="delete" class="delete">x</a>
+
+              <!-- <a ng-if="!p.mine" ng-click="deleteFork(p._id)" title="delete fork" class="delete">x</a> -->
+
+              <a ng-if="p.submitted" href="/posts/contributors/{{p._id}}" class="contribitors"></a>
+
+              <a href="/posts/edit/{{p._id}}" title="edit" class="edit"></a>
+
+            </td>
+            <td class="tip"><post-step-helper post="p"></post-step-helper></td>
+          </tr>
+        </tbody>
       </table>
     </div>
 
   </section>
 
-  <section id="recent">
-    <h3>Newest posts<span><a href="/blog" target="_self" class="btn btn-sm">See all</a></span></h3>
+
+
+  <section ng-if="!session._id" id="recent" class="postTiles">
+    <h3 class="underline">Newest published posts <a href="/posts" target="_self" class="btn btn-sm btn-inverse">See all</a></h3>
     <a ng-href="{{p.url}}" target="_self" ng-repeat="p in recent">
-      <welcome-post-item post="p" ></welcome-post-item>
+      <post-tile post="p" ></post-tile>
     </a>
   </section>
 
 
-  <section id="contributions">
-    <h3>Posts I'm contributing to
 
-      <span>
-        <a href="/posts/in-community-review" class="btn btn-sm">Post in review</a>
-      </span>
-    </h3>
-    <br />
-    <p ng-if="!forks || forks.length == 0">You have not forked anyone else's posts. Check out <a href="/posts/in-community-review">posts in review</a>.</p>
-
-    <div ng-if="forks && forks.length > 0" class="forks">
-      <table class="table table-striped">
-        <tr>
-          <th>By</th>
-          <th>Status</th>
-          <th>Title</th>
-          <th></th>
-        </tr>
-        <tr ng-repeat="p in forks">
-          <td>{{ p.by.name }}</td>
-          <td>
-            <span ng-if="!p.submitted">in draft</span>
-            <span ng-if="p.submitted">in review</span>
-            <span ng-if="p.publishReady">published</span>
-          </td>
-          <td>
-            <a href="{{p.url}}" target="_blank" ng-if="p.published">{{ p.title }}</a>
-            <a href="/posts/review/{{p._id}}" target="_blank" ng-if="!p.published">{{ p.title }}</a>
-          </td>
-          <td class="edit">
-            <a href="/posts/edit/{{p._id}}">edit</a>
-            <a href="https://github.com/{{session.social.gh.username}}/{{p.slug}}" target="_blank" class="gh-white"></a>
-          </td>
-        </tr>
-      </table>
-    </div>
-
+  <section ng-if="session._id" id="inreview" class="postTiles">
+    <h3 class="underline">New posts in review <a href="/posts/in-community-review" target="_self" class="btn btn-sm btn-inverse">See all</a></h3>
+    <a ng-href="{{p.url}}" target="_self" ng-repeat="p in recent">
+      <post-tile post="p" ></post-tile>
+    </a>
   </section>
 
 
 </section>
+
+

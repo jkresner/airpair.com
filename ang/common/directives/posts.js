@@ -24,6 +24,20 @@ angular.module("APPostsDirectives", [])
 
 })
 
+
+.directive('postTile', function() {
+
+  return {
+    restrict: 'E',
+    template: require('./postTile.html'),
+    link(scope, element, attrs) {
+      scope.post = scope.$eval(attrs.post)
+    }
+  }
+
+})
+
+
 .directive('bannerPostcomp', function() {
   return { template: require('./bannerPostcomp.html') }
 })
@@ -35,14 +49,14 @@ angular.module("APPostsDirectives", [])
     scope: { reviews: '=reviews' },
     controller($scope, $rootScope, $element, $attrs) {
       $scope.session = $rootScope.session
-      $scope.post = _.extend($rootScope.post, {
+      $scope.post = _.extend($rootScope.post || $scope.$parent.post, {
         reviews:$scope.reviews,by:{userId:$attrs.byid} })
     }
   }
 })
 
 
-.directive('postComments', function() {
+.directive('postComments', function(PostsUtil) {
 
   return {
     template: require('./../../posts/comments.html'),
@@ -51,17 +65,9 @@ angular.module("APPostsDirectives", [])
       var postId = $scope.post._id
 
       var setScope = (post) => {
-        var reviews = post.reviews
-        var starsTotal = 0
-        $scope.reviews = _.map(reviews, (r) => {
-          r.rating = _.find(r.questions,(q)=>q.key == 'rating').answer
-          r.feedback = _.find(r.questions,(q)=>q.key == 'feedback').answer
-          starsTotal += parseInt(r.rating)
-          return r
-        })
-        if (starsTotal > 0) {
-          $scope.starsAvg = starsTotal/$scope.reviews.length
-        }
+        var post = PostsUtil.extendWithReviewsSummary(post)
+        $scope.reviews = post.reviews
+        $scope.starsAvg = post.stars.avg
       }
 
       setScope($scope.post)

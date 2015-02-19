@@ -35,6 +35,10 @@ var get = {
     cb(null, post)
   },
 
+  getByIdForContributors(post, cb) {
+    selectCB.statsView(cb)(null, post)
+  },
+
   getByIdForPublishing(post, cb) {
     ExpertSvc.getMe.call({user:{_id:post.by.userId}}, (e, expert) => {
       if (expert) {
@@ -141,22 +145,22 @@ var get = {
     svc.searchMany(query.published({ 'by.userId': userId }), options, selectCB.addUrl(cb))
   },
 
-  // getUsersPosts combines users interest posts and self authors
-  getUsersPosts(cb) {
-    $callSvc(get.getRecentPublished,this)((e,r) => {
-      if (!this.user) cb(e,r)
-      else {
-        r = _.first(r, 3)
-        var opts = { options: { sort: { 'created':-1, 'published':1  } } };
-        svc.searchMany({'by.userId':this.user._id},opts, selectCB.addUrl((ee,rr) => {
-          if (e || ee) return cb(e||ee)
-          var posts = rr.slice()
-          for (var p of r) {
-            if (!_.idsEqual(p.by.userId,this.user._id)) posts.push(p)
-          }
-          cb(null, posts)
-        }))
-      }
+  // Everything needed for airpair.com/posts/me
+  getMyPosts(cb) {
+    if (!this.user) return $callSvc(get.getRecentPublished,this)(cb)
+
+    var inReviewOpts = {  options: { sort: { 'submitted': -1 }, limit: 6 } }
+    svc.searchMany(query.inReview(), inReviewOpts, (e,r) => {
+
+      var opts = { options: { sort: { 'created':-1, 'published':1  } } };
+      svc.searchMany(query.myPosts(this.user._id), opts, selectCB.addUrl((ee,rr) => {
+        if (e || ee) return cb(e||ee)
+        var posts = rr.slice()
+        for (var p of r) {
+          if (!_.idsEqual(p.by.userId,this.user._id)) posts.push(p)
+        }
+        selectCB.statsViewList(cb)(null, posts)
+      }))
     })
   },
 
@@ -216,10 +220,6 @@ var get = {
     return cb(null, _.find(post.reviews,(r)=>_.idsEqual(r._id,reviewId)))
   },
 
-
-  // getTableOfContents(markdown, cb) {
-  //   return cb(null, {toc:Data.generateToc(markdown)})
-  // },
 }
 
 
