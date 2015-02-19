@@ -14,6 +14,16 @@ var Roles                 = require('../../shared/roles')
 
 var org = config.auth.github.org
 
+
+var setEventData = function(post, cb){
+  github.repoEvents(org, post.slug, (err,resp)=>{
+    if (err) return cb(err)
+    var existingEvents = post.github.events || []
+    post.github.events = _.union(existingEvents, resp)
+    cb(err,resp)
+  })
+}
+
 var get = {
 
   getById(id, cb) {
@@ -317,18 +327,25 @@ var save = {
   },
 
   propagateMDfromGithub(post, cb){
-    github.getFile(org, post.slug, "/post.md", null, (err, result) => {
-      var commit = result.sha
-      post.md = result.string
-      post.publishedCommit = commit
-      if (post.published) {
-        post.publishHistory.push({
-          commit, touch: svc.newTouch.call(this, 'publish')})
-        post.publishedBy = _.pick(this.user, '_id', 'name', 'email')
-        post.publishedCommit = commit
-        post.publishedUpdated = new Date()
-      }
-      updateWithEditTouch.call(this, post, 'propagateMDfromGithub', cb)
+    github.getStats(org, post.slug, this.user, null, (err,resp)=>{
+      post.github.stats = resp
+      setEventData(post, (err, resp) =>{
+        if(err) return cb(err)
+        github.getFile(org, post.slug, "/post.md", null, (err, result) => {
+          if (err) return cb(err)
+          var commit = result.sha
+          post.md = result.string
+          post.publishedCommit = commit
+          if (post.published) {
+            post.publishHistory.push({
+              commit, touch: svc.newTouch.call(this, 'publish')})
+            post.publishedBy = _.pick(this.user, '_id', 'name', 'email')
+            post.publishedCommit = commit
+            post.publishedUpdated = new Date()
+          }
+          updateWithEditTouch.call(this, post, 'propagateMDfromGithub', cb)
+        })
+      })
     })
   },
 
@@ -344,10 +361,13 @@ var save = {
         original.md = postMD
         original.publishedCommit = result.commit
       }
-      updateWithEditTouch.call(this, original, 'updateGitHEAD', (e,r) => {
-        if (e || !r) return cb(e,r)
-        r.md = postMD // hack for front-end
-        cb(null, r)
+      setEventData(original, (err,resp)=>{
+        if (err) return cb(er)
+        updateWithEditTouch.call(this, original, 'updateGitHEAD', (e,r) => {
+          if (e || !r) return cb(e,r)
+          r.md = postMD // hack for front-end
+          cb(null, r)
+        })
       })
     })
   },
