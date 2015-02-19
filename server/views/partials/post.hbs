@@ -1,9 +1,10 @@
 <header class="entry-header">
   <ol class="entry-meta breadcrumb">
     <li><a href="/posts" target="_self">Posts</a></li>
-    <li>
+    {{#if primarytag}}<li>
       <a href="{{ primarytag.postsUrl }}" target="_self">{{ primarytag.slug }}</a>
     </li>
+    {{/if}}
     <li>
       <span class="entry-author" itemprop="author" itemscope="itemscope" itemtype="//schema.org/Person">
       {{#if by.username}}

@@ -46,7 +46,7 @@
 
     <button class="btn" ng-click="save()" ng-disabled="post.saved">Save</button>
 
-    <a class="btn" href="/posts/info/{{post._id}}" ng-if="!post.published" ng-disabled="preview.wordcount < 500 || !post.saved">Edit info</a>
+    <a class="btn" href="/posts/info/{{post._id}}" ng-if="!post.published" ng-disabled="preview.wordcount < 500 || !post.saved">Post info</a>
 
     <a class="btn" href="/posts/preview/{{post._id}}" target="_blank"
       ng-disabled="!post.saved || !post.assetUrl || !post.tags || post.tags.length == 0">Preview</a>
@@ -54,10 +54,10 @@
     <a class="btn" href="/posts/publish/{{post._id}}" ng-if="post.submitted"
       ng-disabled="!post.saved">Publish</a>
 
-    <a class="btn"
+    <a class="btn" title="Submit post for community review"
       href="/posts/submit/{{post._id}}"
       ng-if="!post.submitted"
-      ng-disabled="notReviewReady">Submit for review</a>
+      ng-disabled="notReviewReady">Submit</a>
 
 
     <post-step-helper post="post"></post-step-helper>

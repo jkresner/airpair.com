@@ -41,7 +41,7 @@ export default function(app) {
     .get('/tags/search/:id', API.Tags.search)
     .get('/tags/:slug', authd, API.Tags.getBySlug)
 
-    .get('/posts/me', API.Posts.getUsersPosts)
+    .get('/posts/me', API.Posts.getMyPosts)
     .get('/posts/review', API.Posts.getPostsInReview)
     .get('/posts/recent', API.Posts.getRecentPublished)
     .get('/posts/by/:id', API.Posts.getUsersPublished)
@@ -57,6 +57,7 @@ export default function(app) {
     .get('/posts/forks/me', populateUser, API.Posts.getUserForks)
     .get('/posts/:post', API.Posts.getByIdForEditing)
     .get('/posts/:post/fork', API.Posts.getByIdForForking)
+    .get('/posts/:post/contributors', API.Posts.getByIdForContributors)
     .get('/posts/:post/publish', populateUser, API.Posts.getByIdForPublishing)
     .get('/posts/head/:post', populateUser, API.Posts.getGitHEAD)
     .get('/posts/check-slug/:post/:slug', API.Posts.checkSlugAvailable)

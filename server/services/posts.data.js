@@ -2,6 +2,7 @@ var marked              = require('marked')
 import generateToc      from './postsToc'
 import * as md5         from '../util/md5'
 var {selectFromObject}  = require('../../shared/util')
+var PostsUtil           = require('../../shared/posts')
 
 var topTapPages = ['angularjs']
 
@@ -77,6 +78,7 @@ var select = {
   },
   stats: {
     '_id': 1,
+    'title': 1,
     'by': 1,
     'meta': 1,
     'github': 1,
@@ -106,6 +108,14 @@ var select = {
       return rev
     })
   },
+  mapForkers(forkers) {
+    return _.map(forkers,(f)=> {
+      var ff = userCommentByte(f)
+      ff.username = f.social.gh.username
+      ff.userId = f.userId
+      return ff
+    })
+  },
   cb: {
     inflateHtml,
     addUrl(cb) {
@@ -131,7 +141,22 @@ var select = {
         if (e || !r) return cb(e,r)
         r = selectFromObject(r, select.stats)
         r.reviews = select.mapReviews(r.reviews)
+        r.forkers = select.mapForkers(r.forkers || [])
         cb(null,r)
+      }
+    },
+    statsViewList(cb) {
+      return (e,posts) => {
+        var statsR = []
+        for (var p of posts) {
+          var wordcount = PostsUtil.wordcount(p.md),
+              reviews = select.mapReviews(p.reviews),
+              forkers = select.mapForkers(p.forkers || [])
+          statsR.push(_.extend(selectFromObject(p, select.stats),
+            { reviews, forkers, wordcount }))
+        }
+
+        cb(null,statsR)
       }
     },
     displayView(cb, similarFn) {
@@ -145,7 +170,6 @@ var select = {
         r.primarytag = _.find(r.tags,(t) => t.sort==0) || r.tags[0]
         var topTagPage = _.find(topTapPages,(s) => r.primarytag.slug==s)
         r.primarytag.postsUrl = (topTagPage) ? `/${r.primarytag.slug}` : `/posts/tag/${r.primarytag.slug}`
-        r.forkers = r.forkers || []
 
         if (!r.published) r.meta = { noindex: true }
         else
@@ -154,6 +178,7 @@ var select = {
           r.showDisqus = moment(r.published) < moment('20150201', 'YYYYMMDD')
         }
 
+        r.forkers = select.mapForkers(r.forkers || [])
         r.reviews = select.mapReviews(r.reviews)
 
         if (!similarFn)
@@ -225,6 +250,13 @@ var query = {
         }
       }
     }
+  },
+
+  myPosts(userId) {
+    return {$or: [
+      { forkers: { $elemMatch: { userId } } },
+      { 'by.userId':userId }
+    ]}
   }
 }
 
