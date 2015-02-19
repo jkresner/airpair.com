@@ -33,9 +33,12 @@ angular.module('APDataSvc', [])
       publish: PUT((d)=>`/posts/publish/${d._id}`),
       deletePost: DELETE((d)=>`/posts/${d._id}`),
       submitForReview: PUT((d)=>`/posts/submit/${d._id}`),
-      addForker: PUT((d)=>`/posts/add-forker/${d._id}`)
-      // getByUsername: GET((d)=>`/posts/by/${d.username}`),
-      // getToc: GET((d)=>`/posts-toc`)
+      addForker: PUT((d)=>`/posts/add-forker/${d._id}`),
+      review: POST((d)=>`/posts/${d.postId}/review`),
+      reviewUpdate: PUT((d)=>`/posts/${d.postId}/review/${d._id}`),
+      reviewReply: PUT((d)=>`/posts/${d.postId}/review/${d._id}/reply`),
+      reviewUpvote: PUT((d)=>`/posts/${d.postId}/review/${d._id}/upvote`),
+      reviewDelete: DELETE((d)=>`/posts/${d.postId}/review/${d._id}`)
     }
 
 

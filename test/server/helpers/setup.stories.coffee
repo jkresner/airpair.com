@@ -120,6 +120,7 @@ stories = {
     b = { userId: author._id, name: author.name, bio: 'yo yo', avatar: author.avatar }
     d = { tags, title, by:b, slug, md: 'Test', assetUrl: 'http://youtu.be/qlOAbrvjMBo', submitted: new Date, published: new Date() }
     d = _.extend(d, postData)
+    d.reviews = [{by:{email:'jk@airpair.com'}}, {by:{email:'pg@airpair.com'}}, {by:{email:'ar@airpair.com'}}]
     POST '/posts', d, {}, (p) ->
       #PUT '/posts/publish/'+p._id, p, {}, (ppub) ->
       done()

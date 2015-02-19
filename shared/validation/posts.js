@@ -171,7 +171,7 @@ var validation = {
 
   review(user, post, review)
   {
-    var existing = _.find(post.reviews, (r)=>_.idsEqual(user._id, r.by_id))
+    var existing = _.find(post.reviews, (r)=>_.idsEqual(user._id, r.by._id))
     if (existing)
       return `You have already reviewed ${post.title}`
 
@@ -192,7 +192,8 @@ var validation = {
 
   reviewUpdate(user, post, original, update)
   {
-    return "reviewUpdate validation not implemented"
+    var isOwner = _.idsEqual(original.by._id, user._id)
+    if (!isOwner) return `Can only update your own review`
   },
 
   reviewReply(user, post, original, reply)
@@ -202,11 +203,14 @@ var validation = {
       return `Reply comment required`
   },
 
-  reviewUpvote(user, post, original, reply)
+  reviewUpvote(user, post, original)
   {
     var existing = _.find(original.votes, (v)=>_.idsEqual(user._id, v.by._id))
     if (existing)
       return `You already voted on this review[${original}]`
+    var isOwner = _.idsEqual(original.by._id, user._id)
+    if (isOwner)
+      return `Can not upvote yourself`
   },
 
   reviewDelete(user, post, original)
