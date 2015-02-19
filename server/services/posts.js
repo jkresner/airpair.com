@@ -10,13 +10,29 @@ var Data                  = require('./posts.data')
 var {query, select, opts} = Data
 var selectCB              = select.cb
 var {selectFromObject}    = require('../../shared/util')
+var Roles                 = require('../../shared/roles')
 
 var org = config.auth.github.org
+
+
+var setEventData = function(post, cb){
+  github.repoEvents(org, post.slug, (err,resp)=>{
+    if (err) return cb(err)
+    var existingEvents = post.github.events || []
+    post.github.events = _.union(existingEvents, resp)
+    cb(err,resp)
+  })
+}
 
 var get = {
 
   getById(id, cb) {
     svc.getById(id, cb)
+  },
+
+  //-- used for api param fn
+  getBySlug(slug, cb) {
+    svc.searchOne(query.published({slug}), null, selectCB.inflateHtml(cb))
   },
 
   getByIdForEditing(post, cb) {
@@ -57,15 +73,6 @@ var get = {
     })
   },
 
-  //-- used for api param fn
-  getBySlug(slug, cb) {
-    svc.searchOne(query.published({slug}), null, selectCB.inflateHtml(cb))
-  },
-
-  getBySlugForPublishedView(slug, cb) {
-    svc.searchOne(query.published({slug}), null, selectCB.displayView(cb, get.getSimilar))
-  },
-
   getByIdForPreview(_id, cb) {
     svc.searchOne({_id}, null, (e,r) => {
       if (e || !r) return cb(e,r)
@@ -76,6 +83,10 @@ var get = {
         selectCB.displayView(cb)(null, r)
       })
     })
+  },
+
+  getBySlugForPublishedView(slug, cb) {
+    svc.searchOne(query.published({slug}), null, selectCB.displayView(cb, get.getSimilar))
   },
 
   getByIdForReview(_id, cb) {
@@ -172,38 +183,29 @@ var get = {
 
   getGitHEAD(post, cb){
     var owner = org
-    var forker = false
-    if (! _.idsEqual(post.by.userId, this.user._id)){
-      owner = this.user.social.gh.username
-      forker = true
-    }
-    github.getFile(owner, post.slug, "/post.md", this.user, (err,resp)=>{
-      if (!err){
-        return cb(null,resp);
-      }
-      if (!forker){
-        return cb(err,resp);
-      }
 
-      //for forker handle the case where they have deleted the fork
-      if (err.code === 404){
-        github.getRepo(owner, post.slug, (err,response) =>{
-          //the fork is gone
-          if (err.code === 404){
-            //redirect user to the create fork page
-            // /posts/fork/${post._id}
-            cb(Error(`No fork present. Create one <a href='/posts/fork/${post._id}'>here</a>`))
-          } else if (err){
-            $log("error retrieving repo in getGitHead")
-            cb(err, response)
-          } else {
-            cb(Error("post.md is missing, but fork exists"))
-          }
+    if ( Roles.post.isForker(this.user, post) )
+      owner = this.user.social.gh.username
+    else if ( !Roles.post.isOwnerOrEditor(this.user, post) )
+      return cb(`Cannot get git HEAD. You have not forked ${post.slug}`)
+
+    $log('getGitHEAD', owner, post.slug)
+
+    github.getFile(owner, post.slug, "/post.md", this.user, (e,resp) => {
+      //for forker check the case where they have deleted the fork
+      if (e && e.code === 404 && owner != org)
+      {
+        github.getRepo(owner, post.slug, (err,response) => {
+          if (err && err.code === 404)
+            return cb(Error(`No fork present. <a href='/posts/fork/${post._id}'>Create new fork?</a>`))
+          else if (!err)
+            return cb(Error(`post.md of fork ${owner}/${post.slug} missing or corrupted`))
+          else
+            return cb(err)
         })
-      } else {
-        $log("unkown error getting file", err)
-        cb(err,resp)
       }
+      else
+        cb(e,resp)
     })
   },
 
@@ -325,18 +327,25 @@ var save = {
   },
 
   propagateMDfromGithub(post, cb){
-    github.getFile(org, post.slug, "/post.md", null, (err, result) => {
-      var commit = result.sha
-      post.md = result.string
-      post.publishedCommit = commit
-      if (post.published) {
-        post.publishHistory.push({
-          commit, touch: svc.newTouch.call(this, 'publish')})
-        post.publishedBy = _.pick(this.user, '_id', 'name', 'email')
-        post.publishedCommit = commit
-        post.publishedUpdated = new Date()
-      }
-      updateWithEditTouch.call(this, post, 'propagateMDfromGithub', cb)
+    github.getStats(org, post.slug, this.user, null, (err,resp)=>{
+      post.github.stats = resp
+      setEventData(post, (err, resp) =>{
+        if(err) return cb(err)
+        github.getFile(org, post.slug, "/post.md", null, (err, result) => {
+          if (err) return cb(err)
+          var commit = result.sha
+          post.md = result.string
+          post.publishedCommit = commit
+          if (post.published) {
+            post.publishHistory.push({
+              commit, touch: svc.newTouch.call(this, 'publish')})
+            post.publishedBy = _.pick(this.user, '_id', 'name', 'email')
+            post.publishedCommit = commit
+            post.publishedUpdated = new Date()
+          }
+          updateWithEditTouch.call(this, post, 'propagateMDfromGithub', cb)
+        })
+      })
     })
   },
 
@@ -352,10 +361,13 @@ var save = {
         original.md = postMD
         original.publishedCommit = result.commit
       }
-      updateWithEditTouch.call(this, original, 'updateGitHEAD', (e,r) => {
-        if (e || !r) return cb(e,r)
-        r.md = postMD // hack for front-end
-        cb(null, r)
+      setEventData(original, (err,resp)=>{
+        if (err) return cb(er)
+        updateWithEditTouch.call(this, original, 'updateGitHEAD', (e,r) => {
+          if (e || !r) return cb(e,r)
+          r.md = postMD // hack for front-end
+          cb(null, r)
+        })
       })
     })
   },

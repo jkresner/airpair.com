@@ -509,7 +509,7 @@ module.exports = () => describe("API: ", function() {
               })
             })
           })
-        }, 2000)
+        }, 1000)
       })
     })
   })
@@ -530,7 +530,7 @@ module.exports = () => describe("API: ", function() {
               })
             })
           })
-        }, 2000)
+        }, 1000)
       })
     })
   })
@@ -551,7 +551,7 @@ module.exports = () => describe("API: ", function() {
               })
             })
           })
-        }, 2000)
+        }, 1000)
       })
     })
   })
@@ -579,7 +579,7 @@ module.exports = () => describe("API: ", function() {
               })
             })
           })
-        }, 2000)
+        }, 1000)
       })
     })
   })
@@ -696,7 +696,7 @@ module.exports = () => describe("API: ", function() {
 
                   })
                 })
-              }, 2000)
+              }, 1000)
             })
           })
         })
@@ -725,12 +725,12 @@ module.exports = () => describe("API: ", function() {
                   github.getRepo(user.social.gh.username, title, function(err, response){
                     expect(err.code).to.equal(404)
                     GET(`/posts/head/${p1._id}`, {status: 400}, function(resp){
-                      expect(resp.message).to.match(/No fork present. Create one/)
+                      expectStartsWith(resp.message, `No fork present.`)
                       done()
                     })
                   })
                 })
-              }, 2000)
+              }, 1000)
             })
           })
         })
@@ -747,7 +747,7 @@ module.exports = () => describe("API: ", function() {
         PUT(`/posts/submit/${p1._id}`, d1, {}, function(resp){
           var token = "fd65392d8926f164755061e70a852d4ebe139e09"
           var username = "airpairtester45"
-          addAndLoginLocalGithubUser("robot24", {token,username}, function(user){
+          addAndLoginLocalGithubUser("robot25", {token,username}, function(user){
             expect(user.social.gh.username).to.equal("airpairtester45")
             PUT(`/posts/add-forker/${p1._id}`, {}, {}, function(resp){
               expect(resp.forkers.length).to.equal(1)
@@ -764,7 +764,6 @@ module.exports = () => describe("API: ", function() {
       })
     })
   })
-
 
   it.only("allows a fork to be clobbered with the latest from master", function(done){
     addAndLoginLocalGithubUser("robot25", {}, function(s) {
@@ -796,4 +795,89 @@ module.exports = () => describe("API: ", function() {
     })
   })
 
+  it("sends back event stats and event data when propgated from github", function(done){
+    addAndLoginLocalGithubUser("robot23", {}, function(s) {
+      var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
+      var title = "test" + Math.floor(Math.random() * 100000000)
+      var d1 = { title: title, slug:title, by: by, md: lotsOfWords, assetUrl: 'http://youtu.be/qlOAbrvjMBo'}
+      POST('/posts', d1, {}, function(p1) {
+        PUT(`/posts/submit/${p1._id}`, d1, {}, function(resp){
+          PUT(`/posts/propagate-head/${p1._id}`, {}, {}, function(resp){
+            var stats = resp.github.stats;
+            var author = _.find(stats, function(stat){
+              return stat.author === "airpairtestreviewer"
+            });
+            expect(author).to.exist()
+            //author has one total commit (for the post)
+            expect(author.total).to.equal(1)
+            var admin = _.find(stats, function(stat){
+              return stat.author === "airpairtest"
+            });
+            expect(admin).to.exist()
+            //admin has one total commit (for the README)
+            expect(admin.total).to.equal(1)
+
+            //should see a commit event for post.md
+
+            var commitEvent = _.find(resp.github.events, function(event){
+              return event.actor.login === "airpairtestreviewer" &&
+               event.type === "PushEvent"
+            })
+            expect(commitEvent).to.exist()
+            expect(commitEvent.payload.commits.length).to.equal(1)
+            expect(commitEvent.payload.commits[0].message).to.equal("Initial Commit")
+            done()
+          })
+        })
+      })
+    })
+  })
+
+  it('records new events when head is updated', function(done){
+    addAndLoginLocalGithubUser("robot26", {}, function(s) {
+      var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
+      var title = "test" + Math.floor(Math.random() * 100000000)
+      var d1 = { title: title, slug:title, by: by, md: lotsOfWords, assetUrl: 'http://youtu.be/qlOAbrvjMBo'}
+
+      var prefix1 = "Prefix 1: "
+      var prefix2 = "Second Prefix: "
+
+
+      POST('/posts', d1, {}, function(p1) {
+        PUT(`/posts/submit/${p1._id}`, d1, {}, function(resp){
+          LOGIN('edap', data.users['edap'], function(editor) {
+            PUT(`/posts/${p1._id}`, resp, {}, function(resp){
+              LOGIN(s.userKey, data.users[s.userKey], (author)=>{
+                PUT(`/posts/update-github-head/${p1._id}`, {md: `${prefix1}${lotsOfWords}`, commitMessage: "commit 1"}, {}, function(resp){
+                  expect(resp.github.events).to.exist
+                  //give time for the first update to be assimilated into github's event stream
+                  setTimeout(function(){
+                    PUT(`/posts/update-github-head/${p1._id}`, {md: `${prefix2}${lotsOfWords}`, commitMessage: "commit 2"}, {}, function(resp){
+                      expect(resp.github.events).to.exist
+                      var commit1Event = _.find(resp.github.events, (event)=>{
+                        if (event.type === "PushEvent" &&
+                          event.payload.commits[0].message === "commit 1"){
+                            return true
+                        }
+                      })
+                      expect(commit1Event).to.exist()
+                      done()
+                    })
+                  }, 2000)
+                })
+              })
+            })
+          })
+        })
+      })
+    })
+  })
+
+  it("github event call supports pagination", function(done){
+    github.repoEvents("JustASimpleTestOrg", "test16666548", function(err, resp){
+      expect(resp.length).to.be.above(30) //30 events per page
+      expect(resp.length).to.equal(64)
+      done()
+    })
+  })
 })

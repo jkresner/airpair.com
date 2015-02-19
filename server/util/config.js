@@ -31,7 +31,6 @@ var cfg = {
       clientID: '378dac2743563e96c747',
       clientSecret: 'f52d233259426f769850a13c95bfc3dbe7e3dbf2',
       adminAccessToken: '73922088f4216d4cd12cff292da1a778b252ec48',
-      adminUsername: "airpairtest",
       org: 'JustASimpleTestOrg',
       privateRepos: false,
       scope: [ 'user', 'repo']
@@ -223,7 +222,6 @@ module.exports = function(env, appdir) {
 
     cfg.auth.github.clientID = process.env.AUTH_GITHUB_CLIENTID
     cfg.auth.github.clientSecret = process.env.AUTH_GITHUB_CLIENTSECRET
-    cfg.auth.github.adminUsername = process.env.AUTH_GITHUB_ADMIN_USERNAME
     cfg.auth.github.adminAccessToken = process.env.AUTH_GITHUB_ADMIN_ACCESSTOKEN
     cfg.auth.github.org = process.env.AUTH_GITHUB_ORG
     cfg.auth.github.privateRepos = true
