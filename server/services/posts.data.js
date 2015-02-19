@@ -145,7 +145,11 @@ var select = {
         r.forkers = r.forkers || []
 
         if (!r.published) r.meta = { noindex: true }
-
+        else
+        {
+          //-- Stop using disqus once deployed the review system
+          r.showDisqus = moment(r.published) < moment('20150201', 'YYYYMMDD')
+        }
 
         if (!similarFn)
           similarFn = (p, done) => done(null,[])
