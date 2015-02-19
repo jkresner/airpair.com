@@ -27,5 +27,17 @@ module.exports = {
       }
       return false
     }
+  },
+  post: {
+    isOwnerOrEditor(user, post) {
+      var isAdmin = _.contains(user.roles, 'admin')
+      var isEditor = _.contains(user.roles, 'editor')
+      var isOwner = _.idsEqual(user._id, post.by.userId)
+
+      return isAdmin || isEditor || isOwner
+    },
+    isForker(user, post) {
+      return _.find(post.forkers, (f)=>_.idsEqual(user._id, f.userId))
+    }
   }
 }

@@ -1,4 +1,5 @@
 var {validSlug,wordcount,wordsTogoForReview} = require('../posts')
+var Roles = require('../roles')
 
 
 var validation = {
@@ -12,11 +13,7 @@ var validation = {
   },
 
   getByIdForPreview(user, post) {
-    var isAdmin = _.contains(user.roles, 'admin')
-    var isEditor = _.contains(user.roles, 'editor')
-    var isOwner = _.idsEqual(user._id, post.by.userId)
-
-    if (!isAdmin && !isEditor && !isOwner) return "Post not available for preview"
+    if (!Roles.post.isOwnerOrEditor(user, post)) return "Post not available for preview"
   },
 
   getByIdForPublish(user, post) {
