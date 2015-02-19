@@ -747,7 +747,7 @@ module.exports = () => describe("API: ", function() {
         PUT(`/posts/submit/${p1._id}`, d1, {}, function(resp){
           var token = "fd65392d8926f164755061e70a852d4ebe139e09"
           var username = "airpairtester45"
-          addAndLoginLocalGithubUser("robot24", {token,username}, function(user){
+          addAndLoginLocalGithubUser("robot25", {token,username}, function(user){
             expect(user.social.gh.username).to.equal("airpairtester45")
             PUT(`/posts/add-forker/${p1._id}`, {}, {}, function(resp){
               expect(resp.forkers.length).to.equal(1)
@@ -804,7 +804,7 @@ module.exports = () => describe("API: ", function() {
   })
 
   it('records new events when head is updated', function(done){
-    addAndLoginLocalGithubUser("robot23", {}, function(s) {
+    addAndLoginLocalGithubUser("robot26", {}, function(s) {
       var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
       var title = "test" + Math.floor(Math.random() * 100000000)
 
@@ -851,6 +851,14 @@ module.exports = () => describe("API: ", function() {
           })
         })
       })
+    })
+  })
+
+  it("github event call supports pagination", function(done){
+    github.repoEvents("JustASimpleTestOrg", "test16666548", function(err, resp){
+      expect(resp.length).to.be.above(30) //30 events per page
+      expect(resp.length).to.equal(64)
+      done()
     })
   })
 })

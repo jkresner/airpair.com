@@ -267,13 +267,32 @@ var github = {
   //only 90 days of data supported or 300 events
   //see GitHub Docs https://developer.github.com/v3/activity/events/
 
-  //TODO should probably support pagination here..
   repoEvents(owner, repo, cb){
     _authenticateAdmin()
+    var allEvents = []
+
     api.events.getFromRepo({
       user: owner,
       repo: repo,
-    }, cb)
+    }, function(err,resp){
+      if (err) return cb(err)
+      fetchRemainingPages(resp, function(err,resp){
+        if (err) return cb(err)
+        cb(null, allEvents)
+      })
+    })
+
+    function fetchRemainingPages(resp, cb){
+      allEvents = allEvents.concat(resp)
+      if (api.hasNextPage(resp)){
+        api.getNextPage(resp, function(err, resp){
+          if (err) return cb(err)
+          fetchRemainingPages(resp, cb)
+        })
+      } else {
+        cb(null, null)
+      }
+    }
   },
 
   getFile(owner, repo, path, user, cb){
