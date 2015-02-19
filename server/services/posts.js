@@ -364,7 +364,9 @@ var save = {
       if (e) return cb(e)
       var { name, email, social } = this.user
       post.forkers = post.forkers || []
-      post.forkers.push({ userId: this.user._id, name, email, social })
+      var existing = _.find(post.forkers, (f)=>_.idsEqual(f.userId,this.user._id))
+      if (!existing)
+        post.forkers.push({ userId: this.user._id, name, email, social })
       svc.update(post._id, post, cb)
     })
   },
@@ -383,12 +385,20 @@ var saveReviews = {
     review.type = `post-survey-inreview`
     if (post.published) review.type.replace('inreview','published')
 
+    post.reviews = post.reviews || []
     post.reviews.push(review)
+
     svc.update(post._id, post, selectCB.statsView(cb))
+
+    var rating = _.find(review.questions,(q)=>q.key=='rating').answer
+    var comment = _.find(review.questions,(q)=>q.key=='feedback').answer
+    mailman.sendPostReviewNotification(this.user, post._id, post.title, review.by.name, rating, comment)
   },
 
   reviewUpdate(post, original, reviewUpdated, cb) {
-
+    var review = _.find(post.reviews,(r)=>_.idsEqual(r._id,original._id))
+    review = _.extend(review,reviewUpdated)
+    svc.update(post._id, post, selectCB.statsView(cb))
   },
 
   reviewReply(post, original, reply, cb) {

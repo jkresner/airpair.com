@@ -1,0 +1,30 @@
+<form ng-if="data && show" id="postReviewForm" novalidate name="postReviewForm" ng-submit="submitReview(postReviewForm.$valid, data)">
+
+  <div class="question multiple-choice stars" data-key="rating" form-group>
+    <label class="control-label" for="postRating">How would you rate the quality of this post?</label>
+    <select form-control id="postRating" name="rating" ng-model="data.rating" required tabindex="1203">
+      <option value="1">1 star (not ready)</option>
+      <option value="2">2 stars (needs works)</option>
+      <option value="3">3 stars (average)</option>
+      <option value="4">4 stars (good)</option>
+      <option value="5">5 stars (exceptional)</option>
+    </select>
+    <div class="error" ng-if="formGroup.showError(postReviewForm.rating)" ng-messages="postReviewForm.rating.$error">
+      <div ng-message="required">Star rating required</div>
+    </div>
+  </div>
+
+  <div class="question paragraph" data-key="feedback" form-group>
+    <label class="control-label" for="postFeedback" style="display:none">Overall comment</label>
+    <textarea form-control id="postFeedback" name="feedback" ng-model="data.feedback"  placeholder="Why did give this post {{data.rating}} stars?" required tabindex="1204" ng-disabled="!data.rating"></textarea>
+    <div class="error" ng-if="formGroup.showError(postReviewForm.feedback)" ng-messages="postReviewForm.feedback.$error">
+      <div ng-message="required">Feedback required</div>
+    </div>
+  </div>
+
+  <input type="submit" value="Save review" class="btn"
+    ng-disabled="!data.rating || !data.feedback || (existing.rating == data.rating && existing.feedback == data.feedback)" />
+
+  <div form-errors></div>
+
+</form>

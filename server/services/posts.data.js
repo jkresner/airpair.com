@@ -96,6 +96,16 @@ var select = {
   generateToc(md) {
     marked(generateToc(md))
   },
+  mapReviews(reviews) {
+    return _.map(reviews,(rev)=> {
+      rev.by = userCommentByte(rev.by)
+      rev.votes = _.map(rev.votes || [], (vote) =>
+        _.extend(vote, {by: userCommentByte(vote.by)}) )
+      rev.replies = _.map(rev.replies || [], (reply) =>
+        _.extend(reply, {by: userCommentByte(reply.by)}) )
+      return rev
+    })
+  },
   cb: {
     inflateHtml,
     addUrl(cb) {
@@ -120,14 +130,7 @@ var select = {
       return (e,r) => {
         if (e || !r) return cb(e,r)
         r = selectFromObject(r, select.stats)
-        r.reviews = _.map(r.reviews, (rev) => {
-          rev.by = userCommentByte(rev.by)
-          rev.votes = _.map(rev.votes || [], (vote) =>
-            _.extend(vote, {by: userCommentByte(vote.by)}) )
-          rev.replies = _.map(rev.replies || [], (reply) =>
-            _.extend(reply, {by: userCommentByte(reply.by)}) )
-          return rev
-        })
+        r.reviews = select.mapReviews(r.reviews)
         cb(null,r)
       }
     },
@@ -151,12 +154,14 @@ var select = {
           r.showDisqus = moment(r.published) < moment('20150201', 'YYYYMMDD')
         }
 
+        r.reviews = select.mapReviews(r.reviews)
+
         if (!similarFn)
           similarFn = (p, done) => done(null,[])
 
         similarFn(r, (ee,similar) => {
           r.similar = similar
-          cb(null,r)
+          cb(null, r)
         })
       })
     }

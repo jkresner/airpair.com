@@ -6,10 +6,12 @@
 
 section.notifications {
   > #postinreview {
-    h1 { font-size:42px;margin-top:0;
-      img { height:48px;margin-top:-8px }
+    h2 { font-size:24px;margin:0 auto;text-align:center;font-weight:bold;
+      color:@blue;
+      img { height:34px;margin-top:-8px }
     }
     p { font-size:16px;max-width:80%;margin:10px auto }
+    a { font-weight:bold }
   }
 }
 
@@ -197,6 +199,13 @@ article.postclean {
     }
  }
 
+  // .grayRail {
+  //   background:@gitgray;
+  //   position:absolute;
+  //   width:@sideRailWidth;
+  //   top:0;bottom:0;right:0;
+  // }
+
   .rail {
     float:right;
     clear:right;
@@ -355,7 +364,7 @@ article.postclean {
   }
 
   #disqus_thread {
-    margin-top:60px;
+    padding-top:20px;
     background:white;
     min-height:700px;
     z-index:2;
@@ -426,13 +435,61 @@ article.postclean {
   }
 }
 
+#reviews {
+  padding:30px 0 0 0;
+  position:relative;
+  background:white;
+  form { .lightblueForm;padding-top:15px;
+    text-align:left;
+    textarea { min-height:100px }
+    h4 { font-size:24px }
+    .btn { width:100% }
+    .stars {
+      .control-label { font-size:22px;font-weight:normal; }
+    }
+  }
+  .noReviews { border-top:solid 1px @lightblue;margin-top:5px;padding-top:10px }
+  ul.reviews {
+    max-width:640px;
+    .ulNoStyle;
+    > li {
+      display:block;border-top:solid 1px @lightblue;
+      position:relative;
+      padding:10px 0 10px 50px;
+      img.user { margin-right:5px;position:absolute;left:0;top:14px }
+      .stars { position:absolute;right:0;top:0px }
+      label { font-size:12px;color:@blue }
+      time { font-size:10px }
+      p { line-height:21px;margin-top:0px;color:#3f4549;font-size:15px }
+      header { border:none;margin-bottom:2px }
+      footer {
+        menu { padding-left:0;margin-top:0;
+          span {
+            font-family: 'Helvetica Neue', arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            line-height:13px;font-size:13px;
+            font-weight:500
+          }
+          a { color:rgba(0, 39, 59, 0.35); }
+          a:hover { color:@orangehighlight }
+        }
+        .bullet { font-weight:100; }
+      }
+    }
+  }
+}
+
 #posts.similar {
   padding:20px 0;
   position:relative;
   background:white;
   z-index:3;
+}
+
+#posts.similar.afterdisqus {
   margin-top:-150px;
 }
+
 
 section.editornotsupported {
   h3 { font-size:20px }
@@ -505,7 +562,6 @@ section#posteditor {
       border-right:solid 2px @bluegray;
     }
   }
-
 
   .form-actions {
     height:110px;
