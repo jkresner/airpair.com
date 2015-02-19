@@ -1,5 +1,6 @@
 import {getHashId} from '../../server/services/postsToc'
 var GitHubApi = require("github")
+var postUtil = require("../../shared/posts")
 var githubApi = new GitHubApi({
   // required
   version: "3.0.0",
@@ -803,7 +804,7 @@ module.exports = () => describe("API: ", function() {
     })
   })
 
-  it('records new events when head is updated', function(done){
+  it.only('records new events when head is updated', function(done){
     addAndLoginLocalGithubUser("robot26", {}, function(s) {
       var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
       var title = "test" + Math.floor(Math.random() * 100000000)
@@ -831,6 +832,11 @@ module.exports = () => describe("API: ", function() {
                         }
                       })
                       expect(commit1Event).to.exist()
+
+                      var commits = postUtil.extractCommits(resp.github.events)
+                      console.log("COMMITS", commits)
+                      expect(commits[0].message).to.equal("Initial Commit")
+                      expect(commits[1].message).to.equal("commit 1")
                       done()
                     })
                   }, 2000)

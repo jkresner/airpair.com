@@ -19,7 +19,15 @@ var setEventData = function(post, cb){
   github.repoEvents(org, post.slug, (err,resp)=>{
     if (err) return cb(err)
     var existingEvents = post.github.events || []
-    post.github.events = _.union(existingEvents, resp)
+
+    var uniqueEvents = _.uniq(existingEvents.concat(resp), false, function(event){
+      return event.id
+    })
+
+    post.github.events = uniqueEvents.sort(function(a,b){
+      a.created_at > b.created_at
+    })
+
     cb(err,resp)
   })
 }

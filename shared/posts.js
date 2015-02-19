@@ -15,6 +15,23 @@ module.exports = {
     var remainder = wordcount%50;
     var countWithoutRemainder = wordcount - remainder;
     return 500 - countWithoutRemainder;
-  }
+  },
 
+  extractCommits(events){
+    var commits = []
+    events.forEach(function(event){
+      if (event.type === "PushEvent")
+        commits.push(
+          {
+            author: event.payload.commits[0].author.name,
+            message: event.payload.commits[0].message,
+            date: event.created_at
+          }
+        )
+    });
+    commits = commits.sort(function(a,b){
+      return a.date > b.date
+    })
+    return commits;
+  }
 }
