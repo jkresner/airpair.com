@@ -57,7 +57,7 @@ export default function(app) {
     .get('/posts/forks/me', populateUser, API.Posts.getUserForks)
     .get('/posts/:post', API.Posts.getByIdForEditing)
     .get('/posts/:post/fork', API.Posts.getByIdForForking)
-    .get('/posts/:post/publish', API.Posts.getByIdForPublishing)
+    .get('/posts/:post/publish', populateUser, API.Posts.getByIdForPublishing)
     .get('/posts/head/:post', populateUser, API.Posts.getGitHEAD)
     .get('/posts/check-slug/:post/:slug', API.Posts.checkSlugAvailable)
     .post('/posts', API.Posts.create)
@@ -68,7 +68,6 @@ export default function(app) {
     .put('/posts/propagate-head/:post', populateUser, API.Posts.propagateMDfromGithub)
     .put('/posts/update-github-head/:post', populateUser, API.Posts.updateGithubHead)
     .delete('/posts/:post', API.Posts.deleteById)
-    // .post('/posts-toc', API.Posts.getTableOfContents)
 
     .post('/posts/:post/review', API.Posts.review)
     .put('/posts/:post/review/:postreview', API.Posts.reviewUpdate)

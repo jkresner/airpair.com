@@ -41,7 +41,6 @@ var get = {
         post.by.expertId = expert._id
         post.by.username = expert.username
       }
-
       if (!post.tmpl)
         post.tmpl = 'default'
 
@@ -54,7 +53,7 @@ var get = {
 
       if (!post.github) return cb(null, post)
 
-      get.getGitHEAD(post, (ee, head) => {
+      $callSvc(get.getGitHEAD, this)(post, (ee, head) => {
         if (!ee && head.string)
           post.mdHEAD = head.string
         cb(ee, post)
@@ -291,6 +290,10 @@ var save = {
     post.tmpl = publishData.tmpl
     post.meta = publishData.meta
     post.meta.ogType = 'article'
+
+    if (post.meta.canonical.indexOf('/') == 0)
+      post.meta.canonical = post.meta.canonical.replace('/', 'https://www.airpair.com/')
+
     post.meta.ogUrl = post.meta.canonical
 
     // if (post.by.expertId)

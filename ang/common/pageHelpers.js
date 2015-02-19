@@ -129,7 +129,7 @@ angular.module("APPageHelpers", [])
 
   this.loadPoSt = function()
   {
-    window.pwidget_config = { shareQuote: false, afterShare: false, counter: true };
+    window.pwidget_config = { shareQuote: false, afterShare: false, counter: true, copypaste: false };
     var p = document.createElement('script');
     p.type = 'text/javascript';
     p.async = true;
