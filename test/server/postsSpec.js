@@ -807,15 +807,6 @@ module.exports = () => describe("API: ", function() {
     addAndLoginLocalGithubUser("robot26", {}, function(s) {
       var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
       var title = "test" + Math.floor(Math.random() * 100000000)
-
-      var oldEvent = {
-        type: "PushEvent",
-        payload: {
-          commits: [
-            {message: 'ancient commit message'}
-          ]
-        }
-      }
       var d1 = { title: title, slug:title, by: by, md: lotsOfWords, assetUrl: 'http://youtu.be/qlOAbrvjMBo'}
 
       var prefix1 = "Prefix 1: "
@@ -825,26 +816,24 @@ module.exports = () => describe("API: ", function() {
       POST('/posts', d1, {}, function(p1) {
         PUT(`/posts/submit/${p1._id}`, d1, {}, function(resp){
           LOGIN('edap', data.users['edap'], function(editor) {
-            resp.github.events = [oldEvent]
             PUT(`/posts/${p1._id}`, resp, {}, function(resp){
               LOGIN(s.userKey, data.users[s.userKey], (author)=>{
                 PUT(`/posts/update-github-head/${p1._id}`, {md: `${prefix1}${lotsOfWords}`, commitMessage: "commit 1"}, {}, function(resp){
                   expect(resp.github.events).to.exist
-                  PUT(`/posts/update-github-head/${p1._id}`, {md: `${prefix2}${lotsOfWords}`, commitMessage: "commit 2"}, {}, function(resp){
-                    expect(resp.github.events).to.exist
-                    var commit1Event = _.find(resp.github.events, (event)=>{
-                      if (event.type === "PushEvent" &&
-                        event.payload.commits[0].message === "commit 1"){
-                          return true
-                      }
+                  //give time for the first update to be assimilated into github's event stream
+                  setTimeout(function(){
+                    PUT(`/posts/update-github-head/${p1._id}`, {md: `${prefix2}${lotsOfWords}`, commitMessage: "commit 2"}, {}, function(resp){
+                      expect(resp.github.events).to.exist
+                      var commit1Event = _.find(resp.github.events, (event)=>{
+                        if (event.type === "PushEvent" &&
+                          event.payload.commits[0].message === "commit 1"){
+                            return true
+                        }
+                      })
+                      expect(commit1Event).to.exist()
+                      done()
                     })
-                    expect(commit1Event).to.exist()
-                    var oldEvent = _.find(resp.github.events, (event)=>{
-                      return event.type == "PushEvent" && event.payload.commits[0].message === "ancient commit message"
-                    })
-                    expect(oldEvent).to.exist()
-                    done()
-                  })
+                  }, 2000)
                 })
               })
             })

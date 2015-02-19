@@ -126,7 +126,7 @@ var validation = {
       return `This post has already been submitted for review`
     if (!post.md)
       return `Posts markdown required`
-    if (post.github && post.github.repoInfo)
+    if (post.github)
       return `Post already has associated git repo`
     var wcount = wordcount(post.md)
     if (wordsTogoForReview(wcount) > 0)
