@@ -96,18 +96,14 @@
 
   <section ng-if="!session._id" id="recent" class="postTiles">
     <h3 class="underline">Newest published posts <a href="/posts" target="_self" class="btn btn-sm btn-inverse">See all</a></h3>
-    <a ng-href="{{p.url}}" target="_self" ng-repeat="p in recent">
-      <post-tile post="p" ></post-tile>
-    </a>
+    <post-tile post="p" ng-repeat="p in recent"></post-tile>
   </section>
 
 
 
-  <section ng-if="session._id" id="inreview" class="postTiles">
+  <section ng-if="session._id" id="inreview" class="postTiles inreview">
     <h3 class="underline">New posts in review <a href="/posts/in-community-review" target="_self" class="btn btn-sm btn-inverse">See all</a></h3>
-    <a ng-href="{{p.url}}" target="_self" ng-repeat="p in recent">
-      <post-tile post="p"></post-tile>
-    </a>
+    <post-tile post="p" ng-repeat="p in recent"></post-tile>
   </section>
 
 

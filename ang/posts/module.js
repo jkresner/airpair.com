@@ -385,7 +385,7 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
   }
 
   $scope.repoAuthorized = false
-  //
+
   if(($scope.session.social && $scope.session.social.gh &&
    $scope.session.social.gh.username)){
     DataService.posts.getProviderScopes({}, (r)=> {
@@ -402,6 +402,7 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
   DataService.posts.getByIdForForking({_id}, (r) => {
     $scope.post = r
     $scope.tofork = [r]
+    $scope.isOwner = r.by.userId == $scope.session._id
   })
 
 })
