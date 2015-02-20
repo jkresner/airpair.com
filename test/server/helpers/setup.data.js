@@ -101,6 +101,13 @@ var dataHelpers = {
     seed.name = user.name
     seed.username = user.name.replace(/ /g,'').toLowerCase()
     return seed
+  },
+
+  postReview(user) {
+    return { by: user, type: 'post-survey-inreview', questions: [
+      { idx: 0, key: 'rating', promt: 'How many stars?', answer: 4 },
+      { idx: 1, key: 'feedback', promt: 'Explain your star rating', answer: 'Good but not great' }
+    ] }
   }
 
 }
