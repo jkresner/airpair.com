@@ -89,6 +89,9 @@
 
   <div class="rail1CTA railBookmarkCTA">
     {{#if github }}
+    {{#if stars }}
+      <post-rail-stars></post-rail-stars>
+    {{/if}}
     <h6>Make this post better!</h6>
     <div class="fork">
       <a href="/posts/fork/{{_id}}" class="btn">Fork this post!</a>
@@ -117,15 +120,15 @@
   </div>
   {{/if}}
 
-  {{#if submitted }}
-    <div id="reviews" post-reviews reviews='{{ JSON reviews }}' byid="{{by.userId}}"></div>
-  {{/if}}
-
-  {{#if showDisqus }}
-  <div id="disqus_thread"></div>
-  {{/if}}
-
 </article>
+
+{{#if submitted }}
+  <div id="reviews" post-reviews reviews='{{ JSON reviews }}' byid="{{by.userId}}"></div>
+{{/if}}
+
+{{#if showDisqus }}
+<div id="disqus_thread"></div>
+{{/if}}
 
 <section id="posts" class="similar {{#if showDisqus }}afterdisqus{{/if}}">
   <hr />
