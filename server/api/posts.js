@@ -41,6 +41,7 @@ var api = initAPI(
   propagateMDfromGithub: (req) => [req.post],
   updateGithubHead: (req) => [req.post, req.body.md, req.body.commitMessage],
   addForker: (req) => [req.post],
+  clobberFork: (req) => [req.post],
   deleteById: (req) => [req.post],
 
   review: (req) => [req.post, req.body],
@@ -48,6 +49,7 @@ var api = initAPI(
   reviewReply: (req) => [req.post, req.postreview, req.body],
   reviewUpvote: (req) => [req.post, req.postreview],
   reviewDelete: (req) => [req.post, req.postreview]
+
 
 }, {
   'post':'getById',

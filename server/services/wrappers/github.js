@@ -190,15 +190,6 @@ var github = {
     })
   },
 
-  //return events across all repos
-  events(cb){
-    _authenticateAdmin()
-    api.events.getFromUserOrg({
-      user: config.auth.github.username,
-      org: org
-    }, cb)
-  },
-
   getScopes(user, cb){
     _authenticateUser(user)
     api.user.get({}, function(err, result){
@@ -244,16 +235,64 @@ var github = {
     })
   },
 
-  //NOT WORKING, only returns meta info
-  getStats(repo, cb){
+  getStats(owner, repo, user, retryCount, cb){
+    var retries = 5
+    if (!retryCount)
+      retryCount = 0
     _authenticateAdmin()
-    api.repos.getStatsCommitActivity({
-      user: org,
+    api.repos.getStatsContributors({
+      user: owner,
       repo: repo
-    }, function(err, res){
+    }, (err, res)=>{
       if (err) return verboseErrorCB(cb, err, 'getStats', `${org} ${repo}`)
-      cb(err, res)
+      if (res.meta.status === "202 Accepted" && retryCount < retries){
+        setTimeout(()=>{
+          this.getStats(owner, repo, user, ++retryCount, cb)
+        }, 2000)
+      } else if (res.meta.status === "202 Accepted" && retryCount >= retries) {
+        cb(Error(`Stil no stats after ${retries} tries`))
+      } else{
+        var trimmedResults = _.map(res, function(contributor){
+          return {
+            author: contributor.author.login,
+            total: contributor.total,
+            weeks: contributor.weeks
+          }
+        })
+        cb(err, trimmedResults)
+      }
     })
+  },
+
+  //only 90 days of data supported or 300 events
+  //see GitHub Docs https://developer.github.com/v3/activity/events/
+
+  repoEvents(owner, repo, cb){
+    _authenticateAdmin()
+    var allEvents = []
+
+    api.events.getFromRepo({
+      user: owner,
+      repo: repo,
+    }, function(err,resp){
+      if (err) return cb(err)
+      fetchRemainingPages(resp, function(err,resp){
+        if (err) return cb(err)
+        cb(null, allEvents)
+      })
+    })
+
+    function fetchRemainingPages(resp, cb){
+      allEvents = allEvents.concat(resp)
+      if (api.hasNextPage(resp)){
+        api.getNextPage(resp, function(err, resp){
+          if (err) return cb(err)
+          fetchRemainingPages(resp, cb)
+        })
+      } else {
+        cb(null, null)
+      }
+    }
   },
 
   getFile(owner, repo, path, user, cb){
