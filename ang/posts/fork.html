@@ -6,7 +6,6 @@
   </ol>
 </header>
 
-
 <section id="postfork">
 
   <section id="recent">
@@ -15,7 +14,16 @@
     </div>
   </section>
 
-  <section id="forkinfo">
+  <section ng-if="isOwner" id="authorcantfork">
+    <h3 class="underline">Can't fork your own post
+      <a href="{{tofork[0].meta.canonical}}" class="btn btn-sm" target="_self">Back to your post</a>
+    </h3>
+
+    <p>If you want to make changes to your post,
+      <a ng-href="/posts/edit/{{tofork[0]._id}}" target="_self">edit it with the AirPair editor</a>.</p>
+  </section>
+
+  <section ng-if="!isOwner" id="forkinfo">
 
     <h2>This post will be forked to your Github account*</h2>
 
