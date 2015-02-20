@@ -161,10 +161,14 @@ var validation = {
       return `Can not fork post that is not yet submitted for review`
   },
 
-  getGitHEAD(user, post)
-  {
+  clobberFork(user, post){
+    console.log("clobbering validation")
+    //TODO handle the case where the user isn't a forker
+  },
+
+  getGitHEAD(user, post){
     // var isOwner = _.idsEqual(post.by.userId, user._id)
-    // var isEditor = user.roles && _.contains(user.roles, "editor")
+
     if (!user.social || !user.social.gh)
       return `User must <a href="/auth/github?returnTo=/posts/edit/${post._id}" target="_self">authorize GitHub</a> to pull from GitHub`
   },
