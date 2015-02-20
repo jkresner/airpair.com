@@ -339,18 +339,21 @@ var save = {
   },
 
   updateGithubHead(original, postMD, commitMessage, cb){
+    var touchAction = 'updateGitHEAD'
     var fork = !(_.idsEqual(original.by.userId, this.user._id))
-    if (fork)
+    if (fork) {
       var owner = this.user.social.gh.username
+      touchAction += 'onFork'
+    }
     else
       owner = org
     github.updateFile(owner, original.slug, "post.md", postMD, commitMessage, this.user, (ee, result) => {
       if (ee) return cb(ee)
-      if (!original.published) {
+      if (!original.published && !fork) {
         original.md = postMD
         original.publishedCommit = result.commit
       }
-      updateWithEditTouch.call(this, original, 'updateGitHEAD', (e,r) => {
+      updateWithEditTouch.call(this, original, touchAction, (e,r) => {
         if (e || !r) return cb(e,r)
         r.md = postMD // hack for front-end
         cb(null, r)
