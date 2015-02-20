@@ -66,9 +66,9 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
 
   DataService.posts.getMyPosts({}, function (r) {
     var recent = []
+    var contributions = []
     if ($scope.session._id)
     {
-      var contributions = []
       for (var i=0;i<r.length;i++) {
         r[i] = PostsUtil.extendWithReviewsSummary(r[i])
         r[i].forked = Roles.post.isForker($scope.session, r[i])
@@ -79,7 +79,6 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
           recent.push(r[i])
 
       }
-      $scope.contributions = contributions
 
       if  ($scope.session.social && $scope.session.social.gh)
       {
@@ -99,6 +98,8 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
       }
 
     }
+
+    $scope.contributions = contributions
     $scope.recent = (recent.length > 0) ? recent : r
 
   })

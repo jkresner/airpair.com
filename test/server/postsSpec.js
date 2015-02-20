@@ -269,7 +269,7 @@ module.exports = () => describe("API: ", function() {
     })
   })
 
-  it("submit for review creates a repo with a README.md and a post.md file", function(done){
+  it.skip("submit for review creates a repo with a README.md and a post.md file", function(done){
     addAndLoginLocalGithubUser("robot2", {}, function(s) {
       var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
       var title = "test" + Math.floor(Math.random() * 100000000)
@@ -320,7 +320,7 @@ module.exports = () => describe("API: ", function() {
 
   //store on last update
   //TODO maybe store a history soon..
-  it("allows contents to be propagated from GitHub as author when in review", function(done){
+  it.skip("allows contents to be propagated from GitHub as author when in review", function(done){
     addAndLoginLocalGithubUser("robot5", {}, function(s){
       var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
       var title = "test" + Math.floor(Math.random() * 100000000)
@@ -364,7 +364,7 @@ module.exports = () => describe("API: ", function() {
     })
   })
 
-  it("allows contents to be updated from GitHub as editor", function(done){
+  it.skip("allows contents to be updated from GitHub as editor", function(done){
     addAndLoginLocalGithubUser("robot10", {}, function(s){
       var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
       var title = "test" + Math.floor(Math.random() * 100000000)
@@ -548,8 +548,8 @@ module.exports = () => describe("API: ", function() {
       var user = s
       user.social.gh.token = {token:"bc9a4b0e5ca18b5ee39bc8cbecb07586c4fbe9c4"}
       var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
-      var title = "test" + Math.floor(Math.random() * 100000000)
-      var d1 = { title: title, slug:title, by: by, md: lotsOfWords, assetUrl: 'http://youtu.be/qlOAbrvjMBo'}
+      var title = "test author already on team" + Math.floor(Math.random() * 100000000)
+      var d1 = { title: title, slug:title.replace(/ /g,'-'), by: by, md: lotsOfWords, assetUrl: 'http://youtu.be/qlOAbrvjMBo'}
       github.createRepo(title, function(err, result){
         if (err) done(err)
         //without a timeout repo is often not found immediately after creation
@@ -574,8 +574,8 @@ module.exports = () => describe("API: ", function() {
   it("does not allow publish post to be invoked twice", function(done){
     addAndLoginLocalGithubUser("robot17", {}, function(s) {
       var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
-      var title = "test" + Math.floor(Math.random() * 100000000)
-      var d1 = { title: title, slug:title, by: by, md: lotsOfWords, assetUrl: 'http://youtu.be/qlOAbrvjMBo'}
+      var title = "test publish twice" + Math.floor(Math.random() * 100000000)
+      var d1 = { title: title, slug:title.replace(/ /g,'-'), by: by, md: lotsOfWords, assetUrl: 'http://youtu.be/qlOAbrvjMBo'}
       POST('/posts', d1, {}, function(p1) {
         PUT(`/posts/submit/${p1._id}`, d1, {}, function(resp){
           PUT(`/posts/submit/${p1._id}`, d1, {status: 403}, function(resp){
@@ -586,11 +586,24 @@ module.exports = () => describe("API: ", function() {
     })
   })
 
+
+  it("should show the correct scopes", function(done){
+    addAndLoginLocalGithubUser("robot18", {}, function(user) {
+      user.social.gh.token = {token:"bc9a4b0e5ca18b5ee39bc8cbecb07586c4fbe9c4"}
+      GET('/users/me/provider-scopes', {}, function(result){
+        expect(result.github).to.contain("repo")
+        expect(result.github).to.contain("user")
+        done()
+      })
+    })
+  })
+
+
   it("allows a post to be deleted and recreated w/ github repo still standing", function(done){
     addAndLoginLocalGithubUser("robot19", {}, function(s) {
       var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
-      var title = "test" + Math.floor(Math.random() * 100000000)
-      var d1 = { title: title, slug:title, by: by, md: lotsOfWords, assetUrl: 'http://youtu.be/qlOAbrvjMBo'}
+      var title = "test can recreate post if repo still exists" + Math.floor(Math.random() * 100000000)
+      var d1 = { title: title, slug:title.replace(/ /g,'-'), by: by, md: lotsOfWords, assetUrl: 'http://youtu.be/qlOAbrvjMBo'}
       POST('/posts', d1, {}, function(p1) {
         PUT(`/posts/submit/${p1._id}`, d1, {}, function(resp){
           LOGIN('edap', data.users['edap'], function(editor) {
@@ -612,8 +625,8 @@ module.exports = () => describe("API: ", function() {
   it("allows a post to be deleted and recreated w/ github repo destroyed", function(done){
     addAndLoginLocalGithubUser("robot20", {}, function(s) {
       var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
-      var title = "test" + Math.floor(Math.random() * 100000000)
-      var d1 = { title: title, slug:title, by: by, md: lotsOfWords, assetUrl: 'http://youtu.be/qlOAbrvjMBo'}
+      var title = "test can reacreate post with github repo destroyed" + Math.floor(Math.random() * 100000000)
+      var d1 = { title: title, slug:title.replace(/ /g,'-'), by: by, md: lotsOfWords, assetUrl: 'http://youtu.be/qlOAbrvjMBo'}
       POST('/posts', d1, {}, function(p1) {
         PUT(`/posts/submit/${p1._id}`, d1, {}, function(resp){
           LOGIN('edap', data.users['edap'], function(editor) {
@@ -635,22 +648,12 @@ module.exports = () => describe("API: ", function() {
     })
   })
 
-  it("should show the correct scopes", function(done){
-    addAndLoginLocalGithubUser("robot18", {}, function(user) {
-      user.social.gh.token = {token:"bc9a4b0e5ca18b5ee39bc8cbecb07586c4fbe9c4"}
-      GET('/users/me/provider-scopes', {}, function(result){
-        expect(result.github).to.contain("repo")
-        expect(result.github).to.contain("user")
-        done()
-      })
-    })
-  })
 
   it("updating github head as a forker updates their fork", function(done){
     addAndLoginLocalGithubUser("robot21", {}, function(s) {
       var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
-      var title = "test" + Math.floor(Math.random() * 100000000)
-      var d1 = { title: title, slug:title, by: by, md: lotsOfWords, assetUrl: 'http://youtu.be/qlOAbrvjMBo'}
+      var title = "test update forkers fork head" + Math.floor(Math.random() * 100000000)
+      var d1 = { title: title, slug:title.replace(/ /g,'-'), by: by, md: lotsOfWords, assetUrl: 'http://youtu.be/qlOAbrvjMBo'}
       POST('/posts', d1, {}, function(p1) {
         PUT(`/posts/submit/${p1._id}`, d1, {}, function(resp){
           var token = "fd65392d8926f164755061e70a852d4ebe139e09"
@@ -665,25 +668,26 @@ module.exports = () => describe("API: ", function() {
                   if (err) return done(err)
                   expect(result.owner.login).to.equal("airpairtester45")
                   var forkerPrefix = "a nice introduction"
+                  $log('Updating head as forker'.white)
                   PUT(`/posts/update-github-head/${p1._id}`, {md: `${forkerPrefix}${lotsOfWords}`, commitMessage:"suggested change"}, {}, function(resp){
                     user.social.gh.token = {token}
                     github.getFile(user.social.gh.username, title, "post.md", user, function(err,result){
                       expect(result.string).to.equal(`${forkerPrefix}${lotsOfWords}`)
                       GET(`/posts/head/${p1._id}`, {}, function(resp){
+                        $log('Got updated forker head as forker'.white)
                         expect(resp.string).to.equal(`${forkerPrefix}${lotsOfWords}`)
                         LOGIN(s.userKey, data.users[s.userKey], function(originalAuthor){
                           GET(`/posts/head/${p1._id}`, {}, function(resp){
                             expect(resp.string).to.equal(lotsOfWords)
+                            $log('Calling done as forker'.white)
                             done()
                           })
                         })
-
                       })
                     })
-
                   })
                 })
-              }, 1000)
+              }, 2000)
             })
           })
         })
@@ -694,8 +698,8 @@ module.exports = () => describe("API: ", function() {
   it("recreates a fork when a user opens their editor after manually deleting it", function(done){
     addAndLoginLocalGithubUser("robot23", {}, function(s) {
       var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
-      var title = "test" + Math.floor(Math.random() * 100000000)
-      var d1 = { title: title, slug:title, by: by, md: lotsOfWords, assetUrl: 'http://youtu.be/qlOAbrvjMBo'}
+      var title = "test create fork and manually delete" + Math.floor(Math.random() * 100000000)
+      var d1 = { title: title, slug:title.replace(/ /g,'-'), by: by, md: lotsOfWords, assetUrl: 'http://youtu.be/qlOAbrvjMBo'}
       POST('/posts', d1, {}, function(p1) {
         PUT(`/posts/submit/${p1._id}`, d1, {}, function(resp){
           var token = "fd65392d8926f164755061e70a852d4ebe139e09"
@@ -726,29 +730,29 @@ module.exports = () => describe("API: ", function() {
   })
 
   it.skip("correctly displays 'out of sync' message when fork is behind master", function(done){
-    addAndLoginLocalGithubUser("robot23", {}, function(s) {
-      var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
-      var title = "test" + Math.floor(Math.random() * 100000000)
-      var d1 = { title: title, slug:title, by: by, md: lotsOfWords, assetUrl: 'http://youtu.be/qlOAbrvjMBo'}
-      POST('/posts', d1, {}, function(p1) {
-        PUT(`/posts/submit/${p1._id}`, d1, {}, function(resp){
-          var token = "fd65392d8926f164755061e70a852d4ebe139e09"
-          var username = "airpairtester45"
-          addAndLoginLocalGithubUser("robot24", {token,username}, function(user){
-            expect(user.social.gh.username).to.equal("airpairtester45")
-            PUT(`/posts/add-forker/${p1._id}`, {}, {}, function(resp){
-              expect(resp.forkers.length).to.equal(1)
-              expect(_.idsEqual(resp.forkers[0].userId, user._id))
-              LOGIN(s.userKey, data.users[s.userKey], function(originalAuthor){
-                var masterPrefix = "I AM YOUR MASTER"
-                PUT(`/posts/update-github-head/${p1._id}`, {md: `${masterPrefix}${lotsOfWords}`}, function(resp){
-                  github.behindMaster(user)
-                })
-              })
-            })
-          })
-        })
-      })
-    })
+    // addAndLoginLocalGithubUser("robot25", {}, function(s) {
+    //   var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
+    //   var title = "test" + Math.floor(Math.random() * 100000000)
+    //   var d1 = { title: title, slug:title, by: by, md: lotsOfWords, assetUrl: 'http://youtu.be/qlOAbrvjMBo'}
+    //   POST('/posts', d1, {}, function(p1) {
+    //     PUT(`/posts/submit/${p1._id}`, d1, {}, function(resp){
+    //       var token = "fd65392d8926f164755061e70a852d4ebe139e09"
+    //       var username = "airpairtester45"
+    //       addAndLoginLocalGithubUser("robot26", {token,username}, function(user){
+    //         expect(user.social.gh.username).to.equal("airpairtester45")
+    //         PUT(`/posts/add-forker/${p1._id}`, {}, {}, function(resp){
+    //           expect(resp.forkers.length).to.equal(1)
+    //           expect(_.idsEqual(resp.forkers[0].userId, user._id))
+    //           LOGIN(s.userKey, data.users[s.userKey], function(originalAuthor){
+    //             var masterPrefix = "I AM YOUR MASTER"
+    //             PUT(`/posts/update-github-head/${p1._id}`, {md: `${masterPrefix}${lotsOfWords}`}, function(resp){
+    //               github.behindMaster(user)
+    //             })
+    //           })
+    //         })
+    //       })
+    //     })
+    //   })
+    // })
   })
 })
