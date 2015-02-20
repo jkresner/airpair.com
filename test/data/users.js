@@ -155,6 +155,18 @@ module.exports = {
   robot29 : { name: "Robot29", email: "robot29@hotmail.com"},
   robot30 : { name: "Robot30", email: "robot30@hotmail.com"},
 
+  rvw1 : { name: "Review01", email: "reviwer01@hotmail.com"},
+  rvw2 : { name: "Review02", email: "reviwer02@hotmail.com"},
+  rvw3 : { name: "Review03", email: "reviwer03@hotmail.com"},
+  rvw4 : { name: "Review04", email: "reviwer04@hotmail.com"},
+  rvw5 : { name: "Review05", email: "reviwer05@hotmail.com"},
+  rvw6 : { name: "Review06", email: "reviwer06@hotmail.com"},
+  rvw7 : { name: "Review07", email: "reviwer07@hotmail.com"},
+  rvw8 : { name: "Review08", email: "reviwer08@hotmail.com"},
+  rvw9 : { name: "Review09", email: "reviwer09@hotmail.com"},
+  rev0 : { name: "Review10", email: "reviwer10@hotmail.com"},
+  rev1 : { name: "Review11", email: "reviwer11@hotmail.com"},
+
   admin: {
     "_id" : "54551be15f221efa174238d1",
     "googleId" : "199992380360999999999",

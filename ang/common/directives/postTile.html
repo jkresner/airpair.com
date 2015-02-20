@@ -1,0 +1,29 @@
+<article class="posttile" itemscope="itemscope" itemtype="http://schema.org/BlogPosting" itemprop="blogPost">
+  <a ng-href="/posts/review/{{p._id}}" target="_self">
+    <header class="entry-header">
+      <img class="entry-header-image" itemprop="image" ng-src="{{ post.meta.ogImage }}" align="left" />
+      <div class="glass"></div>
+      <p>
+        <span class="entry-categories">
+          <em ng-repeat='tag in post.tags'>{{ tag.slug }}</em>
+        </span>
+        {{post.meta.description || "Post is under community review. Give feedback?" }}
+      </p>
+    </header>
+
+    <div class="entry-content" itemprop="text">
+      <h2 class="entry-title" itemprop="headline">{{ post.title }}</h2>
+
+      <span class="entry-author" itemprop="author" itemscope="itemscope" itemtype="http://schema.org/Person">
+        <img class="entry-author-image" itemprop="image" ng-src="{{ post.by.avatar }}?s=50" />
+        <span class="entry-author-name" itemprop="name">{{ post.by.name }}</span>
+      </span>
+
+
+    </div>
+  </a>
+  <footer class="entry-footer">
+    <bookmarker type="'post'" object-id="p._id" ng-if="post.published"></bookmarker>
+  </footer>
+
+</article>

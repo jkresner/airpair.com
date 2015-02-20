@@ -45,13 +45,16 @@ var get = {
     cb(null, post)
   },
 
+  getByIdForContributors(post, cb) {
+    selectCB.statsView(cb)(null, post)
+  },
+
   getByIdForPublishing(post, cb) {
     ExpertSvc.getMe.call({user:{_id:post.by.userId}}, (e, expert) => {
       if (expert) {
         post.by.expertId = expert._id
         post.by.username = expert.username
       }
-
       if (!post.tmpl)
         post.tmpl = 'default'
 
@@ -64,7 +67,7 @@ var get = {
 
       if (!post.github) return cb(null, post)
 
-      get.getGitHEAD(post, (ee, head) => {
+      $callSvc(get.getGitHEAD, this)(post, (ee, head) => {
         if (!ee && head.string)
           post.mdHEAD = head.string
         cb(ee, post)
@@ -152,22 +155,22 @@ var get = {
     svc.searchMany(query.published({ 'by.userId': userId }), options, selectCB.addUrl(cb))
   },
 
-  // getUsersPosts combines users interest posts and self authors
-  getUsersPosts(cb) {
-    $callSvc(get.getRecentPublished,this)((e,r) => {
-      if (!this.user) cb(e,r)
-      else {
-        r = _.first(r, 3)
-        var opts = { options: { sort: { 'created':-1, 'published':1  } } };
-        svc.searchMany({'by.userId':this.user._id},opts, selectCB.addUrl((ee,rr) => {
-          if (e || ee) return cb(e||ee)
-          var posts = rr.slice()
-          for (var p of r) {
-            if (!_.idsEqual(p.by.userId,this.user._id)) posts.push(p)
-          }
-          cb(null, posts)
-        }))
-      }
+  // Everything needed for airpair.com/posts/me
+  getMyPosts(cb) {
+    if (!this.user) return $callSvc(get.getRecentPublished,this)(cb)
+
+    var inReviewOpts = {  options: { sort: { 'submitted': -1 }, limit: 6 } }
+    svc.searchMany(query.inReview(), inReviewOpts, (e,r) => {
+
+      var opts = { options: { sort: { 'created':-1, 'published':1  } } };
+      svc.searchMany(query.myPosts(this.user._id), opts, selectCB.addUrl((ee,rr) => {
+        if (e || ee) return cb(e||ee)
+        var posts = rr.slice()
+        for (var p of r) {
+          if (!_.find(posts,(post)=>_.idsEqual(p._id,post._id))) posts.push(p)
+        }
+        selectCB.statsViewList(cb)(null, posts)
+      }))
     })
   },
 
@@ -188,8 +191,6 @@ var get = {
       owner = this.user.social.gh.username
     else if ( !Roles.post.isOwnerOrEditor(this.user, post) )
       return cb(`Cannot get git HEAD. You have not forked ${post.slug}`)
-
-    $log('getGitHEAD', owner, post.slug)
 
     github.getFile(owner, post.slug, "/post.md", this.user, (e,resp) => {
       //for forker check the case where they have deleted the fork
@@ -225,9 +226,10 @@ var get = {
     })
   },
 
-  // getTableOfContents(markdown, cb) {
-  //   return cb(null, {toc:Data.generateToc(markdown)})
-  // },
+  getReview(post, reviewId, cb) {
+    return cb(null, _.find(post.reviews,(r)=>_.idsEqual(r._id,reviewId)))
+  },
+
 }
 
 
@@ -286,7 +288,7 @@ var save = {
       commit: post.publishedCommit || 'Not yet propagated',
       touch: svc.newTouch.call(this, 'publish')})
 
-    post.publishedBy = _.pick(this.user, '_id', 'name', 'email')
+    post.publishedBy = svc.userByte.call(this)
     post.publishedUpdated = new Date()
 
     if (publishData.publishedOverride)
@@ -298,6 +300,10 @@ var save = {
     post.tmpl = publishData.tmpl
     post.meta = publishData.meta
     post.meta.ogType = 'article'
+
+    if (post.meta.canonical.indexOf('/') == 0)
+      post.meta.canonical = post.meta.canonical.replace('/', 'https://www.airpair.com/')
+
     post.meta.ogUrl = post.meta.canonical
 
     // if (post.by.expertId)
@@ -340,7 +346,6 @@ var save = {
             post.publishHistory.push({
               commit, touch: svc.newTouch.call(this, 'publish')})
             post.publishedBy = _.pick(this.user, '_id', 'name', 'email')
-            post.publishedCommit = commit
             post.publishedUpdated = new Date()
           }
           updateWithEditTouch.call(this, post, 'propagateMDfromGithub', cb)
@@ -349,52 +354,108 @@ var save = {
     })
   },
 
-  updateGithubHead(original, postMD, commitMessage, cb){
+  updateGithubHead(original, postMD, commitMessage, cb) {
+    var touchAction = 'updateGitHEAD'
     var fork = !(_.idsEqual(original.by.userId, this.user._id))
-    if (fork)
+    if (fork) {
       var owner = this.user.social.gh.username
-    else
+      touchAction += 'onFork'
+      updateWithEditTouch.call(this, original, touchAction, (e,r) => {
+        if (e || !r) return cb(e,r)
+        r.md = postMD // hack for front-end
+        cb(null, r)
+      })
+    }
+    else {
       owner = org
-    github.updateFile(owner, original.slug, "post.md", postMD, commitMessage, this.user, (ee, result) => {
-      if (ee) return cb(ee)
-      if (!original.published) {
-        original.md = postMD
-        original.publishedCommit = result.commit
-      }
-      setEventData(original, (err,resp)=>{
-        if (err) return cb(er)
-        updateWithEditTouch.call(this, original, 'updateGitHEAD', (e,r) => {
-          if (e || !r) return cb(e,r)
-          r.md = postMD // hack for front-end
-          cb(null, r)
+      github.updateFile(owner, original.slug, "post.md", postMD, commitMessage, this.user, (ee, result) => {
+        if (ee) return cb(ee)
+        if (!original.published) {
+          original.md = postMD
+          original.publishedCommit = result.commit
+        }
+        setEventData(original, (err,resp)=>{
+          if (err) return cb(er)
+          updateWithEditTouch.call(this, original, 'updateGitHEAD', (e,r) => {
+            if (e || !r) return cb(e,r)
+            r.md = postMD // hack for front-end
+            cb(null, r)
+          })
         })
       })
-    })
+    }
   },
 
-  addReview(post, review, cb){
-    review.userId = this.user._id
-    if (!post.reviews)
-      post.reviews = []
-    post.reviews.push(review)
-    svc.update(post._id, post, cb)
-  },
-
-  addForker(post, cb){
+  addForker(post, cb) {
     var githubUser = this.user.social.gh.username
     github.addContributor(this.user, post.slug, post.github.repoInfo.reviewTeamId, (e, res) => {
       if (e) return cb(e)
       var { name, email, social } = this.user
       post.forkers = post.forkers || []
-      post.forkers.push({ userId: this.user._id, name, email, social })
+      var existing = _.find(post.forkers, (f)=>_.idsEqual(f.userId,this.user._id))
+      if (!existing)
+        post.forkers.push({ userId: this.user._id, name, email, social })
       svc.update(post._id, post, cb)
     })
+  },
+
+  clobberFork(post, cb){
+    console.log("clobber fork")
+    cb(null, "clobbered")
   },
 
   deleteById(post, cb) {
     svc.deleteById(post._id, cb)
   }
+
 }
 
 
-module.exports = _.extend(_.extend(get, getAdmin), save)
+var saveReviews = {
+
+  review(post, review, cb) {
+    review.by = svc.userByte.call(this)
+    review.type = `post-survey-inreview`
+    if (post.published) review.type.replace('inreview','published')
+
+    post.reviews = post.reviews || []
+    post.reviews.push(review)
+
+    svc.update(post._id, post, selectCB.statsView(cb))
+
+    //-- Probably better doing the db hit as we ensure the right email if the user
+    //-- changed it at any point
+    $callSvc(UserSvc.getById, {user:{_id:post.by.userId}})(post.by.userId, (ee, user) => {
+      var rating = _.find(review.questions,(q)=>q.key=='rating').answer
+      var comment = _.find(review.questions,(q)=>q.key=='feedback').answer
+      mailman.sendPostReviewNotification(user, post._id, post.title, review.by.name, rating, comment)
+    })
+  },
+
+  reviewUpdate(post, original, reviewUpdated, cb) {
+    var review = _.find(post.reviews,(r)=>_.idsEqual(r._id,original._id))
+    review = _.extend(review,reviewUpdated)
+    svc.update(post._id, post, selectCB.statsView(cb))
+  },
+
+  reviewReply(post, original, reply, cb) {
+    var review = _.find(post.reviews,(r)=>_.idsEqual(r._id,original._id))
+    reply.by = svc.userByte.call(this)
+    review.replies.push(reply)
+    svc.update(post._id, post, selectCB.statsView(cb))
+  },
+
+  reviewUpvote(post, original, cb) {
+    var review = _.find(post.reviews,(r)=>_.idsEqual(r._id,original._id))
+    var vote = { val: 1, by: svc.userByte.call(this) }
+    review.votes.push(vote)
+    svc.update(post._id, post, selectCB.statsView(cb))
+  },
+
+  reviewDelete(post, original, cb) {
+
+  },
+
+}
+
+module.exports = _.extend(_.extend(get, getAdmin), _.extend(save,saveReviews))

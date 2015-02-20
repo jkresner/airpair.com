@@ -135,7 +135,11 @@ module.exports = function(mailProvider)
       var expertFirstName = util.firstName(toUser.name)
       mailProvider.send(`${toUser.name} <${toUser.email}>`, renderEmail('expertsuggested',
         { expertFirstName, requestByFullName, requestId, accountManagerName, tagsString }), cb)
-    }
+    },
+    sendPostReviewNotification(toUser, postId, postTitle, reviewerFullName, rating, comment, cb) {
+      var firstName = util.firstName(toUser.name)
+      sendTemplateEmail('post-review-notification', { firstName, postId, postTitle, reviewerFullName, comment, rating }, toUser, cb)
+    },
   }
 
   return mailman

@@ -1,6 +1,7 @@
 <header>
   <ol class="entry-meta breadcrumb">
     <li><a href="/posts">Posts</a></li>
+    <li><a href="/posts/me">Contributions</a></li>
     <li class="current">In review</li>
   </ol>
 </header>
@@ -11,8 +12,8 @@
 
   <section id="recent">
     <h3>Posts in review <span><a href="/posts/me" target="_self">My posts</a></span></h3>
-    <div class="posts recent inreview">
-      <ap-post-list-item post="p" ng-repeat="p in inreview"></ap-post-list-item>
+    <div class="inreview">
+      <post-tile post="p" ng-repeat="p in inreview"></post-tile>
     </div>
   </section>
 

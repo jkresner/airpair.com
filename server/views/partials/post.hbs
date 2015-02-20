@@ -1,9 +1,10 @@
 <header class="entry-header">
   <ol class="entry-meta breadcrumb">
     <li><a href="/posts" target="_self">Posts</a></li>
-    <li>
+    {{#if primarytag}}<li>
       <a href="{{ primarytag.postsUrl }}" target="_self">{{ primarytag.slug }}</a>
     </li>
+    {{/if}}
     <li>
       <span class="entry-author" itemprop="author" itemscope="itemscope" itemtype="//schema.org/Person">
       {{#if by.username}}
@@ -21,24 +22,26 @@
 <banner-postcomp></banner-postcomp>
 {{/if}}
 
-{{#unless published}}
-  {{#if submitted }}
-  <section class="notifications">
-    <div id="postinreview">
-      <h1><img ng-src="/static/img/css/airpair-author.png" /> This post is under community review</h1>
-      <p>The author is waiting for community feedback. Posts need a minimum of 5 reviews with an average 3.5/5 star rating or better, before being published.</p>
-      <p>Review this post down the bottom, or fork and submit a pull request if
-      you spot a typo or have suggestions to improve it before it is published for public consumption.</p>
-    </div>
-  </section>
-  {{/if}}
-{{/unless}}
-
 <article class="blogpost">
 
   <h1 class="entry-title" itemprop="headline">{{ title }}</h1>
 
+  {{#unless published}}
+    {{#if submitted }}
+    <section class="notifications">
+      <div id="postinreview">
+        <h2><img ng-src="/static/img/css/airpair-author.png" /> This post is under community review</h2>
+        <p>Posts need a minimum of <a href="#reviews">3 reviews</a> with a minimum 3.5/5 star rating, to be published.</p>
+        {{!-- <p>Review this post down the bottom, or fork and submit a pull request if
+        you spot a typo or have suggestions to improve it before it is published for public consumption.</p> --}}
+      </div>
+    </section>
+    {{/if}}
+  {{/unless}}
+
   <div class="railMarker"></div>
+
+  {{!-- <div class="grayRail"></div> --}}
 
   <h4 id="table-of-contents">Table of Contents</h4>
   {{{toc}}}
@@ -86,6 +89,9 @@
 
   <div class="rail1CTA railBookmarkCTA">
     {{#if github }}
+    {{#if stars }}
+      <post-rail-stars></post-rail-stars>
+    {{/if}}
     <h6>Make this post better!</h6>
     <div class="fork">
       <a href="/posts/fork/{{_id}}" class="btn">Fork this post!</a>
@@ -114,13 +120,17 @@
   </div>
   {{/if}}
 
-  {{#if published }}
-  <div id="disqus_thread"></div>
-  {{/if}}
-
 </article>
 
-<section id="posts" class="similar">
+{{#if submitted }}
+  <div id="reviews" post-reviews reviews='{{ JSON reviews }}' byid="{{by.userId}}"></div>
+{{/if}}
+
+{{#if showDisqus }}
+<div id="disqus_thread"></div>
+{{/if}}
+
+<section id="posts" class="similar {{#if showDisqus }}afterdisqus{{/if}}">
   <hr />
   <h5>This post is categorized under</h5>
   <ul>{{#each tags}}

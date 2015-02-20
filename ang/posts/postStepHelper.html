@@ -1,23 +1,24 @@
-<div ng-if="p && p.md">
+<div ng-if="p">
   <p ng-if="calcDraftStep()">
     <span ng-if="wordcountTooLow">
-      To submit a post for community review,
-      it must be at least 500 words. <i ng-if="wordstogo > 0">You've got about {{wordstogo}} to go.</i></span>
+      Post must be at least 500 words to submit for community review. <i ng-if="wordstogo > 0">You've got about {{wordstogo}} to go.</i></span>
 
     <span ng-if="needInfo">
       To preview your post as it would appear published,
       <a href="/posts/info/{{p._id}}">
       <span ng-if="needTags">add a least one tag</span><span ng-if="needAssetUrl">provide a featured media asset</span></a>.
     </span>
-    <span ng-if="submitForReview">You're ready to submit for community review!</span>
+    <span ng-if="submitForReview">Post looks ready to
+      <a ng-href="/posts/submit/{{p._id}}">submit for review</a> & community ratings!</span>
 
-    <label ng-if="!post.submitted">
-      For guidence on authoring a post see the <a href="http://daringfireball.net/projects/markdown/syntax" target="_blank">Markdown guide</a> and our <a href="/posts/authoring-faq" target="_blank">Post tips & faq</a>.
+    <label ng-if="!p.submitted && !p.published && wordcountTooLow">
+      See the <a href="http://daringfireball.net/projects/markdown/syntax" target="_blank">Markdown guide</a> and our <a href="/posts/authoring-faq" target="_blank">Post tips & faq</a>.
     </label>
   </p>
   <p ng-if="calcReviewStep()">
-    <span ng-if="getReviews">
-      Time to get reviews. Invite your peers to look over your post.
+    <span ng-if="needReviews">
+      Post needs a minimum star rating of 3.5/5 from at least 3
+      reviewers to be publish.
     </span>
   </p>
 </div>
