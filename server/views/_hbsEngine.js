@@ -29,7 +29,7 @@ function registerHelpers(hbs)
   })
 
   hbs.registerHelper('JSON', (o) =>
-    new hbs.handlebars.SafeString(JSON.stringify(o))
+    new hbs.handlebars.SafeString(JSON.stringify(o).replace(/'/g,"’"))
   )
 
   hbs.registerHelper('JSONID', (o) =>

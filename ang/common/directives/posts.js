@@ -66,7 +66,7 @@ angular.module("APPostsDirectives", [])
       var setScope = (reviews) => {
         if (!reviews) return
         $scope.notReviewed = _.find(reviews,(r)=>r.by._id==$rootScope.session._id) == null
-        $scope.count = $rootScope.reviews.length
+        $scope.count = reviews.length
       }
       $rootScope.$watch('postReviews', setScope)
     }
