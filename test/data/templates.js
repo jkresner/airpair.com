@@ -72,5 +72,13 @@ Thanks,
 The AirPair Team
 http://twitter.com/airpair
 `
+  },
+  {
+    "_id" : "54ddc48fa779e09fc45b3b19",
+    "type" : "mail",
+    "key" : "post-review-notification",
+    "description" : "Used for letting authors know when someone reviews their post",
+    "subject" : "New {{rating}} Star Review for {{postTitle}}",
+    "markdown" : "Hi {{ firstName }},  \n  \nYou post was given {{rating}} stars by {{reviewerFullName}}. See their full feedback and reply on your stats page:  \n\nhttps://www.airpair.com/posts/stats/{{ postId }}  \n  \nThanks,\n\nThe AirPair Team  \nhttp://twitter.com/airpair\n"
   }
 ]

@@ -12,6 +12,7 @@
 @mediumgray:#7e7f7f;
 @lightgray:#d3d3d3;
 @palegray:#eee;
+@gitgray:#f7f7f7;
 @reallypalegray:#f9f9f9;
 @bluegray:#c8d6d3;
 @paleyellow:#fcf8e3;
@@ -299,7 +300,7 @@ h1.entry-title {
 }
 
 .railBookmarkCTA {
-  margin:10px 0 8px 0;
+  margin:2px 0 8px 0;
   position:relative;
 
   h6 {
@@ -631,5 +632,24 @@ article.faq {
       padding-left:45px; }
     a:hover { background-color:@orangehighlight }
     p { text-align:right }
+  }
+}
+
+ul.stars {
+  .ulNoStyle;
+  li {
+    background:url('../img/css/sm-icon-star.png');
+    background-size:100%;
+    background-repeat:no-repeat;
+    font-weight:bold;
+    border-radius:50%;
+    width:21px;height:21px;text-align:center;
+    font-size:13px;display:inline-block;
+  }
+  li.half {
+    width:12px;overflow:hidden;
+    background-size:170%;
+    border-top-right-radius:0;
+    border-bottom-right-radius:0;
   }
 }

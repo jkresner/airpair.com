@@ -6,7 +6,6 @@
   </ol>
 </header>
 
-
 <section id="postfork">
 
   <section id="recent">
@@ -15,7 +14,16 @@
     </div>
   </section>
 
-  <section id="forkinfo">
+  <section ng-if="isOwner" id="authorcantfork">
+    <h3 class="underline">Can't fork your own post
+      <a href="{{tofork[0].meta.canonical}}" class="btn btn-sm" target="_self">Back to your post</a>
+    </h3>
+
+    <p>If you want to make changes to your post,
+      <a ng-href="/posts/edit/{{tofork[0]._id}}" target="_self">edit it with the AirPair editor</a>.</p>
+  </section>
+
+  <section ng-if="!isOwner" id="forkinfo">
 
     <h2>This post will be forked to your Github account*</h2>
 
@@ -28,15 +36,15 @@
 
     <img src="/static/img/pages/posts/post-authoring-flow.png" />
 
-    <section class="notice" ng-if="scopesFetched && (!session.social.gh || !repoAuthorized)">
+    <section class="notice" ng-if="!repoAuthorized">
       <h3>We need to authenticate with your Github account.</h3>
       <p>You will be redirected to a github login page requesting repository permissions, so we can fork this post to your account.</p>
     </section>
 
     <hr />
 
-    <a ng-if="scopesFetched && (!session.social.gh || !repoAuthorized)" ng-href="/auth/github?returnTo=/posts/me?fork={{post._id}}" class="btn" target="_self">Connect Github Account & Fork Repository</a>
-    <a ng-if="scopesFetched && session.social.gh && repoAuthorized" ng-href="/posts/me?fork={{post._id}}" class="btn" target="_self">Fork repository</a>
+    <a ng-if="!repoAuthorized" ng-href="/auth/github?returnTo=/posts/me?fork={{post._id}}" class="btn" target="_self">Connect Github Account & Fork Repository</a>
+    <a ng-if="repoAuthorized" ng-href="/posts/me?fork={{post._id}}" class="btn" target="_self">Fork repository</a>
     <p>* Your forked repo will be private, but will not count against your private repo allotment on Github</p>
   </section>
 

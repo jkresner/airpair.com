@@ -12,6 +12,7 @@ export default function(app) {
     .param('booking', API.Bookings.paramFns.getById)
     .param('paymethod', API.Paymethods.paramFns.getById)
     .param('post', API.Posts.paramFns.getById)
+    .param('postreview', API.Posts.reviewParamFn)
 
     .get('/session/full', setAnonSessionData, API.Users.getSession)
     .put('/users/me/password-change', API.Users.requestPasswordChange)
@@ -40,7 +41,7 @@ export default function(app) {
     .get('/tags/search/:id', API.Tags.search)
     .get('/tags/:slug', authd, API.Tags.getBySlug)
 
-    .get('/posts/me', API.Posts.getUsersPosts)
+    .get('/posts/me', API.Posts.getMyPosts)
     .get('/posts/review', API.Posts.getPostsInReview)
     .get('/posts/recent', API.Posts.getRecentPublished)
     .get('/posts/by/:id', API.Posts.getUsersPublished)
@@ -56,19 +57,25 @@ export default function(app) {
     .get('/posts/forks/me', populateUser, API.Posts.getUserForks)
     .get('/posts/:post', API.Posts.getByIdForEditing)
     .get('/posts/:post/fork', API.Posts.getByIdForForking)
-    .get('/posts/:post/publish', API.Posts.getByIdForPublishing)
+    .get('/posts/:post/contributors', API.Posts.getByIdForContributors)
+    .get('/posts/:post/publish', populateUser, API.Posts.getByIdForPublishing)
     .get('/posts/head/:post', populateUser, API.Posts.getGitHEAD)
     .get('/posts/check-slug/:post/:slug', API.Posts.checkSlugAvailable)
     .post('/posts', API.Posts.create)
     .put('/posts/:post', API.Posts.update)
     .put('/posts/publish/:post', API.Posts.publish)
     .put('/posts/submit/:post', populateUser, API.Posts.submitForReview)
-    .put('/posts/review/:post', API.Posts.addReview)
     .put('/posts/add-forker/:post', populateUser, API.Posts.addForker)
+    .put('/posts/clobber-fork/:post', populateUser, API.Posts.clobberFork)
     .put('/posts/propagate-head/:post', populateUser, API.Posts.propagateMDfromGithub)
     .put('/posts/update-github-head/:post', populateUser, API.Posts.updateGithubHead)
     .delete('/posts/:post', API.Posts.deleteById)
-    .post('/posts-toc', API.Posts.getTableOfContents)
+
+    .post('/posts/:post/review', API.Posts.review)
+    .put('/posts/:post/review/:postreview', API.Posts.reviewUpdate)
+    .put('/posts/:post/review/:postreview/reply', API.Posts.reviewReply)
+    .put('/posts/:post/review/:postreview/upvote', API.Posts.reviewUpvote)
+    .delete('/posts/:post/review/:postreview', API.Posts.reviewDelete)
 
     .get('/requests', API.Requests.getMy)
     .get('/requests/:id', API.Requests.getByIdForUser)
@@ -87,7 +94,6 @@ export default function(app) {
     .put('/users/me/username', API.Users.changeUsername)
     .put('/users/me/bio', API.Users.changeBio)
     .put('/users/me/location', API.Users.changeLocationTimezone)
-
 
     .get('/company', API.Companys.getUsersCompany)
 

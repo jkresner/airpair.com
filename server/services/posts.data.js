@@ -1,6 +1,8 @@
 var marked              = require('marked')
 import generateToc      from './postsToc'
+import * as md5         from '../util/md5'
 var {selectFromObject}  = require('../../shared/util')
+var PostsUtil           = require('../../shared/posts')
 
 var topTapPages = ['angularjs']
 
@@ -15,6 +17,9 @@ var inflateHtml = function(cb) {
     cb(e,r)
   }
 };
+
+var userCommentByte = (byte) =>
+  _.extend(_.pick(byte,'_id','name'), {avatar: md5.gravatarUrl(byte.email)})
 
 
 var select = {
@@ -71,19 +76,56 @@ var select = {
     'assetUrl': 1,
     'md': 1
   },
+  stats: {
+    '_id': 1,
+    'title': 1,
+    'by': 1,
+    'meta': 1,
+    'github': 1,
+    'forkers':1,
+    'reviews._id': 1,
+    'reviews.by': 1,
+    'reviews.replies': 1,
+    'reviews.votes': 1,
+    'reviews.questions.key': 1,
+    'reviews.questions.answer': 1,
+    'created': 1,
+    'published': 1,
+    'submitted': 1,
+    'tags': 1,
+    'assetUrl': 1
+  },
   generateToc(md) {
     marked(generateToc(md))
+  },
+  mapReviews(reviews) {
+    return _.map(reviews,(rev)=> {
+      rev.by = userCommentByte(rev.by)
+      rev.votes = _.map(rev.votes || [], (vote) =>
+        _.extend(vote, {by: userCommentByte(vote.by)}) )
+      rev.replies = _.map(rev.replies || [], (reply) =>
+        _.extend(reply, {by: userCommentByte(reply.by)}) )
+      return rev
+    })
+  },
+  mapForkers(forkers) {
+    return _.map(forkers,(f)=> {
+      var ff = userCommentByte(f)
+      ff.username = f.social.gh.username
+      ff.userId = f.userId
+      return ff
+    })
+  },
+  url(post) {
+    if (post.submitted && !post.published) return `https://www.airpair.com/posts/review/${post._id}`
+    else if (post.meta) return post.meta.canonical
   },
   cb: {
     inflateHtml,
     addUrl(cb) {
       return (e,r) => {
-        for (var p of r) {
-          if (p.submitted && !p.published)
-            p.url = `/posts/review/${p._id}`
-          else if (p.meta)
-            p.url = p.meta.canonical
-        }
+        for (var p of r)
+          p.url = select.url(p)
         cb(e,r)
       }
     },
@@ -92,6 +134,31 @@ var select = {
         if (e || !r) return cb(e,r)
         r = selectFromObject(r, select.edit)
         cb(null,r)
+      }
+    },
+    statsView(cb) {
+      return (e,r) => {
+        if (e || !r) return cb(e,r)
+        r = selectFromObject(r, select.stats)
+        r.reviews = select.mapReviews(r.reviews)
+        r.forkers = select.mapForkers(r.forkers || [])
+        r.url = select.url(r)
+        cb(null,r)
+      }
+    },
+    statsViewList(cb) {
+      return (e,posts) => {
+        var statsR = []
+        for (var p of posts) {
+          var url = select.url(p),
+              wordcount = PostsUtil.wordcount(p.md),
+              reviews = select.mapReviews(p.reviews),
+              forkers = select.mapForkers(p.forkers || [])
+          statsR.push(_.extend(selectFromObject(p, select.stats),
+            { url, reviews, forkers, wordcount }))
+        }
+
+       cb(null,statsR)
       }
     },
     displayView(cb, similarFn) {
@@ -105,17 +172,25 @@ var select = {
         r.primarytag = _.find(r.tags,(t) => t.sort==0) || r.tags[0]
         var topTagPage = _.find(topTapPages,(s) => r.primarytag.slug==s)
         r.primarytag.postsUrl = (topTagPage) ? `/${r.primarytag.slug}` : `/posts/tag/${r.primarytag.slug}`
-        r.forkers = r.forkers || []
 
         if (!r.published) r.meta = { noindex: true }
+        else
+        {
+          //-- Stop using disqus once deployed the review system
+          r.showDisqus = moment(r.published) < moment('20150201', 'YYYYMMDD')
+        }
 
+        r.forkers = select.mapForkers(r.forkers || [])
+        r.reviews = select.mapReviews(r.reviews)
+        if (r.reviews.length > 0)
+          r = PostsUtil.extendWithReviewsSummary(r)
 
         if (!similarFn)
           similarFn = (p, done) => done(null,[])
 
         similarFn(r, (ee,similar) => {
           r.similar = similar
-          cb(null,r)
+          cb(null, r)
         })
       })
     }
@@ -179,6 +254,13 @@ var query = {
         }
       }
     }
+  },
+
+  myPosts(userId) {
+    return {$or: [
+      { forkers: { $elemMatch: { userId } } },
+      { 'by.userId':userId }
+    ]}
   }
 }
 

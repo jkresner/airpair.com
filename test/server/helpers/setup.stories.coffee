@@ -100,6 +100,19 @@ stories = {
         done(null, r)
 
 
+  createNewPost: (userKey, postData, done) ->
+    LOGIN userKey, data.users[userKey], (authorSession) ->
+      title = postData.title || 'A test post '+moment().format('X')
+      slug = title.toLowerCase().replace(/\ /g, '-')
+      tags = [data.tags.angular,data.tags.node]
+      author = data.users[userKey]
+      b = { userId: author._id, name: author.name, bio: 'yo yo', avatar: author.avatar }
+      d = { tags, title, by:b, slug, md: 'Test', assetUrl: 'http://youtu.be/qlOAbrvjMBo' }
+      d = _.extend(d, postData)
+      POST '/posts', d, {}, done
+
+
+  ## Todo, consider not using createAndPublishPost
   createAndPublishPost: (author, postData, done) ->
     title = 'A test post '+moment().format('X')
     slug = title.toLowerCase().replace(/\ /g, '-')
@@ -107,6 +120,9 @@ stories = {
     b = { userId: author._id, name: author.name, bio: 'yo yo', avatar: author.avatar }
     d = { tags, title, by:b, slug, md: 'Test', assetUrl: 'http://youtu.be/qlOAbrvjMBo', submitted: new Date, published: new Date() }
     d = _.extend(d, postData)
+    d.reviews = [dataHelpers.postReview({email:'jk@airpair.com'}),
+                 dataHelpers.postReview({email:'pg@airpair.com'}),
+                 dataHelpers.postReview({email:'ar@airpair.com'})]
     POST '/posts', d, {}, (p) ->
       #PUT '/posts/publish/'+p._id, p, {}, (ppub) ->
       done()

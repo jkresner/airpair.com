@@ -19,10 +19,8 @@ module.exports = -> describe "Tracking: ", ->
       SETUP.initTags ->
         LOGIN 'jkap', data.users['jkap'], (s) ->
           SETUP.initWorkshops ->
-            SETUP.createAndPublishPost(s, {title: postTitle,slug:postSlug, reviews: [{}, {}, {}, {}, {}]}, done)
+            SETUP.createAndPublishPost(s, {title: postTitle,slug:postSlug}, done)
 
-  beforeEach ->
-    SETUP.clearIdentity()
 
   it('Can track an anonymous post view', (done) ->
     ANONSESSION (s) ->
