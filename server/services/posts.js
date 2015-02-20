@@ -390,9 +390,13 @@ var saveReviews = {
 
     svc.update(post._id, post, selectCB.statsView(cb))
 
-    var rating = _.find(review.questions,(q)=>q.key=='rating').answer
-    var comment = _.find(review.questions,(q)=>q.key=='feedback').answer
-    mailman.sendPostReviewNotification(this.user, post._id, post.title, review.by.name, rating, comment)
+    //-- Probably better doing the db hit as we ensure the right email if the user
+    //-- changed it at any point
+    $callSvc(UserSvc.getById, {user:{_id:post.by.userId}})(post.by.userId, (ee, user) => {
+      var rating = _.find(review.questions,(q)=>q.key=='rating').answer
+      var comment = _.find(review.questions,(q)=>q.key=='feedback').answer
+      mailman.sendPostReviewNotification(user, post._id, post.title, review.by.name, rating, comment)
+    })
   },
 
   reviewUpdate(post, original, reviewUpdated, cb) {

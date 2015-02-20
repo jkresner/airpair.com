@@ -156,7 +156,7 @@ var select = {
             { reviews, forkers, wordcount }))
         }
 
-        cb(null,statsR)
+        select.cb.addUrl(cb)(null,statsR)
       }
     },
     displayView(cb, similarFn) {
