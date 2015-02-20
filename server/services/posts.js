@@ -157,7 +157,7 @@ var get = {
         if (e || ee) return cb(e||ee)
         var posts = rr.slice()
         for (var p of r) {
-          if (!_.idsEqual(p.by.userId,this.user._id)) posts.push(p)
+          if (!_.find(posts,(post)=>_.idsEqual(p._id,post._id))) posts.push(p)
         }
         selectCB.statsViewList(cb)(null, posts)
       }))

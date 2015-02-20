@@ -1,4 +1,4 @@
-<div ng-if="p && p.wordcount">
+<div ng-if="p">
   <p ng-if="calcDraftStep()">
     <span ng-if="wordcountTooLow">
       Post must be at least 500 words to submit for community review. <i ng-if="wordstogo > 0">You've got about {{wordstogo}} to go.</i></span>
@@ -17,8 +17,8 @@
   </p>
   <p ng-if="calcReviewStep()">
     <span ng-if="needReviews">
-      You need an minimum star rating of 3.5/5 from at least 3
-      reviewers to publish your post.
+      Post needs a minimum star rating of 3.5/5 from at least 3
+      reviewers to be publish.
     </span>
   </p>
 </div>

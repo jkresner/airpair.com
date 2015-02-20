@@ -59,9 +59,7 @@
       ng-if="!post.submitted"
       ng-disabled="notReviewReady">Submit</a>
 
-
     <post-step-helper post="post"></post-step-helper>
-
 
     <div class="commitmsg" ng-if="post.submitted">
       <input type="text" ng-disabled="post.saved" ng-model="post.commitMessage" placeholder="Enter a commit message" class="form-control" />
@@ -70,14 +68,6 @@
     <hr />
 
   </div>
-
-
-    <!-- <div ng-if="post._id">
-      <ul>
-        <li>escape characters with <code>\</code> to render them non markdown, e.g. for a list bullet you might <code>- \-</code></li>
-      </ul>
-    </div> -->
-
 
 </div>
 

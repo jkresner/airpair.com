@@ -49,25 +49,43 @@ angular.module("APPostsDirectives", [])
     scope: { reviews: '=reviews' },
     controller($scope, $rootScope, $element, $attrs) {
       $scope.session = $rootScope.session
-      $scope.post = _.extend($rootScope.post || $scope.$parent.post, {
-        reviews:$scope.reviews,by:{userId:$attrs.byid} })
+      if ($scope.$parent.post && $scope.$parent.post.by)
+        $scope.post = $scope.$parent.post
+      else
+        $scope.post = _.extend($rootScope.post, {
+          reviews:$scope.reviews,by:{userId:$attrs.byid} })
     }
   }
 })
 
+.directive('postRailStars', (PostsUtil) => {
+  return {
+    template: require('./../../posts/railstars.html'),
+    scope: true,
+    controller($scope, $rootScope) {
+      var setScope = (reviews) => {
+        if (!reviews) return
+        $scope.notReviewed = _.find(reviews,(r)=>r.by._id==$rootScope.session._id) == null
+        $scope.count = $rootScope.reviews.length
+      }
+      $rootScope.$watch('postReviews', setScope)
+    }
+  }
+})
 
 .directive('postComments', function(PostsUtil) {
-
   return {
     template: require('./../../posts/comments.html'),
     scope: true,
-    controller($scope, $element, DataService) {
+    controller($scope, $rootScope, $element, DataService) {
       var postId = $scope.post._id
 
       var setScope = (post) => {
         var post = PostsUtil.extendWithReviewsSummary(post)
+        $rootScope.postReviews = post.reviews
         $scope.reviews = post.reviews
-        $scope.starsAvg = post.stars.avg
+        $rootScope.starsAvg = post.stars.avg
+        $scope.stars = { avg: post.stars.avg }
       }
 
       setScope($scope.post)
@@ -85,7 +103,6 @@ angular.module("APPostsDirectives", [])
         alert('Replies coming soon ;)')
     }
   }
-
 })
 
 .directive('stars', function() {

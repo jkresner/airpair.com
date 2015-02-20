@@ -116,16 +116,16 @@ var select = {
       return ff
     })
   },
+  url(post) {
+    if (post.submitted && !post.published) return `https://www.airpair.com/posts/review/${post._id}`
+    else if (post.meta) return post.meta.canonical
+  },
   cb: {
     inflateHtml,
     addUrl(cb) {
       return (e,r) => {
-        for (var p of r) {
-          if (p.submitted && !p.published)
-            p.url = `/posts/review/${p._id}`
-          else if (p.meta)
-            p.url = p.meta.canonical
-        }
+        for (var p of r)
+          p.url = select.url(p)
         cb(e,r)
       }
     },
@@ -142,6 +142,7 @@ var select = {
         r = selectFromObject(r, select.stats)
         r.reviews = select.mapReviews(r.reviews)
         r.forkers = select.mapForkers(r.forkers || [])
+        r.url = select.url(r)
         cb(null,r)
       }
     },
@@ -149,14 +150,15 @@ var select = {
       return (e,posts) => {
         var statsR = []
         for (var p of posts) {
-          var wordcount = PostsUtil.wordcount(p.md),
+          var url = select.url(p),
+              wordcount = PostsUtil.wordcount(p.md),
               reviews = select.mapReviews(p.reviews),
               forkers = select.mapForkers(p.forkers || [])
           statsR.push(_.extend(selectFromObject(p, select.stats),
-            { reviews, forkers, wordcount }))
+            { url, reviews, forkers, wordcount }))
         }
 
-        select.cb.addUrl(cb)(null,statsR)
+       cb(null,statsR)
       }
     },
     displayView(cb, similarFn) {
@@ -180,6 +182,8 @@ var select = {
 
         r.forkers = select.mapForkers(r.forkers || [])
         r.reviews = select.mapReviews(r.reviews)
+        if (r.reviews.length > 0)
+          r = PostsUtil.extendWithReviewsSummary(r)
 
         if (!similarFn)
           similarFn = (p, done) => done(null,[])

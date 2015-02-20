@@ -32,12 +32,12 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
         if ($scope.p.submitted) return false
         if ($scope.p.published) return $scope.submitForReview = true
 
-        if ($scope.p.md && !$scope.wordcount) {
-          $scope.wordcount = PostsUtil.wordcount($scope.p.md)
+        if ($scope.p.md && !$scope.p.wordcount) {
+          $scope.p.wordcount = PostsUtil.wordcount($scope.p.md)
         }
-        if ($scope.wordcount) {
-          $scope.wordstogo = PostsUtil.wordsTogoForReview($scope.wordcount)
-          if ($scope.wordcount < 500)
+        if ($scope.p.wordcount) {
+          $scope.wordstogo = PostsUtil.wordsTogoForReview($scope.p.wordcount)
+          if ($scope.p.wordcount < 500)
             return $scope.wordcountTooLow = true
         }
 
@@ -80,7 +80,7 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
 
       }
 
-      if  ($scope.session.social && $scope.session.social.gh)
+      if ($scope.session.social && $scope.session.social.gh)
       {
         if ($location.search().submitted && $scope.session._id)
         {
@@ -88,12 +88,14 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
         }
 
         var toForkId = $location.search().fork
-        if (toForkId && !_.find(contributions, (f) => toForkId == f._id))
+        if (toForkId)
         {
-          DataService.posts.addForker({_id:$location.search().fork}, function (forked) {
-            $scope.forked = forked
-            $scope.contributions = _.union($scope.contributions, [forked])
-          })
+          $scope.forked = _.find(contributions, (f) => toForkId == f._id)
+          if (!$scope.forked)
+            DataService.posts.addForker({_id:$location.search().fork}, function (forked) {
+              $scope.forked = forked
+              $scope.contributions = _.union($scope.contributions, [forked])
+            })
         }
       }
 
@@ -379,18 +381,16 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
 .controller('PostForkCtrl', function($scope, $routeParams, $location, DataService, PostsUtil) {
   var _id = $routeParams.id
 
-  $scope.githubAuthed = () => {
-    return $scope.session.social && $scope.session.social.gh &&
-      $scope.session.social.gh.username
-  }
+  // $scope.githubAuthed = () => {
+  //   return $scope.session.social && $scope.session.social.gh &&
+  //     $scope.session.social.gh.username
+  // }
 
   $scope.repoAuthorized = false
-
-  if(($scope.session.social && $scope.session.social.gh &&
-   $scope.session.social.gh.username)){
+  if($scope.session.social && $scope.session.social.gh)
+  {
     DataService.posts.getProviderScopes({}, (r)=> {
       $scope.repoAuthorized = _.contains(r.github, "repo")
-      $scope.scopesFetched = true
     })
   }
 
@@ -453,7 +453,7 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
   var _id = $routeParams.id
 
   DataService.posts.getByIdForContributors({_id}, (r) => {
-    $scope.post = r
+    $scope.post = PostsUtil.extendWithReviewsSummary(r)
   })
 
 })
