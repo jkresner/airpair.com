@@ -9,11 +9,12 @@ var validation = {
     var isForker = _.find(post.forkers, (f)=>_.idsEqual(user._id, f.userId))
 
     if (!isOwner && !isForker)
-      return "Post cannot be edited by you, did you fork it already?"
+      return `Post cannot be edited by you, did you fork it already?`
   },
 
   getByIdForPreview(user, post) {
-    if (!Roles.post.isOwnerOrEditor(user, post)) return "Post not available for preview"
+    if (!Roles.post.isOwnerOrEditor(user, post))
+      return `Post not available for preview`
   },
 
   getByIdForPublish(user, post) {
@@ -21,35 +22,32 @@ var validation = {
     var isEditor = _.contains(user.roles, 'editor')
     var isOwner = _.idsEqual(user._id, post.by.userId)
 
-    if (!isAdmin && !isEditor && !isOwner) return "Post not available for publishing by you"
+    if (!isAdmin && !isEditor && !isOwner)
+      return `Post not available for publishing by you`
   },
 
   create(user, post)
   {
-    if (!post.title) return 'Post title required'
-    if (!post.by) return 'Post by required'
-    if (!post.by.bio) return 'Post author bio required'
+    if (!post.title) return `Post title required`
+    if (!post.by) return `Post by required`
+    if (!post.by.bio) return `Post author bio required`
   },
 
   update(user, original, update)
   {
     var isEditor = _.contains(user.roles, 'editor')
-    var isOwner = _.idsEqual(original.by.userId, user._id)
 
-    //-- Consider if editors should be allowed to update posts
-    //-- Rather than fork like everyone else...
+    if (!Roles.post.isOwnerOrEditor(user, original))
+      return `Post must be updated by owner`
 
-    if ( !isEditor && !isOwner )
-      return 'Post must be updated by owner'
     if (original.published && !isEditor)
-      return 'Must be editor to update a published post'
-    if (!validSlug(update.slug))
-      return '${post.slug} not a valid post slug'
+      return `Must be editor to update a published post`
+
     if (original.submitted){
       if (original.md !== update.md)
-        return "Updating markdown must happen through git flow"
+        return `Updating markdown for submitted posts must happen through git flow`
       if (original.slug !== update.slug)
-        return "Cannot change slug after post is in review"
+        return `Cannot change slug after post had been submitted`
     }
   },
 

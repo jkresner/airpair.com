@@ -1,7 +1,7 @@
 module.exports = {
 
   validSlug(slug) {
-    return /^[a-z0-9]+([a-z0-9\-]+)*$/.test(slug)
+    return /^[a-z0-9]+([a-z0-9\-\.]+)*$/.test(slug)
   },
 
   wordcount(md) {
