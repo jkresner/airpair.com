@@ -53,7 +53,11 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
       $scope.calcReviewStep = () => {
         if ($scope.p.published || !$scope.p.submitted) return false
         if ($scope.p.reviews.length < 3)
-          $scope.needReviews = true
+          return $scope.needReviews = true
+        else {
+          if ($scope.p.by.userId == $rootScope.session._id)
+          return $scope.publishReady = true
+        }
 
         return $scope.getReviews = true
       }
@@ -224,18 +228,6 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
     $scope.post = r
   })
 
-  // PostsService.getToc(md, function (tocMd) {
-  //   if (tocMd.toc)
-  //   {
-  //     marked(tocMd.toc, function (err, tocHtml) {
-  //       if (err) throw err;
-
-  //       tocHtml = tocHtml.substring(4, tocHtml.length-6)
-  //       $scope.preview.toc = tocHtml;
-  //     });
-  //   }
-  // });
-
 })
 
 
@@ -331,37 +323,32 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
 .controller('PostSubmitCtrl', function($scope, $q, $routeParams, $location, $timeout, DataService, mdHelper, PostsUtil) {
   var _id = $routeParams.id
 
+  $scope._id = _id
   $scope.slugStatus = { checking: true }
-
-  DataService.posts.getById({_id}, (r) => {
-    if (r.submitted)
-      $location.path('/posts/me?submitted='+_id)
-
-    $scope.post = r
-
-    $scope.$watch('post.slug', function(slug) {
-      DataService.posts.checkSlugAvailable({_id,slug}, (r) => $scope.slugStatus = r )
-    })
-
-    if (!$scope.post.slug)
-      $scope.post.slug = r.title.toLowerCase().replace(/ /g, '_').replace(/\W+/g, '').replace(/_/g, '-')
-
-  })
-
-  $scope.githubAuthed = () => {
-    return $scope.session.social && $scope.session.social.gh &&
-      $scope.session.social.gh.username
-  }
-
   $scope.repoAuthorized = false
-  //
-  if(($scope.session.social && $scope.session.social.gh &&
-   $scope.session.social.gh.username)){
+  if($scope.session.social && $scope.session.social.gh)
+  {
     DataService.posts.getProviderScopes({}, (r)=> {
       $scope.repoAuthorized = _.contains(r.github, "repo")
-      $scope.scopesFetched = true
-    })
+
+      if ($scope.repoAuthorized)
+        DataService.posts.getById({_id}, (r) => {
+          if (r.submitted)
+            $location.path('/posts/me?submitted='+_id)
+
+          $scope.post = r
+
+          $scope.$watch('post.slug', (slug) =>
+            DataService.posts.checkSlugAvailable({_id,slug}, (r) => $scope.slugStatus = r )
+          )
+
+          if (!$scope.post.slug)
+            $scope.post.slug = r.title.toLowerCase().replace(/ /g, '_').replace(/\W+/g, '').replace(/_/g, '-')
+        })
+
+    }, ()=>{})
   }
+
 
   $scope.submitForReviewDeferred = () => {
     var deferred = $q.defer()
@@ -381,17 +368,12 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
 .controller('PostForkCtrl', function($scope, $routeParams, $location, DataService, PostsUtil) {
   var _id = $routeParams.id
 
-  // $scope.githubAuthed = () => {
-  //   return $scope.session.social && $scope.session.social.gh &&
-  //     $scope.session.social.gh.username
-  // }
-
   $scope.repoAuthorized = false
   if($scope.session.social && $scope.session.social.gh)
   {
     DataService.posts.getProviderScopes({}, (r)=> {
       $scope.repoAuthorized = _.contains(r.github, "repo")
-    })
+    }, ()=>{})
   }
 
   $scope.fork = () =>
@@ -412,8 +394,8 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
   var _id = $routeParams.id
 
   $scope.setPublishedOverride = () => {
-    if (!$scope.post.publishedOverride)
-      $scope.post.publishedOverride = $scope.post.published || moment().format()
+    if (!$scope.data.publishedOverride)
+      $scope.data.publishedOverride = $scope.post.published || moment().format()
   }
 
   $scope.user = () => { return $scope.post.by }
@@ -425,16 +407,21 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
       bio: user.bio,
       username: user.username
     };
+    $scope.data.by = $scope.post.by
   }
 
   var setScope = (r) => {
     var isAdmin =  _.contains($scope.session.roles, 'admin')
     var isEditor =  _.contains($scope.session.roles, 'editor')
     $scope.post = r
-    $scope.$watch('post.meta.description', (value) => $scope.post.meta.ogDescription = value )
+    $scope.data = _.pick(r, '_id', 'meta', 'tmpl', 'by')
+    $scope.$watch('data.meta.description', (value) => $scope.data.meta.ogDescription = value )
+    $scope.$watch('data.meta.ogImage', (value) => $scope.post.meta.ogImage = value )
     $scope.canPublish = r.reviews && r.reviews.length > 0 || isAdmin || isEditor
     $scope.canPropagate = isAdmin || isEditor || !r.published
     $scope.canChangeAuthor = isAdmin
+    $scope.canSetTemplate = isAdmin
+    $scope.canOverrideCanonical = isAdmin
     $scope.headPropagated = (r.mdHEAD) ? r.md == r.mdHEAD : true
   }
 
@@ -443,8 +430,10 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
   $scope.propagate = () =>
     DataService.posts.propagateFromHEAD($scope.post, setScope)
 
-  $scope.publish = () =>
-    DataService.posts.publish($scope.post, (r) => window.location = r.meta.canonical)
+  $scope.submitPublish = (formValid, data, postPublishForm) => {
+    if (formValid)
+      DataService.posts.publish(data, (r) => window.location = r.meta.canonical)
+  }
 
 })
 
