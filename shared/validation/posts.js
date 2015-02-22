@@ -68,8 +68,6 @@ var validation = {
       !isAdmin)
       return `Only admins can change post authors`
 
-    // if (!update.publishReady)
-    // return "Post must be marked publishReady by author"
     if (!post.submitted)
       return `Post must be submitted for review before being published`
     // if (!post.publishedCommit)
