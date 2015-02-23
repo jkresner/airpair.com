@@ -37,7 +37,7 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
         }
         if ($scope.p.wordcount) {
           $scope.wordstogo = PostsUtil.wordsTogoForReview($scope.p.wordcount)
-          if ($scope.p.wordcount < 500)
+          if ($scope.p.wordcount < 400)
             return $scope.wordcountTooLow = true
         }
 
@@ -253,7 +253,7 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
       $scope.preview.body = postHtml
       $scope.preview.wordcount = PostsUtil.wordcount($scope.post.md)
 
-      $scope.notReviewReady = $scope.preview.wordcount < 500
+      $scope.notReviewReady = $scope.preview.wordcount < 400
         || !$scope.post.tags || $scope.post.tags.length == 0
         || !$scope.post.assetUrl
     })
@@ -261,6 +261,9 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
   $scope.previewMarkdown = previewMarkdown
 
   var setPostScope = (r) => {
+    if ((r.published && !r.submitted) && (r.by.userId == $scope.session._id))
+      return $scope.editErr = { message: `Edits on published posts my be tracked in git. <br />Please <a href="/posts/submit/${r._id}">submit your post</a> to continue editing it.` }
+
     $scope.post = r
     $scope.post.commitMessage = ""
     $scope.savedMD = r.md
@@ -287,6 +290,7 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
         event.preventDefault();
       }
     })
+
   }
 
   DataService.posts.getById({_id}, (r) => {
@@ -320,7 +324,7 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
 
 })
 
-.controller('PostSubmitCtrl', function($scope, $q, $routeParams, $location, $timeout, DataService, mdHelper, PostsUtil) {
+.controller('PostSubmitCtrl', function($scope, $q, $routeParams, $location, $timeout, ServerErrors, DataService, mdHelper, PostsUtil) {
   var _id = $routeParams.id
 
   $scope._id = _id
@@ -357,7 +361,10 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
       window.location = '/posts/me?submitted='+r._id
       deferred.resolve(r)
     },
-    deferred.reject)
+    (e) => {
+      ServerErrors.add(e)
+      deferred.reject(e)
+    })
 
     return deferred.promise
   }

@@ -14,7 +14,7 @@ module.exports = {
   wordsTogoForReview(wordcount) {
     var remainder = wordcount%50;
     var countWithoutRemainder = wordcount - remainder;
-    return 500 - countWithoutRemainder;
+    return 400 - countWithoutRemainder;
   },
 
 

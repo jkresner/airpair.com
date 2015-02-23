@@ -26,9 +26,8 @@
 
   <section class="notifications" ng-if="!headPropagated && post.published">
     <div class="propagateHEAD">
-      <p>HEAD on github is more up to do than the one
-      <a href="{{post.meta.canonical}}" target="_blank">published live on AirPair</a>.
-        <span ng-if="!canPropagate">Request an editor to propagate your changes</p>.
+      <p>The <a href="{{post.meta.canonical}}" target="_blank">live version of your post</a> is behind HEAD on github. If it's ready to be updated,
+        <span ng-if="!canPropagate"><a  href="mailto:team@airpair.com?subject=Please sync my published post&body=Can you please sync my post {{post.title}}?" target="_blank">request an editor</a> to sync your changes.</p>
       <a ng-if="canPropagate" ng-click="propagate()" class="btn">Update post from github</a>
     </div>
   </section>

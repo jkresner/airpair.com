@@ -121,9 +121,11 @@ var validation = {
       return `Posts markdown required`
     if (post.github)
       return `Post already has associated git repo`
-    var wcount = wordcount(post.md)
-    if (wordsTogoForReview(wcount) > 0)
-      return `Post word count [${wordcount}] too short for review`
+    if (!post.published) {
+      var wcount = wordcount(post.md)
+      if (wordsTogoForReview(wcount) > 0)
+        return `Post word count [${wcount}] too short for review`
+    }
   },
 
   propagateMDfromGithub(user, post){

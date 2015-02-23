@@ -79,8 +79,13 @@ var get = {
   getByIdForPreview(_id, cb) {
     svc.searchOne({_id}, null, (e,r) => {
       if (e || !r) return cb(e,r)
-      if (!r.submitted || !r.github ||
-        !Roles.post.isForker(this.user, r)) return selectCB.displayView(cb)(null, r)
+      if (!r.submitted || !r.github) return selectCB.displayView(cb)(null, r)
+
+      //-- Allow admins to preview a post without a fork
+      if (!Roles.post.isForker(this.user, r) &&
+        !_.idsEqual(this.user._id, r.by.userId)
+        )
+        return selectCB.displayView(cb)(null, r)
 
       $callSvc(get.getGitHEAD, this)(r, (ee, head) => {
         if (head.string)
