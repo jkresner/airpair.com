@@ -41,6 +41,28 @@
   </section>
 
 
+ <section ng-if="post.published" class="notifications">
+    <div id="postpublished">
+      <div class="message">
+        <h3><img ng-src="/static/img/pages/posts/icon-published.png" /> This post is published</h3>
+        <p>You may continue to <a href="/posts/edit/{{post._id}}">edit</a> & save changes to git. Editors can sync changes to the live version.</p>
+      </div>
+      <div class="info">
+        <div class="tip">
+          <p ng-if="post.reviews.length == 0"><span>No reviews yet</span></p>
+          <div ng-if="post.reviews.length > 0">
+            <stars val="post.stars.avg"></stars>
+            <span>From <b>{{ post.reviews.length }}</b> reviewer<ss ng-if="post.reviews.length > 1">s</ss>
+          </div>
+        </div>
+        <h6>Invite more people to review</h6>
+        <a href='http://twitter.com/intent/tweet?text=Let me know what you think of my post "{{ post.title }}" on @airpair {{post.url}}' target="_blank" class="icon tw-white"></a>
+      </div>
+      <hr />
+    </div>
+  </section>
+
+
   <section class="body">
 
     <div class="rail">

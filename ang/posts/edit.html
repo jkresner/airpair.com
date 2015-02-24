@@ -16,7 +16,7 @@
 <section id="posteditor" ng-if="session.emailVerified">
 
 <div ng-if="editErr" class="editor-error-wrap" style="text-align:center">
-  <h3>{{editErr}}</h3>
+  <h3 ng-bind-html="editErr.message | html"></h3>
   <h2 ng-if="_id">Try <a href="/posts/fork/{{_id}}" target="_self">fork it</a> now? </h2>
   <h2 ng-if="fork">Go to <a href="https://github.com/{{fork}}" target="_blank">{{fork}}</a> </h2>
 </div>
@@ -46,7 +46,7 @@
 
     <button class="btn" ng-click="save()" ng-disabled="post.saved">Save</button>
 
-    <a class="btn" href="/posts/info/{{post._id}}" ng-if="!post.published" ng-disabled="preview.wordcount < 500 || !post.saved">Post info</a>
+    <a class="btn" href="/posts/info/{{post._id}}" ng-if="!post.published" ng-disabled="preview.wordcount < 400 || !post.saved">Post info</a>
 
     <a class="btn" href="/posts/preview/{{post._id}}" target="_blank"
       ng-disabled="!post.saved || !post.assetUrl || !post.tags || post.tags.length == 0">Preview</a>

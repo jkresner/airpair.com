@@ -80,6 +80,13 @@ var get = {
     svc.searchOne({_id}, null, (e,r) => {
       if (e || !r) return cb(e,r)
       if (!r.submitted || !r.github) return selectCB.displayView(cb)(null, r)
+
+      //-- Allow admins to preview a post without a fork
+      if (!Roles.post.isForker(this.user, r) &&
+        !_.idsEqual(this.user._id, r.by.userId)
+        )
+        return selectCB.displayView(cb)(null, r)
+
       $callSvc(get.getGitHEAD, this)(r, (ee, head) => {
         if (head.string)
           r.md = head.string
@@ -355,18 +362,17 @@ var save = {
   },
 
   updateGithubHead(original, postMD, commitMessage, cb) {
-    var touchAction = 'updateGitHEAD'
-    var fork = !(_.idsEqual(original.by.userId, this.user._id))
-    if (fork) {
+    if (Roles.post.isForker(this.user, original)) {
       var owner = this.user.social.gh.username
-      touchAction += 'onFork'
-      updateWithEditTouch.call(this, original, touchAction, (e,r) => {
-        if (e || !r) return cb(e,r)
-        r.md = postMD // hack for front-end
-        cb(null, r)
+      github.updateFile(owner, original.slug, "post.md", postMD, commitMessage, this.user, (ee, result) => {
+        updateWithEditTouch.call(this, original, 'updateGitHEADonFork', (e,r) => {
+          if (e || !r) return cb(e,r)
+          r.md = postMD // hack for front-end editor to show latest edit
+          cb(null, r)
+        })
       })
     }
-    else {
+    else if (_.idsEqual(original.by.userId, this.user._id)) {
       owner = org
       github.updateFile(owner, original.slug, "post.md", postMD, commitMessage, this.user, (ee, result) => {
         if (ee) return cb(ee)
@@ -383,6 +389,8 @@ var save = {
           })
         })
       })
+    } else {
+      cb(Error("Must be a forker to update post HEAD"))
     }
   },
 
