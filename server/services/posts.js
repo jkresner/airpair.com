@@ -37,6 +37,7 @@ var get = {
 
   getByIdForEditing(post, cb) {
     post = selectFromObject(post, select.edit)
+    //-- TODO, grab the git HEAD here and not on the client
     cb(null, post)
   },
 
@@ -88,9 +89,9 @@ var get = {
         return selectCB.displayView(cb)(null, r)
 
       $callSvc(get.getGitHEAD, this)(r, (ee, head) => {
-        if (head.string)
+        if (head && head.string)
           r.md = head.string
-        selectCB.displayView(cb)(null, r)
+        selectCB.displayView(cb)(ee, r)
       })
     })
   },
@@ -367,6 +368,7 @@ var save = {
       github.updateFile(owner, original.slug, "post.md", postMD, commitMessage, this.user, (ee, result) => {
         updateWithEditTouch.call(this, original, 'updateGitHEADonFork', (e,r) => {
           if (e || !r) return cb(e,r)
+          r = selectFromObject(r, select.edit)
           r.md = postMD // hack for front-end editor to show latest edit
           cb(null, r)
         })
@@ -381,9 +383,10 @@ var save = {
           original.publishedCommit = result.commit
         }
         setEventData(original, (err,resp)=>{
-          if (err) return cb(er)
+          if (err) return cb(err)
           updateWithEditTouch.call(this, original, 'updateGitHEAD', (e,r) => {
             if (e || !r) return cb(e,r)
+            r = selectFromObject(r, select.edit)
             r.md = postMD // hack for front-end
             cb(null, r)
           })
