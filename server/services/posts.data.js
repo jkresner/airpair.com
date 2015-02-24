@@ -80,6 +80,7 @@ var select = {
     '_id': 1,
     'title': 1,
     'by': 1,
+    'slug': 1,
     'meta': 1,
     'github': 1,
     'forkers':1,

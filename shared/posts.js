@@ -1,7 +1,7 @@
 module.exports = {
 
   validSlug(slug) {
-    return /^[a-z0-9]+([a-z0-9\-]+)*$/.test(slug)
+    return /^[a-z0-9]+([a-z0-9\-\.]+)*$/.test(slug)
   },
 
   wordcount(md) {
@@ -14,7 +14,7 @@ module.exports = {
   wordsTogoForReview(wordcount) {
     var remainder = wordcount%50;
     var countWithoutRemainder = wordcount - remainder;
-    return 500 - countWithoutRemainder;
+    return 400 - countWithoutRemainder;
   },
 
 

@@ -130,21 +130,33 @@
 <div id="disqus_thread"></div>
 {{/if}}
 
-<section id="posts" class="similar {{#if showDisqus }}afterdisqus{{/if}}">
+<footer id="posts" class="postfooter similar {{#if showDisqus }}afterdisqus{{/if}}">
   <hr />
-  <h5>This post is categorized under</h5>
-  <ul>{{#each tags}}
+  <h5>Post categorized under</h5>
+  <ul class="tags">{{#each tags}}
     <li><a href="/posts/tag/{{ slug }}">{{ name }}</a></li>
   {{/each}}
   </ul>
 
   {{#if published }}
+  <div class="share-horizontal">
+    <div class="pw-widget pw-counter-vertical" pw:twitter-via="airpair">
+      <a class="pw-button-twitter pw-look-native"></a>
+      <a class="pw-button-googleplus pw-look-native"></a>
+      <a class="pw-button-facebook pw-look-native"></a>
+      <a class="pw-button-linkedin pw-look-native"></a>
+      <a class="pw-button-tumblr pw-look-native"></a>
+      <a class="pw-button-reddit pw-look-native"></a>
+      <a class="pw-button-email pw-look-native"></a>
+    </div>
+  </div>
+
   <section id="allposts">
-    <h3>Similar posts<span><a href="/posts" target="_self">Recent posts</a></span></h3>
+    <h3 class="underline">Similar posts <a href="/posts" class="btn btn-sm btn-inverse" target="_self">Recent posts</a></h3>
     <div class="posts recent">
       {{#each similar}}{{> postListItem this}}{{/each}}
     </div>
   </section>
   {{/if}}
 
-</section>
+</footer>

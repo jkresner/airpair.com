@@ -15,6 +15,11 @@ section.notifications {
   }
 }
 
+
+.blogpostblank {
+  img { max-width:900px }
+}
+
 //-- A single full post view
 
 .blogpost {
@@ -219,14 +224,6 @@ section.notifications {
     }
   }
 
-  #disqus_thread {
-    padding-top:20px;
-    background:white;
-    min-height:700px;
-    z-index:2;
-    position:relative;
-  }
-
   @media only screen and (max-width:900px) {
     .island {
       width:100%;
@@ -288,6 +285,26 @@ section.notifications {
 
     b { display:block;color:@blue;text-transform:uppercase;padding-bottom:4px }
     a { display:block;font-weight:bold;padding-top:8px;font-size:18px }
+  }
+}
+
+#disqus_thread {
+  padding-top:20px;
+  background:white;
+  min-height:700px;
+  z-index:2;
+  position:relative;
+}
+
+.postfooter {
+  .tags {
+    li { display:inline-block;margin-right:5px }
+  }
+  .share-horizontal { width:100%;
+    background:@palegray;
+    text-align:center;
+    padding:15px;
+    margin:15px 0;
   }
 }
 

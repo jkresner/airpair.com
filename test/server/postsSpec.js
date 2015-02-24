@@ -658,28 +658,24 @@ module.exports = () => describe("API: ", function() {
         PUT(`/posts/submit/${p1._id}`, d1, {}, function(resp){
           var token = "fd65392d8926f164755061e70a852d4ebe139e09"
           var username = "airpairtester45"
-          addAndLoginLocalGithubUser("robot22", {token,username}, function(user){
-            expect(user.social.gh.username).to.equal("airpairtester45")
+          addAndLoginLocalGithubUser("robot22", {token,username}, function(forker22){
+            expect(forker22.social.gh.username).to.equal("airpairtester45")
             PUT(`/posts/add-forker/${p1._id}`, {}, {}, function(resp){
               expect(resp.forkers.length).to.equal(1)
-              expect(_.idsEqual(resp.forkers[0].userId, user._id))
+              expect(_.idsEqual(resp.forkers[0].userId, forker22._id))
               setTimeout(function(){
-                github.getRepo(user.social.gh.username, title, function(err,result){
-                  if (err) return done(err)
-                  expect(result.owner.login).to.equal("airpairtester45")
+                GET(`/posts/head/${p1._id}`, {}, function(p1forkMD) {
                   var forkerPrefix = "a nice introduction"
-                  $log('Updating head as forker'.white)
+                  expect(p1forkMD.string).to.equal(lotsOfWords)
                   PUT(`/posts/update-github-head/${p1._id}`, {md: `${forkerPrefix}${lotsOfWords}`, commitMessage:"suggested change"}, {}, function(resp){
-                    user.social.gh.token = {token}
-                    github.getFile(user.social.gh.username, title, "post.md", user, function(err,result){
-                      expect(result.string).to.equal(`${forkerPrefix}${lotsOfWords}`)
-                      GET(`/posts/head/${p1._id}`, {}, function(resp){
-                        $log('Got updated forker head as forker'.white)
-                        expect(resp.string).to.equal(`${forkerPrefix}${lotsOfWords}`)
+                    forker22.social.gh.token = {token}
+                    GET(`/posts/head/${p1._id}`, {}, function(p2forkMD) {
+                      expect(p2forkMD.string).to.equal(`${forkerPrefix}${lotsOfWords}`)
+                      GET(`/posts/${p1._id}`, {}, function(p2Fork){
+                        expect(p2Fork.md).to.equal(lotsOfWords)
                         LOGIN(s.userKey, data.users[s.userKey], function(originalAuthor){
                           GET(`/posts/head/${p1._id}`, {}, function(resp){
                             expect(resp.string).to.equal(lotsOfWords)
-                            $log('Calling done as forker'.white)
                             done()
                           })
                         })
@@ -687,10 +683,10 @@ module.exports = () => describe("API: ", function() {
                     })
                   })
                 })
-              }, 2000)
+              }, 500)
             })
           })
-        })
+        }, 500)
       })
     })
   })

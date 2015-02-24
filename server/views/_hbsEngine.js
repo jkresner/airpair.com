@@ -28,9 +28,11 @@ function registerHelpers(hbs)
     return moment(date).format(format)
   })
 
-  hbs.registerHelper('JSON', (o) =>
-    new hbs.handlebars.SafeString(JSON.stringify(o).replace(/'/g,"’"))
-  )
+  hbs.registerHelper('JSON', (o) => {
+    var json = JSON.stringify(o)
+    if (json) json = json.replace(/'/g,"’")
+    return new hbs.handlebars.SafeString(json)
+  })
 
   hbs.registerHelper('JSONID', (o) =>
     new hbs.handlebars.SafeString(JSON.stringify(_.pick(o,'_id')))
