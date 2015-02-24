@@ -137,10 +137,7 @@ var github = {
     api.repos.get({
       user: owner,
       repo: repo
-    }, function(err, response){
-      if (err) return verboseErrorCB(cb, err, 'getRepo')
-      cb(err, response)
-    })
+    }, cb)
   },
 
   addToTeam(githubUser, teamId, user, cb){

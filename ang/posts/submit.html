@@ -28,19 +28,18 @@
 
     <img src="/static/img/pages/posts/post-authoring-flow.png" />
 
-    <div ng-if="!session.social.gh || (scopesFetched && !repoAuthorized)">
-
+    <div ng-if="!repoAuthorized">
       <section class="notice">
         <h3>We need to authenticate with your Github account.</h3>
         <p>You will be redirected to a github login page requesting repository permissions,
         so we can fork this post to your account.</p>
       </section>
       <hr />
-      <a ng-href="/auth/github?returnTo=/posts/submit/{{post._id}}" class="btn" target="_self">Authenticate your github account with repo privilages</a>
+      <a ng-href="/auth/github?returnTo=/posts/submit/{{_id}}" class="btn" target="_self">Authenticate your github account with repo privilages</a>
       <p>You will be added to the airpair organization on github, so that you have write access to the repo</p>
     </div>
 
-    <div ng-if="session.social.gh && repoAuthorized ">
+    <div ng-if="repoAuthorized">
       <hr />
 
       <div class="form-group">
@@ -64,7 +63,6 @@
         </single-submit>
       </div>
 
-      <!-- <a ng-click="submitForReview()" class="btn" target="_self" ></a> -->
       <p>You will be added to the airpair organization on github, so you have write access to the repo</p>
     </div>
 
