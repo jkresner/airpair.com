@@ -129,15 +129,23 @@ angular.module("APPageHelpers", [])
 
   this.loadPoSt = function()
   {
-    window.pwidget_config = { shareQuote: false, afterShare: false, counter: true, copypaste: false };
-    var p = document.createElement('script');
-    p.type = 'text/javascript';
-    p.async = true;
-    p.src = ('https:' == document.location.protocol ? 'https://s' : 'http://i')
-      + '.po.st/static/v3/post-widget.js#publisherKey=miu9e01ukog3g0nk72m6&retina=true';
+    if ($('#post_script').toArray().length == 0) {
+      console.log('insert loadPoSt script')
+      window.pwidget_config = { shareQuote: false, afterShare: false, counter: true, copypaste: false };
+      var p = document.createElement('script');
+      p.id = 'post_script';
+      p.type = 'text/javascript';
+      p.async = true;
+      p.src = ('https:' == document.location.protocol ? 'https://s' : 'http://i')
+        + '.po.st/static/v3/post-widget.js#publisherKey=miu9e01ukog3g0nk72m6&retina=true';
 
-    var x = document.getElementsByTagName('script')[0];
-    x.parentNode.insertBefore(p, x);
+      var x = document.getElementsByTagName('script')[0];
+      x.parentNode.insertBefore(p, x);
+    }
+    else
+    {
+      post_init();
+    }
   }
 
   this.fixNavs = function(elmId)
