@@ -1,7 +1,8 @@
 var API = require('../api/_all')
 var {authd,setAnonSessionData} = require('../middleware/auth')
 var {adm,emailv} = require('../middleware/authz')
-var {bodyParam,populateUser} = require('../middleware/data')
+var {bodyParam,populateUser,json2mb} = require('../middleware/data')
+
 
 export default function(app) {
 
@@ -68,7 +69,7 @@ export default function(app) {
     .put('/posts/add-forker/:post', populateUser, API.Posts.addForker)
     .put('/posts/clobber-fork/:post', populateUser, API.Posts.clobberFork)
     .put('/posts/propagate-head/:post', populateUser, API.Posts.propagateMDfromGithub)
-    .put('/posts/update-github-head/:post', populateUser, API.Posts.updateGithubHead)
+    .put('/posts/update-github-head/:post', json2mb, populateUser, API.Posts.updateGithubHead)
     .delete('/posts/:post', API.Posts.deleteById)
 
     .post('/posts/:post/review', API.Posts.review)

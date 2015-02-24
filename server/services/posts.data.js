@@ -74,7 +74,9 @@ var select = {
     'submitted': 1,
     'tags': 1,
     'assetUrl': 1,
-    'md': 1
+    'md': 1,
+    'reviews.questions.key': 1, //-- To know if the post is publishable
+    'reviews.questions.answer': 1,
   },
   stats: {
     '_id': 1,

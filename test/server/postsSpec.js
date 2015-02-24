@@ -782,7 +782,7 @@ module.exports = () => describe("API: ", function() {
     })
   })
 
-  it("sends back event stats and event data when propgated from github", function(done){
+  it.skip("sends back event stats and event data when propgated from github", function(done){
     addAndLoginLocalGithubUser("robot23", {}, function(s) {
       var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
       var title = "test" + Math.floor(Math.random() * 100000000)
@@ -820,7 +820,7 @@ module.exports = () => describe("API: ", function() {
     })
   })
 
-  it('records new events when head is updated', function(done){
+  it.skip('records new events when head is updated', function(done){
     addAndLoginLocalGithubUser("robot26", {}, function(s) {
       var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
       var title = "test" + Math.floor(Math.random() * 100000000)
