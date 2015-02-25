@@ -79,6 +79,14 @@ http://twitter.com/airpair
     "key" : "post-review-notification",
     "description" : "Used for letting authors know when someone reviews their post",
     "subject" : "New {{rating}} Star Review for {{postTitle}}",
-    "markdown" : "Hi {{ firstName }},  \n  \nYou post was given {{rating}} stars by {{reviewerFullName}}. See their full feedback and reply on your stats page:  \n\nhttps://www.airpair.com/posts/stats/{{ postId }}  \n  \nThanks,\n\nThe AirPair Team  \nhttp://twitter.com/airpair\n"
+    "markdown" : "Hi {{ firstName }},  \n  \nYou post was given {{rating}} stars by {{reviewerFullName}}. See their full feedback and reply on your contributors page:  \n\nhttps://www.airpair.com/posts/contributors/{{ postId }}  \n  \nThanks,\n\nThe AirPair Team  \nhttp://twitter.com/airpair\n"
+  },
+  {
+    "_id" : "54ddc48fa779e09fc45b3b29",
+    "type" : "mail",
+    "key" : "post-review-reply-notification",
+    "description" : "Used for letting notifying post reviewers on new comments",
+    "subject" : "New reply on {{postTitle}}",
+    "markdown" : "Hi {{ firstName }},  \n  \n{{replierFullName}} has commented on a thread you're participating on. See the full discussion and parrallel running threads by others on the contributors page:  \n\nhttps://www.airpair.com/posts/contributors/{{ postId }}  \n  \nThanks,\n\nThe AirPair Team  \nhttp://twitter.com/airpair\n"
   }
 ]

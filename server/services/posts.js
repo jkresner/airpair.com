@@ -440,15 +440,30 @@ var saveReviews = {
   },
 
   reviewReply(post, original, reply, cb) {
-    var review = _.find(post.reviews,(r)=>_.idsEqual(r._id,original._id))
-    reply.by = svc.userByte.call(this)
-    review.replies.push(reply)
-    svc.update(post._id, post, selectCB.statsView(cb))
+    // Damn this is annoying... alternative is to stuff the email into the author object
+    // But we'd have to look at mongo consistency updates :/
+    $callSvc(UserSvc.getById, {user:{_id:post.by.userId}})(post.by.userId, (ee, author) => {
+      var review = _.find(post.reviews,(r)=>_.idsEqual(r._id,original._id))
+      reply._id = svc.newId()
+      reply.by = svc.userByte.call(this)
+      review.replies.push(reply)
+
+      var threadParticipants =
+        _.uniq( _.union([author,review.by],_.pluck(review.replies,'by')), (p)=>p.email)
+
+      var thisParticipant = _.find(threadParticipants, (p)=>p.email == this.user.email)
+      if (thisParticipant) threadParticipants = _.without(threadParticipants, thisParticipant)
+      // $log('still'.cyan, threadParticipants, thisParticipant)
+
+      mailman.sendPostReviewReplyNotification(threadParticipants, post._id, post.title, reply.by.name, reply.comment)
+
+      svc.update(post._id, post, selectCB.statsView(cb))
+    })
   },
 
   reviewUpvote(post, original, cb) {
     var review = _.find(post.reviews,(r)=>_.idsEqual(r._id,original._id))
-    var vote = { val: 1, by: svc.userByte.call(this) }
+    var vote = { _id: svc.newId(), val: 1, by: svc.userByte.call(this) }
     review.votes.push(vote)
     svc.update(post._id, post, selectCB.statsView(cb))
   },

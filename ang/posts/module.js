@@ -28,6 +28,8 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
     scope: { p: '=post' },
     controller($rootScope, $scope) {
 
+      $scope.isAuthor = $scope.p.by.userId == $rootScope.session._id
+
       $scope.calcDraftStep = () => {
         if ($scope.p.submitted) return false
         if ($scope.p.published) return $scope.submitForReview = true
@@ -449,6 +451,11 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
 
 .controller('PostContributorsCtrl', function($scope, $routeParams, $location, DataService, PostsUtil) {
   var _id = $routeParams.id
+
+  DataService.posts.getByIdForContributors({_id}, (r) => {
+    $scope.post = PostsUtil.extendWithReviewsSummary(r)
+  })
+
 
   DataService.posts.getByIdForContributors({_id}, (r) => {
     $scope.post = PostsUtil.extendWithReviewsSummary(r)

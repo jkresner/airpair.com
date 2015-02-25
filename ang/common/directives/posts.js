@@ -73,34 +73,52 @@ angular.module("APPostsDirectives", [])
   }
 })
 
-.directive('postComments', function(PostsUtil) {
+
+.directive('postCommentsHeader', function(PostsUtil) {
   return {
-    template: require('./../../posts/comments.html'),
+    template: require('./../../posts/commentsHeader.html'),
+  }
+})
+
+.directive('postCommentsReviewThread', function(PostsUtil) {
+  return {
+    template: require('./../../posts/commentsReviewThread.html'),
     scope: true,
     controller($scope, $rootScope, $element, DataService) {
       var postId = $scope.post._id
-
-      var setScope = (post) => {
-        var post = PostsUtil.extendWithReviewsSummary(post)
-        $rootScope.postReviews = post.reviews
-        $scope.reviews = post.reviews
-        $rootScope.starsAvg = post.stars.avg
-        $scope.stars = { avg: post.stars.avg }
-      }
-
-      setScope($scope.post)
 
       $scope.canVote = (review) =>
         review.by._id != $scope.session._id &&
         _.find(review.votes,(v)=>v.by._id==$scope.session._id) == null
 
       $scope.upVote = (_id) =>
-        DataService.posts.reviewUpvote({postId,_id}, setScope)
+        DataService.posts.reviewUpvote({postId,_id}, $scope.setScope)
 
-      $scope.$parent.$watch('post', setScope)
+      $scope.sendReply = (_id, comment) =>
+        DataService.posts.reviewReply({postId,_id,comment}, $scope.setScope)
 
-      $scope.openReply = (_id) =>
-        alert('Replies coming soon ;)')
+      $scope.toggleReply = (_id) =>
+        $scope.replyOpen = ($scope.replyOpen) ? false : true
+    }
+  }
+})
+
+.directive('postComments', function(PostsUtil) {
+  return {
+    template: require('./../../posts/comments.html'),
+    scope: true,
+    controller($scope, $rootScope, $element, DataService) {
+
+      $scope.setScope = (post) => {
+        var post = PostsUtil.extendWithReviewsSummary(post)
+        $rootScope.postReviews = post.reviews
+        $scope.reviews = post.reviews
+        $rootScope.starsAvg = post.stars.avg
+        $scope.stars = { avg: post.stars.avg }
+      }
+      $scope.setScope($scope.post)
+
+      $scope.$parent.$watch('post', $scope.setScope)
     }
   }
 })
