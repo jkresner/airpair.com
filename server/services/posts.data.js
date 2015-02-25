@@ -132,10 +132,12 @@ var select = {
         cb(e,r)
       }
     },
-    editView(cb) {
+    editView(cb, overrideMD) {
       return (e,r) => {
         if (e || !r) return cb(e,r)
         r = selectFromObject(r, select.edit)
+        if (overrideMD)
+          r.md = overrideMD // hack for front-end editor to show latest edit
         cb(null,r)
       }
     },

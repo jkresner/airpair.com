@@ -151,7 +151,7 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
   var _id = $routeParams.id
 
   $scope.save = () =>
-    DataService.posts.update($scope.post, (result) => {
+    DataService.posts.update(_.omit($scope.post, ['reviews','slug','github']), (result) => {
       $location.path('/posts/edit/'+result._id)
     })
 
@@ -260,12 +260,12 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
   }
   $scope.previewMarkdown = previewMarkdown
 
-  var setPostScope = (r) => {
+  var setPostScope = function(r) {
     if ((r.published && !r.submitted) && (r.by.userId == $scope.session._id))
       return $scope.editErr = { message: `Edits on published posts my be tracked in git. <br />Please <a href="/posts/submit/${r._id}">submit your post</a> to continue editing it.` }
 
+    r.commitMessage = ""
     $scope.post = r
-    $scope.post.commitMessage = ""
     $scope.savedMD = r.md
     if (!$scope.aceLoaded) {
       $scope.aceMD = r.md
@@ -275,6 +275,8 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
     $timeout(previewMarkdown, 20)
 
     $scope.throttleMS = r.md.length * 5
+
+    console.log('setPostScope', $scope.post)
 
     $window.onbeforeunload = function() {
       var md = window.ace.edit($('#aceeditor')[0]).getSession().getValue()
@@ -310,10 +312,10 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
 
   $scope.save = () => {
     if (!$scope.post.submitted)
-      DataService.posts.update($scope.post, setPostScope)
+      DataService.posts.update(_.omit($scope.post, 'reviews'), setPostScope)
     else {
       if ($scope.post.commitMessage == "") return alert('Commit message required')
-      DataService.posts.updateGitHEAD($scope.post, setPostScope)
+      DataService.posts.updateGitHEAD(_.pick($scope.post,'_id','commitMessage','md'), setPostScope)
     }
   }
 

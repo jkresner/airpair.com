@@ -36,9 +36,8 @@ var get = {
   },
 
   getByIdForEditing(post, cb) {
-    post = selectFromObject(post, select.edit)
     //-- TODO, grab the git HEAD here and not on the client
-    cb(null, post)
+    selectCB.editView(cb)(null, post)
   },
 
   getByIdForForking(post, cb) {
@@ -279,13 +278,14 @@ var save = {
     o.by.userId = this.user._id
     o.lastTouch = svc.newTouch.call(this, 'createByAuthor')
     o.editHistory = [o.lastTouch]
-    svc.create(o, cb)
+    svc.create(o, selectCB.editView(cb))
     UserSvc.changeBio.call(this, o.by.bio,() => {})
   },
 
   update(original, o, cb) {
+    var ups = _.omit(o, 'slug', 'reviews', 'publishHistory', 'editHitory', 'forkers', 'github')
     original = _.extend(original, o)
-    updateWithEditTouch.call(this, original, 'updateByAuthor', cb)
+    updateWithEditTouch.call(this, original, 'updateByAuthor', selectCB.editView(cb))
   },
 
   publish(post, publishData, cb) {
@@ -366,12 +366,7 @@ var save = {
     if (Roles.post.isForker(this.user, original)) {
       var owner = this.user.social.gh.username
       github.updateFile(owner, original.slug, "post.md", postMD, commitMessage, this.user, (ee, result) => {
-        updateWithEditTouch.call(this, original, 'updateGitHEADonFork', (e,r) => {
-          if (e || !r) return cb(e,r)
-          r = selectFromObject(r, select.edit)
-          r.md = postMD // hack for front-end editor to show latest edit
-          cb(null, r)
-        })
+        updateWithEditTouch.call(this, original, 'updateGitHEADonFork', selectCB.editView(cb, postMD))
       })
     }
     else if (_.idsEqual(original.by.userId, this.user._id)) {
@@ -384,12 +379,7 @@ var save = {
         }
         setEventData(original, (err,resp)=>{
           if (err) return cb(err)
-          updateWithEditTouch.call(this, original, 'updateGitHEAD', (e,r) => {
-            if (e || !r) return cb(e,r)
-            r = selectFromObject(r, select.edit)
-            r.md = postMD // hack for front-end
-            cb(null, r)
-          })
+          updateWithEditTouch.call(this, original, 'updateGitHEAD', selectCB.editView(cb, postMD))
         })
       })
     } else {
