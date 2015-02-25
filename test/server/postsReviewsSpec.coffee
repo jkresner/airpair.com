@@ -18,6 +18,8 @@ module.exports = -> describe "API: ", ->
   after ->
     SETUP.analytics.restore()
 
+  it.skip "correctly saves index from the UI", (done) ->
+
 
   it "Cannot submit anonymous review", (done)->
     title = "Post Anon Review Test " + moment().format('X')
