@@ -42,6 +42,7 @@ var middleware = {
         $error(e, req.user, req)
       } else {
         $log(req.url + ' ' +(e.message || e).magenta)
+        // $log('Test Debug Error ', e.toString().magenta)
       }
 
       if (e.fromApi)

@@ -287,7 +287,7 @@ var admin = {
     mailman.sendRawTextEmail(request.by, message.subject, message.body, ()=>{})
 
     adm.lastTouch = svc.newTouch.call(this, `sent:${message.type}`)
-    messages.push(_.extend(message,{fromId:this.user._id,toId:request.userId}))
+    messages.push(_.extend(message,{_id:svc.newId(),fromId:this.user._id,toId:request.userId}))
 
     svc.update(request._id, _.extend(request, {status,adm,messages}), admCB(cb))
   },

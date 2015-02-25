@@ -139,6 +139,63 @@ module.exports = -> describe "API: ", ->
                   done()
 
 
+  it "Sends appropriate email notifications for reviews and replies", (done) ->
+    spyReviewNotify = sinon.spy(mailman,'sendPostReviewNotification')
+    spyReviewReplyNotify = sinon.spy(mailman,'sendPostReviewReplyNotification')
+    title = "Post Review Notifications Test " + moment().format('X')
+    SETUP.createNewPost 'jkap', { title, submitted: new Date }, (post) ->
+      addAndLoginLocalUser 'rev0', (rev0) ->
+        POST "/posts/#{post._id}/review", postReview, {}, (p1) ->
+          reviewId = p1.reviews[0]._id
+          addAndLoginLocalUser 'rev1', (rev1) ->
+            PUT "/posts/#{post._id}/review/#{reviewId}/reply", { comment: 'I say 1 reply to your review' }, {}, (p2) ->
+              expect(spyReviewNotify.callCount).to.equal(1)
+              expectIdsEqual(spyReviewNotify.args[0][0]._id, post.by.userId)
+              expectIdsEqual(spyReviewNotify.args[0][1], post._id)
+              expect(spyReviewNotify.args[0][2]).to.equal(post.title)
+              expect(spyReviewNotify.args[0][3]).to.equal(rev0.name)
+              expect(spyReviewNotify.args[0][4]).to.equal(postReview.questions[0].answer)
+              expect(spyReviewNotify.args[0][5]).to.equal(postReview.questions[1].answer)
+              spyReviewNotify.restore()
+              expect(spyReviewReplyNotify.callCount).to.equal(1)
+              expect(spyReviewReplyNotify.args[0][0].length).to.equal(2)
+              expect(spyReviewReplyNotify.args[0][0][0].name).to.equal(post.by.name)
+              expect(spyReviewReplyNotify.args[0][0][1].name).to.equal(rev0.name)
+              expectIdsEqual(spyReviewReplyNotify.args[0][1], post._id)
+              expect(spyReviewReplyNotify.args[0][2]).to.equal(post.title)
+              expect(spyReviewReplyNotify.args[0][3]).to.equal(rev1.name)
+              expect(spyReviewReplyNotify.args[0][4]).to.equal('I say 1 reply to your review')
+              LOGIN 'jkap', data.users.jkap, (jkap) ->
+                PUT "/posts/#{post._id}/review/#{reviewId}/reply", { comment: 'I say 2 reply to your review' }, {}, (p3) ->
+                  expect(spyReviewReplyNotify.callCount).to.equal(2)
+                  expect(spyReviewReplyNotify.args[1][0].length).to.equal(2)
+                  expect(spyReviewReplyNotify.args[1][0][0].name).to.equal(rev0.name)
+                  expect(spyReviewReplyNotify.args[1][0][1].name).to.equal(rev1.name)
+                  expectIdsEqual(spyReviewReplyNotify.args[1][1], post._id)
+                  expect(spyReviewReplyNotify.args[1][2]).to.equal(post.title)
+                  expect(spyReviewReplyNotify.args[1][3]).to.equal(post.by.name)
+                  expect(spyReviewReplyNotify.args[1][4]).to.equal('I say 2 reply to your review')
+                  LOGIN rev0.userKey, data.users[rev0.userKey], (sRev2) ->
+                    PUT "/posts/#{post._id}/review/#{reviewId}/reply", { comment: 'I say 3 reply to your review' }, {}, (p4) ->
+                      expect(spyReviewReplyNotify.callCount).to.equal(3)
+                      expect(spyReviewReplyNotify.args[2][0].length).to.equal(2)
+                      expect(spyReviewReplyNotify.args[2][0][0].name).to.equal(post.by.name)
+                      expect(spyReviewReplyNotify.args[2][0][1].name).to.equal(rev1.name)
+                      expect(spyReviewReplyNotify.args[2][4]).to.equal('I say 3 reply to your review')
+                      addAndLoginLocalUser 'rev2', (rev2) ->
+                        PUT "/posts/#{post._id}/review/#{reviewId}/reply", { comment: 'I say 4 reply to your review' }, {}, (p5) ->
+                          expect(spyReviewReplyNotify.callCount).to.equal(4)
+                          expect(spyReviewReplyNotify.args[3][0].length).to.equal(3)
+                          expect(spyReviewReplyNotify.args[3][0][0].name).to.equal(post.by.name)
+                          expect(spyReviewReplyNotify.args[3][0][1].name).to.equal(rev0.name)
+                          expect(spyReviewReplyNotify.args[3][0][2].name).to.equal(rev1.name)
+                          expect(spyReviewReplyNotify.args[3][4]).to.equal('I say 4 reply to your review')
+                          spyReviewReplyNotify.restore()
+                          done()
+
+
+
+
   it.skip "Can delete review as editor or review owner", (done)->
 
 

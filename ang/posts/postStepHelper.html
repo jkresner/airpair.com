@@ -19,6 +19,9 @@
     <span ng-if="needReviews">
       Post needs a minimum star rating of 3.5/5 from at least 3
       reviewers to be publish.
+      <span ng-if="isAuthor">
+        <a href="/posts/contributors/{{p._id}}">Find contributors</a>.
+      </span>
     </span>
     <span ng-if="publishReady">BOOM :). Post looks ready to
       <a ng-href="/posts/publish/{{p._id}}">publish</a>!</span>
