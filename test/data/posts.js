@@ -271,6 +271,117 @@ module.exports = {
         }
     },
     "slug" : "submit-success-with-connected-github-1425054139"
+  },
+
+  toSync: {
+    "_id" : "54f0dfc74913acfb407311c1",
+    "title" : "Submit success with connected github 1425072070",
+    "md" : "2Sync from with github stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff ",
+    "publishHistory" : [],
+    "editHistory" : [
+        {
+            "action" : "createByAuthor",
+            "utc" : "2015-02-27T21:21:11.001Z",
+            "_id" : "54f0dfc74913acfb407311c2",
+            "by" : {
+                "_id" : "54f0dfc64913acfb407311c0",
+                "name" : "Robot61425072070"
+            }
+        },
+        {
+            "action" : "updateMarkdownByAuthor",
+            "utc" : "2015-02-27T21:21:11.017Z",
+            "_id" : "54f0dfc74913acfb407311c3",
+            "by" : {
+                "_id" : "54f0dfc64913acfb407311c0",
+                "name" : "Robot61425072070"
+            }
+        },
+        {
+            "action" : "updateByAuthor",
+            "utc" : "2015-02-27T21:21:11.025Z",
+            "_id" : "54f0dfc74913acfb407311c4",
+            "by" : {
+                "_id" : "54f0dfc64913acfb407311c0",
+                "name" : "Robot61425072070"
+            }
+        },
+        {
+            "action" : "submittedForReview",
+            "utc" : "2015-02-27T21:21:15.107Z",
+            "_id" : "54f0dfcb4913acfb407311c5",
+            "by" : {
+                "_id" : "54f0dfc64913acfb407311c0",
+                "name" : "Robot61425072070"
+            }
+        },
+        {
+            "action" : "updateHEAD",
+            "utc" : "2015-02-27T21:21:16.016Z",
+            "_id" : "54f0dfcc4913acfb407311c6",
+            "by" : {
+                "_id" : "54f0dfc64913acfb407311c0",
+                "name" : "Robot61425072070"
+            }
+        },
+        {
+            "action" : "propagateMDfromGithub",
+            "utc" : "2015-02-27T21:21:16.405Z",
+            "_id" : "54f0dfcc4913acfb407311c7",
+            "by" : {
+                "_id" : "54f0dfc64913acfb407311c0",
+                "name" : "Robot61425072070"
+            }
+        }
+    ],
+    "tags" : [
+        {
+            "_id" : "5149dccb5fc6390200000013",
+            "name" : "AngularJS",
+            "slug" : "angularjs"
+        },
+        {
+            "_id" : "514825fa2a26ea0200000028",
+            "name" : "Node.JS",
+            "slug" : "node.js"
+        }
+    ],
+    "forkers" : [],
+    "reviews" : [],
+    "updated" : "2015-02-27T21:21:16.405Z",
+    "lastTouch" : {
+        "action" : "propagateMDfromGithub",
+        "utc" : "2015-02-27T21:21:16.405Z",
+        "by" : {
+            "_id" : "54f0dfc64913acfb407311c0",
+            "name" : "Robot61425072070"
+        }
+    },
+    "created" : "2015-02-27T21:21:11.000Z",
+    "by" : {
+        "userId" : "54f0dfc64913acfb407311c0",
+        "name" : "Robot61425072070",
+        "bio" : "yo yyoy o",
+        "social" : {
+            "gh" : {
+                "username" : "airpairtestreviewer"
+            }
+        },
+        "avatar" : "//0.gravatar.com/avatar/82d6dfd16baf4122e330f5951b599cf6"
+    },
+    "__v" : 0,
+    "assetUrl" : "http://youtu.be/qlOAbrvjMBo",
+    "submitted" : "2015-02-27T21:21:15.107Z",
+    "github" : {
+        "repoInfo" : {
+            "url" : "https://github.com/JustASimpleTestOrg/submit-success-with-connected-github-1425072070",
+            "authorTeamId" : 1330387,
+            "authorTeamName" : "submit-success-with-connected-github-1425072070-407311c1-author",
+            "author" : "airpairtestreviewer"
+        }
+    },
+    "slug" : "submit-success-with-connected-github-1425072070",
+    "publishedCommit" : "54ad601eab5b3b870281c026c8ce2bfa9467c8d0"
 }
 
 }

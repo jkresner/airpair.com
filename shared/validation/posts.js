@@ -65,8 +65,8 @@ var validation = {
 
     if (!isEditor && !isAdmin && !isOwner)
       return `Cannot publish post not belonging to you`
-    if (!isEditor && post.reviews < 5)
-      return `Must have at least 5 reviews to be published`
+    if (!isEditor && post.reviews < 3)
+      return `Must have at least 3 reviews to be published`
 
     if (!_.idsEqual(post.by.userId, publishData.by.userId) &&
       !isAdmin)

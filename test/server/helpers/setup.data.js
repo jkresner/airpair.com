@@ -110,6 +110,15 @@ var dataHelpers = {
     ] }
   },
 
+  postMeta(post) {
+    return { title: post.title, description: 'desc',
+      canonical: `https//www.airpair.com/v1/posts/{post.slug}`,
+      ogTitle: post.title,
+      ogImage: post.assetUrl,
+      ogDescription: 'desc'
+    }
+  },
+
   lotsOfWords(seed) {
     var words = (seed || "Start")
     for (var i = 0; i < 501; i++) {

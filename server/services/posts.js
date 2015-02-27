@@ -346,26 +346,26 @@ var save = {
   },
 
   propagateMDfromGithub(post, cb){
-    github.getStats(org, post.slug, this.user, null, (err,resp)=>{
-      post.github.stats = resp
-      setEventData(post, (err, resp) =>{
-        if(err) return cb(err)
-        github.getFile(org, post.slug, "/post.md", null, (err, result) => {
-          if (err) return cb(err)
-          var commit = result.sha
-          post.md = result.string
-          post.publishedCommit = commit
-          if (post.published) {
-            post.publishHistory = post.publishHistory || []
-            post.publishHistory.push({
-              commit, touch: svc.newTouch.call(this, 'publish')})
-            post.publishedBy = _.pick(this.user, '_id', 'name', 'email')
-            post.publishedUpdated = new Date()
-          }
-          updateWithEditTouch.call(this, post, 'propagateMDfromGithub', cb)
-        })
-      })
+    // github.getStats(org, post.slug, this.user, null, (err,resp)=>{
+      // post.github.stats = resp
+      // setEventData(post, (err, resp) =>{
+        // if(err) return cb(err)
+    github2.getFile(this.user, org, post.slug, "/post.md", 'edit', (e, head) => {
+      if (e) return cb(e)
+      var commit = head.sha
+      post.md = head.string
+      post.publishedCommit = commit
+      if (post.published) {
+        post.publishHistory = post.publishHistory || []
+        post.publishHistory.push({
+          commit, touch: svc.newTouch.call(this, 'publish')})
+        post.publishedBy = _.pick(this.user, '_id', 'name', 'email')
+        post.publishedUpdated = new Date()
+      }
+      updateWithEditTouch.call(this, post, 'propagateMDfromGithub', cb)
     })
+      // })
+    // })
   },
 
   updateMarkdown(original, ups, cb) {
