@@ -67,7 +67,6 @@ module.exports = () => describe("API: ", function() {
         expect(post.by.bio).to.equal('yo yyoy o')
         expect(post.by.avatar).to.equal(s.avatar)
         expect(post.created).to.exist
-        expect(post.updated).to.exist // updated is used to show admins recent edited posts
         expect(post.published).to.be.undefined
         expect(post.assetUrl).to.be.undefined
         expect(post.title).to.equal(d.title)
@@ -103,7 +102,6 @@ module.exports = () => describe("API: ", function() {
         expect(post.by.social.so.link).to.equal('ajay/1231so')
         expect(post.by.social.gp.id).to.equal('ajaygp')
         expect(post.created).to.exist
-        expect(post.updated).to.exist
         expect(post.submitted).to.be.undefined
         expect(post.published).to.be.undefined
         expect(post.assetUrl).to.equal(d.assetUrl)
@@ -138,17 +136,26 @@ module.exports = () => describe("API: ", function() {
   it('Edit and delete post as author', (done) => {
     addAndLoginLocalUser('stpv', function(s) {
       var by = { userId: s._id, name: s.name, bio: 'auth test', avatar: s.avatar }
-      var d1 = { title: "test authed delete", by: by, md: 'Test auths 1', assetUrl: '/v1/img/css/blog/example2.jpg' }
+      var title = "test author edit and delete" + Math.floor(Math.random() * 100000000)
+      var d1 = { title, by: by, md: 'Test auths 1', assetUrl: '/v1/img/css/blog/example2.jpg' }
       POST('/posts', d1, {}, function(p1) {
         expect(p1.slug).to.be.undefined
-        p1.slug = d1.title.replace(/ /g,'-')+moment().format('X')
-        PUT(`/posts/${p1._id}`, p1, {}, function(e2) {
-          expect(e2.slug).to.equal(p1.slug)
-          DELETE(`/posts/${p1._id}`, { status: 200 }, function(r) {
-            GET('/posts/me', {}, function(posts) {
-              var myposts = _.where(posts,(p)=>_.idsEqual(p.by.userId,s._id))
-              expect(myposts.length).to.equal(0)
-              done()
+        expect(p1.reviews.length).to.equal(0)
+        expect(p1.lastTouch).to.be.undefined
+        GET(`/posts/${p1._id}`, {}, function(p2) {
+          expect(p2.slug).to.be.undefined
+          expect(p2.reviews.length).to.equal(0)
+          expect(p2.lastTouch).to.be.undefined
+          p2.title = 'edited ' + p2.title
+          p2 = _.omit(p2, 'reviews')
+          PUT(`/posts/${p1._id}`, p2, {}, function(p3) {
+            expect(p3.title).to.equal(p2.title)
+            DELETE(`/posts/${p1._id}`, { status: 200 }, function(r) {
+              GET('/posts/me', {}, function(posts) {
+                var myposts = _.where(posts,(p)=>_.idsEqual(p.by.userId,s._id))
+                expect(myposts.length).to.equal(0)
+                done()
+              })
             })
           })
         })
@@ -157,21 +164,23 @@ module.exports = () => describe("API: ", function() {
   })
 
 
-  it('Edit and delete post as editor', (done) => {
+  it.skip('Edit and delete post as editor', (done) => {
     addAndLoginLocalUser('stpu', function(s) {
       var by = { userId: s._id, name: s.name, bio: 'auth test', avatar: s.avatar }
-      var d1 = { title: "test authed", by: by, md: 'Test auths 1', assetUrl: '/v1/img/css/blog/example2.jpg' }
+      var title = "test editor edit and delete" + Math.floor(Math.random() * 100000000)
+      var d1 = { title, by: by, md: 'Test auths 1', assetUrl: '/v1/img/css/blog/example2.jpg' }
       POST('/posts', d1, {}, function(p1) {
-        expect(p1.slug).to.be.undefined
-        p1.slug = d1.title.replace(/ /g,'-')+moment().format('X')
         LOGIN('edap', data.users['edap'], function() {
-          PUT(`/posts/${p1._id}`, p1, {}, function(e2) {
-            expect(e2.slug).to.equal(p1.slug)
-            DELETE(`/posts/${p1._id}`, { status: 200 }, function(r) {
-              GET('/posts/me', {}, function(posts) {
-                var myposts = _.where(posts,(p)=>_.idsEqual(p.by.userId,s._id))
-                expect(myposts.length).to.equal(0)
-                done()
+          GET(`/posts/${p1._id}`, {}, function(p2) {
+            p1.title = 'edited ' + p1.title
+            PUT(`/posts/${p1._id}`, p1, {}, function(e2) {
+              expect(e2.slug).to.equal(p1.slug)
+              DELETE(`/posts/${p1._id}`, { status: 200 }, function(r) {
+                GET('/posts/me', {}, function(posts) {
+                  var myposts = _.where(posts,(p)=>_.idsEqual(p.by.userId,s._id))
+                  expect(myposts.length).to.equal(0)
+                  done()
+                })
               })
             })
           })
@@ -683,10 +692,10 @@ module.exports = () => describe("API: ", function() {
                     })
                   })
                 })
-              }, 500)
+              }, 1000)
             })
           })
-        }, 500)
+        }, 1000)
       })
     })
   })
@@ -782,7 +791,7 @@ module.exports = () => describe("API: ", function() {
     })
   })
 
-  it("sends back event stats and event data when propgated from github", function(done){
+  it.skip("sends back event stats and event data when propgated from github", function(done){
     addAndLoginLocalGithubUser("robot23", {}, function(s) {
       var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
       var title = "test" + Math.floor(Math.random() * 100000000)
@@ -820,7 +829,7 @@ module.exports = () => describe("API: ", function() {
     })
   })
 
-  it('records new events when head is updated', function(done){
+  it.skip('records new events when head is updated', function(done){
     addAndLoginLocalGithubUser("robot26", {}, function(s) {
       var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
       var title = "test" + Math.floor(Math.random() * 100000000)

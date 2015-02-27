@@ -35,9 +35,15 @@ var get = {
     svc.searchOne(query.published({slug}), null, selectCB.inflateHtml(cb))
   },
 
-  getByIdForEditing(post, cb) {
-    post = selectFromObject(post, select.edit)
+  getByIdForEditingInfo(post, cb) {
+    post = selectFromObject(post, select.editInfo)
     cb(null, post)
+  },
+
+
+  getByIdForEditing(post, cb) {
+    //-- TODO, grab the git HEAD here and not on the client
+    selectCB.editView(cb)(null, post)
   },
 
   getByIdForForking(post, cb) {
@@ -88,9 +94,9 @@ var get = {
         return selectCB.displayView(cb)(null, r)
 
       $callSvc(get.getGitHEAD, this)(r, (ee, head) => {
-        if (head.string)
+        if (head && head.string)
           r.md = head.string
-        selectCB.displayView(cb)(null, r)
+        selectCB.displayView(cb)(ee, r)
       })
     })
   },
@@ -278,13 +284,14 @@ var save = {
     o.by.userId = this.user._id
     o.lastTouch = svc.newTouch.call(this, 'createByAuthor')
     o.editHistory = [o.lastTouch]
-    svc.create(o, cb)
+    svc.create(o, selectCB.editView(cb))
     UserSvc.changeBio.call(this, o.by.bio,() => {})
   },
 
   update(original, o, cb) {
+    var ups = _.omit(o, 'slug', 'reviews', 'publishHistory', 'editHitory', 'forkers', 'github')
     original = _.extend(original, o)
-    updateWithEditTouch.call(this, original, 'updateByAuthor', cb)
+    updateWithEditTouch.call(this, original, 'updateByAuthor', selectCB.editView(cb))
   },
 
   publish(post, publishData, cb) {
@@ -350,6 +357,7 @@ var save = {
           post.md = result.string
           post.publishedCommit = commit
           if (post.published) {
+            post.publishHistory = post.publishHistory || []
             post.publishHistory.push({
               commit, touch: svc.newTouch.call(this, 'publish')})
             post.publishedBy = _.pick(this.user, '_id', 'name', 'email')
@@ -365,11 +373,7 @@ var save = {
     if (Roles.post.isForker(this.user, original)) {
       var owner = this.user.social.gh.username
       github.updateFile(owner, original.slug, "post.md", postMD, commitMessage, this.user, (ee, result) => {
-        updateWithEditTouch.call(this, original, 'updateGitHEADonFork', (e,r) => {
-          if (e || !r) return cb(e,r)
-          r.md = postMD // hack for front-end editor to show latest edit
-          cb(null, r)
-        })
+        updateWithEditTouch.call(this, original, 'updateGitHEADonFork', selectCB.editView(cb, postMD))
       })
     }
     else if (_.idsEqual(original.by.userId, this.user._id)) {
@@ -381,12 +385,8 @@ var save = {
           original.publishedCommit = result.commit
         }
         setEventData(original, (err,resp)=>{
-          if (err) return cb(er)
-          updateWithEditTouch.call(this, original, 'updateGitHEAD', (e,r) => {
-            if (e || !r) return cb(e,r)
-            r.md = postMD // hack for front-end
-            cb(null, r)
-          })
+          if (err) return cb(err)
+          updateWithEditTouch.call(this, original, 'updateGitHEAD', selectCB.editView(cb, postMD))
         })
       })
     } else {
@@ -447,15 +447,30 @@ var saveReviews = {
   },
 
   reviewReply(post, original, reply, cb) {
-    var review = _.find(post.reviews,(r)=>_.idsEqual(r._id,original._id))
-    reply.by = svc.userByte.call(this)
-    review.replies.push(reply)
-    svc.update(post._id, post, selectCB.statsView(cb))
+    // Damn this is annoying... alternative is to stuff the email into the author object
+    // But we'd have to look at mongo consistency updates :/
+    $callSvc(UserSvc.getById, {user:{_id:post.by.userId}})(post.by.userId, (ee, author) => {
+      var review = _.find(post.reviews,(r)=>_.idsEqual(r._id,original._id))
+      reply._id = svc.newId()
+      reply.by = svc.userByte.call(this)
+      review.replies.push(reply)
+
+      var threadParticipants =
+        _.uniq( _.union([author,review.by],_.pluck(review.replies,'by')), (p)=>p.email)
+
+      var thisParticipant = _.find(threadParticipants, (p)=>p.email == this.user.email)
+      if (thisParticipant) threadParticipants = _.without(threadParticipants, thisParticipant)
+      // $log('still'.cyan, threadParticipants, thisParticipant)
+
+      mailman.sendPostReviewReplyNotification(threadParticipants, post._id, post.title, reply.by.name, reply.comment)
+
+      svc.update(post._id, post, selectCB.statsView(cb))
+    })
   },
 
   reviewUpvote(post, original, cb) {
     var review = _.find(post.reviews,(r)=>_.idsEqual(r._id,original._id))
-    var vote = { val: 1, by: svc.userByte.call(this) }
+    var vote = { _id: svc.newId(), val: 1, by: svc.userByte.call(this) }
     review.votes.push(vote)
     svc.update(post._id, post, selectCB.statsView(cb))
   },

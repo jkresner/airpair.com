@@ -337,6 +337,14 @@ section.notifications {
       time { font-size:10px }
       p { line-height:21px;margin-top:0px;color:#3f4549;font-size:15px }
       header { border:none;margin-bottom:2px }
+      ul.replies {
+        margin-left:0;padding-left:0;
+        li {
+          padding-top:2px;
+          display:block;
+          // border-top:solid 1px @palegray;
+          position:relative;padding-left:50px;img { top:6px } }
+      }
       footer {
         menu { padding-left:0;margin-top:0;
           span {
@@ -349,6 +357,7 @@ section.notifications {
           a:hover { color:@orangehighlight }
         }
         .bullet { font-weight:100; }
+        textarea { display:block;width:100% }
       }
     }
   }

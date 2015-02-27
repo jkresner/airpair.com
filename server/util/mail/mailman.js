@@ -52,10 +52,18 @@ module.exports = function(mailProvider)
   initReceivers()
 
   function sendTemplateEmail(templateName, templateData, toUser, cb) {
+    templateData.firstName = util.firstName(toUser.name)
     TemplateSvc.mail(templateName, templateData, (e, renderedEmail) =>
       mailProvider.send(`${toUser.name} <${toUser.email}>`, renderedEmail, cb)
     )
   }
+
+  function sendTemplateEmails(templateName, templateData, toUsers, cb) {
+    if (cb) cb(Error('sendTemplateEmails does not yet support a callback'))
+    for (var user of toUsers)
+      sendTemplateEmail(templateName, templateData, user, cb)
+  }
+
 
   var mailman = {
     sendRawTextEmail(toUser, subject, body, cb) {
@@ -95,8 +103,7 @@ module.exports = function(mailProvider)
       }), cb)
     },
     signupPostcompEmail(toUser, hash, cb) {
-      var firstName = util.firstName(toUser.name)
-      sendTemplateEmail('signup-100k-post-comp', { firstName, hash }, toUser, cb)
+      sendTemplateEmail('signup-100k-post-comp', { hash }, toUser, cb)
     },
     sendGotCreditEmail(toUser, credit, fromUser, cb) {
       mailProvider.send(`${toUser.name} <${toUser.email}>`, renderEmail('gotcredit', {
@@ -136,10 +143,15 @@ module.exports = function(mailProvider)
       mailProvider.send(`${toUser.name} <${toUser.email}>`, renderEmail('expertsuggested',
         { expertFirstName, requestByFullName, requestId, accountManagerName, tagsString }), cb)
     },
+
     sendPostReviewNotification(toUser, postId, postTitle, reviewerFullName, rating, comment, cb) {
-      var firstName = util.firstName(toUser.name)
-      sendTemplateEmail('post-review-notification', { firstName, postId, postTitle, reviewerFullName, comment, rating }, toUser, cb)
+      sendTemplateEmail('post-review-notification', { postId, postTitle, reviewerFullName, comment, rating }, toUser, cb)
     },
+
+    sendPostReviewReplyNotification(toUsers, postId, postTitle, replierFullName, comment, cb) {
+      sendTemplateEmails('post-review-reply-notification', { postId, postTitle, replierFullName, comment }, toUsers, cb)
+    },
+
   }
 
   return mailman

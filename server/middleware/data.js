@@ -25,6 +25,8 @@ var ErrorApi404 = (msg) => {
 
 var middleware = {
 
+  json2mb: require('body-parser').json({limit: '2mb'}),
+
   bodyParam(paramName) {
     return (req, res, next) => {
       var param = req.body[paramName]
