@@ -11,7 +11,8 @@ var knownNonErrors = [
   'no user found',
   'wrong password',
   'failed to obtain access token',
-  'No user found with email'
+  'No user found with email',
+  'Post cannot be edited by you, did you fork it already?'
 ]
 
 

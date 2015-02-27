@@ -28,6 +28,8 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
     scope: { p: '=post' },
     controller($rootScope, $scope) {
 
+      $scope.isAuthor = $scope.p.by.userId == $rootScope.session._id
+
       $scope.calcDraftStep = () => {
         if ($scope.p.submitted) return false
         if ($scope.p.published) return $scope.submitForReview = true
@@ -151,7 +153,7 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
   var _id = $routeParams.id
 
   $scope.save = () =>
-    DataService.posts.update($scope.post, (result) => {
+    DataService.posts.update(_.omit($scope.post, ['reviews','slug','github','md']), (result) => {
       $location.path('/posts/edit/'+result._id)
     })
 
@@ -197,7 +199,7 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
   $scope.exampleImage = function() { $scope.post.assetUrl = exampleImageUrl }
   $scope.exampleYouTube = function() { $scope.post.assetUrl = exampleYoutubeUrl }
 
-  DataService.posts.getById({_id}, (r) => {
+  DataService.posts.getByIdForEditingInfo({_id}, (r) => {
 
     if (r.meta)
     {
@@ -260,12 +262,12 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
   }
   $scope.previewMarkdown = previewMarkdown
 
-  var setPostScope = (r) => {
+  var setPostScope = function(r) {
     if ((r.published && !r.submitted) && (r.by.userId == $scope.session._id))
       return $scope.editErr = { message: `Edits on published posts my be tracked in git. <br />Please <a href="/posts/submit/${r._id}">submit your post</a> to continue editing it.` }
 
+    r.commitMessage = ""
     $scope.post = r
-    $scope.post.commitMessage = ""
     $scope.savedMD = r.md
     if (!$scope.aceLoaded) {
       $scope.aceMD = r.md
@@ -275,6 +277,8 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
     $timeout(previewMarkdown, 20)
 
     $scope.throttleMS = r.md.length * 5
+
+    console.log('setPostScope', $scope.post)
 
     $window.onbeforeunload = function() {
       var md = window.ace.edit($('#aceeditor')[0]).getSession().getValue()
@@ -310,10 +314,10 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
 
   $scope.save = () => {
     if (!$scope.post.submitted)
-      DataService.posts.update($scope.post, setPostScope)
+      DataService.posts.update(_.omit($scope.post, 'reviews'), setPostScope)
     else {
       if ($scope.post.commitMessage == "") return alert('Commit message required')
-      DataService.posts.updateGitHEAD($scope.post, setPostScope)
+      DataService.posts.updateGitHEAD(_.pick($scope.post,'_id','commitMessage','md'), setPostScope)
     }
   }
 
@@ -435,7 +439,7 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
   DataService.posts.getByIdForPubishing({_id}, setScope)
 
   $scope.propagate = () =>
-    DataService.posts.propagateFromHEAD($scope.post, setScope)
+    DataService.posts.propagateFromHEAD({_id}, setScope)
 
   $scope.submitPublish = (formValid, data, postPublishForm) => {
     if (formValid)
@@ -447,6 +451,11 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
 
 .controller('PostContributorsCtrl', function($scope, $routeParams, $location, DataService, PostsUtil) {
   var _id = $routeParams.id
+
+  DataService.posts.getByIdForContributors({_id}, (r) => {
+    $scope.post = PostsUtil.extendWithReviewsSummary(r)
+  })
+
 
   DataService.posts.getByIdForContributors({_id}, (r) => {
     $scope.post = PostsUtil.extendWithReviewsSummary(r)

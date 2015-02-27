@@ -7,7 +7,7 @@ angular.module("APSurveyDirectives", [])
     var idx = -1
     return _.map($(form).find('.question'), (elm) => {
       var $q = $(elm)
-      idx = idx++
+      idx = idx + 1
       return {
         idx,
         key: $q.data('key'),

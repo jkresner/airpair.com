@@ -130,7 +130,6 @@ angular.module("APPageHelpers", [])
   this.loadPoSt = function()
   {
     if ($('#post_script').toArray().length == 0) {
-      console.log('insert loadPoSt script')
       window.pwidget_config = { shareQuote: false, afterShare: false, counter: true, copypaste: false };
       var p = document.createElement('script');
       p.id = 'post_script';

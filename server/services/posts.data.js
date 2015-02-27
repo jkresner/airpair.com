@@ -74,7 +74,21 @@ var select = {
     'submitted': 1,
     'tags': 1,
     'assetUrl': 1,
-    'md': 1
+    'md': 1,
+    'reviews.questions.key': 1, //-- To know if the post is publishable
+    'reviews.questions.answer': 1,
+  },
+  editInfo: {
+    '_id': 1,
+    'by': 1,
+    'github.repoInfo': 1,
+    'title':1,
+    'slug': 1,
+    'created': 1,
+    'published': 1,
+    'submitted': 1,
+    'tags': 1,
+    'assetUrl': 1,
   },
   stats: {
     '_id': 1,
@@ -130,10 +144,12 @@ var select = {
         cb(e,r)
       }
     },
-    editView(cb) {
+    editView(cb, overrideMD) {
       return (e,r) => {
         if (e || !r) return cb(e,r)
         r = selectFromObject(r, select.edit)
+        if (overrideMD)
+          r.md = overrideMD // hack for front-end editor to show latest edit
         cb(null,r)
       }
     },

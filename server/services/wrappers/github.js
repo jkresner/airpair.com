@@ -28,6 +28,8 @@ var _authenticateAdmin = function(){
 }
 
 var _authenticateUser = function(user){
+  if (!user.social || !user.social.gh || !user.social.gh.token)
+    throw Error(`github._authenticateUser social.gh on user [${user.email}][${user._id}] not present`)
   api.authenticate({
     type: "oauth",
     token: user.social.gh.token.token
@@ -219,7 +221,7 @@ var github = {
 
   updateFile(owner, repo, path, content, msg, user, cb){
     this.getFile(owner, repo, path, user, function(err, result){
-      if (err) return verboseErrorCB(cb, err, 'updateFile/getFile', `${user.social.gh.username} ${repo} ${path}`)
+      if (err) return verboseErrorCB(cb, err, 'updateFile/getFile', `${user.social.gh.username} ${owner}/${repo} ${path}`)
       _authenticateUser(user)
       api.repos.updateFile({
         sha: result.sha,
@@ -304,7 +306,7 @@ var github = {
       repo: repo,
       path: path
     }, function (err, resp){
-      if (err) return verboseErrorCB(cb, err, 'getFile', `${repo} ${path}`)
+      if (err) return verboseErrorCB(cb, err, 'getFile', `${owner}/${repo} ${path}`)
       resp.string = new Buffer(resp.content, 'base64').toString('utf8');
       cb(err, resp)
     })

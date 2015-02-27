@@ -1,3 +1,55 @@
+
+Could not find request[54cad38d2aadfe0900d650ff] belonging to user[54cf4f4c83e5610900a602d3]
+GET /v1/api/requests/54cad38d2aadfe0900d650ff
+Carlos Pombeiro carlospombeiro@gmail.com 54cf4f4c83e5610900a602d3
+ << https://www.airpair.com/meet-experts/54cad38d2aadfe0900d650ff
+isBot:false:Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.94 Safari/537.36
+
+ Error: Could not find request[54cad38d2aadfe0900d650ff] belonging to user[54cf4f4c83e5610900a602d3]
+    at Error ()
+    at /app/requests.js:82:54
+    at Promise.searchOne (/app/_service.js:29:9)
+    at Promise. (/app/node_modules/mongoose/node_modules/mpromise/lib/promise.js:177:8)
+    at Promise.emit (events.js:95:17)
+    at Promise.emit (/app/node_modules/mongoose/node_modules/mpromise/lib/promise.js:84:38)
+    at Promise.fulfill (/app/node_modules/mongoose/node_modules/mpromise/lib/promise.js:97:20)
+    at Promise.resolve (/app/node_modules/mongoose/lib/promise.js:114:23)
+    at Promise. (/app/node_modules/mongoose/node_modules/mpromise/lib/promise.js:177:8)
+    at Promise.emit (events.js:95:17)
+
+
+Could not find request[54c55875ba452b0900f2b5aa] belonging to user[54c5590b5ad22b0900efa8f7]
+GET /v1/api/requests/54c55875ba452b0900f2b5aa
+Luca Bonifacio lusa2720@gmail.com 54c5590b5ad22b0900efa8f7
+ << https://www.airpair.com/meet-experts/54c55875ba452b0900f2b5aa
+isBot:false:Mozilla/5.0 (iPad; CPU OS 8_1_1 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) Version/8.0 Mobile/12B436 Safari/600.1.4
+
+ Error: Could not find request[54c55875ba452b0900f2b5aa] belonging to user[54c5590b5ad22b0900efa8f7]
+    at Error ()
+    at /app/requests.js:82:54
+    at Promise.searchOne (/app/_service.js:29:9)
+    at Promise. (/app/node_modules/mongoose/node_modules/mpromise/lib/promise.js:177:8)
+    at Promise.emit (events.js:95:17)
+    at Promise.emit (/app/node_modules/mongoose/node_modules/mpromise/lib/promise.js:84:38)
+    at Promise.fulfill (/app/node_modules/mongoose/node_modules/mpromise/lib/promise.js:97:20)
+    at Promise.resolve (/app/node_modules/mongoose/lib/promise.js:114:23)
+    at Promise. (/app/node_modules/mongoose/node_modules/mpromise/lib/promise.js:177:8)
+    at Promise.emit (events.js:95:17)
+
+
+Request can only be updated by owner
+PUT /v1/api/requests/54c3b4e6a1bfe10900f17bcf
+Brian Dant briandant414@gmail.com 53b038a98f8c80299bcc3687
+ << https://www.airpair.com/help/request
+isBot:false:Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.91 Safari/537.36
+
+ {"step":"submit","_id":"54c3b4e6a1bfe10900f17bcf","by":{"avatar":"//0.gravatar.com/avatar/dea586385f60ac53ef2028afd80ac52c","email":"thegridirongeek@gmail.com","name":"Chris Huie"},"type":"mentoring","brief":"I am trying to build a portfolio so that I can get a junior developer job. I am somewhere between a beginner and proficient, because I work at learning programming everyday. However, I guarantee some of the questions I ask will be on the dumb side hopefully mxed with moments of genius. Currently I am building out a daily fantasy dashboard and need some guidance as I work through it. Currently building frontend with D3 and javascript, but defiently a touch and go effort. On the backend is where I need the most help to query through data and serve up to the front-end. Looking for long term continuous mentorship to take my program to the next level.","tags":[{"_id":"514825fa2a26ea020000001f","slug":"javascript","sort":0},{"_id":"514825fa2a26ea020000002d","slug":"python","sort":1},{"_id":"5181d0a966a6f999a465eb35","slug":"database","sort":2}],"time":"later","hours":"10+","experience":"beginner","status":"waiting","suggested":[{"expert":{"_id":"53b038df5c5e7502006274ec","__v":1,"availability":"","bookMe":{"rate":"110","rake":"25","urlSlug":"briandant","urlBlog":"","noIndex":false,"enabled":true,"coupons":[],"creditRequestIds":[]},"brief":"I want to help new programmers by removing annoying and complicated blockers.","email":"briandant414@gmail.com","gh":{"followers":17,"gravatar_id":"1cb8dfd5c0005f08ff1f639abe37a335","blog":null,"location":"Boston, MA","username":"briandant","id":1884902},"gmail":"briandant414@gmail.com","homepage":"","hours":"2","karma":0,"minRate":40,"name":"Brian Dant","pic":"https://lh6.googleusercontent.com/-I0wfv-XIp7k/AAAAAAAAAAI/AAAAAAAADcI/wKMWZ44jkXs/photo.jpg","rate":70,"so":{"profile_image":"https://www.gravatar.com/avatar/6c07d8b5af42f5c4d21b169dcfd1bda0?s=128&d=identicon&r=PG","reputation":648,"link":"785400/brian-dant","website_url":"http://N/A","id":785400},"stats":{},"status":"ready","tags":[{"_id":"514830f257e7aa0200000014","name":"django","short":"django","soId":"django","levels":["beginner","intermediate","expert"],"subscription":{"auto":[],"custom":[]}},{"_id":"5181d0aa66a6f999a465ed24","name":"django-admin","short":"django-admin","soId":"django-admin","levels":["beginner","intermediate","expert"],"subscription":{"auto":[],"custom":[]}},{"_id":"514825fa2a26ea0200000019","name":"html","short":"html","soId":"html","levels":["beginner","intermediate","expert"],"subscription":{"auto":[],"custom":[]}},{"_id":"514825fa2a26ea0200000013","name":"CSS","short":"css","soId":"css","levels":["beginner","intermediate","expert"],"subscription":{"auto":[],"custom":[]}},{"_id":"5181d0a966a6f999a465eb51","name":"postgresql","short":"postgresql","soId":"postgresql","levels":["beginner","intermediate","expert"],"subscription":{"auto":[],"custom":[]}},{"_id":"5149de4b5fc6390200000017","name":"sql","short":"sql","soId":"sql","levels":["beginner","intermediate","expert"],"subscription":{"auto":[],"custom":[]}}],"timezone":"GMT-0500 (CDT)","tw":{"pic":{"value":"https://pbs.twimg.com/profile_images/481060280362098689/H0Jnnzll_normal.jpeg"},"username":"briandant","id":57657123},"updatedAt":"2014-08-21T19:32:18.071Z","userId":"53b038a98f8c80299bcc3687","username":"briandant","matching":{"replies":{"suggested":1,"replied":1,"lastSuggest":"2014-08-20T02:19:53.000Z","lastReply":"2014-08-20T02:19:53.000Z","last10":[{"replied":"2014-08-20T02:19:53.000Z","status":"available","comment":"I've been working with the Django Admin for about 2 years as a Lead Developer.","requestId":"53f3fe7a4db0f4020079e159","_id":"54b184275bd2fb090064f920"}]},"experience":{"hours":1,"customers":1}},"avatar":"//0.gravatar.com/avatar/6c07d8b5af42f5c4d21b169dcfd1bda0"},"suggestedRate":{"expert":85,"total":130}}],"meta":{"title":"AirPair | javascript, python and database Request","canonical":"https://www.airpair.com/review/54c3b4e6a1bfe10900f17bcf","noindex":true},"reviewRender":true,"budget":"100"}
+
+ Error: Request can only be updated by owner
+
+
+
+
 Sean Bamforth sean.bamforth@gmail.com 54baeeb5af34e30900d1dcfa
 GET /requests/54a7cc9dc8e5b50b00f3b38c {} << https://www.airpair.com/meet-experts/54a7cc9dc8e5b50b00f3b38c || isBot:false:Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36
 Could not find request[54a7cc9dc8e5b50b00f3b38c] belonging to user[54baeeb5af34e30900d1dcfa]
