@@ -9,7 +9,7 @@
 
 <section class="authoringnotsupported">
   <h3>You'll need a bigger screen...</h3>
-  <p>Authoring posts on AirPair requires a minimum resolution of 1200px.</p>
+  <p>Authoring posts on AirPair requires a minimum resolution of 1260px.</p>
 </section>
 
 
@@ -21,13 +21,19 @@
   <h2 ng-if="fork">Go to <a href="https://github.com/{{fork}}" target="_blank">{{fork}}</a> </h2>
 </div>
 
+<div class="poststauts">
+  <b>Status</b>
+    <span ng-if="!post.submitted && !post.published">In draft,</span>
+    <span ng-if="post.saved">saved.</span>
+    <span ng-if="!post.saved">unsaved.</span>
+</div>
 
 <div ng-if="post" class="editor-wrap">
 
   <section ng-if="aceLoaded" id="editor">
     <div id="aceeditor" ui-ace="{
       useWrapMode:true,
-      theme:'solarized_light',
+      theme:'dawn',
       mode:'markdown',
       onLoad: aceLoaded,
       onChange: aceChanged,
@@ -36,6 +42,7 @@
     ng-model="aceMD"
     >
   </section>
+      <!-- theme:'solarized_light', -->
       <!-- rendererOptions: { fontSize: 11.5 } -->
 
   <section id="post" ap-post="">
@@ -43,7 +50,7 @@
 
 </div>
 
-<div class="form-actions">
+<div ng-if="post" class="form-actions">
 
   <button class="btn" ng-click="save()" ng-disabled="post.saved">Save</button>
 

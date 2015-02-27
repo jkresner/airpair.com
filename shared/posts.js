@@ -1,8 +1,10 @@
 module.exports = {
 
+
   validSlug(slug) {
     return /^[a-z0-9]+([a-z0-9\-\.]+)*$/.test(slug)
   },
+
 
   wordcount(md) {
     var s = md.replace(/(^\s*)|(\s*$)/gi,"");
@@ -10,6 +12,7 @@ module.exports = {
     s = s.replace(/\n /,"\n");
     return s.split(' ').length;
   },
+
 
   wordsTogoForReview(wordcount) {
     var remainder = wordcount%50;
@@ -31,6 +34,11 @@ module.exports = {
     }
 
     return post
+  },
+
+
+  authorFromUser(user) {
+    return _.extend({ userId:user._id }, _.pick(user,'name','bio','social','username','avatar', 'userId'))
   }
 
 }
