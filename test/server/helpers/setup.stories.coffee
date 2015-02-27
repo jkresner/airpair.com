@@ -17,29 +17,24 @@ PaymethodsService = require('../../../server/services/paymethods')
 
 global.addLocalUser = (userKey, opts, done) ->
   clone = getNewUserData(userKey)
-  UserService.localSignup.call(newUserSession(userKey), clone.email, clone.password, clone.name, (e, r) ->
+  UserService.localSignup.call newUserSession(userKey), clone.email, clone.password, clone.name, (e, r) ->
     data.users[clone.userKey] = r
-    if (opts && opts.emailVerified)
-      db.Models.User.findOneAndUpdate({_id:r._id},{emailVerified:true},{upsert:true}, (err, user) ->
-        r.emailVerified = true
+    if (opts)
+      ups = {}
+      if (opts.emailVerified)
+        ups.emailVerified = true
+      if (opts.gh)
+        ups.social = gh:
+          username: (opts.gh.username || "airpairtestreviewer")
+          token: { token: (opts.gh.token || "bc9a4b0e5ca18b5ee39bc8cbecb07586c4fbe9c4") }
+
+      r = _.extend(r, ups)
+
+      db.Models.User.findOneAndUpdate {_id:r._id}, ups, {upsert:true}, (err, user) ->
         data.users[clone.userKey] = r
         done(clone.userKey)
-      )
     else
       done(clone.userKey)
-  )
-
-global.addLocalGithubUser = (userKey, opts, done) ->
-  clone = getNewUserData(userKey)
-  UserService.localSignup.call(newUserSession(userKey), clone.email, clone.password, clone.name, (e, r) ->
-    data.users[clone.userKey] = r
-    db.Models.User.findOneAndUpdate({_id:r._id},{social: {gh: {username: (opts.username || "airpairtestreviewer"), token: {token: (opts.token || "bc9a4b0e5ca18b5ee39bc8cbecb07586c4fbe9c4")}}}},{upsert:true}, (err, user) ->
-      r.emailVerified = true
-      r.social = {gh: {username: (opts.username || "airpairtestreviewer"), token: {token: (opts.token || "bc9a4b0e5ca18b5ee39bc8cbecb07586c4fbe9c4")}}}
-      data.users[clone.userKey] = r
-      done(clone.userKey)
-    )
-  )
 
 
 global.addAndLoginLocalUser = (originalUserKey, done) ->
@@ -59,27 +54,18 @@ global.addAndLoginLocalUserWithEmailVerified = (originalUserKey, done) ->
         done(s)
 
 
-
 global.addAndLoginLocalUserWithPayMethod = (originalUserKey, done) ->
   addAndLoginLocalUserWithEmailVerified originalUserKey, (s) ->
     new db.Models.PayMethod( _.extend({userId: s._id}, data.paymethods.braintree_visa) ).save (e,r) ->
       s.primaryPayMethodId = r._id
       done(s)
 
-global.addAndLoginLocalGithubUser = (originalUserKey, options, done) ->
-  addLocalGithubUser originalUserKey, options, (userKey) ->
-    LOGIN userKey, data.users[userKey], ->
-      GET '/session/full', {}, (s) ->
-        s.userKey = userKey
-        done(s)
 
 
 stories = {
 
   addLocalUser,
-  addLocalGithubUser,
   addAndLoginLocalUser,
-  addAndLoginLocalGithubUser,
   addAndLoginLocalUserWithEmailVerified,
   addAndLoginLocalUserWithPayMethod,
 
@@ -100,20 +86,40 @@ stories = {
         done(null, r)
 
 
+  addAndLoginLocalUserWithGithubProfile: (userKey, ghUsername, ghToken, done) ->
+    opts = emailVerified: true, gh: { username: ghUsername, token: ghToken }
+    addLocalUser userKey, opts, (userKey) ->
+      LOGIN userKey, data.users[userKey], ->
+        GET '/session/full', {}, (s) ->
+          s.userKey = userKey
+          done(s)
+
+
   createNewPost: (userKey, postData, done) ->
     LOGIN userKey, data.users[userKey], (authorSession) ->
       title = postData.title || 'A test post '+moment().format('X')
-      slug = title.toLowerCase().replace(/\ /g, '-')
-      tags = [data.tags.angular,data.tags.node]
+      # slug = title.toLowerCase().replace(/\ /g, '-')
+      # tags = slug,
       author = data.users[userKey]
       b = { userId: author._id, name: author.name, bio: 'yo yo', avatar: author.avatar }
-      d = { tags, title, by:b, slug, md: 'Test', assetUrl: 'http://youtu.be/qlOAbrvjMBo' }
+      d = { title, by:b, assetUrl: 'http://youtu.be/qlOAbrvjMBo' } #tags
       d = _.extend(d, postData)
+      d.md = 'New'
       POST '/posts', d, {}, done
+
+
+  createSubmitReadyPost: (userKey, postData, done) ->
+    stories.createNewPost userKey, postData, (post) ->
+      PUT "/posts/#{post._id}/md", { md: postData.md }, {}, (p1) ->
+        expect(p1.md).to.equal(postData.md)
+        p1.tags = postData.tags || [data.tags.angular,data.tags.node]
+        p1.assetUrl = 'http://youtu.be/qlOAbrvjMBo'
+        PUT "/posts/#{post._id}", _.omit(p1,['reviews']), {}, done
 
 
   ## Todo, consider not using createAndPublishPost
   createAndPublishPost: (author, postData, done) ->
+    $log('createAndPublishPost deprecated'.error)
     title = 'A test post '+moment().format('X')
     slug = title.toLowerCase().replace(/\ /g, '-')
     tags = [data.tags.angular,data.tags.node]

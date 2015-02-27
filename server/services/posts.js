@@ -6,6 +6,7 @@ var UserSvc               = require('../services/users')
 var ExpertSvc             = require('../services/experts')
 var TemplateSvc           = require('../services/templates')
 var github                = require("../services/wrappers/github")
+var github2               = require("../services/wrappers/github2")
 var Data                  = require('./posts.data')
 var {query, select, opts} = Data
 var selectCB              = select.cb
@@ -50,24 +51,11 @@ var get = {
     else if ( !Roles.isOwnerOrEditor(this.user, post) )
       return cb(`Cannot edit this post. You need to fork ${post.slug}`)
 
-    github.getFile(owner, post.slug, "/post.md", this.user, (e, resp) => {
-      //-- for forker check the case where they have deleted the fork
-      if (e && e.code === 404 && owner != org)
-      {
-        github.getRepo(owner, post.slug, (err,response) => {
-          if (err && err.code === 404)
-            return cb(Error(`No fork present. <a href='/posts/fork/${post._id}'>Create new fork?</a>`))
-          else if (!err)
-            return cb(Error(`post.md of fork ${owner}/${post.slug} missing or corrupted`))
-          else
-            return cb(err)
-        })
-      }
-      else {
-        post.synced = post.md == resp.string
-        post.md = resp.string // any reason we need the live copy?
-        selectCB.editView(cb)(null, post)
-      }
+    github2.getFile(this.user, owner, post.slug, "/post.md", 'edit', (e, postMDfile) => {
+      if (e) return cb(e)
+      post.synced = post.md == postMDfile.string
+      post.md = postMDfile.string
+      selectCB.editView(cb)(null, post)
     })
   },
 
@@ -230,22 +218,7 @@ var get = {
     else if ( !Roles.isOwnerOrEditor(this.user, post) )
       return cb(`Cannot get git HEAD. You have not forked ${post.slug}`)
 
-    github.getFile(owner, post.slug, "/post.md", this.user, (e,resp) => {
-      //for forker check the case where they have deleted the fork
-      if (e && e.code === 404 && owner != org)
-      {
-        github.getRepo(owner, post.slug, (err,response) => {
-          if (err && err.code === 404)
-            return cb(Error(`No fork present. <a href='/posts/fork/${post._id}'>Create new fork?</a>`))
-          else if (!err)
-            return cb(Error(`post.md of fork ${owner}/${post.slug} missing or corrupted`))
-          else
-            return cb(err)
-        })
-      }
-      else
-        cb(e,resp)
-    })
+    github2.getFile(this.user, owner, post.slug, "/post.md", 'edit', cb)
   },
 
   checkSlugAvailable(post, slug, cb){
@@ -357,16 +330,14 @@ var save = {
   },
 
   submitForReview(post, slug, cb){
-    var repoName = slug
-    var githubOwner = this.user.social.gh.username
     TemplateSvc.mdFile('post-repo-readme', post, (readmeMD) => {
-      var trackData = { type: 'post-submit', name: post.title, postId: post._id, author: post.by.name }
+      var trackData = { type: 'post-submit', name: post.title, postId: post._id, author: post.by.name, repo: slug }
       analytics.track(this.user, this.sessionID, 'Save', trackData, {}, ()=>{})
 
-      github.setupPostRepo(repoName, githubOwner, post, readmeMD, this.user, (e, result) => {
+      github2.setupPostRepo(this.user, slug, org, post._id, post.md, readmeMD, (e, repoInfo) => {
         if (e) return cb(e)
         post.submitted = new Date()
-        post.github = { repoInfo: result }
+        post.github = { repoInfo }
         post.slug = slug
         updateWithEditTouch.call(this, post, 'submittedForReview', cb)
       })
@@ -405,23 +376,23 @@ var save = {
 
     if (Roles.isForker(this.user, original)) {
       var owner = this.user.social.gh.username
-      github.updateFile(owner, original.slug, "post.md", postMD, commitMessage, this.user, (ee, result) => {
+      github2.updateFile(this.user, owner, original.slug, "post.md", 'edit', ups.md, ups.commitMessage, (ee, result) => {
         updateWithEditTouch.call(this, original, 'updateHEADonFork', selectCB.editView(cb, ups.md))
       })
     }
     else if (Roles.isOwner(this.user, original)) {
       var owner = org
-      github.updateFile(owner, original.slug, "post.md", postMD, commitMessage, this.user, (ee, result) => {
+      github2.updateFile(this.user, owner, original.slug, "post.md", 'edit', ups.md, ups.commitMessage, (ee, result) => {
         if (ee) return cb(ee)
         // if (!original.published) {
           // original.md = postMD
           // original.publishedCommit = result.commit
         // }
-        setEventData(original, (err,resp) => {
-          if (err) return cb(err)
-          $log('setEventData.resp', resp)
-          updateWithEditTouch.call(this, original, 'updateHEAD', selectCB.editView(cb, postMD))
-        })
+        // setEventData(original, (err,resp) => {
+          // if (err) return cb(err)
+          // $log('setEventData.resp', resp)
+        updateWithEditTouch.call(this, original, 'updateHEAD', selectCB.editView(cb, ups.md))
+        // })
       })
     } else {
       cb(Error("Must be a forker to update post HEAD"))

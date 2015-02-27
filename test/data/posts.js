@@ -178,6 +178,99 @@ module.exports = {
     ],
     "title" : "PassportJS Sessions Deep Dive",
     "updated" : "2014-10-16T14:26:46.408Z"
-  }
+  },
+
+
+  submittedWithGitRepo: {
+    "_id" : "54f099bb356241e203df0091",
+    "title" : "Submit success with connected github 1425054139",
+    "md" : "Submit with github stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff ",
+    "publishHistory" : [],
+    "editHistory" : [
+        {
+            "action" : "createByAuthor",
+            "utc" : "2015-02-27T16:22:19.636Z",
+            "_id" : "54f099bb356241e203df0092",
+            "by" : {
+                "_id" : "54f099bb356241e203df0090",
+                "name" : "Robot21425054139"
+            }
+        },
+        {
+            "action" : "updateMarkdownByAuthor",
+            "utc" : "2015-02-27T16:22:19.656Z",
+            "_id" : "54f099bb356241e203df0093",
+            "by" : {
+                "_id" : "54f099bb356241e203df0090",
+                "name" : "Robot21425054139"
+            }
+        },
+        {
+            "action" : "updateByAuthor",
+            "utc" : "2015-02-27T16:22:19.661Z",
+            "_id" : "54f099bb356241e203df0094",
+            "by" : {
+                "_id" : "54f099bb356241e203df0090",
+                "name" : "Robot21425054139"
+            }
+        },
+        {
+            "action" : "submittedForReview",
+            "utc" : "2015-02-27T16:22:24.892Z",
+            "_id" : "54f099c0356241e203df0095",
+            "by" : {
+                "_id" : "54f099bb356241e203df0090",
+                "name" : "Robot21425054139"
+            }
+        }
+    ],
+    "tags" : [
+        {
+            "_id" : "5149dccb5fc6390200000013",
+            "name" : "AngularJS",
+            "slug" : "angularjs"
+        },
+        {
+            "_id" : "514825fa2a26ea0200000028",
+            "name" : "Node.JS",
+            "slug" : "node.js"
+        }
+    ],
+    "forkers" : [],
+    "reviews" : [],
+    "updated" : "2015-02-27T16:22:24.892Z",
+    "lastTouch" : {
+        "action" : "submittedForReview",
+        "utc" : "2015-02-27T16:22:24.892Z",
+        "by" : {
+            "_id" : "54f099bb356241e203df0090",
+            "name" : "Robot21425054139"
+        }
+    },
+    "created" : "2015-02-27T16:22:19.636Z",
+    "by" : {
+        "userId" : "54f099bb356241e203df0090",
+        "name" : "Robot21425054139",
+        "bio" : "yo yyoy o",
+        "social" : {
+            "gh" : {
+                "username" : "airpairtestreviewer"
+            }
+        },
+        "avatar" : "//0.gravatar.com/avatar/102a226a1e1b4d65ecf7efdcfc9260b0"
+    },
+    "__v" : 0,
+    "assetUrl" : "http://youtu.be/qlOAbrvjMBo",
+    "submitted" : "2015-02-27T16:22:24.892Z",
+    "github" : {
+        "repoInfo" : {
+            "url" : "https://github.com/JustASimpleTestOrg/submit-success-with-connected-github-1425054139",
+            "authorTeamId" : 1329812,
+            "authorTeamName" : "submit-success-with-connected-github-1425054139-03df0091-author",
+            "author" : "airpairtestreviewer"
+        }
+    },
+    "slug" : "submit-success-with-connected-github-1425054139"
+}
 
 }

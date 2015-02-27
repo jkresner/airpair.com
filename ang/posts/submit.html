@@ -17,16 +17,16 @@
 
   <section id="forkinfo">
 
-    <h2>A private repo will be created on AirPair's Github</h2>
+    <h2>A repo will be created on AirPair's Github</h2>
 
-    <h3>Why does AirPair use Github?</h3>
+    <h3>Why does AirPair use GitHub?</h3>
 
-    <p>Posts created on AirPair are backed by github repositories. This
+    <p>Posts created on AirPair are backed by GitHub repositories. This
     enables community members to work together leveraging all the great Github tools
     you know and love like commit logs, pull requests, issues, comments and more.
     These features make writing great content easier and a more social experience.</p>
 
-    <img src="/static/img/pages/posts/post-authoring-flow.png" />
+    <img src="/static/img/pages/posts/authoring-flow.png" />
 
     <div ng-if="!repoAuthorized">
       <section class="notice">
@@ -39,7 +39,7 @@
       <p>You will be added to the airpair organization on github, so that you have write access to the repo</p>
     </div>
 
-    <div ng-if="repoAuthorized">
+    <div class="submitRepo" ng-if="repoAuthorized">
       <hr />
 
       <div class="form-group">

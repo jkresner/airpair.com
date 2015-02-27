@@ -34,11 +34,13 @@ var Author = {
 
 var Github =    {
   repoInfo:     {
-    reviewTeamId:   { type: String },
+    // reviewTeamId:   { type: String },
     authorTeamId:   { type: String },
-    owner:          { type: String },
+    // owner:          { type: String },
+    authorTeamName: { type: String },
     author:         { type: String },
-    url:            { type: String, lowercase: true}
+    url:            { type: String, lowercase: true },
+    // SHA of file ?
   },
   events: Array,
   stats: Array //Object?

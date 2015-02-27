@@ -83,7 +83,6 @@ var select = {
     'by': 1,
     'github.repoInfo': 1,
     'title':1,
-    'slug': 1,
     'created': 1,
     'published': 1,
     'submitted': 1,
