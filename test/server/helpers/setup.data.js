@@ -108,6 +108,14 @@ var dataHelpers = {
       { idx: 0, key: 'rating', promt: 'How many stars?', answer: 4 },
       { idx: 1, key: 'feedback', promt: 'Explain your star rating', answer: 'Good but not great' }
     ] }
+  },
+
+  lotsOfWords(seed) {
+    var words = (seed || "Start")
+    for (var i = 0; i < 501; i++) {
+      words += " stuff "
+    }
+    return words
   }
 
 }

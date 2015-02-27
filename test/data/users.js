@@ -1202,6 +1202,23 @@ module.exports = {
     },
     "stackId" : 137067,
     "username" : "philfreo"
-  }
+  },
 
+  submPostAuthor: {
+    "_id" : "54f099bb356241e203df0090",
+    "name" : "Robot21425054139",
+    "email" : "robot21425054139@hotmail.com",
+    "emailVerified" : true,
+    "local" : {
+        "password" : "$2a$08$AZDwFfYK7NdospxrN02QO.SJjMQYaf/8RO/dcHiF.aTgccaaE03xa"
+    },
+    "cohort" : {},
+    "social" : {
+        "gh" : {
+            "username" : "airpairtestreviewer",
+            "token" : { "token" : "bc9a4b0e5ca18b5ee39bc8cbecb07586c4fbe9c4" }
+        }
+    },
+    "bio" : "submPostAuthor yo yyoy o"
+  }
 }

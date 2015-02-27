@@ -33,7 +33,7 @@ var cfg = {
       adminAccessToken: '73922088f4216d4cd12cff292da1a778b252ec48',
       org: 'JustASimpleTestOrg',
       privateRepos: false,
-      scope: [ 'user', 'repo']
+      scope: [ 'user', 'public_repo']
     },
     paypal: {
       mode: 'sandbox',

@@ -288,17 +288,17 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
 
 .controller('PostSubmitCtrl', function($scope, $q, $routeParams, $location, $timeout, ServerErrors, DataService, mdHelper, PostsUtil) {
   var _id = $routeParams.id
-
   $scope._id = _id
+
   $scope.slugStatus = { checking: true }
   $scope.repoAuthorized = false
   if($scope.session.social && $scope.session.social.gh)
   {
     DataService.posts.getProviderScopes({}, (r)=> {
-      $scope.repoAuthorized = _.contains(r.github, "repo")
+      $scope.repoAuthorized = _.find(r.github, (s) => s.indexOf("repo") != -1)
 
       if ($scope.repoAuthorized)
-        DataService.posts.getById({_id}, (r) => {
+        DataService.posts.getByIdForEditingInfo({_id}, (r) => {
           if (r.submitted)
             $location.path('/posts/me?submitted='+_id)
 

@@ -1,8 +1,15 @@
+dataHlpr = require('./helpers/setup.data')
+PostsSvc = require('./../../server/services/posts')
 
-module.exports = -> describe  "API: ", ->
+module.exports = -> describe "API: ", ->
+
+  @timeout(8000)
 
   before (done) ->
+    if (config.auth.github.org == 'airpair')
+      throw Error('Cant run post tests against prod github org')
     SETUP.analytics.stub()
+    SETUP.addUserWithRole 'edap', 'editor', ->
     SETUP.addUserWithRole 'jkap', 'editor', ->
       SETUP.initTags ->
         SETUP.initTemplates done
@@ -103,6 +110,27 @@ module.exports = -> describe  "API: ", ->
                     done()
 
 
+  it 'Edit and delete post as editor', (done) ->
+    title = "Post Edit and delete in draft as Editor Test #{timeSeed()}"
+    SETUP.addAndLoginLocalUser 'stpu', (s) ->
+      d = { title, by:_.extend({bio: 'yo yyoy o'},s) }
+      POST "/posts", d, {}, (p0) ->
+        LOGIN 'edap', data.users['edap'], ->
+          GET "/posts/#{p0._id}/info", {}, (p1) ->
+            p1.title = 'edd ' + p1.title
+            p1.assetUrl = 'https://edited.com/test'
+            PUT "/posts/#{p0._id}", p1, {}, (p2) ->
+              expect(p2.title).to.equal(p1.title)
+              expect(p2.assetUrl).to.equal('https://edited.com/test')
+              DELETE "/posts/#{p0._id}", { status: 200 }, (r) ->
+                LOGIN s.userKey, data.users[s.userKey], (s2) ->
+                  expectIdsEqual(s._id, s2._id)
+                  GET '/posts/me', {}, (posts) ->
+                    myposts = _.where(posts,(p)->_.idsEqual(p.by.userId,s._id))
+                    expect(myposts.length).to.equal(0)
+                    done()
+
+
   it "Cant edit or delete draft post as non-author/editor", (done) ->
     title = "Post Can't Edit and delete as non-author #{timeSeed()}"
     SETUP.addAndLoginLocalUser 'evnr', (s) ->
@@ -118,4 +146,69 @@ module.exports = -> describe  "API: ", ->
                 done()
 
 
-  it.only "Edit and delete draft post as author", (done) ->
+  it "submit for review fails without an authenticated GitHub account", (done) ->
+    title = "Submit fails without connected github #{timeSeed()}"
+    addAndLoginLocalUser 'robot1', (s) ->
+      d = { title, by:_.extend({bio: 'yo yyoy o'},s), md: dataHlpr.lotsOfWords('Submit without github') }
+      SETUP.createSubmitReadyPost s.userKey, d, (post) ->
+        PUT "/posts/submit/#{post._id}", post, {status: 403}, (resp) ->
+          expect(resp.message).to.equal("User must authorize GitHub to submit post for review")
+          done()
+
+
+  it "submit for review creates a repo with a README.md and a post.md file on edit branch", (done) ->
+    title = "Submit success with connected github #{timeSeed()}"
+    SETUP.addAndLoginLocalUserWithGithubProfile 'robot2', null, null, (s) ->
+      d = { title, by:_.extend({bio: 'yo yyoy o'},s), md: dataHlpr.lotsOfWords('Submit with github') }
+      SETUP.createSubmitReadyPost s.userKey, d, (post) ->
+        expect(post.github).to.be.undefined
+        post.slug = title.toLowerCase().replace(/\ /g, '-')
+        PUT "/posts/submit/#{post._id}", post, {}, (p1) ->
+          expect(p1.github).to.exist
+          done()
+
+
+  it.skip "Cannot submit a post more than once for review", (done) ->
+
+
+  it "Can edit and preview post in review as author", (done) ->
+    author = data.users.submPostAuthor
+    SETUP.ensureDoc 'User', author, ->
+      SETUP.ensurePost data.posts.submittedWithGitRepo, ->
+        LOGIN 'submPostAuthor', data.users.submPostAuthor, (s) ->
+          GET "/posts/me", {}, (posts) ->
+            myposts = _.where(posts,(p)=>_.idsEqual(p.by.userId,s._id))
+            expect(myposts.length).to.equal(1)
+            _id = myposts[0]._id
+            getForReviewFn = $callSvc(PostsSvc.getByIdForReview,{user:author})
+            getForPreviewFn = $callSvc(PostsSvc.getByIdForPreview,{user:author})
+            getForReviewFn _id, (e, pReview) ->
+              reviewMD = pReview.md
+              expect(reviewMD).to.equal(data.posts.submittedWithGitRepo.md)
+              GET "/posts/#{_id}/edit", {}, (pEdit) ->
+                md = "1"+pEdit.md
+                PUT "/posts/#{_id}/md", { md, commitMessage: timeSeed() }, {}, (p2) ->
+                  expect(p2.md).to.equal(md)
+                  getForPreviewFn _id, (eee, pPreview2) ->
+                    expect(pPreview2.md).to.equal(md)
+                    getForReviewFn _id, (ee, pReview2) ->
+                      expect(pReview2.md).to.equal(reviewMD)
+                      done()
+
+
+
+
+  it.skip "Can sync github to post as author in review", (done) ->
+
+
+  it.skip "Can sync github to post as editor but not author when published", (done) ->
+
+
+  it.skip "Can publish as admin without reviews", (done) ->
+
+
+  it.skip "Cannot publish as author without reviews", (done) ->
+
+
+
+
