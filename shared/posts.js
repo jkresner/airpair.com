@@ -39,6 +39,39 @@ module.exports = {
 
   authorFromUser(user) {
     return _.extend({ userId:user._id }, _.pick(user,'name','bio','social','username','avatar', 'userId'))
+  },
+
+
+  splitLines(lines, colLength, doc) {
+    var i=0
+    var changed = false
+    // console.log('while', colLength, lines.length)
+    while (lines[i] != null)
+    {
+      if (lines[i].length > colLength)
+      {
+        changed = true
+        var line = lines[i].substring(0,colLength)
+        var lineColLength = line.lastIndexOf(' ')
+        var extra = lines[i].substring(lineColLength+1, lines[i].length)
+        lines[i] = lines[i].substring(0,lineColLength)
+
+        // console.log(':::line[i+1]', lines[i+1].length)
+        if (lines[i+1].length == 0)
+          lines.splice(i+1,0,extra)
+        else {
+          // console.log('extra', extra)
+          lines[i+1] = extra + ' ' + lines[i+1]
+        }
+
+        // console.log('line[i+1]', lines[i+1])
+      }
+
+      i = i + 1;
+    }
+    if (changed) doc.setValue(lines.join('\n'))
+    // console.log('done', lines.length)
+    return lines
   }
 
 }

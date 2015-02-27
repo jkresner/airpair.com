@@ -205,7 +205,7 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
       timer = null
     }
 
-    var md = window.ace.edit($('#aceeditor')[0]).getSession().doc.$lines.join('\n')
+    var md = window.ace.edit($('#aceeditor')[0]).getSession().getValue()
     if (!$scope.post) return
     $scope.post.saved = $scope.savedMD == md
     if ($scope.post.saved && $scope.preview.body) return
@@ -229,8 +229,7 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
     if ((r.published && !r.submitted) && (r.by.userId == $scope.session._id))
       return $scope.editErr = { message: `Edits on published posts my be tracked in git. <br />Please <a href="/posts/submit/${r._id}">submit your post</a> to continue editing it.` }
 
-    if (r.md == "new")
-      r.md = StaticDataService.defaultPostMarkdown
+    if (r.md == "new") r.md = StaticDataService.defaultPostMarkdown
 
     r.commitMessage = ""
     $scope.post = r
@@ -262,8 +261,13 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
     })
   }
 
-  $scope.save = () =>
-    DataService.posts.updateMarkdown(_.pick($scope.post, '_id', 'md', 'commitMessage'), setPostScope)
+  $scope.save = () => {
+    var editSession = window.ace.edit($('#aceeditor')[0]).getSession()
+    var cols = editSession.getScreenWidth()
+    var md = PostsUtil.splitLines(editSession.doc.$lines.slice(0), cols, editSession.doc).join('\n')
+    var commitMessage = $scope.commitMessage
+    DataService.posts.updateMarkdown({_id,md,commitMessage}, setPostScope)
+  }
 
   $scope.aceChanged = function(e) {
     if (timer == null)
