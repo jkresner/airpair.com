@@ -8,7 +8,7 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
 
   var route = apRouteProvider.route
   route('/posts/me', 'PostsList', require('./list.html'))
-  route('/posts/new', 'PostNew', require('./info.html'), { resolve: authd })
+  route('/posts/new', 'PostInfo', require('./info.html'), { resolve: authd })
   route('/posts/review', 'PostsInReview', require('./inreview.html'), { resolve: authd })
   route('/posts/in-community-review', 'PostsInReview', require('./inreview.html'), { resolve: authd })
   route('/posts/submit/:id', 'PostSubmit', require('./submit.html'), { resolve: authd })
@@ -136,40 +136,30 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
 
 })
 
-.controller('PostNewCtrl', function($scope, $location, DataService, StaticDataService) {
 
-  $scope.post = { md: StaticDataService.defaultPostMarkdown, by: $scope.session }
-
-  $scope.save = () =>
-    DataService.posts.create($scope.post, (result) => {
-      $location.path('/posts/edit/'+result._id)
-    })
-
-})
-
-.controller('PostInfoCtrl', function($scope, $routeParams, $location, DataService, PostsUtil) {
-  var exampleImageUrl = '//www.airpair.com/static/img/css/blog/example2.jpg';
-  var exampleYoutubeUrl = 'http://youtu.be/qlOAbrvjMBo';
+.controller('PostInfoCtrl', ($scope, $routeParams, $location, DataService, PostsUtil) => {
   var _id = $routeParams.id
 
-  $scope.save = () =>
-    DataService.posts.update(_.omit($scope.post, ['reviews','slug','github','md']), (result) => {
-      $location.path('/posts/edit/'+result._id)
-    })
+  $scope.save = () => {
+    var redirectTo = (!$scope.post.submitted) ?
+      '/posts/edit/' : '/posts/preview/'
+
+    var saveFn = (_id) ? DataService.posts.update : DataService.posts.create
+    saveFn($scope.post, (r) => $location.path(redirectTo+r._id) )
+  }
 
   $scope.tags = () => $scope.post ? $scope.post.tags : null;
   $scope.updateTags = (scope, newTags) => {
     if (!$scope.post) return
     $scope.post.tags = newTags;
   }
-
   $scope.selectTag = function(tag) {
     var tags = $scope.post.tags;
     if ( _.contains(tags, tag) ) $scope.post.tags = _.without(tags, tag)
     else $scope.post.tags = _.union(tags, [tag])
   };
-
   $scope.deselectTag = (tag) => $scope.post.tags = _.without($scope.post.tags, tag)
+
 
   $scope.$watch('post.assetUrl', function(value) {
     $scope.preview = {}
@@ -186,54 +176,27 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
     {
       $scope.preview.asset = `<img src="${value}" />`;
     }
-
-    $scope.post.meta.ogImage = value;
-    if (value.indexOf('http://youtu.be/') == 0) {
-      var youTubeId = value.replace('http://youtu.be/','');
-      $scope.post.meta.ogImage = `https://img.youtube.com/vi/${youTubeId}/hqdefault.jpg`;
-      // ogVideo = `https://www.youtube-nocookie.com/v/${youTubeId}`;
-    }
-
   });
 
+  var exampleImageUrl = '//www.airpair.com/static/img/css/blog/example2.jpg';
+  var exampleYoutubeUrl = 'http://youtu.be/qlOAbrvjMBo';
   $scope.exampleImage = function() { $scope.post.assetUrl = exampleImageUrl }
   $scope.exampleYouTube = function() { $scope.post.assetUrl = exampleYoutubeUrl }
 
-  DataService.posts.getByIdForEditingInfo({_id}, (r) => {
 
-    if (r.meta)
-    {
-      if (r.meta.ogImage) r.meta.ogImage = r.meta.ogImage.replace('http://','https://')
-    }
-    else
-    {
-      r.meta = {
-        title: r.title,
-        canonical: '',
-        ogType: 'article',
-        ogTitle: r.title,
-        ogImage: (r.assetUrl) ? r.assetUrl.replace('http://','https://') : null,
-        ogVideo: null,  // we don't want facebook to point to the original moview, but the post instead
-        ogUrl: ''
-      };
-    }
-
-    if (r.assetUrl)
-    {
-      if (r.assetUrl.indexOf('http://youtu.be/') == 0) {
-        var youTubeId = r.assetUrl.replace('http://youtu.be/','');
-        r.meta.ogImage = `https://img.youtube.com/vi/${youTubeId}/hqdefault.jpg`;
-        // ogVideo = `https://www.youtube-nocookie.com/v/${youTubeId}`;
-      }
-    }
-
-    $scope.post = r
-  })
+  if (_id)
+    DataService.posts.getByIdForEditingInfo({_id}, (r) => {
+      if ($scope.session._id == r.by.userId)  // don't wipe author with editor session
+        r.by = _.extend(r.by, $scope.session)  // update new social links
+      $scope.post = r
+    })
+  else
+    $scope.post = { by: $scope.session, assetUrl: '//www.airpair.com/static/img/css/blog/example2.jpg' }
 
 })
 
 
-.controller('PostEditCtrl', function($scope, $routeParams, $location, $timeout, $window, DataService, mdHelper, PostsUtil) {
+.controller('PostEditCtrl', function($scope, $routeParams, $location, $timeout, $window, StaticDataService, DataService, mdHelper, PostsUtil) {
   var _id = $routeParams.id
 
   var timer = null
@@ -263,8 +226,14 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
   $scope.previewMarkdown = previewMarkdown
 
   var setPostScope = function(r) {
+    console.log('setPostScope')
+    console.log('r', r.by)
+
     if ((r.published && !r.submitted) && (r.by.userId == $scope.session._id))
       return $scope.editErr = { message: `Edits on published posts my be tracked in git. <br />Please <a href="/posts/submit/${r._id}">submit your post</a> to continue editing it.` }
+
+    if (r.md == "new")
+      r.md = StaticDataService.defaultPostMarkdown
 
     r.commitMessage = ""
     $scope.post = r
@@ -278,7 +247,7 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
 
     $scope.throttleMS = r.md.length * 5
 
-    console.log('setPostScope', $scope.post)
+    // console.log('setPostScope', $scope.post)
 
     $window.onbeforeunload = function() {
       var md = window.ace.edit($('#aceeditor')[0]).getSession().getValue()
@@ -322,6 +291,7 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
   }
 
   $scope.aceChanged = function(e) {
+    console.log('aceChanged', e)
     if (timer == null)
       timer = $timeout(previewMarkdown, $scope.throttleMS)
   };
@@ -420,6 +390,21 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
     };
     $scope.data.by = $scope.post.by
   }
+
+  // if (r.assetUrl)
+  // {
+  //   if (r.assetUrl.indexOf('http://youtu.be/') == 0) {
+  //     var youTubeId = r.assetUrl.replace('http://youtu.be/','')
+  //     r.meta.ogImage = `https://img.youtube.com/vi/${youTubeId}/hqdefault.jpg`
+  //   }
+  // }
+    //   $scope.post.meta.ogImage = value;
+    // if (value.indexOf('http://youtu.be/') == 0) {
+    //   var youTubeId = value.replace('http://youtu.be/','');
+    //   $scope.post.meta.ogImage = `https://img.youtube.com/vi/${youTubeId}/hqdefault.jpg`;
+    // }
+
+
 
   var setScope = (r) => {
     var isAdmin =  _.contains($scope.session.roles, 'admin')

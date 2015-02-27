@@ -284,6 +284,7 @@ var save = {
     o.by.userId = this.user._id
     o.lastTouch = svc.newTouch.call(this, 'createByAuthor')
     o.editHistory = [o.lastTouch]
+    o.md = "new"
     svc.create(o, selectCB.editView(cb))
     UserSvc.changeBio.call(this, o.by.bio,() => {})
   },
