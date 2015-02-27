@@ -153,7 +153,7 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
   var _id = $routeParams.id
 
   $scope.save = () =>
-    DataService.posts.update(_.omit($scope.post, ['reviews','slug','github']), (result) => {
+    DataService.posts.update(_.omit($scope.post, ['reviews','slug','github','md']), (result) => {
       $location.path('/posts/edit/'+result._id)
     })
 
@@ -199,7 +199,7 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
   $scope.exampleImage = function() { $scope.post.assetUrl = exampleImageUrl }
   $scope.exampleYouTube = function() { $scope.post.assetUrl = exampleYoutubeUrl }
 
-  DataService.posts.getById({_id}, (r) => {
+  DataService.posts.getByIdForEditingInfo({_id}, (r) => {
 
     if (r.meta)
     {
@@ -439,7 +439,7 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
   DataService.posts.getByIdForPubishing({_id}, setScope)
 
   $scope.propagate = () =>
-    DataService.posts.propagateFromHEAD($scope.post, setScope)
+    DataService.posts.propagateFromHEAD({_id}, setScope)
 
   $scope.submitPublish = (formValid, data, postPublishForm) => {
     if (formValid)

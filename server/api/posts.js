@@ -17,6 +17,7 @@ var api = initAPI(
   svc
 , {
 
+  getByIdForEditingInfo: (req) => [req.post],
   getByIdForEditing: (req) => [req.post],
   getByIdForForking: (req) => [req.post],
   getByIdForPublishing: (req) => [req.post],

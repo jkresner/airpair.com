@@ -78,6 +78,18 @@ var select = {
     'reviews.questions.key': 1, //-- To know if the post is publishable
     'reviews.questions.answer': 1,
   },
+  editInfo: {
+    '_id': 1,
+    'by': 1,
+    'github.repoInfo': 1,
+    'title':1,
+    'slug': 1,
+    'created': 1,
+    'published': 1,
+    'submitted': 1,
+    'tags': 1,
+    'assetUrl': 1,
+  },
   stats: {
     '_id': 1,
     'title': 1,
