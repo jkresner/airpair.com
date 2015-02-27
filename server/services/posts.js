@@ -35,6 +35,12 @@ var get = {
     svc.searchOne(query.published({slug}), null, selectCB.inflateHtml(cb))
   },
 
+  getByIdForEditingInfo(post, cb) {
+    post = selectFromObject(post, select.editInfo)
+    cb(null, post)
+  },
+
+
   getByIdForEditing(post, cb) {
     //-- TODO, grab the git HEAD here and not on the client
     selectCB.editView(cb)(null, post)
@@ -351,6 +357,7 @@ var save = {
           post.md = result.string
           post.publishedCommit = commit
           if (post.published) {
+            post.publishHistory = post.publishHistory || []
             post.publishHistory.push({
               commit, touch: svc.newTouch.call(this, 'publish')})
             post.publishedBy = _.pick(this.user, '_id', 'name', 'email')

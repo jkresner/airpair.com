@@ -57,6 +57,7 @@ export default function(app) {
 
     .get('/posts/forks/me', populateUser, API.Posts.getUserForks)
     .get('/posts/:post', API.Posts.getByIdForEditing)
+    .get('/posts/:post/info', API.Posts.getByIdForEditingInfo)
     .get('/posts/:post/fork', API.Posts.getByIdForForking)
     .get('/posts/:post/contributors', API.Posts.getByIdForContributors)
     .get('/posts/:post/publish', populateUser, API.Posts.getByIdForPublishing)

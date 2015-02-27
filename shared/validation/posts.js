@@ -43,11 +43,8 @@ var validation = {
     if (original.published && !isEditor)
       return `Must be editor to update a published post`
 
-    if (original.submitted){
-      if (original.md !== update.md)
-        return `Updating markdown for submitted posts must happen through git flow`
-    }
-
+    if (update.md)
+      return `Updating markdown for submitted posts must happen through git flow`
     if (update.slug)
       return `Cannot update slug`
     if (update.reviews)
