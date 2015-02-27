@@ -31,6 +31,9 @@ module.exports = {
     }
   },
   post: {
+    isOwner(user, post) {
+      return idsEqual(user._id, post.by.userId)
+    },
     isOwnerOrEditor(user, post) {
       var isAdmin = _.contains(user.roles, 'admin')
       var isEditor = _.contains(user.roles, 'editor')

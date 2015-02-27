@@ -37,6 +37,7 @@ var api = initAPI(
 
   checkSlugAvailable: (req) => [req.post, req.params.slug],
   update: (req) => [req.post,req.body],
+  updateMarkdown: (req) => [req.post,req.body],
   publish: (req) => [req.post,req.body],
   submitForReview: (req) => [req.post, req.body.slug],
   propagateMDfromGithub: (req) => [req.post],

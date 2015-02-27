@@ -56,7 +56,7 @@ export default function(app) {
     .use(authd)
 
     .get('/posts/forks/me', populateUser, API.Posts.getUserForks)
-    .get('/posts/:post', API.Posts.getByIdForEditing)
+    .get('/posts/:post/edit', API.Posts.getByIdForEditing)
     .get('/posts/:post/info', API.Posts.getByIdForEditingInfo)
     .get('/posts/:post/fork', API.Posts.getByIdForForking)
     .get('/posts/:post/contributors', API.Posts.getByIdForContributors)
@@ -65,12 +65,12 @@ export default function(app) {
     .get('/posts/check-slug/:post/:slug', API.Posts.checkSlugAvailable)
     .post('/posts', API.Posts.create)
     .put('/posts/:post', API.Posts.update)
+    .put('/posts/:post/md', json2mb, populateUser, API.Posts.updateMarkdown)
     .put('/posts/publish/:post', API.Posts.publish)
     .put('/posts/submit/:post', populateUser, API.Posts.submitForReview)
     .put('/posts/add-forker/:post', populateUser, API.Posts.addForker)
     .put('/posts/clobber-fork/:post', populateUser, API.Posts.clobberFork)
     .put('/posts/propagate-head/:post', populateUser, API.Posts.propagateMDfromGithub)
-    .put('/posts/update-github-head/:post', json2mb, populateUser, API.Posts.updateGithubHead)
     .delete('/posts/:post', API.Posts.deleteById)
 
     .post('/posts/:post/review', API.Posts.review)

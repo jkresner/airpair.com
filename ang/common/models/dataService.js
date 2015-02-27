@@ -15,7 +15,7 @@ angular.module('APDataSvc', [])
      DELETE = APIRoute.DELETE;
 
     this.posts = {
-      getById: GET((d)=>`/posts/${d._id}`),
+      getByIdEditing: GET((d)=>`/posts/${d._id}/edit`),
       getByIdForEditingInfo: GET((d)=>`/posts/${d._id}/info`),
       getByIdForForking: GET((d)=>`/posts/${d._id}/fork`),
       getByIdForPubishing: GET((d)=>`/posts/${d._id}/publish`),
@@ -29,8 +29,8 @@ angular.module('APDataSvc', [])
       checkSlugAvailable: GET((d)=>`/posts/check-slug/${d._id}/${d.slug}`),
       create: POST((d)=>`/posts`),
       update: PUT((d)=>`/posts/${d._id}`),
+      updateMarkdown: PUT((d)=>`/posts/${d._id}/md`),
       getGitHEAD: GET((d)=>`/posts/head/${d._id}`),
-      updateGitHEAD: PUT((d)=>`/posts/update-github-head/${d._id}`),
       propagateFromHEAD: PUT((d)=>`/posts/propagate-head/${d._id}`),
       publish: PUT((d)=>`/posts/publish/${d._id}`),
       deletePost: DELETE((d)=>`/posts/${d._id}`),
