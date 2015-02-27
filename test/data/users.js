@@ -1220,5 +1220,26 @@ module.exports = {
         }
     },
     "bio" : "submPostAuthor yo yyoy o"
+  },
+
+  syncPostAuthor: {
+    "_id" : "54f0dfc64913acfb407311c0",
+    "name" : "Robot61425072070",
+    "email" : "robot61425072070@hotmail.com",
+    "emailVerified" : true,
+    "local" : {
+        "password" : "$2a$08$f7jXk6Tjo0NqrQk9pHlMmONnRFw1MuigTS3Vs1UNzsdwRI.ZAk0Ti"
+    },
+    "cohort" : {},
+    "social" : {
+        "gh" : {
+            "username" : "airpairtestreviewer",
+            "token" : {
+                "token" : "bc9a4b0e5ca18b5ee39bc8cbecb07586c4fbe9c4"
+            }
+        }
+    },
+    "bio" : "yo yyoy o"
   }
+
 }

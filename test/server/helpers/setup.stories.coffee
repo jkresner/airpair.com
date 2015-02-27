@@ -79,8 +79,14 @@ stories = {
     UserService.googleLogin.call session, data.oauth[userKey], (e,r) ->
       if (!r.roles || !r.roles.length)
         UserService.toggleUserInRole.call {user:r}, r._id, role, (ee,rr) ->
-          data.users[userKey] = rr;
-          done(e,rr)
+          if (role == 'editor')
+            gh = { "username" : "airpairtester45", "token" : { "token" : "fd65392d8926f164755061e70a852d4ebe139e09" } }
+            db.Models.User.findOneAndUpdate {_id:r._id}, {social: {gh}}, {upsert:true}, (err, rrr) ->
+              data.users[userKey] = rrr
+              done(err,rrr)
+          else
+            data.users[userKey] = rr;
+            done(e,rr)
       else
         data.users[userKey] = r;
         done(null, r)

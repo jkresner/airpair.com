@@ -47,47 +47,6 @@ module.exports = () => describe("API: ", function() {
   })
 
 
-  it.skip('Not publish post as non-editor', (done) => {
-    addAndLoginLocalUser('rapo', function(s) {
-      var by = { userId: s._id, name: s.name, bio: 'auth test', avatar: s.avatar }
-      var d1 = { title: "test not publish", by: by, md: 'Test auths 1', assetUrl: '/v1/img/css/blog/example2.jpg'}
-      POST('/posts', d1, {}, function(p1) {
-        expect(p1.slug).to.be.undefined
-        expect(p1.publish).to.be.undefined
-        p1.slug = d1.title.replace(/ /g,'-')+moment().format('X')
-        PUT(`/posts/${p1._id}`, p1, {}, function(e2) {
-          expect(e2.slug).to.equal(p1.slug)
-          PUT(`/posts/publish/${p1._id}`, p1, { status: 403 }, function(e1) {
-            expect(e1.message).to.equal('Post must be published by an editor')
-            done()
-          })
-        })
-      })
-    })
-  })
-
-
-  it.skip('Publish post as editor', function(done) {
-    addAndLoginLocalUser('obie', function(s) {
-      var by = { userId: s._id, name: s.name, bio: 'auth test', avatar: s.avatar }
-      var d1 = { title: "test publish as editor", by: by, md: 'Test auths 1', assetUrl: '/v1/img/css/blog/example2.jpg', publishReady: new Date()}
-      POST('/posts', d1, {}, function(p1) {
-        expect(p1.slug).to.be.undefined
-        expect(p1.publish).to.be.undefined
-        expect(p1.publishedBy).to.be.undefined
-        p1.slug = d1.title.replace(/ /g,'-')+moment().format('X')
-        LOGIN('edap', data.users['edap'], function() {
-          PUT(`/posts/publish/${p1._id}`, p1, {}, function(p1pub) {
-            expect(p1pub.published).to.exist
-            expect(_.idsEqual(p1pub.publishedBy,data.users['edap']._id)).to.be.true
-            done()
-          })
-        })
-      })
-    })
-  })
-
-
   it.skip('Users own posts returns published and unpublished posts', function(done) {
     addAndLoginLocalUser('jkre', function(s) {
       var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }

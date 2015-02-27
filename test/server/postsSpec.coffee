@@ -3,7 +3,7 @@ PostsSvc = require('./../../server/services/posts')
 
 module.exports = -> describe "API: ", ->
 
-  @timeout(8000)
+  @timeout(9000)
 
   before (done) ->
     if (config.auth.github.org == 'airpair')
@@ -196,19 +196,80 @@ module.exports = -> describe "API: ", ->
                       done()
 
 
+  it "Can sync github to post as author in review", (done) ->
+    title = "Submit success with connected github #{timeSeed()}"
+    SETUP.addAndLoginLocalUserWithGithubProfile 'robot6', null, null, (s) ->
+      d = { title, by:_.extend({bio: 'yo yyoy o'},s), md: dataHlpr.lotsOfWords('Sync from with github') }
+      SETUP.createSubmitReadyPost s.userKey, d, (post) ->
+        _id = post._id
+        post.slug = title.toLowerCase().replace(/\ /g, '-')
+        PUT "/posts/submit/#{_id}", post, {}, (p1) ->
+          liveMD = p1.md
+          md = "2"+liveMD
+          PUT "/posts/#{_id}/md", { md, commitMessage: timeSeed() }, {}, (p2) ->
+            getForReviewFn = $callSvc(PostsSvc.getByIdForReview,{user:data.users[s.userKey]})
+            getForReviewFn _id, (e, pReview) ->
+              expect(pReview.md).to.equal(liveMD)
+              expect(pReview.md).to.not.equal(md)
+              PUT "/posts/propagate-head/#{_id}", {}, {}, (p3) ->
+                expect(p3.md).to.equal(md)
+                getForReviewFn _id, (ee, pReview2) ->
+                  expect(pReview2.md).to.equal(md)
+                  done()
 
 
-  it.skip "Can sync github to post as author in review", (done) ->
+
+  it "Can sync github to post as editor but not author when published", (done) ->
+    author = data.users.syncPostAuthor
+    SETUP.ensureDoc 'User', author, ->
+      SETUP.ensurePost data.posts.toSync, ->
+        LOGIN 'syncPostAuthor', data.users.syncPostAuthor, (s) ->
+          _id = data.posts.toSync._id
+          GET "/posts/#{_id}/edit", {}, (pEdit) ->
+            md = "3 "+ data.posts.toSync.md
+            PUT "/posts/#{_id}/md", { md, commitMessage: timeSeed() }, {}, (p2) ->
+              expect(p2.md).to.equal(md)
+              getForPublishedFn = $callSvc(PostsSvc.getBySlugForPublishedView,{user:data.users.syncPostAuthor})
+              LOGIN 'edap', data.users['edap'], ->
+                meta = dataHlpr.postMeta(p2)
+                PUT "/posts/publish/#{_id}", {by:p2.by, meta, tmpl: 'default'}, {}, (p3) ->
+                  getForPublishedFn p2.slug, (e, pPub1) ->
+                    expect(pPub1.md).to.equal(data.posts.toSync.md)
+                    PUT "/posts/propagate-head/#{_id}", {}, {}, (p4) ->
+                      expect(p4.md).to.equal(md)
+                      getForPublishedFn p2.slug, (ee, pPub2) ->
+                        expect(pPub2.md).to.equal(md)
+                        done()
 
 
-  it.skip "Can sync github to post as editor but not author when published", (done) ->
+  it "Can publish as admin without reviews", (done) ->
+    title = "Can publish without reviews as admin #{timeSeed()}"
+    slug = title.toLowerCase().replace(/\ /g, '-')
+    addAndLoginLocalUser 'obie',  (s) ->
+      author = _.extend(s, {bio: "yhoyo", userId: s._id })
+      post = _.extend({},data.posts.submittedWithGitRepo)
+      post = _.extend(post, {title,slug,_id:newId(),by:author})
+      meta = dataHlpr.postMeta(post)
+      SETUP.ensurePost post, ->
+        LOGIN 'edap', data.users['edap'], ->
+          PUT "/posts/publish/#{post._id}", {by:post.by, meta, tmpl: 'default'}, {}, (p2) ->
+            expect(p2.published)
+            expectIdsEqual(p2.publishedBy._id,data.users['edap']._id)
+            done()
 
 
-  it.skip "Can publish as admin without reviews", (done) ->
-
-
-  it.skip "Cannot publish as author without reviews", (done) ->
-
+  it "Cannot publish as author without reviews", (done) ->
+    title = "Cannot publish without reviews #{timeSeed()}"
+    slug = title.toLowerCase().replace(/\ /g, '-')
+    addAndLoginLocalUser 'rapo',  (s) ->
+      author = _.extend(s, {bio: "yhoyo", userId: s._id })
+      post = _.extend({},data.posts.submittedWithGitRepo)
+      post = _.extend(post, {title,slug,_id:newId(),by:author})
+      meta = dataHlpr.postMeta(post)
+      SETUP.ensurePost post, ->
+        PUT "/posts/publish/#{post._id}", {meta}, { status: 403 }, (e1) ->
+          expect(e1.message).to.equal('Must have at least 3 reviews to be published')
+          done()
 
 
 
