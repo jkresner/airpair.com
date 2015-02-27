@@ -144,6 +144,12 @@ var select = {
         cb(e,r)
       }
     },
+    editInfoView(cb) {
+      return (e,r) => {
+        if (e || !r) return cb(e,r)
+        cb(null, selectFromObject(r, select.editInfo))
+      }
+    },
     editView(cb, overrideMD) {
       return (e,r) => {
         if (e || !r) return cb(e,r)

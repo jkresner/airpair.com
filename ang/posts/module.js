@@ -137,7 +137,7 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
 })
 
 
-.controller('PostInfoCtrl', ($scope, $routeParams, $location, DataService, PostsUtil) => {
+.controller('PostInfoCtrl', ($scope, $routeParams, $location, StaticDataService, DataService, PostsUtil) => {
   var _id = $routeParams.id
 
   $scope.save = () => {
@@ -165,24 +165,21 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
     $scope.preview = {}
     if (!value)
     {
-      $scope.preview.asset = `<span>Paste an image url or short link to a youtube movie<br /><br />Example<br /> ${exampleYoutubeUrl}<br /> ${exampleImageUrl}</span>`
+      $scope.preview.asset = `<span>Paste an image url or short link to a youtube movie<br /><br />Example<br /> ${StaticDataService.examplePostYouTube}<br /> ${StaticDataService.examplePostImage}</span>`
       return
     }
     else if (value.indexOf('http://youtu.be/') == 0) {
       var youTubeId = value.replace('http://youtu.be/', '');
       $scope.preview.asset = `<iframe width="640" height="360" frameborder="0" allowfullscreen="" src="//www.youtube-nocookie.com/embed/${youTubeId}"></iframe>`
     }
-    else
-    {
-      $scope.preview.asset = `<img src="${value}" />`;
+    else {
+      $scope.post.assetUrl = value.replace('http:','https:')
+      $scope.preview.asset = `<img src="${$scope.post.assetUrl}" />`
     }
   });
 
-  var exampleImageUrl = '//www.airpair.com/static/img/css/blog/example2.jpg';
-  var exampleYoutubeUrl = 'http://youtu.be/qlOAbrvjMBo';
-  $scope.exampleImage = function() { $scope.post.assetUrl = exampleImageUrl }
-  $scope.exampleYouTube = function() { $scope.post.assetUrl = exampleYoutubeUrl }
-
+  $scope.exampleImage = () => $scope.post.assetUrl = StaticDataService.examplePostImage
+  $scope.exampleYouTube = () => $scope.post.assetUrl = StaticDataService.examplePostYouTube
 
   if (_id)
     DataService.posts.getByIdForEditingInfo({_id}, (r) => {
@@ -196,8 +193,9 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
 })
 
 
-.controller('PostEditCtrl', function($scope, $routeParams, $location, $timeout, $window, StaticDataService, DataService, mdHelper, PostsUtil) {
+.controller('PostEditCtrl', ($scope, $routeParams, $location, $timeout, $window, StaticDataService, DataService, mdHelper, PostsUtil) => {
   var _id = $routeParams.id
+  $scope._id = _id
 
   var timer = null
 
@@ -207,7 +205,7 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
       timer = null
     }
 
-    var md = window.ace.edit($('#aceeditor')[0]).getSession().getValue()
+    var md = window.ace.edit($('#aceeditor')[0]).getSession().doc.$lines.join('\n')
     if (!$scope.post) return
     $scope.post.saved = $scope.savedMD == md
     if ($scope.post.saved && $scope.preview.body) return
@@ -226,8 +224,7 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
   $scope.previewMarkdown = previewMarkdown
 
   var setPostScope = function(r) {
-    console.log('setPostScope')
-    console.log('r', r.by)
+    $scope.fork = `${$scope.session.social.gh.username}/${r.slug}`
 
     if ((r.published && !r.submitted) && (r.by.userId == $scope.session._id))
       return $scope.editErr = { message: `Edits on published posts my be tracked in git. <br />Please <a href="/posts/submit/${r._id}">submit your post</a> to continue editing it.` }
@@ -263,40 +260,20 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
         event.preventDefault();
       }
     })
-
   }
 
-  DataService.posts.getById({_id}, (r) => {
-    if (!r.github) return setPostScope(r)
-    DataService.posts.getGitHEAD({_id}, (h) => {
-      $scope.head = h
-      r.md = h.string
-      setPostScope(r)
-    }, (e) => {
-      $scope.editErr = e.message;
-      $scope.fork = `${$scope.session.social.gh.username}/${r.slug}`
-    })
-  }, (e) => {
-    $scope.editErr = e.message;
-    $scope._id = _id
-  })
-
-  $scope.save = () => {
-    if (!$scope.post.submitted)
-      DataService.posts.update(_.omit($scope.post, 'reviews'), setPostScope)
-    else {
-      if ($scope.post.commitMessage == "") return alert('Commit message required')
-      DataService.posts.updateGitHEAD(_.pick($scope.post,'_id','commitMessage','md'), setPostScope)
-    }
-  }
+  $scope.save = () =>
+    DataService.posts.updateMarkdown(_.pick($scope.post, '_id', 'md', 'commitMessage'), setPostScope)
 
   $scope.aceChanged = function(e) {
-    console.log('aceChanged', e)
     if (timer == null)
       timer = $timeout(previewMarkdown, $scope.throttleMS)
-  };
+  }
+
+  DataService.posts.getByIdEditing({_id}, setPostScope, (e) => $scope.editErr = e.message)
 
 })
+
 
 .controller('PostSubmitCtrl', function($scope, $q, $routeParams, $location, $timeout, ServerErrors, DataService, mdHelper, PostsUtil) {
   var _id = $routeParams.id

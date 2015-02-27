@@ -6,7 +6,7 @@ var validation = {
 
   getByIdForEditing(user, post) {
     var isOwner = _.idsEqual(user._id, post.by.userId)
-    var isForker = _.find(post.forkers, (f)=>_.idsEqual(user._id, f.userId))
+    var isForker = Roles.post.isForker(user, post)
 
     if (!isOwner && !isForker)
       return `Post cannot be edited by you, did you fork it already?`
@@ -43,8 +43,6 @@ var validation = {
     if (original.published && !isEditor)
       return `Must be editor to update a published post`
 
-    if (update.md)
-      return `Updating markdown for submitted posts must happen through git flow`
     if (update.slug)
       return `Cannot update slug`
     if (update.reviews)
@@ -145,14 +143,30 @@ var validation = {
       return `Only editors can update published posts`
   },
 
-  updateGithubHead(user, original, postMD, commitMessage){
-    if (!user.social || !user.social.gh)
-      return `User must authorize GitHub to update HEAD`
-    if (!commitMessage)
-      return `Commit Message required`
-    if (!postMD)
-      return `MarkDown empty`
-    //maybe allow editors as well?
+  updateMarkdown(user, original, update){
+    var isOwner = _.idsEqual(original.by.userId, user._id)
+    var isForker = Roles.post.isForker(user, original)
+
+    if (!original.submitted)
+    {
+      if (!isOwner) return `Cannot update markdown of draft post [${original.title}] not authored by you.`
+    }
+    else
+    {
+      if (!user.social || !user.social.gh)
+        return `User must authorize GitHub to update post markdown in git repo`
+
+      if (!isOwner && !isForker)
+        return `Cannot update markdown of ${original.title}. You must <a href="/posts/fork/${original._id}">fork it</a> first.`
+
+      var md = update.md
+      if (!md || md == '')
+        return `Markdown empty`
+
+      var commitMessage = update.commitMessage
+      if (!commitMessage || commitMessage == '')
+        return `Commit Message required`
+    }
   },
 
   addForker(user, post){

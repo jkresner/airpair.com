@@ -10,7 +10,8 @@ var Data                  = require('./posts.data')
 var {query, select, opts} = Data
 var selectCB              = select.cb
 var {selectFromObject}    = require('../../shared/util')
-var Roles                 = require('../../shared/roles')
+var PostsUtil             = require('../../shared/posts')
+var Roles                 = require('../../shared/roles').post
 
 var org = config.auth.github.org
 
@@ -36,14 +37,38 @@ var get = {
   },
 
   getByIdForEditingInfo(post, cb) {
-    post = selectFromObject(post, select.editInfo)
-    cb(null, post)
+    selectCB.editInfoView(cb)(null, post)
   },
 
 
   getByIdForEditing(post, cb) {
-    //-- TODO, grab the git HEAD here and not on the client
-    selectCB.editView(cb)(null, post)
+    if (!post.submitted) return selectCB.editView(cb)(null, post)
+
+    var owner = org
+    if ( Roles.isForker(this.user, post) )
+      owner = this.user.social.gh.username
+    else if ( !Roles.isOwnerOrEditor(this.user, post) )
+      return cb(`Cannot edit this post. You need to fork ${post.slug}`)
+
+    github.getFile(owner, post.slug, "/post.md", this.user, (e, resp) => {
+      //-- for forker check the case where they have deleted the fork
+      if (e && e.code === 404 && owner != org)
+      {
+        github.getRepo(owner, post.slug, (err,response) => {
+          if (err && err.code === 404)
+            return cb(Error(`No fork present. <a href='/posts/fork/${post._id}'>Create new fork?</a>`))
+          else if (!err)
+            return cb(Error(`post.md of fork ${owner}/${post.slug} missing or corrupted`))
+          else
+            return cb(err)
+        })
+      }
+      else {
+        post.synced = post.md == resp.string
+        post.md = resp.string // any reason we need the live copy?
+        selectCB.editView(cb)(null, post)
+      }
+    })
   },
 
   getByIdForForking(post, cb) {
@@ -88,7 +113,7 @@ var get = {
       if (!r.submitted || !r.github) return selectCB.displayView(cb)(null, r)
 
       //-- Allow admins to preview a post without a fork
-      if (!Roles.post.isForker(this.user, r) &&
+      if (!Roles.isForker(this.user, r) &&
         !_.idsEqual(this.user._id, r.by.userId)
         )
         return selectCB.displayView(cb)(null, r)
@@ -200,9 +225,9 @@ var get = {
   getGitHEAD(post, cb){
     var owner = org
 
-    if ( Roles.post.isForker(this.user, post) )
+    if ( Roles.isForker(this.user, post) )
       owner = this.user.social.gh.username
-    else if ( !Roles.post.isOwnerOrEditor(this.user, post) )
+    else if ( !Roles.isOwnerOrEditor(this.user, post) )
       return cb(`Cannot get git HEAD. You have not forked ${post.slug}`)
 
     github.getFile(owner, post.slug, "/post.md", this.user, (e,resp) => {
@@ -267,32 +292,34 @@ function updateWithEditTouch(post, action, cb) {
   var previousAction = (post.lastTouch) ? post.lastTouch.action : null
   post.lastTouch = svc.newTouch.call(this, action)
   post.editHistory = post.editHistory || []
-  if (action == 'updateByAuthor' &&
-      previousAction == 'updateByAuthor' &&
+  if (action == 'updateMarkdownByAuthor' &&
+      previousAction == 'updateMarkdownByAuthor' &&
       !post.submitted) {
-    $log(`${post.title}:updateByAuthor) not storing author draft edits, but could debounce for some history...`)
+    $log(`${post.title}:updateMarkdownByAuthor) not storing author draft edits, but could debounce for some history...`)
   }
   else
     post.editHistory.push(post.lastTouch)
   svc.update(post._id, post, cb)
 }
 
+
 var save = {
 
   create(o, cb) {
     o.created = new Date()
-    o.by.userId = this.user._id
+    o.by = PostsUtil.authorFromUser(o.by)
     o.lastTouch = svc.newTouch.call(this, 'createByAuthor')
     o.editHistory = [o.lastTouch]
     o.md = "new"
-    svc.create(o, selectCB.editView(cb))
+    if (o.assetUrl) delete o.assetUrl
+    svc.create(o, selectCB.editInfoView(cb))
     UserSvc.changeBio.call(this, o.by.bio,() => {})
   },
 
-  update(original, o, cb) {
-    var ups = _.omit(o, 'slug', 'reviews', 'publishHistory', 'editHitory', 'forkers', 'github')
-    original = _.extend(original, o)
-    updateWithEditTouch.call(this, original, 'updateByAuthor', selectCB.editView(cb))
+  update(original, ups, cb) {
+    var act = (Roles.isOwner(this.user, original)) ? 'updateByAuthor' : 'updateByEditor'
+    ups.by = PostsUtil.authorFromUser(ups.by)
+    updateWithEditTouch.call(this, _.extend(original, ups), act, selectCB.editInfoView(cb))
   },
 
   publish(post, publishData, cb) {
@@ -370,24 +397,30 @@ var save = {
     })
   },
 
-  updateGithubHead(original, postMD, commitMessage, cb) {
-    if (Roles.post.isForker(this.user, original)) {
+  updateMarkdown(original, ups, cb) {
+    var editCB = selectCB.editView(cb)
+
+    if (!original.submitted)
+      return updateWithEditTouch.call(this, _.extend(original,{md:ups.md}), 'updateMarkdownByAuthor', editCB)
+
+    if (Roles.isForker(this.user, original)) {
       var owner = this.user.social.gh.username
       github.updateFile(owner, original.slug, "post.md", postMD, commitMessage, this.user, (ee, result) => {
-        updateWithEditTouch.call(this, original, 'updateGitHEADonFork', selectCB.editView(cb, postMD))
+        updateWithEditTouch.call(this, original, 'updateHEADonFork', selectCB.editView(cb, ups.md))
       })
     }
-    else if (_.idsEqual(original.by.userId, this.user._id)) {
-      owner = org
+    else if (Roles.isOwner(this.user, original)) {
+      var owner = org
       github.updateFile(owner, original.slug, "post.md", postMD, commitMessage, this.user, (ee, result) => {
         if (ee) return cb(ee)
-        if (!original.published) {
-          original.md = postMD
-          original.publishedCommit = result.commit
-        }
-        setEventData(original, (err,resp)=>{
+        // if (!original.published) {
+          // original.md = postMD
+          // original.publishedCommit = result.commit
+        // }
+        setEventData(original, (err,resp) => {
           if (err) return cb(err)
-          updateWithEditTouch.call(this, original, 'updateGitHEAD', selectCB.editView(cb, postMD))
+          $log('setEventData.resp', resp)
+          updateWithEditTouch.call(this, original, 'updateHEAD', selectCB.editView(cb, postMD))
         })
       })
     } else {
