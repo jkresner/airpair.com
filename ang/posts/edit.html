@@ -21,11 +21,13 @@
   <h2 ng-if="fork">Go to <a href="https://github.com/{{fork}}" target="_blank">{{fork}}</a> </h2>
 </div>
 
-<div class="poststauts">
+<div ng-if="post" class="poststauts">
   <b>Status</b>
-    <span ng-if="!post.submitted && !post.published">In draft,</span>
-    <span ng-if="post.saved">saved.</span>
-    <span ng-if="!post.saved">unsaved.</span>
+  <span ng-if="!post.submitted && !post.published">In draft,</span>
+  <span ng-if="post.saved">saved.</span>
+  <span ng-if="!post.saved">unsaved.</span>
+
+  <post-step-helper post="post" class="tip"></post-step-helper>
 </div>
 
 <div ng-if="post" class="editor-wrap">
@@ -43,7 +45,6 @@
     >
   </section>
       <!-- theme:'solarized_light', -->
-      <!-- rendererOptions: { fontSize: 11.5 } -->
 
   <section id="post" ap-post="">
   </section>
@@ -66,8 +67,6 @@
     href="/posts/submit/{{post._id}}"
     ng-if="!post.submitted"
     ng-disabled="notReviewReady">Submit</a>
-
-  <post-step-helper post="post"></post-step-helper>
 
   <div class="commitmsg" ng-if="post.submitted">
     <input type="text" ng-disabled="post.saved" ng-model="post.commitMessage" placeholder="Enter a commit message" class="form-control" />
