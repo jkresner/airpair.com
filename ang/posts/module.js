@@ -31,25 +31,31 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
       $scope.isAuthor = $scope.p.by.userId == $rootScope.session._id
 
       $scope.calcDraftStep = () => {
+        $scope.submitForReview = false
+        $scope.wordcountTooLow = false
+        $scope.needInfo = false
+        $scope.needTags = false
+        $scope.needAssetUrl = false
+
         if ($scope.p.submitted) return false
-        if ($scope.p.published) return $scope.submitForReview = true
 
-        if ($scope.p.md && !$scope.p.wordcount) {
+        if ($scope.p.md && !$scope.p.wordcount)
           $scope.p.wordcount = PostsUtil.wordcount($scope.p.md)
-        }
-        if ($scope.p.wordcount) {
-          $scope.wordstogo = PostsUtil.wordsTogoForReview($scope.p.wordcount)
-          if ($scope.p.wordcount < 400)
-            return $scope.wordcountTooLow = true
-        }
 
-        if (!$scope.p.assetUrl || !$scope.p.tags || $scope.p.tags.length == 0) {
+        if ($scope.p.published) $scope.submitForReview = true
+        else if ($scope.p.wordcount && $scope.p.wordcount < 400) {
+          $scope.wordstogo = PostsUtil.wordsTogoForReview($scope.p.wordcount)
+          $scope.wordcountTooLow = true
+        }
+        else if (!$scope.p.assetUrl || !$scope.p.tags || $scope.p.tags.length == 0) {
           $scope.needInfo = true
           if (!$scope.p.tags || $scope.p.tags.length == 0) return $scope.needTags = true
           if (!$scope.p.assetUrl) return $scope.needAssetUrl = true
         }
+        else
+          $scope.submitForReview = true
 
-        return $scope.submitForReview = true
+        return true
       }
 
       $scope.calcReviewStep = () => {
@@ -232,6 +238,7 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
     if (r.md == "new") r.md = StaticDataService.defaultPostMarkdown
 
     r.commitMessage = ""
+    r.wordcount = PostsUtil.wordcount(r.md)
     $scope.post = r
     $scope.savedMD = r.md
     if (!$scope.aceLoaded) {
