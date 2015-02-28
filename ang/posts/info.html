@@ -41,15 +41,15 @@
       <div ng-if="post._id">
 
         <div class="form-group">
-          <label>Tags </label>
-          <div tag-input=""></div>
+          <label>Feature media <i ng-show="post.title && post.by.bio">https
+          <a href ng-click="exampleImage()">image url</a>
+          or <a href ng-click="exampleYouTube()">youtu.be url</a></i></label>
+          <input ng-model="post.assetUrl" type="text" class="form-control" />
         </div>
 
         <div class="form-group">
-          <label>Feature media <span ng-show="post.title && post.by.bio">
-          <a href ng-click="exampleImage()">image url</a>
-          or <a href ng-click="exampleYouTube()">youtu.be url</a></span></label>
-          <input ng-model="post.assetUrl" type="text" class="form-control" />
+          <label>Tags </label>
+          <div tag-input=""></div>
         </div>
 
       </div>
@@ -59,7 +59,13 @@
 
         <button class="btn" ng-click="save()" ng-disabled="(!post.title || !post.by.bio)">Save</button>
 
+        <p ng-if="post._id && (!post.assetUrl || !post.tags || post.tags.length == 0)">
+          You will be able to open your post in full page preview mode once you've saved
+          tags and a featured media asset.
+        </p>
+
       </div>
+
   </section>
 
   <section ap-post=""></section>

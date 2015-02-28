@@ -79,32 +79,6 @@ module.exports = () => describe("API: ", function() {
 
 
 
-  // it.skip("submit for review creates a repo with a README.md and a post.md file", function(done){
-  //   addAndLoginLocalGithubUser("robot2", {}, function(s) {
-  //     var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
-  //     var title = "test" + Math.floor(Math.random() * 100000000)
-  //     var d1 = { title: title, slug:title, by: by, md: lotsOfWords, assetUrl: 'http://youtu.be/qlOAbrvjMBo'}
-  //     POST('/posts', d1, {}, function(p1) {
-  //       PUT(`/posts/submit/${p1._id}`, d1, {}, function(resp){
-  //         expect(resp.submitted).to.exist
-  //         expect(resp.github.repoInfo.reviewTeamId, "reviewTeamId").to.exist
-  //         expect(resp.github.repoInfo.authorTeamId, "authorTeamId").to.exist
-  //         expect(resp.github.repoInfo.owner, "githubOwner").to.exist
-  //         expect(resp.github.repoInfo.author, "author").to.exist
-  //         expect(resp.github.repoInfo.url, "github url").to.exist
-  //         GET(`/posts/review`, {}, function(resp){
-  //           var post = _.find(resp, function(post){
-  //             return post.title === title
-  //           })
-  //           expect(post).to.exist
-  //           done()
-  //         })
-  //       })
-  //     })
-  //   })
-  // })
-
-
   it.skip("allows forkers to be added to submitted posts", function(done){
     addAndLoginLocalGithubUser("robot4", {}, function(s){
       var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
@@ -131,100 +105,85 @@ module.exports = () => describe("API: ", function() {
 
   //store on last update
   //TODO maybe store a history soon..
-  it.skip("allows contents to be propagated from GitHub as author when in review", function(done){
-    addAndLoginLocalGithubUser("robot5", {}, function(s){
-      var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
-      var title = "test" + Math.floor(Math.random() * 100000000)
-      var d1 = { title: title, slug:title, by: by, md: lotsOfWords, assetUrl: 'http://youtu.be/qlOAbrvjMBo' }
-      POST('/posts', d1, {}, function(p1) {
-        PUT(`/posts/submit/${p1._id}`, p1, {}, function(resp){
-          p1.md = "New content that will be erased when we update from GitHub"
-          PUT(`/posts/${p1._id}`, p1, {status: 403}, function(resp){
-            //expect(resp.err).to.equal("Updating markdown must happen through git flow")
-            var update = {commitMessage: "Test update", md: p1.md + " and a bit more"}
-            PUT(`/posts/update-github-head/${p1._id}`, update, {}, function(resp){
-              github.getCommits(p1.slug, function(err,resp){
-                expect(resp.length).to.equal(3)
+  // it.skip("allows contents to be propagated from GitHub as author when in review", function(done){
+  //   addAndLoginLocalGithubUser("robot5", {}, function(s){
+  //     var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
+  //     var title = "test" + Math.floor(Math.random() * 100000000)
+  //     var d1 = { title: title, slug:title, by: by, md: lotsOfWords, assetUrl: 'http://youtu.be/qlOAbrvjMBo' }
+  //     POST('/posts', d1, {}, function(p1) {
+  //       PUT(`/posts/submit/${p1._id}`, p1, {}, function(resp){
+  //         p1.md = "New content that will be erased when we update from GitHub"
+  //         PUT(`/posts/${p1._id}`, p1, {status: 403}, function(resp){
+  //           //expect(resp.err).to.equal("Updating markdown must happen through git flow")
+  //           var update = {commitMessage: "Test update", md: p1.md + " and a bit more"}
+  //           PUT(`/posts/update-github-head/${p1._id}`, update, {}, function(resp){
+  //             github.getCommits(p1.slug, function(err,resp){
+  //               expect(resp.length).to.equal(3)
 
-                var initialCommit = _.find(resp, function(x){
-                  return x.commit.message == "Initial Commit"
-                })
-                var readmeCommit = _.find(resp, function(x){
-                  return x.commit.message == "Add README.md"
-                })
-                var updateCommit = _.find(resp, function(x){
-                  return x.commit.message == "Test update"
-                })
+  //               var initialCommit = _.find(resp, function(x){
+  //                 return x.commit.message == "Initial Commit"
+  //               })
+  //               var readmeCommit = _.find(resp, function(x){
+  //                 return x.commit.message == "Add README.md"
+  //               })
+  //               var updateCommit = _.find(resp, function(x){
+  //                 return x.commit.message == "Test update"
+  //               })
 
-                //airpairtest is admin account
-                //airpairtestreviewer is test user account
+  //               //airpairtest is admin account
+  //               //airpairtestreviewer is test user account
 
-                expect(readmeCommit.author.login).to.equal("airpairtest")
-                expect(updateCommit.author.login).to.equal("airpairtestreviewer")
-                expect(initialCommit.author.login).to.equal("airpairtestreviewer")
+  //               expect(readmeCommit.author.login).to.equal("airpairtest")
+  //               expect(updateCommit.author.login).to.equal("airpairtestreviewer")
+  //               expect(initialCommit.author.login).to.equal("airpairtestreviewer")
 
-                PUT(`/posts/propagate-head/${p1._id}`, {}, {}, function(resp){
-                  expect(resp.md).to.equal(p1.md + " and a bit more")
-                  done()
-                })
-              })
-            })
-          })
-        })
-      })
-    })
-  })
+  //               PUT(`/posts/propagate-head/${p1._id}`, {}, {}, function(resp){
+  //                 expect(resp.md).to.equal(p1.md + " and a bit more")
+  //                 done()
+  //               })
+  //             })
+  //           })
+  //         })
+  //       })
+  //     })
+  //   })
+  // })
 
-  it.skip("allows contents to be updated from GitHub as editor", function(done){
-    addAndLoginLocalGithubUser("robot10", {}, function(s){
-      var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
-      var title = "test" + Math.floor(Math.random() * 100000000)
-      var d1 = { title: title, slug:title, by: by, md: lotsOfWords, assetUrl: 'http://youtu.be/qlOAbrvjMBo' }
-      POST('/posts', d1, {}, function(p1) {
-        PUT(`/posts/submit/${p1._id}`, p1, {}, function(resp){
-          p1.contents = "New content that will be erased when we update from GitHub"
-          PUT(`/posts/${p1._id}`, p1, {}, function(resp){
-            LOGIN('edap', data.users.edap, function() {
-              PUT(`/posts/propagate-head/${p1._id}`, p1, {}, function(resp){
-                expect(resp.md).to.equal(lotsOfWords)
-                done()
-              })
-            })
-          })
-        })
-      })
-    })
-  })
+  // it.skip("allows contents to be updated from GitHub as editor", function(done){
+  //   addAndLoginLocalGithubUser("robot10", {}, function(s){
+  //     var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
+  //     var title = "test" + Math.floor(Math.random() * 100000000)
+  //     var d1 = { title: title, slug:title, by: by, md: lotsOfWords, assetUrl: 'http://youtu.be/qlOAbrvjMBo' }
+  //     POST('/posts', d1, {}, function(p1) {
+  //       PUT(`/posts/submit/${p1._id}`, p1, {}, function(resp){
+  //         p1.contents = "New content that will be erased when we update from GitHub"
+  //         PUT(`/posts/${p1._id}`, p1, {}, function(resp){
+  //           LOGIN('edap', data.users.edap, function() {
+  //             PUT(`/posts/propagate-head/${p1._id}`, p1, {}, function(resp){
+  //               expect(resp.md).to.equal(lotsOfWords)
+  //               done()
+  //             })
+  //           })
+  //         })
+  //       })
+  //     })
+  //   })
+  // })
 
   it("does not allow contents to be updated from GitHub as author once published", function(done){
-    addAndLoginLocalGithubUser("robot11", {}, function(s){
-      var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
-      var title = "test" + Math.floor(Math.random() * 100000000)
-      var d1 = { title: title, slug:title, by: by, md: lotsOfWords, assetUrl: 'http://youtu.be/qlOAbrvjMBo',  published: Date.now()}
-      POST('/posts', d1, {}, function(p1) {
-        PUT(`/posts/submit/${p1._id}`, p1, {}, function(resp){
-          PUT(`/posts/propagate-head/${p1._id}`, p1, {status: 403}, function(resp){
-            done()
-          })
-        })
-      })
-    })
+    // addAndLoginLocalGithubUser("robot11", {}, function(s){
+    //   var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
+    //   var title = "test" + Math.floor(Math.random() * 100000000)
+    //   var d1 = { title: title, slug:title, by: by, md: lotsOfWords, assetUrl: 'http://youtu.be/qlOAbrvjMBo',  published: Date.now()}
+    //   POST('/posts', d1, {}, function(p1) {
+    //     PUT(`/posts/submit/${p1._id}`, p1, {}, function(resp){
+    //       PUT(`/posts/propagate-head/${p1._id}`, p1, {status: 403}, function(resp){
+    //         done()
+    //       })
+    //     })
+    //   })
+    // })
   })
-
-
-  it('does not allow submission for publication w/ <5 reviews', function(done) {
-    addAndLoginLocalUser('robot7', function(s) {
-      var by = { userId: s._id, name: s.name, bio: 'jk test', avatar: s.avatar }
-      var d1 = { title: "test 1", by: by, md: lotsOfWords, assetUrl: 'http://youtu.be/qlOAbrvjMBo' }
-      POST('/posts', d1, {}, function(p1) {
-        PUT(`/posts/publish/${p1._id}`, p1, {status: 403}, function(resp){
-          expectStartsWith(resp.message, "Must have at least 5 reviews")
-          done()
-        })
-      })
-    })
-  })
-
 
   it('allows author self publish w/ 5 reviews', function(done) {
     addAndLoginLocalGithubUser('robot8', {}, function(s) {

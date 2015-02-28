@@ -133,11 +133,9 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
 })
 
 
-.controller('PostsInReviewCtrl', function($scope, DataService) {
+.controller('PostsInReviewCtrl', ($scope, DataService) => {
 
-  DataService.posts.getInReview({}, function (r) {
-    $scope.inreview = r;
-  })
+  DataService.posts.getInReview({}, (r) => $scope.inreview = r )
 
 })
 
@@ -193,7 +191,7 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
       $scope.post = r
     })
   else
-    $scope.post = { by: $scope.session, assetUrl: '//www.airpair.com/static/img/css/blog/example2.jpg' }
+    $scope.post = { title: 'Type a post title...', by: $scope.session, assetUrl: '//www.airpair.com/static/img/css/blog/example2.jpg' }
 
 })
 
@@ -285,7 +283,7 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
 })
 
 
-.controller('PostSubmitCtrl', function($scope, $q, $routeParams, $location, $timeout, ServerErrors, DataService, mdHelper, PostsUtil) {
+.controller('PostSubmitCtrl', ($scope, $q, $routeParams, ServerErrors, DataService) => {
   var _id = $routeParams.id
   $scope._id = _id
 
@@ -295,11 +293,11 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
   {
     DataService.posts.getProviderScopes({}, (r)=> {
       $scope.repoAuthorized = _.find(r.github, (s) => s.indexOf("repo") != -1)
-
+      console.log('repoAuthorized', $scope.repoAuthorized)
       if ($scope.repoAuthorized)
         DataService.posts.getByIdForEditingInfo({_id}, (r) => {
           if (r.submitted)
-            $location.path('/posts/me?submitted='+_id)
+            window.location = '/posts/me?submitted='+r._id
 
           $scope.post = r
 

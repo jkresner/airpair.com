@@ -5,7 +5,6 @@ var svc                   = new Svc(Post, logging)
 var UserSvc               = require('../services/users')
 var ExpertSvc             = require('../services/experts')
 var TemplateSvc           = require('../services/templates')
-var github                = require("../services/wrappers/github")
 var github2               = require("../services/wrappers/github2")
 var Data                  = require('./posts.data')
 var {query, select, opts} = Data
@@ -14,17 +13,8 @@ var {selectFromObject}    = require('../../shared/util')
 var PostsUtil             = require('../../shared/posts')
 var Roles                 = require('../../shared/roles').post
 
+
 var org = config.auth.github.org
-
-
-var setEventData = function(post, cb){
-  github.repoEvents(org, post.slug, (err,resp)=>{
-    if (err) return cb(err)
-    var existingEvents = post.github.events || []
-    post.github.events = _.union(existingEvents, resp)
-    cb(err,resp)
-  })
-}
 
 var get = {
 
@@ -41,7 +31,6 @@ var get = {
     selectCB.editInfoView(cb)(null, post)
   },
 
-
   getByIdForEditing(post, cb) {
     if (!post.submitted) return selectCB.editView(cb)(null, post)
 
@@ -57,11 +46,6 @@ var get = {
       post.md = postMDfile.string
       selectCB.editView(cb)(null, post)
     })
-  },
-
-  getByIdForForking(post, cb) {
-    post = selectFromObject(post, select.edit)
-    cb(null, post)
   },
 
   getByIdForContributors(post, cb) {
@@ -154,27 +138,6 @@ var get = {
     svc.searchMany(q, options, selectCB.addUrl((e,r) => cb(null, {tag,posts:r}) ))
   },
 
-  //-- used for todd-motto
-  // getPublishedById(_id, cb) {
-  //   var query = _.extend(,)
-  //   svc.searchOne(Data.query.published({_id}), null, inflateHtml(cb))
-  // },
-
-  // getPublished(cb) {
-  //   svc.searchMany(query.published(), { field: select.list, options: opts.publishedByNewest() }, cb)
-  // },
-
-  // getAllVisible(user, cb) {
-  //   if (user && _.contains(user.roles, "reviewer")){
-  //     var opts = { fields: Data.select.list, options: { sort: '-submitted -published'} }
-  //     svc.searchMany(Data.query.publishedReviewReady(), opts, addUrl(cb));//, function(e,r) {
-  //   }
-  //   else {
-  //     var opts = { fields: Data.select.list, options: { sort: { 'published': -1 } } };
-  //     svc.searchMany(Data.query.published(), opts, addUrl(cb))
-  //   }
-  // },
-
 
   getUsersPublished(userId, cb) {
     var options = { fields: select.list, options: opts.publishedNewest() }
@@ -185,10 +148,12 @@ var get = {
   getMyPosts(cb) {
     if (!this.user) return $callSvc(get.getRecentPublished,this)(cb)
 
-    var inReviewOpts = {  options: { sort: { 'submitted': -1 }, limit: 6 } }
+    var fields = _.extend({md:1},select.stats) // meed md for wordcount
+
+    var inReviewOpts = { fields, options: { sort: { 'submitted': -1 }, limit: 6 } }
     svc.searchMany(query.inReview(), inReviewOpts, (e,r) => {
 
-      var opts = { options: { sort: { 'created':-1, 'published':1  } } };
+      var opts = {  fields, options: { sort: { 'created':-1, 'published':1  } } };
       svc.searchMany(query.myPosts(this.user._id), opts, selectCB.addUrl((ee,rr) => {
         if (e || ee) return cb(e||ee)
         var posts = rr.slice()
@@ -205,10 +170,10 @@ var get = {
     svc.searchMany(query.inReview(), options, selectCB.addUrl(cb))
   },
 
-  getUserForks(cb){
-    // all posts where the user is a forker
-    svc.searchMany(query.forker(this.user._id), { field: Data.select.list }, selectCB.addUrl(cb))
-  },
+  // getUserForks(cb){
+  //   // all posts where the user is a forker
+  //   svc.searchMany(query.forker(this.user._id), { field: Data.select.list }, selectCB.addUrl(cb))
+  // },
 
   getGitHEAD(post, cb){
     var owner = org
@@ -227,8 +192,8 @@ var get = {
         if (!_.idsEqual(post._id,r._id))  //-- for posts that were published before the git authoring stuff
           return cb(null, { unavailable: `The slug ${slug} alredy belongs to another post.` })
 
-      github.getRepo(org, slug, (e,repo) => {
-        if (repo) return cb(null, { unavailable: `The repo ${slug} already exist on the airpair org, try another name.` })
+      github2.getRepo('admin', org, slug, (e,repo) => {
+        if (repo) return cb(null, { unavailable: `Try another name. A repo on the airpair org called ${slug} already exists.` })
         if (e.code == 404)
           cb(null, { available: `The repo name ${slug} is available.` })
         else
@@ -258,6 +223,8 @@ var getAdmin = {
   },
 
 }
+
+
 
 
 function updateWithEditTouch(post, action, cb) {
@@ -400,15 +367,15 @@ var save = {
   },
 
   addForker(post, cb) {
-    var githubUser = this.user.social.gh.username
-    github.addContributor(this.user, post.slug, post.github.repoInfo.reviewTeamId, (e, res) => {
+    github2.addContributor(this.user, org, post.slug, (e, fork) => {
       if (e) return cb(e)
       var { name, email, social } = this.user
       post.forkers = post.forkers || []
-      var existing = _.find(post.forkers, (f)=>_.idsEqual(f.userId,this.user._id))
+      var existing = _.find(post.forkers, (f) => _.idsEqual(f.userId,this.user._id))
       if (!existing)
         post.forkers.push({ userId: this.user._id, name, email, social })
-      svc.update(post._id, post, cb)
+      post.stats = PostsUtil.calcStats(post)
+      svc.update(post._id, post, selectCB.statsView(cb))
     })
   },
 
@@ -434,6 +401,7 @@ var saveReviews = {
     post.reviews = post.reviews || []
     post.reviews.push(review)
 
+    post.stats = PostsUtil.calcStats(post)
     svc.update(post._id, post, selectCB.statsView(cb))
 
     //-- Probably better doing the db hit as we ensure the right email if the user
@@ -448,6 +416,7 @@ var saveReviews = {
   reviewUpdate(post, original, reviewUpdated, cb) {
     var review = _.find(post.reviews,(r)=>_.idsEqual(r._id,original._id))
     review = _.extend(review,reviewUpdated)
+    post.stats = PostsUtil.calcStats(post)
     svc.update(post._id, post, selectCB.statsView(cb))
   },
 
@@ -469,6 +438,7 @@ var saveReviews = {
 
       mailman.sendPostReviewReplyNotification(threadParticipants, post._id, post.title, reply.by.name, reply.comment)
 
+      post.stats = PostsUtil.calcStats(post)
       svc.update(post._id, post, selectCB.statsView(cb))
     })
   },

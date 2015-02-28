@@ -1,13 +1,13 @@
-<header>
+<header ng-if="post">
   <ol class="entry-meta breadcrumb">
     <li><a href="/posts">Posts</a></li>
     <li>{{post.title}}</li>
-    <li class="current">Fork</li>
+    <li class="current">Submit</li>
   </ol>
 </header>
 
 
-<section id="postfork">
+<section ng-if="post" id="postfork">
 
   <section id="recent">
     <div class="posts recent">
@@ -17,16 +17,17 @@
 
   <section id="forkinfo">
 
-    <h2>A repo will be created on AirPair's Github</h2>
+    <h2>A repo will be created on AirPair's Github organization account</h2>
 
-    <h3>Why does AirPair use GitHub?</h3>
+    <h3>Why use Git for authoring?</h3>
 
-    <p>Posts created on AirPair are backed by GitHub repositories. This
-    enables community members to work together leveraging all the great Github tools
-    you know and love like commit logs, pull requests, issues, comments and more.
-    These features make writing great content easier and a more social experience.</p>
+    <p>Posts on AirPair are backed by GitHub repos. Git
+    enables collaboration between authors and readers using familiar tools
+    you know and love like forks, pull requests, issues & comments.
+    For more info, see our
+    <a href="/social-authoring" target="_blank">Social Authoring Annoucement</a>.</p>
 
-    <img src="/static/img/pages/posts/authoring-flow.png" />
+    <img class="store" src="/static/img/pages/posts/authoring-flow-store.png" />
 
     <div ng-if="!repoAuthorized">
       <section class="notice">
@@ -43,18 +44,15 @@
       <hr />
 
       <div class="form-group">
-        <label>Repo name</label>
+        <label>
+          <span ng-if="!slugStatus">Repo name</span>
+          <b ng-if="slugStatus.available" style="color:green">Repo name
+            <span>{{post.slug}}</span> available</b>
+          <b ng-if="slugStatus.unavailable" style="color:red">Repo name
+            <span>{{post.slug}}</span> unavailable</b>
+        </label>
+
         <input ng-model="post.slug" type="text" class="form-control" />
-
-        <div ng-if="slugStatus.available">
-          <p><i style="color:green">The repo name <b>{{post.slug}}</b> is available.</i> <br />
-            <b style="color:red">** MAKE SURE you are happy with the repo name, no turning back from here.</b>
-          </p>
-        </div>
-
-        <div ng-if="slugStatus.unavailable">
-          <p><i style="color:red">The repo name <b>{{post.slug}}</b> is unavailable.</i> <br /></p>
-        </div>
 
       </div>
 
@@ -62,8 +60,13 @@
         <single-submit button-text="'Submit Post for Review & Create Repo'" wait-text="Creating repo, this can take a few seconds ..." on-single-click="submitForReviewDeferred">
         </single-submit>
       </div>
+      <p ng-if="slugStatus.available">
+        <span style="color:red;text-transform:uppercase">** MAKE SURE you are happy with your repo name, <b>no changes from here</b></span>
+      </p>
 
-      <p>You will be added to the airpair organization on github, so you have write access to the repo</p>
+      <p ng-if="slugStatus.available">
+      In order to give you write privilages to the repo,
+      we'll add you to the airpair organization on GitHub.</p>
     </div>
 
   </section>
