@@ -112,7 +112,10 @@ var select = {
     'submitted': 1,
     'tags': 1,
     'assetUrl': 1,
-    'stats': 1
+    'stats': 1,
+    'lastTouch.utc': 1,
+    'lastTouch.action': 1,
+    'lastTouch.by.name': 1
   },
   generateToc(md) {
     marked(generateToc(md))

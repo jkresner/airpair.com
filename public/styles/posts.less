@@ -120,7 +120,13 @@
 
   #contributions {
     margin-bottom:50px;
-    h3 { margin-bottom:0 }
+    h3 { margin-bottom:0;
+      ul {
+        display:inline-block;
+        .ulNoStyle;
+        li { padding:0px 0 0 10px;font-size:13px; a { text-transform:uppercase; } }
+      }
+    }
     td { position:relative;padding:8px 10px }
     td.contributors {
       width:65px;

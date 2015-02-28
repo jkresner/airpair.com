@@ -78,47 +78,54 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
 
   DataService.posts.getMyPosts({}, function (r) {
     var recent = []
-    var contributions = []
+    var all = []
+    var mine = []
+    var forks = []
+
     if ($scope.session._id)
     {
       for (var i=0;i<r.length;i++) {
         r[i] = PostsUtil.extendWithReviewsSummary(r[i])
         r[i].forked = Roles.post.isForker($scope.session, r[i])
         r[i].mine = r[i].by.userId == $scope.session._id
-        if (r[i].mine || r[i].forked)
-          contributions.push(r[i])
         if (!r[i].published && r[i].submitted)
           recent.push(r[i])
+        if (r[i].mine)
+          mine.push(r[i])
+        if (r[i].forked)
+          forks.push(r[i])
       }
 
       if ($scope.session.social && $scope.session.social.gh)
       {
-        if ($location.search().submitted && $scope.session._id)
-        {
-          $scope.submitted = _.find(contributions, (p)=> p._id == $location.search().submitted)
-        }
+        if ($location.search().submitted)
+          $scope.submitted = _.find(mine, (p)=> p._id == $location.search().submitted)
 
         var toForkId = $location.search().fork
         if (toForkId)
         {
-          $scope.forked = _.find(contributions, (f) => toForkId == f._id)
+          $scope.forked = _.find(forks, (f) => toForkId == f._id)
           // if (!$scope.forked)  //-- sometimes wew just want to refork it...
           DataService.posts.addForker({_id:$location.search().fork}, function (forked) {
             $scope.forked = forked
-            $scope.contributions = _.union($scope.contributions, [forked])
+            $scope.all = _.union($scope.all, [forked])
           })
         }
       }
 
     }
 
-    $scope.contributions = contributions
     $scope.recent = (recent.length > 0) ? recent : r
-
+    $scope.mine = mine
+    $scope.forks = forks
+    $scope.all = _.sortBy(_.union(mine,forks),(p)=> (p.lastTouch) ? p.lastTouch.utc : 'zzz' )
+    $scope.filterMyPosts('all')
   })
 
   $scope.delete = (_id) =>
     DataService.posts.deletePost({_id}, (r) => window.location = '/posts/me')
+
+  $scope.filterMyPosts = (filter) => $scope.contributions = $scope[filter]
 
 })
 
@@ -227,8 +234,6 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
   $scope.previewMarkdown = previewMarkdown
 
   var setPostScope = function(r) {
-    $scope.fork = `${$scope.session.social.gh.username}/${r.slug}`
-
     if ((r.published && !r.submitted) && (r.by.userId == $scope.session._id))
       return $scope.editErr = { message: `Edits on published posts my be tracked in git. <br />Please <a href="/posts/submit/${r._id}">submit your post</a> to continue editing it.` }
 
