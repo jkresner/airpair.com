@@ -30,7 +30,13 @@
 
   <section ng-if="contributions" id="contributions" class="nomob">
 
-    <h3 class="underline">My contributions
+    <h3 class="underline">Contributions
+      <ul ng-if="contributions.length > 5">
+        <li><a ng-click="filterMyPosts('all')">All</a></li>
+        <li><a ng-click="filterMyPosts('mine')">Posts By me</li>
+        <li><a ng-click="filterMyPosts('forks')">Posts By others</li>
+      </ul>
+
       <a href="/posts/new" class="btn btn-sm">Start a post</a>
     </h3>
 

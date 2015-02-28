@@ -18,7 +18,6 @@
 <div ng-if="editErr" class="editor-error-wrap" style="text-align:center">
   <h3 ng-bind-html="editErr.message | html"></h3>
   <h2 ng-if="_id">Try <a href="/posts/fork/{{_id}}" target="_self">fork it</a> now? </h2>
-  <h2 ng-if="fork">Go to <a href="https://github.com/{{fork}}" target="_blank">{{fork}}</a> </h2>
 </div>
 
 <div ng-if="post" class="poststauts">
