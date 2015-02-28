@@ -84,7 +84,7 @@ var select = {
   editInfo: {
     '_id': 1,
     'by': 1,
-    'github.repoInfo': 1,
+    // 'github.repoInfo': 1,
     'title':1,
     'created': 1,
     'published': 1,

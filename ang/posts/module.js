@@ -148,7 +148,7 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
       '/posts/edit/' : '/posts/preview/'
 
     var saveFn = (_id) ? DataService.posts.update : DataService.posts.create
-    saveFn($scope.post, (r) => $location.path(redirectTo+r._id) )
+    saveFn($scope.post, (r) => window.location = redirectTo+r._id )
   }
 
   $scope.tags = () => $scope.post ? $scope.post.tags : null;
