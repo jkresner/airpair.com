@@ -37,6 +37,7 @@ var select = {
     'published': 1,
     'submitted': 1,
     'tags': 1,
+    'stats': 1
   },
   listAdmin: {
     'by.name': 1,
@@ -64,7 +65,9 @@ var select = {
   },
   edit: {
     '_id': 1,
-    'by': 1,
+    'by.userId':1,
+    'by.name': 1,
+    'by.avatar': 1,
     'meta': 1,
     'github.repoInfo': 1,
     'title':1,
@@ -92,10 +95,11 @@ var select = {
   stats: {
     '_id': 1,
     'title': 1,
-    'by': 1,
+    'by.userId':1,
+    'by.name': 1,
+    'by.avatar': 1,
     'slug': 1,
     'meta': 1,
-    'github': 1,
     'forkers':1,
     'reviews._id': 1,
     'reviews.by': 1,
@@ -107,7 +111,8 @@ var select = {
     'published': 1,
     'submitted': 1,
     'tags': 1,
-    'assetUrl': 1
+    'assetUrl': 1,
+    'stats': 1
   },
   generateToc(md) {
     marked(generateToc(md))
@@ -173,9 +178,9 @@ var select = {
         var statsR = []
         for (var p of posts) {
           var url = select.url(p),
-              wordcount = PostsUtil.wordcount(p.md),
-              reviews = select.mapReviews(p.reviews),
-              forkers = select.mapForkers(p.forkers || [])
+            wordcount = PostsUtil.wordcount(p.md),
+            reviews = select.mapReviews(p.reviews),
+            forkers = select.mapForkers(p.forkers || [])
           statsR.push(_.extend(selectFromObject(p, select.stats),
             { url, reviews, forkers, wordcount }))
         }

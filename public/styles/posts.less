@@ -23,17 +23,18 @@
       position:absolute;top:10px;left:12px;right:12px;
       margin:0px;padding:5px 5px 5px 5px;color:black;font-size:13px;line-height:16px }
   }
+  .stars { height:30px;margin-top:2px }
   .entry-content {
+    position:relative;
     border-left:@tilebordernormal;
     border-right:@tilebordernormal;
     text-align:left;
     padding:10px 10px;
-    img { float:right;border-radius:50% }
   }
   .entry-title {
     color:@darkblue;font-weight:600;
-    height:60px;width:92%;margin:0;
-    font-size:14px!important;line-height:18px!important;
+    height:75px;width:86%;margin:0;
+    font-size:15px!important;line-height:18px!important;
     margin-bottom:0px!important;
   }
   .entry-categories {
@@ -50,11 +51,20 @@
     border-right:@tilebordernormal;
     border-bottom:@tilebordernormal;
     position:absolute;
-    bottom:0;left:0;
+    bottom:0;right:0;
     height:50px;
     width:100%;
     padding:4px 3px 3px 3px;
-    .bookmark { cursor:pointer;background:white;padding:3px 5px }
+    .bookmark { cursor:pointer;background:white;
+      padding:3px 5px 3px 5px;
+     position:absolute;right:12px;bottom:100px }
+  }
+  .entry-author-img {
+    position:absolute;opacity:0.9;
+    right:5px;bottom:5px;border-radius:50%;
+  }
+  .entry-author-img:hover {
+    opacity:1;cursor:pointer;
   }
 }
 
