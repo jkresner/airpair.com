@@ -3,7 +3,7 @@ PostsSvc = require('./../../server/services/posts')
 
 module.exports = -> describe "API: ", ->
 
-  @timeout(9000)
+  @timeout(8000)
 
   before (done) ->
     if (config.auth.github.org == 'airpair')
@@ -47,7 +47,7 @@ module.exports = -> describe "API: ", ->
         done()
 
 
-  it 'Create post with max social', (done) ->
+  it.only 'Create post with max social', (done) ->
     title = "Post Create with max social Test #{timeSeed()}"
     addAndLoginLocalUser 'ajde', (s) ->
       author = _.extend({bio: 'yes test'},s)
@@ -151,7 +151,8 @@ module.exports = -> describe "API: ", ->
     addAndLoginLocalUser 'robot1', (s) ->
       d = { title, by:_.extend({bio: 'yo yyoy o'},s), md: dataHlpr.lotsOfWords('Submit without github') }
       SETUP.createSubmitReadyPost s.userKey, d, (post) ->
-        PUT "/posts/submit/#{post._id}", post, {status: 403}, (resp) ->
+        slug = title.toLowerCase().replace(/\ /g, '-')
+        PUT "/posts/submit/#{post._id}", {slug}, {status: 403}, (resp) ->
           expect(resp.message).to.equal("User must authorize GitHub to submit post for review")
           done()
 
@@ -162,8 +163,8 @@ module.exports = -> describe "API: ", ->
       d = { title, by:_.extend({bio: 'yo yyoy o'},s), md: dataHlpr.lotsOfWords('Submit with github') }
       SETUP.createSubmitReadyPost s.userKey, d, (post) ->
         expect(post.github).to.be.undefined
-        post.slug = title.toLowerCase().replace(/\ /g, '-')
-        PUT "/posts/submit/#{post._id}", post, {}, (p1) ->
+        slug = title.toLowerCase().replace(/\ /g, '-')
+        PUT "/posts/submit/#{post._id}", {slug}, {}, (p1) ->
           expect(p1.github).to.exist
           done()
 
@@ -202,8 +203,8 @@ module.exports = -> describe "API: ", ->
       d = { title, by:_.extend({bio: 'yo yyoy o'},s), md: dataHlpr.lotsOfWords('Sync from with github') }
       SETUP.createSubmitReadyPost s.userKey, d, (post) ->
         _id = post._id
-        post.slug = title.toLowerCase().replace(/\ /g, '-')
-        PUT "/posts/submit/#{_id}", post, {}, (p1) ->
+        slug = title.toLowerCase().replace(/\ /g, '-')
+        PUT "/posts/submit/#{_id}", {slug}, {}, (p1) ->
           liveMD = p1.md
           md = "2"+liveMD
           PUT "/posts/#{_id}/md", { md, commitMessage: timeSeed() }, {}, (p2) ->
@@ -262,7 +263,7 @@ module.exports = -> describe "API: ", ->
     title = "Cannot publish without reviews #{timeSeed()}"
     slug = title.toLowerCase().replace(/\ /g, '-')
     addAndLoginLocalUser 'rapo',  (s) ->
-      author = _.extend(s, {bio: "yhoyo", userId: s._id })
+      author = _.extend({bio: "yhoyo", userId: s._id }, s)
       post = _.extend({},data.posts.submittedWithGitRepo)
       post = _.extend(post, {title,slug,_id:newId(),by:author})
       meta = dataHlpr.postMeta(post)
@@ -271,5 +272,97 @@ module.exports = -> describe "API: ", ->
           expect(e1.message).to.equal('Must have at least 3 reviews to be published')
           done()
 
+
+  it "Can fork, edit & preview post in review", (done) ->
+    @timeout(14000)
+    title = "Can fork edit and preview #{timeSeed()}"
+    SETUP.addAndLoginLocalUserWithGithubProfile 'robot4', null, null, (s) ->
+      d = { title, by:_.extend({bio: 'yo yyoy o'},s), md: dataHlpr.lotsOfWords('Can fork and stuffz ') }
+      SETUP.createSubmitReadyPost s.userKey, d, (post) ->
+        _id = post._id
+        slug = title.toLowerCase().replace(/\ /g, '-')
+        PUT "/posts/submit/#{_id}", { slug }, {}, (p1) ->
+          getForReviewFn = $callSvc(PostsSvc.getByIdForReview,{user:data.users[s.userKey]})
+          getForReviewFn _id, (e, pReview) ->
+            liveMD = pReview.md
+            expect(liveMD).to.equal(d.md)
+            SETUP.addAndLoginLocalUserWithGithubProfile 'robot21', 'airpairtester45', 'fd65392d8926f164755061e70a852d4ebe139e09', (sRobot21) ->
+              GET "/posts/#{p1._id}/contributors", {}, (pForFork) ->
+                expectIdsEqual(pForFork._id, _id)
+                expect(pForFork.editHistory).to.be.undefined
+                expect(pForFork.publishHistory).to.be.undefined
+                expect(pForFork.github.repoInfo).to.exist
+                expect(pForFork.reviews.length).to.equal(0)
+                expect(pForFork.forkers.length).to.equal(0)
+                PUT "/posts/add-forker/#{pForFork._id}", {}, {}, (p2) ->
+                  expect(p2.editHistory).to.be.undefined
+                  expect(p2.publishHistory).to.be.undefined
+                  expect(p2.github.repoInfo).to.exist
+                  expect(p2.reviews.length).to.equal(0)
+                  expect(p2.forkers.length).to.equal(1)
+                  expectIdsEqual(p2.forkers[0].userId, sRobot21._id)
+                  expect(p2.forkers[0]._id).to.exist
+                  expect(p2.forkers[0]._id.toString()).to.not.equal(p2._id.toString())
+                  expect(p2.forkers[0].name).to.equal(sRobot21.name)
+                  expect(p2.forkers[0].email).to.be.undefined
+                  expect(p2.forkers[0].username).to.equals('airpairtester45')
+                  expect(p2.forkers[0].social).to.be.undefined
+                  GET "/posts/me", {}, (myposts) ->
+                    p3 = _.find(myposts,(p)->_.idsEqual(p._id,p2._id))
+                    expect(p3.editHistory).to.be.undefined
+                    expect(p3.publishHistory).to.be.undefined
+                    expect(p3.github.repoInfo).to.exist
+                    expect(p3.github.stats).to.be.undefined
+                    expect(p3.github.events).to.be.undefined
+                    expect(p3.reviews.length).to.equal(0)
+                    expect(p3.forkers.length).to.equal(1)
+                    GET "/posts/#{p3._id}/edit", {}, (pForkEdit) ->
+                      expect(pForkEdit.md).to.equal(liveMD)
+                      expect(pForkEdit.editHistory).to.be.undefined
+                      expect(pForkEdit.publishHistory).to.be.undefined
+                      expect(pForkEdit.forkers).to.be.undefined
+                      forkedMD = 'my fork ' + pForkEdit.md
+                      PUT "/posts/#{_id}/md", { md: forkedMD, commitMessage: timeSeed() }, {}, (pForkSaved) ->
+                        expect(pForkSaved.md).to.equal(forkedMD)
+                        getForReviewFn = $callSvc(PostsSvc.getByIdForReview,{user:data.users[sRobot21.userKey]})
+                        getForPreviewFn = $callSvc(PostsSvc.getByIdForPreview,{user:data.users[sRobot21.userKey]})
+                        getForReviewFn _id, (e, pForkReview) ->
+                          expect(pForkReview.md).to.equal(liveMD)
+                          getForPreviewFn _id, (eee, pForkPreview) ->
+                            expect(pForkPreview.md).to.equal(forkedMD)
+                            LOGIN s.userKey, data.users[s.userKey], (sRobot4) ->
+                              GET "/posts/#{p3._id}/edit", {}, (pParentEdit) ->
+                                expect(pParentEdit.md).to.equal(liveMD)
+                                parentMD = 'my parent ' + pParentEdit.md
+                                PUT "/posts/#{_id}/md", { md: parentMD, commitMessage: timeSeed() }, {}, (pParentSaved) ->
+                                  expect(pParentSaved.md).to.equal(parentMD)
+                                  getForReviewFn = $callSvc(PostsSvc.getByIdForReview,{user:data.users[s.userKey]})
+                                  getForPreviewFn = $callSvc(PostsSvc.getByIdForPreview,{user:data.users[s.userKey]})
+                                  getForReviewFn _id, (e, pParentReview) ->
+                                    expect(pParentReview.md).to.equal(liveMD)
+                                    getForPreviewFn _id, (eee, pParentPreview) ->
+                                      expect(pParentPreview.md).to.equal(parentMD)
+                                      done()
+
+
+  it "Get my posts does not contain any sensitive data", (done) ->
+    LOGIN 'jkap', data.users.jkap, (jk) ->
+      GET "/posts/me", {}, (myposts) ->
+        for p in myposts
+          expect(p.title).to.exist
+          expect(p.publishHistory).to.be.undefined
+          expect(p.editHistory).to.be.undefined
+          if (p.github)
+            expect(p.github.stats).to.be.undefined
+            expect(p.github.events).to.be.undefined
+          for f in p.forkers
+            expect(f.email).to.be.undefined
+          for r in p.reviews
+            expect(r.by.email).to.be.undefined
+            for v in r.votes
+              expect(v.by.email).to.be.undefined
+            for rp in r.replies
+              expect(rp.by.email).to.be.undefined
+        done()
 
 

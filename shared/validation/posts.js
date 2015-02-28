@@ -120,7 +120,7 @@ var validation = {
     if (!slug)
       return `Must have slug to submit for review`
     if (!validSlug(slug))
-      return `${post.slug} not a valid post slug to submit for review`
+      return `${slug} not a valid post slug to submit for review`
     if (post.submitted)
       return `This post has already been submitted for review`
     if (!post.md)

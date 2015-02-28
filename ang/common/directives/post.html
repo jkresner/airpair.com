@@ -19,4 +19,11 @@
     <hr />
     <div id="body" ng-bind-html="preview.body | markdownHtml"></div>
   </article>
+  <footer ng-if="post.tags && post.tags.length > 0" id="posts" class="postfooter similar">
+    <hr />
+    <h5>Post categorized under</h5>
+    <ul class="tags">
+      <li ng-repeat="t in post.tags"><a href="/posts/tag/{{ t.slug }}">{{ t.name }}</a></li>
+    </ul>
+  </footer>
 </div>

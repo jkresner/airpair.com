@@ -85,10 +85,10 @@ stories = {
               data.users[userKey] = rrr
               done(err,rrr)
           else
-            data.users[userKey] = rr;
+            data.users[userKey] = rr
             done(e,rr)
       else
-        data.users[userKey] = r;
+        data.users[userKey] = r
         done(null, r)
 
 

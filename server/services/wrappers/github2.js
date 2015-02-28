@@ -32,6 +32,14 @@ var getGithubUser = function(user) {
     return { username: user.social.gh.username, token: user.social.gh.token.token }
 }
 
+// var setEventData = function(post, cb){
+//   github.repoEvents(org, post.slug, (err,resp)=>{
+//     if (err) return cb(err)
+//     var existingEvents = post.github.events || []
+//     post.github.events = _.union(existingEvents, resp)
+//     cb(err,resp)
+//   })
+// }
 
 
 var gh = {
@@ -89,22 +97,14 @@ var gh = {
     })
   },
 
-  // getRepo(owner, repo, cb){
-  //   _authenticateAdmin()
-  //   api.repos.get({
-  //     user: owner,
-  //     repo: repo
-  //   }, cb)
-  // },
+  getRepo(user, owner, repo, cb){
+    setToken(user)
+    api.repos.get({
+      user: owner,
+      repo: repo
+    }, cb)
+  },
 
-  // addContributor(user, repo, reviewerTeamId, cb){
-  //   var _this = this;
-  //   // $log(`addContributor ${repo} ${reviewerTeamId}`, repo)
-  //   this.addToTeam(user.social.gh.username, reviewerTeamId, user, function(err, result){
-  //     if (err) return verboseErrorCB(cb, err, 'addToTeam', `${user.social.gh.username} ${reviewerTeamId}`)
-  //     _this.fork(repo, user, cb)
-  //   })
-  // },
 
   // deleteTeam(teamId, cb){
   //    _authenticateAdmin()
@@ -113,24 +113,13 @@ var gh = {
   //    });
   // },
 
-  // fork(repo, user, cb){
-  //   _authenticateUser(user)
-  //   api.repos.fork({
-  //     user: org,
-  //     repo: repo
-  //   }, (err,r)=>{
-  //     if (err) return verboseErrorCB(cb, err, 'addToTeam', `${repo} ${user.email} ${user.id}`)
-  //     cb(err, r)
-  //   })
-  // },
-
-  // getScopes(user, cb){
-  //   _authenticateUser(user)
-  //   api.user.get({}, function(err, result){
-  //     if (err) return verboseErrorCB(cb, err, 'checkScopes', `${user.social.gh.username}`)
-  //     cb(null, result.meta['x-oauth-scopes'].split(/,\W*/))
-  //   })
-  // },
+  getScopes(user, cb){
+    setToken(user)
+    api.user.get({}, (e, r) => {
+      if (e) return verboseErrorCB(cb, e, 'checkScopes', `${user.social.gh.username}`)
+      cb(null, { github: r.meta['x-oauth-scopes'].split(/,\W*/) })
+    })
+  },
 
 
   // getStats(owner, repo, user, retryCount, cb){
@@ -200,6 +189,22 @@ var gh = {
   //     repo: repo
   //   }, cb)
   // },
+
+  addContributor(user, org, repo, cb) {
+    setToken(user)
+
+    // $log(`addContributor ${repo} ${reviewerTeamId}`, repo)
+    // this.addToTeam(user.social.gh.username, reviewerTeamId, user, function(err, result){
+      // if (err) return verboseErrorCB(cb, err, 'addToTeam', `${user.social.gh.username} ${reviewerTeamId}`)
+  // fork(repo, user, cb){
+  //   _authenticateUser(user)
+    api.repos.fork({ user: org, repo}, (e,r) => {
+      if (e) return verboseErrorCB(cb, e, 'addContributor', `${repo} ${user.email} ${user.id}`)
+      cb(e, r)
+    })
+  // },
+    // })
+  },
 
 
   getFile(user, repoOwner, repo, path, branch, cb) {

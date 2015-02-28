@@ -6,8 +6,8 @@ var User =          require('../models/user')
 import BaseSvc      from '../services/_service'
 var svc             = new BaseSvc(User, logging)
 var cbSession       = Data.select.cb.session
+var github          = require("./wrappers/github2")
 var Timezone        = require('node-google-timezone')
-var github          = require("../services/wrappers/github")
 Timezone.key(config.timezone.google.apiKey)
 
 
@@ -24,15 +24,12 @@ var get = {
     svc.searchMany({ roles:role }, { fields: Data.select.usersInRole }, cb)
   },
 
-  getById(id, cb){
+  getById(id, cb) {
     svc.searchOne({ _id:this.user._id },{}, cb)
   },
 
-  getProviderScopes(cb){
-    github.getScopes(this.user, function(err,resp){
-      if(err) return cb(err)
-      cb(err, {github: resp})
-    })
+  getProviderScopes(cb) {
+    github.getScopes(this.user, cb)
   },
 
   getSession(cb) {

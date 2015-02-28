@@ -19,12 +19,11 @@ var api = initAPI(
 
   getByIdForEditingInfo: (req) => [req.post],
   getByIdForEditing: (req) => [req.post],
-  getByIdForForking: (req) => [req.post],
   getByIdForPublishing: (req) => [req.post],
   getByIdForContributors: (req) => [req.post],
   getMyPosts: (req) => [],
   getPostsInReview: (req) => [],
-  getUserForks: (req) => [],
+  // getUserForks: (req) => [],
   getTableOfContents: (req) => [req.body.md],
   getRecentPublished: (req) => [],
   getAllPublished: (req) => [],  //-- For indexable page
