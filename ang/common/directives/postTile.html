@@ -12,18 +12,19 @@
     </header>
 
     <div class="entry-content" itemprop="text">
+      <div class="stars" stars val="post.stats.rating"></div>
       <h2 class="entry-title" itemprop="headline">{{ post.title }}</h2>
 
+
       <span class="entry-author" itemprop="author" itemscope="itemscope" itemtype="http://schema.org/Person">
-        <img class="entry-author-image" itemprop="image" ng-src="{{ post.by.avatar }}?s=50" />
         <span class="entry-author-name" itemprop="name">{{ post.by.name }}</span>
       </span>
-
 
     </div>
   </a>
   <footer class="entry-footer">
     <bookmarker type="'post'" object-id="p._id" ng-if="post.published"></bookmarker>
+    <img class="entry-author-img" itemprop="image" ng-src="{{ post.by.avatar }}?s=50" />
   </footer>
 
 </article>

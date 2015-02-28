@@ -1,5 +1,4 @@
-module.exports = {
-
+var postsUtil = {
 
   validSlug(slug) {
     return /^[a-z0-9]+([a-z0-9\-\.]+)*$/.test(slug)
@@ -20,6 +19,25 @@ module.exports = {
     return 400 - countWithoutRemainder;
   },
 
+  calcStats(post) {
+    var totalStars = 0
+    var reviews = post.reviews || []
+    var stars = _.map(reviews, (r) => {
+      var s = parseInt(_.find(r.questions,(q)=>q.key=='rating').answer)
+      totalStars = totalStars + s
+      return s
+    })
+
+    return {
+      rating: (stars.length > 0) ? totalStars / stars.length : null,
+      reviews: reviews.length,
+      comments: reviews.length + _.flatten(_.pluck(reviews,'replies')||[]).length,
+      forkers: (post.forkers||[]).length,
+      acceptedPRs: 0,       // figure it out later
+      shares: 0,            // figure it out later
+      words: postsUtil.wordcount(post.md)
+    }
+  },
 
   extendWithReviewsSummary(post) {
     post.stars = { total: 0 }
@@ -75,3 +93,5 @@ module.exports = {
   }
 
 }
+
+module.exports = postsUtil

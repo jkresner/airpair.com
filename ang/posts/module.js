@@ -87,9 +87,8 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
         r[i].mine = r[i].by.userId == $scope.session._id
         if (r[i].mine || r[i].forked)
           contributions.push(r[i])
-        else
+        if (!r[i].published && r[i].submitted)
           recent.push(r[i])
-
       }
 
       if ($scope.session.social && $scope.session.social.gh)
@@ -350,7 +349,7 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
       $location.path('/posts/me?forked='+result._id)
     })
 
-  DataService.posts.getByIdForForking({_id}, (r) => {
+  DataService.posts.getByIdForContributors({_id}, (r) => {
     $scope.post = r
     $scope.tofork = [r]
     $scope.isOwner = r.by.userId == $scope.session._id
