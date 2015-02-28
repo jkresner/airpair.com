@@ -102,11 +102,11 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
         if (toForkId)
         {
           $scope.forked = _.find(contributions, (f) => toForkId == f._id)
-          if (!$scope.forked)
-            DataService.posts.addForker({_id:$location.search().fork}, function (forked) {
-              $scope.forked = forked
-              $scope.contributions = _.union($scope.contributions, [forked])
-            })
+          // if (!$scope.forked)  //-- sometimes wew just want to refork it...
+          DataService.posts.addForker({_id:$location.search().fork}, function (forked) {
+            $scope.forked = forked
+            $scope.contributions = _.union($scope.contributions, [forked])
+          })
         }
       }
 
@@ -278,7 +278,7 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
       timer = $timeout(previewMarkdown, $scope.throttleMS)
   }
 
-  DataService.posts.getByIdEditing({_id}, setPostScope, (e) => $scope.editErr = e.message)
+  DataService.posts.getByIdEditing({_id}, setPostScope, (e) => $scope.editErr = e)
 
 })
 
@@ -293,7 +293,6 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
   {
     DataService.posts.getProviderScopes({}, (r)=> {
       $scope.repoAuthorized = _.find(r.github, (s) => s.indexOf("repo") != -1)
-      console.log('repoAuthorized', $scope.repoAuthorized)
       if ($scope.repoAuthorized)
         DataService.posts.getByIdForEditingInfo({_id}, (r) => {
           if (r.submitted)
@@ -331,27 +330,27 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
 })
 
 
-.controller('PostForkCtrl', function($scope, $routeParams, $location, DataService, PostsUtil) {
+.controller('PostForkCtrl', ($scope, $routeParams, DataService) => {
   var _id = $routeParams.id
 
   $scope.repoAuthorized = false
   if($scope.session.social && $scope.session.social.gh)
   {
     DataService.posts.getProviderScopes({}, (r)=> {
-      $scope.repoAuthorized = _.contains(r.github, "repo")
+      $scope.repoAuthorized = _.find(r.github, (s) => s.indexOf("repo") != -1)
+      if ($scope.repoAuthorized)
+        DataService.posts.getByIdForContributors({_id}, (r) => {
+          $scope.post = r
+          $scope.isOwner = r.by.userId == $scope.session._id
+        })
+
     }, ()=>{})
   }
 
   $scope.fork = () =>
-    DataService.posts.fork($scope.post, (result) => {
-      $location.path('/posts/me?forked='+result._id)
-    })
+    DataService.posts.fork($scope.post, (result) =>
+      window.location = '/posts/me?forked='+_id )
 
-  DataService.posts.getByIdForContributors({_id}, (r) => {
-    $scope.post = r
-    $scope.tofork = [r]
-    $scope.isOwner = r.by.userId == $scope.session._id
-  })
 
 })
 

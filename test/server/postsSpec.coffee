@@ -47,7 +47,7 @@ module.exports = -> describe "API: ", ->
         done()
 
 
-  it.only 'Create post with max social', (done) ->
+  it 'Create post with max social', (done) ->
     title = "Post Create with max social Test #{timeSeed()}"
     addAndLoginLocalUser 'ajde', (s) ->
       author = _.extend({bio: 'yes test'},s)
