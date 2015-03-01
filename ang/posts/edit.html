@@ -26,8 +26,8 @@
   <span class="status">
     <b>Status</b>
     <span ng-if="!post.submitted && !post.published">In draft,</span>
-    <span ng-if="post.submitted && !post.published">In community review,</span>
-    <span class="saved" ng-if="post.saved">saved</span><span class="unsaved" ng-if="!post.saved">unsaved</span>.
+    <span ng-if="post.submitted && !post.published"><a href="/posts/in-community-review" target="_blank">in community review</a>,</span>
+    <span class="saved" ng-if="post.saved">saved<span ng-if="post.submitted"> to <a href="https://www.github.com/{{post.repo}}/tree/edit" target="_blank">repo</a></span></span><span class="unsaved" ng-if="!post.saved">unsaved</span><span ng-if="post.submitted">, <span class="saved" ng-if="post.synced">synced</span><span class="unsaved" ng-if="!post.synced">not synced</span></span>.
   </span>
 </div>
 
@@ -45,7 +45,6 @@
     ng-model="aceMD"
     >
   </section>
-      <!-- theme:'solarized_light', -->
 
   <section id="post" ap-post="">
   </section>
@@ -73,8 +72,8 @@
     <input type="text" ng-disabled="post.saved" ng-model="post.commitMessage" placeholder="Enter a commit message" class="form-control" />
   </div>
 
-  <label ng-if="!p.submitted && !p.published"> <!-- && wordcountTooLow -->
-    See the <a href="http://daringfireball.net/projects/markdown/syntax" target="_blank">Markdown guide</a> and our <a href="/authoring-faq" target="_blank">Authoring FAQ</a>
+  <label ng-if="!(post.submitted || post.published)"> <!-- && wordcountTooLow -->
+    See the <a href="http://daringfireball.net/projects/markdown/syntax" target="_blank">Markdown guide</a> & our <a href="/authoring-faq" target="_blank">Authoring FAQ</a>
   </label>
 
 </div>

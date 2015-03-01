@@ -115,17 +115,20 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
 
     }
 
-    $scope.recent = (recent.length > 0) ? recent : r
+    $scope.all = _.sortBy(_.union(mine,forks),(p)=>moment(p.lastTouch.utc).format('X')*-1)
     $scope.mine = mine
     $scope.forks = forks
-    $scope.all = _.sortBy(_.union(mine,forks),(p)=> (p.lastTouch) ? p.lastTouch.utc : 'zzz' )
     $scope.filterMyPosts('all')
+    $scope.recent = (recent.length > 0) ? recent : r
   })
 
   $scope.delete = (_id) =>
     DataService.posts.deletePost({_id}, (r) => window.location = '/posts/me')
 
-  $scope.filterMyPosts = (filter) => $scope.contributions = $scope[filter]
+  $scope.filterMyPosts = (filter) => {
+    $scope.filter = filter
+    $scope.contributions = $scope[filter]
+  }
 
 })
 
@@ -203,7 +206,7 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
 })
 
 
-.controller('PostEditCtrl', ($scope, $routeParams, $location, $timeout, $window, StaticDataService, DataService, mdHelper, PostsUtil) => {
+.controller('PostEditCtrl', ($scope, $routeParams, $timeout, $window, StaticDataService, DataService, PostsUtil) => {
   var _id = $routeParams.id
   $scope._id = _id
 
@@ -239,8 +242,8 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
 
     if (r.md == "new") r.md = StaticDataService.defaultPostMarkdown
 
-    r.commitMessage = ""
     r.wordcount = PostsUtil.wordcount(r.md)
+    r.commitMessage = ""
     $scope.post = r
     $scope.savedMD = r.md
     if (!$scope.aceLoaded) {
@@ -251,8 +254,6 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
     $timeout(previewMarkdown, 20)
 
     $scope.throttleMS = r.md.length * 5
-
-    // console.log('setPostScope', $scope.post)
 
     $window.onbeforeunload = function() {
       var md = window.ace.edit($('#aceeditor')[0]).getSession().getValue()
@@ -274,7 +275,7 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
     var editSession = window.ace.edit($('#aceeditor')[0]).getSession()
     var cols = editSession.getScreenWidth()
     var md = PostsUtil.splitLines(editSession.doc.$lines.slice(0), cols, editSession.doc).join('\n')
-    var commitMessage = $scope.commitMessage
+    var commitMessage = $scope.post.commitMessage
     DataService.posts.updateMarkdown({_id,md,commitMessage}, setPostScope)
   }
 

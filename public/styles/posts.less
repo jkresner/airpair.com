@@ -114,9 +114,7 @@
 
 #myposts {
 
-  h3 {
-    a.btn { width:160px }
-  }
+  h3 { a.btn { width:160px } }
 
   #contributions {
     margin-bottom:50px;
@@ -446,14 +444,14 @@ section#posteditor {
     border-bottom:solid 2px @bluegray;
     font-size:13px;
     .tip {
-      float:right;
       display:inline-block;
       position:absolute;top:6px;right:7px;
       z-index:10;
     }
     .status {
+      z-index:10;
       display:inline-block;
-      float:left;
+      position:absolute;top:6px;left:7px;
       .saved { color:darkgreen; }
       .unsaved { color:@darkyellow; }
     }
@@ -501,7 +499,7 @@ section#posteditor {
       float:right;
       clear:right;
       margin:5px 5px 10px 5px;
-      input { width:390px }
+      input { width:670px }
     }
     span { font-weight:bold }
 
