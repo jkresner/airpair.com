@@ -111,8 +111,21 @@
   }
 }
 
+#allposts {
+  h1.underline { font-size:34px;line-height:40px;
+    .btn { width:200px }
+  }
+}
 
 #myposts {
+
+  .notifications {
+    > div { padding:8px }
+    h2 { padding:0;margin:14px 0 0 0;font-weight:bold;font-size:20px;line-height:26px;color:@blue }
+    h3 { padding-top:0;margin-top:-2px;font-size:16px;line-height:22px;color:@gray }
+    img { display:block;margin:20px auto;max-width:500px;background:white;border-radius:20px;padding:2px 20px }
+    p { max-width:740px;margin:10px auto 18px auto;color:@gray;b { text-transform:uppercase;} }
+  }
 
   h3 { a.btn { width:160px } }
 
@@ -125,19 +138,32 @@
         li { padding:0px 0 0 10px;font-size:13px; a { text-transform:uppercase; } }
       }
     }
-    td { position:relative;padding:8px 10px }
+    td { position:relative;padding:7px 9px 5px 8px }
     td.contributors {
-      width:65px;
+      width:36px;
+      padding:8px 7px 6px 6px;
       font-size:9px;
-      .forks { margin-top:3px }
+      .forks { margin-top:2px }
+    }
+    td.forks {
+      color:@mediumgray;
+      em { font-style:normal;font-size:13px;display:block;line-height:11px;font-weight:bold }
+      padding:10px 4px 8px 0px;
+      width:25px;
+      text-align:center;font-size:10px;
     }
     td.title {
       color:@blue;
+      padding-top:6px;
+      line-height:18px;
     }
     td.status {
-      width:140px;
-      span { text-transform:uppercase;font-weight:bold; }
+      width:110px;
+      font-size:10px;
+      padding:6px 9px 2px 16px;
+      > span { text-transform:uppercase;font-weight:bold;margin:-2px 0 0px 0;display:block; }
       .stars {
+        display:inline-block;
         li { width:10px;height:16px;
           display:inline-block;
           background-position-y:5px;
@@ -146,25 +172,31 @@
         li.half {
           width:5px;height:16px;background-position-y:6px
         }
-        display:inline;
       }
-      label { display:inline-block;font-weight:normal;margin:-3px 0 0 0 }
+      div { position:relative;
+        em {
+          display:inline-block;
+          font-size:11px;
+          position:absolute;top:2px;padding-left:3px;
+          font-style:normal;
+        }
+      }
+      label { font-weight:bold }
       .words {
         line-height:10px;
-        margin-bottom:5px;
+        margin-bottom:0px;
         font-size:10px;font-weight:normal;display:block;
         color:@mediumgray;
       }
-      font-size:10px
     }
     td.edit {
-      width:100px;
+      width:110px;
       padding-right:2px;
 
       .icon {
         float:right;
         margin-right:3px;
-        height:22px;width:22px;
+        height:28px;width:28px;
         text-align:center;
         display:inline-block;
         border-radius:50%;
@@ -176,15 +208,15 @@
 
       a.delete {
         .icon;
-        font-size:20px;
-        line-height:20px;
+        font-size:26px;
+        line-height:23px;
         color:white;
         background-color:@error;
       }
       a.edit {
         background:url('../img/pages/posts/author-white.png');
         background-size:74%;
-        background-position:2px 3px;
+        background-position:3px 4px;
         background-color:@orange;
         .icon;
       }
@@ -199,17 +231,18 @@
       }
       a.contribitors {
         background:url('../img/pages/posts/sm-icon-fork.png');
-        background-size:94%;
-        background-position:1px;
-        background-color:@bluegray;
+        background-size:88%;
+        background-position:1px 1px;
+        background-color:@lightgray;
         .icon;
       }
     }
     td.tip {
-      width:300px;
+      width:280px;
       font-size:11px;
-      padding:5px 5px 5px 10px;
+      padding:5px 5px 5px 12px;
       p { margin-bottom:0 }
+      a { display:block;font-weight:bold }
     }
   }
 
@@ -273,11 +306,16 @@
     }
   }
 
-  @media screen and (max-width:1200px) {
+  @media screen and (max-width:1000px) {
     display:none;
   }
 }
 
+#postcontributorsMobile {
+  @media screen and (min-width:1000px) {
+    display:none;
+  }
+}
 
 
 section#postpublish {
@@ -447,6 +485,7 @@ section#posteditor {
       display:inline-block;
       position:absolute;top:6px;right:7px;
       z-index:10;
+      a { font-weight:bold }
     }
     .status {
       z-index:10;
@@ -547,17 +586,6 @@ section#posteditor {
       width:inherit;
       article { margin:auto }
     }
-  }
-}
-
-section#postslist {
-  section > h3 {
-    width:100%;
-    margin-bottom:10px;
-    font-size:18px;
-    padding:5px 0;
-    span { display:block;float:right }
-    .btn { padding:5px;width:180px }
   }
 }
 

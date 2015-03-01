@@ -38,14 +38,17 @@ body {
     font-weight:bold;
     color:@mediumgray;
   }
+  > .btn { float:right }
 }
 
 h1 { font-size:48px;line-height:72px;font-weight:300 }
+h1.underline { .underlinedHeading; }
 h2 { font-size:36px;line-height:60px;font-weight:300 }
 h3 { font-size:24px;line-height:36px;font-weight:400 }
 h3.underline {
   .underlinedHeading;line-height:28px;
   button { padding-bottom:0 }
+  .btn-inverse { min-width:120px;padding:3px 9px; }
 }
 h4 { font-size:18px;line-height:30px;font-weight:400 }
 h5 { font-size:12px;line-height:20px;font-weight:400 }
@@ -96,10 +99,6 @@ a:hover { text-decoration:none }
 .btn-tiny {
   padding:3px 5px;
   font-size:11px;
-}
-
-h3 > .btn {
-  float:right
 }
 
 .absstrech {

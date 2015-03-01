@@ -1,26 +1,29 @@
 <div ng-if="p">
   <p ng-if="calcDraftStep()">
     <span ng-if="wordcountTooLow">
-      Post must be at least 400 words to submit for community review. <i ng-if="wordstogo > 0">You've got about {{wordstogo}} to go</i>.</span>
+      Post must be at least 400 words (<b ng-if="wordstogo > 0">about {{wordstogo}} to go</b>) to submit for community review.</span>
 
     <span ng-if="needInfo">
-      To preview your post as it would appear published,
+      Complete your post header.
       <a href="/posts/info/{{p._id}}">
-      <span ng-if="needTags">add a least one tag</span><span ng-if="needAssetUrl">provide a featured media asset</span></a>.
+        <span ng-if="needTags">Add tags</span><span ng-if="needAssetUrl"> Provide a  media asset</span></a>
     </span>
-    <span ng-if="submitForReview">Post looks ready to
-      <a ng-href="/posts/submit/{{p._id}}">submit for review</a> & community ratings!</span>
+    <span ng-if="submitForReview">Post looks ready for community feedback!
+      <a ng-href="/posts/submit/{{p._id}}">Submit for review</a></span>
   </p>
   <p ng-if="calcReviewStep()">
     <span ng-if="needReviews">
-      Post needs a minimum star rating of 3.5/5 from at least 3
-      reviewers to be publish.
+      Post needs reviews to get published.
       <span ng-if="isAuthor">
-        <a href="/posts/contributors/{{p._id}}">Find contributors</a>.
+        <a href="/posts/contributors/{{p._id}}">Find contributors</a>
       </span>
     </span>
-    <span ng-if="publishReady">BOOM :). Post looks ready to
-      <a ng-href="/posts/publish/{{p._id}}">publish</a>!</span>
+    <span ng-if="publishReady">BOOM :). Post looks ready!
+      <a ng-href="/posts/publish/{{p._id}}">Publish now</a>
+    </span>
+  </p>
+  <p ng-if="p.needsMyReview || p.needsMyFork">
+    <a ng-if="p.needsMyReview" ng-href="/posts/contributors/{{p._id}}">Give feedback</a>
+    <a ng-if="p.needsMyFork && !p.published" ng-href="/posts/fork/{{p._id}}">Fork & suggest edits</a>
   </p>
 </div>
-

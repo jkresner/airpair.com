@@ -77,6 +77,7 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
 .controller('PostsListCtrl', function($scope, $location, DataService, SessionService, PostsUtil, Roles) {
 
   DataService.posts.getMyPosts({}, function (r) {
+    var meUserId = $scope.session._id
     var recent = []
     var all = []
     var mine = []
@@ -92,8 +93,11 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
           recent.push(r[i])
         if (r[i].mine)
           mine.push(r[i])
-        if (r[i].forked)
+        if (r[i].forked) {
           forks.push(r[i])
+          r[i].needsMyReview = !_.find(r[i].reviews,(rev)=>rev.by._id == meUserId)
+          r[i].needsMyFork = !_.find(r[i].fork,(f)=>f.by._id == meUserId)
+        }
       }
 
       if ($scope.session.social && $scope.session.social.gh)
@@ -119,7 +123,7 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
     $scope.mine = mine
     $scope.forks = forks
     $scope.filterMyPosts('all')
-    $scope.recent = (recent.length > 0) ? recent : r
+    $scope.recent = _.sortBy((recent.length > 0) ? recent : r,(p)=>moment(p.submitted).format('X')*-1)
   })
 
   $scope.delete = (_id) =>
@@ -424,13 +428,8 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
 })
 
 
-.controller('PostContributorsCtrl', function($scope, $routeParams, $location, DataService, PostsUtil) {
+.controller('PostContributorsCtrl', function($scope, $routeParams, DataService, PostsUtil) {
   var _id = $routeParams.id
-
-  DataService.posts.getByIdForContributors({_id}, (r) => {
-    $scope.post = PostsUtil.extendWithReviewsSummary(r)
-  })
-
 
   DataService.posts.getByIdForContributors({_id}, (r) => {
     $scope.post = PostsUtil.extendWithReviewsSummary(r)

@@ -10,11 +10,11 @@
 
 <section id="postslist">
 
-  <section id="recent">
-    <h3>Posts in review <span><a href="/posts/me" target="_self">My posts</a></span></h3>
-    <div class="inreview">
-      <post-tile post="p" ng-repeat="p in inreview"></post-tile>
-    </div>
-  </section>
+  <h3 class="underline">Posts in review
+    <a href="/posts/me" target="_self" class="btn btn-inverse btn-sm">My contributions</a>
+  </h3>
+  <div class="inreview">
+    <post-tile post="p" ng-repeat="p in inreview"></post-tile>
+  </div>
 
 </section>
