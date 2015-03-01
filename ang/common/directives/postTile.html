@@ -7,7 +7,10 @@
         <span class="entry-categories">
           <em ng-repeat='tag in post.tags'>{{ tag.slug }}</em>
         </span>
-        {{post.meta.description || "Post is under community review. Give feedback?" }}
+        <span ng-if="post.meta.description">{{post.meta.description}}</span>
+        <span ng-if="!post.meta.description">
+          <!-- Submitted {{post.submitted|agoTime}}.  -->
+          Post is under community review. Give feedback?</span>
       </p>
     </header>
 
