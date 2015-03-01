@@ -77,6 +77,8 @@ var select = {
     'submitted': 1,
     'tags': 1,
     'assetUrl': 1,
+    'repo': 1,
+    'synced': 1,
     'md': 1,
     'reviews.questions.key': 1, //-- To know if the post is publishable
     'reviews.questions.answer': 1,
@@ -184,6 +186,7 @@ var select = {
             wordcount = PostsUtil.wordcount(p.md),
             reviews = select.mapReviews(p.reviews),
             forkers = select.mapForkers(p.forkers || [])
+          p.lastTouch = p.lastTouch || { utc: moment().add(-3,'months').toDate() }
           statsR.push(_.extend(selectFromObject(p, select.stats),
             { url, reviews, forkers, wordcount }))
         }
@@ -195,8 +198,8 @@ var select = {
       return inflateHtml((e,r) => {
         if (e || !r) return cb(e,r)
         if (!r.tags || r.tags.length == 0) {
-          $log(`post [{r._id}] has no tags`.red)
-          cb(null,r)
+          $log(`post ${r.title} [${r._id}] has no tags`.red)
+          return cb(null,r)
         }
 
         r.primarytag = _.find(r.tags,(t) => t.sort==0) || r.tags[0]

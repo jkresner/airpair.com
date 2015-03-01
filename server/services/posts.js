@@ -42,6 +42,7 @@ var get = {
 
     github2.getFile(this.user, owner, post.slug, "/post.md", 'edit', (e, postMDfile) => {
       if (e) return cb(e)
+      post.repo = `${owner}/${post.slug}`
       post.synced = post.md == postMDfile.string
       post.md = postMDfile.string
       selectCB.editView(cb)(null, post)
@@ -259,6 +260,9 @@ var save = {
   update(original, ups, cb) {
     var act = (Roles.isOwner(this.user, original)) ? 'updateByAuthor' : 'updateByEditor'
     ups.by = PostsUtil.authorFromUser(ups.by)
+    if (original.assetUrl != ups.assetUrl && (original.submitted || original.published))
+      ups.meta = _.extend(ups.meta||{},{ogImage:ups.assetUrl})
+
     updateWithEditTouch.call(this, _.extend(original, ups), act, selectCB.editInfoView(cb))
   },
 
@@ -306,6 +310,8 @@ var save = {
         post.submitted = new Date()
         post.github = { repoInfo }
         post.slug = slug
+        post.meta = post.meta || {}
+        post.meta.ogImage = post.assetUrl
         updateWithEditTouch.call(this, post, 'submittedForReview', cb)
       })
     })
