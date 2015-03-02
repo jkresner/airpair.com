@@ -34,7 +34,7 @@
         {{#with workshop}}{{> workshopListItem }}{{/with}}
       </div>
 
-      <div class="col-md-4 posts">
+      <div class="col-md-4">
         <a class="btn" href="#tagposts">Articles</a>
         <hr class="vr" />
         {{#with post}}{{> postListItem }}{{/with}}
@@ -87,10 +87,10 @@
   </section>
 
 
-  <section id="tagposts" class="posts">
+  <section id="tagposts">
     <h2>{{tag.name}} Articles</h2>
 
-    <div class="posts recent">
+    <div>
       {{#each posts}}{{> postListItem }}{{/each}}
 
       <article class="more">

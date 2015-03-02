@@ -285,6 +285,7 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
     //var md = PostsUtil.splitLines(editSession.doc.$lines.slice(0), cols, editSession.doc).join('\n')
     var md = window.ace.edit($('#aceeditor')[0]).getSession().getValue()
     var commitMessage = $scope.post.commitMessage
+    if (commitMessage == "" && $scope.post.submitted) return alert('Commit message required')
     DataService.posts.updateMarkdown({_id,md,commitMessage}, setPostScope)
   }
 
