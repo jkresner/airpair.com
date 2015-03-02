@@ -20,14 +20,15 @@
   <h2 ng-if="_id">Try <a href="/posts/fork/{{_id}}" target="_self">fork it</a> now? </h2>
 </div>
 
-<div ng-if="post" class="poststauts">
+<div ng-if="post" class="poststauts {{post.saved ? 'saved': 'unsaved' }}">
   <post-step-helper post="post" class="tip"></post-step-helper>
 
   <span class="status">
+    {{post.stats.rating}}
     <b>Status</b>
     <span ng-if="!post.submitted && !post.published">In draft,</span>
     <span ng-if="post.submitted && !post.published"><a href="/posts/in-community-review" target="_blank">in community review</a>,</span>
-    <span class="saved" ng-if="post.saved">saved<span ng-if="post.submitted"> to <a href="https://www.github.com/{{post.repo}}/tree/edit" target="_blank">repo</a></span></span><span class="unsaved" ng-if="!post.saved">unsaved</span><span ng-if="post.submitted">, <span class="saved" ng-if="post.synced">synced</span><span class="unsaved" ng-if="!post.synced">not synced</span></span>.
+    <span class="saved" ng-if="post.saved">saved<span ng-if="post.submitted"> to <a href="https://www.github.com/{{post.repo}}/blob/edit/post.md" target="_blank">repo</a></span></span><span class="unsaved" ng-if="!post.saved">unsaved</span><span ng-if="post.submitted">, <span class="saved" ng-if="post.synced">synced</span><span class="unsaved" ng-if="!post.synced">not synced</span></span>.
   </span>
 </div>
 
@@ -61,7 +62,10 @@
     ng-disabled="!post.saved || !post.assetUrl || !post.tags || post.tags.length == 0">Preview</a>
 
   <a class="btn" href="/posts/publish/{{post._id}}" ng-if="post.submitted"
-    ng-disabled="!post.saved">Publish</a>
+    ng-disabled="!post.saved || post.synced">Sync</a>
+
+  <a class="btn" href="/posts/publish/{{post._id}}" ng-if="post.submitted"
+    ng-disabled="!post.saved || !(post.stats && posts.stats.reviews > 3 && post.stats.rating > 3.5)">Publish</a>
 
   <a class="btn" title="Submit post for community review"
     href="/posts/submit/{{post._id}}"
