@@ -117,10 +117,9 @@ var select = {
     'tags': 1,
     'assetUrl': 1,
     'repo': 1,
+    'stats': 1, //-- To know if the post is publishable
     'synced': 1,
-    'md': 1,
-    'reviews.questions.key': 1, //-- To know if the post is publishable
-    'reviews.questions.answer': 1,
+    'md': 1
   },
   editInfo: {
     '_id': 1,
@@ -203,8 +202,10 @@ var select = {
         if (e || !r) return cb(e,r)
         r = selectFromObject(r, select.edit)
         r.repo = `${owner}/${r.slug}`
-        if (overrideMD)
+        if (overrideMD) {
+          r.synced = r.md == overrideMD
           r.md = overrideMD // hack for front-end editor to show latest edit
+        }
         cb(null,r)
       }
     },

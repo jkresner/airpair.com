@@ -42,6 +42,11 @@ angular.module("APSurveyDirectives", [])
             feedback: existing.questions[1].answer }
         } else
           $scope.data = { rating: 3, feedback: '' }
+
+        $scope.unsaved = (data, existing) => {
+          return !existing ||
+            !(existing.rating == data.rating && existing.feedback == data.feedback)
+        }
       }
       setScope($scope.post)
 

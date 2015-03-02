@@ -106,22 +106,25 @@
     {{/if}}
   </div>
 
-  {{#if published }}
-  <div id="bodyCTA1" class="bodyCTA1 bodyCTA">
-    <div ng-if="!session._id">
-      <div cta-post-subscribe
-        tag-name="'{{primarytag.name}}'"
-        tag-slug="'{{primarytag.slug}}'"
-      ></div>
-    </div>
-    <div ng-if="session._id" request></div>
-  </div>
-  {{/if}}
 
 </article>
 
 {{#if submitted }}
   <div id="reviews" post-reviews reviews='{{ JSON reviews }}' byid="{{by.userId}}"></div>
+{{/if}}
+
+{{#if published }}
+<article class="blogpost">
+<div id="bodyCTA1" class="bodyCTA1 bodyCTA">
+  <div ng-if="!session._id">
+    <div cta-post-subscribe
+      tag-name="'{{primarytag.name}}'"
+      tag-slug="'{{primarytag.slug}}'"
+    ></div>
+  </div>
+  <div ng-if="session._id" request></div>
+</div>
+</article>
 {{/if}}
 
 {{#if showDisqus }}

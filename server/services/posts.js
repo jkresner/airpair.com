@@ -42,10 +42,7 @@ var get = {
 
     // $log('getByIdForEditing', owner, post.slug, this.user.social.gh)
     github2.getFile(this.user, owner, post.slug, "/post.md", 'edit', (e, postMDfile) => {
-      if (e) return cb(e)
-      post.synced = post.md == postMDfile.string
-      post.md = postMDfile.string
-      selectCB.editView(cb)(null, post, null, owner)
+      selectCB.editView(cb, postMDfile.string, owner)(e, post)
     })
   },
 
