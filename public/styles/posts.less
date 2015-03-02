@@ -129,6 +129,12 @@
 
   h3 { a.btn { width:160px } }
 
+  .socialauthoring {
+    padding:40px;
+    img { display:block;margin:10px auto;max-width:70% }
+    .btn { margin:40px 80px;display:block }
+  }
+
   #contributions {
     margin-bottom:50px;
     h3 { margin-bottom:0;
@@ -510,6 +516,7 @@ section#posteditor {
     .author + hr { display:none }
     p.asset { display:none }
     p.asset + hr { display:none }
+    footer { display:none }
   }
 
   #editor {
@@ -585,6 +592,14 @@ section#posteditor {
       left:650px;
       width:inherit;
       article { margin:auto }
+    }
+  }
+  @media screen and (min-width:1440px) {
+    #editor {
+      width:700px;
+    }
+    .preview {
+      left:700px;
     }
   }
 }
@@ -835,7 +850,7 @@ section#posts {
       padding:0px 20px 20px 20px;
       background:@lightblue;
       p { margin-bottom:0;padding-bottom:15px  }
-      .btn { width:660px }
+      .btn { width:680px }
     }
   }
 

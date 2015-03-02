@@ -13,10 +13,11 @@
 <section id="myposts">
 
   <section ng-if="forked" class="notifications">
-    <div id="forked">
-      <h1><img ng-src="/static/img/css/airpair-author.png" /> Mother Forker!</h1>
-      <h3><b><a href="https://github.com/{{session.social.gh.username}}/{{forked.slug}}" target="_blank">{{ forked.title }}</a></b> has been forked to your github account.</h3>
-      <p>Make edits like you would normal code, then submit a pull request to get your contributions incorpated.</p>
+    <div id="postsubmitted">
+      <h2>Mother Forker!</h2>
+      <h3><a href="https://github.com/{{session.social.gh.username}}/{{forked.slug}}" target="_blank">{{ forked.title }}</a></b> has been forked to your github account.</h3>
+      <img src="/static/img/pages/posts/authoring-flow-review.png" />
+      <p>You can <b>edit</b> your forked version of the post via the AirPair editor. When you're happy with your changes, send a pull request from GitHub.com</p>
     </div>
   </section>
 
@@ -41,8 +42,10 @@
       <a href="/posts/new" class="btn btn-sm">Start a post</a>
     </h3>
 
-    <p ng-if="contributions == 0">
-      <img src="/static/img/pages/posts/social-authoring.png" />
+    <p class="socialauthoring" ng-if="contributions == 0">
+      <img src="/static/img/pages/posts/social-authoring-logo.png" />
+      <img src="/static/img/pages/posts/authoring-flow.png" />
+      <a href="/posts/new" class="btn">Start a post</a>
     </p>
 
 

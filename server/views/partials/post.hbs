@@ -30,18 +30,16 @@
     {{#if submitted }}
     <section class="notifications">
       <div id="postinreview">
-        <h2><img ng-src="/static/img/css/airpair-author.png" /> This post is under community review</h2>
+        <h2><img ng-src="/static/img/css/airpair-author.png" /> This post is under <a href="/posts/in-community-review" target="_self">Community Review</a></h2>
+        {{#unless publishReady}}
         <p>Posts need a minimum of <a href="#reviews">3 reviews</a> with a minimum 3.5/5 star rating, to be published.</p>
-        {{!-- <p>Review this post down the bottom, or fork and submit a pull request if
-        you spot a typo or have suggestions to improve it before it is published for public consumption.</p> --}}
+        {{/unless}}
       </div>
     </section>
     {{/if}}
   {{/unless}}
 
   <div class="railMarker"></div>
-
-  {{!-- <div class="grayRail"></div> --}}
 
   <h4 id="table-of-contents">Table of Contents</h4>
   {{{toc}}}

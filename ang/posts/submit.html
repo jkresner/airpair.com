@@ -1,21 +1,15 @@
-<header ng-if="post">
+<header>
   <ol class="entry-meta breadcrumb">
     <li><a href="/posts">Posts</a></li>
-    <li>{{post.title}}</li>
     <li class="current">Submit</li>
+    <li ng-if="post">{{post.title}}</li>
   </ol>
 </header>
 
 
-<section ng-if="post" id="postfork">
+<section id="postfork">
 
-  <section id="recent">
-    <div class="posts recent">
-      <ap-post-list-item post="p" ng-repeat="p in tofork"></ap-post-list-item>
-    </div>
-  </section>
-
-  <section id="forkinfo">
+  <section id="forkinfo" ng-if="post">
 
     <h2>A repo will be created on AirPair's Github organization account</h2>
 
@@ -32,41 +26,41 @@
     <div ng-if="!repoAuthorized">
       <section class="notice">
         <h3>We need to authenticate with your Github account.</h3>
-        <p>You will be redirected to a github login page requesting repository permissions,
-        so we can fork this post to your account.</p>
+        <p>You will be redirected to a github login page requesting public repository permissions, so we can fork this post to your account.</p>
       </section>
       <hr />
-      <a ng-href="/auth/github?returnTo=/posts/submit/{{_id}}" class="btn" target="_self">Authenticate your github account with repo privilages</a>
+      <a ng-href="/auth/github?returnTo=/posts/submit/{{_id}}" class="btn" target="_self">Authenticate your github account with public repo privilages</a>
       <p>You will be added to the airpair organization on github, so that you have write access to the repo</p>
     </div>
 
     <div class="submitRepo" ng-if="repoAuthorized">
       <hr />
 
-      <div class="form-group">
+      <div ng-if="post" class="form-group">
         <label>
-          <span ng-if="!slugStatus">Repo name</span>
           <b ng-if="slugStatus.available" style="color:green">Repo name
             <span>{{post.slug}}</span> available</b>
-          <b ng-if="slugStatus.unavailable" style="color:red">Repo name
+          <b ng-if="!slugStatus.available" style="color:red">Repo name
             <span>{{post.slug}}</span> unavailable</b>
         </label>
 
-        <input ng-model="post.slug" type="text" class="form-control" />
+        <input ng-model="post.slug" type="text" class="form-control"
+          ng-change="checkSlugAvailable(post.slug)" />
 
       </div>
 
       <div ng-if="slugStatus.available">
-        <single-submit button-text="'Submit Post for Review & Create Repo'" wait-text="Creating repo, this can take a few seconds ..." on-single-click="submitForReviewDeferred">
-        </single-submit>
-      </div>
-      <p ng-if="slugStatus.available">
-        <span style="color:red;text-transform:uppercase">** MAKE SURE you are happy with your repo name, <b>no changes from here</b></span>
-      </p>
+        <div>
+          <single-submit button-text="'Submit Post for Review & Create Repo'" wait-text="Creating repo, this can take a few seconds ..." on-single-click="submitForReviewDeferred">
+          </single-submit>
+        </div>
+        <p>
+          <span style="color:red;text-transform:uppercase">** MAKE SURE you are happy with your repo name, <b>no changes from here</b></span>
+        </p>
 
-      <p ng-if="slugStatus.available">
-      In order to give you write privilages to the repo,
-      we'll add you to the airpair organization on GitHub.</p>
+        <p> In order to give you write privilages to the repo,
+        we'll add you to the airpair organization on GitHub.</p>
+      </div>
     </div>
 
   </section>

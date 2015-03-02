@@ -19,6 +19,8 @@ var api = initAPI(
 
   getByIdForEditingInfo: (req) => [req.post],
   getByIdForEditing: (req) => [req.post],
+  getByIdForSubmitting: (req) => [req.post],
+  getByIdForForking: (req) => [req.post],
   getByIdForPublishing: (req) => [req.post],
   getByIdForContributors: (req) => [req.post],
   getMyPosts: (req) => [],
@@ -29,7 +31,6 @@ var api = initAPI(
   getAllPublished: (req) => [],  //-- For indexable page
   getByTag: (req) => [req.tag],
   getUsersPublished: (req) => [req.params.id],
-  getGitHEAD: (req) => [req.post],
 
   getAllForAdmin: (req) => [],
   getNewFoAdmin: (req) => [],
