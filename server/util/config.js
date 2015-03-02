@@ -30,9 +30,8 @@ var cfg = {
     github: {
       clientID: '378dac2743563e96c747',
       clientSecret: 'f52d233259426f769850a13c95bfc3dbe7e3dbf2',
-      adminAccessToken: '73922088f4216d4cd12cff292da1a778b252ec48',
+      adminAccessToken: 'b9d09cce1129b4ee1f4b97cc44c3b753cb9d8795', //jkyahoo
       org: 'JustASimpleTestOrg',
-      privateRepos: false,
       scope: [ 'user', 'public_repo']
     },
     paypal: {
@@ -224,7 +223,6 @@ module.exports = function(env, appdir) {
     cfg.auth.github.clientSecret = process.env.AUTH_GITHUB_CLIENTSECRET
     cfg.auth.github.adminAccessToken = process.env.AUTH_GITHUB_ADMIN_ACCESSTOKEN
     cfg.auth.github.org = process.env.AUTH_GITHUB_ORG
-    cfg.auth.github.privateRepos = true
 
     cfg.calendar.on = true
     cfg.calendar.google.ownerRefreshToken = process.env.CALENDAR_GOOGLE_OWNER_REFRESHTOKEN

@@ -182,45 +182,45 @@ module.exports = {
 
 
   submittedWithGitRepo: {
-    "_id" : "54f099bb356241e203df0091",
-    "title" : "Submit success with connected github 1425054139",
+    "_id" : "54f3a1004da2eed243659cea",
+    "title" : "Submit success with connected github 1425252608",
     "md" : "Submit with github stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff ",
     "publishHistory" : [],
     "editHistory" : [
         {
             "action" : "createByAuthor",
-            "utc" : "2015-02-27T16:22:19.636Z",
-            "_id" : "54f099bb356241e203df0092",
+            "utc" : "2015-03-01T23:30:08.567Z",
+            "_id" : "54f3a1004da2eed243659ceb",
             "by" : {
-                "_id" : "54f099bb356241e203df0090",
-                "name" : "Robot21425054139"
+                "_id" : "54f3a1004da2eed243659ce9",
+                "name" : "Robot21425252608"
             }
         },
         {
             "action" : "updateMarkdownByAuthor",
-            "utc" : "2015-02-27T16:22:19.656Z",
-            "_id" : "54f099bb356241e203df0093",
+            "utc" : "2015-03-01T23:30:08.581Z",
+            "_id" : "54f3a1004da2eed243659cec",
             "by" : {
-                "_id" : "54f099bb356241e203df0090",
-                "name" : "Robot21425054139"
+                "_id" : "54f3a1004da2eed243659ce9",
+                "name" : "Robot21425252608"
             }
         },
         {
             "action" : "updateByAuthor",
-            "utc" : "2015-02-27T16:22:19.661Z",
-            "_id" : "54f099bb356241e203df0094",
+            "utc" : "2015-03-01T23:30:08.587Z",
+            "_id" : "54f3a1004da2eed243659ced",
             "by" : {
-                "_id" : "54f099bb356241e203df0090",
-                "name" : "Robot21425054139"
+                "_id" : "54f3a1004da2eed243659ce9",
+                "name" : "Robot21425252608"
             }
         },
         {
             "action" : "submittedForReview",
-            "utc" : "2015-02-27T16:22:24.892Z",
-            "_id" : "54f099c0356241e203df0095",
+            "utc" : "2015-03-01T23:30:15.010Z",
+            "_id" : "54f3a1074da2eed243659cee",
             "by" : {
-                "_id" : "54f099bb356241e203df0090",
-                "name" : "Robot21425054139"
+                "_id" : "54f3a1004da2eed243659ce9",
+                "name" : "Robot21425252608"
             }
         }
     ],
@@ -238,150 +238,116 @@ module.exports = {
     ],
     "forkers" : [],
     "reviews" : [],
-    "updated" : "2015-02-27T16:22:24.892Z",
+    "updated" : "2015-03-01T23:30:15.010Z",
     "lastTouch" : {
         "action" : "submittedForReview",
-        "utc" : "2015-02-27T16:22:24.892Z",
+        "utc" : "2015-03-01T23:30:15.010Z",
         "by" : {
-            "_id" : "54f099bb356241e203df0090",
-            "name" : "Robot21425054139"
+            "_id" : "54f3a1004da2eed243659ce9",
+            "name" : "Robot21425252608"
         }
     },
-    "created" : "2015-02-27T16:22:19.636Z",
+    "created" : "2015-03-01T23:30:08.567Z",
     "by" : {
-        "userId" : "54f099bb356241e203df0090",
-        "name" : "Robot21425054139",
-        "bio" : "yo yyoy o",
-        "social" : {
-            "gh" : {
-                "username" : "airpairtestreviewer"
-            }
-        },
-        "avatar" : "//0.gravatar.com/avatar/102a226a1e1b4d65ecf7efdcfc9260b0"
+        "userId" : "54f3a1004da2eed243659ce9",
+        "name" : "Robot21425252608",
+        "avatar" : "//0.gravatar.com/avatar/0ed7c2028f1139e9a9d1a4a5a3187818",
+        "bio": "Weird"
     },
-    "__v" : 0,
     "assetUrl" : "http://youtu.be/qlOAbrvjMBo",
-    "submitted" : "2015-02-27T16:22:24.892Z",
+    "submitted" : "2015-03-01T23:30:15.010Z",
     "github" : {
         "repoInfo" : {
-            "url" : "https://github.com/JustASimpleTestOrg/submit-success-with-connected-github-1425054139",
-            "authorTeamId" : 1329812,
-            "authorTeamName" : "submit-success-with-connected-github-1425054139-03df0091-author",
-            "author" : "airpairtestreviewer"
+            "url" : "https://github.com/JustASimpleTestOrg/submit-success-with-connected-github-1425252608",
+            "authorTeamId" : 1332852,
+            "authorTeamName" : "submit-success-with-connected-github-1425252608-43659cea-author",
+            "author" : "airpairtest1"
         }
     },
-    "slug" : "submit-success-with-connected-github-1425054139"
+    "slug" : "submit-success-with-connected-github-1425252608",
+    "meta" : {
+        "ogImage" : "http://youtu.be/qlOAbrvjMBo"
+    }
   },
 
   toSync: {
-    "_id" : "54f0dfc74913acfb407311c1",
-    "title" : "Submit success with connected github 1425072070",
-    "md" : "2Sync from with github stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff ",
+    "_id" : "54f3a2300097ad294530014a",
+    "title" : "Submit success with connected github 1425252912",
+    "md" : "Submit with github stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff  stuff ",
     "publishHistory" : [],
     "editHistory" : [
         {
             "action" : "createByAuthor",
-            "utc" : "2015-02-27T21:21:11.001Z",
-            "_id" : "54f0dfc74913acfb407311c2",
+            "utc" : "2015-03-01T23:35:12.099Z",
+            "_id" : "54f3a2300097ad294530014b",
             "by" : {
-                "_id" : "54f0dfc64913acfb407311c0",
-                "name" : "Robot61425072070"
+                "_id" : "54f3a2300097ad2945300149",
+                "name" : "Robot21425252912"
             }
         },
         {
             "action" : "updateMarkdownByAuthor",
-            "utc" : "2015-02-27T21:21:11.017Z",
-            "_id" : "54f0dfc74913acfb407311c3",
+            "utc" : "2015-03-01T23:35:12.112Z",
+            "_id" : "54f3a2300097ad294530014c",
             "by" : {
-                "_id" : "54f0dfc64913acfb407311c0",
-                "name" : "Robot61425072070"
+                "_id" : "54f3a2300097ad2945300149",
+                "name" : "Robot21425252912"
             }
         },
         {
             "action" : "updateByAuthor",
-            "utc" : "2015-02-27T21:21:11.025Z",
-            "_id" : "54f0dfc74913acfb407311c4",
+            "utc" : "2015-03-01T23:35:12.119Z",
+            "_id" : "54f3a2300097ad294530014d",
             "by" : {
-                "_id" : "54f0dfc64913acfb407311c0",
-                "name" : "Robot61425072070"
+                "_id" : "54f3a2300097ad2945300149",
+                "name" : "Robot21425252912"
             }
         },
         {
             "action" : "submittedForReview",
-            "utc" : "2015-02-27T21:21:15.107Z",
-            "_id" : "54f0dfcb4913acfb407311c5",
+            "utc" : "2015-03-01T23:35:16.816Z",
+            "_id" : "54f3a2340097ad294530014e",
             "by" : {
-                "_id" : "54f0dfc64913acfb407311c0",
-                "name" : "Robot61425072070"
-            }
-        },
-        {
-            "action" : "updateHEAD",
-            "utc" : "2015-02-27T21:21:16.016Z",
-            "_id" : "54f0dfcc4913acfb407311c6",
-            "by" : {
-                "_id" : "54f0dfc64913acfb407311c0",
-                "name" : "Robot61425072070"
-            }
-        },
-        {
-            "action" : "propagateMDfromGithub",
-            "utc" : "2015-02-27T21:21:16.405Z",
-            "_id" : "54f0dfcc4913acfb407311c7",
-            "by" : {
-                "_id" : "54f0dfc64913acfb407311c0",
-                "name" : "Robot61425072070"
+                "_id" : "54f3a2300097ad2945300149",
+                "name" : "Robot21425252912"
             }
         }
     ],
     "tags" : [
-        {
-            "_id" : "5149dccb5fc6390200000013",
-            "name" : "AngularJS",
-            "slug" : "angularjs"
-        },
-        {
-            "_id" : "514825fa2a26ea0200000028",
-            "name" : "Node.JS",
-            "slug" : "node.js"
-        }
+        { "_id" : "5149dccb5fc6390200000013", "name" : "AngularJS", "slug" : "angularjs" }
     ],
     "forkers" : [],
     "reviews" : [],
-    "updated" : "2015-02-27T21:21:16.405Z",
+    "updated" : "2015-03-01T23:35:16.816Z",
     "lastTouch" : {
-        "action" : "propagateMDfromGithub",
-        "utc" : "2015-02-27T21:21:16.405Z",
+        "action" : "submittedForReview",
+        "utc" : "2015-03-01T23:35:16.816Z",
         "by" : {
-            "_id" : "54f0dfc64913acfb407311c0",
-            "name" : "Robot61425072070"
+            "_id" : "54f3a2300097ad2945300149",
+            "name" : "Robot21425252912"
         }
     },
-    "created" : "2015-02-27T21:21:11.000Z",
+    "created" : "2015-03-01T23:35:12.099Z",
     "by" : {
-        "userId" : "54f0dfc64913acfb407311c0",
-        "name" : "Robot61425072070",
-        "bio" : "yo yyoy o",
-        "social" : {
-            "gh" : {
-                "username" : "airpairtestreviewer"
-            }
-        },
-        "avatar" : "//0.gravatar.com/avatar/82d6dfd16baf4122e330f5951b599cf6"
+        "userId" : "54f3a2300097ad2945300149",
+        "name" : "Robot21425252912",
+        "avatar" : "//0.gravatar.com/avatar/c7f44ac09e4443605c958ebb2be27488",
+        "bio": "I wonder"
     },
-    "__v" : 0,
     "assetUrl" : "http://youtu.be/qlOAbrvjMBo",
-    "submitted" : "2015-02-27T21:21:15.107Z",
+    "submitted" : "2015-03-01T23:35:16.816Z",
     "github" : {
         "repoInfo" : {
-            "url" : "https://github.com/JustASimpleTestOrg/submit-success-with-connected-github-1425072070",
-            "authorTeamId" : 1330387,
-            "authorTeamName" : "submit-success-with-connected-github-1425072070-407311c1-author",
-            "author" : "airpairtestreviewer"
+            "url" : "https://github.com/JustASimpleTestOrg/submit-success-with-connected-github-1425252912",
+            "authorTeamId" : 1332858,
+            "authorTeamName" : "submit-success-with-connected-github-1425252912-4530014a-author",
+            "author" : "airpairtest1"
         }
     },
-    "slug" : "submit-success-with-connected-github-1425072070",
-    "publishedCommit" : "54ad601eab5b3b870281c026c8ce2bfa9467c8d0"
-}
+    "slug" : "submit-success-with-connected-github-1425252912",
+    "meta" : {
+        "ogImage" : "http://youtu.be/qlOAbrvjMBo"
+    }
+  }
 
 }

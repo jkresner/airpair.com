@@ -17,6 +17,8 @@ angular.module('APDataSvc', [])
     this.posts = {
       getByIdEditing: GET((d)=>`/posts/${d._id}/edit`),
       getByIdForEditingInfo: GET((d)=>`/posts/${d._id}/info`),
+      getByIdForSubmitting: GET((d)=>`/posts/${d._id}/submit`),
+      getByIdForForking: GET((d)=>`/posts/${d._id}/fork`),
       getByIdForContributors: GET((d)=>`/posts/${d._id}/contributors`),
       getByIdForPubishing: GET((d)=>`/posts/${d._id}/publish`),
       getMyPosts: GET((d)=>`/posts/me`),

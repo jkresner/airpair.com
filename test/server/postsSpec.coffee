@@ -1,5 +1,6 @@
 dataHlpr = require('./helpers/setup.data')
 PostsSvc = require('./../../server/services/posts')
+PostsUtil = require('./../../shared/posts')
 
 module.exports = -> describe "API: ", ->
 
@@ -20,6 +21,11 @@ module.exports = -> describe "API: ", ->
 
   it.skip "UI handles anonymous reviews", (done)->
 
+
+  it.skip "Can split line over chacter limit", ->
+    lines = ['### 2.1 When (Developer) Ideas Have Sex', '', '[![Matt Ridley](//airpair.github.io/img/2015/01/ma…alks/matt_ridley_when_ideas_have_sex?language=en)', '> ***"To answer our continual ability to attain mo…ne and recombine, to meet and indeed to mate."***']
+    r = PostsUtil.splitLines(lines, 74)
+    expect(r.length).to.equal(6)
 
 
   it "Cannot create post as anonymous user", (done) ->
@@ -151,22 +157,24 @@ module.exports = -> describe "API: ", ->
     addAndLoginLocalUser 'robot1', (s) ->
       d = { title, by:_.extend({bio: 'yo yyoy o'},s), md: dataHlpr.lotsOfWords('Submit without github') }
       SETUP.createSubmitReadyPost s.userKey, d, (post) ->
-        slug = title.toLowerCase().replace(/\ /g, '-')
-        PUT "/posts/submit/#{post._id}", {slug}, {status: 403}, (resp) ->
-          expect(resp.message).to.equal("User must authorize GitHub to submit post for review")
-          done()
+        GET "/posts/#{post._id}/submit", {}, (pCheckSubmit) ->
+          expect(pCheckSubmit.submit.repoAuthorized).to.be.false
+          PUT "/posts/submit/#{post._id}", {slug:pCheckSubmit.slug}, {status: 403}, (resp) ->
+            expect(resp.message).to.equal("User must authorize GitHub to submit post for review")
+            done()
 
 
   it "submit for review creates a repo with a README.md and a post.md file on edit branch", (done) ->
     title = "Submit success with connected github #{timeSeed()}"
-    SETUP.addAndLoginLocalUserWithGithubProfile 'robot2', null, null, (s) ->
+    SETUP.addAndLoginLocalUserWithGithubProfile 'robot2', null, (s) ->
       d = { title, by:_.extend({bio: 'yo yyoy o'},s), md: dataHlpr.lotsOfWords('Submit with github') }
       SETUP.createSubmitReadyPost s.userKey, d, (post) ->
         expect(post.github).to.be.undefined
-        slug = title.toLowerCase().replace(/\ /g, '-')
-        PUT "/posts/submit/#{post._id}", {slug}, {}, (p1) ->
-          expect(p1.github).to.exist
-          done()
+        GET "/posts/#{post._id}/submit", {}, (pCheckSubmit) ->
+          expect(pCheckSubmit.submit.repoAuthorized).to.be.true
+          PUT "/posts/submit/#{post._id}", {slug:pCheckSubmit.slug}, {}, (p1) ->
+            expect(p1.github).to.exist
+            done()
 
 
   it.skip "Cannot submit a post more than once for review", (done) ->
@@ -199,7 +207,7 @@ module.exports = -> describe "API: ", ->
 
   it "Can sync github to post as author in review", (done) ->
     title = "Submit success with connected github #{timeSeed()}"
-    SETUP.addAndLoginLocalUserWithGithubProfile 'robot6', null, null, (s) ->
+    SETUP.addAndLoginLocalUserWithGithubProfile 'robot6', null, (s) ->
       d = { title, by:_.extend({bio: 'yo yyoy o'},s), md: dataHlpr.lotsOfWords('Sync from with github') }
       SETUP.createSubmitReadyPost s.userKey, d, (post) ->
         _id = post._id
@@ -276,7 +284,7 @@ module.exports = -> describe "API: ", ->
   it "Can fork, edit & preview post in review", (done) ->
     @timeout(14000)
     title = "Can fork edit and preview #{timeSeed()}"
-    SETUP.addAndLoginLocalUserWithGithubProfile 'robot4', null, null, (s) ->
+    SETUP.addAndLoginLocalUserWithGithubProfile 'robot4', null, (s) ->
       d = { title, by:_.extend({bio: 'yo yyoy o'},s), md: dataHlpr.lotsOfWords('Can fork and stuffz ') }
       SETUP.createSubmitReadyPost s.userKey, d, (post) ->
         _id = post._id
@@ -286,18 +294,19 @@ module.exports = -> describe "API: ", ->
           getForReviewFn _id, (e, pReview) ->
             liveMD = pReview.md
             expect(liveMD).to.equal(d.md)
-            SETUP.addAndLoginLocalUserWithGithubProfile 'robot21', 'airpairtester45', 'fd65392d8926f164755061e70a852d4ebe139e09', (sRobot21) ->
-              GET "/posts/#{p1._id}/contributors", {}, (pForFork) ->
+            SETUP.addAndLoginLocalUserWithGithubProfile 'robot21', data.users.apt5.social.gh, (sRobot21) ->
+              GET "/posts/#{p1._id}/fork", {}, (pForFork) ->
                 expectIdsEqual(pForFork._id, _id)
+                expect(pForFork.submit.repoAuthorized).to.be.true
                 expect(pForFork.editHistory).to.be.undefined
                 expect(pForFork.publishHistory).to.be.undefined
-                expect(pForFork.github.repoInfo).to.exist
-                expect(pForFork.reviews.length).to.equal(0)
-                expect(pForFork.forkers.length).to.equal(0)
+                expect(pForFork.github).to.be.undefined
+                expect(pForFork.reviews).to.be.undefined
+                expect(pForFork.forkers).to.be.undefined
                 PUT "/posts/add-forker/#{pForFork._id}", {}, {}, (p2) ->
                   expect(p2.editHistory).to.be.undefined
                   expect(p2.publishHistory).to.be.undefined
-                  expect(p2.github.repoInfo).to.exist
+                  # expect(p2.github.repoInfo).to.exist
                   expect(p2.reviews.length).to.equal(0)
                   expect(p2.forkers.length).to.equal(1)
                   expectIdsEqual(p2.forkers[0].userId, sRobot21._id)
@@ -305,18 +314,20 @@ module.exports = -> describe "API: ", ->
                   expect(p2.forkers[0]._id.toString()).to.not.equal(p2._id.toString())
                   expect(p2.forkers[0].name).to.equal(sRobot21.name)
                   expect(p2.forkers[0].email).to.be.undefined
-                  expect(p2.forkers[0].username).to.equals('airpairtester45')
+                  expect(p2.forkers[0].username).to.equals('airpairtest5')
                   expect(p2.forkers[0].social).to.be.undefined
                   GET "/posts/me", {}, (myposts) ->
                     p3 = _.find(myposts,(p)->_.idsEqual(p._id,p2._id))
                     expect(p3.editHistory).to.be.undefined
                     expect(p3.publishHistory).to.be.undefined
-                    expect(p3.github.repoInfo).to.exist
-                    expect(p3.github.stats).to.be.undefined
-                    expect(p3.github.events).to.be.undefined
+                    # expect(p3.github.repoInfo).to.exist
+                    expect(p3.github).to.be.undefined
+                    # expect(p3.github.events).to.be.undefined
                     expect(p3.reviews.length).to.equal(0)
                     expect(p3.forkers.length).to.equal(1)
+                    # $log('going 42'.yellow, data.users.apt5.social.gh)
                     GET "/posts/#{p3._id}/edit", {}, (pForkEdit) ->
+                      # $log('going 3'.white)
                       expect(pForkEdit.md).to.equal(liveMD)
                       expect(pForkEdit.editHistory).to.be.undefined
                       expect(pForkEdit.publishHistory).to.be.undefined

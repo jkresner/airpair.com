@@ -1,3 +1,4 @@
+var logging = true
 var GitHubApi = require("github")
 
 var api = new GitHubApi({
@@ -200,6 +201,7 @@ var gh = {
   //   _authenticateUser(user)
     api.repos.fork({ user: org, repo}, (e,r) => {
       if (e) return verboseErrorCB(cb, e, 'addContributor', `${repo} ${user.email} ${user.id}`)
+      if (logging) $log(`Forked     ${org}${repo} to ${user.social.gh.username}`.yellow)
       cb(e, r)
     })
   // },
@@ -209,7 +211,9 @@ var gh = {
 
   getFile(user, repoOwner, repo, path, branch, cb) {
     setToken(user)
+    // $log('getFile', user.social.gh, repoOwner, repo, path, branch)
     api.repos.getContent({ user: repoOwner, repo, path, ref: branch }, (e, r) => {
+      if (e) $log('getFile.getContent.e'.red, e)
 
       //-- check the case where repos have been deleted manually
       if (e!=null && e.code == 404)
@@ -317,27 +321,24 @@ var gh = {
     var authorGH = getGithubUser(user)
     if (!authorGH) return verboseErrorCB(cb, Error('User not github authenticated'), 'setupPostRepo', user._id)
 
-    var logging = true
-    if (logging) console.log(`Setting   repo ${fullRepoName} for ${authorGH.username}`.yellow)
+    if (logging) $log(`Setting   repo ${fullRepoName} for ${authorGH.username}`.yellow)
     gh.createOrgRepo('admin', org, repoName, "", false, (e1, repo) => {
       if (e1) return verboseErrorCB(cb, e1, 'setupPostRepo.createRepo', fullRepoName)
-      if (logging) console.log(`Created   ${fullRepoName} for ${authorGH.username}`.yellow)
+      if (logging) $log(`Created   ${fullRepoName} for ${authorGH.username}`.yellow)
         gh.addFile('admin', org, repoName, "README.md", "master", readmeMD, "Add README.md", (e2, readme) => {
           if (e2 && e2 === "file already exists")
-            console.warn(`README.md already exists on repo ${fullRepoName}`.magenta)
+            $log(`README.md already exists on repo ${fullRepoName}`.magenta)
           else if (e2) return verboseErrorCB(cb, e2, 'setupPostRepo.addFile', `${repoName} README.md`)
 
-          if (logging) console.log(`Added     README.md ${fullRepoName}`.yellow)
+          if (logging) $log(`Added     README.md ${fullRepoName}`.yellow)
           gh.createBranch('admin', org, repoName, 'edit', readme.commit, (e9, branchRef) => {})
-          // _this.createRepoReviewTeam(repo, post._id, function(err, result){
-            // if (err) return verboseErrorCB(cb, err, 'createRepoReviewTeam', `${repo} review team`)
 
           gh.createRepoTeam('admin', org, repoName, authorTeamName, 'push', (e3, authorTeamId) => {
             if (e3) return verboseErrorCB(cb, e3, 'setupPostRepo.createRepoTeam', `${repoName}:${authorTeamName} author team`)
-            if (logging) console.log(`Created   team ${authorTeamName} ${authorTeamId}`.yellow)
+            if (logging) $log(`Created   team ${authorTeamName} ${authorTeamId}`.yellow)
             gh.addAndConfirmTeamMember(user, org, authorTeamId, authorGH, (e4, result) => {
               if (e4) return verboseErrorCB(cb, e4, 'addAndConfirmTeamMember', `${fullRepoName} author team ${authorTeamId} ${authorGH.username}`)
-              if (logging) console.log(`Confirmed  ${authorGH.username} as team member of ${authorTeamName}`.yellow)
+              if (logging) $log(`Confirmed  ${authorGH.username} as team member of ${authorTeamName}`.yellow)
               gh.addFile(user, org, repoName, "post.md", "edit", postMD, "Initial Commit", (e5, post) => {
                 var repoInfo = { url, authorTeamId, authorTeamName, author: authorGH.username }
                 if (e5) {
@@ -349,7 +350,7 @@ var gh = {
                   else
                     return verboseErrorCB(cb, e5, 'setupPostRepo.addFile', `${repoName} post.md`)
                 }
-                if (logging) console.log(`Added     post.md to ${fullRepoName}`.yellow)
+                if (logging) $log(`Added     post.md to ${fullRepoName}`.yellow)
                 cb(null, repoInfo)
               })
             })

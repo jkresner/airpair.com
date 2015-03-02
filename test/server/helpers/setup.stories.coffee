@@ -24,12 +24,9 @@ global.addLocalUser = (userKey, opts, done) ->
       if (opts.emailVerified)
         ups.emailVerified = true
       if (opts.gh)
-        ups.social = gh:
-          username: (opts.gh.username || "airpairtestreviewer")
-          token: { token: (opts.gh.token || "bc9a4b0e5ca18b5ee39bc8cbecb07586c4fbe9c4") }
+        ups.social = {gh:opts.gh}
 
       r = _.extend(r, ups)
-
       db.Models.User.findOneAndUpdate {_id:r._id}, ups, {upsert:true}, (err, user) ->
         data.users[clone.userKey] = r
         done(clone.userKey)
@@ -80,7 +77,7 @@ stories = {
       if (!r.roles || !r.roles.length)
         UserService.toggleUserInRole.call {user:r}, r._id, role, (ee,rr) ->
           if (role == 'editor')
-            gh = { "username" : "airpairtester45", "token" : { "token" : "fd65392d8926f164755061e70a852d4ebe139e09" } }
+            gh = data.users.jkya.social.gh
             db.Models.User.findOneAndUpdate {_id:r._id}, {social: {gh}}, {upsert:true}, (err, rrr) ->
               data.users[userKey] = rrr
               done(err,rrr)
@@ -92,8 +89,8 @@ stories = {
         done(null, r)
 
 
-  addAndLoginLocalUserWithGithubProfile: (userKey, ghUsername, ghToken, done) ->
-    opts = emailVerified: true, gh: { username: ghUsername, token: ghToken }
+  addAndLoginLocalUserWithGithubProfile: (userKey, ghSocial, done) ->
+    opts = emailVerified: true, gh: ghSocial || data.users.apt1.social.gh
     addLocalUser userKey, opts, (userKey) ->
       LOGIN userKey, data.users[userKey], ->
         GET '/session/full', {}, (s) ->

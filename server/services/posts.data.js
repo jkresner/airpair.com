@@ -63,6 +63,45 @@ var select = {
     'meta.canonical': 1,
     'meta.ogImage': 1
   },
+  display: {
+    '_id': 1,
+    'by.userId':1,
+    'by.name': 1,
+    'by.avatar': 1,
+    'by.expertId':1,
+    'by.bio': 1,
+    'by.username': 1,
+    'social.gh.username':1,
+    'social.so.link': 1,
+    'social.bb.username':1,
+    'social.in.id': 1,
+    'social.tw.username':1,
+    'social.al.username': 1,
+    'social.gp.link': 1,
+    'meta': 1,
+    'github.repoInfo': 1,
+    'reviews._id': 1,
+    'reviews.by': 1,
+    'reviews.replies': 1,
+    'reviews.votes': 1,
+    'reviews.questions.key': 1,
+    'reviews.questions.answer': 1,
+    'forkers':1,
+    'title':1,
+    'tmpl':1,
+    'slug': 1,
+    'stats': 1,
+    'created': 1,
+    'published': 1,
+    'submitted': 1,
+    'tags': 1,
+    'assetUrl': 1,
+    'md': 1,
+    'lastTouch.utc':1,
+    'lastTouch.action':1,
+    'lastTouch.by._id':1,
+    'lastTouch.by.name':1,
+  },
   edit: {
     '_id': 1,
     'by.userId':1,
@@ -141,7 +180,7 @@ var select = {
     })
   },
   url(post) {
-    if (post.submitted && !post.published) return `https://www.airpair.com/posts/review/${post._id}`
+    if (post.submitted && !post.published) return `/posts/review/${post._id}`
     else if (post.meta) return post.meta.canonical
   },
   cb: {
@@ -159,10 +198,11 @@ var select = {
         cb(null, selectFromObject(r, select.editInfo))
       }
     },
-    editView(cb, overrideMD) {
+    editView(cb, overrideMD, owner) {
       return (e,r) => {
         if (e || !r) return cb(e,r)
         r = selectFromObject(r, select.edit)
+        r.repo = `${owner}/${r.slug}`
         if (overrideMD)
           r.md = overrideMD // hack for front-end editor to show latest edit
         cb(null,r)
@@ -206,12 +246,16 @@ var select = {
         var topTagPage = _.find(topTapPages,(s) => r.primarytag.slug==s)
         r.primarytag.postsUrl = (topTagPage) ? `/${r.primarytag.slug}` : `/posts/tag/${r.primarytag.slug}`
 
-        if (!r.published) r.meta = { noindex: true }
+        if (r.submitted) {
+          r.stats = r.stats || PostsUtil.calcStats(r)
+          r.publishReady = (r.stats.reviews > 2) && (r.stats.rating > 3.5)
+        }
+        if (!r.published)
+          r.meta = { noindex: true }
         else
-        {
           //-- Stop using disqus once deployed the review system
           r.showDisqus = moment(r.published) < moment('20150201', 'YYYYMMDD')
-        }
+
 
         r.forkers = select.mapForkers(r.forkers || [])
         r.reviews = select.mapReviews(r.reviews)

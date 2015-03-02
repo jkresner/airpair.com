@@ -1,28 +1,27 @@
 var {validSlug,wordcount,wordsTogoForReview} = require('../posts')
-var Roles = require('../roles')
+var Roles = require('../roles').post
 
 
 var validation = {
 
   getByIdForEditing(user, post) {
-    var isOwner = _.idsEqual(user._id, post.by.userId)
-    var isForker = Roles.post.isForker(user, post)
-
-    if (!isOwner && !isForker)
+    if (!Roles.isOwner(user, post) &&
+        !Roles.isForker(user, post))
       return `Post cannot be edited by you, did you fork it already?`
   },
 
-  getByIdForPreview(user, post) {
-    if (!Roles.post.isOwnerOrEditor(user, post))
-      return `Post not available for preview`
+  // getByIdForPreview(user, post) {
+  //   if (!Roles.isOwnerOrEditor(user, post))
+  //     return `Post not available for preview`
+  // },
+
+  getByIdForSubmitting(user, post) {
+    if (!Roles.isOwner(user, post))
+      return `Post cannot be submitted by you. It is not yours.`
   },
 
-  getByIdForPublish(user, post) {
-    var isAdmin = _.contains(user.roles, 'admin')
-    var isEditor = _.contains(user.roles, 'editor')
-    var isOwner = _.idsEqual(user._id, post.by.userId)
-
-    if (!isAdmin && !isEditor && !isOwner)
+  getByIdForPublishing(user, post) {
+    if (!Roles.isOwnerOrEditor(user, post))
       return `Post not available for publishing by you`
   },
 
@@ -37,7 +36,7 @@ var validation = {
   {
     var isEditor = _.contains(user.roles, 'editor')
 
-    if (!Roles.post.isOwnerOrEditor(user, original))
+    if (!Roles.isOwnerOrEditor(user, original))
       return `Post must be updated by owner`
 
     if (original.published && !isEditor)
@@ -145,7 +144,7 @@ var validation = {
 
   updateMarkdown(user, original, update){
     var isOwner = _.idsEqual(original.by.userId, user._id)
-    var isForker = Roles.post.isForker(user, original)
+    var isForker = Roles.isForker(user, original)
 
     if (!original.submitted)
     {

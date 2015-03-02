@@ -40,17 +40,51 @@ var get = {
     else if ( !Roles.isOwnerOrEditor(this.user, post) )
       return cb(`Cannot edit this post. You need to fork ${post.slug}`)
 
+    // $log('getByIdForEditing', owner, post.slug, this.user.social.gh)
     github2.getFile(this.user, owner, post.slug, "/post.md", 'edit', (e, postMDfile) => {
       if (e) return cb(e)
-      post.repo = `${owner}/${post.slug}`
       post.synced = post.md == postMDfile.string
       post.md = postMDfile.string
-      selectCB.editView(cb)(null, post)
+      selectCB.editView(cb)(null, post, null, owner)
     })
   },
 
   getByIdForContributors(post, cb) {
     selectCB.statsView(cb)(null, post)
+  },
+
+  getByIdForSubmitting(post, cb) {
+    post = selectFromObject(post, select.editInfo)
+    post.submit = { repoAuthorized: false }
+    post.slug = post.title.toLowerCase()
+                    .replace(/ /g, '_').replace(/\W+/g, '').replace(/_/g, '-')
+
+    if (!this.user.social || !this.user.social.gh) return cb(null, post)
+
+    $callSvc(UserSvc.getProviderScopes, this)((ee, providers) => {
+      if (ee) return cb(Error(`getByIdForSubmitting. Failed to get user providers scopes for [${this.user._id}][${this.user.social.gh.username}]`))
+      var scope = _.find(providers.github, (s) => s.indexOf("repo") != -1)
+      if (!scope) return cb(null, post)
+      post.submit.repoAuthorized = true
+      $callSvc(get.checkSlugAvailable, this)(post, post.slug, (e, r) => {
+        post.submit.slugStatus = r
+        cb(e, post)
+      })
+    })
+  },
+
+  getByIdForForking(post, cb) {
+    var {slug} = post
+    post = selectFromObject(post, select.editInfo)
+    post.submit = { repoAuthorized: false, slug }
+    if (!this.user.social || !this.user.social.gh) return cb(null, post)
+    post.submit.owner = this.user.social.gh.username
+    $callSvc(UserSvc.getProviderScopes, this)((e, providers) => {
+      if (e) return cb(Error(`getByIdForForking. Failed to get user providers scopes for [${this.user._id}][${this.user.social.gh.username}]`))
+      var scope = _.find(providers.github, (s) => s.indexOf("repo") != -1)
+      post.submit.repoAuthorized = scope != null
+      cb(null, post)
+    })
   },
 
   getByIdForPublishing(post, cb) {
@@ -81,7 +115,7 @@ var get = {
   },
 
   getByIdForPreview(_id, cb) {
-    svc.searchOne({_id}, null, (e,r) => {
+    svc.searchOne({_id}, { fields: select.display }, (e,r) => {
       if (e || !r) return cb(e,r)
       if (!r.submitted || !r.github) return selectCB.displayView(cb)(null, r)
 
@@ -100,11 +134,11 @@ var get = {
   },
 
   getBySlugForPublishedView(slug, cb) {
-    svc.searchOne(query.published({slug}), null, selectCB.displayView(cb, get.getSimilar))
+    svc.searchOne(query.published({slug}), { fields: select.display }, selectCB.displayView(cb, get.getSimilar))
   },
 
   getByIdForReview(_id, cb) {
-    svc.searchOne(query.inReview({_id}), null, selectCB.displayView(cb))
+    svc.searchOne(query.inReview({_id}), { fields: select.display }, selectCB.displayView(cb))
   },
 
   getAllForCache(cb) {
@@ -198,7 +232,7 @@ var get = {
         if (e.code == 404)
           cb(null, { available: `The repo name ${slug} is available.` })
         else
-          cb(Error(e),repo)
+          cb(Error(e), repo)
       })
     })
   },
@@ -350,7 +384,7 @@ var save = {
     if (Roles.isForker(this.user, original)) {
       var owner = this.user.social.gh.username
       github2.updateFile(this.user, owner, original.slug, "post.md", 'edit', ups.md, ups.commitMessage, (ee, result) => {
-        updateWithEditTouch.call(this, original, 'updateHEADonFork', selectCB.editView(cb, ups.md))
+        updateWithEditTouch.call(this, original, 'updateHEADonFork', selectCB.editView(cb, ups.md, owner))
       })
     }
     else if (Roles.isOwner(this.user, original)) {
@@ -364,7 +398,7 @@ var save = {
         // setEventData(original, (err,resp) => {
           // if (err) return cb(err)
           // $log('setEventData.resp', resp)
-        updateWithEditTouch.call(this, original, 'updateHEAD', selectCB.editView(cb, ups.md))
+        updateWithEditTouch.call(this, original, 'updateHEAD', selectCB.editView(cb, ups.md, owner))
         // })
       })
     } else {
