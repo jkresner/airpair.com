@@ -3,7 +3,7 @@
   <header post-comments-header></header>
 
   <ul class="reviews" ng-if="reviews.length > 0">
-    <li ng-repeat="r in reviews" class="{{r._id}}" post-comments-review-thread></li>
+    <li ng-repeat="r in reviews | orderBy : 'votes.length':true" class="{{r._id}}" post-comments-review-thread></li>
   </ul>
 
 </div>
