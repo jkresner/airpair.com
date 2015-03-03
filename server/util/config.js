@@ -94,7 +94,8 @@ var cfg = {
     }
   },
   log: {
-    auth: false
+    auth: false,
+    raygun: { on: false, apiKey: '' }
   },
   hangout:{
     //140030887085 == production AirPair app
@@ -169,6 +170,10 @@ module.exports = function(env, appdir) {
   if (cfg.env == 'production') {
 
     cfg.log.auth = (process.env.LOG_AUTH) ? process.env.LOG_AUTH == 'true' : false
+    cfg.log.raygun = {
+      on: true,
+      apiKey: process.env.LOG_RAYGUN_APIKEY
+    }
     cfg.log.email = {
       level:          process.env.LOG_EMAIL_LEVEL || 'error',
       sesAccessKey:   cfg.mail.ses.access_key,

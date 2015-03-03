@@ -1,5 +1,11 @@
 var domain = require('domain')
 
+
+if (config.log.raygun.on) {
+  var raygun = require('raygun')
+  var raygunClient = new raygun.Client().init({ apiKey: config.log.raygun.apiKey })
+}
+
 var middleware = {
 
   slowrequests(req, res, next) {
@@ -44,6 +50,9 @@ var middleware = {
         $log(req.url + ' ' +(e.message || e).magenta)
         // $log('Test Debug Error ', e.toString().magenta)
       }
+
+      if (config.log.raygun.on)
+        raygunClient.send(e, {}, () => { $log('sent e to raygun'.magenta)})
 
       if (e.fromApi)
         res.status(e.status || 400).json({message:e.message || e})
