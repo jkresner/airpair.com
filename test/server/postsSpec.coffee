@@ -97,7 +97,7 @@ module.exports = -> describe "API: ", ->
         expect(p0.lastTouch).to.be.undefined
         GET "/posts/#{p0._id}/edit", {}, (pEdit) ->
           expect(pEdit.md).to.equal('new')
-          expect(pEdit.reviews.length).to.equal(0)
+          # expect(pEdit.stats.reviews).to.equal(0)
           PUT "/posts/#{p0._id}/md", { md: 'updated md' }, {}, (p1) ->
             expect(p1.md, "updated md")
             GET "/posts/#{p0._id}/info", {}, (pInfo) ->

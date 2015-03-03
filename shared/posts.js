@@ -33,7 +33,9 @@ var postsUtil = {
       reviews: reviews.length,
       comments: reviews.length + _.flatten(_.pluck(reviews,'replies')||[]).length,
       forkers: (post.forkers||[]).length,
-      acceptedPRs: 0,       // figure it out later
+      openPRs: _.where(post.pullRequests||[],(pr)=>pr.state=='open').length,  // not really correct at all grrr
+      closedPRs: _.where(post.pullRequests||[],(pr)=>pr.state=='closed').length,  // not really correct at all grrr
+      acceptedPRs: _.where(post.pullRequests||[],(pr)=>pr.state=='closed').length,  // not really correct at all grrr
       shares: 0,            // figure it out later
       words: postsUtil.wordcount(post.md)
     }

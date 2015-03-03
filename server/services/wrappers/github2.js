@@ -45,35 +45,6 @@ var getGithubUser = function(user) {
 
 var gh = {
 
-
-
-  // createRepoReviewTeam(repo, id, cb){
-  //   var _this = this;
-  //   var teamName = `${repo}-${id.toString().slice(-8)}-review`
-
-  //   _authenticateAdmin()
-  //   api.orgs.createTeam({
-  //     org: org,
-  //     name: teamName,
-  //     repo_names: [`${org}/${repo}`],
-  //     description: `Review team for ${repo} (read-only)`,
-  //     permission: 'pull'
-  //   }, function(err, resp){
-  //     if (!err) return cb(err,resp);
-  //     var parsedError = JSON.parse(err.message)
-  //     var errors = parsedError.errors
-  //     if (errors && errors.length == 1 && errors[0].code === "already_exists"){
-  //       //team is already created, list teams and send that back
-  //       _this.getTeamId(repo, teamName, function(err, result){
-  //         if (err) return cb(err)
-  //         cb(null, {id: result})
-  //       })
-  //     } else {
-  //       return cb(err,resp);
-  //     }
-  //   });
-  // },
-
   // listTeams(cb){
   //   _authenticateAdmin()
   //   api.orgs.getTeams({
@@ -191,6 +162,21 @@ var gh = {
   //   }, cb)
   // },
 
+  getPullRequests(user, owner, repo, cb) {
+    setToken('admin')
+    var query
+    var per_page = 100, // max PRS we can get for Github per_page,
+        // head = undefined //'airpair:master',
+        // base = undefined //'master', // head, base,
+        state = 'all' // return both open and closed pull requests
+// , head: undefined, base: undefined
+    api.pullRequests.getAll({ user: owner, repo, state, per_page }, (e,r) => {
+      if (e) return verboseErrorCB(cb, e, 'getPullRequests', `${owner}/${repo} ${user.email} ${user.id}`)
+      if (r && r.meta) delete r.meta
+      cb(e, r)
+    })
+  },
+
   addContributor(user, org, repo, cb) {
     setToken(user)
 
@@ -199,7 +185,7 @@ var gh = {
       // if (err) return verboseErrorCB(cb, err, 'addToTeam', `${user.social.gh.username} ${reviewerTeamId}`)
   // fork(repo, user, cb){
   //   _authenticateUser(user)
-    api.repos.fork({ user: org, repo}, (e,r) => {
+    api.repos.fork({ user: org, repo }, (e,r) => {
       if (e) return verboseErrorCB(cb, e, 'addContributor', `${repo} ${user.email} ${user.id}`)
       if (logging) $log(`Forked     ${org}${repo} to ${user.social.gh.username}`.yellow)
       cb(e, r)
