@@ -60,7 +60,7 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
 
       $scope.calcReviewStep = () => {
         if ($scope.p.published || !$scope.p.submitted) return false
-        if ($scope.p.reviews.length < 3)
+        if (!$scope.p.stats || $scope.p.stats.reviews < 3)
           return $scope.needReviews = true
         else {
           if ($scope.p.by.userId == $rootScope.session._id)
@@ -77,49 +77,66 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
 .controller('PostsListCtrl', function($scope, $location, DataService, SessionService, PostsUtil, Roles) {
 
   DataService.posts.getMyPosts({}, function (r) {
+    var meUserId = $scope.session._id
     var recent = []
-    var contributions = []
+    var all = []
+    var mine = []
+    var forks = []
+
     if ($scope.session._id)
     {
       for (var i=0;i<r.length;i++) {
         r[i] = PostsUtil.extendWithReviewsSummary(r[i])
         r[i].forked = Roles.post.isForker($scope.session, r[i])
         r[i].mine = r[i].by.userId == $scope.session._id
-        if (r[i].mine || r[i].forked)
-          contributions.push(r[i])
-        else
+        if (!r[i].published && r[i].submitted)
           recent.push(r[i])
-
+        if (r[i].mine)
+          mine.push(r[i])
+        if (r[i].forked) {
+          forks.push(r[i])
+          r[i].needsMyReview = !_.find(r[i].reviews,(rev)=>rev.by._id == meUserId)
+          r[i].needsMyFork = !_.find(r[i].forkers,(f)=>f.userId == meUserId)
+        }
       }
 
       if ($scope.session.social && $scope.session.social.gh)
       {
-        if ($location.search().submitted && $scope.session._id)
-        {
-          $scope.submitted = _.find(contributions, (p)=> p._id == $location.search().submitted)
-        }
+        if ($location.search().submitted)
+          $scope.submitted = _.find(mine, (p)=> p._id == $location.search().submitted)
 
         var toForkId = $location.search().fork
         if (toForkId)
         {
-          $scope.forked = _.find(contributions, (f) => toForkId == f._id)
-          if (!$scope.forked)
-            DataService.posts.addForker({_id:$location.search().fork}, function (forked) {
+          $scope.forked = _.find(forks, (f) => toForkId == f._id)
+          // if (!$scope.forked)  //-- sometimes wew just want to refork it...
+          DataService.posts.addForker({_id:$location.search().fork}, function (forked) {
+            if (!$scope.forked) {
               $scope.forked = forked
-              $scope.contributions = _.union($scope.contributions, [forked])
-            })
+              $scope.all = _.union($scope.all, [forked])
+              $scope.forks = _.union($scope.forks, [forked])
+              $scope.filterMyPosts($scope.filter)
+            }
+          })
         }
       }
 
     }
 
-    $scope.contributions = contributions
-    $scope.recent = (recent.length > 0) ? recent : r
-
+    $scope.all = _.sortBy(_.union(mine,forks),(p)=>moment(p.lastTouch.utc).format('X')*-1)
+    $scope.mine = mine
+    $scope.forks = forks
+    $scope.filterMyPosts('all')
+    $scope.recent = _.sortBy((recent.length > 0) ? recent : r,(p)=>moment(p.submitted).format('X')*-1)
   })
 
   $scope.delete = (_id) =>
     DataService.posts.deletePost({_id}, (r) => window.location = '/posts/me')
+
+  $scope.filterMyPosts = (filter) => {
+    $scope.filter = filter
+    $scope.contributions = $scope[filter]
+  }
 
 })
 
@@ -134,11 +151,9 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
 })
 
 
-.controller('PostsInReviewCtrl', function($scope, DataService) {
+.controller('PostsInReviewCtrl', ($scope, DataService) => {
 
-  DataService.posts.getInReview({}, function (r) {
-    $scope.inreview = r;
-  })
+  DataService.posts.getInReview({}, (r) => $scope.inreview = r )
 
 })
 
@@ -151,7 +166,7 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
       '/posts/edit/' : '/posts/preview/'
 
     var saveFn = (_id) ? DataService.posts.update : DataService.posts.create
-    saveFn($scope.post, (r) => $location.path(redirectTo+r._id) )
+    saveFn($scope.post, (r) => window.location = redirectTo+r._id )
   }
 
   $scope.tags = () => $scope.post ? $scope.post.tags : null;
@@ -189,17 +204,20 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
 
   if (_id)
     DataService.posts.getByIdForEditingInfo({_id}, (r) => {
-      if ($scope.session._id == r.by.userId)  // don't wipe author with editor session
+      if ($scope.session._id == r.by.userId) { // don't wipe author with editor session
+        var bio = r.by.bio
         r.by = _.extend(r.by, $scope.session)  // update new social links
+        r.by.bio = bio // in case this post has it's own specific bio, don't wipe it!
+      }
       $scope.post = r
     })
   else
-    $scope.post = { by: $scope.session, assetUrl: '//www.airpair.com/static/img/css/blog/example2.jpg' }
+    $scope.post = { title: 'Type a post title...', by: $scope.session, assetUrl: '//www.airpair.com/static/img/css/blog/example2.jpg' }
 
 })
 
 
-.controller('PostEditCtrl', ($scope, $routeParams, $location, $timeout, $window, StaticDataService, DataService, mdHelper, PostsUtil) => {
+.controller('PostEditCtrl', ($scope, $routeParams, $timeout, $window, StaticDataService, DataService, PostsUtil) => {
   var _id = $routeParams.id
   $scope._id = _id
 
@@ -230,15 +248,15 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
   $scope.previewMarkdown = previewMarkdown
 
   var setPostScope = function(r) {
-    $scope.fork = `${$scope.session.social.gh.username}/${r.slug}`
+    $scope.isAuthor = r.by.userId == $scope.session._id
 
-    if ((r.published && !r.submitted) && (r.by.userId == $scope.session._id))
+    if ((r.published && !r.submitted) && ($scope.isAuthor))
       return $scope.editErr = { message: `Edits on published posts my be tracked in git. <br />Please <a href="/posts/submit/${r._id}">submit your post</a> to continue editing it.` }
 
     if (r.md == "new") r.md = StaticDataService.defaultPostMarkdown
 
-    r.commitMessage = ""
     r.wordcount = PostsUtil.wordcount(r.md)
+    r.commitMessage = ""
     $scope.post = r
     $scope.savedMD = r.md
     if (!$scope.aceLoaded) {
@@ -249,8 +267,6 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
     $timeout(previewMarkdown, 20)
 
     $scope.throttleMS = r.md.length * 5
-
-    // console.log('setPostScope', $scope.post)
 
     $window.onbeforeunload = function() {
       var md = window.ace.edit($('#aceeditor')[0]).getSession().getValue()
@@ -270,9 +286,11 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
 
   $scope.save = () => {
     var editSession = window.ace.edit($('#aceeditor')[0]).getSession()
-    var cols = editSession.getScreenWidth()
-    var md = PostsUtil.splitLines(editSession.doc.$lines.slice(0), cols, editSession.doc).join('\n')
-    var commitMessage = $scope.commitMessage
+    // var cols = editSession.getScreenWidth()
+    //var md = PostsUtil.splitLines(editSession.doc.$lines.slice(0), cols, editSession.doc).join('\n')
+    var md = window.ace.edit($('#aceeditor')[0]).getSession().getValue()
+    var commitMessage = $scope.post.commitMessage
+    if (commitMessage == "" && $scope.post.submitted) return alert('Commit message required')
     DataService.posts.updateMarkdown({_id,md,commitMessage}, setPostScope)
   }
 
@@ -281,40 +299,26 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
       timer = $timeout(previewMarkdown, $scope.throttleMS)
   }
 
-  DataService.posts.getByIdEditing({_id}, setPostScope, (e) => $scope.editErr = e.message)
+  DataService.posts.getByIdEditing({_id}, setPostScope, (e) => $scope.editErr = e)
 
 })
 
 
-.controller('PostSubmitCtrl', function($scope, $q, $routeParams, $location, $timeout, ServerErrors, DataService, mdHelper, PostsUtil) {
+.controller('PostSubmitCtrl', ($scope, $q, $routeParams, ServerErrors, DataService) => {
   var _id = $routeParams.id
-
   $scope._id = _id
-  $scope.slugStatus = { checking: true }
-  $scope.repoAuthorized = false
-  if($scope.session.social && $scope.session.social.gh)
-  {
-    DataService.posts.getProviderScopes({}, (r)=> {
-      $scope.repoAuthorized = _.contains(r.github, "repo")
 
-      if ($scope.repoAuthorized)
-        DataService.posts.getById({_id}, (r) => {
-          if (r.submitted)
-            $location.path('/posts/me?submitted='+_id)
+  DataService.posts.getByIdForSubmitting({_id}, (post) => {
+    if (post.submitted)
+      window.location = '/posts/me?submitted='+post._id
+    $scope.post = post
+    $scope.repoAuthorized = post.submit.repoAuthorized
+    $scope.slugStatus = post.submit.slugStatus
+  })
 
-          $scope.post = r
-
-          $scope.$watch('post.slug', (slug) =>
-            DataService.posts.checkSlugAvailable({_id,slug}, (r) => $scope.slugStatus = r )
-          )
-
-          if (!$scope.post.slug)
-            $scope.post.slug = r.title.toLowerCase().replace(/ /g, '_').replace(/\W+/g, '').replace(/_/g, '-')
-        })
-
-    }, ()=>{})
+  $scope.checkSlugAvailable = (slug) => {
+    DataService.posts.checkSlugAvailable({_id,slug}, (r) => $scope.slugStatus = r )
   }
-
 
   $scope.submitForReviewDeferred = () => {
     var deferred = $q.defer()
@@ -334,27 +338,20 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
 })
 
 
-.controller('PostForkCtrl', function($scope, $routeParams, $location, DataService, PostsUtil) {
+.controller('PostForkCtrl', ($scope, $routeParams, DataService) => {
   var _id = $routeParams.id
-
-  $scope.repoAuthorized = false
-  if($scope.session.social && $scope.session.social.gh)
-  {
-    DataService.posts.getProviderScopes({}, (r)=> {
-      $scope.repoAuthorized = _.contains(r.github, "repo")
-    }, ()=>{})
-  }
-
-  $scope.fork = () =>
-    DataService.posts.fork($scope.post, (result) => {
-      $location.path('/posts/me?forked='+result._id)
-    })
+  $scope._id = _id
 
   DataService.posts.getByIdForForking({_id}, (r) => {
     $scope.post = r
-    $scope.tofork = [r]
     $scope.isOwner = r.by.userId == $scope.session._id
+    $scope.repoAuthorized = r.submit.repoAuthorized
   })
+
+  $scope.fork = () =>
+    DataService.posts.fork($scope.post, (result) =>
+      window.location = '/posts/me?forked='+_id )
+
 
 })
 
@@ -422,15 +419,11 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
 })
 
 
-.controller('PostContributorsCtrl', function($scope, $routeParams, $location, DataService, PostsUtil) {
+.controller('PostContributorsCtrl', function($scope, $routeParams, DataService, PostsUtil) {
   var _id = $routeParams.id
 
   DataService.posts.getByIdForContributors({_id}, (r) => {
-    $scope.post = PostsUtil.extendWithReviewsSummary(r)
-  })
-
-
-  DataService.posts.getByIdForContributors({_id}, (r) => {
+    if (r.url.indexOf('/posts/review') == 0) r.url = `https://www.airpair.com${r.url}`
     $scope.post = PostsUtil.extendWithReviewsSummary(r)
   })
 

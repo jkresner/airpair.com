@@ -313,13 +313,23 @@ section.notifications {
   padding:30px 0 0 0;
   position:relative;
   background:white;
-  form { .lightblueForm;padding-top:15px;
+  form { .lightblueForm;
+    background-color:#151821;
+    color:white;
+    padding-top:15px;
     text-align:left;
-    textarea { min-height:100px }
+    select { color:@darkorange }
+    // input { color:@darkorange }
+    textarea { min-height:100px;color:@darkorange }
     h4 { font-size:24px }
     .btn { width:100% }
     .stars {
       .control-label { font-size:22px;font-weight:normal; }
+    }
+    p.edit { display:none;font-size:18px;font-style:italic;margin-top:10px;margin-bottom:0 }
+    .saved {
+      p.edit { display:block }
+      .btn { display:none }
     }
   }
   .noReviews { border-top:solid 1px @lightblue;margin-top:5px;padding-top:10px }

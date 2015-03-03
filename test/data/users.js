@@ -55,7 +55,6 @@ module.exports = {
 
   jkre: { name:"Jonathon Kresner",email:"jkresner@gmail.com" },
   krez: { name:"Jonathon Krezner",email:"krez@hotmail.com" },
-  jkya: { name:"Jonathon Krezner",email:"jkresner@yahooo.com.au" },
   igor: { name:"Igor Lebovic",email:"igorlebovic@gmail.com" },
   evnr: { name:"Evan Richards",email:"goldfish@gmail.com" },
   evan: { name:"Evan Richards",email:"evengoldfish@gmail.com" },
@@ -123,6 +122,15 @@ module.exports = {
   brif: { name: "Brian Fiester", email: "brian@airtest.com"},
 
   tybr: { name: "Tyler Baur", email: "tb@airtest.com"},
+
+  //*** TO SETUP AN ADMIN TOKEN: => /auth/github?returnTo=/me&scope=user,repo,admin:org
+  jkya: { name:"Jonathon Krezner",email:"jkresner@yahooo.com.au",
+    social: { gh: { username: "jkyahoo", token: { token: "b9d09cce1129b4ee1f4b97cc44c3b753cb9d8795" } } } },
+  apt1: { name: "AirPair Terone", email: "airpairtest1@gmail.com",
+    social: { gh: { username: "airpairtest1", token: { token: "835b520ebd5710972d421cf8c190c59adccf39e7" } } } },
+  apt5: { name: "AirPair TerFive", email: "airpairtest5@gmail.com",
+    social: { gh: { username: "airpairtest5", token: { token: "261d9670b74fed23b2098a55d9bccf55a7526661" } } } },
+
 
   robot1 : { name: "Robot1", email: "robot1@hotmail.com"},
   robot2 : { name: "Robot2", email: "robot2@hotmail.com"},
@@ -1202,6 +1210,40 @@ module.exports = {
     },
     "stackId" : 137067,
     "username" : "philfreo"
-  }
+  },
+
+  submPostAuthor: {
+    "_id" : "54f3a1004da2eed243659ce9",
+    "name" : "Robot21425252608",
+    "email" : "robot21425252608@hotmail.com",
+    "emailVerified" : true,
+    "local" : {
+        "password" : "$2a$08$pm8I2LHWD2kUYZCUHKsujeyeoGzwpIAAO4O2dEkLGuLk4XGD1CwYC"
+    },
+    "cohort" : {},
+    "social" : {
+        "gh" : {
+            "username" : "airpairtest1", "token" : { "token" : "835b520ebd5710972d421cf8c190c59adccf39e7" }
+        }
+    },
+    "bio" : "yo yyoy o"
+  },
+
+  syncPostAuthor: {
+    "_id" : "54f3a2300097ad2945300149",
+    "name" : "Robot21425252912",
+    "email" : "robot21425252912@hotmail.com",
+    "emailVerified" : true,
+    "local" : {
+        "password" : "$2a$08$6/E2/MD9GNihkHC2VTLcTun4HZAW7Zz/Ov5wnYrIOonATHoKkJ0cK"
+    },
+    "cohort" : {},
+    "social" : {
+        "gh" : {
+            "username" : "airpairtest1", "token" : { "token" : "835b520ebd5710972d421cf8c190c59adccf39e7" }
+        }
+    },
+    "bio" : "yo yyoy o"
+}
 
 }
