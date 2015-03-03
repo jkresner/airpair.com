@@ -12,7 +12,6 @@
   <p>Authoring posts on AirPair requires a minimum resolution of 1260px.</p>
 </section>
 
-
 <section id="posteditor" ng-if="session.emailVerified">
 
 <div ng-if="editErr" class="editor-error-wrap" style="text-align:center">
@@ -24,7 +23,6 @@
   <post-step-helper post="post" class="tip"></post-step-helper>
 
   <span class="status">
-    {{post.stats.rating}}
     <b>Status</b>
     <span ng-if="!post.submitted && !post.published">In draft,</span>
     <span ng-if="post.submitted && !post.published"><a href="/posts/in-community-review" target="_blank">in community review</a>,</span>
@@ -61,10 +59,13 @@
   <a class="btn" href="/posts/preview/{{post._id}}" target="_blank"
     ng-disabled="!post.saved || !post.assetUrl || !post.tags || post.tags.length == 0">Preview</a>
 
-  <a class="btn" href="/posts/publish/{{post._id}}" ng-if="post.submitted"
+  <a class="btn" href="https://github.com/airpair/{{post.slug}}/compare/edit...{{session.social.gh.username}}:edit" target="_blank" ng-if="!isAuthor"
+    ng-disabled="!post.saved || post.synced">Create PR</a>
+
+  <a class="btn" href="/posts/publish/{{post._id}}" ng-if="post.submitted && isAuthor"
     ng-disabled="!post.saved || post.synced">Sync</a>
 
-  <a class="btn" href="/posts/publish/{{post._id}}" ng-if="post.submitted"
+  <a class="btn" href="/posts/publish/{{post._id}}" ng-if="post.submitted && isAuthor"
     ng-disabled="!post.saved || !(post.stats && posts.stats.reviews > 3 && post.stats.rating > 3.5)">Publish</a>
 
   <a class="btn" title="Submit post for community review"
