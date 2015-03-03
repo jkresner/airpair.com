@@ -37,6 +37,7 @@ var select = {
     'published': 1,
     'submitted': 1,
     'tags': 1,
+    'stats': 1
   },
   listAdmin: {
     'by.name': 1,
@@ -62,9 +63,51 @@ var select = {
     'meta.canonical': 1,
     'meta.ogImage': 1
   },
+  display: {
+    '_id': 1,
+    'by.userId':1,
+    'by.name': 1,
+    'by.avatar': 1,
+    'by.expertId':1,
+    'by.bio': 1,
+    'by.username': 1,
+    'social.gh.username':1,
+    'social.so.link': 1,
+    'social.bb.username':1,
+    'social.in.id': 1,
+    'social.tw.username':1,
+    'social.al.username': 1,
+    'social.gp.link': 1,
+    'meta': 1,
+    'github.repoInfo': 1,
+    'reviews._id': 1,
+    'reviews.by': 1,
+    'reviews.updated': 1,
+    'reviews.replies': 1,
+    'reviews.votes': 1,
+    'reviews.questions.key': 1,
+    'reviews.questions.answer': 1,
+    'forkers':1,
+    'title':1,
+    'tmpl':1,
+    'slug': 1,
+    'stats': 1,
+    'created': 1,
+    'published': 1,
+    'submitted': 1,
+    'tags': 1,
+    'assetUrl': 1,
+    'md': 1,
+    'lastTouch.utc':1,
+    'lastTouch.action':1,
+    'lastTouch.by._id':1,
+    'lastTouch.by.name':1,
+  },
   edit: {
     '_id': 1,
-    'by': 1,
+    'by.userId':1,
+    'by.name': 1,
+    'by.avatar': 1,
     'meta': 1,
     'github.repoInfo': 1,
     'title':1,
@@ -74,16 +117,16 @@ var select = {
     'submitted': 1,
     'tags': 1,
     'assetUrl': 1,
-    'md': 1,
-    'reviews.questions.key': 1, //-- To know if the post is publishable
-    'reviews.questions.answer': 1,
+    'repo': 1,
+    'stats': 1, //-- To know if the post is publishable
+    'synced': 1,
+    'md': 1
   },
   editInfo: {
     '_id': 1,
     'by': 1,
-    'github.repoInfo': 1,
+    // 'github.repoInfo': 1,
     'title':1,
-    'slug': 1,
     'created': 1,
     'published': 1,
     'submitted': 1,
@@ -93,13 +136,15 @@ var select = {
   stats: {
     '_id': 1,
     'title': 1,
-    'by': 1,
+    'by.userId':1,
+    'by.name': 1,
+    'by.avatar': 1,
     'slug': 1,
     'meta': 1,
-    'github': 1,
     'forkers':1,
     'reviews._id': 1,
     'reviews.by': 1,
+    'reviews.updated': 1,
     'reviews.replies': 1,
     'reviews.votes': 1,
     'reviews.questions.key': 1,
@@ -108,7 +153,28 @@ var select = {
     'published': 1,
     'submitted': 1,
     'tags': 1,
-    'assetUrl': 1
+    'assetUrl': 1,
+    'stats': 1,
+    'pullRequests': 1,
+    'lastTouch.utc': 1,
+    'lastTouch.action': 1,
+    'lastTouch.by.name': 1
+  },
+  pr: {
+    'pullRequests.url':1,
+    'pullRequests.html_url':1,
+    'pullRequests.id':1,
+    'pullRequests.number':1,
+    'pullRequests.state':1,
+    'pullRequests.title':1,
+    'pullRequests.user.login':1,
+    'pullRequests.user.avatar_url':1,
+    'pullRequests.created_at':1,
+    'pullRequests.updated_at':1,
+    'pullRequests.closed_at': null,
+    'pullRequests.merged_at': null,
+    'pullRequests.merge_commit_sha': 1,
+    'pullRequests.statuses_url': 1
   },
   generateToc(md) {
     marked(generateToc(md))
@@ -132,7 +198,7 @@ var select = {
     })
   },
   url(post) {
-    if (post.submitted && !post.published) return `https://www.airpair.com/posts/review/${post._id}`
+    if (post.submitted && !post.published) return `/posts/review/${post._id}`
     else if (post.meta) return post.meta.canonical
   },
   cb: {
@@ -150,12 +216,15 @@ var select = {
         cb(null, selectFromObject(r, select.editInfo))
       }
     },
-    editView(cb, overrideMD) {
+    editView(cb, overrideMD, owner) {
       return (e,r) => {
         if (e || !r) return cb(e,r)
         r = selectFromObject(r, select.edit)
-        if (overrideMD)
+        r.repo = `${owner}/${r.slug}`
+        if (overrideMD) {
+          r.synced = r.md == overrideMD
           r.md = overrideMD // hack for front-end editor to show latest edit
+        }
         cb(null,r)
       }
     },
@@ -174,9 +243,10 @@ var select = {
         var statsR = []
         for (var p of posts) {
           var url = select.url(p),
-              wordcount = PostsUtil.wordcount(p.md),
-              reviews = select.mapReviews(p.reviews),
-              forkers = select.mapForkers(p.forkers || [])
+            wordcount = PostsUtil.wordcount(p.md),
+            reviews = select.mapReviews(p.reviews),
+            forkers = select.mapForkers(p.forkers || [])
+          p.lastTouch = p.lastTouch || { utc: moment().add(-3,'months').toDate() }
           statsR.push(_.extend(selectFromObject(p, select.stats),
             { url, reviews, forkers, wordcount }))
         }
@@ -188,20 +258,24 @@ var select = {
       return inflateHtml((e,r) => {
         if (e || !r) return cb(e,r)
         if (!r.tags || r.tags.length == 0) {
-          $log(`post [{r._id}] has no tags`.red)
-          cb(null,r)
+          $log(`post ${r.title} [${r._id}] has no tags`.red)
+          return cb(null,r)
         }
 
         r.primarytag = _.find(r.tags,(t) => t.sort==0) || r.tags[0]
         var topTagPage = _.find(topTapPages,(s) => r.primarytag.slug==s)
         r.primarytag.postsUrl = (topTagPage) ? `/${r.primarytag.slug}` : `/posts/tag/${r.primarytag.slug}`
 
-        if (!r.published) r.meta = { noindex: true }
+        if (r.submitted) {
+          r.stats = r.stats || PostsUtil.calcStats(r)
+          r.publishReady = (r.stats.reviews > 2) && (r.stats.rating > 3.5)
+        }
+        if (!r.published)
+          r.meta = { noindex: true }
         else
-        {
           //-- Stop using disqus once deployed the review system
           r.showDisqus = moment(r.published) < moment('20150201', 'YYYYMMDD')
-        }
+
 
         r.forkers = select.mapForkers(r.forkers || [])
         r.reviews = select.mapReviews(r.reviews)

@@ -7,11 +7,9 @@
 </header>
 
 
-<section class="editornotsupported">
-  <h3>You'll need a bigger screen...</h3>
-  <p>Authoring posts on AirPair requires a minimum resolution of 1200px.</p>
+<section id="postcontributorsMobile">
+  <h3>The contributors page is not yet supported on mobile.</h3>
 </section>
-
 
 <section ng-if="post" id="postcontributors">
 
@@ -70,9 +68,7 @@
 
       <ul class="forkers">
         <li ng-repeat="f in post.forkers">
-
           <img ng-src="{{f.avatar}}?s=20" class="user" />
-
         </li>
       </ul>
 
@@ -86,7 +82,19 @@
 
     <div id="github">
       <h3 class="underline">Github</h3>
-      <p>No open Pull Requests ... </p>
+      <h4>Pull requests
+        <span><img src="/static/img/pages/posts/sm-icon-fork.png">{{post.stats.openPRs}} Open, </span>
+        <span><img src="/static/img/pages/posts/sm-icon-fork.png" style="opacity:0.6">{{post.stats.closedPRs}} Closed</span>
+      </h4>
+      <ul class="pullRequests" ng-if="post.pullRequests">
+        <li ng-repeat="pr in post.pullRequests">
+          <a href="{{pr.html_url}}" target="_blank">
+            <img src="{{pr.user.avatar_url}}&s=36" />
+            <label>{{pr.title}}</label>
+            <time>#{{pr.number}} {{pr.created_at | agoTime }} by {{pr.user.login}}</time>
+          </a>
+        </li>
+      </ul>
     </div>
 
     <div id="reviews" post-reviews></div>

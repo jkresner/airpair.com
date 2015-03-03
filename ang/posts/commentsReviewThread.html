@@ -1,7 +1,7 @@
 <header>
   <img ng-src="{{r.by.avatar}}?s=40" class="user" />
   <label>{{r.by.name}}</label>
-  <time>{{r._id | objectIdToAgoTime }}</time>
+  <time>{{r._id | objectIdToAgoTime }} <span ng-if="r.updated">+ updated {{ r.updated | agoTime }}</span></time>
   <stars val="r.rating"></stars>
 </header>
 <p>{{r.feedback}}</p>

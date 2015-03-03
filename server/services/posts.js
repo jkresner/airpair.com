@@ -5,7 +5,7 @@ var svc                   = new Svc(Post, logging)
 var UserSvc               = require('../services/users')
 var ExpertSvc             = require('../services/experts')
 var TemplateSvc           = require('../services/templates')
-var github                = require("../services/wrappers/github")
+var github2               = require("../services/wrappers/github2")
 var Data                  = require('./posts.data')
 var {query, select, opts} = Data
 var selectCB              = select.cb
@@ -13,17 +13,8 @@ var {selectFromObject}    = require('../../shared/util')
 var PostsUtil             = require('../../shared/posts')
 var Roles                 = require('../../shared/roles').post
 
+
 var org = config.auth.github.org
-
-
-var setEventData = function(post, cb){
-  github.repoEvents(org, post.slug, (err,resp)=>{
-    if (err) return cb(err)
-    var existingEvents = post.github.events || []
-    post.github.events = _.union(existingEvents, resp)
-    cb(err,resp)
-  })
-}
 
 var get = {
 
@@ -40,7 +31,6 @@ var get = {
     selectCB.editInfoView(cb)(null, post)
   },
 
-
   getByIdForEditing(post, cb) {
     if (!post.submitted) return selectCB.editView(cb)(null, post)
 
@@ -50,34 +40,61 @@ var get = {
     else if ( !Roles.isOwnerOrEditor(this.user, post) )
       return cb(`Cannot edit this post. You need to fork ${post.slug}`)
 
-    github.getFile(owner, post.slug, "/post.md", this.user, (e, resp) => {
-      //-- for forker check the case where they have deleted the fork
-      if (e && e.code === 404 && owner != org)
+    github2.getFile(this.user, owner, post.slug, "/post.md", 'edit', (e, postMDfile) => {
+      selectCB.editView(cb, postMDfile.string, owner)(e, post)
+    })
+  },
+
+  getByIdForContributors(post, cb) {
+    github2.getPullRequests(this.user, org, post.slug, (e, pullRequests) => {
+      post.pullRequests = selectFromObject({pullRequests}, select.pr).pullRequests
+      var {openPRs,closedPRs,acceptedPRs} = PostsUtil.calcStats(post)
+      if (!post.stats
+        || post.stats.acceptedPRs != acceptedPRs
+        || post.stats.closedPRs != closedPRs
+        || post.stats.openPRs != openPRs
+        )
       {
-        github.getRepo(owner, post.slug, (err,response) => {
-          if (err && err.code === 404)
-            return cb(Error(`No fork present. <a href='/posts/fork/${post._id}'>Create new fork?</a>`))
-          else if (!err)
-            return cb(Error(`post.md of fork ${owner}/${post.slug} missing or corrupted`))
-          else
-            return cb(err)
-        })
-      }
-      else {
-        post.synced = post.md == resp.string
-        post.md = resp.string // any reason we need the live copy?
-        selectCB.editView(cb)(null, post)
-      }
+        // Unfortunately this is not right, we need to query the github api again to see if they were merged
+        post.stats = _.extend(post.stats||{},{acceptedPRs,openPRs,closedPRs})
+        svc.update(post._id, post, selectCB.statsView(cb))
+      } else
+        selectCB.statsView(cb)(null, post)
+    })
+  },
+
+  getByIdForSubmitting(post, cb) {
+    post = selectFromObject(post, select.editInfo)
+    post.submit = { repoAuthorized: false }
+    post.slug = post.title.toLowerCase()
+                    .replace(/ /g, '_').replace(/\W+/g, '').replace(/_/g, '-')
+
+    if (!this.user.social || !this.user.social.gh) return cb(null, post)
+
+    $callSvc(UserSvc.getProviderScopes, this)((ee, providers) => {
+      if (ee) return cb(Error(`getByIdForSubmitting. Failed to get user providers scopes for [${this.user._id}][${this.user.social.gh.username}]`))
+      var scope = _.find(providers.github, (s) => s.indexOf("repo") != -1)
+      if (!scope) return cb(null, post)
+      post.submit.repoAuthorized = true
+      $callSvc(get.checkSlugAvailable, this)(post, post.slug, (e, r) => {
+        post.submit.slugStatus = r
+        cb(e, post)
+      })
     })
   },
 
   getByIdForForking(post, cb) {
-    post = selectFromObject(post, select.edit)
-    cb(null, post)
-  },
-
-  getByIdForContributors(post, cb) {
-    selectCB.statsView(cb)(null, post)
+    var {slug} = post
+    post = selectFromObject(post, select.editInfo)
+    post.submit = { repoAuthorized: false, slug }
+    if (!this.user.social || !this.user.social.gh) return cb(null, post)
+    post.submit.owner = this.user.social.gh.username
+    $callSvc(UserSvc.getProviderScopes, this)((e, providers) => {
+      if (e) return cb(Error(`getByIdForForking. Failed to get user providers scopes for [${this.user._id}][${this.user.social.gh.username}]`))
+      var scope = _.find(providers.github, (s) => s.indexOf("repo") != -1)
+      post.submit.repoAuthorized = scope != null
+      cb(null, post)
+    })
   },
 
   getByIdForPublishing(post, cb) {
@@ -108,7 +125,7 @@ var get = {
   },
 
   getByIdForPreview(_id, cb) {
-    svc.searchOne({_id}, null, (e,r) => {
+    svc.searchOne({_id}, { fields: select.display }, (e,r) => {
       if (e || !r) return cb(e,r)
       if (!r.submitted || !r.github) return selectCB.displayView(cb)(null, r)
 
@@ -127,11 +144,11 @@ var get = {
   },
 
   getBySlugForPublishedView(slug, cb) {
-    svc.searchOne(query.published({slug}), null, selectCB.displayView(cb, get.getSimilar))
+    svc.searchOne(query.published({slug}), { fields: select.display }, selectCB.displayView(cb, get.getSimilar))
   },
 
   getByIdForReview(_id, cb) {
-    svc.searchOne(query.inReview({_id}), null, selectCB.displayView(cb))
+    svc.searchOne(query.inReview({_id}), { fields: select.display }, selectCB.displayView(cb))
   },
 
   getAllForCache(cb) {
@@ -166,27 +183,6 @@ var get = {
     svc.searchMany(q, options, selectCB.addUrl((e,r) => cb(null, {tag,posts:r}) ))
   },
 
-  //-- used for todd-motto
-  // getPublishedById(_id, cb) {
-  //   var query = _.extend(,)
-  //   svc.searchOne(Data.query.published({_id}), null, inflateHtml(cb))
-  // },
-
-  // getPublished(cb) {
-  //   svc.searchMany(query.published(), { field: select.list, options: opts.publishedByNewest() }, cb)
-  // },
-
-  // getAllVisible(user, cb) {
-  //   if (user && _.contains(user.roles, "reviewer")){
-  //     var opts = { fields: Data.select.list, options: { sort: '-submitted -published'} }
-  //     svc.searchMany(Data.query.publishedReviewReady(), opts, addUrl(cb));//, function(e,r) {
-  //   }
-  //   else {
-  //     var opts = { fields: Data.select.list, options: { sort: { 'published': -1 } } };
-  //     svc.searchMany(Data.query.published(), opts, addUrl(cb))
-  //   }
-  // },
-
 
   getUsersPublished(userId, cb) {
     var options = { fields: select.list, options: opts.publishedNewest() }
@@ -197,10 +193,12 @@ var get = {
   getMyPosts(cb) {
     if (!this.user) return $callSvc(get.getRecentPublished,this)(cb)
 
-    var inReviewOpts = {  options: { sort: { 'submitted': -1 }, limit: 6 } }
+    var fields = _.extend({md:1},select.stats) // meed md for wordcount
+
+    var inReviewOpts = { fields, options: { sort: { 'submitted': -1 }, limit: 6 } }
     svc.searchMany(query.inReview(), inReviewOpts, (e,r) => {
 
-      var opts = { options: { sort: { 'created':-1, 'published':1  } } };
+      var opts = {  fields, options: { sort: { 'created':-1, 'published':1  } } };
       svc.searchMany(query.myPosts(this.user._id), opts, selectCB.addUrl((ee,rr) => {
         if (e || ee) return cb(e||ee)
         var posts = rr.slice()
@@ -217,10 +215,10 @@ var get = {
     svc.searchMany(query.inReview(), options, selectCB.addUrl(cb))
   },
 
-  getUserForks(cb){
-    // all posts where the user is a forker
-    svc.searchMany(query.forker(this.user._id), { field: Data.select.list }, selectCB.addUrl(cb))
-  },
+  // getUserForks(cb){
+  //   // all posts where the user is a forker
+  //   svc.searchMany(query.forker(this.user._id), { field: Data.select.list }, selectCB.addUrl(cb))
+  // },
 
   getGitHEAD(post, cb){
     var owner = org
@@ -230,22 +228,7 @@ var get = {
     else if ( !Roles.isOwnerOrEditor(this.user, post) )
       return cb(`Cannot get git HEAD. You have not forked ${post.slug}`)
 
-    github.getFile(owner, post.slug, "/post.md", this.user, (e,resp) => {
-      //for forker check the case where they have deleted the fork
-      if (e && e.code === 404 && owner != org)
-      {
-        github.getRepo(owner, post.slug, (err,response) => {
-          if (err && err.code === 404)
-            return cb(Error(`No fork present. <a href='/posts/fork/${post._id}'>Create new fork?</a>`))
-          else if (!err)
-            return cb(Error(`post.md of fork ${owner}/${post.slug} missing or corrupted`))
-          else
-            return cb(err)
-        })
-      }
-      else
-        cb(e,resp)
-    })
+    github2.getFile(this.user, owner, post.slug, "/post.md", 'edit', cb)
   },
 
   checkSlugAvailable(post, slug, cb){
@@ -254,12 +237,12 @@ var get = {
         if (!_.idsEqual(post._id,r._id))  //-- for posts that were published before the git authoring stuff
           return cb(null, { unavailable: `The slug ${slug} alredy belongs to another post.` })
 
-      github.getRepo(org, slug, (e,repo) => {
-        if (repo) return cb(null, { unavailable: `The repo ${slug} already exist on the airpair org, try another name.` })
+      github2.getRepo('admin', org, slug, (e,repo) => {
+        if (repo) return cb(null, { unavailable: `Try another name. A repo on the airpair org called ${slug} already exists.` })
         if (e.code == 404)
           cb(null, { available: `The repo name ${slug} is available.` })
         else
-          cb(Error(e),repo)
+          cb(Error(e), repo)
       })
     })
   },
@@ -285,6 +268,8 @@ var getAdmin = {
   },
 
 }
+
+
 
 
 function updateWithEditTouch(post, action, cb) {
@@ -319,6 +304,9 @@ var save = {
   update(original, ups, cb) {
     var act = (Roles.isOwner(this.user, original)) ? 'updateByAuthor' : 'updateByEditor'
     ups.by = PostsUtil.authorFromUser(ups.by)
+    if (original.assetUrl != ups.assetUrl && (original.submitted || original.published))
+      ups.meta = _.extend(ups.meta||{},{ogImage:ups.assetUrl})
+
     updateWithEditTouch.call(this, _.extend(original, ups), act, selectCB.editInfoView(cb))
   },
 
@@ -357,17 +345,17 @@ var save = {
   },
 
   submitForReview(post, slug, cb){
-    var repoName = slug
-    var githubOwner = this.user.social.gh.username
     TemplateSvc.mdFile('post-repo-readme', post, (readmeMD) => {
-      var trackData = { type: 'post-submit', name: post.title, postId: post._id, author: post.by.name }
+      var trackData = { type: 'post-submit', name: post.title, postId: post._id, author: post.by.name, repo: slug }
       analytics.track(this.user, this.sessionID, 'Save', trackData, {}, ()=>{})
 
-      github.setupPostRepo(repoName, githubOwner, post, readmeMD, this.user, (e, result) => {
+      github2.setupPostRepo(this.user, slug, org, post._id, post.md, readmeMD, (e, repoInfo) => {
         if (e) return cb(e)
         post.submitted = new Date()
-        post.github = { repoInfo: result }
+        post.github = { repoInfo }
         post.slug = slug
+        post.meta = post.meta || {}
+        post.meta.ogImage = post.assetUrl
         updateWithEditTouch.call(this, post, 'submittedForReview', cb)
       })
     })
@@ -375,26 +363,26 @@ var save = {
   },
 
   propagateMDfromGithub(post, cb){
-    github.getStats(org, post.slug, this.user, null, (err,resp)=>{
-      post.github.stats = resp
-      setEventData(post, (err, resp) =>{
-        if(err) return cb(err)
-        github.getFile(org, post.slug, "/post.md", null, (err, result) => {
-          if (err) return cb(err)
-          var commit = result.sha
-          post.md = result.string
-          post.publishedCommit = commit
-          if (post.published) {
-            post.publishHistory = post.publishHistory || []
-            post.publishHistory.push({
-              commit, touch: svc.newTouch.call(this, 'publish')})
-            post.publishedBy = _.pick(this.user, '_id', 'name', 'email')
-            post.publishedUpdated = new Date()
-          }
-          updateWithEditTouch.call(this, post, 'propagateMDfromGithub', cb)
-        })
-      })
+    // github.getStats(org, post.slug, this.user, null, (err,resp)=>{
+      // post.github.stats = resp
+      // setEventData(post, (err, resp) =>{
+        // if(err) return cb(err)
+    github2.getFile(this.user, org, post.slug, "/post.md", 'edit', (e, head) => {
+      if (e) return cb(e)
+      var commit = head.sha
+      post.md = head.string
+      post.publishedCommit = commit
+      if (post.published) {
+        post.publishHistory = post.publishHistory || []
+        post.publishHistory.push({
+          commit, touch: svc.newTouch.call(this, 'publish')})
+        post.publishedBy = _.pick(this.user, '_id', 'name', 'email')
+        post.publishedUpdated = new Date()
+      }
+      updateWithEditTouch.call(this, post, 'propagateMDfromGithub', cb)
     })
+      // })
+    // })
   },
 
   updateMarkdown(original, ups, cb) {
@@ -405,23 +393,23 @@ var save = {
 
     if (Roles.isForker(this.user, original)) {
       var owner = this.user.social.gh.username
-      github.updateFile(owner, original.slug, "post.md", postMD, commitMessage, this.user, (ee, result) => {
-        updateWithEditTouch.call(this, original, 'updateHEADonFork', selectCB.editView(cb, ups.md))
+      github2.updateFile(this.user, owner, original.slug, "post.md", 'edit', ups.md, ups.commitMessage, (ee, result) => {
+        updateWithEditTouch.call(this, original, 'updateHEADonFork', selectCB.editView(cb, ups.md, owner))
       })
     }
     else if (Roles.isOwner(this.user, original)) {
       var owner = org
-      github.updateFile(owner, original.slug, "post.md", postMD, commitMessage, this.user, (ee, result) => {
+      github2.updateFile(this.user, owner, original.slug, "post.md", 'edit', ups.md, ups.commitMessage, (ee, result) => {
         if (ee) return cb(ee)
         // if (!original.published) {
           // original.md = postMD
           // original.publishedCommit = result.commit
         // }
-        setEventData(original, (err,resp) => {
-          if (err) return cb(err)
-          $log('setEventData.resp', resp)
-          updateWithEditTouch.call(this, original, 'updateHEAD', selectCB.editView(cb, postMD))
-        })
+        // setEventData(original, (err,resp) => {
+          // if (err) return cb(err)
+          // $log('setEventData.resp', resp)
+        updateWithEditTouch.call(this, original, 'updateHEAD', selectCB.editView(cb, ups.md, owner))
+        // })
       })
     } else {
       cb(Error("Must be a forker to update post HEAD"))
@@ -429,15 +417,15 @@ var save = {
   },
 
   addForker(post, cb) {
-    var githubUser = this.user.social.gh.username
-    github.addContributor(this.user, post.slug, post.github.repoInfo.reviewTeamId, (e, res) => {
+    github2.addContributor(this.user, org, post.slug, (e, fork) => {
       if (e) return cb(e)
       var { name, email, social } = this.user
       post.forkers = post.forkers || []
-      var existing = _.find(post.forkers, (f)=>_.idsEqual(f.userId,this.user._id))
+      var existing = _.find(post.forkers, (f) => _.idsEqual(f.userId,this.user._id))
       if (!existing)
         post.forkers.push({ userId: this.user._id, name, email, social })
-      svc.update(post._id, post, cb)
+      post.stats = PostsUtil.calcStats(post)
+      svc.update(post._id, post, selectCB.statsView(cb))
     })
   },
 
@@ -463,6 +451,7 @@ var saveReviews = {
     post.reviews = post.reviews || []
     post.reviews.push(review)
 
+    post.stats = PostsUtil.calcStats(post)
     svc.update(post._id, post, selectCB.statsView(cb))
 
     //-- Probably better doing the db hit as we ensure the right email if the user
@@ -476,7 +465,9 @@ var saveReviews = {
 
   reviewUpdate(post, original, reviewUpdated, cb) {
     var review = _.find(post.reviews,(r)=>_.idsEqual(r._id,original._id))
+    reviewUpdated.updated = new Date
     review = _.extend(review,reviewUpdated)
+    post.stats = PostsUtil.calcStats(post)
     svc.update(post._id, post, selectCB.statsView(cb))
   },
 
@@ -498,6 +489,7 @@ var saveReviews = {
 
       mailman.sendPostReviewReplyNotification(threadParticipants, post._id, post.title, reply.by.name, reply.comment)
 
+      post.stats = PostsUtil.calcStats(post)
       svc.update(post._id, post, selectCB.statsView(cb))
     })
   },

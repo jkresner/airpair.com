@@ -41,7 +41,7 @@
       <li ng-if="!post.github && !post.submitted && !post.published"><a ng-click="delete(post._id)">Delete</a></li>
       <li ng-if="post.github"><a href="/posts/edit/{{ post._id }}" target="_blank">Edit</a></li>
       <li ng-if="post.submitted"><a href="/posts/publish/{{ post._id }}" target="_blank">Publish</a></li>
-      <li ng-if="post.tags && post.tags.length > 0"><a href="/posts/preview/{{ post._id }}" target="_blank">Preview</a></li>
+      <li ng-if="post.tags && post.tags.length > 0 || session._id == '5175efbfa3802cc4d5a5e6ed'"><a href="/posts/preview/{{ post._id }}" target="_blank">Preview</a></li>
       <li ng-if="post.published"><a href="{{ post.url }}" target="_blank">View</a></li>
       <li ng-if="post.github">
         <a class="repo" href="//github.com/airpair/{{ post.slug }}" target="_blank" class="repo">Repo</a>

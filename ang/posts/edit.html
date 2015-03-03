@@ -1,33 +1,33 @@
-<header>
+<!-- <header>
   <ol class="entry-meta breadcrumb">
     <li><a href="/posts" target="_self">Posts</a></li>
     <li><a href="/posts/me">My Posts</a></li>
     <li class="current">Author</li>
   </ol>
 </header>
-
+ -->
 
 <section class="authoringnotsupported">
   <h3>You'll need a bigger screen...</h3>
   <p>Authoring posts on AirPair requires a minimum resolution of 1260px.</p>
 </section>
 
-
 <section id="posteditor" ng-if="session.emailVerified">
 
 <div ng-if="editErr" class="editor-error-wrap" style="text-align:center">
   <h3 ng-bind-html="editErr.message | html"></h3>
   <h2 ng-if="_id">Try <a href="/posts/fork/{{_id}}" target="_self">fork it</a> now? </h2>
-  <h2 ng-if="fork">Go to <a href="https://github.com/{{fork}}" target="_blank">{{fork}}</a> </h2>
 </div>
 
-<div ng-if="post" class="poststauts">
-  <b>Status</b>
-  <span ng-if="!post.submitted && !post.published">In draft,</span>
-  <span ng-if="post.saved">saved.</span>
-  <span ng-if="!post.saved">unsaved.</span>
-
+<div ng-if="post" class="poststauts {{post.saved ? 'saved': 'unsaved' }}">
   <post-step-helper post="post" class="tip"></post-step-helper>
+
+  <span class="status">
+    <b>Status</b>
+    <span ng-if="!post.submitted && !post.published">In draft,</span>
+    <span ng-if="post.submitted && !post.published"><a href="/posts/in-community-review" target="_blank">in community review</a>,</span>
+    <span class="saved" ng-if="post.saved">saved<span ng-if="post.submitted"> to <a href="https://www.github.com/{{post.repo}}/blob/edit/post.md" target="_blank">repo</a></span></span><span class="unsaved" ng-if="!post.saved">unsaved</span><span ng-if="post.submitted">, <span class="saved" ng-if="post.synced">synced</span><span class="unsaved" ng-if="!post.synced">not synced</span></span>.
+  </span>
 </div>
 
 <div ng-if="post" class="editor-wrap">
@@ -44,7 +44,6 @@
     ng-model="aceMD"
     >
   </section>
-      <!-- theme:'solarized_light', -->
 
   <section id="post" ap-post="">
   </section>
@@ -55,13 +54,19 @@
 
   <button class="btn" ng-click="save()" ng-disabled="post.saved">Save</button>
 
-  <a class="btn" href="/posts/info/{{post._id}}" ng-if="!post.published" ng-disabled="preview.wordcount < 400 || !post.saved">Info</a>
+  <a class="btn" href="/posts/info/{{post._id}}" ng-if="!post.published" ng-disabled="preview.wordcount < 400 || !post.saved">Header</a>
 
   <a class="btn" href="/posts/preview/{{post._id}}" target="_blank"
     ng-disabled="!post.saved || !post.assetUrl || !post.tags || post.tags.length == 0">Preview</a>
 
-  <a class="btn" href="/posts/publish/{{post._id}}" ng-if="post.submitted"
-    ng-disabled="!post.saved">Publish</a>
+  <a class="btn" href="https://github.com/airpair/{{post.slug}}/compare/edit...{{session.social.gh.username}}:edit" target="_blank" ng-if="!isAuthor"
+    ng-disabled="!post.saved || post.synced">Create PR</a>
+
+  <a class="btn" href="/posts/publish/{{post._id}}" ng-if="post.submitted && isAuthor"
+    ng-disabled="!post.saved || post.synced">Sync</a>
+
+  <a class="btn" href="/posts/publish/{{post._id}}" ng-if="post.submitted && isAuthor"
+    ng-disabled="!post.saved || !(post.stats && posts.stats.reviews > 3 && post.stats.rating > 3.5)">Publish</a>
 
   <a class="btn" title="Submit post for community review"
     href="/posts/submit/{{post._id}}"
@@ -71,6 +76,10 @@
   <div class="commitmsg" ng-if="post.submitted">
     <input type="text" ng-disabled="post.saved" ng-model="post.commitMessage" placeholder="Enter a commit message" class="form-control" />
   </div>
+
+  <label ng-if="!(post.submitted || post.published)"> <!-- && wordcountTooLow -->
+    See the <a href="http://daringfireball.net/projects/markdown/syntax" target="_blank">Markdown guide</a> & our <a href="/authoring-faq" target="_blank">Authoring FAQ</a>
+  </label>
 
 </div>
 

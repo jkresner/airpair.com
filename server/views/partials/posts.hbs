@@ -6,13 +6,11 @@
 
 <banner-postcomp></banner-postcomp>
 
-<section id="postslist">
+<section id="allposts">
 
-  <section id="allposts">
-    <h3>All posts<span><a href="/posts/me" class="btn" target="_self">Contribute</a></span></h3>
-    <div class="posts recent">
-      {{#each this}}{{> postListItem this}}{{/each}}
-    </div>
-  </section>
+  <h1 class="underline">All software posts <a href="/posts/me" class="btn" target="_self">Contribute</a></h1>
+  <div>
+    {{#each this}}{{> postListItem this}}{{/each}}
+  </div>
 
 </section>

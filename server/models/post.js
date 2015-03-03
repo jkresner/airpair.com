@@ -29,16 +29,39 @@ var Author = {
   avatar:       { required: true, type: String },
   bio:          { required: true, type: String },
   username:     { type: String, lowercase: true },
-  social:       { type: Shared.SocialAccounts }
+  social:       { type: {
+      gh: {     username: { type: String } },
+      so: {     link: { type: String } },
+      bb: {     username: { type: String } },
+      in: {     id: { type: String } },
+      tw: {     username: { type: String } },
+      al: {     username: { type: String } },
+      gp: {     link: { type: String } }
+    }
+  }
+}
+
+var StatsSummary = {
+  rating:           { type: Number },
+  reviews:          { type: Number },
+  comments:         { type: Number }, // includes reviews & replies
+  forkers:          { type: Number },
+  acceptedPRs:      { type: Number },
+  closedPRs:        { type: Number },
+  openPRs:          { type: Number },
+  shares:           { type: Number },
+  words:            { type: Number },
 }
 
 var Github =    {
   repoInfo:     {
-    reviewTeamId:   { type: String },
+    // reviewTeamId:   { type: String },
     authorTeamId:   { type: String },
-    owner:          { type: String },
+    // owner:          { type: String },
+    authorTeamName: { type: String },
     author:         { type: String },
-    url:            { type: String, lowercase: true}
+    url:            { type: String, lowercase: true },
+    // SHA of file ?
   },
   events: Array,
   stats: Array //Object?
@@ -90,7 +113,9 @@ module.exports = mongoose.model('Post', new mongoose.Schema({
   meta:             Meta,
   tmpl:             { type: String, enum: tmplType },
 
-  editHistory:     [Shared.Touch],
-  publishHistory:  [PublishEvent],
+  editHistory:      [Shared.Touch],
+  publishHistory:   [PublishEvent],
+
+  stats:            StatsSummary
 
 }))

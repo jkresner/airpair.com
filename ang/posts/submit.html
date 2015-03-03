@@ -1,69 +1,66 @@
 <header>
   <ol class="entry-meta breadcrumb">
     <li><a href="/posts">Posts</a></li>
-    <li>{{post.title}}</li>
-    <li class="current">Fork</li>
+    <li class="current">Submit</li>
+    <li ng-if="post">{{post.title}}</li>
   </ol>
 </header>
 
 
 <section id="postfork">
 
-  <section id="recent">
-    <div class="posts recent">
-      <ap-post-list-item post="p" ng-repeat="p in tofork"></ap-post-list-item>
-    </div>
-  </section>
+  <section id="forkinfo" ng-if="post">
 
-  <section id="forkinfo">
+    <h2>A repo will be created on AirPair's Github organization account</h2>
 
-    <h2>A private repo will be created on AirPair's Github</h2>
+    <h3>Why use Git for authoring?</h3>
 
-    <h3>Why does AirPair use Github?</h3>
+    <p>Posts on AirPair are backed by GitHub repos. Git
+    enables collaboration between authors and readers using familiar tools
+    you know and love like forks, pull requests, issues & comments.
+    For more info, see our
+    <a href="/social-authoring" target="_blank">Social Authoring Annoucement</a>.</p>
 
-    <p>Posts created on AirPair are backed by github repositories. This
-    enables community members to work together leveraging all the great Github tools
-    you know and love like commit logs, pull requests, issues, comments and more.
-    These features make writing great content easier and a more social experience.</p>
-
-    <img src="/static/img/pages/posts/post-authoring-flow.png" />
+    <img class="flow" src="/static/img/pages/posts/authoring-flow-store.png" />
 
     <div ng-if="!repoAuthorized">
       <section class="notice">
         <h3>We need to authenticate with your Github account.</h3>
-        <p>You will be redirected to a github login page requesting repository permissions,
-        so we can fork this post to your account.</p>
+        <p>You will be redirected to a github login page requesting public repository permissions, so we can fork this post to your account.</p>
       </section>
       <hr />
-      <a ng-href="/auth/github?returnTo=/posts/submit/{{_id}}" class="btn" target="_self">Authenticate your github account with repo privilages</a>
+      <a ng-href="/auth/github?returnTo=/posts/submit/{{_id}}" class="btn" target="_self">Authenticate your github account with public repo privilages</a>
       <p>You will be added to the airpair organization on github, so that you have write access to the repo</p>
     </div>
 
-    <div ng-if="repoAuthorized">
+    <div class="submitRepo" ng-if="repoAuthorized">
       <hr />
 
-      <div class="form-group">
-        <label>Repo name</label>
-        <input ng-model="post.slug" type="text" class="form-control" />
+      <div ng-if="post" class="form-group">
+        <label>
+          <b ng-if="slugStatus.available" style="color:green">Repo name
+            <span>{{post.slug}}</span> available</b>
+          <b ng-if="!slugStatus.available" style="color:red">Repo name
+            <span>{{post.slug}}</span> unavailable</b>
+        </label>
 
-        <div ng-if="slugStatus.available">
-          <p><i style="color:green">The repo name <b>{{post.slug}}</b> is available.</i> <br />
-            <b style="color:red">** MAKE SURE you are happy with the repo name, no turning back from here.</b>
-          </p>
-        </div>
-
-        <div ng-if="slugStatus.unavailable">
-          <p><i style="color:red">The repo name <b>{{post.slug}}</b> is unavailable.</i> <br /></p>
-        </div>
+        <input ng-model="post.slug" type="text" class="form-control"
+          ng-change="checkSlugAvailable(post.slug)" />
 
       </div>
 
       <div ng-if="slugStatus.available">
-        <single-submit button-text="'Submit Post for Review & Create Repo'" wait-text="Creating repo, this can take a few seconds ..." on-single-click="submitForReviewDeferred">
-        </single-submit>
-      </div>
+        <div>
+          <single-submit button-text="'Submit Post for Review & Create Repo'" wait-text="Creating repo, this can take a few seconds ..." on-single-click="submitForReviewDeferred">
+          </single-submit>
+        </div>
+        <p>
+          <span style="color:red;text-transform:uppercase">** MAKE SURE you are happy with your repo name, <b>no changes from here</b></span>
+        </p>
 
-      <p>You will be added to the airpair organization on github, so you have write access to the repo</p>
+        <p> In order to give you write privilages to the repo,
+        we'll add you to the airpair organization on GitHub.</p>
+      </div>
     </div>
 
   </section>
