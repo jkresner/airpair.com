@@ -47,6 +47,8 @@ var StatsSummary = {
   comments:         { type: Number }, // includes reviews & replies
   forkers:          { type: Number },
   acceptedPRs:      { type: Number },
+  closedPRs:        { type: Number },
+  openPRs:          { type: Number },
   shares:           { type: Number },
   words:            { type: Number },
 }

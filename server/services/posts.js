@@ -40,14 +40,27 @@ var get = {
     else if ( !Roles.isOwnerOrEditor(this.user, post) )
       return cb(`Cannot edit this post. You need to fork ${post.slug}`)
 
-    // $log('getByIdForEditing', owner, post.slug, this.user.social.gh)
     github2.getFile(this.user, owner, post.slug, "/post.md", 'edit', (e, postMDfile) => {
       selectCB.editView(cb, postMDfile.string, owner)(e, post)
     })
   },
 
   getByIdForContributors(post, cb) {
-    selectCB.statsView(cb)(null, post)
+    github2.getPullRequests(this.user, org, post.slug, (e, pullRequests) => {
+      post.pullRequests = selectFromObject({pullRequests}, select.pr).pullRequests
+      var {openPRs,closedPRs,acceptedPRs} = PostsUtil.calcStats(post)
+      if (!post.stats
+        || post.stats.acceptedPRs != acceptedPRs
+        || post.stats.closedPRs != closedPRs
+        || post.stats.openPRs != openPRs
+        )
+      {
+        // Unfortunately this is not right, we need to query the github api again to see if they were merged
+        post.stats = _.extend(post.stats||{},{acceptedPRs,openPRs,closedPRs})
+        svc.update(post._id, post, selectCB.statsView(cb))
+      } else
+        selectCB.statsView(cb)(null, post)
+    })
   },
 
   getByIdForSubmitting(post, cb) {
@@ -452,6 +465,7 @@ var saveReviews = {
 
   reviewUpdate(post, original, reviewUpdated, cb) {
     var review = _.find(post.reviews,(r)=>_.idsEqual(r._id,original._id))
+    reviewUpdated.updated = new Date
     review = _.extend(review,reviewUpdated)
     post.stats = PostsUtil.calcStats(post)
     svc.update(post._id, post, selectCB.statsView(cb))
