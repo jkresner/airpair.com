@@ -60,7 +60,7 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
 
       $scope.calcReviewStep = () => {
         if ($scope.p.published || !$scope.p.submitted) return false
-        if ($scope.p.reviews.length < 3)
+        if (!$scope.p.stats || $scope.p.stats.reviews < 3)
           return $scope.needReviews = true
         else {
           if ($scope.p.by.userId == $rootScope.session._id)
@@ -96,7 +96,7 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
         if (r[i].forked) {
           forks.push(r[i])
           r[i].needsMyReview = !_.find(r[i].reviews,(rev)=>rev.by._id == meUserId)
-          r[i].needsMyFork = !_.find(r[i].fork,(f)=>f.by._id == meUserId)
+          r[i].needsMyFork = !_.find(r[i].forkers,(f)=>f.userId == meUserId)
         }
       }
 
@@ -204,8 +204,11 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
 
   if (_id)
     DataService.posts.getByIdForEditingInfo({_id}, (r) => {
-      if ($scope.session._id == r.by.userId)  // don't wipe author with editor session
+      if ($scope.session._id == r.by.userId) { // don't wipe author with editor session
+        var bio = r.by.bio
         r.by = _.extend(r.by, $scope.session)  // update new social links
+        r.by.bio = bio // in case this post has it's own specific bio, don't wipe it!
+      }
       $scope.post = r
     })
   else
@@ -245,7 +248,9 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
   $scope.previewMarkdown = previewMarkdown
 
   var setPostScope = function(r) {
-    if ((r.published && !r.submitted) && (r.by.userId == $scope.session._id))
+    $scope.isAuthor = r.by.userId == $scope.session._id
+
+    if ((r.published && !r.submitted) && ($scope.isAuthor))
       return $scope.editErr = { message: `Edits on published posts my be tracked in git. <br />Please <a href="/posts/submit/${r._id}">submit your post</a> to continue editing it.` }
 
     if (r.md == "new") r.md = StaticDataService.defaultPostMarkdown
@@ -418,6 +423,7 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
   var _id = $routeParams.id
 
   DataService.posts.getByIdForContributors({_id}, (r) => {
+    if (r.url.indexOf('/posts/review') == 0) r.url = `https://www.airpair.com${r.url}`
     $scope.post = PostsUtil.extendWithReviewsSummary(r)
   })
 

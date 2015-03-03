@@ -100,15 +100,6 @@ export default function(app) {
       app.renderHbsViewData('post', null, (req, cb) => cb(null, req.post)))
 
 
-    .get('/preview/draft/jk-git-authoring-annoucement', function(req, res, next) {
-      var jk = { _id:"5175efbfa3802cc4d5a5e6ed", social: { "gh" : { "username" : "jkresner", "token" : { "token" : process.env.JK_GITHUB } } } }
-      $callSvc(PostsAPI.svc.getByIdForPreview, {user:jk})('54d52d45ee3c760a005e544e', (e,r) => {
-        req.post = r
-        next()
-      })},
-      app.renderHbsViewData('post', null, (req, cb) => cb(null, req.post)))
-
-
     .get('/posts/preview/:id', authd, populateUser, function(req, res, next) {
       $callSvc(PostsAPI.svc.getByIdForPreview, req)(req.params.id, (e,r) => {
         if (!r) return res.redirect('/posts/me')
