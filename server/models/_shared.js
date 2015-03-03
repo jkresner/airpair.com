@@ -62,6 +62,7 @@ var SocialAccounts = {
 var Survey = new Schema({
   type:         { require:true, type: String },
   by:           { require:true, type: UserByte },
+  updated:      { type: Date },
   questions:    { require:true, type: [{
       idx:            { require:true, type: Number },
       key:            { require:true, type: String, lowercase:true },
