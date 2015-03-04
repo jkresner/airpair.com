@@ -8,7 +8,11 @@ export default initAPI(
   search: (req) => [req.params.id],
   getMatchesForRequest: (req) => [req.request],
   getMatchesForDashboard: (req) => [],
+  create: (req) => [req.body],
+  updateMe: (req) => [req.expert,req.body],
   updateMatchingStats: (req) => [req.params.id,req.request],
 }, {
   'expert':'getById'
-})
+},
+  require('../../shared/validation/experts.js')
+)

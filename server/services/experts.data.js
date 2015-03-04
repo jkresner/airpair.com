@@ -1,43 +1,119 @@
-// import * as md5           from '../util/md5'
-var util =    require('../../shared/util')
+import * as md5           from '../util/md5'
+var {selectFromObject}    = require('../../shared/util')
 
-
-var select = {
-  matches: {
-    '_id': 1,
-    'name': 1,
-    'email': 1,
-    'tags._id': 1,
-    'tags.short': 1,
-    'rate': 1,
-    'minRate': 1,
-    'gh.username': 1,
-    'gh.followers': 1,
-    'so.link': 1,
-    'so.reputation': 1,
-    'bb.id': 1,
-    'bb.followers': 1,
-    'in.id': 1,
-    'in.endorsements': 1,
-    'tw.username': 1,
-    'tw.followers': 1,
-    'matching': 1
-  },
-  search: {
-    '_id': 1,
-    'name': 1,
-    'email': 1,
-    'username': 1,
-    'tags.short': 1,
-    'bookMe.urlSlug': 1
-  }
-}
-
-module.exports = {
+var data = {
 
   select: {
-    matches: select.matches,
-    search: select.search,
+    matches: {
+      '_id': 1,
+      'name': 1,
+      'email': 1,
+      'tags._id': 1,
+      'tags.short': 1,
+      'rate': 1,
+      'minRate': 1,
+      'gh.username': 1,
+      'gh.followers': 1,
+      'so.link': 1,
+      'so.reputation': 1,
+      'bb.id': 1,
+      'bb.followers': 1,
+      'in.id': 1,
+      'in.endorsements': 1,
+      'tw.username': 1,
+      'tw.followers': 1,
+      'matching': 1
+    },
+    search: {
+      '_id': 1,
+      'name': 1,
+      'email': 1,
+      'username': 1,
+      'tags.short': 1,
+      'bookMe.urlSlug': 1
+    },
+    me: {
+      '_id': 1,
+      'userId': 1,
+      // 'user': 1,
+      'name': 1,
+      'email': 1,
+      'username': 1,
+      'initials': 1,
+      'bio': 1,
+      'location': 1,
+      'timezone': 1,
+      'tags': 1,
+      'rate': 1,
+      'brief': 1,
+      'matching': 1,
+      'lastTouch': 1,
+      'gh': 1,
+      'gp': 1,
+      'tw': 1,
+      'in': 1,
+      'al': 1,
+      'so': 1,
+      'bb': 1,
+      'minRate': 1
+    },
+    userCopy: {
+      '_id': 1,
+      'name': 1,
+      'email': 1,
+      'username': 1,
+      'initials': 1,
+      'bio': 1,
+      'localization.location': 1,
+      'localization.timezone': 1,
+      'social':1
+    },
+    updateME: {
+      '_id': 1,
+      'userId': 1,
+      'user': 1,
+      'settings': 1,
+      'rate': 1,
+      'brief': 1,
+      'tags': 1,
+      'homepage': 1,
+      'matching': 1,
+      'activity': 1,
+      'lastTouch': 1,
+
+      'gmail': 1,
+      'pic': 1,
+      'karma': 1,
+      //v0 ?
+      bookMe: 1
+    },
+    cb: {
+      addAvatar(cb) {
+        return (e,r) => {
+          if (e || !r) return cb(e,r)
+          r.avatar = md5.gravatarUrl(r.email||r.user.email)
+          cb(null,r)
+        }
+      },
+      me(cb) {
+        return (e,r) => {
+          if (e) return cb(e)
+          if (r.user) {
+            delete r.user._id
+            var social = r.user.social
+            // how we handle staying v0 on front-end
+            r = _.extend(_.extend(r,r.user),r.social)
+            r.location = r.localization.location
+            r.timezone = r.localization.timezone
+          }
+          r.avatar = md5.gravatarUrl(r.email||r.user.email)
+
+          r.minRate = r.minRate || r.rate
+
+          cb(null, selectFromObject(r, data.select.me))
+        }
+      }
+    }
   },
 
   query: {
@@ -126,3 +202,6 @@ module.exports = {
   }
 
 }
+
+
+module.exports = data

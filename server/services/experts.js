@@ -3,26 +3,21 @@ import * as Validate      from '../../shared/validation/experts.js'
 import Expert             from '../models/expert'
 import Request            from '../models/request'
 import * as md5           from '../util/md5'
-var util =                require('../../shared/util')
-var Data =                require('./experts.data')
-var logging = false
-var svc = new Svc(Expert, logging)
-
+var {ObjectId2Date,
+  selectFromObject}       = require('../../shared/util')
+var Data                  = require('./experts.data')
+var {select}              = Data
+var selectCB              = select.cb
+var logging               = false
+var svc                   = new Svc(Expert, logging)
+var UserSvc               = require('../services/users')
 
 var get = {
   getById(id, cb) {
-    svc.getById(id, (e,r) => {
-      if (e || !r) return cb(e,r)
-      r.avatar = md5.gravatarUrl(r.email)
-      cb(null,r)
-    })
+    svc.getById(id,selectCB.addAvatar(cb))
   },
   getMe(cb) {
-    svc.searchOne({userId:this.user._id}, null, (e,r) => {
-      if (e || !r) return cb(e,r)
-      r.avatar = md5.gravatarUrl(r.email)
-      cb(null,r)
-    })
+    svc.searchOne({userId:this.user._id}, null, selectCB.me(cb))
   },
   getForExpertsPage(cb) {
     var d = Data.data.getForExpertsPage
@@ -119,7 +114,51 @@ var get = {
   }
 }
 
+// Lost the updateWithTouch
+
+function updateWithTouch(expert, action, trackData, cb) {
+  var previousAction = (expert.lastTouch) ? expert.lastTouch.action : null
+  if (action != previousAction ||
+    moment(expert.lastTouch.utc).isBefore(moment().add(1, 'hours')))
+  {
+    expert.lastTouch = svc.newTouch.call(this, action)
+    expert.activity = expert.activity || []
+    expert.activity.push(expert.lastTouch)
+  }
+
+  if (action == 'create')
+    svc.create(expert, cb)
+  else
+    svc.update(expert._id, expert, cb)
+
+  if (trackData)
+    analytics.track(this.user, this.sessionID, 'Save',
+      _.extend(trackData,{type:expert,action}), {}, ()=>{})
+}
+
+
 var save = {
+
+  create(expert, cb) {
+    var trackData = { name: this.user.name }
+    expert.user = selectFromObject(this.user, select.userCopy)
+    expert.userId = this.user._id
+    $callSvc(updateWithTouch, this)(expert, 'create', trackData, (e,r) => {
+      if (r._id)
+        $callSvc(UserSvc.setExpertCohort, this)(r._id)
+      selectCB.me(cb)(e,r)
+    })
+  },
+
+  updateMe(original, ups, cb) {
+    var trackData = { name: this.user.name, _id: original._id }
+    ups.user = selectFromObject(this.user, select.userCopy)
+    var expert = selectFromObject(_.extend(original,ups), select.updateMe)
+    $callSvc(updateWithTouch, this)(expert, 'update', trackData, selectCB.me(cb))
+    if (!this.user.cohort.expert || this.user.cohort.expert._id != ups._id)
+      $callSvc(UserSvc.setExpertCohort, this)(ups._id)
+  },
+
   updateMatchingStats(expertId, request, cb) {
     get.getById(expertId, (e,expert) => {
       if (e || !expert) cb(e)
@@ -139,11 +178,11 @@ var save = {
             var expertSuggestion = _.find(r.suggested,(s)=>_.idsEqual(s.expert._id,expertId))
             expertSuggestions.push(_.extend(expertSuggestion,{requestId:r._id}))
             if (!lastSuggest || expertSuggestion._id > lastSuggest._id)
-              lastSuggest = util.ObjectId2Date(expertSuggestion._id)
+              lastSuggest = ObjectId2Date(expertSuggestion._id)
             if (expertSuggestion.expertStatus != 'waiting') {
               replied = replied + 1
               if (!lastReply || expertSuggestion._id > lastReply._id) lastReply =
-                util.ObjectId2Date(expertSuggestion._id)
+                ObjectId2Date(expertSuggestion._id)
             }
 
             var calls = _.where(r.calls,(c)=>_.idsEqual(c.expertId,expertId))
@@ -157,7 +196,7 @@ var save = {
           var map = function(s) {
             var d =
             {
-              replied:util.ObjectId2Date(s._id),
+              replied:ObjectId2Date(s._id),
               status:s.expertStatus,
               comment:s.expertComment,
               requestId:s.requestId
