@@ -98,6 +98,31 @@ stories = {
           done(s)
 
 
+  createNewExpert: (seedKey, expData, done) ->
+    userKey = "#{seedKey}#{timeSeed()}"
+    username = "#{seedKey}-#{timeSeed()}"
+    initials = "ap-#{timeSeed()}"
+    localization = data.wrappers.locationlization_melbourne
+    username = userKey
+    bio = "a bio for apexpert 1 #{timeSeed()}"
+    user = _.extend({username,initials,localization,username,bio}, data.users[seedKey])
+    if (user.social)
+      user.social.gh = user.social.gh || data.users.ape1.social.gh
+    else
+      user.social = { gh: data.users.ape1.social.gh }
+    user.google = user.google || data.users.ape1.google
+    user._id = newId()
+    user.email = user.email.replace('@',timeSeed()+'@')
+    user.googleId = timeSeed()
+    db.ensureDoc 'User', user, ->
+      data.users[userKey] = user
+      LOGIN userKey, data.users[userKey], (s) ->
+        s.userKey = userKey
+        d = rate: 110, breif: 'yo', tags: [data.tags.angular]
+        POST "/experts/me", d, {}, (expert) ->
+          done(s, expert)
+
+
   createNewPost: (userKey, postData, done) ->
     LOGIN userKey, data.users[userKey], (authorSession) ->
       title = postData.title || 'A test post '+moment().format('X')

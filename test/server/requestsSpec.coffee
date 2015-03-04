@@ -3,7 +3,8 @@ module.exports = -> describe "API", ->
   before (done) ->
     SETUP.analytics.stub()
     SETUP.initTags ->
-      SETUP.ensureExpert 'abha', done
+      SETUP.createNewExpert 'abha', {}, (s,exp) ->
+        done()
 
   after ->
     SETUP.analytics.restore()

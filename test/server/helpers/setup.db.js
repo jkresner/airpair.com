@@ -68,8 +68,9 @@ var db = {
   },
 
   ensureExpert(userKey, cb) {
-    var user = data.users[userKey]
+    var user = _.extend({localization:data.wrappers.locationlization_melbourne}, data.users[userKey])
     var expert = data.experts[userKey]
+    expert.user = user
     ensureDocument(Models.User, user, () => {
       ensureDocument(Models.Expert, expert, cb)
     })

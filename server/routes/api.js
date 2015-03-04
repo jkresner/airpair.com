@@ -95,7 +95,8 @@ export default function(app) {
     .get('/experts/:id', API.Experts.getById)
     .get('/experts', API.Experts.getForExpertsPage)
     .get('/experts/match/:request', authd, API.Experts.getMatchesForRequest)
-
+    .post('/experts/me', populateUser, API.Experts.create)
+    .put('/experts/:expert/me', populateUser, API.Experts.updateMe)
 
   var postsrouter = require('express').Router()
     .param('post', API.Posts.paramFns.getById)

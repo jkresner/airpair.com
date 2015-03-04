@@ -229,6 +229,47 @@ module.exports = {
     "url":"https://maps.google.com/maps/place?q=Bengaluru,+Karnataka,+India&ftid=0x3bae1670c9b44e6d:0xf8dfc3e8517e4fe0",
     "vicinity":"Bengaluru",
     "html_attributions":[]
-  }
+  },
+
+
+  locationlization_melbourne : {
+    "location" : "Melbourne VIC, Australia",
+    "locationData" : {
+      "formatted_address": "Melbourne VIC, Australia",
+      "address_components" : [
+        {
+          "long_name" : "Melbourne",
+          "short_name" : "Melbourne",
+          "types" : ["locality","political" ]
+        },
+        {
+          "long_name" : "Victoria",
+          "short_name" : "VIC",
+          "types" : [ "administrative_area_level_1", "political" ]
+        },
+        {
+          "long_name" : "Australia",
+          "short_name" : "AU",
+          "types" : [ "country", "political" ]
+        }
+      ],
+      "geometry" : {
+          "location" : { "k" : -37.8142155, "D" : 144.9632306999999 },
+          "viewport" : {
+              "Ca" : { "k" : -37.8546255, "j" : -37.7994893 },
+              "va" : { "j" : 144.9514222, "k" : 144.9890617999999 }
+          }
+      },
+      "name" : "Melbourne"
+    },
+    "timezone" : "Australian Eastern Standard Time",
+    "timezoneData" : {
+        "dstOffset" : 0,
+        "rawOffset" : 36000,
+        "status" : "OK",
+        "timeZoneId" : "Australia/Hobart",
+        "timeZoneName" : "Australian Eastern Standard Time"
+    }
+  },
 
 }

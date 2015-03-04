@@ -38,6 +38,7 @@ describe 'Server: ', ->
   describe('Authz: ', require('./authzSpec'))
   describe('Users: ', require('./usersSpec'))
   describe('User Flows: ', require('./userFlowsSpec'))
+  describe('Experts: ', require('./expertsSpec'))
   describe('Analytics: ', require('./analyticsSpec'))
   describe('Tags: ', require('./tagsSpec'))
   describe('Companys: ', require('./companysSpec'))
