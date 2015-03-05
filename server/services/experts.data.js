@@ -97,7 +97,7 @@ var data = {
       },
       me(cb) {
         return (e,r) => {
-          if (e) return cb(e)
+          if (e || !r) return cb(e, r)
           if (r.user) {
             delete r.user._id
             var social = r.user.social

@@ -35,7 +35,7 @@ angular.module("APProfile", ['ngRoute', 'APFilters', 'APSvcSession', 'APTagInput
       }
 
       $rootScope.$watch('session', (session) => {
-        $scope.data = _.pick(session, 'name','email','initials','username','bio')
+        $scope.data = _.extend($scope.data||{},_.pick(session, 'name','email','initials','username','bio'))
 
         console.log('sesh',$scope.data.bio)
         if (session.localization)
@@ -197,17 +197,17 @@ angular.module("APProfile", ['ngRoute', 'APFilters', 'APSvcSession', 'APTagInput
 
 .controller('ExpertApplicationCtrl', ($rootScope, $scope, DataService, SessionService, Util) => {
 
-  $scope.tags = () => $scope.expert ? $scope.expert.tags : null;
+  $scope.tags = () => $scope.data ? $scope.data.tags : null;
   $scope.updateTags = (scope, newTags) => {
     if (!$scope.expert) return
-    $scope.expert.tags = newTags;
+    $scope.data.tags = newTags;
   }
   $scope.selectTag = function(tag) {
-    var tags = $scope.expert.tags;
-    if ( _.contains(tags, tag) ) $scope.expert.tags = _.without(tags, tag)
-    else $scope.post.expert = _.union(tags, [tag])
+    var tags = $scope.data.tags;
+    if ( _.contains(tags, tag) ) $scope.data.tags = _.without(tags, tag)
+    else $scope.data.tags = _.union(tags, [tag])
   };
-  $scope.deselectTag = (tag) => $scope.expert.tags = _.without($scope.expert.tags, tag)
+  $scope.deselectTag = (tag) => $scope.data.tags = _.without($scope.data.tags, tag)
 
   $scope.updateBio = (valid, bio) => {
     if (valid) {
@@ -218,23 +218,32 @@ angular.module("APProfile", ['ngRoute', 'APFilters', 'APSvcSession', 'APTagInput
     }
   }
 
-  console.log($scope.session.bio)
+  if (!$scope.data) $scope.data = { bio: $scope.session.bio }
   $scope.socialCount = _.keys($scope.session.social||{}).length
 
-  // DataService.experts.getMe({}, (expert) => {
-  //   $scope.expert = expert
-  //   if (expert.hours) {
-  //     $scope.v0expert = true
-  //     $scope.firstName = Util.firstName(expert.name)
-  //   } else {
-  //     $scope.data = _.extend($scope.data||{},expert)
-  //   }
-  // })
+  DataService.experts.getMe({}, (expert) => {
+    console.log('$scope.data', $scope.data)
+    $scope.expert = expert
+    if (expert.hours) {
+      $scope.v0expert = true
+      $scope.firstName = Util.firstName(expert.name)
+    } else {
+      delete expert.bio
+      console.log('expert.bio', expert, $scope.data)
+      $scope.data = _.extend(expert, $scope.data||{})
+    }
+  })
 
-  // $scope.save = () =>
-  //   DataService.experts.updateMe(_.pick($scope.data,'_id','tags','rate','brief'), (expert) => {
-  //     console.log('expert created', expert)
-  //   })
+  $scope.save = () => {
+    if ($scope.data._id)
+      DataService.experts.updateMe(_.pick($scope.data,'_id','tags','rate','brief'), (expert) => {
+        console.log('expert updated', expert)
+      })
+    else
+      DataService.experts.create(_.pick($scope.data,'_id','tags','rate','brief'), (expert) => {
+        console.log('expert created', expert)
+      })
+  }
 })
 
 .controller('ProfilePreviewCtrl', ($scope, $location, $q, SessionService) => {

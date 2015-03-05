@@ -17,7 +17,10 @@ var get = {
     svc.getById(id,selectCB.addAvatar(cb))
   },
   getMe(cb) {
-    svc.searchOne({userId:this.user._id}, null, selectCB.me(cb))
+    svc.searchOne({userId:this.user._id}, null, selectCB.me((e,r)=>{
+      if (!e && !r) return cb(null, {user:selectFromObject(this.user, select.userCopy)})
+      cb(e,r)
+    }))
   },
   getForExpertsPage(cb) {
     var d = Data.data.getForExpertsPage
