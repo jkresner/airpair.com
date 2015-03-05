@@ -23,7 +23,7 @@
 
 </section>
 
-<section id="beanexpert" ng-if="session && !v0expert"><!--  && expert -->
+<section id="beanexpert" ng-if="session && expert && !v0expert"><!--  && expert -->
 
   <section class="connect">
 
@@ -43,19 +43,12 @@
     <user-info></user-info>
   </section>
 
-  <section class="tags" ng-if="socialCount > 1">
-    <h3 class="underline">What technologies do you want to help with?</h3>
-    <p>Choose 3 technologies. These are not the same as "your stack" used to customize your content experience on AirPair.com.</p>
-    <tag-input></tag-input>
-    <hr style="clear:both;border-color:white" />
-  </section>
-
   <section class="profile" ng-if="socialCount > 1">
     <h3 class="underline">Profile info <a href="/me/profile-preview" class="btn btn-sm btn-inverse">Preview your profile</a></h3>
 
     <div class="form-group">
       <label class="control-label">Public rate <span>amount customers see on your profile (including AirPair's cut)</span></label>
-      <select class="form-control" ng-model="data.rate">
+      <select class="form-control" ng-model="data.rate" tabindex="301">
         <option value="20">$20/hr</option>
         <option value="40">$40/hr</option>
         <option value="60">$60/hr</option>
@@ -76,18 +69,18 @@
     <form id="bioForm" novalidate name="bioForm">
 
       <div form-group>
-        <label for="profileBio">Bio <span style="font-weight:normal">* 255 characters, used on your profile</span></label>
+        <label for="profileBio" class="control-label">Bio <span style="font-weight:normal">* 100-255 characters, used on your profile</span></label>
         <textarea id="profileBio" name="bio" type="text" form-control placeholder="Enter a 2-3 sentence bio" ng-model="data.bio"
-          ng-blur="updateBio(bioForm.$valid, data.bio)" required ng-minlength="120" ng-maxlength="255"
+          ng-blur="updateBio(bioForm.$valid, data.bio)" required ng-minlength="100" ng-maxlength="255" tabindex="302"
         ></textarea>
         <div class="error" ng-if="formGroup.showError(bioForm.bio)" ng-messages="bioForm.bio.$error">
           <div ng-message="required">Required</div>
-          <div ng-message="minlength">Minimum 120 characters</div>
+          <div ng-message="minlength">Minimum 100 characters</div>
           <div ng-message="maxlength">Maximum 255 characters</div>
         </div>
         <div style="width:100px;float:right;margin:0 0 10px 0">
-          <span ng-if="bioForm.bio.$viewValue.length < 120 || bioForm.bio.$viewValue.length > 255" style="color:red">{{ bioForm.bio.$viewValue.length}} Characters</span>
-          <span ng-if="data.bio.length > 120 && data.bio.length < 255" style="color:green">{{ data.bio.length}} Characters</span>
+          <span ng-if="bioForm.bio.$viewValue.length < 100 || bioForm.bio.$viewValue.length > 255" style="color:red">{{ bioForm.bio.$viewValue.length}} Characters</span>
+          <span ng-if="data.bio.length > 100 && data.bio.length < 255" style="color:green">{{ data.bio.length}} Characters</span>
         </div>
       </div>
       <alert ng-repeat="alert in profileAlerts" type="{{alert.type}}"><span ng-bind-html="alert.msg | html"></span></alert>
@@ -95,15 +88,23 @@
 
     <div class="form-group">
       <label class="control-label">Why do you want to AirPair?</label>
-      <textarea id="profileBrief" name="brief" type="text" class="form-control" placeholder="Enter a 2-3 sentences on why you want to AirPair" ng-model="data.brief"
+      <textarea id="profileBrief" name="brief" type="text" class="form-control" placeholder="Enter a 2-3 sentences on why you want to AirPair" ng-model="data.brief" tabindex="303"
       ></textarea>
     </div>
 
   </section>
 
+  <section class="tags" ng-if="socialCount > 1">
+    <h3 class="underline">3 technologies you want to help with</h3>
+    <p>These can be different to "your stack" which we use to customize your experience on AirPair.com.</p>
+    <tag-input></tag-input>
+    <hr style="clear:both;border-color:white" />
+  </section>
+
+
   <section class="submit" ng-if="socialCount > 1">
     <hr style="clear:both" />
-    <a ng-click="save()" class="btn" ng-disabled="!data.rate || !data.tags || data.tags.length == 0">Submit expert application</a>
+    <a ng-click="save()" class="btn" ng-disabled="!data.rate || !data.tags || data.tags.length == 0" tabindex="401">Submit expert application</a>
   </section>
 
 </section>

@@ -34,7 +34,7 @@ angular.module("APProfileDirectives", [])
       returnTo: '=returnTo',
     },
     controller($scope, $attrs) {
-      $scope.data = {}
+      $scope.data = $rootScope.session.social || {}
       $scope.return = $scope.returnTo || $location.path()
 
       $rootScope.$watch('session', (session) => {

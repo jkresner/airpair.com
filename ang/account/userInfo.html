@@ -2,7 +2,7 @@
 
   <div form-group>
     <label class="control-label" for="profileName">Full name </label>
-    <input id="profileName" name="name" form-control type="text" placeholder="Full name" ng-model="data.name" required ng-minlength="4" ng-maxlength="60" ng-pattern="/\w+ \w+/" tabindex="2"
+    <input id="profileName" name="name" form-control type="text" placeholder="Full name" ng-model="data.name" required ng-minlength="4" ng-maxlength="60" ng-pattern="/\w+ \w+/" tabindex="102"
       ng-blur="updateName()"
     >
     <div class="error" ng-if="formGroup.showError(profileForm.name)" ng-messages="profileForm.name.$error">
@@ -14,14 +14,14 @@
   </div>
 
   <div form-group>
-    <label for="profileInitials">Initials <span>used for IM/chat</span></label>
-    <input id="profileInitials" name="initials" type="text" form-control placeholder="Initials" ng-model="data.initials" tabindex="3"
+    <label class="control-label" for="profileInitials">Initials <span>used for IM/chat</span></label>
+    <input id="profileInitials" name="initials" type="text" form-control placeholder="Initials" ng-model="data.initials" tabindex="103"
       ng-blur="updateInitials()"
     >
   </div>
   <div form-group>
     <label class="control-label" for="profileUsername">Username <span>used for your profile url</span></label>
-    <input id="profileUsername" name="username" form-control type="text" placeholder="Username" ng-model="data.username" ng-minlength="2" ng-pattern="/^\w+$/" tabindex="4"
+    <input id="profileUsername" name="username" form-control type="text" placeholder="Username" ng-model="data.username" ng-minlength="2" ng-pattern="/^\w+$/" tabindex="104"
       ng-blur="updateUsername()"
     >
     <div class="error" ng-if="formGroup.showError(profileForm.username)" ng-messages="profileForm.username.$error">
@@ -32,7 +32,7 @@
 
 </form>
 
-<section class="localization" ng-if="session.emailVerified">
+<section class="localization">
   <location-input data="data" on-select="updateLocation"></location-input>
   <label class="timezone">{{data.timezone}}</label>
 </section>

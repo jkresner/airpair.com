@@ -7,8 +7,8 @@ angular.module("APProfile", ['ngRoute', 'APFilters', 'APSvcSession', 'APTagInput
   route('/me/password', 'Password', require('./password.html'))
   route('/me', 'Account', require('./account.html'),{resolve: authd})
   route('/payouts', 'Payouts', require('./payouts.html'),{resolve: authd})
-  route('/be-an-expert', 'ExpertApplication', require('./beanexpert.html'))
-  route('/me/profile-preview', 'ProfilePreview', require('./profilepreview.html'))
+  route('/be-an-expert', 'ExpertApplication', require('./beanexpert.html'),{resolve: authd})
+  route('/me/profile-preview', 'ProfilePreview', require('./profilepreview.html'),{resolve: authd})
 })
 
 .directive('userInfo', function() {
@@ -36,12 +36,17 @@ angular.module("APProfile", ['ngRoute', 'APFilters', 'APSvcSession', 'APTagInput
 
       $rootScope.$watch('session', (session) => {
         $scope.data = _.extend($scope.data||{},_.pick(session, 'name','email','initials','username','bio'))
-
-        console.log('sesh',$scope.data.bio)
         if (session.localization)
         {
           $scope.data.location = session.localization.location
           $scope.data.timezone = session.localization.timezone
+        }
+
+        if (!$scope.data.username && $scope.session.social) {
+          var social = $scope.session.social
+          if (social.gh) $scope.data.username = social.gh.username
+          else if (social.tw) $scope.data.username = social.tw.username
+          $scope.updateUsername()
         }
       })
 
@@ -210,8 +215,7 @@ angular.module("APProfile", ['ngRoute', 'APFilters', 'APSvcSession', 'APTagInput
   $scope.deselectTag = (tag) => $scope.data.tags = _.without($scope.data.tags, tag)
 
   $scope.updateBio = (valid, bio) => {
-    if (valid) {
-      console.log('update bio?')
+    if (valid && bio!=$scope.session.bio) {
       SessionService.updateBio({bio}, function(result){
         $rootScope.session = result
       })
@@ -222,29 +226,33 @@ angular.module("APProfile", ['ngRoute', 'APFilters', 'APSvcSession', 'APTagInput
   $scope.socialCount = _.keys($scope.session.social||{}).length
 
   DataService.experts.getMe({}, (expert) => {
-    console.log('$scope.data', $scope.data)
     $scope.expert = expert
     if (expert.hours) {
       $scope.v0expert = true
       $scope.firstName = Util.firstName(expert.name)
     } else {
-      delete expert.bio
-      console.log('expert.bio', expert, $scope.data)
-      $scope.data = _.extend(expert, $scope.data||{})
+      $scope.data = expert,_.extend(expert, $scope.data||{})
+      // console.log($scope.session.social.tw)
+      // if (!$scope.data.bio && $scope.session.social
+      //   && $scope.session.social.tw)
+      //   $scope.data.bio = $scope.session.social.tw._json.description
+      if (!$scope.data.brief) $scope.data.brief = "ng-conf"
+      console.log($scope.data.brief)
     }
   })
 
   $scope.save = () => {
     if ($scope.data._id)
-      DataService.experts.updateMe(_.pick($scope.data,'_id','tags','rate','brief'), (expert) => {
-        console.log('expert updated', expert)
+      DataService.experts.updateMe(_.pick($scope.data,'_id','userId','tags','rate','brief'), (expert) => {
+        window.location = '/posts/me'
       })
     else
-      DataService.experts.create(_.pick($scope.data,'_id','tags','rate','brief'), (expert) => {
-        console.log('expert created', expert)
+      DataService.experts.create(_.pick($scope.data,'tags','rate','brief'), (expert) => {
+        window.location = '/posts/me'
       })
   }
 })
+
 
 .controller('ProfilePreviewCtrl', ($scope, $location, $q, SessionService) => {
 

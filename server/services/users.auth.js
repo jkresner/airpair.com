@@ -248,6 +248,8 @@ function connectProvider(provider, short, profile, errorCB, done) {
 
   if (short == 'al')
     profile.username = profile._json.angellist_url.replace('https://angel.co/','')
+  if (short == 'tw')
+    ups.bio = profile._json.description
 
   User.findOneAndUpdate({_id:this.user._id}, ups, (e,r) => {
     if (e || !r) errorCB(e||'connectProvider, no user found.',r)

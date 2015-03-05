@@ -88,14 +88,21 @@ section#account {
 }
 
 .localization {
+  padding-bottom:10px;
   label.timezone {
     display:block;
-    color:@lightgray;margin:-12px 0 20px 2px }
+    color:green;margin:-12px 0 0px 2px;font-size:12px;font-weight:normal;  }
 }
 
 
 section#beanexpert {
-  h3 { margin:20px 0 }
+
+  .control-label {
+    margin-bottom:2px;
+    font-size:11px;
+    span { font-weight:normal;color:@lightorange }
+  }
+  h3 { margin:30px 0 }
   > section.connect {
     // background:@gitgray;
   }
@@ -108,12 +115,13 @@ section#beanexpert {
     // padding:2px 12px;
   }
   > section.tags {
+    padding-top:2px;
     // background:@gitgray;
     // height:220px;
-    // h3 { margin:10px 10px 2px 10px }
     .nomobile { display:none }
   }
-  .submit { margin-bottom:60px;
+  > section.submit {
+    margin:60px 0;
     .btn { width:100% }
   }
 }

@@ -62,9 +62,10 @@ var get = {
       'tags._id': { $in: tagIds }
       // rate: { $lt: request.budget }
     }
-    // $log('query', query)
     var opts = {fields:Data.select.matches, options: { limit: 1000 } }
+    // $log('query', query)
     svc.searchMany(query, opts, (e,experts) => {
+      // $log('searchMany', e, experts.length)
       if (e || !experts || experts.length == 0) return cb(e,experts)
 
       var existingExpertIds = []
@@ -73,10 +74,12 @@ var get = {
 
       var existing = []
       for (var exp of experts) {
-        exp.score = get.calcExpertScore(exp,request.tags)
-        exp.avatar = md5.gravatarUrl(exp.email)
-        if (_.find(existingExpertIds,(id)=>_.idsEqual(id,exp._id)))
-          existing.push(exp)
+        if (!exp.user) {
+          exp.score = get.calcExpertScore(exp,request.tags)
+          exp.avatar = md5.gravatarUrl(exp.email)
+          if (_.find(existingExpertIds,(id)=>_.idsEqual(id,exp._id)))
+            existing.push(exp)
+        }
       }
       var unique = _.difference(experts, existing)
 
@@ -127,6 +130,12 @@ function updateWithTouch(expert, action, trackData, cb) {
     expert.lastTouch = svc.newTouch.call(this, action)
     expert.activity = expert.activity || []
     expert.activity.push(expert.lastTouch)
+  }
+
+  var tagIdx = 0
+  for (var t of expert.tags) {
+    t.sort = tagIdx
+    tagIdx = tagIdx = 1
   }
 
   if (action == 'create')

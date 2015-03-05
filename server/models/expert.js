@@ -31,14 +31,42 @@ var UserCopy = {
   username:         { type: String, lowercase: true, trim: true },
   localization:     { location: String, timezone: String },
   social:       {
-      gh: {     username: { type: String } },
-      so: {     link: { type: String } },
+      gh: {
+        username: { type: String },
+        _json: {
+          avatar_url: { type: String },
+          public_repos: { type: Number },
+          public_gists: { type: Number },
+          followers: { type: Number },
+        }
+      },
+      so: {
+        link: { type: String },
+        reputation: { type: String },
+        badge_counts: { type: {} }
+      },
       bb: {     username: { type: String } },
       in: {     id: { type: String } },
-      tw: {     username: { type: String } },
+      tw: {
+        username: { type: String },
+        _json: {
+          description: { type: String },
+          followers_count: { type: String }
+        }
+      },
       al: {     username: { type: String } },
-      gp: {     id: { type: String } }
+      gp: {
+        id: { type: String },
+        _json: {
+          picture: { type: String },
+        }
+      }
   }
+}
+
+var TagSlim = {
+  _id:          { required: true, type: ObjectId, ref: 'Tag'},
+  sort:         { type: Number, required: true },
 }
 
 module.exports = mongoose.model('Expert', new Schema({
@@ -50,7 +78,7 @@ module.exports = mongoose.model('Expert', new Schema({
 
   rate:           Number,
   brief:          String,
-  tags:           [{}],
+  tags:           [TagSlim],
   gmail:          { type: String },
   pic:            { type: String },
 
