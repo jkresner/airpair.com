@@ -6,6 +6,7 @@ var data = {
   select: {
     matches: {
       '_id': 1,
+      'user': 1,
       'name': 1,
       'email': 1,
       'tags._id': 1,
@@ -48,6 +49,7 @@ var data = {
       'brief': 1,
       'matching': 1,
       'lastTouch': 1,
+      'hours': 1,
       'gh': 1,
       'gp': 1,
       'tw': 1,
@@ -109,10 +111,49 @@ var data = {
           r.avatar = md5.gravatarUrl(r.email||r.user.email)
 
           r.minRate = r.minRate || r.rate
-
-          cb(null, selectFromObject(r, data.select.me))
+          r = selectFromObject(r, data.select.me)
+          data.select.cb.inflateTags(r, cb)
         }
-      }
+      },
+      //-- TODO, watch out for cache changing via adds and deletes of records
+      inflateTags(expert, cb) {
+        var noInflate = !expert || (!expert.tags && !expert.bookmarks)
+        if (noInflate) return cb(null, expert)
+
+        cache.ready(['tags'], () => {
+          // if (logging) $log('inflateTagsAndBookmarks.start')
+
+          var tags = []
+          for (var t of (expert.tags || []))
+          {
+            var tt = cache['tags'][t._id]
+            if (tt) {
+              var {name,slug} = tt
+              tags.push( _.extend({name,slug},t) )
+            }
+            else
+              $log(`tag with Id ${t.tagId} not in cache`)
+              // return cb(Error(`tag with Id ${t.tagId} not in cache`))
+          }
+
+          // var bookmarks = []
+          // for (var b of (expert.bookmarks || []))
+          // {
+          //   var bb = cache[b.type+'s'][b.objectId]
+          //   if (bb) {
+          //     var {title,url} = bb
+          //     bookmarks.push( _.extend({title,url},b) )
+          //   }
+          //   else
+          //     $log(`${b.type} with Id ${b.objectId} not in cache`)
+          //     // return cb(Error(`${b.type} with Id ${b.objectId} not in cache`))
+          // }
+
+          // if (logging) $log('inflateTagsAndBookmarks.done', {tags, bookmarks})
+          // bookmarks
+          cb(null, _.extend(expert, {tags}))
+        })
+      },
     }
   },
 
