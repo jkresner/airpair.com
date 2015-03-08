@@ -12,6 +12,7 @@ section#expert-application {
 
 section#account {
 
+  h3 { margin:10px 0 30px 0 }
   padding-top:20px;
 
   section { padding:20px 0 10px 0 }
@@ -67,7 +68,6 @@ section#account {
     }
   }
 
-
   section.avatar {
     vertical-align:top;
     width:50%;
@@ -83,7 +83,11 @@ section#account {
   }
 
   section.password {
-  .btn { width:48% }
+    .btn { width:48% }
+  }
+
+  section.connect {
+    margin-top:20px;
   }
 }
 
@@ -97,7 +101,12 @@ section#account {
 
 section#beanexpert {
 
+  .form-control {
+    color:@textgray
+  }
+
   .control-label {
+    // color:@mediumgray;
     margin-bottom:2px;
     font-size:11px;
     span { font-weight:normal;color:@lightorange }
@@ -123,6 +132,7 @@ section#beanexpert {
   > section.submit {
     margin:60px 0;
     .btn { width:100% }
+    p { text-align:center;margin:4px;font-size:12px }
   }
 }
 
