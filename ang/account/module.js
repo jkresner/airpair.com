@@ -202,6 +202,18 @@ angular.module("APProfile", ['ngRoute', 'APFilters', 'APSvcSession', 'APTagInput
 
 .controller('ExpertApplicationCtrl', ($rootScope, $scope, DataService, SessionService, Util) => {
 
+  $scope.formRequires = () => {
+    var d = $scope.data, requires = false;
+    if (!d.initials) requires = "Initials required"
+    if (!d.timezone) requires = "Timezone not selected"
+    if (!d.username) requires = "Username required"
+    if (!d.rate) requires = "Rate not selected"
+    if (!d.bio || d.bio.length < 100) requires = "Min 100 character bio required"
+    if (!d.tags || d.tags.length == 0) requires = "Select at least 1 tag"
+    $scope.requires = requires
+    return requires
+  }
+
   $scope.tags = () => $scope.data ? $scope.data.tags : null;
   $scope.updateTags = (scope, newTags) => {
     if (!$scope.expert) return

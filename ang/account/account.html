@@ -59,4 +59,11 @@
     <alert ng-repeat="alert in passwordAlerts" type="{{alert.type}}"><span ng-bind-html="alert.msg | html"></span></alert>
   </section>
 
+  <section class="connect" ng-if="session.emailVerified">
+
+    <h3 class="underline">Connected social accounts</h3>
+    <div social-connect return-to="'/be-an-expert'" class="connect-icons"></div>
+
+  </section>
+
 </section>

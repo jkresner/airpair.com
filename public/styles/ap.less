@@ -67,6 +67,19 @@ a { text-decoration:none;cursor:pointer; }
 a:hover { text-decoration:none }
 
 
+.placeholdertext {
+  @textcolor:@darkbluegray;
+  &::-webkit-input-placeholder { color:@textcolor; }
+  &:-moz-placeholder { color:@textcolor; } /* Firefox 18- */
+  &::-moz-placeholder { color:@textcolor; } /* Firefox 19+ */
+  &:-ms-input-placeholder { color:@textcolor; }
+}
+
+.form-control {
+  .placeholdertext;
+  border:solid 1px red;
+}
+
 .error { color:@error }
 
 .btn {

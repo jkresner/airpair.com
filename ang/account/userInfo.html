@@ -14,14 +14,14 @@
   </div>
 
   <div form-group>
-    <label class="control-label" for="profileInitials">Initials <span>used for IM/chat</span></label>
-    <input id="profileInitials" name="initials" type="text" form-control placeholder="Initials" ng-model="data.initials" tabindex="103"
+    <label class="control-label" for="profileInitials">Initials</label>
+    <input id="profileInitials" name="initials" type="text" form-control placeholder="2-3 letter initials for IM/chat" ng-model="data.initials" tabindex="103"
       ng-blur="updateInitials()"
     >
   </div>
   <div form-group>
-    <label class="control-label" for="profileUsername">Username <span>used for your profile url</span></label>
-    <input id="profileUsername" name="username" form-control type="text" placeholder="Username" ng-model="data.username" ng-minlength="2" ng-pattern="/^\w+$/" tabindex="104"
+    <label class="control-label" for="profileUsername">Username</label>
+    <input id="profileUsername" name="username" form-control type="text" placeholder="Supply username for profile url" ng-model="data.username" ng-minlength="2" ng-pattern="/^\w+$/" tabindex="104"
       ng-blur="updateUsername()"
     >
     <div class="error" ng-if="formGroup.showError(profileForm.username)" ng-messages="profileForm.username.$error">
