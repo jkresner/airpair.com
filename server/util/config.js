@@ -175,7 +175,7 @@ module.exports = function(env) {
 
     cfg.log.auth = (process.env.LOG_AUTH) ? process.env.LOG_AUTH == 'true' : false
     cfg.log.raygun = {
-      on: true,
+      on: false,
       apiKey: process.env.LOG_RAYGUN_APIKEY
     }
     cfg.log.email = {

@@ -93,7 +93,7 @@ var statusHash =
 var hexSeconds = Math.floor(moment('20141220','YYYYMMDD')/1000).toString(16)
 var id2015 = new ObjectId(hexSeconds + "0000000000000000").path
 
-module.exports = {
+var data = {
 
   select: {
     anon: selectFields.anon,
@@ -108,7 +108,8 @@ module.exports = {
       if (r.suggested) {
         r.suggested = _.sortBy(r.suggested, (s)=>statusHash[s.expertStatus])
         for (var s of r.suggested) {
-          s.expert.avatar = md5.gravatarUrl(s.expert.email)
+          if (s.expert.email)
+            s.expert.avatar = md5.gravatarUrl(s.expert.email)
           if (!s.suggestedRate)
             Rates.addSuggestedRate(r, s, true)
         }
@@ -118,6 +119,32 @@ module.exports = {
         r = selectFromObject(r, selectFields[view])
       // $log('selected', view, request.suggested, r)
       return r
+    },
+    expertToSuggestion(r) {
+      if (r.user) {
+        delete r.user._id
+        var social = r.user.social
+        // how we handle staying v0 on front-end
+        r = _.extend(_.extend(r,r.user),r.social)
+        r.location = r.localization.location
+        r.timezone = r.localization.timezone
+      }
+      return r
+      // data.select.cb.inflateTags(r, cb)
+    },
+    cb: {
+      adm(cb) {
+        return  (e,r) => {
+          if (e) return cb(e)
+          if (r.length) {
+            for (var req of r) req = data.select.byView(req, 'admin')
+          }
+          else
+            r = data.select.byView(r, 'admin')
+
+          cb(null,r)
+        }
+      }
     }
   },
 
@@ -155,3 +182,6 @@ module.exports = {
   }
 
 }
+
+
+module.exports = data
