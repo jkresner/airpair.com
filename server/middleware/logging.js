@@ -47,7 +47,7 @@ var middleware = {
         $log(`errorHandle ${uid} ${req.method} ${req.url}`.red, JSON.stringify(req.body), (e.message || e).magenta)
         $error(e, req.user, req)
       } else {
-        $log(req.url + ' ' +(e.message || e).magenta)
+        $log(req.url.gray.dim + ' ' +(e.message || e).expectederr)
         // $log('Test Debug Error ', e.toString().magenta)
       }
 

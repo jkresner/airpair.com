@@ -58,8 +58,8 @@ module.exports = () => describe("API: ", function() {
               expect(s3.sessionID).to.exist
               expect(s3.tags).to.exist
               expect(s3.tags.length).to.equal(3)
-              PUT('/users/me/tag/ruby-on-rails', {}, { status: 400 }, function(err, resp) {
-                expect(resp.text.indexOf('Max 3 tags reached') != -1).to.be.true
+              PUT('/users/me/tag/ruby-on-rails', {}, { status: 400 }, function(resp) {
+                expect(resp.message.indexOf('Max 3 tags reached') != -1).to.be.true
                 done()
               })
             })
@@ -208,8 +208,8 @@ module.exports = () => describe("API: ", function() {
                 expect(s.sessionID).to.exist
                 expect(s.bookmarks).to.exist
                 expect(s.bookmarks.length).to.equal(3)
-                PUT(`/users/me/bookmarks/post/${data.posts.migrateES6._id}`, {}, { status: 400 }, function(err, resp) {
-                  expect(resp.text.indexOf('Max 3 bookmarks reached') != -1).to.be.true
+                PUT(`/users/me/bookmarks/post/${data.posts.migrateES6._id}`, {}, { status: 400 }, function(resp) {
+                  expect(resp.message.indexOf('Max 3 bookmarks reached') != -1).to.be.true
                   done()
                 })
               })

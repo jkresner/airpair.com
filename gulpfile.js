@@ -11,7 +11,7 @@ require('./build/traceur');
 
 gulp.task('default', ['nodemon','less','watch','watchify']);
 
-gulp.task('test', ['testnodemon','build']);
+gulp.task('test', ['nodemontest','build']);
 
 gulp.task('build', ['clean'], function() {
   gulp.start(['less', 'dist']);

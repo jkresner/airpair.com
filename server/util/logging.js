@@ -1,4 +1,9 @@
 var util = require('../../shared/util')
+var colors = require('colors')
+colors.APPLOAD = colors.white
+colors.setTheme({
+  appload: 'APPLOAD'
+})
 
 var knownNonErrors = [
   'try google login',
