@@ -1,66 +1,10 @@
-var db = require('./setup.db')
-var dataHelpers = require('./setup.data')
-var stories = require('./setup.stories')
-
-
-global.braintree = require('braintree')
-
-// "resotreAnalytics"
-
-var analyticsSetup = {
-
-  stubbed: false,
-
-  stub()
-  {
-    if (analyticsSetup.stubbed) return
-    global.trackStub = sinon.stub(analytics,'track', (p1,p2,p3,p4,p5,cb) => { if (cb) cb() })
-    global.viewStub = sinon.stub(analytics,'view', (p1,p2,p3,p4,p5,p6,cb) => { if (cb) cb() })
-    global.identifyStub = sinon.stub(analytics,'identify', (p1,p2,p3,p4,cb) => { if (cb) cb() })
-    global.aliasStub = sinon.stub(analytics,'alias', (p1,p2,p3,cb) => { if (cb) cb() })
-    analyticsSetup.stubbed = true
-  },
-
-  restore()
-  {
-    global.trackStub.restore()
-    global.identifyStub.restore()
-    global.aliasStub.restore()
-    global.viewStub.restore()
-    analyticsSetup.stubbed = false
-  },
-
-  withNoAnalytics(fn, args) {
-    var args = [].slice.call(args)
-
-    if (analyticsSetup.stubbed = false) {
-      var done = args.pop()
-      var doneWithStub = (e,r) => {
-        analyticsSetup.restore()
-        done(e,r)
-      }
-      args.push(doneWithStub)
-      analyticsSetup.stub()
-    }
-
-    fn.apply({}, args)
-  },
-
-  storyWithNoAnalytics(storyName) {
-    return function() { analyticsSetup.withNoAnalytics(stories[storyName], arguments) }
-  }
-
-}
+var dataHelpers           = require('./data')
+var db                    = require('./db')
+var stories               = require('./stories')
+var stubs                 = require('./../helpers/stubs')
 
 
 var setup = {
-
-  analytics: analyticsSetup,
-
-  clearIdentity() {
-    global.cookie = null
-    global.cookieCreatedAt = null
-  },
 
   init(done)
   {
@@ -116,11 +60,13 @@ var setup = {
 
 }
 
-setup = _.extend(setup,db)
+// setup = _.extend(setup,db)
 setup = _.extend(setup,dataHelpers)
+setup = _.extend(setup,stubs)
 
 for (var story of _.keys(stories)) {
-  setup[story] = analyticsSetup.storyWithNoAnalytics(story)
+  setup[story] = stubs.analytics.storyWithNoAnalytics(stories[story])
 }
+
 
 module.exports = setup

@@ -7,7 +7,7 @@ postReview = { questions: [
     { idx: 1, key: 'feedback', promt: 'Explain your star rating', answer: 'Good but not great' }
   ] }
 
-module.exports = -> describe "API: ", ->
+module.exports = -> describe "API: ".subspec, ->
 
   before (done) ->
     SETUP.analytics.stub()
@@ -34,7 +34,7 @@ module.exports = -> describe "API: ", ->
   it "Cannot submit review for draft post", (done)->
     title = "Post Draft Review Test " + moment().format('X')
     SETUP.createNewPost 'jkap', {title}, (post) ->
-      addAndLoginLocalUser 'rvw1', (rvw1) ->
+      SETUP.addAndLoginLocalUser 'rvw1', (rvw1) ->
         POST "/posts/#{post._id}/review", postReview, { status: 403 }, (r) ->
           expectContains(r.message, 'has not been submitted or published')
           done()
@@ -43,7 +43,7 @@ module.exports = -> describe "API: ", ->
   it "Can review post in review", (done)->
     title = "Post in Review, Review Test " + moment().format('X')
     SETUP.createNewPost 'jkap', { title, submitted: new Date }, (post) ->
-      addAndLoginLocalUser 'rvw2', (rvw2) ->
+      SETUP.addAndLoginLocalUser 'rvw2', (rvw2) ->
         POST "/posts/#{post._id}/review", postReview, {}, (p1) ->
           expect(p1.reviews.length).to.equal(1)
           done()
@@ -52,7 +52,7 @@ module.exports = -> describe "API: ", ->
   it "Review fails without valid rating and feedback", (done)->
     title = "Post in Review, Bad Review Test " + moment().format('X')
     SETUP.createNewPost 'jkap', { title, submitted: new Date }, (post) ->
-      addAndLoginLocalUser 'rvw3', (rvw3) ->
+      SETUP.addAndLoginLocalUser 'rvw3', (rvw3) ->
         POST "/posts/#{post._id}/review", {}, { status: 403 }, (e1) ->
           expectContains(e1.message, "5 star rating required")
           r2 = { questions: [
@@ -68,7 +68,7 @@ module.exports = -> describe "API: ", ->
   it "Can submit review for published post", (done)->
     title = "Published Post Review Test " + moment().format('X')
     SETUP.createNewPost 'jkap', { title, submitted: new Date }, (post) ->
-      addAndLoginLocalUser 'rvw4', (rvw4) ->
+      SETUP.addAndLoginLocalUser 'rvw4', (rvw4) ->
         POST "/posts/#{post._id}/review", postReview, {}, (p1) ->
           expect(p1.reviews.length).to.equal(1)
           expect(p1.reviews[0].by._id).to.equal(rvw4._id)
@@ -82,14 +82,14 @@ module.exports = -> describe "API: ", ->
     # .put('/posts/review/:post', API.Posts.addReview)
 
 
-  it "Can reply to review as author", (done)->
+  it "Reply to review as author", (done)->
     title = "Post Reply to Review as Author Test " + moment().format('X')
     SETUP.createNewPost 'jkap', { title, submitted: new Date }, (post) ->
-      addAndLoginLocalUser 'rvw5', (rvw5) ->
+      SETUP.addAndLoginLocalUser 'rvw5', (rvw5) ->
         POST "/posts/#{post._id}/review", postReview, {}, (p1) ->
           reviewId = p1.reviews[0]._id
           expect(reviewId).to.exist
-          LOGIN 'jkap', data.users.jkap, (jkap) ->
+          LOGIN 'jkap', (jkap) ->
             PUT "/posts/#{post._id}/review/#{reviewId}/reply", { comment: 'test review reply as author' }, {}, (p2) ->
               expect(p2.reviews.length).to.equal(1)
               expect(p2.reviews[0].replies.length).to.equal(1)
@@ -98,14 +98,14 @@ module.exports = -> describe "API: ", ->
               done()
 
 
-  it "Can reply to review as another reviewer", (done)->
+  it "Reply to review as another reviewer", (done)->
     title = "Post Reply to Review as another Reviewer Test " + moment().format('X')
     SETUP.createNewPost 'jkap', { title, submitted: new Date }, (post) ->
-      addAndLoginLocalUser 'rvw6', (rvw6) ->
+      SETUP.addAndLoginLocalUser 'rvw6', (rvw6) ->
         POST "/posts/#{post._id}/review", postReview, {}, (p1) ->
           reviewId = p1.reviews[0]._id
           expect(reviewId).to.exist
-          addAndLoginLocalUser 'rvw7', (rvw7) ->
+          SETUP.addAndLoginLocalUser 'rvw7', (rvw7) ->
             PUT "/posts/#{post._id}/review/#{reviewId}/reply", { comment: 'test review reply' }, {}, (p2) ->
               expect(p2.reviews.length).to.equal(1)
               expect(p2.reviews[0].replies.length).to.equal(1)
@@ -114,14 +114,14 @@ module.exports = -> describe "API: ", ->
               done()
 
 
-  it "Can upvote review", (done)->
+  it "Upvote review", (done)->
     title = "Post Upvote Review as another Reviewer Test " + moment().format('X')
     SETUP.createNewPost 'jkap', { title, submitted: new Date }, (post) ->
-      addAndLoginLocalUser 'rvw8', (rvw8) ->
+      SETUP.addAndLoginLocalUser 'rvw8', (rvw8) ->
         POST "/posts/#{post._id}/review", postReview, {}, (p1) ->
           reviewId = p1.reviews[0]._id
           expect(p1.reviews[0].votes.length).to.equal(0)
-          addAndLoginLocalUser 'rvw9', (rvw9) ->
+          SETUP.addAndLoginLocalUser 'rvw9', (rvw9) ->
             PUT "/posts/#{post._id}/review/#{reviewId}/upvote", { comment: 'test review vote another reviewer' }, {}, (p2) ->
               expect(p2.reviews.length).to.equal(1)
               expect(p2.reviews[0].votes.length).to.equal(1)
@@ -129,7 +129,7 @@ module.exports = -> describe "API: ", ->
               expect(p2.reviews[0].votes[0].by._id).to.equal(rvw9._id)
               expect(p2.reviews[0].votes[0].by.email).to.be.undefined
               expect(p2.reviews[0].votes[0].by.avatar).to.exist
-              LOGIN 'jkap', data.users.jkap, (jkap) ->
+              LOGIN 'jkap', (jkap) ->
                 PUT "/posts/#{post._id}/review/#{reviewId}/upvote", { comment: 'test review vote by author' }, {}, (p3) ->
                   expect(p3.reviews.length).to.equal(1)
                   expect(p3.reviews[0].votes.length).to.equal(2)
@@ -144,10 +144,10 @@ module.exports = -> describe "API: ", ->
     spyReviewReplyNotify = sinon.spy(mailman,'sendPostReviewReplyNotification')
     title = "Post Review Notifications Test " + moment().format('X')
     SETUP.createNewPost 'jkap', { title, submitted: new Date }, (post) ->
-      addAndLoginLocalUser 'rev0', (rev0) ->
+      SETUP.addAndLoginLocalUser 'rev0', (rev0) ->
         POST "/posts/#{post._id}/review", postReview, {}, (p1) ->
           reviewId = p1.reviews[0]._id
-          addAndLoginLocalUser 'rev1', (rev1) ->
+          SETUP.addAndLoginLocalUser 'rev1', (rev1) ->
             PUT "/posts/#{post._id}/review/#{reviewId}/reply", { comment: 'I say 1 reply to your review' }, {}, (p2) ->
               expect(spyReviewNotify.callCount).to.equal(1)
               expectIdsEqual(spyReviewNotify.args[0][0]._id, post.by.userId)
@@ -165,7 +165,7 @@ module.exports = -> describe "API: ", ->
               expect(spyReviewReplyNotify.args[0][2]).to.equal(post.title)
               expect(spyReviewReplyNotify.args[0][3]).to.equal(rev1.name)
               expect(spyReviewReplyNotify.args[0][4]).to.equal('I say 1 reply to your review')
-              LOGIN 'jkap', data.users.jkap, (jkap) ->
+              LOGIN 'jkap', (jkap) ->
                 PUT "/posts/#{post._id}/review/#{reviewId}/reply", { comment: 'I say 2 reply to your review' }, {}, (p3) ->
                   expect(spyReviewReplyNotify.callCount).to.equal(2)
                   expect(spyReviewReplyNotify.args[1][0].length).to.equal(2)
@@ -175,14 +175,14 @@ module.exports = -> describe "API: ", ->
                   expect(spyReviewReplyNotify.args[1][2]).to.equal(post.title)
                   expect(spyReviewReplyNotify.args[1][3]).to.equal(post.by.name)
                   expect(spyReviewReplyNotify.args[1][4]).to.equal('I say 2 reply to your review')
-                  LOGIN rev0.userKey, data.users[rev0.userKey], (sRev2) ->
+                  LOGIN rev0.userKey, (sRev2) ->
                     PUT "/posts/#{post._id}/review/#{reviewId}/reply", { comment: 'I say 3 reply to your review' }, {}, (p4) ->
                       expect(spyReviewReplyNotify.callCount).to.equal(3)
                       expect(spyReviewReplyNotify.args[2][0].length).to.equal(2)
                       expect(spyReviewReplyNotify.args[2][0][0].name).to.equal(post.by.name)
                       expect(spyReviewReplyNotify.args[2][0][1].name).to.equal(rev1.name)
                       expect(spyReviewReplyNotify.args[2][4]).to.equal('I say 3 reply to your review')
-                      addAndLoginLocalUser 'rev2', (rev2) ->
+                      SETUP.addAndLoginLocalUser 'rev2', (rev2) ->
                         PUT "/posts/#{post._id}/review/#{reviewId}/reply", { comment: 'I say 4 reply to your review' }, {}, (p5) ->
                           expect(spyReviewReplyNotify.callCount).to.equal(4)
                           expect(spyReviewReplyNotify.args[3][0].length).to.equal(3)

@@ -47,7 +47,7 @@ var middleware = {
     if (logging) $log(`mw.trackFirstRequest ${req.url} ${!req.isAuthenticated()} ${req.sessionID}`.cyan)
     if (!isBot(req.get('user-agent')) && !req.isAuthenticated())
     {
-      if (!req.session.firstRequest)
+      if (!req.session.firstRequest && req.urlMatch)
       {
         req.session.firstRequest = { url: req.url }
         if (req.header('Referer')) { req.session.firstRequest.ref = req.header('Referer') }

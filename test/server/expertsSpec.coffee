@@ -1,7 +1,7 @@
-db = require('./helpers/setup.db')
-dataHlpr = require('./helpers/setup.data')
+db = require('./setup/db')
 
-module.exports = -> describe "API: ", ->
+
+module.exports = -> describe "API: ".subspec, ->
 
   before (done) ->
     SETUP.analytics.stub()
@@ -49,7 +49,7 @@ module.exports = -> describe "API: ", ->
     d = rate: 80, breif: 'yo', tags: [data.tags.angular]
     db.ensureDoc 'User', data.users.ape1, ->
       db.findAndRemove 'Expert', { userId: data.users.ape1._id }, ->
-        LOGIN 'ape1', data.users.ape1, (s) ->
+        LOGIN 'ape1', (s) ->
           PUT "/users/me/username", { username: 'apexpert1' }, {}, ->
             PUT "/users/me/initials", { initials: 'ap' }, {}, ->
               PUT "/users/me/location", data.wrappers.locationlization_melbourne.locationData, {}, ->
@@ -75,7 +75,7 @@ module.exports = -> describe "API: ", ->
   it "Can update expert profile as new v1 user", (done) ->
     SETUP.createNewExpert 'ape1', {}, (s, expert) ->
       expect(expert.lastTouch.action, 'create')
-      expect(expert.rate, 110)
+      expect(expert.rate, 70)
       expect(!_.idsEqual(s._id,expert._id))
       GET "/experts/me", {}, (exp2) ->
         expect(exp2._id).to.exist
@@ -87,7 +87,7 @@ module.exports = -> describe "API: ", ->
         expect(exp2.timezone).to.equal('Australian Eastern Standard Time')
         expect(exp2.bio).to.equal(expert.bio)
         expect(exp2.breif).to.equal(expert.breif)
-        expect(exp2.rate).to.equal(110)
+        expect(exp2.rate).to.equal(70)
         expect(exp2.tags.length).to.equal(1)
         expect(exp2.gh.username).to.equal('airpairtest1')
         expect(exp2.gp.id).to.equal('107399914803761861041')

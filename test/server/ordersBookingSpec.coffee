@@ -1,8 +1,9 @@
+db = require('./setup/db')
 util = require '../../shared/util'
 ordersUtil = require '../../shared/orders'
 
 
-module.exports = -> describe "Booking: ", ->
+module.exports = -> describe "Booking: ".subspec, ->
 
   @timeout 5000
 
@@ -13,12 +14,9 @@ module.exports = -> describe "Booking: ", ->
   after ->
     SETUP.analytics.restore()
 
-  beforeEach ->
-    SETUP.clearIdentity()
-
 
   it 'Book 2 hour with pay as you go private', (done) ->
-    addAndLoginLocalUserWithPayMethod 'jpie', (s) ->
+    SETUP.addAndLoginLocalUserWithPayMethod 'jpie', (s) ->
       airpair1 = time: moment().add(2, 'day'), minutes: 120, type: 'private', payMethodId: s.primaryPayMethodId
       POST "/bookings/#{data.experts.dros._id}", airpair1, {}, (booking1) ->
         expect(booking1._id).to.exist
@@ -51,7 +49,7 @@ module.exports = -> describe "Booking: ", ->
 
 
   it 'Book 2 hour with pay as you go opensource', (done) ->
-    addAndLoginLocalUserWithPayMethod 'crus', (s) ->
+    SETUP.addAndLoginLocalUserWithPayMethod 'crus', (s) ->
       airpair1 = time: moment().add(2, 'day'), minutes: 120, type: 'opensource', payMethodId: s.primaryPayMethodId
       POST "/bookings/#{data.experts.dros._id}", airpair1, {}, (booking1) ->
         GET "/billing/orders", {}, (orders) ->
@@ -75,7 +73,7 @@ module.exports = -> describe "Booking: ", ->
 
 
   it 'Book 3 hour at 150 from 500 credit', (done) ->
-    addAndLoginLocalUserWithPayMethod 'ckni', (s) ->
+    SETUP.addAndLoginLocalUserWithPayMethod 'ckni', (s) ->
       o = total: 500, payMethodId: s.primaryPayMethodId
       POST "/billing/orders/credit", o, {}, (r) ->
         airpair1 = time: moment().add(2, 'day'), minutes: 120, type: 'opensource', credit: 500, payMethodId: s.primaryPayMethodId
@@ -147,7 +145,7 @@ module.exports = -> describe "Booking: ", ->
 
 
   it 'Fail to Book 1 hour at 150 with no credit or payMethodId', (done) ->
-    addAndLoginLocalUserWithPayMethod 'jasp', (s) ->
+    SETUP.addAndLoginLocalUserWithPayMethod 'jasp', (s) ->
       airpair = time: moment().add(1, 'day'), minutes: 60, type: 'private', credit: 150, payMethodId: s.primaryPayMethodId
       POST "/bookings/#{data.experts.dros._id}", airpair, { status: 400 }, (err, resp) ->
         expect(err.message.indexOf('ExpectedCredit $150')).to.equal(0)
@@ -155,11 +153,11 @@ module.exports = -> describe "Booking: ", ->
 
 
   it 'Book 90 mins at 270 from 50 credit and 220 payg', (done) ->
-    addAndLoginLocalUserWithPayMethod 'ajac', (s) ->
-      LOGIN 'admin', data.users.admin, (sadm) ->
+    SETUP.addAndLoginLocalUserWithPayMethod 'ajac', (s) ->
+      LOGIN 'admin', (sadm) ->
         oCred = total: 50, toUser: s, source: 'Test'
         POST "/adm/billing/orders/credit", oCred, {}, (r) ->
-          LOGIN 'ajac', s, (sajac) ->
+          LOGIN s.userKey, (sajac) ->
             airpair1 = time: moment().add(2, 'day'), minutes: 90, type: 'private', credit: 50, payMethodId: s.primaryPayMethodId
             POST "/bookings/#{data.experts.tmot._id}", airpair1, {}, (booking1) ->
               expect(booking1._id).to.exist
@@ -200,8 +198,8 @@ module.exports = -> describe "Booking: ", ->
 
 
   it 'Team members can use company credit for order', (done) ->
-    testDb.setupCompanyWithPayMethodAndTwoMembers 'ldhm', 'matt', 'eddb', (cid, pmid, cAdm, cMem) ->
-      LOGIN 'matt', cAdm, (smatt) ->
+    SETUP.setupCompanyWithPayMethodAndTwoMembers 'ldhm', 'matt', 'eddb', (cid, pmid, cAdm, cMem) ->
+      LOGIN cAdm.userKey, (smatt) ->
         GET '/billing/paymethods', {}, (mattPms) ->
           expect(mattPms.length).to.equal(1)
           expect(mattPms[0]._id).to.exist
@@ -209,7 +207,7 @@ module.exports = -> describe "Booking: ", ->
           POST "/billing/orders/credit", o, {}, (oCredit) ->
             expect(oCredit.total).to.equal(500)
             expect(_.idsEqual(oCredit.payMethodId,pmid)).to.be.true
-            LOGIN 'eddb', cMem, (seddb) ->
+            LOGIN cMem.userKey, (seddb) ->
               GET '/billing/paymethods', {}, (eddbPms) ->
                 expect(eddbPms.length).to.equal(1)
                 airpair1 = time: moment().add(2, 'day'), minutes: 120, type: 'opensource', credit: 500, payMethodId: eddbPms[0]._id
@@ -225,16 +223,16 @@ module.exports = -> describe "Booking: ", ->
 
 
   it 'Book 2 hour with pay as you go off request', (done) ->
-    addAndLoginLocalUserWithPayMethod 'petc', (s) ->
+    SETUP.addAndLoginLocalUserWithPayMethod 'petc', (s) ->
       d = tags: [data.tags.angular], type: 'resources', experience: 'proficient', brief: 'bah bah anglaur test yo4', hours: "1", time: 'rush'
       POST '/requests', d, {}, (r0) ->
         PUT "/requests/#{r0._id}", _.extend(r0,{budget: 300,title:'test'}), {}, (r) ->
-          LOGIN 'abha', data.users.abha, (sAbha) ->
+          LOGIN 'abha', (sAbha) ->
             GET "/requests/review/#{r._id}", {}, (rAbha) ->
               reply = expertComment: "good", expertAvailability: "ok", expertStatus: "available"
               expertId = rAbha.suggested[0].expert._id
               PUT "/requests/#{r._id}/reply/#{expertId}", reply, {}, (r2) ->
-                LOGIN 'petc', s, (sCustomer) ->
+                LOGIN s.userKey, (sCustomer) ->
                   GET "/requests/#{r._id}/book/#{expertId}", {}, (review) ->
                     suggestion = _.find(review.suggested,(s)=> _.idsEqual(s.expert._id,expertId))
                     airpair1 = time: moment().add(2, 'day'), minutes: 60, type: 'private', payMethodId: s.primaryPayMethodId, request: { requestId: review._id, suggestion }
@@ -246,7 +244,7 @@ module.exports = -> describe "Booking: ", ->
                       GET "/billing/orders", {}, (orders1) ->
                         expect(orders1.length).to.equal(1)
                         expect(_.idsEqual(orders1[0].requestId,r._id)).to.be.true
-                        LOGIN 'admin', data.users.admin, ->
+                        LOGIN 'admin', ->
                           GET "/adm/requests/user/#{s._id}", {}, (rAdm) ->
                             expect(rAdm.length).to.equal(1)
                             expect(rAdm[0].suggested.length).to.equal(1)

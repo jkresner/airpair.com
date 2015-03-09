@@ -23,10 +23,10 @@ var authFn = (provider) => {
           if (eerr) return next(eerr)
           res.json(user)
           // console.log('in authFn > ', next)
-          if (next)
-            next();
-          else
-            res.end()
+          // if (next)
+          //   next();
+          // else
+          res.end() // -- need to end response or triggers 404 middleware
         })
       }
 

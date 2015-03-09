@@ -32,6 +32,8 @@ export function run()
     // Don't persist or track sessions for rss
     app.use('/rss', routes.rss(app))
 
+    app.use(mw.auth.setUrlMatch(app))
+
     session(app, mongo.initSessionStore, () => {
       $log(`          SessionStoreReady   ${new Date().getTime()-start}`.appload)
       //-- Do not move connect-livereload before session middleware
@@ -47,9 +49,8 @@ export function run()
       app.use('/adm/*', mw.authz.adm, app.renderHbsAdmin('adm/admin'))
       app.use('/matchmaking*', mw.authz.adm, app.renderHbsAdmin('adm/admin'))
 
-      app.use(mw.auth.setFirebaseTokenOnSession)
       app.use(mw.seo.noTrailingSlash) // Must be after root '/' route
-      routes.redirects.addPatterns(app)
+      app.use(routes.redirects.addPatterns(app))
 
       app.use(mw.analytics.trackFirstRequest)
       routes.redirects.addRoutesFromDb(app, () => {
@@ -57,6 +58,10 @@ export function run()
         app.use(routes.landing(app))
         app.use(routes.dynamic(app))
         app.get(routes.whiteList, app.renderHbs('base') )
+
+        mw.auth.setAppUrlRegexList(app)
+
+        app.use(mw.logging.pageNotFound)
         app.use(mw.logging.errorHandler(app))
 
         var server = app.listen(config.port, () =>

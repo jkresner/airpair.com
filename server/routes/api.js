@@ -31,8 +31,6 @@ export default function(app) {
         req.login(r, (err) => {
           if (err) return next(err)
           res.json(r)
-          // $log('change success loggedin'.magenta, r)
-          next()
         })
       })
     })

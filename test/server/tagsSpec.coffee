@@ -1,4 +1,4 @@
-module.exports = -> describe "API", ->
+module.exports = -> describe "API".subspec, ->
 
   before (done) ->
     SETUP.analytics.stub()
@@ -15,7 +15,7 @@ module.exports = -> describe "API", ->
 
 
   it 'getByTagSlug when logged in', (done) ->
-    LOGIN 'admin', data.users.admin, (s) ->
+    LOGIN 'admin', (s) ->
       GET '/tags/angularjs', {}, (t) ->
         expect(t.slug).to.equal('angularjs')
         expect(t.name).to.equal('AngularJS')

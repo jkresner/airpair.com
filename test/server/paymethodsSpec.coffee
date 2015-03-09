@@ -1,4 +1,8 @@
-module.exports = -> describe "API", ->
+db = require('./setup/db')
+braintree_test_nouce = 'fake-valid-nonce'
+
+
+module.exports = -> describe "API".subspec, ->
 
   @timeout(6000)
 
@@ -27,7 +31,7 @@ module.exports = -> describe "API", ->
 
     it 'Gets migrated stripe result for v0 user from settings', (done) ->
       SETUP.addAndLoginLocalUser 'jmel', (s) ->
-        testDb.ensureSettings s, data.v0.settings.jk, ->
+        db.ensureSettings s, data.v0.settings.jk, ->
           GET '/billing/paymethods', {}, (r) ->
             expect(r).to.exist
             expect(r.length).to.equal(1)
@@ -41,7 +45,7 @@ module.exports = -> describe "API", ->
 
     it 'Can add braintree payment method to new user', (done) ->
       SETUP.addAndLoginLocalUser 'evan', (s) ->
-        d = type: 'braintree', token: braintree.Test.Nonces.Transactable, name: 'Default Card', makeDefault: true
+        d = type: 'braintree', token: braintree_test_nouce, name: 'Default Card', makeDefault: true
         POST '/billing/paymethods', d, {}, (r) ->
           expect(r).to.exist
           expect(r.type).to.equal('braintree')
@@ -59,9 +63,9 @@ module.exports = -> describe "API", ->
 
     it 'Can add multiple braintree payment methods to new user', (done) ->
       SETUP.addAndLoginLocalUser 'elld', (s) ->
-        d = type: 'braintree', token: braintree.Test.Nonces.Transactable, name: 'Default Card', makeDefault: true
+        d = type: 'braintree', token: braintree_test_nouce, name: 'Default Card', makeDefault: true
         POST '/billing/paymethods', d, {}, (r1) ->
-          d2 = type: 'braintree', token: braintree.Test.Nonces.Transactable, name: 'Backup Card'
+          d2 = type: 'braintree', token: braintree_test_nouce, name: 'Backup Card'
           POST '/billing/paymethods', d2, {}, (r2) ->
             GET '/billing/paymethods', {}, (pms2) ->
               expect(pms2.length).to.equal(2)
@@ -73,9 +77,9 @@ module.exports = -> describe "API", ->
     it 'Can add company payment method', (done) ->
       SETUP.addAndLoginLocalUser 'abeh', (s) ->
         comp = data.v0.companys.urbn
-        testDb.ensureDocs 'Company', [comp], (e,r) ->
+        db.ensureDocs 'Company', [comp], (e,r) ->
           # $log('going yah', comp._id)
-          d = type: 'braintree', token: braintree.Test.Nonces.Transactable, name: "#{r.name} Card", companyId: comp._id
+          d = type: 'braintree', token: braintree_test_nouce, name: "#{r.name} Card", companyId: comp._id
           POST '/billing/paymethods', d, {}, (pm) ->
             expect(pm._id).to.exist
             expect(_.idsEqual(pm.companyId, comp._id)).to.be.true
@@ -86,7 +90,7 @@ module.exports = -> describe "API", ->
 
     it 'Company payment methods appear in getPayMethods', (done) ->
       SETUP.setupCompanyWithPayMethodAndTwoMembers 'ldhm', 'math', 'edub', (cid, pmid, cAdm, cMem) ->
-        LOGIN 'edub', cMem, () ->
+        LOGIN cMem.userKey, (scMem) ->
           GET '/billing/paymethods', {}, (cMemPMs) ->
             expect(cMemPMs.length).to.equal(1)
             expect(_.idsEqual(cMemPMs[0]._id,pmid)).to.be.true
@@ -95,7 +99,7 @@ module.exports = -> describe "API", ->
 
     it 'Can delete braintree payment method', (done) ->
       SETUP.addAndLoginLocalUser 'edud', (s) ->
-        d = type: 'braintree', token: braintree.Test.Nonces.Transactable, name: 'Default Card', makeDefault: true
+        d = type: 'braintree', token: braintree_test_nouce, name: 'Default Card', makeDefault: true
         POST '/billing/paymethods', d, {}, (r) ->
           expect(r._id).to.exist
           GET '/session/full', {}, (s1) ->
@@ -111,8 +115,8 @@ module.exports = -> describe "API", ->
   describe 'With Analytics', ->
 
     it 'Can add braintree payment method to new user with Analytics', (done) ->
-      addAndLoginLocalUser 'evan', (s) ->
-        d = type: 'braintree', token: braintree.Test.Nonces.Transactable, name: 'Default Card', makeDefault: true
+      SETUP.addAndLoginLocalUser 'evan', (s) ->
+        d = type: 'braintree', token: braintree_test_nouce, name: 'Default Card', makeDefault: true
         POST '/billing/paymethods', d, {}, (r) ->
           expect(r).to.exist
           expect(r.type).to.equal('braintree')

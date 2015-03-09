@@ -1,4 +1,4 @@
-db = require('./helpers/setup.db')
+db = require('./setup/db')
 postTitle = "Analytics Tests "+moment().format('X')
 postSlug = postTitle.toLowerCase().replace /\ /g, '-'
 postUrl = "/v1/posts/#{postSlug}"
@@ -10,19 +10,19 @@ postUrl = "/v1/posts/#{postSlug}"
 # (3) Alias the users email against the sessionId on user creation
 
 
-module.exports = -> describe "Tracking: ", ->
+module.exports = -> describe "Tracking: ".subspec, ->
 
   @timeout(10000)
 
   before (done) ->
     SETUP.addUserWithRole 'jkap', 'editor', ->
       SETUP.initTags ->
-        LOGIN 'jkap', data.users['jkap'], (s) ->
+        LOGIN 'jkap', (s) ->
           SETUP.initWorkshops ->
             SETUP.createAndPublishPost(s, {title: postTitle,slug:postSlug}, done)
 
 
-  it('Can track an anonymous post view', (done) ->
+  it 'Can track an anonymous post view', (done) ->
     ANONSESSION (s) ->
       anonymousId = s.sessionID
       spy = sinon.spy(analytics,'view')
@@ -52,21 +52,21 @@ module.exports = -> describe "Tracking: ", ->
           expect(spy.args[0][5].utms.utm_campaign).to.be.undefined
           expect(spy.args[0][6]).to.be.undefined
           spy.restore()
-  )
+
 
 
   it 'Can track logged in post view', (done) ->
-    addLocalUser 'krez', {}, (userKey) ->
+    SETUP.addLocalUser 'krez', {}, (userKey) ->
       spy = sinon.spy(analytics,'view')
       userId = data.users[userKey]._id
       analytics.setCallback ->
-        testDb.viewsByUserId userId, (e,r) ->
+        db.viewsByUserId userId, (e,r) ->
           expect(r.length).to.equal(1)
           expect(_.idsEqual(r[0].userId,userId)).to.be.true
           expect(r[0].anonymousId).to.be.null
           done()
 
-      LOGIN userKey, data.users[userKey], (s) ->
+      LOGIN userKey, (s) ->
         GETP("/v1/posts/#{postSlug}?utm_campaign=test2nm")
           .set('referer', 'http://www.airpair.com/posts')
           .expect('Content-Type', /text/)
@@ -122,7 +122,7 @@ module.exports = -> describe "Tracking: ", ->
         .set('referer', 'http://twitter.co')
         .end (err, resp) ->
           spy = sinon.spy(analytics,'alias')
-          singup = getNewUserData('pgup')
+          singup = SETUP.userData('pgup')
           http(global.app).post('/v1/auth/signup').send(singup)
             .set('cookie',cookie)
             .end (err, resp) ->
@@ -134,7 +134,7 @@ module.exports = -> describe "Tracking: ", ->
                 expect(spy.callCount).to.equal(1)
                 expect(spy.args[0][0]).to.equal(s.sessionID)
                 spy.restore()
-                testDb.viewsByUserId userId, (e,r) ->
+                db.viewsByUserId userId, (e,r) ->
                   expect(r.length).to.equal(1)
                   expect(_.idsEqual(r[0].userId,userId)).to.be.true
                   expect(_.idsEqual(r[0].anonymousId,s.sessionID)).to.be.true
@@ -167,10 +167,10 @@ module.exports = -> describe "Tracking: ", ->
 
 
   it 'Can track logged in workshop view', (done) ->
-    addLocalUser 'joem', {}, (userKey) ->
+    SETUP.addLocalUser 'joem', {}, (userKey) ->
       spy = sinon.spy(analytics,'view')
       analytics.setCallback(done)
-      LOGIN userKey, data.users[userKey], (s) ->
+      LOGIN userKey,  (s) ->
         GETP("/v1/workshops/simplifying-rails-tests?utm_campaign=test4nm&utm_medium=test4md")
           .set('referer', 'http://www.airpair.com/workshops')
           .expect('Content-Type', /text/)
@@ -195,7 +195,7 @@ module.exports = -> describe "Tracking: ", ->
   it 'Login local from existing sessionID does not alias', (done) ->
     ANONSESSION ->
       GETP("/v1/posts/#{postSlug}").end (err, resp) ->
-      singup = getNewUserData('pgap')
+      singup = SETUP.userData('pgap')
       http(global.app).post('/v1/auth/signup').send(singup).set('cookie',cookie).end (e1, r1) ->
         GET '/session/full', {}, (s) ->
           spyIdentify = sinon.spy(analytics,'identify')
@@ -213,7 +213,7 @@ module.exports = -> describe "Tracking: ", ->
   it 'Login from two sessionIDs aliases and aliases views', (done) ->
     anonymousId = null
     anonymousId2 = null
-    singup = getNewUserData('igor')
+    singup = SETUP.userData('igor')
 
     session2Callback = (anonymousId) -> ANONSESSION (s2) ->
       anonymousId2 = s2.sessionID
@@ -222,7 +222,7 @@ module.exports = -> describe "Tracking: ", ->
       GETP(postUrl).end  ->
         GETP(postUrl).end ->
 
-          testDb.viewsByAnonymousId anonymousId2, (e2,v2) ->
+          db.viewsByAnonymousId anonymousId2, (e2,v2) ->
             expect(v2.length).to.equal(2)
             expect(v2[0].userId).to.be.null
             expect(v2[1].userId).to.be.null
@@ -244,7 +244,7 @@ module.exports = -> describe "Tracking: ", ->
 
 
               GET '/session/full', {}, (s3) ->
-                testDb.viewsByUserId s3._id, (e3,v3) ->
+                db.viewsByUserId s3._id, (e3,v3) ->
                   expect(v3.length).to.equal(4)
                   spyIdentify.restore()
                   spyAlias.restore()
@@ -255,7 +255,7 @@ module.exports = -> describe "Tracking: ", ->
       GETP(postUrl).end ->
         GETP(postUrl).end ->
 
-          testDb.viewsByAnonymousId anonymousId, (e1,v1) ->
+          db.viewsByAnonymousId anonymousId, (e1,v1) ->
             expect(v1.length).to.equal(2)
             expect(v1[0].userId).to.be.null
             expect(v1[1].userId).to.be.null
