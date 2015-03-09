@@ -12,10 +12,6 @@ module.exports = () => describe("Authorization: ", function() {
     SETUP.analytics.restore()
   })
 
-  beforeEach(function() {
-    SETUP.clearIdentity()
-  })
-
 
   it('Cannot grant roles as non-admin', function(done) {
     addLocalUser('joem', {}, function(userKey) {

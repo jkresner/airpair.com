@@ -1,7 +1,7 @@
 {
   "name": "airpair.com",
   "version": "1.0.1",
-  "description": "site running airpaxir.com",
+  "description": "site running airpair.com",
   "main": "index.js",
   "engines": {
     "node": "0.10.31",
@@ -39,10 +39,6 @@
     "gulp-rev": "^2.0.1",
     "gulp-uglify": "1.0.1",
     "gulp-util": "^3.0.1",
-    "karma": "^0.12.23",
-    "karma-chrome-launcher": "^0.1.4",
-    "karma-jasmine": "^0.1.5",
-    "karma-mocha": "^0.1.9",
     "merge-stream": "^0.1.6",
     "mocha": "^1.21.4",
     "sinon": "^1.10.3",
@@ -59,7 +55,7 @@
     "bcrypt": "^0.8.0",
     "body-parser": "^1.8.1",
     "braintree": "1.21.0",
-    "colors": "^0.6.2",
+    "colors": "^1.0.3",
     "connect-mongo": "^0.4.1",
     "cookie-parser": "^1.3.3",
     "express": "^4.8.5",

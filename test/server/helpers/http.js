@@ -1,142 +1,120 @@
 global.http = require('supertest')
-
 global.cookie = null //-- used for maintaining login
 global.cookieCreatedAt = null
+var hlpr = {}
 
 var uaFirefox = 'Mozilla/5.0 (Windows NT 5.1; rv:31.0) Gecko/20100101 Firefox/31.0'
 
-global.GETXML = function(url) {
-  return GETP(url)
-    .expect('Content-Type', /application\/rss\+xml/)
-}
 
-global.GETP = function(url) {
-  return http(global.app)
-    .get(url)
-    .set('cookie',cookie)
-    .expect(200);
-}
+var session = {
 
+  ANONSESSION(cb)
+  {
+    if (logging) $log('ANONSESSION:')
+    return hlpr.GET('/v1/api/session/full')
+      .set('user-agent', uaFirefox)
+      .end((e,resp) => {
+        if (e) return done(e)
+        cookie = resp.headers['set-cookie']
+        cookieCreatedAt = moment()
+        cb(resp.body)
+      })
+  },
 
-global.ANONSESSION = function(cb) {
-  if (logging) $log('ANONSESSION:')
-  return http(global.app).get('/v1/api/session/full').set('user-agent', uaFirefox).end(function(e,resp){
-    if (e) return done(err)
-    cookie = resp.headers['set-cookie']
-    cookieCreatedAt = moment()
-    cb(resp.body)
-  })
-}
-
-
-global.LOGIN = function(key, user, cb) {
-  if (logging) $log('login:', '/test/setlogin/'+key)
-  data.sessions[key] = { _id: user._id, name: user.name, emailVerified: user.emailVerified, email: user.email, roles: user.roles };
-  if (logging) $log(`login.data.sessions[${key}]`, data.sessions[key])
-  return http(global.app).get('/test/setlogin/'+key).set('user-agent', uaFirefox).end(function(e,resp){
-    if (e) {
-    	$log(resp.text.red)
-     	throw err
+  LOGIN(key, user, cb)
+  {
+    if (logging) $log('LOGIN:'.cyan, '/test/setlogin/'+key)
+    //-- todo, reconsider how the data.users and data.sessions hang together
+    data.sessions[key] = {
+      _id: user._id,
+      name: user.name,
+      emailVerified: user.emailVerified,
+      email: user.email,
+      roles: user.roles
     }
-    cookie = resp.headers['set-cookie']
-  	if (logging) $log('login.cookie.blue', cookie, resp.body)
-    cb(resp.body)
-  })
-}
-
-
-global.GET = function(url, opts, cb) {
-  var apiUrl = '/v1/api'+url
-  if (logging) $log('get:', apiUrl)
-
-  var sessionCookie = cookie
-  if (opts.unauthenticated) { sessionCookie = null }
-
-  return http(global.app)
-    .get(apiUrl)
-    .set('cookie',sessionCookie)
-    .set('user-agent', uaFirefox)
-    .expect('Content-Type', /json/)
-    .expect(opts.status||200)
-    .end(function(err, resp){
-      if (err) {
-        $log( ((resp) ? resp.text : err.message ).red )
-      	throw err
-      }
-      else cb(resp.body)
-    })
-}
-
-
-global.POST = function(url, data, opts, cb) {
-  var apiUrl = '/v1/api'+url
-  if (logging) $log('post:', apiUrl, data)
-
-  var sessionCookie = cookie
-  if (opts.unauthenticated) { sessionCookie = null }
-
-  return http(global.app)
-    .post(apiUrl)
-    .send(data)
-    .set('cookie',sessionCookie)
-    .set('user-agent', uaFirefox)
-    .expect(opts.status||200)
-    .expect('Content-Type', /json/)
-    .end(function(err, resp){
-      if (err) {
-        $log( ((resp) ? resp.text : err.message ).red )
-        throw err
-      }
-      else cb(resp.body, resp)
-    })
+    if (logging) $log(`login.data.sessions[${key}]`, data.sessions[key])
+    return hlpr.GET(`/test/setlogin/${key}`)
+      .set('user-agent', uaFirefox)
+      .end((e,resp) => {
+        if (e) {
+          $log(resp.text.red)
+          throw err
+        }
+        cookie = resp.headers['set-cookie']
+        if (logging) $log('login.cookie', cookie, resp.body)
+        cb(resp.body)
+      })
+  }
 
 }
 
 
-global.PUT = function(url, data, opts, cb) {
-  var apiUrl = '/v1/api'+url
-  if (logging) $log('put:', apiUrl)
+var api = {
 
-  var sessionCookie = cookie
-  if (opts.unauthenticated) { sessionCookie = null }
+  Url(url, httpMethod, data)
+  {
+    var apiUrl = '/v1/api'+url
+    if (logging) $log(`${httpMethod}:`.cyan, apiUrl, data)
+    return apiUrl
+  },
 
-  return http(global.app)
-    .put(apiUrl)
-    .send(data)
-    .set('cookie',sessionCookie)
-    .set('user-agent', uaFirefox)
-    .expect(opts.status||200)
-    .expect('Content-Type', /json/)
-    .end(function(err, resp){
-      if (err) {
-        $log( ((resp) ? resp.text : err.message ).red )
-      	throw err
-      }
-      else cb(resp.body, resp)
-    })
+  Call(httpCall, opts, cb)
+  {
+    return httpCall
+      .set('cookie', (opts.unauthenticated) ? null : cookie)
+      .set('user-agent', uaFirefox)
+      .expect('Content-Type', /json/)
+      .expect(opts.status||200)
+      .end((e, resp) => {
+        if (!e) return cb(resp.body)
+        $log( ((resp) ? resp.text : e.message ).red )
+        throw e
+      })
+  },
+
+  GET(url, opts, cb)
+  {
+    var httpCall = hlpr.GET(api.Url(url,'GET'))
+    return api.Call(httpCall, opts, cb)
+  },
+
+  POST(url, data, opts, cb)
+  {
+    var httpCall = hlpr.POST(api.Url(url,'POST',data)).send(data)
+    return api.Call(httpCall, opts, cb)
+  },
+
+  PUT(url, data, opts, cb)
+  {
+    var httpCall = hlpr.PUT(api.Url(url,'PUT',data)).send(data)
+    return api.Call(httpCall, opts, cb)
+  },
+
+  DELETE(url, opts, cb)
+  {
+    var httpCall = hlpr.DELETE(api.Url(url,'DELETE',data))
+    return api.Call(httpCall, opts, cb)
+  }
 
 }
 
 
-global.DELETE = function(url, opts, cb) {
-  var apiUrl = '/v1/api'+url
-  if (logging) $log('DELETE:', apiUrl)
-
-  var sessionCookie = cookie
-  if (opts.unauthenticated) { sessionCookie = null }
-
-  return http(global.app)
-    .delete(apiUrl)
-    .set('cookie',sessionCookie)
-    .set('user-agent', uaFirefox)
-    .expect(opts.status||200)
-    .expect('Content-Type', /json/)
-    .end(function(err, resp){
-      if (err) {
-        $log( ((resp) ? resp.text : err.message ).red )
-      	throw err
-      }
-      else cb(resp.body, resp)
-    })
-
+module.exports = {
+  init(app) {
+    hlpr.GET = http(app).get
+    hlpr.POST = http(app).post
+    hlpr.PUT = http(app).put
+    hlpr.DELETE = http(app).delete
+    global.GET = api.GET
+    global.POST = api.POST
+    global.PUT = api.PUT
+    global.DELETE = api.DELETE
+    global.ANONSESSION = session.ANONSESSION
+    global.LOGIN = session.LOGIN
+    global.GETP = function(url) {  // for getting non-api calls (e.g. pages)
+      return hlpr.GET(url)
+        .set('cookie', cookie)
+        .expect(200)
+    }
+  }
 }

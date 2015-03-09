@@ -9,7 +9,7 @@ export default {
 
     db.on('error', (e) => $log(('mongo connection error:' + e).red) )
     db.once('open', () => {
-      $log(`          Connected to db ${config.mongoUri}`.white)
+      $log(`          Connected to db ${config.mongoUri}`.appload)
       callback()
     })
 

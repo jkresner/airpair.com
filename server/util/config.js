@@ -1,3 +1,5 @@
+var build = { version: '1.21', deployed: 'Mar 08' }
+
 var cfg = {
   analytics: {
     on: false,
@@ -64,7 +66,7 @@ var cfg = {
   bitly:  {
     shortDomain: 'http://airpa.ir/',
     accessToken: 'b93731e13c8660c7700aca6c3934660ea16fbd5f' },
-  build:  { version: '1.09', deployed: 'Oct 17' },
+  build: build,
   bundle: {
     indexScript: '/static/js/index.js',
     admScript: '/static/js/adm.js',
@@ -127,10 +129,12 @@ var cfg = {
   session: { secret: 'airyv1' }
 }
 
-module.exports = function(env, appdir) {
+module.exports = function(env) {
   cfg.env = env
-  cfg.appdir = appdir
   cfg.livereload = cfg.env == 'dev'
+  cfg.appdir = __dirname
+    .replace('/server/util','')
+    .replace('\\server\\util','') //-- for windows machines
 
   //-- Temp for testing prod setting locally
   // cfg.analytics.on = true
