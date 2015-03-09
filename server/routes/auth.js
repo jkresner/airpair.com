@@ -18,14 +18,14 @@ export default function(app) {
     .use(mw.setReturnTo)
 
     .get('/logout', logout(config.auth))
-    .post('/login', mw.authAlreadyDone, auth.local.login, mw.setFirebaseTokenOnSession)
-    .post('/signup', mw.authAlreadyDone, auth.local.signup, mw.setFirebaseTokenOnSession)
-    .post('/signup-home', mw.authAlreadyDone, mw.setFastSingupPassword('home'), auth.local.signup, mw.setFirebaseTokenOnSession)
-    .post('/signup-so', mw.authAlreadyDone, mw.setFastSingupPassword('so'), auth.local.signup, mw.setFirebaseTokenOnSession)
-    .post('/signup-postcomp', mw.authAlreadyDone, mw.setFastSingupPassword('postcomp'), auth.local.signup, mw.setFirebaseTokenOnSession)
-    .post('/subscribe', mw.authAlreadyDone, mw.setFastSingupPassword('subscribe'), auth.local.signup, mw.setFirebaseTokenOnSession)
+    .post('/login', mw.authAlreadyDone, auth.local.login)
+    .post('/signup', mw.authAlreadyDone, auth.local.signup)
+    .post('/signup-home', mw.authAlreadyDone, mw.setFastSingupPassword('home'), auth.local.signup)
+    .post('/signup-so', mw.authAlreadyDone, mw.setFastSingupPassword('so'), auth.local.signup)
+    .post('/signup-postcomp', mw.authAlreadyDone, mw.setFastSingupPassword('postcomp'), auth.local.signup)
+    .post('/subscribe', mw.authAlreadyDone, mw.setFastSingupPassword('subscribe'), auth.local.signup)
     .get('/google', auth.google.oAuth)
-    .get('/google/callback', auth.google.oAuth, mw.setFirebaseTokenOnSession, mw.authDone)
+    .get('/google/callback', auth.google.oAuth, mw.authDone)
     .get('/paypal-loginurl', mw.authd, (req,res) =>
       { res.json({url:pp.loginUrl(req)}) })
 
@@ -33,7 +33,7 @@ export default function(app) {
 
 
   var connect = require('express').Router()
-    .get('/google/callback', auth.google.oAuth, mw.setFirebaseTokenOnSession, mw.authDone)
+    .get('/google/callback', auth.google.oAuth, mw.authDone)
     .get('/github/callback', mw.authd, auth.github.oAuth, mw.authDone)
     .get('/twitter/callback', mw.authd, auth.twitter.oAuth, mw.authDone)
     .get('/stackexchange/callback', mw.authd, auth.stackexchange.oAuth, mw.authDone)

@@ -1,4 +1,4 @@
-module.exports = -> describe "API: ", ->
+module.exports = -> describe "API: ".subspec, ->
 
 
   before () ->
@@ -13,7 +13,7 @@ module.exports = -> describe "API: ", ->
 
     it 'Can signup from homepage and set password', (done) ->
       spy = sinon.spy(mailman,'signupHomeWelcomeEmail')
-      clone = getNewUserData('mris')
+      clone = SETUP.userData('mris')
       http(global.app).put('/v1/api/users/me/email')
         .send({email:clone.email}).expect(200)
         .end (err, resp) ->
@@ -62,7 +62,7 @@ module.exports = -> describe "API: ", ->
 
     it 'Can signup from post subscribe and set password', (done) ->
       spy = sinon.spy(mailman,'singupSubscribeEmail')
-      clone = getNewUserData('mirs')
+      clone = SETUP.userData('mirs')
       http(global.app).put('/v1/api/users/me/email')
         .send({email:clone.email}).expect(200)
         .end (err, resp) ->

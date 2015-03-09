@@ -1,7 +1,8 @@
+db = require('./setup/db')
 util = require '../../shared/util'
 OrdersUtil = require '../../shared/orders'
 
-module.exports = -> describe "Credit: ", ->
+module.exports = -> describe "Credit: ".subspec, ->
 
   @timeout 10000
 
@@ -57,7 +58,7 @@ module.exports = -> describe "Credit: ", ->
 
 
   it.skip '3000 credit purchase with declined card', (done) ->
-    addAndLoginLocalUserWithPayMethod 'acob', (s) ->
+    SETUP.addAndLoginLocalUserWithPayMethod 'acob', (s) ->
 
   it '5000 credit purchase with 20% extra and coupon discount', (done) ->
     SETUP.addAndLoginLocalUserWithPayMethod 'kelf', (s) ->
@@ -94,7 +95,7 @@ module.exports = -> describe "Credit: ", ->
 
   it 'Admin can give unpaid credit', (done) ->
     SETUP.addAndLoginLocalUserWithPayMethod 'chup', (schup) ->
-      LOGIN 'admin', data.users.admin, (sadm) ->
+      LOGIN 'admin', (sadm) ->
         o = total: 50, toUser: schup, source: 'Angular Workshops Survey Promo'
         POST "/adm/billing/orders/credit", o, {}, (r) ->
           expect(r._id).to.exist
@@ -128,7 +129,7 @@ module.exports = -> describe "Credit: ", ->
         o.userId = require('mongoose').Types.ObjectId(mcas._id)
         o
       v0Orders = _.map(data.v0.orders.jkHist, map)
-      testDb.ensureDocs 'Order', v0Orders, (e,r) ->
+      db.ensureDocs 'Order', v0Orders, (e,r) ->
         o = total: 1000, payMethodId: mcas.primaryPayMethodId
         POST "/billing/orders/credit", o, {}, (credit) ->
           expect(credit._id).to.exist

@@ -3,7 +3,7 @@ util = require '../../shared/util'
 ordersUtil = require '../../shared/orders'
 
 
-module.exports = -> describe "API: ", ->
+module.exports = -> describe "API: ".subspec, ->
 
   @timeout 40000
 
@@ -14,11 +14,8 @@ module.exports = -> describe "API: ", ->
   after ->
     SETUP.analytics.restore()
 
-  beforeEach ->
-    SETUP.clearIdentity()
-
   it "given a YouTube ID, allows a booking to be annotated with YouTube data", (done)->
-    addAndLoginLocalUserWithPayMethod 'miks', (s) ->
+    SETUP.addAndLoginLocalUserWithPayMethod 'miks', (s) ->
       airpair1 = time: moment().add(2, 'day'), minutes: 120, type: 'private', payMethodId: s.primaryPayMethodId
       POST "/bookings/#{data.experts.dros._id}", airpair1, {}, (booking1) ->
         expect(booking1._id).to.exist
@@ -27,7 +24,7 @@ module.exports = -> describe "API: ", ->
         expect(booking1.orderId).to.exist
         expect(booking1.type).to.exist
         expect(booking1.participants.length).to.equal(2)
-        LOGIN 'admin', data.users.admin, (sadm) ->
+        LOGIN 'admin',(sadm) ->
           url = "/adm/bookings/#{booking1._id}/recording"
           PUT url, {youTubeId: "MEv4SuSJgwk"}, {}, (booking) ->
             expect(booking.status).to.equal("followup")
@@ -37,7 +34,7 @@ module.exports = -> describe "API: ", ->
             done()
 
   it "fails gracefully with a bogus YouTube id", (done)->
-    addAndLoginLocalUserWithPayMethod 'mrik', (s) ->
+    SETUP.addAndLoginLocalUserWithPayMethod 'mrik', (s) ->
       airpair1 = time: moment().add(2, 'day'), minutes: 120, type: 'private', payMethodId: s.primaryPayMethodId
       POST "/bookings/#{data.experts.dros._id}", airpair1, {}, (booking1) ->
         expect(booking1._id).to.exist
@@ -46,14 +43,14 @@ module.exports = -> describe "API: ", ->
         expect(booking1.orderId).to.exist
         expect(booking1.type).to.exist
         expect(booking1.participants.length).to.equal(2)
-        LOGIN 'admin', data.users.admin, (sadm) ->
+        LOGIN 'admin', (sadm) ->
           url = "/adm/bookings/#{booking1._id}/recording"
           PUT url, {youTubeId: "MEv4SuSJgw"}, {status: 400}, (booking) ->
             expect(booking.message).to.equal("No YouTube video found")
             done()
 
   it "fails gracefully with a private YouTube id that it does not own", (done)->
-    addAndLoginLocalUserWithPayMethod 'misr', (s) ->
+    SETUP.addAndLoginLocalUserWithPayMethod 'misr', (s) ->
       airpair1 = time: moment().add(2, 'day'), minutes: 120, type: 'private', payMethodId: s.primaryPayMethodId
       POST "/bookings/#{data.experts.dros._id}", airpair1, {}, (booking1) ->
         expect(booking1._id).to.exist
@@ -62,7 +59,7 @@ module.exports = -> describe "API: ", ->
         expect(booking1.orderId).to.exist
         expect(booking1.type).to.exist
         expect(booking1.participants.length).to.equal(2)
-        LOGIN 'admin', data.users.admin, (sadm) ->
+        LOGIN 'admin', (sadm) ->
           url = "/adm/bookings/#{booking1._id}/recording"
           PUT url, {youTubeId: "VfA4ELOHjmk"}, {status: 400}, (booking) ->
             expect(booking.message).to.equal("No YouTube video found")
@@ -70,7 +67,7 @@ module.exports = -> describe "API: ", ->
 
   #owner of VfA4ELOHjmk is experts@airpair.com
   it.skip "works with a private YouTube id if the owner is in process.env.AUTH_GOOGLE_REFRESH_TOKEN" , (done)->
-    addAndLoginLocalUserWithPayMethod 'cher', (s) ->
+    SETUP.addAndLoginLocalUserWithPayMethod 'cher', (s) ->
       airpair1 = time: moment().add(2, 'day'), minutes: 120, type: 'private', payMethodId: s.primaryPayMethodId
       POST "/bookings/#{data.experts.dros._id}", airpair1, {}, (booking1) ->
         expect(booking1._id).to.exist
@@ -79,7 +76,7 @@ module.exports = -> describe "API: ", ->
         expect(booking1.orderId).to.exist
         expect(booking1.type).to.exist
         expect(booking1.participants.length).to.equal(2)
-        LOGIN 'admin', data.users.admin, (sadm) ->
+        LOGIN 'admin', (sadm) ->
           url = "/adm/bookings/#{booking1._id}/recording"
           PUT url, {youTubeId: "VfA4ELOHjmk"}, {}, (booking) ->
             expect(booking.message).to.equal("No YouTube video found")
@@ -99,7 +96,7 @@ module.exports = -> describe "API: ", ->
 
 
   it.skip 'Can update booking and send invitations as admin', (done) ->
-    addAndLoginLocalUserWithPayMethod 'mkis', (s) ->
+    SETUP.addAndLoginLocalUserWithPayMethod 'mkis', (s) ->
       airpair1 = time: moment().add(2, 'day'), minutes: 120, type: 'private', payMethodId: s.primaryPayMethodId
       POST "/bookings/#{data.experts.dros._id}", airpair1, {}, (booking1) ->
         expect(booking1._id).to.exist
@@ -108,7 +105,7 @@ module.exports = -> describe "API: ", ->
         expect(booking1.orderId).to.exist
         expect(booking1.type).to.exist
         expect(booking1.participants.length).to.equal(2)
-        LOGIN 'admin', data.users.admin, (sadm) ->
+        LOGIN 'admin', (sadm) ->
           ups = start: moment().add(3,'days').format('x'), sendGCal: { notify: true }
           bUps = _.extend booking1, ups
           bUps.participants[0].info.email = 'jk@airpair.com'

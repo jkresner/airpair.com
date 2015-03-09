@@ -12,22 +12,27 @@ colors.setTheme({
   expectederr: 'EXPECTEDERR'
 })
 
+testHttpHelpers       = require('./helpers/http')
+
 
 describe 'Server: '.appload, ->
 
   @timeout(4000)
 
   before (done) ->
-    global.logging  = false
-    global.data     = require('./../data/data')
-    global.app             = require('../../index').run()
-    require('./helpers/http').init(app)
-    global.testDb   = require('./helpers/setup')
-    global.SETUP    = global.testDb
-    setTimeout(( -> testDb.init(done) ), 100)
+    global.logging    = false
+    global.data       = require('./../data/data')
+    global.SETUP      = require('./setup/_setup')
+    global.timeSeed   = SETUP.timeSeed
+    global.newId      = SETUP.newId
+    global.app        = require('../../index').run()
+    testHttpHelpers.init(app)
+    setTimeout(( -> SETUP.init(done) ), 100)
+
 
   beforeEach ->
-    SETUP.clearIdentity()
+    LOGOUT()
+
 
   describe 'Session: '.spec,        require('./sessionSpec')
   describe 'Bots: '.spec,           require('./botsSpec')
@@ -41,8 +46,9 @@ describe 'Server: '.appload, ->
   describe 'Companys: '.spec,       require('./companysSpec')
   describe 'Rss: '.spec,            require('./rssSpec')
   describe 'Redirects: '.spec,      require('./redirectsSpec')
-  describe 'Requests: '.spec,       require('./requestsSpec')
-  describe 'Pipeline: '.spec,       require('./requestsAdminSpec')
+
+  # describe 'Requests: '.spec,       require('./requestsSpec')
+  # describe 'Pipeline: '.spec,       require('./requestsAdminSpec')
   describe 'Paymethods: '.spec,     require('./paymethodsSpec')
   describe 'Orders: '.spec,         require('./ordersSpec')
   describe 'Orders: '.spec,         require('./ordersBookingSpec')

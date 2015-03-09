@@ -6,6 +6,7 @@ colors.setTheme({
 })
 
 var knownNonErrors = [
+  'Page not found',
   'try google login',
   'already registered',
   'Max allowed tags reached',
