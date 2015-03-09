@@ -46,9 +46,8 @@ describe 'Server: '.appload, ->
   describe 'Companys: '.spec,       require('./companysSpec')
   describe 'Rss: '.spec,            require('./rssSpec')
   describe 'Redirects: '.spec,      require('./redirectsSpec')
-
-  # describe 'Requests: '.spec,       require('./requestsSpec')
-  # describe 'Pipeline: '.spec,       require('./requestsAdminSpec')
+  describe 'Requests: '.spec,       require('./requestsSpec')
+  describe 'Pipeline: '.spec,       require('./requestsAdminSpec')
   describe 'Paymethods: '.spec,     require('./paymethodsSpec')
   describe 'Orders: '.spec,         require('./ordersSpec')
   describe 'Orders: '.spec,         require('./ordersBookingSpec')

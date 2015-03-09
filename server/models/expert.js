@@ -64,9 +64,11 @@ var UserCopy = {
   }
 }
 
+
+//-- Need to fix this guy
 var TagSlim = {
-  _id:          { required: true, type: ObjectId, ref: 'Tag'},
-  sort:         { type: Number, required: true },
+  _id:          { required: true, type: String}, //, type: ObjectId, ref: 'Tag'
+  sort:         { type: Number }, //, required: true
 }
 
 module.exports = mongoose.model('Expert', new Schema({

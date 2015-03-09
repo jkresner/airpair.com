@@ -116,6 +116,23 @@ var data = {
         }
       },
       //-- TODO, watch out for cache changing via adds and deletes of records
+      inflatedTagsNoCB(expert) {
+        var tags = []
+        for (var t of (expert.tags || []))
+        {
+          if (t._id) {
+            var tt = cache['tags'][t._id]
+            if (tt) {
+              var {name,slug} = tt
+              tags.push( _.extend({name,slug},t) )
+            }
+            else
+              $log(`tag with Id ${t.tagId} not in cache`)
+              // return cb(Error(`tag with Id ${t.tagId} not in cache`))
+          }
+        }
+        return tags
+      },
       inflateTags(expert, cb) {
         var noInflate = !expert || (!expert.tags && !expert.bookmarks)
         if (noInflate) return cb(null, expert)

@@ -56,34 +56,38 @@ var get = {
       })
   },
   getMatchesForRequest(request, cb) {
-    // todo protect with owner of request?
-    var tagIds = _.map(request.tags,(t) => t._id.toString())
-    var query = {
-      'tags._id': { $in: tagIds }
-      // rate: { $lt: request.budget }
-    }
-    var opts = {fields:Data.select.matches, options: { limit: 1000 } }
-    // $log('query', query)
-    svc.searchMany(query, opts, (e,experts) => {
-      // $log('searchMany', e, experts.length)
-      if (e || !experts || experts.length == 0) return cb(e,experts)
-
-      var existingExpertIds = []
-      for (var s of request.suggested)
-        existingExpertIds.push(s.expert._id)
-
-      var existing = []
-      for (var exp of experts) {
-        if (!exp.user) {
-          exp.score = get.calcExpertScore(exp,request.tags)
-          exp.avatar = md5.gravatarUrl(exp.email)
-          if (_.find(existingExpertIds,(id)=>_.idsEqual(id,exp._id)))
-            existing.push(exp)
-        }
+    cache.ready(['tags'], () => {
+      // todo protect with owner of request?
+      var tagIds = _.map(request.tags,(t) => t._id.toString())
+      var query = {
+        'tags._id': { $in: tagIds }
+        // rate: { $lt: request.budget }
       }
-      var unique = _.difference(experts, existing)
+      var opts = {fields:Data.select.matches, options: { limit: 1000 } }
+      // $log('query', query)
+      svc.searchMany(query, opts, (e,experts) => {
+        if (e || !experts || experts.length == 0) return cb(e,experts)
 
-      cb(null, _.take(_.sortBy(unique,(u)=>u.score).reverse(),50))
+        var existingExpertIds = []
+        for (var s of request.suggested)
+          existingExpertIds.push(s.expert._id)
+
+        var existing = []
+        for (var exp of experts) {
+          exp.tags = selectCB.inflatedTagsNoCB(exp)
+          // $log('goin', exp._id, exp.tags)
+          if (exp.user) existing.push(exp)
+          else {
+            exp.score = get.calcExpertScore(exp,request.tags)
+            exp.avatar = md5.gravatarUrl(exp.email)
+            if (_.find(existingExpertIds,(id)=>_.idsEqual(id,exp._id)))
+              existing.push(exp)
+          }
+        }
+        var unique = _.difference(experts, existing)
+
+        cb(null, _.take(_.sortBy(unique,(u)=>u.score).reverse(),50))
+      })
     })
   },
   calcExpertScore:(expert, tagsToScore) => {
@@ -177,72 +181,77 @@ var save = {
       //-- TODO migrate request.calls to bookings
       // var q = { '$or': [{'suggested.expert._id':expertId},{'calls.expertId':expertId}]}
         // .elemMatch('suggested', { 'expert._id': expertId })
-      Request
-        .find({'suggested.expert._id':expertId},{_id:1,userId:1,suggested:1,calls:1}, (e,requests) => {
-          var expertSuggestions = []
-          var expertCalls = []
-          var replied = 0
-          var lastSuggest = null
-          var lastReply = null
-          var hours = 0
-          var customerIds = []
-          for (var r of requests) {
-            var expertSuggestion = _.find(r.suggested,(s)=>_.idsEqual(s.expert._id,expertId))
-            expertSuggestions.push(_.extend(expertSuggestion,{requestId:r._id}))
-            if (!lastSuggest || expertSuggestion._id > lastSuggest._id)
-              lastSuggest = ObjectId2Date(expertSuggestion._id)
-            if (expertSuggestion.expertStatus != 'waiting') {
-              replied = replied + 1
-              if (!lastReply || expertSuggestion._id > lastReply._id) lastReply =
-                ObjectId2Date(expertSuggestion._id)
+      selectCB.inflateTags(expert, (e, expert) => {
+
+        Request
+          .find({'suggested.expert._id':expertId},{_id:1,userId:1,suggested:1,calls:1}, (e,requests) => {
+            var expertSuggestions = []
+            var expertCalls = []
+            var replied = 0
+            var lastSuggest = null
+            var lastReply = null
+            var hours = 0
+            var customerIds = []
+            for (var r of requests) {
+              var expertSuggestion = _.find(r.suggested,(s)=>_.idsEqual(s.expert._id,expertId))
+              expertSuggestions.push(_.extend(expertSuggestion,{requestId:r._id}))
+              if (!lastSuggest || expertSuggestion._id > lastSuggest._id)
+                lastSuggest = ObjectId2Date(expertSuggestion._id)
+              if (expertSuggestion.expertStatus != 'waiting') {
+                replied = replied + 1
+                if (!lastReply || expertSuggestion._id > lastReply._id) lastReply =
+                  ObjectId2Date(expertSuggestion._id)
+              }
+
+              var calls = _.where(r.calls,(c)=>_.idsEqual(c.expertId,expertId))
+              for (var call of calls) {
+                customerIds = _.union(customerIds, [r.userId])
+                expertCalls.push(_.extend(call,{requestId:r._id}))
+                hours = hours + call.duration
+              }
             }
 
-            var calls = _.where(r.calls,(c)=>_.idsEqual(c.expertId,expertId))
-            for (var call of calls) {
-              customerIds = _.union(customerIds, [r.userId])
-              expertCalls.push(_.extend(call,{requestId:r._id}))
-              hours = hours + call.duration
+            var map = function(s) {
+              var d =
+              {
+                replied:ObjectId2Date(s._id),
+                status:s.expertStatus,
+                comment:s.expertComment,
+                requestId:s.requestId
+              };
+              return d
             }
-          }
 
-          var map = function(s) {
-            var d =
-            {
-              replied:ObjectId2Date(s._id),
-              status:s.expertStatus,
-              comment:s.expertComment,
-              requestId:s.requestId
-            };
-            return d
-          }
+            var last10 = _.map(_.take(_.sortBy(expertSuggestions,(s)=>s._id).reverse(), 10), map)
+            var customers = _.unique(_.pluck(expertCalls,''))
 
-          var last10 = _.map(_.take(_.sortBy(expertSuggestions,(s)=>s._id).reverse(), 10), map)
-          var customers = _.unique(_.pluck(expertCalls,''))
-
-          var matching = {
-            replies: {
-              suggested: requests.length,
-              replied, lastSuggest, lastReply, last10
-            },
-            experience: {
-              hours, customers: customerIds.length
+            var matching = {
+              replies: {
+                suggested: requests.length,
+                replied, lastSuggest, lastReply, last10
+              },
+              experience: {
+                hours, customers: customerIds.length
+              }
             }
-          }
 
-          // $log('updaing', expert._id, matching.replies.last10, matching)
-          svc.update(expert._id, _.extend(expert, {matching}), (e,r)=>{
-            if (r) r.avatar = md5.gravatarUrl(r.email)
-            r.score = get.calcExpertScore(r,request.tags)
-            cb(e,r)
+            // $log('updaing', expert._id, expert.tags, matching.replies.last10, matching)
+            svc.update(expert._id, _.extend(expert, {matching}), (e,r)=>{
+              if (r) r.avatar = md5.gravatarUrl(r.email)
+              r.score = get.calcExpertScore(r,request.tags)
+              r.tags = expert.tags
+              // $log('r.tags', r.tags)
+              cb(e,r)
+            })
           })
-        })
+      })
     })
   },
   deleteById(id, cb) {
     svc.getById(id, (e, r) => {
       var inValid = Validate.deleteById(this.user, r)
       if (inValid) return cb(svc.Forbidden(inValid))
-      svc.deleteById(id, cb)
+      svc.deleteById(id, selectCB.inflateTags(cb))
     })
   }
 }

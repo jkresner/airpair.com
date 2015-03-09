@@ -543,6 +543,24 @@ module.exports = {
     "emailVerified" : true,
     "local" : {},
     "name" : "Abe Haskins",
+    "social" : {
+      "tw" : {
+        "id" : 2909811,
+        "username" : "abeisgreat",
+        "pic" : {"value" : "https://pbs.twimg.com/profile_images/2089417473/IMG_5181_normal.jpg" }
+      },
+      "in" : {
+          "id" : "2LZ2W07M-3",
+          "displayName" : "Abe Haskins"
+      },
+      "so" : {
+          "id" : 1570248,
+          "website_url" : "http://www.abehaskins.com",
+          "link" : "1570248/abeisgreat",
+          "reputation" : 872,
+          "profile_image" : "https://www.gravatar.com/avatar/fbb79df0f24e736c8e37f9f195a738cc?s=128&d=identicon&r=PG"
+      },
+    }
   },
 
   narv :{
