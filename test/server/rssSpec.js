@@ -1,9 +1,9 @@
-module.exports = () => describe("Rss: ", function() {
+module.exports = () => describe("Rss: ".subspec, function() {
 
   before( (done) => {
     SETUP.analytics.stub()
-    testDb.initPosts( () => {
-      testDb.initWorkshops(done)
+    SETUP.initPosts( () => {
+      SETUP.initWorkshops(done)
     })
   })
 

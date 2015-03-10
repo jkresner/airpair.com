@@ -52,16 +52,11 @@ var gh = {
   //   },cb)
   // },
 
-  getTeamId(repo, teamName, cb){
-    api.repos.getTeams({
-      user: org,
-      repo: repo
-    }, function(err,resp){
-      if (err) return cb(err);
-      var team = _.find(resp, function(team){
-        if (team.name === teamName)
-          return true
-      });
+  getTeamId(org, teamName, cb){
+    api.orgs.getTeams({ org, per_page: 100}, function(err,resp){
+      //-- TODO, this doesn't page and it NEEDS to
+      if (err) return cb(err)
+      var team = _.find(resp, (team) => team.name == teamName)
       if (team)
         cb(null,team.id);
       else
@@ -265,7 +260,7 @@ var gh = {
       var errors = parsedError.errors
       if (errors && errors.length == 1 && errors[0].code === "already_exists"){
         //team is already created, list teams and send that back
-        gh.getTeamId(repo, name, function(err, result) {
+        gh.getTeamId(org, name, function(err, result) {
           if (err) return cb(err)
           cb(null, result)
         })

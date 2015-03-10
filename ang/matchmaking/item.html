@@ -50,7 +50,7 @@
       <social-links profile="selected"></social-links>
       <em ng-repeat="t in selected.tags"
         ng-class="(highlightedTag(t._id)) ? 'highlight':''"
-        >{{t.short}}</em>
+        >{{t.short||t.name}}</em>
     </div>
     <br /><img ng-src="{{selected.avatar}}?s=50" class="user" />
     <b>{{selected.score}}</b>${{selected.rate}}|${{selected.minRate}}
@@ -111,7 +111,7 @@
           <div>
             <em ng-repeat="t in m.tags"
               ng-class="(highlightedTag(t._id)) ? 'highlight':''"
-              >{{t.short}}</em>
+              >{{t.short||t.name}}</em>
           </div>
         </li>
       </ul>

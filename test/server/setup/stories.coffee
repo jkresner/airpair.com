@@ -1,8 +1,9 @@
 # might be cool to inject this instead of require
-db = require('./setup.db')
-dataHelpers = require('./setup.data')
+db = require('./db')
+dataHelpers = require('./data')
 UserService = require('../../../server/services/users')
 PaymethodsService = require('../../../server/services/paymethods')
+braintree = require('braintree')
 
 """
 // Stories are use cases that take multiple steps that are often precursors
@@ -15,9 +16,10 @@ PaymethodsService = require('../../../server/services/paymethods')
 // hitting braintree and making a slow network call
 """
 
-global.addLocalUser = (userKey, opts, done) ->
-  clone = getNewUserData(userKey)
-  UserService.localSignup.call newUserSession(userKey), clone.email, clone.password, clone.name, (e, r) ->
+addLocalUser = (userKey, opts, done) ->
+  clone = dataHelpers.userData(userKey)
+  newSession = dataHelpers.userSession(userKey)
+  UserService.localSignup.call newSession, clone.email, clone.password, clone.name, (e, r) ->
     data.users[clone.userKey] = r
     if (opts)
       ups = {}
@@ -34,24 +36,24 @@ global.addLocalUser = (userKey, opts, done) ->
       done(clone.userKey)
 
 
-global.addAndLoginLocalUser = (originalUserKey, done) ->
+ addAndLoginLocalUser = (originalUserKey, done) ->
   addLocalUser originalUserKey, {}, (userKey) ->
-    LOGIN userKey, data.users[userKey], ->
+    LOGIN userKey, (u) ->
       GET '/session/full', {}, (s) ->
         s.userKey = userKey
         done(s)
 
 
-global.addAndLoginLocalUserWithEmailVerified = (originalUserKey, done) ->
+ addAndLoginLocalUserWithEmailVerified = (originalUserKey, done) ->
   addLocalUser originalUserKey, {emailVerified: true}, (userKey) ->
-    LOGIN userKey, data.users[userKey], (resp) ->
+    LOGIN userKey, (resp) ->
       GET '/session/full', {}, (s) ->
         expect(s.emailVerified).to.be.true
         s.userKey = userKey
         done(s)
 
 
-global.addAndLoginLocalUserWithPayMethod = (originalUserKey, done) ->
+ addAndLoginLocalUserWithPayMethod = (originalUserKey, done) ->
   addAndLoginLocalUserWithEmailVerified originalUserKey, (s) ->
     new db.Models.PayMethod( _.extend({userId: s._id}, data.paymethods.braintree_visa) ).save (e,r) ->
       s.primaryPayMethodId = r._id
@@ -67,7 +69,7 @@ stories = {
   addAndLoginLocalUserWithPayMethod,
 
   addUserWithRole: (userKey, role, done) ->
-    session = newUserSession()
+    session = dataHelpers.userSession()
 
     # so we aren't aliasing on every login
     session.sessionID = 'test'+userKey
@@ -92,14 +94,39 @@ stories = {
   addAndLoginLocalUserWithGithubProfile: (userKey, ghSocial, done) ->
     opts = emailVerified: true, gh: ghSocial || data.users.apt1.social.gh
     addLocalUser userKey, opts, (userKey) ->
-      LOGIN userKey, data.users[userKey], ->
+      LOGIN userKey, ->
         GET '/session/full', {}, (s) ->
           s.userKey = userKey
           done(s)
 
 
+  createNewExpert: (seedKey, expData, done) ->
+    userKey = "#{seedKey}#{timeSeed()}"
+    username = "#{seedKey}-#{timeSeed()}"
+    initials = "ap-#{timeSeed()}"
+    localization = data.wrappers.locationlization_melbourne
+    username = userKey
+    bio = "a bio for apexpert 1 #{timeSeed()}"
+    user = _.extend({username,initials,localization,username,bio}, data.users[seedKey])
+    if (user.social)
+      user.social.gh = user.social.gh || data.users.ape1.social.gh
+    else
+      user.social = { gh: data.users.ape1.social.gh }
+    user.google = user.google || data.users.ape1.google
+    user._id = newId()
+    user.email = user.email.replace('@',timeSeed()+'@')
+    user.googleId = timeSeed()
+    db.ensureDoc 'User', user, ->
+      data.users[userKey] = user
+      LOGIN userKey, (s) ->
+        s.userKey = userKey
+        d = rate: 70, breif: 'yo', tags: [data.tags.angular]
+        POST "/experts/me", d, {}, (expert) ->
+          done(s, expert)
+
+
   createNewPost: (userKey, postData, done) ->
-    LOGIN userKey, data.users[userKey], (authorSession) ->
+    LOGIN userKey, (authorSession) ->
       title = postData.title || 'A test post '+moment().format('X')
       # slug = title.toLowerCase().replace(/\ /g, '-')
       # tags = slug,
@@ -122,7 +149,7 @@ stories = {
 
   ## Todo, consider not using createAndPublishPost
   createAndPublishPost: (author, postData, done) ->
-    $log('createAndPublishPost deprecated'.error)
+    $log('createAndPublishPost deprecated'.red.dim)
     title = 'A test post '+moment().format('X')
     slug = title.toLowerCase().replace(/\ /g, '-')
     tags = [data.tags.angular,data.tags.node]
@@ -143,27 +170,27 @@ stories = {
         c = _.clone(data.v0.companys[companyCode])
         c._id = new db.ObjectId()
         c.contacts[0]._id = sCompanyAdmin._id
-        testDb.ensureDocs 'Company', [c], (e,r) ->
+        db.ensureDocs 'Company', [c], (e,r) ->
           d =
             type: 'braintree',
             token: braintree.Test.Nonces.Transactable,
             name: "#{c.name} Company Card",
             companyId: c._id
           POST '/billing/paymethods', d, {}, (pm) ->
-            LOGIN 'admin', data.users.admin, ->
+            LOGIN 'admin', ->
               PUT "/adm/companys/migrate/#{c._id}", {type:'smb'}, {}, (r) ->
                 PUT "/adm/companys/member/#{c._id}", {user:sCompanyMember}, {}, (rCompany) ->
                   done(c._id, pm._id, sCompanyAdmin, sCompanyMember)
 
 
   newLoggedInExpert: (userKey, done) ->
-    user = dataHelpers.getNewExpertUserData(userKey)
-    seedExpert = dataHelpers.getNewExpertData(userKey, user)
+    user = dataHelpers.expertUserData(userKey)
+    seedExpert = dataHelpers.expertData(userKey, user)
     data.users[user.userKey] = user
     data.experts[user.userKey] = seedExpert
 
     db.ensureExpert user.userKey, (e,expert) ->
-      LOGIN user.userKey, data.users[user.userKey], (expertSession) ->
+      LOGIN user.userKey, (expertSession) ->
         expertSession.userKey = user.userKey
         expertSession.expertId = expert._id
         done(expert, expertSession)
@@ -204,7 +231,7 @@ stories = {
         PUT "/requests/#{request._id}/reply/#{expert._id}", reply, {}, (r1) ->
           expect(r1.suggested[0].expertStatus).to.equal("available")
           expect(customerSession.primaryPayMethodId).to.exist
-          LOGIN customerSession.userKey, customerSession, ->
+          LOGIN customerSession.userKey,  ->
             GET "/requests/#{request._id}/book/#{expert._id}", {}, (r2) ->
               airpair1 = time: moment().add(2, 'day'), minutes: 60, type: 'private', payMethodId: customerSession.primaryPayMethodId, request: { requestId: request._id, suggestion: r2.suggested[0] }
               POST "/bookings/#{expert._id}", airpair1, {}, (booking) ->
@@ -214,19 +241,20 @@ stories = {
 
   newBookedRequestWithExistingExpert: (customerUserKey, requestData, expertSession, cb) ->
     SETUP.newCompleteRequest customerUserKey, {}, (request, customerSession) ->
-      LOGIN expertSession.userKey, expertSession, () ->
+      LOGIN expertSession.userKey, () ->
         reply = expertComment: "I'll take it", expertAvailability: "Real-time", expertStatus: "available"
         PUT "/requests/#{request._id}/reply/#{expertSession.expertId}", reply, {}, (r1) ->
-          LOGIN customerSession.userKey, customerSession, ->
+          LOGIN customerSession.userKey, ->
             GET "/requests/#{request._id}/book/#{expertSession.expertId}", {}, (r2) ->
               airpair1 = time: moment().add(2, 'day'), minutes: 60, type: 'private', payMethodId: customerSession.primaryPayMethodId, request: { requestId: request._id, suggestion: r2.suggested[0] }
               POST "/bookings/#{expertSession.expertId}", airpair1, {}, (booking) ->
                 cb(request, booking, customerSession, expertSession)
 
+
   releaseOrderAndLogExpertBackIn: (orderId, expertSession, cb) ->
-    LOGIN 'admin', data.users.admin, ->
+    LOGIN 'admin', ->
       PUT "/adm/billing/orders/#{orderId}/release", {}, {}, (released) ->
-        LOGIN expertSession.userKey, expertSession, cb
+        LOGIN expertSession.userKey, cb
 
 }
 

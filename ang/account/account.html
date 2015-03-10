@@ -6,6 +6,8 @@
 
 <section id="account" ng-if="session">
 
+  <h3 class="underline">Contact info</h3>
+
   <section class="email">
 
     <h3 ng-if="!session.emailVerified" style="margin-top:0px">Verify your email to continue</h3>
@@ -36,48 +38,8 @@
 
   </section>
 
-  <hr ng-if="session.emailVerified" />
-
   <section class="info" ng-if="session.emailVerified">
-
-  <form id="profileForm" novalidate name="profileForm" ng-submit="submit(profileForm.$valid, data)">
-
-    <div form-group>
-      <label class="control-label" for="profileName">Full name </label>
-      <input id="profileName" name="name" form-control type="text" placeholder="Full name" ng-model="data.name" required ng-minlength="4" ng-maxlength="60" ng-pattern="/\w+ \w+/" tabindex="2"
-        ng-blur="updateName()"
-      >
-      <div class="error" ng-if="formGroup.showError(profileForm.name)" ng-messages="profileForm.name.$error">
-        <div ng-message="required">Name required</div>
-        <div ng-message="minlength">Full name required (e.g. John Smith)</div>
-        <div ng-message="pattern">Full name required (e.g. John Smith)</div>
-        <div ng-message="maxlength">Full name max length 60 chars</div>
-      </div>
-    </div>
-
-    <div form-group>
-      <label for="profileInitials">Initials <span>used for IM/chat</span></label>
-      <input id="profileInitials" name="initials" type="text" form-control placeholder="Initials" ng-model="data.initials" tabindex="3"
-        ng-blur="updateInitials()"
-      >
-    </div>
-    <div form-group>
-      <label class="control-label" for="profileUsername">Username <span>shown on post you publish</span></label>
-      <input id="profileUsername" name="username" form-control type="text" placeholder="Username" ng-model="data.username" ng-minlength="2" ng-pattern="/^\w+$/" tabindex="4"
-        ng-blur="updateUsername()"
-      >
-      <div class="error" ng-if="formGroup.showError(profileForm.username)" ng-messages="profileForm.username.$error">
-        <div ng-message="minlength">Min 2 characters</div>
-        <div ng-message="pattern">Username must be letters only</div>
-      </div>
-    </div>
-
-  </form>
-
-  <alert ng-repeat="alert in profileAlerts" type="{{alert.type}}"><span ng-bind-html="alert.msg | html"></span></alert>
-
-  </div>
-
+      <user-info></user-info>
   </section>
 
   <section class="avatar" ng-if="session.emailVerified">
@@ -89,31 +51,19 @@
     </p>
   </section>
 
-  <hr />
+  <section class="password" ng-if="session.emailVerified">
+    <h3 class="underline">Login info</h3>
 
-  <section class="localization" ng-if="session.emailVerified">
-
-    <location-input data="data" on-select="updateLocation"></location-input>
-    {{data.timezone}}
-
+    <h4>Change password</h4>
+    <a href="#" ng-click="sendPasswordChange()" class="btn">Send password reset email</a>
+    <alert ng-repeat="alert in passwordAlerts" type="{{alert.type}}"><span ng-bind-html="alert.msg | html"></span></alert>
   </section>
-
-  <hr ng-if="session.emailVerified" />
 
   <section class="connect" ng-if="session.emailVerified">
 
-    <h4 style="margin-top:0">Connected social accounts</h4>
+    <h3 class="underline">Connected social accounts</h3>
+    <div social-connect return-to="'/be-an-expert'" class="connect-icons"></div>
 
-    <div social-connect return-to="'/me'" class="connect-icons"></div>
-
-  </section>
-
-  <hr ng-if="session.emailVerified" />
-
-  <section class="password" ng-if="session.emailVerified">
-    <h3 style="margin-top:0">Change password</h3>
-    <a href="#" ng-click="sendPasswordChange()" class="btn">Send password reset email</a>
-    <alert ng-repeat="alert in passwordAlerts" type="{{alert.type}}"><span ng-bind-html="alert.msg | html"></span></alert>
   </section>
 
 </section>

@@ -1,6 +1,12 @@
 var util = require('../../shared/util')
+var colors = require('colors')
+colors.APPLOAD = colors.white
+colors.setTheme({
+  appload: 'APPLOAD'
+})
 
 var knownNonErrors = [
+  'Page not found',
   'try google login',
   'already registered',
   'Max allowed tags reached',

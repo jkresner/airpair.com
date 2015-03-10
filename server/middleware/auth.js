@@ -16,11 +16,45 @@ var setSessionVarFromQuery = (varName) =>
 
 var middleware = {
 
+  setAppUrlRegexList(app) {
+    app.routeRegexps = []
+    for (var stack of app._router.stack) {
+      if (stack.route && !stack.regexp.fast_slash)
+        app.routeRegexps.push(stack.regexp)
+      else if (stack.name == 'router') {
+        if (!stack.regexp.fast_slash) {
+          app.routeRegexps.push(stack.regexp)
+        }
+        for (var rstack of stack.handle.stack)
+        {
+          if (!rstack.regexp.fast_slash)
+            app.routeRegexps.push(rstack.regexp)
+        }
+      }
+    }
+  },
+
+  setUrlMatch(app) {
+    return function(req, res, next) {
+      if (logging) $log('setUrlMatch ${req.url}'.cyan, req.url) // app.routeRegexps)
+      var url = req.url.split('?')[0]
+      for (var regexp of app.routeRegexps)
+      {
+        var match = regexp.test(url)
+        if (match) {
+          req.urlMatch = true
+          // $log(regexp , req.urlMatch)
+          return next()
+        }
+      }
+      next()
+    }
+  },
 
   checkToPersistSession(expressSession) {
     return (req, res, next) => {
       if (logging) $log(`mw.checkToPersistSession ${req.url} ${!isBot(req.get('user-agent'))}`.cyan)
-      if (isBot(req.get('user-agent'))) {
+      if (isBot(req.get('user-agent')) || req.urlMatch === undefined) {
         req.session = {}
         req.sessionID = 'unNOwnSZ3Wi8bDEnaKzhygGG2a2RkjZ2' //-- hard coded consistent uid
         return next() //-- Do not track the session

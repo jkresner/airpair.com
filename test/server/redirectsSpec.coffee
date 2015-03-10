@@ -1,4 +1,4 @@
-module.exports = -> describe "API", ->
+module.exports = -> describe "API".subspec, ->
 
   before (done) ->
     SETUP.analytics.stub()
@@ -7,19 +7,16 @@ module.exports = -> describe "API", ->
   after ->
     SETUP.analytics.restore()
 
-  beforeEach ->
-    SETUP.clearIdentity()
-
 
   it '403 for non admin on get redirects', (done) ->
     opts = status: 403
-    addAndLoginLocalUser 'dily', (s) ->
+    SETUP.addAndLoginLocalUser 'dily', (s) ->
       GET '/adm/redirects', opts, ->
         done()
 
 
   it 'can create redirect as admin', (done) ->
-    LOGIN 'admin', data.users.admin, (s) ->
+    LOGIN 'admin', (s) ->
       GET '/adm/redirects', {}, (r1) ->
         beforeCount = r1.length
         suffix = moment().format('X')

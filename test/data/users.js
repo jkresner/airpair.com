@@ -11,6 +11,7 @@ module.exports = {
   arys: { name:"Alyssa Reese",email:"aresse@apr.com" },
   alys: { name:"Alyssa Reese",email:"aresse@gmail.com" },
   alry: { name:"Alyssa Reese",email:"aresse@hotmail.com" },
+  alyr: { name:"Alyssa Reese",email:"aresse@airpair.com" },
   mcas: { name:"Moises Cassab",email:"moises.cassab@gmail.com" },
   mois: { name:"Moises Cassab",email:"moises.cassab@hotmail.com" },
 
@@ -332,6 +333,85 @@ module.exports = {
     "stackId" : 104349
   },
 
+  ape1: {
+    "_id" : "54f381551197aff12228380c",
+    "googleId" : "107399914803761861041",
+    "google" : {
+      "provider" : "google",
+      "id" : "107399914803761861041",
+      "displayName" : "AirPair Test1",
+      "name" : { "familyName" : "Test1", "givenName" : "AirPair" },
+      "emails" : [ { "value" : "airpairtest1@gmail.com" } ],
+      "_json" : {
+          "id" : "107399914803761861041",
+          "email" : "airpairtest1@gmail.com",
+          "verified_email" : true,
+          "name" : "AirPair Test1",
+          "given_name" : "AirPair",
+          "family_name" : "Test1",
+          "picture" : "https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg",
+          "gender" : "male",
+          "locale" : "en"
+      },
+      "token" : {
+          "token" : "ya29.KQF1LDKCcCi39ViUupp-NwkU7D-TKeC86GicwhZeTOHdwjpWUeOAEjJ_SZB9r6Wln7dcGcKI-CdKlQ",
+          "attributes" : {"refreshToken" : null}
+      }
+    },
+    "email" : "airpairtest1@gmail.com",
+    "name" : "AirPair Test1",
+    "emailVerified" : false,
+    "cohort" : {
+      "engagement" : {
+          "visits" : [
+            "2015-03-01T08:00:00.000Z"
+          ],
+          "visit_last" : "2015-03-01T21:25:08.437Z",
+          "visit_signup" : "2015-03-01T21:15:01.848Z",
+          "visit_first" : "2015-03-01T21:13:28.265Z"
+      },
+      "aliases" : [],
+      "firstRequest" : { "url" : "/" },
+    },
+    "bio" : "Wowowowo",
+    "social" : {
+      "gh" : {
+        "provider" : "github",
+        "id" : 11261012,
+        "displayName" : null,
+        "username" : "airpairtest1",
+        "profileUrl" : "https://github.com/airpairtest1",
+        "emails" : [{"value" : null}],
+        "_json" : {
+          "login" : "airpairtest1",
+          "id" : 11261012,
+          "avatar_url" : "https://avatars.githubusercontent.com/u/11261012?v=3",
+          "html_url" : "https://github.com/airpairtest1",
+          "gists_url" : "https://api.github.com/users/airpairtest1/gists{/gist_id}",
+          "starred_url" : "https://api.github.com/users/airpairtest1/starred{/owner}{/repo}",
+          "subscriptions_url" : "https://api.github.com/users/airpairtest1/subscriptions",
+          "organizations_url" : "https://api.github.com/users/airpairtest1/orgs",
+          "repos_url" : "https://api.github.com/users/airpairtest1/repos",
+          "public_repos" : 0,
+          "public_gists" : 0,
+          "followers" : 0,
+          "following" : 0,
+          "created_at" : "2015-03-01T21:12:29Z",
+          "updated_at" : "2015-03-01T22:22:16Z",
+          "private_gists" : 0,
+          "total_private_repos" : 0,
+          "owned_private_repos" : 0,
+          "disk_usage" : 0,
+          "collaborators" : 0,
+        },
+        "token" : {
+          "token" : "835b520ebd5710972d421cf8c190c59adccf39e7",
+          "attributes" : { "refreshToken" : null }
+        }
+      }
+    }
+  },
+
   samt: {
     "__v" : 0,
     "_id" : "53a852db1c67d1a4859d3661",
@@ -463,6 +543,24 @@ module.exports = {
     "emailVerified" : true,
     "local" : {},
     "name" : "Abe Haskins",
+    "social" : {
+      "tw" : {
+        "id" : 2909811,
+        "username" : "abeisgreat",
+        "pic" : {"value" : "https://pbs.twimg.com/profile_images/2089417473/IMG_5181_normal.jpg" }
+      },
+      "in" : {
+          "id" : "2LZ2W07M-3",
+          "displayName" : "Abe Haskins"
+      },
+      "so" : {
+          "id" : 1570248,
+          "website_url" : "http://www.abehaskins.com",
+          "link" : "1570248/abeisgreat",
+          "reputation" : 872,
+          "profile_image" : "https://www.gravatar.com/avatar/fbb79df0f24e736c8e37f9f195a738cc?s=128&d=identicon&r=PG"
+      },
+    }
   },
 
   narv :{
@@ -508,6 +606,9 @@ module.exports = {
     "googleId" : "103447198283237700854",
     "name" : "Vikram Narayan"
   },
+
+
+
 
   tmot: {
     "_id" : "527280b766a6f999a465fa9e",

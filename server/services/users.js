@@ -205,15 +205,18 @@ var save = {
 
   //-------- User Info
 
+  setExpertCohort(expertId) {
+    var exCo = this.user.cohort.expert || {}
+    exCo.applied = exCo.applied || new Date
+    this.user.cohort.expert = _.extend(exCo, {_id:expertId})
+
+    User.findOneAndUpdate({_id:this.user._id},
+      { $set: { cohort: this.user.cohort } }, ()=>{})
+  },
+
   changeBio(bio, cb) {
     var ups = {bio}
-
-    //temporary for expert applications
-    User.findOne({_id:this.user._id}, (e,r) => {
-      ups.cohort = _.extend(r.cohort, { expert: { applied: new Date } })
-
-      updateAsIdentity.call(this, ups, {type:'expertBio', by: r.email}, cb)
-    })
+    updateAsIdentity.call(this, ups, {type:'expertBio', by: this.user.email}, cb)
   },
 
   changeName(name, cb) {

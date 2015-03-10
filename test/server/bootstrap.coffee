@@ -1,56 +1,57 @@
-traceur = require('traceur')
-require('traceur-source-maps').install(traceur)
-traceur.require.makeDefault (filePath) ->
-  !~filePath.indexOf('node_modules') && !~filePath.indexOf('test') != 0
+require('./setup/flavor')
 
-setGlobals = require('./../../server/util/global')
-initConfig = require('./../../server/util/config')
-appdir = __dirname.replace('/test/server','').replace('\\test\\server','')
-config = initConfig('test', appdir)
-setGlobals(config)
+{initGlobals,initConfig,colors} = require('./../../server/util/_setup')
+initGlobals(initConfig('test'))
 
-require('./helpers/http')
-global.data     = require('./../data/data')
-global.sinon    = require('sinon')
-global.chai     = require('chai')
-global.expect   = chai.expect
-global.expectIdsEqual = (id1, id2) -> expect(_.idsEqual(id1,id2)).to.be.true
-global.expectStartsWith = (str,start) -> expect(str.indexOf(start)).to.equal(0)
-global.expectContains = (str,start) -> expect(str.indexOf(start)).not.equal(-1)
+colors.SPEC = colors.yellow.dim.bold
+colors.SUBSPEC = colors.yellow.dim
+colors.EXPECTEDERR = colors.magenta.dim
+colors.setTheme({
+  spec: 'SPEC',
+  subspec: 'SUBSPEC',
+  expectederr: 'EXPECTEDERR'
+})
 
-describe 'Server: ', ->
+testHttpHelpers       = require('./helpers/http')
+
+
+describe 'Server: '.appload, ->
 
   @timeout(4000)
 
   before (done) ->
-    global.logging = false
-    global.app = require('../../index').run()
-    global.testDb = require('./helpers/setup')
-    global.SETUP = global.testDb
-    setTimeout(( -> testDb.init(done) ), 100)
+    global.logging    = false
+    global.data       = require('./../data/data')
+    global.SETUP      = require('./setup/_setup')
+    global.timeSeed   = SETUP.timeSeed
+    global.newId      = SETUP.newId
+    global.app        = require('../../index').run()
+    testHttpHelpers.init(app)
+    setTimeout(( -> SETUP.init(done) ), 100)
+
 
   beforeEach ->
-    SETUP.clearIdentity()
+    LOGOUT()
 
-  describe('Session: ', require('./sessionSpec'))
-  describe('Bots: ', require('./botsSpec'))
-  describe('Auth: ', require('./authSpec'))
-  describe('Authz: ', require('./authzSpec'))
-  describe('Users: ', require('./usersSpec'))
-  describe('User Flows: ', require('./userFlowsSpec'))
-  describe('Analytics: ', require('./analyticsSpec'))
-  describe('Tags: ', require('./tagsSpec'))
-  describe('Companys: ', require('./companysSpec'))
-  describe('Rss: ', require('./rssSpec'))
-  describe('Redirects: ', require('./redirectsSpec'))
-  describe('Requests: ', require('./requestsSpec'))
-  describe('Pipeline: ', require('./requestsAdminSpec'))
-  describe('Paymethods: ', require('./paymethodsSpec'))
-  describe('Orders: ', require('./ordersSpec'))
-  # describe('Orders: ', require('./ordersMembershipSpec'))
-  describe('Orders: ', require('./ordersBookingSpec'))
-  describe('Posts: ', require('./postsSpec'))
-  describe('Post Reviews: ', require('./postsReviewsSpec'))
-  describe('Bookings: ', require('./bookingsSpec'))
-  describe('Payouts: ', require('./payoutsSpec'))
 
+  describe 'Session: '.spec,        require('./sessionSpec')
+  describe 'Bots: '.spec,           require('./botsSpec')
+  describe 'Auth: '.spec,           require('./authSpec')
+  describe 'Authz: '.spec,          require('./authzSpec')
+  describe 'Users: '.spec,          require('./usersSpec')
+  describe 'User Flows: '.spec,     require('./userFlowsSpec')
+  describe 'Experts: '.spec,        require('./expertsSpec')
+  describe 'Analytics: '.spec,      require('./analyticsSpec')
+  describe 'Tags: '.spec,           require('./tagsSpec')
+  describe 'Companys: '.spec,       require('./companysSpec')
+  describe 'Rss: '.spec,            require('./rssSpec')
+  describe 'Redirects: '.spec,      require('./redirectsSpec')
+  describe 'Requests: '.spec,       require('./requestsSpec')
+  describe 'Pipeline: '.spec,       require('./requestsAdminSpec')
+  describe 'Paymethods: '.spec,     require('./paymethodsSpec')
+  describe 'Orders: '.spec,         require('./ordersSpec')
+  describe 'Orders: '.spec,         require('./ordersBookingSpec')
+  describe 'Posts: '.spec,          require('./postsSpec')
+  describe 'Post Reviews: '.spec,   require('./postsReviewsSpec')
+  describe 'Bookings: '.spec,       require('./bookingsSpec')
+  describe 'Payouts: '.spec,        require('./payoutsSpec')

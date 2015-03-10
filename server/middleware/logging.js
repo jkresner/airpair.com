@@ -8,6 +8,13 @@ if (config.log.raygun.on) {
 
 var middleware = {
 
+  pageNotFound(req, res, next) {
+    var e = new Error(`Page not found`)
+    e.status = 404
+    // $log('4040404 ??'.red)
+    next(e)
+  },
+
   slowrequests(req, res, next) {
     var start = new Date
     res.on('finish', function() {
@@ -44,10 +51,11 @@ var middleware = {
       var uid = (req.user) ? req.user.email : req.sessionID
 
       if (config.env != 'test') {
-        $log(`errorHandle ${uid} ${req.method} ${req.url}`.red, JSON.stringify(req.body), (e.message || e).magenta)
+        var ref = (req.header('Referer')) ? ` <<< ${req.header('Referer')}` : ''
+        $log(`errorHandle ${uid} ${req.method} ${req.url}${ref}`.red, JSON.stringify(req.body), (e.message || e).magenta)
         $error(e, req.user, req)
       } else {
-        $log(req.url + ' ' +(e.message || e).magenta)
+        $log(`${req.method}:${req.url} `.gray.dim + (e.message || e).expectederr)
         // $log('Test Debug Error ', e.toString().magenta)
       }
 
