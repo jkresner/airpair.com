@@ -1,142 +1,132 @@
-global.http = require('supertest')
+global.http                 = require('supertest')
+global.cookie               = null //-- used for maintaining login
+global.cookieCreatedAt      = null
+var hlpr                    = {}
+var {uaFirefox}             = require('../../data/http')
+var UserData                = require('../../../server/services/users.data')
+var {ObjectId2Moment}       = require('../../../shared/util')
 
-global.cookie = null //-- used for maintaining login
-global.cookieCreatedAt = null
 
-var uaFirefox = 'Mozilla/5.0 (Windows NT 5.1; rv:31.0) Gecko/20100101 Firefox/31.0'
 
-global.GETXML = function(url) {
-  return GETP(url)
-    .expect('Content-Type', /application\/rss\+xml/)
+var session = {
+
+  Call(httpCall, cb)
+  {
+    return httpCall
+      .set('user-agent', uaFirefox)
+      .expect('Content-Type', /json/)
+      .expect(200)
+      .end((e,resp) => {
+        if (e) {
+          $log(e.red)
+          throw e
+        }
+        cookie = resp.headers['set-cookie']
+        if (resp.body._id)
+          cookieCreatedAt = ObjectId2Moment(resp.body._id)
+        else
+          cookieCreatedAt = moment()
+
+        cb(resp.body)
+      })
+  },
+
+  ANONSESSION(cb)
+  {
+    if (logging) $log('ANONSESSION:')
+    var httpCall = hlpr.GET(api.Url('/session/full'))
+    return session.Call(httpCall, cb)
+  },
+
+  LOGIN(userKey, cb)
+  {
+    if (logging) $log('LOGIN:', `/test/setlogin/${userKey}`)
+
+    data.sessions[userKey] =
+      UserData.select.sessionFromUser(data.users[userKey])
+
+    if (logging) $log(`login.data.sessions[${userKey}]`, data.sessions[userKey])
+
+    var httpCall = hlpr.GET(`/test/setlogin/${userKey}`)
+    return session.Call(httpCall, cb)
+  },
+
+  LOGOUT(cb)
+  {
+    global.cookie = null
+    global.cookieCreatedAt = null
+  }
+
 }
 
-global.GETP = function(url) {
-  return http(global.app)
-    .get(url)
-    .set('cookie',cookie)
-    .expect(200);
+
+var api = {
+
+  Url(url, httpMethod, data)
+  {
+    var apiUrl = '/v1/api'+url
+    if (logging && httpMethod) $log(`${httpMethod}:`.cyan, apiUrl, data)
+    return apiUrl
+  },
+
+  Call(httpCall, opts, cb)
+  {
+    return httpCall
+      .set('cookie', (opts.unauthenticated) ? null : cookie)
+      .set('user-agent', uaFirefox)
+      .expect('Content-Type', /json/)
+      .expect(opts.status||200)
+      .end((e, resp) => {
+        if (!e) return cb(resp.body)
+        $log( ((resp) ? resp.text : e.message ).red )
+        throw e
+      })
+  },
+
+  GET(url, opts, cb)
+  {
+    var httpCall = hlpr.GET(api.Url(url,'GET'))
+    return api.Call(httpCall, opts, cb)
+  },
+
+  POST(url, data, opts, cb)
+  {
+    var httpCall = hlpr.POST(api.Url(url,'POST',data)).send(data)
+    return api.Call(httpCall, opts, cb)
+  },
+
+  PUT(url, data, opts, cb)
+  {
+    var httpCall = hlpr.PUT(api.Url(url,'PUT',data)).send(data)
+    return api.Call(httpCall, opts, cb)
+  },
+
+  DELETE(url, opts, cb)
+  {
+    var httpCall = hlpr.DELETE(api.Url(url,'DELETE',data))
+    return api.Call(httpCall, opts, cb)
+  }
+
 }
 
 
-global.ANONSESSION = function(cb) {
-  if (logging) $log('ANONSESSION:')
-  return http(global.app).get('/v1/api/session/full').set('user-agent', uaFirefox).end(function(e,resp){
-    if (e) return done(err)
-    cookie = resp.headers['set-cookie']
-    cookieCreatedAt = moment()
-    cb(resp.body)
-  })
-}
-
-
-global.LOGIN = function(key, user, cb) {
-  if (logging) $log('login:', '/test/setlogin/'+key)
-  data.sessions[key] = { _id: user._id, name: user.name, emailVerified: user.emailVerified, email: user.email, roles: user.roles };
-  if (logging) $log(`login.data.sessions[${key}]`, data.sessions[key])
-  return http(global.app).get('/test/setlogin/'+key).set('user-agent', uaFirefox).end(function(e,resp){
-    if (e) {
-    	$log(resp.text.red)
-     	throw err
+module.exports = {
+  init(app) {
+    hlpr.GET = http(app).get
+    hlpr.POST = http(app).post
+    hlpr.PUT = http(app).put
+    hlpr.DELETE = http(app).delete
+    global.GET = api.GET
+    global.POST = api.POST
+    global.PUT = api.PUT
+    global.DELETE = api.DELETE
+    global.ANONSESSION = session.ANONSESSION
+    global.LOGIN = session.LOGIN
+    global.LOGOUT = session.LOGOUT
+    global.GETP = function(url) {  // for getting non-api calls (e.g. pages)
+      return hlpr.GET(url)
+        .set('cookie', cookie)
+        // .expect(200)
     }
-    cookie = resp.headers['set-cookie']
-  	if (logging) $log('login.cookie.blue', cookie, resp.body)
-    cb(resp.body)
-  })
-}
-
-
-global.GET = function(url, opts, cb) {
-  var apiUrl = '/v1/api'+url
-  if (logging) $log('get:', apiUrl)
-
-  var sessionCookie = cookie
-  if (opts.unauthenticated) { sessionCookie = null }
-
-  return http(global.app)
-    .get(apiUrl)
-    .set('cookie',sessionCookie)
-    .set('user-agent', uaFirefox)
-    .expect('Content-Type', /json/)
-    .expect(opts.status||200)
-    .end(function(err, resp){
-      if (err) {
-        $log( ((resp) ? resp.text : err.message ).red )
-      	throw err
-      }
-      else cb(resp.body)
-    })
-}
-
-
-global.POST = function(url, data, opts, cb) {
-  var apiUrl = '/v1/api'+url
-  if (logging) $log('post:', apiUrl, data)
-
-  var sessionCookie = cookie
-  if (opts.unauthenticated) { sessionCookie = null }
-
-  return http(global.app)
-    .post(apiUrl)
-    .send(data)
-    .set('cookie',sessionCookie)
-    .set('user-agent', uaFirefox)
-    .expect(opts.status||200)
-    .expect('Content-Type', /json/)
-    .end(function(err, resp){
-      if (err) {
-        $log( ((resp) ? resp.text : err.message ).red )
-        throw err
-      }
-      else cb(resp.body, resp)
-    })
-
-}
-
-
-global.PUT = function(url, data, opts, cb) {
-  var apiUrl = '/v1/api'+url
-  if (logging) $log('put:', apiUrl)
-
-  var sessionCookie = cookie
-  if (opts.unauthenticated) { sessionCookie = null }
-
-  return http(global.app)
-    .put(apiUrl)
-    .send(data)
-    .set('cookie',sessionCookie)
-    .set('user-agent', uaFirefox)
-    .expect(opts.status||200)
-    .expect('Content-Type', /json/)
-    .end(function(err, resp){
-      if (err) {
-        $log( ((resp) ? resp.text : err.message ).red )
-      	throw err
-      }
-      else cb(resp.body, resp)
-    })
-
-}
-
-
-global.DELETE = function(url, opts, cb) {
-  var apiUrl = '/v1/api'+url
-  if (logging) $log('DELETE:', apiUrl)
-
-  var sessionCookie = cookie
-  if (opts.unauthenticated) { sessionCookie = null }
-
-  return http(global.app)
-    .delete(apiUrl)
-    .set('cookie',sessionCookie)
-    .set('user-agent', uaFirefox)
-    .expect(opts.status||200)
-    .expect('Content-Type', /json/)
-    .end(function(err, resp){
-      if (err) {
-        $log( ((resp) ? resp.text : err.message ).red )
-      	throw err
-      }
-      else cb(resp.body, resp)
-    })
-
+  }
 }

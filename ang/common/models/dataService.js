@@ -77,8 +77,11 @@ angular.module('APDataSvc', [])
 
     var expertFns = {
       getForExpertsPage: GET((d)=>`/experts`),
+      getMe: GET((d)=>`/experts/me`),
       getById: GET((d)=>`/experts/${d._id}`),
-      getForDashboard: GET((d)=>`/experts/dashboard`)
+      getForDashboard: GET((d)=>`/experts/dashboard`),
+      create: POST((d)=>`/experts/me`),
+      updateMe: PUT((d)=>`/experts/${d._id}/me`)
     }
 
     this.experts = expertFns;

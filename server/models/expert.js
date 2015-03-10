@@ -1,6 +1,7 @@
 var mongoose = require('mongoose')
 var Schema = mongoose.Schema
 var ObjectId = Schema.Types.ObjectId
+var Shared = require("./_shared")
 
 var Coupon = {
   code:           { required: true, type: String },
@@ -21,35 +22,93 @@ var Bookme = {
 
 }
 
+var UserCopy = {
+  _id:              { unique: true, required: true, type: ObjectId, ref: 'User' },
+  email:            { type: String, unique: true, sparse: true, trim: true, lowercase: true },
+  emailVerified:    { type: Boolean, required: true, default: false },
+  name:             { type: String, trim: true },
+  initials:         { type: String, lowercase: true, trim: true },
+  username:         { type: String, lowercase: true, trim: true },
+  localization:     { location: String, timezone: String },
+  social:       {
+      gh: {
+        username: { type: String },
+        _json: {
+          avatar_url: { type: String },
+          public_repos: { type: Number },
+          public_gists: { type: Number },
+          followers: { type: Number },
+        }
+      },
+      so: {
+        link: { type: String },
+        reputation: { type: String },
+        badge_counts: { type: {} }
+      },
+      bb: {     username: { type: String } },
+      in: {     id: { type: String } },
+      tw: {
+        username: { type: String },
+        _json: {
+          description: { type: String },
+          followers_count: { type: String }
+        }
+      },
+      al: {     username: { type: String } },
+      gp: {
+        id: { type: String },
+        _json: {
+          picture: { type: String },
+        }
+      }
+  }
+}
+
+
+//-- Need to fix this guy
+var TagSlim = {
+  _id:          { required: true, type: String}, //, type: ObjectId, ref: 'Tag'
+  sort:         { type: Number }, //, required: true
+}
+
 module.exports = mongoose.model('Expert', new Schema({
 
   userId:         { unique: true, required: true, type: ObjectId, ref: 'User' },
-  name:           { required: true, type: String },
-  username:       { required: true, type: String },
-  email:          { required: true, type: String },
-  gmail:          { required: true, type: String },
-  pic:            { required: true, type: String },
+
+  lastTouch:      Shared.Touch,
+  actvity:        [Shared.Touch],
+
+  rate:           Number,
+  brief:          String,
+  tags:           [TagSlim],
+  gmail:          { type: String },
+  pic:            { type: String },
+
+  user:           UserCopy,
+  // deprecated v0 user props
+  name:           { type: String },
+  username:       { type: String },
+  email:          { type: String },
+  timezone:       String,
+  location:       String,
   homepage:       String,
-  sideproject:    String,
-  other:          String,
   gp:             {},          // googleplus
   gh:             {},          // github
   so:             {},          // stackoverflow
   bb:             {},          // bitbucket
   in:             {},          // linkedIn
   tw:             {},          // twitter
-  tags:           [{}],
-  rate:        		Number,
+
+  settings:       {},
+  // deprecated v0 settings props
   minRate:        Number,
-  timezone:       String,
-  location:       String,
-  brief:          String,
   status:         String,
   availability:   String,
   hours:          String,
-  bookMe:         { required: false, type: Bookme },
   busyUntil:      { type: Date, default: Date },
   updatedAt:      { type: Date, default: Date },
+
+  // matching
   karma:          { required: true, type: Number, default: 0 },
   matching:       {
     replies:      {
@@ -69,6 +128,9 @@ module.exports = mongoose.model('Expert', new Schema({
       weight:     Number, // allow staff to boost experts
       incident:   [{requestId:ObjectId,comment:String,severity:Number}]
     }
-  }
+  },
+
+  // deprecated other
+  bookMe:         { required: false, type: Bookme },
 
 }))

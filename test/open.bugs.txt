@@ -1,4 +1,14 @@
 
+Request can only be updated by owner
+PUT /v1/api/requests/54fc1fee3326620c00735d4e
+Ishan Khanna ishan1604@gmail.com 53e70b6c8f8c80299bcc4066
+ << https://www.airpair.com/help/request
+isBot:false:Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.76 Safari/537.36
+
+ {"step":"brief","_id":"54fc1fee3326620c00735d4e","userId":"53d2a8f28f8c80299bcc3b6b","by":{"avatar":"//0.gravatar.com/avatar/cccfd415335f4646f1a9e2d1770175c2","email":"will_maunders@mac.com","name":"Will Maunders"},"type":"mentoring","brief":"I have been tasked with creating a basic application to take photos, add comments to the photos and output the list as a PDF document by using the itext or PDFjet libs. would love someone to talk / show me how to do this!\n\nThanks in advance\nWill","tags":[{"_id":"514825fa2a26ea0200000006","slug":"android","sort":0},{"_id":"514825fa2a26ea020000001e","slug":"java","sort":1},{"_id":"5181d0a966a6f999a465eb55","slug":"sqlite","sort":2}],"time":"regular","hours":"2","experience":"beginner","status":"review","suggested":[{"matchedBy":{"userId":"5367fd6d1c67d1a4859d30e7","initials":"pg"},"_id":"54fc21993326620c00735d87","suggestedRate":{"expert":43,"total":106},"expertComment":"I can help you out on this.","expertAvailability":"Available 6 PM to 11 PM IST","expertStatus":"available","reply":{"time":"2015-03-08T10:27:02.103Z"},"expert":{"_id":"53e70c0369750b0200ed8c27","email":"ishan1604@gmail.com","gmail":"ishan1604@gmail.com","name":"Ishan Khanna","rate":10,"userId":"53e70b6c8f8c80299bcc4066","in":{"id":"_JGx5OiXJ-"},"so":{"link":"1610459/ishan-khanna"},"gh":{"username":"ishan1604"},"avatar":"//0.gravatar.com/avatar/b83dbe891c213350c710216b89959e03"}}],"title":"2 hour android, java and sqlite mentoring","meta":{"title":"AirPair | android, java and sqlite Request","canonical":"https://www.airpair.com/review/54fc1fee3326620c00735d4e","noindex":true},"reviewRender":true}
+
+
+
 Could not find request[54cad38d2aadfe0900d650ff] belonging to user[54cf4f4c83e5610900a602d3]
 GET /v1/api/requests/54cad38d2aadfe0900d650ff
 Carlos Pombeiro carlospombeiro@gmail.com 54cf4f4c83e5610900a602d3

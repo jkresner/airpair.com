@@ -12,6 +12,7 @@ section#expert-application {
 
 section#account {
 
+  h3 { margin:10px 0 30px 0 }
   padding-top:20px;
 
   section { padding:20px 0 10px 0 }
@@ -67,7 +68,6 @@ section#account {
     }
   }
 
-
   section.avatar {
     vertical-align:top;
     width:50%;
@@ -83,10 +83,58 @@ section#account {
   }
 
   section.password {
-  .btn { width:48% }
+    .btn { width:48% }
+  }
+
+  section.connect {
+    margin-top:20px;
   }
 }
 
+.localization {
+  padding-bottom:10px;
+  label.timezone {
+    display:block;
+    color:green;margin:-12px 0 0px 2px;font-size:12px;font-weight:normal;  }
+}
+
+
+section#beanexpert {
+
+  .form-control {
+    color:@textgray
+  }
+
+  .control-label {
+    // color:@mediumgray;
+    margin-bottom:2px;
+    font-size:11px;
+    span { font-weight:normal;color:@lightorange }
+  }
+  h3 { margin:30px 0 }
+  > section.connect {
+    // background:@gitgray;
+  }
+  > section.info {
+    // background:@paleblue;
+    // padding:2px 12px;
+  }
+  > section.profile {
+    // background:@paleblue;
+    // padding:2px 12px;
+  }
+  > section.tags {
+    padding-top:2px;
+    // background:@gitgray;
+    // height:220px;
+    .nomobile { display:none }
+  }
+  > section.submit {
+    margin:60px 0;
+    .btn { width:100% }
+    p { text-align:center;margin:4px;font-size:12px }
+  }
+}
 
 section#password {
   padding:40px 0;

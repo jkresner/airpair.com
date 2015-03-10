@@ -1,34 +1,38 @@
-db = require('./helpers/setup.db')
-uaFirefox = 'Mozilla/5.0 (Windows NT 5.1; rv:31.0) Gecko/20100101 Firefox/31.0'
-uaGooglebot = 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)'
+db                        = require('./setup/db')
+{uaFirefox,uaGooglebot}   = require('./../data/http')
+
 a_uid = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[\,\-_]*).{24,}/
 
+expectSessionNotStored = (session, cb) ->
+  expect(session.sessionID).to.match(a_uid)
+  db.Models.Session.findOne { _id: session.sessionID }, (e, s) ->
+    expect(s).to.be.null
+    db.viewsByAnonymousId session.sessionID, (e, views) ->
+      expect(views.length).to.equal(0)
+      cb()
 
-module.exports = ->
+
+expectSessionToBeStored = (session, cb) ->
+  expect(session.sessionID).to.match(a_uid)
+  db.Models.Session.findOne { _id: session.sessionID }, (e, s) ->
+    expect(s).to.exist
+    cb()
+
+
+api = ->
 
   before (done) ->
     SETUP.initTags(done)
 
 
-  expectSessionNotStored = (session, cb) ->
-    expect(session.sessionID).to.match(a_uid)
-    db.Models.Session.findOne { _id: session.sessionID }, (e, s) ->
-      expect(s).to.be.null
-      testDb.viewsByAnonymousId session.sessionID, (e, views) ->
-        expect(views.length).to.equal(0)
-        cb()
-
-
-  expectSessionToBeStored = (session, cb) ->
-    expect(session.sessionID).to.match(a_uid)
-    db.Models.Session.findOne { _id: session.sessionID }, (e, s) ->
-      expect(s).to.exist
-      cb()
-
-
-  it.skip 'Does not exec analytics first on 404', (done) ->
-    expect('/feed').to.fail
-    expect('/apple-precompose').to.fail
+  it 'Does not exec analytics or store session on 404', (done) ->
+    trackSpy = sinon.spy(analytics, 'track')
+    GETP('/feed').set('user-agent', uaFirefox).end (err, resp) ->
+      global.cookie = resp.headers['set-cookie']
+      expect(global.cookie).to.be.undefined
+      expect(trackSpy.callCount).to.equal(0)
+      trackSpy.restore()
+      expectSessionNotStored { sessionID: 'unNOwnSZ3Wi8bDEnaKzhygGG2a2RkjZ2' }, done
 
 
   it 'Persists a session for a browser (FireFox)', (done) ->
@@ -50,7 +54,7 @@ module.exports = ->
         expect(viewSpy2.calledOnce).to.be.true
         expect(s.authenticated).to.equal(false)
         expectSessionToBeStored s, ->
-          testDb.viewsByAnonymousId s.sessionID, (e, views) ->
+          db.viewsByAnonymousId s.sessionID, (e, views) ->
             expect(views.length).to.equal(1)
             expect(views[0].url).to.equal('/angularjs')
             expect(views[0].type).to.equal('tag')
@@ -83,11 +87,12 @@ module.exports = ->
     viewSpy2 = sinon.spy(analytics, 'view')
     GETP('/angularjs?utm_source=team-email&utm_medium=email&utm_term=angular-workshops&utm_content=nov14-workshops-ty&utm_campaign=wks14-4').set('user-agent', uaFirefox).end (err, resp) ->
       global.cookie = resp.headers['set-cookie']
+      expect(viewSpy2.calledOnce).to.be.true
+      expect(global.cookie).to.exist
       GET '/session/full', {}, (s) =>
-        expect(viewSpy2.calledOnce).to.be.true
         expect(s.authenticated).to.equal(false)
         expectSessionToBeStored s, ->
-          testDb.viewsByAnonymousId s.sessionID, (e, views) ->
+          db.viewsByAnonymousId s.sessionID, (e, views) ->
             expect(views.length).to.equal(1)
             expect(views[0].url).to.equal('/angularjs')
             expect(views[0].type).to.equal('tag')
@@ -99,9 +104,6 @@ module.exports = ->
             expect(views[0].campaign.name).to.equal('wks14-4')
             viewSpy2.restore()
             done()
-
-
-
 
   #   it 'Views from bots are not saved', (d) ->
   #     done = createCountedDone(8, d)
@@ -122,3 +124,8 @@ module.exports = ->
 
   #   it 'Views are saved for safari', (done) ->
   #     checkViewIsSaved 'Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2049.0 Safari/537.36', done
+
+
+module.exports = ->
+
+  describe("API: ".subspec, api)

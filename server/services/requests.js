@@ -9,12 +9,14 @@ var PaymethodsSvc =       require('../services/paymethods')
 var ExpertsSvc =          require('./experts')
 var util =                require('../../shared/util')
 var Data =                require('./requests.data')
+var selectCB              = Data.select.cb
 var logging =             false
 var svc =                 new Svc(Request, logging)
 var Roles =               require('../../shared/roles.js')
 var {isCustomer,isCustomerOrAdmin,isExpert} = Roles.request
 var BitlySvc =            require('./wrappers/bitly')
 var TwitterSvc =            require('./wrappers/twitter')
+
 
 function selectByRoleCB(ctx, errorCb, cb) {
   return (e, r) => {
@@ -39,21 +41,9 @@ function selectByRoleCB(ctx, errorCb, cb) {
   }
 }
 
-var admCB = (cb) =>
-  (e,r) => {
-    if (e) return cb(e)
-    if (r.length) {
-      for (var req of r) req = Data.select.byView(req, 'admin')
-    }
-    else
-      r = Data.select.byView(r, 'admin')
-
-    cb(null,r)
-  }
-
-
 
 var get = {
+
   getByIdForAdmin(id, cb) {
     svc.getById(id, (e,r) => {
       if (e || !r) return cb(e,r)
@@ -64,6 +54,7 @@ var get = {
       })
     })
   },
+
   getByIdForMatchmaker(id, cb) {
     $log('** getByIdForMatchmaker should filter a bit..')
     svc.getById(id, (e,r) => {
@@ -75,6 +66,7 @@ var get = {
       })
     })
   },
+
   getByIdForUser(id, cb) {  // for updating
     var userId = this.user._id
     svc.getById(id, (e,r) => {
@@ -83,17 +75,21 @@ var get = {
       cb (null, Data.select.byView(r, 'customer'))
     })
   },
+
   getByIdForReview(id, cb) {
     svc.getById(id, selectByRoleCB(this,cb,cb))
   },
+
   getByUserIdForAdmin(userId, cb) {
     var opts = { options: { sort: { '_id': -1 } } }
     svc.searchMany({userId}, opts, cb)
   },
+
   getMy(cb) {
     var opts = { options: { sort: { '_id': -1 } }, fields: Data.select.customer }
-    svc.searchMany({userId:this.user._id}, opts, admCB(cb))
+    svc.searchMany({userId:this.user._id}, opts, selectCB.adm(cb))
   },
+
   getRequestForBookingExpert(id, expertId, cb) {
     var {user} = this
     svc.getById(id, selectByRoleCB(this, cb, (e,r) => {
@@ -103,14 +99,17 @@ var get = {
       cb(null, r)
     }))
   },
+
   getActiveForAdmin(cb) {
-    svc.searchMany(Data.query.active, { options: { sort: { '_id': -1 }}, fields: Data.select.pipeline }, admCB(cb))
+    svc.searchMany(Data.query.active, { options: { sort: { '_id': -1 }}, fields: Data.select.pipeline }, selectCB.adm(cb))
   },
+
   get2015ForAdmin(cb) {
-    svc.searchMany(Data.query['2015'], { options: { sort: { '_id': -1 }}, fields: Data.select.pipeline }, admCB(cb))
+    svc.searchMany(Data.query['2015'], { options: { sort: { '_id': -1 }}, fields: Data.select.pipeline }, selectCB.adm(cb))
   },
+
   getWaitingForMatchmaker(cb) {
-    svc.searchMany(Data.query.waiting, { options: { sort: { 'adm.submitted': -1 }}, fields: Data.select.pipeline }, admCB(cb))
+    svc.searchMany(Data.query.waiting, { options: { sort: { 'adm.submitted': -1 }}, fields: Data.select.pipeline }, selectCB.adm(cb))
   },
   // getIncompleteForAdmin(cb) {
   //   svc.searchMany(Data.query.incomplete, { fields: Data.select.pipeline}, cb)
@@ -183,6 +182,7 @@ var save = {
   },
   replyByExpert(request, expert, reply, cb) {
     var {suggested} = request
+    expert = Data.select.expertToSuggestion(expert)
     // data.events.push @newEvent "expert reviewed", eR
     reply.reply = { time: new Date() }
     var existing = _.find(suggested, (s) => _.idsEqual(s.expert._id, expert._id))
@@ -231,7 +231,9 @@ var save = {
   }
 }
 
+
 var admin = {
+
   updateByAdmin(original, update, cb) {
     var action = 'update'
     var {adm,status} = update
@@ -255,8 +257,9 @@ var admin = {
     adm.lastTouch = svc.newTouch.call(this, action)
 
     var ups = _.extend(original, {adm,status})
-    svc.update(original._id, ups, admCB(cb))
+    svc.update(original._id, ups, selectCB.adm(cb))
   },
+
   farmByAdmin(request, tweet, cb) {
     //TODO Mote url genertion to analyticsSvc ?
     var campPeriod = new moment().format("MMMYY").toLowerCase()
@@ -269,10 +272,11 @@ var admin = {
       adm.lastTouch = svc.newTouch.call(this, 'farm')
       TwitterSvc.postTweet(`${tweet} ${shortLink}`, (e,r) => {
         if (e) return cb(e)
-        svc.update(request._id, _.extend(request, {adm}), admCB(cb))
+        svc.update(request._id, _.extend(request, {adm}), selectCB.adm(cb))
       })
     })
   },
+
   sendMessageByAdmin(request, message, cb)
   {
     var {status,adm} = request
@@ -289,11 +293,13 @@ var admin = {
     adm.lastTouch = svc.newTouch.call(this, `sent:${message.type}`)
     messages.push(_.extend(message,{_id:svc.newId(),fromId:this.user._id,toId:request.userId}))
 
-    svc.update(request._id, _.extend(request, {status,adm,messages}), admCB(cb))
+    svc.update(request._id, _.extend(request, {status,adm,messages}), selectCB.adm(cb))
   },
+
   addSuggestion(request, expert, body, cb)
   {
     var {adm,suggested} = request
+    expert = Data.select.expertToSuggestion(expert)
     suggested.push({
       matchedBy: { userId: this.user._id, initials: 'pg' },
       expertStatus: "waiting",
@@ -304,8 +310,9 @@ var admin = {
       this.user.name, request.tags, ()=>{})
 
     adm.lastTouch = svc.newTouch.call(this, `suggest:${expert.name}`)
-    svc.update(request._id, _.extend(request, {suggested,adm}), admCB(cb))
+    svc.update(request._id, _.extend(request, {suggested,adm}), selectCB.adm(cb))
   },
+
   removeSuggestion(request, expert, cb)
   {
     var {adm,suggested} = request
@@ -313,7 +320,7 @@ var admin = {
     suggested = _.without(suggested,existing)
 
     adm.lastTouch = svc.newTouch.call(this, `remove:${expert.name}`)
-    svc.update(request._id, _.extend(request, {suggested,adm}), admCB(cb))
+    svc.update(request._id, _.extend(request, {suggested,adm}), selectCB.adm(cb))
   }
 }
 

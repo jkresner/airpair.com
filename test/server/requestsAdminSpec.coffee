@@ -1,9 +1,11 @@
 requestUtil = require('../../shared/requests')
+db = require('./setup/db')
+abhaKey = null
 
 
 newCompleteRequestForAdmin = (userKey, requestData, cb) ->
   SETUP.newCompleteRequest userKey, requestData, (r) ->
-    LOGIN 'admin', data.users.admin, ->
+    LOGIN 'admin', ->
       GET "/adm/requests/user/#{r.userId}", {}, (rAdm) ->
         expect(r.status).to.equal('received')
         expect(rAdm.length).to.equal(1)
@@ -30,13 +32,12 @@ module.exports = -> describe "Api", ->
   before (done) ->
     SETUP.analytics.stub()
     SETUP.initTags ->
-      SETUP.ensureExpert 'abha', done
+      SETUP.createNewExpert 'abha', {}, (s,exp) ->
+        abhaKey = s.userKey
+        done()
 
   after ->
     SETUP.analytics.restore()
-
-  beforeEach ->
-    SETUP.clearIdentity()
 
 
   it 'Pipeliner can reply to a new request', (done) ->
@@ -96,12 +97,12 @@ module.exports = -> describe "Api", ->
 
 
   it 'Pipeliner can suggest and remove experts', (done) ->
-    addAndLoginLocalUserWithEmailVerified 'kaun', (s) ->
+    SETUP.addAndLoginLocalUserWithEmailVerified 'kaun', (s) ->
       spy = sinon.spy(mailman,'sendExpertSuggestedEmail')
       d = tags: [data.tags.angular], type: 'resources', experience: 'proficient', brief: 'bah bah anglaur test yo4', hours: "1", time: 'rush'
       POST '/requests', d, {}, (r0) ->
         PUT "/requests/#{r0._id}", _.extend(r0,{budget:300}), {}, (r) ->
-          LOGIN 'admin', data.users.admin, (sAdmin) ->
+          LOGIN 'admin', (sAdmin) ->
             GET "/adm/requests/user/#{s._id}", {}, (reqs1) ->
               expect(reqs1.length).to.equal(1)
               expect(reqs1[0].suggested.length).to.equal(0)
@@ -128,7 +129,7 @@ module.exports = -> describe "Api", ->
   it.skip 'Pipeliner can update expert matching stats', (done) ->
     d = type: 'other', tags: [data.tags.node]
     newCompleteRequestForAdmin 'hubi', d, (r) ->
-      LOGIN 'abha', data.users.abha, (sAbha) ->
+      LOGIN abhaKey, (sAbha) ->
         reply = expertComment: "I'll take it", expertAvailability: "Real-time", expertStatus: "available"
         PUT "/requests/#{r._id}/reply/#{data.experts.abha._id}", reply, {}, (r1) ->
           LOGIN 'admin', data.users.admin, ->

@@ -1,9 +1,15 @@
-module.exports = -> describe "API", ->
+db = require('./setup/db')
+abhaKey = null
+
+module.exports = -> describe "API".subspec, ->
 
   before (done) ->
     SETUP.analytics.stub()
     SETUP.initTags ->
-      SETUP.ensureExpert 'abha', done
+      SETUP.createNewExpert 'abha', {}, (s,exp) ->
+        abhaKey = s.userKey
+        # $log('abha', s.userKey, exp)
+        done()
 
   after ->
     SETUP.analytics.restore()
@@ -17,7 +23,7 @@ module.exports = -> describe "API", ->
 
 
   it 'Cannot create request without a type', (done) ->
-    addAndLoginLocalUser 'joba', (s) ->
+    SETUP.addAndLoginLocalUser 'joba', (s) ->
       d = tags: [_.extend({sort:1}, data.tags.node)]
       POST '/requests', d, { status: 403 }, (r) ->
         expect(r.message).to.equal('Request type required')
@@ -25,7 +31,7 @@ module.exports = -> describe "API", ->
 
 
   it 'Can start a request as logged in customer', (done) ->
-    addAndLoginLocalUser 'josh', (s) ->
+    SETUP.addAndLoginLocalUser 'josh', (s) ->
       d = type: 'mentoring'
       POST '/requests', d, {}, (r) ->
         expect(r._id).to.exist
@@ -37,7 +43,7 @@ module.exports = -> describe "API", ->
         expect(r.lastTouch).to.be.undefined
         expect(r.adm).to.be.undefined
         expect(r.events).to.be.undefined
-        LOGIN 'admin', data.users.admin, ->
+        LOGIN 'admin', ->
           GET "/adm/requests/user/#{s._id}", {}, (rAdm) ->
             expect(rAdm.length).to.equal(1)
             expect(rAdm[0].suggested.length).to.equal(0)
@@ -47,7 +53,7 @@ module.exports = -> describe "API", ->
 
 
   it 'Cannot update a request without emailVerified', (done) ->
-    addAndLoginLocalUser 'bhur', (s) ->
+    SETUP.addAndLoginLocalUser 'bhur', (s) ->
       expect(s.emailVerified).to.be.false
       d = type: 'code-review'
       POST '/requests', d, {}, (r1) ->
@@ -59,7 +65,7 @@ module.exports = -> describe "API", ->
           r2.experience = 'proficient'
           PUT "/requests/#{r1._id}", r2, {status:403}, (rFail) ->
             expect(rFail.message.indexOf("Email verification required")).to.equal(0)
-            LOGIN 'admin', data.users.admin, ->
+            LOGIN 'admin', ->
               GET "/adm/requests/user/#{s._id}", {}, (rAdm) ->
                 expect(rAdm.length).to.equal(1)
                 expect(rAdm[0].lastTouch).to.exist
@@ -69,7 +75,7 @@ module.exports = -> describe "API", ->
 
 
   it 'Can update request type with no technology tags', (done) ->
-    addAndLoginLocalUser 'scol', (s) ->
+    SETUP.addAndLoginLocalUser 'scol', (s) ->
       expect(s.emailVerified).to.be.false
       d = type: 'code-review'
       POST '/requests', d, {}, (r1) ->
@@ -82,7 +88,7 @@ module.exports = -> describe "API", ->
 
 
   it 'Can update a request after verifying email', (done) ->
-    addAndLoginLocalUser 'narv', (s) ->
+    SETUP.addAndLoginLocalUser 'narv', (s) ->
       expect(s.emailVerified).to.be.false
       d = type: 'troubleshooting', tags: [data.tags.node]
       POST '/requests', d, {}, (r1) ->
@@ -97,7 +103,7 @@ module.exports = -> describe "API", ->
             r1.experience = 'proficient'
             PUT "/requests/#{r1._id}", r1, {}, (r2) ->
               expect(r2.experience).to.equal('proficient')
-              LOGIN 'admin', data.users.admin, ->
+              LOGIN 'admin', ->
                 GET "/adm/requests/user/#{s._id}", {}, (rAdm) ->
                   expect(rAdm.length).to.equal(1)
                   expect(rAdm[0].lastTouch.utc).to.exist
@@ -109,8 +115,8 @@ module.exports = -> describe "API", ->
 
 
   it 'Can update a request after verify email if logged in with google', (done) ->
-    testDb.ensureDoc 'User', data.users.narv, (e) ->
-      LOGIN 'narv', data.users.narv, (snarv) ->
+    db.ensureDoc 'User', data.users.narv, (e) ->
+      LOGIN 'narv', (snarv) ->
         d = type: 'troubleshooting', tags: [data.tags.node]
         POST '/requests', d, {}, (r1) ->
           spy = sinon.spy(mailman,'sendVerifyEmailForRequest')
@@ -128,7 +134,7 @@ module.exports = -> describe "API", ->
 
 
   it 'Can submit a full request with emailVerified', (done) ->
-    addAndLoginLocalUserWithEmailVerified 'johb', (s) ->
+    SETUP.addAndLoginLocalUserWithEmailVerified 'johb', (s) ->
       expect(s.emailVerified).to.be.true
       tag = _.extend({sort:1}, data.tags.node)
       all = tags: [tag], type: 'mentoring', experience: 'beginner', brief: 'this is a test yo', hours: "1", time: 'rush', budget: 90
@@ -157,7 +163,7 @@ module.exports = -> describe "API", ->
                     r7.title = 'A test title'
                     PUT putUrl, r7, {}, (r8) ->
                       expect(r8.title).to.equal('A test title')
-                      LOGIN 'admin', data.users.admin, ->
+                      LOGIN 'admin', ->
                         GET "/adm/requests/user/#{s._id}", {}, (rAdm) ->
                           expect(rAdm.length).to.equal(1)
                           expect(rAdm[0].suggested.length).to.equal(0)
@@ -167,8 +173,8 @@ module.exports = -> describe "API", ->
                           done()
 
 
-  it 'Can review a request as anon, customer and other', (done) ->
-    addAndLoginLocalUserWithEmailVerified 'mfly', (s) ->
+  it 'Review a request as anon, customer and other', (done) ->
+    SETUP.addAndLoginLocalUserWithEmailVerified 'mfly', (s) ->
       d = tags: [data.tags.angular], type: 'troubleshooting', experience: 'advanced', brief: 'this is a another anglaur test yo', hours: "2", time: 'regular', budget: 150
       POST '/requests', d, {}, (r) ->
         expect(r._id).to.exist
@@ -189,7 +195,7 @@ module.exports = -> describe "API", ->
             expect(rAnon.budget).to.be.undefined
             expect(rAnon.suggested).to.be.undefined
             expect(rAnon.hours).to.be.undefined
-            LOGIN 'abha', data.users.abha, (sAbha) ->
+            LOGIN abhaKey, (sAbha) ->
               expect(sAbha.name).to.equal('Abe Haskins')
               GET "/requests/review/#{r._id}", {}, (rExpert) ->
                 expect(_.idsEqual(r._id,rExpert._id)).to.be.true
@@ -199,15 +205,15 @@ module.exports = -> describe "API", ->
                 done()
 
 
-  it 'Can self suggest reply to a request as an expert', (done) ->
-    addAndLoginLocalUserWithEmailVerified 'mfln', (s) ->
+  it 'Self suggest reply to a request as an expert', (done) ->
+    SETUP.addAndLoginLocalUserWithEmailVerified 'mfln', (s) ->
       d = tags: [data.tags.angular], type: 'code-review', experience: 'advanced', brief: 'another anglaur test yo3', hours: "5", time: 'regular'
       POST '/requests', d, {}, (r0) ->
         PUT "/requests/#{r0._id}", _.extend(r0,{budget:150,title:'test test'}), {}, (r) ->
           expect(r.status).to.equal('received')
           expect(r.suggested.length).to.equal(0)
           expect(r.adm).to.be.undefined
-          LOGIN 'abha', data.users.abha, (sAbha) ->
+          LOGIN abhaKey, (sAbha) ->
             GET "/requests/review/#{r._id}", {}, (rAbha) ->
               expect(rAbha.adm).to.be.undefined
               expect(rAbha.status).to.equal('received')
@@ -215,9 +221,9 @@ module.exports = -> describe "API", ->
               expect(rAbha.brief).to.exist
               expect(rAbha.suggested.length).to.equal(1)
               expect(rAbha.suggested[0].expert.minRate).to.equal(70)
-              expect(rAbha.suggested[0].expert.email).to.equal("abeisgreat@abeisgreat.com")
-              expect(rAbha.suggested[0].suggestedRate.expert).to.equal(113)
-              expect(rAbha.suggested[0].suggestedRate.total).to.equal(146)
+              expectStartsWith(rAbha.suggested[0].expert.email, "abeisgreat")
+              expect(rAbha.suggested[0].suggestedRate.expert).to.equal(85)
+              expect(rAbha.suggested[0].suggestedRate.total).to.equal(130)
               reply = expertComment: "I'll take it", expertAvailability: "Real-time", expertStatus: "available"
               customerMailSpy = sinon.spy(mailman, 'sendExpertAvailable')
               PUT "/requests/#{r._id}/reply/#{rAbha.suggested[0].expert._id}", reply, {}, (r1) ->
@@ -228,13 +234,15 @@ module.exports = -> describe "API", ->
                 expect(r1.suggested[0].expertComment).to.equal("I'll take it")
                 expect(r1.suggested[0].expertAvailability).to.equal("Real-time")
                 expect(_.idsEqual(sAbha._id,r1.suggested[0].expert.userId)).to.be.true
+                expect(r1.suggested[0].expert.location).to.exist
+                expect(r1.suggested[0].expert.timezone).to.exist
                 expect(r1.suggested[0].expert.name).to.equal("Abe Haskins")
-                expect(r1.suggested[0].expert.gh.username).to.equal("abeisgreat")
+                expect(r1.suggested[0].expert.gh.username).to.equal("airpairtest1")
                 expect(r1.suggested[0].expert.in.id).to.equal("2LZ2W07M-3")
                 expect(r1.suggested[0].expert.so.link).to.equal("1570248/abeisgreat")
                 expect(r1.suggested[0].expert.tw.username).to.equal("abeisgreat")
                 expect(r1.suggested[0].expert.pic).to.be.undefined
-                LOGIN 'admin', data.users.admin, ->
+                LOGIN 'admin', ->
                   GET "/adm/requests/user/#{s._id}", {}, (rAdm) ->
                     expect(rAdm.length).to.equal(1)
                     expect(rAdm[0].lastTouch.utc).to.exist
@@ -253,13 +261,13 @@ module.exports = -> describe "API", ->
 
 
   it 'Can update reply to a request as an expert', (done) ->
-    addAndLoginLocalUserWithEmailVerified 'mikf', (s) ->
+    SETUP.addAndLoginLocalUserWithEmailVerified 'mikf', (s) ->
       d = tags: [data.tags.angular], type: 'resources', experience: 'proficient', brief: 'bah bah anglaur test yo4', hours: "1", time: 'rush'
       POST '/requests', d, {}, (r0) ->
         PUT "/requests/#{r0._id}", _.extend(r0,{budget:150}), {}, (r) ->
           expect(r.status).to.equal('received')
           expect(r.suggested.length).to.equal(0)
-          LOGIN 'abha', data.users.abha, (sAbha) ->
+          LOGIN abhaKey, (sAbha) ->
             GET '/experts/me', {}, (eAbha) ->
               reply = expertComment: "I'm busy", expertAvailability: "Nah need a holiday", expertStatus: "busy"
               PUT "/requests/#{r._id}/reply/#{eAbha._id}", reply, {}, (r1) ->
@@ -282,11 +290,11 @@ module.exports = -> describe "API", ->
 
 
   it 'Double available reply does not trigger a second customer email', (done) ->
-    addAndLoginLocalUserWithPayMethod 'brih', (sbrih) ->
+    SETUP.addAndLoginLocalUserWithPayMethod 'brih', (sbrih) ->
       d = tags: [data.tags.angular], type: 'resources', experience: 'proficient', brief: 'bah bah anglaur test yo4', hours: "1", time: 'rush'
       POST '/requests', d, {}, (r0) ->
         PUT "/requests/#{r0._id}", _.extend(r0,{budget:300}), {}, (r) ->
-          LOGIN 'abha', data.users.abha, (sAbha) ->
+          LOGIN abhaKey, (sAbha) ->
             GET "/requests/review/#{r._id}", {}, (rAbha) ->
               customerMailSpy = sinon.spy(mailman, 'sendExpertAvailable')
               reply = expertComment: "I'm available one", expertAvailability: "Yes", expertStatus: "available"
@@ -294,7 +302,7 @@ module.exports = -> describe "API", ->
                 expect(r1.status).to.equal('review')
                 update = expertComment: "Still available", expertAvailability: "Y", expertStatus: "available"
                 PUT "/requests/#{r._id}/reply/#{rAbha.suggested[0].expert._id}", update, {}, (r2) ->
-                  LOGIN 'admin', data.users.admin, ->
+                  LOGIN 'admin', ->
                     GET "/adm/requests/user/#{sbrih._id}", {}, (rAdm) ->
                       expect(rAdm.length).to.equal(1)
                       expect(rAdm[0].lastTouch.utc).to.exist
@@ -312,37 +320,37 @@ module.exports = -> describe "API", ->
 
 
   it 'Can get data to book expert on request rate', (done) ->
-    addAndLoginLocalUserWithEmailVerified 'pcor', (spcor) ->
+    SETUP.addAndLoginLocalUserWithEmailVerified 'pcor', (spcor) ->
       d = tags: [data.tags.angular], type: 'resources', experience: 'proficient', brief: 'bah bah anglaur test yo4', hours: "1", time: 'rush'
       POST '/requests', d, {}, (r0) ->
         PUT "/requests/#{r0._id}", _.extend(r0,{budget:300}), {}, (r) ->
           testNotAvailable = (callback) ->
-            LOGIN 'abha', data.users.abha, (sAbha) ->
+            LOGIN abhaKey, (sAbha) ->
               GET "/requests/review/#{r._id}", {}, (rAbha) ->
                 reply = expertComment: "I'm busy", expertAvailability: "Nah need a holiday", expertStatus: "busy"
                 expertId = rAbha.suggested[0].expert._id
                 PUT "/requests/#{r._id}/reply/#{expertId}", reply, {}, (r1) ->
                   expect(r1.status).to.equal('received')
-                  LOGIN 'pcor', spcor, (sCustomer) ->
+                  LOGIN spcor.userKey, (sCustomer) ->
                     GET "/requests/#{r._id}/book/#{expertId}", { status: 400 }, (freview) ->
-                      expect(freview.message.indexOf('No available expert')).to.equal(0)
+                      expectStartsWith(freview.message, 'No available expert')
                       callback()
 
           testAvailable = () ->
-            LOGIN 'abha', data.users.abha, (sAbha) ->
+            LOGIN abhaKey, (sAbha) ->
               GET "/requests/review/#{r._id}", {}, (rAbha) ->
                 reply = expertComment: "good", expertAvailability: "ok", expertStatus: "available"
                 expertId = rAbha.suggested[0].expert._id
                 PUT "/requests/#{r._id}/reply/#{expertId}", reply, {}, (r2) ->
                   expect(r2.status).to.equal('review')
-                  LOGIN 'pcor', spcor, (sCustomer) ->
+                  LOGIN spcor.userKey, (sCustomer) ->
                     GET "/requests/#{r._id}/book/#{expertId}", {}, (review) ->
                       expect(review.status).to.equal('review')
                       expect(review.suggested.length).to.equal(1)
-                      expect(_.idsEqual(review.suggested[0]._id,review.suggested[0]._id)).to.be.true
+                      expectIdsEqual(review.suggested[0].expert._id,expertId)
                       expect(review.suggested[0].suggestedRate).to.exist
-                      expect(review.suggested[0].suggestedRate.expert).to.equal(158)
-                      expect(review.suggested[0].suggestedRate.total).to.equal(236)
+                      expect(review.suggested[0].suggestedRate.expert).to.equal(130)
+                      expect(review.suggested[0].suggestedRate.total).to.equal(220)
                       done()
 
           testNotAvailable testAvailable
@@ -355,7 +363,7 @@ module.exports = -> describe "API", ->
 
 
   it 'Can delete an incomplete request as owner', (done) ->
-    addAndLoginLocalUser 'kyla', (s) ->
+    SETUP.addAndLoginLocalUser 'kyla', (s) ->
       d = type: 'mentoring'
       POST '/requests', d, {}, (r) ->
         expect(r._id).to.exist
@@ -366,13 +374,13 @@ module.exports = -> describe "API", ->
 
 
   it 'Cannot delete a request unless owner or admin', (done) ->
-    addAndLoginLocalUser 'kyau', (s) ->
+    SETUP.addAndLoginLocalUser 'kyau', (s) ->
       d = type: 'code-review'
       POST '/requests', d, {}, (r) ->
         expect(r._id).to.exist
-        addAndLoginLocalUser 'auka', (s2) ->
+        SETUP.addAndLoginLocalUser 'auka', (s2) ->
           DELETE "/requests/#{r._id}", { status: 403 }, (rDel) ->
-            LOGIN 'admin', data.users.admin, (sAdmin) ->
+            LOGIN 'admin', (sAdmin) ->
               GET "/adm/requests/user/#{s._id}", {}, (reqs1) ->
                 expect(reqs1.length).to.equal(1)
                 DELETE "/requests/#{r._id}", {}, (rDel2) ->

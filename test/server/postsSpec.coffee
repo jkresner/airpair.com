@@ -1,8 +1,9 @@
-dataHlpr = require('./helpers/setup.data')
+db = require('./setup/db')
+dataHlpr = require('./setup/data')
 PostsSvc = require('./../../server/services/posts')
 PostsUtil = require('./../../shared/posts')
 
-module.exports = -> describe "API: ", ->
+module.exports = -> describe "API: ".subspec, ->
 
   @timeout(8000)
 
@@ -55,7 +56,7 @@ module.exports = -> describe "API: ", ->
 
   it 'Create post with max social', (done) ->
     title = "Post Create with max social Test #{timeSeed()}"
-    addAndLoginLocalUser 'ajde', (s) ->
+    SETUP.addAndLoginLocalUser 'ajde', (s) ->
       author = _.extend({bio: 'yes test'},s)
       author.username = 'ajayD'
       author.social =
@@ -121,7 +122,7 @@ module.exports = -> describe "API: ", ->
     SETUP.addAndLoginLocalUser 'stpu', (s) ->
       d = { title, by:_.extend({bio: 'yo yyoy o'},s) }
       POST "/posts", d, {}, (p0) ->
-        LOGIN 'edap', data.users['edap'], ->
+        LOGIN 'edap', ->
           GET "/posts/#{p0._id}/info", {}, (p1) ->
             p1.title = 'edd ' + p1.title
             p1.assetUrl = 'https://edited.com/test'
@@ -129,7 +130,7 @@ module.exports = -> describe "API: ", ->
               expect(p2.title).to.equal(p1.title)
               expect(p2.assetUrl).to.equal('https://edited.com/test')
               DELETE "/posts/#{p0._id}", { status: 200 }, (r) ->
-                LOGIN s.userKey, data.users[s.userKey], (s2) ->
+                LOGIN s.userKey, (s2) ->
                   expectIdsEqual(s._id, s2._id)
                   GET '/posts/me', {}, (posts) ->
                     myposts = _.where(posts,(p)->_.idsEqual(p.by.userId,s._id))
@@ -142,7 +143,7 @@ module.exports = -> describe "API: ", ->
     SETUP.addAndLoginLocalUser 'evnr', (s) ->
       d = { title, by:_.extend({bio: 'yo yyoy o'},s) }
       POST "/posts", d, {}, (p0) ->
-        addAndLoginLocalUser 'nevk', (s2) ->
+        SETUP.addAndLoginLocalUser 'nevk', (s2) ->
           PUT "/posts/#{p0._id}", { title: 'updated title' }, { status: 403 }, (e1) ->
             expect(e1.message).to.equal('Post must be updated by owner')
             PUT "/posts/#{p0._id}/md", { md: 'updated md' }, { status: 403 }, (e2) ->
@@ -152,9 +153,9 @@ module.exports = -> describe "API: ", ->
                 done()
 
 
-  it "submit for review fails without an authenticated GitHub account", (done) ->
+  it "Submit for review fails without an authenticated GitHub account", (done) ->
     title = "Submit fails without connected github #{timeSeed()}"
-    addAndLoginLocalUser 'robot1', (s) ->
+    SETUP.addAndLoginLocalUser 'robot1', (s) ->
       d = { title, by:_.extend({bio: 'yo yyoy o'},s), md: dataHlpr.lotsOfWords('Submit without github') }
       SETUP.createSubmitReadyPost s.userKey, d, (post) ->
         GET "/posts/#{post._id}/submit", {}, (pCheckSubmit) ->
@@ -164,7 +165,7 @@ module.exports = -> describe "API: ", ->
             done()
 
 
-  it "submit for review creates a repo with a README.md and a post.md file on edit branch", (done) ->
+  it "Submit for review creates a repo with a README.md and a post.md file on edit branch", (done) ->
     title = "Submit success with connected github #{timeSeed()}"
     SETUP.addAndLoginLocalUserWithGithubProfile 'robot2', null, (s) ->
       d = { title, by:_.extend({bio: 'yo yyoy o'},s), md: dataHlpr.lotsOfWords('Submit with github') }
@@ -182,9 +183,9 @@ module.exports = -> describe "API: ", ->
 
   it "Can edit and preview post in review as author", (done) ->
     author = data.users.submPostAuthor
-    SETUP.ensureDoc 'User', author, ->
-      SETUP.ensurePost data.posts.submittedWithGitRepo, ->
-        LOGIN 'submPostAuthor', data.users.submPostAuthor, (s) ->
+    db.ensureDoc 'User', author, ->
+      db.ensurePost data.posts.submittedWithGitRepo, ->
+        LOGIN 'submPostAuthor', (s) ->
           GET "/posts/me", {}, (posts) ->
             myposts = _.where(posts,(p)=>_.idsEqual(p.by.userId,s._id))
             expect(myposts.length).to.equal(1)
@@ -230,16 +231,16 @@ module.exports = -> describe "API: ", ->
 
   it "Can sync github to post as editor but not author when published", (done) ->
     author = data.users.syncPostAuthor
-    SETUP.ensureDoc 'User', author, ->
-      SETUP.ensurePost data.posts.toSync, ->
-        LOGIN 'syncPostAuthor', data.users.syncPostAuthor, (s) ->
+    db.ensureDoc 'User', author, ->
+      db.ensurePost data.posts.toSync, ->
+        LOGIN 'syncPostAuthor',  (s) ->
           _id = data.posts.toSync._id
           GET "/posts/#{_id}/edit", {}, (pEdit) ->
             md = "3 "+ data.posts.toSync.md
             PUT "/posts/#{_id}/md", { md, commitMessage: timeSeed() }, {}, (p2) ->
               expect(p2.md).to.equal(md)
               getForPublishedFn = $callSvc(PostsSvc.getBySlugForPublishedView,{user:data.users.syncPostAuthor})
-              LOGIN 'edap', data.users['edap'], ->
+              LOGIN 'edap', ->
                 meta = dataHlpr.postMeta(p2)
                 PUT "/posts/publish/#{_id}", {by:p2.by, meta, tmpl: 'default'}, {}, (p3) ->
                   getForPublishedFn p2.slug, (e, pPub1) ->
@@ -254,13 +255,13 @@ module.exports = -> describe "API: ", ->
   it "Can publish as admin without reviews", (done) ->
     title = "Can publish without reviews as admin #{timeSeed()}"
     slug = title.toLowerCase().replace(/\ /g, '-')
-    addAndLoginLocalUser 'obie',  (s) ->
+    SETUP.addAndLoginLocalUser 'obie',  (s) ->
       author = _.extend(s, {bio: "yhoyo", userId: s._id })
       post = _.extend({},data.posts.submittedWithGitRepo)
       post = _.extend(post, {title,slug,_id:newId(),by:author})
       meta = dataHlpr.postMeta(post)
-      SETUP.ensurePost post, ->
-        LOGIN 'edap', data.users['edap'], ->
+      db.ensurePost post, ->
+        LOGIN 'edap', ->
           PUT "/posts/publish/#{post._id}", {by:post.by, meta, tmpl: 'default'}, {}, (p2) ->
             expect(p2.published)
             expectIdsEqual(p2.publishedBy._id,data.users['edap']._id)
@@ -270,12 +271,12 @@ module.exports = -> describe "API: ", ->
   it "Cannot publish as author without reviews", (done) ->
     title = "Cannot publish without reviews #{timeSeed()}"
     slug = title.toLowerCase().replace(/\ /g, '-')
-    addAndLoginLocalUser 'rapo',  (s) ->
+    SETUP.addAndLoginLocalUser 'rapo',  (s) ->
       author = _.extend({bio: "yhoyo", userId: s._id }, s)
       post = _.extend({},data.posts.submittedWithGitRepo)
       post = _.extend(post, {title,slug,_id:newId(),by:author})
       meta = dataHlpr.postMeta(post)
-      SETUP.ensurePost post, ->
+      db.ensurePost post, ->
         PUT "/posts/publish/#{post._id}", {meta}, { status: 403 }, (e1) ->
           expect(e1.message).to.equal('Must have at least 3 reviews to be published')
           done()
@@ -341,7 +342,7 @@ module.exports = -> describe "API: ", ->
                           expect(pForkReview.md).to.equal(liveMD)
                           getForPreviewFn _id, (eee, pForkPreview) ->
                             expect(pForkPreview.md).to.equal(forkedMD)
-                            LOGIN s.userKey, data.users[s.userKey], (sRobot4) ->
+                            LOGIN s.userKey, (sRobot4) ->
                               GET "/posts/#{p3._id}/edit", {}, (pParentEdit) ->
                                 expect(pParentEdit.md).to.equal(liveMD)
                                 parentMD = 'my parent ' + pParentEdit.md
@@ -357,7 +358,7 @@ module.exports = -> describe "API: ", ->
 
 
   it "Get my posts does not contain any sensitive data", (done) ->
-    LOGIN 'jkap', data.users.jkap, (jk) ->
+    LOGIN 'jkap', (jk) ->
       GET "/posts/me", {}, (myposts) ->
         for p in myposts
           expect(p.title).to.exist

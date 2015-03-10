@@ -19,9 +19,9 @@ angular.module("APDashboard", ['APFilters', 'APSvcSession',
     if (!$scope.session._id) $location.path(`/about`)
 
     if ($scope.session.tags && $scope.session.tags.length > 0) {
-      DataService.experts.getForDashboard({}, function(r) {
-        $scope.experts = r
-      })
+      // DataService.experts.getForDashboard({}, function(r) {
+      //   $scope.experts = r
+      // })
     }
   })
 

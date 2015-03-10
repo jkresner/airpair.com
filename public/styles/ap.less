@@ -67,6 +67,19 @@ a { text-decoration:none;cursor:pointer; }
 a:hover { text-decoration:none }
 
 
+.placeholdertext {
+  @textcolor:@darkbluegray;
+  &::-webkit-input-placeholder { color:@textcolor; }
+  &:-moz-placeholder { color:@textcolor; } /* Firefox 18- */
+  &::-moz-placeholder { color:@textcolor; } /* Firefox 19+ */
+  &:-ms-input-placeholder { color:@textcolor; }
+}
+
+.form-control {
+  .placeholdertext;
+  border:solid 1px red;
+}
+
 .error { color:@error }
 
 .btn {
@@ -118,6 +131,19 @@ a:hover { text-decoration:none }
 
 section.comingsoon {
   background:url(../img/pages/coming/background.jpg);
+  width:900px;
+  height:600px;
+
+  @media only screen and (max-width: 640px) {
+    background:none;
+    width:inherit;
+    height:inherit;
+  }
+}
+
+section.errorpage {
+  background:url(../img/pages/coming/background.jpg) no-repeat;
+  background-position-y:40px;
   width:900px;
   height:600px;
 

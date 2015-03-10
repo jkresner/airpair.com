@@ -223,33 +223,22 @@ module.exports = {
     },
     "brief" : "I enjoy working with both complex and simple Firebase challenges along with AngularJS challenges which leverage Firebase. I've created some of the largest AngularJS/Firebase applications in existence and am considered a Firebase expert by the founders of the company. I've written large chunks of the official Firebase documentation and helped to shape the official Firebase AngularJS bindings. I've also implemented my own open-source version of the realtime Firebase SDK in Python. It's safe to say that I am the most qualified Firebase consultant available and am capable of helping with any sized challenge. ",
     "email" : "abeisgreat@abeisgreat.com",
-    "gh" : {
-        "id" : 969070,
-        "username" : "abeisgreat",
-        "location" : "Wisconsin",
-        "blog" : "http://www.abehaskins.com",
-        "gravatar_id" : "fbb79df0f24e736c8e37f9f195a738cc",
-        "followers" : 8
-    },
+    // "gh" : {
+    //     "id" : 969070,
+    //     "username" : "abeisgreat",
+    //     "location" : "Wisconsin",
+    //     "blog" : "http://www.abehaskins.com",
+    //     "gravatar_id" : "fbb79df0f24e736c8e37f9f195a738cc",
+    //     "followers" : 8
+    // },
     "gmail" : "abeisgreat@abeisgreat.com",
     "homepage" : "www.abehaskins.com",
     "hours" : "10-20",
-    "in" : {
-        "id" : "2LZ2W07M-3",
-        "displayName" : "Abe Haskins"
-    },
     "karma" : 0,
     "minRate" : 70,
     "name" : "Abe Haskins",
     "pic" : "https://secure.gravatar.com/avatar/fbb79df0f24e736c8e37f9f195a738cc",
     "rate" : 110,
-    "so" : {
-        "id" : 1570248,
-        "website_url" : "http://www.abehaskins.com",
-        "link" : "1570248/abeisgreat",
-        "reputation" : 872,
-        "profile_image" : "https://www.gravatar.com/avatar/fbb79df0f24e736c8e37f9f195a738cc?s=128&d=identicon&r=PG"
-    },
     "stats" : {},
     "status" : "ready",
     "tags" : [
@@ -300,11 +289,6 @@ module.exports = {
         }
     ],
     "timezone" : "GMT-0500 (Central Da",
-    "tw" : {
-        "id" : 2909811,
-        "username" : "abeisgreat",
-        "pic" : {"value" : "https://pbs.twimg.com/profile_images/2089417473/IMG_5181_normal.jpg" }
-    },
     "updatedAt" : "2014-10-16T04:50:59.701Z",
     "userId" : "53336a211c67d1a4859d2a04",
     "username" : "abeisgreat"

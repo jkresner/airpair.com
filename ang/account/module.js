@@ -7,33 +7,62 @@ angular.module("APProfile", ['ngRoute', 'APFilters', 'APSvcSession', 'APTagInput
   route('/me/password', 'Password', require('./password.html'))
   route('/me', 'Account', require('./account.html'),{resolve: authd})
   route('/payouts', 'Payouts', require('./payouts.html'),{resolve: authd})
-  route('/expert-applications', 'ExpertApplication', require('./expertapplication.html'))
-
+  route('/be-an-expert', 'ExpertApplication', require('./beanexpert.html'),{resolve: authd})
+  route('/me/profile-preview', 'ProfilePreview', require('./profilepreview.html'),{resolve: authd})
 })
 
-.controller('ExpertApplicationCtrl', ($scope, $location, $q, SessionService) => {
+.directive('userInfo', function() {
 
-  $scope.data = { email: $scope.session.email, bio: $scope.session.bio }
+  return {
+    restrict: 'E',
+    template: require('./userInfo.html'),
+    controller($rootScope, $scope, $location, ServerErrors, SessionService) {
 
-  $scope.updateBio = (valid, bio) => {
-    $scope.profileAlerts = []
-    if (valid) {
-     SessionService.updateBio({bio}, function(result){
-        $scope.profileAlerts.push({ type: 'success', msg: `Bio saved` })
+      var updateInfo = function(targetName) {
+        $scope.profileAlerts = []
+        var propName = targetName.toLowerCase()
+        if ($scope.session[propName] != $scope.data[propName])
+        {
+          var up = {}
+          up[propName] = $scope.data[propName]
+          SessionService[`update${targetName}`](up, function(result){
+            $scope.profileAlerts.push({ type: 'success', msg: `${targetName} updated` })
+          }, function(e){
+            $scope.data.username = $scope.session.username
+            $scope.profileAlerts.push({ type: 'danger', msg: e.message })
+          })
+        }
+      }
+
+      $rootScope.$watch('session', (session) => {
+        $scope.data = _.extend($scope.data||{},_.pick(session, 'name','email','initials','username','bio'))
+        if (session.localization)
+        {
+          $scope.data.location = session.localization.location
+          $scope.data.timezone = session.localization.timezone
+        }
+
+        if (!$scope.data.username && $scope.session.social) {
+          var social = $scope.session.social
+          if (social.gh) $scope.data.username = social.gh.username
+          else if (social.tw) $scope.data.username = social.tw.username
+          $scope.updateUsername()
+        }
       })
+
+      // $scope.updateBio = () => updateInfo('Bio')
+      $scope.updateName = () => updateInfo('Name')
+      $scope.updateInitials = () => updateInfo('Initials')
+      $scope.updateUsername = () => updateInfo('Username')
+
+      $scope.updateLocation = (locationData) => {
+        SessionService.changeLocationTimezone(locationData, (r)=> {})
+      }
     }
   }
 
-  $scope.sendVerificationEmail = function() {
-    SessionService.changeEmail({email:$scope.session.email}, function(result){
-      $scope.emailAlerts = [{ type: 'success', msg: `Verification email sent to ${$scope.session.email}` }]
-    }, function(e){
-      console.log('sendVerificationEmail.back', e, e.message)
-      $scope.emailAlerts = [{ type: 'danger', msg: `${e.message||e} failed` }]
-    })
-  };
-
 })
+
 
 .controller('AccountCtrl', function($rootScope, $scope, $location, ServerErrors, SessionService) {
 
@@ -46,42 +75,8 @@ angular.module("APProfile", ['ngRoute', 'APFilters', 'APSvcSession', 'APTagInput
     })
   }
 
-  $rootScope.$watch('session', (session) => {
-    $scope.data = _.pick(session, 'name','email','initials','username')
-    if (session.localization)
-    {
-      $scope.data.location = session.localization.location
-      $scope.data.timezone = session.localization.timezone
-    }
-  })
-
   if ($scope.session)
     $scope.data = _.pick($scope.session, 'name','email','initials','username')
-
-  var updateInfo = function(targetName) {
-    $scope.profileAlerts = []
-    var propName = targetName.toLowerCase()
-    if ($scope.session[propName] != $scope.data[propName])
-    {
-      var up = {}
-      up[propName] = $scope.data[propName]
-      SessionService[`update${targetName}`](up, function(result){
-        $scope.profileAlerts.push({ type: 'success', msg: `${targetName} updated` })
-      }, function(e){
-        $scope.data.username = $scope.session.username
-        $scope.profileAlerts.push({ type: 'danger', msg: e.message })
-      })
-    }
-  }
-
-  $scope.updateBio = () => updateInfo('Bio')
-  $scope.updateName = () => updateInfo('Name')
-  $scope.updateInitials = () => updateInfo('Initials')
-  $scope.updateUsername = () => updateInfo('Username')
-
-  $scope.updateLocation = (locationData) => {
-    SessionService.changeLocationTimezone(locationData, (r)=> {})
-  }
 
   $scope.updateEmail = function(model) {
     if (!model.$valid || $scope.data.email == $scope.session.email) return
@@ -201,5 +196,77 @@ angular.module("APProfile", ['ngRoute', 'APFilters', 'APSvcSession', 'APTagInput
 
     return deferred.promise
   }
+
+})
+
+
+.controller('ExpertApplicationCtrl', ($rootScope, $scope, DataService, SessionService, Util) => {
+
+  $scope.formRequires = () => {
+    var d = $scope.data, requires = false;
+    if (!d.initials) requires = "Initials required"
+    if (!d.timezone) requires = "Timezone not selected"
+    if (!d.username) requires = "Username required"
+    if (!d.rate) requires = "Rate not selected"
+    if (!d.bio || d.bio.length < 100) requires = "Min 100 character bio required"
+    if (!d.tags || d.tags.length == 0) requires = "Select at least 1 tag"
+    $scope.requires = requires
+    return requires
+  }
+
+  $scope.tags = () => $scope.data ? $scope.data.tags : null;
+  $scope.updateTags = (scope, newTags) => {
+    if (!$scope.expert) return
+    $scope.data.tags = newTags;
+  }
+  $scope.selectTag = function(tag) {
+    var tags = $scope.data.tags;
+    if ( _.contains(tags, tag) ) $scope.data.tags = _.without(tags, tag)
+    else $scope.data.tags = _.union(tags, [tag])
+  };
+  $scope.deselectTag = (tag) => $scope.data.tags = _.without($scope.data.tags, tag)
+
+  $scope.updateBio = (valid, bio) => {
+    if (valid && bio!=$scope.session.bio) {
+      SessionService.updateBio({bio}, function(result){
+        $rootScope.session = result
+      })
+    }
+  }
+
+  if (!$scope.data) $scope.data = { bio: $scope.session.bio }
+  $scope.socialCount = _.keys($scope.session.social||{}).length
+
+  DataService.experts.getMe({}, (expert) => {
+    $scope.expert = expert
+    if (expert.hours) {
+      $scope.v0expert = true
+      $scope.firstName = Util.firstName(expert.name)
+    } else {
+      $scope.data = expert,_.extend(expert, $scope.data||{})
+      // console.log($scope.session.social.tw)
+      // if (!$scope.data.bio && $scope.session.social
+      //   && $scope.session.social.tw)
+      //   $scope.data.bio = $scope.session.social.tw._json.description
+      if (!$scope.data.brief) $scope.data.brief = "ng-conf"
+      console.log($scope.data.brief)
+    }
+  })
+
+  $scope.save = () => {
+    if ($scope.data._id)
+      DataService.experts.updateMe(_.pick($scope.data,'_id','userId','tags','rate','brief'), (expert) => {
+        window.location = '/posts/me'
+      })
+    else
+      DataService.experts.create(_.pick($scope.data,'tags','rate','brief'), (expert) => {
+        window.location = '/posts/me'
+      })
+  }
+})
+
+
+.controller('ProfilePreviewCtrl', ($scope, $location, $q, SessionService) => {
+
 
 })

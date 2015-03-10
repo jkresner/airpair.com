@@ -34,16 +34,17 @@ export function addPatterns(app) {
   //-- Express routes don't handle spaces, so always put in %20
   //-- More so for some reason it's important to test the fully encoded
   //-- Version of the url first
+  var router = require('express').Router()
 
-  app.get(/%E2%80%A6/, mw.redirectWithQuery('%E2%80%A6',''))
-  app.get(/%20%e2%80%a6/, mw.redirectWithQuery('%20%e2%80%a6',''))
-  app.get(/%20%E2%80%A6/, mw.redirectWithQuery('%20%E2%80%A6',''))
-  app.get(/%20\.\.\./, mw.redirectWithQuery('%20...',''))
-  app.get(/\.\.\./, mw.redirectWithQuery('...',''))
-  app.get('/author/*', (req,res) => { res.redirect(301, '/posts/all')})
-  app.get("/c\\+\\+", mw.redirectWithQuery("/c++","/posts/tag/c++", "302") )
+  router.get(/%E2%80%A6/, mw.redirectWithQuery('%E2%80%A6',''))
+  router.get(/%20%e2%80%a6/, mw.redirectWithQuery('%20%e2%80%a6',''))
+  router.get(/%20%E2%80%A6/, mw.redirectWithQuery('%20%E2%80%A6',''))
+  router.get(/%20\.\.\./, mw.redirectWithQuery('%20...',''))
+  router.get(/\.\.\./, mw.redirectWithQuery('...',''))
+  router.get('/author/*', (req,res) => { res.redirect(301, '/posts/all')})
+  router.get("/c\\+\\+", mw.redirectWithQuery("/c++","/posts/tag/c++", "302") )
 
-  return app
+  return router
 }
 
 
