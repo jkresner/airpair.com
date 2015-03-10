@@ -1,0 +1,11 @@
+/* TEAM */
+  Chef:Jonathon Kresner
+  Contact: airpair.com
+  Twitter: @hackerpreneur
+
+/* THANKS */
+
+
+/* SITE */
+  Language: English
+  Doctype:HTML5
