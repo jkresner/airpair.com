@@ -27,12 +27,12 @@ newCompleteRequestForAdmin = (userKey, requestData, cb) ->
 
 
 
-module.exports = -> describe "Api", ->
+module.exports = -> describe "Admin".subspec, ->
 
   before (done) ->
     SETUP.analytics.stub()
     SETUP.initTags ->
-      SETUP.createNewExpert 'abha', {}, (s,exp) ->
+      SETUP.createNewExpert 'phlf', {}, (s,exp) ->
         abhaKey = s.userKey
         done()
 

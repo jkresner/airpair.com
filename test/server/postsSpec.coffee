@@ -20,9 +20,6 @@ module.exports = -> describe "API: ".subspec, ->
     SETUP.analytics.restore()
 
 
-  it.skip "UI handles anonymous reviews", (done)->
-
-
   it.skip "Can split line over chacter limit", ->
     lines = ['### 2.1 When (Developer) Ideas Have Sex', '', '[![Matt Ridley](//airpair.github.io/img/2015/01/ma…alks/matt_ridley_when_ideas_have_sex?language=en)', '> ***"To answer our continual ability to attain mo…ne and recombine, to meet and indeed to mate."***']
     r = PostsUtil.splitLines(lines, 74)

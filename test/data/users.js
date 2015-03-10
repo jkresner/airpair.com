@@ -26,6 +26,7 @@ module.exports = {
   joem: { name:"Joe Mellin",email:"joe@mellin.com" },
   ramo: { name:"Ramon Porter",email:"sierra@test.com" },
   rapo: { name:"Ramon Porter",email:"ramonp@apr.com" },
+  rpor: { name:"Ramon Porter",email:"ramonp@rpor.com" },
 
   elld: { name:"Ellen Dudley",email:"ellen@apr.com" },
   edud: { name:"Ellen Dudley",email:"edud@apr.com" },

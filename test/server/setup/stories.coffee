@@ -105,9 +105,8 @@ stories = {
     username = "#{seedKey}-#{timeSeed()}"
     initials = "ap-#{timeSeed()}"
     localization = data.wrappers.locationlization_melbourne
-    username = userKey
     bio = "a bio for apexpert 1 #{timeSeed()}"
-    user = _.extend({username,initials,localization,username,bio}, data.users[seedKey])
+    user = _.extend({initials,localization,bio}, data.users[seedKey])
     if (user.social)
       user.social.gh = user.social.gh || data.users.ape1.social.gh
     else
@@ -116,6 +115,7 @@ stories = {
     user._id = newId()
     user.email = user.email.replace('@',timeSeed()+'@')
     user.googleId = timeSeed()
+    user.username = userKey
     db.ensureDoc 'User', user, ->
       data.users[userKey] = user
       LOGIN userKey, (s) ->
