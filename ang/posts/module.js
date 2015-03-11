@@ -202,6 +202,11 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
   $scope.exampleImage = () => $scope.post.assetUrl = StaticDataService.examplePostImage
   $scope.exampleYouTube = () => $scope.post.assetUrl = StaticDataService.examplePostYouTube
 
+  $scope.clearDefaultTitle = () => {
+    if ($scope.post.title == 'Title of your blog post ...')
+      $scope.post.title = ''
+  }
+
   if (_id)
     DataService.posts.getByIdForEditingInfo({_id}, (r) => {
       if ($scope.session._id == r.by.userId) { // don't wipe author with editor session
@@ -212,7 +217,7 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
       $scope.post = r
     })
   else
-    $scope.post = { title: 'Type a post title...', by: $scope.session, assetUrl: '//www.airpair.com/static/img/css/blog/example2.jpg' }
+    $scope.post = { title: 'Title of your blog post ...', by: $scope.session, assetUrl: '//www.airpair.com/static/img/css/blog/example2.jpg' }
 
 })
 
