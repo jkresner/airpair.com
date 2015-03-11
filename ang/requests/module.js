@@ -18,6 +18,7 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
   $routeProvider
     .when('/requests', actions.list)
     .when('/help/request', actions.create)
+    .when('/find-an-expert', actions.create)
     .when('/meet-experts', actions.create)
     .when('/help/types', actions.help)
     .when('/help/request/:id', actions.edit)
