@@ -116,12 +116,11 @@ var get = {
 
       if (!post.github) return cb(null, post)
 
-      $callSvc(get.getGitHEAD, this)(post, (ee, head) => {
+      github2.getFile('admin', org, post.slug, "/post.md", 'edit', (ee, head) => {
         if (!ee && head.string)
           post.mdHEAD = head.string
         cb(ee, post)
       })
-
     })
   },
 
@@ -238,12 +237,9 @@ var get = {
         if (!_.idsEqual(post._id,r._id))  //-- for posts that were published before the git authoring stuff
           return cb(null, { unavailable: `The slug ${slug} alredy belongs to another post.` })
 
-      github2.checkRepo('admin', org, slug, (e,repo) => {
-        if (repo) return cb(null, { unavailable: `Try another name. A repo on the airpair org called ${slug} already exists.` })
-        if (e.code == 404)
-          cb(null, { available: `The repo name ${slug} is available.` })
-        else
-          cb(Error(e), repo)
+      github2.checkRepo('admin', org, slug, (e,repoStatus) => {
+        if (e) return cb(e)
+        cb(null, repoStatus)
       })
     })
   },
