@@ -21,7 +21,8 @@ angular.module("APProfile", ['ngRoute', 'APFilters', 'APSvcSession', 'APTagInput
       var updateInfo = function(targetName) {
         $scope.profileAlerts = []
         var propName = targetName.toLowerCase()
-        if ($scope.session[propName] != $scope.data[propName])
+        if ($scope.data[propName] && $scope.data[propName] != '' &&
+            $scope.session[propName] != $scope.data[propName])
         {
           var up = {}
           up[propName] = $scope.data[propName]
