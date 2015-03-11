@@ -252,6 +252,7 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
   }
   $scope.previewMarkdown = previewMarkdown
 
+  var checkLocationChangeStart = null
   var setPostScope = function(r) {
     $scope.isAuthor = r.by.userId == $scope.session._id
 
@@ -279,7 +280,8 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
       if (!saved) return `It looks like haven't saved some changes...`
     }
 
-    $scope.$on("$locationChangeStart", function(event) {
+    if (checkLocationChangeStart) checkLocationChangeStart()
+    checkLocationChangeStart = $scope.$on("$locationChangeStart", function(event) {
       var md = window.ace.edit($('#aceeditor')[0]).getSession().getValue()
       var saved = $scope.savedMD == md
       if (!saved) {
