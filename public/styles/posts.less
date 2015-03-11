@@ -16,35 +16,45 @@
     border-left:@tilebordernormal;
     border-right:@tilebordernormal;
     position:relative;
-    height:130px;overflow:hidden;
+    height:134px;overflow:hidden;
     img { background:@reallypalegray;min-width:280px;max-width:100%;min-height:130px;opacity:1 }
     .glass { display:none;position:absolute;top:0px;bottom:0px;left:0px;right:0px;opacity:0.7 }
     p { display:none;text-align:center;
-      position:absolute;top:10px;left:12px;right:12px;
+      position:absolute;top:3px;left:12px;right:12px;
       margin:0px;padding:5px 5px 5px 5px;color:black;font-size:13px;line-height:16px }
   }
-  .stars { height:30px;margin-top:2px }
+  .stars {
+    height:22px;margin-top:7px;
+    li {
+      width:15px;height:15px;
+      display:inline-block;
+      // margin-left:-1px;
+    }
+    li.half {
+      width:7px;background-size:210%;
+    }
+  }
   .entry-content {
     position:relative;
     border-left:@tilebordernormal;
     border-right:@tilebordernormal;
     text-align:left;
-    padding:10px 10px;
+    padding:9px 10px;
   }
   .entry-title {
-    color:@darkblue;font-weight:600;
-    height:75px;width:86%;margin:0;
-    font-size:15px!important;line-height:18px!important;
+    color:@darkblue;font-weight:500;
+    height:77px;width:80%;margin:0;
+    font-size:14px!important;line-height:18px!important;
     margin-bottom:0px!important;
   }
   .entry-categories {
-    height:25px;width:100%;display:block;
+    width:100%;display:block;
     em { display:inline-block;font-style:normal;border:solid 1px @bluegray;background:@lightblue;
-      padding:0px 4px;margin-right:4px;font-size:10px;color:#151821; }
+      padding:0px 4px;margin:0px 1px 3px 0px;font-size:10px;color:#151821; }
   }
   .entry-author-name {
-    height:24px;max-width:190px;overflow:hidden;font-size:16px;
-    color:@darkgray;display:block
+    height:22px;max-width:190px;overflow:hidden;font-size:16px;
+    color:@darkbluegray;display:block
   }
   footer {
     border-left:@tilebordernormal;
@@ -56,8 +66,8 @@
     width:100%;
     padding:4px 3px 3px 3px;
     .bookmark { cursor:pointer;background:white;
-      padding:3px 5px 3px 5px;
-     position:absolute;right:12px;bottom:100px }
+      padding:3px 5px 3px 5px;border-radius:5px;
+      position:absolute;right:12px;bottom:108px }
   }
   .entry-author-img {
     position:absolute;opacity:0.9;
