@@ -8,7 +8,10 @@ colors.setTheme({
 var knownNonErrors = [
   'Page not found',
   'try google login',
+  'Cannot signup, you previously created an account with your google login',
+  'Another user account already has the',
   'already registered',
+  'already taken, please choose a different username',
   'Max allowed tags reached',
   'Max allowed bookmarks reached',
   'Max 3 bookmarks reached',
@@ -18,7 +21,10 @@ var knownNonErrors = [
   'wrong password',
   'failed to obtain access token',
   'No user found with email',
-  'Post cannot be edited by you, did you fork it already?'
+  'Post cannot be edited by you, did you fork it already?',
+  'Can not share an incompleted request',
+  'Error getting collection: v1sessions',
+  'Cannot determine state of server'
 ]
 
 
