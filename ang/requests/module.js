@@ -91,7 +91,7 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
 
 
 
-.controller('ReviewCtrl', function($scope, $routeParams, $location, DataService, Shared, ServerErrors, corechat) {
+.controller('ReviewCtrl', function($scope, $routeParams, $location, DataService, Shared, ServerErrors) {
   $scope.requestId = $routeParams.id;
 
   if (!$scope.requestId) return $location.path('/')
@@ -174,16 +174,5 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
     console.log('request not found')
   })
 
-  function getMemberToMemberRID () {
-    return Array.prototype.slice.call(arguments).sort().join('^^v^^')
-  }
-  $scope.openChat = function (memberId) {
-    var RID = getMemberToMemberRID(memberId, corechat.selfmember.id);
-    $scope.currentUser = corechat.getMember(memberId);
-    $scope.currentUser.join(RID);
-    corechat.join(RID);
-    corechat.setActiveRoom(RID);
-    corechat.collapsed = false;
-  };
 
 })
