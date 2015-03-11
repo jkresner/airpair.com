@@ -139,7 +139,7 @@ function updateWithTouch(expert, action, trackData, cb) {
   var tagIdx = 0
   for (var t of expert.tags) {
     t.sort = tagIdx
-    tagIdx = tagIdx = 1
+    tagIdx = tagIdx + 1
   }
 
   if (action == 'create')
