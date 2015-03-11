@@ -3,9 +3,9 @@ import View from '../models/view'
 import Landing from '../models/landing'
 var logging = false
 var _viewSvc = new Svc(View, logging)
-var Segment = require('analytics-node')
-var segmentConf = config.analytics.segmentio
-var segment = new Segment(segmentConf.writekey, segmentConf.options)
+// var Segment = require('analytics-node')
+// var segmentConf = config.analytics.segmentio
+// var segment = new Segment(segmentConf.writekey, segmentConf.options)
 
 
 var util = {
@@ -131,9 +131,11 @@ var analytics = {
 
 
   track(user, sessionID, event, properties, context, done) {
-    var payload = util.buildSegmentPayload('track', user, sessionID, {event,properties,context})
-    segment.track(payload, done || doneBackup)
+    // var payload = util.buildSegmentPayload('track', user, sessionID, {event,properties,context})
+    // segment.track(payload, done || doneBackup)
     $$log(event,properties,user,sessionID)
+    done = done || (doneBackup || function() {})
+    done()
   },
 
 
@@ -141,11 +143,11 @@ var analytics = {
     var m = { event:'View', integrations: { 'All': false, 'Mixpanel': true }}
 
     properties.url = properties.path
-    var mProperties = _.extend(properties, {type,name})
-    if (context.utms) _.extend(mProperties, context.utms)
+    // var mProperties = _.extend(properties, {type,name})
+    // if (context.utms) _.extend(mProperties, context.utms)
 
-    var payload = _.extend(m,util.buildSegmentPayload('mp.view', user, sessionID , {properties:mProperties}))
-    segment.track(payload, done || doneBackup)
+    // var payload = _.extend(m,util.buildSegmentPayload('mp.view', user, sessionID , {properties:mProperties}))
+    // segment.track(payload, done || doneBackup)
 
     // write to mongo
     var {objectId,url} = properties
@@ -153,10 +155,13 @@ var analytics = {
     var campaign = (context.utms) ? util.convertToDumbSegmentCampaignSHIT(context.utms) : undefined
     var userId = (user) ? user._id: null
     viewSvc.create({userId,anonymousId:sessionID,url:properties.path,
-      type,objectId,campaign,referer}, (e,r) => {})
+      type,objectId,campaign,referer}, () => {})
 
     if (!properties.firstRequest) // anoying in the logs
       $$log('View', properties, user, sessionID)
+
+    done = done || (doneBackup || function() {})
+    done()
   },
 
 
@@ -164,14 +169,15 @@ var analytics = {
     var traits = util.segmentTraitsFromUser(user)
     var context = null // ?? to populate
 
-    segment.identify(util.buildSegmentPayload('identify', user, null, {traits,context}), () => {
-      if (logging) $log('**** identified'.yellow)
-      analytics.track(user, null, identifyEvent, identifyEventProps, context, () => {
-        if (logging) $log(`**** ${identifyEvent}`.yellow)
-        done()
-      })
-      segment.flush()
-    })
+    done()
+    // segment.identify(util.buildSegmentPayload('identify', user, null, {traits,context}), () => {
+    //   if (logging) $log('**** identified'.yellow)
+    //   analytics.track(user, null, identifyEvent, identifyEventProps, context, () => {
+    //     if (logging) $log(`**** ${identifyEvent}`.yellow)
+    //     done()
+    //   })
+    //   segment.flush()
+    // })
   },
 
 
@@ -179,16 +185,19 @@ var analytics = {
     if (logging) $log('alias', user.email, sessionID, aliasEvent, done)
     var userId = user._id.toString()
 
-    segment.alias({ previousId: sessionID, userId: user.email }, (e, b) => {
-      if (logging) $log('**** aliased'.blue)
-      analytics.track(user, null, aliasEvent, {_id:user._id,email:user.email,sessionID}, null, () => {
-        if (logging) $log(`**** ${aliasEvent}`.blue)
-        done()
-      })
-    })
-    segment.flush()
+    // segment.alias({ previousId: sessionID, userId: user.email }, (e, b) => {
+    //   if (logging) $log('**** aliased'.blue)
+    //   analytics.track(user, null, aliasEvent, {_id:user._id,email:user.email,sessionID}, null, () => {
+    //     if (logging) $log(`**** ${aliasEvent}`.blue)
+    //     done()
+    //   })
+    // })
+    // segment.flush()
 
     viewSvc.alias(sessionID, user._id, ()=>{})
+
+
+    done()
   },
 
 

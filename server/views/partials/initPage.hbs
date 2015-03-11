@@ -11,7 +11,7 @@
     if (!window.bindTracking)
       window.bindTracking = function() {};
 
-    var mixId = mixpanel.get_distinct_id()
+    // var mixId = mixpanel.get_distinct_id()
 
 {{#if authenticated}}
     var email = '{{ session.email }}';
@@ -23,20 +23,20 @@
 
     //console.log('userEmail', email, 'mixId', mixId, 'anonymousId', anonymousId)
 
-    var ident = function() {
-      //console.log('identify', email || anonymousId)  //-- could be from a different session.
-      window.analytics.identify(email || anonymousId, { id: email || anonymousId, name: '{{ session.name }}' });
-    }
+    // var ident = function() {
+      // console.log('identify', email || anonymousId)  //-- could be from a different session.
+      // window.analytics.identify(email || anonymousId, { id: email || anonymousId, name: '{{ session.name }}' });
+    // }
 
 
     // If they're signed in
-    if (email && mixId != email) ident()
+    // if (email && mixId != email) ident()
 
     // If they didn't already identify their email and log out
-    else if (mixId.indexOf("@") == -1 && anonymousId != mixId)
-    {
-      setTimeout(ident,200)
-    }
+    // else if (mixId.indexOf("@") == -1 && anonymousId != mixId)
+    // {
+      // setTimeout(ident,200)
+    // }
 
     bindTracking();
   });

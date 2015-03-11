@@ -41,7 +41,7 @@ describe 'Server: '.appload, ->
   describe 'Users: '.spec,          require('./usersSpec')
   describe 'User Flows: '.spec,     require('./userFlowsSpec')
   describe 'Experts: '.spec,        require('./expertsSpec')
-  describe.skip 'Analytics: '.spec,      require('./analyticsSpec')
+  describe 'Analytics: '.spec,      require('./analyticsSpec')
   describe 'Tags: '.spec,           require('./tagsSpec')
   describe 'Companys: '.spec,       require('./companysSpec')
   describe 'Rss: '.spec,            require('./rssSpec')
