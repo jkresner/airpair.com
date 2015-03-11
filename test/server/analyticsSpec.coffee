@@ -27,11 +27,12 @@ module.exports = -> describe "Tracking: ".subspec, ->
       anonymousId = s.sessionID
       spy = sinon.spy(analytics,'view')
       analytics.setCallback =>
-        db.viewsByAnonymousId anonymousId, (e,r) ->
+        viewCheck = => db.viewsByAnonymousId anonymousId, (e,r) ->
           expect(r.length).to.equal(1)
           expect(r[0].userId).to.be.null
           expect(r[0].anonymousId).to.equal(anonymousId)
           done()
+        _.delay(viewCheck, 50)
 
       GETP("/v1/posts/#{postSlug}?utm_source=test1src&utm_content=test1ctn")
         .set('referer', 'http://airpair.com/posts')
@@ -54,17 +55,17 @@ module.exports = -> describe "Tracking: ".subspec, ->
           spy.restore()
 
 
-
   it 'Can track logged in post view', (done) ->
     SETUP.addLocalUser 'krez', {}, (userKey) ->
       spy = sinon.spy(analytics,'view')
       userId = data.users[userKey]._id
       analytics.setCallback ->
-        db.viewsByUserId userId, (e,r) ->
+        viewCheck = => db.viewsByUserId userId, (e,r) ->
           expect(r.length).to.equal(1)
           expect(_.idsEqual(r[0].userId,userId)).to.be.true
           expect(r[0].anonymousId).to.be.null
           done()
+        _.delay(viewCheck, 50)
 
       LOGIN userKey, (s) ->
         GETP("/v1/posts/#{postSlug}?utm_campaign=test2nm")
@@ -146,10 +147,6 @@ module.exports = -> describe "Tracking: ".subspec, ->
       anonymousId = s.sessionID
       spy = sinon.spy(analytics,'view')
 
-      analytics.setCallback =>
-        spy.restore()
-        done()
-
       GETP("/v1/workshops/simplifying-rails-tests")
         .set('referer', 'http://airpair.com/workshops')
         .expect('Content-Type', /text/)
@@ -164,12 +161,12 @@ module.exports = -> describe "Tracking: ".subspec, ->
           expect(spy.args[0][5].referer).to.equal('http://airpair.com/workshops')
           expect(spy.args[0][5].campaign).to.be.undefined
           expect(spy.args[0][6]).to.be.undefined
-
+          spy.restore()
+          done()
 
   it 'Can track logged in workshop view', (done) ->
     SETUP.addLocalUser 'joem', {}, (userKey) ->
       spy = sinon.spy(analytics,'view')
-      analytics.setCallback(done)
       LOGIN userKey,  (s) ->
         GETP("/v1/workshops/simplifying-rails-tests?utm_campaign=test4nm&utm_medium=test4md")
           .set('referer', 'http://www.airpair.com/workshops')
@@ -190,6 +187,7 @@ module.exports = -> describe "Tracking: ".subspec, ->
             expect(spy.args[0][5].utms.utm_campaign).to.equal('test4nm')
             expect(spy.args[0][6]).to.be.undefined
             spy.restore()
+            done()
 
 
   it 'Login local from existing sessionID does not alias', (done) ->
@@ -244,11 +242,12 @@ module.exports = -> describe "Tracking: ".subspec, ->
 
 
               GET '/session/full', {}, (s3) ->
-                db.viewsByUserId s3._id, (e3,v3) ->
+                viewCheck = => db.viewsByUserId s3._id, (e3,v3) ->
                   expect(v3.length).to.equal(4)
                   spyIdentify.restore()
                   spyAlias.restore()
                   done()
+                _.delay(viewCheck, 50)
 
     ANONSESSION (s) ->
       anonymousId = s.sessionID
