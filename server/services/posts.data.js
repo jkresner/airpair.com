@@ -1,7 +1,7 @@
 var marked              = require('marked')
 import generateToc      from './postsToc'
 import * as md5         from '../util/md5'
-var {selectFromObject}  = require('../../shared/util')
+var {selectFromObject,firstName}  = require('../../shared/util')
 var PostsUtil           = require('../../shared/posts')
 
 var topTapPages = ['angularjs']
@@ -71,6 +71,7 @@ var select = {
     'by.expertId':1,
     'by.bio': 1,
     'by.username': 1,
+    'by.social': 1,
     'social.gh.username':1,
     'social.so.link': 1,
     'social.bb.username':1,
@@ -284,6 +285,8 @@ var select = {
 
         if (!similarFn)
           similarFn = (p, done) => done(null,[])
+
+        r.by.firstName = firstName(r.by.name)
 
         similarFn(r, (ee,similar) => {
           r.similar = similar
