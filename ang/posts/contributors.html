@@ -14,7 +14,7 @@
 <section ng-if="post" id="postcontributors">
 
   <article class="blogpost">
-    <h1 class="entry-title" itemprop="headline">{{post.title}}</h1>
+    <h1 class="entry-title" itemprop="headline"><a href="{{post.url}}" target="_blank">{{post.title}}</a></h1>
   </article>
 
   <section ng-if="post.submitted && !post.published" class="notifications">
