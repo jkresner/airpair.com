@@ -142,6 +142,10 @@ function updateWithTouch(expert, action, trackData, cb) {
     tagIdx = tagIdx + 1
   }
 
+  //-- consistency with v0 + save db space
+  if (expert.user.social && expert.user.social.so)
+    expert.user.social.so.link = expert.user.social.so.link.replace('http://stackoverflow.com/users/','')
+
   if (action == 'create')
     svc.create(expert, cb)
   else

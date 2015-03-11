@@ -249,7 +249,6 @@ angular.module("APProfile", ['ngRoute', 'APFilters', 'APSvcSession', 'APTagInput
       // if (!$scope.data.bio && $scope.session.social
       //   && $scope.session.social.tw)
       //   $scope.data.bio = $scope.session.social.tw._json.description
-      if (!$scope.data.brief) $scope.data.brief = "ng-conf"
       console.log($scope.data.brief)
     }
   })
