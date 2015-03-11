@@ -1,7 +1,7 @@
 requestUtil = require('../../shared/requests')
 db = require('./setup/db')
-abhaKey = null
-
+phlfKey = null
+phlfExp = null
 
 newCompleteRequestForAdmin = (userKey, requestData, cb) ->
   SETUP.newCompleteRequest userKey, requestData, (r) ->
@@ -33,7 +33,8 @@ module.exports = -> describe "Admin".subspec, ->
     SETUP.analytics.stub()
     SETUP.initTags ->
       SETUP.createNewExpert 'phlf', {}, (s,exp) ->
-        abhaKey = s.userKey
+        phlfKey = s.userKey
+        phlfExp = exp
         done()
 
   after ->
@@ -109,15 +110,15 @@ module.exports = -> describe "Admin".subspec, ->
               reqs1[0].status = 'waiting'
               reqs1[0].adm.owner = 'ad'
               PUT "/adm/requests/#{r._id}", reqs1[0], {}, (reqWexp) ->
-                PUT "/matchmaking/requests/#{r._id}/add/#{data.experts.abha._id}", {}, {}, (reqWexp) ->
+                PUT "/matchmaking/requests/#{r._id}/add/#{phlfExp._id}", {}, {}, (reqWexp) ->
                   GET "/adm/requests/user/#{s._id}", {}, (reqs2) ->
                     expect(reqs2.length).to.equal(1)
                     expect(reqs2[0].suggested.length).to.equal(1)
-                    PUT "/adm/requests/#{r._id}/remove/#{data.experts.abha._id}", {}, {}, (reqRexp) ->
+                    PUT "/adm/requests/#{r._id}/remove/#{phlfExp._id}", {}, {}, (reqRexp) ->
                       expect(reqRexp.suggested.length).to.equal(0)
                       expect(spy.callCount).to.equal(1)
-                      expectStartsWith(spy.args[0][0].name,"Abe Haskins")
-                      expectStartsWith(spy.args[0][0].email,"abeisgreat@abeisgreat.com")
+                      expectStartsWith(spy.args[0][0].name, phlfExp.name)
+                      expectStartsWith(spy.args[0][0].email,phlfExp.email)
                       expectStartsWith(spy.args[0][1],"Kyle Aungst")
                       expectIdsEqual(spy.args[0][2],r._id)
                       expectStartsWith(spy.args[0][3],"Admin Daemon")
@@ -129,7 +130,7 @@ module.exports = -> describe "Admin".subspec, ->
   it.skip 'Pipeliner can update expert matching stats', (done) ->
     d = type: 'other', tags: [data.tags.node]
     newCompleteRequestForAdmin 'hubi', d, (r) ->
-      LOGIN abhaKey, (sAbha) ->
+      LOGIN phlfKey, (sAbha) ->
         reply = expertComment: "I'll take it", expertAvailability: "Real-time", expertStatus: "available"
         PUT "/requests/#{r._id}/reply/#{data.experts.abha._id}", reply, {}, (r1) ->
           LOGIN 'admin', data.users.admin, ->
