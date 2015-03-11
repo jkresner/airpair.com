@@ -111,11 +111,11 @@ stories = {
       user.social.gh = user.social.gh || data.users.ape1.social.gh
     else
       user.social = { gh: data.users.ape1.social.gh }
-    user.google = user.google || data.users.ape1.google
     user._id = newId()
-    user.email = user.email.replace('@',timeSeed()+'@')
-    user.googleId = timeSeed()
     user.username = userKey
+    user.googleId = userKey
+    user.google = user.google || data.users.ape1.google
+    user.email = user.email.replace('@',timeSeed()+'@')
     db.ensureDoc 'User', user, ->
       data.users[userKey] = user
       LOGIN userKey, (s) ->
