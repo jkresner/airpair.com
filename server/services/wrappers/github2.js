@@ -77,6 +77,11 @@ function addAndConfirmTeamMember(user, org, teamId, githubUser, cb) {
     setToken(user)
     //then accept the invite
     api.user.editOrganizationMembership({ org, state: 'active' }, cb)
+    //make the org public on their profile
+    _.delay(() => {
+      api.orgs.publicizeMembership({ org, user: githubUser.username }, () => {
+        $log(`${githubUser.username} membership publicized`)}, 1500)
+    })
   })
 }
 
@@ -97,7 +102,7 @@ var gh = {
     }, (e,r) => {
       if (r) cb(null, { unavailable: `Try another name. A repo at {owner}/${repo} already exists.` })
       else if (e.code == 404) cb(null, { available: `The repo name ${repo} is available.` })
-      else cb(e, r)
+      else cb(e)
     })
   },
 
@@ -287,31 +292,35 @@ var gh = {
           else if (e2) return verboseErrorCB(cb, e2, 'setupPostRepo.addFile', `${repoName} README.md`)
 
           if (logging) $log(`Added     README.md ${fullRepoName}`.yellow)
-          gh.createBranch('admin', org, repoName, 'edit', readme.commit, (e9, branchRef) => {})
+          gh.createBranch('admin', org, repoName, 'edit', readme.commit, (e9, branchRef) => {
+            if (logging) $log(`branched   edit  ${org}/${repoName}`.yellow)
 
-          gh.createRepoTeam('admin', org, repoName, authorTeamName, 'push', (e3, authorTeamId) => {
-            if (e3) return verboseErrorCB(cb, e3, 'setupPostRepo.createRepoTeam', `${repoName}:${authorTeamName} author team`)
-            if (logging) $log(`Created   team ${authorTeamName} ${authorTeamId}`.yellow)
-            addAndConfirmTeamMember(user, org, authorTeamId, authorGH, (e4, result) => {
-              if (e4) return verboseErrorCB(cb, e4, 'addAndConfirmTeamMember', `${fullRepoName} author team ${authorTeamId} ${authorGH.username}`)
-              if (logging) $log(`Confirmed  ${authorGH.username} as team member of ${authorTeamName}`.yellow)
-              gh.addFile(user, org, repoName, "post.md", "edit", postMD, "Initial Commit", (e5, post) => {
-                var repoInfo = { url, authorTeamId, authorTeamName, author: authorGH.username }
-                if (e5) {
-                  if (e5 === "file already exists")
-                    return gh.updateFile(user, org, repoName, "post.md", post.md, "Reinitialize", (e6, post) => {
-                      if (e6) return verboseErrorCB(cb, e6, 'updateFile [reinitialize]', `${repoName} post.md`)
-                      cb(null, { authorTeamId, owner:githubOwner, url, author: authorGH.username })
-                    })
-                  else
-                    return verboseErrorCB(cb, e5, 'setupPostRepo.addFile', `${repoName} post.md`)
-                }
-                if (logging) $log(`Added     post.md to ${fullRepoName}`.yellow)
-                cb(null, repoInfo)
+            gh.createRepoTeam('admin', org, repoName, authorTeamName, 'push', (e3, authorTeamId) => {
+              if (e3) return verboseErrorCB(cb, e3, 'setupPostRepo.createRepoTeam', `${repoName}:${authorTeamName} author team`)
+              if (logging) $log(`Created   team ${authorTeamName} ${authorTeamId}`.yellow)
+              addAndConfirmTeamMember(user, org, authorTeamId, authorGH, (e4, result) => {
+                if (e4) return verboseErrorCB(cb, e4, 'addAndConfirmTeamMember', `${fullRepoName} author team ${authorTeamId} ${authorGH.username}`)
+                if (logging) $log(`Confirmed  ${authorGH.username} as team member of ${authorTeamName}`.yellow)
+                gh.addFile(user, org, repoName, "post.md", "edit", postMD, "Initial Commit", (e5, post) => {
+                  var repoInfo = { url, authorTeamId, authorTeamName, author: authorGH.username }
+                  if (e5) {
+                    if (e5 === "file already exists")
+                      return gh.updateFile(user, org, repoName, "post.md", post.md, "Reinitialize", (e6, post) => {
+                        if (e6) return verboseErrorCB(cb, e6, 'updateFile [reinitialize]', `${repoName} post.md`)
+                        cb(null, { authorTeamId, owner:githubOwner, url, author: authorGH.username })
+                      })
+                    else
+                      return verboseErrorCB(cb, e5, 'setupPostRepo.addFile', `${repoName} post.md`)
+                  }
+                  if (logging) $log(`Added     post.md to ${fullRepoName}`.yellow)
+                  cb(null, repoInfo)
+                })
               })
             })
           })
+
         })
+
     })
   }
 }
