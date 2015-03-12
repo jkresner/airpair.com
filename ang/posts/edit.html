@@ -19,6 +19,11 @@
   <h2 ng-if="_id">Try <a href="/posts/fork/{{_id}}" target="_self">fork it</a> now? </h2>
 </div>
 
+<div ng-if="credentialsErr" class="editor-error-wrap" style="text-align:center">
+  <h2>Something's up with your GitHub token... </h2>
+  <h3 ng-if="_id">We can't use it to access the repo. Please <a href="/auth/github?returnTo={{returnTo}}" target="_self">re-auth your Github Acccount</a>.</h3>
+</div>
+
 <div ng-if="post" class="poststauts {{post.saved ? 'saved': 'unsaved' }}">
   <post-step-helper post="post" class="tip"></post-step-helper>
 
