@@ -31,7 +31,7 @@ var middleware = {
     reqd.add(req)
     reqd.add(res)
     reqd.on('error', function(err) {
-      var url = req.url
+      var url = req.originalUrl // originalUrl because .url does not pick up the base
       var method = req.method
       if (url.indexOf('/api/') != -1) err.fromApi = true
       else if (method == 'POST' || method == 'PUT') err.fromApi = true
@@ -55,7 +55,7 @@ var middleware = {
         $log(`errorHandle ${uid} ${req.method} ${req.url}${ref}`.red, JSON.stringify(req.body), (e.message || e).magenta)
         $error(e, req.user, req)
       } else {
-        $log(`${req.method}:${req.url} `.gray.dim + (e.message || e).expectederr)
+        $log(`${req.method}:${req.url} `.expectederr + (e.message || e).expectederr)
         // $log('Test Debug Error ', e.toString().magenta)
       }
 

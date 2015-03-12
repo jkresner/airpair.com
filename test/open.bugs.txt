@@ -1,3 +1,47 @@
+Cannot read property 'changeEmailHash' of undefined
+PUT /v1/api/users/me/email-verify
+SF BlackswansMedia sfblackswan@gmail.com 54fde681f2a3df0c00175a91
+ << https://www.airpair.com/me?verify=$2a$08$.GXQCDd9Rua.1bRbc1pd1uxjM4xvkFZey4lIysj62kIUlpPjiIMFa
+isBot:false:Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.76 Safari/537.36
+
+ {"hash":"$2a$08$.GXQCDd9Rua.1bRbc1pd1uxjM4xvkFZey4lIysj62kIUlpPjiIMFa"}
+
+ TypeError: Cannot read property 'changeEmailHash' of undefined
+    at /app/users.js:276:17
+    at Promise.searchOne (/app/_service.js:30:9)
+    at Promise. (/app/node_modules/mongoose/node_modules/mpromise/lib/promise.js:177:8)
+    at Promise.emit (events.js:95:17)
+    at Promise.emit (/app/node_modules/mongoose/node_modules/mpromise/lib/promise.js:84:38)
+    at Promise.fulfill (/app/node_modules/mongoose/node_modules/mpromise/lib/promise.js:97:20)
+    at Promise.resolve (/app/node_modules/mongoose/lib/promise.js:114:23)
+    at Promise. (/app/node_modules/mongoose/node_modules/mpromise/lib/promise.js:177:8)
+    at Promise.emit (events.js:95:17)
+    at Promise.emit (/app/node_modules/mongoose/node_modules/mpromise/lib/promise.js:84:38
+
+
+Object true has no method 'match'
+PUT /v1/api/users/me/password
+Lee Willmott lee.willmott@blueyonder.co.uk 54fef62e64d9df0c005df0c9
+ << https://www.airpair.com/me/password?token
+isBot:false:Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/534.24 (KHTML, like Gecko) Chrome/11.0.696.34 Safari/534.24
+
+ {"password":"Lee","hash":true}
+
+ TypeError: Object true has no method 'match'
+    at Object.module.exports.changePassword (/app/users.js:79:21)
+    at /app/api.js:25:40
+    at Layer.handle [as handle_request] (/app/node_modules/express/lib/router/layer.js:82:5)
+    at next (/app/node_modules/express/lib/router/route.js:110:13)
+    at Route.dispatch (/app/node_modules/express/lib/router/route.js:91:3)
+    at Layer.handle [as handle_request] (/app/node_modules/express/lib/router/layer.js:82:5)
+    at /app/node_modules/express/lib/router/index.js:267:22
+    at Function.proto.process_params (/app/node_modules/express/lib/router/index.js:321:12)
+    at next (/app/node_modules/express/lib/router/index.js:261:10)
+    at Function.proto.handle (/app/node_modules/express/lib/router/index.js:166:3)
+
+
+{}
+
 
 Request can only be updated by owner
 PUT /v1/api/requests/54fc1fee3326620c00735d4e

@@ -2,15 +2,11 @@ var logging = true
 var GitHubApi = require("github")
 
 var api = new GitHubApi({
-  // required
   version: "3.0.0",
-  // optional
-  // debug: true,
   protocol: "https",
   timeout: 5000,
-  headers: {
-    "user-agent": "AirPair"
-  }
+  headers: { "user-agent": "AirPair" }
+  // debug: true,
 })
 
 var verboseErrorCB = (cb, err, fn, dataString) => {
@@ -33,61 +29,86 @@ var getGithubUser = function(user) {
     return { username: user.social.gh.username, token: user.social.gh.token.token }
 }
 
-// var setEventData = function(post, cb){
-//   github.repoEvents(org, post.slug, (err,resp)=>{
-//     if (err) return cb(err)
-//     var existingEvents = post.github.events || []
-//     post.github.events = _.union(existingEvents, resp)
-//     cb(err,resp)
-//   })
-// }
+var wrap = (fn, fnName) => {
+  var retries = 3
+
+  var fnWithAuth = function () {
+    var user = arguments[0]
+    var cb = arguments[arguments.length-1]
+    arguments[arguments.length-1] = (e,r) => {
+      retries = retries - 1
+      if (retries > 0 && e && e.message.toLowerCase().indexOf("not found") != -1) {
+        $log(`gh.${fnName} retry not found`, retries, e)
+        return _.delay(fnWrapped, 1000)
+      }
+      cb(e,r)
+    }
+
+    var fnWrapped = () => {
+      setToken(user)
+      fn.apply(this, arguments)
+    }
+    fnWrapped()
+  }
+
+  return fnWithAuth
+}
 
 
+
+function getTeamId(org, teamName, cb)
+{
+  //-- TODO, this doesn't page and it NEEDS to
+  api.orgs.getTeams({ org, per_page: 100}, (e,resp) => {
+    if (e) return verboseErrorCB(cb, e, 'getTeamId.getTeams', `${org} ${user.social.gh.username}`)
+    var team = _.find(resp, (team) => team.name == teamName)
+    if (team)
+      cb(null,team.id);
+    else
+      cb("failed to find team", teamName)
+  })
+}
+
+function addAndConfirmTeamMember(user, org, teamId, githubUser, cb) {
+  setToken('admin')
+  //first invite the user
+  api.orgs.addTeamMembership({id: teamId, user: githubUser.username}, function(e,r) {
+    if (e) return cb(e)
+    setToken(user)
+    //then accept the invite
+    api.user.editOrganizationMembership({ org, state: 'active' }, cb)
+    //make the org public on their profile
+    _.delay(() => {
+      api.orgs.publicizeMembership({ org, user: githubUser.username }, () => {
+        $log(`${githubUser.username} membership publicized`)}, 1500)
+    })
+  })
+}
+
+//-- Contains only functions we want to wrap and expose to module exports
 var gh = {
 
-  // listTeams(cb){
-  //   _authenticateAdmin()
-  //   api.orgs.getTeams({
-  //     org: org
-  //   },cb)
-  // },
-
-  getTeamId(org, teamName, cb){
-    api.orgs.getTeams({ org, per_page: 100}, function(err,resp){
-      //-- TODO, this doesn't page and it NEEDS to
-      if (err) return cb(err)
-      var team = _.find(resp, (team) => team.name == teamName)
-      if (team)
-        cb(null,team.id);
-      else
-        cb("failed to find team", teamName)
-    })
-  },
-
-  getRepo(user, owner, repo, cb){
-    setToken(user)
-    api.repos.get({
-      user: owner,
-      repo: repo
-    }, cb)
-  },
-
-
-  // deleteTeam(teamId, cb){
-  //    _authenticateAdmin()
-  //    api.orgs.deleteTeam({
-  //      id: teamId
-  //    });
-  // },
-
   getScopes(user, cb){
-    setToken(user)
     api.user.get({}, (e, r) => {
       if (e) return verboseErrorCB(cb, e, 'checkScopes', `${user.social.gh.username}`)
       cb(null, { github: r.meta['x-oauth-scopes'].split(/,\W*/) })
     })
   },
 
+  checkRepo(user, owner, repo, cb){
+    api.repos.get({
+      user: owner,
+      repo: repo
+    }, (e,r) => {
+      if (r) cb(null, { unavailable: `Try another name. A repo at {owner}/${repo} already exists.` })
+      else if (e.code == 404) cb(null, { available: `The repo name ${repo} is available.` })
+      else cb(e)
+    })
+  },
+
+  // deleteTeam(id, cb){
+  //    api.orgs.deleteTeam({ id });
+  // },
 
   // getStats(owner, repo, user, retryCount, cb){
   //   var retries = 5
@@ -122,7 +143,6 @@ var gh = {
   //see GitHub Docs https://developer.github.com/v3/activity/events/
 
   // repoEvents(owner, repo, cb){
-  //   _authenticateAdmin()
   //   var allEvents = []
 
   //   api.events.getFromRepo({
@@ -150,22 +170,11 @@ var gh = {
   // },
 
   // getCommits(repo, cb){
-  //   _authenticateAdmin()
-  //   api.repos.getCommits({
-  //     user: org,
-  //     repo: repo
-  //   }, cb)
+  //   api.repos.getCommits({ user: org, repo: repo }, cb)
   // },
 
   getPullRequests(user, owner, repo, cb) {
-    setToken('admin')
-    var query
-    var per_page = 100, // max PRS we can get for Github per_page,
-        // head = undefined //'airpair:master',
-        // base = undefined //'master', // head, base,
-        state = 'all' // return both open and closed pull requests
-// , head: undefined, base: undefined
-    api.pullRequests.getAll({ user: owner, repo, state, per_page }, (e,r) => {
+    api.pullRequests.getAll({ user: owner, repo, state: 'all', per_page: 100 }, (e,r) => {
       if (e) return verboseErrorCB(cb, e, 'getPullRequests', `${owner}/${repo} ${user.email} ${user.id}`)
       if (r && r.meta) delete r.meta
       cb(e, r)
@@ -173,54 +182,41 @@ var gh = {
   },
 
   addContributor(user, org, repo, cb) {
-    setToken(user)
-
-    // $log(`addContributor ${repo} ${reviewerTeamId}`, repo)
-    // this.addToTeam(user.social.gh.username, reviewerTeamId, user, function(err, result){
-      // if (err) return verboseErrorCB(cb, err, 'addToTeam', `${user.social.gh.username} ${reviewerTeamId}`)
-  // fork(repo, user, cb){
-  //   _authenticateUser(user)
     api.repos.fork({ user: org, repo }, (e,r) => {
-      if (e) return verboseErrorCB(cb, e, 'addContributor', `${repo} ${user.email} ${user.id}`)
+      if (e) return verboseErrorCB(cb, e, 'fork', `${repo} ${user.email} ${user.id}`)
       if (logging) $log(`Forked     ${org}${repo} to ${user.social.gh.username}`.yellow)
       cb(e, r)
     })
-  // },
-    // })
   },
 
-
   getFile(user, repoOwner, repo, path, branch, cb) {
-    setToken(user)
-    // $log('getFile', user.social.gh, repoOwner, repo, path, branch)
-    api.repos.getContent({ user: repoOwner, repo, path, ref: branch }, (e, r) => {
-      if (e) $log('getFile.getContent.e'.red, e)
+    api.repos.getContent({ user: repoOwner, repo, path, ref: branch }, (e, file) => {
 
-      //-- check the case where repos have been deleted manually
-      if (e!=null && e.code == 404)
+      //-- check the case where repos have been deleted manually (repo doesn't exist)
+      if (e && e.code == 404)
       {
+        if (logging) $log('getFile.getContent.404'.red, e)
         api.repos.get({ user: repoOwner, repo }, function(err,response) {
+          if (logging) $log('getFile.getRepo'.red, err, response)
           if (err && err.code === 404)
-            return cb(Error(`No repo found at ${repoOwner}/${repo}?`)) // <a href='/posts/fork/${post._id}'>Create new fork?</a>
-          else if (!err)
-            return cb(Error(`${path} of repo ${repoOwner}/${repo} missing or corrupted`))
-          else
+            return cb(Error(`No repo at ${repoOwner}/${repo}?`)) // <a href='/posts/fork/${post._id}'>Create new fork?</a>
+          else if (err)
             return cb(err)
+          else
+            return cb(Error(`${path} on "edit" branch of repo ${repoOwner}/${repo} missing or corrupted.`))
         })
       }
-      else {
-        if (r) {
-          r.string = new Buffer(r.content, 'base64').toString('utf8')
-          cb(e, r)
-        } else
-          verboseErrorCB(cb, e, 'getFile', `${repoOwner}/${repo} ${path}:${branch}`)
+      else if (e) {
+        verboseErrorCB(cb, e, 'getFile', `${repoOwner}/${repo} ${path}:${branch}`)
+      } else {
+        file.string = new Buffer(file.content, 'base64').toString('utf8')
+        cb(null, file)
       }
     })
   },
 
 
   updateFile(user, repoOwner, repo, path, branch, content, message, cb) {
-    setToken(user)
     branch = branch || 'master'
     var fileData = { user: repoOwner, repo, path, branch, ref: branch }
 
@@ -235,7 +231,6 @@ var gh = {
 
 
   addFile(user, repoOwner, repo, path, branch, content, message, cb) {
-    setToken(user)
     branch = branch || 'master'
     api.repos.createFile({
       user: repoOwner, repo, path, message, branch,
@@ -253,7 +248,6 @@ var gh = {
 
   //create a team w/ write access to a repo (name after repo)
   createRepoTeam(user, org, repo, name, permission, cb) {
-    setToken(user)
     api.orgs.createTeam({ org, name, permission, repo_names: [`${org}/${repo}`]}, (e, r) => {
       if (!e) return cb(null, r.id)
       var parsedError = JSON.parse(e.message)
@@ -270,26 +264,12 @@ var gh = {
   },
 
 
-  addAndConfirmTeamMember(user, org, teamId, githubUser, cb) {
-    setToken('admin')
-    //first invite the user
-    api.orgs.addTeamMembership({id: teamId, user: githubUser.username}, function(e,r) {
-      if (e) return cb(e)
-      setToken(user)
-      //then accept the invite
-      api.user.editOrganizationMembership({ org, state: 'active' }, cb)
-    })
-  },
-
-
   createOrgRepo(user, org, name, description, isPrivate, cb) {
-    setToken(user)
     api.repos.createFromOrg({ org, name, description, private: isPrivate }, cb)
   },
 
 
   createBranch(user, org, repo, branchName, offCommit, cb) {
-    setToken(user)
     var {sha} = offCommit
     api.gitdata.createReference({ user: org, repo, sha, ref: `refs/heads/${branchName}` }, cb)
   },
@@ -312,33 +292,42 @@ var gh = {
           else if (e2) return verboseErrorCB(cb, e2, 'setupPostRepo.addFile', `${repoName} README.md`)
 
           if (logging) $log(`Added     README.md ${fullRepoName}`.yellow)
-          gh.createBranch('admin', org, repoName, 'edit', readme.commit, (e9, branchRef) => {})
+          gh.createBranch('admin', org, repoName, 'edit', readme.commit, (e9, branchRef) => {
+            if (logging) $log(`branched   edit  ${org}/${repoName}`.yellow)
 
-          gh.createRepoTeam('admin', org, repoName, authorTeamName, 'push', (e3, authorTeamId) => {
-            if (e3) return verboseErrorCB(cb, e3, 'setupPostRepo.createRepoTeam', `${repoName}:${authorTeamName} author team`)
-            if (logging) $log(`Created   team ${authorTeamName} ${authorTeamId}`.yellow)
-            gh.addAndConfirmTeamMember(user, org, authorTeamId, authorGH, (e4, result) => {
-              if (e4) return verboseErrorCB(cb, e4, 'addAndConfirmTeamMember', `${fullRepoName} author team ${authorTeamId} ${authorGH.username}`)
-              if (logging) $log(`Confirmed  ${authorGH.username} as team member of ${authorTeamName}`.yellow)
-              gh.addFile(user, org, repoName, "post.md", "edit", postMD, "Initial Commit", (e5, post) => {
-                var repoInfo = { url, authorTeamId, authorTeamName, author: authorGH.username }
-                if (e5) {
-                  if (e5 === "file already exists")
-                    return gh.updateFile(user, org, repoName, "post.md", post.md, "Reinitialize", (e6, post) => {
-                      if (e6) return verboseErrorCB(cb, e6, 'updateFile [reinitialize]', `${repoName} post.md`)
-                      cb(null, { authorTeamId, owner:githubOwner, url, author: authorGH.username })
-                    })
-                  else
-                    return verboseErrorCB(cb, e5, 'setupPostRepo.addFile', `${repoName} post.md`)
-                }
-                if (logging) $log(`Added     post.md to ${fullRepoName}`.yellow)
-                cb(null, repoInfo)
+            gh.createRepoTeam('admin', org, repoName, authorTeamName, 'push', (e3, authorTeamId) => {
+              if (e3) return verboseErrorCB(cb, e3, 'setupPostRepo.createRepoTeam', `${repoName}:${authorTeamName} author team`)
+              if (logging) $log(`Created   team ${authorTeamName} ${authorTeamId}`.yellow)
+              addAndConfirmTeamMember(user, org, authorTeamId, authorGH, (e4, result) => {
+                if (e4) return verboseErrorCB(cb, e4, 'addAndConfirmTeamMember', `${fullRepoName} author team ${authorTeamId} ${authorGH.username}`)
+                if (logging) $log(`Confirmed  ${authorGH.username} as team member of ${authorTeamName}`.yellow)
+                gh.addFile(user, org, repoName, "post.md", "edit", postMD, "Initial Commit", (e5, post) => {
+                  var repoInfo = { url, authorTeamId, authorTeamName, author: authorGH.username }
+                  if (e5) {
+                    if (e5 === "file already exists")
+                      return gh.updateFile(user, org, repoName, "post.md", post.md, "Reinitialize", (e6, post) => {
+                        if (e6) return verboseErrorCB(cb, e6, 'updateFile [reinitialize]', `${repoName} post.md`)
+                        cb(null, { authorTeamId, owner:githubOwner, url, author: authorGH.username })
+                      })
+                    else
+                      return verboseErrorCB(cb, e5, 'setupPostRepo.addFile', `${repoName} post.md`)
+                  }
+                  if (logging) $log(`Added     post.md to ${fullRepoName}`.yellow)
+                  cb(null, repoInfo)
+                })
               })
             })
           })
+
         })
+
     })
   }
 }
+
+for (var fnName of _.keys(gh)) {
+  gh[fnName] = wrap(gh[fnName], fnName)
+}
+
 
 module.exports = gh

@@ -76,7 +76,7 @@ var cfg = {
     libCss: '/styles/libs.css'
   },
   calendar: {
-    on: true,
+    on: false,
     google: {
       ownerRefreshToken: 'setyourenvironentvarible',
       owner: 'setyourenvironentvarible@airpair.com',

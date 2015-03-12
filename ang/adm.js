@@ -33,9 +33,7 @@ require('./adm/orders/module.js');
 require('./adm/companys/module.js');
 require('./adm/pipeline/module.js');
 require('./adm/bookings/module.js');
-require('./adm/chat/module.js');
 require('./matchmaking/module.js');
-require('./common/directives/chatNav.js');
 
 angular.module('ADM', [
   'ngRoute', 'ui.bootstrap.datetimepicker', 'APViewData',
@@ -49,8 +47,7 @@ angular.module('ADM', [
   'ADMOrders',
   'ADMBookings',
   'ADMCompanys',
-  'APMatchmaking',
-  'ADMChat', 'APChatNav'
+  'APMatchmaking'
   ])
 
   .config(function($locationProvider, $routeProvider) {
@@ -63,10 +60,10 @@ angular.module('ADM', [
     $rootScope.session.primaryPayMethodId='adm';
     SessionService.onAuthenticated( (session) => {});
 
-    $rootScope.$on('$routeChangeSuccess', function() {
-      var path = $location.path()
-      $('#chat').toggle(path.indexOf('orders') == -1 && path.indexOf('bookings') == -1)
-    })
+    // $rootScope.$on('$routeChangeSuccess', function() {
+      // var path = $location.path()
+      //$('#chat').toggle(path.indexOf('orders') == -1 && path.indexOf('bookings') == -1)
+    // })
   })
 
   .factory('ServerErrors', function serverErrorsFactory($rootScope, $location) {

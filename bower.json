@@ -15,7 +15,6 @@
     "animate.css": "~3.2.0",
     "angular-bootstrap-datetimepicker": "0.3.8",
     "moment-timezone": "~0.2.5",
-    "firebase": "~2.1.0",
     "angular-moment": "~0.9.0",
     "angular-scroll-glue": "~2.0.3",
     "angular-ui-ace": "~0.2.3"

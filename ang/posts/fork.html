@@ -40,7 +40,7 @@
     <div ng-if="repoAuthorized" class="forkRepo">
       <hr />
 
-      <img src="{{post.by.avatar}}?s=60" class="user" />
+      <img ng-src="{{post.by.avatar}}?s=60" class="user" />
       <h4 style="margin-bottom:0">{{post.title}}</h4><label>by {{ post.by.name }}</label>
       <a ng-href="/posts/me?fork={{post._id}}" class="btn" target="_self">Fork Post</a>
       <p>* Your open source fork will appear at {{post.submit.owner}}/{{post.submit.slug}}</p>

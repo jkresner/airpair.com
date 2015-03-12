@@ -76,7 +76,7 @@ module.exports = mongoose.model('Expert', new Schema({
   userId:         { unique: true, required: true, type: ObjectId, ref: 'User' },
 
   lastTouch:      Shared.Touch,
-  actvity:        [Shared.Touch],
+  activity:       [Shared.Touch],
 
   rate:           Number,
   brief:          String,
