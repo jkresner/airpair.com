@@ -306,7 +306,15 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
       timer = $timeout(previewMarkdown, $scope.throttleMS)
   }
 
-  DataService.posts.getByIdEditing({_id}, setPostScope, (e) => $scope.editErr = e)
+  DataService.posts.getByIdEditing({_id}, setPostScope,
+    (e) =>  {
+      $scope.returnTo = window.location.pathname
+      if (e.message && e.message.indexOf('Bad credentials'))
+        $scope.credentialsErr = e
+      else
+        $scope.editErr = e
+    }
+  )
 
 })
 

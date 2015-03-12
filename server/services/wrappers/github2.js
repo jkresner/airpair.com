@@ -90,6 +90,8 @@ var gh = {
 
   getScopes(user, cb){
     api.user.get({}, (e, r) => {
+      if (e && e.message.indexOf('Bad credentials') != -1)
+        e = Error("GitHub token auth failed")
       if (e) return verboseErrorCB(cb, e, 'checkScopes', `${user.social.gh.username}`)
       cb(null, { github: r.meta['x-oauth-scopes'].split(/,\W*/) })
     })
