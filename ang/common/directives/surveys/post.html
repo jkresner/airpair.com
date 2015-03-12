@@ -16,7 +16,7 @@
 
   <div ng-if="session._id" class="question paragraph" data-key="feedback" form-group>
     <label class="control-label" for="postFeedback" style="display:none">Overall comment</label>
-    <textarea form-control id="postFeedback" name="feedback" ng-model="data.feedback"  placeholder="Why did you give this post {{data.rating}} stars?" required tabindex="1204" ng-disabled="!data.rating"></textarea>
+    <textarea textarea-grow form-control id="postFeedback" name="feedback" ng-model="data.feedback"  placeholder="Why did you give this post {{data.rating}} stars?" required tabindex="1204" ng-disabled="!data.rating"></textarea>
     <div class="error" ng-if="formGroup.showError(postReviewForm.feedback)" ng-messages="postReviewForm.feedback.$error">
       <div ng-message="required">Feedback required</div>
     </div>

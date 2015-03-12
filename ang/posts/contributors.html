@@ -14,7 +14,7 @@
 <section ng-if="post" id="postcontributors">
 
   <article class="blogpost">
-    <h1 class="entry-title" itemprop="headline">{{post.title}}</h1>
+    <h1 class="entry-title" itemprop="headline"><a href="{{post.url}}" target="_blank">{{post.title}}</a></h1>
   </article>
 
   <section ng-if="post.submitted && !post.published" class="notifications">
@@ -89,7 +89,7 @@
       <ul class="pullRequests" ng-if="post.pullRequests">
         <li ng-repeat="pr in post.pullRequests">
           <a href="{{pr.html_url}}" target="_blank">
-            <img src="{{pr.user.avatar_url}}&s=36" />
+            <img ng-src="{{pr.user.avatar_url}}&s=36" />
             <label>{{pr.title}}</label>
             <time>#{{pr.number}} {{pr.created_at | agoTime }} by {{pr.user.login}}</time>
           </a>

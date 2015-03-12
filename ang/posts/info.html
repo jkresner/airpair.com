@@ -36,8 +36,8 @@
         <textarea ng-model="post.by.bio" type="text" class="form-control"></textarea>
       </div>
       <div class="form-group">
-        <label>Title</label>
-        <input ng-model="post.title" type="text" class="form-control" placeholder="Type post title ..." />
+        <label>Post title <i>you'll be able to change it later</i></label>
+        <input ng-model="post.title" type="text" class="form-control" placeholder="Type post title..." ng-focus="clearDefaultTitle()" />
       </div>
       <div ng-if="post._id">
 

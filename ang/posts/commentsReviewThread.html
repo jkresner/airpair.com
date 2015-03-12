@@ -41,7 +41,7 @@
       <p>{{reply.comment}}</p>
     </li>
   </ul>
-  <textarea class="form-control" ng-if="replyOpen"
+  <textarea textarea-grow class="form-control" ng-if="replyOpen"
     ng-keypress="($event.which === 13)?sendReply(r._id, reply):0"
     ng-model="reply"></textarea>
 </footer>

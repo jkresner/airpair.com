@@ -238,7 +238,7 @@ password = ->
     it 'Try to request password change multiple, and set a new local password', (done) ->
       new_password = 'chessmac'
       spy = sinon.spy(mailman,'sendChangePasswordEmail')
-      SETUP.addAndLoginLocalUser 'arys', (user) ->
+      SETUP.addAndLoginLocalUser 'rpor', (user) ->
         db.readUser user._id, (eeee,rrrr) ->
           expect(rrrr.local.changePasswordHash).to.be.undefined
           PUT '/users/me/password-change', {email: user.email}, {}, ->

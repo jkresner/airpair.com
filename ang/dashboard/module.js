@@ -18,11 +18,11 @@ angular.module("APDashboard", ['APFilters', 'APSvcSession',
   SessionService.onAuthenticated(function() {
     if (!$scope.session._id) $location.path(`/about`)
 
-    if ($scope.session.tags && $scope.session.tags.length > 0) {
+    // if ($scope.session.tags && $scope.session.tags.length > 0) {
       // DataService.experts.getForDashboard({}, function(r) {
       //   $scope.experts = r
       // })
-    }
+    // }
   })
 
   $scope.posts = { newest: [StaticDataService.getNewestPost()] }
@@ -46,20 +46,15 @@ angular.module("APDashboard", ['APFilters', 'APSvcSession',
 .directive('dashboardStack', function() {
   return { template: require('./stack.html') }
 })
-
-
 .directive('dashboardBookmarks', function() {
   return { template: require('./bookmarks.html') }
 })
-
 .directive('dashboardPosts', function() {
   return { template: require('./posts.html') }
 })
-
 .directive('dashboardExperts', function() {
   return { template: require('./experts.html') }
 })
-
 .directive('dashboardRequests', function() {
   return {
     restrict: 'E',

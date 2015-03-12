@@ -16,11 +16,7 @@ require('./../public/lib/ace-builds/src-min-noconflict/ace.js');
 require('./../public/lib/angular-ui-ace/ui-ace.js');
 require('./../public/lib/ace-builds/src-min-noconflict/ext-language_tools.js');
 require('./../public/lib/ace-builds/src-min-noconflict/mode-markdown.js');
-// require('./../public/lib/ace-builds/src-min-noconflict/theme-solarized_light.js');
 require('./../public/lib/ace-builds/src-min-noconflict/theme-dawn.js');
-require('../public/lib/firebase/firebase.js');
-require('./chat/core.js');
-require('./chat/app.js');
 require('./common/models/viewDataService.js');
 require('./common/models/sessionService.js');
 require('./common/models/dataService.js');
@@ -35,7 +31,6 @@ require('./common/directives/share.js');
 require('./common/directives/posts.js');
 require('./common/directives/experts.js');
 require('./common/directives/sideNav.js');
-require('./common/directives/chatNav.js');
 require('./common/directives/bookmarker.js');
 require('./common/directives/analytics.js');
 require('./common/directives/payment.js');
@@ -66,86 +61,84 @@ angular.module("AP", ['ngRoute', 'ngAnimate',
   'APViewData', 'APSvcSession', 'APDataSvc', 'APSvcStatic',
   'APCTAs', 'APAnalytics', 'APNotifications', 'APBookmarker',
   'APProfileDirectives', 'APPostsDirectives', 'APSurveyDirectives',
-  'APSideNav', 'APChatNav', 'chat-widget',
+  'APSideNav',
   'APAuth', 'APPosts', 'APWorkshops', 'APProfile', 'APBilling',
   'APRequests','APBookings', 'APDashboard'])
 
-  .config(function($locationProvider, $routeProvider) {
+.config(function($locationProvider, $routeProvider) {
 
-    $locationProvider.html5Mode(true);
+  $locationProvider.html5Mode(true);
 
-    $routeProvider.when('/v1', {
-      template: require('./home.html')
+  $routeProvider.when('/v1', {
+    template: require('./home.html')
+  });
+
+  $routeProvider.when('/about', {
+    template: require('./sales/about.html')
+  });
+
+  $routeProvider.when('/learn', {
+    template: require('./learn.html')
+  });
+
+  // $routeProvider.when('/angularjs/pair-programming', {
+  //   template: require('./sales/angular.html')
+  // });
+
+  if (angular.element('#serverTemplate').length > 0)
+  {
+    // '/c++/posts/preparing-for-cpp-interview'
+    window.initialLocation = window.location.pathname.toString().replace(/\+/g,"\\\+");
+    $routeProvider.when(initialLocation, {
+      template: angular.element('#serverTemplate').html(),
+      controller: 'ServerTemplateCtrl'
     });
+  }
+})
 
-    $routeProvider.when('/about', {
-      template: require('./sales/about.html')
-    });
+.run(($rootScope, $location, PageHlpr, Notifications) => {
 
-    $routeProvider.when('/learn', {
-      template: require('./learn.html')
-    });
-
-    // $routeProvider.when('/angularjs/pair-programming', {
-    //   template: require('./sales/angular.html')
-    // });
-
-    if (angular.element('#serverTemplate').length > 0)
-    {
-      // '/c++/posts/preparing-for-cpp-interview'
-      window.initialLocation = window.location.pathname.toString().replace(/\+/g,"\\\+");
-      $routeProvider.when(initialLocation, {
-        template: angular.element('#serverTemplate').html(),
-        controller: 'ServerTemplateCtrl'
-      });
+  $rootScope.$on('$routeChangeSuccess', function() {
+    if ($location.path().indexOf(window.initialLocation) == -1) {
+      window.trackRoute($location.path(),$location.search());
+      window.scrollTo(0,0)
     }
-  })
+    else if (!window.initialLocation) window.scrollTo(0,0)
 
-  .run(function($rootScope, $location, PageHlpr, Notifications) {
+    $rootScope.serverErrors = [];
+    $rootScope.notifications = Notifications.calculateNextNotification()
+  });
 
-    $rootScope.$on('$routeChangeSuccess', function() {
-      if ($location.path().indexOf(window.initialLocation) == -1) {
-        window.trackRoute($location.path(),$location.search());
-        window.scrollTo(0,0)
-      }
-      else if (!window.initialLocation) window.scrollTo(0,0)
+  PageHlpr.fixNavs('#side') //,#chat'
+})
 
-      $rootScope.serverErrors = [];
-      $rootScope.notifications = Notifications.calculateNextNotification()
-    });
+.factory('ServerErrors', function serverErrorsFactory($rootScope) {
+  this.add = (e) => {
+    $rootScope.serverErrors = []
+    if (e) $rootScope.serverErrors = _.union($rootScope.serverErrors, [e.message])
+    else $rootScope.serverErrors = _.union($rootScope.serverErrors, ["An error occured"])
+  }
+  this.remove = (msg) => $rootScope.serverErrors = _.without($rootScope.serverErrors, msg)
 
-    PageHlpr.fixNavs('#side,#chat');
-  })
+  return this;
+})
 
-  .factory('ServerErrors', function serverErrorsFactory($rootScope) {
-    this.add = (e) => {
-      $rootScope.serverErrors = []
-      if (e) $rootScope.serverErrors = _.union($rootScope.serverErrors, [e.message])
-      else $rootScope.serverErrors = _.union($rootScope.serverErrors, ["An error occured"])
-    }
-    this.remove = (msg) => $rootScope.serverErrors = _.without($rootScope.serverErrors, msg)
+.factory('Shared', function sharedFactory() {
+  var shared = {
+    util: require('../shared/util.js'),
+    roles: require('../shared/roles.js')
+  }
+  _.idsEqual = shared.util.idsEqual
+  return shared;
+})
 
-    return this;
-  })
+.controller('ServerTemplateCtrl', ($scope, ViewData, SessionService, RequestHelper, PageHlpr) => {
+  PageHlpr.loadPoSt();
+  PageHlpr.highlightSyntax({ addCtrs: true });
+  PageHlpr.fixPostRail();
+  if ($scope.viewData && angular.element('#disqus_thread').length>0)
+    PageHlpr.loadDisqus($scope.viewData.canonical);
 
-  .factory('Shared', function sharedFactory() {
-    var shared = {
-      util: require('../shared/util.js'),
-      roles: require('../shared/roles.js')
-    }
-    _.idsEqual = shared.util.idsEqual
-    return shared;
-  })
+  RequestHelper.setRequestTagsFromSession($scope)
 
-  .controller('ServerTemplateCtrl', function($scope, ViewData, SessionService, RequestHelper, PageHlpr) {
-    PageHlpr.loadPoSt();
-    PageHlpr.highlightSyntax({ addCtrs: true });
-    PageHlpr.fixPostRail();
-    if ($scope.viewData && angular.element('#disqus_thread').length>0)
-      PageHlpr.loadDisqus($scope.viewData.canonical);
-
-    RequestHelper.setRequestTagsFromSession($scope)
-
-  })
-
-;
+})

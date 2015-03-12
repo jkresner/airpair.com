@@ -70,7 +70,7 @@
     "lodash": "^2.4.1",
     "marked": "^0.3.2",
     "moment": "2.8.4",
-    "mongoose": "^3.8.18",
+    "mongoose": "^3.8.24",
     "node-google-timezone": "0.0.2",
     "passport": "^0.2.1",
     "passport-angellist": "^0.1.2",

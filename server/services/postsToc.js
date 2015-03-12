@@ -171,7 +171,7 @@ export default function(content, maxHeaderNo) {
 
   var headers = getHashedHeaders(lines)
     .concat(getUnderlinedHeaders(lines))
-    .concat(getHtmlHeaders(lines, maxHeaderNo))
+    // .concat(getHtmlHeaders(lines, maxHeaderNo)) // stop rending heading inside code examples
 
   headers.sort(function (a, b) {
     return a.line - b.line;
