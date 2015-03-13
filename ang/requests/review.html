@@ -5,7 +5,7 @@
   </ol>
 </header>
 
-<section id="review" class="{{reviewClass}}">
+<section ng-if="r" id="review" class="{{reviewClass}}">
 
   <section id="info">
     <h5>{{ r.title || 'Spec' }}</h5>
@@ -48,7 +48,7 @@
 
     <div form-group ng-if="data.expertStatus == 'available'">
       <label for="expertAvailabilityTxt">Availability</label>
-      <textarea form-control id="expertAvailabilityTxt" name="expertAvailability" ng-model="data.expertAvailability"></textarea>
+      <textarea form-control id="expertAvailabilityTxt" name="expertAvailability" ng-model="data.expertAvailability" required></textarea>
       <div class="error" ng-if="formGroup.showError(replyForm.expertAvailability)" ng-messages="replyForm.expertAvailability.$error">
       </div>
     </div>
