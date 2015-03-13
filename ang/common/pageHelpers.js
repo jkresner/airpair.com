@@ -169,20 +169,21 @@ angular.module("APPageHelpers", [])
     if ($('.railMarker').length == 0) return
 
     var scrollingOn = $(document).width() > 900;
-    var offsetLeft = $('.railMarker').offset().left - 212;
-    var offset = $('.railMarker').offset().top;
-    var shareHeight = $('.share').height() + 20;
-    var cta1Height = $('.rail1CTA').height() + 20;
-    var tocH3Height = 50;
 
-    $('.share').css('position', 'fixed').css('left', offsetLeft);
-    $('.rail1CTA').css('position', 'fixed').css('left', offsetLeft);
-    $('#table-of-contents').css('position', 'fixed').css('left', offsetLeft);
-    $('#table-of-contents + ul').css('position', 'fixed').css('left', offsetLeft);
-
-    // console.log('scrollingOnr', offset)
+    // console.log('scrollingOnr', scrollingOn, offset)
     if (scrollingOn)
     {
+      var offsetLeft = $('.railMarker').offset().left - 212;
+      var offset = $('.railMarker').offset().top;
+      var shareHeight = $('.share').height() + 20;
+      var cta1Height = $('.rail1CTA').height() + 20;
+      var tocH3Height = 50;
+
+      $('.share').css('position', 'fixed').css('left', offsetLeft);
+      $('.rail1CTA').css('position', 'fixed').css('left', offsetLeft);
+      $('#table-of-contents').css('position', 'fixed').css('left', offsetLeft);
+      $('#table-of-contents + ul').css('position', 'fixed').css('left', offsetLeft);
+
       if (window.scrollY < offset)
       {
         $('.share').css('top', offset - window.scrollY);
@@ -201,7 +202,6 @@ angular.module("APPageHelpers", [])
     else
     {
       $('.railBookmarkCTA').hide()
-      $('.share').hide()
       // if (window.scrollY < (offset + 100)) {
         // $('.rail1CTA').css('top', offset+10 - window.scrollY);
         // $('.rail1CTA').toggle(true)

@@ -123,7 +123,11 @@ section.notifications {
   .share {
     .rail;
     margin:14px 0;
-    top:0;
+    // top:0;
+    .pw-size-medium .pw-icon {
+      background-image: url(../img/icons/set-24@2x.png);
+      background-size:100%;
+    }
   }
 
   #table-of-contents {
@@ -253,6 +257,8 @@ section.notifications {
     .railCTA { margin:auto;float:none;display:block; }
     .rail1CTA { margin:auto;float:none;display:block;position:fixed }
 
+    .book-cta { display: none }
+
     .bodyCTA {
       margin:auto;
       width:90%;
@@ -263,9 +269,11 @@ section.notifications {
     #table-of-contents + ul { display:none;float:left;clear:left; }
     .author { float:none }
     figure { clear:both;padding-top:20px }
+    pre + footer { display:none }
   }
 
   @media only screen and (max-width:640px) {
+    padding:1px;
     p { padding:2px 5px 2px 5px;font-size:14px;line-height:22px }
     iframe { width:100%;position:relative;left:0 }
     > h1 { font-size:28px;line-height:30px;text-align:center;margin-top:20px }
@@ -285,20 +293,27 @@ section.notifications {
     }
     .author > img { width:60px;height:60px; }
     .author > figcaption { width:75%;float:right;height:inherit; }
+
+
+    .share {
+      position:fixed!important;
+      bottom:0!important;
+      top:none!important;
+      left:none!important;
+      right:30px!important;
+      background:@lightblue;
+      padding:8px 1px;
+      height:40px!important;
+      width:180px!important;
+      margin:0!important;
+      z-index:2;
+      opacity:0.9;
+      border-top-left-radius:10px;
+      border-top-right-radius:10px;
+      .ra1-pw-icon-reddit { display:none!important }
+    }
+
   }
-
-  //  .workshop-cta {
-  //   max-width:640px;
-  //   background-color:#dff2ef;
-  //   padding:18px;
-  //   color:black;
-  //   border-top-right-radius:4px;
-  //   border-bottom-right-radius:4px;
-  //   border-left:solid 6px #ce5424;
-
-  //   b { display:block;color:@blue;text-transform:uppercase;padding-bottom:4px }
-  //   a { display:block;font-weight:bold;padding-top:8px;font-size:18px }
-  // }
 }
 
 #disqus_thread {
@@ -318,6 +333,7 @@ section.notifications {
     text-align:center;
     padding:15px;
     margin:15px 0;
+    a { margin-bottom:8px!important }
   }
 }
 
@@ -395,4 +411,46 @@ section.notifications {
 
 #posts.similar.afterdisqus {
   margin-top:-150px;
+}
+
+
+@media only screen and (max-width:640px) {
+  .postfooter {
+    hr { clear:both }
+    height:inherit;
+    width:98%;
+    padding:5px 8px 50px 5px;
+    h5 { text-align:center;font-size:12px }
+    .tags {
+      li { width:80%;margin:5px auto;display:block }
+    }
+
+    .similar {
+      height:inherit;
+      padding-bottom:0px;
+      article { margin:20px auto;display:block }
+    }
+  }
+
+  .requestForm { display:none }
+
+  #reviews {
+    max-width:100%;
+    position:normal;
+    .reviewsthread { padding:0 8px 0 3px; }
+    ul.reviews > li {
+      p { margin-bottom:5px;overflow:hidden; }
+      label { margin-bottom:0px }
+      padding-left:37px;
+      time { display:block }
+      ul.replies {
+        margin-left:-14px;
+        li {
+          padding-left:37px;
+          p { font-size:12px; }
+        }
+      }
+    }
+    img.user { width:30px;height:30px }
+  }
 }
