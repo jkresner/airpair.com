@@ -9,7 +9,7 @@ var github2               = require("../services/wrappers/github2")
 var Data                  = require('./posts.data')
 var {query, select, opts} = Data
 var selectCB              = select.cb
-var {selectFromObject}    = require('../../shared/util')
+var {selectFromObject,getYouTubeThumb} = require('../../shared/util')
 var PostsUtil             = require('../../shared/posts')
 var Roles                 = require('../../shared/roles').post
 
@@ -286,6 +286,13 @@ function updateWithEditTouch(post, action, cb) {
   }
   else
     post.editHistory.push(post.lastTouch)
+
+  // Only set the thumb is the ogImage is still the movie, we want to let it
+  // be customized even though the main assetUrl is a youtube movie
+  if (post.meta && post.assetUrl.indexOf('http://youtu.be/') != -1
+    && post.meta.ogImage == post.assetUrl)
+    post.meta.ogImage = getYouTubeThumb(post.assetUrl)
+
   svc.update(post._id, post, cb)
 }
 

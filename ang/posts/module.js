@@ -109,12 +109,12 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
         if (toForkId)
         {
           $scope.forked = _.find(forks, (f) => toForkId == f._id)
-          // if (!$scope.forked)  //-- sometimes wew just want to refork it...
+          // if (!$scope.forked)  //-- sometimes we just want to refork it...
           DataService.posts.addForker({_id:$location.search().fork}, function (forked) {
             if (!$scope.forked) {
               $scope.forked = forked
-              $scope.all = _.union($scope.all, [forked])
-              $scope.forks = _.union($scope.forks, [forked])
+              $scope.all = _.union([forked], $scope.all)
+              $scope.forks = _.union([forked], $scope.forks)
               $scope.filterMyPosts($scope.filter)
             }
           })
@@ -390,21 +390,6 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
     };
     $scope.data.by = $scope.post.by
   }
-
-  // if (r.assetUrl)
-  // {
-  //   if (r.assetUrl.indexOf('http://youtu.be/') == 0) {
-  //     var youTubeId = r.assetUrl.replace('http://youtu.be/','')
-  //     r.meta.ogImage = `https://img.youtube.com/vi/${youTubeId}/hqdefault.jpg`
-  //   }
-  // }
-    //   $scope.post.meta.ogImage = value;
-    // if (value.indexOf('http://youtu.be/') == 0) {
-    //   var youTubeId = value.replace('http://youtu.be/','');
-    //   $scope.post.meta.ogImage = `https://img.youtube.com/vi/${youTubeId}/hqdefault.jpg`;
-    // }
-
-
 
   var setScope = (r) => {
     var isAdmin =  _.contains($scope.session.roles, 'admin')
