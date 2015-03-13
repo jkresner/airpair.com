@@ -111,8 +111,6 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
     $scope.isCustomer = Shared.roles.request.isCustomer($scope.session,r)
     $scope.replies = _.where(r.suggested,(s)=>s.expertComment!=null)
 
-    if (r.status == 'canceled' || r.status == 'completed')
-      $scope.reviewClass = 'inactive'
     // console.log('$scope.session.primaryPayMethodId', $scope.session.primaryPayMethodId)
 
     if ($scope.isCustomer) { // || $scope.isAdmin
@@ -125,6 +123,9 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
     }
     else
     {
+      if (r.status == 'canceled' || r.status == 'complete')
+        $scope.reviewClass = 'inactive'
+
       if (r.status == 'booked')
         $scope.reviewClass = 'inactive booked'
 
