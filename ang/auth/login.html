@@ -9,7 +9,7 @@
 <p ng-if="!session._id">New to AirPair? <o>Login with google below or <b><a id="loginSignupTop" track-click="signup" ng-click="openProfile()">create an account</a></b> using an email and password.</p>
 
 
-<p ng-if="session._id"><br /><br />You are logged in as {{ session.email }}. <br /><br />Want to <a href="/v1/auth/logout">Logout</a>?</p>
+<p ng-if="session._id"><br /><br />You are logged in as {{ session.email }}. <br /><br />Want to <a href="/v1/auth/logout" target="_self">Logout</a>?</p>
 
 
 <div class="choice" ng-if="!session._id">
