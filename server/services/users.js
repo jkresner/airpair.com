@@ -206,12 +206,19 @@ var save = {
   //-------- User Info
 
   setExpertCohort(expertId) {
-    var exCo = this.user.cohort.expert || {}
-    exCo.applied = exCo.applied || new Date
-    this.user.cohort.expert = _.extend(exCo, {_id:expertId})
+    // Not sure how cohort can be null, but it's happened
+    if (!this.user.cohort)
+      this.user.cohort = {}
 
-    User.findOneAndUpdate({_id:this.user._id},
-      { $set: { cohort: this.user.cohort } }, ()=>{})
+    if (!this.user.cohort.expert || this.user.cohort.expert._id != expertId)
+    {
+      var exCo = this.user.cohort.expert || {}
+      exCo.applied = exCo.applied || new Date // When they went through v1 signup
+      this.user.cohort.expert = _.extend(exCo, {_id:expertId})
+
+      User.findOneAndUpdate({_id:this.user._id},
+        { $set: { cohort: this.user.cohort } }, ()=>{})
+    }
   },
 
   changeBio(bio, cb) {

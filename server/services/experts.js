@@ -175,8 +175,7 @@ var save = {
     ups.user = selectFromObject(this.user, select.userCopy)
     var expert = selectFromObject(_.extend(original,ups), select.updateMe)
     $callSvc(updateWithTouch, this)(expert, 'update', trackData, selectCB.me(cb))
-    if (!this.user.cohort.expert || this.user.cohort.expert._id != ups._id)
-      $callSvc(UserSvc.setExpertCohort, this)(ups._id)
+    $callSvc(UserSvc.setExpertCohort, this)(ups._id)
   },
 
   updateMatchingStats(expertId, request, cb) {
