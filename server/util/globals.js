@@ -41,6 +41,7 @@ module.exports = function(config)
   {
     global.paypal      = require('paypal-rest-sdk')
     global.Braintree   = require('../services/wrappers/braintree')
+    global.Timezone    = require('node-google-timezone')
   }
 
 }
