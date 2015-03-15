@@ -20,13 +20,16 @@ describe 'Server: '.appload, ->
   @timeout(4000)
 
   before (done) ->
+    @timeout(10000)
     global.logging    = false
-    global.data       = require('./../data/data')
     global.SETUP      = require('./setup/_setup')
+    global.ObjectId   = SETUP.ObjectId
     global.timeSeed   = SETUP.timeSeed
     global.newId      = SETUP.newId
+    global.data       = require('./../data/data')
     global.app        = require('../../index').run()
     testHttpHelpers.init(app)
+    global.stubs      = timezone: SETUP.stubGoogleTimezone()
     setTimeout(( -> SETUP.init(done) ), 100)
 
 

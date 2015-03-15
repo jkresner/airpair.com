@@ -4,6 +4,8 @@ var {ObjectId}                = require('mongoose').Types
 
 var dataHelpers = {
 
+  ObjectId,
+
   newId: () => new ObjectId(),
 
   timeSeed: () => moment().format('X'),

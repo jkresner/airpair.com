@@ -7,7 +7,7 @@ import BaseSvc      from '../services/_service'
 var svc             = new BaseSvc(User, logging)
 var cbSession       = Data.select.cb.session
 var github          = require("./wrappers/github2")
-var Timezone        = require('node-google-timezone')
+var Timezone        = global.Timezone || require('node-google-timezone')
 Timezone.key(config.timezone.google.apiKey)
 
 

@@ -232,7 +232,7 @@ module.exports = {
   },
 
 
-  locationlization_melbourne : {
+  localization_melbourne : {
     "location" : "Melbourne VIC, Australia",
     "locationData" : {
       "formatted_address": "Melbourne VIC, Australia",
@@ -271,5 +271,20 @@ module.exports = {
         "timeZoneName" : "Australian Eastern Standard Time"
     }
   },
+
+
+  timezone_melbourne : { options:
+     { location: '-37.8142155,144.9632306999999',
+       timestamp: 1402629305,
+       language: 'en',
+       key: 'AIzaSyANXimipzhyZ-Mp2_RrzjKKp4nXq5VpMGk' },
+    raw_response:
+     { dstOffset: 0,
+       rawOffset: 36000,
+       status: 'OK',
+       timeZoneId: 'Australia/Hobart',
+       timeZoneName: 'Australian Eastern Standard Time' },
+    local_timestamp: 1402665305
+  }
 
 }
