@@ -3,7 +3,7 @@ global.cookie               = null //-- used for maintaining login
 global.cookieCreatedAt      = null
 var hlpr                    = {}
 var {uaFirefox}             = require('../../data/http')
-var UserData                = require('../../../server/services/users.data')
+var {sessionFromUser}       = require('../../../server/services/users.data').select
 var {ObjectId2Moment}       = require('../../../shared/util')
 
 
@@ -42,8 +42,7 @@ var session = {
   {
     if (logging) $log('LOGIN:', `/test/setlogin/${userKey}`)
 
-    data.sessions[userKey] =
-      UserData.select.sessionFromUser(data.users[userKey])
+    data.sessions[userKey] = sessionFromUser(data.users[userKey])
 
     if (logging) $log(`login.data.sessions[${userKey}]`, data.sessions[userKey])
 

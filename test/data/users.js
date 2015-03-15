@@ -98,6 +98,7 @@ module.exports = {
   mfly: { name: "Michael Flynn", email: "michael.flynn@hotmail.com"},
   mfln: { name: "Michael Flynn", email: "michael.flynn@gmail.com"},
   mikf: { name: "Michael Flynn", email: "michael.flynn@test.com"},
+  mify: { name: "Michael Flynn", email: "michael.mify@test.com"},
   pcor: { name: "Peter Corcoran", email: "peter.corcoran@test.com"},
   peco: { name: "Peter Corcoran", email: "peter.corcoran@hotmail.com"},
   petc: { name: "Peter Corcoran", email: "peter.corcoran@live.com"},
@@ -244,8 +245,9 @@ module.exports = {
 
 
   dros :{
-    "_id" : "52cd929666a6f999a465fee8",
+    "_id" : ObjectId("52cd929666a6f999a465fee8"),
     "email": "daniel@roseman.org.uk",
+    "name": "Daniel Roseman",
     "github" : {
         "provider" : "github",
         "id" : 131395,
@@ -528,7 +530,7 @@ module.exports = {
 
   abha: {
     "__v" : 0,
-    "_id" : "53336a211c67d1a4859d2a04",
+    "_id" : ObjectId("53336a211c67d1a4859d2a04"),
     "cohort" : {
         "engagement" : {
             "visit_first" : "2014-03-27T00:00:33.000Z",
@@ -612,7 +614,7 @@ module.exports = {
 
 
   tmot: {
-    "_id" : "527280b766a6f999a465fa9e",
+    "_id" : ObjectId("527280b766a6f999a465fa9e"),
     "__v" : 0,
     "email" : "todd@toddmotto.com",
     "emailVerified" : false,
@@ -866,7 +868,7 @@ module.exports = {
   },
 
   admb: {
-    "_id" : "51a6c65e66a6f999a465f30b",
+    "_id" : ObjectId("51a6c65e66a6f999a465f30b"),
     "email" : "abliss@gmail.com",
     "emailVerified" : true,
     "github" : {
@@ -984,7 +986,7 @@ module.exports = {
   },
 
   dces: {
-    "_id" : "5359bd0e1c67d1a4859d2f74",
+    "_id" : ObjectId("5359bd0e1c67d1a4859d2f74"),
     "email" : "dcestari@gmail.com",
     "emailVerified" : true,
     "google" : {
@@ -1346,6 +1348,98 @@ module.exports = {
         }
     },
     "bio" : "yo yyoy o"
-}
+  },
+
+
+  asv0: {
+    "_id" : ObjectId("52f225771c67d1a4859d2060"),
+    "email": "awaghad.ashish@gmail.com",
+    "name": "Ashish Awaghad",
+    "github" : {
+        "provider" : "github",
+        "id" : 946298,
+        "displayName" : "Ashish Awaghad",
+        "username" : "difficultashish",
+        "profileUrl" : "https://github.com/difficultashish",
+        "emails" : [ { "value" : "difficult.ashish@gmail.com" } ],
+        "_json" : {
+            "login" : "difficultashish",
+            "id" : 946298,
+            "avatar_url" : "https://gravatar.com/avatar/184ae3916a71beaed65a418a8141d896?d=https%3A%2F%2Fidenticons.github.com%2F5c62e5e31c7712923c947bb354b4004d.png&r=x",
+            "gravatar_id" : "184ae3916a71beaed65a418a8141d896",
+            "url" : "https://api.github.com/users/difficultashish",
+            "html_url" : "https://github.com/difficultashish",
+            "followers_url" : "https://api.github.com/users/difficultashish/followers",
+            "following_url" : "https://api.github.com/users/difficultashish/following{/other_user}",
+            "gists_url" : "https://api.github.com/users/difficultashish/gists{/gist_id}",
+            "starred_url" : "https://api.github.com/users/difficultashish/starred{/owner}{/repo}",
+            "subscriptions_url" : "https://api.github.com/users/difficultashish/subscriptions",
+            "organizations_url" : "https://api.github.com/users/difficultashish/orgs",
+            "repos_url" : "https://api.github.com/users/difficultashish/repos",
+            "events_url" : "https://api.github.com/users/difficultashish/events{/privacy}",
+            "received_events_url" : "https://api.github.com/users/difficultashish/received_events",
+            "type" : "User",
+            "site_admin" : false,
+            "name" : "Ashish Awaghad",
+            "company" : "Profyle Inc.",
+            "blog" : "http://sg.linkedin.com/in/ashishawaghad",
+            "location" : "Singapore",
+            "email" : "difficult.ashish@gmail.com",
+            "hireable" : false,
+            "bio" : null,
+            "public_repos" : 3,
+            "public_gists" : 0,
+            "followers" : 3,
+            "following" : 3,
+            "created_at" : "2011-07-29T08:18:27Z",
+            "updated_at" : "2014-01-23T08:59:10Z"
+        },
+        "token" : {}
+    },
+    "githubId" : 946298,
+    "google" : {
+        "provider" : "google",
+        "id" : "111147914006775875722",
+        "displayName" : "LittleGlobal Ville",
+        "name" : { "familyName" : "Ville", "givenName" : "LittleGlobal" },
+        "emails" : [ { "value" : "lilglobalvillage@gmail.com" }],
+        "_json" : {
+            "id" : "111147914006775875722",
+            "email" : "lilglobalvillage@gmail.com",
+            "verified_email" : true,
+            "name" : "LittleGlobal Ville",
+            "given_name" : "LittleGlobal",
+            "family_name" : "Ville",
+            "link" : "https://plus.google.com/111147914006775875722",
+            "picture" : "https://lh6.googleusercontent.com/-HkGi-VCq1_4/AAAAAAAAAAI/AAAAAAAAABY/QNLdrW9UOZc/photo.jpg",
+            "gender" : "male",
+            "locale" : "en"
+        },
+        "token" : {}
+    },
+    "googleId" : "111147914006775875722",
+    "linkedin" : {
+        "provider" : "linkedin",
+        "id" : "cDNFNcqq-z",
+        "displayName" : "Ashish Awaghad",
+        "name" : {
+            "familyName" : "Awaghad",
+            "givenName" : "Ashish"
+        },
+        "_json" : {
+            "firstName" : "Ashish",
+            "id" : "cDNFNcqq-z",
+            "lastName" : "Awaghad"
+        },
+        "token" : {
+            "token" : "f851af58-d020-4dd6-9df7-46938f421073",
+            "attributes" : {
+                "tokenSecret" : "da19159a-6855-4a78-bb19-45dd575ed817"
+            }
+        }
+    },
+    "linkedinId" : "cDNFNcqq-z",
+    "referrer" : {}
+  }
 
 }

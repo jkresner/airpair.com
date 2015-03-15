@@ -88,15 +88,6 @@ var db = {
     Models.User.findOne({_id:id}, (e,r)=> { r.toObject(); cb(e,r); })
   },
 
-  ensureExpert(userKey, cb) {
-    var user = _.extend({localization:data.wrappers.locationlization_melbourne}, data.users[userKey])
-    var expert = data.experts[userKey]
-    expert.user = user
-    ensureDocument(Models.User, user, () => {
-      ensureDocument(Models.Expert, expert, cb)
-    })
-  },
-
   ensureSettings(user, settings, cb) {
     settings.userId = user._id
     ensureDocument(Models.Settings, settings, cb)

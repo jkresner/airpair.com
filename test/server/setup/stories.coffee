@@ -100,11 +100,16 @@ stories = {
           done(s)
 
 
+  injectOAuthPayoutMethod: (user, providerName,pmKey,cb) ->
+    PaymethodsService.addOAuthPayoutmethod.call({user},
+      providerName, data.paymethods[pmKey],{},(e,r)->cb(r))
+
+
   createNewExpert: (seedKey, expData, done) ->
     userKey = "#{seedKey}#{timeSeed()}"
     username = "#{seedKey}-#{timeSeed()}"
     initials = "ap-#{timeSeed()}"
-    localization = data.wrappers.locationlization_melbourne
+    localization = data.wrappers.localization_melbourne
     bio = "a bio for apexpert 1 #{timeSeed()}"
     user = _.extend({initials,localization,bio}, data.users[seedKey])
     if (user.social)
@@ -123,6 +128,58 @@ stories = {
         d = rate: 70, breif: 'yo', tags: [data.tags.angular]
         POST "/experts/me", d, {}, (expert) ->
           done(s, expert)
+
+
+  newLoggedInExpert: (userKey, done) ->
+    user = dataHelpers.expertUserData(userKey)
+    seedExpert = dataHelpers.expertData(userKey, user)
+    data.users[user.userKey] = user
+    data.experts[user.userKey] = seedExpert
+
+    db.ensureDocs 'User', [user], (e) ->
+      db.ensureDocs 'Expert', [seedExpert], (ee) ->
+        LOGIN user.userKey, (expertSession) ->
+          expertSession.userKey = user.userKey
+          expertSession.expertId = expert._id
+          done(expert, expertSession)
+
+
+  newLoggedInExpertWithPayoutmethod: (userKey, done) ->
+    stories.newLoggedInExpert userKey, (expert, expertSession) ->
+      stories.injectOAuthPayoutMethod expertSession, 'paypal', 'payout_paypal_enus_verified', (payoutmethod) ->
+        done expert, expertSession, payoutmethod
+
+
+  ensureV1LoggedInExpert: (userKey, done) ->
+    user = _.extend({localization:data.wrappers.localization_melbourne}, data.users[userKey])
+    expert = data.experts[userKey]
+    expert.user = user
+    db.ensureDocs 'User', [user], (e) ->
+      db.ensureDocs 'Expert', [expert], (ee) ->
+        LOGIN userKey, (sExpert) ->
+          done sExpert
+
+
+  ensureV0LoggedInExpert: (userKey, done) ->
+    db.ensureDocs 'User', [data.users[userKey]], (e) ->
+      db.ensureDocs 'Expert', [data.experts[userKey]], (ee) ->
+        LOGIN userKey, (sExpert) ->
+          done sExpert
+
+
+  applyToBeAnExpert: (expertData, done) ->
+    expertData.tags = expertData.tags || [data.tags.angular]
+    GET "/experts/me", {}, (meExpert) ->
+      d = _.extend(meExpert, expertData)
+      PUT "/users/me/username", { username: expertData.userKey }, {}, ->
+        PUT "/users/me/initials", { initials: expertData.initials }, {}, ->
+          PUT "/users/me/location", expertData.location || data.wrappers.localization_melbourne.locationData, {}, ->
+            PUT "/users/me/bio", { bio: expertData.bio || 'a bio'}, {}, ->
+              # $log('updating expert'.cyan, meExpert._id, d)
+              if (meExpert._id)
+                PUT "/experts/#{meExpert._id}/me", d, {}, done
+              else
+                POST "/experts/me", d, {}, done
 
 
   createNewPost: (userKey, postData, done) ->
@@ -181,30 +238,6 @@ stories = {
               PUT "/adm/companys/migrate/#{c._id}", {type:'smb'}, {}, (r) ->
                 PUT "/adm/companys/member/#{c._id}", {user:sCompanyMember}, {}, (rCompany) ->
                   done(c._id, pm._id, sCompanyAdmin, sCompanyMember)
-
-
-  newLoggedInExpert: (userKey, done) ->
-    user = dataHelpers.expertUserData(userKey)
-    seedExpert = dataHelpers.expertData(userKey, user)
-    data.users[user.userKey] = user
-    data.experts[user.userKey] = seedExpert
-
-    db.ensureExpert user.userKey, (e,expert) ->
-      LOGIN user.userKey, (expertSession) ->
-        expertSession.userKey = user.userKey
-        expertSession.expertId = expert._id
-        done(expert, expertSession)
-
-
-  injectOAuthPayoutMethod: (user, providerName,pmKey,cb) ->
-    PaymethodsService.addOAuthPayoutmethod.call({user},
-      providerName, data.paymethods[pmKey],{},(e,r)->cb(r))
-
-
-  newLoggedInExpertWithPayoutmethod: (userKey, done) ->
-    stories.newLoggedInExpert userKey, (expert, expertSession) ->
-      stories.injectOAuthPayoutMethod expertSession, 'paypal', 'payout_paypal_enus_verified', (payoutmethod) ->
-        done expert, expertSession, payoutmethod
 
 
   newCompleteRequest: (userKey, requestData, cb) ->
