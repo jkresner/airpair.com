@@ -1,6 +1,7 @@
+
 module.exports = {
 	dros: {
-    "_id" : "52cd93103237b10200000013",
+    "_id" : ObjectId("52cd93103237b10200000013"),
     "availability" : "",
     "bookMe" : {
         "rate" : "160",
@@ -98,7 +99,7 @@ module.exports = {
 	},
 
   tmot : {
-    "_id" : "52728efff7f1d4020000001a",
+    "_id" : ObjectId("52728efff7f1d4020000001a"),
     "availability" : "",
     "bookMe" : {
         "rate" : "250",
@@ -202,12 +203,12 @@ module.exports = {
         "id" : 222638700
     },
     "updatedAt" : "2013-10-31T17:10:23.000Z",
-    "userId" : "527280b766a6f999a465fa9e",
+    "userId" : ObjectId("527280b766a6f999a465fa9e"),
     "username" : "toddmotto"
   },
 
   abha: {
-    "_id" : "532950ab264a24020000001f",
+    "_id" : ObjectId("532950ab264a24020000001f"),
     "availability" : "",
     "bookMe" : {
         "rate" : "220",
@@ -290,12 +291,12 @@ module.exports = {
     ],
     "timezone" : "GMT-0500 (Central Da",
     "updatedAt" : "2014-10-16T04:50:59.701Z",
-    "userId" : "53336a211c67d1a4859d2a04",
+    "userId" : ObjectId("53336a211c67d1a4859d2a04"),
     "username" : "abeisgreat"
   },
 
   admb: {
-    "_id" : "51a6cc55960c490200000006",
+    "_id" : ObjectId("51a6cc55960c490200000006"),
     "__v" : 1,
     "availability" : "",
     "bookMe" : {
@@ -361,7 +362,7 @@ module.exports = {
         }
     },
     "updatedAt" : "2013-05-30T03:49:41.000Z",
-    "userId" : "51a6c65e66a6f999a465f30b",
+    "userId" : ObjectId("51a6c65e66a6f999a465f30b"),
     "username" : "abliss"
   },
 
@@ -877,6 +878,150 @@ module.exports = {
     "updatedAt" : "2014-12-04T16:34:01.094Z",
     "userId" : "527d21f266a6f999a465fb1e",
     "username" : "philfreo"
+  },
+
+
+  asv0: {
+    "__v" : 1,
+    "_id" : ObjectId("52f22c15f9b3140200000072"),
+    "userId" : ObjectId("52f225771c67d1a4859d2060"),
+    "username" : "difficultashish",
+    "availability" : "",
+    "bookMe" : {
+        "rate" : "70",
+        "rake" : "30",
+        "urlSlug" : "difficultashish",
+        "urlBlog" : "",
+        "noIndex" : false,
+        "enabled" : true,
+        "coupons" : [],
+        "creditRequestIds" : []
+    },
+    "brief" : "I'd say I like helping newbies more than solving complex problems mainly because that is what I do in my full time job is solving complex problems. So over here, I would really just like take somebody who has preferably not programmed before and see the joy on their face when they program something for the first time. When they write that if else statement for the first time, and they are delighted to see the result. Or, they have not done iOS before and they see the iOS simulator for the first time and are so glad just to see a button on the simulator that can be clicked.",
+    "email" : "awaghad.ashish@gmail.com",
+    "gh" : {
+        "followers" : 3,
+        "gravatar_id" : "184ae3916a71beaed65a418a8141d896",
+        "blog" : "http://sg.linkedin.com/in/ashishawaghad",
+        "location" : "Singapore",
+        "username" : "difficultashish",
+        "id" : 946298
+    },
+    "gmail" : "awaghad.ashish@gmail.com",
+    "homepage" : "sg.linkedin.com/in/ashishawaghad",
+    "hours" : "5-10",
+    "in" : {
+        "displayName" : "Ashish Awaghad",
+        "id" : "cDNFNcqq-z"
+    },
+    "karma" : 0,
+    "minRate" : 40,
+    "name" : "Ashish Awaghad",
+    "pic" : "//1.gravatar.com/avatar/184ae3916a71beaed65a418a8141d896",
+    "rate" : 70,
+    "stats" : {},
+    "status" : "ready",
+    "tags" : [
+        {
+            "_id" : "514825fa2a26ea020000001b",
+            "name" : "iOS",
+            "short" : "ios",
+            "soId" : "ios",
+            "levels" : [
+                "beginner",
+                "intermediate",
+                "expert"
+            ],
+            "subscription" : {
+                "auto" : [],
+                "custom" : []
+            }
+        },
+        {
+            "_id" : "514825fa2a26ea0200000029",
+            "name" : "Objective-C",
+            "short" : "objectiveC",
+            "soId" : "objective-c",
+            "levels" : [
+                "beginner",
+                "intermediate",
+                "expert"
+            ],
+            "subscription" : {
+                "auto" : [],
+                "custom" : []
+            }
+        },
+        {
+            "_id" : "5181d0ad66a6f999a465f13b",
+            "name" : "objective-c-blocks",
+            "short" : "objective-c-blocks",
+            "soId" : "objective-c-blocks",
+            "levels" : [
+                "beginner",
+                "intermediate",
+                "expert"
+            ],
+            "subscription" : {
+                "auto" : [],
+                "custom" : []
+            }
+        },
+        {
+            "_id" : "5181d0a966a6f999a465eb6a",
+            "name" : "uitableview",
+            "short" : "uitableview",
+            "soId" : "uitableview",
+            "levels" : [
+                "beginner",
+                "intermediate",
+                "expert"
+            ],
+            "subscription" : {
+                "auto" : [],
+                "custom" : []
+            }
+        },
+        {
+            "_id" : "5181d0ad66a6f999a465f16a",
+            "name" : "grand-central-dispatch",
+            "short" : "grand-central-dispatch",
+            "soId" : "grand-central-dispatch",
+            "levels" : [
+                "beginner",
+                "intermediate",
+                "expert"
+            ],
+            "subscription" : {
+                "auto" : [],
+                "custom" : []
+            }
+        },
+        {
+            "_id" : "5181d0a966a6f999a465ec8f",
+            "name" : "delegates",
+            "short" : "delegates",
+            "soId" : "delegates",
+            "levels" : [
+                "beginner",
+                "intermediate",
+                "expert"
+            ],
+            "subscription" : {
+                "auto" : [],
+                "custom" : []
+            }
+        }
+    ],
+    "timezone" : "GMT+0800 (SGT)",
+    "updatedAt" : "2014-09-04T03:13:40.464Z",
+    "activity": [ {
+        "action" : "create",
+        "utc" : "2015-03-14T01:45:38.001Z",
+        "_id" : ObjectId("550392c221ab871a8dd15bb1"),
+        "by" : { "_id" : ObjectId("550392c121ab871a8dd15baf"),
+           "name" : "Ashish Awaghad" }
+    } ]
   }
 
 }

@@ -52,10 +52,10 @@ var setup = {
   {
     db.Models.Expert.findOne({_id:data.experts.admb._id}, function(e,r) {
       if (!r) {
-        db.ensureExpert('dros', () =>
-          db.ensureExpert('tmot', () =>
-            db.ensureExpert('abha', () =>
-              db.ensureExpert('admb', done ))))
+        SETUP.ensureV0LoggedInExpert('dros', () =>
+          SETUP.ensureV1LoggedInExpert('abha', () =>
+            SETUP.ensureV0LoggedInExpert('tmot', () =>
+              SETUP.ensureV0LoggedInExpert('admb', () => done() ))))
       }
       else
         done()

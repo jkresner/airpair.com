@@ -23,7 +23,7 @@ var Bookme = {
 }
 
 var UserCopy = {
-  _id:              { unique: true, required: true, type: ObjectId, ref: 'User' },
+  _id:              { unique: true, sparse: true, required: true, type: ObjectId, ref: 'User' },
   email:            { type: String, unique: true, sparse: true, trim: true, lowercase: true },
   emailVerified:    { type: Boolean, required: true, default: false },
   name:             { type: String, trim: true },

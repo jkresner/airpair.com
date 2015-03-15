@@ -35,7 +35,7 @@ module.exports = -> describe "API: ".subspec, ->
             PUT "/users/me/initials", { initials: 'ar' }, {}, (r) ->
               POST "/experts/me", d, { status: 403 }, (r) ->
                 expectStartsWith(r.message, "Cannot create expert without location")
-                PUT "/users/me/location", data.wrappers.locationlization_melbourne.locationData, {}, (r) ->
+                PUT "/users/me/location", data.wrappers.localization_melbourne.locationData, {}, (r) ->
                   expect(r.localization).to.exist
                   POST "/experts/me", d, { status: 403 }, (r) ->
                     expectStartsWith(r.message, "Cannot create expert without bio")
@@ -52,7 +52,7 @@ module.exports = -> describe "API: ".subspec, ->
         LOGIN 'ape1', (s) ->
           PUT "/users/me/username", { username: 'apexpert1' }, {}, ->
             PUT "/users/me/initials", { initials: 'ap' }, {}, ->
-              PUT "/users/me/location", data.wrappers.locationlization_melbourne.locationData, {}, ->
+              PUT "/users/me/location", data.wrappers.localization_melbourne.locationData, {}, ->
                 PUT "/users/me/bio", { bio: 'a bio for apexpert 1'}, {}, ->
                   POST "/experts/me", d, {}, (expert) ->
                     expect(expert._id).to.exist
@@ -98,8 +98,10 @@ module.exports = -> describe "API: ".subspec, ->
           done()
 
 
-  it.skip "Collects social data for social scoring", (done) ->
-
   it.skip "Can update expert profile as existing v0 expert", (done) ->
+    #read db and check all old fields vs new
+
+
+  it.skip "Collects social data for social scoring", (done) ->
 
   it.skip "*** JK Sent annoucement to pre-applied experts expert", (done) ->

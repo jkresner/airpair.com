@@ -23,7 +23,7 @@ module.exports = -> describe "API".subspec, ->
         done()
 
 
-  it 'Search tags when anonymous', (done) ->
+  it.skip 'Search tags when anonymous', (done) ->
     opts = { unauthenticated: true }
     GET '/tags/search/mon', opts, (s) ->
       expect(s.length).to.equal(3)
@@ -36,7 +36,7 @@ module.exports = -> describe "API".subspec, ->
       done()
 
 
-  it 'Search tags for ios', (done) ->
+  it.skip 'Search tags for ios', (done) ->
     opts = { unauthenticated: true }
     GET '/tags/search/ios', opts, (s1) ->
       expect(s1.length).to.equal(3)
@@ -50,7 +50,7 @@ module.exports = -> describe "API".subspec, ->
           done()
 
 
-  it 'Search tags for c++', (done) ->
+  it.skip 'Search tags for c++', (done) ->
     opts = { unauthenticated: true }
     GET '/tags/search/c++', opts, (s1) ->
       GET '/tags/search/c+', opts, (s2) ->
@@ -70,7 +70,7 @@ module.exports = -> describe "API".subspec, ->
       done()
 
 
-  it 'Search tags for android', (done) ->
+  it.skip 'Search tags for android', (done) ->
     opts = { unauthenticated: true }
     GET '/tags/search/android', opts, (s1) ->
       expect(s1[0].slug).to.equal('android')
