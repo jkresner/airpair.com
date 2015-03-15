@@ -36,8 +36,9 @@ angular.module('APTagInput', ['ui.bootstrap'])
           q = encodeURIComponent(q);
           return $http.get('/v1/api/tags/search/'+q).then(function(res){
             var tags = [];
-            angular.forEach(res.data, function(item){
-              tags.push(item);
+            angular.forEach(res.data, function(item) {
+              if (item)
+                tags.push(item)
             });
 
             $scope.matches = tags;
@@ -52,7 +53,7 @@ angular.module('APTagInput', ['ui.bootstrap'])
 
         $scope.selectMatch = function (index) {
           var tag = $scope.matches[index]
-          $scope.selectTag(tag)
+          if (tag) $scope.selectTag(tag)
           $scope.q = ""
         };
 
