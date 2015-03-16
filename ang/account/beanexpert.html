@@ -4,25 +4,6 @@
   </ol>
 </header>
 
-<section id="beanexpert" ng-if="session && v0expert">
-
-  <h3 class="underline">Welcome back, {{firstName}}</h3>
-
-  <p>Hold tight, this page does not yet support existing experts.
-  But is will very shortly after ng-conf.
-  </p>
-
-  <p>Tired of how long it took us to get around to putting the expert stuff back in?
-  Me too :). I've been wondering about an experiment - open sourcing all
-  the front-end we build for experts. <a href="https://github.com/airpair/experts.airpair.com" target="_blank">Fork and leave your name on this GitHub reoi</a>.
-  As soon as I have more than 20 names, I'll move all the expert code over into this
-  repo.
-  </p>
-  <p>jk</p>
-
-
-</section>
-
 <section id="beanexpert" ng-if="session && expert && !v0expert"><!--  && expert -->
 
   <section class="connect">
@@ -95,7 +76,7 @@
   </section>
 
   <section class="tags" ng-if="socialCount > 1">
-    <h3 class="underline">3 technologies you want to help with</h3>
+    <h3 class="underline"><span ng-if="!data._id">3</span> Technologies you want to help with</h3>
     <p>These can be different to "your stack" used to customize your experience on AirPair.com.</p>
     <tag-input></tag-input>
     <hr style="clear:both;border-color:white" />

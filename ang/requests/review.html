@@ -19,7 +19,27 @@
     </p>
   </section>
 
-  <section ng-if="isExpert && expertEdit" id="reply">
+  <section ng-if="isExpert && isV0Expert" id="migrateMSG">
+    <h2>Upgrade time</h2>
+    <img src="https://cdn.andrewlorente.com/29589c30f9d971649e9c2463091e3ad2f18d4cbd" />
+    <br /><br />
+    <p>With the development of our social authoring system out of the way, we're excited to begin
+    a long overdue 8-12 week effort to <b>10x</b> our expert experience.
+    <p>Lots of features and new menu systems planned and we'll be
+      building most of it open source!
+      If you're as eager as JK for features to be appearing quicker,
+      fork <b><a href="https://github.com/airpair/experts.airpair.com" target="_blank">our GitHub repo</a></b>.
+    </p>
+    <hr />
+    One of the first things we're improving is this shabby MVP request-reply flow.
+    We need you to add your location & timezone for the upcoming scheduling feature.
+    Now's also a good time to re-auth your social profiles.
+    Our matching alorithm surface you for AirPairs is more likley to surface you with
+    up to date social data.
+    <a href="/be-an-expert" class="btn">Upgrade my profile</a>
+  </section>
+
+  <section ng-if="isExpert && expertEdit && !isV0Expert" id="reply">
 
     <form ng-if="data" id="replyForm" class="expertReplyForm" novalidate name="replyForm" ng-submit="submit(replyForm.$valid, data)">
 
