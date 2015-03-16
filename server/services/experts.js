@@ -41,7 +41,18 @@ var get = {
       cb(e,r)
     })
   },
-
+  getNewForAdmin(cb) {
+    cache.ready(['tags'], () => {
+      var opts = { options: { limit: 150, sort: { '_id': -1 }  } }
+      svc.searchMany({}, opts, (e,r)=>{
+        for (var expert of r) {
+          expert.tags = selectCB.inflatedTagsNoCB(expert)
+          expert.user.avatar = md5.gravatarUrl(expert.user.email)
+        }
+        cb(e,r)
+      })
+    })
+  },
   /// VERY TEMPORARY SOLUTIOn
   getMatchesForDashboard(cb) {
     //tags, bookmarks, requests,

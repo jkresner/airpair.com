@@ -1,0 +1,49 @@
+<section id="orders">
+
+  <div class="query">
+    <!-- <div datetime-input id="queryStart" datetime="query.start"></div>
+    <div datetime-input id="queryEnd" datetime="query.end"></div> -->
+    <div user-input></div>
+    <a ng-click="fetch()" class="btn">Search</a>
+  </div>
+
+  <h3>Experts</h3>
+
+  <table class="table table-condensed table-striped orders">
+    <tr>
+      <th style="width:100px"></th>
+      <th style="width:150px">Expert</th>
+      <th style="width:250px">Timeozne</th>
+      <th style="width:250px">Social</th>
+      <th>Tags</th>
+    </tr>
+    <tr ng-repeat="o in experts">
+      <td>
+        <img ng-src="{{o.user.avatar}}" />
+      </td>
+      <td>
+        {{o.user.name}}
+        <br />{{o.user.email}}
+        <br />{{o._id | objectIdToDate : 'DD.MM HH:MM' }}
+        <time style="display:block;color:black;width:100%">{{o._id | objectIdToAgoTime }}</time>
+        {{o._id}}
+      </td>
+      <td>
+        {{o.user.localization.location}}
+        <br/>{{o.user.localization.timezone}}
+      </td>
+      <td>
+         <social-links profile="o.user.social"></social-links>
+         <div ng-if="o.user.social.gh">gh.followers: {{o.user.social.gh._json.followers}}</div>
+         <div ng-if="o.user.social.tw">tw.followers: {{o.user.social.tw._json.followers_count}}</div>
+         <div ng-if="o.user.social.so">so.reputation: {{o.user.social.so.reputation}}</div>
+      </td>
+      <td>
+        <div ng-repeat="t in o.tags">
+          <span>{{t.name}}</span>
+        </div>
+      </td>
+    </tr>
+  </table>
+
+</section>

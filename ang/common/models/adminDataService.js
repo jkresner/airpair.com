@@ -22,6 +22,12 @@ angular.module('APSvcAdmin', [])
       getAll: GET((d)=>`/adm/posts/all`)
     }
 
+
+    this.experts = {
+      getNew: GET((d)=>`/adm/experts/new`),
+      // search: GET((d)=>`/adm/experts/search?userid=${d.userId}`)
+    }
+
     this.getUsersViews = function(data, success, error) {
       $http.get(`${APIAdm}/views/user/${data._id}`, data).success(success).error(error)
     }
