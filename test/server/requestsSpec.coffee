@@ -1,18 +1,7 @@
 db = require('./setup/db')
 abhaKey = null
 
-module.exports = -> describe "API".subspec, ->
-
-  before (done) ->
-    SETUP.analytics.stub()
-    SETUP.initTags ->
-      SETUP.createNewExpert 'abha', {}, (s,exp) ->
-        abhaKey = s.userKey
-        # $log('abha', s.userKey, exp)
-        done()
-
-  after ->
-    SETUP.analytics.restore()
+create = ->
 
 
   it '401 for non authenticated request', (done) ->
@@ -173,6 +162,35 @@ module.exports = -> describe "API".subspec, ->
                           done()
 
 
+  it 'Can delete an incomplete request as owner', (done) ->
+    SETUP.addAndLoginLocalUser 'kyla', (s) ->
+      d = type: 'mentoring'
+      POST '/requests', d, {}, (r) ->
+        expect(r._id).to.exist
+        DELETE "/requests/#{r._id}", {}, (rDel) ->
+          GET "/requests", {}, (requests) ->
+            expect(requests.length).to.equal(0)
+            done()
+
+
+  it 'Cannot delete a request unless owner or admin', (done) ->
+    SETUP.addAndLoginLocalUser 'kyau', (s) ->
+      d = type: 'code-review'
+      POST '/requests', d, {}, (r) ->
+        expect(r._id).to.exist
+        SETUP.addAndLoginLocalUser 'auka', (s2) ->
+          DELETE "/requests/#{r._id}", { status: 403 }, (rDel) ->
+            LOGIN 'admin', (sAdmin) ->
+              GET "/adm/requests/user/#{s._id}", {}, (reqs1) ->
+                expect(reqs1.length).to.equal(1)
+                DELETE "/requests/#{r._id}", {}, (rDel2) ->
+                  GET "/adm/requests/user/#{s._id}", {}, (reqs2) ->
+                    expect(reqs2.length).to.equal(0)
+                    done()
+
+
+review = ->
+
   it 'Review a request as anon, customer and other', (done) ->
     SETUP.addAndLoginLocalUserWithEmailVerified 'mfly', (s) ->
       d = tags: [data.tags.angular], type: 'troubleshooting', experience: 'advanced', brief: 'this is a another anglaur test yo', hours: "2", time: 'regular', budget: 150
@@ -205,7 +223,58 @@ module.exports = -> describe "API".subspec, ->
                 done()
 
 
-  it 'Self suggest reply to a request as an expert', (done) ->
+  it 'Fail to review a request as v0 expert', (done) ->
+    d = tags: [data.tags.angular], type: 'code-review', experience: 'advanced', brief: 'another anglaur test yo3', hours: "5", time: 'regular'
+    SETUP.newCompleteRequest 'mify', d, (r) ->
+      expect(data.users.asv0.bio).to.be.undefined
+      SETUP.ensureV0Expert 'asv0', ->
+        LOGIN 'asv0', (sAsv0) ->
+          GET "/requests/review/#{r._id}", {}, (rAsv0) ->
+            expect(rAsv0.status).to.equal('received')
+            seAsv0 = rAsv0.suggested[0].expert
+            expectIdsEqual(seAsv0._id, data.experts.asv0._id)
+            expect(seAsv0.matching).to.be.undefined
+            expect(seAsv0.activity).to.be.undefined
+            expect(seAsv0.isV0).to.be.true
+            reply = expertComment: "I'll take it", expertAvailability: "Real-time", expertStatus: "available"
+            PUT "/requests/#{r._id}/reply/#{seAsv0._id}", reply, { status: 403 }, (err) ->
+              expectStartsWith(err.message, "Must migrate expert profile to reply")
+              done()
+
+
+  it 'Review a request as v0 expert after migration', (done) ->
+    d = tags: [data.tags.angular], type: 'code-review', experience: 'advanced', brief: 'another anglaur test yo3', hours: "5", time: 'regular'
+    SETUP.newCompleteRequest 'dsun', d, (r) ->
+      SETUP.ensureV0Expert 'asv0', ->
+        LOGIN 'asv0', (sAsv0) ->
+          eData = rate: 120, initials: 'as', username: "asv0migrate#{timeSeed()}"
+          SETUP.applyToBeAnExpert eData, (eAsv1) ->
+            GET "/requests/review/#{r._id}", {}, (rAsv1) ->
+              expect(rAsv1.status).to.equal('received')
+              seAsv1 = rAsv1.suggested[0].expert
+              expectIdsEqual(seAsv1._id, data.experts.asv0._id)
+              expect(seAsv1.isV0).to.be.undefined
+              expect(seAsv1.matching).to.be.undefined
+              expect(seAsv1.activity).to.be.undefined
+              reply = expertComment: "I will take it", expertAvailability: "Realest time", expertStatus: "available"
+              PUT "/requests/#{r._id}/reply/#{eAsv1._id}", reply, {}, (r1) ->
+                expect(r1.status).to.equal('review')
+                expect(r1.suggested.length).to.equal(1)
+                expect(r1.suggested[0]._id).to.exist
+                expect(r1.suggested[0].expertStatus).to.equal("available")
+                expect(r1.suggested[0].expertComment).to.equal("I will take it")
+                expect(r1.suggested[0].expertAvailability).to.equal("Realest time")
+                expectIdsEqual(sAsv0._id,r1.suggested[0].expert.userId)
+                expect(r1.suggested[0].expert.location).to.equal("Melbourne VIC, Australia")
+                expect(r1.suggested[0].expert.timezone).to.equal("Australian Eastern Standard Time")
+                expect(r1.suggested[0].expert.name).to.equal("Ashish Awaghad")
+                expect(r1.suggested[0].expert.gh.username).to.equal("difficultashish")
+                expect(r1.suggested[0].expert.in.id).to.equal("cDNFNcqq-z")
+                expect(r1.suggested[0].expert.pic).to.be.undefined
+                done()
+
+
+  it 'Self suggest reply to a request as a expert new expert', (done) ->
     SETUP.addAndLoginLocalUserWithEmailVerified 'mfln', (s) ->
       d = tags: [data.tags.angular], type: 'code-review', experience: 'advanced', brief: 'another anglaur test yo3', hours: "5", time: 'regular'
       POST '/requests', d, {}, (r0) ->
@@ -260,7 +329,10 @@ module.exports = -> describe "API".subspec, ->
                     done()
 
 
-  it 'Can update reply to a request as an expert', (done) ->
+  it.skip 'Self suggest reply to a request as a v0 expert expert', (done) ->
+
+
+  it 'Update reply to a request as an expert', (done) ->
     SETUP.addAndLoginLocalUserWithEmailVerified 'mikf', (s) ->
       d = tags: [data.tags.angular], type: 'resources', experience: 'proficient', brief: 'bah bah anglaur test yo4', hours: "1", time: 'rush'
       POST '/requests', d, {}, (r0) ->
@@ -358,32 +430,26 @@ module.exports = -> describe "API".subspec, ->
 
 
   it.skip 'Cannot reply to customers own request', (done) ->
+
   it.skip 'Cannot reply to inactive request', (done) ->
+
   it.skip 'Cannot reply to overloaded request with 4 existing available replies', (done) ->
 
 
-  it 'Can delete an incomplete request as owner', (done) ->
-    SETUP.addAndLoginLocalUser 'kyla', (s) ->
-      d = type: 'mentoring'
-      POST '/requests', d, {}, (r) ->
-        expect(r._id).to.exist
-        DELETE "/requests/#{r._id}", {}, (rDel) ->
-          GET "/requests", {}, (requests) ->
-            expect(requests.length).to.equal(0)
-            done()
+
+module.exports = ->
+
+  before (done) ->
+    SETUP.analytics.stub()
+    SETUP.initTags ->
+      SETUP.createNewExpert 'abha', {}, (s,exp) ->
+        abhaKey = s.userKey
+        # $log('abha', s.userKey, exp)
+        done()
+
+  after ->
+    SETUP.analytics.restore()
 
 
-  it 'Cannot delete a request unless owner or admin', (done) ->
-    SETUP.addAndLoginLocalUser 'kyau', (s) ->
-      d = type: 'code-review'
-      POST '/requests', d, {}, (r) ->
-        expect(r._id).to.exist
-        SETUP.addAndLoginLocalUser 'auka', (s2) ->
-          DELETE "/requests/#{r._id}", { status: 403 }, (rDel) ->
-            LOGIN 'admin', (sAdmin) ->
-              GET "/adm/requests/user/#{s._id}", {}, (reqs1) ->
-                expect(reqs1.length).to.equal(1)
-                DELETE "/requests/#{r._id}", {}, (rDel2) ->
-                  GET "/adm/requests/user/#{s._id}", {}, (reqs2) ->
-                    expect(reqs2.length).to.equal(0)
-                    done()
+  describe "Create: ".subspec, create
+  describe "Review: ".subspec, review

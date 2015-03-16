@@ -91,6 +91,7 @@ module.exports = {
 
   dysn: { name: "Dilys Sun", email: "dilys@hotmail.com"},
   dily: { name: "Dilys Sun", email: "dilys@gmail.com"},
+  dsun: { name: "Di Sun", email: "disun@gmail.com"},
 
   josh: { name: "Josh Baylin", email: "jaybe@hotmail.com"},
   joba: { name: "Josh Baylin", email: "josh.baylin@gmail.com"},
@@ -114,6 +115,7 @@ module.exports = {
   hbri: { name: "Hur Brian", email: "hurts.hurts@hotmail.com"},
   hubr: { name: "Hur Brian", email: "hurts.brian@hotmail.com"},
   hubi: { name: "Hur Brian", email: "hurts.brian@mail.com"},
+  hbib: { name: "Hubib Brian", email: "hbib.brian@mail.com"},
 
   cher: { name: "Chelsea Rustrum", email: "chelsea@rustrum.com"},
   chru: { name: "Chelsea Rustrum", email: "chelsearustrum@rustrum.com"},
@@ -125,6 +127,9 @@ module.exports = {
   brif: { name: "Brian Fiester", email: "brian@airtest.com"},
 
   tybr: { name: "Tyler Baur", email: "tb@airtest.com"},
+  tylb: { name: "Tyler Baur", email: "tylb@airtest.com"},
+  tbau: { name: "Tyler Baur", email: "tbau@gmail.com"},
+  tbar: { name: "Tyler Bar", email: "tbar@airtest.com"},
 
   //*** TO SETUP AN ADMIN TOKEN: => /auth/github?returnTo=/me&scope=user,repo,admin:org
   jkya: { name:"Jonathon Krezner",email:"jkresner@yahooo.com.au",
@@ -207,7 +212,7 @@ module.exports = {
             "hd" : "airpair.com"
         }
     },
-    "email" : "admin@airpair.com",
+    "email" : "ad@airpair.com",
     "name" : "Admin Daemon",
     "emailVerified" : false,
     "roles" : [ "admin" ]
@@ -306,7 +311,7 @@ module.exports = {
         "token" : { }
     },
     "googleId" : "103602126141908605207",
-    "referrer" : {},
+    // "referrer" : {},
     "stack" : {
         "badge_counts" : { "gold" : 9, "silver" : 164, "bronze" : 238 },
         "profile_image" : "https://www.gravatar.com/avatar/0f4cefeedec5163556751d61625eedd0?s=128&d=identicon&r=PG",
@@ -501,7 +506,7 @@ module.exports = {
     },
     "googleId" : "107929348314160277508",
     "name" : "san thanki",
-    "referrer" : {}
+    // "referrer" : {}
   },
 
   bbe: {
@@ -522,7 +527,7 @@ module.exports = {
     "linkedin":{"provider":"linkedin","id":"R0iEwVgri2","displayName":"Ben Beetle","name":{"familyName":"Beetle","givenName":"Ben"},"_json":{"firstName":"Ben","id":"R0iEwVgri2","lastName":"Beetle"},"token":{}},
     "linkedinId":"R0iEwVgri2",
     "name":"Ben Beetle",
-    "referrer":{},
+    // "referrer":{},
     "tags":[{"_id":"54551ba50af48b0b00403feb","tagId":"5181d0a966a6f999a465ec4e","sort":0},{"_id":"54551ba50af48b0b00403feb","tagId":"5181d0a966a6f999a465ec4e","sort":0},{"_id":"54551ba50af48b0b00403feb","tagId":"5181d0a966a6f999a465ec4e","sort":0},{"_id":"54551ba50af48b0b00403feb","tagId":"5181d0a966a6f999a465ec4e","sort":0},{"_id":"54551ba50af48b0b00403feb","tagId":"5181d0a966a6f999a465ec4e","sort":0},{"_id":"54551ba50af48b0b00403feb","tagId":"5181d0a966a6f999a465ec4e","sort":0}],
     "twitter":{"provider":"twitter","id":31477063,"username":"BenBeetle","displayName":"Ben Beetle","photos":[{"value":"https://abs.twimg.com/sticky/default_profile_images/default_profile_2_normal.png"}],"_json":{"id":31477063,"id_str":"31477063","name":"Ben Beetle","screen_name":"BenBeetle","location":"","description":"","url":null,"entities":{"description":{"urls":[]}},"protected":false,"followers_count":3,"friends_count":1,"listed_count":0,"created_at":"Wed Apr 15 18:30:17 +0000 2009","favourites_count":0,"utc_offset":null,"time_zone":null,"geo_enabled":false,"verified":false,"statuses_count":1,"lang":"en","status":{"created_at":"Wed Apr 15 18:36:20 +0000 2009","id":1527296246,"id_str":"1527296246","text":"@bbeetle I'm just curious...  :-) where do you get the name bbeetle from?  I've never seen that name taken before. Is your last name Beetle?","source":"Twitter Web Client","truncated":false,"in_reply_to_status_id":null,"in_reply_to_status_id_str":null,"in_reply_to_user_id":9145222,"in_reply_to_user_id_str":"9145222","in_reply_to_screen_name":"bbeetle","geo":null,"coordinates":null,"place":null,"contributors":null,"retweet_count":0,"favorite_count":0,"entities":{"hashtags":[],"symbols":[],"urls":[],"user_mentions":[{"screen_name":"bbeetle","name":"bbeetle","id":9145222,"id_str":"9145222","indices":[0,8]}]},"favorited":false,"retweeted":false,"lang":"en"},"contributors_enabled":false,"is_translator":false,"is_translation_enabled":false,"profile_background_color":"C0DEED","profile_background_image_url":"http://abs.twimg.com/images/themes/theme1/bg.png","profile_background_image_url_https":"https://abs.twimg.com/images/themes/theme1/bg.png","profile_background_tile":false,"profile_image_url":"http://abs.twimg.com/sticky/default_profile_images/default_profile_2_normal.png","profile_image_url_https":"https://abs.twimg.com/sticky/default_profile_images/default_profile_2_normal.png","profile_link_color":"0084B4","profile_sidebar_border_color":"C0DEED","profile_sidebar_fill_color":"DDEEF6","profile_text_color":"333333","profile_use_background_image":true,"default_profile":true,"default_profile_image":true,"following":false,"follow_request_sent":false,"notifications":false,"suspended":false,"needs_phone_verification":false},"token":{}},
     "twitterId":31477063
@@ -815,7 +820,7 @@ module.exports = {
     "local" : { "emailHash" : "$2a$08$Be6JKTqPHdtb08vUBj5TquICuYxyEFBM5udLPMM9txRWDct0QS9wq" },
     "name" : "Ari Lerner",
     "primaryPayMethodId" : "54a736ba4d32d20b006f1078",
-    "referrer" : {},
+    // "referrer" : {},
     "twitter" : {
         "provider" : "twitter",
         "id" : 7624382,
@@ -928,7 +933,7 @@ module.exports = {
     "googleId" : "100570824868841568882",
     "initials" : "ACB",
     "name" : "Adam Bliss",
-    "referrer" : {},
+    // "referrer" : {},
     "stack" : {
         "user_id" : 1239095,
         "user_type" : "registered",
@@ -1150,7 +1155,7 @@ module.exports = {
     "local" : {},
     "name" : "Marton Kodok",
     "primaryPayMethodId" : "54904cc620ecd50b001013d8",
-    "referrer" : {},
+    // "referrer" : {},
     "stack" : {
         "badge_counts" : { "bronze" : 324, "silver" : 227, "gold" : 46 },
         "account_id" : 88036,
@@ -1422,24 +1427,206 @@ module.exports = {
         "provider" : "linkedin",
         "id" : "cDNFNcqq-z",
         "displayName" : "Ashish Awaghad",
-        "name" : {
-            "familyName" : "Awaghad",
-            "givenName" : "Ashish"
-        },
+        "name" : {"familyName" : "Awaghad","givenName" : "Ashish"},
         "_json" : {
             "firstName" : "Ashish",
             "id" : "cDNFNcqq-z",
             "lastName" : "Awaghad"
         },
-        "token" : {
-            "token" : "f851af58-d020-4dd6-9df7-46938f421073",
-            "attributes" : {
-                "tokenSecret" : "da19159a-6855-4a78-bb19-45dd575ed817"
-            }
-        }
+        "token" : {}
     },
     "linkedinId" : "cDNFNcqq-z",
-    "referrer" : {}
+    // "referrer" : {}
+  },
+
+  azv0: {
+    "_id" : ObjectId("537a79041c67d1a4859d3263"),
+    "email" : "adz@nycitt.com",
+    "name" : "Anatoliy Zaslavskiy",
+    "bitbucket" : {
+        "provider" : "bitbucket",
+        "username" : "toli-oselot",
+        "displayName" : "Anatoliy Zaslavskiy",
+        "name" : {
+            "familyName" : "Zaslavskiy",
+            "givenName" : "Anatoliy"
+        },
+        "_json" : {
+            "repositories" : [],
+            "user" : {
+                "username" : "toli-oselot",
+                "first_name" : "Anatoliy",
+                "last_name" : "Zaslavskiy",
+                "display_name" : "Anatoliy Zaslavskiy",
+                "is_team" : false,
+                "avatar" : "https://secure.gravatar.com/avatar/16746e94fa053c47bced933975d87dde?d=https%3A%2F%2Fd3oaxc4q5k2d6q.cloudfront.net%2Fm%2Fe357312372b1%2Fimg%2Fdefault_avatar%2F32%2Fuser_blue.png&s=32",
+                "resource_uri" : "/1.0/users/toli-oselot"
+            }
+        },
+        "token" : {},
+        "id" : "toli-oselot"
+    },
+    "bitbucketId" : "toli-oselot",
+    "github" : {
+        "provider" : "github",
+        "id" : 613500,
+        "displayName" : "Anatoliy Zasalvskiy",
+        "username" : "nycitt",
+        "profileUrl" : "https://github.com/nycitt",
+        "emails" : [{"value" : "adz@nycitt.com"}],
+        "_json" : {
+            "login" : "nycitt",
+            "id" : 613500,
+            "avatar_url" : "https://avatars.githubusercontent.com/u/613500?",
+            "gravatar_id" : "16746e94fa053c47bced933975d87dde",
+            "url" : "https://api.github.com/users/nycitt",
+            "html_url" : "https://github.com/nycitt",
+            "followers_url" : "https://api.github.com/users/nycitt/followers",
+            "following_url" : "https://api.github.com/users/nycitt/following{/other_user}",
+            "gists_url" : "https://api.github.com/users/nycitt/gists{/gist_id}",
+            "starred_url" : "https://api.github.com/users/nycitt/starred{/owner}{/repo}",
+            "subscriptions_url" : "https://api.github.com/users/nycitt/subscriptions",
+            "organizations_url" : "https://api.github.com/users/nycitt/orgs",
+            "repos_url" : "https://api.github.com/users/nycitt/repos",
+            "events_url" : "https://api.github.com/users/nycitt/events{/privacy}",
+            "received_events_url" : "https://api.github.com/users/nycitt/received_events",
+            "type" : "User",
+            "site_admin" : false,
+            "name" : "Anatoliy Zasalvskiy",
+            "company" : "NYC ITT Corp",
+            "blog" : null,
+            "location" : null,
+            "email" : "adz@nycitt.com",
+            "hireable" : true,
+            "bio" : null,
+            "public_repos" : 4,
+            "public_gists" : 2,
+            "followers" : 2,
+            "following" : 2,
+            "created_at" : "2011-02-11T21:02:01Z",
+            "updated_at" : "2014-05-13T22:46:24Z"
+        },
+        "token" : {}
+    },
+    "githubId" : 613500,
+    "google" : {
+        "provider" : "google",
+        "id" : "105217687501119465252",
+        "displayName" : "Anatoliy Zaslavskiy",
+        "name" : {"familyName" : "Zaslavskiy", "givenName" : "Anatoliy"},
+        "emails" : [{ "value" : "adz@nycitt.com"}
+        ],
+        "_json" : {
+            "id" : "105217687501119465252",
+            "email" : "adz@nycitt.com",
+            "verified_email" : true,
+            "name" : "Anatoliy Zaslavskiy",
+            "given_name" : "Anatoliy",
+            "family_name" : "Zaslavskiy",
+            "link" : "https://plus.google.com/105217687501119465252",
+            "picture" : "https://lh6.googleusercontent.com/-ENVD0CIAiyw/AAAAAAAAAAI/AAAAAAAAOho/AhVsE2hlBDg/photo.jpg",
+            "gender" : "male",
+            "locale" : "en",
+            "hd" : "nycitt.com"
+        },
+        "token" : {}
+    },
+    "googleId" : "105217687501119465252",
+    "linkedin" : {
+        "provider" : "linkedin",
+        "id" : "Wc6bYsfE6z",
+        "displayName" : "Anatoliy Zaslavskiy",
+        "name" : { "familyName" : "Zaslavskiy", "givenName" : "Anatoliy"},
+        "_json" : {
+            "firstName" : "Anatoliy",
+            "id" : "Wc6bYsfE6z",
+            "lastName" : "Zaslavskiy"
+        },
+        "token" : {}
+    },
+    "linkedinId" : "Wc6bYsfE6z",
+    // "referrer" : {},
+    "stack" : {
+        "badge_counts" : {"bronze" : 15,"silver" : 3, "gold" : 0 },
+        "account_id" : 1969987,
+        "is_employee" : false,
+        "last_modified_date" : 1405338841,
+        "last_access_date" : 1405862701,
+        "reputation_change_year" : 219,
+        "reputation_change_quarter" : 129,
+        "reputation_change_month" : 129,
+        "reputation_change_week" : 0,
+        "reputation_change_day" : 0,
+        "reputation" : 467,
+        "creation_date" : 1351016413,
+        "user_type" : "registered",
+        "user_id" : 1769217,
+        "age" : 22,
+        "accept_rate" : 71,
+        "location" : "New York, United States",
+        "website_url" : "http://www.linkedin.com/in/tolicodes",
+        "link" : "http://stackoverflow.com/users/1769217/anatoliy-zaslavskiy",
+        "display_name" : "Anatoliy Zaslavskiy",
+        "profile_image" : "https://www.gravatar.com/avatar/16746e94fa053c47bced933975d87dde?s=128&d=identicon&r=PG",
+        "provider" : "stackexchange",
+        "id" : 1769217,
+        "token" : {}
+    },
+    "stackId" : 1769217,
+    "twitter" : {
+        "provider" : "twitter",
+        "id" : 2508694140,
+        "username" : "OselotTech",
+        "displayName" : "Oselot Consulting",
+        "photos" : [],
+        "_json" : {
+            "id" : 2508694140,
+            "id_str" : "2508694140",
+            "name" : "Oselot Consulting",
+            "screen_name" : "OselotTech",
+            "location" : "",
+            "description" : "",
+            "url" : null,
+            "entities" : {},
+            "protected" : false,
+            "followers_count" : 0,
+            "friends_count" : 0,
+            "listed_count" : 0,
+            "created_at" : "Mon May 19 23:16:01 +0000 2014",
+            "favourites_count" : 0,
+            "utc_offset" : null,
+            "time_zone" : null,
+            "geo_enabled" : false,
+            "verified" : false,
+            "statuses_count" : 1,
+            "lang" : "en",
+            "status" : {},
+            "contributors_enabled" : false,
+            "is_translator" : false,
+            "is_translation_enabled" : false,
+            "profile_background_color" : "C0DEED",
+            "profile_background_image_url" : "http://abs.twimg.com/images/themes/theme1/bg.png",
+            "profile_background_image_url_https" : "https://abs.twimg.com/images/themes/theme1/bg.png",
+            "profile_background_tile" : false,
+            "profile_image_url" : "http://abs.twimg.com/sticky/default_profile_images/default_profile_1_normal.png",
+            "profile_image_url_https" : "https://abs.twimg.com/sticky/default_profile_images/default_profile_1_normal.png",
+            "profile_link_color" : "0084B4",
+            "profile_sidebar_border_color" : "C0DEED",
+            "profile_sidebar_fill_color" : "DDEEF6",
+            "profile_text_color" : "333333",
+            "profile_use_background_image" : true,
+            "default_profile" : true,
+            "default_profile_image" : true,
+            "following" : false,
+            "follow_request_sent" : false,
+            "notifications" : false,
+            "suspended" : false,
+            "needs_phone_verification" : false
+        },
+        "token" : {}
+    },
+    "twitterId" : 2508694140
   }
+
 
 }
