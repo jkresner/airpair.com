@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/airpair/airpair.com",
   "devDependencies": {
+    "bson": "0.2.19",
     "browserify": "^5.11.1",
     "browserify-ngannotate": "0.3.0",
     "chai": "^1.9.1",
@@ -70,7 +71,7 @@
     "lodash": "^2.4.1",
     "marked": "^0.3.2",
     "moment": "2.8.4",
-    "mongoose": "^3.8.24",
+    "mongoose": "3.8.25",
     "node-google-timezone": "0.0.2",
     "passport": "^0.2.1",
     "passport-angellist": "^0.1.2",

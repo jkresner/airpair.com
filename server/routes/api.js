@@ -182,7 +182,7 @@ export default function(app) {
     .put('/requests/:request/message', API.Requests.sendMessageByAdmin)
     .put('/requests/:request/farm', API.Requests.farmByAdmin)
     .put('/requests/:request/remove/:expert', API.Requests.removeSuggestion)
-
+    .get('/experts/new', API.Experts.getNewForAdmin)
 
   router.use('/adm',admrouter)
 

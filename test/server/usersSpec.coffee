@@ -16,10 +16,12 @@ module.exports = -> describe "API: ".subspec, ->
 
 
     it 'Can add location / timezone', (done) ->
+      global.stubs.timezone.restore()
       SETUP.addAndLoginLocalUserWithEmailVerified 'chri', (chri) ->
         PUT '/users/me/location', data.wrappers.gplaces_succcessful_place, {}, (user) ->
           expect(user.localization.location).to.equal('Bengaluru, Karnataka, India')
           expect(user.localization.timezone).to.equal('India Standard Time')
+          SETUP.stubGoogleTimezone()
           done()
 
 

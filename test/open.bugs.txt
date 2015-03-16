@@ -1,3 +1,50 @@
+exception: insertDocument :: caused by :: 11000 E11000 duplicate key error index: app33053049.users.$email_1  dup key: { : "prtamil@gmail.com" }
+POST /v1/auth/signup-home
+anonymous xi7udVOoG4J2H_eiLU38xb3R4OgQioTy
+ << https://www.airpair.com/
+isBot:false:Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.89 Safari/537.36
+
+ {"email":"prtamil@gmail.com","name":"Tamilselvan Rangasami","password":"home"}
+
+ MongoError: exception: insertDocument :: caused by :: 11000 E11000 duplicate key error index: app33053049.users.$email_1  dup key: { : "prtamil@gmail.com" }
+    at Object.toError (/app/node_modules/mongoose/node_modules/mongodb/lib/mongodb/utils.js:114:11)
+    at /app/node_modules/mongoose/node_modules/mongodb/lib/mongodb/db.js:1194:31
+
+
+
+
+
+Cannot set property 'sort' of null
+POST /v1/api/experts/me
+Maksim Kanev maksim.kanev@gmail.com 5502ba40c878110c00116757
+ << https://www.airpair.com/be-an-expert
+isBot:false:Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.115 Safari/537.36
+
+ {"tags":[{"_id":"514825fa2a26ea020000001e","desc":"Java is a general-purpose programming language designed to be used in conjunction with the Java Virtual Machine (JVM). "Java platform" is the name for a computing system that has installed tools for developing and running Java programs. Use this tag for questions referring to Java programming language or Java platform tools.","name":"java","short":"java","slug":"java","score":22.053125,"sort":0},null,
+
+
+Cannot read property 'sort' of null
+GET /posts/review/54f9ef5b658b7d0c00a4de3e
+Dhananjay Kumar debugmode@outlook.com 54f7652d8438550c00e99b91
+ << https://www.airpair.com/posts/me
+isBot:false:Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.115 Safari/537.36
+
+ TypeError: Cannot read property 'sort' of null
+    at r.primarytag (/app/posts.data.js:265:45)
+    at Function.find (/app/node_modules/lodash/dist/lodash.js:3216:15)
+    at /app/posts.data.js:265:24
+    at /app/posts.data.js:17:5
+    at Promise.searchOne (/app/_service.js:30:9)
+    at Promise. (/app/node_modules/mongoose/node_modules/mpromise/lib/promise.js:177:8)
+    at Promise.emit (events.js:95:17)
+    at Promise.emit (/app/node_modules/mongoose/node_modules/mpromise/lib/promise.js:84:38)
+    at Promise.fulfill (/app/node_modules/mongoose/node_modules/mpromise/lib/promise.js:97:20)
+    at Promise.resolve (/app/node_modules/mongoose/lib/promise.js:114:23)
+
+
+{}
+
+
 Cannot read property 'changeEmailHash' of undefined
 PUT /v1/api/users/me/email-verify
 SF BlackswansMedia sfblackswan@gmail.com 54fde681f2a3df0c00175a91
@@ -51,7 +98,7 @@ isBot:false:Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_0) AppleWebKit/537.36 (
 
  {"step":"brief","_id":"54fc1fee3326620c00735d4e","userId":"53d2a8f28f8c80299bcc3b6b","by":{"avatar":"//0.gravatar.com/avatar/cccfd415335f4646f1a9e2d1770175c2","email":"will_maunders@mac.com","name":"Will Maunders"},"type":"mentoring","brief":"I have been tasked with creating a basic application to take photos, add comments to the photos and output the list as a PDF document by using the itext or PDFjet libs. would love someone to talk / show me how to do this!\n\nThanks in advance\nWill","tags":[{"_id":"514825fa2a26ea0200000006","slug":"android","sort":0},{"_id":"514825fa2a26ea020000001e","slug":"java","sort":1},{"_id":"5181d0a966a6f999a465eb55","slug":"sqlite","sort":2}],"time":"regular","hours":"2","experience":"beginner","status":"review","suggested":[{"matchedBy":{"userId":"5367fd6d1c67d1a4859d30e7","initials":"pg"},"_id":"54fc21993326620c00735d87","suggestedRate":{"expert":43,"total":106},"expertComment":"I can help you out on this.","expertAvailability":"Available 6 PM to 11 PM IST","expertStatus":"available","reply":{"time":"2015-03-08T10:27:02.103Z"},"expert":{"_id":"53e70c0369750b0200ed8c27","email":"ishan1604@gmail.com","gmail":"ishan1604@gmail.com","name":"Ishan Khanna","rate":10,"userId":"53e70b6c8f8c80299bcc4066","in":{"id":"_JGx5OiXJ-"},"so":{"link":"1610459/ishan-khanna"},"gh":{"username":"ishan1604"},"avatar":"//0.gravatar.com/avatar/b83dbe891c213350c710216b89959e03"}}],"title":"2 hour android, java and sqlite mentoring","meta":{"title":"AirPair | android, java and sqlite Request","canonical":"https://www.airpair.com/review/54fc1fee3326620c00735d4e","noindex":true},"reviewRender":true}
 
-
+==================================================================================
 
 Could not find request[54cad38d2aadfe0900d650ff] belonging to user[54cf4f4c83e5610900a602d3]
 GET /v1/api/requests/54cad38d2aadfe0900d650ff
@@ -90,6 +137,26 @@ isBot:false:Mozilla/5.0 (iPad; CPU OS 8_1_1 like Mac OS X) AppleWebKit/600.1.4 (
     at Promise. (/app/node_modules/mongoose/node_modules/mpromise/lib/promise.js:177:8)
     at Promise.emit (events.js:95:17)
 
+Could not find request[54f0bb8be78b900c00fd229c] belonging to user[542eff138f8c80299bcc49e2]
+GET /v1/api/requests/54f0bb8be78b900c00fd229c
+Dan Wolner dan@platformpurple.com 542eff138f8c80299bcc49e2
+ << https://www.airpair.com/meet-experts/54f0bb8be78b900c00fd229c
+isBot:false:Mozilla/5.0 (iPad; CPU OS 8_1_3 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) CriOS/40.0.2214.73 Mobile/12B466 Safari/600.1.4
+
+ Error: Could not find request[54f0bb8be78b900c00fd229c] belonging to user[542eff138f8c80299bcc49e2]
+    at Error ()
+    at /app/requests.js:82:54
+    at Promise.searchOne (/app/_service.js:30:9)
+    at Promise. (/app/node_modules/mongoose/node_modules/mpromise/lib/promise.js:177:8)
+    at Promise.emit (events.js:95:17)
+    at Promise.emit (/app/node_modules/mongoose/node_modules/mpromise/lib/promise.js:84:38)
+    at Promise.fulfill (/app/node_modules/mongoose/node_modules/mpromise/lib/promise.js:97:20)
+    at Promise.resolve (/app/node_modules/mongoose/lib/promise.js:114:23)
+    at Promise. (/app/node_modules/mongoose/node_modules/mpromise/lib/promise.js:177:8)
+    at Promise.emit (events.js:95:17)
+
+==================================================================================
+
 
 Request can only be updated by owner
 PUT /v1/api/requests/54c3b4e6a1bfe10900f17bcf
@@ -102,7 +169,16 @@ isBot:false:Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (
  Error: Request can only be updated by owner
 
 
+Request can only be updated by owner
+PUT /v1/api/requests/54fc99a1c1534a0c00e6ba9b
+Miguel Madero me@miguelmadero.com 519814e266a6f999a465f2d5
+ << https://www.airpair.com/help/request
+isBot:false:Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.76 Safari/537.36
 
+ {"step":"brief","_id":"54fc99a1c1534a0c00e6ba9b","userId":"54ea52c9830d530c00003c27","by":{"avatar":"//0.gravatar.com/avatar/6e89daf9feca768b14388ea01f795a08","email":"vijay.m.harrell@gmail.com","name":"Vijay Harrell"},"type":"other","brief":"### Description of Problem\n*  I can build and deploy successfully, but I can only serve my index.js route.  All other routes resolve to a 404.  URL:  http://beta.oneclickshiplogistics.com/\n\n\n### Current Deploy\n*  My deploy setup involves building the assets in broccoli.js (via ember build) and using nginx to set the root directory.\n\n\n### End Goal\n*  I would like to amend this process to deploy ember-cli to EC2 via http-server (node.js).  I also need to determine what I’m missing with regards to the broccoli asset compilation process.  Documentation is light and I’ve poured hours into reviewing the source code with little success.","tags":[{"_id":"5181d0aa66a6f999a465eceb","slug":"ember.js","sort":0},{"_id":"535ee2951c67d1a4859d2fec","slug":"ember-cli","sort":1},{"_id":"514a3e17bf8213020000002f","slug":"amazon-ec2","sort":2}],"time":"regular","hours":"1","experience":"beginner","status":"waiting","suggested":[{"matchedBy":{"initials":"pg","userId":"5367fd6d1c67d1a4859d30e7"},"_id":"54fdd196f2a3df0c00175714","suggestedRate":{"expert":70,"total":100},"expertStatus":"waiting","expert":{"_id":"519815206c711c0200000004","email":"me@miguelmadero.com","gmail":"me@miguelmadero.com","name":"Miguel Madero","rate":70,"timezone":"GMT-0700 (PDT)","userId":"519814e266a6f999a465f2d5","tw":{"username":"mamadero"},"in":{"id":"6BcQzQq1cp"},"bb":{"id":"mamadero"},"so":{"link":"155069/miguel-madero"},"gh":{"username":"MiguelMadero"},"tags":[{"_id":"5181d0aa66a6f999a465eceb"}],"avatar":"//0.gravatar.com/avatar/eee0e8263681860505633a039af4a10e"}}],"title":"Deploy Ember-CLI WebApp to AWS with Node Http-Server & Broccoli","meta":{"title":"AirPair | ember.js, ember-cli and amazon-ec2 Request","canonical":"https://www.airpair.com/review/54fc99a1c1534a0c00e6ba9b","noindex":true},"reviewRender":true,"budget":"150"}
+
+
+==================================================================================
 
 Sean Bamforth sean.bamforth@gmail.com 54baeeb5af34e30900d1dcfa
 GET /requests/54a7cc9dc8e5b50b00f3b38c {} << https://www.airpair.com/meet-experts/54a7cc9dc8e5b50b00f3b38c || isBot:false:Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36

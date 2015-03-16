@@ -240,27 +240,17 @@ angular.module("APProfile", ['ngRoute', 'APFilters', 'APSvcSession', 'APTagInput
 
   DataService.experts.getMe({}, (expert) => {
     $scope.expert = expert
-    if (expert.hours) {
-      $scope.v0expert = true
-      $scope.firstName = Util.firstName(expert.name)
-    } else {
-      $scope.data = expert,_.extend(expert, $scope.data||{})
-      // console.log($scope.session.social.tw)
-      // if (!$scope.data.bio && $scope.session.social
-      //   && $scope.session.social.tw)
-      //   $scope.data.bio = $scope.session.social.tw._json.description
-      console.log($scope.data.brief)
-    }
+    $scope.data = expert,_.extend(expert, $scope.data||{})
   })
 
   $scope.save = () => {
     if ($scope.data._id)
       DataService.experts.updateMe(_.pick($scope.data,'_id','userId','tags','rate','brief'), (expert) => {
-        window.location = '/posts/me'
+        window.location = '/office'
       })
     else
       DataService.experts.create(_.pick($scope.data,'tags','rate','brief'), (expert) => {
-        window.location = '/posts/me'
+        window.location = '/office'
       })
   }
 })

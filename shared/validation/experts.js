@@ -20,17 +20,15 @@ var validation = {
 
   updateMe(user, original, ups)
   {
-    if (original.hours)
-      return `Expert update not yet supported for v0 users`
-
     if ( !_.idsEqual(original._id, ups._id) )
       return `Cannot update expert _id does not match original`
 
     if ( !_.idsEqual(original.userId, ups.userId) )
       return `Cannot update expert, not your userId`
 
-    if ( !ups.rate ) return `Cannot update expert without rate`
-    if ( !ups.tags || ups.tags.length == 0 ) return `Cannot update expert without tags`
+    var create = validation.create(user, ups)
+    if (create) return create.replace('create','update')
+
     if ( original.breif && !ups.brief ) return `Cannot update expert without brief`
   },
 

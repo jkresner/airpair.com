@@ -117,7 +117,7 @@ login = ->
         expect(aone.google).to.be.undefined
         expect(aone.googleId).to.be.undefined
         UserService.googleLogin.call SETUP.userSession('aone'), data.oauth.aone.google, (ee,user) ->
-          db.readUser user._id, (e,r) ->
+          db.readDoc 'User', user._id, (r) ->
             expect(r.googleId).to.equal(data.oauth.aone.google._json.id)
             expect(r.google._json.email).to.equal('airpairone001@gmail.com')
             expect(r.email).to.equal('airpairone001@gmail.com')
@@ -133,7 +133,7 @@ login = ->
         svcCtx.session.anonData = { email: null }
         UserService.googleLogin.call svcCtx, data.oauth.samt.google, (ee,user) ->
           expect(user).to.exist
-          db.readUser user._id, (e,r) ->
+          db.readDoc 'User', user._id, (r) ->
             expect(r.googleId).to.equal(data.oauth.samt.google._json.id)
             expect(r.google._json.email).to.equal("san.thanki@gmail.com")
             expect(r.email).to.equal("san.thanki@gmail.com")
@@ -148,7 +148,7 @@ login = ->
         svcCtx = SETUP.userSession('bbe')
         UserService.googleLogin.call svcCtx, data.oauth.bbe.google, (ee,user) ->
           expect(user).to.exist
-          db.readUser user._id, (e,r) ->
+          db.readDoc 'User', user._id, (r) ->
             expect(r.googleId).to.equal(data.oauth.bbe.google._json.id)
             expect(r.google._json.email).to.equal('ben.beetle@gmail.com')
             expect(r.email).to.equal('ben.beetle@gmail.com')
@@ -192,13 +192,13 @@ password = ->
           expect(emailTo.email).to.equal(adap.email)
           expect(emailTo.name).to.equal(adap.name)
           expect(generated_hash).to.not.be.empty
-          db.readUser adap._id, (eee,rrr) ->
+          db.readDoc 'User', adap._id, (rrr) ->
             expect(rrr.local.changePasswordHash).to.equal(generated_hash)
             old_password_hash = rrr.local.password
             data = { hash: generated_hash, password: new_password }
             PUT "/users/me/password", data, {unauthenticated: true}, (s) ->
               UserService.localLogin.call SETUP.userSession(), adap.email, new_password, (e,r) ->
-                db.readUser adap._id, (e,r) ->
+                db.readDoc 'User', adap._id, (r) ->
                   expect(r.local.password).to.exist
                   expect(old_password_hash).to.not.equal(r.local.password)
                   expect(r.local.changePasswordHash).to.be.empty
@@ -210,7 +210,7 @@ password = ->
       new_password = 'drowssap'
       spy = sinon.spy(mailman,'sendChangePasswordEmail')
       SETUP.addAndLoginLocalUser 'prak', (d) ->
-        db.readUser d._id, (eeee,rrrr) ->
+        db.readDoc 'User', ObjectId(d._id), (rrrr) ->
           expect(rrrr.local.changePasswordHash).to.be.undefined
           PUT '/users/me/password-change', {email: d.email}, {}, ->
             expect(spy.callCount).to.equal(1)
@@ -219,14 +219,14 @@ password = ->
             expect(emailTo.email).to.equal(d.email)
             expect(emailTo.name).to.equal(d.name)
             expect(generated_hash).to.not.be.empty
-            db.readUser d._id, (e,r) ->
-              expect(r.local.changePasswordHash).to.equal(generated_hash)
-              old_password_hash = r.local.password
+            db.readDoc 'User', d._id, (rr) ->
+              expect(rr.local.changePasswordHash).to.equal(generated_hash)
+              old_password_hash = rr.local.password
               data = { hash: generated_hash, password: new_password }
               PUT "/users/me/password", data, {unauthenticated: true}, (s) ->
                 UserService.localLogin.call SETUP.userSession(), d.email, new_password, (e,r) ->
                   if (e) then return done(e)
-                  db.readUser d._id, (e,r) ->
+                  db.readDoc 'User', d._id, (r) ->
                     if (e) then return done(e)
                     expect(r.local.password).to.exist
                     expect(old_password_hash).to.not.equal(r.local.password)
@@ -239,7 +239,7 @@ password = ->
       new_password = 'chessmac'
       spy = sinon.spy(mailman,'sendChangePasswordEmail')
       SETUP.addAndLoginLocalUser 'rpor', (user) ->
-        db.readUser user._id, (eeee,rrrr) ->
+        db.readDoc 'User', user._id, (rrrr) ->
           expect(rrrr.local.changePasswordHash).to.be.undefined
           PUT '/users/me/password-change', {email: user.email}, {}, ->
             expect(spy.callCount).to.equal(1)
@@ -249,7 +249,7 @@ password = ->
             expect(emailTo.name).to.equal(user.name)
             expect(generated_hash).to.not.be.empty
             # $log('generated_hash', generated_hash)
-            db.readUser user._id, (eee,rrr) ->
+            db.readDoc 'User', user._id, (rrr) ->
               expect(rrr.local.changePasswordHash).to.equal(generated_hash)
               PUT '/users/me/password-change', {email: user.email}, {}, ->
                 expect(spy.callCount).to.equal(2)
@@ -260,13 +260,13 @@ password = ->
                 expect(generated_hash2).to.not.be.empty
                 expect(generated_hash2).to.not.equal(generated_hash)
                 # $log('generated_hash2', generated_hash2)
-                db.readUser user._id, (ee,rr) ->
+                db.readDoc 'User', user._id, (rr) ->
                   expect(rr.local.changePasswordHash).to.equal(generated_hash2)
                   data = { hash: generated_hash2, password: new_password }
                   # $log('data', data)
                   PUT "/users/me/password", data, {unauthenticated: true}, (s) ->
                     UserService.localLogin.call SETUP.userSession(), user.email, new_password, (e,r) ->
-                      db.readUser user._id, (eeeee,rrrrr) ->
+                      db.readDoc 'User', user._id, (rrrrr) ->
                         expect(rrrrr.local.password).to.exist
                         expect(rrrrr.local.changePasswordHash).to.be.empty
                         spy.restore()
@@ -345,7 +345,7 @@ changeEmail = ->
     it 'Cannot change email to an existing users email', (done) ->
       SETUP.addAndLoginLocalUserWithEmailVerified 'scmo', (s) ->
         expect(s.emailVerified).to.be.true
-        PUT '/users/me/email', {email:'admin@airpair.com'}, {status:400}, (e)->
+        PUT '/users/me/email', {email:'ad@airpair.com'}, {status:400}, (e)->
           expect(e.message).to.include('Email belongs to another account')
           done()
 
@@ -446,7 +446,7 @@ withAnalytics = ->
   it 'New user has correct cohort information', (done) ->
     checkCohort = (userId) ->
       ->
-        db.readUser userId, (e,r) ->
+        db.readDoc 'User', userId, (r) ->
           {cohort} = r
           expect(moment(cohort.engagement.visit_first).unix()).to.equal(moment(cookieCreatedAt).unix())
           expect(cohort.engagement.visit_signup).to.be.exist

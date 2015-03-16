@@ -3,30 +3,6 @@ db = require('./setup/db')
 phlfKey = null
 phlfExp = null
 
-newCompleteRequestForAdmin = (userKey, requestData, cb) ->
-  SETUP.newCompleteRequest userKey, requestData, (r) ->
-    LOGIN 'admin', ->
-      GET "/adm/requests/user/#{r.userId}", {}, (rAdm) ->
-        expect(r.status).to.equal('received')
-        expect(rAdm.length).to.equal(1)
-        expect(rAdm[0].lastTouch.utc).to.exist
-        expectStartsWith(rAdm[0].lastTouch.by.name,data.users[userKey].name)
-        expect(rAdm[0].adm.active).to.be.true
-        expect(rAdm[0].adm.owner).to.be.undefined
-        expect(rAdm[0].adm.lastTouch).to.be.undefined
-        expect(rAdm[0].adm.submitted).to.exist
-        expect(rAdm[0].adm.received).to.be.undefined
-        expect(rAdm[0].adm.farmed).to.be.undefined
-        expect(rAdm[0].adm.reviewable).to.be.undefined
-        expect(rAdm[0].adm.booked).to.be.undefined
-        expect(rAdm[0].adm.paired).to.be.undefined
-        expect(rAdm[0].adm.feedback).to.be.undefined
-        expect(rAdm[0].adm.closed).to.be.undefined
-        expect(rAdm[0].messages.length).to.equal(0)
-        cb(r)
-
-
-
 module.exports = -> describe "Admin".subspec, ->
 
   before (done) ->
@@ -43,7 +19,7 @@ module.exports = -> describe "Admin".subspec, ->
 
   it 'Pipeliner can reply to a new request', (done) ->
     d = type: 'other', tags: [data.tags.node]
-    newCompleteRequestForAdmin 'hubr', d, (r) ->
+    SETUP.newCompleteRequestForAdmin 'hubr', d, (r) ->
       msg = type: 'received', subject: "test subject", body: "test body"
       PUT "/adm/requests/#{r._id}/message", msg, {}, (r1) ->
         adm1 = r1.adm
@@ -72,7 +48,7 @@ module.exports = -> describe "Admin".subspec, ->
 
   it 'Pipeliner can farm a new request', (done) ->
     d = type: 'other', tags: [data.tags.node]
-    newCompleteRequestForAdmin 'hbri', d, (r) ->
+    SETUP.newCompleteRequestForAdmin 'hbri', d, (r) ->
       PUT "/adm/requests/#{r._id}/message", { type: 'received', subject: "s", body: "b" }, {}, (r1) ->
         tweet = requestUtil.buildDefaultFarmTweet(r)
         PUT "/adm/requests/#{r._id}/farm", { tweet }, {}, (r1) ->
@@ -127,19 +103,105 @@ module.exports = -> describe "Admin".subspec, ->
                       done()
 
 
-  it.skip 'Pipeliner can update expert matching stats', (done) ->
+  it 'Pipeliner can suggest v0 expert', (done) ->
     d = type: 'other', tags: [data.tags.node]
-    newCompleteRequestForAdmin 'hubi', d, (r) ->
+    SETUP.ensureV0Expert 'azv0', ->
+      SETUP.newCompleteRequestForAdmin 'hbib', d, (r) ->
+        PUT "/adm/requests/#{r._id}/message", { type: 'received', subject: "s", body: "b" }, {}, (r1) ->
+          expect(r1.status,'waiting')
+          expect(r1.adm.owner,'ad')
+          GET "/experts/match/#{r._id}", {}, (matches) ->
+            expect(matches.length).to.equal(1)
+            expect(matches[0].matching).to.be.undefined
+            expertId = matches[0]._id
+            PUT "/matchmaking/experts/#{expertId}/matchify/#{r._id}", {}, {}, (exp1) ->
+              expect(exp1.matching).to.exist
+              PUT "/matchmaking/requests/#{r._id}/add/#{expertId}", {}, {}, (r2) ->
+                expect(r2.suggested.length).to.equal(1)
+                sug = r2.suggested[0]
+                expect(sug.matchedBy._id).to.exist
+                expectIdsEqual(sug.matchedBy.userId,data.users.admin._id)
+                expect(sug.matchedBy.initials).to.equal('ad')
+                expect(sug.matchedBy.type).to.equal('staff')
+                expectIdsEqual(sug.expert._id,data.experts.azv0._id)
+                expect(sug.expert.avatar).to.exist
+                LOGIN 'azv0', (sAzv0) ->
+                  GET "/requests/review/#{r._id}", {}, (rAzv0) ->
+                    expect(rAzv0.status).to.equal('waiting')
+                    seAzv0 = rAzv0.suggested[0].expert
+                    expectIdsEqual(seAzv0._id, data.experts.azv0._id)
+                    expect(seAzv0.isV0).to.be.true
+                    reply = expertComment: "I'll take it", expertAvailability: "Real-time", expertStatus: "available"
+                    PUT "/requests/#{r._id}/reply/#{seAzv0._id}", reply, { status: 403 }, (err) ->
+                      expectStartsWith(err.message, "Must migrate expert profile to reply")
+                      done()
+
+
+  it 'Pipeliner can update expert matching stats', (done) ->
+    d = type: 'other', tags: [data.tags.node]
+    SETUP.newCompleteRequestForAdmin 'hubi', d, (r) ->
       LOGIN phlfKey, (sAbha) ->
         reply = expertComment: "I'll take it", expertAvailability: "Real-time", expertStatus: "available"
-        PUT "/requests/#{r._id}/reply/#{data.experts.abha._id}", reply, {}, (r1) ->
-          LOGIN 'admin', data.users.admin, ->
-            PUT "/matchmaking/experts/#{data.experts.abha._id}/matchify", {}, {}, (eAbha) ->
-              expect(eAbha.matching).to.exist
+        PUT "/requests/#{r._id}/reply/#{phlfExp._id}", reply, {}, (r1) ->
+          expect(r1.suggested[0].expert.avatar).to.exist
+          LOGIN 'admin', ->
+            PUT "/matchmaking/experts/#{phlfExp._id}/matchify/#{r._id}", {}, {}, (exp2) ->
+              expect(exp2.avatar).to.exist
+              expect(exp2.matching).to.exist
+              expect(exp2.matching.experience).to.exist
+              expect(exp2.matching.replies).to.exist
               done()
 
 
-  it.skip 'Pipeliner can junk request', (done) ->
-  it.skip 'Pipeliner setting to cancel closes request', (done) ->
-  it.skip 'Pipeliner setting to complete closes request', (done) ->
+  it 'Pipeliner can junk request', (done) ->
+    adm = data.users.admin
+    d = type: 'mentoring', tags: [data.tags.mongo]
+    SETUP.newCompleteRequestForAdmin 'tylb', d, (r,sCust) ->
+      expect(r.adm.close).to.be.undefined
+      expect(r.lastTouch.action).to.equal('updateByCustomer')
+      expectIdsEqual(r.lastTouch.by._id,sCust._id)
+      # bit whacky to get the client to do this, but ehhhhh
+      r.adm.owner = adm.email.replace("@airpair.com","")
+      r.status = 'junk'
+      PUT "/adm/requests/#{r._id}", r, {}, (r2) ->
+        expect(r2.status).to.equal('junk')
+        expect(r2.adm.closed).to.exist
+        expect(r2.adm.lastTouch.action).to.equal('closed:junk')
+        expectIdsEqual(r2.adm.lastTouch.by._id,adm._id)
+        expect(r2.lastTouch.action).to.equal('updateByCustomer')
+        expectIdsEqual(r2.lastTouch.by._id,sCust._id)
+        done()
 
+
+  it 'Pipeliner setting to canceled closes request', (done) ->
+    adm = data.users.admin
+    d = type: 'resources', tags: [data.tags.mongo]
+    SETUP.newCompleteRequestForAdmin 'tbau', d, (r,sCust) ->
+      # bit whacky to get the client to do this, but ehhhhh
+      r.adm.owner = adm.email.replace("@airpair.com","")
+      r.status = 'canceled'
+      PUT "/adm/requests/#{r._id}", r, {}, (r2) ->
+        expect(r2.status).to.equal('canceled')
+        expect(r2.adm.closed).to.exist
+        expect(r2.adm.lastTouch.action).to.equal('closed:canceled')
+        expectIdsEqual(r2.adm.lastTouch.by._id,adm._id)
+        done()
+
+
+  it.skip 'Pipeliner setting to complete closes request', (done) ->
+    adm = data.users.admin
+    d = type: 'resources', tags: [data.tags.mongo]
+    SETUP.newCompleteRequestForAdmin 'tbar', d, (r,sCust) ->
+      # bit whacky to get the client to do this, but ehhhhh
+      r.adm.owner = adm.email.replace("@airpair.com","")
+      r.status = 'complete'
+      PUT "/adm/requests/#{r._id}", r, { status: 403 }, (e1) ->
+        expectStartsWith(e1.message,"Cannot complete a request with no booked experts")
+
+        # TODO finish full story and test complete update at the end
+
+        # expect(r2.status).to.equal('complete')
+        # expect(r2.adm.closed).to.exist
+        # expect(r2.adm.lastTouch.action).to.equal('closed:complete')
+        # expectIdsEqual(r2.adm.lastTouch.by._id,adm._id)
+        done()
