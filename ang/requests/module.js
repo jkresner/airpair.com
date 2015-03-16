@@ -132,6 +132,10 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
       $scope.isExpert = Shared.roles.request.isExpert($scope.session,r)
       if ($scope.isExpert) {
         var sug = r.suggested[0]
+        if (sug.expert.isV0) {
+          $scope.isV0Expert = true
+          if (!$scope.reviewClass) $scope.reviewClass = 'inactive isV0Expert'
+        }
         $scope.displayRate = sug.suggestedRate.expert
         $scope.notYetReplied = !sug.expertStatus || sug.expertStatus == 'waiting'
         if ($scope.notYetReplied)
