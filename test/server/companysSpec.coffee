@@ -29,6 +29,7 @@ module.exports = -> describe "Companys".subspec, ->
     SETUP.addAndLoginLocalUser 'mthm', (smthm) ->
       comp = _.clone(data.v0.companys.ldhm)
       comp.contacts[0].userId = smthm._id
+      comp._id = newId()
       db.ensureDocs 'Company', [comp], (r) ->
         SETUP.addAndLoginLocalUser 'ktom', (sktom) ->
           LOGIN 'admin', ->

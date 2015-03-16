@@ -3,6 +3,7 @@ module.exports = [
   '/bookings',
   '/bookings/*',
   '/dashboard',
+  '/office',
   '/about',
   '/posts*',
   '*/so-welcome',

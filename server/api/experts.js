@@ -6,6 +6,7 @@ export default initAPI(
   getMe: (req) => [],
   getForExpertsPage: (req) => [],
   search: (req) => [req.params.id],
+  getNewForAdmin: (req) => [],
   getMatchesForRequest: (req) => [req.request],
   getMatchesForDashboard: (req) => [],
   create: (req) => [req.body],

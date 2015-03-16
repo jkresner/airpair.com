@@ -69,6 +69,12 @@ var stubs = {
       resp.items[0].payout_item.amount = payload.items[0].amount.toString()
       cb(null, resp)
     })
+  },
+
+  stubGoogleTimezone(response) {
+    return sinon.stub(Timezone,'data', (k,D,n,cb) => {
+      cb(null, response || data.wrappers.timezone_melbourne)
+    })
   }
 
 }

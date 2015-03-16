@@ -211,9 +211,13 @@ var util = {
     if (!match)
       return null
     return match[1]
+  },
+
+  getYouTubeThumb(url) {
+    if (url.indexOf('http://youtu.be/') == -1) return null
+    var youTubeId = url.replace('http://youtu.be/', '')
+    return `https://img.youtube.com/vi/${youTubeId}/hqdefault.jpg`
   }
-
-
 
 }
 

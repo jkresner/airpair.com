@@ -3,13 +3,15 @@ var db                    = require('./db')
 var stories               = require('./stories')
 var stubs                 = require('./../helpers/stubs')
 
-
 var setup = {
 
   init(done)
   {
-    var _id = data.users.admin._id
-    db.Models.User.findOneAndUpdate({_id}, data.users.admin, { upsert: true }, done)
+    new db.Models.User(data.users.admin).save((e,r) => {
+      if (e) return done()  // we failed to insert as it's done already
+      $log('mongodb_restore'.cyan)
+      db.RestoreBSONData(done)
+    })
   },
 
   upsertProviderProfile(provider, userKey, done)
@@ -20,12 +22,14 @@ var setup = {
 
   initTags(done)
   {
-    db.initCollectionData('Tag', {slug:'angularjs'}, _.values(data.tags), done)
+    done()
+    // db.initCollectionData('Tag', {slug:'angularjs'}, _.values(data.tags), done)
   },
 
   initTemplates(done)
   {
-    db.initCollectionData('Template', {key:'post-repo-readme'}, data.templates, done)
+    done()
+    // db.initCollectionData('Template', {key:'post-repo-readme'}, data.templates, done)
   },
 
   initPosts(done)
@@ -48,10 +52,10 @@ var setup = {
   {
     db.Models.Expert.findOne({_id:data.experts.admb._id}, function(e,r) {
       if (!r) {
-        db.ensureExpert('dros', () =>
-          db.ensureExpert('tmot', () =>
-            db.ensureExpert('abha', () =>
-              db.ensureExpert('admb', done ))))
+        SETUP.ensureV0Expert('dros', () =>
+          SETUP.ensureV1LoggedInExpert('abha', () =>
+            SETUP.ensureV0Expert('tmot', () =>
+              SETUP.ensureV0Expert('admb', () => done() ))))
       }
       else
         done()

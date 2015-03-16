@@ -10,5 +10,9 @@ export function md5(str, encoding) {
 
 
 export function gravatarUrl(email) {
+  if (!email) {
+    $log(`gravatarUrl.err called with null email`.red)
+    return null
+  }
   return `//0.gravatar.com/avatar/${md5(email)}`
 }
