@@ -27,6 +27,7 @@ var UserCopy = {
   email:            { type: String, unique: true, sparse: true, trim: true, lowercase: true },
   emailVerified:    { type: Boolean, required: true, default: false },
   name:             { type: String, trim: true },
+  bio:              { type: String },
   initials:         { type: String, lowercase: true, trim: true },
   username:         { type: String, lowercase: true, trim: true },
   localization:     { location: String, timezone: String },
@@ -108,8 +109,9 @@ module.exports = mongoose.model('Expert', new Schema({
   busyUntil:      { type: Date, default: Date },
   updatedAt:      { type: Date, default: Date },
 
+  // to get rid of
   // matching
-  karma:          { required: true, type: Number, default: 0 },
+  mojo:           { required: true, type: Number, default: 0 },
   matching:       {
     replies:      {
       suggested:  Number,

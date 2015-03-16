@@ -28,13 +28,16 @@ function selectByRoleCB(ctx, errorCb, cb) {
       else cb(null, Data.select.byView(r, 'customer'))
     }
     else {
-      // -- we don't want experts to see other reviews
-      r.suggested = Data.select.meSuggested(r, ctx.user._id)
-      if (r.suggested.length == 1)
-        return cb(null, Data.select.byView(r, 'review'))
-
       ExpertsSvc.getMe.call(ctx, (ee,expert) => {
-        if (expert && expert.rate) r.suggested.push({expert})
+        // -- we don't want experts to see other reviews
+        r.suggested = Data.select.meSuggested(r, ctx.user._id)
+        if (r.suggested.length == 0 && expert && expert.rate)
+          r.suggested.push({expert})
+        else if (expert.isV0 && r.suggested.length == 1)
+          r.suggested[0].expert.isV0 = true
+        else if (r.suggested.length > 1)
+          throw Error("Cannot selectByExpert and have more than 1 suggested")
+
         cb(null, Data.select.byView(r, 'review'))
       })
     }
@@ -194,6 +197,8 @@ var save = {
     if (!existing) {
       var newSuggestion = _.extend(reply, { expert })
       Rates.addSuggestedRate(request, newSuggestion)
+      newSuggestion.matchedBy = { _id: svc.newId(),
+        type: 'self', userId: this.user._id, initials: expert.initials }
       suggested.push(newSuggestion)
     }
     else {
@@ -235,7 +240,7 @@ var save = {
 var admin = {
 
   updateByAdmin(original, update, cb) {
-    var action = 'update'
+    var action = 'updateByAdmin'
     var {adm,status} = update
     if (original.adm.active &&
       (status == 'canceled' || status == 'complete' || status == 'junk')
@@ -299,9 +304,10 @@ var admin = {
   addSuggestion(request, expert, body, cb)
   {
     var {adm,suggested} = request
+    var initials = this.user.email.replace("@airpair.com", "")
     expert = Data.select.expertToSuggestion(expert)
     suggested.push({
-      matchedBy: { userId: this.user._id, initials: 'pg' },
+      matchedBy: { _id: svc.newId(), type: 'staff', userId: this.user._id, initials },
       expertStatus: "waiting",
       expert
     })

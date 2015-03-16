@@ -1022,6 +1022,84 @@ module.exports = {
         "by" : { "_id" : ObjectId("550392c121ab871a8dd15baf"),
            "name" : "Ashish Awaghad" }
     } ]
+  },
+
+
+  azv0: {
+    "_id" : ObjectId("537a8e0c77bbd10200a70b0f"),
+    "availability" : "",
+    "bb" : {"id" : "toli-oselot" },
+    "bookMe" : {
+        "rate" : "100",
+        "rake" : "20",
+        "urlSlug" : "nycitt",
+        "urlBlog" : "",
+        "enabled" : true,
+        "coupons" : []
+    },
+    "brief" : "A little bit about me:\n- I own a startup Software Consultancy called Oselot (making Enterprise Workflow software). It's about 3 weeks old :)\n- Recently left my job in Frontend Architecture @ Fed. Used to lead teams of 5-10 developers, and build  architecture and common components for the entire Bank system (has 20k employees over 12 branches)\n- HUUUUGE proponent of Pair Programming. @ fed I pioneered a team room where I spent ~ 90% of my coding time in Senior - Senior & Senior - Junior coding situations, also set up lots of Junior - Junior parterships.\n- I love Backbone.js. I can be convinced to pair program Angular but for all of my projects I use Backbone.js\n- Huge Require.js user…If you think that Require is more than a simple dependency management tool, then we’re gonna get along :)\n- Bower ftw\n- Really big on abstraction\n- Node.js/NPM user. Duh\n\nYou:\n - Junior-Mid level Backbone.js programmer who needs some advice/code review/architecture (higher rate)\n - High level Backbone.js programmer who wants to exchange tips (i.e. we can learn from one another) (much lower rate or hours exchange)\n- LOOOVE Backbone.js.\n- Have used/want to use Grunt, Bower, Require.js\n\nWhat I Want to Get Out of This:\n- Learning cool programming techniques from similar programmers\n- Change of scenery from my work\n- Future partnerships for my company (contractor, employee, business partner, work4food, whatevs)\n- $$$. Running a startup's expensive (it current is funded off of my savings account and bleeds out $5,000-$6,000 weekly). ",
+    "email" : "toli@oselot.com",
+    "gh" : {
+        "id" : 613500,
+        "username" : "nycitt",
+        "location" : null,
+        "blog" : null,
+        "gravatar_id" : "16746e94fa053c47bced933975d87dde",
+        "followers" : 2
+    },
+    "gmail" : "toli@oselot.com",
+    "homepage" : "airpair.com",
+    "hours" : "5-10",
+    "in" : {
+        "id" : "Wc6bYsfE6z",
+        "displayName" : "Anatoliy Zaslavskiy"
+    },
+    "karma" : 0,
+    "minRate" : 70,
+    "name" : "Anatoliy Zaslavskiy",
+    "pic" : "https://secure.gravatar.com/avatar/16746e94fa053c47bced933975d87dde",
+    "rate" : 110,
+    "so" : {
+        "id" : 1769217,
+        "website_url" : "http://www.linkedin.com/in/tolicodes",
+        "link" : "1769217/anatoliy-zaslavskiy",
+        "reputation" : 467,
+        "profile_image" : "https://www.gravatar.com/avatar/16746e94fa053c47bced933975d87dde?s=128&d=identicon&r=PG"
+    },
+    "status" : "ready",
+    "tags" : [
+        {
+            "soId" : "node.js",
+            "short" : "node.js",
+            "name" : "node.js",
+            "_id" : "514825fa2a26ea0200000028",
+            "levels" : [
+                "beginner",
+                "intermediate",
+                "expert"
+            ]
+        },
+        {
+            "soId" : "grunt",
+            "short" : "grunt",
+            "name" : "grunt",
+            "_id" : "51828a7b66a6f999a465f293",
+            "levels" : [
+                "beginner",
+                "intermediate",
+                "expert"
+            ]
+        }
+    ],
+    "timezone" : "GMT-0400 (EDT)",
+    "tw" : {
+        "id" : 2508694140,
+        "username" : "OselotTech",
+        "pic" : { "value" : "https://abs.twimg.com/sticky/default_profile_images/default_profile_1_normal.png" }
+    },
+    "updatedAt" : "2014-05-19T23:04:44.000Z",
+    "userId" : ObjectId("537a79041c67d1a4859d3263"),
+    "username" : "nycitt"
   }
 
 }

@@ -84,8 +84,12 @@ var db = {
     Models.View.find({anonymousId}, cb)
   },
 
-  readUser(id, cb) {
-    Models.User.findOne({_id:id}, (e,r)=> { r.toObject(); cb(e,r); })
+  readDoc(modelName, _id, cb) {
+    if (typeof _id === 'string') _id = ObjectId(_id)
+    //-- We use the collection property so we don't get
+    //-- Mongoose Model defaults and such, hence a pure view of
+    //-- What's in the DB
+    Models[modelName].collection.findOne({_id}, (e,r) => cb(r) )
   },
 
   ensureSettings(user, settings, cb) {

@@ -76,13 +76,10 @@ var get = {
         for (var exp of experts) {
           exp.tags = selectCB.inflatedTagsNoCB(exp)
           // $log('goin', exp._id, exp.tags)
-          if (exp.user) existing.push(exp)
-          else {
-            exp.score = get.calcExpertScore(exp,request.tags)
-            exp.avatar = md5.gravatarUrl(exp.email)
-            if (_.find(existingExpertIds,(id)=>_.idsEqual(id,exp._id)))
-              existing.push(exp)
-          }
+          exp.score = get.calcExpertScore(exp,request.tags)
+          exp.avatar = md5.gravatarUrl(exp.email||exp.user.email)
+          if (_.find(existingExpertIds,(id)=>_.idsEqual(id,exp._id)))
+            existing.push(exp)
         }
         var unique = _.difference(experts, existing)
 
@@ -138,18 +135,37 @@ function updateWithTouch(expert, action, trackData, cb) {
 
   var tagIdx = 0
   for (var t of expert.tags) {
-    t.sort = tagIdx
+    if (!t.sort)
+      t.sort = tagIdx
     tagIdx = tagIdx + 1
   }
 
   //-- consistency with v0 + save db space
-  if (expert.user.social && expert.user.social.so)
-    expert.user.social.so.link = expert.user.social.so.link.replace('http://stackoverflow.com/users/','')
+  if (expert.user.social) {
+    if (expert.user.social.so)
+      expert.user.social.so.link = expert.user.social.so.link.replace('http://stackoverflow.com/users/','')
+    if (expert.user.google) {
+      expert.user.social.gp = expert.user.google
+      delete expert.user.google
+    }
+  }
 
   if (action == 'create')
     svc.create(expert, cb)
-  else
+  else {
+
+    if (expert.gp || expert.gh || expert.so || expert.bb ||
+      expert.in || expert.tw || expert.name || expert.username ||
+      expert.gmail || expert.timezone || expert.location ||
+      expert.homepage || expert.karma)
+    {
+      svc.updateWithUnset(expert._id, select.v0unset, (e,r)=>{})
+      expert = _.omit(expert, _.keys(select.v0unset))
+      $log(`Migrating v0 expert ${expert._id} ${expert.user.name}`.yellow)
+    }
+
     svc.update(expert._id, expert, cb)
+  }
 
   if (trackData)
     analytics.track(this.user, this.sessionID, 'Save',
@@ -240,7 +256,7 @@ var save = {
 
             // $log('updaing', expert._id, expert.tags, matching.replies.last10, matching)
             svc.update(expert._id, _.extend(expert, {matching}), (e,r)=>{
-              if (r) r.avatar = md5.gravatarUrl(r.email)
+              if (r) r.avatar = md5.gravatarUrl(r.email||r.user.email)
               r.score = get.calcExpertScore(r,request.tags)
               r.tags = expert.tags
               // $log('r.tags', r.tags)

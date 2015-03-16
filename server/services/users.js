@@ -77,34 +77,47 @@ function updateAsIdentity(data, trackData, cb) {
     var ctxUser = this.user
     var id = this.user._id
 
-    // if (this.user)
-    //   User.findOneAndUpdate({_id:this.user._id}, { '$set': { name } }, cbSession(this, cb))
-    // else {
-    //   this.session.anonData.name = name
-    //   return getSession.call(this, cb)
-    // }
+    // var unset = { bitbucketId: 1 }
+    // svc.updateWithUnset(id, unset, (e,user) => {})
 
     // o.updated = new Date() ??
     // authorization etc.
-    // $log('update', data)
     svc.updateWithSet(id, data, (e,user) => {
       if (e) return cb(e)
       if (!user) return cb(Error(`Failed to update user with id: ${id}`))
 
       // console.log('track save', ctx, data)
-      //-- belongs in middleware ?
-      // if (ctxUser)
-        // ctx.session.passport.user = data.select.sessionFromUser(r)
-      //this.user.emailVerified = true
 
       //-- Very magic important line
-
-      // $log('in updateAsIdentity'.blue, user)
       if (!_.isEqual(this.session.passport.user, Data.select.sessionFromUser(user)))
         this.session.passport.user = Data.select.sessionFromUser(user)
 
-      // $log('going to return', user)
-      done(null, user)
+      //-- Migrate social accounts to v1 structure
+      {
+        var migrate = false
+        var social = user.social || {}
+        var connected = _.keys(social).length
+        if (user.bitbucket && !social.bb) social.bb = user.bitbucket
+        if (user.github && !social.gh) social.gh = user.github
+        if (user.linkedin && !social.in) social.in = user.linkedin
+        if (user.stack && !social.so) social.so = user.stack
+        if (user.twitter && !social.tw) social.tw = user.twitter
+        if (_.keys(social).length != connected) migrate = true
+        user.social = social
+        // $log('migrate.social', migrate)
+        var bookmarks = user.bookmarks || []
+        var tags = user.tags || []
+        var siteNotifications = user.siteNotifications || []
+        var roles = user.roles || []
+ // || !user.bookmarks || !user.tags || !user.siteNotifications || !user.roles
+        if (migrate) {
+          $log(`Mirgrating user ${user._id} ${user.email}`.yellow)
+          svc.updateWithSet(id, {social,bookmarks,tags,siteNotifications,roles}, done)
+        }
+        else
+          done(null, user)
+      }
+
     })
   }
   else {

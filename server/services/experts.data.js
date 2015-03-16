@@ -50,6 +50,7 @@ var data = {
       'matching': 1,
       'lastTouch': 1,
       'hours': 1,
+      'isV0': 1,
       'gh': 1,
       'gp': 1,
       'tw': 1,
@@ -63,12 +64,14 @@ var data = {
       '_id': 1,
       'name': 1,
       'email': 1,
+      'emailVerified': 1,
       'username': 1,
       'initials': 1,
       'bio': 1,
       'localization.location': 1,
       'localization.timezone': 1,
-      'social':1
+      'social':1,
+      'google':1
     },
     updateME: {
       '_id': 1,
@@ -85,9 +88,25 @@ var data = {
 
       'gmail': 1,
       'pic': 1,
-      'karma': 1,
+      // 'karma': 1,
       //v0 ?
       bookMe: 1
+    },
+    v0unset: {
+      'name': 1,
+      'email': 1,
+      'username': 1,
+      'location': 1,
+      'timezone': 1,
+      'homepage': 1,
+      'karma': 1,
+      'gh': 1,
+      'gp': 1,
+      'tw': 1,
+      'in': 1,
+      'al': 1,
+      'so': 1,
+      'bb': 1,
     },
     cb: {
       addAvatar(cb) {
@@ -100,15 +119,20 @@ var data = {
       me(cb) {
         return (e,r) => {
           if (e || !r) return cb(e, r)
-          if (r.user) {
+
+          if (!r.user) {
+            r.isV0 = true
+            r.avatar = (r.email) ? md5.gravatarUrl(r.email) : r.pic
+          }
+          else {
             delete r.user._id
             var social = r.user.social
             // how we handle staying v0 on front-end
             r = _.extend(_.extend(r,r.user),r.social)
             r.location = r.localization.location
             r.timezone = r.localization.timezone
+            r.avatar = md5.gravatarUrl(r.email)
           }
-          r.avatar = md5.gravatarUrl(r.email||r.user.email)
 
           r.minRate = r.minRate || r.rate
           r = selectFromObject(r, data.select.me)

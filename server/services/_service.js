@@ -116,6 +116,16 @@ export default function(model, logging)
         if (cb) cb(e, r)
       })
     },
+    updateWithUnset(_id, unsetFields, cb) {
+      // $log('updateWithUnset'.yellow, unsetFields)
+      if (!_id) return cb(new Error('Cannot update object by null id'), null)
+      _id = ObjectId(_id)
+      model.collection.update({_id}, { $unset: unsetFields }, {}, (e, r) => {
+        if (e || !r) $log('svc.updateWithUnset.error'.red, _id, e, unsetFields)
+        if (logging) $log('svc.updated', r)
+        if (cb) cb(e, r)
+      })
+    },
     updateBulk(list, cb) {
       // $log('updateBulk'.yellow, list)
       var bulk = model.collection.initializeOrderedBulkOp()
