@@ -67,7 +67,7 @@ var viewSvc = {
   }
 }
 
-function $$log(action, data, user, sessionID) {
+function $$log(action, data, user, sessionID, ctx) {
   //-- TODO think about adding persistence
   var uid = (user) ? user.email || user._id : sessionID.substring(0,12)
 
@@ -75,9 +75,9 @@ function $$log(action, data, user, sessionID) {
     case 'First':
       var ref = (data.ref) ? ` <<< ${data.ref}` : ''
       if (data.url.indexOf('so-welcome') != -1)
-        $log(`FIRST   ${uid} > ${data.url}${ref}`.yellow)
+        $log(`FIRST   ${uid}:${ctx.ip} > ${data.url}${ref}`.yellow)
       else
-        $log(`FIRST   ${uid} > ${data.url}${ref}`.cyan)
+        $log(`FIRST   ${uid}:${ctx.ip} > ${data.url}${ref}`.cyan)
       break
     case 'View':
       if (data.url.indexOf('so-welcome') != -1)
@@ -133,7 +133,7 @@ var analytics = {
   track(user, sessionID, event, properties, context, done) {
     // var payload = util.buildSegmentPayload('track', user, sessionID, {event,properties,context})
     // segment.track(payload, done || doneBackup)
-    $$log(event,properties,user,sessionID)
+    $$log(event,properties,user,sessionID, context)
     done = done || (doneBackup || function() {})
     done()
   },
