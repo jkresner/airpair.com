@@ -87,8 +87,14 @@ angular.module("AP", ['ngRoute', 'ngAnimate',
 
   if (angular.element('#serverTemplate').length > 0)
   {
-    // '/c++/posts/preparing-for-cpp-interview'
-    window.initialLocation = window.location.pathname.toString().replace(/\+/g,"\\\+");
+
+    window.initialLocation = window.location.pathname.toString()
+      .replace(/\+/g,"\\\+") // '/c++/posts/preparing-for-cpp-interview'
+      .replace(/f\%23/g,"f\\\#") // '/f%23/tips-n-tricks/blah'
+      .replace(/c\%23/g,"c\\\#") // '/c%23/interview-questions'
+
+    console.log('kini', window.initialLocation)
+
     $routeProvider.when(initialLocation, {
       template: angular.element('#serverTemplate').html(),
       controller: 'ServerTemplateCtrl'
