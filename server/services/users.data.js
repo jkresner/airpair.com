@@ -21,6 +21,7 @@ var select = {
     'github.displayName': 1,
     'google.id':1,
     'google._json.link':1,
+    'google._json.email':1,
     'linkedin.id': 1,
     'stack.user_id': 1,
     'stack.link': 1,
@@ -44,7 +45,7 @@ var select = {
     'social.in.id': 1,
     'social.tw.username': 1,
     'social.al.username': 1,
-    'social.gp.link': 1,
+    'social.gp': 1,
   },
   usersInRole: {
     '_id': 1,
@@ -137,7 +138,7 @@ var data = {
 
           if (r.google) {
             r.social = r.social || {}
-            r.social.gp = { link: r.google._json.link }
+            r.social.gp = { link: r.google._json.link, email: r.google._json.email }
           }
 
           var obj = util.selectFromObject(r, data.select.sessionFull)

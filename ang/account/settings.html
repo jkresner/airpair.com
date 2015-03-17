@@ -1,0 +1,23 @@
+<header>
+  <ol class="entry-meta breadcrumb">
+    <li>Settings</li>
+  </ol>
+</header>
+
+<section id="settings">
+
+
+  <section class="password" ng-if="session.emailVerified">
+    <h3 class="underline">Login info</h3>
+
+    <h4>Password</h4>
+    <a href="#" ng-click="sendPasswordChange()" class="btn">Send password reset email</a>
+    <alert ng-repeat="alert in passwordAlerts" type="{{alert.type}}"><span ng-bind-html="alert.msg | html"></span></alert>
+
+    <h4>Login with google</h4>
+    <p ng-if="session.social.gp">Google login enabled with <a href="{{session.social.gp.link}}" target="_blank">{{session.social.gp.email}}</a></p>
+    <p ng-if="!session.social.gp">Google login not setup</p>
+  </section>
+
+
+ </section>
