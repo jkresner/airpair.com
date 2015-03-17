@@ -51,7 +51,7 @@ var middleware = {
       {
         req.session.firstRequest = { url: req.url }
         if (req.header('Referer')) { req.session.firstRequest.ref = req.header('Referer') }
-        analytics.track(null, req.sessionID, 'First', req.session.firstRequest, {}, () => {})
+        analytics.track(null, req.sessionID, 'First', req.session.firstRequest, { ip: req.ip }, () => {})
       }
     }
     next()
