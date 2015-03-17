@@ -204,8 +204,16 @@ nav#side {
   bottom:0;
   margin:0;
   z-index:2020;
+  font-size:15px;
+  left:0;
+  width:@sideNavWidth;
+  background:@blackgray;
+
+  a { color:@lightblue }
+  a:hover { color:@orange }
 
   header {
+    text-align:right;
     background:@blackgray;
     height:35px;
     padding:5px 8px;
@@ -224,7 +232,6 @@ nav#side {
     }
   }
 
-
   figure { text-align:center }
   figure img {
     border:solid 1px white;
@@ -235,76 +242,47 @@ nav#side {
     margin:0 auto;
   }
 
-  figcaption {
-    padding:4px 0px;
-    text-align:center;
-    font-size:11px;
-  }
-
   section {
-    padding:9px 10px;
-    margin-top:4px;
+    padding:8px 6px 9px 4px;
+    margin-top:6px;
+    color:@turquoise;
   }
-
-}
-
-nav#side {
-  font-size:13px;
-  left:0;
-  width:@sideNavWidth;
-  background:@blackgray;
-
-  a { color:@lightblue }
-  a:hover { color:@orange }
 
   label {
     font-weight:normal
   }
 
-  header {
-    text-align:right;
-  }
-
-  section {
-    color:@turquoise;text-transform:uppercase;
-  }
-
   ul { padding:3px 0;margin:0 }
 
   li {
-    font-weight:normal;
-    border:none;
     background:none;
     list-style:none;
-    border-bottom:solid 1px @gray;
     color:white;
-    padding:2px 1px 3px 1px;
-    text-transform:none;
+    margin:0 0 10px 0;
+    padding:0px 0px 5px 0px;
+    span { display:inline-block; }
+    img { margin:0 9px 0 0;background:none;border-radius:50%;display:inline-block; }
+    a { display:block }
+    a:hover { color:@orange; img { background:@orange } }
+  }
+  li.promt {
+    margin-bottom:0;
   }
 
-  .bookmarks li {
-    margin:0;
-    font-size:10px;
-    height:19px;
-    width: 120px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    padding:2px 1px 2px 1px;
-
-    a { width:120px }
+  .gethelp {
+    margin:10px 0 0px 0;
+    img { height:20px;margin:-3px 5px 0 -12px; }
+    a { background:none;padding:3px 0 0 2px;width:100%;height:30px; }
+    a:hover { background:@orangehighlight;color:white }
   }
 
-  section.login {
-    height:30px;
-    border:solid 1px green;
-  }
-
+  .avatar { border-radius:50% }
   .welcome {
     text-transform:none;
     padding:9px 8px;
     span {
-      color:white;display:block
+      // color:white;
+      // display:block
     }
     i { font-size:12px }
     figure {
@@ -318,34 +296,8 @@ nav#side {
     ul.main {
       font-size:12px;
       li { color:gray; }
-      a { font-weight:bold; }
-    }
-  }
-
-  a.icon {
-    display:block;
-    width:100%;
-    border-bottom: 1px solid #4d4e4e;
-    color: white;
-    padding: 2px 1px 3px;
-    text-transform: none;
-    img { display:none }
-
-    i {
-      display:none;
-      position:relative;
-      top:-32px;
-      left:-2px;
-      opacity:0.9;
-      background:@orange;
-      border-radius:7px;
-      width:14px;
-      height:14px;
-      float:right;
-      font-style:normal;
-      font-size:9px;
-      font-weight:bold;
-      color:white;
+      // a { font-weight:bold; }
+      // a:hover { !important }
     }
   }
 
@@ -355,48 +307,37 @@ nav#side {
 }
 
 nav#side.collapse {
-  section {
-    text-align:center;
-    padding:14px 1px;
-    figure {
-      margin-top:10px;
-      img {
-        width:28px;
-        height:28px;
-        border:none;
-        margin:0;
-      }
-    }
-  }
-  ul { display:none }
-  label { display:none }
+  width:40px;
   opacity:.9;
 
-  a.icon {
-    text-align:center;
-    border:none;
-    padding:0;
-    span { display:none }
-    img {
-      display:inline-block;
-      width:28px;
-      height:28px;
-      border:none;
-      margin:0; }
-
-    i {
-      display:block;
-    }
-
+  figure img {
+    width:30px;
+    height:30px;
+    margin:0;
   }
 
-  #navAbout { margin-top:30px }
-}
+  section {
+    text-align:center;
+    padding:2px 3px 6px 4px;
+  }
+  a span { display:none }
 
-nav#side.collapse {
-  width:40px;
-  section.main {
-    display:none
+  .gethelp {
+    margin:10px 0 4px 0;
+    a { padding:0;background:@orange;border-radius:50%;width:32px;margin:0;display:block }
+    img { margin:0px; }
+  }
+
+  label { display:none }
+
+  #navAbout { margin-top:30px }
+
+  li {
+    img { background:#343c51 }
+  }
+
+  li.promt {
+    display:none;
   }
 }
 
