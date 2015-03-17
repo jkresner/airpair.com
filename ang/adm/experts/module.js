@@ -4,7 +4,7 @@ angular.module("ADMExperts", ['APRoutes'])
 
   var route = apRouteProvider.route
   route('/adm/experts', 'Experts', require('./list.html'))
-  route('/adm/experts/:id', 'Expert', require('./item.html'))
+  // route('/adm/experts/:id', 'Expert', require('./item.html'))
 
 })
 
@@ -39,15 +39,15 @@ angular.module("ADMExperts", ['APRoutes'])
 
 })
 
-.controller('ExpertCtrl', function($scope, $routeParams, ServerErrors, AdmDataService) {
+// .controller('ExpertCtrl', function($scope, $routeParams, ServerErrors, AdmDataService) {
 
-  var setScope = (r) =>
-    $scope.order = r
+//   var setScope = (r) =>
+//     $scope.order = r
 
-  $scope.fetch = () =>
-    AdmDataService.bookings.getOrder({_id:$routeParams.id}, setScope,
-      ServerErrors.fetchFailRedirect('/adm/experts'))
+//   $scope.fetch = () =>
+//     AdmDataService.bookings.getOrder({_id:$routeParams.id}, setScope,
+//       ServerErrors.fetchFailRedirect('/adm/experts'))
 
-  $scope.fetch()
+//   $scope.fetch()
 
-})
+// })
