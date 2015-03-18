@@ -19,7 +19,8 @@ angular.module("ADMRedirects", [])
     $scope.createRedirect = function() {
       var d = { previous: $scope.previous, current: $scope.current, type: $scope.type }
       AdmDataService.createRedirect(d, function (result) {
-        $scope.redirects.push(result);
+
+        $scope.redirects = _.union([result],$scope.redirects)
       })
     }
 
