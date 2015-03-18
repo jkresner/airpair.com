@@ -1,8 +1,9 @@
 var logging         = false
-var util =          require('../../shared/util')
-var Data =          require('./users.data')
-var UserAuth =      require('./users.auth')
-var User =          require('../models/user')
+var util            = require('../../shared/util')
+var Data            = require('./users.data')
+var UserAuth        = require('./users.auth')
+var UserCohort      = require('./users.cohort')
+var User            = require('../models/user')
 import BaseSvc      from '../services/_service'
 var svc             = new BaseSvc(User, logging)
 var cbSession       = Data.select.cb.session
@@ -420,5 +421,5 @@ var authWraps = {
 }
 
 
-save = _.extend(save, authWraps)
+save = _.extend(save, _.extend(authWraps,UserCohort))
 module.exports = _.extend(get,save)

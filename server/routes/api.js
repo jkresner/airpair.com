@@ -68,6 +68,7 @@ export default function(app) {
     .put('/users/me/username', API.Users.changeUsername)
     .put('/users/me/bio', API.Users.changeBio)
     .put('/users/me/location', API.Users.changeLocationTimezone)
+    .put('/users/me/cohort', populateUser, API.Users.fullUpdatedCohort)
 
     .get('/company', API.Companys.getUsersCompany)
 
