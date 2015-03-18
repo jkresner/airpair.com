@@ -75,6 +75,12 @@ var stubs = {
     return sinon.stub(Timezone,'data', (k,D,n,cb) => {
       cb(null, response || data.wrappers.timezone_melbourne)
     })
+  },
+
+  stubMailchimpLists(response) {
+    return sinon.stub(MailChimpApi.prototype,'call', (a,b,c,cb) => {
+      cb(null, response)
+    })
   }
 
 }

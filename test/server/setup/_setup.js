@@ -14,6 +14,14 @@ var setup = {
     })
   },
 
+
+  initStubs()
+  {
+    return {
+      timezone: stubs.stubGoogleTimezone()
+    }
+  },
+
   upsertProviderProfile(provider, userKey, done)
   {
     var user = data.oauth[userKey]

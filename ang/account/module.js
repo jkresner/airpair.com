@@ -260,6 +260,10 @@ angular.module("APProfile", ['ngRoute', 'APFilters', 'APSvcSession', 'APTagInput
 
 .controller('SettingsCtrl', ($scope, SessionService, ServerErrors) => {
 
+  // SessionService.updateCohort({}, function(result){
+  //   console.log('cohort result', result)
+  // })
+
 
   $scope.sendPasswordChange = function() {
     SessionService.requestPasswordChange({email:$scope.session.email}, function(result){

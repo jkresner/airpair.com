@@ -152,5 +152,7 @@ angular.module('APSvcSession', [])
       $http.put(`${API}/users/me/password`, data).success(setScope(success)).error(error)
     }
 
-
+    this.updateCohort = function(data, success, error) {
+      $http.put(`${API}/users/me/cohort`, data).success(setScope(success)).error(error)
+    }
   })

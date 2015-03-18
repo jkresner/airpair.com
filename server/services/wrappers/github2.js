@@ -1,5 +1,5 @@
 var logging = true
-var GitHubApi = require("github")
+var GitHubApi = global.GitHubApi || require("github")
 
 var api = new GitHubApi({
   version: "3.0.0",

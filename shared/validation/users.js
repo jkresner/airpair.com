@@ -48,7 +48,8 @@ module.exports = {
   //   if (!email || !email.match(/.+@.+\.+.+/))
   //     return `Invalid email address`
   // },
-
+  fullUpdatedCohort(user) {
+  },
 
   changeUsername(user, username) {
     //-- Can set the username to nothing

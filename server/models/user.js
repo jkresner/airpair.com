@@ -28,7 +28,10 @@ var Cohort = {
   },
   aliases:                { type: [String] },
   firstRequest:           {},
-  expert:                 {}
+  expert:                 {},
+  lists:                  {
+    // chimp:                {}
+  },
   // requests:     Get by query from Requests
   // orders:       Get by query from Order
   // spend:        Get by query from Orders
