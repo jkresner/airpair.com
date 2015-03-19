@@ -319,7 +319,7 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
 })
 
 
-.controller('PostSubmitCtrl', ($scope, $q, $routeParams, ServerErrors, DataService) => {
+.controller('PostSubmitCtrl', ($scope, $q, $routeParams, ServerErrors, DataService, $timeout) => {
   var _id = $routeParams.id
   $scope._id = _id
 
@@ -337,15 +337,23 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
 
   $scope.submitForReviewDeferred = () => {
     var deferred = $q.defer()
-
-    DataService.posts.submitForReview($scope.post, (r) => {
-      window.location = '/posts/me?submitted='+r._id
-      deferred.resolve(r)
-    },
-    (e) => {
-      ServerErrors.add(e)
-      deferred.reject(e)
-    })
+    var slug = $scope.post.slug
+    if (slug.length > 50) {
+      alert('Use a slug smaller than 50 chars'); $timeout(deferred.reject, 10)
+    }
+    else if (slug.indexOf('--') != -1){
+      alert('Clean up that slug url! No double -- please :)'); $timeout(deferred.reject, 10)
+    }
+    else {
+      DataService.posts.submitForReview($scope.post, (r) => {
+        window.location = '/posts/me?submitted='+r._id
+        deferred.resolve(r)
+      },
+      (e) => {
+        ServerErrors.add(e)
+        deferred.reject(e)
+      })
+    }
 
     return deferred.promise
   }
