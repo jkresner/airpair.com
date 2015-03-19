@@ -266,6 +266,7 @@
 
 
 #postcontributors {
+  padding-top:30px;
   .notifications {
     > div { padding:20px 20px 10px 20px }
     .message {
@@ -297,6 +298,16 @@
     margin-top:30px;
     position:relative;
     .rail {
+      a.thumb { display:block;max-height:150px;overflow:hidden; }
+      img { max-width:100%; }
+      a.icon { border-radius:50%;height:40px;width:40px;display:inline-block;margin:15px 0 }
+      a.icon:hover { background-color:@orangehighlight }
+      a.edit {
+        background:@orange url('../img/pages/posts/author-white.png') no-repeat;
+        background-size:78%;
+        background-position:3px 4px;
+      }
+
       position:absolute;top:0;right:0;width:250px;background:@gitgray;
       padding:10px;
 
@@ -595,7 +606,10 @@ section#posteditor {
     hr { border-color:@lightblue }
     background:@lightblue;
     padding:10px 30px 10px 60px;
-    .btn { width:160px;margin:0px 5px;font-size:14px;float:right }
+    .btn { width:160px;margin:0px 5px;font-size:14px;float:right;background-repeat:no-repeat; }
+    .btn-sync { background-image:url('../img/icons/gh-white.png');background-size:34%;background-position:3px 3px }
+    .btn-pr { background-image:url('../img/pages/posts/pr-white.png');background-size:24%;background-position:2px 2px }
+    .btn[disabled=disabled] { background-image:none!important }
     .commitmsg {
       float:right;
       clear:right;
