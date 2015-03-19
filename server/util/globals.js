@@ -41,13 +41,14 @@ module.exports = function(config)
   {
     global.paypal         = require('paypal-rest-sdk')
     global.Braintree      = require('../services/wrappers/braintree')
-    global.Timezone       = require('node-google-timezone')
+    global.TimezoneApi    = require('node-google-timezone')
     global.MailChimpApi   = require('mailchimp/lib/mailchimp/MailChimpAPI_v2_0')
-    // global.GitHubApi      = () => {}
+    global.GitHubApi      = require('github')
   }
   else
   {
     // global.GitHubApi      = () => {}
+    // global.TimezoneApi    = { key() { } }
   }
 
 }
