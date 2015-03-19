@@ -10,14 +10,38 @@
   <section class="password" ng-if="session.emailVerified">
     <h3 class="underline">Login info</h3>
 
-    <h4>Password</h4>
-    <a href="#" ng-click="sendPasswordChange()" class="btn">Send password reset email</a>
+    <h4>Password login</h4>
+    <a href="#" ng-click="sendPasswordChange()" class="btn btn-sm">Send password reset email</a>
     <alert ng-repeat="alert in passwordAlerts" type="{{alert.type}}"><span ng-bind-html="alert.msg | html"></span></alert>
 
-    <h4>Login with google</h4>
-    <p ng-if="session.social.gp">Google login enabled with <a href="{{session.social.gp.link}}" target="_blank">{{session.social.gp.email}}</a></p>
+    <h4>Google oauth login</h4>
+    <p ng-if="session.social.gp">Google login with <a href="{{session.social.gp.link}}" target="_blank">{{session.social.gp.email}}</a> enabled</p>
     <p ng-if="!session.social.gp">Google login not setup</p>
   </section>
 
+  <section class="maillists" ng-if="session.emailVerified">
+    <h3 class="underline">Mail lists</h3>
+    <table class="table">
+      <tr style="border-top:none">
+        <th>Subscriptions for {{session.email}}</th>
+      </tr>
+      <tr ng-repeat="list in maillists">
+        <td>
+          <h4>{{list.name}}</h4>
+          <p>{{list.description}}</p>
+          <a ng-if="!list.subscribed" ng-click="toggleMaillist(list.name)" class="btn btn-sm">Subscribe</a>
+          <a ng-if="list.subscribed"ng-click="toggleMaillist(list.name)" class="btn btn-sm btn-inverse">Unsubscribe</a>
+        </td>
+      </tr>
+    </table>
 
+  </section>
+
+<!--
+  <section class="transactionalmail" ng-if="session.emailVerified">
+    <h3 class="underline">Transactional Email</h3>
+
+
+  </section>
+ -->
  </section>

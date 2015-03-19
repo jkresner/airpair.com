@@ -152,7 +152,12 @@ angular.module('APSvcSession', [])
       $http.put(`${API}/users/me/password`, data).success(setScope(success)).error(error)
     }
 
-    this.updateCohort = function(data, success, error) {
-      $http.put(`${API}/users/me/cohort`, data).success(setScope(success)).error(error)
+    this.getMaillists = function(data, success, error) {
+      $http.get(`${API}/users/me/maillists`, data).success(success).error(error)
     }
+
+    this.toggleMaillist = function(data, success, error) {
+      $http.put(`${API}/users/me/maillists`, data).success(success).error(error)
+    }
+
   })
