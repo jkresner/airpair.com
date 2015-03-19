@@ -29,7 +29,7 @@ var Author = {
   avatar:       { required: true, type: String },
   bio:          { required: true, type: String },
   username:     { type: String, lowercase: true },
-  social:       { type: {
+  social:       {
       gh: {     username: { type: String } },
       so: {     link: { type: String } },
       bb: {     username: { type: String } },
@@ -37,7 +37,6 @@ var Author = {
       tw: {     username: { type: String } },
       al: {     username: { type: String } },
       gp: {     link: { type: String } }
-    }
   }
 }
 
