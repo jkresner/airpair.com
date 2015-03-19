@@ -23,7 +23,10 @@ angular.module("APFormsDirectives", [])
         $timeout(() => scope.btnDisabled = true, 0)
         if (!scope.btnDisabled)
           scope.onSingleClick()
-            .then((data) => scope.btnDisabled = false)
+            .then(
+              (data) => scope.btnDisabled = false,
+              (data) => scope.btnDisabled = false
+            )
       }
     }
   }

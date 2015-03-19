@@ -38,8 +38,10 @@
 
       <div ng-if="post" class="form-group">
         <label>
-          <b ng-if="slugStatus.available" style="color:green">Repo name
-            <span>{{post.slug}}</span> available</b>
+          <b ng-if="slugStatus.available && post.slug.length <= 50" style="color:green">Repo name
+            <span>{{post.slug}}</span>
+            [{{post.slug.length}} chars] available</b>
+          <b ng-if="post.slug.length > 50" style="color:red"><span>{{post.slug}}</span> [{{post.slug.length}} chars] is too long</b>
           <b ng-if="!slugStatus.available" style="color:red">Repo name
             <span>{{post.slug}}</span> unavailable</b>
         </label>
