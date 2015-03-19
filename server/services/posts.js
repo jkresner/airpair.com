@@ -27,6 +27,14 @@ var get = {
     svc.searchOne(query.published({slug}), null, selectCB.inflateHtml(cb))
   },
 
+  //-- used for api param fn
+  getByIdFromCache(_id, cb) {
+    cache.ready(['posts'], () => {
+      var post = cache.posts[_id]
+      cb(null, post)
+    })
+  },
+
   getByIdForEditingInfo(post, cb) {
     selectCB.editInfoView(cb)(null, post)
   },
@@ -162,7 +170,7 @@ var get = {
   },
 
   getAllForCache(cb) {
-    svc.searchMany(query.published(), { fields: select.listCache }, selectCB.addUrl(cb))
+    svc.searchMany(query.cached(), { fields: select.listCache }, selectCB.addUrl(cb))
   },
 
   getAllPublished(cb) {
@@ -377,6 +385,7 @@ var save = {
         post.meta = post.meta || {}
         post.meta.ogImage = post.assetUrl
         updateWithEditTouch.call(this, post, 'submittedForReview', cb)
+        if (cache) cache.flush('posts')
       })
     })
 

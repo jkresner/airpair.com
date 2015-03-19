@@ -31,7 +31,10 @@
     <b>Status</b>
     <span ng-if="!post.submitted && !post.published">In draft,</span>
     <span ng-if="post.submitted && !post.published"><a href="/posts/in-community-review" target="_blank">in community review</a>,</span>
-    <span class="saved" ng-if="post.saved">saved<span ng-if="post.submitted"> to <a href="https://www.github.com/{{post.repo}}/blob/edit/post.md" target="_blank">repo</a></span></span><span class="unsaved" ng-if="!post.saved">unsaved</span><span ng-if="post.submitted">, <span class="saved" ng-if="post.synced">synced</span><span class="unsaved" ng-if="!post.synced">not synced</span></span>.
+    <span ng-if="post.published"><a href="{{post.url}}" target="_blank">published</a>,</span>
+    <span class="unsaved" ng-if="!post.saved">unsaved</span>
+    <span class="saved" ng-if="post.saved">saved<span ng-if="post.submitted"> <a href="https://www.github.com/{{post.repo}}/blob/edit/post.md" target="_blank"></a> on edit branch</span> <span class="unsaved" ng-if="!post.synced">(HEAD not synced)</span></span>
+    <!-- <span ng-if="post.submitted"> , <span class="saved" ng-if="post.synced">synced</span></span>. -->
   </span>
 </div>
 
@@ -57,23 +60,22 @@
 
 <div ng-if="post" class="form-actions">
 
-  <button class="btn" ng-click="save()" ng-disabled="post.saved">Save</button>
+  <button class="btn btn-save" ng-click="save()" ng-disabled="post.saved">Save</button>
 
-  <a class="btn" href="/posts/info/{{post._id}}" ng-if="!post.published" ng-disabled="preview.wordcount < 400 || !post.saved">Header</a>
+  <a class="btn btn-header" href="/posts/info/{{post._id}}" ng-if="!post.published" ng-disabled="preview.wordcount < 400 || !post.saved">Header</a>
 
-  <a class="btn" href="/posts/preview/{{post._id}}" target="_blank"
+  <a class="btn btn-preview" href="/posts/preview/{{post._id}}" target="_blank"
     ng-disabled="!post.saved || !post.assetUrl || !post.tags || post.tags.length == 0">Preview</a>
 
-  <a class="btn" href="https://github.com/airpair/{{post.slug}}/compare/edit...{{session.social.gh.username}}:edit" target="_blank" ng-if="!isAuthor"
+  <a class="btn btn-pr" href="https://github.com/airpair/{{post.slug}}/compare/edit...{{session.social.gh.username}}:edit" target="_blank" ng-if="!isAuthor"
     ng-disabled="!post.saved || post.synced">Create PR</a>
 
-  <a class="btn" href="/posts/publish/{{post._id}}" ng-if="post.submitted && isAuthor"
-    ng-disabled="!post.saved || post.synced">Sync</a>
+  <input type="button" class="btn btn-sync" ng-click="propagate()" ng-if="post.submitted && isAuthor" ng-disabled="!post.saved || post.synced" value="Sync" />
 
-  <a class="btn" href="/posts/publish/{{post._id}}" ng-if="post.submitted && isAuthor"
+  <a class="btn btn-publish" href="/posts/publish/{{post._id}}" ng-if="post.submitted && isAuthor"
     ng-disabled="!post.saved || !(post.stats && posts.stats.reviews > 3 && post.stats.rating > 3.5)">Publish</a>
 
-  <a class="btn" title="Submit post for community review"
+  <a class="btn btn-submit" title="Submit post for community review"
     href="/posts/submit/{{post._id}}"
     ng-if="!post.submitted"
     ng-disabled="notReviewReady">Submit</a>

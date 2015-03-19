@@ -91,9 +91,12 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
         r[i].mine = r[i].by.userId == $scope.session._id
         if (!r[i].published && r[i].submitted)
           recent.push(r[i])
-        if (r[i].mine)
+        if (r[i].mine) {
+          r[i].repo = `airpair/${r[i].slug}`
           mine.push(r[i])
+        }
         if (r[i].forked) {
+          r[i].repo = `${$scope.session.social.gh.username}/${r[i].slug}`
           forks.push(r[i])
           r[i].needsMyReview = !_.find(r[i].reviews,(rev)=>rev.by._id == meUserId)
           r[i].needsMyFork = !_.find(r[i].forkers,(f)=>f.userId == meUserId)
@@ -315,6 +318,9 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
         $scope.editErr = e
     }
   )
+
+  $scope.propagate = () =>
+    DataService.posts.propagateFromHEAD({_id}, (r)=> window.location = window.location)
 
 })
 

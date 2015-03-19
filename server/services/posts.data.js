@@ -316,6 +316,12 @@ var andQuery = (query, andCondition) => {
 
 var query = {
 
+  cached() {
+    return { $or: [
+      {'submitted' : {'$exists': true}},
+      {'published' : { '$exists': true }}]}
+  },
+
   published(andCondition) {
     var query = [
       {'published' : { '$exists': true }} ,

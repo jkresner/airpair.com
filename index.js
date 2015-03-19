@@ -22,6 +22,8 @@ export function run()
   app.use(express.static(config.appdir+'/dist'))
   app.use(express.static(config.appdir+'/public'))
 
+  routes.resolver(app)
+
   app.use(mw.logging.slowrequests)
 
   mongo.connect(() => {
