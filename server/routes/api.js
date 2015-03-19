@@ -21,6 +21,8 @@ export default function(app) {
     .put('/users/me/bookmarks/:type/:id', setAnonSessionData, API.Users.toggleBookmark)
     .put('/users/me/email', setAnonSessionData, API.Users.changeEmail)
     .put('/users/me/name', setAnonSessionData, API.Users.changeName)
+    .get('/users/me/maillists', setAnonSessionData, API.Users.getMaillists)
+    .put('/users/me/maillists', setAnonSessionData, API.Users.toggleMaillist)
     .put('/users/me/password', (req, res, next) => {
       var inValid = API.Users.validation.changePassword(req.user, req.body.hash, req.body.password)
       if (inValid) return res.status(403).json({message:inValid})
@@ -68,7 +70,6 @@ export default function(app) {
     .put('/users/me/username', API.Users.changeUsername)
     .put('/users/me/bio', API.Users.changeBio)
     .put('/users/me/location', API.Users.changeLocationTimezone)
-    .put('/users/me/cohort', populateUser, API.Users.fullUpdatedCohort)
 
     .get('/company', API.Companys.getUsersCompany)
 

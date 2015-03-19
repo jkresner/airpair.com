@@ -5,7 +5,8 @@ export default initAPI(
   require('../services/users')
 , {
   getSession: (req) => [],
-  fullUpdatedCohort: (req) => [],
+  getMaillists: (req) => [],
+  toggleMaillist: (req) => [req.body.name],
   toggleUserInRole: (req) => [req.params.id,req.params.role],
   toggleTag: (req) => [req.tag],
   updateTags: (req) => [req.body],

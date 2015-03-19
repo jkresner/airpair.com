@@ -328,4 +328,10 @@ module.exports = {
     errors: []
   },
 
+  mailchimp_subscription: [
+    { id: '903d16f497',
+    web_id: 117353,
+    name: 'AirPair Newsletter' }
+  ],
+
 }

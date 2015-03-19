@@ -265,16 +265,22 @@ angular.module("APProfile", ['ngRoute', 'APFilters', 'APSvcSession', 'APTagInput
 
 .controller('SettingsCtrl', ($scope, SessionService, ServerErrors) => {
 
-  // SessionService.updateCohort({}, function(result){
-  //   console.log('cohort result', result)
-  // })
-
 
   $scope.sendPasswordChange = function() {
     SessionService.requestPasswordChange({email:$scope.session.email}, function(result){
       $scope.passwordAlerts = [{ type: 'success', msg: `Password reset sent to ${$scope.session.email}` }]
     }, ServerErrors.add)
-  };
+  }
 
+
+  SessionService.getMaillists({}, (r) => $scope.maillists = r)
+
+  $scope.toggleMaillist = (name) => {
+    SessionService.toggleMaillist({name},(r) => {
+      var sub = _.find($scope.maillists,(l)=>l.name==name)
+      sub.subscribed = r.subscribed
+      $scope.$apply()
+    })
+  }
 
 })

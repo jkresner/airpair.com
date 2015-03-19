@@ -29,9 +29,7 @@ var Cohort = {
   aliases:                { type: [String] },
   firstRequest:           {},
   expert:                 {},
-  lists:                  {
-    // chimp:                {}
-  },
+  maillists:              { type: [String] },
   // requests:     Get by query from Requests
   // orders:       Get by query from Order
   // spend:        Get by query from Orders
