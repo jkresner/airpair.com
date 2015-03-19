@@ -46,9 +46,13 @@ angular.module("APProfile", ['ngRoute', 'APFilters', 'APSvcSession', 'APTagInput
 
         if (!$scope.data.username && $scope.session.social) {
           var social = $scope.session.social
-          if (social.gh) $scope.data.username = social.gh.username
-          else if (social.tw) $scope.data.username = social.tw.username
-          $scope.updateUsername()
+          if (social.gh || social.tw)
+          {
+            var username = social.gh.username || social.tw.username
+            SessionService.updateUsername({username}, function(result){
+              $scope.data.username = username
+            }, function(e){})
+          }
         }
       })
 
@@ -234,6 +238,7 @@ angular.module("APProfile", ['ngRoute', 'APFilters', 'APSvcSession', 'APTagInput
   $scope.socialCount = _.keys($scope.session.social||{}).length
 
   DataService.experts.getMe({}, (expert) => {
+    expert.username= $scope.session.username
     $scope.expert = expert
     $scope.data = expert,_.extend(expert, $scope.data||{})
   })
