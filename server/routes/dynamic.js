@@ -91,9 +91,10 @@ export default function(app) {
       (req, cb) => PostsAPI.svc.getUsersPublished('52ad320166a6f999a465fdc5', cb) ))
 
 
-    .get('/posts/review/:id', authd, function(req, res, next) {
+    .get('/posts/review/:id', function(req, res, next) {
       $callSvc(PostsAPI.svc.getByIdForReview, req)(req.params.id, (e,r) => {
         if (!r) return res.redirect('/posts/me')
+        else if (r.published) return res.redirect(301, r.url)
         req.post = r
         next()
       })},

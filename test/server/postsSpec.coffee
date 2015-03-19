@@ -3,22 +3,9 @@ dataHlpr = require('./setup/data')
 PostsSvc = require('./../../server/services/posts')
 PostsUtil = require('./../../shared/posts')
 
-module.exports = -> describe "API: ".subspec, ->
 
-  @timeout(8000)
 
-  before (done) ->
-    if (config.auth.github.org == 'airpair')
-      throw Error('Cant run post tests against prod github org')
-    SETUP.analytics.stub()
-    SETUP.addUserWithRole 'edap', 'editor', ->
-    SETUP.addUserWithRole 'jkap', 'editor', ->
-      SETUP.initTags ->
-        SETUP.initTemplates done
-
-  after ->
-    SETUP.analytics.restore()
-
+authoring = ->
 
   it.skip "Can split line over chacter limit", ->
     lines = ['### 2.1 When (Developer) Ideas Have Sex', '', '[![Matt Ridley](//airpair.github.io/img/2015/01/ma…alks/matt_ridley_when_ideas_have_sex?language=en)', '> ***"To answer our continual ability to attain mo…ne and recombine, to meet and indeed to mate."***']
@@ -61,7 +48,7 @@ module.exports = -> describe "API: ".subspec, ->
         gh: { username: 'ajaygh' },
         in: { id: 'ajayin' },
         so: { link: 'ajay/1231so' },
-        gp: { id: 'ajaygp' }
+        gp: { link: 'ajaygp' }
 
       d = { title, by: author }
       POST "/posts", d, {}, (post) ->
@@ -74,7 +61,7 @@ module.exports = -> describe "API: ".subspec, ->
         expect(post.by.social.gh.username).to.equal('ajaygh')
         expect(post.by.social.in.id).to.equal('ajayin')
         expect(post.by.social.so.link).to.equal('ajay/1231so')
-        expect(post.by.social.gp.id).to.equal('ajaygp')
+        expect(post.by.social.gp.link).to.equal('ajaygp')
         expect(post.created).to.exist
         expect(post.submitted).to.be.undefined
         expect(post.published).to.be.undefined
@@ -279,6 +266,42 @@ module.exports = -> describe "API: ".subspec, ->
           done()
 
 
+browsing = ->
+
+  it "Get my posts does not contain any sensitive data", (done) ->
+    LOGIN 'jkap', (jk) ->
+      GET "/posts/me", {}, (myposts) ->
+        for p in myposts
+          expect(p.title).to.exist
+          expect(p.publishHistory).to.be.undefined
+          expect(p.editHistory).to.be.undefined
+          if (p.github)
+            expect(p.github.stats).to.be.undefined
+            expect(p.github.events).to.be.undefined
+          for f in p.forkers
+            expect(f.email).to.be.undefined
+          for r in p.reviews
+            expect(r.by.email).to.be.undefined
+            for v in r.votes
+              expect(v.by.email).to.be.undefined
+            for rp in r.replies
+              expect(rp.by.email).to.be.undefined
+        done()
+
+
+  it "Redirect on review link for published post", (done) ->
+    author = data.users.submPostAuthor
+    db.ensureDocs 'Post', [data.posts.pubedArchitec], ->
+      ANONSESSION (anon) ->
+        GETP("/posts/review/#{data.posts.pubedArchitec._id}")
+          .expect(301)
+          .end (e, resp) ->
+            expectStartsWith(resp.text, 'Moved Permanently. Redirecting to https://www.airpair.com/scalable-architecture-with-docker-consul-and-nginx')
+            done()
+
+
+contributing = ->
+
   it "Can fork, edit & preview post in review", (done) ->
     @timeout(14000)
     title = "Can fork edit and preview #{timeSeed()}"
@@ -354,24 +377,24 @@ module.exports = -> describe "API: ".subspec, ->
                                       done()
 
 
-  it "Get my posts does not contain any sensitive data", (done) ->
-    LOGIN 'jkap', (jk) ->
-      GET "/posts/me", {}, (myposts) ->
-        for p in myposts
-          expect(p.title).to.exist
-          expect(p.publishHistory).to.be.undefined
-          expect(p.editHistory).to.be.undefined
-          if (p.github)
-            expect(p.github.stats).to.be.undefined
-            expect(p.github.events).to.be.undefined
-          for f in p.forkers
-            expect(f.email).to.be.undefined
-          for r in p.reviews
-            expect(r.by.email).to.be.undefined
-            for v in r.votes
-              expect(v.by.email).to.be.undefined
-            for rp in r.replies
-              expect(rp.by.email).to.be.undefined
-        done()
+module.exports = ->
 
+  @timeout(8000)
+
+  before (done) ->
+    if (config.auth.github.org == 'airpair')
+      throw Error('Cant run post tests against prod github org')
+    SETUP.analytics.stub()
+    SETUP.addUserWithRole 'edap', 'editor', ->
+    SETUP.addUserWithRole 'jkap', 'editor', ->
+      SETUP.initTags ->
+        SETUP.initTemplates done
+
+  after ->
+    SETUP.analytics.restore()
+
+
+  describe("Authoring: ".subspec, authoring)
+  describe("Browsing: ".subspec, browsing)
+  describe("Contributing: ".subspec, contributing)
 
