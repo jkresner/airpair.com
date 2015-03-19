@@ -286,6 +286,17 @@ var select = {
         if (!similarFn)
           similarFn = (p, done) => done(null,[])
 
+        //-- Temporarily fix broken posts
+        if (r.by.social) {
+          if (typeof r.by.social.gh == 'string') r.by.social.gh = { username: r.by.social.gh }
+          if (typeof r.by.social.tw == 'string') r.by.social.tw = { username: r.by.social.tw }
+          if (typeof r.by.social.so == 'string') r.by.social.so = { link: r.by.social.so }
+          if (typeof r.by.social.in == 'string') r.by.social.in = { id: r.by.social.in }
+          if (typeof r.by.social.bb == 'string') r.by.social.bb = { id: r.by.social.bb }
+          if (typeof r.by.social.al == 'string') r.by.social.al = { username: r.by.social.al }
+          if (typeof r.by.social.gp == 'string') r.by.social.gp = { link: r.by.social.gp }
+        }
+
         r.by.firstName = firstName(r.by.name)
 
         similarFn(r, (ee,similar) => {

@@ -348,6 +348,296 @@ module.exports = {
     "meta" : {
         "ogImage" : "http://youtu.be/qlOAbrvjMBo"
     }
-  }
+  },
+
+
+  pubedArchitec: {
+    "_id" : ObjectId("550106c2f1377c0c0051cbef"),
+    "title" : "Scalable Architecture DR CoN: Docker, Registrator, Consul, Consul Template and Nginx",
+    "md" : "No real MD",
+    "publishHistory" : [
+        {
+            "touch" : {
+                "action" : "publish",
+                "utc" : "2015-03-16T21:39:54.136Z",
+                "by" : {
+                    "_id" : ObjectId("5501064cb2620c0c009bae70"),
+                    "name" : "Graham Jenson"
+                }
+            },
+            "commit" : "Not yet propagated",
+            "_id" : ObjectId("55074daa3c09dd0c009b581f")
+        },
+        {
+            "touch" : {
+                "action" : "publish",
+                "utc" : "2015-03-16T21:48:35.616Z",
+                "by" : {
+                    "_id" : ObjectId("5175efbfa3802cc4d5a5e6ed"),
+                    "name" : "Jonathon Kresner"
+                }
+            },
+            "commit" : "4321756fa5c0cfeeaab27b73273a577a609913fe",
+            "_id" : ObjectId("55074fb38dac8f0c00294a3c")
+        }
+    ],
+    "editHistory" : [],
+    "tags" : [
+        {
+            "slug" : "python",
+            "name" : "python",
+            "_id" : ObjectId("514825fa2a26ea020000002d")
+        },
+        {
+            "_id" : ObjectId("5249f4d266a6f999a465f897"),
+            "name" : "docker",
+            "slug" : "docker"
+        },
+        {
+            "_id" : ObjectId("5153f494d96db10200000011"),
+            "name" : "NGINX",
+            "slug" : "nginx"
+        },
+        {
+            "_id" : ObjectId("5358c8081c67d1a4859d2f18"),
+            "name" : "devops",
+            "slug" : "devops"
+        }
+    ],
+    "forkers" : [
+        {
+            "email" : "da@airpair.com",
+            "name" : "David Anderton",
+            "userId" : ObjectId("54de72d1bb6e680a0011c65c"),
+            "_id" : ObjectId("5501c781f1377c0c0051eae1"),
+            "social" : {
+                "gh" : {
+                    "username" : "dwanderton"
+                }
+            }
+        },
+        {
+            "_id" : ObjectId("55074f993c09dd0c009b5875"),
+            "userId" : ObjectId("5175efbfa3802cc4d5a5e6ed"),
+            "name" : "Jonathon Kresner",
+            "email" : "jk@airpair.com",
+            "social" : {
+                "gh" : {
+                    "username" : "jkresner"
+                }
+            }
+        }
+    ],
+    "reviews" : [
+        {
+            "_id" : ObjectId("5502ae9396bc290c00cd048d"),
+            "by" : {
+                "_id" : "54de72d1bb6e680a0011c65c",
+                "name" : "David Anderton",
+                "email" : "da@airpair.com"
+            },
+            "type" : "post-survey-inreview",
+            "votes" : [],
+            "replies" : [],
+            "questions" : [
+                {
+                    "_id" : ObjectId("5502ae9396bc290c00cd048f"),
+                    "idx" : 0,
+                    "key" : "rating",
+                    "prompt" : "How would you rate the quality of this post?",
+                    "answer" : "4"
+                },
+                {
+                    "_id" : ObjectId("5502ae9396bc290c00cd048e"),
+                    "idx" : 1,
+                    "key" : "feedback",
+                    "prompt" : "Overall comment",
+                    "answer" : "Hi Graham, thanks for your post! It would be great to hear more about why consul is so important in this pipeline"
+                }
+            ]
+        },
+        {
+            "_id" : ObjectId("550736f54c39d40c0099424c"),
+            "by" : {
+                "_id" : "550736924c39d40c00994241",
+                "name" : "Fergus Hewson",
+                "email" : "dollar10boy@hotmail.com"
+            },
+            "type" : "post-survey-inreview",
+            "votes" : [],
+            "replies" : [],
+            "questions" : [
+                {
+                    "_id" : ObjectId("550736f54c39d40c0099424e"),
+                    "idx" : 0,
+                    "key" : "rating",
+                    "prompt" : "How would you rate the quality of this post?",
+                    "answer" : "5"
+                },
+                {
+                    "_id" : ObjectId("550736f54c39d40c0099424d"),
+                    "idx" : 1,
+                    "key" : "feedback",
+                    "prompt" : "Overall comment",
+                    "answer" : "Great post, looks like a very useful tool!!!"
+                }
+            ]
+        },
+        {
+            "type" : "post-survey-inreview",
+            "by" : {
+                "_id" : "5474a0138f8c80299bcc5243",
+                "name" : "Rahat Khanna (mappmechanic)",
+                "email" : "yehtechnologies@gmail.com"
+            },
+            "_id" : ObjectId("550738774c39d40c0099427d"),
+            "votes" : [],
+            "replies" : [],
+            "questions" : [
+                {
+                    "answer" : "4",
+                    "prompt" : "How would you rate the quality of this post?",
+                    "key" : "rating",
+                    "idx" : 0,
+                    "_id" : ObjectId("550738774c39d40c0099427f")
+                },
+                {
+                    "answer" : "Nice post. Would try to use Docker.",
+                    "prompt" : "Overall comment",
+                    "key" : "feedback",
+                    "idx" : 1,
+                    "_id" : ObjectId("550738774c39d40c0099427e")
+                }
+            ]
+        },
+        {
+            "_id" : ObjectId("550740e64c39d40c00994413"),
+            "by" : {
+                "_id" : "550740ad4c39d40c0099440b",
+                "name" : "Daniel Walmsley",
+                "email" : "daniel.walmsley@gmail.com"
+            },
+            "type" : "post-survey-inreview",
+            "votes" : [
+                {
+                    "_id" : ObjectId("55074fd88dac8f0c00294a4b"),
+                    "val" : 1,
+                    "by" : {
+                        "_id" : "5175efbfa3802cc4d5a5e6ed",
+                        "name" : "Jonathon Kresner",
+                        "email" : "jk@airpair.com"
+                    }
+                }
+            ],
+            "replies" : [],
+            "questions" : [
+                {
+                    "_id" : ObjectId("550740e64c39d40c00994415"),
+                    "idx" : 0,
+                    "key" : "rating",
+                    "prompt" : "How would you rate the quality of this post?",
+                    "answer" : "5"
+                },
+                {
+                    "_id" : ObjectId("550740e64c39d40c00994414"),
+                    "idx" : 1,
+                    "key" : "feedback",
+                    "prompt" : "Overall comment",
+                    "answer" : "Looks good, good to hear a Maori perspective on Docker."
+                }
+            ]
+        },
+        {
+            "type" : "post-survey-inreview",
+            "by" : {
+                "_id" : "5507428d4c39d40c00994461",
+                "name" : "Duncan Tyler",
+                "email" : "dunkthetyler@gmail.com"
+            },
+            "_id" : ObjectId("550742f94c39d40c00994475"),
+            "votes" : [],
+            "replies" : [],
+            "questions" : [
+                {
+                    "answer" : "5",
+                    "prompt" : "How would you rate the quality of this post?",
+                    "key" : "rating",
+                    "idx" : 0,
+                    "_id" : ObjectId("550742f94c39d40c00994477")
+                },
+                {
+                    "answer" : "Docker definitely sounds like a goer, thanks Graham!",
+                    "prompt" : "Overall comment",
+                    "key" : "feedback",
+                    "idx" : 1,
+                    "_id" : ObjectId("550742f94c39d40c00994476")
+                }
+            ]
+        }
+    ],
+    "updated" : "2015-03-16T22:23:33.578Z",
+    "lastTouch" : {
+        "by" : {
+            "name" : "Jonathon Kresner",
+            "_id" : "5175efbfa3802cc4d5a5e6ed"
+        },
+        "utc" : "2015-03-16T22:23:33.578Z",
+        "action" : "publish"
+    },
+    "created" : "2015-03-12T03:23:46.945Z",
+    "by" : {
+        "userId" : ObjectId("5501064cb2620c0c009bae70"),
+        "name" : "Graham Jenson",
+        "bio" : "I am a Developer who builds things, I blog over at http://www.maori.geek.nz/",
+        "social" : {
+            "gh" : "grahamjenson",
+            "tw" : "GrahamJenson",
+            "gp" : "https://plus.google.com/+GrahamJenson"
+        },
+        "avatar" : "//0.gravatar.com/avatar/7b9e77978853a15053b169abb710a787"
+    },
+    "__v" : 0,
+    "assetUrl" : "https://maorigeek.s3.amazonaws.com/uploads/docker_whale.png_1411805342.jpg_1421807584.jpg",
+    "meta" : {
+        "ogUrl" : "https://www.airpair.com/scalable-architecture-with-docker-consul-and-nginx",
+        "ogType" : "article",
+        "ogTitle" : "Scalable Architecture DR CoN: Docker, Registrator, Consul, Consul Template and Nginx",
+        "description" : "In this post I will describe how to use Docker to plug together Consul, Consul Template, Registrator and Nginx into a truly scalable architecture that I am calling DR CoN. Once all plugged together, DR CoN lets you add and remove services from the architecture without having to rewrite any configuration or restart any services, and everything just works!",
+        "title" : "Scalable Architecture DR CoN: Docker, Registrator, Consul, Consul Template and Nginx",
+        "ogDescription" : "In this post I will describe how to use Docker to plug together Consul, Consul Template, Registrator and Nginx into a truly scalable architecture that I am calling DR CoN. Once all plugged together, DR CoN lets you add and remove services from the architecture without having to rewrite any configuration or restart any services, and everything just works!",
+        "canonical" : "https://www.airpair.com/scalable-architecture-with-docker-consul-and-nginx",
+        "ogImage" : "https://maorigeek.s3.amazonaws.com/uploads/docker_whale.png_1411805342.jpg_1421807584.jpg"
+    },
+    "slug" : "scalable-architecture-dr-con-docker-registrator-consul-consul-template-and-nginx",
+    "github" : {
+        "repoInfo" : {
+            "url" : "https://github.com/airpair/scalable-architecture-dr-con-docker-registrator-consul-consul-template-and-nginx",
+            "authorTeamId" : 1358851,
+            "authorTeamName" : "scalable-architecture-dr-con-docker-registrator-consul-consul-template-and-nginx-0051cbef-author",
+            "author" : "grahamjenson"
+        }
+    },
+    "submitted" : "2015-03-12T04:05:46.709Z",
+    "stats" : {
+        "rating" : 4.6,
+        "reviews" : 5,
+        "comments" : 5,
+        "forkers" : 2,
+        "openPRs" : 0,
+        "closedPRs" : 0,
+        "acceptedPRs" : 0,
+        "shares" : 0,
+        "words" : 1192
+    },
+    "tmpl" : "default",
+    "published" : "2015-03-16T21:39:54.136Z",
+    "publishedUpdated" : "2015-03-16T22:23:33.578Z",
+    "publishedBy" : {
+        "email" : "jk@airpair.com",
+        "name" : "Jonathon Kresner",
+        "_id" : ObjectId("5175efbfa3802cc4d5a5e6ed")
+    },
+    "publishedCommit" : "4321756fa5c0cfeeaab27b73273a577a609913fe"
+}
 
 }

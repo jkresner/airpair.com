@@ -153,7 +153,12 @@ var get = {
   },
 
   getByIdForReview(_id, cb) {
-    svc.searchOne(query.inReview({_id}), { fields: select.display }, selectCB.displayView(cb))
+    svc.searchOne({_id}, { fields: select.display }, (e,r) => {
+      if (e||!r) return cb(e,r)
+      if (r.published) return cb(null, {published:true, url: r.meta.canonical})
+      if (!r.submitted) return cb(null, null)
+      selectCB.displayView(cb)(e,r)
+    })
   },
 
   getAllForCache(cb) {
@@ -312,11 +317,17 @@ var save = {
 
   update(original, ups, cb) {
     var act = (Roles.isOwner(this.user, original)) ? 'updateByAuthor' : 'updateByEditor'
-    ups.by = PostsUtil.authorFromUser(ups.by)
-    if (original.assetUrl != ups.assetUrl && (original.submitted || original.published))
-      ups.meta = _.extend(ups.meta||{},{ogImage:ups.assetUrl})
+    var {userId} = original.by
+    UserSvc.getById.call({user:{_id:userId}}, userId,(ee, user) =>
+    {
+      var social = PostsUtil.authorFromUser(user).social
+      if (social) ups.by.social = social
 
-    updateWithEditTouch.call(this, _.extend(original, ups), act, selectCB.editInfoView(cb))
+      if (original.assetUrl != ups.assetUrl && (original.submitted || original.published))
+        ups.meta = _.extend(original.meta, _.extend(ups.meta||{},{ogImage:ups.assetUrl}))
+
+      updateWithEditTouch.call(this, _.extend(original, ups), act, selectCB.editInfoView(cb))
+    })
   },
 
   publish(post, publishData, cb) {
