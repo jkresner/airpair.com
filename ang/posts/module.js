@@ -211,7 +211,7 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
     DataService.posts.getByIdForEditingInfo({_id}, (r) => {
       if ($scope.session._id == r.by.userId) { // don't wipe author with editor session
         var bio = r.by.bio
-        r.by = _.extend(r.by, $scope.session)  // update new social links
+        r.by = _.extend(r.by, $scope.session)  // show latest social links
         r.by.bio = bio // in case this post has it's own specific bio, don't wipe it!
       }
       $scope.post = r

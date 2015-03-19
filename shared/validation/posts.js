@@ -42,6 +42,8 @@ var validation = {
     if (original.published && !isEditor)
       return `Must be editor to update a published post`
 
+    if (!_.idsEqual(original.by.userId, update.by.userId))
+      return `Cannot change author via update`
     if (update.slug)
       return `Cannot update slug`
     if (update.reviews)
