@@ -100,8 +100,7 @@ var validation = {
     if (!request.adm || !request.adm.active) return `Cannot reply to this request, as it is not active`
 
     // if (!request.suggested.available > 3) return 'Only 4 experts can reply'
-
-    if (!expert.user) return `Must migrate expert profile to reply`
+    if (expert.isV0) return `Must migrate expert profile to reply`
 
     if (!reply.expertComment) return `Reply comment required`
     if (!reply.expertStatus) return `Reply status required`

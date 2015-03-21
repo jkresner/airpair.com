@@ -1,7 +1,9 @@
-dataHelpers = require('./data')
-UserService = require('../../../server/services/users')
-PaymethodsService = require('../../../server/services/paymethods')
-braintree = require('braintree')
+dataHelpers          = require('./data')
+UserService          = require('../../../server/services/users')
+PaymethodsService    = require('../../../server/services/paymethods')
+braintree            = require('braintree')
+expertData           = require('../../../server/services/experts.data')
+{selectFromObject}   = require('../../../shared/util')
 
 """
 // Stories are use cases that take multiple steps that are often precursors
@@ -138,8 +140,8 @@ stories = {
       db.ensureDocs 'Expert', [seedExpert], (ee) ->
         LOGIN user.userKey, (expertSession) ->
           expertSession.userKey = user.userKey
-          expertSession.expertId = expert._id
-          done(expert, expertSession)
+          expertSession.expertId = seedExpert._id
+          done(seedExpert, expertSession)
 
 
   newLoggedInExpertWithPayoutmethod: (userKey, done) ->
@@ -151,7 +153,7 @@ stories = {
   ensureV1LoggedInExpert: (userKey, done) ->
     user = _.extend({localization:data.wrappers.localization_melbourne}, data.users[userKey])
     expert = data.experts[userKey]
-    expert.user = user
+    expert.user = selectFromObject(user, expertData.select.userCopy)
     db.ensureDocs 'User', [user], (e) ->
       db.ensureDocs 'Expert', [expert], (ee) ->
         LOGIN userKey, (sExpert) ->
@@ -255,27 +257,27 @@ stories = {
           cb(r,sessionCustomer)
 
 
-newCompleteRequestForAdmin: (userKey, requestData, cb) ->
-  SETUP.newCompleteRequest userKey, requestData, (r,sCust) ->
-    LOGIN 'admin', ->
-      GET "/adm/requests/user/#{r.userId}", {}, (rAdm) ->
-        expect(r.status).to.equal('received')
-        expect(rAdm.length).to.equal(1)
-        expect(rAdm[0].lastTouch.utc).to.exist
-        expectStartsWith(rAdm[0].lastTouch.by.name,data.users[userKey].name)
-        expect(rAdm[0].adm.active).to.be.true
-        expect(rAdm[0].adm.owner).to.be.undefined
-        expect(rAdm[0].adm.lastTouch).to.be.undefined
-        expect(rAdm[0].adm.submitted).to.exist
-        expect(rAdm[0].adm.received).to.be.undefined
-        expect(rAdm[0].adm.farmed).to.be.undefined
-        expect(rAdm[0].adm.reviewable).to.be.undefined
-        expect(rAdm[0].adm.booked).to.be.undefined
-        expect(rAdm[0].adm.paired).to.be.undefined
-        expect(rAdm[0].adm.feedback).to.be.undefined
-        expect(rAdm[0].adm.closed).to.be.undefined
-        expect(rAdm[0].messages.length).to.equal(0)
-        cb(rAdm[0],sCust)
+  newCompleteRequestForAdmin: (userKey, requestData, cb) ->
+    SETUP.newCompleteRequest userKey, requestData, (r,sCust) ->
+      LOGIN 'admin', ->
+        GET "/adm/requests/user/#{r.userId}", {}, (rAdm) ->
+          expect(r.status).to.equal('received')
+          expect(rAdm.length).to.equal(1)
+          expect(rAdm[0].lastTouch.utc).to.exist
+          expectStartsWith(rAdm[0].lastTouch.by.name,data.users[userKey].name)
+          expect(rAdm[0].adm.active).to.be.true
+          expect(rAdm[0].adm.owner).to.be.undefined
+          expect(rAdm[0].adm.lastTouch).to.be.undefined
+          expect(rAdm[0].adm.submitted).to.exist
+          expect(rAdm[0].adm.received).to.be.undefined
+          expect(rAdm[0].adm.farmed).to.be.undefined
+          expect(rAdm[0].adm.reviewable).to.be.undefined
+          expect(rAdm[0].adm.booked).to.be.undefined
+          expect(rAdm[0].adm.paired).to.be.undefined
+          expect(rAdm[0].adm.feedback).to.be.undefined
+          expect(rAdm[0].adm.closed).to.be.undefined
+          expect(rAdm[0].messages.length).to.equal(0)
+          cb(rAdm[0],sCust)
 
 
   newBookedRequest: (customerUserKey, requestData, expertUserKey, cb) ->

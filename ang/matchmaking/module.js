@@ -16,10 +16,14 @@ angular.module("APMatchmaking", ["APProfileDirectives","APSvcMM"])
   $scope.highlightedTag = (tagId) =>
     _.find($scope.focusTagIds,(id)=>id==tagId)
 
-  $scope.getMatches = () => {
-    MMDataService.pipeline.getRequestMatches({_id}, function (experts) {
+  console.log('RequestsUtil', RequestsUtil)
+
+  $scope.getMatches = (request) => {
+    var query = RequestsUtil.mojoQuery(request)
+    console.log('getMatches', query)
+    MMDataService.matchmaking.getRanked({_id, query}, function (experts) {
       $scope.matches = experts;
-      console.log('$scope.matches', $scope.matches.length)
+      // console.log('$scope.matches', $scope.matches.length)
     })
   }
 
@@ -30,17 +34,17 @@ angular.module("APMatchmaking", ["APProfileDirectives","APSvcMM"])
   })
 
 
-  MMDataService.pipeline.getRequest({_id}, function (r) {
+  MMDataService.matchmaking.getRequest({_id}, function (r) {
     $scope.user = r.user
     $scope.request = r
-    $scope.getMatches()
+    $scope.getMatches(r)
   },
     () => $location.path('/matchmaking')
   )
 
   $scope.addSuggestion = (expertId) => {
     var expert = _.find($scope.matches, (e) => e._id == expertId)
-    MMDataService.pipeline.addSuggestion({_id, expertId}, function (r) {
+    MMDataService.matchmaking.addSuggestion({_id, expertId}, function (r) {
       $scope.request = r
       $scope.matches = _.without($scope.matches, expert)
       $scope.selected = null
@@ -48,7 +52,7 @@ angular.module("APMatchmaking", ["APProfileDirectives","APSvcMM"])
   }
 
   $scope.selectExpert = (expert) =>
-    MMDataService.pipeline.matchifyExpert({expertId:expert._id,requestId:_id}, function(r) {
+    MMDataService.matchmaking.matchifyExpert({expertId:expert._id,requestId:_id}, function(r) {
       console.log('setting selected', r)
       $scope.selected = r
     })
@@ -58,11 +62,11 @@ angular.module("APMatchmaking", ["APProfileDirectives","APSvcMM"])
 
 .controller('MatchmakingCtrl', ($scope, MMDataService, Util) => {
 
-  MMDataService.pipeline.getWaiting({}, (requests) => {
+  MMDataService.matchmaking.getWaiting({}, (requests) => {
     var count = 1;
     _.each(requests, (r) =>
       r.created = Util.ObjectId2Moment(r._id) )
-    console.log('requests', requests.length)
+    // console.log('requests', requests.length)
     $scope.requests = requests
   })
 

@@ -1,12 +1,12 @@
 var API = require('../api/_all')
 var {authd,setAnonSessionData} = require('../middleware/auth')
 var {adm,emailv} = require('../middleware/authz')
-var {bodyParam,populateUser,json2mb} = require('../middleware/data')
-
+var {bodyParam,cacheReady,populateUser,populateExpert,json2mb} = require('../middleware/data')
+var Router = require('express').Router
 
 export default function(app) {
 
-  var router = require('express').Router()
+  var router = Router()
     .param('tag', API.Tags.paramFns.getBySlug)
     .param('expert', API.Experts.paramFns.getById)
     .param('request', API.Requests.paramFns.getByIdForAdmin)
@@ -89,16 +89,14 @@ export default function(app) {
     .get('/bookings/:id', API.Bookings.getById)
     .post('/bookings/:expert', API.Bookings.createBooking)
 
+    .use(cacheReady('tags'))
     .get('/experts/me', API.Experts.getMe)
     .get('/experts/search/:id', API.Experts.search)
-    .get('/experts/dashboard', API.Experts.getMatchesForDashboard)
     .get('/experts/:id', API.Experts.getById)
-    .get('/experts', API.Experts.getForExpertsPage)
-    .get('/experts/match/:request', authd, API.Experts.getMatchesForRequest)
     .post('/experts/me', populateUser, API.Experts.create)
     .put('/experts/:expert/me', populateUser, API.Experts.updateMe)
 
-  var postsrouter = require('express').Router()
+  var postsrouter = Router()
     .param('post', API.Posts.paramFns.getById)
     .param('postreview', API.Posts.reviewParamFn)
 
@@ -131,21 +129,25 @@ export default function(app) {
   router.use('/posts', postsrouter)
 
 
-  var matchmakerrouter = require('express').Router()
+  var matchmakerrouter = Router()
     .param('expert', API.Experts.paramFns.getById)
     .param('request', API.Requests.paramFns.getByIdForAdmin)
+    .use(authd)
+    // .get('/experts/mojo/me', API.Mojo.getMatchesForRequest)
+    .get('/experts/mojo/rank', cacheReady('tags'), populateExpert, API.Mojo.getRanked)
+    // .get('/experts/dashboard', API.Experts.getMatchesForDashboard)
+    // .get('/experts', API.Experts.getForExpertsPage)
     .use(adm) //-- Todo change to match maker permissions
-    .get('/requests', API.Requests.getWaitingForMatchmaker)
-    .get('/requests/waiting', API.Requests.getWaitingForMatchmaker)
-    .get('/requests/:id', API.Requests.getByIdForMatchmaker)
-    .put('/requests/:request/add/:expert', API.Requests.addSuggestion)
-    .put('/experts/:id/matchify/:request', API.Experts.updateMatchingStats)
+    .get('/matchmaking/requests/waiting', API.Requests.getWaitingForMatchmaker)
+    .get('/matchmaking/requests/:id', API.Requests.getByIdForMatchmaker)
+    .put('/matchmaking/requests/:request/add/:expert', API.Requests.addSuggestion)
+    .put('/matchmaking/experts/:expert/matchify/:request', API.Mojo.updateMatchingStats)
 
 
-  router.use('/matchmaking',matchmakerrouter)
+  router.use(matchmakerrouter)
 
 
-  var admrouter = require('express').Router()
+  var admrouter = Router()
     .param('expert', API.Experts.paramFns.getById)
     .param('request', API.Requests.paramFns.getByIdForAdmin)
     .param('booking', API.Bookings.paramFns.getById)

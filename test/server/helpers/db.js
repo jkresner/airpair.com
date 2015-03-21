@@ -33,7 +33,9 @@ function ensureDocument(Model, doc, cb, refresh)
 
 
 var db = {
+
   ObjectId: mongoose.Types.ObjectId,
+  ISODate: Date,
 
   Models,
 
