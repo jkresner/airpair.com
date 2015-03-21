@@ -65,7 +65,10 @@ module.exports = -> describe "API: ".subspec, ->
               done()
 
 
-  it "Can submit review for published post", (done)->
+  it.skip "Can submit review for published post", (done)->
+
+    ## Where is this published ?
+
     title = "Published Post Review Test " + moment().format('X')
     SETUP.createNewPost 'jkap', { title, submitted: new Date }, (post) ->
       SETUP.addAndLoginLocalUser 'rvw4', (rvw4) ->

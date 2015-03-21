@@ -9,6 +9,7 @@ angular.module("APProfile", ['ngRoute', 'APFilters', 'APSvcSession', 'APTagInput
   route('/payouts', 'Payouts', require('./payouts.html'),{resolve: authd})
   route('/be-an-expert', 'ExpertApplication', require('./beanexpert.html'),{resolve: authd})
   route('/me/profile-preview', 'ProfilePreview', require('./profilepreview.html'),{resolve: authd})
+  route('/settings', 'Settings', require('./settings.html'),{resolve: authd})
 })
 
 .directive('userInfo', function() {
@@ -45,9 +46,13 @@ angular.module("APProfile", ['ngRoute', 'APFilters', 'APSvcSession', 'APTagInput
 
         if (!$scope.data.username && $scope.session.social) {
           var social = $scope.session.social
-          if (social.gh) $scope.data.username = social.gh.username
-          else if (social.tw) $scope.data.username = social.tw.username
-          $scope.updateUsername()
+          if (social.gh || social.tw)
+          {
+            var username = social.gh.username || social.tw.username
+            SessionService.updateUsername({username}, function(result){
+              $scope.data.username = username
+            }, function(e){})
+          }
         }
       })
 
@@ -102,12 +107,6 @@ angular.module("APProfile", ['ngRoute', 'APFilters', 'APSvcSession', 'APTagInput
       console.log('sendVerificationEmail.back', e, e.message)
       $scope.emailAlerts = [{ type: 'danger', msg: `${e.message||e} failed` }]
     })
-  };
-
-  $scope.sendPasswordChange = function() {
-    SessionService.requestPasswordChange({email:$scope.session.email}, function(result){
-      $scope.passwordAlerts = [{ type: 'success', msg: `Password reset sent to ${$scope.session.email}` }]
-    }, ServerErrors.add)
   };
 
 })
@@ -239,6 +238,7 @@ angular.module("APProfile", ['ngRoute', 'APFilters', 'APSvcSession', 'APTagInput
   $scope.socialCount = _.keys($scope.session.social||{}).length
 
   DataService.experts.getMe({}, (expert) => {
+    expert.username= $scope.session.username
     $scope.expert = expert
     $scope.data = expert,_.extend(expert, $scope.data||{})
   })
@@ -258,5 +258,29 @@ angular.module("APProfile", ['ngRoute', 'APFilters', 'APSvcSession', 'APTagInput
 
 .controller('ProfilePreviewCtrl', ($scope, $location, $q, SessionService) => {
 
+
+})
+
+
+
+.controller('SettingsCtrl', ($scope, SessionService, ServerErrors) => {
+
+
+  $scope.sendPasswordChange = function() {
+    SessionService.requestPasswordChange({email:$scope.session.email}, function(result){
+      $scope.passwordAlerts = [{ type: 'success', msg: `Password reset sent to ${$scope.session.email}` }]
+    }, ServerErrors.add)
+  }
+
+
+  SessionService.getMaillists({}, (r) => $scope.maillists = r)
+
+  $scope.toggleMaillist = (name) => {
+    SessionService.toggleMaillist({name},(r) => {
+      var sub = _.find($scope.maillists,(l)=>l.name==name)
+      sub.subscribed = r.subscribed
+      $scope.$apply()
+    })
+  }
 
 })

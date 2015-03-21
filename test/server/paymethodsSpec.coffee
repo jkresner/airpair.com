@@ -1,4 +1,3 @@
-db = require('./setup/db')
 braintree_test_nouce = 'fake-valid-nonce'
 
 

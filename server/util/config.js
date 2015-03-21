@@ -108,6 +108,9 @@ var cfg = {
     ses: {
       access_key: process.env.MAIL_SES_ACCESS_KEY || "none",
       secret_key: process.env.MAIL_SES_SECRET_KEY || "none"
+    },
+    mailchimp: {
+      apiKey: ''
     }
   },
   mongoUri: process.env.MONGOHQ_URL || "mongodb://localhost/airpair_dev",
@@ -188,6 +191,7 @@ module.exports = function(env) {
     }
 
     cfg.mail.smtpProvider = require('./mail/ses')
+    cfg.mail.mailchimp.apiKey = process.env.MAIL_MAILCHIMP_APIKEY,
 
     cfg.payments.stripe = {
       publishedKey: process.env.PAYMENTS_STRIPE_PUBLISHEDKEY,

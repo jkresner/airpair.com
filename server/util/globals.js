@@ -39,9 +39,16 @@ module.exports = function(config)
   //-- Services we want to stub can be set on global here
   if (config.env == 'test')
   {
-    global.paypal      = require('paypal-rest-sdk')
-    global.Braintree   = require('../services/wrappers/braintree')
-    global.Timezone    = require('node-google-timezone')
+    global.paypal         = require('paypal-rest-sdk')
+    global.Braintree      = require('../services/wrappers/braintree')
+    global.TimezoneApi    = require('node-google-timezone')
+    global.MailChimpApi   = require('mailchimp/lib/mailchimp/MailChimpAPI_v2_0')
+    global.GitHubApi      = require('github')
+  }
+  else
+  {
+    // global.GitHubApi      = () => {}
+    // global.TimezoneApi    = { key() { } }
   }
 
 }

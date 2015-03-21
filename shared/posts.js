@@ -1,3 +1,5 @@
+var {selectFromObject} = require('./util')
+
 var postsUtil = {
 
   validSlug(slug) {
@@ -58,7 +60,10 @@ var postsUtil = {
 
 
   authorFromUser(user) {
-    return _.extend({ userId:user._id }, _.pick(user,'name','bio','social','username','avatar', 'userId'))
+    var by = _.extend({ userId:user._id }, _.pick(user,'name','bio','social','username','avatar', 'userId'))
+    if (by.social)
+      by.social = selectFromObject(by.social,{ 'gh.username': 1,'so.link':1,'bb.username':1,'in.id':1,'tw.username':1,'al.username':1,'gp.link':1 })
+    return by
   },
 
 

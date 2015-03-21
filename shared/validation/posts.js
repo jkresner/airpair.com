@@ -42,6 +42,8 @@ var validation = {
     if (original.published && !isEditor)
       return `Must be editor to update a published post`
 
+    if (!_.idsEqual(original.by.userId, update.by.userId))
+      return `Cannot change author via update`
     if (update.slug)
       return `Cannot update slug`
     if (update.reviews)
@@ -120,6 +122,10 @@ var validation = {
       return `Must have slug to submit for review`
     if (!validSlug(slug))
       return `${slug} not a valid post slug to submit for review`
+    if (slug.length > 50)
+      return `${slug} is too long, you don't want an ugly long url, it's not good for SEO!`
+    if (slug.indexOf('--') != -1)
+      return `We don't like double '--' in slugs, looks ugly when sharing your post around!`
     if (post.submitted)
       return `This post has already been submitted for review`
     if (!post.md)

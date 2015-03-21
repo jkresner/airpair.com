@@ -26,7 +26,7 @@
       <h2>{{submitted.title}}</h2>
       <h3>is submitted for <a href="/posts/in-community-review">community review</a>  and stored on GitHub!</h3>
       <img src="/static/img/pages/posts/authoring-flow-review.png" />
-      <p>You can continue to <b>edit</b> via the AirPair editor. All edits are now tracked by git and you can <b>collaborate</b> with contributors using forks & pull requests. With 3 reviews of 3.5 stars or higher, you'll be able to publish your post.</p>
+      <p>Your Markdown is stored on the <code>edit</code> branch. Avoid merging the edit branch into master. The simplest way to continue is to <b>edit</b> via the AirPair editor. All edits are now tracked by git and you can <b>collaborate</b> with contributors using forks & pull requests. With 3 reviews of 3.5 stars or higher, you'll be able to publish your post.</p>
     </div>
   </section>
 
@@ -86,10 +86,10 @@
 
               <a href="/posts/edit/{{p._id}}" title="edit" class="edit"></a>
 
-              <a ng-if="p.mine && p.submitted" href="https://github.com/airpair/{{p.slug}}/blob/edit/post.md" target="_blank" class="gh-white"></a>
-
-              <a ng-if="p.forked" href="https://github.com/{{session.social.gh.username}}/{{p.slug}}/blob/edit/post.md" target="_blank" class="gh-white fork"></a>
-
+<!--               <a ng-if="p.submitted" href="https://github.com/{{p.repo}}/blob/edit/post.md" target="_blank" class="gh-white"></a>
+ -->
+<!--               <a ng-if="p.forked" href="https://github.com/{{session.social.gh.username}}/{{p.slug}}/blob/edit/post.md" target="_blank" class="gh-white fork"></a>
+ -->
               <a ng-if="p.mine && !p.submitted && !p.published" ng-click="delete(p._id)" title="delete" class="delete">x</a>
 
               <!-- <a ng-if="!p.mine" ng-click="deleteFork(p._id)" title="delete fork" class="delete">x</a> -->

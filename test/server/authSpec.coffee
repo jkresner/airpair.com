@@ -1,4 +1,3 @@
-db = require('./setup/db')
 UserService = require('../../server/services/users')
 util = require('../../shared/util')
 

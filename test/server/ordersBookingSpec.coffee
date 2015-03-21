@@ -1,4 +1,3 @@
-db = require('./setup/db')
 util = require '../../shared/util'
 ordersUtil = require '../../shared/orders'
 

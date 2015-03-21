@@ -1,7 +1,10 @@
-<header>
+<header ng-if="post">
   <ol class="entry-meta breadcrumb">
-    <li><a href="/posts" target="_self">Posts</a></li>
-    <li><a href="/posts/me">My Posts</a></li>
+    <li>
+      <a ng-if="post.published" href="/posts" target="_self">Posts</a>
+      <a ng-if="!post.published" href="/posts/in-community-review" target="_self">Posts in Review</a>
+    </li>
+    <li><a href="{{post.url}}" target="_self"><b>{{post.title}}</b></a></li>
     <li class="current">Contributors</li>
   </ol>
 </header>
@@ -13,15 +16,11 @@
 
 <section ng-if="post" id="postcontributors">
 
-  <article class="blogpost">
-    <h1 class="entry-title" itemprop="headline"><a href="{{post.url}}" target="_blank">{{post.title}}</a></h1>
-  </article>
-
   <section ng-if="post.submitted && !post.published" class="notifications">
     <div id="inreivew">
       <div class="message">
-        <h3><img ng-src="/static/img/pages/posts/icon-review.png" /> This post is under Community Reivew</h3>
-        <p>Post needs a minimum of 3 reviews with a rating of 3.5 or higher to be published.</p>
+        <h3><img ng-src="/static/img/pages/posts/icon-review.png" /> This post is in <A href="/posts/in-community-review">Community Review</a></h3>
+        <p>It needs a minimum of 3 reviews with a rating of 3.5 or higher to be published.</p>
       </div>
       <div class="info">
         <div class="tip">
@@ -42,8 +41,8 @@
  <section ng-if="post.published" class="notifications">
     <div id="postpublished">
       <div class="message">
-        <h3><img ng-src="/static/img/pages/posts/icon-published.png" /> This post is published</h3>
-        <p>You may continue to <a href="/posts/edit/{{post._id}}">edit</a> & save changes to git. Editors can sync changes to the live version.</p>
+        <h3><img ng-src="/static/img/pages/posts/icon-published.png" /> This post is <a href="{{post.url}}" target="_self">published</a></h3>
+        <p>Only Editors can sync changes from github to the live version.</p>
       </div>
       <div class="info">
         <div class="tip">
@@ -63,7 +62,12 @@
 
   <section class="body">
 
+
     <div class="rail">
+      <a href="{{post.url}}" class="thumb" target="_self"><img src="{{post.meta.ogImage}}" /></a>
+
+      <a href="/posts/edit/{{post._id}}" class="icon edit"></a>
+
       <h4>Forked <b>{{post.forkers.length}}</b> times</h4>
 
       <ul class="forkers">
