@@ -285,6 +285,76 @@ module.exports = {
        timeZoneId: 'Australia/Hobart',
        timeZoneName: 'Australian Eastern Standard Time' },
     local_timestamp: 1402665305
+  },
+
+
+  mailchimp_lists: {
+    total: 2,
+    data: [
+      { id: '39f4769300',
+       web_id: 205165,
+       name: 'AirConf',
+       date_created: '2014-07-14 20:45:44',
+       email_type_option: false,
+       use_awesomebar: true,
+       default_from_name: 'AirPair AirConf',
+       default_from_email: 'team@airpair.com',
+       default_subject: '',
+       default_language: 'en',
+       list_rating: 4,
+       subscribe_url_short: 'http://eepurl.com/ZGkYL',
+       subscribe_url_long: 'http://airpair.us7.list-manage1.com/subscribe?u=707a79398ffed7972e1e87db6&id=39f4769300',
+       beamer_address: 'us7-07807549f9-72b012040c@inbound.mailchimp.com',
+       visibility: 'pub',
+       stats: [Object],
+       modules: [] },
+     { id: '903d16f497',
+       web_id: 117353,
+       name: 'AirPair Newsletter',
+       date_created: '2013-09-30 21:09:29',
+       email_type_option: false,
+       use_awesomebar: true,
+       default_from_name: 'AirPair',
+       default_from_email: 'team@airpair.com',
+       default_subject: 'an update from AirPair',
+       default_language: 'en',
+       list_rating: 3.5,
+       subscribe_url_short: 'http://eepurl.com/Q_gVj',
+       subscribe_url_long: 'http://airpair.us7.list-manage.com/subscribe?u=707a79398ffed7972e1e87db6&id=903d16f497',
+       beamer_address: 'us7-07807549f9-ec0bc25f68@inbound.mailchimp.com',
+       visibility: 'pub',
+       stats: [Object],
+       modules: [] } ],
+    errors: []
+  },
+
+  mailchimp_subscription: [
+    { id: '903d16f497',
+    web_id: 117353,
+    name: 'AirPair Newsletter' }
+  ],
+
+  mailchimp_listsforemail: [
+    { id: '903d16f497', web_id: 117353, name: 'AirPair Newsletter' },
+    { id: '39f4769300', web_id: 205165, name: 'AirConf' },
+    { id: '69de3eea5d', web_id: 224469, name: 'AirPair Authors' }
+  ],
+
+  mailchimp_anon_subscribed: { email: 'subunsub1426911590@airpair.com',
+    euid: 'cb76383d8d',
+    leid: '152330445'
+  },
+
+  mailchimp_subscribed: { email: 'jk@airpair.com',
+    euid: '0ab2e891e6',
+    leid: '152330281'
+  },
+
+  mailchimp_unsubscribed: {
+    complete: true
   }
+
+
+
 
 }

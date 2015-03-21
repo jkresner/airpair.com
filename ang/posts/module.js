@@ -91,9 +91,12 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
         r[i].mine = r[i].by.userId == $scope.session._id
         if (!r[i].published && r[i].submitted)
           recent.push(r[i])
-        if (r[i].mine)
+        if (r[i].mine) {
+          r[i].repo = `airpair/${r[i].slug}`
           mine.push(r[i])
+        }
         if (r[i].forked) {
+          r[i].repo = `${$scope.session.social.gh.username}/${r[i].slug}`
           forks.push(r[i])
           r[i].needsMyReview = !_.find(r[i].reviews,(rev)=>rev.by._id == meUserId)
           r[i].needsMyFork = !_.find(r[i].forkers,(f)=>f.userId == meUserId)
@@ -211,7 +214,7 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
     DataService.posts.getByIdForEditingInfo({_id}, (r) => {
       if ($scope.session._id == r.by.userId) { // don't wipe author with editor session
         var bio = r.by.bio
-        r.by = _.extend(r.by, $scope.session)  // update new social links
+        r.by = _.extend(r.by, $scope.session)  // show latest social links
         r.by.bio = bio // in case this post has it's own specific bio, don't wipe it!
       }
       $scope.post = r
@@ -316,10 +319,13 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
     }
   )
 
+  $scope.propagate = () =>
+    DataService.posts.propagateFromHEAD({_id}, (r)=> window.location = window.location)
+
 })
 
 
-.controller('PostSubmitCtrl', ($scope, $q, $routeParams, ServerErrors, DataService) => {
+.controller('PostSubmitCtrl', ($scope, $q, $routeParams, ServerErrors, DataService, $timeout) => {
   var _id = $routeParams.id
   $scope._id = _id
 
@@ -337,15 +343,23 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
 
   $scope.submitForReviewDeferred = () => {
     var deferred = $q.defer()
-
-    DataService.posts.submitForReview($scope.post, (r) => {
-      window.location = '/posts/me?submitted='+r._id
-      deferred.resolve(r)
-    },
-    (e) => {
-      ServerErrors.add(e)
-      deferred.reject(e)
-    })
+    var slug = $scope.post.slug
+    if (slug.length > 50) {
+      alert('Use a slug smaller than 50 chars'); $timeout(deferred.reject, 10)
+    }
+    else if (slug.indexOf('--') != -1){
+      alert('Clean up that slug url! No double -- please :)'); $timeout(deferred.reject, 10)
+    }
+    else {
+      DataService.posts.submitForReview($scope.post, (r) => {
+        window.location = '/posts/me?submitted='+r._id
+        deferred.resolve(r)
+      },
+      (e) => {
+        ServerErrors.add(e)
+        deferred.reject(e)
+      })
+    }
 
     return deferred.promise
   }

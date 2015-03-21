@@ -27,6 +27,14 @@ var get = {
     svc.searchOne(query.published({slug}), null, selectCB.inflateHtml(cb))
   },
 
+  //-- used for api param fn
+  getByIdFromCache(_id, cb) {
+    cache.ready(['posts'], () => {
+      var post = cache.posts[_id]
+      cb(null, post)
+    })
+  },
+
   getByIdForEditingInfo(post, cb) {
     selectCB.editInfoView(cb)(null, post)
   },
@@ -153,11 +161,16 @@ var get = {
   },
 
   getByIdForReview(_id, cb) {
-    svc.searchOne(query.inReview({_id}), { fields: select.display }, selectCB.displayView(cb))
+    svc.searchOne({_id}, { fields: select.display }, (e,r) => {
+      if (e||!r) return cb(e,r)
+      if (r.published) return cb(null, {published:true, url: r.meta.canonical})
+      if (!r.submitted) return cb(null, null)
+      selectCB.displayView(cb)(e,r)
+    })
   },
 
   getAllForCache(cb) {
-    svc.searchMany(query.published(), { fields: select.listCache }, selectCB.addUrl(cb))
+    svc.searchMany(query.cached(), { fields: select.listCache }, selectCB.addUrl(cb))
   },
 
   getAllPublished(cb) {
@@ -312,11 +325,17 @@ var save = {
 
   update(original, ups, cb) {
     var act = (Roles.isOwner(this.user, original)) ? 'updateByAuthor' : 'updateByEditor'
-    ups.by = PostsUtil.authorFromUser(ups.by)
-    if (original.assetUrl != ups.assetUrl && (original.submitted || original.published))
-      ups.meta = _.extend(ups.meta||{},{ogImage:ups.assetUrl})
+    var {userId} = original.by
+    UserSvc.getById.call({user:{_id:userId}}, userId,(ee, user) =>
+    {
+      var social = PostsUtil.authorFromUser(user).social
+      if (social) ups.by.social = social
 
-    updateWithEditTouch.call(this, _.extend(original, ups), act, selectCB.editInfoView(cb))
+      if (original.assetUrl != ups.assetUrl && (original.submitted || original.published))
+        ups.meta = _.extend(original.meta, _.extend(ups.meta||{},{ogImage:ups.assetUrl}))
+
+      updateWithEditTouch.call(this, _.extend(original, ups), act, selectCB.editInfoView(cb))
+    })
   },
 
   publish(post, publishData, cb) {
@@ -366,6 +385,7 @@ var save = {
         post.meta = post.meta || {}
         post.meta.ogImage = post.assetUrl
         updateWithEditTouch.call(this, post, 'submittedForReview', cb)
+        if (cache) cache.flush('posts')
       })
     })
 

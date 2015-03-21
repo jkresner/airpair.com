@@ -1,5 +1,4 @@
 var dataHelpers           = require('./data')
-var db                    = require('./db')
 var stories               = require('./stories')
 var stubs                 = require('./../helpers/stubs')
 
@@ -12,6 +11,14 @@ var setup = {
       $log('mongodb_restore'.cyan)
       db.RestoreBSONData(done)
     })
+  },
+
+
+  initStubs()
+  {
+    return {
+      timezone: stubs.stubGoogleTimezone()
+    }
   },
 
   upsertProviderProfile(provider, userKey, done)

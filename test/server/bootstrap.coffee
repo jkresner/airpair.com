@@ -22,14 +22,16 @@ describe 'Server: '.appload, ->
   before (done) ->
     @timeout(10000)
     global.logging    = false
+    global.db         = require('./helpers/db')
     global.SETUP      = require('./setup/_setup')
     global.ObjectId   = SETUP.ObjectId
     global.timeSeed   = SETUP.timeSeed
     global.newId      = SETUP.newId
     global.data       = require('./../data/data')
     global.app        = require('../../index').run()
+    global.stubs      = SETUP.initStubs()
     testHttpHelpers.init(app)
-    global.stubs      = timezone: SETUP.stubGoogleTimezone()
+
     setTimeout(( -> SETUP.init(done) ), 100)
 
 
@@ -42,6 +44,7 @@ describe 'Server: '.appload, ->
   describe 'Auth: '.spec,           require('./authSpec')
   describe 'Authz: '.spec,          require('./authzSpec')
   describe 'Users: '.spec,          require('./usersSpec')
+  describe 'Users: '.spec,          require('./usersCohortSpec')
   describe 'User Flows: '.spec,     require('./userFlowsSpec')
   describe 'Experts: '.spec,        require('./expertsSpec')
   describe 'Analytics: '.spec,      require('./analyticsSpec')

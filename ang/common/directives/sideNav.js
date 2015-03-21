@@ -26,11 +26,12 @@ angular.module("APSideNav", ['ui.bootstrap','APSvcSession', 'APTagInput'])
 
         // leave for mobile/tablet taps (no mouseenter)
         this.toggle = function() {
-          if (storage('sideNavOpen') == 'true') storage('sideNavOpen', 'false');
-          else storage('sideNavOpen', 'true');
+          alert('expert menu coming next week')
+          // if (storage('sideNavOpen') == 'true') storage('sideNavOpen', 'false');
+          // else storage('sideNavOpen', 'true');
 
-          $element.toggleClass('collapse', storage('sideNavOpen') == 'false')
-          $scope.toggleAction = (storage('sideNavOpen') != 'true') ? 'Show' : 'Hide';
+          // $element.toggleClass('collapse', storage('sideNavOpen') == 'false')
+          // $scope.toggleAction = (storage('sideNavOpen') != 'true') ? 'Show' : 'Hide';
         }
 
         // set init state

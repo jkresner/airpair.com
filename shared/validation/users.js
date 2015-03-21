@@ -48,7 +48,8 @@ module.exports = {
   //   if (!email || !email.match(/.+@.+\.+.+/))
   //     return `Invalid email address`
   // },
-
+  fullUpdatedCohort(user) {
+  },
 
   changeUsername(user, username) {
     //-- Can set the username to nothing
@@ -116,6 +117,21 @@ module.exports = {
   toggleSiteNotification(user, name) {
     if (!name) return "site notification name required"
     if (name != 'hello') return `${name} unknown site notification`
+  },
+
+  toggleMaillist(user, body) {
+    var name = body.name
+    if (!name) return "mail list name required"
+    if (name != 'AirPair Newsletter' &&
+      name != 'AirPair Developer Digest' &&
+      name != 'AirPair Authors' &&
+      name != 'AirPair Experts'
+      ) return `${name} unknown mail list`
+
+    if (!user) {
+      var email = body.email
+      return validateEmail(email)
+    }
   },
 
 }

@@ -6,7 +6,14 @@ angular.module("APProfileDirectives", [])
     template: require('./socialLinks.html'),
     scope: { p: '=profile' },
     link(scope, element, attrs) { },
-    controller($scope, $attrs) { }
+    controller($scope, $attrs) {
+      $scope.$watch('p', ()=>{
+        if (!$scope.p) return
+        if ($scope.p.so)
+          $scope.p.so.link =
+            $scope.p.so.link.replace('http://stackoverflow.com/users/','')
+      })
+    }
   };
 
 })
@@ -34,7 +41,7 @@ angular.module("APProfileDirectives", [])
       returnTo: '=returnTo',
     },
     controller($scope, $attrs) {
-      $scope.data = $rootScope.session.social || {}
+      $scope.data = {}
       $scope.return = $scope.returnTo || $location.path()
 
       $rootScope.$watch('session', (session) => {

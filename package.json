@@ -69,6 +69,7 @@
     "htmlparser2": "^3.7.3",
     "jwt-simple": "~0.2.0",
     "lodash": "^2.4.1",
+    "mailchimp": "1.1.0",
     "marked": "^0.3.2",
     "moment": "2.8.4",
     "mongoose": "3.8.25",
