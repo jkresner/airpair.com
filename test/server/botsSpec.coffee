@@ -1,4 +1,3 @@
-db                        = require('./setup/db')
 {uaFirefox,uaGooglebot}   = require('./../data/http')
 
 a_uid = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[\,\-_]*).{24,}/

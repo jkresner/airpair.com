@@ -1,5 +1,3 @@
-db = require('./setup/db')
-
 
 module.exports = -> describe "API: ".subspec, ->
 

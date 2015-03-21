@@ -1,4 +1,3 @@
-db = require('./setup/db')
 postTitle = "Analytics Tests "+moment().format('X')
 postSlug = postTitle.toLowerCase().replace /\ /g, '-'
 postUrl = "/v1/posts/#{postSlug}"
