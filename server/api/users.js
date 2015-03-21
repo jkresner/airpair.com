@@ -6,7 +6,7 @@ export default initAPI(
 , {
   getSession: (req) => [],
   getMaillists: (req) => [],
-  toggleMaillist: (req) => [req.body.name],
+  toggleMaillist: (req) => [req.body],
   toggleUserInRole: (req) => [req.params.id,req.params.role],
   toggleTag: (req) => [req.tag],
   updateTags: (req) => [req.body],

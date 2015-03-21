@@ -197,7 +197,7 @@ var gh = {
       //-- check the case where repos have been deleted manually (repo doesn't exist)
       if (e && e.code == 404)
       {
-        if (logging) $log('getFile.getContent.404'.red, e)
+        if (logging) $log(`getFile.getContent.404`.red, `${repoOwner}/${repo}/${path}:${branch}`, e)
         api.repos.get({ user: repoOwner, repo }, function(err,response) {
           if (logging) $log('getFile.getRepo'.red, err, response)
           if (err && err.code === 404)

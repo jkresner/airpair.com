@@ -119,13 +119,19 @@ module.exports = {
     if (name != 'hello') return `${name} unknown site notification`
   },
 
-  toggleMaillist(user, name) {
+  toggleMaillist(user, body) {
+    var name = body.name
     if (!name) return "mail list name required"
     if (name != 'AirPair Newsletter' &&
       name != 'AirPair Developer Digest' &&
       name != 'AirPair Authors' &&
       name != 'AirPair Experts'
       ) return `${name} unknown mail list`
+
+    if (!user) {
+      var email = body.email
+      return validateEmail(email)
+    }
   },
 
 }
