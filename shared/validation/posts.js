@@ -83,12 +83,6 @@ var validation = {
       return `Post must have a slug to be published`
     if (!validSlug(post.slug))
       return `${post.slug} not a valid post slug to publish`
-    if (post.slug.length > 50)
-      return `${post.slug} is too long, you don't want an ugly long url, it's not good for SEO!`
-    if (post.slug.indexOf('--') != -1)
-      return `We don't like double '--' in slugs, looks ugly when sharing your post around!`
-    if (!validSlug(post.slug))
-      return `${post.slug} not a valid post slug to publish`
 
     if (!publishData.tmpl)
       return `Post template name must be provided`
@@ -128,6 +122,10 @@ var validation = {
       return `Must have slug to submit for review`
     if (!validSlug(slug))
       return `${slug} not a valid post slug to submit for review`
+    if (slug.length > 50)
+      return `${slug} is too long, you don't want an ugly long url, it's not good for SEO!`
+    if (slug.indexOf('--') != -1)
+      return `We don't like double '--' in slugs, looks ugly when sharing your post around!`
     if (post.submitted)
       return `This post has already been submitted for review`
     if (!post.md)
