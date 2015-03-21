@@ -334,4 +334,27 @@ module.exports = {
     name: 'AirPair Newsletter' }
   ],
 
+  mailchimp_listsforemail: [
+    { id: '903d16f497', web_id: 117353, name: 'AirPair Newsletter' },
+    { id: '39f4769300', web_id: 205165, name: 'AirConf' },
+    { id: '69de3eea5d', web_id: 224469, name: 'AirPair Authors' }
+  ],
+
+  mailchimp_anon_subscribed: { email: 'subunsub1426911590@airpair.com',
+    euid: 'cb76383d8d',
+    leid: '152330445'
+  },
+
+  mailchimp_subscribed: { email: 'jk@airpair.com',
+    euid: '0ab2e891e6',
+    leid: '152330281'
+  },
+
+  mailchimp_unsubscribed: {
+    complete: true
+  }
+
+
+
+
 }

@@ -19,16 +19,10 @@ module.exports = {
       $callSvc(svc.getById, this)(this.user._id, (e,user) => {
         var currentLists = (user.cohort) ? user.cohort.maillists : []
         MailChimp.subscriptions(user.email, (e,r) => {
-          var subscribed = []
-          var maillists = []
-          for (var list of r) {
-            maillists.push({name:list.name,subscribed:list.subscribed,description:list.description})
-            if (list.subscribed) {
-              subscribed.push(list.name)
-            }
-          }
-          cb(null,maillists)
 
+          cb(null, _.map(r,(l)=>_.pick(l, 'name', 'subscribed', 'description')))
+
+          var subscribed = _.pluck(_.filter(r, (l) => l.subscribed),'name')
           if (_.difference(currentLists,subscribed).length > 0 ||
             _.difference(subscribed,currentLists).length > 0
           )
@@ -39,11 +33,14 @@ module.exports = {
     }
     else
     {
-      throw Error('anonymous list to be implemented')
+      //-- Just return what's in the users session because we can't tell
+      //-- if they have verified anyway
+      cb(null, this.session.maillists)
     }
   },
 
-  toggleMaillist(name, cb) {
+  toggleMaillist(body, cb) {
+    var {name} = body
     if (this.user)
     {
       $callSvc(svc.getById, this)(this.user._id, (ee,user) => {
@@ -64,7 +61,20 @@ module.exports = {
     }
     else
     {
-      throw Error('anonymous list to be implemented')
+      var {email} = body
+
+      this.session.maillists = this.session.maillists || []
+      if (_.contains(this.session.maillists, name)) {
+        cb('Unsubscribe not supported for anonymous users. Please login.')
+        // this.session.maillists = _.without(this.session.maillists, name)
+        // MailChimp.unsubscribe(name, email, (e,r) => cb(e,this.session.maillists))
+      }
+      else {
+        this.session.maillists.push(name)
+        MailChimp.subscribe(name, email, {}, 'html', true, false, (e,r) => cb(e,this.session.maillists))
+      }
+
+      this.session.anonData.email = email
     }
   }
 
