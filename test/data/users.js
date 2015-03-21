@@ -131,6 +131,10 @@ module.exports = {
   tbau: { name: "Tyler Baur", email: "tbau@gmail.com"},
   tbar: { name: "Tyler Bar", email: "tbar@airtest.com"},
 
+  tjar: { name: "Ted Jardine", email: "tj@airtest.com"},
+  tard: { name: "Ted Jardine", email: "tj@test.com"},
+  tedj: { name: "Ted Jardine", email: "tedj@terst.com"},
+
   //*** TO SETUP AN ADMIN TOKEN: => /auth/github?returnTo=/me&scope=user,repo,admin:org
   jkya: { name:"Jonathon Krezner",email:"jkresner@yahooo.com.au",
     social: { gh: { username: "jkyahoo", token: { token: "b9d09cce1129b4ee1f4b97cc44c3b753cb9d8795" } } } },
@@ -1626,7 +1630,155 @@ module.exports = {
         "token" : {}
     },
     "twitterId" : 2508694140
-  }
+  },
 
+  louf: {
+    "_id" : ObjectId("52f3e3a71c67d1a4859d215c"),
+    "cohort" : {
+        "expert" : {
+            "_id" : "52f3e3d34b04b30200000019",
+            "applied" : ISODate("2015-03-18T00:31:26.890Z")
+        },
+        "engagement" : {
+            "visit_first" : ISODate("2014-02-06T19:33:59.000Z"),
+            "visit_signup" : ISODate("2014-02-06T19:33:59.000Z"),
+            "visit_last" : ISODate("2015-03-15T16:58:59.335Z"),
+            "visits" : [
+                ISODate("2014-10-23T00:00:00.000Z")
+            ]
+        },
+        "aliases" : ["NMb__xBDhkxez4S2GJheILKADjiT1o0S"],
+        "firstRequest" : { "url" : "/review/54a70bde0489f40b00306027"}
+    },
+    "email" : "loumfranco@gmail.com",
+    "emailVerified" : true,
+    "google" : {
+        "token" : { },
+        "_json" : {
+            "locale" : "en",
+            "gender" : "male",
+            "picture" : "https://lh3.googleusercontent.com/-1PRoTjsewYI/AAAAAAAAAAI/AAAAAAAAAEw/M1VXtCw6HGM/photo.jpg",
+            "link" : "https://plus.google.com/+LouFranco-1",
+            "family_name" : "Franco",
+            "given_name" : "Lou",
+            "name" : "Lou Franco",
+            "verified_email" : true,
+            "email" : "loumfranco@gmail.com",
+            "id" : "110090553977842288079"
+        },
+        "emails" : [{"value" : "loumfranco@gmail.com"}],
+        "name" : {
+            "givenName" : "Lou",
+            "familyName" : "Franco"
+        },
+        "displayName" : "Lou Franco",
+        "id" : "110090553977842288079",
+        "provider" : "google"
+    },
+    "googleId" : "110090553977842288079",
+    "initials" : "LF",
+    "username" : "loufranco",
+    "tags" : [],
+    "bookmarks" : [],
+    "localization" : {
+        "timezoneData" : {
+            "timeZoneName" : "Eastern Daylight Time",
+            "timeZoneId" : "America/New_York",
+        },
+        "timezone" : "Eastern Daylight Time",
+        "location" : "Northampton, MA, USA"
+    },
+    "siteNotifications" : [],
+    "roles" : [],
+    "social" : {
+        "so" : {
+            "token" : {},
+            "id" : 3937,
+            "provider" : "stackexchange",
+            "profile_image" : "https://www.gravatar.com/avatar/e27f554e9ed800bca61642acaba29452?s=128&d=identicon&r=PG",
+            "display_name" : "Lou Franco",
+            "link" : "http://stackoverflow.com/users/3937/lou-franco",
+            "website_url" : "http://www.loufranco.com",
+            "location" : "Northampton, MA",
+            "accept_rate" : 90,
+            "age" : 43,
+            "user_id" : 3937,
+            "user_type" : "registered",
+            "creation_date" : 1220229061,
+            "reputation" : 46054,
+            "reputation_change_day" : 20,
+            "reputation_change_week" : 100,
+            "reputation_change_month" : 100,
+            "reputation_change_quarter" : 520,
+            "reputation_change_year" : 520,
+            "last_access_date" : 1391714548,
+            "last_modified_date" : 1390407488,
+            "is_employee" : false,
+            "account_id" : 2794,
+            "badge_counts" : {
+                "gold" : 8,
+                "silver" : 63,
+                "bronze" : 115
+            }
+        },
+        "in" : {
+            "token" : {},
+            "_json" : {
+                "lastName" : "Franco",
+                "id" : "urUUT94Yf6",
+                "firstName" : "Lou"
+            },
+            "name" : {
+                "givenName" : "Lou",
+                "familyName" : "Franco"
+            },
+            "displayName" : "Lou Franco",
+            "id" : "urUUT94Yf6",
+            "provider" : "linkedin"
+        },
+        "gh" : {
+            "token" : {},
+            "_json" : {
+                "updated_at" : "2014-02-04T17:02:31Z",
+                "created_at" : "2010-12-23T21:15:00Z",
+                "following" : 14,
+                "followers" : 7,
+                "public_gists" : 0,
+                "public_repos" : 7,
+                "bio" : null,
+                "hireable" : false,
+                "email" : null,
+                "location" : "Northampton, MA",
+                "blog" : "http://loufranco.com",
+                "company" : null,
+                "name" : "Lou Franco",
+                "site_admin" : false,
+                "type" : "User",
+                "received_events_url" : "https://api.github.com/users/loufranco/received_events",
+                "events_url" : "https://api.github.com/users/loufranco/events{/privacy}",
+                "repos_url" : "https://api.github.com/users/loufranco/repos",
+                "organizations_url" : "https://api.github.com/users/loufranco/orgs",
+                "subscriptions_url" : "https://api.github.com/users/loufranco/subscriptions",
+                "starred_url" : "https://api.github.com/users/loufranco/starred{/owner}{/repo}",
+                "gists_url" : "https://api.github.com/users/loufranco/gists{/gist_id}",
+                "following_url" : "https://api.github.com/users/loufranco/following{/other_user}",
+                "followers_url" : "https://api.github.com/users/loufranco/followers",
+                "html_url" : "https://github.com/loufranco",
+                "url" : "https://api.github.com/users/loufranco",
+                "gravatar_id" : "e27f554e9ed800bca61642acaba29452",
+                "avatar_url" : "https://gravatar.com/avatar/e27f554e9ed800bca61642acaba29452?d=https%3A%2F%2Fidenticons.github.com%2Fa685c3dd1f8b2f0ad020d21e95ad4c4d.png&r=x",
+                "id" : 534999,
+                "login" : "loufranco"
+            },
+            "emails" : [{"value" : null}],
+            "profileUrl" : "https://github.com/loufranco",
+            "username" : "loufranco",
+            "displayName" : "Lou Franco",
+            "id" : 534999,
+            "provider" : "github"
+        }
+    },
+    "bio" : "20+ year software veteran with 7 years experience in iOS development. More at http://loufranco.com/airpair"
+  }
 
 }

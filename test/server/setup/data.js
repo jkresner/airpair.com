@@ -47,6 +47,8 @@ var dataHelpers = {
     seed.username = seed.name.replace(/ /g,'').toLowerCase()
     seed.password = 'testpass'+suffix
     seed.userKey = userKey + suffix
+    seed.localization = data.wrappers.localization_melbourne
+    seed.initials = "ap-#{timeSeed()}"
 
     if (seed.google) {
       seed.google.id = seed.google.id + suffix
@@ -63,8 +65,7 @@ var dataHelpers = {
 
     seed._id = new ObjectId
     seed.userId = user._id
-    seed.name = user.name
-    seed.username = user.name.replace(/ /g,'').toLowerCase()
+    seed.user = user
     return seed
   },
 

@@ -30,7 +30,23 @@ var nestedPick = (object, keys) => {
         var result = nestedPick(object[props[0]], [nestedKey])
           // $log('result'.yellow, props[0].yellow, result)
         if (!_.isEmpty(result)) {
-          copy[props[0]] = (copy[props[0]]) ? _.extend(copy[props[0]],result) : result
+          if (!copy[props[0]]) copy[props[0]] = result
+          else {
+            // $log('result', props[0].white, nestedKey.yellow, result)
+            // $log('copy[props[0]]', nestedKey.yellow, copy[props[0]])
+            if (nestedKey.indexOf('.') == -1) {
+              copy[props[0]] = _.extend(copy[props[0]],result)
+              // $log(`copy[${props[0]}]`.cyan, copy[props[0]])
+            } else {
+              var topProp = nestedKey.split('.')[0]
+              // $log(`topProp[${props[0]}]`.cyan, topProp, result)
+              if (copy[props[0]][topProp] && result[topProp])
+                copy[props[0]][topProp] = _.extend(copy[props[0]][topProp],result[topProp])
+              else if (result[topProp])
+                copy[props[0]][topProp] = result[topProp]
+              // $log(`topProp[${props[0]}]`.cyan, topProp, copy[props[0]])
+            }
+          }
         }
       }
     }

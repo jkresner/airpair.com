@@ -23,6 +23,7 @@ describe 'Server: '.appload, ->
     @timeout(10000)
     global.logging    = false
     global.db         = require('./helpers/db')
+    global.ISODate    = db.ISODate
     global.SETUP      = require('./setup/_setup')
     global.ObjectId   = SETUP.ObjectId
     global.timeSeed   = SETUP.timeSeed
@@ -47,6 +48,7 @@ describe 'Server: '.appload, ->
   describe 'Users: '.spec,          require('./usersCohortSpec')
   describe 'User Flows: '.spec,     require('./userFlowsSpec')
   describe 'Experts: '.spec,        require('./expertsSpec')
+  describe 'Experts: '.spec,        require('./expertsMojoSpec')
   describe 'Analytics: '.spec,      require('./analyticsSpec')
   describe 'Tags: '.spec,           require('./tagsSpec')
   describe 'Companys: '.spec,       require('./companysSpec')
@@ -60,4 +62,4 @@ describe 'Server: '.appload, ->
   describe 'Posts: '.spec,          require('./postsSpec')
   describe 'Post Reviews: '.spec,   require('./postsReviewsSpec')
   describe.skip 'Bookings: '.spec,       require('./bookingsSpec')
-  describe.skip 'Payouts: '.spec,        require('./payoutsSpec')
+  describe 'Payouts: '.spec,        require('./payoutsSpec')

@@ -28,6 +28,8 @@ function itemReady(key, cb)
   else {
     svcs[key].getAllForCache( (e, list) => {
       cache[key] = hashEm(list, key, '_id')
+      if (key == 'tags')
+        cache['tag_slugs'] = hashEm(list, key, 'slug')
       cb()
     })
   }
@@ -52,7 +54,7 @@ cache.flush = function(key, cb)
 
 cache.bookmark = function(type, id)
 {
-  if (!cache[type+'s']) return { url: 'cache no loaded', title: '' }
+  if (!cache[type+'s']) return { url: 'cache not loaded', title: '' }
   return cache[type+'s'][id]
 }
 
@@ -62,4 +64,10 @@ cache.tmpl = function(type, key, cb)
   itemReady('templates', () =>
     cb( cache['templates'][`${type}:${key}`] )
   )
+}
+
+cache.tagBySlug = function(slug, cb)
+{
+  if (!cache['tag_slugs']) return { slug: 'cache-not-loaded', name: 'tagBySlug' }
+  return cache['tag_slugs'][slug]
 }

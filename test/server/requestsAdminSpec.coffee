@@ -109,7 +109,8 @@ module.exports = -> describe "Admin".subspec, ->
         PUT "/adm/requests/#{r._id}/message", { type: 'received', subject: "s", body: "b" }, {}, (r1) ->
           expect(r1.status,'waiting')
           expect(r1.adm.owner,'ad')
-          GET "/experts/match/#{r._id}", {}, (matches) ->
+          query = requestUtil.mojoQuery(r1)
+          GET "/experts/mojo/rank?#{query}", {}, (matches) ->
             expect(matches.length).to.equal(1)
             expect(matches[0].matching).to.be.undefined
             expertId = matches[0]._id

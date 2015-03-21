@@ -10,14 +10,14 @@ var data = {
       'name': 1,
       'email': 1,
       'tags._id': 1,
-      'tags.short': 1,
+      'tags.sort': 1,
       'rate': 1,
       'minRate': 1,
       'gh.username': 1,
       'gh.followers': 1,
       'so.link': 1,
       'so.reputation': 1,
-      'bb.id': 1,
+      'bb.username': 1,
       'bb.followers': 1,
       'in.id': 1,
       'in.endorsements': 1,
@@ -70,8 +70,18 @@ var data = {
       'bio': 1,
       'localization.location': 1,
       'localization.timezone': 1,
-      'social':1,
-      'google':1
+      'google.id':1,
+      'google._json.picture':1,
+      'social.gh._json.followers': 1,
+      'social.gh.username': 1,
+      'social.so.link': 1,
+      'social.so.reputation': 1,
+      'social.bb.username': 1,
+      'social.bb.followers': 1,
+      'social.in.id': 1,
+      'social.in.endorsements': 1,
+      'social.tw.username': 1,
+      'social.tw.followers': 1,
     },
     updateME: {
       '_id': 1,
@@ -116,27 +126,37 @@ var data = {
           cb(null,r)
         }
       },
+      migrateInfate(r) {
+        if (!r.user) {
+          r.isV0 = true
+          r.avatar = (r.email) ? md5.gravatarUrl(r.email) : r.pic
+        }
+        else {
+          delete r.user._id
+          var social = r.user.social
+          // how we handle staying v0 on front-end
+          r = _.extend(_.extend(r,r.user),r.social)
+          r.location = r.localization.location
+          r.timezone = r.localization.timezone
+          r.avatar = md5.gravatarUrl(r.email)
+          delete r.user
+          if (r.social) delete r.social
+          if (r.google) delete r.google
+          if (r.localization) delete r.localization
+        }
+
+        if (r.gh && r.gh._json)
+          r.gh.followers = r.gh._json.followers
+
+        r.minRate = r.minRate || r.rate
+        r.tags = data.select.cb.inflatedTagsNoCB(r)
+        return r
+      },
       me(cb) {
         return (e,r) => {
           if (e || !r) return cb(e, r)
-
-          if (!r.user) {
-            r.isV0 = true
-            r.avatar = (r.email) ? md5.gravatarUrl(r.email) : r.pic
-          }
-          else {
-            delete r.user._id
-            var social = r.user.social
-            // how we handle staying v0 on front-end
-            r = _.extend(_.extend(r,r.user),r.social)
-            r.location = r.localization.location
-            r.timezone = r.localization.timezone
-            r.avatar = md5.gravatarUrl(r.email)
-          }
-
-          r.minRate = r.minRate || r.rate
-          r = selectFromObject(r, data.select.me)
-          data.select.cb.inflateTags(r, cb)
+          r = data.select.cb.migrateInfate(r)
+          cb(null, selectFromObject(r, data.select.me))
         }
       },
       //-- TODO, watch out for cache changing via adds and deletes of records
@@ -177,24 +197,17 @@ var data = {
               // return cb(Error(`tag with Id ${t.tagId} not in cache`))
           }
 
-          // var bookmarks = []
-          // for (var b of (expert.bookmarks || []))
-          // {
-          //   var bb = cache[b.type+'s'][b.objectId]
-          //   if (bb) {
-          //     var {title,url} = bb
-          //     bookmarks.push( _.extend({title,url},b) )
-          //   }
-          //   else
-          //     $log(`${b.type} with Id ${b.objectId} not in cache`)
-          //     // return cb(Error(`${b.type} with Id ${b.objectId} not in cache`))
-          // }
-
-          // if (logging) $log('inflateTagsAndBookmarks.done', {tags, bookmarks})
-          // bookmarks
           cb(null, _.extend(expert, {tags}))
         })
       },
+      inflateList(e, experts, cb) {
+        if (e) return cb(e)
+        cache.ready(['tags'], () => {
+          for (var expert of experts)
+            expert = data.select.cb.migrateInfate(expert)
+          cb(null, experts)
+        })
+      }
     }
   },
 
