@@ -80,11 +80,16 @@ var get = {
 
     if (!this.user.social || !this.user.social.gh) return cb(null, post)
 
-    $callSvc(UserSvc.getProviderScopes, this)((ee, providers) => {
-      if (ee) return cb(Error(`getByIdForSubmitting. Failed to get user providers scopes for [${this.user._id}][${this.user.social.gh.username}]`))
-      var scope = _.find(providers.github, (s) => s.indexOf("repo") != -1)
-      if (!scope) return cb(null, post)
-      post.submit.repoAuthorized = true
+    $callSvc(UserSvc.getProviderScopes, this)((e, providers) => {
+      if (e && e.message == "GitHub token auth failed")
+        post.submit.repoAuthorized = false
+      else if (e)
+        return cb(Error(`getByIdForSubmitting. Failed to get user providers scopes for [${this.user._id}][${this.user.social.gh.username}]`))
+      else {
+        var scope = _.find(providers.github, (s) => s.indexOf("repo") != -1)
+        if (!scope) return cb(null, post)
+        post.submit.repoAuthorized = true
+      }
       $callSvc(get.checkSlugAvailable, this)(post, post.slug, (e, r) => {
         post.submit.slugStatus = r
         cb(e, post)
