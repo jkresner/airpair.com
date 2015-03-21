@@ -1,4 +1,3 @@
-db = require('./setup/db')
 abhaKey = null
 
 create = ->

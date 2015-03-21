@@ -1,5 +1,4 @@
 requestUtil = require('../../shared/requests')
-db = require('./setup/db')
 phlfKey = null
 phlfExp = null
 

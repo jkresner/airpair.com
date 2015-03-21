@@ -22,6 +22,7 @@ describe 'Server: '.appload, ->
   before (done) ->
     @timeout(10000)
     global.logging    = false
+    global.db         = require('./helpers/db')
     global.SETUP      = require('./setup/_setup')
     global.ObjectId   = SETUP.ObjectId
     global.timeSeed   = SETUP.timeSeed

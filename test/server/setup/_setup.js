@@ -1,5 +1,4 @@
 var dataHelpers           = require('./data')
-var db                    = require('./db')
 var stories               = require('./stories')
 var stubs                 = require('./../helpers/stubs')
 

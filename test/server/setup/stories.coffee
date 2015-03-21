@@ -1,5 +1,3 @@
-# might be cool to inject this instead of require
-db = require('./db')
 dataHelpers = require('./data')
 UserService = require('../../../server/services/users')
 PaymethodsService = require('../../../server/services/paymethods')
