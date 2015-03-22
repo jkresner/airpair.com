@@ -1,5 +1,3 @@
-var FirebaseTokenGenerator = require('firebase-token-generator')
-var JWT = require('jwt-simple')
 var {isBot,stringToJson}   = require('../../shared/util')
 var logging   = false
 
@@ -155,71 +153,8 @@ var middleware = {
     }
   },
 
-
   setReturnTo: setSessionVarFromQuery('returnTo'),
 
-  setFirebaseTokenOnSession(req, res, next) {
-    if (logging) $log(`mw.setFirebaseTokenOnSession ${req.sessionID} ${req.user==null}`.cyan)
-    if (!config.chat.on) return next()
-    if (isBot(req.header('user-agent'))) return next()
-
-    var token = middleware.setFirebaseToken(req.user, req.session, req.sessionID);
-
-    if (req.session.firebaseToken !== token) {
-      req.session.firebaseToken = token;
-    }
-
-    //$log('firebaseToken in setFirebaseTokenOnSession', req.session.firebaseToken)
-    // console.log('session >', req.sessionID, req.session );
-    next()
-  },
-
-  setFirebaseToken(user, session, sessionID) {
-    var tokenGenerator = new FirebaseTokenGenerator(config.chat.firebase.secret)
-    var tokenData, trues, existingToken = session.firebaseToken, existingTokenData, existingTokenMetadata;
-
-    if (existingToken) {
-      existingTokenMetadata = JWT.decode(existingToken, config.chat.firebase.secret);
-      existingTokenData =  existingTokenMetadata.d;
-    }
-
-    if (user) {
-      var uid = user._id.toString()
-
-      trues = _.map(user.roles, function () {return true});
-      tokenData = {
-        uid: uid,
-        //name: req.user.name,
-        //avatar: req.user.avatar,
-        type: "user",
-        // Convert roles to an object for easy lookup in Firebase security rules
-        roles: _.object(user.roles, trues)
-      }
-
-    } else {
-
-      // Generate firebase token using req.sessionID
-      tokenData = {
-        uid: sessionID,
-        //name: req.session.name || "Visitor " + req.sessionID.substring(0, 6),
-        //avatar: req.session.avatar,
-        type: "session"
-      }
-    }
-    //console.log("uids>", existingTokenData? existingTokenData.uid : "", tokenData.uid)
-    if (!existingTokenData || existingTokenData.uid != tokenData.uid || (existingTokenMetadata.iat*1000) < new Date().getTime()) {
-      //console.log("providing new token")
-      var token, expires = parseInt(new moment(session.cookie._expires).format('x'), 10);
-      //console.log(expires);
-      token = tokenGenerator.createToken(tokenData, {expires:expires});
-      //console.log(token);
-      return token;
-    } else {
-      return existingToken;
-    }
-
-    //console.log("Running setFirebaseTokenOnSession", session.firebaseToken)
-  }
 }
 
 
