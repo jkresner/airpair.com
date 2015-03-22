@@ -1779,6 +1779,84 @@ module.exports = {
         }
     },
     "bio" : "20+ year software veteran with 7 years experience in iOS development. More at http://loufranco.com/airpair"
+  },
+
+  gwil: {
+    "_id" : ObjectId("522f6d3b66a6f999a465f7c5"),
+    "google" : {
+        "provider" : "google",
+        "id" : "110627763484101182285",
+        "displayName" : "Glenn Wikle",
+        "name" : {"familyName" : "Wikle","givenName" : "Glenn"},
+        "emails" : [{"value" : "glennwikle@gmail.com" }],
+        "_json" : {
+            "id" : "110627763484101182285",
+            "email" : "glennwikle@gmail.com",
+            "verified_email" : true,
+            "name" : "Glenn Wikle",
+            "given_name" : "Glenn",
+            "family_name" : "Wikle",
+            "link" : "https://plus.google.com/110627763484101182285",
+            "picture" : "https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg",
+            "gender" : "other",
+            "locale" : "en"
+        },
+        "token" : {}
+    },
+    "googleId" : "110627763484101182285",
+    "email" : "glennwikle@gmail.com",
+    "name" : "Glenn Wikle",
+    "emailVerified" : true,
+    "cohort" : {
+        "engagement" : {
+            "visit_first" : ISODate("2013-09-10T19:04:27.000Z"),
+            "visit_signup" : ISODate("2013-09-10T19:04:27.000Z"),
+            "visit_last" : ISODate("2015-02-06T16:37:31.868Z"),
+            "visits" : [
+                ISODate("2015-02-06T00:00:00.000Z")
+            ]
+        },
+        "aliases" : [],
+        "firstRequest" : { "url" : "/review/54d3b1146c64a1090015d7b7" }
+    },
+    "username" : "nmgeek",
+    "roles" : [],
+    "siteNotifications" : [],
+    "social" : {
+        "gh" : {
+            "token" : {},
+            "_json" : {
+                "public_gists" : 0,
+                "updated_at" : "2013-09-10T19:08:41Z",
+                "created_at" : "2012-10-03T20:21:19Z",
+                "following" : 2,
+                "followers" : 0,
+                "public_repos" : 0,
+                "type" : "User",
+                "received_events_url" : "https://api.github.com/users/nmgeek/received_events",
+                "events_url" : "https://api.github.com/users/nmgeek/events{/privacy}",
+                "repos_url" : "https://api.github.com/users/nmgeek/repos",
+                "organizations_url" : "https://api.github.com/users/nmgeek/orgs",
+                "subscriptions_url" : "https://api.github.com/users/nmgeek/subscriptions",
+                "starred_url" : "https://api.github.com/users/nmgeek/starred{/owner}{/repo}",
+                "gists_url" : "https://api.github.com/users/nmgeek/gists{/gist_id}",
+                "following_url" : "https://api.github.com/users/nmgeek/following{/other_user}",
+                "followers_url" : "https://api.github.com/users/nmgeek/followers",
+                "html_url" : "https://github.com/nmgeek",
+                "url" : "https://api.github.com/users/nmgeek",
+                "gravatar_id" : "a9f71db7446b7380bc0a6e662a4a36a0",
+                "avatar_url" : "https://1.gravatar.com/avatar/a9f71db7446b7380bc0a6e662a4a36a0?d=https%3A%2F%2Fidenticons.github.com%2F36c7be589625e4fc6f7ca049bccb1c8d.png",
+                "id" : 2481775,
+                "login" : "nmgeek"
+            },
+            "emails" : [{"value" : null}],
+            "profileUrl" : "https://github.com/nmgeek",
+            "username" : "nmgeek",
+            "displayName" : null,
+            "id" : 2481775,
+            "provider" : "github"
+        }
+    }
   }
 
 }

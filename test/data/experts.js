@@ -1198,6 +1198,23 @@ module.exports = {
             }
         }
     }
-}
+  },
+
+  gwil: {
+    "_id":"522f6ef2b4b1c60200000057",
+    "userId":"522f6d3b66a6f999a465f7c5",
+    "tags":[
+      {"name":"python","slug":"python","_id":"514825fa2a26ea020000002d"},
+      {"name":"python-2.7","slug":"python-2.7","_id":"5181d0a966a6f999a465ec53"},
+      {"name":"pandas","slug":"pandas","_id":"5181d0ab66a6f999a465efb0"},
+      {"name":"mysql","slug":"mysql","_id":"514825fa2a26ea0200000027"},
+      {"name":"Ubuntu","slug":"ubuntu","_id":"514825fa2a26ea0200000037"},
+      {"name":"ubuntu-12.04","slug":"ubuntu-12.04","_id":"5181d0ac66a6f999a465f0fd"},
+      {"name":"Debian","slug":"debian","_id":"514a0d7404b9960200000006"},
+      {"name":"git","slug":"git","_id":"5181d0a966a6f999a465eb40"},
+      {"name":"numpy","slug":"numpy","_id":"5181d0a966a6f999a465ec33"}],
+    "rate":70,
+    "brief":"I like helping programmers find difficult bugs and reviewing python code. I'm good with scientific programming topics including matrix/linear algebra calculations and statistics."
+  },
 
 }
