@@ -34,7 +34,7 @@
 
 <section class="localization">
   <location-input data="data" on-select="updateLocation"></location-input>
-  <label class="timezone">{{data.timezone}}</label>
+  <label ng-if="data.location" class="timezone">{{data.timezone}}</label>
 </section>
 
 <alert ng-repeat="alert in profileAlerts" type="{{alert.type}}"><span ng-bind-html="alert.msg | html"></span></alert>
