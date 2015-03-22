@@ -55,6 +55,7 @@ var selectFields = {
     // 'experience': 1,
     'status': 1,
     'budget': 1,
+    'suggested.expert.username': 1,
     'suggested.expert.email': 1,
     'suggested.expertStatus': 1,
     'lastTouch':1,

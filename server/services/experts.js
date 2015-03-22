@@ -26,14 +26,22 @@ var get = {
     }))
   },
   search(term, cb) {
-    var searchFields = ['name','email','username','gh.username','tw.username']
+    var searchFields = [
+      'user.name','user.email','user.username',
+      'name','email','username',
+      'gh.username','tw.username',
+      'user.social.gh.username','user.social.tw.username'
+      ]
     var and = { rate: { '$gt': 0 } }
-    svc.swearch(term, searchFields, 5, Data.select.search, and, (e,r) => {
+    svc.search(term, searchFields, 5, Data.select.search, and, (e,r) => {
       if (r) {
         for (var exp of r) {
+          if (exp.user) {
+            exp.name = exp.user.name
+            exp.email = exp.user.email
+            exp.username = exp.user.username
+          }
           exp.avatar = md5.gravatarUrl(exp.email)
-          // if (exp.bookMe && exp.bookMe.urlSlug && !exp.username)
-          //   exp.username = exp.bookMe.urlSlug
         }
       }
       cb(e,r)

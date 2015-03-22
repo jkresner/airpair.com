@@ -30,6 +30,7 @@ var data = {
       'name': 1,
       'email': 1,
       'username': 1,
+      'user': 1,
       'tags.short': 1,
       'bookMe.urlSlug': 1
     },
