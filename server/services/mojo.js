@@ -33,8 +33,10 @@ var get = {
   getRanked(meExpert, query, cb) {
     // $log('getRanked', query)
     var search = { 'tags._id': { $in: query.tags } }
-    if (query.exclude)
+    if (query.exclude) {
+      search['username'] = { $nin: query.exclude }
       search['user.username'] = { $nin: query.exclude }
+    }
 
     // if (query.rate)
     // rate: { $lt: request.budget }
