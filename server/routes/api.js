@@ -154,6 +154,7 @@ export default function(app) {
     .param('order', API.Orders.paramFns.getByIdForAdmin)
 
     .use(adm)
+    .get('/tags', API.Tags.getAllForCache)
     .get('/posts', API.Posts.getNewFoAdmin)
     .get('/posts/all', API.Posts.getAllForAdmin)
     .get('/orders/:start/:end/:userId?', API.Orders.getByQueryForAdmin)
