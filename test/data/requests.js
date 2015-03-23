@@ -198,4 +198,61 @@ module.exports = {
     "title" : "1 hour swift mentoring"
   },
 
+  suggestReply: {
+    "_id" : ObjectId("550e6f237d6ec20c0042cd43"),
+    "type" : "advice",
+    "by" : {
+        "avatar" : "//0.gravatar.com/avatar/20f6f13e624f03757b6a216facb176f0",
+        "email" : "mayan@mathen.net",
+        "name" : "Mayan Mathen"
+    },
+    "userId" : ObjectId("547be5488f8c80299bcc52de"),
+    "status" : "waiting",
+    "calls" : [],
+    "marketingTags" : [],
+    "messages" : [
+        {
+            "toId" : ObjectId("547be5488f8c80299bcc52de"),
+            "fromId" : ObjectId("5367fd6d1c67d1a4859d30e7"),
+            "body" : "Hi Mayan, welcome back!\n\nI am reaching out to our experts for availability and I will be sending you an email with a link to book your session. \n\nDo you have more details, please feel free to share using this link. \n\nhttps://www.airpair.com/help/request/550e6f237d6ec20c0042cd43\n\nBest,\n\nPrateek\n\n--\nPrateek Gupta\ntwitter.com/airpair",
+            "subject" : "1 hour splunk and firewall advice\n",
+            "_id" : ObjectId("550ec7687d6ec20c0042d27d"),
+            "type" : "received"
+        }
+    ],
+    "suggested" : [],
+    "tags" : [
+        {"_id" : ObjectId("52dd4d671c67d1a4859d1cf3"),"slug" : "splunk","sort" : 0},
+        {"_id" : ObjectId("5181d0ae66a6f999a465f279"),"slug" : "firewall", "sort" : 1}
+    ],
+    "adm" : {
+        "lastTouch" : {
+            "by" : {
+                "name" : "Admin User",
+                "_id" : ObjectId("54551be15f221efa174238d1")
+            },
+            "utc" : ISODate("2015-03-22T20:47:22.200Z"),
+            "action" : "updateByAdmin"
+        },
+        "received" : ISODate("2015-03-22T13:45:12.212Z"),
+        "owner" : "ad",
+        "active" : true,
+        "submitted" : ISODate("2015-03-22T07:29:37.094Z")
+    },
+    "lastTouch" : {
+        "by" : {
+            "name" : "Noel Kuntze",
+            "_id" : ObjectId("530e48711c67d1a4859d250d")
+        },
+        "utc" : ISODate("2015-03-22T15:14:39.380Z"),
+        "action" : "replyByExpert:available"
+    },
+    "experience" : "proficient",
+    "brief" : "Push logs from firewall to Splunk. Firewall is a Palo Alto networks",
+    "time" : "regular",
+    "hours" : "1",
+    "budget" : 150,
+    "title" : "1 hour splunk and firewall advice"
+  }
+
 }

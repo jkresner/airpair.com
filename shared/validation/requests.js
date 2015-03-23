@@ -29,6 +29,9 @@ var validation = {
 
     if (!update.type) return `Request type required`
 
+    if (!_.idsEqual(original.userId,update.userId))
+      return `Updating request must have the same userId as the original`
+
     //-- Case when user comes back to edit a request without having put in tags yet
     if (original.tags.length == 0 && update.tags.length == 0
       && update.type
@@ -70,6 +73,9 @@ var validation = {
 
     if (update.status == 'complete' && !original.adm.booked)
       return `Cannot complete a request with no booked experts, pay attention ...`
+
+    if (!_.idsEqual(original.userId,update.userId))
+      return `Updating request must have the same userId as the original`
   },
   farmByAdmin(user, request, tweet) {
     var isAdmin = _.contains(user.roles, 'admin')
