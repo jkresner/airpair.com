@@ -1217,4 +1217,52 @@ module.exports = {
     "brief":"I like helping programmers find difficult bugs and reviewing python code. I'm good with scientific programming topics including matrix/linear algebra calculations and statistics."
   },
 
+  abpa: {
+    "_id" : ObjectId("52dd4d2b65cd100200000014"),
+    "availability" : "",
+    "brief" : "Helping people build elasticity in their operational infrastructure and design for resilience",
+    "gmail" : "abhishek@parolkar.com",
+    "hours" : "3-5",
+    "minRate" : 40,
+    "rate" : 150,
+    "status" : "ready",
+    "tags" : [
+        { "sort" : 0, "_id" : "514825fa2a26ea0200000031" },
+        { "sort" : 1,  "_id" : "52dd4d4f1c67d1a4859d1cf2" },
+        { "sort" : 2,  "_id" : "518962be66a6f999a465f2bd" },
+        { "sort" : 3,  "_id" : "52dd4d671c67d1a4859d1cf3" },
+        { "sort" : 4, "_id" : "514825fa2a26ea0200000018" },
+        { "sort" : 5, "_id" : "5152026beecddf0200000007" },
+        { "sort" : 6, "_id" : "52dd4d851c67d1a4859d1cf4" }
+    ],
+    "updatedAt" : ISODate("2014-01-20T16:22:03.000Z"),
+    "userId" : ObjectId("52dd4cb71c67d1a4859d1cf1"),
+    "activity" : [],
+    "lastTouch" : {
+        "by" : { "name" : "Abhishek Parolkar", "_id" : ObjectId("52dd4cb71c67d1a4859d1cf1") },
+        "utc" : ISODate("2015-03-22T14:16:27.104Z"),
+        "action" : "update"
+    },
+    "user" : {
+        "social" : {
+            "in" : { "id" : "o_2MOiucZn" },
+            "gh" : {
+                "username" : "parolkar",
+                "_json" : { "followers" : 55 }
+            }
+        },
+        "localization" : {
+            "timezone" : "Singapore Standard Time",
+            "location" : "Singapore, Singapore"
+        },
+        "bio" : "I make my life meaningful by simplifying life of those in the art, science & business of making software.\nConsider checking my linkedin profile: https://www.linkedin.com/in/parolkar",
+        "initials" : "AP",
+        "username" : "parolkar",
+        "emailVerified" : true,
+        "email" : "abhishek@parolkar.com",
+        "name" : "Abhishek Parolkar",
+        "_id" : ObjectId("52dd4cb71c67d1a4859d1cf1")
+    }
+  }
+
 }

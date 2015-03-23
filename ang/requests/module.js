@@ -17,10 +17,10 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
 
   $routeProvider
     .when('/requests', actions.list)
+    .when('/help/types', actions.help)
     .when('/help/request', actions.create)
     .when('/find-an-expert', actions.create)
     .when('/meet-experts', actions.create)
-    .when('/help/types', actions.help)
     .when('/help/request/:id', actions.edit)
     .when('/meet-experts/:id', actions.edit)
     .when('/reviews', actions.review)
@@ -45,6 +45,8 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
 
 
 .controller('RequestCtrl', function($rootScope, $scope, StaticDataService, RequestHelper) {
+  //-- In case the come through from request scope from another page like review
+  if ($scope.request) return window.location = '/help/request'
 
   $scope.customers = StaticDataService.getRecentCustomers();
   $scope.reviews = StaticDataService.getRecentReviews();

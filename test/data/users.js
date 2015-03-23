@@ -1857,6 +1857,58 @@ module.exports = {
             "provider" : "github"
         }
     }
+  },
+
+  abpa: {
+    "_id" : ObjectId("52dd4cb71c67d1a4859d1cf1"),
+    "google" : {
+        "_json" : {
+            "picture" : "https://lh3.googleusercontent.com/-8txzb_bS7AM/AAAAAAAAAAI/AAAAAAAAAAA/SiHXJMJIuBo/photo.jpg",
+        },
+        "emails" : [{"value" : "abhishek@parolkar.com"}],
+        "displayName" : "Abhishek Parolkar",
+        "id" : "113094891419151279535",
+        "provider" : "google"
+    },
+    "googleId" : "113094891419151279535",
+    "bookmarks" : null,
+    "tags" : null,
+    "cohort" : {},
+    "emailVerified" : true,
+    "name" : "Abhishek Parolkar",
+    "email" : "abhishek@parolkar.com",
+    "roles" : [],
+    "social" : {
+        "gh" : {
+            "provider" : "github",
+            "id" : 4930,
+            "displayName" : "Abhishek Parolkar",
+            "username" : "parolkar",
+            "profileUrl" : "https://github.com/parolkar",
+            "emails" : [
+                {
+                    "value" : "abhishek[at]parolkar[_dot_]com"
+                }
+            ],
+            "_json" : {
+                "login" : "parolkar",
+                "id" : 4930,
+                "avatar_url" : "https://gravatar.com/avatar/f0ef2e639ed39cf49ec3814ee8268d9d?d=https%3A%2F%2Fidenticons.github.com%2Faba22f748b1a6dff75bda4fd1ee9fe07.png&r=x",
+                "public_gists" : 21,
+                "followers" : 55
+            }
+        },
+        "in" : {
+            "id" : "o_2MOiucZn"
+        }
+    },
+    "username" : "parolkar",
+    "localization" : {
+        "location" : "Singapore, Singapore",
+        "timezone" : "Singapore Standard Time"
+    },
+    "bio" : "I make my life meaningful by simplifying life of those in the art, science & business of making software.\nConsider checking my linkedin profile: https://www.linkedin.com/in/parolkar",
+    "initials" : "AP"
   }
 
 }
