@@ -6,36 +6,6 @@ var svc                   = new BaseSvc(Tag, logging)
 import * as WorkshopsSvc  from './workshops'
 var PostsSvc              = require('./posts')
 
-
-// function encode(term) {
-//   if (!term) return term;
-//   return term.replace(/[-\/\\^$*+?.()|[\]{}+]/g, '\\$&');
-// }
-
-
-// function tokenize(term, wildcardStart, wildcardEnd) {
-//   if (!term) return '.*';
-
-//   var regex = '';
-//   if (wildcardStart) regex += '.*';
-
-//   var tokens = term.split(' ');
-//   if (tokens) regex += tokens.join('.*');
-//   else regex += term;
-
-//   if (wildcardEnd) regex += '.*';
-
-//   return regex;
-// }
-
-
-// function isMatchOnWeightedFields(tag, regex) {
-//   if (tag.name && tag.name.match(regex)) return true;
-//   if (tag.short && tag.short.match(regex)) return true;
-//   if (tag.slug && tag.slug.match(regex)) return true;
-//   return false;
-// }
-
 var get = {
 
   search(searchTerm, cb) {
