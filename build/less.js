@@ -4,9 +4,11 @@ var path = require('path'),
   config = require('./config');
 
 module.exports = function () {
+  var pathsForImports = [ __dirname.replace('build','public/styles') ]
+
   return gulp.src(config.styleBundles)
     .pipe(less({
-      paths: [ path.join(__dirname, 'styles') ]
+      paths: pathsForImports
     }))
     .pipe(gulp.dest(`./public/${config.path.builtCss}`));
 }

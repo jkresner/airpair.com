@@ -11,7 +11,7 @@ module.exports = function() {
 
   //-- Runs live-reload if css, html, js or a server side view change
   livereload.listen(config.livereload);
-  var liveReloadTriggeringFiles = [config.path.devAssets, config.path.views];
+  var liveReloadTriggeringFiles = config.devWatch;
   gulp.watch(liveReloadTriggeringFiles).on('change',livereload.changed);
 
 }

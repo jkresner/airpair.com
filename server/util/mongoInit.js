@@ -21,8 +21,9 @@ export default {
     var MongoStore = require('connect-mongo')(session)
 
     var sessionStore = new MongoStore({
-      auto_reconnect: true,
-      url : `${config.mongoUri}/v1sessions`
+      autoReconnect: true,
+      collection: `v1sessions`,
+      url : `${config.mongoUri}`
     })
 
     callback(sessionStore)
