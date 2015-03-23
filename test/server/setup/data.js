@@ -1,4 +1,5 @@
-var {momentSessionCreated}    = require('../../../shared/util')
+var {momentSessionCreated,
+  getYouTubeThumb}            = require('../../../shared/util')
 var {ObjectId}                = require('mongoose').Types
 
 
@@ -79,10 +80,14 @@ var dataHelpers = {
 
   postMeta(post)
   {
+    var ogImage = (post.assetUrl.indexOf('http://youtu.be/') == 0)
+      ? getYouTubeThumb(post.assetUrl)
+      : post.assetUrl
+
     return { title: post.title, description: 'desc',
       canonical: `https//www.airpair.com/v1/posts/{post.slug}`,
       ogTitle: post.title,
-      ogImage: post.assetUrl,
+      ogImage: ogImage,
       ogDescription: 'desc'
     }
   },
