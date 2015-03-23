@@ -1,5 +1,6 @@
 var logging = true
 var GitHubApi = global.GitHubApi || require("github")
+var maxRetries = 3
 
 var api = new GitHubApi({
   version: "3.0.0",
@@ -30,19 +31,22 @@ var getGithubUser = function(user) {
 }
 
 var wrap = (fn, fnName) => {
-  var retries = 3
 
   var fnWithAuth = function () {
     var user = arguments[0]
     var cb = arguments[arguments.length-1]
     arguments[arguments.length-1] = (e,r) => {
-      retries = retries - 1
-      if (retries > 0 && e && e.message.toLowerCase().indexOf("not found") != -1) {
-        $log(`gh.${fnName} retry not found`, retries, e)
+      this.retries = this.retries - 1
+      if (this.retries > 0 && e &&
+        (e.message.toLowerCase().indexOf("not found") != -1 ||
+         e.message.toLowerCase().indexOf("repository is empty") != -1
+        )) {
+        $log(`gh.${fnName} retry not found`, this.retries, e)
         return _.delay(fnWrapped, 1000)
       }
       cb(e,r)
     }
+    arguments[arguments.length-1].retries = maxRetries
 
     var fnWrapped = () => {
       setToken(user)
@@ -193,9 +197,10 @@ var gh = {
 
   getFile(user, repoOwner, repo, path, branch, cb) {
     api.repos.getContent({ user: repoOwner, repo, path, ref: branch }, (e, file) => {
+      if (e && cb.retries > 0) return verboseErrorCB(cb, e, 'getFile', `${repoOwner}/${repo} ${path}:${branch}`)
 
       //-- check the case where repos have been deleted manually (repo doesn't exist)
-      if (e && e.code == 404)
+      else if (e && e.code == 404)
       {
         if (logging) $log(`getFile.getContent.404`.red, `${repoOwner}/${repo}/${path}:${branch}`, e)
         api.repos.get({ user: repoOwner, repo }, function(err,response) {

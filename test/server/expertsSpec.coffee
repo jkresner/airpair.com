@@ -91,7 +91,9 @@ module.exports = -> describe "API: ".subspec, ->
         expect(exp2.rate).to.equal(70)
         expect(exp2.tags.length).to.equal(1)
         expect(exp2.gh.username).to.equal('airpairtest1')
+        expect(exp2.gh.followers).to.exist
         expect(exp2.gp.id).to.equal('107399914803761861041')
+        expect(exp2.gp._json.picture).to.equal('https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg')
         exp2.rate = 150
         PUT "/experts/#{expert._id}/me", exp2, {}, (expert2) ->
           expect(expert.lastTouch.action, 'update')
@@ -165,7 +167,7 @@ module.exports = -> describe "API: ".subspec, ->
                 expectIdsEqual(azv0U2._id, azv0User._id)
                 expect(azv0U2.email).to.exist
                 expect(azv0U2.name).to.exist
-                ## TODO after v0 is gone, impl wiping
+                # TODO after v0 is gone, impl wiping
                 $log("## TODO after v0 is gone, impl wiping".white)
                 # expect(azv0U2.bitbucket).to.be.undefined
                 # expect(azv0U2.bitbucketId).to.be.undefined
@@ -247,7 +249,7 @@ module.exports = -> describe "API: ".subspec, ->
                   expect(azv0E2.settings).to.be.undefined
                   expect(azv0E2.mojo).to.be.undefined
                   expect(azv0E2.matching).to.be.undefined
-                  done()
+                done()
 
 
   it.skip "Collects social data for social scoring", (done) ->

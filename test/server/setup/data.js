@@ -1,4 +1,5 @@
-var {momentSessionCreated}    = require('../../../shared/util')
+var {momentSessionCreated,
+  getYouTubeThumb}            = require('../../../shared/util')
 var {ObjectId}                = require('mongoose').Types
 
 
@@ -47,6 +48,8 @@ var dataHelpers = {
     seed.username = seed.name.replace(/ /g,'').toLowerCase()
     seed.password = 'testpass'+suffix
     seed.userKey = userKey + suffix
+    seed.localization = data.wrappers.localization_melbourne
+    seed.initials = "ap-#{timeSeed()}"
 
     if (seed.google) {
       seed.google.id = seed.google.id + suffix
@@ -63,8 +66,7 @@ var dataHelpers = {
 
     seed._id = new ObjectId
     seed.userId = user._id
-    seed.name = user.name
-    seed.username = user.name.replace(/ /g,'').toLowerCase()
+    seed.user = user
     return seed
   },
 
@@ -78,10 +80,14 @@ var dataHelpers = {
 
   postMeta(post)
   {
+    var ogImage = (post.assetUrl.indexOf('http://youtu.be/') == 0)
+      ? getYouTubeThumb(post.assetUrl)
+      : post.assetUrl
+
     return { title: post.title, description: 'desc',
       canonical: `https//www.airpair.com/v1/posts/{post.slug}`,
       ogTitle: post.title,
-      ogImage: post.assetUrl,
+      ogImage: ogImage,
       ogDescription: 'desc'
     }
   },

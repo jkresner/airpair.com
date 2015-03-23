@@ -1,18 +1,7 @@
 import * as OAuthProvider from './oauthbase'
 import * as LocalProvider from './localbase'
 var UserService = require('../../../services/users')
-var {setFirebaseToken} = require('../../../middleware/auth')
 
-var fbTokenWrapper = (req, done) => {
-  return (e, user, info) => {
-    if (user) {
-      var token = setFirebaseToken(user, req.session, req.sessionID);
-      user.firebaseToken = token;
-      req.session.firebaseToken = token;
-    }
-    done(e, user, info);
-  }
-}
 
 var providers = {
   twitter: { short: 'tw', strategy: require('passport-twitter').Strategy },
@@ -34,17 +23,17 @@ module.exports = {
 
   local: {
     login: LocalProvider.init('local-login', (req, email, password, done) => {
-      $callSvc(UserService.localLogin,req)(email, password, fbTokenWrapper(req,done))
+      $callSvc(UserService.localLogin,req)(email, password, done)
     }),
 
     signup: LocalProvider.init('local-singup', (req, email, password, done) => {
-      $callSvc(UserService.localSignup,req)(email, password, req.body.name, fbTokenWrapper(req,done))
+      $callSvc(UserService.localSignup,req)(email, password, req.body.name, done)
     })
   },
 
   google: {
     oAuth: OAuthProvider.init('google', require('passport-google-oauth').OAuth2Strategy, (req, provider, profile, done) => {
-      $callSvc(UserService.googleLogin,req)(profile, fbTokenWrapper(req,done))
+      $callSvc(UserService.googleLogin,req)(profile, done)
     })
   },
 

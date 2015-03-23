@@ -263,6 +263,7 @@ module.exports = -> describe "Booking: ".subspec, ->
         adamB = r.suggested[0].expert
         expect(adamB._id).to.exist
         expect(adamB.name).to.equal('Adam Bliss')
+        expect(adamB.username).to.exist
         GET "/requests/#{request._id}/book/#{adamB._id}", {}, (r2) ->
           expect(r2.suggested.length).to.equal(3)
           expect(r2.suggested[0].expert.name).to.equal('Adam Bliss')

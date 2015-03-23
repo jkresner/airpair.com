@@ -11,6 +11,7 @@ import CompanysAPI from '../api/companys'
 import ViewsAPI from '../api/views'
 import RequestsAPI from '../api/requests'
 import PayoutsAPI from '../api/payouts'
+import MojoAPI from '../api/mojo'
 
 module.exports = {
   Workshops: WorkshopsAPI,
@@ -22,6 +23,7 @@ module.exports = {
   Orders: OrdersAPI,
   Bookings: BookingsAPI,
   Experts: ExpertsAPI,
+  Mojo: MojoAPI,
   Companys: CompanysAPI,
   Views: ViewsAPI,
   Requests: RequestsAPI,

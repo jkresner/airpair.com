@@ -20,9 +20,6 @@
       <a class="btn" ng-href="https://mail.google.com/mail/u/0/?shva=1#search/%22{{request.by.name | urlEncode }}%22+OR+{{ request.by.email | urlEncode  }}" target="_blank">
         <i class="glyphicon glyphicon-envelope"></i> Mail
       </a>
-      <a class="btn" ng-href="https://mixpanel.com/report/271245/explore/#list/filter:(conjunction:and,filters:!((filter:(operand:{{request.by.name | urlEncode }},operator:in),property:%27$name%27,selected_property_type:string,type:string))),sort_order:descending,sort_property:%27$created%27,sort_property_type:datetime">
-        <i class="glyphicon glyphicon-sort-by-attributes-alt"></i>
-        Mixpanel</a>
     </div>
 
     <b>{{request.by.name}}</b> : {{request.by.email}}
