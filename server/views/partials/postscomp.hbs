@@ -38,9 +38,8 @@
       <img src="/static/img/pages/postscomp/logo-thoughtworks.png" />
       <img src="/static/img/pages/postscomp/logo-braintree.png" />
       <img src="/static/img/pages/postscomp/logo-pivotaltracker.png" />
-{{!--       <img src="/static/img/pages/postscomp/logo-stormpath.png" /> --}}
-{{!--        --}}
-{{!--       <img src="/static/img/pages/postscomp/logo-nginx.png" /> --}}
+      <img src="/static/img/pages/postscomp/logo-contentful.png" />
+      <img src="/static/img/pages/postscomp/logo-sendgrid.png" />
 
       <a href="/100k-writing-competition/sponsors-faq" target="_blank" class="nomob"><b>> See Sponsor FAQ</b></a>
 
@@ -328,6 +327,16 @@
           <td><b>$500</b></td>
         </tr>
         <tr>
+          <td><img src="/static/img/pages/postscomp/logo-contentful.png" /></td>
+          <td>Anything around the Contentful API</td>
+          <td><b>$500</b></td>
+        </tr>
+        <tr>
+          <td><img src="/static/img/pages/postscomp/logo-sendgrid.png" /></td>
+          <td>Shown and Tell with SendGrid in Production</td>
+          <td><b>$500</b></td>
+        </tr>
+        <tr>
           <td></td>
           <td>More to come</td>
           <td>More</td>
@@ -338,7 +347,35 @@
 
 </div>
 
-<div class="about" style='min-height:50px'></div>
+<div class="about" style='min-height:50px'>
+<section id="successes">
+  <h2>Early successes</h2>
+
+    <div>
+      <h5>Nic Raboy</h5>
+      <h4>Password Management Using Ionic & Firebase</h4>
+      <p>Retweeted to 20,000 firebase followers</p>
+      <img src="//imgur.com/2dGeOk1.png" />
+    </div>
+
+    <div>
+      <h5>Rich McLaughlin</h5>
+      <h4>Legend of <br />Canvas</h4>
+      <p>Trended #1 webdev <br />sub-reddit for 22 hours</p>
+      <img src="//imgur.com/NtorrD0.png" />
+    </div>
+
+    <div>
+      <h5>Greg Osuri</h5>
+      <h4>Automating a multi-tiered app with AWS, Docker & Terraform</h4>
+      <p>Featured on the Official AWS Blog</p>
+      <img src="/static/img/pages/postscomp/greg-on-aws-blog.png" />
+    </div>
+
+
+</section>
+
+</div>
 
 <div style="text-align:left;padding:40px 0 80px 0">
 <section id="allposts">
@@ -496,15 +533,11 @@ Encrypt your passwords using an AES cipher before storing on Firebase for maximu
 
     <div class="entry-content" itemprop="text">
       <div class="stars ng-isolate-scope" stars="" val="4.333333333333333"><ul class="stars">
-  <!-- ngIf: stars >= 1 --><li ng-if="stars >= 1" class="ng-scope"></li><!-- end ngIf: stars >= 1 -->
-  <!-- ngIf: stars >= 1.5 && stars < 2 -->
-  <!-- ngIf: stars >= 2 --><li ng-if="stars >= 2" class="ng-scope"></li><!-- end ngIf: stars >= 2 -->
-  <!-- ngIf: stars >= 2.5 && stars < 3 -->
-  <!-- ngIf: stars >= 3 --><li ng-if="stars >= 3" class="ng-scope"></li><!-- end ngIf: stars >= 3 -->
-  <!-- ngIf: stars >= 3.5 && stars < 4 -->
-  <!-- ngIf: stars >= 4 --><li ng-if="stars >= 4" class="ng-scope"></li><!-- end ngIf: stars >= 4 -->
-  <!-- ngIf: stars >= 4.5 && stars < 5 -->
-  <!-- ngIf: stars >= 5 -->
+  <li ng-if="stars >= 1" class="ng-scope"></li>
+  <li ng-if="stars >= 2" class="ng-scope"></li>
+  <li ng-if="stars >= 3" class="ng-scope"></li>
+  <li ng-if="stars >= 4" class="ng-scope"></li>
+
 </ul>
 </div>
       <h2 class="entry-title" itemprop="headline">What I learned from attending ngConf March 2015</h2>
@@ -536,15 +569,12 @@ Encrypt your passwords using an AES cipher before storing on Firebase for maximu
 
     <div class="entry-content" itemprop="text">
       <div class="stars ng-isolate-scope" stars="" val="4.6"><ul class="stars">
-  <!-- ngIf: stars >= 1 --><li ng-if="stars >= 1" class="ng-scope"></li><!-- end ngIf: stars >= 1 -->
-  <!-- ngIf: stars >= 1.5 && stars < 2 -->
-  <!-- ngIf: stars >= 2 --><li ng-if="stars >= 2" class="ng-scope"></li><!-- end ngIf: stars >= 2 -->
-  <!-- ngIf: stars >= 2.5 && stars < 3 -->
-  <!-- ngIf: stars >= 3 --><li ng-if="stars >= 3" class="ng-scope"></li><!-- end ngIf: stars >= 3 -->
-  <!-- ngIf: stars >= 3.5 && stars < 4 -->
-  <!-- ngIf: stars >= 4 --><li ng-if="stars >= 4" class="ng-scope"></li><!-- end ngIf: stars >= 4 -->
-  <!-- ngIf: stars >= 4.5 && stars < 5 --><li class="half ng-scope" ng-if="stars >= 4.5 &amp;&amp; stars < 5"></li><!-- end ngIf: stars >= 4.5 && stars < 5 -->
-  <!-- ngIf: stars >= 5 -->
+  <li ng-if="stars >= 1" class="ng-scope"></li>
+  <li ng-if="stars >= 2" class="ng-scope"></li>
+  <li ng-if="stars >= 3" class="ng-scope"></li>
+  <li ng-if="stars >= 4" class="ng-scope"></li>
+  <li class="half ng-scope" ng-if="stars >= 4.5 &amp;&amp; stars < 5"></li>
+
 </ul>
 </div>
       <h2 class="entry-title" itemprop="headline">30 Days of Answers on Stack Overflow</h2>
@@ -575,15 +605,11 @@ Encrypt your passwords using an AES cipher before storing on Firebase for maximu
 
     <div class="entry-content" itemprop="text">
       <div class="stars ng-isolate-scope" stars="" val="5"><ul class="stars">
-  <!-- ngIf: stars >= 1 --><li ng-if="stars >= 1" class="ng-scope"></li><!-- end ngIf: stars >= 1 -->
-  <!-- ngIf: stars >= 1.5 && stars < 2 -->
-  <!-- ngIf: stars >= 2 --><li ng-if="stars >= 2" class="ng-scope"></li><!-- end ngIf: stars >= 2 -->
-  <!-- ngIf: stars >= 2.5 && stars < 3 -->
-  <!-- ngIf: stars >= 3 --><li ng-if="stars >= 3" class="ng-scope"></li><!-- end ngIf: stars >= 3 -->
-  <!-- ngIf: stars >= 3.5 && stars < 4 -->
-  <!-- ngIf: stars >= 4 --><li ng-if="stars >= 4" class="ng-scope"></li><!-- end ngIf: stars >= 4 -->
-  <!-- ngIf: stars >= 4.5 && stars < 5 -->
-  <!-- ngIf: stars >= 5 --><li ng-if="stars >= 5" class="ng-scope"></li><!-- end ngIf: stars >= 5 -->
+  <li ng-if="stars >= 1" class="ng-scope"></li>
+  <li ng-if="stars >= 2" class="ng-scope"></li>
+  <li ng-if="stars >= 3" class="ng-scope"></li>
+  <li ng-if="stars >= 4" class="ng-scope"></li>
+  <li ng-if="stars >= 5" class="ng-scope"></li>
 </ul>
 </div>
       <h2 class="entry-title" itemprop="headline">ng-model-options: Total Model Control</h2>

@@ -102,6 +102,31 @@ module.exports = -> describe "Admin".subspec, ->
                       done()
 
 
+  it 'Expert can reply when suggested by pipeliner', (done) ->
+    {_id} = data.requests.suggestReply
+    SETUP.ensureV1LoggedInExpert 'abpa', (abpa) ->
+      db.ensureDoc 'Request', data.requests.suggestReply, () ->
+        LOGIN 'admin', (adm) ->
+          GET "/adm/requests/#{_id}", {}, (r) ->
+            expectIdsEqual(r._id, _id)
+            expect(r.suggested.length).to.equal(0)
+            query = requestUtil.mojoQuery(r)
+            GET "/experts/mojo/rank?#{query}", {}, (matches) ->
+              eAbpa = _.find(matches,(m)=>m.name=="Abhishek Parolkar")
+              expertId = eAbpa._id
+              PUT "/matchmaking/experts/#{expertId}/matchify/#{r._id}", {}, {}, (exp1) ->
+                expect(exp1.matching).to.exist
+                PUT "/matchmaking/requests/#{r._id}/add/#{expertId}", {}, {}, (r2) ->
+                  expect(r2.suggested.length).to.equal(1)
+                  expect(r2.suggested[0].expertStatus).to.equal 'waiting'
+                  LOGIN 'abpa', ->
+                    reply = expertComment: "I'll take it", expertAvailability: "No thanks", expertStatus: "unavailable"
+                    PUT "/requests/#{r._id}/reply/#{exp1._id}", reply, {}, (r3) ->
+                      expect(r3.suggested.length).to.equal(1)
+                      expect(r3.suggested[0].expertStatus).to.equal 'unavailable'
+                      done()
+
+
   it 'Pipeliner can suggest v0 expert', (done) ->
     d = type: 'other', tags: [data.tags.node]
     SETUP.ensureV0Expert 'azv0', ->
@@ -109,7 +134,8 @@ module.exports = -> describe "Admin".subspec, ->
         PUT "/adm/requests/#{r._id}/message", { type: 'received', subject: "s", body: "b" }, {}, (r1) ->
           expect(r1.status,'waiting')
           expect(r1.adm.owner,'ad')
-          GET "/experts/match/#{r._id}", {}, (matches) ->
+          query = requestUtil.mojoQuery(r1)
+          GET "/experts/mojo/rank?#{query}", {}, (matches) ->
             expect(matches.length).to.equal(1)
             expect(matches[0].matching).to.be.undefined
             expertId = matches[0]._id

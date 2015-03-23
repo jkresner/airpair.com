@@ -61,6 +61,25 @@ var reqFns = {
       return `${r.hours} hour ${tagsString} ${r.type}`
     else
       return `${r.hours} ${hourString} ${tagsString} help`
+  },
+
+  mojoQuery(r) {
+    var q = 'tags='
+    if (!r.tags || r.tags.length == 0) return null
+    r.tags.forEach((tag)=>{
+      q = q+tag.slug+','
+    })
+    q = q.replace(new RegExp(',$'), '')
+    if (r.suggested && r.suggested.length > 0)
+    {
+      q = q + '&exclude='
+      r.suggested.forEach((s)=>{
+        if (s.expert.username)
+          q = q + s.expert.username + ','
+      })
+      q = q.replace(new RegExp(',$'), '')
+    }
+    return q
   }
 
 }

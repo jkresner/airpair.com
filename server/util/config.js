@@ -73,7 +73,7 @@ var cfg = {
     homeScript: '/static/js/home.js',
     indexCss: '/static/styles/index.css',
     admCss: '/static/styles/adm.css',
-    libCss: '/styles/libs.css'
+    libCss: '/static/styles/libs.css'
   },
   calendar: {
     on: false,

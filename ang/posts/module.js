@@ -319,8 +319,11 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
     }
   )
 
-  $scope.propagate = () =>
+  $scope.propagate = () => {
+    if ($scope.post.published)
+      return alert("Ask an editor in the Author chat room to sync your post.")
     DataService.posts.propagateFromHEAD({_id}, (r)=> window.location = window.location)
+  }
 
 })
 

@@ -27,6 +27,10 @@ var middleware = {
 
   json2mb: require('body-parser').json({limit: '2mb'}),
 
+  cacheReady(key) {
+    return (req, res, next) => cache.ready([key], next)
+  },
+
   bodyParam(paramName) {
     return (req, res, next) => {
       var param = req.body[paramName]
@@ -61,6 +65,17 @@ var middleware = {
       else {
         req.user = r
         // $log(`req.${paramName}`, req[paramName])
+        next()
+      }
+    })
+  },
+
+  populateExpert(req, res, next) {
+    if (logging) $log('populateExpert', req.user._id)
+    $callSvc(API.Experts.svc.getMe,req)(function(e, r) {
+      if (e) return next(e)
+      else {
+        req.expert = r
         next()
       }
     })

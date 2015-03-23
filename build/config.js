@@ -1,14 +1,17 @@
 var path = require('path');
 
-module.exports = {
+var cfg = {
   path: {
     publicDir: path.resolve('public'),
     public: 'public/**',
-    less: 'public/styles/*.{css,less}',
-    views: 'server/views/**',
-    devAssets: './public/**/*.{css,html,js}',
     builtJS: '/static/js',
-    builtCss: '/static/styles'
+    builtCss: '/static/styles',
+    less: 'public/styles/*.{css,less}',
+    devWatch: [
+      'server/views/**', //views
+      './public/static/js/**/*.{js}',//devJS:
+      './public/static/js/**/*.{css}',//devCSS:
+    ],
   },
   jsBundles: ['index.js', 'adm.js', 'home.js'],
   styleBundles: [
@@ -19,3 +22,6 @@ module.exports = {
   styleLib: 'public/styles/libs.css',
   livereload: { port: 35729 }
 }
+
+
+module.exports = cfg

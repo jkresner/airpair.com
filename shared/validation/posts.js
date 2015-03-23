@@ -56,6 +56,11 @@ var validation = {
       return `Cannot update forkers`
     if (update.github)
       return `Cannot update github`
+    if (update.AssetUrl &&
+        update.assetUrl.indexOf('http://youtu.be/') != 0 &&
+        update.assetUrl.indexOf('https://') != 0)
+
+      return `AssetUrl must be fully qualified https:// url`
   },
 
   publish(user, post, publishData)
@@ -96,6 +101,8 @@ var validation = {
         !publishData.meta.ogImage ||
         !publishData.meta.ogDescription)
       return `Post open graph title, image & description required`
+    if (publishData.meta.ogImage.indexOf('https://') != 0)
+      return `Open graph image & asset url must be fully qualified https:// url`
   },
 
   deleteById(user, original)

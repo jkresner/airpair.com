@@ -263,7 +263,7 @@ module.exports = -> describe "API: ", ->
 
 
   it 'Expert can see payout history', (done) ->
-    SETUP.newLoggedInExpertWithPayoutmethod 'dymo', (expert, expertSession, payoutmethod) ->
+    SETUP.newLoggedInExpertWithPayoutmethod 'abpa', (expert, expertSession, payoutmethod) ->
       SETUP.newBookedRequestWithExistingExpert 'dysn', {}, expertSession, (request1, booking1, customerSession1, expertSession) ->
         SETUP.newBookedRequestWithExistingExpert 'dily', {}, expertSession, (request2, booking2, customerSession2, expertSession) ->
           SETUP.newBookedRequestWithExistingExpert 'chuc', {}, expertSession, (request3, booking3, customerSession3, expertSession) ->

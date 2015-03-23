@@ -9,10 +9,10 @@ var
   addSrc = require('gulp-add-src');
 
 function lessBundler() {
-  return gulp.src(config.styleBundles, {base: config.path.publicDir})
-    .pipe(less())
+  return  gulp.src(config.styleBundles, {base: config.path.publicDir})
+    .pipe(less({}))
     .pipe(addSrc(config.styleLib, {base: config.path.publicDir}))
-    .pipe(minifyCSS())
+    .pipe(minifyCSS({}))
 }
 
 module.exports = () =>
@@ -22,5 +22,5 @@ module.exports = () =>
   )
     .pipe(rev())
     .pipe(gulp.dest('./dist/static'))
-    .pipe(rev.manifest())
+    .pipe(rev.manifest('rev-manifest.json',{merge:true}))
     .pipe(gulp.dest('./dist'))

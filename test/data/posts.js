@@ -91,7 +91,7 @@ module.exports = {
   sessionDeepDive: {
     "_id" : "541a36c3535a850b00b05697",
     "__v" : 0,
-    "assetUrl" : "http://airpair.github.io/img/2014/10/passportjs.png",
+    "assetUrl" : "https://airpair.github.io/img/2014/10/passportjs.png",
     "by" : {
         "userId" : "5175efbfa3802cc4d5a5e6ed",
         "avatar" : "//0.gravatar.com/avatar/19183084115c4a79d34cdc3110adef37",
@@ -139,7 +139,7 @@ module.exports = {
 
   sessionDeepDive2: {
     "_id" : "541a36c3535a850b00b05698",
-    "assetUrl" : "http://airpair.github.io/img/2014/10/passportjs.png",
+    "assetUrl" : "https://airpair.github.io/img/2014/10/passportjs.png",
     "by" : {
         "userId" : "5175efbfa3802cc4d5a5e6ed",
         "avatar" : "//0.gravatar.com/avatar/19183084115c4a79d34cdc3110adef37",
@@ -344,10 +344,7 @@ module.exports = {
             "author" : "airpairtest1"
         }
     },
-    "slug" : "submit-success-with-connected-github-1425252912",
-    "meta" : {
-        "ogImage" : "http://youtu.be/qlOAbrvjMBo"
-    }
+    "slug" : "submit-success-with-connected-github-1425252912"
   },
 
 

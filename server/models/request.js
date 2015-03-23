@@ -15,6 +15,7 @@ var Suggestion = new Schema({
     name:        { required: true, type: String },
     email:       { required: true, type: String },
     gmail:       { required: true, type: String },
+    username:    { required: true, type: String },
     rate:        { required: true, type: Number },
     location:    { type: String },
     timezone:    { type: String },

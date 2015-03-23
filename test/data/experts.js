@@ -1100,6 +1100,169 @@ module.exports = {
     "updatedAt" : "2014-05-19T23:04:44.000Z",
     "userId" : ObjectId("537a79041c67d1a4859d3263"),
     "username" : "nycitt"
+  },
+
+
+  louf: {
+    "_id" : ObjectId("52f3e3d34b04b30200000019"),
+    "availability" : "",
+    "brief" : "I am the author of \"Hello! iOS Development\" and built a tutorial site for mobile programming. I can help at any level from beginner to expert.",
+    "gmail" : "loumfranco@gmail.com",
+    "hours" : "2",
+    "minRate" : 70,
+    "pic" : "https://secure.gravatar.com/avatar/e27f554e9ed800bca61642acaba29452",
+    "rate" : 110,
+    "status" : "ready",
+    "tags" : [
+        {"_id" : "514825fa2a26ea020000001b", "sort" : 0 },
+        {"_id" : "514825fa2a26ea0200000029","sort" : 1},
+        {"_id" : "5181d0a966a6f999a465eb9f","sort" : 2},
+        {"_id" : "5181d0ab66a6f999a465eed6","sort" : 3},
+        {"_id" : "514825fa2a26ea020000000c","sort" : 4},
+        {"_id" : "514825fa2a26ea020000000d","sort" : 5},
+        {"_id" : "514825fa2a26ea020000001e","sort" : 6},
+        {"_id" : "514deb95ca38eb0200000019","sort" : 7},
+        {"_id" : "5181d0a966a6f999a465ebd0","sort" : 8},
+        {"_id" : "514825fa2a26ea020000002d","sort" : 9},
+        {"_id" : "514830f257e7aa0200000014","sort" : 10},
+        {"_id" : "5181d0a966a6f999a465eb4e","sort" : 11},
+        {"_id" : "514825fa2a26ea020000001f","sort" : 12},
+        {"_id" : "52ffea1a1c67d1a4859d2333","sort" : 13}
+    ],
+    "userId" : ObjectId("52f3e3a71c67d1a4859d215c"),
+    "activity" : [
+        {
+            "_id" : ObjectId("5508c75e1a2d210c00cef5c1"),
+            "action" : "update",
+            "utc" : ISODate("2015-03-18T00:31:26.870Z"),
+            "by" : {
+                "_id" : ObjectId("52f3e3a71c67d1a4859d215c"),
+                "name" : "Lou Franco"
+            }
+        }
+    ],
+    "lastTouch" : {
+        "action" : "update",
+        "utc" : ISODate("2015-03-18T00:31:26.870Z"),
+        "by" : {
+            "_id" : ObjectId("52f3e3a71c67d1a4859d215c"),
+            "name" : "Lou Franco"
+        }
+    },
+    "user" : {
+        "_id" : ObjectId("52f3e3a71c67d1a4859d215c"),
+        "name" : "Lou Franco",
+        "email" : "loumfranco@gmail.com",
+        "emailVerified" : true,
+        "username" : "loufranco",
+        "initials" : "LF",
+        "bio" : "20+ year software veteran with 7 years experience in iOS development. More at http://loufranco.com/airpair",
+        "localization" : {
+            "location" : "Northampton, MA, USA",
+            "timezone" : "Eastern Daylight Time"
+        },
+        "social" : {
+            "tw" : {
+                "_json" : {
+                    "followers_count" : "971",
+                    "description" : "Software Business veteran, Crossfitter, iOS developer, and author (http://t.co/NkJLZEzHsN)"
+                },
+                "username" : "loufranco"
+            },
+            "so" : {
+                "link" : "3937/lou-franco",
+                "reputation" : "46054",
+                "badge_counts" : {
+                    "gold" : 8,
+                    "silver" : 63,
+                    "bronze" : 115
+                }
+            },
+            "in" : {
+                "id" : "urUUT94Yf6"
+            },
+            "gh" : {
+                "_json" : {
+                    "followers" : 7,
+                    "public_gists" : 0,
+                    "public_repos" : 7,
+                    "avatar_url" : "https://gravatar.com/avatar/e27f554e9ed800bca61642acaba29452?d=https%3A%2F%2Fidenticons.github.com%2Fa685c3dd1f8b2f0ad020d21e95ad4c4d.png&r=x"
+                },
+                "username" : "loufranco"
+            },
+            "gp" : {
+                "_json" : {
+                    "picture" : "https://lh3.googleusercontent.com/-1PRoTjsewYI/AAAAAAAAAAI/AAAAAAAAAEw/M1VXtCw6HGM/photo.jpg"
+                },
+                "id" : "110090553977842288079"
+            }
+        }
+    }
+  },
+
+  gwil: {
+    "_id":"522f6ef2b4b1c60200000057",
+    "userId":"522f6d3b66a6f999a465f7c5",
+    "tags":[
+      {"name":"python","slug":"python","_id":"514825fa2a26ea020000002d"},
+      {"name":"python-2.7","slug":"python-2.7","_id":"5181d0a966a6f999a465ec53"},
+      {"name":"pandas","slug":"pandas","_id":"5181d0ab66a6f999a465efb0"},
+      {"name":"mysql","slug":"mysql","_id":"514825fa2a26ea0200000027"},
+      {"name":"Ubuntu","slug":"ubuntu","_id":"514825fa2a26ea0200000037"},
+      {"name":"ubuntu-12.04","slug":"ubuntu-12.04","_id":"5181d0ac66a6f999a465f0fd"},
+      {"name":"Debian","slug":"debian","_id":"514a0d7404b9960200000006"},
+      {"name":"git","slug":"git","_id":"5181d0a966a6f999a465eb40"},
+      {"name":"numpy","slug":"numpy","_id":"5181d0a966a6f999a465ec33"}],
+    "rate":70,
+    "brief":"I like helping programmers find difficult bugs and reviewing python code. I'm good with scientific programming topics including matrix/linear algebra calculations and statistics."
+  },
+
+  abpa: {
+    "_id" : ObjectId("52dd4d2b65cd100200000014"),
+    "availability" : "",
+    "brief" : "Helping people build elasticity in their operational infrastructure and design for resilience",
+    "gmail" : "abhishek@parolkar.com",
+    "hours" : "3-5",
+    "minRate" : 40,
+    "rate" : 150,
+    "status" : "ready",
+    "tags" : [
+        { "sort" : 0, "_id" : "514825fa2a26ea0200000031" },
+        { "sort" : 1,  "_id" : "52dd4d4f1c67d1a4859d1cf2" },
+        { "sort" : 2,  "_id" : "518962be66a6f999a465f2bd" },
+        { "sort" : 3,  "_id" : "52dd4d671c67d1a4859d1cf3" },
+        { "sort" : 4, "_id" : "514825fa2a26ea0200000018" },
+        { "sort" : 5, "_id" : "5152026beecddf0200000007" },
+        { "sort" : 6, "_id" : "52dd4d851c67d1a4859d1cf4" }
+    ],
+    "updatedAt" : ISODate("2014-01-20T16:22:03.000Z"),
+    "userId" : ObjectId("52dd4cb71c67d1a4859d1cf1"),
+    "activity" : [],
+    "lastTouch" : {
+        "by" : { "name" : "Abhishek Parolkar", "_id" : ObjectId("52dd4cb71c67d1a4859d1cf1") },
+        "utc" : ISODate("2015-03-22T14:16:27.104Z"),
+        "action" : "update"
+    },
+    "user" : {
+        "social" : {
+            "in" : { "id" : "o_2MOiucZn" },
+            "gh" : {
+                "username" : "parolkar",
+                "_json" : { "followers" : 55 }
+            }
+        },
+        "localization" : {
+            "timezone" : "Singapore Standard Time",
+            "location" : "Singapore, Singapore"
+        },
+        "bio" : "I make my life meaningful by simplifying life of those in the art, science & business of making software.\nConsider checking my linkedin profile: https://www.linkedin.com/in/parolkar",
+        "initials" : "AP",
+        "username" : "parolkar",
+        "emailVerified" : true,
+        "email" : "abhishek@parolkar.com",
+        "name" : "Abhishek Parolkar",
+        "_id" : ObjectId("52dd4cb71c67d1a4859d1cf1")
+    }
   }
 
 }

@@ -33,12 +33,14 @@ function ensureDocument(Model, doc, cb, refresh)
 
 
 var db = {
+
   ObjectId: mongoose.Types.ObjectId,
+  ISODate: Date,
 
   Models,
 
   RestoreBSONData(done) {
-    var bsonDir = __dirname.replace('server', 'data').replace('setup','bson')
+    var bsonDir = __dirname.replace('server', 'data').replace('helpers','bson')
     var collections = fs.readdirSync(bsonDir);
     var last = collections.length, index = 0;
     collections.forEach(function(collectionName) {

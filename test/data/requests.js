@@ -74,6 +74,7 @@ module.exports = {
                 "email" : "abliss@gmail.com",
                 "gmail" : "abliss@gmail.com",
                 "name" : "Adam Bliss",
+                "username" : "abliss",
                 "rate" : 70,
                 "userId" : "51a6c65e66a6f999a465f30b",
                 "tw" : { "username" : "abliss" },
@@ -99,6 +100,7 @@ module.exports = {
                 "email" : "ashish.fagna@gmail.com",
                 "gmail" : "ashish.fagna@gmail.com",
                 "name" : "Ashish Kumar",
+                "username" : "ashish1dev",
                 "rate" : 40,
                 "userId" : "5318d8191c67d1a4859d26ca",
                 "tw" : { "username" : "ashish_fagna" },
@@ -123,6 +125,7 @@ module.exports = {
                 "email" : "elkriefy@gmail.com",
                 "gmail" : "elkriefy@gmail.com",
                 "name" : "Yossi Elkrief",
+                "username" : "MaTriXy",
                 "rate" : 70,
                 "userId" : "53a8cab61c67d1a4859d3675",
                 "tw" : { "username" : "elkriefy" },
@@ -137,6 +140,119 @@ module.exports = {
     "time" : "regular",
     "type" : "code-review",
     "userId" : "5230d19766a6f999a465f7e0"
+  },
+
+  matchSwift: {
+    "_id" : ObjectId("550d07a410a0860c00cea966"),
+    "type" : "mentoring",
+    "by" : {
+        "name" : "VICTOR VASQUEZ",
+        "email" : "victormv143@gmail.com",
+        "avatar" : "//0.gravatar.com/avatar/0f0566bb8722b4136ba2d53838c42b6e"
+    },
+    "userId" : ObjectId("54dffd85ddd9060a00827828"),
+    "status" : "received",
+    "calls" : [],
+    "marketingTags" : [],
+    "messages" : [],
+    "suggested" : [],
+    "tags" : [
+        {
+            "sort" : 0,
+            "slug" : "swift",
+            "_id" : ObjectId("52ffea1a1c67d1a4859d2333")
+        }
+    ],
+    "__v" : 0,
+    "adm" : {
+        "submitted" : ISODate("2015-03-21T05:58:08.954Z"),
+        "active" : true
+    },
+    "lastTouch" : {
+        "by" : {
+            "name" : "VICTOR VASQUEZ",
+            "_id" : ObjectId("54dffd85ddd9060a00827828")
+        },
+        "utc" : ISODate("2015-03-21T05:58:41.172Z"),
+        "action" : "updateByCustomer"
+    },
+    "user" : {
+        "google" : {
+            "name" : {},
+            "_json" : {},
+            "token" : {
+                "attributes" : {}
+            }
+        },
+        "local" : {},
+        "cohort" : {
+            "firstRequest" : {},
+            "engagement" : {}
+        }
+    },
+    "experience" : "proficient",
+    "brief" : "i need to create a app like snapchat",
+    "time" : "regular",
+    "hours" : "1",
+    "budget" : 70,
+    "title" : "1 hour swift mentoring"
+  },
+
+  suggestReply: {
+    "_id" : ObjectId("550e6f237d6ec20c0042cd43"),
+    "type" : "advice",
+    "by" : {
+        "avatar" : "//0.gravatar.com/avatar/20f6f13e624f03757b6a216facb176f0",
+        "email" : "mayan@mathen.net",
+        "name" : "Mayan Mathen"
+    },
+    "userId" : ObjectId("547be5488f8c80299bcc52de"),
+    "status" : "waiting",
+    "calls" : [],
+    "marketingTags" : [],
+    "messages" : [
+        {
+            "toId" : ObjectId("547be5488f8c80299bcc52de"),
+            "fromId" : ObjectId("5367fd6d1c67d1a4859d30e7"),
+            "body" : "Hi Mayan, welcome back!\n\nI am reaching out to our experts for availability and I will be sending you an email with a link to book your session. \n\nDo you have more details, please feel free to share using this link. \n\nhttps://www.airpair.com/help/request/550e6f237d6ec20c0042cd43\n\nBest,\n\nPrateek\n\n--\nPrateek Gupta\ntwitter.com/airpair",
+            "subject" : "1 hour splunk and firewall advice\n",
+            "_id" : ObjectId("550ec7687d6ec20c0042d27d"),
+            "type" : "received"
+        }
+    ],
+    "suggested" : [],
+    "tags" : [
+        {"_id" : ObjectId("52dd4d671c67d1a4859d1cf3"),"slug" : "splunk","sort" : 0},
+        {"_id" : ObjectId("5181d0ae66a6f999a465f279"),"slug" : "firewall", "sort" : 1}
+    ],
+    "adm" : {
+        "lastTouch" : {
+            "by" : {
+                "name" : "Admin User",
+                "_id" : ObjectId("54551be15f221efa174238d1")
+            },
+            "utc" : ISODate("2015-03-22T20:47:22.200Z"),
+            "action" : "updateByAdmin"
+        },
+        "received" : ISODate("2015-03-22T13:45:12.212Z"),
+        "owner" : "ad",
+        "active" : true,
+        "submitted" : ISODate("2015-03-22T07:29:37.094Z")
+    },
+    "lastTouch" : {
+        "by" : {
+            "name" : "Noel Kuntze",
+            "_id" : ObjectId("530e48711c67d1a4859d250d")
+        },
+        "utc" : ISODate("2015-03-22T15:14:39.380Z"),
+        "action" : "replyByExpert:available"
+    },
+    "experience" : "proficient",
+    "brief" : "Push logs from firewall to Splunk. Firewall is a Palo Alto networks",
+    "time" : "regular",
+    "hours" : "1",
+    "budget" : 150,
+    "title" : "1 hour splunk and firewall advice"
   }
 
 }

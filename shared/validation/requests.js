@@ -29,6 +29,9 @@ var validation = {
 
     if (!update.type) return `Request type required`
 
+    if (!_.idsEqual(original.userId,update.userId))
+      return `Updating request must have the same userId as the original`
+
     //-- Case when user comes back to edit a request without having put in tags yet
     if (original.tags.length == 0 && update.tags.length == 0
       && update.type
@@ -70,6 +73,9 @@ var validation = {
 
     if (update.status == 'complete' && !original.adm.booked)
       return `Cannot complete a request with no booked experts, pay attention ...`
+
+    if (!_.idsEqual(original.userId,update.userId))
+      return `Updating request must have the same userId as the original`
   },
   farmByAdmin(user, request, tweet) {
     var isAdmin = _.contains(user.roles, 'admin')
@@ -100,8 +106,7 @@ var validation = {
     if (!request.adm || !request.adm.active) return `Cannot reply to this request, as it is not active`
 
     // if (!request.suggested.available > 3) return 'Only 4 experts can reply'
-
-    if (!expert.user) return `Must migrate expert profile to reply`
+    if (expert.isV0) return `Must migrate expert profile to reply`
 
     if (!reply.expertComment) return `Reply comment required`
     if (!reply.expertStatus) return `Reply status required`

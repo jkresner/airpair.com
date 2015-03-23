@@ -205,6 +205,7 @@ angular.module("APProfile", ['ngRoute', 'APFilters', 'APSvcSession', 'APTagInput
   $scope.formRequires = () => {
     var d = $scope.data, requires = false;
     if (!d.initials) requires = "Initials required"
+    if (!d.location) requires = "Location not selected"
     if (!d.timezone) requires = "Timezone not selected"
     if (!d.username) requires = "Username required"
     if (!d.rate) requires = "Rate not selected"
@@ -244,6 +245,8 @@ angular.module("APProfile", ['ngRoute', 'APFilters', 'APSvcSession', 'APTagInput
   })
 
   $scope.save = () => {
+    if ($scope.requires) return alert($scope.requires)
+
     if ($scope.data._id)
       DataService.experts.updateMe(_.pick($scope.data,'_id','userId','tags','rate','brief'), (expert) => {
         window.location = '/office'
