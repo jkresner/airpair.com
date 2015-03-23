@@ -71,10 +71,9 @@ var get = {
   },
 
   getByIdForUser(id, cb) {  // for updating
-    var userId = this.user._id
     svc.getById(id, (e,r) => {
       if (e || !r) return cb(e,r)
-      if (!isCustomerOrAdmin(this.user,r)) return cb(Error(`Could not find request[${id}] belonging to user[${userId}]`))
+      if (!isCustomerOrAdmin(this.user,r)) return cb(Error(`Could not find request[${id}] belonging to user[${this.user._id}]`))
       cb (null, Data.select.byView(r, 'customer'))
     })
   },
@@ -96,9 +95,9 @@ var get = {
   getRequestForBookingExpert(id, expertId, cb) {
     var {user} = this
     svc.getById(id, selectByRoleCB(this, cb, (e,r) => {
-      if (!isCustomer(user,r)) return cb(Error(`Could not find request[${id}] belonging to user[${user._id}]`))
+      if (!isCustomerOrAdmin(user,r)) return cb(Error(`Could not find request[${id}] belonging to user[${user._id}]`))
       var suggestion = _.find(r.suggested,(s) => _.idsEqual(s.expert._id,expertId) && s.expertStatus == 'available')
-      if (!suggestion) return cb(Error(`No available expert[${expertId}] on request[${r._id}] not found`))
+      if (!suggestion) return cb(Error(`No available expert[${expertId}] on request[${r._id}] for booking`))
       cb(null, r)
     }))
   },
@@ -262,6 +261,10 @@ var admin = {
     adm.lastTouch = svc.newTouch.call(this, action)
 
     var ups = _.extend(original, {adm,status})
+    if (ups.user) {
+      $log('updateByAdmin: should not be saving user to request')
+      delete ups.user
+    }
     svc.update(original._id, ups, selectCB.adm(cb))
   },
 
