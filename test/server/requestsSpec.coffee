@@ -3,22 +3,22 @@ abhaKey = null
 create = ->
 
 
-  it '401 for non authenticated request', (done) ->
+  it '401 for non authenticated request', itDone ->
     opts = status: 401
     d = type: 'mentoring', experience: 'beginner', brief: 'this is a test yo', hours: "1", time: 'rush', budget: 90
     POST '/requests', d, opts, ->
-      done()
+      DONE()
 
 
-  it 'Cannot create request without a type', (done) ->
+  it 'Cannot create request without a type', itDone ->
     SETUP.addAndLoginLocalUser 'joba', (s) ->
       d = tags: [_.extend({sort:1}, data.tags.node)]
       POST '/requests', d, { status: 403 }, (r) ->
         expect(r.message).to.equal('Request type required')
-        done()
+        DONE()
 
 
-  it 'Can start a request as logged in customer', (done) ->
+  it 'Can start a request as logged in customer', itDone ->
     SETUP.addAndLoginLocalUser 'josh', (s) ->
       d = type: 'mentoring'
       POST '/requests', d, {}, (r) ->
@@ -37,10 +37,10 @@ create = ->
             expect(rAdm[0].suggested.length).to.equal(0)
             expect(rAdm[0].lastTouch).to.be.undefined
             expect(rAdm[0].adm).to.be.undefined
-            done()
+            DONE()
 
 
-  it 'Cannot update a request without emailVerified', (done) ->
+  it 'Cannot update a request without emailVerified', itDone ->
     SETUP.addAndLoginLocalUser 'bhur', (s) ->
       expect(s.emailVerified).to.be.false
       d = type: 'code-review'
@@ -59,10 +59,10 @@ create = ->
                 expect(rAdm[0].lastTouch).to.exist
                 expect(rAdm[0].suggested.length).to.equal(0)
                 expect(rAdm[0].adm).to.be.undefined
-                done()
+                DONE()
 
 
-  it 'Can update request type with no technology tags', (done) ->
+  it 'Can update request type with no technology tags', itDone ->
     SETUP.addAndLoginLocalUser 'scol', (s) ->
       expect(s.emailVerified).to.be.false
       d = type: 'code-review'
@@ -72,10 +72,10 @@ create = ->
         PUT "/requests/#{r1._id}", r1, {}, (r2) ->
           expectIdsEqual(r1._id,r2._id)
           expect(r2.type).to.equal('mentoring')
-          done()
+          DONE()
 
 
-  it 'Can update a request after verifying email', (done) ->
+  it 'Can update a request after verifying email', itDone ->
     SETUP.addAndLoginLocalUser 'narv', (s) ->
       expect(s.emailVerified).to.be.false
       d = type: 'troubleshooting', tags: [data.tags.node]
@@ -99,10 +99,10 @@ create = ->
                   expectStartsWith(rAdm[0].lastTouch.by.name,"Vikram Narayan")
                   expect(rAdm[0].adm.active).to.be.true
                   expect(rAdm[0].adm.submitted).to.be.undefined
-                  done()
+                  DONE()
 
 
-  it 'Can update a request after verify email if logged in with google', (done) ->
+  it 'Can update a request after verify email if logged in with google', itDone ->
     db.ensureDoc 'User', data.users.narv, (e) ->
       LOGIN 'narv', (snarv) ->
         d = type: 'troubleshooting', tags: [data.tags.node]
@@ -118,10 +118,10 @@ create = ->
               r1.experience = 'proficient'
               PUT "/requests/#{r1._id}", r1, {}, (r2) ->
                 expect(r2.experience).to.equal('proficient')
-                done()
+                DONE()
 
 
-  it 'Can submit a full request with emailVerified', (done) ->
+  it 'Can submit a full request with emailVerified', itDone ->
     SETUP.addAndLoginLocalUserWithEmailVerified 'johb', (s) ->
       expect(s.emailVerified).to.be.true
       tag = _.extend({sort:1}, data.tags.node)
@@ -158,10 +158,10 @@ create = ->
                           expect(rAdm[0].adm.active).to.be.true
                           expect(rAdm[0].adm.submitted).to.exist
                           expect(rAdm[0].adm.reviewable).to.be.undefined
-                          done()
+                          DONE()
 
 
-  it 'Can delete an incomplete request as owner', (done) ->
+  it 'Can delete an incomplete request as owner', itDone ->
     SETUP.addAndLoginLocalUser 'kyla', (s) ->
       d = type: 'mentoring'
       POST '/requests', d, {}, (r) ->
@@ -169,10 +169,10 @@ create = ->
         DELETE "/requests/#{r._id}", {}, (rDel) ->
           GET "/requests", {}, (requests) ->
             expect(requests.length).to.equal(0)
-            done()
+            DONE()
 
 
-  it 'Cannot delete a request unless owner or admin', (done) ->
+  it 'Cannot delete a request unless owner or admin', itDone ->
     SETUP.addAndLoginLocalUser 'kyau', (s) ->
       d = type: 'code-review'
       POST '/requests', d, {}, (r) ->
@@ -185,12 +185,12 @@ create = ->
                 DELETE "/requests/#{r._id}", {}, (rDel2) ->
                   GET "/adm/requests/user/#{s._id}", {}, (reqs2) ->
                     expect(reqs2.length).to.equal(0)
-                    done()
+                    DONE()
 
 
 review = ->
 
-  it 'Review a request as anon, customer and other', (done) ->
+  it 'Review a request as anon, customer and other', itDone ->
     SETUP.addAndLoginLocalUserWithEmailVerified 'mfly', (s) ->
       d = tags: [data.tags.angular], type: 'troubleshooting', experience: 'advanced', brief: 'this is a another anglaur test yo', hours: "2", time: 'regular', budget: 150
       POST '/requests', d, {}, (r) ->
@@ -219,10 +219,10 @@ review = ->
                 expect(rExpert.by.name.indexOf("Michael Flynn")).to.equal(0)
                 expect(rAnon.userId).to.be.undefined
                 expect(rAnon.budget).to.be.undefined
-                done()
+                DONE()
 
 
-  it 'Fail to review a request as v0 expert', (done) ->
+  it 'Fail to review a request as v0 expert', itDone ->
     d = tags: [data.tags.angular], type: 'code-review', experience: 'advanced', brief: 'another anglaur test yo3', hours: "5", time: 'regular'
     SETUP.newCompleteRequest 'mify', d, (r) ->
       expect(data.users.asv0.bio).to.be.undefined
@@ -238,10 +238,10 @@ review = ->
             reply = expertComment: "I'll take it", expertAvailability: "Real-time", expertStatus: "available"
             PUT "/requests/#{r._id}/reply/#{seAsv0._id}", reply, { status: 403 }, (err) ->
               expectStartsWith(err.message, "Must migrate expert profile to reply")
-              done()
+              DONE()
 
 
-  it 'Review a request as v0 expert after migration', (done) ->
+  it 'Review a request as v0 expert after migration', itDone ->
     d = tags: [data.tags.angular], type: 'code-review', experience: 'advanced', brief: 'another anglaur test yo3', hours: "5", time: 'regular'
     SETUP.newCompleteRequest 'dsun', d, (r) ->
       SETUP.ensureV0Expert 'asv0', ->
@@ -270,10 +270,10 @@ review = ->
                 expect(r1.suggested[0].expert.gh.username).to.equal("difficultashish")
                 expect(r1.suggested[0].expert.in.id).to.equal("cDNFNcqq-z")
                 expect(r1.suggested[0].expert.pic).to.be.undefined
-                done()
+                DONE()
 
 
-  it 'Self suggest reply to a request as a expert new expert', (done) ->
+  it 'Self suggest reply to a request as a expert new expert', itDone ->
     SETUP.addAndLoginLocalUserWithEmailVerified 'mfln', (s) ->
       d = tags: [data.tags.angular], type: 'code-review', experience: 'advanced', brief: 'another anglaur test yo3', hours: "5", time: 'regular'
       POST '/requests', d, {}, (r0) ->
@@ -325,13 +325,13 @@ review = ->
                     expectIdsEqual(customerMailSpy.args[0][2],r1._id)
                     expect(customerMailSpy.args[0][3]).to.be.true
                     customerMailSpy.restore()
-                    done()
+                    DONE()
 
 
-  it.skip 'Self suggest reply to a request as a v0 expert expert', (done) ->
+  it 'Self suggest reply to a request as a v0 expert expert'
 
 
-  it 'Update reply to a request as an expert', (done) ->
+  it 'Update reply to a request as an expert', itDone ->
     SETUP.addAndLoginLocalUserWithEmailVerified 'mikf', (s) ->
       d = tags: [data.tags.angular], type: 'resources', experience: 'proficient', brief: 'bah bah anglaur test yo4', hours: "1", time: 'rush'
       POST '/requests', d, {}, (r0) ->
@@ -357,10 +357,10 @@ review = ->
                   expect(r2.suggested[0].expertAvailability).to.equal("Now")
                   expect(r2.suggested[0].expertComment).to.equal("Actually I've got an hour")
                   expect(r2.suggested[0].reply.time).to.exist
-                  done()
+                  DONE()
 
 
-  it 'Double available reply does not trigger a second customer email', (done) ->
+  it 'Double available reply does not trigger a second customer email', itDone ->
     SETUP.addAndLoginLocalUserWithPayMethod 'brih', (sbrih) ->
       d = tags: [data.tags.angular], type: 'resources', experience: 'proficient', brief: 'bah bah anglaur test yo4', hours: "1", time: 'rush'
       POST '/requests', d, {}, (r0) ->
@@ -387,10 +387,10 @@ review = ->
                       expectIdsEqual(customerMailSpy.args[0][2],r._id)
                       expect(customerMailSpy.args[0][3]).to.be.false
                       customerMailSpy.restore()
-                      done()
+                      DONE()
 
 
-  it 'Can get data to book expert on request rate', (done) ->
+  it 'Can get data to book expert on request rate', itDone ->
     SETUP.addAndLoginLocalUserWithEmailVerified 'pcor', (spcor) ->
       d = tags: [data.tags.angular], type: 'resources', experience: 'proficient', brief: 'bah bah anglaur test yo4', hours: "1", time: 'rush'
       POST '/requests', d, {}, (r0) ->
@@ -422,32 +422,28 @@ review = ->
                       expect(review.suggested[0].suggestedRate).to.exist
                       expect(review.suggested[0].suggestedRate.expert).to.equal(130)
                       expect(review.suggested[0].suggestedRate.total).to.equal(220)
-                      done()
+                      DONE()
 
           testNotAvailable testAvailable
 
 
 
-  it.skip 'Cannot reply to customers own request', (done) ->
+  it 'Cannot reply to customers own request'
 
-  it.skip 'Cannot reply to inactive request', (done) ->
+  it 'Cannot reply to inactive request'
 
-  it.skip 'Cannot reply to overloaded request with 4 existing available replies', (done) ->
+  it 'Cannot reply to overloaded request with 4 existing available replies'
 
 
 
 module.exports = ->
 
   before (done) ->
-    SETUP.analytics.stub()
     SETUP.initTags ->
       SETUP.createNewExpert 'abha', {}, (s,exp) ->
         abhaKey = s.userKey
         # $log('abha', s.userKey, exp)
         done()
-
-  after ->
-    SETUP.analytics.restore()
 
 
   describe "Create: ".subspec, create

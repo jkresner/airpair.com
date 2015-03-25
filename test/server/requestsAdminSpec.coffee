@@ -5,18 +5,13 @@ phlfExp = null
 module.exports = -> describe "Admin".subspec, ->
 
   before (done) ->
-    SETUP.analytics.stub()
-    SETUP.initTags ->
-      SETUP.createNewExpert 'phlf', {}, (s,exp) ->
-        phlfKey = s.userKey
-        phlfExp = exp
-        done()
-
-  after ->
-    SETUP.analytics.restore()
+    SETUP.createNewExpert 'phlf', {}, (s,exp) ->
+      phlfKey = s.userKey
+      phlfExp = exp
+      done()
 
 
-  it 'Pipeliner can reply to a new request', (done) ->
+  it 'Pipeliner can reply to a new request', itDone ->
     d = type: 'other', tags: [data.tags.node]
     SETUP.newCompleteRequestForAdmin 'hubr', d, (r) ->
       msg = type: 'received', subject: "test subject", body: "test body"
@@ -42,10 +37,10 @@ module.exports = -> describe "Admin".subspec, ->
         expect(r1.messages[0].body).to.equal("test body")
         PUT "/adm/requests/#{r._id}/message", msg, {status:403}, (rFail) ->
           expectStartsWith(rFail.message,'Can not send the same message type once')
-          done()
+          DONE()
 
 
-  it 'Pipeliner can farm a new request', (done) ->
+  it 'Pipeliner can farm a new request', itDone ->
     d = type: 'other', tags: [data.tags.node]
     SETUP.newCompleteRequestForAdmin 'hbri', d, (r) ->
       PUT "/adm/requests/#{r._id}/message", { type: 'received', subject: "s", body: "b" }, {}, (r1) ->
@@ -68,11 +63,11 @@ module.exports = -> describe "Admin".subspec, ->
           expect(r1.messages.length).to.equal(1)
           PUT "/adm/requests/#{r._id}/farm", { tweet }, {status:403}, (rFail) ->
             expectStartsWith(rFail.message,'Can not share request once')
-            done()
+            DONE()
 
 
 
-  it 'Pipeliner can suggest and remove experts', (done) ->
+  it 'Pipeliner can suggest and remove experts', itDone ->
     SETUP.addAndLoginLocalUserWithEmailVerified 'kaun', (s) ->
       spy = sinon.spy(mailman,'sendExpertSuggestedEmail')
       d = tags: [data.tags.angular], type: 'resources', experience: 'proficient', brief: 'bah bah anglaur test yo4', hours: "1", time: 'rush'
@@ -99,10 +94,10 @@ module.exports = -> describe "Admin".subspec, ->
                       expectStartsWith(spy.args[0][3],"Admin Daemon")
                       expect(spy.args[0][4].length).to.equal(1)
                       expect(spy.args[0][4][0].slug).to.equal('angularjs')
-                      done()
+                      DONE()
 
 
-  it 'Expert can reply when suggested by pipeliner', (done) ->
+  it 'Expert can reply when suggested by pipeliner', itDone ->
     {_id} = data.requests.suggestReply
     SETUP.ensureV1LoggedInExpert 'abpa', (abpa) ->
       db.ensureDoc 'Request', data.requests.suggestReply, () ->
@@ -124,10 +119,10 @@ module.exports = -> describe "Admin".subspec, ->
                     PUT "/requests/#{r._id}/reply/#{exp1._id}", reply, {}, (r3) ->
                       expect(r3.suggested.length).to.equal(1)
                       expect(r3.suggested[0].expertStatus).to.equal 'unavailable'
-                      done()
+                      DONE()
 
 
-  it 'Pipeliner can suggest v0 expert', (done) ->
+  it 'Pipeliner can suggest v0 expert', itDone ->
     d = type: 'other', tags: [data.tags.node]
     SETUP.ensureV0Expert 'azv0', ->
       SETUP.newCompleteRequestForAdmin 'hbib', d, (r) ->
@@ -159,10 +154,10 @@ module.exports = -> describe "Admin".subspec, ->
                     reply = expertComment: "I'll take it", expertAvailability: "Real-time", expertStatus: "available"
                     PUT "/requests/#{r._id}/reply/#{seAzv0._id}", reply, { status: 403 }, (err) ->
                       expectStartsWith(err.message, "Must migrate expert profile to reply")
-                      done()
+                      DONE()
 
 
-  it 'Pipeliner can update expert matching stats', (done) ->
+  it 'Pipeliner can update expert matching stats', itDone ->
     d = type: 'other', tags: [data.tags.node]
     SETUP.newCompleteRequestForAdmin 'hubi', d, (r) ->
       LOGIN phlfKey, (sAbha) ->
@@ -175,10 +170,10 @@ module.exports = -> describe "Admin".subspec, ->
               expect(exp2.matching).to.exist
               expect(exp2.matching.experience).to.exist
               expect(exp2.matching.replies).to.exist
-              done()
+              DONE()
 
 
-  it 'Pipeliner can junk request', (done) ->
+  it 'Pipeliner can junk request', itDone ->
     adm = data.users.admin
     d = type: 'mentoring', tags: [data.tags.mongo]
     SETUP.newCompleteRequestForAdmin 'tylb', d, (r,sCust) ->
@@ -195,10 +190,10 @@ module.exports = -> describe "Admin".subspec, ->
         expectIdsEqual(r2.adm.lastTouch.by._id,adm._id)
         expect(r2.lastTouch.action).to.equal('updateByCustomer')
         expectIdsEqual(r2.lastTouch.by._id,sCust._id)
-        done()
+        DONE()
 
 
-  it 'Pipeliner setting to canceled closes request', (done) ->
+  it 'Pipeliner setting to canceled closes request', itDone ->
     adm = data.users.admin
     d = type: 'resources', tags: [data.tags.mongo]
     SETUP.newCompleteRequestForAdmin 'tbau', d, (r,sCust) ->
@@ -210,10 +205,10 @@ module.exports = -> describe "Admin".subspec, ->
         expect(r2.adm.closed).to.exist
         expect(r2.adm.lastTouch.action).to.equal('closed:canceled')
         expectIdsEqual(r2.adm.lastTouch.by._id,adm._id)
-        done()
+        DONE()
 
 
-  it.skip 'Pipeliner setting to complete closes request', (done) ->
+  it.skip 'Pipeliner setting to complete closes request', itDone ->
     adm = data.users.admin
     d = type: 'resources', tags: [data.tags.mongo]
     SETUP.newCompleteRequestForAdmin 'tbar', d, (r,sCust) ->
@@ -229,4 +224,4 @@ module.exports = -> describe "Admin".subspec, ->
         # expect(r2.adm.closed).to.exist
         # expect(r2.adm.lastTouch.action).to.equal('closed:complete')
         # expectIdsEqual(r2.adm.lastTouch.by._id,adm._id)
-        done()
+        DONE()

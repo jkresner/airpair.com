@@ -3,7 +3,7 @@ util = require('../../shared/util')
 
 signup = ->
 
-  it 'Can sign up as new user with local credentials', (done) ->
+  it 'Can sign up as new user with local credentials', itDone ->
     d =  SETUP.userData('jkap')
 
     http(global.app).post('/v1/auth/signup').send(d).expect(200)
@@ -30,10 +30,10 @@ signup = ->
           expect(s.local).to.be.undefined  # holds password field
           expect(s.roles).to.be.undefined # new users have undefined roles
           expect(s.cohort.engagement).to.exist
-          done()
+          DONE()
 
 
-  it 'Can sign up as new user with google', (done) ->
+  it 'Can sign up as new user with google', itDone ->
     UserService.googleLogin.call SETUP.userSession(), data.oauth.rbrw, (e,usr) ->
       data.users.rbrw = usr
       LOGIN 'rbrw', ->
@@ -47,10 +47,10 @@ signup = ->
           expect(s.local).to.be.undefined  # holds password field
           expect(s.roles).to.be.undefined  # new users have undefined roles
           expect(s.cohort.engagement).to.exist
-          done()
+          DONE()
 
 
-  it 'Cannot sign up with local credentials and existing gmail', (done) ->
+  it 'Cannot sign up with local credentials and existing gmail', itDone ->
     d = name: "AirPair Experts", email: "experts@airpair.com", password: "Yoyoyoyoy"
 
     UserService.googleLogin.call SETUP.userSession(), data.oauth.exap, (e,usr) ->
@@ -63,10 +63,10 @@ signup = ->
         .end (err, res) ->
           if (err) then return done(err)
           expect(res.body.message).to.equal('Cannot signup, you previously created an account with your google login')
-          done()
+          DONE()
 
 
-  it 'Cannot sign up with local credentials and existing local email', (done) ->
+  it 'Cannot sign up with local credentials and existing local email', itDone ->
     d = SETUP.userData('jkap')
     http(global.app).post('/v1/auth/signup').send(d).expect(200)
       .end (e, r) ->
@@ -74,23 +74,23 @@ signup = ->
           .end (err, res) ->
             if (err) then return done(err)
             expect(res.body.message).to.equal('Cannot signup, user already exists')
-            done()
+            DONE()
 
 
 
-  it 'Can sign up via post comp', (done) ->
+  it 'Can sign up via post comp', itDone ->
     d = _.pick(SETUP.userData('jkya'), ['name','email'])
     http(global.app).post('/v1/auth/signup-postcomp').send(d).expect(200)
       .end (e, resp) ->
         r = resp.body
         expect(r._id).to.exist
         expect(r.email).to.equal(d.email)
-        done()
+        DONE()
 
 
 login = ->
 
-    it 'Login of existing v0 user creates cohort', (done) ->
+    it 'Login of existing v0 user creates cohort', itDone ->
       db.ensureDoc 'User', data.v0.users.SoumyaAcharya, (e, sou) ->
         expect(_.idsEqual sou._id, "51a6668866a6f999a465f2fc").to.be.true
         expect(sou.email).to.be.undefined
@@ -107,10 +107,10 @@ login = ->
           expect(moment(u.cohort.engagement.visit_signup).unix()).to.equal(moment(util.ObjectId2Date(sou._id)).unix())
           expect(u.cohort.engagement.visit_last).to.exists
           expect(u.cohort.engagement.visits.length).to.equal(1)
-          done()
+          DONE()
 
 
-    it 'Can signup with local credentials then login with google of same email', (done) ->
+    it 'Can signup with local credentials then login with google of same email', itDone ->
       db.ensureDoc 'User', data.users.aone, (e, aone) ->
         expect(aone.email).to.equal('airpairone001@gmail.com')
         expect(aone.google).to.be.undefined
@@ -120,10 +120,10 @@ login = ->
             expect(r.googleId).to.equal(data.oauth.aone.google._json.id)
             expect(r.google._json.email).to.equal('airpairone001@gmail.com')
             expect(r.email).to.equal('airpairone001@gmail.com')
-            done()
+            DONE()
 
 
-    it 'Google login for existing v1 user works after played with singup form', (done) ->
+    it 'Google login for existing v1 user works after played with singup form', itDone ->
       db.ensureDoc 'User', data.users.samt, (e, samt) ->
         expect(samt.email).to.equal('san.thanki@gmail.com')
         expect(samt.google).to.exist
@@ -136,10 +136,10 @@ login = ->
             expect(r.googleId).to.equal(data.oauth.samt.google._json.id)
             expect(r.google._json.email).to.equal("san.thanki@gmail.com")
             expect(r.email).to.equal("san.thanki@gmail.com")
-            done()
+            DONE()
 
 
-    it 'Google login for existing v1 user doesnt blow up when tag not found', (done) ->
+    it 'Google login for existing v1 user doesnt blow up when tag not found', itDone ->
       db.ensureDoc 'User', data.users.bbe, (e, bbe) ->
         expect(bbe.email).to.equal('ben.beetle@gmail.com')
         expect(bbe.google).to.exist
@@ -151,7 +151,7 @@ login = ->
             expect(r.googleId).to.equal(data.oauth.bbe.google._json.id)
             expect(r.google._json.email).to.equal('ben.beetle@gmail.com')
             expect(r.email).to.equal('ben.beetle@gmail.com')
-            done()
+            DONE()
 
 
     it.skip 'TODO: Login from a new anonymous session adds sessionID to aliases', () ->
@@ -179,7 +179,7 @@ password = ->
 
     it.skip 'Change password as anonymous user logs user in'
 
-    it 'Request password change as anonymous user, and set a new local password', (done) ->
+    it 'Request password change as anonymous user, and set a new local password', itDone ->
       new_password = 'sellsellsell'
       spy = sinon.spy(mailman,'sendChangePasswordEmail')
       SETUP.addLocalUser 'adap', {}, (userKey) ->
@@ -202,10 +202,10 @@ password = ->
                   expect(old_password_hash).to.not.equal(r.local.password)
                   expect(r.local.changePasswordHash).to.be.empty
                   spy.restore()
-                  done()
+                  DONE()
 
 
-    it 'Request a password change, and set a new local password', (done) ->
+    it 'Request a password change, and set a new local password', itDone ->
       new_password = 'drowssap'
       spy = sinon.spy(mailman,'sendChangePasswordEmail')
       SETUP.addAndLoginLocalUser 'prak', (d) ->
@@ -231,10 +231,10 @@ password = ->
                     expect(old_password_hash).to.not.equal(r.local.password)
                     expect(r.local.changePasswordHash).to.be.empty
                     spy.restore()
-                    done()
+                    DONE()
 
 
-    it 'Try to request password change multiple, and set a new local password', (done) ->
+    it 'Try to request password change multiple, and set a new local password', itDone ->
       new_password = 'chessmac'
       spy = sinon.spy(mailman,'sendChangePasswordEmail')
       SETUP.addAndLoginLocalUser 'rpor', (user) ->
@@ -269,30 +269,30 @@ password = ->
                         expect(rrrrr.local.password).to.exist
                         expect(rrrrr.local.changePasswordHash).to.be.empty
                         spy.restore()
-                        done()
+                        DONE()
 
 
 
-    it 'Must supply a valid email when requesting a password change', (done) ->
+    it 'Must supply a valid email when requesting a password change', itDone ->
       SETUP.addAndLoginLocalUser 'stjp', (user) ->
         PUT '/users/me/password-change', {email: "abc"}, { status: 403 }, (r) ->
           expect(r.message).to.include('Invalid email address')
-          done()
+          DONE()
 
-    it 'Cannot change local password to an short password', (done) ->
+    it 'Cannot change local password to an short password', itDone ->
       PUT "/users/me/password", {hash: "ABC", password:"abc"}, {status:403, unauthenticated: true}, (r) ->
         expect(r.message).to.include('Invalid password')
-        done()
+        DONE()
 
-    it 'Cannot change local password with any empty hash', (done) ->
+    it 'Cannot change local password with any empty hash', itDone ->
       PUT "/users/me/password", {hash: "", password:"newpassword"}, {status:403, unauthenticated: true}, (r) ->
         expect(r.message).to.include('Invalid hash')
-        done()
+        DONE()
 
 
 changeEmail = ->
 
-    it 'Local user can change their email', (done) ->
+    it 'Local user can change their email', itDone ->
       SETUP.addAndLoginLocalUserWithEmailVerified 'spgo', (s) ->
         expect(s.emailVerified).to.be.true
         the_new_email = "hello" + moment().format('x') + "@mydomain.com"
@@ -300,19 +300,19 @@ changeEmail = ->
           GET '/session/full', {}, (s2) ->
             expect(s2.email).to.equal(the_new_email)
             expect(s2.emailVerified).to.be.false
-            done()
+            DONE()
 
 
-    it 'Cannot change a users email to just any string', (done) ->
+    it 'Cannot change a users email to just any string', itDone ->
       the_new_email = "justsomestring"
       SETUP.addAndLoginLocalUserWithEmailVerified 'shan', (s) ->
         expect(s.emailVerified).to.be.true
         PUT '/users/me/email', {email: the_new_email}, {status:403}, (e)->
           expect(e.message).to.include('Invalid email address')
-          done()
+          DONE()
 
 
-    it 'sending verify multiple times sends the same hash', (done) ->
+    it 'sending verify multiple times sends the same hash', itDone ->
       spy = sinon.spy(mailman,'sendVerifyEmail')
       SETUP.addAndLoginLocalUser 'chru', (uChru) ->
         PUT '/users/me/email', { email: uChru.email }, {}, (session) ->
@@ -330,44 +330,44 @@ changeEmail = ->
               expect(spy.callCount).to.equal(3)
               expect(spy.args[2][1]).to.equal(hash1)
               spy.restore()
-              done()
+              DONE()
 
 
-    it 'Cannot change email with empty string', (done) ->
+    it 'Cannot change email with empty string', itDone ->
       SETUP.addAndLoginLocalUserWithEmailVerified 'scol', (s) ->
         expect(s.emailVerified).to.be.true
         PUT '/users/me/email', {}, {status:403}, (e)->
           expect(e.message).to.include('Invalid email address')
-          done()
+          DONE()
 
 
-    it 'Cannot change email to an existing users email', (done) ->
+    it 'Cannot change email to an existing users email', itDone ->
       SETUP.addAndLoginLocalUserWithEmailVerified 'scmo', (s) ->
         expect(s.emailVerified).to.be.true
         PUT '/users/me/email', {email:'ad@airpair.com'}, {status:400}, (e)->
           expect(e.message).to.include('Email belongs to another account')
-          done()
+          DONE()
 
 
-    it.skip 'deny user if e-mail is not verified', (done) ->
+    it.skip 'deny user if e-mail is not verified', itDone ->
       d = getNewUserData('spur')
       SETUP.addAndLoginLocalUser 'spur', (userKey) ->
         GET '/billing/orders', { status: 403 }, (err) ->
           expectStartsWith(err.message,'e-mail not verified')
-          done()
+          DONE()
 
 
-    it 'User can only verify e-mail when logged in', (done) ->
+    it 'User can only verify e-mail when logged in', itDone ->
       http(global.app)
         .put('/v1/api/users/me/email-verify')
         .send({hash:'yoyoy'})
         .expect(401)
         .end (err, res) ->
-          if (err) then return done(err)
-          done()
+          if (err) then return DONE(err)
+          DONE()
 
 
-    it 'Users can verify email for some features', (done) ->
+    it 'Users can verify email for some features', itDone ->
       spy = sinon.spy(mailman,'sendVerifyEmail')
       SETUP.addAndLoginLocalUser 'stev', (s) ->
         POST '/requests', { type: 'troubleshooting', tags: [data.tags.node] }, {}, (r1) ->
@@ -381,10 +381,10 @@ changeEmail = ->
                 expect(sVerified.emailVerified).to.be.true
                 PUT "/requests/#{r1._id}", _.extend(r1,{experience:'beginner'}), {}, (r2) ->
                   r2.experience = 'proficient'
-                  done()
+                  DONE()
 
 
-    it 'users can verify email for some features if logged in with google', (done) ->
+    it 'users can verify email for some features if logged in with google', itDone ->
       spy = sinon.spy(mailman,'sendVerifyEmail')
       db.ensureDoc 'User', data.users.narv, (e) ->
         LOGIN 'narv', (snarv) ->
@@ -399,11 +399,11 @@ changeEmail = ->
                   expect(sVerified.emailVerified).to.be.true
                   PUT "/requests/#{r1._id}", _.extend(r1,{experience:'beginner'}), {}, (r2) ->
                     r2.experience = 'proficient'
-                    done()
+                    DONE()
 
 
 
-    it 'Google login can verify different email for some features if logged in with google', (done) ->
+    it 'Google login can verify different email for some features if logged in with google', itDone ->
       spy = sinon.spy(mailman,'sendVerifyEmail')
       db.ensureDoc 'User', data.users.narv, (e) ->
         expect(data.users.narv.email).to.equal('vikram@freado.com')
@@ -425,24 +425,24 @@ changeEmail = ->
                     expect(sVerified.email).to.equal("vikram@test.com")
                     PUT "/requests/#{r1._id}", _.extend(r1,{experience:'beginner'}), {}, (r2) ->
                       r2.experience = 'proficient'
-                      done()
+                      DONE()
 
 
-    it 'Bad verification link does not verify the user', (done) ->
+    it 'Bad verification link does not verify the user', itDone ->
       SETUP.addAndLoginLocalUser 'step', (s) ->
         fakeHash = 'ABCDEF1234567'
         PUT "/users/me/email-verify", { hash: fakeHash }, { status: 400 }, (r) ->
           expectStartsWith(r.message,"e-mail verification failed")
-          done()
+          DONE()
 
 
 
 withAnalytics = ->
 
   before () ->
-    SETUP.analytics.restore()
+    SETUP.analytics.on()
 
-  it 'New user has correct cohort information', (done) ->
+  it 'New user has correct cohort information', itDone ->
     checkCohort = (userId) ->
       ->
         db.readDoc 'User', userId, (r) ->
@@ -455,7 +455,7 @@ withAnalytics = ->
           expect(moment(cohort.engagement.visits[0]).unix()).to.equal(moment(util.dateWithDayAccuracy()).unix())
           expect(cohort.aliases.length).to.equal(1)
           # expect(cohort.aliases[0].indexOf("testdysn")).to.equal(0)
-          done()
+          DONE()
 
     clone = SETUP.userData('dysn')
     ANONSESSION (r) ->
@@ -474,19 +474,14 @@ module.exports = ->
   @timeout(6000)
 
   before (done) ->
-    SETUP.analytics.stub()
     SETUP.initPosts ->
       SETUP.initTags ->
         SETUP.initTemplates(done)
 
-  after ->
-    SETUP.analytics.restore()
-
   describe("Signup: ".subspec, signup)
   describe("Login: ".subspec, login)
   describe("Password: ".subspec, password)
-  describe("Cha
-    nge and verify e-mail: ".subspec, changeEmail)
+  describe("Change and verify e-mail: ".subspec, changeEmail)
   describe("With analytics: ".subspec, withAnalytics)
 
 

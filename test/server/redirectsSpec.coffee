@@ -1,21 +1,14 @@
 module.exports = -> describe "API".subspec, ->
 
-  before (done) ->
-    SETUP.analytics.stub()
-    SETUP.initTags(done)
 
-  after ->
-    SETUP.analytics.restore()
-
-
-  it '403 for non admin on get redirects', (done) ->
+  it '403 for non admin on get redirects', itDone ->
     opts = status: 403
     SETUP.addAndLoginLocalUser 'dily', (s) ->
       GET '/adm/redirects', opts, ->
-        done()
+        DONE()
 
 
-  it 'can create redirect as admin', (done) ->
+  it 'can create redirect as admin', itDone ->
     LOGIN 'admin', (s) ->
       GET '/adm/redirects', {}, (r1) ->
         beforeCount = r1.length
@@ -27,4 +20,4 @@ module.exports = -> describe "API".subspec, ->
           GET '/adm/redirects', {}, (r2) ->
             expect(beforeCount+1).to.equal(r2.length)
             expect(_.find(r2,(r)->r.previous==d.previous)).to.exist
-            done()
+            DONE()

@@ -31,7 +31,7 @@ var angularPageMeta = {
 var setTagForTrackView = (req, res, next) => { req.tag = angular; req.tag.title = req.tag.name; next() }
 
 
-export default function(app) {
+module.exports = function(app) {
 
   var router = require('express').Router()
 

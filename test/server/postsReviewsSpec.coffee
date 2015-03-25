@@ -10,46 +10,41 @@ postReview = { questions: [
 module.exports = -> describe "API: ".subspec, ->
 
   before (done) ->
-    SETUP.analytics.stub()
     SETUP.addUserWithRole 'jkap', 'editor', ->
-      SETUP.initTags ->
-        SETUP.initTemplates done
-
-  after ->
-    SETUP.analytics.restore()
-
-  it.skip "correctly saves index from the UI", (done) ->
+      done()
 
 
-  it "Cannot submit anonymous review", (done)->
+  it "correctly saves index from the UI"
+
+
+  it "Cannot submit anonymous review", itDone ->
     title = "Post Anon Review Test " + moment().format('X')
     SETUP.createNewPost 'jkap', {title}, (post) ->
       ANONSESSION (s) ->
-        rev =
         POST "/posts/review/#{post._id}", postReview, { status: 401 }, (r) ->
-          done()
+          DONE()
 
 
 
-  it "Cannot submit review for draft post", (done)->
+  it "Cannot submit review for draft post", itDone ->
     title = "Post Draft Review Test " + moment().format('X')
     SETUP.createNewPost 'jkap', {title}, (post) ->
       SETUP.addAndLoginLocalUser 'rvw1', (rvw1) ->
         POST "/posts/#{post._id}/review", postReview, { status: 403 }, (r) ->
           expectContains(r.message, 'has not been submitted or published')
-          done()
+          DONE()
 
 
-  it "Can review post in review", (done)->
+  it "Can review post in review", itDone ->
     title = "Post in Review, Review Test " + moment().format('X')
     SETUP.createNewPost 'jkap', { title, submitted: new Date }, (post) ->
       SETUP.addAndLoginLocalUser 'rvw2', (rvw2) ->
         POST "/posts/#{post._id}/review", postReview, {}, (p1) ->
           expect(p1.reviews.length).to.equal(1)
-          done()
+          DONE()
 
 
-  it "Review fails without valid rating and feedback", (done)->
+  it "Review fails without valid rating and feedback", itDone ->
     title = "Post in Review, Bad Review Test " + moment().format('X')
     SETUP.createNewPost 'jkap', { title, submitted: new Date }, (post) ->
       SETUP.addAndLoginLocalUser 'rvw3', (rvw3) ->
@@ -62,13 +57,11 @@ module.exports = -> describe "API: ".subspec, ->
             r3 = { questions: [ postReview.questions[0] ] }
             POST "/posts/#{post._id}/review", r3, { status: 403 }, (e3) ->
               expectContains(e3.message, "5 star feedback required")
-              done()
+              DONE()
 
 
-  it.skip "Can submit review for published post", (done)->
-
+  it.skip "Can submit review for published post", itDone ->
     ## Where is this published ?
-
     title = "Published Post Review Test " + moment().format('X')
     SETUP.createNewPost 'jkap', { title, submitted: new Date }, (post) ->
       SETUP.addAndLoginLocalUser 'rvw4', (rvw4) ->
@@ -78,14 +71,14 @@ module.exports = -> describe "API: ".subspec, ->
           expect(p1.reviews[0].questions.length).to.equal(2)
           expect(p1.reviews[0].questions[0].key).to.equal('rating')
           expect(p1.reviews[0].questions[1].key).to.equal('feedback')
-          done()
+          DONE()
 
 
-  it.skip "Submitting review twice updates review", (done)->
+  it "Submitting review twice updates review"
     # .put('/posts/review/:post', API.Posts.addReview)
 
 
-  it "Reply to review as author", (done)->
+  it "Reply to review as author", itDone ->
     title = "Post Reply to Review as Author Test " + moment().format('X')
     SETUP.createNewPost 'jkap', { title, submitted: new Date }, (post) ->
       SETUP.addAndLoginLocalUser 'rvw5', (rvw5) ->
@@ -98,10 +91,10 @@ module.exports = -> describe "API: ".subspec, ->
               expect(p2.reviews[0].replies.length).to.equal(1)
               expect(p2.reviews[0].replies[0].by._id).to.equal(jkap._id)
               expect(p2.reviews[0].replies[0].comment).to.equal('test review reply as author')
-              done()
+              DONE()
 
 
-  it "Reply to review as another reviewer", (done)->
+  it "Reply to review as another reviewer", itDone ->
     title = "Post Reply to Review as another Reviewer Test " + moment().format('X')
     SETUP.createNewPost 'jkap', { title, submitted: new Date }, (post) ->
       SETUP.addAndLoginLocalUser 'rvw6', (rvw6) ->
@@ -114,10 +107,10 @@ module.exports = -> describe "API: ".subspec, ->
               expect(p2.reviews[0].replies.length).to.equal(1)
               expect(p2.reviews[0].replies[0].by._id).to.equal(rvw7._id)
               expect(p2.reviews[0].replies[0].comment).to.equal('test review reply')
-              done()
+              DONE()
 
 
-  it "Upvote review", (done)->
+  it "Upvote review", itDone ->
     title = "Post Upvote Review as another Reviewer Test " + moment().format('X')
     SETUP.createNewPost 'jkap', { title, submitted: new Date }, (post) ->
       SETUP.addAndLoginLocalUser 'rvw8', (rvw8) ->
@@ -139,10 +132,10 @@ module.exports = -> describe "API: ".subspec, ->
                   expect(p3.reviews[0].votes[0].by._id).to.equal(rvw9._id)
                   expect(p3.reviews[0].votes[1].by._id).to.equal(jkap._id)
                   expect(p3.reviews[0].votes[1].val).to.equal(1)
-                  done()
+                  DONE()
 
 
-  it "Sends appropriate email notifications for reviews and replies", (done) ->
+  it "Sends appropriate email notifications for reviews and replies", itDone ->
     spyReviewNotify = sinon.spy(mailman,'sendPostReviewNotification')
     spyReviewReplyNotify = sinon.spy(mailman,'sendPostReviewReplyNotification')
     title = "Post Review Notifications Test " + moment().format('X')
@@ -194,15 +187,15 @@ module.exports = -> describe "API: ".subspec, ->
                           expect(spyReviewReplyNotify.args[3][0][2].name).to.equal(rev1.name)
                           expect(spyReviewReplyNotify.args[3][4]).to.equal('I say 4 reply to your review')
                           spyReviewReplyNotify.restore()
-                          done()
+                          DONE()
 
 
 
 
-  it.skip "Can delete review as editor or review owner", (done)->
+  it "Can delete review as editor or review owner"
 
 
-  it.skip "Can publish post once it has positive reviews", (done)->
+  it "Can publish post once it has positive reviews"
 
 
-  it.skip "Cannot publish post with negative reviews", (done)->
+  it "Cannot publish post with negative reviews"

@@ -56,7 +56,7 @@ var middleware = {
         $error(e, req.user, req)
       } else {
         $log(`${req.method}:${req.url} `.expectederr + (e.message || e).expectederr)
-        // $log('Test Debug Error ', e.toString().magenta)
+        // $log('Test Debug Error ', e)
       }
 
       if (config.log.raygun.on)

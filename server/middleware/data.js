@@ -1,19 +1,22 @@
 var logging = false
-var API = require('../api/_all')
-
 
 var resolver = {
   fnLookup: {},
-  param(paramName, api, svcFnName) {
-    resolver.fnLookup[paramName] = api.svc[svcFnName]
+  resolve(paramName) {
+    var {svcName,svcFnName} = resolver.fnLookup[paramName]
+    var svc = require(`../services/${svcName}`)
+    return svc[svcFnName]
+  },
+  param(paramName, svcName, svcFnName) {
+    resolver.fnLookup[paramName] = { svcName, svcFnName }
     return resolver
   }
 }
 
 resolver
-  .param('expert', API.Experts, 'getById')
-  .param('paymethod', API.Paymethods, 'getById')
-  .param('orders', API.Orders, 'getMultipleOrdersById')
+  .param('expert', 'experts', 'getById')
+  .param('paymethod', 'paymethods', 'getById')
+  .param('orders', 'orders', 'getMultipleOrdersById')
 
 var ErrorApi404 = (msg) => {
   var e = new Error(msg)
@@ -36,7 +39,8 @@ var middleware = {
       var param = req.body[paramName]
       if (!param) return next(ErrorApi404(`${paramName} not specified.`))
       if (logging) $log('bodyParamFn', paramName, req.body[paramName])
-      var svcFn = resolver.fnLookup[paramName]
+
+      var svcFn = resolver.resolve(paramName)
       $callSvc(svcFn,req)(param, function(e, r) {
         if (!e && !r)
           e = ErrorApi404(`${paramName} not found.`)
@@ -54,9 +58,10 @@ var middleware = {
   },
 
   populateUser(req, res, next) {
+    var UserSvc = require("../services/users")
     // if (logging) $log('bodyParamFn', paramName, req.body[paramName])
 
-    $callSvc(API.Users.svc.getById,req)(null, function(e, r) {
+    $callSvc(UserSvc.getById,req)(null, function(e, r) {
       // if (!e && !r)
       //   e = ErrorApi404(`${paramName} not found.`)
       // else if (!e && typeof param == 'array' && param.length != r.length)
@@ -71,8 +76,9 @@ var middleware = {
   },
 
   populateExpert(req, res, next) {
+    var ExpertsSvc = require("../services/experts")
     if (logging) $log('populateExpert', req.user._id)
-    $callSvc(API.Experts.svc.getMe,req)(function(e, r) {
+    $callSvc(ExpertsSvc.getMe,req)(function(e, r) {
       if (e) return next(e)
       else {
         req.expert = r

@@ -104,7 +104,7 @@ var cfg = {
     appId: process.env.HANGOUT_APPID || "140030887085"
   },
   mail: {
-    smtpProvider: require('./mail/devSMTPprovider')(true),
+    smtpProvider: null,
     ses: {
       access_key: process.env.MAIL_SES_ACCESS_KEY || "none",
       secret_key: process.env.MAIL_SES_SECRET_KEY || "none"
@@ -132,6 +132,7 @@ var cfg = {
   session: { secret: 'airyv1' }
 }
 
+
 module.exports = function(env) {
   cfg.env = env
   cfg.livereload = cfg.env == 'dev'
@@ -139,10 +140,13 @@ module.exports = function(env) {
     .replace('/server/util','')
     .replace('\\server\\util','') //-- for windows machines
 
+  if (cfg.env == 'dev') {
+    cfg.mail.smtpProvider = require('./mail/devSMTPprovider')(true)
+  }
+
   //-- Temp for testing prod setting locally
   // cfg.analytics.on = true
   // cfg.analytics.segmentio.writekey = '0xxx5xrw5q'
-
   if (cfg.env == 'test') {
     cfg.auth.oAuth.callbackHost = 'http://localhost:4444'
     cfg.analytics.on = true

@@ -1,15 +1,4 @@
-var paypal = global.paypal || require('paypal-rest-sdk')
-var openIdConnect = paypal.openIdConnect
-var {stringToJson}  = require('../../../shared/util')
 
-paypal.configure({
-  'mode': config.auth.paypal.mode,
-  'client_id': config.auth.paypal.clientID,
-  'client_secret': config.auth.paypal.clientSecret,
-  'openid_client_id': config.auth.paypal.clientID,
-  'openid_client_secret': config.auth.paypal.clientSecret,
-  'openid_redirect_uri': `${config.auth.oAuth.callbackHost}/v1/auth/paypal/callback`
-});
 
 // With Refresh token
 // openIdConnect.tokeninfo.refresh("Replace with refresh_token", function (error, tokeninfo) {
@@ -27,14 +16,26 @@ paypal.configure({
 //     }
 // });
 
+var scopeString = config.auth.paypal.scope.join().replace(/,/g,' ')
 
+var wrapper = {
 
-var pp = {
+  // loginUrl: (req) =>
+  //   openIdConnect.authorizeUrl({'scope': scopeString }),
 
-  scopeString: config.auth.paypal.scope.join().replace(/,/g,' '),
+  init() {
+    wrapper.api = global.API_PAYPAL || require('paypal-rest-sdk')
+    wrapper.openIdConnect = wrapper.api.openIdConnect
+    wrapper.api.configure({
+      'mode': config.auth.paypal.mode,
+      'client_id': config.auth.paypal.clientID,
+      'client_secret': config.auth.paypal.clientSecret,
+      'openid_client_id': config.auth.paypal.clientID,
+      'openid_client_secret': config.auth.paypal.clientSecret,
+      'openid_redirect_uri': `${config.auth.oAuth.callbackHost}/v1/auth/paypal/callback`
+    })
+  },
 
-  loginUrl: (req) =>
-    openIdConnect.authorizeUrl({'scope': pp.scopeString }),
 
   handleOAuthCallback(req, res, next) {
     var error = (e) => {
@@ -44,15 +45,15 @@ var pp = {
     }
 
     var authCode = req.query.code
-    openIdConnect.tokeninfo.create(authCode, function (ee, tokeninfo) {
+    wrapper.openIdConnect.tokeninfo.create(authCode, function (ee, tokeninfo) {
       if (ee) return error(ee)
-      openIdConnect.userinfo.get(tokeninfo.access_token, function (e, userinfo) {
+      wrapper.openIdConnect.userinfo.get(tokeninfo.access_token, function (e, userinfo) {
         if (e) return error(e)
         if (!userinfo) return error("no user info")
         // console.log('tokeninfo', tokeninfo, 'userinfo', userinfo)
         req.authInfo = {
-          userinfo: stringToJson(userinfo),
-          tokeninfo: stringToJson(tokeninfo)
+          userinfo: util.stringToJson(userinfo),
+          tokeninfo: util.stringToJson(tokeninfo)
         }
         next()
       })
@@ -77,7 +78,7 @@ var pp = {
       }]
     };
 
-    paypal.payout.create(payload, 'true', (e, payout) => {
+    wrapper.api.payout.create(payload, 'true', (e, payout) => {
       var logging = config.env != 'test'
       if (e) {
         if (logging) $log(`paypal.payout.error`.red, JSON.stringify(e).red, JSON.stringify(payload).white)
@@ -100,6 +101,6 @@ var pp = {
 }
 
 
-module.exports = pp
+module.exports = wrapper
 
 

@@ -1,13 +1,3 @@
-import * as WorkshopsSvc from '../services/workshops'
-
-var svcs = {
-  tags: require('../services/tags'),
-  posts: require('../services/posts'),
-  templates: require('../services/templates'),
-  workshops: WorkshopsSvc
-}
-
-
 global.cache = {}
 
 //-- For O(1) access instead of O(N)
@@ -26,7 +16,8 @@ function itemReady(key, cb)
 {
   if (cache[key] != null) return cb()
   else {
-    svcs[key].getAllForCache( (e, list) => {
+    var svc = require(`../services/${key}`)
+    svc.getAllForCache( (e, list) => {
       cache[key] = hashEm(list, key, '_id')
       if (key == 'tags')
         cache['tag_slugs'] = hashEm(list, key, 'slug')

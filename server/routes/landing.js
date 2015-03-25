@@ -1,7 +1,7 @@
 var API = require('../api/_all')
 var {trackView} = require('../middleware/analytics')
 
-export default function(app) {
+module.exports = function(app) {
 
   var router = require('express').Router()
     .param('tag', API.Tags.paramFns.getBySlug)

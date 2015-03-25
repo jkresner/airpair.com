@@ -1,26 +1,19 @@
 
 module.exports = -> describe "Companys".subspec, ->
 
-  before () ->
-    SETUP.analytics.stub()
-
-  after ->
-    SETUP.analytics.restore()
+  it 'Can create a company'
 
 
-  it.skip 'Can create a company', (done) ->
+  it 'Can invite team members'
 
 
-  it.skip 'Can invite team members', (done) ->
+  it 'Can find a company by userId'
 
 
-  it.skip 'Can find a company by userId', (done) ->
+  it 'Admin can set company adminId'
 
 
-  it.skip 'Admin can set company adminId', (done) ->
-
-
-  it.skip 'Can add team member to a company', (done) ->
+  it 'Can add team member to a company'
 
 
   it 'Admin can migrate a company to v1 and add a 2nd team member', (done) ->
@@ -65,7 +58,7 @@ module.exports = -> describe "Companys".subspec, ->
 
     # show in account page
 
-  it.skip 'Can book using company credit by team member', (done) ->
+  it 'Can book using company credit by team member'
     # show in account page
 
 

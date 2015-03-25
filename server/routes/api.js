@@ -4,7 +4,7 @@ var {adm,emailv} = require('../middleware/authz')
 var {bodyParam,cacheReady,populateUser,populateExpert,json2mb} = require('../middleware/data')
 var Router = require('express').Router
 
-export default function(app) {
+module.exports = function(app) {
 
   var router = Router()
     .param('tag', API.Tags.paramFns.getBySlug)
@@ -81,7 +81,7 @@ export default function(app) {
     .get('/billing/orders/credit/:id', API.Orders.getMyOrdersWithCredit)
     .post('/billing/orders/credit', API.Orders.buyCredit)
 
-    .get('/billing/orders/payouts', API.Orders.getOrdersForPayouts)
+    .get('/billing/orders/payouts', cacheReady('tags'), API.Orders.getOrdersForPayouts)
     .get('/payouts/me', API.Payouts.getPayouts)
     .post('/payouts/:paymethod', bodyParam('orders'), API.Payouts.payoutOrders)
 

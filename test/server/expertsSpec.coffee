@@ -2,30 +2,26 @@
 module.exports = -> describe "API: ".subspec, ->
 
   before (done) ->
-    SETUP.analytics.stub()
     SETUP.initTags -> SETUP.initTemplates done
 
-  after ->
-    SETUP.analytics.restore()
+
+  it "*** JK Sent annoucement to pre-applied experts expert"
 
 
-  it.skip "*** JK Sent annoucement to pre-applied experts expert", (done) ->
-
-
-  it "Cannot get my expert profile as anonymous user", (done) ->
+  it "Cannot get my expert profile as anonymous user", itDone ->
     ANONSESSION (s) ->
       GET "/experts/me", { status: 401 }, (r) ->
-        done()
+        DONE()
 
 
-  it "Cannot create / update expert profile as anonymous user", (done) ->
+  it "Cannot create / update expert profile as anonymous user", itDone ->
     ANONSESSION (s) ->
       POST "/experts/me", {_id: newId(), user: data.users['jk'] }, { status: 401 }, (r) ->
         PUT "/experts/me", {_id: newId(), user: data.users['jk'] }, { status: 401 }, (r) ->
-          done()
+          DONE()
 
 
-  it "Cannot create expert profile without required user info", (done) ->
+  it "Cannot create expert profile without required user info", itDone ->
     d = rate: 80, breif: 'yo', tags: [data.tags.angular]
     SETUP.addAndLoginLocalUser 'alyr', (salyr) ->
       POST "/experts/me", d, { status: 403 }, (r) ->
@@ -43,10 +39,10 @@ module.exports = -> describe "API: ".subspec, ->
                     PUT "/users/me/bio", { bio: 'a bio'}, {}, (r) ->
                       POST "/experts/me", d, { status: 403 }, (r) ->
                         expectStartsWith(r.message, "Must connect at least 2 social account to create expert profile")
-                        done()
+                        DONE()
 
 
-  it "Can create expert profile with required user info", (done) ->
+  it "Can create expert profile with required user info", itDone ->
     d = rate: 80, breif: 'yo', tags: [data.tags.angular]
     db.ensureDoc 'User', data.users.ape1, ->
       db.findAndRemove 'Expert', { userId: data.users.ape1._id }, ->
@@ -70,10 +66,10 @@ module.exports = -> describe "API: ".subspec, ->
                     expect(expert.actvity).to.be.undefined
                     db.readDoc 'User', s._id, (user) ->
                       expect(user.cohort.expert._id).to.exist
-                      done()
+                      DONE()
 
 
-  it "Can update expert profile as new v1 user", (done) ->
+  it "Can update expert profile as new v1 user", itDone ->
     SETUP.createNewExpert 'ape1', {}, (s, expert) ->
       expect(expert.lastTouch.action, 'create')
       expect(expert.rate, 70)
@@ -98,10 +94,10 @@ module.exports = -> describe "API: ".subspec, ->
         PUT "/experts/#{expert._id}/me", exp2, {}, (expert2) ->
           expect(expert.lastTouch.action, 'update')
           expect(expert.rate, 150)
-          done()
+          DONE()
 
 
-  it "Can update expert profile as existing v0 expert", (done) ->
+  it "Can update expert profile as existing v0 expert", itDone ->
     SETUP.ensureV0Expert 'azv0', ->
       db.readDoc 'User', data.users.azv0._id, (azv0User) ->
         expect(_.keys(azv0User).length).to.equal(16)
@@ -249,7 +245,7 @@ module.exports = -> describe "API: ".subspec, ->
                   expect(azv0E2.settings).to.be.undefined
                   expect(azv0E2.mojo).to.be.undefined
                   expect(azv0E2.matching).to.be.undefined
-                done()
+                DONE()
 
 
-  it.skip "Collects social data for social scoring", (done) ->
+  it "Collects social data for social scoring"

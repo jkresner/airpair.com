@@ -1,4 +1,3 @@
-var ObjectId = require('mongoose').Schema.Types.ObjectId
 
 module.exports = {
 
@@ -206,11 +205,11 @@ module.exports = {
               "gmail" : "matt@lendinghome.com",
               "title" : "",
               "phone" : "",
-              "userId" : "5481212b8f8c80299bcc5381",
+              "userId" : ObjectId("5481212b8f8c80299bcc5381"),
               "pic" : "https://lh4.googleusercontent.com/-WRd5bJGGP0U/AAAAAAAAAAI/AAAAAAAAAGw/XNGfNOazfB0/photo.jpg",
               "twitter" : "",
               "timezone" : "GMT-0800 (PST)",
-              "_id" : "54812153bdaaca020044f710"
+              "_id" : ObjectId("54812153bdaaca020044f710")
           }
       ],
     }

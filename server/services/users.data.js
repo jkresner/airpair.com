@@ -1,5 +1,4 @@
 import * as md5     from '../util/md5'
-var util            = require('../../shared/util')
 var bcrypt          = require('bcrypt')
 var logging         = config.log.auth || false
 
@@ -143,7 +142,6 @@ var data = {
 
           var obj = util.selectFromObject(r, data.select.sessionFull)
           if (obj.roles && obj.roles.length == 0) delete obj.roles
-          if (config.chat.on) obj.firebaseToken = ctx.session.firebaseToken
           data.select.setAvatar(obj)
           data.select.inflateTagsAndBookmarks(obj, cb)
           // if (ctx.user)
