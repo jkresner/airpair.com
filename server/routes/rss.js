@@ -1,6 +1,6 @@
 var logging               = true
-var PostsSvc              = require('../services/posts')
-import * as WorkshopsSvc  from '../services/workshops'
+var PostsSvc              = null
+var WorkshopsSvc          = null
 var RSS                   = require('rss')
 
 var allFeedOptions = {
@@ -89,6 +89,8 @@ function rssRenderer() {
   return {
 
     posts(req, res) {
+      if (!PostsSvc) PostsSvc = require('../services/posts')
+
       feeds.posts = defineRssFeed( postsFeedOptions )
       feeds.posts.items = []
       feeds.posts.categories = []
@@ -114,6 +116,8 @@ function rssRenderer() {
     },
 
     workshops(req, res) {
+      if (!WorkshopsSvc) PostsSvc = require('../services/workshops')
+
       feeds.workshops = defineRssFeed( workshopsFeedOptions )
       feeds.workshops.items = []
       feeds.workshops.categories = []
@@ -139,6 +143,9 @@ function rssRenderer() {
     },
 
     mixed(req, res) {
+      if (!PostsSvc) PostsSvc = require('../services/posts')
+      if (!WorkshopsSvc) PostsSvc = require('../services/workshops')
+
       feeds.mixed = defineRssFeed( mixedFeedOptions )
       feeds.mixed.items = []
       feeds.mixed.categories = []
@@ -172,7 +179,7 @@ function rssRenderer() {
   }
 }
 
-export default function(app) {
+module.exports = function(app) {
   var rss = rssRenderer()
   var router = require('express').Router()
 

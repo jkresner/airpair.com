@@ -9,7 +9,7 @@ var authFn = (provider) => {
 
       if (err || info)
       {
-        if (!err && info) err = Error(info)
+        if (!err && info) err = Error(info.message)
         else if (!err && !user) err = Error(`No user found with email ${req.body.email}`)
         err.fromApi = true
         next(err)

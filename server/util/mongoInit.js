@@ -1,6 +1,6 @@
 var mongoose = require('mongoose')
 
-export default {
+module.exports = {
 
   connect(callback) {
     mongoose.connect(config.mongoUri)
@@ -25,7 +25,6 @@ export default {
       collection: `v1sessions`,
       url : `${config.mongoUri}`
     })
-
     callback(sessionStore)
   }
 

@@ -7,7 +7,7 @@ var UserData = require('../services/users.data')
 var logging = false
 
 // takes a delegate to initalize a store that could be Mongo / Redis etc.x
-export default function(app, initSessionStore, done)
+module.exports = function(app, initSessionStore, done)
 {
   initSessionStore( session, (sessionStore) => {
 

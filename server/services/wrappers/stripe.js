@@ -1,6 +1,10 @@
-var stripe = require('stripe')(config.payments.stripe.secretKey)
-
 module.exports = {
+
+  init() {
+    wrapper.api = global.API_STRIPE
+        || require('stripe')(config.payments.stripe.secretKey)
+  },
+
   // StripeService.prototype.createCustomer = function(email, token, callback) {
   //   return stripe.customers.create({
   //     email: email,
@@ -22,7 +26,7 @@ module.exports = {
       currency: "usd"
     };
     // console.log('striping', payload, cb)
-    stripe.charges.create(payload, function(err, charge) {
+    api.charges.create(payload, function(err, charge) {
       if (err) return cb(err)
       // if (winston) {
       //   winston.log("StripResponse: ", charge);
@@ -31,27 +35,5 @@ module.exports = {
       cb(null, charge)
     })
   }
-
-  // StripeService.prototype.createAnonCharge = function(charge, callback) {
-  //   var payload;
-  //   $log('svc.createAnonCharge', charge);
-  //   payload = {
-  //     card: charge.id,
-  //     currency: "usd",
-  //     amount: charge.amount
-  //   };
-  //   $log('svc.createAnonCharge.payload', payload);
-  //   return stripe.charges.create(payload, (function(_this) {
-  //     return function(err, charge) {
-  //       if (err) {
-  //         return callback(err);
-  //       }
-  //       if (config.isProd) {
-  //         winston.log("StripResponse: ", charge);
-  //       }
-  //       return callback(null, charge);
-  //     };
-  //   })(this));
-  // };
 
 }

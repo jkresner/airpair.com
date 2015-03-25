@@ -18,10 +18,12 @@ module.exports = -> describe "Tracking: ".subspec, ->
       SETUP.initTags ->
         LOGIN 'jkap', (s) ->
           SETUP.initWorkshops ->
-            SETUP.createAndPublishPost(s, {title: postTitle,slug:postSlug}, done)
+            SETUP.createAndPublishPost s, {title: postTitle,slug:postSlug}, ->
+              SETUP.analytics.on()
+              done()
 
 
-  it 'Can track an anonymous post view', (done) ->
+  it 'Can track an anonymous post view', itDone ->
     ANONSESSION (s) ->
       anonymousId = s.sessionID
       spy = sinon.spy(analytics,'view')
@@ -30,7 +32,7 @@ module.exports = -> describe "Tracking: ".subspec, ->
           expect(r.length).to.equal(1)
           expect(r[0].userId).to.be.null
           expect(r[0].anonymousId).to.equal(anonymousId)
-          done()
+          DONE()
         _.delay(viewCheck, 50)
 
       GETP("/v1/posts/#{postSlug}?utm_source=test1src&utm_content=test1ctn")
@@ -54,7 +56,7 @@ module.exports = -> describe "Tracking: ".subspec, ->
           spy.restore()
 
 
-  it 'Can track logged in post view', (done) ->
+  it 'Can track logged in post view', itDone ->
     SETUP.addLocalUser 'krez', {}, (userKey) ->
       spy = sinon.spy(analytics,'view')
       userId = data.users[userKey]._id
@@ -63,7 +65,7 @@ module.exports = -> describe "Tracking: ".subspec, ->
           expect(r.length).to.equal(1)
           expect(_.idsEqual(r[0].userId,userId)).to.be.true
           expect(r[0].anonymousId).to.be.null
-          done()
+          DONE()
         _.delay(viewCheck, 50)
 
       LOGIN userKey, (s) ->
@@ -114,7 +116,7 @@ module.exports = -> describe "Tracking: ".subspec, ->
   # })
 
 
-  it 'Aliases anonymous user with new user signup', (done) ->
+  it 'Aliases anonymous user with new user signup', itDone ->
     ANONSESSION (s) ->
       anonymousId = s.sessionID
 
@@ -138,15 +140,15 @@ module.exports = -> describe "Tracking: ".subspec, ->
                   expect(r.length).to.equal(1)
                   expect(_.idsEqual(r[0].userId,userId)).to.be.true
                   expect(_.idsEqual(r[0].anonymousId,s.sessionID)).to.be.true
-                  done()
+                  DONE()
 
 
-  it 'Can track an anonymous workshop view', (done) ->
+  it 'Can track an anonymous workshop view', itDone ->
     ANONSESSION (s) ->
       anonymousId = s.sessionID
       spy = sinon.spy(analytics,'view')
 
-      GETP("/v1/workshops/simplifying-rails-tests")
+      GETP("/any-tag/workshops/simplifying-rails-tests")
         .set('referer', 'http://airpair.com/workshops')
         .expect('Content-Type', /text/)
         .end (err, resp) ->
@@ -161,9 +163,9 @@ module.exports = -> describe "Tracking: ".subspec, ->
           expect(spy.args[0][5].campaign).to.be.undefined
           expect(spy.args[0][6]).to.be.undefined
           spy.restore()
-          done()
+          DONE()
 
-  it 'Can track logged in workshop view', (done) ->
+  it 'Can track logged in workshop view', itDone ->
     SETUP.addLocalUser 'joem', {}, (userKey) ->
       spy = sinon.spy(analytics,'view')
       LOGIN userKey,  (s) ->
@@ -186,10 +188,10 @@ module.exports = -> describe "Tracking: ".subspec, ->
             expect(spy.args[0][5].utms.utm_campaign).to.equal('test4nm')
             expect(spy.args[0][6]).to.be.undefined
             spy.restore()
-            done()
+            DONE()
 
 
-  it 'Login local from existing sessionID does not alias', (done) ->
+  it 'Login local from existing sessionID does not alias', itDone ->
     ANONSESSION ->
       GETP("/v1/posts/#{postSlug}").end (err, resp) ->
       singup = SETUP.userData('pgap')
@@ -204,10 +206,10 @@ module.exports = -> describe "Tracking: ".subspec, ->
               expect(spyAlias.called).to.be.false
               spyIdentify.restore()
               spyAlias.restore()
-              done()
+              DONE()
 
 
-  it 'Login from two sessionIDs aliases and aliases views', (done) ->
+  it 'Login from two sessionIDs aliases and aliases views', itDone ->
     anonymousId = null
     anonymousId2 = null
     singup = SETUP.userData('igor')
@@ -245,7 +247,7 @@ module.exports = -> describe "Tracking: ".subspec, ->
                   expect(v3.length).to.equal(4)
                   spyIdentify.restore()
                   spyAlias.restore()
-                  done()
+                  DONE()
                 _.delay(viewCheck, 50)
 
     ANONSESSION (s) ->

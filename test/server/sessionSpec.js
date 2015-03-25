@@ -42,8 +42,6 @@ function api() {
     })
   })
 
-
-  it.skip('WONT IMPL: Merges anonymous session data to local LOGIN user', () => {})
 }
 
 
@@ -140,27 +138,29 @@ function stack() {
   })
 
 
-  it('Copies anonymous tag data to new local signup user', (done) =>
+  it('Copies anonymous tag data to new local signup user', itDone((done) =>
     http(global.app)
       .put('/v1/api/users/me/tag/mongodb')
       .end( (err, resp) => {
         cookie = resp.headers['set-cookie']
         GET('/session/full', {}, (s) => {
           expect(s.tags[0].name).to.equal('MongoDB')
-          var singup = SETUP.userData('ramo')
-          http(global.app).post('/v1/auth/signup').send(singup)
+          var signup = SETUP.userData('ramo')
+          http(global.app).post('/v1/auth/signup')
+            .send(signup)
             .set('cookie',cookie)
             .end(function(err, resp) {
+              if (err) return done(err)
               var newUser = resp.body
               expect(newUser._id).to.exist
-              expect(newUser.name).to.equal(singup.name)
+              expect(newUser.name).to.equal(signup.name)
               expect(newUser.tags).to.exist
               expect(newUser.tags.length).to.equal(1)
               expect(newUser.tags[0].name).to.equal('MongoDB')
               expect(newUser.emailVerified).to.equal(false)
               GET('/session/full', {}, (sFull) => {
                 expect(sFull._id).to.exist
-                expect(sFull.name).to.equal(singup.name)
+                expect(sFull.name).to.equal(signup.name)
                 expect(sFull.tags).to.exist
                 expect(sFull.tags.length).to.equal(1)
                 expect(sFull.tags[0].name).to.equal('MongoDB')
@@ -170,7 +170,7 @@ function stack() {
             })
         })
       })
-  )
+  ))
 
 
   it('Can add and remove tags to authenticated session', function(done) {
@@ -411,13 +411,8 @@ function profileAuthenticated() {
 module.exports = () => {
 
   before(function(done) {
-    SETUP.analytics.stub()
     SETUP.initPosts( () => {
       SETUP.initTags(done) })
-  })
-
-  after(function() {
-    SETUP.analytics.restore()
   })
 
   describe("API: ".subspec, api)

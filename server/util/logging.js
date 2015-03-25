@@ -54,7 +54,7 @@ export function logError(e, user, req)
     if (req.header('user-agent'))
     {
       var isBot = (util.isBot(req.header('user-agent'))) ? 'true' : 'false'
-      msg += `\nisBot:${isBot}:${req.header('user-agent')}`
+      msg += `\n isBot:${isBot}:${req.header('user-agent')}`
     }
 
     if (req.method != 'GET' && req.body)

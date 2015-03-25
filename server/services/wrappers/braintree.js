@@ -1,81 +1,83 @@
-var util = require('../../../shared/util')
-var braintree = require('braintree')
-
-var {merchantId, publicKey, privateKey} = config.payments.braintree
-var environment = braintree.Environment[config.payments.braintree.environment]
-
-var gateway = braintree.connect({ environment, merchantId, publicKey, privateKey })
-
-var logging = false
+var logging                       = false
+var {firstName,lastName}          = require('../../../shared/util')
+var api                           = null
+var addPaymentMethodOpts          = null
 
 
-var logCB = (operation, payload, errorCB, cb) =>
-  (e,r) => {
-    if (e) { $error(`braintree.${operation}.ERROR [${e}] ${JSON.stringify(payload)}`); errorCB(e) }
-    else if (!r.success) { $error(`braintree.${operation}.ERROR [${r.message}] ${JSON.stringify(payload)}`); errorCB(r) }
-    else {
-      if (logging) $log(`braintree.${operation}`, r)
-      cb(null, r)
-    }
+//-- Delay initialization of api to first call to speed app load
+var wrap = (fn, fnName) =>
+  function () {
+
+    var cb = arguments[arguments.length-1]
+    var wrappedCB = (operation, payload, translate) =>
+      (e,r) => {
+        if (e) { $error(`braintree.${operation}.ERROR [${e}] ${JSON.stringify(payload)}`); errorCB(e) }
+        else if (!r.success) { $error(`braintree.${operation}.ERROR [${r.message}] ${JSON.stringify(payload)}`); errorCB(r) }
+        else {
+          // $log('r', JSON.stringify(r).white)
+          if (translate) r = translate(r)
+          if (logging) $log(`braintree.${operation}`, r)
+          r.type = "braintree"
+          cb(null, r)
+        }
+      }
+    arguments[arguments.length-1] = wrappedCB
+    fn.apply(this, arguments)
   }
 
 
-function getClientToken(cb) {
-  gateway.clientToken.generate({}, (e, response) => {
-    if (e) return cb(e)
-    cb(null, { btoken: response.clientToken })
-  })
-}
+var wrapper = {
 
+  init() {
+    var braintree = global.API_BRAINTREE || require('braintree')
+    var {merchantId, publicKey, privateKey} = config.payments.braintree
+    var environment = braintree.Environment[config.payments.braintree.environment]
+    wrapper.api = braintree.connect({ environment, merchantId, publicKey, privateKey })
+    addPaymentMethodOpts = {}; // { verifyCard: config.payments.braintree.verifyCards
+  },
 
-function chargeWithMethod(amount, orderId, paymentMethodToken, cb) {
-  orderId = orderId.toString() // braintree complains if we give it a mongo.ObjectId
-  var payload = { amount, orderId, paymentMethodToken, options : { submitForSettlement: true } }
+  getClientToken(cb) {
+    wrapper.api.clientToken.generate({}, cb('clientToken.generate',{},(r)=> {
+      return { btoken: r.clientToken } }))
+  },
 
-  gateway.transaction.sale(payload, logCB('transaction.sale', payload, cb,
-    (e,r) => {
-      r.type = "braintree"; cb(e,r)
+  chargeWithMethod(amount, orderId, paymentMethodToken, cb) {
+    orderId = orderId.toString() // braintree complains if we give it a mongo.ObjectId
+    var payload = { amount, orderId, paymentMethodToken, options : { submitForSettlement: true } }
+
+    wrapper.api.transaction.sale(payload, cb('transaction.sale', payload, null))
+  },
+
+  addPaymentMethod(customerId, user, company, paymentMethodNonce, cb) {
+    wrapper.api.customer.find(customerId, function (ee, existing) {
+      if (existing)
+      {
+        var payload = { customerId, paymentMethodNonce }
+        wrapper.api.paymentMethod.create(payload, cb('paymentMethod.create', payload, (r) => r.paymentMethod))
+      }
+      else
+      {
+        var payload = {
+          id: customerId,
+          firstName: util.firstName(user.name),
+          lastName: util.lastName(user.name),
+          email: user.email,
+          customFields: {
+            createdByUserId: user._id.toString()
+          },
+          paymentMethodNonce,
+          // addPaymentMethodOpts
+        }
+
+        if (company) {
+          payload.company = company.name
+          payload.customFields.companyId = company._id.toString()
+        }
+
+        wrapper.api.customer.create(payload, cb('customer.create', payload, (r) => r.customer.creditCards[0]))
+      }
     })
-  )
+  }
 }
 
-
-function addPaymentMethod(customerId, user, company, paymentMethodNonce, cb) {
-  var options = {}; // {
-    // verifyCard: config.payments.braintree.verifyCards
-    // verificationMerchantAccountId: "theMerchantAccountId"
-  // }
-
-  gateway.customer.find(customerId, function (ee, existing) {
-    if (existing)
-    {
-    	var payload = { customerId, paymentMethodNonce }
-    	gateway.paymentMethod.create(payload, logCB('paymentMethod.create', payload, cb,
-        (e,r) => cb(null, r.paymentMethod)))
-    }
-    else
-    {
-      var payload = {
-        id: customerId,
-        firstName: util.firstName(user.name),
-        lastName: util.lastName(user.name),
-        email: user.email,
-        customFields: {
-          createdByUserId: user._id.toString()
-        },
-        paymentMethodNonce,
-        // options
-      }
-
-      if (company) {
-        payload.company = company.name
-        payload.customFields.companyId = company._id.toString()
-      }
-
-      gateway.customer.create(payload, logCB('customer.create', payload, cb,
-        (e,r) => cb(null, r.customer.creditCards[0])))
-    }
-  })
-}
-
-module.exports = { getClientToken, chargeWithMethod, addPaymentMethod }
+module.exports = _.wrapFnList(wrapper, wrap)

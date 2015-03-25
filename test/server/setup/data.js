@@ -1,11 +1,5 @@
-var {momentSessionCreated,
-  getYouTubeThumb}            = require('../../../shared/util')
-var {ObjectId}                = require('mongoose').Types
-
 
 var dataHelpers = {
-
-  ObjectId,
 
   newId: () => new ObjectId(),
 
@@ -19,7 +13,7 @@ var dataHelpers = {
       _expires: moment().add(2419200000, 'ms').subtract(1,'s') }
     }
     //?? not the best setting global here ....
-    cookieCreatedAt = momentSessionCreated(session)
+    cookieCreatedAt = util.momentSessionCreated(session)
     return {user:null,sessionID:`test${userKey}${suffix}`,session}
   },
 
@@ -81,7 +75,7 @@ var dataHelpers = {
   postMeta(post)
   {
     var ogImage = (post.assetUrl.indexOf('http://youtu.be/') == 0)
-      ? getYouTubeThumb(post.assetUrl)
+      ? util.getYouTubeThumb(post.assetUrl)
       : post.assetUrl
 
     return { title: post.title, description: 'desc',

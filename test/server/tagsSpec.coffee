@@ -8,13 +8,13 @@ module.exports = -> describe "API".subspec, ->
     SETUP.analytics.restore()
 
 
-  it '401 on unauthenticated getByTagSlug', (done) ->
+  it '401 on unauthenticated getByTagSlug', itDone ->
     opts = status: 401, unauthenticated: true
     GET('/tags/angularjs', opts, -> done() )
 
 
 
-  it 'getByTagSlug when logged in', (done) ->
+  it 'getByTagSlug when logged in', itDone ->
     LOGIN 'admin', (s) ->
       GET '/tags/angularjs', {}, (t) ->
         expect(t.slug).to.equal('angularjs')
@@ -23,7 +23,7 @@ module.exports = -> describe "API".subspec, ->
         done()
 
 
-  it.skip 'Search tags when anonymous', (done) ->
+  it 'Search tags when anonymous', itDone ->
     opts = { unauthenticated: true }
     GET '/tags/search/mon', opts, (s) ->
       expect(s.length).to.equal(3)
@@ -36,10 +36,11 @@ module.exports = -> describe "API".subspec, ->
       done()
 
 
-  it.skip 'Search tags for ios', (done) ->
+  it.skip 'Search tags for ios', itDone ->
     opts = { unauthenticated: true }
     GET '/tags/search/ios', opts, (s1) ->
-      expect(s1.length).to.equal(3)
+      $log('s1', s1)
+      expect(s1.length).to.equal(4)
       expect(s1[0].name).to.equal('ios')
       expect(s1[1].name).to.equal('ios-simulator')
       expect(s1[2].name).to.equal('ios5')
@@ -50,17 +51,17 @@ module.exports = -> describe "API".subspec, ->
           done()
 
 
-  it.skip 'Search tags for c++', (done) ->
+  it.only 'Search tags for c++', itDone ->
     opts = { unauthenticated: true }
     GET '/tags/search/c++', opts, (s1) ->
       GET '/tags/search/c+', opts, (s2) ->
-        expect(s1.length).to.equal(3)
+        expect(s1.length).to.equal(4)
         expect(s1[0].name).to.equal('c++')
         expect(s2[0].name).to.equal('c++')
         done()
 
 
-  it.skip 'Search tags for c#', (done) ->
+  it.skip 'Search tags for c#', itDone ->
     opts = { unauthenticated: true }
     GET '/tags/search/c%23', opts, (s) ->
       expect(s.length).to.equal(4)
@@ -70,7 +71,7 @@ module.exports = -> describe "API".subspec, ->
       done()
 
 
-  it.skip 'Search tags for android', (done) ->
+  it.skip 'Search tags for android', itDone ->
     opts = { unauthenticated: true }
     GET '/tags/search/android', opts, (s1) ->
       expect(s1[0].slug).to.equal('android')
@@ -81,7 +82,7 @@ module.exports = -> describe "API".subspec, ->
           done()
 
 
-  it.skip 'Search tags for angularjs', (done) ->
+  it.skip 'Search tags for angularjs', itDone ->
     opts = { unauthenticated: true }
     GET '/tags/search/angularjs', opts, (s1) ->
       expect(s1[0].slug).to.equal('angularjs')
@@ -98,7 +99,7 @@ module.exports = -> describe "API".subspec, ->
                 done()
 
 
-  it.skip 'Search tags for ruby on rails', (done) ->
+  it.skip 'Search tags for ruby on rails', itDone ->
     opts = { unauthenticated: true }
     GET '/tags/search/ruby on rails', opts, (s1) ->
       # expect(s1[0].slug).to.equal('ruby-on-rails')

@@ -8,7 +8,7 @@ var setup = {
   {
     new db.Models.User(data.users.admin).save((e,r) => {
       if (e) return done()  // we failed to insert as it's done already
-      $log('mongodb_restore'.cyan)
+      this.timeout(10000)
       db.RestoreBSONData(done)
     })
   },
@@ -71,13 +71,8 @@ var setup = {
 
 }
 
-// setup = _.extend(setup,db)
-setup = _.extend(setup,dataHelpers)
 setup = _.extend(setup,stubs)
-
-for (var story of _.keys(stories)) {
-  setup[story] = stubs.analytics.storyWithNoAnalytics(stories[story])
-}
-
+setup = _.extend(setup,stories)
+setup = _.extend(setup,dataHelpers)
 
 module.exports = setup

@@ -40,7 +40,7 @@ function registerHelpers(hbs)
 
 }
 
-export default function(app) {
+module.exports = function(app) {
 
   var hbsEngine = hbs.express3({ partialsDir: `${config.appdir}/server/views/partials` })
 
