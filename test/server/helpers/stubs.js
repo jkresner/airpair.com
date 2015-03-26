@@ -49,6 +49,14 @@ var stubs = {
     })
   },
 
+  stubYouTube(obj, fnName, err, response) {
+    if (!Wrappers.YouTube.api) Wrappers.YouTube.init()
+    return sinon.stub(Wrappers.YouTube.api[obj], fnName, (payload, cb) => {
+      // $log('YouTube.stubbed', obj, fnName)
+      cb(err, response)
+    })
+  },
+
   stubGoogleTimezone(response) {
     return sinon.stub(Wrappers.Timezone,'getTimezoneFromCoordinates', (k,D,n,cb) => {
       cb(null, response || data.wrappers.timezone_melbourne)

@@ -48,10 +48,10 @@ tagSchema.index(
  },
  {
    weights: {
-      tokens: 20,
-      name: 10,
-      short: 9,
-      desc: 1,
+      tokens: 2000,
+      name: 1000,
+      short: 400,
+      desc: 10,
     },
     name: "TagTextIndex"
   }

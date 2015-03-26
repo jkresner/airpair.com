@@ -219,6 +219,18 @@ module.exports = {
     reminders: { useDefault: true }
   },
 
+  youtube_codereview_list : {
+    "kind":"youtube#videoListResponse","etag":"\"9iWEWaGPvvCMMVNTPHF9GiusHJA/d_9TlsQaaaSBJaA9-DuaomZyt9Q\"",
+    "pageInfo":{"totalResults":1,"resultsPerPage":1},
+    "items":[{"kind":"youtube#video","etag":"\"9iWEWaGPvvCMMVNTPHF9GiusHJA/-1hpkzxagLVFa1ufDiRdB8fpD_g\"","id":"MEv4SuSJgwk",
+    "snippet":{"publishedAt":"2013-10-10T02:18:28.000Z","channelId":"UCX6ZQp3RdEU_9kFNrRB-rIQ",
+    "title":"Online Rails Code Review with RoR Expert Edward Anderson - AirPair",
+    "description":"http://www.airpair.com/ruby-on-rails/code-mentor-edward-anderson\nGet a health check on your Rails app with an online review from an AirPair expert like Edward Anderson.\n\nSee more on Code Mentoring for Ruby on Rails\nhttp://www.airpair.com/code-mentoring/ruby-on-rails",
+    "thumbnails":{"default":{"url":"https://i.ytimg.com/vi/MEv4SuSJgwk/default.jpg","width":120,"height":90},
+    "medium":{"url":"https://i.ytimg.com/vi/MEv4SuSJgwk/mqdefault.jpg","width":320,"height":180},"high":{"url":"https://i.ytimg.com/vi/MEv4SuSJgwk/hqdefault.jpg","width":480,"height":360},"standard":{"url":"https://i.ytimg.com/vi/MEv4SuSJgwk/sddefault.jpg","width":640,"height":480},"maxres":{"url":"https://i.ytimg.com/vi/MEv4SuSJgwk/maxresdefault.jpg","width":1280,"height":720}},
+    "channelTitle":"Air Pair","categoryId":"24","liveBroadcastContent":"none","localized":{"title":"Online Rails Code Review with RoR Expert Edward Anderson - AirPair","description":"http://www.airpair.com/ruby-on-rails/code-mentor-edward-anderson\nGet a health check on your Rails app with an online review from an AirPair expert like Edward Anderson.\n\nSee more on Code Mentoring for Ruby on Rails\nhttp://www.airpair.com/code-mentoring/ruby-on-rails"}}}]
+  },
+
   youtube_video_response:  {
     publishedAt: '2013-10-10T02:18:28.000Z',
    channelId: 'UCX6ZQp3RdEU_9kFNrRB-rIQ',

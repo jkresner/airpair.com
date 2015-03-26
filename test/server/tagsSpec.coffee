@@ -1,16 +1,9 @@
 module.exports = -> describe "API".subspec, ->
 
-  before (done) ->
-    SETUP.analytics.stub()
-    SETUP.initTags(done)
-
-  after ->
-    SETUP.analytics.restore()
-
 
   it '401 on unauthenticated getByTagSlug', itDone ->
     opts = status: 401, unauthenticated: true
-    GET('/tags/angularjs', opts, -> done() )
+    GET('/tags/angularjs', opts, -> DONE() )
 
 
 
@@ -20,12 +13,11 @@ module.exports = -> describe "API".subspec, ->
         expect(t.slug).to.equal('angularjs')
         expect(t.name).to.equal('AngularJS')
         expect(t.short).to.equal('Angular')
-        done()
+        DONE()
 
 
   it 'Search tags when anonymous', itDone ->
-    opts = { unauthenticated: true }
-    GET '/tags/search/mon', opts, (s) ->
+    GET '/tags/search/mon', {}, (s) ->
       expect(s.length).to.equal(3)
       expect(s[2].name).to.equal('MongoDB')
       expect(s[2].slug).to.equal('mongodb')
@@ -33,84 +25,79 @@ module.exports = -> describe "API".subspec, ->
       expect(s[2]._id).to.exist
       expect(s[1].name).to.equal('mongoengine')
       expect(s[0].name).to.equal('mongoid')
-      done()
+      DONE()
 
 
   it.skip 'Search tags for ios', itDone ->
-    opts = { unauthenticated: true }
-    GET '/tags/search/ios', opts, (s1) ->
-      $log('s1', s1)
+    GET '/tags/search/ios', {}, (s1) ->
       expect(s1.length).to.equal(4)
       expect(s1[0].name).to.equal('ios')
       expect(s1[1].name).to.equal('ios-simulator')
       expect(s1[2].name).to.equal('ios5')
-      GET '/tags/search/ios simulator', opts, (s2) ->
+      GET '/tags/search/ios simulator', {}, (s2) ->
         expect(s2[0].name).to.equal('ios-simulator')
-        GET '/tags/search/ios sim', opts, (s3) ->
+        GET '/tags/search/ios sim', {}, (s3) ->
           expect(s2[0].name).to.equal('ios-simulator')
-          done()
+          DONE()
 
 
-  it.only 'Search tags for c++', itDone ->
-    opts = { unauthenticated: true }
-    GET '/tags/search/c++', opts, (s1) ->
-      GET '/tags/search/c+', opts, (s2) ->
-        expect(s1.length).to.equal(4)
-        expect(s1[0].name).to.equal('c++')
+  it 'Search tags for c++', itDone ->
+    GET '/tags/search/c++', {}, (s1) ->
+      expect(s1.length).to.equal(4)
+      expect(s1[0].name).to.equal('c++')
+      GET '/tags/search/c+', {}, (s2) ->
         expect(s2[0].name).to.equal('c++')
-        done()
+        DONE()
 
 
-  it.skip 'Search tags for c#', itDone ->
-    opts = { unauthenticated: true }
-    GET '/tags/search/c%23', opts, (s) ->
+  it 'Search tags for c#', itDone ->
+    GET '/tags/search/c%23', {}, (s) ->
       expect(s.length).to.equal(4)
       expect(s[0].name).to.equal('c#')
-      expect(s[1].name).to.equal('c#-2.0')
-      expect(s[2].name).to.equal('c#-3.0')
-      done()
+      expect(s[1].name).to.equal('c++')
+      expect(s[2].name).to.equal('c#-4.0')
+      expect(s[3].name).to.equal('c#-3.0')
+      DONE()
 
 
-  it.skip 'Search tags for android', itDone ->
-    opts = { unauthenticated: true }
-    GET '/tags/search/android', opts, (s1) ->
+  it 'Search tags for android', itDone ->
+    GET '/tags/search/android', {}, (s1) ->
       expect(s1[0].slug).to.equal('android')
-      GET '/tags/search/droid', opts, (s2) ->
-        # expect(s2[0].slug).to.equal('android')
-        GET '/tags/search/android x86', opts, (s3) ->
+      GET '/tags/search/droid', {}, (s2) ->
+        expect(s2[0].slug).to.equal('android')
+        GET '/tags/search/android x86', {}, (s3) ->
           expect(s3[0].slug).to.equal('android-x86')
-          done()
+          DONE()
 
 
   it.skip 'Search tags for angularjs', itDone ->
-    opts = { unauthenticated: true }
-    GET '/tags/search/angularjs', opts, (s1) ->
+    GET '/tags/search/angularjs', {}, (s1) ->
       expect(s1[0].slug).to.equal('angularjs')
-      GET '/tags/search/angular', opts, (s2) ->
+      GET '/tags/search/angular', {}, (s2) ->
         expect(s2[0].slug).to.equal('angularjs')
-        GET '/tags/search/angular-js', opts, (s3) ->
+        GET '/tags/search/angular-js', {}, (s3) ->
+          # $log('s3', s3)
           # expect(s3[0].slug).to.equal('angularjs')
-          GET '/tags/search/angular js', opts, (s4) ->
+          GET '/tags/search/angular js', {}, (s4) ->
             # expect(s4[0].slug).to.equal('angularjs')
-            GET '/tags/search/angular 1.2', opts, (s5) ->
+            GET '/tags/search/angular 1.2', {}, (s5) ->
               # expect(s5[0].slug).to.equal('angularjs-1.2')
-              GET '/tags/search/angular-1.2', opts, (s6) ->
+              GET '/tags/search/angular-1.2', {}, (s6) ->
                 # expect(s6[0].slug).to.equal('angularjs-1.2')
-                done()
+                DONE()
 
 
   it.skip 'Search tags for ruby on rails', itDone ->
-    opts = { unauthenticated: true }
-    GET '/tags/search/ruby on rails', opts, (s1) ->
+    GET '/tags/search/ruby on rails', {}, (s1) ->
       # expect(s1[0].slug).to.equal('ruby-on-rails')
-      GET '/tags/search/RoR', opts, (s2) ->
+      GET '/tags/search/RoR', {}, (s2) ->
         expect(s2[0].slug).to.equal('ruby-on-rails')
-        GET '/tags/search/rrr', opts, (s3) ->
+        GET '/tags/search/rrr', {}, (s3) ->
           expect(s3[0].slug).to.equal('ruby-on-rails')
-          GET '/tags/search/ruby-on-rails', opts, (s4) ->
+          GET '/tags/search/ruby-on-rails', {}, (s4) ->
             # expect(s4[0].slug).to.equal('ruby-on-rails')
-            GET '/tags/search/rails', opts, (s5) ->
+            GET '/tags/search/rails', {}, (s5) ->
               expect(s5[0].slug).to.equal('ruby-on-rails')
-              GET '/tags/search/ruby', opts, (s6) ->
+              GET '/tags/search/ruby', {}, (s6) ->
                 expect(s6[0].slug).to.equal('ruby')
-                done()
+                DONE()

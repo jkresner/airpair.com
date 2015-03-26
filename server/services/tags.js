@@ -6,25 +6,30 @@ var svc                   = new BaseSvc(Tag, logging)
 import * as WorkshopsSvc  from './workshops'
 var PostsSvc              = require('./posts')
 
+var exactMatchBonus = (term, tag) =>
+  term.toLowerCase() == tag.name.toLowerCase() ? 1000 : 0
+
 var get = {
 
-  search(searchTerm, cb) {
-    var encodedTerm = '\"'+searchTerm+'\"'
+  search(term, cb) {
+    var encodedTerm = '\"'+term+'\"'
 
     var query = { $text: { $search: encodedTerm } }
     var opts = { fields: Data.select.search }
 
-    svc.searchMany(query, opts, function(err, result) {
-      if (err) {
-        cb(err, result);
-        return;
-      }
+    svc.searchMany(query, opts, function(e, result) {
+      if (e) return cb(e)
 
-      result = _.first(_.sortBy(result, (r) => -1*r.score),4)
-      // $log('result',result)
-
-      cb(err, result);
-    });
+      cb(null,
+        _.first(
+          _.sortBy(result, (r) =>
+            -1 * (
+              r.score + exactMatchBonus(term,r)
+              )
+            )
+        ,4)
+        )
+    })
   },
 
   getAllForCache(cb) {

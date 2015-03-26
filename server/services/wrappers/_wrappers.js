@@ -21,10 +21,12 @@ var initAPIWrap = (wrapper) => {
 
 var wrappers = {
   Timezone:       initAPIWrap(require('./gtimezone')),
+  Calendar:       initAPIWrap(require('./gcal')),
   GitHub:         initAPIWrap(require('./github')),
   PayPal:         initAPIWrap(require('./paypal')),
   Stripe:         initAPIWrap(require('./stripe')),
-  Braintree:      initAPIWrap(require('./braintree'))
+  Braintree:      initAPIWrap(require('./braintree')),
+  YouTube:        initAPIWrap(require('./youtube')),
 }
 
 
