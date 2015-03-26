@@ -8,9 +8,18 @@
 
 <section id="allposts">
 
-  <h1 class="underline">All software posts <a href="/posts/me" class="btn" target="_self">Contribute</a></h1>
+  <h1 class="underline">Latest software posts <a href="/posts/me" class="btn" target="_self">Contribute</a></h1>
   <div>
-    {{#each this}}{{> postListItem this}}{{/each}}
+    {{#each featured}}{{> postListItem this}}{{/each}}
   </div>
+
+
+  <h2 class="underline">All software tutorials & featured posts <a href="/posts/me" class="btn" target="_self">Contribute</a></h2>
+
+  <ul class="archive-posts">
+    {{#each archive}}
+    <li><a href="{{url}}">{{title}}</a> by <b>{{by.name}}</b></li>
+    {{/each}}
+  </ul>
 
 </section>

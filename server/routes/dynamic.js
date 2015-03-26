@@ -75,10 +75,9 @@ module.exports = function(app) {
         }))
 
 
-
     .get('/posts',
       app.renderHbsViewData('posts', { title: "Software Posts, Tutorials & Articles" },
-        (req, cb) => PostsAPI.svc.getAllPublished(cb) ))
+        (req, cb) => cache.getOrSetCB('postAllPub',PostsAPI.svc.getAllPublished,cb) ))
 
 
     .get('/:tag/posts/:post',

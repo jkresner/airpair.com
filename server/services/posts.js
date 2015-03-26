@@ -183,7 +183,12 @@ var get = {
     q['$and'].push({'tmpl' : { '$ne': 'blank' }})
     q['$and'].push({'tmpl' : { '$ne': 'faq' }})
     var options = { fields: Data.select.list, options: { sort: { 'published': -1 } } };
-    svc.searchMany(q, options, selectCB.addUrl(cb))
+    svc.searchMany(q, options, selectCB.addUrl((e,r) => {
+      cb(null, {
+        featured: r.splice(0,99),
+        archive: (r.length > 99) ? r.splice(99) : []
+      })
+    }))
   },
 
   getRecentPublished(cb) {

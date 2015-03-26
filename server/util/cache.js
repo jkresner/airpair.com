@@ -1,3 +1,4 @@
+var logging = false
 global.cache = {}
 
 //-- For O(1) access instead of O(N)
@@ -39,7 +40,19 @@ cache.ready = function(keys, cb)
 
 cache.flush = function(key, cb)
 {
+  if (key == 'posts') cache.postAllPublished = null
   delete cache[key]
+}
+
+
+cache.getOrSetCB = function(key, getFn, cb) {
+  if (cache[key]) return cb(null, cache[key])
+  if (logging) $log(`cache.getOrSet ${key}`)
+  getFn((e,r)=>{
+    if (e) return cb(e)
+    cache[key] = r
+    cb(null,r)
+  })
 }
 
 
