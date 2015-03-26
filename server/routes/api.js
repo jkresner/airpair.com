@@ -1,7 +1,7 @@
 var API = require('../api/_all')
 var {authd,setAnonSessionData} = require('../middleware/auth')
 var {adm,emailv} = require('../middleware/authz')
-var {bodyParam,cacheReady,populateUser,populateExpert,json2mb} = require('../middleware/data')
+var {bodyParam,populateUser,populateExpert,json2mb} = require('../middleware/data')
 var Router = require('express').Router
 
 module.exports = function(app) {
@@ -81,7 +81,7 @@ module.exports = function(app) {
     .get('/billing/orders/credit/:id', API.Orders.getMyOrdersWithCredit)
     .post('/billing/orders/credit', API.Orders.buyCredit)
 
-    .get('/billing/orders/payouts', cacheReady('tags'), API.Orders.getOrdersForPayouts)
+    .get('/billing/orders/payouts', API.Orders.getOrdersForPayouts)
     .get('/payouts/me', API.Payouts.getPayouts)
     .post('/payouts/:paymethod', bodyParam('orders'), API.Payouts.payoutOrders)
 
@@ -89,7 +89,6 @@ module.exports = function(app) {
     .get('/bookings/:id', API.Bookings.getById)
     .post('/bookings/:expert', API.Bookings.createBooking)
 
-    .use(cacheReady('tags'))
     .get('/experts/me', API.Experts.getMe)
     .get('/experts/search/:id', API.Experts.search)
     .get('/experts/:id', API.Experts.getById)
@@ -134,7 +133,7 @@ module.exports = function(app) {
     .param('request', API.Requests.paramFns.getByIdForAdmin)
     .use(authd)
     // .get('/experts/mojo/me', API.Mojo.getMatchesForRequest)
-    .get('/experts/mojo/rank', cacheReady('tags'), populateExpert, API.Mojo.getRanked)
+    .get('/experts/mojo/rank', populateExpert, API.Mojo.getRanked)
     // .get('/experts/dashboard', API.Experts.getMatchesForDashboard)
     // .get('/experts', API.Experts.getForExpertsPage)
     .use(adm) //-- Todo change to match maker permissions

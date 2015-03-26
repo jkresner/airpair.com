@@ -43,6 +43,8 @@ export function run()
       hbsEngine(app)
 
       app.use(mw.logging.domainWrap)
+      app.use(mw.data.cacheReady('tags'))
+
       app.get('/', mw.analytics.trackFirstRequest, mw.auth.authdRedirect('/dashboard'), app.renderHbs('home') )
       app.use('/auth', routes('auth')(app))
       app.use('/v1/api', routes('api')(app))
