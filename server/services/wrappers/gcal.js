@@ -1,6 +1,4 @@
-var google = require('googleapis')
-var OAuth2Client = google.auth.OAuth2
-var gcal = google.calendar('v3')
+
 var logging = true
 
 // https://developers.google.com/google-apps/calendar/v3/reference/colors/get
@@ -20,12 +18,19 @@ var owner2colorIndex = {
 }
 
 
-var {calendarId,owner,ownerRefreshToken} = config.calendar.google
+var wrapper = {
 
-var auth = new OAuth2Client(config.auth.google.clientID, config.auth.google.clientSecret);
-auth.setCredentials({ refresh_token: ownerRefreshToken });
+  init() {
+    var {calendarId,owner,ownerRefreshToken} = config.calendar.google
+    var google = require('googleapis')
+    var OAuth2Client = google.auth.OAuth2
+    $log('want to connect')
+    var auth = new OAuth2Client(config.auth.google.clientID, config.auth.google.clientSecret)
+    auth.setCredentials({ refresh_token: ownerRefreshToken })
+    $log('connected')
+    wrapper.api = google.calendar('v3')
+  },
 
-var calFns = {
   // listCalendars(cb) {
   //   gcal.calendarList.list({ userId: 'me', auth }, function(err, data) {
   //     if (err) return console.log('An error occured', err)
@@ -34,7 +39,7 @@ var calFns = {
   //   })
   // },
   listEvents(cb) {
-    gcal.events.list({ auth, calendarId }, function(err, data) {
+    wrapper.api.events.list({ auth, calendarId }, function(err, data) {
       if (err) return console.log('An error occured', err)
       console.log('events', data.length)
       cb(data)
@@ -51,7 +56,7 @@ var calFns = {
     var hangoutLink = null
     var resource = { summary, start, end, attendees, description, colorId, hangoutLink }
 
-    gcal.events.insert({ auth, calendarId, sendNotifications, resource }, function(err, data) {
+    wrapper.api.events.insert({ auth, calendarId, sendNotifications, resource }, function(err, data) {
       if (err) return cb(err)
       cb(null, data)
     })
@@ -66,4 +71,4 @@ var calFns = {
   // }
 }
 
-module.exports = calFns;
+module.exports = wrapper;

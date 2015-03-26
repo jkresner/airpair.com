@@ -69,13 +69,12 @@ describe 'Server: '.appload, ->
   spec @, 'Experts', 'expertsMojo'
   spec @, 'Analytics'
 
-  # spec @, 'Tags'
+  spec @, 'Tags'
 
   spec @, 'Companys'
-  # spec.only @, 'Rss'
   spec @, 'Redirects'
-  spec 'Requests', 'requests'
-  spec 'Pipeline', 'requestsAdmin'
+  spec @, 'Requests', 'requests'
+  spec @, 'Pipeline', 'requestsAdmin'
 
   spec @, 'Paymethods'
   spec @, 'Orders'
@@ -83,5 +82,7 @@ describe 'Server: '.appload, ->
 
   spec @, 'Posts'
   spec @, 'Post Reviews', 'postsReviews'
-  # describe.skip 'Bookings: '.spec,       require('./bookingsSpec')
+  spec @, 'Bookings'
   spec @, 'Payouts'
+
+  # spec.only @, 'Rss'

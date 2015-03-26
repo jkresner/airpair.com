@@ -1909,6 +1909,37 @@ module.exports = {
     },
     "bio" : "I make my life meaningful by simplifying life of those in the art, science & business of making software.\nConsider checking my linkedin profile: https://www.linkedin.com/in/parolkar",
     "initials" : "AP"
+  },
+
+  ap34: {
+    "_id" : ObjectId("55135f470fcb90f80341a992"),
+    "cohort" : {},
+    "emailVerified" : false,
+    "name" : "Air Pair",
+    "email" : "airpairtest34@gmail.com",
+    "google" : {
+        "token" : {
+            "attributes" : { "refreshToken" : null },
+            "token" : "ya29.QgEOOn4SSs_kmpMep7SUeFB37a8wPtvI4K96OSTSruLRBarFCKl5Dmf2WPPRIVQIC_64LErBj6zTcw"
+        },
+        "_json" : {
+            "locale" : "en",
+            "gender" : "male",
+            "picture" : "https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg",
+            "family_name" : "Pair",
+            "given_name" : "Air",
+            "name" : "Air Pair",
+            "verified_email" : true,
+            "email" : "airpairtest34@gmail.com",
+            "id" : "103121129755643370673"
+        },
+        "emails" : [{"value" : "airpairtest34@gmail.com"}],
+        "name" : { "givenName" : "Air", "familyName" : "Pair" },
+        "displayName" : "Air Pair",
+        "id" : "103121129755643370673",
+        "provider" : "google"
+    },
+    "googleId" : "103121129755643370673"
   }
 
 }
