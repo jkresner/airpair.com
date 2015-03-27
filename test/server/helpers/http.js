@@ -17,17 +17,17 @@ var session = {
       .expect('Content-Type', /json/)
       .expect(200)
       .end((e,resp) => {
-        if (e) {
-          $log(e.red)
-          throw e
-        }
-        cookie = resp.headers['set-cookie']
-        if (resp.body._id)
-          cookieCreatedAt = ObjectId2Moment(resp.body._id)
-        else
-          cookieCreatedAt = moment()
+        if (e) return DONE(e)
+        try {
+          cookie = resp.headers['set-cookie']
+          if (resp.body._id)
+            cookieCreatedAt = ObjectId2Moment(resp.body._id)
+          else
+            cookieCreatedAt = moment()
 
-        cb(resp.body)
+          cb(resp.body)
+        }
+        catch (err) { DONE(err) }
       })
   },
 
@@ -52,6 +52,7 @@ var session = {
 
   LOGOUT(cb)
   {
+    global.DONE = null
     global.cookie = null
     global.cookieCreatedAt = null
   }
@@ -76,9 +77,9 @@ var api = {
       .expect('Content-Type', /json/)
       .expect(opts.status||200)
       .end((e, resp) => {
-        if (!e) return cb(resp.body)
-        $log( ((resp) ? resp.text : e.message ).red )
-        throw e
+        if (e) return DONE(e)
+        try { cb.call(this, resp.body) }
+        catch (err) { DONE(err) }
       })
   },
 

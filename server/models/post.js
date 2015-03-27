@@ -9,19 +9,6 @@ var TagSlim = {
   sort:         { type: Number   },
 }
 
-var Meta = {
-  title:        { type: String },
-  description:  { type: String },
-  canonical:    { type: String, lowercase: true, trim: true },
-  ogTitle:      { type: String },
-  ogType:       { type: String },
-  ogDescription:{ type: String },
-  ogImage:      { type: String, trim: true },
-  ogVideo:      { type: String, trim: true },
-  ogUrl:        { type: String, lowercase: true, trim: true }
-  // reviewTeamId: { type: String, unique: true, sparse: true}
-};
-
 var Author = {
   userId:       { required: true, type: ObjectId, ref: 'User', index: true },
   expertId:     { type: ObjectId, ref: 'Expert' },
@@ -109,8 +96,8 @@ module.exports = mongoose.model('Post', new mongoose.Schema({
   md:               { required: true, type: String },
   assetUrl:         { type: String, trim: true },
   tags:             { type: [TagSlim], 'default': [] },
-  meta:             Meta,
   tmpl:             { type: String, enum: tmplType },
+  meta:             Shared.PageMeta,
 
   editHistory:      [Shared.Touch],
   publishHistory:   [PublishEvent],

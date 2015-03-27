@@ -1,20 +1,14 @@
-util = require '../../shared/util'
 ordersUtil = require '../../shared/orders'
-
 
 module.exports = -> describe "Booking: ".subspec, ->
 
   @timeout 5000
 
   before (done) ->
-    SETUP.analytics.stub()
     SETUP.initExperts done
 
-  after ->
-    SETUP.analytics.restore()
 
-
-  it 'Book 2 hour with pay as you go private', (done) ->
+  it 'Book 2 hour with pay as you go private', itDone ->
     SETUP.addAndLoginLocalUserWithPayMethod 'jpie', (s) ->
       airpair1 = time: moment().add(2, 'day'), minutes: 120, type: 'private', payMethodId: s.primaryPayMethodId
       POST "/bookings/#{data.experts.dros._id}", airpair1, {}, (booking1) ->
@@ -43,11 +37,11 @@ module.exports = -> describe "Booking: ".subspec, ->
           expect(_.idsEqual(order.lineItems[1].info.expert._id, data.experts.dros._id)).to.be.true
           expect(order.total).to.equal(280)
           expect(order.profit).to.equal(60)
-          done()
+          DONE()
 
 
 
-  it 'Book 2 hour with pay as you go opensource', (done) ->
+  it 'Book 2 hour with pay as you go opensource', itDone ->
     SETUP.addAndLoginLocalUserWithPayMethod 'crus', (s) ->
       airpair1 = time: moment().add(2, 'day'), minutes: 120, type: 'opensource', payMethodId: s.primaryPayMethodId
       POST "/bookings/#{data.experts.dros._id}", airpair1, {}, (booking1) ->
@@ -67,11 +61,11 @@ module.exports = -> describe "Booking: ".subspec, ->
           expect(order.lineItems[1].info.type).to.equal('opensource')
           expect(order.total).to.equal(260)
           expect(order.profit).to.equal(40)
-          done()
+          DONE()
 
 
 
-  it 'Book 3 hour at 150 from 500 credit', (done) ->
+  it 'Book 3 hour at 150 from 500 credit', itDone ->
     SETUP.addAndLoginLocalUserWithPayMethod 'ckni', (s) ->
       o = total: 500, payMethodId: s.primaryPayMethodId
       POST "/billing/orders/credit", o, {}, (r) ->
@@ -140,18 +134,18 @@ module.exports = -> describe "Booking: ".subspec, ->
                 airpair3 = time: moment().add(4, 'day'), minutes: 60, type: 'private', credit: 200, payMethodId: s.primaryPayMethodId
                 POST "/bookings/#{data.experts.dros._id}", airpair3, { status: 400 }, (err) ->
                   expect(err.message.indexOf('ExpectedCredit $200')).to.equal(0)
-                  done()
+                  DONE()
 
 
-  it 'Fail to Book 1 hour at 150 with no credit or payMethodId', (done) ->
+  it 'Fail to Book 1 hour at 150 with no credit or payMethodId', itDone ->
     SETUP.addAndLoginLocalUserWithPayMethod 'jasp', (s) ->
       airpair = time: moment().add(1, 'day'), minutes: 60, type: 'private', credit: 150, payMethodId: s.primaryPayMethodId
       POST "/bookings/#{data.experts.dros._id}", airpair, { status: 400 }, (err, resp) ->
         expect(err.message.indexOf('ExpectedCredit $150')).to.equal(0)
-        done()
+        DONE()
 
 
-  it 'Book 90 mins at 270 from 50 credit and 220 payg', (done) ->
+  it 'Book 90 mins at 270 from 50 credit and 220 payg', itDone ->
     SETUP.addAndLoginLocalUserWithPayMethod 'ajac', (s) ->
       LOGIN 'admin', (sadm) ->
         oCred = total: 50, toUser: s, source: 'Test'
@@ -193,10 +187,10 @@ module.exports = -> describe "Booking: ".subspec, ->
                 expect(order.lineItems[2].unitPrice).to.equal(190)
                 expect(order.lineItems[2].info.paidout).to.equal(false)
                 expect(_.idsEqual(order.lineItems[2].info.expert._id, data.experts.tmot._id)).to.be.true
-                done()
+                DONE()
 
 
-  it 'Team members can use company credit for order', (done) ->
+  it 'Team members can use company credit for order', itDone ->
     SETUP.setupCompanyWithPayMethodAndTwoMembers 'ldhm', 'matt', 'eddb', (cid, pmid, cAdm, cMem) ->
       LOGIN cAdm.userKey, (smatt) ->
         GET '/billing/paymethods', {}, (mattPms) ->
@@ -215,13 +209,13 @@ module.exports = -> describe "Booking: ".subspec, ->
                   expect(booking1.minutes).to.equal(120)
                   expect(booking1.orderId).to.exist
                   expect(booking1.type).to.equal('opensource')
-                  done()
+                  DONE()
 
 
   it.skip 'Team members can not user anther companys credit for order', (done) ->
 
 
-  it 'Book 2 hour with pay as you go off request', (done) ->
+  it 'Book 2 hour with pay as you go off request', itDone ->
     SETUP.addAndLoginLocalUserWithPayMethod 'petc', (s) ->
       d = tags: [data.tags.angular], type: 'resources', experience: 'proficient', brief: 'bah bah anglaur test yo4', hours: "1", time: 'rush'
       POST '/requests', d, {}, (r0) ->
@@ -252,10 +246,10 @@ module.exports = -> describe "Booking: ".subspec, ->
                             expect(rAdm[0].adm.reviewable).to.exist
                             expect(rAdm[0].adm.booked).to.exist
                             expect(rAdm[0].status).to.equal('booked')
-                            done()
+                            DONE()
 
 
-  it 'Book 1 hour of Adam Bliss by Ari Lerner', (done) ->
+  it 'Book 1 hour of Adam Bliss by Ari Lerner', itDone ->
     SETUP.newCompleteRequest 'aril', data.requests.ariwadam, (request, sAril) ->
       GET "/requests/review/#{request._id}", {}, (r) ->
         expect(r.suggested.length).to.equal(3)
@@ -280,10 +274,10 @@ module.exports = -> describe "Booking: ".subspec, ->
               expect(orders[0].lineItems[0].type).to.equal('payg')
               expect(orders[0].lineItems[1].type).to.equal('airpair')
               expect(orders[0].lineItems[1].unitPrice).to.equal(130)
-              done()
+              DONE()
 
 
-  it 'Book 1 opensource hour of Adam Bliss', (done) ->
+  it 'Book 1 opensource hour of Adam Bliss', itDone ->
     SETUP.newCompleteRequest 'rusc', data.requests.ariwadam, (request, sAril) ->
       GET "/requests/review/#{request._id}", {}, (r) ->
         expect(r.suggested.length).to.equal(3)
@@ -303,16 +297,16 @@ module.exports = -> describe "Booking: ".subspec, ->
               expect(orders[0].lineItems[0].type).to.equal('payg')
               expect(orders[0].lineItems[1].type).to.equal('airpair')
               expect(orders[0].lineItems[1].unitPrice).to.equal(120)
-              done()
+              DONE()
 
 
-  it.skip 'Should be shaping order data from users view', (done) ->
+  it.skip 'Should be shaping order data from users view', ->
     expect(orders[0].profit).to.be.undefined
 
-  it.skip 'Book 3 hour from package', (done) ->
+  it.skip 'Book 3 hour from package', ->
     $log('can deduct by quantity instead of credit')
 
-  it.skip 'Can book another hour after buying more credit', (done) ->
-  it.skip 'With the multiple credit line items, first lineitem gets deducted', (done) ->
-  it.skip 'Gets $5 off booking if member', (done) ->
-  it.skip 'Can redeem membership credit', (done) ->
+  it 'Can book another hour after buying more credit'
+  it 'With the multiple credit line items, first lineitem gets deducted'
+  it 'Gets $5 off booking if member'
+  it 'Can redeem membership credit'

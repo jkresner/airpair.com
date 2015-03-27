@@ -12,14 +12,14 @@ authoring = ->
     expect(r.length).to.equal(6)
 
 
-  it "Cannot create post as anonymous user", (done) ->
+  it "Cannot create post as anonymous user", itDone ->
     title = "Post Anon Create Test #{timeSeed()}"
     ANONSESSION (s) ->
       POST "/posts", {title, by: _.extend({bio:'yo'},data.users['jk']) }, { status: 401 }, (r) ->
-        done()
+        DONE()
 
 
-  it "Create post as signed in user with no social detail", (done) ->
+  it "Create post as signed in user with no social detail", itDone ->
     title = "Post Create with no social Test #{timeSeed()}"
     SETUP.addAndLoginLocalUser 'prat', (s) ->
       d = { title, by: _.extend({bio: 'yo yyoy o'},s) }
@@ -34,10 +34,10 @@ authoring = ->
         expect(post.title).to.equal(d.title)
         expect(post.md).to.be.undefined
         expect(post.tags.length).to.equal(0)
-        done()
+        DONE()
 
 
-  it 'Create post with max social', (done) ->
+  it 'Create post with max social', itDone ->
     title = "Post Create with max social Test #{timeSeed()}"
     SETUP.addAndLoginLocalUser 'ajde', (s) ->
       author = _.extend({bio: 'yes test'},s)
@@ -68,10 +68,10 @@ authoring = ->
         expect(post.title).to.equal(d.title)
         expect(post.md).to.be.undefined
         expect(post.tags.length).to.equal(0)
-        done()
+        DONE()
 
 
-  it "Edit and delete draft post as author", (done) ->
+  it "Edit and delete draft post as author", itDone ->
     title = "Post Edit and delete in draft Test #{timeSeed()}"
     SETUP.addAndLoginLocalUser 'stpv', (s) ->
       d = { title, by:_.extend({bio: 'yo yyoy o'},s) }
@@ -97,10 +97,10 @@ authoring = ->
                   GET '/posts/me', {}, (posts) ->
                     myposts = _.where(posts,(p)->_.idsEqual(p.by.userId,s._id))
                     expect(myposts.length).to.equal(0)
-                    done()
+                    DONE()
 
 
-  it 'Edit and delete post as editor', (done) ->
+  it 'Edit and delete post as editor', itDone ->
     title = "Post Edit and delete in draft as Editor Test #{timeSeed()}"
     SETUP.addAndLoginLocalUser 'stpu', (s) ->
       d = { title, by:_.extend({bio: 'yo yyoy o'},s) }
@@ -118,10 +118,10 @@ authoring = ->
                   GET '/posts/me', {}, (posts) ->
                     myposts = _.where(posts,(p)->_.idsEqual(p.by.userId,s._id))
                     expect(myposts.length).to.equal(0)
-                    done()
+                    DONE()
 
 
-  it "Cant edit or delete draft post as non-author/editor", (done) ->
+  it "Cant edit or delete draft post as non-author/editor", itDone ->
     title = "Post Can't Edit and delete as non-author #{timeSeed()}"
     SETUP.addAndLoginLocalUser 'evnr', (s) ->
       d = { title, by:_.extend({bio: 'yo yyoy o'},s) }
@@ -133,10 +133,10 @@ authoring = ->
               expectStartsWith(e2.message, 'Cannot update markdown of draft post')
               DELETE "/posts/#{p0._id}", { status: 403 }, (e3) ->
                 expect(e3.message).to.equal('Post must be deleted by owner')
-                done()
+                DONE()
 
 
-  it "Submit for review fails without an authenticated GitHub account", (done) ->
+  it "Submit for review fails without an authenticated GitHub account", itDone ->
     title = "Submit fails without connected github #{timeSeed()}"
     SETUP.addAndLoginLocalUser 'robot1', (s) ->
       d = { title, by:_.extend({bio: 'yo yyoy o'},s), md: dataHlpr.lotsOfWords('Submit without github') }
@@ -145,10 +145,10 @@ authoring = ->
           expect(pCheckSubmit.submit.repoAuthorized).to.be.false
           PUT "/posts/submit/#{post._id}", {slug:pCheckSubmit.slug}, {status: 403}, (resp) ->
             expect(resp.message).to.equal("User must authorize GitHub to submit post for review")
-            done()
+            DONE()
 
 
-  it "Submit for review creates a repo with a README.md and a post.md file on edit branch", (done) ->
+  it "Submit for review creates a repo with a README.md and a post.md file on edit branch", itDone ->
     title = "Submit success with connected github #{timeSeed()}"
     SETUP.addAndLoginLocalUserWithGithubProfile 'robot2', null, (s) ->
       d = { title, by:_.extend({bio: 'yo yyoy o'},s), md: dataHlpr.lotsOfWords('Submit with github') }
@@ -158,13 +158,13 @@ authoring = ->
           expect(pCheckSubmit.submit.repoAuthorized).to.be.true
           PUT "/posts/submit/#{post._id}", {slug:pCheckSubmit.slug}, {}, (p1) ->
             expect(p1.github).to.exist
-            done()
+            DONE()
 
 
-  it.skip "Cannot submit a post more than once for review", (done) ->
+  it "Cannot submit a post more than once for review"
 
 
-  it "Can edit and preview post in review as author", (done) ->
+  it "Can edit and preview post in review as author", itDone ->
     author = data.users.submPostAuthor
     db.ensureDoc 'User', author, ->
       db.ensurePost data.posts.submittedWithGitRepo, ->
@@ -186,10 +186,10 @@ authoring = ->
                     expect(pPreview2.md).to.equal(md)
                     getForReviewFn _id, (ee, pReview2) ->
                       expect(pReview2.md).to.equal(reviewMD)
-                      done()
+                      DONE()
 
 
-  it "Can sync github to post as author in review", (done) ->
+  it "Can sync github to post as author in review", itDone ->
     title = "Submit success with connected github #{timeSeed()}"
     SETUP.addAndLoginLocalUserWithGithubProfile 'robot6', null, (s) ->
       d = { title, by:_.extend({bio: 'yo yyoy o'},s), md: dataHlpr.lotsOfWords('Sync from with github') }
@@ -208,11 +208,11 @@ authoring = ->
                 expect(p3.md).to.equal(md)
                 getForReviewFn _id, (ee, pReview2) ->
                   expect(pReview2.md).to.equal(md)
-                  done()
+                  DONE()
 
 
 
-  it "Can sync github to post as editor but not author when published", (done) ->
+  it "Can sync github to post as editor but not author when published", itDone ->
     author = data.users.syncPostAuthor
     db.ensureDoc 'User', author, ->
       db.ensurePost data.posts.toSync, ->
@@ -232,10 +232,10 @@ authoring = ->
                       expect(p4.md).to.equal(md)
                       getForPublishedFn p2.slug, (ee, pPub2) ->
                         expect(pPub2.md).to.equal(md)
-                        done()
+                        DONE()
 
 
-  it "Can publish as admin without reviews", (done) ->
+  it "Can publish as admin without reviews", itDone ->
     title = "Can publish without reviews as admin #{timeSeed()}"
     slug = title.toLowerCase().replace(/\ /g, '-')
     SETUP.addAndLoginLocalUser 'obie',  (s) ->
@@ -248,10 +248,10 @@ authoring = ->
           PUT "/posts/publish/#{post._id}", {by:post.by, meta, tmpl: 'default'}, {}, (p2) ->
             expect(p2.published)
             expectIdsEqual(p2.publishedBy._id,data.users['edap']._id)
-            done()
+            DONE()
 
 
-  it "Cannot publish as author without reviews", (done) ->
+  it "Cannot publish as author without reviews", itDone ->
     title = "Cannot publish without reviews #{timeSeed()}"
     slug = title.toLowerCase().replace(/\ /g, '-')
     SETUP.addAndLoginLocalUser 'rapo',  (s) ->
@@ -262,12 +262,12 @@ authoring = ->
       db.ensurePost post, ->
         PUT "/posts/publish/#{post._id}", {meta}, { status: 403 }, (e1) ->
           expect(e1.message).to.equal('Must have at least 3 reviews to be published')
-          done()
+          DONE()
 
 
 browsing = ->
 
-  it "Get my posts does not contain any sensitive data", (done) ->
+  it "Get my posts does not contain any sensitive data", itDone ->
     LOGIN 'jkap', (jk) ->
       GET "/posts/me", {}, (myposts) ->
         for p in myposts
@@ -285,10 +285,10 @@ browsing = ->
               expect(v.by.email).to.be.undefined
             for rp in r.replies
               expect(rp.by.email).to.be.undefined
-        done()
+        DONE()
 
 
-  it "Redirect on review link for published post", (done) ->
+  it "Redirect on review link for published post", itDone ->
     author = data.users.submPostAuthor
     db.ensureDocs 'Post', [data.posts.pubedArchitec], ->
       ANONSESSION (anon) ->
@@ -296,12 +296,12 @@ browsing = ->
           .expect(301)
           .end (e, resp) ->
             expectStartsWith(resp.text, 'Moved Permanently. Redirecting to https://www.airpair.com/scalable-architecture-with-docker-consul-and-nginx')
-            done()
+            DONE()
 
 
 contributing = ->
 
-  it "Can fork, edit & preview post in review", (done) ->
+  it "Can fork, edit & preview post in review", itDone ->
     @timeout(14000)
 
     edit = (s, sRobot21, _id, liveMD) ->
@@ -332,7 +332,7 @@ contributing = ->
                       expect(pParentReview.md).to.equal(liveMD)
                       getForPreviewFn _id, (eee, pParentPreview) ->
                         expect(pParentPreview.md).to.equal(parentMD)
-                        done()
+                        DONE()
 
     fork = (_id, done) ->
       SETUP.addAndLoginLocalUserWithGithubProfile 'robot21', data.users.apt5.social.gh, (sRobot21) ->
@@ -391,14 +391,9 @@ module.exports = ->
   before (done) ->
     if (config.auth.github.org == 'airpair')
       throw Error('Cant run post tests against prod github org')
-    SETUP.analytics.stub()
     SETUP.addUserWithRole 'edap', 'editor', ->
     SETUP.addUserWithRole 'jkap', 'editor', ->
-      SETUP.initTags ->
-        SETUP.initTemplates done
-
-  after ->
-    SETUP.analytics.restore()
+      done()
 
 
   describe("Authoring: ".subspec, authoring)

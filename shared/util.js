@@ -28,7 +28,7 @@ var nestedPick = (object, keys) => {
       {
         //-- If an array
         var result = nestedPick(object[props[0]], [nestedKey])
-          // $log('result'.yellow, props[0].yellow, result)
+        // $log('result'.yellow, props[0].yellow, result)
         if (!_.isEmpty(result)) {
           if (!copy[props[0]]) copy[props[0]] = result
           else {
@@ -100,6 +100,11 @@ var util = {
     return id1.toString() == id2.toString()
   },
 
+  wrapFnList(fnsObject, wrapFn) {
+    for (var fnName of _.keys(fnsObject))
+      fnsObject[fnName] = wrapFn(fnsObject[fnName], fnName)
+    return fnsObject
+  },
 
   ObjectId2Date(id) {
     return new Date(parseInt(id.toString().slice(0, 8), 16) * 1000)

@@ -1,18 +1,9 @@
 module.exports = () => describe("Rss: ".subspec, function() {
 
   before( (done) => {
-    SETUP.analytics.stub()
     SETUP.initPosts( () => {
       SETUP.initWorkshops(done)
     })
-  })
-
-  after(function() {
-    SETUP.analytics.restore()
-  })
-
-  beforeEach(function() {
-    SETUP.clearIdentity()
   })
 
   var expectFeedWideFields = (text) => {

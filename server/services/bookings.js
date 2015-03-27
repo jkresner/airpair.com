@@ -6,7 +6,6 @@ var OrdersSvc =         require('../services/orders')
 var Data =              require('./bookings.data')
 var logging =           false
 var svc =               new Svc(Booking, logging)
-var GCal =              require('./wrappers/gcal')
 var youTube =           require('./wrappers/youtube')
 var util =              require('../../shared/util')
 
@@ -116,7 +115,7 @@ Booking: https://airpair.com/booking/${original._id}`
 
       if (original.gcal) cb("GCal updated not yet built")
       else {
-        GCal.createEvent(name, update.sendGCal.notify, moment(update.datetime), update.minutes, attenddees, description, 'pg', (e,r) => {
+        Wrappers.Calendar.createEvent(name, update.sendGCal.notify, moment(update.datetime), update.minutes, attenddees, description, 'pg', (e,r) => {
           $log('event created', e, r)
           if (e) return cb(e)
           original.gcal = r

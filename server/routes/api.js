@@ -1,10 +1,10 @@
 var API = require('../api/_all')
 var {authd,setAnonSessionData} = require('../middleware/auth')
 var {adm,emailv} = require('../middleware/authz')
-var {bodyParam,cacheReady,populateUser,populateExpert,json2mb} = require('../middleware/data')
+var {bodyParam,populateUser,populateExpert,json2mb} = require('../middleware/data')
 var Router = require('express').Router
 
-export default function(app) {
+module.exports = function(app) {
 
   var router = Router()
     .param('tag', API.Tags.paramFns.getBySlug)
@@ -37,9 +37,6 @@ export default function(app) {
       })
     })
 
-    .get('/tags/search/:id', API.Tags.search)
-    .get('/tags/:slug', authd, API.Tags.getBySlug)
-
     .get('/posts/me', API.Posts.getMyPosts)
     .get('/posts/review', API.Posts.getPostsInReview)
     .get('/posts/recent', API.Posts.getRecentPublished)
@@ -51,7 +48,11 @@ export default function(app) {
     .get('/workshops/', API.Workshops.getAll)
     .get('/workshops/:id', API.Workshops.getBySlug)
 
+    .get('/tags/search/:id', API.Tags.search)
+
     .use(authd)
+
+    .post('/tags', bodyParam('tagfrom3rdparty'), API.Tags.createFrom3rdParty)
 
     .get('/requests', API.Requests.getMy)
     .get('/requests/:id', API.Requests.getByIdForUser)
@@ -89,7 +90,6 @@ export default function(app) {
     .get('/bookings/:id', API.Bookings.getById)
     .post('/bookings/:expert', API.Bookings.createBooking)
 
-    .use(cacheReady('tags'))
     .get('/experts/me', API.Experts.getMe)
     .get('/experts/search/:id', API.Experts.search)
     .get('/experts/:id', API.Experts.getById)
@@ -134,7 +134,7 @@ export default function(app) {
     .param('request', API.Requests.paramFns.getByIdForAdmin)
     .use(authd)
     // .get('/experts/mojo/me', API.Mojo.getMatchesForRequest)
-    .get('/experts/mojo/rank', cacheReady('tags'), populateExpert, API.Mojo.getRanked)
+    .get('/experts/mojo/rank', populateExpert, API.Mojo.getRanked)
     // .get('/experts/dashboard', API.Experts.getMatchesForDashboard)
     // .get('/experts', API.Experts.getForExpertsPage)
     .use(adm) //-- Todo change to match maker permissions
@@ -152,8 +152,13 @@ export default function(app) {
     .param('request', API.Requests.paramFns.getByIdForAdmin)
     .param('booking', API.Bookings.paramFns.getById)
     .param('order', API.Orders.paramFns.getByIdForAdmin)
+    .param('tagforadm', API.Tags.paramFns.getById)
 
     .use(adm)
+    .get('/tags', API.Tags.getAllForCache)
+    .get('/tags/:id', API.Tags.getById)
+    .post('/tags', API.Tags.createByAdmin)
+    .put('/tags/:tagforadm', API.Tags.updateByAdmin)
     .get('/posts', API.Posts.getNewFoAdmin)
     .get('/posts/all', API.Posts.getAllForAdmin)
     .get('/orders/:start/:end/:userId?', API.Orders.getByQueryForAdmin)

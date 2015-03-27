@@ -1,6 +1,5 @@
 import BaseSvc      from '../services/_service'
 import User         from '../models/user'
-var util =          require('../../shared/util')
 var bcrypt =        require('bcrypt')
 var Data =          require('./users.data')
 var logging         = config.log.auth || false
@@ -171,7 +170,7 @@ function localSignup(email, password, name, errorCB, done) {
        if (existing.email == email) info = "Cannot signup, user already exists"
        if (existing.google && existing.google._json.email == email)
          info = "Cannot signup, you previously created an account with your google login"
-       return errorCB(null, false, info)
+       return errorCB(null, false, Error(info))
     }
 
     var upsert = { name, email, emailVerified: false,

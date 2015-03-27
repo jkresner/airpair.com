@@ -1,9 +1,7 @@
 dataHelpers          = require('./data')
 UserService          = require('../../../server/services/users')
-PaymethodsService    = require('../../../server/services/paymethods')
-braintree            = require('braintree')
 expertData           = require('../../../server/services/experts.data')
-{selectFromObject}   = require('../../../shared/util')
+
 
 """
 // Stories are use cases that take multiple steps that are often precursors
@@ -101,7 +99,7 @@ stories = {
 
 
   injectOAuthPayoutMethod: (user, providerName,pmKey,cb) ->
-    PaymethodsService.addOAuthPayoutmethod.call({user},
+    require('../../../server/services/paymethods').addOAuthPayoutmethod.call({user},
       providerName, data.paymethods[pmKey],{},(e,r)->cb(r))
 
 
@@ -153,7 +151,7 @@ stories = {
   ensureV1LoggedInExpert: (userKey, done) ->
     user = _.extend({localization:data.wrappers.localization_melbourne}, data.users[userKey])
     expert = data.experts[userKey]
-    expert.user = selectFromObject(user, expertData.select.userCopy)
+    expert.user = util.selectFromObject(user, expertData.select.userCopy)
     db.ensureDocs 'User', [user], (e) ->
       db.ensureDocs 'Expert', [expert], (ee) ->
         LOGIN userKey, (sExpert) ->
@@ -225,12 +223,12 @@ stories = {
     addAndLoginLocalUser memberCode, (sCompanyMember) ->
       addAndLoginLocalUser adminCode, (sCompanyAdmin) ->
         c = _.clone(data.v0.companys[companyCode])
-        c._id = new db.ObjectId()
+        c._id = newId()
         c.contacts[0]._id = sCompanyAdmin._id
-        db.ensureDocs 'Company', [c], (e,r) ->
+        db.ensureDocs 'Company', [c], ->
           d =
             type: 'braintree',
-            token: braintree.Test.Nonces.Transactable,
+            token: data.wrappers.braintree_test_nonces_transactable,
             name: "#{c.name} Company Card",
             companyId: c._id
           POST '/billing/paymethods', d, {}, (pm) ->

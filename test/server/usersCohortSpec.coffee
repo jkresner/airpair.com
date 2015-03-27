@@ -4,15 +4,15 @@ mailsubscriptions = ->
   describe "Anonymous: ".subspec, ->
 
 
-    it 'Empty mail subscriptions for new anonymous user', (done) ->
+    it 'Empty mail subscriptions for new anonymous user', itDone ->
       ANONSESSION (sAnon) ->
         expect(sAnon.maillists).to.be.undefined
         PUT '/users/me/maillists', { name: 'AirPair Developer Digest' }, { status: 403 }, (err) ->
           expectStartsWith(err.message, "Invalid email address")
-          done()
+          DONE()
 
 
-    it 'Subscribe to mail list as anonymous user', (done) ->
+    it 'Subscribe to mail list as anonymous user', itDone ->
       ANONSESSION (sAnon) ->
         email = data.wrappers.mailchimp_anon_subscribed.email
         anonSubscribedStub = SETUP.stubMailchimpLists(data.wrappers.mailchimp_anon_subscribed)
@@ -25,7 +25,7 @@ mailsubscriptions = ->
             anonSubscribedStub.restore()
             # PUT '/users/me/maillists', { name: 'AirPair Developer Digest', email }, {}, (maillists2) ->
               # expect(_.find(maillists2,(m)->m=='AirPair Developer Digest')).to.be.null
-            done()
+            DONE()
 
 
 
@@ -33,7 +33,7 @@ mailsubscriptions = ->
   describe "Logged in: ".subspec, ->
 
 
-    it 'Can see mail subscribed & unsubscribed lists for loggedInUser', (done) ->
+    it 'Can see mail subscribed & unsubscribed lists for loggedInUser', itDone ->
       subscriptionsStub = SETUP.stubMailchimpLists(data.wrappers.mailchimp_subscription)
       LOGIN 'jkap', (s) ->
         GET '/users/me/maillists', {}, (maillists) ->
@@ -43,10 +43,10 @@ mailsubscriptions = ->
           expect(subscribed.length).to.equal(1)
           expect(subscribed[0].name).to.equal('AirPair Newsletter')
           subscriptionsStub.restore()
-          done()
+          DONE()
 
 
-    it 'Can toggle subscribe & unsubscribe to a maillist', (done) ->
+    it 'Can toggle subscribe & unsubscribe to a maillist', itDone ->
       listsForEmailStub = SETUP.stubMailchimpLists(data.wrappers.mailchimp_listsforemail)
       LOGIN 'jkap', (s) ->
         GET '/users/me/maillists', {}, (maillists) ->
@@ -66,22 +66,18 @@ mailsubscriptions = ->
             # $log('digest', digest)
             expect(digest.subscribed).to.equal(!digestSubscribed)
             toggleStub.restore()
-            done()
+            DONE()
 
 
-    it.skip 'Updates subscriptions upon email verified', (done) ->
+    it 'Updates subscriptions upon email verified'
 
 
 
 module.exports = ->
 
   before (done) ->
-    SETUP.analytics.stub()
     SETUP.addUserWithRole 'jkap', 'editor', ->
       done()
-
-  after ->
-    SETUP.analytics.restore()
 
 
   describe "Mail Lists: ".subspec, mailsubscriptions

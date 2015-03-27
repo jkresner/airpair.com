@@ -1,17 +1,10 @@
 module.exports = -> describe "API: ".subspec, ->
 
 
-  before () ->
-    SETUP.analytics.stub()
-
-  after ->
-    SETUP.analytics.restore()
-
-
   describe "User flows", ->
 
 
-    it 'Can signup from homepage and set password', (done) ->
+    it 'Can signup from homepage and set password', itDone ->
       spy = sinon.spy(mailman,'signupHomeWelcomeEmail')
       clone = SETUP.userData('mris')
       http(global.app).put('/v1/api/users/me/email')
@@ -56,11 +49,11 @@ module.exports = -> describe "API: ".subspec, ->
                       expect(s4.emailVerified).to.equal(true)
                       expect(s4.email).to.equal(clone.email)
                       cookie = resp.headers['set-cookie']
-                      done()
+                      DONE()
 
 
 
-    it 'Can signup from post subscribe and set password', (done) ->
+    it 'Can signup from post subscribe and set password', itDone ->
       spy = sinon.spy(mailman,'singupSubscribeEmail')
       clone = SETUP.userData('mirs')
       http(global.app).put('/v1/api/users/me/email')
@@ -102,4 +95,4 @@ module.exports = -> describe "API: ".subspec, ->
                       expect(s4.emailVerified).to.equal(true)
                       expect(s4.email).to.equal(clone.email)
                       cookie = resp.headers['set-cookie']
-                      done()
+                      DONE()

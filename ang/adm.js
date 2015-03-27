@@ -34,6 +34,7 @@ require('./adm/companys/module.js');
 require('./adm/pipeline/module.js');
 require('./adm/bookings/module.js');
 require('./adm/experts/module.js');
+require('./adm/tags/module.js');
 require('./matchmaking/module.js');
 
 angular.module('ADM', [
@@ -47,6 +48,7 @@ angular.module('ADM', [
   'ADMViews',
   'ADMOrders',
   'ADMBookings',
+  'ADMTags',
   'ADMExperts',
   'ADMCompanys',
   'APMatchmaking'

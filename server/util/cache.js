@@ -1,13 +1,4 @@
-import * as WorkshopsSvc from '../services/workshops'
-
-var svcs = {
-  tags: require('../services/tags'),
-  posts: require('../services/posts'),
-  templates: require('../services/templates'),
-  workshops: WorkshopsSvc
-}
-
-
+var logging = false
 global.cache = {}
 
 //-- For O(1) access instead of O(N)
@@ -26,7 +17,8 @@ function itemReady(key, cb)
 {
   if (cache[key] != null) return cb()
   else {
-    svcs[key].getAllForCache( (e, list) => {
+    var svc = require(`../services/${key}`)
+    svc.getAllForCache( (e, list) => {
       cache[key] = hashEm(list, key, '_id')
       if (key == 'tags')
         cache['tag_slugs'] = hashEm(list, key, 'slug')
@@ -48,7 +40,19 @@ cache.ready = function(keys, cb)
 
 cache.flush = function(key, cb)
 {
+  if (key == 'posts') cache.postAllPublished = null
   delete cache[key]
+}
+
+
+cache.getOrSetCB = function(key, getFn, cb) {
+  if (cache[key]) return cb(null, cache[key])
+  if (logging) $log(`cache.getOrSet ${key}`)
+  getFn((e,r)=>{
+    if (e) return cb(e)
+    cache[key] = r
+    cb(null,r)
+  })
 }
 
 

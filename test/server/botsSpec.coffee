@@ -21,31 +21,31 @@ expectSessionToBeStored = (session, cb) ->
 api = ->
 
   before (done) ->
+    SETUP.analytics.on()
     SETUP.initTags(done)
 
-
-  it 'Does not exec analytics or store session on 404', (done) ->
+  it 'Does not exec analytics or store session on 404', itDone ->
     trackSpy = sinon.spy(analytics, 'track')
     GETP('/feed').set('user-agent', uaFirefox).end (err, resp) ->
       global.cookie = resp.headers['set-cookie']
       expect(global.cookie).to.be.undefined
       expect(trackSpy.callCount).to.equal(0)
       trackSpy.restore()
-      expectSessionNotStored { sessionID: 'unNOwnSZ3Wi8bDEnaKzhygGG2a2RkjZ2' }, done
+      expectSessionNotStored { sessionID: 'unNOwnSZ3Wi8bDEnaKzhygGG2a2RkjZ2' }, DONE
 
 
-  it 'Persists a session for a browser (FireFox)', (done) ->
+  it 'Persists a session for a browser (FireFox)', itDone ->
     viewSpy1 = sinon.spy(analytics, 'view')
     GETP('/about').set('user-agent', uaFirefox).end (err, resp) ->
       global.cookie = resp.headers['set-cookie']
       GET '/session/full', {}, (s) =>
         expect(viewSpy1.callCount).to.equal(0)
         expect(s.authenticated).to.equal(false)
-        expectSessionToBeStored(s, done)
+        expectSessionToBeStored(s, DONE)
         viewSpy1.restore()
 
 
-  it 'Persists a session and view for /angularjs from a browser (FireFox)', (done) ->
+  it 'Persists a session and view for /angularjs from a browser (FireFox)', itDone ->
     viewSpy2 = sinon.spy(analytics, 'view')
     GETP('/angularjs').set('user-agent', uaFirefox).end (err, resp) ->
       global.cookie = resp.headers['set-cookie']
@@ -59,30 +59,30 @@ api = ->
             expect(views[0].type).to.equal('tag')
             expect(views[0].campaign).to.be.undefined
             viewSpy2.restore()
-            done()
+            DONE()
 
 
-  it 'Does not persist a session with no user-agent header', (done) ->
+  it 'Does not persist a session with no user-agent header', itDone ->
     viewSpy = sinon.spy(analytics, 'view')
     GETP('/angularjs').unset('user-agent').end (err, resp) ->
       cookie = resp.headers['set-cookie']
       expect(viewSpy.callCount).to.equal(0)
       expect(cookie).to.be.undefined
       viewSpy.restore()
-      expectSessionNotStored { sessionID: 'unNOwnSZ3Wi8bDEnaKzhygGG2a2RkjZ2' }, done
+      expectSessionNotStored { sessionID: 'unNOwnSZ3Wi8bDEnaKzhygGG2a2RkjZ2' }, DONE
 
 
-  it 'Does not persist a session with uaGooglebot user-agent header', (done) ->
+  it 'Does not persist a session with uaGooglebot user-agent header', itDone ->
     viewSpy = sinon.spy(analytics, 'view')
     GETP('/angularjs').set('user-agent', uaGooglebot).end (err, resp) ->
       cookie = resp.headers['set-cookie']
       expect(viewSpy.callCount).to.equal(0)
       expect(cookie).to.be.undefined
       viewSpy.restore()
-      expectSessionNotStored { sessionID: 'unNOwnSZ3Wi8bDEnaKzhygGG2a2RkjZ2' }, done
+      expectSessionNotStored { sessionID: 'unNOwnSZ3Wi8bDEnaKzhygGG2a2RkjZ2' }, DONE
 
 
-  it 'Persists utms from a browser (FireFox)', (done) ->
+  it 'Persists utms from a browser (FireFox)', itDone ->
     viewSpy2 = sinon.spy(analytics, 'view')
     GETP('/angularjs?utm_source=team-email&utm_medium=email&utm_term=angular-workshops&utm_content=nov14-workshops-ty&utm_campaign=wks14-4').set('user-agent', uaFirefox).end (err, resp) ->
       global.cookie = resp.headers['set-cookie']
@@ -102,7 +102,7 @@ api = ->
             expect(views[0].campaign.content).to.equal('nov14-workshops-ty')
             expect(views[0].campaign.name).to.equal('wks14-4')
             viewSpy2.restore()
-            done()
+            DONE()
 
   #   it 'Views from bots are not saved', (d) ->
   #     done = createCountedDone(8, d)

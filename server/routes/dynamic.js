@@ -4,45 +4,22 @@ import TagsAPI from '../api/tags'
 import RequestsApi from '../api/requests'
 var {trackView} = require('../middleware/analytics')
 var {authd} = require('../middleware/auth')
-var {populateUser} = require('../middleware/data')
-var util = require("../../shared/util")
-
-//-- TODO move into database evetuall
-var angular = {
-  _id: "5149dccb5fc6390200000013",
-  desc: 'AngularJS is an open-source JavaScript framework. Its goal is to augment browser-based applications with Model–View–Whatever(MV*) capability and reduce the amount of JavaScript needed to make web applications functional. These types of apps are also frequently known as Single-Page Applications.',
-  name: 'AngularJS',
-  short: 'Angular',
-  slug: 'angularjs',
-  soId: 'angularjs'
-}
-
-var angularPageMeta = {
-  title: "AngularJS Articles, Workshops & Developers ready to help. A top resource!",
-  description: "AngularJS Articles, Workshops & Developers ready to help. One of the web's top AngularJS resources - totally worth bookmarking!",
-  ogType: "website",
-  ogTitle: "AngularJS Articles, Workshops and Developers",
-  ogDescription: "One of the best collections of #AngularJS Articles, Live Workshops and Developers on the web",
-  ogImage: "http://www.airpair.com/static/img/css/tags/angularjs-og.png",
-  ogUrl: "http://www.airpair.com/angularjs",
-  canonical: "http://www.airpair.com/angularjs"
-}
-
-var setTagForTrackView = (req, res, next) => { req.tag = angular; req.tag.title = req.tag.name; next() }
+var {populateUser,populateTagPage} = require('../middleware/data')
 
 
-export default function(app) {
+module.exports = function(app) {
+
+
+  for (var slug of ['angularjs']) //,'firebase'
+    app.get(`/${slug}`, populateTagPage(slug), trackView('tag'),
+      app.renderHbsViewData('tag', null, (req, cb) => cb(null, req.tagpage) ))
+
 
   var router = require('express').Router()
 
     .param('workshop', WorkshopsAPI.paramFns.getBySlug)
     .param('review', RequestsApi.paramFns.getByIdForReview)
     .param('post', PostsAPI.paramFns.getBySlugForPublishedView)
-
-    .get('/angularjs', setTagForTrackView,
-      trackView('tag'),
-      app.renderHbsViewData('tag', angularPageMeta,
-        (req, cb) => TagsAPI.svc.getTagPage(req.tag, cb) ))
 
     .get('/workshops',
       app.renderHbsViewData('workshops', { title: "Software Workshops, Webinars & Screencasts" },
@@ -75,10 +52,9 @@ export default function(app) {
         }))
 
 
-
     .get('/posts',
       app.renderHbsViewData('posts', { title: "Software Posts, Tutorials & Articles" },
-        (req, cb) => PostsAPI.svc.getAllPublished(cb) ))
+        (req, cb) => cache.getOrSetCB('postAllPub',PostsAPI.svc.getAllPublished,cb) ))
 
 
     .get('/:tag/posts/:post',

@@ -126,11 +126,12 @@ var middleware = {
   },
 
 
-  handleOAuthSuccess(providerName, svcFn) {
+  handleOAuthSuccess(providerName, svcName, fnName) {
     return (req, res, next) => {
       if (logging) $log(`mw.handleOAuthSuccess ${req.authInfo.userinfo}`.cyan)
       var {userinfo,tokeninfo} = req.authInfo
-      svcFn.call({user:req.user}, providerName, userinfo, tokeninfo, (e,r) => {
+      var svc = require(`../services/${svcName}`)
+      svc[fnName].call({user:req.user}, providerName, userinfo, tokeninfo, (e,r) => {
         var redirectQuery = "success=true"
         if (e) {
           $log('handleOAuthSucces.error: '.red, e)

@@ -1,14 +1,10 @@
-import Svc from './_service'
-import PayMethod from '../models/paymethod'
-import * as CompanysSvc from './companys'
-var UserSvc         = require('./users')
-var Braintree = global.Braintree || require('./wrappers/braintree')
-var Stripe = require('./wrappers/stripe')
-var PayPal = require('./wrappers/paypal')
-var {Settings} = require('../models/v0')
-var logging = false
-var svc = new Svc(PayMethod, logging)
-
+import Svc                from './_service'
+import PayMethod          from '../models/paymethod'
+import * as CompanysSvc   from './companys'
+var UserSvc               = require('./users')
+var {Settings}            = require('../models/v0')
+var logging               = false
+var svc                   = new Svc(PayMethod, logging)
 
 var get = {
   getById(id, cb) {
@@ -33,7 +29,7 @@ var get = {
     })
   },
   getMyPaymethods(cb) {
-    if (!this.user) return Braintree.getClientToken(cb)
+    if (!this.user) return Wrappers.Braintree.getClientToken(cb)
     var ctx = this
 
     CompanysSvc.getUsersCompany.call(ctx, (e, company) => {
@@ -53,7 +49,7 @@ var get = {
         else {
           Settings.findOne({userId:ctx.user._id}, (ee, s) => {
             if (!s || !s.paymentMethods || s.paymentMethods.length == 0 || !_.find(s.paymentMethods,(pm)=>pm.type == 'stripe'))
-              return Braintree.getClientToken(cb)
+              return Wrappers.Braintree.getClientToken(cb)
 
             var existing = _.find(s.paymentMethods, (pm) => pm.type == 'stripe')
             if (!existing) return cb(e,r)
@@ -105,6 +101,7 @@ var save = {
       (ee, payMethodInfo) => {
         if (ee) return cb(ee)
         else {
+
           o.userId = ctx.user._id
           o.companyId = o.companyId
           o.info = payMethodInfo
@@ -126,7 +123,7 @@ var save = {
       }
 
     if (o.type == 'braintree')
-      Braintree.addPaymentMethod(customerId, this.user, null, o.token, savePayMethod(this))
+      Wrappers.Braintree.addPaymentMethod(customerId, this.user, null, o.token, savePayMethod(this))
     else if (o.type == 'stripe')
       savePayMethod(this)(null, o.info)
     else if (o.type == 'payout_paypal' && o.info.verified_account)
@@ -158,9 +155,9 @@ var save = {
   },
   charge(amount, orderId, payMethod, cb) {
     if (payMethod.type == 'braintree')
-      Braintree.chargeWithMethod(amount, orderId, payMethod.info.token, cb)
+      Wrappers.Braintree.chargeWithMethod(amount, orderId, payMethod.info.token, cb)
     else if (payMethod.type == 'stripe')
-      Stripe.createCharge(amount, orderId, payMethod.info.id, cb)
+      Wrappers.Stripe.createCharge(amount, orderId, payMethod.info.id, cb)
     else
       return cb(`${payMethod.type} not supported a payment type`)
   },
@@ -173,7 +170,7 @@ Full detail of this payment can be found at:
 https://www.airpair.com/payouts/${payoutId}
 `
     if (payMethod.type == 'payout_paypal')
-      PayPal.payout(payMethod.info.email, amount, payoutId, note, cb)
+      Wrappers.PayPal.payout(payMethod.info.email, amount, payoutId, note, cb)
     else
       return cb(`${payMethod.type} not supported a payment type`)
   },

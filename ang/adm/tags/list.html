@@ -1,0 +1,17 @@
+<section id="tags">
+
+<h3>Tags</h3>
+<p ng-if="!tags">Loading...</p>
+
+<section class="app" ng-if="tags">
+
+  <ul ng-if="tags.length > 0">
+    <li ng-repeat="t in tags">
+      [<a href="/adm/tags/{{t._id}}">
+        {{t.name}}
+      </a>]
+    </li>
+  </ul>
+</section>
+
+</section>
