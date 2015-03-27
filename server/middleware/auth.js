@@ -1,5 +1,5 @@
-var {isBot,stringToJson}   = require('../../shared/util')
-var logging   = false
+var logging                = false
+var {isBot,stringToJson}   = util
 
 var setSessionVarFromQuery = (varName) =>
   (req, res, next) => {
