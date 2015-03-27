@@ -35,6 +35,7 @@ var select = {
     'tags': 1,
     'bookmarks': 1,
     'cohort.engagement': 1,
+    'cohort.expert._id': 1,
     'membership': 1,
     'localization.location': 1,
     'localization.timezone': 1,

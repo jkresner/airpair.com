@@ -1,30 +1,30 @@
+var logging               = false
 import Svc                from '../services/_service'
-import * as Validate      from '../../shared/validation/experts.js'
 import Expert             from '../models/expert'
-import Request            from '../models/request'
-import * as md5           from '../util/md5'
-var {ObjectId2Date,
-  selectFromObject}       = require('../../shared/util')
+var {selectFromObject}    = util
 var Data                  = require('./experts.data')
 var {select}              = Data
 var selectCB              = select.cb
-var logging               = false
 var svc                   = new Svc(Expert, logging)
 var UserSvc               = require('../services/users')
 
 var get = {
+
   getById(id, cb) {
-    svc.getById(id,(e,r)=>{
-      if (e||!r) return cb(e,r)
-      cb(null,selectCB.migrateInfate(r))
-    })
+    svc.getById(id,selectCB.migrateInflate(cb))
   },
+
+  getByIdForAdmin(id, cb) {
+    svc.getById(id,cb)
+  },
+
   getMe(cb) {
     svc.searchOne({userId:this.user._id}, null, selectCB.me((e,r)=>{
       if (!e && !r) return cb(null, {user:selectFromObject(this.user, select.userCopy)})
       cb(e,r)
     }))
   },
+
   search(term, cb) {
     var searchFields = [
       'user.name','user.email','user.username',
@@ -33,32 +33,17 @@ var get = {
       'user.social.gh.username','user.social.tw.username'
       ]
     var and = { rate: { '$gt': 0 } }
-    svc.search(term, searchFields, 5, Data.select.search, and, (e,r) => {
-      if (r) {
-        for (var exp of r) {
-          if (exp.user) {
-            exp.name = exp.user.name
-            exp.email = exp.user.email
-            exp.username = exp.user.username
-          }
-          exp.avatar = md5.gravatarUrl(exp.email)
-        }
-      }
-      cb(e,r)
-    })
+    svc.search(term, searchFields, 5, Data.select.search, and, selectCB.migrateSearch(cb))
   },
+
   getNewForAdmin(cb) {
-    cache.ready(['tags'], () => {
-      var opts = { options: { limit: 150, sort: { '_id': -1 }  } }
-      svc.searchMany({}, opts, (e,r)=>{
-        for (var expert of r) {
-          expert.tags = selectCB.inflatedTagsNoCB(expert)
-          expert.user.avatar = md5.gravatarUrl(expert.user.email)
-        }
-        cb(e,r)
-      })
-    })
-  }
+    svc.searchMany({}, Data.options.newest100, selectCB.inflateList(cb))
+  },
+
+  getActiveForAdmin(cb) {
+    svc.searchMany({}, Data.options.active100, selectCB.inflateList(cb))
+  },
+
 }
 
 function updateWithTouch(expert, action, trackData, cb) {
@@ -132,12 +117,8 @@ var save = {
     $callSvc(UserSvc.setExpertCohort, this)(ups._id)
   },
 
-  deleteById(id, cb) {
-    svc.getById(id, (e, r) => {
-      var inValid = Validate.deleteById(this.user, r)
-      if (inValid) return cb(svc.Forbidden(inValid))
-      svc.deleteById(id, selectCB.inflateTags(cb))
-    })
+  deleteById(original, cb) {
+    svc.deleteById(original._id, cb)
   }
 }
 

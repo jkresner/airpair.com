@@ -1940,6 +1940,44 @@ module.exports = {
         "provider" : "google"
     },
     "googleId" : "103121129755643370673"
-  }
+  },
+
+  dlim: {
+    "_id" : ObjectId("5514147a022cc2110006605c"),
+    "cohort" : { expert: { "_id" : ObjectId("551427845955b711004d5e90") } },
+    "emailVerified" : true,
+    "name" : "Davi Lima",
+    "email" : "davilima6@gmail.com",
+    "google" : {
+        "_json" : {
+            "picture" : "https://lh4.googleusercontent.com/-xDdDRqkO6vw/AAAAAAAAAAI/AAAAAAAAAdk/TknMYVGYJeM/photo.jpg",
+            "link" : "https://plus.google.com/+DaviLima6",
+            "name" : "Davi Lima",
+            "email" : "davilima6@gmail.com",
+            "id" : "104283755419871295276"
+        },
+        "emails" : [{"value" : "davilima6@gmail.com"}],
+        "displayName" : "Davi Lima",
+        "id" : "104283755419871295276",
+        "provider" : "google"
+    },
+    "googleId" : "104283755419871295276",
+    "username" : "davilima6",
+    "localization" : {
+      "timezone" : "Brasilia Standard Time",
+      "location" : "Aracaju - SE, Brasil",
+    },
+    "social" : {
+        "gh" : { "username" : "davilima6", "id" : 422130, "provider" : "github" },
+        "so" : {
+            "provider" : "stackexchange",
+            "display_name" : "Davi Lima",
+            "link" : "http://stackoverflow.com/users/462849/davi-lima",
+            "account_id" : 210950,
+        }
+    },
+    "bio" : "Frontend",
+    "initials" : "DL"
+  },
 
 }

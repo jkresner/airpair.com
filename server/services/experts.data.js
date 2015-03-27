@@ -13,16 +13,11 @@ var data = {
       'tags.sort': 1,
       'rate': 1,
       'minRate': 1,
-      'gh.username': 1,
-      'gh.followers': 1,
-      'so.link': 1,
-      'so.reputation': 1,
-      'bb.username': 1,
-      'bb.followers': 1,
-      'in.id': 1,
-      'in.endorsements': 1,
-      'tw.username': 1,
-      'tw.followers': 1,
+      'gh': 1,
+      'so': 1,
+      'bb': 1,
+      'in': 1,
+      'tw': 1,
       'matching': 1
     },
     search: {
@@ -82,7 +77,7 @@ var data = {
       'social.in.id': 1,
       'social.in.endorsements': 1,
       'social.tw.username': 1,
-      'social.tw.followers': 1,
+      'social.tw._json.followers_count': 1,
     },
     updateME: {
       '_id': 1,
@@ -119,95 +114,95 @@ var data = {
       'so': 1,
       'bb': 1,
     },
+    migrateInflate(r) {
+      if (!r.user) {
+        r.isV0 = true
+        r.avatar = (r.email) ? md5.gravatarUrl(r.email) : r.pic
+      }
+      else {
+        delete r.user._id
+        var social = r.user.social
+
+        // how we handle staying v0 on front-end
+        r = _.extend(_.extend(r,r.user),r.social)
+        r.location = r.localization.location
+        r.timezone = r.localization.timezone
+        r.avatar = md5.gravatarUrl(r.email)
+        delete r.user
+        if (r.social) delete r.social
+        if (r.google) delete r.google
+        if (r.localization) delete r.localization
+      }
+
+      if (r.gh && r.gh._json)
+        r.gh.followers = r.gh._json.followers
+
+      r.minRate = r.minRate || r.rate
+      r.tags = data.select.inflatedTags(r)
+      return r
+    },
+      //-- TODO, watch out for cache changing via adds and deletes of records
+    inflatedTags(expert) {
+      var tags = []
+      for (var t of (expert.tags || []))
+      {
+        if (t._id) {
+          var tt = cache['tags'][t._id]
+          if (tt) {
+            var {name,slug} = tt
+            tags.push( _.extend({name,slug},t) )
+          }
+          else
+            $log(`tag with Id ${t.tagId} not in cache`)
+            // return cb(Error(`tag with Id ${t.tagId} not in cache`))
+        }
+      }
+      return tags
+    },
     cb: {
       addAvatar(cb) {
         return (e,r) => {
           if (e || !r) return cb(e,r)
           r.avatar = md5.gravatarUrl(r.email||r.user.email)
+          r.tags = data.select.inflatedTags(r)
           cb(null,r)
         }
       },
-      migrateInfate(r) {
-        if (!r.user) {
-          r.isV0 = true
-          r.avatar = (r.email) ? md5.gravatarUrl(r.email) : r.pic
+      migrateSearch(cb) {
+        return (e,r) => {
+          if (r) {
+            for (var exp of r) {
+              if (exp.user) {
+                exp.name = exp.user.name
+                exp.email = exp.user.email
+                exp.username = exp.user.username
+              }
+              exp.avatar = md5.gravatarUrl(exp.email)
+            }
+          }
+          cb(e,r)
         }
-        else {
-          delete r.user._id
-          var social = r.user.social
-          // how we handle staying v0 on front-end
-          r = _.extend(_.extend(r,r.user),r.social)
-          r.location = r.localization.location
-          r.timezone = r.localization.timezone
-          r.avatar = md5.gravatarUrl(r.email)
-          delete r.user
-          if (r.social) delete r.social
-          if (r.google) delete r.google
-          if (r.localization) delete r.localization
+      },
+      migrateInflate(cb) {
+        return (e,r) => {
+          if (e || !r) return cb(e)
+          cb(null, data.select.migrateInflate(r))
         }
-
-        if (r.gh && r.gh._json)
-          r.gh.followers = r.gh._json.followers
-
-        r.minRate = r.minRate || r.rate
-        r.tags = data.select.cb.inflatedTagsNoCB(r)
-        return r
       },
       me(cb) {
         return (e,r) => {
           if (e || !r) return cb(e, r)
-          r = data.select.cb.migrateInfate(r)
+          r = data.select.migrateInflate(r)
           cb(null, selectFromObject(r, data.select.me))
         }
       },
-      //-- TODO, watch out for cache changing via adds and deletes of records
-      inflatedTagsNoCB(expert) {
-        var tags = []
-        for (var t of (expert.tags || []))
-        {
-          if (t._id) {
-            var tt = cache['tags'][t._id]
-            if (tt) {
-              var {name,slug} = tt
-              tags.push( _.extend({name,slug},t) )
-            }
-            else
-              $log(`tag with Id ${t.tagId} not in cache`)
-              // return cb(Error(`tag with Id ${t.tagId} not in cache`))
-          }
-        }
-        return tags
-      },
-      inflateTags(expert, cb) {
-        var noInflate = !expert || (!expert.tags && !expert.bookmarks)
-        if (noInflate) return cb(null, expert)
-
-        cache.ready(['tags'], () => {
-          // if (logging) $log('inflateTagsAndBookmarks.start')
-
-          var tags = []
-          for (var t of (expert.tags || []))
-          {
-            var tt = cache['tags'][t._id]
-            if (tt) {
-              var {name,slug} = tt
-              tags.push( _.extend({name,slug},t) )
-            }
-            else
-              $log(`tag with Id ${t.tagId} not in cache`)
-              // return cb(Error(`tag with Id ${t.tagId} not in cache`))
-          }
-
-          cb(null, _.extend(expert, {tags}))
-        })
-      },
-      inflateList(e, experts, cb) {
-        if (e) return cb(e)
-        cache.ready(['tags'], () => {
+      inflateList(cb) {
+        return (e, experts) => {
+          if (e) return cb(e)
           for (var expert of experts)
-            expert = data.select.cb.migrateInfate(expert)
+            expert = data.select.migrateInflate(expert)
           cb(null, experts)
-        })
+        }
       }
     }
   },
@@ -216,6 +211,8 @@ var data = {
   },
 
   options: {
+    newest100: { options: { limit: 100, sort: { '_id': -1 }  } },
+    active100: { options: { limit: 100, sort: { 'lastTouch.utc': -1 } } }
   },
 
   data: {

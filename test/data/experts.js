@@ -1263,6 +1263,26 @@ module.exports = {
         "name" : "Abhishek Parolkar",
         "_id" : ObjectId("52dd4cb71c67d1a4859d1cf1")
     }
-  }
+  },
 
+  dlim: {
+    "_id" : ObjectId("551427845955b711004d5e90"),
+    "rate" : 40,
+    "brief" : "I want to offer my skills to those who need it despite our physical locations. What matters is deliverables quality of and a solid understanding of the chosen technologies.",
+    "userId" : ObjectId("5514147a022cc2110006605c"),
+    "mojo" : 0,
+    "updatedAt" : ISODate("2015-03-26T15:36:36.000Z"),
+    "busyUntil" : ISODate("2015-03-26T15:36:36.000Z"),
+    "user": "TAKEN FROM data.users.dlim",
+    "tags" : [  {  "_id" : "514825fa2a26ea020000002d",  "sort" : 0 } ],
+    "activity" : [],
+    "lastTouch" : {
+      "action" : "create",
+      "utc" : ISODate("2015-03-26T15:36:36.781Z"),
+      "by" : {
+          "_id" : ObjectId("5514147a022cc2110006605c"),
+          "name" : "Davi Lima"
+      }
+    },
+  }
 }

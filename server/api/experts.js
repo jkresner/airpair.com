@@ -5,9 +5,12 @@ export default initAPI(
 ,{
   getMe: (req) => [],
   search: (req) => [req.params.id],
+  getByIdForAdmin: (req) => [req.params.id],
   getNewForAdmin: (req) => [],
+  getActiveForAdmin: (req) => [],
   create: (req) => [req.body],
-  updateMe: (req) => [req.expert,req.body]
+  updateMe: (req) => [req.expert,req.body],
+  deleteById: (req) => [req.expert],
 }, {
   'expert':'getById'
 },
