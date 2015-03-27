@@ -10,7 +10,7 @@ var initAPIWrap = (wrapper) => {
         wrapper.init()
         if (logging) $log('initApi'.yellow, fnName)
       }
-      fn.apply(this, arguments)
+      return fn.apply(this, arguments)
     }}
   )
   wrapper.init = init
