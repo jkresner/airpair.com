@@ -92,25 +92,29 @@
 
     <div>
       {{#each posts}}{{> postListItem }}{{/each}}
+      <article class="more posttile" >
+         <a rel="bookmark" target="_self" title="All {{tag.name}} posts" href="/posts/tag/{{tag.slug}}">
+           <header class="entry-header">
+            <img class="entry-header-image" itemprop="image" src="/static/img/css/tags/{{tag.slug}}.png" align="left">
+            <div class="glass"></div>
+            <p><span></span></p>
+          </header>
+          <div class="entry-content" itemprop="text">
+            <div class="stars"></div>
+            <h2 class="entry-title" itemprop="headline">All <br />AngularJS Posts</h2>
 
-      <article class="more">
-      <a rel="bookmark" target="_self" title="All {{tag.name}} posts" href="/posts/tag/{{tag.slug}}">
-        <header class="entry-header">
-          <img align="left" src="/static/img/css/tags/{{tag.slug}}.png" style="width:100%">
-
-          <p class="entry-meta">
-
-            <span itemtype="http://schema.org/Person" itemscope="itemscope" itemprop="author" class="entry-author">
-              <img align="left" src="//0.gravatar.com/avatar/e79ddd03edffc5c0669b78e7a090b037?s=50" class="entry-author-image">
+            <span class="entry-author" itemprop="author" itemscope="itemscope" itemtype="http://schema.org/Person">
+              <span class="entry-author-name" itemprop="name">See all Angular Posts</span>
             </span>
-          </p>
-        </header>
-        <div itemprop="text" class="entry-content">
-          <h2 itemprop="headline" class="entry-title">All AngularJS Posts</h2>
-          <p>See all posts tagged with {{tag.slug}}.</p>
-        </div>
-      </a>
-    </article>
+
+          </div>
+        </a>
+        <footer class="entry-footer">
+          <img src="//0.gravatar.com/avatar/e79ddd03edffc5c0669b78e7a090b037?s=50" class="entry-author-img">
+        </footer>
+      </article>
+
+
     </div>
   </section>
 
@@ -145,7 +149,7 @@
     <hr />
   </section>
 
-  <section class="packages">
+{{!--   <section class="packages">
     <h2>{{tag.name}} Help</h2>
 
     <div class="choice">
@@ -186,6 +190,6 @@
         <span>* Limited offer, normally $4000</span>
       </div>
     </div>
-  </section>
+  </section> --}}
 
 </section>

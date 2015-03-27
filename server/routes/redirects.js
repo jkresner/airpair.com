@@ -30,42 +30,44 @@ var mw = {
 }
 
 
-export function addPatterns(app) {
-  //-- Express routes don't handle spaces, so always put in %20
-  //-- More so for some reason it's important to test the fully encoded
-  //-- Version of the url first
-  var router = require('express').Router()
+module.exports = {
 
-  router.get(/%E2%80%A6/, mw.redirectWithQuery('%E2%80%A6',''))
-  router.get(/%20%e2%80%a6/, mw.redirectWithQuery('%20%e2%80%a6',''))
-  router.get(/%20%E2%80%A6/, mw.redirectWithQuery('%20%E2%80%A6',''))
-  router.get(/%20\.\.\./, mw.redirectWithQuery('%20...',''))
-  router.get(/\.\.\./, mw.redirectWithQuery('...',''))
-  router.get('/author/*', (req,res) => { res.redirect(301, '/posts/all')})
-  router.get("/c\\+\\+", mw.redirectWithQuery("/c++","/posts/tag/c++", "302") )
+  addPatterns(app) {
+    //-- Express routes don't handle spaces, so always put in %20
+    //-- More so for some reason it's important to test the fully encoded
+    //-- Version of the url first
+    var router = require('express').Router()
 
-  return router
-}
+    router.get(/%E2%80%A6/, mw.redirectWithQuery('%E2%80%A6',''))
+    router.get(/%20%e2%80%a6/, mw.redirectWithQuery('%20%e2%80%a6',''))
+    router.get(/%20%E2%80%A6/, mw.redirectWithQuery('%20%E2%80%A6',''))
+    router.get(/%20\.\.\./, mw.redirectWithQuery('%20...',''))
+    router.get(/\.\.\./, mw.redirectWithQuery('...',''))
+    router.get('/author/*', (req,res) => { res.redirect(301, '/posts/all')})
+    router.get("/c\\+\\+", mw.redirectWithQuery("/c++","/posts/tag/c++", "302") )
 
+    return router
+  },
 
-export function addRoutesFromDb(app, cb) {
-  if (!config.redirects.on) return cb()
+  addRoutesFromDb(app, cb) {
+    if (!config.redirects.on) return cb()
 
-  RedirectsAPI.svc.getAllRedirects((e,all) =>{
-    var tempMigrates = require('./migration')
-    for (var m of tempMigrates) all.push({type:'canonical-post',current:m.o,previous:m.c})
+    RedirectsAPI.svc.getAllRedirects((e,all) =>{
+      var tempMigrates = require('./migration')
+      for (var m of tempMigrates) all.push({type:'canonical-post',current:m.o,previous:m.c})
 
-    for (var r of all) {
-      if (r.type == 'canonical-post') {
-        mw.routeCanonicalPost(app, r.current, r.previous)
+      for (var r of all) {
+        if (r.type == 'canonical-post') {
+          mw.routeCanonicalPost(app, r.current, r.previous)
+        }
+        else
+        {
+          // $log(`${r.previous} >> ${r.current}`.white)
+          app.get( r.previous, mw.redirectWithQuery(r.previous,r.current,r.type))
+        }
       }
-      else
-      {
-        // $log(`${r.previous} >> ${r.current}`.white)
-        app.get( r.previous, mw.redirectWithQuery(r.previous,r.current,r.type))
-      }
-    }
 
-    cb()
-  })
+      cb()
+    })
+  }
 }

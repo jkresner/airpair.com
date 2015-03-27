@@ -1,10 +1,11 @@
-// Couple of handy globals (this won't get out of hand)
 
+// Couple of handy globals (this won't get out of hand)
 module.exports = function(config)
 {
-
+  global.util           = require('../../shared/util')
   global._              = require('lodash')
-  _.idsEqual            = require('../../shared/util').idsEqual
+  _.idsEqual            = util.idsEqual
+  _.wrapFnList          = util.wrapFnList
   global.moment         = require('moment')
   global.config         = config
   global.$log           = console.log
@@ -18,16 +19,12 @@ module.exports = function(config)
       fn.apply(thisCtx, arguments)
     }
 
-
-  if (config.analytics.on)
-    global.analytics    = require('./../services/analytics').analytics
-  else
-    global.analytics    = { track: ()=>{}, view: ()=>{}, alias: ()=>{}, identify: ()=>{} }
-
-
   global.mailman = {
     init() { global.mailman = require('./mail/mailman')(config.mail.smtpProvider()) }
   }
+
+  //-- makes app a tests load 300ms faster
+  global.analytics    = { track: ()=>{}, view: ()=>{}, alias: ()=>{}, identify: ()=>{} }
 
   if (config.log.email)
   {
@@ -36,19 +33,22 @@ module.exports = function(config)
     winston.add(require('winston-ses').Ses, config.log.email)
   }
 
+  global.Wrappers       = require('../services/wrappers/_wrappers')
+
   //-- Services we want to stub can be set on global here
   if (config.env == 'test')
   {
-    global.paypal         = require('paypal-rest-sdk')
-    global.Braintree      = require('../services/wrappers/braintree')
-    global.TimezoneApi    = require('node-google-timezone')
     global.MailChimpApi   = require('mailchimp/lib/mailchimp/MailChimpAPI_v2_0')
-    global.GitHubApi      = require('github')
   }
   else
   {
-    // global.GitHubApi      = () => {}
-    // global.TimezoneApi    = { key() { } }
+    if (config.analytics.on)
+      global.analytics    = require('./../services/analytics').analytics
   }
-
 }
+
+
+
+
+
+

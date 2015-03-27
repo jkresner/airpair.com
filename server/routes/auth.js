@@ -1,17 +1,14 @@
 import {logout,setTestLogin} from '../identity/auth/actions'
 var auth                     = require('../identity/auth/providers/index')
 var mw                       = require('../middleware/auth')
-var pp                       = require('../services/wrappers/paypal')
-var {addOAuthPayoutmethod}   = require('../services/paymethods')
 
-
-export default function(app) {
+module.exports = function(app) {
 
   var router = require('express').Router()
 
     //-- Don't want returnTo over ridden on oauth callbacks
-    .get('/paypal/callback', mw.authd, pp.handleOAuthCallback,
-      mw.handleOAuthSuccess('paypal', addOAuthPayoutmethod))
+    .get('/paypal/callback', mw.authd, Wrappers.PayPal.handleOAuthCallback,
+      mw.handleOAuthSuccess('paypal', 'paymethods', 'addOAuthPayoutmethod'))
     // .get('/coinbase/callback', mw.authd,
 
     // Looks at the querystring and save to session if ?returnTo=xxx exists

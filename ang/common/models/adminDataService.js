@@ -17,6 +17,12 @@ angular.module('APSvcAdmin', [])
       toggleRole: PUT((d)=>`/adm/users/${d._id}/role/${d.role}`),
     }
 
+    this.tags = {
+      getAllTags: GET((d)=>`/adm/tags`),
+      getById: GET((d)=>`/adm/tags/${d._id}`),
+      updateTag: PUT((d)=>`/adm/tags/${d._id}`)
+    }
+
     this.posts = {
       getNewlyTouched: GET((d)=>`/adm/posts`),
       getAll: GET((d)=>`/adm/posts/all`)

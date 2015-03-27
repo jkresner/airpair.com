@@ -4,7 +4,6 @@ import * as UserSvc from './users'
 var PayMethodSvc = require('./paymethods')
 var RequestsSvc = require('./requests')
 var Data = require('./orders.data')
-var Util = require('../../shared/util')
 var OrderUtil = require('../../shared/orders.js')
 var {base} = Data
 var logging = false
@@ -266,7 +265,7 @@ function bookUsingCredit(expert, minutes, total, lineItems, expectedCredit, payM
 var save = {
   buyCredit(total, coupon, payMethodId, cb)
   {
-    var expires = Util.dateWithDayAccuracy(moment().add(3,'month'))
+    var expires = util.dateWithDayAccuracy(moment().add(3,'month'))
 
     var lineItems = []
     lineItems.push(Lines.credit(true, total, expires, `$${total} Credit Purchase`))
@@ -289,7 +288,7 @@ var save = {
   },
   giveCredit(toUser, total, source, cb)
   {
-    var expires = Util.dateWithDayAccuracy(moment().add(3,'month'))
+    var expires = util.dateWithDayAccuracy(moment().add(3,'month'))
 
     var fullSource = `${source} from ${this.user.name}`
     var lineItems = []

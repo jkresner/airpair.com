@@ -1,9 +1,6 @@
 var mongoose            = require('mongoose')
-var BSON                = require("bson").BSONPure.BSON
-var fs                  = require("fs")
-var {Settings}          = require('../../../server/models/v0')
 var Models = {
-  Settings,
+  Settings: require('../../../server/models/v0').Settings,
   Tag: require('../../../server/models/tag'),
   Workshop: require('../../../server/models/workshop'),
   View: require('../../../server/models/view'),
@@ -40,17 +37,23 @@ var db = {
   Models,
 
   RestoreBSONData(done) {
+    //-- Require inline for faster tests running
+    var BSON                = require("bson").BSONPure.BSON
+    var fs                  = require("fs")
+
     var bsonDir = __dirname.replace('server', 'data').replace('helpers','bson')
-    var collections = fs.readdirSync(bsonDir);
-    var last = collections.length, index = 0;
-    collections.forEach(function(collectionName) {
-      var bson = fs.readFileSync(`${bsonDir}/${collectionName}`, { encoding: null })
+    var bsonFiles = _.where( fs.readdirSync(bsonDir), (c) => c.indexOf('.bson') != -1 )
+    var last = bsonFiles.length, index = 0;
+    bsonFiles.forEach(function(bsonFile) {
+      var bson = fs.readFileSync(`${bsonDir}/${bsonFile}`, { encoding: null })
       var docs = []
       var bsonIndex = 0
       while (bsonIndex < bson.length)
         bsonIndex = BSON.deserializeStream(bson,bsonIndex,1,docs,docs.length)
-      var modelName = collectionName.replace('s.bson','')
-      modelName = modelName.charAt(0).toUpperCase() + modelName.slice(1);
+
+      var modelName = bsonFile.replace('s.bson','')
+      modelName = modelName.charAt(0).toUpperCase() + modelName.slice(1)
+      $log(`Mongo.BSON.Restore: ${modelName} (${docs.length})`.cyan)
       db.ensureDocs(modelName, docs, (e,r) => {
         if (e) return done(e)
         if (last === ++index) return done(null)

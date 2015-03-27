@@ -40,7 +40,7 @@ function registerHelpers(hbs)
 
 }
 
-export default function(app) {
+module.exports = function(app) {
 
   var hbsEngine = hbs.express3({ partialsDir: `${config.appdir}/server/views/partials` })
 
@@ -50,14 +50,14 @@ export default function(app) {
   app.engine('hbs', hbsEngine);
 
   var combineBaseData = (req, data) => {
-    var chatSettings = {
-      on: config.chat.on,
-      firebaseUrl: config.chat.firebase.url
-    };
+    // var chatSettings = {
+    //   on: config.chat.on,
+    //   firebaseUrl: config.chat.firebase.url
+    // };
     if (!data) data = {}
     data.build = config.build
     data.authenticated = !!(req.user && req.user._id)
-    data.config = { analytics: config.analytics, bundle: config.bundle, chatSettings, hangout: config.hangout }
+    data.config = { analytics: config.analytics, bundle: config.bundle, hangout: config.hangout } //, chatSettings
     data.campPeriod = moment().format('MMMYY').toLowerCase()
     return data;
   }

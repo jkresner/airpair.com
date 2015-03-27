@@ -1,14 +1,27 @@
-var select = {
-  listCache: { '_id':1, name: 1, slug: 1 },
-  search: { '_id': 1, 'name': 1, 'slug': 1, 'desc': 1, 'short': 1, score: { $meta: "textScore" } }
-}
-
 var data = {
 
   select: {
-    listCache: select.listCache,
-    search: select.search,
-
+    listCache: {
+      '_id':1,
+      name: 1,
+      slug: 1
+    },
+    search: {
+      '_id': 1,
+      'name': 1,
+      'slug': 1,
+      'desc': 1,
+      'short': 1,
+      score: { $meta: "textScore" }
+    },
+    cb: {
+      search(cb) {
+        return (e,r) => {
+          if (e) return cb(e)
+          cb(null, util.selectFromObject(r, data.select.search))
+        }
+      }
+    }
     // inflateTags(tags, cb) {
     //   cache.ready(['tags'], () => {
 

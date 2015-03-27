@@ -1,5 +1,4 @@
 var logging         = false
-var util            = require('../../shared/util')
 var Data            = require('./users.data')
 var UserAuth        = require('./users.auth')
 var UserCohort      = require('./users.cohort')
@@ -7,10 +6,6 @@ var User            = require('../models/user')
 import BaseSvc      from '../services/_service'
 var svc             = new BaseSvc(User, logging)
 var cbSession       = Data.select.cb.session
-var github          = require("./wrappers/github2")
-var Timezone        = global.TimezoneApi || require('node-google-timezone')
-Timezone.key(config.timezone.google.apiKey)
-
 
 var get = {
 
@@ -30,7 +25,7 @@ var get = {
   },
 
   getProviderScopes(cb) {
-    github.getScopes(this.user, cb)
+    Wrappers.GitHub.getScopes(this.user, cb)
   },
 
   getSession(cb) {
@@ -48,7 +43,6 @@ var get = {
       var session = _.extend({
           authenticated: false,
           sessionID: this.sessionID,
-          firebaseToken: this.session.firebaseToken,
           avatar
         }, this.session.anonData)
 
@@ -355,7 +349,7 @@ var save = {
 
   changeLocationTimezone(locationData, cb) {
     var { k, D } = locationData.geometry.location
-    Timezone.data(k, D, 1402629305, (e,r) => {
+    Wrappers.Timezone.getTimezoneFromCoordinates(k, D, 1402629305, (e,r) => {
       if (e) return cb(e)
 
       var localization = {

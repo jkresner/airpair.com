@@ -88,6 +88,9 @@ var cfg = {
       apiKey: 'AIzaSyANXimipzhyZ-Mp2_RrzjKKp4nXq5VpMGk'
     }
   },
+  youtube: {
+    refreshTokens: 'airpairtest34@gmail.com:1/ButgPHQTginqD-zDnOHHhxiVRSlGDw5iGY9pPIrOsrQ',
+  },
   chat: {
     on: false,
     firebase: {
@@ -104,7 +107,7 @@ var cfg = {
     appId: process.env.HANGOUT_APPID || "140030887085"
   },
   mail: {
-    smtpProvider: require('./mail/devSMTPprovider')(true),
+    smtpProvider: null,
     ses: {
       access_key: process.env.MAIL_SES_ACCESS_KEY || "none",
       secret_key: process.env.MAIL_SES_SECRET_KEY || "none"
@@ -132,6 +135,7 @@ var cfg = {
   session: { secret: 'airyv1' }
 }
 
+
 module.exports = function(env) {
   cfg.env = env
   cfg.livereload = cfg.env == 'dev'
@@ -139,10 +143,13 @@ module.exports = function(env) {
     .replace('/server/util','')
     .replace('\\server\\util','') //-- for windows machines
 
+  if (cfg.env == 'dev') {
+    cfg.mail.smtpProvider = require('./mail/devSMTPprovider')(true)
+  }
+
   //-- Temp for testing prod setting locally
   // cfg.analytics.on = true
   // cfg.analytics.segmentio.writekey = '0xxx5xrw5q'
-
   if (cfg.env == 'test') {
     cfg.auth.oAuth.callbackHost = 'http://localhost:4444'
     cfg.analytics.on = true
@@ -242,20 +249,9 @@ module.exports = function(env) {
     cfg.calendar.google.owner = process.env.CALENDAR_GOOGLE_OWNER
     cfg.calendar.google.calendarId = process.env.CALENDAR_GOOGLE_CALENDARID
 
-    cfg.timezone.google.apiKey = process.env.TIMEZONE_GOOGLE_APIKEY
-  }
+    cfg.youtube.refreshTokens = process.env.YOUTUBE_REFRESH_TOKENS
 
-  if (cfg.calendar.on && process.env.AUTH_GOOGLE_REFRESH_TOKEN) {
-    // example AUTH_GOOGLE_REFRESH_TOKEN
-    // "mike@madeye.io:1/eljaJDHqLRqI5z81h3PcAeFOG9Te2f7OAQhPkX8azRAMEudVrK5jSpoR30zcRFq6"
-    var refreshTokenUsersString = process.env.AUTH_GOOGLE_REFRESH_TOKEN;
-    cfg.auth.google.refreshTokens = {};
-    for (var pair of refreshTokenUsersString.split('::'))
-    {
-      var email = pair.split(":")[0];
-      var token = pair.split(":")[1];
-      cfg.auth.google.refreshTokens[email] = token;
-    }
+    cfg.timezone.google.apiKey = process.env.TIMEZONE_GOOGLE_APIKEY
   }
 
   return cfg;

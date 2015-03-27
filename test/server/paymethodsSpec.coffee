@@ -9,28 +9,24 @@ module.exports = -> describe "API".subspec, ->
   # double think if it's necessary to allow people to add cars when anonymous
   describe 'Anonymous', ->
 
-    it.skip 'Gets braintree token on new anonymous get-paymethods', (done) ->
-    it.skip 'Can create anonymous paymethod and migrate paymethod to new account creation', (done) ->
+    it 'Gets braintree token on new anonymous get-paymethods'
+    it 'Can create anonymous paymethod and migrate paymethod to new account creation'
 
 
   describe 'No Analytics', ->
 
-    before ->
-      SETUP.analytics.stub()
-
-    after ->
-      SETUP.analytics.restore()
-
-    it 'Gets braintree token on new loggedin user get-paymethods', (done) ->
+    it 'Gets braintree token on new loggedin user get-paymethods', itDone ->
+      tokenStub = SETUP.stubBraintree('clientToken','generate',null,data.wrappers.braintree_newuser_token)
       SETUP.addAndLoginLocalUser 'nkig', (s) ->
         GET '/billing/paymethods', {}, (r) ->
           expect(r.btoken).to.exist
-          done()
+          tokenStub.restore()
+          DONE()
 
 
-    it 'Gets migrated stripe result for v0 user from settings', (done) ->
+    it 'Gets migrated stripe result for v0 user from settings', itDone ->
       SETUP.addAndLoginLocalUser 'jmel', (s) ->
-        db.ensureSettings s, data.v0.settings.jk, ->
+        db.ensureDoc 'Settings', _.extend({userId:s._id},data.v0.settings.jk), ->
           GET '/billing/paymethods', {}, (r) ->
             expect(r).to.exist
             expect(r.length).to.equal(1)
@@ -39,10 +35,10 @@ module.exports = -> describe "API".subspec, ->
             expect(r[0].info.default_card).to.equal(data.v0.settings.jk.paymentMethods[1].info.default_card)
             GET '/session/full', {}, (s1) ->
               expect(s1.primaryPayMethodId).to.equal(r[0]._id)
-              done()
+              DONE()
 
 
-    it 'Can add braintree payment method to new user', (done) ->
+    it 'Can add braintree payment method to new user', itDone ->
       SETUP.addAndLoginLocalUser 'evan', (s) ->
         d = type: 'braintree', token: braintree_test_nouce, name: 'Default Card', makeDefault: true
         POST '/billing/paymethods', d, {}, (r) ->
@@ -57,10 +53,10 @@ module.exports = -> describe "API".subspec, ->
             expect(pms[0].name).to.equal('Default Card')
             GET '/session/full', {}, (s1) ->
               expect(s1.primaryPayMethodId).to.equal(pms[0]._id)
-              done()
+              DONE()
 
 
-    it 'Can add multiple braintree payment methods to new user', (done) ->
+    it 'Can add multiple braintree payment methods to new user', itDone ->
       SETUP.addAndLoginLocalUser 'elld', (s) ->
         d = type: 'braintree', token: braintree_test_nouce, name: 'Default Card', makeDefault: true
         POST '/billing/paymethods', d, {}, (r1) ->
@@ -70,33 +66,38 @@ module.exports = -> describe "API".subspec, ->
               expect(pms2.length).to.equal(2)
               GET '/session/full', {}, (s1) ->
                 expect(s1.primaryPayMethodId).to.equal(r1._id)
-                done()
+                DONE()
 
 
-    it 'Can add company payment method', (done) ->
+    it 'Can add company payment method', itDone ->
       SETUP.addAndLoginLocalUser 'abeh', (s) ->
         comp = data.v0.companys.urbn
-        db.ensureDocs 'Company', [comp], (e,r) ->
-          # $log('going yah', comp._id)
-          d = type: 'braintree', token: braintree_test_nouce, name: "#{r.name} Card", companyId: comp._id
+        db.ensureDocs 'Company', [comp], ->
+          d = type: 'braintree', token: braintree_test_nouce, name: "#{comp.name} Card", companyId: comp._id
           POST '/billing/paymethods', d, {}, (pm) ->
             expect(pm._id).to.exist
             expect(_.idsEqual(pm.companyId, comp._id)).to.be.true
-            expect(_.idsEqual(pm.info.customerId, comp._id)).to.be.true
-            done()
+            # expect(_.idsEqual(pm.info.customerId, comp._id)).to.be.true
+            DONE()
 
 
 
-    it 'Company payment methods appear in getPayMethods', (done) ->
+    it 'Company payment methods appear in getPayMethods', itDone ->
+      findStub = SETUP.stubBraintree('customer','find',null,null)
+      ld = data.v0.companys.ldhm
+      createResp = _.extend({id:ld._id} ,data.wrappers.braintree_add_company_card)
+      createStub = SETUP.stubBraintree('customer','create',null,createResp)
       SETUP.setupCompanyWithPayMethodAndTwoMembers 'ldhm', 'math', 'edub', (cid, pmid, cAdm, cMem) ->
+        findStub.restore()
+        createStub.restore()
         LOGIN cMem.userKey, (scMem) ->
           GET '/billing/paymethods', {}, (cMemPMs) ->
             expect(cMemPMs.length).to.equal(1)
             expect(_.idsEqual(cMemPMs[0]._id,pmid)).to.be.true
-            done()
+            DONE()
 
 
-    it 'Can delete braintree payment method', (done) ->
+    it 'Can delete braintree payment method', itDone ->
       SETUP.addAndLoginLocalUser 'edud', (s) ->
         d = type: 'braintree', token: braintree_test_nouce, name: 'Default Card', makeDefault: true
         POST '/billing/paymethods', d, {}, (r) ->
@@ -108,12 +109,15 @@ module.exports = -> describe "API".subspec, ->
                 expect(s2.primaryPayMethodId).to.be.undefined
                 GET '/billing/paymethods', {}, (pms) ->
                   expect(pms.btoken).to.exist
-                  done()
+                  DONE()
 
 
   describe 'With Analytics', ->
 
-    it 'Can add braintree payment method to new user with Analytics', (done) ->
+    before -> SETUP.analytics.on()
+    after -> SETUP.analytics.off()
+
+    it 'Can add braintree payment method to new user with Analytics', itDone ->
       SETUP.addAndLoginLocalUser 'evan', (s) ->
         d = type: 'braintree', token: braintree_test_nouce, name: 'Default Card', makeDefault: true
         POST '/billing/paymethods', d, {}, (r) ->
@@ -128,19 +132,12 @@ module.exports = -> describe "API".subspec, ->
             expect(pms[0].name).to.equal('Default Card')
             GET '/session/full', {}, (s1) ->
               expect(s1.primaryPayMethodId).to.equal(pms[0]._id)
-              done()
+              DONE()
 
 
   describe 'Payouts', ->
 
-    before ->
-      SETUP.analytics.stub()
-
-    after ->
-      SETUP.analytics.restore()
-
-
-    it 'Can get expert payout methods', (done) ->
+    it 'Can get expert payout methods', itDone ->
       SETUP.newLoggedInExpert 'abha', (expert, sAbha) ->
         GET '/billing/payoutmethods', {}, (pms) ->
           expect(pms.length).to.equal(0)
@@ -150,13 +147,13 @@ module.exports = -> describe "API".subspec, ->
             expect(pm.info.verified_account).to.equal('true')
             GET '/billing/payoutmethods', {}, (pms2) ->
               expect(pms2.length).to.equal(1)
-              done()
+              DONE()
 
 
-    it 'Fail to add unverified paypal payout method', (done) ->
+    it 'Fail to add unverified paypal payout method', itDone ->
       SETUP.newLoggedInExpert 'admb', (expert, sTmot) ->
         SETUP.injectOAuthPayoutMethod sTmot,'paypal','payout_paypal_enus_unverified', (pm) ->
           expect(pm).to.be.undefined
-          done()
+          DONE()
 
 

@@ -6,19 +6,17 @@ var _viewSvc = new Svc(View, logging)
 // var Segment = require('analytics-node')
 // var segmentConf = config.analytics.segmentio
 // var segment = new Segment(segmentConf.writekey, segmentConf.options)
+// buildSegmentPayload(type, user, anonymousId, payload) {
+//   if (user) payload.userId = user.email
+//   else payload.anonymousId = anonymousId
 
+//   if (logging)
+//     $log(`analytics.${type}.${JSON.stringify(payload)}}`.white)
+
+//   return payload
+// },
 
 var util = {
-
-  buildSegmentPayload(type, user, anonymousId, payload) {
-    if (user) payload.userId = user.email
-    else payload.anonymousId = anonymousId
-
-    if (logging)
-      $log(`analytics.${type}.${JSON.stringify(payload)}}`.white)
-
-    return payload
-  },
 
   convertToDumbSegmentCampaignSHIT(utms) {
     var c = null
@@ -166,8 +164,8 @@ var analytics = {
 
 
   identify(user, context, identifyEvent, identifyEventProps, done) {
-    var traits = util.segmentTraitsFromUser(user)
-    var context = null // ?? to populate
+    // var traits = util.segmentTraitsFromUser(user)
+    // var context = null // ?? to populate
 
     done()
     // segment.identify(util.buildSegmentPayload('identify', user, null, {traits,context}), () => {

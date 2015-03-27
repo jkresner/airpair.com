@@ -33,7 +33,7 @@ module.exports = {
     "_id" : "514825fa2a26ea0200000028",
     "__v" : 0,
     "desc" : "Node.js is an event-based, asynchronous I/O framework that uses Google&#39;s V8 JavaScript engine.",
-    "name" : "Node.JS",
+    "name" : "node.js",
     "short" : "node.js",
     "slug" : "node.js",
     "soId" : "node.js",
@@ -219,5 +219,22 @@ module.exports = {
     "slug" : "ruby",
     "soId" : "ruby",
     "tokens" : ""
+  },
+  'ember.js': {
+    "_id" : ObjectId("5181d0aa66a6f999a465eceb"),
+    "desc" : "Ember.js itsa an advanced front end MVC application framework written in JavaScript and distributed under an open source license.  Click learn more... and use the preconfigured templates from the tag wiki in order to create better questions.\r\n",
+    "name" : "EmberJS",
+    "short" : "Ember",
+    "slug" : "ember.js",
+    "soId" : "ember.js",
+    "tokens" : "ember,emberjs,emb"
+  },
+  express: {
+    "_id" : ObjectId("514825fa2a26ea0200000016"),
+    "desc" : "Express is a minimalistic web application framework for node.js that features regex-based routing, sessions, and support for multiple view engines.",
+    "name" : "express",
+    "short" : "express",
+    "soId" : "express",
+    "slug" : "express"
   }
 }

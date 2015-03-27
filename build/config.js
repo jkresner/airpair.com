@@ -9,8 +9,8 @@ var cfg = {
     less: 'public/styles/*.{css,less}',
     devWatch: [
       'server/views/**', //views
-      './public/static/js/**/*.{js}',//devJS:
-      './public/static/js/**/*.{css}',//devCSS:
+      'public/static/js/*.js',//devJS:
+      'public/static/styles/*.css',//devCss:
     ],
   },
   jsBundles: ['index.js', 'adm.js', 'home.js'],

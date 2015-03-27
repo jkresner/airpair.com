@@ -4,14 +4,8 @@ module.exports = () => describe("Authorization: ".subspec, function() {
 
 
   before(function(done) {
-    SETUP.analytics.stub()
     SETUP.initTags(done)
   })
-
-  after(function() {
-    SETUP.analytics.restore()
-  })
-
 
   it('Cannot grant roles as non-admin', function(done) {
     SETUP.addLocalUser('joem', {}, function(userKey) {
