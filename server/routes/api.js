@@ -37,9 +37,6 @@ module.exports = function(app) {
       })
     })
 
-    .get('/tags/search/:id', API.Tags.search)
-    .get('/tags/:slug', authd, API.Tags.getBySlug)
-
     .get('/posts/me', API.Posts.getMyPosts)
     .get('/posts/review', API.Posts.getPostsInReview)
     .get('/posts/recent', API.Posts.getRecentPublished)
@@ -51,7 +48,11 @@ module.exports = function(app) {
     .get('/workshops/', API.Workshops.getAll)
     .get('/workshops/:id', API.Workshops.getBySlug)
 
+    .get('/tags/search/:id', API.Tags.search)
+
     .use(authd)
+
+    .post('/tags', bodyParam('tagfrom3rdparty'), API.Tags.createFrom3rdParty)
 
     .get('/requests', API.Requests.getMy)
     .get('/requests/:id', API.Requests.getByIdForUser)
@@ -151,9 +152,13 @@ module.exports = function(app) {
     .param('request', API.Requests.paramFns.getByIdForAdmin)
     .param('booking', API.Bookings.paramFns.getById)
     .param('order', API.Orders.paramFns.getByIdForAdmin)
+    .param('tagforadm', API.Tags.paramFns.getById)
 
     .use(adm)
     .get('/tags', API.Tags.getAllForCache)
+    .get('/tags/:id', API.Tags.getById)
+    .post('/tags', API.Tags.createByAdmin)
+    .put('/tags/:tagforadm', API.Tags.updateByAdmin)
     .get('/posts', API.Posts.getNewFoAdmin)
     .get('/posts/all', API.Posts.getAllForAdmin)
     .get('/orders/:start/:end/:userId?', API.Orders.getByQueryForAdmin)

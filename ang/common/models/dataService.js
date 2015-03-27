@@ -68,7 +68,7 @@ angular.module('APDataSvc', [])
 
     this.tags = {
       search: GET((d)=>`/tags/search/${d.q}`),
-      getBySlug: GET((d)=>`/tags/${d.slug}`)
+      create: GET((d)=>`/tags`)
     }
 
     this.billing = _.extend(billingFns, {

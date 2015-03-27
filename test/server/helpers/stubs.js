@@ -57,6 +57,15 @@ var stubs = {
     })
   },
 
+
+  stubStackOverflowTagInfo(response) {
+    if (!Wrappers.StackExchange.api) Wrappers.StackExchange.init()
+    return sinon.stub(Wrappers.StackExchange.api, 'get', (url, cb) => {
+      // $log('StackExchange.stubbed', response)
+      cb(null, {ok:true,body:response})
+    })
+  },
+
   stubGoogleTimezone(response) {
     return sinon.stub(Wrappers.Timezone,'getTimezoneFromCoordinates', (k,D,n,cb) => {
       cb(null, response || data.wrappers.timezone_melbourne)

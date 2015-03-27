@@ -68,18 +68,14 @@ describe 'Server: '.appload, ->
   spec @, 'Experts'
   spec @, 'Experts', 'expertsMojo'
   spec @, 'Analytics'
-
   spec @, 'Tags'
-
   spec @, 'Companys'
   spec @, 'Redirects'
   spec @, 'Requests', 'requests'
   spec @, 'Pipeline', 'requestsAdmin'
-
   spec @, 'Paymethods'
   spec @, 'Orders'
   spec @, 'Orders', 'ordersBooking'
-
   spec @, 'Posts'
   spec @, 'Post Reviews', 'postsReviews'
   spec @, 'Bookings'

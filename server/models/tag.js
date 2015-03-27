@@ -1,31 +1,30 @@
 var mongoose = require('mongoose')
-
+var Shared = require("./_shared")
 
 var tagSchema = new mongoose.Schema({
 
-  name: { required: true, type: String, trim: true },  // E.g. Ruby on Rails
-  short: {              // E.g. Rails
-    required: true,
-    type: String,
-    trim: true
-  },
-  slug: {               // E.g. ruby-on-rails
-    required: true,
-    type: String,
-    unique: true,
-    sparse: true,
-    lowercase: true,
-    trim: true
-  },
-  desc: String,
-  soId: {
-    type: String,
-    unique: true,
-    sparse: true,
-    lowercase: true,
-    trim: true
-  },
+  // E.g. Ruby on Rails
+  name:     { required: true, type: String, trim: true },
+
+  // E.g. Rails
+  short:    { required: true, type: String, trim: true },
+
+  // E.g. ruby-on-rails
+  slug:     { required: true, type: String, trim: true,
+            lowercase: true, unique: true, sparse: true },
+
+  desc:     String,
+
+  // E.g "RoR,Rub,Ruby,Rai" comma separated strings to assist search
+  tokens:   String,
+
+  meta:     Shared.PageMeta,
+
+  soId:     { type: String, trim: true,
+            lowercase: true, unique: true, sparse: true },
+
   so: {},
+
   ghId: {
     type: String,
     unique: true,
@@ -34,7 +33,6 @@ var tagSchema = new mongoose.Schema({
     trim: true
   },
   gh: {},
-  tokens: String,       // Extra comma separated strings to assist filter search
 
 })
 
