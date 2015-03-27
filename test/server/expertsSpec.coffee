@@ -1,12 +1,4 @@
-
-module.exports = -> describe "API: ".subspec, ->
-
-  before (done) ->
-    SETUP.initTags -> SETUP.initTemplates done
-
-
-  it "*** JK Sent annoucement to pre-applied experts expert"
-
+create = ->
 
   it "Cannot get my expert profile as anonymous user", itDone ->
     ANONSESSION (s) ->
@@ -68,6 +60,9 @@ module.exports = -> describe "API: ".subspec, ->
                       expect(user.cohort.expert._id).to.exist
                       DONE()
 
+
+
+migrate = ->
 
   it "Can update expert profile as new v1 user", itDone ->
     SETUP.createNewExpert 'ape1', {}, (s, expert) ->
@@ -245,7 +240,43 @@ module.exports = -> describe "API: ".subspec, ->
                   expect(azv0E2.settings).to.be.undefined
                   expect(azv0E2.mojo).to.be.undefined
                   expect(azv0E2.matching).to.be.undefined
-                DONE()
+                  DONE()
 
 
+admin = ->
+
+  it "Delete by id", itDone ->
+    SETUP.ensureV1LoggedInExpert 'dlim', (s) ->
+      expertId = s.cohort.expert._id
+      LOGIN 'admin', ->
+        DELETE "/adm/experts/#{expertId}", {}, ->
+          db.readDoc 'Expert', expertId, (r) ->
+            expect(r).to.be.null
+            DONE()
+
+  it "Get newest experts", itDone ->
+    LOGIN 'admin', ->
+      GET "/adm/experts/new", {}, (experts) ->
+        expect(experts.length>0).to.be.true
+        DONE()
+
+
+  it "Get recently active experts", itDone ->
+    LOGIN 'admin', ->
+      GET "/adm/experts/active", {}, (experts) ->
+        expect(experts.length>0).to.be.true
+        DONE()
+
+
+module.exports = ->
+
+  before ->
+
+  it "*** JK Sent annoucement to pre-applied experts expert"
   it "Collects social data for social scoring"
+
+  describe("Create: ".subspec, create)
+  describe("Migrate: ".subspec, migrate)
+  describe("Admin: ".subspec, admin)
+
+

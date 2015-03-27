@@ -155,6 +155,7 @@ stories = {
     db.ensureDocs 'User', [user], (e) ->
       db.ensureDocs 'Expert', [expert], (ee) ->
         LOGIN userKey, (sExpert) ->
+          sExpert.cohort = { expert: { _id: expert._id } }
           done sExpert
 
 

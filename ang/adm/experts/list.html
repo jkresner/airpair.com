@@ -1,13 +1,14 @@
-<section id="orders">
+<section id="experts">
 
   <div class="query">
-    <!-- <div datetime-input id="queryStart" datetime="query.start"></div>
-    <div datetime-input id="queryEnd" datetime="query.end"></div> -->
-    <div user-input></div>
-    <a ng-click="fetch()" class="btn">Search</a>
+    <div style="width:350px" expert-input></div>
   </div>
 
-  <h3>Experts</h3>
+  <h3>Experts >>
+
+    <a ng-click="newest()">Newest</a>
+    | <a ng-click="active()">Active</a>
+  </h3>
 
   <table class="table table-condensed table-striped orders">
     <tr>
@@ -15,33 +16,38 @@
       <th style="width:150px">Expert</th>
       <th style="width:250px">Timeozne</th>
       <th style="width:250px">Social</th>
-      <th>Tags</th>
+      <th style="width:250px">Tags</th>
+      <th style="width:150px">Last Touch</th>
     </tr>
     <tr ng-repeat="o in experts">
       <td>
-        <img ng-src="{{o.user.avatar}}" />
+        <img ng-src="{{o.avatar}}" />
       </td>
       <td>
-        {{o.user.name}}
-        <br />{{o.user.email}}
+        {{o.name}}
+        <br />{{o.email}}
         <br />{{o._id | objectIdToDate : 'DD.MM HH:MM' }}
         <time style="display:block;color:black;width:100%">{{o._id | objectIdToAgoTime }}</time>
         {{o._id}}
       </td>
       <td>
-        {{o.user.localization.location}}
-        <br/>{{o.user.localization.timezone}}
+        {{o.location}}
+        <br/>{{o.timezone}}
       </td>
       <td>
-         <social-links profile="o.user.social"></social-links>
-         <div ng-if="o.user.social.gh">gh.followers: {{o.user.social.gh._json.followers}}</div>
-         <div ng-if="o.user.social.tw">tw.followers: {{o.user.social.tw._json.followers_count}}</div>
-         <div ng-if="o.user.social.so">so.reputation: {{o.user.social.so.reputation}}</div>
+         <social-links profile="o"></social-links>
+         <div ng-if="o.gh">gh.followers: {{o.gh._json.followers}}</div>
+         <div ng-if="o.tw">tw.followers: {{o.tw._json.followers_count}}</div>
+         <div ng-if="o.so">so.reputation: {{o.so.reputation}}</div>
+      </td>
+      <td class="tags">
+        <span ng-repeat="t in o.tags">
+          {{t.name}}
+        </span>
       </td>
       <td>
-        <div ng-repeat="t in o.tags">
-          <span>{{t.name}}</span>
-        </div>
+        {{ o.lastTouch.action }}
+        <time style="display:block;color:black;width:100%">{{o.lastTouch.utc  | agoTime }}</time>
       </td>
     </tr>
   </table>

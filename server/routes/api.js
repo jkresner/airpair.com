@@ -192,6 +192,9 @@ module.exports = function(app) {
     .put('/requests/:request/farm', API.Requests.farmByAdmin)
     .put('/requests/:request/remove/:expert', API.Requests.removeSuggestion)
     .get('/experts/new', API.Experts.getNewForAdmin)
+    .get('/experts/active', API.Experts.getActiveForAdmin)
+    .get('/experts/:id', API.Experts.getByIdForAdmin)
+    .delete('/experts/:expert', API.Experts.deleteById)
 
   router.use('/adm',admrouter)
 
