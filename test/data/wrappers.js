@@ -427,9 +427,98 @@ module.exports = {
 
   mailchimp_unsubscribed: {
     complete: true
-  }
+  },
 
+  stackoverflow_wiki_nofoundtag: {
+    items: [],
+    has_more: false,
+    quota_max: 300,
+    quota_remaining: 275
+  },
 
+  //https://api.stackexchange.com/tags/ember.js/wikis?site=stackoverflow
+  stackoverflow_wiki_ember: {
+    items: [
+      {
+        excerpt_last_edit_date: 1413395402,
+        body_last_edit_date: 1420351795,
+        excerpt: 'Ember.js is an advanced front end MVC application framework written in JavaScript and distributed under an open source license.  Click learn more... and use the preconfigured templates from the tag wiki in order to create better questions.\r\n',
+        tag_name: 'ember.js'
+      }
+    ],
+    has_more: false,
+    quota_max: 300,
+    quota_remaining: 283
+  },
+
+  stackoverflow_wiki_ios8: { items:
+    [ { excerpt_last_edit_date: 1411277797, body_last_edit_date: 1408087005,
+       excerpt: 'iOS 8 is the eighth version of Apple&#39;s iOS mobile operating system. It was announced at Apple&#39;s Worldwide Developers Conference (WWDC) on June 2, 2014 and was later released to the public on September 17, 2014.  See https://www.apple.com/ios/ios8/developer/ for more information.', tag_name: 'ios8' } ],
+    has_more: false, quota_max: 300, quota_remaining: 270 },
+
+  //https://api.stackexchange.com/tags/ember.js/info?site=stackoverflow
+  stackoverflow_info_ember: {
+    "items":[
+      {
+        "has_synonyms":true,
+        "is_moderator_only":false,
+        "is_required":false,
+        "count":14533,
+        "name":"ember.js"
+      }
+    ],
+    "has_more":false,
+    "quota_max":300,
+    "quota_remaining":281
+  },
+
+  //https://api.stackexchange.com/tags/ember.js/synonyms?site=stackoverflow
+  stackoverflow_synonyms_ember: {
+    "items":[
+      {"creation_date":1344434850,"last_applied_date":1427235401,"applied_count":546,"to_tag":"ember.js","from_tag":"emberjs"},
+      {"creation_date":1338657033,"last_applied_date":1427377381,"applied_count":827,"to_tag":"ember.js","from_tag":"ember"}
+    ],
+    "has_more":false,
+    "quota_max":300,
+    "quota_remaining":280
+  },
+
+  //https://api.stackexchange.com/tags/ember.js/synonyms?site=stackoverflow
+  stackoverflow_related_ember: {
+    "items":[
+      {"has_synonyms":true,"is_moderator_only":false,"is_required":false,"count":4033,"name":"javascript"},
+      {"has_synonyms":false,"is_moderator_only":false,"is_required":false,"count":3404,"name":"ember-data"},
+      {"has_synonyms":false,"is_moderator_only":false,"is_required":false,"count":1103,"name":"handlebars.js"},
+      {"has_synonyms":false,"is_moderator_only":false,"is_required":false,"count":948,"name":"ember-cli"},
+      {"has_synonyms":true,"is_moderator_only":false,"is_required":false,"count":557,"name":"ruby-on-rails"},
+      {"has_synonyms":false,"is_moderator_only":false,"is_required":false,"count":549,"name":"jquery"},
+      {"has_synonyms":false,"is_moderator_only":false,"is_required":false,"count":298,"name":"ember-router"},
+      {"has_synonyms":true,"is_moderator_only":false,"is_required":false,"count":276,"name":"json"},
+      {"has_synonyms":false,"is_moderator_only":false,"is_required":false,"count":249,"name":"handlebars"},
+      {"has_synonyms":true,"is_moderator_only":false,"is_required":false,"count":185,"name":"node.js"},
+      {"has_synonyms":true,"is_moderator_only":false,"is_required":false,"count":176,"name":"coffeescript"},
+      {"has_synonyms":true,"is_moderator_only":false,"is_required":false,"count":166,"name":"model-view-controller"},
+      {"has_synonyms":true,"is_moderator_only":false,"is_required":false,"count":147,"name":"rest"},
+      {"has_synonyms":true,"is_moderator_only":false,"is_required":false,"count":147,"name":"html"},
+      {"has_synonyms":true,"is_moderator_only":false,"is_required":false,"count":135,"name":"templates"},
+      {"has_synonyms":true,"is_moderator_only":false,"is_required":false,"count":134,"name":"routes"},
+      {"has_synonyms":false,"is_moderator_only":false,"is_required":false,"count":134,"name":"model"},
+      {"has_synonyms":false,"is_moderator_only":false,"is_required":false,"count":130,"name":"ember-simple-auth"},
+      {"has_synonyms":true,"is_moderator_only":false,"is_required":false,"count":127,"name":"ajax"},
+      {"has_synonyms":false,"is_moderator_only":false,"is_required":false,"count":121,"name":"twitter-bootstrap"},
+      {"has_synonyms":false,"is_moderator_only":false,"is_required":false,"count":119,"name":"controller"},
+      {"has_synonyms":false,"is_moderator_only":false,"is_required":false,"count":116,"name":"ember-old-router"},
+      {"has_synonyms":false,"is_moderator_only":false,"is_required":false,"count":105,"name":"routing"},
+      {"has_synonyms":false,"is_moderator_only":false,"is_required":false,"count":103,"name":"qunit"},
+      {"has_synonyms":false,"is_moderator_only":false,"is_required":false,"count":101,"name":"ember-app-kit"},
+      {"has_synonyms":false,"is_moderator_only":false,"is_required":false,"count":99,"name":"view"},
+      {"has_synonyms":true,"is_moderator_only":false,"is_required":false,"count":98,"name":"angularjs"},
+      {"has_synonyms":true,"is_moderator_only":false,"is_required":false,"count":92,"name":"css"},
+      {"has_synonyms":false,"is_moderator_only":false,"is_required":false,"count":90,"name":"ember-model"},
+      {"has_synonyms":true,"is_moderator_only":false,"is_required":false,"count":75,"name":"authentication"}
+    ],
+    "has_more":true,"quota_max":300,"quota_remaining":279
+  },
 
 
 }

@@ -19,6 +19,7 @@ angular.module('APSvcAdmin', [])
 
     this.tags = {
       getAllTags: GET((d)=>`/adm/tags`),
+      getById: GET((d)=>`/adm/tags/${d._id}`),
       updateTag: PUT((d)=>`/adm/tags/${d._id}`)
     }
 

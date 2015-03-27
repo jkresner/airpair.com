@@ -17,6 +17,7 @@ resolver
   .param('expert', 'experts', 'getById')
   .param('paymethod', 'paymethods', 'getById')
   .param('orders', 'orders', 'getMultipleOrdersById')
+  .param('tagfrom3rdparty', 'tags', 'getBy3rdParty')
 
 var ErrorApi404 = (msg) => {
   var e = new Error(msg)
@@ -37,7 +38,7 @@ var middleware = {
   bodyParam(paramName) {
     return (req, res, next) => {
       var param = req.body[paramName]
-      if (!param) return next(ErrorApi404(`${paramName} not specified.`))
+      if (!param) return next(ErrorApi404(`Body param ${paramName} not specified.`))
       if (logging) $log('bodyParamFn', paramName, req.body[paramName])
 
       var svcFn = resolver.resolve(paramName)

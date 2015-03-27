@@ -8,7 +8,7 @@ angular.module("ADMTags", [])
 
 })
 
-.controller('TagCtrl', ($scope, $routeParams, ServerErrors, DataService, AdmDataService) => {
+.controller('TagCtrl', ($scope, $routeParams, ServerErrors, AdminService) => {
   $scope.data = {}
 
   var setScope = function(r) {
@@ -16,7 +16,7 @@ angular.module("ADMTags", [])
     $scope.data = r
   }
 
-  DataService.tags.getBySlug({slug:$routeParams.id}, setScope,
+  AdminService.tags.getById({slug:$routeParams.id}, setScope,
     ServerErrors.fetchFailRedirect('/adm/tags'))
 
   $scope.update = () =>

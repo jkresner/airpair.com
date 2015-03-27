@@ -27,6 +27,7 @@ var wrappers = {
   Stripe:         initAPIWrap(require('./stripe')),
   Braintree:      initAPIWrap(require('./braintree')),
   YouTube:        initAPIWrap(require('./youtube')),
+  StackExchange:  initAPIWrap(require('./stackexchange')),
 }
 
 
