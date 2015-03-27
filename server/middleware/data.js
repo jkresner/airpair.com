@@ -86,6 +86,23 @@ var middleware = {
         next()
       }
     })
+  },
+
+  populateTagPage(slug) {
+    return function(req, res, next) {
+      var TagsSvc = require("../services/tags")
+      if (logging) $log('tagsPage', slug)
+      $callSvc(TagsSvc.getTagPage,req)(slug, function(e, r) {
+        if (e) return next(e)
+        else {
+          req.tagpage = r
+          req.tagpage.meta = r.tag.meta
+          req.tag = r.tag
+          // $log('req.tagpage', req.tagpage)
+          next()
+        }
+      })
+    }
   }
 }
 

@@ -26,6 +26,5 @@ module.exports = [
   '/matchmaking*',
   '/review*',
   '/requests*',
-  '/angularjs',
   '/100k-writing-competition'
 ]
