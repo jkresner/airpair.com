@@ -62,11 +62,14 @@ var get = {
 
   },
 
-  getTagPage(tag, cb) {
-    require('./posts').getByTag(tag, (ee,posts)=> {
-      require('./workshops').getByTag(tag.slug, (e,workshops)=> {
-        var d = Data.data.angularPage(tag,posts,workshops)
-        cb(null, d)
+  getTagPage(slug, cb) {
+    get.getBySlug(slug,(e, tag)=>{
+      require('./posts').getByTag(tag, (ee,posts)=> {
+        require('./workshops').getByTag(slug, (eee,workshops)=> {
+          //-- TODO move tagPage stuff into the database
+          var d = Data.data.angularPage(tag,posts,workshops)
+          cb(null, d)
+        })
       })
     })
   }
