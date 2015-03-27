@@ -1,6 +1,70 @@
-<section id="tag" ng-if="tag">
+<section id="tag" ng-if="data._id">
 
-<h3>Tag: {{tag.name}}</h3>
+<h2><a href="/adm/tags">Tags</a> > {{data.name}}</h2>
+
+<form id="tagForm" novalidate name="tagForm" ng-submit="submit(data)">
+
+  <div form-group>
+    <div><label class="control-label">_id</label> {{data._id}} </div>
+    <div><label class="control-label">soId</label> {{data.soId}} </div>
+    <div><label class="control-label">slug</label> {{data.slug}} </div>
+  </div>
+
+  <div form-group>
+    <label class="control-label" for="tagName">Name</label>
+    <input id="tagName" name="name" form-control type="text" placeholder="Full capitalized name of tag" ng-model="data.name" tabindex="102">
+<!--     <div class="error" ng-if="formGroup.showError(tagForm.name)" ng-messages="tagForm.name.$error">
+    </div> -->
+  </div>
+
+  <div form-group>
+    <label class="control-label" for="shortName">Short name</label>
+    <input id="shortName" name="short" form-control type="text" placeholder="Short / abbreviated name of tag" ng-model="data.short" tabindex="103">
+    <!-- <div class="error" ng-if="formGroup.showError(tagForm.short)" ng-messages="tagForm.short.$error">
+      <div ng-message="required">Short name required</div>
+    </div> -->
+  </div>
+
+  <div form-group>
+    <label class="control-label" for="tagDesc">Description</label>
+    <textarea id="tagDesc" name="desc" form-control type="text" ng-model="data.desc" tabindex="105"></textarea>
+<!--     <div class="error" ng-if="formGroup.showError(tagForm.desc)" ng-messages="tagForm.desc.$error">
+      <div ng-message="required">Description required</div>
+    </div> -->
+  </div>
+
+  <div form-group>
+    <label class="control-label" for="tagTokens">Search tokens</label>
+    <input id="tagTokens" name="tokens" type="text" form-control placeholder="comma separated strings to surface tag in text search" ng-model="data.tokens" tabindex="106">
+<!--     <div class="error" ng-if="formGroup.showError(tagForm.tokens)" ng-messages="tagForm.tokens.$error">
+    </div> -->
+  </div>
+
+  <hr />
+  <h3>Page meta</h3>
+
+  <div form-group>
+    <label class="control-label" for="metaTitle">Title</label>
+    <input id="metaTitle" name="metaTitle" type="text" form-control placeholder="Meta title" ng-model="data.meta.title" tabindex="107">
+<!--     <div class="error" ng-if="formGroup.showError(tagForm.metaTitle)" ng-messages="tagForm.metaTitle.$error">
+    </div> -->
+  </div>
+
+  <div form-group>
+    <label class="control-label" for="metaCanonical">Canonical url</label>
+    <input id="metaCanonical" name="metaCanonical" type="text" form-control placeholder="Meta title" ng-model="data.meta.canonical" tabindex="108"
+    >
+  </div>
+
+  <div form-group>
+    <label class="control-label" for="metaDescription">Description</label>
+    <input id="metaDescription" name="metaDescription" type="text" form-control placeholder="Meta description" ng-model="data.meta.description" tabindex="100"
+    >
+  </div>
+  <hr />
+  <a class="btn" style="width:100%" ng-click="update()">Save</a>
+
+</form>
 
 
 </section>

@@ -1,5 +1,3 @@
-var util = require('../../../shared/util');
-
 angular.module("ADMBookings", [])
 
 .config(function(apRouteProvider) {
@@ -10,7 +8,9 @@ angular.module("ADMBookings", [])
 
 })
 
-.controller('BookingCtrl', ($scope, $routeParams, AdmDataService, ServerErrors, BookingsUtil, OrdersUtil) => {
+.controller('BookingCtrl', ($scope, $routeParams, AdmDataService, ServerErrors,
+    Util, BookingsUtil, OrdersUtil) =>
+{
   $scope.data = {}
   $scope.util = BookingsUtil
 
@@ -49,7 +49,7 @@ angular.module("ADMBookings", [])
   $scope.updateStatus = (val) => updateBooking({status:val})
   $scope.addGcal = (val) => updateBooking({ sendGCal: { notify: val } })
   $scope.addYouTubeData = function(val){
-    var youTubeId = util.parseYouTubeId(val);
+    var youTubeId = Util.parseYouTubeId(val);
     AdmDataService.bookings.addYouTubeData({_id: $scope.booking._id, youTubeId}, setScope)
   }
 

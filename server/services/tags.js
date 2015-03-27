@@ -95,11 +95,14 @@ var save = {
 
   updateByAdmin(orignal, ups, cb) {
     if (ups.meta) {
-      ups.meta.ogType = "website"
-      ups.meta.ogUrl = ups.meta.canonical
-      ups.meta.ogImage = `https://www.airpair.com/static/img/css/tags/${orignal.slug}-og.png`
-      if (!ups.meta.ogTitle) ups.meta.ogTitle = ups.meta.title
-      if (!ups.meta.ogDescription) ups.meta.ogDescription = ups.meta.description
+      if (_.isEmpty(ups.meta)) delete ups.meta
+      else {
+        ups.meta.ogType = "website"
+        ups.meta.ogUrl = ups.meta.canonical
+        ups.meta.ogImage = `https://www.airpair.com/static/img/css/tags/${orignal.slug}-og.png`
+        if (!ups.meta.ogTitle) ups.meta.ogTitle = ups.meta.title
+        if (!ups.meta.ogDescription) ups.meta.ogDescription = ups.meta.description
+      }
     }
     svc.update(orignal._id, ups, cb)
   }
