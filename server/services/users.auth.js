@@ -223,7 +223,7 @@ function localLogin(email, password, errorCB, done) {
     else if (!validPassword(password, existing.local.password))
       info = "wrong password"
 
-    if (info) return errorCB(null, false, info)
+    if (info) return errorCB(null, false, Error(info))
 
     var upsert = { email: email }
 

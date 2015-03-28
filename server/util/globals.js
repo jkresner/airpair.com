@@ -9,7 +9,7 @@ module.exports = function(config)
   global.moment         = require('moment')
   global.config         = config
   global.$log           = console.log
-  global.$error         = require('./logging').logError
+  global.$error         = require('./log/error')
 
   //-- Consistent way to call services from a function with request context
   global.$callSvc       = (fn, ctx) =>

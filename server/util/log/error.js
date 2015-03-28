@@ -1,10 +1,3 @@
-var util = require('../../shared/util')
-var colors = require('colors')
-colors.APPLOAD = colors.white
-colors.setTheme({
-  appload: 'APPLOAD'
-})
-
 var knownNonErrors = [
   'Page not found',
   'try google login',
@@ -24,11 +17,12 @@ var knownNonErrors = [
   'Post cannot be edited by you, did you fork it already?',
   'Can not share an incompleted request',
   'Error getting collection: v1sessions',
-  'Cannot determine state of server'
+  'Cannot determine state of server',
+  'Cannot signup, user already exists'
 ]
 
 
-export function logError(e, user, req)
+module.exports = function(e, user, req)
 {
   if (!e) return
   if (e.message) {
