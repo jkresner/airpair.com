@@ -17,17 +17,16 @@ var owner2colorIndex = {
   '11': 11 //dc2127 bold red
 }
 
+var {calendarId,owner,ownerRefreshToken} = config.calendar.google
+var auth  = null
 
 var wrapper = {
 
   init() {
-    var {calendarId,owner,ownerRefreshToken} = config.calendar.google
     var google = require('googleapis')
     var OAuth2Client = google.auth.OAuth2
-    $log('want to connect')
-    var auth = new OAuth2Client(config.auth.google.clientID, config.auth.google.clientSecret)
+    auth = new OAuth2Client(config.auth.google.clientID, config.auth.google.clientSecret)
     auth.setCredentials({ refresh_token: ownerRefreshToken })
-    $log('connected')
     wrapper.api = google.calendar('v3')
   },
 
@@ -38,6 +37,7 @@ var wrapper = {
   //     cb(data)
   //   })
   // },
+
   listEvents(cb) {
     wrapper.api.events.list({ auth, calendarId }, function(err, data) {
       if (err) return console.log('An error occured', err)
@@ -45,6 +45,7 @@ var wrapper = {
       cb(data)
     })
   },
+
   createEvent(eventName, sendNotifications, start, minutes, attendees, description, admInitials, cb) {
     if (!config.calendar.on) return cb()
     var end = { dateTime: moment(start).add(minutes,'minutes').toISOString() } //.substring(0,16)+'-08:00' }
