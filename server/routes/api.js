@@ -93,6 +93,7 @@ module.exports = function(app) {
     .get('/experts/me', API.Experts.getMe)
     .get('/experts/search/:id', API.Experts.search)
     .get('/experts/:id', API.Experts.getById)
+    .get('/experts/:expert/history', API.Experts.getHistory)
     .post('/experts/me', populateUser, API.Experts.create)
     .put('/experts/:expert/me', populateUser, API.Experts.updateMe)
 

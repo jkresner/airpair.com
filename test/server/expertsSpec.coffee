@@ -242,6 +242,11 @@ migrate = ->
                   expect(azv0E2.matching).to.be.undefined
                   DONE()
 
+  it "Can save a different gravatar as pic property"
+
+
+  it "Pic property carries through request and order bookings objects flows"
+
 
 admin = ->
 
@@ -267,6 +272,52 @@ admin = ->
         expect(experts.length>0).to.be.true
         DONE()
 
+
+availability = ->
+
+  it "Save availability settings"
+
+admin = ->
+
+  it.skip "Get experts history", itDone ->
+    LOGIN 'admin', ->
+      # expertId = "524304901c9b0f0200000012" ## Matias
+      expertId = "53cfe315a60ad902009c5954" ## Michael P
+      GET "/experts/#{expertId}/history", {}, (history) ->
+        expect(history.requests.length > 0).to.be.true
+        # $log('history.requests', history.requests.length)
+        for req in history.requests
+          expect(req.calls).to.be.undefined
+          expect(req.adm).to.be.undefined
+          expect(req.suggested.length).to.equal(1)
+          expect(req.by).to.exist
+          expect(req.company).to.be.undefined
+          expectIdsEqual(req.suggested[0].expert._id,expertId)
+        # $log('calls', history.calls.length, history.calls[0])
+        # expect(history.calls.length > 0).to.be.true
+        # for call in (history.calls||[])
+        #   expectIdsEqual(call.expertId, expertId)
+        $log('bookings', history.bookings.length, history.bookings[0].participants[0])
+        expect(history.bookings.length > 0).to.be.true
+        for booking in (history.bookings)
+          expectIdsEqual(booking.expertId, expertId)
+          expect(booking.type).to.exist
+          expect(booking.status).to.exist
+          expect(booking.customerId).to.exist
+          expect(booking.datetime).to.exist
+          expect(booking.minutes).to.exist
+          expect(booking.participants.length>0).to.be.true
+          $log('cust', booking.participants[0])
+          expect(booking.participants[0].role).to.equal('customer')
+          expect(booking.participants[0].info.name).to.exist
+        DONE()
+
+
+history = ->
+
+  it "Cannot get another experts history"
+
+  it "Get experts history"
 
 module.exports = ->
 

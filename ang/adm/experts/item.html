@@ -1,1 +1,121 @@
-{{expert}}
+<section id="expert" ng-if="data._id">
+
+
+<section class="a user">
+
+  <h3 class="underline" ng-if="data"><a href="/adm/experts">Experts</a> > {{ data.name || data.user.name }}
+  <b>
+    {{data.lastTouch.action}}
+    <time>{{ data.lastTouch.utc | agoTime }}</time>
+  </b>
+  </h3>
+
+  <div class="display-group" ng-if="data.user">
+    <img class="pic" ng-src="{{data.pic}}">
+    <social-links profile='data.user.social'></social-links>
+    <user-info info="data.user"></user-info>
+  </div>
+  <div class="display-group" ng-if="!data.user">
+    <user-info info="data"></user-info>
+    <p class="text-warning">Not upgraded to v1</p>
+  </div>
+
+</section>
+
+
+<section class="b json">
+
+  <h3 class="underline">Raw</h3>
+
+  <pre>{{expert|json}}</pre>
+
+</section>
+
+<section class="a expert">
+
+  <h4>Expert info</h4>
+
+  <div class="display-group">
+    <div class="gmail">
+      <var>Gmail</var>
+      <label>{{data.gmail||'n/a'}}</label>
+    </div>
+    <div class="rate">
+      <var>Rate</var>
+      <label>{{data.rate}}</label>
+    </div>
+    <div class="tags">
+      <var>Tags</var>
+      <label><ul>
+      <li ng-repeat="tag in data.tags">{{tag.sort}}: <span>{{tag.slug}}</span></li>
+      </ul></label>
+    </div>
+    <div class="brief">
+      <var>Brief</var>
+      <label><p>{{data.brief}}</p></label>
+    </div>
+  </div>
+
+
+</section>
+
+
+<section class="a availability">
+
+  <expert-availability></expert-availability>
+
+
+  <h3 class="underline">Deals</h3>
+  <p class="text-warning">Deals coming sunday (today)...</p>
+
+</section>
+
+<section class="b history">
+
+  <h3 class="underline">History</h3>
+
+  <p ng-if="!requests">Loading ...</p>
+
+  <div class="requests" ng-if="requests">
+    <h4>Requests (<span ng-if="requests">{{requests.length}}</span>)</h4>
+    <ul>
+      <li ng-repeat="r in requests"><a href="/adm/pipeline/{{r._id}}" target="_blank">{{r._id |objectIdToDate : 'YYYY DD MMM' }}</a> {{r.suggested[0].expertStatus}}</li>
+    </ul>
+  </div>
+
+  <div class="bookings" ng-if="bookings">
+    <h4>Bookings (<span ng-if="requests">{{bookings.length+calls.length}}</span>)</h4>
+    <ul>
+      <li ng-repeat="b in bookings"><a href="/adm/bookings/{{b._id}}" target="_blank">{{b._id |objectIdToDate : 'YYYY DD MMM' }} {{b.utc}} </a>{{ b.participants[0].info.name }}</li>
+    </ul>
+  </div>
+
+  <h4>Payouts (0)</h4>
+  <p class="text-warning">Payous coming soonish. Need to migrate v0 orders :p</p>
+
+</section>
+
+<section class="a mojo">
+
+  <h3 class="underline">Mojo</h3>
+
+  <p class="text-warning">Coming soon...</p>
+
+</section>
+
+
+<section class="b activity">
+
+  <h3 class="underline">Activity</h3>
+
+  <ul>
+    <li ng-repeat="act in data.activity">
+      <b>{{act.action}} <time>{{act.utc | locaTime }}</time></b>
+    </li>
+  </ul>
+
+</section>
+
+
+</section>
+

@@ -1,16 +1,19 @@
 require('./setup/flavor')
 
 {initGlobals,initConfig,colors} = require('./../../server/util/_setup')
-initGlobals(initConfig('test'))
 
 colors.SPEC = colors.yellow.dim.bold
 colors.SUBSPEC = colors.yellow.dim
 colors.EXPECTEDERR = colors.magenta.dim
+colors.APPLOAD = colors.white
 colors.setTheme({
   spec: 'SPEC',
   subspec: 'SUBSPEC',
-  expectederr: 'EXPECTEDERR'
+  expectederr: 'EXPECTEDERR',
+  appload: 'APPLOAD'
 })
+
+initGlobals(initConfig('test'))
 
 global.itDone = (fn) ->
   (dn) ->

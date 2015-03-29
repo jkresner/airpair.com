@@ -60,6 +60,21 @@ var selectFields = {
     'suggested.expertStatus': 1,
     'lastTouch':1,
     'adm': 1
+  },
+  experts: {
+    '_id':1,
+    'title': 1,
+    'userId':1,
+    'by':1,
+    'suggested':1,
+    'calls._id':1,
+    'calls.expertId':1,
+    'calls.type':1,
+    'calls.duration':1,
+    'calls.datetime':1,
+    'calls.status':1,
+    'company.contacts.fullName':1,
+    'company.contacts.email':1,
   }
 }
 
@@ -100,6 +115,7 @@ var data = {
     anon: selectFields.anon,
     review: selectFields.review,
     customer: selectFields.customer,
+    experts: selectFields.experts,
     meSuggested(r, userId) {
       var sug = _.find(r.suggested,(s)=>_.idsEqual(userId,s.expert.userId))
       return (sug) ? [sug] : []
@@ -145,7 +161,20 @@ var data = {
 
           cb(null,r)
         }
-      }
+      },
+      experts(ctx, cb) {
+        return  (e,r) => {
+          if (e) return cb(e)
+          if (r.length) {
+            for (var req of r) {
+              req.suggested = data.select.meSuggested(req, ctx.user._id)
+              if (req.calls)
+                req.calls = _.where(req.calls,(c)=>_.idsEqual(ctx.expertId,c.expertId))
+            }
+          }
+          cb(null,r)
+        }
+      },
     }
   },
 
@@ -160,6 +189,10 @@ var data = {
 
     //   return { '$and': query }
     // },
+
+    experts(expert) {
+      return {'suggested.expert._id':expert._id}
+    },
 
     incomplete: {
       'budget' : { '$exists': false }, status: { $in: ['received'] }

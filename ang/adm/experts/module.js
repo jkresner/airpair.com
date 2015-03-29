@@ -8,11 +8,20 @@ angular.module("ADMExperts", ['APRoutes'])
 
 })
 
-.controller('ExpertsCtrl', ($scope, $location, AdmDataService, DateTime) => {
+.directive('userInfo', () => {
+  return { template: require('./userInfo.html'), scope: { info: '=info' } }
+})
 
-  // $scope.query = {
-  //   user:     { _id: '' }
-  // }
+.directive('expertAvailability', () => {
+  return {
+    template: require('./availability.html'),
+    controller($scope, $attrs) {
+      console.log('$expertSettings.p')
+    }
+  }
+})
+
+.controller('ExpertsCtrl', ($scope, $location, AdmDataService, DateTime) => {
 
   $scope.selectExpert = (expert) =>
     $location.path(`/adm/experts/${expert._id}`)
@@ -26,15 +35,26 @@ angular.module("ADMExperts", ['APRoutes'])
 
 })
 
-.controller('ExpertCtrl', ($scope, $routeParams, ServerErrors, AdmDataService) => {
+.controller('ExpertCtrl', ($scope, $routeParams, ServerErrors, AdmDataService, DataService) => {
 
-  var setScope = (r) =>
+  var _id = $routeParams.id
+
+  var setScope = (r) => {
     $scope.expert = r
+    $scope.data = r
+  }
 
   $scope.fetch = () =>
-    AdmDataService.experts.getBydId({_id:$routeParams.id}, setScope,
+    AdmDataService.experts.getBydId({_id}, setScope,
       ServerErrors.fetchFailRedirect('/adm/experts'))
 
   $scope.fetch()
+
+  var setHistoryScope = (history) => {
+    $scope.requests = history.requests
+    $scope.bookings = history.bookings
+  }
+
+  DataService.experts.getHistory({_id}, setHistoryScope)
 
 })

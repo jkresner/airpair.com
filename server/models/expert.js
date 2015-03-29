@@ -3,10 +3,17 @@ var Schema = mongoose.Schema
 var ObjectId = Schema.Types.ObjectId
 var Shared = require("./_shared")
 
-var Coupon = {
+
+//-- If userIds.length == 0, then the deal is available to everyone
+var Deal = {
+  lastTouch:      Shared.Touch,
+  active:         { type: Boolean, required: true, default: true },
   code:           { required: true, type: String },
-  rate:           { required: true, type: Number }
+  rate:           { required: true, type: Number },
+  rake:           { required: true, type: Number },  // allow the expert commission deals
+  userIds:        { required: true, type: [ObjectId] }
 }
+
 
 var Bookme = {
 
@@ -15,7 +22,7 @@ var Bookme = {
   noIndex:        { type: Boolean, default: false    },  // no index for crawlers
   rate:           { required: true, type: Number     },  // experts external rate
   rake:           { required: true, type: Number     },  // allow the expert commission deals
-  coupons:        [Coupon],                              // allow the expert to hand out promotions
+  coupons:        [Deal],                              // allow the expert to hand out promotions
   urlBlog:        String,                                // www.airpair.com/node.js/expert-training-domenic-denicola
   youTubeId:      String,                                // youtube movie
   // creditRequestIds: { type: [ObjectId] },  # Requests that credits can be applied for
@@ -75,6 +82,7 @@ var TagSlim = {
 module.exports = mongoose.model('Expert', new Schema({
 
   userId:         { unique: true, required: true, type: ObjectId, ref: 'User' },
+  pic:            { type: String },
 
   lastTouch:      Shared.Touch,
   activity:       [Shared.Touch],
@@ -83,9 +91,9 @@ module.exports = mongoose.model('Expert', new Schema({
   brief:          String,
   tags:           [TagSlim],
   gmail:          { type: String },
-  pic:            { type: String },
 
   user:           UserCopy,
+
   // deprecated v0 user props
   name:           { type: String },
   username:       { type: String },
@@ -100,14 +108,24 @@ module.exports = mongoose.model('Expert', new Schema({
   in:             {},          // linkedIn
   tw:             {},          // twitter
 
-  settings:       {},
+  deals:          [Deal],
+
+  availability:   {
+    lastTouch:    Shared.Touch,
+    status:       String,
+    busyUntil:    { type: Date },
+    times:        String,
+    minRate:      Number,
+    hours:        String
+  },
+
   // deprecated v0 settings props
   minRate:        Number,
-  status:         String,
-  availability:   String,
-  hours:          String,
-  busyUntil:      { type: Date, default: Date },
-  updatedAt:      { type: Date, default: Date },
+  // status:         String,
+  // availability:   String,
+  // hours:          String,
+  // busyUntil:      { type: Date, default: Date },
+  // updatedAt:      { type: Date, default: Date },
 
   // to get rid of
   // matching
@@ -136,3 +154,24 @@ module.exports = mongoose.model('Expert', new Schema({
   bookMe:         { required: false, type: Bookme },
 
 }))
+
+
+
+
+// migrate 2015.03.29
+// db.experts.update({ karma: { $exists:1 } },{ $unset: { karma: "" } },{ 'multi': true })
+// db.experts.update({ other: { $exists:1 } },{ $unset: { other: "" } },{ 'multi': true })
+// db.experts.update({ stats: { $exists:1 } },{ $unset: { stats: "" } },{ 'multi': true })
+
+// db.experts.update({ busyUntil: { $exists:1 } },{ $unset: { busyUntil: "" } },{ 'multi': true })
+// db.experts.update({ updatedAt: { $exists:1 } },{ $unset: { updatedAt: "" } },{ 'multi': true })
+// db.experts.update({ availability: { $exists:1 } },{ $set: { availability: {} } },{ 'multi': true })
+
+// db.experts.update({ status: { $exists:1 } },{ $rename: { 'status':'availability.status' } },{ 'multi': true })
+// db.experts.update({ status: { $exists:1 } },{ $unset: { status: "" } },{ 'multi': true })
+// db.experts.update({ minRate: { $exists:1 } },{ $rename: { 'minRate':'availability.minRate' } },{ 'multi': true })
+// db.experts.update({ minRate: { $exists:1 } },{ $unset: { minRate: "" } },{ 'multi': true })
+// db.experts.update({ hours: { $exists:1 } },{ $rename: { 'hours':'availability.hours' } },{ 'multi': true })
+// db.experts.update({ hours: { $exists:1 } },{ $unset: { hours: "" } },{ 'multi': true })
+
+

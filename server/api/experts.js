@@ -8,6 +8,7 @@ export default initAPI(
   getByIdForAdmin: (req) => [req.params.id],
   getNewForAdmin: (req) => [],
   getActiveForAdmin: (req) => [],
+  getHistory: (req) => [req.expert],
   create: (req) => [req.body],
   updateMe: (req) => [req.expert,req.body],
   deleteById: (req) => [req.expert],
