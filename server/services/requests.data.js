@@ -1,82 +1,7 @@
 import Rates              from '../services/requests.rates'
 import * as md5           from '../util/md5'
-var Roles =               require('../../shared/roles.js')
-var {selectFromObject} =  require('../../shared/util')
-var {ObjectId} =          require('mongoose').Schema
-
-
-var selectFields = {
-  anon: {
-    '_id': 1,
-    'by.avatar': 1,
-    'type': 1,
-    'brief': 1,
-    'tags': 1,
-    'time': 1,
-    'experience': 1
-  },
-  review: {
-    '_id': 1,
-    'userId': 1,
-    'by': 1,
-    'type': 1,
-    'brief': 1,
-    'tags': 1,
-    'time': 1,
-    'hours': 1,
-    'experience': 1,
-    'status': 1,
-    'suggested': 1,
-    'title': 1
-  },
-  customer: {
-    '_id': 1,
-    'userId': 1,
-    'by': 1,
-    'brief': 1,
-    'type': 1,
-    'tags': 1,
-    'time': 1,
-    'hours': 1,
-    'experience': 1,
-    'status': 1,
-    'budget': 1,
-    'suggested': 1,
-    'title': 1
-  },
-  pipeline: {
-    '_id': 1,
-    'userId': 1,
-    'by': 1,
-    'type': 1,
-    'tags.slug': 1,
-    'time': 1,
-    // 'hours': 1,
-    // 'experience': 1,
-    'status': 1,
-    'budget': 1,
-    'suggested.expert.username': 1,
-    'suggested.expert.email': 1,
-    'suggested.expertStatus': 1,
-    'lastTouch':1,
-    'adm': 1
-  },
-  experts: {
-    '_id':1,
-    'title': 1,
-    'userId':1,
-    'by':1,
-    'suggested':1,
-    'calls._id':1,
-    'calls.expertId':1,
-    'calls.type':1,
-    'calls.duration':1,
-    'calls.datetime':1,
-    'calls.status':1,
-    'company.contacts.fullName':1,
-    'company.contacts.email':1,
-  }
-}
+var Roles                 = require('../../shared/roles.js').request
+var {ObjectId}            = require('mongoose').Schema
 
 
 function migrateV0(r) {
@@ -112,10 +37,76 @@ var id2015 = new ObjectId(hexSeconds + "0000000000000000").path
 var data = {
 
   select: {
-    anon: selectFields.anon,
-    review: selectFields.review,
-    customer: selectFields.customer,
-    experts: selectFields.experts,
+    anon: {
+      '_id': 1,
+      'by.avatar': 1,
+      'type': 1,
+      'brief': 1,
+      'tags': 1,
+      'time': 1,
+      'experience': 1
+    },
+    review: {
+      '_id': 1,
+      'userId': 1,
+      'by': 1,
+      'type': 1,
+      'brief': 1,
+      'tags': 1,
+      'time': 1,
+      'hours': 1,
+      'experience': 1,
+      'status': 1,
+      'suggested': 1,
+      'title': 1
+    },
+    customer: {
+      '_id': 1,
+      'userId': 1,
+      'by': 1,
+      'brief': 1,
+      'type': 1,
+      'tags': 1,
+      'time': 1,
+      'hours': 1,
+      'experience': 1,
+      'status': 1,
+      'budget': 1,
+      'suggested': 1,
+      'title': 1
+    },
+    pipeline: {
+      '_id': 1,
+      'userId': 1,
+      'by': 1,
+      'type': 1,
+      'tags.slug': 1,
+      'time': 1,
+      // 'hours': 1,
+      // 'experience': 1,
+      'status': 1,
+      'budget': 1,
+      'suggested.expert.username': 1,
+      'suggested.expert.email': 1,
+      'suggested.expertStatus': 1,
+      'lastTouch':1,
+      'adm': 1
+    },
+    experts: {
+      '_id':1,
+      'title': 1,
+      'userId':1,
+      'by':1,
+      'suggested':1,
+      'calls._id':1,
+      'calls.expertId':1,
+      'calls.type':1,
+      'calls.duration':1,
+      'calls.datetime':1,
+      'calls.status':1,
+      'company.contacts.fullName':1,
+      'company.contacts.email':1,
+    },
     meSuggested(r, userId) {
       var sug = _.find(r.suggested,(s)=>_.idsEqual(userId,s.expert.userId))
       return (sug) ? [sug] : []
@@ -133,7 +124,7 @@ var data = {
       }
 
       if (view != 'admin')
-        r = selectFromObject(r, selectFields[view])
+        r = util.selectFromObject(r, data.select[view])
       // $log('selected', view, request.suggested, r)
       return r
     },
@@ -160,6 +151,33 @@ var data = {
             r = data.select.byView(r, 'admin')
 
           cb(null,r)
+        }
+      },
+      byRole(ctx, errorCb, cb) {
+        return (e, r) => {
+          if (e || !r) return errorCb(e, r)
+
+          if (!ctx.user) return cb(null, data.select.byView(r, 'anon'))
+          else if (Roles.isCustomerOrAdmin(ctx.user, r)) {
+            if (ctx.machineCall) cb(null, data.select.byView(r, 'admin'))
+            else cb(null, data.select.byView(r, 'customer'))
+          }
+          else {
+            //-- Yes this is not the right place for this ...
+            var ExpertsSvc            = require('./experts')
+            $callSvc(ExpertsSvc.getMe,ctx)((ee,expert) => {
+              // -- we don't want experts to see other reviews
+              r.suggested = data.select.meSuggested(r, ctx.user._id)
+              if (r.suggested.length == 0 && expert && expert.rate)
+                r.suggested.push({expert})
+              else if (expert.isV0 && r.suggested.length == 1)
+                r.suggested[0].expert.isV0 = true
+              else if (r.suggested.length > 1)
+                throw Error("Cannot selectByExpert and have more than 1 suggested")
+
+              cb(null, data.select.byView(r, 'review'))
+            })
+          }
         }
       },
       experts(ctx, cb) {

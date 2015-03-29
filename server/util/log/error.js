@@ -18,7 +18,9 @@ var knownNonErrors = [
   'Can not share an incompleted request',
   'Error getting collection: v1sessions',
   'Cannot determine state of server',
-  'Cannot signup, user already exists'
+  'Cannot signup, user already exists',
+  'Email belongs to another account',
+  'Cannot suggest the same expert twice'
 ]
 
 

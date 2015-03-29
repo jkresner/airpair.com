@@ -163,7 +163,9 @@ var data = {
       addAvatar(cb) {
         return (e,r) => {
           if (e || !r) return cb(e,r)
-          r.avatar = md5.gravatarUrl(r.email||r.user.email)
+          if (!r.pic)
+            r.pic = md5.gravatarUrl(r.email||r.user.email)
+          r.avatar = r.pic
           r.tags = data.select.inflatedTags(r)
           cb(null,r)
         }

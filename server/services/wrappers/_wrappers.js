@@ -28,6 +28,8 @@ var wrappers = {
   Braintree:      initAPIWrap(require('./braintree')),
   YouTube:        initAPIWrap(require('./youtube')),
   StackExchange:  initAPIWrap(require('./stackexchange')),
+  Twitter:         initAPIWrap(require('./twitter')),
+  Bitly:          initAPIWrap(require('./bitly')),
 }
 
 

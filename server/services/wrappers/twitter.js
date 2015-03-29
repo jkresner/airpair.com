@@ -1,11 +1,14 @@
-var Twit = require('twit')
-var twit = new Twit(config.auth.twitter)
 
+var wrapper = {
 
-var tw = {
+  init() {
+    var Twit = require('twit')
+    wrapper.api = new Twit(config.auth.twitter)
+  },
+
   postTweet(content, cb) {
     if (config.env != 'production') return cb(null, 'faked')
-    twit.post('statuses/update', {status:content}, (e, r, resp) => {
+    wrapper.api.post('statuses/update', {status:content}, (e, r, resp) => {
         if (e) {
           $log(e.message.red, e.twitterReply.white)
           cb(e)
@@ -19,6 +22,7 @@ var tw = {
       }
     )
   }
+
 }
 
-module.exports = tw
+module.exports = wrapper
