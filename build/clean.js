@@ -1,4 +1,7 @@
 var del = require('del')
 
-module.exports = (callback) =>
-  del(['dist'], callback)
+module.exports = function(gulp, config, options, callback) {
+  return function() {
+    return del(['dist'], callback)
+  }
+}
