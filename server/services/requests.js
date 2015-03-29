@@ -1,49 +1,16 @@
+var logging               = false
 import Svc                from '../services/_service'
 import Rates              from '../services/requests.rates'
-import * as Validate      from '../../shared/validation/requests.js'
-import * as md5           from '../util/md5'
 import Request            from '../models/request'
 import User               from '../models/user'
+import * as md5           from '../util/md5'
 var UserSvc               = require('../services/users')
 var PaymethodsSvc         = require('../services/paymethods')
-var ExpertsSvc =          require('./experts')
-var util =                require('../../shared/util')
-var {select,query} =      require('./requests.data')
+var {select,query}        = require('./requests.data')
 var selectCB              = select.cb
-var logging =             false
 var svc =                 new Svc(Request, logging)
 var Roles =               require('../../shared/roles.js')
 var {isCustomer,isCustomerOrAdmin,isExpert} = Roles.request
-var BitlySvc =            require('./wrappers/bitly')
-var TwitterSvc =            require('./wrappers/twitter')
-
-
-function selectByRoleCB(ctx, errorCb, cb) {
-  return (e, r) => {
-    if (e || !r) return errorCb(e, r)
-
-    if (!ctx.user) return cb(null, select.byView(r, 'anon'))
-    else if (isCustomerOrAdmin(ctx.user, r)) {
-      if (ctx.machineCall) cb(null, select.byView(r, 'admin'))
-      else cb(null, select.byView(r, 'customer'))
-    }
-    else {
-      ExpertsSvc.getMe.call(ctx, (ee,expert) => {
-        // -- we don't want experts to see other reviews
-        r.suggested = select.meSuggested(r, ctx.user._id)
-        if (r.suggested.length == 0 && expert && expert.rate)
-          r.suggested.push({expert})
-        else if (expert.isV0 && r.suggested.length == 1)
-          r.suggested[0].expert.isV0 = true
-        else if (r.suggested.length > 1)
-          throw Error("Cannot selectByExpert and have more than 1 suggested")
-
-        cb(null, select.byView(r, 'review'))
-      })
-    }
-  }
-}
-
 
 var get = {
 
@@ -79,7 +46,7 @@ var get = {
   },
 
   getByIdForReview(id, cb) {
-    svc.getById(id, selectByRoleCB(this,cb,cb))
+    svc.getById(id, selectCB.byRole(this,cb,cb))
   },
 
   getByUserIdForAdmin(userId, cb) {
@@ -94,7 +61,7 @@ var get = {
 
   getRequestForBookingExpert(id, expertId, cb) {
     var {user} = this
-    svc.getById(id, selectByRoleCB(this, cb, (e,r) => {
+    svc.getById(id, selectCB.byRole(this, cb, (e,r) => {
       if (!isCustomerOrAdmin(user,r)) return cb(Error(`Could not find request[${id}] belonging to user[${user._id}]`))
       var suggestion = _.find(r.suggested,(s) => _.idsEqual(s.expert._id,expertId) && s.expertStatus == 'available')
       if (!suggestion) return cb(Error(`No available expert[${expertId}] on request[${r._id}] for booking`))
@@ -147,13 +114,13 @@ var save = {
       $log('******* Should impl request started email')
     }
 
-    svc.create(o, selectByRoleCB(this,cb,cb))
+    svc.create(o, selectCB.byRole(this,cb,cb))
   },
   sendVerifyEmailByCustomer(original, email, cb) {
     UserSvc.updateEmailToBeVerified.call(this, email, cb, (e,r, hash)=>{
       if (e) return cb(e)
       mailman.sendVerifyEmailForRequest(r, hash, original._id)
-      selectByRoleCB(this,cb,cb)(null, original)
+      selectCB.byRole(this,cb,cb)(null, original)
     })
   },
   updateByCustomer(original, update, cb) {
@@ -179,7 +146,7 @@ var save = {
         ups.adm = admSet(ups,{active:true})
     }
 
-    svc.update(original._id, ups, selectByRoleCB(this,cb,cb))
+    svc.update(original._id, ups, selectCB.byRole(this,cb,cb))
   },
   updateWithBookingByCustomer(request, order, cb) {
     request.status = 'booked'
@@ -187,7 +154,7 @@ var save = {
     if (!request.adm.booked)
       request.adm.booked = new Date
 
-    svc.update(request._id, request, selectByRoleCB(this,cb,cb))
+    svc.update(request._id, request, selectCB.byRole(this,cb,cb))
   },
   replyByExpert(request, expert, reply, cb) {
     var {suggested} = request
@@ -234,7 +201,7 @@ var save = {
       request.adm = admSet(request,{reviewable:new Date()})
 
     // var ups = _.extend(request,{suggested})
-    svc.update(request._id, request, selectByRoleCB(this,cb,cb))
+    svc.update(request._id, request, selectCB.byRole(this,cb,cb))
   },
   deleteById(o, cb)
   {
@@ -282,10 +249,10 @@ var admin = {
     var url = `/review/${request._id}?utm_medium=farm-link&utm_campaign=farm-${campPeriod}&utm_term=${term}`
 
     var {adm} = request
-    BitlySvc.shorten(url, (e,shortLink) => {
+    Wrappers.Bitly.shorten(url, (e,shortLink) => {
       adm.farmed = new Date
       adm.lastTouch = svc.newTouch.call(this, 'farm')
-      TwitterSvc.postTweet(`${tweet} ${shortLink}`, (e,r) => {
+      Wrappers.Twitter.postTweet(`${tweet} ${shortLink}`, (e,r) => {
         if (e) return cb(e)
         svc.update(request._id, _.extend(request, {adm}), selectCB.adm(cb))
       })
