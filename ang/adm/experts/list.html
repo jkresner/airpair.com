@@ -21,7 +21,7 @@
     </tr>
     <tr ng-repeat="o in experts">
       <td>
-        <img ng-src="{{o.avatar}}" />
+        <a href="/adm/experts/{{o._id}}"><img ng-src="{{o.avatar}}" /></a>
       </td>
       <td>
         {{o.name}}

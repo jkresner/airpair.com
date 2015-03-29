@@ -1,7 +1,8 @@
-@import "ap.less";
-@import "adm.pipeline.less";
-@import "adm.chat.less";
-@import "chat.less";
+@import "./index/ap.less";
+@import "./adm/pipeline.less";
+@import "./adm/experts.less";
+// @import "./adm/chat.less";
+// @import "chat.less";
 
 html, body{
   height:100%;
@@ -43,9 +44,25 @@ a:hover { text-decoration:none }
 
 .delete { color:red }
 
-.initials { color:white;width:22px;height:20px;padding:1px 2px;border-radius:3px;text-align:center; }
+.initials {
+  color:white;
+  width:22px;height:20px;
+  padding:1px 2px;
+  border-radius:3px;
+  text-align:center;
+}
 .pg { background:green;.initials }
 .jk { background:orange;.initials }
+.rp { background:#B99AFF;.initials }
+
+
+.display-group {
+  var { font-style:normal;display:inline-block;width:70px;
+    font-size:10px;color:@blue;
+  }
+  label { font-weight:normal;}
+
+}
 
 main {
   clear:both;
@@ -339,12 +356,5 @@ section#order {
   }
 }
 
-#experts {
-  .selected { display:none }
-  table {
-    td { font-size:13px }
-  }
-  .tags {
-    span { display:inline-block;margin:2px 5px }
-  }
-}
+
+

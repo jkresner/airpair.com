@@ -1,5 +1,14 @@
 var validation = {
 
+  getHistory(user, expert)
+  {
+    var isAdmin = _.contains(user.roles, 'admin')
+    var isOwner = _.idsEqual(expert.userId, user._id)
+
+    if ( !isAdmin && !isOwner )
+      return 'Cannot view another expert history that is not your own'
+  },
+
   create(user, expert)
   {
     if ( !user.username ) return `Cannot create expert without username`

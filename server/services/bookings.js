@@ -1,9 +1,9 @@
-import Svc              from '../services/_service'
-import Booking          from '../models/booking'
-import User             from '../models/user'
-import Expert           from '../models/expert'
-var OrdersSvc =         require('../services/orders')
-var Data =              require('./bookings.data')
+import Svc                  from '../services/_service'
+import Booking              from '../models/booking'
+import User                 from '../models/user'
+import Expert               from '../models/expert'
+var OrdersSvc               = require('../services/orders')
+var {select,query,options}  = require('./bookings.data')
 var logging =           false
 var svc =               new Svc(Booking, logging)
 var youTube =           require('./wrappers/youtube')
@@ -11,7 +11,7 @@ var util =              require('../../shared/util')
 
 var setAvatarsCB = (cb) =>
   (e, booking) => {
-    Data.select.setAvatars(booking)
+    select.setAvatars(booking)
     cb(e,booking)
   }
 
@@ -33,21 +33,15 @@ var get = {
     var opts = {}
     svc.searchMany({ customerId: id }, opts, cb)
   },
-  getByExpertId(id, cb) {
-    var opts = {}
-    svc.searchMany({ expertId: id }, opts, cb)
+  getByExpertId(expertId, cb) {
+    svc.searchMany({ expertId }, { fields: select.experts }, select.cb.inflateAvatars(cb))
   },
   getByQueryForAdmin(start, end, userId, cb)
   {
-    var opts = { fields: Data.select.listAdmin, options: Data.options.orderByDate }
-    var query = Data.query.inRange(start,end)
+    var opts = { fields: select.listAdmin, options: options.orderByDate }
+    var query = query.inRange(start,end)
     if (userId) query.customerId = userId
-    svc.searchMany(query, opts, (e,r) => {
-      for (var o of r) {
-        Data.select.setAvatars(o)
-      }
-      cb(null, r)
-    })
+    svc.searchMany(query, opts, select.cb.inflateAvatars(cb))
   }
 }
 

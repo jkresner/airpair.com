@@ -2,11 +2,12 @@ var logging               = false
 import Svc                from '../services/_service'
 import Expert             from '../models/expert'
 var {selectFromObject}    = util
-var Data                  = require('./experts.data')
-var {select}              = Data
+var {select,options}      = require('./experts.data')
 var selectCB              = select.cb
 var svc                   = new Svc(Expert, logging)
 var UserSvc               = require('../services/users')
+var RequestSvc            = require('../services/requests')
+var BookingSvc            = require('../services/bookings')
 
 var get = {
 
@@ -15,7 +16,7 @@ var get = {
   },
 
   getByIdForAdmin(id, cb) {
-    svc.getById(id,cb)
+    svc.getById(id,selectCB.addAvatar(cb))
   },
 
   getMe(cb) {
@@ -23,6 +24,43 @@ var get = {
       if (!e && !r) return cb(null, {user:selectFromObject(this.user, select.userCopy)})
       cb(e,r)
     }))
+  },
+
+  getHistory(expert, cb) {
+    var user = { _id: expert.userId }
+    $callSvc(RequestSvc.getExperts,{user})(expert,(ee,requests)=>{
+      if (ee) return cb(ee)
+      var calls = []
+      for (var req of requests) {
+        if (!req.by && req.company) {
+          req.by = {_id:req.userId,
+            name: req.company.contacts[0].fullName,
+            email: req.company.contacts[0].email
+          }
+        }
+        if (req.company) delete req.company
+
+        if (req.calls) {
+          for (var call of req.calls) {
+            var minutes = call.duration*60,
+              customerId = req.userId
+            var participants = [
+              { role: 'customer',
+                info: req.by
+              }
+            ]
+            calls.push(_.extend({customerId,participants,minutes,requestId:req._id}, call))
+          }
+          delete req.calls
+        }
+      }
+      $callSvc(BookingSvc.getByExpertId,this)(expert._id,(e,bookings)=>{
+        if (e) return cb(ee)
+        cb(null,{requests,bookings:
+          _.sortBy(_.union(calls,bookings),(b)=>-1*moment(b.datetime).unix())
+        })
+      })
+    })
   },
 
   search(term, cb) {
@@ -33,15 +71,15 @@ var get = {
       'user.social.gh.username','user.social.tw.username'
       ]
     var and = { rate: { '$gt': 0 } }
-    svc.search(term, searchFields, 5, Data.select.search, and, selectCB.migrateSearch(cb))
+    svc.search(term, searchFields, 5, select.search, and, selectCB.migrateSearch(cb))
   },
 
   getNewForAdmin(cb) {
-    svc.searchMany({}, Data.options.newest100, selectCB.inflateList(cb))
+    svc.searchMany({}, options.newest100, selectCB.inflateList(cb))
   },
 
   getActiveForAdmin(cb) {
-    svc.searchMany({}, Data.options.active100, selectCB.inflateList(cb))
+    svc.searchMany({}, options.active100, selectCB.inflateList(cb))
   },
 
 }

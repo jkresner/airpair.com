@@ -1,6 +1,6 @@
 import * as md5         from '../util/md5'
 
-module.exports = {
+var data = {
 
   select: {
     listAdmin: {
@@ -16,10 +16,31 @@ module.exports = {
       'participants':1,
       // 'orderId':1
     },
+    experts: {
+      '_id': 1,
+      'customerId': 1,
+      'expertId': 1,
+      'requestId': 1,
+      'type': 1,
+      'minutes': 1,
+      'status':1,
+      'datetime':1,
+      'participants':1
+    },
     setAvatars: (booking) => {
       if (booking && booking.participants)
         for (var p of booking.participants)
           p.info.avatar = md5.gravatarUrl(p.info.email)
+    },
+    cb: {
+      inflateAvatars(cb) {
+        return (e,r)  => {
+          if (e) return cb(e)
+          for (var o of r)
+            data.select.setAvatars(o)
+          cb(null, r)
+        }
+      }
     }
   },
 
@@ -38,3 +59,6 @@ module.exports = {
   }
 
 }
+
+
+module.exports = data

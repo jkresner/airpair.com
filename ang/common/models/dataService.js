@@ -84,6 +84,7 @@ angular.module('APDataSvc', [])
       getForExpertsPage: GET((d)=>`/experts`),
       getMe: GET((d)=>`/experts/me`),
       getById: GET((d)=>`/experts/${d._id}`),
+      getHistory: GET((d)=>`/experts/${d._id}/history`),
       getForDashboard: GET((d)=>`/experts/dashboard`),
       create: POST((d)=>`/experts/me`),
       updateMe: PUT((d)=>`/experts/${d._id}/me`)
