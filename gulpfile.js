@@ -71,28 +71,33 @@ function initTasks(initTasks, options) {
 }
 
 
-function initRunTasks(runTasks, options) {
+function initRunTasks(runTasks, tasksToInit, options) {
   return function(callback) {
+    if (tasksToInit)
+      initTasks(tasksToInit, options)
 
     runTasks.forEach(function(task) {
       gulp.task(task, function(cb) {
         require('./build/'+task)(gulp, cfg, options, cb)() })
     })
 
-    return gulp.start(runTasks)
+    gulp.task('run', tasksToInit, function(){
+      return gulp.start(runTasks)
+    })
+    gulp.start('run')
   }
 }
 
-gulp.task('less:all', initRunTasks(['less'], {section:'all'}) )
-gulp.task('less:libs', initRunTasks(['less'], {section:'libs'}) )
-gulp.task('less:adm', initRunTasks(['less'], {section:'adm'}) )
-gulp.task('less:index', initRunTasks(['less'], {section:'index'}) )
+gulp.task('less:all', initRunTasks(['less'], null, {section:'all'}) )
+gulp.task('less:libs', initRunTasks(['less'], null, {section:'libs'}) )
+gulp.task('less:adm', initRunTasks(['less'], null, {section:'adm'}) )
+gulp.task('less:index', initRunTasks(['less'], null, {section:'index'}) )
 
-gulp.task('build', initTasks(['clean']),initRunTasks(['dist']))
+gulp.task('build', initRunTasks(['dist', ['clean']]))
 
-gulp.task('default', initTasks(['nodemon','less']), initRunTasks(['watch'], {section:'all'}) )
-gulp.task('index', initTasks(['nodemon','less'], {section:'index'}), initRunTasks(['watch'], {section:'index'}) )
-gulp.task('adm', initTasks(['nodemon','less'], {section:'adm'}), initRunTasks(['watch'], {section:'adm'}) )
+gulp.task('default', initRunTasks(['watch'], ['nodemon','less'], {section:'all'}) )
+gulp.task('index', initRunTasks(['watch'], ['nodemon','less'], {section:'index'}) )
+gulp.task('adm', initRunTasks(['watch'], ['nodemon','less'], {section:'adm'}) )
 
 // gulp.task('test', initTasks(['less'],['nodemontest']))
 

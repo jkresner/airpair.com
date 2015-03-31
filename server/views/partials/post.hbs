@@ -73,12 +73,8 @@
 
   {{#if published }}
   <div class="share">
-    <div class="pw-widget pw-size-medium pw-counter-show" pw:twitter-via="airpair">
-      <a class="pw-button-facebook"></a>
-      <a class="pw-button-twitter"></a>
-      <a class="pw-button-linkedin"></a>
-      <a class="pw-button-googleplus"></a>
-      <a class="pw-button-reddit"></a>
+    <div class="pw-widget pw-size-large pw-counter-show" pw:twitter-via="airpair">
+      <a class="pw-button-twitter"></a><a class="pw-button-facebook"></a><a class="pw-button-linkedin"></a><a class="pw-button-googleplus"></a>{{!-- <a class="pw-button-reddit"></a> --}}
       <a class="pw-button-post"></a>
     </div>
   </div>
@@ -93,7 +89,7 @@
     <h6>Make this post better!</h6>
     <div class="fork">
       <a href="/posts/fork/{{_id}}" class="btn">Fork this post!</a>
-      <p>Forked <b>{{forkers.length}}</b> times so far.</p>
+      <p>Forked <b>{{forkers.length}}</b> times so far</p>
     </div>
     {{/if}}
     {{#if published }}

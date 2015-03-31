@@ -45,8 +45,7 @@ angular.module('APFilters', [])
 
 .filter('agoTime', function() {
   return (date) => {
-    console.log('agoTime', date)
-    return moment(date).fromNow();
+    return moment(date).fromNow()
   }
 })
 

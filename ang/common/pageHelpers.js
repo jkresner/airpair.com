@@ -175,9 +175,9 @@ angular.module("APPageHelpers", [])
     {
       var offsetLeft = $('.railMarker').offset().left - 212;
       var offset = $('.railMarker').offset().top;
-      var shareHeight = $('.share').height() + 20;
-      var cta1Height = $('.rail1CTA').height() + 20;
-      var tocH3Height = 50;
+      var shareHeight = $('.share').height() + 22;
+      var cta1Height = $('.rail1CTA').height() + 16;
+      var tocH3Height = 40;
 
       $('.share').css('position', 'fixed').css('left', offsetLeft);
       $('.rail1CTA').css('position', 'fixed').css('left', offsetLeft);
@@ -213,6 +213,23 @@ angular.module("APPageHelpers", [])
 
   this.fixRailElements = fixRailElements
 
+  function highlightSocialIcon(elem) {
+    return function() {
+      $(elem).addClass('highlight').delay(175).queue(function(){
+        $(this).removeClass('highlight')
+        $(this).dequeue()
+      })
+    }
+  }
+
+  var icons = null
+  var flashSocial = function() {
+    icons = icons || $('.pw-size-large .pw-icon')
+    icons.each(function(idx, elem) {
+      setTimeout(highlightSocialIcon(elem), (idx+1)*175)
+    })
+  }
+
   this.fixPostRail = function()
   {
     if ($('.railMarker').length > 0) {
@@ -221,6 +238,7 @@ angular.module("APPageHelpers", [])
       setTimeout(fixRailElements, 500)
       setTimeout(fixRailElements, 1000)
       setTimeout(fixRailElements, 3000)
+      var highlights = setInterval(flashSocial, 20000)
     }
   }
 
