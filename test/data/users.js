@@ -193,6 +193,12 @@ module.exports = {
   rev6 : { name: "Review16", email: "reviwer16@hotmail.com"},
 
 
+  del1 : { name: "Deal Buyer  ", email: "dealbuyer2@hotmail.com"},
+  del2 : { name: "Deal Buyer 2", email: "dealbuyer2@hotmail.com"},
+  del3 : { name: "Deal Buyer 3", email: "dealbuyer3@hotmail.com"},
+  del4 : { name: "Deal Buyer 4", email: "dealbuyer4@hotmail.com"},
+
+
   admin: {
     "_id" : "54551be15f221efa174238d1",
     "googleId" : "199992380360999999999",
@@ -1650,6 +1656,7 @@ module.exports = {
         "aliases" : ["NMb__xBDhkxez4S2GJheILKADjiT1o0S"],
         "firstRequest" : { "url" : "/review/54a70bde0489f40b00306027"}
     },
+    "name" : "Lou Franco",
     "email" : "loumfranco@gmail.com",
     "emailVerified" : true,
     "google" : {
@@ -1979,5 +1986,37 @@ module.exports = {
     "bio" : "Frontend",
     "initials" : "DL"
   },
+
+  snug: {
+    "_id" : ObjectId("52127d4066a6f999a465f637"),
+    "cohort" : {
+        "expert" : {
+            "_id" : "52127d5fc6a5870200000007",
+            "applied" : ISODate("2015-03-19T16:00:22.964Z")
+        }
+    },
+    "email" : "rashaunstovall@gmail.com",
+    "emailVerified" : true,
+    "google" : {
+        "id" : "109960924546535808651",
+        "provider" : "google"
+    },
+    "googleId" : "109960924546535808651",
+    "name" : "Ra'Shaun Stovall",
+    "tags" : [],
+    "bookmarks" : [],
+    "social" : {
+        "in" : { "id" : "SJu5-UP-9Y" },
+        "tw" : { "id" : "121639673", "username" : "snuggsi", },
+        "gh" : { "username" : "snuggs" }
+    },
+    "bio" : "I'm not a software engineer. Writing beautiful code is only one of the ways I solve problems. Looking forward to helping you!",
+    "username" : "snuggs",
+    "initials" : "rs",
+    "localization" : {
+        "timezone" : "Eastern Daylight Time",
+        "location" : "New York, État de New York, États-Unis"
+    }
+}
 
 }

@@ -10,6 +10,7 @@ export default initAPI(
   updateByAdmin: (req) => [req.booking,req.body],
   addYouTubeData: (req) => [req.booking, req.body.youTubeId],
   addHangout: (req) => [req.booking, req.body.youTubeId, req.body.youTubeAccount, req.body.hangoutUrl],
+  cheatExpertSwap: (req) => [req.booking, req.order, req.request, req.params.id],
 }, {
   booking:'getById'
 },

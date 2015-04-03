@@ -311,6 +311,13 @@ stories = {
       PUT "/adm/billing/orders/#{orderId}/release", {}, {}, (released) ->
         LOGIN expertSession.userKey, cb
 
+
+  ensureBookingFromRequest: (objectKey, cb) ->
+    db.ensureDocs 'Request', [data.requests[objectKey]], ->
+      db.ensureDocs 'Order', [data.orders[objectKey]], ->
+        db.ensureDoc 'Booking', data.bookings[objectKey], (e, b) ->
+          b.request = data.requests[objectKey]
+          cb(b)
 }
 
 module.exports = stories

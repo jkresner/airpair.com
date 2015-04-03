@@ -100,6 +100,22 @@
     </div>
 
 
+    <div class="request">
+      <h3>Request</h3>
+
+      <div ng-if="booking.request">
+        This booking comes from <a href="/adm/pipeline/{{booking.request._id}}">{{booking.request.title}}</a>
+        <br />
+        <br />
+        <ul><li ng-repeat="sug in booking.request.suggested | filter: {expertStatus: 'available'}"
+        ng-if="sug.expert._id != booking.expertId"
+          >
+          <a ng-click="swapExpert(sug._id)">Swap</a> {{sug.expert.name}}
+        </li></ul>
+      </div>
+      <div ng-if="!booking.request">This booking is not associated to a request</div>
+    </div>
+
     <div class="payout">
       <h3>Payout</h3>
       Order:
