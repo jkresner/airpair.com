@@ -180,6 +180,7 @@ var data = {
   },
 
   data: {
+
     anonAvatars: [
       "/static/img/css/sidenav/default-cat.png",
       "/static/img/css/sidenav/default-mario.png",
@@ -193,7 +194,31 @@ var data = {
         hash = bcrypt.hashSync(seedString, bcrypt.genSaltSync(8))
       }
       return hash
-    }
+    },
+
+    maillists: [
+      { id: '903d16f497',
+       web_id: 117353,
+       name: 'AirPair Newsletter',
+       description: 'General annoucements from the AirPair team. We don\'t plan to use this very often moving forward',
+       subscribe_url_short: 'http://eepurl.com/Q_gVj' },
+      { id: '89214a2507',
+       web_id: 209265,
+       name: 'AirPair Developer Digest',
+       description: 'New content published on AirPair daily, every other day or weekly depending on your preferences',
+       subscribe_url_short: 'http://eepurl.com/bhlYr5' },
+      { id: '69de3eea5d',
+       web_id: 224469,
+       name: 'AirPair Authors',
+       description: 'Stay in touch with the AirPair authoring community and news about AirPair\'s Social Authoring platform',
+       subscribe_url_short: 'http://eepurl.com/bhlYrH' },
+      { id: 'f905e62324',
+       web_id: 224465,
+       name: 'AirPair Experts',
+       description: 'Tips for getting more AirPairs, news about Expert features and more',
+       subscribe_url_short: 'http://eepurl.com/bhlYrP' },
+    ]
+
   },
 
 

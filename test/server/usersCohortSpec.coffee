@@ -17,8 +17,8 @@ mailsubscriptions = ->
     #     # DONE()
 
     # it.only 'Get member info', itDone ->
-    #   Wrappers.MailChimp.member '903d16f497', 'jk@airpair.com', (e,r) ->
-    #     $log('r', e, r.data[0])
+    #   Wrappers.MailChimp.memberLists 'jk@airpair.com', (e,r) ->
+    #     $log('r'.cyan, e, r)
         # for list in r.data
         #   report(list)
           # Wrappers.MailChimp.abuseReport list.id, (ee,rr) ->
@@ -64,20 +64,20 @@ mailsubscriptions = ->
         done()
 
     it 'Can see mail subscribed & unsubscribed lists for loggedInUser', itDone ->
-      subscriptionsStub = SETUP.stubMailchimpLists(data.wrappers.mailchimp_subscription)
+      subscriptionsStub = SETUP.stubMailchimpLists(data.wrappers.mailchimp_memberinfo_jk)
       LOGIN 'jkap', (s) ->
         GET '/users/me/maillists', {}, (maillists) ->
           # $log('maillists', maillists)
           expect(maillists.length).to.equal(4)
           subscribed = _.filter(maillists, (l) -> l.subscribed)
-          expect(subscribed.length).to.equal(1)
+          expect(subscribed.length).to.equal(3)
           expect(subscribed[0].name).to.equal('AirPair Newsletter')
           subscriptionsStub.restore()
           DONE()
 
 
     it 'Can toggle subscribe & unsubscribe to a maillist', itDone ->
-      listsForEmailStub = SETUP.stubMailchimpLists(data.wrappers.mailchimp_listsforemail)
+      listsForEmailStub = SETUP.stubMailchimpLists(data.wrappers.mailchimp_memberinfo_jk)
       LOGIN 'jkap', (s) ->
         GET '/users/me/maillists', {}, (maillists) ->
           listsForEmailStub.restore()
@@ -108,7 +108,7 @@ stories = ->
     SETUP.analytics.on()
     done()
 
-  it.only 'Create account and update lots of things', itDone ->
+  it 'Create account and update lots of things', itDone ->
     _id = null
     firstRequestUrl = '/posts'
     firstSessionId = null
@@ -128,7 +128,7 @@ stories = ->
         expect(user.cohort).to.exist
         expect(user.cohort.firstRequest.url).to.equal(firstRequestUrl)
         expect(user.cohort.aliases).to.exist
-        expect(user.cohort.aliases.length).to.equal(1)
+        expect(user.cohort.aliases.length > 0).to.be.true
         expect(user.cohort.aliases[0]).to.equal(firstSessionId)
         expect(user.cohort.maillists).to.exist
         expect(user.cohort.maillists.length > 1).to.be.true
@@ -199,18 +199,16 @@ stories = ->
               cb()
 
     updateMailLists = (cb) ->
-      $log('updateMailLists'.cyan, cb)
+      # $log('updateMailLists'.cyan)
       GET "/users/me/maillists", {}, (ml) ->
         GET "/session/full", {}, (s11) ->
-          expectCohort(s11, expert, 's11', cb)
+          expectCohort(s11, expert, null, cb)
 
 
     signup ->
       updateAccount ->
         applyToBeAnExpert ->
           updateMailLists(DONE)
-
-
 
 
 

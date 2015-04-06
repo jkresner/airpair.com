@@ -415,6 +415,31 @@ module.exports = {
     { id: '69de3eea5d', web_id: 224469, name: 'AirPair Authors' }
   ],
 
+  mailchimp_memberinfo_jk: {
+    "success_count":1,
+    "error_count":0,
+    "errors":[],
+    "data":[
+      {"email":"jk@airpair.com","id":"0ab2e891e6","euid":"0ab2e891e6","email_type":"html",
+      "ip_signup":null,"timestamp_signup":null,"ip_opt":"54.159.165.97",
+      "timestamp_opt":"2015-03-19 15:30:20","member_rating":2,
+      "info_changed":"2015-03-19 15:30:20","web_id":94021797,"leid":94021797,
+      "language":"en","list_id":"903d16f497","list_name":"AirPair Newsletter",
+      "merges":{"EMAIL":"jk@airpair.com","FNAME":"Jonathon","LNAME":"Kresner","ISREPEAT":"Y","ISFORMER":"Y","ISCUST":"Y","ISEXPERT":"Y","COMPANY":"AirPair","ISFROMMONG":"Y","MMERGE9":"2682"},
+      "status":"subscribed","timestamp":"2015-03-19 15:30:20","is_gmonkey":false,
+      "lists":[
+        {"id":"39f4769300","status":"subscribed"},
+        {"id":"9403a36fa1","status":"subscribed"},
+        {"id":"89214a2507","status":"subscribed"},
+        {"id":"f905e62324","status":"unsubscribed"},
+        {"id":"69de3eea5d","status":"subscribed"}
+      ],
+      "geo":{"latitude":"33.8882000","longitude":"-118.3480000","gmtoff":"-8","dstoff":"-7","timezone":"America/Los_Angeles","cc":"US","region":"CA"},
+      "clients":{"name":"Android","icon_url":"http://us7.admin.mailchimp.com/images/email-client-icons/android.png"},
+      "static_segments":[],"notes":[]
+    }]
+  },
+
   mailchimp_anon_subscribed: { email: 'subunsub1426911590@airpair.com',
     euid: 'cb76383d8d',
     leid: '152330445'

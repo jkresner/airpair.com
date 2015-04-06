@@ -90,74 +90,89 @@ signup = ->
 
 login = ->
 
-    it 'Login of existing v0 user creates cohort', itDone ->
-      db.ensureDoc 'User', data.v0.users.SoumyaAcharya, (e, sou) ->
-        expect(_.idsEqual sou._id, "51a6668866a6f999a465f2fc").to.be.true
-        expect(sou.email).to.be.undefined
-        expect(sou.name).to.be.undefined
-        expect(sou.cohort.visit_first).to.be.undefined
-        expect(sou.cohort.aliases.length).to.equal(0)
-        UserService.googleLogin.call SETUP.userSession('SoumyaAcharya'), sou.google, (ee,u) ->
-          expect(u.email).to.equal(sou.google._json.email)
-          expect(u.name).to.equal(sou.google.displayName)
-          expect(u.emailVerified).to.be.false
-          # expect(u.cohort.aliases.length).to.equal(1)
-          # expect(u.cohort.aliases[0].indexOf('testSoumyaAcharya')).to.equal(0)
-          expect(u.cohort.engagement.visit_first).to.exist
-          expect(moment(u.cohort.engagement.visit_signup).unix()).to.equal(moment(util.ObjectId2Date(sou._id)).unix())
-          expect(u.cohort.engagement.visit_last).to.exists
-          expect(u.cohort.engagement.visits.length).to.equal(1)
+  before () ->
+    SETUP.analytics.on()
+
+  it 'Login of existing v0 user creates cohort', itDone ->
+    checkCohort = (_id) ->
+      ->
+        db.readDoc 'User', _id, (uRaw) ->
+          # $log('uRaw', uRaw.cohort)
+          expect(uRaw.cohort.maillists.length).to.equal(1)
+          expect(uRaw.cohort.aliases.length).to.equal(1)
+          expect(uRaw.cohort.aliases[0].indexOf('testSoumyaAcharya')).to.equal(0)
+          SETUP.analytics.off()
+          DONE()
+
+    db.ensureDoc 'User', data.v0.users.SoumyaAcharya, (e, sou) ->
+      expect(_.idsEqual sou._id, "51a6668866a6f999a465f2fc").to.be.true
+      expect(sou.email).to.be.undefined
+      expect(sou.name).to.be.undefined
+      expect(sou.cohort.visit_first).to.be.undefined
+      expect(sou.cohort.aliases.length).to.equal(0)
+      session = SETUP.userSession('SoumyaAcharya')
+      UserService.googleLogin.call session, sou.google, (ee,u) ->
+        expect(u.email).to.equal(sou.google._json.email)
+        expect(u.name).to.equal(sou.google.displayName)
+        expect(u.emailVerified).to.be.false
+        expect(u.cohort.aliases).to.be.undefined
+        expect(u.cohort.engagement.visit_first).to.exist
+        expect(moment(u.cohort.engagement.visit_signup).unix()).to.equal(moment(util.ObjectId2Date(sou._id)).unix())
+        expect(u.cohort.engagement.visit_last).to.exists
+        expect(u.cohort.engagement.visits.length).to.equal(1)
+        expect(u.cohort.maillists).to.be.undefined
+        setTimeout checkCohort(u._id), 50
+
+
+
+  it 'Can signup with local credentials then login with google of same email', itDone ->
+    db.ensureDoc 'User', data.users.aone, (e, aone) ->
+      expect(aone.email).to.equal('airpairone001@gmail.com')
+      expect(aone.google).to.be.undefined
+      expect(aone.googleId).to.be.undefined
+      UserService.googleLogin.call SETUP.userSession('aone'), data.oauth.aone.google, (ee,user) ->
+        db.readDoc 'User', user._id, (r) ->
+          expect(r.googleId).to.equal(data.oauth.aone.google._json.id)
+          expect(r.google._json.email).to.equal('airpairone001@gmail.com')
+          expect(r.email).to.equal('airpairone001@gmail.com')
           DONE()
 
 
-    it 'Can signup with local credentials then login with google of same email', itDone ->
-      db.ensureDoc 'User', data.users.aone, (e, aone) ->
-        expect(aone.email).to.equal('airpairone001@gmail.com')
-        expect(aone.google).to.be.undefined
-        expect(aone.googleId).to.be.undefined
-        UserService.googleLogin.call SETUP.userSession('aone'), data.oauth.aone.google, (ee,user) ->
-          db.readDoc 'User', user._id, (r) ->
-            expect(r.googleId).to.equal(data.oauth.aone.google._json.id)
-            expect(r.google._json.email).to.equal('airpairone001@gmail.com')
-            expect(r.email).to.equal('airpairone001@gmail.com')
-            DONE()
+  it 'Google login for existing v1 user works after played with singup form', itDone ->
+    db.ensureDoc 'User', data.users.samt, (e, samt) ->
+      expect(samt.email).to.equal('san.thanki@gmail.com')
+      expect(samt.google).to.exist
+      expect(samt.googleId).to.equal('107929348314160277508')
+      svcCtx = SETUP.userSession('samt')
+      svcCtx.session.anonData = { email: null }
+      UserService.googleLogin.call svcCtx, data.oauth.samt.google, (ee,user) ->
+        expect(user).to.exist
+        db.readDoc 'User', user._id, (r) ->
+          expect(r.googleId).to.equal(data.oauth.samt.google._json.id)
+          expect(r.google._json.email).to.equal("san.thanki@gmail.com")
+          expect(r.email).to.equal("san.thanki@gmail.com")
+          DONE()
 
 
-    it 'Google login for existing v1 user works after played with singup form', itDone ->
-      db.ensureDoc 'User', data.users.samt, (e, samt) ->
-        expect(samt.email).to.equal('san.thanki@gmail.com')
-        expect(samt.google).to.exist
-        expect(samt.googleId).to.equal('107929348314160277508')
-        svcCtx = SETUP.userSession('samt')
-        svcCtx.session.anonData = { email: null }
-        UserService.googleLogin.call svcCtx, data.oauth.samt.google, (ee,user) ->
-          expect(user).to.exist
-          db.readDoc 'User', user._id, (r) ->
-            expect(r.googleId).to.equal(data.oauth.samt.google._json.id)
-            expect(r.google._json.email).to.equal("san.thanki@gmail.com")
-            expect(r.email).to.equal("san.thanki@gmail.com")
-            DONE()
+  it 'Google login for existing v1 user doesnt blow up when tag not found', itDone ->
+    db.ensureDoc 'User', data.users.bbe, (e, bbe) ->
+      expect(bbe.email).to.equal('ben.beetle@gmail.com')
+      expect(bbe.google).to.exist
+      expect(bbe.googleId).to.equal('108341472603890720649')
+      svcCtx = SETUP.userSession('bbe')
+      UserService.googleLogin.call svcCtx, data.oauth.bbe.google, (ee,user) ->
+        expect(user).to.exist
+        db.readDoc 'User', user._id, (r) ->
+          expect(r.googleId).to.equal(data.oauth.bbe.google._json.id)
+          expect(r.google._json.email).to.equal('ben.beetle@gmail.com')
+          expect(r.email).to.equal('ben.beetle@gmail.com')
+          DONE()
 
 
-    it 'Google login for existing v1 user doesnt blow up when tag not found', itDone ->
-      db.ensureDoc 'User', data.users.bbe, (e, bbe) ->
-        expect(bbe.email).to.equal('ben.beetle@gmail.com')
-        expect(bbe.google).to.exist
-        expect(bbe.googleId).to.equal('108341472603890720649')
-        svcCtx = SETUP.userSession('bbe')
-        UserService.googleLogin.call svcCtx, data.oauth.bbe.google, (ee,user) ->
-          expect(user).to.exist
-          db.readDoc 'User', user._id, (r) ->
-            expect(r.googleId).to.equal(data.oauth.bbe.google._json.id)
-            expect(r.google._json.email).to.equal('ben.beetle@gmail.com')
-            expect(r.email).to.equal('ben.beetle@gmail.com')
-            DONE()
+  it.skip 'TODO: Login from a new anonymous session adds sessionID to aliases', () ->
+    # expect('updates last visit')
 
-
-    it.skip 'TODO: Login from a new anonymous session adds sessionID to aliases', () ->
-      # expect('updates last visit')
-
-    it.skip 'TODO: Login from existing anonymous session leaves aliases', () ->
+  it.skip 'TODO: Login from existing anonymous session leaves aliases', () ->
 
   #   it('login google: no google, has local, google login matching local email')
   #     expect('login success')
