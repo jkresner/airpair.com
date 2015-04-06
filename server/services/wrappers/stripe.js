@@ -1,4 +1,4 @@
-module.exports = {
+ var wrapper = {
 
   init() {
     wrapper.api = global.API_STRIPE
@@ -26,7 +26,7 @@ module.exports = {
       currency: "usd"
     };
     // console.log('striping', payload, cb)
-    api.charges.create(payload, function(err, charge) {
+    wrapper.api.charges.create(payload, function(err, charge) {
       if (err) return cb(err)
       // if (winston) {
       //   winston.log("StripResponse: ", charge);
@@ -37,3 +37,6 @@ module.exports = {
   }
 
 }
+
+
+module.exports = wrapper
