@@ -98,6 +98,24 @@ stories = {
           done(s)
 
 
+  connectOAuth: (user, provider, profile, done) ->
+    short = null
+    if provider is 'twitter' then short = 'tw'
+    if provider is 'github' then short = 'gh'
+    if provider is 'linkein' then short = 'in'
+    UserService.connectProvider.call {user}, provider, short, profile, ->
+      GET '/session/full', {}, (s) ->
+        done(s)
+
+
+  connectGoogle: (user, profile, done) ->
+    profile = _.clone(profile)
+    profile.id = profile.id + timeSeed()
+    UserService.googleLogin.call {user}, profile, (e,r) ->
+      GET '/session/full', {}, (s) ->
+        done(s)
+
+
   injectOAuthPayoutMethod: (user, providerName,pmKey,cb) ->
     require('../../../server/services/paymethods').addOAuthPayoutmethod.call({user},
       providerName, data.paymethods[pmKey],{},(e,r)->cb(r))

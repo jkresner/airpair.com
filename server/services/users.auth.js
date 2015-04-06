@@ -44,10 +44,12 @@ function upsertSmart(upsert, existing, cb) {
     wrap(`upsert [${_id}][existing:${existing!=null}] [${JSON.stringify(upsert)}] []`, cb, (user) => {
 
     cb(null, user)
-
+    // $log('analytics.upsert.before'.white, user.cohort.aliases)
+    var prevAliasesLength = user.cohort.aliases.length
     if (analytics.upsert)
       analytics.upsert(user, existing, sessionID, (aliases) => {
-        if (aliases && aliases.length != user.cohort.aliases.length)
+        // $log('analytics.upsert', aliases, user.cohort.aliases, aliases.length != user.cohort.aliases.length)
+        if (aliases && aliases.length != prevAliasesLength)
         {
           if (logging) $log(`updating ${user._id} ${aliases}`.yellow, aliases)
           User.findOneAndUpdate({_id:user._id}, { 'cohort.aliases': aliases }, ()=>{} )
@@ -90,7 +92,6 @@ function googleLogin(profile, errorCB, done) {
 
   User.findOne(Data.query.existing(profile._json.email),
     wrap(`googleLogin.existing ${profile._json.email}`, errorCB, (existing) => {
-
 
     var upsert = { googleId: profile.id, google: profile }
     //-- copy google details to top level users details

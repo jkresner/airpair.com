@@ -1,10 +1,10 @@
 var logging         = false
+import BaseSvc      from '../services/_service'
+var User            = require('../models/user')
+var svc             = new BaseSvc(User, logging)
 var Data            = require('./users.data')
 var UserAuth        = require('./users.auth')
 var UserCohort      = require('./users.cohort')
-var User            = require('../models/user')
-import BaseSvc      from '../services/_service'
-var svc             = new BaseSvc(User, logging)
 var cbSession       = Data.select.cb.session
 
 var get = {
@@ -190,7 +190,8 @@ var save = {
       else
         r.siteNotifications.push({name})
 
-      svc.update(this.user._id, r, Data.select.cb.siteNotifications(cb))
+      updateAsIdentity.call(this, {siteNotifications:r.siteNotifications}, null, Data.select.cb.siteNotifications(cb))
+      // svc.update(this.user._id, r, Data.select.cb.siteNotifications(cb))
     })
   },
 
@@ -209,24 +210,6 @@ var save = {
       // so we call svc.update rather than update
       svc.update(userId, r, cb)
     })
-  },
-
-  //-------- User Info
-
-  setExpertCohort(expertId) {
-    // Not sure how cohort can be null, but it's happened
-    if (!this.user.cohort)
-      this.user.cohort = {}
-
-    if (!this.user.cohort.expert || this.user.cohort.expert._id != expertId)
-    {
-      var exCo = this.user.cohort.expert || {}
-      exCo.applied = exCo.applied || new Date // When they went through v1 signup
-      this.user.cohort.expert = _.extend(exCo, {_id:expertId})
-
-      User.findOneAndUpdate({_id:this.user._id},
-        { $set: { cohort: this.user.cohort } }, ()=>{})
-    }
   },
 
   changeBio(bio, cb) {
@@ -398,12 +381,21 @@ function updateEmailToBeVerified(email, errorCB, successCB) {
 }
 
 save.updateEmailToBeVerified = updateEmailToBeVerified
+var cohortFns = _.wrapFnList(UserCohort,(fn, fnName) => {
+  return function() {
+    this.svc = svc
+    return fn.apply(this, arguments)
+  }
+})
+
 
 function callAuthSvcFn(thisCtx, fnName, args) {
   var cb = args[args.length-1]
   args = [].slice.call(args)
   var cbSessioned = cbSession(thisCtx,cb)
   args.push(cbSessioned)
+  thisCtx.svc = svc
+  thisCtx.cohortFns = cohortFns
   UserAuth[fnName].apply(thisCtx, args)
 }
 
@@ -415,5 +407,5 @@ var authWraps = {
 }
 
 
-save = _.extend(save, _.extend(authWraps,UserCohort))
+save = _.extend(save, _.extend(authWraps,cohortFns))
 module.exports = _.extend(get,save)
