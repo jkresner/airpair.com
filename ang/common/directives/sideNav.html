@@ -1,56 +1,74 @@
 <header>
-  <img id="sideNavToggle" track-click="sideNav" data="{{ toggleAction }}" track-click-if="!session._id" ng-click="sideNav.toggle()" src="/static/img/css/sidenav/toggle.png" />
+  <div class="toggle" id="sideNavToggle" track-click="sideNav" data="{{ toggleAction }}" track-click-if="!session._id" ng-click="sideNav.toggle()"></div>
 </header>
 
-<section class="gethelp">
-  <a href="/help/request" class="btn btn-inverse" target="_self"><img src="/static/img/css/sidenav/help.png"><span>get help</span></a>
+
+<section class="help">
+  <a href="/help/request" class="btn btn-inverse" target="_self">
+    <div class="pair"></div><span>get help</span>
+  </a>
 </section>
 
 
 <section class="welcome" ng-if="session.unauthenticated">
-<figure><a id="navWelcomeAvatar" track-click="sideNav" ng-click="openProfile()"><img class="avatar" ng-src="{{ session.avatar }}" /></a></figure>
   <ul class="main">
-    <li ng-if="!session.email" class="promt">Claim your real face:</li>
-    <li ng-if="!session.email"><a id="navEditProfile" href="#" track-click="sideNav" ng-click="openProfile()"><span><b>> Edit your profile</b></span></a></li>
-    <li class="promt">Already in the tribe?</li>
-    <li><a id="navLogin" href="/v1/auth/login" track-click="sideNav"><b><span>> Login</span></b></a></li>
-    <!-- <li>Why join?</li> -->
-    <li><a id="navStackToggle" track-click="sideNav" href="#" ng-click="openStack()">
-        <img src="/static/img/css/sidenav/stack.png" /><span>stack<!-- <i>{{ session.tags.length || 0 }}</i> --></span>
+    <li>
+      <a id="navWelcomeAvatar" class="avatar" track-click="sideNav" ng-click="openProfile()"><div><img ng-src="{{ session.avatar }}" /></div><span>signup</span></a>
+    </li>
+    <li>
+      <a id="navLogin" href="/v1/auth/login" track-click="sideNav">
+        <div class="login"></div><span>login</span>
       </a>
     </li>
     <li>
-      <a id="navBookmarksToggle" track-click="sideNav" href="#" ng-click="openBookmarks()"> <img src="/static/img/css/sidenav/bookmarks.png" /><span>bookmarks <!-- <i>{{ session.bookmarks.length || 0 }}</i> --></span>
+      <a id="navStackToggle" track-click="sideNav" href="#" ng-click="openStack()">
+        <div class="stack"></div><span>stack</span>
+      </a>
+    </li>
+    <li>
+      <a id="navBookmarksToggle" track-click="sideNav" href="#" ng-click="openBookmarks()">
+        <div class="bookmarks"></div><span>bookmarks</span>
       </a>
     </li>
   </ul>
-<!--   <a id="navAbout" track-click="sideNav" href="/about" class="icon">
-    <span>Read about AirPair</span><img src="/static/img/css/sidenav/airpair.png" />
-  </a> -->
 </section>
 
 
 <section class="main" ng-if="session._id">
   <ul>
-    <li><a href="/me"><img class="avatar" ng-src="{{ session.avatar }}?s=31" /><span>me</span></a></li>
-    <li><a href="/dashboard"><img src="/static/img/css/sidenav/dashboard.png"><span>dashboard</span></a></li>
-    <li><a href="/settings"><img src="/static/img/css/sidenav/settings.png"><span>settings</span></a></li>
-    <li><a href="/posts/me"><img src="/static/img/css/sidenav/posts.png"><span>my posts</span></a></li>
+    <li><a href="/me" class="avatar"><div><img ng-src="{{ session.avatar }}?s=31" /></div><span>me</span></a></li>
+    <li><a href="/dashboard"><div class="dashboard"></div><span>dashboard</span></a></li>
+    <li><a href="/settings"><div class="settings"></div><span>settings</span></a></li>
+    <li><a href="/posts/me"><div class="posts"></div><span>my posts</span></a></li>
     <!--<li><a href="/experts">experts</a></li>
     <li><a href="#">airpairs</a></li> -->
     <li><a id="navStackToggle" track-click="sideNav" href="#" ng-click="openStack()">
-        <img src="/static/img/css/sidenav/stack.png" /><span>stack<!-- <i>{{ session.tags.length || 0 }}</i> --></span>
+        <div class="stack"></div><span>stack</span>
       </a>
     </li>
     <li>
-      <a id="navBookmarksToggle" track-click="sideNav" href="#" ng-click="openBookmarks()"> <img src="/static/img/css/sidenav/bookmarks.png" /><span>bookmarks <!-- <i>{{ session.bookmarks.length || 0 }}</i> --></span>
+      <a id="navBookmarksToggle" track-click="sideNav" href="#" ng-click="openBookmarks()"><div class="bookmarks"></div><span>bookmarks</span>
       </a>
     </li>
-    <li><a href="/billing"><img src="/static/img/css/sidenav/billing.png"><span>billing</span></a></li>
+    <li><a href="/billing"><div class="billing"></div><span>billing</span></a></li>
 <!--     <li><a href="/v1">see a bug?</a></li> -->
-    <li><a href="/v1/auth/logout" target="_self"><img src="/static/img/css/sidenav/logout.png"><span>logout</span></a></li>
+    <li><a href="/v1/auth/logout" target="_self"><div class="logout"></div><span>logout</span></a></li>
   </ul>
 </section>
+
+<section class="expert" ng-if="session._id">
+  <ul>
+    <li><a href="/be-an-expert" class="avatar"><div><img ng-src="{{ session.avatar }}?s=31" /></div><span>profile</span></a></li>
+    <li><a href="/office"><div class="dashboard"></div><span>office</span></a></li>
+<!--     <li><a href="/availability"><div class="deals"></div><span>availability</span></a></li> -->
+    <li><a href="/deals"><div class="deals"></div><span>deals</span></a></li>
+    <li><a href="/payouts"><div class="billing"></div><span>payouts</span></a></li>
+    <li><a href="/settings"><div class="settings"></div><span>settings</span></a></li>
+  </ul>
+</section>
+
+
+
 
 
 <!-- <section class="stack"> <label>Stack</label>

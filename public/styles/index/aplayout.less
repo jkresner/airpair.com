@@ -196,6 +196,18 @@ main {
   }
 }
 
+nav#side.expert {
+  background:@blackgray;
+  header {
+    background:@blackgray;
+  }
+
+  section.main { display:none }
+  section.help { display:none }
+  section.expert { display:block;
+    margin-top:18px; }
+}
+
 nav#side {
   display:block;
   position:fixed;
@@ -204,104 +216,92 @@ nav#side {
   bottom:0;
   margin:0;
   z-index:2020;
-  font-size:15px;
+  font-size:16px;
   left:0;
   width:@sideNavWidth;
-  // background:@blackgray;
   background:@darkblue;
 
-  a { color:@lightblue }
-  a:hover { color:@orange }
-
-  header {
-    text-align:right;
-    // background:@blackgray;
-    background:@darkblue;
-    height:35px;
-    padding:5px 8px;
-    margin:0;
-    color:white;
-    font-size:16px;
-    border-bottom:1px solid @gray;
-
-    img { cursor:pointer;
-      filter: brightness(1);
-      -webkit-filter: brightness(1);
-    }
-    img:hover {
-      filter: brightness(1.5);
-      -webkit-filter: brightness(1.5);
-    }
+  .icon {
+    background-image:url('../img/css/sidenav/sprite.png');
+    background-position-x:center;
+    width:30px;height:30px;
+    overflow:hidden;
+    display:inline-block;
+    border-radius:50%;
   }
 
-  figure { text-align:center }
-  figure img {
-    border:solid 1px white;
-    background:white;
-    width:100px;
-    height:100px;
-    border-radius:50px;
-    margin:0 auto;
+  header {
+    height:35px;
+    margin:0;
+    padding:5px 8px;
+    background:@darkblue;
+    border-bottom:1px solid @gray;
+    div { .icon;
+      float:right;
+      background-position-y:27px;
+      cursor:pointer;filter: brightness(1);-webkit-filter: brightness(1) }
+    div:hover { filter: brightness(1.5);-webkit-filter: brightness(1.5) }
+  }
+
+  a > div {
+    background:none;
+    .icon;
+    // background-color:#343c51;
+    position:absolute;top:-4px;
+  }
+  a:hover > div { background-color:@orangehighlight }
+
+  .pair { background-position-y:484px }
+  .login { background-position-y:97px }
+  .stack { background-position-y:236px }
+  .bookmarks { background-position-y:195px }
+  .dashboard { background-position-y:528px }
+  .settings { background-position-y:278px }
+  .posts { background-position-y:319px }
+  .billing { background-position-y:360px }
+  .logout { background-position-y:155px }
+  .deals { background-position-y:155px }
+
+  li > a { color:@lightblue;position:relative }
+  a > span { margin-left:36px }
+  li > a:hover { color:@orange }
+
+  .help {
+    margin:12px 0 4px 0;
+    div { margin:-4px 0px 0 0;top:3px }
+    span { vertical-align:top; }
+    a {
+      position:relative;
+      text-align:left;background:none;
+      padding:3px 0 0px 0px;width:100%;height:30px;
+      overflow:hidden;color:white }
+    a:hover { background:@orangehighlight }
   }
 
   section {
-    padding:8px 6px 9px 4px;
+    padding:8px 5px 9px 5px;
     margin-top:6px;
-    color:@turquoise;
   }
 
-  label {
-    font-weight:normal
-  }
+  .avatar img { .icon;background:none; }
+  .avatar > div { background:none; }
 
-  ul { padding:3px 0;margin:0 }
 
+  ul { padding:0;margin:0 }
   li {
+    height:30px;
+    padding:0px 0px 5px 0px;
+    margin:0 0 12px 0;
     background:none;
     list-style:none;
-    color:white;
-    margin:0 0 10px 0;
-    padding:0px 0px 5px 0px;
     span { display:inline-block; }
-    img { margin:0 9px 0 0;background:none;border-radius:50%;display:inline-block; }
-    a { display:block }
-    a:hover { color:@orange; img { background:@orange } }
-  }
-  li.promt {
-    margin-bottom:0;
+    a { display:block;
+      div { margin:0 9px 0 0; }
+    }
+    a:hover { color:@orange; }
   }
 
-  .gethelp {
-    margin:10px 0 0px 0;
-    img { height:20px;margin:-3px 5px 0 -12px; }
-    a { background:none;padding:3px 0 0 2px;width:100%;height:30px; }
-    a:hover { background:@orangehighlight;color:white }
-  }
-
-  .avatar { border-radius:50% }
-  .welcome {
-    text-transform:none;
-    padding:9px 8px;
-    span {
-      // color:white;
-      // display:block
-    }
-    i { font-size:12px }
-    figure {
-      img {
-      cursor:pointer;
-      margin:15px 10px;
-      background:@orange
-      }
-    }
-
-    ul.main {
-      font-size:12px;
-      li { color:gray; }
-      // a { font-weight:bold; }
-      // a:hover { !important }
-    }
-  }
+  section.expert { display:none }
 
   @media only screen and (max-width: 734px) {
     display:none;
@@ -312,35 +312,19 @@ nav#side.collapse {
   width:40px;
   opacity:.9;
 
-  figure img {
-    width:30px;
-    height:30px;
-    margin:0;
+  .help {
+    margin:14px 0 18px 0;
+    a { padding:0;border-radius:50%;width:30px;display:block;border:none }
+    a > div { margin:0;background-color:@orange;top:0px }
   }
 
+  figure img { width:30px;height:30px; }
   section {
     text-align:center;
-    padding:2px 3px 6px 4px;
+    padding:2px 4px 6px 4px;
   }
   a span { display:none }
-
-  .gethelp {
-    margin:10px 0 4px 0;
-    a { padding:0;background:@orange;border-radius:50%;width:32px;margin:0;display:block }
-    img { margin:0px; }
-  }
-
-  label { display:none }
-
-  #navAbout { margin-top:30px }
-
-  li {
-    img { background:#343c51 }
-  }
-
-  li.promt {
-    display:none;
-  }
+  a > div { background-color:#343c51;margin:0;display:block }
 }
 
 
@@ -458,3 +442,43 @@ nav#side.collapse {
   .btn-primary { width:100% }
 }
 
+
+[data-effeckt-type="twist"] {
+  -webkit-perspective: 400px;
+  -ms-perspective: 400px;
+  -o-perspective: 400px;
+  perspective: 400px;
+  -webkit-perspective-origin: 50% 50%;
+  -ms-perspective-origin: 50% 50%;
+  -o-perspective-origin: 50% 50%;
+  perspective-origin: 50% 50%;
+}
+
+[data-effeckt-type="twist"] li {
+  -webkit-transition: all 500ms ease, opacity 250ms ease;
+  -o-transition: all 500ms ease, opacity 250ms ease;
+  transition: all 500ms ease, opacity 250ms ease;
+  -webkit-transform-origin: center;
+  -ms-transform-origin: center;
+  -o-transform-origin: center;
+  transform-origin: center;
+}
+
+[data-effeckt-type="twist"] li.past,
+[data-effeckt-type="twist"] li.future {
+  opacity: 0;
+}
+
+[data-effeckt-type="twist"] li.past {
+  -webkit-transform: rotateY(-180deg);
+  -ms-transform: rotateY(-180deg);
+  -o-transform: rotateY(-180deg);
+  transform: rotateY(-180deg);
+}
+
+[data-effeckt-type="twist"] li.future {
+  -webkit-transform: rotateY(180deg);
+  -ms-transform: rotateY(180deg);
+  -o-transform: rotateY(180deg);
+  transform: rotateY(180deg);
+}
