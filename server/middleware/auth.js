@@ -79,7 +79,7 @@ var middleware = {
 
 
   authd(req, res, next) {
-    if (logging) $log(`mw.authd ${req.isAuthenticated()}`.cyan)
+    if (logging) $log(`mw.authd[${req.url}] ${req.isAuthenticated()}`.cyan)
     if (req.isAuthenticated()) return next()
 
     var apiRequest = req.originalUrl.indexOf('/api/') > -1

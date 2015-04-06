@@ -54,7 +54,7 @@ require('./dashboard/module.js');
 
 
 angular.module("AP", ['ngRoute', 'ngAnimate',
-  'ui.bootstrap.datetimepicker', 'ui.ace',
+  'ui.bootstrap', 'ui.bootstrap.datetimepicker', 'ui.ace',
   'Providers',
   'APRoutes', 'APServerTemplates', 'APPageHelpers',
   'APFilters', 'APUtil', 'APFormsDirectives', 'APInputs',
