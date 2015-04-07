@@ -88,6 +88,7 @@ angular.module('APDataSvc', [])
       getForDashboard: GET((d)=>`/experts/dashboard`),
       create: POST((d)=>`/experts/me`),
       updateMe: PUT((d)=>`/experts/${d._id}/me`),
+      getDeal: POST((d)=>`/experts/deals/${d._id}`),
       saveDeal: POST((d)=>`/experts/${d.expertId}/deal`),
       // expireDeal: PUT((d)=>`/experts/${d._id}/deal/${d.dealId}/expire`),
     }

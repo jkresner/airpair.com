@@ -82,6 +82,12 @@ var get = {
     svc.searchMany({}, options.active100, selectCB.inflateList(cb))
   },
 
+  getByDeal(id, cb) {
+    var search = {'deals._id':id}
+    if (id.length != 24) search = {'deals.code':id}
+    svc.searchOne(search,{},selectCB.migrateInflate(cb))
+  },
+
 }
 
 function updateWithTouch(expert, action, trackData, cb) {

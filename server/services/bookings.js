@@ -52,7 +52,7 @@ function create(e, r, user, expert, time, minutes, type, cb) {
 
   var participants = [
     {role:"customer",info: { _id: user._id, name: user.name, email: user.email } },
-    {role:"expert",info: { _id: expert.userId, name: expert.name, email: expert.email } }
+    {role:"expert",info: { _id: expert.userId, name: expert.name||expert.user.name, email: expert.email||expert.user.email } }
   ]
 
   var booking = {
@@ -76,10 +76,10 @@ function create(e, r, user, expert, time, minutes, type, cb) {
 
 var save = {
 
-  createBooking(expert, time, minutes, type, credit, payMethodId, requestId, cb)
+  createBooking(expert, time, minutes, type, credit, payMethodId, requestId, dealId, cb)
   {
     var createCB = (e, r) => create(e, r, this.user, expert, time, minutes, type, cb)
-    OrdersSvc.createBookingOrder.call(this, expert, time, minutes, type, credit, payMethodId, requestId, createCB)
+    OrdersSvc.createBookingOrder.call(this, expert, time, minutes, type, credit, payMethodId, requestId, dealId, createCB)
   },
 
   updateByAdmin(original, update, cb) {

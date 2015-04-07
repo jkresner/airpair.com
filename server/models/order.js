@@ -12,10 +12,10 @@ var lineType = [
 
   'redeemedcredit',
 
-  //-- Buy a block of hours with specific experts
-  'package',
+  //-- Block of time with a specific expert
+  'deal',
 
-  'redeemedhour',
+  'redeemeddealtime',
 
   //-- Time with an expert, can be redeemed using credit or payg
   'airpair',

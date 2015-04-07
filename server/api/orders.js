@@ -6,6 +6,7 @@ export default initAPI(
   // buyMembership: (req) => [req.body.length,req.body.coupon,req.paymethod],
   getByIdForAdmin: (req) => [req.params.id],
   buyCredit: (req) => [req.body.total,req.body.coupon,req.body.payMethodId],
+  buyDeal: (req) => [req.expertshaped,req.body.dealId,req.body.payMethodId],
   giveCredit: (req) => [req.body.toUser,req.body.total,req.body.source],
   getMyOrders: (req) => [],
   getMyOrdersWithCredit: (req) => [req.params.id],
