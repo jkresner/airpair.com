@@ -91,6 +91,7 @@ function updateWithTouch(expert, action, trackData, cb) {
   {
     expert.lastTouch = svc.newTouch.call(this, action)
     expert.activity = expert.activity || []
+    // if (_.idsEqual(this.user._id,expert.userId))  // Don't want activity for admins
     expert.activity.push(expert.lastTouch)
   }
 
@@ -111,8 +112,9 @@ function updateWithTouch(expert, action, trackData, cb) {
     }
   }
 
-  if (action == 'create')
+  if (action == 'create') {
     svc.create(expert, cb)
+  }
   else {
 
     if (expert.gp || expert.gh || expert.so || expert.bb ||
@@ -157,6 +159,22 @@ var save = {
 
   deleteById(original, cb) {
     svc.deleteById(original._id, cb)
+  },
+
+  createDeal(expert, deal, cb) {
+    deal.lastTouch = svc.newTouch.call(this, 'createDeal')
+    deal.activity = [deal.lastTouch]
+    deal.rake = deal.rake || 10 //-- To become more intelligent and custom per deal
+    expert.deals = expert.deals || []
+    expert.deals.push(deal)
+    $callSvc(updateWithTouch, this)(expert, 'createDeal', null, selectCB.me(cb))
+  },
+
+  deactivateDeal(expert, dealId, cb) {
+    var deal = _.find(expert.deals,(d)=>_.idsEqual(d._id,dealId))
+    deal.lastTouch = svc.newTouch.call(this, 'dectivateDeal')
+    deal.expiry = new Date
+    $callSvc(updateWithTouch, this)(expert, 'dectivateDeal', null, selectCB.me(cb))
   }
 }
 

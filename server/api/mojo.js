@@ -8,7 +8,7 @@ export default initAPI(
   getRanked: (req) => [req.expert,req.query],
   // getMatchesForRequest: (req) => [req.request],
   getMatchesForDashboard: (req) => [],
-  updateMatchingStats: (req) => [req.expert,req.request],
+  updateMatchingStats: (req) => [req.expertshaped,req.request],
 }, {
 },
   require('../../shared/validation/mojo.js')

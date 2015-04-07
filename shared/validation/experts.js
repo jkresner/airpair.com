@@ -47,10 +47,54 @@ var validation = {
     var isOwner = _.idsEqual(expert.userId, user._id)
 
     if ( !isAdmin && !isOwner )
-      return 'Expert can only be deleted by owner'
+      return `Expert can only be deleted by owner`
+  },
 
-    $log('deleteById.val'.cyan)
-  }
+  createDeal(user, expert, deal)
+  {
+    var isAdmin = _.contains(user.roles, 'admin')
+    var isOwner = _.idsEqual(expert.userId, user._id)
+
+    if ( !isAdmin && !isOwner )
+      return `You can only create deals for yourself`
+
+    if (deal.expiry && moment(deal.expiry).isBefore(moment()))
+      return `Cannot create already expired deal`
+
+    if (deal.code && deal.code.length > 20)
+      return `Code must be 20 characters or less`
+
+    if (!deal.price) return `Deal price required`
+    if (!deal.minutes) return `Deal time purchased required`
+
+    if (!deal.type) return `Deal type required`
+    if (!_.contains(['airpair', 'offline', 'code-review', 'article', 'workshop'],deal.type))
+      return `${deal.type} not a valid deal type`
+
+    if (!deal.target.type) return `Deal target type required`
+    if (!_.contains(['all','user','company','newsletter','past-customers','code'],deal.target.type))
+      return `${deal.target.type} not a valid deal target`
+
+    if (deal.rake && !isAdmin) return `Client does not determine deal rake...`
+    if (deal.tagId && !cache.tags[deal.tagId])
+      return `Could not resolve tag[${deal.tagId}] specified for your deal`
+  },
+
+  expireDeal(user, expert, dealId, expiry)
+  {
+    var isAdmin = _.contains(user.roles, 'admin')
+    var isOwner = _.idsEqual(expert.userId, user._id)
+
+    if ( !isAdmin && !isOwner )
+      return `Cannot edit deals belonging to other experts`
+
+    var deal = _.find(expert.deals,(d)=>_.idsEqual(d._id,dealId))
+    if (!deal)
+      return `Cannot find deal[${dealId}] belonging you[{expert._id}]`
+
+    if (deal.expiry && moment(deal.expiry).isBefore(moment()))
+      return `Cannot deactivate already deactivated deal[${dealId}] belonging to[{expert._id}]`
+  },
 
 }
 

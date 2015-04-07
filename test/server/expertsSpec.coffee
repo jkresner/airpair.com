@@ -313,11 +313,148 @@ admin = ->
         DONE()
 
 
+  it "Get deals for tag"
+
+
+  it.skip "Get deals for expert", itDone ->
+    DONE()
+
+
+  it "Add no tag expert deal available to everyone with not expiration", itDone ->
+    SETUP.createNewExpert 'louf', {}, (s, expert) ->
+      LOGIN 'admin', ->
+        GET "/adm/experts/#{expert._id}", {}, (e1) ->
+          expect(e1.deals.length).to.equal(0)
+          target = type: 'all'
+          deal = { price: 100, minutes: 120, type: 'airpair', target }
+          POST "/experts/#{expert._id}/deal", deal, {}, (e2) ->
+            expect(e2.deals.length).to.equal(1)
+            expect(e2.deals[0].activity).to.be.undefined
+            expect(e2.deals[0].lastTouch).to.be.undefined
+            expect(e2.deals[0].expiry).to.be.undefined
+            expect(e2.deals[0].price).to.equal(100)
+            expect(e2.deals[0].minutes).to.equal(120)
+            expect(e2.deals[0].type).to.equal('airpair')
+            expect(e2.deals[0].description).to.be.undefined
+            expect(e2.deals[0].rake).to.equal(10)
+            expect(e2.deals[0].tag).to.be.undefined
+            expect(e2.deals[0].target.type).to.equal('all')
+            expect(e2.deals[0].target.objectId).to.be.undefined
+            expect(e2.deals[0].code).to.be.undefined
+            db.readDoc 'Expert', expert._id, (e3) ->
+              expect(e3.deals[0].lastTouch.action).to.equal('createDeal')
+              expect(e3.deals[0].lastTouch.utc).to.exist
+              expect(e3.deals[0].activity.length).to.equal(1)
+              expect(e3.deals[0].activity[0].action).to.equal('createDeal')
+              expectIdsEqual(e3.deals[0].lastTouch.by._id, data.users.admin._id)
+              expect(e3.deals[0].redeemed.length).to.equal(0)
+              DONE()
+
+
+  it "Add expert deal for a tag with a required code expiring in 7 days", itDone ->
+    SETUP.createNewExpert 'gwil', {}, (s, expert) ->
+      LOGIN 'admin', ->
+        GET "/adm/experts/#{expert._id}", {}, (e1) ->
+          expect(e1.deals.length).to.equal(0)
+          target = type: 'code'
+          deal = { expiry: moment().add(7, 'days'), code: 'cd7'+timeSeed(), price: 120, minutes: 300, type: 'offline', tag: data.tags.angular, description: 'code required deal', target }
+          POST "/experts/#{expert._id}/deal", deal, {}, (e2) ->
+            expect(e2.deals.length).to.equal(1)
+            expect(moment(e2.deals[0].expiry).isAfter(moment().add(6,'days'))).to.be.true
+            expect(moment(e2.deals[0].expiry).isBefore(moment().add(8,'days'))).to.be.true
+            expect(e2.deals[0].price).to.equal(120)
+            expect(e2.deals[0].minutes).to.equal(300)
+            expect(e2.deals[0].type).to.equal('offline')
+            expect(e2.deals[0].description).to.equal('code required deal')
+            expect(e2.deals[0].rake).to.equal(10)
+            expectIdsEqual(e2.deals[0].tag._id, data.tags.angular._id)
+            expect(e2.deals[0].tag.name).to.equal('AngularJS')
+            expect(e2.deals[0].target.type).to.equal('code')
+            expect(e2.deals[0].target.objectId).to.be.undefined
+            expect(e2.deals[0].code).to.equal(deal.code)
+            DONE()
+
+
+  it "Add expert deal available to one user", itDone ->
+    SETUP.addAndLoginLocalUserWithPayMethod 'del1', (sdel1) ->
+      SETUP.createNewExpert 'dros', {}, (s, expert) ->
+        GET "/experts/me", {}, (e1) ->
+          expect(e1.deals.length).to.equal(0)
+          target = type: 'user', objectId: sdel1._id
+          deal = { price: 20, minutes: 30, type: 'code-review', target }
+          POST "/experts/#{expert._id}/deal", deal, {}, (e2) ->
+            expect(e2.deals.length).to.equal(1)
+            expect(e2.deals[0].expiry).to.be.undefined
+            expect(e2.deals[0].price).to.equal(20)
+            expect(e2.deals[0].minutes).to.equal(30)
+            expect(e2.deals[0].type).to.equal('code-review')
+            expect(e2.deals[0].description).to.be.undefined
+            expect(e2.deals[0].rake).to.equal(10)
+            expect(e2.deals[0].tag).to.be.undefined
+            expect(e2.deals[0].target.type).to.equal('user')
+            expectIdsEqual(e2.deals[0].target.objectId,sdel1._id)
+            expect(e2.deals[0].code).to.be.undefined
+            db.readDoc 'Expert', expert._id, (e3) ->
+              expect(e3.deals[0].lastTouch.action).to.equal('createDeal')
+              expect(e3.deals[0].lastTouch.utc).to.exist
+              expect(e3.deals[0].activity.length).to.equal(1)
+              expect(e3.deals[0].activity[0].action).to.equal('createDeal')
+              expectIdsEqual(e3.deals[0].lastTouch.by._id, s._id)
+              DONE()
+
+
+  it "Create with invalid deal type, invalid target type & expiry in the past", itDone ->
+    SETUP.createNewExpert 'mper', {}, (s, expert) ->
+      d1 = price: 100, minutes: 120, type: 'nonsicle', target: { type: 'all' }
+      POST "/experts/#{expert._id}/deal", d1, {status:403}, (err1) ->
+        expect(err1.message.indexOf("not a valid deal type")!=-1).to.be.true
+        d2 = price: 10, minutes: 20, type: 'offline', target: { type: 'nobody' }
+        POST "/experts/#{expert._id}/deal", d2, {status:403}, (err2) ->
+          expect(err2.message.indexOf("not a valid deal target")!=-1).to.be.true
+          d3 = expiry: moment().add(-1,'days'), price: 10, minutes: 20, type: 'offline', target: { type: 'all' }
+          POST "/experts/#{expert._id}/deal", d3, {status:403}, (err3) ->
+            expect(err3.message.indexOf("Cannot create already expired deal")!=-1).to.be.true
+            DONE()
+
+
+  it "Add more than one deal to an expert", itDone ->
+    SETUP.createNewExpert 'phlf', {}, (s, expert) ->
+      expect(expert.deals.length).to.equal(0)
+      d1 = { price: 100, minutes: 100, type: 'airpair', target: { type: 'all'} }
+      POST "/experts/#{expert._id}/deal", d1, {}, (e2) ->
+        expect(e2.deals.length).to.equal(1)
+        d2 = { price: 200, minutes: 300, type: 'airpair', target: { type: 'all'} }
+        POST "/experts/#{expert._id}/deal", d2, {}, (e3) ->
+          expect(e3.deals.length).to.equal(2)
+          expect(e3.deals[0].price).to.equal(100)
+          expect(e3.deals[1].price).to.equal(200)
+          DONE()
+
+
+  it "Only admin can specify rake", itDone ->
+    SETUP.createNewExpert 'tmot', {}, (s, expert) ->
+      d1 = { rake:5, price: 100, minutes: 100, type: 'airpair', target: { type: 'all'} }
+      POST "/experts/#{expert._id}/deal", d1, {status:403}, (err) ->
+        expectStartsWith(err.message,"Client does not determine deal rake")
+        LOGIN 'admin', ->
+          d2 = { rake:5, price: 100, minutes: 100, type: 'airpair', target: { type: 'all'} }
+          POST "/experts/#{expert._id}/deal", d2, {}, (e2) ->
+            expect(e2.deals.length).to.equal(1)
+            expect(e2.deals[0].rake).to.equal(5)
+            DONE()
+
+
+  it "Expire deal"
+
+  it "Cannot re-activate expert deal"
+
+
 history = ->
 
   it "Cannot get another experts history"
 
   it "Get experts history"
+
 
 module.exports = ->
 

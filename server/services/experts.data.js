@@ -1,5 +1,5 @@
 import * as md5           from '../util/md5'
-var {selectFromObject}    = require('../../shared/util')
+var {selectFromObject}    = util
 
 var data = {
 
@@ -54,7 +54,18 @@ var data = {
       'al': 1,
       'so': 1,
       'bb': 1,
-      'minRate': 1
+      'minRate': 1,
+      'deals._id': 1,
+      'deals.expiry': 1,
+      'deals.price': 1,
+      'deals.minutes': 1,
+      'deals.type': 1,
+      'deals.description': 1,
+      'deals.rake': 1,
+      'deals.tag': 1,
+      'deals.target': 1,
+      'deals.code': 1,
+      'deals.redeemed': 1
     },
     userCopy: {
       '_id': 1,
@@ -139,6 +150,13 @@ var data = {
 
       r.minRate = r.minRate || r.rate
       r.tags = data.select.inflatedTags(r)
+
+      if (r.deals) {
+        for (var deal of r.deals) {
+          if (deal.tag) deal.tag = cache.tags[deal.tag._id]
+        }
+      }
+
       return r
     },
       //-- TODO, watch out for cache changing via adds and deletes of records
@@ -157,12 +175,23 @@ var data = {
             // return cb(Error(`tag with Id ${t.tagId} not in cache`))
         }
       }
+
+      if (expert.deals) {
+        for (var deal of expert.deals) {
+          if (deal.tag) deal.tag = cache.tags[deal.tag._id]
+        }
+      }
+
       return tags
     },
     cb: {
       addAvatar(cb) {
         return (e,r) => {
           if (e || !r) return cb(e,r)
+          if (!r.user) {
+            r.isV0 = true
+            r.avatar = (r.email) ? md5.gravatarUrl(r.email) : r.pic
+          }
           if (!r.pic)
             r.pic = md5.gravatarUrl(r.email||r.user.email)
           r.avatar = r.pic

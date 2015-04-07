@@ -1,10 +1,11 @@
-angular.module("ADMExperts", ['APRoutes'])
+angular.module("ADMExperts", ['APDealsDirectives'])
 
 .config((apRouteProvider) => {
 
   var route = apRouteProvider.route
   route('/adm/experts', 'Experts', require('./list.html'))
   route('/adm/experts/:id', 'Expert', require('./item.html'))
+  route('/adm/experts/:id/deals', 'Deals', require('./deals.html'))
 
 })
 
@@ -56,5 +57,24 @@ angular.module("ADMExperts", ['APRoutes'])
   }
 
   DataService.experts.getHistory({_id}, setHistoryScope)
+
+})
+
+
+.controller('DealsCtrl', ($scope, $routeParams, ServerErrors, AdmDataService) => {
+
+  var _id = $routeParams.id
+
+  var setScope = (r) => {
+    $scope.expert = r
+    $scope.deals = r.deals
+    $scope.selected = null
+    $scope.expired = _.filter(r.deals,(d)=>d.expiry&&moment(d.expiry).isBefore(moment()))
+    $scope.current = _.filter(r.deals,(d)=>d.expiry==null||moment(d.expiry).isAfter(moment()))
+  }
+  $scope.setScope = setScope
+
+  AdmDataService.experts.getBydId({_id}, setScope,
+    ServerErrors.fetchFailRedirect('/adm/experts'))
 
 })
