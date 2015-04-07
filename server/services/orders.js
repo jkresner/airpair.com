@@ -1,3 +1,4 @@
+var logging                     = false
 import Svc from './_service'
 import Order from '../models/order'
 import * as UserSvc from './users'
@@ -6,7 +7,6 @@ var RequestsSvc = require('./requests')
 var Data = require('./orders.data')
 var OrderUtil = require('../../shared/orders.js')
 var {base} = Data
-var logging = false
 var svc = new Svc(Order, logging)
 
 
@@ -28,16 +28,20 @@ var get = {
   getMyOrdersWithCredit(payMethodId, cb) {
     PayMethodSvc.getById.call(this, payMethodId, (e,r) => {
       if (e) return cb(e)
-      var query = Data.query.creditRemaining(this.user._id, payMethodId)
-      svc.searchMany(query, { options: Data.opts.orderByOldest }, cb)
+      var q = Data.query.creditRemaining(this.user._id, r._id)
+      svc.searchMany(q, { options: Data.opts.orderByOldest }, cb)
     })
+  },
+  getMyOrdersForDeal(dealId, cb) {
+    var q = Data.query.dealMinutesRemaining(this.user._id, dealId)
+    svc.searchMany(q, { options: Data.opts.orderByOldest }, cb)
   },
   getByQueryForAdmin(start, end, userId, cb)
   {
     var opts = { fields: Data.select.listAdmin, options: Data.opts.orderByNewest }
-    var query = Data.query.inRange(start,end)
-    if (userId) query.userId = userId
-    svc.searchMany(query, opts, Data.select.forAdmin(cb))
+    var q = Data.query.inRange(start,end)
+    if (userId) q.userId = userId
+    svc.searchMany(q, opts, Data.select.forAdmin(cb))
   },
   getOrdersForPayouts(cb)
   {
@@ -73,6 +77,23 @@ var Lines = {
     var info = { name: `$${total} Redeemed Credit`, source: fromLineItem._id }
     return Lines._new('redeemedcredit',1,-1*total,-1*total,-1*total,0,info)
   },
+  deal(expert, deal, expires, source)
+  {
+    var total = parseInt(deal.price)
+    var info = { name: `${deal.minutes} Minutes`, source, remaining: deal.minutes, expires, redeemedLines: [],
+                    deal: _.pick(deal,'rake','type','minutes','price','target','_id') }
+    // var profit = (deal.rake/100)*total
+    // var qty = (parseInt(deal.minutes)/60).toFixed(1)
+    // var unitPrice = (total/qty).toFixed(2)
+    var profit = 0 //-- profit is recognized on future lines
+    var qty = 1
+    return Lines._new('deal',qty,total,total,0,profit,info)
+  },
+  redeemeddealtime(minutes, total, fromLineItem)
+  {
+    var info = { name: `${minutes} Minutes`, source: fromLineItem._id }
+    return Lines._new('redeemeddealtime',1,-1*total,-1*total,0,0,info)
+  },
   payg(amount)
   {
     //-- payg always has $0 total as it balances against an airpair line item which has a total
@@ -92,7 +113,7 @@ var Lines = {
     var qty = minutes / 60
     var total = qty*unitPrice
     var exp = { _id: expert._id, name: expert.name, avatar: expert.avatar, userId: expert.userId }
-    var info = { name: `${minutes} min (${expert.name})`, type, time, minutes, paidout: false, expert: exp }
+    var info = { name: `${minutes} min (${expert.name||expert.user.name})`, type, time, minutes, paidout: false, expert: exp }
     return Lines._new('airpair',qty,unitPrice,total,0,qty*unitProfit,info)
   }
 }
@@ -100,7 +121,7 @@ var Lines = {
 
 //-- Create the order object without saving anything
 //-- Use the lineItems, paymethod and who the orders is for
-function makeOrder(byUser, lineItems, payMethodId, forUserId, requestId, errorCB, cb)
+function makeOrder(byUser, lineItems, payMethodId, forUserId, requestId, dealId, errorCB, cb)
 {
   var byUserId = svc.idFromString(byUser._id)
   forUserId = (forUserId) ? svc.idFromString(forUserId) : byUserId
@@ -128,9 +149,14 @@ function makeOrder(byUser, lineItems, payMethodId, forUserId, requestId, errorCB
   if (requestId)
     o.requestId = requestId
 
+  if (dealId)
+    o.dealId = dealId
+
   if (o.total == 0)
     o.payment = { type: '$0 order' }
 
+  if (logging)
+    $log('makeOrder'.cyan, o.total, payMethodId, dealId, errorCB, cb)
 
   if (!payMethodId && o.total == 0) cb(null, o)
   else
@@ -192,26 +218,55 @@ function trackOrderPayment(order) {
 
 }
 
-function _createBookingOrder(expert, time, minutes, type, credit, payMethodId, request, lineItems, total, cb)
+
+function bookUsingDeal(expert, time, minutes, type, dealId, cb)
 {
-  var requestId = (request) ? request._id : null
-  if (credit && credit > 0)
-  {
-    bookUsingCredit.call(this, expert, minutes, total, lineItems, credit, payMethodId, requestId, cb)
-  }
-  else
-  {
-    lineItems.unshift(Lines.payg(total))
-    makeOrder(this.user, lineItems, payMethodId, null, requestId, cb, (e, order) => {
+  get.getMyOrdersForDeal.call(this, dealId, (e, orders) => {
+    var lines = OrderUtil.linesWithMinutesRemaining(orders)
+    var availableMinutes = OrderUtil.getAvailableMinutesRemaining(lines)
+    if (availableMinutes < minutes)
+      return cb(Error(`Not enough remaining minutes. ${availableMinutes} found.`))
+
+    var {deal} = lines[0].info
+    var unitPrice = (deal.price/(deal.minutes/60))
+    var profit = (deal.rake/100)*deal.price
+    var unitProfit = (profit/(deal.minutes/60))
+    // $log('profit', profit, unitPrice, 'unitProfit'.white, unitProfit)
+    var lineItems = [Lines.airpair(expert, time, minutes, type, unitPrice, unitProfit)]
+
+    var need = minutes
+    var ordersToUpdate = []
+    for (var o of orders) {
+      for (var li of o.lineItems) {
+        if (need > 0 && li.type == 'deal' && li.info.remaining > 0)
+        {
+          var deducted = need
+          if (li.info.remaining < need)
+            deducted = li.info.remaining
+
+          var redeemedLine = Lines.redeemeddealtime(deducted, unitPrice*deducted/60, li)
+          lineItems.unshift(redeemedLine)
+          li.info.remaining = li.info.remaining - deducted
+          li.info.redeemedLines.push({ lineItemId: redeemedLine._id, minutes: deducted, partial: deducted!=need })
+
+          ordersToUpdate = _.union(ordersToUpdate,[o._id])
+          need = need - deducted
+        }
+      }
+    }
+
+    ordersToUpdate = _.map(ordersToUpdate, (id) => _.find(orders,(o)=> _.idsEqual(o._id, id) ) )
+
+    // console.log('bookUsingDeal Available minutes'.cyan, lineItems)
+    makeOrder(this.user, lineItems, null, null, null, dealId, cb, (e, order) => {
+
       chargeAndTrackOrder(order, cb, (e,o) => {
-        if (request)
-          RequestsSvc.updateWithBookingByCustomer.call(this, request, o, () => {})
-        svc.create(o, cb)
+        // console.log('inserting deal minutes redeemed order', order.total, order._id, order.userId)
+        svc.updateAndInsertOneBulk(ordersToUpdate, o, (e,r) => cb(e,o))
       })
     })
-  }
+  })
 }
-
 
 function bookUsingCredit(expert, minutes, total, lineItems, expectedCredit, payMethodId, requestId, cb)
 {
@@ -250,7 +305,7 @@ function bookUsingCredit(expert, minutes, total, lineItems, expectedCredit, payM
     ordersToUpdate = _.map(ordersToUpdate, (id) => _.find(orders,(o)=> _.idsEqual(o._id, id) ) )
 
     // console.log('bookUsingCredit', lineItems)
-    makeOrder(this.user, lineItems, payMethodId, null, requestId, cb, (e, order) => {
+    makeOrder(this.user, lineItems, payMethodId, null, requestId, null, cb, (e, order) => {
 
       chargeAndTrackOrder(order, cb, (e,o) => {
         // console.log('inserting cred redeemed order', order.total, order._id, order.userId)
@@ -262,7 +317,45 @@ function bookUsingCredit(expert, minutes, total, lineItems, expectedCredit, payM
 
 
 
+function _createBookingOrder(expert, time, minutes, type, credit, payMethodId, request, lineItems, total, cb)
+{
+  var requestId = (request) ? request._id : null
+  if (credit && credit > 0)
+  {
+    bookUsingCredit.call(this, expert, minutes, total, lineItems, credit, payMethodId, requestId, cb)
+  }
+  else
+  {
+    lineItems.unshift(Lines.payg(total))
+    makeOrder(this.user, lineItems, payMethodId, null, requestId, null, cb, (e, order) => {
+      chargeAndTrackOrder(order, cb, (e,o) => {
+        if (request)
+          RequestsSvc.updateWithBookingByCustomer.call(this, request, o, () => {})
+        svc.create(o, cb)
+      })
+    })
+  }
+}
+
+
+
 var save = {
+
+  buyDeal(expert, dealId, payMethodId, cb)
+  {
+    var deal = _.find(expert.deals,(d)=>_.idsEqual(d._id,dealId))
+    var expires = util.dateWithDayAccuracy(moment().add(3,'month'))
+    var lineItems = []
+
+    //(expert, dealId, total, minutes, rake, expires, source)
+    lineItems.push(Lines.deal(expert, deal, expires, `$${deal.price} Special w ${expert.name||expert.user.name}`))
+
+    makeOrder(this.user, lineItems, payMethodId, null, null, dealId, cb, (e, order) => {
+      // $log('buyCredit.order', order)
+      chargeAndTrackOrder(order, cb, (e,o) => svc.create(o, cb))
+    })
+  },
+
   buyCredit(total, coupon, payMethodId, cb)
   {
     var expires = util.dateWithDayAccuracy(moment().add(3,'month'))
@@ -281,11 +374,12 @@ var save = {
     if (coupon == "letspair")
       lineItems.push(Lines.discount("letspair", 100, 'Credit Announcement Promo', this.user) )
 
-    makeOrder(this.user, lineItems, payMethodId, null, null, cb, (e, order) => {
+    makeOrder(this.user, lineItems, payMethodId, null, null, null, cb, (e, order) => {
       // $log('buyCredit.order', order)
       chargeAndTrackOrder(order, cb, (e,o) => svc.create(o, cb))
     })
   },
+
   giveCredit(toUser, total, source, cb)
   {
     var expires = util.dateWithDayAccuracy(moment().add(3,'month'))
@@ -301,13 +395,17 @@ var save = {
     }
 
     mailman.sendGotCreditEmail(toUser, total, this.user, ()=>{})
-    makeOrder(forUser, lineItems, null, toUser._id, null, cb, (e, order) =>
+    makeOrder(forUser, lineItems, null, toUser._id, null, null, cb, (e, order) =>
       chargeAndTrackOrder(order, cb, (e,o) => svc.create(o, cb))
     )
   },
-  createBookingOrder(expert, time, minutes, type, credit, payMethodId, requestSuggestion, cb)
+
+  createBookingOrder(expert, time, minutes, type, credit, payMethodId, requestSuggestion, dealId, cb)
   {
-    if (requestSuggestion) {
+    if (dealId) {
+      bookUsingDeal.call(this, expert, time, minutes, type, dealId, cb)
+    }
+    else if (requestSuggestion) {
       this.machineCall = true // so we get back all data for the request
       RequestsSvc.getRequestForBookingExpert.call(this, requestSuggestion.requestId, expert._id, (e, request) => {
         if (e) return cb(e)
@@ -330,6 +428,7 @@ var save = {
       _createBookingOrder.call(this, expert, time, minutes, type, credit, payMethodId, null, lineItems, total, cb)
     }
   },
+
   releasePayout(order, cb)
   {
     var payoutLine = _.find(order.lineItems, (li) =>

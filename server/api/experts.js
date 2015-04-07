@@ -14,12 +14,14 @@ export default initAPI(
   updateMe: (req) => [req.expert,req.body],
   deleteById: (req) => [req.expert],
 
+  getByDeal: (req) => [req.params.id],
   createDeal: (req) => [req.expert, req.body],
   expireDeal: (req) => [req.expert, req.params.dealId, req.body.expiry],
 
 }, {
   'expertshaped':'getById',
   'expert':'getByIdForAdmin',
+  'deal':'getByDeal',
 },
   require('../../shared/validation/experts.js')
 )

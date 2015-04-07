@@ -69,9 +69,19 @@ var query = {
     return {
       '$or': [{payMethodId},{userId,payMethodId:null}],
       '$and': [
+          {'lineItems.type' : 'credit'},
           {'lineItems.info' : { '$exists': true }},
           {'lineItems.info.remaining': { '$gt': 0 }}
       ] }
+  },
+  dealMinutesRemaining: function(userId, dealId) {
+    return {
+      'userId':userId,
+      'lineItems.type' : 'deal',
+      'lineItems.info' : { '$exists': true },
+      // 'lineItems.info.deal._id' : dealId,
+      'lineItems.info.remaining': { '$gt': 0 }
+    }
   },
   inRange: function(start, end) {
    return {

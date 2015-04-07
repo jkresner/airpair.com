@@ -8,10 +8,11 @@ module.exports = function(app) {
 
   var router = Router()
     .param('tag', API.Tags.paramFns.getBySlug)
-    .param('expert', API.Experts.paramFns.getByIdForAdmin)
     .param('request', API.Requests.paramFns.getByIdForAdmin)
     .param('booking', API.Bookings.paramFns.getById)
     .param('paymethod', API.Paymethods.paramFns.getById)
+    .param('expert', API.Experts.paramFns.getByIdForAdmin)
+    .param('expertshaped', API.Experts.paramFns.getById)
 
     .get('/session/full', setAnonSessionData, API.Users.getSession)
     .put('/users/me/password-change', API.Users.requestPasswordChange)
@@ -81,6 +82,7 @@ module.exports = function(app) {
     .get('/billing/orders', API.Orders.getMyOrders)  //emailv,
     .get('/billing/orders/credit/:id', API.Orders.getMyOrdersWithCredit)
     .post('/billing/orders/credit', API.Orders.buyCredit)
+    .post('/billing/orders/deal/:expertshaped', API.Orders.buyDeal)
 
     .get('/billing/orders/payouts', API.Orders.getOrdersForPayouts)
     .get('/payouts/me', API.Payouts.getPayouts)
@@ -88,7 +90,7 @@ module.exports = function(app) {
 
     .get('/bookings', API.Bookings.getByUserId)
     .get('/bookings/:id', API.Bookings.getById)
-    .post('/bookings/:expert', API.Bookings.createBooking)
+    .post('/bookings/:expertshaped', API.Bookings.createBooking)
 
     .get('/experts/me', API.Experts.getMe)
     .get('/experts/search/:id', API.Experts.search)
@@ -96,6 +98,7 @@ module.exports = function(app) {
     .get('/experts/:expert/history', API.Experts.getHistory)
     .post('/experts/me', populateUser, API.Experts.create)
     .put('/experts/:expert/me', populateUser, API.Experts.updateMe)
+    .get('/experts/deal/:id', API.Experts.getByDeal)
     .post('/experts/:expert/deal', API.Experts.createDeal)
     .put('/experts/:expert/deal/:dealid/expire', API.Experts.expireDeal)
 

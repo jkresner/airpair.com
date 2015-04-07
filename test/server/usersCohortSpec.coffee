@@ -63,7 +63,7 @@ mailsubscriptions = ->
       SETUP.addUserWithRole 'jkap', 'editor', ->
         done()
 
-    it 'Can see mail subscribed & unsubscribed lists for loggedInUser', itDone ->
+    it.skip 'Can see mail subscribed & unsubscribed lists for loggedInUser', itDone ->
       subscriptionsStub = SETUP.stubMailchimpLists(data.wrappers.mailchimp_memberinfo_jk)
       LOGIN 'jkap', (s) ->
         GET '/users/me/maillists', {}, (maillists) ->

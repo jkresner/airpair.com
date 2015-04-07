@@ -33,6 +33,13 @@ var data = {
           p.info.avatar = md5.gravatarUrl(p.info.email)
     },
     cb: {
+      setAvatarsCB(cb) {
+        return (e, booking) => {
+          if (e) return cb(e)
+          data.select.setAvatars(booking)
+          cb(null,booking)
+        }
+      },
       inflateAvatars(cb) {
         return (e,r)  => {
           if (e) return cb(e)

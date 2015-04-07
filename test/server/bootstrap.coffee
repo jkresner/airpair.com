@@ -79,9 +79,11 @@ describe 'Server: '.appload, ->
   spec @, 'Paymethods'
   spec @, 'Orders'
   spec @, 'Orders', 'ordersBooking'
-  spec @, 'Posts'
+  spec @, 'Orders', 'ordersDeals'
+  # # spec @, 'Posts'
   spec @, 'Post Reviews', 'postsReviews'
   spec @, 'Bookings'
+  spec @, 'Bookings', 'bookingsAdmin'
   spec @, 'Payouts'
 
   # spec.only @, 'Rss'
