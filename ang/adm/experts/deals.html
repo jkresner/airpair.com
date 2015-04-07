@@ -1,0 +1,58 @@
+<section id="expert" ng-if="expert._id">
+
+
+  <section class="a user">
+
+    <h3 class="underline" ng-if="expert"><a href="/adm/experts">Experts</a> >
+      <a href="/adm/experts/{{expert._id}}">{{ expert.name || expert.user.name }}</a> >
+      Deals
+    </h3>
+
+  </section>
+
+
+
+  <section class="b deal-form">
+
+    <deal-form deal="selected" success="setScope" expert="expert"></deal-form>
+
+  </section>
+
+
+  <section class="a current-deals">
+
+    <h4>Current</h4>
+
+    <p ng-if="current.length == 0">No current deals</p>
+
+    <p ng-if="current.length > 0">
+      <ul>
+        <li class="deal" ng-repeat="d in current">
+          <a href="/billing/deal/{{d._id}}" target="_blank">
+            ${{d.price}}
+            ({{d.minutes}} mins : {{d.type}})
+          </a>
+          <b>{{d.target.type}} <span ng-if="d.tag">{ {{d.tag.name}} }</span> </b>
+          <time ng-if="d.expiry">Expires {{d.expiry|locaTime : 'DD MMM YYYY'}}</time>
+          <time ng-if="!d.expiry">No expiry</time>
+        </li>
+      </ul>
+    </p>
+
+  </section>
+
+
+  <section class="a expired-deals">
+
+    <h4>Expired</h4>
+
+    <p ng-if="expired.length == 0">No expired deals</p>
+
+    <p ng-if="expired.length > 0">
+    </p>
+
+  </section>
+
+
+
+</section>

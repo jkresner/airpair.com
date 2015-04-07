@@ -1,4 +1,4 @@
-angular.module("ADMOrders", ['APRoutes'])
+angular.module("ADMOrders", [])
 
 .config(function(apRouteProvider) {
 

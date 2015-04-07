@@ -4,15 +4,33 @@ var ObjectId = Schema.Types.ObjectId
 var Shared = require("./_shared")
 
 
+var DEAL_TYPE = ['airpair', 'offline', 'code-review', 'article', 'workshop']
+var DEAL_TARGET_TYPE = ['all','user','company','newsletter','past-customers','code']
+
+
 //-- If userIds.length == 0, then the deal is available to everyone
-var Deal = {
+var Deal = new Schema({
   lastTouch:      Shared.Touch,
-  active:         { type: Boolean, required: true, default: true },
-  code:           { required: true, type: String },
-  rate:           { required: true, type: Number },
+  expiry:         { type: Date },     // used as a flag that the deal is not longer available
+  price:          { required: true, type: Number },
+  minutes:        { required: true, type: Number },
+  type:           { required: true, lowercase: true, type: String, enum: DEAL_TYPE },
+  description:    { type: String },
   rake:           { required: true, type: Number },  // allow the expert commission deals
-  userIds:        { required: true, type: [ObjectId] }
-}
+  tag:            {
+    _id:          { type: ObjectId, ref: 'Tag' },
+  },
+  target:         {
+    type:         { required: true, type: String, enum: DEAL_TARGET_TYPE },
+    objectId:     { type: ObjectId },   // userId || companyId || code (required)
+  },
+  code:           { type: String, unique: true, sparse: true, trim: true, lowercase: true },
+  redeemed:       [{
+    orderId:      { required: true, type: ObjectId, ref: 'Order' },
+    by:           Shared.UserByte,
+  }],
+  activity:       [Shared.Touch]   // updates + views + (expert) shares
+}, { strict: true })
 
 
 var Bookme = {
@@ -22,7 +40,7 @@ var Bookme = {
   noIndex:        { type: Boolean, default: false    },  // no index for crawlers
   rate:           { required: true, type: Number     },  // experts external rate
   rake:           { required: true, type: Number     },  // allow the expert commission deals
-  coupons:        [Deal],                              // allow the expert to hand out promotions
+  coupons:        [{}],                                  // allow the expert to hand out promotions
   urlBlog:        String,                                // www.airpair.com/node.js/expert-training-domenic-denicola
   youTubeId:      String,                                // youtube movie
   // creditRequestIds: { type: [ObjectId] },  # Requests that credits can be applied for
@@ -39,36 +57,39 @@ var UserCopy = {
   username:         { type: String, lowercase: true, trim: true },
   localization:     { location: String, timezone: String },
   social:       {
-      gh: {
-        username: { type: String },
-        _json: {
-          avatar_url: { type: String },
-          public_repos: { type: Number },
-          public_gists: { type: Number },
-          followers: { type: Number },
-        }
-      },
-      so: {
-        link: { type: String },
-        reputation: { type: String },
-        badge_counts: { type: {} }
-      },
-      bb: {     username: { type: String } },
-      in: {     id: { type: String } },
-      tw: {
-        username: { type: String },
-        _json: {
-          description: { type: String },
-          followers_count: { type: String }
-        }
-      },
-      al: {     username: { type: String } },
-      gp: {
-        id: { type: String },
-        _json: {
-          picture: { type: String },
-        }
+    gh: {
+      username:       { type: String },
+      _json: {
+        avatar_url:   { type: String },
+        public_repos: { type: Number },
+        public_gists: { type: Number },
+        followers:    { type: Number },
       }
+    },
+    so: {
+      link:           { type: String },
+      reputation:     { type: String },
+      badge_counts:   { type: {} }
+    },
+    bb: {
+      username:       { type: String } },
+    in: {
+      id:             { type: String } },
+    tw: {
+      username:       { type: String },
+      _json: {
+        description:  { type: String },
+        followers_count: { type: String }
+      }
+    },
+    al: {
+      username:       { type: String } },
+    gp: {
+      id:             { type: String },
+      _json: {
+        picture:      { type: String },
+      }
+    }
   }
 }
 

@@ -1,0 +1,135 @@
+<h3 class="underline" ng-if="!data._id">New deal</h3>
+<h3 class="underline" ng-if="data._id">Edit deal</h3>
+
+<form id="dealForm" novalidate name="dealForm" ng-submit="saveDeal(dealForm.$valid, data, dealForm)">
+
+  <h4>Required</h4>
+
+  <div class="form-group target-type">
+    <label class="control-label">For</label>
+    <select class="form-control" ng-model="data.target.type" tabindex="301">
+      <option value="all">Everyone</option>
+      <option value="newsletter">Newsletter (includes everyone)</option>
+      <option value="past-customers">Previous customers</option>
+      <option value="code">With code</option>
+    </select>
+  </div>
+
+  <div class="form-group type">
+    <label class="control-label">Type</label>
+    <select class="form-control" ng-model="data.type" tabindex="303">
+      <option value="airpair">AirPairing (video chat)</option>
+      <option value="offline">Offline work</option>
+      <option value="code-review">Code Review (Asyncrous reviews)</option>
+      <option value="article">Aritcle (comissioned)</option>
+      <option value="workshop">Workshop (1-to-many AirPair)</option>
+    </select>
+  </div>
+
+<!--           <option value="user">Specific customer</option> -->
+<!--           <option value="company">Company</option> -->
+
+  <div form-group class="minutes">
+    <label class="control-label" for="minutes">Time
+
+      <span class="error" ng-if="formGroup.showError(dealForm.minutes)" ng-messages="dealForm.minutes.$error">
+        <span ng-message="required">Required</span>
+      </span>
+    </label>
+    <select id="minutes" form-control ng-model="data.minutes" name="minutes" tabindex="306" required>
+      <option value="30">30 minutes</option>
+      <option value="60">60 minutes</option>
+      <option value="90">90 minutes</option>
+      <option value="120">02 hours</option>
+      <option value="180">03 hours</option>
+      <option value="240">04 hours</option>
+      <option value="300">05 hours</option>
+      <option value="360">06 hours</option>
+      <option value="420">07 hours</option>
+      <option value="480">08 hours</option>
+      <option value="540">09 hours</option>
+      <option value="600">10 hours</option>
+      <option value="900">15 hours</option>
+      <option value="1200">20 hours</option>
+      <option value="1500">25 hours</option>
+      <option value="1800">30 hours</option>
+      <option value="2100">35 hours</option>
+      <option value="2400">40 hours</option>
+      <option value="2700">45 hours</option>
+      <option value="3000">50 hours</option>
+    </select>
+  </div>
+
+  <div form-group class="price">
+    <label class="control-label" for="price">Price (USD)
+      <span ng-if="data.minutes && data.price">{{data.price/data.minutes | currency}}/min</span>
+
+      <span class="error" ng-if="formGroup.showError(dealForm.price)" ng-messages="dealForm.price.$error">
+        <span ng-message="required">Required</span>
+      </span>
+
+    </label>
+    <div class="input-group">
+      <div class="input-group-addon">$</div>
+      <input id="price" name="price" form-control type="number" placeholder="Total price in USD" ng-model="data.price" tabindex="312" required />
+    </div>
+  </div>
+
+  <div class="form-group rake">
+    <label class="control-label" for="rake">Rake <span>(AirPair Commission)</span></label>
+    <div class="input-group">
+      <input id="rake" name="rake" class="form-control" type="number" placeholder="Percentage cut AirPair takes" value="10" disabled />
+      <div class="input-group-addon">%</div>
+    </div>
+  </div>
+
+
+  <h4>Optional</h4>
+
+  <div class="form-group tag-input-group tag">
+    <label class="control-label">Tag</label>
+    <div ng-if="data.tag" class="selected">
+      <ul class="tags">
+        <li ng-attr-data-id="{{data.tag._id}}">
+          {{data.tag.slug}} <a class="remove" ng-click="deselectTag()">x</a>
+        </li>
+      </ul>
+    </div>
+
+    <input
+      type="text" class="tagInput form-control"
+      name="q"
+      placeholder="Type a technology (e.g. javascript)"
+      ng-model="data.q"
+      typeahead="t as t for t in getTags($viewValue) | filter:$viewValue"
+      typeahead-input-formatter="keypressSelect($model)" tabindex="315"
+      typeahead-template-url="tagMatch.html"
+      >
+    </div>
+
+    <script type="text/ng-template" id="tagMatch.html">
+      <div>
+        <a class="tagSelect">
+          <span bind-html-unsafe="match.model.name | typeaheadHighlight:query"></span>
+          <p bind-html-unsafe="match.model.desc | typeaheadHighlight:query"></p>
+        </a>
+      </div>
+    </script>
+
+  </div>
+
+  <div class="form-group code">
+    <label class="control-label">Code</label>
+    <input id="profileName" name="code" class="form-control" type="text" placeholder="Redemption code" ng-model="data.code"
+  ng-blur="checkCode(data.code)" tabindex="318" />
+  </div>
+
+  <div class="form-group expiry">
+    <label class="control-label">Expiry</label>
+    <div datetime-input id="bookingDatetime" datetime="data.expiry" min-view="day" date-format="YYYY MMM DD"></div>
+  </div>
+
+  <hr >
+  <input type="submit" class="btn" value="Save">
+
+</form>

@@ -20,7 +20,7 @@ export default initAPI(
   replyByExpert: (req) => [req.request,req.expert,req.body],
   farmByAdmin: (req) => [req.request,req.body.tweet],
   sendMessageByAdmin: (req) => [req.request,req.body],
-  addSuggestion: (req) => [req.request,req.expert,req.body],
+  addSuggestion: (req) => [req.request,req.expertshaped,req.body],
   removeSuggestion: (req) => [req.request,req.expert],
   deleteById: (req) => [req.request],
 }, {

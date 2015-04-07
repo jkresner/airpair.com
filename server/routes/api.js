@@ -8,7 +8,7 @@ module.exports = function(app) {
 
   var router = Router()
     .param('tag', API.Tags.paramFns.getBySlug)
-    .param('expert', API.Experts.paramFns.getById)
+    .param('expert', API.Experts.paramFns.getByIdForAdmin)
     .param('request', API.Requests.paramFns.getByIdForAdmin)
     .param('booking', API.Bookings.paramFns.getById)
     .param('paymethod', API.Paymethods.paramFns.getById)
@@ -96,6 +96,8 @@ module.exports = function(app) {
     .get('/experts/:expert/history', API.Experts.getHistory)
     .post('/experts/me', populateUser, API.Experts.create)
     .put('/experts/:expert/me', populateUser, API.Experts.updateMe)
+    .post('/experts/:expert/deal', API.Experts.createDeal)
+    .put('/experts/:expert/deal/:dealid/expire', API.Experts.expireDeal)
 
   var postsrouter = Router()
     .param('post', API.Posts.paramFns.getById)
@@ -131,7 +133,7 @@ module.exports = function(app) {
 
 
   var matchmakerrouter = Router()
-    .param('expert', API.Experts.paramFns.getById)
+    .param('expertshaped', API.Experts.paramFns.getById)
     .param('request', API.Requests.paramFns.getByIdForAdmin)
     .use(authd)
     // .get('/experts/mojo/me', API.Mojo.getMatchesForRequest)
@@ -141,15 +143,15 @@ module.exports = function(app) {
     .use(adm) //-- Todo change to match maker permissions
     .get('/matchmaking/requests/waiting', API.Requests.getWaitingForMatchmaker)
     .get('/matchmaking/requests/:id', API.Requests.getByIdForMatchmaker)
-    .put('/matchmaking/requests/:request/add/:expert', API.Requests.addSuggestion)
-    .put('/matchmaking/experts/:expert/matchify/:request', API.Mojo.updateMatchingStats)
+    .put('/matchmaking/requests/:request/add/:expertshaped', API.Requests.addSuggestion)
+    .put('/matchmaking/experts/:expertshaped/matchify/:request', API.Mojo.updateMatchingStats)
 
 
   router.use(matchmakerrouter)
 
 
   var admrouter = Router()
-    .param('expert', API.Experts.paramFns.getById)
+    .param('expert', API.Experts.paramFns.getByIdForAdmin)
     .param('request', API.Requests.paramFns.getByIdForAdmin)
     .param('booking', API.Bookings.paramFns.getById)
     .param('order', API.Orders.paramFns.getByIdForAdmin)
@@ -168,6 +170,7 @@ module.exports = function(app) {
     .put('/bookings/:booking/recording', API.Bookings.addYouTubeData)
     .put('/bookings/:booking/hangout', API.Bookings.addHangout)
     .put('/bookings/:booking', API.Bookings.updateByAdmin)
+    .put('/bookings/:booking/:order/:request/:id/swap', API.Bookings.cheatExpertSwap)
     .get('/payouts/:userId', API.Payouts.getPayouts)
     .get('/users/role/:role', API.Users.getUsersInRole)
     .put('/users/:id/role/:role', API.Users.toggleUserInRole)

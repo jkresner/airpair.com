@@ -22,7 +22,6 @@
 
 </section>
 
-
 <section class="b json">
 
   <h3 class="underline">Raw</h3>
@@ -62,11 +61,24 @@
 
 <section class="a availability">
 
-  <expert-availability></expert-availability>
+  <h3 class="underline">Availability</h3>
+  <p class="text-warning">Coming soonish...</p>
+  <!-- <expert-availability></expert-availability> -->
 
+</section>
 
-  <h3 class="underline">Deals</h3>
-  <p class="text-warning">Deals coming sunday (today)...</p>
+<section class="a deals">
+
+  <h3 class="underline">Deals <a href="/adm/experts/{{data._id}}/deals" class="btn-sm">edit</a></h3>
+
+  <p ng-if="!expert.deals || expert.deals.length == 0">Deals coming sunday (today)...</p>
+
+  <ul ng-if="expert.deals.length > 0">
+    <li ng-repeat="d in expert.deals">${{d.price}} ({{d.minutes}} mins : {{d.type}})
+      <time ng-if="d.expiry">Expires {{d.expiry|locaTime : 'DD MMM YYYY'}}</time>
+      <time ng-if="!d.expiry">No expiry</time>
+    </li>
+  </ul>
 
 </section>
 
