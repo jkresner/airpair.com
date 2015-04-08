@@ -1,6 +1,6 @@
 var {selectFromObject}    = require('../../shared/util')
 import * as md5           from '../util/md5'
-
+var ObjectId              = require('mongoose').Types.ObjectId
 
 var base = {
   'opensource': 20,
@@ -79,8 +79,25 @@ var query = {
       'userId':userId,
       'lineItems.type' : 'deal',
       'lineItems.info' : { '$exists': true },
-      // 'lineItems.info.deal._id' : dealId,
+      'lineItems.info.deal._id' : ObjectId(dealId.toString()),
       'lineItems.info.remaining': { '$gt': 0 }
+    }
+  },
+  dealsForExpertWithMinutesRemaining: function(userId, expertId) {
+    return {
+      'userId': userId,
+      'lineItems.type' : 'deal',
+      'lineItems.info' : { '$exists': true },
+      'lineItems.info.expert._id' : ObjectId(expertId.toString()),
+      'lineItems.info.remaining': { '$gt': 0 }
+    }
+  },
+  expertPayouts: function(expertId) {
+    return {
+        'lineItems.type' : { $ne: 'deal' },
+       '$or': [
+        {'lineItems.info.expert._id' : expertId},
+        {'lineItems.info.expert._id' : expertId.toString()}]
     }
   },
   inRange: function(start, end) {

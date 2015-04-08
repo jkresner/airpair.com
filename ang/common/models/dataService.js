@@ -76,8 +76,10 @@ angular.module('APDataSvc', [])
       getBookings: GET((d)=>`/bookings`),
       getBooking: GET((d)=>`/bookings/${d._id}`),
       getOrdersForPayouts: GET((d)=>`/billing/orders/payouts`),
+      getMyOrdersForExpert: GET((d)=>`/billing/orders/expert/${d._id}`),
       deletePaymethod: DELETE((d)=>`/billing/paymethods/${d._id}`),
-      payoutOrders: POST((d)=>`/payouts/${d.payoutmethodId}`)
+      payoutOrders: POST((d)=>`/payouts/${d.payoutmethodId}`),
+      orderDeal:  POST((d)=>`/billing/orders/deal/${d.expertId}`),
     })
 
     var expertFns = {
@@ -88,7 +90,7 @@ angular.module('APDataSvc', [])
       getForDashboard: GET((d)=>`/experts/dashboard`),
       create: POST((d)=>`/experts/me`),
       updateMe: PUT((d)=>`/experts/${d._id}/me`),
-      getDeal: POST((d)=>`/experts/deals/${d._id}`),
+      getDeal: GET((d)=>`/experts/deal/${d._id}`),
       saveDeal: POST((d)=>`/experts/${d.expertId}/deal`),
       // expireDeal: PUT((d)=>`/experts/${d._id}/deal/${d.dealId}/expire`),
     }

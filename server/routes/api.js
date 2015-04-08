@@ -81,6 +81,7 @@ module.exports = function(app) {
     .delete('/billing/paymethods/:paymethod', API.Paymethods.deletePaymethod)
     .get('/billing/orders', API.Orders.getMyOrders)  //emailv,
     .get('/billing/orders/credit/:id', API.Orders.getMyOrdersWithCredit)
+    .get('/billing/orders/expert/:id', API.Orders.getMyDealOrdersForExpert)
     .post('/billing/orders/credit', API.Orders.buyCredit)
     .post('/billing/orders/deal/:expertshaped', API.Orders.buyDeal)
 

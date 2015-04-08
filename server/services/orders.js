@@ -1,14 +1,14 @@
-var logging                     = false
-import Svc from './_service'
-import Order from '../models/order'
-import * as UserSvc from './users'
-var PayMethodSvc = require('./paymethods')
-var RequestsSvc = require('./requests')
-var Data = require('./orders.data')
-var OrderUtil = require('../../shared/orders.js')
-var {base} = Data
-var svc = new Svc(Order, logging)
-
+var logging                 = false
+import Svc                  from './_service'
+import Order                from '../models/order'
+import * as UserSvc         from './users'
+var PayMethodSvc            = require('./paymethods')
+var RequestsSvc             = require('./requests')
+var Data                    = require('./orders.data')
+var OrderUtil               = require('../../shared/orders.js')
+var {base}                  = Data
+var svc                     = new Svc(Order, logging)
+var ObjectId                = require('mongoose').Types.ObjectId
 
 OrderUtil.calculateUnitPrice = (expert, type) => expert.rate + base[type]
 OrderUtil.calculateUnitProfit = (expert, type) => base[type] // TODO fix this for requests
@@ -36,6 +36,10 @@ var get = {
     var q = Data.query.dealMinutesRemaining(this.user._id, dealId)
     svc.searchMany(q, { options: Data.opts.orderByOldest }, cb)
   },
+  getMyDealOrdersForExpert(expertId, cb) {
+    var q = Data.query.dealsForExpertWithMinutesRemaining(this.user._id, expertId)
+    svc.searchMany(q, { options: Data.opts.orderByOldest }, cb)
+  },
   getByQueryForAdmin(start, end, userId, cb)
   {
     var opts = { fields: Data.select.listAdmin, options: Data.opts.orderByNewest }
@@ -50,9 +54,9 @@ var get = {
     // and use the userId
     require('./experts').getMe.call(this, (e, expert)=>{
       if (e || !expert) return cb(e,expert)
-      var query = { '$or': [{'lineItems.info.expert._id' : expert._id},{'lineItems.info.expert._id' : expert._id.toString()}] }
-      // console.log('expert.query', query)
-      svc.searchMany(query, {}, Data.select.forPayout(cb))
+      var q = Data.query.expertPayouts(expert._id)
+      // console.log('expert.q', q)
+      svc.searchMany(q, {}, Data.select.forPayout(cb))
     })
   }
 }
@@ -80,8 +84,10 @@ var Lines = {
   deal(expert, deal, expires, source)
   {
     var total = parseInt(deal.price)
+    var exp = { _id: ObjectId(expert._id), name: expert.name, avatar: expert.avatar, userId: ObjectId(expert.userId) }
     var info = { name: `${deal.minutes} Minutes`, source, remaining: deal.minutes, expires, redeemedLines: [],
-                    deal: _.pick(deal,'rake','type','minutes','price','target','_id') }
+                 deal: _.pick(deal,'rake','type','minutes','price','target','_id'), expert: exp }
+    info.deal._id = ObjectId(info.deal._id)
     // var profit = (deal.rake/100)*total
     // var qty = (parseInt(deal.minutes)/60).toFixed(1)
     // var unitPrice = (total/qty).toFixed(2)

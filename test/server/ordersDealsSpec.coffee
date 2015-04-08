@@ -30,6 +30,23 @@ orderDeals = ->
               DONE()
 
 
+  it 'Can get deal order for expert booking', itDone ->
+    SETUP.createNewExpert 'admb', {}, (sExp, expert) ->
+      deal = { price: 100, minutes: 300, type: 'airpair', target: { type: 'all' } }
+      POST "/experts/#{expert._id}/deal", deal, {}, (e2) ->
+        SETUP.addAndLoginLocalUserWithPayMethod 'del5', (s) ->
+          b = dealId: e2.deals[0]._id, payMethodId: s.primaryPayMethodId
+          POST "/billing/orders/deal/#{expert._id}", b, {}, (order) ->
+            GET "/billing/orders/expert/#{expert._id}", {}, (orders) ->
+              expect(orders.length).to.equal(1)
+              DONE()
+
+            # expect(e4.deals.length).to.equal(1)
+            # expectIdsEqual(dealId,e4.deals[0]._id)
+            # expectIdsEqual(expert._id, e4._id)
+
+
+
   it.skip 'Can not get expert by dealId if not belonging to target type', itDone ->
 
   it.skip 'Can get expert by expired dealId but not purchase deal', itDone ->
@@ -71,7 +88,7 @@ orderDeals = ->
                   expect(dealOrder.lineItems[0].balance).to.equal(0)
                   expect(dealOrder.lineItems[0].info.remaining).to.equal(180)
                   expect(dealOrder.lineItems[0].info.redeemedLines.length).to.equal(1)
-                  # expectIdsEqual(dealOrder.lineItems[0].info.expert._id,expert._id)
+                  expectIdsEqual(dealOrder.lineItems[0].info.expert._id,expert._id)
                   expectIdsEqual(dealOrder.lineItems[0].info.deal._id,b.dealId)
 
                   expect(_.idsEqual(redeemOrder._id,booking1.orderId)).to.be.true
