@@ -194,11 +194,12 @@ module.exports = {
   rev6 : { name: "Review16", email: "reviwer16@hotmail.com"},
 
 
-  del1 : { name: "Deal Buyer  ", email: "dealbuyer2@hotmail.com"},
+  del1 : { name: "Deal Buyer 1", email: "dealbuyer1@hotmail.com"},
   del2 : { name: "Deal Buyer 2", email: "dealbuyer2@hotmail.com"},
   del3 : { name: "Deal Buyer 3", email: "dealbuyer3@hotmail.com"},
   del4 : { name: "Deal Buyer 4", email: "dealbuyer4@hotmail.com"},
-
+  del5 : { name: "Deal Buyer 5", email: "dealbuyer5@hotmail.com"},
+  del6 : { name: "Deal Buyer 6", email: "dealbuyer6@hotmail.com"},
 
   admin: {
     "_id" : "54551be15f221efa174238d1",
