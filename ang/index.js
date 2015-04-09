@@ -51,6 +51,7 @@ require('./account/module.js');
 require('./requests/module.js');
 require('./bookings/module.js');
 require('./dashboard/module.js');
+require('./expert/module.js');
 
 
 angular.module("AP", ['ngRoute', 'ngAnimate',
@@ -63,7 +64,7 @@ angular.module("AP", ['ngRoute', 'ngAnimate',
   'APProfileDirectives', 'APPostsDirectives', 'APSurveyDirectives',
   'APSideNav',
   'APAuth', 'APPosts', 'APWorkshops', 'APProfile', 'APBilling',
-  'APRequests','APBookings', 'APDashboard'])
+  'APRequests','APBookings', 'APDashboard', 'APExpert'])
 
 .config(function($locationProvider, $routeProvider) {
 

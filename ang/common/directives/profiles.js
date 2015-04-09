@@ -1,5 +1,62 @@
 angular.module("APProfileDirectives", [])
 
+.directive('userInfo', function() {
+
+  return {
+    restrict: 'E',
+    template: require('./userInfo.html'),
+    controller($rootScope, $scope, $location, ServerErrors, SessionService) {
+
+      var updateInfo = function(targetName) {
+        $scope.profileAlerts = []
+        var propName = targetName.toLowerCase()
+        if ($scope.data[propName] && $scope.data[propName] != '' &&
+            $scope.session[propName] != $scope.data[propName])
+        {
+          var up = {}
+          up[propName] = $scope.data[propName]
+          SessionService[`update${targetName}`](up, function(result){
+            $scope.profileAlerts.push({ type: 'success', msg: `${targetName} updated` })
+          }, function(e){
+            $scope.data.username = $scope.session.username
+            $scope.profileAlerts.push({ type: 'danger', msg: e.message })
+          })
+        }
+      }
+
+      $rootScope.$watch('session', (session) => {
+        $scope.data = _.extend($scope.data||{},_.pick(session, 'name','email','initials','username','bio'))
+        if (session.localization)
+        {
+          $scope.data.location = session.localization.location
+          $scope.data.timezone = session.localization.timezone
+        }
+
+        if (!$scope.data.username && $scope.session.social) {
+          var social = $scope.session.social
+          if (social.gh || social.tw)
+          {
+            var username = social.gh.username || social.tw.username
+            SessionService.updateUsername({username}, function(result){
+              $scope.data.username = username
+            }, function(e){})
+          }
+        }
+      })
+
+      // $scope.updateBio = () => updateInfo('Bio')
+      $scope.updateName = () => updateInfo('Name')
+      $scope.updateInitials = () => updateInfo('Initials')
+      $scope.updateUsername = () => updateInfo('Username')
+
+      $scope.updateLocation = (locationData) => {
+        SessionService.changeLocationTimezone(locationData, (r)=> {})
+      }
+    }
+  }
+
+})
+
 .directive('socialLinks', function() {
 
   return {
