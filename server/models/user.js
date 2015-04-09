@@ -26,10 +26,13 @@ var Cohort = {
     visit_signup:         { type: Date },
     visits:               { type: [Date] },  // array of dates the user came to the site
   },
+  maillists:              { type: [String] },
+  expert:                 {
+    _id:                  { type: ObjectId, ref: 'Expert' },
+    applied:              { type: Date },
+  },
   aliases:                { type: [String] },
   firstRequest:           {},
-  expert:                 {},
-  maillists:              { type: [String] },
   // requests:     Get by query from Requests
   // orders:       Get by query from Order
   // spend:        Get by query from Orders
