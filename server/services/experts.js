@@ -1,6 +1,6 @@
 var logging               = false
 import Svc                from '../services/_service'
-import Expert             from '../models/expert'
+var Expert                = require('../models/expert')
 var {selectFromObject}    = util
 var {select,options}      = require('./experts.data')
 var selectCB              = select.cb
