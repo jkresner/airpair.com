@@ -4,21 +4,12 @@ angular.module("APDashboard", ['APFilters', 'APSvcSession',
 .config(function($locationProvider, $routeProvider) {
 
   var actions = {
-    list:   { template: require('./list.html'), controller: 'DashboardCtrl' },
-    expert:   { template: require('./office.html'), controller: 'ExpertDashboardCtrl' }
+    list:   { template: require('./list.html'), controller: 'DashboardCtrl' }
   };
 
   $routeProvider
     .when('/', actions.list)
     .when('/dashboard', actions.list)
-    .when('/office', actions.expert)
-})
-
-
-
-.controller('ExpertDashboardCtrl', function($scope, DataService) {
-
-
 })
 
 
