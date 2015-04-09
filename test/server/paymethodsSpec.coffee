@@ -3,7 +3,7 @@ braintree_test_nouce = 'fake-valid-nonce'
 
 module.exports = -> describe "API".subspec, ->
 
-  @timeout(6000)
+  @timeout(10000)
 
 
   # double think if it's necessary to allow people to add cars when anonymous
