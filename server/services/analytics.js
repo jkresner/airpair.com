@@ -68,7 +68,7 @@ var viewSvc = {
 function $$log(action, data, user, sessionID, ctx) {
   //-- TODO think about adding persistence
   var uid = (user) ? user.email.gray || user._id.gray
-    : `${sessionID.substring(0,12)}${ctx.ip.replace(':ffff','')}`.cyan
+    : `${sessionID.substring(0,12)}${(ctx&&ctx.ip)?ctx.ip.replace(':ffff',''):''}`.cyan
 
   uid = uid+"                                     ".substring(0,37-uid.length)
 
@@ -159,7 +159,7 @@ var analytics = {
       type,objectId,campaign,referer}, () => {})
 
     if (!properties.firstRequest) // anoying in the logs
-      $$log('View', properties, user, sessionID)
+      $$log('View', properties, user, sessionID, context)
 
     done = done || (doneBackup || function() {})
     done()
