@@ -28,7 +28,8 @@ angular.module("APSideNav", [])
         else
           $animate.addClass($element, 'expert')
 
-        storage('sideExpertOpen', $element.hasClass('expert').toString())
+        var storeFn = () => storage('sideExpertOpen', $element.hasClass('expert').toString())
+        setTimeout(storeFn, 3000)
       }
 
       if (storage('sideExpertOpen') == 'true') $element.addClass('expert')
