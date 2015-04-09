@@ -178,7 +178,7 @@ Booking: https://airpair.com/booking/${original._id}`
     bookingLine.info.swapped = [_.extend({utc:moment(),prevExpert})]
     bookingLine.info.name = bookingLine.info.name.replace(prevExpert.name,suggestion.expert.name)
     bookingLine.info.expert = _.pick(expert,['_id','userId','name','avatar'])
-    booking.gcal = {}
+    booking.gcal = null
 
     //-- After updating order, change booking
     //---- expertId
