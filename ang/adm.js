@@ -13,6 +13,7 @@ require('./common/directives/forms/forms.js');
 require('./common/directives/forms/inputs.js');
 require('./common/directives/forms/tagInput.js');
 require('./common/directives/posts.js');
+require('./common/directives/deals.js');
 require('./common/directives/requests.js');
 require('./common/directives/mailtemplates.js');
 require('./common/directives/profiles.js');
@@ -35,10 +36,11 @@ require('./adm/pipeline/module.js');
 require('./adm/bookings/module.js');
 require('./adm/experts/module.js');
 require('./adm/tags/module.js');
+require('./adm/mail/module.js');
 require('./matchmaking/module.js');
 
 angular.module('ADM', [
-  'ngRoute', 'ui.bootstrap.datetimepicker', 'APViewData',
+  'ngRoute', 'ui.bootstrap', 'ui.bootstrap.datetimepicker', 'APViewData',
   'APSvcSession', 'APSvcAdmin', 'APDataSvc', 'APNotifications', 'APRoutes', 'APUtil',
   'APFilters', 'APFormsDirectives', 'APInputs', 'APMailTemplates', 'APHangouts',
   'ADMPipeline',
@@ -51,6 +53,7 @@ angular.module('ADM', [
   'ADMTags',
   'ADMExperts',
   'ADMCompanys',
+  'ADMMail',
   'APMatchmaking'
   ])
 

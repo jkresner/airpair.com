@@ -1,54 +1,49 @@
-import Svc              from '../services/_service'
-import Booking          from '../models/booking'
-import User             from '../models/user'
-import Expert           from '../models/expert'
-var OrdersSvc =         require('../services/orders')
-var Data =              require('./bookings.data')
-var logging =           false
-var svc =               new Svc(Booking, logging)
-var youTube =           require('./wrappers/youtube')
-var util =              require('../../shared/util')
-
-var setAvatarsCB = (cb) =>
-  (e, booking) => {
-    Data.select.setAvatars(booking)
-    cb(e,booking)
-  }
-
+var logging                 = false
+var RequestsSvc             = require('../services/requests')
+var OrdersSvc               = require('../services/orders')
+import Svc                  from '../services/_service'
+import Booking              from '../models/booking'
+import Order                from '../models/order'
+var svc                     = new Svc(Booking, logging)
+var {select,query,options}  = require('./bookings.data')
+var {setAvatarsCB}          = select.cb
 
 
 var get = {
+
   getById(id, cb) {
     svc.getById(id, setAvatarsCB(cb))
   },
+
   getByIdForAdmin(id, cb) {
     svc.getById(id, (e,r) => {
       OrdersSvc.getByIdForAdmin(r.orderId, (ee,order) => {
         r.order = order
-        setAvatarsCB(cb)(e,r)
+        if (!order.requestId) return setAvatarsCB(cb)(e,r)
+        RequestsSvc.getByIdForAdmin(order.requestId, (eee,request) => {
+          r.request = request
+          setAvatarsCB(cb)(eee,r)
+        })
       })
     })
   },
+
   getByUserId(id, cb) {
     var opts = {}
     svc.searchMany({ customerId: id }, opts, cb)
   },
-  getByExpertId(id, cb) {
-    var opts = {}
-    svc.searchMany({ expertId: id }, opts, cb)
+
+  getByExpertId(expertId, cb) {
+    svc.searchMany({ expertId }, { fields: select.experts }, select.cb.inflateAvatars(cb))
   },
-  getByQueryForAdmin(start, end, userId, cb)
-  {
-    var opts = { fields: Data.select.listAdmin, options: Data.options.orderByDate }
-    var query = Data.query.inRange(start,end)
-    if (userId) query.customerId = userId
-    svc.searchMany(query, opts, (e,r) => {
-      for (var o of r) {
-        Data.select.setAvatars(o)
-      }
-      cb(null, r)
-    })
+
+  getByQueryForAdmin(start, end, userId, cb) {
+    var opts = { fields: select.listAdmin, options: options.orderByDate }
+    var q = query.inRange(start,end)
+    if (userId) q.customerId = userId
+    svc.searchMany(q, opts, select.cb.inflateAvatars(cb))
   }
+
 }
 
 
@@ -57,7 +52,7 @@ function create(e, r, user, expert, time, minutes, type, cb) {
 
   var participants = [
     {role:"customer",info: { _id: user._id, name: user.name, email: user.email } },
-    {role:"expert",info: { _id: expert.userId, name: expert.name, email: expert.email } }
+    {role:"expert",info: { _id: expert.userId, name: expert.name||expert.user.name, email: expert.email||expert.user.email } }
   ]
 
   var booking = {
@@ -80,11 +75,13 @@ function create(e, r, user, expert, time, minutes, type, cb) {
 }
 
 var save = {
-  createBooking(expert, time, minutes, type, credit, payMethodId, requestId, cb)
+
+  createBooking(expert, time, minutes, type, credit, payMethodId, requestId, dealId, cb)
   {
     var createCB = (e, r) => create(e, r, this.user, expert, time, minutes, type, cb)
-    OrdersSvc.createBookingOrder.call(this, expert, time, minutes, type, credit, payMethodId, requestId, createCB)
+    OrdersSvc.createBookingOrder.call(this, expert, time, minutes, type, credit, payMethodId, requestId, dealId, createCB)
   },
+
   updateByAdmin(original, update, cb) {
     // $log('updateByAdmin', original, update)
     if (original.datetime != update.datetime)
@@ -132,7 +129,10 @@ Booking: https://airpair.com/booking/${original._id}`
         get.getByIdForAdmin(r._id,cb)
       })
   },
-  // cheatSwapAnExpert(original, newExpert, requestId, cb){
+
+
+  //-- Short cut needs to be replaced by something much more robust
+  cheatExpertSwap(booking, order, request, suggestionId, cb) {
 
     //-- If there was a calendar invite, cancel and delete
     //-- Grab the expert details from the expert or optional requestId
@@ -170,12 +170,25 @@ Booking: https://airpair.com/booking/${original._id}`
     //     "name": "60 min (Dominic Barnes)"
     //   }
     // }
+    var lineItems = order.lineItems
+    var suggestion = _.find(request.suggested, (s)=> _.idsEqual(suggestionId,s._id))
+    var expert = suggestion.expert
+    var bookingLine = _.find(lineItems,(li)=>li.type=='airpair'&&_.idsEqual(li.info.expert._id,booking.expertId))
+    var prevExpert = bookingLine.info.expert
+    bookingLine.info.swapped = [_.extend({utc:moment(),prevExpert})]
+    bookingLine.info.name = bookingLine.info.name.replace(prevExpert.name,suggestion.expert.name)
+    bookingLine.info.expert = _.pick(expert,['_id','userId','name','avatar'])
+    booking.gcal = null
 
     //-- After updating order, change booking
     //---- expertId
     //----
     //---- Find and update expert participant
 
+    booking.expertId = expert._id
+    var toRemove = _.find(booking.participants,(p)=>_.idsEqual(p.info._id,prevExpert.userId))
+    booking.participants = _.without(booking.participants,toRemove)
+    booking.participants.push({ role:"expert", info:{ _id: expert.userId, name: expert.name, email: expert.email } })
     // {
     //     "_id" : ObjectId("54c952a4f2c7f80900554316"),
     //     "createdById" : ObjectId("53a75e911c67d1a4859d3636"),
@@ -210,10 +223,15 @@ Booking: https://airpair.com/booking/${original._id}`
     //     "__v" : 0
     // }
 
-  // },
+    Order.findByIdAndUpdate(order._id,{ $set:{ lineItems } }, (e,r)=>{
+      svc.update(booking._id, booking, (ee,rr)=>{
+        get.getByIdForAdmin(booking._id, cb)
+      })
+    })
+  },
 
   addYouTubeData(original, youTubeId, cb){
-    youTube.getVideoInfo(youTubeId, function(err, response){
+    Wrappers.YouTube.getVideoInfo(youTubeId, function(err, response){
       if (err){
         return cb(Error(err),data)
       }
@@ -231,7 +249,7 @@ Booking: https://airpair.com/booking/${original._id}`
   },
 
   addHangout(original, youTubeId, youTubeAccount, hangoutUrl, cb){
-    youTube.getVideoInfo(youTubeId, function(err, response){
+    Wrappers.YouTube.getVideoInfo(youTubeId, function(err, response){
       //TODO mark video as private if booking.type is private
       if (err){
         return cb(Error(err),data)

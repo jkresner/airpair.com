@@ -67,49 +67,52 @@ var viewSvc = {
 
 function $$log(action, data, user, sessionID, ctx) {
   //-- TODO think about adding persistence
-  var uid = (user) ? user.email || user._id : sessionID.substring(0,12)
+  var uid = (user) ? user.email.gray || user._id.gray
+    : `${sessionID.substring(0,12)}${(ctx&&ctx.ip)?ctx.ip.replace(':ffff',''):''}`.cyan
+
+  uid = uid+"                                     ".substring(0,37-uid.length)
 
   switch (action) {
     case 'First':
       var ref = (data.ref) ? ` <<< ${data.ref}` : ''
       if (data.url.indexOf('so-welcome') != -1)
-        $log(`FIRST   ${uid}:${ctx.ip} > ${data.url}${ref}`.yellow)
+        $log(uid, `FIRST   > ${data.url}${ref}`.yellow)
       else
-        $log(`FIRST   ${uid}:${ctx.ip} > ${data.url}${ref}`.cyan)
+        $log(uid, `FIRST   > ${data.url}${ref}`.cyan)
       break
     case 'View':
       if (data.url.indexOf('so-welcome') != -1)
-        $log(`VIEW    ${uid} > ${data.url}`.yellow)
+        $log(uid, `VIEW    > ${data.url}`.yellow)
       else
-        $log(`VIEW    ${uid} > ${data.url}`.cyan)
+        $log(uid, `VIEW    > ${data.url}`.cyan)
       break
     case 'Login':
-      $log(`Login   ${uid} > ${data._id}`.green)
+      $log(uid, `LOGIN   > ${data._id}`.green)
       break
     case 'Signup':
-      $log(`Singup  ${uid} > ${data._id}`.green)
+      $log(uid, `SINGUP  > ${data._id}`.green)
       break
     case 'Request':
-      $log(`REQUEST ${uid} > ${data.action}`, `https://www.airpair.com/adm/pipeline/${data._id}`.white)
+      $log(uid, `REQUEST > ${data.action}`, `https://www.airpair.com/adm/pipeline/${data._id}`.white)
       break
     case 'Order':
-      $log(`ORDER   ${uid} > $${data.total}`, `https://www.airpair.com/adm/orders/${data._id}`.white)
+      $log(uid, `ORDER  > $${data.total}`, `https://www.airpair.com/adm/orders/${data._id}`.white)
       break
     case 'Payment':
-      $log(`PAYMENT ${uid} > $${data.total}`, `https://www.airpair.com/adm/orders/${data.orderId}`.white)
+      $log(uid, `PAYMENT > $${data.total}`, `https://www.airpair.com/adm/orders/${data.orderId}`.white)
       break
     case 'Save':
       if (data.type == 'paymethod')
-        $log(`PAYM    ${uid} > ${data.method} ${data.cardType}`.yellow)
+        $log(uid, `PAYM    > ${data.method} ${data.cardType}`.yellow)
       else if (data.type == 'email')
-        $log(`EMAILC  ${uid} > ${data.email} << ${data.previous}[${data.previousVerified}] `.green)
+        $log(uid, `EMAILC  > ${data.email} << ${data.previous}[${data.previousVerified}] `.green)
       else if (data.type == 'emailVerified')
-        $log(`EMAILV  ${uid} > ${data.email}`.green)
+        $log(uid, `EMAILV  > ${data.email}`.green)
       else
-        $log(`${action.toUpperCase()}  ${uid} > ${JSON.stringify(data)}`.yellow)
+        $log(uid, `${action.toUpperCase()}  > ${JSON.stringify(data)}`.yellow)
       break
     default:
-      $log(`${action.toUpperCase()}  ${uid} > ${JSON.stringify(data)}`.yellow)
+      $log(uid, `${action.toUpperCase()} > ${JSON.stringify(data)}`.yellow)
   }
 }
 
@@ -156,7 +159,7 @@ var analytics = {
       type,objectId,campaign,referer}, () => {})
 
     if (!properties.firstRequest) // anoying in the logs
-      $$log('View', properties, user, sessionID)
+      $$log('View', properties, user, sessionID, context)
 
     done = done || (doneBackup || function() {})
     done()

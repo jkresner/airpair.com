@@ -1,0 +1,27 @@
+<div class="name">
+  <var>Name</var>
+  <label>{{info.name}}</label>
+</div>
+
+<span ng-if="info.localization">
+<div class="bio">
+  <var><!-- Bio --></var>
+  <label><p>{{info.bio}}</p></label>
+</div>
+<div class="username">
+  <var>Username</var>
+  <label>{{info.username}}</label>
+</div>
+<div class="initial">
+  <var>Initials</var>
+  <label>{{info.initials}}</label>
+</div>
+<div class="location">
+  <var>Location</var>
+  <label>{{info.localization.location}}</label>
+</div>
+<div class="timezone">
+  <var>Timezone</var>
+  <label>{{info.localization.timezone}}</label>
+</div>
+</span>

@@ -2,11 +2,17 @@ ordersUtil = require '../../shared/orders'
 
 module.exports = -> describe "Booking: ".subspec, ->
 
-  @timeout 5000
+  @timeout 8000
 
   before (done) ->
     SETUP.initExperts done
 
+  beforeEach ->
+    @braintreepaymentStub = SETUP.stubBraintreeChargeWithMethod()
+
+  afterEach ->
+    if @braintreepaymentStub
+      @braintreepaymentStub.restore()
 
   it 'Book 2 hour with pay as you go private', itDone ->
     SETUP.addAndLoginLocalUserWithPayMethod 'jpie', (s) ->
@@ -20,6 +26,13 @@ module.exports = -> describe "Booking: ".subspec, ->
         expect(booking1.minutes).to.equal(120)
         expect(_.idsEqual(booking1.createdById, s._id)).to.be.true
         expect(booking1.status).to.equal('pending')
+        expect(booking1.participants.length).to.equal(2)
+        expect(booking1.participants[0].role).to.equal('customer')
+        expect(booking1.participants[0].info.email).to.exist
+        expect(booking1.participants[0].info.name).to.exist
+        expect(booking1.participants[1].role).to.equal('expert')
+        expect(booking1.participants[1].info.email).to.exist
+        expect(booking1.participants[1].info.name).to.exist
         GET "/billing/orders", {}, (orders) ->
           order = _.find(orders, (o) -> _.idsEqual(o._id,booking1.orderId))
           expect(order.lineItems.length).to.equal(2)
@@ -39,6 +52,23 @@ module.exports = -> describe "Booking: ".subspec, ->
           expect(order.profit).to.equal(60)
           DONE()
 
+
+  it 'Book 2 hour with pay as you go private two gets email + name on participant', itDone ->
+    SETUP.createNewExpert 'louf', {rate:140}, (sExp, expert) ->
+      SETUP.addAndLoginLocalUserWithPayMethod 'jkjk', (s) ->
+        airpair1 = time: moment().add(2, 'day'), minutes: 120, type: 'private', payMethodId: s.primaryPayMethodId
+        POST "/bookings/#{expert._id}", airpair1, {}, (booking1) ->
+          expect(booking1._id).to.exist
+          expect(_.idsEqual(booking1.expertId, expert._id)).to.be.true
+          expect(_.idsEqual(booking1.customerId, s._id)).to.be.true
+          expect(booking1.participants.length).to.equal(2)
+          expect(booking1.participants[0].role).to.equal('customer')
+          expect(booking1.participants[0].info.email).to.exist
+          expect(booking1.participants[0].info.name).to.exist
+          expect(booking1.participants[1].role).to.equal('expert')
+          expect(booking1.participants[1].info.email).to.exist
+          expect(booking1.participants[1].info.name).to.exist
+          DONE()
 
 
   it 'Book 2 hour with pay as you go opensource', itDone ->
@@ -113,6 +143,7 @@ module.exports = -> describe "Booking: ".subspec, ->
             expect(redeemOrder.lineItems[1].profit).to.equal(40)
             expect(redeemOrder.lineItems[1].info.expert.name).to.equal("Daniel Roseman")
             expect(redeemOrder.lineItems[1].info.type).to.equal('opensource')
+            expect(redeemOrder.lineItems[1].info.paidout).to.equal(false)
 
             lines1 = ordersUtil.linesWithCredit(orders1)
             availableCredit1 = ordersUtil.getAvailableCredit(lines1)

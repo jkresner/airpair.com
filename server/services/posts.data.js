@@ -345,7 +345,8 @@ var query = {
   inReview(andCondition) {
     var query = [
       { 'submitted': {'$exists': true } },
-      { 'published': {'$exists': false } }
+      { 'submitted': {'$gt': moment().add(-10,'day').toDate() } },
+      { 'published': {'$exists': false } },
     ]
     return andQuery(query, andCondition)
   },
@@ -391,3 +392,11 @@ var opts = {
 }
 
 module.exports = {select,query,opts}
+
+
+
+
+
+
+
+

@@ -1,5 +1,5 @@
-var {isBot,stringToJson}   = require('../../shared/util')
-var logging   = false
+var logging                = false
+var {isBot,stringToJson}   = util
 
 var setSessionVarFromQuery = (varName) =>
   (req, res, next) => {
@@ -79,7 +79,7 @@ var middleware = {
 
 
   authd(req, res, next) {
-    if (logging) $log(`mw.authd ${req.isAuthenticated()}`.cyan)
+    if (logging) $log(`mw.authd[${req.url}] ${req.isAuthenticated()}`.cyan)
     if (req.isAuthenticated()) return next()
 
     var apiRequest = req.originalUrl.indexOf('/api/') > -1

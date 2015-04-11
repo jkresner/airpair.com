@@ -1,56 +1,23 @@
+var logging               = false
 import Svc                from '../services/_service'
 import Rates              from '../services/requests.rates'
-import * as Validate      from '../../shared/validation/requests.js'
-import * as md5           from '../util/md5'
 import Request            from '../models/request'
 import User               from '../models/user'
+import * as md5           from '../util/md5'
 var UserSvc               = require('../services/users')
-var PaymethodsSvc =       require('../services/paymethods')
-var ExpertsSvc =          require('./experts')
-var util =                require('../../shared/util')
-var Data =                require('./requests.data')
-var selectCB              = Data.select.cb
-var logging =             false
+var PaymethodsSvc         = require('../services/paymethods')
+var {select,query}        = require('./requests.data')
+var selectCB              = select.cb
 var svc =                 new Svc(Request, logging)
 var Roles =               require('../../shared/roles.js')
 var {isCustomer,isCustomerOrAdmin,isExpert} = Roles.request
-var BitlySvc =            require('./wrappers/bitly')
-var TwitterSvc =            require('./wrappers/twitter')
-
-
-function selectByRoleCB(ctx, errorCb, cb) {
-  return (e, r) => {
-    if (e || !r) return errorCb(e, r)
-
-    if (!ctx.user) return cb(null, Data.select.byView(r, 'anon'))
-    else if (isCustomerOrAdmin(ctx.user, r)) {
-      if (ctx.machineCall) cb(null, Data.select.byView(r, 'admin'))
-      else cb(null, Data.select.byView(r, 'customer'))
-    }
-    else {
-      ExpertsSvc.getMe.call(ctx, (ee,expert) => {
-        // -- we don't want experts to see other reviews
-        r.suggested = Data.select.meSuggested(r, ctx.user._id)
-        if (r.suggested.length == 0 && expert && expert.rate)
-          r.suggested.push({expert})
-        else if (expert.isV0 && r.suggested.length == 1)
-          r.suggested[0].expert.isV0 = true
-        else if (r.suggested.length > 1)
-          throw Error("Cannot selectByExpert and have more than 1 suggested")
-
-        cb(null, Data.select.byView(r, 'review'))
-      })
-    }
-  }
-}
-
 
 var get = {
 
   getByIdForAdmin(id, cb) {
     svc.getById(id, (e,r) => {
       if (e || !r) return cb(e,r)
-      r = Data.select.byView(r, 'admin')
+      r = select.byView(r, 'admin')
       User.findOne({_id:r.userId}, (ee,user) => {
         r.user = user
         return cb(ee,r)
@@ -62,7 +29,7 @@ var get = {
     $log('** getByIdForMatchmaker should filter a bit..')
     svc.getById(id, (e,r) => {
       if (e || !r) return cb(e,r)
-      r = Data.select.byView(r, 'admin')
+      r = select.byView(r, 'admin')
       User.findOne({_id:r.userId}, (ee,user) => {
         r.user = user
         return cb(ee,r)
@@ -74,12 +41,12 @@ var get = {
     svc.getById(id, (e,r) => {
       if (e || !r) return cb(e,r)
       if (!isCustomerOrAdmin(this.user,r)) return cb(Error(`Could not find request[${id}] belonging to user[${this.user._id}]`))
-      cb (null, Data.select.byView(r, 'customer'))
+      cb (null, select.byView(r, 'customer'))
     })
   },
 
   getByIdForReview(id, cb) {
-    svc.getById(id, selectByRoleCB(this,cb,cb))
+    svc.getById(id, selectCB.byRole(this,cb,cb))
   },
 
   getByUserIdForAdmin(userId, cb) {
@@ -88,13 +55,13 @@ var get = {
   },
 
   getMy(cb) {
-    var opts = { options: { sort: { '_id': -1 } }, fields: Data.select.customer }
+    var opts = { options: { sort: { '_id': -1 } }, fields: select.customer }
     svc.searchMany({userId:this.user._id}, opts, selectCB.adm(cb))
   },
 
   getRequestForBookingExpert(id, expertId, cb) {
     var {user} = this
-    svc.getById(id, selectByRoleCB(this, cb, (e,r) => {
+    svc.getById(id, selectCB.byRole(this, cb, (e,r) => {
       if (!isCustomerOrAdmin(user,r)) return cb(Error(`Could not find request[${id}] belonging to user[${user._id}]`))
       var suggestion = _.find(r.suggested,(s) => _.idsEqual(s.expert._id,expertId) && s.expertStatus == 'available')
       if (!suggestion) return cb(Error(`No available expert[${expertId}] on request[${r._id}] for booking`))
@@ -103,19 +70,26 @@ var get = {
   },
 
   getActiveForAdmin(cb) {
-    svc.searchMany(Data.query.active, { options: { sort: { '_id': -1 }}, fields: Data.select.pipeline }, selectCB.adm(cb))
+    svc.searchMany(query.active, { options: { sort: { '_id': -1 }}, fields: select.pipeline }, selectCB.adm(cb))
   },
 
   get2015ForAdmin(cb) {
-    svc.searchMany(Data.query['2015'], { options: { sort: { '_id': -1 }}, fields: Data.select.pipeline }, selectCB.adm(cb))
+    svc.searchMany(query['2015'], { options: { sort: { '_id': -1 }}, fields: select.pipeline }, selectCB.adm(cb))
   },
 
   getWaitingForMatchmaker(cb) {
-    svc.searchMany(Data.query.waiting, { options: { sort: { 'adm.submitted': -1 }}, fields: Data.select.pipeline }, selectCB.adm(cb))
+    svc.searchMany(query.waiting, { options: { sort: { 'adm.submitted': -1 }}, fields: select.pipeline }, selectCB.adm(cb))
   },
+
   // getIncompleteForAdmin(cb) {
-  //   svc.searchMany(Data.query.incomplete, { fields: Data.select.pipeline}, cb)
+  //   svc.searchMany(query.incomplete, { fields: select.pipeline}, cb)
   // }
+
+  getExperts(expert, cb) {
+    var opts = { fields: select.experts }
+    this.expertId = expert._id
+    svc.searchMany(query.experts(expert), opts, selectCB.experts(this, cb))
+  },
 }
 
 var admSet = (request, properties) =>
@@ -140,13 +114,13 @@ var save = {
       $log('******* Should impl request started email')
     }
 
-    svc.create(o, selectByRoleCB(this,cb,cb))
+    svc.create(o, selectCB.byRole(this,cb,cb))
   },
   sendVerifyEmailByCustomer(original, email, cb) {
     UserSvc.updateEmailToBeVerified.call(this, email, cb, (e,r, hash)=>{
       if (e) return cb(e)
       mailman.sendVerifyEmailForRequest(r, hash, original._id)
-      selectByRoleCB(this,cb,cb)(null, original)
+      selectCB.byRole(this,cb,cb)(null, original)
     })
   },
   updateByCustomer(original, update, cb) {
@@ -172,7 +146,7 @@ var save = {
         ups.adm = admSet(ups,{active:true})
     }
 
-    svc.update(original._id, ups, selectByRoleCB(this,cb,cb))
+    svc.update(original._id, ups, selectCB.byRole(this,cb,cb))
   },
   updateWithBookingByCustomer(request, order, cb) {
     request.status = 'booked'
@@ -180,11 +154,11 @@ var save = {
     if (!request.adm.booked)
       request.adm.booked = new Date
 
-    svc.update(request._id, request, selectByRoleCB(this,cb,cb))
+    svc.update(request._id, request, selectCB.byRole(this,cb,cb))
   },
   replyByExpert(request, expert, reply, cb) {
     var {suggested} = request
-    expert = Data.select.expertToSuggestion(expert)
+    expert = select.expertToSuggestion(expert)
     // data.events.push @newEvent "expert reviewed", eR
     reply.reply = { time: new Date() }
     var existing = _.find(suggested, (s) => _.idsEqual(s.expert._id, expert._id))
@@ -227,7 +201,7 @@ var save = {
       request.adm = admSet(request,{reviewable:new Date()})
 
     // var ups = _.extend(request,{suggested})
-    svc.update(request._id, request, selectByRoleCB(this,cb,cb))
+    svc.update(request._id, request, selectCB.byRole(this,cb,cb))
   },
   deleteById(o, cb)
   {
@@ -275,10 +249,10 @@ var admin = {
     var url = `/review/${request._id}?utm_medium=farm-link&utm_campaign=farm-${campPeriod}&utm_term=${term}`
 
     var {adm} = request
-    BitlySvc.shorten(url, (e,shortLink) => {
+    Wrappers.Bitly.shorten(url, (e,shortLink) => {
       adm.farmed = new Date
       adm.lastTouch = svc.newTouch.call(this, 'farm')
-      TwitterSvc.postTweet(`${tweet} ${shortLink}`, (e,r) => {
+      Wrappers.Twitter.postTweet(`${tweet} ${shortLink}`, (e,r) => {
         if (e) return cb(e)
         svc.update(request._id, _.extend(request, {adm}), selectCB.adm(cb))
       })
@@ -308,7 +282,7 @@ var admin = {
   {
     var {adm,suggested} = request
     var initials = this.user.email.replace("@airpair.com", "")
-    expert = Data.select.expertToSuggestion(expert)
+    expert = select.expertToSuggestion(expert)
     suggested.push({
       matchedBy: { _id: svc.newId(), type: 'staff', userId: this.user._id, initials },
       expertStatus: "waiting",

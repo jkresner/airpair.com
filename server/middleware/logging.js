@@ -1,11 +1,6 @@
 var domain = require('domain')
 
 
-if (config.log.raygun.on) {
-  var raygun = require('raygun')
-  var raygunClient = new raygun.Client().init({ apiKey: config.log.raygun.apiKey })
-}
-
 var middleware = {
 
   pageNotFound(req, res, next) {

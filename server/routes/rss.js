@@ -116,7 +116,7 @@ function rssRenderer() {
     },
 
     workshops(req, res) {
-      if (!WorkshopsSvc) PostsSvc = require('../services/workshops')
+      if (!WorkshopsSvc) WorkshopsSvc = require('../services/workshops')
 
       feeds.workshops = defineRssFeed( workshopsFeedOptions )
       feeds.workshops.items = []
@@ -144,7 +144,7 @@ function rssRenderer() {
 
     mixed(req, res) {
       if (!PostsSvc) PostsSvc = require('../services/posts')
-      if (!WorkshopsSvc) PostsSvc = require('../services/workshops')
+      if (!WorkshopsSvc) WorkshopsSvc = require('../services/workshops')
 
       feeds.mixed = defineRssFeed( mixedFeedOptions )
       feeds.mixed.items = []

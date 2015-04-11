@@ -1,14 +1,21 @@
-var path = require('path'),
-  gulp = require('gulp'),
-  less = require('gulp-less'),
-  config = require('./config');
+module.exports = function(gulp, config, options, callback) {
 
-module.exports = function () {
-  var pathsForImports = [ __dirname.replace('build','public/styles') ]
+  return function() {
+    var less = require('gulp-less')
 
-  return gulp.src(config.styleBundles)
-    .pipe(less({
-      paths: pathsForImports
-    }))
-    .pipe(gulp.dest(`./public/${config.path.builtCss}`));
+    var pathsForImports = [ config.path.lessDir ]
+
+    var section = (options) ? options.section : 'all'
+
+    // console.log('less', section,
+    //   config.path.lessSrc[section],
+    //   config.path.builtCss)
+
+    return gulp.src(config.path.lessSrc[section])
+      .pipe(less({paths: pathsForImports}))
+      .on('error', gulp.printErr('LESS', callback))
+      .pipe(gulp.dest(config.path.builtCss))
+      .on('end', callback)
+  }
+
 }

@@ -1263,6 +1263,139 @@ module.exports = {
         "name" : "Abhishek Parolkar",
         "_id" : ObjectId("52dd4cb71c67d1a4859d1cf1")
     }
+  },
+
+  dlim: {
+    "_id" : ObjectId("551427845955b711004d5e90"),
+    "rate" : 40,
+    "brief" : "I want to offer my skills to those who need it despite our physical locations. What matters is deliverables quality of and a solid understanding of the chosen technologies.",
+    "userId" : ObjectId("5514147a022cc2110006605c"),
+    "mojo" : 0,
+    "updatedAt" : ISODate("2015-03-26T15:36:36.000Z"),
+    "busyUntil" : ISODate("2015-03-26T15:36:36.000Z"),
+    "user": "TAKEN FROM data.users.dlim",
+    "tags" : [  {  "_id" : "514825fa2a26ea020000002d",  "sort" : 0 } ],
+    "activity" : [],
+    "lastTouch" : {
+      "action" : "create",
+      "utc" : ISODate("2015-03-26T15:36:36.781Z"),
+      "by" : {
+          "_id" : ObjectId("5514147a022cc2110006605c"),
+          "name" : "Davi Lima"
+      }
+    },
+  },
+
+
+  snug: {
+    "_id" : ObjectId("52127d5fc6a5870200000007"),
+    "availability" : "",
+    "brief" : "Due to health reasons I have to keep moving at all times. This allows me to be remote and take my workouts every couple hours while helping in between. ",
+    "gmail" : "rashaunstovall@gmail.com",
+    "hours" : "10-20",
+    "minRate" : 40,
+    "pic" : "https://secure.gravatar.com/avatar/64436c814e3b8422fc25c0112760168c",
+    "rate" : 110,
+    "status" : "ready",
+    "tags" : [
+        {
+            "_id" : "514825fa2a26ea020000001f",
+            "sort" : 0
+        },
+        {
+            "_id" : "5181d0aa66a6f999a465ee2e",
+            "sort" : 1
+        },
+        {
+            "_id" : "5149de4b5fc6390200000017",
+            "sort" : 2
+        },
+        {
+            "_id" : "51520638eecddf020000000f",
+            "sort" : 3
+        },
+        {
+            "_id" : "5181d0aa66a6f999a465eceb",
+            "sort" : 4
+        }
+    ],
+    "updatedAt" : ISODate("2015-03-03T18:02:31.620Z"),
+    "userId" : ObjectId("52127d4066a6f999a465f637"),
+    "activity" : [
+        {
+            "_id" : ObjectId("550af29601a4760c005bd071"),
+            "action" : "update",
+            "utc" : ISODate("2015-03-19T16:00:22.947Z"),
+            "by" : {
+                "_id" : ObjectId("52127d4066a6f999a465f637"),
+                "name" : "Ra'Shaun Stovall"
+            }
+        }
+    ],
+    "lastTouch" : {
+        "action" : "update",
+        "utc" : ISODate("2015-03-19T16:00:22.947Z"),
+        "by" : {
+            "_id" : ObjectId("52127d4066a6f999a465f637"),
+            "name" : "Ra'Shaun Stovall"
+        }
+    },
+    "user" : {
+        "social" : {
+            "gp" : {
+                "id" : "109960924546535808651",
+                "name" : {},
+                "_json" : {
+                    "picture" : "https://lh6.googleusercontent.com/-nFQP0NQvhxc/AAAAAAAAAAI/AAAAAAAAAO8/JSOUtNEsqHo/photo.jpg"
+                }
+            },
+            "gh" : {
+                "_json" : {
+                    "plan" : {},
+                    "followers" : 109,
+                    "public_gists" : 22,
+                    "public_repos" : 25,
+                    "avatar_url" : "https://avatars.githubusercontent.com/u/38223?v=3"
+                },
+                "username" : "snuggs"
+            },
+            "tw" : {
+                "_json" : {
+                    "status" : {
+                        "entities" : {}
+                    },
+                    "followers_count" : "462",
+                    "entities" : {
+                        "description" : {},
+                        "url" : {}
+                    },
+                    "description" : "I'm not a software engineer. Writing beautiful code is only one of the ways I solve problems."
+                },
+                "username" : "snuggsi"
+            },
+            "in" : {
+                "id" : "SJu5-UP-9Y",
+                "name" : {},
+                "_json" : {},
+            }
+        },
+        "localization" : {
+            "timezone" : "Eastern Daylight Time",
+            "location" : "New York, État de New York, États-Unis"
+        },
+        "bio" : "I'm not a software engineer. Writing beautiful code is only one of the ways I solve problems. Looking forward to helping you!",
+        "initials" : "rs",
+        "username" : "snuggs",
+        "emailVerified" : true,
+        "email" : "rashaunstovall@gmail.com",
+        "name" : "Ra'Shaun Stovall",
+        "_id" : ObjectId("52127d4066a6f999a465f637")
+    },
+    "timezone" : "Eastern Daylight Time",
+    "location" : "New York, État de New York, États-Unis",
+    "name" : "Ra'Shaun Stovall",
+    "email" : "rashaunstovall@gmail.com",
+    "username" : "snuggs"
   }
 
 }

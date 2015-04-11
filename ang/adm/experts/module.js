@@ -1,53 +1,80 @@
-angular.module("ADMExperts", ['APRoutes'])
+angular.module("ADMExperts", ['APDealsDirectives'])
 
-.config(function(apRouteProvider) {
+.config((apRouteProvider) => {
 
   var route = apRouteProvider.route
   route('/adm/experts', 'Experts', require('./list.html'))
-  // route('/adm/experts/:id', 'Expert', require('./item.html'))
+  route('/adm/experts/:id', 'Expert', require('./item.html'))
+  route('/adm/experts/:id/deals', 'Deals', require('./deals.html'))
 
 })
 
-.controller('ExpertsCtrl', function($scope, AdmDataService, DateTime) {
+.directive('userInfo', () => {
+  return { template: require('./userInfo.html'), scope: { info: '=info' } }
+})
 
-  $scope.query = {
-    // start:    DateTime.firstOfMonth(0),
-    // end:      DateTime.firstOfMonth(1),
-    user:     { _id: '' }
+.directive('expertAvailability', () => {
+  return {
+    template: require('./availability.html'),
+    controller($scope, $attrs) {
+      console.log('$expertSettings.p')
+    }
   }
+})
 
-  var setScope = (r) => {
+.controller('ExpertsCtrl', ($scope, $location, AdmDataService, DateTime) => {
+
+  $scope.selectExpert = (expert) =>
+    $location.path(`/adm/experts/${expert._id}`)
+
+  var setScope = (r) =>
     $scope.experts = r
 
-    // var summary = { total: 0, byCount: 0, profit: 0, count: r.length }
-    // var customers = {}
-    // for (var i = 0;i<r.length;i++) {
-    //   summary.total += r[i].total
-    //   summary.profit += r[i].profit
-    //   if (!customers[r[i].userId]) {
-    //     summary.byCount += 1
-    //     customers[r.userId] = true
-    //   }
-    // }
-
-    // $scope.summary = summary
-  }
-
-  $scope.selectUser = (user) => $scope.query.user = user
-  $scope.fetch = () => AdmDataService.experts.getNew({}, setScope)
-  $scope.fetch()
+  $scope.newest = () => AdmDataService.experts.getNew({}, setScope)
+  $scope.active = () => AdmDataService.experts.getActive({}, setScope)
+  $scope.newest()
 
 })
 
-// .controller('ExpertCtrl', function($scope, $routeParams, ServerErrors, AdmDataService) {
+.controller('ExpertCtrl', ($scope, $routeParams, ServerErrors, AdmDataService, DataService) => {
 
-//   var setScope = (r) =>
-//     $scope.order = r
+  var _id = $routeParams.id
 
-//   $scope.fetch = () =>
-//     AdmDataService.bookings.getOrder({_id:$routeParams.id}, setScope,
-//       ServerErrors.fetchFailRedirect('/adm/experts'))
+  var setScope = (r) => {
+    $scope.expert = r
+    $scope.data = r
+  }
 
-//   $scope.fetch()
+  $scope.fetch = () =>
+    AdmDataService.experts.getBydId({_id}, setScope,
+      ServerErrors.fetchFailRedirect('/adm/experts'))
 
-// })
+  $scope.fetch()
+
+  var setHistoryScope = (history) => {
+    $scope.requests = history.requests
+    $scope.bookings = history.bookings
+  }
+
+  DataService.experts.getHistory({_id}, setHistoryScope)
+
+})
+
+
+.controller('DealsCtrl', ($scope, $routeParams, ServerErrors, AdmDataService) => {
+
+  var _id = $routeParams.id
+
+  var setScope = (r) => {
+    $scope.expert = r
+    $scope.deals = r.deals
+    $scope.selected = null
+    $scope.expired = _.filter(r.deals,(d)=>d.expiry&&moment(d.expiry).isBefore(moment()))
+    $scope.current = _.filter(r.deals,(d)=>d.expiry==null||moment(d.expiry).isAfter(moment()))
+  }
+  $scope.setScope = setScope
+
+  AdmDataService.experts.getBydId({_id}, setScope,
+    ServerErrors.fetchFailRedirect('/adm/experts'))
+
+})

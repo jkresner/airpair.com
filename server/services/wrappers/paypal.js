@@ -20,8 +20,7 @@ var scopeString = config.auth.paypal.scope.join().replace(/,/g,' ')
 
 var wrapper = {
 
-  // loginUrl: (req) =>
-  //   openIdConnect.authorizeUrl({'scope': scopeString }),
+  loginUrl: () => wrapper.openIdConnect.authorizeUrl({'scope': scopeString }),
 
   init() {
     wrapper.api = global.API_PAYPAL || require('paypal-rest-sdk')
@@ -38,17 +37,17 @@ var wrapper = {
 
 
   handleOAuthCallback(req, res, next) {
-    var error = (e) => {
-      $log('paypal.handleOAuthCallback.error: no user info'.red, e)
+    var error = (operation, e) => {
+      $log(`paypal.handleOAuthCallback.${operation}.error: no user info`.red, e)
       res.redirect(`${req.session.returnToUrl}?fail=${e.message||e.toString()}`)
       res.end()
     }
 
     var authCode = req.query.code
     wrapper.openIdConnect.tokeninfo.create(authCode, function (ee, tokeninfo) {
-      if (ee) return error(ee)
+      if (ee) return error('openIdConnect.tokeninfo',ee)
       wrapper.openIdConnect.userinfo.get(tokeninfo.access_token, function (e, userinfo) {
-        if (e) return error(e)
+        if (e) return error('openIdConnect.userinfo', e)
         if (!userinfo) return error("no user info")
         // console.log('tokeninfo', tokeninfo, 'userinfo', userinfo)
         req.authInfo = {

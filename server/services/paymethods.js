@@ -147,7 +147,7 @@ var save = {
   },
   deletePaymethod(paymethod, cb) {
     UserSvc.getSession.call(this, (e, user) => {
-      if (_.idsEqual(user.primaryPayMethodId,paymethod._id))
+      if (user.primaryPayMethodId && _.idsEqual(user.primaryPayMethodId,paymethod._id))
         UserSvc.changePrimaryPayMethodId.call(this, null, () => {})
       Settings.remove({userId:this.user._id}, () => {})
       svc.deleteById(paymethod._id, cb)

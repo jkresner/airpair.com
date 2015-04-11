@@ -3,6 +3,7 @@ module.exports = {
   ilap: { name:"Igor Lebovic",email:"il@airpair.com" },
   scap: { _id:"5418c03f8f8c80299bcc4783",name:"Shane",email:"sc@airpair.com" },
   jkap: { _id:"5175efbfa3802cc4d5a5e6ed",name:"Jonathon Kresner",email:"jk@airpair.com" },
+  jkjk: { name:"Jon Kresner",email:"jonk@airpair.com" },
   pgap: { name:"Prateek Gupta",email:"pg@airpair.com" },
   prat: { name:"Prateek Gupta",email:"prateek@gupta.com" },
   pgup: { name:"Prateek Gupta",email:"prateek@gup.com" },
@@ -192,6 +193,13 @@ module.exports = {
   rev5 : { name: "Review15", email: "reviwer15@hotmail.com"},
   rev6 : { name: "Review16", email: "reviwer16@hotmail.com"},
 
+
+  del1 : { name: "Deal Buyer 1", email: "dealbuyer1@hotmail.com"},
+  del2 : { name: "Deal Buyer 2", email: "dealbuyer2@hotmail.com"},
+  del3 : { name: "Deal Buyer 3", email: "dealbuyer3@hotmail.com"},
+  del4 : { name: "Deal Buyer 4", email: "dealbuyer4@hotmail.com"},
+  del5 : { name: "Deal Buyer 5", email: "dealbuyer5@hotmail.com"},
+  del6 : { name: "Deal Buyer 6", email: "dealbuyer6@hotmail.com"},
 
   admin: {
     "_id" : "54551be15f221efa174238d1",
@@ -1650,6 +1658,7 @@ module.exports = {
         "aliases" : ["NMb__xBDhkxez4S2GJheILKADjiT1o0S"],
         "firstRequest" : { "url" : "/review/54a70bde0489f40b00306027"}
     },
+    "name" : "Lou Franco",
     "email" : "loumfranco@gmail.com",
     "emailVerified" : true,
     "google" : {
@@ -1940,6 +1949,76 @@ module.exports = {
         "provider" : "google"
     },
     "googleId" : "103121129755643370673"
-  }
+  },
+
+  dlim: {
+    "_id" : ObjectId("5514147a022cc2110006605c"),
+    "cohort" : { expert: { "_id" : ObjectId("551427845955b711004d5e90") } },
+    "emailVerified" : true,
+    "name" : "Davi Lima",
+    "email" : "davilima6@gmail.com",
+    "google" : {
+        "_json" : {
+            "picture" : "https://lh4.googleusercontent.com/-xDdDRqkO6vw/AAAAAAAAAAI/AAAAAAAAAdk/TknMYVGYJeM/photo.jpg",
+            "link" : "https://plus.google.com/+DaviLima6",
+            "name" : "Davi Lima",
+            "email" : "davilima6@gmail.com",
+            "id" : "104283755419871295276"
+        },
+        "emails" : [{"value" : "davilima6@gmail.com"}],
+        "displayName" : "Davi Lima",
+        "id" : "104283755419871295276",
+        "provider" : "google"
+    },
+    "googleId" : "104283755419871295276",
+    "username" : "davilima6",
+    "localization" : {
+      "timezone" : "Brasilia Standard Time",
+      "location" : "Aracaju - SE, Brasil",
+    },
+    "social" : {
+        "gh" : { "username" : "davilima6", "id" : 422130, "provider" : "github" },
+        "so" : {
+            "provider" : "stackexchange",
+            "display_name" : "Davi Lima",
+            "link" : "http://stackoverflow.com/users/462849/davi-lima",
+            "account_id" : 210950,
+        }
+    },
+    "bio" : "Frontend",
+    "initials" : "DL"
+  },
+
+  snug: {
+    "_id" : ObjectId("52127d4066a6f999a465f637"),
+    "cohort" : {
+        "expert" : {
+            "_id" : "52127d5fc6a5870200000007",
+            "applied" : ISODate("2015-03-19T16:00:22.964Z")
+        }
+    },
+    "email" : "rashaunstovall@gmail.com",
+    "emailVerified" : true,
+    "google" : {
+        "id" : "109960924546535808651",
+        "provider" : "google"
+    },
+    "googleId" : "109960924546535808651",
+    "name" : "Ra'Shaun Stovall",
+    "tags" : [],
+    "bookmarks" : [],
+    "social" : {
+        "in" : { "id" : "SJu5-UP-9Y" },
+        "tw" : { "id" : "121639673", "username" : "snuggsi", },
+        "gh" : { "username" : "snuggs" }
+    },
+    "bio" : "I'm not a software engineer. Writing beautiful code is only one of the ways I solve problems. Looking forward to helping you!",
+    "username" : "snuggs",
+    "initials" : "rs",
+    "localization" : {
+        "timezone" : "Eastern Daylight Time",
+        "location" : "New York, État de New York, États-Unis"
+    }
+}
 
 }

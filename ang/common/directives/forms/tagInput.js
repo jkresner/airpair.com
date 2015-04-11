@@ -1,5 +1,5 @@
 
-angular.module('APTagInput', ['ui.bootstrap'])
+angular.module('APTagInput', [])
 
   .value('badTagsSearchQuery', function(value) {
     var lengthOk = value && (value.length >= 2 || /r|c/i.test(value));

@@ -82,7 +82,7 @@ As you type you'll see the preview pane update. The longer your posts gets, the 
 
 Note that you still need to click **SAVE** to save your work. If the **SAVE** button is disabled, it means your Markdown is saved.
 
-## Handy Markdown snippits
+## Handy Markdown snippets
 
 ### Links and Images
 

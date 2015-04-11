@@ -23,8 +23,7 @@ module.exports = function(app) {
     .post('/subscribe', mw.authAlreadyDone, mw.setFastSingupPassword('subscribe'), auth.local.signup)
     .get('/google', auth.google.oAuth)
     .get('/google/callback', auth.google.oAuth, mw.authDone)
-    .get('/paypal-loginurl', mw.authd, (req,res) =>
-      { res.json({url:pp.loginUrl(req)}) })
+    .get('/paypal-loginurl', mw.authd, (req,res) => res.json({url:Wrappers.PayPal.loginUrl()}) )
 
   app.use('/v1/auth', router)
 

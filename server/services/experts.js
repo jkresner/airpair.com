@@ -1,30 +1,68 @@
-import Svc                from '../services/_service'
-import * as Validate      from '../../shared/validation/experts.js'
-import Expert             from '../models/expert'
-import Request            from '../models/request'
-import * as md5           from '../util/md5'
-var {ObjectId2Date,
-  selectFromObject}       = require('../../shared/util')
-var Data                  = require('./experts.data')
-var {select}              = Data
-var selectCB              = select.cb
 var logging               = false
+import Svc                from '../services/_service'
+var Expert                = require('../models/expert')
+var {selectFromObject}    = util
+var {select,options}      = require('./experts.data')
+var selectCB              = select.cb
 var svc                   = new Svc(Expert, logging)
 var UserSvc               = require('../services/users')
+var RequestSvc            = require('../services/requests')
+var BookingSvc            = require('../services/bookings')
 
 var get = {
+
   getById(id, cb) {
-    svc.getById(id,(e,r)=>{
-      if (e||!r) return cb(e,r)
-      cb(null,selectCB.migrateInfate(r))
-    })
+    svc.getById(id,selectCB.migrateInflate(cb))
   },
+
+  getByIdForAdmin(id, cb) {
+    svc.getById(id,selectCB.addAvatar(cb))
+  },
+
   getMe(cb) {
     svc.searchOne({userId:this.user._id}, null, selectCB.me((e,r)=>{
       if (!e && !r) return cb(null, {user:selectFromObject(this.user, select.userCopy)})
       cb(e,r)
     }))
   },
+
+  getHistory(expert, cb) {
+    var user = { _id: expert.userId }
+    $callSvc(RequestSvc.getExperts,{user})(expert,(ee,requests)=>{
+      if (ee) return cb(ee)
+      var calls = []
+      for (var req of requests) {
+        if (!req.by && req.company) {
+          req.by = {_id:req.userId,
+            name: req.company.contacts[0].fullName,
+            email: req.company.contacts[0].email
+          }
+        }
+        if (req.company) delete req.company
+
+        if (req.calls) {
+          for (var call of req.calls) {
+            var minutes = call.duration*60,
+              customerId = req.userId
+            var participants = [
+              { role: 'customer',
+                info: req.by
+              }
+            ]
+            calls.push(_.extend({customerId,participants,minutes,requestId:req._id}, call))
+          }
+          delete req.calls
+        }
+      }
+      $callSvc(BookingSvc.getByExpertId,this)(expert._id,(e,bookings)=>{
+        if (e) return cb(ee)
+        cb(null,{requests,bookings:
+          _.sortBy(_.union(calls,bookings),(b)=>-1*moment(b.datetime).unix())
+        })
+      })
+    })
+  },
+
   search(term, cb) {
     var searchFields = [
       'user.name','user.email','user.username',
@@ -33,32 +71,23 @@ var get = {
       'user.social.gh.username','user.social.tw.username'
       ]
     var and = { rate: { '$gt': 0 } }
-    svc.search(term, searchFields, 5, Data.select.search, and, (e,r) => {
-      if (r) {
-        for (var exp of r) {
-          if (exp.user) {
-            exp.name = exp.user.name
-            exp.email = exp.user.email
-            exp.username = exp.user.username
-          }
-          exp.avatar = md5.gravatarUrl(exp.email)
-        }
-      }
-      cb(e,r)
-    })
+    svc.search(term, searchFields, 5, select.search, and, selectCB.migrateSearch(cb))
   },
+
   getNewForAdmin(cb) {
-    cache.ready(['tags'], () => {
-      var opts = { options: { limit: 150, sort: { '_id': -1 }  } }
-      svc.searchMany({}, opts, (e,r)=>{
-        for (var expert of r) {
-          expert.tags = selectCB.inflatedTagsNoCB(expert)
-          expert.user.avatar = md5.gravatarUrl(expert.user.email)
-        }
-        cb(e,r)
-      })
-    })
-  }
+    svc.searchMany({}, options.newest100, selectCB.inflateList(cb))
+  },
+
+  getActiveForAdmin(cb) {
+    svc.searchMany({}, options.active100, selectCB.inflateList(cb))
+  },
+
+  getByDeal(id, cb) {
+    var search = {'deals._id':id}
+    if (id.length != 24) search = {'deals.code':id}
+    svc.searchOne(search,{},selectCB.migrateInflate(cb))
+  },
+
 }
 
 function updateWithTouch(expert, action, trackData, cb) {
@@ -68,6 +97,7 @@ function updateWithTouch(expert, action, trackData, cb) {
   {
     expert.lastTouch = svc.newTouch.call(this, action)
     expert.activity = expert.activity || []
+    // if (_.idsEqual(this.user._id,expert.userId))  // Don't want activity for admins
     expert.activity.push(expert.lastTouch)
   }
 
@@ -88,8 +118,9 @@ function updateWithTouch(expert, action, trackData, cb) {
     }
   }
 
-  if (action == 'create')
+  if (action == 'create') {
     svc.create(expert, cb)
+  }
   else {
 
     if (expert.gp || expert.gh || expert.so || expert.bb ||
@@ -132,12 +163,24 @@ var save = {
     $callSvc(UserSvc.setExpertCohort, this)(ups._id)
   },
 
-  deleteById(id, cb) {
-    svc.getById(id, (e, r) => {
-      var inValid = Validate.deleteById(this.user, r)
-      if (inValid) return cb(svc.Forbidden(inValid))
-      svc.deleteById(id, selectCB.inflateTags(cb))
-    })
+  deleteById(original, cb) {
+    svc.deleteById(original._id, cb)
+  },
+
+  createDeal(expert, deal, cb) {
+    deal.lastTouch = svc.newTouch.call(this, 'createDeal')
+    deal.activity = [deal.lastTouch]
+    deal.rake = deal.rake || 10 //-- To become more intelligent and custom per deal
+    expert.deals = expert.deals || []
+    expert.deals.push(deal)
+    $callSvc(updateWithTouch, this)(expert, 'createDeal', null, selectCB.me(cb))
+  },
+
+  deactivateDeal(expert, dealId, cb) {
+    var deal = _.find(expert.deals,(d)=>_.idsEqual(d._id,dealId))
+    deal.lastTouch = svc.newTouch.call(this, 'dectivateDeal')
+    deal.expiry = new Date
+    $callSvc(updateWithTouch, this)(expert, 'dectivateDeal', null, selectCB.me(cb))
   }
 }
 

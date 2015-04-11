@@ -1,3 +1,6 @@
+var withoutStubs = false
+var emptyStub = () => sinon.stub({fake:()=>{}},'fake',()=>{})
+
 var analyticsSetup = {
 
   stubbed: false,
@@ -17,6 +20,7 @@ var stubs = {
   analytics: analyticsSetup,
 
   stubBraintreeChargeWithMethod() {
+    if (withoutStubs) return emptyStub()
     if (!Wrappers.Braintree.api) Wrappers.Braintree.init()
     return sinon.stub(Wrappers.Braintree.api.transaction,'sale', (payload, cb) => {
       var resp = _.clone(data.wrappers.braintree_charge_success)
@@ -32,6 +36,7 @@ var stubs = {
   },
 
   stubPayPalPayout() {
+    if (withoutStubs) return emptyStub()
     if (!Wrappers.PayPal.api) Wrappers.PayPal.init()
     return sinon.stub(Wrappers.PayPal.api.payout,'create', (payload,syncmode,cb) => {
       var resp = _.clone(data.wrappers.paypal_single_payout_success)
@@ -42,6 +47,7 @@ var stubs = {
   },
 
   stubBraintree(obj, fnName, err, response) {
+    if (withoutStubs) return emptyStub()
     if (!Wrappers.Braintree.api) Wrappers.Braintree.init()
     return sinon.stub(Wrappers.Braintree.api[obj], fnName, (payload, cb) => {
       // $log('Braintree.stubbed', obj, fnName)
@@ -50,6 +56,7 @@ var stubs = {
   },
 
   stubYouTube(obj, fnName, err, response) {
+    if (withoutStubs) return emptyStub()
     if (!Wrappers.YouTube.api) Wrappers.YouTube.init()
     return sinon.stub(Wrappers.YouTube.api[obj], fnName, (payload, cb) => {
       // $log('YouTube.stubbed', obj, fnName)
@@ -59,6 +66,7 @@ var stubs = {
 
 
   stubStackOverflowTagInfo(response) {
+    if (withoutStubs) return emptyStub()
     if (!Wrappers.StackExchange.api) Wrappers.StackExchange.init()
     return sinon.stub(Wrappers.StackExchange.api, 'get', (url, cb) => {
       // $log('StackExchange.stubbed', response)
@@ -67,12 +75,14 @@ var stubs = {
   },
 
   stubGoogleTimezone(response) {
+    if (withoutStubs) return emptyStub()
     return sinon.stub(Wrappers.Timezone,'getTimezoneFromCoordinates', (k,D,n,cb) => {
       cb(null, response || data.wrappers.timezone_melbourne)
     })
   },
 
   stubMailchimpLists(response) {
+    if (withoutStubs) return emptyStub()
     return sinon.stub(MailChimpApi.prototype,'call', (a,b,c,cb) => {
       cb(null, response)
     })

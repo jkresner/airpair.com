@@ -43,8 +43,7 @@ var get = {
 
     var opts = {fields:Data.select.matches, options: { limit: query.limit } }
     // $log('search', search, 'limit', query.limit)
-    svc.searchMany(search, opts, (ee,r) =>
-      selectCB.inflateList(ee,r, (e, experts) => {
+    svc.searchMany(search, opts, selectCB.inflateList((e, experts) => {
         if (e || !experts || experts.length == 0) return cb(e,experts)
         for (var exp of experts)
           exp.score = get.calcMojo(exp,query.tags)

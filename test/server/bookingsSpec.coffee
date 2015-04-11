@@ -1,8 +1,3 @@
-youtube = require "../../server/services/wrappers/youtube.js"
-util = require '../../shared/util'
-ordersUtil = require '../../shared/orders'
-
-
 module.exports = -> describe "API: ".subspec, ->
 
   @timeout 40000

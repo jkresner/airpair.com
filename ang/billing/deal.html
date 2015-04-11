@@ -1,0 +1,48 @@
+<header ng-if="expert">
+  <ol class="entry-meta breadcrumb">
+    <li><a href="/billing">Billing</a></li>
+    <li><a href="/experts/{{expert._id}}">{{expert.name}}</a></li>
+    <li class="current">Special</li>
+  </ol>
+</header>
+
+<section id="deal">
+
+  <section id="schedule">
+
+    <form id="bookForm" novalidate name="bookForm" ng-submit="submit(bookForm.$valid, data)">
+      <h2>{{expert.name}} Special</h2>
+      <div ng-if="deal.expiry">Valid until {{deal.expiry|locaTime : 'DD MMM YYYY'}}</div>
+      <hr />
+
+      <div class="form-group">
+        <label class="control-label" for="paymethod">Pay with</label>
+        <select class="form-control" id="payMethodId" name="payMethodId" ng-model="payMethodId">
+          <option ng-repeat="p in paymethods" value="{{p._id}}">{{p.name}}</option>
+        </select>
+      </div>
+
+
+    </form>
+
+    <section class="bookSummary">
+      <h3>Your Order</h3>
+      <img ng-src="{{expert.avatar}}" class="user" />
+      <hr />
+      <div><label>Special</label> <span>{{deal.type}}</span></div>
+      <div ng-if="deal.minutes < 120"><label>Minutes</label> <span>{{deal.minutes}}</span></div>
+      <div ng-if="deal.minutes >= 120"><label>HOURS</label> <span>{{deal.minutes/60}}</span></div>
+
+      <!-- <div><label>HOURLY</label> <span>${{hrRate}}</span></div> -->
+      <!-- <hr /> -->
+      <div><label>TOTAL</label> <span>${{deal.price}}</span></div>
+      <hr />
+
+      <input type="submit" id="submit" value="Confirm" class="btn" ng-click="orderDeal()">
+      <p>Your card will be charged ${{deal.price}}</p>
+     </section>
+
+  </section>
+
+</section>
+

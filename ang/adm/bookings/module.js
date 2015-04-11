@@ -60,6 +60,11 @@ angular.module("ADMBookings", [])
       $scope.lineForPayout = OrdersUtil.lineForPayout(r)
     })
 
+  $scope.swapExpert = (suggestionId) => {
+    var swap = {_id:$scope.booking._id,orderId:$scope.booking.order._id,requestId:$scope.booking.request._id,suggestionId}
+    AdmDataService.bookings.cheatBookingExpertSwap(swap,setScope)
+  }
+
 })
 
 .controller('BookingsCtrl', ($scope, AdmDataService, DateTime, BookingsUtil) => {
