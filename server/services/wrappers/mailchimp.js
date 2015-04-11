@@ -79,6 +79,7 @@ var wrapper = {
       if (e) return cb(e)
       if (r.success_count == 0) return cb(e,r)
       var rawLists = r.data[0].lists
+      if (logging) $log('mailchimp.rawLists'.cyan, rawLists)
       var lists = [{name:r.data[0].list_name,id:listId,status:r.data[0].status}]
       for (var l of rawLists) {
         if (_.has(listDict,l.id))
@@ -99,9 +100,8 @@ var wrapper = {
         wrapper.subscribe('AirPair Newsletter', email, merge_vars, null, false, false, retry)
       }
       else {
-       for (var listName of lists) {
+        for (var listName of lists) {
           var synced = _.find(r, (l)=>l.name == listName)
-          // $log('synced'.blue, synced)
           if (synced && (synced.status == 'unsubscribed' || synced.status == 'cleaned'))
             syncedList = syncedList
             //-- Do nothing
@@ -113,6 +113,11 @@ var wrapper = {
               wrapper.subscribe(listName, email, merge_vars, null, false, false, ()=>{})
             // else if (synced.status == 'subscribed')
           }
+        }
+        for (var synced of r)
+        {
+          if (!_.contains(syncedList,synced.name)&&synced.status=='subscribed')
+            syncedList.push(synced.name)
         }
         // $log(e,r)
         cb(null, syncedList)

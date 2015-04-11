@@ -225,3 +225,75 @@ module.exports = -> describe "Admin".subspec, ->
         # expect(r2.adm.lastTouch.action).to.equal('closed:complete')
         # expectIdsEqual(r2.adm.lastTouch.by._id,adm._id)
         DONE()
+
+
+  it "Pipeliner cannot set booked without a booking", itDone ->
+    d = type: 'resources', tags: [data.tags.mongo]
+    SETUP.newCompleteRequestForAdmin 'rpor', d, (r,sCust) ->
+      msg = type: 'received', subject: "test subject", body: "test body"
+      PUT "/adm/requests/#{r._id}/message", msg, {}, (r1) ->
+        adm1 = r1.adm
+        expect(r1.status).to.equal('waiting')
+        expect(r1.adm.received).to.exist
+        expect(r1.adm.reviewable).to.be.undefined
+        LOGIN 'snug', (ssnug) ->
+          reply = expertComment: "I will take it", expertAvailability: "Realest time", expertStatus: "available"
+          PUT "/requests/#{r1._id}/reply/#{data.experts.snug._id}", reply, {}, (r2) ->
+            LOGIN 'admin', ->
+              GET "/adm/requests/#{r1._id}", {}, (r3) ->
+                expect(r3.adm.received).to.exist
+                expect(r3.adm.reviewable).to.exist
+                expect(r3.adm.booked).to.be.undefined
+                r3.status = "booked"
+                PUT "/adm/requests/#{r1._id}", r3, { status: 403}, (err) ->
+                  expectStartsWith(err.message, "Cannot set booked status manually")
+                  DONE()
+
+
+
+  it.skip "Can not undo request adm.booked", itDone ->
+    ## Other ideas to test. Close a requesst and try book it closed and after reopned (put into review)
+    ## Many problem requests had multiple orders
+    # d = type: 'resources', tags: [data.tags.mongo]
+    # SETUP.newCompleteRequestForAdmin 'jkjk', d, (r,sCust) ->
+    #   msg = type: 'received', subject: "test subject", body: "test body"
+    #   PUT "/adm/requests/#{r._id}/message", msg, {}, (r1) ->
+    #     adm1 = r1.adm
+    #     expect(r1.status).to.equal('waiting')
+    #     expect(r1.adm.received).to.exist
+    #     expect(r1.adm.reviewable).to.be.undefined
+    #     LOGIN 'snug', (ssnug) ->
+    #       reply = expertComment: "I will take it", expertAvailability: "Realest time", expertStatus: "available"
+    #       PUT "/requests/#{r1._id}/reply/#{data.experts.snug._id}", reply, {}, (r2) ->
+    #         LOGIN 'admin', ->
+    #           GET "/adm/requests/#{r1._id}", {}, (r3) ->
+    #             expect(r3.adm.received).to.exist
+    #             expect(r3.adm.reviewable).to.exist
+    #             expect(r3.adm.booked).to.be.undefined
+    #             LOGIN sCust.userKey, (s) ->
+    #               suggestion = r3.suggested[0]
+    #               airpair1 = time: moment().add(2, 'day'), minutes: 60, type: 'private', payMethodId: sCust.primaryPayMethodId, request: { requestId: r1._id, suggestion }
+    #               POST "/bookings/#{suggestion.expert._id}", airpair1, {}, (booking1) ->
+    #                 LOGIN 'admin', ->
+    #                   GET "/adm/requests/#{r1._id}", {}, (r4) ->
+    #                     expect(r4.adm.received).to.exist
+    #                     expect(r4.adm.reviewable).to.exist
+    #                     expect(r4.adm.booked).to.exist
+    #                     r4.status = "review"
+    #                     PUT "/adm/requests/#{r1._id}", r4, {}, (r5) ->
+    #                       expect(r5.status).to.equal('review')
+    #                       expect(r5.adm.received).to.exist
+    #                       expect(r5.adm.reviewable).to.exist
+    #                       expect(r5.adm.booked).to.exist
+    #                       PUT "/matchmaking/requests/#{r._id}/add/#{data.experts.tmot._id}", {}, {}, (r6) ->
+    #                         expect(r6.status).to.equal('review')
+    #                         expect(r6.suggested.length).to.equal 2
+    #                         expect(r6.adm.received).to.exist
+    #                         expect(r6.adm.reviewable).to.exist
+    #                         expect(r6.adm.booked).to.exist
+    #                       # LOGIN 'snug', (ssnug) ->
+
+    #                         DONE()
+
+
+

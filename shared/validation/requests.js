@@ -74,6 +74,9 @@ var validation = {
     if (update.status == 'complete' && !original.adm.booked)
       return `Cannot complete a request with no booked experts, pay attention ...`
 
+    if (update.status == 'booked' && !original.adm.booked)
+      return `Cannot set booked status manually a real payment must be collected ...`
+
     if (!_.idsEqual(original.userId,update.userId))
       return `Updating request must have the same userId as the original`
   },
