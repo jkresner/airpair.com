@@ -253,6 +253,195 @@ module.exports = {
     "hours" : "1",
     "budget" : 150,
     "title" : "1 hour splunk and firewall advice"
-  }
+  },
+
+  swap1: {
+    "_id" : ObjectId("54cad97ec80a3809004361e7"),
+    "type" : "mentoring",
+    "by" : {
+        "avatar" : "//0.gravatar.com/avatar/dda1d954478dbf96adbeb860562c01a3",
+        "email" : "dan85.cardenas@gmail.com","name" : "Daniel Cardenas"
+    },
+    "userId" : ObjectId("54b49bf67b1047516695d508"),
+    "status" : "complete",
+    "messages" : [
+        {
+            "type" : "received",
+            "_id" : ObjectId("54cad97ec80a3809004361e7"),
+            "subject" : "1 hour ruby-on-rails mentoring\n",
+            "body" : "Hi Daniel,\n\nMy name is Prateek, I'm your personal AirPair Matchmaker assigned to help find you the perfect ruby-on-rails expert. I'm also available to answer questions and to make sure your experience is smooth from now through to getting your challenges solved. \n\nI am just reaching out to our experts for availability to get you started asap. Normally, our turnaround time for Rails is about 2 hrs. When would you like to start?\n\nI am looking forward to your response.\n\nBest,\n\nPrateek\n\n--\nPrateek Gupta\ntwitter.com/airpair",
+            "fromId" : ObjectId("5367fd6d1c67d1a4859d30e7"),
+            "toId" : ObjectId("54b49bf67b1047516695d508")
+        }
+    ],
+    "suggested" : [
+        {
+            "matchedBy" : { "userId" : "5367fd6d1c67d1a4859d30e7", "initials" : "pg" },
+            "_id" : ObjectId("54cadb262aadfe0900d651b5"),
+            "suggestedRate" : { "total" : 70, "expert" : 40 },
+            "expertComment" : "I've been a fullstack rails dev for the past 5 years.  My current employer focuses on pair programming and test driven development.   I have written/worked on a couple of gems in the past.  Most of my experience has been with structuring larger applications in Rails 3.",
+            "expertAvailability" : "Evenings and Weekends.  I live in Toronto, so EDT (GMT -5hrs).",
+            "expertStatus" : "available",
+            "reply" : { "time" : ISODate("2015-01-30T01:21:22.314Z") },
+            "expert" : {
+                "_id" : ObjectId("53041710a9a333020000001d"),
+                "email" : "ajrkerr@gmail.com",
+                "gmail" : "ajrkerr@gmail.com",
+                "name" : "Adam Kerr",
+                "rate" : 70,
+                "userId" : ObjectId("530416e51c67d1a4859d23c8"),
+                "tw" : {"username" : "ajrkerr" },
+                "in" : {"id" : "ssF0A7duY4"},
+                "so" : {"link" : "800664/ajrkerr"},
+                "gh" : {"username" : "ajrkerr"}
+            }
+        },
+        {
+            "matchedBy" : {
+                "initials" : "pg",
+                "userId" : "5367fd6d1c67d1a4859d30e7"
+            },
+            "_id" : ObjectId("54cadb1c2aadfe0900d651b3"),
+            "suggestedRate" : {
+                "expert" : 40,
+                "total" : 70
+            },
+            "expertComment" : "Hi Daniel. I really would like to have a review session with you.",
+            "expertAvailability" : "I am available, tell me what time fit to you.",
+            "expertStatus" : "available",
+            "reply" : {"time" : ISODate("2015-01-30T01:25:30.990Z")},
+            "expert" : {
+                "_id" : ObjectId("52587ddc2cac42020000001c"),
+                "email" : "rodrigopqn@gmail.com",
+                "gmail" : "rodrigopqn@gmail.com",
+                "name" : "Rodrigo Pinto",
+                "rate" : 70,
+                "userId" : ObjectId("52587dad66a6f999a465f9d3"),
+                "tw" : {"username" : "rodrigoospinto"},
+                "in" : {"id" : "WN3pN2yLlm"},
+                "gh" : {"username" : "rodrigopinto"}
+            }
+        },
+        {
+            "expertComment" : "Bonjour!\n\n I can definitely help you get up to speed in Ruby. I am an adjunct professor who teaches Ruby & Rails at New York University. I also have 8 years ruby experience.\n\nI look forward to hearing from you.",
+            "expertAvailability" : "My personal availability on weekdays are:\n0800hrs-1900hrs EST",
+            "suggestedRate" : {"total" : 70,"expert" : 40},
+            "_id" : ObjectId("54e221ed24d2860a003a80ee"),
+            "expertStatus" : "available",
+            "reply" : {
+                "time" : ISODate("2015-02-16T16:59:25.459Z")
+            },
+            "expert" : {
+                "_id" : ObjectId("52127d5fc6a5870200000007"),
+                "email" : "rashaunstovall@gmail.com",
+                "gmail" : "rashaunstovall@gmail.com",
+                "name" : "Ra'Shaun Stovall",
+                "rate" : 70,
+                "userId" : ObjectId("52127d4066a6f999a465f637"),
+                "tw" : {"username" : "snuggsi"},
+                "in" : {"id" : "SJu5-UP-9Y"},
+                "gh" : {"username" : "snuggs"}
+            }
+        },
+        {
+            "matchedBy" : {"userId" : "5367fd6d1c67d1a4859d30e7","initials" : "pg"},
+            "_id" : ObjectId("54cadafac80a38090043620d"),
+            "suggestedRate" : {"total" : 70,"expert" : 40},
+            "expertStatus" : "waiting",
+            "expert" : {
+                "_id" : ObjectId("5359bef3c558c2020000002f"),
+                "email" : "dcestari@gmail.com",
+                "gmail" : "dcestari@gmail.com",
+                "name" : "Daniel Cestari",
+                "rate" : 230,
+                "userId" : ObjectId("5359bd0e1c67d1a4859d2f74"),
+                "tw" : {"username" : "dcestari"},
+                "in" : {"id" : "2EAxYvhnal"},
+                "bb" : {"id" : "dcestari"},
+                "so" : {"link" : "452964/dcestari"},
+                "gh" : {"username" : "dcestari"}
+            }
+        },
+        {
+            "matchedBy" : {"initials" : "pg","userId" : "5367fd6d1c67d1a4859d30e7"},
+            "_id" : ObjectId("54cadafd2aadfe0900d651a5"),
+            "suggestedRate" : {
+                "expert" : 40,
+                "total" : 70
+            },
+            "expertStatus" : "waiting",
+            "expert" : {
+                "_id" : ObjectId("5387a1e7e558890200722fd5"),
+                "email" : "fernando.visa@gmail.com",
+                "gmail" : "fernando.visa@gmail.com",
+                "name" : "Fernando Villalobos",
+                "rate" : 40,
+                "userId" : ObjectId("5387a1af1c67d1a4859d3342"),
+                "tw" : {"username" : "fervisa"},
+                "gh" : {"username" : "fervisa"}
+            }
+        },
+        {
+            "matchedBy" : {
+                "userId" : "5367fd6d1c67d1a4859d30e7",
+                "initials" : "pg"
+            },
+            "_id" : ObjectId("54cadb112aadfe0900d651b1"),
+            "suggestedRate" : {
+                "total" : 70,
+                "expert" : 40
+            },
+            "expertStatus" : "waiting",
+            "expert" : {
+                "_id" : ObjectId("52eb1d03e441b30200000039"),
+                "email" : "hiddentiger@gmail.com",
+                "gmail" : "hiddentiger@gmail.com",
+                "name" : "Kieran Andrews",
+                "rate" : 40,
+                "userId" : ObjectId("52eb1cd21c67d1a4859d1e2e"),
+                "tw" : {"username" : "HiddenTiger"},
+                "in" : {"id" : "uQ1W7ZqRew"},
+                "so" : {"link" : "359736/kieran-andrews"},
+                "gh" : {"username" : "TigerWolf"
+                }
+            }
+        }
+    ],
+    tags: [
+      {"slug" : "ruby-on-rails",
+      "_id" : ObjectId("514825fa2a26ea020000002f")
+      ,"sort" : 0}],
+    "lastTouch" : {
+        "action" : "replyByExpert:available",
+        "utc" : ISODate("2015-02-16T16:59:25.462Z"),
+        "by" : {
+            "_id" : ObjectId("52127d4066a6f999a465f637"),
+            "name" : "Ra'Shaun Stovall"
+        }
+    },
+    "adm" : {
+        "submitted" : ISODate("2015-01-30T01:08:57.050Z"),
+        "owner" : "pg",
+        "received" : ISODate("2015-01-30T01:14:21.576Z"),
+        "lastTouch" : {
+            "action" : "closed:complete",
+            "utc" : ISODate("2015-02-17T00:19:26.881Z"),
+            "by" : {
+                "_id" : ObjectId("5367fd6d1c67d1a4859d30e7"),
+                "name" : "Prateek Gupta"
+            }
+        },
+        "farmed" : ISODate("2015-01-30T01:14:26.384Z"),
+        "reviewable" : ISODate("2015-01-30T01:21:22.324Z"),
+        "booked" : ISODate("2015-01-30T01:36:40.415Z"),
+        "closed" : ISODate("2015-02-17T00:19:26.881Z")
+    },
+    "experience" : "beginner",
+    "brief" : "Would like to go over some code i wrote.",
+    "time" : "regular",
+    "hours" : "1",
+    "budget" : 70,
+    "title" : "1 hour ruby-on-rails mentoring"
+  },
 
 }

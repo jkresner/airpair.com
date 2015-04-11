@@ -76,17 +76,23 @@ angular.module('APDataSvc', [])
       getBookings: GET((d)=>`/bookings`),
       getBooking: GET((d)=>`/bookings/${d._id}`),
       getOrdersForPayouts: GET((d)=>`/billing/orders/payouts`),
+      getMyOrdersForExpert: GET((d)=>`/billing/orders/expert/${d._id}`),
       deletePaymethod: DELETE((d)=>`/billing/paymethods/${d._id}`),
-      payoutOrders: POST((d)=>`/payouts/${d.payoutmethodId}`)
+      payoutOrders: POST((d)=>`/payouts/${d.payoutmethodId}`),
+      orderDeal:  POST((d)=>`/billing/orders/deal/${d.expertId}`),
     })
 
     var expertFns = {
       getForExpertsPage: GET((d)=>`/experts`),
       getMe: GET((d)=>`/experts/me`),
       getById: GET((d)=>`/experts/${d._id}`),
+      getHistory: GET((d)=>`/experts/${d._id}/history`),
       getForDashboard: GET((d)=>`/experts/dashboard`),
       create: POST((d)=>`/experts/me`),
-      updateMe: PUT((d)=>`/experts/${d._id}/me`)
+      updateMe: PUT((d)=>`/experts/${d._id}/me`),
+      getDeal: GET((d)=>`/experts/deal/${d._id}`),
+      saveDeal: POST((d)=>`/experts/${d.expertId}/deal`),
+      // expireDeal: PUT((d)=>`/experts/${d._id}/deal/${d.dealId}/expire`),
     }
 
     this.experts = expertFns;

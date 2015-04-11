@@ -1,11 +1,7 @@
-import BaseSvc      from '../services/_service'
 import User         from '../models/user'
-var bcrypt =        require('bcrypt')
-var Data =          require('./users.data')
+var bcrypt          = require('bcrypt')
+var Data            = require('./users.data')
 var logging         = config.log.auth || false
-var svc             = new BaseSvc(User, logging)
-var cbSession       = Data.select.cb.fullSession
-
 
 var wrap = (fnName, errorCB, cb) =>
  (e,r) => {
@@ -21,44 +17,6 @@ var wrap = (fnName, errorCB, cb) =>
  }
 
 
-function getCohortProperties(existingUser, session, done)
-{
-  //-- Default engagement
-  var visit_first = util.momentSessionCreated(session).toDate()
-  var visit_signup = new Date()
-  var visit_last = new Date()
-  var visits = [util.dateWithDayAccuracy()]
-  var aliases = []  // we add the aliases after successful sign up
-  var firstRequest = session.firstRequest
-
-  // This is a new user (easy peasy)
-  if (existingUser)
-  {
-    var {cohort} = existingUser
-
-    //-- This is an existing v0 user. We need to alias their google._json.email to their userId for v1
-    if (!cohort || !cohort.engagement.visit_first)
-    {
-      var v0AccountCreatedAt = util.ObjectId2Date(existingUser._id)
-      visit_first = v0AccountCreatedAt
-      visit_signup = v0AccountCreatedAt
-    }
-    else
-    {
-      // keep existing fist visit, signup and visits
-      visit_first = cohort.engagement.visit_first
-      visit_signup = cohort.engagement.visit_signup
-      visits = cohort.engagement.visits
-      aliases = cohort.aliases || []
-      firstRequest = cohort.firstRequest || session.firstRequest
-    }
-  }
-
-  return {engagement:{visit_first,visit_signup,visit_last,visits},aliases,firstRequest}
-}
-
-
-
 // upsertSmart
 // Intelligent logic around updating user accounts on Signup and Login for
 // User info and analytics. Adds the user if new, or updates if existing
@@ -67,7 +25,7 @@ function upsertSmart(upsert, existing, cb) {
   if (logging) $log(`upsertSmart', 'existing[${JSON.stringify(existing)}] upsert =>${JSON.stringify(upsert)}`)
 
   upsert = _.extend(upsert, this.session.anonData || {})
-  upsert.cohort = getCohortProperties(existing, this.session)
+  upsert.cohort = this.cohortFns.getCohortProperties(existing, this.session)
 
   if (existing) {
     if (!existing.emailVerified) upsert.emailVerified = false
@@ -81,15 +39,17 @@ function upsertSmart(upsert, existing, cb) {
   //-- Session is their cookie, which may or may not have been their first visit
   var {sessionID} = this
   Data.query.existing(upsert.email)
-  var _id = (existing) ? existing._id : svc.newId()
+  var _id = (existing) ? existing._id : this.svc.newId()
   User.findOneAndUpdate({_id}, upsert, { upsert: true },
     wrap(`upsert [${_id}][existing:${existing!=null}] [${JSON.stringify(upsert)}] []`, cb, (user) => {
 
     cb(null, user)
-
+    // $log('analytics.upsert.before'.white, user.cohort.aliases)
+    var prevAliasesLength = user.cohort.aliases.length
     if (analytics.upsert)
       analytics.upsert(user, existing, sessionID, (aliases) => {
-        if (aliases && aliases.length != user.cohort.aliases.length)
+        // $log('analytics.upsert', aliases, user.cohort.aliases, aliases.length != user.cohort.aliases.length)
+        if (aliases && aliases.length != prevAliasesLength)
         {
           if (logging) $log(`updating ${user._id} ${aliases}`.yellow, aliases)
           User.findOneAndUpdate({_id:user._id}, { 'cohort.aliases': aliases }, ()=>{} )
@@ -132,7 +92,6 @@ function googleLogin(profile, errorCB, done) {
 
   User.findOne(Data.query.existing(profile._json.email),
     wrap(`googleLogin.existing ${profile._json.email}`, errorCB, (existing) => {
-
 
     var upsert = { googleId: profile.id, google: profile }
     //-- copy google details to top level users details
@@ -188,19 +147,20 @@ function localSignup(email, password, name, errorCB, done) {
       upsert.local.passwordHashGenerated = new Date
     }
 
+    var mailFn = 'signupHomeWelcomeEmail'
+    if (password == 'home')
+      mailFn = 'signupHomeWelcomeEmail'
+    if (password == 'postcomp')
+      mailFn = 'signupPostcompEmail'
+    if (password == 'subscribe') {
+      mailFn = 'singupSubscribeEmail'
+      this.session.maillists = _.union(this.session.maillists||[],['AirPair Developer Digest'])
+    }
+
     upsertSmart.call(this, upsert, null, (e,r) => {
-      if (!e) {
-        if (password == 'home')
-          mailman.signupHomeWelcomeEmail(r, upsert.local.changePasswordHash)
-        if (password == 'postcomp') {
-          //-- TODO Subscribe user to post complist
-          mailman.signupPostcompEmail(r, upsert.local.changePasswordHash)
-        }
-        if (password == 'so')
-          mailman.signupHomeWelcomeEmail(r, upsert.local.changePasswordHash)
-        if (password == 'subscribe')
-          mailman.singupSubscribeEmail(r, upsert.local.changePasswordHash)
-      }
+      if (!e)
+        mailman[mailFn](r, upsert.local.changePasswordHash)
+
       done(e,r)
     })
 
@@ -223,7 +183,7 @@ function localLogin(email, password, errorCB, done) {
     else if (!validPassword(password, existing.local.password))
       info = "wrong password"
 
-    if (info) return errorCB(null, false, info)
+    if (info) return errorCB(null, false, Error(info))
 
     var upsert = { email: email }
 

@@ -1,33 +1,116 @@
-import BaseSvc      from '../services/_service'
-import User         from '../models/user'
-var util            = require('../../shared/util')
-var Data            = require('./users.data')
-var logging         = config.log.auth || false
-var svc             = new BaseSvc(User, logging)
-var cbSession       = Data.select.cb.fullSession
-var MailChimp       = require('./wrappers/mailchimp')
+var maillists       = require('./users.data').data.maillists
+var emptyMongooseCohort = { maillists: [], aliases: [], engagement: { visits: [] } }
 
-
-// var mailListNames = ['AirPair Newsletter', 'AirPair Experts', 'AirPair Authors', 'AirPair Dev Digest']
-
+// Cohorts
+//
+// Experts
+// 6 Months Domant
+// Domant contacted twice
+// Country (India)
+// Company
+// Has Paymethod
+// Has Tags
+// SiteNotifications
+// Visits
+// Engagement
+// Email Verified
 
 module.exports = {
+
+  getCohortProperties(existingUser, session, done)
+  {
+    var cohort = (existingUser) ? existingUser.cohort : null
+    cohort = cohort || {}
+    if (_.isEqual(cohort,emptyMongooseCohort)) cohort = {}
+    // if (true) $log('getCohortProperties'.cyan, cohort)
+
+    var now         = new Date()
+    var day         = util.dateWithDayAccuracy()
+    var visit_first = (existingUser) ?
+      util.ObjectId2Date(existingUser._id) :
+      util.momentSessionCreated(session).toDate()
+    var visit_signup = (existingUser) ?
+      util.ObjectId2Date(existingUser._id) :
+      now
+
+    if (!cohort.engagement)
+      cohort.engagement = {visit_first,visit_signup,visit_last:now,visits:[day]}
+    if (!cohort.engagement.visit_first)
+      cohort.engagement.visit_first = visit_first
+    if (!cohort.engagement.visit_signup)
+      cohort.engagement.visit_signup = visit_signup
+    if (!cohort.engagement.visit_last)
+      cohort.engagement.visit_last = now
+    if (!cohort.engagement.visits || cohort.engagement.visits.length == 0)
+      cohort.engagement.visits = [day]
+
+    if (!cohort.firstRequest)
+      cohort.firstRequest = session.firstRequest
+
+    if (!existingUser)
+      cohort.maillists = ['AirPair Newsletter']
+    //-- bit strange, if they un-subscribe we throw them back on ....
+    else if (!cohort.maillists) // || !cohort.maillists == 0)
+      cohort.maillists = ['AirPair Newsletter']
+    if (session.maillists && session.maillists.length > 0)
+      cohort.maillists = _.union(cohort.maillists||[],session.maillists)
+
+    if (!cohort.aliases)   // we add the aliases after successful sign up
+      cohort.aliases = []  // This could probably make more sense
+
+    return cohort
+  },
+
+  //-------- User Info
+
+  setExpertCohort(expertId) {
+    // Not sure how cohort can be null, but it's happened
+    if (!this.user.cohort)
+      this.user.cohort = {}
+
+    if (!this.user.cohort.expert || this.user.cohort.expert._id != expertId)
+    {
+      var exCo = this.user.cohort.expert || {}
+      exCo.applied = exCo.applied || new Date // When they went through v1 signup
+      this.user.cohort.expert = _.extend(exCo, {_id:expertId})
+      this.user.cohort.maillists = _.union(this.user.cohort.maillists||[],['AirPair Experts'])
+      this.svc.updateWithSet(this.user._id, {cohort: this.user.cohort}, (ee,rr)=>{})
+    }
+  },
+
+
+  syncMaillists(cb) {
+    throw Error("syncMaillists not implemented")
+  },
+
 
   getMaillists(cb) {
     if (this.user)
     {
-      $callSvc(svc.getById, this)(this.user._id, (e,user) => {
-        var currentLists = (user.cohort) ? user.cohort.maillists : []
-        MailChimp.subscriptions(user.email, (e,r) => {
+      $callSvc(this.svc.getById, this)(this.user._id, (e,user) => {
+        var cohortLists = (user.cohort && user.cohort.maillists) ? user.cohort.maillists : []
+        var FNAME = util.firstName(user.name)
+        var LNAME = user.name.replace(FNAME+' ','')
 
-          cb(null, _.map(r,(l)=>_.pick(l, 'name', 'subscribed', 'description')))
+        // $log('cohortLists'.magenta, cohortLists)
+        Wrappers.MailChimp.sync(user.email, {FNAME,LNAME}, cohortLists, (e,syncMaillists) => {
+          if (e) return cb(e)
+          // $log('syncMaillists'.yellow, e, syncMaillists)
+          // var subscribed = _.pluck(_.filter(r, (l) => l.subscribed),'name')
+          // if (_.difference(currentLists,subscribed).length > 0 ||
+            // _.difference(subscribed,currentLists).length > 0
+          // )
+          var cohort =  _.extend(user.cohort || {},{maillists:syncMaillists})
+          this.svc.updateWithSet(user._id, {cohort}, (ee,rr)=>{})
 
-          var subscribed = _.pluck(_.filter(r, (l) => l.subscribed),'name')
-          if (_.difference(currentLists,subscribed).length > 0 ||
-            _.difference(subscribed,currentLists).length > 0
-          )
-            var cohort =  _.extend(user.cohort || {},{maillists:subscribed})
-            svc.updateWithSet(user._id, {cohort}, (ee,rr)=>{})
+          var listsAndStatus = []
+          for (var list of maillists) {
+            // var subscribed = null
+            if (_.find(syncMaillists,(l)=>l==list.name)) list.subscribed = true
+            listsAndStatus.push(list)
+          }
+          // $log('listsAndStatus'.yellow, listsAndStatus)
+          cb(null, listsAndStatus)
         })
       })
     }
@@ -43,20 +126,20 @@ module.exports = {
     var {name} = body
     if (this.user)
     {
-      $callSvc(svc.getById, this)(this.user._id, (ee,user) => {
-        var maillists = (user.cohort) ? user.cohort.maillists : []
-        if (_.contains(maillists, name)) {
-          MailChimp.unsubscribe(name, user.email, (e,r) => cb(e,{name,subscribed:false}))
-          maillists = _.without(maillists, name)
+      $callSvc(this.svc.getById, this)(this.user._id, (ee,user) => {
+        var cohortLists = (user.cohort) ? user.cohort.maillists : []
+        if (_.contains(cohortLists, name)) {
+          Wrappers.MailChimp.unsubscribe(name, user.email, (e,r) => cb(e,{name,subscribed:false}))
+          maillists = _.without(cohortLists, name)
         }
         else {
           var FNAME = util.firstName(user.name)
           var LNAME = user.name.replace(FNAME+' ','')
-          MailChimp.subscribe(name, user.email, {FNAME,LNAME}, 'html', false, false, (e,r) => cb(e,{name,subscribed:true}))
-          maillists.push(name)
+          Wrappers.MailChimp.subscribe(name, user.email, {FNAME,LNAME}, 'html', false, false, (e,r) => cb(e,{name,subscribed:true}))
+          cohortLists.push(name)
         }
-        var cohort =  _.extend(user.cohort || {},{maillists})
-        svc.updateWithSet(user._id, {cohort}, (ee,rr)=>{})
+        var cohort =  _.extend(user.cohort || {},{maillists:cohortLists})
+        this.svc.updateWithSet(user._id, {cohort}, (ee,rr)=>{})
       })
     }
     else
@@ -67,11 +150,11 @@ module.exports = {
       if (_.contains(this.session.maillists, name)) {
         cb('Unsubscribe not supported for anonymous users. Please login.')
         // this.session.maillists = _.without(this.session.maillists, name)
-        // MailChimp.unsubscribe(name, email, (e,r) => cb(e,this.session.maillists))
+        // Wrappers.MailChimp.unsubscribe(name, email, (e,r) => cb(e,this.session.maillists))
       }
       else {
         this.session.maillists.push(name)
-        MailChimp.subscribe(name, email, {}, 'html', true, false, (e,r) => cb(e,this.session.maillists))
+        Wrappers.MailChimp.subscribe(name, email, {}, 'html', true, false, (e,r) => cb(e,this.session.maillists))
       }
 
       this.session.anonData.email = email

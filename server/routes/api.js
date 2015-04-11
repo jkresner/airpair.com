@@ -8,10 +8,11 @@ module.exports = function(app) {
 
   var router = Router()
     .param('tag', API.Tags.paramFns.getBySlug)
-    .param('expert', API.Experts.paramFns.getById)
     .param('request', API.Requests.paramFns.getByIdForAdmin)
     .param('booking', API.Bookings.paramFns.getById)
     .param('paymethod', API.Paymethods.paramFns.getById)
+    .param('expert', API.Experts.paramFns.getByIdForAdmin)
+    .param('expertshaped', API.Experts.paramFns.getById)
 
     .get('/session/full', setAnonSessionData, API.Users.getSession)
     .put('/users/me/password-change', API.Users.requestPasswordChange)
@@ -29,11 +30,17 @@ module.exports = function(app) {
 
       // $log('trying to change pass'.magenta, req.body.hash, req.body.password)
       $callSvc(API.Users.svc.changePassword,req)(req.body.hash, req.body.password, (e,r) => {
-        if (e) return next(e)
-        req.login(r, (err) => {
-          if (err) return next(err)
-          res.json(r)
-        })
+        if (e) { e.fromApi = true; return next(e) }
+
+        var cb = (e,r) => {
+          if (e) return next(e)
+          req.login(r, (err) => {
+            if (err) return next(err)
+            res.json(r)
+          })
+        }
+
+        $callSvc(API.Users.svc.localLogin,req)(r.email, req.body.password, cb, cb)
       })
     })
 
@@ -80,7 +87,9 @@ module.exports = function(app) {
     .delete('/billing/paymethods/:paymethod', API.Paymethods.deletePaymethod)
     .get('/billing/orders', API.Orders.getMyOrders)  //emailv,
     .get('/billing/orders/credit/:id', API.Orders.getMyOrdersWithCredit)
+    .get('/billing/orders/expert/:id', API.Orders.getMyDealOrdersForExpert)
     .post('/billing/orders/credit', API.Orders.buyCredit)
+    .post('/billing/orders/deal/:expertshaped', API.Orders.buyDeal)
 
     .get('/billing/orders/payouts', API.Orders.getOrdersForPayouts)
     .get('/payouts/me', API.Payouts.getPayouts)
@@ -88,13 +97,17 @@ module.exports = function(app) {
 
     .get('/bookings', API.Bookings.getByUserId)
     .get('/bookings/:id', API.Bookings.getById)
-    .post('/bookings/:expert', API.Bookings.createBooking)
+    .post('/bookings/:expertshaped', API.Bookings.createBooking)
 
     .get('/experts/me', API.Experts.getMe)
     .get('/experts/search/:id', API.Experts.search)
     .get('/experts/:id', API.Experts.getById)
+    .get('/experts/:expert/history', API.Experts.getHistory)
     .post('/experts/me', populateUser, API.Experts.create)
     .put('/experts/:expert/me', populateUser, API.Experts.updateMe)
+    .get('/experts/deal/:id', API.Experts.getByDeal)
+    .post('/experts/:expert/deal', API.Experts.createDeal)
+    .put('/experts/:expert/deal/:dealid/expire', API.Experts.expireDeal)
 
   var postsrouter = Router()
     .param('post', API.Posts.paramFns.getById)
@@ -130,7 +143,7 @@ module.exports = function(app) {
 
 
   var matchmakerrouter = Router()
-    .param('expert', API.Experts.paramFns.getById)
+    .param('expertshaped', API.Experts.paramFns.getById)
     .param('request', API.Requests.paramFns.getByIdForAdmin)
     .use(authd)
     // .get('/experts/mojo/me', API.Mojo.getMatchesForRequest)
@@ -140,15 +153,15 @@ module.exports = function(app) {
     .use(adm) //-- Todo change to match maker permissions
     .get('/matchmaking/requests/waiting', API.Requests.getWaitingForMatchmaker)
     .get('/matchmaking/requests/:id', API.Requests.getByIdForMatchmaker)
-    .put('/matchmaking/requests/:request/add/:expert', API.Requests.addSuggestion)
-    .put('/matchmaking/experts/:expert/matchify/:request', API.Mojo.updateMatchingStats)
+    .put('/matchmaking/requests/:request/add/:expertshaped', API.Requests.addSuggestion)
+    .put('/matchmaking/experts/:expertshaped/matchify/:request', API.Mojo.updateMatchingStats)
 
 
   router.use(matchmakerrouter)
 
 
   var admrouter = Router()
-    .param('expert', API.Experts.paramFns.getById)
+    .param('expert', API.Experts.paramFns.getByIdForAdmin)
     .param('request', API.Requests.paramFns.getByIdForAdmin)
     .param('booking', API.Bookings.paramFns.getById)
     .param('order', API.Orders.paramFns.getByIdForAdmin)
@@ -167,6 +180,7 @@ module.exports = function(app) {
     .put('/bookings/:booking/recording', API.Bookings.addYouTubeData)
     .put('/bookings/:booking/hangout', API.Bookings.addHangout)
     .put('/bookings/:booking', API.Bookings.updateByAdmin)
+    .put('/bookings/:booking/:order/:request/:id/swap', API.Bookings.cheatExpertSwap)
     .get('/payouts/:userId', API.Payouts.getPayouts)
     .get('/users/role/:role', API.Users.getUsersInRole)
     .put('/users/:id/role/:role', API.Users.toggleUserInRole)
@@ -192,6 +206,9 @@ module.exports = function(app) {
     .put('/requests/:request/farm', API.Requests.farmByAdmin)
     .put('/requests/:request/remove/:expert', API.Requests.removeSuggestion)
     .get('/experts/new', API.Experts.getNewForAdmin)
+    .get('/experts/active', API.Experts.getActiveForAdmin)
+    .get('/experts/:id', API.Experts.getByIdForAdmin)
+    .delete('/experts/:expert', API.Experts.deleteById)
 
   router.use('/adm',admrouter)
 

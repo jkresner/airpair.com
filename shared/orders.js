@@ -62,6 +62,28 @@ module.exports = {
     return _.reduce(remaining, function(memo, num){ return memo + num; }, 0)
   },
 
+  linesWithMinutesRemaining(orders) {
+    var lines = []
+    orders.forEach(function(order){
+      order.lineItems.forEach(function(li){
+        if (li.type == 'deal' && li.info && li.info.remaining > 0) lines.push(li)
+      })
+    })
+
+    return lines
+  },
+
+  getAvailableMinutesRemaining(lines) {
+    if (lines.length == 0) return 0
+    var remaining = []
+
+    lines.forEach(function(li){
+      remaining.push(li.info.remaining)
+    })
+
+    return _.reduce(remaining, function(memo, num){ return memo + num; }, 0)
+  },
+
   ordersToLinesWithRunningBalance(orders) {
     if (!orders || orders.length == 0) return []
 

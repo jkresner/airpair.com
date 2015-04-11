@@ -10,7 +10,7 @@ var initAPIWrap = (wrapper) => {
         wrapper.init()
         if (logging) $log('initApi'.yellow, fnName)
       }
-      fn.apply(this, arguments)
+      return fn.apply(this, arguments)
     }}
   )
   wrapper.init = init
@@ -28,6 +28,9 @@ var wrappers = {
   Braintree:      initAPIWrap(require('./braintree')),
   YouTube:        initAPIWrap(require('./youtube')),
   StackExchange:  initAPIWrap(require('./stackexchange')),
+  Twitter:        initAPIWrap(require('./twitter')),
+  Bitly:          initAPIWrap(require('./bitly')),
+  MailChimp:      initAPIWrap(require('./mailchimp')),
 }
 
 

@@ -105,6 +105,7 @@ section.notifications {
   .rail1CTA {
     .rail;
     .railstars {
+      padding-top:4px;
       ul.stars { height:35px;margin:0;padding:0;float:left;max-width:130px }
       a { height:35px;text-transform:uppercase;float:right }
     }
@@ -117,22 +118,51 @@ section.notifications {
       width:100%;
       padding-left:45px;
     }
-    p { width:100%!important;text-align:right;margin:0 0 20px 0;padding-top:5px!important }
+    p { width:100%!important;text-align:right;margin:0 0 16px 0;
+        padding-top:5px!important; }
   }
 
   .share {
+    height:44px;
     .rail;
-    margin:14px 0;
-    // top:0;
-    .pw-size-medium .pw-icon {
-      background-image: url(../img/icons/set-24@2x.png);
-      background-size:100%;
+    margin:14px 0 12px 0;
+    .ra1-pw-icon-post { display:none!important }
+    .pw-size-large {
+      .pw-icon {
+        background-image:url(../img/icons/set-32bw.png)!important;
+        background-size:100% 204px;
+      }
+      .pw-icon:hover, .pw-icon.highlight {
+        background-image:url(../img/icons/set-32.png)!important;
+      }
+
+      .ra1-pw-icon-facebook { background-position: 0 0px; }
+      .ra1-pw-icon-twitter { background-position: 0 170px; }
+      .ra1-pw-icon-linkedin { background-position: 0 102px; }
+      .ra1-pw-icon-googleplus { background-position: 0 136px; }
+
+      @media
+      only screen and (-webkit-min-device-pixel-ratio: 2),
+      only screen and (   min--moz-device-pixel-ratio: 2),
+      only screen and (     -o-min-device-pixel-ratio: 2/1),
+      only screen and (        min-device-pixel-ratio: 2),
+      only screen and (                min-resolution: 192dpi),
+      only screen and (                min-resolution: 2dppx) {
+        .pw-icon {
+          background-image: url(../img/icons/set-32bw@2x.png)!important;
+        }
+
+        .pw-icon:hover, .pw-icon.highlight {
+          background-image:url(../img/icons/set-32@2x.png)!important;
+        }
+      }
+
     }
   }
 
   #table-of-contents {
     .rail;
-    margin:10px 0 8px 0;
+    margin:5px 0 0px 0;
     font-size:24px;
   }
   #table-of-contents + ul {
@@ -145,7 +175,8 @@ section.notifications {
     max-height:540px;
     overflow-y:auto;
 
-    ul { list-style:none;margin-top:4px;margin-bottom:0;padding-left:0px;font-size:10px;line-height:14px }
+    ul { list-style:none;margin-top:1px;margin-bottom:0;
+      padding-left:0px;font-size:10px;line-height:14px }
     li { padding:1px 0 2px 0; }
   }
 

@@ -31,7 +31,8 @@ angular.module('APSvcAdmin', [])
 
     this.experts = {
       getNew: GET((d)=>`/adm/experts/new`),
-      // search: GET((d)=>`/adm/experts/search?userid=${d.userId}`)
+      getActive: GET((d)=>`/adm/experts/active`),
+      getBydId: GET((d)=>`/adm/experts/${d._id}`)
     }
 
     this.getUsersViews = function(data, success, error) {
@@ -126,6 +127,7 @@ angular.module('APSvcAdmin', [])
       getBookings: GET((d)=>`/adm/bookings/${d.start.format('x')}/${d.end.format('x')}/${d.user._id}`),
       getBooking: GET((d)=>`/adm/bookings/${d._id}`),
       updateBooking: PUT((d)=>`/adm/bookings/${d._id}`),
+      cheatBookingExpertSwap: PUT((d)=>`/adm/bookings/${d._id}/${d.orderId}/${d.requestId}/${d.suggestionId}/swap`),
       addYouTubeData: PUT((d)=>`/adm/bookings/${d._id}/recording`),
       giveCredit: POST((d)=>`/adm/billing/orders/credit`)
     }

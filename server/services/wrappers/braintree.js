@@ -11,8 +11,8 @@ var wrap = (fn, fnName) =>
     var cb = arguments[arguments.length-1]
     var wrappedCB = (operation, payload, translate) =>
       (e,r) => {
-        if (e) { $error(`braintree.${operation}.ERROR [${e}] ${JSON.stringify(payload)}`); errorCB(e) }
-        else if (!r.success) { $error(`braintree.${operation}.ERROR [${r.message}] ${JSON.stringify(payload)}`); errorCB(r) }
+        if (e) { $error(`braintree.${operation}.ERROR [${e}] ${JSON.stringify(payload)}`); cb(e) }
+        else if (!r.success) { $error(`braintree.${operation}.ERROR [${r.message}] ${JSON.stringify(payload)}`); cb(r) }
         else {
           // $log('r', JSON.stringify(r).white)
           if (translate) r = translate(r)

@@ -55,6 +55,7 @@ var session = {
     global.DONE = null
     global.cookie = null
     global.cookieCreatedAt = null
+    if (cb) cb()
   }
 
 }
@@ -127,6 +128,11 @@ module.exports = {
       return hlpr.GET(url)
         .set('cookie', cookie)
         // .expect(200)
+    }
+    global.POSTAUTH = function(url, data) {
+      return hlpr.POST(url)
+        .set('cookie', cookie)
+        .send(data)
     }
   }
 }

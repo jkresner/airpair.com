@@ -98,6 +98,24 @@ stories = {
           done(s)
 
 
+  connectOAuth: (user, provider, profile, done) ->
+    short = null
+    if provider is 'twitter' then short = 'tw'
+    if provider is 'github' then short = 'gh'
+    if provider is 'linkein' then short = 'in'
+    UserService.connectProvider.call {user}, provider, short, profile, ->
+      GET '/session/full', {}, (s) ->
+        done(s)
+
+
+  connectGoogle: (user, profile, done) ->
+    profile = _.clone(profile)
+    profile.id = profile.id + timeSeed()
+    UserService.googleLogin.call {user}, profile, (e,r) ->
+      GET '/session/full', {}, (s) ->
+        done(s)
+
+
   injectOAuthPayoutMethod: (user, providerName,pmKey,cb) ->
     require('../../../server/services/paymethods').addOAuthPayoutmethod.call({user},
       providerName, data.paymethods[pmKey],{},(e,r)->cb(r))
@@ -155,6 +173,7 @@ stories = {
     db.ensureDocs 'User', [user], (e) ->
       db.ensureDocs 'Expert', [expert], (ee) ->
         LOGIN userKey, (sExpert) ->
+          sExpert.cohort = { expert: { _id: expert._id } }
           done sExpert
 
 
@@ -310,6 +329,13 @@ stories = {
       PUT "/adm/billing/orders/#{orderId}/release", {}, {}, (released) ->
         LOGIN expertSession.userKey, cb
 
+
+  ensureBookingFromRequest: (objectKey, cb) ->
+    db.ensureDocs 'Request', [data.requests[objectKey]], ->
+      db.ensureDocs 'Order', [data.orders[objectKey]], ->
+        db.ensureDoc 'Booking', data.bookings[objectKey], (e, b) ->
+          b.request = data.requests[objectKey]
+          cb(b)
 }
 
 module.exports = stories

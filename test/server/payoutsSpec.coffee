@@ -283,6 +283,36 @@ module.exports = -> describe "API: ", ->
                               DONE()
 
 
+  it 'Expert can collect payment from part deal completion', itDone ->
+    SETUP.newLoggedInExpertWithPayoutmethod 'snug', (expert, expertSession, payoutmethod) ->
+      deal = { price: 1200, minutes: 500, type: 'offline', target: { type: 'all' } }
+      POST "/experts/#{expert._id}/deal", deal, {}, (e2) ->
+        expect(e2.deals.length).to.equal(1)
+        expect(e2.deals[0].rake).to.equal(10)
+        SETUP.addAndLoginLocalUserWithPayMethod 'del4', (s) ->
+          b = dealId: e2.deals[0]._id, payMethodId: s.primaryPayMethodId
+          POST "/billing/orders/deal/#{expert._id}", b, {}, (order) ->
+            b1 = dealId: b.dealId, time: moment().add(2, 'day'), minutes: 250, type: 'offline', payMethodId: s.primaryPayMethodId
+            POST "/bookings/#{expert._id}", b1, {}, (booking) ->
+              expect(booking._id).to.exist
+              LOGIN 'admin', ->
+                PUT "/adm/billing/orders/#{booking.orderId}/release", {}, {}, (released1) ->
+                  expect(released1._id).to.exist
+                  LOGIN expertSession.userKey, ->
+                    GET "/billing/orders/payouts", {}, (orders) ->
+                      expect(orders.length).to.equal(1)
+                      d1 = orders: [orders[0]._id]
+                      POST "/payouts/#{payoutmethod._id}", d1, {}, (payout1) ->
+                        expect(payout1.total).to.equal(540)
+                        expectIdsEqual(payout1.lines[0].order._id,orders[0]._id)
+                        GET "/payouts/me", {}, (payouts) ->
+                          expect(payouts.length).to.equal(1)
+                          expect(payouts[0].total).to.equal(540)
+                          DONE()
+
+
+
+
   it 'Expert can see payout history including v0 payouts'
 
 
