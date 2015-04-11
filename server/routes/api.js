@@ -30,11 +30,17 @@ module.exports = function(app) {
 
       // $log('trying to change pass'.magenta, req.body.hash, req.body.password)
       $callSvc(API.Users.svc.changePassword,req)(req.body.hash, req.body.password, (e,r) => {
-        if (e) return next(e)
-        req.login(r, (err) => {
-          if (err) return next(err)
-          res.json(r)
-        })
+        if (e) { e.fromApi = true; return next(e) }
+
+        var cb = (e,r) => {
+          if (e) return next(e)
+          req.login(r, (err) => {
+            if (err) return next(err)
+            res.json(r)
+          })
+        }
+
+        $callSvc(API.Users.svc.localLogin,req)(r.email, req.body.password, cb, cb)
       })
     })
 

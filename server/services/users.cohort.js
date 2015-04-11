@@ -1,6 +1,19 @@
 var maillists       = require('./users.data').data.maillists
 var emptyMongooseCohort = { maillists: [], aliases: [], engagement: { visits: [] } }
 
+// Cohorts
+//
+// Experts
+// 6 Months Domant
+// Domant contacted twice
+// Country (India)
+// Company
+// Has Paymethod
+// Has Tags
+// SiteNotifications
+// Visits
+// Engagement
+// Email Verified
 
 module.exports = {
 
@@ -75,13 +88,14 @@ module.exports = {
     if (this.user)
     {
       $callSvc(this.svc.getById, this)(this.user._id, (e,user) => {
-        var cohortLists = (user.cohort) ? user.cohort.maillists : []
+        var cohortLists = (user.cohort && user.cohort.maillists) ? user.cohort.maillists : []
         var FNAME = util.firstName(user.name)
         var LNAME = user.name.replace(FNAME+' ','')
 
         // $log('cohortLists'.magenta, cohortLists)
         Wrappers.MailChimp.sync(user.email, {FNAME,LNAME}, cohortLists, (e,syncMaillists) => {
-          // $log('syncMaillists'.yellow, syncMaillists)
+          if (e) return cb(e)
+          // $log('syncMaillists'.yellow, e, syncMaillists)
           // var subscribed = _.pluck(_.filter(r, (l) => l.subscribed),'name')
           // if (_.difference(currentLists,subscribed).length > 0 ||
             // _.difference(subscribed,currentLists).length > 0
@@ -91,10 +105,11 @@ module.exports = {
 
           var listsAndStatus = []
           for (var list of maillists) {
-            var subscribed = null
-            if (_.find(syncMaillists,(l)=>l==list.name)) subscribed = true
-            listsAndStatus.push(_.extend({subscribed},list))
+            // var subscribed = null
+            if (_.find(syncMaillists,(l)=>l==list.name)) list.subscribed = true
+            listsAndStatus.push(list)
           }
+          // $log('listsAndStatus'.yellow, listsAndStatus)
           cb(null, listsAndStatus)
         })
       })
