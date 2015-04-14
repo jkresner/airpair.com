@@ -8,6 +8,7 @@ export default initAPI(
   buyCredit: (req) => [req.body.total,req.body.coupon,req.body.payMethodId],
   buyDeal: (req) => [req.expertshaped,req.body.dealId,req.body.payMethodId],
   giveCredit: (req) => [req.body.toUser,req.body.total,req.body.source],
+  getAdminReports: (req) => [],
   getMyOrders: (req) => [],
   getMyOrdersWithCredit: (req) => [req.params.id],
   getOrdersForPayouts: (req) => [],
