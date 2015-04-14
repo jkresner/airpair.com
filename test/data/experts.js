@@ -1396,6 +1396,83 @@ module.exports = {
     "name" : "Ra'Shaun Stovall",
     "email" : "rashaunstovall@gmail.com",
     "username" : "snuggs"
+  },
+
+  rbig: {
+    "_id" : ObjectId("52854908dc3dd1020000001c"),
+    "__v" : 1,
+    "availability" : {
+        "status" : "busy",
+        "minRate" : 110,
+        "hours" : "1"
+    },
+    "bookMe" : {
+        "rate" : "200",
+        "rake" : "20",
+        "urlSlug" : "ryanbigg",
+        "urlBlog" : "/rails/expert-multi-tenancy-author-ryan-bigg",
+        "noIndex" : false,
+        "enabled" : true,
+        "coupons" : [
+            {
+                "code" : "airconf",
+                "rate" : "180"
+            }
+        ],
+        "creditRequestIds" : [
+            "53ce8a703441d602008095b6"
+        ]
+    },
+    "brief" : "I like helping newbies learn about Ruby and Rails, as well as solving complicated problems.",
+    "gmail" : "me@ryanbigg.com",
+    "pic" : "https://secure.gravatar.com/avatar/9a2a53db8e9b4476038c94a64b32833f",
+    "rate" : 230,
+    "tags" : [
+        {"_id" : "514825fa2a26ea020000002f","sort" : 0},
+        {"_id" : "514825fa2a26ea0200000031","sort" : 1},
+        {"_id" : "527ced4a66a6f999a465fb19","sort" : 2}
+    ],
+    "userId" : ObjectId("528548d866a6f999a465fb83"),
+    "activity" : [
+        {
+            "_id" : ObjectId("5512099d72254b1100c7b924"),
+            "action" : "update",
+            "utc" : ISODate("2015-03-25T01:04:29.544Z"),
+            "by" : {
+                "_id" : ObjectId("528548d866a6f999a465fb83"),
+                "name" : "Ryan Bigg"
+            }
+        }
+    ],
+    "lastTouch" : {
+        "action" : "update",
+        "utc" : ISODate("2015-03-25T01:04:29.544Z"),
+        "by" : {
+            "_id" : ObjectId("528548d866a6f999a465fb83"),
+            "name" : "Ryan Bigg"
+        }
+    },
+    "user" : {
+        "social" : {
+            "gp" : {
+                "_json" : {"picture" : "https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg"},"id" : "110053484251962074953"
+            },
+            "tw" : { "username" : "ryanbigg" },
+            "so" : { "reputation" : "56482", "link" : "15245/ryan-bigg"},
+            "gh" : { "username" : "radar", "_json" : { "followers" : 1075 } }
+        },
+        "localization" : {
+            "timezone" : "Australian Eastern Standard Time",
+            "location" : "Melbourne VIC, Australia"
+        },
+        "bio" : "Husband of @sharonbigg. Humble award winning super hero twice published author. Knowledgeable about Ruby and Rails and all that comes with it.",
+        "initials" : "RB",
+        "username" : "radar",
+        "emailVerified" : true,
+        "email" : "me@ryanbigg.com",
+        "name" : "Ryan Bigg",
+        "_id" : ObjectId("528548d866a6f999a465fb83")
+    }
   }
 
 }

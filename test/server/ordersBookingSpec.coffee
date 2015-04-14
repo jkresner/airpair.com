@@ -94,7 +94,6 @@ module.exports = -> describe "Booking: ".subspec, ->
           DONE()
 
 
-
   it 'Book 3 hour at 150 from 500 credit', itDone ->
     SETUP.addAndLoginLocalUserWithPayMethod 'ckni', (s) ->
       o = total: 500, payMethodId: s.primaryPayMethodId
@@ -278,6 +277,33 @@ module.exports = -> describe "Booking: ".subspec, ->
                             expect(rAdm[0].adm.booked).to.exist
                             expect(rAdm[0].status).to.equal('booked')
                             DONE()
+
+
+  it 'Book 2 hour with 10 welcome credit off request', itDone ->
+    SETUP.addAndLoginLocalUserWithPayMethod 'crus', (s) ->
+      d = tags: [data.tags.angular], type: 'resources', experience: 'proficient', brief: 'bah bah anglaur test yo4', hours: "1", time: 'rush'
+      POST '/requests', d, {}, (r0) ->
+        PUT "/requests/#{r0._id}", _.extend(r0,{budget: 300,title:'test'}), {}, (r) ->
+          LOGIN 'rbig', (sRbig) ->
+            GET "/requests/review/#{r._id}", {}, (rRbig) ->
+              reply = expertComment: "good", expertAvailability: "ok", expertStatus: "available"
+              expertId = rRbig.suggested[0].expert._id
+              PUT "/requests/#{r._id}/reply/#{expertId}", reply, {}, (r2) ->
+                LOGIN 'admin', (sadm) ->
+                  oCred = total: 10, toUser: s, source: 'Welcome'
+                  POST "/adm/billing/orders/credit", oCred, {}, (rOcred) ->
+                    LOGIN s.userKey, (sajac) ->
+                      GET "/requests/#{r._id}/book/#{expertId}", {}, (review) ->
+                        suggestion = _.find(review.suggested,(s)=> _.idsEqual(s.expert._id,expertId))
+                        airpair1 = time: moment().add(2, 'day'), minutes: 60, type: 'private', payMethodId: s.primaryPayMethodId, credit: 10, request: { requestId: review._id, suggestion }
+                        POST "/bookings/#{expertId}", airpair1, {}, (booking1) ->
+                          GET "/billing/orders", {}, (orders) ->
+                            expect(orders.length).to.equal(2)
+                            expect(orders[0].requestId).to.exist
+                            expect(orders[0].lineItems.length).to.equal(3) # credit + payg + airpair
+                            GET "/requests/#{orders[0].requestId}", {}, (request) ->
+                              expect(request.status).to.equal("booked")
+                              DONE()
 
 
   it 'Book 1 hour of Adam Bliss by Ari Lerner', itDone ->

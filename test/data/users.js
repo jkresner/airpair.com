@@ -2019,6 +2019,269 @@ module.exports = {
         "timezone" : "Eastern Daylight Time",
         "location" : "New York, État de New York, États-Unis"
     }
+  },
+
+  rbig: {
+    "_id" : ObjectId("528548d866a6f999a465fb83"),
+    "cohort" : {
+        "expert" : {
+            "_id" : "52854908dc3dd1020000001c",
+            "applied" : ISODate("2015-03-25T01:04:29.556Z")
+        },
+        "engagement" : {
+            "visit_first" : ISODate("2013-11-14T22:04:08.000Z"),
+            "visit_signup" : ISODate("2013-11-14T22:04:08.000Z"),
+            "visit_last" : ISODate("2015-03-25T00:51:00.276Z"),
+            "visits" : [
+                ISODate("2015-01-11T00:00:00.000Z")
+            ]
+        },
+        "aliases" : [
+            "RSKp8bpt8ncmhV83mQBY0F4fnpvXEKTI"
+        ],
+        "firstRequest" : {
+            "url" : "/review/54b20e9d5c5725090042d05f"
+        },
+        "maillists" : [
+            "AirPair Newsletter",
+            "AirPair Experts"
+        ]
+    },
+    "email" : "me@ryanbigg.com",
+    "name" : "Ryan Bigg",
+    "emailVerified" : true,
+    "__v" : 0,
+    "tags" : [],
+    "bookmarks" : [],
+    "local" : {
+        "changeEmailHash" : "$2a$08$hLzzWYA.Ruds5pwJIi6PMeTAnhLr8.NyvPMDg/XWOnRRkMrF/emEK",
+        "emailHashGenerated" : ISODate("2015-01-22T02:24:27.188Z")
+    },
+    "social" : {
+        "tw" : {
+            "token" : {
+                "attributes" : {
+                    "refreshToken" : "XevGfHZXg83qfNOljllLBNebCMuCxmPaH5p6ptMBPkWJD"
+                },
+                "token" : "14506011-WkRbR7T472zkmHcEM9FOo4Ujh0M94OsnHs5RTx2eZ"
+            },
+            "_accessLevel" : "read-write",
+            "_json" : {
+                "needs_phone_verification" : false,
+                "suspended" : false,
+                "notifications" : false,
+                "follow_request_sent" : false,
+                "following" : false,
+                "default_profile_image" : false,
+                "default_profile" : false,
+                "profile_use_background_image" : true,
+                "profile_text_color" : "000000",
+                "profile_sidebar_fill_color" : "00BBFF",
+                "profile_sidebar_border_color" : "121212",
+                "profile_link_color" : "000000",
+                "profile_image_url_https" : "https://pbs.twimg.com/profile_images/559192552033636352/-wJ0cXml_normal.jpeg",
+                "profile_image_url" : "http://pbs.twimg.com/profile_images/559192552033636352/-wJ0cXml_normal.jpeg",
+                "profile_background_tile" : true,
+                "profile_background_image_url_https" : "https://pbs.twimg.com/profile_background_images/2503404/Untitled.jpg",
+                "profile_background_image_url" : "http://pbs.twimg.com/profile_background_images/2503404/Untitled.jpg",
+                "profile_background_color" : "5D8A8C",
+                "is_translation_enabled" : true,
+                "is_translator" : false,
+                "contributors_enabled" : false,
+                "status" : {
+                    "lang" : "en",
+                    "retweeted" : false,
+                    "favorited" : false,
+                    "entities" : {
+                        "urls" : [],
+                        "user_mentions" : [
+                            {
+                                "indices" : [
+                                    0,
+                                    12
+                                ],
+                                "id_str" : "538600173",
+                                "id" : 538600173,
+                                "name" : "eliza sørensen",
+                                "screen_name" : "Zemmiph0bia"
+                            }
+                        ],
+                        "symbols" : [],
+                        "hashtags" : []
+                    },
+                    "favorite_count" : 0,
+                    "retweet_count" : 0,
+                    "contributors" : null,
+                    "place" : null,
+                    "coordinates" : null,
+                    "geo" : null,
+                    "in_reply_to_screen_name" : "Zemmiph0bia",
+                    "in_reply_to_user_id_str" : "538600173",
+                    "in_reply_to_user_id" : 538600173,
+                    "in_reply_to_status_id_str" : "580519102671880192",
+                    "in_reply_to_status_id" : 5.805191026718802e+17,
+                    "truncated" : false,
+                    "source" : "<a href=\"http://tapbots.com/software/tweetbot/mac\" rel=\"nofollow\">Tweetbot for Mac</a>",
+                    "text" : "@Zemmiph0bia Soup",
+                    "id_str" : "580521488316497921",
+                    "id" : 5.805214883164979e+17,
+                    "created_at" : "Wed Mar 25 00:08:03 +0000 2015"
+                },
+                "lang" : "en",
+                "statuses_count" : 48563,
+                "verified" : false,
+                "geo_enabled" : true,
+                "time_zone" : "Brisbane",
+                "utc_offset" : 36000,
+                "favourites_count" : 1041,
+                "created_at" : "Thu Apr 24 03:23:53 +0000 2008",
+                "listed_count" : 367,
+                "friends_count" : 390,
+                "followers_count" : 4448,
+                "protected" : false,
+                "entities" : {
+                    "description" : {
+                        "urls" : []
+                    },
+                    "url" : {
+                        "urls" : [
+                            {
+                                "indices" : [
+                                    0,
+                                    22
+                                ],
+                                "display_url" : "ryanbigg.com",
+                                "expanded_url" : "http://ryanbigg.com",
+                                "url" : "http://t.co/JugWe2pJqt"
+                            }
+                        ]
+                    }
+                },
+                "url" : "http://t.co/JugWe2pJqt",
+                "description" : "Husband of @sharonbigg. Humble award winning super hero twice published author. Employer of sarcasm and wit.",
+                "profile_location" : null,
+                "location" : "Melbourne, Australia",
+                "screen_name" : "ryanbigg",
+                "name" : "Ryan Bigg",
+                "id_str" : "14506011",
+                "id" : 14506011
+            },
+            "provider" : "twitter",
+            "photos" : [
+                {
+                    "value" : "https://pbs.twimg.com/profile_images/559192552033636352/-wJ0cXml_normal.jpeg"
+                }
+            ],
+            "displayName" : "Ryan Bigg",
+            "username" : "ryanbigg",
+            "id" : "14506011"
+        },
+        "so" : {
+            "token" : {
+                "attributes" : {
+                    "refreshToken" : null
+                },
+                "token" : "zkgCBLZABMqW3Eitu1IroQ))"
+            },
+            "id" : 15245,
+            "provider" : "stackexchange",
+            "account_id" : 8452,
+            "is_employee" : false,
+            "last_modified_date" : 1384135176,
+            "last_access_date" : 1384465014,
+            "reputation_change_year" : 14626,
+            "reputation_change_quarter" : 1917,
+            "reputation_change_month" : 480,
+            "reputation_change_week" : 210,
+            "reputation_change_day" : 10,
+            "reputation" : 56482,
+            "creation_date" : 1221636893,
+            "user_type" : "registered",
+            "user_id" : 15245,
+            "age" : 25,
+            "accept_rate" : 87,
+            "location" : "Melbourne, Australia",
+            "website_url" : "http://ryanbigg.com",
+            "link" : "http://stackoverflow.com/users/15245/ryan-bigg",
+            "display_name" : "Ryan Bigg",
+            "profile_image" : "https://www.gravatar.com/avatar/9a2a53db8e9b4476038c94a64b32833f?s=128&d=identicon&r=PG",
+            "badge_counts" : {
+                "bronze" : 147,
+                "silver" : 99,
+                "gold" : 12
+            }
+        },
+        "gh" : {
+            "provider" : "github",
+            "id" : 2687,
+            "displayName" : "Ryan Bigg",
+            "username" : "radar",
+            "profileUrl" : "https://github.com/radar",
+            "emails" : [
+                {
+                    "value" : "me@ryanbigg.com"
+                }
+            ],
+            "_json" : {
+                "login" : "radar",
+                "id" : 2687,
+                "avatar_url" : "https://avatars.githubusercontent.com/u/2687?v=3",
+                "gravatar_id" : "",
+                "url" : "https://api.github.com/users/radar",
+                "html_url" : "https://github.com/radar",
+                "followers_url" : "https://api.github.com/users/radar/followers",
+                "following_url" : "https://api.github.com/users/radar/following{/other_user}",
+                "gists_url" : "https://api.github.com/users/radar/gists{/gist_id}",
+                "starred_url" : "https://api.github.com/users/radar/starred{/owner}{/repo}",
+                "subscriptions_url" : "https://api.github.com/users/radar/subscriptions",
+                "organizations_url" : "https://api.github.com/users/radar/orgs",
+                "repos_url" : "https://api.github.com/users/radar/repos",
+                "events_url" : "https://api.github.com/users/radar/events{/privacy}",
+                "received_events_url" : "https://api.github.com/users/radar/received_events",
+                "type" : "User",
+                "site_admin" : false,
+                "name" : "Ryan Bigg",
+                "company" : "Bike Exchange",
+                "blog" : "http://ryanbigg.com",
+                "location" : "Melbourne, Australia",
+                "email" : "me@ryanbigg.com",
+                "hireable" : false,
+                "bio" : null,
+                "public_repos" : 199,
+                "public_gists" : 1227,
+                "followers" : 1075,
+                "following" : 4,
+                "created_at" : "2008-03-10T13:28:14Z",
+                "updated_at" : "2015-03-25T01:00:48Z",
+                "private_gists" : 416,
+                "total_private_repos" : 15,
+                "owned_private_repos" : 15,
+                "disk_usage" : 194062,
+                "collaborators" : 24,
+                "plan" : {
+                    "name" : "medium",
+                    "space" : 976562499,
+                    "collaborators" : 0,
+                    "private_repos" : 20
+                }
+            },
+            "token" : {
+                "token" : "75fac988e10803e6c13d307ec484a8177b13526b",
+                "attributes" : {
+                    "refreshToken" : null
+                }
+            }
+        }
+    },
+    "username" : "radar",
+    "roles" : [],
+    "siteNotifications" : [],
+    "bio" : "Humble award winning super hero twice published author. Knowledgeable about Ruby and Rails and all that comes with it.",
+    "initials" : "RB",
+    "localization" : {
+        "timezone" : "Australian Eastern Standard Time",
+        "location" : "Melbourne VIC, Australia"
+    }
 }
 
 }
