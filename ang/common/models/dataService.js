@@ -46,24 +46,16 @@ angular.module('APDataSvc', [])
 
 
     var billingFns = {
-      getPaymethods(success, error) {
-        $http.get(`${API}/billing/paymethods`).success(success).error(error)
-      },
+      getPaymethods: GET((d)=>`/billing/paymethods`),
       addPaymethod(data, success, error) {
         $http.post(`${API}/billing/paymethods`, data).success(success).error(error)
       },
-      getMyOrders(success) {
-        $http.get(`${API}/billing/orders`).success(success).error(lazyErrorCb)
-      },
-      getMyOrdersWithCredit(payMethodId, success) {
-        $http.get(`${API}/billing/orders/credit/${payMethodId}`).success(success).error(lazyErrorCb);
-      },
+      getMyOrders: GET((d)=>`/billing/orders`),
+      getMyOrdersWithCredit: GET((d)=>`/billing/orders/credit/${d.payMethodId}`),
       orderCredit(data, success, error) {
         $http.post(`${API}/billing/orders/credit`, data).success(success).error(error)
       },
-      bookExpert(data, success, error) {
-        $http.post(`${API}/bookings/${data.expertId}`, data).success(success).error(error)
-      }
+      bookExpert: POST((d)=>`/bookings/${d.expertId}`),
     }
 
     this.tags = {
@@ -109,9 +101,7 @@ angular.module('APDataSvc', [])
       replyByExpert(requestId, expertId, data, success, error) {
         $http.put(`${API}/requests/${requestId}/reply/${expertId}`, data).success(success).error(error)
       },
-      getRequestForBookingExpert(requestId, expertId, success, error) {
-        $http.get(`${API}/requests/${requestId}/book/${expertId}`).success(success).error(error)
-      },
+      getRequestForBookingExpert: GET((d)=>`/requests/${d.requestId}/book/${d.expertId}`),
       sendVerifyEmailByCustomer(data, success, error) {
         $http.put(`${API}/requests/${data._id}/verify`, {email:data.by.email}).success(success).error(error)
       }

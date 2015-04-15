@@ -1,11 +1,8 @@
-var resolver = require('./../common/routes/helpers.js').resolveHelper;
-
 angular.module("APPosts", ['APShare', 'APTagInput'])
 
 .config(function(apRouteProvider) {
 
-  var authd = resolver(['session']);
-
+  var authd = apRouteProvider.resolver(['session'])
   var route = apRouteProvider.route
   route('/posts/me', 'PostsList', require('./list.html'))
   route('/posts/new', 'PostInfo', require('./info.html'), { resolve: authd })
