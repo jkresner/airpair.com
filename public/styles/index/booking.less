@@ -1,0 +1,32 @@
+@import "ap.less";
+
+
+section#booking {
+  position:relative;
+
+  .row { width:100%;margin-top:50px }
+  hr.join {
+    top:20px;
+    left:5%;
+    z-index:-1;
+    width:90%;
+    position:absolute;
+    border:solid @lightblue 2px;
+  }
+
+  .time {
+    margin:auto;width:140px;height:140px;
+    text-align:center;border-radius:50%;
+    font-size:12px;
+    p { padding:30px 20px }
+    background-color:@lightorange;
+    color:white;
+  }
+
+  .customer { float:left;
+    b { position:absolute;left:100px;top:15px }
+  }
+  .expert { float:right;
+    b { position:absolute;right:120px;top:15px }
+  }
+}

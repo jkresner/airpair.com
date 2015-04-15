@@ -6,6 +6,7 @@ var PayMethodSvc            = require('./paymethods')
 var RequestsSvc             = require('./requests')
 var Data                    = require('./orders.data')
 var OrderUtil               = require('../../shared/orders.js')
+var DateTime                = util.datetime
 var {base}                  = Data
 var svc                     = new Svc(Order, logging)
 var ObjectId                = require('mongoose').Types.ObjectId
@@ -58,7 +59,65 @@ var get = {
       // console.log('expert.q', q)
       svc.searchMany(q, {}, Data.select.forPayout(cb))
     })
-  }
+  },
+  getAdminReports(cb) {
+    var opts = { fields: Data.select.listAdminReport, options: Data.opts.orderByNewest }
+    var end = moment().format("x")
+    var startOfWeek = moment().startOf('week').add(-1, 'day')
+    var start = moment(startOfWeek).add(-28, 'day')
+    var q = Data.query.inRange(start.format("x"),end)
+
+    // $log('q', start.toDate(), end, startOfWeek.toDate())
+    svc.searchMany(q, opts, (e,r)=>{
+      var zeroOrdersCount=0,total=0,profit=0,count=0,cust=0
+      var customers = {}
+      var wks = {}
+      var bucket = 0
+      for (var o of r) {
+        if (o.total == 0)
+        {
+          zeroOrdersCount++
+        }
+        else
+        {
+          count++
+          total = total+o.total
+          profit = profit+o.profit
+          if (!customers[o.by.email]) {
+            cust++
+            customers[o.by.email] = {total: o.total, count: 1}
+          }
+          else {
+            customers[o.by.email].total+=o.total
+            customers[o.by.email].count++
+          }
+
+          if (moment(o.utc).isBefore(startOfWeek))
+          {
+            bucket++
+            startOfWeek = startOfWeek.add(-7,'day')
+          }
+          var bk = bucket.toString()
+
+          // $log('bucket', moment(o.utc).isAfter(startOfWeek), bk.magenta, o.utc, startOfWeek.toString().blue)
+          // $log('cust', o.by)
+          if (!wks[bk]) wks[bk] = { total:0,profit:0,count:0,customers:{},cust:0 }
+          wks[bk].count ++
+          wks[bk].total = wks[bucket].total+o.total
+          wks[bk].profit = wks[bucket].profit+o.profit
+          if (!wks[bk].customers[o.by.email]) {
+            wks[bk].cust++
+            wks[bk].customers[o.by.email] = {total: o.total, count: 1}
+          }
+          else {
+            wks[bk].customers[o.by.email].total+=o.total
+            wks[bk].customers[o.by.email].count++
+          }
+        }
+      }
+      cb(null, {wkRev: {zeroOrdersCount,cust,count,total,profit,wks}})
+    })
+  },
 }
 
 
@@ -274,7 +333,7 @@ function bookUsingDeal(expert, time, minutes, type, dealId, cb)
   })
 }
 
-function bookUsingCredit(expert, minutes, total, lineItems, expectedCredit, payMethodId, requestId, cb)
+function bookUsingCredit(expert, minutes, total, lineItems, expectedCredit, payMethodId, request, cb)
 {
   get.getMyOrdersWithCredit.call(this, payMethodId, (e, orders) => {
     var lines = OrderUtil.linesWithCredit(orders)
@@ -311,9 +370,11 @@ function bookUsingCredit(expert, minutes, total, lineItems, expectedCredit, payM
     ordersToUpdate = _.map(ordersToUpdate, (id) => _.find(orders,(o)=> _.idsEqual(o._id, id) ) )
 
     // console.log('bookUsingCredit', lineItems)
+    var requestId = (request) ? request._id : null
     makeOrder(this.user, lineItems, payMethodId, null, requestId, null, cb, (e, order) => {
 
       chargeAndTrackOrder(order, cb, (e,o) => {
+        if (request) $callSvc(RequestsSvc.updateWithBookingByCustomer,this)(request, o, (e,r) => {})
         // console.log('inserting cred redeemed order', order.total, order._id, order.userId)
         svc.updateAndInsertOneBulk(ordersToUpdate, o, (e,r) => cb(e,o))
       })
@@ -325,18 +386,17 @@ function bookUsingCredit(expert, minutes, total, lineItems, expectedCredit, payM
 
 function _createBookingOrder(expert, time, minutes, type, credit, payMethodId, request, lineItems, total, cb)
 {
-  var requestId = (request) ? request._id : null
   if (credit && credit > 0)
   {
-    bookUsingCredit.call(this, expert, minutes, total, lineItems, credit, payMethodId, requestId, cb)
+    bookUsingCredit.call(this, expert, minutes, total, lineItems, credit, payMethodId, request, cb)
   }
   else
   {
+    var requestId = (request) ? request._id : null
     lineItems.unshift(Lines.payg(total))
     makeOrder(this.user, lineItems, payMethodId, null, requestId, null, cb, (e, order) => {
       chargeAndTrackOrder(order, cb, (e,o) => {
-        if (request)
-          RequestsSvc.updateWithBookingByCustomer.call(this, request, o, () => {})
+        if (request) $callSvc(RequestsSvc.updateWithBookingByCustomer,this)(request, o, (e,r) => {})
         svc.create(o, cb)
       })
     })

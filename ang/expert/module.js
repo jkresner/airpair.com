@@ -71,7 +71,6 @@ angular.module("APExpert", ['APTagInput','APPayPal'])
 
   $scope.collectPaymentDeferred = () => {
     var deferred = $q.defer()
-    console.log('*****clicked', $scope.data)
     DataService.billing.payoutOrders($scope.data, (r) => {
       window.location = window.location
       deferred.resolve(r)
