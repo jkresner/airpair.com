@@ -219,7 +219,7 @@ var data = {
     active: {
       //
       // status: { $in: ['received','waiting','review','scheduled','consumed'] }
-      'budget' : { '$exists': true }, 'adm.active': true
+      'budget' : { '$exists': true }, 'adm.active': true, 'adm.submitted': { '$exists': true }
     },
 
     '2015': {

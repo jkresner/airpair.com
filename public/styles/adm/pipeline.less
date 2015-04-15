@@ -21,7 +21,14 @@
 
 
 #pipeline {
+
+  .stale { background:#FFB2B2!important; }
+  .nonadmtouch { background:#E6F0E6; }
+  .threehr { background:#FFE6E6; }
+
   padding-top:20px;
+
+  .menu { float:right;width:150px;background:white;padding:15px }
 
   table {
     width:85%;display:inline-block;
@@ -70,6 +77,20 @@
     display:block;
     font-size:9px;
     span { font-size:9px;font-weight:normal;display:block; }
+  }
+
+  @media only screen and (max-width:900px) {
+    .menu { display:none }
+    table {
+      width:100%;
+      a { font-size:18px;font-weight:bold;text-transform:uppercase; }
+    }
+    .info { width:58%;padding-top:4px }
+    .nonadm { width:58%;padding-top:4px;time { height:46px } }
+    .cust { width:58%;a { font-size:11px } }
+    .adm { width:38%;float:right }
+    .sug { width:38%;float:right }
+    .tags { width:38%;float:right }
   }
 }
 

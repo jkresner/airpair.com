@@ -23,19 +23,18 @@
     </div>
 
     <b>{{request.by.name}}</b> : {{request.by.email}}
-
+    <div>{{user.localization.timezone}}|{{user.localization.location}}</div>
 
     <div class="has" ng-repeat="pm in paymethods"><b>{{pm.name}}</b></div>
     <div ng-if="!paymethods || paymethods.length == 0" class="nopaymethods"><b>No pay methods</b></div>
 
-    <div>
+    <div ng-if="user">
       <span class="has" ng-if="user.emailVerified">Email Verified</span>
       <span ng-if="!user.emailVerified" class="nopaymethods"><b>Email not verified</b></span>
       (<span class="has" ng-if="user.googleId">G+ {{user.googleId}}</span><span ng-if="!user.googleId">No google login</span>)
-
     </div>
 
-    <div class="cohort" ng-if="request._id">
+    <div class="cohort" ng-if="request._id && user">
       <div><label>Trust</label> Level {{meta.trustedLevel}}</div>
       <div><label>First seen</label> {{user.cohort.engagement.visit_first | locaTime : 'DD MMM HH:mm:ss' }} <span>{{user.cohort.engagement.visit_first | agoTime}}</span>
       </div>
@@ -184,6 +183,7 @@
           <label><a href="/adm/experts/edit/{{s.expert._id}}" target="_blank">{{s.expert.name}}</a></label>
           <b>{{s.expert.email}}</b>
           <span class="{{s.expertStatus}}">{{s.expertStatus}}</span>
+          <div>{{s.matchedBy.type}} match::<span class="{{s.matchedBy.initials}}"> {{s.matchedBy.initials}}</span> {{ s._id | objectIdToAgoTime }}</div>
 
           <a ng-click="removeSuggestion(s.expert._id)" class="delete">x</a>
         </div>
