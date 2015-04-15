@@ -9,5 +9,4 @@ module.exports = -> describe "Admin".subspec, ->
       GET "/adm/orders/reports", {}, (r) ->
         expect(r.wkRev).to.exist
         expect(r.wkRev.count>0).to.be.true
-        $log('r.wkRev', r.wkRev)
         DONE()
