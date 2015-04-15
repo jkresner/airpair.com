@@ -1,42 +1,60 @@
 <section id="booking" ng-if="booking && booking.participants">
 
-<h3 style="border-bottom: 1px solid gray">{{booking.gcal.summary}}</h3>
+<!-- <h3 style="border-bottom: 1px solid gray">{{booking.gcal.summary}}</h3> -->
+
+
+<div class="row">
+
+  <div class="expert">
+    <div class="participant" ng-repeat="p in experts">
+      <b>{{p.info.name}} </b>
+      <img ng-src="{{p.info.avatar}}" class="user">
+      <!-- <span>{{p.info.email}} </span> -->
+    </div>
+  </div>
+
+  <div class="customer">
+    <div class="participant" ng-repeat="p in customers">
+      <img ng-src="{{p.info.avatar}}" class="user">
+      <b>{{p.info.name}} </b>
+      <!-- <span>{{p.info.email}} </span> -->
+    </div>
+  </div>
+
+  <div class="time">
+    <p ng-if="booking.status == 'pending'">
+      You will shortly be invited into chat to schedule the time of your session
+    </p>
+    <p ng-if="booking.status == 'confirmed'">
+      {{ booking.datetime | date:'medium'}}
+      <br />{{booking.minutes}} minutes
+    </p>
+  </div>
+
+
+
+
+  <hr class="join" />
+</div>
+
 
 <div class="row">
 
   <div class="col-md-4">
     <h3>Details</h3>
-    <div>{{ booking.datetime | date:'medium'}}</div>
     <div>{{booking.minutes}} minutes </div>
-    <div>Privacy: {{booking.type | uppercase}} </div>
+    <div>Booking type: {{booking.type | uppercase}} </div>
+<!--     <div>{{ booking.datetime | date:'medium'}}</div> -->
     <!-- <div>{{booking.status}}</div> -->
   </div>
 
-  <div class="col-md-3">
-    <div class="customer">
-      <h3>Customer</h3>
-      <div class="participant" ng-repeat="p in customers">
-        <img ng-src="{{p.info.avatar}}" class="user">
-        <span>{{p.info.name}} </span>
-        <span>{{p.info.email}} </span>
-      </div>
-    </div>
-
-    <div class="expert">
-      <h3>Expert</h3>
-      <div class="participant" ng-repeat="p in experts">
-        <img ng-src="{{p.info.avatar}}" class="user">
-        <span>{{p.info.name}} </span>
-        <span>{{p.info.email}} </span>
-      </div>
-    </div>
-  </div>
 
   <div class="col-md-4">
     <div class="recordings">
-      <h3>Hangout</h3>
-      <div ng-if="hangoutState.none">
-        No Hangout. Come back at {{ booking.datetime | date:'medium'}}
+      <div ng-if="hangoutState.none && booking.status == 'confirmed'">
+        <h3>Hangout</h3>
+        No Hangout yet.
+        <br />Come back at {{ booking.datetime | date:'medium'}}
       </div>
       <div ng-if="hangoutState.inProgress">
         <a href="{{ booking.recordings[booking.recordings.length-1].hangoutUrl }}">Join Hangout</a>
