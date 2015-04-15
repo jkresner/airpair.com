@@ -74,6 +74,15 @@ var get = {
     svc.search(term, searchFields, 5, select.search, and, selectCB.migrateSearch(cb))
   },
 
+  getByUsername(term, cb) {
+    var q = {'$or':[
+      {'user.username':term},
+      {'username':term},
+      {'bookme.urlSlug':term}
+    ]}
+    svc.searchOne(q, { fields: select.me }, selectCB.migrateInflate(cb))
+  },
+
   getNewForAdmin(cb) {
     svc.searchMany({}, options.newest100, selectCB.inflateList(cb))
   },

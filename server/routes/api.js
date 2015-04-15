@@ -175,6 +175,7 @@ module.exports = function(app) {
     .get('/posts', API.Posts.getNewFoAdmin)
     .get('/posts/all', API.Posts.getAllForAdmin)
     .get('/orders/:start/:end/:userId?', API.Orders.getByQueryForAdmin)
+    .get('/orders/reports', API.Orders.getAdminReports)
     .get('/bookings/:start/:end/:userId?', API.Bookings.getByQueryForAdmin)
     .get('/bookings/:id', API.Bookings.getByIdForAdmin)
     .put('/bookings/:booking/recording', API.Bookings.addYouTubeData)

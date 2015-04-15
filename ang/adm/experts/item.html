@@ -1,9 +1,9 @@
 <section id="expert" ng-if="data._id">
 
 
-<section class="a user">
+<section class="a user" ng-if="data">
 
-  <h3 class="underline" ng-if="data"><a href="/adm/experts">Experts</a> > {{ data.name || data.user.name }}
+  <h3 class="underline"><a href="/adm/experts">Experts</a> > {{ data.name || data.user.name }}
   <b>
     {{data.lastTouch.action}}
     <time>{{ data.lastTouch.utc | agoTime }}</time>
@@ -13,10 +13,10 @@
   <div class="display-group" ng-if="data.user">
     <img class="pic" ng-src="{{data.pic}}">
     <social-links profile='data.user.social'></social-links>
-    <user-info info="data.user"></user-info>
+    <div user-info info="data.user"></div>
   </div>
   <div class="display-group" ng-if="!data.user">
-    <user-info info="data"></user-info>
+    <div user-info info="data"></div>
     <p class="text-warning">Not upgraded to v1</p>
   </div>
 

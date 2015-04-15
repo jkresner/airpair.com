@@ -236,9 +236,9 @@ module.exports = -> describe "Admin".subspec, ->
         expect(r1.status).to.equal('waiting')
         expect(r1.adm.received).to.exist
         expect(r1.adm.reviewable).to.be.undefined
-        LOGIN 'snug', (ssnug) ->
+        LOGIN phlfKey, (sphilf) ->
           reply = expertComment: "I will take it", expertAvailability: "Realest time", expertStatus: "available"
-          PUT "/requests/#{r1._id}/reply/#{data.experts.snug._id}", reply, {}, (r2) ->
+          PUT "/requests/#{r1._id}/reply/#{phlfExp._id}", reply, {}, (r2) ->
             LOGIN 'admin', ->
               GET "/adm/requests/#{r1._id}", {}, (r3) ->
                 expect(r3.adm.received).to.exist

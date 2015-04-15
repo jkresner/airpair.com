@@ -131,4 +131,8 @@ angular.module('APSvcAdmin', [])
       addYouTubeData: PUT((d)=>`/adm/bookings/${d._id}/recording`),
       giveCredit: POST((d)=>`/adm/billing/orders/credit`)
     }
+
+    this.reports = {
+      getOrdersReport: GET((d)=>`/adm//orders/reports`)
+    }
   })

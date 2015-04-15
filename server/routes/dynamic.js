@@ -1,7 +1,8 @@
-import WorkshopsAPI from '../api/workshops'
-import PostsAPI from '../api/posts'
-import TagsAPI from '../api/tags'
-import RequestsApi from '../api/requests'
+import WorkshopsAPI                 from '../api/workshops'
+import PostsAPI                     from '../api/posts'
+import TagsAPI                      from '../api/tags'
+import RequestsApi                  from '../api/requests'
+import ExpertsApi                   from '../api/experts'
 var {trackView} = require('../middleware/analytics')
 var {authd} = require('../middleware/auth')
 var {populateUser,populateTagPage} = require('../middleware/data')
@@ -60,6 +61,16 @@ module.exports = function(app) {
     .get('/:tag/posts/:post',
       trackView('post'),
       app.renderHbsViewData('post', null, (req, cb) => cb(null, req.post)))
+
+
+    .get('/book/:username', function(req, res, next) {
+        $callSvc(ExpertsApi.svc.getByUsername,req)(req.params.username,(e,r)=>{
+          if (!r) return res.redirect('/')
+          r.meta = { canonical: `https://www.airpair.com/book/${r.username}` }
+          req.expert = r
+          next()
+        })},
+        app.renderHbsViewData('book', null, (req, cb) => cb(null, req.expert)))
 
 
     .get('/blog',

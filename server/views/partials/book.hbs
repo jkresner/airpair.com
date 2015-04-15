@@ -1,0 +1,43 @@
+
+
+{{#if @root.session._id }}
+  <book-expert expert="expert"></book-expert>
+{{else}}
+
+<header>
+  <ol class="entry-meta breadcrumb">
+    <li><a href="/experts" target="_self">Experts</a></li>
+    <li class="current">{{name}}</li>
+  </ol>
+</header>
+
+  <section id="book">
+
+  <section id="schedule">
+
+    <form id="bookForm" name="bookForm">
+      <h2 class="ng-binding">Book Todd Motto</h2>
+      <hr>
+
+      <p>Please login to continue</p>
+
+    </form>
+
+    <section class="bookSummary">
+      <h3>Booking</h3>
+      <img src="{{avatar}}" class="user" />
+      <hr>
+      <a href="/login?returnTo=/book/{{username}}" class="btn">Login</a>
+    </section>
+
+  </section>
+
+</section>
+
+{{/if}}
+
+<script type="text/javascript">
+
+  var expert = {{ JSON @root.viewData }};
+
+</script>

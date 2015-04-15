@@ -34,6 +34,14 @@ var select = {
     'lineItems.info':1,
     'lineItems.owed':1,
   },
+  listAdminReport: {
+    '_id': 1,
+    'userId': 1,
+    'by': 1,
+    'utc': 1,
+    'total': 1,
+    'profit':1,
+  },
   forPayout(cb) {
     return (e, r) => {
       var selected = []
