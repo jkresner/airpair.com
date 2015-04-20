@@ -37,6 +37,18 @@ matchmaking = ->
         DONE()
 
 
+  it 'Rank by c# and C++', itDone ->
+    SETUP.addAndLoginLocalUser 'mrik', (s) ->
+      cPPQuery = 'tags=c%2B%2B'
+      GET "/experts/mojo/rank?#{cPPQuery}", {}, (experts) ->
+        expect(experts.length).to.equal(1)
+        cShaprQuery = 'tags=c%23'
+        GET "/experts/mojo/rank?#{cShaprQuery}", {}, (experts2) ->
+          expect(experts2.length).to.equal(1)
+          DONE()
+
+
+
 module.exports = ->
 
   before (done) ->
