@@ -7,6 +7,11 @@
 
 <section ng-if="r" id="review" class="{{reviewClass}}">
 
+  <section ng-if="isCustomer && !session.localization" class="localization">
+    <p style="padding:20px 10px">Please provide your location / timezone to help with scheduling</p>
+    <location-input data="data" on-select="updateLocation"></location-input>
+  </section>
+
   <section id="info">
     <h5>{{ r.title || 'Spec' }}</h5>
     <request-review-summary></request-review-summary>

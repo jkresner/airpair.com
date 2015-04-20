@@ -34,6 +34,10 @@ spec = (ctx, name, path, only) ->
 spec.only = (ctx, name, path) ->
   spec(ctx,name,path,true)
 
+
+# config.mongoUri = "mongodb://localhost/airpair_dev"
+
+
 describe 'Server: '.appload, ->
 
   @timeout(4000)
@@ -80,7 +84,8 @@ describe 'Server: '.appload, ->
   spec @, 'Orders'
   spec @, 'Orders', 'ordersBooking'
   spec @, 'Orders', 'ordersDeals'
-  # # spec @, 'Posts'
+  spec @, 'Orders', 'ordersAdmin'
+  # spec @, 'Posts'
   spec @, 'Post Reviews', 'postsReviews'
   spec @, 'Bookings'
   spec @, 'Bookings', 'bookingsAdmin'
