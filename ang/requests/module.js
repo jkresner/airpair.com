@@ -93,7 +93,7 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
 
 
 
-.controller('ReviewCtrl', function($scope, $routeParams, $location, DataService, Shared, ServerErrors) {
+.controller('ReviewCtrl', function($scope, $routeParams, $location, DataService, Shared, ServerErrors, SessionService) {
   $scope.requestId = $routeParams.id;
 
   if (!$scope.requestId) return $location.path('/')
@@ -122,6 +122,11 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
         $scope.reviewClass = 'verifyEmail'
       // else (!$scope.session.primaryPayMethodId)
         // $scope.reviewClass = 'addPayMethod'
+
+      $scope.data = {} // to collect location / timezone
+      $scope.updateLocation = $scope.updateLocation = (locationData) => {
+        SessionService.changeLocationTimezone(locationData, (r)=> {})
+      }
     }
     else
     {
