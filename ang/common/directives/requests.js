@@ -20,8 +20,7 @@ angular.module("APRequestDirectives", [])
 .factory('StepHelper', function StepHelper(DataService) {
 
   var getPayMethods = function(scope) {
-    DataService.billing.getPaymethods((r) => {
-      // console.log('getPayMethods', r)
+    DataService.billing.getPaymethods({},(r) => {
       if (r.btoken) {
         scope.paymethods = null
         scope.btoken = r.btoken

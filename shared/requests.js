@@ -67,7 +67,7 @@ var reqFns = {
     var q = 'tags='
     if (!r.tags || r.tags.length == 0) return null
     r.tags.forEach((tag)=>{
-      q = q+tag.slug+','
+      q = q+encodeURIComponent(tag.slug)+','
     })
     q = q.replace(new RegExp(',$'), '')
     if (r.suggested && r.suggested.length > 0)
