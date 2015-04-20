@@ -147,7 +147,7 @@ function localSignup(email, password, name, errorCB, done) {
       upsert.local.passwordHashGenerated = new Date
     }
 
-    var mailFn = 'signupHomeWelcomeEmail'
+    var mailFn = null
     if (password == 'home')
       mailFn = 'signupHomeWelcomeEmail'
     if (password == 'postcomp')
@@ -158,7 +158,7 @@ function localSignup(email, password, name, errorCB, done) {
     }
 
     upsertSmart.call(this, upsert, null, (e,r) => {
-      if (!e)
+      if (!e && mailFn)
         mailman[mailFn](r, upsert.local.changePasswordHash)
 
       done(e,r)

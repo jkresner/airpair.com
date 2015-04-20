@@ -66,7 +66,7 @@ module.exports = function(app) {
     .get('/book/:username', function(req, res, next) {
         $callSvc(ExpertsApi.svc.getByUsername,req)(req.params.username,(e,r)=>{
           if (!r) return res.redirect('/')
-          r.meta = { canonical: `https://www.airpair.com/book/${r.username}` }
+          r.meta = { canonical: `https://www.airpair.com/book/${r.username}`, title: r.name }
           req.expert = r
           next()
         })},

@@ -77,7 +77,11 @@ var get = {
     })
   },
   getUserPaymethodsByAdmin(userId, cb) {
-    get.getMyPaymethods.call({user: {_id:userId}}, cb)
+    $callSvc(get.getMyPaymethods,{user: {_id:userId}})((e,r)=>{
+      if (e) return cb(e)
+      if (r.btoken) return cb(null,[])
+      else cb(null,r)
+    })
   },
   hasPaymethods(userId, cb) {
     CompanysSvc.getUsersCompany.call({user: {_id:userId}}, (e, company) => {
