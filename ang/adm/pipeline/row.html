@@ -1,5 +1,5 @@
 <td>
-  <span>
+  <span class="info">
     <a href="/adm/pipeline/{{r._id}}">
       {{r.status}}
     </a>
@@ -19,21 +19,20 @@
     </time>
   </span>
   <span class="nonadm">
-    <figure>{{r.lastTouch.by.name}}</figure>
-    <time>
+    <figure>{{r.lastTouch.by.name}}</figure><time>
       <label>{{r.lastTouch.action}}</label>
       {{r.lastTouch.utc | locaTime : 'MMM DD HH:mm' }}
       <span>{{r.lastTouch.utc | agoTime }}</span>
     </time>
   </span>
-  <div>
+  <div class="tags">
     <i ng-repeat="t in r.tags">{{t.slug}}</i>
   </div>
   <div class="cust">
     <img ng-src="{{r.by.avatar}}?s=30">
     <a href="/adm/users/{{r.by._id}}" ng-bind-html="r.by.name | addNameBreak" target="_blank"></a>
   </div>
-  <div>
+  <div class="sug">
     <ul>
       <li ng-repeat="s in r.suggested">
         <img ng-src="{{s.expert.avatar}}?s=20" />

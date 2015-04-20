@@ -113,9 +113,7 @@ angular.module('APSvcAdmin', [])
     })
 
     var billingFns = {
-      getUserPaymethods(_id, success, error) {
-        $http.get(`${APIAdm}/billing/paymethods/${_id}`).success(success).error(error)
-      },
+      getUserPaymethods: GET((d)=>`/adm/billing/paymethods/${d._id}`)
     }
 
     this.billing = billingFns

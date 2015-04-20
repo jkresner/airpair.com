@@ -20,13 +20,14 @@ angular.module("ADMPipeline", ["APRequestDirectives","APProfileDirectives"])
   $scope.composeGeneric = false
 
   var setScope = (r) => {
-    if (!$scope.user || !$scope.paymethods) return
-
+    if (!$scope.paymethods) return
     var meta = RequestsUtil.calcMeta(r)
     meta.noPaymethod = $scope.paymethods.length < 1
-    meta.trustedLevel = ($scope.user.emailVerified) ?  1 : 0
     meta.trustedLevel += (meta.noPaymethod) ? 0 : 1
-    meta.trustedLevel += ($scope.user.googleId) ? 1 : 0
+    if ($scope.user) {
+      meta.trustedLevel = ($scope.user.emailVerified) ?  1 : 0
+      meta.trustedLevel += ($scope.user.googleId) ? 1 : 0
+    }
     $scope.meta = meta
     $scope.request = r
     $scope.composeGeneric = false
@@ -44,9 +45,8 @@ angular.module("ADMPipeline", ["APRequestDirectives","APProfileDirectives"])
   AdmDataService.pipeline.getRequest({_id}, function (r) {
     $scope.user = r.user
     $scope.farmTweet = RequestsUtil.buildDefaultFarmTweet(r)
-
-    AdmDataService.billing.getUserPaymethods(r.userId, function (pms) {
-      $scope.paymethods = (pms.btoken) ? [] : pms;
+    AdmDataService.billing.getUserPaymethods({_id:r.userId}, function (pms) {
+      $scope.paymethods = pms
       setScope(r)
     })
     AdmDataService.getUsersViews({_id:r.userId}, function (views) {
@@ -54,9 +54,8 @@ angular.module("ADMPipeline", ["APRequestDirectives","APProfileDirectives"])
     })
 
     var orderQuery = { user:r.user, start: DateTime.dawn(), end: moment() }
-    AdmDataService.bookings.getOrders(orderQuery, (orders) =>
-      $scope.orders = orders
-    )
+    if (r.user) //slight chance account is deleted...
+      AdmDataService.bookings.getOrders(orderQuery, (orders) =>$scope.orders = orders)
 
     AdmDataService.pipeline.getUsersRequests({userId:r.userId}, (requests) => {
       var thisRequest = _.find(requests,(rr)=>rr._id==r._id)

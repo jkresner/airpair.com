@@ -40,7 +40,7 @@ section#index {
 }
 
 section#auth {
-  padding-top:40px;
+  padding-top:30px;
   text-align:center;
   width:100%;
 
@@ -66,16 +66,28 @@ section#auth {
     // label { display:none }
   }
 
+  .google {
+    .googInfo { font-size:12px;margin:20px 0 0 0 }
+  }
+
   .local {
     form { margin-bottom:0 }
     .alert-danger {
       padding-bottom:10px;max-width:300px;margin:15px auto 0px auto
     }
+
+    .password {
+      margin-top:10px
+    }
+
+    .new {
+      p { margin-bottom:0 }
+      padding-top:5px;
+    }
+
   }
 
   p.help-text { margin:20px 0 0 0 }
-
-
 
   .reset {
     .alert-success {
@@ -89,9 +101,10 @@ section#auth {
   @media only screen and (max-width:900px) {
     .option {
       width:300px;
-      margin:10px 4px;
+      margin:10px auto;
       min-height:280px;
-      h2 { font-size:26px; }
+      h2 { font-size:24px; }
+      p.googInfo { text-align:center;margin:20px auto }
     }
   }
 
@@ -100,16 +113,18 @@ section#auth {
     h3 { font-weight:bold }
     p { max-width:240px;margin:auto }
 
-    .choice { margin:auto }
+    .choice { margin-left:-5px; }
 
     text-align:center;
     .option {
       margin:10px auto 0px auto;
       min-height:200px;
-      width:96%;
+      width:94%;
       display:block;
+      padding:15px 5px;
     }
 
+    .btn { font-size:14px }
     p.help-text { display:none }
   }
 

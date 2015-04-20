@@ -194,7 +194,6 @@ angular.module("APBilling", ['ngRoute', 'APPaymentDirectives', 'APBillingDirecti
         else {
           $scope.booking.payMethodId = r[0]._id.toString()
           $scope.paymethods = _.map(r,(p)=>{return {name:p.name,_id:p._id.toString()} })
-          console.log('paymethods', $scope.paymethods)
         }
       })
 
@@ -203,7 +202,6 @@ angular.module("APBilling", ['ngRoute', 'APPaymentDirectives', 'APBillingDirecti
 
       $scope.submitDeferred = () => {
         var deferred = $q.defer()
-        console.log('booking', $scope.booking)
         DataService.billing.bookExpert($scope.booking, (r) => {
           $location.path(`/bookings/${r._id}`)
           deferred.resolve(r)
