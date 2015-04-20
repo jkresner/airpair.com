@@ -19,6 +19,8 @@ var validation = {
     var tagIds = []
     for (var slug of query.tags.split(','))
     {
+      if (slug.indexOf('#'))
+        slug = slug.replace('#','%23')
       var tag = cache.tagBySlug(slug)
       if (!tag) return `Tag ${slug} not valid to query`
       tagIds.push(tag._id.toString())

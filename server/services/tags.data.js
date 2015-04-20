@@ -44,6 +44,8 @@ var data = {
   },
 
   data: {
+    encodes: ['c%2B%2B','c%23','f%23'],
+
     angularPage(tag, posts, workshops) {
       var d = {
         tag,
