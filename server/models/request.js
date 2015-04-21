@@ -137,9 +137,6 @@ var Request = new Schema({
 
   marketingTags:    { type: [{}], default: [] },
 
-  // v0 used for expert stats need to migrate to booking
-  calls:            [{}]
-
 })
 
 module.exports = mongoose.model('Request', Request)
@@ -151,3 +148,8 @@ module.exports = mongoose.model('Request', Request)
 // calls:            [Call]
 // incompleteDetail: String
 // pricing:          { required: true, type: String, enum: VALID_CALL_TYPES   }
+
+
+// 2015.04.21
+// db.requests.update({},{ $unset: { calls : "" } },{ 'multi': true })
+
