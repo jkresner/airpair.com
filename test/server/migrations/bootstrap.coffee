@@ -19,7 +19,6 @@ colors.setTheme({
 
 global.config =
   mongoUri: "mongodb://localhost/airpair_dev"
-  # mongoUri: "mongodb://heroku:PQDUBfuFXxtCHT-LpObnI_pS_nx7bEzs2vGtbP3pqxhZUeMGo1p7WXwAYLK9RqhiqD6ftG9-zmQ1CVWnWqeTEQ@candidate.14.mongolayer.com:10507/app33053049"
   log: { auth: false }
 
 
@@ -42,9 +41,15 @@ describe 'Migration: '.spec, ->
         global.Experts = Experts
         db.collection 'users', (err, Users) ->
           global.Users = Users
-          done()
+          db.collection 'bookings', (err, Bookings) ->
+            global.Bookings = Bookings
+            db.collection 'orders', (err, Orders) ->
+              global.Orders = Orders
+              db.collection 'requests', (err, Requests) ->
+                global.Requests = Requests
+                done()
 
 
-  it.kip '20150409experts', (done) ->
-    require('./20150409experts')(done)
+  it '20150421experts', (done) ->
+    require('./20150421experts')(done)
     expect(true).to.be.true

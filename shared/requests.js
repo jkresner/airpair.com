@@ -27,7 +27,7 @@ var reqFns = {
       moreThan2HourOld: (submitted) ? submitted.isBefore(moment().add('-2','hours')) : submitted,
       moreThan1DayOld: (submitted) ? submitted.isBefore(moment().add('-1','days')) : submitted,
       moreThan2DayOld: (submitted) ? submitted.isBefore(moment().add('-2','days')) : submitted,
-      shortBrief: r.brief.length < 100,
+      shortBrief: !r.breif || r.brief.length < 100,
       okToDelete: r.suggested.length == 0
     }
     if (submitted)

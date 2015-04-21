@@ -19,8 +19,13 @@ var get = {
       if (e || !r) return cb(e,r)
       r = select.byView(r, 'admin')
       User.findOne({_id:r.userId}, (ee,user) => {
+        if (ee || !user) return cb(ee,r)
         r.user = user
-        return cb(ee,r)
+        get.getByUserIdForAdmin(user._id, (eee,requests) => {
+          var thisR = _.find(requests,(rr)=>_.idsEqual(rr._id,id))
+          r.prevs = _.without(requests,thisR)
+          return cb(ee,r)
+        })
       })
     })
   },

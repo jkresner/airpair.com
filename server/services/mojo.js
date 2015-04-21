@@ -106,9 +106,8 @@ var get = {
 var save = {
 
   updateMatchingStats(expert, request, cb) {
-    //-- TODO migrate request.calls to bookings & query bookings
     Request
-      .find({'suggested.expert._id':expert._id},{_id:1,userId:1,suggested:1,calls:1}, (e,requests) => {
+      .find({'suggested.expert._id':expert._id},{_id:1,userId:1,suggested:1}, (e,requests) => {
         var expertSuggestions = []
         var expertCalls = []
         var replied = 0
@@ -125,13 +124,6 @@ var save = {
             replied = replied + 1
             if (!lastReply || expertSuggestion._id > lastReply._id)
               lastReply = ObjectId2Date(expertSuggestion._id)
-          }
-
-          var calls = _.where(r.calls,(c)=>_.idsEqual(c.expertId,expert._id))
-          for (var call of calls) {
-            customerIds = _.union(customerIds, [r.userId])
-            expertCalls.push(_.extend(call,{requestId:r._id}))
-            hours = hours + call.duration
           }
         }
 

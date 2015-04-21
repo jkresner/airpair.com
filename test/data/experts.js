@@ -1474,6 +1474,107 @@ module.exports = {
         "name" : "Ryan Bigg",
         "_id" : ObjectId("528548d866a6f999a465fb83")
     }
+  },
+
+  erij: {
+    "_id" : ObjectId("539dd6b217367f02009b72bb"),
+    "availability" : {
+        "hours" : "2",
+        "minRate" : 70,
+        "status" : "ready"
+    },
+    "brief" : "Entity Framwork strategy, Ado.net and data access issues, SqlServer performance tunĩng, Sql compact - anything",
+    "gmail" : "ejlskov@hotmail.com",
+    "pic" : "https://secure.gravatar.com/avatar/6458cf59b73b593fa9c9c8194f0a3b15",
+    "rate" : 110,
+    "tags" : [
+        { "_id" : "514a4c0dbf82130200000092", "sort" : 0 },
+        { "_id" : "5181d0aa66a6f999a465ed06", "sort" : 1 },
+        { "_id" : "5181d0aa66a6f999a465ee35", "sort" : 2 },
+        { "_id" : "5181d0a966a6f999a465eb6b", "sort" : 3 },
+        { "_id" : "514825fa2a26ea0200000026", "sort" : 4 },
+        { "_id" : "5181d0ac66a6f999a465f00d", "sort" : 5 },
+        { "_id" : "5181d0a966a6f999a465ec50", "sort" : 6 }
+    ],
+    "userId" : ObjectId("539dd6881c67d1a4859d34eb"),
+    "matching" : {
+        "experience" : {
+            "customers" : 1,
+            "hours" : 2
+        },
+        "replies" : {
+            "last10" : [
+                {
+                    "requestId" : ObjectId("54be1c05acea360900642330"),
+                    "status" : "waiting",
+                    "replied" : ISODate("2015-01-20T10:43:18.000Z"),
+                    "_id" : ObjectId("5525534365ccdd1100c10356")
+                },
+                {
+                    "requestId" : ObjectId("53c5a0edf5d0270200b75e66"),
+                    "status" : "waiting",
+                    "replied" : ISODate("2014-07-15T21:52:48.000Z"),
+                    "_id" : ObjectId("5525534365ccdd1100c10355")
+                },
+                {
+                    "requestId" : ObjectId("53ac86ed9e55ac0200fb4a2f"),
+                    "status" : "waiting",
+                    "replied" : ISODate("2014-06-26T23:05:30.000Z"),
+                    "_id" : ObjectId("5525534365ccdd1100c10354")
+                },
+                {
+                    "requestId" : ObjectId("539d4d4c2e4c930200039bdc"),
+                    "comment" : "I have helped many other folks online, and contribute many replies on Stackoverflow, I am also a contributor to EF",
+                    "status" : "available",
+                    "replied" : ISODate("2014-06-15T17:38:51.000Z"),
+                    "_id" : ObjectId("5525534365ccdd1100c10353")
+                }
+            ],
+            "lastReply" : ISODate("2014-06-15T17:38:51.000Z"),
+            "lastSuggest" : ISODate("2014-06-15T17:38:51.000Z"),
+            "replied" : 1,
+            "suggested" : 4
+        }
+    },
+    "minRate" : 110,
+    "activity" : [ {
+            "_id" : ObjectId("552568d497868111004118b2"),
+            "action" : "update",
+            "utc" : ISODate("2015-04-08T17:43:48.154Z"),
+            "by" : { "_id" : ObjectId("539dd6881c67d1a4859d34eb"), "name" : "Erik Ejlskov Jensen" }
+        }
+    ],
+    "lastTouch" : {
+        "by" : {
+            "name" : "Erik Ejlskov Jensen",
+            "_id" : ObjectId("539dd6881c67d1a4859d34eb")
+        },
+        "utc" : ISODate("2015-04-17T09:50:10.752Z"),
+        "action" : "update"
+    },
+    "user" : {
+        "social" : {
+            "gp" : {
+                "_json" : {"picture" : "https://lh5.googleusercontent.com/-SkLB7bdwXRM/AAAAAAAAAAI/AAAAAAAABj8/mC4VKd2dqrk/photo.jpg"},
+                "id" : "100749280014101740543"
+            },
+            "tw" : { "_json" : {"followers_count" : "1964"},  "username" : "ErikEJ" },
+            "in" : { "id" : "ewnAm4gGeh" },
+            "so" : { "reputation" : "17091", "link" : "183934/erikej" },
+            "gh" : { "username" : "ErikEJ", "_json" : { "followers" : 0 } }
+        },
+        "localization" : {
+            "timezone" : "Central European Summer Time",
+            "location" : "København, Danmark"
+        },
+        "bio" : "Microsoft .NET Developer & SQL Server Data Development MVP, Visual Studio Data Developer Tools Guy, Technical Subject Matter Expert at NNIT A/S",
+        "initials" : "ErikEJ",
+        "username" : "ErikEJ",
+        "emailVerified" : true,
+        "email" : "ejlskov@hotmail.com",
+        "name" : "Erik Ejlskov Jensen",
+        "_id" : ObjectId("539dd6881c67d1a4859d34eb")
+    }
   }
 
 }
