@@ -92,6 +92,18 @@ migrate = ->
           DONE()
 
 
+
+  it "Cannot create multiple expert profiles for one user", itDone ->
+    SETUP.createNewExpert 'erij', {}, (s, exp1) ->
+      d = _.omit(exp1,'_id')
+      POST "/experts/me", d, {status:400}, (exp2) ->
+        db.readDocs 'Expert', {userId:ObjectId(s._id)}, (r) ->
+          $log('r', r)
+          expect(r.length).to.equal(1)
+          DONE()
+
+
+
   it "Can update expert profile as existing v0 expert", itDone ->
     SETUP.ensureV0Expert 'azv0', ->
       db.readDoc 'User', data.users.azv0._id, (azv0User) ->
@@ -293,10 +305,6 @@ admin = ->
           expect(req.by).to.exist
           expect(req.company).to.be.undefined
           expectIdsEqual(req.suggested[0].expert._id,expertId)
-        # $log('calls', history.calls.length, history.calls[0])
-        # expect(history.calls.length > 0).to.be.true
-        # for call in (history.calls||[])
-        #   expectIdsEqual(call.expertId, expertId)
         $log('bookings', history.bookings.length, history.bookings[0].participants[0])
         expect(history.bookings.length > 0).to.be.true
         for booking in (history.bookings)

@@ -2282,6 +2282,190 @@ module.exports = {
         "timezone" : "Australian Eastern Standard Time",
         "location" : "Melbourne VIC, Australia"
     }
-}
+  },
+
+  erij: {
+    "_id" : ObjectId("539dd6881c67d1a4859d34eb"),
+    "google" : {
+        "_json" : {
+            "locale" : "da",
+            "gender" : "male",
+            "picture" : "https://lh5.googleusercontent.com/-SkLB7bdwXRM/AAAAAAAAAAI/AAAAAAAABj8/mC4VKd2dqrk/photo.jpg",
+            "link" : "https://plus.google.com/100749280014101740543",
+            "family_name" : "Ejlskov Jensen",
+            "given_name" : "Erik",
+            "name" : "Erik Ejlskov Jensen",
+            "verified_email" : true,
+            "email" : "ejlskov@hotmail.com",
+            "id" : "100749280014101740543"
+        },
+        "emails" : [
+            {
+                "value" : "ejlskov@hotmail.com"
+            }
+        ],
+        "name" : {
+            "givenName" : "Erik",
+            "familyName" : "Ejlskov Jensen"
+        },
+        "displayName" : "Erik Ejlskov Jensen",
+        "id" : "100749280014101740543",
+        "provider" : "google"
+    },
+    "googleId" : "100749280014101740543",
+    "cohort" : {
+        "engagement" : {
+            "visits" : [
+                ISODate("2015-01-06T00:00:00.000Z")
+            ],
+            "visit_last" : ISODate("2015-01-06T19:50:53.433Z"),
+            "visit_signup" : ISODate("2014-06-15T17:23:20.000Z"),
+            "visit_first" : ISODate("2014-06-15T17:23:20.000Z")
+        },
+        "maillists" : [
+            "AirPair Newsletter",
+            "AirPair Experts"
+        ],
+        "expert" : {
+            "applied" : ISODate("2015-04-08T17:43:48.163Z"),
+            "_id" : ObjectId("539dd6b217367f02009b72bb")
+        },
+        "aliases" : [
+            "Xz6Gqb9_EXlxAirwUcnthYlo0gpkLHJh",
+            "mFV2IDkM5a7gp4ZAEnpKTRtsaojGq2DB",
+            "C1XJZXhiPFI1hbEmmi9GBHJIW9HqBH22"
+        ],
+        "firstRequest" : {
+            "url" : "/review/54aa1de6ff625a0b007fb76b"
+        }
+    },
+    "email" : "ejlskov@hotmail.com",
+    "name" : "Erik Ejlskov Jensen",
+    "emailVerified" : true,
+    "initials" : "ErikEJ",
+    "username" : "ErikEJ",
+    "tags" : [
+        {
+            "sort" : 1,
+            "tagId" : ObjectId("5181d0a966a6f999a465ec50"),
+            "_id" : ObjectId("54ac3e6911be5f0b00899555")
+        },
+        {
+            "sort" : 0,
+            "tagId" : ObjectId("514a4c0dbf82130200000092"),
+            "_id" : ObjectId("54ac3f6211be5f0b00899574")
+        },
+        {
+            "sort" : 0,
+            "tagId" : ObjectId("514825fa2a26ea0200000022"),
+            "_id" : ObjectId("54ac3f6d11be5f0b00899576")
+        }
+    ],
+    "bookmarks" : null,
+    "social" : {
+        "in" : {
+            "_json" : {
+                "lastName" : "Jensen",
+                "id" : "ewnAm4gGeh",
+                "firstName" : "Erik Ejlskov"
+            },
+            "name" : {
+                "givenName" : "Erik Ejlskov",
+                "familyName" : "Jensen"
+            },
+            "displayName" : "Erik Ejlskov Jensen",
+            "id" : "ewnAm4gGeh",
+            "provider" : "linkedin"
+        },
+        "gh" : {
+            "_json" : {
+                "updated_at" : "2014-06-26T11:55:12Z",
+                "created_at" : "2013-04-16T08:47:09Z",
+                "following" : 1,
+                "followers" : 0,
+                "public_gists" : 0,
+                "public_repos" : 2,
+                "site_admin" : false,
+                "type" : "User",
+                "received_events_url" : "https://api.github.com/users/ErikEJ/received_events",
+                "events_url" : "https://api.github.com/users/ErikEJ/events{/privacy}",
+                "repos_url" : "https://api.github.com/users/ErikEJ/repos",
+                "organizations_url" : "https://api.github.com/users/ErikEJ/orgs",
+                "subscriptions_url" : "https://api.github.com/users/ErikEJ/subscriptions",
+                "starred_url" : "https://api.github.com/users/ErikEJ/starred{/owner}{/repo}",
+                "gists_url" : "https://api.github.com/users/ErikEJ/gists{/gist_id}",
+                "following_url" : "https://api.github.com/users/ErikEJ/following{/other_user}",
+                "followers_url" : "https://api.github.com/users/ErikEJ/followers",
+                "html_url" : "https://github.com/ErikEJ",
+                "url" : "https://api.github.com/users/ErikEJ",
+                "gravatar_id" : "6458cf59b73b593fa9c9c8194f0a3b15",
+                "avatar_url" : "https://avatars.githubusercontent.com/u/4169187?",
+                "id" : 4169187,
+                "login" : "ErikEJ"
+            },
+            "emails" : [
+                {
+                    "value" : null
+                }
+            ],
+            "profileUrl" : "https://github.com/ErikEJ",
+            "username" : "ErikEJ",
+            "displayName" : null,
+            "id" : 4169187,
+            "provider" : "github"
+        },
+        "tw" : {
+            "id" : "16888288",
+            "username" : "ErikEJ",
+            "displayName" : "ErikEJ",
+            "photos" : [],
+            "provider" : "twitter",
+            "_json" : {
+                "id" : 16888288,
+                "id_str" : "16888288",
+                "name" : "ErikEJ",
+                "screen_name" : "ErikEJ",
+                "location" : "Denmark",
+                "profile_location" : null,
+                "description" : "Microsoft .NET Developer & SQL Server Data Development MVP, Visual Studio Data Developer Tools Guy, Technical Subject Matter Expert at NNIT A/S",
+                "url" : "http://t.co/v0v49FOENy",
+                "followers_count" : 1964,
+                "friends_count" : 1875,
+                "listed_count" : 109,
+                "created_at" : "Tue Oct 21 16:03:58 +0000 2008",
+                "favourites_count" : 20,
+                "utc_offset" : 7200,
+                "time_zone" : "Copenhagen",
+                "geo_enabled" : true,
+                "verified" : false,
+                "statuses_count" : 6708,
+                "following" : false,
+                "follow_request_sent" : false,
+                "notifications" : false,
+                "suspended" : false,
+                "needs_phone_verification" : false
+            }
+        },
+        "so" : {
+            "badge_counts" : {
+                "bronze" : 46,
+                "silver" : 14,
+                "gold" : 2
+            },
+            "link" : "183934/erikej",
+            "reputation" : 17091,
+            "creation_date" : 1254664166,
+            "user_type" : "registered",
+            "user_id" : 183934
+        }
+    },
+    "bio" : "Microsoft .NET Developer & SQL Server Data Development MVP, Visual Studio Data Developer Tools Guy, Technical Subject Matter Expert at NNIT A/S",
+    "localization" : {
+        "timezone" : "Central European Summer Time",
+        "location" : "København, Danmark"
+    },
+    "roles" : [],
+    "siteNotifications" : []
+  }
 
 }

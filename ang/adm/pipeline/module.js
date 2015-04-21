@@ -57,10 +57,7 @@ angular.module("ADMPipeline", ["APRequestDirectives","APProfileDirectives"])
     if (r.user) //slight chance account is deleted...
       AdmDataService.bookings.getOrders(orderQuery, (orders) =>$scope.orders = orders)
 
-    AdmDataService.pipeline.getUsersRequests({userId:r.userId}, (requests) => {
-      var thisRequest = _.find(requests,(rr)=>rr._id==r._id)
-      $scope.requests = _.difference(requests,[thisRequest])
-    })
+    $scope.requests = r.prevs
   },
     () => $location.path('/adm/pipeline')
   )

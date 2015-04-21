@@ -102,7 +102,7 @@ angular.module("APProfileDirectives", [])
       $scope.return = $scope.returnTo || $location.path()
 
       $rootScope.$watch('session', (session) => {
-        if (session.emailVerified && session.social) {
+        if (session.social) {
           if (session.social.gh) $scope.data.gh = session.social.gh.username
           if (session.social.tw) $scope.data.tw = session.social.tw.username
           if (session.social.so) $scope.data.so = session.social.so.link

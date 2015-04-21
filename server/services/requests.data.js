@@ -184,11 +184,8 @@ var data = {
         return  (e,r) => {
           if (e) return cb(e)
           if (r.length) {
-            for (var req of r) {
+            for (var req of r)
               req.suggested = data.select.meSuggested(req, ctx.user._id)
-              if (req.calls)
-                req.calls = _.where(req.calls,(c)=>_.idsEqual(ctx.expertId,c.expertId))
-            }
           }
           cb(null,r)
         }
