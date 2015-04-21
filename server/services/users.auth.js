@@ -68,6 +68,12 @@ function connectGoogle(profile, errorCB, done) {
     if (loggedInUser.googleId && loggedInUser.googleId != profile.id)
       return errorCB(Error(`Cannot overwrite existing google login ${loggedInUser.google._json.email} with ${profile._json.email}. Try <a href='/auth/logout'>Logout</a> and log back in with that google account?`))
 
+    //-- Changes in google+ data structure
+    var email = profile._json.email
+    if (!email) {
+      profile._json.email = profile.emails[0].value
+    }
+
     User.findOne({googleId: profile.id}, (ee, existingGoogleUser) => {
 
       if ( (loggedInUser && !existingGoogleUser) ||
@@ -90,7 +96,14 @@ function connectGoogle(profile, errorCB, done) {
 function googleLogin(profile, errorCB, done) {
   if (this.user) return connectGoogle.call(this, profile, errorCB, done)
 
-  User.findOne(Data.query.existing(profile._json.email),
+  //-- Changes in google+ data structure
+  var email = profile._json.email
+  if (!email) {
+    email = profile.emails[0].value
+    profile._json.email = profile.emails[0].value
+  }
+
+  User.findOne(Data.query.existing(email),
     wrap(`googleLogin.existing ${profile._json.email}`, errorCB, (existing) => {
 
     var upsert = { googleId: profile.id, google: profile }
