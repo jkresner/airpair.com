@@ -54,7 +54,7 @@ var UserCopy = {
   name:             { type: String, trim: true },
   bio:              { type: String },
   initials:         { type: String, lowercase: true, trim: true },
-  username:         { type: String, lowercase: true, trim: true },
+  username:         { type: String, unique: true, sparse: true, lowercase: true, trim: true },
   localization:     { location: String, timezone: String },
   social:       {
     gh: {

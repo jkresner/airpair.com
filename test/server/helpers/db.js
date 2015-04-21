@@ -98,6 +98,12 @@ var db = {
     Models[modelName].collection.findOne({_id}, (e,r) => cb(r) )
   },
 
+  readDocs(modelName, query, cb) {
+    //-- We use the collection property so we don't get
+    //-- Mongoose Model defaults and such
+    Models[modelName].collection.find(query).toArray((e, r) => cb(r))
+  },
+
   ensureSettings(user, settings, cb) {
     settings.userId = user._id
     ensureDocument(Models.Settings, settings, cb)
