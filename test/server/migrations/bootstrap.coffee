@@ -18,7 +18,7 @@ colors.setTheme({
 })
 
 global.config =
-  mongoUri: "mongodb://localhost/airp air_dev"
+  mongoUri: "mongodb://localhost/airpair_dev"
   log: { auth: false }
 
 
@@ -50,6 +50,6 @@ describe 'Migration: '.spec, ->
                 done()
 
 
-  it '20150421callstobookings', (done) ->
-    require('./20150421callstobookings')(done)
+  it '20150421experts', (done) ->
+    require('./20150421experts')(done)
     expect(true).to.be.true
