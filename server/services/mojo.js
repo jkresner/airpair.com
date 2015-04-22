@@ -158,7 +158,7 @@ var save = {
           r.tags = expert.tags
 
           var d = { tagsString:util.tagsString(request.tags), expertFirstName: util.firstName(expert.name),
-            requestByFullName:request.by.name,_id:r._id,accountManagerName:this.user.name }
+            requestByFullName:request.by.name,_id:request._id,accountManagerName:this.user.name }
           mailman.get('expert-suggest', d, (ee,rr) => {
             if (rr) r.suggest = { subject: rr.Subject, body: rr.Text }
             cb(e,r)
