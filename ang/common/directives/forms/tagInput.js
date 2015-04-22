@@ -9,7 +9,7 @@ angular.module('APTagInput', [])
     return searchBad;
   })
 
-  .directive('tagInput', function(badTagsSearchQuery) {
+  .directive('tagInput', function(badTagsSearchQuery, DataService) {
 
     return {
       restrict: 'EA',
@@ -17,7 +17,6 @@ angular.module('APTagInput', [])
       scope: {
       },
       controller: function($scope, $attrs, $http) {
-
         $scope.tags = $scope.$parent.tags
         $scope.selectTag = $scope.$parent.selectTag
         $scope.deselectTag = $scope.$parent.deselectTag
@@ -29,6 +28,8 @@ angular.module('APTagInput', [])
         $scope.templateUrl = "tagMatch.html"
 
         $scope.getTags = function(q) {
+          $scope.addErrorMsg = false
+          $scope.none = null
           if (badTagsSearchQuery(q)) {
             return [];
           }
@@ -42,6 +43,8 @@ angular.module('APTagInput', [])
             });
 
             $scope.matches = tags;
+            if (tags.length == 0) $scope.none = decodeURIComponent(q)
+
             return tags;
           });
         };
@@ -59,6 +62,20 @@ angular.module('APTagInput', [])
 
         $scope.deselectMatch = function (match) {
           $scope.deselectTag(match)
+        };
+
+        $scope.addTag = function(q) {
+          $scope.adding = true
+          DataService.tags.create({ tagfrom3rdparty: q }, function(tag) {
+            $scope.adding = false
+            if (tag) $scope.selectTag(tag)
+            $scope.q = ""
+          },
+          function(e) {
+            // console.log(e)
+            $scope.adding = false
+            $scope.addErrorMsg = true
+          })
         };
 
       }
