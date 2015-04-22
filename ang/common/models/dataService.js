@@ -60,7 +60,7 @@ angular.module('APDataSvc', [])
 
     this.tags = {
       search: GET((d)=>`/tags/search/${d.q}`),
-      create: GET((d)=>`/tags`)
+      create: POST((d)=>`/tags`)
     }
 
     this.billing = _.extend(billingFns, {

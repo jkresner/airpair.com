@@ -87,10 +87,12 @@ var save = {
       // $log('Creating new tag', tagFrom3rdParty)
       svc.create(tagFrom3rdParty, Data.select.cb.search(cb))
     }
+    if (cache) cache.flush('tags')
   },
 
   createByAdmin(o, cb) {
     svc.create(o,null, cb)
+    if (cache) cache.flush('tags')
   },
 
   updateByAdmin(orignal, ups, cb) {
