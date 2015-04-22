@@ -134,8 +134,9 @@ var save = {
 
     if (submitted)
     {
-      mailman.sendPipelinerNotifyRequestEmail(this.user.name, original._id, update.time.toUpperCase(),
-        update.budget, update.tags, ()=>{})
+      var d = {byName:this.user.name, _id:original._id,budget:update.budget,
+        tags:util.tagsString(update.tags),time:update.time.toUpperCase()}
+      mailman.send('pipeliners','pipeliner-notify-request', d, ()=>{})
 
       update.adm = admSet(original,{active:true,submitted:new Date()})
 
@@ -198,8 +199,9 @@ var save = {
     // sug.events.push @newEvent "expert updated"
     // sug.expert.paymentMethod = type: 'paypal', info: { email: eR.payPalEmail }
 
-    mailman.sendPipelinerNotifyReplyEmail(this.user.name, reply.expertStatus, request._id,
-        request.by.name, ()=>{})
+    var d = { isAvailable:reply.expertStatus=="available",status:reply.expertStatus.toUpperCase(),
+      byName:this.user.name,_id:request._id,requestByName:request.by.name }
+    mailman.send('pipeliners', 'pipeliner-notify-reply', d, ()=>{})
 
     request.lastTouch = svc.newTouch.call(this, `replyByExpert:${reply.expertStatus}`)
     if (!request.adm.reviewable && reply.expertStatus == 'available')
@@ -283,7 +285,7 @@ var admin = {
     svc.update(request._id, _.extend(request, {status,adm,messages}), selectCB.adm(cb))
   },
 
-  addSuggestion(request, expert, body, cb)
+  addSuggestion(request, expert, msg, cb)
   {
     var {adm,suggested} = request
     var initials = this.user.email.replace("@airpair.com", "")
@@ -294,8 +296,7 @@ var admin = {
       expert
     })
 
-    mailman.sendExpertSuggestedEmail(expert, request.by.name, request._id,
-      this.user.name, request.tags, ()=>{})
+    mailman.sendRawTextEmail(expert, msg.subject, msg.body, ()=>{})
 
     adm.lastTouch = svc.newTouch.call(this, `suggest:${expert.name}`)
     svc.update(request._id, _.extend(request, {suggested,adm}), selectCB.adm(cb))
