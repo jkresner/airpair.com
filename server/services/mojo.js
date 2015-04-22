@@ -156,8 +156,13 @@ var save = {
           if (r) r.avatar = md5.gravatarUrl(r.email||r.user.email)
           r.score = get.calcMojo(r,request.tags)
           r.tags = expert.tags
-          // $log('r.tags', r.tags)
-          cb(e,r)
+
+          var d = { tagsString:util.tagsString(request.tags), expertFirstName: util.firstName(expert.name),
+            requestByFullName:request.by.name,_id:r._id,accountManagerName:this.user.name }
+          mailman.get('expert-suggest', d, (ee,rr) => {
+            if (rr) r.suggest = { subject: rr.Subject, body: rr.Text }
+            cb(e,r)
+          })
         })
       })
 

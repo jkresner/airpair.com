@@ -16,11 +16,8 @@ angular.module("APMatchmaking", ["APProfileDirectives","APSvcMM"])
   $scope.highlightedTag = (tagId) =>
     _.find($scope.focusTagIds,(id)=>id==tagId)
 
-  console.log('RequestsUtil', RequestsUtil)
-
   $scope.getMatches = (request) => {
     var query = RequestsUtil.mojoQuery(request)
-    console.log('getMatches', query)
     MMDataService.matchmaking.getRanked({_id, query}, function (experts) {
       $scope.matches = experts;
       // console.log('$scope.matches', $scope.matches.length)
@@ -44,7 +41,8 @@ angular.module("APMatchmaking", ["APProfileDirectives","APSvcMM"])
 
   $scope.addSuggestion = (expertId) => {
     var expert = _.find($scope.matches, (e) => e._id == expertId)
-    MMDataService.matchmaking.addSuggestion({_id, expertId}, function (r) {
+    var msg = $scope.selected.suggest
+    MMDataService.matchmaking.addSuggestion({_id, expertId, msg}, function (r) {
       $scope.request = r
       $scope.matches = _.without($scope.matches, expert)
       $scope.selected = null
@@ -53,7 +51,6 @@ angular.module("APMatchmaking", ["APProfileDirectives","APSvcMM"])
 
   $scope.selectExpert = (expert) =>
     MMDataService.matchmaking.matchifyExpert({expertId:expert._id,requestId:_id}, function(r) {
-      console.log('setting selected', r)
       $scope.selected = r
     })
 
