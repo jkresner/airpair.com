@@ -51,6 +51,12 @@ module.exports = function(mailProvider)
   initTemplates()
   initReceivers()
 
+  function sendMassEmail(templateName, templateData, toUsers, cb) {
+    TemplateSvc.mail(templateName, templateData, (e, renderedEmail) => {
+      mailProvider.send(toUsers, renderedEmail, cb)
+    })
+  }
+
   function sendTemplateEmail(templateName, templateData, toUser, cb) {
     templateData.firstName = util.firstName(toUser.name)
     TemplateSvc.mail(templateName, templateData, (e, renderedEmail) =>
@@ -112,36 +118,22 @@ module.exports = function(mailProvider)
         credit
       }), cb)
     },
-    sendPipelinerNotifyPurchaseEmail(byName, total, cb) {
-      mailProvider.send(receivers.pipeliners, renderEmail('pipelinernotifypurchase', {
-        fullName: byName,
-        total,
-      }), cb)
+
+    send(toUser, tmpl, data, cb) {
+      if (toUser == 'pipeliners')
+        sendMassEmail(tmpl,data,receivers.pipeliners,cb)
+      else
+        sendTemplateEmail(tmpl, data, toUser, cb)
     },
-    sendPipelinerNotifyBookingEmail(byName, expertName, bookingId, cb) {
-      mailProvider.send(receivers.pipeliners, renderEmail('pipelinernotifybooking',
-        { byName, expertName, bookingId }), cb)
+
+    get(templateName, templateData, cb) {
+      TemplateSvc.mail(templateName, templateData, (e, renderedEmail) => cb(e,renderedEmail))
     },
-    sendPipelinerNotifyRequestEmail(byName, requestId, time, budget, tags, cb) {
-      var tagsString = util.tagsString(tags)
-      mailProvider.send(receivers.pipeliners, renderEmail('pipelinernotifyrequest',
-        { byName, requestId, time, budget, tags: tagsString }), cb)
-    },
-    sendPipelinerNotifyReplyEmail(byName, expertStatus, requestId, requestByName, cb) {
-      mailProvider.send(receivers.pipeliners, renderEmail('pipelinernotifyreply',
-        { byName, requestId, requestByName, isAvailable: expertStatus == 'available',
-          expertStatus: expertStatus.toUpperCase() }), cb)
-    },
+
     sendExpertAvailable(toCustomer, expertName, requestId, noPaymethods, cb) {
       mailProvider.send(`${toCustomer.name} <${toCustomer.email}>`, renderEmail('expertavailable', {
         firstName: util.firstName(toCustomer.name),
         expertName, requestId, noPaymethods }), cb)
-    },
-    sendExpertSuggestedEmail(toUser, requestByFullName, requestId, accountManagerName, tags, cb) {
-      var tagsString = util.tagsString(tags)
-      var expertFirstName = util.firstName(toUser.name)
-      mailProvider.send(`${toUser.name} <${toUser.email}>`, renderEmail('expertsuggested',
-        { expertFirstName, requestByFullName, requestId, accountManagerName, tagsString }), cb)
     },
 
     sendPostReviewNotification(toUser, postId, postTitle, reviewerFullName, rating, comment, cb) {

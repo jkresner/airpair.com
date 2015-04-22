@@ -67,7 +67,11 @@
         {{reply.replied | locaTime : 'DD MMM' }} {{reply.status}}
       </li>
     </ul>
-    <br /><a ng-click="addSuggestion(selected._id)" class="btn">Suggest</a>
+    <div class="mailTo">
+      <input type="text" ng-model="selected.suggest.subject" class="form-control">
+      <textarea ng-model="selected.suggest.body" class="form-control"></textarea>
+      <p><a ng-click="addSuggestion(selected._id)" class="btn">Suggest</a></p>
+    </div>
 
     <hr />
   </section>
@@ -75,13 +79,6 @@
 
   <section class="matchControls left">
     <div class="expertInput" expert-input=""></div>
-    <!-- <div ng-repeat="t in request.tags">
-      <input type="checkbox" value="t._id" disabled="" />
-      <label>{{t.slug}}</label>
-    </div>
-    <div>
-      <a ng-click="getMatches()">Show matches</a>
-    </div> -->
   </section>
 
   <section class="experts" style="clear:both">
