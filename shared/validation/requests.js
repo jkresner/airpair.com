@@ -126,7 +126,7 @@ var validation = {
     if (original.suggested.length > 0)
       return `Cannot delete request with suggestions`
   },
-  addSuggestion(user, original, expert)
+  addSuggestion(user, original, expert, msg)
   {
     if (user.email.indexOf('@airpair.com') == -1)
       return `Request addSuggestion does not yet support non @airpair.com team members`
@@ -138,6 +138,9 @@ var validation = {
     var existing = _.find(original.suggested, (s) => _.idsEqual(s.expert._id,expert._id) )
     if (existing)
       return `Cannot suggest the same expert twice`
+
+    if (!msg || !msg.subject || !msg.body)
+      return `Message to expert required to suggest expert`
   },
   removeSuggestion(user, original, expert)
   {

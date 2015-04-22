@@ -69,7 +69,7 @@ module.exports = -> describe "Admin".subspec, ->
 
   it 'Pipeliner can suggest and remove experts', itDone ->
     SETUP.addAndLoginLocalUserWithEmailVerified 'kaun', (s) ->
-      spy = sinon.spy(mailman,'sendExpertSuggestedEmail')
+      spy = sinon.spy(mailman,'sendRawTextEmail')
       d = tags: [data.tags.angular], type: 'resources', experience: 'proficient', brief: 'bah bah anglaur test yo4', hours: "1", time: 'rush'
       POST '/requests', d, {}, (r0) ->
         PUT "/requests/#{r0._id}", _.extend(r0,{budget:300}), {}, (r) ->
@@ -80,21 +80,18 @@ module.exports = -> describe "Admin".subspec, ->
               reqs1[0].status = 'waiting'
               reqs1[0].adm.owner = 'ad'
               PUT "/adm/requests/#{r._id}", reqs1[0], {}, (reqWexp) ->
-                PUT "/matchmaking/requests/#{r._id}/add/#{phlfExp._id}", {}, {}, (reqWexp) ->
-                  GET "/adm/requests/user/#{s._id}", {}, (reqs2) ->
-                    expect(reqs2.length).to.equal(1)
-                    expect(reqs2[0].suggested.length).to.equal(1)
-                    PUT "/adm/requests/#{r._id}/remove/#{phlfExp._id}", {}, {}, (reqRexp) ->
-                      expect(reqRexp.suggested.length).to.equal(0)
-                      expect(spy.callCount).to.equal(1)
-                      expectStartsWith(spy.args[0][0].name, phlfExp.name)
-                      expectStartsWith(spy.args[0][0].email,phlfExp.email)
-                      expectStartsWith(spy.args[0][1],"Kyle Aungst")
-                      expectIdsEqual(spy.args[0][2],r._id)
-                      expectStartsWith(spy.args[0][3],"Admin Daemon")
-                      expect(spy.args[0][4].length).to.equal(1)
-                      expect(spy.args[0][4][0].slug).to.equal('angularjs')
-                      DONE()
+                PUT "/matchmaking/experts/#{phlfExp._id}/matchify/#{r._id}", {}, {}, (exp1) ->
+                  ds = msg: exp1.suggest
+                  PUT "/matchmaking/requests/#{r._id}/add/#{phlfExp._id}", ds, {}, (reqWexp) ->
+                    GET "/adm/requests/user/#{s._id}", {}, (reqs2) ->
+                      expect(reqs2.length).to.equal(1)
+                      expect(reqs2[0].suggested.length).to.equal(1)
+                      PUT "/adm/requests/#{r._id}/remove/#{phlfExp._id}", {}, {}, (reqRexp) ->
+                        expect(reqRexp.suggested.length).to.equal(0)
+                        expect(spy.callCount).to.equal(1)
+                        expectStartsWith(spy.args[0][1], "angularjs AirPair?")
+                        expectStartsWith(spy.args[0][2], "Hi Phil,")
+                        DONE()
 
 
   it 'Expert can reply when suggested by pipeliner', itDone ->
@@ -111,7 +108,8 @@ module.exports = -> describe "Admin".subspec, ->
               expertId = eAbpa._id
               PUT "/matchmaking/experts/#{expertId}/matchify/#{r._id}", {}, {}, (exp1) ->
                 expect(exp1.matching).to.exist
-                PUT "/matchmaking/requests/#{r._id}/add/#{expertId}", {}, {}, (r2) ->
+                ds = msg: exp1.suggest
+                PUT "/matchmaking/requests/#{r._id}/add/#{expertId}", ds, {}, (r2) ->
                   expect(r2.suggested.length).to.equal(1)
                   expect(r2.suggested[0].expertStatus).to.equal 'waiting'
                   LOGIN 'abpa', ->
@@ -136,7 +134,7 @@ module.exports = -> describe "Admin".subspec, ->
             expertId = matches[0]._id
             PUT "/matchmaking/experts/#{expertId}/matchify/#{r._id}", {}, {}, (exp1) ->
               expect(exp1.matching).to.exist
-              PUT "/matchmaking/requests/#{r._id}/add/#{expertId}", {}, {}, (r2) ->
+              PUT "/matchmaking/requests/#{r._id}/add/#{expertId}", {msg:{subject:'Test',body:'Test'}}, {}, (r2) ->
                 expect(r2.suggested.length).to.equal(1)
                 sug = r2.suggested[0]
                 expect(sug.matchedBy._id).to.exist

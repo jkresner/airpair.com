@@ -1,5 +1,3 @@
-var util = require('../../../shared/util.js');
-
 var tmpls = {
   received: {
     subject: require('../../../shared/mail/pipelinereceived_subject.html'),
@@ -16,12 +14,12 @@ var tmpls = {
   generic: {
     subject: require('../../../shared/mail/pipelinegeneric_subject.html'),
     text: require('../../../shared/mail/pipelinegeneric_text.html')
-  },
+  }
 }
 
 angular.module("APMailTemplates", [])
 
-.directive('mailLink', function($compile, $timeout) {
+.directive('mailLink', function($compile, $timeout, Util) {
 
   return {
     template: require('./mailtemplatesLink.html'),
@@ -41,10 +39,10 @@ angular.module("APMailTemplates", [])
       $scope.$watch('meta.noPaymethod', function() {
         if (!$scope.r || !$scope.r.by) return
 
-        $scope.tagsString = util.tagsString($scope.r.tags)
-        $scope.firstName = util.firstName($scope.r.by.name)
+        $scope.tagsString = Util.tagsString($scope.r.tags)
+        $scope.firstName = Util.firstName($scope.r.by.name)
         $scope.accountManager = {
-          firstName: util.firstName($rootScope.session.name),
+          firstName: Util.firstName($rootScope.session.name),
           name: $rootScope.session.name
         }
 
