@@ -20,7 +20,8 @@ var knownNonErrors = [
   'Cannot determine state of server',
   'Cannot signup, user already exists',
   'Email belongs to another account',
-  'Cannot suggest the same expert twice'
+  'Cannot suggest the same expert twice',
+  'tagfrom3rdparty not found'
 ]
 
 
