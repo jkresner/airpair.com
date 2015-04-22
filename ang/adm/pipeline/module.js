@@ -69,8 +69,9 @@ angular.module("ADMPipeline", ["APRequestDirectives","APProfileDirectives"])
   $scope.removeSuggestion = (expertId) =>
     AdmDataService.pipeline.removeSuggestion({_id, expertId}, setScope)
 
-  $scope.update = () =>
-    AdmDataService.pipeline.updateRequest($scope.request, setScope)
+  $scope.update = () => {
+    AdmDataService.pipeline.updateRequest(_.omit($scope.request,'user','prevs'), setScope)
+  }
 
   $scope.junk = () => {
     $scope.request.adm.owner = $scope.session.email.substring(0,2)
