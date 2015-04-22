@@ -69,7 +69,8 @@ function create(e, r, user, expert, time, minutes, type, cb) {
     orderId: r._id
   }
 
-  mailman.sendPipelinerNotifyBookingEmail(user.name, expert.name, booking._id, ()=>{})
+  var d = {byName:user.name,expertName:expert.name, bookingId:booking._id}
+  mailman.send('pipeliners', 'pipeliner-notify-booking', d, ()=>{})
 
   svc.create(booking, setAvatarsCB(cb))
 }
