@@ -1575,6 +1575,27 @@ module.exports = {
         "name" : "Erik Ejlskov Jensen",
         "_id" : ObjectId("539dd6881c67d1a4859d34eb")
     }
+  },
+
+  ronr: {
+    "_id" : ObjectId("53f76a7017b29a0200c442a6"),
+    "bb" : { "id" : "ronreiter" },
+    "brief" : "",
+    "email" : "ron.reiter@gmail.com",
+    "gmail" : "ron.reiter@gmail.com",
+    "name" : "Ron Reiter",
+    "pic" : "https://lh4.googleusercontent.com/-N2LkHrxAdPE/AAAAAAAAAAI/AAAAAAAAK-I/DYlZoyOlwb4/photo.jpg",
+    "tags" : [
+        {
+            "_id" : "5181d0aa66a6f999a465ed07",
+            "name" : "operating-system",
+            "short" : "operating-system",
+            "soId" : "operating-system"
+        }
+    ],
+    "timezone" : "GMT+0300 (IDT)",
+    "userId" : ObjectId("53f768a18f8c80299bcc43c0"),
+    "username" : "ronreiter"
   }
 
 }
