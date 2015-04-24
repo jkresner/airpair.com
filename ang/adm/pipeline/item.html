@@ -47,7 +47,7 @@
           <li ng-repeat="o in orders">
             <a href="/v1/adm/orders/{{o._id}}" target="_blank">{{o.utc | locaTime : 'YYYY DD MMM' }}</a>
             <span ng-if="o.requestId != request._id">${{o.total}}</span>
-            <b ng-if="o.requestId == request._id">${{o.total}}</b>
+            <b class="thisreq" ng-if="o.requestId == request._id">${{o.total}}</b>
           </li>
         </ul>
         <span ng-if="requests && requests.length == 0">No requests</span>
@@ -147,34 +147,44 @@
       <p><a ng-click="farm(farmTweet)" class="btn">Tweet</a></p>
     </div>
 
-    <hr />
 
-    <div ng-if="request.status == 'waiting' || request.status=='review'">
+    <div ng-if="request.status == 'waiting' || request.status=='review'" style"clear:both">
       <a href="/matchmaking/{{request._id}}" class="btn">Match experts</a>
     </div>
 
   </section>
 
+  <section class="bookings right">
 
-  <section class="views right">
-    <table class="table table-condensed">
+    <p ng-if="bookings && bookings.length == 0">No airpairing yet by this customer</p>
+
+    <table class="table table-condensed" ng-if="bookings && bookings.length > 0">
       <tr>
-        <th style="width:80px">Time</th>
-        <th style="width:280px">Url</th>
-        <th style="width:240px">Ref</th>
-        <th>Utm</th>
+        <th style="width:80px">Booked</th>
+        <th style="width:80px"></th>
+        <th style="width:80px">For</th>
+        <th style="width:240px"></th>
+        <th>Feedback</th>
       </tr>
-      <tr ng-repeat="v in views">
-        <td>{{v.utc | publishedTime : 'MMM DD HH:mm' }}</td>
-        <td><a href="{{v.url}}" target="_blank"><b>{{v.type}}</b>:{{v.url}}</a></td>
-        <td>{{ v.referer }}</td>
-        <td><div ng-if="v.campaign">{{ v.campaign.name }}, {{ v.campaign.content }}, {{ v.campaign.term }},
-          {{ v.campaign.source }}</div>
+      <tr ng-repeat="b in bookings">
+        <td>
+          <b ng-if="b.thisRequest" class="thisreq">{{b._id | objectIdToDate : 'YYYY MMMDD' }}</b>
+          <span ng-if="!b.thisRequest">{{b._id | objectIdToDate : 'YYYY MMMDD' }}</span>
+        </td>
+        <td><a href="/adm/experts/{{b.expertId }}">{{b.participants[1].info.name }}</a></td>
+        <td><a href="/adm/bookings/{{b._id}}" target="_blank"><b>{{b.minutes}}min {{b.type}}</b> </a></td>
+        <td>{{b.datetime | publishedTime : 'MMM DD HH:mm' }}
+          <br />{{b.status}}
+        </td>
+        <td>
+          -
+        </div>
       </td>
     </tr>
     </table>
 
   </section>
+
 
   <section class="experts left">
 
@@ -198,6 +208,27 @@
         <hr />
       </div>
     </section>
+
+  </section>
+
+
+  <section class="views right">
+    <table class="table table-condensed">
+      <tr>
+        <th style="width:80px">Time</th>
+        <th style="width:280px">Url</th>
+        <th style="width:240px">Ref</th>
+        <th>Utm</th>
+      </tr>
+      <tr ng-repeat="v in views">
+        <td>{{v.utc | publishedTime : 'MMM DD HH:mm' }}</td>
+        <td><a href="{{v.url}}" target="_blank"><b>{{v.type}}</b>:{{v.url}}</a></td>
+        <td>{{ v.referer }}</td>
+        <td><div ng-if="v.campaign">{{ v.campaign.name }}, {{ v.campaign.content }}, {{ v.campaign.term }},
+          {{ v.campaign.source }}</div>
+      </td>
+    </tr>
+    </table>
 
   </section>
 

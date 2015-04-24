@@ -45,19 +45,26 @@ angular.module("ADMPipeline", ["APRequestDirectives","APProfileDirectives"])
   AdmDataService.pipeline.getRequest({_id}, function (r) {
     $scope.user = r.user
     $scope.farmTweet = RequestsUtil.buildDefaultFarmTweet(r)
+    r.bookings.forEach((b)=>{
+      var o = _.find(r.orders,(oo)=>oo._id == b.orderId)
+      if (o.requestId == r._id) b.thisRequest = true
+    })
+    $scope.bookings = r.bookings
+    delete r.bookings
+    $scope.orders = r.orders
+    delete r.orders
+    $scope.requests = r.prevs
+    delete r.prevs
+
     AdmDataService.billing.getUserPaymethods({_id:r.userId}, function (pms) {
       $scope.paymethods = pms
       setScope(r)
     })
+
     AdmDataService.getUsersViews({_id:r.userId}, function (views) {
       $scope.views = views.reverse()
     })
 
-    var orderQuery = { user:r.user, start: DateTime.dawn(), end: moment() }
-    if (r.user) //slight chance account is deleted...
-      AdmDataService.bookings.getOrders(orderQuery, (orders) =>$scope.orders = orders)
-
-    $scope.requests = r.prevs
   },
     () => $location.path('/adm/pipeline')
   )

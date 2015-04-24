@@ -1,15 +1,17 @@
 var logging               = false
+import * as md5           from '../util/md5'
 import Svc                from '../services/_service'
 import Rates              from '../services/requests.rates'
 import Request            from '../models/request'
+import Booking            from '../models/booking'
+import Order              from '../models/order'
 import User               from '../models/user'
-import * as md5           from '../util/md5'
+var Roles                 = require('../../shared/roles.js')
 var UserSvc               = require('../services/users')
 var PaymethodsSvc         = require('../services/paymethods')
 var {select,query}        = require('./requests.data')
 var selectCB              = select.cb
-var svc =                 new Svc(Request, logging)
-var Roles =               require('../../shared/roles.js')
+var svc                   = new Svc(Request, logging)
 var {isCustomer,isCustomerOrAdmin,isExpert} = Roles.request
 
 var get = {
@@ -24,7 +26,17 @@ var get = {
         get.getByUserIdForAdmin(user._id, (eee,requests) => {
           var thisR = _.find(requests,(rr)=>_.idsEqual(rr._id,id))
           r.prevs = _.without(requests,thisR)
-          return cb(ee,r)
+          var selectOrdersFields = require('./orders.data').select.listAdmin
+          //-- using models instead of services to avoid circular dependencies
+          Order.find({userId:r.userId}, selectOrdersFields,(eeer,orders) => {
+            r.orders = orders
+            r.bookings = []
+            if (orders.length == 0) return cb(eeer,r)
+            Booking.find({customerId:r.userId},(eerr,bookings) => {
+              r.bookings = bookings
+              cb(eerr,r)
+            })
+          })
         })
       })
     })
