@@ -111,13 +111,9 @@ angular.module("APBilling", ['ngRoute', 'APPaymentDirectives', 'APBillingDirecti
     template: require('./bookExpert.html'),
     link() { },
     controller($rootScope, $scope, $q, $routeParams, $location, DataService) {
-      $scope.booking = {
-          credit: 0,
-          minutes: 120,
-          type: "private",
-          time: moment().add(1, 'month'),
-          // payMethodId: null
-        }
+      $scope.booking = { // payMethodId: null,
+        credit: 0, minutes: 120, type: "private", time: moment().add(1, 'month')
+      }
 
       $scope.calcSummary = function() {
         if (!$scope.expert || !$scope.booking) return
@@ -183,9 +179,12 @@ angular.module("APBilling", ['ngRoute', 'APPaymentDirectives', 'APBillingDirecti
       DataService.billing.getMyOrdersForExpert({_id},(r) => {
         var lines = OrdersUtil.linesWithMinutesRemaining(r)
         $scope.availableMinutes = OrdersUtil.getAvailableMinutesRemaining(lines)
-        // console.log('getMyOrdersForExpert', $scope.availableMinutes)
-        // $scope.paymethods = r
-        // $scope.booking.payMethodId = r[0]._id
+        if ($scope.availableMinutes > 0) $scope.redeemableTime = [{val:30,name:'30 mins'}]
+        if ($scope.availableMinutes > 59) $scope.redeemableTime.push({val:60,name:'60 min'})
+        if ($scope.availableMinutes > 89) $scope.redeemableTime.push({val:90,name:'180 min'})
+        if ($scope.availableMinutes > 119) $scope.redeemableTime.push({val:120,name:'2 hr'})
+        if ($scope.availableMinutes > 170) $scope.redeemableTime.push({val:180,name:'3 hr'})
+        $scope.booking.dealId = lines[0].info.deal._id
       })
 
 
@@ -203,6 +202,7 @@ angular.module("APBilling", ['ngRoute', 'APPaymentDirectives', 'APBillingDirecti
       $scope.submitDeferred = () => {
         var deferred = $q.defer()
         DataService.billing.bookExpert($scope.booking, (r) => {
+          console.log('booked', r._id, r)
           $location.path(`/bookings/${r._id}`)
           deferred.resolve(r)
         },
@@ -251,7 +251,6 @@ angular.module("APBilling", ['ngRoute', 'APPaymentDirectives', 'APBillingDirecti
   $scope.orderDeal = () => {
     var o = { expertId: $scope.expert._id, payMethodId: $scope.payMethodId, dealId: $scope.deal._id }
     DataService.billing.orderDeal(o, (r) => {
-      console.log('deal ordered', r)
       $location.path("/billing/book/"+$scope.expert._id)
     })
   }
