@@ -6,11 +6,14 @@
       <h2>Book {{expert.name}}</h2>
       <hr />
 
+      <div ng-if="!availableMinutes || availableMinutes < 30">
+
       <div class="form-group">
         <label class="control-label" for="paymethod">Pay with</label>
         <select class="form-control" id="payMethodId" name="payMethodId" ng-model="booking.payMethodId" ng-options="p._id as p.name for p in paymethods">
         </select>
       </div>
+
       <hr />
 
       <div class="form-group">
@@ -26,7 +29,9 @@
         <input name="minutes" ng-model="booking.minutes" type="radio" value="300">
         <span>5 HRS &nbsp &nbsp &nbsp &nbsp</span>
       </div>
-       <br />
+
+
+      <br />
       <div class="form-group">
         <input id="typePrivate" name="type" ng-model="booking.type" type="radio" value="private" ng-change="calcSummary()">
         <label for="typePrivate"><span>Keep Private</span></label>
@@ -37,6 +42,15 @@
         <em ng-if="booking.type == 'opensource'" style="color:#DD8766">$10 discount /hr</em>
 
         <p ng-if="booking.type == 'opensource'" style="padding-top:15px;font-size:12px">Open sourced recordings are accessible on expert profiles to help them promote themselves. Do not open source your recording if you have any sensitive information you do not want others to see.</p>
+      </div>
+
+
+      </div>
+
+      <div class="form-group" ng-if="availableMinutes > 29">
+        <label class="control-label" for="minutes">Redeem time ({{availableMinutes}} pre-purchased mins available)</label>
+        <select class="form-control" id="redeemedTime" ng-model="booking.minutes" ng-options="p.val as p.name for p in redeemableTime">
+        </select>
       </div>
 
 <!--
@@ -51,7 +65,7 @@
 
     </form>
 
-    <section class="bookSummary">
+    <section class="bookSummary" ng-if="!availableMinutes || availableMinutes < 30">
       <h3>Your Order</h3>
       <img ng-src="{{expert.avatar}}" class="user" />
       <hr />
@@ -68,6 +82,20 @@
 
       <p ng-if="remainingCredit == 0">Your card will be charged ${{owe}}</p>
       <p ng-if="remainingCredit > 0">Remaining credit will be ${{remainingCredit}}</p>
+    </section>
+
+
+    <section class="bookSummary" ng-if="availableMinutes > 29">
+      <h3>Your booking</h3>
+      <img ng-src="{{expert.avatar}}" class="user" />
+      <hr />
+      <div><label>AVAIALABLE</label> <span>{{availableMinutes}} mins</span></div>
+      <div><label>REDEEM</label> <span class="owe">{{booking.minutes}} mins</span></div>
+      <hr />
+      <single-submit button-text="'Confirm'" wait-text="Processing ..." on-single-click="submitDeferred">
+      </single-submit>
+
+      <p>You will have {{availableMinutes-booking.minutes}} mins left for future airpairing</p>
     </section>
 
   </section>
