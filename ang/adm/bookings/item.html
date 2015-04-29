@@ -113,28 +113,35 @@
           <a ng-click="swapExpert(sug._id)">Swap</a> {{sug.expert.name}}
         </li></ul>
       </div>
-      <div ng-if="!booking.request">This booking is not associated to a request</div>
+      <div ng-if="!booking.request">Booking is not request associated</div>
     </div>
 
     <div class="payout">
+
       <h3>Payout</h3>
-      Order:
-      ${{ booking.order.total }}
 
-      <a href="/v1/adm/orders/{{ booking.order._id }}">{{ booking.order._id }}</a>
+      <p ng-if="!booking.order">v0 migrated booking w no associated payout</p>
 
-      <div ng-if="lineForPayout.info.paidout">
-        <span style="color:green">paidout</span>
+      <div ng-if="booking.order">
+        Order:
+        ${{ booking.order.total }}
+
+        <a href="/v1/adm/orders/{{ booking.order._id }}">{{ booking.order._id }}</a>
+
+        <div ng-if="lineForPayout.info.paidout">
+          <span style="color:green">paidout</span>
+        </div>
+
+        <div ng-if="!lineForPayout.info.paidout">
+          <div ng-if="!lineForPayout.info.released">
+            <a ng-click="releasePayout()">Release payment</a>
+          </div>
+          <div ng-if="lineForPayout.info.released">
+            <span style="color:blue">Waiting for expert to collect</span>
+          </div>
+        </div>
       </div>
 
-      <div ng-if="!lineForPayout.info.paidout">
-        <div ng-if="!lineForPayout.info.released">
-          <a ng-click="releasePayout()">Release payment</a>
-        </div>
-        <div ng-if="lineForPayout.info.released">
-          <span style="color:blue">Waiting for expert to collect</span>
-        </div>
-      </div>
     </div>
 
   </div>
