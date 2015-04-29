@@ -53,7 +53,7 @@
   </div>
 
   <div ng-if="!hideCardNickname" class="cardNickname" form-group>
-    <label class="control-label" for="cardNickName">Card nickname <i>* to help you distiguide between differen cards</i></label>
+    <label class="control-label" for="cardNickName">Card nickname <i>* to help you distinguish between different cards</i></label>
     <input form-control id="cardNickName" name="cardNickName" data-braintree-name="cardNickName" ng-model="card.cardNickName" type="text" placeholder="Nick name for card (e.g. personal visa)" required ng-minlength="4" ng-minlength="60" tabindex="1205">
     <div class="error" ng-if="formGroup.showError(cardinfoForm.cardNickName)" ng-messages="cardinfoForm.cardNickName.$error">
       <div ng-message="required">Card nickname required</div>

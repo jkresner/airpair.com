@@ -178,6 +178,7 @@ angular.module("APBilling", ['ngRoute', 'APPaymentDirectives', 'APBillingDirecti
 
       DataService.billing.getMyOrdersForExpert({_id},(r) => {
         var lines = OrdersUtil.linesWithMinutesRemaining(r)
+        if (!lines || lines.length == 0) return
         $scope.availableMinutes = OrdersUtil.getAvailableMinutesRemaining(lines)
         if ($scope.availableMinutes > 0) $scope.redeemableTime = [{val:30,name:'30 mins'}]
         if ($scope.availableMinutes > 59) $scope.redeemableTime.push({val:60,name:'60 min'})
