@@ -93,7 +93,7 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
 
 
 
-.controller('ReviewCtrl', function($scope, $routeParams, $location, DataService, Shared, ServerErrors, SessionService) {
+.controller('ReviewCtrl', function($scope, $routeParams, $location, $timeout, DataService, Shared, ServerErrors, SessionService, PageHlpr) {
   $scope.requestId = $routeParams.id;
 
   if (!$scope.requestId) return $location.path('/')
@@ -181,6 +181,8 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
       }
 
     }
+
+    $timeout(function(){ PageHlpr.highlightSyntax({ addCtrs: false })}, 500)
 
   }, function(er) {
     console.log('request not found')

@@ -70,6 +70,14 @@ angular.module('APFilters', [])
   }
 })
 
+.filter('markdownAsHtml', function ($sce, Util) {
+  return (markdown) => {
+    var markdownHtml = marked(Util.htmlEscape(markdown))
+    markdownHtml = Util.codeblockUnescape(markdownHtml)
+    return $sce.trustAsHtml(markdownHtml)
+  }
+})
+
 .filter('addNameBreak', function ($sce) {
   return (text) => {
     return $sce.trustAsHtml(text.replace(' ','<br>'))

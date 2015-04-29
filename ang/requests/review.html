@@ -148,7 +148,8 @@
             <img class="user" itemprop="image" ng-src="{{s.expert.avatar}}?s=100" />
             <h3>{{s.expert.name}}</h3>
             <social-links profile="s.expert"></social-links>
-            <div><p>{{s.expertComment}}</p><p>{{s.expertAvailability}}</p></div>
+            <div ng-bind-html="s.expertComment | markdownAsHtml"></div>
+            <p>{{s.expertAvailability}}</p>
           </div>
           <section ng-if="isExpert">
             <strong ng-if="s.expertStatus == 'available'">${{s.suggestedRate.expert}}<span>/hr</span></strong>
@@ -171,7 +172,7 @@
       <div class="message">
         <img class="entry-author-image user" itemprop="image" ng-src="{{ (r.by) ? r.by.avatar : r.company.contacts[0].pic }}?s=100" />
         <h4 ng-if="r.by.name">{{r.by.name}}</h4>
-        <div ng-bind-html="r.brief | markdownHtml"></div>
+        <div ng-bind-html="r.brief | markdownAsHtml"></div>
       </div>
     </div>
 

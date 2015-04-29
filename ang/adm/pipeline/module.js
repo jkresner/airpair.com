@@ -45,10 +45,11 @@ angular.module("ADMPipeline", ["APRequestDirectives","APProfileDirectives"])
   AdmDataService.pipeline.getRequest({_id}, function (r) {
     $scope.user = r.user
     $scope.farmTweet = RequestsUtil.buildDefaultFarmTweet(r)
-    r.bookings.forEach((b)=>{
-      var o = _.find(r.orders,(oo)=>oo._id == b.orderId)
-      if (o && o.requestId == r._id) b.thisRequest = true
-    })
+    if (r.bookings)
+      r.bookings.forEach((b)=>{
+        var o = _.find(r.orders,(oo)=>oo._id == b.orderId)
+        if (o && o.requestId == r._id) b.thisRequest = true
+      })
     $scope.bookings = r.bookings
     delete r.bookings
     $scope.orders = r.orders
