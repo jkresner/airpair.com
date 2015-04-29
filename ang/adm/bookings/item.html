@@ -103,30 +103,30 @@
     <div class="request">
       <h3>Request</h3>
 
-      <div ng-if="booking.request">
-        This booking comes from <a href="/adm/pipeline/{{booking.request._id}}">{{booking.request.title}}</a>
+      <div ng-if="request">
+        This booking comes from <a href="/adm/pipeline/{{request._id}}">{{request.title}}</a>
         <br />
         <br />
-        <ul><li ng-repeat="sug in booking.request.suggested | filter: {expertStatus: 'available'}"
+        <ul><li ng-repeat="sug in request.suggested | filter: {expertStatus: 'available'}"
         ng-if="sug.expert._id != booking.expertId"
           >
           <a ng-click="swapExpert(sug._id)">Swap</a> {{sug.expert.name}}
         </li></ul>
       </div>
-      <div ng-if="!booking.request">Booking is not request associated</div>
+      <div ng-if="!request">Booking is not request associated</div>
     </div>
 
     <div class="payout">
 
       <h3>Payout</h3>
 
-      <p ng-if="!booking.order">v0 migrated booking w no associated payout</p>
+      <p ng-if="!order">v0 migrated booking w no associated payout</p>
 
-      <div ng-if="booking.order">
+      <div ng-if="order">
         Order:
-        ${{ booking.order.total }}
+        ${{ order.total }}
 
-        <a href="/v1/adm/orders/{{ booking.order._id }}">{{ booking.order._id }}</a>
+        <a href="/v1/adm/orders/{{ order._id }}">{{ order._id }}</a>
 
         <div ng-if="lineForPayout.info.paidout">
           <span style="color:green">paidout</span>
