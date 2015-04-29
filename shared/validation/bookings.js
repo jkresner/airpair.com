@@ -13,6 +13,8 @@ var validation = {
     if (!update.status) return `Booking status required`
     if (!update.datetime) return `Booking datetime required`
     if (!update.orderId) return `Booking orderId required`
+    if (update.order) return `Booking update should not include order join object`
+    if (update.request) return `Booking update should not include request join object`
 
     if (original.gcal && update.sendGCal) return `Updating gCAL events not yet supported`
 

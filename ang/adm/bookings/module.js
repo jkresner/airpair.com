@@ -29,9 +29,11 @@ angular.module("ADMBookings", [])
       },
       customers: BookingsUtil.customers(r),
       experts: BookingsUtil.experts(r),
-      booking: r,
-      lineForPayout: OrdersUtil.lineForPayout(r.order)
+      booking: _.omit(r,'order','request')
     }
+
+    if (r.order)
+      scope.lineForPayout = OrdersUtil.lineForPayout(r.order)
 
     angular.extend($scope, scope)
   }
@@ -55,7 +57,6 @@ angular.module("ADMBookings", [])
 
   $scope.releasePayout = () =>
     AdmDataService.bookings.releasePayout({_id:$scope.booking.order._id},(r) => {
-      console.log('r.order?', r)
       $scope.booking.order = r
       $scope.lineForPayout = OrdersUtil.lineForPayout(r)
     })
