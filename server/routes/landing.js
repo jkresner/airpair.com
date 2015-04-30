@@ -7,6 +7,10 @@ module.exports = function(app) {
     .param('tag', API.Tags.paramFns.getBySlug)
     // .param('landing', )
 
+    .get('/airconf2014', (req,res) => {
+      res.status(200).render(`./legacy/airconf2014.hbs`)
+    })
+
     .get('/:tag/so-welcome',
       (req, res, next) => {
         req.landing = {

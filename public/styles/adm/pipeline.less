@@ -233,7 +233,8 @@
 
 #pipelineReq {
 
-  time { font-weight:normal;font-size:9px;display:block }
+  .thisreq { font-weight:bold;color:green }
+  time { font-weight:normal;font-size:10px;display:block }
 
   > section {
     position:relative;
@@ -318,10 +319,17 @@
     }
   }
 
+  section.bookings {
+    td, th { font-size:10px;padding:2px }
+  }
+
   section.views {
     td { font-size:10px }
   }
 
+  .experts {
+    time { color:black;line-height:18px }
+  }
   section.suggested {
     .expertStatus { position:relative; }
     line-height:11px;

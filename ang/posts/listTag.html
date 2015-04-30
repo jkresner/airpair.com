@@ -16,4 +16,6 @@
     <post-tile post="p" ng-repeat="p in tagposts"></post-tile>
   </div>
 
+  <p ng-if="tagposts && tagposts.length == 0">No posts taged with <code>{{tag.name}}</code> yet. <a href="/posts/new">Start one</a>?</p>
+
 </section>

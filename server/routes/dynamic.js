@@ -49,6 +49,12 @@ module.exports = function(app) {
             canonical: `https://www.airpair.com/review/${req.review._id}`,
             noindex: true
           }
+          req.review.brief = util.htmlEscape(req.review.brief)
+          for (var sug of req.review.suggested || [])
+          {
+            if (sug.expertComment)
+              sug.expertComment = util.htmlEscape(sug.expertComment)
+          }
           cb(null,req.review)
         }))
 

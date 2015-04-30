@@ -5,7 +5,7 @@ import * as md5           from '../util/md5'
 var {ObjectId2Date,
   selectFromObject}       = require('../../shared/util')
 var Data                  = require('./experts.data')
-var {select}              = Data
+var {select,query}        = Data
 var selectCB              = select.cb
 var logging               = false
 var svc                   = new Svc(Expert, logging)
@@ -30,23 +30,14 @@ var get = {
       })
   },
 
-  getRanked(meExpert, query, cb) {
-    // $log('getRanked', query)
-    var search = { 'tags._id': { $in: query.tags } }
-    if (query.exclude) {
-      search['username'] = { $nin: query.exclude }
-      search['user.username'] = { $nin: query.exclude }
-    }
-
-    // if (query.rate)
-    // rate: { $lt: request.budget }
-
-    var opts = {fields:Data.select.matches, options: { limit: query.limit } }
-    // $log('search', search, 'limit', query.limit)
+  getRanked(meExpert, q, cb) {
+    var {tags,exclude} = q
+    var opts = {fields:Data.select.matches, options: { limit: q.limit } }
+    var search = query.ranked(tags,exclude,0)
     svc.searchMany(search, opts, selectCB.inflateList((e, experts) => {
         if (e || !experts || experts.length == 0) return cb(e,experts)
         for (var exp of experts)
-          exp.score = get.calcMojo(exp,query.tags)
+          exp.score = get.calcMojo(exp,tags)
         cb(null, _.take(_.sortBy(experts,(u)=>u.score).reverse(),75))
     }))
   },
@@ -158,7 +149,7 @@ var save = {
           r.tags = expert.tags
 
           var d = { tagsString:util.tagsString(request.tags), expertFirstName: util.firstName(expert.name),
-            requestByFullName:request.by.name,_id:r._id,accountManagerName:this.user.name }
+            requestByFullName:request.by.name,_id:request._id,accountManagerName:this.user.name }
           mailman.get('expert-suggest', d, (ee,rr) => {
             if (rr) r.suggest = { subject: rr.Subject, body: rr.Text }
             cb(e,r)

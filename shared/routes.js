@@ -19,6 +19,7 @@ module.exports = [
   '/payouts*',
   '*pair-programming*',
   '/v1/auth*',
+  '/v1/adm/orders*',
   '/login',
   '/me*',
   '/help*',

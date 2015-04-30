@@ -17,6 +17,7 @@ var get = {
 
   getByIdForAdmin(id, cb) {
     svc.getById(id, (e,r) => {
+      if (!r.orderId) return setAvatarsCB(cb)(e,r) //is a migrated booking from v0 call
       OrdersSvc.getByIdForAdmin(r.orderId, (ee,order) => {
         r.order = order
         if (!order.requestId) return setAvatarsCB(cb)(e,r)

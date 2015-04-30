@@ -288,7 +288,7 @@ module.exports = {
     "adr_address":"<span class=\"locality\">Bengaluru</span>, <span class=\"region\">Karnataka</span>, <span class=\"country-name\">India</span>",
     "formatted_address":"Bengaluru, Karnataka, India",
     "geometry":{
-      "location":{"k":12.9715987,"D":77.59456269999998},
+      "location":{"A":12.9715987,"F":77.59456269999998},
       "viewport":{
         "Ea":{"k":12.7342888,"j":13.173706},
         "wa":{"j":77.37919809999994,"k":77.88268089999997}
