@@ -1,6 +1,5 @@
 <section id="pipelineReq" ng-if="request">
 
-
   <section class="nav left">
     <a ng-href="/adm/pipeline">Back</a>
     | <a ng-href="/review/{{request._id}}" target="_blank">Review</a>
@@ -10,8 +9,6 @@
     | <a class="delete" ng-click="delete()">Delete</a>
     </span>
   </section>
-
-
 
   <section class="user right">
     <img ng-src="{{request.by.avatar}}" />
@@ -197,13 +194,15 @@
           <label><a href="/adm/experts/edit/{{s.expert._id}}" target="_blank">{{s.expert.name}}</a></label>
           <b>{{s.expert.email}}</b>
           <span class="{{s.expertStatus}}">{{s.expertStatus}}</span>
-          <div>{{s.matchedBy.type}} match::<span class="{{s.matchedBy.initials}}"> {{s.matchedBy.initials}}</span> {{ s._id | objectIdToAgoTime }}</div>
+          <div>{{s.matchedBy.type}} match::<span class="{{s.matchedBy.initials}}"> {{s.matchedBy.initials}}</span> <time>{{ s._id | objectIdToAgoTime }} (after {{ s.suggestedAfter }})</time></div>
 
           <a ng-click="removeSuggestion(s.expert._id)" class="delete">x</a>
         </div>
         <p ng-if="s.expertComment">
-          <time>{{s.reply.time | agoTime }}</time>
+          <time>{{s.reply.time | agoTime }} (after {{ s.reply.replyAfter }})</time>
           {{s.expertComment }}
+
+          <time>{{s.expertAvailability }}</time>
         </p>
         <hr />
       </div>

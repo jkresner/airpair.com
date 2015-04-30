@@ -15,7 +15,7 @@ angular.module("ADMPipeline", ["APRequestDirectives","APProfileDirectives"])
 )
 
 
-.controller('RequestCtrl', function($scope, $routeParams, $location, AdmDataService, RequestsUtil, DateTime) {
+.controller('RequestCtrl', function($scope, $routeParams, $location, AdmDataService, Util, RequestsUtil, DateTime) {
   var _id = $routeParams.id
   $scope.composeGeneric = false
 
@@ -28,6 +28,16 @@ angular.module("ADMPipeline", ["APRequestDirectives","APProfileDirectives"])
       meta.trustedLevel = ($scope.user.emailVerified) ?  1 : 0
       meta.trustedLevel += ($scope.user.googleId) ? 1 : 0
     }
+
+    (r.suggested || []).forEach((s)=>{
+      var suggestedUtc = Util.ObjectId2Moment(s._id)
+      s.suggestedAfter =
+        moment.duration(meta.submitted.diff(suggestedUtc)).humanize()
+      if (s.reply)
+        s.reply.replyAfter = moment.duration(suggestedUtc.diff(s.reply.time)).humanize()
+      // console.log('sug',meta.submitted,sug)
+    })
+
     $scope.meta = meta
     $scope.request = r
     $scope.composeGeneric = false
