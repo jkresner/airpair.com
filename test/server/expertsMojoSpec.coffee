@@ -48,6 +48,14 @@ matchmaking = ->
           DONE()
 
 
+  it 'Ranked experts must have a rate', itDone ->
+    db.ensureDocs 'Expert', [data.experts.ronr], (r) ->
+      LOGIN 'admin', ->
+        qq = 'tags=operating-system'
+        GET "/experts/mojo/rank?#{qq}", {}, (experts) ->
+          expect(experts.length).to.equal(0)
+          DONE()
+
 
 module.exports = ->
 

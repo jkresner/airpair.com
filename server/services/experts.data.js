@@ -239,6 +239,20 @@ var data = {
   },
 
   query: {
+    ranked(tags, exclude, budget) {
+      // $log('getRanked', query)
+      var q = { 'tags._id': { $in: tags }, rate: { $gt: 0 } }
+      if (exclude) {
+        q['username'] = { $nin: exclude }
+        q['user.username'] = { $nin: exclude }
+      }
+
+      // TODO add minimum rate filter
+      // if (query.rate)
+      // rate: { $lt: request.budget }
+
+      return q
+    }
   },
 
   options: {

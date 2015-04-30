@@ -15,7 +15,7 @@ angular.module("ADMPipeline", ["APRequestDirectives","APProfileDirectives"])
 )
 
 
-.controller('RequestCtrl', function($scope, $routeParams, $location, AdmDataService, RequestsUtil, DateTime) {
+.controller('RequestCtrl', function($scope, $routeParams, $location, AdmDataService, Util, RequestsUtil, DateTime) {
   var _id = $routeParams.id
   $scope.composeGeneric = false
 
@@ -28,6 +28,16 @@ angular.module("ADMPipeline", ["APRequestDirectives","APProfileDirectives"])
       meta.trustedLevel = ($scope.user.emailVerified) ?  1 : 0
       meta.trustedLevel += ($scope.user.googleId) ? 1 : 0
     }
+
+    (r.suggested || []).forEach((s)=>{
+      var suggestedUtc = Util.ObjectId2Moment(s._id)
+      s.suggestedAfter =
+        moment.duration(meta.submitted.diff(suggestedUtc)).humanize()
+      if (s.reply)
+        s.reply.replyAfter = moment.duration(suggestedUtc.diff(s.reply.time)).humanize()
+      // console.log('sug',meta.submitted,sug)
+    })
+
     $scope.meta = meta
     $scope.request = r
     $scope.composeGeneric = false
@@ -45,19 +55,27 @@ angular.module("ADMPipeline", ["APRequestDirectives","APProfileDirectives"])
   AdmDataService.pipeline.getRequest({_id}, function (r) {
     $scope.user = r.user
     $scope.farmTweet = RequestsUtil.buildDefaultFarmTweet(r)
+    if (r.bookings)
+      r.bookings.forEach((b)=>{
+        var o = _.find(r.orders,(oo)=>oo._id == b.orderId)
+        if (o && o.requestId == r._id) b.thisRequest = true
+      })
+    $scope.bookings = r.bookings
+    delete r.bookings
+    $scope.orders = r.orders
+    delete r.orders
+    $scope.requests = r.prevs
+    delete r.prevs
+
     AdmDataService.billing.getUserPaymethods({_id:r.userId}, function (pms) {
       $scope.paymethods = pms
       setScope(r)
     })
+
     AdmDataService.getUsersViews({_id:r.userId}, function (views) {
       $scope.views = views.reverse()
     })
 
-    var orderQuery = { user:r.user, start: DateTime.dawn(), end: moment() }
-    if (r.user) //slight chance account is deleted...
-      AdmDataService.bookings.getOrders(orderQuery, (orders) =>$scope.orders = orders)
-
-    $scope.requests = r.prevs
   },
     () => $location.path('/adm/pipeline')
   )
@@ -69,8 +87,9 @@ angular.module("ADMPipeline", ["APRequestDirectives","APProfileDirectives"])
   $scope.removeSuggestion = (expertId) =>
     AdmDataService.pipeline.removeSuggestion({_id, expertId}, setScope)
 
-  $scope.update = () =>
-    AdmDataService.pipeline.updateRequest($scope.request, setScope)
+  $scope.update = () => {
+    AdmDataService.pipeline.updateRequest(_.omit($scope.request,'user','prevs'), setScope)
+  }
 
   $scope.junk = () => {
     $scope.request.adm.owner = $scope.session.email.substring(0,2)

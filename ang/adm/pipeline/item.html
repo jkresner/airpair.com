@@ -1,6 +1,5 @@
 <section id="pipelineReq" ng-if="request">
 
-
   <section class="nav left">
     <a ng-href="/adm/pipeline">Back</a>
     | <a ng-href="/review/{{request._id}}" target="_blank">Review</a>
@@ -10,8 +9,6 @@
     | <a class="delete" ng-click="delete()">Delete</a>
     </span>
   </section>
-
-
 
   <section class="user right">
     <img ng-src="{{request.by.avatar}}" />
@@ -44,7 +41,11 @@
         <span ng-if="orders && orders.length == 0">No orders</span>
         <ul ng-if="orders && orders.length > 0">
           <li>ORDERS</li>
-          <li ng-repeat="o in orders"><a href="/v1/adm/orders/{{o._id}}" target="_blank">{{o.utc | locaTime : 'YYYY DD MMM' }}</a> ${{o.total}}</li>
+          <li ng-repeat="o in orders">
+            <a href="/v1/adm/orders/{{o._id}}" target="_blank">{{o.utc | locaTime : 'YYYY DD MMM' }}</a>
+            <span ng-if="o.requestId != request._id">${{o.total}}</span>
+            <b class="thisreq" ng-if="o.requestId == request._id">${{o.total}}</b>
+          </li>
         </ul>
         <span ng-if="requests && requests.length == 0">No requests</span>
         <ul ng-if="requests && requests.length > 0">
@@ -143,11 +144,69 @@
       <p><a ng-click="farm(farmTweet)" class="btn">Tweet</a></p>
     </div>
 
-    <hr />
 
-    <div ng-if="request.status == 'waiting' || request.status=='review'">
+    <div ng-if="request.status == 'waiting' || request.status=='review'" style"clear:both">
       <a href="/matchmaking/{{request._id}}" class="btn">Match experts</a>
     </div>
+
+  </section>
+
+  <section class="bookings right">
+
+    <p ng-if="bookings && bookings.length == 0">No airpairing yet by this customer</p>
+
+    <table class="table table-condensed" ng-if="bookings && bookings.length > 0">
+      <tr>
+        <th style="width:80px">Booked</th>
+        <th style="width:80px"></th>
+        <th style="width:80px">For</th>
+        <th style="width:240px"></th>
+        <th>Feedback</th>
+      </tr>
+      <tr ng-repeat="b in bookings">
+        <td>
+          <b ng-if="b.thisRequest" class="thisreq">{{b._id | objectIdToDate : 'YYYY MMMDD' }}</b>
+          <span ng-if="!b.thisRequest">{{b._id | objectIdToDate : 'YYYY MMMDD' }}</span>
+        </td>
+        <td><a href="/adm/experts/{{b.expertId }}">{{b.participants[1].info.name }}</a></td>
+        <td><a href="/adm/bookings/{{b._id}}" target="_blank"><b>{{b.minutes}}min {{b.type}}</b> </a></td>
+        <td>{{b.datetime | publishedTime : 'MMM DD HH:mm' }}
+          <br />{{b.status}}
+        </td>
+        <td>
+          -
+        </div>
+      </td>
+    </tr>
+    </table>
+
+  </section>
+
+
+  <section class="experts left">
+
+    <section class="suggested">
+      <div ng-repeat="s in request.suggested" class="expertStatus">
+        <img ng-src="{{s.expert.avatar}}?s=60" class="user {{s.expertStatus}}" />
+        <div>
+          <label>${{s.suggestedRate.total}} /
+          ${{s.suggestedRate.expert}}</label>
+          <label><a href="/adm/experts/edit/{{s.expert._id}}" target="_blank">{{s.expert.name}}</a></label>
+          <b>{{s.expert.email}}</b>
+          <span class="{{s.expertStatus}}">{{s.expertStatus}}</span>
+          <div>{{s.matchedBy.type}} match::<span class="{{s.matchedBy.initials}}"> {{s.matchedBy.initials}}</span> <time>{{ s._id | objectIdToAgoTime }} (after {{ s.suggestedAfter }})</time></div>
+
+          <a ng-click="removeSuggestion(s.expert._id)" class="delete">x</a>
+        </div>
+        <p ng-if="s.expertComment">
+          <time>{{s.reply.time | agoTime }} (after {{ s.reply.replyAfter }})</time>
+          {{s.expertComment }}
+
+          <time>{{s.expertAvailability }}</time>
+        </p>
+        <hr />
+      </div>
+    </section>
 
   </section>
 
@@ -169,31 +228,6 @@
       </td>
     </tr>
     </table>
-
-  </section>
-
-  <section class="experts left">
-
-    <section class="suggested">
-      <div ng-repeat="s in request.suggested" class="expertStatus">
-        <img ng-src="{{s.expert.avatar}}?s=60" class="user {{s.expertStatus}}" />
-        <div>
-          <label>${{s.suggestedRate.total}} /
-          ${{s.suggestedRate.expert}}</label>
-          <label><a href="/adm/experts/edit/{{s.expert._id}}" target="_blank">{{s.expert.name}}</a></label>
-          <b>{{s.expert.email}}</b>
-          <span class="{{s.expertStatus}}">{{s.expertStatus}}</span>
-          <div>{{s.matchedBy.type}} match::<span class="{{s.matchedBy.initials}}"> {{s.matchedBy.initials}}</span> {{ s._id | objectIdToAgoTime }}</div>
-
-          <a ng-click="removeSuggestion(s.expert._id)" class="delete">x</a>
-        </div>
-        <p ng-if="s.expertComment">
-          <time>{{s.reply.time | agoTime }}</time>
-          {{s.expertComment }}
-        </p>
-        <hr />
-      </div>
-    </section>
 
   </section>
 
