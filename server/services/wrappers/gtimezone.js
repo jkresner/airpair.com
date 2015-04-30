@@ -11,7 +11,7 @@ var wrapper = {
   getTimezoneFromCoordinates(k, d, timestamp, cb) {
     //-- Todo, figure out the timestamp approach to fix funny reported timezones
     if (!timestamp) timestamp = moment().unix()
-    // $log('getTimezoneFromCoordinates'.yellow, k)
+    if (logging) $log('getTimezoneFromCoordinates'.yellow, k, d, timestamp)
     wrapper.api.data(k,d,timestamp,cb)
   }
 
