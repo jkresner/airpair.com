@@ -81,7 +81,24 @@ module.exports = {
       remaining.push(li.info.remaining)
     })
 
+    //-- How does this work if lines are for different experts?
     return _.reduce(remaining, function(memo, num){ return memo + num; }, 0)
+  },
+
+  getExpertsWithAvailableMins(orders) {
+    if (!orders || orders.length == 0) return {}
+    var experts = {}
+    orders.forEach((o) =>
+      o.lineItems.forEach((li) => {
+        if (li.type == 'deal') {
+          if (!experts[li.info.expert._id])
+            experts[li.info.expert._id] = { _id: li.info.expert._id, name: li.info.expert.name, lines: [li], remaining: li.info.remaining }
+          else
+            experts[li.info.expert._id].remaining += li.info.remaining
+        }
+      })
+    )
+    return _.values(experts)
   },
 
   ordersToLinesWithRunningBalance(orders) {
