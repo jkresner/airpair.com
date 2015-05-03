@@ -40,6 +40,10 @@ function upsertSmart(upsert, existing, cb) {
   var {sessionID} = this
   Data.query.existing(upsert.email)
   var _id = (existing) ? existing._id : this.svc.newId()
+
+  //-- 2015.05.03 Apparently mongoose lowercase:true does not work
+  upsert.email = (upsert.email) ? upsert.email.toLowerCase() : null
+
   User.findOneAndUpdate({_id}, upsert, { upsert: true },
     wrap(`upsert [${_id}][existing:${existing!=null}] [${JSON.stringify(upsert)}] []`, cb, (user) => {
 
