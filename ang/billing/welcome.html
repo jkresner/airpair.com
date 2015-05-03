@@ -4,7 +4,7 @@
   </ol>
 </header>
 
-<section id="billing">
+<section ng-if="orders" id="billing">
 
   <div class="welcome" ng-if="!paymethods || paymethods.length == 0">
 
@@ -43,7 +43,6 @@
 
     <hr />
 
-
   </div>
 
   <div class="info" ng-if="paymethods && paymethods.length > 0">
@@ -66,6 +65,14 @@
     No transaction history yet. <a href="/experts">Book an expert</a> to get started.
     </p>
 
+  </div>
+
+  <div class="deals" ng-if="expertsWithRemainingTime.length > 0">
+    <h2>Experts</h2>
+    <div ng-repeat="exp in expertsWithRemainingTime">
+      {{ exp.name }} | {{ exp.remaining }} mins remaining ::
+      <a href="/billing/book/{{exp._id}}">Book</a>
+    </div>
   </div>
 
   <div class="history" ng-if="orders && orders.length > 0">
