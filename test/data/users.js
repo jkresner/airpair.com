@@ -136,6 +136,8 @@ module.exports = {
   tard: { name: "Ted Jardine", email: "tj@test.com"},
   tedj: { name: "Ted Jardine", email: "tedj@terst.com"},
 
+  akum: { name : "Ash Kumar", email : "ashishlive@gmail.com" },
+
   //*** TO SETUP AN ADMIN TOKEN: => /auth/github?returnTo=/me&scope=user,repo,admin:org
   jkya: { name:"Jonathon Krezner",email:"jkresner@yahooo.com.au",
     social: { gh: { username: "jkyahoo", token: { token: "b9d09cce1129b4ee1f4b97cc44c3b753cb9d8795" } } } },
