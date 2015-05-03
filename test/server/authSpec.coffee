@@ -124,7 +124,6 @@ login = ->
         setTimeout checkCohort(u._id), 50
 
 
-
   it 'Can signup with local credentials then login with google of same email', itDone ->
     db.ensureDoc 'User', data.users.aone, (e, aone) ->
       expect(aone.email).to.equal('airpairone001@gmail.com')
@@ -136,6 +135,42 @@ login = ->
           expect(r.google._json.email).to.equal('airpairone001@gmail.com')
           expect(r.email).to.equal('airpairone001@gmail.com')
           DONE()
+
+
+  it 'Signup / login always uses lowercase and handles mixed-case input', itDone ->
+    akumD = SETUP.userData('akum')
+    akumD_google =
+      "provider" : "google",
+      "id" : "1999923803#{timeSeed()}",
+      "displayName" : "A Kumm",
+      "name" : { "familyName" : "AA", "givenName" : "Kumm" },
+      "emails" : [ {"value" : "admin@airpair.com" }],
+      "_json" :
+          "id" : "199992380360991119999",
+          "email" : akumD.email.toUpperCase(),
+          "name" : "AA Kumm",
+          "given_name" : "AA",
+          "family_name" : "Kum",
+          "link" : "https://plus.google.com/117132380360243205611",
+          "picture" : "https://lh3.googleusercontent.com/-NKYL9eK5Gis/AAAAAAAAAAI/AAAAAAAABKU/25K0BTOoa8c/photo.jpg",
+          "gender" : "male"
+    lower = akumD.email.toLowerCase()
+    akumD.email = akumD.email.toUpperCase()
+    http(global.app).post('/v1/auth/signup').send(akumD).expect(200)
+      .end (err, resp) ->
+        if (err) then throw err
+        expect(resp.body.email).to.equal(lower)
+        # $log('r.email', akumD.email) ## login with caps email
+        http(global.app).post('/v1/auth/login').send(akumD).expect(200)
+        .end (err2, resp2) ->
+          if (err) then throw err
+          expect(resp2.body._id).to.exist
+          svcCtx = SETUP.userSession('akum')
+          UserService.googleLogin.call svcCtx, akumD_google, (ee,user) ->
+            expectIdsEqual(user._id,resp2.body._id)
+            expect(user.google).to.exist
+            expect(user.email).to.equal(lower)
+            DONE()
 
 
   it 'Google login for existing v1 user works after played with singup form', itDone ->

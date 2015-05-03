@@ -1,5 +1,4 @@
 require('./directives');
-var OrdersUtil = require('./../../shared/orders')
 
 angular.module("APBilling", ['ngRoute', 'APPaymentDirectives', 'APBillingDirectives','APExpertsDirectives'])
 
@@ -28,9 +27,7 @@ angular.module("APBilling", ['ngRoute', 'APPaymentDirectives', 'APBillingDirecti
   return this
 })
 
-.controller('BillingCtrl', function($scope, DataService, submitPaymentText) {
-
-  $scope.orders = []
+.controller('BillingCtrl', function($scope, DataService, submitPaymentText, OrdersUtil) {
 
   var getPayMethods = function() {
     DataService.billing.getPaymethods({},(r) => {
@@ -43,7 +40,10 @@ angular.module("APBilling", ['ngRoute', 'APPaymentDirectives', 'APBillingDirecti
   }
   getPayMethods()
 
-  DataService.billing.getMyOrders({}, (r) => $scope.orders = r)
+  DataService.billing.getMyOrders({}, (r) => {
+    $scope.orders = r
+    $scope.expertsWithRemainingTime = OrdersUtil.getExpertsWithAvailableMins(r)
+  })
 
   $scope.orderSuccess = (r) => {
     $scope.orders = _.union($scope.orders,[r])
@@ -110,7 +110,7 @@ angular.module("APBilling", ['ngRoute', 'APPaymentDirectives', 'APBillingDirecti
   return {
     template: require('./bookExpert.html'),
     link() { },
-    controller($rootScope, $scope, $q, $routeParams, $location, DataService) {
+    controller($rootScope, $scope, $q, $routeParams, $location, DataService, OrdersUtil) {
       $scope.booking = { // payMethodId: null,
         credit: 0, minutes: 120, type: "private", time: moment().add(1, 'month')
       }
@@ -182,7 +182,7 @@ angular.module("APBilling", ['ngRoute', 'APPaymentDirectives', 'APBillingDirecti
         $scope.availableMinutes = OrdersUtil.getAvailableMinutesRemaining(lines)
         if ($scope.availableMinutes > 0) $scope.redeemableTime = [{val:30,name:'30 mins'}]
         if ($scope.availableMinutes > 59) $scope.redeemableTime.push({val:60,name:'60 min'})
-        if ($scope.availableMinutes > 89) $scope.redeemableTime.push({val:90,name:'180 min'})
+        if ($scope.availableMinutes > 89) $scope.redeemableTime.push({val:90,name:'90 min'})
         if ($scope.availableMinutes > 119) $scope.redeemableTime.push({val:120,name:'2 hr'})
         if ($scope.availableMinutes > 170) $scope.redeemableTime.push({val:180,name:'3 hr'})
         $scope.booking.dealId = lines[0].info.deal._id
