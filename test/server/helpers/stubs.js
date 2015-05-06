@@ -76,7 +76,7 @@ var stubs = {
 
   stubGoogleTimezone(response) {
     if (withoutStubs) return emptyStub()
-    return sinon.stub(Wrappers.Timezone,'getTimezoneFromCoordinates', (k,D,n,cb) => {
+    return sinon.stub(Wrappers.Timezone,'getTimezoneFromCoordinates', (loc,n,cb) => {
       cb(null, response || data.wrappers.timezone_melbourne)
     })
   },

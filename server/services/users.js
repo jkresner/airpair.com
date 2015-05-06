@@ -331,10 +331,9 @@ var save = {
   },
 
   changeLocationTimezone(locationData, cb) {
-    var lat = locationData.geometry.location.A || locationData.geometry.location.k
-    var lon = locationData.geometry.location.F || locationData.geometry.location.D
+
     var timeZoneTimestamp = moment().unix()
-    Wrappers.Timezone.getTimezoneFromCoordinates(lat, lon, timeZoneTimestamp, (e,r) => {
+    Wrappers.Timezone.getTimezoneFromCoordinates(locationData, timeZoneTimestamp, (e,r) => {
       if (logging) $log('changeLocationTimezone'.cyan, e, r)
       if (e) return cb(e)
 
