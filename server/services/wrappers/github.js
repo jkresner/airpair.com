@@ -333,3 +333,14 @@ var gh = {
 var wrapper = _.wrapFnList(gh, wrap)
 wrapper.init = init
 module.exports = wrapper
+
+// Migrating old private posts
+// git checkout -b edit
+// git push origin edit
+// git checkout master
+// rm post.md
+// git add .
+// git commit -m 'Migrating post to open source repo'
+// git push origin master
+
+

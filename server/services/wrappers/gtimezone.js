@@ -8,11 +8,18 @@ var wrapper = {
     wrapper.api.key(config.timezone.google.apiKey)
   },
 
-  getTimezoneFromCoordinates(k, d, timestamp, cb) {
+  getTimezoneFromCoordinates(locationData, timestamp, cb)
+  {
+    var location = locationData.geometry.location
+
+    //-- Damn google places reponses keep changing...
+    var lat = location.A || location.k || location.j
+    var lon = location.F || location.D || location.C
+
     //-- Todo, figure out the timestamp approach to fix funny reported timezones
     if (!timestamp) timestamp = moment().unix()
-    if (logging) $log('getTimezoneFromCoordinates'.yellow, k, d, timestamp)
-    wrapper.api.data(k,d,timestamp,cb)
+    if (logging) $log('getTimezoneFromCoordinates'.yellow, lat, lon, timestamp)
+    wrapper.api.data(lat,lon,timestamp,cb)
   }
 
 }
