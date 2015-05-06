@@ -31,8 +31,8 @@ angular.module("ADMPipeline", ["APRequestDirectives","APProfileDirectives"])
 
     (r.suggested || []).forEach((s)=>{
       var suggestedUtc = Util.ObjectId2Moment(s._id)
-      s.suggestedAfter =
-        moment.duration(meta.submitted.diff(suggestedUtc)).humanize()
+      if (meta && meta.submitted)
+        s.suggestedAfter = moment.duration(meta.submitted.diff(suggestedUtc)).humanize()
       if (s.reply)
         s.reply.replyAfter = moment.duration(suggestedUtc.diff(s.reply.time)).humanize()
       // console.log('sug',meta.submitted,sug)
