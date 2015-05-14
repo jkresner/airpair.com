@@ -1,8 +1,9 @@
 var logging = true
-var maxRetries = 4
+var maxRetries = 3
 
 
 var verboseErrorCB = (cb, err, fn, dataString) => {
+  $log('github.dataString'.red, err)
   $log('github.error'.red, fn.white, dataString, err)
   cb(err)
 }
@@ -25,27 +26,31 @@ var getGithubUser = function(user) {
 var wrap = (fn, fnName) => {
 
   var fnWithAuth = function () {
-    var user = arguments[0]
-    var cb = arguments[arguments.length-1]
+    var args = arguments
+    var user = args[0]
+    var cb = args[args.length-1]
     cb.retries = maxRetries
-    arguments[arguments.length-1] = (e,r) => {
+    args[args.length-1] = (e,r) => {
       cb.retries = cb.retries - 1
       if (cb.retries > 0 && e &&
         (e.message.toLowerCase().indexOf("not found") != -1 ||
          e.message.toLowerCase().indexOf("repository is empty") != -1
         )) {
-        $log(`gh.${fnName} retry not found`, cb.retries, e)
+        $log(`gh.${fnName} retry not found`.magenta, cb.retries, e)
         return _.delay(fnWrapped, 1000)
       }
+
+      $log(`gh.${fnName}.cb.retries`.magenta, cb.retries)
       if (cb.retries < 3)
-        $log(`gh.${fnName}.cb.retries`, cb.retries)
+        $log(`gh.${fnName}.cb.retries`.yellow, cb.retries)
       cb(e,r)
     }
 
     var fnWrapped = () => {
       setToken(user)
-      arguments[arguments.length-1].retries = cb.retries
-      fn.apply(this, arguments)
+      args[args.length-1].retries = cb.retries
+      $log(`gh.${fnName}.cb.retries`.blue, cb.retries)
+      fn.apply(this, args)
     }
     fnWrapped()
   }
@@ -178,6 +183,7 @@ var gh = {
   // },
 
   getPullRequests(user, owner, repo, cb) {
+    $log('getPullRequests', this.user)
     gh.api.pullRequests.getAll({ user: owner, repo, state: 'all', per_page: 100 }, (e,r) => {
       if (e) return verboseErrorCB(cb, e, 'getPullRequests', `${owner}/${repo} ${user.email} ${user.id}`)
       if (r && r.meta) delete r.meta
