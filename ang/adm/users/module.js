@@ -3,8 +3,8 @@ angular.module("ADMUsers", [])
 .config(function(apRouteProvider) {
 
   var route = apRouteProvider.route
-  route('/v1/adm/users', 'Users', require('./list.html'))
-  route('/v1/adm/users/:id', 'User', require('./item.html'))
+  route('/adm/users', 'Users', require('./list.html'))
+  route('/adm/users/:id', 'User', require('./item.html'))
 
 })
 

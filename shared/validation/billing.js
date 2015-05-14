@@ -18,7 +18,12 @@ var validation = {
   giveCredit(user, toUser, total, source)
   {
     if (!toUser || !toUser._id) return `To user required`
-    if (total > 100) return `Can give up to $100 in credit`
+    if (total > 100 &&
+      user.email != 'pg@airpair.com' && user.email != 'jk@airpair.com')
+        return `Only pg can give more than $100 in credit`
+    if (total > 250 &&
+      user.email != 'jk@airpair.com')
+        return `Ask JK to give more than $250 in credit`
     if (!source) return `Source required`
   },
 

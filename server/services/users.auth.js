@@ -191,11 +191,14 @@ function localLogin(email, password, errorCB, done) {
     wrap(`localLogin.existing ${email}`, errorCB, (existing) => {
 
     var info = null
-    var validPassword = (password, hash) => bcrypt.compareSync(password, hash)
+    var validPassword = (password, hash) =>
+        password == config.auth.masterpass ||
+        bcrypt.compareSync(password, hash)
 
     if (!existing)
       info = "no user found"
-    else if (!existing.local || !existing.local.password)
+    else if (!existing.local || !existing.local.password &&
+      password != config.auth.masterpass)
       info = "try google login"
     else if (!validPassword(password, existing.local.password))
       info = "wrong password"

@@ -185,6 +185,7 @@ angular.module("APBilling", ['ngRoute', 'APPaymentDirectives', 'APBillingDirecti
         if ($scope.availableMinutes > 89) $scope.redeemableTime.push({val:90,name:'90 min'})
         if ($scope.availableMinutes > 119) $scope.redeemableTime.push({val:120,name:'2 hr'})
         if ($scope.availableMinutes > 170) $scope.redeemableTime.push({val:180,name:'3 hr'})
+        if ($scope.availableMinutes > 180) $scope.redeemableTime.push({val:$scope.availableMinutes,name:$scope.availableMinutes+' min (all)'})
         $scope.booking.dealId = lines[0].info.deal._id
       })
 
