@@ -1,6 +1,7 @@
 module.exports = [
   '/v1',
   '/bookings',
+  '/booking/*',
   '/bookings/*',
   '/dashboard',
   '/office',

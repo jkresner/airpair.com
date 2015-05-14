@@ -60,10 +60,10 @@
         <a href="{{ booking.recordings[booking.recordings.length-1].hangoutUrl }}">Join Hangout</a>
       </div>
       <div ng-if="hangoutState.complete">
-        <ul>
-          Watch your AirPair session at
+        <ul ng-if="booking && booking.recordings.length > 0">
+          Watch your AirPair session
           <li ng-repeat="recording in booking.recordings">
-            <a target="youTubePreview" href="http://youtube.com/watch?v={{recording.data.youTubeId}}">{{recording.data.description}}</a>
+            <div ng-if="recording.data.youTubeId" youtube-id="recording.data.youTubeId" youtube-embed></div>
           </li>
         </ul>
       </div>
