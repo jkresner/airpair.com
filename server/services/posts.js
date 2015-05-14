@@ -55,7 +55,9 @@ var get = {
   },
 
   getByIdForContributors(post, cb) {
-    github2.getPullRequests('admin', org, post.slug, (e, pullRequests) => {
+    $log('getByIdForContributors'.yellow)
+    analytics.track(this.user, this.sessionID, 'getPullRequests', {slug:post.slug},null,()=>{})
+    github2.getPullRequests.call(this, 'admin', org, post.slug, (e, pullRequests) => {
       post.pullRequests = selectFromObject({pullRequests}, select.pr).pullRequests
       var {openPRs,closedPRs,acceptedPRs} = PostsUtil.calcStats(post)
       if (!post.stats
