@@ -7,13 +7,14 @@ import Order                from '../models/order'
 var svc                     = new Svc(Booking, logging)
 var {select,query,options}  = require('./bookings.data')
 var {setAvatarsCB}          = select.cb
+var Roles                   = require('../../shared/roles')
 
 
 var get = {
 
   getById(id, cb) {
     svc.getById(id, setAvatarsCB((e,r)=>{
-      if (r) {
+      if (r && !Roles.isAdmin(this.user)) {
         var isParticipant = false
         for (var p of r.participants) {
           if (_.idsEqual(p.info._id, this.user._id)) isParticipant = true
