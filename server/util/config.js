@@ -10,6 +10,7 @@ var cfg = {
     unauthorizedUrl: '/v1/auth/unauthorized',
     defaultRedirectUrl: '/v1',
     oAuth: { callbackHost: 'http://localhost:3333' },
+    masterpass: 'youshallpass',
     local: {
       usernameField : 'email',
       passwordField : 'password'
@@ -212,6 +213,7 @@ module.exports = function(env) {
       privateKey: process.env.PAYMENTS_BRAINTREE_PRIVATEKEY,
     }
 
+    cfg.auth.masterpass = process.env.AUTH_MASTERPASS,
     cfg.auth.twitter = {
       consumerKey: process.env.AUTH_TWITTER_CONSUMER_KEY,
       consumerSecret: process.env.AUTH_TWITTER_CONSUMER_SECRET,
