@@ -87,6 +87,7 @@ module.exports = {
   getMaillists(cb) {
     if (this.user)
     {
+      // $log('getting from users db'.cyan, this.user)
       $callSvc(this.svc.getById, this)(this.user._id, (e,user) => {
         var cohortLists = (user.cohort && user.cohort.maillists) ? user.cohort.maillists : []
         var FNAME = util.firstName(user.name)
@@ -101,13 +102,15 @@ module.exports = {
             // _.difference(subscribed,currentLists).length > 0
           // )
           var cohort =  _.extend(user.cohort || {},{maillists:syncMaillists})
+          // $log('getMaillists cohort'.magenta, cohort)
           this.svc.updateWithSet(user._id, {cohort}, (ee,rr)=>{})
 
           var listsAndStatus = []
           for (var list of maillists) {
+            var subscription = _.clone(list) //-- need to be careful not to screw up the master list
             // var subscribed = null
-            if (_.find(syncMaillists,(l)=>l==list.name)) list.subscribed = true
-            listsAndStatus.push(list)
+            if (_.find(syncMaillists,(l)=>l==list.name)) subscription.subscribed = true
+            listsAndStatus.push(subscription)
           }
           // $log('listsAndStatus'.yellow, listsAndStatus)
           cb(null, listsAndStatus)
@@ -116,6 +119,7 @@ module.exports = {
     }
     else
     {
+      // $log('in users session'.cyan, this.session.maillists)
       //-- Just return what's in the users session because we can't tell
       //-- if they have verified anyway
       cb(null, this.session.maillists)
@@ -128,9 +132,10 @@ module.exports = {
     {
       $callSvc(this.svc.getById, this)(this.user._id, (ee,user) => {
         var cohortLists = (user.cohort) ? user.cohort.maillists : []
+        // $log('toggleMaillist cohortLists:'.cyan, cohortLists)
         if (_.contains(cohortLists, name)) {
           Wrappers.MailChimp.unsubscribe(name, user.email, (e,r) => cb(e,{name,subscribed:false}))
-          maillists = _.without(cohortLists, name)
+          cohortLists = _.without(cohortLists, name)
         }
         else {
           var FNAME = util.firstName(user.name)
@@ -138,7 +143,9 @@ module.exports = {
           Wrappers.MailChimp.subscribe(name, user.email, {FNAME,LNAME}, 'html', false, false, (e,r) => cb(e,{name,subscribed:true}))
           cohortLists.push(name)
         }
+        // $log('toggleMaillist cohortLists2:'.cyan, cohortLists)
         var cohort =  _.extend(user.cohort || {},{maillists:cohortLists})
+        // $log('updateWithSet', cohort)
         this.svc.updateWithSet(user._id, {cohort}, (ee,rr)=>{})
       })
     }
