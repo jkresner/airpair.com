@@ -40,7 +40,7 @@ module.exports = -> describe "Admin".subspec, ->
           DONE()
 
 
-  it 'Pipeliner can farm a new request', itDone ->
+  it.only 'Pipeliner can farm a new request', itDone ->
     d = type: 'other', tags: [data.tags.node]
     SETUP.newCompleteRequestForAdmin 'hbri', d, (r) ->
       PUT "/adm/requests/#{r._id}/message", { type: 'received', subject: "s", body: "b" }, {}, (r1) ->
@@ -62,7 +62,7 @@ module.exports = -> describe "Admin".subspec, ->
           expect(adm1.closed).to.be.undefined
           expect(r1.messages.length).to.equal(1)
           PUT "/adm/requests/#{r._id}/farm", { tweet }, {status:403}, (rFail) ->
-            expectStartsWith(rFail.message,'Can not share request once')
+            expectStartsWith(rFail.message,'Can only share request once')
             DONE()
 
 
