@@ -42,6 +42,7 @@ module.exports = -> describe "API".subspec, ->
       SETUP.addAndLoginLocalUser 'evan', (s) ->
         d = type: 'braintree', token: braintree_test_nouce, name: 'Default Card', makeDefault: true
         POST '/billing/paymethods', d, {}, (r) ->
+          # $log('r', r)
           expect(r).to.exist
           expect(r.type).to.equal('braintree')
           expect(r.name).to.equal('Default Card')
