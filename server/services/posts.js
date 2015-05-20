@@ -188,7 +188,7 @@ var get = {
     svc.searchMany(q, options, selectCB.addUrl((e,r) => {
       cb(null, {
         featured: r.splice(0,99),
-        archive: (r.length > 99) ? r.splice(99) : []
+        archive: r || []
       })
     }))
   },
