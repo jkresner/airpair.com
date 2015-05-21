@@ -40,7 +40,6 @@ var wrap = (fn, fnName) => {
         return _.delay(fnWrapped, 1000)
       }
 
-      $log(`gh.${fnName}.cb.retries`.magenta, cb.retries)
       if (cb.retries < 3)
         $log(`gh.${fnName}.cb.retries`.yellow, cb.retries)
       cb(e,r)
@@ -49,7 +48,7 @@ var wrap = (fn, fnName) => {
     var fnWrapped = () => {
       setToken(user)
       args[args.length-1].retries = cb.retries
-      $log(`gh.${fnName}.cb.retries`.blue, cb.retries)
+      // $log(`gh.${fnName}.cb.retries`.blue, cb.retries)
       fn.apply(this, args)
     }
     fnWrapped()
@@ -183,7 +182,7 @@ var gh = {
   // },
 
   getPullRequests(user, owner, repo, cb) {
-    $log('getPullRequests', this.user)
+    $log('gh.getPullRequests'.yellow, repo.white, this.user)
     gh.api.pullRequests.getAll({ user: owner, repo, state: 'all', per_page: 100 }, (e,r) => {
       if (e) return verboseErrorCB(cb, e, 'getPullRequests', `${owner}/${repo} ${user.email} ${user.id}`)
       if (r && r.meta) delete r.meta

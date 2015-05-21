@@ -55,9 +55,9 @@ var get = {
   },
 
   getByIdForContributors(post, cb) {
-    $log('getByIdForContributors'.yellow)
     analytics.track(this.user, this.sessionID, 'getPullRequests', {slug:post.slug},null,()=>{})
-    github2.getPullRequests.call(this, 'admin', org, post.slug, (e, pullRequests) => {
+
+    var done = (e, pullRequests) => {
       post.pullRequests = selectFromObject({pullRequests}, select.pr).pullRequests
       var {openPRs,closedPRs,acceptedPRs} = PostsUtil.calcStats(post)
       if (!post.stats
@@ -71,7 +71,11 @@ var get = {
         svc.update(post._id, post, selectCB.statsView(cb))
       } else
         selectCB.statsView(cb)(null, post)
-    })
+    }
+
+    cache.pullRequests(post.slug, (cb) => {
+      github2.getPullRequests.call(this, 'admin', org, post.slug, cb)
+    }, done)
   },
 
   getByIdForSubmitting(post, cb) {
