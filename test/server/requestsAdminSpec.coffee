@@ -40,7 +40,7 @@ module.exports = -> describe "Admin".subspec, ->
           DONE()
 
 
-  it.only 'Pipeliner can farm a new request', itDone ->
+  it 'Pipeliner can farm a new request', itDone ->
     d = type: 'other', tags: [data.tags.node]
     SETUP.newCompleteRequestForAdmin 'hbri', d, (r) ->
       PUT "/adm/requests/#{r._id}/message", { type: 'received', subject: "s", body: "b" }, {}, (r1) ->
