@@ -131,6 +131,7 @@ angular.module('APSvcAdmin', [])
     }
 
     this.reports = {
-      getOrdersReport: GET((d)=>`/adm//orders/reports`)
+      getOrdersReport: GET((d)=>`/adm/reports/orders`),
+      getRequestReport: GET((d)=>`/adm/reports/requests`),
     }
   })
