@@ -43,7 +43,7 @@ require('./matchmaking/module.js');
 angular.module('ADM', [
   'ngRoute', 'ui.bootstrap', 'ui.bootstrap.datetimepicker', 'APViewData',
   'APSvcSession', 'APSvcAdmin', 'APDataSvc', 'APNotifications', 'APRoutes', 'APUtil',
-  'APFilters', 'APFormsDirectives', 'APInputs', 'APMailTemplates', 'APHangouts',
+  'APFilters', 'APFormsDirectives', 'APInputs', 'APTagInput', 'APMailTemplates', 'APHangouts',
   'ADMPipeline',
   'ADMPosts',
   'ADMUsers',
