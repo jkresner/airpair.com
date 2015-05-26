@@ -87,6 +87,15 @@ var util = {
       util.dateInRange(moment(datetime),util.datetime[start](),util.datetime[end]())
   },
 
+  dehumanize(durationStr) {
+    if (!durationStr) return moment.duration()
+    if (durationStr == "a minute") durationStr = "1 minutes"
+    if (durationStr == "an hour") durationStr = "1 hours"
+    var d = {}
+    var bits = durationStr.split(' ')
+    d[bits[1]] = parseInt(bits[0])
+    return moment.duration(d)
+  },
 
   dateInRange(date, start, end)
   {

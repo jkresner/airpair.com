@@ -126,7 +126,7 @@ var Request = new Schema({
     feedback:       { type: Date },
     closed:         { type: Date },
   },
-  messages:        [Shared.Message],  // TODO, un-nest this
+  messages:         [Shared.Message],  // TODO, un-nest this
   title:            String,
   canceledDetail:   String,
   lastTouch:        Shared.Touch,

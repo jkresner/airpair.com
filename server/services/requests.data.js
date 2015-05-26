@@ -205,6 +205,14 @@ var data = {
     //   return { '$and': query }
     // },
 
+    submittedInRange: function(start, end) {
+     return {
+        '$and': [
+            {'adm.submitted': { '$gt': new Date(parseInt(start)) }},
+            {'adm.submitted': { '$lt': new Date(parseInt(end)) }}
+        ] }
+    },
+
     experts(expert) {
       return {'suggested.expert._id':expert._id}
     },
