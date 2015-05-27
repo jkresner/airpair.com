@@ -88,7 +88,7 @@ var validation = {
     if (!request.adm || !request.adm.active) return `Cannot share request as it is not active`
     if (!request.adm.submitted) return `Can not share an incompleted request`
     if (request.status != 'waiting') return `Can only share request while waiting for experts`
-    if (request.adm.farmed) return `Can not share request once`
+    if (request.adm.farmed) return `Can only share request once`
     if (!tweet) return `Tweet required for farming`
   },
   sendMessageByAdmin(user, request, message) {

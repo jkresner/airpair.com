@@ -1,4 +1,4 @@
-var botPattern = /googlebot|CPython|libwww-perl|Superfeedr|Mechanize|AdsBot-Google|gurujibot|bitlybot|twitterbot|scritch|yandexbot|slurp|msnbot|bingbot|rogerbot|MetaURI|Hatena|PaperLiBot|QuerySeekerSpider|AhrefsBot|EmailMarketingRobot|ShowyouBot|Baiduspider|YisouSpider|facebookexternalhit/i
+var botPattern = /googlebot|uk_lddc_bot|CPython|libwww-perl|Superfeedr|Mechanize|AdsBot-Google|gurujibot|bitlybot|twitterbot|scritch|yandexbot|slurp|msnbot|bingbot|rogerbot|MetaURI|Hatena|PaperLiBot|QuerySeekerSpider|AhrefsBot|EmailMarketingRobot|ShowyouBot|Baiduspider|YisouSpider|facebookexternalhit/i
 
 
 var nestedPick = (object, keys) => {
@@ -87,6 +87,15 @@ var util = {
       util.dateInRange(moment(datetime),util.datetime[start](),util.datetime[end]())
   },
 
+  dehumanize(durationStr) {
+    if (!durationStr) return moment.duration()
+    if (durationStr == "a minute") durationStr = "1 minutes"
+    if (durationStr == "an hour") durationStr = "1 hours"
+    var d = {}
+    var bits = durationStr.split(' ')
+    d[bits[1]] = parseInt(bits[0])
+    return moment.duration(d)
+  },
 
   dateInRange(date, start, end)
   {

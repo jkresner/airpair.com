@@ -60,64 +60,7 @@ var get = {
       svc.searchMany(q, {}, Data.select.forPayout(cb))
     })
   },
-  getAdminReports(cb) {
-    var opts = { fields: Data.select.listAdminReport, options: Data.opts.orderByNewest }
-    var end = moment().format("x")
-    var startOfWeek = moment().startOf('week').add(-1, 'day')
-    var start = moment(startOfWeek).add(-28, 'day')
-    var q = Data.query.inRange(start.format("x"),end)
 
-    // $log('q', start.toDate(), end, startOfWeek.toDate())
-    svc.searchMany(q, opts, (e,r)=>{
-      var zeroOrdersCount=0,total=0,profit=0,count=0,cust=0
-      var customers = {}
-      var wks = {}
-      var bucket = 0
-      for (var o of r) {
-        if (o.total == 0)
-        {
-          zeroOrdersCount++
-        }
-        else
-        {
-          count++
-          total = total+o.total
-          profit = profit+o.profit
-          if (!customers[o.by.email]) {
-            cust++
-            customers[o.by.email] = {total: o.total, count: 1}
-          }
-          else {
-            customers[o.by.email].total+=o.total
-            customers[o.by.email].count++
-          }
-
-          if (moment(o.utc).isBefore(startOfWeek))
-          {
-            bucket++
-            startOfWeek = startOfWeek.add(-7,'day')
-          }
-          var bk = bucket.toString()
-
-          // $log('bucket', moment(o.utc).isAfter(startOfWeek), bk.magenta, o.utc, startOfWeek.toString().blue)
-          // $log('cust', o.by)
-          if (!wks[bk]) wks[bk] = { total:0,profit:0,count:0,customers:{},cust:0 }
-          wks[bk].count ++
-          wks[bk].total = wks[bucket].total+o.total
-          wks[bk].profit = wks[bucket].profit+o.profit
-          if (!wks[bk].customers[o.by.email]) {
-            wks[bk].cust++
-            wks[bk].customers[o.by.email] = {total: o.total, count: 1}
-          }
-          else {
-            wks[bk].customers[o.by.email].total+=o.total
-            wks[bk].customers[o.by.email].count++
-          }
-        }
-      }
-      cb(null, {wkRev: {zeroOrdersCount,cust,count,total,profit,wks}})
-    })
-  },
 }
 
 

@@ -75,3 +75,18 @@ cache.tagBySlug = function(slug, cb)
   if (!cache['tag_slugs']) return { slug: 'cache-not-loaded', name: 'tagBySlug' }
   return cache['tag_slugs'][slug]
 }
+
+//-- Could make this generic, but we don't want to allow the cache to start
+//-- accepting arbitary things
+cache.pullRequests = function(repo, getterCB, cb)
+{
+  if (!cache['post_prs']) cache['post_prs'] = {}
+  if (cache['post_prs'][repo])
+    return cb(null, cache['post_prs'][repo])
+  getterCB((e,r)=>{
+    if (e) return cb(e)
+    cache['post_prs'][repo] = r
+    $log("set cache['post_prs']".magenta, repo)
+    cb(null,r)
+  })
+}
