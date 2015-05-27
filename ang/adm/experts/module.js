@@ -22,7 +22,7 @@ angular.module("ADMExperts", ['APDealsDirectives'])
   }
 })
 
-.controller('ExpertsCtrl', ($scope, $location, AdmDataService, DateTime) => {
+.controller('ExpertsCtrl', ($scope, $location, AdmDataService, RequestsUtil, DateTime, MMDataService) => {
 
   $scope.selectExpert = (expert) =>
     $location.path(`/adm/experts/${expert._id}`)
@@ -34,6 +34,12 @@ angular.module("ADMExperts", ['APDealsDirectives'])
   $scope.active = () => AdmDataService.experts.getActive({}, setScope)
   $scope.newest()
 
+  $scope.selectTag = function(tag) {
+    var query = RequestsUtil.mojoQuery({tags:[tag]})
+    MMDataService.matchmaking.getRanked({_id:null, query}, function (experts) {
+      $scope.experts = experts;
+    })
+  }
 })
 
 .controller('ExpertCtrl', ($scope, $routeParams, ServerErrors, AdmDataService, DataService) => {
@@ -57,7 +63,6 @@ angular.module("ADMExperts", ['APDealsDirectives'])
   }
 
   DataService.experts.getHistory({_id}, setHistoryScope)
-
 })
 
 

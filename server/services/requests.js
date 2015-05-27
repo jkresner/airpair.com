@@ -32,7 +32,7 @@ var get = {
             r.orders = orders
             r.bookings = []
             if (orders.length == 0) return cb(eeer,r)
-            Booking.find({customerId:r.userId},(eerr,bookings) => {
+            Booking.find({customerId:r.userId},{},{ sort: { '_id': -1 } },(eerr,bookings) => {
               r.bookings = bookings
               cb(eerr,r)
             })

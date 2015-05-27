@@ -11,6 +11,7 @@ import CompanysAPI from '../api/companys'
 import ViewsAPI from '../api/views'
 import RequestsAPI from '../api/requests'
 import PayoutsAPI from '../api/payouts'
+import ReportsAPI from '../api/reports'
 import MojoAPI from '../api/mojo'
 
 module.exports = {
@@ -27,5 +28,6 @@ module.exports = {
   Companys: CompanysAPI,
   Views: ViewsAPI,
   Requests: RequestsAPI,
-  Payouts: PayoutsAPI
+  Payouts: PayoutsAPI,
+  Reports: ReportsAPI
 }
