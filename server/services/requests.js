@@ -43,7 +43,7 @@ var get = {
   },
 
   getByIdForMatchmaker(id, cb) {
-    $log('** getByIdForMatchmaker should filter a bit..')
+    // $log('** getByIdForMatchmaker should filter properties a bit when non-admins start matching..')
     svc.getById(id, (e,r) => {
       if (e || !r) return cb(e,r)
       r = select.byView(r, 'admin')

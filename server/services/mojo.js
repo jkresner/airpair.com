@@ -33,12 +33,24 @@ var get = {
   getRanked(meExpert, q, cb) {
     var {tags,exclude} = q
     var opts = {fields:Data.select.matches, options: { limit: q.limit } }
-    var search = query.ranked(tags,exclude,0)
-    svc.searchMany(search, opts, selectCB.inflateList((e, experts) => {
-        if (e || !experts || experts.length == 0) return cb(e,experts)
-        for (var exp of experts)
-          exp.score = get.calcMojo(exp,tags)
-        cb(null, _.take(_.sortBy(experts,(u)=>u.score).reverse(),75))
+    q.limit = 200
+
+    Expert.aggregate([
+        { $match: query.ranked(tags,exclude,0) } /* Query can go here, if you want to filter results. */
+      , { $project: _.extend({ common: { $setIntersection: ['$tags._id',tags] } }, Data.select.matches) } /* select the tokens field as something we want to "send" to the next command in the chain */
+      , { $project: _.extend({ common:1, primary: { $setIntersection: ['$tags._id',[tags[0]]] } }, Data.select.matches) } /* select the tokens field as something we want to "send" to the next command in the chain */
+      , { $project: _.extend({ commonLen: { $size: '$common' }, primaryLen: { $size: '$primary' } }, Data.select.matches) }
+      , { $sort: { commonLen: -1, primaryLen: -1 } }
+      , { $limit: q.limit }
+    ], selectCB.inflateList((e, experts) => {
+      // $log('prim', tags[0])
+
+      if (e || !experts || experts.length == 0) return cb(e,experts)
+      // $log('len'.cyan, experts.length, experts[0])
+      for (var exp of experts)
+        exp.score = get.calcMojo(exp,tags)
+
+      cb(null, _.take(_.sortBy(experts,(u)=>u.score).reverse(),100))
     }))
   },
 
@@ -58,12 +70,11 @@ var get = {
     for (var tag of tagIdsOrdered) {
       // $log('tagToScore', expert._id, tag, expert.tags.length)
       var match = _.find(expert.tags,(t)=>_.idsEqual(t._id,tag))
-      // $log('match'.cyan)
       if (match) {
         tagMatchCount = tagMatchCount+1
-        requirements = requirements + (5 - tagSort)*20
-        tagSort = tagSort+1 // TODO, increment outside conditional
+        requirements = requirements + (10 - tagSort)*20
       }
+      tagSort = tagSort+3 // TODO, increment outside conditional
     }
     requirements = (requirements + tagMatchCount * 30)*200
 
