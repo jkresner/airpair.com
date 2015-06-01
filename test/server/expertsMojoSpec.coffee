@@ -57,7 +57,7 @@ matchmaking = ->
           DONE()
 
 
-  it.only 'Does a good job at sorting top tag over 2nd and 3rd tag', itDone ->
+  it.skip 'Does a good job at sorting top tag over 2nd and 3rd tag', itDone ->
     # http://localhost:3333/matchmaking/5565a27e8d9baa1100ce2cd9
     # http://localhost:3333/matchmaking/5565e8391acf981100722e68
     # http://localhost:3333/matchmaking/555d33401cf1ff1100e8426e
