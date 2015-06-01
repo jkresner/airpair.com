@@ -30,7 +30,7 @@
       <div>
         <label>${{s.suggestedRate.total}} /
         ${{s.suggestedRate.expert}}</label>
-        <label><a href="/adm/experts/edit/{{s.expert._id}}" target="_blank">{{s.expert.name}}</a></label>
+        <label><a href="/adm/experts/{{s.expert._id}}" target="_blank">{{s.expert.name}}</a></label>
         <span class="{{s.expertStatus}}">{{s.expertStatus}}</span>
       </div>
       <p ng-if="s.expertComment">
@@ -54,7 +54,7 @@
     </div>
     <br /><img ng-src="{{selected.avatar}}?s=50" class="user" />
     <b>{{selected.score}}</b>${{selected.rate}}|${{selected.minRate}}
-    <br /><a href="/adm/experts/edit/{{m._id}}" target="_blank">{{selected.name}}</a>
+    <br /><a href="/adm/experts/{{m._id}}" target="_blank">{{selected.name}}</a>
     <br />Customers: {{selected.matching.experience.customers}}
     <br />Hours: {{selected.matching.experience.hours}}
     <br />Suggested: {{selected.matching.replies.suggested}}
@@ -93,7 +93,7 @@
           <social-scores profile="m"></social-scores>
           <div>{{gh}}</div>
           <b>Mojo: {{m.score}}</b>
-          <a href="/adm/experts/edit/{{m._id}}" target="_blank">{{m.name}}</a>
+          <a href="/adm/experts/{{m._id}}" target="_blank">{{m.name}}</a>
           <a class="btn hist" ng-href="https://mail.google.com/mail/u/0/?shva=1#search/%22{{m.name | urlEncode }}%22+OR+{{ m.email | urlEncode  }}" target="_blank">
             <i class="glyphicon glyphicon-envelope"></i> history
           </a>

@@ -4,6 +4,7 @@
 #experts {
   .selected { display:none }
   .tag-input-group {
+    max-width:320px;
     .nomobile { display:none; }
     label { display:none }
     input { width:132px!important; }
@@ -12,9 +13,38 @@
   table {
     td { font-size:13px }
   }
-  .tags {
-    span { display:inline-block;margin:2px 5px }
+  .t {
+    span { display:inline-block;margin:2px 5px;font-size:10px }
   }
+
+  .requestWidget { display:none }
+  .requestForm {
+    display:inline-block;
+    width:420px;
+    .requestProgress { display:none }
+    i { display:none }
+    .controls { display:none }
+    .control-label { display:none }
+    .info { display:none }
+    .submit { display:none }
+    .type { display:none }
+    .experience { display:none }
+    .brief { display:none }
+    .time { display:none }
+    .hours { display:none }
+    .tags { width:140px; hr { display:none } }
+    .budget { width:280px;display:none  }
+    // .budget > div.info { display:none }
+    // .budget > div > div {
+    //   float:right;
+    //   label { margin:0 }
+    //   b { font-size:9px;span { display:none } }
+    // }
+    section { border:none;display:inline-block;height:30px }
+  }
+
+  .socialscores { margin-top:-9px;opacity:0.6 }
+  .replies { list-style:none;font-size:8px }
 }
 
 

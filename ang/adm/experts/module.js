@@ -30,16 +30,22 @@ angular.module("ADMExperts", ['APDealsDirectives'])
   var setScope = (r) =>
     $scope.experts = r
 
+  $scope.request = { type:'resources',
+    tags:[{_id:"5149dccb5fc6390200000013",slug:'angularjs'}]
+  }
+  $scope.query = null
   $scope.newest = () => AdmDataService.experts.getNew({}, setScope)
   $scope.active = () => AdmDataService.experts.getActive({}, setScope)
   $scope.newest()
 
-  $scope.selectTag = function(tag) {
-    var query = RequestsUtil.mojoQuery({tags:[tag]})
-    MMDataService.matchmaking.getRanked({_id:null, query}, function (experts) {
+  $scope.$watch('request.tags', function(req) {
+    if ($scope.request.tags.length < 1) return
+    // console.log('req', $scope.request.tags)
+    $scope.query = RequestsUtil.mojoQuery($scope.request)
+    MMDataService.matchmaking.getRanked({_id:null, query:$scope.query}, function (experts) {
       $scope.experts = experts;
     })
-  }
+  })
 })
 
 .controller('ExpertCtrl', ($scope, $routeParams, ServerErrors, AdmDataService, DataService) => {

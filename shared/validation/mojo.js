@@ -30,7 +30,7 @@ var validation = {
     if (query.exclude) query.exclude = query.exclude.split(',')
 
     if (isAdmin(user))
-      query.limit = 500
+      query.limit = query.limit || 500
     else if (!expert._id)
       query.limit = 3
     else if (expert._id && !expert.matching)

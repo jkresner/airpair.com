@@ -1,12 +1,11 @@
 <section id="experts">
-
   <div class="query">
-    <div style="width:150px" tag-input></div>
+    <span ng-if="query" style="position:absolute;font-size:9px">{{query}}</span>
+    <div request></div>
     <div style="width:350px" expert-input></div>
   </div>
 
   <h3>Experts >>
-
     <a ng-click="newest()">Newest</a>
     | <a ng-click="active()">Active</a>
   </h3>
@@ -15,40 +14,59 @@
     <tr>
       <th style="width:100px"></th>
       <th style="width:150px">Expert</th>
-      <th style="width:250px">Timeozne</th>
-      <th style="width:250px">Social</th>
-      <th style="width:250px">Tags</th>
-      <th style="width:150px">Last Touch</th>
+      <th style="width:200px">Availability</th>
+      <th style="width:150px">Engagement</th>
+      <th style="width:150px">Experience</th>
+      <th style="width:160px">Social</th>
+      <th style="width:200px">Tags</th>
     </tr>
     <tr ng-repeat="o in experts">
       <td>
         <a href="/adm/experts/{{o._id}}"><img ng-src="{{o.avatar}}" /></a>
       </td>
       <td>
-        {{o.name}}
+        {{o.name}} ({{o.score}})
         <br />{{o.email}}
         <br />{{o._id | objectIdToDate : 'DD.MM HH:MM' }}
         <time style="display:block;color:black;width:100%">{{o._id | objectIdToAgoTime }}</time>
+        <br />{{ o.lastTouch.action }}
+        <time style="display:block;color:black;width:100%font-size:9px">{{o.lastTouch.utc  | agoTime }}</time>
         {{o._id}}
       </td>
       <td>
+        <div>{{o.rate}}/{{o.minRate}}</div>
         {{o.location}}
         <br/>{{o.timezone}}
       </td>
       <td>
-         <social-links profile="o"></social-links>
-         <div ng-if="o.gh">gh.followers: {{o.gh._json.followers}}</div>
-         <div ng-if="o.tw">tw.followers: {{o.tw._json.followers_count}}</div>
-         <div ng-if="o.so">so.reputation: {{o.so.reputation}}</div>
+        <div>{{o.matching.replies.replied/o.matching.replies.suggested | number : 2}}% all time</div>
+        Suggested: {{o.matching.replies.suggested}}
+        <div>Replied: {{o.matching.replies.replied}}</div>
+        <div>LastReply: {{o.matching.replies.lastReply | agoTime }}</div>
+        LastSuggest: {{o.matching.replies.lastSuggest | agoTime }}
+        <div>{{o.matching.replies.replied/o.matching.replies.suggested | number : 2}}% last 10</div>
+        <ul class="replies">
+          <li ng-repeat="reply in o.matching.replies.last10" class="{{reply.status}}">
+            {{reply.replied | locaTime : 'DD MMM' }} {{reply.status}}
+          </li>
+        </ul>
       </td>
-      <td class="tags">
+      <td>
+        {{o.matching.experience.hours}}
+        {{o.matching.experience.customers}}
+      </td>
+      <td>
+         <social-links profile="o"></social-links>
+        <social-scores profile="o"></social-scores>
+         <!-- <div ng-if="o.gh">gh.followers: {{o.gh._json.followers}}</div>
+         <div ng-if="o.tw">tw.followers: {{o.tw._json.followers_count}}</div>
+         <div ng-if="o.so">so.reputation: {{o.so.reputation}}</div> -->
+      </td>
+      <td class="t">
+        <b>[{{o.tags.length}}]</b>
         <span ng-repeat="t in o.tags">
           {{t.name}}
         </span>
-      </td>
-      <td>
-        {{ o.lastTouch.action }}
-        <time style="display:block;color:black;width:100%">{{o.lastTouch.utc  | agoTime }}</time>
       </td>
     </tr>
   </table>
