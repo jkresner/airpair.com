@@ -18,8 +18,8 @@ export function run()
   var app = express()
   //-- We don't want to serve sessions for static resources
   //-- Save database write on every resources
-  app.use(express.static(config.appdir+'/dist'))
-  app.use(express.static(config.appdir+'/public'))
+  app.use(express.static(config.appdir+'/dist', { maxAge: '1d' }))
+  app.use(express.static(config.appdir+'/public', { maxAge: '1d' }))
   routes('resolver')(app)
   app.use(mw.logging.slowrequests)
 
