@@ -157,10 +157,18 @@
   em.highlight { background:@lightorange;color:white }
 
   section.selected {
-    div { text-align:right;float:right;width:30% }
-    .replies {
-      font-size:11px;
+    > div { text-align:right;float:right;width:40% }
+    hr { clear:both;
+      margin:2px!important }
+    .replies, .bookings {
+      width:28%;
+      margin-right:5%;
+      float:left;
+      h6 > span { color:red }
+      font-size:10px;
+      ul { list-style:none }
     }
+    .bookings { width:60% }
 
     .mailTo { width:100% }
   }
@@ -176,6 +184,7 @@
         img.user { position:absolute;top:-5px;left:-5px; }
         > b { margin-left:40px;display:block;font-size:11px }
         > a { margin-left:40px;display:block;font-size:11px }
+        min { font-size:12px }
       }
     }
 
@@ -183,7 +192,7 @@
 
     .hist {
       position:absolute;bottom:5px;left:5px;
-      width:58px;font-size:9px;padding:1px 4px;margin:0!important;
+      width:78px;font-size:9px;padding:1px 4px;margin:0!important;
     }
 
     .sociallinks {

@@ -163,7 +163,8 @@ module.exports = mongoose.model('Expert', new Schema({
       hours:      Number,
       customers:  Number,
       workshops:  [{workshopId:ObjectId,url:String}],
-      posts:      [{postId:ObjectId,url:String}]
+      posts:      [{postId:ObjectId,url:String}],
+      last10:     [{_id:ObjectId,status:String,datetime:Date,participants:[]}],
     },
     internal:     {
       weight:     Number, // allow staff to boost experts

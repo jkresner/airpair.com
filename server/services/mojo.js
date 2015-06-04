@@ -1,6 +1,7 @@
 import Svc                from '../services/_service'
 import Expert             from '../models/expert'
 import Request            from '../models/request'
+import Booking            from '../models/booking'
 import * as md5           from '../util/md5'
 var {ObjectId2Date,
   selectFromObject}       = require('../../shared/util')
@@ -83,7 +84,8 @@ var get = {
     if (expert.matching)
     {
       engagement = expert.matching.replies.replied
-      experience = expert.matching.experience.customers
+      experience = expert.matching.experience.customers * 10
+                 + expert.matching.experience.hours * 2
     }
     engagement = engagement*200
     experience = experience*200
@@ -104,71 +106,101 @@ var get = {
 }
 
 
+var calcMatching = (expert, cb) => {
+  Booking
+    .find({'expertId':expert._id},{_id:1,expertId:1,participants:1,minutes:1,datetime:1,status:1}, (ee,bookings) => {
+  Request
+    .find({'suggested.expert._id':expert._id},{_id:1,userId:1,suggested:1}, (e,requests) => {
+      var expertSuggestions = []
+      var expertCalls = []
+      var replied = 0
+      var lastSuggest = null
+      var lastReply = null
+      var hours = Math.round(_.reduce(_.pluck(bookings,'minutes'), (m, n) => m + n, 0)/60)
+      var customerIds = _.uniq(_.pluck(bookings,'expertId'))
+      for (var r of requests) {
+        var expertSuggestion = _.find(r.suggested,(s)=>_.idsEqual(s.expert._id,expert._id))
+        expertSuggestions.push(_.extend(expertSuggestion,{requestId:r._id}))
+        if (!lastSuggest || expertSuggestion._id > lastSuggest._id)
+          lastSuggest = ObjectId2Date(expertSuggestion._id)
+        if (expertSuggestion.expertStatus != 'waiting') {
+          replied = replied + 1
+          if (!lastReply || expertSuggestion._id > lastReply._id)
+            lastReply = ObjectId2Date(expertSuggestion._id)
+        }
+      }
+
+      var map = function(s) {
+        var d =
+        {
+          replied:ObjectId2Date(s._id),
+          status:s.expertStatus,
+          comment:s.expertComment,
+          requestId:s.requestId
+        };
+        return d
+      }
+
+      var customers = _.unique(_.pluck(expertCalls,''))
+      cb( e||ee, {
+        replies: {
+          suggested: requests.length,
+          replied, lastSuggest, lastReply,
+          last10: _.map(_.take(_.sortBy(expertSuggestions,(s)=>s._id).reverse(), 10), map)
+        },
+        experience: {
+          hours,
+          customers: customerIds.length,
+          last10: _.take(_.sortBy(bookings,(b)=>b._id).reverse(), 10)
+        }
+      })
+    })
+  })
+}
+
+
 
 var save = {
 
+  updateAllStats() {
+    var updateOne = function(exp) {
+      calcMatching(exp, (e, matching) => {
+        $log('matching'.cyan, (exp.name) ? exp.name : exp.user.name, exp.rate, matching.experience.last10.length)
+        Expert.update({_id:exp._id},{$set:{matching}}, {},
+          (e,r)=>$log('updated'.yellow, e, (exp.name) ? exp.name : exp.user.name))
+      })
+    }
+
+    Expert.find({rate:{'$gt':0}},(e,r) => {
+      $log('experts'.cyan, r.length)
+      for (var exp of r)
+        updateOne(exp)
+    })
+  },
+
   updateMatchingStats(expert, request, cb) {
-    Request
-      .find({'suggested.expert._id':expert._id},{_id:1,userId:1,suggested:1}, (e,requests) => {
-        var expertSuggestions = []
-        var expertCalls = []
-        var replied = 0
-        var lastSuggest = null
-        var lastReply = null
-        var hours = 0
-        var customerIds = []
-        for (var r of requests) {
-          var expertSuggestion = _.find(r.suggested,(s)=>_.idsEqual(s.expert._id,expert._id))
-          expertSuggestions.push(_.extend(expertSuggestion,{requestId:r._id}))
-          if (!lastSuggest || expertSuggestion._id > lastSuggest._id)
-            lastSuggest = ObjectId2Date(expertSuggestion._id)
-          if (expertSuggestion.expertStatus != 'waiting') {
-            replied = replied + 1
-            if (!lastReply || expertSuggestion._id > lastReply._id)
-              lastReply = ObjectId2Date(expertSuggestion._id)
-          }
+    calcMatching(expert, (e, matching) => {
+      // $log('updaing', expert._id, expert.tags, matching.replies.last10, matching)
+      svc.update(expert._id, _.extend(expert, {matching}), (e,r)=>{
+        if (r) r.avatar = md5.gravatarUrl(r.email||r.user.email)
+        r.score = get.calcMojo(r,request.tags)
+        r.tags = expert.tags
+
+        var d = {
+          tagsString:util.tagsString(request.tags), expertFirstName: util.firstName(expert.name),
+          requestByFullName:request.by.name,_id:request._id,accountManagerName:this.user.name,
+          // suggested: matching.replies.suggested.length,
+          // isFirstSuggest: matching.replies.suggested.length == 0,
         }
-
-        var map = function(s) {
-          var d =
-          {
-            replied:ObjectId2Date(s._id),
-            status:s.expertStatus,
-            comment:s.expertComment,
-            requestId:s.requestId
-          };
-          return d
-        }
-
-        var last10 = _.map(_.take(_.sortBy(expertSuggestions,(s)=>s._id).reverse(), 10), map)
-        var customers = _.unique(_.pluck(expertCalls,''))
-
-        var matching = {
-          replies: {
-            suggested: requests.length,
-            replied, lastSuggest, lastReply, last10
-          },
-          experience: {
-            hours, customers: customerIds.length
-          }
-        }
-
-        // $log('updaing', expert._id, expert.tags, matching.replies.last10, matching)
-        svc.update(expert._id, _.extend(expert, {matching}), (e,r)=>{
-          if (r) r.avatar = md5.gravatarUrl(r.email||r.user.email)
-          r.score = get.calcMojo(r,request.tags)
-          r.tags = expert.tags
-
-          var d = { tagsString:util.tagsString(request.tags), expertFirstName: util.firstName(expert.name),
-            requestByFullName:request.by.name,_id:request._id,accountManagerName:this.user.name }
-          mailman.get('expert-suggest', d, (ee,rr) => {
-            if (rr) r.suggest = { subject: rr.Subject, body: rr.Text }
-            cb(e,r)
-          })
+        mailman.get('expert-suggest', d, (ee,rr) => {
+          if (rr) r.suggest = { subject: rr.Subject, body: rr.Text }
+          cb(e,r)
         })
       })
-
+    })
   }
 }
+
+// save.updateAllStats()
 
 module.exports = _.extend(get, save)
