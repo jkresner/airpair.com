@@ -191,7 +191,7 @@
         <div>
           <label>${{s.suggestedRate.total}} /
           ${{s.suggestedRate.expert}}</label>
-          <label><a href="/adm/experts/edit/{{s.expert._id}}" target="_blank">{{s.expert.name}}</a></label>
+          <label><a href="/adm/experts/{{s.expert._id}}" target="_blank">{{s.expert.name}}</a></label>
           <b>{{s.expert.email}}</b>
           <span class="{{s.expertStatus}}">{{s.expertStatus}}</span>
           <div>{{s.matchedBy.type}} match::<span class="{{s.matchedBy.initials}}"> {{s.matchedBy.initials}}</span> <time>{{ s._id | objectIdToAgoTime }} (after {{ s.suggestedAfter }})</time></div>

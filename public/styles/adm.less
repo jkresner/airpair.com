@@ -157,8 +157,11 @@ section#bookings {
     ul {
       .ulNoStyle;
       li {
-        height:110px;
-        width:220px;border:solid 1px @palegray;
+        div > span { font-size:10px; }
+        height:122px;
+        width:186px;border-right:solid 1px @palegray;
+        padding-left:6px;
+        margin-right:8px;
       }
     }
   }
@@ -166,11 +169,23 @@ section#bookings {
     padding:0px 0 15px 0;
     h4 { margin-bottom:0;padding-bottom:0 }
     font-size:11px;
-    time { width:90px;display:inline-block; }
+    time { width:102px;display:inline-block; }
     ul {
       .ulNoStyle;
-      li { display:inline-block;width:320px }
+      li {
+        display:inline-block;width:320px;
+        a { display:inline-block;float:left;width:108px }
+        label { width:94px;height:15px;overflow:hidden;float:left }
+        span { width:95px;height:16px;overflow:hidden;float:left }
+      }
     }
+  }
+  table.bookings {
+    .complete { color:green }
+    .followup { color:blue }
+    .confirmed { color:orange }
+    .canceled { color:red }
+    time { font-size:10px }
   }
 }
 
