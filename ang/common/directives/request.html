@@ -72,7 +72,7 @@
 
     <div ng-if="request.time == 'rush'" class="onrush"></div>
 
-    <div class="{{request.time}}">
+<!--     <div class="{{request.time}}">
       <input id="requestBudget70" name="budget" ng-model="request.budget" type="radio" value="70" ng-click="setBuget()">
       <label for="requestBudget70">
         <b>$70<span>/hr</span></b>
@@ -81,6 +81,7 @@
       </label>
     </div>
 
+ -->
     <div ng-if="nonCurrentBudget">
       <input id="requestBudgetOther" name="budget" ng-model="request.budget" type="radio" value="{{ existingBudget }}" ng-click="setBuget()">
       <label for="requestBudgetOther">
