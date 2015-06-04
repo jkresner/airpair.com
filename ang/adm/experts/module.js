@@ -31,7 +31,8 @@ angular.module("ADMExperts", ['APDealsDirectives'])
     $scope.experts = r
 
   $scope.request = { type:'resources',
-    tags:[{_id:"5149dccb5fc6390200000013",slug:'angularjs'}]
+    // tags:[{_id:"5149dccb5fc6390200000013",slug:'angularjs'}]
+    tags:[]
   }
   $scope.query = null
   $scope.newest = () => AdmDataService.experts.getNew({}, setScope)
