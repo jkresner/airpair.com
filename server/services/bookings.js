@@ -50,16 +50,21 @@ var get = {
 
   getByQueryForAdmin(start, end, userId, cb) {
     var q = query.inRange(start,end)
-    if (userId) q.customerId = userId
+    if (userId) q['participants.info._id'] = userId
 
     Booking.find(q, select.listAdmin)
       .populate('orderId', 'lineItems.info.paidout lineItems.info.released')
       .sort(options.orderByDate.sort)
       .lean().exec(select.cb.inflateAvatars((e,r)=>{
         for (var b of r) {
-          b.paidout = _.find(b.orderId.lineItems||[],(li)=>li.info.paidout!=null)
+          if (!b.orderId)
+            $log('no order', b._id)
+          else
+            b.paidout = _.find(b.orderId.lineItems||[],(li)=>
+              li.info!=null&&li.info.paidout!=null)
+
           if (b.paidout) b.paidout = b.paidout.info
-          delete b.orderId.lineItems
+          if (b.orderId) delete b.orderId.lineItems
         }
         cb(e,r)
       }))
