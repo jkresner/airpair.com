@@ -37,6 +37,7 @@ require('./adm/bookings/module.js');
 require('./adm/experts/module.js');
 require('./adm/tags/module.js');
 require('./adm/mail/module.js');
+require('./adm/chat/module.js');
 require('./adm/jk/module.js');
 require('./matchmaking/module.js');
 
@@ -56,7 +57,8 @@ angular.module('ADM', [
   'ADMCompanys',
   'ADMMail',
   'ADMjk',
-  'APMatchmaking'
+  'APMatchmaking',
+  'ADMChat'
   ])
 
   .config(function($locationProvider, $routeProvider) {

@@ -29,15 +29,7 @@
       <span class="has" ng-if="user.emailVerified">Email Verified</span>
       <span ng-if="!user.emailVerified" class="nopaymethods"><b>Email not verified</b></span>
       (<span class="has" ng-if="user.googleId">G+ {{user.googleId}}</span><span ng-if="!user.googleId">No google login</span>)
-      <div>
-        <span ng-if="!user.chat.slack">No chat
-          <a ng-if="!invitedToSlackTeam" ng-click="inviteToTeam()">==> invite to slack</a>
-          <span ng-if="invitedToSlackTeam">... invitation sent</span>
-        </span>
-        <span ng-if="user.chat.slack" class="has">
-          Slack
-          <a href="https://airpair.slack.com/messages/@{{user.chat.slack.name}}" target="_blank">{{user.chat.slack.name}}</a></span>
-      </div>
+      <div slack-status member="user.chat" userid="user._id"></div>
     </div>
 
     <div class="cohort" ng-if="request._id && user">

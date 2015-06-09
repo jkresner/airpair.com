@@ -1,6 +1,7 @@
 var logging                 = false
 var RequestsSvc             = require('../services/requests')
 var OrdersSvc               = require('../services/orders')
+var ChatsSvc                = require('../services/chats')
 import Svc                  from '../services/_service'
 import Booking              from '../models/booking'
 import Order                from '../models/order'
@@ -8,6 +9,7 @@ var svc                     = new Svc(Booking, logging)
 var {select,query,options}  = require('./bookings.data')
 var {setAvatarsCB}          = select.cb
 var Roles                   = require('../../shared/roles')
+var BookingdUtil            = require('../../shared/bookings')
 
 
 var get = {
@@ -25,15 +27,27 @@ var get = {
     }))
   },
 
-  getByIdForAdmin(id, cb) {
+  getByIdForAdmin(id, callback) {
+    var cb = (e,r) => Wrappers.Slack.getUsers(()=>setAvatarsCB(callback)(e,r))
+
     svc.getById(id, (e,r) => {
-      if (!r.orderId) return setAvatarsCB(cb)(e,r) //is a migrated booking from v0 call
+      if (!r.orderId) return cb(e,r) //is a migrated booking from v0 call
       OrdersSvc.getByIdForAdmin(r.orderId, (ee,order) => {
         r.order = order
-        if (!order.requestId) return setAvatarsCB(cb)(e,r)
+        if (!order.requestId) return cb(e,r)
         RequestsSvc.getByIdForAdmin(order.requestId, (eee,request) => {
           r.request = request
-          setAvatarsCB(cb)(eee,r)
+          if (r.chatId)
+            ChatsSvc.getById(r.chatId,(eeee,chat)=>{
+              r.chat = chat
+              return cb(eee,r)
+            })
+          else
+            ChatsSvc.searchSyncOptions(BookingdUtil.searchBits(r)[0],(eeee,syncOptions)=>{
+              r.chatSyncOptions = syncOptions
+              $log('got.chatSyncOptions'.magenta)
+              return cb(eeee,r)
+            })
         })
       })
     })
@@ -293,6 +307,18 @@ Booking: https://airpair.com/booking/${original._id}`
         })
       });
   },
+
+  // associateChat(original, type, providerId,cb)
+  // {
+  //   $callSvc(ChatsSvc.createSync, this)(type, providerId, (e,chat)=>{
+  //     $log('createSync'.cyan, e, chat)
+  //     original.chatId = chat._id
+  //     svc.update(original._id, original, (ee,r)=>{
+  //       if (r) r.chat = chat
+  //       return cb(ee,r)
+  //     })
+  //   })
+  // },
 
   confirmBooking()
   {

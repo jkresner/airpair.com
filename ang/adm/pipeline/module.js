@@ -101,11 +101,6 @@ angular.module("ADMPipeline", ["APRequestDirectives","APProfileDirectives"])
     AdmDataService.pipeline.farm({_id,tweet}, setScope)
 
   $scope.alertMessage = (msg) => alert(msg)
-
-  $scope.inviteToTeam = () =>
-    AdmDataService.chats.inviteToTeam({_id:$scope.user._id}, (r)=>
-      $scope.invitedToSlackTeam = true
-    )
 })
 
 
