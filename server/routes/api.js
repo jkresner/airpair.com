@@ -187,6 +187,7 @@ module.exports = function(app) {
     .get('/users/role/:role', API.Users.getUsersInRole)
     .put('/users/:id/role/:role', API.Users.toggleUserInRole)
     .get('/users/search/:id', API.Users.search)
+    .put('/chat/invite-to-team/:userId', API.Chat.inviteToTeam)
     .get('/billing/orders/:id', API.Orders.getByIdForAdmin)
     .post('/billing/orders/credit', API.Orders.giveCredit)
     .put('/billing/orders/:order/release', API.Orders.releasePayout)

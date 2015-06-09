@@ -90,3 +90,15 @@ cache.pullRequests = function(repo, getterCB, cb)
     cb(null,r)
   })
 }
+
+cache.slackUsers = function(getterCB, cb)
+{
+  if (cache['slack_users'])
+    return cb(null, cache['slack_users'])
+  getterCB((e,r)=>{
+    if (e) return cb(e)
+    cache['slack_users'] = r
+    $log("set cache['slack_users']".magenta, r.length)
+    cb(null,r)
+  })
+}

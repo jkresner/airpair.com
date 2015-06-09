@@ -20,21 +20,23 @@ var get = {
     svc.getById(id, (e,r) => {
       if (e || !r) return cb(e,r)
       r = select.byView(r, 'admin')
-      User.findOne({_id:r.userId}, (ee,user) => {
+      User.findOne({_id:r.userId}).lean().exec((ee,user) => {
         if (ee || !user) return cb(ee,r)
-        r.user = user
-        get.getByUserIdForAdmin(user._id, (eee,requests) => {
-          var thisR = _.find(requests,(rr)=>_.idsEqual(rr._id,id))
-          r.prevs = _.without(requests,thisR)
-          var selectOrdersFields = require('./orders.data').select.listAdmin
-          //-- using models instead of services to avoid circular dependencies
-          Order.find({userId:r.userId}, selectOrdersFields,(eeer,orders) => {
-            r.orders = orders
-            r.bookings = []
-            if (orders.length == 0) return cb(eeer,r)
-            Booking.find({customerId:r.userId},{},{ sort: { '_id': -1 } },(eerr,bookings) => {
-              r.bookings = bookings
-              cb(eerr,r)
+        Wrappers.Slack.checkUser({email:user.email,name:user.name}, (er,slack)=>{
+          r.user = _.extend({chat:{slack}},user)
+          get.getByUserIdForAdmin(user._id, (eee,requests) => {
+            var thisR = _.find(requests,(rr)=>_.idsEqual(rr._id,id))
+            r.prevs = _.without(requests,thisR)
+            var selectOrdersFields = require('./orders.data').select.listAdmin
+            //-- using models instead of services to avoid circular dependencies
+            Order.find({userId:r.userId}, selectOrdersFields,(eeer,orders) => {
+              r.orders = orders
+              r.bookings = []
+              if (orders.length == 0) return cb(eeer,r)
+              Booking.find({customerId:r.userId},{},{ sort: { '_id': -1 } },(eerr,bookings) => {
+                r.bookings = bookings
+                cb(eerr,r)
+              })
             })
           })
         })
