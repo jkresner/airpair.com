@@ -63,6 +63,12 @@ var cfg = {
       clientSecret: 'e702b47dca92523fd99a3cc8f8262acfea8a52b19c5809cd',
       scope: ['email','talent']
     },
+    slack: {
+      slackTeam: "",
+      clientID: '',
+      clientSecret: '',
+      scope: ['identify','read','post','client']
+    },
   },
   bitly:  {
     shortDomain: 'http://airpa.ir/',
@@ -245,6 +251,10 @@ module.exports = function(env) {
     cfg.auth.github.clientSecret = process.env.AUTH_GITHUB_CLIENTSECRET
     cfg.auth.github.adminAccessToken = process.env.AUTH_GITHUB_ADMIN_ACCESSTOKEN
     cfg.auth.github.org = process.env.AUTH_GITHUB_ORG
+
+    cfg.auth.slack.clientID = process.env.AUTH_SLACK_CLIENTID
+    cfg.auth.slack.clientSecret = process.env.AUTH_SLACK_CLIENTSECRET
+    cfg.auth.slack.slackTeam = process.env.AUTH_SLACK_SLACKTEAM
 
     cfg.calendar.on = true
     cfg.calendar.google.ownerRefreshToken = process.env.CALENDAR_GOOGLE_OWNER_REFRESHTOKEN
