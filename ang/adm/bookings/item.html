@@ -47,9 +47,6 @@
             ({{attendee.email}})
           </li>
       </div>
-    </section>
-
-  </section>
 
   <br />
 <div class="spin">
@@ -57,6 +54,42 @@
     hangout-id="booking._id"
     booking="booking"></ap-hangout-spinner>
 </div>
+    </section>
+
+    <section class="chat">
+      <h3>Chat</h3>
+      <div ng-if="booking.chat">
+        <div ng-if="booking.chat.provider">
+          <a target="_blank" href="https://airpair.slack.com/messages/{{booking.chat.data.name}}">  {{booking.chat.data.name}}
+            <span ng-if="booking.chat.data.is_archived">(archived)</span>
+          </a>{{booking.chat.providerId}} <!-- {{booking.chat.data.created}} -->
+          <p class="purpose">{{booking.chat.data.purpose.value}}</p>
+          <p class="topic">{{booking.chat.data.topic.value}}</p>
+          <ul>
+            <li ng-repeat="m in booking.chat.data.members">{{m}}</li>
+          </ul>
+          <hr />
+          <ul class="history">
+            <li ng-repeat="m in booking.chat.history">
+              <time>{{m.ts}} <b>{{m.user}}</b></time>
+              <p>{{m.text}}</p>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div ng-if="booking.chatSyncOptions">
+        {{booking.chatSyncOptions.length}}<br />
+        <div ng-repeat="c in booking.chatSyncOptions">
+          <div ng-if="c.provider == 'slack'">
+            <b><a target="_blank" href="https://airpair.slack.com/messages/{{c.data.name}}/
+            ">{{c.provider}}</a></b>::{{c.data.name}}
+            <a ng-click="associateChat('slack',c.data.id)">associate</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </section>
 
   </div>
 
@@ -68,6 +101,7 @@
     <img ng-src="{{p.info.avatar}}" class="user">
     <span>{{p.info.name}} </span>
     <span>{{p.info.email}} </span>
+    <div slack-status member="p.chat" userid="p.info._id"></div>
   </div>
 </div>
 
@@ -78,6 +112,7 @@
     <img ng-src="{{p.info.avatar}}" class="user">
     <span>{{p.info.name}} </span>
     <span>{{p.info.email}} </span>
+    <div slack-status member="p.chat" userid="p.info._id"></div>
   </div>
 </div>
 

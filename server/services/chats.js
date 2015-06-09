@@ -6,17 +6,17 @@ var UserSvc               = require('../services/users')
 
 var get = {
 
-  // getById: svc.getById,
+  getById: svc.getById,
 
-  // searchSyncOptions(term, cb)
-  // {
-  //   Wrappers.Slack.searchGroupsByName(term, (e,r)=>{
-  //     var groups = []
-  //     for (var group of r||[])
-  //       groups.push(_.extend({type:'group',provider:'slack',data:group}))
-  //     cb(e,groups)
-  //   })
-  // }
+  searchSyncOptions(term, cb)
+  {
+    Wrappers.Slack.searchGroupsByName(term, (e,r)=>{
+      var groups = []
+      for (var group of r||[])
+        groups.push(_.extend({type:'group',provider:'slack',data:group}))
+      cb(e,groups)
+    })
+  }
 
 }
 

@@ -93,10 +93,8 @@ var wrapper = {
     clientCall('pairbot', 'groups.list', null, 'groups', select.slackGroup, (e,r)=>{
       if (e) return cb(e)
       var groups = []
-      for (var p of r) {
-        $log(p.name.toLowerCase().yellow, term, p.name.toLowerCase().indexOf(term))
+      for (var p of r)
         if (p.name.toLowerCase().indexOf(term) != -1) groups.push(p)
-      }
 
       cb(null, groups)
     })
