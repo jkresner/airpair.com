@@ -229,6 +229,10 @@ function connectProvider(provider, short, profile, errorCB, done) {
     profile.username = profile._json.angellist_url.replace('https://angel.co/','')
   if (short == 'tw')
     ups.bio = profile._json.description
+  if (short == 'sl') {
+    delete ups['$set']['social.sl']._json
+    ups['$set']['social.sl'].token = profile.token.token
+  }
 
   User.findOneAndUpdate({_id:this.user._id}, ups, (e,r) => {
     if (e || !r) errorCB(e||'connectProvider, no user found.',r)

@@ -56,6 +56,7 @@ var SocialAccounts = {
   bb: {},
   al: {},
   gp: {},
+  sl: {},
 }
 
 
