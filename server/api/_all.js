@@ -13,6 +13,7 @@ import RequestsAPI from '../api/requests'
 import PayoutsAPI from '../api/payouts'
 import ReportsAPI from '../api/reports'
 import MojoAPI from '../api/mojo'
+import ChatAPI from '../api/chat'
 
 module.exports = {
   Workshops: WorkshopsAPI,
@@ -29,5 +30,6 @@ module.exports = {
   Views: ViewsAPI,
   Requests: RequestsAPI,
   Payouts: PayoutsAPI,
-  Reports: ReportsAPI
+  Reports: ReportsAPI,
+  Chat: ChatAPI,
 }

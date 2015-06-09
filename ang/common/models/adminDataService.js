@@ -17,6 +17,10 @@ angular.module('APSvcAdmin', [])
       toggleRole: PUT((d)=>`/adm/users/${d._id}/role/${d.role}`),
     }
 
+    this.chats = {
+      inviteToTeam: PUT((d)=>`/adm/chat/invite-to-team/${d._id}`),
+    }
+
     this.tags = {
       getAllTags: GET((d)=>`/adm/tags`),
       getById: GET((d)=>`/adm/tags/${d._id}`),
