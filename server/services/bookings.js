@@ -45,7 +45,6 @@ var get = {
           else
             ChatsSvc.searchSyncOptions(BookingdUtil.searchBits(r)[0],(eeee,syncOptions)=>{
               r.chatSyncOptions = syncOptions
-              $log('got.chatSyncOptions'.magenta)
               return cb(eeee,r)
             })
         })
@@ -308,17 +307,29 @@ Booking: https://airpair.com/booking/${original._id}`
       });
   },
 
-  // associateChat(original, type, providerId,cb)
-  // {
-  //   $callSvc(ChatsSvc.createSync, this)(type, providerId, (e,chat)=>{
-  //     $log('createSync'.cyan, e, chat)
-  //     original.chatId = chat._id
-  //     svc.update(original._id, original, (ee,r)=>{
-  //       if (r) r.chat = chat
-  //       return cb(ee,r)
-  //     })
-  //   })
-  // },
+  createChat(original, type, groupchat, cb)
+  {
+    $callSvc(ChatsSvc.createCreate, this)(type, groupchat, original.participants, (e,chat)=>{
+      $log('createCreate'.cyan, e, chat)
+      original.chatId = chat._id
+      svc.update(original._id, original, (ee,r)=>{
+        if (r) r.chat = chat
+        return cb(ee,r)
+      })
+    })
+  },
+
+  associateChat(original, type, providerId, cb)
+  {
+    $callSvc(ChatsSvc.createSync, this)(type, providerId, (e,chat)=>{
+      $log('createSync'.cyan, e, chat)
+      original.chatId = chat._id
+      svc.update(original._id, original, (ee,r)=>{
+        if (r) r.chat = chat
+        return cb(ee,r)
+      })
+    })
+  },
 
   confirmBooking()
   {

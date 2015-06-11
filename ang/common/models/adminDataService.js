@@ -131,7 +131,9 @@ angular.module('APSvcAdmin', [])
       updateBooking: PUT((d)=>`/adm/bookings/${d._id}`),
       cheatBookingExpertSwap: PUT((d)=>`/adm/bookings/${d._id}/${d.orderId}/${d.requestId}/${d.suggestionId}/swap`),
       addYouTubeData: PUT((d)=>`/adm/bookings/${d._id}/recording`),
-      giveCredit: POST((d)=>`/adm/billing/orders/credit`)
+      giveCredit: POST((d)=>`/adm/billing/orders/credit`),
+      createChat: PUT((d)=>`/adm/bookings/${d._id}/create-chat`),
+      associateChat: PUT((d)=>`/adm/bookings/${d._id}/associate-chat`),
     }
 
     this.reports = {

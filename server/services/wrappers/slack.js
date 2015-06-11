@@ -1,5 +1,6 @@
 var logging                       = true
 var {select}                      = require('../chats.data')
+var {admin,owner,pairbot}         = config.chat.slack
 
 var clientCall = (user, method, data, cbProp, select, cb) => {
   var client = null
@@ -25,8 +26,8 @@ var wrapper = {
   init() {
     var SlackAPI = require('slackey')
     wrapper.api = new SlackAPI({})
-    wrapper.api.admin = wrapper.api.getClient(config.chat.slack.admin.token)
-    wrapper.api.pairbot = wrapper.api.getClient(config.chat.slack.pairbot.token)
+    wrapper.api.admin = wrapper.api.getClient(admin.token)
+    wrapper.api.pairbot = wrapper.api.getClient(pairbot.token)
   },
 
   teamInfo(cb)
@@ -71,7 +72,12 @@ var wrapper = {
   {
     var first_name = util.firstName(fullName)
     var last_name = util.lastName(fullName)
-    clientCall(config.chat.slack.owner, 'users.admin.invite', {first_name,last_name,email}, null, null, cb)
+    clientCall(owner, 'users.admin.invite', {first_name,last_name,email}, null, null, cb)
+  },
+
+  deactivateUser(id, cb)
+  {
+    clientCall(owner, 'users.admin.setInactive', {user:id}, null, null, cb)
   },
 
   // getUserPresence(user, cb)
@@ -102,11 +108,11 @@ var wrapper = {
 
   getGroupWithHistory(id, cb)
   {
-    clientCall('pairbot', 'groups.info', {channel:id}, 'group', select.slackGroup, (e,data)=>{
+    clientCall('pairbot', 'groups.info', {channel:id}, 'group', select.slackGroup, (e,info)=>{
       if (e) return cb(e)
       clientCall('pairbot', 'groups.history', {channel:id,count:500}, 'messages', null, (ee,history)=>{
         if (ee) return cb(ee)
-        cb(null, { data, history })
+        cb(null, { info, history: _.map(history,(h)=>_.omit(h,'type')) })
       })
     })
   },
@@ -123,6 +129,25 @@ var wrapper = {
     clientCall(user, 'groups.rename', { channel:groupId, name }, 'channel', null, cb)
   },
 
+  createGroup(user, groupInfo, members, cb)
+  {
+    var user = (user.token) ? user : 'admin'
+    var {name,purpose} = groupInfo
+    $log('going'.yellow)
+    clientCall(user, 'groups.create', { name }, 'group', select.slackGroup, (e,group)=>{
+      if (e) return cb(e)
+
+      if (!_.contains(members,(m)=>m==pairbot.id)) members.push(pairbot.id)
+      for (var m of members)
+        clientCall(user, 'groups.invite', { channel:group.id, user:m }, null, null, (e,invite)=>{})
+
+      clientCall(user, 'groups.setPurpose', { channel:group.id, purpose }, null, null, (ee,purpose)=>{
+        if (ee) return cb(ee)
+        group.purpose.value = purpose
+        cb(null, group)
+      })
+    })
+  },
 
   // getIMs(user, cb)
   // {

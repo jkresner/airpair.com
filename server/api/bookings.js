@@ -11,6 +11,8 @@ export default initAPI(
   addYouTubeData: (req) => [req.booking, req.body.youTubeId],
   addHangout: (req) => [req.booking, req.body.youTubeId, req.body.youTubeAccount, req.body.hangoutUrl],
   cheatExpertSwap: (req) => [req.booking, req.order, req.request, req.params.id],
+  createChat: (req) => [req.booking, req.body.type, req.body.groupchat],
+  associateChat: (req) => [req.booking, req.body.type, req.body.providerId],
 }, {
   booking:'getById'
 },

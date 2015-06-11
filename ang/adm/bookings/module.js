@@ -37,6 +37,9 @@ angular.module("ADMBookings", [])
     if (r.order)
       scope.lineForPayout = OrdersUtil.lineForPayout(r.order)
 
+    if (r.chatSyncOptions)
+      scope.newGroupChat = BookingsUtil.chatGroup(r)
+
     angular.extend($scope, scope)
   }
 
@@ -68,6 +71,15 @@ angular.module("ADMBookings", [])
     AdmDataService.bookings.cheatBookingExpertSwap(swap,setScope)
   }
 
+  $scope.associateGroupChat = (type, providerId) => {
+    var d = {_id:$scope.booking._id,type,providerId}
+    AdmDataService.bookings.associateChat(d,setScope)
+  }
+
+  $scope.createGroupChat = (type) => {
+    var d = {_id:$scope.booking._id,type,groupchat:$scope.newGroupChat}
+    AdmDataService.bookings.createChat(d,setScope)
+  }
 })
 
 .controller('BookingsCtrl', ($scope, AdmDataService, DateTime, BookingsUtil) => {

@@ -60,13 +60,13 @@
       <h3>Chat</h3>
       <div ng-if="booking.chat">
         <div ng-if="booking.chat.provider">
-          <a target="_blank" href="https://airpair.slack.com/messages/{{booking.chat.data.name}}">  {{booking.chat.data.name}}
-            <span ng-if="booking.chat.data.is_archived">(archived)</span>
+          <a target="_blank" href="https://airpair.slack.com/messages/{{booking.chat.info.name}}">  {{booking.chat.info.name}}
+            <span ng-if="booking.chat.info.is_archived">(archived)</span>
           </a>{{booking.chat.providerId}} <!-- {{booking.chat.data.created}} -->
-          <p class="purpose">{{booking.chat.data.purpose.value}}</p>
-          <p class="topic">{{booking.chat.data.topic.value}}</p>
+          <p class="purpose">{{booking.chat.info.purpose.value}}</p>
+          <p class="topic">{{booking.chat.info.topic.value}}</p>
           <ul>
-            <li ng-repeat="m in booking.chat.data.members">{{m}}</li>
+            <li ng-repeat="m in booking.chat.info.members">{{m}}</li>
           </ul>
           <hr />
           <ul class="history">
@@ -78,12 +78,20 @@
         </div>
       </div>
       <div ng-if="booking.chatSyncOptions">
-        {{booking.chatSyncOptions.length}}<br />
+        <div id="pipelineReq">
+          <a ng-click="createGroupChat('slack')" class="btn" style="float:right">Create chat</a>
+          <div style="float:right;clear:right" ng-repeat="p in booking.participants" slack-status member="p.chat" userid="p.info._id"></div>
+          <input type="text" ng-model="newGroupChat.name" style="width:310px;margin-right:50px" />
+          <br /><textarea ng-model="newGroupChat.purpose" style="width:290px" /></textarea>
+          <hr />
+        </div>
+
+        {{booking.chatSyncOptions.length}} possible syncs<br />
         <div ng-repeat="c in booking.chatSyncOptions">
           <div ng-if="c.provider == 'slack'">
-            <b><a target="_blank" href="https://airpair.slack.com/messages/{{c.data.name}}/
-            ">{{c.provider}}</a></b>::{{c.data.name}}
-            <a ng-click="associateChat('slack',c.data.id)">associate</a>
+            <b><a target="_blank" href="https://airpair.slack.com/messages/{{c.info.name}}/
+            ">{{c.provider}}</a></b>::{{c.info.name}}
+            <a ng-click="associateGroupChat('slack',c.info.id)">associate</a>
           </div>
         </div>
       </div>
