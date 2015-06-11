@@ -72,6 +72,7 @@ describe 'Server: '.appload, ->
   spec @, 'Users'
   spec @, 'Users Cohort', 'usersCohort'
   spec @, 'User Flors', 'userFlows'
+  spec @, 'Chat'
   spec @, 'Experts'
   spec @, 'Experts', 'expertsMojo'
   spec @, 'Analytics'

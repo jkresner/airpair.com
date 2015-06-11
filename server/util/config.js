@@ -64,9 +64,9 @@ var cfg = {
       scope: ['email','talent']
     },
     slack: {
-      slackTeam: "",
-      clientID: '',
-      clientSecret: '',
+      slackTeam: '-',
+      clientID: '-',
+      clientSecret: '-',
       scope: ['identify','read','post','client']
     },
   },
@@ -99,10 +99,10 @@ var cfg = {
     refreshTokens: 'airpairtest34@gmail.com:1/ButgPHQTginqD-zDnOHHhxiVRSlGDw5iGY9pPIrOsrQ',
   },
   chat: {
-    on: false,
-    firebase: {
-      url: 'https://airpair-chat-dev.firebaseio.com/',
-      secret: 'BKE9PP6DP4k06Es10nD6Rvh9443Fz7XBstb6fg54'
+    slack: {
+      owner:   { id: '', token: '' },
+      admin:   { id: '', token: '' },
+      pairbot: { id: '', token: '' }
     }
   },
   log: {
@@ -229,11 +229,6 @@ module.exports = function(env) {
       access_token_secret: process.env.AUTH_TWITTER_ACCESS_TOKEN_SECRET
     }
 
-    cfg.chat.firebase = {
-      url: process.env.CHAT_FIREBASE_URL,
-      secret: process.env.CHAT_FIREBASE_SECRET
-    };
-
     cfg.auth.paypal.mode = 'live'
     cfg.auth.paypal.clientID = process.env.AUTH_PAYPAL_CLIENTID,
     cfg.auth.paypal.clientSecret = process.env.AUTH_PAYPAL_CLIENTSECRET
@@ -260,6 +255,13 @@ module.exports = function(env) {
     cfg.calendar.google.ownerRefreshToken = process.env.CALENDAR_GOOGLE_OWNER_REFRESHTOKEN
     cfg.calendar.google.owner = process.env.CALENDAR_GOOGLE_OWNER
     cfg.calendar.google.calendarId = process.env.CALENDAR_GOOGLE_CALENDARID
+
+    cfg.chat.slack.owner.id = process.env.CHAT_SLACK_OWNER_ID
+    cfg.chat.slack.owner.token = process.env.CHAT_SLACK_OWNER_TOKEN
+    cfg.chat.slack.admin.id = process.env.CHAT_SLACK_ADMIN_ID
+    cfg.chat.slack.admin.token = process.env.CHAT_SLACK_ADMIN_TOKEN
+    cfg.chat.slack.pairbot.id = process.env.CHAT_SLACK_PAIRBOT_ID
+    cfg.chat.slack.pairbot.token = process.env.CHAT_SLACK_PAIRBOT_TOKEN
 
     cfg.youtube.refreshTokens = process.env.YOUTUBE_REFRESH_TOKENS
 

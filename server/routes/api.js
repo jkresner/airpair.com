@@ -183,6 +183,8 @@ module.exports = function(app) {
     .put('/bookings/:booking/hangout', API.Bookings.addHangout)
     .put('/bookings/:booking', API.Bookings.updateByAdmin)
     .put('/bookings/:booking/:order/:request/:id/swap', API.Bookings.cheatExpertSwap)
+    .put('/bookings/:booking/create-chat', API.Bookings.createChat)
+    .put('/bookings/:booking/associate-chat', API.Bookings.associateChat)
     .get('/payouts/:userId', API.Payouts.getPayouts)
     .get('/users/role/:role', API.Users.getUsersInRole)
     .put('/users/:id/role/:role', API.Users.toggleUserInRole)
