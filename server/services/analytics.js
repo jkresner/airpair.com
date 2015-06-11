@@ -103,7 +103,7 @@ function $$log(action, data, user, sessionID, ctx) {
       break
     case 'Save':
       if (data.type == 'paymethod')
-        $log(uid, `PAYM    > ${data.method} ${data.cardType}`.yellow)
+        $log(uid, `PAYM    > ${data.method} ${data.cardType} SAVED!!!`.yellow)
       else if (data.type == 'email')
         $log(uid, `EMAILC  > ${data.email} << ${data.previous}[${data.previousVerified}] `.green)
       else if (data.type == 'emailVerified')
