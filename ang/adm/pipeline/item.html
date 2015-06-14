@@ -45,7 +45,7 @@
         <ul ng-if="orders && orders.length > 0">
           <li>ORDERS</li>
           <li ng-repeat="o in orders">
-            <a href="/v1/adm/orders/{{o._id}}" target="_blank">{{o.utc | locaTime : 'YYYY DD MMM' }}</a>
+            <a href="/adm/orders/{{o._id}}" target="_blank">{{o.utc | locaTime : 'YYYY DD MMM' }}</a>
             <span ng-if="o.requestId != request._id">${{o.total}}</span>
             <b class="thisreq" ng-if="o.requestId == request._id">${{o.total}}</b>
           </li>

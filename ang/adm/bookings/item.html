@@ -169,7 +169,7 @@
         Order:
         ${{ order.total }}
 
-        <a href="/v1/adm/orders/{{ order._id }}">{{ order._id }}</a>
+        <a href="/adm/orders/{{ order._id }}">{{ order._id }}</a>
 
         <div ng-if="lineForPayout.info.paidout">
           <span style="color:green">paidout</span>
