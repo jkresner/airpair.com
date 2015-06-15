@@ -545,6 +545,17 @@ module.exports = {
     "has_more":true,"quota_max":300,"quota_remaining":279
   },
 
+  slack_users_list: [
+    {
+      id: 'U03ME5Q7X',
+      name: '123peterkim',
+      deleted: false,
+      real_name: 'Peter Kim',
+      tz_label: 'Pacific Daylight Time',
+      profile: { email: '123peterkim@gmail.com'}
+    }
+  ],
+
   slack_group_james_even: {
     id: 'G056VLB6V',
     name: 'p-james-evan',
@@ -570,5 +581,20 @@ module.exports = {
     }
   },
 
-
+  slack_groups_list: [
+    { id: 'G043NJRC0',
+      purpose: { value: '' },
+      topic: { value: '' },
+      members:
+       [ 'U02ASLW2Z',
+         'U03K7EWLT',
+         'U03KY719E',
+         'U063Z4Z44',
+         'U06944TLK',
+         'U069EJMK9' ],
+      is_archived: false,
+      creator: 'U03KMN81C',
+      created: 1426867853,
+      name: '-airpair-authors-' }
+  ]
 }

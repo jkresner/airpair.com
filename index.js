@@ -31,7 +31,7 @@ export function run()
     // Don't persist or track sessions for rss
     app.use('/rss', routes('rss')(app))
 
-    app.use(mw.auth.setUrlMatch(app))
+    app.use(mw.auth.setNonSessionUrl(app))
 
     session(app, mongo.initSessionStore, () => {
 
@@ -47,10 +47,17 @@ export function run()
 
       app.get('/', mw.analytics.trackFirstRequest, mw.auth.authdRedirect('/dashboard'), app.renderHbs('home') )
       app.use('/auth', routes('auth')(app))
-      app.use('/v1/api', routes('api')(app))
+      app.use('/v1/api/posts', routes('api').posts(app))
+      app.use('/v1/api/adm', routes('api').admin(app))
+      app.use('/v1/api', routes('api').other(app))
+      app.use('/v1/api', routes('api').pipeline(app))
       // $timelapsed("APP ROUTES API")
-      app.use('/adm/*', mw.authz.adm, app.renderHbsAdmin('adm/admin'))
-      app.use('/matchmaking*', mw.authz.adm, app.renderHbsAdmin('adm/admin'))
+      app.use(['^/matchmaking*','^/adm/bookings*'],
+        mw.authz.plnr, app.renderHbsAdmin('adm/admin'))
+
+      app.use(['^/adm/pipeline*','^/adm/users*','^/adm/orders*','^/adm/experts*','^/adm/companys*',
+        '^/adm/views*','^/adm/posts*','^/adm/tags*','^/adm/chat*','^/adm/mail*','^/adm/redirects*'],
+        mw.authz.adm, app.renderHbsAdmin('adm/admin'))
 
       app.use(mw.seo.noTrailingSlash) // Must be after root '/' route
       app.use(routes('redirects').addPatterns(app))
@@ -61,8 +68,6 @@ export function run()
         app.use(routes('landing')(app))
         app.use(routes('dynamic')(app))
         app.get(routes('whiteList'), app.renderHbs('base') )
-
-        mw.auth.setAppUrlRegexList(app)
 
         app.use(mw.logging.pageNotFound)
         app.use(mw.logging.errorHandler(app))

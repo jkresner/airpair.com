@@ -16,7 +16,7 @@ var clientCall = (user, method, data, cbProp, select, cb) => {
       else
         r = util.selectFromObject(r, select)
     }
-    if (logging) $log('slack.result'.yellow, r)
+    if (logging) $log(`slack[${method}].result`.yellow, (r && r.length) ? r.length : 1, (r && r.length) ? r[0] : r)
     cb(null, r)
   })
 }
@@ -47,24 +47,38 @@ var wrapper = {
     }, cb)
   },
 
+  checkUserSync(info)
+  {
+    //-- This method will explode if the cache isn't preloaded
+    var slackUsers = cache.slack_users
+
+    // Priority 1 if a username is provided
+    if (info.username)
+      for (var u of slackUsers)
+        if (u.name && info.username) return u
+
+    // Priority 2 if we have an email match
+    for (var u of slackUsers)
+      if (u.profile && info.email==u.profile.email) return u
+
+    // Priority 3 fuzzy matching on name
+    if (info.name)
+      for (var u of slackUsers)
+        //-- checking by name like this will cause problems when we
+        //-- have two users with the same name, but may be ok with email checkd first
+        if (u.real_name && info.name.toLowerCase()==u.real_name.toLowerCase()) return u
+
+    return null
+  },
+
   checkUser(info, cb)
   {
     if (info.id)
       clientCall('admin', 'users.info', { user:info.id }, 'user', select.slackUser, cb)
     else
       wrapper.getUsers((e,users)=>{
-        for (var u of users||[])
-          if (u.profile && info.email==u.profile.email) return cb(null, u)
-
-        if (info.name)
-          for (var u of users||[]) {
-            //-- checking by name like this will cause problems when we
-            //-- have two users with the same name, but may be ok with email checkd first
-            if (u.real_name && info.name.toLowerCase()==u.real_name.toLowerCase())
-              return cb(null, u)
-          }
-
-        cb(e, null)
+        if (e) return cb(e)
+        cb(null, wrapper.checkUserSync(info))
       })
   },
 
@@ -96,7 +110,7 @@ var wrapper = {
   searchGroupsByName(term, cb)
   {
     term = term.toLowerCase()
-    clientCall('pairbot', 'groups.list', null, 'groups', select.slackGroup, (e,r)=>{
+    wrapper.getGroups('pairbot', (e,r)=>{
       if (e) return cb(e)
       var groups = []
       for (var p of r)
@@ -121,6 +135,7 @@ var wrapper = {
   {
     var user = (invitor.token) ? invitor : 'admin'
     clientCall(user, 'groups.invite', { channel:groupId, user:invitee }, null, null, cb)
+    cache.flush('slack_users')
   },
 
   renameGroup(user, groupId, name, cb)
@@ -133,7 +148,6 @@ var wrapper = {
   {
     var user = (user.token) ? user : 'admin'
     var {name,purpose} = groupInfo
-    $log('going'.yellow)
     clientCall(user, 'groups.create', { name }, 'group', select.slackGroup, (e,group)=>{
       if (e) return cb(e)
 

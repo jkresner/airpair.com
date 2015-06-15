@@ -32,9 +32,7 @@ var data = {
         for (var p of booking.participants) {
           p.info.avatar = md5.gravatarUrl(p.info.email)
           if (!p.chat) {
-            var slackUser = _.find(cache['slack_users'],(u) => {
-              if (u.profile) return u.profile.email==p.info.email})
-
+            var slackUser = Wrappers.Slack.checkUserSync(p.info)
             if (slackUser)
               p.chat = { slack: { id: slackUser.id, name:slackUser.name } }
           }
@@ -50,10 +48,12 @@ var data = {
       },
       inflateAvatars(cb) {
         return (e,r)  => {
-          if (e) return cb(e)
-          for (var o of r)
-            data.select.setAvatars(o)
-          cb(null, r)
+          Wrappers.Slack.getUsers(()=>{
+            if (e) return cb(e)
+            for (var o of r)
+              data.select.setAvatars(o)
+            cb(null, r)
+          })
         }
       }
     }

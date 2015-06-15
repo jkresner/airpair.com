@@ -41,6 +41,7 @@ cache.ready = function(keys, cb)
 cache.flush = function(key, cb)
 {
   if (key == 'posts') cache.postAllPublished = null
+  if (key == 'slack_users') cache.slack_users = null
   delete cache[key]
 }
 
