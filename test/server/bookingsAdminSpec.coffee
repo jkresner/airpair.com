@@ -1,4 +1,4 @@
-module.exports = -> describe "API: ".subspec, ->
+module.exports = -> describe "ADM: ".subspec, ->
 
 
   before (done) ->

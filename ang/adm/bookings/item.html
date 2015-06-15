@@ -37,7 +37,7 @@
         Notify participants
       </div>
       <div ng-if="data.gcal">
-        <p><a href="{{data.gcal.htmlLink}}">{{data.gcal.summary}}</a></p>
+        <p><a target="_blank" href="{{data.gcal.htmlLink}}">{{data.gcal.summary}}</a></p>
         {{data.gcal.start.dateTime | date:'MM/dd/yyyy'}}<br/>
         {{data.gcal.start.dateTime | date:'h:mma'}} to {{data.gcal.end.dateTime | date:'h:mma'}}<br /><br />
         <p><strong>Attendees</strong></p>
@@ -142,12 +142,11 @@
       <p>JK still to build</p>
     </div>
 
-
     <div class="request">
       <h3>Request</h3>
 
       <div ng-if="request">
-        This booking comes from <a href="/adm/pipeline/{{request._id}}">{{request.title}}</a>
+        This booking comes from <a href="/adm/pipeline/{{request._id}}" target="_blank">{{request.title}}</a>
         <br />
         <br />
         <ul><li ng-repeat="sug in request.suggested | filter: {expertStatus: 'available'}"
@@ -169,7 +168,7 @@
         Order:
         ${{ order.total }}
 
-        <a href="/adm/orders/{{ order._id }}">{{ order._id }}</a>
+        <a href="/adm/orders/{{ order._id }}" target="_blank">{{ order._id }}</a>
 
         <div ng-if="lineForPayout.info.paidout">
           <span style="color:green">paidout</span>
@@ -186,6 +185,13 @@
       </div>
 
     </div>
+
+    <div class="notes">
+      <h3>Notes</h3>
+      <p>JK still to build</p>
+    </div>
+
+
 
   </div>
 
