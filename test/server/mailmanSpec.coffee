@@ -49,16 +49,22 @@ module.exports = -> describe "MailMan: ", ->
       DONE()
 
 
+  it.skip 'Pipeliners notify payment added', itDone ->
+    d = {byName:"Jonyisalive 5"}
+    mailman.send 'pipeliners', 'pipeliner-notify-addpaymethod', d, ->
+
+
   it 'Pipeliners notify booking', itDone ->
     SETUP.addAndLoginLocalUserWithPayMethod 'ckni', (s) ->
-      airpair1 = time: moment().add(2, 'day'), minutes: 120, type: 'private', payMethodId: s.primaryPayMethodId
+      airpair1 = datetime: moment().add(2, 'day'), minutes: 120, type: 'private', payMethodId: s.primaryPayMethodId
       POST "/bookings/#{data.experts.dros._id}", airpair1, {}, (booking1) ->
-        expect(send.callCount).to.equal(2)
+        expect(send.callCount).to.equal(3)
         expectStartsWith(send.args[1][1].Subject, "[Pipeline] Booking by #{s.name} for #{booking1.participants[1].info.name}")
         expectContains(send.args[1][1].Text, "https://www.airpair.com/adm/bookings/#{booking1._id}")
         expectContains(send.args[1][1].Text, 'Daniel Roseman')
         expectContains(send.args[1][1].Text, s.name)
         expectContains(send.args[1][1].Html, booking1._id)
+        expectStartsWith(send.args[2][1].Subject, "You got booked to AirPair with #{s.name}")
         DONE()
 
 
@@ -78,3 +84,14 @@ module.exports = -> describe "MailMan: ", ->
           expectContains(send.args[0][1].Text, "https://www.airpair.com/adm/pipeline/#{r._id}")
           DONE()
 
+
+  it 'Expert gets notification on booking', itDone ->
+    _id = ObjectId("55555ae4b38fc91937086df7")
+    d = {byName:"Jonyisalive 5", expertName:"Jonathon Kaye", bookingId:_id,minutes:60}
+    mailman.send {name:'Karan Kurani',email:'karankurani@testmail.com'}, 'expert-booked', d, ->
+      expect(send.callCount).to.equal(1)
+      expectStartsWith(send.args[0][1].Subject,'You got booked to AirPair with Jonyisalive 5')
+      expectContains(send.args[0][1].Text,'https://www.airpair.com/bookings/55555ae4b38fc91937086df7')
+      expectContains(send.args[0][1].Text,'60 minutes')
+      expectContains(send.args[0][1].Html,'55555ae4b38fc91937086df7')
+      DONE()

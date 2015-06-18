@@ -1,5 +1,3 @@
-var util = require('../../../shared/util')
-
 angular.module("APRequestDirectives", [])
 
 .factory('RequestHelper', function requestHelperFactory(SessionService) {
@@ -163,7 +161,7 @@ angular.module("APRequestDirectives", [])
 
 
 .directive('request', function($timeout, ServerErrors, DataService,
-  SessionService, StepHelper, RequestsUtil) {
+  SessionService, StepHelper, Util, RequestsUtil) {
 
   return {
     template: require('./request.html'),
@@ -175,7 +173,7 @@ angular.module("APRequestDirectives", [])
       $scope.tags = () => $scope.request.tags ? $scope.request.tags : null;
       $scope.updateTags = (scope, newTags) => $scope.request.tags = newTags;
       $scope.deselectTag = (tag) => $scope.request.tags = _.without($scope.request.tags, tag);
-      $scope.tagsString = () => util.tagsString($scope.request.tags)
+      $scope.tagsString = () => Util.tagsString($scope.request.tags)
       $scope.selectTag = function(tag) {
         var tags = $scope.request.tags
         var updated = []

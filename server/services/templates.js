@@ -50,7 +50,13 @@ var interpolate = {
         Html: marked(Text)
       })
     })
-  }
+  },
+
+  slackMSG(key, data, cb) {
+    cache.tmpl('slack-message', key, (tmpl) =>
+      cb(null, tmpl.markdownFn(data))
+    )
+  },
 
 }
 

@@ -11,13 +11,13 @@ var Touch = {
   }
 }
 
-
-var MESSAGE_TYPE = [
-  'received',
-  'review',
-  'generic',
-  'cancelfromwaiting'
-]
+var Note = new Schema({
+  body:         { require:true, type: String },
+  by:           {
+    _id:        { type: ObjectId, ref: 'User' },
+    name:       String
+  }
+})
 
 
 var PageMeta = {
@@ -30,7 +30,16 @@ var PageMeta = {
   ogImage:      { type: String, trim: true },
   ogVideo:      { type: String, trim: true },
   ogUrl:        { type: String, lowercase: true, trim: true }
-};
+}
+
+
+var MESSAGE_TYPE = [
+  'received',
+  'review',
+  'generic',
+  'cancelfromwaiting'
+]
+
 
 
 var Message = new Schema({
@@ -56,6 +65,7 @@ var SocialAccounts = {
   bb: {},
   al: {},
   gp: {},
+  sl: {},
 }
 
 
@@ -83,4 +93,4 @@ var Survey = new Schema({
 })
 
 
-module.exports = {Touch,Message,UserByte,PageMeta,SocialAccounts,Survey}
+module.exports = {Touch,Message,Note,UserByte,PageMeta,SocialAccounts,Survey}

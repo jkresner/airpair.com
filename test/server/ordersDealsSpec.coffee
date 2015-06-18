@@ -62,7 +62,7 @@ orderDeals = ->
             b = dealId: expertToBook.deals[0]._id, payMethodId: s.primaryPayMethodId
             POST "/billing/orders/deal/#{expert._id}", b, {}, (order) ->
               expect(order._id).to.exist
-              airpair1 = dealId: b.dealId, time: moment().add(2, 'day'), minutes: 120, type: 'private', payMethodId: s.primaryPayMethodId
+              airpair1 = dealId: b.dealId, datetime: moment().add(2, 'day'), minutes: 120, type: 'private', payMethodId: s.primaryPayMethodId
               POST "/bookings/#{expert._id}", airpair1, {}, (booking1) ->
                 expect(booking1._id).to.exist
                 expect(booking1.orderId).to.exist
@@ -119,7 +119,7 @@ orderDeals = ->
                   availableMinutes1 = ordersUtil.getAvailableMinutesRemaining(lines1)
                   expect(lines1.length).to.equal(1)
                   expect(availableMinutes1).to.equal(180)
-                  airpair2 = dealId: b.dealId, time: moment().add(3, 'day'), minutes: 60, type: 'opensource', payMethodId: s.primaryPayMethodId
+                  airpair2 = dealId: b.dealId, datetime: moment().add(3, 'day'), minutes: 60, type: 'opensource', payMethodId: s.primaryPayMethodId
                   POST "/bookings/#{expert._id}", airpair2, {}, (booking2) ->
                     expect(booking2._id).to.exist
                     expect(booking2.minutes).to.equal(60)
@@ -132,7 +132,7 @@ orderDeals = ->
                       expect(lines2.length).to.equal(1)
                       availableMinutes2 = ordersUtil.getAvailableCredit(lines2)
                       expect(availableMinutes2).to.equal(120)
-                      airpair3 = dealId: b.dealId, time: moment().add(4, 'day'), minutes: 180, type: 'private', payMethodId: s.primaryPayMethodId
+                      airpair3 = dealId: b.dealId, datetime: moment().add(4, 'day'), minutes: 180, type: 'private', payMethodId: s.primaryPayMethodId
                       POST "/bookings/#{expert._id}", airpair3, { status: 400 }, (err) ->
                         expectStartsWith(err.message,'Not enough remaining minutes.')
                         DONE()

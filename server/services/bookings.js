@@ -1,6 +1,8 @@
 var logging                 = false
 var RequestsSvc             = require('../services/requests')
 var OrdersSvc               = require('../services/orders')
+var ChatsSvc                = require('../services/chats')
+var TemplateSvc             = require('../services/templates')
 import Svc                  from '../services/_service'
 import Booking              from '../models/booking'
 import Order                from '../models/order'
@@ -8,6 +10,21 @@ var svc                     = new Svc(Booking, logging)
 var {select,query,options}  = require('./bookings.data')
 var {setAvatarsCB}          = select.cb
 var Roles                   = require('../../shared/roles')
+var BookingdUtil            = require('../../shared/bookings')
+
+
+function getChat(booking, cb) {
+  if (booking.chatId)
+    ChatsSvc.getById(booking.chatId,(e,chat)=>{
+      booking.chat = chat
+      return cb(e,booking)
+    })
+  else
+    ChatsSvc.searchSyncOptions(BookingdUtil.searchBits(booking),(e,syncOptions)=>{
+      booking.chatSyncOptions = syncOptions
+      return cb(e,booking)
+    })
+}
 
 
 var get = {
@@ -25,15 +42,20 @@ var get = {
     }))
   },
 
-  getByIdForAdmin(id, cb) {
+  getByIdForAdmin(id, callback) {
+    var cb = (e,r) => Wrappers.Slack.getUsers(()=>setAvatarsCB(callback)(e,r))
+
     svc.getById(id, (e,r) => {
-      if (!r.orderId) return setAvatarsCB(cb)(e,r) //is a migrated booking from v0 call
+      if (!r.orderId) return cb(e,r) //is a migrated booking from v0 call
       OrdersSvc.getByIdForAdmin(r.orderId, (ee,order) => {
         r.order = order
-        if (!order.requestId) return setAvatarsCB(cb)(e,r)
-        RequestsSvc.getByIdForAdmin(order.requestId, (eee,request) => {
-          r.request = request
-          setAvatarsCB(cb)(eee,r)
+        getChat(r, (eeee,booking)=>{
+          if (!order.requestId) return cb(e,r)
+          RequestsSvc.getByIdForAdmin(order.requestId, (eee,request) => {
+            if (eee) return cb(eee)
+            r.request = request
+            cb(null,r)
+          })
         })
       })
     })
@@ -49,21 +71,38 @@ var get = {
   },
 
   getByQueryForAdmin(start, end, userId, cb) {
-    var opts = { fields: select.listAdmin, options: options.orderByDate }
     var q = query.inRange(start,end)
-    if (userId) q.customerId = userId
-    svc.searchMany(q, opts, select.cb.inflateAvatars(cb))
+    if (userId) q['participants.info._id'] = userId
+
+    Booking.find(q, select.listAdmin)
+      .populate('orderId', 'lineItems.info.paidout lineItems.info.released')
+      .populate('chatId', 'info.name')
+      .sort(options.orderByDate.sort)
+      .lean().exec(select.cb.inflateAvatars((e,r)=>{
+        for (var b of r) {
+          if (!b.orderId)
+            $log('no order', b._id)
+          else
+            b.paidout = _.find(b.orderId.lineItems||[],(li)=>
+              li.info!=null&&li.info.paidout!=null)
+
+          if (b.paidout) b.paidout = b.paidout.info
+          if (b.orderId) delete b.orderId.lineItems
+        }
+        cb(e,r)
+      }))
   }
 
 }
 
 
-function create(e, r, user, expert, time, minutes, type, cb) {
+function create(e, r, user, expert, datetime, minutes, type, cb) {
   if (e) return cb(e)
 
+  var localization = user.localization ? { location:user.localization.location,timezone:user.localization.timezone } : {}
   var participants = [
-    {role:"customer",info: { _id: user._id, name: user.name, email: user.email } },
-    {role:"expert",info: { _id: expert.userId, name: expert.name||expert.user.name, email: expert.email||expert.user.email } }
+    _.extend(localization,{role:"customer",info: { _id: user._id, name: user.name, email: user.email } }),
+    {role:"expert",location:expert.location,timezone:expert.timezone,info: { _id: expert.userId, name: expert.name||expert.user.name, email: expert.email||expert.user.email } }
   ]
 
   var booking = {
@@ -74,17 +113,37 @@ function create(e, r, user, expert, time, minutes, type, cb) {
     participants,
     type,
     minutes,
+    datetime,
     status: 'pending',
-    datetime: time,
     gcal: {},
     orderId: r._id
   }
 
-  var d = {byName:user.name,expertName:expert.name, bookingId:booking._id}
+  var d = {byName:user.name,expertName:expert.name, bookingId:booking._id,minutes,type}
   mailman.send('pipeliners', 'pipeliner-notify-booking', d, ()=>{})
+  mailman.send(expert, 'expert-booked', d, ()=>{}) // todo add type && instructions to email
 
   svc.create(booking, setAvatarsCB(cb))
 }
+
+
+function updateForAdmin(thisCtx, booking, cb) {
+  Wrappers.Slack.getUsers(()=>{
+    svc.update(booking._id, booking, (e,r)=>{
+      if (e) return cb(e)
+      if (!r.chatId)
+        $callSvc(get.getByIdForAdmin, thisCtx)(r._id, cb)
+      else {
+        var groupInfo = BookingdUtil.chatGroup(r)
+        $callSvc(ChatsSvc.sync, thisCtx)(r.chatId, groupInfo, (ee,chat)=>{
+          if (ee) return cb(ee)
+          $callSvc(get.getByIdForAdmin, thisCtx)(r._id, cb)
+        })
+      }
+    })
+  })
+}
+
 
 var save = {
 
@@ -96,14 +155,17 @@ var save = {
 
   updateByAdmin(original, update, cb) {
     // $log('updateByAdmin', original, update)
-    if (original.datetime != update.datetime)
+    if (!moment(original.datetime).isSame(moment(update.datetime)))
     {
       $log('changing the date yea!', original.datetime, update.datetime)
       original.datetime = update.datetime
       original.minutes = update.minutes
     }
 
-    original.status = update.status
+    if (original.status != update.status) {
+      $log('changing the status yea!'.cyan, original.status, update.status)
+      original.status = update.status
+    }
 
     if (update.sendGCal) {
       var attenddees = []
@@ -125,21 +187,15 @@ Booking: https://airpair.com/booking/${original._id}`
       if (original.gcal) cb("GCal updated not yet built")
       else {
         Wrappers.Calendar.createEvent(name, update.sendGCal.notify, moment(update.datetime), update.minutes, attenddees, description, 'pg', (e,r) => {
-          $log('event created', e, r)
+          $log('event created'.yellow, e, r)
           if (e) return cb(e)
           original.gcal = r
-          svc.update(original._id, original, (e,r) => {
-            if (e || !r) return cb(e,r)
-            get.getByIdForAdmin(r._id,cb)
-          })
+          updateForAdmin(this, original, cb)
         })
       }
     }
     else
-      svc.update(original._id, original, (e,r) => {
-        if (e || !r) return cb(e,r)
-        get.getByIdForAdmin(r._id,cb)
-      })
+      updateForAdmin(this, original, cb)
   },
 
 
@@ -243,7 +299,7 @@ Booking: https://airpair.com/booking/${original._id}`
   },
 
   addYouTubeData(original, youTubeId, cb){
-    Wrappers.YouTube.getVideoInfo(youTubeId, function(err, response){
+    Wrappers.YouTube.getVideoInfo(youTubeId, (err, response) => {
       if (err){
         return cb(Error(err),data)
       }
@@ -253,15 +309,12 @@ Booking: https://airpair.com/booking/${original._id}`
       data.youTubeId = response.id;
       delete(data.thumbnails) //can be derived from YouTube ID
       original.recordings.push({type: "youTube", data})
-      svc.update(original._id, original, (e,r) => {
-        if (e || !r) return cb(e,r)
-          get.getByIdForAdmin(r._id,cb)
-      })
+      updateForAdmin(this, original, cb)
     });
   },
 
   addHangout(original, youTubeId, youTubeAccount, hangoutUrl, cb){
-    Wrappers.YouTube.getVideoInfo(youTubeId, function(err, response){
+    Wrappers.YouTube.getVideoInfo(youTubeId, (err, response) => {
       //TODO mark video as private if booking.type is private
       if (err){
         return cb(Error(err),data)
@@ -272,11 +325,45 @@ Booking: https://airpair.com/booking/${original._id}`
       data.youTubeId = response.id;
       delete(data.thumbnails) //can be derived from YouTube ID
       original.recordings.push({type: "YouTube", data, hangoutUrl, youTubeAccount})
-      svc.update(original._id, original, (e,r) => {
-        if (e || !r) return cb(e,r)
-          get.getByIdForAdmin(r._id,cb)
-        })
-      });
+      updateForAdmin(this, original, (e,r)=>{
+        if (!e)
+          TemplateSvc.slackMSG('hangout-started-slack', {hangoutUrl}, (ee, msg) =>
+            Wrappers.Slack.postMessage('pairbot', r.chat.providerId, msg, ()=>{}))
+        cb(e,r)
+      })
+    })
+  },
+
+  deleteRecording(original, recordingId, cb)
+  {
+    var recordings = _.filter(original.recordings, (r)=>!_.idsEqual(r._id,recordingId))
+    original.recordings = recordings
+    updateForAdmin(this, original, cb)
+  },
+
+  createChat(original, type, groupchat, cb)
+  {
+    $callSvc(ChatsSvc.createCreate, this)(type, groupchat, original.participants, (e,chat)=>{
+      original.chatId = chat._id
+      updateForAdmin(this, original, cb)
+    })
+  },
+
+  associateChat(original, type, providerId, cb)
+  {
+    $callSvc(ChatsSvc.createSync, this)(type, providerId, (e,chat)=>{
+      if (e) return cb(e)
+      original.chatId = chat._id
+      updateForAdmin(this, original, cb)
+    })
+  },
+
+  addNote(original, note, cb)
+  {
+    var notes = original.notes || []
+    notes.push({body:note,by:{_id:this.user._id,name:this.user.name}})
+    original.notes = notes
+    updateForAdmin(this, original, cb)
   },
 
   confirmBooking()

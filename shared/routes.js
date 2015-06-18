@@ -1,5 +1,6 @@
 module.exports = [
   '/v1',
+  '/v1/auth*',
   '/bookings',
   '/booking/*',
   '/bookings/*',
@@ -19,8 +20,6 @@ module.exports = [
   '/billing*',
   '/payouts*',
   '*pair-programming*',
-  '/v1/auth*',
-  '/v1/adm/orders*',
   '/login',
   '/me*',
   '/help*',

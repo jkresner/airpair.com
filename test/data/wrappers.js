@@ -545,5 +545,66 @@ module.exports = {
     "has_more":true,"quota_max":300,"quota_remaining":279
   },
 
+  slack_users_list: [
+    {
+      id: 'U03ME5Q7X',
+      name: '123peterkim',
+      deleted: false,
+      real_name: 'Peter Kim',
+      tz_label: 'Pacific Daylight Time',
+      profile: { email: '123peterkim@gmail.com'}
+    }
+  ],
 
+  slack_group_james_even: {
+    id: 'G056VLB6V',
+    name: 'p-james-evan',
+    is_group: true,
+    created: 1433447227,
+    creator: 'U02ASLW2Z',
+    is_archived: false,
+    is_open: true,
+    last_read: '1433560548.000008',
+    latest: {
+      type: 'message',
+      user: 'U04MHG2HF',
+      text: 'Today’s session was awesome.. Thanks again <@U03M5HQU5>',
+      ts: '1433560548.000008' },
+    unread_count: 0,
+    unread_count_display: 0,
+    members: [ 'U02ASLW2Z', 'U03K7EWLT', 'U03M5HQU5', 'U04MHG2HF', 'U061TMK98' ],
+    topic: { value: '', creator: '', last_set: 0 },
+    purpose: {
+      value: 'https://www.airpair.com/review/55707e97b376c81100de413c James (CDT, Houston), Evan (PDT, San Francisco)',
+      creator: 'U02ASLW2Z',
+      last_set: 1433447228
+    }
+  },
+
+  slack_groups_list: [
+    { id: 'G043NJRC0',
+      purpose: { value: '' },
+      topic: { value: '' },
+      members:
+       [ 'U02ASLW2Z',
+         'U03K7EWLT',
+         'U03KY719E',
+         'U063Z4Z44',
+         'U06944TLK',
+         'U069EJMK9' ],
+      is_archived: false,
+      creator: 'U03KMN81C',
+      created: 1426867853,
+      name: '-airpair-authors-' },
+    { id: 'G03KMNM5N',
+      purpose: { value: '' },
+      topic: { value: '' },
+      members:
+       [ 'U02ASLW2Z',
+         'U03K7EWLT' ],
+      is_archived: false,
+      creator: 'U03KMN81C',
+      created: 1426867853,
+      name: '-pipeline-' }
+  ]
 }

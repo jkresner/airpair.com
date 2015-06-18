@@ -37,13 +37,14 @@ require('./adm/bookings/module.js');
 require('./adm/experts/module.js');
 require('./adm/tags/module.js');
 require('./adm/mail/module.js');
+require('./adm/chat/module.js');
 require('./adm/jk/module.js');
 require('./matchmaking/module.js');
 
 angular.module('ADM', [
   'ngRoute', 'ui.bootstrap', 'ui.bootstrap.datetimepicker', 'APViewData',
   'APSvcSession', 'APSvcAdmin', 'APDataSvc', 'APNotifications', 'APRoutes', 'APUtil',
-  'APFilters', 'APFormsDirectives', 'APInputs', 'APTagInput', 'APMailTemplates', 'APHangouts',
+  'APFilters', 'APFormsDirectives', 'APInputs', 'APTagInput', 'APMailTemplates', 'APHangouts', 'APRequestDirectives',
   'ADMPipeline',
   'ADMPosts',
   'ADMUsers',
@@ -56,7 +57,8 @@ angular.module('ADM', [
   'ADMCompanys',
   'ADMMail',
   'ADMjk',
-  'APMatchmaking'
+  'APMatchmaking',
+  'ADMChat'
   ])
 
   .config(function($locationProvider, $routeProvider) {

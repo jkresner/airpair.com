@@ -1,12 +1,18 @@
 var logging       = false
-var authorizeRole = (roleName) => {
+
+function authorizeRole(roleName) {
   return (req, res, next) => {
+    if (logging)
+      $log(`authorizeRole[${roleName}] anon:${req.user==null}`.cyan, req.originalUrl,
+        (req.user) ? req.user.roles : '')
+
     if (!req.isAuthenticated())
     {
       res.status(401).json()
     }
     else if ( ! _.contains(req.user.roles, roleName) )
     {
+      if (_.contains(req.user.roles, 'admin')) return next()
       res.status(403).json()
     }
     else
@@ -36,7 +42,7 @@ var middleware = {
 
 
   adm:          authorizeRole('admin'),
-  pipeliner:    authorizeRole('pipeliner'),
+  plnr:         authorizeRole('pipeliner'),
   mm:           authorizeRole('matchmaker'),
   editor:       authorizeRole('editor'),
   reviewer:     authorizeRole('reviewer'),

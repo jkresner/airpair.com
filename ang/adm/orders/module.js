@@ -3,8 +3,8 @@ angular.module("ADMOrders", [])
 .config(function(apRouteProvider) {
 
   var route = apRouteProvider.route
-  route('/v1/adm/orders', 'Orders', require('./list.html'))
-  route('/v1/adm/orders/:id', 'Order', require('./item.html'))
+  route('/adm/orders', 'Orders', require('./list.html'))
+  route('/adm/orders/:id', 'Order', require('./item.html'))
 
 })
 
@@ -46,7 +46,7 @@ angular.module("ADMOrders", [])
 
   $scope.fetch = () =>
     AdmDataService.bookings.getOrder({_id:$routeParams.id}, setScope,
-      ServerErrors.fetchFailRedirect('/v1/adm/orders'))
+      ServerErrors.fetchFailRedirect('/adm/orders'))
 
   $scope.fetch()
 

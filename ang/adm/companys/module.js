@@ -3,7 +3,7 @@ angular.module("ADMCompanys", [])
 
   .config(function($locationProvider, $routeProvider) {
 
-    $routeProvider.when('/v1/adm/companys', {
+    $routeProvider.when('/adm/companys', {
       template: require('./list.html'),
       controller: 'CompanysCtrl as companys'
     });
