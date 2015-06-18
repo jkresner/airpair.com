@@ -14,37 +14,57 @@ var setSessionVarFromQuery = (varName) =>
 
 var middleware = {
 
-  setAppUrlRegexList(app) {
-    app.routeRegexps = []
-    for (var stack of app._router.stack) {
-      if (stack.route && !stack.regexp.fast_slash)
-        app.routeRegexps.push(stack.regexp)
-      else if (stack.name == 'router') {
-        if (!stack.regexp.fast_slash) {
-          app.routeRegexps.push(stack.regexp)
-        }
-        for (var rstack of stack.handle.stack)
-        {
-          if (!rstack.regexp.fast_slash)
-            app.routeRegexps.push(rstack.regexp)
-        }
-      }
-    }
-  },
+  // setAppUrlRegexList(app) {
+  //   app.routeRegexps = []
+  //   for (var stack of app._router.stack) {
+  //     if (stack.route && !stack.regexp.fast_slash)
+  //       app.routeRegexps.push(stack.regexp)
+  //     else if (stack.name == 'router') {
+  //       if (!stack.regexp.fast_slash) {
+  //         app.routeRegexps.push(stack.regexp)
+  //       }
+  //       for (var rstack of stack.handle.stack)
+  //       {
+  //         if (!rstack.regexp.fast_slash)
+  //           app.routeRegexps.push(rstack.regexp)
+  //       }
+  //     }
+  //   }
+  //   app.routeRegexps.splice(-1,1) //-- /^\/(?:([^\/]+?))\/?$/i  (don't include catch all route)
+  //   if (logging) $log(`setAppUrlRegexList`.cyan, app.routeRegexps.length)
+  // },
 
-  setUrlMatch(app) {
+  // setUrlMatch(app) {
+  //   return function(req, res, next) {
+  //     if (logging) $log(`setUrlMatch ${req.url}`.cyan, req.url, req.originalUrl)
+  //     var url = req.originalUrl.split('?')[0]
+  //     for (var regexp of app.routeRegexps)
+  //     {
+  //       var match = regexp.test(url)
+  //       if (match) {
+  //         req.urlMatch = true
+  //         $log(regexp , req.urlMatch, url)
+  //         return next()
+  //       }
+  //     }
+  //     next()
+  //   }
+  // },
+
+  setNonSessionUrl() {
     return function(req, res, next) {
-      if (logging) $log('setUrlMatch ${req.url}'.cyan, req.url) // app.routeRegexps)
-      var url = req.url.split('?')[0]
-      for (var regexp of app.routeRegexps)
-      {
-        var match = regexp.test(url)
-        if (match) {
-          req.urlMatch = true
-          // $log(regexp , req.urlMatch)
-          return next()
-        }
-      }
+      if (logging) $log(`setNonSessionUrl ${req.url}`.cyan, req.originalUrl)
+      var nonSessionUrls = [
+        '/feed',
+        '/android/rss',
+        '/rails/consulting',
+        '/static/styles/'
+      ]
+
+      for (var url of nonSessionUrls)
+        if (req.originalUrl.indexOf(url) == 0)
+          req.nonSessionUrl = true
+
       next()
     }
   },
@@ -52,7 +72,7 @@ var middleware = {
   checkToPersistSession(expressSession) {
     return (req, res, next) => {
       if (logging) $log(`mw.checkToPersistSession ${req.url} ${!isBot(req.get('user-agent'))}`.cyan)
-      if (isBot(req.get('user-agent')) || req.urlMatch === undefined) {
+      if (isBot(req.get('user-agent')) || req.nonSessionUrl) {
         req.session = {}
         req.sessionID = 'unNOwnSZ3Wi8bDEnaKzhygGG2a2RkjZ2' //-- hard coded consistent uid
         return next() //-- Do not track the session

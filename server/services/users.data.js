@@ -47,6 +47,7 @@ var select = {
     'social.tw.username': 1,
     'social.al.username': 1,
     'social.gp': 1,
+    'social.sl.username': 1
   },
   usersInRole: {
     '_id': 1,

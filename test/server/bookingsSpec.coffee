@@ -14,7 +14,7 @@ module.exports = -> describe "API: ".subspec, ->
   it "given a YouTube ID, allows a booking to be annotated with YouTube data", itDone ->
     listStub = SETUP.stubYouTube 'videos','list',null,data.wrappers.youtube_codereview_list
     SETUP.addAndLoginLocalUserWithPayMethod 'miks', (s) ->
-      airpair1 = time: moment().add(2, 'day'), minutes: 120, type: 'private', payMethodId: s.primaryPayMethodId
+      airpair1 = datetime: moment().add(2, 'day'), minutes: 120, type: 'private', payMethodId: s.primaryPayMethodId
       POST "/bookings/#{data.experts.dros._id}", airpair1, {}, (booking1) ->
         expect(booking1._id).to.exist
         expect(booking1.customerId).to.exist
@@ -35,7 +35,7 @@ module.exports = -> describe "API: ".subspec, ->
 
   it "fails gracefully with a bogus YouTube id", itDone ->
     SETUP.addAndLoginLocalUserWithPayMethod 'mrik', (s) ->
-      airpair1 = time: moment().add(2, 'day'), minutes: 120, type: 'private', payMethodId: s.primaryPayMethodId
+      airpair1 = datetime: moment().add(2, 'day'), minutes: 120, type: 'private', payMethodId: s.primaryPayMethodId
       POST "/bookings/#{data.experts.dros._id}", airpair1, {}, (booking1) ->
         expect(booking1._id).to.exist
         expect(booking1.customerId).to.exist
@@ -51,7 +51,7 @@ module.exports = -> describe "API: ".subspec, ->
 
   it "fails gracefully with a private YouTube id that it does not own", itDone ->
     SETUP.addAndLoginLocalUserWithPayMethod 'misr', (s) ->
-      airpair1 = time: moment().add(2, 'day'), minutes: 120, type: 'private', payMethodId: s.primaryPayMethodId
+      airpair1 = datetime: moment().add(2, 'day'), minutes: 120, type: 'private', payMethodId: s.primaryPayMethodId
       POST "/bookings/#{data.experts.dros._id}", airpair1, {}, (booking1) ->
         expect(booking1._id).to.exist
         expect(booking1.customerId).to.exist
@@ -68,7 +68,7 @@ module.exports = -> describe "API: ".subspec, ->
   #owner of VfA4ELOHjmk is experts@airpair.com
   it.skip "works with a private YouTube id if the owner is in process.env.AUTH_GOOGLE_REFRESH_TOKEN" , (done)->
     SETUP.addAndLoginLocalUserWithPayMethod 'cher', (s) ->
-      airpair1 = time: moment().add(2, 'day'), minutes: 120, type: 'private', payMethodId: s.primaryPayMethodId
+      airpair1 = datetime: moment().add(2, 'day'), minutes: 120, type: 'private', payMethodId: s.primaryPayMethodId
       POST "/bookings/#{data.experts.dros._id}", airpair1, {}, (booking1) ->
         expect(booking1._id).to.exist
         expect(booking1.customerId).to.exist
@@ -97,7 +97,7 @@ module.exports = -> describe "API: ".subspec, ->
 
   it.skip 'Can update booking and send invitations as admin', itDone ->
     SETUP.addAndLoginLocalUserWithPayMethod 'mkis', (s) ->
-      airpair1 = time: moment().add(2, 'day'), minutes: 120, type: 'private', payMethodId: s.primaryPayMethodId
+      airpair1 = datetime: moment().add(2, 'day'), minutes: 120, type: 'private', payMethodId: s.primaryPayMethodId
       POST "/bookings/#{data.experts.dros._id}", airpair1, {}, (booking1) ->
         expect(booking1._id).to.exist
         expect(booking1.customerId).to.exist

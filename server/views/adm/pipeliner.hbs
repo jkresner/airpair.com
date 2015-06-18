@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html ng-app="ADM">
+<head>
+  <title>Adm | AirPair</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="{{ config.bundle.libCss}}" type="text/css" />
+  <link rel="stylesheet" href="{{ config.bundle.admCss}}" type="text/css" />
+  <base href="/" />
+</head>
+<body>
+<header>
+  {{!-- <a href="/adm/pipeline" target="_self">Pipeline</a> | --}}
+  <a href="/adm/bookings">Bookings</a> |
+  {{!-- <a href="/adm/users">Users</a> --}}
+  {{!-- <span class="nomob">| <a href="/adm/chat">Chat</a></span> --}}
+</header>
+
+<main>
+  <div notifications></div>
+  <div ng-view></div>
+</main>
+
+<script type="text/javascript" src="{{ config.bundle.admScript }}"></script>
+<script type="text/javascript">
+
+window.viewData = { session: {{ JSON session }}, chatSettings: {{ JSON config.chatSettings }}, hangoutAppId: "{{ config.hangout.appId }}"}
+
+</script>
+
+</body>
+</html>

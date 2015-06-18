@@ -10,6 +10,7 @@ var providers = {
   bitbucket: { short: 'bb', strategy: require('passport-bitbucket').Strategy },
   linkedin: { short: 'in', strategy: require('passport-linkedin').Strategy },
   angellist: { short: 'al', strategy: require('passport-angellist').Strategy },
+  slack: { short: 'sl', strategy: require('passport-slack-ponycode').SlackStrategy },
 }
 
 var connect = (proivderName) => {
@@ -43,5 +44,6 @@ module.exports = {
   bitbucket: { oAuth: connect('bitbucket', require('passport-bitbucket').Strategy) },
   linkedin: { oAuth: connect('linkedin', require('passport-linkedin').Strategy) },
   angellist: { oAuth: connect('angellist', require('passport-angellist').Strategy) },
+  slack: { oAuth: connect('slack', require('passport-slack-ponycode').SlackStrategy) }
 
 }

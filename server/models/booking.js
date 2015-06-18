@@ -16,7 +16,12 @@ var ATTENDEE_TYPES = ['expert','customer']
 
 var Participant = {
   role: { required: true, type: String, enum: ATTENDEE_TYPES },
-  info: Shared.UserByte
+  info: Shared.UserByte,
+  location:  String,
+  timezone:  String,
+  chat: {
+    slack: { id: { type: String }, name: { type: String } }
+  }
 }
 
 
@@ -45,8 +50,9 @@ module.exports = mongoose.model('Booking', new mongoose.Schema({
   datetime:      { required: true, type: Date, index: true },
   gcal:          { required: true, type: {} },
   recordings:    { type: [Recording], default: [] },
-  orderId:       { required: true, type: ObjectId, ref: 'Order' }
-  // notes:         { required: true, type: String }
+  orderId:       { required: true, type: ObjectId, ref: 'Order' },
+  chatId:        { type: ObjectId, ref: 'Chat' },
+  notes:         { type: [Shared.Note] }
 
   // customerReview:   {}   # Customer's feedback on how the session went
   // customerShare:    {}   # Tacking Customer sharing activity

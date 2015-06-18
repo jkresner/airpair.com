@@ -113,6 +113,7 @@ var data = {
     },
     byView(request, view) {
       var r = migrateV0(request)
+      r.tags = _.sortBy(r.tags,(t)=>t.sort)
       if (r.suggested) {
         r.suggested = _.sortBy(r.suggested, (s)=>statusHash[s.expertStatus])
         for (var s of r.suggested) {

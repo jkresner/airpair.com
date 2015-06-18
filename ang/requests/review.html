@@ -147,9 +147,10 @@
           <div class="message noexperts">
             <img class="user" itemprop="image" ng-src="{{s.expert.avatar}}?s=100" />
             <h3>{{s.expert.name}}</h3>
+            <h5>{{s.expert.timezone}} | {{s.expert.location}}</h5>
+            <p>{{s.expertAvailability}}</p>
             <social-links profile="s.expert"></social-links>
             <div ng-bind-html="s.expertComment | markdownAsHtml"></div>
-            <p>{{s.expertAvailability}}</p>
           </div>
           <section ng-if="isExpert">
             <strong ng-if="s.expertStatus == 'available'">${{s.suggestedRate.expert}}<span>/hr</span></strong>

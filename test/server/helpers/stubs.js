@@ -81,12 +81,28 @@ var stubs = {
     })
   },
 
+  stubSlack(fnName, result) {
+    if (withoutStubs) return emptyStub()
+    if (!Wrappers.Slack.api) Wrappers.Slack.init()
+    return sinon.stub(Wrappers.Slack, fnName, function() {
+      var cb = arguments[arguments.length-1]
+      // $log(`Slack.${fnName}.stubbed`, result)
+      cb(null, result)
+    })
+  },
+
+  stubSlackSync(fnName, result) {
+    return sinon.stub(Wrappers.Slack, fnName, function() {
+      return result
+    })
+  },
+
   stubMailchimpLists(response) {
     if (withoutStubs) return emptyStub()
     return sinon.stub(MailChimpApi.prototype,'call', (a,b,c,cb) => {
       cb(null, response)
     })
-  }
+  },
 
 }
 

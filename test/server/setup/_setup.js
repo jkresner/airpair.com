@@ -17,7 +17,11 @@ var setup = {
   initStubs()
   {
     return {
-      timezone: stubs.stubGoogleTimezone()
+      timezone: stubs.stubGoogleTimezone(),
+      slackCheckUser: SETUP.stubSlack('checkUser', null),
+      slackCheckUserSync: SETUP.stubSlackSync('checkUserSync',null),
+      slackGetUsers: SETUP.stubSlack('getUsers', data.wrappers.slack_users_list),
+      slackGetGroups: SETUP.stubSlack('getGroups', data.wrappers.slack_groups_list),
     }
   },
 

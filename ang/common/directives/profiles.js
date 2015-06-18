@@ -83,7 +83,6 @@ angular.module("APProfileDirectives", [])
     scope: { p: '=profile' },
     link(scope, element, attrs) { },
     controller($scope, $attrs) {
-      console.log('$scope.p', $scope.p)
     }
   };
 

@@ -15,11 +15,11 @@
     <li ng-repeat="b in bookings.upcoming">
       <a href="/adm/bookings/{{b._id}}">
         <time>{{b.datetime | locaTime : 'ddd, DD HH:mm' }}
-        <b>{{b.datetime | agoTime }}</b>
+        <br /><b>({{b.minutes}}) {{b.datetime | agoTime }}</b>
         </time>
       </a>
       <div ng-repeat="p in b.participants">
-        <img ng-src="{{p.info.avatar}}" class="user"> {{p.info.name}}
+        <img ng-src="{{p.info.avatar}}" class="user"> <span>{{p.info.name}}</span>
       </div>
       <div ap-hangout-spinner
         hangout-id="b._id"
@@ -33,10 +33,10 @@
   <ul ng-if="bookings.pending.length > 0">
     <li ng-repeat="b in bookings.pending">
       <a href="/adm/bookings/{{b._id}}">
-        <time>{{b.datetime | locaTime : 'ddd, DD HH:mm' }} </time>
+        <time>({{b.minutes}}) {{b.datetime | locaTime : 'ddd, DD HH:mm' }} </time>
       </a>
-      <label>{{ util.firstExpert(b).name }}</label> +
-      <span>{{ util.firstCustomer(b).name }}</span>
+      <label>{{ util.firstExpert(b).name }}</label>
+      <span>+ {{ util.firstCustomer(b).name }}</span>
     </li>
   </ul>
 </section>
@@ -44,28 +44,52 @@
 
 <table class="table table-condensed bookings">
   <tr>
-    <th style="width:100px">Time</th>
-    <th style="width:100px">Type</th>
-    <th>Status</th>
+    <th style="width:110px">Time</th>
+    <th style="width:120px">Status</th>
+    <th style="width:150px">Type</th>
+    <th style="width:180px">Room</th>
     <th style="width:80px">Participants</th>
+    <th>Feedback</th>
     <th>Recordings</th>
-    <th class="p"></th>
   </tr>
-  <tr ng-repeat="b in bookings.other" ng-class="css.bookingRow(b)">
+  <tr ng-repeat="b in bookings.other | orderBy : ['-status','datetime']" ng-class="css.bookingRow(b)">
     <td>
       <a href="/adm/bookings/{{b._id}}">
-        <b>{{b.datetime | locaTime : 'MM.DD HH:mm' }}</b><br /><time>{{b.minutes}} minutes</time>
+        <b>{{b.datetime | locaTime : 'MM.DD HH:mm' }}</b><br /><time>{{b.minutes}} min booking</time>
       </a>
     </td>
-    <td>{{b.type}}</td>
-    <td>{{b.status}}</div>
+    <td>
+      <span class="{{b.status}}">{{b.status}}</span>
+      <div ng-if="b.paidout.paidout">
+        <span style="color:green">paidout</span>
+      </div>
+
+      <div ng-if="!b.paidout.paidout">
+        <div ng-if="!b.paidout.released">holding
+        </div>
+        <div ng-if="b.paidout.released">
+          <span style="color:orange">released</span>
+        </div>
+      </div>
+    </td>
+    <td>
+      {{b.type}}
+      <br /><time>booked {{b._id | objectIdToAgoTime }}</time>
+    </td>
+    <td>
+      {{b.chatId.info.name}}
+    </td>
     <td style="width:300px">
       <div ng-repeat="p in b.participants">
         <img ng-src="{{p.info.avatar}}" class="user"> {{p.info.name}}
       </div>
     </td>
-    <td></div>
-    <td class="p"></div>
+    <td>-</td>
+    <td>
+      <div ng-repeat="r in b.recordings">
+        <span><a target="_blank" href="http://youtube.com/watch?v={{r.data.youTubeId}}">{{r.data.title}}</a></span>
+      </div>
+    </td>
 </table>
 
 </section>

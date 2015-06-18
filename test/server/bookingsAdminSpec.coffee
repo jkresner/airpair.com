@@ -1,4 +1,7 @@
-module.exports = -> describe "API: ".subspec, ->
+snggsId = "52127d5fc6a5870200000007"
+adamKerrId = "53041710a9a333020000001d"
+
+module.exports = -> describe "ADM: ".subspec, ->
 
 
   before (done) ->
@@ -6,8 +9,6 @@ module.exports = -> describe "API: ".subspec, ->
 
 
   it "Can dirty swap available expert", itDone ->
-    snggsId = "52127d5fc6a5870200000007"
-    adamKerrId = "53041710a9a333020000001d"
     SETUP.ensureV1LoggedInExpert 'snug', ->
     SETUP.ensureBookingFromRequest 'swap1', (booking) ->
       expect(_.find(booking.participants,(p)=>p.info.name == "Adam Kerr")).to.exist
@@ -34,3 +35,26 @@ module.exports = -> describe "API: ".subspec, ->
                   expectIdsEqual(orders[0]._id,booking.orderId)
                   # Never quite took the test as far as the payout ...
                   DONE()
+
+
+  it "Can leave notes on bookings", itDone ->
+    SETUP.ensureV1LoggedInExpert 'snug', ->
+    SETUP.ensureBookingFromRequest 'swap1', (booking) ->
+      expect(booking.notes.length).to.equal(0)
+      LOGIN "admin", ->
+        d = { body: 'A great session and this test note is at least 20 characters' }
+        POST "/adm/bookings/#{booking._id}/note", d, {}, (b1) ->
+          expectIdsEqual(b1._id,data.bookings.swap1._id)
+          expect(b1.notes.length).to.equal(1)
+          d2 = { body: 'Futher this test note again is also at least 20 characters' }
+          POST "/adm/bookings/#{booking._id}/note", d2, {}, (b2) ->
+            expect(b2.notes.length).to.equal(2)
+            expect(b2.notes[0].body).to.equal('A great session and this test note is at least 20 characters')
+            expect(b2.notes[0]._id).to.exist
+            expect(b2.notes[1].body).to.equal('Futher this test note again is also at least 20 characters')
+            expect(b2.notes[1]._id).to.exist
+            expect(b2.notes[0]._id.toString()!=b2.notes[1]._id.toString()).to.be.true
+            DONE()
+
+
+  it.skip "Can add more participants to bookings", itDone ->

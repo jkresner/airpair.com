@@ -14,7 +14,8 @@ var data = {
       // 'gcal':1,
       'recordings':1,
       'participants':1,
-      // 'orderId':1
+      'orderId':1,
+      'chatId':1,
     },
     experts: {
       '_id': 1,
@@ -29,8 +30,20 @@ var data = {
     },
     setAvatars: (booking) => {
       if (booking && booking.participants)
-        for (var p of booking.participants)
+        for (var p of booking.participants) {
           p.info.avatar = md5.gravatarUrl(p.info.email)
+          if (!p.chat) {
+            var slackUser = Wrappers.Slack.checkUserSync(p.info)
+            if (slackUser)
+              p.chat = { slack: { id: slackUser.id, name:slackUser.name } }
+          }
+        }
+      if (booking.chat) {
+        booking.chat.members = {}
+        for (var m of booking.chat.info.members) {
+          booking.chat.members[m] = Wrappers.Slack.checkUserSync({id:m}) || {id:m}
+        }
+      }
     },
     cb: {
       setAvatarsCB(cb) {
@@ -42,10 +55,12 @@ var data = {
       },
       inflateAvatars(cb) {
         return (e,r)  => {
-          if (e) return cb(e)
-          for (var o of r)
-            data.select.setAvatars(o)
-          cb(null, r)
+          Wrappers.Slack.getUsers(()=>{
+            if (e) return cb(e)
+            for (var o of r)
+              data.select.setAvatars(o)
+            cb(null, r)
+          })
         }
       }
     }

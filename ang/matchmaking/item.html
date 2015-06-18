@@ -30,7 +30,7 @@
       <div>
         <label>${{s.suggestedRate.total}} /
         ${{s.suggestedRate.expert}}</label>
-        <label><a href="/adm/experts/edit/{{s.expert._id}}" target="_blank">{{s.expert.name}}</a></label>
+        <label><a href="/adm/experts/{{s.expert._id}}" target="_blank">{{s.expert.name}}</a></label>
         <span class="{{s.expertStatus}}">{{s.expertStatus}}</span>
       </div>
       <p ng-if="s.expertComment">
@@ -52,21 +52,33 @@
         ng-class="(highlightedTag(t._id)) ? 'highlight':''"
         >{{t.short||t.name}}</em>
     </div>
-    <br /><img ng-src="{{selected.avatar}}?s=50" class="user" />
+    <img ng-src="{{selected.avatar}}?s=50" class="user" />
     <b>{{selected.score}}</b>${{selected.rate}}|${{selected.minRate}}
-    <br /><a href="/adm/experts/edit/{{m._id}}" target="_blank">{{selected.name}}</a>
+    <br /><a href="/adm/experts/{{m._id}}" target="_blank">{{selected.name}}</a>
     <br />Customers: {{selected.matching.experience.customers}}
     <br />Hours: {{selected.matching.experience.hours}}
     <br />Suggested: {{selected.matching.replies.suggested}}
     <br />Replied: {{selected.matching.replies.replied}}
 
+    <hr />
+    <div class="replies">
+      <h6>Replies <span ng-if="!selected.matching.replies.last10 || selected.matching.replies.last10.length == 0">Never been suggested</span></h6>
+      <ul ng-if="selected.matching.replies.last10">
+        <li ng-repeat="reply in selected.matching.replies.last10" class="{{reply.status}}">
+           <a href="/adm/pipeline/{{reply.requestId}}" target="_blank">{{reply.replied | locaTime : 'DD MMM YY' }}</a> {{reply.status}}
+        </li>
+      </ul>
+    </div>
 
-    <h6>Replies</h6><span ng-if="!selected.matching.replies.last10">Never been suggested</span>
-    <ul class="replies" ng-if="selected.matching.replies.last10">
-      <li ng-repeat="reply in selected.matching.replies.last10" class="{{reply.status}}">
-        {{reply.replied | locaTime : 'DD MMM' }} {{reply.status}}
-      </li>
-    </ul>
+    <div class="bookings">
+      <h6>Bookings <span ng-if="!selected.matching.experience.last10 || selected.matching.experience.last10.length == 0">Never been booked</span></h6>
+      <ul  ng-if="selected.matching.experience.last10">
+        <li ng-repeat="b in selected.matching.experience.last10" class="{{b.status}}">
+          <b>(5/5)</b> {{b.status}} {{b.participants[0].info.name}}  <a href="/adm/bookings/{{b._id}}" target="_blank">{{b.datetime | locaTime : 'DD MMM YY' }}</a>
+        </li>
+      </ul>
+    </div>
+
     <div class="mailTo">
       <input type="text" ng-model="selected.suggest.subject" class="form-control">
       <textarea ng-model="selected.suggest.body" class="form-control"></textarea>
@@ -93,17 +105,17 @@
           <social-scores profile="m"></social-scores>
           <div>{{gh}}</div>
           <b>Mojo: {{m.score}}</b>
-          <a href="/adm/experts/edit/{{m._id}}" target="_blank">{{m.name}}</a>
+          <a href="/adm/experts/{{m._id}}" target="_blank">{{m.name}}</a>
           <a class="btn hist" ng-href="https://mail.google.com/mail/u/0/?shva=1#search/%22{{m.name | urlEncode }}%22+OR+{{ m.email | urlEncode  }}" target="_blank">
             <i class="glyphicon glyphicon-envelope"></i> history
           </a>
 
-          <br />Rates: {{m.rate}}|{{m.minRate}} (min)
-          <span ng-if="m.matching">
-            Cust: {{m.matching.experience.customers}} /
-            hr {{m.matching.experience.hours}} /
+          <br />R ${{m.rate}}|<min>{{m.minRate}} min</min>
+          <br /><span ng-if="m.matching">
+            Cust {{m.matching.experience.customers}} /
+            Hr {{m.matching.experience.hours}} /
             Sug {{m.matching.replies.suggested}} /
-            Rep {{m.matching.replies.replied}} /
+            Rep {{m.matching.replies.replied}}
           </span>
           <div>
             <em ng-repeat="t in m.tags"

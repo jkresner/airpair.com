@@ -23,12 +23,15 @@
     <div>{{user.localization.timezone}}|{{user.localization.location}}</div>
 
     <div class="has" ng-repeat="pm in paymethods"><b>{{pm.name}}</b></div>
-    <div ng-if="!paymethods || paymethods.length == 0" class="nopaymethods"><b>No pay methods</b></div>
+    <div ng-if="!paymethods || paymethods.length == 0" class="nopaymethods"><b>No pay methods</b>
+      <a target="_blank" href="https://mail.google.com/mail/u/0/?view=cm&fs=1&tf=1&source=mailto&su=AirPair+Help&to={{request.by.email}}&body=Hi,+I+just+want+to+double+check+my+emails+are+not+going+into+your+SPAM+folder+and+that+we+are+not+holding+you+up+from+getting+help+because+of+any+misfired+messages.+Cheers,+Jonathon">==> send gmail check</a>
+    </div>
 
     <div ng-if="user">
       <span class="has" ng-if="user.emailVerified">Email Verified</span>
       <span ng-if="!user.emailVerified" class="nopaymethods"><b>Email not verified</b></span>
       (<span class="has" ng-if="user.googleId">G+ {{user.googleId}}</span><span ng-if="!user.googleId">No google login</span>)
+      <div slack-status member="user.chat" userid="user._id"></div>
     </div>
 
     <div class="cohort" ng-if="request._id && user">
@@ -42,7 +45,7 @@
         <ul ng-if="orders && orders.length > 0">
           <li>ORDERS</li>
           <li ng-repeat="o in orders">
-            <a href="/v1/adm/orders/{{o._id}}" target="_blank">{{o.utc | locaTime : 'YYYY DD MMM' }}</a>
+            <a href="/adm/orders/{{o._id}}" target="_blank">{{o.utc | locaTime : 'YYYY DD MMM' }}</a>
             <span ng-if="o.requestId != request._id">${{o.total}}</span>
             <b class="thisreq" ng-if="o.requestId == request._id">${{o.total}}</b>
           </li>
@@ -191,7 +194,7 @@
         <div>
           <label>${{s.suggestedRate.total}} /
           ${{s.suggestedRate.expert}}</label>
-          <label><a href="/adm/experts/edit/{{s.expert._id}}" target="_blank">{{s.expert.name}}</a></label>
+          <label><a href="/adm/experts/{{s.expert._id}}" target="_blank">{{s.expert.name}}</a></label>
           <b>{{s.expert.email}}</b>
           <span class="{{s.expertStatus}}">{{s.expertStatus}}</span>
           <div>{{s.matchedBy.type}} match::<span class="{{s.matchedBy.initials}}"> {{s.matchedBy.initials}}</span> <time>{{ s._id | objectIdToAgoTime }} (after {{ s.suggestedAfter }})</time></div>

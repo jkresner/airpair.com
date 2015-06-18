@@ -22,7 +22,7 @@ matchmaking = ->
       expect(query).to.equal('tags=swift')
       GET "/experts/mojo/rank?#{query}", {}, (experts) ->
         expect(experts.length).to.equal(1)
-        expect(experts[0].score).to.equal(26307)
+        expect(experts[0].score).to.equal(46307)
         DONE()
 
 
@@ -56,6 +56,11 @@ matchmaking = ->
           expect(experts.length).to.equal(0)
           DONE()
 
+
+  it.skip 'Does a good job at sorting top tag over 2nd and 3rd tag', itDone ->
+    # http://localhost:3333/matchmaking/5565a27e8d9baa1100ce2cd9
+    # http://localhost:3333/matchmaking/5565e8391acf981100722e68
+    # http://localhost:3333/matchmaking/555d33401cf1ff1100e8426e
 
 module.exports = ->
 

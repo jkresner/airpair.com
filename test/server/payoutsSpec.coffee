@@ -292,7 +292,7 @@ module.exports = -> describe "API: ", ->
         SETUP.addAndLoginLocalUserWithPayMethod 'del4', (s) ->
           b = dealId: e2.deals[0]._id, payMethodId: s.primaryPayMethodId
           POST "/billing/orders/deal/#{expert._id}", b, {}, (order) ->
-            b1 = dealId: b.dealId, time: moment().add(2, 'day'), minutes: 250, type: 'offline', payMethodId: s.primaryPayMethodId
+            b1 = dealId: b.dealId, datetime: moment().add(2, 'day'), minutes: 250, type: 'offline', payMethodId: s.primaryPayMethodId
             POST "/bookings/#{expert._id}", b1, {}, (booking) ->
               expect(booking._id).to.exist
               LOGIN 'admin', ->

@@ -27,6 +27,7 @@ var wrappers = {
   Stripe:         initAPIWrap(require('./stripe')),
   Braintree:      initAPIWrap(require('./braintree')),
   YouTube:        initAPIWrap(require('./youtube')),
+  Slack:          initAPIWrap(require('./slack')),
   StackExchange:  initAPIWrap(require('./stackexchange')),
   Twitter:        initAPIWrap(require('./twitter')),
   Bitly:          initAPIWrap(require('./bitly')),

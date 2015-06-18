@@ -66,8 +66,7 @@ module.exports = -> describe "Admin".subspec, ->
             DONE()
 
 
-
-  it 'Pipeliner can suggest and remove experts', itDone ->
+  it 'Admin can suggest and remove experts', itDone ->
     SETUP.addAndLoginLocalUserWithEmailVerified 'kaun', (s) ->
       spy = sinon.spy(mailman,'sendRawTextEmail')
       d = tags: [data.tags.angular], type: 'resources', experience: 'proficient', brief: 'bah bah anglaur test yo4', hours: "1", time: 'rush'

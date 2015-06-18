@@ -37,6 +37,9 @@ angular.module("ADMBookings", [])
     if (r.order)
       scope.lineForPayout = OrdersUtil.lineForPayout(r.order)
 
+    if (r.chatSyncOptions)
+      scope.newGroupChat = BookingsUtil.chatGroup(r)
+
     angular.extend($scope, scope)
   }
 
@@ -57,6 +60,10 @@ angular.module("ADMBookings", [])
     AdmDataService.bookings.addYouTubeData({_id: $scope.booking._id, youTubeId}, setScope)
   }
 
+  $scope.deleteRecording = function(recordingId){
+    AdmDataService.bookings.deleteRecording({_id: $scope.booking._id, recordingId}, setScope)
+  }
+
   $scope.releasePayout = () =>
     AdmDataService.bookings.releasePayout({_id:$scope.order._id},(r) => {
       $scope.order = r
@@ -68,6 +75,20 @@ angular.module("ADMBookings", [])
     AdmDataService.bookings.cheatBookingExpertSwap(swap,setScope)
   }
 
+  $scope.associateGroupChat = (type, providerId) => {
+    var d = {_id:$scope.booking._id,type,providerId}
+    AdmDataService.bookings.associateChat(d,setScope)
+  }
+
+  $scope.createGroupChat = (type) => {
+    var d = {_id:$scope.booking._id,type,groupchat:$scope.newGroupChat}
+    AdmDataService.bookings.createChat(d,setScope)
+  }
+
+  $scope.saveNote = (body) => {
+    var d = {_id:$scope.booking._id,body}
+    AdmDataService.bookings.saveNote(d,setScope)
+  }
 })
 
 .controller('BookingsCtrl', ($scope, AdmDataService, DateTime, BookingsUtil) => {

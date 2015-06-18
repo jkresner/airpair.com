@@ -51,6 +51,15 @@
     </p>
   </section>
 
+  <section class="chat" ng-if="session.emailVerified">
+  <h3 class="underline">Chat</h3>
+
+    <a href="/auth/slack?returnTo=/me" target="_self" class="btn">Connect slack</a>
+    <span ng-if="session.social.sl" style="color:green;padding-left:10px">Slack user <b>{{session.social.sl.username}}</b> connected.</span>
+
+
+  </section>
+
   <section class="connect" ng-if="session.emailVerified">
 
     <h3 class="underline">Connected social accounts</h3>
