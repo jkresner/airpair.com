@@ -198,6 +198,13 @@ module.exports = -> describe "SlackAPI: ", ->
         DONE()
 
 
+    it 'Can message group as pairbot', itDone ->
+      pipelineGroupId = 'G03KMNM5N'
+      message = "I have updated bleah #{timeSeed()}"
+      Wrappers.Slack.postMessage 'pairbot', pipelineGroupId, message, (e,r)->
+        $log('postMessage', e, r)
+        DONE()
+
 
   # it.skip 'Can associate and sync existing slack group not belonging to any other booking', itDone ->
 

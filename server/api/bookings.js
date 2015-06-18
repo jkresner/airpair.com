@@ -6,13 +6,15 @@ export default initAPI(
   getByUserId: (req) => [req.user._id],
   getByIdForAdmin: (req) => [req.params.id],
   getByQueryForAdmin: (req) => [req.params.start,req.params.end,req.params.userId],
-  createBooking: (req) => [req.expertshaped,req.body.time,req.body.minutes,req.body.type,req.body.credit,req.body.payMethodId,req.body.request,req.body.dealId],
+  createBooking: (req) => [req.expertshaped,req.body.datetime,req.body.minutes,req.body.type,req.body.credit,req.body.payMethodId,req.body.request,req.body.dealId],
   updateByAdmin: (req) => [req.booking,req.body],
   addYouTubeData: (req) => [req.booking, req.body.youTubeId],
+  deleteRecording: (req) => [req.booking, req.params.recordingId],
   addHangout: (req) => [req.booking, req.body.youTubeId, req.body.youTubeAccount, req.body.hangoutUrl],
   cheatExpertSwap: (req) => [req.booking, req.order, req.request, req.params.id],
   createChat: (req) => [req.booking, req.body.type, req.body.groupchat],
   associateChat: (req) => [req.booking, req.body.type, req.body.providerId],
+  addNote: (req) => [req.booking, req.body.body],
 }, {
   booking:'getById'
 },

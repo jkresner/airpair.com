@@ -41,7 +41,6 @@ cache.ready = function(keys, cb)
 cache.flush = function(key, cb)
 {
   if (key == 'posts') cache.postAllPublished = null
-  if (key == 'slack_users') cache.slack_users = null
   delete cache[key]
 }
 
@@ -100,6 +99,19 @@ cache.slackUsers = function(getterCB, cb)
     if (e) return cb(e)
     cache['slack_users'] = r
     $log("set cache['slack_users']".magenta, r.length)
+    cb(null,r)
+  })
+}
+
+
+cache.slackGroups = function(getterCB, cb)
+{
+  if (cache['slack_groups'])
+    return cb(null, cache['slack_groups'])
+  getterCB((e,r)=>{
+    if (e) return cb(e)
+    cache['slack_groups'] = r
+    $log("set cache['slack_groups']".magenta, r.length)
     cb(null,r)
   })
 }

@@ -49,6 +49,13 @@ angular.module('APFilters', [])
   }
 })
 
+.filter('tsTime', function() {
+  return (ts, displayFormat) => {
+    displayFormat = displayFormat || 'ddd, MMM Do ha'
+    return moment.unix(ts).format(displayFormat)
+  }
+})
+
 .filter('objectIdToAgoTime', function(Util) {
   return (id) => {
     return moment(Util.ObjectId2Date(id)).fromNow();

@@ -40,6 +40,11 @@ var wrapper = {
     clientCall(user, 'auth.test', null, null, null, cb)
   },
 
+  getChannels(cb)
+  {
+    clientCall('admin', 'channels.list', null, null, null, cb)
+  },
+
   getUsers(cb)
   {
     cache.slackUsers((callback)=>{
@@ -52,10 +57,15 @@ var wrapper = {
     //-- This method will explode if the cache isn't preloaded
     var slackUsers = cache.slack_users
 
+    // Priority 0 if a username is provided
+    if (info.id)
+      for (var u of slackUsers)
+        if (u.id == info.id) return u
+
     // Priority 1 if a username is provided
     if (info.username)
       for (var u of slackUsers)
-        if (u.name && info.username) return u
+        if (u.name == info.username) return u
 
     // Priority 2 if we have an email match
     for (var u of slackUsers)
@@ -87,6 +97,7 @@ var wrapper = {
     var first_name = util.firstName(fullName)
     var last_name = util.lastName(fullName)
     clientCall(owner, 'users.admin.invite', {first_name,last_name,email}, null, null, cb)
+    cache.flush('slack_users')
   },
 
   deactivateUser(id, cb)
@@ -100,11 +111,15 @@ var wrapper = {
   //   client.api('users.getPresence', { user:user.slackId }, cb)
   // },
 
-
   getGroups(user, cb)
   {
     var user = (user.token) ? user : 'pairbot'
-    clientCall(user, 'groups.list', null, 'groups', select.slackGroup, cb)
+    if (user == 'pairbot')
+      cache.slackGroups((callback)=>{
+        clientCall(user, 'groups.list', null, 'groups', select.slackGroup, callback)
+      }, cb)
+    else
+      clientCall(user, 'groups.list', null, 'groups', select.slackGroup, cb)
   },
 
   searchGroupsByName(term, cb)
@@ -135,13 +150,18 @@ var wrapper = {
   {
     var user = (invitor.token) ? invitor : 'admin'
     clientCall(user, 'groups.invite', { channel:groupId, user:invitee }, null, null, cb)
-    cache.flush('slack_users')
   },
 
   renameGroup(user, groupId, name, cb)
   {
     var user = (user.token) ? user : 'admin'
     clientCall(user, 'groups.rename', { channel:groupId, name }, 'channel', null, cb)
+  },
+
+  setGroupPurpose(user, groupId, purpose, cb)
+  {
+    var user = (user.token) ? user : 'admin'
+    clientCall(user, 'groups.setPurpose', { channel:groupId, purpose }, null, null, cb)
   },
 
   createGroup(user, groupInfo, members, cb)
@@ -155,13 +175,21 @@ var wrapper = {
       for (var m of members)
         clientCall(user, 'groups.invite', { channel:group.id, user:m }, null, null, (e,invite)=>{})
 
-      clientCall(user, 'groups.setPurpose', { channel:group.id, purpose }, null, null, (ee,purpose)=>{
+      wrapper.setGroupPurpose(user, group.id, purpose, (ee,purpose)=>{
         if (ee) return cb(ee)
         group.purpose.value = purpose
         cb(null, group)
       })
     })
+    cache.flush('slack_groups')
   },
+
+  postMessage(user, channel, message, cb)
+  {
+    var data = { channel, text:message, parse: 'full' }
+    if (user == 'pairbot') data.username = 'pairbot'
+    clientCall(user, 'chat.postMessage', data, null, null, cb)
+  }
 
   // getIMs(user, cb)
   // {

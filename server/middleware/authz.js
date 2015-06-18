@@ -10,8 +10,9 @@ function authorizeRole(roleName) {
     {
       res.status(401).json()
     }
-    else if ( ! _.contains(req.user.roles, roleName) && ! _.contains(req.user.roles, 'admin'))
+    else if ( ! _.contains(req.user.roles, roleName) )
     {
+      if (_.contains(req.user.roles, 'admin')) return next()
       res.status(403).json()
     }
     else

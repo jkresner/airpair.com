@@ -1,35 +1,32 @@
 <section id="booking" ng-if="booking && booking.participants">
 
 <h3>Booking</h3>
-
-
 <div class="row">
+
 
   <div class="col-md-4">
 
-  <span>{{booking.minutes}} MINS </span>
-  <span>{{booking.type}} </span>
-
-  <div>
-    <br />
-    <span>Status</span>
-    <select class="form-control" ng-model="data.status" ng-change="updateStatus(data.status)">
-      <option>pending</option>
-      <option>confirmed</option>
-      <option>followup</option>
-      <option>complete</option>
-      <option>canceled</option>
-    </select>
-  </div>
+    <section>
+      <h3>Status</h3>
+      <select class="form-control" ng-model="data.status" ng-change="updateStatus(data.status)">
+        <option>pending</option>
+        <option>confirmed</option>
+        <option>followup</option>
+        <option>complete</option>
+        <option>canceled</option>
+      </select>
+    </section>
 
   <section class="datetime">
-    <br />
+
+    <h3>{{booking.minutes}} MINS </h3>
+    <span>{{booking.type}} </span>
+
     <div datetime-input id="bookingDatetime" datetime="data.datetime" min-view="minute" date-format="YYYY MMM DD HH:mm Z"></div>
 
     <a ng-if="datetimeChanged(data.datetime)" ng-click="updateTime(data.datetime)">Update time</a>
 
-    <br /><br />
-    <section class="gcal">
+    <div class="gcal">
       <div ng-if="!data.gcal">No google invitations sent
         <br />
         <br /><a ng-click="addGcal(data.notify)">Create gcal event for <br /> {{previousDatetime.format('YYYY MMM DD HH:mm ZZ')}}</a>
@@ -47,31 +44,31 @@
             ({{attendee.email}})
           </li>
       </div>
+    </div>
 
-  <br />
-<div class="spin">
-  <ap-hangout-spinner
-    hangout-id="booking._id"
-    booking="booking"></ap-hangout-spinner>
-</div>
-    </section>
+    <div class="spin">
+      <ap-hangout-spinner
+        hangout-id="booking._id"
+        booking="booking"></ap-hangout-spinner>
+    </div>
 
-    <section class="chat">
+  </section>
+
+  <section class="chat">
       <h3>Chat</h3>
       <div ng-if="booking.chat">
         <div ng-if="booking.chat.provider">
           <a target="_blank" href="https://airpair.slack.com/messages/{{booking.chat.info.name}}">  {{booking.chat.info.name}}
             <span ng-if="booking.chat.info.is_archived">(archived)</span>
           </a>{{booking.chat.providerId}} <!-- {{booking.chat.data.created}} -->
-          <p class="purpose">{{booking.chat.info.purpose.value}}</p>
-          <p class="topic">{{booking.chat.info.topic.value}}</p>
           <ul>
-            <li ng-repeat="m in booking.chat.info.members">{{m}}</li>
+            <li ng-repeat="m in booking.chat.members">{{m.real_name || m.id}}</li>
           </ul>
+          <p class="purpose">{{booking.chat.info.purpose.value}}</p>
           <hr />
           <ul class="history">
-            <li ng-repeat="m in booking.chat.history">
-              <time>{{m.ts}} <b>{{m.user}}</b></time>
+            <li ng-repeat="m in booking.chat.history | orderBy:'-ts'">
+              <time>{{m.ts | tsTime }} <b>{{booking.chat.members[m.user].real_name}}</b></time>
               <p>{{m.text}}</p>
             </li>
           </ul>
@@ -95,13 +92,11 @@
           </div>
         </div>
       </div>
-    </section>
-
   </section>
 
-  </div>
+</div>
 
-  <div class="col-md-3">
+<div class="col-md-3">
 
 <div class="customer">
   <h3>Customer</h3>
@@ -109,6 +104,8 @@
     <img ng-src="{{p.info.avatar}}" class="user">
     <span>{{p.info.name}} </span>
     <span>{{p.info.email}} </span>
+    <span>{{p.location}} </span>
+    <span>{{p.timezone}} </span>
     <div slack-status member="p.chat" userid="p.info._id"></div>
   </div>
 </div>
@@ -120,6 +117,8 @@
     <img ng-src="{{p.info.avatar}}" class="user">
     <span>{{p.info.name}} </span>
     <span>{{p.info.email}} </span>
+    <span>{{p.location}} </span>
+    <span>{{p.timezone}} </span>
     <div slack-status member="p.chat" userid="p.info._id"></div>
   </div>
 </div>
@@ -128,25 +127,26 @@
 
   <div class="col-md-4">
 
-    <div class="recodings">
-      <h3>Recordings</h3>
-      <div ng-repeat="r in booking.recordings">
-      <span><a target="_blank" href="http://youtube.com/watch?v={{r.data.youTubeId}}">{{r.data.title}}</a></span><br />
-      </div><br /><br />
-      <input type="text" id="newYouTubeLink" class="form-control" placeholder="Paste YouTube link" ng-model="data.youTubeId"/>
-      <input type="submit" ng-click="addYouTubeData(data.youTubeId)" value="Add Recording" /><br /><br />
-    </div>
+    <section class="recordings">
+      <h3>Recording(s)</h3>
+      <input type="text" id="newYouTubeLink" class="form-control" placeholder="Paste YouTube link" ng-model="data.youTubeId" />
+      <input type="submit" ng-click="addYouTubeData(data.youTubeId)" value="Add" class="btn" />
+      <ul>
+        <li ng-repeat="r in booking.recordings"><a target="_blank" href="http://youtube.com/watch?v={{r.data.youTubeId}}">{{r.data.title}}</a> <time>{{ r.data.publishedAt }}</time> <a ng-click="deleteRecording(r._id)" class="error">x</a></li>
+      </ul>
+    </section>
 
-    <div class="feedback">
+    <section class="feedback">
       <h3>Feedback</h3>
       <p>JK still to build</p>
-    </div>
+    </section>
 
-    <div class="request">
+    <section class="request">
       <h3>Request</h3>
 
       <div ng-if="request">
-        This booking comes from <a href="/adm/pipeline/{{request._id}}" target="_blank">{{request.title}}</a>
+        {{request.adm.submitted | locaTime : 'YY.MMM.DD' }}
+        <a href="/adm/pipeline/{{request._id}}" target="_blank">{{request.title}}</a>
         <br />
         <br />
         <ul><li ng-repeat="sug in request.suggested | filter: {expertStatus: 'available'}"
@@ -156,9 +156,9 @@
         </li></ul>
       </div>
       <div ng-if="!request">Booking is not request associated</div>
-    </div>
+    </section>
 
-    <div class="payout">
+    <section class="payout">
 
       <h3>Payout</h3>
 
@@ -176,7 +176,7 @@
 
         <div ng-if="!lineForPayout.info.paidout">
           <div ng-if="!lineForPayout.info.released">
-            <a ng-click="releasePayout()">Release payment</a>
+            <a ng-click="releasePayout()" class="btn-yellow">Release payment</a>
           </div>
           <div ng-if="lineForPayout.info.released">
             <span style="color:blue">Waiting for expert to collect</span>
@@ -184,12 +184,20 @@
         </div>
       </div>
 
-    </div>
+    </section>
 
-    <div class="notes">
+    <section class="notes">
       <h3>Notes</h3>
-      <p>JK still to build</p>
-    </div>
+      <textarea ng-model="newNote"></textarea>
+      <a ng-click="saveNote(newNote)" class="btn-yellow">Add note</a>
+      <hr />
+      <ul>
+        <li ng-repeat="n in booking.notes">
+          <time>{{n._id | objectIdToDate }} {{ n.by.name }}</time>
+          {{n.body}}
+        </li>
+      </ul>
+    </section>
 
 
 
@@ -198,3 +206,4 @@
 </div>
 
 </section>
+

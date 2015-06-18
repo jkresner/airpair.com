@@ -9,7 +9,9 @@
   },
   "scripts": {
     "start": "node bootstrap.js",
-    "test": "/usr/local/bin/mocha test/server/bootstrap.coffee"
+    "test": "/usr/local/bin/mocha test/server/bootstrap.coffee",
+    "gv": "heroku logs --tail --source app",
+    "db": "mongod --dbpath ~/data/db/"
   },
   "repository": {
     "type": "git",
@@ -59,7 +61,7 @@
     "colors": "1.0.3",
     "connect-mongo": "0.7.0",
     "cookie-parser": "^1.3.3",
-    "express": "4.12.3",
+    "express": "4.12.4",
     "express-hbs": "^0.7.11",
     "express-session": "^1.9.1",
     "github": "git://github.com/airpair/node-github.git",

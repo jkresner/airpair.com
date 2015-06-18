@@ -14,7 +14,8 @@ var data = {
       // 'gcal':1,
       'recordings':1,
       'participants':1,
-      'orderId':1
+      'orderId':1,
+      'chatId':1,
     },
     experts: {
       '_id': 1,
@@ -37,6 +38,12 @@ var data = {
               p.chat = { slack: { id: slackUser.id, name:slackUser.name } }
           }
         }
+      if (booking.chat) {
+        booking.chat.members = {}
+        for (var m of booking.chat.info.members) {
+          booking.chat.members[m] = Wrappers.Slack.checkUserSync({id:m}) || {id:m}
+        }
+      }
     },
     cb: {
       setAvatarsCB(cb) {

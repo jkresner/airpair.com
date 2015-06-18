@@ -60,6 +60,10 @@ angular.module("ADMBookings", [])
     AdmDataService.bookings.addYouTubeData({_id: $scope.booking._id, youTubeId}, setScope)
   }
 
+  $scope.deleteRecording = function(recordingId){
+    AdmDataService.bookings.deleteRecording({_id: $scope.booking._id, recordingId}, setScope)
+  }
+
   $scope.releasePayout = () =>
     AdmDataService.bookings.releasePayout({_id:$scope.order._id},(r) => {
       $scope.order = r
@@ -79,6 +83,11 @@ angular.module("ADMBookings", [])
   $scope.createGroupChat = (type) => {
     var d = {_id:$scope.booking._id,type,groupchat:$scope.newGroupChat}
     AdmDataService.bookings.createChat(d,setScope)
+  }
+
+  $scope.saveNote = (body) => {
+    var d = {_id:$scope.booking._id,body}
+    AdmDataService.bookings.saveNote(d,setScope)
   }
 })
 

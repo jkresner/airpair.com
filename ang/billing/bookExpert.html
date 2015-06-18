@@ -3,72 +3,75 @@
   <section id="schedule" ng-if="booking && booking.payMethodId">
 
     <form id="bookForm" novalidate name="bookForm" ng-submit="submit(bookForm.$valid, data)">
+
       <h2>Book {{expert.name}}</h2>
-      <hr />
-
-      <div ng-if="!availableMinutes || availableMinutes < 30">
-
-      <div class="form-group">
-        <label class="control-label" for="paymethod">Pay with</label>
-        <select class="form-control" id="payMethodId" name="payMethodId" ng-model="booking.payMethodId" ng-options="p._id as p.name for p in paymethods">
-        </select>
-      </div>
 
       <hr />
 
       <div class="form-group">
-        <input name="minutes" ng-model="booking.minutes" type="radio" value="60">
-        <span>1 HR &nbsp &nbsp &nbsp &nbsp</span>
-
-        <input name="minutes" ng-model="booking.minutes" type="radio" value="120">
-        <span>2 HRS &nbsp &nbsp &nbsp &nbsp</span>
-
-        <input name="minutes" ng-model="booking.minutes" type="radio" value="180">
-        <span>3 HRS &nbsp &nbsp &nbsp &nbsp</span>
-
-        <input name="minutes" ng-model="booking.minutes" type="radio" value="300">
-        <span>5 HRS &nbsp &nbsp &nbsp &nbsp</span>
-
-        <input name="minutes" ng-model="booking.minutes" type="radio" value="480">
-        <span>8 HRS &nbsp &nbsp &nbsp &nbsp</span>
+        <label class="control-label" for="when">Your preferred time</label>
+        <div datetime-input id="bookingDatetime" datetime="booking.datetime" min-view="minute" date-format="YYYY MMM DD HH:mm Z" style="width:230px"></div>
+        <p style="padding:10px">* If this time doesn't work {{expert.name}} will suggest an alternative</p>
       </div>
 
+      <div ng-if="(!availableMinutes || availableMinutes < 30) && booking.datetime">
 
-      <br />
-      <div class="form-group">
-        <input id="typePrivate" name="type" ng-model="booking.type" type="radio" value="private" ng-change="calcSummary()">
-        <label for="typePrivate"><span>Keep Private</span></label>
-        <em ng-if="booking.type == 'private'"></em>
-        &nbsp &nbsp &nbsp &nbsp
-        <input id="typeOpensource" name="type" ng-model="booking.type" type="radio" value="opensource" ng-change="calcSummary()">
-        <span>Open Source</span>
-        <em ng-if="booking.type == 'opensource'" style="color:#DD8766">$10 discount /hr</em>
+        <div class="form-group" style="width:190px">
+          <label class="control-label" for="when">For</label>
+          <select class="form-control" ng-model="booking.minutes" required>
+            <option value="">Select length</option>
+            <option value="60">60 minutes</option>
+            <option value="90">90 minutes</option>
+            <option value="120">02 hours</option>
+            <option value="180">03 hours</option>
+            <option value="240">04 hours</option>
+            <option value="300">05 hours</option>
+            <option value="360">06 hours</option>
+            <option value="420">07 hours</option>
+            <option value="480">08 hours</option>
+            <option value="540">09 hours</option>
+            <option value="600">10 hours</option>
+          </select>
+        </div>
 
-        <p ng-if="booking.type == 'opensource'" style="padding-top:15px;font-size:12px">Open sourced recordings are accessible on expert profiles to help them promote themselves. Do not open source your recording if you have any sensitive information you do not want others to see.</p>
+        <div ng-if="booking.minutes">
+          <hr />
+
+          <div class="form-group">
+            <label class="control-label" for="paymethod">Pay with</label>
+            <select class="form-control" id="payMethodId" name="payMethodId" ng-model="booking.payMethodId" ng-options="p._id as p.name for p in paymethods">
+            </select>
+          </div>
+
+          <div class="form-group">
+            <input id="typePrivate" name="type" ng-model="booking.type" type="radio" value="private" ng-change="calcSummary()">
+            <label for="typePrivate"><span>Keep Private</span></label>
+            <em ng-if="booking.type == 'private'"></em>
+            &nbsp &nbsp &nbsp &nbsp
+            <input id="typeOpensource" name="type" ng-model="booking.type" type="radio" value="opensource" ng-change="calcSummary()">
+            <span>Open Source</span>
+            <em ng-if="booking.type == 'opensource'" style="color:#DD8766">$10 discount /hr</em>
+
+            <p ng-if="booking.type == 'opensource'" style="padding-top:15px;font-size:12px">Open sourced recordings are accessible on expert profiles to help them promote themselves. Do not open source your recording if you have any sensitive information you do not want others to see.</p>
+          </div>
+
+        </div>
+
       </div>
 
-
-      </div>
-
-      <div class="form-group" ng-if="availableMinutes > 29">
+      <div class="form-group" ng-if="availableMinutes > 29 && booking.datetime">
         <label class="control-label" for="minutes">Redeem time ({{availableMinutes}} pre-purchased mins available)</label>
         <select class="form-control" id="redeemedTime" ng-model="booking.minutes" ng-options="p.val as p.name for p in redeemableTime">
         </select>
       </div>
 
-<!--
-      <div class="form-group">
-        <label class="control-label" for="when">When</label>
-        <p>We will try find a time to get you on AirPair with {{ expert.name }}</p>
-      </div>
- -->
-      <section class="satisfaction">
+      <section class="satisfaction" ng-if="booking.datetime && booking.minutes">
         <p>Remember, you are covered by AirPair's satisfaction guarantee; if you aren't satisfied with your session, we will either make it right or give you a full refund.</p>
       </section>
 
     </form>
 
-    <section class="bookSummary" ng-if="!availableMinutes || availableMinutes < 30">
+    <section class="bookSummary" ng-if="(!availableMinutes || availableMinutes < 30) && booking.datetime && booking.minutes">
       <h3>Your Order</h3>
       <img ng-src="{{expert.avatar}}" class="user" />
       <hr />
@@ -88,7 +91,7 @@
     </section>
 
 
-    <section class="bookSummary" ng-if="availableMinutes > 29">
+    <section class="bookSummary" ng-if="availableMinutes > 29 && booking.datetime && booking.minutes">
       <h3>Your booking</h3>
       <img ng-src="{{expert.avatar}}" class="user" />
       <hr />

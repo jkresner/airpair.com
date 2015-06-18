@@ -57,7 +57,8 @@ var middleware = {
       var nonSessionUrls = [
         '/feed',
         '/android/rss',
-        '/rails/consulting'
+        '/rails/consulting',
+        '/static/styles/'
       ]
 
       for (var url of nonSessionUrls)
