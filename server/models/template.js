@@ -9,6 +9,7 @@ var type = [
   'tw-tweet',
   'fb-share',
   'in-share',
+  'slack-message',
   'pageMeta'
 ]
 

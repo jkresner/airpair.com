@@ -16,7 +16,7 @@ module.exports = -> describe "Booking: ".subspec, ->
 
   it 'Book 2 hour with pay as you go private', itDone ->
     SETUP.addAndLoginLocalUserWithPayMethod 'jpie', (s) ->
-      airpair1 = time: moment().add(2, 'day'), minutes: 120, type: 'private', payMethodId: s.primaryPayMethodId
+      airpair1 = datetime: moment().add(2, 'day'), minutes: 120, type: 'private', payMethodId: s.primaryPayMethodId
       POST "/bookings/#{data.experts.dros._id}", airpair1, {}, (booking1) ->
         expect(booking1._id).to.exist
         expect(booking1.orderId).to.exist
@@ -56,7 +56,7 @@ module.exports = -> describe "Booking: ".subspec, ->
   it 'Book 2 hour with pay as you go private two gets email + name on participant', itDone ->
     SETUP.createNewExpert 'louf', {rate:140}, (sExp, expert) ->
       SETUP.addAndLoginLocalUserWithPayMethod 'jkjk', (s) ->
-        airpair1 = time: moment().add(2, 'day'), minutes: 120, type: 'private', payMethodId: s.primaryPayMethodId
+        airpair1 = datetime: moment().add(2, 'day'), minutes: 120, type: 'private', payMethodId: s.primaryPayMethodId
         POST "/bookings/#{expert._id}", airpair1, {}, (booking1) ->
           expect(booking1._id).to.exist
           expect(_.idsEqual(booking1.expertId, expert._id)).to.be.true
@@ -73,7 +73,7 @@ module.exports = -> describe "Booking: ".subspec, ->
 
   it 'Book 2 hour with pay as you go opensource', itDone ->
     SETUP.addAndLoginLocalUserWithPayMethod 'crus', (s) ->
-      airpair1 = time: moment().add(2, 'day'), minutes: 120, type: 'opensource', payMethodId: s.primaryPayMethodId
+      airpair1 = datetime: moment().add(2, 'day'), minutes: 120, type: 'opensource', payMethodId: s.primaryPayMethodId
       POST "/bookings/#{data.experts.dros._id}", airpair1, {}, (booking1) ->
         GET "/billing/orders", {}, (orders) ->
           order = _.find(orders, (o) -> _.idsEqual(o._id,booking1.orderId))
@@ -98,7 +98,7 @@ module.exports = -> describe "Booking: ".subspec, ->
     SETUP.addAndLoginLocalUserWithPayMethod 'ckni', (s) ->
       o = total: 500, payMethodId: s.primaryPayMethodId
       POST "/billing/orders/credit", o, {}, (r) ->
-        airpair1 = time: moment().add(2, 'day'), minutes: 120, type: 'opensource', credit: 500, payMethodId: s.primaryPayMethodId
+        airpair1 = datetime: moment().add(2, 'day'), minutes: 120, type: 'opensource', credit: 500, payMethodId: s.primaryPayMethodId
         POST "/bookings/#{data.experts.dros._id}", airpair1, {}, (booking1) ->
           expect(booking1._id).to.exist
           expect(booking1.minutes).to.equal(120)
@@ -148,7 +148,7 @@ module.exports = -> describe "Booking: ".subspec, ->
             availableCredit1 = ordersUtil.getAvailableCredit(lines1)
             expect(lines1.length).to.equal(1)
             expect(availableCredit1).to.equal(240)
-            airpair2 = time: moment().add(3, 'day'), minutes: 60, type: 'private', credit: 240, payMethodId: s.primaryPayMethodId
+            airpair2 = datetime: moment().add(3, 'day'), minutes: 60, type: 'private', credit: 240, payMethodId: s.primaryPayMethodId
             POST "/bookings/#{data.experts.dros._id}", airpair2, {}, (booking2) ->
               expect(booking2._id).to.exist
               expect(booking2.minutes).to.equal(60)
@@ -161,7 +161,7 @@ module.exports = -> describe "Booking: ".subspec, ->
                 expect(lines2.length).to.equal(1)
                 availableCredit2 = ordersUtil.getAvailableCredit(lines2)
                 expect(availableCredit2).to.equal(100)
-                airpair3 = time: moment().add(4, 'day'), minutes: 60, type: 'private', credit: 200, payMethodId: s.primaryPayMethodId
+                airpair3 = datetime: moment().add(4, 'day'), minutes: 60, type: 'private', credit: 200, payMethodId: s.primaryPayMethodId
                 POST "/bookings/#{data.experts.dros._id}", airpair3, { status: 400 }, (err) ->
                   expect(err.message.indexOf('ExpectedCredit $200')).to.equal(0)
                   DONE()
@@ -169,7 +169,7 @@ module.exports = -> describe "Booking: ".subspec, ->
 
   it 'Fail to Book 1 hour at 150 with no credit or payMethodId', itDone ->
     SETUP.addAndLoginLocalUserWithPayMethod 'jasp', (s) ->
-      airpair = time: moment().add(1, 'day'), minutes: 60, type: 'private', credit: 150, payMethodId: s.primaryPayMethodId
+      airpair = datetime: moment().add(1, 'day'), minutes: 60, type: 'private', credit: 150, payMethodId: s.primaryPayMethodId
       POST "/bookings/#{data.experts.dros._id}", airpair, { status: 400 }, (err, resp) ->
         expect(err.message.indexOf('ExpectedCredit $150')).to.equal(0)
         DONE()
@@ -181,7 +181,7 @@ module.exports = -> describe "Booking: ".subspec, ->
         oCred = total: 50, toUser: s, source: 'Test'
         POST "/adm/billing/orders/credit", oCred, {}, (r) ->
           LOGIN s.userKey, (sajac) ->
-            airpair1 = time: moment().add(2, 'day'), minutes: 90, type: 'private', credit: 50, payMethodId: s.primaryPayMethodId
+            airpair1 = datetime: moment().add(2, 'day'), minutes: 90, type: 'private', credit: 50, payMethodId: s.primaryPayMethodId
             POST "/bookings/#{data.experts.tmot._id}", airpair1, {}, (booking1) ->
               expect(booking1._id).to.exist
               expect(booking1.orderId).to.exist
@@ -233,7 +233,7 @@ module.exports = -> describe "Booking: ".subspec, ->
             LOGIN cMem.userKey, (seddb) ->
               GET '/billing/paymethods', {}, (eddbPms) ->
                 expect(eddbPms.length).to.equal(1)
-                airpair1 = time: moment().add(2, 'day'), minutes: 120, type: 'opensource', credit: 500, payMethodId: eddbPms[0]._id
+                airpair1 = datetime: moment().add(2, 'day'), minutes: 120, type: 'opensource', credit: 500, payMethodId: eddbPms[0]._id
                 POST "/bookings/#{data.experts.dros._id}", airpair1, {}, (booking1)  ->
                   expect(booking1._id).to.exist
                   expect(booking1.minutes).to.equal(120)
@@ -258,7 +258,7 @@ module.exports = -> describe "Booking: ".subspec, ->
                 LOGIN s.userKey, (sCustomer) ->
                   GET "/requests/#{r._id}/book/#{expertId}", {}, (review) ->
                     suggestion = _.find(review.suggested,(s)=> _.idsEqual(s.expert._id,expertId))
-                    airpair1 = time: moment().add(2, 'day'), minutes: 60, type: 'private', payMethodId: s.primaryPayMethodId, request: { requestId: review._id, suggestion }
+                    airpair1 = datetime: moment().add(2, 'day'), minutes: 60, type: 'private', payMethodId: s.primaryPayMethodId, request: { requestId: review._id, suggestion }
                     POST "/bookings/#{expertId}", airpair1, {}, (booking1) ->
                       expect(booking1._id).to.exist
                       expect(booking1.minutes).to.equal(60)
@@ -295,7 +295,7 @@ module.exports = -> describe "Booking: ".subspec, ->
                     LOGIN s.userKey, (sajac) ->
                       GET "/requests/#{r._id}/book/#{expertId}", {}, (review) ->
                         suggestion = _.find(review.suggested,(s)=> _.idsEqual(s.expert._id,expertId))
-                        airpair1 = time: moment().add(2, 'day'), minutes: 60, type: 'private', payMethodId: s.primaryPayMethodId, credit: 10, request: { requestId: review._id, suggestion }
+                        airpair1 = datetime: moment().add(2, 'day'), minutes: 60, type: 'private', payMethodId: s.primaryPayMethodId, credit: 10, request: { requestId: review._id, suggestion }
                         POST "/bookings/#{expertId}", airpair1, {}, (booking1) ->
                           GET "/billing/orders", {}, (orders) ->
                             expect(orders.length).to.equal(2)
@@ -320,7 +320,7 @@ module.exports = -> describe "Booking: ".subspec, ->
           expect(r2.suggested[0].expert.name).to.equal('Adam Bliss')
           expect(r2.suggested[0].suggestedRate.total).to.equal(130)
           suggestion = r2.suggested[0]
-          airpair1 = time: moment().add(2, 'day'), minutes: 60, type: 'private', payMethodId: sAril.primaryPayMethodId, request: { requestId: r._id, suggestion }
+          airpair1 = datetime: moment().add(2, 'day'), minutes: 60, type: 'private', payMethodId: sAril.primaryPayMethodId, request: { requestId: r._id, suggestion }
           POST "/bookings/#{adamB._id}", airpair1, {}, (booking1) ->
             expect(booking1._id).to.exist
             GET "/billing/orders", {}, (orders) ->
@@ -344,7 +344,7 @@ module.exports = -> describe "Booking: ".subspec, ->
           expect(r2.suggested[0].expert.name).to.equal('Adam Bliss')
           expect(r2.suggested[0].suggestedRate.total).to.equal(130)
           suggestion = r2.suggested[0]
-          airpair1 = time: moment().add(2, 'day'), minutes: 60, type: 'opensource', payMethodId: sAril.primaryPayMethodId, request: { requestId: r._id, suggestion }
+          airpair1 = datetime: moment().add(2, 'day'), minutes: 60, type: 'opensource', payMethodId: sAril.primaryPayMethodId, request: { requestId: r._id, suggestion }
           POST "/bookings/#{adamB._id}", airpair1, {}, (booking1) ->
             GET "/billing/orders", {}, (orders) ->
               expect(orders.length).to.equal(1)

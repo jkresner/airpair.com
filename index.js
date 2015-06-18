@@ -48,12 +48,12 @@ export function run()
       app.get('/', mw.analytics.trackFirstRequest, mw.auth.authdRedirect('/dashboard'), app.renderHbs('home') )
       app.use('/auth', routes('auth')(app))
       app.use('/v1/api/posts', routes('api').posts(app))
+      app.use('/v1/api', routes('api').pipeline(app))
       app.use('/v1/api/adm', routes('api').admin(app))
       app.use('/v1/api', routes('api').other(app))
-      app.use('/v1/api', routes('api').pipeline(app))
       // $timelapsed("APP ROUTES API")
       app.use(['^/matchmaking*','^/adm/bookings*'],
-        mw.authz.plnr, app.renderHbsAdmin('adm/admin'))
+        mw.authz.plnr, app.renderHbsAdmin('adm/pipeliner'))
 
       app.use(['^/adm/pipeline*','^/adm/users*','^/adm/orders*','^/adm/experts*','^/adm/companys*',
         '^/adm/views*','^/adm/posts*','^/adm/tags*','^/adm/chat*','^/adm/mail*','^/adm/redirects*'],

@@ -11,8 +11,7 @@ function pipeline() {
     .param('request', API.Requests.paramFns.getByIdForAdmin)
     .param('booking', API.Bookings.paramFns.getById)
     .param('order', API.Orders.paramFns.getByIdForAdmin)
-    .get('/experts/mojo/rank', populateExpert, API.Mojo.getRanked)
-    .use(plnr)
+    .get('/experts/mojo/rank', authd, populateExpert, API.Mojo.getRanked)
     // .get('/experts/mojo/me', API.Mojo.getMatchesForRequest)
     // .get('/experts/dashboard', API.Experts.getMatchesForDashboard)
     // .get('/experts', API.Experts.getForExpertsPage)
@@ -22,13 +21,15 @@ function pipeline() {
     .put('/matchmaking/experts/:expertshaped/matchify/:request', plnr, API.Mojo.updateMatchingStats)
     .get('/adm/bookings/:start/:end/:userId?', plnr, API.Bookings.getByQueryForAdmin)
     .get('/adm/bookings/:id', plnr, API.Bookings.getByIdForAdmin)
-    .put('/adm/bookings/:booking/recording', plnr, API.Bookings.addYouTubeData)
     .put('/adm/bookings/:booking/hangout', plnr, API.Bookings.addHangout)
+    .put('/adm/bookings/:booking/recording', plnr, API.Bookings.addYouTubeData)
+    .delete('/adm/bookings/:booking/recording/:recordingId', plnr, API.Bookings.deleteRecording)
     .put('/adm/bookings/:booking', plnr, API.Bookings.updateByAdmin)
     .put('/adm/bookings/:booking/:order/:request/:id/swap', plnr, API.Bookings.cheatExpertSwap)
     .put('/adm/bookings/:booking/create-chat', plnr, API.Bookings.createChat)
     .put('/adm/bookings/:booking/associate-chat', plnr, API.Bookings.associateChat)
     .put('/adm/chat/invite-to-team/:userId', plnr, API.Chat.inviteToTeam)
+    .post('/adm/bookings/:booking/note', plnr, API.Bookings.addNote)
 }
 
 function admin() {
@@ -205,7 +206,7 @@ function other(app) {
 
     .get('/bookings', API.Bookings.getByUserId)
     .get('/bookings/:id', API.Bookings.getById)
-    .post('/bookings/:expertshaped', API.Bookings.createBooking)
+    .post('/bookings/:expertshaped', populateUser, API.Bookings.createBooking)
 
     .get('/experts/me', API.Experts.getMe)
     .get('/experts/search/:id', API.Experts.search)

@@ -1,10 +1,10 @@
 var validation = {
 
-  createBooking(user, expert, time, minutes, type, credit, payMethodId, requestId)
+  createBooking(user, expert, datetime, minutes, type, credit, payMethodId, requestId)
   {
-
-
-
+    // if (!type) return `Booking type required`
+    if (!minutes) return `Booking minutes required`
+    if (!datetime) return `Booking datetime required`
   },
 
   updateByAdmin(user, original, update)
@@ -22,6 +22,10 @@ var validation = {
 
     if (original.gcal && update.sendGCal) return `Updating gCAL events not yet supported`
 
+    if (update.status != original.status) {
+      if (update.status == 'complete')
+        return `Cannot set Booking complete status manually. Release expert payment, save the recording & get customer feedback`
+    }
   },
 
   confirmBooking(user, original, update)
@@ -35,6 +39,14 @@ var validation = {
     var existing = _.find(original.recordings, (r) => r.data.youTubeId == youTubeId)
     if (existing)
       return `YouTube ID already exists`
+  },
+
+  deleteRecording(user, original, recordingId)
+  {
+    if (!recordingId) return `RecordingId Required`
+    var existing = _.find(original.recordings, (r) => r._id == recordingId)
+    if (!existing)
+      return `Recording with ${recordingId} does not belong to booking[${booking._id}]`
   },
 
   addHangout(user, original, youTubeId, youTubeAccount, hangoutUrl)
@@ -74,6 +86,11 @@ var validation = {
   {
     if (booking.chatId) return `[${booking._id}] already associated with [${booking.chatId}]. Disassociate first?`
     if (type != "slack") return `Only slack chat supported at the moment`
+  },
+
+  addNote(user, booking, note)
+  {
+    if (!note || !note.length || note.length < 20) return `Note must be minimum 20 characters`
   }
 }
 

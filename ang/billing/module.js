@@ -112,7 +112,7 @@ angular.module("APBilling", ['ngRoute', 'APPaymentDirectives', 'APBillingDirecti
     link() { },
     controller($rootScope, $scope, $q, $routeParams, $location, DataService, OrdersUtil) {
       $scope.booking = { // payMethodId: null,
-        credit: 0, minutes: 120, type: "private", time: moment().add(1, 'month')
+        credit: 0, type: "private"
       }
 
       $scope.calcSummary = function() {
@@ -204,7 +204,6 @@ angular.module("APBilling", ['ngRoute', 'APPaymentDirectives', 'APBillingDirecti
       $scope.submitDeferred = () => {
         var deferred = $q.defer()
         DataService.billing.bookExpert($scope.booking, (r) => {
-          console.log('booked', r._id, r)
           $location.path(`/bookings/${r._id}`)
           deferred.resolve(r)
         },

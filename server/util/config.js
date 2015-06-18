@@ -102,7 +102,10 @@ var cfg = {
     slack: {
       owner:   { id: '', token: '' },
       admin:   { id: '', token: '' },
-      pairbot: { id: '', token: '' }
+      pairbot: { id: '', token: '' },
+      channels:   {
+        pipeline: { id: 'G03KMNM5N' }
+      }
     }
   },
   log: {

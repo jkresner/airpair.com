@@ -595,6 +595,16 @@ module.exports = {
       is_archived: false,
       creator: 'U03KMN81C',
       created: 1426867853,
-      name: '-airpair-authors-' }
+      name: '-airpair-authors-' },
+    { id: 'G03KMNM5N',
+      purpose: { value: '' },
+      topic: { value: '' },
+      members:
+       [ 'U02ASLW2Z',
+         'U03K7EWLT' ],
+      is_archived: false,
+      creator: 'U03KMN81C',
+      created: 1426867853,
+      name: '-pipeline-' }
   ]
 }

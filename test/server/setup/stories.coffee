@@ -306,7 +306,7 @@ stories = {
           expect(customerSession.primaryPayMethodId).to.exist
           LOGIN customerSession.userKey,  ->
             GET "/requests/#{request._id}/book/#{expert._id}", {}, (r2) ->
-              airpair1 = time: moment().add(2, 'day'), minutes: 60, type: 'private', payMethodId: customerSession.primaryPayMethodId, request: { requestId: request._id, suggestion: r2.suggested[0] }
+              airpair1 = datetime: moment().add(2, 'day'), minutes: 60, type: 'private', payMethodId: customerSession.primaryPayMethodId, request: { requestId: request._id, suggestion: r2.suggested[0] }
               POST "/bookings/#{expert._id}", airpair1, {}, (booking) ->
                 expect(booking._id).to.exist
                 cb(request, booking, customerSession, expertSession)
@@ -319,7 +319,7 @@ stories = {
         PUT "/requests/#{request._id}/reply/#{expertSession.expertId}", reply, {}, (r1) ->
           LOGIN customerSession.userKey, ->
             GET "/requests/#{request._id}/book/#{expertSession.expertId}", {}, (r2) ->
-              airpair1 = time: moment().add(2, 'day'), minutes: 60, type: 'private', payMethodId: customerSession.primaryPayMethodId, request: { requestId: request._id, suggestion: r2.suggested[0] }
+              airpair1 = datetime: moment().add(2, 'day'), minutes: 60, type: 'private', payMethodId: customerSession.primaryPayMethodId, request: { requestId: request._id, suggestion: r2.suggested[0] }
               POST "/bookings/#{expertSession.expertId}", airpair1, {}, (booking) ->
                 cb(request, booking, customerSession, expertSession)
 
