@@ -189,7 +189,16 @@ var wrapper = {
     var data = { channel, text:message, parse: 'full' }
     if (user == 'pairbot') data.username = 'pairbot'
     clientCall(user, 'chat.postMessage', data, null, null, cb)
+  },
+
+  postAttachments(user, channel, attachments, cb)
+  {
+    var data = { channel, attachments }
+    if (user == 'pairbot') data.username = 'pairbot'
+    data.attachments = JSON.stringify(data.attachments)
+    clientCall(user, 'chat.postMessage', data, null, null, cb)
   }
+
 
   // getIMs(user, cb)
   // {

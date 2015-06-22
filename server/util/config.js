@@ -104,7 +104,8 @@ var cfg = {
       admin:   { id: '', token: '' },
       pairbot: { id: '', token: '' },
       channels:   {
-        pipeline: { id: 'G03KMNM5N' }
+        pipeline: { id: 'C06KZHXAS' },
+        posts: { id: 'C06KZHXAS' }
       }
     }
   },
@@ -265,6 +266,8 @@ module.exports = function(env) {
     cfg.chat.slack.admin.token = process.env.CHAT_SLACK_ADMIN_TOKEN
     cfg.chat.slack.pairbot.id = process.env.CHAT_SLACK_PAIRBOT_ID
     cfg.chat.slack.pairbot.token = process.env.CHAT_SLACK_PAIRBOT_TOKEN
+    cfg.chat.slack.channels.pipeline.id = process.env.CHAT_SLACK_CHANNELS_PIPELINE_ID
+    cfg.chat.slack.channels.posts.id = process.env.CHAT_SLACK_CHANNELS_POSTS_ID
 
     cfg.youtube.refreshTokens = process.env.YOUTUBE_REFRESH_TOKENS
 

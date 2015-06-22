@@ -326,9 +326,7 @@ Booking: https://airpair.com/booking/${original._id}`
       delete(data.thumbnails) //can be derived from YouTube ID
       original.recordings.push({type: "YouTube", data, hangoutUrl, youTubeAccount})
       updateForAdmin(this, original, (e,r)=>{
-        if (!e)
-          TemplateSvc.slackMSG('hangout-started-slack', {hangoutUrl}, (ee, msg) =>
-            Wrappers.Slack.postMessage('pairbot', r.chat.providerId, msg, ()=>{}))
+        if (!e) pairbot.sendSlackMsg('hangout-started-slack', {hangoutUrl})
         cb(e,r)
       })
     })
