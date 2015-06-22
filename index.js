@@ -27,6 +27,7 @@ export function run()
 
     // requires db for users in roles, so execute after mongo.connect
     mailman.init()
+    pairbot.init()
 
     // Don't persist or track sessions for rss
     app.use('/rss', routes('rss')(app))

@@ -92,5 +92,6 @@ describe 'Server: '.appload, ->
   spec @, 'Bookings', 'bookingsAdmin'
   spec @, 'Payouts'
   spec @, 'Mail', 'mailman'
+  spec @, 'Pairbot', 'pairbot'
 
   # spec.only @, 'Rss'
