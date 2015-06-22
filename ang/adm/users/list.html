@@ -102,8 +102,9 @@
   </section>
 
 
-  <section class="info">
+  <section class="info" ng-if="selectedUser._id">
     <pre>{{selectedUser|json}}</pre>
+    <div slack-status member="selectedUser" userid="selectedUser._id"></div>
   </section>
 
 </section>
