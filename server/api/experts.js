@@ -17,6 +17,7 @@ export default initAPI(
   getByDeal: (req) => [req.params.id],
   createDeal: (req) => [req.expert, req.body],
   expireDeal: (req) => [req.expert, req.params.dealId, req.body.expiry],
+  addNote: (req) => [req.expert, req.body.body],
 
 }, {
   'expertshaped':'getById',

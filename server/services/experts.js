@@ -190,7 +190,16 @@ var save = {
     deal.lastTouch = svc.newTouch.call(this, 'dectivateDeal')
     deal.expiry = new Date
     $callSvc(updateWithTouch, this)(expert, 'dectivateDeal', null, selectCB.me(cb))
-  }
+  },
+
+  addNote(original, note, cb)
+  {
+    var notes = original.notes || []
+    notes.push({body:note,by:{_id:this.user._id,name:this.user.name}})
+    original.notes = notes
+    svc.update(original._id, original, cb)
+  },
+
 }
 
 module.exports = _.extend(get, save)

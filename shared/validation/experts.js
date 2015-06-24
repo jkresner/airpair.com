@@ -96,6 +96,10 @@ var validation = {
       return `Cannot deactivate already deactivated deal[${dealId}] belonging to[{expert._id}]`
   },
 
+  addNote(user, expert, note)
+  {
+    if (!note || !note.length || note.length < 20) return `Note must be minimum 20 characters`
+  }
 }
 
 module.exports = validation

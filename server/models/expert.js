@@ -172,6 +172,8 @@ module.exports = mongoose.model('Expert', new Schema({
     }
   },
 
+  notes:          { type: [Shared.Note] },
+
   // deprecated other
   bookMe:         { required: false, type: Bookme },
 

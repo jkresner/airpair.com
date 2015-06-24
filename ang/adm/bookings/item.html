@@ -190,16 +190,14 @@
       <h3>Notes</h3>
       <textarea ng-model="newNote"></textarea>
       <a ng-click="saveNote(newNote)" class="btn-yellow">Add note</a>
-      <hr />
       <ul>
-        <li ng-repeat="n in booking.notes">
-          <time>{{n._id | objectIdToDate }} {{ n.by.name }}</time>
-          {{n.body}}
+        <li ng-repeat="n in booking.notes | orderBy : '-_id' ">
+          <span>{{ n.by.name }}</span>
+          <time>{{n._id | objectIdToDate : 'YY MMM DD HH:mm' }}</time>
+          <p>{{n.body}}</p>
         </li>
       </ul>
     </section>
-
-
 
   </div>
 

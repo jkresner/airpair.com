@@ -54,7 +54,7 @@ angular.module("ADMExperts", ['APDealsDirectives'])
   var _id = $routeParams.id
 
   var setScope = (r) => {
-    $scope.expert = r
+    $scope.expert = _.cloneDeep(r)
     $scope.data = r
   }
 
@@ -70,6 +70,10 @@ angular.module("ADMExperts", ['APDealsDirectives'])
   }
 
   DataService.experts.getHistory({_id}, setHistoryScope)
+
+  $scope.saveNote = (body) =>
+    AdmDataService.experts.saveNote({_id,body},setScope)
+
 })
 
 
