@@ -1,8 +1,10 @@
 
+<!-- ng-submit="submit(availabilityForm.$valid, data)" -->
+<form id="availabilityForm" novalidate name="availabilityForm" ng-if="data">
 
-<form id="availabilityForm" novalidate name="availabilityForm" ng-submit="submit(availabilityForm.$valid, data)">
+  {{data.availability.lastTouch}}
 
-  <h3 class="underline">Availability <a ng-click="alert('haha')" class="btn btn-small btn-inverse">Save</a></h3>
+  <h3 class="underline">Availability <a ng-click="submitAvailability(data._id, data.availability)" class="btn btn-small btn-inverse btn-yellow">Save</a></h3>
 
   <div form-group>
     <label class="control-label" for="availabilityStatus">Status</label>
@@ -10,30 +12,41 @@
       <option value="ready">I'm available</option>
       <option value="busy">Busy until</option>
     </select>
-    <div ng-if="data.availability.status == 'busy'" datetime-input id="bookingDatetime" datetime="data.availability.busyUntil" min-view="day" date-format="YYYY MMM DD"></div>
+    <div datetime-input  id="busyUntilDatetime"
+      ng-if="data.availability.status == 'busy'"
+      datetime="data.availability.busyUntil" min-view="day" date-format="YYYY MMM DD"></div>
   </div>
 
-  <div form-group>
+  <div form-group ng-if="data.availability.status == 'busy'">
     <label class="control-label" for="busyUntil"></label>
   </div>
 
-  <div form-group>
-    <label class="control-label" for="hours">Hours</label>
-    <select id="hours" name="hours" form-control ng-model="data.availability.hours">
-      <option value="1-2">2</option>
-      <option value="3-5">5</option>
-      <option value="10-20">10</option>
-      <option value="20+">20</option>
-    </select>
-  </div>
+  <div ng-if='data.availability.status == "ready"'>
 
-  <div form-group>
-    <label class="control-label" for="minRate">Min rate</label>
-    <input id="minRate" name="minRate" form-control type="number" placeholder="The minimum rate you would take" ng-model="data.availability.minRate" required tabindex="1">
-    <div class="error" ng-if="formGroup.showError(availabilityForm.minRate)" ng-messages="availabilityForm.minRate.$error">
-      <div ng-message="required">Field required</div>
-      <div ng-message="number">Invalid amount</div>
+    <div form-group>
+      <label class="control-label" for="hours">Hours/wk</label>
+      <select id="hours" name="hours" form-control ng-model="data.availability.hours">
+        <option value="1-2">2</option>
+        <option value="3-5">5</option>
+        <option value="10-20">10</option>
+        <option value="20+">20</option>
+      </select>
     </div>
+
+    <div form-group>
+      <label class="control-label" for="minRate">Min rate</label>
+      <input id="minRate" name="minRate" form-control type="number" placeholder="The minimum rate you would take" ng-model="data.availability.minRate" required>
+      <div class="error" ng-if="formGroup.showError(availabilityForm.minRate)" ng-messages="availabilityForm.minRate.$error">
+        <div ng-message="required">Field required</div>
+        <div ng-message="number">Invalid amount</div>
+      </div>
+    </div>
+
+    <div form-group>
+      <label class="control-label" for="times">Preferred times <span>* optional</span></label>
+      <textarea id="times" name="times" form-control type="number" placeholder='E.g. "Weekdays after 7pm, any time on weekends."' ng-model="data.availability.times"></textarea>
+    </div>
+
   </div>
 
 </form>

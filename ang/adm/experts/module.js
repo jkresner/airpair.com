@@ -13,11 +13,15 @@ angular.module("ADMExperts", ['APDealsDirectives'])
   return { template: require('./userInfo.html'), scope: { info: '=info' } }
 })
 
-.directive('expertAvailability', () => {
+.directive('expertAvailability', (DataService) => {
   return {
     template: require('./availability.html'),
     controller($scope, $attrs) {
-      console.log('$expertSettings.p')
+      $scope.submitAvailability = (_id, availability) => {
+        DataService.experts.updateAvailability({_id,availability},(r)=>
+          window.location = window.location
+        )
+      }
     }
   }
 })

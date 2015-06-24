@@ -65,7 +65,8 @@ var data = {
       'deals.tag': 1,
       'deals.target': 1,
       'deals.code': 1,
-      'deals.redeemed': 1
+      'deals.redeemed': 1,
+      'availability': 1,
     },
     userCopy: {
       '_id': 1,
@@ -102,7 +103,7 @@ var data = {
       'matching': 1,
       'activity': 1,
       'lastTouch': 1,
-
+      'availability': 1,
       'gmail': 1,
       'pic': 1,
       // 'karma': 1,
@@ -239,9 +240,15 @@ var data = {
   },
 
   query: {
-    ranked(tags, exclude, budget) {
+    ranked(tags, exclude, budget, includeBusy) {
       // $log('getRanked', query)
-      var q = { 'tags._id': { $in: tags }, rate: { $gt: 0 } }
+      var q = {
+        'tags._id': { $in: tags },
+        'rate': { $gt: 0 },
+      }
+      if (!includeBusy)
+        q['availability.status'] = { $ne: 'busy' }
+
       if (exclude) {
         q['username'] = { $nin: exclude }
         q['user.username'] = { $nin: exclude }

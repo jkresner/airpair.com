@@ -134,7 +134,7 @@ module.exports = mongoose.model('Expert', new Schema({
   availability:   {
     lastTouch:    Shared.Touch,
     status:       String,
-    busyUntil:    { type: Date },
+    busyUntil:    Date,
     times:        String,
     minRate:      Number,
     hours:        String
