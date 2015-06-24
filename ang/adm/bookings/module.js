@@ -42,6 +42,8 @@ angular.module("ADMBookings", [])
       scope.newGroupChat = BookingsUtil.chatGroup(r)
 
     angular.extend($scope, scope)
+
+    $scope.setMsgTemplate('confirm')
   }
 
   AdmDataService.bookings.getBooking({_id}, setScope,
@@ -88,6 +90,14 @@ angular.module("ADMBookings", [])
 
   $scope.saveNote = (body) =>
     AdmDataService.bookings.saveNote({_id,body},setScope)
+
+  $scope.setMsgTemplate = (tmpl) => {
+    var experts = $scope.experts[0].chat.slack.name
+    var timeString = BookingsUtil.multitime($scope.booking)
+
+    if (tmpl == 'confirm') $scope.slackMessage = `@${experts}: the customer has requested to pair at ${timeString} does that work?`
+    if (tmpl == 'feedback') $scope.slackMessage = `@franklin: would love to get your feedback! http://airpa.ir/1wjREmL`
+  }
 })
 
 .controller('BookingsCtrl', ($scope, AdmDataService, DateTime, BookingsUtil) => {

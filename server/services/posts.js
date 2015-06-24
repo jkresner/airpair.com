@@ -386,6 +386,11 @@ var save = {
 
     updateWithEditTouch.call(this, post, 'publish', cb)
     if (cache) cache.flush('posts')
+
+    if (publishData.publishedOverride)
+      pairbot.sendPostSynced(post)
+    else
+      pairbot.sendPostPublished(post)
   },
 
   submitForReview(post, slug, cb){
@@ -401,7 +406,9 @@ var save = {
         post.meta = post.meta || {}
         post.meta.ogImage = post.assetUrl
         updateWithEditTouch.call(this, post, 'submittedForReview', cb)
+
         if (cache) cache.flush('posts')
+        pairbot.sendPostSubmitted(post)
       })
     })
 

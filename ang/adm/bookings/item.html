@@ -66,6 +66,12 @@
           </ul>
           <p class="purpose">{{booking.chat.info.purpose.value}}</p>
           <hr />
+          <a ng-click="setMsgTemplate('feedback')" ng-if="booking.status == 'followup'">feedback</a> |
+          <a ng-click="setMsgTemplate('confirm')" ng-if="booking.status == 'pending'">confirm time</a>
+          <br />
+          <textarea style="width:75%" ng-model="slackMessage"></textarea>
+          <a ng-click="postMessage()" class="btn-yellow" style="float:right">Post</a>
+          <hr />
           <ul class="history">
             <li ng-repeat="m in booking.chat.history | orderBy:'-ts'">
               <time>{{m.ts | tsTime }} <b>{{booking.chat.members[m.user].real_name}}</b></time>
