@@ -36,7 +36,8 @@ angular.module('APSvcAdmin', [])
     this.experts = {
       getNew: GET((d)=>`/adm/experts/new`),
       getActive: GET((d)=>`/adm/experts/active`),
-      getBydId: GET((d)=>`/adm/experts/${d._id}`)
+      getBydId: GET((d)=>`/adm/experts/${d._id}`),
+      saveNote: POST((d)=>`/adm/experts/${d._id}/note`),
     }
 
     this.getUsersViews = function(data, success, error) {
