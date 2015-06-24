@@ -1,5 +1,5 @@
 UserService = require('../../server/services/users')
-util = require('../../shared/util')
+
 
 signup = ->
 
