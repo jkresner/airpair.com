@@ -48,9 +48,11 @@ var data = {
     cb: {
       setAvatarsCB(cb) {
         return (e, booking) => {
-          if (e) return cb(e)
-          data.select.setAvatars(booking)
-          cb(null,booking)
+          Wrappers.Slack.getUsers(()=>{
+            if (e) return cb(e)
+            data.select.setAvatars(booking)
+            cb(null,booking)
+          })
         }
       },
       inflateAvatars(cb) {

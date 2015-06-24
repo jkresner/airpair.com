@@ -13,6 +13,7 @@ module.exports = -> describe "SlackAPI: ", ->
 
   after ->
 
+
   describe.skip 'Wrapper Users', ->
 
     it 'Can get Slack team info', itDone ->
@@ -108,6 +109,16 @@ module.exports = -> describe "SlackAPI: ", ->
     #   connection_count: 1,
     #   last_activity: 1433656202 }
       # DONE()
+
+
+  describe.skip 'Wrapper Channels', ->
+
+
+    it 'Can get channels', itDone ->
+      Wrappers.Slack.getChannels (e, channels) ->
+        $log('channels', channels)
+        DONE()
+
 
 
   describe.skip 'Wrapper Groups', ->

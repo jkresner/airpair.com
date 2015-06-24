@@ -23,6 +23,10 @@ module.exports = function(config)
     init() { global.mailman = require('./mail/mailman')(config.mail.smtpProvider()) }
   }
 
+  global.pairbot = {
+    init() { global.pairbot = require('./im/pairbot')() }
+  }
+
   //-- makes app a tests load 300ms faster
   global.analytics    = { track: ()=>{}, view: ()=>{}, alias: ()=>{}, identify: ()=>{} }
 

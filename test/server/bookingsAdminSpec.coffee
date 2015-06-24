@@ -1,5 +1,6 @@
 snggsId = "52127d5fc6a5870200000007"
 adamKerrId = "53041710a9a333020000001d"
+BookingUtil = require("../../shared/bookings")
 
 module.exports = -> describe "ADM: ".subspec, ->
 
@@ -7,6 +8,15 @@ module.exports = -> describe "ADM: ".subspec, ->
   before (done) ->
     done()
 
+
+  it.only "Can get multiTime", itDone ->
+    $log 'time', data.bookings.timezones.datetime
+    tzBooking = data.bookings.timezones
+    expect(tzBooking.participants.length).to.equal(2)
+    expect(tzBooking.participants[0].timezone).to.equal("Pacific Daylight Time")
+    expect(tzBooking.participants[1].timezone).to.equal("Central Daylight Time")
+    $log('BookingUtil', BookingUtil.multitime(tzBooking))
+    DONE()
 
   it "Can dirty swap available expert", itDone ->
     SETUP.ensureV1LoggedInExpert 'snug', ->

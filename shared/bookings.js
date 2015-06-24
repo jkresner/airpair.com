@@ -25,6 +25,14 @@ var utilFns = {
     ]
   },
 
+  multitime(booking) {
+    var mom = moment(booking.datetime)
+    // $log('mom'.cyan, mom)
+    // var est = mom.tz('America/New_York').format('ha z')
+    // $log('est'.cyan, est)
+    return `${mom.format('ddd, hA z')}`
+  },
+
   statusLetter(booking) {
     if (booking.status == 'pending') return 'p'
     if (booking.status == 'confirmed') return 'c'
