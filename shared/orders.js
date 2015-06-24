@@ -1,5 +1,22 @@
 module.exports = {
 
+  getOrdersListSummary(r) {
+    var summary = { total: 0, byCount: 0, profit: 0, count: r.length, paid: 0 }
+    var customers = {}
+    for (var i = 0; i < r.length; i++) {
+      summary.profit += r[i].profit
+      summary.total += r[i].total
+      if (r[i].total > 0) {
+        summary.paid += 1
+        if (!customers[r[i].userId]) {
+          summary.byCount += 1
+          customers[r[i].userId] = true
+        }
+      }
+    }
+    return summary
+  },
+
   lineForPayout(order) {
     return _.find(order.lineItems,(l) => l.info &&
         l.info.expert && l.info.paidout != null)

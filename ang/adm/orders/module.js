@@ -8,7 +8,7 @@ angular.module("ADMOrders", [])
 
 })
 
-.controller('OrdersCtrl', function($scope, AdmDataService, DateTime) {
+.controller('OrdersCtrl', function($scope, AdmDataService, OrdersUtil, DateTime) {
 
   $scope.query = {
     start:    DateTime.firstOfMonth(0),
@@ -18,19 +18,10 @@ angular.module("ADMOrders", [])
 
   var setScope = (r) => {
     $scope.orders = r
+    $scope.summary = OrdersUtil.getOrdersListSummary(r)
 
-    var summary = { total: 0, byCount: 0, profit: 0, count: r.length }
-    var customers = {}
-    for (var i = 0;i<r.length;i++) {
-      summary.total += r[i].total
-      summary.profit += r[i].profit
-      if (!customers[r[i].userId]) {
-        summary.byCount += 1
-        customers[r.userId] = true
-      }
-    }
-
-    $scope.summary = summary
+    $scope.monthProjection = (DateTime.firstOfMonth(0).isSame($scope.query.start))
+      ? moment().endOf('month').date() / moment().date() : null
   }
 
   $scope.selectUser = (user) => $scope.query.user = user
