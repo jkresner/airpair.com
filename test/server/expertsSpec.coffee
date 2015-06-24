@@ -98,7 +98,6 @@ migrate = ->
       d = _.omit(exp1,'_id')
       POST "/experts/me", d, {status:400}, (exp2) ->
         db.readDocs 'Expert', {userId:ObjectId(s._id)}, (r) ->
-          $log('r', r)
           expect(r.length).to.equal(1)
           DONE()
 
@@ -287,7 +286,55 @@ admin = ->
 
 availability = ->
 
-  it "Save availability settings"
+
+  it "Fail to save availability settings for another expert", itDone ->
+    LOGIN 'dros', (s) ->
+      availability =  { status: 'busy', busyUntil: moment().add(1,'day') }
+      expertId = data.experts.abha._id
+      PUT "/experts/#{expertId}/availability", {availability}, {status:403}, (err) ->
+        expectStartsWith(err.message, "Cannot update expert[#{expertId}], not your userId")
+        DONE()
+
+
+  it "Save busy availability settings", itDone ->
+    SETUP.createNewExpert 'jjel', {}, (s, exp1) ->
+      expect(exp1.availability).to.be.undefined
+      availability =  { status: 'busy', busyUntil: moment().add(1,'day') }
+      PUT "/experts/#{exp1._id}/availability", {availability}, {}, (e2) ->
+        expectIdsEqual(e2.availability.lastTouch.by._id,s._id)
+        expect(e2.availability.status).to.equal("busy")
+        expect(e2.availability.busyUntil).to.exist
+        expect(e2.availability.times).to.be.undefined
+        expect(e2.availability.minRate).to.be.undefined
+        expect(e2.availability.hours).to.be.undefined
+        DONE()
+
+
+  it "Save available availability settings", itDone ->
+    testFails = (s,exp1,cb) ->
+      a1 = { status: 'available' }
+      PUT "/experts/#{exp1._id}/availability", {availability:a1}, {status:403}, (er1) ->
+        expectStartsWith(er1.message, "Expert status [available] not recognized")
+        a2 = { status: 'ready' }
+        PUT "/experts/#{exp1._id}/availability", {availability:a2}, {status:403}, (er2) ->
+          expectStartsWith(er2.message, "Expert availability minRate require")
+          a3 = { status: 'ready', minRate: 20 }
+          PUT "/experts/#{exp1._id}/availability", {availability:a3}, {status:403}, (er3) ->
+            expectStartsWith(er3.message, "Expert availability hours required")
+            cb()
+
+    SETUP.createNewExpert 'joem', {}, (s, exp1) ->
+      testFails s, exp1, ->
+        availability =  { status: 'ready', times: 'anytime', hours: '1-2', minRate: 50 }
+        PUT "/experts/#{exp1._id}/availability", {availability}, {}, (e2) ->
+          expectIdsEqual(e2.availability.lastTouch.by._id,s._id)
+          expect(e2.availability.status).to.equal("ready")
+          expect(e2.availability.busyUntil).to.be.undefined
+          expect(e2.availability.times).to.equal('anytime')
+          expect(e2.availability.minRate).to.equal(50)
+          expect(e2.availability.hours).to.equal('1-2')
+          DONE()
+
 
 admin = ->
 
@@ -466,13 +513,15 @@ history = ->
 
 module.exports = ->
 
-  before ->
+  before (done) ->
+    SETUP.initExperts done
 
   it "*** JK Sent annoucement to pre-applied experts expert"
   it "Collects social data for social scoring"
 
   describe("Create: ".subspec, create)
   describe("Migrate: ".subspec, migrate)
+  describe("Availability: ".subspec, availability)
   describe("Admin: ".subspec, admin)
 
 

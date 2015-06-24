@@ -172,8 +172,9 @@ var save = {
     $callSvc(UserSvc.setExpertCohort, this)(ups._id)
   },
 
-  deleteById(original, cb) {
-    svc.deleteById(original._id, cb)
+  updateAvailability(original, availability, cb) {
+    availability.lastTouch = svc.newTouch.call(this, availability.status)
+    svc.update(original._id, _.extend(original,{availability}), selectCB.me(cb))
   },
 
   createDeal(expert, deal, cb) {
@@ -200,6 +201,9 @@ var save = {
     svc.update(original._id, original, cb)
   },
 
+  deleteById(original, cb) {
+    svc.deleteById(original._id, cb)
+  },
 }
 
 module.exports = _.extend(get, save)
