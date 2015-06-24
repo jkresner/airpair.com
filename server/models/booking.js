@@ -15,10 +15,10 @@ var ATTENDEE_TYPES = ['expert','customer']
 
 
 var Participant = {
-  role: { required: true, type: String, enum: ATTENDEE_TYPES },
-  info: Shared.UserByte,
-  location:  String,
-  timezone:  String,
+  role:         { required: true, type: String, enum: ATTENDEE_TYPES },
+  info:         Shared.UserByte,
+  location:     String,
+  timeZoneId:   String,
   chat: {
     slack: { id: { type: String }, name: { type: String } }
   }
@@ -40,22 +40,36 @@ var BOOKING_STATUS = [
 
 module.exports = mongoose.model('Booking', new mongoose.Schema({
 
-  customerId:    { required: true, type: ObjectId, ref: 'User', index: true },
-  expertId:      { required: true, type: ObjectId, ref: 'Expert', index: true },
-  participants:  { required: true, type: [Participant] },
-  type:          { required: true, type: String, enum: BOOKING_TYPES },
-  minutes:       { required: true, type: Number },
-  createdById:   { required: true, type: ObjectId, ref: 'User', index: true }, // Could be initiated by the expert or customer
-  status:        { required: true, type: String, enum: BOOKING_STATUS },  // pending, confirmed, declined
-  datetime:      { required: true, type: Date, index: true },
-  gcal:          { required: true, type: {} },
-  recordings:    { type: [Recording], default: [] },
-  orderId:       { required: true, type: ObjectId, ref: 'Order' },
-  chatId:        { type: ObjectId, ref: 'Chat' },
-  notes:         { type: [Shared.Note] }
+  createdById:    { required: true, type: ObjectId, ref: 'User', index: true }, // Could be initiated by the expert or customer
+  customerId:     { required: true, type: ObjectId, ref: 'User', index: true },
+  expertId:       { required: true, type: ObjectId, ref: 'Expert', index: true },
+  participants:   { required: true, type: [Participant] },
+  type:           { required: true, type: String, enum: BOOKING_TYPES },
+  minutes:        { required: true, type: Number },
+  status:         { required: true, type: String, enum: BOOKING_STATUS },  // pending, confirmed, declined
+  datetime:       { required: true, type: Date, index: true },
+  suggestedTimes: { required: true, type: [{_id:ObjectId,byId:ObjectId,time:Date,confirmedById:ObjectId}]},
+  gcal:           { required: true, type: {} },
+  recordings:     { type: [Recording], default: [] },
+  orderId:        { required: true, type: ObjectId, ref: 'Order' },
+  chatId:         { type: ObjectId, ref: 'Chat' },
+  notes:          { type: [Shared.Note] },
 
-  // customerReview:   {}   # Customer's feedback on how the session went
-  // customerShare:    {}   # Tacking Customer sharing activity
-  // postId:           {}   # title, transcript, expertMeta, customerMeta
-  // airpairRating:    { type: Number }  # How we sort session by awesomeness
+  lastTouch:      Shared.Touch,
+  activity:       [Shared.Touch],
+
+  // reviews:       {
+  //   staff:       {
+  //     rating:    { type: Number }
+  //   },
+  //   customer:    {
+  //     review:    { type: Shared.Survey },
+  //     // share:     {}  # Tacking Customer sharing activity
+  //   },
+  //   expert:      {
+  //     review:    { type: Shared.Survey },
+  //     // share:     {}
+  //   },
+  // }
+
 }))

@@ -53,7 +53,7 @@
     <th>Feedback</th>
     <th>Recordings</th>
   </tr>
-  <tr ng-repeat="b in bookings.other | orderBy : ['-status','datetime']" ng-class="css.bookingRow(b)">
+  <tr ng-repeat="b in bookings.other | orderBy : ['-status','-datetime']" ng-class="css.bookingRow(b)">
     <td>
       <a href="/adm/bookings/{{b._id}}">
         <b>{{b.datetime | locaTime : 'MM.DD HH:mm' }}</b><br /><time>{{b.minutes}} min booking</time>
