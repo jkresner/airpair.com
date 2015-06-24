@@ -6,6 +6,7 @@ var TemplateSvc             = require('../services/templates')
 import Svc                  from '../services/_service'
 import Booking              from '../models/booking'
 import Order                from '../models/order'
+var User                    = require('../models/user')
 var svc                     = new Svc(Booking, logging)
 var {select,query,options}  = require('./bookings.data')
 var {setAvatarsCB}          = select.cb
@@ -43,7 +44,7 @@ var get = {
   },
 
   getByIdForAdmin(id, callback) {
-    var cb = (e,r) => Wrappers.Slack.getUsers(()=>setAvatarsCB(callback)(e,r))
+    var cb = (e,r) => setAvatarsCB(callback)(e,r)
 
     svc.getById(id, (e,r) => {
       if (!r.orderId) return cb(e,r) //is a migrated booking from v0 call
@@ -98,32 +99,44 @@ var get = {
 
 function create(e, r, user, expert, datetime, minutes, type, cb) {
   if (e) return cb(e)
+  User.findOne({_id:expert.userId},{localization:1,name:1,email:1},(e, expertUser)=>{
+    var cTimeLoc = !user.localization || !user.localization.timezoneData ? {} :
+      { location:user.localization.location, timeZoneId:user.localization.timezoneData.timeZoneId }
 
-  var localization = user.localization ? { location:user.localization.location,timezone:user.localization.timezone } : {}
-  var participants = [
-    _.extend(localization,{role:"customer",info: { _id: user._id, name: user.name, email: user.email } }),
-    {role:"expert",location:expert.location,timezone:expert.timezone,info: { _id: expert.userId, name: expert.name||expert.user.name, email: expert.email||expert.user.email } }
-  ]
+    var eTimeLoc = !expertUser.localization || !expertUser.localization.timezoneData ? {} :
+      { location:expertUser.localization.location, timeZoneId:expertUser.localization.timezoneData.timeZoneId }
 
-  var booking = {
-    _id: svc.newId(),
-    createdById: user._id,
-    customerId: user._id, // consider use case of expert creating booking
-    expertId: expert._id,
-    participants,
-    type,
-    minutes,
-    datetime,
-    status: 'pending',
-    gcal: {},
-    orderId: r._id
-  }
+    var participants = [
+      _.extend(cTimeLoc, { role:"customer", info: { _id: user._id, name: user.name, email: user.email } }),
+      _.extend(eTimeLoc, { role:"expert", info: { _id: expert.userId, name: expertUser.name, email: expertUser.email } })
+    ]
 
-  var d = {byName:user.name,expertName:expert.name, bookingId:booking._id,minutes,type}
-  mailman.send('pipeliners', 'pipeliner-notify-booking', d, ()=>{})
-  mailman.send(expert, 'expert-booked', d, ()=>{}) // todo add type && instructions to email
+    $log('expertUser,')
+    $log('expertUser,', this)
+    var touch = svc.newTouch.call(this, 'create')
+    var booking = {
+      _id: svc.newId(),
+      createdById: user._id,
+      customerId: user._id, // consider use case of expert creating booking
+      expertId: expert._id,
+      participants,
+      type,
+      minutes,
+      datetime,
+      suggestedTimes:[{_id:svc.newId(),time:datetme,byId:user._id}],
+      status: 'pending',
+      gcal: {},
+      orderId: r._id,
+      lastTouch: touch,
+      activity: [touch]
+    }
+    $log('gogog', booking)
+    var d = {byName:user.name,expertName:expert.name, bookingId:booking._id,minutes,type}
+    mailman.send('pipeliners', 'pipeliner-notify-booking', d, ()=>{})
+    mailman.send(expert, 'expert-booked', d, ()=>{}) // todo add type && instructions to email
 
-  svc.create(booking, setAvatarsCB(cb))
+    svc.create(booking, setAvatarsCB(cb))
+  })
 }
 
 
@@ -149,7 +162,7 @@ var save = {
 
   createBooking(expert, time, minutes, type, credit, payMethodId, requestId, dealId, cb)
   {
-    var createCB = (e, r) => create(e, r, this.user, expert, time, minutes, type, cb)
+    var createCB = (e, r) => create.call(this, e, r, this.user, expert, time, minutes, type, cb)
     OrdersSvc.createBookingOrder.call(this, expert, time, minutes, type, credit, payMethodId, requestId, dealId, createCB)
   },
 

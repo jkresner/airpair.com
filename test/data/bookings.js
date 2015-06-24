@@ -50,54 +50,41 @@ module.exports = {
   },
 
   timezones: {
-    "_id" : ObjectId("55842879a5cf3b11001e6567"),
+    "_id" : ObjectId("558aa2454be238d1956cb8aa"),
     "createdById" : ObjectId("552d81ec35c4e411001ae059"),
     "customerId" : ObjectId("552d81ec35c4e411001ae059"),
     "expertId" : ObjectId("529e685c1a4bf00200000017"),
     "type" : "private",
-    "minutes" : 120,
-    "datetime" : ISODate("2015-06-23T03:00:00.000Z"),
-    "status" : "confirmed",
-    "orderId" : ObjectId("55842879a5cf3b11001e6566"),
+    "minutes" : 90,
+    "datetime" : ISODate("2016-06-25T00:00:00.000Z"),
+    "status" : "pending",
+    "orderId" : ObjectId("558aa2454be238d1956cb8a9"),
     "notes" : [],
     "recordings" : [],
     "participants" : [
         {
-            "_id" : ObjectId("55842879a5cf3b11001e6569"),
-            "role" : "customer",
-            "timezone" : "Pacific Daylight Time",
             "location" : "San Francisco, CA, USA",
-            "chat" : {
-                "slack" : {
-                    "name" : "morgan",
-                    "id" : "U04JY7PR9"
-                }
-            },
+            "timeZoneId" : "America/Los_Angeles",
+            "role" : "customer",
+            "_id" : ObjectId("558aa2454be238d1956cb8ac"),
             "info" : {
-                "email" : "morgan.wildermuth@gmail.com",
+                "_id" : ObjectId("552d81ec35c4e411001ae059"),
                 "name" : "Morgan Wildermuth",
-                "_id" : ObjectId("552d81ec35c4e411001ae059")
+                "email" : "morgan.wildermuth@gmail.com"
             }
         },
         {
-            "_id" : ObjectId("55842879a5cf3b11001e6568"),
-            "timezone" : "Central Daylight Time",
             "location" : "Houston, TX, USA",
+            "timeZoneId" : "America/Chicago",
             "role" : "expert",
-            "chat" : {
-                "slack" : {
-                    "name" : "billycravens",
-                    "id" : "U063HH7QS"
-                }
-            },
+            "_id" : ObjectId("558aa2454be238d1956cb8ab"),
             "info" : {
-                "email" : "bdcravens@gmail.com",
+                "_id" : ObjectId("529e680966a6f999a465fd14"),
                 "name" : "Billy Cravens",
-                "_id" : ObjectId("529e680966a6f999a465fd14")
+                "email" : "bdcravens@gmail.com"
             }
         }
     ],
-    "gcal" : {},
-    "chatId" : ObjectId("557f7a2416c2a71100a1c992")
+    "__v" : 0
   }
 }
