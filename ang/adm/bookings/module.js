@@ -68,7 +68,7 @@ angular.module("ADMBookings", [])
   }
 
   $scope.releasePayout = () =>
-    AdmDataService.bookings.releasePayout({_id},(r) => {
+    AdmDataService.bookings.releasePayout({_id:$scope.order._id},(r) => {
       $scope.order = r
       $scope.lineForPayout = OrdersUtil.lineForPayout(r)
     })
@@ -110,11 +110,14 @@ angular.module("ADMBookings", [])
   }
 
   var setScope = (r) => {
-    var bs = { upcoming: [], pending: [], other: [] }
+    var bs = { upcoming: [], pending: [], other: [], minsOnAir: 0 }
     r.forEach((b)=>{
       if (DateTime.inRange(b.datetime, 'anHourAgo', 'in48hours')) bs.upcoming.push(b)
       if (b.status == 'pending') bs.pending.push(b)
       else bs.other.push(b)
+
+      if (b.status == 'followup' || b.status == 'complete')
+        bs.minsOnAir += b.minutes
     })
     $scope.bookings = bs
   }
