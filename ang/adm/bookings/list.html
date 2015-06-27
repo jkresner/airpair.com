@@ -7,7 +7,7 @@
   <a ng-click="fetch()" class="btn">Search</a>
 </div>
 
-<h3>Bookings</h3>
+<h3>Bookings ({{bookings.minsOnAir/60 |number:0}} hrs)</h3>
 
 <section class="upcoming" ng-if="bookings.upcoming">
   <p ng-if="bookings.upcoming.length == 0">No AirPairs Scheduled in the next 48 hours.</p>
@@ -21,9 +21,10 @@
       <div ng-repeat="p in b.participants">
         <img ng-src="{{p.info.avatar}}" class="user"> <span>{{p.info.name}}</span>
       </div>
-      <div ap-hangout-spinner
+      <div ng-if="b.chatId" ap-hangout-spinner
         hangout-id="b._id"
         booking="b"></div>
+      <div ng-if="!b.chatId" style="color:brown">Assign chat</div>
     </li>
   </ul>
 </section>
@@ -52,7 +53,7 @@
     <th>Feedback</th>
     <th>Recordings</th>
   </tr>
-  <tr ng-repeat="b in bookings.other | orderBy : ['-status','datetime']" ng-class="css.bookingRow(b)">
+  <tr ng-repeat="b in bookings.other | orderBy : ['-status','-datetime']" ng-class="css.bookingRow(b)">
     <td>
       <a href="/adm/bookings/{{b._id}}">
         <b>{{b.datetime | locaTime : 'MM.DD HH:mm' }}</b><br /><time>{{b.minutes}} min booking</time>

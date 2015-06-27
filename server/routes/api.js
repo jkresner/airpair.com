@@ -75,6 +75,7 @@ function admin() {
     .get('/experts/new', API.Experts.getNewForAdmin)
     .get('/experts/active', API.Experts.getActiveForAdmin)
     .get('/experts/:id', API.Experts.getByIdForAdmin)
+    .post('/experts/:expert/note', plnr, API.Experts.addNote)
     .delete('/experts/:expert', API.Experts.deleteById)
 }
 
@@ -207,6 +208,8 @@ function other(app) {
     .get('/bookings', API.Bookings.getByUserId)
     .get('/bookings/:id', API.Bookings.getById)
     .post('/bookings/:expertshaped', populateUser, API.Bookings.createBooking)
+    // .put('/bookings/:booking/suggest-time', API.Bookings.suggestTime)
+    // .put('/bookings/:booking/confirm-time', API.Bookings.confirmTime)
 
     .get('/experts/me', API.Experts.getMe)
     .get('/experts/search/:id', API.Experts.search)
@@ -214,6 +217,7 @@ function other(app) {
     .get('/experts/:expert/history', API.Experts.getHistory)
     .post('/experts/me', populateUser, API.Experts.create)
     .put('/experts/:expert/me', populateUser, API.Experts.updateMe)
+    .put('/experts/:expert/availability', populateUser, API.Experts.updateAvailability)
     .get('/experts/deal/:id', API.Experts.getByDeal)
     .post('/experts/:expert/deal', API.Experts.createDeal)
     .put('/experts/:expert/deal/:dealid/expire', API.Experts.expireDeal)

@@ -134,7 +134,7 @@ module.exports = mongoose.model('Expert', new Schema({
   availability:   {
     lastTouch:    Shared.Touch,
     status:       String,
-    busyUntil:    { type: Date },
+    busyUntil:    Date,
     times:        String,
     minRate:      Number,
     hours:        String
@@ -171,6 +171,8 @@ module.exports = mongoose.model('Expert', new Schema({
       incident:   [{requestId:ObjectId,comment:String,severity:Number}]
     }
   },
+
+  notes:          { type: [Shared.Note] },
 
   // deprecated other
   bookMe:         { required: false, type: Bookme },

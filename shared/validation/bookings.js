@@ -7,6 +7,27 @@ var validation = {
     if (!datetime) return `Booking datetime required`
   },
 
+  // suggestTime(user, original, datetime)
+  // {
+  //   if (original.status != 'pending') return `Booking [${original._id}] must be in pending state to suggest a new time`
+  //   if (!datetime) return `Suggested booking datetime required`
+  //   var isParticipant = _.find(original.participants,(p)=>_.idsEqual(p.info._id,this.user._id))
+  //   if (!isParticipant) return `Cannot suggest time. You[${this.user._id}] are not a participant to Booking[${original._id}]`
+  // },
+
+  // confirmTime(user, original, timeId)
+  // {
+  //   if (original.status != 'pending') return `Booking [${original._id}] must be in pending state to confirm a time`
+
+  //   var isAdmin = Roles.isAdmin(this.user)
+  //   var isParticipant = _.find(original.participants,(p)=>_.idsEqual(p.info._id,this.user._id))
+
+  //   if (!isParticipant && !isAdmin) return `Cannot confirm time. You[${this.user._id}] are not a participant to Booking[${original._id}]`
+  //   var time = _.find(original.suggestTimes,(t)=>_.idsEqual(t._id,timeId))
+  //   if (!time) return `Cannot confirm time [${timeId}]. It does not belong to Booking[${original._id}]`
+  //   if (time.confirmedById) return `Time already confirmed`
+  // },
+
   updateByAdmin(user, original, update)
   {
     // $log('validation.updateByAdmin', user, original, update)
@@ -26,11 +47,6 @@ var validation = {
       if (update.status == 'complete')
         return `Cannot set Booking complete status manually. Release expert payment, save the recording & get customer feedback`
     }
-  },
-
-  confirmBooking(user, original, update)
-  {
-
   },
 
   addYouTubeData(user, original, youTubeId)

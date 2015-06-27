@@ -94,6 +94,7 @@
         <option>V1 Migration</option>
         <option>Happy New Year</option>
         <option>Expert Thanks You</option>
+        <option>Customer Feedback</option>
       </select>
       <button class="btn" ng-click="giveCredit(credit, source)">Give credit</button>
     </div>
@@ -102,8 +103,9 @@
   </section>
 
 
-  <section class="info">
+  <section class="info" ng-if="selectedUser._id">
     <pre>{{selectedUser|json}}</pre>
+    <div slack-status member="selectedUser" userid="selectedUser._id"></div>
   </section>
 
 </section>

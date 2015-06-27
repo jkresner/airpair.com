@@ -56,7 +56,7 @@ var data = {
         }
       },
       inflateAvatars(cb) {
-        return (e,r)  => {
+        return (e,r) => {
           Wrappers.Slack.getUsers(()=>{
             if (e) return cb(e)
             for (var o of r)

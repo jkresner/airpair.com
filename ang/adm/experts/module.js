@@ -13,11 +13,15 @@ angular.module("ADMExperts", ['APDealsDirectives'])
   return { template: require('./userInfo.html'), scope: { info: '=info' } }
 })
 
-.directive('expertAvailability', () => {
+.directive('expertAvailability', (DataService) => {
   return {
     template: require('./availability.html'),
     controller($scope, $attrs) {
-      console.log('$expertSettings.p')
+      $scope.submitAvailability = (_id, availability) => {
+        DataService.experts.updateAvailability({_id,availability},(r)=>
+          window.location = window.location
+        )
+      }
     }
   }
 })
@@ -54,7 +58,7 @@ angular.module("ADMExperts", ['APDealsDirectives'])
   var _id = $routeParams.id
 
   var setScope = (r) => {
-    $scope.expert = r
+    $scope.expert = _.cloneDeep(r)
     $scope.data = r
   }
 
@@ -70,6 +74,10 @@ angular.module("ADMExperts", ['APDealsDirectives'])
   }
 
   DataService.experts.getHistory({_id}, setHistoryScope)
+
+  $scope.saveNote = (body) =>
+    AdmDataService.experts.saveNote({_id,body},setScope)
+
 })
 
 
