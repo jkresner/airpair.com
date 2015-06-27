@@ -201,7 +201,7 @@ var get = {
     var q = query.published()
     q['$and'].push({'tmpl' : { '$ne': 'blank' }})
     q['$and'].push({'tmpl' : { '$ne': 'faq' }})
-    svc.searchMany(q, { field: select.list, options: opts.publishedNewest(9) }, selectCB.addUrl(cb))
+    svc.searchMany(q, { fields: select.list, options: opts.publishedNewest(9) }, selectCB.addUrl(cb))
   },
 
   //-- Placeholder for showing similar posts to a currently displayed post
@@ -220,7 +220,10 @@ var get = {
 
   getUsersPublished(userId, cb) {
     var options = { fields: select.list, options: opts.publishedNewest() }
-    svc.searchMany(query.published({ 'by.userId': userId }), options, selectCB.addUrl(cb))
+    svc.searchMany(query.published({ 'by.userId': userId }), options, selectCB.addUrl((e,r)=>{
+      if (e) return cb(e)
+      cb(null, {featured: r,archive: []})
+    }))
   },
 
   // Everything needed for airpair.com/posts/me

@@ -4,7 +4,7 @@
   </ol>
 </header>
 
-<div banner-postcomp style="min-height:90px;"></div>
+{{!-- <div banner-postcomp style="min-height:90px;"></div> --}}
 
 <section id="allposts">
 
@@ -14,6 +14,8 @@
   </div>
 
 
+  {{#if archive}}
+
   <h2 class="underline">All software tutorials & featured posts <a href="/posts/me" class="btn" target="_self">Contribute</a></h2>
 
   <ul class="archive-posts">
@@ -21,5 +23,7 @@
     <li><a href="{{url}}">{{title}}</a> by <b>{{by.name}}</b></li>
     {{/each}}
   </ul>
+
+  {{/if}}
 
 </section>
