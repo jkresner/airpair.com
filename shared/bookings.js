@@ -48,6 +48,13 @@ var utilFns = {
     if (booking.status == 'canceled') return 'v'
   },
 
+  // statusBotMessage(booking) {
+  //   if (booking.status == 'confirmed')
+  //     return 'c'
+  //   if (booking.status == 'followup')
+  //     return 'f'
+  // },
+
   chatGroup(booking) {
     var customer = utilFns.customers(booking)[0]
     var customerFirst = util.firstName(customer.info.name).replace("'","")

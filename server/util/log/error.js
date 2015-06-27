@@ -21,7 +21,8 @@ var knownNonErrors = [
   'Cannot signup, user already exists',
   'Email belongs to another account',
   'Cannot suggest the same expert twice',
-  'tagfrom3rdparty not found'
+  'tagfrom3rdparty not found',
+  'already_in_team' //slack
 ]
 
 

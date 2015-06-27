@@ -17,6 +17,7 @@ module.exports = {
   mois: { name:"Moises Cassab",email:"moises.cassab@hotmail.com" },
   jjel: { name:"James Jelinek:",email:" jelinek@gmail.com" },
   jaje: { name:"James Jelinek:",email:" jelinek@test.com" },
+  clew: { name:"Chris Lewis:",email:" clew@test.com" },
 
   mris: { name:"Mike Risse",email:"mike@madeye.io" },
   mirs: { name:"Mike Risse",email:"mike.risse@hotmail.com" },

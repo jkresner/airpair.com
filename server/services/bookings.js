@@ -111,8 +111,6 @@ function create(e, r, user, expert, datetime, minutes, type, cb) {
       _.extend(eTimeLoc, { role:"expert", info: { _id: expert.userId, name: expertUser.name, email: expertUser.email } })
     ]
 
-    $log('expertUser,')
-    $log('expertUser,', this)
     var touch = svc.newTouch.call(this, 'create')
     var booking = {
       _id: svc.newId(),
@@ -123,14 +121,13 @@ function create(e, r, user, expert, datetime, minutes, type, cb) {
       type,
       minutes,
       datetime,
-      suggestedTimes:[{_id:svc.newId(),time:datetme,byId:user._id}],
+      suggestedTimes:[{_id:svc.newId(),time:datetime,byId:user._id}],
       status: 'pending',
       gcal: {},
       orderId: r._id,
       lastTouch: touch,
       activity: [touch]
     }
-    $log('gogog', booking)
     var d = {byName:user.name,expertName:expert.name, bookingId:booking._id,minutes,type}
     mailman.send('pipeliners', 'pipeliner-notify-booking', d, ()=>{})
     mailman.send(expert, 'expert-booked', d, ()=>{}) // todo add type && instructions to email
