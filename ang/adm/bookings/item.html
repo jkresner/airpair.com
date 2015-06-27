@@ -46,7 +46,7 @@
       </div>
     </div>
 
-    <div class="spin">
+    <div class="spin" ng-if="booking.chat">
       <ap-hangout-spinner
         hangout-id="booking._id"
         booking="booking"></ap-hangout-spinner>
@@ -65,6 +65,12 @@
             <li ng-repeat="m in booking.chat.members">{{m.real_name || m.id}}</li>
           </ul>
           <p class="purpose">{{booking.chat.info.purpose.value}}</p>
+          <hr />
+          <a ng-click="setMsgTemplate('feedback')" ng-if="booking.status == 'followup'">feedback</a> |
+          <a ng-click="setMsgTemplate('confirm')" ng-if="booking.status == 'pending'">confirm time</a>
+          <br />
+          <textarea style="width:75%" ng-model="slackMessage"></textarea>
+          <a ng-click="postMessage()" class="btn-yellow" style="float:right">Post</a>
           <hr />
           <ul class="history">
             <li ng-repeat="m in booking.chat.history | orderBy:'-ts'">
@@ -105,7 +111,7 @@
     <span>{{p.info.name}} </span>
     <span>{{p.info.email}} </span>
     <span>{{p.location}} </span>
-    <span>{{p.timezone}} </span>
+    <span>{{p.timeZoneId}} </span>
     <div slack-status member="p.chat" userid="p.info._id"></div>
   </div>
 </div>
@@ -118,7 +124,7 @@
     <span>{{p.info.name}} </span>
     <span>{{p.info.email}} </span>
     <span>{{p.location}} </span>
-    <span>{{p.timezone}} </span>
+    <span>{{p.timeZoneId}} </span>
     <div slack-status member="p.chat" userid="p.info._id"></div>
   </div>
 </div>
@@ -190,16 +196,14 @@
       <h3>Notes</h3>
       <textarea ng-model="newNote"></textarea>
       <a ng-click="saveNote(newNote)" class="btn-yellow">Add note</a>
-      <hr />
       <ul>
-        <li ng-repeat="n in booking.notes">
-          <time>{{n._id | objectIdToDate }} {{ n.by.name }}</time>
-          {{n.body}}
+        <li ng-repeat="n in booking.notes | orderBy : '-_id' ">
+          <span>{{ n.by.name }}</span>
+          <time>{{n._id | objectIdToDate : 'YY MMM DD HH:mm' }}</time>
+          <p>{{n.body}}</p>
         </li>
       </ul>
     </section>
-
-
 
   </div>
 

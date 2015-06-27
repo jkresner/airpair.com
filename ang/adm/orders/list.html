@@ -19,17 +19,26 @@
       <th class="p">Profit</th>
     </tr>
     <tr style="background:white">
-      <th>${{summary.total}}</th>
-      <th>{{summary.count}}</th>
+      <th>${{summary.total | number:0}}</th>
+      <th>{{summary.count}} / {{summary.paid}}</th>
       <th>{{summary.byCount}} (unique)</th>
       <th></th>
       <th></th>
-      <th class="p">${{summary.profit}}</th>
+      <th class="p">${{summary.profit| number:0}}</th>
+    </tr>
+    <tr ng-if="monthProjection" style="background:white">
+      <th>${{summary.total*monthProjection | number:0 }}</th>
+      <th>{{summary.count*monthProjection | number:0 }} / {{summary.paid*monthProjection | number:0 }}</th>
+      <th>{{summary.byCount*monthProjection | number:0 }} (unique)</th>
+      <th></th>
+      <th></th>
+      <th class="p">${{summary.profit*monthProjection | number:0}}</th>
     </tr>
     <tr ng-repeat="o in orders">
       <td>
         <a href="/adm/orders/{{o._id}}">
-          <b>${{o.total}}</b>
+          <b ng-if="o.total < 1000">${{o.total}}</b>
+          <b ng-if="o.total >= 1000" style="color:green">${{o.total}}</b>
         </a>
       </td>
       <td><time>{{o.utc | publishedTime : 'MM/DD HH:mm' }}</time></td>

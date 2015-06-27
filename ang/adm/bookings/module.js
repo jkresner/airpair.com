@@ -11,6 +11,7 @@ angular.module("ADMBookings", [])
 .controller('BookingCtrl', ($scope, $routeParams, AdmDataService, ServerErrors,
     Util, BookingsUtil, OrdersUtil) =>
 {
+  var _id = $routeParams.id
   $scope.data = {}
   $scope.util = BookingsUtil
 
@@ -41,9 +42,11 @@ angular.module("ADMBookings", [])
       scope.newGroupChat = BookingsUtil.chatGroup(r)
 
     angular.extend($scope, scope)
+
+    $scope.setMsgTemplate('confirm')
   }
 
-  AdmDataService.bookings.getBooking({_id:$routeParams.id}, setScope,
+  AdmDataService.bookings.getBooking({_id}, setScope,
     ServerErrors.fetchFailRedirect('/adm/bookings'))
 
   $scope.datetimeChanged = (datetime) =>
@@ -57,11 +60,11 @@ angular.module("ADMBookings", [])
   $scope.addGcal = (val) => updateBooking({ sendGCal: { notify: val } })
   $scope.addYouTubeData = function(val){
     var youTubeId = Util.parseYouTubeId(val);
-    AdmDataService.bookings.addYouTubeData({_id: $scope.booking._id, youTubeId}, setScope)
+    AdmDataService.bookings.addYouTubeData({_id, youTubeId}, setScope)
   }
 
   $scope.deleteRecording = function(recordingId){
-    AdmDataService.bookings.deleteRecording({_id: $scope.booking._id, recordingId}, setScope)
+    AdmDataService.bookings.deleteRecording({_id, recordingId}, setScope)
   }
 
   $scope.releasePayout = () =>
@@ -76,18 +79,24 @@ angular.module("ADMBookings", [])
   }
 
   $scope.associateGroupChat = (type, providerId) => {
-    var d = {_id:$scope.booking._id,type,providerId}
+    var d = {_id,type,providerId}
     AdmDataService.bookings.associateChat(d,setScope)
   }
 
   $scope.createGroupChat = (type) => {
-    var d = {_id:$scope.booking._id,type,groupchat:$scope.newGroupChat}
+    var d = {_id,type,groupchat:$scope.newGroupChat}
     AdmDataService.bookings.createChat(d,setScope)
   }
 
-  $scope.saveNote = (body) => {
-    var d = {_id:$scope.booking._id,body}
-    AdmDataService.bookings.saveNote(d,setScope)
+  $scope.saveNote = (body) =>
+    AdmDataService.bookings.saveNote({_id,body},setScope)
+
+  $scope.setMsgTemplate = (tmpl) => {
+    var experts = $scope.experts[0].chat.slack.name
+    var timeString = BookingsUtil.multitime($scope.booking)
+
+    if (tmpl == 'confirm') $scope.slackMessage = `@${experts}: the customer has requested to pair at ${timeString} does that work?`
+    if (tmpl == 'feedback') $scope.slackMessage = `@franklin: would love to get your feedback! http://airpa.ir/1wjREmL`
   }
 })
 
@@ -101,11 +110,14 @@ angular.module("ADMBookings", [])
   }
 
   var setScope = (r) => {
-    var bs = { upcoming: [], pending: [], other: [] }
+    var bs = { upcoming: [], pending: [], other: [], minsOnAir: 0 }
     r.forEach((b)=>{
       if (DateTime.inRange(b.datetime, 'anHourAgo', 'in48hours')) bs.upcoming.push(b)
       if (b.status == 'pending') bs.pending.push(b)
       else bs.other.push(b)
+
+      if (b.status == 'followup' || b.status == 'complete')
+        bs.minsOnAir += b.minutes
     })
     $scope.bookings = bs
   }

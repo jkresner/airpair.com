@@ -1,11 +1,54 @@
 snggsId = "52127d5fc6a5870200000007"
 adamKerrId = "53041710a9a333020000001d"
+BookingUtil = require("../../shared/bookings")
 
 module.exports = -> describe "ADM: ".subspec, ->
 
 
   before (done) ->
     done()
+
+
+  it "Can get multiTime", itDone ->
+    tzBooking = data.bookings.timezones
+    tzBooking.datetime = ISODate("2016-06-25T00:00:00.000Z")
+    expect(tzBooking.participants.length).to.equal(2)
+    expect(tzBooking.participants[0].timeZoneId).to.equal("America/Los_Angeles")
+    expect(tzBooking.participants[1].timeZoneId).to.equal("America/Chicago")
+    multitime = BookingUtil.multitime(tzBooking)
+    expectStartsWith(multitime, "Sat 25 12AM UTC | Fri 24 5PM PDT | Fri 24 7PM CDT")
+    # $log('BookingUtil'.cyan, BookingUtil.multitime(tzBooking))
+    bOld = data.bookings.swap1
+    bOld.datetime = ISODate("2015-03-12T03:33:18.576Z")
+    multitime2 = BookingUtil.multitime(bOld)
+    expectStartsWith(multitime2, "Thu 12 3AM UTC")
+    DONE()
+
+
+  it "Can get purpose for various booking statuses", itDone ->
+    bPending = data.bookings.timezones
+    bPending.datetime = ISODate("2016-06-25T00:00:00.000Z")
+    expect(bPending.status).to.equal("pending")
+    expect(bPending.participants.length).to.equal(2)
+    expect(bPending.participants[0].timeZoneId).to.equal("America/Los_Angeles")
+    expect(bPending.participants[1].timeZoneId).to.equal("America/Chicago")
+    pendingPurpose = BookingUtil.chatGroup(bPending).purpose
+    expectStartsWith(pendingPurpose, "https://airpair.com/bookings/558aa2454be238d1956cb8aa Morgan (PDT, San Francisco, CA, USA) + Billy (CDT, Houston, TX, USA). WAITING to confirm 90 mins @ Sat 25 12AM UTC | Fri 24 5PM PDT | Fri 24 7PM CDT.")
+    bConfirmed = _.extend(bPending,{status:'confirmed'})
+    confirmedPurpose = BookingUtil.chatGroup(bConfirmed).purpose
+    expectStartsWith(confirmedPurpose, "https://airpair.com/bookings/558aa2454be238d1956cb8aa Morgan (PDT, San Francisco, CA, USA) + Billy (CDT, Houston, TX, USA). CONFIRMED 90 mins @ Sat 25 12AM UTC | Fri 24 5PM PDT | Fri 24 7PM CDT.")
+    bFollowup = _.extend(bPending,{status:'followup'})
+    followupPurpose = BookingUtil.chatGroup(bFollowup).purpose
+    expectStartsWith(followupPurpose, "https://airpair.com/bookings/558aa2454be238d1956cb8aa Morgan (PDT, San Francisco, CA, USA) + Billy (CDT, Houston, TX, USA). FEEDBACK required to payout expert for 90 mins on Sat 25 12AM UTC | Fri 24 5PM PDT | Fri 24 7PM CDT.")
+    DONE()
+
+
+  it "Can get purpose for old no timeZoneId bookings", itDone ->
+    bOld = data.bookings.swap1
+    bOld.datetime = ISODate("2015-03-12T03:33:18.576Z")
+    purpose = BookingUtil.chatGroup(bOld).purpose
+    expectStartsWith(purpose, "https://airpair.com/bookings/54dc2d2fd137810a00f2813b Daniel + Adam. FEEDBACK required to payout expert for 60 mins on Thu 12 3AM UTC")
+    DONE()
 
 
   it "Can dirty swap available expert", itDone ->

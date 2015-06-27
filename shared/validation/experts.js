@@ -41,6 +41,27 @@ var validation = {
     if ( original.breif && !ups.brief ) return `Cannot update expert without brief`
   },
 
+  updateAvailability(user, original, availability)
+  {
+    var isAdmin = _.contains(user.roles, 'admin')
+    var isOwner = _.idsEqual(original.userId, user._id)
+
+    if ( !isOwner && !isAdmin )
+      return `Cannot update expert[${original._id}], not your userId`
+
+    if (!availability.status) return `Expert availability status required`
+    if (availability.status != 'busy' && availability.status != 'ready')
+      return `Expert status [${availability.status}] not recognized`
+    if (availability.status == 'busy' && !availability.busyUntil)
+      return `Expert busy status requires date busy until`
+    if (availability.status == 'ready' && !availability.minRate)
+      return `Expert availability minRate required`
+    if (availability.status == 'ready' && !availability.hours)
+      return `Expert availability hours required`
+    // if (!availability.times) return `Expert availability status required`
+
+  },
+
   deleteById(user, expert)
   {
     var isAdmin = _.contains(user.roles, 'admin')
@@ -96,6 +117,10 @@ var validation = {
       return `Cannot deactivate already deactivated deal[${dealId}] belonging to[{expert._id}]`
   },
 
+  addNote(user, expert, note)
+  {
+    if (!note || !note.length || note.length < 20) return `Note must be minimum 20 characters`
+  }
 }
 
 module.exports = validation

@@ -25,6 +25,21 @@ var utilFns = {
     ]
   },
 
+  multitime(booking) {
+    var momUtc = moment.utc(new Date(booking.datetime).toISOString())
+    var multitime = momUtc.format('ddd DD hA z')
+    var mainDate = momUtc.format('ddd DD ')
+    var timezones = ['Universal']
+    booking.participants.forEach(function(p) {
+      if (p.timeZoneId && !_.contains(timezones,p.timeZoneId)) {
+        timezones.push(p.timeZoneId)
+        var localTime = momUtc.tz(p.timeZoneId).format('ddd DD hA z').replace(mainDate,'')
+        multitime += ` | ${localTime}`
+      }
+    })
+    return multitime
+  },
+
   statusLetter(booking) {
     if (booking.status == 'pending') return 'p'
     if (booking.status == 'confirmed') return 'c'
@@ -33,6 +48,13 @@ var utilFns = {
     if (booking.status == 'canceled') return 'v'
   },
 
+  // statusBotMessage(booking) {
+  //   if (booking.status == 'confirmed')
+  //     return 'c'
+  //   if (booking.status == 'followup')
+  //     return 'f'
+  // },
+
   chatGroup(booking) {
     var customer = utilFns.customers(booking)[0]
     var customerFirst = util.firstName(customer.info.name).replace("'","")
@@ -40,11 +62,17 @@ var utilFns = {
     var expertFirst = util.firstName(expert.info.name).replace("'","")
     var statusLetter = utilFns.statusLetter(booking)
     var purpose = `https://airpair.com/bookings/${booking._id} ${customerFirst}`
-    purpose += (customer.timezone) ? ` (${customer.timezone}, ${customer.location})` : ``
+    purpose += (customer.timeZoneId) ? ` (${moment.tz(customer.timeZoneId).format('z')}, ${customer.location})` : ``
     purpose += ` + ${expertFirst}`
-    purpose += (expert.timezone) ? ` (${expert.timezone}, ${expert.location})` : ``
-    console.log('statusLetter', statusLetter, 'purpose', purpose)
+    purpose += (expert.timeZoneId) ? ` (${moment.tz(expert.timeZoneId).format('z')}, ${expert.location})` : ``
+    if (booking.status == "pending")
+      purpose += `. WAITING to confirm ${booking.minutes} mins @ ${utilFns.multitime(booking)}.`
+    else if (booking.status == "confirmed")
+      purpose += `. CONFIRMED ${booking.minutes} mins @ ${utilFns.multitime(booking)}.`
+    else if (booking.status == "followup")
+      purpose += `. FEEDBACK required to payout expert for ${booking.minutes} mins on ${utilFns.multitime(booking)}.`
 
+    // console.log('statusLetter', statusLetter, 'purpose', purpose)
     return {
       name: `${statusLetter}-${customerFirst}-${expertFirst}-${booking._id}`.toLowerCase().substring(0,21),
       purpose,

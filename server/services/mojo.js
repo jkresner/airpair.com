@@ -33,11 +33,13 @@ var get = {
 
   getRanked(meExpert, q, cb) {
     var {tags,exclude} = q
+    var budget = q.budget || 0
+    var includeBusy = q.includeBusy
     var opts = {fields:Data.select.matches, options: { limit: q.limit } }
     q.limit = 200
 
     Expert.aggregate([
-        { $match: query.ranked(tags,exclude,0) } /* Query can go here, if you want to filter results. */
+        { $match: query.ranked(tags,exclude,0,includeBusy) } /* Query can go here, if you want to filter results. */
       , { $project: _.extend({ common: { $setIntersection: ['$tags._id',tags] } }, Data.select.matches) } /* select the tokens field as something we want to "send" to the next command in the chain */
       , { $project: _.extend({ common:1, primary: { $setIntersection: ['$tags._id',[tags[0]]] } }, Data.select.matches) } /* select the tokens field as something we want to "send" to the next command in the chain */
       , { $project: _.extend({ commonLen: { $size: '$common' }, primaryLen: { $size: '$primary' } }, Data.select.matches) }
@@ -51,7 +53,7 @@ var get = {
       for (var exp of experts)
         exp.score = get.calcMojo(exp,tags)
 
-      cb(null, _.take(_.sortBy(experts,(u)=>u.score).reverse(),100))
+      cb(null, _.take(_.sortBy(experts,(u)=>u.score).reverse(),150))
     }))
   },
 
