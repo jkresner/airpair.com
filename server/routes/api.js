@@ -208,6 +208,8 @@ function other(app) {
     .get('/bookings', API.Bookings.getByUserId)
     .get('/bookings/:id', API.Bookings.getById)
     .post('/bookings/:expertshaped', populateUser, API.Bookings.createBooking)
+    // .put('/bookings/:booking/suggest-time', API.Bookings.suggestTime)
+    // .put('/bookings/:booking/confirm-time', API.Bookings.confirmTime)
 
     .get('/experts/me', API.Experts.getMe)
     .get('/experts/search/:id', API.Experts.search)

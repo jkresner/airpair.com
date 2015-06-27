@@ -10,6 +10,7 @@ module.exports = {
     "status" : "followup",
     "gcal" : {},
     "datetime" : ISODate("2015-03-12T03:33:18.576Z"),
+    "suggestedTimes" : [{byId:ObjectId("54b49bf67b1047516695d508"),time:ISODate("2015-03-12T03:33:18.576Z")}],
     "orderId" : ObjectId("54dc2d2ed137810a00f2813a"),
     "recordings" : [
         {
@@ -57,6 +58,7 @@ module.exports = {
     "type" : "private",
     "minutes" : 90,
     "datetime" : ISODate("2016-06-25T00:00:00.000Z"),
+    "suggestedTimes" : [{byId:ObjectId("552d81ec35c4e411001ae059"),time:ISODate("2016-06-25T00:00:00.000Z")}],
     "status" : "pending",
     "orderId" : ObjectId("558aa2454be238d1956cb8a9"),
     "notes" : [],
