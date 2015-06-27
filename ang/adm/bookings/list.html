@@ -7,7 +7,7 @@
   <a ng-click="fetch()" class="btn">Search</a>
 </div>
 
-<h3>Bookings</h3>
+<h3>Bookings ({{bookings.minsOnAir/60 |number:0}} hrs)</h3>
 
 <section class="upcoming" ng-if="bookings.upcoming">
   <p ng-if="bookings.upcoming.length == 0">No AirPairs Scheduled in the next 48 hours.</p>
