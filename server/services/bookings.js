@@ -145,19 +145,30 @@ var save = {
     OrdersSvc.createBookingOrder.call(this, expert, time, minutes, type, credit, payMethodId, requestId, dealId, createCB)
   },
 
-  suggestTime(original, datetime, cb)
+  suggestTime(original, time, cb)
   {
-    original.suggestedTimes.push({time:datetime,byId:this.user._id})
+    original.suggestedTimes.push({time,byId:this.user._id})
     var lastTouch = svc.newTouch.call(this, 'suggest-time')
     original.activity.push(lastTouch)
     original.lastTouch = lastTouch
     svc.update(original._id, original, select.cb.itemIndex(cb))
   },
 
-  // confirmTime()
-  // {
+  confirmTime(original, timeId, cb)
+  {
+    var suggestedTime = _.find(original.suggestedTimes,(t)=>_.idsEqual(t._id,timeId))
+    original.datetime = suggestedTime.time
+    original.status = 'confirmed'
 
-  // },
+    original.lastTouch = svc.newTouch.call(this, 'confirm-time')
+    original.activity.push(original.lastTouch)
+
+    suggestedTime.confirmedById = this.user._id
+
+    // TODO:gcal
+
+    svc.update(original._id, original, select.cb.itemIndex(cb))
+  },
 
 }
 
