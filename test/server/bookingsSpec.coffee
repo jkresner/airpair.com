@@ -35,35 +35,67 @@ scheduling = ->
         expect(b2.status).to.equal("pending")
         expect(b2.suggestedTimes.length).to.equal(2)
         expectSameMoment(b2.suggestedTimes[0].time,time1)
+        expectIdsEqual(b2.suggestedTimes[0].byId, s._id)
         expectSameMoment(b2.suggestedTimes[1].time,time2)
-        db.readDoc 'Booking', b1._id, (b2) ->
-          expectTouch(b2.lastTouch, s._id, "suggest-time")
-          expect(b2.activity.length).to.equal(2)
-          expect(b2.activity[0].action).to.equal("create")
-          expect(b2.activity[1].action).to.equal("suggest-time")
-          DONE()
-
-    # can suggest a new time as expert
-    # lastTouch is by expert for 'suggest-time'
-    # can suggest an additional time as customer
-    # lastTouch is by customer for 'suggest-time'
-
-
-
-
-  it.skip 'Can not confirm own suggested time', itDone ->
-
-  it.skip 'Can confirm customer booking suggested time by expert', itDone ->
-    # status set to confirmed
-    # lastTouch is by expert for 'confirm-time'
-    # google calendar invite sent
-    # bot message room
-    # can't suggest another time
-
-
-  it.skip 'Expert can suggest alternative which can be confirmed by customer'
+        expectIdsEqual(b2.suggestedTimes[1].byId, s._id)
+        db.readDoc 'Booking', b1._id, (b3) ->
+          expect(b3.activity.length).to.equal(2)
+          expectTouch(b3.activity[0], s._id, "create")
+          expectTouch(b3.activity[1], s._id, "suggest-time")
+          expectTouch(b3.lastTouch, s._id, "suggest-time")
+          LOGIN 'dros', (sDros) ->
+            time3 = moment().add(4, 'day')
+            d2 = { _id:b1._id, time:time3}
+            PUT "/bookings/#{b1._id}/suggest-time", d2, {}, (b4) ->
+              expect(b4.status).to.equal("pending")
+              expect(b4.suggestedTimes.length).to.equal(3)
+              expectSameMoment(b4.suggestedTimes[0].time,time1)
+              expectSameMoment(b4.suggestedTimes[1].time,time2)
+              expectSameMoment(b4.suggestedTimes[2].time,time3)
+              expectIdsEqual(b4.suggestedTimes[2].byId, sDros._id)
+              db.readDoc 'Booking', b1._id, (b5) ->
+                expect(b5.activity.length).to.equal(3)
+                expectTouch(b5.lastTouch, sDros._id, "suggest-time")
+                expectTouch(b5.activity[1],s._id,"suggest-time")
+                expectTouch(b5.activity[2],sDros._id,"suggest-time")
+                DONE()
 
 
+  it 'Can not confirm own suggested time', itDone ->
+    SETUP.newBookedExpert 'grnv', {}, (s, b1) ->
+      timeId = b1.suggestedTimes[0]._id
+      PUT "/bookings/#{b1._id}/confirm-time", {_id:b1._id, timeId}, {status:403}, (err) ->
+        expectStartsWith(err.message, 'Cannot confirm your own time')
+        DONE()
+
+
+  it 'Can confirm customer booking suggested time by expert', itDone ->
+    datetime = moment().add(10, 'day')
+    SETUP.newBookedExpert 'gniv', {datetime}, (s, b1) ->
+      LOGIN 'dros', (sDros) ->
+        timeId = b1.suggestedTimes[0]._id
+        PUT "/bookings/#{b1._id}/confirm-time", {_id:b1._id, timeId}, {}, (b2) ->
+          expect(b2.lastTouch).to.be.undefined
+          expect(b2.activity).to.be.undefined
+          expect(b2.notes).to.be.undefined
+          expect(b2.status).to.equal("confirmed")
+          expectSameMoment(b2.datetime, datetime)
+          db.readDoc 'Booking', b1._id, (b3) ->
+            expectTouch(b3.lastTouch, sDros._id, "confirm-time")
+            expectTouch(b3.activity[0],s._id, "create")
+            expectTouch(b3.activity[1],sDros._id, "confirm-time")
+            DONE()
+
+            # TODO:sunday
+            # google calendar invite sent
+            # bot message room
+            # email notifications sent
+
+
+  it 'Expert can suggest alternative which can be confirmed by customer'
+
+
+  it 'Can only suggest or confirm datetime on a pending booking'
 
 
 

@@ -19,6 +19,9 @@ module.exports = {
   jaje: { name:"James Jelinek",email:"jelinek@test.com" },
   clew: { name:"Chris Lewis",email:"clew@test.com" },
   chle: { name:"Chris Lewis",email:"clew@hotmail.com" },
+  gnic: { name:"Gregory Nic",email:"gniccy@msn.com" },
+  gniv: { name:"Gregory Nic",email:"gnicvy@msn.com" },
+  grnv: { name:"Gregory Nicola",email:"gnicola@msn.com" },
 
   mris: { name:"Mike Risse",email:"mike@madeye.io" },
   mirs: { name:"Mike Risse",email:"mike.risse@hotmail.com" },
