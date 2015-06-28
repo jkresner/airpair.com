@@ -121,7 +121,7 @@ function create(e, r, user, expert, datetime, minutes, type, cb) {
       type,
       minutes,
       datetime,
-      suggestedTimes:[{_id:svc.newId(),time:datetime,byId:user._id}],
+      suggestedTimes:[{time:datetime,byId:user._id}],
       status: 'pending',
       gcal: {},
       orderId: r._id,
@@ -132,9 +132,36 @@ function create(e, r, user, expert, datetime, minutes, type, cb) {
     mailman.send('pipeliners', 'pipeliner-notify-booking', d, ()=>{})
     mailman.send(expert, 'expert-booked', d, ()=>{}) // todo add type && instructions to email
 
-    svc.create(booking, setAvatarsCB(cb))
+    svc.create(booking, select.cb.itemIndex(cb))
   })
 }
+
+
+var save = {
+
+  createBooking(expert, time, minutes, type, credit, payMethodId, requestId, dealId, cb)
+  {
+    var createCB = (e, r) => create.call(this, e, r, this.user, expert, time, minutes, type, cb)
+    OrdersSvc.createBookingOrder.call(this, expert, time, minutes, type, credit, payMethodId, requestId, dealId, createCB)
+  },
+
+  suggestTime(original, datetime, cb)
+  {
+    original.suggestedTimes.push({time:datetime,byId:this.user._id})
+    var lastTouch = svc.newTouch.call(this, 'suggest-time')
+    original.activity.push(lastTouch)
+    original.lastTouch = lastTouch
+    svc.update(original._id, original, select.cb.itemIndex(cb))
+  },
+
+  // confirmTime()
+  // {
+
+  // },
+
+}
+
+
 
 
 function updateForAdmin(thisCtx, booking, cb) {
@@ -154,14 +181,7 @@ function updateForAdmin(thisCtx, booking, cb) {
   })
 }
 
-
-var save = {
-
-  createBooking(expert, time, minutes, type, credit, payMethodId, requestId, dealId, cb)
-  {
-    var createCB = (e, r) => create.call(this, e, r, this.user, expert, time, minutes, type, cb)
-    OrdersSvc.createBookingOrder.call(this, expert, time, minutes, type, credit, payMethodId, requestId, dealId, createCB)
-  },
+var admin = {
 
   updateByAdmin(original, update, cb) {
     // $log('updateByAdmin', original, update)
@@ -374,11 +394,7 @@ Booking: https://airpair.com/booking/${original._id}`
     updateForAdmin(this, original, cb)
   },
 
-  confirmBooking()
-  {
-    cb(Error('confirmBooking not implemented'))
-  }
 }
 
 
-module.exports = _.extend(get, save)
+module.exports = _.extend(get, _.extend(save,admin))

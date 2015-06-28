@@ -55,7 +55,7 @@ module.exports = -> describe "MailMan: ", ->
 
 
   it 'Pipeliners notify booking', itDone ->
-    SETUP.addAndLoginLocalUserWithPayMethod 'ckni', (s) ->
+    SETUP.addAndLoginLocalUserWhoCanMakeBooking 'ckni', (s) ->
       airpair1 = datetime: moment().add(2, 'day'), minutes: 120, type: 'private', payMethodId: s.primaryPayMethodId
       POST "/bookings/#{data.experts.dros._id}", airpair1, {}, (booking1) ->
         expect(send.callCount).to.equal(3)

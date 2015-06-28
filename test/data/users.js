@@ -15,9 +15,10 @@ module.exports = {
   alyr: { name:"Alyssa Reese",email:"aresse@airpair.com" },
   mcas: { name:"Moises Cassab",email:"moises.cassab@gmail.com" },
   mois: { name:"Moises Cassab",email:"moises.cassab@hotmail.com" },
-  jjel: { name:"James Jelinek:",email:" jelinek@gmail.com" },
-  jaje: { name:"James Jelinek:",email:" jelinek@test.com" },
-  clew: { name:"Chris Lewis:",email:" clew@test.com" },
+  jjel: { name:"James Jelinek",email:"jelinek@gmail.com" },
+  jaje: { name:"James Jelinek",email:"jelinek@test.com" },
+  clew: { name:"Chris Lewis",email:"clew@test.com" },
+  chle: { name:"Chris Lewis",email:"clew@hotmail.com" },
 
   mris: { name:"Mike Risse",email:"mike@madeye.io" },
   mirs: { name:"Mike Risse",email:"mike.risse@hotmail.com" },

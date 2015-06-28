@@ -45,7 +45,7 @@ var middleware = {
 
       var uid = (req.user) ? req.user.email : req.sessionID
 
-      if (config.env != 'test') {
+      if (config.env != 'test' || global.verboseErrHandler) {
         var ref = (req.header('Referer')) ? ` <<< ${req.header('Referer')}` : ''
         $log(`errorHandle ${uid} ${req.method} ${req.url}${ref}`.red, JSON.stringify(req.body), (e.message || e).magenta)
         $error(e, req.user, req)
@@ -53,9 +53,6 @@ var middleware = {
         $log(`${req.method}:${req.url} `.expectederr + (e.message || e).expectederr)
         // $log('Test Debug Error ', e)
       }
-
-      if (config.log.raygun.on)
-        raygunClient.send(e, {}, () => { $log('sent e to raygun'.magenta)})
 
       if (e.fromApi)
         res.status(e.status || 400).json({message:e.message || e})
