@@ -25,6 +25,8 @@ addLocalUser = (userKey, opts, done) ->
         ups.emailVerified = true
       if (opts.gh)
         ups.social = {gh:opts.gh}
+      if (opts.localization)
+        ups.localization = data.wrappers.localization_melbourne
 
       r = _.extend(r, ups)
       db.Models.User.findOneAndUpdate {_id:r._id}, ups, {upsert:true}, (err, user) ->
@@ -47,6 +49,14 @@ addLocalUser = (userKey, opts, done) ->
     LOGIN userKey, (resp) ->
       GET '/session/full', {}, (s) ->
         expect(s.emailVerified).to.be.true
+        s.userKey = userKey
+        done(s)
+
+
+ addAndLoginLocalUserWithEmailVerifiedAndTimezone = (originalUserKey, done) ->
+  addLocalUser originalUserKey, {emailVerified: true, localization: true}, (userKey) ->
+    LOGIN userKey, (resp) ->
+      GET '/session/full', {}, (s) ->
         s.userKey = userKey
         done(s)
 
@@ -87,6 +97,17 @@ stories = {
       else
         data.users[userKey] = r
         done(null, r)
+
+
+  addAndLoginLocalUserWhoCanMakeBooking: (userKey, done) ->
+    opts = emailVerified: true, localization: true
+    addLocalUser userKey, opts, (userKey) ->
+      LOGIN userKey, ->
+        GET '/session/full', {}, (s) ->
+          s.userKey = userKey
+          new db.Models.PayMethod( _.extend({userId: s._id}, data.paymethods.braintree_visa) ).save (e,r) ->
+            s.primaryPayMethodId = r._id
+            done(s)
 
 
   addAndLoginLocalUserWithGithubProfile: (userKey, ghSocial, done) ->
@@ -239,8 +260,8 @@ stories = {
 
 
   setupCompanyWithPayMethodAndTwoMembers: (companyCode, adminCode, memberCode, done) ->
-    addAndLoginLocalUser memberCode, (sCompanyMember) ->
-      addAndLoginLocalUser adminCode, (sCompanyAdmin) ->
+    addAndLoginLocalUserWithEmailVerifiedAndTimezone memberCode, (sCompanyMember) ->
+      addAndLoginLocalUserWithEmailVerifiedAndTimezone adminCode, (sCompanyAdmin) ->
         c = _.clone(data.v0.companys[companyCode])
         c._id = newId()
         c.contacts[0]._id = sCompanyAdmin._id
@@ -257,9 +278,23 @@ stories = {
                   done(c._id, pm._id, sCompanyAdmin, sCompanyMember)
 
 
+  newBookedExpert: (userKey, bookingData, cb) ->
+    stories.addAndLoginLocalUserWhoCanMakeBooking userKey, (sessionCustomer) ->
+      bData = _.extend({
+          datetime:     moment().add(2, 'day')
+          minutes:      120
+          type:         'private'
+          payMethodId:  sessionCustomer.primaryPayMethodId,
+          expertId:     data.experts.dros._id
+        }, bookingData)
+
+      POST "/bookings/#{bData.expertId}", bData, {}, (booking) ->
+        cb sessionCustomer, booking
+
+
   newCompleteRequest: (userKey, requestData, cb) ->
     budget = requestData.budget || 100
-    addAndLoginLocalUserWithPayMethod userKey, (sessionCustomer) ->
+    stories.addAndLoginLocalUserWhoCanMakeBooking userKey, (sessionCustomer) ->
       request = {
         type: 'mentoring',
         tags: [data.tags.angular],

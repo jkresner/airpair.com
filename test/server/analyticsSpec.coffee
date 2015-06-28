@@ -166,7 +166,7 @@ module.exports = -> describe "Tracking: ".subspec, ->
           DONE()
 
   it 'Can track logged in workshop view', itDone ->
-    SETUP.addLocalUser 'joem', {}, (userKey) ->
+    SETUP.addLocalUser 'gnic', {}, (userKey) ->
       spy = sinon.spy(analytics,'view')
       LOGIN userKey,  (s) ->
         GETP("/v1/workshops/simplifying-rails-tests?utm_campaign=test4nm&utm_medium=test4md")

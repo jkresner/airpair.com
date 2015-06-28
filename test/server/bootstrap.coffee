@@ -45,6 +45,7 @@ describe 'Server: '.appload, ->
   before (done) ->
     # $timelapsed("BEFORE start")
     global.logging     = false
+    global.verboseErrHandler = false
     global.db          = require('./helpers/db')
     global.ObjectId    = db.ObjectId
     global.ISODate     = db.ISODate

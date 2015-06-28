@@ -1,42 +1,102 @@
 scheduling = ->
 
 
-  it 'Can suggest time if in pending', itDone ->
-    SETUP.addAndLoginLocalUserWithPayMethod 'clew', (s) ->
+  it 'New booking has default prefered uncomfirmed time', itDone ->
+    SETUP.addAndLoginLocalUserWhoCanMakeBooking 'clew', (s) ->
       pairDateTime = moment().add(2, 'day')
       airpair1 = datetime: pairDateTime, minutes: 120, type: 'private', payMethodId: s.primaryPayMethodId
       POST "/bookings/#{data.experts.dros._id}", airpair1, {}, (b1) ->
         expect(b1._id).to.exist
+        expect(b1.status).to.equal("pending")
         expect(b1.minutes).to.equal(120)
         expect(b1.suggestedTimes.length).to.equal(1)
         expect(b1.suggestedTimes[0]._id).to.exist
         expect(b1.suggestedTimes[0].confirmedById).to.be.undefined
-        expect(moment(b1.suggestedTimes[0].time).isSame(pairDateTime)).to.be.true
         expectIdsEqual(b1.suggestedTimes[0].byId, s._id)
-        expectIdsEqual(b1.lastTouch.by._id, s._id)
-        expect(b1.lastTouch.action).to.equal("create")
+        expect(moment(b1.suggestedTimes[0].time).isSame(pairDateTime)).to.be.true
+        expect(b1.lastTouch).to.be.undefined
+        expect(b1.activity).to.be.undefined
+        expect(b1.notes).to.be.undefined
+        db.readDoc 'Booking', b1._id, (b2) ->
+          expectTouch(b2.lastTouch, s._id, "create")
+          expect(b2.activity.length).to.equal(1)
+          expect(b2.notes.length).to.equal(0)
+          DONE()
 
+
+  it 'Can suggest time if in pending', itDone ->
+    time1 = moment().add(1, 'day')
+    SETUP.newBookedExpert 'chle', {datetime:time1}, (s, b1) ->
+      expect(b1.suggestedTimes.length).to.equal(1)
+      expectSameMoment(b1.suggestedTimes[0].time,time1)
+      time2 = moment().add(3, 'day')
+      d = { _id:b1._id, time:time2}
+      PUT "/bookings/#{b1._id}/suggest-time", d, {}, (b2) ->
+        expect(b2.status).to.equal("pending")
+        expect(b2.suggestedTimes.length).to.equal(2)
+        expectSameMoment(b2.suggestedTimes[0].time,time1)
+        expectIdsEqual(b2.suggestedTimes[0].byId, s._id)
+        expectSameMoment(b2.suggestedTimes[1].time,time2)
+        expectIdsEqual(b2.suggestedTimes[1].byId, s._id)
+        db.readDoc 'Booking', b1._id, (b3) ->
+          expect(b3.activity.length).to.equal(2)
+          expectTouch(b3.activity[0], s._id, "create")
+          expectTouch(b3.activity[1], s._id, "suggest-time")
+          expectTouch(b3.lastTouch, s._id, "suggest-time")
+          LOGIN 'dros', (sDros) ->
+            time3 = moment().add(4, 'day')
+            d2 = { _id:b1._id, time:time3}
+            PUT "/bookings/#{b1._id}/suggest-time", d2, {}, (b4) ->
+              expect(b4.status).to.equal("pending")
+              expect(b4.suggestedTimes.length).to.equal(3)
+              expectSameMoment(b4.suggestedTimes[0].time,time1)
+              expectSameMoment(b4.suggestedTimes[1].time,time2)
+              expectSameMoment(b4.suggestedTimes[2].time,time3)
+              expectIdsEqual(b4.suggestedTimes[2].byId, sDros._id)
+              db.readDoc 'Booking', b1._id, (b5) ->
+                expect(b5.activity.length).to.equal(3)
+                expectTouch(b5.lastTouch, sDros._id, "suggest-time")
+                expectTouch(b5.activity[1],s._id,"suggest-time")
+                expectTouch(b5.activity[2],sDros._id,"suggest-time")
+                DONE()
+
+
+  it 'Can not confirm own suggested time', itDone ->
+    SETUP.newBookedExpert 'grnv', {}, (s, b1) ->
+      timeId = b1.suggestedTimes[0]._id
+      PUT "/bookings/#{b1._id}/confirm-time", {_id:b1._id, timeId}, {status:403}, (err) ->
+        expectStartsWith(err.message, 'Cannot confirm your own time')
         DONE()
 
 
-  it.skip 'Can not change time if not pending status', itDone ->
+  it 'Can confirm customer booking suggested time by expert', itDone ->
+    datetime = moment().add(10, 'day')
+    SETUP.newBookedExpert 'gniv', {datetime}, (s, b1) ->
+      LOGIN 'dros', (sDros) ->
+        timeId = b1.suggestedTimes[0]._id
+        PUT "/bookings/#{b1._id}/confirm-time", {_id:b1._id, timeId}, {}, (b2) ->
+          expect(b2.lastTouch).to.be.undefined
+          expect(b2.activity).to.be.undefined
+          expect(b2.notes).to.be.undefined
+          expect(b2.status).to.equal("confirmed")
+          expectSameMoment(b2.datetime, datetime)
+          db.readDoc 'Booking', b1._id, (b3) ->
+            expectTouch(b3.lastTouch, sDros._id, "confirm-time")
+            expectTouch(b3.activity[0],s._id, "create")
+            expectTouch(b3.activity[1],sDros._id, "confirm-time")
+            DONE()
+
+            # TODO:sunday
+            # google calendar invite sent
+            # bot message room
+            # email notifications sent
 
 
-  it.skip 'Can not confirm own time', itDone ->
+  it 'Expert can suggest alternative which can be confirmed by customer'
 
 
-  it.skip 'Can confirm customer booking time by expert', itDone ->
-    # addAndLoginLocalUserWithPayMethod 'jpie', (s) ->
-      # airpair1 = time: moment().add(2, 'day'), minutes: 120, type: 'private', payMethodId: s.primaryPayMethodId
-      # POST "/bookings/#{data.experts.dros._id}", airpair1, {}, (booking1) ->
-        # expect(booking1._id).to.exist
-        # expect(booking1.orderId).to.exist
-        # expect(_.idsEqual(booking1.expertId, data.experts.dros._id)).to.be.true
-        # expect(_.idsEqual(booking1.customerId, s._id)).to.be.true
-        # expect(booking1.type).to.equal('private')
+  it 'Can only suggest or confirm datetime on a pending booking'
 
-
-  it.skip 'Expert can deny booking time and suggest alternative which can be confirmed by customer'
 
 
   it.skip 'Can update booking and send invitations as admin', itDone ->
@@ -66,7 +126,7 @@ recordings = ->
 
   it "given a YouTube ID, allows a booking to be annotated with YouTube data", itDone ->
     listStub = SETUP.stubYouTube 'videos','list',null,data.wrappers.youtube_codereview_list
-    SETUP.addAndLoginLocalUserWithPayMethod 'miks', (s) ->
+    SETUP.addAndLoginLocalUserWhoCanMakeBooking 'miks', (s) ->
       airpair1 = datetime: moment().add(2, 'day'), minutes: 120, type: 'private', payMethodId: s.primaryPayMethodId
       POST "/bookings/#{data.experts.dros._id}", airpair1, {}, (booking1) ->
         expect(booking1._id).to.exist
@@ -87,7 +147,7 @@ recordings = ->
 
 
   it "fails gracefully with a bogus YouTube id", itDone ->
-    SETUP.addAndLoginLocalUserWithPayMethod 'mrik', (s) ->
+    SETUP.addAndLoginLocalUserWhoCanMakeBooking 'mrik', (s) ->
       airpair1 = datetime: moment().add(2, 'day'), minutes: 120, type: 'private', payMethodId: s.primaryPayMethodId
       POST "/bookings/#{data.experts.dros._id}", airpair1, {}, (booking1) ->
         expect(booking1._id).to.exist
@@ -104,7 +164,7 @@ recordings = ->
 
 
   it "fails gracefully with a private YouTube id that it does not own", itDone ->
-    SETUP.addAndLoginLocalUserWithPayMethod 'misr', (s) ->
+    SETUP.addAndLoginLocalUserWhoCanMakeBooking 'misr', (s) ->
       airpair1 = datetime: moment().add(2, 'day'), minutes: 120, type: 'private', payMethodId: s.primaryPayMethodId
       POST "/bookings/#{data.experts.dros._id}", airpair1, {}, (booking1) ->
         expect(booking1._id).to.exist
@@ -122,7 +182,7 @@ recordings = ->
 
   #owner of VfA4ELOHjmk is experts@airpair.com
   it.skip "works with a private YouTube id if the owner is in process.env.AUTH_GOOGLE_REFRESH_TOKEN" , (done)->
-    SETUP.addAndLoginLocalUserWithPayMethod 'cher', (s) ->
+    SETUP.addAndLoginLocalUserWhoCanMakeBooking 'cher', (s) ->
       airpair1 = datetime: moment().add(2, 'day'), minutes: 120, type: 'private', payMethodId: s.primaryPayMethodId
       POST "/bookings/#{data.experts.dros._id}", airpair1, {}, (booking1) ->
         expect(booking1._id).to.exist

@@ -1,32 +1,42 @@
+var Roles = require('../roles').booking
+
 var validation = {
 
   createBooking(user, expert, datetime, minutes, type, credit, payMethodId, requestId)
   {
+    if (!user.localization || !user.localization.timezone)
+      return `Booking requires customer to have added their timezone`
+
     // if (!type) return `Booking type required`
     if (!minutes) return `Booking minutes required`
     if (!datetime) return `Booking datetime required`
   },
 
-  // suggestTime(user, original, datetime)
-  // {
-  //   if (original.status != 'pending') return `Booking [${original._id}] must be in pending state to suggest a new time`
-  //   if (!datetime) return `Suggested booking datetime required`
-  //   var isParticipant = _.find(original.participants,(p)=>_.idsEqual(p.info._id,this.user._id))
-  //   if (!isParticipant) return `Cannot suggest time. You[${this.user._id}] are not a participant to Booking[${original._id}]`
-  // },
+  // Full Feature: Step 5
+  suggestTime(user, original, time)
+  {
+    if (original.status != 'pending')
+      return `Booking [${original._id}] must be in pending state to suggest a new time`
+    if (!time)
+      return `Suggested booking time required`
 
-  // confirmTime(user, original, timeId)
-  // {
-  //   if (original.status != 'pending') return `Booking [${original._id}] must be in pending state to confirm a time`
+    if (!Roles.isParticipant(user,original))
+      return `Cannot suggest time. You[${user._id}] are not a participant to the Booking[${original._id}]`
+  },
 
-  //   var isAdmin = Roles.isAdmin(this.user)
-  //   var isParticipant = _.find(original.participants,(p)=>_.idsEqual(p.info._id,this.user._id))
+  confirmTime(user, original, timeId)
+  {
+    if (original.status != 'pending')
+      return `Booking [${original._id}] must be in pending state to confirm time`
 
-  //   if (!isParticipant && !isAdmin) return `Cannot confirm time. You[${this.user._id}] are not a participant to Booking[${original._id}]`
-  //   var time = _.find(original.suggestTimes,(t)=>_.idsEqual(t._id,timeId))
-  //   if (!time) return `Cannot confirm time [${timeId}]. It does not belong to Booking[${original._id}]`
-  //   if (time.confirmedById) return `Time already confirmed`
-  // },
+    if (!Roles.isParticipant(user,original))
+      return `Cannot confirm time. You[${user._id}] are not a participant to Booking[${original._id}]`
+
+    var time = _.find(original.suggestedTimes,(t)=>_.idsEqual(t._id,timeId))
+    if (!time) return `Cannot confirm time [${timeId}]. It does not belong to Booking[${original._id}]`
+    if (_.idsEqual(user._id,time.byId)) return `Cannot confirm your own time suggestion.`
+    if (time.confirmedById) return `Time already confirmed`
+  },
 
   updateByAdmin(user, original, update)
   {
@@ -44,6 +54,8 @@ var validation = {
     if (original.gcal && update.sendGCal) return `Updating gCAL events not yet supported`
 
     if (update.status != original.status) {
+      if (update.status == 'confirmed')
+        return `Cannot set Booking confirmed status manually. Participant must confirm time`
       if (update.status == 'complete')
         return `Cannot set Booking complete status manually. Release expert payment, save the recording & get customer feedback`
     }

@@ -12,7 +12,7 @@ var Error404 = (msg, fromApi) => {
 var cbSend = (req, res, next) => {
   var httpMethod = req.method
   return (e, r) => {
-    if (logging) { $log('cbSend', e, r) }
+    if (logging) { $log('cbSend'.cyan, e, r) }
     if (e)
     {
       e.fromApi = true
@@ -33,12 +33,12 @@ var cbSend = (req, res, next) => {
 
 function resolveParamFn(Svc, svcFnName, paramName, objectName) {
   return (req, res, next, id) => {
-    if (logging) $log('paramFn', paramName, id)
+    if (logging) $log('paramFn'.cyan, paramName, id)
     if (id) id = id.trim()
     $callSvc(Svc[svcFnName],req)(id, function(e, r) {
       if (!r && !e) {
         e = new Error404(`${paramName} not found.`,
-          paramName != 'post'&& paramName != 'workshop')
+          !_.contains(['post','postpublished','workshop'], paramName))
       }
       req[objectName||paramName] = r
       next(e, r)
@@ -47,14 +47,16 @@ function resolveParamFn(Svc, svcFnName, paramName, objectName) {
 }
 
 
+
 export function serve(Svc, svcFnName, argsFn, Validation) {
   return (req, res, next) => {
-    if (logging) $log('serve.Svc', svcFnName, argsFn, Svc)
+    if (logging) $log('serve.Svc'.cyan, svcFnName, argsFn, Svc)
     var callback = cbSend(req,res,next)
     var args = argsFn(req)
     if (Validation) {
       if (req.method != 'GET' || Validation[svcFnName])
       {
+        if (!Validation[svcFnName]) throw new Error(`Validation function ${svcFnName} not define`)
         var inValid = Validation[svcFnName].apply({}, _.union([req.user],args))
         if (inValid) {
           var e = new Error(inValid)
@@ -64,7 +66,7 @@ export function serve(Svc, svcFnName, argsFn, Validation) {
       }
     }
     args.push(callback)
-
+    if (!Svc[svcFnName]) throw new Error(`Service function ${svcFnName} not defined`)
     $callSvc(Svc[svcFnName],req).apply(this, args)
   }
 }

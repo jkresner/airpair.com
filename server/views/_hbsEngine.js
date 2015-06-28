@@ -50,14 +50,10 @@ module.exports = function(app) {
   app.engine('hbs', hbsEngine);
 
   var combineBaseData = (req, data) => {
-    // var chatSettings = {
-    //   on: config.chat.on,
-    //   firebaseUrl: config.chat.firebase.url
-    // };
     if (!data) data = {}
     data.build = config.build
     data.authenticated = !!(req.user && req.user._id)
-    data.config = { analytics: config.analytics, bundle: config.bundle, hangout: config.hangout } //, chatSettings
+    data.config = { analytics: config.analytics, bundle: config.bundle, hangout: config.hangout }
     data.campPeriod = moment().format('MMMYY').toLowerCase()
     return data;
   }

@@ -15,16 +15,16 @@ module.exports = -> describe "Booking: ".subspec, ->
       @braintreepaymentStub.restore()
 
   it 'Book 2 hour with pay as you go private', itDone ->
-    SETUP.addAndLoginLocalUserWithPayMethod 'jpie', (s) ->
+    SETUP.addAndLoginLocalUserWhoCanMakeBooking 'jpie', (s) ->
       airpair1 = datetime: moment().add(2, 'day'), minutes: 120, type: 'private', payMethodId: s.primaryPayMethodId
       POST "/bookings/#{data.experts.dros._id}", airpair1, {}, (booking1) ->
         expect(booking1._id).to.exist
         expect(booking1.orderId).to.exist
         expect(_.idsEqual(booking1.expertId, data.experts.dros._id)).to.be.true
         expect(_.idsEqual(booking1.customerId, s._id)).to.be.true
+        expect(_.idsEqual(booking1.createdById, s._id)).to.be.true
         expect(booking1.type).to.equal('private')
         expect(booking1.minutes).to.equal(120)
-        expect(_.idsEqual(booking1.createdById, s._id)).to.be.true
         expect(booking1.status).to.equal('pending')
         expect(booking1.participants.length).to.equal(2)
         expect(booking1.participants[0].role).to.equal('customer')
@@ -55,7 +55,7 @@ module.exports = -> describe "Booking: ".subspec, ->
 
   it 'Book 2 hour with pay as you go private two gets email + name on participant', itDone ->
     SETUP.createNewExpert 'louf', {rate:140}, (sExp, expert) ->
-      SETUP.addAndLoginLocalUserWithPayMethod 'jkjk', (s) ->
+      SETUP.addAndLoginLocalUserWhoCanMakeBooking 'jkjk', (s) ->
         airpair1 = datetime: moment().add(2, 'day'), minutes: 120, type: 'private', payMethodId: s.primaryPayMethodId
         POST "/bookings/#{expert._id}", airpair1, {}, (booking1) ->
           expect(booking1._id).to.exist
@@ -72,7 +72,7 @@ module.exports = -> describe "Booking: ".subspec, ->
 
 
   it 'Book 2 hour with pay as you go opensource', itDone ->
-    SETUP.addAndLoginLocalUserWithPayMethod 'crus', (s) ->
+    SETUP.addAndLoginLocalUserWhoCanMakeBooking 'crus', (s) ->
       airpair1 = datetime: moment().add(2, 'day'), minutes: 120, type: 'opensource', payMethodId: s.primaryPayMethodId
       POST "/bookings/#{data.experts.dros._id}", airpair1, {}, (booking1) ->
         GET "/billing/orders", {}, (orders) ->
@@ -95,7 +95,7 @@ module.exports = -> describe "Booking: ".subspec, ->
 
 
   it 'Book 3 hour at 150 from 500 credit', itDone ->
-    SETUP.addAndLoginLocalUserWithPayMethod 'ckni', (s) ->
+    SETUP.addAndLoginLocalUserWhoCanMakeBooking 'ckni', (s) ->
       o = total: 500, payMethodId: s.primaryPayMethodId
       POST "/billing/orders/credit", o, {}, (r) ->
         airpair1 = datetime: moment().add(2, 'day'), minutes: 120, type: 'opensource', credit: 500, payMethodId: s.primaryPayMethodId
@@ -168,7 +168,7 @@ module.exports = -> describe "Booking: ".subspec, ->
 
 
   it 'Fail to Book 1 hour at 150 with no credit or payMethodId', itDone ->
-    SETUP.addAndLoginLocalUserWithPayMethod 'jasp', (s) ->
+    SETUP.addAndLoginLocalUserWhoCanMakeBooking 'jasp', (s) ->
       airpair = datetime: moment().add(1, 'day'), minutes: 60, type: 'private', credit: 150, payMethodId: s.primaryPayMethodId
       POST "/bookings/#{data.experts.dros._id}", airpair, { status: 400 }, (err, resp) ->
         expect(err.message.indexOf('ExpectedCredit $150')).to.equal(0)
@@ -176,7 +176,7 @@ module.exports = -> describe "Booking: ".subspec, ->
 
 
   it 'Book 90 mins at 270 from 50 credit and 220 payg', itDone ->
-    SETUP.addAndLoginLocalUserWithPayMethod 'ajac', (s) ->
+    SETUP.addAndLoginLocalUserWhoCanMakeBooking 'ajac', (s) ->
       LOGIN 'admin', (sadm) ->
         oCred = total: 50, toUser: s, source: 'Test'
         POST "/adm/billing/orders/credit", oCred, {}, (r) ->
@@ -246,7 +246,7 @@ module.exports = -> describe "Booking: ".subspec, ->
 
 
   it 'Book 2 hour with pay as you go off request', itDone ->
-    SETUP.addAndLoginLocalUserWithPayMethod 'petc', (s) ->
+    SETUP.addAndLoginLocalUserWhoCanMakeBooking 'petc', (s) ->
       d = tags: [data.tags.angular], type: 'resources', experience: 'proficient', brief: 'bah bah anglaur test yo4', hours: "1", time: 'rush'
       POST '/requests', d, {}, (r0) ->
         PUT "/requests/#{r0._id}", _.extend(r0,{budget: 300,title:'test'}), {}, (r) ->
@@ -280,7 +280,7 @@ module.exports = -> describe "Booking: ".subspec, ->
 
 
   it 'Book 2 hour with 10 welcome credit off request', itDone ->
-    SETUP.addAndLoginLocalUserWithPayMethod 'crus', (s) ->
+    SETUP.addAndLoginLocalUserWhoCanMakeBooking 'crus', (s) ->
       d = tags: [data.tags.angular], type: 'resources', experience: 'proficient', brief: 'bah bah anglaur test yo4', hours: "1", time: 'rush'
       POST '/requests', d, {}, (r0) ->
         PUT "/requests/#{r0._id}", _.extend(r0,{budget: 300,title:'test'}), {}, (r) ->
