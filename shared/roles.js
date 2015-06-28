@@ -1,9 +1,11 @@
 var {idsEqual} = require('./util')
 
-module.exports = {
-  isAdmin(user) {
-    return user ? _.contains(user.roles, 'admin') : false
-  },
+var isAdmin = (user) =>
+  user ? _.contains(user.roles, 'admin') : false
+
+
+var roles = {
+  isAdmin,
   order: {
     isCustomer(user, o) {
       return user ? idsEqual(o.userId, user._id) : false
@@ -17,7 +19,7 @@ module.exports = {
     isCustomerOrAdmin(user, o) {
       if (!o.userId) return false
       return user
-        ? idsEqual(o.userId, user._id) || _.contains(user.roles, 'admin')
+        ? idsEqual(o.userId, user._id) || isAdmin(user)
         : false
     },
     isExpert(user, request) {
@@ -30,19 +32,29 @@ module.exports = {
       return false
     }
   },
+  booking: {
+    isParticipant(user, o) {
+      return _.find(o.participants,(p)=>_.idsEqual(p.info._id,user._id)) != null
+    },
+    isParticipantOrAdmin(user, o) {
+      return isAdmin(user) || roles.booking.isParticipant(user,o)
+    }
+  },
   post: {
     isOwner(user, post) {
       return idsEqual(user._id, post.by.userId)
     },
     isOwnerOrEditor(user, post) {
-      var isAdmin = _.contains(user.roles, 'admin')
       var isEditor = _.contains(user.roles, 'editor')
       var isOwner = idsEqual(user._id, post.by.userId)
 
-      return isAdmin || isEditor || isOwner
+      return isAdmin(user) || isEditor || isOwner
     },
     isForker(user, post) {
       return _.find(post.forkers, (f)=>idsEqual(user._id, f.userId))
     }
   }
 }
+
+
+module.exports = roles

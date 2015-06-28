@@ -30,6 +30,59 @@ For git pre-push hook to ensure tests pass before pushing, do this:
     cd .git/hooks
     ln -nsf ../../build/git-hooks/pre-push
 
+### Testing gotchas
+
+If the test suite is failing without much but stops at
+
+    Server: 
+      1) "before all" hook
+
+*Step 1)* Check if the app is still compiling (gulp runs without problems)
+
+*Step 2)* Check your test code (data fixtures, stories, specs, helpers)
+
+
+Coding a feature
+=============
+
+Building tests is a great way to start, but so far (Jul 2015) test all wrap only
+api calls.
+
+### Project Structure
+
+    - ANG (front-end)
+    -- /adm
+    -- /common
+    --- /directives
+    --- /filters
+    --- /models
+    ---- /[xxxService] (inteface to call api)
+    -- /[module]
+    --- module.js
+    --- list.html
+    --- item.html
+    -- index.js
+    -- adm.js
+    - SERVER
+    -- services
+    --- entity(s).js
+    --- entity(s).data.js
+    - SHARED
+    -- validation
+    --- [entity]
+
+### Layers to make up a feature
+
+   1. Angular Controller
+   2. Define Front-end "Service" api call
+   3. Add server-side route
+   4. The Param Mappings for /server/api/:entityname.js
+      4.a. Define param function (if don't have one)
+   5. If not GET, validation function is required
+   6. Define (business logic) service function
+   7. Choose existing or add a entity(s).data.js select callback
+   
+
 Hangout Info
 ============
 

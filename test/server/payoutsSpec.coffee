@@ -289,7 +289,7 @@ module.exports = -> describe "API: ", ->
       POST "/experts/#{expert._id}/deal", deal, {}, (e2) ->
         expect(e2.deals.length).to.equal(1)
         expect(e2.deals[0].rake).to.equal(10)
-        SETUP.addAndLoginLocalUserWithPayMethod 'del4', (s) ->
+        SETUP.addAndLoginLocalUserWhoCanMakeBooking 'del4', (s) ->
           b = dealId: e2.deals[0]._id, payMethodId: s.primaryPayMethodId
           POST "/billing/orders/deal/#{expert._id}", b, {}, (order) ->
             b1 = dealId: b.dealId, datetime: moment().add(2, 'day'), minutes: 250, type: 'offline', payMethodId: s.primaryPayMethodId

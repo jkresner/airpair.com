@@ -267,6 +267,15 @@ authoring = ->
 
 browsing = ->
 
+
+  it "Request post by non-existing slug", itDone ->
+    GETP("/ionic-framework/posts/the-definitive-ionic-starter-gu")
+      .expect('Content-Type', /text/)
+      .expect(404)
+      .end (e, resp) =>
+        DONE(e)
+
+
   it "Get my posts does not contain any sensitive data", itDone ->
     LOGIN 'jkap', (jk) ->
       GET "/posts/me", {}, (myposts) ->
