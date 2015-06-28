@@ -34,7 +34,7 @@ orderDeals = ->
     SETUP.createNewExpert 'admb', {}, (sExp, expert) ->
       deal = { price: 100, minutes: 300, type: 'airpair', target: { type: 'all' } }
       POST "/experts/#{expert._id}/deal", deal, {}, (e2) ->
-        SETUP.addAndLoginLocalUserWithPayMethod 'del5', (s) ->
+        SETUP.addAndLoginLocalUserWhoCanMakeBooking 'del5', (s) ->
           b = dealId: e2.deals[0]._id, payMethodId: s.primaryPayMethodId
           POST "/billing/orders/deal/#{expert._id}", b, {}, (order) ->
             GET "/billing/orders/expert/#{expert._id}", {}, (orders) ->
@@ -56,7 +56,7 @@ orderDeals = ->
     SETUP.createNewExpert 'louf', {}, (sExp, expert) ->
       deal = price: 150, minutes: 300, type: 'airpair', target: { type: 'all' }, tag: data.tags.angular
       POST "/experts/#{expert._id}/deal", deal, {}, (e2) ->
-        SETUP.addAndLoginLocalUserWithPayMethod 'del3', (s) ->
+        SETUP.addAndLoginLocalUserWhoCanMakeBooking 'del3', (s) ->
           GET "/experts/#{expert._id}", {}, (expertToBook) ->
             expect(expertToBook.deals.length).to.equal(1)
             b = dealId: expertToBook.deals[0]._id, payMethodId: s.primaryPayMethodId
@@ -152,5 +152,5 @@ module.exports = ->
 
   # @timeout 5000
 
-  describe "Booking: ".subspec, orderDeals
+  describe "Deals: ".subspec, orderDeals
 #

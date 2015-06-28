@@ -5,10 +5,10 @@ var {ObjectId} = mongoose.Schema
 
 
 var Recording = {
-  type: { required: true, lowercase: true, trim:true, type: String },
-  hangoutUrl: {required: false, type: String},
-  youTubeAccount: {required: false, type: String},
-  data: { required: true, type: {} } // YouTube's API response
+  type:             { required: true, lowercase: true, trim:true, type: String },
+  hangoutUrl:       {required: false, type: String},
+  youTubeAccount:   {required: false, type: String},
+  data:             { required: true, type: {} } // YouTube's API response
 }
 
 var ATTENDEE_TYPES = ['expert','customer']
@@ -21,8 +21,14 @@ var Participant = {
   timeZoneId:   String,
   chat: {
     slack: { id: { type: String }, name: { type: String } }
-  }
+  },
 }
+
+var SuggestedTime = new mongoose.Schema({
+  time:           { required: true, type: Date },
+  byId:           { required: true, type: ObjectId, ref: 'User' },
+  confirmedById:  { type: ObjectId, ref: 'User' },
+})
 
 
 var BOOKING_TYPES = [
@@ -38,6 +44,8 @@ var BOOKING_STATUS = [
 ]
 
 
+
+
 module.exports = mongoose.model('Booking', new mongoose.Schema({
 
   createdById:    { required: true, type: ObjectId, ref: 'User', index: true }, // Could be initiated by the expert or customer
@@ -48,7 +56,7 @@ module.exports = mongoose.model('Booking', new mongoose.Schema({
   minutes:        { required: true, type: Number },
   status:         { required: true, type: String, enum: BOOKING_STATUS },  // pending, confirmed, declined
   datetime:       { required: true, type: Date, index: true },
-  suggestedTimes: { required: true, type: [{_id:ObjectId,byId:ObjectId,time:Date,confirmedById:ObjectId}]},
+  suggestedTimes: { required: true, type: [SuggestedTime] },
   gcal:           { required: true, type: {} },
   recordings:     { type: [Recording], default: [] },
   orderId:        { required: true, type: ObjectId, ref: 'Order' },

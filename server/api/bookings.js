@@ -7,7 +7,8 @@ export default initAPI(
   getByIdForAdmin: (req) => [req.params.id],
   getByQueryForAdmin: (req) => [req.params.start,req.params.end,req.params.userId],
   createBooking: (req) => [req.expertshaped,req.body.datetime,req.body.minutes,req.body.type,req.body.credit,req.body.payMethodId,req.body.request,req.body.dealId],
-  // suggestTime: (req) => [req.booking,req.body.datetime],
+  // Full Feature: Step 4
+  suggestTime: (req) => [req.booking,req.body.time],
   // confirmTime: (req) => [req.booking,req.body.timeId],
   updateByAdmin: (req) => [req.booking,req.body],
   addYouTubeData: (req) => [req.booking, req.body.youTubeId],

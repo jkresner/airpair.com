@@ -56,6 +56,7 @@ export function serve(Svc, svcFnName, argsFn, Validation) {
     if (Validation) {
       if (req.method != 'GET' || Validation[svcFnName])
       {
+        if (!Validation[svcFnName]) throw new Error(`Validation function ${svcFnName} not define`)
         var inValid = Validation[svcFnName].apply({}, _.union([req.user],args))
         if (inValid) {
           var e = new Error(inValid)
@@ -65,7 +66,7 @@ export function serve(Svc, svcFnName, argsFn, Validation) {
       }
     }
     args.push(callback)
-
+    if (!Svc[svcFnName]) throw new Error(`Service function ${svcFnName} not defined`)
     $callSvc(Svc[svcFnName],req).apply(this, args)
   }
 }

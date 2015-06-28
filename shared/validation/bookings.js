@@ -2,18 +2,26 @@ var validation = {
 
   createBooking(user, expert, datetime, minutes, type, credit, payMethodId, requestId)
   {
+    if (!user.localization || !user.localization.timezone)
+      return `Booking requires customer to have added their timezone`
+
     // if (!type) return `Booking type required`
     if (!minutes) return `Booking minutes required`
     if (!datetime) return `Booking datetime required`
   },
 
-  // suggestTime(user, original, datetime)
-  // {
-  //   if (original.status != 'pending') return `Booking [${original._id}] must be in pending state to suggest a new time`
-  //   if (!datetime) return `Suggested booking datetime required`
-  //   var isParticipant = _.find(original.participants,(p)=>_.idsEqual(p.info._id,this.user._id))
-  //   if (!isParticipant) return `Cannot suggest time. You[${this.user._id}] are not a participant to Booking[${original._id}]`
-  // },
+  // Full Feature: Step 5
+  suggestTime(user, original, time)
+  {
+    if (original.status != 'pending')
+      return `Booking [${original._id}] must be in pending state to suggest a new time`
+    if (!time)
+      return `Suggested booking time required`
+
+    var isParticipant = _.find(original.participants,(p)=>_.idsEqual(p.info._id,user._id))
+    if (!isParticipant)
+      return `Cannot suggest time. You[${user._id}] are not a participant to the Booking[${original._id}]`
+  },
 
   // confirmTime(user, original, timeId)
   // {
