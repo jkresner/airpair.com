@@ -1,11 +1,13 @@
 var logging                       = true
 var {select}                      = require('../chats.data')
-var {admin,owner,pairbot}         = config.chat.slack
+var {owner,support,pairbot}       = config.chat.slack
+
 
 var clientCall = (user, method, data, cbProp, select, cb) => {
   var client = null
-  if (user == 'admin') client = wrapper.api.admin
-  else if (user == 'pairbot') client = wrapper.api.admin
+  if (user == 'owner') client = wrapper.api.owner
+  else if (user == 'support') client = wrapper.api.support
+  else if (user == 'pairbot') client = wrapper.api.pairbot
   else client = wrapper.api.getClient(user.token)
   client.api(method, data, (e,response) => {
     if (e) return cb(e)
@@ -26,13 +28,18 @@ var wrapper = {
   init() {
     var SlackAPI = require('slackey')
     wrapper.api = new SlackAPI({})
-    wrapper.api.admin = wrapper.api.getClient(admin.token)
+
+    //-- Has full access (team@)
+    wrapper.api.owner = wrapper.api.getClient(owner.token)
+    //-- Should be in every private group (support@)
+    wrapper.api.support = wrapper.api.getClient(support.token)
+    //-- Should be in every private group (bot)
     wrapper.api.pairbot = wrapper.api.getClient(pairbot.token)
   },
 
   teamInfo(cb)
   {
-    clientCall('admin', 'team.info', {}, 'team', select.team, cb)
+    clientCall('owner', 'team.info', {}, 'team', select.team, cb)
   },
 
   meInfo(user, cb)
@@ -40,15 +47,21 @@ var wrapper = {
     clientCall(user, 'auth.test', null, null, null, cb)
   },
 
+  updateMe(user, cb)
+  {
+    throw Error("not impl")
+    // clientCall(user, 'auth.test', null, null, null, cb)
+  },
+
   getChannels(cb)
   {
-    clientCall('admin', 'channels.list', null, null, null, cb)
+    clientCall('owner', 'channels.list', null, 'channels', null, cb)
   },
 
   getUsers(cb)
   {
     cache.slackUsers((callback)=>{
-      clientCall('admin', 'users.list', null, 'members', select.slackUser, callback)
+      clientCall('owner', 'users.list', null, 'members', select.slackUser, callback)
     }, cb)
   },
 
@@ -84,12 +97,17 @@ var wrapper = {
   checkUser(info, cb)
   {
     if (info.id)
-      clientCall('admin', 'users.info', { user:info.id }, 'user', select.slackUser, cb)
+      clientCall('owner', 'users.info', { user:info.id }, 'user', select.slackUser, cb)
     else
       wrapper.getUsers((e,users)=>{
         if (e) return cb(e)
         cb(null, wrapper.checkUserSync(info))
       })
+  },
+
+  deactivateUser(id, cb)
+  {
+    clientCall(owner, 'users.admin.setInactive', {user:id}, null, null, cb)
   },
 
   inviteToTeam(fullName, email, cb)
@@ -100,14 +118,9 @@ var wrapper = {
     cache.flush('slack_users')
   },
 
-  deactivateUser(id, cb)
-  {
-    clientCall(owner, 'users.admin.setInactive', {user:id}, null, null, cb)
-  },
-
   // getUserPresence(user, cb)
   // {
-  //   var client = (user.token) ? wrapper.api.getClient(user.token) : wrapper.api.admin
+  //   var client = (user.token) ? wrapper.api.getClient(user.token) : wrapper.api.support
   //   client.api('users.getPresence', { user:user.slackId }, cb)
   // },
 
@@ -148,25 +161,25 @@ var wrapper = {
 
   inviteToGroup(invitor, groupId, invitee, cb)
   {
-    var user = (invitor.token) ? invitor : 'admin'
+    var user = (invitor.token) ? invitor : 'support'
     clientCall(user, 'groups.invite', { channel:groupId, user:invitee }, null, null, cb)
   },
 
   renameGroup(user, groupId, name, cb)
   {
-    var user = (user.token) ? user : 'admin'
+    var user = (user.token) ? user : 'support'
     clientCall(user, 'groups.rename', { channel:groupId, name }, 'channel', null, cb)
   },
 
   setGroupPurpose(user, groupId, purpose, cb)
   {
-    var user = (user.token) ? user : 'admin'
+    var user = (user.token) ? user : 'support'
     clientCall(user, 'groups.setPurpose', { channel:groupId, purpose }, null, null, cb)
   },
 
   createGroup(user, groupInfo, members, cb)
   {
-    var user = (user.token) ? user : 'admin'
+    var user = (user.token) ? user : 'support'
     var {name,purpose} = groupInfo
     clientCall(user, 'groups.create', { name }, 'group', select.slackGroup, (e,group)=>{
       if (e) return cb(e)
@@ -175,7 +188,7 @@ var wrapper = {
       for (var m of members)
         clientCall(user, 'groups.invite', { channel:group.id, user:m }, null, null, (e,invite)=>{})
 
-      wrapper.setGroupPurpose(user, group.id, purpose, (ee,purpose)=>{
+      wrapper.setGroupPurpose(user, group.id, purpose, (ee,rPurpose)=>{
         if (ee) return cb(ee)
         group.purpose.value = purpose
         cb(null, group)
@@ -188,7 +201,7 @@ var wrapper = {
   {
     var data = { channel, text:message, parse: 'full' }
     if (user == 'pairbot') data.username = 'pairbot'
-    clientCall(user, 'chat.postMessage', data, null, null, cb)
+    clientCall(user, 'chat.postMessage', data, 'message', null, cb)
   },
 
   postAttachments(user, channel, attachments, cb)

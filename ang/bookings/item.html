@@ -32,11 +32,57 @@
   </div>
 
 
-
-
   <hr class="join" />
 </div>
 
+
+<section class="schdule-time">
+  <h5>Schedule</h5>
+  <section ng-if="booking.status == 'pending'">
+    <h4>Suggested times</h4>
+    <table class="table" style="width:60%">
+      <tr>
+        <th>Time (60 mins)</th>
+        <th>By</th>
+        <th></th>
+      </tr>
+      <tr>
+        <td>Sun 28 4PM CEST | 10AM EDT.</td>
+        <td>You</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>Sun 28 5PM CEST | 11AM EDT.</td>
+        <td>gregory nichola</td>
+        <td><a href="#">Confirm this time</a></td>
+      </tr>
+      <tr>
+        <td>Sun 29 2PM CEST | 8AM EDT.</td>
+        <td>gregory nichola</td>
+        <td><a href="#">Confirm this time</a></td>
+      </tr>
+      <tr>
+        <td>Sun 30 4PM CEST | 10AM EDT.</td>
+        <td>You</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>Sun 31 4PM CEST | 10AM EDT.</td>
+        <td>gregory nichola</td>
+        <td><a href="#">Confirm this time</a></td>
+      </tr>
+    </table>
+      <div class="form-group">
+        <label class="control-label" for="when">Suggest another time</label>
+        <div datetime-input id="bookingDatetime" datetime="booking.datetime" min-view="minute" date-format="YYYY MMM DD HH:mm Z" style="width:230px"></div>
+        <p style="padding:10px">* If this time doesn't work {{expert.name}} will suggest an alternative</p>
+      </div>
+
+  </section>
+  <section ng-if="booking.status != 'pending'">
+    <h4>Booking time: <b>{{util.multitime(booking)}}</b></h4>
+  </section>
+</section>
 
 <div class="row">
 

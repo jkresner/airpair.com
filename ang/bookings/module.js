@@ -10,6 +10,7 @@ angular.module("APBookings", [])
 })
 
 .controller('BookingCtrl', ($scope, $routeParams, DataService, ServerErrors, BookingsUtil, OrdersUtil, Util) => {
+  var _id = $routeParams.id
   $scope.data = {}
   $scope.util = BookingsUtil
 
@@ -39,7 +40,7 @@ angular.module("APBookings", [])
       },
       customers: BookingsUtil.customers(r),
       experts: BookingsUtil.experts(r),
-      booking: r
+      booking: r,
     }
     // console.log("SCOPE", $scope)
     angular.extend($scope, scope)
@@ -47,7 +48,11 @@ angular.module("APBookings", [])
 
   // console.log("hi", $routeParams.id)
 
-  DataService.billing.getBooking({_id:$routeParams.id}, setScope)
+  DataService.billing.getBooking({_id}, setScope)
+
+  // Full Feature: Step 1
+  $scope.suggestTime = (time) =>
+    DataService.bookings.suggestTime({_id,time}, setScope)
 
 })
 
@@ -66,4 +71,5 @@ angular.module("APBookings", [])
 
   $scope.fetch = () => DataService.billing.getBookings({}, setScope)
   $scope.fetch()
+
 })
