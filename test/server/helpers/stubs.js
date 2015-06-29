@@ -1,4 +1,3 @@
-var withoutStubs = false
 var emptyStub = () => sinon.stub({fake:()=>{}},'fake',()=>{})
 
 var analyticsSetup = {
@@ -85,6 +84,8 @@ var stubs = {
     if (withoutStubs) return emptyStub()
     if (!Wrappers.Slack.api) Wrappers.Slack.init()
     return sinon.stub(Wrappers.Slack, fnName, function() {
+      if (fnName == "getUsers") cache.slack_users = result
+      if (fnName == "getGroups") cache.slack_groups = result
       var cb = arguments[arguments.length-1]
       // $log(`Slack.${fnName}.stubbed`, result)
       cb(null, result)
@@ -92,6 +93,7 @@ var stubs = {
   },
 
   stubSlackSync(fnName, result) {
+    if (withoutStubs) return emptyStub()
     return sinon.stub(Wrappers.Slack, fnName, function() {
       return result
     })

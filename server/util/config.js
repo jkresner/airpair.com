@@ -64,9 +64,9 @@ var cfg = {
       scope: ['email','talent']
     },
     slack: {
-      slackTeam: '-',
-      clientID: '-',
-      clientSecret: '-',
+      slackTeam: 'T06U2HQQ3',
+      clientID: '6954602819.6963320480',
+      clientSecret: 'ef0b1b25910627ce92f721bda02ba757',
       scope: ['identify','read','post','client']
     },
   },
@@ -100,12 +100,13 @@ var cfg = {
   },
   chat: {
     slack: {
-      owner:   { id: '', token: '' },
-      admin:   { id: '', token: '' },
-      pairbot: { id: '', token: '' },
+      owner:      { id: 'U06U2HQQK', token: 'xoxp-6954602819-6954602835-6963586337-08f737' },
+      support:    { id: 'U06UCSHL0', token: 'xoxp-6954602819-6964901680-6965169622-a2bb52' },
+      jk:         { id: 'U06U2HQQK', token: 'xoxp-6954602819-6954602835-6963586337-08f737' },
+      pairbot:    { id: 'U06UBBT9V', token: 'xoxb-6963401335-ziIikHY5Uo9zyG6NPQ9ijoam' },
       channels:   {
         pipeline: { id: 'C06KZHXAS' },
-        posts: { id: 'C06KZHXAS' }
+        posts:    { id: 'C06UBRE77' }
       }
     }
   },
@@ -260,10 +261,14 @@ module.exports = function(env) {
     cfg.calendar.google.owner = process.env.CALENDAR_GOOGLE_OWNER
     cfg.calendar.google.calendarId = process.env.CALENDAR_GOOGLE_CALENDARID
 
+    //-- until things are under control (jk)
+    cfg.chat.slack.jk.id = process.env.CHAT_SLACK_ADMIN_ID
+    cfg.chat.slack.jk.token = process.env.CHAT_SLACK_ADMIN_TOKEN
+
     cfg.chat.slack.owner.id = process.env.CHAT_SLACK_OWNER_ID
     cfg.chat.slack.owner.token = process.env.CHAT_SLACK_OWNER_TOKEN
-    cfg.chat.slack.admin.id = process.env.CHAT_SLACK_ADMIN_ID
-    cfg.chat.slack.admin.token = process.env.CHAT_SLACK_ADMIN_TOKEN
+    cfg.chat.slack.support.id = process.env.CHAT_SLACK_SUPPORT_ID
+    cfg.chat.slack.support.token = process.env.CHAT_SLACK_SUPPORT_TOKEN
     cfg.chat.slack.pairbot.id = process.env.CHAT_SLACK_PAIRBOT_ID
     cfg.chat.slack.pairbot.token = process.env.CHAT_SLACK_PAIRBOT_TOKEN
     cfg.chat.slack.channels.pipeline.id = process.env.CHAT_SLACK_CHANNELS_PIPELINE_ID
