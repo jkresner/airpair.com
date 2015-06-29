@@ -44,20 +44,22 @@ describe 'Server: '.appload, ->
 
   before (done) ->
     # $timelapsed("BEFORE start")
-    global.logging     = false
-    global.verboseErrHandler = false
-    global.db          = require('./helpers/db')
-    global.ObjectId    = db.ObjectId
-    global.ISODate     = db.ISODate
+    global.logging            = false
+    global.verboseErrHandler  = false   # true => lots of red detail
+    global.withoutStubs       = false    # true => real (slow) apis calls
+    $log("   Stubs:".white, if withoutStubs then "TURNED OFF!".red else "on".gray)
+    global.db                 = require('./helpers/db')
+    global.ObjectId           = db.ObjectId
+    global.ISODate            = db.ISODate
     # $timelapsed("DB done")
     # $timelapsed("SETUP done")
-    global.data        = require('./../data/data')
-    global.SETUP       = require('./setup/_setup')
-    global.timeSeed    = SETUP.timeSeed
-    global.newId       = SETUP.newId
-    global.app         = require('../../index').run()
+    global.data               = require('./../data/data')
+    global.SETUP              = require('./setup/_setup')
+    global.timeSeed           = SETUP.timeSeed
+    global.newId              = SETUP.newId
+    global.app                = require('../../index').run()
     # $timelapsed("APP done")
-    global.stubs       = SETUP.initStubs()
+    global.stubs              = SETUP.initStubs()
     require('./helpers/http').init(app)
     # $timelapsed("HELPERS done")
     SETUP.init.call(@, done)
@@ -87,7 +89,7 @@ describe 'Server: '.appload, ->
   spec @, 'Orders', 'ordersBooking'
   spec @, 'Orders', 'ordersDeals'
   spec @, 'Orders', 'ordersAdmin'
-  # spec @, 'Posts'
+  # # spec @, 'Posts'
   spec @, 'Post Reviews', 'postsReviews'
   spec @, 'Bookings'
   spec @, 'Bookings', 'bookingsAdmin'

@@ -545,15 +545,46 @@ module.exports = {
     "has_more":true,"quota_max":300,"quota_remaining":279
   },
 
+  slack_team_info:  {
+    id: 'T06U2HQQ3',
+    name: 'AirPair Test'
+  },
+
+  slack_me_info: {
+    url: 'https://airpairtest.slack.com/',
+    team: 'AirPair Test',
+    user: 'pairbot',
+    team_id: 'T06U2HQQ3',
+    user_id: 'U06UBBT9V'
+  },
+
   slack_users_list: [
     {
-      id: 'U03ME5Q7X',
-      name: '123peterkim',
-      deleted: false,
-      real_name: 'Peter Kim',
-      tz_label: 'Pacific Daylight Time',
-      profile: { email: '123peterkim@gmail.com'}
-    }
+      "id":"U06UCSHL0",
+      "name":"customer-support",
+      "deleted":false,
+      "real_name":"{} Customer Support",
+      "tz_label":"Pacific Daylight Time",
+      "profile":{"email":"support@airpair.com"}
+    },
+    {"id":"U06UBH472","name":"experts","deleted":false,"real_name":"Experts AirPair","tz_label":"Pacific Daylight Time","profile":{"email":"experts@airpair.com"}},{"id":"U06U2QUVB","name":"gregorynicholas","deleted":false,"real_name":"gregory n","tz_label":"Pacific Daylight Time","profile":{"email":"nicholas.g.gregory@gmail.com"}},{"id":"U06U2HQQK","name":"jk","deleted":false,"real_name":"{} Jonathon Kresner","tz_label":"Pacific Daylight Time","profile":{"email":"jk@airpair.com"}},{"id":"U06UCKSSF","name":"jkgmail","deleted":false,"real_name":"Jonathon Gmail","tz_label":"Pacific Daylight Time","profile":{"email":"jkresner@gmail.com"}},{"id":"U06UBBT9V","name":"pairbot","deleted":false,"real_name":"","tz_label":"Pacific Daylight Time"}
+  ],
+
+  slack_channels_list: [
+    {
+      "id":"C06U2H1GC",
+      "name":"airpair-channel",
+      "is_channel":true,
+      "created":1435494439,
+      "creator":"U06U2HQQK",
+      "is_archived":false,
+      "is_general":true,
+      "is_member":true,
+      "members":["U06U2HQQK","U06U2QUVB","U06UBBT9V","U06UBH472","U06UCKSSF","U06UCSHL0"],"topic":{"value":"Company-wide announcements and work-based matters","creator":"","last_set":0},
+      "purpose":{"value":"This channel is for team-wide communication and announcements. All team members are in this channel.","creator":"","last_set":0},
+      "num_members":6
+    },
+    {"id":"C06UBRE77","name":"airpair-posts","is_channel":true,"created":1435535658,"creator":"U06U2HQQK","is_archived":false,"is_general":false,"is_member":true,"members":["U06U2HQQK"],"topic":{"value":"","creator":"","last_set":0},"purpose":{"value":"","creator":"","last_set":0},"num_members":1},{"id":"C06U2H1GU","name":"airpair-support","is_channel":true,"created":1435494439,"creator":"U06U2HQQK","is_archived":false,"is_general":false,"is_member":true,"members":["U06U2HQQK","U06U2QUVB","U06UBH472","U06UCKSSF","U06UCSHL0"],"topic":{"value":"Non-work banter and water cooler conversation","creator":"","last_set":0},"purpose":{"value":"A place for non-work-related flimflam, faffing, hodge-podge or jibber-jabber you'd prefer to keep out of more focused work-related channels.","creator":"","last_set":0},"num_members":5}
   ],
 
   slack_group_james_even: {
@@ -582,29 +613,23 @@ module.exports = {
   },
 
   slack_groups_list: [
-    { id: 'G043NJRC0',
-      purpose: { value: '' },
-      topic: { value: '' },
-      members:
-       [ 'U02ASLW2Z',
-         'U03K7EWLT',
-         'U03KY719E',
-         'U063Z4Z44',
-         'U06944TLK',
-         'U069EJMK9' ],
-      is_archived: false,
-      creator: 'U03KMN81C',
-      created: 1426867853,
-      name: '-airpair-authors-' },
-    { id: 'G03KMNM5N',
-      purpose: { value: '' },
-      topic: { value: '' },
-      members:
-       [ 'U02ASLW2Z',
-         'U03K7EWLT' ],
-      is_archived: false,
-      creator: 'U03KMN81C',
-      created: 1426867853,
-      name: '-pipeline-' }
-  ]
+    {"id":"G06UBFX8S","purpose":{"value":""},"topic":{"value":""},"members":["U06U2HQQK","U06U2QUVB","U06UBBT9V"],"is_archived":false,"creator":"U06U2HQQK","created":1435535644,"name":"-pipeline-"},
+    {"id":"G06UFLR5K","purpose":{"value":"I have a test purpose 1435548265"},"topic":{"value":""},"members":["U06U2HQQK","U06U2QUVB","U06UBBT9V","U06UCSHL0"],"is_archived":false,"creator":"U06UCSHL0","created":1435548112,"name":"zz-test-5590ba6953c6b"},
+    {"id":"G06UFKTDZ","purpose":{"value":"I have a test purpose 1435548812"},"topic":{"value":""},"members":["U06U2HQQK","U06UBBT9V","U06UCSHL0"],"is_archived":false,"creator":"U06UCSHL0","created":1435548659,"name":"zz-test-5590bc8ce8c6f"},
+    {"id":"G06UFJCQ2","purpose":{"value":"I have a test purpose 1435548961"},"topic":{"value":""},"members":["U06U2HQQK","U06UBBT9V","U06UCSHL0"],"is_archived":false,"creator":"U06UCSHL0","created":1435548808,"name":"zz-test-5590bd219285f"},
+    {"id":"G06UFKP2A","purpose":{"value":"I have a test purpose 1435548978"},"topic":{"value":""},"members":["U06U2HQQK","U06UBBT9V","U06UCSHL0"],"is_archived":false,"creator":"U06UCSHL0","created":1435548825,"name":"zz-test-5590bd321801e"}
+  ],
+
+  slack_createGroup_wPurpose: {
+    id: 'G06UFLR5K',
+    purpose: { value: { purpose: 'I have a test purpose 1435548265' } },
+    topic: { value: '' },
+    members: [ 'U06UCSHL0' ],
+    is_archived: false,
+    creator: 'U06UCSHL0',
+    created: 1435548112,
+    name: 'zz-test-5590ba6953c6b'
+  },
+
+
 }
