@@ -22,7 +22,9 @@ var knownNonErrors = [
   'Email belongs to another account',
   'Cannot suggest the same expert twice',
   'tagfrom3rdparty not found',
-  'already_in_team' //slack
+  //slack
+  'already_in_team',
+  'already_invited'
 ]
 
 
