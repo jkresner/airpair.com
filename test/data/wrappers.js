@@ -587,31 +587,6 @@ module.exports = {
     {"id":"C06UBRE77","name":"airpair-posts","is_channel":true,"created":1435535658,"creator":"U06U2HQQK","is_archived":false,"is_general":false,"is_member":true,"members":["U06U2HQQK"],"topic":{"value":"","creator":"","last_set":0},"purpose":{"value":"","creator":"","last_set":0},"num_members":1},{"id":"C06U2H1GU","name":"airpair-support","is_channel":true,"created":1435494439,"creator":"U06U2HQQK","is_archived":false,"is_general":false,"is_member":true,"members":["U06U2HQQK","U06U2QUVB","U06UBH472","U06UCKSSF","U06UCSHL0"],"topic":{"value":"Non-work banter and water cooler conversation","creator":"","last_set":0},"purpose":{"value":"A place for non-work-related flimflam, faffing, hodge-podge or jibber-jabber you'd prefer to keep out of more focused work-related channels.","creator":"","last_set":0},"num_members":5}
   ],
 
-  slack_group_james_even: {
-    id: 'G056VLB6V',
-    name: 'p-james-evan',
-    is_group: true,
-    created: 1433447227,
-    creator: 'U02ASLW2Z',
-    is_archived: false,
-    is_open: true,
-    last_read: '1433560548.000008',
-    latest: {
-      type: 'message',
-      user: 'U04MHG2HF',
-      text: 'Today’s session was awesome.. Thanks again <@U03M5HQU5>',
-      ts: '1433560548.000008' },
-    unread_count: 0,
-    unread_count_display: 0,
-    members: [ 'U02ASLW2Z', 'U03K7EWLT', 'U03M5HQU5', 'U04MHG2HF', 'U061TMK98' ],
-    topic: { value: '', creator: '', last_set: 0 },
-    purpose: {
-      value: 'https://www.airpair.com/review/55707e97b376c81100de413c James (CDT, Houston), Evan (PDT, San Francisco)',
-      creator: 'U02ASLW2Z',
-      last_set: 1433447228
-    }
-  },
-
   slack_groups_list: [
     {"id":"G06UBFX8S","purpose":{"value":""},"topic":{"value":""},"members":["U06U2HQQK","U06U2QUVB","U06UBBT9V"],"is_archived":false,"creator":"U06U2HQQK","created":1435535644,"name":"-pipeline-"},
     {"id":"G06UFLR5K","purpose":{"value":"I have a test purpose 1435548265"},"topic":{"value":""},"members":["U06U2HQQK","U06U2QUVB","U06UBBT9V","U06UCSHL0"],"is_archived":false,"creator":"U06UCSHL0","created":1435548112,"name":"zz-test-5590ba6953c6b"},
@@ -630,6 +605,5 @@ module.exports = {
     created: 1435548112,
     name: 'zz-test-5590ba6953c6b'
   },
-
 
 }
