@@ -29,6 +29,32 @@ module.exports = function(imProvider)
       TemplateSvc.slackMSG(tmpl, data, (e, msg) => cb(e,msg))
     },
 
+    sendSuggestedTime(booking, timeId, cb) {
+      // var attachment = {
+      //   fallback: `Post SUBMITTED: ${post.title}`,
+      //   color:  `warning`,
+      //   pretext: `SUBMITTED for review`,
+      //   thumb_url: `https://www.airpair.com/posts/thumb/${post._id}`,
+      //   title: post.title,
+      //   title_link: `https://www.airpair.com/posts/review/${post._id}`,
+      //   text: `Don't be shy.\nTell ${post.by.name} what you think => https://www.airpair.com/posts/review/${post._id}`,
+      // }
+      // imProvider.postAttachments('pairbot', postsChannelId, [attachment], cb || emtpyCb)
+    },
+
+    sendConfirmedTime(booking, cb) {
+      // var attachment = {
+      //   fallback: `Post SUBMITTED: ${post.title}`,
+      //   color:  `warning`,
+      //   pretext: `SUBMITTED for review`,
+      //   thumb_url: `https://www.airpair.com/posts/thumb/${post._id}`,
+      //   title: post.title,
+      //   title_link: `https://www.airpair.com/posts/review/${post._id}`,
+      //   text: `Don't be shy.\nTell ${post.by.name} what you think => https://www.airpair.com/posts/review/${post._id}`,
+      // }
+      // imProvider.postAttachments('pairbot', postsChannelId, [attachment], cb || emtpyCb)
+    },
+
     sendPostSubmitted(post, cb) {
       var attachment = {
         fallback: `Post SUBMITTED: ${post.title}`,

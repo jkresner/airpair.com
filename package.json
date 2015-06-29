@@ -11,7 +11,7 @@
     "start": "node bootstrap.js",
     "test": "/usr/local/bin/mocha test/server/bootstrap.coffee",
     "gv": "heroku logs --tail --source app",
-    "db": "mongod --dbpath ~/data/db/"
+    "db": "mongod --smallfiles --noprealloc --nojournal --dbpath ~/data/db/"
   },
   "repository": {
     "type": "git",

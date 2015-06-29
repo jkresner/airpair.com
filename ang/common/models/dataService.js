@@ -65,14 +65,20 @@ angular.module('APDataSvc', [])
 
     this.billing = _.extend(billingFns, {
       getPayoutmethods: GET((d)=>`/billing/payoutmethods`),
-      getBookings: GET((d)=>`/bookings`),
-      getBooking: GET((d)=>`/bookings/${d._id}`),
       getOrdersForPayouts: GET((d)=>`/billing/orders/payouts`),
       getMyOrdersForExpert: GET((d)=>`/billing/orders/expert/${d._id}`),
       deletePaymethod: DELETE((d)=>`/billing/paymethods/${d._id}`),
       payoutOrders: POST((d)=>`/payouts/${d.payoutmethodId}`),
       orderDeal:  POST((d)=>`/billing/orders/deal/${d.expertId}`),
     })
+
+    this.bookings = _.extend(billingFns, {
+      getBookings: GET((d)=>`/bookings`),
+      getBooking: GET((d)=>`/bookings/${d._id}`),
+      // Full Feature: Step 1
+      suggestTime: PUT((d)=>`/bookings/${d._id}/suggest-time`),
+    })
+
 
     var expertFns = {
       getForExpertsPage: GET((d)=>`/experts`),

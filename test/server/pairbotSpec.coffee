@@ -42,3 +42,10 @@ module.exports = -> describe "pairbot: ", ->
         msg = r.message
         DONE()
 
+
+    # it 'Sends message with', itDone ->
+    #   pairbot.sendPostPublished data.posts.mmTopAngMistakes, (e,r) ->
+    #     expect(e).to.be.null
+    #     msg = r.message
+    #     DONE()
+
