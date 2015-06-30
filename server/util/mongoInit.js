@@ -1,4 +1,5 @@
 var mongoose = require('mongoose')
+var _s = require('underscore.string')
 
 module.exports = {
 
@@ -7,7 +8,20 @@ module.exports = {
 
     var db = mongoose.connection
 
-    db.on('error', (e) => $log(('mongo connection error:' + e).red) )
+    // db.on('error', (e) => {
+    //   // $log(('run mongod command before running tests').red) )
+    //   $log((`mongo connection: #{e}`).red) )
+    // })
+
+    db.once('disconnected', () => {
+      $log(('mongo default connection disconnected').red.dim)
+    })
+
+    db.once('error', (e) => {
+      $log((`mongo connection: ${e}`).red.bold)
+      // callback()
+    })
+
     db.once('open', () => {
       $log(`          Connected to db ${config.mongoUri}`.appload)
       callback()

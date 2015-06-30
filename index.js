@@ -73,7 +73,7 @@ export function run()
         app.use(mw.logging.pageNotFound)
         app.use(mw.logging.errorHandler(app))
 
-        app.listen(config.port, () =>
+        var server = app.listen(config.port, () =>
           $log(`          Listening after ${new Date().getTime()-start}ms on port ${config.port}`.appload))
 
       })

@@ -144,7 +144,10 @@ var cfg = {
     }
   },
   redirects: { on: false },
-  session: { secret: 'airyv1' }
+  session: { secret: 'airyv1' },
+  http: {
+    max_sockets: 5
+  }
 }
 
 
@@ -191,6 +194,8 @@ module.exports = function(env) {
 
     cfg.redirects.on = true
     cfg.session.secret = process.env.SESSION_SECRET || 'airyv1'
+
+    cfg.http.max_sockets = 100
   }
 
   if (cfg.env == 'production') {
