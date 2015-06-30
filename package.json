@@ -9,9 +9,9 @@
   },
   "scripts": {
     "start": "node bootstrap.js",
-    "test": "/usr/local/bin/mocha test/server/bootstrap.coffee",
+    "test": "./node_modules/.bin/mocha test/server/bootstrap.coffee",
     "gv": "heroku logs --tail --source app",
-    "db": "mongod --smallfiles --noprealloc --nojournal --dbpath ~/data/db/"
+    "db": "mongod --smallfiles --noprealloc --nojournal --dbpath ~/data/db/ --noIndexBuildRetry --quiet"
   },
   "repository": {
     "type": "git",
@@ -44,6 +44,7 @@
     "gulp-util": "3.0.4",
     "merge-stream": "0.1.7",
     "mocha": "2.2.1",
+    "coffee-script": "*",
     "mongodb": "2.0.27",
     "sinon": "1.14.1",
     "sinon-chai": "2.7.0",
