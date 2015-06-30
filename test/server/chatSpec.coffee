@@ -12,9 +12,20 @@ slackUsers = ->
   it 'Can get Slack me info', itDone ->
     stub = SETUP.stubSlack('meInfo', data.wrappers.slack_me_info)
     Wrappers.Slack.meInfo config.chat.slack.pairbot, (e, me) ->
+      # $log('e', e, 'me', me) # uncomment with withoutStubs=true to get user info
       expect(me.user).to.equal('pairbot')
       stub.restore()
       DONE()
+
+
+  # it.skip 'Can update Slack me info', itDone ->
+  #   # stub = SETUP.stubSlack('updateMe', data.wrappers.slack_me_info)
+  #   $log('config.chat.slack.support', config.chat.slack.support)
+  #   Wrappers.Slack.updateMe config.chat.slack.support, 'Customer Servivce', 'Yo', (e, me) ->
+  #     $log(e,me)
+  #     expect(me.user).to.equal('customer-support')
+  #     stub.restore()
+  #     DONE()
 
 
   it 'Can get all team users', itDone ->
@@ -203,15 +214,15 @@ slackHelpers = ->
   it 'Can invite userB to all userA non-archived groups', itDone ->
     groupCount = 0
     invitedCount = 0
-    userAtoken = config.chat.slack.support.token  # cannot be a bot
-    userB_id = "U06UCKSSF" # jkgmail
+    userAtoken = ""  # cannot be a bot
+    userB_id = "" # "U06UCKSSF" # jkgmail
 
     invite = (group) ->
       Wrappers.Slack.inviteToGroup {token:userAtoken},group.id,userB_id, (ee,ok)->
         if (ee && ee.message == "is_archived")
           $log 'is_achived'.yellow, group.name.white
         else if (ee)
-          $log 'error'.red, e
+          $log 'error'.red, ee
         else
           expect(ok.group.id).to.equal(group.id)
           if (ok.already_in_group)
