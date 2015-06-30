@@ -89,6 +89,8 @@ function initRunTasks(runTasks, tasksToInit, options) {
   }
 }
 
+gulp.task('devsetup:googletoken', initRunTasks(['googletoken']))
+
 gulp.task('less:all', initRunTasks(['less'], null, {section:'all'}) )
 gulp.task('less:libs', initRunTasks(['less'], null, {section:'libs'}) )
 gulp.task('less:adm', initRunTasks(['less'], null, {section:'adm'}) )
