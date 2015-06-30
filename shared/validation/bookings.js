@@ -69,19 +69,19 @@ var validation = {
       return `YouTube ID already exists`
   },
 
+  addHangout(user, original, youTubeId, youTubeAccount, hangoutUrl)
+  {
+    if (!youTubeAccount) return `YouTube Account Required`
+    if (!hangoutUrl) return `Hangout URL Required`
+    return validation.addYouTubeData(user, original, youTubeId)
+  },
+
   deleteRecording(user, original, recordingId)
   {
     if (!recordingId) return `RecordingId Required`
     var existing = _.find(original.recordings, (r) => r._id == recordingId)
     if (!existing)
       return `Recording with ${recordingId} does not belong to booking[${booking._id}]`
-  },
-
-  addHangout(user, original, youTubeId, youTubeAccount, hangoutUrl)
-  {
-    if (!youTubeAccount) return `YouTube Account Required`
-    if (!hangoutUrl) return `Hangout URL Required`
-    return validation.addYouTubeData(user, original, youTubeId)
   },
 
   cheatExpertSwap(user, original, order, request, suggestionId)

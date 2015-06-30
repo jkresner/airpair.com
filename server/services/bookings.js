@@ -339,7 +339,8 @@ Booking: https://airpair.com/booking/${original._id}`
     })
   },
 
-  addYouTubeData(original, youTubeId, cb){
+  addYouTubeData(original, youTubeId, cb) {
+    $log('bookings.addYouTubeData'.cyan, original._id, youTubeId)
     Wrappers.YouTube.getVideoInfo(youTubeId, (err, response) => {
       if (err){
         return cb(Error(err),data)
@@ -355,6 +356,7 @@ Booking: https://airpair.com/booking/${original._id}`
   },
 
   addHangout(original, youTubeId, youTubeAccount, hangoutUrl, cb){
+    $log('bookings.addHangout'.cyan, original._id, youTubeId, youTubeAccount, hangoutUrl)
     Wrappers.YouTube.getVideoInfo(youTubeId, (err, response) => {
       //TODO mark video as private if booking.type is private
       if (err){
