@@ -10,11 +10,15 @@ var participant = JSON.parse(decodeURI(/participant=(.*?)(&|$)/.exec(document.lo
 
 var invalidAccount = false;
 //TODO would be cleaner to rely on some immutable ID, unfortunately email isn't available
-if (appData.admin && !(participant.person.displayName === "AirPair Experts" ||
-      participant.person.displayName === "Air Pair")){
+if (appData.admin &&
+      !(participant.person.displayName === "AirPair Experts" ||
+        participant.person.displayName === "Air Pair" ||
+        participant.person.displayName === "Customer Support" ||
+      )
+    ){
   invalidAccount = true;
   alert("We cannot start the hangout recording. You must be logged in with" +
-    "the experts@airpair.com team@airpair.com or nda@airpair.com account. "
+    "the experts@airpair.com team@airpair.com or support@airpair.com account. "
 
   );
 }
