@@ -65,10 +65,9 @@ matchmaking = ->
 module.exports = ->
 
   before (done) ->
-    SETUP.initTags ->
-      db.ensureDoc 'Request', data.requests.matchSwift, ->
-        reqs.matchSwift = data.requests.matchSwift
-        SETUP.ensureV1LoggedInExpert 'louf', ->
-          done()
+    db.ensureDoc 'Request', data.requests.matchSwift, ->
+      reqs.matchSwift = data.requests.matchSwift
+      SETUP.ensureV1LoggedInExpert 'louf', ->
+        done()
 
   describe "matchmaking: ".subspec, matchmaking

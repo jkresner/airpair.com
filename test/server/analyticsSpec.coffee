@@ -14,13 +14,12 @@ module.exports = -> describe "Tracking: ".subspec, ->
   @timeout(10000)
 
   before (done) ->
-    SETUP.addUserWithRole 'jkap', 'editor', ->
-      SETUP.initTags ->
-        LOGIN 'jkap', (s) ->
-          SETUP.initWorkshops ->
-            SETUP.createAndPublishPost s, {title: postTitle,slug:postSlug}, ->
-              SETUP.analytics.on()
-              done()
+    SETUP.addEditorUserWithGitHub 'jkap', ->
+      LOGIN 'jkap', (s) ->
+        SETUP.initWorkshops ->
+          SETUP.createAndPublishPost s, {title: postTitle,slug:postSlug}, ->
+            SETUP.analytics.on()
+            done()
 
 
   it 'Can track an anonymous post view', itDone ->

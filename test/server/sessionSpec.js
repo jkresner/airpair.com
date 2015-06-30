@@ -411,8 +411,7 @@ function profileAuthenticated() {
 module.exports = () => {
 
   before(function(done) {
-    SETUP.initPosts( () => {
-      SETUP.initTags(done) })
+    SETUP.initPosts(done)
   })
 
   describe("API: ".subspec, api)

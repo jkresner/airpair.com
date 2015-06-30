@@ -524,9 +524,7 @@ module.exports = ->
   @timeout(6000)
 
   before (done) ->
-    SETUP.initPosts ->
-      SETUP.initTags ->
-        SETUP.initTemplates(done)
+    SETUP.initPosts done
 
   describe("Signup: ".subspec, signup)
   describe("Login: ".subspec, login)

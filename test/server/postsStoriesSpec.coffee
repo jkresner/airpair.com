@@ -2,9 +2,7 @@ module.exports = -> describe "API: ", ->
 
   before (done) ->
     SETUP.analytics.stub()
-    SETUP.addUserWithRole 'jkap', 'editor', ->
-      SETUP.initTags ->
-        SETUP.initTemplates done
+    SETUP.addEditorUserWithGitHub 'jkap', done
 
   after ->
     SETUP.analytics.restore()

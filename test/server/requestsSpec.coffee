@@ -439,11 +439,9 @@ review = ->
 module.exports = ->
 
   before (done) ->
-    SETUP.initTags ->
-      SETUP.createNewExpert 'abha', {}, (s,exp) ->
-        abhaKey = s.userKey
-        # $log('abha', s.userKey, exp)
-        done()
+    SETUP.createNewExpert 'abha', {}, (s,exp) ->
+      abhaKey = s.userKey
+      done()
 
 
   describe "Create: ".subspec, create
