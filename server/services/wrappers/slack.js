@@ -1,6 +1,6 @@
 var logging                       = true
 var {select}                      = require('../chats.data')
-var {owner,support,pairbot}       = config.chat.slack
+var {owner,support,pairbot,jk}    = config.chat.slack
 
 
 var clientCall = (user, method, data, cbProp, select, cb) => {
@@ -47,11 +47,16 @@ var wrapper = {
     clientCall(user, 'auth.test', null, null, null, cb)
   },
 
-  updateMe(user, cb)
-  {
-    throw Error("not impl")
-    // clientCall(user, 'auth.test', null, null, null, cb)
-  },
+  // updateMe(user, first_name, last_name, cb)
+  // {
+  //   clientCall(user, 'users.info', { user:user.id }, 'user', null, (ee, r)=>{
+  //     if (ee) return cb(ee)
+  //     var {profile} = r
+  //     $log('profile', r.id)
+  //     // var body = {users:r.id,profile:profile,set_active:true,_attempts:1}
+  //     clientCall(user, 'users.profile.set', profile, null, null, cb)
+  //   })
+  // },
 
   getChannels(cb)
   {
@@ -185,6 +190,7 @@ var wrapper = {
       if (e) return cb(e)
 
       if (!_.contains(members,(m)=>m==pairbot.id)) members.push(pairbot.id)
+      if (!_.contains(members,(m)=>m==jk.id)) members.push(jk.id)
       for (var m of members)
         clientCall(user, 'groups.invite', { channel:group.id, user:m }, null, null, (e,invite)=>{})
 
