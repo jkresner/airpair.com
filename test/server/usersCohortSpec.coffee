@@ -60,7 +60,7 @@ mailsubscriptions = ->
   describe "Logged in: ".subspec, ->
 
     before (done) ->
-      SETUP.addUserWithRole 'jkap', 'editor', ->
+      SETUP.addEditorUserWithGitHub 'jkap', ->
         done()
 
     it.skip 'Can see mail subscribed & unsubscribed lists for loggedInUser', itDone ->

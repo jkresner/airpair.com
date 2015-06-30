@@ -282,9 +282,7 @@ module.exports = ->
   @timeout(2000)
 
   before (done) ->
-    SETUP.initPosts ->
-      SETUP.initTags ->
-        SETUP.initTemplates(done)
+    SETUP.initPosts done
 
   describe("Get: ".subspec, get)
   describe("Create: ".subspec, create)

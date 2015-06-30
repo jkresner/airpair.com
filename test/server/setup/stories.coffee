@@ -76,24 +76,35 @@ stories = {
   addAndLoginLocalUserWithEmailVerified,
   addAndLoginLocalUserWithPayMethod,
 
-  addUserWithRole: (userKey, role, done) ->
+
+  addAndLoginUserWithRole: (userKey, role, done) ->
     session = dataHelpers.userSession()
 
     # so we aren't aliasing on every login
     session.sessionID = 'test'+userKey
 
-    # Add an administrator
+    addAndLoginLocalUser userKey, (s) ->
+      LOGIN 'admin', ->
+        PUT "/adm/users/#{data.users[s.userKey]._id}/role/#{role}", {}, {}, (user) ->
+          expect(user.roles.length).to.equal(1)
+          expect(user.roles[0]).to.equal(role)
+          data.users[s.userKey].roles = user.roles
+          LOGIN s.userKey, (sWithRole) ->
+            done(sWithRole)
+
+
+  addEditorUserWithGitHub: (userKey, done) ->
+    session = dataHelpers.userSession()
+    # so we aren't aliasing on every login
+    session.sessionID = 'test'+userKey
+
     UserService.googleLogin.call session, data.oauth[userKey], (e,r) ->
       if (!r.roles || !r.roles.length)
-        UserService.toggleUserInRole.call {user:r}, r._id, role, (ee,rr) ->
-          if (role == 'editor')
-            gh = data.users.jkya.social.gh
-            db.Models.User.findOneAndUpdate {_id:r._id}, {social: {gh}}, {upsert:true}, (err, rrr) ->
-              data.users[userKey] = rrr
-              done(err,rrr)
-          else
-            data.users[userKey] = rr
-            done(e,rr)
+        UserService.toggleUserInRole.call {user:r}, r._id, "editor", (ee,rr) ->
+          gh = data.users.jkya.social.gh
+          db.Models.User.findOneAndUpdate {_id:r._id}, {social: {gh}}, {upsert:true}, (err, rrr) ->
+            data.users[userKey] = rrr
+            done(err,rrr)
       else
         data.users[userKey] = r
         done(null, r)
