@@ -50,10 +50,9 @@ module.exports = function(config)
     if (config.analytics.on)
       global.analytics    = require('./../services/analytics').analytics
   }
+
+  // set ULIMIT on machine
+  // - see: http://askubuntu.com/questions/162229/how-do-i-increase-the-open-files-limit-for-a-non-root-user
+  require('http').globalAgent.maxSockets = config.http.max_sockets
 }
-
-
-
-
-
 
