@@ -37,7 +37,8 @@ var roles = {
       return _.find(o.participants,(p)=>_.idsEqual(p.info._id,user._id)) != null
     },
     isParticipantOrAdmin(user, o) {
-      return isAdmin(user) || roles.booking.isParticipant(user,o)
+      var isSpinner = _.contains(user.roles, 'spinner')
+      return isAdmin(user) || isSpinner || roles.booking.isParticipant(user,o)
     }
   },
   post: {
