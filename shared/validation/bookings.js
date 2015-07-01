@@ -40,7 +40,7 @@ var validation = {
 
   updateByAdmin(user, original, update)
   {
-    // $log('validation.updateByAdmin', user, original, update)
+    $log('validation.updateByAdmin'.magenta, user, original, update)
 
     if (!update.type) return `Booking type required`
     if (!update.minutes) return `Booking minutes required`
@@ -54,8 +54,8 @@ var validation = {
     if (original.gcal && update.sendGCal) return `Updating gCAL events not yet supported`
 
     if (update.status != original.status) {
-      if (update.status == 'confirmed')
-        return `Cannot set Booking confirmed status manually. Participant must confirm time`
+      // if (update.status == 'confirmed')
+        // return `Cannot set Booking confirmed status manually. Participant must confirm time`
       if (update.status == 'complete')
         return `Cannot set Booking complete status manually. Release expert payment, save the recording & get customer feedback`
     }

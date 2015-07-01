@@ -43,6 +43,7 @@ var middleware = {
 
   adm:          authorizeRole('admin'),
   plnr:         authorizeRole('pipeliner'),
+  spnr:         authorizeRole('spinner'),
   mm:           authorizeRole('matchmaker'),
   editor:       authorizeRole('editor'),
   reviewer:     authorizeRole('reviewer'),

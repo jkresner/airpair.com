@@ -23,6 +23,9 @@ module.exports = {
   gniv: { name:"Gregory Nic",email:"gnicvy@msn.com" },
   grnv: { name:"Gregory Nicola",email:"gnicola@msn.com" },
 
+  nabk: { name:"NA Bookings",email:"noaccess@bookings.com" },
+  adbk: { name:"Admin Bookings",email:"adm@bookings.com" },
+
   mris: { name:"Mike Risse",email:"mike@madeye.io" },
   mirs: { name:"Mike Risse",email:"mike.risse@hotmail.com" },
   miks: { name:"Mike Risse",email:"miks.ri@hotmail.com" },
@@ -49,6 +52,7 @@ module.exports = {
 
   somr: { name:"Somik Rana",email:"somik@gmail.com" },
   soik: { name:"Somik Rana",email:"somik@hotmail.com" },
+  sora: { name:"Somik Rana",email:"somik@mail.com" },
   kelf: { name:"Kelly Ford",email:"kelf@gmail.com" },
   kfor: { name:"Kelly Ford",email:"kellyford@hotmail.com" },
   chup: { name:"Chris Upton",email:"chrisupton@hotmail.com" },

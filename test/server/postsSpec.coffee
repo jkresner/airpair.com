@@ -400,8 +400,8 @@ module.exports = ->
   before (done) ->
     if (config.auth.github.org == 'airpair')
       throw Error('Cant run post tests against prod github org')
-    SETUP.addUserWithRole 'edap', 'editor', ->
-    SETUP.addUserWithRole 'jkap', 'editor', ->
+    SETUP.addEditorUserWithGitHub 'edap', ->
+    SETUP.addEditorUserWithGitHub 'jkap', ->
       done()
 
 

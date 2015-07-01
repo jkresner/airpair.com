@@ -15,8 +15,9 @@
       <br />
       <select ng-model="role">
         <option>admin</option>
-        <option>editor</option>
+        <option>spinner</option>
         <option>pipeliner</option>
+        <option>editor</option>
         <option>reviewer</option>
       </select>
       <button class="btn" ng-click="toggleRole(selectedUser._id, role)">Toggle role</button>
@@ -28,16 +29,23 @@
         <li ng-repeat="user in admins">{{ user.name }}</li>
       </ul>
     </div>
+
     <div>
-      <h3>Editors</h3>
-      <ul class="users editors">
-        <li ng-repeat="user in editors">{{ user.name }}</li>
+      <h3>Spinners</h3>
+      <ul class="users spinners">
+        <li ng-repeat="user in spinners">{{ user.name }}</li>
       </ul>
     </div>
     <div>
       <h3>Pipeliners</h3>
       <ul class="users pipeliners">
         <li ng-repeat="user in pipeliners">{{ user.name }}</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Editors</h3>
+      <ul class="users editors">
+        <li ng-repeat="user in editors">{{ user.name }}</li>
       </ul>
     </div>
     <div>

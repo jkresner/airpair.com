@@ -13,7 +13,6 @@ var setup = {
     })
   },
 
-
   initStubs()
   {
     return {
@@ -28,18 +27,6 @@ var setup = {
   {
     var user = data.oauth[userKey]
     UserService.upsertProviderProfile(null, provider, user, done)
-  },
-
-  initTags(done)
-  {
-    done()
-    // db.initCollectionData('Tag', {slug:'angularjs'}, _.values(data.tags), done)
-  },
-
-  initTemplates(done)
-  {
-    done()
-    // db.initCollectionData('Template', {key:'post-repo-readme'}, data.templates, done)
   },
 
   initPosts(done)

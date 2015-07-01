@@ -22,7 +22,7 @@ api = ->
 
   before (done) ->
     SETUP.analytics.on()
-    SETUP.initTags(done)
+    done()
 
   it 'Does not exec analytics or store session on 404', itDone ->
     trackSpy = sinon.spy(analytics, 'track')

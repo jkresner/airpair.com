@@ -1,6 +1,7 @@
 var validRoles = [
     'admin',       // Get access to all admin backend app
     'dev',         // Get application error notification
+    'spinner',     // Get bookings emails
     'pipeliner',   // Get pipeline emails
     'editor',      // Can publish posts
     'reviewer',    // Can see unpublished posts
