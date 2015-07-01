@@ -100,4 +100,50 @@ module.exports = -> describe "ADM: ".subspec, ->
             DONE()
 
 
+
+  it.skip 'Can update booking and send invitations as admin', itDone ->
+    SETUP.addAndLoginLocalUserWhoCanMakeBooking 'mkis', (s) ->
+      airpair1 = datetime: moment().add(2, 'day'), minutes: 120, type: 'private', payMethodId: s.primaryPayMethodId
+      POST "/bookings/#{data.experts.dros._id}", airpair1, {}, (booking1) ->
+        expect(booking1._id).to.exist
+        expect(booking1.customerId).to.exist
+        expect(booking1.minutes).to.equal(120)
+        expect(booking1.orderId).to.exist
+        expect(booking1.type).to.exist
+        expect(booking1.participants.length).to.equal(2)
+        LOGIN 'admin', (sadm) ->
+          ups = start: moment().add(3,'days').format('x'), sendGCal: { notify: true }
+          bUps = _.extend booking1, ups
+          bUps.participants[0].info.email = 'jk@airpair.com'
+          bUps.participants[1].info.email = 'jkresner@gmail.com'
+          PUT "/adm/bookings/#{booking1._id}", bUps, {}, (bs1) ->
+            $log('bs1', bs1)
+            expect(bs1.gcal).to.exist
+            expect(bs1.gcal.attendees.length).to.equal(2)
+            DONE()
+
+
+  it 'Can get google calendars', itDone ->
+    # use this function if you need an id for a calendar you want to use to test
+    stub = SETUP.stubGoogleCalendar 'calendarList', 'list', data.wrappers.google_cal_list
+    Wrappers.Calendar.listCalendars (e,r) ->
+      $log('e,', e, 'r', r)
+      stub.restore()
+      DONE()
+
+
+  it.only 'Can create google calendar invite', itDone ->
+    config.calendar.on = true
+    stub = SETUP.stubGoogleCalendar 'calendarList', 'list', data.wrappers.google_cal_list
+    name = "create cal test #{timeSeed()}"
+    sendNotification = false
+    attenddees = [{email:"nicholas.g.gregory@gmail.com"},{email:'jkresner@gmail.com'}]
+    Wrappers.Calendar.createEvent name, sendNotification, moment(), 60, attenddees, "It's a test", 'jk', (e,r) ->
+      $log('event created'.yellow, e, r)
+      expect(r).to.exist
+      config.calendar.on = false
+      DONE()
+
+
+
   it.skip "Can add more participants to bookings", itDone ->
