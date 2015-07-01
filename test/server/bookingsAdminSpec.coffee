@@ -2,8 +2,8 @@ snggsId = "52127d5fc6a5870200000007"
 adamKerrId = "53041710a9a333020000001d"
 BookingUtil = require("../../shared/bookings")
 
-module.exports = -> describe "ADM: ".subspec, ->
 
+scheduling = ->
 
   before (done) ->
     done()
@@ -100,4 +100,140 @@ module.exports = -> describe "ADM: ".subspec, ->
             DONE()
 
 
+  # # this was previously broken + skipped
+  # it.skip 'Can update booking and send invitations as admin', itDone ->
+  #   SETUP.addAndLoginLocalUserWhoCanMakeBooking 'mkis', (s) ->
+  #     airpair1 = datetime: moment().add(2, 'day'), minutes: 120, type: 'private', payMethodId: s.primaryPayMethodId
+  #     POST "/bookings/#{data.experts.dros._id}", airpair1, {}, (booking1) ->
+  #       expect(booking1._id).to.exist
+  #       expect(booking1.customerId).to.exist
+  #       expect(booking1.minutes).to.equal(120)
+  #       expect(booking1.orderId).to.exist
+  #       expect(booking1.type).to.exist
+  #       expect(booking1.participants.length).to.equal(2)
+
+  #       LOGIN 'admin', (sadm) ->
+  #         ups = start: moment().add(3,'days').format('x'), sendGCal: {notify: true}
+  #         bUps = _.extend booking1, ups
+  #         bUps.participants[0].info.email = 'jk@airpair.com'
+  #         bUps.participants[1].info.email = 'jkresner@gmail.com'
+  #         PUT "/adm/bookings/#{booking1._id}", bUps, {}, (bs1) ->
+  #           $log('bs1', bs1)
+  #           expect(bs1.gcal).to.exist
+  #           expect(bs1.gcal.attendees.length).to.equal(2)
+  #           DONE()
+
+
+  it 'Can list google calendars', itDone ->
+    # use this function if you need an id for a calendar you want to use to test
+    stub = SETUP.stubGoogleCalendar 'calendarList', 'list', data.wrappers.google_cal_list
+    Wrappers.Calendar.listCalendars (e,calendars) ->
+      stub.restore()
+      DONE(e) if e?
+      # $log('calendars', calendars)
+      DONE()
+
+
+  it 'Can create google calendar event', itDone ->
+    stub = SETUP.stubGoogleCalendar 'calendarList', 'list', data.wrappers.google_cal_list
+    name = "create calendar test #{timeSeed()}"
+    send = false
+    description = "it's a test"
+    adminInitials = 'jk'
+    attendees = [
+      {email:"participant1@null.com"},
+      {email:"participant2@null.com"},
+    ]
+    start1 = moment()
+    Wrappers.Calendar.createEvent name, send, start1, 60, attendees, description, adminInitials, (e, event1) ->
+      stub.restore()
+      DONE(e) if e?
+
+      expect(event1).to.exist
+      expectExists event1.id
+      expect(event1.summary).to.equal name
+      expect(event1.description).to.equal description
+      expectLength event1.attendees, 2
+
+      startresult1 = moment event1.start.dateTime
+      expectDatetime start1, startresult1
+
+      DONE()
+
+
+  it 'Can update booking by admin and update calendar event', itDone ->
+
+    updateGcal = _.cloneDeep(data.wrappers.google_cal_create)
+    Wrappers.Calendar.init()
+    stub = sinon.stub Wrappers.Calendar, 'updateEventDateTimes', (id, start, end, cb) -> cb(null, updateGcal)
+
+    SETUP.addAndLoginLocalUserWhoCanMakeBooking 'jkap', (s) ->
+      b = data.bookings.admUpdate
+      b.createdById = s._id
+      db.ensureDocs 'Booking', [b], () ->
+        LOGIN 'admin', (sadm) ->
+          newDateTime = moment()
+          body = _.extend b, {datetime:newDateTime}
+          PUT "/adm/bookings/#{b._id}", body, {}, (r) ->
+            expectSameMoment(r.datetime, newDateTime)
+            expect(stub.calledOnce).to.be.true
+            expect(stub.args[0][0]).to.equal(b.gcal.id)
+            expectSameMoment(stub.args[0][1],newDateTime)
+            expectSameMoment(stub.args[0][2],newDateTime.add(body.minutes,'minutes'))
+            stub.restore()
+            DONE()
+
+
   it.skip "Can add more participants to bookings", itDone ->
+
+
+
+calendar = ->
+
+  it.skip 'Can create and update gcal event through api wrapper', itDone ->
+    config.calendar.on = true
+    # stub = SETUP.stubGoogleCalendar 'events', 'patch', data.wrappers.google_cal_create
+    gcal = data.bookings.admUpdate.gcal
+    # set to 3pm
+    start1 = moment('20150701:15','YYYYMMDDHH:mm').utc()
+    $log start1.toISOString()
+    adminInitials = 'ap'
+    sendnotifications = false
+
+    Wrappers.Calendar.createEvent gcal.summary, sendnotifications, start1, 60, gcal.attendees, gcal.description, adminInitials, (err, event) ->
+      return DONE(err) if err?
+
+      result1 = moment event.start.dateTime
+      start2 = moment('20150710:15','YYYYMMDDHH:mm').utc()
+      end2 = moment('20150711:15','YYYYMMDDHH:mm').utc()
+      expectExists event.id
+      expect(event.kind).to.equal gcal.kind
+      expect(event.summary).to.equal gcal.summary
+      expect(event.description).to.equal gcal.description
+      expectLength event.attendees, 2
+
+      expectSameMoment(start1.toISOString(), event.start.dateTime)
+      expectDatetime start1, result1
+
+      Wrappers.Calendar.updateEventDateTimes event.id, start2, end2, (err2, event2) ->
+        return DONE(err2) if err2?
+
+        result2 = moment event2.start.dateTime
+        expectExists event2.id
+        expect(event2.id).to.equal event.id
+        expectSameMoment(start2, event2.start.dateTime)
+        expectDatetime start2, result2
+        expectSameMoment(end2, event2.end.dateTime)
+        DONE()
+
+
+
+module.exports = ->
+
+  @timeout 100000
+
+  describe "ADM: ".subspec, ->
+    describe "Scheduling: ".subspec, scheduling
+
+  describe "Calendar: ".subspec, ->
+    describe "Wrapper: ".subspec, calendar

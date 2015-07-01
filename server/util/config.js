@@ -85,9 +85,9 @@ var cfg = {
   calendar: {
     on: false,
     google: {
-      ownerRefreshToken: 'setyourenvironentvarible',
-      owner: 'setyourenvironentvarible@airpair.com',
-      calendarId: 'setyourenvironentvarible@airpair.com'
+      ownerRefreshToken: process.env.CALENDAR_GOOGLE_OWNER_REFRESHTOKEN || 'setyourenvironentvarible',
+      owner: process.env.CALENDAR_GOOGLE_OWNER || 'setyourenvironentvarible@airpair.com',
+      calendarId: process.env.CALENDAR_GOOGLE_CALENDARID || 'setyourenvironentvarible@airpair.com',
     }
   },
   timezone: {

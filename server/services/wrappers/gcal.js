@@ -30,13 +30,10 @@ var wrapper = {
     wrapper.api = google.calendar('v3')
   },
 
-  // listCalendars(cb) {
-  //   gcal.calendarList.list({ userId: 'me', auth }, function(err, data) {
-  //     if (err) return console.log('An error occured', err)
-  //     console.log('data', data)
-  //     cb(data)
-  //   })
-  // },
+  //-- user this for dev
+  listCalendars(cb) {
+    wrapper.api.calendarList.list({ auth }, cb)
+  },
 
   listEvents(cb) {
     wrapper.api.events.list({ auth, calendarId }, function(err, data) {
@@ -46,30 +43,75 @@ var wrapper = {
     })
   },
 
-  createEvent(eventName, sendNotifications, start, minutes, attendees, description, admInitials, cb) {
-    if (!config.calendar.on) return cb()
-    var end = { dateTime: moment(start).add(minutes,'minutes').toISOString() } //.substring(0,16)+'-08:00' }
-    var start = { dateTime: start.toISOString() } //.substring(0,16)+'-08:00' }
-
-    if (logging) $log('createEvent', start, end, attendees, eventName, admInitials, description)
-    var summary = eventName
-    var colorId = (admInitials) ? owner2colorIndex[admInitials] : undefined
-    var hangoutLink = null
-    var resource = { summary, start, end, attendees, description, colorId, hangoutLink }
-
-    wrapper.api.events.insert({ auth, calendarId, sendNotifications, resource }, function(err, data) {
+  getEvent(eventId, cb) {
+    wrapper.api.events.get({ auth, calendarId, eventId }, function(err, event) {
       if (err) return cb(err)
-      cb(null, data)
+      cb(null, event)
     })
   },
-  // updateEvent(event, cb) {
-  //   var eventId = event.id
-  //   gcal.events.patch({ auth, calendarId, eventId, params: event }, function(err, data) {
-  //     if (err) return console.log('An error occured', err)
-  //     console.log('events', data.length)
-  //     cb(data)
-  //   })
-  // }
+
+  createEvent(eventName, sendNotifications, start, minutes, attendees, description, admInitials, cb) {
+    if (!config.calendar.on) {
+      console.warn('config.calendar is off'.red);
+      return cb()
+    }
+
+    var colorId = undefined
+    if (admInitials) {
+      colorId = owner2colorIndex[admInitials]
+    }
+
+    var event = {
+      start:       { dateTime: moment(start).toISOString() },
+      end:         { dateTime: moment(start).add(minutes,'minutes').toISOString() },
+      summary:     eventName,
+      colorId:     colorId,
+      attendees:   attendees,
+      description: description,
+      reminders: {
+        useDefault: false,
+        overrides: [
+          {'method': 'email', 'minutes': 24 * 60},
+        ],
+      },
+    }
+
+    var data = {
+      auth: auth,
+      calendarId: calendarId,
+      sendNotifications: sendNotifications,
+      resource: event,
+    }
+
+    if (logging) $log('createEvent:'.yellow, event)
+
+    wrapper.api.events.insert(data, function(err, result) {
+      if (err) return cb(err)
+      cb(null, result)
+    })
+  },
+
+  updateEventDateTimes(eventId, start, end, cb) {
+    if (!config.calendar.on) return cb()
+
+    var params = {
+      start: {dateTime: start.toISOString()},
+      end:   {dateTime: end.toISOString()},
+    }
+
+    var data = {
+      auth: auth,
+      calendarId: calendarId,
+      eventId: eventId,
+      resource: params,
+    }
+
+    wrapper.api.events.patch(data, function(err2, event2) {
+      if (err2) return cb(err2)
+      cb(null, event2)
+    })
+  }
+
 }
 
 module.exports = wrapper;

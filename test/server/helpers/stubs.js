@@ -73,6 +73,16 @@ var stubs = {
     })
   },
 
+
+  stubGoogleCalendar(objectName, fnName, response) {
+    if (withoutStubs) return emptyStub()
+    if (!Wrappers.Calendar.api) Wrappers.Calendar.init()
+    return sinon.stub(Wrappers.Calendar.api[objectName], fnName, (obj,cb) => {
+      cb(null, response)
+    })
+  },
+
+
   stubGoogleTimezone(response) {
     if (withoutStubs) return emptyStub()
     return sinon.stub(Wrappers.Timezone,'getTimezoneFromCoordinates', (loc,n,cb) => {
