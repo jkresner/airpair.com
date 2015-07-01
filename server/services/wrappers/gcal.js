@@ -52,7 +52,7 @@ var wrapper = {
 
   createEvent(eventName, sendNotifications, start, minutes, attendees, description, admInitials, cb) {
     if (!config.calendar.on) {
-      console.warn('config.calendar is off!'.red);
+      console.warn('config.calendar is off'.red);
       return cb()
     }
 
@@ -92,6 +92,8 @@ var wrapper = {
   },
 
   updateEventDateTimes(eventId, start, end, cb) {
+    if (!config.calendar.on) return cb()
+
     var params = {
       start: {dateTime: start.toISOString()},
       end:   {dateTime: end.toISOString()},
