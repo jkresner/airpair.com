@@ -30,13 +30,10 @@ var wrapper = {
     wrapper.api = google.calendar('v3')
   },
 
-  // listCalendars(cb) {
-  //   gcal.calendarList.list({ userId: 'me', auth }, function(err, data) {
-  //     if (err) return console.log('An error occured', err)
-  //     console.log('data', data)
-  //     cb(data)
-  //   })
-  // },
+  //-- user this for dev
+  listCalendars(cb) {
+    wrapper.api.calendarList.list({ auth }, cb)
+  },
 
   listEvents(cb) {
     wrapper.api.events.list({ auth, calendarId }, function(err, data) {
@@ -57,6 +54,7 @@ var wrapper = {
     var hangoutLink = null
     var resource = { summary, start, end, attendees, description, colorId, hangoutLink }
 
+    $log('insert', { auth, calendarId, sendNotifications, resource })
     wrapper.api.events.insert({ auth, calendarId, sendNotifications, resource }, function(err, data) {
       if (err) return cb(err)
       cb(null, data)
