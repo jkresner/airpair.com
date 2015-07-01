@@ -5,9 +5,30 @@ module.exports = -> describe "Credit: ".subspec, ->
 
   @timeout 10000
 
+  it '300 credit purchase', itDone ->
+    SETUP.addAndLoginLocalUserWithPayMethod 'somr', (s) ->
+      o = total: 300, payMethodId: s.primaryPayMethodId
+      POST "/billing/orders/credit", o, {}, (r) ->
+        expect(r._id).to.exist
+        expect(_.idsEqual(r.userId, s._id)).to.be.true
+        expect(_.idsEqual(r.by._id, s._id)).to.be.true
+        expect(r.lineItems.length).to.equal(1)
+        expect(r.lineItems[0].type).to.equal('credit')
+        expect(r.lineItems[0].unitPrice).to.equal(300)
+        expect(r.lineItems[0].qty).to.equal(1)
+        expect(r.lineItems[0].total).to.equal(300)
+        expect(r.lineItems[0].profit).to.equal(0)
+        expect(r.lineItems[0].balance).to.equal(300)
+        expect(r.lineItems[0].info.remaining).to.equal(300)
+        expect(r.lineItems[0].info.name).to.equal('$300 Credit')
+        expect(r.lineItems[0].info.source).to.equal('$300 Credit Purchase')
+        expect(r.total).to.equal(300)
+        expect(r.profit).to.equal(0)
+        DONE()
+
 
   it '500 credit purchase', itDone ->
-    SETUP.addAndLoginLocalUserWithPayMethod 'somr', (s) ->
+    SETUP.addAndLoginLocalUserWithPayMethod 'sora', (s) ->
       o = total: 500, payMethodId: s.primaryPayMethodId
       POST "/billing/orders/credit", o, {}, (r) ->
         expect(r._id).to.exist
