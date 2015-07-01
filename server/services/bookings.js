@@ -32,13 +32,8 @@ var get = {
 
   getById(id, cb) {
     svc.getById(id, setAvatarsCB((e,r)=>{
-      if (r && !Roles.isAdmin(this.user)) {
-        var isParticipant = false
-        for (var p of r.participants) {
-          if (_.idsEqual(p.info._id, this.user._id)) isParticipant = true
-        }
-        if (!isParticipant) return cb(Error(`You[${this.user._id}] are not a participants to this booking[${r._id}]`))
-      }
+      if (r && !Roles.booking.isParticipantOrAdmin(this.user, r))
+        return cb(Error(`You[${this.user._id}] are not a participants to this booking[${r._id}]`))
       cb(e,r)
     }))
   },

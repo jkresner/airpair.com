@@ -1,6 +1,6 @@
 var API = require('../api/_all')
 var {authd,setAnonSessionData} = require('../middleware/auth')
-var {adm,plnr,emailv} = require('../middleware/authz')
+var {adm,spnr,emailv} = require('../middleware/authz')
 var {bodyParam,populateUser,populateExpert,json2mb} = require('../middleware/data')
 var Router = require('express').Router
 
@@ -15,21 +15,22 @@ function pipeline() {
     // .get('/experts/mojo/me', API.Mojo.getMatchesForRequest)
     // .get('/experts/dashboard', API.Experts.getMatchesForDashboard)
     // .get('/experts', API.Experts.getForExpertsPage)
-    .get('/matchmaking/requests/waiting', plnr, API.Requests.getWaitingForMatchmaker)
-    .get('/matchmaking/requests/:id', plnr, API.Requests.getByIdForMatchmaker)
-    .put('/matchmaking/requests/:request/add/:expertshaped', plnr, API.Requests.addSuggestion)
-    .put('/matchmaking/experts/:expertshaped/matchify/:request', plnr, API.Mojo.updateMatchingStats)
-    .get('/adm/bookings/:start/:end/:userId?', plnr, API.Bookings.getByQueryForAdmin)
-    .get('/adm/bookings/:id', plnr, API.Bookings.getByIdForAdmin)
-    .put('/adm/bookings/:booking/hangout', plnr, API.Bookings.addHangout)
-    .put('/adm/bookings/:booking/recording', plnr, API.Bookings.addYouTubeData)
-    .delete('/adm/bookings/:booking/recording/:recordingId', plnr, API.Bookings.deleteRecording)
-    .put('/adm/bookings/:booking', plnr, API.Bookings.updateByAdmin)
-    .put('/adm/bookings/:booking/:order/:request/:id/swap', plnr, API.Bookings.cheatExpertSwap)
-    .put('/adm/bookings/:booking/create-chat', plnr, API.Bookings.createChat)
-    .put('/adm/bookings/:booking/associate-chat', plnr, API.Bookings.associateChat)
-    .put('/adm/chat/invite-to-team/:userId', plnr, API.Chat.inviteToTeam)
-    .post('/adm/bookings/:booking/note', plnr, API.Bookings.addNote)
+    .get('/matchmaking/requests/waiting', spnr, API.Requests.getWaitingForMatchmaker)
+    .get('/matchmaking/requests/:id', spnr, API.Requests.getByIdForMatchmaker)
+    .put('/matchmaking/requests/:request/add/:expertshaped', spnr, API.Requests.addSuggestion)
+    .put('/matchmaking/experts/:expertshaped/matchify/:request', spnr, API.Mojo.updateMatchingStats)
+    .get('/adm/bookings/:start/:end/:userId?', spnr, API.Bookings.getByQueryForAdmin)
+    .get('/adm/bookings/:id', spnr, API.Bookings.getByIdForAdmin)
+    .put('/adm/bookings/:booking/hangout', spnr, API.Bookings.addHangout)
+    .put('/adm/bookings/:booking/recording', spnr, API.Bookings.addYouTubeData)
+    .delete('/adm/bookings/:booking/recording/:recordingId', spnr, API.Bookings.deleteRecording)
+    .put('/adm/bookings/:booking', spnr, API.Bookings.updateByAdmin)
+    .put('/adm/bookings/:booking/:order/:request/:id/swap', spnr, API.Bookings.cheatExpertSwap)
+    .put('/adm/bookings/:booking/create-chat', spnr, API.Bookings.createChat)
+    .put('/adm/bookings/:booking/associate-chat', spnr, API.Bookings.associateChat)
+    .put('/adm/chat/invite-to-team/:userId', spnr, API.Chat.inviteToTeam)
+    .post('/adm/bookings/:booking/note', spnr, API.Bookings.addNote)
+    .post('/experts/:expert/note', spnr, API.Experts.addNote)
 }
 
 function admin() {
@@ -75,7 +76,6 @@ function admin() {
     .get('/experts/new', API.Experts.getNewForAdmin)
     .get('/experts/active', API.Experts.getActiveForAdmin)
     .get('/experts/:id', API.Experts.getByIdForAdmin)
-    .post('/experts/:expert/note', plnr, API.Experts.addNote)
     .delete('/experts/:expert', API.Experts.deleteById)
 }
 
