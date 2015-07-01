@@ -62,8 +62,8 @@ var wrapper = {
     }
 
     var event = {
-      start:       { dateTime: moment(start).utc().format() },
-      end:         { dateTime: moment(start).add(minutes,'minutes').utc().format() },
+      start:       { dateTime: moment(start).toISOString() },
+      end:         { dateTime: moment(start).add(minutes,'minutes').toISOString() },
       summary:     eventName,
       colorId:     colorId,
       attendees:   attendees,
@@ -93,8 +93,8 @@ var wrapper = {
 
   updateEventDateTimes(eventId, start, end, cb) {
     var params = {
-      start: {dateTime: start.utc().format()},
-      end:   {dateTime: end.utc().format()},
+      start: {dateTime: start.toISOString()},
+      end:   {dateTime: end.toISOString()},
     }
 
     var data = {

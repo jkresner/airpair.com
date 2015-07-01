@@ -190,10 +190,13 @@ scheduling = ->
 
 calendar = ->
 
-  it 'Can create and update gcal event through api wrapper', itDone ->
+  it.skip 'Can create and update gcal event through api wrapper', itDone ->
+    config.calendar.on = true
     # stub = SETUP.stubGoogleCalendar 'events', 'patch', data.wrappers.google_cal_create
     gcal = data.bookings.admUpdate.gcal
-    start1 = moment()
+    # set to 3pm
+    start1 = moment('20150701:15','YYYYMMDDHH:mm').utc()
+    $log start1.toISOString()
     adminInitials = 'ap'
     sendnotifications = false
 
@@ -201,13 +204,15 @@ calendar = ->
       return DONE(err) if err?
 
       result1 = moment event.start.dateTime
-      start2 = moment(start1).add 10, 'days'
-      end2 = moment(start2).add 60, 'minutes'
+      start2 = moment('20150710:15','YYYYMMDDHH:mm').utc()
+      end2 = moment('20150711:15','YYYYMMDDHH:mm').utc()
       expectExists event.id
       expect(event.kind).to.equal gcal.kind
       expect(event.summary).to.equal gcal.summary
       expect(event.description).to.equal gcal.description
       expectLength event.attendees, 2
+
+      expectSameMoment(start1.toISOString(), event.start.dateTime)
       expectDatetime start1, result1
 
       Wrappers.Calendar.updateEventDateTimes event.id, start2, end2, (err2, event2) ->
@@ -216,7 +221,9 @@ calendar = ->
         result2 = moment event2.start.dateTime
         expectExists event2.id
         expect(event2.id).to.equal event.id
+        expectSameMoment(start2, event2.start.dateTime)
         expectDatetime start2, result2
+        expectSameMoment(end2, event2.end.dateTime)
         DONE()
 
 
