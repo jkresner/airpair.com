@@ -2,6 +2,10 @@
 <div class="creditChoice">
   <label class="control-label" for=""></label>
 
+  <input name="creditAmount" ng-model="creditAmount" type="radio" value="300">
+  <span>$300</span>
+  <em ng-if="creditAmount == 300"></em>
+
   <input name="creditAmount" ng-model="creditAmount" type="radio" value="500">
   <span>$500</span>
   <em ng-if="creditAmount == 500"></em>

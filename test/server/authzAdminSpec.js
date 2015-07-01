@@ -3,10 +3,6 @@ var UserService = require('../../server/services/users')
 module.exports = () => describe("Authorization: ".subspec, function() {
 
 
-  before(function(done) {
-    SETUP.initTags(done)
-  })
-
   it('Cannot grant roles as non-admin', itDone(function(done) {
     SETUP.addLocalUser('joem', {}, function(userKey) {
       LOGIN(userKey, function() {
