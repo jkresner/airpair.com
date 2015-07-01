@@ -8,8 +8,8 @@ var validation = {
   },
 
   buyCredit(user, total, coupon, paymethodId) {
-    if (total != 500 && total != 1000 && total != 3000 && total != 5000)
-      return `Can purchase only 500, 1000, 3000, 5000 amounts of credit`
+    if (total != 300 && total != 500 && total != 1000 && total != 3000 && total != 5000)
+      return `Can purchase only 300, 1000, 3000, 5000 amounts of credit`
 
     if (!paymethodId)
       return `Paymethod requried`
