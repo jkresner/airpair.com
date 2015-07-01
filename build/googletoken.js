@@ -19,12 +19,6 @@
 module.exports = function(gulp, config, options, callback) {
 
  return function() {
-  console.log("********************************************************************************")
-  console.log("Important: Be sure to deauthorize 'AirPair Dev' before continuing");
-  console.log("If the app is already authorized, no refresh token will be received");
-  console.log("You can do that here: https://security.google.com/settings/security/permissions");
-  console.log("********************************************************************************")
-
   var dev_config = {
     auth: {
       google: {
@@ -60,15 +54,26 @@ module.exports = function(gulp, config, options, callback) {
   setTimeout(function(){
     console.log("");
     console.log("********************************************************************************");
-    console.log('Visit the url: ', url.white);
+    console.log('Open the url:'.yellow, '\n' + url.white);
     console.log("");
-    rl.question('Then enter the code in your browser URL (e.g. 4/gUhj...) here: ', function(code) {
+    rl.question('Then enter the code in your browser URL (e.g. 4/gUhj...#) here: '.yellow, function(code) {
       // request access token
       oauth2Client.getToken(code, function(err, tokens) {
 
-        if (err) console.error("Error retrieving tokens", err);
+        if (err) {
+          console.warn("Error retrieving tokens:".red, err);
+          callback()
+        } else if (!tokens.refresh_token) {
+          console.warn("********************************************************************************")
+          console.warn("Important: Be sure to deauthorize 'AirPair Dev' before continuing".magenta);
+          console.warn("If the app is already authorized, no refresh token will be received".magenta);
+          console.warn("You can do that here: https://security.google.com/settings/security/permissions".magenta);
+          console.warn("********************************************************************************")
+          callback()
+        }
+
         refreshToken = tokens.refresh_token;
-        console.log("Your refresh token is ", refreshToken);
+        console.log("Your refresh token is ".yellow, refreshToken);
         oauth2Client.setCredentials(tokens);
 
         plus.people.get({ userId: 'me', auth: oauth2Client }, function(err2, profile) {
@@ -80,9 +85,17 @@ module.exports = function(gulp, config, options, callback) {
               emailAddress = entry.value;
             }
           });
-          console.log("Add the following line to your ~/.bashrc:");
-          console.log("export AUTH_GOOGLE_REFRESH_TOKEN='" + emailAddress + ":" + refreshToken + "'");
-          callback()
+
+
+        console.log("add the following line to your:  ~/.bashrc".yellow);
+        console.log("\
+export AUTH_GOOGLE_REFRESH_TOKEN='" + emailAddress + ":" + refreshToken + "'\n\
+export CALENDAR_GOOGLE_OWNER_REFRESHTOKEN='" + refreshToken + "'\n\
+export CALENDAR_GOOGLE_OWNER='" + emailAddress + "'\n\
+export CALENDAR_GOOGLE_CALENDARID=''\n\
+        ")
+
+
         });
       });
     });

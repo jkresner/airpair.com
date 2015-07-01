@@ -187,29 +187,13 @@ function updateForAdmin(thisCtx, booking, cb) {
   })
 }
 
-var admin = {
-
-  updateByAdmin(original, update, cb) {
-    // $log('updateByAdmin', original, update)
-    if (!moment(original.datetime).isSame(moment(update.datetime)))
-    {
-      $log('changing the date yea!', original.datetime, update.datetime)
-      original.datetime = update.datetime
-      original.minutes = update.minutes
-    }
-
-    if (original.status != update.status) {
-      $log('changing the status yea!'.cyan, original.status, update.status)
-      original.status = update.status
-    }
-
-    if (update.sendGCal) {
-      var attenddees = []
-      for (var p of update.participants) attenddees.push({email:p.info.email})
-      var cust = _.find(update.participants, (a)=>a.role=='customer')
-      var exp = _.find(update.participants, (a)=>a.role=='expert')
-      var name = `AirPair ${util.firstName(cust.info.name)} + ${util.firstName(exp.info.name)}`
-      var description = `Your matchmaker, will set up a Google
+function createBookingGoogleCalendarEvent(update, cb) {
+  var attendees = []
+  for (var p of update.participants) attendees.push({email:p.info.email})
+  var cust = _.find(update.participants, (a)=>a.role=='customer')
+  var exp = _.find(update.participants, (a)=>a.role=='expert')
+  var name = `AirPair ${util.firstName(cust.info.name)} + ${util.firstName(exp.info.name)}`
+  var description = `Your matchmaker, will set up a Google
 hangout for this session and share the link with you a few
 minutes prior to the session.
 
@@ -218,17 +202,57 @@ on your system. Please let your matchmaker know if you'd like to do
 a dry run.
 
 Booking: https://airpair.com/booking/${original._id}`
-      console.log('update.sendGCal.notify', update.sendGCal.notify)
 
-      if (original.gcal) cb("GCal updated not yet built")
-      else {
-        Wrappers.Calendar.createEvent(name, update.sendGCal.notify, moment(update.datetime), update.minutes, attenddees, description, 'pg', (e,r) => {
-          $log('event created'.yellow, e, r)
-          if (e) return cb(e)
-          original.gcal = r
-          updateForAdmin(this, original, cb)
-        })
-      }
+  Wrappers.Calendar.createEvent(name, tnotify, moment(update.datetime), update.minutes, attendees, description, adminInitials, (e,r) => {
+    if (logging) $log('event created'.yellow, e, r)
+    if (e) return cb(e)
+    original.gcal = r
+    cb(this, original)
+  })
+}
+
+function updateBookingGoogleCalendarEvent(update, sendNotification,cb) {
+  var sendNotification = true //always try for now
+  var {gcal} = update
+  //Calculate start end
+  var start = moment(update.datetime)
+  var end = moment(update.datetime).add(update.minutes,'minutes')
+  Wrappers.Calendar.updateEventDateTimes(gcal.id, start, end, (e,r) => {
+    if (logging) $log('calendar event updated'.yellow, e, updated_gcal)
+    if (e) return cb(e)
+    update.gcal = r
+    cb(this, update)
+  })
+}
+
+var admin = {
+
+  updateByAdmin(original, update, cb) {
+    var isDatetimeUpdate = false
+
+    if (!moment(original.datetime).isSame(moment(update.datetime)))
+    {
+      if (logging) $log('changing the date yea!', original.datetime, update.datetime)
+      original.datetime = update.datetime
+      original.minutes = update.minutes
+      isDatetimeUpdate = true
+    }
+
+    if (original.status != update.status) {
+      if (logging) $log('changing the status yea!'.cyan, original.status, update.status)
+      original.status = update.status
+    }
+
+    var updateCB = (ctx,bk) => updateForAdmin(ctx,bk,cb)
+
+    // the sendGCal flag prevent double-submission from client
+    if (update.sendGCal) {
+      createBookingGoogleCalendarEvent.call(this, update, updateCB)
+    }
+    else if (isDatetimeUpdate) {
+      var sendNotification = true //always try for now
+      if (logging) $log('updating cgal', 'notify', sendNotification)
+      updateBookingGoogleCalendarEvent.call(this, update, sendNotification, updateCB)
     }
     else
       updateForAdmin(this, original, cb)
