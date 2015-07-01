@@ -40,14 +40,16 @@ var validation = {
 
   updateByAdmin(user, original, update)
   {
-    $log('validation.updateByAdmin'.magenta, user, original, update)
+    // $log('validation.updateByAdmin'.cyan, user, original, update)
 
     if (!update.type) return `Booking type required`
     if (!update.minutes) return `Booking minutes required`
     if (!update.createdById) return `Booking createdById required`
     if (!update.status) return `Booking status required`
     if (!update.datetime) return `Booking datetime required`
-    if (!update.orderId) return `Booking orderId required`
+
+    // TODO: this was disabled as a hack for the updateByAdmin call 2015-07-01 (jk+gn)
+    // if (!update.orderId) return `Booking orderId required`
     if (update.order) return `Booking update should not include order join object`
     if (update.request) return `Booking update should not include request join object`
 
