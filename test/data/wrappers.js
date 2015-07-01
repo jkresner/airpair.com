@@ -606,36 +606,6 @@ module.exports = {
     name: 'zz-test-5590ba6953c6b'
   },
 
-  google_cal_create:
-  {
-    kind: 'calendar#event',
-    etag: '"2871454031892000"',
-    id: '3juiose9d8o3kou0lfiqsemb9k',
-    status: 'confirmed',
-    htmlLink: 'https://www.google.com/calendar/event?eid=M2p1aW9zZTlkOG8za291MGxmaXFzZW1iOWsgYWlycGFpci5jb190bjE1dTRrbHZhMW5tc3NjOXNlbHBjb3Zqb0Bn',
-    created: '2015-07-01T05:03:35.000Z',
-    updated: '2015-07-01T05:03:35.946Z',
-    summary: 'create cal test 1435727173',
-    description: 'It\'s a test',
-    colorId: '6',
-    creator: { email: 'jk@airpair.com', displayName: 'Jonathon Kresner' },
-    organizer:
-     { email: 'airpair.co_tn15u4klva1nmssc9selpcovjo@group.calendar.google.com',
-       displayName: 'jk-dev',
-       self: true },
-    start: { dateTime: '2015-06-30T22:06:13-07:00' },
-    end: { dateTime: '2015-06-30T23:06:13-07:00' },
-    iCalUID: '3juiose9d8o3kou0lfiqsemb9k@google.com',
-    sequence: 0,
-    attendees:
-     [ { email: 'nicholas.g.gregory@gmail.com',
-         displayName: 'gregory nicholas',
-         responseStatus: 'needsAction' },
-       { email: 'jkresner@gmail.com',
-         displayName: 'Jonathon Kresner',
-         responseStatus: 'needsAction' } ],
-    reminders: { useDefault: true }
-  },
 
   google_cal_list: [
     {
@@ -662,6 +632,51 @@ module.exports = {
          selected: true,
          accessRole: 'owner',
          defaultReminders: [] },
-  ]
+  ],
+
+
+  google_cal_create:
+  {
+    kind: 'calendar#event',
+    etag: '"2871454031892000"',
+    id: '3juiose9d8o3kou0lfiqsemb9k',
+    status: 'confirmed',
+    htmlLink: 'https://www.google.com/calendar/event?eid=M2p1aW9zZTlkOG8za291MGxmaXFzZW1iOWsgYWlycGFpci5jb190bjE1dTRrbHZhMW5tc3NjOXNlbHBjb3Zqb0Bn',
+    created: '2015-07-01T05:03:35.000Z',
+    updated: '2015-07-01T05:03:35.946Z',
+    summary: 'create cal test 1435727173',
+    description: 'It\'s a test',
+    colorId: '6',
+
+    creator: {
+      email: 'jk@airpair.com',
+      displayName: 'Jonathon Kresner',
+    },
+
+    organizer: {
+     email: 'airpair.co_tn15u4klva1nmssc9selpcovjo@group.calendar.google.com',
+     displayName: 'jk-dev',
+     self: true,
+   },
+
+    start: { dateTime: '2015-06-30T22:06:13-07:00' },
+    end:   { dateTime: '2015-06-30T23:06:13-07:00' },
+    iCalUID: '3juiose9d8o3kou0lfiqsemb9k@google.com',
+    sequence: 0,
+    attendees: [
+     {
+       email: 'participant1@null.com',
+       displayName: 'gregory nicholas',
+       responseStatus: 'needsAction'
+     },
+     {
+       email: 'participant2@null.com',
+       displayname: 'jonathon kresner',
+       responseStatus: 'needsAction'
+     },
+    ],
+    reminders: { useDefault: true }
+  },
+
 
 }
