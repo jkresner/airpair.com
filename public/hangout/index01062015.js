@@ -13,14 +13,12 @@ var invalidAccount = false;
 if (appData.admin &&
       !(participant.person.displayName === "AirPair Experts" ||
         participant.person.displayName === "Air Pair" ||
-        participant.person.displayName === "Customer Support" ||
+        participant.person.displayName === "Customer Support"
       )
     ){
   invalidAccount = true;
   alert("We cannot start the hangout recording. You must be logged in with" +
-    "the experts@airpair.com team@airpair.com or support@airpair.com account. "
-
-  );
+    "the experts@airpair.com team@airpair.com or support@airpair.com account. ");
 }
 
 invalidAccount = false;

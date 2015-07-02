@@ -1,5 +1,5 @@
 
-var logging = true
+var logging = false
 
 // https://developers.google.com/google-apps/calendar/v3/reference/colors/get
 var owner2colorIndex = {
@@ -13,7 +13,7 @@ var owner2colorIndex = {
   '7': 7,  //46d6db turqoise
   '8': 8,  //e1e1e1 gray
   '9': 9,  //5484ed bold blue
-  pg: 10, //51b749 bold green
+  '10': 10, //51b749 bold green
   '11': 11 //dc2127 bold red
 }
 
@@ -51,65 +51,62 @@ var wrapper = {
   },
 
   createEvent(eventName, sendNotifications, start, minutes, attendees, description, admInitials, cb) {
-    if (!config.calendar.on) {
-      console.warn('config.calendar is off'.red);
-      return cb()
-    }
 
     var colorId = undefined
-    if (admInitials) {
-      colorId = owner2colorIndex[admInitials]
+    // if (admInitials) {
+      colorId = owner2colorIndex['10']
+    // }
+
+    var createData = {
+      auth,
+      calendarId,
+      sendNotifications,
+      resource: {
+        start:       { dateTime: moment(start).toISOString() },
+        end:         { dateTime: moment(start).add(minutes,'minutes').toISOString() },
+        summary:     eventName,
+        colorId:     colorId,
+        attendees:   attendees,
+        description: description,
+        // TODO: think through user experience and play with reminder settings
+        // reminders: {
+        //   useDefault: false,
+        //   overrides: [
+        //     {'method': 'email', 'minutes': 24 * 60},
+        //   ],
+        // },
+      }
     }
 
-    var event = {
-      start:       { dateTime: moment(start).toISOString() },
-      end:         { dateTime: moment(start).add(minutes,'minutes').toISOString() },
-      summary:     eventName,
-      colorId:     colorId,
-      attendees:   attendees,
-      description: description,
-      reminders: {
-        useDefault: false,
-        overrides: [
-          {'method': 'email', 'minutes': 24 * 60},
-        ],
-      },
+    if (logging) $log('Calendar.createEvent:'.yellow, createData)
+
+    if (config.calendar.on) wrapper.api.events.insert(createData, cb)
+    else {
+      console.warn('config.calendar is off'.red);
+      cb(null,{'off':'this is a config.calendar.off response',attendees:[{},{}]})
     }
-
-    var data = {
-      auth: auth,
-      calendarId: calendarId,
-      sendNotifications: sendNotifications,
-      resource: event,
-    }
-
-    if (logging) $log('createEvent:'.yellow, event)
-
-    wrapper.api.events.insert(data, function(err, result) {
-      if (err) return cb(err)
-      cb(null, result)
-    })
   },
 
-  updateEventDateTimes(eventId, start, end, cb) {
-    if (!config.calendar.on) return cb()
-
-    var params = {
-      start: {dateTime: start.toISOString()},
-      end:   {dateTime: end.toISOString()},
+  updateEvent(eventId, sendNotifications, start, minutes, cb) {
+    var patchData = {
+      auth,
+      calendarId,
+      sendNotifications,
+      eventId,
+      resource: {
+        start:       { dateTime: moment(start).toISOString() },
+        end:         { dateTime: moment(start).add(minutes,'minutes').toISOString() },
+      }
     }
 
-    var data = {
-      auth: auth,
-      calendarId: calendarId,
-      eventId: eventId,
-      resource: params,
-    }
+    if (logging) $log('Calendar.updateEvent:'.yellow, patchData)
 
-    wrapper.api.events.patch(data, function(err2, event2) {
-      if (err2) return cb(err2)
-      cb(null, event2)
-    })
+    if (config.calendar.on)
+      wrapper.api.events.patch(patchData, cb)
+    else {
+      console.warn('config.calendar is off'.red);
+      cb(null,{'off':'this is a config.calendar.off response',attendees:[{},{}]})
+    }
   }
 
 }
