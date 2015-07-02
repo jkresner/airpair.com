@@ -26,6 +26,10 @@ module.exports = {
   nabk: { name:"NA Bookings",email:"noaccess@bookings.com" },
   adbk: { name:"Admin Bookings",email:"adm@bookings.com" },
 
+  stco: { name:"Steve Cox",email:"steve@cox.io" },
+  stec: { name:"Steve Cox",email:"steve@mail.com" },
+  stcx: { name:"Steve Cox",email:"stevexc@gmail.com" },
+
   mris: { name:"Mike Risse",email:"mike@madeye.io" },
   mirs: { name:"Mike Risse",email:"mike.risse@hotmail.com" },
   miks: { name:"Mike Risse",email:"miks.ri@hotmail.com" },

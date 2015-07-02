@@ -33,6 +33,9 @@ var roles = {
     }
   },
   booking: {
+    isCustomer(user, o) {
+      return _.find(o.participants,(p)=>_.idsEqual(p.info._id,user._id)&&p.role=='customer') != null
+    },
     isParticipant(user, o) {
       return _.find(o.participants,(p)=>_.idsEqual(p.info._id,user._id)) != null
     },

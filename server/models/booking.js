@@ -44,8 +44,6 @@ var BOOKING_STATUS = [
 ]
 
 
-
-
 module.exports = mongoose.model('Booking', new mongoose.Schema({
 
   createdById:    { required: true, type: ObjectId, ref: 'User', index: true }, // Could be initiated by the expert or customer
@@ -66,18 +64,8 @@ module.exports = mongoose.model('Booking', new mongoose.Schema({
   lastTouch:      Shared.Touch,
   activity:       [Shared.Touch],
 
-  // reviews:       {
-  //   staff:       {
-  //     rating:    { type: Number }
-  //   },
-  //   customer:    {
-  //     review:    { type: Shared.Survey },
-  //     // share:     {}  # Tacking Customer sharing activity
-  //   },
-  //   expert:      {
-  //     review:    { type: Shared.Survey },
-  //     // share:     {}
-  //   },
-  // }
+  // save different survey 'type' for customers & experts
+  reviews:        [Shared.Survey]
+  //staffRating:  { type: Number, default: 0 },
 
 }))
