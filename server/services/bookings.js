@@ -187,11 +187,12 @@ function updateForAdmin(thisCtx, booking, cb) {
   })
 }
 
-function createBookingGoogleCalendarEvent(update, cb) {
+function createBookingGoogleCalendarEvent(booking, cb) {
+  var {minutes,datetime,participants} = booking
   var attendees = []
-  for (var p of update.participants) attendees.push({email:p.info.email})
-  var cust = _.find(update.participants, (a)=>a.role=='customer')
-  var exp = _.find(update.participants, (a)=>a.role=='expert')
+  for (var p of participants) attendees.push({email:p.info.email})
+  var cust = _.find(participants, (a)=>a.role=='customer')
+  var exp = _.find(participants, (a)=>a.role=='expert')
   var name = `AirPair ${util.firstName(cust.info.name)} + ${util.firstName(exp.info.name)}`
   var description = `Your matchmaker, will set up a Google
 hangout for this session and share the link with you a few
@@ -201,42 +202,44 @@ You are encouraged to make sure beforehand your mic/webcam are working
 on your system. Please let your matchmaker know if you'd like to do
 a dry run.
 
-Booking: https://airpair.com/booking/${original._id}`
+Booking: https://airpair.com/booking/${booking._id}`
 
-  Wrappers.Calendar.createEvent(name, tnotify, moment(update.datetime), update.minutes, attendees, description, adminInitials, (e,r) => {
+  var adminInitials = "jk" // TODO un-hardcode
+  var sendNotifications = true //always true for now
+  Wrappers.Calendar.createEvent(name, sendNotifications, moment(datetime), minutes, attendees, description, adminInitials, (e,r) => {
     if (logging) $log('event created'.yellow, e, r)
     if (e) return cb(e)
-    original.gcal = r
-    cb(this, original)
+    booking.gcal = r
+    cb(this, booking)
   })
 }
 
-function updateBookingGoogleCalendarEvent(update, sendNotification,cb) {
-  var sendNotification = true //always try for now
-  var {gcal} = update
+function updateBookingGoogleCalendarEvent(booking, sendNotifications,cb) {
+  var {gcal,datetime,minutes} = booking
+  $log('going'.magenta, gcal.id, sendNotifications, datetime, minutes)
   //Calculate start end
-  var start = moment(update.datetime)
-  var end = moment(update.datetime).add(update.minutes,'minutes')
-  Wrappers.Calendar.updateEventDateTimes(gcal.id, start, end, (e,r) => {
-    if (logging) $log('calendar event updated'.yellow, e, updated_gcal)
+  Wrappers.Calendar.updateEvent(gcal.id, sendNotifications, datetime, minutes, (e,r) => {
+    if (logging) $log('calendar event updated'.yellow, e, r)
     if (e) return cb(e)
-    update.gcal = r
-    cb(this, update)
+    booking.gcal = r
+    cb(this, booking)
   })
 }
 
 var admin = {
 
   updateByAdmin(original, update, cb) {
-    var isDatetimeUpdate = false
+    var shouldUpdateGal = false
 
     if (!moment(original.datetime).isSame(moment(update.datetime)))
     {
       if (logging) $log('changing the date yea!', original.datetime, update.datetime)
       original.datetime = update.datetime
       original.minutes = update.minutes
-      isDatetimeUpdate = true
+      shouldUpdateGal = true
     }
+    else if (original.gcal && !moment(original.gcal.start.dateTime).isSame(original.datetime))
+      shouldUpdateGal = true
 
     if (original.status != update.status) {
       if (logging) $log('changing the status yea!'.cyan, original.status, update.status)
@@ -249,8 +252,8 @@ var admin = {
     if (update.sendGCal) {
       createBookingGoogleCalendarEvent.call(this, update, updateCB)
     }
-    else if (isDatetimeUpdate) {
-      var sendNotification = true //always try for now
+    else if (shouldUpdateGal) {
+      var sendNotification = false //always false for now
       if (logging) $log('updating cgal', 'notify', sendNotification)
       updateBookingGoogleCalendarEvent.call(this, update, sendNotification, updateCB)
     }
