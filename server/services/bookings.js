@@ -248,7 +248,7 @@ var admin = {
       if (logging) $log('changing the date yea!', original.datetime, update.datetime)
       original.datetime = update.datetime
       original.minutes = update.minutes
-      shouldUpdateGal = true
+      shouldUpdateGal = original.gcal != null
     }
     else if (original.gcal && !moment(original.gcal.start.dateTime).isSame(original.datetime))
       shouldUpdateGal = true
