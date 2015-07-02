@@ -1596,6 +1596,63 @@ module.exports = {
     "timezone" : "GMT+0300 (IDT)",
     "userId" : ObjectId("53f768a18f8c80299bcc43c0"),
     "username" : "ronreiter"
+  },
+
+  jkgm: {
+    "_id" : ObjectId("5181d4ccf3dc070200000004"),
+    "availability" : { "hours" : "1", "minRate" : 70, "status" : "ready" },
+    "brief" : "Learning frameworks, creating good project structures / architecture. Pair programming.",
+    "gmail" : "jkresner@gmail.com",
+    "matching" : {},
+    "pic" : "https://secure.gravatar.com/avatar/780d02a99798886da48711d8104801a4",
+    "rate" : 110,
+    "tags" : [
+        { "_id" : "514825fa2a26ea0200000028", "sort" : 0 },
+        { "_id" : "5149d9d37bc6da020000000a", "sort" : 1 },
+        { "_id" : "514825fa2a26ea020000000b", "sort" : 2 },
+        { "_id" : "5149dccb5fc6390200000013", "sort" : 3 }
+    ],
+    "userId" : ObjectId("549342348f8c80299bcc56c1"),
+    "activity" : [],
+    "lastTouch" : {
+        "by" : { "name" : "Jonathon Kresner", "_id" : ObjectId("5175efbfa3802cc4d5a5e6ed") },
+        "utc" : ISODate("2015-06-30T19:47:07.890Z"),
+        "action" : "createDeal"
+    },
+    "user" : {
+        "social" : {
+            "gp" : {
+                "id" : "111546642302857408422",
+                "_json" : { "picture" : "https://lh3.googleusercontent.com/-daU--wCrRcI/AAAAAAAAAAI/AAAAAAAAAKs/o_lTNF4G8Pk/photo.jpg" }
+            },
+            "al" : {
+                "username" : "jkresner"
+            },
+            "gh" : {
+                "_json" : {
+                    "plan" : {},
+                    "followers" : 41,
+                    "public_gists" : 22,
+                    "public_repos" : 23,
+                    "avatar_url" : "https://avatars.githubusercontent.com/u/979542?v=3"
+                },
+                "username" : "jkresner"
+            }
+        },
+        "localization" : {
+            "timezone" : "Pacific Daylight Time",
+            "location" : "San Francisco, CA, USA"
+        },
+        "bio" : "This is jk's testing expert account that doesn't have god administrator permissions. You should pretend this profile is a ghost.",
+        "initials" : "jk",
+        "username" : "jkres",
+        "emailVerified" : true,
+        "email" : "jkresner@gmail.com",
+        "name" : "Jonathon Kresner",
+        "_id" : ObjectId("549342348f8c80299bcc56c1")
+    },
+    "minRate" : 110,
+    "deals" : []
   }
 
 }

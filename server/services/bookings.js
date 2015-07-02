@@ -165,6 +165,18 @@ var save = {
     svc.update(original._id, original, select.cb.itemIndex(cb))
   },
 
+  customerFeedback(original, review, expert, expertReview, cb)
+  {
+    if (expertReview) throw Error("expertReview not implemented")
+
+    review.by = svc.userByte.call(this)
+    review.type = 'booking-feedback'
+    original.reviews = original.reviews || []
+    // TODO deal with update case gracefully
+    original.reviews.push(review)
+    // $log('customerFeedback'.magenta, review, expert._id, expertReview)
+    svc.update(original._id, original, select.cb.itemIndex(cb))
+  }
 }
 
 
@@ -362,7 +374,7 @@ var admin = {
   },
 
   addYouTubeData(original, youTubeId, cb) {
-    $log('bookings.addYouTubeData'.cyan, original._id, youTubeId)
+    if (logging) $log('bookings.addYouTubeData'.cyan, original._id, youTubeId)
     Wrappers.YouTube.getVideoInfo(youTubeId, (err, response) => {
       if (err){
         return cb(Error(err),data)
@@ -378,7 +390,7 @@ var admin = {
   },
 
   addHangout(original, youTubeId, youTubeAccount, hangoutUrl, cb){
-    $log('bookings.addHangout'.cyan, original._id, youTubeId, youTubeAccount, hangoutUrl)
+    if (logging) $log('bookings.addHangout'.cyan, original._id, youTubeId, youTubeAccount, hangoutUrl)
     Wrappers.YouTube.getVideoInfo(youTubeId, (err, response) => {
       //TODO mark video as private if booking.type is private
       if (err){

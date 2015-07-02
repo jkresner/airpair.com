@@ -38,6 +38,32 @@ var validation = {
     if (time.confirmedById) return `Time already confirmed`
   },
 
+  customerFeedback(user, original, review, expert, expertReview)
+  {
+    var {status} = original
+    if (status != 'followup' && status != 'followup')
+      return `Booking [${original._id}] must be in folloup or complete state to leave customerFeedback`
+
+    if (!Roles.isCustomer(user,original))
+      return `Not a customer on bookings[${original._id}]`
+
+    if (!review)
+      return `Booking customer feedback review required"`
+
+    //--
+    var existingReview = _.find(original.reviews||[],(r)=>_.idsEqual(r.by._id,user._id))
+    if (existingReview && !bookingReview._id)
+      return `Expecting update for existing bookingReview[${existingReview._id}]`
+
+    if (expertReview) {
+      // return "Booking customer feedback review required"
+      //-- Check similar for expert review? Or join on original.populate?
+      var existingExpertReview = _.find(expert.reviews||[],(r)=>_.idsEqual(r.by._id,user._id))
+      if (existingExpertReview && !expertReview._id)
+        return `Expecting update for existing expertReview[${existingExpertReview._id}]`
+    }
+  },
+
   updateByAdmin(user, original, update)
   {
     // $log('validation.updateByAdmin'.cyan, user, original, update)

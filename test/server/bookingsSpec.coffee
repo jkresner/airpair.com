@@ -185,37 +185,79 @@ recordings = ->
 
 feedback = ->
 
+  beforeEach ->
+    @listStub = SETUP.stubYouTube 'videos','list',null,data.wrappers.youtube_codereview_list
+
+  afterEach ->
+    @listStub.restore()
+
+
+  it.skip 'Cannot insert expert or booking review more than once by the same user', itDone ->
+    SETUP.addAndLoginLocalUser "stcx", (s) ->
+      review = type: 'expert-review', by: { _id: ObjectId(s._id), name: s.name, email: s.email }
+      jkgm = _.extend _.cloneDeep(data.experts.jkgm), { reviews:[review] }
+      db.ensureDocs 'Expert', [jkgm], ->
+        db.readDoc 'Expert', jkgm._id, (r1) ->
+          $log('r1'.yellow, r1.reviews.length)
+          expect(r1.reviews.length).to.equal(1)
+          review2 = _.extend {update:1}, review
+          jkgm.reviews.push(review2)
+          twoReviews = jkgm.reviews
+          db.Models.Expert.findOneAndUpdate {_id:r1._id},{$set:{reviews:twoReviews}}, (e2, r2) ->
+            $log('reviews2'.yellow, e2, r2.reviews)
+            # db.ensureDocs 'Expert', [jkgm], ->
+            # db.readDoc 'Expert', jkgm._id, (r2) ->
+              # expect(r1.reviews.length).to.equal(1)
+            DONE()
+
+
+  describe.skip 'Skip', ->
 
   it 'Cannot give feedback in pending, confirmed or canceled state', itDone ->
-    expect(false).to.be.true
-    DONE()
+    SETUP.newBookedExpert 'stco', {}, (s, b1) ->
+      expect(b1.status).to.equal('pending')
+      PUT "/bookings/#{b1._id}/#{b1.expertId}/customer-feedback", {}, {status:403}, (e) ->
+        expectStartsWith(e.message,"Booking [#{b1._id}] must be in folloup or complete state")
+        ## todo test confirmed
+        ## todo test canceled
+        DONE()
 
 
-  it 'Cannot give customer feedback if not the customer', itDone ->
-    expect(false).to.be.true
-    DONE()
+  it 'Can give customer feedback as the customer without expert feedback', itDone ->
+    SETUP.newBookedExpert 'stcx', {}, (s, b1) ->
+      LOGIN 'admin', (sadm) ->
+        PUT "/adm/bookings/#{b1._id}/recording", {youTubeId: "MEv4SuSJgwk"}, {}, (b2) ->
+          expect(b2.status).to.equal("followup")
+          LOGIN s.userKey, ->
+            PUT "/bookings/#{b1._id}/#{b1.expertId}/customer-feedback", {}, {status:403}, (e) ->
+              expectStartsWith(e.message,"Booking customer feedback review required")
+              rev1 = { questions: [
+                { idx: 0, key: 'rating', promt: 'How many stars?', answer: "Awesome" }] }
+              body1 = { review: rev1 }
+              PUT "/bookings/#{b1._id}/#{b1.expertId}/customer-feedback", body1, {}, (b3) ->
+                expect(b3.reviews.length).to.equal(1)
+                DONE()
 
 
-  it 'Can give customer feedback as the customer', itDone ->
-    expect(false).to.be.true
-    DONE()
+    it 'Can give customer feedback as the customer with expert feedback', itDone ->
 
 
-  it '4 or 5 start feedback releases expert payment', itDone ->
-    expect(false).to.be.true
-    # sets status to complete with recording
-    DONE()
+  it 'Cannot give customer feedback if not a customer', itDone ->
+    SETUP.newBookedExpert 'stec', {}, (s, b1) ->
+      LOGIN 'admin', (sadm) ->
+        PUT "/adm/bookings/#{b1._id}/recording", {youTubeId: "MEv4SuSJgwk"}, {}, (b2) ->
+          expect(b2.status).to.equal("followup")
+          LOGIN 'dros', ->
+            PUT "/bookings/#{b1._id}/#{b1.expertId}/customer-feedback", {}, {status:403}, (e) ->
+              expectStartsWith(e.message,"Not a customer on booking")
+              DONE()
 
 
-  it 'Cannot give expert feedback if not the expert', itDone ->
-    expect(false).to.be.true
-    DONE()
+    it 'Can update customer feedback', itDone ->
 
+    it 'Cannot give expert feedback if not the expert', itDone ->
 
-  it 'Cannot give expert feedback as the expert', itDone ->
-    expect(false).to.be.true
-    DONE()
-
+    it 'Cannot give expert feedback as the expert', itDone ->
 
 
 
@@ -234,5 +276,5 @@ module.exports = ->
 
   describe("Scheduling: ".subspec, scheduling)
   describe("Recordings: ".subspec, recordings)
-  describe.skip("Feedback: ".subspec, feedback)
+  describe.only("Feedback: ".subspec, feedback)
 
