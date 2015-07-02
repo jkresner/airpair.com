@@ -46,7 +46,7 @@
       </div>
     </div>
 
-    <div class="spin" ng-if="booking.chat">
+    <div class="spin" ng-if="chat">
       <ap-hangout-spinner
         hangout-id="booking._id"
         booking="booking"></ap-hangout-spinner>
@@ -56,15 +56,15 @@
 
   <section class="chat">
       <h3>Chat</h3>
-      <div ng-if="booking.chat">
-        <div ng-if="booking.chat.provider">
-          <a target="_blank" href="https://airpair.slack.com/messages/{{booking.chat.info.name}}">  {{booking.chat.info.name}}
-            <span ng-if="booking.chat.info.is_archived">(archived)</span>
-          </a>{{booking.chat.providerId}} <!-- {{booking.chat.data.created}} -->
+      <div ng-if="chat">
+        <div ng-if="chat.provider">
+          <a target="_blank" href="https://airpair.slack.com/messages/{{chat.info.name}}">  {{chat.info.name}}
+            <span ng-if="chat.info.is_archived">(archived)</span>
+          </a>{{chat.providerId}}
           <ul>
-            <li ng-repeat="m in booking.chat.members">{{m.real_name || m.id}}</li>
+            <li ng-repeat="m in chat.members">{{m.real_name || m.id}}</li>
           </ul>
-          <p class="purpose">{{booking.chat.info.purpose.value}}</p>
+          <p class="purpose">{{chat.info.purpose.value}}</p>
           <hr />
           <a ng-click="setMsgTemplate('feedback')" ng-if="booking.status == 'followup'">feedback</a> |
           <a ng-click="setMsgTemplate('confirm')" ng-if="booking.status == 'pending'">confirm time</a>
@@ -73,14 +73,14 @@
           <a ng-click="postMessage()" class="btn-yellow" style="float:right">Post</a>
           <hr />
           <ul class="history">
-            <li ng-repeat="m in booking.chat.history | orderBy:'-ts'">
-              <time>{{m.ts | tsTime }} <b>{{booking.chat.members[m.user].real_name}}</b></time>
+            <li ng-repeat="m in chat.history | orderBy:'-ts'">
+              <time>{{m.ts | tsTime }} <b>{{chat.members[m.user].real_name}}</b></time>
               <p>{{m.text}}</p>
             </li>
           </ul>
         </div>
       </div>
-      <div ng-if="booking.chatSyncOptions">
+      <div ng-if="chatSyncOptions">
         <div id="pipelineReq">
           <a ng-click="createGroupChat('slack')" class="btn" style="float:right">Create chat</a>
           <div style="float:right;clear:right" ng-repeat="p in booking.participants" slack-status member="p.chat" userid="p.info._id"></div>
@@ -89,8 +89,8 @@
           <hr />
         </div>
 
-        {{booking.chatSyncOptions.length}} possible syncs<br />
-        <div ng-repeat="c in booking.chatSyncOptions">
+        {{chatSyncOptions.length}} possible syncs<br />
+        <div ng-repeat="c in chatSyncOptions">
           <div ng-if="c.provider == 'slack'">
             <b><a target="_blank" href="https://airpair.slack.com/messages/{{c.info.name}}/
             ">{{c.provider}}</a></b>::{{c.info.name}}
@@ -150,7 +150,7 @@
     <section class="request">
       <h3>Request</h3>
 
-      <div ng-if="request">
+      <div ng-if="request">w
         {{request.adm.submitted | locaTime : 'YY.MMM.DD' }}
         <a href="/adm/pipeline/{{request._id}}" target="_blank">{{request.title}}</a>
         <br />
@@ -164,7 +164,7 @@
       <div ng-if="!request">Booking is not request associated</div>
     </section>
 
-    <section class="payout">
+    <section class="payout" ng-if="booking.status == 'followup'">
 
       <h3>Payout</h3>
 
