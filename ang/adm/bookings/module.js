@@ -30,9 +30,11 @@ angular.module("ADMBookings", [])
       },
       customers: BookingsUtil.customers(r),
       experts: BookingsUtil.experts(r),
+      chatSyncOptions: r.chatSyncOptions,
+      chat: r.chat,
       request: r.request,
       order: r.order,
-      booking: _.omit(r,'order','request')
+      booking: _.omit(r,'order','request','chat','chatSyncOptions')
     }
 
     if (r.order)
@@ -112,9 +114,13 @@ angular.module("ADMBookings", [])
   var setScope = (r) => {
     var bs = { upcoming: [], pending: [], other: [], minsOnAir: 0 }
     r.forEach((b)=>{
-      if (DateTime.inRange(b.datetime, 'anHourAgo', 'in48hours')) bs.upcoming.push(b)
-      if (b.status == 'pending') bs.pending.push(b)
-      else bs.other.push(b)
+      if (DateTime.inRange(b.datetime, 'anHourAgo', 'in48hours')
+            && b.status != 'canceled')
+        bs.upcoming.push(b)
+      if (b.status == 'pending')
+        bs.pending.push(b)
+      else
+        bs.other.push(b)
 
       if (b.status == 'followup' || b.status == 'complete')
         bs.minsOnAir += b.minutes
