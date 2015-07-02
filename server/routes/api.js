@@ -30,7 +30,7 @@ function pipeline() {
     .put('/adm/bookings/:booking/associate-chat', spnr, API.Bookings.associateChat)
     .put('/adm/chat/invite-to-team/:userId', spnr, API.Chat.inviteToTeam)
     .post('/adm/bookings/:booking/note', spnr, API.Bookings.addNote)
-    .post('/experts/:expert/note', spnr, API.Experts.addNote)
+    .post('/adm/experts/:expert/note', spnr, API.Experts.addNote)
 }
 
 function admin() {
