@@ -27,14 +27,15 @@ Runs in node with mocha
 
 For git pre-push hook to ensure tests pass before pushing, do this:
 
-    cd .git/hooks
-    ln -nsf ../../build/git-hooks/pre-push
+    $ mkdir .git/hooks
+    $ cd .git/hooks
+    $ ln -nsf ../../build/git-hooks/pre-push
 
 ### Testing gotchas
 
 If the test suite is failing without much but stops at
 
-    Server: 
+    Server:
       1) "before all" hook
 
 *Step 1)* Check if the app is still compiling (gulp runs without problems)
@@ -81,7 +82,7 @@ api calls.
    5. If not GET, validation function is required
    6. Define (business logic) service function
    7. Choose existing or add a entity(s).data.js select callback
-   
+
 
 Hangout Info
 ============
