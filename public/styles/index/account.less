@@ -158,23 +158,6 @@ section#password {
   }
 }
 
-section#payouts {
-
-  .payoutmethods {
-    ul {
-      .ulNoStyle;
-      img { border-radius:50% }
-    }
-  }
-
-  .payoutOrders {
-    .btn { float:right;width:180px }
-    .paidout { color:green }
-    .pending { color:@lightorange }
-  }
-
-}
-
 section#settings {
   > section { margin-bottom:50px }
   .maillists {
@@ -207,3 +190,38 @@ section#settings {
     }
   }
 }
+
+
+// Want to move payouts back from experts to account e.g. paying authors potentially
+section#payouts {
+
+  h3 { .headingUnderline }
+
+  section.setup {
+    float:left;
+    width:640px;
+    p { margin-top:20px;margin-bottom:20px }
+  }
+
+
+  section.summary {
+    float:right;
+    width:230px;
+    background:@lightblue;
+    padding:10px;
+  }
+
+  .payoutmethods {
+    ul {
+      .ulNoStyle;
+      img { border-radius:50% }
+    }
+  }
+
+  .payoutOrders {
+    .btn { float:right;width:180px }
+    .paidout { color:green }
+    .pending { color:@lightorange }
+  }
+}
+
