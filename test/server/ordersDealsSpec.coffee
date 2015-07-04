@@ -104,6 +104,7 @@ orderDeals = ->
                   expect(redeemOrder.lineItems[0].unitPrice).to.equal(-60)
                   expect(redeemOrder.lineItems[0].qty).to.equal(1)
                   expect(redeemOrder.lineItems[0].balance).to.equal(0)
+                  expectIdsEqual(redeemOrder.lineItems[1].bookingId,booking1._id)
                   expect(redeemOrder.lineItems[1].type).to.equal('airpair')
                   expect(redeemOrder.lineItems[1]._id).to.exist
                   expect(redeemOrder.lineItems[1].total).to.equal(60)
@@ -135,7 +136,10 @@ orderDeals = ->
                       airpair3 = dealId: b.dealId, datetime: moment().add(4, 'day'), minutes: 180, type: 'private', payMethodId: s.primaryPayMethodId
                       POST "/bookings/#{expert._id}", airpair3, { status: 400 }, (err) ->
                         expectStartsWith(err.message,'Not enough remaining minutes.')
-                        DONE()
+                        db.readDoc 'Order', dealOrder._id, (orderDB) ->
+                          expect(orderDB.payMethod).to.be.undefined
+                          DONE()
+
 
 
   it 'Cant see or purchase deal targeted to another user'

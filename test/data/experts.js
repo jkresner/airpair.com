@@ -1653,6 +1653,56 @@ module.exports = {
     },
     "minRate" : 110,
     "deals" : []
+  },
+
+  tomb: {
+    "_id" : ObjectId("54c85ee6a4f65e03005d1640"),
+    "userId" : ObjectId("54c7d549be0e440a00df49d4"),
+    "gmail" : "tmbeihl@tmbeihl.com",
+    "pic" : "https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg",
+    "tags" : [
+        { "sort" : 0, "_id" : "514825fa2a26ea0200000031" },
+        { "sort" : 1, "_id" : "5181d0a966a6f999a465eb3d" },
+        { "sort" : 2, "_id" : "514825fa2a26ea0200000030" },
+        { "sort" : 3, "_id" : "5181d0ab66a6f999a465efba" },
+        { "sort" : 4, "_id" : "522670ee66a6f999a465f74c" },
+        { "sort" : 5, "_id" : "514825fa2a26ea020000002c" },
+        { "sort" : 6, "_id" : "5181d0ad66a6f999a465f1eb" },
+        { "sort" : 7, "_id" : "5181d0a966a6f999a465eba6" },
+        { "sort" : 8, "_id" : "5181d0aa66a6f999a465ed21" }
+    ],
+    "brief" : "I like connecting with and helping people with interesting projects",
+    "rate" : 110,
+    "user" : {
+        "_id" : ObjectId("54c7d549be0e440a00df49d4"),
+        "name" : "Thomas Beihl",
+        "email" : "tmbeihl@tmbeihl.com",
+        "emailVerified" : true,
+        "username" : "tmbeihl",
+        "initials" : "tmb",
+        "bio" : "Hello there,\n\nMy name is Thomas, I am a freelance web developer from Chattanooga,TN I have been loving Ruby on Rails for the past five years, before that I was a PHP developer.",
+        "localization" : { "location" : "Chattanooga, TN, USA", "timezone" : "Eastern Daylight Time"},
+        "social" : {
+            "gh" : {
+                "_json" : { "followers" : 6 },
+                "username" : "tmbeihl" },
+            "in" : { "id" : "JhY8gRr3pa" },
+            "tw" : {
+                "username" : "tmbeihl",
+                "_json" : { "followers_count" : "178" }
+            },
+            "gp" : { "id" : "102621330858612527290" }
+        }
+    },
+    "availability" : {
+        "status" : "ready",
+        "minRate" : 110,
+        "hours" : "3-5"
+    },
+    "minRate" : 110,
+    "deals" : [],
+    "timezone" : "Eastern Daylight Time",
+    "location" : "Chattanooga, TN, USA",
   }
 
 }

@@ -24,7 +24,9 @@ module.exports = -> describe "Credit: ".subspec, ->
         expect(r.lineItems[0].info.source).to.equal('$300 Credit Purchase')
         expect(r.total).to.equal(300)
         expect(r.profit).to.equal(0)
-        DONE()
+        db.readDoc 'Order', r._id, (orderDB) ->
+          expect(orderDB.payMethod).to.be.undefined
+          DONE()
 
 
   it '500 credit purchase', itDone ->

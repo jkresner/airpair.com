@@ -35,6 +35,8 @@ module.exports = -> describe "Booking: ".subspec, ->
         expect(booking1.participants[1].info.name).to.exist
         GET "/billing/orders", {}, (orders) ->
           order = _.find(orders, (o) -> _.idsEqual(o._id,booking1.orderId))
+          expect(order.total).to.equal(280)
+          expect(order.profit).to.equal(60)
           expect(order.lineItems.length).to.equal(2)
           expect(order.lineItems[0].type).to.equal('payg')
           expect(order.lineItems[0].total).to.equal(0)
@@ -47,11 +49,9 @@ module.exports = -> describe "Booking: ".subspec, ->
           expect(order.lineItems[1].unitPrice).to.equal(140)
           expect(order.lineItems[1].info.paidout).to.equal(false)
           expect(order.lineItems[1].info.type).to.equal('private')
-          expect(_.idsEqual(order.lineItems[1].info.expert._id, data.experts.dros._id)).to.be.true
-          expect(order.total).to.equal(280)
-          expect(order.profit).to.equal(60)
+          expectIdsEqual(order.lineItems[1].bookingId,booking1._id)
+          expectIdsEqual(order.lineItems[1].info.expert._id, data.experts.dros._id)
           DONE()
-
 
   it 'Book 2 hour with pay as you go private two gets email + name on participant', itDone ->
     SETUP.createNewExpert 'louf', {rate:140}, (sExp, expert) ->
@@ -134,6 +134,7 @@ module.exports = -> describe "Booking: ".subspec, ->
             expect(redeemOrder.lineItems[0].qty).to.equal(1)
             expect(redeemOrder.lineItems[0].balance).to.equal(-260)
             expect(redeemOrder.lineItems[1].type).to.equal('airpair')
+            expectIdsEqual(redeemOrder.lineItems[1].bookingId,booking1._id)
             expect(redeemOrder.lineItems[1]._id).to.exist
             expect(redeemOrder.lineItems[1].total).to.equal(260)
             expect(redeemOrder.lineItems[1].qty).to.equal(2)
@@ -217,7 +218,9 @@ module.exports = -> describe "Booking: ".subspec, ->
                 expect(order.lineItems[2].unitPrice).to.equal(190)
                 expect(order.lineItems[2].info.paidout).to.equal(false)
                 expect(_.idsEqual(order.lineItems[2].info.expert._id, data.experts.tmot._id)).to.be.true
-                DONE()
+                db.readDoc 'Order', order._id, (orderDB) ->
+                  expect(orderDB.payMethod).to.be.undefined
+                  DONE()
 
 
   it 'Team members can use company credit for order', itDone ->
