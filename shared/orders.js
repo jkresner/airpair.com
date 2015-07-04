@@ -27,7 +27,8 @@ module.exports = {
     var result = {
       pending: { count:0, total:0 },
       owed: { count:0, total:0 },
-      paid: { count:0, total:0 }
+      paid: { count:0, total:0 },
+      total: 0
     }
     orders.forEach(function(order){
       order.lineItems.forEach(function(li){
@@ -53,6 +54,7 @@ module.exports = {
       }
     })
 
+    result.total = result.pending.total + result.owed.total + result.paid.total
     return result
   },
 

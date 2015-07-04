@@ -195,33 +195,33 @@ section#settings {
 // Want to move payouts back from experts to account e.g. paying authors potentially
 section#payouts {
 
-  h3 { .headingUnderline }
+  .paidout { color:green }
+  .pending { color:@lightorange }
 
   section.setup {
+    h3 { .headingUnderline }
     float:left;
-    width:640px;
+    width:620px;
     p { margin-top:20px;margin-bottom:20px }
   }
 
 
   section.summary {
+    h4 { float:right;color:@blue;margin-bottom:8px }
     float:right;
-    width:230px;
+    width:240px;
     background:@lightblue;
     padding:10px;
-  }
-
-  .payoutmethods {
-    ul {
-      .ulNoStyle;
-      img { border-radius:50% }
-    }
+    img { border-radius:50%;margin-top:4px }
+    th { padding:2px 4px;}
+    td { padding:3px 4px;}
+    email { font-size:10px; }
   }
 
   .payoutOrders {
+    float:left;
+    width:620px;
     .btn { float:right;width:180px }
-    .paidout { color:green }
-    .pending { color:@lightorange }
   }
 }
 
