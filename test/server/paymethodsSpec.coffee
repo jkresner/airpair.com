@@ -6,7 +6,7 @@ module.exports = -> describe "API".subspec, ->
   @timeout(10000)
 
 
-  # double think if it's necessary to allow people to add cars when anonymous
+  # double think if it's necessary to allow people to add cards when anonymous
   describe 'Anonymous', ->
 
     it 'Gets braintree token on new anonymous get-paymethods'
@@ -42,7 +42,7 @@ module.exports = -> describe "API".subspec, ->
       SETUP.addAndLoginLocalUser 'evan', (s) ->
         d = type: 'braintree', token: braintree_test_nouce, name: 'Default Card', makeDefault: true
         POST '/billing/paymethods', d, {}, (r) ->
-          # $log('r', r)
+          # $log('uncomment and copy result:: '.cyan, _.omit(r,'__v','_id','userId'))
           expect(r).to.exist
           expect(r.type).to.equal('braintree')
           expect(r.name).to.equal('Default Card')

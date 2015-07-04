@@ -56,7 +56,7 @@ var dataHelpers = {
   expertData(userKey, user)
   {
     var seed = _.clone(data.experts[userKey])
-    if (!seed || !seed.email) $log('getNewExpertData failed, need seed expert'.red)
+    if (!seed) $log('getNewExpertData failed, need seed expert'.red)
 
     seed._id = new ObjectId
     seed.userId = user._id

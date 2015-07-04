@@ -44,15 +44,18 @@
         <tr>
           <th>Amount</th>
           <th>For</th>
-          <th>With</th>
           <th>Minutes</th>
+          <th>With</th>
           <th style="text-align:right">Status</th>
         </tr>
         <tr ng-repeat="o in payoutOrders">
           <td>${{o.lineItems[0].owed}}</td>
-          <td>{{o.lineItems[0].type}}</td>
-          <td>{{o.by.name}}</td>
+          <td>{{o.lineItems[0].type}} =>
+            <a href="/bookings/{{o.lineItems[0].bookingId._id}}">{{o.lineItems[0].bookingId.datetime | locaTime }}</a>
+          </td>
           <td>{{o.lineItems[0].info.minutes}}</td>
+          <td>{{o.by.name}}
+          </td>
           <td style="text-align:right">
             <span class="paidout" ng-if="o.lineItems[0].info.paidout">paidout</span>
             <span class="pending" ng-if="!o.lineItems[0].info.released">pending</span>

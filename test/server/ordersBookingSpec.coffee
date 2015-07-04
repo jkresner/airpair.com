@@ -49,8 +49,9 @@ module.exports = -> describe "Booking: ".subspec, ->
           expect(order.lineItems[1].unitPrice).to.equal(140)
           expect(order.lineItems[1].info.paidout).to.equal(false)
           expect(order.lineItems[1].info.type).to.equal('private')
-          expectIdsEqual(order.lineItems[1].bookingId,booking1._id)
           expectIdsEqual(order.lineItems[1].info.expert._id, data.experts.dros._id)
+          # expectIdsEqual(order.lineItems[1].bookingId,booking1._id)
+          expectIdsEqual(order.lineItems[1].bookingId._id,booking1._id)
           DONE()
 
   it 'Book 2 hour with pay as you go private two gets email + name on participant', itDone ->
@@ -134,7 +135,8 @@ module.exports = -> describe "Booking: ".subspec, ->
             expect(redeemOrder.lineItems[0].qty).to.equal(1)
             expect(redeemOrder.lineItems[0].balance).to.equal(-260)
             expect(redeemOrder.lineItems[1].type).to.equal('airpair')
-            expectIdsEqual(redeemOrder.lineItems[1].bookingId,booking1._id)
+            # expectIdsEqual(redeemOrder.lineItems[1].bookingId,booking1._id)
+            expectIdsEqual(redeemOrder.lineItems[1].bookingId._id,booking1._id)
             expect(redeemOrder.lineItems[1]._id).to.exist
             expect(redeemOrder.lineItems[1].total).to.equal(260)
             expect(redeemOrder.lineItems[1].qty).to.equal(2)

@@ -34,6 +34,7 @@ var select = {
     'lineItems.type':1,
     'lineItems.info':1,
     'lineItems.owed':1,
+    'lineItems.bookingId':1,
   },
   listAdminReport: {
     '_id': 1,
@@ -103,7 +104,7 @@ var query = {
   },
   expertPayouts: function(expertId) {
     return {
-        'lineItems.type' : { $ne: 'deal' },
+       'lineItems.type' : { $ne: 'deal' },
        '$or': [
         {'lineItems.info.expert._id' : expertId},
         {'lineItems.info.expert._id' : expertId.toString()}]
@@ -119,8 +120,9 @@ var query = {
 }
 
 var opts = {
-  orderByNewest: { sort: { 'utc': -1 } },
-  orderByOldest: { sort: { 'utc': 1 } }
+  orderByNewest:    { sort: { 'utc': -1 }, join: { 'lineItems.bookingId': '_id datetime participants' } },
+  orderByOldest:    { sort: { 'utc': 1 } },
+  orderForPayouts:  { sort: { 'utc': 1 }, join: { 'lineItems.bookingId': '_id datetime participants' } },
 }
 
 module.exports = {base,select,query,opts}
