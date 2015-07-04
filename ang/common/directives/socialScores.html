@@ -7,7 +7,7 @@
 
   <label ng-if="p.in" class="in-white icon">{{p.so.endorsements}}N/A</label>
 
-  <label ng-if="p.tw" class="tw-white icon">{{p.tw.followers}}N/A</label>
+  <label ng-if="p.tw" class="tw-white icon">{{p.tw.followers || '-'}}</label>
 
   <label ng-if="p.al" class="al-white icon">{{p.al.followers}}N/A</label>
 

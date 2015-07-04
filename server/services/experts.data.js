@@ -18,7 +18,8 @@ var data = {
       'bb': 1,
       'in': 1,
       'tw': 1,
-      'matching': 1
+      'matching': 1,
+      'lastTouch.utc': 1,
     },
     search: {
       '_id': 1,
@@ -132,11 +133,12 @@ var data = {
         r.avatar = (r.email) ? md5.gravatarUrl(r.email) : r.pic
       }
       else {
+
         delete r.user._id
         var social = r.user.social
 
         // how we handle staying v0 on front-end
-        r = _.extend(_.extend(r,r.user),r.social)
+        r = _.extend(_.extend(r,r.user),social)
         r.location = r.localization.location
         r.timezone = r.localization.timezone
         r.avatar = md5.gravatarUrl(r.email)
@@ -148,6 +150,9 @@ var data = {
 
       if (r.gh && r.gh._json)
         r.gh.followers = r.gh._json.followers
+
+      if (r.tw && r.tw._json)
+        r.tw.followers = r.tw._json.followers_count
 
       r.minRate = r.minRate || r.rate
       r.tags = data.select.inflatedTags(r)
