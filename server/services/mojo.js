@@ -110,7 +110,10 @@ var get = {
 
 var calcMatching = (expert, cb) => {
   Booking
-    .find({'expertId':expert._id},{_id:1,expertId:1,participants:1,minutes:1,datetime:1,status:1}, (ee,bookings) => {
+    .find({'expertId':expert._id},{_id:1,expertId:1,minutes:1,datetime:1,status:1
+      ,'participants.info':1
+      ,'participants.role':1
+    }, (ee,bookings) => {
   Request
     .find({'suggested.expert._id':expert._id},{_id:1,userId:1,suggested:1}, (e,requests) => {
       var expertSuggestions = []
