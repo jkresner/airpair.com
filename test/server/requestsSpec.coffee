@@ -270,7 +270,10 @@ review = ->
                 expect(r1.suggested[0].expert.gh.username).to.equal("difficultashish")
                 expect(r1.suggested[0].expert.in.id).to.equal("cDNFNcqq-z")
                 expect(r1.suggested[0].expert.pic).to.be.undefined
-                DONE()
+                db.readDoc 'Request', r._id, (rDB) ->
+                  expect(rDB.user).to.be.undefined
+                  DONE()
+
 
 
   it 'Self suggest reply to a request as a expert new expert', itDone ->

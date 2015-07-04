@@ -1,9 +1,11 @@
-section#dashboard {
+@import "ap.less";
 
-  .headingUnderline {
-    border-bottom:solid 2px @bluegray;padding-bottom:10px;
-    margin-bottom:20px;
-  }
+.headingUnderline {
+  border-bottom:solid 2px @bluegray;padding-bottom:10px;
+}
+
+
+section#dashboard {
 
   section.notifications {
     #hello {
@@ -14,15 +16,12 @@ section#dashboard {
   section.main {
     float:left;
     width:640px;
-    h3 {
-      .headingUnderline
-    }
+    h3 { .headingUnderline }
 
     .experts {
       // .entry-meta { display:none }
     }
   }
-
 
   section.side {
     float:right;
@@ -47,9 +46,4 @@ section#dashboard {
   h3 {
     a { float:right;font-size:14px;padding-top:4px }
   }
-
-
-
 }
-
-
