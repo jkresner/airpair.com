@@ -72,7 +72,7 @@ module.exports = -> describe "API: ", ->
             DONE()
 
 
-  it.skip 'Expert can see single transaction released', itDone ->
+  it 'Expert can see single transaction released', itDone ->
     SETUP.newBookedRequest 'kyau', {}, 'admb', (request, booking, customerSession, expertSession) ->
       LOGIN 'admin', ->
         PUT "/adm/billing/orders/#{booking.orderId}/release", {}, {}, (released) ->
@@ -103,7 +103,7 @@ module.exports = -> describe "API: ", ->
               DONE()
 
 
-  it.skip 'Expert can see multiple transactions owed', itDone ->
+  it 'Expert can see multiple transactions owed', itDone ->
     SETUP.newBookedRequest 'mikf', {}, 'mper', (request1, booking1, customerSession1, expertSession) ->
       SETUP.newBookedRequestWithExistingExpert 'mfly', {}, expertSession, (request2, booking2, customerSession2, expertSession) ->
         LOGIN 'admin', ->
@@ -143,7 +143,7 @@ module.exports = -> describe "API: ", ->
                   DONE()
 
 
-  it.skip 'Paypal sandbox works', itDone ->
+  it 'Paypal sandbox works', itDone ->
     # These can start failing with 500 INTERNAL ERROR if there isn't enough
     # balance in the test account (really annoying)
     @payoutStub.restore()
@@ -156,7 +156,7 @@ module.exports = -> describe "API: ", ->
       DONE()
 
 
-  it.skip 'Paypal sandbox passes back error for non existing address', itDone ->
+  it 'Paypal sandbox passes back error for non existing address', itDone ->
     @payoutStub.restore()
     pp = require('../../server/services/wrappers/paypal')
     payoutId = newId()
@@ -234,7 +234,7 @@ module.exports = -> describe "API: ", ->
               DONE()
 
 
-  it.skip 'Expert can pay out combined transaction to their payout account', itDone ->
+  it 'Expert can pay out combined transaction to their payout account', itDone ->
     SETUP.newLoggedInExpertWithPayoutmethod 'mper', (expert, expertSession, payoutmethod) ->
       SETUP.newBookedRequestWithExistingExpert 'hubi', {}, expertSession, (request1, booking1, customerSession1, expertSession) ->
         SETUP.newBookedRequestWithExistingExpert 'brfi', {}, expertSession, (request2, booking2, customerSession2, expertSession) ->
@@ -258,8 +258,8 @@ module.exports = -> describe "API: ", ->
                           DONE()
 
 
-  it.skip 'Expert can see payout history', itDone ->
-    SETUP.newLoggedInExpertWithPayoutmethod 'abpa', (expert, expertSession, payoutmethod) ->
+  it 'Expert can see payout history', itDone ->
+    SETUP.newLoggedInExpertWithPayoutmethod 'tomb', (expert, expertSession, payoutmethod) ->
       SETUP.newBookedRequestWithExistingExpert 'dysn', {}, expertSession, (request1, booking1, customerSession1, expertSession) ->
         SETUP.newBookedRequestWithExistingExpert 'dily', {}, expertSession, (request2, booking2, customerSession2, expertSession) ->
           SETUP.newBookedRequestWithExistingExpert 'chuc', {}, expertSession, (request3, booking3, customerSession3, expertSession) ->
@@ -314,6 +314,7 @@ module.exports = -> describe "API: ", ->
 
 
   it 'Expert can see payout history including v0 payouts'
+
 
 
   # it.skip 'Expert can verify venmo account', (done) ->

@@ -104,7 +104,8 @@ orderDeals = ->
                   expect(redeemOrder.lineItems[0].unitPrice).to.equal(-60)
                   expect(redeemOrder.lineItems[0].qty).to.equal(1)
                   expect(redeemOrder.lineItems[0].balance).to.equal(0)
-                  expectIdsEqual(redeemOrder.lineItems[1].bookingId,booking1._id)
+                  expectIdsEqual(redeemOrder.lineItems[1].bookingId._id,booking1._id)
+                  # expectIdsEqual(redeemOrder.lineItems[1].bookingId,booking1._id)
                   expect(redeemOrder.lineItems[1].type).to.equal('airpair')
                   expect(redeemOrder.lineItems[1]._id).to.exist
                   expect(redeemOrder.lineItems[1].total).to.equal(60)

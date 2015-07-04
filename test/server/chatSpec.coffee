@@ -18,14 +18,14 @@ slackUsers = ->
       DONE()
 
 
-  # it.skip 'Can update Slack me info', itDone ->
-  #   # stub = SETUP.stubSlack('updateMe', data.wrappers.slack_me_info)
-  #   $log('config.chat.slack.support', config.chat.slack.support)
-  #   Wrappers.Slack.updateMe config.chat.slack.support, 'Customer Servivce', 'Yo', (e, me) ->
-  #     $log(e,me)
-  #     expect(me.user).to.equal('customer-support')
-  #     stub.restore()
-  #     DONE()
+  it.skip 'Can update Slack me info', itDone ->
+    # stub = SETUP.stubSlack('updateMe', data.wrappers.slack_me_info)
+    $log('config.chat.slack.support', config.chat.slack.support)
+    Wrappers.Slack.updateMe config.chat.slack.support, 'Customer Servivce', 'Yo', (e, me) ->
+      $log(e,me)
+      expect(me.user).to.equal('customer-support')
+      stub.restore()
+      DONE()
 
 
   it 'Can get all team users', itDone ->
@@ -94,14 +94,15 @@ slackUsers = ->
       DONE()
 
 
-  # it.skip 'Can check other users presence', itDone ->
-  #   Wrappers.Slack.getUserPresence {slackId:"U02ASLW2Z"}, (e, u) ->
-  #     console.log(e, u)
-  #   # { presence: 'away' }
-  #   # { presence: 'active' }
-  #     DONE()
+  it.skip 'Can check other users presence', itDone ->
+    # Wrappers.Slack.getUserPresence {slackId:"U02ASLW2Z"}, (e, u) ->
+      # console.log(e, u)
+    # { presence: 'away' }
+    # { presence: 'active' }
+      # DONE()
 
-  # it.skip 'Can get my presence', itDone ->
+
+  it.skip 'Can get my presence', itDone ->
     # Wrappers.Slack.getUserPresence {slackId:"U03KKUVBJ",token:jkresner_gmail_token}, (e, u) ->
     #   console.log(e, u)
     # { presence: 'active',
@@ -110,7 +111,8 @@ slackUsers = ->
     #   manual_away: false,
     #   connection_count: 1,
     #   last_activity: 1433656202 }
-      # DONE()
+    #   DONE()
+
 
 slackGroups = ->
 
@@ -265,6 +267,11 @@ chatSvc = ->
 module.exports = ->
 
   @timeout 100000
+
+  before ->
+    expect(config.auth.slack.slackTeam != 'T02ATFDPL', "Cannot run test against prod slack team".magenta).to.be.true
+    expect(config.chat.slack.ower != 'U02ASLW2Z', "Cannot run test against prod slack team".magenta).to.be.true
+    expect(config.chat.slack.support != 'U06UD6SES', "Cannot run test against prod slack team".magenta).to.be.true
 
   describe "SlackWrapper: ".subspec, ->
     describe "Users & Team: ".subspec, slackUsers

@@ -57,7 +57,7 @@ var get = {
       if (e || !expert) return cb(e,expert)
       var q = Data.query.expertPayouts(expert._id)
       // console.log('expert.q', q)
-      svc.searchMany(q, {}, Data.select.forPayout(cb))
+      svc.searchMany(q, {options: Data.opts.orderForPayouts}, Data.select.forPayout(cb))
     })
   },
 
@@ -116,13 +116,13 @@ var Lines = {
     var info = { name: `Discount ($${amount})`, amount, coupon, source, appliedBy: { _id: user._id, name: user.name } }
     return Lines._new('discount',1,unitPrice,unitPrice,0,profit,info)
   },
-  airpair(expert, time, minutes, type, unitPrice, unitProfit)
+  booking(bookingId, expert, time, minutes, type, unitPrice, unitProfit)
   {
     var qty = minutes / 60
     var total = qty*unitPrice
     var exp = { _id: expert._id, name: expert.name, avatar: expert.avatar, userId: expert.userId }
     var info = { name: `${minutes} min (${expert.name||expert.user.name})`, type, time, minutes, paidout: false, expert: exp }
-    return Lines._new('airpair',qty,unitPrice,total,0,qty*unitProfit,info)
+    return _.extend({bookingId}, Lines._new('airpair',qty,unitPrice,total,0,qty*unitProfit,info))
   }
 }
 
@@ -211,6 +211,9 @@ function chargeAndTrackOrder(o, errorCB, saveCB)
         o.payment = { id, type, status: "authorized", total:amount, orderId: o._id, created }
       }
 
+      //-- Mongoose is useless ... so we manually make sure this doesn't get through
+      if (o.payMethod) delete o.payMethod
+
       saveCB(null, o)
     })
   }
@@ -225,7 +228,7 @@ function trackOrderPayment(order) {
 }
 
 
-function bookUsingDeal(expert, time, minutes, type, dealId, cb)
+function bookUsingDeal(bookingId, expert, time, minutes, type, dealId, cb)
 {
   get.getMyOrdersForDeal.call(this, dealId, (e, orders) => {
     var lines = OrderUtil.linesWithMinutesRemaining(orders)
@@ -238,7 +241,7 @@ function bookUsingDeal(expert, time, minutes, type, dealId, cb)
     var profit = (deal.rake/100)*deal.price
     var unitProfit = (profit/(deal.minutes/60))
     // $log('profit', profit, unitPrice, 'unitProfit'.white, unitProfit)
-    var lineItems = [Lines.airpair(expert, time, minutes, type, unitPrice, unitProfit)]
+    var lineItems = [Lines.booking(bookingId, expert, time, minutes, type, unitPrice, unitProfit)]
 
     var need = minutes
     var ordersToUpdate = []
@@ -407,10 +410,10 @@ var save = {
     )
   },
 
-  createBookingOrder(expert, time, minutes, type, credit, payMethodId, requestSuggestion, dealId, cb)
+  createBookingOrder(bookingId, expert, time, minutes, type, credit, payMethodId, requestSuggestion, dealId, cb)
   {
     if (dealId) {
-      bookUsingDeal.call(this, expert, time, minutes, type, dealId, cb)
+      bookUsingDeal.call(this, bookingId, expert, time, minutes, type, dealId, cb)
     }
     else if (requestSuggestion) {
       this.machineCall = true // so we get back all data for the request
@@ -423,7 +426,7 @@ var save = {
         if (type == 'opensource') unitPrice = unitPrice - 10
         var unitProfit = unitPrice - expert.rate
         var total = minutes/60 * unitPrice
-        var lineItems = [Lines.airpair(expert, time, minutes, type, unitPrice, unitProfit)]
+        var lineItems = [Lines.booking(bookingId, expert, time, minutes, type, unitPrice, unitProfit)]
         _createBookingOrder.call(this, expert, time, minutes, type, credit, payMethodId, request, lineItems, total, cb)
       })
     }
@@ -431,7 +434,7 @@ var save = {
       var unitPrice = OrderUtil.calculateUnitPrice(expert,type)
       var unitProfit = OrderUtil.calculateUnitProfit(expert, type)
       var total = minutes/60 * unitPrice
-      var lineItems = [Lines.airpair(expert, time, minutes, type, unitPrice, unitProfit)]
+      var lineItems = [Lines.booking(bookingId, expert, time, minutes, type, unitPrice, unitProfit)]
       _createBookingOrder.call(this, expert, time, minutes, type, credit, payMethodId, null, lineItems, total, cb)
     }
   },

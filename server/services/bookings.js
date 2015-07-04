@@ -92,52 +92,51 @@ var get = {
 }
 
 
-function create(e, r, user, expert, datetime, minutes, type, cb) {
-  if (e) return cb(e)
-  User.findOne({_id:expert.userId},{localization:1,name:1,email:1},(e, expertUser)=>{
-    var cTimeLoc = !user.localization || !user.localization.timezoneData ? {} :
-      { location:user.localization.location, timeZoneId:user.localization.timezoneData.timeZoneId }
-
-    var eTimeLoc = !expertUser.localization || !expertUser.localization.timezoneData ? {} :
-      { location:expertUser.localization.location, timeZoneId:expertUser.localization.timezoneData.timeZoneId }
-
-    var participants = [
-      _.extend(cTimeLoc, { role:"customer", info: { _id: user._id, name: user.name, email: user.email } }),
-      _.extend(eTimeLoc, { role:"expert", info: { _id: expert.userId, name: expertUser.name, email: expertUser.email } })
-    ]
-
-    var touch = svc.newTouch.call(this, 'create')
-    var booking = {
-      _id: svc.newId(),
-      createdById: user._id,
-      customerId: user._id, // consider use case of expert creating booking
-      expertId: expert._id,
-      participants,
-      type,
-      minutes,
-      datetime,
-      suggestedTimes:[{time:datetime,byId:user._id}],
-      status: 'pending',
-      gcal: {},
-      orderId: r._id,
-      lastTouch: touch,
-      activity: [touch]
-    }
-    var d = {byName:user.name,expertName:expert.name, bookingId:booking._id,minutes,type}
-    mailman.send('pipeliners', 'pipeliner-notify-booking', d, ()=>{})
-    mailman.send(expert, 'expert-booked', d, ()=>{}) // todo add type && instructions to email
-
-    svc.create(booking, select.cb.itemIndex(cb))
-  })
-}
-
-
 var save = {
 
-  createBooking(expert, time, minutes, type, credit, payMethodId, requestId, dealId, cb)
+  createBooking(expert, datetime, minutes, type, credit, payMethodId, requestId, dealId, cb)
   {
-    var createCB = (e, r) => create.call(this, e, r, this.user, expert, time, minutes, type, cb)
-    OrdersSvc.createBookingOrder.call(this, expert, time, minutes, type, credit, payMethodId, requestId, dealId, createCB)
+    var getParticipants = (callback) => {
+      User.findOne({_id:expert.userId},{localization:1,name:1,email:1}, (e, expertUser) => {
+        if (e) return callback(e)
+        callback(null,[
+          BookingdUtil.participantFromUser("customer", this.user),
+          BookingdUtil.participantFromUser("expert", expertUser)
+        ])
+      })
+    }
+
+    getParticipants((ee, participants)=>{
+      if (ee) return cb(ee)
+      var bookingId = svc.newId()
+      OrdersSvc.createBookingOrder.call(this, bookingId, expert, datetime, minutes, type, credit, payMethodId, requestId, dealId, (e, order) => {
+        if (e) return cb(e)
+
+        var {user} = this
+        var touch = svc.newTouch.call(this, 'create')
+        var booking = {
+          _id: bookingId,
+          createdById: user._id,
+          customerId: user._id, // consider use case of expert creating booking
+          expertId: expert._id,
+          participants,
+          type,
+          minutes,
+          datetime,
+          suggestedTimes:[{time:datetime,byId:user._id}],
+          status: 'pending',
+          gcal: {},
+          orderId: order._id,
+          lastTouch: touch,
+          activity: [touch]
+        }
+        var d = {byName:user.name,expertName:expert.name, bookingId:booking._id,minutes,type}
+        mailman.send('pipeliners', 'pipeliner-notify-booking', d, ()=>{})
+        mailman.send(expert, 'expert-booked', d, ()=>{}) // todo add type && instructions to email
+
+        svc.create(booking, select.cb.itemIndex(cb))
+      })
+    })
   },
 
   suggestTime(original, time, cb)
