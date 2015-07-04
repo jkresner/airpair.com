@@ -37,6 +37,9 @@ angular.module("APExpert", ['APTagInput','APPayPal'])
     $scope.payoutmethods = r
     if (r.length == 1)
       $scope.data.payoutmethodId = r[0]._id
+
+    var slack = $scope.session.social.sl
+    $scope.connectedSlack = slack && slack.username
   }
 
   DataService.billing.getPayoutmethods({},setPayoutmethodsScope)
