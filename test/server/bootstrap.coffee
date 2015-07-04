@@ -85,7 +85,7 @@ describe 'Server: '.appload, ->
   spec @, 'Redirects'
   spec @, 'Requests', 'requests'
   spec @, 'Pipeline', 'requestsAdmin'
-  # spec @, 'Paymethods'
+  spec @, 'Paymethods'
   spec @, 'Orders'
   spec @, 'Orders', 'ordersBooking'
   spec @, 'Orders', 'ordersDeals'
