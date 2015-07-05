@@ -213,44 +213,44 @@ feedback = ->
 
   describe.skip 'Skip', ->
 
-  it 'Cannot give feedback in pending, confirmed or canceled state', itDone ->
-    SETUP.newBookedExpert 'stco', {}, (s, b1) ->
-      expect(b1.status).to.equal('pending')
-      PUT "/bookings/#{b1._id}/#{b1.expertId}/customer-feedback", {}, {status:403}, (e) ->
-        expectStartsWith(e.message,"Booking [#{b1._id}] must be in folloup or complete state")
-        ## todo test confirmed
-        ## todo test canceled
-        DONE()
+    it 'Cannot give feedback in pending, confirmed or canceled state', itDone ->
+      SETUP.newBookedExpert 'stco', {}, (s, b1) ->
+        expect(b1.status).to.equal('pending')
+        PUT "/bookings/#{b1._id}/#{b1.expertId}/customer-feedback", {}, {status:403}, (e) ->
+          expectStartsWith(e.message,"Booking [#{b1._id}] must be in folloup or complete state")
+          ## todo test confirmed
+          ## todo test canceled
+          DONE()
 
 
-  it 'Can give customer feedback as the customer without expert feedback', itDone ->
-    SETUP.newBookedExpert 'stcx', {}, (s, b1) ->
-      LOGIN 'admin', (sadm) ->
-        PUT "/adm/bookings/#{b1._id}/recording", {youTubeId: "MEv4SuSJgwk"}, {}, (b2) ->
-          expect(b2.status).to.equal("followup")
-          LOGIN s.userKey, ->
-            PUT "/bookings/#{b1._id}/#{b1.expertId}/customer-feedback", {}, {status:403}, (e) ->
-              expectStartsWith(e.message,"Booking customer feedback review required")
-              rev1 = { questions: [
-                { idx: 0, key: 'rating', promt: 'How many stars?', answer: "Awesome" }] }
-              body1 = { review: rev1 }
-              PUT "/bookings/#{b1._id}/#{b1.expertId}/customer-feedback", body1, {}, (b3) ->
-                expect(b3.reviews.length).to.equal(1)
-                DONE()
+    it 'Can give customer feedback as the customer without expert feedback', itDone ->
+      SETUP.newBookedExpert 'stcx', {}, (s, b1) ->
+        LOGIN 'admin', (sadm) ->
+          PUT "/adm/bookings/#{b1._id}/recording", {youTubeId: "MEv4SuSJgwk"}, {}, (b2) ->
+            expect(b2.status).to.equal("followup")
+            LOGIN s.userKey, ->
+              PUT "/bookings/#{b1._id}/#{b1.expertId}/customer-feedback", {}, {status:403}, (e) ->
+                expectStartsWith(e.message,"Booking customer feedback review required")
+                rev1 = { questions: [
+                  { idx: 0, key: 'rating', promt: 'How many stars?', answer: "Awesome" }] }
+                body1 = { review: rev1 }
+                PUT "/bookings/#{b1._id}/#{b1.expertId}/customer-feedback", body1, {}, (b3) ->
+                  expect(b3.reviews.length).to.equal(1)
+                  DONE()
 
 
     it 'Can give customer feedback as the customer with expert feedback', itDone ->
 
 
-  it 'Cannot give customer feedback if not a customer', itDone ->
-    SETUP.newBookedExpert 'stec', {}, (s, b1) ->
-      LOGIN 'admin', (sadm) ->
-        PUT "/adm/bookings/#{b1._id}/recording", {youTubeId: "MEv4SuSJgwk"}, {}, (b2) ->
-          expect(b2.status).to.equal("followup")
-          LOGIN 'dros', ->
-            PUT "/bookings/#{b1._id}/#{b1.expertId}/customer-feedback", {}, {status:403}, (e) ->
-              expectStartsWith(e.message,"Not a customer on booking")
-              DONE()
+    it 'Cannot give customer feedback if not a customer', itDone ->
+      SETUP.newBookedExpert 'stec', {}, (s, b1) ->
+        LOGIN 'admin', (sadm) ->
+          PUT "/adm/bookings/#{b1._id}/recording", {youTubeId: "MEv4SuSJgwk"}, {}, (b2) ->
+            expect(b2.status).to.equal("followup")
+            LOGIN 'dros', ->
+              PUT "/bookings/#{b1._id}/#{b1.expertId}/customer-feedback", {}, {status:403}, (e) ->
+                expectStartsWith(e.message,"Not a customer on booking")
+                DONE()
 
 
     it 'Can update customer feedback', itDone ->
@@ -276,5 +276,5 @@ module.exports = ->
 
   describe("Scheduling: ".subspec, scheduling)
   describe("Recordings: ".subspec, recordings)
-  describe.only("Feedback: ".subspec, feedback)
+  describe("Feedback: ".subspec, feedback)
 
