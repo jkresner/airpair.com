@@ -1,5 +1,6 @@
 import * as md5         from '../util/md5'
 var {selectFromObject}  = util
+var {Slack}             = Wrappers
 
 var select = {
   itemIndex: {
@@ -13,6 +14,7 @@ var select = {
     'gcal': 1,
     'recordings': 1,
     'chatId': 1,
+    'chat': 1,
     'customerId': 1,
     'expertId': 1,
     'createdById':1,
@@ -27,9 +29,9 @@ var select = {
     'createdById':1,
     'status':1,
     'datetime':1,
-    // 'gcal':1,
     'recordings':1,
-    'participants':1,
+    'participants.role':1,
+    'participants.info':1,
     'orderId':1,
     'chatId':1,
   },
@@ -44,47 +46,32 @@ var select = {
     'datetime':1,
     'participants':1
   },
-  setAvatars: (booking) => {
-    if (booking && booking.participants)
-      for (var p of booking.participants) {
-        p.info.avatar = md5.gravatarUrl(p.info.email)
-        if (!p.chat) {
-          var slackUser = Wrappers.Slack.checkUserSync(p.info)
-          if (slackUser)
-            p.chat = { slack: { id: slackUser.id, name:slackUser.name } }
-        }
-      }
-    if (booking.chat) {
-      booking.chat.members = {}
-      for (var m of booking.chat.info.members) {
-        booking.chat.members[m] = Wrappers.Slack.checkUserSync({id:m}) || {id:m}
-      }
+  inflateParticipantInfo(participants) {
+    for (var p of (participants || [])) {
+      p.info.avatar = md5.gravatarUrl(p.info.email)
+      p.chat = p.chat || Slack.checkUserSync(p.info)
+      if (p.chat == null) delete p.chat
     }
   },
+  inflateChatInfo(chat) {
+    if (!chat) return
+    chat.members = {}
+    for (var m of chat.info.members)
+      chat.members[m] = Slack.checkUserSync({id:m}) || {id:m}
+  },
   cb: {
-    itemIndex(cb) {
-      return select.cb.setAvatarsCB((e, booking) => {
-        if (e) return cb(e)
-        cb(null,selectFromObject(booking,select.itemIndex))
-      })
-    },
-    setAvatarsCB(cb) {
-      return (e, booking) => {
-        Wrappers.Slack.getUsers(()=>{
-          if (e) return cb(e)
-          select.setAvatars(booking)
-          cb(null,booking)
-        })
+    inflate(cb, selectFields) {
+      var inflateBooking = (b) => {
+        select.inflateParticipantInfo(b.participants)
+        select.inflateChatInfo(b.chat)
       }
-    },
-    inflateAvatars(cb) {
+
       return (e,r) => {
-        Wrappers.Slack.getUsers(()=>{
-          if (e) return cb(e)
-          for (var o of r)
-            select.setAvatars(o)
-          cb(null, r)
-        })
+        if (e) return cb(e)
+        if (r.constructor === Array) r = _.map(r,(b)=>inflateBooking(b))
+        else inflateBooking(r)
+        if (selectFields) r = selectFromObject(r,selectFields)
+        cb(null,r)
       }
     }
   }
@@ -100,9 +87,15 @@ var query = {
   }
 }
 
-var options = {
-  orderByDate: { sort: { 'datetime': -1 } }
+var opts = {
+  orderByDate: { sort: { 'datetime': -1 } },
+  forParticipant: {
+    join: {
+      'orderId': '_id type lineItems.info.released lineItems.info.paidout',
+      'requestId': '_id title brief tags',
+    }
+  }
 }
 
 
-module.exports = {select,query,options}
+module.exports = {select,query,opts}

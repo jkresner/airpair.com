@@ -44,47 +44,50 @@ var select = {
     'total': 1,
     'profit':1,
   },
-  forPayout(cb) {
-    return (e, r) => {
-      if (e) return cb(e)
-      var selected = []
-      for (var order of r) {
-        for (var line of order.lineItems)
-        {
-          if (line.suggestion) {
-            line.owed = line.qty * line.suggestion.suggestedRate[line.type].expert
-            line.info = {
-              expert: line.suggestion.expert,
-              paidout: true,
-              minutes: line.qty*60,
-              bookingIds: [],
-              type: line.type,
-              name: `${line.qty*60} min (${line.suggestion.expert.name})`,
-              released: true
+  cb: {
+    forPayout(cb) {
+      return (e, r) => {
+        if (e) return cb(e)
+        var selected = []
+        for (var order of r) {
+          for (var line of order.lineItems)
+          {
+            // v0 order (2013/2014)
+            if (line.suggestion) {
+              line.owed = line.qty * line.suggestion.suggestedRate[line.type].expert
+              line.info = {
+                expert: line.suggestion.expert,
+                paidout: true,
+                minutes: line.qty*60,
+                bookingIds: [],
+                type: line.type,
+                name: `${line.qty*60} min (${line.suggestion.expert.name})`,
+                released: true
+              }
+              line.type = 'airpair'
+              for (var c of line.redeemedCalls)
+                line.info.bookingIds.push(c.callId)
             }
-            line.type = 'airpair'
-            for (var c of line.redeemedCalls)
-              line.info.bookingIds.push(c.callId)
+            else if (line.type != 'airpair')
+              order.lineItems = _.difference(order.lineItems, [line])
+            else {
+              line.owed = line.total - line.profit
+            }
           }
-          else if (line.type != 'airpair')
-            order.lineItems = _.difference(order.lineItems, [line])
-          else {
-            line.owed = line.total - line.profit
-          }
+          selected.push(selectFromObject(order, select.listPayout))
         }
-        selected.push(selectFromObject(order, select.listPayout))
+        cb(null,selected)
       }
-      cb(null,selected)
-    }
-  },
-  forAdmin(cb) {
-    return (e,r) => {
-      for (var o of r) {
-        if (o.company)
-          o.by = { name: o.company.contacts[0].fullName, email: o.company.contacts[0].email }
-        o.by.avatar = md5.gravatarUrl(o.by.email)
+    },
+    forAdmin(cb) {
+      return (e,r) => {
+        for (var o of r) {
+          if (o.company)
+            o.by = { name: o.company.contacts[0].fullName, email: o.company.contacts[0].email }
+          o.by.avatar = md5.gravatarUrl(o.by.email)
+        }
+        cb(null, r)
       }
-      cb(null, r)
     }
   }
 }
@@ -137,6 +140,7 @@ var query = {
 }
 
 var opts = {
+  byIdForAdmin:     { join: { 'lineItems.bookingId': '_id datetime participants' } },
   orderByNewest:    { sort: { 'utc': -1 }, join: { 'lineItems.bookingId': '_id datetime participants' } },
   orderByOldest:    { sort: { 'utc': 1 } }
 }

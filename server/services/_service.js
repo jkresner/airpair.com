@@ -31,6 +31,7 @@ export default function(model, logging)
 
     q.lean().exec( (e, r) => {
       if (e && logging) { $log('svc.searchOne.err', query, e, cb) }
+      // TODO rename populated objectId to "object" attributes
       cb(e, r)
     } )
   }
@@ -47,6 +48,7 @@ export default function(model, logging)
 
     q.lean().exec( (e, r) => {
       if (e && logging) { $log('svc.searchMany.err', query, e, cb) }
+      // TODO rename populated objectId to "object" attributes
       cb(e, r)
     } )
   }
