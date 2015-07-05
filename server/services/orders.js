@@ -57,7 +57,7 @@ var get = {
       if (e || !expert) return cb(e,expert)
       var q = Data.query.expertPayouts(expert._id)
       // console.log('expert.q', q)
-      svc.searchMany(q, {options: Data.opts.orderForPayouts}, Data.select.forPayout(cb))
+      svc.searchMany(q, {options: Data.opts.orderByNewest}, Data.select.forPayout(cb))
     })
   },
 
