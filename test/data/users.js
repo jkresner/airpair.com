@@ -71,11 +71,14 @@ module.exports = {
   jpie: { name:"Jason Pierce ",email:"jasonpierce@gmail.com" },
   jasp: { name:"Jason Pierce ",email:"jasonpierce@hotmail.com" },
 
+  acal: { name:"Andrew Callahan",email:"andrew.callahan@hotmail.com" },
+  anca: { name:"Andrew Callahan",email:"andrew.allahan@test.com" },
+
   jkre: { name:"Jonathon Kresner",email:"jkresner@gmail.com" },
   krez: { name:"Jonathon Krezner",email:"krez@hotmail.com" },
   igor: { name:"Igor Lebovic",email:"igorlebovic@gmail.com" },
   evnr: { name:"Evan Richards",email:"goldfish@gmail.com" },
-  evan: { name:"Evan Richards",email:"evengoldfish@gmail.com" },
+  // evan: { name:"Evan Richards",email:"evengoldfish@gmail.com" },
   nevk: { name:"Nevan King",email:"nevking@gmail.com" },
   nkig: { name:"Nevan King",email:"nevanking@hotmail.com" },
 
@@ -277,6 +280,20 @@ module.exports = {
     "name" : "Alexander Dymo",
   },
 
+  evan: {
+    "_id" : ObjectId("5241c04a66a6f999a465f861"),
+    "email" : "goldcpufish@gmail.com",
+    "emailVerified" : true,
+    "name" : "Evan R",
+    "localization" : {
+        "timezoneData" : {
+            "timeZoneName" : "Pacific Daylight Time",
+            "timeZoneId" : "America/Los_Angeles" },
+        "timezone" : "Pacific Daylight Time",
+        "locationData" : { "name" : "Oakland", },
+        "location" : "Oakland, CA, USA"
+    }
+  },
 
   dros :{
     "_id" : ObjectId("52cd929666a6f999a465fee8"),
@@ -2573,5 +2590,43 @@ module.exports = {
             "provider" : "linkedin"
         }
     }
+  },
+
+  gior: {
+    "_id" : ObjectId("5283d1bb66a6f999a465fb6d"),
+    "cohort" : {
+        "expert" : { "_id" : ObjectId("528953641c60530200000011"), "applied" : ISODate("2013-11-17T23:38:12.000Z") }
+    },
+    "email" : "g.natili@gnstudio.com",
+    "emailVerified" : true,
+    "google" : {
+        "_json" : { "email" : "g.natili@gnstudio.com" },
+        "emails" : [ { "type" : "account", "value" : "g.natili@gnstudio.com" } ],
+        "displayName" : "Giorgio Natili",
+        "id" : "107269671216217485938",
+        "provider" : "google"
+    },
+    "googleId" : "107269671216217485938",
+    "name" : "Giorgio Natili",
+    "primaryPayMethodId" : ObjectId("5492f69faaa4a20b007a36ff"),
+    "bio" : "I’m an #opensource, #mobile and #frontend development fanatic with an insane passion for #graphdatabases and #linux.",
+    "social" : {
+        "gh" : {
+            "profileUrl" : "https://github.com/GiorgioNatili",
+            "username" : "GiorgioNatili",
+            "displayName" : "Giorgio Natili",
+            "id" : 1223504,
+            "provider" : "github"
+        }
+    },
+    "localization" : {
+        "timezoneData" : {"timeZoneName" : "Eastern Daylight Time", "timeZoneId" : "America/New_York", },
+        "timezone" : "Eastern Daylight Time",
+        "locationData" : { "name" : "Boston" },
+        "location" : "Boston, MA, USA"
+    },
+    "initials" : "gn",
+    "username" : "giorgionatili"
   }
+
 }
