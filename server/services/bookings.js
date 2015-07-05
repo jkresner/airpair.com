@@ -66,7 +66,7 @@ var get = {
   },
 
   getByUserId(id, cb) {
-    svc.searchMany({ customerId: id }, {}, inflate(cb,select.itemIndex))
+    svc.searchMany({ customerId: id }, {options: opts.orderByDate}, inflate(cb,select.itemIndex))
   },
 
   getByExpertId(expertId, cb) {
