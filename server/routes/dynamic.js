@@ -3,16 +3,16 @@ import PostsAPI                     from '../api/posts'
 import TagsAPI                      from '../api/tags'
 import RequestsApi                  from '../api/requests'
 import ExpertsApi                   from '../api/experts'
-var {trackView} = require('../middleware/analytics')
-var {authd} = require('../middleware/auth')
-var {populateUser,populateTagPage} = require('../middleware/data')
+var {trackView}                     = require('../middleware/analytics')
+var {authd}                         = require('../middleware/auth')
+var {populate}                      = require('../middleware/data')
 
 
 module.exports = function(app) {
 
 
   for (var slug of ['angularjs']) //,'firebase'
-    app.get(`/${slug}`, populateTagPage(slug), trackView('tag'),
+    app.get(`/${slug}`, populate.tagPage(slug), trackView('tag'),
       app.renderHbsViewData('tag', null, (req, cb) => cb(null, req.tagpage) ))
 
 
@@ -94,7 +94,7 @@ module.exports = function(app) {
       app.renderHbsViewData('post', null, (req, cb) => cb(null, req.post)))
 
 
-    .get('/posts/preview/:id', authd, populateUser, function(req, res, next) {
+    .get('/posts/preview/:id', authd, populate.user, function(req, res, next) {
       $callSvc(PostsAPI.svc.getByIdForPreview, req)(req.params.id, (e,r) => {
         if (!r) return res.redirect('/posts/me')
         if (!_.idsEqual(r.by.userId,req.user._id) &&

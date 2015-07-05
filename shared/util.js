@@ -204,7 +204,7 @@ var util = {
 
 
   lastName(name) {
-    return name.replace(name.split(' ')[0]+ '' , '')
+    return name.replace(name.split(' ')[0]+ '' , '').trim()
   },
 
 

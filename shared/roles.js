@@ -9,6 +9,10 @@ var roles = {
   order: {
     isCustomer(user, o) {
       return user ? idsEqual(o.userId, user._id) : false
+    },
+    isOwnerOrAdmin(user, o) {
+      var isSpinner = _.contains(user.roles, 'spinner')
+      return isAdmin(user) || isSpinner || roles.order.isCustomer(user,o)
     }
   },
   request: {
@@ -33,6 +37,9 @@ var roles = {
     }
   },
   booking: {
+    isCustomer(user, o) {
+      return _.find(o.participants,(p)=>_.idsEqual(p.info._id,user._id)&&p.role=='customer') != null
+    },
     isParticipant(user, o) {
       return _.find(o.participants,(p)=>_.idsEqual(p.info._id,user._id)) != null
     },

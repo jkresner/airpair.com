@@ -5,6 +5,7 @@ import * as UserSvc         from './users'
 var PayMethodSvc            = require('./paymethods')
 var RequestsSvc             = require('./requests')
 var Data                    = require('./orders.data')
+var {select,opts}           = Data
 var OrderUtil               = require('../../shared/orders.js')
 var DateTime                = util.datetime
 var {base}                  = Data
@@ -16,38 +17,55 @@ OrderUtil.calculateUnitProfit = (expert, type) => base[type] // TODO fix this fo
 
 
 var get = {
-  getByIdForAdmin(id, cb) {
+
+  getById(id, cb)
+  {
     svc.getById(id, cb)
   },
-  getMultipleOrdersById(ids, cb) {
+
+  getByIdForAdmin(id, cb)
+  {
+    svc.getById(id, cb)
+  },
+
+  getMultipleOrdersById(ids, cb)
+  {
     svc.getManyById(ids, cb)
   },
-  getMyOrders(cb) {
-    var opts = { options: Data.opts.orderByNewest }
-    svc.searchMany({userId:this.user._id}, opts, cb)
+
+  getMyOrders(cb)
+  {
+    svc.searchMany({userId:this.user._id}, { options: opts.orderByNewest }, cb)
   },
-  getMyOrdersWithCredit(payMethodId, cb) {
+
+  getMyOrdersWithCredit(payMethodId, cb)
+  {
     PayMethodSvc.getById.call(this, payMethodId, (e,r) => {
       if (e) return cb(e)
       var q = Data.query.creditRemaining(this.user._id, r._id)
-      svc.searchMany(q, { options: Data.opts.orderByOldest }, cb)
+      svc.searchMany(q, { options: opts.orderByOldest }, cb)
     })
   },
-  getMyOrdersForDeal(dealId, cb) {
+
+  getMyOrdersForDeal(dealId, cb)
+  {
     var q = Data.query.dealMinutesRemaining(this.user._id, dealId)
-    svc.searchMany(q, { options: Data.opts.orderByOldest }, cb)
+    svc.searchMany(q, { options: opts.orderByOldest }, cb)
   },
-  getMyDealOrdersForExpert(expertId, cb) {
+
+  getMyDealOrdersForExpert(expertId, cb)
+  {
     var q = Data.query.dealsForExpertWithMinutesRemaining(this.user._id, expertId)
-    svc.searchMany(q, { options: Data.opts.orderByOldest }, cb)
+    svc.searchMany(q, { options: opts.orderByOldest }, cb)
   },
+
   getByQueryForAdmin(start, end, userId, cb)
   {
-    var opts = { fields: Data.select.listAdmin, options: Data.opts.orderByNewest }
     var q = Data.query.inRange(start,end)
     if (userId) q.userId = userId
-    svc.searchMany(q, opts, Data.select.forAdmin(cb))
+    svc.searchMany(q, { fields: select.listAdmin, options: opts.orderByNewest }, select.cb.forAdmin(cb))
   },
+
   getOrdersForPayouts(cb)
   {
     // TODO, after we've paid out all the new orders and
@@ -57,7 +75,7 @@ var get = {
       if (e || !expert) return cb(e,expert)
       var q = Data.query.expertPayouts(expert._id)
       // console.log('expert.q', q)
-      svc.searchMany(q, {}, Data.select.forPayout(cb))
+      svc.searchMany(q, {options: opts.orderByNewest}, select.cb.forPayout(cb))
     })
   },
 
@@ -116,13 +134,13 @@ var Lines = {
     var info = { name: `Discount ($${amount})`, amount, coupon, source, appliedBy: { _id: user._id, name: user.name } }
     return Lines._new('discount',1,unitPrice,unitPrice,0,profit,info)
   },
-  airpair(expert, time, minutes, type, unitPrice, unitProfit)
+  booking(bookingId, expert, time, minutes, type, unitPrice, unitProfit)
   {
     var qty = minutes / 60
     var total = qty*unitPrice
     var exp = { _id: expert._id, name: expert.name, avatar: expert.avatar, userId: expert.userId }
     var info = { name: `${minutes} min (${expert.name||expert.user.name})`, type, time, minutes, paidout: false, expert: exp }
-    return Lines._new('airpair',qty,unitPrice,total,0,qty*unitProfit,info)
+    return _.extend({bookingId}, Lines._new('airpair',qty,unitPrice,total,0,qty*unitProfit,info))
   }
 }
 
@@ -211,6 +229,9 @@ function chargeAndTrackOrder(o, errorCB, saveCB)
         o.payment = { id, type, status: "authorized", total:amount, orderId: o._id, created }
       }
 
+      //-- Mongoose is useless ... so we manually make sure this doesn't get through
+      if (o.payMethod) delete o.payMethod
+
       saveCB(null, o)
     })
   }
@@ -225,7 +246,7 @@ function trackOrderPayment(order) {
 }
 
 
-function bookUsingDeal(expert, time, minutes, type, dealId, cb)
+function bookUsingDeal(bookingId, expert, time, minutes, type, dealId, cb)
 {
   get.getMyOrdersForDeal.call(this, dealId, (e, orders) => {
     var lines = OrderUtil.linesWithMinutesRemaining(orders)
@@ -238,7 +259,7 @@ function bookUsingDeal(expert, time, minutes, type, dealId, cb)
     var profit = (deal.rake/100)*deal.price
     var unitProfit = (profit/(deal.minutes/60))
     // $log('profit', profit, unitPrice, 'unitProfit'.white, unitProfit)
-    var lineItems = [Lines.airpair(expert, time, minutes, type, unitPrice, unitProfit)]
+    var lineItems = [Lines.booking(bookingId, expert, time, minutes, type, unitPrice, unitProfit)]
 
     var need = minutes
     var ordersToUpdate = []
@@ -407,10 +428,10 @@ var save = {
     )
   },
 
-  createBookingOrder(expert, time, minutes, type, credit, payMethodId, requestSuggestion, dealId, cb)
+  createBookingOrder(bookingId, expert, time, minutes, type, credit, payMethodId, requestSuggestion, dealId, cb)
   {
     if (dealId) {
-      bookUsingDeal.call(this, expert, time, minutes, type, dealId, cb)
+      bookUsingDeal.call(this, bookingId, expert, time, minutes, type, dealId, cb)
     }
     else if (requestSuggestion) {
       this.machineCall = true // so we get back all data for the request
@@ -423,7 +444,7 @@ var save = {
         if (type == 'opensource') unitPrice = unitPrice - 10
         var unitProfit = unitPrice - expert.rate
         var total = minutes/60 * unitPrice
-        var lineItems = [Lines.airpair(expert, time, minutes, type, unitPrice, unitProfit)]
+        var lineItems = [Lines.booking(bookingId, expert, time, minutes, type, unitPrice, unitProfit)]
         _createBookingOrder.call(this, expert, time, minutes, type, credit, payMethodId, request, lineItems, total, cb)
       })
     }
@@ -431,39 +452,28 @@ var save = {
       var unitPrice = OrderUtil.calculateUnitPrice(expert,type)
       var unitProfit = OrderUtil.calculateUnitProfit(expert, type)
       var total = minutes/60 * unitPrice
-      var lineItems = [Lines.airpair(expert, time, minutes, type, unitPrice, unitProfit)]
+      var lineItems = [Lines.booking(bookingId, expert, time, minutes, type, unitPrice, unitProfit)]
       _createBookingOrder.call(this, expert, time, minutes, type, credit, payMethodId, null, lineItems, total, cb)
     }
   },
 
-  releasePayout(order, cb)
+  releasePayout(order, booking, cb)
   {
     var payoutLine = _.find(order.lineItems, (li) =>
       li.info && li.info.paidout === false)
 
     payoutLine.info.released = svc.newTouch.call(this,'release')
-    svc.update(order._id, order, cb)
+
+    svc.update(order._id, order, (e,r)=>{
+      if (booking && booking.chat) {
+        var d = {byName:this.user.name,bookingId:booking._id}
+        pairbot.sendSlackMsg(booking.chat.providerId, 'expert-payment-released', d)
+      }
+
+      cb(e,util.selectFromObject(r, select.listPayout))
+    })
   }
 }
-
-
-
-// export function buyMembership(length, coupon, payMethod, cb)
-// {
-//   var total = (length == 12) ? 500 : 300
-//   var expires = Util.dateWithDayAccuracy(moment().add(6,'month'))
-
-//   var lineItems = []
-
-//   lineItems.push({ type : 'membership', unitPrice: total, qty: 1, total, profit: total,
-//     info: { name: 'Membership (6 mth)', expires }} )
-
-//   if (length == 12)
-//     lineItems.push( Lines.credit(false, 500, expires, '12 Month Membership Promo') )
-
-//   if (coupon == "bestpair")
-//     lineItems.push( Lines.discount("bestpair", 50, 'Membership Announcement Promo', this.user) )
-// }
 
 
 module.exports = _.extend(get, save)

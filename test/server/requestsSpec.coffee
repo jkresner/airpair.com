@@ -270,7 +270,10 @@ review = ->
                 expect(r1.suggested[0].expert.gh.username).to.equal("difficultashish")
                 expect(r1.suggested[0].expert.in.id).to.equal("cDNFNcqq-z")
                 expect(r1.suggested[0].expert.pic).to.be.undefined
-                DONE()
+                db.readDoc 'Request', r._id, (rDB) ->
+                  expect(rDB.user).to.be.undefined
+                  DONE()
+
 
 
   it 'Self suggest reply to a request as a expert new expert', itDone ->
@@ -420,8 +423,8 @@ review = ->
                       expect(review.suggested.length).to.equal(1)
                       expectIdsEqual(review.suggested[0].expert._id,expertId)
                       expect(review.suggested[0].suggestedRate).to.exist
-                      expect(review.suggested[0].suggestedRate.expert).to.equal(130)
-                      expect(review.suggested[0].suggestedRate.total).to.equal(220)
+                      expect(review.suggested[0].suggestedRate.expert).to.equal(127)
+                      expect(review.suggested[0].suggestedRate.total).to.equal(224)
                       DONE()
 
           testNotAvailable testAvailable

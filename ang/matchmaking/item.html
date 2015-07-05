@@ -104,12 +104,10 @@
           <social-links profile="m"></social-links>
           <social-scores profile="m"></social-scores>
           <div>{{gh}}</div>
+          <time>{{m.lastTouch.utc | agoTime }}</time>
           <b>Mojo: {{m.score}}</b>
           <a href="/adm/experts/{{m._id}}" target="_blank">{{m.name}}</a>
-          <a class="btn hist" ng-href="https://mail.google.com/mail/u/0/?shva=1#search/%22{{m.name | urlEncode }}%22+OR+{{ m.email | urlEncode  }}" target="_blank">
-            <i class="glyphicon glyphicon-envelope"></i> history
-          </a>
-
+          <i>{{m.location}}</i>
           <br />R ${{m.rate}}|<min>{{m.minRate}} min</min>
           <br /><span ng-if="m.matching">
             Cust {{m.matching.experience.customers}} /
@@ -117,11 +115,14 @@
             Sug {{m.matching.replies.suggested}} /
             Rep {{m.matching.replies.replied}}
           </span>
-          <div>
             <em ng-repeat="t in m.tags"
               ng-class="(highlightedTag(t._id)) ? 'highlight':''"
               >{{t.short||t.name}}</em>
-          </div>
+            <hr />
+            <div></div>
+            <a class="btn hist" ng-href="https://mail.google.com/mail/u/0/?shva=1#search/%22{{m.name | urlEncode }}%22+OR+{{ m.email | urlEncode  }}" target="_blank">
+            <i class="glyphicon glyphicon-envelope"></i> history
+          </a>
         </li>
       </ul>
     </section>

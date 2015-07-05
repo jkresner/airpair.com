@@ -74,6 +74,7 @@ var wrapper = {
   {
     //-- This method will explode if the cache isn't preloaded
     var slackUsers = cache.slack_users
+    if (!slackUsers) $log('Slack.checkUserSync cache not loaded'.red)
 
     // Priority 0 if a username is provided
     if (info.id)

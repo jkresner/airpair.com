@@ -24,9 +24,8 @@ adminTasks = ->
             expect(swappedLine.info.expert.name).to.equal("Ra'Shaun Stovall")
             expect(swappedLine.info.name).to.equal("60 min (Ra'Shaun Stovall)")
             expect(swappedLine.info.swapped[0].prevExpert._id).to.equal(adamKerrId)
-            PUT "/adm/billing/orders/#{booking.orderId}/release", {}, {}, (released1) ->
+            PUT "/billing/orders/#{booking.orderId}/release", {}, {}, (released1) ->
               LOGIN 'snug', (sSnug) ->
-                # $log('sSnug', sSnug)
                 GET "/billing/orders/payouts", {}, (orders) ->
                   expect(orders.length).to.equal(1)
                   expectIdsEqual(orders[0]._id,booking.orderId)

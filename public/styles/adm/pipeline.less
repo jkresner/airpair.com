@@ -152,7 +152,7 @@
     }
   }
 
-  em { display:inline-block;font-style:normal;font-size:9px;padding:2px 3px;margin:1px;
+  em { display:inline-block;font-style:normal;font-size:9px;padding:1px 3px;margin:1px;
   border-radius:3px }
   em.highlight { background:@lightorange;color:white }
 
@@ -177,6 +177,8 @@
     ul { .ulNoStyle;
       vertical-align:top;
       li.match {
+        time { padding-left:40px }
+        > i { padding-left:40px;font-size:9px;color:@darkgray;font-style:normal }
         position:relative;
         vertical-align:top;
         min-height:150px;
@@ -185,6 +187,8 @@
         > b { margin-left:40px;display:block;font-size:11px }
         > a { margin-left:40px;display:block;font-size:11px }
         min { font-size:12px }
+        hr { margin:30px 0 0 0;clear:both;border:white }
+        a.btn { display:block;clear:both }
       }
     }
 

@@ -17,7 +17,7 @@ var lineType = [
 
   'redeemeddealtime',
 
-  //-- Time with an expert, can be redeemed using credit or payg
+  //-- Time (Booking) with an expert, can be redeemed using credit, payg or time
   'airpair',
 
   //-- Rescheduling
@@ -25,6 +25,7 @@ var lineType = [
 
   //-- Get benfits like discounts
   'membership',
+
   //-- Attend a webinar
   'ticket',
 
@@ -46,13 +47,13 @@ var LineItem = new Schema({
 
   total:            { required: true, type: Number },  // Amount paid by customer
   balance:          { required: true, type: Number },  // Amount effecting customers balance
-// balanceRemaining: { required: true, type: Number },  // Amount effecting customers balance
+// balanceRemaining: { required: true, type: Number }, // Amount effecting customers balance
 
-  info:             { required: true, type: {} }, // Amount effecting customers balance
+  info:             { required: true, type: {} },      // Arbitrary info about the line item
 
-  // backwards compatibal with v0
-  suggestion:       { type: {} }
+  bookingId:        { type: ObjectId, ref: 'Booking' },
 
+  suggestion:       { type: {} }   // backwards compatibal with v0
 })
 
 LineItem.index({'info.expert._id': 1},{name: "ExpertPayoutsIndex"})
