@@ -40,6 +40,7 @@ module.exports = {
             "total" : 60,
             "balance" : 0,
             "profit" : 20,
+            "bookingId" : ObjectId("54dc2d2fd137810a00f2813b"),
             "info" : {
                 "expert" : {
                     "userId" : "530416e51c67d1a4859d23c8", "avatar" : "//0.gravatar.com/avatar/8b6d240a3a697982a0e77ee7871ac70b",

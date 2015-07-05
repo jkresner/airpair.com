@@ -18,8 +18,8 @@ module.exports = {
   },
 
   lineForPayout(order) {
-    return _.find(order.lineItems,(l) => l.info &&
-        l.info.expert && l.info.paidout != null)
+    return _.find(order.lineItems,(l) =>
+      l.info && l.info.expert && l.info.paidout != null)
   },
 
   payoutSummary(orders) {

@@ -10,6 +10,7 @@ module.exports = {
   requests:   require('./requests'),
   orders:     require('./orders'),
   bookings:   require('./bookings'),
+  chats:      require('./chats'),
   wrappers:   require('./wrappers'),
   sessions:   {}
 }

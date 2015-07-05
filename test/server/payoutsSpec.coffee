@@ -211,29 +211,41 @@ module.exports = -> describe "API: ", ->
 
 
   it 'Can collect a single payout released by the customer', itDone ->
+    pairbotStub = sinon.stub(pairbot,'sendSlackMsg',->)
+    db.ensureDoc 'Chat', data.chats.tst1, ->
     SETUP.newLoggedInExpertWithPayoutmethod 'gior', (expert, expertSession, payoutmethod) ->
-      SETUP.newBookedExpert 'acal', {expertId:expert._id, payoutmethodId:payoutmethod._id}, (s, booking1) ->
-        PUT "/billing/orders/#{booking1.orderId}/release", {}, {}, (released1) ->
-          expect(released1.lineItems.length).to.equal(2)
-          expect(released1.lineItems[1].info.paidout).to.equal(false)
-          expect(released1.lineItems[1].info.released).to.exist
-          expect(released1.lineItems[1].info.released.action).to.equal('release')
-          expectIdsEqual(released1.lineItems[1].info.released.by._id, s._id)
-          PUT "/billing/orders/#{booking1.orderId}/release", {}, {status:403}, (err2) ->
-            expectStartsWith(err2.message, "Order[#{booking1.orderId}] has already been released")
-            LOGIN expertSession.userKey, ->
-              GET "/billing/orders/payouts", {}, (orders) ->
-                expect(orders.length).to.equal(1)
-                expect(orders[0].lineItems.length).to.equal(1)
-                expect(orders[0].lineItems[0].type).to.equal('airpair')
-                expect(orders[0].lineItems[0].info.released).to.exist
-                expect(orders[0].lineItems[0].info.released.utc).to.exist
-                expectIdsEqual(orders[0].lineItems[0].info.released.by._id, s._id)
-                summary = payoutSummary(orders)
-                expect(summary.owed.count).to.equal(1)
-                expect(summary.paid.count).to.equal(0)
-                expect(summary.pending.count).to.equal(0)
-                DONE()
+      SETUP.newBookedExpert 'jkap', {expertId:expert._id, payoutmethodId:payoutmethod._id}, (s, booking1) ->
+        LOGIN "admin", ->
+          providerId = data.chats.tst1.providerId
+          PUT "/adm/bookings/#{booking1._id}/associate-chat", {type:'slack',providerId}, {}, (bChat) ->
+            LOGIN s.userKey, ->
+              PUT "/billing/orders/#{booking1.orderId}/release", {}, {}, (released1) ->
+                expect(released1.lineItems.length).to.equal(2)
+                expect(released1.lineItems[1].info.paidout).to.equal(false)
+                expect(released1.lineItems[1].info.released).to.exist
+                expect(released1.lineItems[1].info.released.action).to.equal('release')
+                expectIdsEqual(released1.lineItems[1].info.released.by._id, s._id)
+                expect(pairbotStub.calledOnce, "pairbot not called").to.be.true
+                expect(pairbotStub.args[0][0]).to.equal(providerId)
+                expect(pairbotStub.args[0][1]).to.equal('expert-payment-released')
+                expect(pairbotStub.args[0][2].byName).to.equal(s.name)
+                expectIdsEqual(pairbotStub.args[0][2].bookingId,booking1._id)
+                pairbotStub.restore()
+                PUT "/billing/orders/#{booking1.orderId}/release", {}, {status:403}, (err2) ->
+                  expectStartsWith(err2.message, "Order[#{booking1.orderId}] has already been released")
+                  LOGIN expertSession.userKey, ->
+                    GET "/billing/orders/payouts", {}, (orders) ->
+                      expect(orders.length).to.equal(1)
+                      expect(orders[0].lineItems.length).to.equal(1)
+                      expect(orders[0].lineItems[0].type).to.equal('airpair')
+                      expect(orders[0].lineItems[0].info.released).to.exist
+                      expect(orders[0].lineItems[0].info.released.utc).to.exist
+                      expectIdsEqual(orders[0].lineItems[0].info.released.by._id, s._id)
+                      summary = payoutSummary(orders)
+                      expect(summary.owed.count).to.equal(1)
+                      expect(summary.paid.count).to.equal(0)
+                      expect(summary.pending.count).to.equal(0)
+                      DONE()
 
 
   it 'Cannot release a payment if not customer or admin', itDone ->
@@ -363,7 +375,6 @@ module.exports = -> describe "API: ", ->
           expect(orders.length).to.equal(1)
           expect(orders[0].lineItems.length).to.equal(1)
           li = orders[0].lineItems[0]
-          $log('line'.yellow, li)
           expect(li.owed).to.equal(70)
           expect(li.type).to.equal('airpair')
           expect(li.suggestion).to.be.undefined
