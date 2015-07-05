@@ -22,6 +22,7 @@ var select = {
     'reviews':1
   },
   listAdmin: {
+    '_id': 1,
     'customerId': 1,
     'expertId': 1,
     'type': 1,
@@ -64,14 +65,32 @@ var select = {
       var inflateBooking = (b) => {
         select.inflateParticipantInfo(b.participants)
         select.inflateChatInfo(b.chat)
+        return (selectFields) ? selectFromObject(b,selectFields) : b
       }
 
       return (e,r) => {
         if (e) return cb(e)
-        if (r.constructor === Array) r = _.map(r,(b)=>inflateBooking(b))
-        else inflateBooking(r)
-        if (selectFields) r = selectFromObject(r,selectFields)
+        if (r.constructor === Array)
+          r = _.map(r,(b)=>inflateBooking(b))
+        else
+          r = inflateBooking(r)
         cb(null,r)
+      }
+    },
+    listAdmin(cb) {
+      return (e,r) => {
+        if (e) return cb(e)
+        for (var b of r) {
+          if (!b.orderId)
+            $log('no order', b._id)
+          else
+            b.paidout = _.find(b.orderId.lineItems||[],(li)=>
+              li.info!=null&&li.info.paidout!=null)
+
+          if (b.paidout) b.paidout = b.paidout.info
+          if (b.orderId) delete b.orderId.lineItems
+        }
+        select.cb.inflate(cb,select.listAdmin)(e,r)
       }
     }
   }
@@ -93,6 +112,13 @@ var opts = {
     join: {
       'orderId': '_id type lineItems.info.released lineItems.info.paidout',
       'requestId': '_id title brief tags',
+    }
+  },
+  adminList: {
+    sort: { 'datetime': -1 },
+    join: {
+      'orderId': '_id type lineItems.info.released lineItems.info.paidout',
+      'chatId': '_id info.name',
     }
   }
 }

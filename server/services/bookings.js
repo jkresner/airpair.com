@@ -77,23 +77,8 @@ var get = {
     var q = query.inRange(start,end)
     if (userId) q['participants.info._id'] = userId
 
-    Booking.find(q, select.listAdmin)
-      .populate('orderId', 'lineItems.info.paidout lineItems.info.released')
-      .populate('chatId', 'info.name')
-      .sort(opts.orderByDate.sort)
-      .lean().exec(select.cb.inflateAvatars((e,r)=>{
-        for (var b of r) {
-          if (!b.orderId)
-            $log('no order', b._id)
-          else
-            b.paidout = _.find(b.orderId.lineItems||[],(li)=>
-              li.info!=null&&li.info.paidout!=null)
-
-          if (b.paidout) b.paidout = b.paidout.info
-          if (b.orderId) delete b.orderId.lineItems
-        }
-        cb(e,r)
-      }))
+    svc.searchMany(q, { fields: select.listAdmin, options: opts.adminList },
+      select.cb.listAdmin(cb))
   }
 
 }
