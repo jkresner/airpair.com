@@ -423,8 +423,8 @@ review = ->
                       expect(review.suggested.length).to.equal(1)
                       expectIdsEqual(review.suggested[0].expert._id,expertId)
                       expect(review.suggested[0].suggestedRate).to.exist
-                      expect(review.suggested[0].suggestedRate.expert).to.equal(130)
-                      expect(review.suggested[0].suggestedRate.total).to.equal(220)
+                      expect(review.suggested[0].suggestedRate.expert).to.equal(127)
+                      expect(review.suggested[0].suggestedRate.total).to.equal(224)
                       DONE()
 
           testNotAvailable testAvailable

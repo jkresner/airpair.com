@@ -120,6 +120,7 @@ angular.module("APBilling", ['ngRoute', 'APPaymentDirectives', 'APBillingDirecti
         if (!$scope.expert || !$scope.booking) return
 
         var hrRate = $scope.expert.rate + 30
+        if (hrRate >= 180) hrRate = hrRate + 10
 
         if ($scope.suggestion)
           hrRate = $scope.suggestion.suggestedRate.total
