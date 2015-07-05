@@ -38,6 +38,8 @@ function calcSuggestedRate(requestBudget, expert)
   // {
     // get the base margin for the type of pricing
     var baseMargin = base['private']
+    if (requestBudget > 150)
+      baseMargin = baseMargin + 10
 
     // if the user was to change their choice between opensource / private
     // var relativeBudget = fns.getRelativeBudget(requestBudget, 'private', pricing)
