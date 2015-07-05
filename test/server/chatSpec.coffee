@@ -245,7 +245,18 @@ slackHelpers = ->
 
 chatSvc = ->
 
-  it.skip 'Can associate and sync existing slack group not belonging to any other booking', itDone ->
+  it.skip 'Can associate and save chat from group sync options', itDone ->
+    SETUP.newLoggedInExpertWithPayoutmethod 'gior', (expert, expertSession, payoutmethod) ->
+      SETUP.newBookedExpert 'jkap', {expertId:expert._id, payoutmethodId:payoutmethod._id}, (s, booking1) ->
+        LOGIN "admin", ->
+          Wrappers.Slack.searchGroupsByName 'zz-test-5590bdcdb50c4', (e,groups) ->
+            expect(groups.length).to.equal(1)
+            PUT "/adm/bookings/#{booking1._id}/associate-chat", {type:'slack',providerId:groups[0].id}, {}, (b2) ->
+              expect(b2.chatId).to.exist
+              DONE()
+
+
+  it.skip 'Can associate and sync existing group', itDone ->
 
   it.skip 'Can associate and sync existing slack group already belonging to another booking', itDone ->
 

@@ -13,7 +13,7 @@ export default initAPI(
   getOrdersForPayouts: (req) => [],
   getByQueryForAdmin: (req) => [req.params.start,req.params.end,req.params.userId],
   getMyDealOrdersForExpert: (req) => [req.params.id],
-  releasePayout: (req) => [req.order],
+  releasePayout: (req) => [req.order,req.booking],
 }, {
   order:'getByIdForAdmin',
   orders: 'getMultipleOrdersById'
