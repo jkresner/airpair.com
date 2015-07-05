@@ -9,6 +9,10 @@ var roles = {
   order: {
     isCustomer(user, o) {
       return user ? idsEqual(o.userId, user._id) : false
+    },
+    isOwnerOrAdmin(user, o) {
+      var isSpinner = _.contains(user.roles, 'spinner')
+      return isAdmin(user) || isSpinner || roles.order.isCustomer(user,o)
     }
   },
   request: {

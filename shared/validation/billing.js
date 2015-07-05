@@ -1,13 +1,17 @@
+var Roles = require('../roles').order
+
 var validation = {
 
-  getOrdersToPayout(user, expert) {
+  getOrdersToPayout(user, expert)
+  {
     var isAdmin = _.contains(user.roles, 'admin')
     var isExpert = _.idsEqual(user._id, expert.userId)
 
     if (!isAdmin && !isExpert) return `Can only get orders to payout for yourself`
   },
 
-  buyCredit(user, total, coupon, paymethodId) {
+  buyCredit(user, total, coupon, paymethodId)
+  {
     if (total != 300 && total != 500 && total != 1000 && total != 3000 && total != 5000)
       return `Can purchase only 300, 1000, 3000, 5000 amounts of credit`
 
@@ -27,8 +31,8 @@ var validation = {
     if (!source) return `Source required`
   },
 
-
-  buyDeal(user, expert, dealId, payMethodId) {
+  buyDeal(user, expert, dealId, payMethodId)
+  {
     var deal = _.find(expert.deals,(d)=>_.idsEqual(d._id,dealId))
     if (!deal)
       return `Could not find deal`
@@ -45,28 +49,22 @@ var validation = {
     if (!paymethod.type) return `Type required`
   },
 
-
   deletePaymethod(user, original)
   {
-    var isAdmin = _.contains(user.roles, 'admin')
-    var isOwner = _.idsEqual(original.userId, user._id)
-
-    if ( !isAdmin && !isOwner )
+    if (!Roles.isOwnerOrAdmin(user,original))
       return `PayMethod must be deleted by owner`
   },
 
-  releasePayout(user, order)
+  releasePayout(user, original)
   {
-    var isAdmin = _.contains(user.roles, 'admin')
+    if (!Roles.isOwnerOrAdmin(user,original))
+      return `Payout[${original._id}] must be released by owner`
 
-    if ( !isAdmin )
-      return `Payouts are controlled by admins`
-
-    var payoutLines = _.where(order.lineItems, (l) =>
+    var payoutLines = _.where(original.lineItems, (l) =>
       l.info && l.info.paidout === false)
 
-    if (payoutLines.length != 1) return `[{payoutLines.length}] Payout lines is invalid for releasing a payout`
-    if (payoutLines[0].by) return `Order has already been released`
+    if (payoutLines.length != 1) return `[${payoutLines.length}] Payout lines is invalid for releasing a payout`
+    if (payoutLines[0].info.released) return `Order[${original._id}] has already been released`
   },
 
   payoutOrders(user, payoutmethod, orders)
@@ -89,12 +87,6 @@ var validation = {
       if (!payoutLine) return `Cannot payout. Order[${orders[i]._id}] does not have payout belonging to you`
     }
   }
-
-  // buyMembership(user, length)
-  // {
-  //   if (length != 6 && length != 12)
-  //     return 'Can purchase only 6 month and 12 month membership'
-  // },
 
 }
 

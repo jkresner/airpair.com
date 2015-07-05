@@ -55,7 +55,6 @@ function admin() {
     .get('/users/search/:id', API.Users.search)
     .get('/billing/orders/:id', API.Orders.getByIdForAdmin)
     .post('/billing/orders/credit', API.Orders.giveCredit)
-    .put('/billing/orders/:order/release', API.Orders.releasePayout)
     .get('/billing/paymethods/:id', API.Paymethods.getUserPaymethodsByAdmin)
     .get('/views/user/:id', API.Views.getByUserId)
     .get('/redirects', API.Redirects.getAllRedirects)
@@ -82,7 +81,6 @@ function admin() {
 function posts() {
   return Router().param('expert', API.Experts.paramFns.getByIdForAdmin)
     .param('request', API.Requests.paramFns.getByIdForAdmin)
-    .param('order', API.Orders.paramFns.getByIdForAdmin)
     .param('tagforadm', API.Tags.paramFns.getById)
     .param('post', API.Posts.paramFns.getById)
     .param('postreview', API.Posts.reviewParamFn)
@@ -123,6 +121,7 @@ function other(app) {
     .param('paymethod', API.Paymethods.paramFns.getById)
     .param('expert', API.Experts.paramFns.getByIdForAdmin)
     .param('expertshaped', API.Experts.paramFns.getById)
+    .param('order', API.Orders.paramFns.getByIdForAdmin)
 
     .get('/session/full', setAnonSessionData, API.Users.getSession)
     .put('/users/me/password-change', API.Users.requestPasswordChange)
@@ -200,7 +199,7 @@ function other(app) {
     .get('/billing/orders/expert/:id', API.Orders.getMyDealOrdersForExpert)
     .post('/billing/orders/credit', API.Orders.buyCredit)
     .post('/billing/orders/deal/:expertshaped', API.Orders.buyDeal)
-
+    .put('/billing/orders/:order/release', API.Orders.releasePayout)
     .get('/billing/orders/payouts', API.Orders.getOrdersForPayouts)
     .get('/payouts/me', API.Payouts.getPayouts)
     .post('/payouts/:paymethod', bodyParam('orders'), API.Payouts.payoutOrders)
