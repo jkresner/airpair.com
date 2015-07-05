@@ -2,6 +2,18 @@ var Roles = require('../roles').booking
 
 var validation = {
 
+  getById(user, original)
+  {
+    if (!Roles.isParticipantOrAdmin(user, original))
+      return `You[${this.user._id}] are not a participants to this booking[${r._id}]`
+  },
+
+  getByIdForParticipant(user, original)
+  {
+    if (!Roles.isParticipantOrAdmin(user, original))
+      return `You[${this.user._id}] are not a participants to this booking[${r._id}]`
+  },
+
   createBooking(user, expert, datetime, minutes, type, credit, payMethodId, requestId)
   {
     if (!user.localization || !user.localization.timezone)
