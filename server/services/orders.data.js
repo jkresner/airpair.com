@@ -46,12 +46,27 @@ var select = {
   },
   forPayout(cb) {
     return (e, r) => {
-      var selected = []
       if (e) return cb(e)
+      var selected = []
       for (var order of r) {
         for (var line of order.lineItems)
         {
-          if (line.type != 'airpair')
+          if (line.suggestion) {
+            line.owed = line.qty * line.suggestion.suggestedRate[line.type].expert
+            line.info = {
+              expert: line.suggestion.expert,
+              paidout: true,
+              minutes: line.qty*60,
+              bookingIds: [],
+              type: line.type,
+              name: `${line.qty*60} min (${line.suggestion.expert.name})`,
+              released: true
+            }
+            line.type = 'airpair'
+            for (var c of line.redeemedCalls)
+              line.info.bookingIds.push(c.callId)
+          }
+          else if (line.type != 'airpair')
             order.lineItems = _.difference(order.lineItems, [line])
           else {
             line.owed = line.total - line.profit
@@ -106,8 +121,10 @@ var query = {
     return {
        'lineItems.type' : { $ne: 'deal' },
        '$or': [
-        {'lineItems.info.expert._id' : expertId},
-        {'lineItems.info.expert._id' : expertId.toString()}]
+          {'lineItems.info.expert._id' : expertId},
+          {'lineItems.info.expert._id' : expertId.toString()},
+          {'lineItems.suggestion.expert._id' : expertId.toString(), paymentStatus: 'paidout' },
+        ]
     }
   },
   inRange: function(start, end) {
@@ -121,8 +138,7 @@ var query = {
 
 var opts = {
   orderByNewest:    { sort: { 'utc': -1 }, join: { 'lineItems.bookingId': '_id datetime participants' } },
-  orderByOldest:    { sort: { 'utc': 1 } },
-  orderForPayouts:  { sort: { 'utc': 1 }, join: { 'lineItems.bookingId': '_id datetime participants' } },
+  orderByOldest:    { sort: { 'utc': 1 } }
 }
 
 module.exports = {base,select,query,opts}

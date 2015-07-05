@@ -47,7 +47,7 @@
 
 <section class="summary">
 
-  <h4>Total earned <b>${{summary.total}}</b></h4>
+  <h4>Total earned <b>${{summary.total|number}}</b></h4>
   <table class="table">
     <tr>
       <th></th>
@@ -56,17 +56,17 @@
     </tr>
     <tr>
       <td class="pending">Pending</td>
-      <td>${{summary.pending.total}}</td>
+      <td>${{summary.pending.total|number}}</td>
       <td>{{summary.pending.count}}</td>
     </tr>
     <tr>
       <td>Owed</td>
-      <td>${{summary.owed.total}}</td>
+      <td>${{summary.owed.total|number}}</td>
       <td>{{summary.owed.count}}</td>
     </tr>
     <tr>
       <td class="paidout">Paid</td>
-      <td>${{summary.paid.total}}</td>
+      <td>${{summary.paid.total|number}}</td>
       <td>{{summary.paid.count}}</td>
     </tr>
   </table>
@@ -128,7 +128,13 @@
           </td>
           <td>${{o.lineItems[0].owed}}</td>
           <td>
-            <a href="/bookings/{{o.lineItems[0].bookingId._id}}" target="_blank">{{o.lineItems[0].bookingId.datetime | locaTime }}</a>
+            <a ng-if="o.lineItems[0].bookingId" href="/bookings/{{o.lineItems[0].bookingId._id}}" target="_blank">{{o.lineItems[0].bookingId.datetime | locaTime : 'YYYY.MM ddd DD, HH:00' }}</a>
+            <ul ng-if="o.lineItems[0].info.bookingIds">
+              <li ng-repeat="b in o.lineItems[0].info.bookingIds">
+                <a href="/bookings/{{b}}" target="_blank">
+                  {{b | objectIdToDate : 'YYYY.MM ddd DD, HH:00' }}</a>
+              </li>
+            </ul>
           </td>
           <td>{{o.lineItems[0].info.minutes}}
             {{o.lineItems[0].info.type}}
