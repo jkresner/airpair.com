@@ -166,6 +166,8 @@ var save = {
         ups.adm = admSet(ups,{active:true})
     }
 
+    if (ups.user) delete ups.user //got lazy should solve this via proper pattern
+
     svc.update(original._id, ups, selectCB.byRole(this,cb,cb))
   },
   updateWithBookingByCustomer(request, order, cb) {
@@ -176,16 +178,17 @@ var save = {
 
     svc.update(request._id, request, selectCB.byRole(this,cb,cb))
   },
-  replyByExpert(request, expert, reply, cb) {
-    var {suggested} = request
+
+  replyByExpert(request, expert, reply, cb)
+  {
+    var {suggested,adm,lastTouch,status} = request
+
     expert = select.expertToSuggestion(expert)
     // data.events.push @newEvent "expert reviewed", eR
     reply.reply = { time: new Date() }
     var existing = _.find(suggested, (s) => _.idsEqual(s.expert._id, expert._id))
 
-    var previouslyNotAvailable = (existing)
-      ? existing.expertStatus != 'available'
-      : true
+    var previouslyNotAvailable = !existing || existing.expertStatus != 'available'
 
     if (!existing) {
       var newSuggestion = _.extend(reply, { expert })
@@ -201,14 +204,11 @@ var save = {
     }
 
     if (reply.expertStatus == 'available' &&
-      (request.status == 'received' ||
-      request.status == 'waiting')) request.status = 'review'
+        (status == 'received' || status == 'waiting')) status = 'review'
 
-    if (previouslyNotAvailable && reply.expertStatus == 'available') {
-      PaymethodsSvc.hasPaymethods(request.userId,(e,hasPaymethods)=>{
-        mailman.sendExpertAvailable(request.by, expert.name, request._id, !hasPaymethods, ()=>{})
-      })
-    }
+    if (previouslyNotAvailable && reply.expertStatus == 'available')
+      PaymethodsSvc.hasPaymethods(request.userId, (e,hasPaymethods) =>
+        mailman.sendExpertAvailable(request.by, expert.name, request._id, !hasPaymethods, ()=>{}))
 
     // sug.events.push @newEvent "expert updated"
     // sug.expert.paymentMethod = type: 'paypal', info: { email: eR.payPalEmail }
@@ -217,12 +217,11 @@ var save = {
       byName:this.user.name,_id:request._id,requestByName:request.by.name }
     mailman.send('pipeliners', 'pipeliner-notify-reply', d, ()=>{})
 
-    request.lastTouch = svc.newTouch.call(this, `replyByExpert:${reply.expertStatus}`)
-    if (!request.adm.reviewable && reply.expertStatus == 'available')
-      request.adm = admSet(request,{reviewable:new Date()})
+    lastTouch = svc.newTouch.call(this, `replyByExpert:${reply.expertStatus}`)
+    if (!adm.reviewable && reply.expertStatus == 'available')
+      adm = admSet(request,{reviewable:new Date()})
 
-    // var ups = _.extend(request,{suggested})
-    svc.update(request._id, request, selectCB.byRole(this,cb,cb))
+    svc.updateWithSet(request._id, {suggested,adm,lastTouch,status}, selectCB.byRole(this,cb,cb))
   },
   deleteById(o, cb)
   {

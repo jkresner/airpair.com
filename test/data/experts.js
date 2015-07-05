@@ -1596,6 +1596,385 @@ module.exports = {
     "timezone" : "GMT+0300 (IDT)",
     "userId" : ObjectId("53f768a18f8c80299bcc43c0"),
     "username" : "ronreiter"
+  },
+
+  jkgm: {
+    "_id" : ObjectId("5181d4ccf3dc070200000004"),
+    "availability" : { "hours" : "1", "minRate" : 70, "status" : "ready" },
+    "brief" : "Learning frameworks, creating good project structures / architecture. Pair programming.",
+    "gmail" : "jkresner@gmail.com",
+    "matching" : {},
+    "pic" : "https://secure.gravatar.com/avatar/780d02a99798886da48711d8104801a4",
+    "rate" : 110,
+    "tags" : [
+        { "_id" : "514825fa2a26ea0200000028", "sort" : 0 },
+        { "_id" : "5149d9d37bc6da020000000a", "sort" : 1 },
+        { "_id" : "514825fa2a26ea020000000b", "sort" : 2 },
+        { "_id" : "5149dccb5fc6390200000013", "sort" : 3 }
+    ],
+    "userId" : ObjectId("549342348f8c80299bcc56c1"),
+    "activity" : [],
+    "lastTouch" : {
+        "by" : { "name" : "Jonathon Kresner", "_id" : ObjectId("5175efbfa3802cc4d5a5e6ed") },
+        "utc" : ISODate("2015-06-30T19:47:07.890Z"),
+        "action" : "createDeal"
+    },
+    "user" : {
+        "social" : {
+            "gp" : {
+                "id" : "111546642302857408422",
+                "_json" : { "picture" : "https://lh3.googleusercontent.com/-daU--wCrRcI/AAAAAAAAAAI/AAAAAAAAAKs/o_lTNF4G8Pk/photo.jpg" }
+            },
+            "al" : {
+                "username" : "jkresner"
+            },
+            "gh" : {
+                "_json" : {
+                    "plan" : {},
+                    "followers" : 41,
+                    "public_gists" : 22,
+                    "public_repos" : 23,
+                    "avatar_url" : "https://avatars.githubusercontent.com/u/979542?v=3"
+                },
+                "username" : "jkresner"
+            }
+        },
+        "localization" : {
+            "timezone" : "Pacific Daylight Time",
+            "location" : "San Francisco, CA, USA"
+        },
+        "bio" : "This is jk's testing expert account that doesn't have god administrator permissions. You should pretend this profile is a ghost.",
+        "initials" : "jk",
+        "username" : "jkres",
+        "emailVerified" : true,
+        "email" : "jkresner@gmail.com",
+        "name" : "Jonathon Kresner",
+        "_id" : ObjectId("549342348f8c80299bcc56c1")
+    },
+    "minRate" : 110,
+    "deals" : []
+  },
+
+  tomb: {
+    "_id" : ObjectId("54c85ee6a4f65e03005d1640"),
+    "userId" : ObjectId("54c7d549be0e440a00df49d4"),
+    "gmail" : "tmbeihl@tmbeihl.com",
+    "pic" : "https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg",
+    "tags" : [
+        { "sort" : 0, "_id" : "514825fa2a26ea0200000031" },
+        { "sort" : 1, "_id" : "5181d0a966a6f999a465eb3d" },
+        { "sort" : 2, "_id" : "514825fa2a26ea0200000030" },
+        { "sort" : 3, "_id" : "5181d0ab66a6f999a465efba" },
+        { "sort" : 4, "_id" : "522670ee66a6f999a465f74c" },
+        { "sort" : 5, "_id" : "514825fa2a26ea020000002c" },
+        { "sort" : 6, "_id" : "5181d0ad66a6f999a465f1eb" },
+        { "sort" : 7, "_id" : "5181d0a966a6f999a465eba6" },
+        { "sort" : 8, "_id" : "5181d0aa66a6f999a465ed21" }
+    ],
+    "brief" : "I like connecting with and helping people with interesting projects",
+    "rate" : 110,
+    "user" : {
+        "_id" : ObjectId("54c7d549be0e440a00df49d4"),
+        "name" : "Thomas Beihl",
+        "email" : "tmbeihl@tmbeihl.com",
+        "emailVerified" : true,
+        "username" : "tmbeihl",
+        "initials" : "tmb",
+        "bio" : "Hello there,\n\nMy name is Thomas, I am a freelance web developer from Chattanooga,TN I have been loving Ruby on Rails for the past five years, before that I was a PHP developer.",
+        "localization" : { "location" : "Chattanooga, TN, USA", "timezone" : "Eastern Daylight Time"},
+        "social" : {
+            "gh" : {
+                "_json" : { "followers" : 6 },
+                "username" : "tmbeihl" },
+            "in" : { "id" : "JhY8gRr3pa" },
+            "tw" : {
+                "username" : "tmbeihl",
+                "_json" : { "followers_count" : "178" }
+            },
+            "gp" : { "id" : "102621330858612527290" }
+        }
+    },
+    "availability" : {
+        "status" : "ready",
+        "minRate" : 110,
+        "hours" : "3-5"
+    },
+    "minRate" : 110,
+    "deals" : [],
+    "timezone" : "Eastern Daylight Time",
+    "location" : "Chattanooga, TN, USA",
+  },
+
+  gior: {
+    "_id" : ObjectId("528953641c60530200000011"),
+    "availability" : {
+        "status" : "ready",
+        "minRate" : 110,
+        "hours" : "3-5"
+    },
+    "brief" : "iorgio Giorgio Natili is an author, educator, community leader and an engineering mentor in Cengage Learning a publisher of print and digital information services for the academic, professional and library markets. Giorgio was also the founder of GNStudio, a boutique Rome-based development and design studio specializing in engaging and accessible web and mobile experiences. A strong proponent of agile development practices, Giorgio's areas of expertise include standards-based application development, client-side scripting, gaming, and video streaming. His previous speaking engagements include Adobe Max, 360|Flex, FITC, XP 2010 and 2012 and several community driven conferences.\n\nSpecialities:mobile development, phonegap, Android, iOS, Blackberry, web development, html5, JavaScript, require.js, mustache.js, angular.js, nosql DB, MySql, node.js, wordpress, drupal, real time communication, ActionScript, Adobe Media Server Red5, Wowza, WebRTC, gaming, starling, unity3d, agile coaching, business analysis and software requirements.",
+    "gmail" : "g.natili@gnstudio.com",
+    "rate" : 110,
+    "tags" : [
+        {"_id" : "514825fa2a26ea020000002a",
+            "sort" : 0
+        },
+        {"_id" : "514825fa2a26ea020000001d",
+            "sort" : 1
+        },
+        {"_id" : "514825fa2a26ea020000001f",
+            "sort" : 2
+        },
+        { "_id" : "5181d0aa66a6f999a465ed8e",
+            "sort" : 3
+        },
+        {"_id" : "5181d0ad66a6f999a465f1af",
+            "sort" : 4
+        },
+        {"_id" : "5216526a66a6f999a465f698",
+            "sort" : 5
+        },
+        {"_id" : "514825fa2a26ea0200000021",
+            "sort" : 6
+        },
+        {"_id" : "514825fa2a26ea0200000020",
+            "sort" : 7
+        },
+        {"_id" : "514825fa2a26ea0200000028",
+            "sort" : 8
+        },
+        { "_id" : "5181d0aa66a6f999a465edfa",
+            "sort" : 9
+        },
+        { "_id" : "5181d0ab66a6f999a465ef19",
+            "sort" : 10
+        },
+        { "_id" : "5149dccb5fc6390200000013",
+            "sort" : 11
+        },
+        { "_id" : "5277082066a6f999a465fac9",
+            "sort" : 12
+        },
+        {"_id" : "5252503f66a6f999a465f992",
+            "sort" : 13
+        },
+        {"_id" : "528f2ae566a6f999a465fc3c",
+            "sort" : 14
+        },
+        {"_id" : "5181d0ad66a6f999a465f1d2",
+            "sort" : 15
+        },
+        {"_id" : "5181d0ae66a6f999a465f24f",
+            "sort" : 16
+        },
+        {"_id" : "5181d0a966a6f999a465ebd7",
+            "sort" : 17
+        },
+        {"_id" : "514825fa2a26ea020000001a",
+            "sort" : 18
+        },
+        {"_id" : "514825fa2a26ea020000003a",
+            "sort" : 19
+        },
+        {"_id" : "514825fa2a26ea0200000024",
+            "sort" : 20
+        },
+        {"_id" : "52ffea1a1c67d1a4859d2333",
+            "sort" : 21
+        },
+        {"_id" : "543d79ae8f8c80299bcc4baa",
+            "sort" : 22
+        },
+        {"_id" : "51828a7b66a6f999a465f293",
+            "sort" : 23
+        },
+        {"_id" : "52d7149c66a6f999a465ff4a",
+            "sort" : 24
+        },
+        {"_id" : "5181d0ab66a6f999a465eecb",
+            "sort" : 25
+        },
+        {"_id" : "514825fa2a26ea020000001b",
+            "sort" : 26
+        },
+        {"_id" : "514825fa2a26ea0200000025",
+            "sort" : 27 }
+    ],
+    "userId" : ObjectId("5283d1bb66a6f999a465fb6d"),
+    "user" : {
+        "social" : {
+            "gp" : { "_json" : { "picture" : "https://lh3.googleusercontent.com/-_LulxJVG6zM/AAAAAAAAAAI/AAAAAAAARG4/aDn-lzk178s/photo.jpg" }, "id" : "107269671216217485938" },
+            "tw" : {  "username" : "giorgionatili" },
+            "in" : { "id" : "8BgqVN4NOM" },
+            "gh" : { "username" : "GiorgioNatili", "_json" : {  "followers" : 17 } }
+        },
+        "localization" : { "timezone" : "Eastern Daylight Time", "location" : "Boston, MA, USA" },
+        "bio" : "I’m an #opensource, #mobile and #frontend development fanatic with an insane passion for #graphdatabases and #linux.",
+        "initials" : "gn",
+        "username" : "giorgionatili",
+        "emailVerified" : true,
+        "email" : "g.natili@gnstudio.com",
+        "name" : "Giorgio Natili",
+        "_id" : ObjectId("5283d1bb66a6f999a465fb6d")
+    }
+  },
+
+  evan: {
+    "_id" : ObjectId("5241c121c20d3f020000000e"),
+    "brief" : "While I like solving problems, I enjoy helping people, especially when I can make them more capable of solving problems on their own. It's best when I've taught someone so well that they can start teaching others. ",
+    "gmail" : "goldcpufish@gmail.com",
+    "rate" : 110,
+    "tags" : [
+        {
+            "_id" : "514825fa2a26ea0200000031",
+            "sort" : 0
+        },
+        {
+            "_id" : "5192296b66a6f999a465f2ce",
+            "sort" : 16
+        },
+        {
+            "_id" : "5181d0aa66a6f999a465ece5",
+            "sort" : 6
+        },
+        {
+            "_id" : "514825fa2a26ea0200000007",
+            "sort" : 7
+        },
+        {
+            "_id" : "514825fa2a26ea0200000018",
+            "sort" : 1
+        },
+        {
+            "_id" : "514825fa2a26ea0200000021",
+            "sort" : 8
+        },
+        {
+            "_id" : "514deb95ca38eb0200000019",
+            "sort" : 9
+        },
+        {
+            "_id" : "5181d0a966a6f999a465eb42",
+            "sort" : 10
+        },
+        {
+            "_id" : "514825fa2a26ea0200000023",
+            "sort" : 4
+        },
+        {
+            "_id" : "514825fa2a26ea020000002c",
+            "sort" : 12
+        },
+        {
+            "_id" : "5181d0a966a6f999a465ec85",
+            "sort" : 13
+        },
+        {
+            "_id" : "5181d0ac66a6f999a465f0ce",
+            "sort" : 14
+        },
+        {
+            "_id" : "514825fa2a26ea020000001f",
+            "sort" : 2
+        },
+        {
+            "_id" : "5181d0a966a6f999a465eb37",
+            "sort" : 15
+        },
+        {
+            "_id" : "5181d0aa66a6f999a465edbf",
+            "sort" : 5
+        },
+        {
+            "_id" : "514825fa2a26ea0200000014",
+            "sort" : 17
+        },
+        {
+            "_id" : "5261bc5566a6f999a465fa0b",
+            "sort" : 3
+        },
+        {
+            "_id" : "51a671ed66a6f999a465f304",
+            "sort" : 18
+        },
+        {
+            "_id" : "5181d0a966a6f999a465eb47",
+            "sort" : 19
+        },
+        {
+            "_id" : "5148330457e7aa020000001d",
+            "sort" : 20
+        },
+        {
+            "_id" : "5181d0a966a6f999a465ec4a",
+            "sort" : 21
+        },
+        {
+            "_id" : "5148adf4982090020000000d",
+            "sort" : 22
+        },
+        {
+            "_id" : "5181d0aa66a6f999a465ed56",
+            "sort" : 23
+        },
+        {
+            "_id" : "5181d0a966a6f999a465ec39",
+            "sort" : 24
+        },
+        {
+            "_id" : "5181d0ab66a6f999a465ef17",
+            "sort" : 11
+        },
+        {
+            "_id" : "5181d0ab66a6f999a465eead",
+            "sort" : 25
+        },
+        {
+            "_id" : "5181d0ac66a6f999a465f0d2",
+            "sort" : 26
+        }
+    ],
+    "userId" : ObjectId("5241c04a66a6f999a465f861"),
+    "user" : {
+        "social" : {
+            "gp" : {
+                "id" : "116783905857898576907"
+            },
+            "tw" : {
+                "_json" : {
+                    "followers_count" : "24"
+                },
+                "username" : "510_boatswain"
+            },
+            "in" : {
+                "id" : "A0CrMIM_ey"
+            },
+            "bb" : {
+                "username" : "eunoia"
+            },
+            "so" : {
+                "reputation" : "84",
+                "link" : "1016978/nick-silva"
+            },
+            "gh" : {
+                "username" : "Eunoia",
+                "_json" : {
+                    "followers" : 18
+                }
+            }
+        },
+        "localization" : {
+            "timezone" : "Pacific Daylight Time",
+            "location" : "Oakland, CA, USA"
+        },
+        "bio" : "Since 2011, I've been based in the San Francisco Bay Area. My clients are small startups, who need extra help with junior developers, and small businesses, who need help automating processes.",
+        "initials" : "evan",
+        "username" : "Eunoia",
+        "emailVerified" : true,
+        "email" : "goldcpufish@gmail.com",
+        "name" : "Evan R",
+        "_id" : ObjectId("5241c04a66a6f999a465f861")
+    }
   }
 
 }

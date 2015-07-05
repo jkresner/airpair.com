@@ -100,7 +100,8 @@ var TagSlim = {
   sort:         { type: Number }, //, required: true
 }
 
-module.exports = mongoose.model('Expert', new Schema({
+
+var ExpertSchema = new Schema({
 
   userId:         { unique: true, required: true, type: ObjectId, ref: 'User' },
   pic:            { type: String },
@@ -177,10 +178,15 @@ module.exports = mongoose.model('Expert', new Schema({
   // deprecated other
   bookMe:         { required: false, type: Bookme },
 
-}))
+  reviews:        [Shared.Survey]
+
+})
+
+// Does not work errrr.
+ExpertSchema.index({'_id':1,'reviews.by._id':1},{ unique: true, sparse: true })
 
 
-
+module.exports = mongoose.model('Expert', ExpertSchema)
 
 // migrate 2015.03.29
 // db.experts.update({ karma: { $exists:1 } },{ $unset: { karma: "" } },{ 'multi': true })

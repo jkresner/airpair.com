@@ -8,44 +8,52 @@ import Booking              from '../models/booking'
 import Order                from '../models/order'
 var User                    = require('../models/user')
 var svc                     = new Svc(Booking, logging)
-var {select,query,options}  = require('./bookings.data')
-var {setAvatarsCB}          = select.cb
 var Roles                   = require('../../shared/roles')
 var BookingdUtil            = require('../../shared/bookings')
+var {select,query,opts}     = require('./bookings.data')
+var {inflate}               = select.cb
 
 
-function getChat(booking, cb) {
+function getChat(booking, syncOptions, cb) {
   if (booking.chatId)
     ChatsSvc.getById(booking.chatId,(e,chat)=>{
-      booking.chat = chat
-      return cb(e,booking)
+      if (chat) booking.chat = chat
+      cb(e,booking)
+    })
+  else if (syncOptions)
+    ChatsSvc.searchSyncOptions(BookingdUtil.searchBits(booking),(e,syncOptions)=>{
+      if (syncOptions) booking.chatSyncOptions = syncOptions
+      cb(e,booking)
     })
   else
-    ChatsSvc.searchSyncOptions(BookingdUtil.searchBits(booking),(e,syncOptions)=>{
-      booking.chatSyncOptions = syncOptions
-      return cb(e,booking)
-    })
+    cb(null,booking)
 }
 
 
 var get = {
 
-  getById(id, cb) {
-    svc.getById(id, setAvatarsCB((e,r)=>{
-      if (r && !Roles.booking.isParticipantOrAdmin(this.user, r))
-        return cb(Error(`You[${this.user._id}] are not a participants to this booking[${r._id}]`))
-      cb(e,r)
-    }))
+  getById(id, cb)
+  {
+    svc.getById(id, cb)
   },
 
-  getByIdForAdmin(id, callback) {
-    var cb = (e,r) => setAvatarsCB(callback)(e,r)
+  getByIdForParticipant(_id, cb)
+  {
+    svc.searchOne({_id}, { options: opts.forParticipant }, (e,r) => {
+      if (e) return cb(e)
+      getChat(r, false, inflate(cb,select.itemIndex))
+    })
+  },
+
+  getByIdForAdmin(id, callback)
+  {
+    var cb = inflate(callback)
 
     svc.getById(id, (e,r) => {
       if (!r.orderId) return cb(e,r) //is a migrated booking from v0 call
       OrdersSvc.getByIdForAdmin(r.orderId, (ee,order) => {
         r.order = order
-        getChat(r, (eeee,booking)=>{
+        getChat(r, true, (eeee,booking)=>{
           if (!order.requestId) return cb(e,r)
           RequestsSvc.getByIdForAdmin(order.requestId, (eee,request) => {
             if (eee) return cb(eee)
@@ -58,12 +66,11 @@ var get = {
   },
 
   getByUserId(id, cb) {
-    var opts = {}
-    svc.searchMany({ customerId: id }, opts, cb)
+    svc.searchMany({ customerId: id }, {}, inflate(cb,select.itemIndex))
   },
 
   getByExpertId(expertId, cb) {
-    svc.searchMany({ expertId }, { fields: select.experts }, select.cb.inflateAvatars(cb))
+    svc.searchMany({ expertId }, { fields: select.experts }, inflate(cb,select.experts))
   },
 
   getByQueryForAdmin(start, end, userId, cb) {
@@ -73,7 +80,7 @@ var get = {
     Booking.find(q, select.listAdmin)
       .populate('orderId', 'lineItems.info.paidout lineItems.info.released')
       .populate('chatId', 'info.name')
-      .sort(options.orderByDate.sort)
+      .sort(opts.orderByDate.sort)
       .lean().exec(select.cb.inflateAvatars((e,r)=>{
         for (var b of r) {
           if (!b.orderId)
@@ -92,52 +99,51 @@ var get = {
 }
 
 
-function create(e, r, user, expert, datetime, minutes, type, cb) {
-  if (e) return cb(e)
-  User.findOne({_id:expert.userId},{localization:1,name:1,email:1},(e, expertUser)=>{
-    var cTimeLoc = !user.localization || !user.localization.timezoneData ? {} :
-      { location:user.localization.location, timeZoneId:user.localization.timezoneData.timeZoneId }
-
-    var eTimeLoc = !expertUser.localization || !expertUser.localization.timezoneData ? {} :
-      { location:expertUser.localization.location, timeZoneId:expertUser.localization.timezoneData.timeZoneId }
-
-    var participants = [
-      _.extend(cTimeLoc, { role:"customer", info: { _id: user._id, name: user.name, email: user.email } }),
-      _.extend(eTimeLoc, { role:"expert", info: { _id: expert.userId, name: expertUser.name, email: expertUser.email } })
-    ]
-
-    var touch = svc.newTouch.call(this, 'create')
-    var booking = {
-      _id: svc.newId(),
-      createdById: user._id,
-      customerId: user._id, // consider use case of expert creating booking
-      expertId: expert._id,
-      participants,
-      type,
-      minutes,
-      datetime,
-      suggestedTimes:[{time:datetime,byId:user._id}],
-      status: 'pending',
-      gcal: {},
-      orderId: r._id,
-      lastTouch: touch,
-      activity: [touch]
-    }
-    var d = {byName:user.name,expertName:expert.name, bookingId:booking._id,minutes,type}
-    mailman.send('pipeliners', 'pipeliner-notify-booking', d, ()=>{})
-    mailman.send(expert, 'expert-booked', d, ()=>{}) // todo add type && instructions to email
-
-    svc.create(booking, select.cb.itemIndex(cb))
-  })
-}
-
-
 var save = {
 
-  createBooking(expert, time, minutes, type, credit, payMethodId, requestId, dealId, cb)
+  createBooking(expert, datetime, minutes, type, credit, payMethodId, requestId, dealId, cb)
   {
-    var createCB = (e, r) => create.call(this, e, r, this.user, expert, time, minutes, type, cb)
-    OrdersSvc.createBookingOrder.call(this, expert, time, minutes, type, credit, payMethodId, requestId, dealId, createCB)
+    var getParticipants = (callback) => {
+      User.findOne({_id:expert.userId},{localization:1,name:1,email:1}, (e, expertUser) => {
+        if (e) return callback(e)
+        callback(null,[
+          BookingdUtil.participantFromUser("customer", this.user),
+          BookingdUtil.participantFromUser("expert", expertUser)
+        ])
+      })
+    }
+
+    getParticipants((ee, participants)=>{
+      if (ee) return cb(ee)
+      var bookingId = svc.newId()
+      OrdersSvc.createBookingOrder.call(this, bookingId, expert, datetime, minutes, type, credit, payMethodId, requestId, dealId, (e, order) => {
+        if (e) return cb(e)
+
+        var {user} = this
+        var touch = svc.newTouch.call(this, 'create')
+        var booking = {
+          _id: bookingId,
+          createdById: user._id,
+          customerId: user._id, // consider use case of expert creating booking
+          expertId: expert._id,
+          participants,
+          type,
+          minutes,
+          datetime,
+          suggestedTimes:[{time:datetime,byId:user._id}],
+          status: 'pending',
+          gcal: {},
+          orderId: order._id,
+          lastTouch: touch,
+          activity: [touch]
+        }
+        var d = {byName:user.name,expertName:expert.name, bookingId:booking._id,minutes,type}
+        mailman.send('pipeliners', 'pipeliner-notify-booking', d, ()=>{})
+        mailman.send(expert, 'expert-booked', d, ()=>{}) // todo add type && instructions to email
+
+        svc.create(booking, inflate(cb,select.itemIndex))
+      })
+    })
   },
 
   suggestTime(original, time, cb)
@@ -146,7 +152,7 @@ var save = {
     var lastTouch = svc.newTouch.call(this, 'suggest-time')
     original.activity.push(lastTouch)
     original.lastTouch = lastTouch
-    svc.update(original._id, original, select.cb.itemIndex(cb))
+    svc.update(original._id, original, inflate(cb,select.itemIndex))
   },
 
   confirmTime(original, timeId, cb)
@@ -162,9 +168,21 @@ var save = {
 
     // TODO:gcal
 
-    svc.update(original._id, original, select.cb.itemIndex(cb))
+    svc.update(original._id, original, inflate(cb,select.itemIndex))
   },
 
+  customerFeedback(original, review, expert, expertReview, cb)
+  {
+    if (expertReview) throw Error("expertReview not implemented")
+
+    review.by = svc.userByte.call(this)
+    review.type = 'booking-feedback'
+    original.reviews = original.reviews || []
+    // TODO deal with update case gracefully
+    original.reviews.push(review)
+    // $log('customerFeedback'.magenta, review, expert._id, expertReview)
+    svc.update(original._id, original, inflate(cb,select.itemIndex))
+  }
 }
 
 
@@ -236,7 +254,7 @@ var admin = {
       if (logging) $log('changing the date yea!', original.datetime, update.datetime)
       original.datetime = update.datetime
       original.minutes = update.minutes
-      shouldUpdateGal = true
+      shouldUpdateGal = original.gcal != null
     }
     else if (original.gcal && !moment(original.gcal.start.dateTime).isSame(original.datetime))
       shouldUpdateGal = true
@@ -362,7 +380,7 @@ var admin = {
   },
 
   addYouTubeData(original, youTubeId, cb) {
-    $log('bookings.addYouTubeData'.cyan, original._id, youTubeId)
+    if (logging) $log('bookings.addYouTubeData'.cyan, original._id, youTubeId)
     Wrappers.YouTube.getVideoInfo(youTubeId, (err, response) => {
       if (err){
         return cb(Error(err),data)
@@ -378,7 +396,7 @@ var admin = {
   },
 
   addHangout(original, youTubeId, youTubeAccount, hangoutUrl, cb){
-    $log('bookings.addHangout'.cyan, original._id, youTubeId, youTubeAccount, hangoutUrl)
+    if (logging) $log('bookings.addHangout'.cyan, original._id, youTubeId, youTubeAccount, hangoutUrl)
     Wrappers.YouTube.getVideoInfo(youTubeId, (err, response) => {
       //TODO mark video as private if booking.type is private
       if (err){

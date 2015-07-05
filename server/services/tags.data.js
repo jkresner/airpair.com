@@ -99,7 +99,7 @@ var data = {
             avatar: '//secure.gravatar.com/avatar/1400be56ff17549b926dd3260da4a494',
             tags: ['typescript','javascript','angularjs'],
             bio: '',
-            rate: '130'
+            rate: '150'
           },
           {
             name: 'Todd Motto',
@@ -110,20 +110,12 @@ var data = {
             rate: '250'
           },
           {
-            name: 'Abe Haskins',
-            username: 'abeisgreat',
-            avatar: '//secure.gravatar.com/avatar/fbb79df0f24e736c8e37f9f195a738cc',
-            tags: ['angularjs','firebase','angularfire'],
-            bio: 'AngularFire Contributor',
-            rate: '220'
-          },
-          {
             name: 'Uri Shaked',
             username: 'urish',
             avatar: '//secure.gravatar.com/avatar/fbf41c66afb1e3807b7b330c2d8fcc28',
             tags: ['angularjs', 'node.js', 'gulp'],
             bio: 'Google Developer Expert',
-            rate: '160'
+            rate: '210'
           },
           {
             name: 'Mark Meyer',

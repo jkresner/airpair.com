@@ -26,6 +26,10 @@ module.exports = {
   nabk: { name:"NA Bookings",email:"noaccess@bookings.com" },
   adbk: { name:"Admin Bookings",email:"adm@bookings.com" },
 
+  stco: { name:"Steve Cox",email:"steve@cox.io" },
+  stec: { name:"Steve Cox",email:"steve@mail.com" },
+  stcx: { name:"Steve Cox",email:"stevexc@gmail.com" },
+
   mris: { name:"Mike Risse",email:"mike@madeye.io" },
   mirs: { name:"Mike Risse",email:"mike.risse@hotmail.com" },
   miks: { name:"Mike Risse",email:"miks.ri@hotmail.com" },
@@ -67,11 +71,14 @@ module.exports = {
   jpie: { name:"Jason Pierce ",email:"jasonpierce@gmail.com" },
   jasp: { name:"Jason Pierce ",email:"jasonpierce@hotmail.com" },
 
+  acal: { name:"Andrew Callahan",email:"andrew.callahan@hotmail.com" },
+  anca: { name:"Andrew Callahan",email:"andrew.allahan@test.com" },
+
   jkre: { name:"Jonathon Kresner",email:"jkresner@gmail.com" },
   krez: { name:"Jonathon Krezner",email:"krez@hotmail.com" },
   igor: { name:"Igor Lebovic",email:"igorlebovic@gmail.com" },
   evnr: { name:"Evan Richards",email:"goldfish@gmail.com" },
-  evan: { name:"Evan Richards",email:"evengoldfish@gmail.com" },
+  // evan: { name:"Evan Richards",email:"evengoldfish@gmail.com" },
   nevk: { name:"Nevan King",email:"nevking@gmail.com" },
   nkig: { name:"Nevan King",email:"nevanking@hotmail.com" },
 
@@ -273,6 +280,20 @@ module.exports = {
     "name" : "Alexander Dymo",
   },
 
+  evan: {
+    "_id" : ObjectId("5241c04a66a6f999a465f861"),
+    "email" : "goldcpufish@gmail.com",
+    "emailVerified" : true,
+    "name" : "Evan R",
+    "localization" : {
+        "timezoneData" : {
+            "timeZoneName" : "Pacific Daylight Time",
+            "timeZoneId" : "America/Los_Angeles" },
+        "timezone" : "Pacific Daylight Time",
+        "locationData" : { "name" : "Oakland", },
+        "location" : "Oakland, CA, USA"
+    }
+  },
 
   dros :{
     "_id" : ObjectId("52cd929666a6f999a465fee8"),
@@ -386,10 +407,6 @@ module.exports = {
           "gender" : "male",
           "locale" : "en"
       },
-      "token" : {
-          "token" : "ya29.KQF1LDKCcCi39ViUupp-NwkU7D-TKeC86GicwhZeTOHdwjpWUeOAEjJ_SZB9r6Wln7dcGcKI-CdKlQ",
-          "attributes" : {"refreshToken" : null}
-      }
     },
     "email" : "airpairtest1@gmail.com",
     "name" : "AirPair Test1",
@@ -670,12 +687,7 @@ module.exports = {
             "locale" : "en",
             "hd" : "toddmotto.com"
         },
-        "token" : {
-            "token" : "ya29.kwBOaqwCrDMR6IgXFyh6DUdiHkwSiMbVBLpCXYlSvPCgoa-9ILZ6oYaP",
-            "attributes" : {
-                "refreshToken" : null
-            }
-        }
+        "token" : {}
     },
     "googleId" : "104675806858920385950",
     "name" : "Todd Motto",
@@ -747,12 +759,6 @@ module.exports = {
             "following" : false,
             "follow_request_sent" : false,
             "notifications" : false
-        },
-        "token" : {
-            "token" : "222638700-FiFSpZJVv5mqMQxZNI3t8tgrIHwOjkzWvoZhbUAj",
-            "attributes" : {
-                "tokenSecret" : "nrja7E8RxorQxyR5AT0Hb5ViZM5UotqKPcXzCv5HUwILW"
-            }
         }
     },
     "twitterId" : 222638700
@@ -989,28 +995,7 @@ module.exports = {
         "token" : {}
     },
     "stackId" : 1239095,
-    "tags" : [
-        {
-            "_id" : "54a637f65d13d00b00e82700",
-            "tagId" : "514825fa2a26ea020000001f",
-            "sort" : 1
-        },
-        {
-            "_id" : "54a63802f0ae2a0b00ba30a0",
-            "tagId" : "514825fa2a26ea0200000006",
-            "sort" : 0
-        },
-        {
-            "_id" : "54a63822f0ae2a0b00ba30a6",
-            "tagId" : "5181d0a966a6f999a465ec4e",
-            "sort" : 2
-        },
-        {
-            "_id" : "54a63835f0ae2a0b00ba30a9",
-            "tagId" : "514825fa2a26ea020000001a",
-            "sort" : 3
-        }
-    ],
+    "tags" : [],
     "twitterId" : 12958622,
     "username" : "abliss"
   },
@@ -1043,12 +1028,6 @@ module.exports = {
             "picture" : "https://lh4.googleusercontent.com/-DxP-LDK4QNc/AAAAAAAAAAI/AAAAAAAACeM/_QwsHFEXoRE/photo.jpg",
             "gender" : "male",
             "locale" : "en"
-        },
-        "token" : {
-            "token" : "ya29.4wDdlJ14TTnMY5un3xmcHGlTNfXVBH7yC7X8epyYKuHMutMyrQ_B4UXQstOjkGmEWEdHBPg05_tXuA",
-            "attributes" : {
-                "refreshToken" : null
-            }
         }
     },
     "googleId" : "107946246039966851979",
@@ -1208,16 +1187,7 @@ module.exports = {
         "token" : {}
     },
     "stackId" : 243782,
-    "tags" : [{ "_id" : "5493479e1f354d0b00b49ad5",
-            "tagId" : "514825fa2a26ea020000002b",
-            "sort" : 0 },
-        {  "_id" : "549347a11f354d0b00b49ad6",
-            "tagId" : "514825fa2a26ea0200000027",
-            "sort" : 0  },
-        {  "_id" : "549347a91f354d0b00b49ad8",
-            "tagId" : "514825fa2a26ea020000001f",
-            "sort" : 0 }
-    ],
+    "tags" : [],
     "twitter" : {
         "provider" : "twitter",
         "id" : 46473071,
@@ -1302,12 +1272,7 @@ module.exports = {
             "gender" : "male",
             "locale" : "en"
         },
-        "token" : {
-            "token" : "ya29.9wCSjXftdQ_yTygtGwAZQje_y_CayNtWW7jokDCMgQSHmXd-eVnN0ZMKGw3Zlm0id3XCRSoEKvRw2A",
-            "attributes" : {
-                "refreshToken" : null
-            }
-        }
+        "token" : {}
     },
     "googleId" : "103737476744834482789",
     "initials" : "PF",
@@ -2479,6 +2444,189 @@ module.exports = {
     },
     "roles" : [],
     "siteNotifications" : []
+  },
+
+  tomb: {
+    "_id" : ObjectId("54c7d549be0e440a00df49d4"),
+    "googleId" : "102621330858612527290",
+    "google" : {
+        "_json" : {
+            "email" : "tmbeihl@tmbeihl.com",
+            "domain" : "tmbeihl.com",
+            "verified" : false,
+            "circledByCount" : 5,
+            "language" : "en",
+            "url" : "https://plus.google.com/102621330858612527290",
+            "name" : {"givenName" : "Thomas", "familyName" : "Beihl" },
+            "displayName" : "Thomas Beihl",
+            "id" : "102621330858612527290",
+            "objectType" : "person",
+            "emails" : [{"type" : "account", "value" : "tmbeihl@tmbeihl.com" } ],
+            "gender" : "male",
+            "etag" : "\"RqKWnRU4WW46-6W3rWhLR9iFZQM/GqAwgF7eHysxgMOXGYN_dCBeYJI\"",
+            "kind" : "plus#person"
+        },
+        "gender" : "male",
+        "photos" : [ { "value" : "https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg?sz=50" } ],
+        "emails" : [ { "type" : "account",  "value" : "tmbeihl@tmbeihl.com" } ],
+        "name" : { "givenName" : "Thomas", "familyName" : "Beihl" },
+        "displayName" : "Thomas Beihl",
+        "id" : "102621330858612527290",
+        "provider" : "google"
+    },
+    "email" : "tmbeihl@tmbeihl.com",
+    "name" : "Thomas Beihl",
+    "emailVerified" : true,
+    "cohort" : {
+        "engagement" : {
+            "visits" : [ ISODate("2015-01-27T00:00:00.000Z") ],
+            "visit_first" : ISODate("2015-01-27T18:13:24.244Z"),
+            "visit_signup" : ISODate("2015-01-27T18:13:29.603Z"),
+            "visit_last" : ISODate("2015-03-30T23:45:52.369Z")
+        },
+        "maillists" : [
+            "AirPair Newsletter",
+            "AirPair Experts"
+        ],
+        "expert" : {
+            "applied" : ISODate("2015-01-28T04:00:38.000Z"),
+            "_id" : ObjectId("54c85ee6a4f65e03005d1640")
+        },
+        "aliases" : [
+            "Z54IQ_jTCaFFsMrqVCJvk8NiRFaCSfLL",
+            "_uFjqS2s2Zu7a7qSd-mTfaIfjnTT6Pbo",
+            "RLJsT4fG1jvL8cNAbYLw_eOszSAJtyzP",
+            "A2Qld5UZjm38KFWvUsQx5G7oMx52v_rV",
+            "yuSXhaKZhIzzsNgvKKV9eUGVbn_rDL7F",
+            "-ZZhfCdK2E_FGE7sNtuufWUgRbemcul1",
+            "tGgfJCzepKD0eUH1FDjUFYCIZUqb5Le0",
+            "m3eu8amg-m7tn7tWLVntddPNix97wITB",
+            "0deAVkEgKx-SoNPX5n2xlyDUhH_UMKDX",
+            "OWOVy5mBq04hJ_o9mVfGyG9JQX3TdfLa",
+            "yvsWO7G_1eKEG8tc_Fzyvt403FCQQvFa",
+            "LSsomJTbaPk22SLFsoxLcU6-5CtEZUgN",
+            "F1GBnwukKfmsyE92W56uP0mfwr7CP3Pj",
+            "rJC7mn_sgQLJ2e9x8q_2UGRW64hgiGFW",
+            "9OhcFIOMjXs0GVOMwWwoZjsspiZV-sfZ"
+        ],
+        "firstRequest" : {
+            "ref" : "http://t.co/g2mhpvSFVX",
+            "url" : "/review/54c6f3738137280900a3bc0c?utm_medium=farm-link&utm_campaign=farm-jan15&utm_term=javascript,%20nosql%20and%20elasticsearch"
+        }
+    },
+    "bio" : "Hello there,\n\nMy name is Thomas, I am a freelance web developer from Chattanooga,TN I have been loving Ruby on Rails for the past five years, before that I was a PHP developer.",
+    "tags" : [],
+    "bookmarks" : null,
+    "username" : "tmbeihl",
+    "initials" : "tmb",
+    "localization" : {
+        "location" : "Chattanooga, TN, USA",
+        "locationData" : {
+            "address_components" : [
+                {
+                    "long_name" : "Chattanooga",
+                    "short_name" : "Chattanooga",
+                    "types" : [ "locality", "political" ]
+                }
+            ],
+            "geometry" : {
+                "location" : { "k" : 35.0456297, "D" : -85.30968009999998 },
+                "viewport" : {
+                    "Ca" : { "k" : 34.9829239, "j" : 35.2136671 },
+                    "va" : { "j" : -85.42558400000001, "k" : -85.0517979 }
+                }
+            },
+            "name" : "Chattanooga"
+        },
+        "timezone" : "Eastern Daylight Time",
+        "timezoneData" : {
+            "dstOffset" : 3600,
+            "rawOffset" : -18000,
+            "status" : "OK",
+            "timeZoneId" : "America/New_York",
+            "timeZoneName" : "Eastern Daylight Time"
+        }
+    },
+    "social" : {
+        "gh" : {
+            "_json" : {
+                "collaborators" : 8,
+                "disk_usage" : 94954,
+                "owned_private_repos" : 5,
+                "total_private_repos" : 6,
+                "private_gists" : 6,
+                "updated_at" : "2015-03-12T14:32:38Z",
+                "created_at" : "2011-08-15T22:42:38Z",
+                "following" : 7,
+                "followers" : 6,
+                "id" : 982144,
+                "login" : "tmbeihl"
+            },
+            "emails" : [],
+            "profileUrl" : "https://github.com/tmbeihl",
+            "username" : "tmbeihl",
+            "displayName" : "",
+            "id" : 982144,
+            "provider" : "github"
+        },
+        "tw" : {
+          "_json" : {
+                "needs_phone_verification" : false,
+                "suspended" : false,
+                "notifications" : false,
+                "follow_request_sent" : false,
+                "following" : false,
+                "id" : 127334983
+            },
+            "provider" : "twitter",
+            "displayName" : "Thomas Beihl",
+            "username" : "tmbeihl",
+            "id" : "127334983"
+        },
+        "in" : {
+            "name" : { "givenName" : "Thomas", "familyName" : "Beihl" },
+            "displayName" : "Thomas Beihl",
+            "id" : "JhY8gRr3pa",
+            "provider" : "linkedin"
+        }
+    }
+  },
+
+  gior: {
+    "_id" : ObjectId("5283d1bb66a6f999a465fb6d"),
+    "cohort" : {
+        "expert" : { "_id" : ObjectId("528953641c60530200000011"), "applied" : ISODate("2013-11-17T23:38:12.000Z") }
+    },
+    "email" : "g.natili@gnstudio.com",
+    "emailVerified" : true,
+    "google" : {
+        "_json" : { "email" : "g.natili@gnstudio.com" },
+        "emails" : [ { "type" : "account", "value" : "g.natili@gnstudio.com" } ],
+        "displayName" : "Giorgio Natili",
+        "id" : "107269671216217485938",
+        "provider" : "google"
+    },
+    "googleId" : "107269671216217485938",
+    "name" : "Giorgio Natili",
+    "primaryPayMethodId" : ObjectId("5492f69faaa4a20b007a36ff"),
+    "bio" : "I’m an #opensource, #mobile and #frontend development fanatic with an insane passion for #graphdatabases and #linux.",
+    "social" : {
+        "gh" : {
+            "profileUrl" : "https://github.com/GiorgioNatili",
+            "username" : "GiorgioNatili",
+            "displayName" : "Giorgio Natili",
+            "id" : 1223504,
+            "provider" : "github"
+        }
+    },
+    "localization" : {
+        "timezoneData" : {"timeZoneName" : "Eastern Daylight Time", "timeZoneId" : "America/New_York", },
+        "timezone" : "Eastern Daylight Time",
+        "locationData" : { "name" : "Boston" },
+        "location" : "Boston, MA, USA"
+    },
+    "initials" : "gn",
+    "username" : "giorgionatili"
   }
 
 }

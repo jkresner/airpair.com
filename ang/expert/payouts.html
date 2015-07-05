@@ -7,58 +7,139 @@
 
 <section id="payouts">
 
-  <section class="payoutmethods" ng-if="payoutmethods">
+<section class="setup">
 
-    <h3>Verified payment methods</h3>
+  <section ng-if="payoutmethods.length == 0" class="payoutmethods" ng-if="payoutmethods">
 
-    <p ng-if="payoutmethods.length == 0">
-      Please login with one of the supported
-      payment providers so we can verify your ability to accept payments. We <b>will not</b> store your login (token), only use it for a one off verification.
-    </p>
+    <div>
+      <h3>Verify your payment method</h3>
 
-    <p ng-if="payoutmethods.length > 0" style="color:green">
-      You're good to receive payments using:
-    </p>
+      <p>Please login with one of the supported
+        payment providers so we can verify your ability to accept payments.
+        We <b>will not</b> store your login/token.
+      </p>
 
-    <ul>
-      <li ng-repeat='pm in payoutmethods'><img ng-src="{{'/static/img/icons/'+ pm.type.replace('payout_','') + '.png'}}"/> {{ pm.name }}
-      [<a ng-click="deletePaymethod(pm._id)" class="delete">delete</a>]
-      </li>
-    </ul>
-
-    <div ng-if="!has.paypal">
-      <paypal-login></paypal-login>
+      <div ng-if="!has.paypal">
+        <paypal-login></paypal-login>
+      </div>
     </div>
 
   </section>
 
+
+  <section class="chat" ng-if="payoutmethods.length > 0">
+    <div ng-if="!connectedSlack">
+      <h3 class="underline">Chat oauth</h3>
+      <p>AirPair is leveraging Slack instant messaging more and more for things like showing your (online/unavailable)
+      status for pairing. We will also post specific message on your behalf for example when automatically creating and
+      sharing hangout links.</p>
+      <p>The releasing payments is now up to your pair (once they are happy with your service).
+      Connect you slack account so
+        <b>pairbot</b> can message you reminders when payments are ready to collect :$.
+      </p>
+      <a href="/auth/slack?returnTo=/payouts" target="_self" class="btn">Connect slack</a>
+      <span ng-if="session.social.sl" style="color:green;padding-left:10px">Slack user <b>{{session.social.sl.username}}</b> connected.</span>
+    </div>
+  </section>
+
+</section>
+
+
+<section class="summary">
+
+  <h4>Total earned <b>${{summary.total|number}}</b></h4>
+  <table class="table">
+    <tr>
+      <th></th>
+      <th>Total</th>
+      <th>#</th>
+    </tr>
+    <tr>
+      <td class="pending">Pending</td>
+      <td>${{summary.pending.total|number}}</td>
+      <td>{{summary.pending.count}}</td>
+    </tr>
+    <tr>
+      <td>Owed</td>
+      <td>${{summary.owed.total|number}}</td>
+      <td>{{summary.owed.count}}</td>
+    </tr>
+    <tr>
+      <td class="paidout">Paid</td>
+      <td>${{summary.paid.total|number}}</td>
+      <td>{{summary.paid.count}}</td>
+    </tr>
+  </table>
+
+
+  <div class="payoutmethods" ng-if="payoutmethods.length > 0 && connectedSlack">
+    <h4 class="underline">Payment methods</h4>
+
+    <table class="table">
+      <tr ng-repeat='pm in payoutmethods'>
+        <td style="width:32px">
+          <img ng-src="{{'/static/img/icons/'+ pm.type.replace('payout_','') + '.png'}}"/>
+        </td>
+        <td>
+          {{ pm.type }}
+          <email>
+            {{ pm.info.email }}
+            <a ng-click="deletePaymethod(pm._id)" class="delete">delete</a>
+          </email>
+        </td>
+      </tr>
+    </table>
+
+  </div>
+
+
+</section>
+
+
   <hr />
 
-  <section class="payoutOrders" ng-if="payoutOrders && payoutmethods.length > 0">
-    <h3>Payments you've earned</h3>
+  <section class="payoutOrders" ng-if="payoutOrders && payoutmethods.length > 0 && connectedSlack">
+    <h3>Payments</h3>
 
     <p ng-if="payoutOrders.length == 0">No payments to report. Better start AirPairing!</p>
     <div ng-if="payoutOrders.length > 0">
 
       <table class="table table-striped">
         <tr>
-          <th>Amount</th>
+          <th></th>
+          <th>Status</th>
+          <th>Earned</th>
           <th>For</th>
-          <th>With</th>
           <th>Minutes</th>
-          <th style="text-align:right">Status</th>
+          <th>With</th>
         </tr>
         <tr ng-repeat="o in payoutOrders">
-          <td>${{o.lineItems[0].owed}}</td>
-          <td>{{o.lineItems[0].type}}</td>
-          <td>{{o.by.name}}</td>
-          <td>{{o.lineItems[0].info.minutes}}</td>
-          <td style="text-align:right">
+          <td>
+            <span ng-if="o.lineItems[0].info.released && !o.lineItems[0].info.paidout">
+              <input id="{{o._id}}" type="checkbox" ng-model="checkedOrders[o._id]" ng-change="watchOrdersToPayout()" />
+            </span>
+          </td>
+          <td>
+            <span ng-if="o.lineItems[0].info.released && !o.lineItems[0].info.paidout">
+              <label for="{{o._id}}">Collect</label>
+            </span>
             <span class="paidout" ng-if="o.lineItems[0].info.paidout">paidout</span>
             <span class="pending" ng-if="!o.lineItems[0].info.released">pending</span>
-            <span ng-if="o.lineItems[0].info.released && !o.lineItems[0].info.paidout">
-              <input id="{{o._id}}" type="checkbox" ng-model="checkedOrders[o._id]" ng-change="watchOrdersToPayout()" /> <label for="{{o._id}}">Collect</label>
-            </span>
+          </td>
+          <td>${{o.lineItems[0].owed}}</td>
+          <td>
+            <a ng-if="o.lineItems[0].bookingId" href="/bookings/{{o.lineItems[0].bookingId._id}}" target="_blank">{{o.lineItems[0].bookingId.datetime | locaTime : 'YYYY.MM ddd DD, HH:00' }}</a>
+            <ul ng-if="o.lineItems[0].info.bookingIds">
+              <li ng-repeat="b in o.lineItems[0].info.bookingIds">
+                <a href="/bookings/{{b}}" target="_blank">
+                  {{b | objectIdToDate : 'YYYY.MM ddd DD, HH:00' }}</a>
+              </li>
+            </ul>
+          </td>
+          <td>{{o.lineItems[0].info.minutes}}
+            {{o.lineItems[0].info.type}}
+          </td>
+          <td>{{o.by.name}}
           </td>
         </tr>
       </table>

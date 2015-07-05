@@ -31,6 +31,7 @@
       <td>
         <div ng-if="t.info">
           <div style="font-size:11px">{{t.info.name}}</div>
+          <div style="font-size:11px" ng-if="t.type == 'airpair'"><a href="/bookings/{{t.bookingId._id}}">{{t.bookingId.datetime | locaTime }}</a></div>
           <div style="font-size:9px">{{t.info.source}}</div><!--  ng-if="t.type == 'credit'" -->
         </div>
         <div ng-if="t.suggestion">

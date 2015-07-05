@@ -13,6 +13,7 @@ var Models = {
   Booking: require('../../../server/models/booking'),
   Company: require('../../../server/models/company'),
   Template: require('../../../server/models/template'),
+  Chat: require('../../../server/models/chat'),
   Session: mongoose.model('Session', {_id: String, session: String, expires: Date}, 'v1sessions')
 }
 

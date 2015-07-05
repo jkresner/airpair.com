@@ -372,7 +372,7 @@ stories = {
 
   releaseOrderAndLogExpertBackIn: (orderId, expertSession, cb) ->
     LOGIN 'admin', ->
-      PUT "/adm/billing/orders/#{orderId}/release", {}, {}, (released) ->
+      PUT "/billing/orders/#{orderId}/release", {}, {}, (released) ->
         LOGIN expertSession.userKey, cb
 
 

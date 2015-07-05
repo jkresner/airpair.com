@@ -23,24 +23,34 @@ export default function(model, logging)
     // $log('searchOne'.yellow, query)
     if (!opts) { opts = { fields:null, options:null } }
     var {fields,options} = opts
-    model.findOne(query,fields,options)
-      .lean()
-      .exec( (e, r) => {
-        if (e && logging) { $log('svc.searchOne.err', query, e, cb) }
-        cb(e, r)
-      } )
+    var q = model.findOne(query,fields,options)
+
+    if (options && options.join)
+      for (var p of _.keys(options.join))
+        q = q.populate(p,options.join[p])
+
+    q.lean().exec( (e, r) => {
+      if (e && logging) { $log('svc.searchOne.err', query, e, cb) }
+      // TODO rename populated objectId to "object" attributes
+      cb(e, r)
+    } )
   }
 
   var searchMany = (query, opts, cb) => {
     // $log('searchMany'.yellow, query)
     if (!opts) { opts = { fields:null, options:null } }
     var {fields,options} = opts
-    model.find(query,fields,options)
-      .lean()
-      .exec( (e, r) => {
-        if (e && logging) { $log('svc.searchMany.err', query, e, cb) }
-        cb(e, r)
-      } )
+    var q = model.find(query,fields,options)
+
+    if (options && options.join)
+      for (var p of _.keys(options.join))
+        q = q.populate(p,options.join[p])
+
+    q.lean().exec( (e, r) => {
+      if (e && logging) { $log('svc.searchMany.err', query, e, cb) }
+      // TODO rename populated objectId to "object" attributes
+      cb(e, r)
+    } )
   }
 
   return {
