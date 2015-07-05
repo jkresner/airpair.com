@@ -31,14 +31,21 @@ var cbSend = (req, res, next) => {
 }
 
 
-function resolveParamFn(Svc, svcFnName, paramName, objectName) {
+function resolveParamFn(Svc, svcFnName, paramName, objectName, Validation) {
   return (req, res, next, id) => {
-    if (logging) $log('paramFn'.cyan, paramName, id)
+    if (logging) $log('paramFn'.cyan, paramName, svcFnName, id)
     if (id) id = id.trim()
     $callSvc(Svc[svcFnName],req)(id, function(e, r) {
       if (!r && !e) {
         e = new Error404(`${paramName} not found.`,
           !_.contains(['post','postpublished','workshop'], paramName))
+      }
+      if (r && Validation && Validation[svcFnName]) {
+        var inValid = Validation[svcFnName](req.user,r)
+        if (inValid) {
+          var e = new Error(inValid)
+          e.status = 403
+        }
       }
       req[objectName||paramName] = r
       next(e, r)
@@ -90,7 +97,8 @@ export var initAPI = (Svc, custom, paramFns, Validation, reqObjectName) => {
     for (var paramName of Object.keys(paramFns))
     {
       var svcFn = paramFns[paramName]
-      api.paramFns[svcFn] = resolveParamFn(Svc,svcFn,paramName,reqObjectName)
+      api.paramFns[svcFn] =
+        resolveParamFn(Svc,svcFn,paramName,reqObjectName,Validation)
     }
 
   api.svc = Svc
