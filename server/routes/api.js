@@ -1,8 +1,8 @@
-var API = require('../api/_all')
-var {authd,setAnonSessionData} = require('../middleware/auth')
-var {adm,spnr,emailv} = require('../middleware/authz')
-var {bodyParam,populateUser,populateExpert,json2mb} = require('../middleware/data')
-var Router = require('express').Router
+var API                                   = require('../api/_all')
+var {authd,setAnonSessionData}            = require('../middleware/auth')
+var {adm,spnr,emailv}                     = require('../middleware/authz')
+var {bodyParam,populate,json2mb,cache}    = require('../middleware/data')
+var Router                                = require('express').Router
 
 
 function pipeline() {
@@ -11,7 +11,7 @@ function pipeline() {
     .param('request', API.Requests.paramFns.getByIdForAdmin)
     .param('booking', API.Bookings.paramFns.getById)
     .param('order', API.Orders.paramFns.getByIdForAdmin)
-    .get('/experts/mojo/rank', authd, populateExpert, API.Mojo.getRanked)
+    .get('/experts/mojo/rank', authd, populate.expert, API.Mojo.getRanked)
     // .get('/experts/mojo/me', API.Mojo.getMatchesForRequest)
     // .get('/experts/dashboard', API.Experts.getMatchesForDashboard)
     // .get('/experts', API.Experts.getForExpertsPage)
@@ -19,6 +19,9 @@ function pipeline() {
     .get('/matchmaking/requests/:id', spnr, API.Requests.getByIdForMatchmaker)
     .put('/matchmaking/requests/:request/add/:expertshaped', spnr, API.Requests.addSuggestion)
     .put('/matchmaking/experts/:expertshaped/matchify/:request', spnr, API.Mojo.updateMatchingStats)
+    .post('/adm/experts/:expert/note', spnr, API.Experts.addNote)
+
+    .use(cache.slackReady)
     .get('/adm/bookings/:start/:end/:userId?', spnr, API.Bookings.getByQueryForAdmin)
     .get('/adm/bookings/:id', spnr, API.Bookings.getByIdForAdmin)
     .put('/adm/bookings/:booking/hangout', spnr, API.Bookings.addHangout)
@@ -30,7 +33,6 @@ function pipeline() {
     .put('/adm/bookings/:booking/associate-chat', spnr, API.Bookings.associateChat)
     .put('/adm/chat/invite-to-team/:userId', spnr, API.Chat.inviteToTeam)
     .post('/adm/bookings/:booking/note', spnr, API.Bookings.addNote)
-    .post('/adm/experts/:expert/note', spnr, API.Experts.addNote)
 }
 
 function admin() {
@@ -98,7 +100,7 @@ function posts() {
     .put('/:post', API.Posts.update)
     .delete('/:post', API.Posts.deleteById)
     .get('/check-slug/:post/:slug', API.Posts.checkSlugAvailable)
-    .use(populateUser)
+    .use(populate.user)
     // .get('/forks/me', API.Posts.getUserForks)
     .get('/:post/edit', API.Posts.getByIdForEditing)
     .get('/:post/submit', API.Posts.getByIdForSubmitting)
@@ -179,7 +181,7 @@ function other(app) {
     .post('/requests', API.Requests.create)
     .delete('/requests/:request', API.Requests.deleteById)
 
-    .get('/users/me/provider-scopes', populateUser, API.Users.getProviderScopes)
+    .get('/users/me/provider-scopes', populate.user, API.Users.getProviderScopes)
     .get('/users/me/site-notifications', API.Users.getSiteNotifications)
     .put('/users/me/site-notifications', API.Users.toggleSiteNotification)
     .put('/users/me/email-verify', setAnonSessionData, API.Users.verifyEmail)
@@ -190,6 +192,17 @@ function other(app) {
 
     .get('/company', API.Companys.getUsersCompany)
 
+    .get('/experts/me', API.Experts.getMe)
+    .get('/experts/search/:id', API.Experts.search)
+    .get('/experts/:id', API.Experts.getById)
+    .get('/experts/:expert/history', API.Experts.getHistory)
+    .post('/experts/me', populate.user, API.Experts.create)
+    .put('/experts/:expert/me', populate.user, API.Experts.updateMe)
+    .put('/experts/:expert/availability', populate.user, API.Experts.updateAvailability)
+    .get('/experts/deal/:id', API.Experts.getByDeal)
+    .post('/experts/:expert/deal', API.Experts.createDeal)
+    .put('/experts/:expert/deal/:dealid/expire', API.Experts.expireDeal)
+
     .get('/billing/payoutmethods', API.Paymethods.getMyPayoutmethods)
     .get('/billing/paymethods', API.Paymethods.getMyPaymethods)
     .post('/billing/paymethods', API.Paymethods.addPaymethod)
@@ -199,29 +212,20 @@ function other(app) {
     .get('/billing/orders/expert/:id', API.Orders.getMyDealOrdersForExpert)
     .post('/billing/orders/credit', API.Orders.buyCredit)
     .post('/billing/orders/deal/:expertshaped', API.Orders.buyDeal)
-    .put('/billing/orders/:order/release', API.Orders.releasePayout)
+
+    .post('/payouts/:paymethod', bodyParam('orders'), API.Payouts.payoutOrders)
     .get('/billing/orders/payouts', API.Orders.getOrdersForPayouts)
     .get('/payouts/me', API.Payouts.getPayouts)
-    .post('/payouts/:paymethod', bodyParam('orders'), API.Payouts.payoutOrders)
+
+    .use(cache.slackReady)
+    .put('/billing/orders/:order/release', populate.orderBooking, API.Orders.releasePayout)
 
     .get('/bookings', API.Bookings.getByUserId)
     .get('/bookings/:id', API.Bookings.getById)
-    .post('/bookings/:expertshaped', populateUser, API.Bookings.createBooking)
-
+    .post('/bookings/:expertshaped', populate.user, API.Bookings.createBooking)
     .put('/bookings/:booking/suggest-time', API.Bookings.suggestTime)
     .put('/bookings/:booking/confirm-time', API.Bookings.confirmTime)
     .put('/bookings/:booking/:expert/customer-feedback', API.Bookings.customerFeedback)
-
-    .get('/experts/me', API.Experts.getMe)
-    .get('/experts/search/:id', API.Experts.search)
-    .get('/experts/:id', API.Experts.getById)
-    .get('/experts/:expert/history', API.Experts.getHistory)
-    .post('/experts/me', populateUser, API.Experts.create)
-    .put('/experts/:expert/me', populateUser, API.Experts.updateMe)
-    .put('/experts/:expert/availability', populateUser, API.Experts.updateAvailability)
-    .get('/experts/deal/:id', API.Experts.getByDeal)
-    .post('/experts/:expert/deal', API.Experts.createDeal)
-    .put('/experts/:expert/deal/:dealid/expire', API.Experts.expireDeal)
 
   return router
 
