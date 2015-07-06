@@ -1740,9 +1740,6 @@ module.exports = {
         {"_id" : "514825fa2a26ea0200000020",
             "sort" : 7
         },
-        {"_id" : "514825fa2a26ea0200000028",
-            "sort" : 8
-        },
         { "_id" : "5181d0aa66a6f999a465edfa",
             "sort" : 9
         },
@@ -1778,9 +1775,6 @@ module.exports = {
         },
         {"_id" : "514825fa2a26ea0200000024",
             "sort" : 20
-        },
-        {"_id" : "52ffea1a1c67d1a4859d2333",
-            "sort" : 21
         },
         {"_id" : "543d79ae8f8c80299bcc4baa",
             "sort" : 22
@@ -1974,6 +1968,40 @@ module.exports = {
         "email" : "goldcpufish@gmail.com",
         "name" : "Evan R",
         "_id" : ObjectId("5241c04a66a6f999a465f861")
+    }
+  },
+
+  gnic: {
+    "_id" : ObjectId("52a7729e2320fe0200000064"),
+    "availability" : { "hours" : "5-10", "minRate" : 40, "status" : "ready" },
+    "brief" : "software engineer + startup founder. enjoy teaching and helping people of all skill levels. from basics of http requests, to rest api design, to advanced data aggregation + visualization, to advanced package management + packaging techniques.",
+    "gmail" : "faction.gregory@gmail.com",
+    "rate" : 100,
+    "tags" : [
+        { "_id" : "514825fa2a26ea020000002d", "sort" : 0 },
+        { "_id" : "51828a7b66a6f999a465f293", "sort" : 1 }
+    ],
+    "userId" : ObjectId("51ba69f466a6f999a465f3b5"),
+    "user" : {
+        "social" : {
+            "gp" : { "id" : "101598986042556184098" },
+            "tw" : { "_json" : { "followers_count" : "429" }, "username" : "gregorynich" },
+            "in" : { "id" : "josf4LXmyF" },
+            "bb" : { "username" : "gregorynicholas" },
+            "so" : { "reputation" : "108", "link" : "310658/gregory-nicholas" },
+            "gh" : { "username" : "gregorynicholas", "_json" : { "followers" : 35 } }
+        },
+        "localization" : {
+            "timezone" : "Pacific Daylight Time",
+            "location" : "Los Angeles, CA, USA"
+        },
+        "bio" : "software engineer + startup founder. enjoy teaching and helping people of all skill levels. from basics of http requests, to rest api design, to advanced data aggregation + visualization, to advanced package management + packaging techniques.",
+        "initials" : "GN",
+        "username" : "gregorynicholas",
+        "emailVerified" : true,
+        "email" : "faction.gregory@gmail.com",
+        "name" : "gregory n",
+        "_id" : ObjectId("51ba69f466a6f999a465f3b5")
     }
   }
 

@@ -79,9 +79,9 @@ module.exports = -> describe "Admin".subspec, ->
               reqs1[0].status = 'waiting'
               reqs1[0].adm.owner = 'ad'
               PUT "/adm/requests/#{r._id}", reqs1[0], {}, (reqWexp) ->
-                PUT "/matchmaking/experts/#{phlfExp._id}/matchify/#{r._id}", {}, {}, (exp1) ->
+                PUT "/matching/experts/#{phlfExp._id}/matchify/#{r._id}", {}, {}, (exp1) ->
                   ds = msg: exp1.suggest
-                  PUT "/matchmaking/requests/#{r._id}/add/#{phlfExp._id}", ds, {}, (reqWexp) ->
+                  PUT "/matching/requests/#{r._id}/add/#{phlfExp._id}", ds, {}, (reqWexp) ->
                     GET "/adm/requests/user/#{s._id}", {}, (reqs2) ->
                       expect(reqs2.length).to.equal(1)
                       expect(reqs2[0].suggested.length).to.equal(1)
@@ -105,10 +105,10 @@ module.exports = -> describe "Admin".subspec, ->
             GET "/experts/mojo/rank?#{query}", {}, (matches) ->
               eAbpa = _.find(matches,(m)=>m.name=="Abhishek Parolkar")
               expertId = eAbpa._id
-              PUT "/matchmaking/experts/#{expertId}/matchify/#{r._id}", {}, {}, (exp1) ->
+              PUT "/matching/experts/#{expertId}/matchify/#{r._id}", {}, {}, (exp1) ->
                 expect(exp1.matching).to.exist
                 ds = msg: exp1.suggest
-                PUT "/matchmaking/requests/#{r._id}/add/#{expertId}", ds, {}, (r2) ->
+                PUT "/matching/requests/#{r._id}/add/#{expertId}", ds, {}, (r2) ->
                   expect(r2.suggested.length).to.equal(1)
                   expect(r2.suggested[0].expertStatus).to.equal 'waiting'
                   LOGIN 'abpa', ->
@@ -131,9 +131,9 @@ module.exports = -> describe "Admin".subspec, ->
             expect(matches.length).to.equal(1)
             expect(matches[0].matching).to.be.undefined
             expertId = matches[0]._id
-            PUT "/matchmaking/experts/#{expertId}/matchify/#{r._id}", {}, {}, (exp1) ->
+            PUT "/matching/experts/#{expertId}/matchify/#{r._id}", {}, {}, (exp1) ->
               expect(exp1.matching).to.exist
-              PUT "/matchmaking/requests/#{r._id}/add/#{expertId}", {msg:{subject:'Test',body:'Test'}}, {}, (r2) ->
+              PUT "/matching/requests/#{r._id}/add/#{expertId}", {msg:{subject:'Test',body:'Test'}}, {}, (r2) ->
                 expect(r2.suggested.length).to.equal(1)
                 sug = r2.suggested[0]
                 expect(sug.matchedBy._id).to.exist
@@ -162,7 +162,7 @@ module.exports = -> describe "Admin".subspec, ->
         PUT "/requests/#{r._id}/reply/#{phlfExp._id}", reply, {}, (r1) ->
           expect(r1.suggested[0].expert.avatar).to.exist
           LOGIN 'admin', ->
-            PUT "/matchmaking/experts/#{phlfExp._id}/matchify/#{r._id}", {}, {}, (exp2) ->
+            PUT "/matching/experts/#{phlfExp._id}/matchify/#{r._id}", {}, {}, (exp2) ->
               expect(exp2.avatar).to.exist
               expect(exp2.matching).to.exist
               expect(exp2.matching.experience).to.exist

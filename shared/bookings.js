@@ -87,6 +87,21 @@ var utilFns = {
     }
   },
 
+  filterSlackHistory(messages)
+  {
+    var cleaned = []
+    _.each(messages, (m)=>{
+      if (!m.subtype || (
+        m.subtype!='group_join' &&
+        m.subtype!='group_name' &&
+        m.subtype!='group_purpose'
+      ))
+        cleaned.push(m)
+    })
+    //TODO string replace @ mentions
+    return cleaned
+  },
+
   hangoutName(booking) {
     var customerFirst = util.firstName(utilFns.firstCustomer(booking).name)
     var expertFirst = util.firstName(utilFns.firstExpert(booking).name)

@@ -75,8 +75,8 @@ angular.module('APDataSvc', [])
     this.bookings = _.extend(billingFns, {
       getBookings: GET((d)=>`/bookings`),
       getBooking: GET((d)=>`/bookings/${d._id}`),
-      // Full Feature: Step 1
       suggestTime: PUT((d)=>`/bookings/${d._id}/suggest-time`),
+      releasePayout: PUT((d)=>`/billing/orders/${d._id}/release`),
     })
 
 
@@ -91,7 +91,6 @@ angular.module('APDataSvc', [])
       updateAvailability: PUT((d)=>`/experts/${d._id}/availability`),
       getDeal: GET((d)=>`/experts/deal/${d._id}`),
       saveDeal: POST((d)=>`/experts/${d.expertId}/deal`),
-
       // expireDeal: PUT((d)=>`/experts/${d._id}/deal/${d.dealId}/expire`),
     }
 

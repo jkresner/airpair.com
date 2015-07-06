@@ -1,7 +1,7 @@
 window.$ = window.jQuery = require('./../public/lib/jquery/dist/jquery.js');
 window._ = require('./../public/lib/lodash/dist/lodash.js');
 window.moment = require('./../public/lib/moment/moment.js');
-// window.moment.tz = require('./../public/lib/moment-timezone/builds/moment-timezone-with-data-2010-2020.js');
+window.moment = require('./../public/lib/moment-timezone/builds/moment-timezone-with-data-2010-2020.js');
 require('./../public/lib/angular/angular.js');
 require('./../public/lib/angular-animate/angular-animate.js');
 require('./../public/lib/angular-route/angular-route.js');
