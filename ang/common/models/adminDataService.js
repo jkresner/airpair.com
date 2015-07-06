@@ -126,7 +126,6 @@ angular.module('APSvcAdmin', [])
     this.bookings = {
       getOrders: GET((d)=>`/adm/orders/${d.start.format('x')}/${d.end.format('x')}/${d.user._id}`),
       getOrder: GET((d)=>`/adm/billing/orders/${d._id}`),
-      releasePayout: PUT((d)=>`/adm/billing/orders/${d._id}/release`),
       getBookings: GET((d)=>`/adm/bookings/${d.start.format('x')}/${d.end.format('x')}/${d.user._id}`),
       getBooking: GET((d)=>`/adm/bookings/${d._id}`),
       updateBooking: PUT((d)=>`/adm/bookings/${d._id}`),

@@ -68,6 +68,10 @@ var get = {
     svc.getById(id, selectCB.byRole(this,cb,cb))
   },
 
+  getByIdForBookingInflate(id, cb) {
+    svc.searchOne(id, {fields:select.anon}, cb)
+  },
+
   getByUserIdForAdmin(userId, cb) {
     var opts = { options: { sort: { '_id': -1 } } }
     svc.searchMany({userId}, opts, cb)

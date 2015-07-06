@@ -8,11 +8,11 @@ angular.module('APSvcMM', [])
    DELETE = APIRoute.DELETE;
 
   this.matchmaking = {
-    getWaiting: GET((d)=>`/matchmaking/requests/waiting`),
+    getWaiting: GET((d)=>`/matching/requests/waiting`),
     getRanked: GET((d)=>`/experts/mojo/rank?${d.query}`),
-    getRequest: GET((d)=>`/matchmaking/requests/${d._id}`),
-    addSuggestion: PUT((d)=>`/matchmaking/requests/${d._id}/add/${d.expertId}`),
-    matchifyExpert: PUT((d)=>`/matchmaking/experts/${d.expertId}/matchify/${d.requestId}`),
+    getRequest: GET((d)=>`/matching/requests/${d._id}`),
+    addSuggestion: PUT((d)=>`/matching/requests/${d._id}/add/${d.expertId}`),
+    matchifyExpert: PUT((d)=>`/matching/experts/${d.expertId}/matchify/${d.requestId}`),
   }
 
 })

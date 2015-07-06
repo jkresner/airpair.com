@@ -48,7 +48,7 @@ angular.module("Providers", ['angularLoad'])
     scope: {
       id: '=youtubeId',
     },
-    template: '<iframe width="560" height="315" ng-src="{{url}}" frameborder="0" allowfullscreen></iframe>',
+    template: '<iframe width="640" height="360" ng-src="{{url}}" frameborder="0" allowfullscreen></iframe>',
     controller($scope) {
       $scope.url = $sce.trustAsResourceUrl("https://www.youtube-nocookie.com/embed/" + $scope.id)
     }

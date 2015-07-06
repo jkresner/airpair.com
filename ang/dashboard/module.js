@@ -13,7 +13,10 @@ angular.module("APDashboard", ['APFilters', 'APSvcSession',
 })
 
 
-.controller('DashboardCtrl', function($scope, $location, DataService, SessionService, StaticDataService) {
+.controller('DashboardCtrl', function($scope, $location, DataService,
+  SessionService, StaticDataService, BookingsUtil) {
+
+  $scope.util = BookingsUtil
 
   SessionService.onAuthenticated(function() {
     if (!$scope.session._id) $location.path(`/about`)
@@ -27,8 +30,12 @@ angular.module("APDashboard", ['APFilters', 'APSvcSession',
 
   $scope.posts = { newest: [StaticDataService.getNewestPost()] }
 
-  DataService.requests.getMyRequests({}, function(result) {
-    $scope.requests = result
+  DataService.bookings.getBookings({}, (r) => {
+    $scope.bookings = _.take(r,4)
+  })
+
+  DataService.requests.getMyRequests({}, (r) => {
+    $scope.requests = r
   })
 
   var setSeen = (siteNotifications) => {
@@ -59,8 +66,12 @@ angular.module("APDashboard", ['APFilters', 'APSvcSession',
   return {
     restrict: 'E',
     template: require('./requests.html'),
-    link(scope, element, attrs) {
-    }
+  }
+})
+.directive('dashboardBookings', function() {
+  return {
+    restrict: 'E',
+    template: require('./bookings.html'),
   }
 })
 

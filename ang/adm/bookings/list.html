@@ -21,10 +21,10 @@
       <div ng-repeat="p in b.participants">
         <img ng-src="{{p.info.avatar}}" class="user"> <span>{{p.info.name}}</span>
       </div>
-      <div ng-if="b.chatId" ap-hangout-spinner
+      <div ng-if="b.chat" ap-hangout-spinner
         hangout-id="b._id"
         booking="b"></div>
-      <div ng-if="!b.chatId" style="color:brown">Assign chat</div>
+      <div ng-if="!b.chat" style="color:brown">Assign chat</div>
     </li>
   </ul>
 </section>
@@ -78,7 +78,7 @@
       <br /><time>booked {{b._id | objectIdToAgoTime }}</time>
     </td>
     <td>
-      {{b.chatId.info.name}}
+      {{b.chat.info.name}}
     </td>
     <td style="width:300px">
       <div ng-repeat="p in b.participants">

@@ -40,20 +40,25 @@ angular.module("APBookings", [])
       },
       customers: BookingsUtil.customers(r),
       experts: BookingsUtil.experts(r),
-      booking: r,
+      firstExpert: BookingsUtil.experts(r)[0],
+      multitime: BookingsUtil.multitime(r),
+      chat: r.chat,
+      request: r.request,
+      order: r.order,
+      booking: _.omit(r,'order','request','chat','chatSyncOptions')
     }
     // console.log("SCOPE", $scope)
     angular.extend($scope, scope)
   }
 
-  // console.log("hi", $routeParams.id)
-
   DataService.billing.getBooking({_id}, setScope)
 
-  // Full Feature: Step 1
   $scope.suggestTime = (time) =>
     DataService.bookings.suggestTime({_id,time}, setScope)
 
+  $scope.releasePayout = () =>
+    DataService.bookings.releasePayout({_id:$scope.order._id},(r) =>
+      $scope.order.released = true)
 })
 
 .controller('BookingsCtrl', ($scope, DataService, DateTime, BookingsUtil) => {
