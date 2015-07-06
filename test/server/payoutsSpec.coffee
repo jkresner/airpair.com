@@ -210,7 +210,7 @@ module.exports = -> describe "API: ", ->
                   DONE()
 
 
-  it 'Can collect a single payout released by the customer', itDone ->
+  it.skip 'Can collect a single payout released by the customer', itDone ->
     pairbotStub = sinon.stub(pairbot,'sendSlackMsg',->)
     db.ensureDoc 'Chat', data.chats.tst1, ->
     SETUP.newLoggedInExpertWithPayoutmethod 'gior', (expert, expertSession, payoutmethod) ->

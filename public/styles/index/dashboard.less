@@ -1,9 +1,5 @@
 @import "ap.less";
 
-.headingUnderline {
-  border-bottom:solid 2px @bluegray;padding-bottom:10px;
-}
-
 
 section#dashboard {
 
@@ -16,7 +12,7 @@ section#dashboard {
   section.main {
     float:left;
     width:640px;
-    h3 { .headingUnderline }
+    h3 { .hUnderline }
 
     .experts {
       // .entry-meta { display:none }
@@ -32,11 +28,11 @@ section#dashboard {
     .bookmarks {
       ul { margin:0;padding:0 }
       li { width:200px;overflow:hidden; }
-      h3 { .headingUnderline }
+      h3 { .hUnderline }
     }
 
     .dash-posts {
-      h3 { .headingUnderline }
+      h3 { .hUnderline }
       article { margin:0;max-width:100%;
         .entry-content { padding:5px 10px }
       }
@@ -46,7 +42,6 @@ section#dashboard {
   h3 {
     a { float:right;font-size:14px;padding-top:4px }
   }
-
 
   section#bookings {
     ul { .ulNoStyle;

@@ -37,40 +37,47 @@ var get = {
     svc.getById(id, cb)
   },
 
-  getByIdForParticipant(_id, cb)
+  getForParticipant(booking, cb)
   {
-    svc.searchOne({_id}, { options: opts.forParticipant }, (e,r) => {
-      if (e) return cb(e)
-      getChat(r, false, inflate(cb,select.itemIndex))
-    })
+    cb(null, booking)
   },
 
-  getByIdForAdmin(id, callback)
+  getByUserId(id, cb)
   {
-    var cb = inflate(callback)
+    svc.searchMany({ customerId: id }, {options: opts.orderByDate}, select.cb.itemIndex(cb))
+  },
 
-    svc.getById(id, (e,r) => {
-      if (!r.orderId) return cb(e,r) //is a migrated booking from v0 call
-      OrdersSvc.getByIdForAdmin(r.orderId, (ee,order) => {
-        r.order = order
-        getChat(r, true, (eeee,booking)=>{
-          if (!order.requestId) return cb(e,r)
-          RequestsSvc.getByIdForAdmin(order.requestId, (eee,request) => {
-            if (eee) return cb(eee)
-            r.request = request
-            cb(null,r)
-          })
-        })
+  getByExpertId(expertId, cb)
+  {
+    svc.searchMany({ expertId }, { fields: select.experts }, select.cb.itemIndex(cb))
+  },
+
+  getByIdForParticipant(_id, callback)
+  {
+    var cb = select.cb.itemIndex(callback)
+    svc.searchOne({_id}, {options:opts.forParticipant}, (eee,r) => {
+      if (eee) return cb(eee)
+      if (!r.order) return cb(null,r) // an edgecase migrated booking from v0 call
+      getChat(r, false, (ee,r)=>{
+        if (!r.order.requestId) return cb(ee,r)
+        RequestsSvc.getByIdForBookingInflate(r.order.requestId, (e,request) =>
+          cb(e,_.extend(r,{request})))
       })
     })
   },
 
-  getByUserId(id, cb) {
-    svc.searchMany({ customerId: id }, {options: opts.orderByDate}, inflate(cb,select.itemIndex))
-  },
-
-  getByExpertId(expertId, cb) {
-    svc.searchMany({ expertId }, { fields: select.experts }, inflate(cb,select.experts))
+  getByIdForAdmin(_id, callback)
+  {
+    var cb = select.cb.inflate(callback)
+    svc.searchOne({_id}, {options:opts.forAdmin}, (eee,r) => {
+      if (eee) return cb(eee)
+      if (!r.order) return cb(null,r) // an edgecase migrated booking from v0 call
+      getChat(r, true, (ee,r) => {
+        if (!r.order.requestId) return cb(ee,r)
+        RequestsSvc.getByIdForBookingInflate(r.order.requestId, (e,request) =>
+          cb(e,_.extend(r,{request})))
+      })
+    })
   },
 
   getByQueryForAdmin(start, end, userId, cb) {
@@ -126,7 +133,7 @@ var save = {
         mailman.send('pipeliners', 'pipeliner-notify-booking', d, ()=>{})
         mailman.send(expert, 'expert-booked', d, ()=>{}) // todo add type && instructions to email
 
-        svc.create(booking, inflate(cb,select.itemIndex))
+        svc.create(booking, select.cb.itemIndex(cb))
       })
     })
   },
@@ -265,8 +272,79 @@ var admin = {
   },
 
 
+
+  addYouTubeData(original, youTubeId, cb) {
+    if (logging) $log('bookings.addYouTubeData'.cyan, original._id, youTubeId)
+    Wrappers.YouTube.getVideoInfo(youTubeId, (err, response) => {
+      if (err){
+        return cb(Error(err),data)
+      }
+      original.status = "followup"
+      var data = {}
+      data = response.snippet;
+      data.youTubeId = response.id;
+      delete(data.thumbnails) //can be derived from YouTube ID
+      original.recordings.push({type: "youTube", data})
+      updateForAdmin(this, original, cb)
+    });
+  },
+
+  addHangout(original, youTubeId, youTubeAccount, hangoutUrl, cb){
+    if (logging) $log('bookings.addHangout'.cyan, original._id, youTubeId, youTubeAccount, hangoutUrl)
+    Wrappers.YouTube.getVideoInfo(youTubeId, (err, response) => {
+      //TODO mark video as private if booking.type is private
+      if (err){
+        return cb(Error(err),data)
+      }
+      original.status = "followup"
+      var data = {}
+      data = response.snippet;
+      data.youTubeId = response.id;
+      delete(data.thumbnails) //can be derived from YouTube ID
+      original.recordings.push({type: "YouTube", data, hangoutUrl, youTubeAccount})
+      updateForAdmin(this, original, (e,r)=>{
+        if (!e) pairbot.sendSlackMsg(r.chat.providerId, 'hangout-started-slack', {hangoutUrl})
+        cb(e,r)
+      })
+    })
+  },
+
+  deleteRecording(original, recordingId, cb)
+  {
+    var recordings = _.filter(original.recordings, (r)=>!_.idsEqual(r._id,recordingId))
+    original.recordings = recordings
+    updateForAdmin(this, original, cb)
+  },
+
+  createChat(original, type, groupchat, cb)
+  {
+    select.inflateParticipantInfo(original.participants)
+    $callSvc(ChatsSvc.createCreate, this)(type, groupchat, original.participants, (e,chat)=>{
+      original.chatId = chat._id
+      updateForAdmin(this, original, cb)
+    })
+  },
+
+  associateChat(original, type, providerId, cb)
+  {
+    $callSvc(ChatsSvc.createSync, this)(type, providerId, (e,chat)=>{
+      if (e) return cb(e)
+      original.chatId = chat._id
+      updateForAdmin(this, original, select.cb.itemIndex(cb))
+    })
+  },
+
+  addNote(original, note, cb)
+  {
+    var notes = original.notes || []
+    notes.push({body:note,by:{_id:this.user._id,name:this.user.name}})
+    original.notes = notes
+    updateForAdmin(this, original, cb)
+  },
+
   //-- Short cut needs to be replaced by something much more robust
-  cheatExpertSwap(booking, order, request, suggestionId, cb) {
+  cheatExpertSwap(booking, order, request, suggestionId, cb)
+  {
 
     //-- If there was a calendar invite, cancel and delete
     //-- Grab the expert details from the expert or optional requestId
@@ -362,74 +440,6 @@ var admin = {
         get.getByIdForAdmin(booking._id, cb)
       })
     })
-  },
-
-  addYouTubeData(original, youTubeId, cb) {
-    if (logging) $log('bookings.addYouTubeData'.cyan, original._id, youTubeId)
-    Wrappers.YouTube.getVideoInfo(youTubeId, (err, response) => {
-      if (err){
-        return cb(Error(err),data)
-      }
-      original.status = "followup"
-      var data = {}
-      data = response.snippet;
-      data.youTubeId = response.id;
-      delete(data.thumbnails) //can be derived from YouTube ID
-      original.recordings.push({type: "youTube", data})
-      updateForAdmin(this, original, cb)
-    });
-  },
-
-  addHangout(original, youTubeId, youTubeAccount, hangoutUrl, cb){
-    if (logging) $log('bookings.addHangout'.cyan, original._id, youTubeId, youTubeAccount, hangoutUrl)
-    Wrappers.YouTube.getVideoInfo(youTubeId, (err, response) => {
-      //TODO mark video as private if booking.type is private
-      if (err){
-        return cb(Error(err),data)
-      }
-      original.status = "followup"
-      var data = {}
-      data = response.snippet;
-      data.youTubeId = response.id;
-      delete(data.thumbnails) //can be derived from YouTube ID
-      original.recordings.push({type: "YouTube", data, hangoutUrl, youTubeAccount})
-      updateForAdmin(this, original, (e,r)=>{
-        if (!e) pairbot.sendSlackMsg(r.chat.providerId, 'hangout-started-slack', {hangoutUrl})
-        cb(e,r)
-      })
-    })
-  },
-
-  deleteRecording(original, recordingId, cb)
-  {
-    var recordings = _.filter(original.recordings, (r)=>!_.idsEqual(r._id,recordingId))
-    original.recordings = recordings
-    updateForAdmin(this, original, cb)
-  },
-
-  createChat(original, type, groupchat, cb)
-  {
-    $callSvc(ChatsSvc.createCreate, this)(type, groupchat, original.participants, (e,chat)=>{
-      original.chatId = chat._id
-      updateForAdmin(this, original, cb)
-    })
-  },
-
-  associateChat(original, type, providerId, cb)
-  {
-    $callSvc(ChatsSvc.createSync, this)(type, providerId, (e,chat)=>{
-      if (e) return cb(e)
-      original.chatId = chat._id
-      updateForAdmin(this, original, cb)
-    })
-  },
-
-  addNote(original, note, cb)
-  {
-    var notes = original.notes || []
-    notes.push({body:note,by:{_id:this.user._id,name:this.user.name}})
-    original.notes = notes
-    updateForAdmin(this, original, cb)
   },
 
 }

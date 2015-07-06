@@ -17,6 +17,25 @@ function tokenize(term, wildcardStart, wildcardEnd) {
 }
 
 
+function addJoins(q, joins) {
+  for (var p of _.keys(joins))
+    q = q.populate(p,joins[p])
+  return q
+}
+
+function cleanJoins(r, joins) {
+  for (var pId of _.keys(joins)) {
+    if (r[pId]) {
+      var p = pId.replace('Id','')
+      r[p] = r[pId]
+      // $log(`r[${p}]`, r[p], pId.cyan)
+      delete r[pId]
+    }
+  }
+  return r
+}
+
+
 export default function(model, logging)
 {
   var searchOne = (query, opts, cb) => {
@@ -25,12 +44,11 @@ export default function(model, logging)
     var {fields,options} = opts
     var q = model.findOne(query,fields,options)
 
-    if (options && options.join)
-      for (var p of _.keys(options.join))
-        q = q.populate(p,options.join[p])
+    if (options && options.join) q = addJoins(q,options.join)
 
     q.lean().exec( (e, r) => {
       if (e && logging) { $log('svc.searchOne.err', query, e, cb) }
+      if (options && options.join) r = cleanJoins(r, options.join)
       // TODO rename populated objectId to "object" attributes
       cb(e, r)
     } )
@@ -42,13 +60,13 @@ export default function(model, logging)
     var {fields,options} = opts
     var q = model.find(query,fields,options)
 
-    if (options && options.join)
-      for (var p of _.keys(options.join))
-        q = q.populate(p,options.join[p])
+    if (options && options.join) q = addJoins(q,options.join)
 
     q.lean().exec( (e, r) => {
       if (e && logging) { $log('svc.searchMany.err', query, e, cb) }
-      // TODO rename populated objectId to "object" attributes
+      if (options && options.join)
+        for (var o of r) o = cleanJoins(o, options.join)
+
       cb(e, r)
     } )
   }

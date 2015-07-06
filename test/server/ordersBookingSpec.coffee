@@ -20,6 +20,7 @@ module.exports = -> describe "Booking: ".subspec, ->
       POST "/bookings/#{data.experts.dros._id}", airpair1, {}, (booking1) ->
         expect(booking1._id).to.exist
         expect(booking1.orderId).to.exist
+        expect(booking1.order).to.be.undefined
         expect(_.idsEqual(booking1.expertId, data.experts.dros._id)).to.be.true
         expect(_.idsEqual(booking1.customerId, s._id)).to.be.true
         expect(_.idsEqual(booking1.createdById, s._id)).to.be.true

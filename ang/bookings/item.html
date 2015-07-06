@@ -1,121 +1,211 @@
+<header ng-if="booking">
+  <ol class="entry-meta breadcrumb">
+    <li><a href="/bookings" target="_self">Bookings</a></li>
+    <li><a href="/billing/book/{{booking.expertId}}">{{experts[0].info.name}}</a></li>
+    <li class="current">{{booking.datetime | locaTime }}</li>
+  </ol>
+</header>
+
+
 <section id="booking" ng-if="booking && booking.participants">
 
-<!-- <h3 style="border-bottom: 1px solid gray">{{booking.gcal.summary}}</h3> -->
 
-
-<div class="row">
+<section class="header row">
 
   <div class="expert">
     <div class="participant" ng-repeat="p in experts">
       <b>{{p.info.name}} </b>
-      <img ng-src="{{p.info.avatar}}" class="user">
-      <!-- <span>{{p.info.email}} </span> -->
+      <img ng-src="{{p.info.avatar}}?s=100" class="user">
     </div>
   </div>
 
   <div class="customer">
     <div class="participant" ng-repeat="p in customers">
-      <img ng-src="{{p.info.avatar}}" class="user">
+      <img ng-src="{{p.info.avatar}}?s=100" class="user">
       <b>{{p.info.name}} </b>
-      <!-- <span>{{p.info.email}} </span> -->
     </div>
   </div>
 
-  <div class="time">
-    <p ng-if="booking.status == 'pending'">
-      You will shortly be invited into chat to schedule the time of your session
+  <div class="pairup"></div>
+
+  <hr />
+
+</section>
+
+
+<div class="side">
+
+  <a href="/billing/book/{{booking.expertId}}" class="btn">Book next AirPair</a>
+
+  <section class="status {{booking.status}}">
+    <h4>Status <span>{{booking.status.toUpperCase()}}</span></h4>
+    <div ng-if="booking.status == 'pending'">
+    <span><b>You still need to lock in a time:</b>{{multitime}}</span>
+      <p>Suggest more times or confirm one proposed by your pair.</p>
+    </div>
+    <div ng-if="booking.status == 'confirmed'">
+      <span><b>We've locked in your time:</b>{{multitime}}</span>
+      <p>Return to this page 10 minutes before for your hangout link.</p>
+    </div>
+    <p ng-if="booking.status == 'followup'">
+      <span><b>We're waiting to hear how it went:</b>
+      <p>The customer must leave feedback and release payment for the expert.</p>
     </p>
-    <p ng-if="booking.status == 'confirmed'">
-      {{ booking.datetime | date:'medium'}}
-      <br />{{booking.minutes}} minutes
-    </p>
-  </div>
-
-
-  <hr class="join" />
-</div>
-
-
-<!-- <section class="schdule-time">
-  <h5>Schedule</h5>
-  <section ng-if="booking.status == 'pending'">
-    <h4>Suggested times</h4>
-    <table class="table" style="width:60%">
-      <tr>
-        <th>Time (60 mins)</th>
-        <th>By</th>
-        <th></th>
-      </tr>
-      <tr>
-        <td>Sun 28 4PM CEST | 10AM EDT.</td>
-        <td>You</td>
-        <td></td>
-      </tr>
-      <tr>
-        <td>Sun 28 5PM CEST | 11AM EDT.</td>
-        <td>gregory nichola</td>
-        <td><a href="#">Confirm this time</a></td>
-      </tr>
-      <tr>
-        <td>Sun 29 2PM CEST | 8AM EDT.</td>
-        <td>gregory nichola</td>
-        <td><a href="#">Confirm this time</a></td>
-      </tr>
-      <tr>
-        <td>Sun 30 4PM CEST | 10AM EDT.</td>
-        <td>You</td>
-        <td></td>
-      </tr>
-      <tr>
-        <td>Sun 31 4PM CEST | 10AM EDT.</td>
-        <td>gregory nichola</td>
-        <td><a href="#">Confirm this time</a></td>
-      </tr>
-    </table>
-      <div class="form-group">
-        <label class="control-label" for="when">Suggest another time</label>
-        <div datetime-input id="bookingDatetime" datetime="booking.datetime" min-view="minute" date-format="YYYY MMM DD HH:mm Z" style="width:230px"></div>
-        <p style="padding:10px">* If this time doesn't work {{expert.name}} will suggest an alternative</p>
-      </div>
-
+    <p ng-if="booking.status == 'complete'"></p>
+    <p ng-if="booking.status == 'canceled'"></p>
   </section>
-  <section ng-if="booking.status != 'pending'">
-    <h4>Booking time: <b>{{util.multitime(booking)}}</b></h4>
-  </section>
-</section> -->
 
-<div class="row">
-
-  <div class="col-md-4">
-    <h3>Details</h3>
-    <div>{{booking.minutes}} minutes </div>
-    <div>Booking type: {{booking.type | uppercase}} </div>
-<!--     <div>{{ booking.datetime | date:'medium'}}</div> -->
+  <section class="datetime">
+    <h4>Scheduled</h4>
+    <date>{{booking.datetime | locaTime : 'MMM DD' }}</date>
+    <time>{{booking.datetime | locaTime : 'h:mma Z' }}</time>
+    <div>{{booking.minutes}} minutes ({{booking.type | uppercase}}) </div>
+    <!--<div>{{ booking.datetime | date:'medium'}}</div> -->
     <!-- <div>{{booking.status}}</div> -->
-  </div>
+  </section>
 
+  <section class="payout" ng-if="order && (session._id == booking.customerId
+   || session.cohort.expert._id == booking.expertId)">
+    <h4>Escrow</h4>
 
-  <div class="col-md-4">
-    <div class="recordings">
-      <div ng-if="hangoutState.none && booking.status == 'confirmed'">
-        <h3>Hangout</h3>
-        No Hangout yet.
-        <br />Come back at {{ booking.datetime | date:'medium'}}
-      </div>
-      <div ng-if="hangoutState.inProgress">
-        <a href="{{ booking.recordings[booking.recordings.length-1].hangoutUrl }}">Join Hangout</a>
-      </div>
-      <div ng-if="hangoutState.complete">
-        <ul ng-if="booking && booking.recordings.length > 0">
-          Watch your AirPair session
-          <li ng-repeat="recording in booking.recordings">
-            <div ng-if="recording.data.youTubeId" youtube-id="recording.data.youTubeId" youtube-embed></div>
-          </li>
-        </ul>
-      </div>
+    <div ng-if="session._id == booking.customerId">
+      <p ng-if="order.released">
+        Payment sent to {{experts[0].info.name}}.
+      </p>
+      <p ng-if="!order.paidout && !order.released">
+        <a ng-click="releasePayout()" class="btn">Release payment</a> for {{experts[0].info.name}} once happy.
+      </p>
     </div>
-  </div>
+
+    <div ng-if="session.cohort.expert._id == booking.expertId">
+      <p ng-if="!order.released">
+        Ask customer to release payment.
+      </p>
+      <p ng-if="order.released && !order.paidout">
+        Money ready to collect from your
+        <a href="/payouts">payouts page</a>.
+      </p>
+      <p ng-if="order.paidout">
+        You've collect payment for this booking.
+        Details on your <a href="/payouts">payouts page.
+      </p>
+    </div>
+  </section>
+
 
 </div>
+
+
+<div class="main">
+
+  <section class="schdule-time" ng-if="booking.status == 'pending'">
+  <!--   <h5>Schedule</h5>
+    <section ng-if="booking.status == 'pending'">
+      <h4>Suggested times</h4>
+      <table class="table" style="width:60%">
+        <tr>
+          <th>Time (60 mins)</th>
+          <th>By</th>
+          <th></th>
+        </tr>
+        <tr>
+          <td>Sun 28 4PM CEST | 10AM EDT.</td>
+          <td>You</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>Sun 28 5PM CEST | 11AM EDT.</td>
+          <td>gregory nichola</td>
+          <td><a href="#">Confirm this time</a></td>
+        </tr>
+        <tr>
+          <td>Sun 29 2PM CEST | 8AM EDT.</td>
+          <td>gregory nichola</td>
+          <td><a href="#">Confirm this time</a></td>
+        </tr>
+        <tr>
+          <td>Sun 30 4PM CEST | 10AM EDT.</td>
+          <td>You</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>Sun 31 4PM CEST | 10AM EDT.</td>
+          <td>gregory nichola</td>
+          <td><a href="#">Confirm this time</a></td>
+        </tr>
+      </table>
+        <div class="form-group">
+          <label class="control-label" for="when">Suggest another time</label>
+          <div datetime-input id="bookingDatetime" datetime="booking.datetime" min-view="minute" date-format="YYYY MMM DD HH:mm Z" style="width:230px"></div>
+          <p style="padding:10px">* If this time doesn't work {{expert.name}} will suggest an alternative</p>
+        </div>
+
+    </section>
+    <section ng-if="booking.status != 'pending'">
+      <h4>Booking time: <b>{{util.multitime(booking)}}</b></h4>
+    </section> -->
+  </section>
+
+
+  <section class="hangout" ng-if="hangoutState.none && booking.status == 'confirmed'">
+    <div>
+      <h3>Your AirPair</h3>
+      <p>Return here <b>10 mins before</b>
+      {{ booking.datetime | locaTime :'hh:mma ddd MMM DD'}}.
+      </p>
+      <a href="#" class="btn btn-disabled disabled">Join AirPair Video Call</a>
+      <p style="font-size:11px">
+        * Paid pairing time begins exactly when scheduled. Join 10 minutes early if you wish to test your audio/video.
+      </p>
+    </div>
+
+    <div ng-if="hangoutState.inProgress">
+      <a href="{{ booking.recordings[booking.recordings.length-1].hangoutUrl }}" target="_blank" class="btn">Join AirPair G+ Hangout</a>
+    </div>
+
+  </section>
+
+
+  <section class="recordings" ng-if="hangoutState.complete &&
+    booking.recordings.length > 0">
+    <h3>Watch your AirPair</h3>
+    <div>
+      <ul>
+        <li ng-repeat="recording in booking.recordings">
+          <div ng-if="recording.data.youTubeId" youtube-id="recording.data.youTubeId" youtube-embed></div>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+
+  <section class="request" ng-if="request">
+    <h3>AirPair Brief</h3>
+
+    {{request.brief}}
+  </section>
+
+
+
+  <section class="chat" ng-if="chat">
+    <h3>Chat > <a target="_blank" href="https://airpair.slack.com/messages/{{chat.info.name}}">  {{chat.info.name}}
+            <span ng-if="chat.info.is_archived">(archived)</span>
+    </a></h3>
+
+    <p ng-if="chat.history.length==0">No chat history yet.</p>
+    <ul class="history">
+      <li ng-repeat="m in chat.history | orderBy:'-ts'">
+        <time>
+          {{m.ts | tsTime : 'MM.DD HH:00' }} &nbsp
+          <b>{{chat.members[m.user].name}}</b>
+        </time>
+        <p>{{m.text}}</p>
+      </li>
+    </ul>
+  </section>
+
+</div>
+
+
 
 </section>

@@ -1,3 +1,40 @@
+views = ->
+
+  it.skip 'New booking from request can be viewed by creator', itDone ->
+    SETUP.ensureV1LoggedInExpert 'gnic', (sExp) ->
+      SETUP.newBookedRequestWithExistingExpert 'jkgm', {}, {userKey:'gnic',expertId:sExp.cohort.expert._id}, (r1, b1, sCust, sExp2) ->
+        GET "/bookings/#{b1._id}", {}, (b2) ->
+          # $log('creating'.magenta, data.experts.gnic._id, b2)
+          expect(b2.orderId).to.be.undefined
+          expect(b2.order._id).to.exist
+          expect(b2.order.paidout==false).to.be.true
+          expect(b2.requestId).to.be.undefined
+          expectIdsEqual(r1._id,b2.request._id)
+          expect(b2.request.brief).to.exist
+          # expect(b2.request.title).to.exist
+          expect(b2.request.adm).to.be.undefined
+          expect(b2.request.budget).to.be.undefined
+          expect(b2.participants.length).to.equal(2)
+          expect(b2.participants[1].chat).to.exist
+          expect(b2.participants[1].chat.name).to.equal('gregorynicholas')
+          expect(b2.chat).to.be.undefined
+          LOGIN "admin", ->
+            d = {type:'slack',providerId:"G06UFJCQ2"}
+            PUT "/adm/bookings/#{b1._id}/associate-chat", d, {}, (b3) ->
+              expect(b3.chat).to.exist
+              LOGIN 'gnic', ->
+                GET "/bookings/#{b1._id}", {}, (b4) ->
+                  # $log('b4'.magenta, b4)
+                  expect(b4.chat).to.exist
+                  DONE()
+
+
+  it.skip 'New booking can be viewed by expert', itDone ->
+
+
+  it.skip 'Can be viewed by additional participants', itDone ->
+
+
 scheduling = ->
 
 
@@ -24,7 +61,7 @@ scheduling = ->
           DONE()
 
 
-  it 'Can suggest time if in pending', itDone ->
+  it.skip 'Can suggest time if in pending', itDone ->
     time1 = moment().add(1, 'day')
     SETUP.newBookedExpert 'chle', {datetime:time1}, (s, b1) ->
       expect(b1.suggestedTimes.length).to.equal(1)
@@ -61,7 +98,7 @@ scheduling = ->
                 DONE()
 
 
-  it 'Can not confirm own suggested time', itDone ->
+  it.skip 'Can not confirm own suggested time', itDone ->
     SETUP.newBookedExpert 'grnv', {}, (s, b1) ->
       timeId = b1.suggestedTimes[0]._id
       PUT "/bookings/#{b1._id}/confirm-time", {_id:b1._id, timeId}, {status:403}, (err) ->
@@ -69,7 +106,7 @@ scheduling = ->
         DONE()
 
 
-  it 'Can confirm customer booking suggested time by expert', itDone ->
+  it.skip 'Can confirm customer booking suggested time by expert', itDone ->
     datetime = moment().add(10, 'day')
     SETUP.newBookedExpert 'gniv', {datetime}, (s, b1) ->
       LOGIN 'dros', (sDros) ->
@@ -111,6 +148,7 @@ recordings = ->
         expect(booking1.customerId).to.exist
         expect(booking1.minutes).to.equal(120)
         expect(booking1.orderId).to.exist
+        expect(booking1.order).to.be.undefined
         expect(booking1.type).to.exist
         expect(booking1.participants.length).to.equal(2)
         LOGIN 'admin',(sadm) ->
@@ -128,12 +166,6 @@ recordings = ->
     SETUP.addAndLoginLocalUserWhoCanMakeBooking 'mrik', (s) ->
       airpair1 = datetime: moment().add(2, 'day'), minutes: 120, type: 'private', payMethodId: s.primaryPayMethodId
       POST "/bookings/#{data.experts.dros._id}", airpair1, {}, (booking1) ->
-        expect(booking1._id).to.exist
-        expect(booking1.customerId).to.exist
-        expect(booking1.minutes).to.equal(120)
-        expect(booking1.orderId).to.exist
-        expect(booking1.type).to.exist
-        expect(booking1.participants.length).to.equal(2)
         LOGIN 'admin', (sadm) ->
           url = "/adm/bookings/#{booking1._id}/recording"
           PUT url, {youTubeId: "MEv4SuSJgw"}, {status: 400}, (booking) ->
@@ -145,12 +177,6 @@ recordings = ->
     SETUP.addAndLoginLocalUserWhoCanMakeBooking 'misr', (s) ->
       airpair1 = datetime: moment().add(2, 'day'), minutes: 120, type: 'private', payMethodId: s.primaryPayMethodId
       POST "/bookings/#{data.experts.dros._id}", airpair1, {}, (booking1) ->
-        expect(booking1._id).to.exist
-        expect(booking1.customerId).to.exist
-        expect(booking1.minutes).to.equal(120)
-        expect(booking1.orderId).to.exist
-        expect(booking1.type).to.exist
-        expect(booking1.participants.length).to.equal(2)
         LOGIN 'admin', (sadm) ->
           url = "/adm/bookings/#{booking1._id}/recording"
           PUT url, {youTubeId: "VfA4ELOHjmk"}, {status: 400}, (booking) ->
@@ -166,7 +192,7 @@ recordings = ->
         expect(booking1._id).to.exist
         expect(booking1.customerId).to.exist
         expect(booking1.minutes).to.equal(120)
-        expect(booking1.orderId).to.exist
+        expect(booking1.order).to.exist
         expect(booking1.type).to.exist
         expect(booking1.participants.length).to.equal(2)
         LOGIN 'admin', (sadm) ->
@@ -274,6 +300,7 @@ module.exports = ->
   afterEach ->
     @braintreepaymentStub.restore()
 
+  describe("Views: ".subspec, views)
   describe("Scheduling: ".subspec, scheduling)
   describe("Recordings: ".subspec, recordings)
   describe("Feedback: ".subspec, feedback)

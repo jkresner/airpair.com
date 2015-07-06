@@ -5,13 +5,14 @@ var validation = {
   getById(user, original)
   {
     if (!Roles.isParticipantOrAdmin(user, original))
-      return `You[${this.user._id}] are not a participants to this booking[${r._id}]`
+      return `You[${user._id}] are not a participants to this booking[${original._id}]`
   },
 
   getByIdForParticipant(user, original)
   {
+    // $log('validation.getByIdForParticipant'.yellow, original)
     if (!Roles.isParticipantOrAdmin(user, original))
-      return `You[${this.user._id}] are not a participants to this booking[${r._id}]`
+      return `You[${user._id}] are not a participants to this booking[${original._id}]`
   },
 
   createBooking(user, expert, datetime, minutes, type, credit, payMethodId, requestId)
