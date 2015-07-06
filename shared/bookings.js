@@ -34,13 +34,13 @@ var utilFns = {
 
   multitime(booking) {
     var momUtc = moment.utc(new Date(booking.datetime).toISOString())
-    var multitime = momUtc.format('ddd DD hA z')
+    var multitime = momUtc.format('ddd DD h:mmA z').replace(':00','')
     var mainDate = momUtc.format('ddd DD ')
     var timezones = ['Universal']
     booking.participants.forEach(function(p) {
       if (p.timeZoneId && !_.contains(timezones,p.timeZoneId)) {
         timezones.push(p.timeZoneId)
-        var localTime = momUtc.tz(p.timeZoneId).format('ddd DD hA z').replace(mainDate,'')
+        var localTime = momUtc.tz(p.timeZoneId).format('ddd DD h:mmA z').replace(mainDate,'').replace(':00','')
         multitime += ` | ${localTime}`
       }
     })

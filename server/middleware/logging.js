@@ -46,15 +46,21 @@ var middleware = {
       var uid = (req.user) ? req.user.email : req.sessionID
 
       if (config.env != 'test' || global.verboseErrHandler) {
+
         var ref = (req.header('Referer')) ? ` <<< ${req.header('Referer')}` : ''
-        $log(`errorHandle ${uid} ${req.method} ${req.url}${ref}`.red, JSON.stringify(req.body), (e.message || e).magenta)
+        if (!req.nonSessionUrl)
+          $log('errHandle'.gray, `${req.ip}:${uid} ${req.method} ${req.url}${ref}`.red, JSON.stringify(req.body), (e.message || e).magenta)
         $error(e, req.user, req)
+
       } else {
+
         $log(`${req.method}:${req.url} `.expectederr + (e.message || e).expectederr)
         // $log('Test Debug Error ', e)
       }
 
-      if (e.fromApi)
+      if (e.message == "Page not found" && req.nonSessionUrl)
+        res.status(404).send("") // serve nothing for spam requests
+      else if (e.fromApi)
         res.status(e.status || 400).json({message:e.message || e})
       else
         app.renderErrorPage(e)(req,res)

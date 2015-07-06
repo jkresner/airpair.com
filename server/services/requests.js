@@ -68,8 +68,12 @@ var get = {
     svc.getById(id, selectCB.byRole(this,cb,cb))
   },
 
-  getByIdForBookingInflate(id, cb) {
-    svc.searchOne(id, {fields:select.anon}, cb)
+  getByIdForBookingInflate(id, cb)
+  {
+    var fields = !Roles.isAdmin(this.user) ? select.anon :
+       _.extend({'suggested._id': 1,'suggested.expert.name': 1,'brief':1},select.pipeline)
+
+    svc.searchOne(id, {fields}, cb)
   },
 
   getByUserIdForAdmin(userId, cb) {

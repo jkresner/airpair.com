@@ -60,7 +60,7 @@ var get = {
       if (!r.order) return cb(null,r) // an edgecase migrated booking from v0 call
       getChat(r, false, (ee,r)=>{
         if (!r.order.requestId) return cb(ee,r)
-        RequestsSvc.getByIdForBookingInflate(r.order.requestId, (e,request) =>
+        $callSvc(RequestsSvc.getByIdForBookingInflate,this)(r.order.requestId, (e,request) =>
           cb(e,_.extend(r,{request})))
       })
     })
@@ -74,7 +74,7 @@ var get = {
       if (!r.order) return cb(null,r) // an edgecase migrated booking from v0 call
       getChat(r, true, (ee,r) => {
         if (!r.order.requestId) return cb(ee,r)
-        RequestsSvc.getByIdForBookingInflate(r.order.requestId, (e,request) =>
+        $callSvc(RequestsSvc.getByIdForBookingInflate, this)(r.order.requestId, (e,request) =>
           cb(e,_.extend(r,{request})))
       })
     })

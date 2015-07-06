@@ -34,6 +34,7 @@ spinning: Router()
   .put('/:booking/create-chat', API.Bookings.createChat)
   .put('/:booking/associate-chat', API.Bookings.associateChat)
   .post('/:booking/note', API.Bookings.addNote)
+  .post('/experts/:expert/note', API.Experts.addNote)
   .put('/chat/invite-to-team/:userId', API.Chat.inviteToTeam),
 
 
@@ -192,8 +193,9 @@ admin: Router()
   .get('/experts/active', API.Experts.getActiveForAdmin)
   .get('/experts/:id', API.Experts.getByIdForAdmin)
   .delete('/experts/:expert', API.Experts.deleteById)
+  .post('/experts/:expert/note', API.Experts.addNote)
+  .put('/chat/invite-to-team/:userId', API.Chat.inviteToTeam),
 
-  .post('experts/:expert/note', API.Experts.addNote),
 
 
 
