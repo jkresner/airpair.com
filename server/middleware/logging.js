@@ -3,6 +3,25 @@ var domain = require('domain')
 
 var middleware = {
 
+  badBot(req, res, next) {
+    var logging = true
+    var userAgent = req.get('user-agent')
+
+    if (util.isBot(userAgent)) {
+      var badBotPattern = /MegaIndex|uk_lddc_bot|MJ12bot|CPython|libwww-perl|Superfeedr|Mechanize/i
+      var referer = req.header('Referer')
+      var ref = (referer) ? ` <<< ${referer}` : ''
+      if (util.isBot(userAgent,badBotPattern)) {
+        $log(`__BADBOT${req.ip}`.cyan,`${userAgent}`.blue,`${req.originalUrl} ${ref}`.gray)
+        return res.status(200).send('')
+      }
+      else if (logging)
+        $log(`_____BOT${req.ip}`.cyan,`${userAgent}`.cyan,`${req.originalUrl} ${ref}`.gray)
+    }
+
+    next()
+  },
+
   pageNotFound(req, res, next) {
     var e = new Error(`Page not found`)
     e.status = 404
