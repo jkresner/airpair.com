@@ -19,7 +19,7 @@ module.exports = {
   jaje: { name:"James Jelinek",email:"jelinek@test.com" },
   clew: { name:"Chris Lewis",email:"clew@test.com" },
   chle: { name:"Chris Lewis",email:"clew@hotmail.com" },
-  gnic: { name:"Gregory Nic",email:"gniccy@msn.com" },
+  gnik: { name:"Gregory Nic",email:"gniccy@msn.com" },
   gniv: { name:"Gregory Nic",email:"gnicvy@msn.com" },
   grnv: { name:"Gregory Nicola",email:"gnicola@msn.com" },
 
@@ -75,6 +75,7 @@ module.exports = {
   anca: { name:"Andrew Callahan",email:"andrew.allahan@test.com" },
 
   jkre: { name:"Jonathon Kresner",email:"jkresner@gmail.com" },
+  jkgm: { name:"Jonathon Gmail",email:"jkresner@gmail.com" },
   krez: { name:"Jonathon Krezner",email:"krez@hotmail.com" },
   igor: { name:"Igor Lebovic",email:"igorlebovic@gmail.com" },
   evnr: { name:"Evan Richards",email:"goldfish@gmail.com" },
@@ -115,6 +116,7 @@ module.exports = {
   josh: { name: "Josh Baylin", email: "jaybe@hotmail.com"},
   joba: { name: "Josh Baylin", email: "josh.baylin@gmail.com"},
   johb: { name: "Josh Baylin", email: "josh.baylin@hotmail.com"},
+  jbay: { name: "Josh Baylin", email: "josh.b@hotmail.com"},
   mfly: { name: "Michael Flynn", email: "michael.flynn@hotmail.com"},
   mfln: { name: "Michael Flynn", email: "michael.flynn@gmail.com"},
   mikf: { name: "Michael Flynn", email: "michael.flynn@test.com"},
@@ -2627,6 +2629,24 @@ module.exports = {
     },
     "initials" : "gn",
     "username" : "giorgionatili"
-  }
+  },
 
+  gnic: {
+    "_id" : ObjectId("51ba69f466a6f999a465f3b5"),
+    "email" : "faction.gregory@gmail.com",
+    "emailVerified" : true,
+    "name" : "gregory n",
+    "username" : "gregorynicholas",
+    "bio" : "software engineer + startup founder. enjoy teaching and helping people of all skill levels. from basics of http requests, to rest api design, to advanced data aggregation + visualization, to advanced package management + packaging techniques.",
+    "initials" : "GN",
+    "localization" : {
+      "timezoneData" : {
+          "timeZoneName" : "Pacific Daylight Time",
+          "timeZoneId" : "America/Los_Angeles"
+      },
+      "timezone" : "Pacific Daylight Time",
+      "locationData" : { "name" : "Los Angeles" },
+      "location" : "Los Angeles, CA, USA"
+    },
+  },
 }

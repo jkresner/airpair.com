@@ -8,7 +8,7 @@ angular.module("ADMBookings", [])
 
 })
 
-.controller('BookingCtrl', ($scope, $routeParams, AdmDataService, ServerErrors,
+.controller('BookingCtrl', ($scope, $routeParams, AdmDataService, DataService, ServerErrors,
     Util, BookingsUtil, OrdersUtil) =>
 {
   var _id = $routeParams.id
@@ -70,7 +70,7 @@ angular.module("ADMBookings", [])
   }
 
   $scope.releasePayout = () =>
-    AdmDataService.bookings.releasePayout({_id:$scope.order._id},(r) => {
+    DataService.bookings.releasePayout({_id:$scope.order._id},(r) => {
       $scope.order = r
       $scope.lineForPayout = OrdersUtil.lineForPayout(r)
     })
