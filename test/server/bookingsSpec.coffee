@@ -1,4 +1,47 @@
+BookingUtil = require("../../shared/bookings")
+
 views = ->
+
+  it "Can get multiTime", itDone ->
+    tzBooking = data.bookings.timezones
+    tzBooking.datetime = ISODate("2016-06-25T00:00:00.000Z")
+    expect(tzBooking.participants.length).to.equal(2)
+    expect(tzBooking.participants[0].timeZoneId).to.equal("America/Los_Angeles")
+    expect(tzBooking.participants[1].timeZoneId).to.equal("America/Chicago")
+    multitime = BookingUtil.multitime(tzBooking)
+    expectStartsWith(multitime, "Sat 25 12AM UTC | Fri 24 5PM PDT | Fri 24 7PM CDT")
+    bOld = data.bookings.swap1
+    bOld.datetime = ISODate("2015-03-12T03:15:18.576Z")
+    multitime2 = BookingUtil.multitime(bOld)
+    expectStartsWith(multitime2, "Thu 12 3:15AM UTC")
+    DONE()
+
+
+  it "Can get purpose for various booking statuses", itDone ->
+    bPending = data.bookings.timezones
+    bPending.datetime = ISODate("2016-06-25T00:00:00.000Z")
+    expect(bPending.status).to.equal("pending")
+    expect(bPending.participants.length).to.equal(2)
+    expect(bPending.participants[0].timeZoneId).to.equal("America/Los_Angeles")
+    expect(bPending.participants[1].timeZoneId).to.equal("America/Chicago")
+    pendingPurpose = BookingUtil.chatGroup(bPending).purpose
+    expectStartsWith(pendingPurpose, "https://airpair.com/bookings/558aa2454be238d1956cb8aa Morgan (PDT, San Francisco, CA, USA) + Billy (CDT, Houston, TX, USA). WAITING to confirm 90 mins @ Sat 25 12AM UTC | Fri 24 5PM PDT | Fri 24 7PM CDT.")
+    bConfirmed = _.extend(bPending,{status:'confirmed'})
+    confirmedPurpose = BookingUtil.chatGroup(bConfirmed).purpose
+    expectStartsWith(confirmedPurpose, "https://airpair.com/bookings/558aa2454be238d1956cb8aa Morgan (PDT, San Francisco, CA, USA) + Billy (CDT, Houston, TX, USA). CONFIRMED 90 mins @ Sat 25 12AM UTC | Fri 24 5PM PDT | Fri 24 7PM CDT.")
+    bFollowup = _.extend(bPending,{status:'followup'})
+    followupPurpose = BookingUtil.chatGroup(bFollowup).purpose
+    expectStartsWith(followupPurpose, "https://airpair.com/bookings/558aa2454be238d1956cb8aa Morgan (PDT, San Francisco, CA, USA) + Billy (CDT, Houston, TX, USA). FEEDBACK required to payout expert for 90 mins on Sat 25 12AM UTC | Fri 24 5PM PDT | Fri 24 7PM CDT.")
+    DONE()
+
+
+  it "Can get purpose for old no timeZoneId bookings", itDone ->
+    bOld = data.bookings.swap1
+    bOld.datetime = ISODate("2015-03-12T03:30:18.576Z")
+    purpose = BookingUtil.chatGroup(bOld).purpose
+    expectStartsWith(purpose, "https://airpair.com/bookings/54dc2d2fd137810a00f2813b Daniel + Adam. FEEDBACK required to payout expert for 60 mins on Thu 12 3:30AM UTC")
+    DONE()
+
 
   it.skip 'New booking from request can be viewed by creator', itDone ->
     SETUP.ensureV1LoggedInExpert 'gnic', (sExp) ->
@@ -37,8 +80,11 @@ views = ->
 
 scheduling = ->
 
+  before -> config.calendar.on = true
+  after -> config.calendar.on = false
 
-  it 'New booking has default prefered uncomfirmed time', itDone ->
+  it.skip 'New booking has default prefered uncomfirmed time', itDone ->
+    expect("email to expert has preferred times").to.be.true
     SETUP.addAndLoginLocalUserWhoCanMakeBooking 'clew', (s) ->
       pairDateTime = moment().add(2, 'day')
       airpair1 = datetime: pairDateTime, minutes: 120, type: 'private', payMethodId: s.primaryPayMethodId
@@ -61,7 +107,7 @@ scheduling = ->
           DONE()
 
 
-  it.skip 'Can suggest time if in pending', itDone ->
+  it 'Can suggest time if in pending', itDone ->
     time1 = moment().add(1, 'day')
     SETUP.newBookedExpert 'chle', {datetime:time1}, (s, b1) ->
       expect(b1.suggestedTimes.length).to.equal(1)
@@ -98,7 +144,7 @@ scheduling = ->
                 DONE()
 
 
-  it.skip 'Can not confirm own suggested time', itDone ->
+  it 'Can not confirm own suggested time', itDone ->
     SETUP.newBookedExpert 'grnv', {}, (s, b1) ->
       timeId = b1.suggestedTimes[0]._id
       PUT "/bookings/#{b1._id}/confirm-time", {_id:b1._id, timeId}, {status:403}, (err) ->
@@ -106,9 +152,14 @@ scheduling = ->
         DONE()
 
 
-  it.skip 'Can confirm customer booking suggested time by expert', itDone ->
+  it 'Can confirm customer booking suggested time by expert', itDone ->
+    stubCal = SETUP.stubGoogleCalendar 'events', 'insert', data.wrappers.google_cal_create
+    # email notifications sent
+    # stubMail = SETUP.stub mailman, 'send'
+    stubPairBot = sinon.stub pairbot, 'sendSlackMsg', ->
     datetime = moment().add(10, 'day')
-    SETUP.newBookedExpert 'gniv', {datetime}, (s, b1) ->
+    slackChatId = "G06UFP6AX"
+    SETUP.newBookedExpert 'gniv', {datetime,slackChatId}, (s, b1) ->
       LOGIN 'dros', (sDros) ->
         timeId = b1.suggestedTimes[0]._id
         PUT "/bookings/#{b1._id}/confirm-time", {_id:b1._id, timeId}, {}, (b2) ->
@@ -117,19 +168,65 @@ scheduling = ->
           expect(b2.notes).to.be.undefined
           expect(b2.status).to.equal("confirmed")
           expectSameMoment(b2.datetime, datetime)
+          expect(stubPairBot.calledOnce).to.be.true
+          expect(stubPairBot.args[0][0]).to.equal("G06UFP6AX")
+          expect(stubPairBot.args[0][1]).to.equal('booking-confirmed-time')
+          expect(stubPairBot.args[0][2].byName).to.equal(sDros.name)
+          expect(b2.suggestedTimes.length).to.equal(1)
+          expectIdsEqual(b2.suggestedTimes[0].byId,s._id)
+          expectIdsEqual(b2.suggestedTimes[0].confirmedById,sDros._id)
+          stubPairBot.restore()
+          expect(stubCal.calledOnce).to.be.true
+          stubCal.restore()
           db.readDoc 'Booking', b1._id, (b3) ->
             expectTouch(b3.lastTouch, sDros._id, "confirm-time")
             expectTouch(b3.activity[0],s._id, "create")
             expectTouch(b3.activity[1],sDros._id, "confirm-time")
+            expectTouch(b3.activity[1],sDros._id, "confirm-time")
             DONE()
 
-            # TODO:sunday
-            # google calendar invite sent
-            # bot message room
-            # email notifications sent
 
-
-  it 'Expert can suggest alternative which can be confirmed by customer'
+  it 'Expert can suggest alternative which can be confirmed by customer', itDone ->
+    stubCal = SETUP.stubGoogleCalendar 'events', 'insert', data.wrappers.google_cal_create
+    # email notifications sent
+    # stubMail = SETUP.stub mailman, 'send'
+    stubPairBot = sinon.stub pairbot, 'sendSlackMsg', ->
+    datetime = moment().add(11, 'day')
+    SETUP.newBookedExpert 'kelf', {datetime,expertId:data.experts.gnic._id}, (s, b1) ->
+      LOGIN 'gnic', (sGnic) ->
+        time2 = moment().add(17, 'day')
+        d = { _id:b1._id, time:time2}
+        PUT "/bookings/#{b1._id}/suggest-time", d, {}, (b2) ->
+          expect(b2.lastTouch).to.be.undefined
+          expect(b2.activity).to.be.undefined
+          expect(b2.notes).to.be.undefined
+          expect(b2.status).to.equal("pending")
+          expectSameMoment(b2.datetime, datetime)
+          expect(b2.suggestedTimes.length).to.equal(2)
+          expect(stubPairBot.calledOnce).to.be.false
+          LOGIN s.userKey, ->
+            expectIdsEqual(b2.suggestedTimes[1].byId,sGnic._id)
+            timeId = b2.suggestedTimes[1]._id
+            PUT "/bookings/#{b1._id}/confirm-time", {_id:b1._id, timeId}, {}, (b3) ->
+              expect(b3.status).to.equal("confirmed")
+              expectSameMoment(b3.datetime, time2)
+              expect(stubPairBot.calledOnce).to.be.false
+              stubPairBot.restore()
+              expect(stubCal.calledOnce).to.be.true
+              expect(b3.suggestedTimes.length).to.equal(2)
+              expectSameMoment(b3.suggestedTimes[0].time,datetime)
+              expectIdsEqual(b3.suggestedTimes[0].byId,s._id)
+              expect(b3.suggestedTimes[0].confirmedById).to.be.undefined
+              expectSameMoment(b3.suggestedTimes[1].time,time2)
+              expectIdsEqual(b3.suggestedTimes[1].byId,sGnic._id)
+              expectIdsEqual(b3.suggestedTimes[1].confirmedById,s._id)
+              stubCal.restore()
+              db.readDoc 'Booking', b1._id, (bDb1) ->
+                expectTouch(bDb1.lastTouch, s._id, "confirm-time")
+                expectTouch(bDb1.activity[0],s._id, "create")
+                expectTouch(bDb1.activity[1],sGnic._id, "suggest-time")
+                expectTouch(bDb1.activity[2],s._id, "confirm-time")
+                DONE()
 
 
   it 'Can only suggest or confirm datetime on a pending booking'

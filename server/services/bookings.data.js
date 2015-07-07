@@ -129,6 +129,11 @@ var query = {
 
 var opts = {
   orderByDate: { sort: { 'datetime': -1 } },
+  getById: {
+    join: {
+      'chatId': '_id type provider, providerId',
+    }
+  },
   forAdmin: {
     join: {
       'orderId': '_id type lineItems.info.released lineItems.info.paidout lineItems.info.expert requestId',

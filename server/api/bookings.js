@@ -24,7 +24,9 @@ export default initAPI(
   addNote: (req) => [req.booking, req.body.body],
 }, {
   booking:'getById',
-  bookingitem: 'getByIdForParticipant'
+  bookingforparticipant: 'getByIdForParticipant'
 },
   require('../../shared/validation/bookings.js')
+  ,
+  'booking'
 )
