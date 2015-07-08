@@ -1,4 +1,4 @@
-var util = require('./util')
+var {firstName,idsEqual} = require('./util')
 
 var utilFns = {
 
@@ -20,8 +20,8 @@ var utilFns = {
 
   searchBits(booking) {
     return [
-      util.firstName(utilFns.firstCustomer(booking).name).replace("'",""),
-      util.firstName(utilFns.firstExpert(booking).name).replace("'","")
+      firstName(utilFns.firstCustomer(booking).name).replace("'",""),
+      firstName(utilFns.firstExpert(booking).name).replace("'","")
     ]
   },
 
@@ -32,15 +32,26 @@ var utilFns = {
     return _.extend(timeLoc, { role, info: { _id: user._id, name: user.name, email: user.email } })
   },
 
-  multitime(booking) {
-    var momUtc = moment.utc(new Date(booking.datetime).toISOString())
-    var multitime = momUtc.format('ddd DD hA z')
+  suggestedTimesInflate(b,timeZoneId)
+  {
+    return _.map(b.suggestedTimes,(t)=>{
+      return {
+        _id:t._id,
+        multitime:utilFns.multitime(b,t.time),
+        localTime:moment(t.time).tz(timeZoneId||'Universal').format('h:mmA z'),
+        by: _.find(b.participants,(p)=>idsEqual(t.byId,p.info._id)) }
+    })
+  },
+
+  multitime(booking, time) {
+    var momUtc = moment.utc(new Date(time||booking.datetime).toISOString())
+    var multitime = momUtc.format('ddd DD HH:mm z')
     var mainDate = momUtc.format('ddd DD ')
     var timezones = ['Universal']
     booking.participants.forEach(function(p) {
       if (p.timeZoneId && !_.contains(timezones,p.timeZoneId)) {
         timezones.push(p.timeZoneId)
-        var localTime = momUtc.tz(p.timeZoneId).format('ddd DD hA z').replace(mainDate,'')
+        var localTime = momUtc.tz(p.timeZoneId).format('ddd DD h:mmA z').replace(mainDate,'').replace(':00','')
         multitime += ` | ${localTime}`
       }
     })
@@ -64,9 +75,9 @@ var utilFns = {
 
   chatGroup(booking) {
     var customer = utilFns.customers(booking)[0]
-    var customerFirst = util.firstName(customer.info.name).replace("'","")
+    var customerFirst = firstName(customer.info.name).replace("'","")
     var expert = utilFns.experts(booking)[0]
-    var expertFirst = util.firstName(expert.info.name).replace("'","")
+    var expertFirst = firstName(expert.info.name).replace("'","")
     var statusLetter = utilFns.statusLetter(booking)
     var purpose = `https://airpair.com/bookings/${booking._id} ${customerFirst}`
     purpose += (customer.timeZoneId) ? ` (${moment.tz(customer.timeZoneId).format('z')}, ${customer.location})` : ``
@@ -103,8 +114,8 @@ var utilFns = {
   },
 
   hangoutName(booking) {
-    var customerFirst = util.firstName(utilFns.firstCustomer(booking).name)
-    var expertFirst = util.firstName(utilFns.firstExpert(booking).name)
+    var customerFirst = firstName(utilFns.firstCustomer(booking).name)
+    var expertFirst = firstName(utilFns.firstExpert(booking).name)
     return `AirPair ${customerFirst} + ${expertFirst}`
   },
 

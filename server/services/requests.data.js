@@ -44,7 +44,8 @@ var data = {
       'brief': 1,
       'tags': 1,
       'time': 1,
-      'experience': 1
+      'experience': 1,
+      'title': 1
     },
     review: {
       '_id': 1,
@@ -82,6 +83,7 @@ var data = {
       'type': 1,
       'tags.slug': 1,
       'time': 1,
+      'title': 1,
       // 'hours': 1,
       // 'experience': 1,
       'status': 1,

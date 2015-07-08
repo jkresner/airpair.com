@@ -33,7 +33,7 @@ var cbSend = (req, res, next) => {
 
 function resolveParamFn(Svc, svcFnName, paramName, objectName, Validation) {
   return (req, res, next, id) => {
-    if (logging) $log('paramFn'.cyan, paramName, svcFnName, id)
+    if (logging) $log('paramFn'.cyan, paramName, objectName, svcFnName, id)
     if (id) id = id.trim()
     $callSvc(Svc[svcFnName],req)(id, function(e, r) {
       if (!r && !e) {
@@ -48,6 +48,7 @@ function resolveParamFn(Svc, svcFnName, paramName, objectName, Validation) {
         }
       }
       req[objectName||paramName] = r
+      if (logging) $log('paramFn'.yellow, objectName||paramName, r!=null, req[objectName||paramName])
       next(e, r)
     })
   }
@@ -57,7 +58,7 @@ function resolveParamFn(Svc, svcFnName, paramName, objectName, Validation) {
 
 export function serve(Svc, svcFnName, argsFn, Validation) {
   return (req, res, next) => {
-    if (logging) $log('serve.Svc'.cyan, svcFnName, argsFn, Svc)
+    if (logging) $log('serve.Svc'.cyan, svcFnName, argsFn)
     var callback = cbSend(req,res,next)
     var args = argsFn(req)
     if (Validation) {

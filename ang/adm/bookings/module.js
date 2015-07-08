@@ -94,10 +94,11 @@ angular.module("ADMBookings", [])
     AdmDataService.bookings.saveNote({_id,body},setScope)
 
   $scope.setMsgTemplate = (tmpl) => {
-    var experts = $scope.experts[0].chat.slack.name
+    var expertHandle = $scope.experts[0].chat.slack.name
+    var customerHandle = $scope.customers[0].chat.slack.name
     var timeString = BookingsUtil.multitime($scope.booking)
 
-    if (tmpl == 'confirm') $scope.slackMessage = `@${experts}: the customer has requested to pair at ${timeString} does that work?`
+    if (tmpl == 'confirm') $scope.slackMessage = `Hey @${expertHandle}! @${customerHandle} has requested to pair for ${$scope.booking.minutes} MINS at ${timeString}. Please confirm, or propose alternate time slots => https://www.airpair.com/bookings/${_id}`
     if (tmpl == 'feedback') $scope.slackMessage = `@franklin: would love to get your feedback! http://airpa.ir/1wjREmL`
   }
 })

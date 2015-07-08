@@ -16,6 +16,8 @@ export function run()
 
   var express = require('express')
   var app = express()
+
+  app.use(mw.logging.badBot)
   //-- We don't want to serve sessions for static resources
   //-- Save database write on every resources
   app.use(express.static(config.appdir+'/dist', { maxAge: '1d' }))
