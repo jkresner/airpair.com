@@ -27,11 +27,14 @@ section#booking {
     .primaryParticipantName {
       position:absolute;top:15px;font-weight:normal;font-size:18px
     }
+    location {
+      font-size:10px;maring:20px;padding:12px
+    }
 
     .customer { float:left;b { left:120px;.primaryParticipantName }}
     .expert { float:right;b { right:120px;.primaryParticipantName }}
 
-    .participant img { border:solid 2px @bluegray }
+    .participant img { border:solid 2px @bluegray;background:white }
   }
 
   .side {
@@ -42,11 +45,12 @@ section#booking {
   }
 
   .followup { span { color:@lightorange } }
-  .pending { span {color:@darkyellow } }
+  .pending { background-color:@paleyellow;span {color:@darkyellow } }
   .confirmed { span {color:@green } }
   .complete { span {color:@turquoise } }
   .canceled { span {color:@error } }
   .status {
+    > div { background:white }
     padding:0px 2px 0px 4px;
     span {font-size:12px;}
     b { display:block }
@@ -83,7 +87,16 @@ section#booking {
     > section { margin-bottom:50px }
   }
 
-  .time {
+  .schedule-time {
+    padding-bottom:50px;
+    .suggestion {
+      .btn { padding:3px 10px;font-size:11px }
+      time { font-size:13px }
+    }
+    .suggestTime {
+      .control-label { font-weight:normal;i { font-size:11px }}
+      .btn { padding:11px 12px;width:120px;float:left;margin-left:3px }
+    }
     // font-size:12px;
     // p { padding:30px 20px }
     // color:white;

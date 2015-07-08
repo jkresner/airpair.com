@@ -32,9 +32,9 @@ function getChat(booking, syncOptions, cb) {
 
 var get = {
 
-  getById(id, cb)
+  getById(_id, cb)
   {
-    svc.getById(id, cb)
+    svc.searchOne({_id}, {options:opts.getById}, cb)
   },
 
   getForParticipant(booking, cb)
@@ -44,12 +44,14 @@ var get = {
 
   getByUserId(id, cb)
   {
-    svc.searchMany({ customerId: id }, {options: opts.orderByDate}, select.cb.itemIndex(cb))
+    var fields = select.listIndex
+    svc.searchMany({ customerId: id }, { fields, options: opts.orderByDate}, select.cb.listIndex(cb))
   },
 
+  //-- TODO: differentiate between admin getByExpertID and just the expert getting by their own Id
   getByExpertId(expertId, cb)
   {
-    svc.searchMany({ expertId }, { fields: select.experts }, select.cb.itemIndex(cb))
+    svc.searchMany({ expertId }, { fields: select.expertMatching }, cb)
   },
 
   getByIdForParticipant(_id, callback)
@@ -60,7 +62,7 @@ var get = {
       if (!r.order) return cb(null,r) // an edgecase migrated booking from v0 call
       getChat(r, false, (ee,r)=>{
         if (!r.order.requestId) return cb(ee,r)
-        RequestsSvc.getByIdForBookingInflate(r.order.requestId, (e,request) =>
+        $callSvc(RequestsSvc.getByIdForBookingInflate,this)(r.order.requestId, (e,request) =>
           cb(e,_.extend(r,{request})))
       })
     })
@@ -74,7 +76,7 @@ var get = {
       if (!r.order) return cb(null,r) // an edgecase migrated booking from v0 call
       getChat(r, true, (ee,r) => {
         if (!r.order.requestId) return cb(ee,r)
-        RequestsSvc.getByIdForBookingInflate(r.order.requestId, (e,request) =>
+        $callSvc(RequestsSvc.getByIdForBookingInflate, this)(r.order.requestId, (e,request) =>
           cb(e,_.extend(r,{request})))
       })
     })
@@ -140,27 +142,39 @@ var save = {
 
   suggestTime(original, time, cb)
   {
-    original.suggestedTimes.push({time,byId:this.user._id})
-    var lastTouch = svc.newTouch.call(this, 'suggest-time')
-    original.activity.push(lastTouch)
-    original.lastTouch = lastTouch
-    svc.update(original._id, original, inflate(cb,select.itemIndex))
+    var {suggestedTimes,lastTouch,activity} = original
+    suggestedTimes.push({time,byId:this.user._id})
+    lastTouch = svc.newTouch.call(this, 'suggest-time')
+    activity.push(lastTouch)
+    svc.updateWithSet(original._id, {suggestedTimes,lastTouch,activity}, inflate(cb,select.itemIndex))
   },
 
   confirmTime(original, timeId, cb)
   {
-    var suggestedTime = _.find(original.suggestedTimes,(t)=>_.idsEqual(t._id,timeId))
-    original.datetime = suggestedTime.time
-    original.status = 'confirmed'
+    var {suggestedTimes,lastTouch,activity,datetime,status} = original
 
-    original.lastTouch = svc.newTouch.call(this, 'confirm-time')
-    original.activity.push(original.lastTouch)
+    var suggestedTime = _.find(suggestedTimes,(t)=>_.idsEqual(t._id,timeId))
+    datetime = suggestedTime.time
+    status = 'confirmed'
+
+    lastTouch = svc.newTouch.call(this, 'confirm-time')
+    activity.push(lastTouch)
 
     suggestedTime.confirmedById = this.user._id
 
-    // TODO:gcal
+    original.datetime = datetime
+    createBookingGoogleCalendarEvent(original, cb, (gcal) => {
+      if (original.chat) {
+        var multitime = BookingdUtil.multitime(original)
+        var d = {multitime,byName:this.user.name,bookingId:original._id}
+        pairbot.sendSlackMsg(original.chat.providerId, 'booking-confirm-time', d)
+      }
 
-    svc.update(original._id, original, inflate(cb,select.itemIndex))
+      svc.updateWithSet(original._id,
+        {suggestedTimes,lastTouch,activity,datetime,status,gcal},
+        inflate(cb,select.itemIndex)
+      )
+    })
   },
 
   customerFeedback(original, review, expert, expertReview, cb)
@@ -197,30 +211,27 @@ function updateForAdmin(thisCtx, booking, cb) {
   })
 }
 
-function createBookingGoogleCalendarEvent(booking, cb) {
+function createBookingGoogleCalendarEvent(booking, errorCB, cb) {
   var {minutes,datetime,participants} = booking
   var attendees = []
   for (var p of participants) attendees.push({email:p.info.email})
   var cust = _.find(participants, (a)=>a.role=='customer')
   var exp = _.find(participants, (a)=>a.role=='expert')
   var name = `AirPair ${util.firstName(cust.info.name)} + ${util.firstName(exp.info.name)}`
-  var description = `Your matchmaker, will set up a Google
-hangout for this session and share the link with you a few
-minutes prior to the session.
+  var description = `Please be in your chat room or on the booking page 10 minutes before this invite.
+
+=> https://www.airpair.com/bookings/${booking._id}
 
 You are encouraged to make sure beforehand your mic/webcam are working
 on your system. Please let your matchmaker know if you'd like to do
-a dry run.
-
-Booking: https://airpair.com/booking/${booking._id}`
+a dry run.`
 
   var adminInitials = "jk" // TODO un-hardcode
   var sendNotifications = true //always true for now
   Wrappers.Calendar.createEvent(name, sendNotifications, moment(datetime), minutes, attendees, description, adminInitials, (e,r) => {
     if (logging) $log('event created'.yellow, e, r)
-    if (e) return cb(e)
-    booking.gcal = r
-    cb(this, booking)
+    if (e) return errorCB(e)
+    cb(r)
   })
 }
 
@@ -256,13 +267,14 @@ var admin = {
       original.status = update.status
     }
 
-    var updateCB = (ctx,bk) => updateForAdmin(ctx,bk,cb)
 
     // the sendGCal flag prevent double-submission from client
-    if (update.sendGCal) {
-      createBookingGoogleCalendarEvent.call(this, update, updateCB)
-    }
+    if (update.sendGCal)
+      createBookingGoogleCalendarEvent(update, cb, (gcal) =>
+        updateForAdmin(this, _.extend(update,{gcal}), cb) )
+
     else if (shouldUpdateGal) {
+      var updateCB = (ctx,bk) => updateForAdmin(ctx,bk,cb)
       var sendNotification = false //always false for now
       if (logging) $log('updating cgal', 'notify', sendNotification)
       updateBookingGoogleCalendarEvent.call(this, update, sendNotification, updateCB)

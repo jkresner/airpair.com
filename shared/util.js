@@ -1,4 +1,4 @@
-var botPattern = /googlebot|TurnitinBot|SMTBot|MegaIndex.ru|Domain Re-Animator Bot|uk_lddc_bot|MJ12bot|CPython|libwww-perl|Superfeedr|Mechanize|AdsBot-Google|gurujibot|bitlybot|twitterbot|scritch|yandexbot|slurp|msnbot|bingbot|rogerbot|MetaURI|Hatena|PaperLiBot|QuerySeekerSpider|AhrefsBot|EmailMarketingRobot|ShowyouBot|Baiduspider|YisouSpider|facebookexternalhit/i
+var botPattern = /googlebot|TurnitinBot|SMTBot|MegaIndex|Domain Re-Animator Bot|uk_lddc_bot|MJ12bot|CPython|libwww-perl|Superfeedr|Mechanize|AdsBot-Google|gurujibot|bitlybot|twitterbot|scritch|yandexbot|slurp|msnbot|bingbot|rogerbot|MetaURI|Hatena|PaperLiBot|QuerySeekerSpider|AhrefsBot|EmailMarketingRobot|ShowyouBot|Baiduspider|YisouSpider|facebookexternalhit|Y!J-ASR/i
 
 
 var nestedPick = (object, keys) => {
@@ -214,10 +214,11 @@ var util = {
   },
 
 
-  isBot(useragent) {
+  isBot(useragent, pattern) {
     if (!useragent) return true // browser and even bots should have a defined user agent
     var source = useragent.replace(/^\s*/, '').replace(/\s*$/, '')
-    return botPattern.test(source)
+    pattern = pattern || botPattern
+    return pattern.test(source)
   },
 
   stringToJson(content) {

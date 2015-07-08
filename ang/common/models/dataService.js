@@ -76,6 +76,7 @@ angular.module('APDataSvc', [])
       getBookings: GET((d)=>`/bookings`),
       getBooking: GET((d)=>`/bookings/${d._id}`),
       suggestTime: PUT((d)=>`/bookings/${d._id}/suggest-time`),
+      confirmTime: PUT((d)=>`/bookings/${d._id}/confirm-time`),
       releasePayout: PUT((d)=>`/billing/orders/${d._id}/release`),
     })
 

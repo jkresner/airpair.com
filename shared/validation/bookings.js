@@ -25,7 +25,6 @@ var validation = {
     if (!datetime) return `Booking datetime required`
   },
 
-  // Full Feature: Step 5
   suggestTime(user, original, time)
   {
     if (original.status != 'pending')
