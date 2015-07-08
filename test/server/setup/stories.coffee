@@ -301,7 +301,14 @@ stories = {
         }, bookingData)
 
       POST "/bookings/#{bData.expertId}", bData, {}, (booking) ->
-        cb sessionCustomer, booking
+        if (!bookingData.slackChatId)
+          cb sessionCustomer, booking
+        else
+          LOGIN "admin", ->
+            c = type:'slack',providerId:bookingData.slackChatId
+            PUT "/adm/bookings/#{booking._id}/associate-chat", c, {}, (b1) ->
+              LOGIN sessionCustomer.userKey, (s1) ->
+                cb s1, b1
 
 
   newCompleteRequest: (userKey, requestData, cb) ->

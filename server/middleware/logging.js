@@ -3,6 +3,25 @@ var domain = require('domain')
 
 var middleware = {
 
+  badBot(req, res, next) {
+    var logging = true
+    var userAgent = req.get('user-agent')
+
+    if (util.isBot(userAgent)) {
+      var badBotPattern = /MegaIndex|uk_lddc_bot|MJ12bot|CPython|libwww-perl|Superfeedr|Mechanize/i
+      var referer = req.header('Referer')
+      var ref = (referer) ? ` <<< ${referer}` : ''
+      if (util.isBot(userAgent,badBotPattern)) {
+        $log(`__BADBOT${req.ip}`.cyan,`${userAgent}`.blue,`${req.originalUrl} ${ref}`.gray)
+        return res.status(200).send('')
+      }
+      else if (logging)
+        $log(`_____BOT${req.ip}`.cyan,`${userAgent}`.cyan,`${req.originalUrl} ${ref}`.gray)
+    }
+
+    next()
+  },
+
   pageNotFound(req, res, next) {
     var e = new Error(`Page not found`)
     e.status = 404
@@ -46,15 +65,21 @@ var middleware = {
       var uid = (req.user) ? req.user.email : req.sessionID
 
       if (config.env != 'test' || global.verboseErrHandler) {
+
         var ref = (req.header('Referer')) ? ` <<< ${req.header('Referer')}` : ''
-        $log(`errorHandle ${uid} ${req.method} ${req.url}${ref}`.red, JSON.stringify(req.body), (e.message || e).magenta)
+        if (!req.nonSessionUrl)
+          $log('errHandle'.gray, `${req.ip}:${uid} ${req.method} ${req.url}${ref}`.red, JSON.stringify(req.body), (e.message || e).magenta)
         $error(e, req.user, req)
+
       } else {
+
         $log(`${req.method}:${req.url} `.expectederr + (e.message || e).expectederr)
         // $log('Test Debug Error ', e)
       }
 
-      if (e.fromApi)
+      if (e.message == "Page not found" && req.nonSessionUrl)
+        res.status(404).send("") // serve nothing for spam requests
+      else if (e.fromApi)
         res.status(e.status || 400).json({message:e.message || e})
       else
         app.renderErrorPage(e)(req,res)

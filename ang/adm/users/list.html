@@ -65,7 +65,9 @@
 
     <div ng-if="selectedUser.name">
       {{selectedUser.name}}
-      <div>{{selectedUser.email}}</div>
+      <div>{{selectedUser.email}}
+        <a ng-if="session.email=='jk@airpair.com'" href="/login?as={{selectedUser.email}}" target="_blank">Login</a>
+      </div>
       <img ng-src="{{selectedUser.avatar}}" />
       <br />
       <select ng-model="credit">

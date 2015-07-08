@@ -8,7 +8,7 @@ var cfg = {
   auth: {
     loginUrl: '/v1/auth/login',
     unauthorizedUrl: '/v1/auth/unauthorized',
-    defaultRedirectUrl: '/v1',
+    defaultRedirectUrl: '/',
     oAuth: { callbackHost: 'http://localhost:3333' },
     masterpass: 'youshallpass',
     local: {
@@ -112,7 +112,6 @@ var cfg = {
   },
   log: {
     auth: false,
-    raygun: { on: false, apiKey: '' }
   },
   hangout:{
     //140030887085 == production AirPair app
@@ -196,10 +195,6 @@ module.exports = function(env) {
   if (cfg.env == 'production') {
 
     cfg.log.auth = (process.env.LOG_AUTH) ? process.env.LOG_AUTH == 'true' : false
-    cfg.log.raygun = {
-      on: false,
-      apiKey: process.env.LOG_RAYGUN_APIKEY
-    }
     cfg.log.email = {
       level:          process.env.LOG_EMAIL_LEVEL || 'error',
       sesAccessKey:   cfg.mail.ses.access_key,

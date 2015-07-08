@@ -34,13 +34,15 @@ spinning: Router()
   .put('/:booking/create-chat', API.Bookings.createChat)
   .put('/:booking/associate-chat', API.Bookings.associateChat)
   .post('/:booking/note', API.Bookings.addNote)
+  .post('/experts/:expert/note', API.Experts.addNote)
   .put('/chat/invite-to-team/:userId', API.Chat.inviteToTeam),
 
 
 other: Router()
   .param('tag', API.Tags.paramFns.getBySlug)
   .param('request', API.Requests.paramFns.getByIdForAdmin)
-  .param('bookingitem', API.Bookings.paramFns.getByIdForParticipant)
+  .param('booking', API.Bookings.paramFns.getById)
+  .param('bookingforparticipant', API.Bookings.paramFns.getByIdForParticipant)
   .param('paymethod', API.Paymethods.paramFns.getById)
   .param('expert', API.Experts.paramFns.getByIdForAdmin)
   .param('expertshaped', API.Experts.paramFns.getById)
@@ -144,10 +146,10 @@ other: Router()
   .put('/billing/orders/:order/release', populate.orderBooking, API.Orders.releasePayout)
   .post('/bookings/:expertshaped', populate.user, API.Bookings.createBooking)
   .get('/bookings', API.Bookings.getByUserId)
-  .get('/bookings/:bookingitem', API.Bookings.getForParticipant)
-  .put('/bookings/:bookingitem/suggest-time', API.Bookings.suggestTime)
-  .put('/bookings/:bookingitem/confirm-time', API.Bookings.confirmTime)
-  .put('/bookings/:bookingitem/:expert/customer-feedback', API.Bookings.customerFeedback),
+  .get('/bookings/:bookingforparticipant', API.Bookings.getForParticipant)
+  .put('/bookings/:booking/suggest-time', API.Bookings.suggestTime)
+  .put('/bookings/:booking/confirm-time', API.Bookings.confirmTime)
+  .put('/bookings/:booking/:expert/customer-feedback', API.Bookings.customerFeedback),
 
 
 admin: Router()
@@ -192,8 +194,9 @@ admin: Router()
   .get('/experts/active', API.Experts.getActiveForAdmin)
   .get('/experts/:id', API.Experts.getByIdForAdmin)
   .delete('/experts/:expert', API.Experts.deleteById)
+  .post('/experts/:expert/note', API.Experts.addNote)
+  .put('/chat/invite-to-team/:userId', API.Chat.inviteToTeam),
 
-  .post('experts/:expert/note', API.Experts.addNote),
 
 
 

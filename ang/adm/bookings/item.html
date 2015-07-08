@@ -152,8 +152,8 @@
     <section class="request">
       <h3>Request</h3>
 
-      <div ng-if="request">w
-        {{request.adm.submitted | locaTime : 'YY.MMM.DD' }}
+      <div ng-if="request">
+        {{request.adm.submitted | locaTime : 'YY MMM DD' }}
         <a href="/adm/pipeline/{{request._id}}" target="_blank">{{request.title}}</a>
         <br />
         <br />

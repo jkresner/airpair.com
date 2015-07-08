@@ -1,4 +1,5 @@
-{uaFirefox,uaGooglebot}   = require('./../data/http')
+
+{uaFirefox,uaGooglebot,uk_lddc_bot}   = require('./../data/http')
 
 a_uid = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[\,\-_]*).{24,}/
 
@@ -23,6 +24,27 @@ api = ->
   before (done) ->
     SETUP.analytics.on()
     done()
+
+  it 'Returns empty 200 on bad urls for bad bots', itDone ->
+    GETP('/fasdfasdfaeed').set('user-agent', uk_lddc_bot).end (err, resp) ->
+      expect(err).to.be.null
+      expect(resp.text).to.equal('')
+      expect(resp.status).to.equal(200)
+      GETP('/fasdfasdfaeed').set('user-agent', uaGooglebot).end (err2, resp2) ->
+        expect(err2).to.to.be.null
+        expect(resp2.status).to.equal(404)
+        DONE()
+
+  it 'Returns empty 200 on good urls for bad bots', itDone ->
+    GETP('/').set('user-agent', uk_lddc_bot).end (err, resp) ->
+      expect(err).to.be.null
+      expect(resp.text).to.equal('')
+      expect(resp.status).to.equal(200)
+      GETP('/').set('user-agent', uaGooglebot).end (err2, resp2) ->
+        expect(err2).to.to.be.null
+        expect(resp2.status).to.equal(200)
+        DONE()
+
 
   it 'Does not exec analytics or store session on 404', itDone ->
     trackSpy = sinon.spy(analytics, 'track')
