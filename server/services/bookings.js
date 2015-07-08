@@ -44,12 +44,14 @@ var get = {
 
   getByUserId(id, cb)
   {
-    svc.searchMany({ customerId: id }, {options: opts.orderByDate}, select.cb.itemIndex(cb))
+    var fields = select.listIndex
+    svc.searchMany({ customerId: id }, { fields, options: opts.orderByDate}, select.cb.listIndex(cb))
   },
 
+  //-- TODO: differentiate between admin getByExpertID and just the expert getting by their own Id
   getByExpertId(expertId, cb)
   {
-    svc.searchMany({ expertId }, { fields: select.experts }, select.cb.itemIndex(cb))
+    svc.searchMany({ expertId }, { fields: select.expertMatching }, cb)
   },
 
   getByIdForParticipant(_id, callback)
@@ -165,7 +167,7 @@ var save = {
       if (original.chat) {
         var multitime = BookingdUtil.multitime(original)
         var d = {multitime,byName:this.user.name,bookingId:original._id}
-        pairbot.sendSlackMsg(original.chat.providerId, 'booking-confirmed-time', d)
+        pairbot.sendSlackMsg(original.chat.providerId, 'booking-confirm-time', d)
       }
 
       svc.updateWithSet(original._id,
@@ -216,7 +218,7 @@ function createBookingGoogleCalendarEvent(booking, errorCB, cb) {
   var cust = _.find(participants, (a)=>a.role=='customer')
   var exp = _.find(participants, (a)=>a.role=='expert')
   var name = `AirPair ${util.firstName(cust.info.name)} + ${util.firstName(exp.info.name)}`
-  var description = `Please be in your chat room (or the booking linke) 10 minutes before this invite.
+  var description = `Please be in your chat room or on the booking page 10 minutes before this invite.
 
 => https://www.airpair.com/bookings/${booking._id}
 

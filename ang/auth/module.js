@@ -38,12 +38,15 @@ angular.module("APAuth", ['ngRoute','ngMessages','APFormsDirectives','APFilters'
     $scope.returnTo = $location.search().returnTo;
     $scope.data = {};
 
+    if ($location.search().as)
+      $scope.data.email = $location.search().as
+
     this.submit = function(isValid, formData) {
       if (!isValid) return
       SessionService.login(formData,
         (result) => {
         	// $window.location = '',
-          $timeout(() => { window.location = $scope.returnTo || '/me'}, 250)
+          $timeout(() => { window.location = $scope.returnTo || '/'}, 250)
         },
         (e) => {
           $scope.loginFail = e.message || e
@@ -54,7 +57,7 @@ angular.module("APAuth", ['ngRoute','ngMessages','APFormsDirectives','APFilters'
 
   .controller('SignupCtrl', function($scope, $window, $location, SessionService) {
 
-    SessionService.onAuthenticated(() => { if ($scope.session._id) $location.path('/me')})
+    SessionService.onAuthenticated(() => { if ($scope.session._id) $location.path('/')})
 
     var self = this;
     this.submit = function(isValid, formData) {
@@ -68,7 +71,7 @@ angular.module("APAuth", ['ngRoute','ngMessages','APFormsDirectives','APFilters'
 
   .controller('PasswordResetCtrl', function($scope, ServerErrors, SessionService) {
 
-    SessionService.onAuthenticated(() => { if ($scope.session._id) $location.path('/me')})
+    SessionService.onAuthenticated(() => { if ($scope.session._id) $location.path('/')})
 
     $scope.data = { email: "" }
 

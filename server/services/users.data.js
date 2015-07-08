@@ -40,6 +40,7 @@ var select = {
     'membership': 1,
     'localization.location': 1,
     'localization.timezone': 1,
+    'localization.timezoneData.timeZoneId': 1,
     'social.gh.username': 1,
     'social.so.link': 1,
     'social.bb.username': 1,
@@ -146,6 +147,10 @@ var data = {
 
           var obj = util.selectFromObject(r, data.select.sessionFull)
           if (obj.roles && obj.roles.length == 0) delete obj.roles
+
+          if (obj.localization)
+            obj.timeZoneId = obj.localization.timezoneData.timeZoneId
+
           data.select.setAvatar(obj)
           data.select.inflateTagsAndBookmarks(obj, cb)
           // if (ctx.user)

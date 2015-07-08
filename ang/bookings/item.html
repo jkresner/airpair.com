@@ -15,6 +15,7 @@
   <div class="expert">
     <div class="participant" ng-repeat="p in experts">
       <b>{{p.info.name}} </b>
+      <location>{{p.location}} </location>
       <img ng-src="{{p.info.avatar}}?s=100" class="user">
     </div>
   </div>
@@ -23,6 +24,7 @@
     <div class="participant" ng-repeat="p in customers">
       <img ng-src="{{p.info.avatar}}?s=100" class="user">
       <b>{{p.info.name}} </b>
+      <location>{{p.location}}</location>
     </div>
   </div>
 
@@ -35,28 +37,34 @@
 
 <div class="side">
 
-  <a href="/billing/book/{{booking.expertId}}" class="btn">Book next AirPair</a>
+  <a ng-if="isCustomerPrimary" href="/billing/book/{{booking.expertId}}" class="btn btn-inverse">Book next AirPair</a>
+  <a ng-if="isExpert" href="javascript:alert('coming this week :{}, jk')" class="btn btn-inverse">See Expert Guide</a>
 
-  <section class="status {{booking.status}}">
-    <h4>Status <span>{{booking.status.toUpperCase()}}</span></h4>
-    <div ng-if="booking.status == 'pending'">
-    <span><b>You still need to lock in a time:</b>{{multitime}}</span>
-      <p>Suggest more times or confirm one proposed by your pair.</p>
+  <section class="status">
+    <!-- <h4>Status <span>{{booking.status.toUpperCase()}}</span></h4> -->
+
+    <div ng-if="booking.status == 'pending'" class="pending">
+      <span><b>We need to lock in a time.</b></span>
+      <p>Suggest alternate times or confirm one proposed by {{customers[0].info.name}}.</p>
     </div>
+
     <div ng-if="booking.status == 'confirmed'">
       <span><b>We've locked in your time:</b>{{multitime}}</span>
       <p>Return to this page 10 minutes before for your hangout link.</p>
     </div>
-    <p ng-if="booking.status == 'followup'">
+
+    <div ng-if="booking.status == 'followup'">
       <span><b>We're waiting to hear how it went:</b>
       <p>The customer must leave feedback and release payment for the expert.</p>
-    </p>
-    <p ng-if="booking.status == 'complete'"></p>
-    <p ng-if="booking.status == 'canceled'"></p>
+    </div>
+
+    <div ng-if="booking.status == 'complete'"></div>
+
+    <div ng-if="booking.status == 'canceled'"></div>
   </section>
 
-  <section class="datetime">
-    <h4>Scheduled</h4>
+  <section class="datetime {{booking.status}}">
+    <h4><span>{{booking.status.toUpperCase()}}</span></h4>
     <date>{{booking.datetime | locaTime : 'MMM DD' }}</date>
     <time>{{booking.datetime | locaTime : 'h:mma Z' }}</time>
     <div>{{booking.minutes}} minutes ({{booking.type | uppercase}}) </div>
@@ -79,7 +87,8 @@
 
     <div ng-if="session.cohort.expert._id == booking.expertId">
       <p ng-if="!order.released">
-        Ask customer to release payment.
+        After you've delivered service, ask {{customers[0].info.name}}
+        to release your payment.
       </p>
       <p ng-if="order.released && !order.paidout">
         Money ready to collect from your
@@ -98,52 +107,38 @@
 
 <div class="main">
 
-  <section class="schdule-time" ng-if="booking.status == 'pending'">
-  <!--   <h5>Schedule</h5>
-    <section ng-if="booking.status == 'pending'">
-      <h4>Suggested times</h4>
-      <table class="table" style="width:60%">
+  <section class="schedule-time" ng-if="booking.status == 'pending'">
+    <h3>Confirm a time</h3>
+    <section>
+      <table class="table table-striped">
         <tr>
-          <th>Time (60 mins)</th>
+          <th style="width:180px"></th>
+          <th>Suggestion</th>
           <th>By</th>
+        </tr>
+        <tr class="suggestion" ng-repeat="t in suggestedTimes">
+          <td ng-if="t.by.info._id != session._id">
+            <a ng-click="confirmTime(t._id)" class="btn">Confirm {{t.localTime}}</a>
+          </td>
+          <td ng-if="t.by.info._id == session._id"></td>
+          <td><time>{{t.multitime}}</time></td>
+          <td ng-if="t.by.info._id == session._id">You</td>
+          <td ng-if="t.by.info._id != session._id">{{t.by.info.name}}</td>
+        </tr>
+        <tfoot>
           <th></th>
-        </tr>
-        <tr>
-          <td>Sun 28 4PM CEST | 10AM EDT.</td>
-          <td>You</td>
-          <td></td>
-        </tr>
-        <tr>
-          <td>Sun 28 5PM CEST | 11AM EDT.</td>
-          <td>gregory nichola</td>
-          <td><a href="#">Confirm this time</a></td>
-        </tr>
-        <tr>
-          <td>Sun 29 2PM CEST | 8AM EDT.</td>
-          <td>gregory nichola</td>
-          <td><a href="#">Confirm this time</a></td>
-        </tr>
-        <tr>
-          <td>Sun 30 4PM CEST | 10AM EDT.</td>
-          <td>You</td>
-          <td></td>
-        </tr>
-        <tr>
-          <td>Sun 31 4PM CEST | 10AM EDT.</td>
-          <td>gregory nichola</td>
-          <td><a href="#">Confirm this time</a></td>
-        </tr>
+          <th></th>
+          <th></th>
+        </tfoot>
       </table>
-        <div class="form-group">
-          <label class="control-label" for="when">Suggest another time</label>
-          <div datetime-input id="bookingDatetime" datetime="booking.datetime" min-view="minute" date-format="YYYY MMM DD HH:mm Z" style="width:230px"></div>
-          <p style="padding:10px">* If this time doesn't work {{expert.name}} will suggest an alternative</p>
+
+        <div class="form-group suggestTime">
+          <label class="control-label" for="when">Or propose alternatives <i> *in your local time</i></label><br />
+          <div datetime-input id="newTime" datetime="newTime" min-view="minute" date-format="YYYY MMM DD HH:mm Z" style="width:280px;float:left"></div>
+          <a class="btn" ng-click="suggestTime(newTime)" ng-if="newTime">Add time</a>
         </div>
 
     </section>
-    <section ng-if="booking.status != 'pending'">
-      <h4>Booking time: <b>{{util.multitime(booking)}}</b></h4>
-    </section> -->
   </section>
 
 
@@ -180,7 +175,7 @@
 
 
   <section class="request" ng-if="request">
-    <h3>AirPair Brief</h3>
+    <h3>AirPair brief</h3>
 
     {{request.brief}}
   </section>

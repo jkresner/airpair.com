@@ -4,7 +4,7 @@ export default initAPI(
   require('../services/bookings')
 , {
   getByUserId: (req) => [req.user._id],
-  getForParticipant: (req) => [req.bookingitem],
+  getForParticipant: (req) => [req.booking],
   getByIdForAdmin: (req) => [req.params.id],
   getByQueryForAdmin: (req) => [req.params.start,req.params.end,req.params.userId],
   createBooking: (req) => [req.expertshaped,req.body.datetime,req.body.minutes,req.body.type,req.body.credit,req.body.payMethodId,req.body.request,req.body.dealId],

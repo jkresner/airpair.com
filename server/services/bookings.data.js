@@ -23,6 +23,17 @@ var select = {
     'request': 1,
     'reviews':1
   },
+  listIndex: {
+    '_id': 1,
+    'type': 1,
+    'minutes': 1,
+    'status':1,
+    'datetime':1,
+    // 'recordings':1,
+    'participants.role':1,
+    'participants.info':1,
+    // 'paidout':1
+  },
   listAdmin: {
     '_id': 1,
     'customerId': 1,
@@ -41,7 +52,7 @@ var select = {
     'chat':1,
     'paidout':1
   },
-  experts: {
+  expertMatching: {
     '_id': 1,
     'customerId': 1,
     'expertId': 1,
@@ -98,6 +109,15 @@ var select = {
           if (b.order) delete b.order.lineItems
         }
         select.cb.inflate(cb,select.listAdmin)(e,r)
+      }
+    },
+    listIndex(cb) {
+      return (e,r) => {
+        if (e) return cb(e)
+        for (var b of r || [])
+          for (var p of (b.participants || []))
+            p.info.avatar = md5.gravatarUrl(p.info.email)
+        cb(e,r)
       }
     },
     itemIndex(cb) {
