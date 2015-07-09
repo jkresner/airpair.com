@@ -25,6 +25,19 @@ var utilFns = {
     ]
   },
 
+  rebookUrl(booking) {
+    // TODO expand function to check date etc.
+    if (booking.request)
+      return `/billing/book/${booking.expertId}/${booking.request._id}`
+    return `/billing/book/${booking.expertId}`
+  },
+
+  timeToBookAgain(booking, user) {
+    var {status,customerId} = booking
+    return idsEqual(customerId,user._id) &&
+      status == 'complete' || status == 'followup'
+  },
+
   participantFromUser(role, user) {
     var timeLoc = !user.localization || !user.localization.timezoneData ? {} :
       { location:user.localization.location, timeZoneId:user.localization.timezoneData.timeZoneId }
@@ -78,8 +91,8 @@ var utilFns = {
     var customerFirst = firstName(customer.info.name).replace("'","")
     var expert = utilFns.experts(booking)[0]
     var expertFirst = firstName(expert.info.name).replace("'","")
-    var statusLetter = utilFns.statusLetter(booking)
-    var purpose = `https://airpair.com/bookings/${booking._id} ${customerFirst}`
+    // var statusLetter = utilFns.statusLetter(booking)
+    var purpose = `http://bookings.airpair.com/${booking._id} ${customerFirst}`
     purpose += (customer.timeZoneId) ? ` (${moment.tz(customer.timeZoneId).format('z')}, ${customer.location})` : ``
     purpose += ` + ${expertFirst}`
     purpose += (expert.timeZoneId) ? ` (${moment.tz(expert.timeZoneId).format('z')}, ${expert.location})` : ``
@@ -92,7 +105,7 @@ var utilFns = {
 
     // console.log('statusLetter', statusLetter, 'purpose', purpose)
     return {
-      name: `${statusLetter}-${customerFirst}-${expertFirst}-${booking._id}`.toLowerCase().substring(0,21),
+      name: `${customerFirst}-${expertFirst}-${booking._id}`.toLowerCase().substring(0,21),
       purpose,
       topic: `Let's find a time to pair`
     }

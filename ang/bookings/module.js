@@ -44,7 +44,7 @@ angular.module("APBookings", [])
       firstExpert: BookingsUtil.experts(r)[0],
       multitime: BookingsUtil.multitime(r),
       suggestedTimes: (r.status == "pending") ? BookingsUtil.suggestedTimesInflate(r,$scope.session.timeZoneId) : [],
-      isCustomerPrimary: $scope.session._id == r.customerId,
+      timeToBookNextPair: BookingsUtil.timeToBookAgain(r,$scope.session),
       isCustomer: Roles.booking.isCustomer($scope.session,r),
       isExpert: Roles.booking.isExpert($scope.session,r),
       chat: r.chat,

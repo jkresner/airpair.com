@@ -1,7 +1,7 @@
-import * as md5         from '../util/md5'
-var {selectFromObject}  = util
-var {Slack}             = Wrappers
-var {filterSlackHistory}= require("../../shared/bookings")
+import * as md5                     from '../util/md5'
+var {selectFromObject}              = util
+var {Slack}                         = Wrappers
+var {filterSlackHistory,rebookUrl}  = require("../../shared/bookings")
 
 var select = {
   itemIndex: {
@@ -21,7 +21,8 @@ var select = {
     'order':1,
     'orderId':1,     // leave this one for the create action
     'request': 1,
-    'reviews':1
+    'reviews':1,
+    'rebookUrl': 1
   },
   listIndex: {
     '_id': 1,
@@ -32,6 +33,7 @@ var select = {
     // 'recordings':1,
     'participants.role':1,
     'participants.info':1,
+    'rebookUrl': 1
     // 'paidout':1
   },
   listAdmin: {
@@ -83,6 +85,7 @@ var select = {
       var inflateSelect = (b) => {
         select.inflateParticipantInfo(b.participants)
         select.inflateChatInfo(b.chat)
+        b.rebookUrl = rebookUrl(b)
         return (selectFields) ? selectFromObject(b,selectFields) : b
       }
 
