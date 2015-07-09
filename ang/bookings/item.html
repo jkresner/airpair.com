@@ -14,16 +14,16 @@
 
   <div class="expert">
     <div class="participant" ng-repeat="p in experts">
-      <b>{{p.info.name}} </b>
+      <b>{{first(p.info.name)}} </b>
       <location>{{p.location}} </location>
-      <img ng-src="{{p.info.avatar}}?s=100" class="user">
+      <img ng-src="{{p.info.avatar}}?s=120" class="user">
     </div>
   </div>
 
   <div class="customer">
     <div class="participant" ng-repeat="p in customers">
-      <img ng-src="{{p.info.avatar}}?s=100" class="user">
-      <b>{{p.info.name}} </b>
+      <img ng-src="{{p.info.avatar}}?s=120" class="user">
+      <b>{{first(p.info.name)}} </b>
       <location>{{p.location}}</location>
     </div>
   </div>
@@ -40,24 +40,23 @@
   <a ng-if="timeToBookNextPair" class="btn" href="{{booking.rebookUrl}}">Book next AirPair</a>
   <a ng-if="isCustomer && !timeToBookNextPair" class="btn btn-inverse"  href="{{booking.rebookUrl}}">Book next AirPair</a>
 
-  <a ng-if="isExpert" href="javascript:alert('coming this week :{}, jk')" class="btn btn-inverse">See Expert Guide</a>
+  <a ng-if="isExpert" href="/wiki/experts/expert-guide" class="btn btn-inverse" target="_blank">See Expert Guide</a>
 
   <section class="status">
-    <!-- <h4>Status <span>{{booking.status.toUpperCase()}}</span></h4> -->
 
     <div ng-if="booking.status == 'pending'" class="pending">
       <span><b>We need to lock in a time.</b></span>
-      <p>Suggest alternate times or confirm one proposed by {{customers[0].info.name}}.</p>
+      <p>Suggest alternate times or confirm one proposed by your pair.</p>
     </div>
 
-    <div ng-if="booking.status == 'confirmed'">
-      <span><b>We've locked in your time:</b>{{multitime}}</span>
-      <p>Return to this page 10 minutes before for your hangout link.</p>
+    <div ng-if="booking.status == 'confirmed'" class="confirmed">
+      <span><b>You're all set for:</b>{{multitime}}</span>
+      <p>Check your calendar for an invite. Read the fine print. Return to this page 10 minutes before for your scheduled time.</p>
     </div>
 
-    <div ng-if="booking.status == 'followup'">
+    <div ng-if="booking.status == 'followup'" class="followup">
       <span><b>We're waiting to hear how it went:</b>
-      <p>The customer must leave feedback and release payment for the expert.</p>
+      <p>Once you've left feedback and the expert's payment is released, we're all done!</p>
     </div>
 
     <div ng-if="booking.status == 'complete'"></div>
@@ -70,11 +69,9 @@
     <date>{{booking.datetime | locaTime : 'MMM DD' }}</date>
     <time>{{booking.datetime | locaTime : 'h:mma Z' }}</time>
     <div>{{booking.minutes}} minutes ({{booking.type | uppercase}}) </div>
-    <!--<div>{{ booking.datetime | date:'medium'}}</div> -->
-    <!-- <div>{{booking.status}}</div> -->
   </section>
 
-  <section class="payout" ng-if="order && (session._id == booking.customerId
+  <section class="{{fadeClass('payout')}}" ng-if="order && (session._id == booking.customerId
    || session.cohort.expert._id == booking.expertId)">
     <h4>Escrow</h4>
 
@@ -89,7 +86,7 @@
 
     <div ng-if="session.cohort.expert._id == booking.expertId">
       <p ng-if="!order.released">
-        After you've delivered service, ask {{customers[0].info.name}}
+        After you've delivered service, ask {{first(customers[0].info.name)}}
         to release your payment.
       </p>
       <p ng-if="order.released && !order.paidout">
@@ -110,13 +107,13 @@
 <div class="main">
 
   <section class="schedule-time" ng-if="booking.status == 'pending'">
-    <h3>Confirm a time</h3>
+    <h2>Confirm a time</h2>
     <section>
       <table class="table table-striped">
         <tr>
           <th style="width:180px"></th>
-          <th>Suggestion</th>
-          <th>By</th>
+          <th><span>Suggestion</span></th>
+          <th><span>By</span></th>
         </tr>
         <tr class="suggestion" ng-repeat="t in suggestedTimes">
           <td ng-if="t.by.info._id != session._id">
@@ -128,17 +125,16 @@
           <td ng-if="t.by.info._id != session._id">{{t.by.info.name}}</td>
         </tr>
         <tfoot>
-          <th></th>
-          <th></th>
-          <th></th>
+          <th colspan="3">
+            <div class="form-group suggestTime lightblueForm">
+              <label class="control-label" for="when">Or propose alternatives <i> *in your local time</i></label><br />
+              <div datetime-input id="newTime" datetime="newTime" min-view="minute" date-format="YYYY MMM DD HH:mm Z" style="width:280px;float:left"></div>
+              <a class="btn" ng-click="suggestTime(newTime)" ng-if="newTime">Add time</a>
+            </div>
+          </th>
         </tfoot>
       </table>
 
-        <div class="form-group suggestTime">
-          <label class="control-label" for="when">Or propose alternatives <i> *in your local time</i></label><br />
-          <div datetime-input id="newTime" datetime="newTime" min-view="minute" date-format="YYYY MMM DD HH:mm Z" style="width:280px;float:left"></div>
-          <a class="btn" ng-click="suggestTime(newTime)" ng-if="newTime">Add time</a>
-        </div>
 
     </section>
   </section>
@@ -147,23 +143,49 @@
   <section class="hangout" ng-if="hangoutState.none && booking.status == 'confirmed'">
     <div>
       <h3>Your AirPair</h3>
-      <p>Return here <b>10 mins before</b>
-      {{ booking.datetime | locaTime :'hh:mma ddd MMM DD'}}.
-      </p>
-      <a href="#" class="btn btn-disabled disabled">Join AirPair Video Call</a>
-      <p style="font-size:11px">
-        * Paid pairing time begins exactly when scheduled. Join 10 minutes early if you wish to test your audio/video.
-      </p>
-    </div>
+      <h4>Be here <strong>10 mins before</strong>
+      {{ booking.datetime | locaTime :'hh:mma, ddd MMM DD'}}.
+      </h4>
+      <a href="javascript:alert('Come back 10 mins before your scheduled time')" class="btn btn-disabled">Join AirPair Video Call</a>
 
-    <div ng-if="hangoutState.inProgress">
-      <a href="{{ booking.recordings[booking.recordings.length-1].hangoutUrl }}" target="_blank" class="btn">Join AirPair G+ Hangout</a>
+      <h5>The fine print:</h5>
+      <ul>
+        <li style="list-style:none"></li>
+        <li>Provide <a href="javascript:alert('A feature is planned. The current protocol is to mention your alternate email address in chat.')">an alternate email</a> if <b>{{session.email}}</b> does not work with G+ Hangouts</li>
+        <li>Provide <a href="javascript:alert('A feature is planned. The current protocol is to mention your colleauges' full names and emails in chat.')">additional names and emails</a> if  other participnts are attending</li>
+        <li>Paid pairing time begins and ends <em>exactly</em> when scheduled</li>
+        <li>Bookings are canceled and fully charged if you are more than 15 minutes late</li>
+        <li>Technical difficulties do not extend call times</li>
+        <li>Join early to test your audio/video (especially if your first AirPair)</li>
+<!--    <li>Bookings can be rescheduled with a $10 fee with 12 hours notice.</li> -->
+        <li>Bookings can not be rescheduled unless given 12 hours notice</li>
+        <li>Money back gaurantee available if first booking with <b>{{firstExpert.info.name}}</b> and the call ends inside 50 mins</li>
+        <li>Refunds are not avaialble under any other circumstanses</li>
+        <li>Calls can be extended using the "BOOK NEXT AIRPAIR" button</li>
+      </ul>
     </div>
 
   </section>
 
+  <section ng-if="hangoutState.inProgress &&
+    booking.recordings.length > 0">
+      <h3>AirPair in progress!</h3>
 
-  <section class="recordings" ng-if="hangoutState.complete &&
+      <br /><br />
+
+      <div ng-if="hangoutState.inProgress">
+        <a href="{{ booking.recordings[booking.recordings.length-1].hangoutUrl }}" target="_blank" class="btn">Join Google+ Hangout Video Call</a>
+      </div>
+
+      <br />
+      <ul>
+        <li>Provide <a href="javascript:alert('A feature is planned. The current protocol is to mention your alternate email address in chat.')">an alternate email</a> if <b>{{session.email}}</b> does not work with G+ Hangouts</li>
+        <li>Calls can be extended using the "BOOK NEXT AIRPAIR" button</li>
+      </ul>
+
+  </section>
+
+  <section class="{{fadeClass('recordings')}}" ng-if="
     booking.recordings.length > 0">
     <h3>Watch your AirPair</h3>
     <div>
@@ -176,15 +198,15 @@
   </section>
 
 
-  <section class="request" ng-if="request">
+  <section class="{{fadeClass('request')}}" ng-if="request">
     <h3>AirPair brief</h3>
 
-    {{request.brief}}
+    <div ng-bind-html="request.brief | markdownAsHtml"></div>
   </section>
 
 
 
-  <section class="chat" ng-if="chat">
+  <section class="{{fadeClass('chat')}}" ng-if="chat">
     <h3>Chat > <a target="_blank" href="https://airpair.slack.com/messages/{{chat.info.name}}">  {{chat.info.name}}
             <span ng-if="chat.info.is_archived">(archived)</span>
     </a></h3>

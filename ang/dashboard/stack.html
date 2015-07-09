@@ -1,4 +1,4 @@
-<h3>My Stack <a ng-click="openStack()">edit</a></h3>
+<h3>My stack <a ng-click="openStack()">edit</a></h3>
 <ul class="tags">
   <li ng-repeat="tag in session.tags | orderBy:'sort'" ng-attr-data-id="{{tag._id}}">
     {{tag.slug}}

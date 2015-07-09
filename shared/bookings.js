@@ -35,7 +35,7 @@ var utilFns = {
   timeToBookAgain(booking, user) {
     var {status,customerId} = booking
     return idsEqual(customerId,user._id) &&
-      status == 'complete' || status == 'followup'
+      status == 'complete' // || status == 'followup'
   },
 
   participantFromUser(role, user) {
