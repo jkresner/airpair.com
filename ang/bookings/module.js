@@ -17,7 +17,7 @@ angular.module("APBookings", [])
   var setScope = function(r) {
     if (!r.participants) return
 
-    var hangoutReadyDate = moment(r.datetime).add(-10,"minutes")
+    var hangoutReadyDate = moment(r.datetime).add(-12,"minutes")
     var endDate = moment(r.datetime).add(r.minutes,'minutes')
     var hangoutState = {};
     if (Util.dateInRange(moment(), hangoutReadyDate, endDate)){
@@ -28,7 +28,20 @@ angular.module("APBookings", [])
       hangoutState.complete = true
     }
 
+    var isCustomer = Roles.booking.isCustomer($scope.session,r)
+    var isExpert = Roles.booking.isExpert($scope.session,r)
+
+
+    if (isCustomer && r.status == 'pending' && r.order.released)
+      r.status = 'complete'
+    else if (isExpert && r.order.paidout && r.status == 'pending')
+      r.status = 'complete'
+
+
     var scope = {
+      first: Util.firstName,
+      isCustomer,
+      isExpert,
       newTime: null,
       hangoutState: hangoutState,
       previousDatetime: moment(r.datetime),
@@ -45,13 +58,12 @@ angular.module("APBookings", [])
       multitime: BookingsUtil.multitime(r),
       suggestedTimes: (r.status == "pending") ? BookingsUtil.suggestedTimesInflate(r,$scope.session.timeZoneId) : [],
       timeToBookNextPair: BookingsUtil.timeToBookAgain(r,$scope.session),
-      isCustomer: Roles.booking.isCustomer($scope.session,r),
-      isExpert: Roles.booking.isExpert($scope.session,r),
       chat: r.chat,
       request: r.request,
       order: r.order,
       booking: _.omit(r,'order','request','chat','chatSyncOptions')
     }
+
 
     if ($scope.session.timeZoneId)
       scope.currentTimezone = moment.tz(moment().format('z')).format('z')
@@ -71,6 +83,11 @@ angular.module("APBookings", [])
   $scope.releasePayout = () =>
     DataService.bookings.releasePayout({_id:$scope.order._id},(r) =>
       $scope.order.released = true)
+
+  $scope.fadeClass = (cssClass) => {
+    if ($scope.booking.status == "pending") return `${cssClass} faded`
+    else return cssClass
+  }
 })
 
 .controller('BookingsCtrl', ($scope, DataService, DateTime, BookingsUtil) => {
