@@ -106,6 +106,43 @@
 
 <div class="main">
 
+  <section class="chat-association" ng-if="isExpert && !chat && booking.status != 'complete'">
+    <h3>Associate a (slack) chat group with this booking</h3>
+
+    <div ng-if="chatSyncOptions.length == 0">
+      <h4>No existing chat groups detected</h4>
+      <div ng-if="customers[0].chat && experts[0].chat">
+        {{customers[0].chat.slack}} |||| {{experts[0].chat.slack}}
+        <a ng-click="createGroupChat('slack')" class="btn">Create group {{newGroupChat.name}}</a>
+        <div ng-repeat="p in booking.participants" slack-status member="p.chat" userid="p.info._id"></div>
+      </div>
+      <div ng-if="!session.social.sl">
+        <h5>Chat oauth</h5>
+        <p>AirPair is leveraging Slack instant messaging more and more for things like showing your (online/unavailable)
+        status for pairing. Please connect your slack account to continue help</p>
+        <a href="/auth/slack?returnTo=/payouts" target="_self" class="btn">Connect slack</a>
+      </div>
+      <div ng-if="!customers[0].chat && session.social.sl">
+        <p style="color:green;padding-left:10px">Your Slack account <b>{{session.social.sl.username}}</b> is connected.</p>
+        <p>But we're waiting for {{customers[0].info.name}} to join the airpair.slack Team. Then there will be
+        a option for you to create a room.</p>
+      </div>
+    </div>
+
+    <div ng-if="chatSyncOptions.length > 0">
+      {{chatSyncOptions.length}} probable sync(s)<br />
+      <ul>
+        <li ng-repeat="c in chatSyncOptions">
+          <div ng-if="c.provider == 'slack'">
+            <b><a target="_blank" href="https://airpair.slack.com/messages/{{c.info.name}}/
+            ">{{c.provider}} group</a></b>::{{c.info.name}}
+            <a ng-click="associateGroupChat('slack',c.info.id)" class="btn">associate {{c.info.name}}</a>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </section>
+
   <section class="schedule-time" ng-if="booking.status == 'pending'">
     <h2>Confirm a time</h2>
     <section>

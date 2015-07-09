@@ -59,6 +59,7 @@ angular.module("APBookings", [])
       suggestedTimes: (r.status == "pending") ? BookingsUtil.suggestedTimesInflate(r,$scope.session.timeZoneId) : [],
       timeToBookNextPair: BookingsUtil.timeToBookAgain(r,$scope.session),
       chat: r.chat,
+      chatSyncOptions: r.chatSyncOptions,
       request: r.request,
       order: r.order,
       booking: _.omit(r,'order','request','chat','chatSyncOptions')
@@ -67,6 +68,9 @@ angular.module("APBookings", [])
 
     if ($scope.session.timeZoneId)
       scope.currentTimezone = moment.tz(moment().format('z')).format('z')
+
+    if (scope.chatSyncOptions)
+      scope.newGroupChat = BookingsUtil.chatGroup(r)
 
     // console.log("SCOPE", $scope)
     angular.extend($scope, scope)
@@ -83,6 +87,16 @@ angular.module("APBookings", [])
   $scope.releasePayout = () =>
     DataService.bookings.releasePayout({_id:$scope.order._id},(r) =>
       $scope.order.released = true)
+
+  $scope.associateGroupChat = (type, providerId) => {
+    var d = {_id,type,providerId}
+    DataService.bookings.associateChat(d,setScope)
+  }
+
+  $scope.createGroupChat = (type) => {
+    var d = {_id,type,groupchat:$scope.newGroupChat}
+    DataService.bookings.createChat(d,setScope)
+  }
 
   $scope.fadeClass = (cssClass) => {
     if ($scope.booking.status == "pending") return `${cssClass} faded`

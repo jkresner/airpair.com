@@ -17,12 +17,13 @@ var select = {
     'customerId': 1,
     'expertId': 1,
     'createdById':1,
-    'chat': 1,
     'order':1,
     'orderId':1,     // leave this one for the create action
     'request': 1,
     'reviews':1,
-    'rebookUrl': 1
+    'rebookUrl': 1,
+    'chat': 1,
+    'chatSyncOptions': 1,
   },
   listIndex: {
     '_id': 1,
@@ -66,7 +67,6 @@ var select = {
     'participants':1
   },
   inflateParticipantInfo(participants) {
-    // $log('inflateParticipantInfo')
     for (var p of (participants || [])) {
       p.info.avatar = md5.gravatarUrl(p.info.email)
       p.chat = p.chat || { slack: Slack.checkUserSync(p.info) }
@@ -154,7 +154,7 @@ var opts = {
   orderByDate: { sort: { 'datetime': -1 } },
   getById: {
     join: {
-      'chatId': '_id type provider, providerId',
+      'chatId': '_id type provider providerId',
     }
   },
   forAdmin: {

@@ -32,7 +32,6 @@ spinning: Router()
   .put('/:booking', API.Bookings.updateByAdmin)
   .put('/:booking/:order/:request/:id/swap', API.Bookings.cheatExpertSwap)
   .put('/:booking/create-chat', API.Bookings.createChat)
-  .put('/:booking/associate-chat', API.Bookings.associateChat)
   .post('/:booking/note', API.Bookings.addNote)
   .post('/experts/:expert/note', API.Experts.addNote)
   .put('/chat/invite-to-team/:userId', API.Chat.inviteToTeam),
@@ -143,13 +142,17 @@ other: Router()
   .get('/payouts/me', API.Payouts.getPayouts)
 
   .use(cache.slackReady)
+  .use(populate.user)
   .put('/billing/orders/:order/release', populate.orderBooking, API.Orders.releasePayout)
-  .post('/bookings/:expertshaped', populate.user, API.Bookings.createBooking)
+  .post('/bookings/:expertshaped', API.Bookings.createBooking)
   .get('/bookings', API.Bookings.getByUserId)
+  .get('/bookings/expert', API.Bookings.getByExpertId)
   .get('/bookings/:bookingforparticipant', API.Bookings.getForParticipant)
   .put('/bookings/:booking/suggest-time', API.Bookings.suggestTime)
   .put('/bookings/:booking/confirm-time', API.Bookings.confirmTime)
-  .put('/bookings/:booking/:expert/customer-feedback', API.Bookings.customerFeedback),
+  .put('/bookings/:booking/:expert/customer-feedback', API.Bookings.customerFeedback)
+  .put('/bookings/:booking/associate-chat', API.Bookings.associateChat),
+
 
 
 admin: Router()

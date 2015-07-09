@@ -155,10 +155,19 @@ var validation = {
     if (!groupchat.purpose) return `Booking group chat purpose required`
   },
 
-  associateChat(user, booking, type, id)
+  associateChat(user, booking, provider, providerId)
   {
-    if (booking.chatId) return `[${booking._id}] already associated with [${booking.chatId}]. Disassociate first?`
-    if (type != "slack") return `Only slack chat supported at the moment`
+    if (!Roles.isPrimaryExpertOrAdmin(user,booking))
+      return `Must be primary expert on [${booking._id}] to associate existing chat`
+
+    if (booking.chatId)
+      return `[${booking._id}] already associated with [${booking.chatId}]. Disassociate first?`
+
+    if (provider != "slack")
+      return `Only slack chat supported at the moment`
+
+    if (!providerId)
+      return `ProviderId require to associate chat with Booking`
   },
 
   addNote(user, booking, note)

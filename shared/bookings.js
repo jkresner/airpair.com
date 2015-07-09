@@ -86,13 +86,22 @@ var utilFns = {
   //     return 'f'
   // },
 
+  // participantInChat(booking, chat, userId)
+  // {
+  //   if (!chat || !chat.info || !chat.info.members) return
+  //   var participant = _.find(booking.participants,(p)=>idsEqual(p.info._id,userId||booking.customerId))
+  //   if (!participant || !participant.chat) return
+  //   var chatUserId = participant.chat.slack.id
+  //   return _.find(chat.info.members,(m)=>m==chatUserId)
+  // },
+
   chatGroup(booking) {
     var customer = utilFns.customers(booking)[0]
     var customerFirst = firstName(customer.info.name).replace("'","")
     var expert = utilFns.experts(booking)[0]
     var expertFirst = firstName(expert.info.name).replace("'","")
     // var statusLetter = utilFns.statusLetter(booking)
-    var purpose = `http://bookings.airpair.com/${booking._id} ${customerFirst}`
+    var purpose = `bookings.airpair.com/${booking._id} ${customerFirst}`
     purpose += (customer.timeZoneId) ? ` (${moment.tz(customer.timeZoneId).format('z')}, ${customer.location})` : ``
     purpose += ` + ${expertFirst}`
     purpose += (expert.timeZoneId) ? ` (${moment.tz(expert.timeZoneId).format('z')}, ${expert.location})` : ``

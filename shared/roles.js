@@ -43,6 +43,10 @@ var roles = {
     isExpert(user, o) {
       return _.find(o.participants,(p)=>idsEqual(p.info._id,user._id)&&p.role=='expert') != null
     },
+    isPrimaryExpertOrAdmin(user, o) {
+      var isSpinner = _.contains(user.roles, 'spinner')
+      return isAdmin(user) || isSpinner || idsEqual(user.cohort.expert._id,o.expertId)
+    },
     isParticipant(user, o) {
       return _.find(o.participants,(p)=>idsEqual(p.info._id,user._id)) != null
     },

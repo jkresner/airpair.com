@@ -306,7 +306,7 @@ stories = {
         else
           LOGIN "admin", ->
             c = type:'slack',providerId:bookingData.slackChatId
-            PUT "/adm/bookings/#{booking._id}/associate-chat", c, {}, (b1) ->
+            PUT "/bookings/#{booking._id}/associate-chat", c, {}, (b1) ->
               LOGIN sessionCustomer.userKey, (s1) ->
                 cb s1, b1
 

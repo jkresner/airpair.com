@@ -8,7 +8,7 @@ import Booking              from '../models/booking'
 import Order                from '../models/order'
 var User                    = require('../models/user')
 var svc                     = new Svc(Booking, logging)
-var Roles                   = require('../../shared/roles')
+var Roles                   = require('../../shared/roles').booking
 var BookingdUtil            = require('../../shared/bookings')
 var {select,query,opts}     = require('./bookings.data')
 var {inflate}               = select.cb
@@ -20,12 +20,20 @@ function getChat(booking, syncOptions, cb) {
       if (chat) booking.chat = chat
       cb(e,booking)
     })
-  else if (syncOptions)
-    ChatsSvc.searchSyncOptions(BookingdUtil.searchBits(booking),(e,syncOptions)=>{
-      if (syncOptions) booking.chatSyncOptions = syncOptions
-      cb(e,booking)
-    })
-  else
+  else if (syncOptions) {
+    if (syncOptions.mode == 'all')
+      ChatsSvc.searchSyncOptions(BookingdUtil.searchBits(booking),(e,syncOptions)=>{
+        if (syncOptions) booking.chatSyncOptions = syncOptions
+        cb(e,booking)
+      })
+    else if (syncOptions.mode == 'expert') {
+      select.inflateParticipantInfo(booking.participants)
+      ChatsSvc.searchParticipantSyncOptions(booking.participants,(e,syncOptions)=>{
+        if (syncOptions) booking.chatSyncOptions = syncOptions
+        cb(e,booking)
+      })
+    }
+  } else
     cb(null,booking)
 }
 
@@ -48,8 +56,15 @@ var get = {
     svc.searchMany({ customerId: id }, { fields, options: opts.orderByDate}, select.cb.listIndex(cb))
   },
 
+  getByExpertId(user, cb)
+  {
+    if (!user.cohort || ! user.cohort.expert) return cb(null,null)
+    var fields = select.listIndex
+    svc.searchMany({ expertId: user.cohort.expert._id }, { fields, options: opts.orderByDate}, select.cb.listIndex(cb))
+  },
+
   //-- TODO: differentiate between admin getByExpertID and just the expert getting by their own Id
-  getByExpertId(expertId, cb)
+  getByExpertIdForMatching(expertId, cb)
   {
     svc.searchMany({ expertId }, { fields: select.expertMatching }, cb)
   },
@@ -60,7 +75,9 @@ var get = {
     svc.searchOne({_id}, {options:opts.forParticipant}, (eee,r) => {
       if (eee) return cb(eee)
       if (!r.order) return cb(null,r) // an edgecase migrated booking from v0 call
-      getChat(r, false, (ee,r)=>{
+      var chatSync = false
+      if (Roles.isExpert(this.user,r)) chatSync = {mode:'expert'}
+      getChat(r, chatSync, (ee,r)=>{
         if (!r.order.requestId) return cb(ee,r)
         $callSvc(RequestsSvc.getByIdForBookingInflate,this)(r.order.requestId, (e,request) =>
           cb(e,_.extend(r,{request})))
@@ -74,7 +91,7 @@ var get = {
     svc.searchOne({_id}, {options:opts.forAdmin}, (eee,r) => {
       if (eee) return cb(eee)
       if (!r.order) return cb(null,r) // an edgecase migrated booking from v0 call
-      getChat(r, true, (ee,r) => {
+      getChat(r, {mode:'all'}, (ee,r) => {
         if (!r.order.requestId) return cb(ee,r)
         $callSvc(RequestsSvc.getByIdForBookingInflate, this)(r.order.requestId, (e,request) =>
           cb(e,_.extend(r,{request})))
@@ -188,26 +205,41 @@ var save = {
     original.reviews.push(review)
     // $log('customerFeedback'.magenta, review, expert._id, expertReview)
     svc.update(original._id, original, inflate(cb,select.itemIndex))
+  },
+
+
+  createChat(original, type, groupchat, cb)
+  {
+    select.inflateParticipantInfo(original.participants)
+    $callSvc(ChatsSvc.createCreate, this)(type, groupchat, original.participants, (e,chat)=>{
+      original.chatId = chat._id
+      updateForAdmin(this, original, cb)
+    })
+  },
+
+  associateChat(original, type, providerId, cb)
+  {
+    $callSvc(ChatsSvc.createSync, this)(type, providerId, (e,chat)=>{
+      if (e) return cb(e)
+      original.chatId = chat._id
+      updateForAdmin(this, original, select.cb.itemIndex(cb))
+    })
   }
 }
 
 
-
-
 function updateForAdmin(thisCtx, booking, cb) {
-  Wrappers.Slack.getUsers(()=>{
-    svc.update(booking._id, booking, (e,r)=>{
-      if (e) return cb(e)
-      if (!r.chatId)
+  svc.update(booking._id, booking, (e,r)=>{
+    if (e) return cb(e)
+    if (!r.chatId)
+      $callSvc(get.getByIdForAdmin, thisCtx)(r._id, cb)
+    else {
+      var groupInfo = BookingdUtil.chatGroup(r)
+      $callSvc(ChatsSvc.sync, thisCtx)(r.chatId, groupInfo, (ee,chat)=>{
+        if (ee) return cb(ee)
         $callSvc(get.getByIdForAdmin, thisCtx)(r._id, cb)
-      else {
-        var groupInfo = BookingdUtil.chatGroup(r)
-        $callSvc(ChatsSvc.sync, thisCtx)(r.chatId, groupInfo, (ee,chat)=>{
-          if (ee) return cb(ee)
-          $callSvc(get.getByIdForAdmin, thisCtx)(r._id, cb)
-        })
-      }
-    })
+      })
+    }
   })
 }
 
@@ -326,24 +358,6 @@ var admin = {
     var recordings = _.filter(original.recordings, (r)=>!_.idsEqual(r._id,recordingId))
     original.recordings = recordings
     updateForAdmin(this, original, cb)
-  },
-
-  createChat(original, type, groupchat, cb)
-  {
-    select.inflateParticipantInfo(original.participants)
-    $callSvc(ChatsSvc.createCreate, this)(type, groupchat, original.participants, (e,chat)=>{
-      original.chatId = chat._id
-      updateForAdmin(this, original, cb)
-    })
-  },
-
-  associateChat(original, type, providerId, cb)
-  {
-    $callSvc(ChatsSvc.createSync, this)(type, providerId, (e,chat)=>{
-      if (e) return cb(e)
-      original.chatId = chat._id
-      updateForAdmin(this, original, select.cb.itemIndex(cb))
-    })
   },
 
   addNote(original, note, cb)

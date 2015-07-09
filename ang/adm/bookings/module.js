@@ -82,12 +82,12 @@ angular.module("ADMBookings", [])
 
   $scope.associateGroupChat = (type, providerId) => {
     var d = {_id,type,providerId}
-    AdmDataService.bookings.associateChat(d,setScope)
+    DataService.bookings.associateChat(d,setScope)
   }
 
   $scope.createGroupChat = (type) => {
     var d = {_id,type,groupchat:$scope.newGroupChat}
-    AdmDataService.bookings.createChat(d,setScope)
+    DataService.bookings.createChat(d,setScope)
   }
 
   $scope.saveNote = (body) =>
