@@ -17,30 +17,37 @@ views = ->
     DONE()
 
 
-  it "Can get purpose for various booking statuses", itDone ->
-    bPending = data.bookings.timezones
-    bPending.datetime = ISODate("2016-06-25T00:00:00.000Z")
-    expect(bPending.status).to.equal("pending")
-    expect(bPending.participants.length).to.equal(2)
-    expect(bPending.participants[0].timeZoneId).to.equal("America/Los_Angeles")
-    expect(bPending.participants[1].timeZoneId).to.equal("America/Chicago")
-    pendingPurpose = BookingUtil.chatGroup(bPending).purpose
-    $log('pending', pendingPurpose)
-    expectStartsWith(pendingPurpose, "https://airpair.com/bookings/558aa2454be238d1956cb8aa Morgan (PDT, San Francisco, CA, USA) + Billy (CDT, Houston, TX, USA). WAITING to confirm 90 mins @ Sat 25 00:00 UTC | Fri 24 5PM PDT | Fri 24 7PM CDT.")
-    bConfirmed = _.extend(bPending,{status:'confirmed'})
-    confirmedPurpose = BookingUtil.chatGroup(bConfirmed).purpose
-    expectStartsWith(confirmedPurpose, "https://airpair.com/bookings/558aa2454be238d1956cb8aa Morgan (PDT, San Francisco, CA, USA) + Billy (CDT, Houston, TX, USA). CONFIRMED 90 mins @ Sat 25 00:00 UTC | Fri 24 5PM PDT | Fri 24 7PM CDT.")
-    bFollowup = _.extend(bPending,{status:'followup'})
-    followupPurpose = BookingUtil.chatGroup(bFollowup).purpose
-    expectStartsWith(followupPurpose, "https://airpair.com/bookings/558aa2454be238d1956cb8aa Morgan (PDT, San Francisco, CA, USA) + Billy (CDT, Houston, TX, USA). FEEDBACK required to payout expert for 90 mins on Sat 25 00:00 UTC | Fri 24 5PM PDT | Fri 24 7PM CDT.")
+  it "Purpose for pending status", itDone ->
+    b = data.bookings.timezones
+    b.datetime = ISODate("2016-06-25T00:00:00.000Z")
+    expect(b.status).to.equal("pending")
+    expect(b.participants.length).to.equal(2)
+    expect(b.participants[0].timeZoneId).to.equal("America/Los_Angeles")
+    expect(b.participants[1].timeZoneId).to.equal("America/Chicago")
+    pendingPurpose = BookingUtil.chatGroup(b).purpose
+    expectStartsWith(pendingPurpose, "http://bookings.airpair.com/558aa2454be238d1956cb8aa Morgan (PDT, San Francisco, CA, USA) + Billy (CDT, Houston, TX, USA). WAITING to confirm 90 mins @ Sat 25 00:00 UTC | Fri 24 5PM PDT | Fri 24 7PM CDT")
     DONE()
 
 
-  it "Can get purpose for old no timeZoneId bookings", itDone ->
+  it "Purpose for confirmed status", itDone ->
+    b = _.extend _.extend({},data.bookings.timezones), { datetime: ISODate("2016-06-25T00:00:00.000Z"), status: 'confirmed' }
+    purpose = BookingUtil.chatGroup(b).purpose
+    expectStartsWith(purpose, "http://bookings.airpair.com/558aa2454be238d1956cb8aa Morgan (PDT, San Francisco, CA, USA) + Billy (CDT, Houston, TX, USA). CONFIRMED 90 mins @ Sat 25 00:00 UTC | Fri 24 5PM PDT | Fri 24 7PM CDT")
+    DONE()
+
+
+  it "Purpose for followup status", itDone ->
+    b = _.extend _.extend({},data.bookings.timezones), { datetime: ISODate("2016-06-25T00:00:00.000Z"), status: 'followup' }
+    purpose = BookingUtil.chatGroup(b).purpose
+    expectStartsWith(purpose, "http://bookings.airpair.com/558aa2454be238d1956cb8aa Morgan (PDT, San Francisco, CA, USA) + Billy (CDT, Houston, TX, USA). FEEDBACK required to payout expert for 90 mins on Sat 25 00:00 UTC | Fri 24 5PM PDT | Fri 24 7PM CDT")
+    DONE()
+
+
+  it "Purpose for old no timeZoneId bookings", itDone ->
     bOld = data.bookings.swap1
     bOld.datetime = ISODate("2015-03-12T03:30:18.576Z")
     purpose = BookingUtil.chatGroup(bOld).purpose
-    expectStartsWith(purpose, "https://airpair.com/bookings/54dc2d2fd137810a00f2813b Daniel + Adam. FEEDBACK required to payout expert for 60 mins on Thu 12 03:30 UTC")
+    expectStartsWith(purpose, "http://bookings.airpair.com/54dc2d2fd137810a00f2813b Daniel + Adam. FEEDBACK required to payout expert for 60 mins on Thu 12 03:30 UTC")
     DONE()
 
 
