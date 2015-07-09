@@ -13,8 +13,21 @@ angular.module("APExpert", ['APTagInput','APPayPal'])
 
 
 
-.controller('ExpertDashboardCtrl', function($scope, DataService) {
+.directive('officeBookings', function() {
+  return {
+    restrict: 'E',
+    template: require('./bookings.html'),
+  }
+})
 
+
+.controller('ExpertDashboardCtrl', function($scope, DataService, BookingsUtil) {
+
+  $scope.util = BookingsUtil
+
+  DataService.bookings.getExpertBookings({}, (r) => {
+    $scope.bookings = _.take(r,10)
+  })
 
 })
 
