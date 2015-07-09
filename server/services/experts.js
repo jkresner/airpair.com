@@ -39,22 +39,8 @@ var get = {
           }
         }
         if (req.company) delete req.company
-
-        // if (req.calls) {
-        //   for (var call of req.calls) {
-        //     var minutes = call.duration*60,
-        //       customerId = req.userId
-        //     var participants = [
-        //       { role: 'customer',
-        //         info: req.by
-        //       }
-        //     ]
-        //     calls.push(_.extend({customerId,participants,minutes,requestId:req._id}, call))
-        //   }
-        //   delete req.calls
-        // }
       }
-      $callSvc(BookingSvc.getByExpertId,this)(expert._id,(e,bookings)=>{
+      $callSvc(BookingSvc.getByExpertIdForMatching,this)(expert._id,(e,bookings)=>{
         if (e) return cb(ee)
         cb(null,{requests,bookings:
           _.sortBy(_.union(calls,bookings),(b)=>-1*moment(b.datetime).unix())
