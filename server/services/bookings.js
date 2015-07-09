@@ -163,7 +163,9 @@ var save = {
     suggestedTimes.push({time,byId:this.user._id})
     lastTouch = svc.newTouch.call(this, 'suggest-time')
     activity.push(lastTouch)
-    svc.updateWithSet(original._id, {suggestedTimes,lastTouch,activity}, inflate(cb,select.itemIndex))
+    svc.updateWithSet(original._id, {suggestedTimes,lastTouch,activity}, (e,r) => {
+      $callSvc(get.getByIdForParticipant,this)(original._id,cb)
+    })
   },
 
   confirmTime(original, timeId, cb)
@@ -188,9 +190,9 @@ var save = {
       }
 
       svc.updateWithSet(original._id,
-        {suggestedTimes,lastTouch,activity,datetime,status,gcal},
-        inflate(cb,select.itemIndex)
-      )
+        {suggestedTimes,lastTouch,activity,datetime,status,gcal},(e,r) => {
+        $callSvc(get.getByIdForParticipant,this)(original._id,cb)
+      })
     })
   },
 

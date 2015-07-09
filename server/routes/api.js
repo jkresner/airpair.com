@@ -31,7 +31,6 @@ spinning: Router()
   .delete('/:booking/recording/:recordingId', API.Bookings.deleteRecording)
   .put('/:booking', API.Bookings.updateByAdmin)
   .put('/:booking/:order/:request/:id/swap', API.Bookings.cheatExpertSwap)
-  .put('/:booking/create-chat', API.Bookings.createChat)
   .post('/:booking/note', API.Bookings.addNote)
   .post('/experts/:expert/note', API.Experts.addNote)
   .put('/chat/invite-to-team/:userId', API.Chat.inviteToTeam),
@@ -151,6 +150,7 @@ other: Router()
   .put('/bookings/:booking/suggest-time', API.Bookings.suggestTime)
   .put('/bookings/:booking/confirm-time', API.Bookings.confirmTime)
   .put('/bookings/:booking/:expert/customer-feedback', API.Bookings.customerFeedback)
+  .put('/bookings/:booking/create-chat', API.Bookings.createChat)
   .put('/bookings/:booking/associate-chat', API.Bookings.associateChat),
 
 
