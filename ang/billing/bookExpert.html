@@ -71,37 +71,43 @@
 
     </form>
 
-    <section class="bookSummary" ng-if="(!availableMinutes || availableMinutes < 30) && booking.datetime && booking.minutes">
+
+
+    <section class="bookSummary">
       <h3>Your Order</h3>
       <img ng-src="{{expert.avatar}}" class="user" />
       <hr />
-      <div><label>HOURLY</label> <span>${{hrRate}}</span></div>
-      <div><label>HOURS</label> <span>{{booking.minutes/60}}</span></div>
-      <hr />
-      <div><label>TOTAL</label> <span>${{total}}</span></div>
-      <hr />
-      <div><label>CREDIT</label> <span>${{booking.credit}}</span></div>
-      <div><label>You Owe</label> <span class="owe">${{owe}}</span></div>
-      <hr />
-      <single-submit button-text="'Confirm'" wait-text="Processing ..." on-single-click="submitDeferred">
-      </single-submit>
 
-      <p ng-if="remainingCredit == 0">Your card will be charged ${{owe}}</p>
-      <p ng-if="remainingCredit > 0">Remaining credit will be ${{remainingCredit}}</p>
-    </section>
+      <span ng-if="!availableMinutes || availableMinutes < 30">
+        <div><label>HOURLY</label> <span>${{hrRate}}</span></div>
+        <span ng-if="booking.datetime && booking.minutes">
+          <div><label>HOURS</label> <span>{{booking.minutes/60}}</span></div>
+          <hr />
+          <div><label>TOTAL</label> <span>${{total}}</span></div>
+          <hr />
+          <div><label>CREDIT</label> <span>${{booking.credit}}</span></div>
+          <div><label>You Owe</label> <span class="owe">${{owe}}</span></div>
+          <hr />
+          <single-submit button-text="'Confirm'" wait-text="Processing ..." on-single-click="submitDeferred">
+          </single-submit>
 
+          <p ng-if="remainingCredit == 0">Your card will be charged ${{owe}}</p>
+          <p ng-if="remainingCredit > 0">Remaining credit will be ${{remainingCredit}}</p>
+        </div>
+      </span>
 
-    <section class="bookSummary" ng-if="availableMinutes > 29 && booking.datetime && booking.minutes">
-      <h3>Your booking</h3>
-      <img ng-src="{{expert.avatar}}" class="user" />
-      <hr />
-      <div><label>AVAIALABLE</label> <span>{{availableMinutes}} mins</span></div>
-      <div><label>REDEEM</label> <span class="owe">{{booking.minutes}} mins</span></div>
-      <hr />
-      <single-submit button-text="'Confirm'" wait-text="Processing ..." on-single-click="submitDeferred">
-      </single-submit>
+      <span ng-if="availableMinutes >= 30">
+        <div><label>AVAILABLE</label> <span>{{availableMinutes}} mins</span></div>
+        <span ng-if="booking.datetime && booking.minutes">
+          <div><label>Redeem</label> <span class="owe">{{booking.minutes}} mins</span></div>
+          <hr />
+          <single-submit button-text="'Confirm'" wait-text="Processing ..." on-single-click="submitDeferred">
+          </single-submit>
 
-      <p>You will have {{availableMinutes-booking.minutes}} mins left for future airpairing</p>
+          <p>You will have {{availableMinutes-booking.minutes}} mins left for future airpairing</p>
+        </span>
+      </span>
+
     </section>
 
   </section>
