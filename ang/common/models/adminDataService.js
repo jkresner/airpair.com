@@ -133,8 +133,6 @@ angular.module('APSvcAdmin', [])
       addYouTubeData: PUT((d)=>`/adm/bookings/${d._id}/recording`),
       deleteRecording: DELETE((d)=>`/adm/bookings/${d._id}/recording/${d.recordingId}`),
       giveCredit: POST((d)=>`/adm/billing/orders/credit`),
-      createChat: PUT((d)=>`/adm/bookings/${d._id}/create-chat`),
-      associateChat: PUT((d)=>`/adm/bookings/${d._id}/associate-chat`),
       saveNote: POST((d)=>`/adm/bookings/${d._id}/note`),
     }
 

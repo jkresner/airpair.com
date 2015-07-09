@@ -19,8 +19,23 @@ var get = {
         )
       })
     })
-  }
+  },
 
+  searchParticipantSyncOptions(participants, cb)
+  {
+    if (!participants[0].chat || !participants[1].chat) return cb(null,[])
+    var p1Id = participants[0].chat.slack.id
+    var p2Id = participants[1].chat.slack.id
+    var groups = []
+    // TODO: could use expert token...
+    Wrappers.Slack.getGroups('pairbot',(e,r)=>{
+      for (var g of r) {
+        if (_.contains(g.members,p1Id)&&_.contains(g.members,p2Id))
+          groups.push(_.extend({type:'group',provider:'slack',info:g}))
+      }
+      cb(e,groups)
+    })
+  }
 }
 
 
