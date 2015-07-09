@@ -97,11 +97,11 @@ var utilFns = {
     purpose += ` + ${expertFirst}`
     purpose += (expert.timeZoneId) ? ` (${moment.tz(expert.timeZoneId).format('z')}, ${expert.location})` : ``
     if (booking.status == "pending")
-      purpose += `. WAITING to confirm ${booking.minutes} mins @ ${utilFns.multitime(booking)}.`
+      purpose += `. WAITING to confirm ${booking.minutes} mins @ ${utilFns.multitime(booking)}`
     else if (booking.status == "confirmed")
-      purpose += `. CONFIRMED ${booking.minutes} mins @ ${utilFns.multitime(booking)}.`
+      purpose += `. CONFIRMED ${booking.minutes} mins @ ${utilFns.multitime(booking)}`
     else if (booking.status == "followup")
-      purpose += `. FEEDBACK required to payout expert for ${booking.minutes} mins on ${utilFns.multitime(booking)}.`
+      purpose += `. FEEDBACK required to payout expert for ${booking.minutes} mins on ${utilFns.multitime(booking)}`
 
     // console.log('statusLetter', statusLetter, 'purpose', purpose)
     return {
