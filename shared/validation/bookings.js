@@ -34,6 +34,11 @@ var validation = {
 
     if (!Roles.isParticipant(user,original))
       return `Cannot suggest time. You[${user._id}] are not a participant to the Booking[${original._id}]`
+
+    var mom = moment(time)
+    var existing = _.find(original.suggestedTimes,(t)=>mom.isSame(moment(t.time)))
+    if (existing)
+      return `Time[${mom}] already suggested as an option for Booking[${original._id}]`
   },
 
   confirmTime(user, original, timeId)
