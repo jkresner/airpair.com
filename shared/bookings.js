@@ -51,6 +51,7 @@ var utilFns = {
       return {
         _id:t._id,
         multitime:utilFns.multitime(b,t.time),
+        mom: moment(t.time),
         localTime:moment(t.time).tz(timeZoneId||'Universal').format('h:mmA z'),
         by: _.find(b.participants,(p)=>idsEqual(t.byId,p.info._id)) }
     })

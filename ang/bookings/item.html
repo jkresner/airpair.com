@@ -152,12 +152,12 @@
           <th><span>Suggestion</span></th>
           <th><span>By</span></th>
         </tr>
-        <tr class="suggestion" ng-repeat="t in suggestedTimes">
+        <tr class="suggestion" ng-repeat="t in suggestedTimes | orderBy : 'mom' ">
           <td ng-if="t.by.info._id != session._id">
             <a ng-click="confirmTime(t._id)" class="btn">Confirm {{t.localTime}}</a>
           </td>
           <td ng-if="t.by.info._id == session._id"></td>
-          <td><time>{{t.multitime}}</time></td>
+          <td><time>{{t.mom.format('MMM') }} {{t.multitime}}</time></td>
           <td ng-if="t.by.info._id == session._id">You</td>
           <td ng-if="t.by.info._id != session._id">{{t.by.info.name}}</td>
         </tr>
