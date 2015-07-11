@@ -280,9 +280,6 @@ module.exports = ->
   @timeout 100000
 
   before ->
-    expect(config.auth.slack.slackTeam != 'T02ATFDPL', "Cannot run test against prod slack team".magenta).to.be.true
-    expect(config.chat.slack.ower != 'U02ASLW2Z', "Cannot run test against prod slack team".magenta).to.be.true
-    expect(config.chat.slack.support != 'U06UD6SES', "Cannot run test against prod slack team".magenta).to.be.true
 
   describe "SlackWrapper: ".subspec, ->
     describe "Users & Team: ".subspec, slackUsers

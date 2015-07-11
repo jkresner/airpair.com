@@ -80,13 +80,6 @@ var utilFns = {
     if (booking.status == 'canceled') return 'v'
   },
 
-  // statusBotMessage(booking) {
-  //   if (booking.status == 'confirmed')
-  //     return 'c'
-  //   if (booking.status == 'followup')
-  //     return 'f'
-  // },
-
   // participantInChat(booking, chat, userId)
   // {
   //   if (!chat || !chat.info || !chat.info.members) return
@@ -98,11 +91,11 @@ var utilFns = {
 
   chatGroup(booking) {
     var customer = utilFns.customers(booking)[0]
-    var customerFirst = firstName(customer.info.name).replace("'","")
+    var customerFirst = firstName(customer.info.name).replace(/\W/g,"")
     var expert = utilFns.experts(booking)[0]
-    var expertFirst = firstName(expert.info.name).replace("'","")
-    // var statusLetter = utilFns.statusLetter(booking)
-    var purpose = `bookings.airpair.com/${booking._id} ${customerFirst}`
+    var expertFirst = firstName(expert.info.name).replace(/\W/g,"")
+
+    var purpose = `http://booking.airpa.ir/${booking._id} ${customerFirst}`
     purpose += (customer.timeZoneId) ? ` (${moment.tz(customer.timeZoneId).format('z')}, ${customer.location})` : ``
     purpose += ` + ${expertFirst}`
     purpose += (expert.timeZoneId) ? ` (${moment.tz(expert.timeZoneId).format('z')}, ${expert.location})` : ``
@@ -113,7 +106,6 @@ var utilFns = {
     else if (booking.status == "followup")
       purpose += `. FEEDBACK required to payout expert for ${booking.minutes} mins on ${utilFns.multitime(booking)}`
 
-    // console.log('statusLetter', statusLetter, 'purpose', purpose)
     return {
       name: `${customerFirst}-${expertFirst}-${booking._id}`.toLowerCase().substring(0,21),
       purpose,

@@ -70,11 +70,13 @@ cache.tmpl = function(type, key, cb)
   )
 }
 
+
 cache.tagBySlug = function(slug, cb)
 {
   if (!cache['tag_slugs']) return { slug: 'cache-not-loaded', name: 'tagBySlug' }
   return cache['tag_slugs'][slug]
 }
+
 
 //-- Could make this generic, but we don't want to allow the cache to start
 //-- accepting arbitary things
@@ -90,6 +92,7 @@ cache.pullRequests = function(repo, getterCB, cb)
     cb(null,r)
   })
 }
+
 
 cache.slackUsers = function(getterCB, cb)
 {

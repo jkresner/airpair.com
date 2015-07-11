@@ -31,10 +31,11 @@ angular.module("ADMBookings", [])
       customers: BookingsUtil.customers(r),
       experts: BookingsUtil.experts(r),
       chatSyncOptions: r.chatSyncOptions,
+      botMsgKeys: _.keys(r.botMsgs),
       chat: r.chat,
       request: r.request,
       order: r.order,
-      booking: _.omit(r,'order','request','chat','chatSyncOptions')
+      booking: _.omit(r,'order','request','chat','chatSyncOptions','botMsgs')
     }
 
     if (r.order)
@@ -45,7 +46,11 @@ angular.module("ADMBookings", [])
 
     angular.extend($scope, scope)
 
-    $scope.setMsgTemplate('confirm')
+    if (r.botMsgs && $scope.botMsgKeys.length > 0) {
+      console.log('got em')
+      $scope.botMsgs = r.botMsgs
+      $scope.setMsgTemplate($scope.botMsgKeys[0])
+    }
   }
 
   AdmDataService.bookings.getBooking({_id}, setScope,
@@ -93,13 +98,14 @@ angular.module("ADMBookings", [])
   $scope.saveNote = (body) =>
     AdmDataService.bookings.saveNote({_id,body},setScope)
 
-  $scope.setMsgTemplate = (tmpl) => {
-    var expertHandle = $scope.experts[0].chat.slack.name
-    var customerHandle = $scope.customers[0].chat.slack.name
-    var timeString = BookingsUtil.multitime($scope.booking)
+  $scope.setMsgTemplate = (key) => {
+    $scope.slackMessage = $scope.botMsgs[key].text
+    $scope.slackMessageTmpl = _.extend($scope.botMsgs[key],{key})
+  }
 
-    if (tmpl == 'confirm') $scope.slackMessage = `Hey @${expertHandle}! @${customerHandle} has requested to pair for ${$scope.booking.minutes} MINS at ${timeString}. Please confirm, or propose alternate time slots => https://www.airpair.com/bookings/${_id}`
-    if (tmpl == 'feedback') $scope.slackMessage = `@franklin: would love to get your feedback! http://airpa.ir/1wjREmL`
+  $scope.postChatMessage = (text) => {
+    var d = _.extend($scope.slackMessageTmpl,{_id,text})
+    AdmDataService.bookings.postChatMessage(d,setScope)
   }
 })
 

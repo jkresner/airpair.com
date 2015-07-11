@@ -1,7 +1,10 @@
 import * as md5                     from '../util/md5'
 var {selectFromObject}              = util
 var {Slack}                         = Wrappers
-var {filterSlackHistory,rebookUrl}  = require("../../shared/bookings")
+var {filterSlackHistory,
+  rebookUrl,multitime,
+  customers,experts}                = require("../../shared/bookings")
+var {pairbot,jk,support}            = config.chat.slack
 
 var select = {
   itemIndex: {
@@ -74,11 +77,23 @@ var select = {
     }
   },
   inflateChatInfo(chat) {
-    if (!chat) return
+    if (!chat || !chat._id) return
     chat.members = {}
     for (var m of chat.info.members||[])
-      chat.members[m] = Slack.checkUserSync({id:m}) || {id:m}
+      if (!_.contains([pairbot.id,jk.id,support.id],m))
+        chat.members[m] = Slack.checkUserSync({id:m}) || {id:m}
     chat.history = filterSlackHistory(chat.history)
+  },
+  slackMsgTemplateData(b) {
+    select.inflateParticipantInfo(b.participants)
+    return {
+      status: b.status,
+      bookingId: b._id,
+      minutes: b.minutes,
+      customer: customers(b)[0].chat.slack.name,
+      expert: experts(b)[0].chat.slack.name,
+      multitime: multitime(b)
+    }
   },
   cb: {
     inflate(cb, selectFields) {

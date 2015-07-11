@@ -22,6 +22,7 @@ export default initAPI(
   cheatExpertSwap: (req) => [req.booking, req.order, req.request, req.params.id],
   createChat: (req) => [req.booking, req.body.type, req.body.groupchat],
   associateChat: (req) => [req.booking, req.body.type, req.body.providerId],
+  postChatMessage: (req) => [req.booking, req.body],
   addNote: (req) => [req.booking, req.body.body],
 }, {
   booking:'getById',
