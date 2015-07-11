@@ -34,7 +34,7 @@ var middleware = {
     res.on('finish', function() {
       var duration = new Date - start
       if (duration > 1000)
-      $log(`req::end ${duration} ${req.url}`.red)
+      $log(`req::end ${duration}`.red, req.originalUrl.white)
     })
     next()
   },

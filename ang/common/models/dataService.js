@@ -74,10 +74,13 @@ angular.module('APDataSvc', [])
 
     this.bookings = _.extend(billingFns, {
       getBookings: GET((d)=>`/bookings`),
+      getExpertBookings: GET((d)=>`/bookings/expert`),
       getBooking: GET((d)=>`/bookings/${d._id}`),
       suggestTime: PUT((d)=>`/bookings/${d._id}/suggest-time`),
       confirmTime: PUT((d)=>`/bookings/${d._id}/confirm-time`),
       releasePayout: PUT((d)=>`/billing/orders/${d._id}/release`),
+      createChat: PUT((d)=>`/bookings/${d._id}/create-chat`),
+      associateChat: PUT((d)=>`/bookings/${d._id}/associate-chat`),
     })
 
 

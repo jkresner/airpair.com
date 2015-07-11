@@ -25,6 +25,19 @@ var utilFns = {
     ]
   },
 
+  rebookUrl(booking) {
+    // TODO expand function to check date etc.
+    if (booking.request)
+      return `/billing/book/${booking.expertId}/${booking.request._id}`
+    return `/billing/book/${booking.expertId}`
+  },
+
+  timeToBookAgain(booking, user) {
+    var {status,customerId} = booking
+    return idsEqual(customerId,user._id) &&
+      status == 'complete' // || status == 'followup'
+  },
+
   participantFromUser(role, user) {
     var timeLoc = !user.localization || !user.localization.timezoneData ? {} :
       { location:user.localization.location, timeZoneId:user.localization.timezoneData.timeZoneId }
@@ -38,6 +51,7 @@ var utilFns = {
       return {
         _id:t._id,
         multitime:utilFns.multitime(b,t.time),
+        mom: moment(t.time),
         localTime:moment(t.time).tz(timeZoneId||'Universal').format('h:mmA z'),
         by: _.find(b.participants,(p)=>idsEqual(t.byId,p.info._id)) }
     })
@@ -66,33 +80,34 @@ var utilFns = {
     if (booking.status == 'canceled') return 'v'
   },
 
-  // statusBotMessage(booking) {
-  //   if (booking.status == 'confirmed')
-  //     return 'c'
-  //   if (booking.status == 'followup')
-  //     return 'f'
+  // participantInChat(booking, chat, userId)
+  // {
+  //   if (!chat || !chat.info || !chat.info.members) return
+  //   var participant = _.find(booking.participants,(p)=>idsEqual(p.info._id,userId||booking.customerId))
+  //   if (!participant || !participant.chat) return
+  //   var chatUserId = participant.chat.slack.id
+  //   return _.find(chat.info.members,(m)=>m==chatUserId)
   // },
 
   chatGroup(booking) {
     var customer = utilFns.customers(booking)[0]
-    var customerFirst = firstName(customer.info.name).replace("'","")
+    var customerFirst = firstName(customer.info.name).replace(/\W/g,"")
     var expert = utilFns.experts(booking)[0]
-    var expertFirst = firstName(expert.info.name).replace("'","")
-    var statusLetter = utilFns.statusLetter(booking)
-    var purpose = `https://airpair.com/bookings/${booking._id} ${customerFirst}`
+    var expertFirst = firstName(expert.info.name).replace(/\W/g,"")
+
+    var purpose = `http://booking.airpa.ir/${booking._id} ${customerFirst}`
     purpose += (customer.timeZoneId) ? ` (${moment.tz(customer.timeZoneId).format('z')}, ${customer.location})` : ``
     purpose += ` + ${expertFirst}`
     purpose += (expert.timeZoneId) ? ` (${moment.tz(expert.timeZoneId).format('z')}, ${expert.location})` : ``
     if (booking.status == "pending")
-      purpose += `. WAITING to confirm ${booking.minutes} mins @ ${utilFns.multitime(booking)}.`
+      purpose += `. WAITING to confirm ${booking.minutes} mins @ ${utilFns.multitime(booking)}`
     else if (booking.status == "confirmed")
-      purpose += `. CONFIRMED ${booking.minutes} mins @ ${utilFns.multitime(booking)}.`
+      purpose += `. CONFIRMED ${booking.minutes} mins @ ${utilFns.multitime(booking)}`
     else if (booking.status == "followup")
-      purpose += `. FEEDBACK required to payout expert for ${booking.minutes} mins on ${utilFns.multitime(booking)}.`
+      purpose += `. FEEDBACK required to payout expert for ${booking.minutes} mins on ${utilFns.multitime(booking)}`
 
-    // console.log('statusLetter', statusLetter, 'purpose', purpose)
     return {
-      name: `${statusLetter}-${customerFirst}-${expertFirst}-${booking._id}`.toLowerCase().substring(0,21),
+      name: `${customerFirst}-${expertFirst}-${booking._id}`.toLowerCase().substring(0,21),
       purpose,
       topic: `Let's find a time to pair`
     }

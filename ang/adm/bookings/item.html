@@ -1,12 +1,12 @@
 <section id="booking" ng-if="booking && booking.participants">
 
-<h3>Booking
-  <a href="/bookings/{{booking._id}}" target="_blank">particiant view</a>
-</h3>
 <div class="row">
 
 
   <div class="col-md-4">
+    <h3>Booking
+      <a href="/bookings/{{booking._id}}" target="_blank">particiant view</a>
+    </h3>
 
     <section>
       <h3>Status</h3>
@@ -56,86 +56,7 @@
 
   </section>
 
-  <section class="chat">
-      <h3>Chat</h3>
-      <div ng-if="chat">
-        <div ng-if="chat.provider">
-          <a target="_blank" href="https://airpair.slack.com/messages/{{chat.info.name}}">  {{chat.info.name}}
-            <span ng-if="chat.info.is_archived">(archived)</span>
-          </a>{{chat.providerId}}
-          <ul>
-            <li ng-repeat="m in chat.members">{{m.real_name || m.id}}</li>
-          </ul>
-          <p class="purpose">{{chat.info.purpose.value}}</p>
-          <hr />
-          <a ng-click="setMsgTemplate('feedback')" ng-if="booking.status == 'followup'">feedback</a> |
-          <a ng-click="setMsgTemplate('confirm')" ng-if="booking.status == 'pending'">confirm time</a>
-          <br />
-          <textarea style="width:75%" ng-model="slackMessage"></textarea>
-          <a ng-click="postMessage()" class="btn-yellow" style="float:right">Post</a>
-          <hr />
-          <ul class="history">
-            <li ng-repeat="m in chat.history | orderBy:'-ts'">
-              <time>{{m.ts | tsTime }} <b>{{chat.members[m.user].real_name}}</b></time>
-              <p>{{m.text}}</p>
-            </li>
-          </ul>
-        </div>
-      </div>
-      <div ng-if="chatSyncOptions">
-        <div id="pipelineReq">
-          <a ng-click="createGroupChat('slack')" class="btn" style="float:right">Create chat</a>
-          <div style="float:right;clear:right" ng-repeat="p in booking.participants" slack-status member="p.chat" userid="p.info._id"></div>
-          <input type="text" ng-model="newGroupChat.name" style="width:310px;margin-right:50px" />
-          <br /><textarea ng-model="newGroupChat.purpose" style="width:290px" /></textarea>
-          <hr />
-        </div>
-
-        {{chatSyncOptions.length}} possible syncs<br />
-        <div ng-repeat="c in chatSyncOptions">
-          <div ng-if="c.provider == 'slack'">
-            <b><a target="_blank" href="https://airpair.slack.com/messages/{{c.info.name}}/
-            ">{{c.provider}}</a></b>::{{c.info.name}}
-            <a ng-click="associateGroupChat('slack',c.info.id)">associate</a>
-          </div>
-        </div>
-      </div>
-  </section>
-
-</div>
-
-<div class="col-md-3">
-
-<div class="customer">
-  <h3>Customer</h3>
-  <div class="participant" ng-repeat="p in customers">
-    <img ng-src="{{p.info.avatar}}" class="user">
-    <span>{{p.info.name}} </span>
-    <span>{{p.info.email}} </span>
-    <span>{{p.location}} </span>
-    <span>{{p.timeZoneId}} </span>
-    <div slack-status member="p.chat" userid="p.info._id"></div>
-  </div>
-</div>
-
-
-<div class="expert">
-  <h3>Expert</h3>
-  <div class="participant" ng-repeat="p in experts">
-    <img ng-src="{{p.info.avatar}}" class="user">
-    <span>{{p.info.name}} </span>
-    <span>{{p.info.email}} </span>
-    <span>{{p.location}} </span>
-    <span>{{p.timeZoneId}} </span>
-    <div slack-status member="p.chat" userid="p.info._id"></div>
-  </div>
-</div>
-
-  </div>
-
-  <div class="col-md-4">
-
-    <section class="recordings">
+  <section class="recordings">
       <h3>Recording(s)</h3>
       <input type="text" id="newYouTubeLink" class="form-control" placeholder="Paste YouTube link" ng-model="data.youTubeId" />
       <input type="submit" ng-click="addYouTubeData(data.youTubeId)" value="Add" class="btn" />
@@ -163,31 +84,33 @@
           <a ng-click="swapExpert(sug._id)">Swap</a> {{sug.expert.name}}
         </li></ul>
       </div>
-      <div ng-if="!request">Booking is not request associated</div>
+      <div ng-if="!request">Not request associated</div>
     </section>
 
-    <section class="payout" ng-if="booking.status == 'followup'">
+    <section class="payout">
 
-      <h3>Payout</h3>
+      <h3>Order</h3>
 
       <p ng-if="!order">v0 migrated booking w no associated payout</p>
 
       <div ng-if="order">
-        Order:
         ${{ order.total }}
 
         <a href="/adm/orders/{{ order._id }}" target="_blank">{{ order._id }}</a>
 
-        <div ng-if="lineForPayout.info.paidout">
-          <span style="color:green">paidout</span>
-        </div>
-
-        <div ng-if="!lineForPayout.info.paidout">
-          <div ng-if="!lineForPayout.info.released">
-            <a ng-click="releasePayout()" class="btn-yellow">Release payment</a>
+        <div ng-if="booking.status == 'followup'">
+          <h4>Payout</h4>
+          <div ng-if="lineForPayout.info.paidout">
+            <span style="color:green">paidout</span>
           </div>
-          <div ng-if="lineForPayout.info.released">
-            <span style="color:blue">Waiting for expert to collect</span>
+
+          <div ng-if="!lineForPayout.info.paidout">
+            <div ng-if="!lineForPayout.info.released">
+              <a ng-click="releasePayout()" class="btn-yellow">Release payment</a>
+            </div>
+            <div ng-if="lineForPayout.info.released">
+              <span style="color:blue">Waiting for expert to collect</span>
+            </div>
           </div>
         </div>
       </div>
@@ -206,6 +129,102 @@
         </li>
       </ul>
     </section>
+
+
+</div>
+
+<div class="col-md-3">
+  <h3>Participants</h3>
+
+  <div class="customer">
+    <div class="participant" ng-repeat="p in customers">
+      <img ng-src="{{p.info.avatar}}" class="user">
+      <span><b>Customer</b></span>
+      <span>{{p.info.name}} </span>
+      <span>{{p.info.email}} </span>
+      <span>{{p.location}} </span>
+      <span>{{p.timeZoneId}} </span>
+      <div slack-status member="p.chat" userid="p.info._id"></div>
+    </div>
+  </div>
+
+
+  <div class="expert">
+    <div class="participant" ng-repeat="p in experts">
+      <img ng-src="{{p.info.avatar}}" class="user">
+      <span><b>Expert</b></span>
+      <span>{{p.info.name}} </span>
+      <span>{{p.info.email}} </span>
+      <span>{{p.location}} </span>
+      <span>{{p.timeZoneId}} </span>
+      <div slack-status member="p.chat" userid="p.info._id"></div>
+    </div>
+  </div>
+
+  <section class="activity">
+    <h4>Activity</h4>
+    <ul>
+      <li ng-repeat="t in booking.activity"><code>{{t.action}}</code> {{t.by.name}}
+        <time>{{t._id | objectIdToAgoTime }}</time></li>
+    </ul>
+
+  </section>
+
+</div>
+
+<div class="col-md-4">
+    <h3>Chat
+        <a ng-if="chat.provider" target="_blank" href="https://airpair.slack.com/messages/{{chat.info.name}}"> {{chat.info.name}}
+          <span ng-if="chat.info.is_archived">(archived)</span>
+        </a>
+    </h3>
+
+    <section class="chat">
+      <div ng-if="chat">
+
+        <div ng-if="chat.provider">
+          <h4>{{chat.providerId}} | {{chat._id}}</h4>
+          <ul>
+            <li ng-repeat="m in chat.members">{{m.real_name || m.id}}</li>
+          </ul>
+          <p class="purpose">{{chat.info.purpose.value}}</p>
+
+          <div class="post" ng-if="botMsgKeys.length > 0">
+            <br />
+            <textarea ng-model="slackMessage"></textarea>
+            <a ng-repeat="key in botMsgKeys" ng-click="setMsgTemplate(key)">{{key}}</a>
+            <a ng-click="postChatMessage(slackMessage)" class="btn-yellow" style="float:right">Post</a>
+          </div>
+
+          <ul class="history">
+            <li ng-repeat="m in chat.history | orderBy:'-ts'">
+              <time>{{m.ts | tsTime }} <b>{{chat.members[m.user].real_name}}</b></time>
+              <p>{{m.text}}</p>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div ng-if="chatSyncOptions">
+        <div id="pipelineReq">
+          <a ng-click="createGroupChat('slack')" class="btn" style="float:right">Create chat</a>
+          <div style="float:right;clear:right" ng-repeat="p in booking.participants" slack-status member="p.chat" userid="p.info._id"></div>
+          <input type="text" ng-model="newGroupChat.name" style="width:310px;margin-right:50px" />
+          <br /><textarea ng-model="newGroupChat.purpose" /></textarea>
+          <hr />
+        </div>
+
+        {{chatSyncOptions.length}} possible syncs<br />
+        <div ng-repeat="c in chatSyncOptions">
+          <div ng-if="c.provider == 'slack'">
+            <b><a target="_blank" href="https://airpair.slack.com/messages/{{c.info.name}}/
+            ">{{c.provider}}</a></b>::{{c.info.name}}
+            <a ng-click="associateGroupChat('slack',c.info.id)">associate</a>
+          </div>
+        </div>
+      </div>
+  </section>
+
 
   </div>
 
