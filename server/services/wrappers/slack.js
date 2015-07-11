@@ -18,7 +18,7 @@ var clientCall = (user, method, data, cbProp, select, cb) => {
       else
         r = util.selectFromObject(r, select)
     }
-    if (logging) $log(`slack[${method}].result`.yellow, (r && r.length) ? r.length : 1, (r && r.length) ? r[0] : r)
+    if (logging) $log(`slack[${method}].result`.wrappercall, (r && r.length) ? r.length : 1, (r && r.length) ? r[0] : r)
     cb(null, r)
   })
 }
@@ -135,7 +135,17 @@ var wrapper = {
     var user = (user.token) ? user : 'pairbot'
     if (user == 'pairbot')
       cache.slackGroups((callback)=>{
-        clientCall(user, 'groups.list', null, 'groups', select.slackGroup, callback)
+        clientCall(user, 'groups.list', null, 'groups', select.slackGroup, (e,r)=>{
+          if (e) return cb(e)
+          var groups = []
+          for (var g of r)
+            // don't cache airpair-channel / -support etc.
+            if (g.name.indexOf('airpair-')==-1) {
+              g.members = _.without(g.members, support.id , pairbot.id , jk.id)
+              groups.push(g)
+            }
+          callback(null, groups)
+        })
       }, cb)
     else
       clientCall(user, 'groups.list', null, 'groups', select.slackGroup, cb)

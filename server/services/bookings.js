@@ -14,27 +14,29 @@ var {select,query,opts}     = require('./bookings.data')
 var {inflate}               = select.cb
 
 
-function getChat(booking, syncOptions, cb) {
+function getChat(booking, syncMode, exitCB, cb) {
+
   if (booking.chatId)
-    ChatsSvc.getById(booking.chatId,(e,chat)=>{
-      if (chat) booking.chat = chat
-      cb(e,booking)
+    return ChatsSvc.getById(booking.chatId, (e,r) =>
+      cb(e, (r) ? _.extend(booking,{chat:r}) : booking))
+
+  select.inflateParticipantInfo(booking.participants)
+
+  if (syncMode == 'all')
+    return ChatsSvc.searchSyncOptions(BookingdUtil.searchBits(booking), (e,r) =>
+        cb(e, (r) ? _.extend(booking,{chatSyncOptions:r}) : booking))
+
+  if (syncMode == 'auto')
+    return ChatsSvc.searchParticipantSyncOptions(booking.participants, (e,match,chatSyncOptions) => {
+      if (match) {
+        $callSvc(save.associateChat,this)(booking, 'slack', match.info.id, (e,r) => {
+          $log('auto.associateChat.success'.update, match.info.name)
+          exitCB(e, r)
+        })
+      }
+      else
+        cb(e, (chatSyncOptions) ? _.extend(booking,{chatSyncOptions}) : booking)
     })
-  else if (syncOptions) {
-    if (syncOptions.mode == 'all')
-      ChatsSvc.searchSyncOptions(BookingdUtil.searchBits(booking),(e,syncOptions)=>{
-        if (syncOptions) booking.chatSyncOptions = syncOptions
-        cb(e,booking)
-      })
-    else if (syncOptions.mode == 'expert') {
-      select.inflateParticipantInfo(booking.participants)
-      ChatsSvc.searchParticipantSyncOptions(booking.participants,(e,syncOptions)=>{
-        if (syncOptions) booking.chatSyncOptions = syncOptions
-        cb(e,booking)
-      })
-    }
-  } else
-    cb(null,booking)
 }
 
 
@@ -75,10 +77,10 @@ var get = {
     svc.searchOne({_id}, {options:opts.forParticipant}, (eee,r) => {
       if (eee) return cb(eee)
       if (!r.order) return cb(null,r) // an edgecase migrated booking from v0 call
-      var chatSync = false
-      if (Roles.isExpert(this.user,r)) chatSync = {mode:'expert'}
-      getChat(r, chatSync, (ee,r)=>{
-        if (!r.order.requestId) return cb(ee,r)
+      // var chatSync = false
+      // if (Roles.isExpert(this.user,r)) chatSync = {mode:'expert'}
+      getChat.call(this, r, 'auto', callback, (ee,r)=>{
+        if (!r.order.requestId || ee) return cb(ee,r)
         $callSvc(RequestsSvc.getByIdForBookingInflate,this)(r.order.requestId, (e,request) =>
           cb(e,_.extend(r,{request})))
       })
@@ -91,8 +93,8 @@ var get = {
     svc.searchOne({_id}, {options:opts.forAdmin}, (eee,r) => {
       if (eee) return cb(eee)
       if (!r.order) return cb(null,r) // an edgecase migrated booking from v0 call
-      getChat(r, {mode:'all'}, (ee,r) => {
-        if (!r.order.requestId) return cb(ee,r)
+      getChat.call(this, r, 'all', callback, (ee,r) => {
+        if (!r.order.requestId || ee) return cb(ee,r)
         $callSvc(RequestsSvc.getByIdForBookingInflate, this)(r.order.requestId, (e,request) =>
           cb(e,_.extend(r,{request})))
       })
@@ -214,8 +216,13 @@ var save = {
   {
     select.inflateParticipantInfo(original.participants)
     $callSvc(ChatsSvc.createCreate, this)(type, groupchat, original.participants, (e,chat)=>{
-      original.chatId = chat._id
-      updateForAdmin(this, original, cb)
+      if (e) return cb(e)
+      var {activity,lastTouch} = original
+      lastTouch = svc.newTouch.call(this, 'create-chat')
+      activity.push(lastTouch)
+      svc.updateWithSet(original._id, {chatId:chat._id,activity}, (e,r)=>{
+        get.getByIdForParticipant(original._id,cb)
+      })
     })
   },
 
@@ -223,8 +230,12 @@ var save = {
   {
     $callSvc(ChatsSvc.createSync, this)(type, providerId, (e,chat)=>{
       if (e) return cb(e)
-      original.chatId = chat._id
-      updateForAdmin(this, original, select.cb.itemIndex(cb))
+      var {activity,lastTouch} = original
+      lastTouch = svc.newTouch.call(this, 'associate-chat')
+      activity.push(lastTouch)
+      svc.updateWithSet(original._id, {chatId:chat._id,activity}, (e,r)=>{
+        get.getByIdForParticipant(original._id, cb)
+      })
     })
   }
 }
