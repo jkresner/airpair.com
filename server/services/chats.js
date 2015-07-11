@@ -23,17 +23,29 @@ var get = {
 
   searchParticipantSyncOptions(participants, cb)
   {
-    if (!participants[0].chat || !participants[1].chat) return cb(null,[])
-    var p1Id = participants[0].chat.slack.id
-    var p2Id = participants[1].chat.slack.id
-    var groups = []
-    // TODO: could use expert token...
+    var allHaveSlack = true
+    var memberIds = []
+    for (var p of participants) {
+      if (p.chat) memberIds.push(p.chat.slack.id)
+      else allHaveSlack = false
+    }
+
+    if (memberIds.length < 2)
+      return cb(null,null,[])
+
+    var possibles = []
+    var match = null
+
+    // TODO: could use expert token to be more efficient ...
     Wrappers.Slack.getGroups('pairbot',(e,r)=>{
-      for (var g of r) {
-        if (_.contains(g.members,p1Id)&&_.contains(g.members,p2Id))
-          groups.push(_.extend({type:'group',provider:'slack',info:g}))
+      for (var info of r) {
+        var union = _.union(info.members,memberIds)
+        if (union.length == participants.length)
+          match = _.extend({type:'group',provider:'slack',info})
+        else if (union.length > 1)
+          possibles.push(_.extend({type:'group',provider:'slack',info}))
       }
-      cb(e,groups)
+      cb(e,match,possibles)
     })
   }
 }
@@ -108,29 +120,27 @@ var save = {
       if (ee||!rr) return cb(ee,rr)
       if (rr.provider != 'slack') cb(Error("Only slack sync supported"))
 
+      var {name,purpose} = groupInfo
+
       // stop hitting slack api on every single save
-      if (moment(rr.synced).isAfter(moment().add(-30,'second'))) return cb(null,rr)
+      // if (moment(rr.synced).isAfter(moment().add(-30,'second'))) return cb(null,rr)
 
       Wrappers.Slack.getGroupWithHistory(rr.providerId, (e,r)=>{
         if (e) return cb(e,r)
+
         var history = _.sortBy(_.unique(_.union(r.history,rr.history),false,'ts'),'ts')
-        var ups = _.extend(rr,r)
-        ups.history = history
-        if (ups.info.name[0] != groupInfo.name[0]) {
-          groupInfo.name = groupInfo.name[0] + ups.info.name.substring(1)
-          var msg = `${this.user.email}::  ${ups.info.name}  -> ${groupInfo.name}`
-          ups.info.name = groupInfo.name
-          Wrappers.Slack.renameGroup({},rr.providerId,groupInfo.name,()=>{
-            Wrappers.Slack.postMessage('pairbot', channels.pipeline.id, msg, ()=>{})
-          })
+
+        if (r.info.name != name) {
+          Wrappers.Slack.renameGroup({},rr.providerId,groupInfo.name,()=>{})
+          // var msg = `${this.user.email}::  ${r.info.name}  -> ${groupInfo.name}`
+          // Wrappers.Slack.postMessage('pairbot', channels.pipeline.id, msg, ()=>{})
         }
-        if (ups.info.purpose.value != groupInfo.purpose) {
-          $log('update purpose'.yellow, ups.info.purpose.value, groupInfo.purpose)
-          ups.info.purpose.value = groupInfo.purpose
-          Wrappers.Slack.setGroupPurpose({},rr.providerId,groupInfo.purpose,()=>{})
+        if (r.info.purpose.value != purpose) {
+          $log('update purpose'.update, r.info.purpose.value, purpose)
+          Wrappers.Slack.setGroupPurpose({},rr.providerId,purpose,()=>{})
         }
-        ups.synced = new Date
-        return svc.update(rr._id,ups,cb)
+
+        return svc.updateWithSet(rr._id,{history,name,purpose,synced:new Date},cb)
       })
     })
   },

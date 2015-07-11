@@ -8,7 +8,7 @@ var initAPIWrap = (wrapper) => {
       if (!wrapper.api) {
         //this. ugly solution
         wrapper.init()
-        if (logging) $log('initApi'.yellow, fnName)
+        if (logging) $log('initApi'.wrappercall, fnName)
       }
       return fn.apply(this, arguments)
     }}

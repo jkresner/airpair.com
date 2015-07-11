@@ -86,7 +86,7 @@ cache.pullRequests = function(repo, getterCB, cb)
   getterCB((e,r)=>{
     if (e) return cb(e)
     cache['post_prs'][repo] = r
-    $log("set cache['post_prs']".magenta, repo)
+    $log("set cache['post_prs']".trace, repo)
     cb(null,r)
   })
 }
@@ -98,7 +98,7 @@ cache.slackUsers = function(getterCB, cb)
   getterCB((e,r)=>{
     if (e) return cb(e)
     cache['slack_users'] = r
-    $log("set cache['slack_users']".magenta, r.length)
+    $log("set cache['slack_users']".trace, r.length)
     cb(null,r)
   })
 }
@@ -111,7 +111,7 @@ cache.slackGroups = function(getterCB, cb)
   getterCB((e,r)=>{
     if (e) return cb(e)
     cache['slack_groups'] = r
-    $log("set cache['slack_groups']".magenta, r.length)
+    $log("set cache['slack_groups']".trace, r.length)
     cb(null,r)
   })
 }
