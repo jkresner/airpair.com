@@ -35,7 +35,7 @@ var middleware = {
     return (req, res, next) => {
       var param = req.body[paramName]
       if (!param) return next(ErrorApi404(`Body param ${paramName} not specified.`))
-      if (logging) $log('bodyParamFn', paramName, req.body[paramName])
+      if (logging) $log('bodyParamFn'.trace, paramName, req.body[paramName])
 
       var svcFn = resolver.resolve(paramName)
       $callSvc(svcFn,req)(param, function(e, r) {
@@ -62,8 +62,14 @@ var middleware = {
     },
 
     slackReady(req, res, next) {
+      if (logging) $log('cache.slackReady'.trace)
       Wrappers.Slack.getUsers(next)
-    }
+    },
+
+    templatesReady(req, res, next) {
+      if (logging) $log('cache.templatesReady'.trace)
+      cache.tmpl('','',()=>{next()})
+    },
 
   },
 
@@ -71,7 +77,7 @@ var middleware = {
 
     user(req, res, next) {
       var UserSvc = require("../services/users")
-      // if (logging) $log('bodyParamFn', paramName, req.body[paramName])
+      if (logging) $log('bodyParamFn'.trace, paramName, req.body[paramName])
 
       $callSvc(UserSvc.getById,req)(null, function(e, r) {
         // if (!e && !r)
@@ -89,7 +95,7 @@ var middleware = {
 
     expert(req, res, next) {
       var ExpertsSvc = require("../services/experts")
-      if (logging) $log('populate.expert', req.user._id)
+      if (logging) $log('populate.expert'.trace, req.user._id)
       $callSvc(ExpertsSvc.getMe,req)(function(e, r) {
         if (e) return next(e)
         else {
@@ -100,7 +106,7 @@ var middleware = {
     },
 
     orderBooking(req, res, next) {
-      if (logging) $log('populate.orderBooking', req.user._id)
+      if (logging) $log('populate.orderBooking'.trace, req.user._id)
       if (!req.order) return next()
       var BookingsSvc = require("../services/bookings")
       var line = _.find(req.order.lineItems,(l) =>l.info && l.info.paidout != null)
@@ -115,7 +121,7 @@ var middleware = {
     tagPage(slug) {
       return function(req, res, next) {
         var TagsSvc = require("../services/tags")
-        if (logging) $log('populate.tagsPage', slug)
+        if (logging) $log('populate.tagsPage'.trace, slug)
         $callSvc(TagsSvc.getTagPage,req)(slug, function(e, r) {
           if (e) return next(e)
           else {

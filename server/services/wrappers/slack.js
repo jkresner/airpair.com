@@ -216,7 +216,10 @@ var wrapper = {
 
   postMessage(user, channel, message, cb)
   {
-    var data = { channel, text:message, parse: 'full' }
+    if (message.type == 'attachment')
+      return wrapper.postAttachments(user, channel, [message], cb)
+
+    var data = { channel, text: message, parse: 'full' }
     if (user == 'pairbot') data.username = 'pairbot'
     clientCall(user, 'chat.postMessage', data, 'message', null, cb)
   },
@@ -229,13 +232,10 @@ var wrapper = {
     clientCall(user, 'chat.postMessage', data, null, null, cb)
   }
 
-
   // getIMs(user, cb)
   // {
   //   clientCall(user, 'im.list', {}, null, null cb)
   // }
-
-
 }
 
 module.exports = wrapper

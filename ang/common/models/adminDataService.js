@@ -134,6 +134,7 @@ angular.module('APSvcAdmin', [])
       deleteRecording: DELETE((d)=>`/adm/bookings/${d._id}/recording/${d.recordingId}`),
       giveCredit: POST((d)=>`/adm/billing/orders/credit`),
       saveNote: POST((d)=>`/adm/bookings/${d._id}/note`),
+      postChatMessage: POST((d)=>`/adm/bookings/chat/${d._id}/message`),
     }
 
     this.reports = {

@@ -173,25 +173,29 @@
 </div>
 
 <div class="col-md-4">
-    <h3>Chat</h3>
+    <h3>Chat
+        <a ng-if="chat.provider" target="_blank" href="https://airpair.slack.com/messages/{{chat.info.name}}"> {{chat.info.name}}
+          <span ng-if="chat.info.is_archived">(archived)</span>
+        </a>
+    </h3>
 
     <section class="chat">
       <div ng-if="chat">
+
         <div ng-if="chat.provider">
-          <a target="_blank" href="https://airpair.slack.com/messages/{{chat.info.name}}">  {{chat.info.name}}
-            <span ng-if="chat.info.is_archived">(archived)</span>
-          </a>{{chat.providerId}}
+          <h4>{{chat.providerId}} | {{chat._id}}</h4>
           <ul>
             <li ng-repeat="m in chat.members">{{m.real_name || m.id}}</li>
           </ul>
           <p class="purpose">{{chat.info.purpose.value}}</p>
-          <hr />
-          <a ng-click="setMsgTemplate('feedback')" ng-if="booking.status == 'followup'">feedback</a> |
-          <a ng-click="setMsgTemplate('confirm')" ng-if="booking.status == 'pending'">confirm time</a>
-          <br />
-          <textarea ng-model="slackMessage"></textarea>
-          <a ng-click="postMessage()" class="btn-yellow" style="float:right">Post</a>
-          <hr />
+
+          <div class="post" ng-if="botMsgKeys.length > 0">
+            <br />
+            <textarea ng-model="slackMessage"></textarea>
+            <a ng-repeat="key in botMsgKeys" ng-click="setMsgTemplate(key)">{{key}}</a>
+            <a ng-click="postChatMessage(slackMessage)" class="btn-yellow" style="float:right">Post</a>
+          </div>
+
           <ul class="history">
             <li ng-repeat="m in chat.history | orderBy:'-ts'">
               <time>{{m.ts | tsTime }} <b>{{chat.members[m.user].real_name}}</b></time>
@@ -200,6 +204,7 @@
           </ul>
         </div>
       </div>
+
       <div ng-if="chatSyncOptions">
         <div id="pipelineReq">
           <a ng-click="createGroupChat('slack')" class="btn" style="float:right">Create chat</a>

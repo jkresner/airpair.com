@@ -225,19 +225,6 @@ section#booking {
     padding-top:20px;
     span { display:block;margin-left:90px }
   }
-  section.chat {
-    .purpose { background:white }
-    ul.history { overflow-y:scroll;height:300px;background:white; }
-    textarea { width:100%;min-height:90px }
-  }
-  section.activity {
-    time { font-size:11px }
-  }
-  ul.history {
-    padding:0;
-    list-style:none;
-    time { font-size:10px }
-  }
   .col-md-4 {
     > section {
       h3 { line-height:10px }
@@ -252,6 +239,28 @@ section#booking {
       ul { margin-top:20px;margin:20px;padding:0 }
       time { font-size:10px }
     }
+  }
+  section.activity {
+    font-size:11px;
+    code { font-size:9px }
+    time { font-size:9px }
+    ul { margin-left:-44px;list-style:none }
+  }
+  section.chat {
+    .purpose { background:white;font-family:courier;font-size:10px;padding:5px 4px }
+    textarea { width:100%;min-height:90px;font-size:12px }
+    .post { padding-bottom:12px }
+  }
+  ul.history {
+    overflow-y:scroll;overflow-x:hidden;
+    height:600px;
+    background:white;
+    padding:5px;
+    clear:both;
+    padding:0;
+    list-style:none;
+    time { font-size:10px }
+    p { font-size:12px }
   }
 }
 

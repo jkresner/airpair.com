@@ -106,6 +106,21 @@ var validation = {
     }
   },
 
+  postChatMessage(user, original, chatMessage)
+  {
+    var type = (chatMessage) ? chatMessage.type : null
+    if (!type || !(type=='attachmet'||type=='message'))
+      return `Booking chat type [message] or [attachment] required`
+    if (!chatMessage.text)
+      return `Booking chat message text required`
+    if (!chatMessage.key)
+      return `Booking chat message key require`
+    if (!cache.templates[`slack-message:booking-${original.status}-${chatMessage.key}`])
+      return `Booking chat message template [booking-${original.status}-${chatMessage.key}] not found`
+    if (!original.chat)
+      return `Booking[${original._id}] requires associate chat to post message to`
+  },
+
   addYouTubeData(user, original, youTubeId)
   {
     if (!youTubeId) return `YouTube ID Required`

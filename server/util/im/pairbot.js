@@ -9,19 +9,16 @@ module.exports = function(imProvider)
   if (!imProvider)
     imProvider = Wrappers.Slack
 
-
   var pairbot = {
 
     sendSlackMsg(channelId, tmpl, data, cb) {
-      TemplateSvc.slackMSG(tmpl, data, (e, msg) =>
-        imProvider.postMessage('pairbot', channelId, msg, cb || emtpyCb)
-      )
-    },
-
-    sendSlackAttachment(channelId, tmpl, data, attachment, cb) {
+      var cb = cb || emtpyCb
       TemplateSvc.slackMSG(tmpl, data, (e, msg) => {
-        attachment.fallback = msg
-        imProvider.postAttachments('pairbot', channelId, [attachment], cb || emtpyCb)
+        var text = data.text || msg.text
+        if (msg.type == 'message')
+          imProvider.postMessage('pairbot', channelId, text, cb)
+        if (msg.type == 'attachment')
+          imProvider.postAttachments('pairbot', channelId, [_.extend(msg,{text})], cb)
       })
     },
 
@@ -29,32 +26,7 @@ module.exports = function(imProvider)
       TemplateSvc.slackMSG(tmpl, data, (e, msg) => cb(e,msg))
     },
 
-    sendSuggestedTime(booking, timeId, cb) {
-      // var attachment = {
-      //   fallback: `Post SUBMITTED: ${post.title}`,
-      //   color:  `warning`,
-      //   pretext: `SUBMITTED for review`,
-      //   thumb_url: `https://www.airpair.com/posts/thumb/${post._id}`,
-      //   title: post.title,
-      //   title_link: `https://www.airpair.com/posts/review/${post._id}`,
-      //   text: `Don't be shy.\nTell ${post.by.name} what you think => https://www.airpair.com/posts/review/${post._id}`,
-      // }
-      // imProvider.postAttachments('pairbot', postsChannelId, [attachment], cb || emtpyCb)
-    },
-
-    sendConfirmedTime(booking, cb) {
-      // var attachment = {
-      //   fallback: `Post SUBMITTED: ${post.title}`,
-      //   color:  `warning`,
-      //   pretext: `SUBMITTED for review`,
-      //   thumb_url: `https://www.airpair.com/posts/thumb/${post._id}`,
-      //   title: post.title,
-      //   title_link: `https://www.airpair.com/posts/review/${post._id}`,
-      //   text: `Don't be shy.\nTell ${post.by.name} what you think => https://www.airpair.com/posts/review/${post._id}`,
-      // }
-      // imProvider.postAttachments('pairbot', postsChannelId, [attachment], cb || emtpyCb)
-    },
-
+    //-- TODO: move into db
     sendPostSubmitted(post, cb) {
       var attachment = {
         fallback: `Post SUBMITTED: ${post.title}`,
