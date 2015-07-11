@@ -1,14 +1,14 @@
 var logging                 = true
 
 
-var initAPIWrap = (wrapper) => {
+var initAPIWrap = (wrapperName, wrapper) => {
   var init = wrapper.init
   wrapper = _.wrapFnList(wrapper, (fn, fnName) => {
     return function() {
       if (!wrapper.api) {
         //this. ugly solution
         wrapper.init()
-        if (logging) $log('initApi'.yellow, fnName)
+        if (logging) $log(`initApi.${wrapperName}`.wrappercall, fnName)
       }
       return fn.apply(this, arguments)
     }}
@@ -20,18 +20,18 @@ var initAPIWrap = (wrapper) => {
 
 
 var wrappers = {
-  Timezone:       initAPIWrap(require('./gtimezone')),
-  Calendar:       initAPIWrap(require('./gcal')),
-  GitHub:         initAPIWrap(require('./github')),
-  PayPal:         initAPIWrap(require('./paypal')),
-  Stripe:         initAPIWrap(require('./stripe')),
-  Braintree:      initAPIWrap(require('./braintree')),
-  YouTube:        initAPIWrap(require('./youtube')),
-  Slack:          initAPIWrap(require('./slack')),
-  StackExchange:  initAPIWrap(require('./stackexchange')),
-  Twitter:        initAPIWrap(require('./twitter')),
-  Bitly:          initAPIWrap(require('./bitly')),
-  MailChimp:      initAPIWrap(require('./mailchimp')),
+  Timezone:       initAPIWrap('Timezone', require('./gtimezone')),
+  Calendar:       initAPIWrap('Calendar', require('./gcal')),
+  GitHub:         initAPIWrap('GitHub', require('./github')),
+  PayPal:         initAPIWrap('PayPal', require('./paypal')),
+  Stripe:         initAPIWrap('Stripe', require('./stripe')),
+  Braintree:      initAPIWrap('Braintree', require('./braintree')),
+  YouTube:        initAPIWrap('YouTube', require('./youtube')),
+  Slack:          initAPIWrap('Slack', require('./slack')),
+  StackExchange:  initAPIWrap('StackExchange', require('./stackexchange')),
+  Twitter:        initAPIWrap('Twitter', require('./twitter')),
+  Bitly:          initAPIWrap('Bitly', require('./bitly')),
+  MailChimp:      initAPIWrap('MailChimp', require('./mailchimp')),
 }
 
 

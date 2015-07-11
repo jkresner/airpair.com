@@ -69,6 +69,12 @@ module.exports = function(app) {
       app.renderHbsViewData('post', null, (req, cb) => cb(null, req.post)))
 
 
+    .get('/wiki/experts/:post',
+      authd,
+      trackView('post'),
+      app.renderHbsViewData('post', null, (req, cb) => cb(null, req.post)))
+
+
     .get('/book/:username', function(req, res, next) {
         $callSvc(ExpertsApi.svc.getByUsername,req)(req.params.username,(e,r)=>{
           if (!r) return res.redirect('/')

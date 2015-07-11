@@ -6,11 +6,19 @@ colors.SPEC = colors.yellow.dim.bold
 colors.SUBSPEC = colors.yellow.dim
 colors.EXPECTEDERR = colors.magenta.dim
 colors.APPLOAD = colors.white
+colors.UPDATE = colors.yellow
+colors.TRACE = colors.gray
+colors.VALIDAION = colors.blue
+colors.WRAPPERCALL = colors.white
 colors.setTheme({
   spec: 'SPEC',
   subspec: 'SUBSPEC',
   expectederr: 'EXPECTEDERR',
-  appload: 'APPLOAD'
+  appload: 'APPLOAD',
+  update: 'UPDATE',
+  trace: 'TRACE',
+  validation: 'VALIDAION',
+  wrappercall: 'WRAPPERCALL',
 })
 
 initGlobals(initConfig('test'))
@@ -62,6 +70,9 @@ describe 'Server: '.appload, ->
     global.stubs              = SETUP.initStubs()
     require('./helpers/http').init(app)
     # $timelapsed("HELPERS done")
+    expect(config.auth.slack.slackTeam != 'T02ATFDPL', "Cannot run test against prod slack team".magenta).to.be.true
+    expect(config.chat.slack.ower != 'U02ASLW2Z', "Cannot run test against prod slack team".magenta).to.be.true
+    expect(config.chat.slack.support != 'U06UD6SES', "Cannot run test against prod slack team".magenta).to.be.true
     SETUP.init.call(@, done)
 
   beforeEach ->

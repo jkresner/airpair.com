@@ -18,7 +18,7 @@ var clientCall = (user, method, data, cbProp, select, cb) => {
       else
         r = util.selectFromObject(r, select)
     }
-    if (logging) $log(`slack[${method}].result`.yellow, (r && r.length) ? r.length : 1, (r && r.length) ? r[0] : r)
+    if (logging) $log(`slack[${method}].result`.wrappercall, (r && r.length) ? r.length : 1, (r && r.length) ? r[0] : r)
     cb(null, r)
   })
 }
@@ -135,7 +135,17 @@ var wrapper = {
     var user = (user.token) ? user : 'pairbot'
     if (user == 'pairbot')
       cache.slackGroups((callback)=>{
-        clientCall(user, 'groups.list', null, 'groups', select.slackGroup, callback)
+        clientCall(user, 'groups.list', null, 'groups', select.slackGroup, (e,r)=>{
+          if (e) return cb(e)
+          var groups = []
+          for (var g of r)
+            // don't cache airpair-channel / -support etc.
+            if (g.name.indexOf('airpair-')==-1) {
+              g.members = _.without(g.members, support.id , pairbot.id , jk.id)
+              groups.push(g)
+            }
+          callback(null, groups)
+        })
       }, cb)
     else
       clientCall(user, 'groups.list', null, 'groups', select.slackGroup, cb)
@@ -206,7 +216,10 @@ var wrapper = {
 
   postMessage(user, channel, message, cb)
   {
-    var data = { channel, text:message, parse: 'full' }
+    if (message.type == 'attachment')
+      return wrapper.postAttachments(user, channel, [message], cb)
+
+    var data = { channel, text: message, parse: 'full' }
     if (user == 'pairbot') data.username = 'pairbot'
     clientCall(user, 'chat.postMessage', data, 'message', null, cb)
   },
@@ -219,13 +232,10 @@ var wrapper = {
     clientCall(user, 'chat.postMessage', data, null, null, cb)
   }
 
-
   // getIMs(user, cb)
   // {
   //   clientCall(user, 'im.list', {}, null, null cb)
   // }
-
-
 }
 
 module.exports = wrapper

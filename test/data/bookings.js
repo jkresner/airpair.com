@@ -181,4 +181,97 @@ module.exports = {
      },
   },
 
+  specChar: {
+    "_id" : ObjectId("559dc6ff476dc61100a02069"),
+    "createdById" : ObjectId("5372d71f1c67d1a4859d31f0"),
+    "customerId" : ObjectId("5372d71f1c67d1a4859d31f0"),
+    "expertId" : ObjectId("53448a6e77a084020000002b"),
+    "type" : "private",
+    "minutes" : 60,
+    "datetime" : ISODate("2015-07-09T01:00:00.000Z"),
+    "status" : "followup",
+    "orderId" : ObjectId("559dc6ff476dc61100a0206e"),
+    "reviews" : [],
+    "activity" : [
+        { "_id" : ObjectId("559dc700476dc61100a0206f"), "utc" : ISODate("2015-07-09T00:57:36.857Z"),
+          "action" : "create", "by" : { "name" : "Michael Merritt", "_id" : ObjectId("5372d71f1c67d1a4859d31f0") } },
+        { "_id" : ObjectId("559dc74c476dc61100a0207e"), "action" : "confirm-time",
+          "utc" : ISODate("2015-07-09T00:58:52.061Z"), "by" : { "_id" : ObjectId("53448a511c67d1a4859d2c62"), "name" : "J.J. Fliegelman" } }
+    ],
+    "lastTouch" : {
+        "action" : "confirm-time",
+        "utc" : ISODate("2015-07-09T00:58:52.061Z"),
+        "by" : { "_id" : ObjectId("53448a511c67d1a4859d2c62"), "name" : "J.J. Fliegelman" }
+    },
+    "notes" : [],
+    "recordings" : [
+        {
+            "youTubeAccount" : "Air Pair",
+            "hangoutUrl" : "https://talkgadget.google.com/hangouts/_/g3aydanwab3goi2dk7r6xxsysia",
+            "data" : {
+                "publishedAt" : "2015-07-09T01:00:56.000Z",
+                "channelId" : "UCX6ZQp3RdEU_9kFNrRB-rIQ",
+                "title" : "AirPair Michael + J.J.",
+                "description" : "AirPair Michael + J.J.",
+                "channelTitle" : "Air Pair",
+                "categoryId" : "24",
+                "liveBroadcastContent" : "upcoming",
+                "localized" : { "title" : "AirPair Michael + J.J.", "description" : "AirPair Michael + J.J." },
+                "youTubeId" : "6Jvgcz40jUs"
+            },
+            "type" : "youtube",
+            "_id" : ObjectId("559dc7cd476dc61100a0208e")
+        }
+    ],
+    "suggestedTimes" : [{ "_id" : ObjectId("559dc700476dc61100a02070"), "byId" : ObjectId("5372d71f1c67d1a4859d31f0"),
+            "time" : ISODate("2015-07-09T01:00:00.000Z"), "confirmedById" : ObjectId("53448a511c67d1a4859d2c62") } ],
+    "participants" : [
+        {
+            "location" : "San Francisco, CA, USA",
+            "timeZoneId" : "America/Los_Angeles",
+            "role" : "customer",
+            "_id" : ObjectId("559dc700476dc61100a02072"),
+            "chat" : { "slack" : { "id" : "U03M2A1FF", "name" : "mjmj" } },
+            "info" : {
+                "_id" : ObjectId("5372d71f1c67d1a4859d31f0"),
+                "name" : "Michael Merritt", "email" : "mmerritt1010@gmail.com" }
+        },
+        {
+            "location" : "New York, NY, USA",
+            "timeZoneId" : "America/New_York",
+            "role" : "expert",
+            "_id" : ObjectId("559dc700476dc61100a02071"),
+            "chat" : {"slack" : { "id" : "U070JLF4N", "name" : "jdotjdot" }
+            },
+            "info" : {
+                "_id" : ObjectId("53448a511c67d1a4859d2c62"),
+                "name" : "J.J. Fliegelman", "email" : "jdotjdot89@gmail.com" }
+        }
+    ],
+    // "chatId" : ObjectId("559dc71e476dc61100a02077"),
+    "gcal" : {
+        "kind" : "calendar#event",
+        "etag" : "\"2872807065364000\"",
+        "id" : "e3rmmmejtlfad4j7uu02g9r530",
+        "status" : "confirmed",
+        "htmlLink" : "https://www.google.com/calendar/event?eid=ZTNybW1tZWp0bGZhZDRqN3V1MDJnOXI1MzAgYWlycGFpci5jb18xOXQwMW4wZ2Q2Zzc1NDhrMzhwZDNtNWJtMEBn",
+        "created" : "2015-07-09T00:58:52.000Z",
+        "updated" : "2015-07-09T00:58:52.682Z",
+        "summary" : "AirPair Michael + J.J.",
+        "description" : "Please be in your chat room or on the booking page 10 minutes before this invite.\n\n=> https://www.airpair.com/bookings/559dc6ff476dc61100a02069\n\nYou are encouraged to make sure beforehand your mic/webcam are working\non your system. Please let your matchmaker know if you'd like to do\na dry run.",
+        "colorId" : "10",
+        "creator" : { "email" : "team@airpair.com", "displayName" : "Air Pair" },
+        "organizer" : { "email" : "", "displayName" : "Air Pairings", "self" : true },
+        "start" : { "dateTime" : "2015-07-08T18:00:00-07:00" },
+        "end" : { "dateTime" : "2015-07-08T19:00:00-07:00" },
+        "iCalUID" : "e3rmmmejtlfad4j7uu02g9r530@google.com",
+        "sequence" : 0,
+        "attendees" : [
+            { "email" : "mmerritt1010@gmail.com", "displayName" : "Michael Merritt", "responseStatus" : "needsAction" },
+            { "email" : "jdotjdot89@gmail.com", "displayName" : "J.J. Fliegelman", "responseStatus" : "needsAction" }
+        ],
+        "reminders" : { "useDefault" : true }
+    }
+  },
+
 }

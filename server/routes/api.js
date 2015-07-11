@@ -4,6 +4,7 @@ var {adm,spnr,mm,emailv}                  = require('../middleware/authz')
 var {bodyParam,populate,json2mb,cache}    = require('../middleware/data')
 var Router                                = require('express').Router
 
+
 module.exports = {
 
 matching: Router()
@@ -21,6 +22,7 @@ matching: Router()
 spinning: Router()
   .use(spnr)
   .use(cache.slackReady)
+  .use(cache.templatesReady)
   .param('request', API.Requests.paramFns.getByIdForAdmin)
   .param('booking', API.Bookings.paramFns.getById)
   .param('order', API.Orders.paramFns.getByIdForAdmin)
@@ -31,11 +33,10 @@ spinning: Router()
   .delete('/:booking/recording/:recordingId', API.Bookings.deleteRecording)
   .put('/:booking', API.Bookings.updateByAdmin)
   .put('/:booking/:order/:request/:id/swap', API.Bookings.cheatExpertSwap)
-  .put('/:booking/create-chat', API.Bookings.createChat)
-  .put('/:booking/associate-chat', API.Bookings.associateChat)
   .post('/:booking/note', API.Bookings.addNote)
   .post('/experts/:expert/note', API.Experts.addNote)
-  .put('/chat/invite-to-team/:userId', API.Chat.inviteToTeam),
+  .put('/chat/invite-to-team/:userId', API.Chat.inviteToTeam)
+  .post('/chat/:booking/message', API.Bookings.postChatMessage),
 
 
 other: Router()
@@ -48,6 +49,7 @@ other: Router()
   .param('expertshaped', API.Experts.paramFns.getById)
   .param('order', API.Orders.paramFns.getByIdForAdmin)
 
+  .use(cache.templatesReady)
   .get('/session/full', setAnonSessionData, API.Users.getSession)
   .put('/users/me/password-change', API.Users.requestPasswordChange)
   .put('/users/me/tag/:tag', setAnonSessionData, API.Users.toggleTag)
@@ -143,13 +145,18 @@ other: Router()
   .get('/payouts/me', API.Payouts.getPayouts)
 
   .use(cache.slackReady)
+  .use(populate.user)
   .put('/billing/orders/:order/release', populate.orderBooking, API.Orders.releasePayout)
-  .post('/bookings/:expertshaped', populate.user, API.Bookings.createBooking)
+  .post('/bookings/:expertshaped', API.Bookings.createBooking)
   .get('/bookings', API.Bookings.getByUserId)
+  .get('/bookings/expert', API.Bookings.getByExpertId)
   .get('/bookings/:bookingforparticipant', API.Bookings.getForParticipant)
   .put('/bookings/:booking/suggest-time', API.Bookings.suggestTime)
   .put('/bookings/:booking/confirm-time', API.Bookings.confirmTime)
-  .put('/bookings/:booking/:expert/customer-feedback', API.Bookings.customerFeedback),
+  .put('/bookings/:booking/:expert/customer-feedback', API.Bookings.customerFeedback)
+  .put('/bookings/:booking/create-chat', API.Bookings.createChat)
+  .put('/bookings/:booking/associate-chat', API.Bookings.associateChat),
+
 
 
 admin: Router()
@@ -162,6 +169,7 @@ admin: Router()
   .get('/tags/:id', API.Tags.getById)
   .post('/tags', API.Tags.createByAdmin)
   .put('/tags/:tagforadm', API.Tags.updateByAdmin)
+  .use(cache.templatesReady)
   .get('/posts', API.Posts.getNewFoAdmin)
   .get('/posts/all', API.Posts.getAllForAdmin)
   .get('/orders/:start/:end/:userId?', API.Orders.getByQueryForAdmin)

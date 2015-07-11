@@ -34,6 +34,11 @@ var validation = {
 
     if (!Roles.isParticipant(user,original))
       return `Cannot suggest time. You[${user._id}] are not a participant to the Booking[${original._id}]`
+
+    var mom = moment(time)
+    var existing = _.find(original.suggestedTimes,(t)=>mom.isSame(moment(t.time)))
+    if (existing)
+      return `Time[${mom}] already suggested as an option for Booking[${original._id}]`
   },
 
   confirmTime(user, original, timeId)
@@ -101,6 +106,21 @@ var validation = {
     }
   },
 
+  postChatMessage(user, original, chatMessage)
+  {
+    var type = (chatMessage) ? chatMessage.type : null
+    if (!type || !(type=='attachmet'||type=='message'))
+      return `Booking chat type [message] or [attachment] required`
+    if (!chatMessage.text)
+      return `Booking chat message text required`
+    if (!chatMessage.key)
+      return `Booking chat message key require`
+    if (!cache.templates[`slack-message:booking-${original.status}-${chatMessage.key}`])
+      return `Booking chat message template [booking-${original.status}-${chatMessage.key}] not found`
+    if (!original.chat)
+      return `Booking[${original._id}] requires associate chat to post message to`
+  },
+
   addYouTubeData(user, original, youTubeId)
   {
     if (!youTubeId) return `YouTube ID Required`
@@ -150,10 +170,19 @@ var validation = {
     if (!groupchat.purpose) return `Booking group chat purpose required`
   },
 
-  associateChat(user, booking, type, id)
+  associateChat(user, booking, provider, providerId)
   {
-    if (booking.chatId) return `[${booking._id}] already associated with [${booking.chatId}]. Disassociate first?`
-    if (type != "slack") return `Only slack chat supported at the moment`
+    if (!Roles.isPrimaryExpertOrAdmin(user,booking))
+      return `Must be primary expert on [${booking._id}] to associate existing chat`
+
+    if (booking.chatId)
+      return `[${booking._id}] already associated with [${booking.chatId}]. Disassociate first?`
+
+    if (provider != "slack")
+      return `Only slack chat supported at the moment`
+
+    if (!providerId)
+      return `ProviderId require to associate chat with Booking`
   },
 
   addNote(user, booking, note)

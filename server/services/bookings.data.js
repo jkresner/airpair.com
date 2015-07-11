@@ -1,7 +1,10 @@
-import * as md5         from '../util/md5'
-var {selectFromObject}  = util
-var {Slack}             = Wrappers
-var {filterSlackHistory}= require("../../shared/bookings")
+import * as md5                     from '../util/md5'
+var {selectFromObject}              = util
+var {Slack}                         = Wrappers
+var {filterSlackHistory,
+  rebookUrl,multitime,
+  customers,experts}                = require("../../shared/bookings")
+var {pairbot,jk,support}            = config.chat.slack
 
 var select = {
   itemIndex: {
@@ -17,11 +20,13 @@ var select = {
     'customerId': 1,
     'expertId': 1,
     'createdById':1,
-    'chat': 1,
     'order':1,
     'orderId':1,     // leave this one for the create action
     'request': 1,
-    'reviews':1
+    'reviews':1,
+    'rebookUrl': 1,
+    'chat': 1,
+    'chatSyncOptions': 1,
   },
   listIndex: {
     '_id': 1,
@@ -32,6 +37,7 @@ var select = {
     // 'recordings':1,
     'participants.role':1,
     'participants.info':1,
+    'rebookUrl': 1
     // 'paidout':1
   },
   listAdmin: {
@@ -64,7 +70,6 @@ var select = {
     'participants':1
   },
   inflateParticipantInfo(participants) {
-    // $log('inflateParticipantInfo')
     for (var p of (participants || [])) {
       p.info.avatar = md5.gravatarUrl(p.info.email)
       p.chat = p.chat || { slack: Slack.checkUserSync(p.info) }
@@ -72,17 +77,30 @@ var select = {
     }
   },
   inflateChatInfo(chat) {
-    if (!chat) return
+    if (!chat || !chat._id) return
     chat.members = {}
     for (var m of chat.info.members||[])
-      chat.members[m] = Slack.checkUserSync({id:m}) || {id:m}
+      if (!_.contains([pairbot.id,jk.id,support.id],m))
+        chat.members[m] = Slack.checkUserSync({id:m}) || {id:m}
     chat.history = filterSlackHistory(chat.history)
+  },
+  slackMsgTemplateData(b) {
+    select.inflateParticipantInfo(b.participants)
+    return {
+      status: b.status,
+      bookingId: b._id,
+      minutes: b.minutes,
+      customer: customers(b)[0].chat.slack.name,
+      expert: experts(b)[0].chat.slack.name,
+      multitime: multitime(b)
+    }
   },
   cb: {
     inflate(cb, selectFields) {
       var inflateSelect = (b) => {
         select.inflateParticipantInfo(b.participants)
         select.inflateChatInfo(b.chat)
+        b.rebookUrl = rebookUrl(b)
         return (selectFields) ? selectFromObject(b,selectFields) : b
       }
 
@@ -151,7 +169,7 @@ var opts = {
   orderByDate: { sort: { 'datetime': -1 } },
   getById: {
     join: {
-      'chatId': '_id type provider, providerId',
+      'chatId': '_id type provider providerId',
     }
   },
   forAdmin: {
