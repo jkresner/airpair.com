@@ -37,7 +37,8 @@ var select = {
     'published': 1,
     'submitted': 1,
     'tags': 1,
-    'stats': 1
+    'stats': 1,
+    'prize': 1,
   },
   listAdmin: {
     'by.name': 1,
@@ -329,6 +330,13 @@ var query = {
     ]
 
     return andQuery(query, andCondition)
+  },
+
+  comp2015winners() {
+    return {
+      'prize' : { '$exists': true },
+      'prize.comp': '2015_q1'
+    }
   },
 
   //posts published before now or readyForReview
