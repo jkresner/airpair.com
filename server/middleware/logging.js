@@ -7,11 +7,10 @@ var middleware = {
     var logging = true
     var userAgent = req.get('user-agent')
 
-    if (util.isBot(userAgent)) {
-      var badBotPattern = /MegaIndex|uk_lddc_bot|MJ12bot|CPython|libwww-perl|Superfeedr|Mechanize/i
+    if (util.isBot(userAgent, config.bots.all)) {
       var referer = req.header('Referer')
       var ref = (referer) ? ` <<< ${referer}` : ''
-      if (util.isBot(userAgent,badBotPattern)) {
+      if (util.isBot(userAgent, config.bots.bad)) {
         $log(`__BADBOT${req.ip}`.cyan,`${userAgent}`.blue,`${req.originalUrl} ${ref}`.gray)
         return res.status(200).send('')
       }

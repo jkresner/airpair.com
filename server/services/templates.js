@@ -61,15 +61,17 @@ var interpolate = {
   },
 
   slackMSGSync(key, data) {
-    if (!cache.templates[key])
-      return $log(`template ${key} not found in cache`.warning)
+    var tmpl = cache.templates[`slack-message:${key}`]
 
-    var tmpl = cache.templates[key]
-    if (tmpl.subtype == 'message')
+    if (!tmpl)
+      $log(`template slack-message:${key} not found in cache`.warning)
+
+    else if (tmpl.subtype == 'message')
       return {
         type: 'message',
         text: tmpl.markdownFn(data)
       }
+
     else if (tmpl.subtype == 'attachment')
       return {
         type: 'attachment',
@@ -97,7 +99,7 @@ var interpolate = {
       {
         var type = cache.templates[tmlpKey].subtype
         var msgKey = tmlpKey.replace(`slack-message:booking-${status}-`,'')
-        msgs[msgKey] = interpolate.slackMSGSync(tmlpKey,data)  //message|attachment
+        msgs[msgKey] = interpolate.slackMSGSync(`booking-${status}-${msgKey}`,data)  //message|attachment
       }
     }
     return msgs

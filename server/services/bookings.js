@@ -133,6 +133,7 @@ var save = {
       if (ee) return cb(ee)
       var bookingId = svc.newId()
       OrdersSvc.createBookingOrder.call(this, bookingId, expert, datetime, minutes, type, credit, payMethodId, requestId, dealId, (e, order) => {
+        // $log('createBookingOrder.done'.trace, e, order)
         if (e) return cb(e)
 
         var {user} = this
@@ -154,7 +155,7 @@ var save = {
           activity: [touch]
         }
         var d = {byName:user.name,expertName:expert.name, bookingId:booking._id,minutes,type}
-        mailman.send('pipeliners', 'pipeliner-notify-booking', d, ()=>{})
+        mailman.send('spinners', 'pipeliner-notify-booking', d, ()=>{})
         mailman.send(expert, 'expert-booked', d, ()=>{}) // todo add type && instructions to email
 
         svc.create(booking, select.cb.itemIndex(cb))
@@ -188,15 +189,12 @@ var save = {
 
     original.datetime = datetime
     createBookingGoogleCalendarEvent(original, cb, (gcal) => {
-      if (original.chat) {
-        var multitime = BookingdUtil.multitime(original)
-        var d = {multitime,byName:this.user.name,bookingId:original._id}
-        pairbot.sendSlackMsg(original.chat.providerId, 'booking-confirm-time', d)
-      }
-
-      svc.updateWithSet(original._id,
-        {suggestedTimes,lastTouch,activity,datetime,status,gcal},(e,r) => {
+      var ups = {suggestedTimes,lastTouch,activity,datetime,status,gcal}
+      svc.updateWithSet(original._id, ups, (e,r) => {
         $callSvc(get.getByIdForParticipant,this)(original._id,cb)
+        if (original.chat)
+          pairbot.sendSlackMsg(original.chat.providerId, 'booking-confirm-time',
+            select.slackMsgTemplateData(r,{byName:this.user.name}) )
       })
     })
   },
@@ -335,7 +333,7 @@ var admin = {
   {
     var {providerId,provider} = original.chat
     var data = _.extend(select.slackMsgTemplateData(original),{text:chatMessage.text})
-    pairbot.sendSlackMsg(providerId,`slack-message:booking-${original.status}-${chatMessage.key}`, data, (e,msg) => {
+    pairbot.sendSlackMsg(providerId,`booking-${original.status}-${chatMessage.key}`, data, (e,msg) => {
       if (e) return cb(e)
       updateForAdmin(this, original, {}, 'adm-post-chat', cb)
     })
@@ -367,7 +365,7 @@ var admin = {
 
       updateForAdmin(this, original, {status:'followup',recordings}, 'adm-start-hangout', (e,r) => {
         if (!e && r && r.chat)
-          pairbot.sendTemplateSlackMsg(r.chat.providerId, 'hangout-started-slack', {hangoutUrl})
+          pairbot.sendSlackMsg(r.chat.providerId, 'hangout-started-slack', {hangoutUrl})
         cb(e,r)
       })
     })

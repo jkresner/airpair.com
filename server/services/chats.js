@@ -39,10 +39,10 @@ var get = {
     // TODO: could use expert token to be more efficient ...
     Wrappers.Slack.getGroups('pairbot',(e,r)=>{
       for (var info of r) {
-        var union = _.union(info.members,memberIds)
-        if (union.length == participants.length)
+        var intersection = _.intersection(info.members,memberIds)
+        if (intersection.length == participants.length)
           match = _.extend({type:'group',provider:'slack',info})
-        else if (union.length > 1)
+        else if (intersection.length > 1)
           possibles.push(_.extend({type:'group',provider:'slack',info}))
       }
       cb(e,match,possibles)
