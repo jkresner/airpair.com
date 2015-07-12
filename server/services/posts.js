@@ -197,6 +197,12 @@ var get = {
     }))
   },
 
+  getAll2015CompWinners(cb) {
+    var q = query.comp2015winners()
+    var options = { fields: Data.select.list, options: { sort: { 'published': -1 } } };
+    svc.searchMany(q, options, selectCB.addUrl(cb))
+  },
+
   getRecentPublished(cb) {
     var q = query.published()
     q['$and'].push({'tmpl' : { '$ne': 'blank' }})
@@ -557,7 +563,9 @@ var saveReviews = {
   },
 
   reviewDelete(post, original, cb) {
-
+    var review = _.find(post.reviews,(r)=>_.idsEqual(r._id,original._id))
+    var reviews = _.without(post.reviews,review)
+    svc.updateWithSet(post._id, {reviews}, selectCB.statsView(cb))
   },
 
 }
