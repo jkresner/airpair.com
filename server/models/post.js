@@ -66,6 +66,9 @@ var Forker = new mongoose.Schema({
 var tmplType = ['post','blank','landing','faq'] //,'customsidebar']
 
 
+var compType = ['2015_q1']
+
+
 var PublishEvent = new mongoose.Schema({
   touch:        { type: Shared.Touch },
   commit:       { type: {} }, // sha hash
@@ -102,6 +105,13 @@ module.exports = mongoose.model('Post', new mongoose.Schema({
   editHistory:      [Shared.Touch],
   publishHistory:   [PublishEvent],
 
-  stats:            StatsSummary
+  stats:            StatsSummary,
+
+  prize:            {
+    comp:       { type: String, enum: compType },
+    sponsor:    { type: String },
+    name:       { type: String },
+    tag:        { type: String },
+                    }
 
 }))
