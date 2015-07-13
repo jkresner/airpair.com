@@ -300,7 +300,6 @@ header.top {
       img { max-width:110px;margin:10px 14px; }
     }
 
-
     @media only screen and (max-width:640px) {
       padding-bottom:10px;
       min-height:inherit;
@@ -331,70 +330,12 @@ header.top {
     }
   }
 
-  // .fold2 {
-  //   background:url('../img/pages/postscomp/banner-bg.png');
-  //   background-size:100%;
-
-  //   img.plus { margin:0px 20px;width:40px  }
-  //   img.typewriter { margin:10px 10px 0 0;width:130px }
-  //   img.github { margin:10px 35px;width:130px; }
-  //   img.hundred { margin:-20px 0 0 30px;width:190px }
-
-  // }
-
   .about {
-    min-height:520px;
     position:relative;
-    color:white;
     background:@darkblue;
-    h2 { margin-bottom:0px }
-    p { max-width:900px;
-      margin:22px auto 0 auto;
-      padding:6px 20px 0 20px;
-      text-align:center;
-      font-size:20px }
-    span { max-width:800px;
-      margin:2px auto 0 auto;padding:2px;
-      text-align:center;font-size:16px;color:@mediumgray;
-      display:block;
-      b { color:@turquoise;font-weight:normal; }
-    }
-    ul.stats {
-      .ulNoStyle;
-      // background:@darkblue;
-      opacity:0.9;
-      height:100px;
-      max-width:800px;
-      border:solid 1px @orange;
-      margin:30px auto 10px auto;
-      li {
-        h5 {
-          font-size:26px;text-transform:none;
-          color:white;
-        }
-        color:@mediumgray;
-        font-size:11px;
-        text-transform:uppercase;
-        padding:16px;
-        width:24%;
-        text-align:center;
-      }
-    }
-
-    // .parallax {
-      perspective: 1px;
-      overflow-x: hidden;
-      overflow-y: hidden;
-    // }
-
-    .parallax__layer {
-      // border:solid 1px red;
-      img.viewsbg {
-        opacity:0.05;width:100%;
-        position: absolute;
-        top: 0;
-      }
-    }
+    // color:white;
+    padding:10px 20px 30px 20px;
+    h2.underline { padding-bottom:10px;margin-bottom:10px;border-bottom:solid 1px @lightblue;color:white }
 
     @media only screen and (max-width:640px) {
       .viewsbg { display:none }
@@ -419,6 +360,17 @@ header.top {
       }
     }
 
+   .posttile {
+      margin:20px 5px 10px 5px;
+      max-width:286px;
+      padding:2px;
+      .logo { top:5px }
+      h3.sponsor { margin:4px 2px 0px 2px;padding:0px;font-size:12px;line-height:18px }
+      h6 { margin:2px 2px 10px 2px;line-height:20px;font-size:16px }
+      header { border:none }
+      .entry-content { border:none }
+      footer { border:none }
+    }
 
     .pastauthors {
       .ulNoStyle;
@@ -426,7 +378,7 @@ header.top {
       li {
         display:inline-block;
         width:30%;
-        p { font-size:14px;display:inline-block;padding:5px;max-width:200px;margin-top:0px  }
+        p { font-size:16px;display:inline-block;padding:5px;max-width:200px;margin-top:0px  }
         img { border-radius:50%;display:block;margin:30px auto 0px auto }
         b { display:block; }
       }
@@ -438,260 +390,46 @@ header.top {
         }
       }
     }
-
-  }
-
-  .details {
-    position:relative;
-    clear:both;
-
-    font-size:15px;
-    padding:20px 0 20px 0;
-
-    color:@gray;
-    h2 {
-      text-align:left;
-      margin-bottom:30px;
-      font-size:24px;
-      border-bottom:solid 1px @lightblue
-    }
-
-    .typewriter {
-      margin:-30px 0 0 -30px;
-      position:absolute;
-      width:300px;
-      left:0;
-    }
-
-    img.flow {
-      max-width:620px;
-      margin:30px auto;
-      display:block;
-    }
-
-    hr { width:1% }
-
-    > section > div {
-      padding-left:280px;
-    }
-
-    .btn {
-      width:320px;
-    }
-
-    margin-bottom:20px;
-
-    .rules {
-      color:white;
-      h3 { font-weight:bold }
-      code { font-size:20px;margin-bottom:30px;padding:20px;color:black }
-      b { color:@lightorange }
-      padding-bottom:50px;
-      .btn { max-width:300px }
-      span { display:inline;color:@blue }
-      .fineprint { font-size:16px;padding:10px }
-    }
-
-    @media only screen and (max-width:640px) {
-      padding:5px;
-      font-size:14px;
-      h2 { margin:20px;font-size:22px;line-height:28px;border-bottom:none;text-align:center; }
-      .typewriter { display:none }
-      > section > div {
-        padding-left:0px;
-      }
-      p { margin:20px }
-      img.flow { display:none }
-      .btn {
-        max-width:90%;font-size:13px;
-      }
-
-      .rules {
-        code { font-size:14px;margin-bottom:30px;padding:5px;color:black;width:220px }
-      }
-    }
   }
 
   .prizes {
-    h2 { border-bottom:solid 1px @lightblue }
+
+    padding-bottom:30px;
     h3 { text-transform:uppercase;color:#232835 }
+    h2.underline { border-bottom:solid 1px @lightblue }
     section { text-align:left }
+    .posttile { height:360px;margin-bottom:20px }
+    h3.sponsor { margin-top:0;padding-top:0;font-size:22px }
+    .logo { max-width:80px;max-height:50px;position:absolute;right:10px;top:10px }
     .prize-section {
       width:448px;display:inline-block;vertical-align:top;
       // border: solid 1px blue;
       // max-width:100%;
       img { max-width:95% }
     }
-    .top-prizes {
-      .ulNoStyle;
-      li { background:@lightorange;border-radius:50%;margin:10px auto;
-        color:white;text-align:center;padding-top:3.5%;
-      }
-      li:hover {
-        background:@orangehighlight;
-      }
-    }
-
-    .category-prizes {
-      .ulNoStyle;
-      li { background:@lightblue;border-radius:50%;margin:10px 5px;
-        color:black;text-align:center;padding-top:2%;width:80px;height:80px;
-        font-size:12px;vertical-align:top;
-        span {
-          font-size:9px;line-height:14px;display:block;
-        }
-      }
-      li:hover {
-        background:@orangehighlight;
-      }
-    }
-
-    table td {
-      text-align:left;
-      font-size:16px;
-      height:40px;
-      padding:4px;
-      vertical-align:middle;
-      img { max-width:90px;max-height:32px }
-      b { font-size:22px;color:black }
-    }
-
-    @media only screen and (max-width:640px) {
-      .prize-section {
-        width:320px;
-      }
-    }
-  }
-
-
-  #successes {
-    padding-bottom:40px;
-    h5 { line-height:10px;font-weight:bold; }
-    h4 { line-height:22px;font-size:16px;color:@lightorange;margin:0px 15px }
-    > div {
-      margin:5px;
-      vertical-align:top;
-      max-width:280px;max-height:390px;overflow:hidden;display:inline-block;
-      img { max-width:300px }
-      p { margin:5px 0 10px 0;font-size:18px }
-    }
-  }
-    // .authorfeedback {
-    //   img { border-radius:50%;margin:-35px 0 20px 0;float:right }
-    //   p { display:inline-block;padding:5px;font-size:14px;font-style:italic }
-    //   b { text-align:right;display:block;padding-right:65px }
+    // .top-prizes {
+    //   .ulNoStyle;
+    //   li { background:@lightorange;border-radius:50%;margin:10px auto;
+    //     color:white;text-align:center;padding-top:3.5%;
+    //   }
+    //   li:hover {
+    //     background:@orangehighlight;
+    //   }
     // }
 
-    // .why {
-    //   img { max-width:100%;border:solid 2px @lightblue;
-    //     margin:10px 0 10px 0;padding:5px 0px;
-    //   }
-    //   li {
-    //     margin:10px 0 20px 0
-    //   }
-  // .colA { width:46%;float:left;margin-right:55px;margin-bottom:30px;
-
-  //   h3 { font-size:20px; color:@darkblue;  }
-  // }
-  // .colB { width:47%;float:left;margin:auto;margin-bottom:30px }
-
-  // @media only screen and (max-width:640px) {
-  //   .colA { width:95%;float:none;margin:auto }
-  //   .colB { width:95%;float:none;margin:auto }
-
-  //   .pw-button-tumblr { display:none!important }
-  //   .pw-button-reddit { display:none!important }
-  // }
-
-  // .cta2 {
-  //   clear:both;
-  //   height:160px;
-  //   background:@darkblue;
-  //   > div { max-width:900px;margin:auto }
-  //   h3 { font-size:20px;margin:5px 0 0 0 }
-  //   margin:20px 0;
-  //   padding:10px;
-  //   text-align:center;
-  //   // .btn { margin:0 auto 5px auto;width:280px; }
-  //   p { text-transform:uppercase;color:@lightorange;
-  //     margin:2px auto }
-  //   b { color:white }
-  //   form {
-  //     height:120px;
-  //     position:relative;
-  //     vertical-align:top;
-  //     .postCompEmailDiv { margin:2px auto;width:90%  }
-  //     .postCompNameDiv {
-  //       position:absolute;
-  //       top:35px;
-  //       left:30px;
-  //       right:310px;
-  //       display:inline-block;
-  //       margin:0;
-  //       padding:0;
-  //       height:100px;
-  //     }
-
-  //     .error {
-  //       max-width:90%;
-  //       margin:auto;
-  //       padding-top:2px;
-  //       text-align:right
-  //     }
-
-  //     input {
-  //       margin-top:5px;
-  //       border-radius:2px;
-  //       border-top:none;border-left:none;border-right:none;box-shadow:none;
-  //       border-bottom:solid 2px @turquoise;
-  //       width:100%;
-  //       font-size:24px;
-  //       padding:16px 0px 15px 10px;
-  //     }
-
-  //     .has-error input {
-  //       border-bottom:solid 2px @error;
-  //     }
-
-  //     .inputPlaceholder { color:@lightorange;font-size:20px }
-  //     input::-webkit-input-placeholder { .inputPlaceholder }
-  //     input::-moz-placeholder { .inputPlaceholder }
-  //     input:-ms-input-placeholder { .inputPlaceholder }
-
-  //     button {
-  //       position:absolute;
-  //       top:40px;
-  //       right:30px;
-  //       width:30%;
-  //       padding:20px;
-  //       text-transform:uppercase;
-
-  //       &.focushide {
-  //         width:1px;opacity:0;
-  //         font-size:1px;
-  //       }
-  //     }
-
-  //     span {
-  //       position:absolute;
-  //       top:102px;
-  //       right:35px;
-  //     }
-  //   }
-  // }
-
-  // .cta3 {
-  //   clear:both;
-  //   height:120px;
-  //   background:@darkblue;
-  //   margin:20px 0;
-  //   padding:20px;
-  //   text-align:center;
-  //   .btn { margin:0 auto 5px auto;width:280px; }
-  //   p { text-transform:uppercase;color:@lightorange;
-  //     margin:2px auto }
-  //   b { color:white }
-  // }
+    // .category-prizes {
+      // li { background:@lightblue;border-radius:50%;margin:10px 5px;
+      //   color:black;padding-top:2%;width:80px;height:80px;
+      //   font-size:12px;vertical-align:top;
+      //   span {
+      //     font-size:9px;line-height:14px;display:block;
+      //   }
+      // }
+      // li:hover {
+      //   background:@orangehighlight;
+      // }
+    // }
+  }
 
 }
 

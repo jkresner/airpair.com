@@ -18,6 +18,7 @@ var utilFns = {
     return utilFns.experts(booking)[0].info
   },
 
+
   searchBits(booking) {
     return [
       firstName(utilFns.firstCustomer(booking).name).replace("'",""),
@@ -43,6 +44,10 @@ var utilFns = {
       { location:user.localization.location, timeZoneId:user.localization.timezoneData.timeZoneId }
 
     return _.extend(timeLoc, { role, info: { _id: user._id, name: user.name, email: user.email } })
+  },
+
+  participantSlackHandle(participant) {
+    return (!participant.chat) ? 'null' : participant.chat.slack.name
   },
 
   suggestedTimesInflate(b,timeZoneId)
