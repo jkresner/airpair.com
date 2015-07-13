@@ -56,6 +56,16 @@ var select = {
     'lastTouch': 1,
     'tags': 1
   },
+  listComp: {
+    'by.name': 1,
+    'by.avatar': 1,
+    'meta.canonical': 1,
+    'meta.ogImage': 1,
+    'title':1,
+    'slug': 1,
+    'stats': 1,
+    'prize': 1,
+  },
   listCache: {
     '_id': 1,
     'by.name': 1,

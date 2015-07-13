@@ -36,18 +36,26 @@ describe 'Migration: '.spec, ->
     global.logging            = false
     MongoClient               = require('mongodb').MongoClient
     MongoClient.connect config.mongoUri, (err, db) ->
-      db.collection 'bookings', (err, Bookings) ->
-        global.Bookings = Bookings
-        db.collection 'orders', (err, Orders) ->
-          global.Orders = Orders
-          db.collection 'requests', (err, Requests) ->
-            global.Requests = Requests
+      db.collection 'posts', (err, Posts) ->
+        global.Posts = Posts
+        done()
+
+      # db.collection 'bookings', (err, Bookings) ->
+      #   global.Bookings = Bookings
+        # db.collection 'orders', (err, Orders) ->
+        #   global.Orders = Orders
+          # db.collection 'requests', (err, Requests) ->
+          #   global.Requests = Requests
     #   $log("                 Connected to db #{config.mongoUri}".appload)
     #   db.collection 'experts', (err, Experts) ->
     #     global.Experts = Experts
     #     db.collection 'users', (err, Users) ->
     #       global.Users = Users
-            done()
+
+  it '20150712 Post Comp Prizes', (done) ->
+    require('./20150712postcomp')(done)
+    expect(true).to.be.true
+
 
   # it '20150704 2013-2014 orderIds on migrated bookings', (done) ->
   #   require('./20150704orderIdonBookings')(done)
