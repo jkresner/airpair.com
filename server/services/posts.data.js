@@ -37,7 +37,8 @@ var select = {
     'published': 1,
     'submitted': 1,
     'tags': 1,
-    'stats': 1
+    'stats': 1,
+    'prize': 1,
   },
   listAdmin: {
     'by.name': 1,
@@ -54,6 +55,16 @@ var select = {
     'updated': 1,
     'lastTouch': 1,
     'tags': 1
+  },
+  listComp: {
+    'by.name': 1,
+    'by.avatar': 1,
+    'meta.canonical': 1,
+    'meta.ogImage': 1,
+    'title':1,
+    'slug': 1,
+    'stats': 1,
+    'prize': 1,
   },
   listCache: {
     '_id': 1,
@@ -329,6 +340,13 @@ var query = {
     ]
 
     return andQuery(query, andCondition)
+  },
+
+  comp2015winners() {
+    return {
+      'prize' : { '$exists': true },
+      'prize.comp': '2015_q1'
+    }
   },
 
   //posts published before now or readyForReview

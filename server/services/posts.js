@@ -197,6 +197,19 @@ var get = {
     }))
   },
 
+  getAll2015CompWinners(cb) {
+    var getWinners = function(callback) {
+      var q = query.comp2015winners()
+      var options = { fields: Data.select.listComp, options: { sort: { 'stats.reviews': -1 } } };
+      svc.searchMany(q, options, selectCB.addUrl((e,r)=>{
+        for (var p of r||[]) p.prize.pic = (p.prize.sponsor == 'airpair') ? `prize-${p.prize.tag}` : `logo-${p.prize.tag}`
+        callback(e,r)
+      }))
+    }
+    $log('getAll2015CompWinners'.gray)
+    cache.getOrSetCB('2015postcomp', getWinners, cb)
+  },
+
   getRecentPublished(cb) {
     var q = query.published()
     q['$and'].push({'tmpl' : { '$ne': 'blank' }})
@@ -553,11 +566,15 @@ var saveReviews = {
     var review = _.find(post.reviews,(r)=>_.idsEqual(r._id,original._id))
     var vote = { _id: svc.newId(), val: 1, by: svc.userByte.call(this) }
     review.votes.push(vote)
+    post.stats = PostsUtil.calcStats(post)
     svc.update(post._id, post, selectCB.statsView(cb))
   },
 
   reviewDelete(post, original, cb) {
-
+    var review = _.find(post.reviews,(r)=>_.idsEqual(r._id,original._id))
+    var reviews = _.without(post.reviews,review)
+    var stats = PostsUtil.calcStats(_.extend(post,{reviews}))
+    svc.updateWithSet(post._id, {reviews,stats}, selectCB.statsView(cb))
   },
 
 }

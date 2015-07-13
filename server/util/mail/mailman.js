@@ -20,11 +20,15 @@ function initTemplates() {
   }
 }
 
-var receivers = {}
+var receivers = { pipeliners: [], spinners: [] }
 function initReceivers() {
   getUsersInRole('pipeliner', (e,r) => {
-    receivers.pipeliners = []
-    for (var {name,email} of r) { receivers.pipeliners.push(`${name} <${email}>`) }
+    for (var {name,email} of r)
+      receivers.pipeliners.push(`${name} <${email}>`)
+  })
+  getUsersInRole('spinner', (e,r) => {
+    for (var {name,email} of r)
+      receivers.spinners.push(`${name} <${email}>`)
   })
 }
 
@@ -119,7 +123,9 @@ module.exports = function(mailProvider)
     },
 
     send(toUser, tmpl, data, cb) {
-      if (toUser == 'pipeliners')
+      if (toUser == 'spinners')
+        sendMassEmail(tmpl,data,receivers.spinners,cb)
+      else if (toUser == 'pipeliners')
         sendMassEmail(tmpl,data,receivers.pipeliners,cb)
       else
         sendTemplateEmail(tmpl, data, toUser, cb)

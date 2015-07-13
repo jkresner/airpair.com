@@ -86,7 +86,6 @@ angular.module("APPostsDirectives", [])
     scope: true,
     controller($scope, $rootScope, $element, DataService) {
       var postId = $scope.post._id
-
       $scope.canVote = (review) =>
         review.by._id != $scope.session._id &&
         _.find(review.votes,(v)=>v.by._id==$scope.session._id) == null
@@ -99,6 +98,9 @@ angular.module("APPostsDirectives", [])
 
       $scope.toggleReply = (_id) =>
         $scope.replyOpen = ($scope.replyOpen) ? false : true
+
+      $scope.deleteReview = (_id) =>
+        DataService.posts.reviewDelete({postId,_id}, $scope.setScope)
     }
   }
 })
@@ -115,6 +117,9 @@ angular.module("APPostsDirectives", [])
         $scope.reviews = post.reviews
         $rootScope.starsAvg = post.stars.avg
         $scope.stars = { avg: post.stars.avg }
+        $scope.isEditor = ($scope.session.roles)
+          ? _.find($scope.session.roles,(role)=>role=='admin'||role=='editor')!=null
+          : false
       }
       $scope.setScope($scope.post)
 
