@@ -70,6 +70,10 @@ var cfg = {
       scope: ['identify','read','post','client']
     },
   },
+  bots: {
+    all: /googlebot|TurnitinBot|SMTBot|MegaIndex|Domain Re-Animator Bot|uk_lddc_bot|MJ12bot|CPython|libwww-perl|Superfeedr|Mechanize|AdsBot-Google|gurujibot|bitlybot|twitterbot|scritch|yandexbot|slurp|msnbot|bingbot|rogerbot|MetaURI|Hatena|PaperLiBot|QuerySeekerSpider|AhrefsBot|EmailMarketingRobot|ShowyouBot|Baiduspider|YisouSpider|facebookexternalhit|archive.org_bot|Y!J-ASR/i,
+    bad: /MegaIndex|uk_lddc_bot|MJ12bot|CPython|libwww-perl|Superfeedr|Mechanize/i,
+  },
   bitly:  {
     shortDomain: 'http://airpa.ir/',
     accessToken: 'b93731e13c8660c7700aca6c3934660ea16fbd5f' },
