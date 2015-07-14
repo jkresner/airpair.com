@@ -84,6 +84,10 @@ var get = {
 
 var Lines = {
   _new(type, qty, unitPrice, total, balance, profit, info) {
+    if (unitPrice % 1 != 0) unitPrice = parseFloat(unitPrice.toFixed(2))
+    if (total % 1 != 0) total = parseFloat(total.toFixed(2))
+    if (profit % 1 != 0) profit = parseFloat(profit.toFixed(2))
+
     return {_id: svc.newId(),type, qty, unitPrice, total, balance, profit, info}
   },
   credit(paid, total, expires, source)
@@ -115,10 +119,12 @@ var Lines = {
     var qty = 1
     return Lines._new('deal',qty,total,total,0,profit,info)
   },
-  redeemeddealtime(minutes, total, fromLineItem)
+  redeemeddealtime(minutes, unitPrice, fromLineItem)
   {
     var info = { name: `${minutes} Minutes`, source: fromLineItem._id }
-    return Lines._new('redeemeddealtime',1,-1*total,-1*total,0,0,info)
+    var qty = minutes/60
+    var total = -1 * qty * unitPrice
+    return Lines._new('redeemeddealtime',qty,-1*unitPrice,total,0,0,info)
   },
   payg(amount)
   {
@@ -188,7 +194,7 @@ function makeOrder(byUser, lineItems, payMethodId, forUserId, requestId, dealId,
   else
   {
     PayMethodSvc.getById.call({user:byUser}, payMethodId, (e,payMethod) => {
-      if (e || !payMethod || !payMethod.userId) return errorCB(e || `Could not find payMethod ${payMethodId}`)
+      if (e || !payMethod || !payMethod.userId) return errorCB(e || Error(`Could not find payMethod ${payMethodId}`))
 
       o.payMethod = payMethod // only for passing around, the object won't get saved to db
       o.payMethodId = payMethod._id // TODO: consider/test what happens if we delete a payMethod?
@@ -271,7 +277,7 @@ function bookUsingDeal(bookingId, expert, time, minutes, type, dealId, cb)
           if (li.info.remaining < need)
             deducted = li.info.remaining
 
-          var redeemedLine = Lines.redeemeddealtime(deducted, unitPrice*deducted/60, li)
+          var redeemedLine = Lines.redeemeddealtime(deducted, unitPrice, li)
           lineItems.unshift(redeemedLine)
           li.info.remaining = li.info.remaining - deducted
           li.info.redeemedLines.push({ lineItemId: redeemedLine._id, minutes: deducted, partial: deducted!=need })
@@ -284,7 +290,6 @@ function bookUsingDeal(bookingId, expert, time, minutes, type, dealId, cb)
 
     ordersToUpdate = _.map(ordersToUpdate, (id) => _.find(orders,(o)=> _.idsEqual(o._id, id) ) )
 
-    // console.log('bookUsingDeal Available minutes'.cyan, lineItems)
     makeOrder(this.user, lineItems, null, null, null, dealId, cb, (e, order) => {
 
       chargeAndTrackOrder(order, cb, (e,o) => {

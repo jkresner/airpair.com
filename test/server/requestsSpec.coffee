@@ -19,7 +19,7 @@ create = ->
 
 
   it 'Can start a request as logged in customer', itDone ->
-    SETUP.addAndLoginLocalUser 'josh', (s) ->
+    SETUP.addAndLoginLocalUser 'josb', (s) ->
       d = type: 'mentoring'
       POST '/requests', d, {}, (r) ->
         expect(r._id).to.exist

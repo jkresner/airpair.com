@@ -101,8 +101,8 @@ orderDeals = ->
                   expect(redeemOrder.lineItems.length).to.equal(2)
                   expect(redeemOrder.lineItems[0].type).to.equal('redeemeddealtime')
                   expect(redeemOrder.lineItems[0].total).to.equal(-60)
-                  expect(redeemOrder.lineItems[0].unitPrice).to.equal(-60)
-                  expect(redeemOrder.lineItems[0].qty).to.equal(1)
+                  expect(redeemOrder.lineItems[0].unitPrice).to.equal(-30)
+                  expect(redeemOrder.lineItems[0].qty).to.equal(2)
                   expect(redeemOrder.lineItems[0].balance).to.equal(0)
                   expectIdsEqual(redeemOrder.lineItems[1].bookingId._id,booking1._id)
                   # expectIdsEqual(redeemOrder.lineItems[1].bookingId,booking1._id)
@@ -152,10 +152,45 @@ orderDeals = ->
     #   expect(false).to.be.true
 
 
+  it 'Can use deal with decimal rate and 90 and 120 min increments', itDone ->
+    db.ensureDoc 'User', data.users.josh, (e1, u) ->
+      db.ensureDoc 'Order', data.orders.deal90mindec, (e2, o) ->
+        LOGIN 'josh', (sJosh) ->
+          dealId = o.lineItems[0].info.deal._id
+          dB1 = { dealId, datetime: moment().add(3, 'hour'), minutes: 120, type: 'offline', payMethodId: sJosh.primaryPayMethodId }
+          POST "/bookings/#{data.experts.snug._id}", dB1, {}, (b1) ->
+            db.readDoc 'Order', b1.orderId, (o2) ->
+              expect(o2.total).to.equal(0)
+              expect(o2.profit).to.equal(40)
+              expect(o2.lineItems.length).to.equal(2)
+              expect(o2.lineItems[0].type).to.equal('redeemeddealtime')
+              expect(o2.lineItems[0].unitPrice).to.equal(-111.11)
+              expect(o2.lineItems[0].total).to.equal(-222.22)
+              expect(o2.lineItems[0].profit).to.equal(0)
+              expect(o2.lineItems[1].type).to.equal('airpair')
+              expect(o2.lineItems[1].unitPrice).to.equal(111.11)
+              expect(o2.lineItems[1].total).to.equal(222.22)
+              expect(o2.lineItems[1].qty).to.equal(2)
+              # expect(o2.lineItems[1].profit).to.equal(222.22*0.18)
+              # expect(o2.lineItems[1].profit).to.equal(o.total)
+              expect(o2.lineItems[1].profit).to.equal(40)
+              dB2 = { dealId, datetime: moment().add(4, 'hour'), minutes: 90, type: 'opensource', payMethodId: sJosh.primaryPayMethodId }
+              POST "/bookings/#{data.experts.snug._id}", dB2, {}, (b2) ->
+                db.readDoc 'Order', b2.orderId, (o2) ->
+                  expect(o2.total).to.equal(0)
+                  expect(o2.profit).to.equal(30)
+                  expect(o2.lineItems.length).to.equal(2)
+                  expect(o2.lineItems[0].type).to.equal('redeemeddealtime')
+                  expect(o2.lineItems[0].unitPrice).to.equal(-111.11)
+                  expect(o2.lineItems[0].total).to.equal(-166.67)
+                  expect(o2.lineItems[0].profit).to.equal(0)
+                  expect(o2.lineItems[1].type).to.equal('airpair')
+                  expect(o2.lineItems[1].unitPrice).to.equal(111.11)
+                  expect(o2.lineItems[1].total).to.equal(166.67)
+                  expect(o2.lineItems[1].qty).to.equal(1.50)
+                  DONE()
+
 
 module.exports = ->
 
-  # @timeout 5000
-
   describe "Deals: ".subspec, orderDeals
-#

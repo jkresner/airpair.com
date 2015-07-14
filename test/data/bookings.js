@@ -36,17 +36,40 @@ module.exports = {
     ],
     "participants": [
         {
-            "role": "customer",
-            "_id": ObjectId("54dc2d2fd137810a00f2813d"),
-            "info": {"_id": ObjectId("54b49bf67b1047516695d508"),
-                "name": "Daniel Cardenas","email": "dan85.cardenas@gmail.com"}
+            "timeZoneId" : "America/New_York",
+            "location" : "Miami, FL, USA",
+            "_id" : ObjectId("54dc2d2fd137810a00f2813d"),
+            "role" : "customer",
+            "info" : { "email" : "dan85.cardenas@gmail.com", "name" : "Daniel Cardenas", "_id" : ObjectId("54b49bf67b1047516695d508") }
         },
         {
             "role": "expert",
             "_id": ObjectId("54dc2d2fd137810a00f2813c"),
             "info": {"_id": ObjectId("530416e51c67d1a4859d23c8"),
-                "name": "Adam Kerr","email": "ajrkerr@gmail.com"}
+                "name": "Adam Kerr","email": "ajrkerr@gmail.com"},
+            "timeZoneId" : "America/New_York",
+            "location" : "Miami, FL, USA",
         }
+    ]
+  },
+
+  noTimezones: {
+    "_id": ObjectId("54dc2d2fd137810a00f2813b"),
+    "type": "opensource",
+    "minutes": 60,
+    "status": "followup",
+    "datetime": ISODate("2015-03-12T03:33:18.576Z"),
+    "suggestedTimes": [{byId:ObjectId("54b49bf67b1047516695d508"),time:ISODate("2015-03-12T03:33:18.576Z")}],
+    "orderId": ObjectId("54dc2d2ed137810a00f2813a"),
+    "participants": [{
+            "_id" : ObjectId("54dc2d2fd137810a00f2813d"),
+            "role" : "customer",
+            "info" : { "email" : "dan85.cardenas@gmail.com", "name" : "Daniel Cardenas", "_id" : ObjectId("54b49bf67b1047516695d508") }
+        },{
+            "role": "expert",
+            "_id": ObjectId("54dc2d2fd137810a00f2813c"),
+            "info": {"_id": ObjectId("530416e51c67d1a4859d23c8"),
+                "name": "Adam Kerr","email": "ajrkerr@gmail.com"}}
     ]
   },
 

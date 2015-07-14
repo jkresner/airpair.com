@@ -101,7 +101,7 @@ describe 'Server: '.appload, ->
   spec @, 'Orders', 'ordersBooking'
   spec @, 'Orders', 'ordersDeals'
   spec @, 'Orders', 'ordersAdmin'
-  # # spec @, 'Posts'
+  spec @, 'Posts'
   spec @, 'Post Reviews', 'postsReviews'
   spec @, 'Bookings'
   spec @, 'Bookings', 'bookingsAdmin'
