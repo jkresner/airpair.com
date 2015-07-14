@@ -406,6 +406,9 @@ var opts = {
     var o = { sort: { 'published': -1 } }
     if (limit) o.limit = limit
     return o
+  },
+  highestRating: {
+    sort: { 'stats.reviews': -1, 'stats.rating': -1 }
   }
 }
 

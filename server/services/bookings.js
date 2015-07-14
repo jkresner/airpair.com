@@ -387,94 +387,47 @@ var admin = {
   //-- Short cut needs to be replaced by something much more robust
   cheatExpertSwap(booking, order, request, suggestionId, cb)
   {
-
-    //-- If there was a calendar invite, cancel and delete
-    //-- Grab the expert details from the expert or optional requestId
-
-    //-- We have to go to the order
-    //-- Change the airpair lineItem for the booking
-    //-- Adjust
-    //---- profit
-    //---- as the difference of
-    //--   (unitPrice - expertRate) * profit
-    //--
-    //---- expert
-    //--
-    //---- name
-
-    // {
-    //   "_id": "54c952a3f2c7f80900554313",
-    //   "type": "airpair",
-    //   "qty": 1,
-    //   "unitPrice": 106,
-    //   "total": 106,
-    //   "balance": 0,
-    //   "profit": 33,
-    //   "info": {
-    //     "expert": {
-    //       "userId": "53640d621c67d1a4859d3090",
-    //       "avatar": "//0.gravatar.com/avatar/9257dbb2fdd9d164711aa191420ef621",
-    //       "name": "Dominic Barnes",
-    //       "_id": "53640d81c1acca0200000021"
-    //     },
-    //     "paidout": false,
-    //     "minutes": "60",
-    //     "time": "2015-02-28T21:20:22.266Z",
-    //     "type": "private",
-    //     "name": "60 min (Dominic Barnes)"
-    //   }
-    // }
     var lineItems = order.lineItems
     var suggestion = _.find(request.suggested, (s)=> _.idsEqual(suggestionId,s._id))
     var expert = suggestion.expert
     var bookingLine = _.find(lineItems,(li)=>li.type=='airpair'&&_.idsEqual(li.info.expert._id,booking.expertId))
     var prevExpert = bookingLine.info.expert
-    bookingLine.info.swapped = [_.extend({utc:moment(),prevExpert})]
-    bookingLine.info.name = bookingLine.info.name.replace(prevExpert.name,suggestion.expert.name)
-    bookingLine.info.expert = _.pick(expert,['_id','userId','name','avatar'])
-    booking.gcal = null
 
-    //-- After updating order, change booking
-    //---- expertId
-    //----
-    //---- Find and update expert participant
+    User.findOne({_id:expert.userId},{localization:1,name:1,email:1}, (e, expertUser) => {
+      if (e) return callback(e)
 
-    var expertId = expert._id
-    var toRemove = _.find(booking.participants,(p)=>_.idsEqual(p.info._id,prevExpert.userId))
-    var participants = _.without(booking.participants,toRemove)
-    participants.push({ role:"expert", info:{ _id: expert.userId, name: expert.name, email: expert.email } })
-    // {
-    //     "_id" : ObjectId("54c952a4f2c7f80900554316"),
-    //     "createdById" : ObjectId("53a75e911c67d1a4859d3636"),
-    //     "customerId" : ObjectId("53a75e911c67d1a4859d3636"),
-    //     "expertId" : ObjectId("53640d81c1acca0200000021"),
-    //     "type" : "private",
-    //     "minutes" : 60,
-    //     "status" : "pending",
-    //     "datetime" : ISODate("2015-02-28T21:20:22.266Z"),
-    //     "orderId" : ObjectId("54c952a3f2c7f80900554315"),
-    //     "participants" : [
-    //         {
-    //             "role" : "customer",
-    //             "_id" : ObjectId("54c952a4f2c7f80900554318"),
-    //             "info" : {
-    //                 "_id" : ObjectId("53a75e911c67d1a4859d3636"),
-    //                 "name" : "Leslie Pound", "email" : "lesliedpound@gmail.com"
-    //             }
-    //         },
-    //         {
-    //             "role" : "expert",
-    //             "_id" : ObjectId("54c952a4f2c7f80900554317"),
-    //             "info" : {
-    //                 "_id" : ObjectId("53640d621c67d1a4859d3090"),
-    //                 "name" : "Dominic Barnes", "email" : "dominic@dbarnes.info"
-    //             }
-    //         }
-    //     ],
-    // }
+      //-- If there was a calendar invite, cancel and delete
+      //-- Grab the expert details from the expert or optional requestId
 
-    Order.findByIdAndUpdate(order._id,{ $set:{ lineItems } }, (e,r) =>
-      updateForAdmin(this, booking, {expertId,participants}, 'adm-swap-expert', cb))
+      //-- We have to go to the order
+      //-- Change the airpair lineItem for the booking
+      //-- Adjust
+      //---- profit
+      //---- as the difference of
+      //--   (unitPrice - expertRate) * profit
+      //--
+      //---- expert
+      //--
+      //---- name
+
+      bookingLine.info.swapped = [_.extend({utc:moment(),prevExpert})]
+      bookingLine.info.name = bookingLine.info.name.replace(prevExpert.name,suggestion.expert.name)
+      bookingLine.info.expert = _.pick(expert,['_id','userId','name','avatar'])
+      booking.gcal = null
+
+      //-- After updating order, change booking
+      //---- expertId
+      //----
+      //---- Find and update expert participant
+
+      var expertId = expert._id
+      var toRemove = _.find(booking.participants,(p)=>_.idsEqual(p.info._id,prevExpert.userId))
+      var participants = _.without(booking.participants,toRemove)
+      participants.push(BookingdUtil.participantFromUser("expert", expertUser))
+
+      Order.findByIdAndUpdate(order._id,{ $set:{ lineItems } }, (e,r) =>
+        updateForAdmin(this, booking, {expertId,participants}, 'adm-swap-expert', cb))
+    })
   },
 
 }
