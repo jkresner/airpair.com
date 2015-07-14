@@ -8,7 +8,10 @@ adminTasks = ->
   it "Can dirty swap available expert", itDone ->
     SETUP.ensureV1LoggedInExpert 'snug', ->
     SETUP.ensureBookingFromRequest 'swap1', (booking) ->
-      expect(_.find(booking.participants,(p)=>p.info.name == "Adam Kerr")).to.exist
+      initalExpert = _.find(booking.participants,(p)=>p.info.name == "Adam Kerr")
+      expect(initalExpert.info.name).to.equal("Adam Kerr")
+      expect(initalExpert.location).to.exist
+      expect(initalExpert.timeZoneId).to.exist
       expect(_.find(booking.participants,(p)=>p.info.name == "Ra'Shaun Stovall")).to.be.undefined
       LOGIN "admin", ->
         expectIdsEqual(booking.expertId,adamKerrId)
@@ -16,7 +19,10 @@ adminTasks = ->
           expectIdsEqual(b2._id,data.bookings.swap1._id)
           expectIdsEqual(b2.expertId,snggsId)
           expect(_.find(b2.participants,(p)=>p.info.name == "Adam Kerr")).to.be.undefined
-          expect(b2.participants,(p)=>p.info.name == "Ra'Shaun Stovall").to.exist
+          newExpert = _.find b2.participants,(p)=>p.info.name == "Ra'Shaun Stovall"
+          expect(newExpert.info.name).to.equal("Ra'Shaun Stovall")
+          expect(newExpert.location).to.exist
+          expect(newExpert.timeZoneId).to.exist
           db.readDoc 'Order', booking.orderId, (o2) ->
             expect(_.where(o2.lineItems,(li)->li.type=='airpair').length).to.equal(1)
             swappedLine = _.find(o2.lineItems,(li)=>li.type=='airpair'&&_.idsEqual(li.info.expert._id,"52127d5fc6a5870200000007"))
@@ -27,8 +33,9 @@ adminTasks = ->
             PUT "/billing/orders/#{booking.orderId}/release", {}, {}, (released1) ->
               LOGIN 'snug', (sSnug) ->
                 GET "/billing/orders/payouts", {}, (orders) ->
-                  expect(orders.length).to.equal(1)
-                  expectIdsEqual(orders[0]._id,booking.orderId)
+                  expect(orders.length>1).to.be.true
+                  oBooked = _.find(orders, (o) -> _.idsEqual(o._id,booking.orderId))
+                  expect(oBooked).to.exist
                   # Never quite took the test as far as the payout ...
                   DONE()
 

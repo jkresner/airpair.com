@@ -200,7 +200,7 @@ var get = {
   getAll2015CompWinners(cb) {
     var getWinners = function(callback) {
       var q = query.comp2015winners()
-      var options = { fields: Data.select.listComp, options: { sort: { 'stats.reviews': -1 } } };
+      var options = { fields: Data.select.listComp, options: opts.highestRating }
       svc.searchMany(q, options, selectCB.addUrl((e,r)=>{
         for (var p of r||[]) p.prize.pic = (p.prize.sponsor == 'airpair') ? `prize-${p.prize.tag}` : `logo-${p.prize.tag}`
         callback(e,r)

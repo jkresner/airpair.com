@@ -268,7 +268,7 @@ module.exports = -> describe "API: ", ->
 
   it 'Expert can not collect single released transaction with no paymethod', itDone ->
     SETUP.newLoggedInExpert 'abha', (expert, expertSession) ->
-      SETUP.newBookedRequestWithExistingExpert 'joba', {}, expertSession, (request, booking, customerSession, expertSession) ->
+      SETUP.newBookedRequestWithExistingExpert 'jbbb', {}, expertSession, (request, booking, customerSession, expertSession) ->
         SETUP.releaseOrderAndLogExpertBackIn booking.orderId, expertSession, ->
           GET "/billing/orders/payouts", {}, (orders) ->
             d = orders: _.pluck(orders,'_id')
@@ -331,6 +331,7 @@ module.exports = -> describe "API: ", ->
                           expectIdsEqual(payout1.lines[1].order._id,orders[0]._id)
                           d2 = orders: [orders[2]._id]
                           POST "/payouts/#{payoutmethod._id}", d2, {}, (payout2) ->
+                            expect(payout2.total).to.equal(70)
                             GET "/payouts/me", {}, (payouts) ->
                               expect(payouts.length).to.equal(2)
                               expect(payouts[0].total).to.equal(140)

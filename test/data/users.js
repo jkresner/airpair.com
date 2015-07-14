@@ -113,10 +113,11 @@ module.exports = {
   dily: { name: "Dilys Sun", email: "dilys@gmail.com"},
   dsun: { name: "Di Sun", email: "disun@gmail.com"},
 
-  josh: { name: "Josh Baylin", email: "jaybe@hotmail.com"},
+  josb: { name: "Josh Baylin", email: "jaybe@hotmail.com"},
   joba: { name: "Josh Baylin", email: "josh.baylin@gmail.com"},
   johb: { name: "Josh Baylin", email: "josh.baylin@hotmail.com"},
   jbay: { name: "Josh Baylin", email: "josh.b@hotmail.com"},
+  jbbb: { name: "Josh Baylin", email: "josh.bbb@hotmail.com"},
   mfly: { name: "Michael Flynn", email: "michael.flynn@hotmail.com"},
   mfln: { name: "Michael Flynn", email: "michael.flynn@gmail.com"},
   mikf: { name: "Michael Flynn", email: "michael.flynn@test.com"},
@@ -1996,6 +1997,7 @@ module.exports = {
     "username" : "snuggs",
     "initials" : "rs",
     "localization" : {
+        "timezoneData" : { "timeZoneName" : "Eastern Daylight Time", "timeZoneId" : "America/New_York" },
         "timezone" : "Eastern Daylight Time",
         "location" : "New York, État de New York, États-Unis"
     }
@@ -2649,4 +2651,23 @@ module.exports = {
       "location" : "Los Angeles, CA, USA"
     },
   },
+
+
+  josh: {
+    "_id" : ObjectId("51f7026666a6f999a465f4b0"),
+    "email" : "josh.baylin@gmail.com",
+    "emailVerified" : true,
+    "google" : { "emails" : [ { "type" : "account", "value" : "josh.baylin@gmail.com" } ] },
+    "googleId" : "104361530273318559319",
+    "initials" : "JB",
+    "name" : "Josh Baylin",
+    "primaryPayMethodId" : ObjectId("54a1d4287db2250b00d42368"),
+    "localization" : {
+        "timezoneData" : { "timeZoneName" : "Pacific Daylight Time", "timeZoneId" : "America/Los_Angeles" },
+        "timezone" : "Pacific Daylight Time",
+        "locationData" : { "name" : "San Diego" },
+        "location" : "San Diego, CA, USA"
+    }
+  },
+
 }

@@ -405,7 +405,7 @@ module.exports = ->
       done()
 
 
-  describe("Authoring: ".subspec, authoring)
+  describe.skip("Authoring: ".subspec, authoring)
   describe("Browsing: ".subspec, browsing)
-  describe("Contributing: ".subspec, contributing)
+  describe.skip("Contributing: ".subspec, contributing)
 
