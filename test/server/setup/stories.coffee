@@ -14,6 +14,12 @@ expertData           = require('../../../server/services/experts.data')
 // hitting braintree and making a slow network call
 """
 
+upsertUser = (userKey, _id, ups, done) ->
+  db.Models.User.findOneAndUpdate {_id}, ups, {'upsert':true,'new':true}, (e, r) ->
+    data.users[userKey] = r
+    done userKey
+
+
 addLocalUser = (userKey, opts, done) ->
   clone = dataHelpers.userData(userKey)
   newSession = dataHelpers.userSession(userKey)
@@ -29,9 +35,7 @@ addLocalUser = (userKey, opts, done) ->
         ups.localization = data.wrappers.localization_melbourne
 
       r = _.extend(r, ups)
-      db.Models.User.findOneAndUpdate {_id:r._id}, ups, {upsert:true}, (err, user) ->
-        data.users[clone.userKey] = r
-        done(clone.userKey)
+      upsertUser clone.userKey, r._id, ups, done
     else
       done(clone.userKey)
 
@@ -101,13 +105,10 @@ stories = {
     UserService.googleLogin.call session, data.oauth[userKey], (e,r) ->
       if (!r.roles || !r.roles.length)
         UserService.toggleUserInRole.call {user:r}, r._id, "editor", (ee,rr) ->
-          gh = data.users.jkya.social.gh
-          db.Models.User.findOneAndUpdate {_id:r._id}, {social: {gh}}, {upsert:true}, (err, rrr) ->
-            data.users[userKey] = rrr
-            done(err,rrr)
+          upsertUser userKey, r._id, {'social.gh':data.users.jkya.social.gh}, done
       else
         data.users[userKey] = r
-        done(null, r)
+        done userKey
 
 
   addAndLoginLocalUserWhoCanMakeBooking: (userKey, done) ->

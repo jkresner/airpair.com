@@ -1,4 +1,4 @@
-import User         from '../models/user'
+var User            = require('../models/user')
 var bcrypt          = require('bcrypt')
 var Data            = require('./users.data')
 var logging         = config.log.auth || false
@@ -21,7 +21,7 @@ var wrap = (fnName, errorCB, cb) =>
 // Intelligent logic around updating user accounts on Signup and Login for
 // User info and analytics. Adds the user if new, or updates if existing
 // based on the search which could be by _id or provider e.g. { googleId: 'someId' }
-function upsertSmart(upsert, existing, cb) {
+function upsertSmart(upsert, existing, done) {
   if (logging) $log(`upsertSmart', 'existing[${JSON.stringify(existing)}] upsert =>${JSON.stringify(upsert)}`)
 
   upsert = _.extend(upsert, this.session.anonData || {})
@@ -44,23 +44,22 @@ function upsertSmart(upsert, existing, cb) {
   //-- 2015.05.03 Apparently mongoose lowercase:true does not work
   upsert.email = (upsert.email) ? upsert.email.toLowerCase() : null
 
-  User.findOneAndUpdate({_id}, upsert, { upsert: true },
-    wrap(`upsert [${_id}][existing:${existing!=null}] [${JSON.stringify(upsert)}] []`, cb, (user) => {
-
-    cb(null, user)
-    // $log('analytics.upsert.before'.white, user.cohort.aliases)
+  var cb = wrap(`upsert [${_id}][existing:${existing!=null}] [${JSON.stringify(upsert)}] []`, done, (user) => {
+    done(null, user)
     var prevAliasesLength = user.cohort.aliases.length
+    // $log('analytics.upsert.before'.cyan, user, analytics.upsert)
     if (analytics.upsert)
       analytics.upsert(user, existing, sessionID, (aliases) => {
         // $log('analytics.upsert', aliases, user.cohort.aliases, aliases.length != user.cohort.aliases.length)
         if (aliases && aliases.length != prevAliasesLength)
         {
           if (logging) $log(`updating ${user._id} ${aliases}`.yellow, aliases)
-          User.findOneAndUpdate({_id:user._id}, { 'cohort.aliases': aliases }, ()=>{} )
+          User.findOneAndUpdate({_id:user._id}, { 'cohort.aliases': aliases }, ()=>{})
         }
       })
-  }))
+  })
 
+  User.findOneAndUpdate({_id}, upsert, { upsert: true, new: true }, cb)
 }
 
 
