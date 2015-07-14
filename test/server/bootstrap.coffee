@@ -71,7 +71,6 @@ describe 'Server: '.appload, ->
     require('./helpers/http').init(app)
     # $timelapsed("HELPERS done")
     expect(config.auth.slack.slackTeam != 'T02ATFDPL', "Cannot run test against prod slack team".magenta).to.be.true
-    expect(config.chat.slack.ower != 'U02ASLW2Z', "Cannot run test against prod slack team".magenta).to.be.true
     expect(config.chat.slack.support != 'U06UD6SES', "Cannot run test against prod slack team".magenta).to.be.true
     SETUP.init.call(@, done)
 
