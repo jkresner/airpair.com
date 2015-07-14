@@ -137,6 +137,56 @@ module.exports = {
     "total" : 90,
     "userId" : ObjectId("53965a5a1c67d1a4859d3453"),
     "utc" : ISODate("2014-06-12T19:27:22.000Z")
-  }
+  },
+
+  deal90mindec: {
+    "_id" : ObjectId("559dae81c6c20809714a4e02"),
+    "userId" : ObjectId("51f7026666a6f999a465f4b0"),
+    "total" : 0,
+    "profit" : 0,
+    "by" : {
+        "email" : "josh.baylin@gmail.com",
+        "name" : "Josh Baylin",
+        "_id" : ObjectId("51f7026666a6f999a465f4b0")
+    },
+    "payMethodId" : ObjectId("54a1d4287db2250b00d42368"),
+    "payment" : {},
+    "owner" : "",
+    "marketingTags" : [],
+    "utc" : ISODate("2015-07-08T14:26:24.895Z"),
+    "lineItems" : [
+        {
+            "type" : "deal",
+            "qty" : 1,
+            "unitPrice" : 2000,
+            "total" : 0,
+            "balance" : 0,
+            "profit" : 0,
+            "info" : {
+                "expert" : {
+                    "userId" : ObjectId("522f35f366a6f999a465f7b9"),
+                    "avatar" : "//0.gravatar.com/avatar/c01ef7584331527e1c600b85ba6a75f3",
+                    "name" : "Backnol Yogendran",
+                    "_id" : ObjectId("522f3616b4b1c60200000041")
+                },
+                "deal" : {
+                    "_id" : ObjectId("558b7cd9c240fb1100251674"),
+                    "target" : {
+                        "type" : "past-customers"
+                    },
+                    "price" : 2000,
+                    "minutes" : 1080,
+                    "type" : "airpair",
+                    "rake" : 18
+                },
+                "redeemedLines" : [],
+                "expires" : ISODate("2015-10-30T00:00:00.000Z"),
+                "remaining" : 900,
+                "source" : "$2000 Swichtaroo Special w Backnol Yogendran",
+                "name" : "1080 Minutes"
+            }
+        }
+    ]
+}
 
 }

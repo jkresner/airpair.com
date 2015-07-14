@@ -47,7 +47,7 @@ views = ->
 
 
   it "Purpose for old no timeZoneId bookings", itDone ->
-    bOld = data.bookings.swap1
+    bOld = data.bookings.noTimezones
     bOld.datetime = ISODate("2015-03-12T03:30:18.576Z")
     purpose = BookingUtil.chatGroup(bOld).purpose
     expectStartsWith(purpose, "http://booking.airpa.ir/54dc2d2fd137810a00f2813b Daniel + Adam. FEEDBACK required to payout expert for 60 mins on Thu 12 03:30 UTC")
