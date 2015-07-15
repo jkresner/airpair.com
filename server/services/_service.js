@@ -117,7 +117,7 @@ export default function(model, logging)
       searchMany(query, opts, cb)
     },
     create(o, cb) {
-      // $log('create'.yellow, o)
+      // $log('create'.trace, o)
       new model( o ).save( (e,r) => {
         if (e) $log('svc.create.error', e)
         if (logging) $log('svc.create', o)
@@ -126,53 +126,59 @@ export default function(model, logging)
       })
     },
     update(id, data, cb) {
-      // $log('update'.yellow, data)
+      // $log('update.deprecated'.trace, data)
       if (!id) return cb(new Error('Cannot update object by null id'), null)
       var ups = _.omit(data, '_id') // so mongo doesn't complain
-      model.findByIdAndUpdate(id, ups).lean().exec( (e, r) => {
+      model.findByIdAndUpdate(id, ups, {new:true}).lean().exec( (e, r) => {
         if (e) $log('svc.update.error', id, e, data)
         if (logging) $log('svc.updated', r)
         if (cb) cb(e, r)
       })
     },
     updateWithSet(id, data, cb) {
-      // $log('updateWithSet'.yellow, data)
+      // $log('updateWithSet'.trace, data)
       if (!id) return cb(new Error('Cannot update object by null id'), null)
-      model.findByIdAndUpdate(id, { $set: data }).lean().exec( (e, r) => {
+      model.findByIdAndUpdate(id, { $set: data }, { new: true }).lean().exec( (e, r) => {
         if (e || !r) $log('svc.updateWithSet.error'.red, id, e, data)
         if (logging) $log('svc.updated', r)
         if (cb) cb(e, r)
       })
     },
     updateWithUnset(_id, unsetFields, cb) {
-      // $log('updateWithUnset'.yellow, unsetFields)
+      // $log('updateWithUnset'.trace, unsetFields)
       if (!_id) return cb(new Error('Cannot update object by null id'), null)
       _id = ObjectId(_id)
-      model.collection.update({_id}, { $unset: unsetFields }, {}, (e, r) => {
+      model.collection.update({_id}, { $unset: unsetFields }, { new: true }, (e, r) => {
         if (e || !r) $log('svc.updateWithUnset.error'.red, _id, e, unsetFields)
         if (logging) $log('svc.updated', r)
         if (cb) cb(e, r)
       })
     },
-    updateBulk(list, cb) {
-      // $log('updateBulk'.yellow, list)
-      var bulk = model.collection.initializeOrderedBulkOp()
-      for (var item of list) {
-        bulk.find({_id:item._id}).updateOne(item)
-      }
-      bulk.execute(cb)
+    updateBulk(updates, cb) {
+      var bulkOps = []
+      for (var u of updates) bulkOps.push({ updateOne: { q:{_id:u._id}, u } })
+      model.collection.bulkWrite(bulkOps, {ordered:true}, cb)
+      // $log('updateBulk'.trace, list)
+      // var bulk = model.collection.initializeOrderedBulkOp()
+      // for (var item of list) {
+      // bulk.find({_id:item._id}).updateOne(item)
+      // }
+      // bulk.execute(cb)
     },
-    updateAndInsertOneBulk(updateList, insert, cb) {
-      // $log('updateAndInsertOneBulk'.yellow, updateList)
-      var bulk = model.collection.initializeOrderedBulkOp()
-      bulk.insert(insert)
-      for (var item of updateList) {
-        bulk.find({_id:item._id}).updateOne(item)
-      }
-      bulk.execute(cb)
+    updateAndInsertOneBulk(updates, insert, cb) {
+      var bulkOps = [{ insertOne: insert }]
+      for (var u of updates) bulkOps.push({ updateOne: { q:{_id:u._id}, u } })
+      model.collection.bulkWrite(bulkOps, {ordered:true}, cb)
+      // $log('updateAndInsertOneBulk'.trace, updateList.length, insert)
+      // var bulk = model.collection.initializeOrderedBulkOp()
+      // bulk.insert(insert)
+      // for (var item of updateList) {
+        // bulk.find({_id:item._id}).updateOne(item)
+      // }
+      // bulk.execute(cb)
     },
     deleteById(id, cb) {
-      // $log('deleteById'.yellow, id)
+      // $log('deleteById'.trace, id)
       if (!id) return cb(new Error('Cannot delete object by null id'), null)
       model.findByIdAndRemove(id, (e) => {
         if (e) $log('svc.delete.error', id, e)

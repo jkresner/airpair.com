@@ -105,7 +105,7 @@ login = ->
           DONE()
 
     db.ensureDoc 'User', data.v0.users.SoumyaAcharya, (e, sou) ->
-      expect(_.idsEqual sou._id, "51a6668866a6f999a465f2fc").to.be.true
+      expectIdsEqual(sou._id, "51a6668866a6f999a465f2fc")
       expect(sou.email).to.be.undefined
       expect(sou.name).to.be.undefined
       expect(sou.cohort.visit_first).to.be.undefined

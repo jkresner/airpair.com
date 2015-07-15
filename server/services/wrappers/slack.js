@@ -66,7 +66,11 @@ var wrapper = {
   getUsers(cb)
   {
     cache.slackUsers((callback)=>{
-      clientCall('owner', 'users.list', null, 'members', select.slackUser, callback)
+      clientCall('owner', 'users.list', null, 'members', select.slackUser, (e,r)=>{
+        // global.userHash = {}
+        // for (var u of r || []) global.userHash[u.id] = u.name
+        callback(e,r)
+      })
     }, cb)
   },
 
@@ -230,12 +234,31 @@ var wrapper = {
     if (user == 'pairbot') data.username = 'pairbot'
     data.attachments = JSON.stringify(data.attachments)
     clientCall(user, 'chat.postMessage', data, null, null, cb)
-  }
+  },
 
-  // getIMs(user, cb)
-  // {
-  //   clientCall(user, 'im.list', {}, null, null cb)
-  // }
+  getIMChats(user, cb)
+  {
+    var chats = [] //'ims', ,
+    var synced = 1
+
+    var getHistory = (info, count) => {
+      clientCall(user, 'im.history', {channel:info.id,count:500}, 'messages', null, (ee,history)=>{
+          if (ee) return cb(ee)
+          history = _.map(history,(h)=>_.omit(h,'type'))
+          // $log('history', info.id, history)
+          chats.push({ info, history })
+          if (synced++ >= count)
+            cb(null, chats)
+        })
+    }
+
+    clientCall(user, 'im.list', {}, 'ims', select.slackIM, (e,chatInfos) => {
+      if (e) return cb(e)
+      var count = chatInfos.length
+      for (var info of chatInfos)
+        getHistory(info, count)
+    })
+  }
 }
 
 module.exports = wrapper

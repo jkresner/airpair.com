@@ -31,6 +31,8 @@ function ensureDocument(Model, doc, cb, refresh)
 }
 
 
+
+
 var db = {
 
   ObjectId: mongoose.Types.ObjectId,
@@ -42,7 +44,8 @@ var db = {
 
   RestoreBSONData(done) {
     //-- Require inline for faster tests running
-    var BSON                = require("bson").BSONPure.BSON
+    var {BSONPure}          = new require("bson")
+    var BSON                = new BSONPure()
     var fs                  = require("fs")
 
     var bsonDir = __dirname.replace('server', 'data').replace('helpers','bson')
@@ -57,9 +60,12 @@ var db = {
 
       var modelName = bsonFile.replace('s.bson','')
       modelName = modelName.charAt(0).toUpperCase() + modelName.slice(1)
-      $log(`Mongo.BSON.Restore: ${modelName} (${docs.length})`.cyan)
+      $log(`Mongo.BSON.Restore: ${modelName} (${docs.length})`.cyan, docs.length)
       db.ensureDocs(modelName, docs, (e,r) => {
-        if (e) return done(e)
+        if (e) {
+          $log('e', e)
+          return done(e)
+        }
         if (last === ++index) return done(null)
       })
     })
@@ -83,14 +89,6 @@ var db = {
 
   ModelById(modelName, id, cb) {
     Models[modelName].findOne({_id:id}, cb)
-  },
-
-  viewsByUserId(userId, cb) {
-    Models.View.find({userId}, cb)
-  },
-
-  viewsByAnonymousId(anonymousId, cb) {
-    Models.View.find({anonymousId}, cb)
   },
 
   readDoc(modelName, _id, cb) {
@@ -121,11 +119,15 @@ var db = {
   },
 
   ensureDocs(modelName, docs, cb) {
-    var bulk = Models[modelName].collection.initializeUnorderedBulkOp()
-    for (var o of docs) {
-      bulk.find({_id:o._id}).upsert().replaceOne(o)
-    }
-    bulk.execute(cb)
+    var ordered = false
+    var upsert = true
+
+    var upserts = _.map(docs,(update)=>{
+      var q = {_id:update._id}
+      return { updateOne: { q, u:update, upsert } }
+    })
+
+    Models[modelName].collection.bulkWrite(upserts, {ordered}, cb)
   },
 
   findAndRemove(modelName, query, cb) {

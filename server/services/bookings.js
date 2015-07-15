@@ -288,7 +288,7 @@ a dry run.`
 
 function updateBookingGoogleCalendarEvent(booking, sendNotifications, errorCB, cb) {
   var {gcal,datetime,minutes} = booking
-  $log('booking.updateCalendarEvent'.trace, gcal.id, sendNotifications, datetime, minutes)
+  // $log('booking.updateCalendarEvent'.trace, gcal.id, sendNotifications, datetime, minutes)
   Wrappers.Calendar.updateEvent(gcal.id, sendNotifications, datetime, minutes, (e,r) => {
     if (logging) $log('calendar event updated'.yellow, e, r)
     if (e) return errorCB(e)

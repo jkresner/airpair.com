@@ -1,20 +1,7 @@
 import Svc from '../services/_service'
-import View from '../models/view'
 import Landing from '../models/landing'
 var logging = false
-var _viewSvc = new Svc(View, logging)
-// var Segment = require('analytics-node')
-// var segmentConf = config.analytics.segmentio
-// var segment = new Segment(segmentConf.writekey, segmentConf.options)
-// buildSegmentPayload(type, user, anonymousId, payload) {
-//   if (user) payload.userId = user.email
-//   else payload.anonymousId = anonymousId
 
-//   if (logging)
-//     $log(`analytics.${type}.${JSON.stringify(payload)}}`.white)
-
-//   return payload
-// },
 
 var util = {
 
@@ -46,24 +33,36 @@ var util = {
 
 }
 
-
+var ViewsCollection = require('../models/view').collection
 var viewSvc = {
-  getByUserId(userId, cb) {
-    var opts = { sort: { '_id': -1 } }
-    _viewSvc.searchMany({userId}, opts, cb)
+
+  getByUserId(userId, cb)
+  {
+    if (logging) $log('views.getByUserId'.trace, userId)
+    ViewsCollection.find({userId}).sort({_id:-1}).toArray((e, r) => cb(r))
   },
-  getByAnonymousId(anonymousId, cb) {
-    var opts = {}
-    _viewSvc.searchMany({anonymousId}, opts, cb)
+
+  getByAnonymousId(anonymousId, cb)
+  {
+    if (logging) $log('views.getByAnonymousId'.trace, anonymousId)
+    ViewsCollection.find({anonymousId}).sort({_id:-1}).toArray((e, r) => cb(r))
   },
-  alias(anonymousId, userId, cb) {
-    View.update({anonymousId}, {userId}, { multi: true }, cb)
+
+  alias(anonymousId, userId, cb)
+  {
+    if (logging) $log('views.alias'.trace, anonymousId, userId)
+    userId = ObjectId(userId)
+    ViewsCollection.update({anonymousId}, {$set:{userId}}, { multi: true }, cb)
   },
-  create(o, cb) {
-    o.utc = new Date()
-    _viewSvc.create(o, cb)
+
+  create(o, cb)
+  {
+    if (logging) $log('views.create'.trace, o)
+    ViewsCollection.insert(o, cb)
   }
+
 }
+
 
 function $$log(action, data, user, sessionID, ctx) {
   //-- TODO think about adding persistence
@@ -155,8 +154,14 @@ var analytics = {
     var {referer} = context
     var campaign = (context.utms) ? util.convertToDumbSegmentCampaignSHIT(context.utms) : undefined
     var userId = (user) ? user._id: null
-    viewSvc.create({userId,anonymousId:sessionID,url:properties.path,
-      type,objectId,campaign,referer}, () => {})
+
+    var d = {url:properties.path,type,objectId}
+    if (userId) d.userId = ObjectId(userId)
+    else d.anonymousId = sessionID
+    if (campaign) d.campaign = campaign
+    if (referer) d.referer = referer
+
+    viewSvc.create(d, () => {})
 
     if (!properties.firstRequest) // anoying in the logs
       $$log('View', properties, user, sessionID, context)

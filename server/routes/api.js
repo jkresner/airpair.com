@@ -203,8 +203,8 @@ admin: Router()
   .get('/experts/:id', API.Experts.getByIdForAdmin)
   .delete('/experts/:expert', API.Experts.deleteById)
   .post('/experts/:expert/note', API.Experts.addNote)
-  .put('/chat/invite-to-team/:userId', API.Chat.inviteToTeam),
-
+  .put('/chat/invite-to-team/:userId', API.Chat.inviteToTeam)
+  .put('/chat/sync-ims', API.Chat.syncIMs),
 
 
 

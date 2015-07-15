@@ -13,6 +13,12 @@ var select = {
     'created':1,
     'name':1
   },
+  slackIM: {
+    'id': 1,
+    'user':1,
+    'created':1,
+    'is_user_delete':1,
+  },
   slackUser: {
     'id': 1,
     'name':1,
