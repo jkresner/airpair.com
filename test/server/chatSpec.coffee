@@ -213,7 +213,7 @@ slackGroups = ->
 
 slackHelpers = ->
 
-  it 'Can invite userB to all userA non-archived groups', itDone ->
+  it.skip 'Can invite userB to all userA non-archived groups', itDone ->
     groupCount = 0
     invitedCount = 0
     userAtoken = ""  # cannot be a bot
@@ -240,8 +240,14 @@ slackHelpers = ->
       invite(g) for g in r
 
 
-  it.skip 'Can auto remove invite, join & purpose change messages', itDone ->
+  it.skip 'Can auto remove messages with subtypes invite, join & purpose', itDone ->
 
+  it.skip 'Can sync all IMs', itDone ->
+    @timeout 500000
+    ChatSvc = require('../../server/services/chats')
+    ChatSvc.syncIMs (e,r) ->
+      $log('DONE.ChatSync'.cyan, e, r)
+      DONE()
 
 chatSvc = ->
 
@@ -284,7 +290,7 @@ module.exports = ->
   describe "SlackWrapper: ".subspec, ->
     describe "Users & Team: ".subspec, slackUsers
     describe "Groups & Channels: ".subspec, slackGroups
-    describe.skip "Mirgration Helpers".subspec, slackHelpers
+    describe "Mirgration Helpers".subspec, slackHelpers
 
   describe "ChatSvc: ".subspec, chatSvc
 
