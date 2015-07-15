@@ -10,7 +10,8 @@ postReview = { questions: [
 module.exports = -> describe "API: ".subspec, ->
 
   before (done) ->
-    SETUP.addEditorUserWithGitHub 'jkap', done
+    SETUP.addEditorUserWithGitHub 'jkap', ->
+      done()
 
 
   it "correctly saves index from the UI"

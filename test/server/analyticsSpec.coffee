@@ -27,12 +27,12 @@ module.exports = -> describe "Tracking: ".subspec, ->
       anonymousId = s.sessionID
       spy = sinon.spy(analytics,'view')
       analytics.setCallback =>
-        viewCheck = => db.viewsByAnonymousId anonymousId, (e,r) ->
+        viewCheck = => db.readDocs 'View', {anonymousId}, (r) ->
           expect(r.length).to.equal(1)
-          expect(r[0].userId).to.be.null
+          expect(r[0].userId).to.be.undefined
           expect(r[0].anonymousId).to.equal(anonymousId)
           DONE()
-        _.delay(viewCheck, 50)
+        _.delay(viewCheck, 100)
 
       GETP("/v1/posts/#{postSlug}?utm_source=test1src&utm_content=test1ctn")
         .set('referer', 'http://airpair.com/posts')
@@ -59,13 +59,13 @@ module.exports = -> describe "Tracking: ".subspec, ->
     SETUP.addLocalUser 'krez', {}, (userKey) ->
       spy = sinon.spy(analytics,'view')
       userId = data.users[userKey]._id
-      analytics.setCallback ->
-        viewCheck = => db.viewsByUserId userId, (e,r) ->
+      analytics.setCallback =>
+        viewCheck = => db.readDocs 'View', {userId}, (r) ->
           expect(r.length).to.equal(1)
-          expect(_.idsEqual(r[0].userId,userId)).to.be.true
-          expect(r[0].anonymousId).to.be.null
+          expectIdsEqual(r[0].userId,userId)
+          expect(r[0].anonymousId).to.be.undefined
           DONE()
-        _.delay(viewCheck, 50)
+        _.delay(viewCheck, 150)
 
       LOGIN userKey, (s) ->
         GETP("/v1/posts/#{postSlug}?utm_campaign=test2nm")
@@ -128,17 +128,17 @@ module.exports = -> describe "Tracking: ".subspec, ->
             .set('cookie',cookie)
             .end (err, resp) ->
               GET '/session/full', {}, (sFull) ->
-                userId = sFull._id
+                userId = ObjectId(sFull._id)
                 expect(sFull._id).to.exist
                 expect(sFull.name).to.equal(singup.name)
                 expect(sFull.tags).to.be.undefined
                 expect(spy.callCount).to.equal(1)
                 expect(spy.args[0][0]).to.equal(s.sessionID)
                 spy.restore()
-                db.viewsByUserId userId, (e,r) ->
+                db.readDocs 'View', {userId}, (r) ->
                   expect(r.length).to.equal(1)
-                  expect(_.idsEqual(r[0].userId,userId)).to.be.true
-                  expect(_.idsEqual(r[0].anonymousId,s.sessionID)).to.be.true
+                  expectIdsEqual(r[0].userId,userId)
+                  expectIdsEqual(r[0].anonymousId,s.sessionID)
                   DONE()
 
 
@@ -220,10 +220,10 @@ module.exports = -> describe "Tracking: ".subspec, ->
       GETP(postUrl).end  ->
         GETP(postUrl).end ->
 
-          db.viewsByAnonymousId anonymousId2, (e2,v2) ->
+          db.readDocs 'View', {anonymousId:anonymousId2}, (v2) ->
             expect(v2.length).to.equal(2)
-            expect(v2[0].userId).to.be.null
-            expect(v2[1].userId).to.be.null
+            expect(v2[0].userId).to.be.undefined
+            expect(v2[1].userId).to.be.undefined
             expect(v2[0].anonymousId).to.equal(anonymousId2)
             expect(v2[1].anonymousId).to.equal(anonymousId2)
 
@@ -240,9 +240,9 @@ module.exports = -> describe "Tracking: ".subspec, ->
               expect(spyAlias.called).to.be.false
               # expect(spyAlias.args[0][2]).to.equal('Login')
 
-
               GET '/session/full', {}, (s3) ->
-                viewCheck = => db.viewsByUserId s3._id, (e3,v3) ->
+                userId = ObjectId(s3._id)
+                viewCheck = => db.readDocs 'View', {userId}, (v3) ->
                   expect(v3.length).to.equal(4)
                   spyIdentify.restore()
                   spyAlias.restore()
@@ -254,27 +254,13 @@ module.exports = -> describe "Tracking: ".subspec, ->
       GETP(postUrl).end ->
         GETP(postUrl).end ->
 
-          db.viewsByAnonymousId anonymousId, (e1,v1) ->
+          db.readDocs 'View', {anonymousId}, (v1) ->
             expect(v1.length).to.equal(2)
-            expect(v1[0].userId).to.be.null
-            expect(v1[1].userId).to.be.null
+            expect(v1[0].userId).to.be.undefined
+            expect(v1[1].userId).to.be.undefined
             expect(v1[0].anonymousId).to.equal(anonymousId)
             expect(v1[1].anonymousId).to.equal(anonymousId)
 
           http(global.app).post('/v1/auth/signup').send(singup).set('cookie',cookie).end ->
             session2Callback(anonymousId)
-
-
-
-#     it('User alias', function(done) {
-#       expect('pageViews linked')
-#       expect('visit_first')
-#       expect('visit_last')
-#       expect('visit_signup')
-#       expect('visits')
-#       expect('copied-bookmarks')
-#       expect('copied-stack')
-#       expect('?copied-email')
-#     })
-
 

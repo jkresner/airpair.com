@@ -3,19 +3,20 @@
 
 a_uid = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[\,\-_]*).{24,}/
 
+
 expectSessionNotStored = (session, cb) ->
   expect(session.sessionID).to.match(a_uid)
-  db.Models.Session.findOne { _id: session.sessionID }, (e, s) ->
-    expect(s).to.be.null
-    db.viewsByAnonymousId session.sessionID, (e, views) ->
+  db.readDocs 'Session', {_id:session.sessionID}, (s) ->
+    expect(s.length).to.equal(0)
+    db.readDocs 'View', { anonymousId:session.sessionID }, (views) ->
       expect(views.length).to.equal(0)
       cb()
 
 
 expectSessionToBeStored = (session, cb) ->
   expect(session.sessionID).to.match(a_uid)
-  db.Models.Session.findOne { _id: session.sessionID }, (e, s) ->
-    expect(s).to.exist
+  db.readDocs 'Session', {_id:session.sessionID}, (s) ->
+    expect(s.length).to.equal(1)
     cb()
 
 
@@ -75,11 +76,13 @@ api = ->
         expect(viewSpy2.calledOnce).to.be.true
         expect(s.authenticated).to.equal(false)
         expectSessionToBeStored s, ->
-          db.viewsByAnonymousId s.sessionID, (e, views) ->
+          db.readDocs 'View', { anonymousId:s.sessionID }, (views) ->
             expect(views.length).to.equal(1)
             expect(views[0].url).to.equal('/angularjs')
             expect(views[0].type).to.equal('tag')
             expect(views[0].campaign).to.be.undefined
+            expect(views[0].userId).to.be.undefined
+            expect(views[0].anonymousId).to.equal(s.sessionID)
             viewSpy2.restore()
             DONE()
 
@@ -113,7 +116,7 @@ api = ->
       GET '/session/full', {}, (s) =>
         expect(s.authenticated).to.equal(false)
         expectSessionToBeStored s, ->
-          db.viewsByAnonymousId s.sessionID, (e, views) ->
+          db.readDocs 'View', { anonymousId:s.sessionID }, (views) ->
             expect(views.length).to.equal(1)
             expect(views[0].url).to.equal('/angularjs')
             expect(views[0].type).to.equal('tag')

@@ -65,7 +65,6 @@ function updateAsIdentity(data, trackData, cb) {
   if (trackData)
     analytics.track(this.user, this.sessionID, 'Save', trackData, {}, ()=>{})
 
-
   if (this.user) {
     var done = cbSession(this, cb)
 
@@ -116,7 +115,6 @@ function updateAsIdentity(data, trackData, cb) {
     })
   }
   else {
-    // $log('in updateAsIdentity: anon', data, this)
 
     this.session.anonData = _.extend(this.session.anonData, data)
     get.getSession.call(this, cb)
@@ -223,17 +221,14 @@ var save = {
 
   changeUsername(username, cb) {
     var userId = this.user._id
-    if (!username || username == '') {
-      User.findOneAndUpdate({_id:this.user._id}, { $unset: { username: '' } } , cbSession(this, cb))
-    }
-    else {
+    if (!username || username == '')
+      svc.updateWithUnset(this.user._id, {username:1}, cbSession(this, cb))
+    else
       svc.searchOne({username}, null, (e,r) => {
-        if (r && !_.idsEqual(userId,r._id)) {
+        if (r && !_.idsEqual(userId,r._id))
           return cb(svc.Forbidden(`${username} already taken, please choose a different username`))
-        }
         updateAsIdentity.call(this, {username}, null, cb)
       })
-    }
   },
 
   changePrimaryPayMethodId(primaryPayMethodId, cb) {
