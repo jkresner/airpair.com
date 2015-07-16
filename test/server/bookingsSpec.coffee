@@ -245,6 +245,23 @@ scheduling = ->
 
 recordings = ->
 
+  # describe.skip "YouTube Wrapper", ->
+
+  #   @timeout 9000000
+
+  # it "can get all channels", itDone ->
+  #   Wrappers.YouTube.getAllChannels (e,r) ->
+  #     DONE()
+
+  # it.skip "can get all videos", itDone ->
+  #   Wrappers.YouTube.getAllVideos (e,r) ->
+  #     DONE()
+
+  # it "can update all video privacy", itDone ->
+  #   Wrappers.YouTube.updateAllPrivacy 'private', (e,r) ->
+  #     DONE()
+
+
 
   it "given a YouTube ID, allows a booking to be annotated with YouTube data", itDone ->
     listStub = SETUP.stubYouTube 'videos','list',null,data.wrappers.youtube_codereview_list
