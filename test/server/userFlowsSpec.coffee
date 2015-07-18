@@ -94,9 +94,22 @@ signup = ->
                     DONE()
 
 
+dashboard = ->
+
+  it 'Can signup and close hello notification', itDone ->
+    SETUP.addAndLoginLocalUser 'andr', (s) ->
+      GET "/users/me/site-notifications", {}, (n1) ->
+        expect(n1).to.exist
+        expect(n1.length).to.equal(0)
+        PUT "/users/me/site-notifications", { name: 'hello'}, {}, (n2) ->
+          expect(n2.length).to.equal(1)
+          expect(n2[0].name).to.equal('hello')
+          DONE()
+
+
 module.exports = ->
 
   before -> SETUP.analytics.on()
 
   describe("Signup: ".subspec, signup)
-
+  describe("Dashboard: ".subspec, dashboard)

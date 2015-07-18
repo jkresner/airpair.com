@@ -31,15 +31,16 @@ angular.module("APDashboard", ['APFilters', 'APSvcSession',
       $scope.requests = r
     })
 
-    var setSeen = (siteNotifications) => {
+    var setSeen = (r) => {
       $scope.seen = []
-      siteNotifications.forEach((n)=>$scope.seen[n.name] = true)
+      r.forEach((n)=>$scope.seen[n.name] = true)
     }
 
     SessionService.getSiteNotifications({}, setSeen)
 
     $scope.closeNotification = (name) =>
       SessionService.toggleSiteNotification({name}, setSeen)
+
 
     // if ($scope.session.tags && $scope.session.tags.length > 0) {
       // DataService.experts.getForDashboard({}, function(r) {
