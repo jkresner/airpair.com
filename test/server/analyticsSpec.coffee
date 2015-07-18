@@ -1,6 +1,7 @@
-postTitle = "Analytics Tests "+moment().format('X')
-postSlug = postTitle.toLowerCase().replace /\ /g, '-'
-postUrl = "/v1/posts/#{postSlug}"
+{uaFirefox}       = require('./../data/http')
+postTitle         = "Analytics Tests "+moment().format('X')
+postSlug          = postTitle.toLowerCase().replace /\ /g, '-'
+postUrl           = "/v1/posts/#{postSlug}"
 
 #-- Approach
 
@@ -55,12 +56,50 @@ module.exports = -> describe "Tracking: ".subspec, ->
           spy.restore()
 
 
+  it 'Can track an anonymous ad click view', itDone ->
+    ANONSESSION (s) ->
+      anonymousId = s.sessionID
+      spy = sinon.spy(analytics,'view')
+      analytics.setCallback =>
+        viewCheck = => db.readDocs 'View', {anonymousId}, (r) ->
+          expect(r.length).to.equal(1)
+          expect(r[0].userId).to.be.undefined
+          expect(r[0].anonymousId).to.equal(anonymousId)
+          expect(r[0].ip).to.exist
+          expect(r[0].ua).to.exist
+          expect(r[0].type).to.equal('ad')
+          expect(r[0].referer).to.equal('https://www.airpair.com/js/js-framework-comparison')
+          expect(r[0].url).to.equal('https://keen.io/?utm_source=airpair&utm_medium=banner&utm_campaign=custom_analytics')
+          expectIdsEqual(r[0].objectId,"55aa28f643f81ad565104e6f")
+          DONE()
+        _.delay(viewCheck, 100)
+
+      GETP("/visit/keen.io-072015")
+        .set('user-agent', uaFirefox)
+        .set('referer', 'https://www.airpair.com/js/js-framework-comparison')
+        .expect(302)
+        .expect('Content-Type', /text/)
+        .end (err, resp) ->
+          if err then throw err
+          expect(spy.callCount).to.equal(1)
+          expect(spy.args[0][0]).to.be.undefined
+          expect(spy.args[0][1]).to.exist
+          expect(spy.args[0][2]).to.equal('ad')
+          expect(spy.args[0][3]).to.equal('Keen.io jul custom analytics')
+          expect(spy.args[0][4].tags).to.exist
+          expect(spy.args[0][5].referer).to.equal('https://www.airpair.com/js/js-framework-comparison')
+          expect(spy.args[0][5].utms).to.be.undefined
+          expect(spy.args[0][6]).to.be.undefined
+          spy.restore()
+
+
   it 'Can track logged in post view', itDone ->
     SETUP.addLocalUser 'krez', {}, (userKey) ->
       spy = sinon.spy(analytics,'view')
       userId = data.users[userKey]._id
       analytics.setCallback =>
         viewCheck = => db.readDocs 'View', {userId}, (r) ->
+          expect(spy.callCount).to.equal(1)
           expect(r.length).to.equal(1)
           expectIdsEqual(r[0].userId,userId)
           expect(r[0].anonymousId).to.be.undefined
@@ -69,6 +108,7 @@ module.exports = -> describe "Tracking: ".subspec, ->
 
       LOGIN userKey, (s) ->
         GETP("/v1/posts/#{postSlug}?utm_campaign=test2nm")
+          .set('user-agent', uaFirefox)
           .set('referer', 'http://www.airpair.com/posts')
           .expect('Content-Type', /text/)
           .end (err, resp) ->
@@ -198,7 +238,7 @@ module.exports = -> describe "Tracking: ".subspec, ->
         GET '/session/full', {}, (s) ->
           spyIdentify = sinon.spy(analytics,'identify')
           spyAlias = sinon.spy(analytics,'alias')
-          GETP('/v1/auth/logout').end (e2, r2) ->
+          GETP('/logout').end (e2, r2) ->
             http(global.app).post('/v1/auth/login').send(singup).set('cookie',cookie).end (e3, r3) ->
               expect(spyIdentify.callCount).to.equal(1)
               expect(spyIdentify.args[0][2]).to.equal('Login')

@@ -16,7 +16,7 @@ angular.module("APCTAs", ['ngMessages','APAnalytics'])
         scope.updateFailed = e.message || e.error || e
         scope.data.email = null
         if (scope.updateFailed.indexOf("already") != -1)
-          scope.updateFailed += ". Try <a href='/v1/auth/login'>LOGIN instead?</a>"
+          scope.updateFailed += ". Try <a href='/login'>LOGIN instead?</a>"
       }
     )
   }
@@ -29,7 +29,7 @@ angular.module("APCTAs", ['ngMessages','APAnalytics'])
         (e) => {
           $scope.updateFailed = e.message || e.error || e
           if ($scope.updateFailed.indexOf("already") != -1)
-            $scope.updateFailed += ". Try <a href='/v1/auth/login'>LOGIN instead?</a>"
+            $scope.updateFailed += ". Try <a href='/login'>LOGIN instead?</a>"
         }
       )
   }

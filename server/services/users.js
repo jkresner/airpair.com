@@ -179,17 +179,22 @@ var save = {
   },
 
   toggleSiteNotification(name, cb) {
-    svc.searchOne({ _id:this.user._id }, null, (e,r) => {
-      var existing = _.find(r.siteNotifications, (n) => n.name == name)
-      if (!r.siteNotifications)
-        r.siteNotifications = [{name}]
-      else if (existing)
-        r.siteNotifications = _.without(r.siteNotifications, existing)
+    var opts = { fields: { _id:1,siteNotifications:1} }
+    svc.searchOne({ _id:this.user._id }, opts, (e,r) => {
+      if (e) return cb(e)
+      var siteNotifications = (r) ? r.siteNotifications : []
+      if (!siteNotifications || siteNotifications.length == 0)
+        siteNotifications = [{name}]
       else
-        r.siteNotifications.push({name})
+      {
+        var existing = _.find(siteNotifications, (n) => n.name == name)
+        if (existing)
+          siteNotifications = _.without(siteNotifications, existing)
+        else
+          siteNotifications.push({name})
+      }
 
-      updateAsIdentity.call(this, {siteNotifications:r.siteNotifications}, null, Data.select.cb.siteNotifications(cb))
-      // svc.update(this.user._id, r, Data.select.cb.siteNotifications(cb))
+      svc.update(this.user._id, {siteNotifications}, Data.select.cb.siteNotifications(cb))
     })
   },
 

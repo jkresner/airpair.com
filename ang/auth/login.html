@@ -1,6 +1,6 @@
 <section id="auth" ng-controller="LoginCtrl as LoginCtrl">
 
-<p ng-if="session._id"><br /><br />You are logged in as {{ session.email }}. <br /><br />Want to <a href="/v1/auth/logout" target="_self">Logout</a>?</p>
+<p ng-if="session._id"><br /><br />You are logged in as {{ session.email }}. <br /><br />Want to <a href="/logout" target="_self">Logout</a>?</p>
 
 
 <div class="choice" ng-if="!session._id">
@@ -15,7 +15,7 @@
 
 </div>
 
-<div class="local option">
+<!-- <div class="local option">
 
   <h2>Password login</h2>
 
@@ -55,7 +55,7 @@
   </form>
 
 </div>
-
+ -->
 
 </div>
 

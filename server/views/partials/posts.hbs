@@ -1,29 +1,43 @@
-<header>
-  <ol class="entry-meta breadcrumb">
-    <li class="current">Posts</li>
-  </ol>
-</header>
-
-{{!-- <div banner-postcomp style="min-height:90px;"></div> --}}
 
 <section id="allposts">
 
-  <h1 class="underline">Latest software posts <a href="/posts/me" class="btn" target="_self">Contribute</a></h1>
-  <div>
+  <h1 class="underline">Learn from top software experts</h1>
+
+  <div class="nobookmarks">
     {{#each featured}}{{> postListItem this}}{{/each}}
   </div>
 
+  <h2 class="underline">Latest software tutorials & guides
+    <a href="/posts/me" class="btn btn-inverse" target="_self">Contribute a post</a>
+  </h2>
 
-  {{#if archive}}
+  <div class="nobookmarks">
+    {{#each latest}}{{> postListItem this}}{{/each}}
+  </div>
 
-  <h2 class="underline">All software tutorials & featured posts <a href="/posts/me" class="btn" target="_self">Contribute</a></h2>
+
+  <div class="popular nostars nobookmarks">
+    <h2 class="underline">Popular software blog posts
+      <a href="/posts/me" class="btn btn-inverse" target="_self">Contribute a post</a>
+    </h2>
+    {{#each popular}}{{> postListItem this}}{{/each}}
+  </div>
+
+  <div class="popular nobookmarks">
+    <h2 class="underline">2015 Writing Competition Prize winners
+      <a href="/100k-writing-competition" class="btn btn-inverse" target="_self">See all winners</a>
+    </h2>
+    {{#each comp}}{{> postListItem this}}{{/each}}
+  </div>
+
+  <h2 class="underline">All software tutorials
+    <a href="/posts/me" class="btn btn-inverse" target="_self">Contribute a post</a>
+  </h2>
 
   <ul class="archive-posts">
     {{#each archive}}
-    <li><a href="{{url}}">{{title}}</a> by <b>{{by.name}}</b></li>
+    <li><a href="{{url}}" target="_self">{{title}}</a> by <b>{{by.name}}</b></li>
     {{/each}}
   </ul>
-
-  {{/if}}
 
 </section>

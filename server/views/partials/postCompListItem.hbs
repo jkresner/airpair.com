@@ -1,7 +1,7 @@
-<article class="posttile" itemscope="itemscope" itemtype="http://schema.org/BlogPosting" itemprop="blogPost">
+<article class="posttile comppost" itemscope="itemscope" itemtype="http://schema.org/BlogPosting" itemprop="blogPost">
   <img src="/static/img/pages/postscomp/{{prize.pic}}.png" class="logo" />
   <h3 class="sponsor">{{prize.sponsor}}</h3>
-  <h6>{{prize.name}}<h6>
+  <h5>{{prize.name}}</h5>
 
   <span class="entry-author" itemprop="author" itemscope="itemscope" itemtype="http://schema.org/Person">
     <span class="entry-author-name" itemprop="name">{{ by.name }}</span>
@@ -15,8 +15,8 @@
     <div class="entry-content" itemprop="text">
       <h2 class="entry-title" itemprop="headline">{{ title }}
       </h2>
-      {{!-- <p>{{ meta.description }}</p> --}}
-      <div class="stars" stars val="{{stats.rating}}"></div>reviewed by {{stats.reviews}}
+      <div class="stars" stars val="{{stats.rating}}"></div>
+      <i>reviewed by {{stats.reviews}}</i>
     </div>
   </a>
 

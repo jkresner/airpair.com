@@ -1,6 +1,7 @@
 import Svc from '../services/_service'
 import Landing from '../models/landing'
 var logging = false
+var {ObjectId} = require('mongoose').Types
 
 
 var util = {
@@ -17,19 +18,19 @@ var util = {
     return (c) ? c : null
   },
 
-  segmentTraitsFromUser(user) {
-    var traits = {
-      name: user.name,
-      email: user.email,
-      // lastSeen: new Date(),  //-- leave this up to the client as it doesn't work via segment
-      createdAt: user.cohort.engagement.visit_first,
-      paymentInfoSet: user.primaryPayMethodId != null
-    }
-    if (user.username) traits.username = user.username
-    // isExpert / isCustomer
+  // segmentTraitsFromUser(user) {
+  //   var traits = {
+  //     name: user.name,
+  //     email: user.email,
+  //     // lastSeen: new Date(),  //-- leave this up to the client as it doesn't work via segment
+  //     createdAt: user.cohort.engagement.visit_first,
+  //     paymentInfoSet: user.primaryPayMethodId != null
+  //   }
+  //   if (user.username) traits.username = user.username
+  //   // isExpert / isCustomer
 
-    return traits;
-  }
+  //   return traits;
+  // }
 
 }
 
@@ -51,16 +52,30 @@ var viewSvc = {
   alias(anonymousId, userId, cb)
   {
     if (logging) $log('views.alias'.trace, anonymousId, userId)
-    userId = ObjectId(userId)
+    userId = ObjectId(userId.toString())
     ViewsCollection.update({anonymousId}, {$set:{userId}}, { multi: true }, cb)
   },
 
   create(o, cb)
   {
+    if (o.userId) o.userId = ObjectId(o.userId.toString())
     if (logging) $log('views.create'.trace, o)
     ViewsCollection.insert(o, cb)
   }
 
+}
+
+
+var Impressions = require('../models/impression').collection
+var impressionSvc = {
+  alias(sId, uId, cb) {
+    uId = ObjectId(uId.toString())
+    Impressions.update({sId}, {$set:{uId}}, { multi: true }, cb)
+  },
+  create(o, cb) {
+    if (o.uId) o.uId = ObjectId(o.uId.toString())
+    Impressions.insert(o, cb)
+  }
 }
 
 
@@ -130,6 +145,19 @@ var analytics = {
   },
 
 
+  impression(user, sessionID, img, context, done) {
+    var d = {img,ip:context.ip}
+    var userId = (user) ? user._id: null
+    if (userId) d.uId = userId
+    else d.sId = sessionID
+    if (context.referer) d.ref = context.referer
+    if (context.userAgent) d.ua = context.userAgent
+    impressionSvc.create(d, () => {})
+    done = done || (doneBackup || function() {})
+    done()
+  },
+
+
   track(user, sessionID, event, properties, context, done) {
     // var payload = util.buildSegmentPayload('track', user, sessionID, {event,properties,context})
     // segment.track(payload, done || doneBackup)
@@ -143,11 +171,6 @@ var analytics = {
     var m = { event:'View', integrations: { 'All': false, 'Mixpanel': true }}
 
     properties.url = properties.path
-    // var mProperties = _.extend(properties, {type,name})
-    // if (context.utms) _.extend(mProperties, context.utms)
-
-    // var payload = _.extend(m,util.buildSegmentPayload('mp.view', user, sessionID , {properties:mProperties}))
-    // segment.track(payload, done || doneBackup)
 
     // write to mongo
     var {objectId,url} = properties
@@ -155,11 +178,12 @@ var analytics = {
     var campaign = (context.utms) ? util.convertToDumbSegmentCampaignSHIT(context.utms) : undefined
     var userId = (user) ? user._id: null
 
-    var d = {url:properties.path,type,objectId}
-    if (userId) d.userId = ObjectId(userId)
+    var d = {url:properties.path,type,objectId,ip:context.ip}
+    if (userId) d.userId = userId
     else d.anonymousId = sessionID
     if (campaign) d.campaign = campaign
     if (referer) d.referer = referer
+    if (context.userAgent) d.ua = context.userAgent
 
     viewSvc.create(d, () => {})
 
@@ -246,6 +270,7 @@ var analytics = {
 
       //-- but update all the anonymous views to the userId
       viewSvc.alias(sessionID, user._id, ()=>{})
+      impressionSvc.alias(sessionID, user._id, ()=>{})
 
       var context = {sessionID} // ??
       analytics.identify(user, context, 'Login', _.extend(properties,{type:'revisit'}), () => {})

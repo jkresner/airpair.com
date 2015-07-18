@@ -268,6 +268,11 @@ authoring = ->
 browsing = ->
 
 
+  it '200 on unauthenticated Posts by tag', itDone ->
+    opts = status: 200, unauthenticated: true
+    GET("/posts/tagged/python", opts, -> DONE() )
+
+
   it "Request post by non-existing slug", itDone ->
     GETP("/ionic-framework/posts/the-definitive-ionic-starter-gu")
       .expect('Content-Type', /text/)

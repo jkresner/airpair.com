@@ -74,21 +74,8 @@ angular.module("AP", ['ngRoute', 'ngAnimate',
     template: require('./home.html')
   });
 
-  $routeProvider.when('/about', {
-    template: require('./sales/about.html')
-  });
-
-  $routeProvider.when('/learn', {
-    template: require('./learn.html')
-  });
-
-  // $routeProvider.when('/angularjs/pair-programming', {
-  //   template: require('./sales/angular.html')
-  // });
-
   if (angular.element('#serverTemplate').length > 0)
   {
-
     window.initialLocation = window.location.pathname.toString()
       .replace(/\+/g,"\\\+") // '/c++/posts/preparing-for-cpp-interview'
       .replace(/f\%23/g,"f\\\#") // '/f%23/tips-n-tricks/blah'
