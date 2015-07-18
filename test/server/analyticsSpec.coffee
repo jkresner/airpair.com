@@ -238,7 +238,7 @@ module.exports = -> describe "Tracking: ".subspec, ->
         GET '/session/full', {}, (s) ->
           spyIdentify = sinon.spy(analytics,'identify')
           spyAlias = sinon.spy(analytics,'alias')
-          GETP('/v1/auth/logout').end (e2, r2) ->
+          GETP('/logout').end (e2, r2) ->
             http(global.app).post('/v1/auth/login').send(singup).set('cookie',cookie).end (e3, r3) ->
               expect(spyIdentify.callCount).to.equal(1)
               expect(spyIdentify.args[0][2]).to.equal('Login')

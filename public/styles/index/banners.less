@@ -1,6 +1,6 @@
 
 .banner {
-  position:relative;x
+  position:relative;
   border:solid 1px white;
 }
 .banner:hover {
@@ -9,10 +9,17 @@
 }
 
 .banner-top {
-  display:block;
+  height:92px;
+  a {
+    height:92px;width:100%;
+    display:block;margin:0;padding:0;
+  }
+  img {
+    width:100%;display:block;margin:0;padding:0
+  }
   margin:20px 0;
   width:902px;
-  height:92px;
+
 }
 
 .banner-keenio-pain {
@@ -36,7 +43,7 @@
 
 @media only screen and (max-width:900px) {
   .banner-top {
-    width:640px;
+    a { width:640px; }
   }
 
   // .banner-100kpostcomp {
@@ -53,10 +60,10 @@
 
 @media only screen and (max-width:640px) {
   .banner-top {
-    // display:none;
-    max-width:90%;
-    margin:20px auto 10px auto;
-    height:50px;
+    height:34px;
+    a { height:34px;width:320px; }
+    padding-top:15px;
+    // margin:20px 0 10px 0;
   }
 
   // .banner-100kpostcomp {

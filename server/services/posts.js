@@ -188,6 +188,7 @@ var get = {
     var q = query.published()
     q['$and'].push({'tmpl' : { '$ne': 'blank' }})
     q['$and'].push({'tmpl' : { '$ne': 'faq' }})
+    q['$and'].push({'by.userId' : { '$ne': '52ad320166a6f999a465fdc5' }})
     var options = { fields: select.list, options: opts.allPublished }
 
     svc.searchMany(q, options, selectCB.addUrl((e,r) => {
@@ -196,9 +197,10 @@ var get = {
         :  -1*(p.stats.rating-2)*(p.stats.reviews+2) ), 6)
       r = _.difference(r, featured)
       var popular = _.filter(r, (p) => _.contains(Data.data.popular,p.slug))
-      var archive = _.difference(r, popular)
+      var comp = _.filter(r, (p) => _.contains(Data.data.comp,p.slug))
+      var archive = _.difference(r, _.union(popular,comp))
 
-      cb(null, { latest, featured, popular, archive })
+      cb(null, { latest, featured, popular, comp, archive })
     }))
   },
 

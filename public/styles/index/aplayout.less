@@ -7,7 +7,7 @@
 body > header {
   height:@headerHeight;
   border-bottom:solid 1px @lightgray;
-  background-color:@lightblue;
+  background-color:@gitgray;
   // padding:7px 10px 7px 20px;
 
   > a {
@@ -22,14 +22,15 @@ body > header {
   }
 
   ul {
-    padding:5px 10px 7px 8px;
+    padding:5px 10px 5px 8px;
     float:right;
     list-style:none;
+    margin-bottom:0;
   }
 
   li {
-    float:left;margin:5px 10px;font-size:14px;
-
+    float:left;margin:6px 10px;font-size:12px;
+    font-weight:600;
     a { color:black; }
     a:hover { color:@orange }
   }
@@ -100,7 +101,7 @@ body > header {
       right:6px;
     }
 
-    .ps { margin:5px 104px 0 0 }
+    .ps { }
     div { display:none }
     .wk { display:none }
     .more { display:none }

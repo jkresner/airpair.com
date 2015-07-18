@@ -34,7 +34,7 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
 .controller('RequestListCtrl', function($scope, $location, DataService, SessionService) {
 
   SessionService.onAuthenticated(function() {
-    if (!$scope.session._id) $location.path(`/about`)
+    if (!$scope.session._id) $location.path(`/`)
   })
 
   DataService.requests.getMyRequests({}, function(result) {
