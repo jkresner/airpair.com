@@ -188,12 +188,17 @@ var get = {
     var q = query.published()
     q['$and'].push({'tmpl' : { '$ne': 'blank' }})
     q['$and'].push({'tmpl' : { '$ne': 'faq' }})
-    var options = { fields: Data.select.list, options: { sort: { 'published': -1 } } };
+    var options = { fields: select.list, options: opts.allPublished }
+
     svc.searchMany(q, options, selectCB.addUrl((e,r) => {
-      cb(null, {
-        featured: r.splice(0,99),
-        archive: r || []
-      })
+      var latest = r.splice(0,6)
+      var featured = _.take(_.sortBy(r, (p) => (!p.stats) ? 0
+        :  -1*(p.stats.rating-2)*(p.stats.reviews+2) ), 6)
+      r = _.difference(r, featured)
+      var popular = _.filter(r, (p) => _.contains(Data.data.popular,p.slug))
+      var archive = _.difference(r, popular)
+
+      cb(null, { latest, featured, popular, archive })
     }))
   },
 
@@ -206,7 +211,6 @@ var get = {
         callback(e,r)
       }))
     }
-    $log('getAll2015CompWinners'.gray)
     cache.getOrSetCB('2015postcomp', getWinners, cb)
   },
 
