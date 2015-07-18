@@ -1,4 +1,4 @@
-<header class="entry-header">
+{{!-- <header class="entry-header">
   <ol class="entry-meta breadcrumb">
     <li><a href="/posts" target="_self">Posts</a></li>
     {{#if primarytag}}<li>
@@ -16,10 +16,10 @@
       </span>
     </li>
   </ol>
-</header>
+</header> --}}
 
 {{#if published }}
-<div banner-postcomp></div>
+<div class="banner-top" banner-posttop></div>
 {{/if}}
 
 <article class="blogpost">
@@ -86,7 +86,7 @@
     {{#if stars }}
       <post-rail-stars></post-rail-stars>
     {{/if}}
-    <h6>Make this post better!</h6>
+    <h6>Help make this post better!</h6>
     <div class="fork">
       <a href="/posts/fork/{{_id}}" class="btn">Fork this post!</a>
       <p>Forked <b>{{forkers.length}}</b> times so far</p>

@@ -3,7 +3,7 @@ import PostsAPI                     from '../api/posts'
 import TagsAPI                      from '../api/tags'
 import RequestsApi                  from '../api/requests'
 import ExpertsApi                   from '../api/experts'
-var {trackView}                     = require('../middleware/analytics')
+var {trackView,trackAdClick}        = require('../middleware/analytics')
 var {authd}                         = require('../middleware/auth')
 var {populate}                      = require('../middleware/data')
 
@@ -26,6 +26,11 @@ module.exports = function(app) {
     .param('workshop', WorkshopsAPI.paramFns.getBySlug)
     .param('review', RequestsApi.paramFns.getByIdForReview)
     .param('post', PostsAPI.paramFns.getBySlugForPublishedView)
+
+    .get('/visit/keen.io-072015',
+       trackAdClick('https://keen.io/?utm_source=airpair&utm_medium=banner&utm_campaign=custom_analytics'),
+        (req, res, cb) => res.redirect(req.adUrl)
+      )
 
     .get('/workshops',
       app.renderHbsViewData('workshops', { title: "Software Workshops, Webinars & Screencasts" },
