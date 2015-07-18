@@ -7,10 +7,11 @@
 body > header {
   height:@headerHeight;
   border-bottom:solid 1px @lightgray;
+  background-color:@lightblue;
   // padding:7px 10px 7px 20px;
 
   > a {
-    padding:7px 24px;
+    padding:9px 24px 4px 0px;
     background:url('../img/css/header/logo.png') no-repeat;
     background-position:25px 9px;
     background-size:90px 22px;
@@ -21,21 +22,20 @@ body > header {
   }
 
   ul {
-    padding:7px 10px;
+    padding:5px 10px 7px 8px;
     float:right;
     list-style:none;
   }
 
   li {
-    float:left;margin:6px 10px;font-size:11px;
+    float:left;margin:5px 10px;font-size:14px;
 
     a { color:black; }
     a:hover { color:@orange }
   }
 
-  li.exp { font-weight:bold;
-    a { color:@orange }
-    a:hover { color:@orangehighlight } }
+  li.login { font-weight:bold }
+  li.exp { a:hover { color:@orangehighlight } }
 
   #headerGetHelp {
     letter-spacing:0px;
@@ -68,14 +68,16 @@ body > header {
     a { display:block }
     position:absolute;
     z-index:10000;
-    right:0px;
-    top:36px;
-    width:200px;
+    right:2px;
+    top:32px;
+    width:160px;
     background:white;
+    border:solid 1px @bluegray;
+    padding-bottom:10px;
     li {
       display:block;
-      width:100%;
-      border-bottom:solid 1px @palegray;
+      width:90%;
+      border-bottom:solid 1px @mediumbluegray;
       padding-bottom:8px;
     }
     display:none;
@@ -211,7 +213,8 @@ nav#side.expert {
 }
 
 nav#side {
-  display:block;
+  display:none;//wait for angular to set display:block
+  // display:block;
   position:fixed;
   height:auto;
   top:@headerHeight;

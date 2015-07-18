@@ -14,7 +14,10 @@
     </header>
 
     <div class="entry-content" itemprop="text">
+      {{#if stats.reviews}}
+      <h6><b>{{stats.reviews}}</b> x</h6>
       <div class="stars" stars val="{{stats.rating}}"></div>
+      {{/if}}
       <h2 class="entry-title" itemprop="headline">{{ title }}</h2>
 
       <span class="entry-author" itemprop="author" itemscope="itemscope" itemtype="http://schema.org/Person">
