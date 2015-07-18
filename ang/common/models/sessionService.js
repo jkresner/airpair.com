@@ -141,7 +141,7 @@ angular.module('APSvcSession', [])
       $http.get(`${API}/users/me/site-notifications`).success(success).error(error)
     }
     this.toggleSiteNotification = function(data, success, error) {
-      $http.put(`${API}/users/me/site-notifications`, data).success(setScope(success)).error(error)
+      $http.put(`${API}/users/me/site-notifications`, data).success(success).error(error)
     }
 
     this.requestPasswordChange = function(data, success, error) {
