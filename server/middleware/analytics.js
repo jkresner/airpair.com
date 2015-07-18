@@ -6,7 +6,7 @@ var getContext = (req) => {
   var ctx = {
     app: config.build,
     // device:
-    ip: req.ip,
+    ip: req.ip.replace('::ffff:',''),
     // ip: req.host var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
     // library: // locale: // location: // network: // os:
     referer: req.header('Referer'),
@@ -23,13 +23,6 @@ var getContext = (req) => {
   if (utm_content) (c) ? (c.utm_content = utm_content) : (c = {utm_content:utm_content})
 
   if (c) ctx.utms = c
-
-//   Recommended by segment for server-side GA tracking (which doesn't work.)
-//   if (req.cookies._ga) {
-//     ctx['Google Analytics'] = { clientId: req.cookies._ga.replace('GA1.1.','').replace('GA1.2.',''),
-//       userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_2) AppleWebKit/537.17 (KHTML, like Gecko) Chrome/24.0.1312.57 Safari/537.17',
-// ip: '11.1.11.11' }
-//   }
 
   return ctx
 }
@@ -57,10 +50,29 @@ var middleware = {
     next()
   },
 
+  trackAdImpression(req, res, next) {
+    if (logging) $log('trackAdImpression'.cyan, req.originalUrl)
+    var img = req.originalUrl.replace('/ad/','')
+    var context = getContext(req)
+    analytics.impression(req.user, req.sessionID, img, context)
+    next()
+  },
+
+  trackAdClick(adUrl) {
+    return (req, res, next) => {
+      if (isBot(req.header('user-agent'))) return next()
+      if (true || logging) $log('trackAdClick'.yellow, req.header('Referer'))
+      req.ad = {
+        _id: ObjectId("55aa28f643f81ad565104e6f"),
+        title: 'Keen.io jul custom analytics', url: adUrl, tags: [{slug:'keen-io'}]
+      }
+      middleware.trackView('ad')(req,res,next)
+    }
+  },
 
   trackView(type) {
     return (req, res, next) => {
-      if (logging) $log(`mw.trackView ${req.url}`.cyan)
+      if (logging) $log(`mw.trackView ${req.url}`.cyan, req.sessionID)
       if (isBot(req.header('user-agent'))) return next()
 
       var userId = null
@@ -71,18 +83,21 @@ var middleware = {
         anonymousId = req.sessionID
 
       var obj = req[type]
+
       var tags = _.pluck(obj.tags,'slug')
       if (type == 'workshop') var tags = obj.tags // temp hack until we fix workshops
       var url = req.protocol + '://' + req.get('host') + req.originalUrl
 
+
       var properties = { title: obj.title, tags, url, path: req.path, objectId: obj._id, referrer: context.referer }
 
-      if (momentSessionCreated(req.session).isAfter(moment().add(-3,'seconds')))
+      if (type == 'ad')
+        properties.path = obj.url
+      else if (momentSessionCreated(req.session).isAfter(moment().add(-3,'seconds')))
         properties.firstRequest = true
 
       analytics.view(req.user, anonymousId, type, obj.title, properties, context)
 
-      // if (logging) $log('trackView', type, properties)
       next()
     }
   },

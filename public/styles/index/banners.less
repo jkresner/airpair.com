@@ -1,6 +1,6 @@
 
 .banner {
-  position:relative;
+  position:relative;x
   border:solid 1px white;
 }
 .banner:hover {
@@ -12,36 +12,43 @@
   display:block;
   margin:20px 0;
   width:902px;
-  height:90px;
+  height:92px;
 }
 
-.banner-100kpostcomp {
-  background:url('../img/pages/postscomp/banner.jpg');
-  text-align:right;
-  .btn {
-    font-size:13px;
-    padding:5px;
-    position:absolute;
-    top:35%;
-    right:15px;
-  }
+.banner-keenio-pain {
+  border:solid 1px @bluegray;
+  margin-bottom:40px;
+  text-align:center;
+  vertical-align:middle;
 }
+
+// .banner-100kpostcomp {
+//   background:url('../img/pages/postscomp/banner.jpg');
+//   text-align:right;
+//   .btn {
+//     font-size:13px;
+//     padding:5px;
+//     position:absolute;
+//     top:35%;
+//     right:15px;
+//   }
+// }
 
 @media only screen and (max-width:900px) {
   .banner-top {
     width:640px;
   }
 
-  .banner-100kpostcomp {
-    background:url('../img/pages/postscomp/banner-640.png');
-    .btn {
-      font-size:12px;
-      padding:5px;
-      position:absolute;
-      top:35%;
-      right:-5px;
-    }
-  }
+  // .banner-100kpostcomp {
+  //   background:url('../img/pages/postscomp/banner-640.png');
+  //   .btn {
+  //     font-size:12px;
+  //     padding:5px;
+  //     position:absolute;
+  //     top:35%;
+  //     right:-5px;
+  //   }
+  // }
 }
 
 @media only screen and (max-width:640px) {
@@ -52,8 +59,8 @@
     height:50px;
   }
 
-  .banner-100kpostcomp {
-    background-size:126%;
-    .btn { display:none }
-  }
+  // .banner-100kpostcomp {
+  //   background-size:126%;
+  //   .btn { display:none }
+  // }
 }

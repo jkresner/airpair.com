@@ -38,8 +38,8 @@ angular.module("APPostsDirectives", [])
 })
 
 
-.directive('bannerPostcomp', function() {
-  return { template: require('./bannerPostcomp.html') }
+.directive('bannerPosttop', function() {
+  return { template: require('./bannerPosttop.html') }
 })
 
 

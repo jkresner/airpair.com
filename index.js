@@ -42,6 +42,8 @@ export function run()
       //-- Do not move connect-livereload before session middleware
       if (config.livereload) app.use(require('connect-livereload')({ port: 35729 }))
 
+      app.use('/ad', mw.analytics.trackAdImpression, express.static(config.appdir+'/public/static/img/ads')) //no max age, we want no cacheing
+
       var hbsEngine   = require('./server/views/_hbsEngine')
       hbsEngine(app)
 
