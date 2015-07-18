@@ -65,7 +65,7 @@
     "express-hbs": "^0.7.11",
     "express-session": "^1.9.1",
     "github": "git://github.com/airpair/node-github.git",
-    "googleapis": "2.0.2",
+    "googleapis": "2.1.1",
     "handlebars": "^2.0.0",
     "htmlparser2": "^3.7.3",
     "lodash": "2.4.1",
