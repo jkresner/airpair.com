@@ -1,4 +1,4 @@
-<header class="entry-header">
+{{!-- <header class="entry-header">
   <ol class="entry-meta breadcrumb">
     <li><a href="/posts" target="_self">Posts</a></li>
     {{#if primarytag}}<li>
@@ -16,10 +16,10 @@
       </span>
     </li>
   </ol>
-</header>
+</header> --}}
 
 {{#if published }}
-<div banner-postcomp></div>
+<div class="banner-top" banner-posttop></div>
 {{/if}}
 
 <article class="blogpost">
@@ -86,18 +86,18 @@
     {{#if stars }}
       <post-rail-stars></post-rail-stars>
     {{/if}}
-    <h6>Make this post better!</h6>
+    {{!-- <h6>Help make this post better!</h6>
     <div class="fork">
       <a href="/posts/fork/{{_id}}" class="btn">Fork this post!</a>
       <p>Forked <b>{{forkers.length}}</b> times so far</p>
-    </div>
+    </div> --}}
     {{/if}}
     {{#if published }}
-    <h6>Like this article?</h6>
-    <div>
+    <h6>Need 1 on 1 expert help?</h6>
+    <div class="gethelp">
       <img src="{{by.avatar}}?s=100" />
-      <div bookmarkerserver type="'post'" object-id="'{{_id}}'"></div>
-      <p>Save it to your bookmarks</p>
+      <span><b>PAIR UP</b> with<br /> experts like <br />{{by.name}}</span>
+      <a href="/login" class="btn btn-sm">Login</a>
     </div>
     {{/if}}
   </div>
@@ -129,7 +129,7 @@
 
 <footer id="posts" class="postfooter similar {{#if showDisqus }}afterdisqus{{/if}}">
   <hr />
-  <h5>Post categorized under</h5>
+  <h5>Tagged under</h5>
   <ul class="tags">{{#each tags}}
     <li><a href="/posts/tag/{{ slug }}">{{ name }}</a></li>
   {{/each}}
@@ -149,8 +149,8 @@
   </div>
 
   <section id="allposts">
-    <h3 class="underline">Similar posts <a href="/posts" class="btn btn-sm btn-inverse" target="_self">Recent posts</a></h3>
-    <div class="similar">
+    <h3 class="underline">Similar posts <a href="/posts" class="btn btn-sm btn-inverse" target="_self">All posts</a></h3>
+    <div class="similar nostars">
       {{#each similar}}{{> postListItem this}}{{/each}}
     </div>
   </section>

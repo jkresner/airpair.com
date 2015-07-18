@@ -20,8 +20,8 @@ export function run()
   app.use(mw.logging.badBot)
   //-- We don't want to serve sessions for static resources
   //-- Save database write on every resources
-  app.use(express.static(config.appdir+'/dist', { maxAge: '1d' }))
-  app.use(express.static(config.appdir+'/public', { maxAge: '1d' }))
+  app.use(express.static(config.appdir+'/dist', config.http.static))
+  app.use(express.static(config.appdir+'/public', config.http.static))
   routes('resolver')(app)
   app.use(mw.logging.slowrequests)
 
@@ -42,6 +42,8 @@ export function run()
       //-- Do not move connect-livereload before session middleware
       if (config.livereload) app.use(require('connect-livereload')({ port: 35729 }))
 
+      app.use('/ad', mw.analytics.trackAdImpression, express.static(config.appdir+'/public/static/img/ads')) //no max age, we want no cacheing
+
       var hbsEngine   = require('./server/views/_hbsEngine')
       hbsEngine(app)
 
@@ -50,11 +52,11 @@ export function run()
 
       app.get('/', mw.analytics.trackFirstRequest, mw.auth.authdRedirect('/dashboard'), app.renderHbs('home') )
       app.use('/auth', routes('auth')(app))
-      app.use('/v1/api/posts', routes('api').posts)
       app.use('/v1/api/matching', routes('api').matching)
       app.use('/v1/api/adm/bookings', routes('api').spinning)
       app.use('/v1/api/adm', routes('api').admin)
       app.use('/v1/api', routes('api').other)
+      app.use('/v1/api/posts', routes('api').posts)
       // $timelapsed("APP ROUTES API")
       app.use(['^/matchmaking*','^/adm/bookings*'],
         mw.authz.plnr, app.renderHbsAdmin('adm/pipeliner'))

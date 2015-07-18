@@ -1,10 +1,10 @@
-<header>
+<header ng-if="session._id">
   <ol class="entry-meta breadcrumb">
     <li class="current">Dashboard</li>
   </ol>
 </header>
 
-<section id="dashboard">
+<section id="dashboard" ng-if="session._id">
 
   <section ng-if="seen" class="notifications">
     <div ng-if="!seen.hello" id="hello">

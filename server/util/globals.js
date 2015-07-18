@@ -29,7 +29,7 @@ module.exports = function(config)
   }
 
   //-- makes app a tests load 300ms faster
-  global.analytics    = { track: ()=>{}, view: ()=>{}, alias: ()=>{}, identify: ()=>{} }
+  global.analytics    = { track: ()=>{}, view: ()=>{}, alias: ()=>{}, identify: ()=>{}, impression: ()=>{} }
 
   if (config.log.email)
   {

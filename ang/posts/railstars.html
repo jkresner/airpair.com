@@ -1,5 +1,7 @@
 <div class="railstars">
-  <h6 ng-if="notReviewed">Community Rating</h6>
+  <h6 ng-if="notReviewed">Community Rating<span ng-if="count > 1">s</span>
+    ({{count}})
+  </h6>
   <stars val="starsAvg"></stars>
-  <a href="#reviews">{{count}} Rating<span ng-if="count > 1">s</span></a>
+
 </div>

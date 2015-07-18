@@ -46,13 +46,13 @@
             else
             {
               var returnTo = $location.path()
-              $location.path(`/v1/auth/login`).search('returnTo', returnTo)
+              $location.path(`/login`).search('returnTo', returnTo)
               return $q.reject();
             }
           },
           function()
           {
-            $location.path('/v1/auth/login')
+            $location.path('/login')
             return $q.reject();
           }
         );
@@ -64,7 +64,7 @@
     // console.log('trackRoute', analytics)
     if (analytics)
     {
-      if (locationPath == '/v1/auth/login')
+      if (locationPath == '/login')
         analytics.track('Route',{ category: 'auth', name: 'login' })
 
       else if (locationPath == '/v1/auth/signup')

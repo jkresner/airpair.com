@@ -19,7 +19,7 @@
 
   <ul>
     <li><b><a id="headerLogin" href="/login" track-click="login">Login</a></b></li>
-    <li><b><a id="headerGetHelp" onclick="angular.element('#join input').focus()" class="btn">Live Coding Help</a></b></li>
+    <li><b><a id="headerGetHelp" onclick="angular.element('#join input').focus()" class="btn">Coding Help</a></b></li>
   </ul>
 </header>
 
@@ -96,48 +96,64 @@
     </div>
   </section>
 
-<!-- <div class="vr"></div>
-<section class="gaurantee">
 
-  <div class="block">try it out, risk free</div>
-  <div class="vr" style="margin-top:-30px"></div>
+  <section id="about">
 
-  <p>We have a 100% satisfaction guarantee</p>
+  <div class="vr"></div>
 
-  <label>Warning AirPairing can become addictive once you realized how awesome it is.</label>
+  <section class="help">
 
-</section> -->
+    <div class="block">got a problem?</div>
+    <div class="vr" style="margin-top:-30px"></div>
 
-  <br /><br /><br />
-    <br /><br /><br />
+    <p>The average jaunt on Stack Overflow takes <em>4 painful hours</em>.</p>
+
+    <label>and shortens your life by 3 months</label>
+
+    <p>Solve your problem <em>10x quicker</em> with experts in every language.</p>
+
+  </section>
+
+  <br />
 
 
-<!-- <div class="vr"></div>
-<section class="customers">
+  <div class="vr"></div>
+  <section class="help">
 
-  <div class="block">Recent customers</div>
-  <div class="vr" style="margin-top:-30px"></div>
+    <div class="block">it's easy</div>
+    <div class="vr" style="margin-top:-30px"></div>
 
-  <p>We have a 100% satisfaction guarantee</p>
+    <p>Spend <em>5 minutes</em> filling out a request and get introduced to</p>
 
-  <label>Warning AirPairing can become addictive once you realized how awesome it is.</label>
+    <p>developers that <em>Facebook, Google and Apple</em> would salivate over.</p>
+    <br />
+  </section>
 
-</section> -->
+  <div class="vr"></div>
+  <section class="gaurantee">
+
+    <div class="block">try it out, risk free</div>
+    <div class="vr" style="margin-top:-30px"></div>
+
+    <p>We have a 100% satisfaction guarantee</p>
+
+    <label>Warning AirPairing can become addictive once you realized how awesome it is.</label>
+
+  </section>
+
+    <a id="homeJoinBottom" href="/login" class="btn">Join AirPair</a>
+
+  </section>
 
 
   </main>
 </div>
 
-
-
-
-
 <footer>
   <ul>
-    <li><a href="/rss" target="_self" class="rss">Rss</a></li>
-    <li><a href="/privacy" target="_blank" class="pp">Privacy</a></li>
-    <li><a href="/workshops" target="_self" class="wks">Workshops</a></li>
     <li><a href="/posts" target="_blank" class="pts">Posts</a></li>
+    <li><a href="/rss" target="_self" class="rss">Rss</a></li>
+    <li><a href="/privacy" target="_blank" class="pp">Privacy Policy</a></li>
     <li>&copy; 2015 airpair, inc.</li>
   </ul>
 </footer>
@@ -157,6 +173,7 @@ body.focus > header { opacity:0.2 }
 body.focus > footer { opacity:0.2 }
 body.focus section.header { opacity:0.2 }
 body.focus section.how { opacity:0.2 }
+body.focus section#about { opacity:0.2 }
 body.focus section#join img { opacity:0.6 }
 body.focus section#join form { opacity:1;background-color:white }
 body.focus section#join .you { background-color:#90d1cc!important }

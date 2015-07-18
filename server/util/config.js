@@ -6,7 +6,7 @@ var cfg = {
     segmentio: { writekey: '9793xyfxat', options: { flushAt: 1 } }
   },
   auth: {
-    loginUrl: '/v1/auth/login',
+    loginUrl: '/login',
     unauthorizedUrl: '/v1/auth/unauthorized',
     defaultRedirectUrl: '/',
     oAuth: { callbackHost: 'http://localhost:3333' },
@@ -147,7 +147,12 @@ var cfg = {
     }
   },
   redirects: { on: false },
-  session: { secret: 'airyv1' }
+  session: { secret: 'airyv1' },
+  http: {
+    static: {
+      maxAge: null
+    }
+  }
 }
 
 
@@ -196,7 +201,9 @@ module.exports = function(env) {
     cfg.session.secret = process.env.SESSION_SECRET || 'airyv1'
   }
 
-  if (cfg.env == 'production') {
+  if (cfg.env == 'production')
+  {
+    cfg.http.static.maxAge = '1d'
 
     cfg.log.auth = (process.env.LOG_AUTH) ? process.env.LOG_AUTH == 'true' : false
     cfg.log.email = {

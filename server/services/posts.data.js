@@ -409,10 +409,37 @@ var opts = {
   },
   highestRating: {
     sort: { 'stats.reviews': -1, 'stats.rating': -1 }
+  },
+  allPublished: {
+    sort: { 'published': -1, 'stats.reviews': -1, 'stats.rating': -1 }
   }
 }
 
-module.exports = {select,query,opts}
+
+var data = {
+  popular: [
+    'angularjs-tutorial',
+    'hybrid-apps-ionic-famous-f7-onsen',
+    'nodejs-framework-comparison-express-koa-hapi',
+    'python-tips-and-traps',
+    'top-10-mistakes-nodejs-developers-make',
+    'comprehensive-guide-to-building-scalable-web-app-on-amazon-web-services--part-1',
+    'swift-tutorial-building-an-ios-applicationpart-1',
+    'understand-javascript-array-reduce-in-1-minute',
+    'creating-a-photo-gallery-in-android-studio-with-list-fragments'
+  ],
+  comp: [
+    'switching-from-ios-to-ionic',
+    'how-to-create-a-complete-expressjs--nodejs--mongodb-crud-and-rest-skeleton',
+    'ntiered-aws-docker-terraform-guide',
+    'unit-testing-angularjs-applications',
+    'the-legend-of-canvas',
+    'moving-from-sql-to-rethinkdb'
+  ]
+}
+
+
+module.exports = {select,query,opts,data}
 
 
 
