@@ -306,7 +306,7 @@ header.top {
       background-size:cover;
       h1 { font-size:22px;line-height:30px }
       h4 { font-size:18px;margin:20px auto 0 auto;max-width:80%;padding-bottom:10px }
-      img.logo { margin:20px auto 0px auto;max-width:70% }
+      img.logo { margin:auto;max-width:76%;display:block;padding:20px; }
     }
   }
 
@@ -330,6 +330,12 @@ header.top {
     }
   }
 
+  .details {
+    img.flow {
+      max-width:100%;
+    }
+  }
+
   .about {
     position:relative;
     background:@darkblue;
@@ -339,24 +345,45 @@ header.top {
 
     @media only screen and (max-width:640px) {
       .viewsbg { display:none }
-      height:340px;
+      // height:340px;
       p {  max-width:90%;margin-top:6px;font-size:14px;
         padding:16px 5px 0 5px; }
-      ul.stats {
-        border:none;
-        margin-top:0;
-        li {
-          color:@turquoise;
-          width:32%;
-          h5 { font-size:16px; }
-          font-size:10px;
-        }
+      #overview {
+        h2 { padding-bottom:5px;margin:0 0 0px 0;border:none;width:100%;font-size:16px;font-weight:bold }
       }
-      img.flow {
-        max-width:100%;
-        position:absolute;
-        bottom:0;
-        left:0;
+      // ul.stats {
+      //   border:none;
+      //   margin-top:0;
+      //   li {
+      //     color:@turquoise;
+      //     width:32%;
+      //     h5 { font-size:16px; }
+      //     font-size:10px;
+      //   }
+      // }
+
+    }
+
+    .pastauthors {
+      .ulNoStyle;
+      text-align:center;
+      li {
+        display:inline-block;
+        width:30%;
+        p { font-size:16px;display:inline-block;padding:5px;max-width:200px;margin-top:0px  }
+        img { border-radius:50%;display:block;margin:30px auto 0px auto }
+        b { display:block; }
+      }
+
+      @media only screen and (max-width:640px) {
+        li {
+          vertical-align:top;
+          max-width:90px;
+          img { margin:10px auto 0px auto;max-width:60px }
+          p { font-size:12px }
+          h6 { display:none }
+          b { display:none }
+        }
       }
     }
 
@@ -376,24 +403,6 @@ header.top {
       }
     }
 
-    .pastauthors {
-      .ulNoStyle;
-      text-align:center;
-      li {
-        display:inline-block;
-        width:30%;
-        p { font-size:16px;display:inline-block;padding:5px;max-width:200px;margin-top:0px  }
-        img { border-radius:50%;display:block;margin:30px auto 0px auto }
-        b { display:block; }
-      }
-
-      @media only screen and (max-width:640px) {
-        li {
-          img { margin:10px auto 0px auto }
-          p { font-size:12px }
-        }
-      }
-    }
   }
 
   .prizes {
@@ -422,19 +431,3 @@ header.top {
 }
 
 
-
-.faq {
-  color:@gray;
-  max-width:900px;
-  margin:auto;
-
-  h1 {
-    border-bottom:solid 1px @lightblue;
-    font-size:28px;
-    line-height:50px;
-    .btn { padding:5px;width:240px;margin-top:10px }
-  }
-
-  h2 { font-weight:bold;font-size:22px }
-  h5 { color:@orange;font-weight:bold }
-}

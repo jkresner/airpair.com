@@ -50,7 +50,7 @@ angular.module('APSvcSession', [])
             return response.data;
           }
         },
-        function(err) { window.location = '/v1/auth/logout'; }
+        function(err) { window.location = '/logout'; }
       );
     }
 

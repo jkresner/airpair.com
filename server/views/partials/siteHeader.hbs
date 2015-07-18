@@ -3,9 +3,10 @@
 
   <ul>
     {{#unless authenticated}}<li class="login"><a href="/login" target="_self">Login</a></li>{{/unless}}
-    <li class="exp nomob"><a href="/be-an-expert" target="_self">Expert Application</a></li>
+    <li class="find nomob"><a href="/find-an-expert" target="_self">Find an expert</a></li>
+    <li class="exp nomob"><a href="/be-an-expert" target="_self">Help others</a></li>
     <li class="ps"><a href="/posts" target="_self">Posts</a></li>
-    <li class="more"><a>More</a>
+    <li class="more nomob"><a>More</a>
       <ul class="more">
         <li><a href="/blog" target="_self" class="blog">AirPair Blog</a></li>
         {{!-- <li class="nomob"><a href="/workshops" target="_self" class="wk">Workshops</a></li> --}}

@@ -129,14 +129,12 @@
 #allposts {
   h1 {
     margin-left:8px;max-width:880px;
-    font-size:42px;line-height:50px;margin-top:30px;border-color:@lightgray;
+    font-size:42px;line-height:50px;margin-top:30px;
   }
   h2.underline {
-    .underlinedHeading;
-    border-color:@lightgray;
     margin-top:40px;
     margin-left:8px;max-width:880px;
-    font-size:34px;line-height:40px;
+    font-size:32px;line-height:50px;
     .btn {
       float:right;
       margin-top:5px;
@@ -167,6 +165,19 @@
     .bookmark  { display:none }
   }
 
+  @media only screen and (max-width:640px) {
+    h1 { font-size:20px;line-height:24px;
+      border:none;
+    }
+    h2.underline { font-size:20px;line-height:24px;
+      border:none;
+      .btn { display:none }
+    }
+
+    .archive-posts {
+      a { display:block;margin-top:8px }
+    }
+  }
 }
 
 #myposts {

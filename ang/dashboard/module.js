@@ -16,10 +16,30 @@ angular.module("APDashboard", ['APFilters', 'APSvcSession',
 .controller('DashboardCtrl', function($scope, $location, DataService,
   SessionService, StaticDataService, BookingsUtil) {
 
-  $scope.util = BookingsUtil
-
   SessionService.onAuthenticated(function() {
-    if (!$scope.session._id) $location.path(`/about`)
+
+    if (!$scope.session._id)
+      return window.location = "/"
+
+    $scope.util = BookingsUtil
+
+    DataService.bookings.getBookings({}, (r) => {
+      $scope.bookings = _.take(r,4)
+    })
+
+    DataService.requests.getMyRequests({}, (r) => {
+      $scope.requests = r
+    })
+
+    var setSeen = (siteNotifications) => {
+      $scope.seen = []
+      siteNotifications.forEach((n)=>$scope.seen[n.name] = true)
+    }
+
+    SessionService.getSiteNotifications({}, setSeen)
+
+    $scope.closeNotification = (name) =>
+      SessionService.toggleSiteNotification({name}, setSeen)
 
     // if ($scope.session.tags && $scope.session.tags.length > 0) {
       // DataService.experts.getForDashboard({}, function(r) {
@@ -28,25 +48,6 @@ angular.module("APDashboard", ['APFilters', 'APSvcSession',
     // }
   })
 
-  $scope.posts = { newest: [StaticDataService.getNewestPost()] }
-
-  DataService.bookings.getBookings({}, (r) => {
-    $scope.bookings = _.take(r,4)
-  })
-
-  DataService.requests.getMyRequests({}, (r) => {
-    $scope.requests = r
-  })
-
-  var setSeen = (siteNotifications) => {
-    $scope.seen = []
-    siteNotifications.forEach((n)=>$scope.seen[n.name] = true)
-  }
-
-  SessionService.getSiteNotifications({}, setSeen)
-
-  $scope.closeNotification = (name) =>
-    SessionService.toggleSiteNotification({name}, setSeen)
 })
 
 

@@ -141,11 +141,7 @@
 
   </section>
 
-
-
-    <a ng-if="!session._id" id="aboutSignupBottom" track-click="signup" ng-click="openProfile()" class="btn">Join AirPair</a>
-    <a ng-if="session._id" href="/help/request" target="_self" class="btn">Get help</a>
-
+    <a id="homeJoinBottom" href="/login" class="btn">Join AirPair</a>
 
   </section>
 
@@ -153,20 +149,11 @@
   </main>
 </div>
 
-
-
-
-
-
-
-
-
 <footer>
   <ul>
-    <li><a href="/rss" target="_self" class="rss">Rss</a></li>
-    <li><a href="/privacy" target="_blank" class="pp">Privacy</a></li>
-    <li><a href="/workshops" target="_self" class="wks">Workshops</a></li>
     <li><a href="/posts" target="_blank" class="pts">Posts</a></li>
+    <li><a href="/rss" target="_self" class="rss">Rss</a></li>
+    <li><a href="/privacy" target="_blank" class="pp">Privacy Policy</a></li>
     <li>&copy; 2015 airpair, inc.</li>
   </ul>
 </footer>
@@ -186,6 +173,7 @@ body.focus > header { opacity:0.2 }
 body.focus > footer { opacity:0.2 }
 body.focus section.header { opacity:0.2 }
 body.focus section.how { opacity:0.2 }
+body.focus section#about { opacity:0.2 }
 body.focus section#join img { opacity:0.6 }
 body.focus section#join form { opacity:1;background-color:white }
 body.focus section#join .you { background-color:#90d1cc!important }

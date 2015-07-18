@@ -427,8 +427,17 @@ var data = {
     'swift-tutorial-building-an-ios-applicationpart-1',
     'understand-javascript-array-reduce-in-1-minute',
     'creating-a-photo-gallery-in-android-studio-with-list-fragments'
+  ],
+  comp: [
+    'switching-from-ios-to-ionic',
+    'how-to-create-a-complete-expressjs--nodejs--mongodb-crud-and-rest-skeleton',
+    'ntiered-aws-docker-terraform-guide',
+    'unit-testing-angularjs-applications',
+    'the-legend-of-canvas',
+    'moving-from-sql-to-rethinkdb'
   ]
 }
+
 
 module.exports = {select,query,opts,data}
 
