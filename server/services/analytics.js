@@ -1,6 +1,7 @@
 import Svc from '../services/_service'
 import Landing from '../models/landing'
 var logging = false
+var {ObjectId} = require('mongoose').Types
 
 
 var util = {
@@ -51,12 +52,13 @@ var viewSvc = {
   alias(anonymousId, userId, cb)
   {
     if (logging) $log('views.alias'.trace, anonymousId, userId)
-    userId = ObjectId(userId)
+    userId = ObjectId(userId.toString())
     ViewsCollection.update({anonymousId}, {$set:{userId}}, { multi: true }, cb)
   },
 
   create(o, cb)
   {
+    if (o.userId) o.userId = ObjectId(o.userId.toString())
     if (logging) $log('views.create'.trace, o)
     ViewsCollection.insert(o, cb)
   }
@@ -67,10 +69,11 @@ var viewSvc = {
 var Impressions = require('../models/impression').collection
 var impressionSvc = {
   alias(sId, uId, cb) {
-    uId = ObjectId(uId)
+    uId = ObjectId(uId.toString())
     Impressions.update({sId}, {$set:{uId}}, { multi: true }, cb)
   },
   create(o, cb) {
+    if (o.uId) o.uId = ObjectId(o.uId.toString())
     Impressions.insert(o, cb)
   }
 }
@@ -145,7 +148,7 @@ var analytics = {
   impression(user, sessionID, img, context, done) {
     var d = {img,ip:context.ip}
     var userId = (user) ? user._id: null
-    if (userId) d.uId = ObjectId(userId)
+    if (userId) d.uId = userId
     else d.sId = sessionID
     if (context.referer) d.ref = context.referer
     if (context.userAgent) d.ua = context.userAgent
@@ -176,7 +179,7 @@ var analytics = {
     var userId = (user) ? user._id: null
 
     var d = {url:properties.path,type,objectId,ip:context.ip}
-    if (userId) d.userId = ObjectId(userId)
+    if (userId) d.userId = userId
     else d.anonymousId = sessionID
     if (campaign) d.campaign = campaign
     if (referer) d.referer = referer

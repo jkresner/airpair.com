@@ -1,5 +1,6 @@
 var API = require('../api/_all')
 var {trackView} = require('../middleware/analytics')
+var auth = require('../middleware/auth')
 
 module.exports = function(app) {
 
@@ -12,6 +13,7 @@ module.exports = function(app) {
     })
 
     .get('/:tag/so-welcome',
+      auth.noCrawl('/'),
       (req, res, next) => {
         req.landing = {
           _id: '54c937cc85e52c93f2c72bf4',

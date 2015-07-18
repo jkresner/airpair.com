@@ -97,6 +97,21 @@ var middleware = {
     next()
   },
 
+  noCrawl(redirectUrl) {
+    return (req, res, next) => {
+      var userAgent = req.get('user-agent')
+
+      if (util.isBot(userAgent, config.bots.all)) {
+        var referer = req.header('Referer')
+        var ref = (referer) ? ` <<< ${referer}` : ''
+        if (true || logging)
+          $log(`nocrawl ${req.ip}`.cyan,`${userAgent}`.blue,`${req.originalUrl} ${ref}`.gray)
+        res.redirect(301, redirectUrl)
+      }
+      else
+        next()
+    }
+  },
 
   authd(req, res, next) {
     if (logging) $log(`mw.authd[${req.url}] ${req.isAuthenticated()}`.cyan)

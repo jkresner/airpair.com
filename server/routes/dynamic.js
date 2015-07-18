@@ -4,7 +4,7 @@ import TagsAPI                      from '../api/tags'
 import RequestsApi                  from '../api/requests'
 import ExpertsApi                   from '../api/experts'
 var {trackView,trackAdClick}        = require('../middleware/analytics')
-var {authd}                         = require('../middleware/auth')
+var {authd,noCrawl}                 = require('../middleware/auth')
 var {populate}                      = require('../middleware/data')
 
 
@@ -29,7 +29,7 @@ module.exports = function(app) {
 
     .get('/visit/keen.io-072015',
        trackAdClick('https://keen.io/?utm_source=airpair&utm_medium=banner&utm_campaign=custom_analytics'),
-        (req, res, cb) => res.redirect(req.adUrl)
+        (req, res, cb) => res.redirect(req.ad.url)
       )
 
     .get('/workshops',
@@ -51,7 +51,9 @@ module.exports = function(app) {
         (req, cb) => cb(null,req.workshop) ))
 
 
-    .get('/review/:review', //trackView('request'),
+    .get('/review/:review',
+      noCrawl('/'),
+      //trackView('request'),
       app.renderHbsViewData('review', null,
         (req, cb) => {
           req.review.meta = {
@@ -85,6 +87,7 @@ module.exports = function(app) {
 
 
     .get('/wiki/experts/:post',
+      noCrawl('/posts'),
       authd,
       trackView('post'),
       app.renderHbsViewData('post', null, (req, cb) => cb(null, req.post)))
@@ -100,7 +103,9 @@ module.exports = function(app) {
         app.renderHbsViewData('book', null, (req, cb) => cb(null, req.expert)))
 
 
-    .get('/posts/review/:id', function(req, res, next) {
+    .get('/posts/review/:id',
+      noCrawl('/posts'),
+      function(req, res, next) {
       $callSvc(PostsAPI.svc.getByIdForReview, req)(req.params.id, (e,r) => {
         if (!r) return res.redirect('/posts/me')
         else if (r.published) return res.redirect(301, r.url)
@@ -110,7 +115,9 @@ module.exports = function(app) {
       app.renderHbsViewData('post', null, (req, cb) => cb(null, req.post)))
 
 
-    .get('/posts/preview/:id', authd, populate.user, function(req, res, next) {
+    .get('/posts/preview/:id',
+      noCrawl('/posts'),
+      authd, populate.user, function(req, res, next) {
       $callSvc(PostsAPI.svc.getByIdForPreview, req)(req.params.id, (e,r) => {
         if (!r) return res.redirect('/posts/me')
         if (!_.idsEqual(r.by.userId,req.user._id) &&
