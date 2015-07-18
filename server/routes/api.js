@@ -80,11 +80,6 @@ other: Router()
     })
   })
 
-  .get('/posts/me', API.Posts.getMyPosts)
-  .get('/posts/review', API.Posts.getPostsInReview)
-  .get('/posts/recent', API.Posts.getRecentPublished)
-  .get('/posts/by/:id', API.Posts.getUsersPublished)
-  .get('/posts/tag/:tag', API.Posts.getByTag)
 
   .get('/requests/review/:id', API.Requests.getByIdForReview)
 
@@ -92,8 +87,13 @@ other: Router()
   .get('/workshops/:id', API.Workshops.getBySlug)
 
   .get('/tags/search/:id', API.Tags.search)
+  .get('/posts/tagged/:tag', API.Posts.getByTag)
 
   .use(authd)
+  .get('/posts/me', API.Posts.getMyPosts)
+  .get('/posts/review', API.Posts.getPostsInReview)
+  .get('/posts/recent', API.Posts.getRecentPublished)
+  .get('/posts/by/:id', API.Posts.getUsersPublished)
 
   .post('/tags', bodyParam('tagfrom3rdparty'), API.Tags.createFrom3rdParty)
 

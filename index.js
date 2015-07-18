@@ -50,11 +50,11 @@ export function run()
 
       app.get('/', mw.analytics.trackFirstRequest, mw.auth.authdRedirect('/dashboard'), app.renderHbs('home') )
       app.use('/auth', routes('auth')(app))
-      app.use('/v1/api/posts', routes('api').posts)
       app.use('/v1/api/matching', routes('api').matching)
       app.use('/v1/api/adm/bookings', routes('api').spinning)
       app.use('/v1/api/adm', routes('api').admin)
       app.use('/v1/api', routes('api').other)
+      app.use('/v1/api/posts', routes('api').posts)
       // $timelapsed("APP ROUTES API")
       app.use(['^/matchmaking*','^/adm/bookings*'],
         mw.authz.plnr, app.renderHbsAdmin('adm/pipeliner'))

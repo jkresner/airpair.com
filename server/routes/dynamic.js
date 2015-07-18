@@ -15,6 +15,11 @@ module.exports = function(app) {
     app.get(`/${slug}`, populate.tagPage(slug), trackView('tag'),
       app.renderHbsViewData('tag', null, (req, cb) => cb(null, req.tagpage) ))
 
+  for (var slug of ['reactjs', 'python', 'node.js', 'ember.js', 'keen-io', 'rethinkdb',
+    'ionic-framework', 'swift', 'android', 'ruby' ])
+    app.get(`^/${slug}`, //trackView('tag'),
+      app.renderHbs('base') )
+
 
   var router = require('express').Router()
 
@@ -59,6 +64,11 @@ module.exports = function(app) {
         }))
 
 
+    .get('/blog',
+      app.renderHbsViewData('blog', null,
+      (req, cb) => PostsAPI.svc.getUsersPublished('52ad320166a6f999a465fdc5', cb) ))
+
+
     .get('/posts',
       app.renderHbsViewData('posts', { title: "Software Posts, Tutorials & Articles" },
         (req, cb) => cache.getOrSetCB('postAllPub',PostsAPI.svc.getAllPublished,cb) ))
@@ -83,11 +93,6 @@ module.exports = function(app) {
           next()
         })},
         app.renderHbsViewData('book', null, (req, cb) => cb(null, req.expert)))
-
-
-    .get('/blog',
-      app.renderHbsViewData('posts', null,
-      (req, cb) => PostsAPI.svc.getUsersPublished('52ad320166a6f999a465fdc5', cb) ))
 
 
     .get('/posts/review/:id', function(req, res, next) {

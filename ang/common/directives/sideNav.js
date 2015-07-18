@@ -18,6 +18,7 @@ angular.module("APSideNav", [])
         storage('sideNavOpen', 'false');
       });
 
+      element.css('display','block')
     },
     controllerAs: 'sideNav',
     controller($scope, $element, $attrs) {
