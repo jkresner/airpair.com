@@ -2,21 +2,18 @@
   <a href="/" tile="airpair.com pair programming"></a>
 
   <ul>
-    {{!-- <li class="nomob"><a href="/v1"><i>Ooooops</i></a></li> --}}
     {{#unless authenticated}}<li class="login"><a href="/login" target="_self">Login</a></li>{{/unless}}
-    <li class="exp nomob"><a href="/be-an-expert" target="_self">! Expert Application</a></li>
+    <li class="exp nomob"><a href="/be-an-expert" target="_self">Expert Application</a></li>
     <li class="ps"><a href="/posts" target="_self">Posts</a></li>
-    {{!-- <li class="nomob"><a href="/100k-writing-competition" target="_self"><b>100k Writing Comp</b></a></li> --}}
     <li class="more"><a>More</a>
       <ul class="more">
-        <li><a href="/about" target="_self" class="about">About</a></li>
         <li><a href="/blog" target="_self" class="blog">AirPair Blog</a></li>
-        <li class="nomob"><a href="/workshops" target="_self" class="wk">Workshops</a></li>
+        {{!-- <li class="nomob"><a href="/workshops" target="_self" class="wk">Workshops</a></li> --}}
         <li><a href="/rss" target="_self" class="rss">Rss</a></li>
         <li><a href="/privacy" target="_blank" class="pp">Privacy</a></li>
       </ul>
     </li>
-    <li><b><a id="headerGetHelp" href="/help/request" track-click="request" class="btn">Live Coding Help </a></b></li>
+{{!--     <li><b><a id="headerGetHelp" href="/help/request" track-click="request" class="btn">Coding Help </a></b></li> --}}
     {{!--<li><a href="#" target="_self">Pair Programming</a></li>--}}
   </ul>
 </header>

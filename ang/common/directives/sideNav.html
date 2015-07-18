@@ -10,31 +10,7 @@
 </section>
 
 
-<section class="welcome" ng-if="session.unauthenticated">
-  <ul class="main">
-    <li>
-      <a id="navWelcomeAvatar" class="avatar" track-click="sideNav" ng-click="openProfile()"><div><img ng-src="{{ session.avatar }}" /></div><span>signup</span></a>
-    </li>
-    <li>
-      <a id="navLogin" href="/v1/auth/login" track-click="sideNav">
-        <div class="login"></div><span>login</span>
-      </a>
-    </li>
-    <li>
-      <a id="navStackToggle" track-click="sideNav" href="#" ng-click="openStack()">
-        <div class="stack"></div><span>stack</span>
-      </a>
-    </li>
-    <li>
-      <a id="navBookmarksToggle" track-click="sideNav" href="#" ng-click="openBookmarks()">
-        <div class="bookmarks"></div><span>bookmarks</span>
-      </a>
-    </li>
-  </ul>
-</section>
-
-
-<section class="main" ng-if="session._id">
+<section class="main">
   <ul>
     <li><a href="/me" class="avatar"><div><img ng-src="{{ session.avatar }}?s=31" /></div><span>me</span></a></li>
     <li><a href="/dashboard"><div class="dashboard"></div><span>dashboard</span></a></li>
@@ -51,12 +27,11 @@
       </a>
     </li>
     <li><a href="/billing"><div class="billing"></div><span>billing</span></a></li>
-<!--     <li><a href="/v1">see a bug?</a></li> -->
     <li><a href="/v1/auth/logout" target="_self"><div class="logout"></div><span>logout</span></a></li>
   </ul>
 </section>
 
-<section class="expert" ng-if="session._id">
+<section class="expert">
   <ul>
     <li><a href="/be-an-expert" class="avatar"><div><img ng-src="{{ session.avatar }}?s=31" /></div><span>profile</span></a></li>
     <li><a href="/office"><div class="dashboard"></div><span>office</span></a></li>
@@ -66,28 +41,5 @@
     <li><a href="/settings"><div class="settings"></div><span>settings</span></a></li>
   </ul>
 </section>
-
-
-
-
-
-<!-- <section class="stack"> <label>Stack</label>
-  <ul>
-    <li ng-repeat="tag in session.tags | orderBy:'sort'">
-      <a ng-if="tag.slug != 'angularjs'" href="/posts/tag/{{tag.slug}}">{{tag.name}}</a>
-      <a ng-if="tag.slug == 'angularjs'" href="/angularjs" target="_self">{{tag.name}}</a>
-    </li>
-  </ul>
-
-</section>
- -->
-
-<!-- <section class="bookmarks"> <label>Bookmarks</label>
-  <ul class="bookmarks">
-    <li ng-repeat="bookmark in session.bookmarks | orderBy:'sort'">
-      <a href="{{bookmark.url}}" target="_self">{{bookmark.title}}</a>
-    </li>
-  </ul>
-</section> -->
 
 <div stack></div>

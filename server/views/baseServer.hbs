@@ -23,6 +23,7 @@
         {{#if postblankRender}}{{> postblank }}{{/if}}
         {{#if postfaqRender}}{{> postfaq }}{{/if}}
         {{#if postsRender}}{{> posts }}{{/if}}
+        {{#if blogRender}}{{> blog }}{{/if}}
         {{#if workshopRender}}{{> workshop }}{{/if}}
         {{#if workshopsRender}}{{> workshops }}{{/if}}
         {{#if tagRender}}{{> tag }}{{/if}}
@@ -34,34 +35,14 @@
 
 </div>
 
-<nav id="side" class="collapse" side-nav></nav>
-{{#if config.chatSettings.on}}
-<nav id="chat" class="collapse" chat-nav></nav>
-{{/if}}
+<nav id="side" ng-if="session._id" class="collapse" side-nav></nav>
+
 
 <script type="text/javascript" src="{{config.bundle.indexScript}}"></script>
 <script type="text/javascript">
 
 function bindTracking() {
   ga('send', 'pageview')
-
-  $.each($('.trackPostCTA'), function(idx,el){
-    $(el).click(function (e) {
-      analytics.track('Click', { type: 'Post CTA', unit: 'code footer', idx: idx, text: el.innerHTML, location: window.location.pathname });
-
-      setTimeout(function () {
-        window.location.href = $(el).attr('href');
-      }, 350);
-
-      return false;
-    });
-  })
-
-  $.each($('.featured a.btn'), function(idx,el) {
-    $(el).click(function (e) {
-      analytics.track('Click', { type: 'Tag Feature', unit: 'featured', idx: idx, text: el.innerHTML, location: window.location.pathname });
-    });
-  })
 }
 
 window.viewData = { canonical: '{{ canonical }}', {{partialName}} : {{JSONID viewData}}, session: {{ JSON session }} };
