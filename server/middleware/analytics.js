@@ -63,7 +63,7 @@ var middleware = {
       if (isBot(req.header('user-agent'))) return next()
       if (true || logging) $log('trackAdClick'.yellow, req.header('Referer'))
       req.ad = {
-        _id: ObjectId("55aa28f643f81ad565104e6f"),
+        _id: "55aa28f643f81ad565104e6f",
         title: 'Keen.io jul custom analytics', url: adUrl, tags: [{slug:'keen-io'}]
       }
       middleware.trackView('ad')(req,res,next)

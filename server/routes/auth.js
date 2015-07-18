@@ -13,6 +13,7 @@ module.exports = function(app) {
 
     // Looks at the querystring and save to session if ?returnTo=xxx exists
     .use(mw.setReturnTo)
+    .use(mw.noCrawl('/'))
 
     .get('/logout', logout(config.auth))
     .post('/login', mw.authAlreadyDone, auth.local.login)

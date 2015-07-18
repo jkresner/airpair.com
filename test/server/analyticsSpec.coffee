@@ -80,7 +80,6 @@ module.exports = -> describe "Tracking: ".subspec, ->
         .expect(302)
         .expect('Content-Type', /text/)
         .end (err, resp) ->
-          $log('gotback'.magenta)
           if err then throw err
           expect(spy.callCount).to.equal(1)
           expect(spy.args[0][0]).to.be.undefined
@@ -100,6 +99,7 @@ module.exports = -> describe "Tracking: ".subspec, ->
       userId = data.users[userKey]._id
       analytics.setCallback =>
         viewCheck = => db.readDocs 'View', {userId}, (r) ->
+          expect(spy.callCount).to.equal(1)
           expect(r.length).to.equal(1)
           expectIdsEqual(r[0].userId,userId)
           expect(r[0].anonymousId).to.be.undefined
@@ -108,6 +108,7 @@ module.exports = -> describe "Tracking: ".subspec, ->
 
       LOGIN userKey, (s) ->
         GETP("/v1/posts/#{postSlug}?utm_campaign=test2nm")
+          .set('user-agent', uaFirefox)
           .set('referer', 'http://www.airpair.com/posts')
           .expect('Content-Type', /text/)
           .end (err, resp) ->
