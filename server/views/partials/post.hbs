@@ -86,20 +86,20 @@
     {{#if stars }}
       <post-rail-stars></post-rail-stars>
     {{/if}}
-    <h6>Help make this post better!</h6>
+    {{!-- <h6>Help make this post better!</h6>
     <div class="fork">
       <a href="/posts/fork/{{_id}}" class="btn">Fork this post!</a>
       <p>Forked <b>{{forkers.length}}</b> times so far</p>
+    </div> --}}
+    {{/if}}
+    {{#if published }}
+    <h6>Need 1 on 1 expert help?</h6>
+    <div class="gethelp">
+      <img src="{{by.avatar}}?s=100" />
+      <span><b>PAIR UP</b> with<br /> experts like <br />{{by.name}}</span>
+      <a href="/login" class="btn btn-sm">Login</a>
     </div>
     {{/if}}
-    {{!-- {{#if published }}
-    <h6>Like this article?</h6>
-    <div>
-      <img src="{{by.avatar}}?s=100" />
-      <div bookmarkerserver type="'post'" object-id="'{{_id}}'"></div>
-      <p>Save it to your bookmarks</p>
-    </div>
-    {{/if}} --}}
   </div>
 
 
