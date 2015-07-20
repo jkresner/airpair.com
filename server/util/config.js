@@ -119,7 +119,11 @@ var cfg = {
   },
   hangout:{
     //140030887085 == production AirPair app
-    appId: process.env.HANGOUT_APPID || "140030887085"
+    appId: '140030887085',
+    login: {
+      email: 'support@airpair.com',
+      password: 'helsyea'
+    }
   },
   mail: {
     smtpProvider: null,
@@ -266,6 +270,10 @@ module.exports = function(env) {
     cfg.calendar.google.ownerRefreshToken = process.env.CALENDAR_GOOGLE_OWNER_REFRESHTOKEN
     cfg.calendar.google.owner = process.env.CALENDAR_GOOGLE_OWNER
     cfg.calendar.google.calendarId = process.env.CALENDAR_GOOGLE_CALENDARID
+
+    cfg.hangout.appId = process.env.HANGOUT_APPID
+    cfg.hangout.login.email = process.env.HANGOUT_LOGIN_EMAIL
+    cfg.hangout.login.password = process.env.HANGOUT_LOGIN_PASSWORD
 
     //-- until things are under control (jk)
     cfg.chat.slack.jk.id = process.env.CHAT_SLACK_ADMIN_ID

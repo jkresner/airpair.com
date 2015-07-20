@@ -22,6 +22,7 @@ require('./common/models/sessionService.js');
 require('./common/models/dataService.js');
 require('./common/models/staticDataService.js');
 require('./common/util.js');
+require('./common/directives/hangouts.js');
 require('./common/directives/forms/forms.js');
 require('./common/directives/forms/inputs.js');
 require('./common/directives/forms/tagInput.js');
@@ -62,7 +63,7 @@ angular.module("AP", ['ngRoute', 'ngAnimate',
   'APViewData', 'APSvcSession', 'APDataSvc', 'APSvcStatic',
   'APCTAs', 'APAnalytics', 'APNotifications', 'APBookmarker',
   'APProfileDirectives', 'APPostsDirectives', 'APSurveyDirectives',
-  'APSideNav',
+  'APSideNav', 'APHangouts',
   'APAuth', 'APPosts', 'APWorkshops', 'APProfile', 'APBilling',
   'APRequests','APBookings', 'APDashboard', 'APExpert'])
 

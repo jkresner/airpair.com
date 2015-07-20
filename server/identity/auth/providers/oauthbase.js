@@ -33,9 +33,11 @@ var oauthFn = (provider, scope) => {
     {
     	if (logging) $log('oauthFn.req.isAuthenticated().false.authenticate'.red)
 
+      if (req.query && req.query.loginHint)
+        var newOpts = _.extend({loginHint:req.query.loginHint},opts)
       // If the users is not logged in (got a session), then we
       // handshake with the provider AND authenticate the user
-      passport.authenticate(provider, opts)(req, res, next)
+      passport.authenticate(provider, newOpts||opts)(req, res, next)
     }
   }
 }

@@ -103,7 +103,11 @@ module.exports = -> describe "Tracking: ".subspec, ->
           expect(r.length).to.equal(1)
           expectIdsEqual(r[0].userId,userId)
           expect(r[0].anonymousId).to.be.undefined
-          DONE()
+          LOGIN 'admin', ->
+            GET "/adm/views/user/#{userId}", {}, (r2) ->
+              expect(r2.length).to.equal(1)
+              expectIdsEqual(r2[0].userId,userId)
+              DONE()
         _.delay(viewCheck, 150)
 
       LOGIN userKey, (s) ->
