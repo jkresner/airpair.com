@@ -77,13 +77,42 @@ var get = {
     svc.searchOne({_id}, {options:opts.forParticipant}, (eee,r) => {
       if (eee) return cb(eee)
       if (!r.order) return cb(null,r) // an edgecase migrated booking from v0 call
-      // var chatSync = false
-      // if (Roles.isExpert(this.user,r)) chatSync = {mode:'expert'}
       getChat.call(this, r, 'auto', callback, (ee,r)=>{
         if (!r.order.requestId || ee) return cb(ee,r)
         $callSvc(RequestsSvc.getByIdForBookingInflate,this)(r.order.requestId, (e,request) =>
           cb(e,_.extend(r,{request})))
       })
+    })
+  },
+
+  getByIdForSpinning(_id, pemail, cb)
+  {
+    svc.searchOne({_id}, {}, (e,r) => {
+      if (e || !r ||
+          // !r.status != 'confirmed' || !r.status != 'followup' ||
+          !r.datetime || !util.dateInRange(moment(),moment(r.datetime).add(-15,'minutes'),moment(r.datetime).add(15,'minutes')) )
+      {
+        cb(null,null) // => Feature only works for bookings that are about to start
+      }
+      else if (!this.user)
+      {
+        if (!_.find(r.participants,(p)=>p.info.email==pemail))
+          cb(null,{handshake:'supply-email',noemail:true, _id })  // => Get participant email for security check
+        else
+          cb(null,{handshake:'sign-in',login:config.hangout.login, _id })
+      }
+      else
+      {
+        if (this.user.email == 'support@airpair.com') {
+          var booking = util.selectFromObject(r,select.itemIndex)
+          cb(null,_.extend({hangoutAppId:config.hangout.appId},booking))
+        }
+        else {
+          var meParticipant = _.find(r.participants,(p)=>_.idsEqual(p.info._id, this.user._id))
+          var email = (meParticipant) ? meParticipant.info.email : null
+          cb(null,{ handshake:'logout', goincognito: true, _id, email }) // => "Hit this url in a new incongnito window.
+        }
+      }
     })
   },
 

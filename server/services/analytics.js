@@ -39,14 +39,15 @@ var viewSvc = {
 
   getByUserId(userId, cb)
   {
-    if (logging) $log('views.getByUserId'.trace, userId)
-    ViewsCollection.find({userId}).sort({_id:-1}).toArray((e, r) => cb(r))
+    if (true || logging) $log('views.getByUserId'.trace, userId)
+    userId = ObjectId(userId.toString())
+    ViewsCollection.find({userId}).sort({_id:-1}).toArray(cb)
   },
 
   getByAnonymousId(anonymousId, cb)
   {
     if (logging) $log('views.getByAnonymousId'.trace, anonymousId)
-    ViewsCollection.find({anonymousId}).sort({_id:-1}).toArray((e, r) => cb(r))
+    ViewsCollection.find({anonymousId}).sort({_id:-1}).toArray(cb)
   },
 
   alias(anonymousId, userId, cb)

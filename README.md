@@ -43,6 +43,22 @@ If the test suite is failing without much but stops at
 *Step 2)* Check your test code (data fixtures, stories, specs, helpers)
 
 
+Restoring db
+=============
+
+1. Get a copy of the database and unpack it where your'e happy. Rename the
+folder names as the prod database name to "db"
+
+2. From root of this project
+
+    $ cd .git
+    $ ln -nsf {where-you-unpacked-it}/db
+
+3. Go back to project root and run
+
+    $ npm run dbrestore
+
+
 Coding a feature
 =============
 

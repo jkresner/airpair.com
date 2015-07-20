@@ -11,7 +11,8 @@
     "start": "node bootstrap.js",
     "test": "/usr/local/bin/mocha test/server/bootstrap.coffee",
     "gv": "heroku logs --tail --source app",
-    "db": "mongod --smallfiles --noprealloc --nojournal --dbpath ~/data/db/"
+    "db": "mongod --smallfiles --noprealloc --nojournal --dbpath ~/data/db/",
+    "dbrestore": "mongorestore --drop --db airpair_dev .git/db"
   },
   "repository": {
     "type": "git",

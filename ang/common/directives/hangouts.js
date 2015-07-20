@@ -4,6 +4,7 @@ angular.module("APHangouts", ['angularLoad'])
 
   var src = 'https://apis.google.com/js/plusone.js'
   var ngLoadPromise = angularLoad.loadScript(src);
+  var hLoaded = {}
 
   return {
     template: '<div class="g-hangout" id="{{hangoutId}}"></div>',
@@ -11,8 +12,9 @@ angular.module("APHangouts", ['angularLoad'])
       hangoutId: '=hangoutId',
       participants: '=participants',
       booking: '=booking',
+      once: '=once',
     },
-    link: function(scope, element, attrs) {
+    link(scope, element, attrs) {
 
       var participants = scope.participants
       var hangoutName = attrs.hangoutName
@@ -39,7 +41,10 @@ angular.module("APHangouts", ['angularLoad'])
       }
 
       ngLoadPromise.then(function(){
-        gapi.hangout.render(scope.hangoutId, hData)
+        if (!hLoaded[scope.hangoutId] || !scope.once) {
+          hLoaded[scope.hangoutId] = true
+          gapi.hangout.render(scope.hangoutId, hData)
+        }
       });
     }
   };
