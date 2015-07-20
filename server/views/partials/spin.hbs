@@ -1,0 +1,56 @@
+<section>
+
+<style>
+header ul { display:none!important }
+#side { display:none!important }
+</style>
+
+<h1>Spin dat'</h1>
+
+{{#if handshake}}
+
+  {{#if goincognito}}
+    <h4>Hit this url in a new <b>incognito</b> window:</h3>
+
+    <a href="https://www.airpair.com/bookings/{{_id}}/spin?email={{email}}">https://www.airpair.com/bookings/{{_id}}/spin?email={{email}}</a>
+  {{/if}}
+
+  {{#if noemail}}
+    <h4>Hit this url again with your email in the querystring</h3>
+
+    https://www.airpair.com/bookings/{{_id}}/spin?email=your@email
+  {{/if}}
+
+  {{#if login}}
+
+    <h4>Step 1) Copy password to your clickboard:</h4>
+
+    <pre style="font-size:28px">{{login.password}}</pre>
+
+    <h4>Step 2) </h4>
+
+    <a id="loginGoogleAuth" track-click="auth" class="btn btn-error" ng-href="/v1/auth/google?loginHint={{login.email}}&returnTo=/bookings/{{_id}}/spin" target="_self">g+ Login to {{login.email}}</a>
+  {{/if}}
+
+{{else}}
+
+
+  <div style="background:#dff2ef;text-align:center;padding:40px">
+    <h4>Let's rock n' roll...</h4>
+
+    <div class="spin">
+      <ap-hangout-spinner
+        once="true"
+        hangout-id='"{{_id}}"'
+        booking='{{JSON this}}'></ap-hangout-spinner>
+    </div>
+
+    <h3>But don't forget to start the recording!!!</h3>
+
+    <img src="/static/img/pages/faq/click-startbroadcast.jpg" style="width:440px" />
+
+  </div>
+
+{{/if}}
+
+</section>
