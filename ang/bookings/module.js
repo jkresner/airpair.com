@@ -84,6 +84,9 @@ angular.module("APBookings", [])
   $scope.confirmTime = (timeId) =>
     DataService.bookings.confirmTime({_id,timeId}, setScope)
 
+  $scope.removeTime = (timeId) =>
+    DataService.bookings.removeTime({_id,timeId}, setScope)
+
   $scope.releasePayout = () =>
     DataService.bookings.releasePayout({_id:$scope.order._id},(r) =>
       $scope.order.released = true)

@@ -11,6 +11,7 @@ export default initAPI(
   createBooking: (req) => [req.expertshaped,req.body.datetime,req.body.minutes,req.body.type,req.body.credit,req.body.payMethodId,req.body.request,req.body.dealId],
 
   suggestTime: (req) => [req.booking,req.body.time],
+  removeSuggestedTime: (req) => [req.booking,req.body.timeId],
   confirmTime: (req) => [req.booking,req.body.timeId],
   customerFeedback: (req) => [req.booking,req.body.review,req.expert,req.body.expertReview],
   // releasePayment: (req) => [req.booking],
