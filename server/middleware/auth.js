@@ -66,6 +66,9 @@ var middleware = {
         if (req.originalUrl.indexOf(url) == 0)
           req.nonSessionUrl = true
 
+      if (req.type == "HEAD")
+        req.nonSessionUrl = true
+
       next()
     }
   },
