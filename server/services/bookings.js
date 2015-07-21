@@ -248,14 +248,31 @@ var save = {
   customerFeedback(original, review, expert, expertReview, cb)
   {
     if (expertReview) throw Error("expertReview not implemented")
+    var {activity,lastTouch,status} = original
+    var reviews = original.reviews || []
+
+    // TODO deal with update case gracefully
 
     review.by = svc.userByte.call(this)
-    review.type = 'booking-feedback'
-    original.reviews = original.reviews || []
-    // TODO deal with update case gracefully
-    original.reviews.push(review)
+    review.type = 'booking-customer-feedback'
+    reviews.push(review)
+
     // $log('customerFeedback'.magenta, review, expert._id, expertReview)
-    svc.update(original._id, original, inflate(cb,select.itemIndex))
+    lastTouch = svc.newTouch.call(this, 'customer-feedback')
+    activity.push(lastTouch)
+
+    OrdersSvc.getByIdForAdmin(original.orderId,(e,order) =>{
+      var li = _.find(order.lineItems,(l)=>l.type == 'airpair')
+      var paidout = (li) ? li.info.paidout : true
+      // $log('original'.yellow, original, paidout)
+
+      if (status != 'complete' && paidout)
+        status = 'complete'
+
+      svc.updateWithSet(original._id, {status,reviews,activity,lastTouch}, (e,r)=>{
+        get.getByIdForParticipant(original._id,cb)
+      })
+    })
   },
 
 
@@ -353,7 +370,7 @@ var admin = {
       if (logging) $log('changing the date yea!', original.datetime, datetime)
       shouldUpdateGal = original.gcal != null
     }
-    else if (original.gcal && !moment(original.gcal.start.dateTime).isSame(original.datetime))
+    else if (original.gcal && original.gcal.start && !moment(original.gcal.start.dateTime).isSame(original.datetime))
       shouldUpdateGal = true
 
     if (original.status != status) {

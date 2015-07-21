@@ -71,11 +71,11 @@ var validation = {
   customerFeedback(user, original, review, expert, expertReview)
   {
     var {status} = original
-    if (status != 'followup' && status != 'followup')
+    if (status != 'followup' && status != 'complete')
       return `Booking [${original._id}] must be in folloup or complete state to leave customerFeedback`
 
     if (!Roles.isCustomer(user,original))
-      return `Not a customer on bookings[${original._id}]`
+      return `Not a customer on booking[${original._id}]`
 
     if (!review)
       return `Booking customer feedback review required"`
@@ -83,14 +83,14 @@ var validation = {
     //--
     var existingReview = _.find(original.reviews||[],(r)=>_.idsEqual(r.by._id,user._id))
     if (existingReview && !bookingReview._id)
-      return `Expecting update for existing bookingReview[${existingReview._id}]`
+      return `Expecting update for existing bookingReview[${existingReview._id}] on booking[${original._id}]`
 
     if (expertReview) {
       // return "Booking customer feedback review required"
       //-- Check similar for expert review? Or join on original.populate?
       var existingExpertReview = _.find(expert.reviews||[],(r)=>_.idsEqual(r.by._id,user._id))
       if (existingExpertReview && !expertReview._id)
-        return `Expecting update for existing expertReview[${existingExpertReview._id}]`
+        return `Expecting update for existing expertReview[${existingExpertReview._id}] on expert[${expert._id}]`
     }
   },
 
