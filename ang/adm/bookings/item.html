@@ -61,7 +61,7 @@
       <input type="text" id="newYouTubeLink" class="form-control" placeholder="Paste YouTube link" ng-model="data.youTubeId" />
       <input type="submit" ng-click="addYouTubeData(data.youTubeId)" value="Add" class="btn" />
       <ul>
-        <li ng-repeat="r in booking.recordings"><a target="_blank" href="http://youtube.com/watch?v={{r.data.youTubeId}}">{{r.data.title}}</a> <time>{{ r.data.publishedAt }}</time> <a ng-click="deleteRecording(r._id)" class="error">x</a></li>
+        <li ng-repeat="r in booking.recordings"><a target="_blank" href="https://www.youtube.com/edit?video_id={{r.data.youTubeId||r.data.id}}">{{r.data.title || r.data.snippet.title}}</a> <time>{{ r.data.publishedAt }}</time> <a ng-click="deleteRecording(r._id)" class="error">x</a></li>
       </ul>
     </section>
 

@@ -73,7 +73,7 @@
   </section>
 
   <section class="{{fadeClass('payout')}}" ng-if="order && (session._id == booking.customerId
-   || session.cohort.expert._id == booking.expertId)">
+   || session.cohort.expert._id == booking.expertId) && (order.isV0 != true)">
     <h4>Escrow</h4>
 
     <div ng-if="session._id == booking.customerId">
