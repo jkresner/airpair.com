@@ -12,7 +12,7 @@ module.exports = function(app) {
       app.renderHbsViewData('tag', null, (req, cb) => cb(null, req.tagpage) ))
 
   for (var slug of ['reactjs', 'python', 'node.js', 'ember.js', 'keen-io', 'rethinkdb',
-    'ionic-framework', 'swift', 'android', 'ruby' ])
+    'ionic', 'swift', 'android', 'ruby' ])
     app.get(`^/${slug}`, //trackView('tag'),
       app.renderHbs('base') )
 

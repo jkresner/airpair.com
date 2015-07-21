@@ -205,7 +205,7 @@ var wrapper = {
       if (e) return cb(e)
 
       if (!_.contains(members,(m)=>m==pairbot.id)) members.push(pairbot.id)
-      if (!_.contains(members,(m)=>m==jk.id)) members.push(jk.id)
+      // if (!_.contains(members,(m)=>m==jk.id)) members.push(jk.id)
       for (var m of members)
         clientCall(user, 'groups.invite', { channel:group.id, user:m }, null, null, (e,invite)=>{})
 

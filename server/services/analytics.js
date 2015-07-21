@@ -39,7 +39,7 @@ var viewSvc = {
 
   getByUserId(userId, cb)
   {
-    if (true || logging) $log('views.getByUserId'.trace, userId)
+    if (logging) $log('views.getByUserId'.trace, userId)
     userId = ObjectId(userId.toString())
     ViewsCollection.find({userId}).sort({_id:-1}).toArray(cb)
   },

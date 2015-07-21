@@ -184,8 +184,8 @@ module.exports = function(app) {
   var router = require('express').Router()
 
   .get('/', rss.mixed)
-  .get('/posts', rss.posts)
-  .get('/workshops', rss.workshops)
+  // .get('/posts', rss.posts)
+  // .get('/workshops', rss.workshops)
 
   return router
 }
