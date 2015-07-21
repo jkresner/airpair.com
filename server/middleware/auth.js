@@ -58,7 +58,8 @@ var middleware = {
         '/feed',
         '/android/rss',
         '/rails/consulting',
-        '/static/styles/'
+        '/static/styles/',
+        '/angularjs/workshops/unit-testing-angularjs'
       ]
 
       for (var url of nonSessionUrls)
