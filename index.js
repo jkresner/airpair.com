@@ -20,6 +20,7 @@ export function run()
   app.use(mw.logging.badBot)
   //-- We don't want to serve sessions for static resources
   //-- Save database write on every resources
+  app.use('/rev-manifest.json',(req,res,next)=>res.status(404).send(''))
   app.use(express.static(config.appdir+'/dist', config.http.static))
   app.use(express.static(config.appdir+'/public', config.http.static))
   routes('resolver')(app)
