@@ -195,8 +195,25 @@ var save = {
   suggestTime(original, time, cb)
   {
     var {suggestedTimes,lastTouch,activity} = original
+    suggestedTimes = suggestedTimes || []
     suggestedTimes.push({time,byId:this.user._id})
     lastTouch = svc.newTouch.call(this, 'suggest-time')
+    activity.push(lastTouch)
+    svc.updateWithSet(original._id, {suggestedTimes,lastTouch,activity}, (e,r) => {
+      $callSvc(get.getByIdForParticipant,this)(original._id,cb)
+      if (original.chat)
+        pairbot.sendSlackMsg(original.chat.providerId, 'booking-suggest-time',
+          select.slackMsgTemplateData(r,{byName:this.user.name,suggestedMultitime:BookingdUtil.multitime(r,time)},this.user._id) )
+    })
+  },
+
+  removeSuggestedTime(original, timeId, cb)
+  {
+    var {suggestedTimes,lastTouch,activity,datetime,status} = original
+
+    var suggestedTime = _.find(suggestedTimes,(t)=>_.idsEqual(t._id,timeId))
+    suggestedTimes = _.without(suggestedTimes,suggestedTime)
+    lastTouch = svc.newTouch.call(this, 'remove-time')
     activity.push(lastTouch)
     svc.updateWithSet(original._id, {suggestedTimes,lastTouch,activity}, (e,r) => {
       $callSvc(get.getByIdForParticipant,this)(original._id,cb)

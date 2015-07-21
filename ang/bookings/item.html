@@ -157,7 +157,9 @@
           <td ng-if="t.by.info._id != session._id">
             <a ng-click="confirmTime(t._id)" class="btn">Confirm {{t.localTime}}</a>
           </td>
-          <td ng-if="t.by.info._id == session._id"></td>
+          <td ng-if="t.by.info._id == session._id">
+            <a ng-click="removeTime(t._id)" style="font-size:10px">Remove {{t.localTime}}</a>
+          </td>
           <td><time>{{t.mom.format('MMM') }} {{t.multitime}}</time></td>
           <td ng-if="t.by.info._id == session._id">You</td>
           <td ng-if="t.by.info._id != session._id">{{t.by.info.name}}</td>
