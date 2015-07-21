@@ -84,7 +84,7 @@ var select = {
         chat.members[m] = Slack.checkUserSync({id:m}) || {id:m}
     chat.history = filterSlackHistory(chat.history)
   },
-  slackMsgTemplateData(b, extraData) {
+  slackMsgTemplateData(b, extraData, meId) {
     select.inflateParticipantInfo(b.participants)
     var tmplData = {
       status: b.status,
@@ -94,6 +94,13 @@ var select = {
       expert: participantSlackHandle(experts(b)[0]),
       multitime: multitime(b)
     }
+    if (meId && tmplData.customer && tmplData.expert) {
+      var me = _.find(b.participants,(p)=>_.idsEqual(p.info._id,meId))
+      tmplData.me = participantSlackHandle(me)
+      if (tmplData.me == tmplData.customer) tmplData.them = tmplData.expert
+      if (tmplData.me == tmplData.expert) tmplData.them = tmplData.customer
+    }
+
     return (extraData) ? _.extend(tmplData,extraData) : tmplData
   },
   cb: {

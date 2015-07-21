@@ -41,6 +41,19 @@ var validation = {
       return `Time[${mom}] already suggested as an option for Booking[${original._id}]`
   },
 
+  removeSuggestedTime(user, original, timeId)
+  {
+    if (original.status != 'pending')
+      return `Booking [${original._id}] must be in pending state to remove suggested time`
+
+    if (!Roles.isParticipant(user,original))
+      return `Cannot remove time. You[${user._id}] are not a participant to Booking[${original._id}]`
+
+    var time = _.find(original.suggestedTimes,(t)=>_.idsEqual(t._id,timeId))
+    if (!time) return `Cannot remove time [${timeId}]. It does not belong to Booking[${original._id}]`
+    if (!_.idsEqual(user._id,time.byId)) return `Can only remove your own time suggestion.`
+  },
+
   confirmTime(user, original, timeId)
   {
     if (original.status != 'pending')
