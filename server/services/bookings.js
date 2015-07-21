@@ -90,7 +90,7 @@ var get = {
     svc.searchOne({_id}, {}, (e,r) => {
       if (e || !r ||
           // !r.status != 'confirmed' || !r.status != 'followup' ||
-          !r.datetime || !util.dateInRange(moment(),moment(r.datetime).add(-15,'minutes'),moment(r.datetime).add(15,'minutes')) )
+          !r.datetime || !util.dateInRange(moment(),moment(r.datetime).add(-45,'minutes'),moment(r.datetime).add(45,'minutes')) )
       {
         cb(null,null) // => Feature only works for bookings that are about to start
       }
