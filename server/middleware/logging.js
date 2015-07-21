@@ -67,7 +67,7 @@ var middleware = {
 
         var ref = (req.header('Referer')) ? ` <<< ${req.header('Referer')}` : ''
         if (!req.nonSessionUrl)
-          $log('errHandle'.gray, `${req.ip}:${uid} ${req.method} ${req.url}${ref}`.red, JSON.stringify(req.body), (e.message || e).magenta)
+          $log('errHandle'.red, `${req.ip.replace('::ffff:','').cyan} ${uid} ${req.method} ${req.url}.magenta${ref}`, JSON.stringify(req.body), (e.message || e).magenta)
         $error(e, req.user, req)
 
       } else {
