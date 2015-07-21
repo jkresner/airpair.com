@@ -6,8 +6,8 @@ var getContext = (req) => {
   var ctx = {
     app: config.build,
     // device:
-    ip: req.ip.replace('::ffff:',''),
-    // ip: req.host var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+    // ip: req.ip.replace('::ffff:',''),
+    ip: req.headers['x-forwarded-for'] || req.connection.remoteAddress,
     // library: // locale: // location: // network: // os:
     referer: req.header('Referer'),
     // screen: // traits: ,
