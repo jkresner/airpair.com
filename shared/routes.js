@@ -15,7 +15,7 @@ module.exports = [
   '/expert-applications',
   '/learn',
   '*/posts*',
-  '*/workshops*',
+  // '*/workshops*',
   '/billing*',
   '/payouts*',
   '*pair-programming*',
