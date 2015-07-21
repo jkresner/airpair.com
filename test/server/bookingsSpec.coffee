@@ -368,25 +368,41 @@ feedback = ->
         expect(b1.status).to.equal('pending')
         PUT "/bookings/#{b1._id}/#{b1.expertId}/customer-feedback", {}, {status:403}, (e) ->
           expectStartsWith(e.message,"Booking [#{b1._id}] must be in folloup or complete state")
-          ## todo test confirmed
-          ## todo test canceled
+          LOGIN 'dros', (sDros) ->
+            timeId = b1.suggestedTimes[0]._id
+            PUT "/bookings/#{b1._id}/confirm-time", {_id:b1._id, timeId}, {}, (b2) ->
+              expect(b2.status).to.equal("confirmed")
+              LOGIN s.userKey, (s2) ->
+                PUT "/bookings/#{b1._id}/#{b1.expertId}/customer-feedback", {}, {status:403}, (e2) ->
+                  expectStartsWith(e2.message,"Booking [#{b1._id}] must be in folloup or complete state")
+                  LOGIN "admin", ->
+                    d = _.extend(_.pick(b2,'type','minutes','createdById','status','datetime','gcal'),{status:'canceled'})
+                    PUT "/adm/bookings/#{b1._id}", d, {}, (b3) ->
+                      expect(b3.status).to.equal("canceled")
+                      LOGIN s.userKey, (s3) ->
+                        PUT "/bookings/#{b1._id}/#{b1.expertId}/customer-feedback", {}, {status:403}, (e3) ->
+                          expectStartsWith(e3.message,"Booking [#{b1._id}] must be in folloup or complete state")
+                          DONE()
+
+
+  it 'Can give booking feedback as the customer without expert feedback', itDone ->
+    SETUP.newBookingInFollowupState 'stcx', {}, (b1, sCust, sExp) ->
+      PUT "/bookings/#{b1._id}/#{b1.expertId}/customer-feedback", {}, {status:403}, (e) ->
+        expectStartsWith(e.message,"Booking customer feedback review required")
+        rev1 = { questions: [
+          { idx: 0, key: 'rating', promt: 'How many stars?', answer: "Awesome 1" }] }
+        body1 = { review: rev1 }
+        PUT "/bookings/#{b1._id}/#{b1.expertId}/customer-feedback", body1, {}, (b3) ->
+          expect(b3.status).to.equal('followup')
+          expect(b3.reviews.length).to.equal(1)
+          expectIdsEqual(b3.reviews[0].by._id,sCust._id)
+          expect(b3.reviews[0].type).to.equal('booking-customer-feedback')
+          expect(b3.reviews[0].questions.length).to.equal(1)
+          expect(b3.reviews[0].questions[0].key).to.equal('rating')
+          expect(b3.reviews[0].questions[0].answer).to.equal('Awesome 1')
+          ## TODO update feedback
+          ## TODO check using db.readDoc
           DONE()
-
-
-    it 'Can give customer feedback as the customer without expert feedback', itDone ->
-      SETUP.newBookedExpert 'stcx', {}, (s, b1) ->
-        LOGIN 'admin', (sadm) ->
-          PUT "/adm/bookings/#{b1._id}/recording", {youTubeId: "MEv4SuSJgwk"}, {}, (b2) ->
-            expect(b2.status).to.equal("followup")
-            LOGIN s.userKey, ->
-              PUT "/bookings/#{b1._id}/#{b1.expertId}/customer-feedback", {}, {status:403}, (e) ->
-                expectStartsWith(e.message,"Booking customer feedback review required")
-                rev1 = { questions: [
-                  { idx: 0, key: 'rating', promt: 'How many stars?', answer: "Awesome" }] }
-                body1 = { review: rev1 }
-                PUT "/bookings/#{b1._id}/#{b1.expertId}/customer-feedback", body1, {}, (b3) ->
-                  expect(b3.reviews.length).to.equal(1)
-                  DONE()
 
 
     it 'Can give customer feedback as the customer with expert feedback', itDone ->
@@ -428,5 +444,5 @@ module.exports = ->
   describe("Views: ".subspec, views)
   describe("Scheduling: ".subspec, scheduling)
   describe("Recordings: ".subspec, recordings)
-  describe("Feedback: ".subspec, feedback)
+  describe.only("Feedback: ".subspec, feedback)
 

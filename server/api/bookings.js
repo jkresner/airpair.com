@@ -13,8 +13,8 @@ export default initAPI(
   suggestTime: (req) => [req.booking,req.body.time],
   removeSuggestedTime: (req) => [req.booking,req.body.timeId],
   confirmTime: (req) => [req.booking,req.body.timeId],
+
   customerFeedback: (req) => [req.booking,req.body.review,req.expert,req.body.expertReview],
-  // releasePayment: (req) => [req.booking],
 
   updateByAdmin: (req) => [req.booking,req.body],
   addYouTubeData: (req) => [req.booking, req.body.youTubeId],
@@ -25,6 +25,7 @@ export default initAPI(
   associateChat: (req) => [req.booking, req.body.type, req.body.providerId],
   postChatMessage: (req) => [req.booking, req.body],
   addNote: (req) => [req.booking, req.body.body],
+
 }, {
   booking:'getById',
   bookingforparticipant: 'getByIdForParticipant'
