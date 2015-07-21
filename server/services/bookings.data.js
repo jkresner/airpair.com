@@ -151,11 +151,25 @@ var select = {
         if (e) return cb(e)
         if (r.order) {
           for (var li of r.order.lineItems) {
-            if (li.info.paidout != null) r.order.paidout = li.info.paidout
-            if (li.info.released != null) r.order.released = li.info.released
+            if (li.info) {
+              if (li.info.paidout != null) r.order.paidout = li.info.paidout
+              if (li.info.released != null) r.order.released = li.info.released
+            }
+            else if (moment(r.datetime).isBefore(moment("20150101","YYYYMMDD")))  {
+              r.order.isV0 = true
+              li = { info: { paidout: true, released: true } }
+              r.order = _.extend(r.order, {paidout:true, release: true })
+              r.status = "complete"
+            }
           }
 
           delete r.order.lineItems
+        }
+        if (r.recordings && r.recordings.length > 0)
+        {
+          for (var rec of r.recordings)
+            if (!rec.data.youTubeId)
+              rec.data.youTubeId = rec.data.id
         }
         select.cb.inflate(cb,select.itemIndex)(e,r)
       }
