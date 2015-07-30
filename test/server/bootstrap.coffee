@@ -25,6 +25,7 @@ initGlobals(initConfig('test'))
 
 global.itDone = (fn) ->
   (dn) ->
+    @testKey = @test.title.toLowerCase().replace(/ /g,'-')
     global.DONE = dn
     fn.call(@, dn)
 
@@ -85,7 +86,7 @@ describe 'Server: '.appload, ->
   spec @, 'Authz'
   spec @, 'Users'
   spec @, 'Users Cohort', 'usersCohort'
-  spec @, 'User Flors', 'userFlows'
+  spec @, 'User Flows', 'userFlows'
   spec @, 'Chat'
   spec @, 'Experts'
   spec @, 'Experts', 'expertsMojo'
