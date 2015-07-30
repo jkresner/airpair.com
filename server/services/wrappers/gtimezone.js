@@ -13,8 +13,8 @@ var wrapper = {
     var location = locationData.geometry.location
 
     //-- Damn google places reponses keep changing...
-    var lat = location.A || location.k || location.j
-    var lon = location.F || location.D || location.C
+    var lat = location.A || location.k || location.j || location.G
+    var lon = location.F || location.D || location.C || location.K
 
     //-- Todo, figure out the timestamp approach to fix funny reported timezones
     if (!timestamp) timestamp = moment().unix()

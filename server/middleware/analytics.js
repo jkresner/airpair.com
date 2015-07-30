@@ -60,7 +60,7 @@ var middleware = {
 
   trackAdClick(adUrl) {
     return (req, res, next) => {
-      if (isBot(req.header('user-agent'))) return next()
+      if (isBot(req.header('user-agent'))) return res.status(301).send('/')
       if (true || logging) $log('trackAdClick'.yellow, req.header('Referer'))
       req.ad = {
         _id: "55aa28f643f81ad565104e6f",
