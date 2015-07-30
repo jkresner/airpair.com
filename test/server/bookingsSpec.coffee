@@ -343,22 +343,22 @@ feedback = ->
 
 
   it.skip 'Cannot insert expert or booking review more than once by the same user', itDone ->
-    SETUP.addAndLoginLocalUser "stcx", (s) ->
-      review = type: 'expert-review', by: { _id: ObjectId(s._id), name: s.name, email: s.email }
-      jkgm = _.extend _.cloneDeep(data.experts.jkgm), { reviews:[review] }
-      db.ensureDocs 'Expert', [jkgm], ->
-        db.readDoc 'Expert', jkgm._id, (r1) ->
-          $log('r1'.yellow, r1.reviews.length)
-          expect(r1.reviews.length).to.equal(1)
-          review2 = _.extend {update:1}, review
-          jkgm.reviews.push(review2)
-          twoReviews = jkgm.reviews
-          db.Models.Expert.findOneAndUpdate {_id:r1._id},{$set:{reviews:twoReviews}}, (e2, r2) ->
-            $log('reviews2'.yellow, e2, r2.reviews)
-            # db.ensureDocs 'Expert', [jkgm], ->
-            # db.readDoc 'Expert', jkgm._id, (r2) ->
-              # expect(r1.reviews.length).to.equal(1)
-            DONE()
+    # SETUP.addAndLoginLocalUser "stcx", (s) ->
+    #   review = type: 'expert-review', by: { _id: ObjectId(s._id), name: s.name, email: s.email }
+    #   jkgm = _.extend _.cloneDeep(data.experts.jkgm), { reviews:[review] }
+    #   db.ensureDocs 'Expert', [jkgm], ->
+    #     db.readDoc 'Expert', jkgm._id, (r1) ->
+    #       $log('r1'.yellow, r1.reviews.length)
+    #       expect(r1.reviews.length).to.equal(1)
+    #       review2 = _.extend {update:1}, review
+    #       jkgm.reviews.push(review2)
+    #       twoReviews = jkgm.reviews
+    #       # db.Models.Expert.findOneAndUpdate {_id:r1._id},{$set:{reviews:twoReviews}}, (e2, r2) ->
+    #         # $log('reviews2'.yellow, e2, r2.reviews)
+    #         # db.ensureDocs 'Expert', [jkgm], ->
+    #         # db.readDoc 'Expert', jkgm._id, (r2) ->
+    #           # expect(r1.reviews.length).to.equal(1)
+    #         DONE()
 
 
   describe.skip 'Skip', ->
@@ -444,5 +444,5 @@ module.exports = ->
   describe("Views: ".subspec, views)
   describe("Scheduling: ".subspec, scheduling)
   describe("Recordings: ".subspec, recordings)
-  describe.only("Feedback: ".subspec, feedback)
+  describe.skip("Feedback: ".subspec, feedback)
 

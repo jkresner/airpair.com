@@ -15,7 +15,7 @@ expertData           = require('../../../server/services/experts.data')
 """
 
 upsertUser = (userKey, _id, ups, done) ->
-  db.Models.User.findOneAndUpdate {_id}, ups, {'upsert':true,'new':true}, (e, r) ->
+  db.Models.user.findOneAndUpdate {_id}, ups, {'upsert':true,'new':true}, (e, r) ->
     data.users[userKey] = r
     done userKey
 
@@ -67,7 +67,7 @@ addLocalUser = (userKey, opts, done) ->
 
  addAndLoginLocalUserWithPayMethod = (originalUserKey, done) ->
   addAndLoginLocalUserWithEmailVerified originalUserKey, (s) ->
-    new db.Models.PayMethod( _.extend({userId: s._id}, data.paymethods.braintree_visa) ).save (e,r) ->
+    new db.Models.paymethod( _.extend({userId: s._id}, data.paymethods.braintree_visa) ).save (e,r) ->
       s.primaryPayMethodId = r._id
       done(s)
 
@@ -117,7 +117,7 @@ stories = {
       LOGIN userKey, ->
         GET '/session/full', {}, (s) ->
           s.userKey = userKey
-          new db.Models.PayMethod( _.extend({userId: s._id}, data.paymethods.braintree_visa) ).save (e,r) ->
+          new db.Models.paymethod( _.extend({userId: s._id}, data.paymethods.braintree_visa) ).save (e,r) ->
             s.primaryPayMethodId = r._id
             done(s)
 
