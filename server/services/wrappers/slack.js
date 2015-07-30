@@ -95,11 +95,14 @@ var wrapper = {
       if (u.profile && info.email==u.profile.email) return u
 
     // Priority 3 fuzzy matching on name
-    if (info.name)
-      for (var u of slackUsers)
+    if (info.name) {
+      var fnameLower = info.name.toLowerCase()
+      for (var u of slackUsers) {
         //-- checking by name like this will cause problems when we
         //-- have two users with the same name, but may be ok with email checkd first
-        if (u.real_name && info.name.toLowerCase()==u.real_name.toLowerCase()) return u
+        if (u.real_name && u.real_name.trim().replace('  ',' ').toLowerCase() == fnameLower) return u
+      }
+    }
 
     return null
   },

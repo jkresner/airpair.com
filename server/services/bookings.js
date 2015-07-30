@@ -295,6 +295,7 @@ var save = {
     $callSvc(ChatsSvc.createSync, this)(type, providerId, (e,chat)=>{
       if (e) return cb(e)
       var {activity,lastTouch} = original
+      activity = activity || []
       lastTouch = svc.newTouch.call(this, 'associate-chat')
       activity.push(lastTouch)
       svc.updateWithSet(original._id, {chatId:chat._id,activity,lastTouch}, (e,r)=>{
