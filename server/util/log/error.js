@@ -40,9 +40,8 @@ module.exports = function(e, user, req)
   var msg = e.message || e
 
   if (req) {
-    var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress
-    msg += `\n${ip}`
     msg += `\n${req.method} ${req.url}`
+    msg += `\n${req.headers['x-forwarded-for'] || req.connection.remoteAddress}`
 
     var uid = (req.user) ? req.user.email : req.sessionID
     var userInfo = (user && user.name) ?

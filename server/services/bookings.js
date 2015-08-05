@@ -90,7 +90,7 @@ var get = {
     svc.searchOne({_id}, {}, (e,r) => {
       if (e || !r ||
           // !r.status != 'confirmed' || !r.status != 'followup' ||
-          !r.datetime || !util.dateInRange(moment(),moment(r.datetime).add(-15,'minutes'),moment(r.datetime).add(15,'minutes')) )
+          !r.datetime || !util.dateInRange(moment(),moment(r.datetime).add(-45,'minutes'),moment(r.datetime).add(45,'minutes')) )
       {
         cb(null,null) // => Feature only works for bookings that are about to start
       }
@@ -248,14 +248,31 @@ var save = {
   customerFeedback(original, review, expert, expertReview, cb)
   {
     if (expertReview) throw Error("expertReview not implemented")
+    var {activity,lastTouch,status} = original
+    var reviews = original.reviews || []
+
+    // TODO deal with update case gracefully
 
     review.by = svc.userByte.call(this)
-    review.type = 'booking-feedback'
-    original.reviews = original.reviews || []
-    // TODO deal with update case gracefully
-    original.reviews.push(review)
+    review.type = 'booking-customer-feedback'
+    reviews.push(review)
+
     // $log('customerFeedback'.magenta, review, expert._id, expertReview)
-    svc.update(original._id, original, inflate(cb,select.itemIndex))
+    lastTouch = svc.newTouch.call(this, 'customer-feedback')
+    activity.push(lastTouch)
+
+    OrdersSvc.getByIdForAdmin(original.orderId,(e,order) =>{
+      var li = _.find(order.lineItems,(l)=>l.type == 'airpair')
+      var paidout = (li) ? li.info.paidout : true
+      // $log('original'.yellow, original, paidout)
+
+      if (status != 'complete' && paidout)
+        status = 'complete'
+
+      svc.updateWithSet(original._id, {status,reviews,activity,lastTouch}, (e,r)=>{
+        get.getByIdForParticipant(original._id,cb)
+      })
+    })
   },
 
 
@@ -278,6 +295,7 @@ var save = {
     $callSvc(ChatsSvc.createSync, this)(type, providerId, (e,chat)=>{
       if (e) return cb(e)
       var {activity,lastTouch} = original
+      activity = activity || []
       lastTouch = svc.newTouch.call(this, 'associate-chat')
       activity.push(lastTouch)
       svc.updateWithSet(original._id, {chatId:chat._id,activity,lastTouch}, (e,r)=>{
@@ -353,7 +371,7 @@ var admin = {
       if (logging) $log('changing the date yea!', original.datetime, datetime)
       shouldUpdateGal = original.gcal != null
     }
-    else if (original.gcal && !moment(original.gcal.start.dateTime).isSame(original.datetime))
+    else if (original.gcal && original.gcal.start && !moment(original.gcal.start.dateTime).isSame(original.datetime))
       shouldUpdateGal = true
 
     if (original.status != status) {

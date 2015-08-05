@@ -58,13 +58,15 @@ var middleware = {
         '/feed',
         '/android/rss',
         '/rails/consulting',
-        '/static/styles/',
-        '/angularjs/workshops/unit-testing-angularjs'
+        '/static/styles/'
       ]
 
       for (var url of nonSessionUrls)
         if (req.originalUrl.indexOf(url) == 0)
           req.nonSessionUrl = true
+
+      if (req.type == "HEAD")
+        req.nonSessionUrl = true
 
       next()
     }
