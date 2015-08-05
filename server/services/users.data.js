@@ -86,6 +86,10 @@ var data = {
       return util.selectFromObject(user, select.session)
     },
 
+    getAvatar(user) {
+      return (user && user.email) ? md5.gravatarUrl(user.email) : undefined
+    },
+
     setAvatar(user) {
       if (user && user.email) user.avatar = md5.gravatarUrl(user.email)
       else user.avatar = undefined

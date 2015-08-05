@@ -111,9 +111,14 @@ angular.module("APBilling", ['ngRoute', 'APPaymentDirectives', 'APBillingDirecti
   return {
     template: require('./bookExpert.html'),
     link() { },
-    controller($rootScope, $scope, $q, $routeParams, $location, DataService, OrdersUtil) {
+    controller($rootScope, $scope, $q, $routeParams, $location, DataService, SessionService, OrdersUtil) {
       $scope.booking = { // payMethodId: null,
         credit: 0, type: "private"
+      }
+
+      $scope.data = {} // to collect location / timezone
+      $scope.updateLocation = (locationData) => {
+        SessionService.changeLocationTimezone(locationData, (r)=> {})
       }
 
       $scope.calcSummary = function() {

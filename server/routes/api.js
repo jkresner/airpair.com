@@ -154,9 +154,9 @@ other: Router()
   .put('/bookings/:booking/suggest-time', API.Bookings.suggestTime)
   .put('/bookings/:booking/remove-time', API.Bookings.removeSuggestedTime)
   .put('/bookings/:booking/confirm-time', API.Bookings.confirmTime)
-  .put('/bookings/:booking/:expert/customer-feedback', API.Bookings.customerFeedback)
   .put('/bookings/:booking/create-chat', API.Bookings.createChat)
-  .put('/bookings/:booking/associate-chat', API.Bookings.associateChat),
+  .put('/bookings/:booking/associate-chat', API.Bookings.associateChat)
+  .put('/bookings/:booking/:expert/customer-feedback', API.Bookings.customerFeedback),
 
 
 
