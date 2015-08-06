@@ -1,0 +1,18 @@
+<div class="rebookings">
+
+  <h3>Book next pair</h3>
+  <ul>
+    <li ng-repeat="b in rebookings">
+      <a href="{{b.rebookUrl}}">
+        <img ng-src="{{util.firstExpert(b).avatar}}?s=70">
+        <div>
+          <h4>{{firstName(util.firstExpert(b).name)}}</h4>
+          <span>Last pair</span>
+          <time>{{b._id | objectIdToAgoTime }}</time>
+          <p>Book</p>
+        </div>
+      </a>
+    </li>
+  </ul>
+
+</div>
