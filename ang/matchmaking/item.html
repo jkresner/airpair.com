@@ -4,7 +4,8 @@
   <section class="nav left">
     <a ng-href="/matchmaking">Back</a>
     | <a ng-href="/review/{{request._id}}" target="_blank">Review</a>
-    | <a ng-href="/adm/pipeline/{{request._id}}" target="_self">Pipeline</a>
+    | <a ng-href="/adm/request/{{request._id}}" target="_self">Pipeline</a>
+    | <a ng-href="/help/request/{{request._id}}" target="_self">Edit</a>
   </section>
 
 
@@ -65,7 +66,7 @@
       <h6>Replies <span ng-if="!selected.matching.replies.last10 || selected.matching.replies.last10.length == 0">Never been suggested</span></h6>
       <ul ng-if="selected.matching.replies.last10">
         <li ng-repeat="reply in selected.matching.replies.last10" class="{{reply.status}}">
-           <a href="/adm/pipeline/{{reply.requestId}}" target="_blank">{{reply.replied | locaTime : 'DD MMM YY' }}</a> {{reply.status}}
+           <a href="/adm/request/{{reply.requestId}}" target="_blank">{{reply.replied | locaTime : 'DD MMM YY' }}</a> {{reply.status}}
         </li>
       </ul>
     </div>

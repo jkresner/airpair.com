@@ -108,13 +108,13 @@ function $$log(action, data, user, sessionID, ctx) {
       $log(uid, `SINGUP  > ${data._id}`.green)
       break
     case 'Request':
-      $log(uid, `REQUEST > ${data.action}`, `https://www.airpair.com/adm/pipeline/${data._id}`.white)
+      $log(uid, `REQUEST > ${data.action}`, `http://adm.airpa.ir/r/${data._id}`.white)
       break
     case 'Order':
-      $log(uid, `ORDER  > $${data.total}`, `https://www.airpair.com/adm/orders/${data._id}`.white)
+      $log(uid, `ORDER  > $${data.total}`, `http://adm.airpa.ir/o/${data._id}`.white)
       break
     case 'Payment':
-      $log(uid, `PAYMENT > $${data.total}`, `https://www.airpair.com/adm/orders/${data.orderId}`.white)
+      $log(uid, `PAYMENT > $${data.total}`, `http://adm.airpa.ir/o/${data.orderId}`.white)
       break
     case 'Save':
       if (data.type == 'paymethod')

@@ -29,7 +29,7 @@
         <th colspan="4">Adm</th>
       </tr>
       <tr ng-repeat="r in reports.requests">
-        <td class="s"><a href="/adm/pipeline/{{r._id}}" target="_blank"><b>{{r.adm.submitted | locaTime : 'MM.DD' }}</b>:{{r.adm.submitted | locaTime : 'HH' }}</a></td>
+        <td class="s"><a href="/adm/request/{{r._id}}" target="_blank"><b>{{r.adm.submitted | locaTime : 'MM.DD' }}</b>:{{r.adm.submitted | locaTime : 'HH' }}</a></td>
         <td class="b">{{r.budget}}</td>
         <td class="t">{{tagsString(r.tags)}}</td>
         <td class="e">{{r.by.email}}</td>
