@@ -1,49 +1,6 @@
 {{#if config.analytics.on }}
 
 <script type="text/javascript">
-
-  window.analytics=window.analytics||[],window.analytics.methods=["identify","group","track","page","pageview","alias","ready","on","once","off","trackLink","trackForm","trackClick","trackSubmit"],window.analytics.factory=function(t){return function(){var a=Array.prototype.slice.call(arguments);return a.unshift(t),window.analytics.push(a),window.analytics}};for(var i=0;i<window.analytics.methods.length;i++){var key=window.analytics.methods[i];window.analytics[key]=window.analytics.factory(key)}window.analytics.load=function(t){if(!document.getElementById("analytics-js")){var a=document.createElement("script");a.type="text/javascript",a.id="analytics-js",a.async=!0,a.src=("https:"===document.location.protocol?"https://":"http://")+"cdn.segment.io/analytics.js/v1/"+t+"/analytics.min.js";var n=document.getElementsByTagName("script")[0];n.parentNode.insertBefore(a,n)}},window.analytics.SNIPPET_VERSION="2.0.9",
-  window.analytics.load("{{config.analytics.segmentio.writekey}}");
-
-
-  window.analytics.ready(function() {
-
-    if (!window.bindTracking)
-      window.bindTracking = function() {};
-
-    // var mixId = mixpanel.get_distinct_id()
-
-{{#if authenticated}}
-    var email = '{{ session.email }}';
-    var anonymousId = null;
-{{else}}
-    var email = null;
-    var anonymousId = '{{ session.sessionID }}';
-{{/if}}
-
-    //console.log('userEmail', email, 'mixId', mixId, 'anonymousId', anonymousId)
-
-    // var ident = function() {
-      // console.log('identify', email || anonymousId)  //-- could be from a different session.
-      // window.analytics.identify(email || anonymousId, { id: email || anonymousId, name: '{{ session.name }}' });
-    // }
-
-
-    // If they're signed in
-    // if (email && mixId != email) ident()
-
-    // If they didn't already identify their email and log out
-    // else if (mixId.indexOf("@") == -1 && anonymousId != mixId)
-    // {
-      // setTimeout(ident,200)
-    // }
-
-    bindTracking();
-  });
-
-</script>
-
-<script type="text/javascript">
 adroll_adv_id = "XF634YIRAZHM5AG2HSQDII";
 adroll_pix_id = "RJLKZHU5IFD2NP5M3C6X35";
 (function () {
@@ -60,21 +17,11 @@ window.onload = function(){
    if(oldonload){oldonload()}};
 }());
 </script>
+
 <script type="text/javascript">
-  (function() {
-    window._pa = window._pa || {};
-    var pa = document.createElement('script'); pa.type = 'text/javascript'; pa.async = true;
-    pa.src = ('https:' == document.location.protocol ? 'https:' : 'http:') + "//tag.perfectaudience.com/serve/54b046fb22526644ea000012.js";
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(pa, s);
-  })();
-</script>
-<script type="text/javascript">setTimeout(function(){var a=document.createElement("script");var b=document.getElementsByTagName("script")[0];a.src=document.location.protocol+"//dnn506yrbagrg.cloudfront.net/pages/scripts/0021/1713.js?"+Math.floor(new Date().getTime()/3600000);a.async=true;a.type="text/javascript";b.parentNode.insertBefore(a,b)}, 1);
-</script>
-
-{{else}}
-
-<script type="text/javascript">window.analytics = {};
+  window.analytics = {};
   window.analytics.track = function(event, props) { console.log('off.track', event, props); }
 </script>
 
 {{/if}}
+
