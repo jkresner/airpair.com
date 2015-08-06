@@ -53,7 +53,7 @@
         <span ng-if="requests && requests.length == 0">No requests</span>
         <ul ng-if="requests && requests.length > 0">
           <li>REQUESTS</li>
-          <li ng-repeat="r in requests"><a href="/adm/pipeline/{{r._id}}" target="_blank">{{r._id |objectIdToDate : 'YYYY DD MMM' }}</a>  {{r._id}}</li>
+          <li ng-repeat="r in requests"><a href="/adm/request/{{r._id}}" target="_blank">{{r._id |objectIdToDate : 'YYYY DD MMM' }}</a>  {{r._id}}</li>
         </ul>
       </div>
       <div>
