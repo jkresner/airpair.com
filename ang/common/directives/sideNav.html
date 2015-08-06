@@ -1,3 +1,5 @@
+<div ng-if="session._id" >
+
 <header>
   <div class="toggle" id="sideNavToggle" track-click="sideNav" data="{{ toggleAction }}" track-click-if="!session._id" ng-click="sideNav.toggle()"></div>
 </header>
@@ -14,20 +16,20 @@
   <ul>
     <li><a href="/me" class="avatar"><div><img ng-src="{{ session.avatar }}?s=31" /></div><span>me</span></a></li>
     <li><a href="/dashboard"><div class="dashboard"></div><span>dashboard</span></a></li>
-    <li><a href="/settings"><div class="settings"></div><span>settings</span></a></li>
-    <li><a href="/posts/me"><div class="posts"></div><span>my posts</span></a></li>
-    <!--<li><a href="/experts">experts</a></li>
-    <li><a href="#">airpairs</a></li> -->
-    <li><a id="navStackToggle" track-click="sideNav" href="#" ng-click="openStack()">
+    <!-- <li><a id="navStackToggle" track-click="sideNav" href="#" ng-click="openStack()">
         <div class="stack"></div><span>stack</span>
       </a>
-    </li>
+    </li> -->
+    <!--<li><a href="/experts">experts</a></li>
+    <li><a href="#">airpairs</a></li> -->
 <!--     <li>
       <a id="navBookmarksToggle" track-click="sideNav" href="#" ng-click="openBookmarks()"><div class="bookmarks"></div><span>bookmarks</span>
       </a>
     </li> -->
     <li><a href="/billing"><div class="billing"></div><span>billing</span></a></li>
-    <li><a href="/logout" target="_self"><div class="logout"></div><span>logout</span></a></li>
+    <li><a href="/posts/me"><div class="posts"></div><span>my posts</span></a></li>
+    <li><a href="/settings"><div class="settings"></div><span>settings</span></a></li>
+    <!-- <li><a href="/logout" target="_self"><div class="logout"></div><span>logout</span></a></li> -->
   </ul>
 </section>
 
@@ -41,5 +43,7 @@
     <li><a href="/settings"><div class="settings"></div><span>settings</span></a></li>
   </ul>
 </section>
+
+</div>
 
 <div stack></div>
