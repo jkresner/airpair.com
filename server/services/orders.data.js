@@ -53,7 +53,7 @@ var select = {
           for (var line of order.lineItems)
           {
             // v0 order (2013/2014)
-            if (line.suggestion && line.suggestion.suggestedRate) {
+            if (line.suggestion && line.suggestion.suggestedRate && line.type != 'credit') {
               line.owed = line.qty * line.suggestion.suggestedRate[line.type].expert
               line.info = {
                 expert: line.suggestion.expert,
