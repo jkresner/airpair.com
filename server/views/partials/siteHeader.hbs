@@ -6,7 +6,7 @@
     <li class="find nomob"><a href="/find-an-expert" target="_self">Find an expert</a></li>
     <li class="exp nomob"><a href="/be-an-expert" target="_self">Help others</a></li>
     <li class="ps"><a href="/posts" target="_self">Posts</a></li>
-    <li class="more nomob"><a>More</a>
+    {{#unless authenticated}}<li class="more nomob"><a>More</a>
       <ul class="more">
         <li><a href="/blog" target="_self" class="blog">AirPair Blog</a></li>
         {{!-- <li class="nomob"><a href="/workshops" target="_self" class="wk">Workshops</a></li> --}}
@@ -14,6 +14,7 @@
         <li><a href="/privacy" target="_blank" class="pp">Privacy</a></li>
       </ul>
     </li>
+    {{/unless}}
 {{!--     <li><b><a id="headerGetHelp" href="/help/request" track-click="request" class="btn">Coding Help </a></b></li> --}}
     {{!--<li><a href="#" target="_self">Pair Programming</a></li>--}}
   </ul>
