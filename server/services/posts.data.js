@@ -230,7 +230,12 @@ var select = {
     },
     editView(cb, overrideMD, owner) {
       return (e,r) => {
-        if (e || !r) return cb(e,r)
+        if (e && !r) return cb(e,r)
+        else if (e) {
+          if (e.message.indexOf("Not Found") != -1)
+            return cb(Error(`Could not read ${r.slug} repo`))
+          return cb(e,r)
+        }
         r = selectFromObject(r, select.edit)
         r.repo = `${owner}/${r.slug}`
         if (overrideMD) {

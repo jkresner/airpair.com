@@ -272,7 +272,7 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
     $scope.isAuthor = r.by.userId == $scope.session._id
 
     if ((r.published && !r.submitted) && ($scope.isAuthor))
-      return $scope.editErr = { message: `Edits on published posts my be tracked in git. <br />Please <a href="/posts/submit/${r._id}">submit your post</a> to continue editing it.` }
+      return $scope.editErr = { message: `Edits on published posts must be tracked in git. <br />Please <a href="/posts/submit/${r._id}">submit your post</a> to continue editing it.` }
 
     if (r.md == "new") r.md = StaticDataService.defaultPostMarkdown
 
@@ -324,10 +324,12 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
   DataService.posts.getByIdEditing({_id}, setPostScope,
     (e) =>  {
       $scope.returnTo = window.location.pathname
-      if (e.message && e.message.indexOf('Bad credentials'))
+      if (e.message && e.message.indexOf('Bad credentials') != -1)
         $scope.credentialsErr = e
-      else
+      else if (e.message && e.message.indexOf('Not Found') != -1)
         $scope.editErr = e
+      else
+        window.location = "/posts/me"
     }
   )
 
