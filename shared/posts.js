@@ -1,11 +1,9 @@
-var {selectFromObject} = require('./util')
 
-var postsUtil = {
+var utilFns = {
 
   validSlug(slug) {
     return /^[a-z0-9]+([a-z0-9\-\.]+)*$/.test(slug)
   },
-
 
   wordcount(md) {
     var s = md.replace(/(^\s*)|(\s*$)/gi,"");
@@ -14,11 +12,55 @@ var postsUtil = {
     return s.split(' ').length;
   },
 
-
   wordsTogoForReview(wordcount) {
     var remainder = wordcount%50;
     var countWithoutRemainder = wordcount - remainder;
     return 400 - countWithoutRemainder;
+  },
+
+  extractSupReferences(markdown) {
+    var references = null
+    var supTags = markdown.match(/<sup>(.*?)<\/sup>/g)
+
+    if (!supTags) return {markdown,references}
+
+    var count = 0
+    var references = {}
+
+    var md = markdown
+    supTags.forEach((sup) => {
+      var ref = sup.replace(/<\/?sup>/g,'')
+      var reused = references[parseInt(ref)]
+
+      // allows to reuse previous references
+      if (!reused) {
+        references[++count] = ref
+        markdown = markdown.replace(sup,
+          `<sup>[<a href="#r${count}">${count}</a>]</sup>`)
+      } else {
+        markdown = markdown.replace(sup,
+          `<sup>[<a href="#r${count}">${ref}</a>]</sup>`)
+      }
+    })
+
+    return { markdown, references }
+  },
+
+  markupReferences(references, marked) {
+    return _.map(_.keys(references), (idx) =>
+      `<cite id="r${idx}">${idx}. ${marked(references[idx])}</cite>`.replace(/<\/?p>/g,''))
+  },
+
+  getPreview(md, cb) {
+    var preview = utilFns.extractSupReferences(md)
+    preview.wordcount = utilFns.wordcount(md)
+    preview.markedUpReferences =
+      utilFns.markupReferences(preview.references, marked)
+    marked(preview.markdown, (e, postHtml) => {
+      if (e) return cb(e)
+      preview.body = postHtml
+      cb(null,preview)
+    })
   },
 
   calcStats(post) {
@@ -39,9 +81,10 @@ var postsUtil = {
       closedPRs: _.where(post.pullRequests||[],(pr)=>pr.state=='closed').length,  // not really correct at all grrr
       acceptedPRs: _.where(post.pullRequests||[],(pr)=>pr.state=='closed').length,  // not really correct at all grrr
       shares: 0,            // figure it out later
-      words: postsUtil.wordcount(post.md)
+      words: utilFns.wordcount(post.md)
     }
   },
+
 
   extendWithReviewsSummary(post) {
     post.stars = { total: 0 }
@@ -62,7 +105,7 @@ var postsUtil = {
   authorFromUser(user) {
     var by = _.extend({ userId:user._id }, _.pick(user,'name','bio','social','username','avatar', 'userId'))
     if (by.social)
-      by.social = selectFromObject(by.social,{ 'gh.username': 1,'so.link':1,'bb.username':1,'in.id':1,'tw.username':1,'al.username':1,'gp.link':1 })
+      by.social = util.selectFromObject(by.social,{ 'gh.username': 1,'so.link':1,'bb.username':1,'in.id':1,'tw.username':1,'al.username':1,'gp.link':1 })
     return by
   },
 
@@ -107,4 +150,4 @@ var postsUtil = {
 
 }
 
-module.exports = postsUtil
+module.exports = utilFns

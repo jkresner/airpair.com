@@ -86,11 +86,6 @@
     {{#if stars }}
       <post-rail-stars></post-rail-stars>
     {{/if}}
-    {{!-- <h6>Help make this post better!</h6>
-    <div class="fork">
-      <a href="/posts/fork/{{_id}}" class="btn">Fork this post!</a>
-      <p>Forked <b>{{forkers.length}}</b> times so far</p>
-    </div> --}}
     {{/if}}
     {{#if published }}
     <h6>Need 1 on 1 expert help?</h6>
@@ -99,9 +94,23 @@
       <span><b>PAIR UP</b> with<br /> experts like <br />{{by.name}}</span>
       <a href="/login" class="btn btn-sm">Login</a>
     </div>
+    {{else}}
+    <h6>Help make this post better!</h6>
+    <div class="fork">
+      <a href="/posts/fork/{{_id}}" class="btn">Fork this post!</a>
+      <p>Forked <b>{{forkers.length}}</b> times so far</p>
+    </div>
     {{/if}}
   </div>
 
+  {{#if references}}
+  <div id="references" no-compile>
+    <h4>References</h4>
+    <ul class="references">
+      {{#each references}}<li>{{{this}}}</li>{{/each}}
+    </ul>
+  </div>
+  {{/if}}
 
 </article>
 
