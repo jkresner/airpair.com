@@ -88,6 +88,7 @@ var data = {
       // 'experience': 1,
       'status': 1,
       'budget': 1,
+      'suggested.expert.userId': 1,
       'suggested.expert.username': 1,
       'suggested.expert.email': 1,
       'suggested.expertStatus': 1,
@@ -109,8 +110,11 @@ var data = {
       'company.contacts.fullName':1,
       'company.contacts.email':1,
     },
-    meSuggested(r, userId) {
-      var sug = _.find(r.suggested,(s)=>_.idsEqual(userId,s.expert.userId))
+    meSuggested(r, userId, expertId) {
+      // $log('meSuggested'.yellow, r.suggested, userId, new ObjectId())
+      var sug = _.find(r.suggested,(s)=>
+        (expertId) ? _.idsEqual(expertId,s.expert._id) :
+                     _.idsEqual(userId,s.expert.userId))
       return (sug) ? [sug] : []
     },
     byView(request, view) {
@@ -187,8 +191,9 @@ var data = {
         return  (e,r) => {
           if (e) return cb(e)
           if (r.length) {
-            for (var req of r)
-              req.suggested = data.select.meSuggested(req, ctx.user._id)
+            for (var req of r) {
+              req.suggested = data.select.meSuggested(req, ctx.user._id, ctx.expertId)
+            }
           }
           cb(null,r)
         }

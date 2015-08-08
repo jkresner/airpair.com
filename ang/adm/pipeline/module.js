@@ -5,8 +5,7 @@ angular.module("ADMPipeline", ["APRequestDirectives","APProfileDirectives"])
   var route = apRouteProvider.route
   route('/adm/pipeline', 'Pipeline', require('./list.html'))
   route('/adm/pipeline-2015', 'Pipeline2015', require('./2015.html'))
-  route('/adm/pipeline-metrics', 'PipelineMetrics', require('./metrics.html'))
-  route('/adm/pipeline/:id', 'Request', require('./item.html'))
+  route('/adm/request/:id', 'Request', require('./item.html'))
 
 })
 
@@ -162,11 +161,7 @@ angular.module("ADMPipeline", ["APRequestDirectives","APProfileDirectives"])
 })
 
 
-.controller('PipelineMetricsCtrl', function($scope, AdmDataService) {
-
-  AdmDataService.pipeline.get2015({}, (requests) => {
-    $scope.requests = requests
-  })
+// .controller('PipelineMetricsCtrl', function($scope, AdmDataService) {
 
     // var todays = [], incomplete = [], complete = [];
     // _.each(requests, (r) => {
@@ -205,7 +200,7 @@ angular.module("ADMPipeline", ["APRequestDirectives","APProfileDirectives"])
 
     // $scope.todays = { budgetCount, briefCount, tagsCount, typeCount }
 
-})
+// })
 
 
 

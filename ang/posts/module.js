@@ -254,12 +254,10 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
     $scope.post.saved = $scope.savedMD == md
     if ($scope.post.saved && $scope.preview.body) return
 
-    marked(md, function (err, postHtml) {
-      if (err) throw err;
-      $scope.post.md = md
-      $scope.preview.body = postHtml
-      $scope.preview.wordcount = PostsUtil.wordcount($scope.post.md)
-
+    $scope.post.md = md
+    PostsUtil.getPreview(md, (e, preview) => {
+      if (e) throw e
+      $scope.preview = preview
       $scope.notReviewReady = $scope.preview.wordcount < 400
         || !$scope.post.tags || $scope.post.tags.length == 0
         || !$scope.post.assetUrl
@@ -272,7 +270,7 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
     $scope.isAuthor = r.by.userId == $scope.session._id
 
     if ((r.published && !r.submitted) && ($scope.isAuthor))
-      return $scope.editErr = { message: `Edits on published posts my be tracked in git. <br />Please <a href="/posts/submit/${r._id}">submit your post</a> to continue editing it.` }
+      return $scope.editErr = { message: `Edits on published posts must be tracked in git. <br />Please <a href="/posts/submit/${r._id}">submit your post</a> to continue editing it.` }
 
     if (r.md == "new") r.md = StaticDataService.defaultPostMarkdown
 
@@ -324,10 +322,12 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
   DataService.posts.getByIdEditing({_id}, setPostScope,
     (e) =>  {
       $scope.returnTo = window.location.pathname
-      if (e.message && e.message.indexOf('Bad credentials'))
+      if (e.message && e.message.indexOf('Bad credentials') != -1)
         $scope.credentialsErr = e
-      else
+      else if (e.message && e.message.indexOf('Not Found') != -1)
         $scope.editErr = e
+      else
+        window.location = "/posts/me"
     }
   )
 

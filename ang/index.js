@@ -93,7 +93,7 @@ angular.module("AP", ['ngRoute', 'ngAnimate',
 
   $rootScope.$on('$routeChangeSuccess', function() {
     if ($location.path().indexOf(window.initialLocation) == -1) {
-      window.trackRoute($location.path(),$location.search());
+      // window.trackRoute($location.path(),$location.search());
       window.scrollTo(0,0)
     }
     else if (!window.initialLocation) window.scrollTo(0,0)

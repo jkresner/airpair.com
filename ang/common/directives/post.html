@@ -18,6 +18,13 @@
     <p class="asset" ng-bind-html="preview.asset | markdownHtml" ng-if="post.title && post.by.bio"></p>
     <hr />
     <div id="body" ng-bind-html="preview.body | markdownHtml"></div>
+    <div id="references" ng-if="preview.references">
+      <h4>References</h4>
+      <ul class="references">
+        <li ng-repeat="r in preview.markedUpReferences" ng-bind-html="r | markdownHtml">
+        </li>
+      </ul>
+    </div>
   </article>
   <footer ng-if="post.tags && post.tags.length > 0" id="posts" class="postfooter similar">
     <hr />

@@ -27,10 +27,14 @@ var utilFns = {
   },
 
   rebookUrl(booking) {
+    var url = `/billing/book/${booking.expertId}`
     // TODO expand function to check date etc.
     if (booking.request)
-      return `/billing/book/${booking.expertId}/${booking.request._id}`
-    return `/billing/book/${booking.expertId}`
+      url = `/billing/book/${booking.expertId}/${booking.request._id}`
+    else if (booking.requestId)
+      url = `/billing/book/${booking.expertId}/${booking.requestId}`
+
+    return url
   },
 
   timeToBookAgain(booking, user) {

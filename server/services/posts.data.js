@@ -9,11 +9,11 @@ var topTapPages = ['angularjs']
 
 var inflateHtml = function(cb) {
   return (e,r) => {
-    if (r)
-    {
-      r.html = marked(r.md)
-      r.toc = marked(generateToc(r.md))
-    }
+    if (!r) return cb(e,r)
+    var supped = PostsUtil.extractSupReferences(r.md)
+    r.references = PostsUtil.markupReferences(supped.references, marked)
+    r.html = marked(supped.markdown)
+    r.toc = marked(generateToc(r.md))
     cb(e,r)
   }
 };
@@ -230,7 +230,12 @@ var select = {
     },
     editView(cb, overrideMD, owner) {
       return (e,r) => {
-        if (e || !r) return cb(e,r)
+        if (e && !r) return cb(e,r)
+        else if (e) {
+          if (e.message.indexOf("Not Found") != -1)
+            return cb(Error(`Could not read ${r.slug} repo`))
+          return cb(e,r)
+        }
         r = selectFromObject(r, select.edit)
         r.repo = `${owner}/${r.slug}`
         if (overrideMD) {
@@ -363,7 +368,20 @@ var query = {
   inReview(andCondition) {
     var query = [
       { 'submitted': {'$exists': true } },
-      { 'submitted': {'$gt': moment().add(-10,'day').toDate() } },
+      { 'published': {'$exists': false } },
+      { '$or': [
+          {'submitted': {'$gt': moment().add(-10,'day').toDate() }},
+          {'updated':   {'$gt': moment().add(-10,'day').toDate() }}
+        ]
+      }
+    ]
+    return andQuery(query, andCondition)
+  },
+
+  stale(andCondition) {
+    var query = [
+      { 'submitted': {'$exists': true } },
+      { 'submitted': {'$lt': moment().add(-10,'day').toDate() } },
       { 'published': {'$exists': false } },
     ]
     return andQuery(query, andCondition)
@@ -412,6 +430,9 @@ var opts = {
   },
   allPublished: {
     sort: { 'published': -1, 'stats.reviews': -1, 'stats.rating': -1 }
+  },
+  stale: {
+    sort: { 'stats.reviews': -1, 'stats.rating': -1 }, 'limit': 9
   }
 }
 
