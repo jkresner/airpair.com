@@ -1,8 +1,11 @@
 <section id="bookingslist" ng-if="bookings && bookings.length > 0">
-  <h3>Bookings<!--  <a href="/bookings">see all</a> --></h3>
+  <h3>Bookings <!--  <a href="/bookings">see all</a> --></h3>
   <ul class="bookings">
     <li ng-repeat="b in bookings">
-      <time>{{b.datetime | locaTime : 'ddd MMM DD' }}</time>
+      <time>
+        {{b.datetime | locaTime : 'ddd DD MMM' }}
+        <span>{{b.datetime | locaTime : 'YYYY' }}</span>
+      </time>
       <a href="/bookings/{{b._id}}">
         <h6>{{b.status}}</h6>
         <img ng-src="{{util.firstExpert(b).avatar}}?s=50">

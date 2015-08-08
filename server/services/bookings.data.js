@@ -34,11 +34,13 @@ var select = {
     'minutes': 1,
     'status':1,
     'datetime':1,
-    // 'recordings':1,
     'participants.role':1,
     'participants.info':1,
-    'rebookUrl': 1
+    // 'recordings':1,
     // 'paidout':1
+    'expertId': 1,
+    'requestId': 1,
+    'rebookUrl': 1
   },
   listAdmin: {
     '_id': 1,
@@ -140,9 +142,12 @@ var select = {
     listIndex(cb) {
       return (e,r) => {
         if (e) return cb(e)
-        for (var b of r || [])
+        for (var b of r || []) {
+          //-- rebookUrl not handling requests
+          b.rebookUrl = rebookUrl(b)
           for (var p of (b.participants || []))
             p.info.avatar = md5.gravatarUrl(p.info.email)
+        }
         cb(e,r)
       }
     },

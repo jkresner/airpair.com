@@ -268,7 +268,11 @@ var get = {
 
   getPostsInReview(cb) {
     var options = { fields: select.list, options: { sort: { 'submitted': -1 } } }
-    svc.searchMany(query.inReview(), options, selectCB.addUrl(cb))
+    svc.searchMany(query.inReview(), options, selectCB.addUrl((e,r)=>{
+      if (e || r.length != 0) return cb(e, r)
+      options.options = opts.stale
+      svc.searchMany(query.stale(), options, selectCB.addUrl(cb))
+    }))
   },
 
   // getUserForks(cb){

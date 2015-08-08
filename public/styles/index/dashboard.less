@@ -51,6 +51,25 @@ section#dashboard {
 
     .tags { padding-top:14px }
 
+    .rebookings {
+      ul { .ulNoStyle;padding:10px 25px;background:@gitgray }
+      li { display:block;width:180px;padding:10px 0;
+        img { display:inline-block;vertical-align:top;border:solid 2px @bluegray;border-radius:50% }
+        div { width:90px;margin-left:10px;display:inline-block;vertical-align:top; }
+        h4 { margin:0;padding:2px 0 0 0;font-size:15px;line-height:18px }
+        span { color:@gray;display:block;font-size:10px;margin-top:1px }
+        time { color:@gray;display:block;font-size:11px;margin-bottom:1px }
+        p { font-weight:bold;text-transform:uppercase;font-size:16px }
+        &:hover {
+          img { border-color:@orangehighlight }
+          h4 { color:@orangehighlight; }
+          p { color:@orangehighlight; }
+          span { color:@orange }
+          time { color:@orange }
+        }
+      }
+    }
+
     .bookmarks {
       ul { margin:0;padding:0 }
       li { width:200px;overflow:hidden; }

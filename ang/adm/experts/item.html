@@ -88,7 +88,7 @@
   <div class="requests" ng-if="requests">
     <h4>Requests (<span ng-if="requests">{{requests.length}}</span>)</h4>
     <ul>
-      <li ng-repeat="r in requests"><a href="/adm/pipeline/{{r._id}}" target="_blank">{{r._id |objectIdToDate : 'YYYY DD MMM' }}</a> {{r.suggested[0].expertStatus}}</li>
+      <li ng-repeat="r in requests"><a href="/adm/request/{{r._id}}" target="_blank">{{r._id |objectIdToDate : 'YYYY DD MMM' }}</a> {{r.suggested[0].expertStatus}}</li>
     </ul>
   </div>
 

@@ -75,7 +75,7 @@
 
       <div ng-if="request">
         {{request.adm.submitted | locaTime : 'YY MMM DD' }}
-        <a href="/adm/pipeline/{{request._id}}" target="_blank">{{request.title}}</a>
+        <a href="/adm/request/{{request._id}}" target="_blank">{{request.title}}</a>
         <br />
         <br />
         <ul><li ng-repeat="sug in request.suggested | filter: {expertStatus: 'available'}"
