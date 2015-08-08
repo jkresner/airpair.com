@@ -254,12 +254,10 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
     $scope.post.saved = $scope.savedMD == md
     if ($scope.post.saved && $scope.preview.body) return
 
-    marked(md, function (err, postHtml) {
-      if (err) throw err;
-      $scope.post.md = md
-      $scope.preview.body = postHtml
-      $scope.preview.wordcount = PostsUtil.wordcount($scope.post.md)
-
+    $scope.post.md = md
+    PostsUtil.getPreview(md, (e, preview) => {
+      if (e) throw e
+      $scope.preview = preview
       $scope.notReviewReady = $scope.preview.wordcount < 400
         || !$scope.post.tags || $scope.post.tags.length == 0
         || !$scope.post.assetUrl
