@@ -27,6 +27,10 @@ module.exports = function(app) {
        trackAdClick('https://keen.io/?utm_source=airpair&utm_medium=banner&utm_campaign=custom_analytics'),
         (req, res, cb) => res.redirect(req.ad.url) )
 
+    .get('/visit/keen.io-082015',
+       trackAdClick('http://keen.github.io/explorer?utm_source=airpair&utm_medium=banner&utm_campaign=data_explorer'),
+        (req, res, cb) => res.redirect(req.ad.url) )
+
     .get('/workshops',
       app.renderHbsViewData('workshops', { title: "Software Workshops, Webinars & Screencasts" },
         (req, cb) => API.Workshops.svc.getAll(cb) ))
