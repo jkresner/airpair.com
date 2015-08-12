@@ -1,4 +1,8 @@
 var cfg = {
+  ads: {
+    on: true,
+    staticDir: '/public/static/img/ads',
+  },
   analytics: {
     on: false,
     segmentio: { writekey: '9793xyfxat', options: { flushAt: 1 } }
@@ -164,6 +168,8 @@ module.exports = function(env) {
   cfg.appdir = __dirname
     .replace('/server/util','')
     .replace('\\server\\util','') //-- for windows machines
+
+  cfg.ads.staticDir = `${cfg.appdir}${cfg.ads.staticDir}`
 
   if (cfg.env == 'dev') {
     cfg.mail.smtpProvider = require('./mail/devSMTPprovider')(true)
