@@ -15,14 +15,32 @@ section.notifications {
   }
 }
 
-
-.blogpostblank {
-  img { max-width:900px }
+article.faq {
+  text-align:justify;
+  img { max-width:640px }
+  p { max-width:640px;margin-top:12px }
+  h3 { color:@lightorange;font-weight:bold;font-size:18px;margin-bottom:0;margin-bottom:0 }
+  h4 { color:@lightorange;font-weight:bold;font-size:14px;margin-bottom:0 }
+  .fork { float:right;width:220px;
+    a { width:100%;background:@orange no-repeat url('../img/icons/gh-white.png');
+      background-size:21%;
+      width:100%;
+      padding-left:45px; }
+    a:hover { background-color:@orangehighlight }
+    p { text-align:right }
+  }
 }
 
 //-- A single full post view
 
 .blogpost {
+  #references
+  {
+    padding-top:20px;
+    h5 { margin:20px 0 0 0 }
+    ul { margin:10px 0 0 0 }
+    li { list-style:none;padding:4px 2px; }
+  }
 
   clear:both;
   padding:0 0px;
@@ -52,7 +70,7 @@ section.notifications {
   ol { max-width:620px;padding-left:30px }
   ul { max-width:620px;margin:10px 0 15px 10px;
     padding-left:15px;color:@mediumgray;font-size:15px }
-  ul ul { margin-left:12px } // nested lists
+  ul ul { margin-left:14px } // nested lists
 
   iframe { margin:0px 0px 0px 0px }
   img { max-width:640px }
@@ -60,7 +78,7 @@ section.notifications {
     padding-top:0px;
     padding-bottom:0px;
     margin-top:10px;
-    p { margin:0 }
+    p { margin:0;max-width:610px; }
   }
 
   p.asset {
