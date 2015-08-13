@@ -89,6 +89,7 @@ var get = {
   getRequestForBookingExpert(id, expertId, cb) {
     var {user} = this
     svc.getById(id, selectCB.byRole(this, cb, (e,r) => {
+      if (isExpert(user,r)) return cb(Error(`Cannot book yourself on request[${id}]`))
       if (!isCustomerOrAdmin(user,r)) return cb(Error(`Could not find request[${id}] belonging to user[${user._id}]`))
       var suggestion = _.find(r.suggested,(s) => _.idsEqual(s.expert._id,expertId) && s.expertStatus == 'available')
       if (!suggestion) return cb(Error(`No available expert[${expertId}] on request[${r._id}] for booking`))
