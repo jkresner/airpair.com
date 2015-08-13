@@ -1,6 +1,8 @@
-var build = { version: '1.21', deployed: 'Mar 08' }
-
 var cfg = {
+  ads: {
+    on: true,
+    staticDir: '/public/static/img/ads',
+  },
   analytics: {
     on: false,
     segmentio: { writekey: '9793xyfxat', options: { flushAt: 1 } }
@@ -71,13 +73,13 @@ var cfg = {
     },
   },
   bots: {
-    all: /googlebot|TurnitinBot|SMTBot|MegaIndex|Domain Re-Animator Bot|ToutiaoSpider|uk_lddc_bot|MJ12bot|CPython|libwww-perl|Superfeedr|Mechanize|AdsBot-Google|gurujibot|bitlybot|twitterbot|scritch|yandexbot|slurp|msnbot|bingbot|rogerbot|MetaURI|Hatena|PaperLiBot|QuerySeekerSpider|AhrefsBot|EmailMarketingRobot|ShowyouBot|Baiduspider|YisouSpider|facebookexternalhit|archive.org_bot|Y!J-ASR/i,
-    bad: /MegaIndex|uk_lddc_bot|MJ12bot|CPython|libwww-perl|Superfeedr|Nutch|Mechanize/i,
+    all: /googlebot|TweetmemeBot|TurnitinBot|SMTBot|MegaIndex|Domain Re-Animator Bot|ToutiaoSpider|uk_lddc_bot|MJ12bot|CPython|libwww-perl|Superfeedr|Mechanize|AdsBot-Google|gurujibot|bitlybot|twitterbot|scritch|yandexbot|slurp|msnbot|bingbot|rogerbot|MetaURI|Hatena|PaperLiBot|QuerySeekerSpider|AhrefsBot|EmailMarketingRobot|ShowyouBot|Baiduspider|YisouSpider|facebookexternalhit|archive.org_bot|Y!J-ASR/i,
+    bad: /MegaIndex|datasift|uk_lddc_bot|MJ12bot|CPython|libwww-perl|Superfeedr|Nutch|Mechanize/i,
   },
   bitly:  {
     shortDomain: 'http://airpa.ir/',
     accessToken: 'b93731e13c8660c7700aca6c3934660ea16fbd5f' },
-  build: build,
+  build: { version: 'dev', deployed: 'n/a' },
   bundle: {
     indexScript: '/static/js/index.js',
     admScript: '/static/js/adm.js',
@@ -167,6 +169,8 @@ module.exports = function(env) {
     .replace('/server/util','')
     .replace('\\server\\util','') //-- for windows machines
 
+  cfg.ads.staticDir = `${cfg.appdir}${cfg.ads.staticDir}`
+
   if (cfg.env == 'dev') {
     cfg.mail.smtpProvider = require('./mail/devSMTPprovider')(true)
   }
@@ -186,6 +190,9 @@ module.exports = function(env) {
 
   if (cfg.env == 'staging' || cfg.env == 'production') {
     var dist = require('../../dist/rev-manifest.json')
+
+    cfg.build = dist.build
+
     cfg.bundle.indexScript = `/static/${dist['js/index.js']}`
     cfg.bundle.indexCss = `/static/${dist['styles/index.css']}`
     cfg.bundle.admScript = `/static/${dist['js/adm.js']}`

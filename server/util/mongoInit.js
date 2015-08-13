@@ -9,7 +9,7 @@ module.exports = {
 
     db.on('error', (e) => $log(('mongo connection error:' + e).red) )
     db.once('open', () => {
-      $log(`          Connected to db ${config.mongoUri}`.appload)
+      $log(`           Connected to db ${config.mongoUri}`.appload)
       callback()
     })
 

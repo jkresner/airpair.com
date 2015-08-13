@@ -1,5 +1,5 @@
 var API                             = require('../api/_all')
-var {trackView,trackAdClick}        = require('../middleware/analytics')
+var {trackView}                     = require('../middleware/analytics')
 var {authd,noCrawl}                 = require('../middleware/auth')
 var {populate}                      = require('../middleware/data')
 
@@ -22,14 +22,6 @@ module.exports = function(app) {
     .param('workshop', API.Workshops.paramFns.getBySlug)
     .param('review', API.Requests.paramFns.getByIdForReview)
     .param('post', API.Posts.paramFns.getBySlugForPublishedView)
-
-    .get('/visit/keen.io-072015',
-       trackAdClick('https://keen.io/?utm_source=airpair&utm_medium=banner&utm_campaign=custom_analytics'),
-        (req, res, cb) => res.redirect(req.ad.url) )
-
-    .get('/visit/keen.io-082015',
-       trackAdClick('http://keen.github.io/explorer?utm_source=airpair&utm_medium=banner&utm_campaign=data_explorer'),
-        (req, res, cb) => res.redirect(req.ad.url) )
 
     .get('/workshops',
       app.renderHbsViewData('workshops', { title: "Software Workshops, Webinars & Screencasts" },
