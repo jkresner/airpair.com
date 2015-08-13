@@ -19,6 +19,7 @@ var knownNonErrors = [
   'Error getting collection: v1sessions',
   'Cannot determine state of server',
   'Cannot signup, user already exists',
+  'Cannot book yourself on request',
   'Email belongs to another account',
   'Cannot suggest the same expert twice',
   'tagfrom3rdparty not found',
