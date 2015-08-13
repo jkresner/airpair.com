@@ -77,17 +77,6 @@ signup = ->
             DONE()
 
 
-
-  it 'Can sign up via post comp', itDone ->
-    d = _.pick(SETUP.userData('jkya'), ['name','email'])
-    http(global.app).post('/v1/auth/signup-postcomp').send(d).expect(200)
-      .end (e, resp) ->
-        r = resp.body
-        expect(r._id).to.exist
-        expect(r.email).to.equal(d.email)
-        DONE()
-
-
 login = ->
 
   before () ->

@@ -156,7 +156,6 @@ function localSignup(email, password, name, errorCB, done) {
 
     if (password == 'home'
       || password == 'subscribe'
-      || password == 'postcomp'
       || password == 'so')
     {
       upsert.local.changePasswordHash = Data.data.generateHash(email)
@@ -166,8 +165,6 @@ function localSignup(email, password, name, errorCB, done) {
     var mailFn = null
     if (password == 'home')
       mailFn = 'signupHomeWelcomeEmail'
-    if (password == 'postcomp')
-      mailFn = 'signupPostcompEmail'
     if (password == 'subscribe') {
       mailFn = 'singupSubscribeEmail'
       this.session.maillists = _.union(this.session.maillists||[],['AirPair Developer Digest'])
