@@ -41,8 +41,8 @@ module.exports = -> describe "MailMan: ", ->
     d = { byName:"Jony 5", total:17332, _id }
     mailman.send 'pipeliners', 'pipeliner-notify-purchase', d, ->
       expect(send.callCount).to.equal(1)
-      expectStartsWith(send.args[0][1].Subject,'[Pipeline] $17332 Payment by Jony 5')
-      expectContains(send.args[0][1].Text,'https://www.airpair.com/adm/orders/55371ce4b38fc91937086df7')
+      expectStartsWith(send.args[0][1].Subject,'{Payment} $17332 by Jony 5')
+      expectContains(send.args[0][1].Text,'http://adm.airpa.ir/o/55371ce4b38fc91937086df7')
       expectContains(send.args[0][1].Text,'$17332')
       expectContains(send.args[0][1].Text,'Jony 5')
       expectContains(send.args[0][1].Html,'55371ce4b38fc91937086df7')
@@ -59,8 +59,9 @@ module.exports = -> describe "MailMan: ", ->
       airpair1 = datetime: moment().add(2, 'day'), minutes: 120, type: 'private', payMethodId: s.primaryPayMethodId
       POST "/bookings/#{data.experts.dros._id}", airpair1, {}, (booking1) ->
         expect(send.callCount).to.equal(3)
-        expectStartsWith(send.args[1][1].Subject, "[Pipeline] Booking by #{s.name} for #{booking1.participants[1].info.name}")
-        expectContains(send.args[1][1].Text, "https://www.airpair.com/adm/bookings/#{booking1._id}")
+        expectStartsWith(send.args[1][1].Subject, "{Booking} by #{s.name} for #{booking1.participants[1].info.name}")
+        expectContains(send.args[1][1].Text, "/#{booking1._id}")
+        expectContains(send.args[1][1].Text, "http://adm.airpa.ir/b/#{booking1._id}")
         expectContains(send.args[1][1].Text, 'Daniel Roseman')
         expectContains(send.args[1][1].Text, s.name)
         expectContains(send.args[1][1].Html, booking1._id)
@@ -71,8 +72,9 @@ module.exports = -> describe "MailMan: ", ->
   it 'Pipeliners notify request and reply', itDone ->
     SETUP.newCompleteRequest 'jkjk', {}, (r,s) ->
       expect(send.callCount).to.equal(1)
-      expectStartsWith(send.args[0][1].Subject, "[Request] RUSH $100 #{s.name}")
-      expectContains(send.args[0][1].Text, "https://www.airpair.com/adm/pipeline/#{r._id}")
+      expectStartsWith(send.args[0][1].Subject, "{Request} RUSH $100 #{s.name}")
+      expectContains(send.args[0][1].Text, "/#{r._id}")
+      expectContains(send.args[0][1].Text, "http://adm.airpa.ir/r/#{r._id}")
       expectContains(send.args[0][1].Text, "RUSH")
       expectContains(send.args[0][1].Text, s.name)
       LOGIN 'snug', (sExp) ->
@@ -81,7 +83,8 @@ module.exports = -> describe "MailMan: ", ->
           expect(send.callCount).to.equal(3)
           $log(send.args[1][1].Subject)
           expectStartsWith(send.args[1][1].Subject, "[Reply] AVAILABLE by Ra&#x27;Shaun Stovall for #{s.name}")
-          expectContains(send.args[0][1].Text, "https://www.airpair.com/adm/pipeline/#{r._id}")
+          expectContains(send.args[0][1].Text, "http://adm.airpa.ir/r/#{r._id}")
+          expectContains(send.args[0][1].Text, "/#{r._id}")
           DONE()
 
 
