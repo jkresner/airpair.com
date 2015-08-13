@@ -12,7 +12,7 @@ require('./server/util/cache')
 export function run()
 {
   $timelapsed("APP START")
-  $log(`APP       Start   ${start}`.appload)
+  $log(`APP v${config.build.version}   Start   ${start}`.appload)
 
   var express = require('express')
   var app = express()
@@ -39,11 +39,12 @@ export function run()
 
     session(app, mongo.initSessionStore, () => {
 
-      $log(`          SessionStoreReady   ${new Date().getTime()-start}`.appload)
+      $log(`           SessionStoreReady   ${new Date().getTime()-start}`.appload)
+
+      app.use('/visit', routes('ads')(app))
+
       //-- Do not move connect-livereload before session middleware
       if (config.livereload) app.use(require('connect-livereload')({ port: 35729 }))
-
-      app.use('/ad', mw.analytics.trackAdImpression, express.static(config.appdir+'/public/static/img/ads')) //no max age, we want no cacheing
 
       var hbsEngine   = require('./server/views/_hbsEngine')
       hbsEngine(app)
@@ -80,7 +81,7 @@ export function run()
         app.use(mw.logging.errorHandler(app))
 
         app.listen(config.port, () =>
-          $log(`          Listening after ${new Date().getTime()-start}ms on port ${config.port}`.appload))
+          $log(`           Listening after ${new Date().getTime()-start}ms on port ${config.port}`.appload))
 
       })
     })

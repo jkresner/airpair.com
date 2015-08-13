@@ -36,8 +36,8 @@
   <i ng-show="loading" class="glyphicon glyphicon-refresh"></i>
    -->
   <div class="nomob">
-    <i ng-if="none && !addErrorMsg && !adding" class="none">No match,
-      <a ng-click="addTag(none)">add tag</a> <b>{{none}}</b>?</i>
+    <b ng-if="none && !addErrorMsg && !adding" class="none" style="padding-right:14px">No match,
+      <a ng-click="addTag(none)">add tag</a> <span>{{none}}</span>?</b>
     <i ng-if="adding" class="none">Checking stackoverflow ...</i>
     <i ng-if="addErrorMsg" class="none error">No tag found on stackoverflow
        for auto-populating. <br /><a href="mailto:team@airpair.com?Subject=New%20tag%20{{none}}" target="_blank"><b>Email us to maunaully add {{none}}</b></a>?</i>

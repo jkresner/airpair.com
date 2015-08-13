@@ -1,4 +1,4 @@
-<article class="blogpostblank faq">
+<article class="blogpost faq">
 
   <h1 class="entry-title" itemprop="headline">{{ title }}</h1>
 
@@ -15,5 +15,15 @@
 
 
   <post no-compile>{{{ html }}}</post>
+
+  {{#if references}}
+  <div id="references" no-compile>
+    <hr />
+    <h5>Definitions</h5>
+    <ul class="references">
+      {{#each references}}<li>{{{this}}}</li>{{/each}}
+    </ul>
+  </div>
+  {{/if}}
 
 </article>

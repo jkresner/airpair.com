@@ -1,5 +1,31 @@
+function primeRevBuild(gulp) {
+
+  function string_src(filename, string) {
+    var src = require('stream').Readable({ objectMode: true })
+    src._read = function () {
+      this.push(new gulp.util.File({ cwd: "", base: "", path: filename, contents: new Buffer(string) }))
+      this.push(null)
+    }
+    return src
+  }
+
+
+  var pkg = require('../package.json')
+  var buildJSON  = '{ ' + '\n' +
+    '  "build": {' +
+    ' "time": "'+new Date().getTime()+'", "version": "'+pkg.version +
+    '" }' + '\n' +
+    '} '
+
+  console.log("Building v".cyan+pkg.version, buildJSON)
+
+  return string_src("rev-manifest.json", buildJSON).pipe(gulp.dest('./dist'))
+}
+
+
 
 module.exports = function(gulp, config, options, callback) {
+
   return function() {
     $time('dist start')
 
@@ -18,6 +44,8 @@ module.exports = function(gulp, config, options, callback) {
     var base = config.path.publicDir
 
     $time('dist required')
+
+    primeRevBuild(gulp)
 
     return merge(
 
@@ -47,8 +75,8 @@ module.exports = function(gulp, config, options, callback) {
     )
       .pipe(rev())
       .pipe(gulp.dest('./dist/static'))
-      .pipe(rev.manifest('rev-manifest.json',{merge:true}))
-      .pipe(gulp.dest('./dist'))
+      .pipe(rev.manifest('./dist/rev-manifest.json',{merge:true}))
+      .pipe(gulp.dest('./'))
       .on('end', callback)
   }
 
