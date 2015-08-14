@@ -9,7 +9,7 @@ require('./server/util/cache')
 // DO NOT MOVE ANYTHING IN THIS FILE
 // middleware order is 112% crucial to not screw up sessions
 
-export function run()
+export function run(cb)
 {
   $timelapsed("APP START")
   $log(`APP v${config.build.version}   Start   ${start}`.appload)
@@ -80,9 +80,10 @@ export function run()
         app.use(mw.logging.pageNotFound)
         app.use(mw.logging.errorHandler(app))
 
-        app.listen(config.port, () =>
-          $log(`           Listening after ${new Date().getTime()-start}ms on port ${config.port}`.appload))
-
+        app.listen(config.port, () => {
+          $log(`           Listening after ${new Date().getTime()-start}ms on port ${config.port}`.appload)
+          if (cb) cb()
+        })
       })
     })
   })
