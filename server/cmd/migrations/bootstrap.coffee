@@ -1,5 +1,5 @@
 """
-  mocha test/server/migrations/bootstrap.coffee
+  mocha server/cmd/migrations/bootstrap.coffee
 
 """
 
