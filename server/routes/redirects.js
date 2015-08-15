@@ -18,7 +18,7 @@ var mw = {
       (req, res, next) =>
         PostsAPI.svc.getBySlugForPublishedView(slug, (e,post) => {
           if (!post) {
-            if (winston) winston.error(`Did not find migrated post ${canonical} for ${slug}`)
+            if (config.log.redirects) mailman.sendError(`Did not find migrated post ${canonical} for ${slug}`)
             return next(`Post with slug[${slug}] not found`)
           }
           req.post = post
