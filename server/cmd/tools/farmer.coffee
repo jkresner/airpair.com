@@ -36,7 +36,7 @@ describe 'Farmer: ', ->
     dat = _.omit(outReach,'experts')
     for exp in outReach.experts
       tmplData = _.extend({firstName:exp.f||util.firstName(exp.n)},dat)
-      mailman.send({email:exp.e,name:exp.n}, 'expert-farm', tmplData, isDone)
+      mailman.sendTemplate('expert-farm', tmplData, {email:exp.e,name:exp.n}, isDone)
 
 
 # outReach =

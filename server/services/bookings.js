@@ -184,9 +184,8 @@ var save = {
           activity: [touch]
         }
         var d = {byName:user.name,expertName:expert.name, bookingId:booking._id,minutes,type}
-        mailman.send('spinners', 'pipeliner-notify-booking', d, ()=>{})
-        mailman.send(expert, 'expert-booked', d, ()=>{}) // todo add type && instructions to email
-
+        mailman.sendTemplate('pipeliner-notify-booking', d, 'spinners')
+        mailman.sendTemplate('expert-booked', d, expert) // todo add type && instructions to email
         svc.create(booking, select.cb.itemIndex(cb))
       })
     })

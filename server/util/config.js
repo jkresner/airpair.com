@@ -1,76 +1,57 @@
 var cfg = {
   ads: {
-    on: true,
-    staticDir: '/public/static/img/ads',
-  },
-  analytics: {
-    on: false,
-    segmentio: { writekey: '9793xyfxat', options: { flushAt: 1 } }
-  },
+    on:                   true,
+    staticDir:            '/public/static/img/ads'                          },
+  analytics: { on:        false                                             },
   auth: {
-    loginUrl: '/login',
-    unauthorizedUrl: '/v1/auth/unauthorized',
-    defaultRedirectUrl: '/',
-    oAuth: { callbackHost: 'http://localhost:3333' },
-    masterpass: 'youshallpass',
+    loginUrl:             '/login',
+    unauthorizedUrl:      '/v1/auth/unauthorized',
+    defaultRedirectUrl:   '/',
+    oAuth: {
+      callbackHost:       'http://localhost:3333' },
+    masterpass:           'youshallpass',
     local: {
       usernameField : 'email',
-      passwordField : 'password'
-    },
+      passwordField : 'password'                                            },
     google: {
       clientID: '1019727294613-rjf83l9dl3rqb5courtokvdadaj2dlk5.apps.googleusercontent.com',
       clientSecret: 'Kd6ceFORVbABH7p5UbKURexZ',
       scope: [ 'profile', 'email',
-        'https://www.googleapis.com/auth/plus.profile.emails.read'
-      ]
-    },
+        'https://www.googleapis.com/auth/plus.profile.emails.read']        },
     twitter: {
-      consumerKey: '8eIvjnVbj0BkMiUVQP0ZQ',
-      consumerSecret: 'OwrnjqCz3BeRswKLuDJqdzMQlgdDZi9F3hFZPIbxgVM',
-      consumer_key: 'Tfw8PWs5LcxqrWlFJWUhXf8i8',
-      consumer_secret: 'yoA38VC94a2gcxJ7ewCyNn8nPu7bHVVVMTauZTanlvkgXBWNOE',
-      access_token: 'test',
-      access_token_secret: 'test'
-    },
+      consumerKey: 'Tfw8PWs5LcxqrWlFJWUhXf8i8',
+      consumerSecret: 'yoA38VC94a2gcxJ7ewCyNn8nPu7bHVVVMTauZTanlvkgXBWNOE' },
     github: {
       clientID: '378dac2743563e96c747',
       clientSecret: 'f52d233259426f769850a13c95bfc3dbe7e3dbf2',
       adminAccessToken: 'b9d09cce1129b4ee1f4b97cc44c3b753cb9d8795', //jkyahoo
       org: 'JustASimpleTestOrg',
-      scope: [ 'user', 'public_repo']
-    },
+      scope: [ 'user', 'public_repo']                                      },
     paypal: {
       mode: 'sandbox',
       clientID: 'AVk7JRBmL3kzKnxrLC8Ze98l2rg__gK1PhASloHmd0wsDvsvkSJd_QnWx3xE',
       clientSecret: 'EGLE0xD3MJO4dY6GxGVngdU8ssl5cHke1vVmuCzmmS0KD4QFjvHEpmb2YgRT',
       scope: [ 'profile', 'email', 'address', 'openid',
-        'https://uri.paypal.com/services/paypalattributes'
-      ]
-    },
+        'https://uri.paypal.com/services/paypalattributes']                },
     linkedin: {
       consumerKey: 'sy5n2q8o2i49',
-      consumerSecret: 'lcKjdbFSNG3HfZsd',
-    },
+      consumerSecret: 'lcKjdbFSNG3HfZsd'                                   },
     bitbucket: {
       consumerKey: 'QNw3HsMSKzM6ptP4G4',
-      consumerSecret: 'Cx5pvK2ZEjsymVxME42hSffkzkaQ9Buf',
-    },
+      consumerSecret: 'Cx5pvK2ZEjsymVxME42hSffkzkaQ9Buf'                   },
     stackexchange: {
       clientID: '1451',
       clientSecret: 'CCkJpq3BY3e)lZFNsgkCkA((',
-      key: 'dTtlx1WL0TJvOKPfoU88yg((',
-    },
+      key: 'dTtlx1WL0TJvOKPfoU88yg(('                                      },
     angellist: {
       clientID: 'b6e2b75a1e20367c9b2bd267dbbd06269193814b83c2a492',
       clientSecret: 'e702b47dca92523fd99a3cc8f8262acfea8a52b19c5809cd',
-      scope: ['email','talent']
-    },
+      scope: ['email','talent']                                            },
     slack: {
       slackTeam: 'T06U2HQQ3',
       clientID: '6954602819.6963320480',
       clientSecret: 'ef0b1b25910627ce92f721bda02ba757',
-      scope: ['identify','read','post','client']
-    },
+      scope: ['identify','read','post','client']                           },
   },
   bots: {
     all: /googlebot|TweetmemeBot|TurnitinBot|SMTBot|MegaIndex|Domain Re-Animator Bot|ToutiaoSpider|uk_lddc_bot|MJ12bot|CPython|libwww-perl|Superfeedr|Mechanize|AdsBot-Google|gurujibot|bitlybot|twitterbot|scritch|yandexbot|slurp|msnbot|bingbot|rogerbot|MetaURI|Hatena|PaperLiBot|QuerySeekerSpider|AhrefsBot|EmailMarketingRobot|ShowyouBot|Baiduspider|YisouSpider|facebookexternalhit|archive.org_bot|Y!J-ASR/i,
@@ -78,7 +59,7 @@ var cfg = {
   },
   bitly:  {
     shortDomain: 'http://airpa.ir/',
-    accessToken: 'b93731e13c8660c7700aca6c3934660ea16fbd5f' },
+    accessToken: 'b93731e13c8660c7700aca6c3934660ea16fbd5f'               },
   build: { version: 'dev', deployed: 'n/a' },
   bundle: {
     indexScript: '/static/js/index.js',
@@ -96,14 +77,6 @@ var cfg = {
       calendarId: process.env.CALENDAR_GOOGLE_CALENDARID || 'setyourenvironentvarible@airpair.com',
     }
   },
-  timezone: {
-    google: {
-      apiKey: 'AIzaSyANXimipzhyZ-Mp2_RrzjKKp4nXq5VpMGk'
-    }
-  },
-  youtube: {
-    refreshTokens: 'airpairtest34@gmail.com:1/ButgPHQTginqD-zDnOHHhxiVRSlGDw5iGY9pPIrOsrQ',
-  },
   chat: {
     slack: {
       owner:      { id: 'U06U2HQQK', token: 'xoxp-6954602819-6954602835-6963586337-08f737' },
@@ -112,57 +85,59 @@ var cfg = {
       pairbot:    { id: 'U06UBBT9V', token: 'xoxb-6963401335-ziIikHY5Uo9zyG6NPQ9ijoam' },
       channels:   {
         pipeline: { id: 'C06KZHXAS' },
-        posts:    { id: 'C06UBRE77' }
-      }
-    }
-  },
-  log: {
-    auth: false,
+        posts:    { id: 'C06UBRE77' } } }
   },
   hangout:{
-    //140030887085 == production AirPair app
-    appId: '140030887085',
-    login: {
-      email: 'support@airpair.com',
-      password: 'helsyea'
-    }
+    appId: '140030887085', //140030887085 == production AirPair app
+    login: { email: 'support@airpair.com', password: 'helsyea' }
+  },
+  http: { static: { maxAge: null } },
+  log: {
+    ads:                  process.env.LOG_ADS || false,
+    auth:                 process.env.LOG_AUTH || false,
+    mail:                 process.env.LOG_MAIL || true,
+    error:                { email: null },
   },
   mail: {
-    smtpProvider: null,
-    ses: {
-      access_key: process.env.MAIL_SES_ACCESS_KEY || "none",
-      secret_key: process.env.MAIL_SES_SECRET_KEY || "none"
+    sender: {
+      jk: 'Jonathon Kresner <team@airpair.com>',
+      ap: 'AP <team@airpair.com>',
+      team: 'AirPair <team@airpair.com>',
+      pairbot: 'Pairbot <pairbot@airpair.com>' },
+    mailchimp: { apiKey: '' },
+    transport: {
+      default: 'stub',
+      ses: { access_key: '', secret_key: '' },
+      smtp: { service: '', auth: { user: '', pass: '' } }
     },
-    mailchimp: {
-      apiKey: ''
-    }
   },
-  mongoUri: process.env.MONGOHQ_URL || "mongodb://localhost/airpair_dev",
-  port:     process.env.PORT || 3333,
+  mongoUri: 'mongodb://localhost/airpair_dev',
   payments: {
     braintree: {
       environment: 'Sandbox',
       verifyCards: false,
       merchantId: 'chkr49r8yxk5y65p',
       publicKey: '3pwpby7rrfdr3x3m',
-      privateKey: '7d5586d4be9ba9e36daebfa814f0584a'
-    },
+      privateKey: '7d5586d4be9ba9e36daebfa814f0584a'                  },
     stripe: {
       publishedKey: 'pk_test_aj305u5jk2uN1hrDQWdH0eyl',
-      secretKey: 'sk_test_8WOe71OlRWPyB3rDRcnthSCc'
-    }
+      secretKey: 'sk_test_8WOe71OlRWPyB3rDRcnthSCc'                   }
   },
+  port:     process.env.PORT || 3333,
   redirects: { on: false },
+  share: {
+    tw: { access_token: 'test', access_token_secret: 'test' },
+  },
   session: { secret: 'airyv1' },
-  http: {
-    static: {
-      maxAge: null
-    }
-  }
+  timezone: { google: { apiKey: 'AIzaSyANXimipzhyZ-Mp2_RrzjKKp4nXq5VpMGk' } },
+  youtube: {
+    refreshTokens: 'airpairtest34@gmail.com:1/ButgPHQTginqD-zDnOHHhxiVRSlGDw5iGY9pPIrOsrQ',
+  },
 }
 
 
 module.exports = function(env) {
+
   cfg.env = env
   cfg.livereload = cfg.env == 'dev'
   cfg.appdir = __dirname
@@ -171,85 +146,32 @@ module.exports = function(env) {
 
   cfg.ads.staticDir = `${cfg.appdir}${cfg.ads.staticDir}`
 
-  if (cfg.env == 'dev') {
-    cfg.mail.smtpProvider = require('./mail/devSMTPprovider')(true)
+  if (env == 'dev') {
+
   }
 
   //-- Temp for testing prod setting locally
-  // cfg.analytics.on = true
-  // cfg.analytics.segmentio.writekey = '0xxx5xrw5q'
-  if (cfg.env == 'test') {
-    cfg.auth.oAuth.callbackHost = 'http://localhost:4444'
+  if (env == 'test') {
     cfg.analytics.on = true
-    cfg.analytics.segmentio.writekey = '9793xyfxat'
+    cfg.auth.oAuth.callbackHost = 'http://localhost:4444'
     cfg.port = 4444
     cfg.mongoUri = "mongodb://localhost/airpair_test"
     cfg.testlogin = true
-    cfg.mail.smtpProvider = require('./mail/devSMTPprovider')(false)
+    cfg.log.mail = false
   }
 
-  if (cfg.env == 'staging' || cfg.env == 'production') {
-    var dist = require('../../dist/rev-manifest.json')
-
-    cfg.build = dist.build
-
-    cfg.bundle.indexScript = `/static/${dist['js/index.js']}`
-    cfg.bundle.indexCss = `/static/${dist['styles/index.css']}`
-    cfg.bundle.admScript = `/static/${dist['js/adm.js']}`
-    cfg.bundle.admCss = `/static/${dist['styles/adm.css']}`
-    cfg.bundle.libCss = `/static/${dist['styles/libs.css']}`
-    cfg.bundle.homeScript = `/static/${dist['js/home.js']}`
+  if (env == 'staging' || env == 'production') {
+    dist = require('../../dist/rev-manifest.json')
 
     cfg.analytics.on = true
-    cfg.analytics.segmentio.writekey = process.env.ANALYTICS_SEGMENTIO_WRITEKEY
-    cfg.analytics.segmentio.options = {}
 
+    cfg.auth.masterpass = process.env.AUTH_MASTERPASS,
     cfg.auth.oAuth.callbackHost = process.env.AUTH_OAUTH_CALLBACKHOST
     cfg.auth.google.clientID = process.env.AUTH_GOOGLE_CLIENTID
     cfg.auth.google.clientSecret = process.env.AUTH_GOOGLE_CLIENTSECRET
 
-    cfg.redirects.on = true
-    cfg.session.secret = process.env.SESSION_SECRET || 'airyv1'
-  }
-
-  if (cfg.env == 'production')
-  {
-    cfg.http.static.maxAge = '1d'
-
-    cfg.log.auth = (process.env.LOG_AUTH) ? process.env.LOG_AUTH == 'true' : false
-    cfg.log.email = {
-      level:          process.env.LOG_EMAIL_LEVEL || 'error',
-      sesAccessKey:   cfg.mail.ses.access_key,
-      sesSecretKey:   cfg.mail.ses.secret_key,
-      sesFrom:        process.env.LOG_EMAIL_FROM || 'AP <jk@airpair.com>',
-      sesTo:          process.env.LOG_EMAIL_RECEIVERS.split(','),
-      sesSubject:     process.env.LOG_EMAIL_SUBJECT || 'aperror'
-    }
-
-    cfg.mail.smtpProvider = require('./mail/ses')
-    cfg.mail.mailchimp.apiKey = process.env.MAIL_MAILCHIMP_APIKEY,
-
-    cfg.payments.stripe = {
-      publishedKey: process.env.PAYMENTS_STRIPE_PUBLISHEDKEY,
-      secretKey: process.env.PAYMENTS_STRIPE_SECRETKEY
-    }
-    cfg.payments.braintree = {
-      environment: 'Production',
-      verifyCards: false,
-      merchantId: process.env.PAYMENTS_BRAINTREE_MERCHANTID,
-      publicKey: process.env.PAYMENTS_BRAINTREE_PUBLICKEY,
-      privateKey: process.env.PAYMENTS_BRAINTREE_PRIVATEKEY,
-    }
-
-    cfg.auth.masterpass = process.env.AUTH_MASTERPASS,
-    cfg.auth.twitter = {
-      consumerKey: process.env.AUTH_TWITTER_CONSUMER_KEY,
-      consumerSecret: process.env.AUTH_TWITTER_CONSUMER_SECRET,
-      consumer_key: process.env.AUTH_TWITTER_CONSUMER_KEY,
-      consumer_secret: process.env.AUTH_TWITTER_CONSUMER_SECRET,
-      access_token: process.env.AUTH_TWITTER_ACCESS_TOKEN,
-      access_token_secret: process.env.AUTH_TWITTER_ACCESS_TOKEN_SECRET
-    }
+    cfg.auth.twitter.consumerKey = process.env.AUTH_TWITTER_CONSUMER_KEY,
+    cfg.auth.twitter.consumerSecret = process.env.AUTH_TWITTER_CONSUMER_SECRET
 
     cfg.auth.paypal.mode = 'live'
     cfg.auth.paypal.clientID = process.env.AUTH_PAYPAL_CLIENTID,
@@ -266,12 +188,47 @@ module.exports = function(env) {
 
     cfg.auth.github.clientID = process.env.AUTH_GITHUB_CLIENTID
     cfg.auth.github.clientSecret = process.env.AUTH_GITHUB_CLIENTSECRET
+
     cfg.auth.github.adminAccessToken = process.env.AUTH_GITHUB_ADMIN_ACCESSTOKEN
     cfg.auth.github.org = process.env.AUTH_GITHUB_ORG
 
     cfg.auth.slack.clientID = process.env.AUTH_SLACK_CLIENTID
     cfg.auth.slack.clientSecret = process.env.AUTH_SLACK_CLIENTSECRET
     cfg.auth.slack.slackTeam = process.env.AUTH_SLACK_SLACKTEAM
+
+    cfg.build = dist.build
+    cfg.bundle.indexScript = `/static/${dist['js/index.js']}`
+    cfg.bundle.indexCss = `/static/${dist['styles/index.css']}`
+    cfg.bundle.admScript = `/static/${dist['js/adm.js']}`
+    cfg.bundle.admCss = `/static/${dist['styles/adm.css']}`
+    cfg.bundle.libCss = `/static/${dist['styles/libs.css']}`
+    cfg.bundle.homeScript = `/static/${dist['js/home.js']}`
+
+    cfg.http.static.maxAge = '1d'
+    cfg.redirects.on = true
+    cfg.session.secret = process.env.SESSION_SECRET
+
+    //-- TODO: Remove Winston
+    cfg.log.error.email = {
+      from:        process.env.LOG_EMAIL_FROM || 'AP <jk@airpair.com>',
+      to:          process.env.LOG_EMAIL_RECEIVERS.split(','),
+      subject:     process.env.LOG_EMAIL_SUBJECT || '{ERROR}'
+    }
+
+    cfg.mail.transpost.default = 'ses',
+    cfg.mail.mailchimp.apiKey = process.env.MAIL_MAILCHIMP_APIKEY,
+
+    cfg.payments.stripe = {
+      publishedKey: process.env.PAYMENTS_STRIPE_PUBLISHEDKEY,
+      secretKey: process.env.PAYMENTS_STRIPE_SECRETKEY
+    }
+    cfg.payments.braintree = {
+      environment: 'Production',
+      verifyCards: false,
+      merchantId: process.env.PAYMENTS_BRAINTREE_MERCHANTID,
+      publicKey: process.env.PAYMENTS_BRAINTREE_PUBLICKEY,
+      privateKey: process.env.PAYMENTS_BRAINTREE_PRIVATEKEY,
+    }
 
     cfg.calendar.on = true
     cfg.calendar.google.ownerRefreshToken = process.env.CALENDAR_GOOGLE_OWNER_REFRESHTOKEN
@@ -295,10 +252,15 @@ module.exports = function(env) {
     cfg.chat.slack.channels.pipeline.id = process.env.CHAT_SLACK_CHANNELS_PIPELINE_ID
     cfg.chat.slack.channels.posts.id = process.env.CHAT_SLACK_CHANNELS_POSTS_ID
 
+    cfg.timezone.google.apiKey = process.env.TIMEZONE_GOOGLE_APIKEY
     cfg.youtube.refreshTokens = process.env.YOUTUBE_REFRESH_TOKENS
 
-    cfg.timezone.google.apiKey = process.env.TIMEZONE_GOOGLE_APIKEY
+    cfg.share.tw.access_token = process.env.AUTH_TWITTER_ACCESS_TOKEN,
+    cfg.share.tw.access_token_secret = process.env.AUTH_TWITTER_ACCESS_TOKEN_SECRET
   }
+
+  cfg.share.tw.consumer_key  = cfg.auth.twitter.consumerKey
+  cfg.share.tw.consumer_secret = cfg.auth.twitter.consumerSecret
 
   return cfg;
 }

@@ -21,8 +21,6 @@ var get = {
           _id: `${tmpl.type}:${tmpl.key}`,
           markdownFn: handlebars.compile(tmpl.markdown)
         }
-        if (tmpl.subject)
-          compiledTmpl.subjectFn = handlebars.compile(tmpl.subject)
         if (tmpl.fallback)
           compiledTmpl.fallbackFn = handlebars.compile(tmpl.fallback)
         if (tmpl.thumbnail)
@@ -31,6 +29,10 @@ var get = {
           compiledTmpl.linkFn = handlebars.compile(tmpl.link)
         if (tmpl.subtype)
           compiledTmpl.subtype = tmpl.subtype
+        if (tmpl.subject) {
+          compiledTmpl.subjectFn = handlebars.compile(tmpl.subject)
+          compiledTmpl.sender = tmpl.sender || 'team'
+        }
 
         compiled.push(compiledTmpl)
       }
@@ -49,13 +51,17 @@ var interpolate = {
     )
   },
 
-  mail(key, data, cb) {
+  mail(key, data, to, cb) {
+    if (to && to.name)
+      data.firstName = util.firstName(to.name)
+
     cache.tmpl('mail', key, (tmpl) => {
-      var Text = tmpl.markdownFn(data)
       cb(null, {
-        Subject: tmpl.subjectFn(data),
-        Text,
-        Html: marked(Text)
+        to: (to.constructor === Array) ? to : [`${to.name} <${to.email}>`],
+        subject: tmpl.subjectFn(data).replace(/&#x27;/g,"'"),
+        markdown: tmpl.markdownFn(data).replace(/&#x27;/g,"'"),
+        from: config.mail.sender[tmpl.sender],
+        transport: (tmpl.sender == 'pairbot') ? 'ses' : 'smtp'
       })
     })
   },

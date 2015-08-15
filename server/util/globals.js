@@ -6,10 +6,10 @@ module.exports = function(config)
   global._              = require('lodash')
   _.idsEqual            = util.idsEqual
   _.wrapFnList          = util.wrapFnList
-  // global.moment         = require('moment')
   global.moment         = require('moment-timezone')
   global.config         = config
   global.$log           = console.log
+  global.$trace         = require('./log/trace')
   global.$error         = require('./log/error')
 
   //-- Consistent way to call services from a function with request context
@@ -21,7 +21,7 @@ module.exports = function(config)
     }
 
   global.mailman = {
-    init() { global.mailman = require('./mail/mailman')(config.mail.smtpProvider()) }
+    init() { global.mailman = require('./mailman')() }
   }
 
   global.pairbot = {
@@ -30,13 +30,6 @@ module.exports = function(config)
 
   //-- makes app a tests load 300ms faster
   global.analytics    = { track: ()=>{}, view: ()=>{}, alias: ()=>{}, identify: ()=>{}, impression: ()=>{} }
-
-  if (config.log.email)
-  {
-    global.winston      = require('winston')
-    winston.remove(winston.transports.Console)
-    winston.add(require('winston-ses').Ses, config.log.email)
-  }
 
   global.Wrappers       = require('../services/wrappers/_wrappers')
 

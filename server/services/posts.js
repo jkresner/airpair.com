@@ -9,6 +9,7 @@ var github2               = Wrappers.GitHub
 var Data                  = require('./posts.data')
 var {query, select, opts} = Data
 var selectCB              = select.cb
+var selectTmpl            = select.tmpl
 var {selectFromObject,getYouTubeThumb} = require('../../shared/util')
 var PostsUtil             = require('../../shared/posts')
 var Roles                 = require('../../shared/roles').post
@@ -535,9 +536,8 @@ var saveReviews = {
     //-- Probably better doing the db hit as we ensure the right email if the user
     //-- changed it at any point
     $callSvc(UserSvc.getById, {user:{_id:post.by.userId}})(post.by.userId, (ee, user) => {
-      var rating = _.find(review.questions,(q)=>q.key=='rating').answer
-      var comment = _.find(review.questions,(q)=>q.key=='feedback').answer
-      mailman.sendPostReviewNotification(user, post._id, post.title, review.by.name, rating, comment)
+      mailman.sendTemplate('post-review-notification',
+        selectTmpl.reviewNotify(post,review), user)
     })
   },
 
@@ -563,9 +563,9 @@ var saveReviews = {
 
       var thisParticipant = _.find(threadParticipants, (p)=>p.email == this.user.email)
       if (thisParticipant) threadParticipants = _.without(threadParticipants, thisParticipant)
-      // $log('still'.cyan, threadParticipants, thisParticipant)
 
-      mailman.sendPostReviewReplyNotification(threadParticipants, post._id, post.title, reply.by.name, reply.comment)
+      mailman.sendTemplateMails('post-review-reply-notification',
+        selectTmpl.reviewReplyNotify(post,reply), threadParticipants)
 
       post.stats = PostsUtil.calcStats(post)
       svc.update(post._id, post, selectCB.statsView(cb))
