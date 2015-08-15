@@ -19,9 +19,9 @@ module.exports = () => describe("Authorization: ".subspec, function() {
     SETUP.addAndLoginLocalUser('ilap', function(s) {
       expect(s.roles).to.be.undefined // new users have undefined roles
       LOGIN('admin', function() {
-        PUT(`/adm/users/${data.users[s.userKey]._id}/role/admin`, {}, {}, function(s) {
+        PUT(`/adm/users/${data.users[s.userKey]._id}/role/spinner`, {}, {}, function(s) {
           expect(s.roles.length).to.equal(1)
-          expect(s.roles[0]).to.equal('admin')
+          expect(s.roles[0]).to.equal('spinner')
           DONE()
         })
       })

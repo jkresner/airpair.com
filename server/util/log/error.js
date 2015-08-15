@@ -74,8 +74,5 @@ module.exports = function(e, user, req)
 
   console.log(msg.red)
 
-  if (config.log.email)
-  {
-    winston.error(`${msg}`)
-  }
+  mailman.sendError(`${msg}`)
 }

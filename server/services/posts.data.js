@@ -213,6 +213,19 @@ var select = {
     if (post.submitted && !post.published) return `/posts/review/${post._id}`
     else if (post.meta) return post.meta.canonical
   },
+  tmpl: {
+    reviewNotify(post, review) {
+      var {_id,title} = post
+      var rating = _.find(review.questions,(q)=>q.key=='rating').answer
+      var comment = _.find(review.questions,(q)=>q.key=='feedback').answer
+      return { _id, title , comment, rating, reviewerFullName: review.by.name }
+    },
+    reviewReplyNotify(post, reply) {
+      var {_id,title} = post
+      var {comment,by} = reply
+      return { _id, title , comment, replierFullName: by.name }
+    },
+  },
   cb: {
     inflateHtml,
     addUrl(cb) {

@@ -27,10 +27,8 @@ angular.module('APSvcSession', [])
         $rootScope.session = r
         $rootScope.notifications = Notifications.calculateNextNotification()
 
-        if (trackingData) analytics.track('Save', trackingData);
+        if (window.analytics && trackingData) analytics.track('Save', trackingData);
 
-        // console.log(r);
-        window.firebaseToken = r.firebaseToken;
         successFn(r)
       }
     }

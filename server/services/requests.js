@@ -159,7 +159,7 @@ var save = {
     {
       var d = {byName:this.user.name, _id:original._id,budget:update.budget,
         tags:util.tagsString(update.tags),time:update.time.toUpperCase()}
-      mailman.send('pipeliners','pipeliner-notify-request', d, ()=>{})
+      mailman.sendTemplate('pipeliner-notify-request', d, 'pipeliners')
 
       update.adm = admSet(original,{active:true,submitted:new Date()})
 
@@ -190,7 +190,8 @@ var save = {
 
   replyByExpert(request, expert, reply, cb)
   {
-    var {suggested,adm,lastTouch,status} = request
+    var {suggested,adm,lastTouch,status,_id} = request
+    var replyStatus = reply.expertStatus.toUpperCase()
 
     expert = select.expertToSuggestion(expert)
     // data.events.push @newEvent "expert reviewed", eR
@@ -212,19 +213,21 @@ var save = {
       Rates.addSuggestedRate(request, existing)
     }
 
-    if (reply.expertStatus == 'available' &&
-        (status == 'received' || status == 'waiting')) status = 'review'
+    var d = {_id,isAvailable:replyStatus=="AVAILABLE", expertName: expert.name}
 
-    if (previouslyNotAvailable && reply.expertStatus == 'available')
+    if (d.isAvailable && (status == 'received' || status == 'waiting'))
+      status = 'review'
+
+    if (previouslyNotAvailable && d.isAvailable)
       PaymethodsSvc.hasPaymethods(request.userId, (e,hasPaymethods) =>
-        mailman.sendExpertAvailable(request.by, expert.name, request._id, !hasPaymethods, ()=>{}))
+        mailman.sendTemplate('expert-available',
+          _.extend({noPaymethods: !hasPaymethods },d), request.by))
 
     // sug.events.push @newEvent "expert updated"
     // sug.expert.paymentMethod = type: 'paypal', info: { email: eR.payPalEmail }
 
-    var d = { isAvailable:reply.expertStatus=="available",status:reply.expertStatus.toUpperCase(),
-      byName:this.user.name,_id:request._id,requestByName:request.by.name }
-    mailman.send('pipeliners', 'pipeliner-notify-reply', d, ()=>{})
+    var dRep = { status: replyStatus, byName:this.user.name, requestByName:request.by.name }
+    mailman.sendTemplate('pipeliner-notify-reply', _.extend(dRep,d), 'pipeliners')
 
     lastTouch = svc.newTouch.call(this, `replyByExpert:${reply.expertStatus}`)
     if (!adm.reviewable && reply.expertStatus == 'available')

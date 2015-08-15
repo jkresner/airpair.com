@@ -1,100 +1,150 @@
 origMailman      = global.mailman
 send             = null
-stubMailProvider =
-  send: (to, renderedEmail, cb) ->
-    $log('fake send'.cyan, renderedEmail.Subject.white,  renderedEmail.Text)
-    cb()
-
 
 module.exports = -> describe "MailMan: ", ->
 
   before (done) ->
     @braintreepaymentStub = SETUP.stubBraintreeChargeWithMethod()
-    global.mailman = require('../../server/util/mail/mailman')(stubMailProvider)
-    SETUP.initExperts done
+    global.config.log.mail = true
+    global.mailman = require('../../server/util/mailman')()
+    global.mailman.getGroupList 'spinners', ->
+      global.mailman.getGroupList 'pipeliners', ->
+        SETUP.initExperts done
 
   after ->
     @braintreepaymentStub.restore()
     global.mailman = origMailman
 
+
   beforeEach ->
-    send = sinon.spy(stubMailProvider,'send')
+    send = sinon.spy(global.mailman,'send')
 
   afterEach ->
     send.restore()
 
+  describe 'Basics: ', ->
 
-  it 'Can get rendered template without sending', itDone ->
-    d = { tagsString:"angularjs", expertFirstName:"Jony",requestByFullName:"Jane Dow",_id:"55371ce4b38fc91937086df7",accountManagerName:"Jonathon Kresner" }
-    mailman.get 'expert-suggest', d, (e,r) ->
-      expect(e).to.be.null
-      expectStartsWith(r.Subject,"angularjs AirPair?")
-      expectContains(r.Text,"Hi Jony,")
-      expectContains(r.Text,"for Jane Dow")
-      expectContains(r.Text,"/review/55371ce4b38fc91937086df7")
-      expectContains(r.Text,"Jonathon Kresner")
-      DONE()
-
-
-  it 'Pipeliners notify puchase mass database template to pipeliners', itDone ->
-    _id = ObjectId("55371ce4b38fc91937086df7")
-    d = { byName:"Jony 5", total:17332, _id }
-    mailman.send 'pipeliners', 'pipeliner-notify-purchase', d, ->
-      expect(send.callCount).to.equal(1)
-      expectStartsWith(send.args[0][1].Subject,'{Payment} $17332 by Jony 5')
-      expectContains(send.args[0][1].Text,'http://adm.airpa.ir/o/55371ce4b38fc91937086df7')
-      expectContains(send.args[0][1].Text,'$17332')
-      expectContains(send.args[0][1].Text,'Jony 5')
-      expectContains(send.args[0][1].Html,'55371ce4b38fc91937086df7')
-      DONE()
-
-
-  it.skip 'Pipeliners notify payment added', itDone ->
-    d = {byName:"Jonyisalive 5"}
-    mailman.send 'pipeliners', 'pipeliner-notify-addpaymethod', d, ->
-
-
-  it 'Pipeliners notify booking', itDone ->
-    SETUP.addAndLoginLocalUserWhoCanMakeBooking 'ckni', (s) ->
-      airpair1 = datetime: moment().add(2, 'day'), minutes: 120, type: 'private', payMethodId: s.primaryPayMethodId
-      POST "/bookings/#{data.experts.dros._id}", airpair1, {}, (booking1) ->
-        expect(send.callCount).to.equal(3)
-        expectStartsWith(send.args[1][1].Subject, "{Booking} by #{s.name} for #{booking1.participants[1].info.name}")
-        expectContains(send.args[1][1].Text, "/#{booking1._id}")
-        expectContains(send.args[1][1].Text, "http://adm.airpa.ir/b/#{booking1._id}")
-        expectContains(send.args[1][1].Text, 'Daniel Roseman')
-        expectContains(send.args[1][1].Text, s.name)
-        expectContains(send.args[1][1].Html, booking1._id)
-        expectStartsWith(send.args[2][1].Subject, "You got booked to AirPair with #{s.name}")
+    it 'Can get rendered markdown without sending', itDone ->
+      d = { tagsString: "angularjs", expertFirstName: "Jony", requestByFullName:"Jane Dow",_id:"55371ce4b38fc91937086df7",accountManagerName:"Jonathon Kresner" }
+      mailman.get 'expert-suggest', d, (e,r) ->
+        expect(e).to.be.null
+        expectStartsWith(r.subject,"angularjs AirPair?")
+        md = r.markdown
+        expectContains(md,"Hi Jony,")
+        expectContains(md,"for Jane Dow")
+        expectContains(md,"/review/55371ce4b38fc91937086df7")
+        expectContains(md,"Jonathon Kresner")
         DONE()
 
 
-  it 'Pipeliners notify request and reply', itDone ->
-    SETUP.newCompleteRequest 'jkjk', {}, (r,s) ->
-      expect(send.callCount).to.equal(1)
-      expectStartsWith(send.args[0][1].Subject, "{Request} RUSH $100 #{s.name}")
-      expectContains(send.args[0][1].Text, "/#{r._id}")
-      expectContains(send.args[0][1].Text, "http://adm.airpa.ir/r/#{r._id}")
-      expectContains(send.args[0][1].Text, "RUSH")
-      expectContains(send.args[0][1].Text, s.name)
-      LOGIN 'snug', (sExp) ->
-        reply = expertComment: "I'll take it", expertAvailability: "Real-time", expertStatus: "available"
-        PUT "/requests/#{r._id}/reply/#{data.experts.snug._id}", reply, {}, (r2) ->
+    it 'Can send raw markdown', itDone ->
+      d = { tagsString: "angularjs", expertFirstName: "Jony", requestByFullName:"Jane Dow",_id:"55371ce4b38fc91937086df7",accountManagerName:"Jonathon Kresner" }
+      md = "Hi Jony,\n\nfor Jane Dow\n\nhttps://www.ap.com/review/55371ce4b38fc91937086df7"
+      mailman.sendMarkdown "angularJS AirPair?", md, {email:'jay@kay.com',name:"Jony"}, 'jk', (e,r) ->
+        expect(e).to.be.null
+        expectStartsWith(r.subject,"angularJS AirPair?")
+        expectContains(r.html, "<p>Hi Jony,</p>\n")
+        expectContains(r.html, "<p>for Jane Dow</p>\n")
+        DONE()
+
+
+  describe 'Pipeline: ', ->
+
+    it 'Pipeliners notify purchase mass database template to pipeliners', itDone ->
+      _id = ObjectId("55371ce4b38fc91937086df7")
+      d = { byName:"Jony 5", total:17332, _id }
+      mailman.sendGroupMail 'pipeliner-notify-purchase', d, 'pipeliners', (e, r) ->
+        expect(e).to.be.null
+        expect(send.callCount).to.equal(1)
+        mail = send.args[0][0]
+        # $log('mail'.cyan, mail)
+        expectStartsWith(mail.subject,'{Payment} $17332 by Jony 5')
+        # expect(mail.text).to.be.null
+        # expect(mail.html).to.be.null
+        expect(mail.to.constructor).to.equal(Array)
+        expect(send.args[0][1].constructor).to.equal(Function)
+        expect(send.args[0][2]).to.be.undefined
+        expectContains(r.text,'http://adm.airpa.ir/o/55371ce4b38fc91937086df7')
+        expectContains(r.text,'$17332')
+        expectContains(r.text,'Jony 5')
+        expectContains(r.html,'55371ce4b38fc91937086df7')
+        DONE()
+
+
+  # it.skip 'Pipeliners notify payment added', itDone ->
+  #   d = {byName:"Jonyisalive 5"}
+  #   mailman.send 'pipeliners', 'pipeliner-notify-addpaymethod', d, ->
+
+
+    it 'Pipeliners notify booking', itDone ->
+      SETUP.addAndLoginLocalUserWhoCanMakeBooking 'ckni', (s) ->
+        airpair1 = datetime: moment().add(2, 'day'), minutes: 120, type: 'private', payMethodId: s.primaryPayMethodId
+        POST "/bookings/#{data.experts.dros._id}", airpair1, {}, (booking1) ->
           expect(send.callCount).to.equal(3)
-          $log(send.args[1][1].Subject)
-          expectStartsWith(send.args[1][1].Subject, "[Reply] AVAILABLE by Ra&#x27;Shaun Stovall for #{s.name}")
-          expectContains(send.args[0][1].Text, "http://adm.airpa.ir/r/#{r._id}")
-          expectContains(send.args[0][1].Text, "/#{r._id}")
+          expectStartsWith(send.args[1][0].subject, "{Booking} by #{s.name} for #{booking1.participants[1].info.name}")
+          expectContains(send.args[1][0].text, "/#{booking1._id}")
+          expectContains(send.args[1][0].text, "http://adm.airpa.ir/b/#{booking1._id}")
+          expectContains(send.args[1][0].text, 'Daniel Roseman')
+          expectContains(send.args[1][0].text, s.name)
+          expectContains(send.args[1][0].html, booking1._id)
+          expectStartsWith(send.args[2][0].subject, "You got booked to AirPair with #{s.name}")
           DONE()
 
 
-  it 'Expert gets notification on booking', itDone ->
-    _id = ObjectId("55555ae4b38fc91937086df7")
-    d = {byName:"Jonyisalive 5", expertName:"Jonathon Kaye", bookingId:_id,minutes:60}
-    mailman.send {name:'Karan Kurani',email:'karankurani@testmail.com'}, 'expert-booked', d, ->
-      expect(send.callCount).to.equal(1)
-      expectStartsWith(send.args[0][1].Subject,'You got booked to AirPair with Jonyisalive 5')
-      expectContains(send.args[0][1].Text,'https://www.airpair.com/bookings/55555ae4b38fc91937086df7')
-      expectContains(send.args[0][1].Text,'60 minutes')
-      expectContains(send.args[0][1].Html,'55555ae4b38fc91937086df7')
-      DONE()
+    it 'Pipeliners notify request and reply', itDone ->
+      SETUP.newCompleteRequest 'jkjk', {}, (r,s) ->
+        expect(send.callCount).to.equal(1)
+        expectStartsWith(send.args[0][0].subject, "{Request} RUSH $100 #{s.name}")
+        expectContains(send.args[0][0].text, "/#{r._id}")
+        expectContains(send.args[0][0].text, "http://adm.airpa.ir/r/#{r._id}")
+        expectContains(send.args[0][0].text, "RUSH")
+        expectContains(send.args[0][0].text, s.name)
+        LOGIN 'snug', (sExp) ->
+          reply = expertComment: "I'll take it", expertAvailability: "Real-time", expertStatus: "available"
+          PUT "/requests/#{r._id}/reply/#{data.experts.snug._id}", reply, {}, (r2) ->
+            expect(send.callCount).to.equal(3)
+            # $log(send.args[1][1].subject)
+            expectStartsWith(send.args[1][0].subject, "[Reply] AVAILABLE by Ra'Shaun Stovall for #{s.name}")
+            expectContains(send.args[1][0].text, "http://adm.airpa.ir/r/#{r._id}")
+            expectContains(send.args[1][0].text, "/#{r._id}")
+            expectStartsWith(send.args[2][0].subject, "Ra'Shaun Stovall is available")
+            expectContains(send.args[2][0].text, "https://www.airpair.com/review/#{r._id}")
+            DONE()
+
+
+    it 'Expert gets notification on booking', itDone ->
+      _id = ObjectId("55555ae4b38fc91937086df7")
+      d = {byName:"Jonyisalive 5", expertName:"Jonathon Kaye", bookingId:_id,minutes:60}
+      mailman.sendTemplate 'expert-booked', d, {name:'Karan Kurani',email:'karankurani@testmail.com'}, ->
+        expect(send.callCount).to.equal(1)
+        mail = send.args[0][0]
+        expectStartsWith(mail.subject,'You got booked to AirPair with Jonyisalive 5')
+        expectContains(mail.from,'Pairbot <pairbot@airpair.com>')
+        expectContains(mail.text,'https://www.airpair.com/bookings/55555ae4b38fc91937086df7')
+        expectContains(mail.text,'60 minutes')
+        expectContains(mail.html,'55555ae4b38fc91937086df7')
+        DONE()
+
+
+    # it 'Admin can give credit', itDone ->
+
+  describe 'Posts: ', ->
+
+    it 'Sends review notificaton', itDone ->
+      d =
+        _id: "541a36c3535a850b00b05697",
+        title: "ExpressJS and PassportJS Sessions Deep Dive" ,
+        comment: "## Pretty cool\n\nYou should update it thought",
+        rating: 4,
+        reviewerFullName: 'Karan Kurani'
+      mailman.sendTemplate 'post-review-notification', d, {name:"Jonathon Kresner",email:'jk@airpair.com'}, (e, mail) ->
+        expect(send.callCount).to.equal(1)
+        mail = send.args[0][0]
+        expectStartsWith(mail.subject,'4 Star Review for ExpressJS and PassportJS Sessions Deep Dive')
+        expectContains(mail.from,'Pairbot <pairbot@airpair.com>')
+        expectContains(mail.text,'http://posts.airpa.ir/contributors/541a36c3535a850b00b05697')
+        expectContains(mail.text,'Karan Kurani')
+        expectContains(mail.html,'541a36c3535a850b00b05697')
+        DONE()
+
+
