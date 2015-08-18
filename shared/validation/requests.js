@@ -94,7 +94,7 @@ var validation = {
   sendMessageByAdmin(user, request, message) {
     if (!message.type) return `Message type required`
     if (!message.subject) return `Message subject required`
-    if (!message.body) return `Message body required`
+    if (!message.markdown) return `Message body required`
 
     if (message.type != 'generic') {
       var existing = _.find(request.messages,(m)=>m.type==message.type)
@@ -139,7 +139,7 @@ var validation = {
     if (existing)
       return `Cannot suggest the same expert twice`
 
-    if (!msg || !msg.subject || !msg.body)
+    if (!msg || !msg.subject || !msg.markdown)
       return `Message to expert required to suggest expert`
   },
   removeSuggestion(user, original, expert)

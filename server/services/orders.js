@@ -427,7 +427,7 @@ var save = {
       email: toUser.email
     }
 
-    mailman.sendGotCreditEmail(toUser, total, this.user, ()=>{})
+    mailman.sendTemplate('customer-got-credit', {total,fromName:this.user.name}, toUser)
     makeOrder(forUser, lineItems, null, toUser._id, null, null, cb, (e, order) =>
       chargeAndTrackOrder(order, cb, (e,o) => svc.create(o, cb))
     )

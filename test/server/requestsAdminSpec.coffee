@@ -14,7 +14,7 @@ module.exports = -> describe "Admin".subspec, ->
   it 'Pipeliner can reply to a new request', itDone ->
     d = type: 'other', tags: [data.tags.node]
     SETUP.newCompleteRequestForAdmin 'hubr', d, (r) ->
-      msg = type: 'received', subject: "test subject", body: "test body"
+      msg = type: 'received', subject: "test subject", markdown: "test body"
       PUT "/adm/requests/#{r._id}/message", msg, {}, (r1) ->
         adm1 = r1.adm
         expect(r1.status).to.equal('waiting')
@@ -43,7 +43,7 @@ module.exports = -> describe "Admin".subspec, ->
   it 'Pipeliner can farm a new request', itDone ->
     d = type: 'other', tags: [data.tags.node]
     SETUP.newCompleteRequestForAdmin 'hbri', d, (r) ->
-      PUT "/adm/requests/#{r._id}/message", { type: 'received', subject: "s", body: "b" }, {}, (r1) ->
+      PUT "/adm/requests/#{r._id}/message", { type: 'received', subject: "s", markdown: "b" }, {}, (r1) ->
         tweet = requestUtil.buildDefaultFarmTweet(r)
         PUT "/adm/requests/#{r._id}/farm", { tweet }, {}, (r1) ->
           adm1 = r1.adm
@@ -68,7 +68,7 @@ module.exports = -> describe "Admin".subspec, ->
 
   it 'Admin can suggest and remove experts', itDone ->
     SETUP.addAndLoginLocalUserWithEmailVerified 'kaun', (s) ->
-      spy = sinon.spy(mailman,'sendRawTextEmail')
+      spy = sinon.spy(mailman,'sendMarkdown')
       d = tags: [data.tags.angular], type: 'resources', experience: 'proficient', brief: 'bah bah anglaur test yo4', hours: "1", time: 'rush'
       POST '/requests', d, {}, (r0) ->
         PUT "/requests/#{r0._id}", _.extend(r0,{budget:300}), {}, (r) ->
@@ -88,8 +88,8 @@ module.exports = -> describe "Admin".subspec, ->
                       PUT "/adm/requests/#{r._id}/remove/#{phlfExp._id}", {}, {}, (reqRexp) ->
                         expect(reqRexp.suggested.length).to.equal(0)
                         expect(spy.callCount).to.equal(1)
-                        expectStartsWith(spy.args[0][1], "angularjs AirPair?")
-                        expectStartsWith(spy.args[0][2], "Hi Phil,")
+                        expectStartsWith(spy.args[0][0], "angularjs AirPair?")
+                        expectStartsWith(spy.args[0][1], "Hi Phil,")
                         DONE()
 
 
@@ -123,7 +123,7 @@ module.exports = -> describe "Admin".subspec, ->
     d = type: 'other', tags: [data.tags.node]
     SETUP.ensureV0Expert 'azv0', ->
       SETUP.newCompleteRequestForAdmin 'hbib', d, (r) ->
-        PUT "/adm/requests/#{r._id}/message", { type: 'received', subject: "s", body: "b" }, {}, (r1) ->
+        PUT "/adm/requests/#{r._id}/message", { type: 'received', subject: "s", markdown: "b" }, {}, (r1) ->
           expect(r1.status,'waiting')
           expect(r1.adm.owner,'ad')
           query = requestUtil.mojoQuery(r1)
@@ -133,7 +133,7 @@ module.exports = -> describe "Admin".subspec, ->
             expertId = matches[0]._id
             PUT "/matching/experts/#{expertId}/matchify/#{r._id}", {}, {}, (exp1) ->
               expect(exp1.matching).to.exist
-              PUT "/matching/requests/#{r._id}/add/#{expertId}", {msg:{subject:'Test',body:'Test'}}, {}, (r2) ->
+              PUT "/matching/requests/#{r._id}/add/#{expertId}", {msg:{subject:'Test',markdown:'Test'}}, {}, (r2) ->
                 expect(r2.suggested.length).to.equal(1)
                 sug = r2.suggested[0]
                 expect(sug.matchedBy._id).to.exist
@@ -227,7 +227,7 @@ module.exports = -> describe "Admin".subspec, ->
   it "Pipeliner cannot set booked without a booking", itDone ->
     d = type: 'resources', tags: [data.tags.mongo]
     SETUP.newCompleteRequestForAdmin 'rpor', d, (r,sCust) ->
-      msg = type: 'received', subject: "test subject", body: "test body"
+      msg = type: 'received', subject: "test subject", markdown: "test body"
       PUT "/adm/requests/#{r._id}/message", msg, {}, (r1) ->
         adm1 = r1.adm
         expect(r1.status).to.equal('waiting')
@@ -253,7 +253,7 @@ module.exports = -> describe "Admin".subspec, ->
     ## Many problem requests had multiple orders
     # d = type: 'resources', tags: [data.tags.mongo]
     # SETUP.newCompleteRequestForAdmin 'jkjk', d, (r,sCust) ->
-    #   msg = type: 'received', subject: "test subject", body: "test body"
+    #   msg = type: 'received', subject: "test subject", markdown: "test body"
     #   PUT "/adm/requests/#{r._id}/message", msg, {}, (r1) ->
     #     adm1 = r1.adm
     #     expect(r1.status).to.equal('waiting')
