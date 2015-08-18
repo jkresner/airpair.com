@@ -22,7 +22,11 @@ module.exports = -> describe "MailMan: ", ->
   afterEach ->
     send.restore()
 
+
+
+
   describe 'Basics: ', ->
+
 
     it 'Can get rendered markdown without sending', itDone ->
       d = { tagsString: "angularjs", expertFirstName: "Jony", requestByFullName:"Jane Dow",_id:"55371ce4b38fc91937086df7",accountManagerName:"Jonathon Kresner" }
@@ -40,15 +44,36 @@ module.exports = -> describe "MailMan: ", ->
     it 'Can send raw markdown', itDone ->
       d = { tagsString: "angularjs", expertFirstName: "Jony", requestByFullName:"Jane Dow",_id:"55371ce4b38fc91937086df7",accountManagerName:"Jonathon Kresner" }
       md = "Hi Jony,\n\nfor Jane Dow\n\nhttps://www.ap.com/review/55371ce4b38fc91937086df7"
-      mailman.sendMarkdown "angularJS AirPair?", md, {email:'jay@kay.com',name:"Jony"}, 'jk', (e,r) ->
+      mailman.sendMarkdown "angularJS Test AirPair?", md, {email:'jkresner@gmail.com',name:"Jony Expert"}, 'team', (e,r) ->
         expect(e).to.be.null
-        expectStartsWith(r.subject,"angularJS AirPair?")
+        expectContains(r.from,'AirPair <team@airpair.com>')
+        expectStartsWith(r.subject,"angularJS Test AirPair?")
         expectContains(r.html, "<p>Hi Jony,</p>\n")
         expectContains(r.html, "<p>for Jane Dow</p>\n")
         DONE()
 
 
-  describe 'Pipeline: ', ->
+    it.skip 'Can send from adm dash', itDone ->
+
+
+  describe 'Users auto: ', ->
+
+# 'expert-available'
+# 'expert-booked'
+# 'user-password-change'
+# 'user-signup-nopass'
+# 'user-verify-email'
+
+  describe 'Pipeliners auto: ', ->
+
+# 'pipeliner-notify-addpaymethod'
+# 'pipeliner-notify-purchase'
+# 'pipeliner-notify-booking'
+# 'pipeliner-notify-request'
+# 'pipeliner-notify-reply'
+# 'expert-suggest'
+# 'customer-got-credit'
+
 
     it 'Pipeliners notify purchase mass database template to pipeliners', itDone ->
       _id = ObjectId("55371ce4b38fc91937086df7")
@@ -64,6 +89,7 @@ module.exports = -> describe "MailMan: ", ->
         expect(mail.to.constructor).to.equal(Array)
         expect(send.args[0][1].constructor).to.equal(Function)
         expect(send.args[0][2]).to.be.undefined
+        expectContains(r.from,'AP <team@airpair.com>')
         expectContains(r.text,'http://adm.airpa.ir/o/55371ce4b38fc91937086df7')
         expectContains(r.text,'$17332')
         expectContains(r.text,'Jony 5')
@@ -75,6 +101,11 @@ module.exports = -> describe "MailMan: ", ->
   #   d = {byName:"Jonyisalive 5"}
   #   mailman.send 'pipeliners', 'pipeliner-notify-addpaymethod', d, ->
 
+    it.skip 'Admin can give credit', itDone ->
+
+
+
+  describe 'Spinners auto: ', ->
 
     it 'Pipeliners notify booking', itDone ->
       SETUP.addAndLoginLocalUserWhoCanMakeBooking 'ckni', (s) ->
@@ -87,7 +118,9 @@ module.exports = -> describe "MailMan: ", ->
           expectContains(send.args[1][0].text, 'Daniel Roseman')
           expectContains(send.args[1][0].text, s.name)
           expectContains(send.args[1][0].html, booking1._id)
+          expectContains(send.args[1][0].from,'AP <team@airpair.com>')
           expectStartsWith(send.args[2][0].subject, "You got booked to AirPair with #{s.name}")
+          expectContains(send.args[2][0].from,'Pairbot <team@airpair.com>')
           DONE()
 
 
@@ -107,8 +140,10 @@ module.exports = -> describe "MailMan: ", ->
             expectStartsWith(send.args[1][0].subject, "[Reply] AVAILABLE by Ra'Shaun Stovall for #{s.name}")
             expectContains(send.args[1][0].text, "http://adm.airpa.ir/r/#{r._id}")
             expectContains(send.args[1][0].text, "/#{r._id}")
+            expectContains(send.args[1][0].from, 'AP <team@airpair.com>')
             expectStartsWith(send.args[2][0].subject, "Ra'Shaun Stovall is available")
             expectContains(send.args[2][0].text, "https://www.airpair.com/review/#{r._id}")
+            expectContains(send.args[2][0].from, 'Pairbot <team@airpair.com>')
             DONE()
 
 
@@ -119,16 +154,19 @@ module.exports = -> describe "MailMan: ", ->
         expect(send.callCount).to.equal(1)
         mail = send.args[0][0]
         expectStartsWith(mail.subject,'You got booked to AirPair with Jonyisalive 5')
-        expectContains(mail.from,'Pairbot <pairbot@airpair.com>')
+        expectContains(mail.from,'Pairbot <team@airpair.com>')
         expectContains(mail.text,'https://www.airpair.com/bookings/55555ae4b38fc91937086df7')
         expectContains(mail.text,'60 minutes')
         expectContains(mail.html,'55555ae4b38fc91937086df7')
         DONE()
 
 
-    # it 'Admin can give credit', itDone ->
+
 
   describe 'Posts: ', ->
+
+# 'post-review-notification'
+# 'post-review-reply-notification'
 
     it 'Sends review notificaton', itDone ->
       d =
@@ -141,10 +179,13 @@ module.exports = -> describe "MailMan: ", ->
         expect(send.callCount).to.equal(1)
         mail = send.args[0][0]
         expectStartsWith(mail.subject,'4 Star Review for ExpressJS and PassportJS Sessions Deep Dive')
-        expectContains(mail.from,'Pairbot <pairbot@airpair.com>')
+        expectContains(mail.from,'Pairbot <team@airpair.com>')
         expectContains(mail.text,'http://posts.airpa.ir/contributors/541a36c3535a850b00b05697')
         expectContains(mail.text,'Karan Kurani')
         expectContains(mail.html,'541a36c3535a850b00b05697')
         DONE()
 
+
+  describe 'Other: ', ->
+# expert-farm
 

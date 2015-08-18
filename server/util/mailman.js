@@ -3,6 +3,13 @@ var lists         = {}
 var {sender}      = config.mail
 var emptyCB       = (e,r) => { if (e) $log('mailman.send.error'.red, e) }
 
+var senderTansport = {
+  ap: 'ses',
+  jk: 'smtp',
+  team: 'smtp',
+  pairbot: 'ses'
+}
+
 module.exports = function()
 {
   var $$log = function() {
@@ -45,20 +52,22 @@ module.exports = function()
 
     send(mail, transportType, cb)
     {
-      // $log('send'.white, mail, transportType, cb)
+      if (transportType.constructor === Function) {
+        cb = transportType
+        transportType = null
+      }
+
       if (!mm.transports)
         mm.transports = initTransports()
 
-      if (transportType.constructor === Function) {
-        cb = transportType
-        transportType = config.mail.transport.default
-      }
+      mail.from = (mail.sender) ? config.mail.sender[mail.sender] : config.mail.sender.team
+      transportType = transportType ||  senderTansport[mail.sender]
 
       if (!_.contains(['ses','smtp','stub'], transportType))
-        return $log('transportType'.red, transportType)
+        return $log('transportType'.red, transportType, mail)
 
-      mm.transports[transportType].sendMail(mail, (e, info) => {
-        $$log(null,transportType.cyan, mail.subject.yellow)
+      mm.transports[transportType||config.mail.transport.default].sendMail(mail, (e, info) => {
+        $$log(null,transportType.cyan, mail.from.split(' ')[0].gray, mail.to, mail.subject.yellow)
         if (config.log.mail) $log(mail.text)
         if (cb) cb(e, mail)
       })
@@ -67,7 +76,7 @@ module.exports = function()
 
     sendMarkdown(subject, markdown, toUser, sender, cb) {
       var to = `${toUser.name} <${toUser.email}>`
-      mm.send({subject, markdown, to, from:sender}, 'ses', cb)
+      mm.send({subject, markdown, to, sender}, cb||emptyCB)
     },
 
 
@@ -102,7 +111,7 @@ module.exports = function()
         return mm.sendGroupMail.apply(this, arguments)
 
       TemplateSvc.mail(tmplName, tmplData, to, (e, mail) =>
-        mm.send(mail, 'smtp', cb||emptyCB))
+        mm.send(mail, cb||emptyCB))
     },
 
 
@@ -111,7 +120,7 @@ module.exports = function()
       // $log('sendTemplateMails'.green, tmplName, tmplData, toUsers)
       for (var to of toUsers)
         TemplateSvc.mail(tmplName, tmplData, to, (e, mail) =>
-          mm.send(mail, 'smtp', cb||emptyCB))
+          mm.send(mail, cb||emptyCB))
     },
 
 
