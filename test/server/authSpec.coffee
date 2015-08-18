@@ -220,13 +220,14 @@ password = ->
 
     it 'Request password change as anonymous user, and set a new local password', itDone ->
       new_password = 'sellsellsell'
-      spy = sinon.spy(mailman,'sendChangePasswordEmail')
+      spy = sinon.spy(mailman,'sendTemplate')
       SETUP.addLocalUser 'adap', {}, (userKey) ->
         adap = data.users[userKey]
         PUT '/users/me/password-change', {email: adap.email}, {}, ->
           expect(spy.callCount).to.equal(1)
-          emailTo = spy.args[0][0]
-          generated_hash = spy.args[0][1]
+          expect(spy.args[0][0]).to.equal('user-password-change')
+          emailTo = spy.args[0][2]
+          generated_hash = spy.args[0][1].hash
           expect(emailTo.email).to.equal(adap.email)
           expect(emailTo.name).to.equal(adap.name)
           expect(generated_hash).to.not.be.empty
@@ -246,14 +247,15 @@ password = ->
 
     it 'Request a password change, and set a new local password', itDone ->
       new_password = 'drowssap'
-      spy = sinon.spy(mailman,'sendChangePasswordEmail')
+      spy = sinon.spy(mailman,'sendTemplate')
       SETUP.addAndLoginLocalUser 'prak', (d) ->
         db.readDoc 'User', ObjectId(d._id), (rrrr) ->
           expect(rrrr.local.changePasswordHash).to.be.undefined
           PUT '/users/me/password-change', {email: d.email}, {}, ->
             expect(spy.callCount).to.equal(1)
-            emailTo = spy.args[0][0]
-            generated_hash = spy.args[0][1]
+            expect(spy.args[0][0]).to.equal('user-password-change')
+            emailTo = spy.args[0][2]
+            generated_hash = spy.args[0][1].hash
             expect(emailTo.email).to.equal(d.email)
             expect(emailTo.name).to.equal(d.name)
             expect(generated_hash).to.not.be.empty
@@ -275,14 +277,15 @@ password = ->
 
     it 'Try to request password change multiple, and set a new local password', itDone ->
       new_password = 'chessmac'
-      spy = sinon.spy(mailman,'sendChangePasswordEmail')
+      spy = sinon.spy(mailman,'sendTemplate')
       SETUP.addAndLoginLocalUser 'rpor', (user) ->
         db.readDoc 'User', user._id, (rrrr) ->
           expect(rrrr.local.changePasswordHash).to.be.undefined
           PUT '/users/me/password-change', {email: user.email}, {}, ->
             expect(spy.callCount).to.equal(1)
-            emailTo = spy.args[0][0]
-            generated_hash = spy.args[0][1]
+            expect(spy.args[0][0]).to.equal('user-password-change')
+            emailTo = spy.args[0][2]
+            generated_hash = spy.args[0][1].hash
             expect(emailTo.email).to.equal(user.email)
             expect(emailTo.name).to.equal(user.name)
             expect(generated_hash).to.not.be.empty
@@ -291,8 +294,8 @@ password = ->
               expect(rrr.local.changePasswordHash).to.equal(generated_hash)
               PUT '/users/me/password-change', {email: user.email}, {}, ->
                 expect(spy.callCount).to.equal(2)
-                emailTo2 = spy.args[1][0]
-                generated_hash2 = spy.args[1][1]
+                emailTo2 = spy.args[1][2]
+                generated_hash2 = spy.args[1][1].hash
                 expect(emailTo2.email).to.equal(user.email)
                 expect(emailTo2.name).to.equal(user.name)
                 expect(generated_hash2).to.not.be.empty
@@ -352,22 +355,22 @@ changeEmail = ->
 
 
     it 'sending verify multiple times sends the same hash', itDone ->
-      spy = sinon.spy(mailman,'sendVerifyEmail')
+      spy = sinon.spy(mailman,'sendTemplate')
       SETUP.addAndLoginLocalUser 'chru', (uChru) ->
         PUT '/users/me/email', { email: uChru.email }, {}, (session) ->
           expect(session.emailVerified).to.be.false
           expect(spy.callCount).to.equal(1)
-          hash1 = spy.args[0][1]
+          hash1 = spy.args[0][1].hash
           expect(hash1).to.exist
           PUT '/users/me/email', { email: uChru.email }, {}, (session2) ->
             expect(session2.emailVerified).to.be.false
             expect(spy.callCount).to.equal(2)
-            hash2 = spy.args[1][1]
+            hash2 = spy.args[1][1].hash
             expect(hash2).to.exist
             expect(hash2).to.equal(hash1)
             PUT '/users/me/email', { email: uChru.email }, {}, (session3) ->
               expect(spy.callCount).to.equal(3)
-              expect(spy.args[2][1]).to.equal(hash1)
+              expect(spy.args[2][1].hash).to.equal(hash1)
               spy.restore()
               DONE()
 
@@ -407,14 +410,14 @@ changeEmail = ->
 
 
     it 'Users can verify email for some features', itDone ->
-      spy = sinon.spy(mailman,'sendVerifyEmail')
+      spy = sinon.spy(mailman,'sendTemplate')
       SETUP.addAndLoginLocalUser 'stev', (s) ->
         POST '/requests', { type: 'troubleshooting', tags: [data.tags.node] }, {}, (r1) ->
           PUT "/requests/#{r1._id}", _.extend(r1,{experience:'beginner'}), {status:403}, (rFail) ->
             expectStartsWith(rFail.message,'Email verification required')
             PUT '/users/me/email', { email: s.email }, {}, (s2) ->
               expect(spy.callCount).to.equal(1)
-              hash = spy.args[0][1]
+              hash = spy.args[0][1].hash
               spy.restore()
               PUT "/users/me/email-verify", { hash }, {}, (sVerified) ->
                 expect(sVerified.emailVerified).to.be.true
@@ -424,7 +427,7 @@ changeEmail = ->
 
 
     it 'users can verify email for some features if logged in with google', itDone ->
-      spy = sinon.spy(mailman,'sendVerifyEmail')
+      spy = sinon.spy(mailman,'sendTemplate')
       db.ensureDoc 'User', data.users.narv, (e) ->
         LOGIN 'narv', (snarv) ->
           POST '/requests', { type: 'troubleshooting', tags: [data.tags.node] }, {}, (r1) ->
@@ -432,7 +435,7 @@ changeEmail = ->
               expectStartsWith(rFail.message,'Email verification required')
               PUT '/users/me/email', { email: data.users.narv.email }, {}, (s2) ->
                 expect(spy.callCount).to.equal(1)
-                hash = spy.args[0][1]
+                hash = spy.args[0][1].hash
                 spy.restore()
                 PUT "/users/me/email-verify", { hash }, {}, (sVerified) ->
                   expect(sVerified.emailVerified).to.be.true
@@ -443,7 +446,7 @@ changeEmail = ->
 
 
     it 'Google login can verify different email for some features if logged in with google', itDone ->
-      spy = sinon.spy(mailman,'sendVerifyEmail')
+      spy = sinon.spy(mailman,'sendTemplate')
       db.ensureDoc 'User', data.users.narv, (e) ->
         expect(data.users.narv.email).to.equal('vikram@freado.com')
         LOGIN 'narv', (snarv) ->
@@ -456,8 +459,8 @@ changeEmail = ->
                   expect(s2.emailVerified).to.be.false
                   expect(s2.email).to.equal("vikram@test.com")
                   expect(spy.callCount).to.equal(1)
-                  expect(spy.args[0][0].email).to.equal("vikram@test.com")
-                  hash = spy.args[0][1]
+                  expect(spy.args[0][2].email).to.equal("vikram@test.com")
+                  hash = spy.args[0][1].hash
                   spy.restore()
                   PUT "/users/me/email-verify", { hash }, {}, (sVerified) ->
                     expect(sVerified.emailVerified).to.be.true

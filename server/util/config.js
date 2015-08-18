@@ -96,18 +96,19 @@ var cfg = {
     ads:                  process.env.LOG_ADS || false,
     auth:                 process.env.LOG_AUTH || false,
     mail:                 process.env.LOG_MAIL || true,
+    redirects:            process.env.LOG_REDIRECTS || false,
     error:                { email: null },
   },
   mail: {
     sender: {
+      ap: 'AP <team@airpair.com>',  //-- admin / sys
       jk: 'Jonathon Kresner <team@airpair.com>',
-      ap: 'AP <team@airpair.com>',
       team: 'AirPair <team@airpair.com>',
-      pairbot: 'Pairbot <pairbot@airpair.com>' },
+      pairbot: 'Pairbot <team@airpair.com>' },
     mailchimp: { apiKey: '' },
     transport: {
       default: 'stub',
-      ses: { access_key: '', secret_key: '' },
+      ses: { accessKeyId: '', secretAccessKey: '' },
       smtp: { service: '', auth: { user: '', pass: '' } }
     },
   },
@@ -251,6 +252,13 @@ module.exports = function(env) {
     cfg.chat.slack.pairbot.token = process.env.CHAT_SLACK_PAIRBOT_TOKEN
     cfg.chat.slack.channels.pipeline.id = process.env.CHAT_SLACK_CHANNELS_PIPELINE_ID
     cfg.chat.slack.channels.posts.id = process.env.CHAT_SLACK_CHANNELS_POSTS_ID
+
+    cfg.mail.transport.default = process.env.MAIL_TRANSPORT_DEFAULT
+    cfg.mail.transport.ses.accessKeyId = process.env.MAIL_TRANSPORT_SES_ACCESSKEYID
+    cfg.mail.transport.ses.secretAccessKey = process.env.MAIL_TRANSPORT_SES_SECRETKEY
+    cfg.mail.transport.smtp.service = process.env.MAIL_TRANSPORT_SMTP_SERVICE
+    cfg.mail.transport.smtp.auth.user = process.env.MAIL_TRANSPORT_SMTP_AUTHUSER
+    cfg.mail.transport.smtp.auth.pass = process.env.MAIL_TRANSPORT_SMTP_AUTHPASS
 
     cfg.timezone.google.apiKey = process.env.TIMEZONE_GOOGLE_APIKEY
     cfg.youtube.refreshTokens = process.env.YOUTUBE_REFRESH_TOKENS
