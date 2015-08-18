@@ -60,8 +60,7 @@ var interpolate = {
         to: (to.constructor === Array) ? to : [`${to.name} <${to.email}>`],
         subject: tmpl.subjectFn(data).replace(/&#x27;/g,"'"),
         markdown: tmpl.markdownFn(data).replace(/&#x27;/g,"'"),
-        from: config.mail.sender[tmpl.sender],
-        transport: (tmpl.sender == 'pairbot') ? 'ses' : 'smtp'
+        sender: tmpl.sender
       })
     })
   },

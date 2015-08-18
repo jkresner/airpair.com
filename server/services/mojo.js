@@ -198,7 +198,7 @@ var save = {
           // isFirstSuggest: matching.replies.suggested.length == 0,
         }
         mailman.get('expert-suggest', d, (ee,rr) => {
-          if (rr) r.suggest = { subject: rr.Subject, body: rr.Text }
+          if (rr) r.suggest = { subject: rr.subject, markdown: rr.markdown }
           cb(e,r)
         })
       })

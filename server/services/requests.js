@@ -147,7 +147,7 @@ var save = {
   sendVerifyEmailByCustomer(original, email, cb) {
     UserSvc.updateEmailToBeVerified.call(this, email, cb, (e,r, hash)=>{
       if (e) return cb(e)
-      mailman.sendVerifyEmailForRequest(r, hash, original._id)
+      mailman.sendTemplate('user-verify-email',{hash}, r)
       selectCB.byRole(this,cb,cb)(null, original)
     })
   },
@@ -302,10 +302,11 @@ var admin = {
       adm.received = new Date
     }
 
-    mailman.sendRawTextEmail(request.by, message.subject, message.body, ()=>{})
+    mailman.sendMarkdown(message.subject, message.markdown, request.by, 'team')
 
     adm.lastTouch = svc.newTouch.call(this, `sent:${message.type}`)
-    messages.push(_.extend(message,{_id:svc.newId(),fromId:this.user._id,toId:request.userId}))
+    messages.push(_.extend(message,{_id:svc.newId(),fromId:this.user._id,toId:request.userId,
+      body: message.text||message.markdown}))
 
     svc.update(request._id, _.extend(request, {status,adm,messages}), selectCB.adm(cb))
   },
@@ -321,7 +322,7 @@ var admin = {
       expert
     })
 
-    mailman.sendRawTextEmail(expert, msg.subject, msg.body, ()=>{})
+    mailman.sendMarkdown(msg.subject, msg.markdown, expert, 'team')
 
     adm.lastTouch = svc.newTouch.call(this, `suggest:${expert.name}`)
     svc.update(request._id, _.extend(request, {suggested,adm}), selectCB.adm(cb))
