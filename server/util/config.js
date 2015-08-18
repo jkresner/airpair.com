@@ -162,7 +162,7 @@ module.exports = function(env) {
   }
 
   if (env == 'staging' || env == 'production') {
-    dist = require('../../dist/rev-manifest.json')
+    var dist = require('../../dist/rev-manifest.json')
 
     cfg.analytics.on = true
 
@@ -216,8 +216,6 @@ module.exports = function(env) {
       subject:     process.env.LOG_EMAIL_SUBJECT || '{ERROR}'
     }
 
-    cfg.mail.transpost.default = 'ses',
-    cfg.mail.mailchimp.apiKey = process.env.MAIL_MAILCHIMP_APIKEY,
 
     cfg.payments.stripe = {
       publishedKey: process.env.PAYMENTS_STRIPE_PUBLISHEDKEY,
@@ -253,12 +251,15 @@ module.exports = function(env) {
     cfg.chat.slack.channels.pipeline.id = process.env.CHAT_SLACK_CHANNELS_PIPELINE_ID
     cfg.chat.slack.channels.posts.id = process.env.CHAT_SLACK_CHANNELS_POSTS_ID
 
+    cfg.mail.mailchimp.apiKey = process.env.MAIL_MAILCHIMP_APIKEY,
     cfg.mail.transport.default = process.env.MAIL_TRANSPORT_DEFAULT
     cfg.mail.transport.ses.accessKeyId = process.env.MAIL_TRANSPORT_SES_ACCESSKEYID
     cfg.mail.transport.ses.secretAccessKey = process.env.MAIL_TRANSPORT_SES_SECRETKEY
     cfg.mail.transport.smtp.service = process.env.MAIL_TRANSPORT_SMTP_SERVICE
     cfg.mail.transport.smtp.auth.user = process.env.MAIL_TRANSPORT_SMTP_AUTHUSER
     cfg.mail.transport.smtp.auth.pass = process.env.MAIL_TRANSPORT_SMTP_AUTHPASS
+
+    cfg.mongoUri = process.env.MONGOHQ_URL
 
     cfg.timezone.google.apiKey = process.env.TIMEZONE_GOOGLE_APIKEY
     cfg.youtube.refreshTokens = process.env.YOUTUBE_REFRESH_TOKENS
