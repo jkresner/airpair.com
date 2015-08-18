@@ -9,7 +9,6 @@ module.exports = function(app) {
     //-- Don't want returnTo over ridden on oauth callbacks
     .get('/paypal/callback', mw.authd, Wrappers.PayPal.handleOAuthCallback,
       mw.handleOAuthSuccess('paypal', 'paymethods', 'addOAuthPayoutmethod'))
-    // .get('/coinbase/callback', mw.authd,
 
     // Looks at the querystring and save to session if ?returnTo=xxx exists
     .use(mw.setReturnTo)
@@ -19,9 +18,9 @@ module.exports = function(app) {
     .post('/login', mw.authAlreadyDone, auth.local.login)
     .post('/signup', mw.authAlreadyDone, auth.local.signup)
     .post('/signup-home', mw.authAlreadyDone, mw.setFastSingupPassword('home'), auth.local.signup)
-    .post('/signup-so', mw.authAlreadyDone, mw.setFastSingupPassword('so'), auth.local.signup)
-    .post('/signup-postcomp', mw.authAlreadyDone, mw.setFastSingupPassword('postcomp'), auth.local.signup)
     .post('/subscribe', mw.authAlreadyDone, mw.setFastSingupPassword('subscribe'), auth.local.signup)
+    .post('/signup-so', mw.authAlreadyDone, mw.setFastSingupPassword('so'), auth.local.signup)
+    // .post('/signup-postcomp', mw.authAlreadyDone, mw.setFastSingupPassword('postcomp'), auth.local.signup)
     .get('/google', auth.google.oAuth)
     .get('/google/callback', auth.google.oAuth, mw.authDone)
     .get('/paypal-loginurl', mw.authd, (req,res) => res.json({url:Wrappers.PayPal.loginUrl()}) )

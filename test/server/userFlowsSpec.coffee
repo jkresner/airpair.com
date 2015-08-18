@@ -1,7 +1,7 @@
 signup = ->
 
   it 'Can signup from homepage and set password', itDone ->
-    spy = sinon.spy(mailman,'signupHomeWelcomeEmail')
+    spy = sinon.spy(mailman,'sendTemplate')
     clone = SETUP.userData('mris')
     http(global.app).put('/v1/api/users/me/email')
       .send({email:clone.email}).expect(200)
@@ -23,8 +23,9 @@ signup = ->
             expect(s2.name).to.equal(clone.name)
             expect(s2.email).to.equal(clone.email)
             expect(spy.callCount).to.equal(1)
-            emailTo = spy.args[0][0]
-            set_password_hash = spy.args[0][1]
+            expect(spy.args[0][0]).to.equal('user-signup-nopass')
+            emailTo = spy.args[0][2]
+            set_password_hash = spy.args[0][1].hash
             expect(emailTo.email).to.equal(clone.email)
             expect(emailTo.name).to.equal(clone.name)
             expect(set_password_hash).to.not.be.empty
@@ -50,7 +51,7 @@ signup = ->
 
 
   it 'Can signup from post subscribe and set password', itDone ->
-    spy = sinon.spy(mailman,'singupSubscribeEmail')
+    spy = sinon.spy(mailman,'sendTemplate')
     clone = SETUP.userData('mirs')
     http(global.app).put('/v1/api/users/me/email')
       .send({email:clone.email}).expect(200)
@@ -69,8 +70,9 @@ signup = ->
             expect(s2.sessionID).to.be.undefined
             expect(s2.emailVerified).to.equal(false)
             expect(spy.callCount).to.equal(1)
-            emailTo = spy.args[0][0]
-            set_password_hash = spy.args[0][1]
+            expect(spy.args[0][0]).to.equal('user-signup-nopass')
+            set_password_hash = spy.args[0][1].hash
+            emailTo = spy.args[0][2]
             expect(emailTo.email).to.equal(clone.email)
             expect(emailTo.name).to.equal(clone.name)
             expect(set_password_hash).to.not.be.empty

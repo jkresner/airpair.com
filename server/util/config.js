@@ -96,6 +96,7 @@ var cfg = {
     ads:                  process.env.LOG_ADS || false,
     auth:                 process.env.LOG_AUTH || false,
     mail:                 process.env.LOG_MAIL || true,
+    redirects:            process.env.LOG_REDIRECTS || false,
     error:                { email: null },
   },
   mail: {

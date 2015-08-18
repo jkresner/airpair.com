@@ -121,9 +121,7 @@ module.exports = function()
         mm.send(_.extend({text}, email), 'ses')
     }
 
-    // sendVerifyEmail(toUser, hash, cb) {
     // sendVerifyEmailForRequest(toUser, hash, requestId, cb) {
-    // sendChangePasswordEmail(toUser, hash, cb) {
     // singupSubscribeEmail(toUser, hash, cb) {
     // signupHomeWelcomeEmail(toUser, hash, cb) {
   })
