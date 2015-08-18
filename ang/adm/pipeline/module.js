@@ -46,8 +46,8 @@ angular.module("ADMPipeline", ["APRequestDirectives","APProfileDirectives"])
   $scope.toggleComposeGeneric = () =>
     $scope.composeGeneric = !$scope.composeGeneric
 
-  $scope.send = (subject, body, type) => {
-    var data = { type, _id, subject, body }
+  $scope.send = (subject, markdown, type) => {
+    var data = { type, _id, subject, markdown }
     AdmDataService.pipeline.sendMesssage(data,setScope)
   }
 
