@@ -1,7 +1,7 @@
 var User            = require('../models/user')
 var bcrypt          = require('bcrypt')
 var Data            = require('./users.data')
-var logging         = config.log.auth || false
+var logging         = config.log.auth
 
 var wrap = (fnName, errorCB, cb) =>
  (e,r) => {
@@ -162,17 +162,11 @@ function localSignup(email, password, name, errorCB, done) {
       upsert.local.passwordHashGenerated = new Date
     }
 
-    var mailFn = null
-    if (password == 'home')
-      mailFn = 'signupHomeWelcomeEmail'
-    if (password == 'subscribe') {
-      mailFn = 'singupSubscribeEmail'
-      this.session.maillists = _.union(this.session.maillists||[],['AirPair Developer Digest'])
-    }
+    this.session.maillists = _.union(this.session.maillists||[],['AirPair Developer Digest'])
 
     upsertSmart.call(this, upsert, null, (e,r) => {
-      if (!e && mailFn)
-        mailman[mailFn](r, upsert.local.changePasswordHash)
+      if (!e && upsert.local.changePasswordHash)
+        mailman.sendTemplate('user-signup-nopass', {hash:upsert.local.changePasswordHash}, r)
 
       done(e,r)
     })

@@ -252,7 +252,7 @@ var save = {
       var isVerifyRequest = this.user.email == email
       updateEmailToBeVerified.call(this, email, cb, (e, user, hash) => {
         if (!e && hash && isVerifyRequest)
-          mailman.sendVerifyEmail(user, hash)
+          mailman.sendTemplate('user-verify-email',{hash}, user)
         cb(e, user)
       })
     } else
@@ -303,7 +303,7 @@ var save = {
       //-- Update the user record regardless if anonymous or authenticated
       svc.updateWithSet(user._id, ups, (e,r) => {
         if (e) return cb(e)
-        mailman.sendChangePasswordEmail(r, ups.local.changePasswordHash)
+        mailman.sendTemplate('user-password-change',{hash:ups.local.changePasswordHash},r)
         return cb(null, {email})
       })
     })

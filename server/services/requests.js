@@ -147,7 +147,7 @@ var save = {
   sendVerifyEmailByCustomer(original, email, cb) {
     UserSvc.updateEmailToBeVerified.call(this, email, cb, (e,r, hash)=>{
       if (e) return cb(e)
-      mailman.sendVerifyEmailForRequest(r, hash, original._id)
+      mailman.sendTemplate('user-verify-email',{hash}, r)
       selectCB.byRole(this,cb,cb)(null, original)
     })
   },
