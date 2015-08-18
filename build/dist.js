@@ -17,7 +17,7 @@ function primeRevBuild(gulp) {
     '" }' + '\n' +
     '} '
 
-  console.log("Building v".cyan+pkg.version, buildJSON)
+  console.log("Building v".cyan+pkg.version)
 
   return string_src("rev-manifest.json", buildJSON).pipe(gulp.dest('./dist'))
 }

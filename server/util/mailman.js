@@ -127,7 +127,7 @@ module.exports = function()
     sendError(text) {
       $log('sendError', text, config.log.error.email)
       if (config.log.error.email)
-        mm.send(_.extend({text}, email), 'ses')
+        mm.send(_.extend({text}, config.log.error.email), 'ses')
     }
 
     // sendVerifyEmailForRequest(toUser, hash, requestId, cb) {
