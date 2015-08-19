@@ -2,19 +2,22 @@
   <a href="/" tile="airpair.com pair programming"></a>
 
   <ul>
-    {{#unless authenticated}}<li class="login"><a href="/login" target="_self">Login</a></li>{{/unless}}
-    <li class="find nomob"><a href="/find-an-expert" target="_self">Find an expert</a></li>
-    <li class="exp nomob"><a href="/be-an-expert" target="_self">Help others</a></li>
-    <li class="ps"><a href="/posts" target="_self">Posts</a></li>
-    {{#unless authenticated}}<li class="more nomob"><a>More</a>
-      <ul class="more">
-        <li><a href="/blog" target="_self" class="blog">AirPair Blog</a></li>
+    <li class="ps"><a href="/posts" target="_self">Software experts</a></li>
+{{!--     <li class="nomob">{}</li> --}}
+    <li class="find nomob"><a href="/find-an-expert" target="_self">Hire developers</a></li>
+    {{!-- <li class="nomob">{}</li> --}}
+    <li class="exp nomob"><a href="/be-an-expert" target="_self">Consult</a></li>
+{{!--     <li class="nomob">{}</li> --}}
+    <li class="exp nomob"><a href="/be-an-author" target="_self">Author</a></li>
+    {{!-- {{#unless authenticated}}<li class="more nomob"><a>More</a>
+     <ul class="more">--}}
+        {{!-- <li><a href="/blog" target="_self" class="blog">AirPair Blog</a></li> --}}
         {{!-- <li class="nomob"><a href="/workshops" target="_self" class="wk">Workshops</a></li> --}}
-        <li><a href="/rss" target="_self" class="rss">Rss</a></li>
-        <li><a href="/privacy" target="_blank" class="pp">Privacy</a></li>
+        {{!-- <li><a href="/rss" target="_self" class="rss">Rss</a></li>
+        <li><a href="/tos" target="_blank" class="pp">Tos</a></li>
       </ul>
     </li>
-    {{/unless}}
+    {{/unless}} --}}
 {{!--     <li><b><a id="headerGetHelp" href="/help/request" track-click="request" class="btn">Coding Help </a></b></li> --}}
     {{!--<li><a href="#" target="_self">Pair Programming</a></li>--}}
   </ul>
