@@ -209,18 +209,17 @@ module.exports = function(env) {
     cfg.redirects.on = true
     cfg.session.secret = process.env.SESSION_SECRET
 
-    //-- TODO: Remove Winston
     cfg.log.error.email = {
       from:        process.env.LOG_EMAIL_FROM || 'AP <jk@airpair.com>',
       to:          process.env.LOG_EMAIL_RECEIVERS.split(','),
       subject:     process.env.LOG_EMAIL_SUBJECT || '{ERROR}'
     }
 
-
     cfg.payments.stripe = {
       publishedKey: process.env.PAYMENTS_STRIPE_PUBLISHEDKEY,
       secretKey: process.env.PAYMENTS_STRIPE_SECRETKEY
     }
+
     cfg.payments.braintree = {
       environment: 'Production',
       verifyCards: false,
