@@ -124,15 +124,15 @@ module.exports = function()
     },
 
 
-    sendError(text) {
-      $log('sendError', text, config.log.error.email)
+    sendError(text, subject) {
       if (config.log.error.email)
-        mm.transports['ses'].sendMail(_.extend({text},config.log.error.email), (e, info) => {})
-    }
+        mm.transports[ses]({markdown:text,
+          from: config.log.error.email.from,
+          subject: subject || config.log.error.email.subject
+        },()=>{})
 
-    // sendVerifyEmailForRequest(toUser, hash, requestId, cb) {
-    // singupSubscribeEmail(toUser, hash, cb) {
-    // signupHomeWelcomeEmail(toUser, hash, cb) {
+        // mm.transports['ses'].sendMail(_.extend({text},config.log.error.email), (e, info) => {})
+    }
   })
 
   return mm
