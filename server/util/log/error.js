@@ -74,5 +74,5 @@ module.exports = function(e, user, req)
 
   console.log(msg.red)
 
-  mailman.sendError(`${msg}`)
+  mailman.sendError(`${msg}`, e.message)
 }
