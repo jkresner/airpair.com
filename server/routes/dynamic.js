@@ -62,9 +62,9 @@ module.exports = function(app) {
         }))
 
 
-    .get('/blog',
-      app.renderHbsViewData('blog', null,
-      (req, cb) => API.Posts.svc.getUsersPublished('52ad320166a6f999a465fdc5', cb) ))
+    // .get('/blog',
+    //   app.renderHbsViewData('blog', null,
+    //   (req, cb) => API.Posts.svc.getUsersPublished('52ad320166a6f999a465fdc5', cb) ))
 
 
     .get('/posts',

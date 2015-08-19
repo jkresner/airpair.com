@@ -12,14 +12,7 @@
 </head>
 <body>
 
-<header>
-  <a onclick="angular.element('#join input').focus()" tile="airpair.com pair programming"></a>
-
-  <ul>
-    <li><b><a id="headerLogin" href="/login" track-click="login">Login</a></b></li>
-    <li><b><a id="headerGetHelp" onclick="angular.element('#join input').focus()" class="btn">Coding Help</a></b></li>
-  </ul>
-</header>
+{{>siteHeader}}
 
 
 <div class="main-wrap">
@@ -32,8 +25,8 @@
       <tr>
         <td><span>{</span></td>
         <td><h2><br />
-      AirPair is a <b>community</b> of <b>world class developers</b>
-      <a onclick="angular.element('#join input').focus()">available for <b>micro-consulting</b> through video chat</a>
+      AirPair is a network of <b>world class developers</b>
+      <a onclick="angular.element('#join input').focus()">available for <b>micro-consulting</b></a>
     </h2></td>
         <td><span>}</span></td>
       </tr>
@@ -56,20 +49,20 @@
 
     <div class="row">
       <div class="col-md-4">
-        <h3>Troubleshooting</h3>
+        <h3>Pair programming</h3>
         <p>AirPair attracts experts with eagle eyes to point out the problems.
         Our experts are top-notch in their stack.</p>
       </div>
       <div class="col-md-4">
-        <h3>Mentorship</h3>
-        <p>Having a mentor is precious, especially when it comes to sorting out
-        complex problems and learning new technologies.</p>
-      </div>
-      <div class="col-md-4">
         <h3>Code Review</h3>
         <p>Everyone can use a second set of eyes
-            with tons of experience to improve
+          with tons of experience to improve
           their code base.</p>
+      </div>
+      <div class="col-md-4">
+        <h3>Resources</h3>
+        <p>Having a mentor is precious, especially when it comes to sorting out
+        complex problems and learning new technologies.</p>
       </div>
     </div>
     <div class="row">
@@ -137,24 +130,22 @@
 
     <label>Warning AirPairing can become addictive once you realized how awesome it is.</label>
 
+
+
   </section>
 
-    <a id="homeJoinBottom" href="/login" class="btn">Join AirPair</a>
+    {{!-- <a id="homeJoinBottom" href="/login" class="btn">Join AirPair</a> --}}
 
   </section>
 
 
   </main>
+
+
 </div>
 
-<footer>
-  <ul>
-    <li><a href="/posts" target="_blank" class="pts">Posts</a></li>
-    <li><a href="/rss" target="_self" class="rss">Rss</a></li>
-    <li><a href="/privacy" target="_blank" class="pp">Privacy Policy</a></li>
-    <li>&copy; 2015 airpair, inc.</li>
-  </ul>
-</footer>
+{{>siteAnonFooter}}
+
 
 <script type="text/javascript" src="{{config.bundle.homeScript}}"></script>
 <script type="text/javascript">
