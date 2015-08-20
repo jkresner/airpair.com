@@ -1,6 +1,10 @@
 module.exports = function(routes)
 {
-  if (routes == 'whiteList')
+  if (routes == 'blackList')
+    return [
+      '/rev-manifest.json'
+    ]
+  else if (routes == 'whiteList')
     return [
       '/v1',
       '/v1/auth*',
