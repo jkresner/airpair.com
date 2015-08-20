@@ -21,14 +21,14 @@ aonn = ->
       it 'rss', itDone ->
 
     describe 'Legal content', ->
-      # it 'noindex /contact contact', itDone ->
+      it.skip 'noindex /contact contact', itDone ->
       it 'noindex /tos tos', itDone ->
       it 'noindex /privacy privacy', itDone ->
       it 'noindex /refund-policy refund', itDone ->
 
     describe 'Browse', ->
       it 'index / homepage', itDone ->
-      it 'index /posts software experts', itDone ->
+      it 'index /software-experts software experts', itDone ->
 
       it 'index /consult through airpair (partial)', itDone ->
       it 'index /hire-developers through airpair (partial)', itDone ->

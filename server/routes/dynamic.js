@@ -67,7 +67,7 @@ module.exports = function(app) {
     //   (req, cb) => API.Posts.svc.getUsersPublished('52ad320166a6f999a465fdc5', cb) ))
 
 
-    .get('/posts',
+    .get('/software-experts',
       app.renderHbsViewData('posts', { title: "Software Posts, Tutorials & Articles" },
         (req, cb) => cache.getOrSetCB('postAllPub',API.Posts.svc.getAllPublished,cb) ))
 
