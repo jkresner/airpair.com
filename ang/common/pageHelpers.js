@@ -76,13 +76,15 @@ angular.module("APPageHelpers", [])
 
       element.className = 'language-'+config.lang
       Prism.highlightElement(element, false, function() {
-        // if (opts && opts.addCtrs)
-        // {
-          // if (!$rootScope.session._id)
-            // element.parentNode.outerHTML+='<footer class="signup">Signup</footer>';
-          // else
-            // element.parentNode.outerHTML+='<footer>Like learning from posts like this? <a onclick="$(\'#postSubscribeEmail\').focus()"><b>Subscribe for more!</b></a></footer>';
-        // }
+        if (!$rootScope.session._id) {
+          element.parentNode.className = "signup " + element.parentNode.className
+
+          element.parentNode.innerHTML = element.parentNode.innerHTML + `
+          <span class="cta">
+            <div></div><a href="/auth/github?ref={{_id}}">Signin with GitHub</a>
+            <p>To see full unobfuscated code samples</p>
+          </span>`
+        }
       });
   }
 
