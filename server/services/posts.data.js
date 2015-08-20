@@ -1,19 +1,30 @@
-var marked              = require('marked')
-import generateToc      from './postsToc'
 import * as md5         from '../util/md5'
-var {selectFromObject,firstName}  = require('../../shared/util')
+import generateToc      from './postsToc'
+var marked              = require('marked')
+var {selectFromObject}  = require('../../shared/util')
 var PostsUtil           = require('../../shared/posts')
 
 var topTapPages = ['angularjs']
 
 
-var inflateHtml = function(cb) {
+var inflateHtml = function(isAnon, cb) {
   return (e,r) => {
     if (!r) return cb(e,r)
     var supped = PostsUtil.extractSupReferences(r.md)
     r.references = PostsUtil.markupReferences(supped.references, marked)
-    r.html = marked(supped.markdown)
     r.toc = marked(generateToc(r.md))
+    if (isAnon) {
+      $log('isAnon', marked.setOptions)
+      marked.setOptions({highlight: function(code, lang) {
+        var firstLine = code.split('\n')[0]
+        $log('highlight'.blue, code.white, lang)
+        return firstLine
+      }})
+      r.html = marked(supped.markdown)
+      marked.setOptions({highlight:null})
+    }
+    else
+      r.html = marked(supped.markdown)
     cb(e,r)
   }
 };
@@ -284,9 +295,21 @@ var select = {
        cb(null,statsR)
       }
     },
-    displayView(cb, similarFn) {
-      return inflateHtml((e,r) => {
+    displayView(isAnon, similarFn, cb) {
+      return inflateHtml(isAnon, (e,r) => {
+        $log('inflateHtml', isAnon, e)
+
         if (e || !r) return cb(e,r)
+
+        // if (isAnon) {
+          // for (var m of r.html.match(/<pre(?:[\s\S]*)<\/pre>/)) {
+        //     $log(`<div class="signup"></div>${m.split('\n')[0]}</code></pre>`.cyan)
+        //     // r.html = r.html.replace(m,`<div class="signup"></div>${m.split('\n')[0]}</code></pre>`)
+        //   }
+          // r.html = r.html.replace(/<pre/g,'<pre signup ')
+
+        // }
+
         if (!r.tags || r.tags.length == 0) {
           $log(`post ${r.title} [${r._id}] has no tags`.red)
           return cb(null,r)
@@ -326,7 +349,7 @@ var select = {
           if (typeof r.by.social.gp == 'string') r.by.social.gp = { link: r.by.social.gp }
         }
 
-        r.by.firstName = firstName(r.by.name)
+        r.by.firstName = util.firstName(r.by.name)
 
         similarFn(r, (ee,similar) => {
           r.similar = similar
