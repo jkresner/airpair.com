@@ -93,6 +93,13 @@ module.exports = -> describe "Admin".subspec, ->
                         DONE()
 
 
+  it.skip 'Admin can multi suggest', itDone ->
+    # 1 fails when request doesn't have tag
+    # 2 Send 10 when tag is on request
+    # 3 Doesn't send twice to same experts
+
+
+
   it 'Expert can reply when suggested by pipeliner', itDone ->
     {_id} = data.requests.suggestReply
     SETUP.ensureV1LoggedInExpert 'abpa', (abpa) ->

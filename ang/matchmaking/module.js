@@ -34,6 +34,7 @@ angular.module("APMatchmaking", ["APProfileDirectives","APSvcMM"])
   MMDataService.matchmaking.getRequest({_id}, function (r) {
     $scope.user = r.user
     $scope.request = r
+    $scope.groupMatch = r.groupMatch
     $scope.getMatches(r)
   },
     () => $location.path('/matchmaking')
@@ -46,6 +47,13 @@ angular.module("APMatchmaking", ["APProfileDirectives","APSvcMM"])
       $scope.request = r
       $scope.matches = _.without($scope.matches, expert)
       $scope.selected = null
+    })
+  }
+
+  $scope.groupSuggest = (tagId) => {
+    MMDataService.matchmaking.groupSuggest({_id, tagId}, function (r) {
+      $scope.request = r
+      $scope.matches = _.without($scope.matches, expert)
     })
   }
 

@@ -1,6 +1,5 @@
 <section id="matchingReq" ng-if="request">
 
-
   <section class="nav left">
     <a ng-href="/matchmaking">Back</a>
     | <a ng-href="/review/{{request._id}}" target="_blank">Review</a>
@@ -42,7 +41,13 @@
     </div>
   </section>
 
-
+  <section ng-if="groupMatch" class="groupMatch left">
+    {{groupMatch.type.toUpperCase()}}[<b>{{groupMatch.tag.slug}}</b>] Group match found:
+    <ul>
+      <li ng-repeat="s in groupMatch.suggested">{{s.name}}</li>
+    </ul>
+    <p><a ng-click="groupSuggest(groupMatch.tag.slug)" class="btn">Suggest Group</a></p>
+  </section>
   <section ng-if="!selected" class="selected left">
     Select an expert below to see if they are a good fit.
   </section>

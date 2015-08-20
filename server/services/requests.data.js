@@ -3,7 +3,6 @@ import * as md5           from '../util/md5'
 var Roles                 = require('../../shared/roles.js').request
 var {ObjectId}            = require('mongoose').Schema
 
-
 function migrateV0(r) {
   if (r.budget)
   {
@@ -129,13 +128,15 @@ var data = {
             Rates.addSuggestedRate(r, s, true)
         }
       }
-
       if (view != 'admin')
         r = util.selectFromObject(r, data.select[view])
       // $log('selected', view, request.suggested, r)
       return r
     },
-    expertToSuggestion(r) {
+    expertToSuggestion(r, by, type, expertStatus) {
+      type = type || 'staff'
+      expertStatus = expertStatus || 'waiting'
+
       if (r.user) {
         delete r.user._id
         var social = r.user.social
@@ -144,8 +145,19 @@ var data = {
         r.location = r.localization.location
         r.timezone = r.localization.timezone
       }
-      return r
-      // data.select.cb.inflateTags(r, cb)
+
+      var _id = new require('mongoose').Types.ObjectId()
+      var initials = (by.email.indexOf('@airpair.com')==-1) ? r.user.initials
+        : by.email.replace('@airpair.com','')
+      return {
+        matchedBy: { _id, type, userId: by._id, initials },
+        expert: r, expertStatus
+      }
+    },
+    template: {
+      expertAutomatch(r, tagName) {
+        return { _id: r._id, tag: tagName, requestByFullName: r.by.name }
+      }
     },
     cb: {
       adm(cb) {
@@ -174,11 +186,23 @@ var data = {
             var ExpertsSvc            = require('./experts')
             $callSvc(ExpertsSvc.getMe,ctx)((ee,expert) => {
               // -- we don't want experts to see other reviews
-              r.suggested = data.select.meSuggested(r, ctx.user._id)
+              r.suggested = data.select.meSuggested(r, ctx.user._id, expert._id)
               if (r.suggested.length == 0 && expert && expert.rate)
                 r.suggested.push({expert})
-              else if (expert.isV0 && r.suggested.length == 1)
+              else if (r.suggested.length == 1 && expert.isV0)
                 r.suggested[0].expert.isV0 = true
+              else if (r.suggested.length == 1 && !r.suggested[0].expert.userId) {
+                // how we handle staying v0 on front-end
+                r.suggested[0].expert.userId = ctx.user._id
+                r.suggested[0].expert.rate = expert.rate
+                r.suggested[0].expert.tags = expert.tags
+                if (r.user) {
+                  var social = r.user.social
+                  r = _.extend(_.extend(r,r.user),r.social)
+                  r.location = r.localization.location
+                  r.timezone = r.localization.timezone
+                }
+              }
               else if (r.suggested.length > 1)
                 throw Error("Cannot selectByExpert and have more than 1 suggested")
 

@@ -12,6 +12,7 @@ angular.module('APSvcMM', [])
     getRanked: GET((d)=>`/experts/mojo/rank?${d.query}`),
     getRequest: GET((d)=>`/matching/requests/${d._id}`),
     addSuggestion: PUT((d)=>`/matching/requests/${d._id}/add/${d.expertId}`),
+    groupSuggest: PUT((d)=>`/matching/requests/${d._id}/group/${d.tagId}`),
     matchifyExpert: PUT((d)=>`/matching/experts/${d.expertId}/matchify/${d.requestId}`),
   }
 

@@ -2,6 +2,7 @@ import Svc                from '../services/_service'
 import Expert             from '../models/expert'
 import Request            from '../models/request'
 import Booking            from '../models/booking'
+import MatchGroup         from '../models/matchgroup'
 import * as md5           from '../util/md5'
 var {ObjectId2Date,
   selectFromObject}       = require('../../shared/util')
@@ -10,6 +11,9 @@ var {select,query}        = Data
 var selectCB              = select.cb
 var logging               = false
 var svc                   = new Svc(Expert, logging)
+
+
+
 
 var get = {
 
@@ -57,6 +61,34 @@ var get = {
     }))
   },
 
+
+  getGroupMatch(tags, q, cb) {
+    var filterQ = (group) =>
+      _.take(_.filter(group.suggested,(s) =>
+        s.minRate <= q.maxRate  &&
+        !_.contains(q.exclude,s._id)), q.take)
+
+    var groupMatch = (tag) => {
+      var {slug} = tag
+      if (MatchGroup[slug])
+        return { tag, type: 'primary', suggested: filterQ(MatchGroup[slug]) }
+      else
+        for (var mg of _.values(MatchGroup))
+        {
+          if (_.contains(mg.auto, slug))
+            return { tag, type: 'auto', suggested: filterQ(mg) }
+          else if (_.contains(mg.manual, slug))
+            return { tag, type: 'manual', suggested: filterQ(mg) }
+        }
+    }
+
+    for (var tag of tags) {
+      var group = groupMatch(tag)
+      if (group && group.suggested.length > 0)
+        return cb(null, group)
+    }
+    cb()
+  },
 
   //  requirements
   //  experience
