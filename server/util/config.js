@@ -1,7 +1,7 @@
 var cfg = {
   ads: {
     on:                   true,
-    staticDir:            '/public/static/img/ads'                          },
+    staticDir:            '/static/img/ads'                          },
   analytics: { on:        false                                             },
   auth: {
     loginUrl:             '/login',
@@ -144,8 +144,6 @@ module.exports = function(env) {
     .replace('/server/util','')
     .replace('\\server\\util','') //-- for windows machines
 
-  cfg.ads.staticDir = `${cfg.appdir}${cfg.ads.staticDir}`
-
   if (env == 'dev') {
 
   }
@@ -272,6 +270,7 @@ module.exports = function(env) {
   cfg.share.tw.consumer_secret = cfg.auth.twitter.consumerSecret
 
   cfg.http.appStaticDir = `${cfg.appdir}/${cfg.http.static.dir}`
+  cfg.ads.staticDir = `${cfg.http.appStaticDir}${cfg.ads.staticDir}`
 
   return cfg;
 }

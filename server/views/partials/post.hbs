@@ -62,12 +62,12 @@
   {{/if}}
   <hr />
 
-  {{#if by.expertId }}
+  {{!-- {{#if by.expertId }}
   <div class="book-cta">
     <b>Want help from a top {{primarytag.name}} developer?</b> {{by.name}} is available for live {{primarytag.name}} pair programming on AirPair.
     <a id="postTopBookAuthor" data="{{ by.expertId }}" track-click="book" href="/billing/book/{{by.expertId}}">&gt;&gt; Video chat with {{by.name}}</a>
   </div>
-  {{/if}}
+  {{/if}} --}}
 
   <post no-compile>{{{ html }}}</post>
 
@@ -121,13 +121,7 @@
 {{#if published }}
 <article class="blogpost">
 <div id="bodyCTA1" class="bodyCTA1 bodyCTA">
-  <div ng-if="!session._id">
-    <div cta-post-subscribe
-      tag-name="'{{primarytag.name}}'"
-      tag-slug="'{{primarytag.slug}}'"
-    ></div>
-  </div>
-  <div ng-if="session._id" request></div>
+
 </div>
 </article>
 {{/if}}
@@ -136,11 +130,10 @@
 <div id="disqus_thread"></div>
 {{/if}}
 
-<footer id="posts" class="postfooter similar {{#if showDisqus }}afterdisqus{{/if}}">
-  <hr />
+<footer class="postfooter {{#if showDisqus }}afterdisqus{{/if}}">
   <h5>Tagged under</h5>
-  <ul class="tags">{{#each tags}}
-    <li><a href="/posts/tag/{{ slug }}" target="_self">{{ name }}</a></li>
+  <ul class="posttags">{{#each tags}}
+    <li><a href="/posts/tag/{{ slug }}" target="_self">{{ slug }}</a></li>
   {{/each}}
   </ul>
 
@@ -156,14 +149,15 @@
       <a class="pw-button-email pw-look-native"></a>
     </div>
   </div>
-
-  <section id="allposts">
+  {{/if}}
+</footer>
+{{#if published }}
+<div id="posts">
+  <section id="allposts" class="similar">
     <h3 class="underline">Similar posts <a href="/posts" class="btn btn-sm btn-inverse" target="_self">All posts</a></h3>
     <div class="similar nostars">
       {{#each similar}}{{> postListItem this}}{{/each}}
     </div>
   </section>
-  {{/if}}
-
-</footer>
-
+</div>
+{{/if}}

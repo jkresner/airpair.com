@@ -68,11 +68,7 @@ angular.module("AP", ['ngRoute', 'ngAnimate',
 
 .config(function($locationProvider, $routeProvider) {
 
-  $locationProvider.html5Mode(true);
-
-  // $routeProvider.when('/v1', {
-  //   template: require('./home.html')
-  // });
+  $locationProvider.html5Mode(true)
 
   if (angular.element('#serverTemplate').length > 0)
   {
