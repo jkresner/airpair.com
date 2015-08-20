@@ -14,11 +14,14 @@ var inflateHtml = function(isAnon, cb) {
     r.references = PostsUtil.markupReferences(supped.references, marked)
     r.toc = marked(generateToc(r.md))
     if (isAnon) {
-      $log('isAnon', marked.setOptions)
       marked.setOptions({highlight: function(code, lang) {
-        var firstLine = code.split('\n')[0]
-        $log('highlight'.blue, code.white, lang)
-        return firstLine
+        var maxLines = 0
+        var obs = ""
+        for (var line of code.split('\n')) {
+          if (++maxLines < 4)
+            obs += '\n' + line.replace(/(\S\S)(\S\S)/g,'$1{}{}')
+        }
+        return obs.replace('\n','') // trim first \n
       }})
       r.html = marked(supped.markdown)
       marked.setOptions({highlight:null})

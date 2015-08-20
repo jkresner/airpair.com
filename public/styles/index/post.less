@@ -92,7 +92,59 @@ article.faq {
       line-height:40px;
       padding-top:40px;
     }
- }
+  }
+
+  pre.signup {
+    overflow:hidden!important;
+    position:relative;
+    height:140px;
+    code { opacity:0.5;overflow:hidden!important; }
+    span.cta {
+      width:320px;
+      position:absolute;
+      bottom:0px;
+      right:0px;
+      padding:0;
+      text-align:right;
+      p {
+        position:absolute;
+        z-index:2px;
+        font-size:12px;
+        margin:5px;
+        padding:0;
+        text-align:right;
+        bottom:1px;
+        right:0px;
+      }
+      a {
+        position:absolute;
+        z-index:2px;
+        right:0px;
+        top:5px;
+        border-top-left-radius:10px;
+        border-bottom-left-radius:10px;
+        width:70%;
+        color:white;
+        background:@orange no-repeat url('../img/icons/gh-white.png');
+        background-size:28%;
+        padding: 8px 20px 8px 60px;
+        font-family:Open Sans, Century Gothic;
+        font-size:13px;
+        letter-spacing: 1px;
+        display:inline-block;
+      }
+      div {
+        height:140px;
+        width:320px;
+        position:absolute;
+        background:white;
+        opacity:0.8;
+        top:-10px;right:0;left:0;right:0;
+        border-top-left-radius:100px;
+      }
+    }
+
+  }
 
   .book-cta {
     max-width:640px;
