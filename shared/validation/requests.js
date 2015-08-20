@@ -149,6 +149,12 @@ var validation = {
     var existing = _.find(original.suggested, (s) => _.idsEqual(s.expert._id,expert._id) )
     if (!existing)
       return `Cannot remove expert not on request`
+  },
+  groupSuggest(user, original, tag)
+  {
+    if (!original.adm || !original.adm.active) return `Cannot addSuggestion to this request, as it is not active`
+
+    if (original.status == 'received') return `Cannot addSuggestion while request is still in received status`
   }
 }
 

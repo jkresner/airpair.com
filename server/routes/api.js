@@ -9,11 +9,13 @@ module.exports = {
 
 matching: Router()
   .use(mm)
+  .param('tag', API.Tags.paramFns.getBySlug)
   .param('expertshaped', API.Experts.paramFns.getById)
   .param('request', API.Requests.paramFns.getByIdForAdmin)
   .get('/requests/waiting', API.Requests.getWaitingForMatchmaker)
   .get('/requests/:id', API.Requests.getByIdForMatchmaker)
   .put('/requests/:request/add/:expertshaped', API.Requests.addSuggestion)
+  .put('/requests/:request/group/:tag', API.Requests.groupSuggest)
   .put('/experts/:expertshaped/matchify/:request', API.Mojo.updateMatchingStats),
   // .get('/experts/mojo/me', API.Mojo.getMatchesForRequest)
   // .get('/experts/dashboard', API.Experts.getMatchesForDashboard)
