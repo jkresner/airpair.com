@@ -64,7 +64,6 @@ var cfg = {
   bundle: {
     indexScript: '/static/js/index.js',
     admScript: '/static/js/adm.js',
-    homeScript: '/static/js/home.js',
     indexCss: '/static/styles/index.css',
     admCss: '/static/styles/adm.css',
     libCss: '/static/styles/libs.css'
@@ -205,7 +204,6 @@ module.exports = function(env) {
     cfg.bundle.admScript = `/static/${dist['js/adm.js']}`
     cfg.bundle.admCss = `/static/${dist['styles/adm.css']}`
     cfg.bundle.libCss = `/static/${dist['styles/libs.css']}`
-    cfg.bundle.homeScript = `/static/${dist['js/home.js']}`
 
 
     cfg.redirects.on = true

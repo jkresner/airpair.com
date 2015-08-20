@@ -57,9 +57,9 @@ var cfg = {
   },
   styleBundles:     ['libs.less', 'index.less', 'adm.less'],
   jsBundles:        {
-    all:            ['home.js', 'index.js', 'adm.js'],
+    all:            [ 'index.js', 'adm.js'],
     adm:            ['adm.js'],
-    index:          ['index.js','home.js'],
+    index:          ['index.js'],
   }
 }
 

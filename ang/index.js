@@ -27,7 +27,6 @@ require('./common/directives/forms/forms.js');
 require('./common/directives/forms/inputs.js');
 require('./common/directives/forms/tagInput.js');
 require('./common/directives/surveys/surveys.js');
-require('./common/directives/ctas.js');
 require('./common/directives/share.js');
 require('./common/directives/posts.js');
 require('./common/directives/experts.js');
@@ -61,7 +60,7 @@ angular.module("AP", ['ngRoute', 'ngAnimate',
   'APRoutes', 'APServerTemplates', 'APPageHelpers',
   'APFilters', 'APUtil', 'APFormsDirectives', 'APInputs',
   'APViewData', 'APSvcSession', 'APDataSvc', 'APSvcStatic',
-  'APCTAs', 'APAnalytics', 'APNotifications', 'APBookmarker',
+  'APAnalytics', 'APNotifications', 'APBookmarker',
   'APProfileDirectives', 'APPostsDirectives', 'APSurveyDirectives',
   'APSideNav', 'APHangouts',
   'APAuth', 'APPosts', 'APWorkshops', 'APProfile', 'APBilling',
