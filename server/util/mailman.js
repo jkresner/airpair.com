@@ -18,7 +18,11 @@ module.exports = function()
     mm.$$trace(named, args)
   }
 
-  var TemplateSvc   = require('../services/templates')
+  var tmplSvc       = () => {
+    if (!mm.TemplateSvc)
+      mm.TemplateSvc = require('../services/templates')
+    return mm.TemplateSvc
+  }
 
   function initTransports() {
     var {createTransport}   = require('nodemailer')
@@ -46,7 +50,7 @@ module.exports = function()
 
 
     get(tmplName, tmplData, cb) {
-      TemplateSvc.mail(tmplName, tmplData, [], cb)
+      tmplSvc().mail(tmplName, tmplData, [], cb)
     },
 
 
@@ -99,7 +103,7 @@ module.exports = function()
       var cb = callback || emptyCB
       mm.getGroupList(toGroup, (e, to) => {
         if (e) return cb(e)
-        TemplateSvc.mail(tmplName, tmplData, to, (ee, mail) => {
+        tmplSvc().mail(tmplName, tmplData, to, (ee, mail) => {
           mm.send(mail, cb)
         })
       })
@@ -110,7 +114,7 @@ module.exports = function()
       if (_.contains(groups,to))
         return mm.sendGroupMail.apply(this, arguments)
 
-      TemplateSvc.mail(tmplName, tmplData, to, (e, mail) =>
+      tmplSvc().mail(tmplName, tmplData, to, (e, mail) =>
         mm.send(mail, cb||emptyCB))
     },
 
@@ -119,7 +123,7 @@ module.exports = function()
       if (cb) cb(Error('sendTemplateEmails does not yet support a callback'))
       // $log('sendTemplateMails'.green, tmplName, tmplData, toUsers)
       for (var to of toUsers)
-        TemplateSvc.mail(tmplName, tmplData, to, (e, mail) =>
+        tmplSvc().mail(tmplName, tmplData, to, (e, mail) =>
           mm.send(mail, cb||emptyCB))
     },
 

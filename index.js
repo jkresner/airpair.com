@@ -1,7 +1,6 @@
 // $timelapsed("APP READ")
 var start       = new Date().getTime()
 var mw          = require('./server/middleware/_middleware')
-import mongo from './server/util/mongoInit'
 var session     = require('./server/identity/session')
 var routes      = require('./server/routes/index')
 require('./server/util/cache')
@@ -18,19 +17,17 @@ export function run(cb)
   var app = express()
 
   app.use(mw.logging.badBot)
+  app.use(routes('blackList'), (r,res) => res.status(404).send(''))
+  routes('resolver')(app)
+
   //-- We don't want to serve sessions for static resources
   //-- Save database write on every resources
-  app.use('/rev-manifest.json',(req,res,next)=>res.status(404).send(''))
-  app.use(express.static(config.appdir+'/dist', config.http.static))
-  app.use(express.static(config.appdir+'/public', config.http.static))
-  routes('resolver')(app)
+  app.use(express.static(config.http.appStaticDir, config.http.static))
   app.use(mw.logging.slowrequests)
 
+  var mongo       = require('./server/util/mongoInit')
   mongo.connect(() => {
-
-    // requires db for users in roles, so execute after mongo.connect
-    mailman.init()
-    pairbot.init()
+    $timelapsed("APP Connected")
 
     // Don't persist or track sessions for rss
     app.use('/rss', routes('rss')(app))

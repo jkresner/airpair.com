@@ -1,8 +1,8 @@
-var mongoose = require('mongoose')
 
 module.exports = {
 
   connect(callback) {
+    var mongoose = require('mongoose')
     mongoose.connect(config.mongoUri)
 
     var db = mongoose.connection

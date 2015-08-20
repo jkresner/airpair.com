@@ -91,7 +91,7 @@ var cfg = {
     appId: '140030887085', //140030887085 == production AirPair app
     login: { email: 'support@airpair.com', password: 'helsyea' }
   },
-  http: { static: { maxAge: null } },
+  http: { static: { dir: 'public', maxAge: null } },
   log: {
     ads:                  process.env.LOG_ADS || false,
     auth:                 process.env.LOG_AUTH || false,
@@ -163,6 +163,8 @@ module.exports = function(env) {
 
   if (env == 'staging' || env == 'production') {
     var dist = require('../../dist/rev-manifest.json')
+    cfg.http.static.maxAge = '1d'
+    cfg.http.static.dir = `dist`
 
     cfg.analytics.on = true
 
@@ -205,7 +207,7 @@ module.exports = function(env) {
     cfg.bundle.libCss = `/static/${dist['styles/libs.css']}`
     cfg.bundle.homeScript = `/static/${dist['js/home.js']}`
 
-    cfg.http.static.maxAge = '1d'
+
     cfg.redirects.on = true
     cfg.session.secret = process.env.SESSION_SECRET
 
@@ -270,6 +272,8 @@ module.exports = function(env) {
 
   cfg.share.tw.consumer_key  = cfg.auth.twitter.consumerKey
   cfg.share.tw.consumer_secret = cfg.auth.twitter.consumerSecret
+
+  cfg.http.appStaticDir = `${cfg.appdir}/${cfg.http.static.dir}`
 
   return cfg;
 }
