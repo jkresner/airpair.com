@@ -81,7 +81,7 @@ angular.module("APPageHelpers", [])
 
           element.parentNode.innerHTML = element.parentNode.innerHTML + `
           <span class="cta">
-            <div></div><a href="/auth/github?ref={{_id}}">Signin with GitHub</a>
+            <div></div><a href="/auth/github?returnTo=${window.location.pathname}">Signin with GitHub</a>
             <p>To see full unobfuscated code samples</p>
           </span>`
         }
