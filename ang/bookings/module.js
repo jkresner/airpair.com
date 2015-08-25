@@ -37,9 +37,11 @@ angular.module("APBookings", [])
     else if (isExpert && r.order.paidout && r.status == 'pending')
       r.status = 'complete'
 
+    var meSlack = BookingsUtil.meSlack(r,$scope.session._id)
 
     var scope = {
       first: Util.firstName,
+      slackinInviteUrl: meSlack ? null : BookingsUtil.slackinUrl(r.slackin.host,$scope.session),
       isCustomer,
       isExpert,
       newTime: null,
@@ -62,7 +64,7 @@ angular.module("APBookings", [])
       chatSyncOptions: r.chatSyncOptions,
       request: r.request,
       order: r.order,
-      booking: _.omit(r,'order','request','chat','chatSyncOptions')
+      booking: _.omit(r,'order','request','chat','chatSyncOptions','slackin')
     }
 
 

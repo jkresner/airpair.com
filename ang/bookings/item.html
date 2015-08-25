@@ -35,7 +35,14 @@
 </section>
 
 
-<div class="side">
+<section class="chat-self-invite" ng-if="slackinInviteUrl">
+  <h3>Sign into AirPair's real-time chat network:</h3>
+  <p>* required to connect with your pair</p>
+  <iframe class="slackin" src="{{slackinInviteUrl | trustUrl}}"></iframe>
+  <h4>Once in Slack click => <a href="/bookings/{{booking._id}}?refresh" target="_self">Refesh this page</a></h4>
+</section>
+
+<div class="side" ng-if="!slackinInviteUrl">
 
   <a ng-if="timeToBookNextPair" class="btn" href="{{booking.rebookUrl}}">Book next AirPair</a>
   <a ng-if="isCustomer && !timeToBookNextPair" class="btn btn-inverse"  href="{{booking.rebookUrl}}">Book next AirPair</a>
@@ -105,7 +112,7 @@
 </div>
 
 
-<div class="main">
+<div class="main" ng-if="!slackinInviteUrl">
 
   <section class="chat-association" ng-if="isExpert && !chat && booking.status != 'complete'">
     <h3>Associate a (slack) chat group with this booking</h3>
