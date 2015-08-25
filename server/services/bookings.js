@@ -73,8 +73,12 @@ var get = {
 
   getByIdForParticipant(_id, callback)
   {
+    var {query} = this
+    if (query && query.refresh) cache.flush('slack_users')
+
     var cb = select.cb.itemIndex(callback)
     svc.searchOne({_id}, {options:opts.forParticipant}, (eee,r) => {
+      r.slackin = config.chat.slackin
       if (eee) return cb(eee)
       if (!r.order) return cb(null,r) // an edgecase migrated booking from v0 call
       getChat.call(this, r, 'auto', callback, (ee,r)=>{
