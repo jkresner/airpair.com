@@ -78,6 +78,7 @@ var cfg = {
     }
   },
   chat: {
+    slackin:      { host: 'http://slackin.airpair.com' },
     slack: {
       owner:      { id: 'U06U2HQQK', token: 'xoxp-6954602819-6954602835-6963586337-08f737' },
       support:    { id: 'U06UCSHL0', token: 'xoxp-6954602819-6964901680-6965169622-a2bb52' },
@@ -238,6 +239,7 @@ module.exports = function(env) {
     cfg.hangout.login.password = process.env.HANGOUT_LOGIN_PASSWORD
 
     //-- until things are under control (jk)
+    cfg.chat.slackin.host = 'https://slackin.airpair.com'
     cfg.chat.slack.jk.id = process.env.CHAT_SLACK_ADMIN_ID
     cfg.chat.slack.jk.token = process.env.CHAT_SLACK_ADMIN_TOKEN
 
