@@ -27,6 +27,7 @@ var select = {
     'rebookUrl': 1,
     'chat': 1,
     'chatSyncOptions': 1,
+    'slackin': 1,
   },
   listIndex: {
     '_id': 1,

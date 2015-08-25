@@ -1,4 +1,4 @@
-var {firstName,idsEqual} = require('./util')
+var {firstName,lastName,idsEqual} = require('./util')
 
 var utilFns = {
 
@@ -52,6 +52,15 @@ var utilFns = {
 
   participantSlackHandle(participant) {
     return (!participant.chat) ? 'null' : participant.chat.slack.name
+  },
+
+  meSlack(booking, meUserId) {
+    var meParticipant = _.find(booking.participants, p => p.info._id==meUserId)
+    return meParticipant.chat ? meParticipant.chat.slack : null
+  },
+
+  slackinUrl(slackinHost, user) {
+    return `${slackinHost}?email=${user.email}&f=${firstName(user.name)}&l=${lastName(user.name)}`
   },
 
   suggestedTimesInflate(b,timeZoneId)
