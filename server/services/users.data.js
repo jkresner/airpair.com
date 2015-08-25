@@ -134,6 +134,13 @@ var data = {
       })
     },
 
+    providerProfile: {
+      email: {
+        gh(profile) { return profile.email },
+        gp(profile) { return profile.emails[0] },
+      }
+    },
+
     cb: {
       session(ctx, cb) {
         return (e, r) => {
@@ -188,6 +195,12 @@ var data = {
     existing: function(email) {
       email = email.toLowerCase()
       return { '$or': [{email:email},{'google._json.email':email}] }
+    },
+    gh: {
+      existing(emails) {
+        email = email.toLowerCase()
+        return { '$or': [{email:{$in:emails}},{'social.gh.email':{$in:emails}}] }
+      }
     }
   },
 

@@ -26,7 +26,8 @@ var cfg = {
       clientSecret: 'f52d233259426f769850a13c95bfc3dbe7e3dbf2',
       adminAccessToken: 'b9d09cce1129b4ee1f4b97cc44c3b753cb9d8795', //jkyahoo
       org: 'JustASimpleTestOrg',
-      scope: [ 'user', 'public_repo']                                      },
+      scope: [ 'user' ]                                             },
+      //, 'public_repo'
     paypal: {
       mode: 'sandbox',
       clientID: 'AVk7JRBmL3kzKnxrLC8Ze98l2rg__gK1PhASloHmd0wsDvsvkSJd_QnWx3xE',
@@ -93,8 +94,8 @@ var cfg = {
   http: { static: { dir: 'public', maxAge: null } },
   log: {
     ads:                  process.env.LOG_ADS || false,
-    auth:                 process.env.LOG_AUTH || false,
-    mail:                 process.env.LOG_MAIL || true,
+    auth:                 process.env.LOG_AUTH || true,
+    mail:                 process.env.LOG_MAIL || false,
     redirects:            process.env.LOG_REDIRECTS || false,
     error:                { email: null },
   },
