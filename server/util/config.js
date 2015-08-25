@@ -210,7 +210,7 @@ module.exports = function(env) {
     cfg.session.secret = process.env.SESSION_SECRET
 
     cfg.log.error.email = {
-      from:        process.env.LOG_EMAIL_FROM || 'ERR <jk@airpair.com>',
+      from:        process.env.LOG_EMAIL_FROM || 'ERR <team@airpair.com>',
       to:          process.env.LOG_EMAIL_RECEIVERS.split(','),
       subject:     process.env.LOG_EMAIL_SUBJECT || '{ERROR}'
     }
