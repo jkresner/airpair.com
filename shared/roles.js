@@ -30,7 +30,8 @@ var roles = {
       if (!user) return false
       for (var i=0;i<request.suggested.length;i++)
       {
-        if (idsEqual(request.suggested[i].expert.userId, user._id))
+        var suggestedExp = request.suggested[i].expert
+        if (suggestedExp.userId && idsEqual(suggestedExp.userId, user._id))
           return true
       }
       return false
