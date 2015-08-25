@@ -130,9 +130,8 @@ module.exports = function()
           from: config.log.error.email.from,
           subject: subject || config.log.error.email.subject
         },()=>{})
-
-        // mm.transports['ses'].sendMail(_.extend({text},config.log.error.email), (e, info) => {})
     }
+    // mm.transports['ses'].sendMail(_.extend({text},config.log.error.email), (e, info) => {})
   })
 
   return mm
