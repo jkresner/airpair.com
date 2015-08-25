@@ -21,6 +21,7 @@ export default initAPI(
   farmByAdmin: (req) => [req.request,req.body.tweet],
   sendMessageByAdmin: (req) => [req.request,req.body],
   addSuggestion: (req) => [req.request,req.expertshaped,req.body.msg],
+  groupSuggest: (req) => [req.request,req.tag],
   removeSuggestion: (req) => [req.request,req.expert],
   deleteById: (req) => [req.request],
 }, {

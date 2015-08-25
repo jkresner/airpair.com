@@ -2,6 +2,8 @@ var groups        = ['pipeliners','spinners']
 var lists         = {}
 var {sender}      = config.mail
 var emptyCB       = (e,r) => { if (e) $log('mailman.send.error'.red, e) }
+var TemplateSvc   = null
+var tmplSvc       = $require('../services/templates', TemplateSvc)
 
 var senderTansport = {
   ap: 'ses',
@@ -12,13 +14,6 @@ var senderTansport = {
 
 module.exports = function()
 {
-  var $$log = function() {
-    var args = [].slice.call(arguments)
-    var named = args.shift()
-    mm.$$trace(named, args)
-  }
-
-  var TemplateSvc   = require('../services/templates')
 
   function initTransports() {
     var {createTransport}   = require('nodemailer')
@@ -46,7 +41,7 @@ module.exports = function()
 
 
     get(tmplName, tmplData, cb) {
-      TemplateSvc.mail(tmplName, tmplData, [], cb)
+      tmplSvc().mail(tmplName, tmplData, [], cb)
     },
 
 
@@ -99,7 +94,7 @@ module.exports = function()
       var cb = callback || emptyCB
       mm.getGroupList(toGroup, (e, to) => {
         if (e) return cb(e)
-        TemplateSvc.mail(tmplName, tmplData, to, (ee, mail) => {
+        tmplSvc().mail(tmplName, tmplData, to, (ee, mail) => {
           mm.send(mail, cb)
         })
       })
@@ -110,7 +105,7 @@ module.exports = function()
       if (_.contains(groups,to))
         return mm.sendGroupMail.apply(this, arguments)
 
-      TemplateSvc.mail(tmplName, tmplData, to, (e, mail) =>
+      tmplSvc().mail(tmplName, tmplData, to, (e, mail) =>
         mm.send(mail, cb||emptyCB))
     },
 
@@ -119,20 +114,27 @@ module.exports = function()
       if (cb) cb(Error('sendTemplateEmails does not yet support a callback'))
       // $log('sendTemplateMails'.green, tmplName, tmplData, toUsers)
       for (var to of toUsers)
-        TemplateSvc.mail(tmplName, tmplData, to, (e, mail) =>
+        tmplSvc().mail(tmplName, tmplData, to, (e, mail) =>
           mm.send(mail, cb||emptyCB))
     },
 
 
     sendError(text, subject) {
-      if (config.log.error.email)
-        mm.transports[ses]({markdown:text,
+      if (config.log.error.email) {
+        if (!mm.transports) mm.transports = initTransports()
+
+        mm.transports.ses.sendMail({
+          text,
+          to: config.log.error.email.to,
           from: config.log.error.email.from,
           subject: subject || config.log.error.email.subject
         },()=>{})
+
+      }
     }
-    // mm.transports['ses'].sendMail(_.extend({text},config.log.error.email), (e, info) => {})
   })
+
+  var $$log = function() { mm.$$trace.apply(this, arguments) }
 
   return mm
 }

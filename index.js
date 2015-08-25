@@ -63,7 +63,7 @@ export function run(cb)
       app.use(['^/matchmaking*','^/adm/bookings*'],
         mw.authz.plnr, app.renderHbsAdmin('adm/pipeliner'))
 
-      app.use(['^/adm/pipeline','^/adm/request*','^/adm/users*','^/adm/orders*','^/adm/experts*','^/adm/companys*',
+      app.use(['^/adm/pipeline*','^/adm/request*','^/adm/users*','^/adm/orders*','^/adm/experts*','^/adm/companys*',
         '^/adm/views*','^/adm/posts*','^/adm/tags*','^/adm/chat*','^/adm/mail*','^/adm/redirects*'],
         mw.authz.adm, app.renderHbsAdmin('adm/admin'))
 
