@@ -9,6 +9,7 @@ import User               from '../models/user'
 var Roles                 = require('../../shared/roles.js')
 var UserSvc               = require('../services/users')
 var PaymethodsSvc         = require('../services/paymethods')
+var MojoSvc               = require('../services/mojo')
 var {select,query}        = require('./requests.data')
 var selectCB              = select.cb
 var svc                   = new Svc(Request, logging)
@@ -51,7 +52,12 @@ var get = {
       r = select.byView(r, 'admin')
       User.findOne({_id:r.userId}, (ee,user) => {
         r.user = user
-        return cb(ee,r)
+        var exclude = _.map(r.suggested||[],(s)=>s.expert._id.toString())
+        MojoSvc.getGroupMatch(r.tags, {take:5,exclude,maxRate:r.budget},(ee,group)=>{
+          $log('getByIdForMatchmaker', r.tags, ee, group)
+          r.groupMatch = group
+          return cb(ee,r)
+        })
       })
     })
   },
@@ -193,22 +199,21 @@ var save = {
     var {suggested,adm,lastTouch,status,_id} = request
     var replyStatus = reply.expertStatus.toUpperCase()
 
-    expert = select.expertToSuggestion(expert)
-    // data.events.push @newEvent "expert reviewed", eR
     reply.reply = { time: new Date() }
+    // data.events.push @newEvent "expert reviewed", eR
     var existing = _.find(suggested, (s) => _.idsEqual(s.expert._id, expert._id))
 
     var previouslyNotAvailable = !existing || existing.expertStatus != 'available'
 
     if (!existing) {
-      var newSuggestion = _.extend(reply, { expert })
+      var newSuggestion = _.extend(select.expertToSuggestion(expert, this.user), reply)
       Rates.addSuggestedRate(request, newSuggestion)
       newSuggestion.matchedBy = { _id: svc.newId(),
         type: 'self', userId: this.user._id, initials: expert.initials }
       suggested.push(newSuggestion)
     }
     else {
-      existing.expert = expert
+      existing.expert = select.expertToSuggestion(expert, this.user).expert
       existing = _.extend(existing, reply)
       Rates.addSuggestedRate(request, existing)
     }
@@ -244,6 +249,7 @@ var save = {
 
 var admin = {
 
+
   updateByAdmin(original, update, cb) {
     var action = 'updateByAdmin'
     var {adm,status} = update
@@ -274,6 +280,7 @@ var admin = {
     svc.update(original._id, ups, selectCB.adm(cb))
   },
 
+
   farmByAdmin(request, tweet, cb) {
     //TODO Mote url genertion to analyticsSvc ?
     var campPeriod = new moment().format("MMMYY").toLowerCase()
@@ -290,6 +297,7 @@ var admin = {
       })
     })
   },
+
 
   sendMessageByAdmin(request, message, cb)
   {
@@ -311,22 +319,34 @@ var admin = {
     svc.update(request._id, _.extend(request, {status,adm,messages}), selectCB.adm(cb))
   },
 
+
   addSuggestion(request, expert, msg, cb)
   {
     var {adm,suggested} = request
-    var initials = this.user.email.replace("@airpair.com", "")
-    expert = select.expertToSuggestion(expert)
-    suggested.push({
-      matchedBy: { _id: svc.newId(), type: 'staff', userId: this.user._id, initials },
-      expertStatus: "waiting",
-      expert
-    })
-
-    mailman.sendMarkdown(msg.subject, msg.markdown, expert, 'team')
-
     adm.lastTouch = svc.newTouch.call(this, `suggest:${expert.name}`)
-    svc.update(request._id, _.extend(request, {suggested,adm}), selectCB.adm(cb))
+    suggested.push(select.expertToSuggestion(expert, this.user))
+    svc.updateWithSet(request._id, {suggested,adm}, selectCB.adm(cb))
+    mailman.sendMarkdown(msg.subject, msg.markdown, expert, 'team')
   },
+
+
+  groupSuggest(request, tag, cb)
+  {
+    var {adm,suggested,budget} = request
+    adm.lastTouch = svc.newTouch.call(this, `suggestGroup:${tag.slug}`)
+
+    var exclude = _.map(request.suggested||[],(s)=>s.expert._id.toString())
+    MojoSvc.getGroupMatch([tag], {take:5,exclude,maxRate:budget}, (e,group) => {
+      for (var expert of group.suggested)
+        suggested.push(select.expertToSuggestion(expert, this.user, group.type))
+
+      // $log('updateWithSet', request._id, suggested)
+      svc.updateWithSet(request._id, {suggested,adm}, selectCB.adm(cb))
+      var tmplData = select.template.expertAutomatch(request, tag.name)
+      mailman.sendTemplateMails('expert-automatch', tmplData, group.suggested)
+    })
+  },
+
 
   removeSuggestion(request, expert, cb)
   {
