@@ -19,6 +19,11 @@ module.exports = function(config)
       // $log('fn', fn, thisCtx, arguments)
       fn.apply(thisCtx, arguments)
     }
+  global.$require       = (path, obj) =>
+    function() {
+      if (!obj) obj = require(path)
+      return obj
+    }
 
   global.mailman = {
     init() { global.mailman = require('./mailman')() }

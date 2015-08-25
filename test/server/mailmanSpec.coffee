@@ -141,7 +141,7 @@ module.exports = -> describe "MailMan: ", ->
             expectContains(send.args[1][0].text, "http://adm.airpa.ir/r/#{r._id}")
             expectContains(send.args[1][0].text, "/#{r._id}")
             expectContains(send.args[1][0].from, 'AP <team@airpair.com>')
-            expectStartsWith(send.args[2][0].subject, "Ra'Shaun Stovall is available")
+            expectStartsWith(send.args[2][0].subject, "[AirPair] Ra'Shaun Stovall is bookable for 24 hours")
             expectContains(send.args[2][0].text, "https://www.airpair.com/review/#{r._id}")
             expectContains(send.args[2][0].from, 'Pairbot <team@airpair.com>')
             DONE()
@@ -180,7 +180,7 @@ module.exports = -> describe "MailMan: ", ->
         mail = send.args[0][0]
         expectStartsWith(mail.subject,'4 Star Review for ExpressJS and PassportJS Sessions Deep Dive')
         expectContains(mail.from,'Pairbot <team@airpair.com>')
-        expectContains(mail.text,'http://posts.airpa.ir/contributors/541a36c3535a850b00b05697')
+        expectContains(mail.text,'http://author.airpa.ir/contributors/541a36c3535a850b00b05697')
         expectContains(mail.text,'Karan Kurani')
         expectContains(mail.html,'541a36c3535a850b00b05697')
         DONE()
