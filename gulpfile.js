@@ -1,4 +1,3 @@
-var colors    = require('colors')
 var path      = require('path')
 var gulp      = require('gulp')
 gulp.util     = require('gulp-util')

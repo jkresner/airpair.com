@@ -11,7 +11,7 @@
     "start": "node bootstrap.js",
     "test": "/usr/local/bin/mocha test/server/bootstrap.coffee",
     "gv": "heroku logs --tail --source app",
-    "db": "mongod --smallfiles --noprealloc --nojournal --dbpath ~/data/db/",
+    "db": "mongod --smallfiles --noprealloc --dbpath ~/data/db/",
     "dbrestore": "mongorestore --drop --db airpair_dev .git/db"
   },
   "repository": {
@@ -32,7 +32,7 @@
     "connect-livereload": "0.5.3",
     "del": "1.1.1",
     "es6ify": "1.6.0",
-    "gulp": "3.8.11",
+    "gulp": "3.9.0",
     "gulp-add-src": "0.2.0",
     "gulp-buffer": "0.0.2",
     "gulp-jshint": "1.9.4",
