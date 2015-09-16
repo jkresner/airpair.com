@@ -47,6 +47,10 @@ module.exports = function(gulp, config, options, callback) {
 
     primeRevBuild(gulp)
 
+    gulp.src('public/styles/slackin.less', {base:base})
+      .pipe(less({}))
+      .pipe(gulp.dest('./dist/static'))
+
     return merge(
 
       config.jsBundles.all.map(function(fileName) {
