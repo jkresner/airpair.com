@@ -18,4 +18,4 @@ setup.colors.setTheme({
 var config = setup.initConfig(process.env.env || 'dev')
 setup.initGlobals(config)
 
-require('./index').run()
+require('./server/app').run(config)

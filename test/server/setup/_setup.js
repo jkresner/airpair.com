@@ -4,11 +4,6 @@ var stubs                 = require('./../helpers/stubs')
 
 var setup = {
 
-  init(done)
-  {
-
-  },
-
   initStubs()
   {
     return {
@@ -27,18 +22,20 @@ var setup = {
 
   initPosts(done)
   {
-    var {v1AirPair,migrateES6,sessionDeepDive,sessionDeepDive2} = data.posts
-    var d = [v1AirPair,migrateES6,sessionDeepDive,sessionDeepDive2]
-    db.initCollectionData('Post', {slug:'starting-a-mean-stack-app'}, d, done)
+  //   var {v1AirPair,migrateES6,sessionDeepDive,sessionDeepDive2} = data.posts
+  //   var d = [v1AirPair,migrateES6,sessionDeepDive,sessionDeepDive2]
+  //   // db.initCollectionData('Post', {slug:'starting-a-mean-stack-app'}, d, done)
+    done()
   },
 
   initWorkshops(done)
   {
-    var {railsTests, biggestFailsOnThePlayStore} = data.workshops
-    railsTests.time = moment().add(1,'day').format()
-    biggestFailsOnThePlayStore.time = moment().add(2,'day').format()
-    var d = [railsTests,biggestFailsOnThePlayStore]
-    db.initCollectionData('Workshop', {slug:'simplifying-rails-tests'}, d, done)
+  //   var {railsTests, biggestFailsOnThePlayStore} = data.workshops
+  //   railsTests.time = moment().add(1,'day').format()
+  //   biggestFailsOnThePlayStore.time = moment().add(2,'day').format()
+  //   var d = [railsTests,biggestFailsOnThePlayStore]
+  //   db.initCollectionData('Workshop', {slug:'simplifying-rails-tests'}, d, done)
+    done()
   },
 
   initExperts(done)

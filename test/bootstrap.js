@@ -5,4 +5,4 @@ var setup = require('../server/util/_setup')
 var config = setup.initConfig('test')
 setup.initGlobals(config)
 
-require('../index').run()
+require('../server/app').run(config)
