@@ -348,6 +348,27 @@ module.exports = {
   },
 
 
+  madridLocationData: {
+    "formatted_address":"Madrid, Madrid, Spain",
+    "address_components":[
+      {"long_name":"Madrid","short_name":"Madrid","types":["locality","political"]},
+      {"long_name":"Madrid","short_name":"Madrid","types":["administrative_area_level_4","political"]},
+      {"long_name":"Área Metropolitalitana y Corredor del Henares","short_name":"Área Metropolitalitana y Corredor del Henares","types":["administrative_area_level_3","political"]},
+      {"long_name":"Madrid","short_name":"M","types":["administrative_area_level_2","political"]},
+      {"long_name":"Community of Madrid","short_name":"Community of Madrid","types":["administrative_area_level_1","political"]},
+      {"long_name":"Spain","short_name":"ES","types":["country","political"]}
+    ],
+    "geometry": {
+      "location":{"H":40.4167754,"L":-3.7037901999999576},
+      "viewport":{
+        "Ka":{"H":40.3120639,"j":40.5638447},
+        "Ga":{"j":-3.834161799999947,"H":-3.52491150000003}
+      }
+    },
+    "name":"Madrid",
+  },
+
+
   timezone_melbourne : { options:
      { location: '-37.8142155,144.9632306999999',
        timestamp: 1402629305,
