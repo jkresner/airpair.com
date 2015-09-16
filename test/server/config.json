@@ -1,0 +1,44 @@
+{
+  "specs":                "session",
+  "stubs": {
+    "on":                  true
+  },
+  "colors": {
+    "seed":               "magenta",
+    "spec":               "white",
+    "error":              "red"
+  },
+  "verbose": {
+    "errors":             "true"
+  },
+  "mongo": {
+    "url":                { "appConfig": "mongoUri" },
+    "collections":        ["V1tests","Users","Experts","Bookings","Orders",
+          "Paymethods","Payouts","Posts","Requests","Tags","Workshops","Templates"]
+  },
+  "paths": {
+    "specs":              "specs",
+    "fixtures":           "../data/fixtures",
+    "bson":               "../data/bson"
+  },
+  "seed": {
+    "force":              false,
+    "model":              "Post",
+    "key":                "v1AirPair",
+    "timeout":            30000
+  },
+  "http": {
+    "api": {
+      "urlPath":          "/v1/api"
+    }
+  },
+  "appConfig": {
+    "expect": {
+      "mongoUri":          "mongodb://localhost/airpair_test",
+      "auth.slack.slackTeam": "T02ATFDPL",
+      "chat.slack.support": "U06UD6SES"
+    }
+  }
+}
+
+
