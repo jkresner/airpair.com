@@ -1,4 +1,3 @@
-require('./es6')
 var colors           = require('colors')
 global.$timelapsed   = require('./log/timelapsed')
 

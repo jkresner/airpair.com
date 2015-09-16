@@ -1,6 +1,6 @@
-import * as OAuthProvider from './oauthbase'
-import * as LocalProvider from './localbase'
-var UserService = require('../../../services/users')
+var OAuthProvider = require('./oauthbase')
+var LocalProvider = require('./localbase')
+var UserService   = require('../../../services/users')
 
 
 var providers = {

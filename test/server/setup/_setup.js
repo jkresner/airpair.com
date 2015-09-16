@@ -6,11 +6,7 @@ var setup = {
 
   init(done)
   {
-    new db.Models.user(data.users.admin).save((e,r) => {
-      if (e) return done()  // we failed to insert as it's done already
-      this.timeout(10000)
-      db.RestoreBSONData(done)
-    })
+
   },
 
   initStubs()

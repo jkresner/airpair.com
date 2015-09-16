@@ -56,7 +56,7 @@ function resolveParamFn(Svc, svcFnName, paramName, objectName, Validation) {
 
 
 
-export function serve(Svc, svcFnName, argsFn, Validation) {
+function serve(Svc, svcFnName, argsFn, Validation) {
   return (req, res, next) => {
     if (logging) $log('serve.Svc'.cyan, svcFnName, argsFn)
     var callback = cbSend(req,res,next)
@@ -80,7 +80,7 @@ export function serve(Svc, svcFnName, argsFn, Validation) {
 }
 
 
-export var initAPI = (Svc, custom, paramFns, Validation, reqObjectName) => {
+var initAPI = (Svc, custom, paramFns, Validation, reqObjectName) => {
   var base = {
     getAll: (req) => [],
     getById: (req) => [req.params.id],
@@ -108,39 +108,5 @@ export var initAPI = (Svc, custom, paramFns, Validation, reqObjectName) => {
   return api;
 }
 
-
-
-// export var initAPI2 = (Svc, argsFns, paramFns) => {
-//   for (var fnName of Object.keys(apiDefs)) {
-//     var params = argsFns[fnName];
-//     argsFns[fnName] = function(req) {
-//       var reqParams = []
-//       for (var path of params) {
-//         var p = null
-//         var props = path.split('.')
-//         for (var prop of props) {
-//           p = req[prop]
-//         }
-//         reqParams.push(p)
-//       }
-//       return reqParams;
-//     }
-//   }
-
-//   var api = { paramFns: {} }
-
-//   for (var name of Object.keys(argsFns))
-//     api[name] = serve(Svc, name, argsFns[name], Validation)
-
-//   if (paramFns)
-//     for (var paramName of Object.keys(paramFns))
-//     {
-//       var svcFn = paramFns[paramName]
-//       api.paramFns[svcFn] = resolveParamFn(Svc,svcFn,paramName)
-//     }
-
-//   api.svc = Svc
-
-//   return api;
-// }
+module.exports = { serve, initAPI }
 

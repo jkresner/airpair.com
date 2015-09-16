@@ -1,5 +1,5 @@
-import RedirectsAPI from '../api/redirects'
-import PostsAPI from '../api/posts'
+var RedirectsAPI = require('../api/redirects')
+var PostsAPI = require('../api/posts')
 var {trackView} = require('../middleware/analytics')
 
 

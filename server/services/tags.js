@@ -1,8 +1,8 @@
 var logging               = false
 var Data                  = require('./tags.data')
 var Tag                   = require('../models/tag')
-import BaseSvc            from '../services/_service'
-var svc                   = new BaseSvc(Tag, logging)
+var Svc                = require('./_service')
+var svc                   = new Svc(Tag, logging)
 
 
 var exactMatchBonus = (term, tag) =>

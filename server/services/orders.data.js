@@ -1,5 +1,5 @@
 var {selectFromObject}    = require('../../shared/util')
-import * as md5           from '../util/md5'
+var md5                   = require('../util/md5')
 var ObjectId              = require('mongoose').Types.ObjectId
 
 var base = {

@@ -1,6 +1,9 @@
-import Svc                from './_service'
-import PayMethod          from '../models/paymethod'
-import * as CompanysSvc   from './companys'
+var Svc                = require('./_service')
+var Rates              = require('./requests.rates')
+var PayMethod          = require('../models/paymethod')
+
+
+var CompanysSvc       = require('./companys')
 var UserSvc               = require('./users')
 var {Settings}            = require('../models/v0')
 var logging               = false

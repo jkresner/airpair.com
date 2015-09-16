@@ -29,6 +29,9 @@ module.exports = function(gulp, config, options, callback) {
           '*DS_Store'
         ],
         env: { NODE_ENV: "development" },
+        execMap: {
+          js: 'node --harmony_destructuring'
+        }
       })
       .on('change', ['lint'])
       .on('restart', function () {

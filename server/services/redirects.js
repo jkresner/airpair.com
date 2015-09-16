@@ -1,5 +1,5 @@
 var logging               = false
-import Svc                from '../services/_service'
+var Svc                = require('./_service')
 var Redirect              = require('../models/redirect')
 var svc                   = new Svc(Redirect, logging)
 
