@@ -1,6 +1,6 @@
-import Svc from '../services/_service'
-import Company from '../models/company'
-import * as UserSvc from '../services/users'
+var Svc                = require('./_service')
+var Company          = require('../models/company')
+var UserSvc = require('./users')
 
 var logging = false
 var svc = new Svc(Company, logging)
@@ -11,29 +11,29 @@ var fields = {
 }
 
 
-export function getById(id, cb) {
+function getById(id, cb) {
   svc.getById(id, cb)
 }
 
 
 
-export function getUsersCompany(cb) {
+ function getUsersCompany(cb) {
   svc.searchOne({'members.userId':this.user._id,'members.enabled':true}, null, cb)
 }
 
 
 
-export function search(searchTerm, cb) {
+ function search(searchTerm, cb) {
   svc.searchMany({name: new RegExp(searchTerm, 'i')}, {}, cb)
 }
 
 
-export function create(o, cb) {
+ function create(o, cb) {
   svc.create(o,null, cb)
 }
 
 
-export function addMember(id, user, cb) {
+ function addMember(id, user, cb) {
   // TODO CHECK user does not belong to another company that's enabled
 
   getById(id, (e,company) => {
@@ -49,7 +49,7 @@ export function addMember(id, user, cb) {
 }
 
 
-export function migrate(id, type, cb) {
+ function migrate(id, type, cb) {
   getById(id, (e,company) => {
     if (!company || company.members) return cb("Company does not exist or already migrated")
     var ups = {type}
@@ -63,3 +63,6 @@ export function migrate(id, type, cb) {
     svc.update(company._id, ups, cb)
   })
 }
+
+
+module.exports = { getById, getUsersCompany, search, create, addMember, migrate }

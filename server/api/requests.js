@@ -1,6 +1,4 @@
-import {initAPI} from './_api'
-
-export default initAPI(
+module.exports = require('./_api').initAPI(
   require('../services/requests')
 ,{
   getByIdForUser: (req) => [req.params.id],

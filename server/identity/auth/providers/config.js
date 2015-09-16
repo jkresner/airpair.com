@@ -3,7 +3,7 @@ function isLocal(provider)
   return provider.indexOf('local') == 0;
 }
 
-export function getEnvConfig(provider)
+function getEnvConfig(provider)
 {
   var cfg = { passReqToCallback: true }
   if (isLocal(provider))
@@ -18,3 +18,6 @@ export function getEnvConfig(provider)
 
   return cfg;
 }
+
+
+module.exports = { getEnvConfig }

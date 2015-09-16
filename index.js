@@ -1,7 +1,7 @@
 // $timelapsed("APP READ")
 var start       = new Date().getTime()
 var mw          = require('./server/middleware/_middleware')
-import mongo from './server/util/mongoInit'
+var mongo       = require('./server/util/mongoInit')
 var session     = require('./server/identity/session')
 var routes      = require('./server/routes/index')
 require('./server/util/cache')
@@ -9,7 +9,7 @@ require('./server/util/cache')
 // DO NOT MOVE ANYTHING IN THIS FILE
 // middleware order is 112% crucial to not screw up sessions
 
-export function run(cb)
+function run(cb)
 {
   $timelapsed("APP START")
   $log(`APP v${config.build.version}   Start   ${start}`.appload)
@@ -90,3 +90,6 @@ export function run(cb)
 
   return app;
 }
+
+
+module.exports = { run }

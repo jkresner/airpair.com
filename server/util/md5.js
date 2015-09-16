@@ -1,7 +1,7 @@
 var crypto = require('crypto')
 
 
-export function md5(str, encoding) {
+function md5(str, encoding) {
   return crypto
     .createHash('md5')
     .update(str, 'utf8')
@@ -9,10 +9,13 @@ export function md5(str, encoding) {
 }
 
 
-export function gravatarUrl(email) {
+function gravatarUrl(email) {
   if (!email) {
     $log(`gravatarUrl.err called with null email`.red)
     return null
   }
   return `//0.gravatar.com/avatar/${md5(email)}`
 }
+
+
+module.exports = { md5, gravatarUrl }

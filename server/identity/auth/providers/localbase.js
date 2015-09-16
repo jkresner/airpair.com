@@ -1,5 +1,5 @@
 var passport = require('passport')
-import * as authConfig from './config'
+var authConfig = require('./config')
 
 var logging = false
 
@@ -34,7 +34,7 @@ var authFn = (provider) => {
   }
 }
 
-export function init(provider, strategyCallback) {
+function init(provider, strategyCallback) {
   var Strategy = require(`passport-local`).Strategy
   var cfg = authConfig.getEnvConfig(provider)
 
@@ -42,3 +42,6 @@ export function init(provider, strategyCallback) {
 
   return authFn(provider)
 }
+
+
+module.exports = { init }

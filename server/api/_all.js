@@ -1,35 +1,19 @@
-import WorkshopsAPI from '../api/workshops'
-import PostsAPI from '../api/posts'
-import UsersAPI from '../api/users'
-import TagsAPI from '../api/tags'
-import RedirectsAPI from '../api/redirects'
-import PaymethodsAPI from '../api/paymethods'
-import OrdersAPI from '../api/orders'
-import BookingsAPI from '../api/bookings'
-import ExpertsAPI from '../api/experts'
-import CompanysAPI from '../api/companys'
-import ViewsAPI from '../api/views'
-import RequestsAPI from '../api/requests'
-import PayoutsAPI from '../api/payouts'
-import ReportsAPI from '../api/reports'
-import MojoAPI from '../api/mojo'
-import ChatAPI from '../api/chat'
 
 module.exports = {
-  Workshops: WorkshopsAPI,
-  Posts: PostsAPI,
-  Users: UsersAPI,
-  Tags: TagsAPI,
-  Redirects: RedirectsAPI,
-  Paymethods: PaymethodsAPI,
-  Orders: OrdersAPI,
-  Bookings: BookingsAPI,
-  Experts: ExpertsAPI,
-  Mojo: MojoAPI,
-  Companys: CompanysAPI,
-  Views: ViewsAPI,
-  Requests: RequestsAPI,
-  Payouts: PayoutsAPI,
-  Reports: ReportsAPI,
-  Chat: ChatAPI,
+  Workshops:    require('./Workshops'),
+  Posts:        require('./Posts'),
+  Users:        require('./Users'),
+  Tags:         require('./Tags'),
+  Redirects:    require('./Redirects'),
+  Paymethods:   require('./Paymethods'),
+  Orders:       require('./Orders'),
+  Bookings:     require('./Bookings'),
+  Experts:      require('./Experts'),
+  Mojo:         require('./Mojo'),
+  Companys:     require('./Companys'),
+  Views:        require('./Views'),
+  Requests:     require('./Requests'),
+  Payouts:      require('./Payouts'),
+  Reports:      require('./Reports'),
+  Chat:         require('./Chat'),
 }

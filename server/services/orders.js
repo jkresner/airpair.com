@@ -1,7 +1,7 @@
 var logging                 = false
-import Svc                  from './_service'
-import Order                from '../models/order'
-import * as UserSvc         from './users'
+var Svc                     = require('./_service')
+var Order                   = require('../models/order')
+var UsersSvc                = require('./users')
 var PayMethodSvc            = require('./paymethods')
 var RequestsSvc             = require('./requests')
 var Data                    = require('./orders.data')
