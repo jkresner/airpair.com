@@ -38,7 +38,7 @@
 <section class="chat-self-invite" ng-if="slackinInviteUrl">
   <h3>Sign into AirPair's real-time chat network:</h3>
   <p>* required to connect with your pair</p>
-  <iframe class="slackin" src="{{slackinInviteUrl | trustUrl}}"></iframe>
+  <iframe class="slackin" ng-src="{{slackinInviteUrl | trustUrl}}"></iframe>
   <h4>Once in Slack click => <a href="/bookings/{{booking._id}}?refresh" target="_self">Refesh this page</a></h4>
 </section>
 

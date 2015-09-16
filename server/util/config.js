@@ -239,6 +239,7 @@ module.exports = function(env) {
     cfg.hangout.login.password = process.env.HANGOUT_LOGIN_PASSWORD
 
     //-- until things are under control (jk)
+    cfg.chat.slackin.host = 'https://slackin.airpair.com'
     cfg.chat.slack.jk.id = process.env.CHAT_SLACK_ADMIN_ID
     cfg.chat.slack.jk.token = process.env.CHAT_SLACK_ADMIN_TOKEN
 
