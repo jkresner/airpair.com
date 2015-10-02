@@ -211,7 +211,7 @@ function api() {
 //           expect(s.bookmarks[0].title).to.equal("Starting a Mean Stack App")
 //           expect(s.bookmarks[0].type).to.equal("post")
 //           done()
-//         })
+//         })`
 //       })
 //   })
 
@@ -308,27 +308,21 @@ function api() {
 
 function profileAnonymous() {
 
-  it('Can update email', function(done) {
+  IT('Can update email', (done) => {
     var clone = SETUP.userData('kfor')
-    http(global.app)
-      .put('/v1/api/users/me/email')
-      .send({email:clone.email})
-      .expect(200)
-      .expect('Content-Type', /json/)
-      .end(function(err, resp){
-        cookie = resp.headers['set-cookie']
-        expect(resp.body.email).to.equal(clone.email)
-        expect(resp.body.authenticated).to.equal(false)
-        expect(resp.body.avatar).to.exist
-        expect(resp.body.sessionID).to.exist
-        GET('/session/full', {}, function(s) {
-          expect(s.email).to.equal(clone.email)
-          expect(s.authenticated).to.equal(false)
-          expect(s.avatar).to.exist
-          expect(s.sessionID).to.exist
-          done()
-        })
+    PUT('/users/me/email',{email:clone.email}, {unauthenticated:true}, (r) => {
+      expect(r.email).to.equal(clone.email)
+      expect(r.authenticated).to.equal(false)
+      expect(r.avatar).to.exist
+      expect(r.sessionID).to.exist
+      GET('/session/full', {}, function(s) {
+        expect(s.email).to.equal(clone.email)
+        expect(s.authenticated).to.equal(false)
+        expect(s.avatar).to.exist
+        expect(s.sessionID).to.exist
+        DONE()
       })
+    })
   })
 
 //   it('Can update name', function(done) {
@@ -380,32 +374,34 @@ function profileAnonymous() {
 
 }
 
-// function profileAuthenticated() {
+function profileAuthenticated() {
 
-//   it('Can update name', function(done) {
-//     SETUP.addAndLoginLocalUserWithEmailVerified('sctm', function(s) {
-//       expect(s._id).to.exist
-//       expect(s.email).to.exist
-//       expect(s.name).to.exist
-//       expect(s.avatar).to.exist
-//       expect(s.emailVerified).to.equal(true)
-//       expect(s.initials).to.be.undefined
-//       expect(s.username).to.be.undefined
+  IT('Can update name', () => {
+    STORY.addAndLoginLocalUserWithEmailVerified('sctm', function(s) {
+      $log('here'.cyan)
+      expect(s._id).to.exist
+      expect(s.email).to.exist
+      expect(s.name).to.exist
+      expect(s.avatar).to.exist
+      expect(s.emailVerified).to.equal(true)
+      expect(s.initials).to.be.undefined
+      expect(s.username).to.be.undefined
 
-//       var originalName = s.name
+      var originalName = s.name
 
-//       PUT('/users/me/name', { name: 'test UP' }, {}, function(s2) {
-//         // expect(r.initials).to.equal('IN')
-//         expect(s2.name).to.equal('test UP')
-//         GET('/session/full', {}, (s2) => {
-//           expect(s2.name).to.equal('test UP')
-//           done()
-//         })
-//       })
-//     })
-//   })
+      PUT('/users/me/name', { name: 'test UP' }, {}, function(s2) {
+        $log('here'.magenta)
+        // expect(r.initials).to.equal('IN')
+        expect(s2.name).to.equal('test UP')
+        GET('/session/full', {}, (s2) => {
+          expect(s2.name).to.equal('test UP')
+          DONE()
+        })
+      })
+    })
+  })
 
-// }
+}
 
 
 module.exports = () => {
@@ -416,5 +412,5 @@ module.exports = () => {
   // describe("Stack: ".subspec, stack)
   // describe("Bookmarks: ".subspec, bookmarks)
   describe("Profile: anonymous: ".subspec, profileAnonymous)
-  // describe("Profile: authenticated: ".subspec, profileAuthenticated)
+  describe("Profile: authenticated: ".subspec, profileAuthenticated)
 }

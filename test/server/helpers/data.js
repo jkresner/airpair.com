@@ -19,7 +19,7 @@ var dataHelpers = {
 
   userData(userKey)
   {
-    var seed = data.users[userKey]
+    var seed = FIXTURE.users[userKey]
     var suffix = dataHelpers.timeSeed()
     return {
       email: seed.email.replace('@',suffix+'@'),

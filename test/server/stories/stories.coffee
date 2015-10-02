@@ -1,4 +1,3 @@
-dataHelpers          = require('./data')
 UserService          = require('../../../server/services/users')
 expertData           = require('../../../server/services/experts.data')
 
@@ -14,17 +13,18 @@ expertData           = require('../../../server/services/experts.data')
 // hitting braintree and making a slow network call
 """
 
-upsertUser = (userKey, _id, ups, done) ->
-  db.Models.user.findOneAndUpdate {_id}, ups, {'upsert':true,'new':true}, (e, r) ->
-    data.users[userKey] = r
+updateUser = (userKey, _id, ups, done) ->
+  DB.Collections.users.findAndModify {_id}, [['_id',1]], { $set: ups }, {'new':true}, (e, r) ->
+    FIXTURE.users[userKey] = r.value
     done userKey
 
 
 addLocalUser = (userKey, opts, done) ->
-  clone = dataHelpers.userData(userKey)
-  newSession = dataHelpers.userSession(userKey)
+  clone = SETUP.userData(userKey)
+  newSession = SETUP.userSession(userKey)
   UserService.localSignup.call newSession, clone.email, clone.password, clone.name, (e, r) ->
-    data.users[clone.userKey] = r
+    expect(r.email)
+    FIXTURE.users[clone.userKey] = r
     if (opts)
       ups = {}
       if (opts.emailVerified)
@@ -32,10 +32,10 @@ addLocalUser = (userKey, opts, done) ->
       if (opts.gh)
         ups.social = {gh:opts.gh}
       if (opts.localization)
-        ups.localization = data.wrappers.localization_melbourne
+        ups.localization = FIXTURE.wrappers.localization_melbourne
 
       r = _.extend(r, ups)
-      upsertUser clone.userKey, r._id, ups, done
+      updateUser clone.userKey, r._id, ups, done
     else
       done(clone.userKey)
 
@@ -50,7 +50,7 @@ addLocalUser = (userKey, opts, done) ->
 
  addAndLoginLocalUserWithEmailVerified = (originalUserKey, done) ->
   addLocalUser originalUserKey, {emailVerified: true}, (userKey) ->
-    LOGIN userKey, (resp) ->
+    LOGIN {key:userKey}, (resp) ->
       GET '/session/full', {}, (s) ->
         expect(s.emailVerified).to.be.true
         s.userKey = userKey
@@ -82,7 +82,7 @@ stories = {
 
 
   addAndLoginUserWithRole: (userKey, role, done) ->
-    session = dataHelpers.userSession()
+    session = SETUP.userSession()
 
     # so we aren't aliasing on every login
     session.sessionID = 'test'+userKey

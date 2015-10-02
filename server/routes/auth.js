@@ -25,6 +25,7 @@ module.exports = function(app) {
     .get('/google/callback', auth.google.oAuth, mw.authDone)
     .get('/paypal-loginurl', mw.authd, (req,res) => res.json({url:Wrappers.PayPal.loginUrl()}) )
 
+
   app.use('/v1/auth', router)
 
 
@@ -36,7 +37,7 @@ module.exports = function(app) {
     .get('/linkedin/callback', mw.authd, auth.linkedin.oAuth, mw.authDone)
     .get('/bitbucket/callback', mw.authd, auth.bitbucket.oAuth, mw.authDone)
     .get('/angellist/callback', mw.authd, auth.angellist.oAuth, mw.authDone)
-    .get('/slack/callback', mw.authd, auth.slack.oAuth, mw.authDone)
+    .get('/slack/callback', auth.slack.oAuth, mw.authDone)
 
     .use(mw.setReturnTo)
     .get('/google', auth.google.oAuth)
@@ -46,7 +47,11 @@ module.exports = function(app) {
     .get('/linkedin', mw.authd, auth.linkedin.oAuth)
     .get('/bitbucket', mw.authd, auth.bitbucket.oAuth)
     .get('/angellist', mw.authd, auth.angellist.oAuth)
-    .get('/slack', mw.authd, auth.slack.oAuth)
+    // .get('/slack', mw.authd, auth.slack.oAuth)
+
+
+  if (config.auth.test)
+    connect.post(config.auth.test.loginUrl, config.auth.test.loginHandler)
 
   app.use('/auth', connect)
 
