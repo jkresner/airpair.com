@@ -1,7 +1,7 @@
 {
-  "specs":                "session",
+  "specs":                "chat",
   "stubs": {
-    "on":                  true
+    "on":                  false
   },
   "colors": {
     "seed":               "magenta",
