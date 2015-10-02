@@ -1,4 +1,4 @@
-import * as md5           from '../util/md5'
+var md5           = require('../util/md5')
 var {selectFromObject}    = util
 
 var data = {

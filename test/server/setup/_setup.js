@@ -4,15 +4,6 @@ var stubs                 = require('./../helpers/stubs')
 
 var setup = {
 
-  init(done)
-  {
-    new db.Models.user(data.users.admin).save((e,r) => {
-      if (e) return done()  // we failed to insert as it's done already
-      this.timeout(10000)
-      db.RestoreBSONData(done)
-    })
-  },
-
   initStubs()
   {
     return {
@@ -31,18 +22,20 @@ var setup = {
 
   initPosts(done)
   {
-    var {v1AirPair,migrateES6,sessionDeepDive,sessionDeepDive2} = data.posts
-    var d = [v1AirPair,migrateES6,sessionDeepDive,sessionDeepDive2]
-    db.initCollectionData('Post', {slug:'starting-a-mean-stack-app'}, d, done)
+  //   var {v1AirPair,migrateES6,sessionDeepDive,sessionDeepDive2} = data.posts
+  //   var d = [v1AirPair,migrateES6,sessionDeepDive,sessionDeepDive2]
+  //   // db.initCollectionData('Post', {slug:'starting-a-mean-stack-app'}, d, done)
+    done()
   },
 
   initWorkshops(done)
   {
-    var {railsTests, biggestFailsOnThePlayStore} = data.workshops
-    railsTests.time = moment().add(1,'day').format()
-    biggestFailsOnThePlayStore.time = moment().add(2,'day').format()
-    var d = [railsTests,biggestFailsOnThePlayStore]
-    db.initCollectionData('Workshop', {slug:'simplifying-rails-tests'}, d, done)
+  //   var {railsTests, biggestFailsOnThePlayStore} = data.workshops
+  //   railsTests.time = moment().add(1,'day').format()
+  //   biggestFailsOnThePlayStore.time = moment().add(2,'day').format()
+  //   var d = [railsTests,biggestFailsOnThePlayStore]
+  //   db.initCollectionData('Workshop', {slug:'simplifying-rails-tests'}, d, done)
+    done()
   },
 
   initExperts(done)

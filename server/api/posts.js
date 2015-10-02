@@ -1,4 +1,4 @@
-import {initAPI} from './_api'
+var {initAPI} = require('./_api')
 var svc = require('../services/posts')
 
 function reviewParamFn(req, res, next, id) {
@@ -64,4 +64,4 @@ var api = initAPI(
 )
 
 
-export default _.extend(api, {reviewParamFn})
+module.exports = _.extend(api, {reviewParamFn})

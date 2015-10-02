@@ -1,15 +1,15 @@
 // $timelapsed("APP READ")
 var start       = new Date().getTime()
-var mw          = require('./server/middleware/_middleware')
-import mongo from './server/util/mongoInit'
-var session     = require('./server/identity/session')
-var routes      = require('./server/routes/index')
-require('./server/util/cache')
+var mw          = require('./middleware/_middleware')
+var mongo       = require('./util/mongoInit')
+var session     = require('./identity/session')
+var routes      = require('./routes/index')
+require('./util/cache')
 
 // DO NOT MOVE ANYTHING IN THIS FILE
 // middleware order is 112% crucial to not screw up sessions
 
-export function run(cb)
+function run(config, done)
 {
   $timelapsed("APP START")
   $log(`APP v${config.build.version}   Start   ${start}`.appload)
@@ -46,7 +46,7 @@ export function run(cb)
       //-- Do not move connect-livereload before session middleware
       if (config.livereload) app.use(require('connect-livereload')({ port: 35729 }))
 
-      var hbsEngine   = require('./server/views/_hbsEngine')
+      var hbsEngine   = require('./views/_hbsEngine')
       hbsEngine(app)
 
       app.use(mw.logging.domainWrap)
@@ -59,7 +59,7 @@ export function run(cb)
       app.use('/v1/api/adm', routes('api').admin)
       app.use('/v1/api', routes('api').other)
       app.use('/v1/api/posts', routes('api').posts)
-      // $timelapsed("APP ROUTES API")
+      $timelapsed("APP ROUTES API")
       app.use(['^/matchmaking*','^/adm/bookings*'],
         mw.authz.plnr, app.renderHbsAdmin('adm/pipeliner'))
 
@@ -80,13 +80,17 @@ export function run(cb)
         app.use(mw.logging.pageNotFound)
         app.use(mw.logging.errorHandler(app))
 
+        var cb = done || (e => {})
         app.listen(config.port, () => {
           $log(`           Listening after ${new Date().getTime()-start}ms on port ${config.port}`.appload)
-          if (cb) cb()
-        })
+          cb()
+        }).on('error', cb)
       })
     })
   })
 
   return app;
 }
+
+
+module.exports = { run }

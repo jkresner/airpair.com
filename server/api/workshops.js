@@ -1,7 +1,5 @@
-import {initAPI} from './_api'
 
-
-export default initAPI(
+module.exports = require('./_api').initAPI(
   require('../services/workshops')
 , {
   getBySlug: (req) => [req.params.id]

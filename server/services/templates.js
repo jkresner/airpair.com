@@ -1,4 +1,4 @@
-import Svc                from '../services/_service'
+var Svc                   = require('./_service')
 var logging               = false
 var Template              = require('../models/template')
 var svc                   = new Svc(Template, logging)

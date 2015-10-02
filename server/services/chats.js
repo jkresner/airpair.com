@@ -1,5 +1,5 @@
-import Svc                from '../services/_service'
-var logging               = false
+var logging                 = false
+var Svc                     = require('./_service')
 var Chat                  = require('../models/chat')
 var svc                   = new Svc(Chat, logging)
 var UserSvc               = require('../services/users')

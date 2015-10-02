@@ -1,5 +1,5 @@
-import Rates              from '../services/requests.rates'
-import * as md5           from '../util/md5'
+var Rates                 = require('../services/requests.rates')
+var md5                   = require('../util/md5')
 var Roles                 = require('../../shared/roles.js').request
 var {ObjectId}            = require('mongoose').Schema
 

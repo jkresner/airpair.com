@@ -1,9 +1,9 @@
-import Svc                from '../services/_service'
-import Expert             from '../models/expert'
-import Request            from '../models/request'
-import Booking            from '../models/booking'
-import MatchGroup         from '../models/matchgroup'
-import * as md5           from '../util/md5'
+var Svc                = require('./_service')
+var Expert             = require('../models/expert')
+var Request            = require('../models/request')
+var Booking            = require('../models/booking')
+var MatchGroup         = require('../models/matchgroup')
+var md5                   = require('../util/md5')
 var {ObjectId2Date,
   selectFromObject}       = require('../../shared/util')
 var Data                  = require('./experts.data')

@@ -36,7 +36,7 @@ function cleanJoins(r, joins) {
 }
 
 
-export default function(model, logging)
+module.exports = function(model, logging)
 {
   var searchOne = (query, opts, cb) => {
     // $log('searchOne'.yellow, query)

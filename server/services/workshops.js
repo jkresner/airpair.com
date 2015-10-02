@@ -1,5 +1,5 @@
-import Svc from '../services/_service'
-import Workshop from '../models/workshop'
+var Svc = require('./_service')
+var Workshop = require('../models/workshop')
 
 var logging = false
 var svc = new Svc(Workshop, logging)

@@ -1,4 +1,4 @@
-import Svc        from './_service'
+var Svc                = require('./_service')
 var logging       = false
 var OrdersUtil    = require('../../shared/orders')
 var Payout        = require('../models/payout')
