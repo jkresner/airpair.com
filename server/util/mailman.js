@@ -14,6 +14,17 @@ var senderTansport = {
 
 module.exports = function()
 {
+  var $$log = function() {
+    var args = [].slice.call(arguments)
+    var named = args.shift()
+    mm.$$trace(named, args)
+  }
+
+  var tmplSvc       = () => {
+    if (!mm.TemplateSvc)
+      mm.TemplateSvc = require('../services/templates')
+    return mm.TemplateSvc
+  }
 
   function initTransports() {
     var {createTransport}   = require('nodemailer')
@@ -129,7 +140,6 @@ module.exports = function()
           from: config.log.error.email.from,
           subject: subject || config.log.error.email.subject
         },()=>{})
-
       }
     }
   })

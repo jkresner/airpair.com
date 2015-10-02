@@ -11,7 +11,6 @@ module.exports = function(config)
   global.$log           = console.log
   global.$trace         = require('./log/trace')
   global.$error         = require('./log/error')
-
   //-- Consistent way to call services from a function with request context
   global.$callSvc       = (fn, ctx) =>
     function() {
@@ -25,18 +24,11 @@ module.exports = function(config)
       return obj
     }
 
-  global.mailman = {
-    init() { global.mailman = require('./mailman')() }
-  }
-
-  global.pairbot = {
-    init() { global.pairbot = require('./im/pairbot')() }
-  }
-
   //-- makes app a tests load 300ms faster
   global.analytics    = { track: ()=>{}, view: ()=>{}, alias: ()=>{}, identify: ()=>{}, impression: ()=>{} }
-
-  global.Wrappers       = require('../services/wrappers/_wrappers')
+  global.Wrappers     = require('../services/wrappers/_index')
+  global.mailman      = require('./mailman')()
+  global.pairbot      = require('./im/pairbot')()
 
   //-- Services we want to stub can be set on global here
   if (config.env == 'test')

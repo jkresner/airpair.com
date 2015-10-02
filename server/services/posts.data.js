@@ -7,13 +7,27 @@ var PostsUtil           = require('../../shared/posts')
 var topTapPages = ['angularjs']
 
 
-var inflateHtml = function(cb) {
+var inflateHtml = function(isAnon, cb) {
   return (e,r) => {
     if (!r) return cb(e,r)
     var supped = PostsUtil.extractSupReferences(r.md)
     r.references = PostsUtil.markupReferences(supped.references, marked)
-    r.html = marked(supped.markdown)
     r.toc = marked(generateToc(r.md))
+    if (isAnon) {
+      marked.setOptions({highlight: function(code, lang) {
+        var maxLines = 0
+        var obs = ""
+        for (var line of code.split('\n')) {
+          if (++maxLines < 4)
+            obs += '\n' + line.replace(/(\S\S)(\S\S)/g,'$1{}{}')
+        }
+        return obs.replace('\n','') // trim first \n
+      }})
+      r.html = marked(supped.markdown)
+      marked.setOptions({highlight:null})
+    }
+    else
+      r.html = marked(supped.markdown)
     cb(e,r)
   }
 };
@@ -284,9 +298,21 @@ var select = {
        cb(null,statsR)
       }
     },
-    displayView(cb, similarFn) {
-      return inflateHtml((e,r) => {
+    displayView(isAnon, similarFn, cb) {
+      return inflateHtml(isAnon, (e,r) => {
+        $log('inflateHtml', isAnon, e)
+
         if (e || !r) return cb(e,r)
+
+        // if (isAnon) {
+          // for (var m of r.html.match(/<pre(?:[\s\S]*)<\/pre>/)) {
+        //     $log(`<div class="signup"></div>${m.split('\n')[0]}</code></pre>`.cyan)
+        //     // r.html = r.html.replace(m,`<div class="signup"></div>${m.split('\n')[0]}</code></pre>`)
+        //   }
+          // r.html = r.html.replace(/<pre/g,'<pre signup ')
+
+        // }
+
         if (!r.tags || r.tags.length == 0) {
           $log(`post ${r.title} [${r._id}] has no tags`.red)
           return cb(null,r)
@@ -326,7 +352,7 @@ var select = {
           if (typeof r.by.social.gp == 'string') r.by.social.gp = { link: r.by.social.gp }
         }
 
-        r.by.firstName = firstName(r.by.name)
+        r.by.firstName = util.firstName(r.by.name)
 
         similarFn(r, (ee,similar) => {
           r.similar = similar
