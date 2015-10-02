@@ -1,6 +1,6 @@
 var marked              = require('marked')
-import generateToc      from './postsToc'
-import * as md5         from '../util/md5'
+var generateToc         = require('./postsToc')
+var md5                   = require('../util/md5')
 var {selectFromObject,firstName}  = require('../../shared/util')
 var PostsUtil           = require('../../shared/posts')
 

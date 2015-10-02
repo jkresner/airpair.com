@@ -1,4 +1,4 @@
-import Svc                from '../services/_service'
+var Svc                   = require('./_service')
 var logging               = false
 var Post                  = require('../models/post')
 var svc                   = new Svc(Post, logging)

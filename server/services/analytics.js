@@ -1,5 +1,4 @@
-import Svc from '../services/_service'
-import Landing from '../models/landing'
+var Svc                = require('./_service')
 var logging = false
 var {ObjectId} = require('mongoose').Types
 

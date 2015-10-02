@@ -1,4 +1,4 @@
-import {logout,setTestLogin} from '../identity/auth/actions'
+var {logout,setTestLogin}    = require('../identity/auth/actions')
 var auth                     = require('../identity/auth/providers/index')
 var mw                       = require('../middleware/auth')
 

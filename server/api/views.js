@@ -1,6 +1,5 @@
-import {initAPI} from './_api'
-var Svc = require('../services/analytics')
-
-export default initAPI(Svc.views, {
+module.exports = require('./_api').initAPI(
+  require('../services/analytics').views
+, {
   getByUserId: (req) => [req.params.id]
 })

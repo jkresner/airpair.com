@@ -162,7 +162,7 @@ function countHeaders (headers) {
   return headers;
 }
 
-export default function(content, maxHeaderNo) {
+module.exports = function(content, maxHeaderNo) {
   var maxHeaderNo = maxHeaderNo || 4;
 
   // $log('transform.content', content)

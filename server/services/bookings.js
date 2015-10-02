@@ -3,9 +3,9 @@ var RequestsSvc             = require('../services/requests')
 var OrdersSvc               = require('../services/orders')
 var ChatsSvc                = require('../services/chats')
 var TemplateSvc             = require('../services/templates')
-import Svc                  from '../services/_service'
-import Booking              from '../models/booking'
-import Order                from '../models/order'
+var Svc                = require('./_service')
+var Booking                    = require('../models/booking')
+var Order                    = require('../models/order')
 var User                    = require('../models/user')
 var svc                     = new Svc(Booking, logging)
 var Roles                   = require('../../shared/roles').booking

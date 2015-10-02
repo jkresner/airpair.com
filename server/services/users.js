@@ -1,7 +1,7 @@
 var logging         = false
-import BaseSvc      from '../services/_service'
+var Svc             = require('./_service')
 var User            = require('../models/user')
-var svc             = new BaseSvc(User, logging)
+var svc             = new Svc(User, logging)
 var Data            = require('./users.data')
 var UserAuth        = require('./users.auth')
 var UserCohort      = require('./users.cohort')

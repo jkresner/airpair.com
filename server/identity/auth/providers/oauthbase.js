@@ -1,5 +1,5 @@
 var passport = require('passport')
-import * as authConfig from './config'
+var authConfig = require('./config')
 
 
 var logging = false
@@ -43,7 +43,7 @@ var oauthFn = (provider, scope) => {
 }
 
 
-export function init(provider, Strategy, successfulShakeDelegate) {
+function init(provider, Strategy, successfulShakeDelegate) {
   var oauthConfig = authConfig.getEnvConfig(provider)
 
   var verifyCallback = (req, accessToken, refreshToken, profile, done) =>
@@ -65,3 +65,6 @@ export function init(provider, Strategy, successfulShakeDelegate) {
 
   return oauthFn(provider, oauthConfig.scope)
 }
+
+
+module.exports = { init }

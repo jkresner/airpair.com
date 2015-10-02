@@ -81,7 +81,7 @@ function calcSuggestedRate(requestBudget, expert)
   return  r
 }
 
-export default fns
+module.exports = fns
 
 
   //   ## Biased score to get the developer booked
