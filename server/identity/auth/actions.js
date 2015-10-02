@@ -9,10 +9,11 @@ function logout(options) {
 
 //-- only used in testing
 function setTestLogin(req, res, next) {
-  if (logging) $log('setTestLogin', req.params.id, global.data.sessions[req.params.id])
-  var user = global.data.sessions[req.params.id]
-  user.avatar = require('../../util/md5').gravatarUrl(user.email)
-  req.logIn( user, (err) => res.json(user) )
+  throw Error("No longer used")
+  // if (logging) $log('setTestLogin', req.params.id, global.data.sessions[req.params.id])
+  // var user = global.data.sessions[req.params.id]
+  // user.avatar = require('../../util/md5').gravatarUrl(user.email)
+  // req.logIn( user, (err) => res.json(user) )
 }
 
 

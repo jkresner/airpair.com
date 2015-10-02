@@ -178,7 +178,7 @@ var ExpertSchema = new Schema({
   // deprecated other
   bookMe:         { required: false, type: Bookme },
 
-  reviews:        [Shared.Survey]
+  // reviews:        [Shared.Survey]
 
 })
 

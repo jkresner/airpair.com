@@ -1,6 +1,6 @@
 routes = ->
 
-  it.skip 'Can hit routes adm bookings routes as spinner', itDone ->
+  IT 'Can hit routes adm bookings routes as spinner', ->
     SETUP.addAndLoginLocalUserWithEmailVerified 'nabk', (s1) ->
       GET "/adm/bookings/1434398823517/1439582823517", {status:403}, (e1) ->
         SETUP.addAndLoginUserWithRole 'adbk', 'spinner', (user) ->
@@ -14,11 +14,11 @@ routes = ->
               DONE()
 
 
-  it.skip 'Can hit only index routes as normal user', itDone ->
+  it.skip 'Can hit only index routes as normal user', ->
 
 
 
 
 module.exports = ->
 
-  describe("Routes: ".subspec, routes)
+  describe.skip("Routes: ".subspec, routes)

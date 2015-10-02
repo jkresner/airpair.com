@@ -80,9 +80,9 @@ var cfg = {
   chat: {
     slackin:      { host: 'http://slackin.airpair.com' },
     slack: {
-      owner:      { id: 'U06U2HQQK', token: 'xoxp-6954602819-6954602835-6963586337-08f737' },
+      owner:      { id: 'U06U2HQQK', token: 'xoxp-6954602819-6954602835-7019593206-19f426' },
       support:    { id: 'U06UCSHL0', token: 'xoxp-6954602819-6964901680-6965169622-a2bb52' },
-      jk:         { id: 'U06U2HQQK', token: 'xoxp-6954602819-6954602835-6963586337-08f737' },
+      jk:         { id: 'U06U2HQQK', token: 'xoxp-6954602819-6954602835-7019593206-19f426' },
       pairbot:    { id: 'U06UBBT9V', token: 'xoxb-6963401335-ziIikHY5Uo9zyG6NPQ9ijoam' },
       channels:   {
         pipeline: { id: 'C06KZHXAS' },
