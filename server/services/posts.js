@@ -25,7 +25,7 @@ var get = {
 
   //-- used for api param fn
   getBySlug(slug, cb) {
-    svc.searchOne(query.published({slug}), null, selectCB.inflateHtml(cb))
+    svc.searchOne(query.published({slug}), null, selectCB.inflateHtml(this.user==null,cb))
   },
 
   //-- used for api param fn
@@ -152,24 +152,26 @@ var get = {
   getByIdForPreview(_id, cb) {
     svc.searchOne({_id}, { fields: select.display }, (e,r) => {
       if (e || !r) return cb(e,r)
-      if (!r.submitted || !r.github) return selectCB.displayView(cb)(null, r)
+      if (!r.submitted || !r.github) return selectCB.displayView(false, null, cb)(null, r)
 
       //-- Allow admins to preview a post without a fork
       if (!Roles.isForker(this.user, r) &&
         !_.idsEqual(this.user._id, r.by.userId)
         )
-        return selectCB.displayView(cb)(null, r)
+        return selectCB.displayView(false, null, cb)(null, r)
 
       $callSvc(get.getGitHEAD, this)(r, (ee, head) => {
         if (head && head.string)
           r.md = head.string
-        selectCB.displayView(cb)(ee, r)
+        selectCB.displayView(false, null, cb)(ee, r)
       })
     })
   },
 
   getBySlugForPublishedView(slug, cb) {
-    svc.searchOne(query.published({slug}), { fields: select.display }, selectCB.displayView(cb, get.getSimilar))
+    svc.searchOne(query.published({slug}), { fields: select.display },
+      selectCB.displayView(this.user == null, get.getSimilar, cb)
+    )
   },
 
   getByIdForReview(_id, cb) {
@@ -177,7 +179,7 @@ var get = {
       if (e||!r) return cb(e,r)
       if (r.published) return cb(null, {published:true, url: r.meta.canonical})
       if (!r.submitted) return cb(null, null)
-      selectCB.displayView(cb)(e,r)
+      selectCB.displayView(this.user==null, null, cb)(e,r)
     })
   },
 

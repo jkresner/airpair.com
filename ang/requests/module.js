@@ -17,13 +17,13 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
 
   $routeProvider
     .when('/requests', actions.list)
-    .when('/help/types', actions.help)
+    // .when('/help/types', actions.help)
     .when('/help/request', actions.create)
     .when('/find-an-expert', actions.create)
     .when('/meet-experts', actions.create)
     .when('/help/request/:id', actions.edit)
     .when('/meet-experts/:id', actions.edit)
-    .when('/reviews', actions.review)
+    // .when('/reviews', actions.review)
     .when('/review/:id', actions.review)
 
 })

@@ -1,7 +1,7 @@
 var cfg = {
   ads: {
     on:                   true,
-    staticDir:            '/public/static/img/ads'                          },
+    staticDir:            '/static/img/ads'                          },
   analytics: { on:        false                                             },
   auth: {
     loginUrl:             '/login',
@@ -26,7 +26,8 @@ var cfg = {
       clientSecret: 'f52d233259426f769850a13c95bfc3dbe7e3dbf2',
       adminAccessToken: 'b9d09cce1129b4ee1f4b97cc44c3b753cb9d8795', //jkyahoo
       org: 'JustASimpleTestOrg',
-      scope: [ 'user', 'public_repo']                                      },
+      scope: [ 'user' ]                                             },
+      //, 'public_repo'
     paypal: {
       mode: 'sandbox',
       clientID: 'AVk7JRBmL3kzKnxrLC8Ze98l2rg__gK1PhASloHmd0wsDvsvkSJd_QnWx3xE',
@@ -64,7 +65,6 @@ var cfg = {
   bundle: {
     indexScript: '/static/js/index.js',
     admScript: '/static/js/adm.js',
-    homeScript: '/static/js/home.js',
     indexCss: '/static/styles/index.css',
     admCss: '/static/styles/adm.css',
     libCss: '/static/styles/libs.css'
@@ -92,11 +92,11 @@ var cfg = {
     appId: '140030887085', //140030887085 == production AirPair app
     login: { email: 'support@airpair.com', password: 'helsyea' }
   },
-  http: { static: { maxAge: null } },
+  http: { static: { dir: 'public', maxAge: null } },
   log: {
     ads:                  process.env.LOG_ADS || false,
-    auth:                 process.env.LOG_AUTH || false,
-    mail:                 process.env.LOG_MAIL || true,
+    auth:                 process.env.LOG_AUTH || true,
+    mail:                 process.env.LOG_MAIL || false,
     redirects:            process.env.LOG_REDIRECTS || false,
     error:                { email: null },
   },
@@ -146,8 +146,6 @@ module.exports = function(env) {
     .replace('/server/util','')
     .replace('\\server\\util','') //-- for windows machines
 
-  cfg.ads.staticDir = `${cfg.appdir}${cfg.ads.staticDir}`
-
   if (env == 'dev') {
 
   }
@@ -164,6 +162,8 @@ module.exports = function(env) {
 
   if (env == 'staging' || env == 'production') {
     var dist = require('../../dist/rev-manifest.json')
+    cfg.http.static.maxAge = '1d'
+    cfg.http.static.dir = `dist`
 
     cfg.analytics.on = true
 
@@ -204,9 +204,8 @@ module.exports = function(env) {
     cfg.bundle.admScript = `/static/${dist['js/adm.js']}`
     cfg.bundle.admCss = `/static/${dist['styles/adm.css']}`
     cfg.bundle.libCss = `/static/${dist['styles/libs.css']}`
-    cfg.bundle.homeScript = `/static/${dist['js/home.js']}`
 
-    cfg.http.static.maxAge = '1d'
+
     cfg.redirects.on = true
     cfg.session.secret = process.env.SESSION_SECRET
 
@@ -271,6 +270,9 @@ module.exports = function(env) {
 
   cfg.share.tw.consumer_key  = cfg.auth.twitter.consumerKey
   cfg.share.tw.consumer_secret = cfg.auth.twitter.consumerSecret
+
+  cfg.http.appStaticDir = `${cfg.appdir}/${cfg.http.static.dir}`
+  cfg.ads.staticDir = `${cfg.http.appStaticDir}${cfg.ads.staticDir}`
 
   return cfg;
 }

@@ -2,7 +2,11 @@ var postsChannelId = config.chat.slack.channels.posts.id
 
 module.exports = function(imProvider)
 {
-  var TemplateSvc      = require('../../services/templates')
+  var tmplSvc       = () => {
+    if (!mm.TemplateSvc)
+      mm.TemplateSvc = require('../../services/templates')
+    return mm.TemplateSvc
+  }
 
   var emtpyCb = (e,r) => {}
 
@@ -13,7 +17,7 @@ module.exports = function(imProvider)
 
     sendSlackMsg(channelId, tmpl, data, cb) {
       var cb = cb || emtpyCb
-      TemplateSvc.slackMSG(tmpl, data, (e, msg) => {
+      tmplSvc().slackMSG(tmpl, data, (e, msg) => {
         var text = data.text || msg.text
         if (msg.type == 'message')
           imProvider.postMessage('pairbot', channelId, text, cb)
@@ -23,7 +27,7 @@ module.exports = function(imProvider)
     },
 
     get(tmpl, data, cb) {
-      TemplateSvc.slackMSG(tmpl, data, (e, msg) => cb(e,msg))
+      tmplSvc().slackMSG(tmpl, data, (e, msg) => cb(e,msg))
     },
 
     //-- TODO: move into db
