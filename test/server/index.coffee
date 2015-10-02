@@ -18,12 +18,14 @@ initGlobals(config)
 
 SCREAM          = require('meanair-scream')
 
+global.SETUP    = require('./helpers/setup')
+global.STORY    = require('./stories/stories')
 
 
 loginLogic = (req, callback) ->
-  u = FIXTURE.User[req.params.id]
+  u = FIXTURE.users[req.body.key]
   fn = require('../../server/services/users').localLogin
-  fn.call(req, u.email, conf.auth.masterpass, callback)
+  fn.call(req, u.email, config.auth.masterpass, callback)
 
 
 SCREAM(__dirname, config, loginLogic).run()

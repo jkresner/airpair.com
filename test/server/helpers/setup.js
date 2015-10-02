@@ -1,6 +1,7 @@
 var dataHelpers           = require('./data')
-var stories               = require('./stories')
-var stubs                 = require('./../helpers/stubs')
+var stubs                 = require('./stubs')
+// var stories               = require('../stories/stories')
+
 
 var setup = {
 
@@ -14,11 +15,11 @@ var setup = {
     }
   },
 
-  upsertProviderProfile(provider, userKey, done)
-  {
-    var user = data.oauth[userKey]
-    UserService.upsertProviderProfile(null, provider, user, done)
-  },
+  // upsertProviderProfile(provider, userKey, done)
+  // {
+  //   var user = data.oauth[userKey]
+  //   UserService.upsertProviderProfile(null, provider, user, done)
+  // },
 
   initPosts(done)
   {
@@ -28,15 +29,15 @@ var setup = {
     done()
   },
 
-  initWorkshops(done)
-  {
+  // initWorkshops(done)
+  // {
   //   var {railsTests, biggestFailsOnThePlayStore} = data.workshops
   //   railsTests.time = moment().add(1,'day').format()
   //   biggestFailsOnThePlayStore.time = moment().add(2,'day').format()
   //   var d = [railsTests,biggestFailsOnThePlayStore]
   //   db.initCollectionData('Workshop', {slug:'simplifying-rails-tests'}, d, done)
-    done()
-  },
+    // done()
+  // },
 
   initExperts(done)
   {
@@ -54,8 +55,5 @@ var setup = {
 
 }
 
-setup = _.extend(setup,stubs)
-setup = _.extend(setup,stories)
-setup = _.extend(setup,dataHelpers)
 
-module.exports = setup
+module.exports = Object.assign(setup,stubs,dataHelpers)
