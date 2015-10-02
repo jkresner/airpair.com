@@ -1,6 +1,6 @@
 {
   "name": "airpair.com",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "description": "site running airpair.com",
   "main": "index.js",
   "engines": {
@@ -11,7 +11,7 @@
     "start": "node bootstrap.js",
     "test": "server/cmd/npm/test",
     "gv": "heroku logs --tail --source app",
-    "db": "mongod --smallfiles --noprealloc --nojournal --dbpath ~/data/db/",
+    "db": "mongod --smallfiles --noprealloc --dbpath ~/data/db/",
     "dbrestore": "mongorestore --drop --db airpair_dev .git/db"
   },
   "repository": {
@@ -33,6 +33,7 @@
     "dotenv": "1.2.0",
     "es6ify": "1.6.0",
     "gulp": "3.9.0",
+    "gulp-add-src": "0.2.0",
     "gulp-buffer": "0.0.2",
     "gulp-jshint": "1.11.2",
     "gulp-less": "3.0.3",
@@ -66,7 +67,7 @@
     "htmlparser2": "^3.7.3",
     "lodash": "2.4.1",
     "mailchimp": "1.1.0",
-    "marked": "0.3.3",
+    "marked": "0.3.5",
     "moment": "2.10.3",
     "moment-timezone": "0.4.0",
     "mongoose": "4.1.6",

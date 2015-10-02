@@ -5,7 +5,7 @@ module.exports = function(gulp, config, options, callback) {
 
     var pathsForImports = [ config.path.lessDir ]
 
-    var section = (options) ? options.section : 'all'
+    var section = options ? options.section : 'all'
 
     // console.log('less', section,
     //   config.path.lessSrc[section],

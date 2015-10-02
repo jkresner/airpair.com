@@ -9,9 +9,9 @@ angular.module("APAuth", ['ngRoute','ngMessages','APFormsDirectives','APFilters'
       template: require('./login.html')
     });
 
-    $routeProvider.when('/v1/auth/signup', {
-      template: require('./signup.html')
-    });
+    // $routeProvider.when('/v1/auth/signup', {
+    //   template: require('./signup.html')
+    // });
 
     $routeProvider.when('/v1/auth/reset', {
       template: require('./passwordreset.html'),
