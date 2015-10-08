@@ -37,7 +37,6 @@ var select = {
     'bookmarks': 1,
     'cohort.engagement': 1,
     'cohort.expert._id': 1,
-    'membership': 1,
     'localization.location': 1,
     'localization.timezone': 1,
     'localization.timezoneData.timeZoneId': 1,
@@ -65,8 +64,7 @@ var select = {
     'username': 1,
     'bio': 1,
     'google': 1,
-    'cohort': 1,
-    'membership': 1
+    'cohort': 1
   },
   siteNotifications: {
     '_id': 0,

@@ -23,9 +23,6 @@ var lineType = [
   //-- Rescheduling
   'fee',
 
-  //-- Get benfits like discounts
-  'membership',
-
   //-- Attend a webinar
   'ticket',
 

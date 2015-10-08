@@ -8,7 +8,6 @@ angular.module("APBilling", ['ngRoute', 'APPaymentDirectives', 'APBillingDirecti
   var route = apRouteProvider.route
   route('/billing', 'Billing', require('./welcome.html'), { resolve: authd })
   route('/billing/top-up', 'BillingTopUp', require('./topup.html'), { resolve: authd })
-  route('/billing/membership', 'BillingMembership', require('./membership.html'), { resolve: authd })
   route('/billing/book/:id', 'BillingBookExpert', require('./book.html'), { resolve: authd })
   route('/billing/book/:id/:rid', 'BillingBookExpert', require('./book.html'), { resolve: authd })
   route('/billing/deal/:id', 'BillingDeal', require('./deal.html'), { resolve: authd })
