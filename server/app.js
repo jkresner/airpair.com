@@ -26,7 +26,6 @@ function run(config, done)
   app.use(express.static(config.http.appStaticDir, config.http.static))
   app.use(mw.logging.slowrequests)
 
-  var mongo       = require('./server/util/mongoInit')
   mongo.connect(() => {
     $timelapsed("APP Connected")
 
@@ -62,8 +61,7 @@ function run(config, done)
       app.use(['^/matchmaking*','^/adm/bookings*'],
         mw.authz.plnr, app.renderHbsAdmin('adm/pipeliner'))
 
-      app.use(['^/adm/pipeline*','^/adm/request*','^/adm/users*','^/adm/orders*','^/adm/experts*','^/adm/companys*',
-        '^/adm/views*','^/adm/posts*','^/adm/tags*','^/adm/chat*','^/adm/mail*','^/adm/redirects*'],
+      app.use(['^/adm/pipeline*','^/adm/request*','^/adm/users*','^/adm/orders*','^/adm/experts*','^/adm/posts*','^/adm/redirects*'],
         mw.authz.adm, app.renderHbsAdmin('adm/admin'))
 
       app.use(mw.seo.noTrailingSlash) // Must be after root '/' route

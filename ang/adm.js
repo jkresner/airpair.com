@@ -1,6 +1,5 @@
 window.$ = window.jQuery = require('./../public/lib/jquery/dist/jquery.js');
 window._ = require('./../public/lib/lodash/dist/lodash.js');
-window.moment = require('./../public/lib/moment/moment.js');
 window.moment = require('./../public/lib/moment-timezone/builds/moment-timezone-with-data-2010-2020.js');
 require('./../public/lib/angular/angular.js');
 require('./../public/lib/angular-route/angular-route.js');
@@ -29,16 +28,10 @@ require('./common/routes/routes.js');
 require('./adm/posts/module.js');
 require('./adm/users/module.js');
 require('./adm/redirects/module.js');
-require('./adm/views/module.js');
 require('./adm/orders/module.js');
-require('./adm/companys/module.js');
 require('./adm/pipeline/module.js');
 require('./adm/bookings/module.js');
 require('./adm/experts/module.js');
-require('./adm/tags/module.js');
-require('./adm/mail/module.js');
-require('./adm/chat/module.js');
-require('./adm/jk/module.js');
 require('./matchmaking/module.js');
 
 angular.module('ADM', [
@@ -49,16 +42,10 @@ angular.module('ADM', [
   'ADMPosts',
   'ADMUsers',
   'ADMRedirects',
-  'ADMViews',
   'ADMOrders',
   'ADMBookings',
-  'ADMTags',
   'ADMExperts',
-  'ADMCompanys',
-  'ADMMail',
-  'ADMjk',
   'APMatchmaking',
-  'ADMChat'
   ])
 
   .config(function($locationProvider, $routeProvider) {

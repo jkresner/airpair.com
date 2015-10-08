@@ -15,12 +15,7 @@
   <a href="/adm/orders">Orders</a> |
   <a href="/adm/users">Users</a>
   <span class="nomob">| <a href="/adm/experts">Experts</a></span>
-  <span class="nomob">| <a href="/adm/companys">Companys</a></span>
-  <span class="nomob">| <a href="/adm/views">Views</a></span>
   <span class="nomob">| <a href="/adm/posts">Posts</a></span>
-  <span class="nomob">| <a href="/adm/tags">Tags</a></span>
-  <span class="nomob">| <a href="/adm/chat">Chat</a></span>
-  <span class="nomob">| <a href="/adm/mail">Mail</a></span>
   <span class="nomob">| <a href="/adm/redirects">Redirects</a></span>
 </header>
 
@@ -29,15 +24,6 @@
   <div ng-view></div>
 </main>
 
-{{#if config.chatSettings.on}}
-  <!-- <nav id="chat" chat-nav></nav> -->
-  <!-- <div style="border-left:solid 1px red; position: fixed; top: 0px; height: 100%; right: 0; width: 300px;"> -->
-{{!--
-  <nav id="chat" chat-nav>
-  </nav>
- --}}
-  <!-- </div> -->
-{{/if}}
 
 <script type="text/javascript" src="{{ config.bundle.admScript }}"></script>
 <script type="text/javascript">
