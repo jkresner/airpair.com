@@ -8,9 +8,7 @@ var routes = {
 signup: Router()
   .use(mw.authAlreadyDone)
   .use(mw.setReturnTo)
-  .use(mw.noCrawl('/'))
-  .get('/github', auth.github.oAuth)
-  .get('/github/callback', auth.github.oAuth, mw.authDone),
+  .use(mw.noCrawl('/')),
 
 v1: Router()
   //-- Don't want returnTo over ridden on oauth callbacks
