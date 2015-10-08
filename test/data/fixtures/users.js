@@ -273,7 +273,6 @@ module.exports = {
     bookmarks: [],
     tags: [],
     roles: [],
-    membership: {},
     emailVerified: false
   },
 

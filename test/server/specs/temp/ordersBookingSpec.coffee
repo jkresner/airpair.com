@@ -371,5 +371,5 @@ module.exports = -> describe "Booking: ".subspec, ->
 
   it 'Can book another hour after buying more credit'
   it 'With the multiple credit line items, first lineitem gets deducted'
-  it 'Gets $5 off booking if member'
-  it 'Can redeem membership credit'
+
+
