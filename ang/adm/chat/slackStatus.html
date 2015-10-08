@@ -1,9 +1,0 @@
-<div>
-  <span ng-if="!chat.slack">No chat
-    <a ng-if="!invitedToSlackTeam" ng-click="inviteToTeam()">==> invite to slack</a>
-    <span ng-if="invitedToSlackTeam">... invitation sent</span>
-  </span>
-  <span ng-if="chat.slack" class="has">
-    Slack
-    <a href="https://airpair.slack.com/messages/@{{chat.slack.name}}" target="_blank">{{chat.slack.name}}</a></span>
-</div>
