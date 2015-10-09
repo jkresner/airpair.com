@@ -9,7 +9,7 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
 
   var actions = {
     list:   { template: require('./list.html'), controller: 'RequestListCtrl' },
-    create: { template: require('./new.html'), controller: 'RequestCtrl' },
+    create: { resolve: authd, template: require('./new.html'), controller: 'RequestCtrl' },
     edit: { resolve: authd, template: require('./edit.html'), controller: 'RequestEditCtrl' },
     help: { resolve: authd, template: require('./types.html'), controller: 'RequestTypesCtrl' },
     review: { template: require('./review.html'), controller: 'ReviewCtrl' }
@@ -20,6 +20,7 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
     // .when('/help/types', actions.help)
     .when('/help/request', actions.create)
     .when('/find-an-expert', actions.create)
+    .when('/hire-software-developers', actions.create)
     .when('/meet-experts', actions.create)
     .when('/help/request/:id', actions.edit)
     .when('/meet-experts/:id', actions.edit)

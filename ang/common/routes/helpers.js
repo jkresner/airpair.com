@@ -62,7 +62,7 @@
 
   window.trackRoute = function(locationPath, locationSearch) {
     // console.log('trackRoute', analytics)
-    if (analytics)
+    if (window.analytics)
     {
       if (locationPath == '/login')
         analytics.track('Route',{ category: 'auth', name: 'login' })

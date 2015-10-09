@@ -29,7 +29,7 @@ angular.module("APRoutes", [])
   var trackSave = (trackData) => {
     trackData.location = window.location.pathname // $location.path() no good...
     // console.log('trackData', trackData)
-    analytics.track('Save', trackData)
+    if (window.analytics) analytics.track('Save', trackData)
   }
 
   this.GET = (urlFn) =>
