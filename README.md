@@ -80,6 +80,21 @@ tags
 - /angular
 
 
+v2.0.0 ux
+---------
+
+Header
+/hire-developers      => landing page about airpair
+/softwhare-expert     => banner or info up to the top about airpair
+/consult              => goes to consult.airpair.com homepage
+
+Home
+- Add more technologies
+
+Software Experts
+- Improve page
+
+
 
 
 Hangout Info
