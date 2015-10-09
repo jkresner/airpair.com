@@ -17,6 +17,7 @@ module.exports = function(routes)
       '*/so-welcome',
       '/settings',
       '/find-an-expert',
+      '/hire-software-developers',
       '/be-an-expert',
       '/experts',
       '/expert-applications',
