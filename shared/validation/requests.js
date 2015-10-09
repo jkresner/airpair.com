@@ -41,13 +41,13 @@ var validation = {
     if (!update.tags || !(update.tags.length > 0) )
       return `Request must include at least one technology`
 
-    if (!user.emailVerified &&
-      (update.experience ||
-      update.brief ||
-      update.hours ||
-      update.time ||
-      update.budget))
-      return `Email verification required to update request`
+    // if (!user.emailVerified &&
+    //   (update.experience ||
+    //   update.brief ||
+    //   update.hours ||
+    //   update.time ||
+    //   update.budget))
+    //   return `Email verification required to update request`
 
     if (original.experience && !update.experience) return `Request experience required`
 
