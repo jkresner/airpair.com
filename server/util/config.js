@@ -2,7 +2,7 @@ var cfg = {
   ads: {
     on:                   true,
     staticDir:            '/static/img/ads'                          },
-  analytics: { on:        false                                             },
+  analytics: { on:        true                                              },
   auth: {
     loginUrl:             '/login',
     unauthorizedUrl:      '/v1/auth/unauthorized',
