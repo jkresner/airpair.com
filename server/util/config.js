@@ -147,7 +147,7 @@ module.exports = function(env) {
     .replace('\\server\\util','') //-- for windows machines
 
   if (env == 'dev') {
-
+    cfg.log.mail = true
   }
 
   //-- Temp for testing prod setting locally
@@ -209,6 +209,7 @@ module.exports = function(env) {
     cfg.redirects.on = true
     cfg.session.secret = process.env.SESSION_SECRET
 
+    cfg.log.mail = true
     cfg.log.error.email = {
       from:        process.env.LOG_EMAIL_FROM || 'ERR <team@airpair.com>',
       to:          process.env.LOG_EMAIL_RECEIVERS.split(','),
