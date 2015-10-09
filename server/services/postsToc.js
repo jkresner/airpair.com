@@ -72,7 +72,9 @@ function getHtmlHeaders(lines, maxHeaderNo) {
 
 
 function anchor(header, repetition) {
-  return '[' + header + '](#' + marked(`##${header}`).split('"')[1] + ')';
+  var headerHthml = marked(header+'\n==')
+  var idAttr = headerHthml.split('"')[1]
+  return `[${header}](#${idAttr})`;
 };
 
 

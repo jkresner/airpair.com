@@ -77,13 +77,13 @@ angular.module("APPageHelpers", [])
       element.className = 'language-'+config.lang
       Prism.highlightElement(element, false, function() {
         if (!$rootScope.session._id) {
-          element.parentNode.className = "signup " + element.parentNode.className
+          // element.parentNode.className = "signup " + element.parentNode.className
 
-          element.parentNode.innerHTML = element.parentNode.innerHTML + `
-          <span class="cta">
-            <div></div><a href="/auth/github?returnTo=${window.location.pathname}">Signin with GitHub</a>
-            <p>To see full unobfuscated code samples</p>
-          </span>`
+          // element.parentNode.innerHTML = element.parentNode.innerHTML + `
+          // <span class="cta">
+          //   <div></div><a href="/auth/github?returnTo=${window.location.pathname}">Signin with GitHub</a>
+          //   <p>To see full unobfuscated code samples</p>
+          // </span>`
         }
       });
   }
