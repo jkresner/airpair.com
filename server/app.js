@@ -24,6 +24,7 @@ function run(config, done)
   //-- We don't want to serve sessions for static resources
   //-- Save database write on every resources
   app.use(express.static(config.http.appStaticDir, config.http.static))
+  app.use(express.static(config.http.appStaticDir.replace('dist','public'), config.http.static))
   app.use(mw.logging.slowrequests)
 
   mongo.connect(() => {
