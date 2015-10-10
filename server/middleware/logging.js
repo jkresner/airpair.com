@@ -72,8 +72,7 @@ var middleware = {
         $error(e, req.user, req)
 
       } else {
-
-        $log(`${req.method}:${req.url} `.expectederr + (e.message || e).expectederr)
+        $log(`${req.method}:${req.url} `.magenta.dim + (e.message || e).gray.dim)
         // $log('Test Debug Error ', e)
       }
 

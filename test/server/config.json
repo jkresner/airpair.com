@@ -1,9 +1,10 @@
 {
-  "specs":                "usersCohort",
+  "specs":                "tags",
   "stubs": {
-    "on":                  false
+    "on":                  true
   },
   "colors": {
+    "appload":            "white",
     "seed":               "magenta",
     "spec":               "white",
     "error":              "red"

@@ -1,16 +1,5 @@
-colors           = require('colors')
-colors.setTheme({
-  spec: ['yellow','dim','bold']
-  subspec: ['yellow','dim']
-  expectederr: ['magenta','dim']
-  appload: 'white'
-  update: 'yellow'
-  trace: 'grey'
-  validation: 'blue'
-  wrappercall: 'white'
-})
+{colors,initGlobals,initConfig} = require('./../../server/util/_setup')
 
-{initGlobals,initConfig} = require('./../../server/util/_setup')
 
 config = initConfig('test')
 initGlobals(config)
@@ -22,13 +11,29 @@ global.SETUP    = require('./helpers/setup')
 global.STORY    = require('./stories/stories')
 
 
-loginLogic = (req, callback) ->
-  u = FIXTURE.users[req.body.key]
+loginHandler = (req, cb) ->
+  {email} = FIXTURE.users[req.body.key]
   fn = require('../../server/services/users').localLogin
-  fn.call(req, u.email, config.auth.masterpass, callback)
+  fn.call req, email, config.auth.masterpass, (e,r) ->
+    req.session.passport = { user: r } if r
+    cb(e,r)
 
+colors.setTheme({
+  spec: ['yellow','dim','bold']
+  # subspec: ['yellow','dim']
+  expectederr: 'red'
+  appload: 'white'
+  update: 'yellow'
+  trace: 'grey'
+  validation: 'blue'
+  wrappercall: 'white'
+})
 
-SCREAM(__dirname, config, loginLogic).run()
+config.colors = colors
+
+config.log.auth = false
+
+SCREAM(__dirname, config, loginHandler).run()
 
 
     # $timelapsed("BEFORE start")

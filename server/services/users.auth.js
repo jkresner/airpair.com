@@ -6,11 +6,11 @@ var logging         = config.log.auth
 var wrap = (fnName, errorCB, cb) =>
  (e,r) => {
    if (e) {
-     if (logging) $log(`${fnName}.error`.red, e)
+     if (logging) $log(`${fnName}:error`.red, e)
      errorCB(e)
    }
    else {
-     if (logging) $log(`${fnName}.ok`.white)
+     if (logging) $log(`${fnName}:ok`.white)
      if (r) r = r.toObject()
      cb(r)
    }
