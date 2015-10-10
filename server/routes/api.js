@@ -85,8 +85,8 @@ other: Router()
 
   .get('/requests/review/:id', API.Requests.getByIdForReview)
 
-  .get('/workshops/', API.Workshops.getAll)
-  .get('/workshops/:id', API.Workshops.getBySlug)
+  // .get('/workshops/', API.Workshops.getAll)
+  // .get('/workshops/:id', API.Workshops.getBySlug)
 
   .get('/tags/search/:id', API.Tags.search)
   .get('/posts/tagged/:tag', API.Posts.getByTag)
@@ -185,6 +185,7 @@ admin: Router()
   .get('/billing/orders/:id', API.Orders.getByIdForAdmin)
   .post('/billing/orders/credit', API.Orders.giveCredit)
   .get('/billing/paymethods/:id', API.Paymethods.getUserPaymethodsByAdmin)
+  .get('/views/user/:id', API.Views.getByUserId)
   .get('/redirects', API.Redirects.getAllRedirects)
   .post('/redirects', API.Redirects.createRedirect)
   .delete('/redirects/:id', API.Redirects.deleteRedirectById)
