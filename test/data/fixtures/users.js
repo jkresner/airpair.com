@@ -2,7 +2,7 @@ module.exports = {
 
   ilap: { name:"Igor Lebovic",email:"il@airpair.com" },
   scap: { _id:"5418c03f8f8c80299bcc4783",name:"Shane",email:"sc@airpair.com" },
-  jkap: { _id:"5175efbfa3802cc4d5a5e6ed",name:"Jonathon Kresner",email:"jk@airpair.com" },
+  jkap: { _id:ObjectId("5175efbfa3802cc4d5a5e6ed"),name:"Jonathon Kresner",email:"jk@airpair.com" },
   jkjk: { name:"Jon Kresner",email:"jonk@airpair.com" },
   pgap: { name:"Prateek Gupta",email:"pg@airpair.com" },
   prat: { name:"Prateek Gupta",email:"prateek@gupta.com" },

@@ -223,7 +223,7 @@ var get = {
     var q = query.published()
     q['$and'].push({'tmpl' : { '$ne': 'blank' }})
     q['$and'].push({'tmpl' : { '$ne': 'faq' }})
-    svc.searchMany(q, { fields: select.list, options: opts.publishedNewest(9) }, selectCB.addUrl(cb))
+    svc.searchMany(q, { fields: select.list, options: opts.publishedNewest(12) }, selectCB.addUrl(cb))
   },
 
   //-- Placeholder for showing similar posts to a currently displayed post

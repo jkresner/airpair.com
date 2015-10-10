@@ -27,6 +27,8 @@ v1: Router()
   .get('/paypal-loginurl', mw.authd, (req,res) => res.json({url:Wrappers.PayPal.loginUrl()}) ),
 
 connect: Router()
+  .post('/login', auth.local.login)
+  .post('/signup', auth.local.signup)
   .get('/google/callback', auth.google.oAuth, mw.authDone)
   .get('/github/callback', mw.authd, auth.github.oAuth, mw.authDone)
   .get('/twitter/callback', mw.authd, auth.twitter.oAuth, mw.authDone)

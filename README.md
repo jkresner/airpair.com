@@ -97,7 +97,8 @@ Software Experts
 Dashboard
 - Make it easier to make a request
 
-
+Login (+ signup)
+- Email for team setup
 
 
 Hangout Info

@@ -1,5 +1,5 @@
 {
-  "specs":                "mailman",
+  "specs":                "usersCohort",
   "stubs": {
     "on":                  false
   },
@@ -13,8 +13,8 @@
   },
   "mongo": {
     "url":                { "appConfig": "mongoUri" },
-    "collections":        ["V1tests","Users","Experts","Bookings","Orders",
-          "Paymethods","Payouts","Posts","Requests","Tags","Workshops","Templates"]
+    "collections":        ["V1Tests","Users","Experts","Bookings","Orders",
+          "Paymethods","Payouts","Posts","Requests","Tags","Templates"]
   },
   "paths": {
     "specs":              "specs",
@@ -23,8 +23,8 @@
   },
   "seed": {
     "force":              false,
-    "model":              "Post",
-    "key":                "v1AirPair",
+    "model":              "User",
+    "key":                "jkap",
     "timeout":            30000
   },
   "http": {

@@ -8,35 +8,35 @@ module.exports = function(app) {
     .param('tag', API.Tags.paramFns.getBySlug)
     // .param('landing', )
 
-    .get('/airconf2014', (req,res) => {
-      res.status(200).render(`./legacy/airconf2014.hbs`)
-    })
+    // .get('/airconf2014', (req,res) => {
+    //   res.status(200).render(`./legacy/airconf2014.hbs`)
+    // })
 
-    .get('/:tag/so-welcome',
-      auth.noCrawl('/'),
-      (req, res, next) => {
-        req.landing = {
-          _id: '54c937cc85e52c93f2c72bf4',
-          title: 'Stackoverflow Welcome Customize',
-          slug: 'so-welcome',
-          launched: 'Wed Jan 28 2015 11:26:04 GMT-0800 (PST)',
-          meta:
-           { title: 'Welcome',
-             description: null,
-             canonical: null,
-             ogTitle: 'Welcome',
-             ogDescription: 'Welcome'
-           },
-        }
-        req.landing.tag = req.tag
-        req.landing.tags = [req.tag]
-        // $log('landing')
-        next()
-      },
-      trackView('landing'),
-      app.renderHbsViewData('sowelcome', null, (req, cb) => {
-        cb(null, req.landing) })
-    )
+    // .get('/:tag/so-welcome',
+    //   auth.noCrawl('/'),
+    //   (req, res, next) => {
+    //     req.landing = {
+    //       _id: '54c937cc85e52c93f2c72bf4',
+    //       title: 'Stackoverflow Welcome Customize',
+    //       slug: 'so-welcome',
+    //       launched: 'Wed Jan 28 2015 11:26:04 GMT-0800 (PST)',
+    //       meta:
+    //        { title: 'Welcome',
+    //          description: null,
+    //          canonical: null,
+    //          ogTitle: 'Welcome',
+    //          ogDescription: 'Welcome'
+    //        },
+    //     }
+    //     req.landing.tag = req.tag
+    //     req.landing.tags = [req.tag]
+    //     // $log('landing')
+    //     next()
+    //   },
+    //   trackView('landing'),
+    //   app.renderHbsViewData('sowelcome', null, (req, cb) => {
+    //     cb(null, req.landing) })
+    // )
 
 
     .get('/100k-writing-competition',
