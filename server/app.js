@@ -49,6 +49,7 @@ function run(config, done)
 
       app.use(mw.logging.domainWrap)
       app.use(mw.data.cache.itemReady('tags'))
+      app.use(mw.auth.showAuthdPageViews())
 
       mailman.init()
       pairbot.init()

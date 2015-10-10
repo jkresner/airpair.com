@@ -135,7 +135,7 @@ var Request = new Schema({
   //company:          { required: true, type: {} }
   // contacts { userId, fullName, email }
 
-  marketingTags:    { type: [{}], default: [] },
+  // marketingTags:    { type: [{}], default: [] },
 
 })
 

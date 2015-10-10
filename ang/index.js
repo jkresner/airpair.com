@@ -45,7 +45,6 @@ require('./common/pageHelpers.js');
 require('./common/routes/routes.js');
 require('./auth/module.js');
 require('./posts/module.js');
-require('./workshops/module.js');
 require('./billing/module.js');
 require('./account/module.js');
 require('./requests/module.js');
@@ -63,7 +62,7 @@ angular.module("AP", ['ngRoute', 'ngAnimate',
   'APAnalytics', 'APNotifications', 'APBookmarker',
   'APProfileDirectives', 'APPostsDirectives', 'APSurveyDirectives',
   'APSideNav', 'APHangouts',
-  'APAuth', 'APPosts', 'APWorkshops', 'APProfile', 'APBilling',
+  'APAuth', 'APPosts', 'APProfile', 'APBilling',
   'APRequests','APBookings', 'APDashboard', 'APExpert'])
 
 .config(function($locationProvider, $routeProvider) {

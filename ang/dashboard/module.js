@@ -19,15 +19,15 @@ angular.module("APDashboard", ['APFilters', 'APSvcSession',
     }
   }
 })
-.directive('dashboardStack', function() {
-  return { template: require('./stack.html') }
-})
-.directive('dashboardBookmarks', function() {
-  return { template: require('./bookmarks.html') }
-})
-.directive('dashboardPosts', function() {
-  return { template: require('./posts.html') }
-})
+// .directive('dashboardStack', function() {
+//   return { template: require('./stack.html') }
+// })
+// .directive('dashboardBookmarks', function() {
+//   return { template: require('./bookmarks.html') }
+// })
+// .directive('dashboardPosts', function() {
+//   return { template: require('./posts.html') }
+// })
 .directive('dashboardExperts', function() {
   return { template: require('./experts.html') }
 })

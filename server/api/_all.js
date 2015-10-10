@@ -14,6 +14,5 @@ module.exports = {
   Views:        require('./views'),
   Requests:     require('./requests'),
   Payouts:      require('./payouts'),
-  Reports:      require('./reports'),
   Chat:         require('./chat'),
 }
