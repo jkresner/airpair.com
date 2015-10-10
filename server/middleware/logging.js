@@ -9,13 +9,13 @@ var middleware = {
 
     if (util.isBot(userAgent, config.bots.all)) {
       var referer = req.header('Referer')
-      var ref = (referer) ? ` <<< ${referer}` : ''
+      var ref = (referer ? ` <<< `.cyan+referer.blue : '').replace('https://','')
       if (util.isBot(userAgent, config.bots.bad)) {
-        $log(`__BADBOT${req.ip}`.cyan,`${userAgent}`.blue,`${req.originalUrl} ${ref}`.gray)
+        $log(`__BADBOT${req.ip}\t ${userAgent||'UA:null'} ${req.originalUrl}`.cyan, ref)
         return res.status(200).send('')
       }
       else if (logging)
-        $log(`_____BOT${req.ip}`.cyan,`${userAgent}`.cyan,`${req.originalUrl} ${ref}`.gray)
+        $log(`_____BOT${req.ip}\t ${userAgent||'UA:null'} ${req.originalUrl}`.cyan, ref)
     }
 
     next()
@@ -66,8 +66,9 @@ var middleware = {
       if (config.env != 'test' || global.verboseErrHandler) {
 
         var ref = (req.header('Referer')) ? ` <<< ${req.header('Referer')}` : ''
+        var ip = req.ip ? req.ip.replace('::ffff:','') : ''
         if (!req.nonSessionUrl)
-          $log('errHandle'.red, `${req.ip.replace('::ffff:','').cyan} ${uid} ${req.method} ${req.url.magenta}${ref}`, JSON.stringify(req.body), (e.message || e).magenta)
+          $log('errHandle'.red, `${ip.cyan} ${uid} ${req.method} ${req.url.magenta}${ref}`, JSON.stringify(req.body), (e.message || e).magenta)
         $error(e, req.user, req)
 
       } else {

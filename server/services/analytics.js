@@ -1,4 +1,4 @@
-var Svc                = require('./_service')
+// var Svc                = require('./_service')
 var logging = false
 var {ObjectId} = require('mongoose').Types
 
@@ -86,19 +86,15 @@ function $$log(action, data, user, sessionID, ctx) {
 
   uid = uid+"                                     ".substring(0,37-uid.length)
 
+  var ref = ((data.ref) ? (` <<< `.cyan+`${data.ref}`.replace(/\/+$/, '').blue) : '')
+    .replace('https://','').replace('http://','').replace('www.','');
+
   switch (action) {
     case 'First':
-      var ref = (data.ref) ? ` <<< ${data.ref}` : ''
-      if (data.url.indexOf('so-welcome') != -1)
-        $log(uid, `FIRST   > ${data.url}${ref}`.yellow)
-      else
-        $log(uid, `FIRST   > ${data.url}${ref}`.cyan)
+      $log(uid, `FIRST   > ${data.url}`.cyan+ref)
       break
     case 'View':
-      if (data.url.indexOf('so-welcome') != -1)
-        $log(uid, `VIEW    > ${data.url}`.yellow)
-      else
-        $log(uid, `VIEW    > ${data.url}`.cyan)
+      $log(uid, `VIEW    > ${data.url}`.cyan+ref)
       break
     case 'Login':
       $log(uid, `LOGIN   > ${data._id}`.green)
