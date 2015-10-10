@@ -50,7 +50,6 @@ var workshops = {
     // throw new Error('Workshops.getByTag deprecated in v2 migration. Please let us know how the UX got you here!')
     // svc.searchMany({'tags': new RegExp(tagSlug, "i") },{fields:fields.listSelect}, (e, r) => {
     var regEx = new RegExp(tagSlug, "i")
-    $log('regEx', regEx)
     var r = _.filter(ALL, w => _.find(w.tags, t=>t.match(regEx)) )
     for (var w of r)
     {
