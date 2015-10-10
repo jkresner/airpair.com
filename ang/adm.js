@@ -32,6 +32,7 @@ require('./adm/orders/module.js');
 require('./adm/pipeline/module.js');
 require('./adm/bookings/module.js');
 require('./adm/experts/module.js');
+require('./adm/chat/module.js');
 require('./matchmaking/module.js');
 
 angular.module('ADM', [
@@ -39,6 +40,7 @@ angular.module('ADM', [
   'APSvcSession', 'APSvcAdmin', 'APDataSvc', 'APNotifications', 'APRoutes', 'APUtil',
   'APFilters', 'APFormsDirectives', 'APInputs', 'APTagInput', 'APMailTemplates', 'APHangouts', 'APRequestDirectives',
   'ADMPipeline',
+  'ADMChat',
   'ADMPosts',
   'ADMUsers',
   'ADMRedirects',
