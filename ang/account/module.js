@@ -15,7 +15,7 @@ angular.module("APProfile", ['APTagInput'])
   if ($location.search().verify)
   {
     SessionService.verifyEmail({hash:$location.search().verify}, function(result){
-      $scope.emailAlerts = [{ type: 'success', msg: `${$scope.session.email} verified ! Next step, <a href="/posts/new">Start authoring post</a> or setup your <a href="/billing">Billing info</a>.` }]
+      $scope.emailAlerts = [{ type: 'success', msg: `${$scope.session.email} verified ! Next step setup your <a href="/billing">Billing info</a>.` }]
     }, function(e){
       $scope.emailAlerts = [{ type: 'danger', msg: `${e.message||e}` }]
     })

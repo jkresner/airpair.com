@@ -10,21 +10,21 @@ var topTapPages = ['angularjs']
 var inflateHtml = function(isAnon, cb) {
   return (e,r) => {
     if (!r) return cb(e,r)
+    r.toc = marked(generateToc(r.md))
     var supped = PostsUtil.extractSupReferences(r.md)
     r.references = PostsUtil.markupReferences(supped.references, marked)
-    r.toc = marked(generateToc(r.md))
     if (isAnon) {
-      marked.setOptions({highlight: function(code, lang) {
-        var maxLines = 0
-        var obs = ""
-        for (var line of code.split('\n')) {
-          if (++maxLines < 4)
-            obs += '\n' + line.replace(/(\S\S)(\S\S)/g,'$1{}{}')
-        }
-        return obs.replace('\n','') // trim first \n
-      }})
+      // marked.setOptions({highlight: function(code, lang) {
+      //   var maxLines = 0
+      //   var obs = ""
+      //   for (var line of code.split('\n')) {
+      //     if (++maxLines < 4)
+      //       obs += '\n' + line.replace(/(\S\S)(\S\S)/g,'$1{}{}')
+      //   }
+      //   return obs.replace('\n','') // trim first \n
+      // }})
       r.html = marked(supped.markdown)
-      marked.setOptions({highlight:null})
+      // marked.setOptions({highlight:null})
     }
     else
       r.html = marked(supped.markdown)
@@ -300,7 +300,7 @@ var select = {
     },
     displayView(isAnon, similarFn, cb) {
       return inflateHtml(isAnon, (e,r) => {
-        $log('inflateHtml', isAnon, e)
+        // $log('inflateHtml', isAnon, e)
 
         if (e || !r) return cb(e,r)
 

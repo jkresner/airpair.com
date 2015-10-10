@@ -2,13 +2,16 @@ var postsChannelId = config.chat.slack.channels.posts.id
 
 module.exports = function(imProvider)
 {
+  var TemplateSvc = null
+
   var tmplSvc       = () => {
-    if (!mm.TemplateSvc)
-      mm.TemplateSvc = require('../../services/templates')
-    return mm.TemplateSvc
+    if (!TemplateSvc)
+      TemplateSvc = require('../../services/templates')
+    return TemplateSvc
   }
 
   var emtpyCb = (e,r) => {}
+
 
   if (!imProvider)
     imProvider = Wrappers.Slack

@@ -4,7 +4,7 @@ angular.module("APPosts", ['APShare', 'APTagInput'])
 
   var authd = apRouteProvider.resolver(['session'])
   var route = apRouteProvider.route
-  route('/posts/me', 'PostsList', require('./list.html'))
+  route('/posts/me', 'PostsList', require('./list.html'), { resolve: authd })
   route('/posts/new', 'PostInfo', require('./info.html'), { resolve: authd })
   route('/posts/review', 'PostsInReview', require('./inreview.html'), { resolve: authd })
   route('/posts/in-community-review', 'PostsInReview', require('./inreview.html'), { resolve: authd })

@@ -6,7 +6,7 @@ var UserService   = require('../../../services/users')
 var providers = {
   twitter: { short: 'tw', strategy: require('passport-twitter').Strategy },
   github: { short: 'gh', strategy: require('passport-github').Strategy },
-  stackexchange: { short: 'so', strategy: require('passport-stackexchange').Strategy },
+  // stackexchange: { short: 'so', strategy: require('passport-stackexchange').Strategy },
   bitbucket: { short: 'bb', strategy: require('passport-bitbucket').Strategy },
   linkedin: { short: 'in', strategy: require('passport-linkedin').Strategy },
   angellist: { short: 'al', strategy: require('passport-angellist').Strategy },
@@ -40,7 +40,7 @@ module.exports = {
 
   github: { oAuth: connect('github', require('passport-github').Strategy) },
   twitter: { oAuth: connect('twitter', require('passport-twitter').Strategy) },
-  stackexchange: { oAuth: connect('stackexchange', require('passport-stackexchange').Strategy) },
+  // stackexchange: { oAuth: connect('stackexchange', require('passport-stackexchange').Strategy) },
   bitbucket: { oAuth: connect('bitbucket', require('passport-bitbucket').Strategy) },
   linkedin: { oAuth: connect('linkedin', require('passport-linkedin').Strategy) },
   angellist: { oAuth: connect('angellist', require('passport-angellist').Strategy) },
