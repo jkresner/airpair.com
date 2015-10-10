@@ -1,3 +1,4 @@
+var colors      = require('colors')
 var path      = require('path')
 var gulp      = require('gulp')
 gulp.util     = require('gulp-util')
@@ -95,7 +96,8 @@ gulp.task('less:libs', initRunTasks(['less'], null, {section:'libs'}) )
 gulp.task('less:adm', initRunTasks(['less'], null, {section:'adm'}) )
 gulp.task('less:index', initRunTasks(['less'], null, {section:'index'}) )
 
-gulp.task('build', initRunTasks(['dist'], ['clean']))
+gulp.task('build:clean', initRunTasks(['clean']))
+gulp.task('build', initRunTasks(['dist']))
 
 gulp.task('default', initRunTasks(['watch'], ['nodemon','less'], {section:'all'}) )
 gulp.task('index', initRunTasks(['watch'], ['nodemon','less'], {section:'index'}) )

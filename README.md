@@ -1,103 +1,103 @@
 airpair.com
 ===========
 
+auth
+- login
+-- google
+-- email / password
+-- send password reset
+- signup
+-- google
 
-Developing
-==========
+user
+- set password
+- account
+-- user info
+-- send email verification
+-- verify email
+- settings
+-- maillists
+-- send password reset
+-- logout
 
-Whitespace
-----------
-Let's keep whitespace out of the repo. To help with this:
+adm 
+- pipeline
+- bookings
+- experts
+- orders
+- users
+- redirects
 
- - Make sure your IDE/editor is setup to use the .editorConfig file (http://editorconfig.org/)
- - Enable git the pre-commit hooks to stop whitespace going in. In your local repo renaming
-   - /.git/hooks/pre-commit.sample
-   - to
-   - /.git/hooks/pre-commit
+billing
+- book
+- deal
+- ? experts
+- top-up
+- welcome (history)
+
+bookings
+- item
+- history (un-finished)
+
+dashboard
+-- recent bookings
+-- recent requests
+-- rebook experts
+
+expert
+- office
+- bookings
+- payouts
+- be-an-expert
+
+matchmaking
+- item
+- list
+
+posts
+- list (all)
+- list (in-review)
+- list (tag)
+- create (info)
+- edit (editor)
+- submit (create repo)
+- fork
+- publish
+- contributors
+- review (widget)
+
+post
+- item
+- review (widget)
+
+requests
+- list (history)
+- new 
+- edit
+- review
+
+tags
+- /angular
 
 
-Running Tests
-=============
+v2.0.0 ux
+---------
 
-##### 1. /test/server
+Header
+/hire-developers      => landing page about airpair
+/softwhare-expert     => banner or info up to the top about airpair
+/consult              => goes to consult.airpair.com homepage
 
-Runs in node with mocha
+Home
+- Add more technologies
 
-    mocha test/server/bootstrap.js
+Software Experts
+- Improve page
 
-For git pre-push hook to ensure tests pass before pushing, do this:
-
-    $ mkdir .git/hooks
-    $ cd .git/hooks
-    $ ln -nsf ../../build/git-hooks/pre-push
-
-### Testing gotchas
-
-If the test suite is failing without much but stops at
-
-    Server:
-      1) "before all" hook
-
-*Step 1)* Check if the app is still compiling (gulp runs without problems)
-
-*Step 2)* Check your test code (data fixtures, stories, specs, helpers)
+Dashboard
+- Make it easier to make a request
 
 
-Restoring db
-=============
-
-1. Get a copy of the database and unpack it where your'e happy. Rename the
-folder names as the prod database name to "db"
-
-2. From root of this project
-
-    $ cd .git
-    $ ln -nsf {where-you-unpacked-it}/db
-
-3. Go back to project root and run
-
-    $ npm run dbrestore
-
-
-Coding a feature
-=============
-
-Building tests is a great way to start, but so far (Jul 2015) test all wrap only
-api calls.
-
-### Project Structure
-
-    - ANG (front-end)
-    -- /adm
-    -- /common
-    --- /directives
-    --- /filters
-    --- /models
-    ---- /[xxxService] (inteface to call api)
-    -- /[module]
-    --- module.js
-    --- list.html
-    --- item.html
-    -- index.js
-    -- adm.js
-    - SERVER
-    -- services
-    --- entity(s).js
-    --- entity(s).data.js
-    - SHARED
-    -- validation
-    --- [entity]
-
-### Layers to make up a feature
-
-   1. Angular Controller
-   2. Define Front-end "Service" api call
-   3. Add server-side route
-   4. The Param Mappings for /server/api/:entityname.js
-      4.a. Define param function (if don't have one)
-   5. If not GET, validation function is required
-   6. Define (business logic) service function
-   7. Choose existing or add a entity(s).data.js select callback
 
 
 Hangout Info

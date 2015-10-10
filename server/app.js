@@ -24,9 +24,9 @@ function run(config, done)
   //-- We don't want to serve sessions for static resources
   //-- Save database write on every resources
   app.use(express.static(config.http.appStaticDir, config.http.static))
+  app.use(express.static(config.http.appStaticDir.replace('dist','public'), config.http.static))
   app.use(mw.logging.slowrequests)
 
-  var mongo       = require('./server/util/mongoInit')
   mongo.connect(() => {
     $timelapsed("APP Connected")
 
@@ -50,6 +50,9 @@ function run(config, done)
       app.use(mw.logging.domainWrap)
       app.use(mw.data.cache.itemReady('tags'))
 
+      mailman.init()
+      pairbot.init()
+
       app.get('/', mw.analytics.trackFirstRequest, mw.auth.authdRedirect('/dashboard'), app.renderHbs('home') )
       // app.use('/auth', routes('auth')(app))
       routes('auth')(app)
@@ -62,8 +65,7 @@ function run(config, done)
       app.use(['^/matchmaking*','^/adm/bookings*'],
         mw.authz.plnr, app.renderHbsAdmin('adm/pipeliner'))
 
-      app.use(['^/adm/pipeline*','^/adm/request*','^/adm/users*','^/adm/orders*','^/adm/experts*','^/adm/companys*',
-        '^/adm/views*','^/adm/posts*','^/adm/tags*','^/adm/chat*','^/adm/mail*','^/adm/redirects*'],
+      app.use(['^/adm/pipeline*','^/adm/request*','^/adm/users*','^/adm/orders*','^/adm/experts*','^/adm/posts*','^/adm/redirects*'],
         mw.authz.adm, app.renderHbsAdmin('adm/admin'))
 
       app.use(mw.seo.noTrailingSlash) // Must be after root '/' route

@@ -1,7 +1,6 @@
 module.exports = require('./_api').initAPI(
   require('../services/orders')
 , {
-  // buyMembership: (req) => [req.body.length,req.body.coupon,req.paymethod],
   getByIdForAdmin: (req) => [req.params.id],
   buyCredit: (req) => [req.body.total,req.body.coupon,req.body.payMethodId],
   buyDeal: (req) => [req.expertshaped,req.body.dealId,req.body.payMethodId],

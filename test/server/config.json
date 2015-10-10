@@ -1,5 +1,5 @@
 {
-  "specs":                "chat",
+  "specs":                "mailman",
   "stubs": {
     "on":                  false
   },
