@@ -18,7 +18,7 @@ var middleware = {
     return function(req, res, next) {
       if (req.isAuthenticated()) {
         if (req.originalUrl.indexOf('/api') == -1)
-          $log(`authd[${req.originalUrl}]`.cyan, req.user.name.white)
+          $log(req.user.name.white+`\t\t${req.originalUrl}`.cyan)
       }
       next()
     }
