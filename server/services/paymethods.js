@@ -3,11 +3,10 @@ var Rates              = require('./requests.rates')
 var PayMethod          = require('../models/paymethod')
 
 
-var CompanysSvc       = require('./companys')
-var UserSvc               = require('./users')
-var {Settings}            = require('../models/v0')
-var logging               = false
-var svc                   = new Svc(PayMethod, logging)
+var CompanysSvc        = require('./companys')
+var UserSvc            = require('./users')
+var logging            = false
+var svc                = new Svc(PayMethod, logging)
 
 var get = {
   getById(id, cb) {
@@ -48,23 +47,24 @@ var get = {
           }
         }
 
-        if (nonPayoutMethods.length > 0) return cb(e,nonPayoutMethods)
-        else {
-          Settings.findOne({userId:ctx.user._id}, (ee, s) => {
-            if (!s || !s.paymentMethods || s.paymentMethods.length == 0 || !_.find(s.paymentMethods,(pm)=>pm.type == 'stripe'))
-              return Wrappers.Braintree.getClientToken(cb)
+        cb(e,nonPayoutMethods)
+        // if (nonPayoutMethods.length > 0) return cb(e,nonPayoutMethods)
+        // else {
+        //   Settings.findOne({userId:ctx.user._id}, (ee, s) => {
+        //     if (!s || !s.paymentMethods || s.paymentMethods.length == 0 || !_.find(s.paymentMethods,(pm)=>pm.type == 'stripe'))
+        //       return Wrappers.Braintree.getClientToken(cb)
 
-            var existing = _.find(s.paymentMethods, (pm) => pm.type == 'stripe')
-            if (!existing) return cb(e,r)
-            else {
-              var {info,type} = existing
-              save.addPaymethod.call(ctx, {info,type,userId:ctx.user._id,name:`${ctx.user.name}'s card`,makeDefault:true}, (eee, pm) => {
-                if (eee) return cb(eee)
-                cb(null,[pm])
-              })
-            }
-          })
-        }
+        //     var existing = _.find(s.paymentMethods, (pm) => pm.type == 'stripe')
+        //     if (!existing) return cb(e,r)
+        //     else {
+        //       var {info,type} = existing
+        //       save.addPaymethod.call(ctx, {info,type,userId:ctx.user._id,name:`${ctx.user.name}'s card`,makeDefault:true}, (eee, pm) => {
+        //         if (eee) return cb(eee)
+        //         cb(null,[pm])
+        //       })
+        //     }
+        //   })
+        // }
       })
 
     })
@@ -158,7 +158,7 @@ var save = {
     UserSvc.getSession.call(this, (e, user) => {
       if (user.primaryPayMethodId && _.idsEqual(user.primaryPayMethodId,paymethod._id))
         UserSvc.changePrimaryPayMethodId.call(this, null, () => {})
-      Settings.remove({userId:this.user._id}, () => {})
+      // Settings.remove({userId:this.user._id}, () => {})
       svc.deleteById(paymethod._id, cb)
     })
   },

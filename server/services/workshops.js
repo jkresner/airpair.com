@@ -25,7 +25,7 @@ var workshops = {
   },
 
   getAllForRss(cb) {
-    throw new Error('Workshops.getAllForRss deprecated in v2 migration. Please let us know how the UX got you here!')
+    cb(V2DeprecatedError('Workshops.getAllForRss'))
     // var options = {sort: {'time': -1}, limit: 9}
     // svc.searchMany({},{ fields: fields.rssSelect, options }, (e, r) => {
     //   for (var w of r) {
