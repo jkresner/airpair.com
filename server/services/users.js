@@ -124,25 +124,25 @@ function updateAsIdentity(data, trackData, cb) {
 
 
 
-function toggleSessionItem(type, item, maxAnon, maxAuthd, comparator, trackData, cb)
-{
-  var up = {}
-  if (this.user) {
-    return svc.searchOne({ _id: this.user._id }, null, (e,r) => {
-      if (e || !r) return cb(e,r)
-      var list = util.toggleItemInArray(r[type], item, comparator)
-      if (list.length > maxAuthd) return cb(Error(`Max allowed ${type} reached`))
-      up[type] = list
-      updateAsIdentity.call(this, up, trackData, cb)
-    })
-  }
+// function toggleSessionItem(type, item, maxAnon, maxAuthd, comparator, trackData, cb)
+// {
+//   var up = {}
+//   if (this.user) {
+//     return svc.searchOne({ _id: this.user._id }, null, (e,r) => {
+//       if (e || !r) return cb(e,r)
+//       var list = util.toggleItemInArray(r[type], item, comparator)
+//       if (list.length > maxAuthd) return cb(Error(`Max allowed ${type} reached`))
+//       up[type] = list
+//       updateAsIdentity.call(this, up, trackData, cb)
+//     })
+//   }
 
-  var existing = this.session.anonData[type]
-  var list = util.toggleItemInArray(existing, item, comparator)
-  if (list.length > maxAnon) return cb(Error(`Max ${maxAnon} ${type} reached. <a href="/login">Login</a> to increase limit.`))
-  up[type] = list
-  updateAsIdentity.call(this, up, trackData, cb)
-}
+//   var existing = this.session.anonData[type]
+//   var list = util.toggleItemInArray(existing, item, comparator)
+//   if (list.length > maxAnon) return cb(Error(`Max ${maxAnon} ${type} reached. <a href="/login">Login</a> to increase limit.`))
+//   up[type] = list
+//   updateAsIdentity.call(this, up, trackData, cb)
+// }
 
 
 
@@ -151,21 +151,23 @@ var save = {
   //-------- Tags and bookmarks
 
   toggleTag(tag, cb) {
-    var name = tag.name
-    var tagId = tag._id
-    tag = { _id: svc.newId().toString(), tagId: tag._id, sort: 0 }
-    var tagCompator = (i) => _.idsEqual(i.tagId, tagId)
-    var trackData = { type: 'tag', name }
-    toggleSessionItem.call(this, 'tags', tag, 3, 6, tagCompator, trackData, cb)
+    throw new Error('User.toggleTag deprecated in migration. Please let us know the UX that go you here.')
+    // var name = tag.name
+    // var tagId = tag._id
+    // tag = { _id: svc.newId().toString(), tagId: tag._id, sort: 0 }
+    // var tagCompator = (i) => _.idsEqual(i.tagId, tagId)
+    // var trackData = { type: 'tag', name }
+    // toggleSessionItem.call(this, 'tags', tag, 3, 6, tagCompator, trackData, cb)
   },
 
   toggleBookmark(type, id, cb) {
-    if (!type) $log('toggleBookmark.type', type, cb)
-    var bookmark = { _id: svc.newId().toString(), objectId: id, type, sort: 0 }
-    var bookmarkComparator = (i) => _.idsEqual(i.objectId,id)
-    var props = cache.bookmark(type,id)
-    var trackData = { type: 'bookmark', objectType: type, objectId: id, url: props.url, name: props.title }
-    toggleSessionItem.call(this, 'bookmarks', bookmark, 3, 15, bookmarkComparator, trackData, cb)
+    throw new Error('User.toggleBookmark deprecated in migration. Please let us know the UX that go you here.')
+    // if (!type) $log('toggleBookmark.type', type, cb)
+    // var bookmark = { _id: svc.newId().toString(), objectId: id, type, sort: 0 }
+    // var bookmarkComparator = (i) => _.idsEqual(i.objectId,id)
+    // var props = cache.bookmark(type,id)
+    // var trackData = { type: 'bookmark', objectType: type, objectId: id, url: props.url, name: props.title }
+    // toggleSessionItem.call(this, 'bookmarks', bookmark, 3, 15, bookmarkComparator, trackData, cb)
   },
 
   //-- Used for saing sort order
@@ -175,44 +177,48 @@ var save = {
   },
 
   updateBookmarks(bookmarks, cb) {
-    updateAsIdentity.call(this, {bookmarks}, null, cb)
+    throw new Error('User.updateBookmarks deprecated in migration. Please let us know the UX that go you here.')
+    // updateAsIdentity.call(this, {bookmarks}, null, cb)
   },
 
   toggleSiteNotification(name, cb) {
-    var opts = { fields: { _id:1,siteNotifications:1} }
-    svc.searchOne({ _id:this.user._id }, opts, (e,r) => {
-      if (e) return cb(e)
-      var siteNotifications = (r) ? r.siteNotifications : []
-      if (!siteNotifications || siteNotifications.length == 0)
-        siteNotifications = [{name}]
-      else
-      {
-        var existing = _.find(siteNotifications, (n) => n.name == name)
-        if (existing)
-          siteNotifications = _.without(siteNotifications, existing)
-        else
-          siteNotifications.push({name})
-      }
+    throw new Error('User.toggleSiteNotification deprecated in migration. Please let us know the UX that go you here.')
 
-      svc.update(this.user._id, {siteNotifications}, Data.select.cb.siteNotifications(cb))
-    })
+    // var opts = { fields: { _id:1,siteNotifications:1} }
+    // svc.searchOne({ _id:this.user._id }, opts, (e,r) => {
+    //   if (e) return cb(e)
+    //   var siteNotifications = (r) ? r.siteNotifications : []
+    //   if (!siteNotifications || siteNotifications.length == 0)
+    //     siteNotifications = [{name}]
+    //   else
+    //   {
+    //     var existing = _.find(siteNotifications, (n) => n.name == name)
+    //     if (existing)
+    //       siteNotifications = _.without(siteNotifications, existing)
+    //     else
+    //       siteNotifications.push({name})
+    //   }
+
+    //   svc.update(this.user._id, {siteNotifications}, Data.select.cb.siteNotifications(cb))
+    // })
   },
 
   //-------- Admin user updates
 
   toggleUserInRole(userId, role, cb) {
-    svc.searchOne({ _id:userId }, null, (e,r) => {
-      if (!r.roles)
-        r.roles = [role]
-      else if ( _.contains(r.roles, role) )
-        r.roles = _.without(r.roles, role)
-      else
-        r.roles.push(role)
+    throw new Error('User.toggleUserInRole deprecated in migration. Please let us know the UX that go you here.')
+    // svc.searchOne({ _id:userId }, null, (e,r) => {
+    //   if (!r.roles)
+    //     r.roles = [role]
+    //   else if ( _.contains(r.roles, role) )
+    //     r.roles = _.without(r.roles, role)
+    //   else
+    //     r.roles.push(role)
 
-      // note here we are not updating as the identity
-      // so we call svc.update rather than update
-      svc.update(userId, r, cb)
-    })
+    //   // note here we are not updating as the identity
+    //   // so we call svc.update rather than update
+    //   svc.update(userId, r, cb)
+    // })
   },
 
   changeBio(bio, cb) {
