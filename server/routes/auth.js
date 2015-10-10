@@ -1,4 +1,3 @@
-var {logout,setTestLogin}    = require('../identity/auth/actions')
 var auth                     = require('../identity/auth/providers/index')
 var mw                       = require('../middleware/auth')
 var Router                    = require('express').Router
@@ -52,11 +51,18 @@ connect: Router()
 
 module.exports = function(app) {
 
-  app.get('/logout', mw.setReturnTo, logout(config.auth))
+  app.get('/logout', mw.setReturnTo, (req, res, next) => {
+    req.logout()
+    res.redirect(config.auth.loginUrl)
+  })
 
   // app.use('/signup', routes.signup)
   app.use('/v1/auth', routes.v1)
   app.use('/auth', routes.connect)
 
-  if (config.testlogin) app.get('/test/setlogin/:id', setTestLogin)
+  if (config.auth.test) {
+    // config.auth.test.defaultLoginLogic = mw.logic.auth.link
+    app.post(`/auth${config.auth.test.loginUrl}`, config.auth.test.loginHandler)
+  }
+
 }

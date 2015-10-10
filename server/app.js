@@ -27,6 +27,11 @@ function run(config, done)
   app.use(express.static(config.http.appStaticDir.replace('dist','public'), config.http.static))
   app.use(mw.logging.slowrequests)
 
+  require(`meanair-model`)(config).connect((e, DAL) => {
+    global.DAL = DAL
+    $timelapsed("DAL Connected", DAL)
+  })
+
   mongo.connect(() => {
     $timelapsed("APP Connected")
 
