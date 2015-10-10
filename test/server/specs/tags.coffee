@@ -284,12 +284,7 @@ update = ->
 
 module.exports = ->
 
-  # @timeout(2000)
-
-  # before (done) ->
-    # SETUP.initPosts done
-
-  # DESCRIBE("Get", get)
+  DESCRIBE("Get", get)
   DESCRIBE("Create", create)
   DESCRIBE("Update ", update)
 

@@ -42,7 +42,7 @@ addLocalUser = (userKey, opts, done) ->
 
  addAndLoginLocalUser = (originalUserKey, done) ->
   addLocalUser originalUserKey, {}, (userKey) ->
-    LOGIN userKey, (u) ->
+    LOGIN {key:userKey}, (u) ->
       GET '/session/full', {}, (s) ->
         s.userKey = userKey
         done(s)
