@@ -82,7 +82,7 @@ module.exports = mongoose.model('Order', new Schema({
   payment:        { required: true, type: {} },
 
   // Revenue attribution
-  marketingTags:  { type: [{}], 'default': [] },
+  // marketingTags:  { type: [{}], 'default': [] },
 
   // AirPair staff member watching the transaction
   owner:          { type: String, 'default': '' },
