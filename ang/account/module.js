@@ -1,4 +1,4 @@
-angular.module("APProfile", ['APTagInput'])
+angular.module("APProfile", [])
 
 .config((apRouteProvider) => {
 
@@ -6,7 +6,6 @@ angular.module("APProfile", ['APTagInput'])
   var route = apRouteProvider.route
   route('/me/password', 'Password', require('./password.html'))
   route('/me', 'Account', require('./account.html'),{resolve: authd})
-  route('/settings', 'Settings', require('./settings.html'),{resolve: authd})
 })
 
 
@@ -49,6 +48,12 @@ angular.module("APProfile", ['APTagInput'])
     })
   };
 
+  $scope.sendPasswordChange = function() {
+    SessionService.requestPasswordChange({email:$scope.session.email}, function(result){
+      $scope.passwordAlerts = [{ type: 'success', msg: `Password reset sent to ${$scope.session.email}` }]
+    }, ServerErrors.add)
+  }
+
 })
 
 
@@ -71,28 +76,5 @@ angular.module("APProfile", ['APTagInput'])
 
   if (!$scope.data.hash)
     $scope.alerts.push({ type: 'danger', msg: `Password token expired` })
-
-})
-
-
-.controller('SettingsCtrl', ($scope, SessionService, ServerErrors) => {
-
-
-  $scope.sendPasswordChange = function() {
-    SessionService.requestPasswordChange({email:$scope.session.email}, function(result){
-      $scope.passwordAlerts = [{ type: 'success', msg: `Password reset sent to ${$scope.session.email}` }]
-    }, ServerErrors.add)
-  }
-
-
-  SessionService.getMaillists({}, (r) => $scope.maillists = r)
-
-  $scope.toggleMaillist = (name) => {
-    SessionService.toggleMaillist({name},(r) => {
-      var sub = _.find($scope.maillists,(l)=>l.name==name)
-      sub.subscribed = r.subscribed
-      $scope.$apply()
-    })
-  }
 
 })

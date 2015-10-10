@@ -14,6 +14,16 @@ var setSessionVarFromQuery = (varName) =>
 
 var middleware = {
 
+  showAuthdPageViews() {
+    return function(req, res, next) {
+      if (req.isAuthenticated()) {
+        if (req.originalUrl.indexOf('/api') == -1)
+          $log(`authd[${req.originalUrl}]`.cyan, req.user.name.white)
+      }
+      next()
+    }
+  },
+
   // setAppUrlRegexList(app) {
   //   app.routeRegexps = []
   //   for (var stack of app._router.stack) {

@@ -79,93 +79,93 @@ module.exports = {
   },
 
 
-  syncMaillists(cb) {
-    throw Error("syncMaillists not implemented")
-  },
+  // syncMaillists(cb) {
+  //   throw Error("syncMaillists not implemented")
+  // },
 
 
-  getMaillists(cb) {
-    if (this.user)
-    {
-      // $log('getting from users db'.cyan, this.user)
-      $callSvc(this.svc.getById, this)(this.user._id, (e,user) => {
-        var cohortLists = (user.cohort && user.cohort.maillists) ? user.cohort.maillists : []
-        var FNAME = util.firstName(user.name)
-        var LNAME = user.name.replace(FNAME+' ','')
+  // getMaillists(cb) {
+  //   if (this.user)
+  //   {
+  //     // $log('getting from users db'.cyan, this.user)
+  //     $callSvc(this.svc.getById, this)(this.user._id, (e,user) => {
+  //       var cohortLists = (user.cohort && user.cohort.maillists) ? user.cohort.maillists : []
+  //       var FNAME = util.firstName(user.name)
+  //       var LNAME = user.name.replace(FNAME+' ','')
 
-        // $log('cohortLists'.magenta, cohortLists)
-        Wrappers.MailChimp.sync(user.email, {FNAME,LNAME}, cohortLists, (e,syncMaillists) => {
-          if (e) return cb(e)
-          // $log('syncMaillists'.yellow, e, syncMaillists)
-          // var subscribed = _.pluck(_.filter(r, (l) => l.subscribed),'name')
-          // if (_.difference(currentLists,subscribed).length > 0 ||
-            // _.difference(subscribed,currentLists).length > 0
-          // )
-          var cohort =  _.extend(user.cohort || {},{maillists:syncMaillists})
-          // $log('getMaillists cohort'.magenta, cohort)
-          this.svc.updateWithSet(user._id, {cohort}, (ee,rr)=>{})
+  //       // $log('cohortLists'.magenta, cohortLists)
+  //       Wrappers.MailChimp.sync(user.email, {FNAME,LNAME}, cohortLists, (e,syncMaillists) => {
+  //         if (e) return cb(e)
+  //         // $log('syncMaillists'.yellow, e, syncMaillists)
+  //         // var subscribed = _.pluck(_.filter(r, (l) => l.subscribed),'name')
+  //         // if (_.difference(currentLists,subscribed).length > 0 ||
+  //           // _.difference(subscribed,currentLists).length > 0
+  //         // )
+  //         var cohort =  _.extend(user.cohort || {},{maillists:syncMaillists})
+  //         // $log('getMaillists cohort'.magenta, cohort)
+  //         this.svc.updateWithSet(user._id, {cohort}, (ee,rr)=>{})
 
-          var listsAndStatus = []
-          for (var list of maillists) {
-            var subscription = _.clone(list) //-- need to be careful not to screw up the master list
-            // var subscribed = null
-            if (_.find(syncMaillists,(l)=>l==list.name)) subscription.subscribed = true
-            listsAndStatus.push(subscription)
-          }
-          // $log('listsAndStatus'.yellow, listsAndStatus)
-          cb(null, listsAndStatus)
-        })
-      })
-    }
-    else
-    {
-      // $log('in users session'.cyan, this.session.maillists)
-      //-- Just return what's in the users session because we can't tell
-      //-- if they have verified anyway
-      cb(null, this.session.maillists)
-    }
-  },
+  //         var listsAndStatus = []
+  //         for (var list of maillists) {
+  //           var subscription = _.clone(list) //-- need to be careful not to screw up the master list
+  //           // var subscribed = null
+  //           if (_.find(syncMaillists,(l)=>l==list.name)) subscription.subscribed = true
+  //           listsAndStatus.push(subscription)
+  //         }
+  //         // $log('listsAndStatus'.yellow, listsAndStatus)
+  //         cb(null, listsAndStatus)
+  //       })
+  //     })
+  //   }
+  //   else
+  //   {
+  //     // $log('in users session'.cyan, this.session.maillists)
+  //     //-- Just return what's in the users session because we can't tell
+  //     //-- if they have verified anyway
+  //     cb(null, this.session.maillists)
+  //   }
+  // },
 
-  toggleMaillist(body, cb) {
-    var {name} = body
-    if (this.user)
-    {
-      $callSvc(this.svc.getById, this)(this.user._id, (ee,user) => {
-        var cohortLists = (user.cohort) ? user.cohort.maillists : []
-        // $log('toggleMaillist cohortLists:'.cyan, cohortLists)
-        if (_.contains(cohortLists, name)) {
-          Wrappers.MailChimp.unsubscribe(name, user.email, (e,r) => cb(e,{name,subscribed:false}))
-          cohortLists = _.without(cohortLists, name)
-        }
-        else {
-          var FNAME = util.firstName(user.name)
-          var LNAME = user.name.replace(FNAME+' ','')
-          Wrappers.MailChimp.subscribe(name, user.email, {FNAME,LNAME}, 'html', false, false, (e,r) => cb(e,{name,subscribed:true}))
-          cohortLists.push(name)
-        }
-        // $log('toggleMaillist cohortLists2:'.cyan, cohortLists)
-        var cohort =  _.extend(user.cohort || {},{maillists:cohortLists})
-        // $log('updateWithSet', cohort)
-        this.svc.updateWithSet(user._id, {cohort}, (ee,rr)=>{})
-      })
-    }
-    else
-    {
-      var {email} = body
+  // toggleMaillist(body, cb) {
+  //   var {name} = body
+  //   if (this.user)
+  //   {
+  //     $callSvc(this.svc.getById, this)(this.user._id, (ee,user) => {
+  //       var cohortLists = (user.cohort) ? user.cohort.maillists : []
+  //       // $log('toggleMaillist cohortLists:'.cyan, cohortLists)
+  //       if (_.contains(cohortLists, name)) {
+  //         Wrappers.MailChimp.unsubscribe(name, user.email, (e,r) => cb(e,{name,subscribed:false}))
+  //         cohortLists = _.without(cohortLists, name)
+  //       }
+  //       else {
+  //         var FNAME = util.firstName(user.name)
+  //         var LNAME = user.name.replace(FNAME+' ','')
+  //         Wrappers.MailChimp.subscribe(name, user.email, {FNAME,LNAME}, 'html', false, false, (e,r) => cb(e,{name,subscribed:true}))
+  //         cohortLists.push(name)
+  //       }
+  //       // $log('toggleMaillist cohortLists2:'.cyan, cohortLists)
+  //       var cohort =  _.extend(user.cohort || {},{maillists:cohortLists})
+  //       // $log('updateWithSet', cohort)
+  //       this.svc.updateWithSet(user._id, {cohort}, (ee,rr)=>{})
+  //     })
+  //   }
+  //   else
+  //   {
+  //     var {email} = body
 
-      this.session.maillists = this.session.maillists || []
-      if (_.contains(this.session.maillists, name)) {
-        cb('Unsubscribe not supported for anonymous users. Please login.')
-        // this.session.maillists = _.without(this.session.maillists, name)
-        // Wrappers.MailChimp.unsubscribe(name, email, (e,r) => cb(e,this.session.maillists))
-      }
-      else {
-        this.session.maillists.push(name)
-        Wrappers.MailChimp.subscribe(name, email, {}, 'html', true, false, (e,r) => cb(e,this.session.maillists))
-      }
+  //     this.session.maillists = this.session.maillists || []
+  //     if (_.contains(this.session.maillists, name)) {
+  //       cb('Unsubscribe not supported for anonymous users. Please login.')
+  //       // this.session.maillists = _.without(this.session.maillists, name)
+  //       // Wrappers.MailChimp.unsubscribe(name, email, (e,r) => cb(e,this.session.maillists))
+  //     }
+  //     else {
+  //       this.session.maillists.push(name)
+  //       Wrappers.MailChimp.subscribe(name, email, {}, 'html', true, false, (e,r) => cb(e,this.session.maillists))
+  //     }
 
-      this.session.anonData.email = email
-    }
-  }
+  //     this.session.anonData.email = email
+  //   }
+  // }
 
 }
