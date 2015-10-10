@@ -1,5 +1,5 @@
 {
-  "specs":                "tags",
+  "specs":                "redirects tags",
   "stubs": {
     "on":                  true
   },
