@@ -11,7 +11,7 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
     list:   { template: require('./list.html'), controller: 'RequestListCtrl' },
     create: { resolve: authd, template: require('./new.html'), controller: 'RequestCtrl' },
     edit: { resolve: authd, template: require('./edit.html'), controller: 'RequestEditCtrl' },
-    help: { resolve: authd, template: require('./types.html'), controller: 'RequestTypesCtrl' },
+    // help: { resolve: authd, template: require('./types.html'), controller: 'RequestTypesCtrl' },
     review: { template: require('./review.html'), controller: 'ReviewCtrl' }
   };
 
@@ -88,9 +88,9 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
 })
 
 
-.controller('RequestTypesCtrl', function($scope) {
+// .controller('RequestTypesCtrl', function($scope) {
 
-})
+// })
 
 
 

@@ -6,7 +6,7 @@ angular.module("APExpert", ['APTagInput','APPayPal'])
   var exprd = apRouteProvider.resolver(['expert'])
   var route = apRouteProvider.route
   route('/be-an-expert', 'ExpertApplication', require('./beanexpert.html'),{resolve: authd})
-  route('/me/profile-preview', 'ProfilePreview', require('./profilepreview.html'),{resolve: authd})
+  // route('/me/profile-preview', 'ProfilePreview', require('./profilepreview.html'),{resolve: authd})
   route('/payouts', 'Payouts', require('./payouts.html'),{resolve: exprd})
   route('/office', 'ExpertDashboard', require('./office.html'),{resolve: exprd})
 })
@@ -158,7 +158,7 @@ angular.module("APExpert", ['APTagInput','APPayPal'])
 })
 
 
-.controller('ProfilePreviewCtrl', ($scope, $location, $q, SessionService) => {
+// .controller('ProfilePreviewCtrl', ($scope, $location, $q, SessionService) => {
 
 
-})
+// })
