@@ -14,7 +14,7 @@ var wrapper = {
     wrapper.api
       .get(`${bitlyUrl}/shorten?access_token=${accessToken}&longUrl=${link}`)
       .type('json')
-      .end((res)=>{
+      .end((e, res)=>{
         if (!res.ok) return cb(res.error)
         // $log('bitly', res.body)
         cb(null, `${shortDomain}${res.body.data.hash}`)
