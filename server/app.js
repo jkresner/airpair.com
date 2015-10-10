@@ -50,6 +50,9 @@ function run(config, done)
       app.use(mw.logging.domainWrap)
       app.use(mw.data.cache.itemReady('tags'))
 
+      mailman.init()
+      pairbot.init()
+
       app.get('/', mw.analytics.trackFirstRequest, mw.auth.authdRedirect('/dashboard'), app.renderHbs('home') )
       // app.use('/auth', routes('auth')(app))
       routes('auth')(app)
