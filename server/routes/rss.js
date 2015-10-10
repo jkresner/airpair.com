@@ -1,6 +1,6 @@
 var logging               = true
 var PostsSvc              = null
-var WorkshopsSvc          = null
+// var WorkshopsSvc          = null
 var RSS                   = require('rss')
 
 var allFeedOptions = {
@@ -11,23 +11,23 @@ var allFeedOptions = {
   ttl: '60'
 }
 
-var postsFeedOptions = {
-  title: 'AirPair Posts',
-  description: 'Blog Posts from AirPair',
-  feed_url: 'https://www.airpair.com/rss/posts',
-  categories: []
-}
+// var postsFeedOptions = {
+//   title: 'AirPair Posts',
+//   description: 'Blog Posts from AirPair',
+//   feed_url: 'https://www.airpair.com/rss/posts',
+//   categories: []
+// }
 
-var workshopsFeedOptions = {
-  title: 'AirPair Workshops',
-  description: 'Workshops from AirPair',
-  feed_url: 'https://www.airpair.com/rss/workshops',
-  categories: []
-}
+// var workshopsFeedOptions = {
+//   title: 'AirPair Workshops',
+//   description: 'Workshops from AirPair',
+//   feed_url: 'https://www.airpair.com/rss/workshops',
+//   categories: []
+// }
 
 var mixedFeedOptions = {
-  title: 'AirPair Posts & Workshops',
-  description: 'Posts & Workshops from AirPair',
+  title: 'AirPair Software Coding Tutorials & More',
+  description: 'Posts by Software Experts from AirPair',
   feed_url: 'https://www.airpair.com/rss',
   categories: []
 }
@@ -48,17 +48,17 @@ function generatePostFeedItem(data) {
   }
 }
 
-function generateWorkshopFeedItem(data) {
-  // $log('generateWorkshopFeedItem',_.pluck(data.tags, 'name'))
-  return {
-    title: data.title,
-    description: data.description,
-    date: data.time,
-    author: data.speakers[0].name,
-    url: data.url,
-    categories: _.pluck(data.tags, 'name')
-  }
-}
+// function generateWorkshopFeedItem(data) {
+//   // $log('generateWorkshopFeedItem',_.pluck(data.tags, 'name'))
+//   return {
+//     title: data.title,
+//     description: data.description,
+//     date: data.time,
+//     author: data.speakers[0].name,
+//     url: data.url,
+//     categories: _.pluck(data.tags, 'name')
+//   }
+// }
 
 var rssCache = {}
 
@@ -86,18 +86,18 @@ function rssRenderer() {
   var feeds = {}
 
 
-  return {
+  var _rss = {
 
     posts(req, res) {
       if (!PostsSvc) PostsSvc = require('../services/posts')
 
-      feeds.posts = defineRssFeed( postsFeedOptions )
+      feeds.posts = defineRssFeed( mixedFeedOptions || postsFeedOptions )
       feeds.posts.items = []
       feeds.posts.categories = []
 
       if (rssCache.posts)
       {
-        if (logging) $log(`render ${rssCache.posts.length} posts from cache`, rssCache.posts.length)
+        if (logging) $log(`RSS[${rssCache.posts.length}] posts from cache`)
         populate(feeds.posts, rssCache.posts, generatePostFeedItem)
         return render(res, feeds.posts)
       }
@@ -108,75 +108,78 @@ function rssRenderer() {
           return render(res, feeds.posts)
         }
 
-        // $log('render posts from db', posts.length)
+        $log(`RSS[${posts.length}] posts from db`)
         rssCache = _.extend(rssCache,{posts})
         populate(feeds.posts, posts, generatePostFeedItem)
         render(res, feeds.posts)
       })
     },
 
-    workshops(req, res) {
-      if (!WorkshopsSvc) WorkshopsSvc = require('../services/workshops')
+    // workshops(req, res) {
+    //   if (!WorkshopsSvc) WorkshopsSvc = require('../services/workshops')
 
-      feeds.workshops = defineRssFeed( workshopsFeedOptions )
-      feeds.workshops.items = []
-      feeds.workshops.categories = []
+    //   feeds.workshops = defineRssFeed( workshopsFeedOptions )
+    //   feeds.workshops.items = []
+    //   feeds.workshops.categories = []
 
-      if (rssCache.workshops)
-      {
-        // $log('render workshops from cache', rssCache.workshops.length)
-        populate(feeds.workshops, rssCache.workshops, generateWorkshopFeedItem)
-        return render(res, feeds.workshops)
-      }
+    //   if (rssCache.workshops)
+    //   {
+    //     // $log('render workshops from cache', rssCache.workshops.length)
+    //     populate(feeds.workshops, rssCache.workshops, generateWorkshopFeedItem)
+    //     return render(res, feeds.workshops)
+    //   }
 
-      WorkshopsSvc.getAllForRss((e,workshops) => {
-        $log('data access workshops')
-        if (e) {
-          $log(('error retrieving workshops for rss feed:' + e).red)
-          return render(res, feeds.workshops)
-        }
+    //   WorkshopsSvc.getAllForRss((e,workshops) => {
+    //     $log('data access workshops')
+    //     if (e) {
+    //       $log(('error retrieving workshops for rss feed:' + e).red)
+    //       return render(res, feeds.workshops)
+    //     }
 
-        rssCache = _.extend(rssCache,{workshops})
-        populate(feeds.workshops, workshops, generateWorkshopFeedItem)
-        render(res, feeds.workshops)
-      })
-    },
+    //     rssCache = _.extend(rssCache,{workshops})
+    //     populate(feeds.workshops, workshops, generateWorkshopFeedItem)
+    //     render(res, feeds.workshops)
+    //   })
+    // },
 
     mixed(req, res) {
-      if (!PostsSvc) PostsSvc = require('../services/posts')
-      if (!WorkshopsSvc) WorkshopsSvc = require('../services/workshops')
+      return _rss.posts(req, res)
+      // if (!PostsSvc) PostsSvc = require('../services/posts')
+      // // if (!WorkshopsSvc) WorkshopsSvc = require('../services/workshops')
 
-      feeds.mixed = defineRssFeed( mixedFeedOptions )
-      feeds.mixed.items = []
-      feeds.mixed.categories = []
+      // feeds.mixed = defineRssFeed( mixedFeedOptions )
+      // feeds.mixed.items = []
+      // feeds.mixed.categories = []
 
-      if (rssCache.posts && rssCache.workshops)
-      {
-        if (logging) $log(`render ${rssCache.posts.length + rssCache.workshops.length} mixed from cache`)
-        populate(feeds.mixed, rssCache.posts, generatePostFeedItem)
-        populate(feeds.mixed, rssCache.workshops, generateWorkshopFeedItem)
-        return render(res, feeds.mixed)
-      }
+      // if (rssCache.posts && rssCache.workshops)
+      // {
+      //   if (logging) $log(`render ${rssCache.posts.length + rssCache.workshops.length} mixed from cache`)
+      //   populate(feeds.mixed, rssCache.posts, generatePostFeedItem)
+      //   populate(feeds.mixed, rssCache.workshops, generateWorkshopFeedItem)
+      //   return render(res, feeds.mixed)
+      // }
 
-      PostsSvc.getRecentPublished((e, posts) => {
-        if (e) {
-          $log(('error retrieving posts for mixed rss feed:' + e).red)
-          return render(res, feeds.mixed)
-        }
-        WorkshopsSvc.getAllForRss((e, workshops) => {
-          if (e) {
-            $log(('error retrieving workshops for mixed rss feed:' + e).red)
-            return render(res, feeds.mixed)
-          }
-          rssCache = _.extend(rssCache,{posts,workshops})
-          if (logging) $log(`render ${rssCache.posts.length + rssCache.workshops.length} mixed from data access`)
-          populate(feeds.mixed, posts, generatePostFeedItem)
-          populate(feeds.mixed, workshops, generateWorkshopFeedItem)
-          render(res, feeds.mixed)
-        })
-      })
+      // PostsSvc.getRecentPublished((e, posts) => {
+      //   if (e) {
+      //     $log(('error retrieving posts for mixed rss feed:' + e).red)
+      //     return render(res, feeds.mixed)
+      //   }
+      //   WorkshopsSvc.getAllForRss((e, workshops) => {
+      //     if (e) {
+      //       $log(('error retrieving workshops for mixed rss feed:' + e).red)
+      //       return render(res, feeds.mixed)
+      //     }
+      //     rssCache = _.extend(rssCache,{posts,workshops})
+      //     if (logging) $log(`render ${rssCache.posts.length + rssCache.workshops.length} mixed from data access`)
+      //     populate(feeds.mixed, posts, generatePostFeedItem)
+      //     populate(feeds.mixed, workshops, generateWorkshopFeedItem)
+      //     render(res, feeds.mixed)
+      //   })
+      // })
     }
   }
+
+  return  _rss
 }
 
 module.exports = function(app) {

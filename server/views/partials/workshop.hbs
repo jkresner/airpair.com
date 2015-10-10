@@ -2,11 +2,11 @@
   <ol class="entry-meta breadcrumb">
     <li><a href="/workshops" target="_self">Workshops</a></li>
     <li><span class="entry-author" itemprop="author" itemscope="itemscope" itemtype="//schema.org/Person">
-      {{#if by.username}}
+      {{!-- {{#if by.username}}
         <a href="/me/{{by.username}}" class="entry-author-link" itemprop="url" rel="author" target="_self"><span class="entry-author-name" itemprop="name">{{by.name}}</span></a>
-      {{else}}
+      {{else}} --}}
         <span class="entry-author-name" itemprop="name">{{by.name}}</span>
-      {{/if}}
+      {{!-- {{/if}} --}}
       </span>
     </li>
   </ol>
@@ -37,7 +37,7 @@
 
       <h2>Presenting</h2>
       <ul>
-        {{#each speakers}}
+        {{#each speakers }}
         <li>
           <h3>{{ name }}</h3>
           <img src="//0.gravatar.com/avatar/{{ gravatar }}?s=400" class="speaker" />
@@ -54,20 +54,7 @@
 
     <p>{{ description }}</p>
 
-    <div class="action">
-      {{#if youtube }}
-      <div>
-        <a href="/workshops" target="_self" class="btn" style="width:300px">Get access to all live talks</a>
-        <label>with AirPair Membership</label>
-      </div>
-      {{else}}
-      <div>
-        <a href="/workshops/signup/{{slug}}" class="btn" style="width:300px">Sign up to attend workshop</a>
-        <label>Limited space</label>
-      </div>
-      {{/if}}
-    </div>
-    <div class="player">
+    {{!-- <div class="player">
     {{#if youtube }}
       <div class="recording">
         <iframe width="640" height="360" src="//www.youtube-nocookie.com/embed/{{youtube}}" frameborder="0" allowfullscreen></iframe>
@@ -163,7 +150,7 @@
   </svg>
       </div>
     {{/if}}
-    </div>
+    </div> --}}
 
 
     <hr />

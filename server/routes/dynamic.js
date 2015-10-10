@@ -37,10 +37,6 @@ module.exports = function(app) {
           req.workshop.by = req.workshop.speakers[0]; cb(null,req.workshop)
         }))
 
-    .get('/workshops-slide/:workshop',
-      app.renderHbsViewData('workshopsslide', {},
-        (req, cb) => cb(null,req.workshop) ))
-
 
     .get('/review/:review',
       noCrawl('/'),
