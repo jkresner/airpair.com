@@ -7,7 +7,7 @@ initGlobals(config)
 
 SCREAM          = require('meanair-scream')
 global.SETUP    = require('./helpers/setup')
-
+global.newId    = -> new DB.ObjectId()
 
 
 loginHandler = (req, cb) ->

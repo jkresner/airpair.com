@@ -11,6 +11,15 @@ module.exports = {
   PAYMETHOD: {
     TYPE: ['stripe','braintree','paypal',
            'payout_paypal','payout_veno','payout_coinbase']
+  },
+
+  PAYOUT: {
+    LINE_TYPE: ['airpair','post'] //,'social','referral','adjustment'
+  },
+
+  EXPERT: {
+    DEAL_TYPE: ['airpair', 'offline', 'code-review', 'article', 'workshop'],
+    DEAL_TARGET_TYPE: ['all','user','company','newsletter','past-customers','code']
   }
 
 }
