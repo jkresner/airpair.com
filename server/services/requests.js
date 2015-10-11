@@ -1,11 +1,10 @@
 var logging               = false
-var md5           = require('../util/md5')
-var Svc                = require('./_service')
-var Rates              = require('./requests.rates')
-var Request            = require('../models/request')
-var Booking            = require('../models/booking')
-var Order              = require('../models/order')
-var User               = require('../models/user')
+var md5                   = require('../util/md5')
+var Svc                   = require('./_service')
+var Rates                 = require('./requests.rates')
+var Request               = require('../models/request')
+var {Order,Booking}       = DAL
+var User                  = require('../models/user')
 var Roles                 = require('../../shared/roles.js')
 var UserSvc               = require('../services/users')
 var PaymethodsSvc         = require('../services/paymethods')
@@ -30,11 +29,11 @@ var get = {
             r.prevs = _.without(requests,thisR)
             var selectOrdersFields = require('./orders.data').select.listAdmin
             //-- using models instead of services to avoid circular dependencies
-            Order.find({userId:r.userId}, selectOrdersFields,(eeer,orders) => {
+            Order.getManyByQuery({userId:r.userId}, selectOrdersFields, (eeer,orders) => {
               r.orders = orders
               r.bookings = []
               if (orders.length == 0) return cb(eeer,r)
-              Booking.find({customerId:r.userId},{},{ sort: { '_id': -1 } },(eerr,bookings) => {
+              Booking.getManyByQuery({customerId:r.userId},{ sort: {'_id':-1 }},(eerr,bookings) => {
                 r.bookings = bookings
                 cb(eerr,r)
               })
@@ -54,7 +53,7 @@ var get = {
         r.user = user
         var exclude = _.map(r.suggested||[],(s)=>s.expert._id.toString())
         MojoSvc.getGroupMatch(r.tags, {take:5,exclude,maxRate:r.budget},(ee,group)=>{
-          $log('getByIdForMatchmaker', r.tags, ee, group)
+          // $log('getByIdForMatchmaker', r.tags, ee, group)
           r.groupMatch = group
           return cb(ee,r)
         })

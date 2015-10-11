@@ -158,31 +158,6 @@ stories = {
       providerName, data.paymethods[pmKey],{},(e,r)->cb(r))
 
 
-  createNewExpert: (seedKey, expData, done) ->
-    userKey = "#{seedKey}#{timeSeed()}"
-    username = "#{seedKey}-#{timeSeed()}"
-    initials = "ap-#{timeSeed()}"
-    localization = data.wrappers.localization_melbourne
-    bio = "a bio for apexpert 1 #{timeSeed()}"
-    user = _.extend({initials,localization,bio}, data.users[seedKey])
-    if (user.social)
-      user.social.gh = user.social.gh || data.users.ape1.social.gh
-    else
-      user.social = { gh: data.users.ape1.social.gh }
-    user._id = newId()
-    user.username = userKey
-    user.googleId = userKey
-    user.google = user.google || data.users.ape1.google
-    user.email = user.email.replace('@',timeSeed()+'@')
-    db.ensureDoc 'User', user, ->
-      data.users[userKey] = user
-      LOGIN userKey, (s) ->
-        s.userKey = userKey
-        d = rate: 70, breif: 'yo', tags: [data.tags.angular]
-        POST "/experts/me", d, {}, (expert) ->
-          done(s, expert)
-
-
   newLoggedInExpert: (userKey, done) ->
     user = dataHelpers.expertUserData(userKey)
     seedExpert = dataHelpers.expertData(userKey, user)
