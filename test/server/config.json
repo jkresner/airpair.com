@@ -1,5 +1,5 @@
 {
-  "specs":                "paymethods redirects tags expertsMojo",
+  "specs":                "orders",
   "stubs": {
     "on":                  true
   },

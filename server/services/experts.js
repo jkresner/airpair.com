@@ -18,7 +18,7 @@ var get = {
   },
 
   getMe(cb) {
-    Expert.getByQuery({userId:this.user._id}, null, selectCB.me((e,r)=>{
+    Expert.getByQuery({userId:this.user._id}, selectCB.me((e,r)=>{
       if (!e && !r) return cb(null, {user:selectFromObject(this.user, select.userCopy)})
       cb(e,r)
     }))

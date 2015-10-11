@@ -1,69 +1,82 @@
-var logging                 = false
-var Svc                     = require('./_service')
-var Order                   = require('../models/order')
-var UsersSvc                = require('./users')
-var PayMethodSvc            = require('./paymethods')
-var RequestsSvc             = require('./requests')
-var Data                    = require('./orders.data')
-var {select,opts}           = Data
-var OrderUtil               = require('../../shared/orders.js')
-var DateTime                = util.datetime
-var {base}                  = Data
-var svc                     = new Svc(Order, logging)
-var ObjectId                = require('mongoose').Types.ObjectId
+var logging                   = false
+var {Order,Paymethod,Expert}  = DAL
+var PaymethodsSvc             = require('./paymethods')
+var UsersSvc                  = require('./users')
+var RequestsSvc               = require('./requests')
+var Data                      = require('./orders.data')
+var {select,opts,query}       = Data
+var OrderUtil                 = require('../../shared/orders.js')
+var DateTime                  = util.datetime
+var {base}                    = Data
+var {ObjectId}                = require('mongoose').Types
+
 
 OrderUtil.calculateUnitPrice = (expert, type) => expert.rate + base[type]
 OrderUtil.calculateUnitProfit = (expert, type) => base[type] // TODO fix this for requests
 
+var svc = {
+  newTouch(action) {
+    return {
+      action,
+      utc: new Date(),
+      by: { _id: this.user._id, name: this.user.name }
+    }
+  },
+  idFromString(id) {
+    return ObjectId(id.toString())
+  }
+}
 
 var get = {
 
   getById(id, cb)
   {
-    svc.getById(id, cb)
+    Order.getById(id, cb)
   },
 
   getByIdForAdmin(id, cb)
   {
-    svc.getById(id, cb)
+    Order.getById(id, cb)
   },
 
   getMultipleOrdersById(ids, cb)
   {
-    svc.getManyById(ids, cb)
+    Order.getManyByQuery({_id:{$in:ids}}, cb)
   },
 
   getMyOrders(cb)
   {
-    svc.searchMany({userId:this.user._id}, { options: opts.orderByNewest }, cb)
+    Order.getManyByQuery({userId:this.user._id}, opts.orderByNewest, cb)
   },
 
   getMyOrdersWithCredit(payMethodId, cb)
   {
-    PayMethodSvc.getById.call(this, payMethodId, (e,r) => {
+    Paymethod.getById(payMethodId, (e,r) => {
       if (e) return cb(e)
-      var q = Data.query.creditRemaining(this.user._id, r._id)
-      svc.searchMany(q, { options: opts.orderByOldest }, cb)
+      var q = query.creditRemaining(this.user._id, r._id)
+      Order.getManyByQuery(q, opts.orderByOldest, cb)
     })
   },
 
   getMyOrdersForDeal(dealId, cb)
   {
-    var q = Data.query.dealMinutesRemaining(this.user._id, dealId)
-    svc.searchMany(q, { options: opts.orderByOldest }, cb)
+    var q = query.dealMinutesRemaining(this.user._id, dealId)
+    Order.getManyByQuery(q, opts.orderByOldest, cb)
   },
 
   getMyDealOrdersForExpert(expertId, cb)
   {
-    var q = Data.query.dealsForExpertWithMinutesRemaining(this.user._id, expertId)
-    svc.searchMany(q, { options: opts.orderByOldest }, cb)
+    var q = query.dealsForExpertWithMinutesRemaining(this.user._id, expertId)
+    Order.getManyByQuery(q, opts.orderByOldest, cb)
   },
 
   getByQueryForAdmin(start, end, userId, cb)
   {
-    var q = Data.query.inRange(start,end)
+    var q = query.inRange(start,end)
     if (userId) q.userId = userId
-    svc.searchMany(q, { fields: select.listAdmin, options: opts.orderByNewest }, select.cb.forAdmin(cb))
+    var options = _.extend({},opts.orderByNewest)
+    options.select = select.listAdmin
+    Order.getManyByQuery(q, options, select.cb.forAdmin(cb))
   },
 
   getOrdersForPayouts(cb)
@@ -71,11 +84,11 @@ var get = {
     // TODO, after we've paid out all the new orders and
     // migrated old paidout lines to payouts, remove extra expertId query
     // and use the userId
-    require('./experts').getMe.call(this, (e, expert)=>{
+    Expert.getByQuery({userId:this.user._id}, (e, expert) => {
       if (e || !expert) return cb(e,expert)
       var q = Data.query.expertPayouts(expert._id)
       // console.log('expert.q', q)
-      svc.searchMany(q, {options: opts.orderByNewest}, select.cb.forPayout(cb))
+      Order.getManyByQuery(q, opts.orderByNewest, select.cb.forPayout(cb))
     })
   },
 
@@ -88,7 +101,7 @@ var Lines = {
     if (total % 1 != 0) total = parseFloat(total.toFixed(2))
     if (profit % 1 != 0) profit = parseFloat(profit.toFixed(2))
 
-    return {_id: svc.newId(),type, qty, unitPrice, total, balance, profit, info}
+    return {_id: Order.newId(), type, qty, unitPrice, total, balance, profit, info}
   },
   credit(paid, total, expires, source)
   {
@@ -159,7 +172,7 @@ function makeOrder(byUser, lineItems, payMethodId, forUserId, requestId, dealId,
   forUserId = (forUserId) ? svc.idFromString(forUserId) : byUserId
 
   var o = {
-    _id: svc.newId(),
+    _id: new ObjectId(),
     utc: new Date(),
     userId: forUserId, // May be different from the identity (which could be an admin)
     total: 0,
@@ -193,7 +206,7 @@ function makeOrder(byUser, lineItems, payMethodId, forUserId, requestId, dealId,
   if (!payMethodId && o.total == 0) cb(null, o)
   else
   {
-    PayMethodSvc.getById.call({user:byUser}, payMethodId, (e,payMethod) => {
+    PaymethodsSvc.getById.call({user:byUser}, payMethodId, (e,payMethod) => {
       if (e || !payMethod || !payMethod.userId) return errorCB(e || Error(`Could not find payMethod ${payMethodId}`))
 
       o.payMethod = payMethod // only for passing around, the object won't get saved to db
@@ -218,7 +231,7 @@ function chargeAndTrackOrder(o, errorCB, saveCB)
   else
   {
     if (logging) $log('orders.svc.charge', o)
-    PayMethodSvc.charge(o.total, o._id, o.payMethod, (e,r) => {
+    PaymethodsSvc.charge(o.total, o._id, o.payMethod, (e,r) => {
       if (e) {
         $log('e', e)
         return errorCB(e)
@@ -294,7 +307,7 @@ function bookUsingDeal(bookingId, expert, time, minutes, type, dealId, cb)
 
       chargeAndTrackOrder(order, cb, (e,o) => {
         // console.log('inserting deal minutes redeemed order', order.total, order._id, order.userId)
-        svc.updateAndInsertOneBulk(ordersToUpdate, o, (e,r) => cb(e,o))
+        Order.bulkOperation([o], ordersToUpdate, [], (e,r) => cb(e,o))
       })
     })
   })
@@ -343,7 +356,7 @@ function bookUsingCredit(expert, minutes, total, lineItems, expectedCredit, payM
       chargeAndTrackOrder(order, cb, (e,o) => {
         if (request) $callSvc(RequestsSvc.updateWithBookingByCustomer,this)(request, o, (e,r) => {})
         // console.log('inserting cred redeemed order', order.total, order._id, order.userId)
-        svc.updateAndInsertOneBulk(ordersToUpdate, o, (e,r) => cb(e,o))
+        Order.bulkOperation([o], ordersToUpdate, [], (e,r) => cb(e,o))
       })
     })
   })
@@ -364,7 +377,7 @@ function _createBookingOrder(expert, time, minutes, type, credit, payMethodId, r
     makeOrder(this.user, lineItems, payMethodId, null, requestId, null, cb, (e, order) => {
       chargeAndTrackOrder(order, cb, (e,o) => {
         if (request) $callSvc(RequestsSvc.updateWithBookingByCustomer,this)(request, o, (e,r) => {})
-        svc.create(o, cb)
+        Order.create(o, cb)
       })
     })
   }
@@ -385,7 +398,7 @@ var save = {
 
     makeOrder(this.user, lineItems, payMethodId, null, null, dealId, cb, (e, order) => {
       // $log('buyCredit.order', order)
-      chargeAndTrackOrder(order, cb, (e,o) => svc.create(o, cb))
+      chargeAndTrackOrder(order, cb, (e,o) => Order.create(o, cb))
     })
   },
 
@@ -409,7 +422,7 @@ var save = {
 
     makeOrder(this.user, lineItems, payMethodId, null, null, null, cb, (e, order) => {
       // $log('buyCredit.order', order)
-      chargeAndTrackOrder(order, cb, (e,o) => svc.create(o, cb))
+      chargeAndTrackOrder(order, cb, (e,o) => Order.create(o, cb))
     })
   },
 
@@ -429,7 +442,7 @@ var save = {
 
     mailman.sendTemplate('customer-got-credit', {total,fromName:this.user.name}, toUser)
     makeOrder(forUser, lineItems, null, toUser._id, null, null, cb, (e, order) =>
-      chargeAndTrackOrder(order, cb, (e,o) => svc.create(o, cb))
+      chargeAndTrackOrder(order, cb, (e,o) => Order.create(o, cb))
     )
   },
 
@@ -464,12 +477,14 @@ var save = {
 
   releasePayout(order, booking, cb)
   {
-    var payoutLine = _.find(order.lineItems, (li) =>
+    var {lineItems} = order
+
+    var payoutLine = _.find(lineItems, (li) =>
       li.info && li.info.paidout === false)
 
     payoutLine.info.released = svc.newTouch.call(this,'release')
 
-    svc.update(order._id, order, (e,r)=>{
+    Order.updateSet(order._id, {lineItems}, (e,r)=>{
       if (booking && booking.chat) {
         var d = {byName:this.user.name,bookingId:booking._id}
         pairbot.sendSlackMsg(booking.chat.providerId, 'expert-payment-released', d)
