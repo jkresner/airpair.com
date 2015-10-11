@@ -1,5 +1,5 @@
 {
-  "specs":                "redirects tags",
+  "specs":                "mailman redirects tags",
   "stubs": {
     "on":                  true
   },
@@ -20,7 +20,8 @@
   "paths": {
     "specs":              "specs",
     "fixtures":           "../data/fixtures",
-    "bson":               "../data/bson"
+    "bson":               "../data/bson",
+    "stories":            "stories"
   },
   "seed": {
     "force":              false,

@@ -84,23 +84,24 @@ raw = ->
 
 
 
-#   describe 'Spinners auto: ', ->
+spinners = ->
 
-#     it 'Pipeliners notify booking', itDone ->
-#       SETUP.addAndLoginLocalUserWhoCanMakeBooking 'ckni', (s) ->
-#         airpair1 = datetime: moment().add(2, 'day'), minutes: 120, type: 'private', payMethodId: s.primaryPayMethodId
-#         POST "/bookings/#{data.experts.dros._id}", airpair1, {}, (booking1) ->
-#           expect(send.callCount).to.equal(3)
-#           expectStartsWith(send.args[1][0].subject, "{Booking} by #{s.name} for #{booking1.participants[1].info.name}")
-#           expectContains(send.args[1][0].text, "/#{booking1._id}")
-#           expectContains(send.args[1][0].text, "http://adm.airpa.ir/b/#{booking1._id}")
-#           expectContains(send.args[1][0].text, 'Daniel Roseman')
-#           expectContains(send.args[1][0].text, s.name)
-#           expectContains(send.args[1][0].html, booking1._id)
-#           expectContains(send.args[1][0].from,'AP <team@airpair.com>')
-#           expectStartsWith(send.args[2][0].subject, "You got booked to AirPair with #{s.name}")
-#           expectContains(send.args[2][0].from,'Pairbot <team@airpair.com>')
-#           DONE()
+  IT 'Pipeliners notify booking', ->
+
+    STORY.newUser 'ckni', {paymethod:true,login:true}, (s) ->
+      airpair1 = datetime: moment().add(2, 'day'), minutes: 120, type: 'private', payMethodId: s.primaryPayMethodId
+      POST "/bookings/#{FIXTURE.experts.dros._id}", airpair1, {}, (booking1) ->
+        expect(send.callCount).to.equal(3)
+        expectStartsWith(send.args[1][0].subject, "{Booking} by #{s.name} for #{booking1.participants[1].info.name}")
+        expectContains(send.args[1][0].text, "/#{booking1._id}")
+        expectContains(send.args[1][0].text, "http://adm.airpa.ir/b/#{booking1._id}")
+        expectContains(send.args[1][0].text, 'Daniel Roseman')
+        expectContains(send.args[1][0].text, s.name)
+        expectContains(send.args[1][0].html, booking1._id)
+        expectContains(send.args[1][0].from,'AP <team@airpair.com>')
+        expectStartsWith(send.args[2][0].subject, "You got booked to AirPair with #{s.name}")
+        expectContains(send.args[2][0].from,'Pairbot <team@airpair.com>')
+        DONE()
 
 
 #     it 'Pipeliners notify request and reply', itDone ->
@@ -113,7 +114,7 @@ raw = ->
 #         expectContains(send.args[0][0].text, s.name)
 #         LOGIN 'snug', (sExp) ->
 #           reply = expertComment: "I'll take it", expertAvailability: "Real-time", expertStatus: "available"
-#           PUT "/requests/#{r._id}/reply/#{data.experts.snug._id}", reply, {}, (r2) ->
+#           PUT "/requests/#{r._id}/reply/#{FIXTURE.experts.snug._id}", reply, {}, (r2) ->
 #             expect(send.callCount).to.equal(3)
 #             # $log(send.args[1][1].subject)
 #             expectStartsWith(send.args[1][0].subject, "[Reply] AVAILABLE by Ra'Shaun Stovall for #{s.name}")
@@ -126,18 +127,18 @@ raw = ->
 #             DONE()
 
 
-#     it 'Expert gets notification on booking', itDone ->
-#       _id = ObjectId("55555ae4b38fc91937086df7")
-#       d = {byName:"Jonyisalive 5", expertName:"Jonathon Kaye", bookingId:_id,minutes:60}
-#       mailman.sendTemplate 'expert-booked', d, {name:'Karan Kurani',email:'karankurani@testmail.com'}, ->
-#         expect(send.callCount).to.equal(1)
-#         mail = send.args[0][0]
-#         expectStartsWith(mail.subject,'You got booked to AirPair with Jonyisalive 5')
-#         expectContains(mail.from,'Pairbot <team@airpair.com>')
-#         expectContains(mail.text,'https://www.airpair.com/bookings/55555ae4b38fc91937086df7')
-#         expectContains(mail.text,'60 minutes')
-#         expectContains(mail.html,'55555ae4b38fc91937086df7')
-#         DONE()
+    IT 'Expert gets notification on booking', ->
+      _id = ObjectId("55555ae4b38fc91937086df7")
+      d = {byName:"Jonyisalive 5", expertName:"Jonathon Kaye", bookingId:_id,minutes:60}
+      mailman.sendTemplate 'expert-booked', d, {name:'Karan Kurani',email:'karankurani@testmail.com'}, ->
+        expect(send.callCount).to.equal(1)
+        mail = send.args[0][0]
+        expectStartsWith(mail.subject,'You got booked to AirPair with Jonyisalive 5')
+        expectContains(mail.from,'Pairbot <team@airpair.com>')
+        expectContains(mail.text,'https://www.airpair.com/bookings/55555ae4b38fc91937086df7')
+        expectContains(mail.text,'60 minutes')
+        expectContains(mail.html,'55555ae4b38fc91937086df7')
+        DONE()
 
 
 
@@ -174,16 +175,22 @@ module.exports = ->
 
 
   before (done) ->
-    # @braintreepaymentStub = SETUP.stubBraintreeChargeWithMethod()
+    @braintreepaymentStub = SETUP.stubBraintreeChargeWithMethod()
     global.config.log.mail = true
     global.mailman = require('../../../server/util/mailman')()
-    # global.mailman.getGroupList 'spinners', ->
-      # global.mailman.getGroupList 'pipeliners', ->
+    global.mailman.getGroupList 'spinners', ->
+      global.mailman.getGroupList 'pipeliners', ->
+        done()
         # SETUP.initExperts done
-    done()
+
+  beforeEach ->
+    STUB.sync(Wrappers.Slack, 'checkUserSync', null)
+    STUB.cb(Wrappers.Slack, 'getUsers', FIXTURE.wrappers.slack_users_list)
+    STUB.cb(Wrappers.Slack, 'getChannels', FIXTURE.wrappers.slack_channels_list)
+    STUB.cb(Wrappers.Slack, 'getGroups', FIXTURE.wrappers.slack_groups_list)
 
   after ->
-    # @braintreepaymentStub.restore()
+    @braintreepaymentStub.restore()
     global.mailman = origMailman
 
 
@@ -195,4 +202,6 @@ module.exports = ->
 
 
   DESCRIBE "Raw", raw
+  DESCRIBE "Spinners", spinners
+
 
