@@ -1,5 +1,5 @@
 {
-  "specs":                "mailman redirects tags",
+  "specs":                "paymethods",
   "stubs": {
     "on":                  true
   },
@@ -15,7 +15,8 @@
   "mongo": {
     "url":                { "appConfig": "mongoUri" },
     "collections":        ["V1Tests","Users","Experts","Bookings","Orders",
-          "Paymethods","Payouts","Posts","Requests","Tags","Templates"]
+                           "Companies","Paymethods","Payouts","Posts",
+                           "Requests","Tags","Templates"]
   },
   "paths": {
     "specs":              "specs",

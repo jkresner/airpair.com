@@ -87,7 +87,6 @@ raw = ->
 spinners = ->
 
   IT 'Pipeliners notify booking', ->
-
     STORY.newUser 'ckni', {paymethod:true,login:true}, (s) ->
       airpair1 = datetime: moment().add(2, 'day'), minutes: 120, type: 'private', payMethodId: s.primaryPayMethodId
       POST "/bookings/#{FIXTURE.experts.dros._id}", airpair1, {}, (booking1) ->
