@@ -1,14 +1,7 @@
 module.exports = {
 
-  ilap: { name:"Igor Lebovic",email:"il@airpair.com" },
-  scap: { _id:"5418c03f8f8c80299bcc4783",name:"Shane",email:"sc@airpair.com" },
   jkap: { _id:ObjectId("5175efbfa3802cc4d5a5e6ed"),name:"Jonathon Kresner",email:"jk@airpair.com" },
   jkjk: { name:"Jon Kresner",email:"jonk@airpair.com" },
-  pgap: { name:"Prateek Gupta",email:"pg@airpair.com" },
-  prat: { name:"Prateek Gupta",email:"prateek@gupta.com" },
-  pgup: { name:"Prateek Gupta",email:"prateek@gup.com" },
-  adap: { name:"Ajay Desai",email:"ad@airpair.com" },
-  ajde: { name:"Ajay Desai",email:"ajay@desai.com" },
   arys: { name:"Alyssa Reese",email:"aresse@apr.com" },
   alys: { name:"Alyssa Reese",email:"aresse@gmail.com" },
   alry: { name:"Alyssa Reese",email:"aresse@hotmail.com" },
@@ -256,7 +249,7 @@ module.exports = {
 
 
   aone: {
-    _id: "5452cea65f221efa174237b4",
+    _id: ObjectId("5452cea65f221efa174237b4"),
     email: 'airpairone001@gmail.com',
     name: 'AirPair TestOne',
     local:
@@ -277,7 +270,7 @@ module.exports = {
   },
 
   dymo: {
-    "_id" : "534d3e5d1c67d1a4859d2d5b",
+    "_id" : ObjectId("534d3e5d1c67d1a4859d2d5b"),
     "email" : "alex@alexdymo.com",
     "emailVerified" : true,
     "name" : "Alexander Dymo",
@@ -391,7 +384,7 @@ module.exports = {
   },
 
   ape1: {
-    "_id" : "54f381551197aff12228380c",
+    "_id" : ObjectId("54f381551197aff12228380c"),
     "googleId" : "107399914803761861041",
     "google" : {
       "provider" : "google",
@@ -467,7 +460,7 @@ module.exports = {
 
   samt: {
     "__v" : 0,
-    "_id" : "53a852db1c67d1a4859d3661",
+    "_id" : ObjectId("53a852db1c67d1a4859d3661"),
     "cohort" : {
         "engagement" : {
             "visit_first" : "2014-06-23T16:16:27.000Z",
@@ -556,7 +549,7 @@ module.exports = {
 
   bbe: {
     "__v":0,
-    "_id":"534db6bc1c67d1a4859d2d72",
+    "_id":ObjectId("534db6bc1c67d1a4859d2d72"),
     "cohort": {
       "engagement":{
         "visit_first":"2014-04-15T22:46:20.000Z","visit_signup":"2014-04-15T22:46:20.000Z","visit_last":"2014-11-01T17:46:24.653Z","visits":["2014-11-01T00:00:00.000Z"]
@@ -578,46 +571,8 @@ module.exports = {
     "twitterId":31477063
   },
 
-  abha: {
-    "__v" : 0,
-    "_id" : ObjectId("53336a211c67d1a4859d2a04"),
-    "cohort" : {
-        "engagement" : {
-            "visit_first" : "2014-03-27T00:00:33.000Z",
-            "visit_signup" : "2014-03-27T00:00:33.000Z",
-            "visit_last" : "2014-12-17T00:05:08.606Z",
-            "visits" : ["2014-11-13T00:00:00.000Z"]
-        },
-        "aliases" : [
-            "9bSMPH56FSLl78boK48wphzFp13ey5Hf"
-        ]
-    },
-    "email" : "abeisgreat@abeisgreat.com",
-    "emailVerified" : true,
-    "local" : {},
-    "name" : "Abe Haskins",
-    "social" : {
-      "tw" : {
-        "id" : 2909811,
-        "username" : "abeisgreat",
-        "pic" : {"value" : "https://pbs.twimg.com/profile_images/2089417473/IMG_5181_normal.jpg" }
-      },
-      "in" : {
-          "id" : "2LZ2W07M-3",
-          "displayName" : "Abe Haskins"
-      },
-      "so" : {
-          "id" : 1570248,
-          "website_url" : "http://www.abehaskins.com",
-          "link" : "1570248/abeisgreat",
-          "reputation" : 872,
-          "profile_image" : "https://www.gravatar.com/avatar/fbb79df0f24e736c8e37f9f195a738cc?s=128&d=identicon&r=PG"
-      },
-    }
-  },
-
   narv :{
-    "_id" : "5421793a8f8c80299bcc4852",
+    "_id" : ObjectId("5421793a8f8c80299bcc4852"),
     "__v" : 0,
     "cohort" : {
         "engagement" : {
@@ -768,7 +723,7 @@ module.exports = {
   },
 
   aril: {
-    "_id" : "5230d19766a6f999a465f7e0",
+    "_id" : ObjectId("5230d19766a6f999a465f7e0"),
     "cohort" : {
         "engagement" : {
             "visit_first" : "2013-09-11T20:24:55.000Z",
@@ -1955,6 +1910,7 @@ module.exports = {
     "username" : "davilima6",
     "localization" : {
       "timezone" : "Brasilia Standard Time",
+      "timezoneData": { timeZoneId: "asdf" },
       "location" : "Aracaju - SE, Brasil",
     },
     "social" : {

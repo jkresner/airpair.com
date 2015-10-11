@@ -7,7 +7,7 @@ UNIQUIFY_USER = (key) ->
 module.exports = (key, opts, done) ->
   {data,paymethod,login} = opts
   userId = new ObjectId()
-  user = _.extend(UNIQUIFY_USER(key),data||{})
+  user = UNIQUIFY_USER(key)
   user._id = userId
 
   paymethodId = if paymethod is true then new ObjectId() else null
@@ -20,12 +20,14 @@ module.exports = (key, opts, done) ->
   user.emailVerified = true
   user.localization = FIXTURE.wrappers.localization_melbourne
 
+  Object.assign(user, opts.data||{})
+
   DB.Collections.users.insert user, (e, r) ->
     if login
       LOGIN user, (session) ->
         if (paymethodId)
           session.primaryPayMethodId = paymethodId # convinience
-        done session
+        done session, user.key
     else
       done user.key
 

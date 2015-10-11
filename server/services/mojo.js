@@ -1,16 +1,12 @@
-var Svc                = require('./_service')
-var Expert             = require('../models/expert')
-var Request            = require('../models/request')
-var Booking            = require('../models/booking')
-var MatchGroup         = require('../models/matchgroup')
+var {Expert}              = DAL
+var Request               = require('../models/request')
+var Booking               = require('../models/booking')
+var MatchGroup            = require('../models/matchgroup')
 var md5                   = require('../util/md5')
-var {ObjectId2Date,
-  selectFromObject}       = require('../../shared/util')
+var {ObjectId2Date}       = util
 var Data                  = require('./experts.data')
 var {select,query}        = Data
 var selectCB              = select.cb
-var logging               = false
-var svc                   = new Svc(Expert, logging)
 
 
 

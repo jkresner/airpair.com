@@ -1,6 +1,5 @@
 var dataHelpers           = require('./data')
 var stubs                 = require('./stubs')
-// var stories               = require('../stories/stories')
 
 
 var setup = {
@@ -15,40 +14,25 @@ var setup = {
     }
   },
 
-  // upsertProviderProfile(provider, userKey, done)
-  // {
-  //   var user = data.oauth[userKey]
-  //   UserService.upsertProviderProfile(null, provider, user, done)
-  // },
-
-  initPosts(done)
+  ensureExpert(key, done)
   {
-  //   var {v1AirPair,migrateES6,sessionDeepDive,sessionDeepDive2} = data.posts
-  //   var d = [v1AirPair,migrateES6,sessionDeepDive,sessionDeepDive2]
-  //   // db.initCollectionData('Post', {slug:'starting-a-mean-stack-app'}, d, done)
-    done()
+    DB.ensureDocs('User', [FIXTURE.users[key]], (e) => {
+      DB.ensureDocs('Expert', [FIXTURE.experts[key]], (ee) => done())
+    })
   },
-
-  // initWorkshops(done)
-  // {
-  //   var {railsTests, biggestFailsOnThePlayStore} = data.workshops
-  //   railsTests.time = moment().add(1,'day').format()
-  //   biggestFailsOnThePlayStore.time = moment().add(2,'day').format()
-  //   var d = [railsTests,biggestFailsOnThePlayStore]
-  //   db.initCollectionData('Workshop', {slug:'simplifying-rails-tests'}, d, done)
-    // done()
-  // },
 
   initExperts(done)
   {
-    db.readDoc('expert',data.experts.admb._id, function(r) {
+    DB.docById('expert',FIXTURE.experts.admb._id, function(r) {
       if (r) return done()
-      SETUP.ensureV0Expert('snug', () =>
-        SETUP.ensureV0Expert('rbig', () =>
-          SETUP.ensureV0Expert('dros', () =>
-            SETUP.ensureV1LoggedInExpert('abha', () =>
-              SETUP.ensureV0Expert('tmot', () =>
-                SETUP.ensureV0Expert('admb', () => done() ))))))
+      setup.ensureExpert('dros', () =>
+        setup.ensureExpert('tmot', () =>
+          done() ))
+
+        // SETUP.ensureV0Expert('snug', () =>
+        //   SETUP.ensureV0Expert('rbig', () =>
+        //     SETUP.ensureV1LoggedInExpert('abha', () =>
+        //         SETUP.ensureV0Expert('admb', () => done() ))))))
 
     })
   }

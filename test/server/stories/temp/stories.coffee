@@ -215,13 +215,6 @@ stories = {
           done sExpert
 
 
-  ensureV0Expert: (userKey, done) ->
-    user = _.extend({emailVerified:true},data.users[userKey])
-    db.ensureDocs 'User', [user], (e) ->
-      db.ensureDocs 'Expert', [data.experts[userKey]], (ee) ->
-        done()
-
-
   applyToBeAnExpert: (expertData, done) ->
     expertData.tags = expertData.tags || [data.tags.angular]
     GET "/experts/me", {}, (meExpert) ->
