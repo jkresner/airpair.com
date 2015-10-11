@@ -45,14 +45,14 @@ var stubs = {
     })
   },
 
-  stubBraintree(obj, fnName, err, response) {
-    if (global.withoutStubs) return emptyStub()
-    if (!Wrappers.Braintree.api) Wrappers.Braintree.init()
-    return sinon.stub(Wrappers.Braintree.api[obj], fnName, (payload, cb) => {
-      // $log('Braintree.stubbed', obj, fnName)
-      cb(err, response)
-    })
-  },
+  // stubBraintree(obj, fnName, err, response) {
+  //   if (global.withoutStubs) return emptyStub()
+  //   if (!Wrappers.Braintree.api) Wrappers.Braintree.init()
+  //   return sinon.stub(Wrappers.Braintree.api[obj], fnName, (payload, cb) => {
+  //     // $log('Braintree.stubbed', obj, fnName)
+  //     cb(err, response)
+  //   })
+  // },
 
   stubYouTube(obj, fnName, err, response) {
     if (global.withoutStubs) return emptyStub()
