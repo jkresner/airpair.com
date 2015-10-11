@@ -6,9 +6,8 @@ initGlobals(config)
 
 
 SCREAM          = require('meanair-scream')
-
 global.SETUP    = require('./helpers/setup')
-global.STORY    = require('./stories/stories')
+
 
 
 loginHandler = (req, cb) ->
