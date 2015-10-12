@@ -1,5 +1,5 @@
 {
-  "specs":                "bookings",
+  "specs":                "analytics",
   "stubs": {
     "on":                  true
   },
@@ -16,7 +16,7 @@
     "url":                { "appConfig": "mongoUri" },
     "collections":        ["V1Tests","Users","Experts","Bookings","Orders",
                            "Companies","Paymethods","Payouts","Posts",
-                           "Requests","Tags","Templates"]
+                           "Requests","Tags","Templates","Views","Impressions"]
   },
   "paths": {
     "specs":              "specs",
@@ -37,9 +37,10 @@
   },
   "appConfig": {
     "expect": {
-      "mongoUri":          "mongodb://localhost/airpair_test",
-      "auth.slack.slackTeam": "T02ATFDPL",
-      "chat.slack.support": "U06UD6SES"
+      "mongoUri":               "mongodb://localhost/airpair_test",
+      "auth.github.org":        "JustASimpleTestOrg",
+      "auth.slack.slackTeam":   "T02ATFDPL",
+      "chat.slack.support":     "U06UD6SES"
     }
   }
 }

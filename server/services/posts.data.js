@@ -1,15 +1,32 @@
 var marked              = require('marked')
 var generateToc         = require('./postsToc')
-var md5                   = require('../util/md5')
-var {selectFromObject,firstName}  = require('../../shared/util')
+var md5                 = require('../util/md5')
 var PostsUtil           = require('../../shared/posts')
+var {selectFromObject}  = require('../../shared/util')
+
+var selectFromObj = function(obj, fieldsString) {
+  var fieldsObj = {}
+  for (var f of fieldsString.split(' ')) fieldsObj[f] = 1
+  return selectFromObject(obj, fieldsObj)
+}
 
 var topTapPages = ['angularjs']
 
+var inflatedTags = (tags) => {
+  if (!tags || !tags.length) return []
+  var inflatedTags = []
+  for (var tag of tags||[]) {
+    if (cache.tags[tag._id])
+      inflatedTags.push(Object.assign(tag, _.pick(cache.tags[tag._id],'name','slug','short','desc')))
+  }
+  return inflatedTags
+}
 
 var inflateHtml = function(isAnon, cb) {
   return (e,r) => {
     if (!r) return cb(e,r)
+    r.tags = inflatedTags(r.tags)
+    // $log('inflateHtml'.yellow, r.tags)
     r.toc = marked(generateToc(r.md))
     var supped = PostsUtil.extractSupReferences(r.md)
     r.references = PostsUtil.markupReferences(supped.references, marked)
@@ -28,6 +45,7 @@ var inflateHtml = function(isAnon, cb) {
     }
     else
       r.html = marked(supped.markdown)
+
     cb(e,r)
   }
 };
@@ -148,17 +166,9 @@ var select = {
     'synced': 1,
     'md': 1
   },
-  editInfo: {
-    '_id': 1,
-    'by': 1,
+  editInfo:
+    '_id by title created published submitted tags assetUrl',
     // 'github.repoInfo': 1,
-    'title':1,
-    'created': 1,
-    'published': 1,
-    'submitted': 1,
-    'tags': 1,
-    'assetUrl': 1,
-  },
   stats: {
     '_id': 1,
     'title': 1,
@@ -252,7 +262,7 @@ var select = {
     editInfoView(cb) {
       return (e,r) => {
         if (e || !r) return cb(e,r)
-        cb(null, selectFromObject(r, select.editInfo))
+        cb(null, selectFromObj(r, select.editInfo))
       }
     },
     editView(cb, overrideMD, owner) {
@@ -355,6 +365,7 @@ var select = {
         r.by.firstName = util.firstName(r.by.name)
 
         similarFn(r, (ee,similar) => {
+          for (var p of similar) p.tags = inflatedTags(p)
           r.similar = similar
           cb(null, r)
         })

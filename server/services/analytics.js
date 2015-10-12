@@ -1,7 +1,7 @@
-// var Svc                = require('./_service')
 var logging = false
-var {ObjectId} = require('mongoose').Types
-
+var mongoose = require('mongoose')
+var {ObjectId} = mongoose.Types
+var Id = mongoose.Schema.ObjectId
 
 var util = {
 
@@ -17,56 +17,70 @@ var util = {
     return (c) ? c : null
   },
 
-  // segmentTraitsFromUser(user) {
-  //   var traits = {
-  //     name: user.name,
-  //     email: user.email,
-  //     // lastSeen: new Date(),  //-- leave this up to the client as it doesn't work via segment
-  //     createdAt: user.cohort.engagement.visit_first,
-  //     paymentInfoSet: user.primaryPayMethodId != null
-  //   }
-  //   if (user.username) traits.username = user.username
-  //   // isExpert / isCustomer
-
-  //   return traits;
-  // }
-
 }
 
-var ViewsCollection = require('../models/view').collection
+
+// cleanup 2015.07.13
+// db.views.update({ __v: { $exists:1 } },{ $unset: { __v: "" } },{ 'multi': true })
+// db.views.update({ userId: null },{ $unset: { userId: "" } },{ 'multi': true })
+// db.views.remove({ utc: { $lt:ISODate('2015-03-02 10:00:00.002Z') }, userId: { $exists: false }, campaign: { $exists: false }, referer: { $exists: false }  })
+//-- (Don't need utc if already have the _id)
+// db.views.update({ utc: { $exists:1 } },{ $unset: { utc: "" } },{ 'multi': true })
+var objectType = ['post','workshop','expert','tag','landing']
+var Views = mongoose.model('View', new mongoose.Schema({
+  userId:       { type: Id, ref: 'User', index: true, sparse: true },
+  anonymousId:  { type: String, index: true, sparse: true },
+  objectId:     { type: Id, required: true },
+  type:         { enum: objectType, type: String, required: true, lowercase: true },
+  url:          { type: String, required: true },
+  campaign:     { type: {} },
+  ip:           { type: String },
+  ua:           { type: String },
+  referer:      { type: String }
+})).collection
+
+
 var viewSvc = {
 
   getByUserId(userId, cb)
   {
     if (logging) $log('views.getByUserId'.trace, userId)
     userId = ObjectId(userId.toString())
-    ViewsCollection.find({userId}).sort({_id:-1}).toArray(cb)
+    Views.find({userId}).sort({_id:-1}).toArray(cb)
   },
 
   getByAnonymousId(anonymousId, cb)
   {
     if (logging) $log('views.getByAnonymousId'.trace, anonymousId)
-    ViewsCollection.find({anonymousId}).sort({_id:-1}).toArray(cb)
+    Views.find({anonymousId}).sort({_id:-1}).toArray(cb)
   },
 
   alias(anonymousId, userId, cb)
   {
     if (logging) $log('views.alias'.trace, anonymousId, userId)
     userId = ObjectId(userId.toString())
-    ViewsCollection.update({anonymousId}, {$set:{userId}}, { multi: true }, cb)
+    Views.update({anonymousId}, {$set:{userId}}, { multi: true }, cb)
   },
 
   create(o, cb)
   {
     if (o.userId) o.userId = ObjectId(o.userId.toString())
     if (logging) $log('views.create'.trace, o)
-    ViewsCollection.insert(o, cb)
+    Views.insert(o, cb)
   }
 
 }
 
 
-var Impressions = require('../models/impression').collection
+var Impressions = mongoose.model('Impression', new mongoose.Schema({
+  img:          { type: String, required: true },
+  uId:          { type: Id, ref: 'User', index: true, sparse: true },
+  sId:          { type: String, ref: 'v1Session', index: true, sparse: true },
+  ip:           { type: String, required: true },
+  ref:          { type: String, required: true },
+  ua:           { type: String }
+})).collection
+
 var impressionSvc = {
   alias(sId, uId, cb) {
     uId = ObjectId(uId.toString())

@@ -98,7 +98,6 @@ module.exports = {
   stjp: { name: "Stephen Purves", email: "stevejpurves@yahoo.com"},
   chuc: { name: "Chuck Norris", email: "chuck@hotmail.com"},
   spgo: { name: "SJ Purves", email: "stevejpurves@ymail.com"},
-  prak: { name: "Prateek Gupta", email: "prateek@hotmail.com"},
 
   obfn: { name: "Obie Fernandez", email: "obiefernand@gmail.com"},
   obie: { name: "Obie Fernandez", email: "obiefernand@hotmail.com"},
@@ -2623,4 +2622,116 @@ module.exports = {
     }
   },
 
+
+  tiagorg: {
+    "_id" : ObjectId("538bae591c67d1a4859d3381"),
+    "cohort" : {
+        "engagement" : {
+            "visits" : [
+                ISODate("2015-04-07T00:00:00.000Z")
+            ],
+            "visit_first" : ISODate("2014-06-01T22:51:05.000Z"),
+            "visit_signup" : ISODate("2014-06-01T22:51:05.000Z"),
+            "visit_last" : ISODate("2015-04-07T15:48:59.200Z")
+        },
+        "maillists" : [
+            "AirPair Newsletter",
+            "AirPair Experts"
+        ],
+        "expert" : {
+            "applied" : ISODate("2014-06-01T22:51:54.000Z"),
+            "_id" : ObjectId("538bae8a9768760200ee9e15")
+        },
+        "aliases" : [
+        ],
+        "firstRequest" : {
+            "url" : "/javascript/posts/eleven-mistakes-developers-javascript?utm_source=twitter&utm_medium=social&utm_term=eleven-mistakes-javascript&utm_content=dave-sag&utm_campaign=social-blast-oct",
+            "ref" : "http://t.co/Vc2afiYfSi"
+        }
+    },
+    "email" : "tiagoromerogarcia@gmail.com",
+    "emailVerified" : true,
+    "name" : "Tiago Romero Garcia",
+    "initials" : "TG",
+    "username" : "tiagorg",
+    "social" : {
+        "gh" : {
+            "provider" : "github",
+            "id" : 764487,
+            "displayName" : "Tiago Garcia",
+            "username" : "tiagorg",
+            "profileUrl" : "https://github.com/tiagorg",
+            "emails" : [
+                {
+                    "value" : ""
+                }
+            ],
+            "_json" : {
+                "login" : "tiagorg",
+                "id" : 764487,
+                "avatar_url" : "https://avatars.githubusercontent.com/u/764487?v=3",
+                "gravatar_id" : "",
+                "url" : "https://api.github.com/users/tiagorg",
+                "html_url" : "https://github.com/tiagorg",
+                "followers_url" : "https://api.github.com/users/tiagorg/followers",
+                "following_url" : "https://api.github.com/users/tiagorg/following{/other_user}",
+                "gists_url" : "https://api.github.com/users/tiagorg/gists{/gist_id}",
+                "starred_url" : "https://api.github.com/users/tiagorg/starred{/owner}{/repo}",
+                "subscriptions_url" : "https://api.github.com/users/tiagorg/subscriptions",
+                "organizations_url" : "https://api.github.com/users/tiagorg/orgs",
+                "repos_url" : "https://api.github.com/users/tiagorg/repos",
+                "events_url" : "https://api.github.com/users/tiagorg/events{/privacy}",
+                "received_events_url" : "https://api.github.com/users/tiagorg/received_events",
+                "type" : "User",
+                "site_admin" : false,
+                "name" : "Tiago Garcia",
+                "company" : "Avenue Code",
+                "blog" : "http://tiagorg.com",
+                "location" : "Alameda, CA",
+                "email" : "",
+                "hireable" : false,
+                "bio" : null,
+                "public_repos" : 61,
+                "public_gists" : 4,
+                "followers" : 17,
+                "following" : 9,
+                "created_at" : "2011-05-02T22:34:14Z",
+                "updated_at" : "2015-04-04T21:35:42Z",
+                "private_gists" : 0,
+                "total_private_repos" : 1,
+                "owned_private_repos" : 0,
+                "disk_usage" : 107108,
+                "collaborators" : 0,
+                "plan" : {
+                    "name" : "free",
+                    "space" : 976562499,
+                    "collaborators" : 0,
+                    "private_repos" : 0
+                }
+            },
+            "token" : {
+                "token" : "8176cc64a829dcc55281c2c2e136f433e3e1aa6f",
+                "attributes" : {
+                    "refreshToken" : null
+                }
+            }
+        }
+    },
+    "bio" : "Technical Manager at @AvenueCode and Technical Leader at @Macys, heavily interested in cutting-edge front-end technologies. http://tiagorg.com",
+    "localization" : {
+        "location" : "San Francisco, CA, USA",
+        "locationData" : {
+            "name" : "San Francisco"
+        },
+        "timezone" : "Pacific Daylight Time",
+        "timezoneData" : {
+            "dstOffset" : 3600,
+            "rawOffset" : -28800,
+            "status" : "OK",
+            "timeZoneId" : "America/Los_Angeles",
+            "timeZoneName" : "Pacific Daylight Time"
+        }
+    },
+    "roles" : [ "editor" ]
+  }
 }
