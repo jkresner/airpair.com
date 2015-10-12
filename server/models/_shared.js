@@ -2,36 +2,6 @@ var mongoose = require('mongoose')
 var Schema = mongoose.Schema
 var {ObjectId} = Schema
 
-var Touch = {
-  utc:          { type: Date },
-  action:       String,
-  by:           {
-    _id:        { type: ObjectId, ref: 'User' },
-    name:       String
-  }
-}
-
-var Note = new Schema({
-  body:         { require:true, type: String },
-  by:           {
-    _id:        { type: ObjectId, ref: 'User' },
-    name:       String
-  }
-})
-
-
-var PageMeta = {
-  title:        { type: String },
-  description:  { type: String },
-  canonical:    { type: String, lowercase: true, trim: true },
-  ogTitle:      { type: String },
-  ogType:       { type: String },
-  ogDescription:{ type: String },
-  ogImage:      { type: String, trim: true },
-  ogVideo:      { type: String, trim: true },
-  ogUrl:        { type: String, lowercase: true, trim: true }
-}
-
 
 var MESSAGE_TYPE = [
   'received',
@@ -69,7 +39,7 @@ var SocialAccounts = {
 }
 
 
-var Survey = new Schema({
+var Survey = {
   type:         { require:true, type: String },
   by:           { require:true, type: UserByte },
   updated:      { type: Date },
@@ -80,17 +50,17 @@ var Survey = new Schema({
       answer:         { require:true, type: {} }
     }]
   },
-  replies:      { require:true, type: [new Schema({
+  replies:      { require:true, type: [({
       by:             { require:true, type: UserByte },
       comment:        { require:true, type: String }
     })]
   },
-  votes:        { require:true, type: [new Schema({
+  votes:        { require:true, type: [({
       by:             { require:true, type: UserByte },
       val:            { require:true, type: Number }
     })]
   }
-})
+}
 
 
-module.exports = {Touch,Message,Note,UserByte,PageMeta,SocialAccounts,Survey}
+module.exports = {Message,UserByte,SocialAccounts,Survey}

@@ -1,5 +1,5 @@
 {
-  "specs":                "bookings",
+  "specs":                "posts",
   "stubs": {
     "on":                  true
   },
@@ -37,9 +37,10 @@
   },
   "appConfig": {
     "expect": {
-      "mongoUri":          "mongodb://localhost/airpair_test",
-      "auth.slack.slackTeam": "T02ATFDPL",
-      "chat.slack.support": "U06UD6SES"
+      "mongoUri":               "mongodb://localhost/airpair_test",
+      "auth.github.org":        "JustASimpleTestOrg",
+      "auth.slack.slackTeam":   "T02ATFDPL",
+      "chat.slack.support":     "U06UD6SES"
     }
   }
 }

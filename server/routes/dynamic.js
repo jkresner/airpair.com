@@ -94,29 +94,33 @@ module.exports = function(app) {
       noCrawl('/posts'),
       function(req, res, next) {
       $callSvc(API.Posts.svc.getByIdForReview, req)(req.params.id, (e,r) => {
-        if (!r) return res.redirect('/posts/me')
+        if (!r) return res.redirect('https://author.airpair.com/')
         else if (r.published) return res.redirect(301, r.url)
-        req.post = r
-        next()
-      })},
-      app.renderHbsViewData('post', null, (req, cb) => cb(null, req.post)))
+        res.redirect(301, req.originalUrl.replace('/post','https://author.airpair.com'))
+      //   req.post = r
+        // next()
+        })
+      })
+      // ,app.renderHbsViewData('post', null, (req, cb) => cb(null, req.post)))
 
 
     .get('/posts/preview/:id',
       noCrawl('/posts'),
       authd, populate.user, function(req, res, next) {
-      $callSvc(API.Posts.svc.getByIdForPreview, req)(req.params.id, (e,r) => {
-        if (!r) return res.redirect('/posts/me')
-        if (!_.idsEqual(r.by.userId,req.user._id) &&
-            !_.contains(req.user.roles,'admin') &&
-            !_.find(r.forkers,(f)=>_.idsEqual(f.userId,req.user._id))
-          )
-          return next(Error("Post unavailable for you to preview, did you fork it already?"))
+        res.redirect(req.originalUrl.replace('/post','https://author.airpair.com'))
+      // $callSvc(API.Posts.svc.getByIdForPreview, req)(req.params.id, (e,r) => {
+      //   if (!r) return res.redirect('/posts/me')
+      //   if (!_.idsEqual(r.by.userId,req.user._id) &&
+      //       !_.contains(req.user.roles,'admin') &&
+      //       !_.find(r.forkers,(f)=>_.idsEqual(f.userId,req.user._id))
+      //     )
+      //     return next(Error("Post unavailable for you to preview, did you fork it already?"))
 
-        req.post = r
-        next()
-      })},
-      app.renderHbsViewData('post', null, (req, cb) => cb(null, req.post)))
+      //   req.post = r
+      //   next()
+      // })},
+      })
+    // ,app.renderHbsViewData('post', null, (req, cb) => cb(null, req.post)))
 
 
     .get('/bookings/:id/spin*',
