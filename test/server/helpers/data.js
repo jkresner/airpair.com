@@ -64,27 +64,27 @@ var dataHelpers = {
     return seed
   },
 
-  postReview(user)
-  {
-    return { by: user, type: 'post-survey-inreview', questions: [
-      { idx: 0, key: 'rating', promt: 'How many stars?', answer: 4 },
-      { idx: 1, key: 'feedback', promt: 'Explain your star rating', answer: 'Good but not great' }
-    ] }
-  },
+  // postReview(user)
+  // {
+  //   return { by: user, type: 'post-survey-inreview', questions: [
+  //     { idx: 0, key: 'rating', promt: 'How many stars?', answer: 4 },
+  //     { idx: 1, key: 'feedback', promt: 'Explain your star rating', answer: 'Good but not great' }
+  //   ] }
+  // },
 
-  postMeta(post)
-  {
-    var ogImage = (post.assetUrl.indexOf('http://youtu.be/') == 0)
-      ? util.getYouTubeThumb(post.assetUrl)
-      : post.assetUrl
+  // postMeta(post)
+  // {
+  //   var ogImage = (post.assetUrl.indexOf('http://youtu.be/') == 0)
+  //     ? util.getYouTubeThumb(post.assetUrl)
+  //     : post.assetUrl
 
-    return { title: post.title, description: 'desc',
-      canonical: `https//www.airpair.com/v1/posts/{post.slug}`,
-      ogTitle: post.title,
-      ogImage: ogImage,
-      ogDescription: 'desc'
-    }
-  },
+  //   return { title: post.title, description: 'desc',
+  //     canonical: `https//www.airpair.com/v1/posts/{post.slug}`,
+  //     ogTitle: post.title,
+  //     ogImage: ogImage,
+  //     ogDescription: 'desc'
+  //   }
+  // },
 
   lotsOfWords(seed)
   {

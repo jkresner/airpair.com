@@ -1,9 +1,5 @@
-var Svc                = require('./_service')
-var Company            = require('../models/company')
+var {Company}            = DAL
 // var UserSvc = require('./users')
-
-var logging = false
-var svc = new Svc(Company, logging)
 
 
 var fields = {
@@ -19,7 +15,7 @@ function getById(id, cb) {
 
 
  function getUsersCompany(cb) {
-  svc.searchOne({'members.userId':this.user._id,'members.enabled':true}, null, cb)
+  Company.getByQuery({'members.userId':this.user._id,'members.enabled':true}, cb)
 }
 
 

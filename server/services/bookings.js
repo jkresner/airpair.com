@@ -3,16 +3,22 @@ var RequestsSvc             = require('../services/requests')
 var OrdersSvc               = require('../services/orders')
 var ChatsSvc                = require('../services/chats')
 var TemplateSvc             = require('../services/templates')
-var Svc                = require('./_service')
-var Booking                    = require('../models/booking')
-var Order                    = require('../models/order')
+var {Booking}               = DAL
 var User                    = require('../models/user')
-var svc                     = new Svc(Booking, logging)
 var Roles                   = require('../../shared/roles').booking
 var BookingdUtil            = require('../../shared/bookings')
 var {select,query,opts}     = require('./bookings.data')
 var {inflate}               = select.cb
 
+var svc = {
+  newTouch(action) {
+    return {
+      action,
+      utc: new Date(),
+      by: { _id: this.user._id, name: this.user.name }
+    }
+  }
+}
 
 function getChat(booking, syncMode, exitCB, cb) {
 
@@ -44,7 +50,7 @@ var get = {
 
   getById(_id, cb)
   {
-    svc.searchOne({_id}, {options:opts.getById}, cb)
+    Booking.getById(_id, opts.getById, cb)
   },
 
   getForParticipant(booking, cb)
@@ -54,21 +60,21 @@ var get = {
 
   getByUserId(id, cb)
   {
-    var fields = select.listIndex
-    svc.searchMany({ customerId: id }, { fields, options: opts.orderByDate}, select.cb.listIndex(cb))
+    var options = _.extend({select:select.listIndex},opts.orderByDate)
+    Booking.getManyByQuery({ customerId: id }, options, select.cb.listIndex(cb))
   },
 
   getByExpertId(user, cb)
   {
     if (!user.cohort || ! user.cohort.expert) return cb(null,null)
-    var fields = select.listIndex
-    svc.searchMany({ expertId: user.cohort.expert._id }, { fields, options: opts.orderByDate}, select.cb.listIndex(cb))
+    var options = _.extend({select:select.listIndex},opts.orderByDate)
+    Booking.getManyByQuery({ expertId: user.cohort.expert._id }, options, select.cb.listIndex(cb))
   },
 
   //-- TODO: differentiate between admin getByExpertID and just the expert getting by their own Id
   getByExpertIdForMatching(expertId, cb)
   {
-    svc.searchMany({ expertId }, { fields: select.expertMatching }, cb)
+    Booking.getManyByQuery({ expertId }, { select: select.expertMatching }, cb)
   },
 
   getByIdForParticipant(_id, callback)
@@ -77,7 +83,7 @@ var get = {
     if (query && query.refresh) cache.flush('slack_users')
 
     var cb = select.cb.itemIndex(callback)
-    svc.searchOne({_id}, {options:opts.forParticipant}, (eee,r) => {
+    Booking.getById(_id, opts.forParticipant, (eee,r) => {
       r.slackin = config.chat.slackin
       if (eee) return cb(eee)
       if (!r.order) return cb(null,r) // an edgecase migrated booking from v0 call
@@ -91,7 +97,7 @@ var get = {
 
   getByIdForSpinning(_id, pemail, cb)
   {
-    svc.searchOne({_id}, {}, (e,r) => {
+    Booking.getById(_id, (e,r) => {
       if (e || !r ||
           // !r.status != 'confirmed' || !r.status != 'followup' ||
           !r.datetime || !util.dateInRange(moment(),moment(r.datetime).add(-45,'minutes'),moment(r.datetime).add(45,'minutes')) )
@@ -123,7 +129,7 @@ var get = {
   getByIdForAdmin(_id, callback)
   {
     var cb = select.cb.inflate(callback)
-    svc.searchOne({_id}, {options:opts.forAdmin}, (eee,r) => {
+    Booking.getById(_id, opts.forAdmin, (eee,r) => {
       if (eee) return cb(eee)
       if (!r.order) return cb(null,r) // an edgecase migrated booking from v0 call
       getChat.call(this, r, 'all', callback, (ee,r) => {
@@ -140,9 +146,8 @@ var get = {
   getByQueryForAdmin(start, end, userId, cb) {
     var q = query.inRange(start,end)
     if (userId) q['participants.info._id'] = userId
-
-    svc.searchMany(q, { fields: select.listAdmin, options: opts.adminList },
-      select.cb.listAdmin(cb))
+    var options = _.extend({select:select.listAdmin},opts.adminList)
+    Booking.getManyByQuery(q, options, select.cb.listAdmin(cb))
   }
 
 }
@@ -164,7 +169,7 @@ var save = {
 
     getParticipants((ee, participants)=>{
       if (ee) return cb(ee)
-      var bookingId = svc.newId()
+      var bookingId = Booking.newId()
       OrdersSvc.createBookingOrder.call(this, bookingId, expert, datetime, minutes, type, credit, payMethodId, requestId, dealId, (e, order) => {
         // $log('createBookingOrder.done'.trace, e, order)
         if (e) return cb(e)
@@ -190,7 +195,7 @@ var save = {
         var d = {byName:user.name,expertName:expert.name, bookingId:booking._id,minutes,type}
         mailman.sendTemplate('pipeliner-notify-booking', d, 'spinners')
         mailman.sendTemplate('expert-booked', d, expert) // todo add type && instructions to email
-        svc.create(booking, select.cb.itemIndex(cb))
+        Booking.create(booking, select.cb.itemIndex(cb))
       })
     })
   },
@@ -202,7 +207,7 @@ var save = {
     suggestedTimes.push({time,byId:this.user._id})
     lastTouch = svc.newTouch.call(this, 'suggest-time')
     activity.push(lastTouch)
-    svc.updateWithSet(original._id, {suggestedTimes,lastTouch,activity}, (e,r) => {
+    Booking.updateSet(original._id, {suggestedTimes,lastTouch,activity}, (e,r) => {
       $callSvc(get.getByIdForParticipant,this)(original._id,cb)
       if (original.chat)
         pairbot.sendSlackMsg(original.chat.providerId, 'booking-suggest-time',
@@ -218,7 +223,7 @@ var save = {
     suggestedTimes = _.without(suggestedTimes,suggestedTime)
     lastTouch = svc.newTouch.call(this, 'remove-time')
     activity.push(lastTouch)
-    svc.updateWithSet(original._id, {suggestedTimes,lastTouch,activity}, (e,r) => {
+    Booking.updateSet(original._id, {suggestedTimes,lastTouch,activity}, (e,r) => {
       $callSvc(get.getByIdForParticipant,this)(original._id,cb)
     })
   },
@@ -239,7 +244,7 @@ var save = {
     original.datetime = datetime
     createBookingGoogleCalendarEvent(original, cb, (gcal) => {
       var ups = {suggestedTimes,lastTouch,activity,datetime,status,gcal}
-      svc.updateWithSet(original._id, ups, (e,r) => {
+      Booking.updateSet(original._id, ups, (e,r) => {
         $callSvc(get.getByIdForParticipant,this)(original._id,cb)
         if (original.chat)
           pairbot.sendSlackMsg(original.chat.providerId, 'booking-confirm-time',
@@ -272,7 +277,7 @@ var save = {
       if (status != 'complete' && paidout)
         status = 'complete'
 
-      svc.updateWithSet(original._id, {status,reviews,activity,lastTouch}, (e,r)=>{
+      Booking.updateSet(original._id, {status,reviews,activity,lastTouch}, (e,r)=>{
         get.getByIdForParticipant(original._id,cb)
       })
     })
@@ -287,7 +292,7 @@ var save = {
       var {activity,lastTouch} = original
       lastTouch = svc.newTouch.call(this, 'create-chat')
       activity.push(lastTouch)
-      svc.updateWithSet(original._id, {chatId:chat._id,activity,lastTouch}, (e,r)=>{
+      Booking.updateSet(original._id, {chatId:chat._id,activity,lastTouch}, (e,r)=>{
         get.getByIdForParticipant(original._id,cb)
       })
     })
@@ -301,7 +306,7 @@ var save = {
       activity = activity || []
       lastTouch = svc.newTouch.call(this, 'associate-chat')
       activity.push(lastTouch)
-      svc.updateWithSet(original._id, {chatId:chat._id,activity,lastTouch}, (e,r)=>{
+      Booking.updateSet(original._id, {chatId:chat._id,activity,lastTouch}, (e,r)=>{
         get.getByIdForParticipant(original._id, cb)
       })
     })
@@ -315,7 +320,7 @@ function updateForAdmin(thisCtx, booking, updates, action, cb) {
   activity = activity || []
   lastTouch = svc.newTouch.call(thisCtx, action)
   activity.push(lastTouch)
-  svc.updateWithSet(booking._id, _.extend(updates,{lastTouch,activity}), (e,r)=>{
+  Booking.updateSet(booking._id, _.extend(updates,{lastTouch,activity}), (e,r)=>{
     if (e) return cb(e)
     if (!r.chatId)
       $callSvc(get.getByIdForAdmin, thisCtx)(r._id, cb)
@@ -413,7 +418,7 @@ var admin = {
     Wrappers.YouTube.getVideoInfo(youTubeId, (e, response) => {
       if (e) return cb(Error(e))
       recordings.push({
-        type:'youTube',
+        type:'youtube',
         data:_.extend(_.omit(response.snippet,'thumbnails'),{youTubeId:response.id})})
       updateForAdmin(this, original, {status:'followup',recordings}, 'addYouTube', cb)
     });
@@ -427,7 +432,7 @@ var admin = {
       //TODO mark video as private if booking.type is private
       if (e) return cb(Error(e))
       recordings.push({
-        type:'youTube', hangoutUrl, youTubeAccount,
+        type:'youtube', hangoutUrl, youTubeAccount,
         data:_.extend(_.omit(response.snippet,'thumbnails'),{youTubeId:response.id})})
 
       updateForAdmin(this, original, {status:'followup',recordings}, 'adm-start-hangout', (e,r) => {
@@ -492,7 +497,7 @@ var admin = {
       var participants = _.without(booking.participants,toRemove)
       participants.push(BookingdUtil.participantFromUser("expert", expertUser))
 
-      Order.findByIdAndUpdate(order._id,{ $set:{ lineItems } }, (e,r) =>
+      DAL.Order.updateSet(order._id, { lineItems }, (e,r) =>
         updateForAdmin(this, booking, {expertId,participants}, 'adm-swap-expert', cb))
     })
   },

@@ -95,7 +95,7 @@ var cfg = {
   http: { static: { dir: 'public', maxAge: null } },
   log: {
     ads:                  process.env.LOG_ADS || false,
-    auth:                 process.env.LOG_AUTH || true,
+    auth:                 process.env.LOG_AUTH || false,
     mail:                 process.env.LOG_MAIL || false,
     redirects:            process.env.LOG_REDIRECTS || false,
     error:                { email: null },
@@ -274,6 +274,10 @@ module.exports = function(env) {
 
   cfg.http.appStaticDir = `${cfg.appdir}/${cfg.http.static.dir}`
   cfg.ads.staticDir = `${cfg.http.appStaticDir}${cfg.ads.staticDir}`
+
+  //v2 temp settings
+  cfg.appModelDir = `${cfg.appdir}/server/model`
+  cfg.mongoUrl = cfg.mongoUri
 
   return cfg;
 }

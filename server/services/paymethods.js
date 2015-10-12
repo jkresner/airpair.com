@@ -1,17 +1,15 @@
-var Svc                = require('./_service')
+var logging            = false
 var Rates              = require('./requests.rates')
-var PayMethod          = require('../models/paymethod')
-
+var {Paymethod}        = DAL
 
 var CompanysSvc        = require('./companys')
 var UserSvc            = require('./users')
-var logging            = false
-var svc                = new Svc(PayMethod, logging)
+
 
 var get = {
   getById(id, cb) {
     var user = this.user
-    svc.getById(id, (ee, pm) => {
+    Paymethod.getById(id, (ee, pm) => {
       if (pm)
       {
         if (pm.userId == user._id) return cb(null, pm) // PayMethod added by user
@@ -37,22 +35,19 @@ var get = {
     CompanysSvc.getUsersCompany.call(ctx, (e, company) => {
       var companyIds = [] // TODO read companies user belongs too
       if (company) companyIds.push(company._id)
-
-      svc.searchMany({$or: [{userId:ctx.user._id},{companyId: {$in:companyIds}}]}, null, (e,r) => {
+      Paymethod.getManyByQuery({$or: [{userId:ctx.user._id},{companyId: {$in:companyIds}}]}, null, (e,r) => {
         if (e) return cb(e,r)
         var nonPayoutMethods = []
-        if (r.length > 0) {
-          for (var pm of r) {
-            if (pm.type.indexOf('payout') == -1) nonPayoutMethods.push(pm)
-          }
-        }
+        for (var pm of r||[])
+          if (pm.type.indexOf('payout') == -1) nonPayoutMethods.push(pm)
 
-        cb(e,nonPayoutMethods)
+        if (nonPayoutMethods.length == 0)
+          return Wrappers.Braintree.getClientToken(cb)
+        else
+          cb(e, nonPayoutMethods)
         // if (nonPayoutMethods.length > 0) return cb(e,nonPayoutMethods)
         // else {
         //   Settings.findOne({userId:ctx.user._id}, (ee, s) => {
-        //     if (!s || !s.paymentMethods || s.paymentMethods.length == 0 || !_.find(s.paymentMethods,(pm)=>pm.type == 'stripe'))
-        //       return Wrappers.Braintree.getClientToken(cb)
 
         //     var existing = _.find(s.paymentMethods, (pm) => pm.type == 'stripe')
         //     if (!existing) return cb(e,r)
@@ -70,7 +65,7 @@ var get = {
     })
   },
   getMyPayoutmethods(cb) {
-    svc.searchMany({userId:this.user._id}, null, (e,r) => {
+    Paymethod.getManyByQuery({userId:this.user._id}, null, (e,r) => {
       if (e) return cb(e,r)
       var payoutMethods = []
       for (var pm of r) {
@@ -90,7 +85,7 @@ var get = {
     CompanysSvc.getUsersCompany.call({user: {_id:userId}}, (e, company) => {
       var companyIds = [] // TODO read companies user belongs too
       if (company) companyIds.push(company._id)
-      svc.searchMany({$or: [{userId},{companyId: {$in:companyIds}}]}, null, (e,r) => {
+      Paymethod.getManyByQuery({$or: [{userId},{companyId: {$in:companyIds}}]}, null, (e,r) => {
         if (e) return cb(e,r)
         if (_.where(r,(pm)=>pm.type.indexOf('payout')==-1).length > 0) return cb(null,true)
         else cb(null,false)
@@ -114,7 +109,7 @@ var save = {
           o.info = payMethodInfo
           if (logging) $log('savePayMethod', payMethodInfo)
 
-          svc.create(o, (e,r) => {
+          Paymethod.create(o, (e,r) => {
             if (logging) $log('savedPayMethod', o.makeDefault, ctx.user, r._id)
 
             if (ctx.user.email) { //-- When admin looks at request, don't trigger analtyics
@@ -159,7 +154,7 @@ var save = {
       if (user.primaryPayMethodId && _.idsEqual(user.primaryPayMethodId,paymethod._id))
         UserSvc.changePrimaryPayMethodId.call(this, null, () => {})
       // Settings.remove({userId:this.user._id}, () => {})
-      svc.deleteById(paymethod._id, cb)
+      Paymethod.delete(paymethod, cb)
     })
   },
   charge(amount, orderId, payMethod, cb) {

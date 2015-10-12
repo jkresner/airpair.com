@@ -2000,7 +2000,7 @@ module.exports = {
         "username" : "gregorynicholas",
         "emailVerified" : true,
         "email" : "faction.gregory@gmail.com",
-        "name" : "gregory n",
+        "name" : "gregorynicholas",
         "_id" : ObjectId("51ba69f466a6f999a465f3b5")
     }
   }

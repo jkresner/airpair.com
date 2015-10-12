@@ -1,7 +1,4 @@
-var Svc                   = require('./_service')
-var logging               = false
-var Template              = require('../models/template')
-var svc                   = new Svc(Template, logging)
+var {Template}            = DAL
 var handlebars            = require('handlebars')
 var marked                = require('marked')
 
@@ -9,7 +6,7 @@ var get = {
 
   getAll(cb)
   {
-    svc.searchMany({},{}, cb)
+    Template.getAll(cb)
   },
 
   getAllForCache(cb)

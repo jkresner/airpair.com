@@ -1,9 +1,10 @@
 {
-  "specs":                "usersCohort",
+  "specs":                "bookings",
   "stubs": {
-    "on":                  false
+    "on":                  true
   },
   "colors": {
+    "appload":            "white",
     "seed":               "magenta",
     "spec":               "white",
     "error":              "red"
@@ -14,12 +15,14 @@
   "mongo": {
     "url":                { "appConfig": "mongoUri" },
     "collections":        ["V1Tests","Users","Experts","Bookings","Orders",
-          "Paymethods","Payouts","Posts","Requests","Tags","Templates"]
+                           "Companies","Paymethods","Payouts","Posts",
+                           "Requests","Tags","Templates"]
   },
   "paths": {
     "specs":              "specs",
     "fixtures":           "../data/fixtures",
-    "bson":               "../data/bson"
+    "bson":               "../data/bson",
+    "stories":            "stories"
   },
   "seed": {
     "force":              false,

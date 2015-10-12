@@ -1,14 +1,14 @@
 var logging                 = false
-var Svc                     = require('./_service')
-var Chat                  = require('../models/chat')
-var svc                   = new Svc(Chat, logging)
-var UserSvc               = require('../services/users')
-var User                  = require('../models/user')
-var {channels}            = config.chat.slack
+var {Chat}                  = DAL
+var UserSvc                 = require('../services/users')
+var User                    = require('../models/user')
+var {channels}              = config.chat.slack
 
 var get = {
 
-  getById: svc.getById,
+  getById(_id, cb) {
+    Chat.getById(_id,cb)
+  },
 
   searchSyncOptions(terms, cb)
   {
@@ -81,7 +81,7 @@ var save = {
         history: [],
         info: rr
       }
-      return svc.create(o,cb)
+      return Chat.create(o,cb)
     })
   },
 
@@ -90,7 +90,7 @@ var save = {
     if (provider != 'slack') cb(Error("Only slack sync supported"))
     Wrappers.Slack.getGroupWithHistory(providerId, (e,r)=>{
       if (e) return cb(e,r)
-      svc.searchOne({providerId},{},(ee,rr)=>{
+      Chat.getByQuery({providerId},(ee,rr)=>{
         if (ee) return cb(ee,rr)
         if (!rr) {
           $log('history'.cyan, r.info)
@@ -103,13 +103,13 @@ var save = {
             info: r.info,
             history: r.history
           }
-          return svc.create(o,cb)
+          return Chat.create(o,cb)
         }
         else {
           var history = _.sortBy(_.unique(_.union(r.history,rr.history),false,'ts'),'ts')
           var ups = _.extend(rr,r)
           ups.history = history
-          return svc.update(rr._id,ups,cb)
+          return Chat.updateSet(rr._id, _.omit(ups,['_id']), cb)
         }
       })
     })
@@ -117,7 +117,7 @@ var save = {
 
   sync(_id, groupInfo, cb)
   {
-    svc.searchOne({_id},{},(ee,rr)=>{
+    Chat.getById(_id,(ee,rr)=>{
       if (ee||!rr) return cb(ee,rr)
       if (rr.provider != 'slack') cb(Error("Only slack sync supported"))
 
@@ -141,7 +141,7 @@ var save = {
           Wrappers.Slack.setGroupPurpose({},rr.providerId,purpose,()=>{})
         }
 
-        return svc.updateWithSet(rr._id,{history,name,purpose,synced:new Date},cb)
+        return Chat.updateSet(rr._id,{history,name,purpose,synced:new Date},cb)
       })
     })
   },
@@ -194,10 +194,6 @@ var save = {
       })
     })
   }
-
-  // deleteRedirectById(id, cb) {
-  //   svc.deleteById(id, cb)
-  // }
 
 }
 

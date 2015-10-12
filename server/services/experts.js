@@ -1,26 +1,34 @@
 var logging               = false
-var Svc                   = require('./_service')
-var Expert                = require('../models/expert')
-var {selectFromObject}    = util
-var {select,options}      = require('./experts.data')
-var selectCB              = select.cb
-var svc                   = new Svc(Expert, logging)
+var {Expert}              = DAL
 var UserSvc               = require('../services/users')
 var RequestSvc            = require('../services/requests')
 var BookingSvc            = require('../services/bookings')
+var {selectFromObject}    = util
+var {select,options}      = require('./experts.data')
+var selectCB              = select.cb
+
+var svc = {
+  newTouch(action) {
+    return {
+      action,
+      utc: new Date(),
+      by: { _id: this.user._id, name: this.user.name }
+    }
+  }
+}
 
 var get = {
 
   getById(id, cb) {
-    svc.getById(id,selectCB.migrateInflate(cb))
+    Expert.getById(id,selectCB.migrateInflate(cb))
   },
 
   getByIdForAdmin(id, cb) {
-    svc.getById(id,selectCB.addAvatar(cb))
+    Expert.getById(id,selectCB.addAvatar(cb))
   },
 
   getMe(cb) {
-    svc.searchOne({userId:this.user._id}, null, selectCB.me((e,r)=>{
+    Expert.getByQuery({userId:this.user._id}, selectCB.me((e,r)=>{
       if (!e && !r) return cb(null, {user:selectFromObject(this.user, select.userCopy)})
       cb(e,r)
     }))
@@ -50,14 +58,11 @@ var get = {
   },
 
   search(term, cb) {
-    var searchFields = [
-      'user.name','user.email','user.username',
-      'name','email','username',
-      'gh.username','tw.username',
-      'user.social.gh.username','user.social.tw.username'
-      ]
-    var and = { rate: { '$gt': 0 } }
-    svc.search(term, searchFields, 5, select.search, and, selectCB.migrateSearch(cb))
+    var searchFields = 'user.name user.email user.username name email username'
+      + 'gh.username tw.username user.social.gh.username user.social.tw.username'
+    var opts = { limit: 5, andQuery: { rate: { '$gt': 0 } }, select: select.search }
+
+    Expert.searchByRegex(term, searchFields, opts, selectCB.migrateSearch(cb))
   },
 
   getByUsername(term, cb) {
@@ -66,21 +71,21 @@ var get = {
       {'username':term},
       {'bookme.urlSlug':term}
     ]}
-    svc.searchOne(q, { fields: select.me }, selectCB.migrateInflate(cb))
+    Expert.getByQuery(q, { select: select.me }, selectCB.migrateInflate(cb))
   },
 
   getNewForAdmin(cb) {
-    svc.searchMany({}, options.newest100, selectCB.inflateList(cb))
+    Expert.getManyByQuery({}, options.newest100, selectCB.inflateList(cb))
   },
 
   getActiveForAdmin(cb) {
-    svc.searchMany({}, options.active100, selectCB.inflateList(cb))
+    Expert.getManyByQuery({}, options.active100, selectCB.inflateList(cb))
   },
 
   getByDeal(id, cb) {
     var search = {'deals._id':id}
     if (id.length != 24) search = {'deals.code':id}
-    svc.searchOne(search,{},selectCB.migrateInflate(cb))
+    Expert.getByQuery(search, selectCB.migrateInflate(cb))
   },
 
 }
@@ -92,8 +97,8 @@ function updateWithTouch(expert, action, trackData, cb) {
   {
     expert.lastTouch = svc.newTouch.call(this, action)
     expert.activity = expert.activity || []
-    // if (_.idsEqual(this.user._id,expert.userId))  // Don't want activity for admins
-    expert.activity.push(expert.lastTouch)
+    if (_.idsEqual(this.user._id,expert.userId))  // Don't want activity for admins
+     expert.activity.push(expert.lastTouch)
   }
 
   var tagIdx = 0
@@ -114,7 +119,7 @@ function updateWithTouch(expert, action, trackData, cb) {
   }
 
   if (action == 'create') {
-    svc.create(expert, cb)
+    Expert.create(expert, cb)
   }
   else {
 
@@ -123,17 +128,17 @@ function updateWithTouch(expert, action, trackData, cb) {
       expert.gmail || expert.timezone || expert.location ||
       expert.homepage || expert.karma)
     {
-      svc.updateWithUnset(expert._id, select.v0unset, (e,r)=>{})
-      expert = _.omit(expert, _.keys(select.v0unset))
+      Expert.updateUnset(expert._id, select.v0unset.split(' '), (e,r)=>{})
+      expert = _.omit(expert, select.v0unset.split(' '))
       $log(`Migrating v0 expert ${expert._id} ${expert.user.name}`.yellow)
     }
 
-    svc.update(expert._id, expert, cb)
+    Expert.updateSet(expert._id, _.omit(expert,['_id']), cb)
   }
 
-  if (trackData)
-    analytics.track(this.user, this.sessionID, 'Save',
-      _.extend(trackData,{type:expert,action}), {}, ()=>{})
+  // if (trackData)
+  //   analytics.track(this.user, this.sessionID, 'Save',
+  //     _.extend(trackData,{type:expert,action}), {}, ()=>{})
 }
 
 
@@ -155,12 +160,12 @@ var save = {
     ups.user = selectFromObject(this.user, select.userCopy)
     var expert = selectFromObject(_.extend(original,ups), select.updateMe)
     $callSvc(updateWithTouch, this)(expert, 'update', trackData, selectCB.me(cb))
-    $callSvc(UserSvc.setExpertCohort, this)(ups._id)
+    // $callSvc(UserSvc.setExpertCohort, this)(ups._id)
   },
 
   updateAvailability(original, availability, cb) {
     availability.lastTouch = svc.newTouch.call(this, availability.status)
-    svc.update(original._id, _.extend(original,{availability}), selectCB.me(cb))
+    Expert.updateSet(original._id, {availability}, selectCB.me(cb))
   },
 
   createDeal(expert, deal, cb) {
@@ -183,12 +188,11 @@ var save = {
   {
     var notes = original.notes || []
     notes.push({body:note,by:{_id:this.user._id,name:this.user.name}})
-    original.notes = notes
-    svc.update(original._id, original, cb)
+    Expert.updateSet(original._id, {notes}, cb)
   },
 
   deleteById(original, cb) {
-    svc.deleteById(original._id, cb)
+    Expert.delete(original, cb)
   },
 }
 
