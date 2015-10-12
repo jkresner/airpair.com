@@ -1,15 +1,15 @@
-module.exports = -> describe "API".subspec, ->
+basic = ->
 
 
-  it '403 for non admin on get redirects', itDone ->
-    opts = status: 403
-    SETUP.addAndLoginLocalUser 'dily', (s) ->
-      GET '/adm/redirects', opts, ->
-        DONE()
+  # IT '403 for non admin on get redirects', ->
+  #   opts = status: 403
+  #   SETUP.addAndLoginLocalUser 'dily', (s) ->
+  #     GET '/adm/redirects', opts, ->
+  #       DONE()
 
 
-  it 'can create redirect as admin', itDone ->
-    LOGIN 'admin', (s) ->
+  IT 'can create redirect as admin', ->
+    LOGIN {key:'admin'}, (s) ->
       GET '/adm/redirects', {}, (r1) ->
         beforeCount = r1.length
         suffix = moment().format('X')
@@ -21,3 +21,9 @@ module.exports = -> describe "API".subspec, ->
             expect(beforeCount+1).to.equal(r2.length)
             expect(_.find(r2,(r)->r.previous==d.previous)).to.exist
             DONE()
+
+
+module.exports = ->
+
+  DESCRIBE("Basic", basic)
+

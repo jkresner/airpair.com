@@ -6,6 +6,7 @@ angular.module("APBilling", ['ngRoute', 'APPaymentDirectives', 'APBillingDirecti
 
   var authd = apRouteProvider.resolver(['session'])
   var route = apRouteProvider.route
+  route('/bookings', 'Billing', require('./welcome.html'), { resolve: authd })
   route('/billing', 'Billing', require('./welcome.html'), { resolve: authd })
   route('/billing/top-up', 'BillingTopUp', require('./topup.html'), { resolve: authd })
   route('/billing/book/:id', 'BillingBookExpert', require('./book.html'), { resolve: authd })

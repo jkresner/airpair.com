@@ -1,8 +1,32 @@
-colors           = require('colors')
+{colors,initGlobals,initConfig} = require('./../../server/util/_setup')
+
+
+config = initConfig('test')
+initGlobals(config)
+
+
+SCREAM          = require('meanair-scream')
+global.SETUP    = require('./helpers/setup')
+global.newId    = -> new DB.ObjectId()
+global.timeSeed = SETUP.timeSeed
+global.expectTouch = (touch, byId, action) ->
+  expectIdsEqual(touch.by._id, byId)
+  expect(touch.action).to.equal(action)
+
+loginHandler = (req, cb) ->
+  fixtureUser = FIXTURE.users[req.body.key]
+  if !fixtureUser
+    throw Error("Could not find FIXTURE.user for {key:#{req.body.key}}")
+  {email} = FIXTURE.users[req.body.key]
+  fn = require('../../server/services/users').localLogin
+  fn.call req, email, config.auth.masterpass, (e,r) ->
+    req.session.passport = { user: r } if r
+    cb(e,r)
+
 colors.setTheme({
   spec: ['yellow','dim','bold']
-  subspec: ['yellow','dim']
-  expectederr: ['magenta','dim']
+  # subspec: ['yellow','dim']
+  expectederr: 'red'
   appload: 'white'
   update: 'yellow'
   trace: 'grey'
@@ -10,25 +34,11 @@ colors.setTheme({
   wrappercall: 'white'
 })
 
-{initGlobals,initConfig} = require('./../../server/util/_setup')
+config.colors = colors
 
-config = initConfig('test')
-initGlobals(config)
+config.log.auth = false
 
-
-SCREAM          = require('meanair-scream')
-
-global.SETUP    = require('./helpers/setup')
-global.STORY    = require('./stories/stories')
-
-
-loginLogic = (req, callback) ->
-  u = FIXTURE.users[req.body.key]
-  fn = require('../../server/services/users').localLogin
-  fn.call(req, u.email, config.auth.masterpass, callback)
-
-
-SCREAM(__dirname, config, loginLogic).run()
+SCREAM(__dirname, config, loginHandler).run()
 
 
     # $timelapsed("BEFORE start")

@@ -73,7 +73,7 @@ angular.module("APDashboard", ['APFilters', 'APSvcSession',
       r.forEach((n)=>$scope.seen[n.name] = true)
     }
 
-    SessionService.getSiteNotifications({}, setSeen)
+    // SessionService.getSiteNotifications({}, setSeen)
 
     $scope.closeNotification = (name) =>
       SessionService.toggleSiteNotification({name}, setSeen)

@@ -1,31 +1,23 @@
-var logging               = false
 var Data                  = require('./tags.data')
-var Tag                   = require('../models/tag')
-var Svc                = require('./_service')
-var svc                   = new Svc(Tag, logging)
-
+var {Tag} = DAL
 
 var exactMatchBonus = (term, tag) =>
   term.toLowerCase() == tag.name.toLowerCase() ? 1000 : 0
 
-// function encode(term) {
-//   if (!term) return term;
-//   return term.replace(/[-\/\\^$*+?.()|[\]{}+]/g, '\\$&');
-// }
+
 
 var get = {
 
   getById(id,cb) {
-    svc.getById(id, cb)
+    Tag.getById(id, cb)
   },
 
   search(term, cb) {
     var encodedTerm = '\"'+term+'\"'
 
     var query = { $text: { $search: encodedTerm } }
-    var opts = { fields: Data.select.search }
-    // $log('search', query)/
-    svc.searchMany(query, opts, function(e, result) {
+    var opts = { select: Data.select.search }
+    Tag.getManyByQuery(query, opts, function(e, result) {
       if (e) return cb(e)
 
       cb(null,
@@ -41,20 +33,19 @@ var get = {
   },
 
   getAllForCache(cb) {
-    svc.searchMany({}, { fields: Data.select.listCache }, cb)
+    Tag.getManyByQuery({}, { fields: Data.select.listCache }, cb)
   },
 
   getBySlug(slug, cb) {
     if (slug.indexOf('#') != -1) slug = encodeURIComponent(slug)
-    svc.searchOne({slug:slug},null, cb)
+    Tag.getByQuery({slug},null, cb)
   },
 
   getBy3rdParty(term, cb) {
     term = term.toLowerCase()
     Wrappers.StackExchange.getTagByStackoverflowSlug(term, (e,r) => {
-      if (e || config.env != 'test') $log('getTagByStackoverflowSlug.error', e)
       if (!r) return cb()
-      svc.searchOne({$or:[{soId:term},{ghId:term}]}, {}, (e,existing) => {
+      Tag.getByQuery({$or:[{soId:term},{ghId:term}]}, {}, (e,existing) => {
         // $log('getBy3rdParty.existing', existing)
         cb(null, _.extend(r, existing||{}))
       })
@@ -81,32 +72,33 @@ var save = {
   createFrom3rdParty(term, tagFrom3rdParty, cb) {
     if (tagFrom3rdParty._id) {
       // $log('Updating tag from 3rd Party', tagFrom3rdParty.name)
-      svc.update(tagFrom3rdParty._id, tagFrom3rdParty, Data.select.cb.search(cb))
+      Tag.updateSet(tagFrom3rdParty._id, tagFrom3rdParty, Data.select.cb.search(cb))
     }
     else {
       // $log('Creating new tag', tagFrom3rdParty)
-      svc.create(tagFrom3rdParty, Data.select.cb.search(cb))
+      Tag.create(tagFrom3rdParty, Data.select.cb.search(cb))
     }
     if (cache) cache.flush('tags')
   },
 
   createByAdmin(o, cb) {
-    svc.create(o,null, cb)
+    Tag.create(o, null, cb)
     if (cache) cache.flush('tags')
   },
 
   updateByAdmin(orignal, ups, cb) {
-    if (ups.meta) {
-      if (_.isEmpty(ups.meta)) delete ups.meta
-      else {
-        ups.meta.ogType = "website"
-        ups.meta.ogUrl = ups.meta.canonical
-        ups.meta.ogImage = `https://www.airpair.com/static/img/css/tags/${orignal.slug}-og.png`
-        if (!ups.meta.ogTitle) ups.meta.ogTitle = ups.meta.title
-        if (!ups.meta.ogDescription) ups.meta.ogDescription = ups.meta.description
-      }
-    }
-    svc.update(orignal._id, ups, cb)
+    cb(V2DeprecatedError('Tags.updateByAdmin'))
+    // if (ups.meta) {
+    //   if (_.isEmpty(ups.meta)) delete ups.meta
+    //   else {
+    //     ups.meta.ogType = "website"
+    //     ups.meta.ogUrl = ups.meta.canonical
+    //     ups.meta.ogImage = `https://www.airpair.com/static/img/css/tags/${orignal.slug}-og.png`
+    //     if (!ups.meta.ogTitle) ups.meta.ogTitle = ups.meta.title
+    //     if (!ups.meta.ogDescription) ups.meta.ogDescription = ups.meta.description
+    //   }
+    // }
+    // Tag.updateSet(orignal._id, ups, cb)
   }
 
 }

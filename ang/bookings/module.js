@@ -4,7 +4,7 @@ angular.module("APBookings", [])
 
   var authd = apRouteProvider.resolver(['session'])
   var route = apRouteProvider.route
-  route('/bookings', 'Bookings', require('./list.html'), { resolve: authd })
+  // route('/bookings', 'Bookings', require('./list.html'), { resolve: authd })
   route('/bookings/:id', 'Booking', require('./item.html'), { resolve: authd })
   route('/booking/:id', 'Booking', require('./item.html'), { resolve: authd })
 })

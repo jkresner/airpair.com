@@ -111,22 +111,7 @@ var data = {
       //v0 ?
       bookMe: 1
     },
-    v0unset: {
-      'name': 1,
-      'email': 1,
-      'username': 1,
-      'location': 1,
-      'timezone': 1,
-      'homepage': 1,
-      'karma': 1,
-      'gh': 1,
-      'gp': 1,
-      'tw': 1,
-      'in': 1,
-      'al': 1,
-      'so': 1,
-      'bb': 1,
-    },
+    v0unset:'name email username location timezone homepage karma gh gp tw in al so bb',
     migrateInflate(r) {
       if (!r.user) {
         r.isV0 = true
@@ -268,8 +253,8 @@ var data = {
   },
 
   options: {
-    newest100: { options: { limit: 100, sort: { '_id': -1 }  } },
-    active100: { options: { limit: 100, sort: { 'lastTouch.utc': -1 } } }
+    newest100: { limit: 100, sort: { '_id': -1 } },
+    active100: { limit: 100, sort: { 'lastTouch.utc': -1 } }
   },
 
   data: {
