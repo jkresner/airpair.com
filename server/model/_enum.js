@@ -67,6 +67,11 @@ module.exports = {
     ]
   },
 
+  POST: {
+    TEMPLATE: ['post','blank','landing','faq'],
+    COMP: ['2015_q1']
+  },
+
   BOOKING: {
     TYPE:['opensource','private','offline','chat','workshop'],
     ATTENDEE_TYPE: ['expert','customer'],
