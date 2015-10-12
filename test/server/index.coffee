@@ -21,7 +21,7 @@ loginHandler = (req, cb) ->
   if !fixtureUser
     throw Error("Could not find FIXTURE.user for {key:#{req.body.key}}")
   {email} = FIXTURE.users[req.body.key]
-  fn = require('../../server/services/users').localLogin
+  fn = require('../../server/services/auth').localLogin
   fn.call req, email, config.auth.masterpass, (e,r) ->
     req.session.passport = { user: r } if r
     cb(e,r)

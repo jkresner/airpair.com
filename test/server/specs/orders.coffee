@@ -197,6 +197,7 @@ bookingOrders = ->
           expectIdsEqual(order.lineItems[1].bookingId._id,booking1._id)
           DONE()
 
+
   IT 'Book 2 hour with pay as you go private two gets email + name on participant', ->
     STORY.newExpert 'louf', {rate:140}, (sExp, expert) ->
       STORY.newUser 'jkjk', {login:true,paymethod:true,location:true}, (s) ->
@@ -239,7 +240,7 @@ bookingOrders = ->
 
 
   IT 'Book 3 hour at 150 from 500 credit', ->
-    STORY.newUser 'ckni', {login:true,paymethod:true,location:true}, (s) ->
+    STORY.newUser 'usha', {login:true,paymethod:true,location:true}, (s) ->
       o = total: 500, payMethodId: s.primaryPayMethodId
       POST "/billing/orders/credit", o, (r) ->
         airpair1 = datetime: moment().add(2, 'day'), minutes: 120, type: 'opensource', credit: 500, payMethodId: s.primaryPayMethodId

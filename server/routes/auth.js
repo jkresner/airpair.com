@@ -1,13 +1,15 @@
 var auth                     = require('../identity/auth/providers/index')
 var mw                       = require('../middleware/auth')
-var Router                    = require('express').Router
+var AuthSvc                  = require('../services/auth')
+var Router                   = require('express').Router
+
 
 var routes = {
 
-signup: Router()
-  .use(mw.authAlreadyDone)
-  .use(mw.setReturnTo)
-  .use(mw.noCrawl('/')),
+// signup: Router()
+//   .use(mw.authAlreadyDone)
+//   .use(mw.setReturnTo)
+//   .use(mw.noCrawl('/')),
 
 v1: Router()
   //-- Don't want returnTo over ridden on oauth callbacks
@@ -45,7 +47,32 @@ connect: Router()
   .get('/bitbucket', mw.authd, auth.bitbucket.oAuth)
   .get('/angellist', mw.authd, auth.angellist.oAuth)
   .get('/slack', mw.authd, auth.slack.oAuth)
-
+  .post('/password-reset', (req, res, next) => {
+    var validation = require("../../shared/validation/users")
+    var inValid = validation.requestPasswordChange(req.user, req.body.email)
+    if (inValid) return res.status(403).json({message:inValid})
+    $callSvc(AuthSvc.requestPasswordChange,req)(req.body.email, (e,r) => {
+      if (e) { e.fromApi = true; return next(e) }
+      res.json(r)
+    })
+  })
+  .post('/password-set', (req, res, next) => {
+    var validation = require("../../shared/validation/users")
+    var inValid = validation.changePassword(req.user, req.body.hash, req.body.password)
+    if (inValid) return res.status(403).json({message:inValid})
+    // $log('trying to change pass'.magenta, req.body.hash, req.body.password)
+    $callSvc(AuthSvc.changePassword,req)(req.body.hash, req.body.password, (e,r) => {
+      if (e) { e.fromApi = true; return next(e) }
+      var cb = (e,r) => {
+        if (e) return next(e)
+        req.login(r, (err) => {
+          if (err) return next(err)
+          res.json(r)
+        })
+      }
+      $callSvc(AuthSvc.localLogin,req)(r.email, req.body.password, cb)
+    })
+  })
 }
 
 
@@ -59,6 +86,7 @@ module.exports = function(app) {
   // app.use('/signup', routes.signup)
   app.use('/v1/auth', routes.v1)
   app.use('/auth', routes.connect)
+
 
   if (config.auth.test) {
     // config.auth.test.defaultLoginLogic = mw.logic.auth.link

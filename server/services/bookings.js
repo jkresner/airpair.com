@@ -3,8 +3,7 @@ var RequestsSvc             = require('../services/requests')
 var OrdersSvc               = require('../services/orders')
 var ChatsSvc                = require('../services/chats')
 var TemplateSvc             = require('../services/templates')
-var {Booking}               = DAL
-var User                    = require('../models/user')
+var {Booking,User}          = DAL
 var Roles                   = require('../../shared/roles').booking
 var BookingdUtil            = require('../../shared/bookings')
 var {select,query,opts}     = require('./bookings.data')
@@ -158,7 +157,7 @@ var save = {
   createBooking(expert, datetime, minutes, type, credit, payMethodId, requestId, dealId, cb)
   {
     var getParticipants = (callback) => {
-      User.findOne({_id:expert.userId},{localization:1,name:1,email:1}, (e, expertUser) => {
+      User.getById(expert.userId,'localization name email', (e, expertUser) => {
         if (e) return callback(e)
         callback(null,[
           BookingdUtil.participantFromUser("customer", this.user),
@@ -185,7 +184,7 @@ var save = {
           type,
           minutes,
           datetime,
-          suggestedTimes:[{time:datetime,byId:user._id}],
+          suggestedTimes:[{_id:Booking.newId(),time:datetime,byId:user._id}],
           status: 'pending',
           gcal: {},
           orderId: order._id,
@@ -204,7 +203,7 @@ var save = {
   {
     var {suggestedTimes,lastTouch,activity} = original
     suggestedTimes = suggestedTimes || []
-    suggestedTimes.push({time,byId:this.user._id})
+    suggestedTimes.push({_id:Booking.newId(),time,byId:this.user._id})
     lastTouch = svc.newTouch.call(this, 'suggest-time')
     activity.push(lastTouch)
     Booking.updateSet(original._id, {suggestedTimes,lastTouch,activity}, (e,r) => {
@@ -261,7 +260,7 @@ var save = {
 
     // TODO deal with update case gracefully
 
-    review.by = svc.userByte.call(this)
+    review.by = _.pick(this.user,'_id','name')
     review.type = 'booking-customer-feedback'
     reviews.push(review)
 
@@ -465,7 +464,7 @@ var admin = {
     var bookingLine = _.find(lineItems,(li)=>li.type=='airpair'&&_.idsEqual(li.info.expert._id,booking.expertId))
     var prevExpert = bookingLine.info.expert
 
-    User.findOne({_id:expert.userId},{localization:1,name:1,email:1}, (e, expertUser) => {
+    User.getById(expert.userId,'localization name email', (e, expertUser) => {
       if (e) return callback(e)
 
       //-- If there was a calendar invite, cancel and delete
