@@ -53,7 +53,6 @@ other: Router()
 
   .use(cache.templatesReady)
   .get('/session/full', setAnonSessionData, API.Users.getSession)
-  .put('/users/me/password-change', API.Users.requestPasswordChange)
   .put('/users/me/tag/:tag', setAnonSessionData, API.Users.toggleTag)
   .put('/users/me/tags', setAnonSessionData, API.Users.updateTags)
   .put('/users/me/bookmarks', setAnonSessionData, API.Users.updateBookmarks)
@@ -62,26 +61,6 @@ other: Router()
   .put('/users/me/name', setAnonSessionData, API.Users.changeName)
   // .get('/users/me/maillists', setAnonSessionData, API.Users.getMaillists)
   // .put('/users/me/maillists', setAnonSessionData, API.Users.toggleMaillist)
-  .put('/users/me/password', (req, res, next) => {
-    var inValid = API.Users.validation.changePassword(req.user, req.body.hash, req.body.password)
-    if (inValid) return res.status(403).json({message:inValid})
-
-    // $log('trying to change pass'.magenta, req.body.hash, req.body.password)
-    $callSvc(API.Users.svc.changePassword,req)(req.body.hash, req.body.password, (e,r) => {
-      if (e) { e.fromApi = true; return next(e) }
-
-      var cb = (e,r) => {
-        if (e) return next(e)
-        req.login(r, (err) => {
-          if (err) return next(err)
-          res.json(r)
-        })
-      }
-
-      $callSvc(API.Users.svc.localLogin,req)(r.email, req.body.password, cb, cb)
-    })
-  })
-
 
   .get('/requests/review/:id', API.Requests.getByIdForReview)
 

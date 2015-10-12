@@ -149,8 +149,8 @@ var save = {
     expert.user = selectFromObject(this.user, select.userCopy)
     expert.userId = this.user._id
     $callSvc(updateWithTouch, this)(expert, 'create', trackData, (e,r) => {
-      if (r._id)
-        $callSvc(UserSvc.setExpertCohort, this)(r._id)
+      // if (r._id)
+      //   $callSvc(UserSvc.setExpertCohort, this)(r._id)
       selectCB.me(cb)(e,r)
     })
   },

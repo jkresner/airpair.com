@@ -1,5 +1,4 @@
-var {Post, Expert}        = DAL
-var UserSvc               = require('../services/users')
+var {Post, Expert, User}  = DAL
 var TemplateSvc           = require('../services/templates')
 var github2               = Wrappers.GitHub
 var Data                  = require('./posts.data')
@@ -555,23 +554,22 @@ var save = {
 
 var saveReviews = {
 
-  review(original, review, cb) {
+  review(post, review, cb) {
     review.by = svc.userByte.call(this)
     review.type = `post-survey-inreview`
-    if (original.published) review.type.replace('inreview','published')
+    if (post.published) review.type.replace('inreview','published')
 
-    var reviews = original.reviews || []
+    var reviews = post.reviews || []
     reviews.push(review)
 
-    var stats = PostsUtil.calcStats(Object.assign(original,{reviews}))
-    Post.updateSet(original._id, {reviews,stats}, select.cb.statsView(cb))
+    var stats = PostsUtil.calcStats(Object.assign(post,{reviews}))
+    Post.updateSet(post._id, {reviews,stats}, select.cb.statsView(cb))
 
     //-- Probably better doing the db hit as we ensure the right email if the user
     //-- changed it at any point
-    var {userId} = original.by
-    $callSvc(UserSvc.getById, {user:{_id:userId}})(userId, (ee, user) => {
+    User.getById(post.by.userId, (ee, user) => {
       mailman.sendTemplate('post-review-notification',
-        selectTmpl.reviewNotify(original,review), user)
+        selectTmpl.reviewNotify(post,review), user)
     })
   },
 

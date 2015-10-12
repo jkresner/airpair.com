@@ -56,16 +56,7 @@ var select = {
     'name': 1,
     'initials': 1
   },
-  search: {
-    '_id': 1,
-    'email': 1,
-    'name': 1,
-    'initials': 1,
-    'username': 1,
-    'bio': 1,
-    'google': 1,
-    'cohort': 1
-  },
+  search: '_id email name initials username bio google',
   siteNotifications: {
     '_id': 0,
     'siteNotifications': 1
@@ -190,7 +181,7 @@ var data = {
   },
 
   query: {
-    existing: function(email) {
+    existing(email) {
       email = email.toLowerCase()
       return { '$or': [{email:email},{'google._json.email':email}] }
     },
@@ -200,6 +191,10 @@ var data = {
         return { '$or': [{email:{$in:emails}},{'social.gh.email':{$in:emails}}] }
       }
     }
+  },
+
+  opts: {
+    search: { limit:4, select: select.search }
   },
 
   data: {

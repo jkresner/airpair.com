@@ -79,7 +79,7 @@ var middleware = {
       var UserSvc = require("../services/users")
       if (logging) $log('bodyParamFn'.trace, paramName, req.body[paramName])
 
-      $callSvc(UserSvc.getById,req)(null, function(e, r) {
+      $callSvc(UserSvc.getMe, req)(function(e, r) {
         // if (!e && !r)
         //   e = ErrorApi404(`${paramName} not found.`)
         // else if (!e && typeof param == 'array' && param.length != r.length)

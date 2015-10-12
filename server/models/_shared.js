@@ -27,17 +27,6 @@ var UserByte = {
   email:      { type: String, lowercase: true } // We can use the email to infalte the avatar
 }
 
-var SocialAccounts = {
-  tw: {},
-  so: {},
-  gh: {},
-  in: {},
-  bb: {},
-  al: {},
-  gp: {},
-  sl: {},
-}
-
 
 var Survey = {
   type:         { require:true, type: String },
@@ -63,4 +52,4 @@ var Survey = {
 }
 
 
-module.exports = {Message,UserByte,SocialAccounts,Survey}
+module.exports = {Message,UserByte,Survey}
