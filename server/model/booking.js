@@ -24,6 +24,7 @@ var Participant = {
 }
 
 var SuggestedTime = asSchema({
+  _id:            { type: Id, required },
   time:           { type: Date, required },
   byId:           { type: Id, ref: 'User', required },
   confirmedById:  { type: Id, ref: 'User' },
