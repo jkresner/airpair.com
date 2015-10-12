@@ -1,5 +1,5 @@
 {
-  "specs":                "posts",
+  "specs":                "analytics",
   "stubs": {
     "on":                  true
   },
@@ -16,7 +16,7 @@
     "url":                { "appConfig": "mongoUri" },
     "collections":        ["V1Tests","Users","Experts","Bookings","Orders",
                            "Companies","Paymethods","Payouts","Posts",
-                           "Requests","Tags","Templates"]
+                           "Requests","Tags","Templates","Views","Impressions"]
   },
   "paths": {
     "specs":              "specs",
