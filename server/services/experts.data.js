@@ -253,8 +253,8 @@ var data = {
   },
 
   options: {
-    newest100: { options: { limit: 100, sort: { '_id': -1 }  } },
-    active100: { options: { limit: 100, sort: { 'lastTouch.utc': -1 } } }
+    newest100: { limit: 100, sort: { '_id': -1 } },
+    active100: { limit: 100, sort: { 'lastTouch.utc': -1 } }
   },
 
   data: {

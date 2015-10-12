@@ -4,10 +4,11 @@ var validation = {
 
   getOrdersForPayouts(user, expert)
   {
-    var isAdmin = _.contains(user.roles, 'admin')
-    var isExpert = expert && _.idsEqual(user._id, expert.userId)
+    return 'Payouts.getPayouts deprecated for v2 migration. Checkout consult.airpair.com this week.'
+    // var isAdmin = _.contains(user.roles, 'admin')
+    // var isExpert = expert && _.idsEqual(user._id, expert.userId)
 
-    if (!isAdmin && !isExpert) return `Can only get orders to payout for yourself`
+    // if (!isAdmin && !isExpert) return `Can only get orders to payout for yourself`
   },
 
   buyCredit(user, total, coupon, paymethodId)

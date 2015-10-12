@@ -61,7 +61,8 @@ var get = {
     var searchFields = 'user.name user.email user.username name email username'
       + 'gh.username tw.username user.social.gh.username user.social.tw.username'
     var opts = { limit: 5, andQuery: { rate: { '$gt': 0 } }, select: select.search }
-    Expert.search(term, searchFields, opts, selectCB.migrateSearch(cb))
+
+    Expert.searchByRegex(term, searchFields, opts, selectCB.migrateSearch(cb))
   },
 
   getByUsername(term, cb) {
@@ -70,7 +71,7 @@ var get = {
       {'username':term},
       {'bookme.urlSlug':term}
     ]}
-    Exper.getByQuery(q, { select: select.me }, selectCB.migrateInflate(cb))
+    Expert.getByQuery(q, { select: select.me }, selectCB.migrateInflate(cb))
   },
 
   getNewForAdmin(cb) {

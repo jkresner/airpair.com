@@ -9,6 +9,9 @@ SCREAM          = require('meanair-scream')
 global.SETUP    = require('./helpers/setup')
 global.newId    = -> new DB.ObjectId()
 global.timeSeed = SETUP.timeSeed
+global.expectTouch = (touch, byId, action) ->
+  expectIdsEqual(touch.by._id, byId)
+  expect(touch.action).to.equal(action)
 
 loginHandler = (req, cb) ->
   fixtureUser = FIXTURE.users[req.body.key]

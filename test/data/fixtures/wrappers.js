@@ -588,7 +588,7 @@ module.exports = {
       "tz_label":"Pacific Daylight Time",
       "profile":{"email":"support@airpair.com"}
     },
-    {"id":"U06UBH472","name":"experts","deleted":false,"real_name":"Experts AirPair","tz_label":"Pacific Daylight Time","profile":{"email":"experts@airpair.com"}},{"id":"U06U2QUVB","name":"gregorynicholas","deleted":false,"real_name":"gregory n","tz_label":"Pacific Daylight Time","profile":{"email":"nicholas.g.gregory@gmail.com"}},{"id":"U06U2HQQK","name":"jk","deleted":false,"real_name":"{} Jonathon Kresner","tz_label":"Pacific Daylight Time","profile":{"email":"jk@airpair.com"}},{"id":"U06UCKSSF","name":"jkgmail","deleted":false,"real_name":"Jonathon Gmail","tz_label":"Pacific Daylight Time","profile":{"email":"jkresner@gmail.com"}},{"id":"U06UBBT9V","name":"pairbot","deleted":false,"real_name":"","tz_label":"Pacific Daylight Time"}
+    {"id":"U06UBH472","name":"experts","deleted":false,"real_name":"Experts AirPair","tz_label":"Pacific Daylight Time","profile":{"email":"experts@airpair.com"}},{"id":"U06U2QUVB","name":"gregorynicholas","deleted":false,"real_name":"gregorynicholas","tz_label":"Pacific Daylight Time","profile":{"email":"nicholas.g.gregory@gmail.com"}},{"id":"U06U2HQQK","name":"jk","deleted":false,"real_name":"{} Jonathon Kresner","tz_label":"Pacific Daylight Time","profile":{"email":"jk@airpair.com"}},{"id":"U06UCKSSF","name":"jkgmail","deleted":false,"real_name":"Jonathon Gmail","tz_label":"Pacific Daylight Time","profile":{"email":"jkresner@gmail.com"}},{"id":"U06UBBT9V","name":"pairbot","deleted":false,"real_name":"","tz_label":"Pacific Daylight Time"}
   ],
 
   slack_channels_list: [
