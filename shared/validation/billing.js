@@ -2,10 +2,10 @@ var Roles = require('../roles').order
 
 var validation = {
 
-  getOrdersToPayout(user, expert)
+  getOrdersForPayouts(user, expert)
   {
     var isAdmin = _.contains(user.roles, 'admin')
-    var isExpert = _.idsEqual(user._id, expert.userId)
+    var isExpert = expert && _.idsEqual(user._id, expert.userId)
 
     if (!isAdmin && !isExpert) return `Can only get orders to payout for yourself`
   },

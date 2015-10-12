@@ -8,9 +8,12 @@ initGlobals(config)
 SCREAM          = require('meanair-scream')
 global.SETUP    = require('./helpers/setup')
 global.newId    = -> new DB.ObjectId()
-
+global.timeSeed = SETUP.timeSeed
 
 loginHandler = (req, cb) ->
+  fixtureUser = FIXTURE.users[req.body.key]
+  if !fixtureUser
+    throw Error("Could not find FIXTURE.user for {key:#{req.body.key}}")
   {email} = FIXTURE.users[req.body.key]
   fn = require('../../server/services/users').localLogin
   fn.call req, email, config.auth.masterpass, (e,r) ->

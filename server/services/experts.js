@@ -1,11 +1,21 @@
 var logging               = false
 var {Expert}              = DAL
-var {selectFromObject}    = util
-var {select,options}      = require('./experts.data')
-var selectCB              = select.cb
 var UserSvc               = require('../services/users')
 var RequestSvc            = require('../services/requests')
 var BookingSvc            = require('../services/bookings')
+var {selectFromObject}    = util
+var {select,options}      = require('./experts.data')
+var selectCB              = select.cb
+
+var svc = {
+  newTouch(action) {
+    return {
+      action,
+      utc: new Date(),
+      by: { _id: this.user._id, name: this.user.name }
+    }
+  }
+}
 
 var get = {
 
@@ -60,7 +70,7 @@ var get = {
       {'username':term},
       {'bookme.urlSlug':term}
     ]}
-    Exper.getByQuery(q, { fields: select.me }, selectCB.migrateInflate(cb))
+    Exper.getByQuery(q, { select: select.me }, selectCB.migrateInflate(cb))
   },
 
   getNewForAdmin(cb) {
@@ -81,14 +91,14 @@ var get = {
 
 function updateWithTouch(expert, action, trackData, cb) {
   var previousAction = (expert.lastTouch) ? expert.lastTouch.action : null
-  // if (action != previousAction ||
-  //   moment(expert.lastTouch.utc).isBefore(moment().add(1, 'hours')))
-  // {
-  //   // expert.lastTouch = svc.newTouch.call(this, action)
-  //   expert.activity = expert.activity || []
-  //   // if (_.idsEqual(this.user._id,expert.userId))  // Don't want activity for admins
-  //   expert.activity.push(expert.lastTouch)
-  // }
+  if (action != previousAction ||
+    moment(expert.lastTouch.utc).isBefore(moment().add(1, 'hours')))
+  {
+    expert.lastTouch = svc.newTouch.call(this, action)
+    expert.activity = expert.activity || []
+    if (_.idsEqual(this.user._id,expert.userId))  // Don't want activity for admins
+     expert.activity.push(expert.lastTouch)
+  }
 
   var tagIdx = 0
   for (var t of expert.tags) {
@@ -117,17 +127,17 @@ function updateWithTouch(expert, action, trackData, cb) {
       expert.gmail || expert.timezone || expert.location ||
       expert.homepage || expert.karma)
     {
-      Expert.updateUnset(expert._id, select.v0unset, (e,r)=>{})
-      expert = _.omit(expert, _.keys(select.v0unset))
+      Expert.updateUnset(expert._id, select.v0unset.split(' '), (e,r)=>{})
+      expert = _.omit(expert, select.v0unset.split(' '))
       $log(`Migrating v0 expert ${expert._id} ${expert.user.name}`.yellow)
     }
 
-    Expert.updateSet(expert._id, expert, cb)
+    Expert.updateSet(expert._id, _.omit(expert,['_id']), cb)
   }
 
-  if (trackData)
-    analytics.track(this.user, this.sessionID, 'Save',
-      _.extend(trackData,{type:expert,action}), {}, ()=>{})
+  // if (trackData)
+  //   analytics.track(this.user, this.sessionID, 'Save',
+  //     _.extend(trackData,{type:expert,action}), {}, ()=>{})
 }
 
 
@@ -149,16 +159,16 @@ var save = {
     ups.user = selectFromObject(this.user, select.userCopy)
     var expert = selectFromObject(_.extend(original,ups), select.updateMe)
     $callSvc(updateWithTouch, this)(expert, 'update', trackData, selectCB.me(cb))
-    $callSvc(UserSvc.setExpertCohort, this)(ups._id)
+    // $callSvc(UserSvc.setExpertCohort, this)(ups._id)
   },
 
   updateAvailability(original, availability, cb) {
-    // availability.lastTouch = svc.newTouch.call(this, availability.status)
+    availability.lastTouch = svc.newTouch.call(this, availability.status)
     Expert.updateSet(original._id, {availability}, selectCB.me(cb))
   },
 
   createDeal(expert, deal, cb) {
-    // deal.lastTouch = svc.newTouch.call(this, 'createDeal')
+    deal.lastTouch = svc.newTouch.call(this, 'createDeal')
     deal.activity = [deal.lastTouch]
     deal.rake = deal.rake || 10 //-- To become more intelligent and custom per deal
     expert.deals = expert.deals || []
@@ -168,7 +178,7 @@ var save = {
 
   deactivateDeal(expert, dealId, cb) {
     var deal = _.find(expert.deals,(d)=>_.idsEqual(d._id,dealId))
-    // deal.lastTouch = svc.newTouch.call(this, 'dectivateDeal')
+    deal.lastTouch = svc.newTouch.call(this, 'dectivateDeal')
     deal.expiry = new Date
     $callSvc(updateWithTouch, this)(expert, 'dectivateDeal', null, selectCB.me(cb))
   },
