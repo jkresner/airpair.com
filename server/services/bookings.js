@@ -185,7 +185,7 @@ var save = {
           type,
           minutes,
           datetime,
-          suggestedTimes:[{time:datetime,byId:user._id}],
+          suggestedTimes:[{_id:Booking.newId(),time:datetime,byId:user._id}],
           status: 'pending',
           gcal: {},
           orderId: order._id,
@@ -204,7 +204,7 @@ var save = {
   {
     var {suggestedTimes,lastTouch,activity} = original
     suggestedTimes = suggestedTimes || []
-    suggestedTimes.push({time,byId:this.user._id})
+    suggestedTimes.push({_id:Booking.newId(),time,byId:this.user._id})
     lastTouch = svc.newTouch.call(this, 'suggest-time')
     activity.push(lastTouch)
     Booking.updateSet(original._id, {suggestedTimes,lastTouch,activity}, (e,r) => {
