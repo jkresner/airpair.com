@@ -43,7 +43,7 @@ return asSchema({
   gcal:           {},
   recordings:     [Recording],
   orderId:        { type: Id, ref: 'Order', required },
-  // chatId:         { type: Id, ref: 'Chat' },
+  chatId:         { type: Id, ref: 'Chat' },
   notes:          [Note],
 
   lastTouch:      Touch,

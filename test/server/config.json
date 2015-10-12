@@ -1,5 +1,5 @@
 {
-  "specs":                "orders",
+  "specs":                "bookings",
   "stubs": {
     "on":                  true
   },

@@ -1,12 +1,8 @@
-var {Expert,Booking,Request}      = DAL
-var MatchGroup            = require('../models/matchgroup')
-var md5                   = require('../util/md5')
-var {ObjectId2Date}       = util
-var Data                  = require('./experts.data')
-var {select,query}        = Data
-var selectCB              = select.cb
-
-
+var {Expert,Booking,Request} = DAL
+var MatchGroup               = require('../models/matchgroup')
+var md5                      = require('../util/md5')
+var {ObjectId2Date}          = util
+var {select,query}           = require('./experts.data')
 
 
 var get = {
@@ -33,17 +29,16 @@ var get = {
     var {tags,exclude} = q
     var budget = q.budget || 0
     var includeBusy = q.includeBusy
-    var opts = {fields:Data.select.matches, options: { limit: q.limit } }
     q.limit = 200
 
     Expert.aggregate([
         { $match: query.ranked(tags,exclude,0,includeBusy) } /* Query can go here, if you want to filter results. */
-      , { $project: _.extend({ common: { $setIntersection: ['$tags._id',tags] } }, Data.select.matches) } /* select the tokens field as something we want to "send" to the next command in the chain */
-      , { $project: _.extend({ common:1, primary: { $setIntersection: ['$tags._id',[tags[0]]] } }, Data.select.matches) } /* select the tokens field as something we want to "send" to the next command in the chain */
-      , { $project: _.extend({ commonLen: { $size: '$common' }, primaryLen: { $size: '$primary' } }, Data.select.matches) }
+      , { $project: _.extend({ common: { $setIntersection: ['$tags._id',tags] } }, select.matches) } /* select the tokens field as something we want to "send" to the next command in the chain */
+      , { $project: _.extend({ common:1, primary: { $setIntersection: ['$tags._id',[tags[0]]] } }, select.matches) } /* select the tokens field as something we want to "send" to the next command in the chain */
+      , { $project: _.extend({ commonLen: { $size: '$common' }, primaryLen: { $size: '$primary' } }, select.matches) }
       , { $sort: { commonLen: -1, primaryLen: -1 } }
       , { $limit: q.limit }
-    ], selectCB.inflateList((e, experts) => {
+    ], select.cb.inflateList((e, experts) => {
       // $log('prim', tags[0])
 
       if (e || !experts || experts.length == 0) return cb(e,experts)
@@ -140,7 +135,8 @@ var calcMatching = (expert, cb) => {
       select: '_id expertId minutes datetime status participants.info participants.role'
     }, (ee,bookings) => {
   Request
-    .find({'suggested.expert._id':expert._id},{_id:1,userId:1,suggested:1}, (e,requests) => {
+    .getManyByQuery({'suggested.expert._id':expert._id}, {
+        select:'_id userId suggested'}, (e,requests) => {
       var expertSuggestions = []
       var expertCalls = []
       var replied = 0
@@ -211,7 +207,7 @@ var save = {
   updateMatchingStats(expert, request, cb) {
     calcMatching(expert, (e, matching) => {
       // $log('updaing', expert._id, expert.tags, matching.replies.last10, matching)
-      svc.update(expert._id, _.extend(expert, {matching}), (e,r)=>{
+      Expert.updateSet(expert._id, {matching}, (e,r)=>{
         if (r) r.avatar = md5.gravatarUrl(r.email||r.user.email)
         r.score = get.calcMojo(r,request.tags)
         r.tags = expert.tags
