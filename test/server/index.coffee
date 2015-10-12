@@ -12,6 +12,9 @@ global.timeSeed = SETUP.timeSeed
 global.expectTouch = (touch, byId, action) ->
   expectIdsEqual(touch.by._id, byId)
   expect(touch.action).to.equal(action)
+global.ANONSESSION = (cb) ->
+  global.COOKIE = null
+  GET '/session/full', cb
 
 loginHandler = (req, cb) ->
   fixtureUser = FIXTURE.users[req.body.key]
