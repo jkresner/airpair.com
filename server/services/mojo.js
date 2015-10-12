@@ -1,6 +1,4 @@
-var {Expert}              = DAL
-var Request               = require('../models/request')
-var Booking               = require('../models/booking')
+var {Expert,Booking,Request}      = DAL
 var MatchGroup            = require('../models/matchgroup')
 var md5                   = require('../util/md5')
 var {ObjectId2Date}       = util
@@ -138,9 +136,8 @@ var get = {
 
 var calcMatching = (expert, cb) => {
   Booking
-    .find({'expertId':expert._id},{_id:1,expertId:1,minutes:1,datetime:1,status:1
-      ,'participants.info':1
-      ,'participants.role':1
+    .getManyByQuery({'expertId':expert._id}, {
+      select: '_id expertId minutes datetime status participants.info participants.role'
     }, (ee,bookings) => {
   Request
     .find({'suggested.expert._id':expert._id},{_id:1,userId:1,suggested:1}, (e,requests) => {

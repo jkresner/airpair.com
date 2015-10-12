@@ -4,6 +4,31 @@ module.exports = {
     TYPE: ['301','302','410','canonical-post']
   },
 
+  REQUEST: {
+    REPLY_STATUS: ['waiting','opened','busy','abstained','underpriced','available','chosen','released'],
+    TYPE:  ['troubleshooting', 'mentoring', 'code-review', 'resources', 'advice', 'vetting', 'other' ],
+    EXPERIENCE: ['beginner','proficient','advanced'],
+    TIME: ['regular', 'rush', 'later'],
+    STATUS: [
+  //     //v1
+      'received',       //: requires review by airpair
+      'waiting',        //: no experts available yet
+      'review',         //: customer must review & choose one or more experts
+      'booked',      //: one or more calls already scheduled
+      'consumed',       //: feedback on all calls collected, but lead still warm for up-sell
+      'complete',       //: transaction final and time to archive
+      'canceled',       //: company has canceled the request
+      'deferred',       //: customer indicated they need more time
+      'junk',
+      //v0
+      'holding',        //: waiting for go ahead by customer
+      'scheduling',     //: call needs to be scheduled
+      'scheduled',      //: one or more calls already scheduled
+      'incomplete',     //: more detail required
+      'pending'        //: [bookme] customer put in request and expert has to confirm
+    ]
+  },
+
   TEMPLATE: {
     TYPE: ['mail','md-file','site-notification','site-content','tw-tweet','fb-share','in-share','slack-message','pageMeta']
   },
@@ -15,6 +40,11 @@ module.exports = {
 
   PAYOUT: {
     LINE_TYPE: ['airpair','post'] //,'social','referral','adjustment'
+  },
+
+  CHAT: {
+    TYPE: ['im','group'],
+    PROVIDER: ['slack']
   },
 
   EXPERT: {

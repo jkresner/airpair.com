@@ -148,7 +148,7 @@ var data = {
             return cb(e, r)
           }
 
-          if (r.google) {
+          if (r.google && r.google._json) {
             r.social = r.social || {}
             r.social.gp = { link: r.google._json.link || r.google._json.url
               , email: r.google._json.email }

@@ -190,20 +190,6 @@ stories = {
           done sExpert
 
 
-  applyToBeAnExpert: (expertData, done) ->
-    expertData.tags = expertData.tags || [data.tags.angular]
-    GET "/experts/me", {}, (meExpert) ->
-      d = _.extend(meExpert, expertData)
-      PUT "/users/me/username", {  username: expertData.username || expertData.userKey }, {}, ->
-        PUT "/users/me/initials", { initials: expertData.initials }, {}, ->
-          PUT "/users/me/location", expertData.location || data.wrappers.localization_melbourne.locationData, {}, ->
-            PUT "/users/me/bio", { bio: expertData.bio || 'a bio'}, {}, ->
-              # $log('updating expert'.cyan, meExpert._id, d)
-              if (meExpert._id)
-                PUT "/experts/#{meExpert._id}/me", d, {}, done
-              else
-                POST "/experts/me", d, {}, done
-
 
   createNewPost: (userKey, postData, done) ->
     LOGIN userKey, (authorSession) ->
@@ -263,21 +249,7 @@ stories = {
                   done(c._id, pm._id, sCompanyAdmin, sCompanyMember)
 
 
-  newCompleteRequest: (userKey, requestData, cb) ->
-    budget = requestData.budget || 100
-    stories.addAndLoginLocalUserWhoCanMakeBooking userKey, (sessionCustomer) ->
-      request = {
-        type: 'mentoring',
-        tags: [data.tags.angular],
-        experience: 'beginner',
-        brief: 'this is a test yo',
-        hours: "1",
-        time: 'rush'
-      }
-      request = _.extend(request, requestData)
-      POST '/requests', request, {}, (r0) ->
-        PUT "/requests/#{r0._id}", _.extend(r0,{budget,title:'test'}), {}, (r) ->
-          cb(r,sessionCustomer)
+
 
 
   newCompleteRequestForAdmin: (userKey, requestData, cb) ->
@@ -318,17 +290,6 @@ stories = {
                 cb(request, booking, customerSession, expertSession)
 
 
-  newBookedRequestWithExistingExpert: (customerUserKey, requestData, expertSession, cb) ->
-    SETUP.newCompleteRequest customerUserKey, {}, (request, customerSession) ->
-      LOGIN expertSession.userKey, () ->
-        reply = expertComment: "I'll take it", expertAvailability: "Real-time", expertStatus: "available"
-        PUT "/requests/#{request._id}/reply/#{expertSession.expertId}", reply, {}, (r1) ->
-          LOGIN customerSession.userKey, ->
-            GET "/requests/#{request._id}/book/#{expertSession.expertId}", {}, (r2) ->
-              airpair1 = datetime: moment().add(2, 'day'), minutes: 60, type: 'private', payMethodId: customerSession.primaryPayMethodId, request: { requestId: request._id, suggestion: r2.suggested[0] }
-              POST "/bookings/#{expertSession.expertId}", airpair1, {}, (booking) ->
-                cb(request, booking, customerSession, expertSession)
-
 
   releaseOrderAndLogExpertBackIn: (orderId, expertSession, cb) ->
     LOGIN 'admin', ->
@@ -342,53 +303,6 @@ stories = {
         db.ensureDoc 'Booking', data.bookings[objectKey], (e, b) ->
           b.request = data.requests[objectKey]
           cb(b)
-
-
-  newBookedExpert: (userKey, bookingData, cb) ->
-    stories.addAndLoginLocalUserWhoCanMakeBooking userKey, (sessionCustomer) ->
-      if bookingData.expertUserKey
-        bookingData.expertId = data.experts[bookingData.expertUserKey]._id
-
-      bData = _.extend({
-          datetime:       moment().add(2, 'day')
-          minutes:        120
-          type:           'private'
-          payMethodId:    sessionCustomer.primaryPayMethodId,
-          expertId:       data.experts.dros._id
-          expertUserKey:  'dros'
-        }, bookingData)
-
-      POST "/bookings/#{bData.expertId}", bData, {}, (booking) ->
-        if (!bookingData.slackChatId)
-          cb sessionCustomer, booking
-        else
-          LOGIN "admin", ->
-            c = type:'slack',providerId:bookingData.slackChatId
-            PUT "/bookings/#{booking._id}/associate-chat", c, {}, (b1) ->
-              LOGIN sessionCustomer.userKey, ->
-                cb sessionCustomer, b1
-
-
-  newBookingInConfirmedState: (customerUserKey, bookingData, cb) ->
-    bookingData.expertUserKey = 'gnic'
-    bookingData.slackChatId = bookingData.slackChatId || "G06UFP6AX"
-    stories.newBookedExpert customerUserKey, bookingData, (s, b1) ->
-      LOGIN bookingData.expertUserKey, (sExp) ->
-        timeId = b1.suggestedTimes[0]._id
-        PUT "/bookings/#{b1._id}/confirm-time", {_id:b1._id, timeId}, {}, (b2) ->
-          expect(b2.status).to.equal("confirmed")
-          LOGIN s.userKey, ->
-            cb b2, s, sExp
-
-
-  newBookingInFollowupState: (customerUserKey, bookingData, cb) ->
-    stories.newBookingInConfirmedState customerUserKey, bookingData, (b, sCust, sExp) ->
-      LOGIN 'admin',(sadm) ->
-        youTubeId = bookingData.youTubeId || "MEv4SuSJgwk"
-        PUT "/adm/bookings/#{b._id}/recording", {youTubeId}, {}, (b2) ->
-          expect(b2.status).to.equal("followup")
-          LOGIN sCust.userKey, ->
-            cb _.extend(b,{status:"followup"}), sCust, sExp
 
 
 }

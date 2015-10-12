@@ -573,7 +573,6 @@ module.exports = {
 
   narv :{
     "_id" : ObjectId("5421793a8f8c80299bcc4852"),
-    "__v" : 0,
     "cohort" : {
         "engagement" : {
             "visit_first" : "2014-09-23T13:44:26.000Z",
@@ -1937,25 +1936,23 @@ module.exports = {
     "email" : "rashaunstovall@gmail.com",
     "emailVerified" : true,
     "google" : {
-        "id" : "109960924546535808651",
-        "provider" : "google"
+      "id" : "109960924546535808651",
+      "provider" : "google"
     },
     "googleId" : "109960924546535808651",
     "name" : "Ra'Shaun Stovall",
-    "tags" : [],
-    "bookmarks" : [],
     "social" : {
         "in" : { "id" : "SJu5-UP-9Y" },
-        "tw" : { "id" : "121639673", "username" : "snuggsi", },
+        "tw" : { "id" : "121639673", "username" : "snuggsi" },
         "gh" : { "username" : "snuggs" }
     },
     "bio" : "I'm not a software engineer. Writing beautiful code is only one of the ways I solve problems. Looking forward to helping you!",
     "username" : "snuggs",
     "initials" : "rs",
     "localization" : {
-        "timezoneData" : { "timeZoneName" : "Eastern Daylight Time", "timeZoneId" : "America/New_York" },
-        "timezone" : "Eastern Daylight Time",
-        "location" : "New York, État de New York, États-Unis"
+      "timezoneData" : { "timeZoneName" : "Eastern Daylight Time", "timeZoneId" : "America/New_York" },
+      "timezone" : "Eastern Daylight Time",
+      "location" : "New York, État de New York, États-Unis"
     }
   },
 
@@ -2593,7 +2590,7 @@ module.exports = {
     "_id" : ObjectId("51ba69f466a6f999a465f3b5"),
     "email" : "faction.gregory@gmail.com",
     "emailVerified" : true,
-    "name" : "gregory n",
+    "name" : "gregorynicholas",
     "username" : "gregorynicholas",
     "bio" : "software engineer + startup founder. enjoy teaching and helping people of all skill levels. from basics of http requests, to rest api design, to advanced data aggregation + visualization, to advanced package management + packaging techniques.",
     "initials" : "GN",

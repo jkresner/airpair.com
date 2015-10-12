@@ -27,9 +27,9 @@ var setup = {
       if (r) return done()
       setup.ensureExpert('dros', () =>
         setup.ensureExpert('tmot', () =>
-          done() ))
+          setup.ensureExpert('snug', () =>
+            done() )))
 
-        // SETUP.ensureV0Expert('snug', () =>
         //   SETUP.ensureV0Expert('rbig', () =>
         //     SETUP.ensureV1LoggedInExpert('abha', () =>
         //         SETUP.ensureV0Expert('admb', () => done() ))))))

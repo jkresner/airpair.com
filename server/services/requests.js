@@ -1,23 +1,30 @@
 var logging               = false
 var md5                   = require('../util/md5')
-var Svc                   = require('./_service')
 var Rates                 = require('./requests.rates')
-var Request               = require('../models/request')
-var {Order,Booking}       = DAL
-var User                  = require('../models/user')
+var {Request,Order,Booking}       = DAL
 var Roles                 = require('../../shared/roles.js')
 var UserSvc               = require('../services/users')
 var PaymethodsSvc         = require('../services/paymethods')
 var MojoSvc               = require('../services/mojo')
 var {select,query}        = require('./requests.data')
+var User                  = require('../models/user')
 var selectCB              = select.cb
-var svc                   = new Svc(Request, logging)
 var {isCustomer,isCustomerOrAdmin,isExpert} = Roles.request
+
+var svc = {
+  newTouch(action) {
+    return {
+      action,
+      utc: new Date(),
+      by: { _id: this.user._id, name: this.user.name }
+    }
+  }
+}
 
 var get = {
 
   getByIdForAdmin(id, cb) {
-    svc.getById(id, (e,r) => {
+    Request.getById(id, (e,r) => {
       if (e || !r) return cb(e,r)
       r = select.byView(r, 'admin')
       User.findOne({_id:r.userId}).lean().exec((ee,user) => {
@@ -46,7 +53,7 @@ var get = {
 
   getByIdForMatchmaker(id, cb) {
     // $log('** getByIdForMatchmaker should filter properties a bit when non-admins start matching..')
-    svc.getById(id, (e,r) => {
+    Request.getById(id, (e,r) => {
       if (e || !r) return cb(e,r)
       r = select.byView(r, 'admin')
       User.findOne({_id:r.userId}, (ee,user) => {
@@ -62,7 +69,7 @@ var get = {
   },
 
   getByIdForUser(id, cb) {  // for updating
-    svc.getById(id, (e,r) => {
+    Request.getById(id, (e,r) => {
       if (e || !r) return cb(e,r)
       if (!isCustomerOrAdmin(this.user,r)) return cb(Error(`Could not find request[${id}] belonging to user[${this.user._id}]`))
       cb (null, select.byView(r, 'customer'))
@@ -70,7 +77,7 @@ var get = {
   },
 
   getByIdForReview(id, cb) {
-    svc.getById(id, selectCB.byRole(this,cb,cb))
+    Request.getById(id, selectCB.byRole(this,cb,cb))
   },
 
   getByIdForBookingInflate(id, cb)
@@ -78,22 +85,21 @@ var get = {
     var fields = !Roles.isAdmin(this.user) ? select.anon :
        _.extend({'suggested._id': 1,'suggested.expert.name': 1,'brief':1},select.pipeline)
 
-    svc.searchOne(id, {fields}, cb)
+    Request.getById(id, {select:fields}, cb)
   },
 
   getByUserIdForAdmin(userId, cb) {
-    var opts = { options: { sort: { '_id': -1 } } }
-    svc.searchMany({userId}, opts, cb)
+    Request.getManyByQuery({userId}, { sort: { '_id': -1 } }, cb)
   },
 
   getMy(cb) {
-    var opts = { options: { sort: { '_id': -1 } }, fields: select.customer }
-    svc.searchMany({userId:this.user._id}, opts, selectCB.adm(cb))
+    var opts = { sort: { '_id': -1 }, select: select.customer }
+    Request.getManyByQuery({userId:this.user._id}, opts, selectCB.adm(cb))
   },
 
   getRequestForBookingExpert(id, expertId, cb) {
     var {user} = this
-    svc.getById(id, selectCB.byRole(this, cb, (e,r) => {
+    Request.getById(id, selectCB.byRole(this, cb, (e,r) => {
       if (isExpert(user,r)) return cb(Error(`Cannot book yourself on request[${id}]`))
       if (!isCustomerOrAdmin(user,r)) return cb(Error(`Could not find request[${id}] belonging to user[${user._id}]`))
       var suggestion = _.find(r.suggested,(s) => _.idsEqual(s.expert._id,expertId) && s.expertStatus == 'available')
@@ -103,25 +109,20 @@ var get = {
   },
 
   getActiveForAdmin(cb) {
-    svc.searchMany(query.active, { options: { sort: { '_id': -1 }}, fields: select.pipeline }, selectCB.adm(cb))
+    Request.getManyByQuery(query.active, { sort: { '_id': -1 }, select: select.pipeline }, selectCB.adm(cb))
   },
 
   get2015ForAdmin(cb) {
-    svc.searchMany(query['2015'], { options: { sort: { '_id': -1 }}, fields: select.pipeline }, selectCB.adm(cb))
+    Request.getManyByQuery(query['2015'], { sort: { '_id': -1 }, select: select.pipeline }, selectCB.adm(cb))
   },
 
   getWaitingForMatchmaker(cb) {
-    svc.searchMany(query.waiting, { options: { sort: { 'adm.submitted': -1 }}, fields: select.pipeline }, selectCB.adm(cb))
+    Request.getManyByQuery(query.waiting, { sort: { 'adm.submitted': -1 }, select: select.pipeline }, selectCB.adm(cb))
   },
 
-  // getIncompleteForAdmin(cb) {
-  //   svc.searchMany(query.incomplete, { fields: select.pipeline}, cb)
-  // }
-
   getExperts(expert, cb) {
-    var opts = { fields: select.experts }
     this.expertId = expert._id
-    svc.searchMany(query.experts(expert), opts, selectCB.experts(this, cb))
+    Request.getManyByQuery(query.experts(expert), { select: select.experts }, selectCB.experts(this, cb))
   },
 }
 
@@ -135,7 +136,7 @@ var save = {
     o.by = { name, email, avatar: md5.gravatarUrl(email) }
     if (o.tags && o.tags.length == 1) o.tags[0].sort = 0
 
-    o._id = svc.newId()
+    o._id = Request.newId()
     o.userId = _id
     o.status = 'received'
     // o.adm = { active:true }
@@ -147,7 +148,7 @@ var save = {
       $log('******* Should impl request started email')
     }
 
-    svc.create(o, selectCB.byRole(this,cb,cb))
+    Request.create(o, selectCB.byRole(this,cb,cb))
   },
   sendVerifyEmailByCustomer(original, email, cb) {
     UserSvc.updateEmailToBeVerified.call(this, email, cb, (e,r, hash)=>{
@@ -157,40 +158,43 @@ var save = {
     })
   },
   updateByCustomer(original, update, cb) {
-    // todo posibily revise submitted to the submit action
-    var submitted = update.title && !original.title
+    var {adm,lastTouch} = original
+    var {tags,type,experience,brief,hours,time,budget,title} = update
+    // $log('updateByCustomer'.cyan, update)
 
+    // todo posibily revise submitted to the submit action
+    var submitted = title && !original.title
     if (submitted)
     {
       var d = {byName:this.user.name, _id:original._id,budget:update.budget,
         tags:util.tagsString(update.tags),time:update.time.toUpperCase()}
       mailman.sendTemplate('pipeliner-notify-request', d, 'pipeliners')
 
-      update.adm = admSet(original,{active:true,submitted:new Date()})
+      adm = admSet(original,{active:true,submitted:new Date()})
 
       analytics.track(original.by, null, 'Request', {_id:original._id,action:'submit'})
     }
 
-    var ups = _.extend(original, update)
-    if (ups.tags.length == 1) ups.tags[0].sort = 0
+    // var ups = _.extend(original, update)
+    if (tags.length == 1) tags[0].sort = 0
 
     if (isCustomer(this.user, original)) {
-      ups.lastTouch = svc.newTouch.call(this, 'updateByCustomer')
+      lastTouch = svc.newTouch.call(this, 'updateByCustomer')
       if (this.user.emailVerified)
-        ups.adm = admSet(ups,{active:true})
+        adm = admSet(original,{active:true})
     }
 
-    if (ups.user) delete ups.user //got lazy should solve this via proper pattern
-
-    svc.update(original._id, ups, selectCB.byRole(this,cb,cb))
+    Request.updateSet(original._id,
+      {tags,type,experience,brief,hours,time,budget,title,adm,lastTouch}
+      , selectCB.byRole(this,cb,cb))
   },
   updateWithBookingByCustomer(request, order, cb) {
-    request.status = 'booked'
-    request.lastTouch = svc.newTouch.call(this, 'booked')
-    if (!request.adm.booked)
-      request.adm.booked = new Date
+    var {adm} = request
+    var status = 'booked'
+    var lastTouch = svc.newTouch.call(this, 'booked')
+    if (!adm.booked) adm.booked = new Date
 
-    svc.update(request._id, request, selectCB.byRole(this,cb,cb))
+    Request.updateSet(request._id, {adm,status,lastTouch}, selectCB.byRole(this,cb,cb))
   },
 
   replyByExpert(request, expert, reply, cb)
@@ -206,8 +210,9 @@ var save = {
 
     if (!existing) {
       var newSuggestion = _.extend(select.expertToSuggestion(expert, this.user), reply)
+      newSuggestion._id =  Request.newId()
       Rates.addSuggestedRate(request, newSuggestion)
-      newSuggestion.matchedBy = { _id: svc.newId(),
+      newSuggestion.matchedBy = { _id: Request.newId(),
         type: 'self', userId: this.user._id, initials: expert.initials }
       suggested.push(newSuggestion)
     }
@@ -237,11 +242,11 @@ var save = {
     if (!adm.reviewable && reply.expertStatus == 'available')
       adm = admSet(request,{reviewable:new Date()})
 
-    svc.updateWithSet(request._id, {suggested,adm,lastTouch,status}, selectCB.byRole(this,cb,cb))
+    Request.updateSet(request._id, {suggested,adm,lastTouch,status}, selectCB.byRole(this,cb,cb))
   },
   deleteById(o, cb)
   {
-    svc.deleteById(o._id, cb)
+    Request.delete(o, cb)
   }
 }
 
@@ -276,12 +281,11 @@ var admin = {
       $log('updateByAdmin: should not be saving user to request')
       delete ups.user
     }
-    svc.update(original._id, ups, selectCB.adm(cb))
+    Request.updateSet(original._id, ups, selectCB.adm(cb))
   },
 
 
   farmByAdmin(request, tweet, cb) {
-    //TODO Mote url genertion to analyticsSvc ?
     var campPeriod = new moment().format("MMMYY").toLowerCase()
     var term = encodeURIComponent(util.tagsString(request.tags))
     var url = `/review/${request._id}?utm_medium=farm-link&utm_campaign=farm-${campPeriod}&utm_term=${term}`
@@ -292,7 +296,7 @@ var admin = {
       adm.lastTouch = svc.newTouch.call(this, 'farm')
       Wrappers.Twitter.postTweet(`${tweet} ${shortLink}`, (e,r) => {
         if (e) return cb(e)
-        svc.update(request._id, _.extend(request, {adm}), selectCB.adm(cb))
+        Request.updateSet(request._id, {adm}, selectCB.adm(cb))
       })
     })
   },
@@ -312,10 +316,10 @@ var admin = {
     mailman.sendMarkdown(message.subject, message.markdown, request.by, 'team')
 
     adm.lastTouch = svc.newTouch.call(this, `sent:${message.type}`)
-    messages.push(_.extend(message,{_id:svc.newId(),fromId:this.user._id,toId:request.userId,
+    messages.push(_.extend(message,{_id:Request.newId(),fromId:this.user._id,toId:request.userId,
       body: message.text||message.markdown}))
 
-    svc.update(request._id, _.extend(request, {status,adm,messages}), selectCB.adm(cb))
+    Request.updateSet(request._id, {status,adm,messages}, selectCB.adm(cb))
   },
 
 
@@ -324,7 +328,7 @@ var admin = {
     var {adm,suggested} = request
     adm.lastTouch = svc.newTouch.call(this, `suggest:${expert.name}`)
     suggested.push(select.expertToSuggestion(expert, this.user))
-    svc.updateWithSet(request._id, {suggested,adm}, selectCB.adm(cb))
+    Request.updateSet(request._id, {suggested,adm}, selectCB.adm(cb))
     mailman.sendMarkdown(msg.subject, msg.markdown, expert, 'team')
   },
 
@@ -339,8 +343,7 @@ var admin = {
       for (var expert of group.suggested)
         suggested.push(select.expertToSuggestion(expert, this.user, group.type))
 
-      // $log('updateWithSet', request._id, suggested)
-      svc.updateWithSet(request._id, {suggested,adm}, selectCB.adm(cb))
+      Request.updateSet(request._id, {suggested,adm}, selectCB.adm(cb))
       var tmplData = select.template.expertAutomatch(request, tag.name)
       mailman.sendTemplateMails('expert-automatch', tmplData, group.suggested)
     })
@@ -354,7 +357,7 @@ var admin = {
     suggested = _.without(suggested,existing)
 
     adm.lastTouch = svc.newTouch.call(this, `remove:${expert.name}`)
-    svc.update(request._id, _.extend(request, {suggested,adm}), selectCB.adm(cb))
+    Request.updateSet(request._id, _.extend(request, {suggested,adm}), selectCB.adm(cb))
   }
 }
 

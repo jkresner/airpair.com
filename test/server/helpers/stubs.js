@@ -35,14 +35,21 @@ var stubs = {
   },
 
   stubPayPalPayout() {
-    if (global.withoutStubs) return emptyStub()
-    if (!Wrappers.PayPal.api) Wrappers.PayPal.init()
-    return sinon.stub(Wrappers.PayPal.api.payout,'create', (payload,syncmode,cb) => {
-      var resp = _.clone(data.wrappers.paypal_single_payout_success)
-      resp.items[0].payout_item.receiver = payload.items[0].receiver
-      resp.items[0].payout_item.amount = payload.items[0].amount.toString()
-      cb(null, resp)
-    })
+    // if (global.withoutStubs) return emptyStub()
+    // if (!Wrappers.PayPal.api) Wrappers.PayPal.init()
+    // return sinon.stub(Wrappers.PayPal.api.payout,'create',
+    var respCB = key =>
+      (payload,syncmode,cb) => {
+        $log('coming')
+        var resp = _.clone(FIXTURE.wrappers[key])
+        resp.items[0].payout_item.receiver = payload.items[0].receiver
+        resp.items[0].payout_item.amount = payload.items[0].amount.toString()
+        $log('returnstub'.magenta, resp)
+        cb(null, resp)
+      }
+
+    var stubber = STUB.stubWrapperInnerAPI('PayPal', 'payout.create')
+    return stubber(respCB('paypal_single_payout_success'))
   },
 
   // stubBraintree(obj, fnName, err, response) {

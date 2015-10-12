@@ -1,18 +1,20 @@
 
 UNIQUIFY_USER = (key) ->
-  uniqueKey = FIXTURE.uniquify('users', key, 'name email linked.gh.id key')
-  Object.assign(FIXTURE.users[uniqueKey],{key:uniqueKey})
+  uniqueKey = FIXTURE.uniquify('users', key, 'name email linked.gh.id linked.gp.id googleId key')
+  Object.assign(FIXTURE.users[uniqueKey],{key:uniqueKey,_id:new ObjectId()})
 
 
 module.exports = (key, opts, done) ->
+  if !done and opts.constructor is Function
+    done = opts
+    opts = {login:true}
+
   {data,paymethod,login} = opts
-  userId = new ObjectId()
   user = UNIQUIFY_USER(key)
-  user._id = userId
 
   paymethodId = if paymethod is true then new ObjectId() else null
   if paymethodId
-    paymethod = _.extend({_id:paymethodId,userId}, FIXTURE.paymethods.braintree_visa)
+    paymethod = _.extend({_id:paymethodId,userId:user._id}, FIXTURE.paymethods.braintree_visa)
     user.primaryPayMethodId = paymethodId
     DB.Collections.paymethods.insert paymethod, ->
 
@@ -22,7 +24,9 @@ module.exports = (key, opts, done) ->
 
   Object.assign(user, opts.data||{})
 
+  # $log('create user'.yellow, user.key.white, user)
   DB.Collections.users.insert user, (e, r) ->
+    if (e) then $log('DB.insert.user', e)
     if login
       LOGIN user, (session) ->
         if (paymethodId)
