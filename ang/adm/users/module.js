@@ -12,29 +12,29 @@ angular.module("ADMUsers", [])
 
   $scope.selectedUser = {}
 
-  AdmDataService.users.getInRole({role:'admin'}, (result) =>
-    $scope.admins = result)
+  // AdmDataService.users.getInRole({role:'admin'}, (result) =>
+  //   $scope.admins = result)
 
-  AdmDataService.users.getInRole({role:'editor'}, (result) =>
-    $scope.editors = result)
+  // AdmDataService.users.getInRole({role:'editor'}, (result) =>
+  //   $scope.editors = result)
 
-  AdmDataService.users.getInRole({role:'pipeliner'}, (result) =>
-    $scope.pipeliners = result)
+  // AdmDataService.users.getInRole({role:'pipeliner'}, (result) =>
+  //   $scope.pipeliners = result)
 
-  AdmDataService.users.getInRole({role:'spinner'}, (result) =>
-    $scope.spinners = result)
+  // AdmDataService.users.getInRole({role:'spinner'}, (result) =>
+  //   $scope.spinners = result)
 
-  AdmDataService.users.getInRole({role:'reviewer'}, (result) =>
-    $scope.reviewers = result)
+  // AdmDataService.users.getInRole({role:'reviewer'}, (result) =>
+  //   $scope.reviewers = result)
 
 
-  $scope.toggleRole = function(_id, role) {
-    AdmDataService.users.toggleRole({_id,role}, function (r) {
-      AdmDataService.users.getInRole({role}, function (result) {
-        $scope[role+'s'] = result;
-      })
-    })
-  }
+  // $scope.toggleRole = function(_id, role) {
+  //   AdmDataService.users.toggleRole({_id,role}, function (r) {
+  //     AdmDataService.users.getInRole({role}, function (result) {
+  //       $scope[role+'s'] = result;
+  //     })
+  //   })
+  // }
 
   $scope.giveCredit = function(total, source) {
     AdmDataService.bookings.giveCredit({ total, source, toUser: $scope.selectedUser },

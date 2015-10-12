@@ -1,6 +1,20 @@
 airpair.com
 ===========
 
+anon
+- home
+-- all links
+- posts
+-- software experts
+--- all tiles
+--- all bottom links
+-- by tag
+--- all tiles
+- post
+-- 
+- tag
+- /angular
+
 auth
 - login
 -- google
@@ -9,34 +23,36 @@ auth
 - signup
 -- google
 
-user
+account
 - set password
-- account
--- user info
--- send email verification
--- verify email
-- settings
--- maillists
--- send password reset
--- logout
+- user info
+- send email verification
+- verify email
+- [off] maillists
+- send password reset
+- logout
 
-adm 
-- pipeline
-- bookings
-- experts
-- orders
-- users
-- redirects
+requests
+- new 
+- review (as customer)
+-- add timezone
+- edit
+- list (history)
+-- delete (incomplete)
 
 billing
-- book
-- deal
-- ? experts
-- top-up
 - welcome (history)
+-- add card
+- top-up
+- book
+-- without request
+-- from request
+- [off] deal
+- [off] experts
 
 bookings
 - item
+-- suggest time
 - history (un-finished)
 
 dashboard
@@ -47,8 +63,8 @@ dashboard
 expert
 - office
 - bookings
-- payouts
 - be-an-expert
+- [off] payouts
 
 matchmaking
 - item
@@ -70,14 +86,14 @@ post
 - item
 - review (widget)
 
-requests
-- list (history)
-- new 
-- edit
-- review
 
-tags
-- /angular
+adm 
+- pipeline
+- bookings
+- experts
+- orders
+- users
+- redirects
 
 
 v2.0.0 ux
