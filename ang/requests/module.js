@@ -112,7 +112,7 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
     $scope.r = r
     $scope.isAdmin = Shared.roles.isAdmin($scope.session)
     $scope.isCustomer = Shared.roles.request.isCustomer($scope.session,r)
-    $scope.replies = _.where(r.suggested,(s)=>s.expertComment!=null)
+    $scope.replies = _.filter(r.suggested,(s)=>s.expertComment!=null)
 
     // console.log('$scope.session.primaryPayMethodId', $scope.session.primaryPayMethodId)
 

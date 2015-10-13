@@ -31,7 +31,7 @@ get = ->
 
 
   IT 'Search tags when anonymous', ->
-    GET '/tags/search/mon', {}, (s) ->
+    GET '/tags/search/mon', (s) ->
       expect(s.length).to.equal(3)
       expect(s[2]._id).to.exist
       expect(s[2].name).to.equal('MongoDB')

@@ -3,6 +3,17 @@ var md5                   = require('../util/md5')
 var Roles                 = require('../../shared/roles.js').request
 var {ObjectId}            = require('mongoose').Schema
 
+var inflatedTags = (tags) => {
+  if (!tags || !tags.length) return []
+  var inflatedTags = []
+  for (var tag of tags||[]) {
+    if (cache.tags[tag._id])
+      inflatedTags.push(Object.assign(tag, _.pick(cache.tags[tag._id],'name','slug','short')))
+  }
+  return inflatedTags
+}
+
+
 function migrateV0(r) {
   if (r.budget)
   {
@@ -119,6 +130,7 @@ var data = {
     byView(request, view) {
       var r = migrateV0(request)
       r.tags = _.sortBy(r.tags,(t)=>t.sort)
+      r.rags = inflatedTags(r.tags)
       if (r.suggested) {
         r.suggested = _.sortBy(r.suggested, (s)=>statusHash[s.expertStatus])
         for (var s of r.suggested) {

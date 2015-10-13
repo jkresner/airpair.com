@@ -36,4 +36,5 @@ module.exports = (key, opts, done) ->
     LOGIN {key:user.key}, (s) ->
       d = rate: 70, breif: 'yo', tags: [FIXTURE.tags.angular]
       POST "/experts/me", d, (expert) ->
+        s.userKey = user.key
         done(s, expert)
