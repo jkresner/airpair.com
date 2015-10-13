@@ -46,6 +46,32 @@ module.exports = function(app, initSessionStore, done)
       done(null, sessionUser)
     })
 
+
+    global.MW = { oauth: function(provider, Strategy) {
+      if (!Strategy) Strategy = require(`passport-${provider}`).Strategy
+
+      var success = (req, token, refresh, resp, cb) =>
+        require('../services/auth').link.call(req, provider, resp._json, {token,refresh}, cb)
+
+      config.auth[provider].passReqToCallback = true
+      passport.use(provider, new Strategy(config.auth[provider], success))
+
+      return function(req, res, next) {
+        var opts = {}
+
+        // if (opts.assignProperty) delete opts.assignProperty
+
+        // If the users is ALREADY logged in (got a session), then we
+        // handshake with the provider AND do not do anything with the session
+        // * the name authorize is kind of unclear, hence the comments
+        var passMethod = req.isAuthenticated() ? 'authorize' : 'authenticate'
+
+        $log(`passport:${passMethod} ${provider}`.white, opts)
+        passport[passMethod](provider, opts)(req, res, next)
+      }
+    }}
+
+
     done()
   })
 }

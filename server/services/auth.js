@@ -103,116 +103,47 @@ function upsertSmart(upsert, existing, done) {
 }
 
 
-function connectGoogle(profile, done) {
-  done(V2DeprecatedError('User.connectGoogle - Are you already logged in?'))
-  // User.getById(this.user._id, (err, loggedInUser) => {
-  //   if (err || !loggedInUser) return errorCB(err || 'Failed to googleConnect, loggedInUser not found', loggedInUser)
+function localSignup(email, password, name, done) {
+  cb(V2DeprecatedError('User.getSiteNotifications'))
 
-  //   //-- stop user clobbering user.google details
-  //   if (loggedInUser.googleId && loggedInUser.googleId != profile.id)
-  //     return errorCB(Error(`Cannot overwrite existing google login ${loggedInUser.google._json.email} with ${profile._json.email}. Try <a href='/auth/logout'>Logout</a> and log back in with that google account?`))
+  // if (this.user)
+  //   errorCB(Error(`Cannot signup. Already signed in as ${this.user.email}. Logout first?`),null)
 
-  //   //-- Changes in google+ data structure
-  //   var email = profile._json.email
-  //   if (!email) {
-  //     profile._json.email = profile.emails[0].value
+  // User.getByQuery(query.existing(email), (e, existing) => {
+  //   if (e) return done(e)
+  //   if (existing)
+  //   {
+  //      var info = ""
+  //      if (existing.email == email) info = "Cannot signup, user already exists"
+  //      if (existing.google && existing.google._json.email == email)
+  //        info = "Cannot signup, you previously created an account with your google login"
+  //      return done(null, false, Error(info))
   //   }
 
-  //   User.findOne({googleId: profile.id}, (ee, existingGoogleUser) => {
+  //   var upsert = { name, email, emailVerified: false,
+  //     local: {
+  //       password: data.generateHash(password), // password is hased in the db
+  //     }
+  //   }
 
-  //     if ( (loggedInUser && !existingGoogleUser) ||
-  //       _.idsEqual(loggedInUser._id, existingGoogleUser._id) )
+  //   // if (password == 'home'
+  //   //   || password == 'subscribe'
+  //   //   || password == 'so')
+  //   // {
+  //   //   upsert.local.changePasswordHash = Data.data.generateHash(email)
+  //   //   upsert.local.passwordHashGenerated = new Date
+  //   // }
 
-  //       User.findOneAndUpdate({_id:this.user._id}, { googleId: profile.id, google: profile }, (e,r) => {
-  //         if (e || !r) errorCB(e||'connectGoogle, no user found.',r)
-  //         var trackData = { type: 'oauth', provider: 'google', id: profile.id }
-  //         analytics.track(this.user, this.sessionID, 'Save', trackData, {}, ()=>{})
-  //         done(e, r)
-  //       })
+  //   this.session.maillists = _.union(this.session.maillists||[],['AirPair Developer Digest'])
 
-  //     else
-  //       return errorCB(Error(`Another user account already has the ${profile._json.email} google account connected with it. Try <a href='/auth/logout'>Logout</a> and log back in with google?`))
+  //   upsertSmart.call(this, upsert, null, (e,r) => {
+  //     if (!e && upsert.local.changePasswordHash)
+  //       mailman.sendTemplate('user-signup-nopass', {hash:upsert.local.changePasswordHash}, r)
+
+  //     done(e,r)
   //   })
+
   // })
-}
-
-
-function googleLogin(profile, done) {
-  if (this.user) return connectGoogle.call(this, profile, done)
-
-  //-- Changes in google+ data structure
-  var email = profile._json.email
-  if (!email) {
-    email = profile.emails[0].value
-    profile._json.email = profile.emails[0].value
-  }
-
-  User.getByQuery(query.existing(email), (e, existing) => {
-    if (e) return cb(e)
-
-    var upsert = { googleId: profile.id, google: profile }
-    //-- copy google details to top level users details
-    if (!existing || !existing.email)
-    {
-      upsert.email = upsert.google._json.email
-      upsert.name = upsert.google.displayName
-      upsert.emailVerified = false
-    }
-    else {
-      // In case google login email different from contact email
-      upsert.email = existing.email
-    }
-
-    // gotcha, don't remove
-    // 'Google login for existing v1 user works after played with singup form'
-    if (this.session.anonData) delete this.session.anonData.email
-
-    upsertSmart.call(this, upsert, existing, done)
-
-  })
-}
-
-
-function localSignup(email, password, name, done) {
-  if (this.user)
-    errorCB(Error(`Cannot signup. Already signed in as ${this.user.email}. Logout first?`),null)
-
-  User.getByQuery(query.existing(email), (e, existing) => {
-    if (e) return done(e)
-    if (existing)
-    {
-       var info = ""
-       if (existing.email == email) info = "Cannot signup, user already exists"
-       if (existing.google && existing.google._json.email == email)
-         info = "Cannot signup, you previously created an account with your google login"
-       return done(null, false, Error(info))
-    }
-
-    var upsert = { name, email, emailVerified: false,
-      local: {
-        password: data.generateHash(password), // password is hased in the db
-      }
-    }
-
-    // if (password == 'home'
-    //   || password == 'subscribe'
-    //   || password == 'so')
-    // {
-    //   upsert.local.changePasswordHash = Data.data.generateHash(email)
-    //   upsert.local.passwordHashGenerated = new Date
-    // }
-
-    this.session.maillists = _.union(this.session.maillists||[],['AirPair Developer Digest'])
-
-    upsertSmart.call(this, upsert, null, (e,r) => {
-      if (!e && upsert.local.changePasswordHash)
-        mailman.sendTemplate('user-signup-nopass', {hash:upsert.local.changePasswordHash}, r)
-
-      done(e,r)
-    })
-
-  })
-
 }
 
 
@@ -238,11 +169,45 @@ function localLogin(email, password, done) {
     var upsert = { email: email }
 
     //-- Change password on v0 google login
-    if (!existing.email)
+    // if (!existing.email)
+    // {
+    //   upsert.email = existing.google._json.email
+    //   upsert.name = existing.google.displayName
+    //   upsert.emailVerified = true
+    // }
+
+    upsertSmart.call(this, upsert, existing, done)
+
+  })
+}
+
+
+var {appKey} = config.auth.oAuth
+
+function oauthLogin(provider, profile, done) {
+  var {short} = config.auth[provider]
+
+  //-- Changes in google+ data structure
+  var {email,id} = profile
+  if (!email && short == 'gp')
+    email = profile.emails[0].value
+
+
+  User.getByQuery(query[short].existing(email, id), (e, existing) => {
+    if (e) return cb(e)
+
+    var upsert = {}
+    upsert[`auth.${short}`] = profile
+    //-- copy google details to top level users details
+    if (!existing || !existing.email)
     {
-      upsert.email = existing.google._json.email
-      upsert.name = existing.google.displayName
-      upsert.emailVerified = true
+      upsert.email = profile.email
+      upsert.name = profile.displayName
+      upsert.emailVerified = profile.verified_email
+    }
+    else {
+      // In case google login email different from contact email
+      upsert.email = existing.email
     }
 
     upsertSmart.call(this, upsert, existing, done)
@@ -251,11 +216,35 @@ function localLogin(email, password, done) {
 }
 
 
-function connectProvider(provider, short, profile, done) {
-  done(V2DeprecatedError('User.connectProvider'))
-  // var ups = { $set : { } }
-  // ups['$set'][`social.${short}`] = profile
+function link(provider, profile, {token,refresh}, done) {
+  $log('link.${provider}'.white, profile, token, refresh)
 
+  if (!this.user) {
+    if (provider == 'google') return oauthLogin.apply(this, arguments)
+    else return Done(Error(`auth.Login with ${provider} not supported`))
+  }
+
+  var {short} = config.auth[provider]
+  var {_id} = this.user
+
+  User.getById(_id, {select:`auth.${short}`}, (e, {auth})=>{
+    if (auth[short]) {
+      if (auth[short].id != profile.id)
+        return done(Error(`Unlink existing ${provider} account first`))
+
+      profile = _.extend(auth[short], profile)
+    }
+
+    _.set(profile,`tokens.${appKey}.token`, token)
+    if (refresh)
+      _.set(profile,`tokens.${appKey}.refresh`, refresh)
+    var $set = {}
+    $set[`auth.${short}`] = profile
+    User.updateSet(_id, $set, done)
+  })
+
+  //   var trackData = { type: 'oauth', provider, id: profile.id }
+  //   analytics.track(this.user, this.sessionID, 'Save', trackData, {}, ()=>{})
   // if (short == 'al')
   //   profile.username = profile._json.angellist_url.replace('https://angel.co/','')
   // if (short == 'tw')
@@ -264,67 +253,63 @@ function connectProvider(provider, short, profile, done) {
   //   delete ups['$set']['social.sl']._json
   //   ups['$set']['social.sl'].token = profile.token.token
   // }
-
-  // User.updateSet(this.user._id, ups, (e,r) => {
-  //   if (e || !r) errorCB(e||'connectProvider, no user found.',r)
-  //   var trackData = { type: 'oauth', provider, id: profile.id }
-  //   analytics.track(this.user, this.sessionID, 'Save', trackData, {}, ()=>{})
-  //   done(e, r)
-  // })
 }
 
 //-------- Account email
 function requestPasswordChange(email, cb) {
-  var anonymous = this.user == null
-  User.getByQuery(query.existing(email), (e,user) => {
-    if (e || !user) return cb(Error(`No user found with email ${email}`))
+  done(V2DeprecatedError('Auth.requestPasswordChange'))
 
-    var ups = { local: _.extend(user.local || {}, {
-      changePasswordHash: data.generateHash(email),
-      passwordHashGenerated: new Date()
-    })}
+  // var anonymous = this.user == null
+  // User.getByQuery(query.existing(email), (e,user) => {
+  //   if (e || !user) return cb(Error(`No user found with email ${email}`))
 
-    //-- Previously had a google login without a v1 upsert migrate
-    // if (!user.email && user.google) {
-    //   ups.email = user.google._json.email
-    //   ups.name = user.google.displayName || 'there noname'
-    // }
+  //   var ups = { local: _.extend(user.local || {}, {
+  //     changePasswordHash: data.generateHash(email),
+  //     passwordHashGenerated: new Date()
+  //   })}
 
-    var trackData = { type: 'change-password-request', email, anonymous }
-    analytics.track(this.user, this.sessionID, 'Save', trackData, {}, ()=>{})
-    // self.user = user
-    //-- Update the user record regardless if anonymous or authenticated
-    User.updateSet(user._id, ups, (e,r) => {
-      if (e) return cb(e)
-      mailman.sendTemplate('user-password-change',{hash:ups.local.changePasswordHash},r)
-      return cb(null, {email})
-    })
-  })
+  //   //-- Previously had a google login without a v1 upsert migrate
+  //   // if (!user.email && user.google) {
+  //   //   ups.email = user.google._json.email
+  //   //   ups.name = user.google.displayName || 'there noname'
+  //   // }
+
+  //   var trackData = { type: 'change-password-request', email, anonymous }
+  //   analytics.track(this.user, this.sessionID, 'Save', trackData, {}, ()=>{})
+  //   // self.user = user
+  //   //-- Update the user record regardless if anonymous or authenticated
+  //   User.updateSet(user._id, ups, (e,r) => {
+  //     if (e) return cb(e)
+  //     mailman.sendTemplate('user-password-change',{hash:ups.local.changePasswordHash},r)
+  //     return cb(null, {email})
+  //   })
+  // })
 }
 
 function changePassword(hash, password, cb) {
-  User.getByQuery({'local.changePasswordHash': hash}, (e,user) => {
-    if (e||!user) return cb(Error('Valid reset hash not found. Your token could be used or expired. Try <a href="/v1/auth/reset">Reset your password</a> again?'))
+  done(V2DeprecatedError('Auth.requestPasswordChange'))
 
-  //   // we've just received the hash that we sent to user.email
-  //   // so mark their email as verified
-    delete user.local.changePasswordHash
-    delete user.local.passwordHashGenerated
-    user.local.password = data.generateHash(password)
+  // if (hash != "123456789")
+  //   return cb(Error('Invalid reset hash. <a href="/v1/auth/reset">Send it again</a>?'))
 
-    var update = {
-      'emailVerified': true,
-      local: user.local
-    }
+  // var _id = decodeHash(hash)
 
-    this.user = select.sessionFromUser(user)
+  // User.getByQuery({'local.changePasswordHash': hash}, (e,user) => {
+  //   if (e||!user)
 
-    // var trackData = { type: 'password', hash }
-    User.updateSet(user._id, update, cb)
-  })
+  //   var update = {
+  //     'emailVerified': true,
+  //     'auth.password.vale': data.generateHash(password)
+  //   }
+
+  //   this.user = select.sessionFromUser(user)
+
+  //   // var trackData = { type: 'password', hash }
+  //   User.updateSet(user._id, update, cb)
+  // })
 }
 
 
 module.exports = {
-  googleLogin, localSignup, localLogin, connectProvider, requestPasswordChange, changePassword
+  localSignup, localLogin, link, requestPasswordChange, changePassword
 }

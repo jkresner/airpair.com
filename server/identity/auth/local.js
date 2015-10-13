@@ -1,6 +1,5 @@
+var AuthService   = require('../../services/auth')
 var passport = require('passport')
-var authConfig = require('./config')
-
 var logging = false
 
 var authFn = (provider) => {
@@ -36,7 +35,8 @@ var authFn = (provider) => {
 
 function init(provider, strategyCallback) {
   var Strategy = require(`passport-local`).Strategy
-  var cfg = authConfig.getEnvConfig(provider)
+  var cfg = config.auth.local
+  cfg.passReqToCallback = true
 
   passport.use(provider, new Strategy(cfg, strategyCallback))
 
@@ -44,4 +44,14 @@ function init(provider, strategyCallback) {
 }
 
 
-module.exports = { init }
+module.exports = {
+
+  login:  init('local-login', (req, email, password, done) => {
+    $callSvc(AuthService.localLogin,req)(email, password, done)
+  }),
+
+  signup: init('local-singup', (req, email, password, done) => {
+    $callSvc(AuthService.localSignup,req)(email, password, req.body.name, done)
+  })
+
+}

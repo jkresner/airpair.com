@@ -6,7 +6,7 @@ var cbSession                = select.cb.session
 var get = {
 
   search(searchTerm, cb) {
-    var matchFields = 'name email linked.gp.name linked.gp.email'
+    var matchFields = 'name email auth.gp.name auth.gp.email'
     User.searchByRegex(searchTerm, matchFields, opts.search, select.cb.searchResults(cb))
   },
 

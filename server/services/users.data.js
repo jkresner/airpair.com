@@ -14,18 +14,6 @@ var select = {
     // '__v': 1,
     '_id': 1,
     'roles': 1,
-    'bitbucket.username': 1,
-    'bitbucket.displayName': 1,
-    'github.username': 1,
-    'github.displayName': 1,
-    'google.id':1,
-    'google._json.url':1,
-    'google._json.link':1,
-    'google._json.email':1,
-    'linkedin.id': 1,
-    'stack.user_id': 1,
-    'stack.link': 1,
-    'twitter.username': 1,
     'email': 1,
     'emailVerified': 1,
     'primaryPayMethodId': 1,
@@ -37,17 +25,17 @@ var select = {
     'bookmarks': 1,
     'cohort.engagement': 1,
     'cohort.expert._id': 1,
-    'localization.location': 1,
-    'localization.timezone': 1,
-    'localization.timezoneData.timeZoneId': 1,
-    'social.gh.username': 1,
-    'social.so.link': 1,
-    'social.bb.username': 1,
-    'social.in.id': 1,
-    'social.tw.username': 1,
-    'social.al.username': 1,
-    'social.gp': 1,
-    'social.sl.username': 1
+    'location': 1,
+    'auth.gh.username': 1,
+    'auth.so.link': 1,
+    'auth.bb.username': 1,
+    'auth.in.id': 1,
+    'auth.tw.username': 1,
+    'auth.al.username': 1,
+    'auth.gp.link': 1,
+    'auth.gp.url': 1,
+    'auth.gp.email': 1,
+    'auth.sl.username': 1
   },
   usersInRole: {
     '_id': 1,
@@ -56,11 +44,11 @@ var select = {
     'name': 1,
     'initials': 1
   },
-  search: '_id email name initials username bio google',
-  siteNotifications: {
-    '_id': 0,
-    'siteNotifications': 1
-  }
+  search: '_id email name initials username bio auth.gp',
+  // siteNotifications: {
+  //   '_id': 0,
+  //   'siteNotifications': 1
+  // }
 }
 
 var data = {
@@ -123,12 +111,12 @@ var data = {
       })
     },
 
-    providerProfile: {
-      email: {
-        gh(profile) { return profile.email },
-        gp(profile) { return profile.emails[0] },
-      }
-    },
+    // providerProfile: {
+    //   email: {
+    //     gh(profile) { return profile.email },
+    //     gp(profile) { return profile.emails[0] },
+    //   }
+    // },
 
     cb: {
       session(ctx, cb) {
@@ -139,17 +127,17 @@ var data = {
             return cb(e, r)
           }
 
-          if (r.google && r.google._json) {
-            r.social = r.social || {}
-            r.social.gp = { link: r.google._json.link || r.google._json.url
-              , email: r.google._json.email }
-          }
+          // if (r.google && r.google._json) {
+          //   r.social = r.social || {}
+          //   r.social.gp = { link: r.google._json.link || r.google._json.url
+          //     , email: r.google._json.email }
+          // }
 
           var obj = util.selectFromObject(r, data.select.sessionFull)
           if (obj.roles && obj.roles.length == 0) delete obj.roles
 
-          if (obj.localization)
-            obj.timeZoneId = obj.localization.timezoneData.timeZoneId
+          // if (obj.localization)
+          //   obj.timeZoneId = obj.localization.timezoneData.timeZoneId
 
           data.select.setAvatar(obj)
           data.select.inflateTagsAndBookmarks(obj, cb)
@@ -160,35 +148,41 @@ var data = {
       searchResults(cb) {
         return (e, r) => {
           for (var u of r)
-          {
-            if (u.google) {
-              if (!u.email && u.google._json.email) u.email = u.google._json.email
-              if (!u.name && u.google.displayName) u.name = u.google.displayName
-            }
+          // {
+            // if (u.google) {
+            //   if (!u.email && u.google._json.email) u.email = u.google._json.email
+            //   if (!u.name && u.google.displayName) u.name = u.google.displayName
+            // }
             u = data.select.setAvatar(u);
-          }
+          // }
           cb(e,r)
         }
       },
-      siteNotifications(cb) {
-        return (e,r) => {
-          if (e) return cb(e)
-          r = util.selectFromObject(r, select.siteNotifications)
-          cb(null, r.siteNotifications || [])
-        }
-      },
+      // siteNotifications(cb) {
+      //   return (e,r) => {
+      //     if (e) return cb(e)
+      //     r = util.selectFromObject(r, select.siteNotifications)
+      //     cb(null, r.siteNotifications || [])
+      //   }
+      // },
     }
   },
 
   query: {
     existing(email) {
       email = email.toLowerCase()
-      return { '$or': [{email:email},{'google._json.email':email}] }
+      return { '$or': [{email:email},{'auth.gp.email':email}] }
+    },
+    gp: {
+      existing(email, id) {
+        email = email.toLowerCase()
+        return { '$or': [{email},{'auth.gp.email':email},{'auth.gp.id':id}] }
+      }
     },
     gh: {
       existing(emails) {
         email = email.toLowerCase()
-        return { '$or': [{email:{$in:emails}},{'social.gh.email':{$in:emails}}] }
+        return { '$or': [{email:{$in:emails}},{'auth.gh.email':{$in:emails}}] }
       }
     }
   },
@@ -199,11 +193,11 @@ var data = {
 
   data: {
 
-    anonAvatars: [
-      "/static/img/css/sidenav/default-cat.png",
-      "/static/img/css/sidenav/default-mario.png",
-      "/static/img/css/sidenav/default-stormtrooper.png"
-    ],
+    // anonAvatars: [
+    //   "/static/img/css/sidenav/default-cat.png",
+    //   "/static/img/css/sidenav/default-mario.png",
+    //   "/static/img/css/sidenav/default-stormtrooper.png"
+    // ],
 
     generateHash(seedString) {
       var hash = bcrypt.hashSync(seedString, bcrypt.genSaltSync(8))
