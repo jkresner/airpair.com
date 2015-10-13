@@ -143,11 +143,11 @@ angular.module('APSvcSession', [])
     }
 
     this.requestPasswordChange = function(data, success, error) {
-      $http.put(`${API}/users/me/password-change`, data).success(success).error(error)
+      $http.post(`/auth/password-reset`, data).success(success).error(error)
     }
 
     this.changePassword = function(data, success, error) {
-      $http.put(`${API}/users/me/password`, data).success(setScope(success)).error(error)
+      $http.post(`/auth/password-set`, data).success(setScope(success)).error(error)
     }
 
     this.getMaillists = function(data, success, error) {

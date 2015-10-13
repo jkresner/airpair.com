@@ -1,6 +1,6 @@
 
 UNIQUIFY_USER = (key) ->
-  uniqueKey = FIXTURE.uniquify('users', key, 'name email linked.gh.id linked.gp.id googleId key')
+  uniqueKey = FIXTURE.uniquify('users', key, 'name email username linked.gh.id linked.gp.id googleId key')
   Object.assign(FIXTURE.users[uniqueKey],{key:uniqueKey,_id:new ObjectId()})
 
 

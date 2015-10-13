@@ -1,5 +1,4 @@
-var {Post, Expert}        = DAL
-var UserSvc               = require('../services/users')
+var {Post, Expert, User}  = DAL
 var TemplateSvc           = require('../services/templates')
 var github2               = Wrappers.GitHub
 var Data                  = require('./posts.data')
@@ -9,19 +8,6 @@ var {selectFromObject}    = require('../../shared/util')
 var PostsUtil             = require('../../shared/posts')
 var Roles                 = require('../../shared/roles').post
 var {org}                 = config.auth.github
-
-var svc = {
-  newTouch(action) {
-    return {
-      action,
-      utc: new Date(),
-      by: { _id: this.user._id, name: this.user.name }
-    }
-  },
-  userByte() {
-    return _.pick(this.user, '_id', 'name')
-  }
-}
 
 
 var get = {
@@ -253,11 +239,12 @@ var get = {
 
 
   getUsersPublished(userId, cb) {
-    var options = { fields: select.list, options: opts.publishedNewest() }
-    svc.searchMany(query.published({ 'by.userId': userId }), options, select.cb.addUrl((e,r)=>{
-      if (e) return cb(e)
-      cb(null, {featured: r,archive: []})
-    }))
+    cb(V2DeprecatedError('Posts.getUsersPublished'))
+    // var options = { fields: select.list, options: opts.publishedNewest() }
+    // svc.searchMany(query.published({ 'by.userId': userId }), options, select.cb.addUrl((e,r)=>{
+    //   if (e) return cb(e)
+    //   cb(null, {featured: r,archive: []})
+    // }))
   },
 
   // Everything needed for airpair.com/posts/me
@@ -555,23 +542,22 @@ var save = {
 
 var saveReviews = {
 
-  review(original, review, cb) {
-    review.by = svc.userByte.call(this)
+  review(post, review, cb) {
+    review.by = _.pick(this.user,'_id','name')
     review.type = `post-survey-inreview`
-    if (original.published) review.type.replace('inreview','published')
+    if (post.published) review.type.replace('inreview','published')
 
-    var reviews = original.reviews || []
+    var reviews = post.reviews || []
     reviews.push(review)
 
-    var stats = PostsUtil.calcStats(Object.assign(original,{reviews}))
-    Post.updateSet(original._id, {reviews,stats}, select.cb.statsView(cb))
+    var stats = PostsUtil.calcStats(Object.assign(post,{reviews}))
+    Post.updateSet(post._id, {reviews,stats}, select.cb.statsView(cb))
 
     //-- Probably better doing the db hit as we ensure the right email if the user
     //-- changed it at any point
-    var {userId} = original.by
-    $callSvc(UserSvc.getById, {user:{_id:userId}})(userId, (ee, user) => {
+    User.getById(post.by.userId, (ee, user) => {
       mailman.sendTemplate('post-review-notification',
-        selectTmpl.reviewNotify(original,review), user)
+        selectTmpl.reviewNotify(post,review), user)
     })
   },
 

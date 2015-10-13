@@ -44,7 +44,6 @@ angular.module("APProfileDirectives", [])
         }
       })
 
-      // $scope.updateBio = () => updateInfo('Bio')
       $scope.updateName = () => updateInfo('Name')
       $scope.updateInitials = () => updateInfo('Initials')
       $scope.updateUsername = () => updateInfo('Username')

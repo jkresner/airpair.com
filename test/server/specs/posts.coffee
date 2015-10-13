@@ -78,7 +78,7 @@ reviews = ->
 
   IT "Can submit review for published post", ->
     STORY.newUser 'jkap', (s) ->
-      POST "/posts/#{POSTS.higherOrder._id}/review", postReview, {}, (p1) ->
+      POST "/posts/#{POSTS.higherOrder._id}/review", postReview, (p1) ->
         expect(p1.reviews.length>0).to.be.true
         review = _.find(p1.reviews,(rev)->_.idsEqual(rev.by._id,s._id))
         expectIdsEqual(review.by._id, s._id)

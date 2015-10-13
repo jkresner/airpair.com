@@ -9,19 +9,25 @@ SCREAM          = require('meanair-scream')
 global.SETUP    = require('./helpers/setup')
 global.newId    = -> new DB.ObjectId()
 global.timeSeed = SETUP.timeSeed
-global.expectTouch = (touch, byId, action) ->
-  expectIdsEqual(touch.by._id, byId)
-  expect(touch.action).to.equal(action)
 global.ANONSESSION = (cb) ->
   global.COOKIE = null
   GET '/session/full', cb
+global.expectObjectId = (val) ->
+  expect(val, "Expected ObjectId null").to.exist
+  expect(val.constructor is ObjectId, "Expected ObjectId #{val.toString().white}".gray+" #{val.constructor} not an ObjectId".gray).to.be.true
+global.expectTouch = (touch, byId, action) ->
+  expect(touch._id).to.exist
+  # expectObjectId(touch._id)
+  expectIdsEqual(touch.by._id, byId)
+  expect(touch.action).to.equal(action)
+
 
 loginHandler = (req, cb) ->
   fixtureUser = FIXTURE.users[req.body.key]
   if !fixtureUser
     throw Error("Could not find FIXTURE.user for {key:#{req.body.key}}")
   {email} = FIXTURE.users[req.body.key]
-  fn = require('../../server/services/users').localLogin
+  fn = require('../../server/services/auth').localLogin
   fn.call req, email, config.auth.masterpass, (e,r) ->
     req.session.passport = { user: r } if r
     cb(e,r)

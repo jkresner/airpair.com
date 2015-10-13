@@ -10,7 +10,7 @@
 
   <section class="email">
 
-    <h3 ng-if="!session.emailVerified" style="margin-top:0px">Verify your email to continue</h3>
+<!--     <h3 ng-if="!session.emailVerified" style="margin-top:0px">Verify your email to continue</h3>
 
     <form id="emailForm" novalidate name="emailForm" ng-submit="submit(emailForm.$valid, data)" ng-class="(session.emailVerified) ? '' : 'verify'">
 
@@ -36,13 +36,13 @@
       <hr />
     </form>
 
-  </section>
+  </section> -->
 
-  <section class="info" ng-if="session.emailVerified">
+  <section class="info">
       <user-info></user-info>
   </section>
 
-  <section class="avatar" ng-if="session.emailVerified">
+  <section class="avatar">
     <img class="avatar" ng-src="{{session.avatar}}?s=200" title="Avatars are gravtars from your email." />
     <p style="font-size:12px">
     <span ng-if="session.email">Update the <b><a href="http://www.gravatar.com/" target="_blank">gravatar</a></b> for {{ session.email }}</span>
@@ -52,7 +52,7 @@
   </section>
 
 
-  <section class="password" ng-if="session.emailVerified">
+  <section class="password">
     <h3 class="underline">Login info</h3>
 
     <div>
@@ -70,7 +70,7 @@
 
 <section class="logoutClick">
     <h3 class="underline">Logout</h3>
-    <a href="/logout" target="_self" class="btn btn-sm"><div class="logout"></div><span>logout</span></a>
+    <a href="/logout" target="_self" class="btn btn-sm btn-inverse"><div class="logout"></div><span>logout</span></a>
   </section>
 
 

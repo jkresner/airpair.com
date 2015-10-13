@@ -4,8 +4,10 @@ newUser = require('./newUser')
 module.exports = (userKey, opts, cb) ->
   bookingData = opts.data||{}
   newUser userKey, {login:true,location:true,paymethod:true}, (sessionCustomer, userKey) ->
-    if bookingData.expertUserKey
-      bookingData.expertId = FIXTURE.experts[bookingData.expertUserKey]._id
+    Object.assign(sessionCustomer,{userKey})
+
+    if bookingData.expertKey
+      bookingData.expertId = FIXTURE.experts[bookingData.expertKey]._id
 
     bData = _.extend({
         datetime:       moment().add(2, 'day')
@@ -16,7 +18,7 @@ module.exports = (userKey, opts, cb) ->
         expertUserKey:  'dros'
       }, bookingData)
 
-    POST "/bookings/#{bData.expertId}", bData, {}, (booking) ->
+    POST "/bookings/#{bData.expertId}", bData, (booking) ->
       if (!bookingData.slackChatId)
         cb sessionCustomer, booking
       else

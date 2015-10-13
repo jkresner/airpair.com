@@ -1,6 +1,6 @@
 var OAuthProvider = require('./oauthbase')
 var LocalProvider = require('./localbase')
-var UserService   = require('../../../services/users')
+var AuthService   = require('../../../services/auth')
 
 
 var providers = {
@@ -17,24 +17,24 @@ var connect = (proivderName) => {
   var {strategy, short} = providers[proivderName]
   return OAuthProvider.init(proivderName, strategy,
     (req, provider, profile, done) =>
-      $callSvc(UserService.connectProvider,req)(proivderName, short, profile, done) )
+      $callSvc(AuthService.connectProvider,req)(proivderName, short, profile, done) )
 }
 
 module.exports = {
 
   local: {
     login: LocalProvider.init('local-login', (req, email, password, done) => {
-      $callSvc(UserService.localLogin,req)(email, password, done)
+      $callSvc(AuthService.localLogin,req)(email, password, done)
     }),
 
     signup: LocalProvider.init('local-singup', (req, email, password, done) => {
-      $callSvc(UserService.localSignup,req)(email, password, req.body.name, done)
+      $callSvc(AuthService.localSignup,req)(email, password, req.body.name, done)
     })
   },
 
   google: {
     oAuth: OAuthProvider.init('google', require('passport-google-oauth').OAuth2Strategy, (req, provider, profile, done) => {
-      $callSvc(UserService.googleLogin,req)(profile, done)
+      $callSvc(AuthService.googleLogin,req)(profile, done)
     })
   },
 

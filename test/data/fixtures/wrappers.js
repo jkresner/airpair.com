@@ -263,6 +263,7 @@ module.exports = {
   },
 
   gplaces_succcessful_place: {
+    "coordinates":{"lat":12.9715987,"lng":77.59456269999998},
     "address_components":[
       {
         "long_name":"Bengaluru",
@@ -310,6 +311,7 @@ module.exports = {
   localization_melbourne : {
     "location" : "Melbourne VIC, Australia",
     "locationData" : {
+      "coordinates" : { "lng" : -37.8142155, "lat" : 144.9632306999999 },
       "formatted_address": "Melbourne VIC, Australia",
       "address_components" : [
         {
@@ -349,6 +351,7 @@ module.exports = {
 
 
   madridLocationData: {
+    "coordinates" : { "lng" :40.4167754, "lat" :-3.7037901999999576 },
     "formatted_address":"Madrid, Madrid, Spain",
     "address_components":[
       {"long_name":"Madrid","short_name":"Madrid","types":["locality","political"]},
