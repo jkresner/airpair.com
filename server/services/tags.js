@@ -21,7 +21,7 @@ var get = {
       if (e) return cb(e)
 
       cb(null,
-        _.first(
+        _.take(
           _.sortBy(result, (r) =>
             -1 * (
               r.score + exactMatchBonus(term,r)

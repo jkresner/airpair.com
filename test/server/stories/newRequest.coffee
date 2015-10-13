@@ -17,6 +17,30 @@ newCompleteRequest = (userKey, requestData, cb) ->
         cb(r, sCustomer, sKey)
 
 
+
+requestForAdmin = (sCust, userKey, r, cb) ->
+  LOGIN {key:'admin'}, ->
+    GET "/adm/requests/user/#{r.userId}", (rAdm) ->
+      expect(r.status).to.equal('received')
+      expect(rAdm.length).to.equal(1)
+      expect(rAdm[0].lastTouch._id).to.exist
+      expectStartsWith(rAdm[0].lastTouch.by.name,FIXTURE.users[userKey].name)
+      $log(rAdm[0])
+      expect(rAdm[0].adm.active).to.be.true
+      expect(rAdm[0].adm.owner).to.be.undefined
+      expect(rAdm[0].adm.lastTouch).to.be.undefined
+      expect(rAdm[0].adm.submitted).to.exist
+      expect(rAdm[0].adm.received).to.be.undefined
+      expect(rAdm[0].adm.farmed).to.be.undefined
+      expect(rAdm[0].adm.reviewable).to.be.undefined
+      expect(rAdm[0].adm.booked).to.be.undefined
+      expect(rAdm[0].adm.paired).to.be.undefined
+      expect(rAdm[0].adm.feedback).to.be.undefined
+      expect(rAdm[0].adm.closed).to.be.undefined
+      expect(rAdm[0].messages.length).to.equal(0)
+      cb(rAdm[0], sCust)
+
+
 # newBookedRequestWithExistingExpert = (custKey, requestData, expertSession, cb) ->
 #   SETUP.newCompleteRequest customerUserKey, {}, (request, customerSession) ->
 #     LOGIN expertSession.userKey, () ->
@@ -31,7 +55,9 @@ newCompleteRequest = (userKey, requestData, cb) ->
 
 module.exports = (custKey, opts, done) ->
   newCompleteRequest custKey, opts.data||{}, (request, custSession, custKey) ->
-    if !opts.reply
+    if opts.forAdmin
+      requestForAdmin custSession, custKey, request, done
+    else if !opts.reply
       done request, custSession
     else
       {expertId} = opts.reply
@@ -45,4 +71,4 @@ module.exports = (custKey, opts, done) ->
               GET "/requests/#{request._id}/book/#{expertId}", (r2) ->
                 airpair1 = datetime: moment().add(2, 'day'), minutes: 60, type: 'private', payMethodId: custSession.primaryPayMethodId, request: { requestId: request._id, suggestion: r2.suggested[0] }
                 POST "/bookings/#{expertId}", airpair1, (booking) ->
-                  done(r1, booking, custSession, expertSession)
+                    done(r1, booking, custSession, expertSession)

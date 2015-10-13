@@ -249,32 +249,6 @@ stories = {
                   done(c._id, pm._id, sCompanyAdmin, sCompanyMember)
 
 
-
-
-
-  newCompleteRequestForAdmin: (userKey, requestData, cb) ->
-    SETUP.newCompleteRequest userKey, requestData, (r,sCust) ->
-      LOGIN 'admin', ->
-        GET "/adm/requests/user/#{r.userId}", {}, (rAdm) ->
-          expect(r.status).to.equal('received')
-          expect(rAdm.length).to.equal(1)
-          expect(rAdm[0].lastTouch.utc).to.exist
-          expectStartsWith(rAdm[0].lastTouch.by.name,data.users[userKey].name)
-          expect(rAdm[0].adm.active).to.be.true
-          expect(rAdm[0].adm.owner).to.be.undefined
-          expect(rAdm[0].adm.lastTouch).to.be.undefined
-          expect(rAdm[0].adm.submitted).to.exist
-          expect(rAdm[0].adm.received).to.be.undefined
-          expect(rAdm[0].adm.farmed).to.be.undefined
-          expect(rAdm[0].adm.reviewable).to.be.undefined
-          expect(rAdm[0].adm.booked).to.be.undefined
-          expect(rAdm[0].adm.paired).to.be.undefined
-          expect(rAdm[0].adm.feedback).to.be.undefined
-          expect(rAdm[0].adm.closed).to.be.undefined
-          expect(rAdm[0].messages.length).to.equal(0)
-          cb(rAdm[0],sCust)
-
-
   newBookedRequest: (customerUserKey, requestData, expertUserKey, cb) ->
     SETUP.newCompleteRequest customerUserKey, {}, (request, customerSession) ->
       SETUP.newLoggedInExpert expertUserKey, (expert, expertSession) ->

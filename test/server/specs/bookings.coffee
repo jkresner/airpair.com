@@ -22,7 +22,9 @@ util = ->
     b.datetime = ISODate("2016-06-25T00:00:00.000Z")
     expect(b.status).to.equal("pending")
     expect(b.participants.length).to.equal(2)
+    expectStartsWith(b.participants[0].info.name, "Morgan")
     expect(b.participants[0].timeZoneId).to.equal("America/Los_Angeles")
+    expectStartsWith(b.participants[1].info.name, "Billy")
     expect(b.participants[1].timeZoneId).to.equal("America/Chicago")
     {name,purpose} = BookingUtil.chatGroup(b)
     expectStartsWith(name, "morgan-billy")
@@ -41,7 +43,6 @@ util = ->
     b = _.extend _.extend({},FIXTURE.bookings.specChar), { datetime: ISODate("2016-05-25T11:30:00.000Z"), status: 'followup' }
     {name,purpose} = BookingUtil.chatGroup(b)
     expectStartsWith(name, "michael-jj")
-    $log('purpose', purpose)
     expectStartsWith(purpose, "http://booking.airpa.ir/559dc6ff476dc61100a02069 Michael (PDT, San Francisco, CA, USA) + JJ (EDT, New York, NY, USA). FEEDBACK required to payout expert for 60 mins on Wed 25 11:30 UTC | 4:30AM PDT | 7:30AM EDT")
     DONE()
 
