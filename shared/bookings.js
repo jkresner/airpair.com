@@ -3,11 +3,11 @@ var {firstName,lastName,idsEqual} = require('./util')
 var utilFns = {
 
   customers(booking) {
-    return _.where(booking.participants, (p)=> p.role == 'customer')
+    return booking.participants.filter(p => p.role == 'customer')
   },
 
   experts(booking) {
-    return _.where(booking.participants, (p)=> p.role == 'expert')
+    return booking.participants.filter(p => p.role == 'expert')
   },
 
   firstCustomer(booking) {

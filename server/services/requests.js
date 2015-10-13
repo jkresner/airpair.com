@@ -159,8 +159,7 @@ var save = {
         tags:util.tagsString(update.tags),time:update.time.toUpperCase()}
       mailman.sendTemplate('pipeliner-notify-request', d, 'pipeliners')
 
-      adm = admSet(original,{active:true,submitted:new Date()})
-
+      original.adm = admSet(original,{active:true,submitted:new Date()})
       analytics.track(original.by, null, 'Request', {_id:original._id,action:'submit'})
     }
 

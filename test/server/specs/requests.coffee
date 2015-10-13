@@ -108,8 +108,11 @@ create = ->
         expect(r1.type).to.equal('mentoring')
         r1.tags = all.tags
         putUrl = "/requests/#{r1._id}"
-        PUT putUrl, r1, {}, (r2) ->
+        PUT putUrl, r1, (r2) ->
           expect(r2.tags.length).to.equal(1)
+          expect(r2.tags[0].slug).to.equal('node.js')
+          expect(r2.tags[0].name).to.equal('Node.JS')
+          expect(r2.tags[0].short).to.equal('Node')
           r2.experience = all.experience
           PUT putUrl, r2, {}, (r3) ->
             expect(r3.experience).to.equal(all.experience)
