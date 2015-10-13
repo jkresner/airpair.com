@@ -9,19 +9,6 @@ var PostsUtil             = require('../../shared/posts')
 var Roles                 = require('../../shared/roles').post
 var {org}                 = config.auth.github
 
-var svc = {
-  newTouch(action) {
-    return {
-      action,
-      utc: new Date(),
-      by: { _id: this.user._id, name: this.user.name }
-    }
-  },
-  userByte() {
-    return _.pick(this.user, '_id', 'name')
-  }
-}
-
 
 var get = {
 
@@ -252,11 +239,12 @@ var get = {
 
 
   getUsersPublished(userId, cb) {
-    var options = { fields: select.list, options: opts.publishedNewest() }
-    svc.searchMany(query.published({ 'by.userId': userId }), options, select.cb.addUrl((e,r)=>{
-      if (e) return cb(e)
-      cb(null, {featured: r,archive: []})
-    }))
+    cb(V2DeprecatedError('Posts.getUsersPublished'))
+    // var options = { fields: select.list, options: opts.publishedNewest() }
+    // svc.searchMany(query.published({ 'by.userId': userId }), options, select.cb.addUrl((e,r)=>{
+    //   if (e) return cb(e)
+    //   cb(null, {featured: r,archive: []})
+    // }))
   },
 
   // Everything needed for airpair.com/posts/me
@@ -555,7 +543,7 @@ var save = {
 var saveReviews = {
 
   review(post, review, cb) {
-    review.by = svc.userByte.call(this)
+    review.by = _.pick(this.user,'_id','name')
     review.type = `post-survey-inreview`
     if (post.published) review.type.replace('inreview','published')
 

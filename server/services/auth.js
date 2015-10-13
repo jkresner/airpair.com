@@ -104,7 +104,7 @@ function upsertSmart(upsert, existing, done) {
 
 
 function connectGoogle(profile, done) {
-  cb(V2DeprecatedError('User.connectGoogle - Are you already logged in?'))
+  done(V2DeprecatedError('User.connectGoogle - Are you already logged in?'))
   // User.getById(this.user._id, (err, loggedInUser) => {
   //   if (err || !loggedInUser) return errorCB(err || 'Failed to googleConnect, loggedInUser not found', loggedInUser)
 
@@ -252,7 +252,7 @@ function localLogin(email, password, done) {
 
 
 function connectProvider(provider, short, profile, done) {
-  cb(V2DeprecatedError('User.connectProvider'))
+  done(V2DeprecatedError('User.connectProvider'))
   // var ups = { $set : { } }
   // ups['$set'][`social.${short}`] = profile
 

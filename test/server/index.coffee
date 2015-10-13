@@ -9,12 +9,18 @@ SCREAM          = require('meanair-scream')
 global.SETUP    = require('./helpers/setup')
 global.newId    = -> new DB.ObjectId()
 global.timeSeed = SETUP.timeSeed
-global.expectTouch = (touch, byId, action) ->
-  expectIdsEqual(touch.by._id, byId)
-  expect(touch.action).to.equal(action)
 global.ANONSESSION = (cb) ->
   global.COOKIE = null
   GET '/session/full', cb
+global.expectObjectId = (val) ->
+  expect(val, "Expected ObjectId null").to.exist
+  expect(val.constructor is ObjectId, "Expected ObjectId #{val.toString().white}".gray+" #{val.constructor} not an ObjectId".gray).to.be.true
+global.expectTouch = (touch, byId, action) ->
+  expect(touch._id).to.exist
+  # expectObjectId(touch._id)
+  expectIdsEqual(touch.by._id, byId)
+  expect(touch.action).to.equal(action)
+
 
 loginHandler = (req, cb) ->
   fixtureUser = FIXTURE.users[req.body.key]

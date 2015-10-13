@@ -207,48 +207,53 @@ scheduling = ->
             DONE()
 
 
-  # IT 'Expert can suggest alternative which can be confirmed by customer', ->
-  #   stubber = STUB.stubWrapperInnerAPI 'Calendar', 'events.insert'
-  #   stub = stubber (obj,cb) -> cb null, FIXTURE.wrappers.google_cal_create
-  #   # email notifications sent
-  #   # stubMail = SETUP.stub mailman, 'send'
-  #   stubPairBot = sinon.stub pairbot, 'sendSlackMsg', ->
-  #   datetime = moment().add(11, 'day')
-  #   SETUP.newBookedExpert 'kelf', {datetime,expertId:FIXTURE.experts.gnic._id}, (s, b1) ->
-  #     LOGIN {key:'gnic'}, (sGnic) ->
-  #       time2 = moment().add(17, 'day')
-  #       d = { _id:b1._id, time:time2}
-  #       PUT "/bookings/#{b1._id}/suggest-time", d, {}, (b2) ->
-  #         expect(b2.lastTouch).to.be.undefined
-  #         expect(b2.activity).to.be.undefined
-  #         expect(b2.notes).to.be.undefined
-  #         expect(b2.status).to.equal("pending")
-  #         expectSameMoment(b2.datetime, datetime)
-  #         expect(b2.suggestedTimes.length).to.equal(2)
-  #         expect(stubPairBot.calledOnce).to.be.false
-  #         LOGIN {key:s.userKey}, ->
-  #           expectIdsEqual(b2.suggestedTimes[1].byId,sGnic._id)
-  #           timeId = b2.suggestedTimes[1]._id
-  #           PUT "/bookings/#{b1._id}/confirm-time", {_id:b1._id, timeId}, {}, (b3) ->
-  #             expect(b3.status).to.equal("confirmed")
-  #             expectSameMoment(b3.datetime, time2)
-  #             expect(stubPairBot.calledOnce).to.be.false
-  #             stubPairBot.restore()
-  #             expect(stubCal.calledOnce).to.be.true
-  #             expect(b3.suggestedTimes.length).to.equal(2)
-  #             expectSameMoment(b3.suggestedTimes[0].time,datetime)
-  #             expectIdsEqual(b3.suggestedTimes[0].byId,s._id)
-  #             expect(b3.suggestedTimes[0].confirmedById).to.be.undefined
-  #             expectSameMoment(b3.suggestedTimes[1].time,time2)
-  #             expectIdsEqual(b3.suggestedTimes[1].byId,sGnic._id)
-  #             expectIdsEqual(b3.suggestedTimes[1].confirmedById,s._id)
-  #             stubCal.restore()
-  #             db.readDoc 'Booking', b1._id, (bDb1) ->
-  #               expectTouch(bDb1.lastTouch, s._id, "confirm-time")
-  #               expectTouch(bDb1.activity[0],s._id, "create")
-  #               expectTouch(bDb1.activity[1],sGnic._id, "suggest-time")
-  #               expectTouch(bDb1.activity[2],s._id, "confirm-time")
-  #               DONE()
+  IT 'Expert can suggest alternative which can be confirmed by customer', ->
+    stubber = STUB.stubWrapperInnerAPI 'Calendar', 'events.insert'
+    stubCal = stubber (obj,cb) -> cb null, FIXTURE.wrappers.google_cal_create
+    # email notifications sent
+    stubMail = STUB.cb mailman, 'send', {}
+    stubPairBot = STUB.cb pairbot, 'sendSlackMsg', {}
+    datetime = moment().add(11, 'day')
+    STORY.newBooking 'kelf', data:{datetime,expertKey:'gnic'}, (s, b1) ->
+      expect(b1.suggestedTimes.length).to.equal(1)
+      suggestedTimeOriginal = b1.suggestedTimes[0]
+      expect(suggestedTimeOriginal._id).to.exist
+      DB.docById 'Booking', b1._id, (b1raw) ->
+        expectObjectId(b1raw.suggestedTimes[0]._id)
+      LOGIN {key:'gnic'}, (sGnic) ->
+        time2 = moment().add(17, 'day')
+        d = { _id:b1._id, time:time2}
+        PUT "/bookings/#{b1._id}/suggest-time", d, (b2) ->
+          expect(b2.lastTouch).to.be.undefined
+          expect(b2.activity).to.be.undefined
+          expect(b2.notes).to.be.undefined
+          expect(b2.status).to.equal("pending")
+          expectSameMoment(b2.datetime, datetime)
+          expect(b2.suggestedTimes.length).to.equal(2)
+          expect(b2.suggestedTimes[0]._id).to.exist
+          expect(b2.suggestedTimes[1]._id).to.exist
+          expect(stubPairBot.calledOnce).to.be.false
+          LOGIN {key:s.userKey}, ->
+            expectIdsEqual(b2.suggestedTimes[1].byId,sGnic._id)
+            timeId = b2.suggestedTimes[1]._id
+            PUT "/bookings/#{b1._id}/confirm-time", {_id:b1._id, timeId}, {}, (b3) ->
+              expect(b3.status).to.equal("confirmed")
+              expectSameMoment(b3.datetime, time2)
+              expect(stubPairBot.calledOnce).to.be.false
+              expect(stubCal.calledOnce).to.be.true
+              expect(b3.suggestedTimes.length).to.equal(2)
+              expectSameMoment(b3.suggestedTimes[0].time,datetime)
+              expectIdsEqual(b3.suggestedTimes[0].byId,s._id)
+              expect(b3.suggestedTimes[0].confirmedById).to.be.undefined
+              expectSameMoment(b3.suggestedTimes[1].time,time2)
+              expectIdsEqual(b3.suggestedTimes[1].byId,sGnic._id)
+              expectIdsEqual(b3.suggestedTimes[1].confirmedById,s._id)
+              DB.docById 'Booking', b1._id, (bDb1) ->
+                expectTouch(bDb1.lastTouch, s._id, "confirm-time")
+                expectTouch(bDb1.activity[0],s._id, "create")
+                expectTouch(bDb1.activity[1],sGnic._id, "suggest-time")
+                expectTouch(bDb1.activity[2],s._id, "confirm-time")
+                DONE()
 
 
 
@@ -452,9 +457,9 @@ module.exports = ->
   after ->
     @braintreepaymentStub.restore()
 
-  # DESCRIBE("Util", util)
-  # DESCRIBE("Viewing", views)
+  DESCRIBE("Util", util)
+  DESCRIBE("Viewing", views)
   DESCRIBE("Scheduling", scheduling)
-  # DESCRIBE("Recordings", recordings)
+  DESCRIBE("Recordings", recordings)
   # DESCRIBE("Feedback", feedback)
 

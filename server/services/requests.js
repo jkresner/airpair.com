@@ -9,15 +9,6 @@ var MojoSvc                  = require('../services/mojo')
 var {select,query}           = require('./requests.data')
 var {isCustomer,isCustomerOrAdmin,isExpert} = Roles.request
 
-var svc = {
-  newTouch(action) {
-    return {
-      action,
-      utc: new Date(),
-      by: { _id: this.user._id, name: this.user.name }
-    }
-  }
-}
 
 var get = {
 
@@ -54,7 +45,7 @@ var get = {
     Request.getById(id, (e,r) => {
       if (e || !r) return cb(e,r)
       r = select.byView(r, 'admin')
-      User.getById(userId, (ee,user) => {
+      User.getById(r.userId, (ee,user) => {
         r.user = user
         var exclude = _.map(r.suggested||[],(s)=>s.expert._id.toString())
         MojoSvc.getGroupMatch(r.tags, {take:5,exclude,maxRate:r.budget},(ee,group)=>{
@@ -137,6 +128,7 @@ var save = {
     o._id = Request.newId()
     o.userId = _id
     o.status = 'received'
+    // o.lastTouch = svc.newTouch.call(this, 'create')
     // o.adm = { active:true }
 
     analytics.track(o.by, null, 'Request', {_id:o._id,action:'start'})
@@ -157,12 +149,10 @@ var save = {
     // })
   },
   updateByCustomer(original, update, cb) {
-    var {adm,lastTouch} = original
-    var {tags,type,experience,brief,hours,time,budget,title} = update
     // $log('updateByCustomer'.cyan, update)
 
     // todo posibily revise submitted to the submit action
-    var submitted = title && !original.title
+    var submitted = update.title && !original.title
     if (submitted)
     {
       var d = {byName:this.user.name, _id:original._id,budget:update.budget,
@@ -175,17 +165,15 @@ var save = {
     }
 
     // var ups = _.extend(original, update)
-    if (tags.length == 1) tags[0].sort = 0
+    if (update.tags.length == 1) update.tags[0].sort = 0
 
     if (isCustomer(this.user, original)) {
-      lastTouch = svc.newTouch.call(this, 'updateByCustomer')
+      update.lastTouch = svc.newTouch.call(this, 'updateByCustomer')
       if (this.user.emailVerified)
-        adm = admSet(original,{active:true})
+        update.adm = admSet(original,{active:true})
     }
 
-    Request.updateSet(original._id,
-      {tags,type,experience,brief,hours,time,budget,title,adm,lastTouch}
-      , select.cb.byRole(this,cb,cb))
+    Request.updateSet(original._id, update, select.cb.byRole(this,cb,cb))
   },
   updateWithBookingByCustomer(request, order, cb) {
     var {adm} = request
@@ -326,7 +314,9 @@ var admin = {
   {
     var {adm,suggested} = request
     adm.lastTouch = svc.newTouch.call(this, `suggest:${expert.name}`)
-    suggested.push(select.expertToSuggestion(expert, this.user))
+    var suggest = select.expertToSuggestion(expert, this.user)
+    suggest._id = Request.newId()
+    suggested.push(suggest)
     Request.updateSet(request._id, {suggested,adm}, select.cb.adm(cb))
     mailman.sendMarkdown(msg.subject, msg.markdown, expert, 'team')
   },
@@ -339,8 +329,11 @@ var admin = {
 
     var exclude = _.map(request.suggested||[],(s)=>s.expert._id.toString())
     MojoSvc.getGroupMatch([tag], {take:5,exclude,maxRate:budget}, (e,group) => {
-      for (var expert of group.suggested)
-        suggested.push(select.expertToSuggestion(expert, this.user, group.type))
+      for (var expert of group.suggested) {
+        var suggest = select.expertToSuggestion(expert, this.user, group.type)
+        // suggest._id = Request.newId()
+        suggested.push(suggest)
+      }
 
       Request.updateSet(request._id, {suggested,adm}, select.cb.adm(cb))
       var tmplData = select.template.expertAutomatch(request, tag.name)

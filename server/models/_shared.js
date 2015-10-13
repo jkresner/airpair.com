@@ -3,22 +3,7 @@ var Schema = mongoose.Schema
 var {ObjectId} = Schema
 
 
-var MESSAGE_TYPE = [
-  'received',
-  'review',
-  'generic',
-  'cancelfromwaiting'
-]
 
-
-
-var Message = new Schema({
-  type:         { require:true, type: String, enum: MESSAGE_TYPE },
-  subject:      { require:true, type: String },
-  body:         { require:true, type: String },
-  fromId:       { require:true, type: ObjectId, ref: 'User' },
-  toId:         { require:true, type: ObjectId, ref: 'User' }
-})
 
 
 var UserByte = {
@@ -52,4 +37,4 @@ var Survey = {
 }
 
 
-module.exports = {Message,UserByte,Survey}
+module.exports = {UserByte,Survey}
