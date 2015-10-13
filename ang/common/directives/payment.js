@@ -22,7 +22,7 @@ angular.module("APPaymentDirectives", ['angularLoad','APDataSvc'])
               cardholderName: $scope.session.name,
               number:"",//"4111111111111111",
               expirationMonth:"", //"12",
-              expirationYear: 2015,
+              expirationYear: 2016,
               cardNickName: "" //"Personal united visa"
             }
 

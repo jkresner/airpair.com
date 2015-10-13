@@ -38,20 +38,23 @@ angular.module('APInputs', ['ui.bootstrap','angularLoad'])
           scope.gPlace = new google.maps.places.Autocomplete(input, options)
 
           var selectPlace = function() {
-            scope.details = scope.gPlace.getPlace()
+            var details = scope.gPlace.getPlace()
 
-            // console.log('details', scope.details)
-            if (!scope.details || !scope.details.geometry) {
+            if (!details || !details.geometry) {
               // var suggestion_selected = $(".pac-item-selected").length > 0
               // var first_text = $(".pac-container .pac-item:first").text()
               alert('Please click on an option from the list that appears as you type to save timezone')
             }
             else
             {
+              var lat = details.geometry.location.lat()
+              var lng = details.geometry.location.lng()
+              // console.log('lat lng', lat, lng)
+
               scope.data.location = $(input).val()
               previousLocation = scope.data.location
               if (scope.onSelect)
-                scope.onSelect(scope.details)
+                scope.onSelect(_.extend(details,{coordinates:{lat,lng}}))
             }
           }
 
