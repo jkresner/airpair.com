@@ -311,7 +311,7 @@ module.exports = {
   localization_melbourne : {
     "location" : "Melbourne VIC, Australia",
     "locationData" : {
-      "coordinates" : { "lng" : -37.8142155, "lat" : 144.9632306999999 },
+      "coordinates" : { "lng" : 144.9632306999999, "lat" : -37.8142155 },
       "formatted_address": "Melbourne VIC, Australia",
       "address_components" : [
         {
