@@ -1,6 +1,3 @@
-origMailman      = global.mailman
-send             = null
-
 raw = ->
 
   IT 'Get rendered markdown without sending', ->
@@ -87,6 +84,7 @@ raw = ->
 spinners = ->
 
   IT 'Pipeliners notify booking', ->
+    send = @send
     STORY.newUser 'ckni', {paymethod:true,login:true}, (s) ->
       airpair1 = datetime: moment().add(2, 'day'), minutes: 120, type: 'private', payMethodId: s.primaryPayMethodId
       POST "/bookings/#{FIXTURE.experts.dros._id}", airpair1, {}, (booking1) ->
@@ -127,6 +125,7 @@ spinners = ->
 
 
     IT 'Expert gets notification on booking', ->
+      send = @send
       _id = ObjectId("55555ae4b38fc91937086df7")
       d = {byName:"Jonyisalive 5", expertName:"Jonathon Kaye", bookingId:_id,minutes:60}
       mailman.sendTemplate 'expert-booked', d, {name:'Karan Kurani',email:'karankurani@testmail.com'}, ->
@@ -174,6 +173,7 @@ module.exports = ->
 
 
   before (done) ->
+    global.origMailman      = global.mailman
     @braintreepaymentStub = SETUP.stubBraintreeChargeWithMethod()
     global.config.log.mail = true
     global.mailman = require('../../../server/util/mailman')()
@@ -183,6 +183,7 @@ module.exports = ->
         # SETUP.initExperts done
 
   beforeEach ->
+    @send = STUB.spy(global.mailman,'send')
     STUB.sync(Wrappers.Slack, 'checkUserSync', null)
     STUB.cb(Wrappers.Slack, 'getUsers', FIXTURE.wrappers.slack_users_list)
     STUB.cb(Wrappers.Slack, 'getChannels', FIXTURE.wrappers.slack_channels_list)
@@ -190,14 +191,10 @@ module.exports = ->
 
   after ->
     @braintreepaymentStub.restore()
-    global.mailman = origMailman
+    global.mailman = global.origMailman
+    global.origMailman = undefined
 
 
-  beforeEach ->
-    send = sinon.spy(global.mailman,'send')
-
-  afterEach ->
-    send.restore()
 
 
   DESCRIBE "Raw", raw

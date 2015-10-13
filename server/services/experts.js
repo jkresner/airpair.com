@@ -7,15 +7,6 @@ var {selectFromObject}    = util
 var {select,options}      = require('./experts.data')
 var selectCB              = select.cb
 
-var svc = {
-  newTouch(action) {
-    return {
-      action,
-      utc: new Date(),
-      by: { _id: this.user._id, name: this.user.name }
-    }
-  }
-}
 
 var get = {
 
@@ -149,8 +140,8 @@ var save = {
     expert.user = selectFromObject(this.user, select.userCopy)
     expert.userId = this.user._id
     $callSvc(updateWithTouch, this)(expert, 'create', trackData, (e,r) => {
-      if (r._id)
-        $callSvc(UserSvc.setExpertCohort, this)(r._id)
+      // if (r._id)
+      //   $callSvc(UserSvc.setExpertCohort, this)(r._id)
       selectCB.me(cb)(e,r)
     })
   },

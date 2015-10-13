@@ -1,13 +1,9 @@
 module.exports = require('./_api').initAPI(
   require('../services/users')
 , {
-  getSession: (req) => [],
-  toggleTag: (req) => [req.tag],
-  updateTags: (req) => [req.body],
-  toggleBookmark: (req) => [req.params.type,req.params.id],
-  updateBookmarks: (req) => [req.body],
   search: (req) => [req.params.id],
-  getUsersInRole: (req) => [req.params.role],
+  getSession: (req) => [],
+  updateTags: (req) => [req.body],
   changeName: (req) => [req.body.name],
   changeEmail: (req) => [req.body.email],
   changeBio: (req) => [req.body.bio],
@@ -17,6 +13,11 @@ module.exports = require('./_api').initAPI(
   requestPasswordChange: (req) => [req.body.email],
   changePassword: (req) => [req.body.hash, req.body.password],
   changeLocationTimezone: (req) => [req.body],
+
+  toggleBookmark: (req) => [req.params.type,req.params.id],
+  updateBookmarks: (req) => [req.body],
+  toggleTag: (req) => [req.tag],
+  getUsersInRole: (req) => [req.params.role],
   getSiteNotifications: (req) => [],
   toggleSiteNotification: (req) => [req.body.name],
   getProviderScopes: (req) => [],

@@ -30,6 +30,16 @@ function run(config, done)
   require(`meanair-model`)(config).connect((e, DAL) => {
     global.DAL = DAL
     $timelapsed("DAL Connected", DAL)
+    global.svc = {
+      newTouch(action) {
+        return {
+          _id: DAL.User.newId(),
+          action,
+          utc: new Date(),
+          by: { _id: this.user._id, name: this.user.name }
+        }
+      }
+    }
   })
 
   mongo.connect(() => {

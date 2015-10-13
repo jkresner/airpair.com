@@ -1,7 +1,4 @@
-var logging                 = false
-var {Chat}                  = DAL
-var UserSvc                 = require('../services/users')
-var User                    = require('../models/user')
+var {Chat,User}             = DAL
 var {channels}              = config.chat.slack
 
 var get = {
@@ -56,7 +53,8 @@ var save = {
 
   inviteToTeam(userId, cb)
   {
-    $callSvc(UserSvc.getById,{user:{_id:userId}})(userId,(e,r)=>{
+    //-- User data access should probably be handled by param + validation
+    User.getById(userId, (e,r)=>{
       if (e) return cb(e)
       if (!r || !r.email || !r.name) return cb(Error(`UserId[${userId}] does not have a valid email and name`))
       $log(`Inviting ${r.email} ${r.name} to slack`)
@@ -147,52 +145,53 @@ var save = {
   },
 
   syncIMs(cb) {
-    var displayFormat = 'DDD MM.DD H:mm'
-    Wrappers.Slack.getUsers(()=>{
-      var read = 0, done = 1
+    cb(V2DeprecatedError('Chat.syncIMs'))
+    // var displayFormat = 'DDD MM.DD H:mm'
+    // Wrappers.Slack.getUsers(()=>{
+    //   var read = 0, done = 1
 
-      User.find({'social.sl':{$exists:true}},{_id:1,name:1,'social.sl.id':1,'social.sl.token':1}).exec((e,users)=>{
-        var print = (u) =>
-         (e,r) => {
-            $log(u.name.cyan, e, (r) ? r.length : '')
-            for (var chat of r || []) {
-              var withcU = (global.userHash[chat.info.user]) ? global.userHash[chat.info.user] : chat.info.user
-              if (withcU!='jk'&&withcU!='airpair'&&withcU!='USLACKBOT') {
-                $log(`chat ${u.name}`.yellow, chat.history.length, withcU)
-                if (chat.history && chat.history.length > 0) {
-                  var withJK = false
-                  var log = ""
-                  for (var msg of chat.history || []) {
-                    // if (global.userHash[msg.user] == 'jk') withJK = true
-                    var withU = (global.userHash[msg.user]) ? global.userHash[msg.user] : msg.user
-                    if (withU == 'jk' || withU == 'USLACKBOT') withJK = true
-                    else log += `\n${moment.unix(msg.ts).format(displayFormat).white} ${withU} ${msg.text}`
-                  }
-                  if (!withJK)
-                    $log(log)
-                  else
-                    $log('with JK'.gray)
-                }
-              }
-            }
-            if (done++ >= users.length) return cb(null, users.length)
-            else $log(`done[${done}/${users.length}]`)
-          }
+    //   User.getManyByQuery({'social.sl':{$exists:true}}, '_id name social.sl.id social.sl.token', (e,users) => {
+    //     var print = (u) =>
+    //      (e,r) => {
+    //         $log(u.name.cyan, e, (r) ? r.length : '')
+    //         for (var chat of r || []) {
+    //           var withcU = (global.userHash[chat.info.user]) ? global.userHash[chat.info.user] : chat.info.user
+    //           if (withcU!='jk'&&withcU!='airpair'&&withcU!='USLACKBOT') {
+    //             $log(`chat ${u.name}`.yellow, chat.history.length, withcU)
+    //             if (chat.history && chat.history.length > 0) {
+    //               var withJK = false
+    //               var log = ""
+    //               for (var msg of chat.history || []) {
+    //                 // if (global.userHash[msg.user] == 'jk') withJK = true
+    //                 var withU = (global.userHash[msg.user]) ? global.userHash[msg.user] : msg.user
+    //                 if (withU == 'jk' || withU == 'USLACKBOT') withJK = true
+    //                 else log += `\n${moment.unix(msg.ts).format(displayFormat).white} ${withU} ${msg.text}`
+    //               }
+    //               if (!withJK)
+    //                 $log(log)
+    //               else
+    //                 $log('with JK'.gray)
+    //             }
+    //           }
+    //         }
+    //         if (done++ >= users.length) return cb(null, users.length)
+    //         else $log(`done[${done}/${users.length}]`)
+    //       }
 
-        var getIt = (u) =>
-            () => Wrappers.Slack.getIMChats(u.social.sl, print(u))
+    //     var getIt = (u) =>
+    //         () => Wrappers.Slack.getIMChats(u.social.sl, print(u))
 
-        for (var u of users) {
-          if (u.social.sl.id != config.chat.slack.jk.io)
-          {
-            read++
-            _.delay(getIt(u), read*1000)
-          }
+    //     for (var u of users) {
+    //       if (u.social.sl.id != config.chat.slack.jk.io)
+    //       {
+    //         read++
+    //         _.delay(getIt(u), read*1000)
+    //       }
 
-        }
-        // cb(e,r)
-      })
-    })
+    //     }
+    //     // cb(e,r)
+    //   })
+    // })
   }
 
 }

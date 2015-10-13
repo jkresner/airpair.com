@@ -1,5 +1,5 @@
 {
-  "specs":                "analytics",
+  "specs":                "all",
   "stubs": {
     "on":                  true
   },

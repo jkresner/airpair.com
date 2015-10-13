@@ -1,5 +1,3 @@
-var Shared = require('../models/_shared')
-
 module.exports = ({ Id, Enum, Touch, Reftag },
   { asSchema, required, trim, index, sparse }) => {
 
@@ -7,16 +5,16 @@ module.exports = ({ Id, Enum, Touch, Reftag },
 var Suggestion = asSchema({
   // events:             [{}]
   expert: {
-    _id:         { required: true, type: Id, ref: 'Expert' },
-    userId:      { required: true, type: Id, ref: 'User' },
-    name:        { required: true, type: String },
-    email:       { required: true, type: String },
-    gmail:       { required: true, type: String },
-    username:    { required: true, type: String },
-    rate:        { required: true, type: Number },
+    _id:         { type: Id, ref: 'Expert', required },
+    userId:      { type: Id, ref: 'User', required },
+    name:        { type: String, required },
+    email:       { type: String, required },
+    gmail:       { type: String, required },
+    username:    { type: String, required },
+    rate:        { type: Number, required },
     location:    { type: String },
     timezone:    { type: String },
-    tags:        [Reftag],
+    tags:        { type: [Reftag] },
     gh:          { username: String },
     so:          { link: String },
     bb:          { id: String },
@@ -26,7 +24,7 @@ var Suggestion = asSchema({
   // expertRating:       Number,
   // expertFeedback:     String
   reply:         {
-    time:        Date
+    time:        { type: Date }
   },
   //-- TODO, move these guys into the reply object
   expertStatus:       { type: String, required, enum: Enum.REQUEST.REPLY_STATUS, default: 'waiting' },
@@ -41,38 +39,38 @@ var Suggestion = asSchema({
   //events:            [{}]
 })
 
+var admMeta = {
+  active:         { type: Boolean, index, sparse },
+  owner:          { type: String },
+  lastTouch:      { type: Touch, required },
+  submitted:      { type: Date },
+  received:       { type: Date },
+  farmed:         { type: Date },
+  reviewable:     { type: Date },
+  booked:         { type: Date },
+  paired:         { type: Date },
+  feedback:       { type: Date },
+  closed:         { type: Date },
+}
 
 return asSchema({
 
-  userId:           { required: true, type: Id, ref: 'User', index: true },
+  userId:           { type: Id, ref: 'User', required, index },
   by:               {},
-  type:             { required: true, type: String, enum: Enum.REQUEST.TYPE },
-  tags:             [Reftag],
+  type:             { type: String, required, enum: Enum.REQUEST.TYPE },
+  tags:             { type: [Reftag] },
   experience:       { type: String, enum: Enum.REQUEST.EXPERIENCE },
-  brief:            { type: String   },
-  hours:            { type: String   },
+  brief:            { type: String },
+  hours:            { type: String },
   time:             { type: String, enum: Enum.REQUEST.TIME },
-  budget:           { type: Number   },
-  status:           { required: true, type: String, enum: Enum.REQUEST.STATUS },
-  suggested:        [Suggestion],
-  adm:              {
-    active:         { type: Boolean, index, sparse },
-    owner:          String,
-    lastTouch:      Touch,
-    submitted:      { type: Date },
-    received:       { type: Date },
-    farmed:         { type: Date },
-    reviewable:     { type: Date },
-    booked:         { type: Date },
-    paired:         { type: Date },
-    feedback:       { type: Date },
-    closed:         { type: Date },
-  },
-  // messages:         [Shared.Message],  // TODO, un-nest this
-  messages:         [{}],  // TODO, un-nest this
-  title:            String,
-  canceledDetail:   String,
-  lastTouch:        Touch,
+  budget:           { type: Number },
+  status:           { type: String, required, enum: Enum.REQUEST.STATUS },
+  suggested:        { type: [Suggestion] },
+  adm:              { type: admMeta, required: false },
+  messages:         { type: [{}] }, // {type:[Message]}, // TODO, un-nest this
+  title:            { type: String },
+  canceledDetail:   { type: String },
+  lastTouch:        { type: Touch, required: false },
 
 })
 
