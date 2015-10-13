@@ -9,15 +9,6 @@ var BookingdUtil            = require('../../shared/bookings')
 var {select,query,opts}     = require('./bookings.data')
 var {inflate}               = select.cb
 
-var svc = {
-  newTouch(action) {
-    return {
-      action,
-      utc: new Date(),
-      by: { _id: this.user._id, name: this.user.name }
-    }
-  }
-}
 
 function getChat(booking, syncMode, exitCB, cb) {
 
@@ -184,7 +175,7 @@ var save = {
           type,
           minutes,
           datetime,
-          suggestedTimes:[{_id:Booking.newId(),time:datetime,byId:user._id}],
+          suggestedTimes:[{time:datetime,byId:user._id}],
           status: 'pending',
           gcal: {},
           orderId: order._id,
@@ -203,7 +194,7 @@ var save = {
   {
     var {suggestedTimes,lastTouch,activity} = original
     suggestedTimes = suggestedTimes || []
-    suggestedTimes.push({_id:Booking.newId(),time,byId:this.user._id})
+    suggestedTimes.push({time,byId:this.user._id})
     lastTouch = svc.newTouch.call(this, 'suggest-time')
     activity.push(lastTouch)
     Booking.updateSet(original._id, {suggestedTimes,lastTouch,activity}, (e,r) => {

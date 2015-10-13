@@ -21,11 +21,11 @@ var util = {
 
 
 // cleanup 2015.07.13
-// db.views.update({ __v: { $exists:1 } },{ $unset: { __v: "" } },{ 'multi': true })
-// db.views.update({ userId: null },{ $unset: { userId: "" } },{ 'multi': true })
-// db.views.remove({ utc: { $lt:ISODate('2015-03-02 10:00:00.002Z') }, userId: { $exists: false }, campaign: { $exists: false }, referer: { $exists: false }  })
+// db.views.update({ __v: { $exists:1 } },{ $unset: { __v: "1" } },{ 'multi': true })
+// db.views.update({ userId: null },{ $unset: { userId: "1" } },{ 'multi': true })
+// db.views.remove({ utc: { $lt:ISODate('2015-08-02 10:00:00.002Z') }, userId:{$exists:0}, campaign: {$exists:0}, referer: {$exists:0}  })
 //-- (Don't need utc if already have the _id)
-// db.views.update({ utc: { $exists:1 } },{ $unset: { utc: "" } },{ 'multi': true })
+// db.views.update({ utc: { $exists:1 } },{ $unset: { utc: "1" } },{ 'multi': true })
 var objectType = ['post','workshop','expert','tag','landing']
 var Views = mongoose.model('View', new mongoose.Schema({
   userId:       { type: Id, ref: 'User', index: true, sparse: true },

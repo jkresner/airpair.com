@@ -27,7 +27,7 @@ return asSchema({
   // The user that create the order (often same as userId, but can be an admin)
   by:             { type: {}, required },
 
-  lineItems:      [LineItem],
+  lineItems:      { type: [LineItem] },
 
   // when the order was made
   utc:            { type: Date, 'default': Date },

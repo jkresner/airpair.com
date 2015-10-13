@@ -7,15 +7,6 @@ var {selectFromObject}    = util
 var {select,options}      = require('./experts.data')
 var selectCB              = select.cb
 
-var svc = {
-  newTouch(action) {
-    return {
-      action,
-      utc: new Date(),
-      by: { _id: this.user._id, name: this.user.name }
-    }
-  }
-}
 
 var get = {
 

@@ -14,18 +14,6 @@ var {ObjectId}                = require('mongoose').Types
 OrderUtil.calculateUnitPrice = (expert, type) => expert.rate + base[type]
 OrderUtil.calculateUnitProfit = (expert, type) => base[type] // TODO fix this for requests
 
-var svc = {
-  newTouch(action) {
-    return {
-      action,
-      utc: new Date(),
-      by: { _id: this.user._id, name: this.user.name }
-    }
-  },
-  idFromString(id) {
-    return ObjectId(id.toString())
-  }
-}
 
 var get = {
 
@@ -168,8 +156,8 @@ var Lines = {
 //-- Use the lineItems, paymethod and who the orders is for
 function makeOrder(byUser, lineItems, payMethodId, forUserId, requestId, dealId, errorCB, cb)
 {
-  var byUserId = svc.idFromString(byUser._id)
-  forUserId = (forUserId) ? svc.idFromString(forUserId) : byUserId
+  var byUserId = ObjectId(byUser._id.toString())
+  forUserId = (forUserId) ? ObjectId(forUserId.toString()) : byUserId
 
   var o = {
     _id: new ObjectId(),

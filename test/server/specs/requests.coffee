@@ -19,7 +19,7 @@ create = ->
   IT 'Can start a request as logged in customer', ->
     STORY.newUser 'josb', (s) ->
       d = type: 'mentoring'
-      POST '/requests', d, {}, (r) ->
+      POST '/requests', d, (r) ->
         expect(r._id).to.exist
         expect(_.idsEqual(s._id,r.userId)).to.be.true
         expect(r.type).to.equal('mentoring')
@@ -38,35 +38,13 @@ create = ->
             DONE()
 
 
-#   IT 'Cannot update a request without emailVerified', ->
-#     STORY.newUser 'bhur', (s) ->
-#       expect(s.emailVerified).to.be.false
-#       d = type: 'code-review'
-#       POST '/requests', d, {}, (r1) ->
-#         expect(r1._id).to.exist
-#         r1.tags = [FIXTURE.tags.node]
-#         PUT "/requests/#{r1._id}", r1, {}, (r2) ->
-#           expectIdsEqual(r1._id,r2._id)
-#           expect(r2.tags.length).to.equal(1)
-#           r2.experience = 'proficient'
-#           PUT "/requests/#{r1._id}", r2, {status:403}, (rFail) ->
-#             expect(rFail.message.indexOf("Email verification required")).to.equal(0)
-#             LOGIN 'admin', ->
-#               GET "/adm/requests/user/#{s._id}", {}, (rAdm) ->
-#                 expect(rAdm.length).to.equal(1)
-#                 expect(rAdm[0].lastTouch).to.exist
-#                 expect(rAdm[0].suggested.length).to.equal(0)
-#                 expect(rAdm[0].adm).to.be.undefined
-#                 DONE()
-
-
   IT 'Can update request type with no technology tags', ->
     STORY.newUser 'scol', (s) ->
       d = type: 'code-review'
       POST '/requests', d, {}, (r1) ->
         expect(r1._id).to.exist
         r1.type = 'mentoring'
-        PUT "/requests/#{r1._id}", r1, {}, (r2) ->
+        PUT "/requests/#{r1._id}", r1, (r2) ->
           expectIdsEqual(r1._id,r2._id)
           expect(r2.type).to.equal('mentoring')
           DONE()
@@ -88,14 +66,12 @@ create = ->
         # PUT '/users/me/email-verify', { hash }, {}, (s1) ->
           # expect(s1.emailVerified).to.be.true
         r1.experience = 'proficient'
-        PUT "/requests/#{r1._id}", r1, {}, (r2) ->
+        PUT "/requests/#{r1._id}", r1, (r2) ->
           expect(r2.experience).to.equal('proficient')
           LOGIN {key:'admin'}, ->
-            GET "/adm/requests/user/#{s._id}", {}, (rAdm) ->
+            GET "/adm/requests/user/#{s._id}", (rAdm) ->
               expect(rAdm.length).to.equal(1)
-              expect(rAdm[0].lastTouch.utc).to.exist
-              expect(rAdm[0].lastTouch.action).to.equal('updateByCustomer')
-              expectStartsWith(rAdm[0].lastTouch.by.name,"Vikram Narayan")
+              expectTouch(rAdm[0].lastTouch, s._id, 'updateByCustomer')
               expect(rAdm[0].adm.active).to.be.true
               expect(rAdm[0].adm.submitted).to.be.undefined
               DONE()

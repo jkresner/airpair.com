@@ -22,7 +22,7 @@ var TagSchema = asSchema({
 
   so:       {},
 
-  meta:     Htmlhead,
+  meta:     { type: Htmlhead, required: false },
 
 })
 

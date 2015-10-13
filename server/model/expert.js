@@ -36,9 +36,9 @@ var ExpertSchema = asSchema({
   lastTouch:      Touch,
   activity:       [Touch],
 
-  rate:           Number,
-  brief:          String,
-  tags:           [Reftag],
+  rate:           { type: Number },
+  brief:          { type: String },
+  tags:           { type: [Reftag] },
   gmail:          { type: String },
 
   user:           {},
@@ -60,12 +60,12 @@ var ExpertSchema = asSchema({
   deals:          [DealSchema],
 
   availability:   {
-    lastTouch:    Touch,
+    // lastTouch:    Touch,
     status:       String,
-    busyUntil:    Date,
-    times:        String,
-    minRate:      Number,
-    hours:        String
+    busyUntil:    { type: Date },
+    times:        { type: String },
+    minRate:      { type: Number },
+    hours:        { type: String }
   },
 
   // deprecated v0 settings props
