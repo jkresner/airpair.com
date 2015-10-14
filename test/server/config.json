@@ -13,7 +13,7 @@
     "errors":             "true"
   },
   "mongo": {
-    "url":                { "appConfig": "mongoUri" },
+    "url":                { "appConfig": "mongoUrl" },
     "collections":        ["V1Tests","Users","Experts","Bookings","Orders",
                            "Companies","Paymethods","Payouts","Posts",
                            "Requests","Tags","Templates","Views","Impressions",
@@ -38,7 +38,7 @@
   },
   "appConfig": {
     "expect": {
-      "mongoUri":               "mongodb://localhost/airpair_test",
+      "mongoUrl":               "mongodb://localhost/airpair_test",
       "auth.github.org":        "JustASimpleTestOrg",
       "auth.slack.slackTeam":   "T02ATFDPL",
       "chat.slack.support":     "U06UD6SES"

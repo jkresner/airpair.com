@@ -3,11 +3,12 @@ var mongoose = require('mongoose')
 var {ObjectId} = mongoose.Types
 var Id = mongoose.Schema.ObjectId
 
-mongoose.connect(config.analytics.mongoUrl)
-mongoose.connection.on('error', e =>
-  $log('ERROR on mongo connect to analytics:'.red, e))
-mongoose.connection.once('open', e => {
-  console.log(`CONNECTED  to ${config.analytics.mongoUrl} for analytics`)})
+var {mongoUrl} = config.analytics
+var analyticsDB = mongoose.createConnection(mongoUrl)
+analyticsDB.on('error', e =>
+  $log('ERROR on mongo connect to analytics {mongoUrl}:'.red, e))
+analyticsDB.once('open', e =>
+  $log(`CONNECTED to ${mongoUrl}  (for analytics)`.white))
 
 
 
@@ -35,7 +36,7 @@ var util = {
 //-- (Don't need utc if already have the _id)
 // db.views.update({ utc: { $exists:1 } },{ $unset: { utc: "1" } },{ 'multi': true })
 var objectType = ['post','workshop','expert','tag','landing']
-var Views = mongoose.model('View', new mongoose.Schema({
+var Views = analyticsDB.model('View', new mongoose.Schema({
   userId:       { type: Id, ref: 'User', index: true, sparse: true },
   anonymousId:  { type: String, index: true, sparse: true },
   objectId:     { type: Id, required: true },
@@ -80,7 +81,7 @@ var viewSvc = {
 }
 
 
-var Impressions = mongoose.model('Impression', new mongoose.Schema({
+var Impressions = analyticsDB.model('Impression', new mongoose.Schema({
   img:          { type: String, required: true },
   uId:          { type: Id, ref: 'User', index: true, sparse: true },
   sId:          { type: String, ref: 'v1Session', index: true, sparse: true },
