@@ -1,7 +1,6 @@
 // $timelapsed("APP READ")
 var start       = new Date().getTime()
 var mw          = require('./middleware/_middleware')
-var mongo       = require('./util/mongoInit')
 var session     = require('./identity/session')
 var routes      = require('./routes/index')
 require('./util/cache')
@@ -31,26 +30,18 @@ function run(config, done)
     global.DAL = DAL
     $timelapsed("DAL Connected", DAL)
     global.svc = {
-      newTouch(action) {
-        return {
-          _id: DAL.User.newId(),
-          action,
-          utc: new Date(),
-          by: { _id: this.user._id, name: this.user.name }
-        }
-      }
+      newTouch(action) { return { action, _id: DAL.User.newId(),
+          utc: new Date(), by: { _id: this.user._id, name: this.user.name } } }
     }
-  })
-
-  mongo.connect(() => {
-    $timelapsed("APP Connected")
 
     // Don't persist or track sessions for rss
     app.use('/rss', routes('rss')(app))
 
     app.use(mw.auth.setNonSessionUrl(app))
 
-    session(app, mongo.initSessionStore, () => {
+    var initSessionStore = (seshMW, callback) => callback(DAL.sessionStore(seshMW))
+
+    session(app, initSessionStore, () => {
 
       $log(`           SessionStoreReady   ${new Date().getTime()-start}`.appload)
 

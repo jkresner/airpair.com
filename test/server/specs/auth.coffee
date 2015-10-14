@@ -2,7 +2,8 @@
 signup = ->
 
   IT 'Can sign up as new user with local credentials', ->
-    d = SETUP.userData('jkap')
+    d = SETUP.userData('spur')
+    $log()
     SUBMIT '/v1/auth/signup', d, {}, (r) ->
       expect(r._id).to.exist
       expect(r.google).to.be.undefined

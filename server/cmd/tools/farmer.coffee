@@ -12,7 +12,7 @@ colors.setTheme({
 
 initGlobals(initConfig('prod'))
 
-global.config.mongoUri = "mongodb://localhost/airpair_dev"
+global.config.mongoUrl = "mongodb://localhost/airpair_dev"
 global.config.mail =
   sender:
     jk: 'Jonathon Kresner <team@airpair.com>',
