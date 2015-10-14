@@ -3,6 +3,14 @@ var mongoose = require('mongoose')
 var {ObjectId} = mongoose.Types
 var Id = mongoose.Schema.ObjectId
 
+mongoose.connect(config.analytics.mongoUrl)
+mongoose.connection.on('error', e =>
+  $log('ERROR on mongo connect to analytics:'.red, e))
+mongoose.connection.once('open', e => {
+  console.log(`CONNECTED  to ${config.analytics.mongoUrl} for analytics`)})
+
+
+
 var util = {
 
   convertToDumbSegmentCampaignSHIT(utms) {

@@ -89,7 +89,15 @@ var middleware = {
       var url = req.protocol + '://' + req.get('host') + req.originalUrl
 
 
-      var properties = { title: obj.title, tags, url, path: req.path, objectId: obj._id, referrer: context.referer }
+      var properties = {
+        // title: obj.title,
+        // tags,
+        url,
+        path: req.path,
+        objectId: obj._id,
+        referrer: context.referer
+      }
+      $log('properties'.white, properties)
 
       if (type == 'ad')
         properties.path = obj.url
