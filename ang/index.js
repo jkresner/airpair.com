@@ -1,6 +1,5 @@
 window.$ = window.jQuery = require('./../public/lib/jquery/dist/jquery.js');
 window._ = require('./../public/lib/lodash/dist/lodash.js');
-window.moment = require('./../public/lib/moment/moment.js');
 window.moment = require('./../public/lib/moment-timezone/builds/moment-timezone-with-data-2010-2020.js');
 require('./../public/lib/angular/angular.js');
 require('./../public/lib/angular-animate/angular-animate.js');
@@ -27,11 +26,8 @@ require('./common/directives/forms/forms.js');
 require('./common/directives/forms/inputs.js');
 require('./common/directives/forms/tagInput.js');
 require('./common/directives/surveys/surveys.js');
-require('./common/directives/share.js');
-require('./common/directives/posts.js');
 require('./common/directives/experts.js');
 require('./common/directives/sideNav.js');
-require('./common/directives/bookmarker.js');
 require('./common/directives/analytics.js');
 require('./common/directives/payment.js');
 require('./common/directives/requests.js');
@@ -48,9 +44,9 @@ require('./posts/module.js');
 require('./billing/module.js');
 require('./account/module.js');
 require('./requests/module.js');
-require('./bookings/module.js');
-require('./dashboard/module.js');
-require('./expert/module.js');
+require('./bookings/module.js')
+require('./dashboard/module.js')
+require('./expert/module.js')
 
 
 angular.module("AP", ['ngRoute', 'ngAnimate',
@@ -59,8 +55,8 @@ angular.module("AP", ['ngRoute', 'ngAnimate',
   'APRoutes', 'APServerTemplates', 'APPageHelpers',
   'APFilters', 'APUtil', 'APFormsDirectives', 'APInputs',
   'APViewData', 'APSvcSession', 'APDataSvc', 'APSvcStatic',
-  'APAnalytics', 'APNotifications', 'APBookmarker',
-  'APProfileDirectives', 'APPostsDirectives', 'APSurveyDirectives',
+  'APAnalytics', 'APNotifications',
+  'APProfileDirectives', 'APSurveyDirectives',
   'APSideNav', 'APHangouts',
   'APAuth', 'APPosts', 'APProfile', 'APBilling',
   'APRequests','APBookings', 'APDashboard', 'APExpert'])

@@ -29,7 +29,7 @@
 
 
 
-  <a href="/posts/contributors/{{post._id}}" rel="nofollow" class="btn" ng-if="!session._id">Login to save {{data.rating}} star review</a>
+  <a href="/auth/google/callback?returnTo=/posts/review/{{post._id}}" rel="nofollow" class="btn" ng-if="!session._id" target="_self">Login to save {{data.rating}} star review</a>
 
   <div form-errors></div>
 
