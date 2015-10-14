@@ -2,7 +2,10 @@ var cfg = {
   ads: {
     on:                   true,
     staticDir:            '/static/img/ads'                          },
-  analytics: { on:        true                                              },
+  analytics: {
+    on:                   true,
+    mongoUrl:             'mongodb://localhost/airpair_analytics'
+  },
   auth: {
     loginUrl:             '/login',
     unauthorizedUrl:      '/v1/auth/unauthorized',
@@ -92,7 +95,13 @@ var cfg = {
     appId: '140030887085', //140030887085 == production AirPair app
     login: { email: 'support@airpair.com', password: 'helsyea' }
   },
-  http: { static: { dir: 'public', maxAge: null } },
+  http: {
+    static:               { dir: 'public', maxAge: null },
+    sessionStore: {
+      autoReconnect:      true,
+      collection:         'v1sessions'
+    }
+  },
   log: {
     ads:                  process.env.LOG_ADS || false,
     auth:                 process.env.LOG_AUTH || false,
@@ -113,7 +122,7 @@ var cfg = {
       smtp: { service: '', auth: { user: '', pass: '' } }
     },
   },
-  mongoUri: 'mongodb://localhost/airpair_dev',
+  mongoUrl: 'mongodb://localhost/airpair_dev',
   payments: {
     braintree: {
       environment: 'Sandbox',
@@ -126,7 +135,7 @@ var cfg = {
       secretKey: 'sk_test_8WOe71OlRWPyB3rDRcnthSCc'                   }
   },
   port:     process.env.PORT || 3333,
-  redirects: { on: false },
+  redirects: { on: true },
   share: {
     tw: { access_token: 'test', access_token_secret: 'test' },
   },
@@ -153,11 +162,13 @@ module.exports = function(env) {
   //-- Temp for testing prod setting locally
   if (env == 'test') {
     cfg.analytics.on = true
+    cfg.analytics.mongoUrl = 'mongodb://localhost/airpair_test'
     cfg.auth.oAuth.callbackHost = 'http://localhost:4444'
     cfg.port = 4444
-    cfg.mongoUri = "mongodb://localhost/airpair_test"
+    cfg.mongoUrl = "mongodb://localhost/airpair_test"
     cfg.testlogin = true
     cfg.log.mail = false
+    cfg.http.sessionStore.collection = 'sessions'
   }
 
   if (env == 'staging' || env == 'production') {
@@ -166,6 +177,8 @@ module.exports = function(env) {
     cfg.http.static.dir = `dist`
 
     cfg.analytics.on = true
+    cfg.analytics.mongoUrl = process.env.ANALYTICS_MONGOURL
+    cfg.mongoUrl = process.env.MONGOURL
 
     cfg.auth.masterpass = process.env.AUTH_MASTERPASS,
     cfg.auth.oAuth.callbackHost = process.env.AUTH_OAUTH_CALLBACKHOST
@@ -260,8 +273,6 @@ module.exports = function(env) {
     cfg.mail.transport.smtp.auth.user = process.env.MAIL_TRANSPORT_SMTP_AUTHUSER
     cfg.mail.transport.smtp.auth.pass = process.env.MAIL_TRANSPORT_SMTP_AUTHPASS
 
-    cfg.mongoUri = process.env.MONGOHQ_URL
-
     cfg.timezone.google.apiKey = process.env.TIMEZONE_GOOGLE_APIKEY
     cfg.youtube.refreshTokens = process.env.YOUTUBE_REFRESH_TOKENS
 
@@ -273,11 +284,10 @@ module.exports = function(env) {
   cfg.share.tw.consumer_secret = cfg.auth.twitter.consumerSecret
 
   cfg.http.appStaticDir = `${cfg.appdir}/${cfg.http.static.dir}`
-  cfg.ads.staticDir = `${cfg.http.appStaticDir}${cfg.ads.staticDir}`
+  cfg.ads.staticDir = `${cfg.appdir}/public/${cfg.ads.staticDir}`
 
   //v2 temp settings
   cfg.appModelDir = `${cfg.appdir}/server/model`
-  cfg.mongoUrl = cfg.mongoUri
 
   return cfg;
 }

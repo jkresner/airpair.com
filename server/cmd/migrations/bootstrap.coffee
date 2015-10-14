@@ -18,7 +18,7 @@ colors.setTheme({
 })
 
 global.config =
-  mongoUri: "mongodb://localhost/airpair_dev"
+  mongoUrl: "mongodb://localhost/airpair_dev"
   log: { auth: false }
 
 
@@ -35,7 +35,7 @@ describe 'Migration: '.spec, ->
     global.$log               = console.log
     global.logging            = false
     MongoClient               = require('mongodb').MongoClient
-    MongoClient.connect config.mongoUri, (err, db) ->
+    MongoClient.connect config.mongoUrl, (err, db) ->
       db.collection 'posts', (err, Posts) ->
         global.Posts = Posts
         done()

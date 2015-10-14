@@ -56,7 +56,7 @@ views = ->
         expect(spy.args[0][1]).to.exist
         expect(spy.args[0][2]).to.equal('ad')
         expect(spy.args[0][3]).to.equal('Keen.io jul custom analytics')
-        expect(spy.args[0][4].tags).to.exist
+        # expect(spy.args[0][4].tags).to.exist
         expect(spy.args[0][5].referer).to.equal('https://www.airpair.com/js/js-framework-comparison')
         expect(spy.args[0][5].utms).to.be.undefined
         expect(spy.args[0][6]).to.be.undefined
@@ -117,7 +117,8 @@ views = ->
     DB.removeDocs 'User', { name: signup.name }, ->
     ANONSESSION (s) ->
       anonymousId = s.sessionID
-      PAGE "#{publishedPostUrl}?utm_campaign=testSingup&utm_source=test8src&utm_content=test8ctn", {}, ->
+      utms = 'utm_campaign=testSingup&utm_source=test8src&utm_content=test8ctn'
+      PAGE "#{publishedPostUrl}?#{utms}", {}, ->
         spy = STUB.spy(analytics,'alias')
         SUBMIT '/v1/auth/signup', signup, {}, (sFull) ->
           userId = ObjectId(sFull._id)
@@ -133,7 +134,7 @@ views = ->
 
 
 
-  # it 'Can track an anonymous workshop view', ->
+  it 'Can track an anonymous workshop view'
   #   ANONSESSION (s) ->
   #     anonymousId = s.sessionID
   #     spy = sinon.spy(analytics,'view')
@@ -155,7 +156,7 @@ views = ->
   #         spy.restore()
   #         DONE()
 
-  # it 'Can track logged in workshop view', ->
+  it 'Can track logged in workshop view'
   #   SETUP.addLocalUser 'gnic', {}, (userKey) ->
   #     spy = sinon.spy(analytics,'view')
   #     LOGIN userKey,  (s) ->
@@ -181,79 +182,76 @@ views = ->
   #           DONE()
 
 
-  # it 'Login local from existing sessionID does not alias', ->
-  #   ANONSESSION ->
-  #     GETP("/v1/posts/#{postSlug}").end (err, resp) ->
-  #     singup = SETUP.userData('pgap')
-  #     http(global.app).post('/v1/auth/signup').send(singup).set('cookie',cookie).end (e1, r1) ->
-  #       GET '/session/full', {}, (s) ->
-  #         spyIdentify = sinon.spy(analytics,'identify')
-  #         spyAlias = sinon.spy(analytics,'alias')
-  #         GETP('/logout').end (e2, r2) ->
-  #           http(global.app).post('/v1/auth/login').send(singup).set('cookie',cookie).end (e3, r3) ->
-  #             expect(spyIdentify.callCount).to.equal(1)
-  #             expect(spyIdentify.args[0][2]).to.equal('Login')
-  #             expect(spyAlias.called).to.be.false
-  #             spyIdentify.restore()
-  #             spyAlias.restore()
-  #             DONE()
+  IT 'Login local from existing sessionID does not alias', ->
+    ANONSESSION ->
+      utms = ''
+      PAGE "#{publishedPostUrl}?#{utms}", {}, ->
+      singup = SETUP.userData('jkap')
+      SUBMIT '/v1/auth/signup', singup, {}, (r) ->
+        GET '/session/full', (s) ->
+          spyIdentify = STUB.spy(analytics,'identify')
+          spyAlias = STUB.spy(analytics,'alias')
+          PAGE '/logout', {status:302}, ->
+            SUBMIT '/v1/auth/login', singup, {}, (r3) ->
+              expect(spyIdentify.callCount).to.equal(1)
+              expect(spyIdentify.args[0][2]).to.equal('Login')
+              expect(spyAlias.called).to.be.false
+              DONE()
 
 
-  # it 'Login from two sessionIDs aliases and aliases views', ->
-  #   anonymousId = null
-  #   anonymousId2 = null
-  #   singup = SETUP.userData('igor')
+  IT 'Login from two sessionIDs aliases and aliases views', ->
+    anonymousId = null
+    anonymousId2 = null
+    singup = SETUP.userData('sora')
 
-  #   session2Callback = (anonymousId) -> ANONSESSION (s2) ->
-  #     anonymousId2 = s2.sessionID
-  #     expect(anonymousId2).to.not.equal(anonymousId)
+    session2Callback = (anonymousId) -> ANONSESSION (s2) ->
+      anonymousId2 = s2.sessionID
+      expect(anonymousId2).to.not.equal(anonymousId)
 
-  #     GETP(postUrl).end  ->
-  #       GETP(postUrl).end ->
+      PAGE publishedPostUrl, {}, ->
+        PAGE publishedPostUrl, {}, ->
 
-  #         db.readDocs 'View', {anonymousId:anonymousId2}, (v2) ->
-  #           expect(v2.length).to.equal(2)
-  #           expect(v2[0].userId).to.be.undefined
-  #           expect(v2[1].userId).to.be.undefined
-  #           expect(v2[0].anonymousId).to.equal(anonymousId2)
-  #           expect(v2[1].anonymousId).to.equal(anonymousId2)
+          DB.docsByQuery 'View', {anonymousId:anonymousId2}, (v2) ->
+            expect(v2.length).to.equal(2)
+            expect(v2[0].userId).to.be.undefined
+            expect(v2[1].userId).to.be.undefined
+            expect(v2[0].anonymousId).to.equal(anonymousId2)
+            expect(v2[1].anonymousId).to.equal(anonymousId2)
 
-  #           spyIdentify = sinon.spy(analytics,'identify')
-  #           spyAlias = sinon.spy(analytics,'alias')
+            spyIdentify = STUB.spy(analytics,'identify')
+            spyAlias = STUB.spy(analytics,'alias')
 
-  #           http(global.app).post('/v1/auth/login').send(singup).set('cookie',cookie).end ->
+            SUBMIT '/v1/auth/login', singup, {}, ->
 
-  #             # expect(spyIdentify.called).to.be.false
-  #             # expect(spyAlias.callCount).to.equal(1)
-  #             # expect(spyAlias.args[0][2]).to.equal('Login')
+              # expect(spyIdentify.called).to.be.false
+              # expect(spyAlias.callCount).to.equal(1)
+              # expect(spyAlias.args[0][2]).to.equal('Login')
 
-  #             expect(spyIdentify.called).to.be.true
-  #             expect(spyAlias.called).to.be.false
-  #             # expect(spyAlias.args[0][2]).to.equal('Login')
+              expect(spyIdentify.called).to.be.true
+              expect(spyAlias.called).to.be.false
+              # expect(spyAlias.args[0][2]).to.equal('Login')
 
-  #             GET '/session/full', {}, (s3) ->
-  #               userId = ObjectId(s3._id)
-  #               viewCheck = => db.readDocs 'View', {userId}, (v3) ->
-  #                 expect(v3.length).to.equal(4)
-  #                 spyIdentify.restore()
-  #                 spyAlias.restore()
-  #                 DONE()
-  #               _.delay(viewCheck, 50)
+              GET '/session/full', (s3) ->
+                userId = ObjectId(s3._id)
+                viewCheck = => DB.docsByQuery 'View', {userId}, (v3) ->
+                  expect(v3.length).to.equal(4)
+                  DONE()
+                _.delay(viewCheck, 50)
 
-  #   ANONSESSION (s) ->
-  #     anonymousId = s.sessionID
-  #     GETP(postUrl).end ->
-  #       GETP(postUrl).end ->
+    ANONSESSION (s) ->
+      anonymousId = s.sessionID
+      PAGE publishedPostUrl, {}, ->
+        PAGE publishedPostUrl, {}, ->
 
-  #         db.readDocs 'View', {anonymousId}, (v1) ->
-  #           expect(v1.length).to.equal(2)
-  #           expect(v1[0].userId).to.be.undefined
-  #           expect(v1[1].userId).to.be.undefined
-  #           expect(v1[0].anonymousId).to.equal(anonymousId)
-  #           expect(v1[1].anonymousId).to.equal(anonymousId)
+          DB.docsByQuery 'View', {anonymousId}, (v1) ->
+            expect(v1.length).to.equal(2)
+            expect(v1[0].userId).to.be.undefined
+            expect(v1[1].userId).to.be.undefined
+            expect(v1[0].anonymousId).to.equal(anonymousId)
+            expect(v1[1].anonymousId).to.equal(anonymousId)
 
-  #         http(global.app).post('/v1/auth/signup').send(singup).set('cookie',cookie).end ->
-  #           session2Callback(anonymousId)
+          SUBMIT '/v1/auth/signup', singup, {}, (s0) ->
+            session2Callback(anonymousId)
 
 
 module.exports = ->
@@ -267,11 +265,8 @@ module.exports = ->
       global.publishedPostUrl = higherOrder.meta.canonical.replace('https://www.airpair.com', '')
       done()
 
-
   after ->
     global.publishedPostUrl = undefined
 
-  # beforeEach ->
-    # STUB.cb(Wrappers.Slack, 'getUsers', FIXTURE.wrappers.slack_users_list)
 
   DESCRIBE("Views", views)

@@ -332,6 +332,13 @@ var select = {
         var topTagPage = _.find(topTapPages,(s) => r.primarytag.slug==s)
         r.primarytag.postsUrl = (topTagPage) ? `/${r.primarytag.slug}` : `/posts/tag/${r.primarytag.slug}`
 
+        r.adtag = 'node.js'
+        if (_.find(r.tags, t => t.slug.indexOf('java')!=-1 && t.slug.indexOf('javascript')==-1))
+          r.adtag = 'java'
+        if (_.find(r.tags, t => t.slug.indexOf('php')!=-1 || t.slug.indexOf('wordpress')!=-1))
+          r.adtag = 'php'
+
+
         if (r.submitted) {
           r.stats = r.stats || PostsUtil.calcStats(r)
           r.publishReady = (r.stats.reviews > 2) && (r.stats.rating > 3.5)
@@ -488,6 +495,11 @@ var opts = {
 
 
 var data = {
+  featured: [
+    'ten-ways-to-secure-wordpress',
+    'mastering-es6-higher-order-functions-for-arrays',
+    'transclusion-template-scope-in-angular-directives'
+  ],
   popular: [
     'angularjs-tutorial',
     'hybrid-apps-ionic-famous-f7-onsen',
