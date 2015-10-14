@@ -30,17 +30,9 @@ function run(config, done)
     global.DAL = DAL
     $timelapsed("DAL Connected", DAL)
     global.svc = {
-      newTouch(action) {
-        return {
-          _id: DAL.User.newId(),
-          action,
-          utc: new Date(),
-          by: { _id: this.user._id, name: this.user.name }
-        }
-      }
+      newTouch(action) { return { action, _id: DAL.User.newId(),
+          utc: new Date(), by: { _id: this.user._id, name: this.user.name } } }
     }
-
-
 
     // Don't persist or track sessions for rss
     app.use('/rss', routes('rss')(app))

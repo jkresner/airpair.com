@@ -4,7 +4,7 @@ var cfg = {
     staticDir:            '/static/img/ads'                          },
   analytics: {
     on:                   true,
-    mongoUrl:             'mongodb://heroku:OCiNDqrzRR-xo1BZywGjSuZgbmlH5T7_e4dwUkB1Bln-iG5vv7XXSxgSAENfNBP3655NGysPeUMcmeENvOoZWA@candidate.56.mongolayer.com:10144/app42556761' //'mongodb://localhost/airpair_dev'
+    mongoUrl:             'mongodb://localhost/airpair_analytics'
   },
   auth: {
     loginUrl:             '/login',
@@ -122,7 +122,7 @@ var cfg = {
       smtp: { service: '', auth: { user: '', pass: '' } }
     },
   },
-  mongoUri: 'mongodb://localhost/airpair_dev',
+  mongoUrl: 'mongodb://localhost/airpair_dev',
   payments: {
     braintree: {
       environment: 'Sandbox',
@@ -135,7 +135,7 @@ var cfg = {
       secretKey: 'sk_test_8WOe71OlRWPyB3rDRcnthSCc'                   }
   },
   port:     process.env.PORT || 3333,
-  redirects: { on: false },
+  redirects: { on: true },
   share: {
     tw: { access_token: 'test', access_token_secret: 'test' },
   },
@@ -165,7 +165,7 @@ module.exports = function(env) {
     cfg.analytics.mongoUrl = 'mongodb://localhost/airpair_test'
     cfg.auth.oAuth.callbackHost = 'http://localhost:4444'
     cfg.port = 4444
-    cfg.mongoUri = "mongodb://localhost/airpair_test"
+    cfg.mongoUrl = "mongodb://localhost/airpair_test"
     cfg.testlogin = true
     cfg.log.mail = false
     cfg.http.sessionStore.collection = 'sessions'
@@ -178,6 +178,7 @@ module.exports = function(env) {
 
     cfg.analytics.on = true
     cfg.analytics.mongoUrl = process.env.ANALYTICS_MONGOURL
+    cfg.mongoUrl = process.env.MONGOURL
 
     cfg.auth.masterpass = process.env.AUTH_MASTERPASS,
     cfg.auth.oAuth.callbackHost = process.env.AUTH_OAUTH_CALLBACKHOST
@@ -272,8 +273,6 @@ module.exports = function(env) {
     cfg.mail.transport.smtp.auth.user = process.env.MAIL_TRANSPORT_SMTP_AUTHUSER
     cfg.mail.transport.smtp.auth.pass = process.env.MAIL_TRANSPORT_SMTP_AUTHPASS
 
-    cfg.mongoUri = process.env.MONGOHQ_URL
-
     cfg.timezone.google.apiKey = process.env.TIMEZONE_GOOGLE_APIKEY
     cfg.youtube.refreshTokens = process.env.YOUTUBE_REFRESH_TOKENS
 
@@ -285,11 +284,10 @@ module.exports = function(env) {
   cfg.share.tw.consumer_secret = cfg.auth.twitter.consumerSecret
 
   cfg.http.appStaticDir = `${cfg.appdir}/${cfg.http.static.dir}`
-  cfg.ads.staticDir = `${cfg.http.appStaticDir}${cfg.ads.staticDir}`
+  cfg.ads.staticDir = `${cfg.appdir}/public/${cfg.ads.staticDir}`
 
   //v2 temp settings
   cfg.appModelDir = `${cfg.appdir}/server/model`
-  cfg.mongoUrl = cfg.mongoUri
 
   return cfg;
 }

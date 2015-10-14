@@ -97,7 +97,7 @@ var middleware = {
         objectId: obj._id,
         referrer: context.referer
       }
-      $log('properties'.white, properties)
+      // $log('properties'.white, properties)
 
       if (type == 'ad')
         properties.path = obj.url
