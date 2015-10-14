@@ -192,15 +192,17 @@ var get = {
     var options = Object.assign({ select: select.list}, opts.allPublished)
 
     Post.getManyByQuery(q, options, select.cb.addUrl((e,r) => {
-      var latest = r.splice(0,6)
-      var featured = _.take(_.sortBy(r, (p) => (!p.stats) ? 0
-        :  -1*(p.stats.rating-2)*(p.stats.reviews+2) ), 6)
+      var featured = _.filter(r, p => _.contains(Data.data.featured,p.slug))
       r = _.difference(r, featured)
+      var latest = r.splice(0,6)
+      var top = _.take(_.sortBy(r, (p) => (!p.stats) ? 0
+        :  -1*(p.stats.rating-2)*(p.stats.reviews+2) ), 6)
+      r = _.difference(r, top)
       var popular = _.filter(r, (p) => _.contains(Data.data.popular,p.slug))
       var comp = _.filter(r, (p) => _.contains(Data.data.comp,p.slug))
       var archive = _.difference(r, _.union(popular,comp))
 
-      cb(null, { latest, featured, popular, comp, archive })
+      cb(null, { latest, featured, top, popular, comp, archive })
     }))
   },
 

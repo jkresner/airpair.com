@@ -11,8 +11,16 @@
     <a href="https://author.airpair.com/" class="btn btn-inverse" target="_self">Contribute a post</a>
   </h2>
 
-  <div class="nobookmarks">
+  <div class="popular nobookmarks">
     {{#each latest}}{{> postListItem this}}{{/each}}
+  </div>
+
+  <hr style="clear:both" />
+
+  <div>
+    <h2 class="underline">Highest rated posts
+      <a href="https://author.airpair.com/" class="btn btn-inverse" target="_self">Contribute a post</a></h2>
+    {{#each top}}{{> postListItem this}}{{/each}}
   </div>
 
 
