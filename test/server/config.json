@@ -16,7 +16,8 @@
     "url":                { "appConfig": "mongoUri" },
     "collections":        ["V1Tests","Users","Experts","Bookings","Orders",
                            "Companies","Paymethods","Payouts","Posts",
-                           "Requests","Tags","Templates","Views","Impressions"]
+                           "Requests","Tags","Templates","Views","Impressions",
+                           "Sessions"]
   },
   "paths": {
     "specs":              "specs",
