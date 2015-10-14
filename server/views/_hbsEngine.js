@@ -84,6 +84,7 @@ module.exports = function(app) {
       $callSvc(getSession,req)((e,session)=> {
         if (e) { req.logout(); return res.redirect('/login') }
         viewDataFn(req, (e,data) => {
+          data.authenticated = session._id!=null
           if (data.tmpl && data.tmpl != 'default')
             data[`${partialName}${data.tmpl}Render`] = true
           else
