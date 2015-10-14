@@ -2,7 +2,10 @@ var cfg = {
   ads: {
     on:                   true,
     staticDir:            '/static/img/ads'                          },
-  analytics: { on:        true                                              },
+  analytics: {
+    on:                   true,
+    mongoUrl:             'mongodb://heroku:OCiNDqrzRR-xo1BZywGjSuZgbmlH5T7_e4dwUkB1Bln-iG5vv7XXSxgSAENfNBP3655NGysPeUMcmeENvOoZWA@candidate.56.mongolayer.com:10144/app42556761' //'mongodb://localhost/airpair_dev'
+  },
   auth: {
     loginUrl:             '/login',
     unauthorizedUrl:      '/v1/auth/unauthorized',
@@ -92,7 +95,13 @@ var cfg = {
     appId: '140030887085', //140030887085 == production AirPair app
     login: { email: 'support@airpair.com', password: 'helsyea' }
   },
-  http: { static: { dir: 'public', maxAge: null } },
+  http: {
+    static:               { dir: 'public', maxAge: null },
+    sessionStore: {
+      autoReconnect:      true,
+      collection:         'v1sessions'
+    }
+  },
   log: {
     ads:                  process.env.LOG_ADS || false,
     auth:                 process.env.LOG_AUTH || false,
@@ -153,11 +162,13 @@ module.exports = function(env) {
   //-- Temp for testing prod setting locally
   if (env == 'test') {
     cfg.analytics.on = true
+    cfg.analytics.mongoUrl = 'mongodb://localhost/airpair_test'
     cfg.auth.oAuth.callbackHost = 'http://localhost:4444'
     cfg.port = 4444
     cfg.mongoUri = "mongodb://localhost/airpair_test"
     cfg.testlogin = true
     cfg.log.mail = false
+    cfg.http.sessionStore.collection = 'sessions'
   }
 
   if (env == 'staging' || env == 'production') {
@@ -166,6 +177,7 @@ module.exports = function(env) {
     cfg.http.static.dir = `dist`
 
     cfg.analytics.on = true
+    cfg.analytics.mongoUrl = process.env.ANALYTICS_MONGOURL
 
     cfg.auth.masterpass = process.env.AUTH_MASTERPASS,
     cfg.auth.oAuth.callbackHost = process.env.AUTH_OAUTH_CALLBACKHOST
