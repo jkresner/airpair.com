@@ -168,8 +168,8 @@ var save = {
 
     if (isCustomer(this.user, original)) {
       update.lastTouch = svc.newTouch.call(this, 'updateByCustomer')
-      if (this.user.emailVerified)
-        update.adm = admSet(original,{active:true})
+      // if (this.user.emailVerified)
+      update.adm = admSet(original,{active:true})
     }
 
     Request.updateSet(original._id, update, select.cb.byRole(this,cb,cb))

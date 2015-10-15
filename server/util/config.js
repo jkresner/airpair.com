@@ -135,7 +135,7 @@ var cfg = {
       secretKey: 'sk_test_8WOe71OlRWPyB3rDRcnthSCc'                   }
   },
   port:     process.env.PORT || 3333,
-  redirects: { on: true },
+  redirects: { on: false },
   share: {
     tw: { access_token: 'test', access_token_secret: 'test' },
   },
