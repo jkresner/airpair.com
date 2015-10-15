@@ -1,0 +1,37 @@
+{
+  "specs":                "01aTag,01bUser",
+  "stubs": {
+    "on":                 true
+  },
+  "colors": {
+    "seed":               "magenta",
+    "spec":               "white",
+    "error":              "red"
+  },
+  "verbose": {
+    "errors":             true,
+    "info":               false
+  },
+  "mongo": {
+    "url":                { "appConfig": "mongoUrl" },
+    "collections":        [ "tags","users" ]
+  },
+  "paths": {
+    "app":                "./201509/app.coffee",
+    "fixtures":           "./201509/fixtures",
+    "bson":               "./201509/bson/0premigrate",
+    "specs":              "./201509/migrations"
+  },
+  "seed": {
+    "force":              false,
+    "clean":              true,
+    "model":              "User",
+    "key":                "jkap",
+    "timeout":            30000
+  },
+  "appConfig": {
+    "expect": {
+      "mongoUrl":          "mongodb://localhost/meanair-auth-migrate"
+    }
+  }
+}
