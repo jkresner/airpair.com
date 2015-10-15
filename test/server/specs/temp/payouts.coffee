@@ -2,48 +2,50 @@
 
 get = ->
 
-  it 'Non expert gets 403 on orders to payout'
+
   # IT 'Non expert gets 403 on orders to payout', ->
-  #   STORY.newUser 'bfie', {login:true}, (s) ->
+  #   STORY.newUser 'bfie', (s) ->
   #     GET "/billing/orders/payouts", { status: 403 }, (orders) ->
   #       DONE()
 
 
-  it 'New expert sees empty orders list to be paid out'
   # IT 'New expert sees empty orders list to be paid out', ->
   #   STORY.newExpert 'tmot', (eSession, expert) ->
-  #     $log('eSession', eSession)
+  #     $log('eSession', eSession, expert)
   #     GET "/billing/orders/payouts", (orders) ->
   #       expect(orders.length).to.equal(0)
   #       DONE()
 
 
-  it 'Booked expert can see single transaction pending'
-  # IT 'Booked expert can see single transaction pending', ->
-  #   SETUP.newBookedRequest 'rusc', {}, 'dymo', (request, booking, customerSession, expertSession) ->
-  #     LOGIN expertSession.userKey, ->
-  #       GET "/billing/orders/payouts", {}, (orders) ->
-  #         expect(orders.length).to.equal(1)
-  #         expect(orders[0].total).to.be.undefined
-  #         expect(orders[0].profit).to.be.undefined
-  #         expect(orders[0].userId).to.equal(customerSession._id)
-  #         expect(orders[0].by.name).to.equal(customerSession.name)
-  #         expect(orders[0].lineItems.length).to.equal(1)
-  #         expect(orders[0].lineItems[0].type).to.equal('airpair')
-  #         expect(orders[0].lineItems[0].info.expert._id).to.equal(booking.expertId)
-  #         expect(orders[0].lineItems[0].info.paidout).to.equal(false)
-  #         expect(orders[0].lineItems[0].owed).to.equal(70)
-  #         expect(orders[0].lineItems[0].total).to.be.undefined
-  #         expect(orders[0].lineItems[0].profit).to.be.undefined
-  #         expect(orders[0].lineItems[0].info.released).to.be.undefined
-  #         summary = payoutSummary(orders)
-  #         expect(summary.owed.count).to.equal(0)
-  #         expect(summary.owed.total).to.equal(0)
-  #         expect(summary.paid.count).to.equal(0)
-  #         expect(summary.paid.total).to.equal(0)
-  #         expect(summary.pending.count).to.equal(1)
-  #         expect(summary.pending.total).to.equal(70)
-  #         DONE()
+  it 'Booked expert can see single transaction pending', ->
+    # SETUP.ensureExpert 'dymo', ->
+    #   opts = book: true, reply: { expertId: FIXTURE.experts.dymo._id, userKey: 'dymo' }
+    #   $log('I got my request', FIXTURE.experts.dymo._id)
+    #   STORY.newRequest 'rusc', opts, (request, booking, customerSession, expertSession) ->
+    #     LOGIN {key:'dymo'}, ->
+    #       GET "/billing/orders/payouts", (orders) ->
+    #         expect(orders.length).to.equal(1)
+    #         expect(orders[0].total).to.be.undefined
+    #         expect(orders[0].profit).to.be.undefined
+    #         expect(orders[0].userId).to.equal(customerSession._id)
+    #         expect(orders[0].by.name).to.equal(customerSession.name)
+    #         expect(orders[0].lineItems.length).to.equal(1)
+    #         expect(orders[0].lineItems[0].type).to.equal('airpair')
+    #         expect(orders[0].lineItems[0].info.expert._id).to.equal(booking.expertId)
+    #         expect(orders[0].lineItems[0].info.paidout).to.equal(false)
+    #         expect(orders[0].lineItems[0].owed).to.equal(70)
+    #         expect(orders[0].lineItems[0].total).to.be.undefined
+    #         expect(orders[0].lineItems[0].profit).to.be.undefined
+    #         expect(orders[0].lineItems[0].info.released).to.be.undefined
+    #         summary = payoutSummary(orders)
+    #         expect(summary.owed.count).to.equal(0)
+    #         expect(summary.owed.total).to.equal(0)
+    #         expect(summary.paid.count).to.equal(0)
+    #         expect(summary.paid.total).to.equal(0)
+    #         expect(summary.pending.count).to.equal(1)
+    #         expect(summary.pending.total).to.equal(70)
+    #         DONE()
+
 
   it 'Expert can see multiple transactions pending'
   # IT 'Expert can see multiple transactions pending', ->
@@ -379,12 +381,16 @@ module.exports = ->
 
   @timeout 10000
 
-  before (done) ->
-    SETUP.initExperts done
+  # before (done) ->
+    # SETUP.initExperts done
 
   beforeEach ->
     @payoutStub = SETUP.stubPayPalPayout()
     @braintreepaymentStub = SETUP.stubBraintreeChargeWithMethod()
+    STUB.sync(Wrappers.Slack, 'checkUserSync', null)
+    STUB.cb(Wrappers.Slack, 'getUsers', FIXTURE.wrappers.slack_users_list)
+    STUB.cb(Wrappers.Slack, 'getChannels', FIXTURE.wrappers.slack_channels_list)
+    STUB.cb(Wrappers.Slack, 'getGroups', FIXTURE.wrappers.slack_groups_list)
 
   afterEach ->
     @braintreepaymentStub.restore()
