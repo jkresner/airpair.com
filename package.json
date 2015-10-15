@@ -9,7 +9,7 @@
   },
   "scripts": {
     "start": "node --harmony_destructuring bootstrap.js",
-    "test": "server/cmd/npm/test",
+    "test": "cmd/test",
     "gv": "heroku logs --tail --source app"
   },
   "repository": {

@@ -122,7 +122,7 @@ other: Router()
   .post('/billing/orders/deal/:expertshaped', API.Orders.buyDeal)
 
   .post('/payouts/:paymethod', bodyParam('orders'), API.Payouts.payoutOrders)
-  .get('/billing/orders/payouts', API.Orders.getOrdersForPayouts)
+  .get('/billing/orders/payouts', populate.expert, API.Orders.getOrdersForPayouts)
   .get('/payouts/me', API.Payouts.getPayouts)
 
   .use(cache.slackReady)
