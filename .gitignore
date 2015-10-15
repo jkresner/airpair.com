@@ -34,3 +34,6 @@ public/static/js/*
 public/static/styles/*
 public/lib/*
 ^/dist
+
+# bson files
+cmd/migrate/**/*/bson
