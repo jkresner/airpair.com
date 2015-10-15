@@ -1,22 +1,21 @@
-var ExpertsSvc               = require('./experts')
+// var {select}                =
+// var ExpertsSvc               = require('./experts')
 var PaymethodsSvc            = require('./paymethods')
 var {Payout,Order}           = DAL
 
 
 var get = {
 
-  getPayouts(userId, cb) {
+  getPayouts(expert, cb) {
     cb(V2DeprecatedError('Payouts.getPayouts'))
-    // $log('getPayouts', getPayouts)
-    // userId = userId || this.user._id
-    // Payout.getManyByQuery({userId}, cb)
+    // Payout.getManyByQuery({userId:expert.userId}, cb)
   }
 
 }
 
 var save = {
 
-  payoutOrders(payoutmethod, orders, cb) {
+  payoutOrders(expert, payoutmethod, orders, cb) {
     cb(V2DeprecatedError('Payouts.payoutOrders'))
     // var total = 0, lines = []
     // var userId = this.user._id

@@ -67,17 +67,14 @@ var get = {
     Order.getManyByQuery(q, options, select.cb.forAdmin(cb))
   },
 
-  getOrdersForPayouts(cb)
+  getOrdersForPayouts(expert, cb)
   {
     // TODO, after we've paid out all the new orders and
     // migrated old paidout lines to payouts, remove extra expertId query
     // and use the userId
-    Expert.getByQuery({userId:this.user._id}, (e, expert) => {
-      if (e || !expert) return cb(e,expert)
-      var q = Data.query.expertPayouts(expert._id)
-      // console.log('expert.q', q)
-      Order.getManyByQuery(q, opts.orderByNewest, select.cb.forPayout(cb))
-    })
+    var q = query.expertPayouts(expert._id)
+    // console.log('expert.q', q)
+    Order.getManyByQuery(q, opts.orderByNewest, select.cb.forPayout(cb))
   },
 
 }
