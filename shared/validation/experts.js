@@ -13,12 +13,10 @@ var validation = {
   {
     if ( !user.username ) return `Cannot create expert without username`
     if ( !user.initials ) return `Cannot create expert without initials`
-    if ( !user.localization ) return `Cannot create expert without location`
+    if ( !user.location ) return `Cannot create expert without location`
     if ( !user.bio ) return `Cannot create expert without bio`
 
-    var gp = (user.google) ? { gp: user.google } : null
-    var social = _.extend(user.social||{},gp||{})
-    var socialCount = _.keys(social||{}).length
+    var socialCount = _.keys(user.auth||{}).length
 
     if ( socialCount < 2 ) return `Must connect at least 2 social account to create expert profile`
 

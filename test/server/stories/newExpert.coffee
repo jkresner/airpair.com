@@ -1,6 +1,6 @@
 
 UNIQUIFY_USER = (key) ->
-  uniqueKey = FIXTURE.uniquify('users', key, 'name email linked.gh.id linked.gp.id googleId key')
+  uniqueKey = FIXTURE.uniquify('users', key, 'name email auth.gh.id auth.gp.id googleId key')
   Object.assign(FIXTURE.users[uniqueKey],{key:uniqueKey,_id:new ObjectId()})
 
 
@@ -18,14 +18,17 @@ module.exports = (key, opts, done) ->
   user = UNIQUIFY_USER(key)
   user.username = "#{key}-#{timeSeed()}"
   user.initials = "ap-#{timeSeed()}"
-  user.localization = FIXTURE.wrappers.localization_melbourne
+  user.location =
+    name:       FIXTURE.wrappers.localization_melbourne.locationData.formatted_address,
+    short:      FIXTURE.wrappers.localization_melbourne.locationData.name,
+    timeZoneId: FIXTURE.wrappers.localization_melbourne.timezoneData.timeZoneId
+
   user.bio = "a bio for apexpert 1 #{timeSeed()}"
-  if (user.social)
-    user.social.gh = user.social.gh || FIXTURE.users.ape1.social.gh
+  if (user.auth)
+    user.auth.gh = user.auth.gh || FIXTURE.users.ape1.auth.gh
   else
-    user.social = { gh: FIXTURE.users.ape1.social.gh }
-  user.googleId = timeSeed()
-  user.google = user.google || FIXTURE.users.ape1.google
+    user.auth = { gh: FIXTURE.users.ape1.auth.gh }
+  user.auth.gp = user.auth.gp || FIXTURE.users.ape1.auth.gp
 
   expData = opts.data || {}
   if (expData.user)

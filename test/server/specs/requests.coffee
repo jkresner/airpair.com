@@ -77,28 +77,7 @@ create = ->
               DONE()
 
 
-#   IT 'Can update a request after verify email if logged in with google', ->
-#     db.ensureDoc 'User', FIXTURE.users.narv, (e) ->
-#       LOGIN 'narv', (snarv) ->
-#         d = type: 'troubleshooting', tags: [FIXTURE.tags.node]
-#         POST '/requests', d, {}, (r1) ->
-#           spy = sinon.spy(mailman,'sendTemplate')
-#           PUT "/requests/#{r1._id}/verify", {email:snarv.email}, {}, (v) ->
-#             expect(spy.callCount).to.equal(1)
-#             expect(spy.args[0][0]).to.equal('user-verify-email')
-#             {hash} = spy.args[0][1]
-#             expect(hash).to.exist
-#             spy.restore()
-#             # expectIdsEqual(spy.args[0][2], r1._id)
-#             PUT '/users/me/email-verify', { hash }, {}, (s1) ->
-#               expect(s1.emailVerified).to.be.true
-#               r1.experience = 'proficient'
-#               PUT "/requests/#{r1._id}", r1, {}, (r2) ->
-#                 expect(r2.experience).to.equal('proficient')
-#                 DONE()
-
-
-  IT 'Can submit a full request with emailVerified', ->
+  IT 'Submit a full request with emailVerified', ->
     STORY.newUser 'johb', (s) ->
       expect(s.emailVerified).to.be.true
       tag = _.extend({sort:1}, FIXTURE.tags.node)
@@ -141,7 +120,7 @@ create = ->
                           DONE()
 
 
-  IT 'Can delete an incomplete request as owner', ->
+  IT 'Delete an incomplete request as owner', ->
     STORY.newUser 'kyla', (s) ->
       d = type: 'mentoring'
       POST '/requests', d, {}, (r) ->
@@ -202,6 +181,7 @@ review = ->
                   DONE()
 
 
+  it 'Fail to review a request as v0 expert'
   # IT 'Fail to review a request as v0 expert', ->
   #   d = tags: [FIXTURE.tags.angular], type: 'code-review', experience: 'advanced', brief: 'another anglaur test yo3', hours: "5", time: 'regular'
   #   STORY.newRequest 'mify', {data:d}, (r) ->
@@ -220,7 +200,7 @@ review = ->
   #             expectStartsWith(err.message, "Must migrate expert profile to reply")
   #             DONE()
 
-  it.skip 'Review a request as v0 expert after migration'
+  it 'Review a request as v0 expert after migration'
   # IT 'Review a request as v0 expert after migration', ->
   #   data = tags: [FIXTURE.tags.angular], type: 'code-review', experience: 'advanced', brief: 'another anglaur test yo3', hours: "5", time: 'regular'
   #   STORY.newRequest 'dsun', {data}, (r) ->
@@ -256,7 +236,7 @@ review = ->
   #                 DONE()
 
 
-
+  it 'Self suggest reply to a request as a expert new expert'
 #   it.skip 'Self suggest reply to a request as a expert new expert', ->
 #     STORY.newUserWithEmailVerified 'mfln', (s) ->
 #       d = tags: [FIXTURE.tags.angular], type: 'code-review', experience: 'advanced', brief: 'another anglaur test yo3', hours: "5", time: 'regular'
@@ -347,15 +327,18 @@ review = ->
     STORY.newUser 'brih', {login:true,paymethod:true,location:true}, (sbrih) ->
       d = tags: [FIXTURE.tags.angular], type: 'resources', experience: 'proficient', brief: 'bah bah anglaur test yo4', hours: "1", time: 'rush'
       POST '/requests', d, {}, (r0) ->
-        PUT "/requests/#{r0._id}", _.extend(r0,{budget:300}), {}, (r) ->
+        PUT "/requests/#{r0._id}", _.extend(r0,{budget:300,title:'fnaaay'}), {}, (r) ->
           LOGIN {key:'snug'}, (sAbha) ->
             GET "/requests/review/#{r._id}", {}, (rAbha) ->
               customerMailSpy = sinon.spy(mailman, 'sendTemplate')
               reply = expertComment: "I'm available one", expertAvailability: "Yes", expertStatus: "available"
-              PUT "/requests/#{r._id}/reply/#{rAbha.suggested[0].expert._id}", reply, {}, (r1) ->
+              PUT "/requests/#{r._id}/reply/#{rAbha.suggested[0].expert._id}", reply, (r1) ->
+                $log('AFTER REPLY'.blue)
                 expect(r1.status).to.equal('review')
                 update = expertComment: "Still available", expertAvailability: "Y", expertStatus: "available"
-                PUT "/requests/#{r._id}/reply/#{rAbha.suggested[0].expert._id}", update, {}, (r2) ->
+                $log('r1'.blue, r1)
+                PUT "/requests/#{r._id}/reply/#{rAbha.suggested[0].expert._id}", update, (r2) ->
+                  $log('222 AFTER REPLY'.blue)
                   LOGIN {key:'admin'}, ->
                     GET "/adm/requests/user/#{sbrih._id}", {}, (rAdm) ->
                       expect(rAdm.length).to.equal(1)
@@ -425,7 +408,9 @@ review = ->
 module.exports = ->
 
   before (done) ->
-    done()
+    DB.ensureDoc 'User', FIXTURE.users.admin, ->
+    SETUP.ensureExpert 'snug', ->
+      done()
 
   beforeEach ->
     STUB.sync(Wrappers.Slack, 'checkUserSync', null)

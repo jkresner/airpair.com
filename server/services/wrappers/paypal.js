@@ -31,7 +31,7 @@ var wrapper = {
       'client_secret': config.auth.paypal.clientSecret,
       'openid_client_id': config.auth.paypal.clientID,
       'openid_client_secret': config.auth.paypal.clientSecret,
-      'openid_redirect_uri': `${config.auth.oAuth.callbackHost}/v1/auth/paypal/callback`
+      'openid_redirect_uri': `${config.auth.oauth.callbackHost}/v1/auth/paypal/callback`
     })
   },
 

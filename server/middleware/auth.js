@@ -1,6 +1,8 @@
 var logging                = false
 var {isBot,stringToJson}   = util
 
+
+
 var setSessionVarFromQuery = (varName) =>
   (req, res, next) => {
     var reqVar = req.query[varName]
@@ -13,6 +15,41 @@ var setSessionVarFromQuery = (varName) =>
 
 
 var middleware = {
+
+  localAuth(passport, authType, strategyCallback) {
+    var {Strategy} = require('passport-local')
+    var strategy = new Strategy(config.auth.local, strategyCallback)
+    passport.use(authType, strategy)
+
+    return (req, res, next) => {
+      passport.authenticate(authType, (err, user, info) => {
+
+        if (err || info)
+        {
+          if (!err && info) err = Error(info.message)
+          else if (!err && !user) err = Error(`No user found with email ${req.body.email}`)
+          err.fromApi = true
+          next(err)
+        }
+        else if (user)
+        {
+          //-- wipe anonymous data so logging out isn't weird
+          req.session.anonData = null
+
+          req.logIn(user, function(eerr) {
+            if (eerr) return next(eerr)
+            res.json(user)
+            // console.log('in authFn > ', next)
+            // if (next)
+            //   next();
+            // else
+            res.end() // -- need to end response or triggers 404 middleware
+          })
+        }
+
+      })(req, res, next)
+    }
+  },
 
   showAuthdPageViews() {
     return function(req, res, next) {

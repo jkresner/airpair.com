@@ -5,11 +5,6 @@ forAdmin = true
 
 requests = ->
 
-  before (done) ->
-    STORY.newExpert 'phlf', {}, (s, exp) ->
-      phlfKey = s.userKey
-      phlfExp = exp
-      done()
 
   IT 'Pipeliner can reply to a new request', ->
     data = type: 'other', tags: [FIXTURE.tags.node]
@@ -304,12 +299,17 @@ requests = ->
 module.exports = ->
 
   before (done) ->
-    done()
+    STORY.newExpert 'phlf', {}, (s, exp) ->
+      phlfKey = s.userKey
+      phlfExp = exp
+      done()
+
 
   beforeEach ->
     STUB.sync(Wrappers.Slack, 'checkUserSync', null)
     STUB.cb(Wrappers.Slack, 'getUsers', FIXTURE.wrappers.slack_users_list)
     STUB.cb(Wrappers.Slack, 'getChannels', FIXTURE.wrappers.slack_channels_list)
     STUB.cb(Wrappers.Slack, 'getGroups', FIXTURE.wrappers.slack_groups_list)
+
 
   DESCRIBE "Request", requests

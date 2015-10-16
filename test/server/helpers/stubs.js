@@ -9,7 +9,7 @@ var analyticsSetup = {
   },
 
   off() {
-    global.analytics    = { track: ()=>{}, view: ()=>{}, alias: ()=>{}, identify: ()=>{} }
+    global.analytics    = { echo: ()=>{}, event: ()=>{}, view: ()=>{}, alias: ()=>{}, identify: ()=>{} }
   }
 
 }

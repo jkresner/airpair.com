@@ -120,12 +120,14 @@ views = ->
       utms = 'utm_campaign=testSingup&utm_source=test8src&utm_content=test8ctn'
       PAGE "#{publishedPostUrl}?#{utms}", {}, ->
         spy = STUB.spy(analytics,'alias')
-        SUBMIT '/v1/auth/signup', signup, {}, (sFull) ->
+        SUBMIT '/auth/signup', signup, {}, (sFull) ->
           userId = ObjectId(sFull._id)
           expect(sFull._id).to.exist
           expectStartsWith(sFull.name, "Will Moss")
           expect(spy.callCount).to.equal(1)
-          expect(spy.args[0][0]).to.equal(s.sessionID)
+          expectIdsEqual(spy.args[0][0]._id, sFull._id)
+          expect(spy.args[0][1]).to.equal(s.sessionID)
+          expect(spy.args[0][2]).to.equal('signup')
           DB.docsByQuery 'View', {userId}, (r) ->
             expect(r.length).to.equal(1)
             expectIdsEqual(r[0].userId,userId)
@@ -156,46 +158,21 @@ views = ->
   #         spy.restore()
   #         DONE()
 
-  it 'Can track logged in workshop view'
-  #   SETUP.addLocalUser 'gnic', {}, (userKey) ->
-  #     spy = sinon.spy(analytics,'view')
-  #     LOGIN userKey,  (s) ->
-  #       GETP("/v1/workshops/simplifying-rails-tests?utm_campaign=test4nm&utm_medium=test4md")
-  #         .set('referer', 'http://www.airpair.com/workshops')
-  #         .expect('Content-Type', /text/)
-  #         .end (err, resp) ->
-  #           if (err) then throw err
-  #           expect(spy.callCount).to.equal(1)
-  #           expect(spy.args[0][0]._id).to.equal(s._id)
-  #           expect(spy.args[0][1]).to.be.null
-  #           expect(spy.args[0][2]).to.equal('workshop')
-  #           expect(spy.args[0][3]).to.equal('Breaking Up (with) Your Test Suite')
-  #           expect(spy.args[0][4].tags).to.exist
-  #           expect(spy.args[0][5].referer).to.equal('http://www.airpair.com/workshops')
-  #           expect(spy.args[0][5].utms.utm_source).to.be.undefined
-  #           expect(spy.args[0][5].utms.utm_content).to.be.undefined
-  #           expect(spy.args[0][5].utms.utm_medium).to.equal('test4md')
-  #           expect(spy.args[0][5].utms.utm_term).to.be.undefined
-  #           expect(spy.args[0][5].utms.utm_campaign).to.equal('test4nm')
-  #           expect(spy.args[0][6]).to.be.undefined
-  #           spy.restore()
-  #           DONE()
-
 
   IT 'Login local from existing sessionID does not alias', ->
     ANONSESSION ->
       utms = ''
       PAGE "#{publishedPostUrl}?#{utms}", {}, ->
-      singup = SETUP.userData('jkap')
-      SUBMIT '/v1/auth/signup', singup, {}, (r) ->
+      singup = SETUP.userData('jpie')
+      SUBMIT '/auth/signup', singup, {}, (r) ->
         GET '/session/full', (s) ->
-          spyIdentify = STUB.spy(analytics,'identify')
-          spyAlias = STUB.spy(analytics,'alias')
-          PAGE '/logout', {status:302}, ->
-            SUBMIT '/v1/auth/login', singup, {}, (r3) ->
-              expect(spyIdentify.callCount).to.equal(1)
-              expect(spyIdentify.args[0][2]).to.equal('Login')
-              expect(spyAlias.called).to.be.false
+          expect(s._id).to.exist
+          PAGE '/logout', { status:302 }, ->
+            spyAlias = STUB.spy(analytics,'alias')
+            SUBMIT '/auth/login', singup, {}, (r3) ->
+              expect(spyAlias.callCount).to.equal(1)
+              expectIdsEqual(spyAlias.args[0][0]._id, s._id)
+              expect(spyAlias.args[0][2]).to.equal('login')
               DONE()
 
 
@@ -218,17 +195,17 @@ views = ->
             expect(v2[0].anonymousId).to.equal(anonymousId2)
             expect(v2[1].anonymousId).to.equal(anonymousId2)
 
-            spyIdentify = STUB.spy(analytics,'identify')
+            # spyIdentify = STUB.spy(analytics,'identify')
             spyAlias = STUB.spy(analytics,'alias')
 
-            SUBMIT '/v1/auth/login', singup, {}, ->
+            SUBMIT '/auth/login', singup, {}, ->
 
               # expect(spyIdentify.called).to.be.false
               # expect(spyAlias.callCount).to.equal(1)
               # expect(spyAlias.args[0][2]).to.equal('Login')
 
-              expect(spyIdentify.called).to.be.true
-              expect(spyAlias.called).to.be.false
+              # expect(spyIdentify.called).to.be.true
+              expect(spyAlias.called).to.be.true
               # expect(spyAlias.args[0][2]).to.equal('Login')
 
               GET '/session/full', (s3) ->
@@ -250,7 +227,7 @@ views = ->
             expect(v1[0].anonymousId).to.equal(anonymousId)
             expect(v1[1].anonymousId).to.equal(anonymousId)
 
-          SUBMIT '/v1/auth/signup', singup, {}, (s0) ->
+          SUBMIT '/auth/signup', singup, {}, (s0) ->
             session2Callback(anonymousId)
 
 
@@ -260,6 +237,7 @@ module.exports = ->
 
   before (done) ->
     SETUP.analytics.on()
+    DB.ensureDoc 'User', FIXTURE.users.admin, ->
     {higherOrder} = FIXTURE.posts
     DB.ensureDoc 'Post', higherOrder, ->
       global.publishedPostUrl = higherOrder.meta.canonical.replace('https://www.airpair.com', '')

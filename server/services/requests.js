@@ -131,7 +131,7 @@ var save = {
     // o.lastTouch = svc.newTouch.call(this, 'create')
     // o.adm = { active:true }
 
-    analytics.track(o.by, null, 'Request', {_id:o._id,action:'start'})
+    analytics.echo(o.by, null, 'Request', {_id:o._id,action:'start'})
 
     if (this.user.emailVerified) {
       // Send here's a link to update your request.
@@ -160,7 +160,7 @@ var save = {
       mailman.sendTemplate('pipeliner-notify-request', d, 'pipeliners')
 
       original.adm = admSet(original,{active:true,submitted:new Date()})
-      analytics.track(original.by, null, 'Request', {_id:original._id,action:'submit'})
+      analytics.echo(original.by, null, 'Request', {_id:original._id,action:'submit'})
     }
 
     // var ups = _.extend(original, update)
@@ -228,6 +228,7 @@ var save = {
     if (!adm.reviewable && reply.expertStatus == 'available')
       adm = admSet(request,{reviewable:new Date()})
 
+    // $log('replyByExpert'.blue, suggested)
     Request.updateSet(request._id, {suggested,adm,lastTouch,status}, select.cb.byRole(this,cb,cb))
   },
   deleteById(o, cb)

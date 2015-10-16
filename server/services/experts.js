@@ -11,7 +11,7 @@ var selectCB              = select.cb
 var get = {
 
   getById(id, cb) {
-    Expert.getById(id,selectCB.migrateInflate(cb))
+    Expert.getById(id,{join:{userId:select.mojoUser}},selectCB.migrateInflate(cb))
   },
 
   getByIdForAdmin(id, cb) {
@@ -19,7 +19,7 @@ var get = {
   },
 
   getMe(cb) {
-    Expert.getByQuery({userId:this.user._id}, selectCB.me((e,r)=>{
+    Expert.getByQuery({userId:this.user._id}, {join:{userId:select.mojoUser}}, selectCB.me((e,r)=>{
       if (!e && !r) return cb(null, {user:selectFromObject(this.user, select.userCopy)})
       cb(e,r)
     }))
@@ -137,7 +137,8 @@ var save = {
 
   create(expert, cb) {
     var trackData = { name: this.user.name }
-    expert.user = selectFromObject(this.user, select.userCopy)
+    expert.user = selectFromObject(_.extend({social:this.user.auth},this.user), select.userCopy)
+    // $log('EXPERT.create', expert.user, this.user.auth)
     expert.userId = this.user._id
     $callSvc(updateWithTouch, this)(expert, 'create', trackData, (e,r) => {
       // if (r._id)
@@ -148,7 +149,7 @@ var save = {
 
   updateMe(original, ups, cb) {
     var trackData = { name: this.user.name, _id: original._id }
-    ups.user = selectFromObject(this.user, select.userCopy)
+    ups.user = selectFromObject(_.extend({social:this.user.auth},this.user), select.userCopy)
     var expert = selectFromObject(_.extend(original,ups), select.updateMe)
     $callSvc(updateWithTouch, this)(expert, 'update', trackData, selectCB.me(cb))
     // $callSvc(UserSvc.setExpertCohort, this)(ups._id)

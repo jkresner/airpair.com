@@ -6,7 +6,7 @@ var cbSession                = select.cb.session
 var get = {
 
   search(searchTerm, cb) {
-    var matchFields = 'name email linked.gp.name linked.gp.email'
+    var matchFields = 'name email auth.gp.name auth.gp.email'
     User.searchByRegex(searchTerm, matchFields, opts.search, select.cb.searchResults(cb))
   },
 
@@ -59,7 +59,7 @@ function updateAsIdentity(data, trackData, cb) {
   if (!this.user) return cb(V2DeprecatedError('User.anon.updateAsIdentity'))
 
   if (trackData)
-    analytics.track(this.user, this.sessionID, 'Save', trackData, {}, ()=>{})
+    analytics.echo(this.user, this.sessionID, 'Save', trackData, {}, ()=>{})
 
   var {user} = this
 
@@ -299,20 +299,21 @@ var save = {
   },
 
   changeLocationTimezone(locationData, cb) {
-
     var timeZoneTimestamp = moment().unix()
     Wrappers.Timezone.getTimezoneFromCoordinates(locationData.coordinates, timeZoneTimestamp, (e,r) => {
       if (logging) $log('changeLocationTimezone'.cyan, e, r)
       if (e) return cb(e)
 
-      var localization = {
-        location: locationData.formatted_address,
-        locationData: _.pick(locationData, 'address_components', 'geometry', 'name'),
-        timezone: r.raw_response.timeZoneName,
-        timezoneData: r.raw_response,
+      var updates = {
+        location: {
+          name: locationData.formatted_address,
+          shortName: locationData.name,
+          timeZoneId: r.raw_response.timeZoneId,
+        },
+        'raw.locationData': locationData
       }
 
-      updateAsIdentity.call(this, {localization}, null, cb)
+      updateAsIdentity.call(this, updates, null, cb)
     })
   },
 

@@ -1,5 +1,5 @@
 {
-  "specs":                "deals",
+  "specs":                "all",
   "stubs": {
     "on":                  true
   },
@@ -7,7 +7,8 @@
     "appload":            "white",
     "seed":               "magenta",
     "spec":               "white",
-    "error":              "red"
+    "error":              "red",
+    "expectederr":        "blue"
   },
   "verbose": {
     "errors":             "true"
@@ -17,7 +18,7 @@
     "collections":        ["V1Tests","Users","Experts","Bookings","Orders",
                            "Companies","Paymethods","Payouts","Posts",
                            "Requests","Tags","Templates","Views","Impressions",
-                           "Sessions"]
+                           "Sessions","Events"]
   },
   "paths": {
     "specs":              "specs",

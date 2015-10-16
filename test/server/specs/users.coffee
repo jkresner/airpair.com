@@ -15,11 +15,11 @@ update = ->
 
   IT 'Add location / timezone', ->
     # stubs.timezone.restore()
-    STORY.newUser 'chri', (chri) ->
+    STORY.newUser 'chri', {location:undefined,login:true}, (chri) ->
       PUT '/users/me/location', FIXTURE.wrappers.gplaces_succcessful_place, (user) ->
-        expect(user.localization.location).to.equal('Bengaluru, Karnataka, India')
-        expect(user.localization.timezone).to.equal('India Standard Time')
-        # stubs.timezone = SETUP.stubGoogleTimezone()
+        expect(user.location.name).to.equal('Bengaluru, Karnataka, India')
+        expect(user.location.shortName).to.equal('Bengaluru')
+        expect(user.location.timeZoneId).to.equal('Asia/Calcutta')
         DONE()
 
   IT 'Set and unset username', ->
@@ -50,8 +50,6 @@ update = ->
           DB.docById 'User', s._id, (u2) ->
             expect(u2.initials).to.equal('GJ')
             DONE()
-
-  it "can update tags"
 
   it "can change bio"
 

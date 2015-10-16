@@ -1,7 +1,6 @@
 module.exports = {
   angular: {
     "_id" : "5149dccb5fc6390200000013",
-    "__v" : 0,
     "desc" : "AngularJS is an open-source JavaScript framework. Its goal is to augment browser-based applications with Model–View–Controller (MVC) capability and reduce the amount of JavaScript needed to make web applications functional. These type of apps are also known as Single-Page Applications.",
     "name" : "AngularJS",
     "short" : "Angular",
@@ -11,7 +10,6 @@ module.exports = {
   },
   angularonetwo: {
     "_id" : "54624a63791b7e75a3faff1a",
-    "__v" : 0,
     "desc" : "AngularJS is an open-source JavaScript framework. Its goal is to augment browser-based applications with Model–View–Controller (MVC) capability and reduce the amount of JavaScript needed to make web applications functional. These type of apps are also known as Single-Page Applications.",
     "name" : "AngularJS 1.2",
     "short" : "Angular 1.2",
@@ -21,7 +19,6 @@ module.exports = {
   },
   angularonethree: {
     "_id" : "54624a6c791b7e75a3faff1b",
-    "__v" : 0,
     "desc" : "AngularJS is an open-source JavaScript framework. Its goal is to augment browser-based applications with Model–View–Controller (MVC) capability and reduce the amount of JavaScript needed to make web applications functional. These type of apps are also known as Single-Page Applications.",
     "name" : "AngularJS 1.3",
     "short" : "Angular 1.3",
@@ -31,7 +28,6 @@ module.exports = {
   },
   node: {
     "_id" : "514825fa2a26ea0200000028",
-    "__v" : 0,
     "desc" : "Node.js is an event-based, asynchronous I/O framework that uses Google&#39;s V8 JavaScript engine.",
     "name" : "node.js",
     "short" : "node.js",
@@ -41,7 +37,6 @@ module.exports = {
   },
   mongo: {
     "_id" : "514825fa2a26ea0200000025",
-    "__v" : 0,
     "desc" : "MongoDB is a scalable, high-performance, open source, document-oriented database.  It supports a large number of languages and application development platforms.  ",
     "name" : "MongoDB",
     "short" : "mongodb",
@@ -77,7 +72,6 @@ module.exports = {
   },
   rails: {
     "_id" : "514825fa2a26ea020000002f",
-    "__v" : 0,
     "desc" : "Ruby on Rails is an open source full-stack web application framework written in Ruby. It follows the popular MVC framework model and is known for its &quot;convention over configuration&quot; approach to application development.",
     "name" : "Ruby on Rails",
     "short" : "Rails",
@@ -119,7 +113,6 @@ module.exports = {
   },
   cplusplus: {
     "_id" : "514825fa2a26ea020000000d",
-    "__v" : 0,
     "desc" : "C++ is a general-purpose programming language based on C. Use this tag for questions about code compiled with a C++ compiler, regardless of whether the code could be valid in C, C#, Objective-C and other C based programming languages.",
     "name" : "c++",
     "short" : "c++",
@@ -144,7 +137,6 @@ module.exports = {
   },
   csharp: {
     "_id" : "514825fa2a26ea020000000e",
-    "__v" : 0,
     "desc" : "C# is a multi-paradigm programming language encompassing strong typing, imperative, declarative, functional, generic, object-oriented (class-based), and component-oriented programming disciplines.",
     "name" : "c#",
     "short" : "c#",
@@ -194,7 +186,6 @@ module.exports = {
   },
   android: {
     "_id" : "514825fa2a26ea0200000006",
-    "__v" : 0,
     "desc" : "Android is Google&#39;s OS for digital devices[Phone,Tablet,Auto,TV,Watch]. Please use Android-specific tags such as [android-intent], not [intent]. For non-developer/programming questions, see http://android.stackexchange.com.",
     "name" : "Android",
     "short" : "android",
@@ -212,7 +203,6 @@ module.exports = {
   },
   ruby: {
     "_id" : "514825fa2a26ea0200000031",
-    "__v" : 0,
     "desc" : "Ruby is a multi-platform open-source dynamic object-oriented interpreted language created by Yukihiro Matsumoto (Matz) in 1993.",
     "name" : "ruby",
     "short" : "ruby",
