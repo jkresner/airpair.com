@@ -755,6 +755,776 @@ var newer = {
     },
     "bio" : "yo yyoy o"
   },
+
+  dymo: {
+    "_id" : ObjectId("534d3e5d1c67d1a4859d2d5b"),
+    "email" : "alex@alexdymo.com",
+    "emailVerified" : true,
+    "name" : "Alexander Dymo",
+    "username" : "adymo",
+    "initials" : "AD",
+    "bio" : "I've been developing Ruby and Ruby on Rails applications since 2006. My two startups run on Rails. Now I'm writing a book on Ruby Performance (signed with PragProg, beta soon)\n\nMore about me: alexdymo.com\nMore about the book: ruby-performance-book.com",
+    "location" : {
+        "timeZoneId" : "America/Chicago",
+        "name" : "Chicago, IL, USA",
+        "shortName" : "Chicago"
+    },
+    "auth" : {
+      "gp" : {
+        "email" : "alex@alexdymo.com",
+        "domain" : "alexdymo.com",
+        "verified" : false,
+        "circledByCount" : 97,
+        "language" : "en",
+        "isPlusUser" : true,
+        "placesLived" : [ ],
+        "organizations" : [ ],
+        "image" : {
+            "isDefault" : false,
+            "url" : "https://lh3.googleusercontent.com/-9d75AmfftNE/AAAAAAAAAAI/AAAAAAAABgM/57LUVu2SMmU/photo.jpg?sz=50"
+        },
+        "url" : "https://plus.google.com/+AlexanderDymo",
+        "tagline" : "Entrepreneur, Y Combinator alum, free software developer, passionate about programming and engineering, hardcore Linuxoid.",
+        "name" : {
+            "givenName" : "Alexander",
+            "familyName" : "Dymo"
+        },
+        "displayName" : "Alexander Dymo",
+        "id" : "117794624398803940592",
+        "objectType" : "person",
+        "urls" : [],
+        "emails": [{ "type" : "account", "value" : "alex@alexdymo.com" } ],
+        "gender" : "male",
+        "etag" : "\"RqKWnRU4WW46-6W3rWhLR9iFZQM/3nYVGKSGLl6_LawMzYNiDxhwUjg\"",
+        "kind" : "plus#person",
+        "tokens" : {}
+      },
+      "gh" : {
+        "updated_at" : "2015-02-06T19:20:00Z",
+        "created_at" : "2008-04-05T09:00:46Z",
+        "following" : 1,
+        "followers" : 18,
+        "public_gists" : 1,
+        "public_repos" : 19,
+        "bio" : null,
+        "hireable" : false,
+        "email" : "alex@alexdymo.com",
+        "location" : "Chicago, USA",
+        "blog" : "http://www.alexdymo.com",
+        "company" : "Eligo Energy",
+        "name" : "Alexander Dymo",
+        "gravatar_id" : "",
+        "avatar_url" : "https://avatars.githubusercontent.com/u/5263?v=3",
+        "id" : 5263,
+        "login" : "adymo",
+        "tokens" : {}
+      },
+      "in" : {
+        "lastName" : "Dymo",
+        "id" : "1KB9BDtDYm",
+        "firstName" : "Alexander",
+        "tokens" : {
+            "apcom" : {}
+        }
+      },
+      "tw" : {
+        "needs_phone_verification" : false,
+        "suspended" : false,
+        "notifications" : false,
+        "following" : false,
+        "profile_image_url" : "http://pbs.twimg.com/profile_images/2363282175/rvgpjxu04gr72kf09xlh_normal.png",
+        "lang" : "en",
+        "verified" : false,
+        "geo_enabled" : false,
+        "time_zone" : "Kyiv",
+        "utc_offset" : 10800,
+        "favourites_count" : 0,
+        "created_at" : "Tue Jan 22 16:16:17 +0000 2008",
+        "listed_count" : 4,
+        "friends_count" : 13,
+        "followers_count" : 12,
+        "protected" : false,
+        "url" : "http://t.co/wLtHhHYz",
+        "description" : "Entrepreneur, Y Combinator alum, free software developer, passionate about programming and engineering, hardcore Linuxoid.",
+        "location" : "",
+        "screen_name" : "alexander_dymo",
+        "name" : "Alexander Dymo",
+        "id" : 12546142,
+        "tokens" : {}
+      }
+    }
+  },
+
+  dces: {
+    "_id" : ObjectId("5359bd0e1c67d1a4859d2f74"),
+    "email" : "dcestari@gmail.com",
+    "emailVerified" : true,
+    "initials" : "DC",
+    "name" : "Daniel Cestari",
+    "username" : "dcestari",
+    "bio" : "I've been a professional Software Developer for almost 8 years, mainly worked in web and mobile related technologies.",
+    "location" : {
+      "timeZoneId" : "Europe/Madrid",
+      "name" : "Madrid, Madrid, Spain",
+      "shortName" : "Madrid"
+    },
+    "auth" : {
+      "so" : {
+        "badge_counts" : { "bronze" : 6, "silver" : 1, "gold" : 0 },
+        "account_id" : 204629,
+        "last_modified_date" : 1384960199,
+        "last_access_date" : 1398379701,
+        "reputation_change_year" : 0,
+        "reputation_change_quarter" : 0,
+        "reputation_change_month" : 0,
+        "reputation_change_week" : 0,
+        "reputation_change_day" : 0,
+        "reputation" : 333,
+        "creation_date" : 1285001621,
+        "user_type" : "registered",
+        "user_id" : 452964,
+        "age" : 26,
+        "location" : "Caracas, Venezuela",
+        "website_url" : "http://dcestari.github.com",
+        "link" : "http://stackoverflow.com/users/452964/dcestari",
+        "display_name" : "dcestari",
+        "profile_image" : "https://www.gravatar.com/avatar/d81fcc68490ea265c3d85b5af2581ea4?s=128&d=identicon&r=PG",
+        "id" : 452964,
+        "tokens" : {}
+      },
+      "gp" : {
+        "email" : "dcestari@gmail.com",
+        "verified" : false,
+        "language" : "en",
+        "isPlusUser" : true,
+        "image" : {
+          "isDefault" : false,
+          "url" : "https://lh4.googleusercontent.com/-DxP-LDK4QNc/AAAAAAAAAAI/AAAAAAAACeM/_QwsHFEXoRE/photo.jpg?sz=50"
+        },
+        "url" : "https://plus.google.com/107946246039966851979",
+        "name" : { "givenName" : "Daniel", "familyName" : "Cestari" },
+        "displayName" : "Daniel Cestari",
+        "id" : "107946246039966851979",
+        "objectType" : "person",
+        "urls" : [],
+        "emails" : [ { "type" : "account", "value" : "dcestari@gmail.com" } ],
+        "gender" : "male",
+        "etag" : "\"gLJf7LwN3wOpLHXk4IeQ9ES9mEc/thuMusFcd5u0jh3imnWXlNU_ENY\"",
+        "kind" : "plus#person",
+        "tokens" : {}
+      },
+      "bb" : {
+        "username" : "dcestari",
+        "first_name" : "Daniel",
+        "last_name" : "Cestari",
+        "display_name" : "Daniel Cestari",
+        "avatar" : "https://secure.gravatar.com/avatar/d81fcc68490ea265c3d85b5af2581ea4?d=https%3A%2F%2Fd3oaxc4q5k2d6q.cloudfront.net%2Fm%2Fd80ee17d67bb%2Fimg%2Fdefault_avatar%2F32%2Fuser_blue.png&s=32",
+        "tokens" : {}
+      },
+      "gh" : {
+        "updated_at" : "2015-03-23T16:56:12Z",
+        "created_at" : "2010-03-04T22:56:49Z",
+        "following" : 1,
+        "followers" : 5,
+        "public_gists" : 2,
+        "public_repos" : 19,
+        "bio" : null,
+        "hireable" : false,
+        "email" : "",
+        "location" : "Venezuela",
+        "blog" : "http://danielcestari.com",
+        "company" : "Divux Systems",
+        "name" : "Daniel Cestari",
+        "gravatar_id" : "",
+        "avatar_url" : "https://avatars.githubusercontent.com/u/216160?v=3",
+        "id" : 216160,
+        "login" : "dcestari",
+        "tokens" : {}
+      },
+      "in" : {
+        "firstName" : "Daniel",
+        "id" : "2EAxYvhnal",
+        "lastName" : "Cestari",
+        "tokens" : {}
+      },
+      "tw" : {
+        "id" : 42958815,
+        "name" : "Daniel Cestari",
+        "screen_name" : "dcestari",
+        "location" : "",
+        "description" : "Sotfware Developer and, recently, running enthusiast",
+        "url" : "http://t.co/upfUwyo5B7",
+        "protected" : false,
+        "followers_count" : 179,
+        "friends_count" : 145,
+        "listed_count" : 6,
+        "created_at" : "Wed May 27 20:08:00 +0000 2009",
+        "favourites_count" : 0,
+        "utc_offset" : -16200,
+        "time_zone" : "Caracas",
+        "geo_enabled" : true,
+        "verified" : false,
+        "lang" : "en",
+        "profile_image_url" : "http://pbs.twimg.com/profile_images/2690606847/f1ba5726e16d719417254429beb1b46a_normal.jpeg",
+        "following" : false,
+        "notifications" : false,
+        "suspended" : false,
+        "needs_phone_verification" : false,
+        "tokens" : { }
+      },
+      "sl" : {
+        "slackUrl" : "https://airpair.slack.com/",
+        "team" : "AirPair",
+        "teamId" : "T02ATFDPL",
+        "username" : "dcestari",
+        "id" : "U04JXR89T",
+        "tokens" : {}
+        }
+    }
+  },
+
+  admb: {
+    "_id" : ObjectId("51a6c65e66a6f999a465f30b"),
+    "email" : "abliss@gmail.com",
+    "emailVerified" : true,
+    "initials" : "ACB",
+    "name" : "Adam Bliss",
+    "username" : "abliss",
+    "bio" : "Full stack generalist. 7 years at google. Wrote Google Maps for Android's first release. Expert debugger.",
+    "location" : {
+      "timeZoneId" : "America/Los_Angeles",
+      "name" : "Portland, OR, USA",
+      "shortName" : "Portland"
+    },
+    "auth" : {
+      "so" : {
+          "id" : 1239095,
+          "badge_counts" : {
+              "bronze" : 4,
+              "silver" : 1,
+              "gold" : 0
+          },
+          "account_id" : 549540,
+          "location" : "Bangkok, Thailand",
+          "website_url" : "http://google.com/profiles/abliss",
+          "link" : "http://stackoverflow.com/users/1239095/adam-bliss",
+          "last_modified_date" : 1377270913,
+          "last_access_date" : 1378714371,
+          "age" : 31,
+          "reputation_change_year" : 335,
+          "reputation_change_quarter" : 155,
+          "reputation_change_month" : 0,
+          "reputation_change_week" : 0,
+          "reputation_change_day" : 0,
+          "reputation" : 336,
+          "profile_image" : "https://www.gravatar.com/avatar/13122bc0c7b33d9720caf821b4165136?s=128&d=identicon&r=PG",
+          "display_name" : "Adam Bliss",
+          "creation_date" : 1330474357,
+          "user_type" : "registered",
+          "user_id" : 1239095,
+          "tokens" : {}
+      },
+      "gp" : {
+          "email" : "abliss@gmail.com",
+          "verified" : false,
+          "circledByCount" : 937,
+          "language" : "en",
+          "isPlusUser" : true,
+          "placesLived" : [ ],
+          "organizations" : [],
+          "image" : {
+              "isDefault" : false,
+              "url" : "https://lh6.googleusercontent.com/-gCfCYXVr37c/AAAAAAAAAAI/AAAAAAABts0/v3W0qJKb_kM/photo.jpg?sz=50"
+          },
+          "url" : "https://plus.google.com/+AdamBliss",
+          "relationshipStatus" : "in_a_relationship",
+          "aboutMe" : "Think Midas, but without the tragic ending.<br />",
+          "braggingRights" : "PGP Public key ID 9CBA637A28B4426B",
+          "tagline" : "The simplest person that cannot be described in ten words.",
+          "name" : {
+              "givenName" : "Adam",
+              "familyName" : "Bliss"
+          },
+          "displayName" : "Adam Bliss",
+          "id" : "100570824868841568882",
+          "objectType" : "person",
+          "urls" : [],
+          "emails" : [
+              {
+                  "type" : "account",
+                  "value" : "abliss@gmail.com"
+              }
+          ],
+          "gender" : "male",
+          "occupation" : "Software Engineer",
+          "etag" : "\"RqKWnRU4WW46-6W3rWhLR9iFZQM/yfUaVesw8sU2yWw8HN2od7TwmLQ\"",
+          "kind" : "plus#person",
+          "tokens" : {}
+      },
+      "gh" : {
+          "login" : "abliss",
+          "id" : 215283,
+          "avatar_url" : "https://avatars.githubusercontent.com/u/215283?v=3",
+          "gravatar_id" : "",
+          "name" : "Adam Bliss",
+          "company" : "",
+          "blog" : "http://www.google.com/+AdamBliss",
+          "location" : "United States",
+          "email" : "abliss@gmail.com",
+          "hireable" : true,
+          "bio" : null,
+          "public_repos" : 21,
+          "public_gists" : 1,
+          "followers" : 7,
+          "following" : 3,
+          "created_at" : "2010-03-04T04:26:27Z",
+          "updated_at" : "2015-04-13T11:44:08Z",
+          "tokens" : {}
+      },
+      "in" : {
+          "lastName" : "Bliss",
+          "id" : "o2928bHLan",
+          "firstName" : "Adam",
+          "tokens" : {}
+      },
+      "tw" : {
+          "notifications" : false,
+          "following" : false,
+          "profile_image_url" : "http://a0.twimg.com/profile_images/2489434659/6hin9qAg_normal",
+          "lang" : "en",
+          "verified" : false,
+          "geo_enabled" : true,
+          "time_zone" : "Alaska",
+          "utc_offset" : -32400,
+          "favourites_count" : 4,
+          "created_at" : "Fri Feb 01 20:52:29 +0000 2008",
+          "listed_count" : 4,
+          "friends_count" : 282,
+          "followers_count" : 75,
+          "protected" : false,
+          "description" : "",
+          "url" : "http://google.com/profiles/abliss",
+          "location" : "",
+          "screen_name" : "abliss",
+          "name" : "abliss",
+          "id" : 12958622,
+          "tokens" : { }
+      }
+    }
+  },
+
+  mkod: {
+    "_id" : ObjectId("52f229b71c67d1a4859d2065"),
+    "email" : "pentium10@gmail.com",
+    "emailVerified" : true,
+    "name" : "Marton Kodok",
+    "initials" : "MAR",
+    "username" : "pentium10",
+    "bio" : "Highly rated full-stack expert for over a decade(13+yrs). 2 yrs experience in online mentoring and consulting, I possess coaching skills that enable much more effective dialogue, lots of sessions completed. Among top users on Stackoverflow (77k rep)",
+    "location" : {
+        "timeZoneId" : "Europe/Bucharest",
+        "name" : "Bucharest, Romania",
+        "shortName" : "Bucharest"
+    },
+    "auth" : {
+      "so" : {
+        "profile_image" : "http://i.stack.imgur.com/gInNr.png?s=128&g=1",
+        "display_name" : "Pentium10",
+        "link" : "http://stackoverflow.com/users/243782/pentium10",
+        "website_url" : "http://www.kodokmarton.eu",
+        "location" : "Transylvania, LA",
+        "accept_rate" : 94,
+        "age" : 30,
+        "user_id" : 243782,
+        "user_type" : "registered",
+        "creation_date" : 1262684260,
+        "reputation" : 75382,
+        "reputation_change_day" : 15,
+        "reputation_change_week" : 40,
+        "reputation_change_month" : 507,
+        "reputation_change_quarter" : 2020,
+        "reputation_change_year" : 2020,
+        "last_access_date" : 1423472065,
+        "last_modified_date" : 1421840796,
+        "account_id" : 88036,
+        "badge_counts" : {  "gold" : 64, "silver" : 270, "bronze" : 361 },
+        "tokens" : {}
+      },
+      "gp" : {
+        "email" : "pentium10@gmail.com",
+        "verified" : false,
+        "circledByCount" : 47,
+        "language" : "en",
+        "isPlusUser" : true,
+        "image" : {
+            "isDefault" : false,
+            "url" : "https://lh4.googleusercontent.com/-zHuP1iWEDI8/AAAAAAAAAAI/AAAAAAAAAoI/3-6aSdo1W5I/photo.jpg?sz=50"
+        },
+        "url" : "https://plus.google.com/+MartonKodok",
+        "name" : { "givenName" : "Marton","familyName" : "Kodok" },
+        "displayName" : "Marton Kodok",
+        "id" : "111187629502324536557",
+        "objectType" : "person",
+        "emails" : [{"type" : "account", "value" : "pentium10@gmail.com"}],
+        "gender" : "male",
+        "etag" : "\"i9aZP8TD8jXVPIxD0T0PWsMRx6s/No0GtlfITk6xudzieUWMoCb6m0Y\"",
+        "kind" : "plus#person",
+        "tokens" : {}
+      },
+      "gh" : {
+        "updated_at" : "2014-02-05T12:08:36Z",
+        "created_at" : "2010-11-03T12:01:33Z",
+        "following" : 5,
+        "followers" : 2,
+        "public_gists" : 14,
+        "public_repos" : 15,
+        "bio" : null,
+        "hireable" : true,
+        "email" : null,
+        "location" : null,
+        "blog" : null,
+        "company" : null,
+        "name" : "Pentium10",
+        "gravatar_id" : "4a682874e7a4757dc02a9823e277e235",
+        "avatar_url" : "https://gravatar.com/avatar/4a682874e7a4757dc02a9823e277e235?d=https%3A%2F%2Fidenticons.github.com%2Fcc75ea4d8af87f7b833d7014bf74bdf3.png&r=x",
+        "id" : 465691,
+        "login" : "pentium10",
+        "tokens" : {}
+      },
+      "in" : {
+        "lastName" : "Kodok",
+        "id" : "R6aydoO8yp",
+        "firstName" : "Márton",
+        "tokens" : {}
+      },
+      "tw" : {
+        "needs_phone_verification" : false,
+        "suspended" : false,
+        "notifications" : false,
+        "following" : false,
+        "profile_image_url" : "http://pbs.twimg.com/profile_images/270915543/martonProfilJo_normal.jpg",
+        "lang" : "en",
+        "verified" : false,
+        "geo_enabled" : true,
+        "time_zone" : "Bucharest",
+        "utc_offset" : 7200,
+        "favourites_count" : 157,
+        "created_at" : "Thu Jun 11 19:51:07 +0000 2009",
+        "listed_count" : 4,
+        "friends_count" : 120,
+        "followers_count" : 253,
+        "protected" : false,
+        "url" : "http://t.co/76YFY8Myvp",
+        "description" : "http://t.co/FFjFBtkz",
+        "location" : "Targu Mures",
+        "screen_name" : "MartonKodok",
+        "name" : "Kodok Marton",
+        "id" : 46473071,
+        "tokens" : {}
+      },
+      "sl" : {
+        "slackUrl" : "https://airpair.slack.com/",
+        "team" : "AirPair",
+        "teamId" : "T02ATFDPL",
+        "username" : "marton",
+        "id" : "U03VB5CQN",
+        "tokens" : {}
+      }
+    }
+  },
+
+
+  mper: {
+    "_id" : ObjectId("53cfe2ba8f8c80299bcc3af8"),
+    "email" : "mperren@gmail.com",
+    "emailVerified" : true,
+    "initials" : "MJP",
+    "name" : "Michael Perrenoud",
+    "bio" : "A consultant, mentor, and engineer with a calling and passion for teaching. For the past fifteen years I've been building enterprise applications for small businesses and Fortune 500 companies. I've used that experience to perform hundreds of successful paired programming sessions with developers all over the world.",
+    "username" : "mperrenoud",
+    "location" : {
+        "timeZoneId" : "America/Denver",
+        "name" : "Wellington, CO 80549, USA",
+        "shortName" : "Wellington"
+    },
+    "auth" : {
+      "so" : {
+        "badge_counts" : { "bronze" : 111, "silver" : 50, "gold" : 6 },
+        "account_id" : 1230342,
+        "last_modified_date" : 1423221967,
+        "last_access_date" : 1423516313,
+        "reputation_change_year" : 515,
+        "reputation_change_quarter" : 515,
+        "reputation_change_month" : 105,
+        "reputation_change_week" : 5,
+        "reputation_change_day" : 0,
+        "reputation" : 40176,
+        "creation_date" : 1328630285,
+        "user_type" : "registered",
+        "user_id" : 1195080,
+        "age" : 33,
+        "accept_rate" : 94,
+        "location" : "Colorado",
+        "website_url" : "http://www.consultwithmike.us",
+        "link" : "http://stackoverflow.com/users/1195080/michael-perrenoud",
+        "display_name" : "Michael Perrenoud",
+        "profile_image" : "https://www.gravatar.com/avatar/b2528fb97648d9b78942a83a456f03ab?s=128&d=identicon&r=PG",
+        "tokens" : {}
+      },
+      "gp" : {
+        "email" : "mperren@gmail.com",
+        "verified" : false,
+        "circledByCount" : 26,
+        "language" : "en",
+        "isPlusUser" : true,
+        "organizations" : [],
+        "image" : {
+            "isDefault" : false,
+            "url" : "https://lh5.googleusercontent.com/-JfW1lp3qu98/AAAAAAAAAAI/AAAAAAAAA_k/psohtxoE2Rs/photo.jpg?sz=50"
+        },
+        "url" : "https://plus.google.com/+MichaelPerrenoud",
+        "name" : {
+            "givenName" : "Michael",
+            "familyName" : "Perrenoud"
+        },
+        "displayName" : "Michael Perrenoud",
+        "id" : "116808585840043693419",
+        "objectType" : "person",
+        "urls" : [
+            {
+                "label" : "The Bible Answered",
+                "type" : "contributor",
+                "value" : "http://thebibleanswered.com"
+            },
+            {
+                "label" : "Learn C#",
+                "type" : "other",
+                "value" : "http://www.learncsharp.org"
+            }
+        ],
+        "emails" : [
+            {
+                "type" : "account",
+                "value" : "mperren@gmail.com"
+            }
+        ],
+        "gender" : "male",
+        "skills" : "C#, ASP.NET, SQL Server, MVC, JavaScript, HTML, CSS",
+        "occupation" : "Software Engineer/Architect",
+        "etag" : "\"gLJf7LwN3wOpLHXk4IeQ9ES9mEc/UwWffGiAHhbtzbCPYX_z05pjwOs\"",
+        "kind" : "plus#person",
+        "tokens" : {}
+      },
+      "bb" : {
+        "username" : "michael_perrenoud",
+        "first_name" : "Michael",
+        "last_name" : "Perrenoud",
+        "display_name" : "Michael Perrenoud",
+        "avatar" : "https://secure.gravatar.com/avatar/1fe14bf08188abd443168eefb0349ec1?d=https%3A%2F%2Fd3oaxc4q5k2d6q.cloudfront.net%2Fm%2Fdac75071f136%2Fimg%2Fdefault_avatar%2F32%2Fuser_blue.png&s=32",
+        "tokens" : { }
+      },
+      "gh" : {
+        "login" : "mperrenoud",
+        "id" : 2049534,
+        "avatar_url" : "https://avatars.githubusercontent.com/u/2049534?v=3",
+        "gravatar_id" : "",
+        "name" : "Michael Perrenoud",
+        "company" : "",
+        "blog" : "",
+        "location" : "Colorado",
+        "email" : "mperren@gmail.com",
+        "hireable" : true,
+        "bio" : null,
+        "public_repos" : 3,
+        "public_gists" : 0,
+        "followers" : 2,
+        "following" : 1,
+        "created_at" : "2012-07-27T01:39:56Z",
+        "updated_at" : "2015-02-10T16:04:20Z",
+        "tokens" : {}
+      },
+      "in" : {
+        "firstName" : "Michael",
+        "id" : "mT5mywxZ4D",
+        "lastName" : "Perrenoud",
+        "tokens" : {}
+      },
+      "tw" : {
+        "id" : 2862614849,
+        "name" : "Mike Perrenoud",
+        "screen_name" : "consultwmike",
+        "location" : "Colorado",
+        "profile_location" : null,
+        "description" : "Consultant. Mentor. Engineer.",
+        "url" : "http://t.co/LCH3LhHxOF",
+        "protected" : false,
+        "followers_count" : 19,
+        "friends_count" : 49,
+        "listed_count" : 0,
+        "created_at" : "Wed Nov 05 14:54:18 +0000 2014",
+        "favourites_count" : 4,
+        "utc_offset" : null,
+        "time_zone" : null,
+        "geo_enabled" : false,
+        "verified" : false,
+        "lang" : "en",
+        "profile_image_url" : "http://pbs.twimg.com/profile_images/530010391850393601/NQgyyeBV_normal.jpeg",
+        "profile_banner_url" : "https://pbs.twimg.com/profile_banners/2862614849/1415199314",
+        "following" : false,
+        "notifications" : false,
+        "suspended" : false,
+        "needs_phone_verification" : false,
+        "tokens" : {}
+      },
+      "sl" : {
+        "slackUrl" : "https://airpair.slack.com/",
+        "team" : "AirPair",
+        "teamId" : "T02ATFDPL",
+        "username" : "mike",
+        "id" : "U03M32XDN",
+        "tokens" : {}
+      }
+    }
+  },
+
+  evan: {
+    "_id" : ObjectId("5241c04a66a6f999a465f861"),
+    "email" : "goldcpufish@gmail.com",
+    "emailVerified" : true,
+    "name" : "Evan R",
+    "username" : "Eunoia",
+    "initials" : "evan",
+    "bio" : "Since 2011, I've been based in the San Francisco Bay Area. My clients are small startups, who need extra help with junior developers, and small businesses, who need help automating processes.",
+    "location" : {
+        "timeZoneId" : "America/Los_Angeles",
+        "name" : "Oakland, CA, USA",
+        "shortName" : "Oakland"
+    },
+    "auth" : {
+      "so" : {
+          "id" : 1016978,
+          "accept_rate" : 86,
+          "badge_counts" : {
+              "bronze" : 7,
+              "silver" : 0,
+              "gold" : 0
+          },
+          "account_id" : 1002404,
+          "link" : "http://stackoverflow.com/users/1016978/nick-silva",
+          "last_modified_date" : 1332302516,
+          "last_access_date" : 1380040834,
+          "reputation_change_year" : 5,
+          "reputation_change_quarter" : 0,
+          "reputation_change_month" : 0,
+          "reputation_change_week" : 0,
+          "reputation_change_day" : 0,
+          "reputation" : 84,
+          "profile_image" : "https://www.gravatar.com/avatar/03b634fab4014a94ec63d06603c49c38?s=128&d=identicon&r=PG",
+          "display_name" : "Nick Silva",
+          "creation_date" : 1319734776,
+          "user_type" : "registered",
+          "user_id" : 1016978,
+          "tokens" : {}
+      },
+      "gp" : {
+          "email" : "goldcpufish@gmail.com",
+          "verified" : false,
+          "circledByCount" : 34,
+          "language" : "en",
+          "isPlusUser" : true,
+          "image" : {
+              "isDefault" : false,
+              "url" : "https://lh6.googleusercontent.com/-TJko8Z_fCN8/AAAAAAAAAAI/AAAAAAAAAAA/_NkyCE3rZr0/photo.jpg?sz=50"
+          },
+          "url" : "https://plus.google.com/116783905857898576907",
+          "name" : {
+              "givenName" : "Evan",
+              "familyName" : "R"
+          },
+          "displayName" : "Evan R",
+          "id" : "116783905857898576907",
+          "objectType" : "person",
+          "emails" : [
+              {
+                  "type" : "account",
+                  "value" : "goldcpufish@gmail.com"
+              }
+          ],
+          "gender" : "male",
+          "etag" : "\"gLJf7LwN3wOpLHXk4IeQ9ES9mEc/x2R8aFb6rej8lu1RSQT3GnAUwgs\"",
+          "kind" : "plus#person",
+          "tokens" : { }
+      },
+      "bb" : {
+          "avatar" : "https://bitbucket-assetroot.s3.amazonaws.com/c/photos/2013/Sep/15/eunoia-avatar-562832946-3_avatar.png",
+          "display_name" : "eunoia",
+          "last_name" : "",
+          "first_name" : "",
+          "username" : "eunoia",
+          "tokens" : {}
+      },
+      "gh" : {
+          "updated_at" : "2015-05-15T16:29:28Z",
+          "created_at" : "2011-07-23T23:57:53Z",
+          "following" : 9,
+          "followers" : 18,
+          "public_gists" : 7,
+          "public_repos" : 27,
+          "bio" : null,
+          "hireable" : true,
+          "email" : null,
+          "location" : null,
+          "blog" : null,
+          "company" : null,
+          "name" : "Evan R",
+          "gravatar_id" : "",
+          "avatar_url" : "https://avatars.githubusercontent.com/u/934880?v=3",
+          "id" : 934880,
+          "login" : "Eunoia",
+          "tokens" : {}
+      },
+      "in" : {
+          "lastName" : "R",
+          "id" : "A0CrMIM_ey",
+          "firstName" : "Evan",
+          "tokens" : {}
+      },
+      "tw" : {
+          "notifications" : false,
+          "following" : false,
+          "profile_banner_url" : "https://pbs.twimg.com/profile_banners/519175224/1355422690",
+          "profile_image_url" : "http://a0.twimg.com/profile_images/3084306905/805c7d858a2672aa2400a702972faf5f_normal.png",
+          "lang" : "en",
+          "verified" : false,
+          "geo_enabled" : false,
+          "time_zone" : "Pacific Time (US & Canada)",
+          "utc_offset" : -25200,
+          "favourites_count" : 14,
+          "created_at" : "Fri Mar 09 04:25:51 +0000 2012",
+          "listed_count" : 0,
+          "friends_count" : 129,
+          "followers_count" : 24,
+          "protected" : false,
+          "url" : null,
+          "description" : "All around reasonable person",
+          "location" : "Where I need to be.",
+          "screen_name" : "510_boatswain",
+          "name" : "evan",
+          "id" : 519175224,
+          "tokens" : {}
+      },
+      "sl" : {
+          "slackUrl" : "https://airpair.slack.com/",
+          "team" : "AirPair",
+          "teamId" : "T02ATFDPL",
+          "username" : "evan",
+          "id" : "U03M5HQU5",
+          "tokens" : {}
+      }
+    }
+},
+
+
 }
 
 module.exports = Object.assign(old, newer)

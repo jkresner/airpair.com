@@ -1,3 +1,12 @@
+anonymous = ->
+
+  IT 'Gets sessionId on anonymous session', ->
+    GET '/session/full', { unauthenticated: true }, (s) ->
+      expect(s.authenticated).to.be.false
+      expect(s.sessionID).to.exist
+      DONE()
+
+
 get = ->
 
   IT 'Search users', ->
@@ -53,6 +62,37 @@ update = ->
 
   it "can change bio"
 
+# function profileAuthenticated() {
+
+#   IT('Can update name', () => {
+#     STORY.addAndLoginLocalUserWithEmailVerified('sctm', function(s) {
+#       $log('here'.cyan)
+#       expect(s._id).to.exist
+#       expect(s.email).to.exist
+#       expect(s.name).to.exist
+#       expect(s.avatar).to.exist
+#       expect(s.emailVerified).to.equal(true)
+#       expect(s.initials).to.be.undefined
+#       expect(s.username).to.be.undefined
+
+#       var originalName = s.name
+
+#       PUT('/users/me/name', { name: 'test UP' }, {}, function(s2) {
+#         $log('here'.magenta)
+#         // expect(r.initials).to.equal('IN')
+#         expect(s2.name).to.equal('test UP')
+#         GET('/session/full', {}, (s2) => {
+#           expect(s2.name).to.equal('test UP')
+#           DONE()
+#         })
+#       })
+#     })
+#   })
+
+# }
+
+
+
 
 module.exports = ->
 
@@ -62,6 +102,7 @@ module.exports = ->
     STUB.cb(Wrappers.Slack, 'getChannels', FIXTURE.wrappers.slack_channels_list)
     STUB.cb(Wrappers.Slack, 'getGroups', FIXTURE.wrappers.slack_groups_list)
 
+  DESCRIBE("anonymous", anonymous)
   DESCRIBE("Get", get)
   DESCRIBE("Update ", update)
 

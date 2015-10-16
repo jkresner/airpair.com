@@ -109,7 +109,7 @@ var get = {
     // $log('exper tags', expertTags)
     for (var tag of tagIdsOrdered) {
       var match = _.find(expert.tags,(t)=>_.idsEqual(t._id,tag))
-      $log('tagToScore', expert._id, tag, expert.tags.length, match)
+      $log('tagToScore', expert, tag, expert.tags.length, match)
       if (match) {
         tagMatchCount = tagMatchCount+1
         requirements = requirements + (10 - tagSort)*20

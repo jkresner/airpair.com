@@ -40,11 +40,10 @@ var stubs = {
     // return sinon.stub(Wrappers.PayPal.api.payout,'create',
     var respCB = key =>
       (payload,syncmode,cb) => {
-        $log('coming')
         var resp = _.clone(FIXTURE.wrappers[key])
         resp.items[0].payout_item.receiver = payload.items[0].receiver
         resp.items[0].payout_item.amount = payload.items[0].amount.toString()
-        $log('returnstub'.magenta, resp)
+        // $log('returnstub'.magenta, resp)
         cb(null, resp)
       }
 
