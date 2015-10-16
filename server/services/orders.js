@@ -211,7 +211,7 @@ function makeOrder(byUser, lineItems, payMethodId, forUserId, requestId, dealId,
 
 function chargeAndTrackOrder(o, errorCB, saveCB)
 {
-  analytics.track(o.by, null, 'Order', o)
+  analytics.event('order', o.by, {total:o.total})
   if (o.total == 0) saveCB(null, o)
   else
   {
@@ -246,7 +246,7 @@ function chargeAndTrackOrder(o, errorCB, saveCB)
 function trackOrderPayment(order) {
   var d = {byName:order.by.name,total:order.total, _id:order._id}
   mailman.sendTemplate('pipeliner-notify-purchase', d, 'pipeliners')
-  analytics.track(order.by, null, 'Payment', {orderId:order._id, total:order.total})
+  analytics.event('payment', order.by, {orderId:order._id, total:order.total})
 }
 
 

@@ -1,6 +1,6 @@
 
 UNIQUIFY_USER = (key) ->
-  uniqueKey = FIXTURE.uniquify('users', key, 'name email username linked.gh.id linked.gp.id googleId key')
+  uniqueKey = FIXTURE.uniquify('users', key, 'name email username auth.gh.id auth.gp.id auth.password.value key')
   Object.assign(FIXTURE.users[uniqueKey],{key:uniqueKey,_id:new ObjectId()})
 
 
@@ -20,9 +20,21 @@ module.exports = (key, opts, done) ->
 
   # temporary stuff
   user.emailVerified = true
-  user.localization = FIXTURE.wrappers.localization_melbourne
+  user.location =
+    name:       FIXTURE.wrappers.localization_melbourne.locationData.formatted_address,
+    short:      FIXTURE.wrappers.localization_melbourne.locationData.name,
+    timeZoneId: FIXTURE.wrappers.localization_melbourne.timezoneData.timeZoneId
+
+
+  user.emails = [{value:user.email,primary:true,verified:true}]
 
   Object.assign(user, opts.data||{})
+
+  user.auth = {}
+  if opts.oauth
+    user.auth[oauth] = 'bhac'
+  else
+    user.auth.password = hash: 'basdfsdfsdf'
 
   # $log('create user'.yellow, user.key.white, user)
   DB.Collections.users.insert user, (e, r) ->

@@ -10,21 +10,32 @@ var cfg = {
     loginUrl:             '/login',
     unauthorizedUrl:      '/v1/auth/unauthorized',
     defaultRedirectUrl:   '/',
-    oAuth: {
+    oauth: {
+      appKey:             'apcom',
       callbackHost:       'http://localhost:3333' },
     masterpass:           'youshallpass',
     local: {
-      usernameField : 'email',
-      passwordField : 'password'                                            },
+      passReqToCallback:  true,
+      usernameField:      'email',
+      passwordField:      'password'
+    },
+    password: {
+      resetSalt:          '$2a$08$Qn0unnOa4XH0pN.IRZHB4u'
+    },
     google: {
+      login: true,
+      signup: true,
+      short: 'gp',
       clientID: '1019727294613-rjf83l9dl3rqb5courtokvdadaj2dlk5.apps.googleusercontent.com',
       clientSecret: 'Kd6ceFORVbABH7p5UbKURexZ',
       scope: [ 'profile', 'email',
         'https://www.googleapis.com/auth/plus.profile.emails.read']        },
     twitter: {
+      short: 'tw',
       consumerKey: 'Tfw8PWs5LcxqrWlFJWUhXf8i8',
       consumerSecret: 'yoA38VC94a2gcxJ7ewCyNn8nPu7bHVVVMTauZTanlvkgXBWNOE' },
     github: {
+      short: 'gh',
       clientID: '378dac2743563e96c747',
       clientSecret: 'f52d233259426f769850a13c95bfc3dbe7e3dbf2',
       adminAccessToken: 'b9d09cce1129b4ee1f4b97cc44c3b753cb9d8795', //jkyahoo
@@ -38,20 +49,25 @@ var cfg = {
       scope: [ 'profile', 'email', 'address', 'openid',
         'https://uri.paypal.com/services/paypalattributes']                },
     linkedin: {
+      short: 'in',
       consumerKey: 'sy5n2q8o2i49',
       consumerSecret: 'lcKjdbFSNG3HfZsd'                                   },
     bitbucket: {
+      short: 'bb',
       consumerKey: 'QNw3HsMSKzM6ptP4G4',
       consumerSecret: 'Cx5pvK2ZEjsymVxME42hSffkzkaQ9Buf'                   },
     stackexchange: {
+      short: 'so',
       clientID: '1451',
       clientSecret: 'CCkJpq3BY3e)lZFNsgkCkA((',
       key: 'dTtlx1WL0TJvOKPfoU88yg(('                                      },
     angellist: {
+      short: 'al',
       clientID: 'b6e2b75a1e20367c9b2bd267dbbd06269193814b83c2a492',
       clientSecret: 'e702b47dca92523fd99a3cc8f8262acfea8a52b19c5809cd',
       scope: ['email','talent']                                            },
     slack: {
+      short: 'sl',
       slackTeam: 'T06U2HQQ3',
       clientID: '6954602819.6963320480',
       clientSecret: 'ef0b1b25910627ce92f721bda02ba757',
@@ -161,9 +177,10 @@ module.exports = function(env) {
 
   //-- Temp for testing prod setting locally
   if (env == 'test') {
+    cfg.ads.on = false
     cfg.analytics.on = true
     cfg.analytics.mongoUrl = 'mongodb://localhost/airpair_test'
-    cfg.auth.oAuth.callbackHost = 'http://localhost:4444'
+    cfg.auth.oauth.callbackHost = 'http://localhost:4444'
     cfg.port = 4444
     cfg.mongoUrl = "mongodb://localhost/airpair_test"
     cfg.testlogin = true
@@ -181,7 +198,7 @@ module.exports = function(env) {
     cfg.mongoUrl = process.env.MONGOURL
 
     cfg.auth.masterpass = process.env.AUTH_MASTERPASS,
-    cfg.auth.oAuth.callbackHost = process.env.AUTH_OAUTH_CALLBACKHOST
+    cfg.auth.oauth.callbackHost = process.env.AUTH_OAUTH_CALLBACKHOST
     cfg.auth.google.clientID = process.env.AUTH_GOOGLE_CLIENTID
     cfg.auth.google.clientSecret = process.env.AUTH_GOOGLE_CLIENTSECRET
 

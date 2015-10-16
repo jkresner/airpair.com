@@ -3,7 +3,6 @@ reqs                        = {}
 
 matchmaking = ->
 
-  # rSwiftId = FIXTURE.requests.matchSwift._id
 
   IT '401 for non authenticated get matches for request', ->
     GET '/experts/mojo/rank', {status: 401}, ->

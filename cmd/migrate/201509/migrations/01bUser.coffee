@@ -39,12 +39,12 @@ renameAttrs = ->
 
   rename = renameModelAttr('Users')
 
-  renameLocation = (cb) ->
+  location = (cb) ->
     rename 'localization.timezoneData.timeZoneId', 'location.timeZoneId', true, ->
       rename 'localization.location', 'location.name', true, ->
         rename 'localization.locationData.name', 'location.shortName', true, cb
 
-  renameLogins = (cb) ->
+  social = (cb) ->
     rename 'google', 'social.gp', true,  ->
       rename 'bitbucket', 'social.bb', false,  ->
         rename 'github', 'social.gh', false, ->
@@ -53,8 +53,8 @@ renameAttrs = ->
               rename 'twitter', 'social.tw', false, cb
 #                 # rename 'angel', 'social.al', false, ->
 
-  reorgLogins = (cb) ->
-    rename 'local.password', 'auth.password.value', true, ->
+  auth = (cb) ->
+    rename 'local.password', 'auth.password.hash', true, ->
       rename 'social.so', 'auth.so', true, ->
         rename 'social.gp._json', 'auth.gp', true, ->
           rename 'social.bb._json.user', 'auth.bb', true, ->
@@ -64,7 +64,7 @@ renameAttrs = ->
                   rename 'social.al._json', 'auth.al', true, ->
                     rename 'social.sl', 'auth.sl', true, cb
 
-  reorgLoginTokens = (cb) ->
+  tokens = (cb) ->
     rename 'social.gp.token', 'auth.gp.tokens.apcom', true, ->
       rename 'social.gh.token', 'auth.gh.tokens.apcom', true, ->
         rename 'social.bb.token', 'auth.bb.tokens.apcom', true, ->
@@ -74,8 +74,13 @@ renameAttrs = ->
                 rename 'auth.so.token', 'auth.so.tokens.apcom', true, ->
                   rename 'auth.sl.token', 'auth.sl.tokens.apcom.token', true, cb
 
+  legacy = (cb) ->
+    rename 'siteNotifications', 'legacy.siteNotifications', true, ->
+      rename 'tags', 'legacy.tags', true, ->
+        rename 'bookmarks', 'legacy.bookmarks', true, ->
 
-  renameLocation -> renameLogins -> reorgLogins  -> reorgLoginTokens ->
+
+  location -> social -> auth -> tokens -> legacy ->
 
     expectAllPromises resolveResult('Users','premigrated'),
       maxAltschuler: (u, orig) ->

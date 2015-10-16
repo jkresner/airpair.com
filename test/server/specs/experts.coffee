@@ -14,7 +14,7 @@ create = ->
 
   IT "Cannot create expert profile without required user info", ->
     d = rate: 80, breif: 'yo', tags: [FIXTURE.tags.angular]
-    STORY.newUser 'alyr', {login:true,data:{localization:null}}, (salyr, salyrKey) ->
+    STORY.newUser 'alyr', {login:true,data:{location:null}}, (salyr, salyrKey) ->
       POST "/experts/me", d, { status: 403 }, (r) ->
         expectStartsWith(r.message, "Cannot create expert without username")
         PUT "/users/me/username", { username: salyrKey }, (r) ->
@@ -24,7 +24,7 @@ create = ->
               POST "/experts/me", d, { status: 403 }, (r) ->
                 expectStartsWith(r.message, "Cannot create expert without location")
                 PUT "/users/me/location", FIXTURE.wrappers.localization_melbourne.locationData, (r) ->
-                  expect(r.localization).to.exist
+                  expect(r.location).to.exist
                   POST "/experts/me", d, { status: 403 }, (r) ->
                     expectStartsWith(r.message, "Cannot create expert without bio")
                     PUT "/users/me/bio", { bio: 'a bio'}, (r) ->
@@ -43,14 +43,15 @@ create = ->
               PUT "/users/me/location", FIXTURE.wrappers.localization_melbourne.locationData, ->
                 PUT "/users/me/bio", { bio: 'a bio for apexpert 1'}, ->
                   POST "/experts/me", d, (expert) ->
+                    $log('expert', expert)
                     expect(expert._id).to.exist
                     # expect(expert.lastTouch).to.exist
                     expect(expert.name).to.equal(USERS.ape1.name)
                     expect(expert.username).to.equal('apexpert1')
                     expect(expert.initials).to.equal('ap')
                     expect(expert.location).to.equal('Melbourne VIC, Australia')
-                    expectStartsWith(expert.timezone, 'Australian ')
-                    expect(expert.gh.username).to.equal('airpairtest1')
+                    expectStartsWith(expert.timezone, 'Australia')
+                    expect(expert.gh.login).to.equal('airpairtest1')
                     expect(expert.gh.provider).to.be.undefined
                     expect(expert.gp.id).to.equal('107399914803761861041')
                     expect(expert.gp.name).to.be.undefined
@@ -280,10 +281,7 @@ admin = ->
         DONE()
 
 
-
-# admin = ->
-
-#   it.skip "Get experts history", ->
+  it "Get experts history", ->
 #     LOGIN 'admin', ->
 #       # expertId = "524304901c9b0f0200000012" ## Matias
 #       expertId = "53cfe315a60ad902009c5954" ## Michael P
@@ -311,13 +309,6 @@ admin = ->
 #           expect(booking.participants[0].role).to.equal('customer')
 #           expect(booking.participants[0].info.name).to.exist
 #         DONE()
-
-
-#   IT "Get deals for tag"
-
-
-#   it.skip "Get deals for expert", ->
-#     DONE()
 
 
 #   IT "Add no tag expert deal available to everyone with not expiration", ->
@@ -455,7 +446,8 @@ module.exports = ->
 
   before (done) ->
     global.USERS = FIXTURE.users
-    SETUP.initExperts done
+    SETUP.ensureExpert 'snug', ->
+      done()
 
   after ->
     global.USERS = null

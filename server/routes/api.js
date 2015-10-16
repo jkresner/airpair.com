@@ -83,7 +83,7 @@ other: Router()
   .get('/requests/:id/book/:expertId', API.Requests.getRequestForBookingExpert)
   .put('/requests/:request/verify', API.Requests.sendVerifyEmailByCustomer)
   .put('/requests/:request', API.Requests.updateByCustomer)
-  .put('/requests/:request/reply/:expert', API.Requests.replyByExpert)
+  .put('/requests/:request/reply/:expertshaped', API.Requests.replyByExpert)
   .post('/requests', API.Requests.create)
   .delete('/requests/:request', API.Requests.deleteById)
 

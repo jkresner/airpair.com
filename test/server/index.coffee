@@ -44,8 +44,8 @@ colors.setTheme({
 })
 
 config.colors = colors
-
 config.log.auth = false
+config.log.da = false
 
 SCREAM(__dirname, config, loginHandler).run()
 

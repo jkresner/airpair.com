@@ -29,6 +29,19 @@ var dataHelpers = {
     }
   },
 
+  usrData(name)
+  {
+    var ident = name.toLowerCase().replace(/ /g,'.')
+    var seed = { name, email: `${ident}@testpair.com` }
+    var suffix = dataHelpers.timeSeed()
+    return {
+      email: seed.email.replace('@',suffix+'@'),
+      name: seed.name+suffix,
+      password: 'testpass'+suffix,
+      userKey: ident.substring(0, 4)+suffix
+    }
+  },
+
   expertUserData(userKey)
   {
     var seed = _.clone(data.users[userKey])
@@ -53,25 +66,25 @@ var dataHelpers = {
     return seed
   },
 
-  expertData(userKey, user)
-  {
-    var seed = _.clone(data.experts[userKey])
-    if (!seed) $log('getNewExpertData failed, need seed expert'.red)
+  // expertData(userKey, user)
+  // {
+  //   var seed = _.clone(data.experts[userKey])
+  //   if (!seed) $log('getNewExpertData failed, need seed expert'.red)
 
-    seed._id = new ObjectId
-    seed.userId = user._id
-    seed.user = user
-    return seed
-  },
+  //   seed._id = new ObjectId
+  //   seed.userId = user._id
+  //   seed.user = user
+  //   return seed
+  // },
 
-  lotsOfWords(seed)
-  {
-    var words = (seed || "Start")
-    for (var i = 0; i < 501; i++) {
-      words += " stuff "
-    }
-    return words
-  }
+  // lotsOfWords(seed)
+  // {
+  //   var words = (seed || "Start")
+  //   for (var i = 0; i < 501; i++) {
+  //     words += " stuff "
+  //   }
+  //   return words
+  // }
 
 }
 

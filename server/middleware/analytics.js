@@ -44,7 +44,8 @@ var middleware = {
       {
         req.session.firstRequest = { url: req.url }
         if (req.header('Referer')) { req.session.firstRequest.ref = req.header('Referer') }
-        analytics.track(null, req.sessionID, 'First', req.session.firstRequest, { ip: req.ip }, () => {})
+        var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress
+        analytics.echo(null, req.sessionID, 'First', req.session.firstRequest, { ip }, () => {})
       }
     }
     next()

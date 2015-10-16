@@ -17,7 +17,7 @@ var validation = {
 
   createBooking(user, expert, datetime, minutes, type, credit, payMethodId, requestId)
   {
-    if (!user.localization || !user.localization.timezone)
+    if (!user.location || !user.location.name)
       return `Booking requires customer to have added their timezone`
 
     // if (!type) return `Booking type required`

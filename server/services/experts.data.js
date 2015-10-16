@@ -1,12 +1,16 @@
 var md5           = require('../util/md5')
 var {selectFromObject}    = util
 
+var mojoUser = 'email name initials username location auth.gp.link auth.gh.login auth.gh.followers auth.so.link auth.so.reputation auth.bb.username auth.in.id auth.tw.username'
+
 var data = {
 
   select: {
+    mojoUser,
     matches: {
       '_id': 1,
       'user': 1,
+      'userId': 1,
       'name': 1,
       'email': 1,
       'tags._id': 1,
@@ -77,12 +81,11 @@ var data = {
       'username': 1,
       'initials': 1,
       'bio': 1,
-      'localization.location': 1,
-      'localization.timezone': 1,
-      'google.id':1,
-      'google._json.picture':1,
-      'social.gh._json.followers': 1,
-      'social.gh.username': 1,
+      'location': 1,
+      'social.gp.id': 1,
+      'social.gp.link': 1,
+      'social.gh.followers': 1,
+      'social.gh.login': 1,
       'social.so.link': 1,
       'social.so.reputation': 1,
       'social.bb.username': 1,
@@ -90,7 +93,7 @@ var data = {
       'social.in.id': 1,
       'social.in.endorsements': 1,
       'social.tw.username': 1,
-      'social.tw._json.followers_count': 1,
+      'social.tw.followers_count': 1,
     },
     updateME: {
       '_id': 1,
@@ -113,31 +116,27 @@ var data = {
     },
     v0unset:'name email username location timezone homepage karma gh gp tw in al so bb',
     migrateInflate(r) {
-      if (!r.user) {
-        r.isV0 = true
-        r.avatar = (r.email) ? md5.gravatarUrl(r.email) : r.pic
-      }
-      else {
+      // $log('migrateInflate.r', r)
+      if (!r.user) return
 
-        delete r.user._id
-        var social = r.user.social
+      // $log('migrateInflate'.yellow, r._id, r, r.user)
+      r.avatar = (r.email||r.gmail||r.user.email) ?
+        md5.gravatarUrl(r.email||r.gmail||r.user.email) : r.pic
 
-        // how we handle staying v0 on front-end
-        r = _.extend(_.extend(r,r.user),social)
-        r.location = r.localization.location
-        r.timezone = r.localization.timezone
-        r.avatar = md5.gravatarUrl(r.email)
-        delete r.user
-        if (r.social) delete r.social
-        if (r.google) delete r.google
-        if (r.localization) delete r.localization
-      }
+      var social = r.user.social || r.user.auth
+      delete r.user.social
+      delete r.user.auth
 
-      if (r.gh && r.gh._json)
-        r.gh.followers = r.gh._json.followers
-
-      if (r.tw && r.tw._json)
-        r.tw.followers = r.tw._json.followers_count
+      // $log('social'.white, r.user)
+      // how we handle staying v0 on front-end
+      r.userId = r.user._id
+      delete r.user._id
+      r = _.extend(_.extend(r,r.user),social)
+      r.timezone = r.location.timeZoneId
+      r.location = r.location.name
+      r.avatar = md5.gravatarUrl(r.email)
+      delete r.user
+      if (r.localization) delete r.localization
 
       r.minRate = r.minRate || r.rate
       r.tags = data.select.inflatedTags(r)
@@ -148,6 +147,7 @@ var data = {
         }
       }
 
+      // $log('migrateInflated.r'.white, r)
       return r
     },
       //-- TODO, watch out for cache changing via adds and deletes of records
@@ -223,6 +223,7 @@ var data = {
           if (e) return cb(e)
           for (var expert of experts)
             expert = data.select.migrateInflate(expert)
+          var experts = experts.filter(exp=>exp!=null)
           cb(null, experts)
         }
       }
@@ -232,10 +233,12 @@ var data = {
   query: {
     ranked(tags, exclude, budget, includeBusy) {
       // $log('getRanked', query)
+
       var q = {
-        'tags._id': { $in: tags },
         'rate': { $gt: 0 },
+        'tags._id': { $in: tags.map(t=>t._id) }
       }
+
       if (!includeBusy)
         q['availability.status'] = { $ne: 'busy' }
 
@@ -253,7 +256,7 @@ var data = {
   },
 
   options: {
-    newest100: { limit: 100, sort: { '_id': -1 } },
+    newest100: { limit: 100, sort: { '_id': -1 }, join: { 'userId': mojoUser } },
     active100: { limit: 100, sort: { 'lastTouch.utc': -1 } }
   },
 
