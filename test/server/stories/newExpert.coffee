@@ -1,3 +1,6 @@
+injectOAuthPayoutMethod = (user, providerName, pmKey,cb) ->
+  require('../../../server/services/paymethods').addOAuthPayoutmethod.call({user},
+    providerName, FIXTURE.paymethods[pmKey],{},(e,r)->cb(r))
 
 UNIQUIFY_USER = (key) ->
   uniqueKey = FIXTURE.uniquify('users', key, 'name email auth.gh.id auth.gp.id googleId key')
@@ -37,7 +40,12 @@ module.exports = (key, opts, done) ->
   DB.ensureDoc 'User', user, ->
     FIXTURE.users[user.key] = user
     LOGIN {key:user.key}, (s) ->
+      s.userKey = user.key
       d = rate: 70, breif: 'yo', tags: [FIXTURE.tags.angular]
       POST "/experts/me", d, (expert) ->
-        s.userKey = user.key
-        done(s, expert)
+        FIXTURE.experts[user.key] = expert
+        if !opts.payoutmethod
+          done(s, expert)
+        else
+          injectOAuthPayoutMethod s, 'paypal', 'payout_paypal_enus_verified', (payoutmethod) ->
+            done expert, s, payoutmethod

@@ -1,16 +1,6 @@
 function api() {
 
 
-  IT('Gets sessionId on anonymous session', function() {
-    var opts = { unauthenticated: true }
-    GET('/session/full', opts, function(s) {
-      expect(s.authenticated).to.be.false
-      expect(s.sessionID).to.exist
-      DONE()
-    })
-  })
-
-
 //   it('Does not wipe existing local login data with anonymous tags and bookmarks data', function(done) {
 //     SETUP.addAndLoginLocalUser('wlmo', function(sWlmo) {
 //       PUT(`/users/me/bookmarks/post/${data.posts.v1AirPair._id}`, {}, {}, function(s1) {
@@ -303,27 +293,27 @@ function api() {
 //     })
 //   })
 
-// }
+// // }
 
 
-function profileAnonymous() {
+// function profileAnonymous() {
 
-  IT('Can update email', (done) => {
-    var clone = SETUP.userData('kfor')
-    PUT('/users/me/email',{email:clone.email}, {unauthenticated:true}, (r) => {
-      expect(r.email).to.equal(clone.email)
-      expect(r.authenticated).to.equal(false)
-      expect(r.avatar).to.exist
-      expect(r.sessionID).to.exist
-      GET('/session/full', {}, function(s) {
-        expect(s.email).to.equal(clone.email)
-        expect(s.authenticated).to.equal(false)
-        expect(s.avatar).to.exist
-        expect(s.sessionID).to.exist
-        DONE()
-      })
-    })
-  })
+//   IT('Can update email', (done) => {
+//     var clone = SETUP.userData('kfor')
+//     PUT('/users/me/email',{email:clone.email}, {unauthenticated:true}, (r) => {
+//       expect(r.email).to.equal(clone.email)
+//       expect(r.authenticated).to.equal(false)
+//       expect(r.avatar).to.exist
+//       expect(r.sessionID).to.exist
+//       GET('/session/full', {}, function(s) {
+//         expect(s.email).to.equal(clone.email)
+//         expect(s.authenticated).to.equal(false)
+//         expect(s.avatar).to.exist
+//         expect(s.sessionID).to.exist
+//         DONE()
+//       })
+//     })
+//   })
 
 //   it('Can update name', function(done) {
 //     var clone = SETUP.userData('mthm')
@@ -374,34 +364,17 @@ function profileAnonymous() {
 
 }
 
-function profileAuthenticated() {
+// dashboard = ->
 
-  IT('Can update name', () => {
-    STORY.addAndLoginLocalUserWithEmailVerified('sctm', function(s) {
-      $log('here'.cyan)
-      expect(s._id).to.exist
-      expect(s.email).to.exist
-      expect(s.name).to.exist
-      expect(s.avatar).to.exist
-      expect(s.emailVerified).to.equal(true)
-      expect(s.initials).to.be.undefined
-      expect(s.username).to.be.undefined
-
-      var originalName = s.name
-
-      PUT('/users/me/name', { name: 'test UP' }, {}, function(s2) {
-        $log('here'.magenta)
-        // expect(r.initials).to.equal('IN')
-        expect(s2.name).to.equal('test UP')
-        GET('/session/full', {}, (s2) => {
-          expect(s2.name).to.equal('test UP')
-          DONE()
-        })
-      })
-    })
-  })
-
-}
+//   it 'Can signup and close hello notification', itDone ->
+//     SETUP.addAndLoginLocalUser 'andr', (s) ->
+//       GET "/users/me/site-notifications", {}, (n1) ->
+//         expect(n1).to.exist
+//         expect(n1.length).to.equal(0)
+//         PUT "/users/me/site-notifications", { name: 'hello'}, {}, (n2) ->
+//           expect(n2.length).to.equal(1)
+//           expect(n2[0].name).to.equal('hello')
+//           DONE()
 
 
 module.exports = () => {

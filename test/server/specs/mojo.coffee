@@ -10,13 +10,13 @@ matchmaking = ->
 
 
   IT '301 Result for logged in rank with no query propeties', ->
-    STORY.newUser 'tjar', {login:true}, (s) ->
+    STORY.newUser 'tjar', (s) ->
       GET '/experts/mojo/rank', {status: 403}, (experts) ->
         DONE()
 
 
   IT 'Matches experts on swift', ->
-    STORY.newUser 'tard', {login:true}, (s) ->
+    STORY.newUser 'tard', (s) ->
       query = RequestsUtil.mojoQuery(reqs.matchSwift)
       expect(query).to.equal('tags=swift')
       GET "/experts/mojo/rank?#{query}", (experts) ->
@@ -26,7 +26,7 @@ matchmaking = ->
 
 
   IT 'Rank filters out excludes by username', ->
-    STORY.newUser 'tedj', {login:true}, (s) ->
+    STORY.newUser 'tedj', (s) ->
       req = _.extend({},reqs.matchSwift)
       req.suggested = [{expert:{username:'loufranco'}}]
       query = RequestsUtil.mojoQuery(req)
@@ -37,7 +37,7 @@ matchmaking = ->
 
 
   IT 'Rank by c# and C++', ->
-    STORY.newUser 'mrik', {login:true}, (s) ->
+    STORY.newUser 'mrik', (s) ->
       cPPQuery = 'tags=c%2B%2B'
       GET "/experts/mojo/rank?#{cPPQuery}", {}, (experts) ->
         expect(experts.length).to.equal(1)
@@ -64,9 +64,10 @@ matchmaking = ->
 module.exports = ->
 
   before (done) ->
-    DB.ensureDoc 'Request', FIXTURE.requests.matchSwift, ->
-      reqs.matchSwift = FIXTURE.requests.matchSwift
+    DB.removeDocs 'Expert', {_id: FIXTURE.experts.louf.id }, ->
       SETUP.ensureExpert 'louf', ->
-        done()
+        DB.ensureDoc 'Request', FIXTURE.requests.matchSwift, ->
+          reqs.matchSwift = FIXTURE.requests.matchSwift
+          done()
 
   DESCRIBE "matchmaking: ", matchmaking

@@ -4,7 +4,10 @@ var validation = {
 
   getOrdersForPayouts(user, expert)
   {
-    var isAdmin = _.contains(user.roles, 'admin')
+    if (!expert || !expert._id || !expert.userId)
+      return `Payouts currently only avaialble for experts`
+
+    var isAdmin = _.contains(user.roles||[], 'admin')
     var isExpert = expert && _.idsEqual(user._id, expert.userId)
 
     if (!isAdmin && !isExpert) return `Can only get orders to payout for yourself`
@@ -60,7 +63,7 @@ var validation = {
     if (!Roles.isOwnerOrAdmin(user,original))
       return `Payout[${original._id}] must be released by owner`
 
-    var payoutLines = _.where(original.lineItems, (l) =>
+    var payoutLines = _.filter(original.lineItems, (l) =>
       l.info && l.info.paidout === false)
 
     if (payoutLines.length != 1) return `[${payoutLines.length}] Payout lines is invalid for releasing a payout`

@@ -5,13 +5,8 @@ module.exports = -> describe "pairbot: ", ->
   before (done) ->
     done()
 
-  after ->
 
-  beforeEach ->
-
-  afterEach ->
-
-  it 'Can get rendered template without sending', itDone ->
+  IT 'Can get rendered template without sending', ->
     hangoutUrl = "https://talkgadet.com/test-spinning-test"
     pairbot.get 'hangout-started-slack', {hangoutUrl}, (e,msg) ->
       expect(e).to.be.null
@@ -21,7 +16,7 @@ module.exports = -> describe "pairbot: ", ->
 
   describe.skip "posts ", ->
 
-    it 'Sends message with attachment on post submit', itDone ->
+    IT 'Sends message with attachment on post submit', ->
       pairbot.sendPostSubmitted data.posts.mmTopAngMistakes, (e,r) ->
         expect(e).to.be.null
         msg = r.message
@@ -29,21 +24,21 @@ module.exports = -> describe "pairbot: ", ->
         DONE()
 
 
-    it 'Sends message with attachment on post sync', itDone ->
+    IT 'Sends message with attachment on post sync', ->
       pairbot.sendPostSynced data.posts.mmTopAngMistakes, (e,r) ->
         expect(e).to.be.null
         msg = r.message
         DONE()
 
 
-    it 'Sends message with attachment on post published', itDone ->
+    IT 'Sends message with attachment on post published', ->
       pairbot.sendPostPublished data.posts.mmTopAngMistakes, (e,r) ->
         expect(e).to.be.null
         msg = r.message
         DONE()
 
 
-    # it 'Sends message with', itDone ->
+    IT 'Sends message with', ->
     #   pairbot.sendPostPublished data.posts.mmTopAngMistakes, (e,r) ->
     #     expect(e).to.be.null
     #     msg = r.message
