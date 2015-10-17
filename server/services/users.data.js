@@ -31,8 +31,9 @@ var select = {
     'auth.so.link': 1,
     'auth.bb.username': 1,
     'auth.in.id': 1,
-    'auth.tw.username': 1,
-    'auth.al.username': 1,
+    'auth.tw.screen_name': 1,
+    'auth.al.angellist_url': 1,
+    'auth.gp.id': 1,
     'auth.gp.link': 1,
     'auth.gp.url': 1,
     'auth.gp.email': 1,
@@ -168,11 +169,19 @@ var data = {
           var obj = util.selectFromObject(r, data.select.sessionFull)
           if (obj.roles && obj.roles.length == 0) delete obj.roles
 
-          // if (obj.localization)
-          //   obj.timeZoneId = obj.localization.timezoneData.timeZoneId
+          // $log('session', obj.location)
+          if (obj.location)
+            obj.timeZoneId = obj.location.timeZoneId
 
           data.select.setAvatar(obj)
           data.select.inflateTagsAndBookmarks(obj, cb)
+
+          if (obj.auth && obj.auth.al) {
+            obj.auth.al.username = obj.auth.al.angellist_url.replace('https://angel.co/','')
+            delete obj.auth.al.angellist_url
+          }
+
+          // $log('session.obj', obj)
 
           // if (ctx.user)
             // ctx.session.passport.user = data.select.sessionFromUser(obj)
@@ -233,11 +242,11 @@ var data = {
 
   data: {
 
-    // anonAvatars: [
-    //   "/static/img/css/sidenav/default-cat.png",
-    //   "/static/img/css/sidenav/default-mario.png",
-    //   "/static/img/css/sidenav/default-stormtrooper.png"
-    // ],
+    anonAvatars: [
+      "/static/img/css/sidenav/default-cat.png",
+      "/static/img/css/sidenav/default-mario.png",
+      "/static/img/css/sidenav/default-stormtrooper.png"
+    ],
 
     maillists: [
       { id: '903d16f497',

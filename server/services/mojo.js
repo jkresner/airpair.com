@@ -54,12 +54,12 @@ var get = {
           // $log('inflated', exclude, inflated)
           for (var exp of inflated) {
             exp.score = get.calcMojo(exp, q.tags)
-            $log('exp.score', exp.username.white, exp.score)
+            // $log('exp.score', exp.score)
           }
 
           var filtered = inflated.filter(exp=>exclude.indexOf(exp.username)==-1)
           var sorted = _.sortBy(filtered, u => u.score).reverse()
-          var results = _.take(sorted, 40)
+          var results = _.take(sorted, 100)
           // $log('experts', results)
           cb(null, results)
         })(ee, experts)
@@ -109,7 +109,7 @@ var get = {
     // $log('exper tags', expertTags)
     for (var tag of tagIdsOrdered) {
       var match = _.find(expert.tags,(t)=>_.idsEqual(t._id,tag))
-      $log('tagToScore', expert, tag, expert.tags.length, match)
+      // $log('tagToScore', expert, tag, expert.tags.length, match)
       if (match) {
         tagMatchCount = tagMatchCount+1
         requirements = requirements + (10 - tagSort)*20
@@ -131,7 +131,7 @@ var get = {
 
     var social = 0;
 
-    $log('calcMojo'.blue, requirements, expert.gh, expert.so)
+    // $log('calcMojo'.blue, requirements, expert.gh, expert.so)
     // $log('social', expert._id, expert.gh)
     if (expert.gh) social += Math.floor(expert.gh.followers/20)
     if (expert.so) social += social + Math.floor(expert.so.reputation/150)
@@ -216,7 +216,7 @@ var save = {
     }
 
     Expert.find({rate:{'$gt':0}},(e,r) => {
-      $log('experts'.cyan, r.length)
+      // $log('experts'.cyan, r.length)
       for (var exp of r)
         updateOne(exp)
     })
@@ -224,11 +224,11 @@ var save = {
 
   updateMatchingStats(expert, request, cb) {
     calcMatching(expert, (e, matching) => {
-      // $log('updaing', expert._id, expert.tags, matching.replies.last10, matching)
-      Expert.updateSet(expert._id, {matching}, (e,r)=>{
-        if (r) r.avatar = md5.gravatarUrl(r.email||r.user.email)
-        r.score = get.calcMojo(r,request.tags)
-        r.tags = expert.tags
+      // $log('updaing.matching', expert._id, expert.tags, matching.replies.last10, matching)
+      Expert.updateSet(expert._id, {matching}, (e, update)=>{
+        if (e) return cb(e)
+        expert.matching = matching
+        expert.score = get.calcMojo(expert,request.tags)
 
         var d = {
           tagsString:util.tagsString(request.tags), expertFirstName: util.firstName(expert.name),
@@ -237,8 +237,8 @@ var save = {
           // isFirstSuggest: matching.replies.suggested.length == 0,
         }
         mailman.get('expert-suggest', d, (ee,rr) => {
-          if (rr) r.suggest = { subject: rr.subject, markdown: rr.markdown }
-          cb(e,r)
+          if (rr) expert.suggest = { subject: rr.subject, markdown: rr.markdown }
+          cb(e,expert)
         })
       })
     })

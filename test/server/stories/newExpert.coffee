@@ -3,7 +3,7 @@ injectOAuthPayoutMethod = (user, providerName, pmKey,cb) ->
     providerName, FIXTURE.paymethods[pmKey],{},(e,r)->cb(r))
 
 UNIQUIFY_USER = (key) ->
-  uniqueKey = FIXTURE.uniquify('users', key, 'name email auth.gh.id auth.gp.id googleId key')
+  uniqueKey = FIXTURE.uniquify('users', key, 'name email auth.gh.id auth.gp.id googleId')
   Object.assign(FIXTURE.users[uniqueKey],{key:uniqueKey,_id:new ObjectId()})
 
 
@@ -19,23 +19,26 @@ module.exports = (key, opts, done) ->
   {data,login} = opts
 
   user = UNIQUIFY_USER(key)
-  user.username = "#{key}-#{timeSeed()}"
+  # $log('user.key'.white, user.key)
+  user.username = user.key
   user.initials = "ap-#{timeSeed()}"
+  user.bio = "a bio for apexpert 1 #{timeSeed()}"
   user.location =
     name:       FIXTURE.wrappers.localization_melbourne.locationData.formatted_address,
     short:      FIXTURE.wrappers.localization_melbourne.locationData.name,
     timeZoneId: FIXTURE.wrappers.localization_melbourne.timezoneData.timeZoneId
 
-  user.bio = "a bio for apexpert 1 #{timeSeed()}"
   if (user.auth)
-    user.auth.gh = user.auth.gh || FIXTURE.users.ape1.auth.gh
+    user.auth.gh = _.extend(FIXTURE.users.ape1.auth.gh||{},user.auth.gh||{})
   else
     user.auth = { gh: FIXTURE.users.ape1.auth.gh }
-  user.auth.gp = user.auth.gp || FIXTURE.users.ape1.auth.gp
+
+  user.auth.gp = _.extend(FIXTURE.users.ape1.auth.gp||{},user.auth.gp||{})
 
   expData = opts.data || {}
   if (expData.user)
     Object.assign(user,expData.user)
+
 
   DB.ensureDoc 'User', user, ->
     FIXTURE.users[user.key] = user
@@ -43,6 +46,7 @@ module.exports = (key, opts, done) ->
       s.userKey = user.key
       d = rate: 70, breif: 'yo', tags: [FIXTURE.tags.angular]
       POST "/experts/me", d, (expert) ->
+        expect(expert._id, "no expert id")
         FIXTURE.experts[user.key] = expert
         if !opts.payoutmethod
           done(s, expert)

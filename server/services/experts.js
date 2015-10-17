@@ -1,5 +1,5 @@
 var logging               = false
-var {Expert}              = DAL
+var {Expert,User}         = DAL
 var UserSvc               = require('../services/users')
 var RequestSvc            = require('../services/requests')
 var BookingSvc            = require('../services/bookings')
@@ -15,7 +15,7 @@ var get = {
   },
 
   getByIdForAdmin(id, cb) {
-    Expert.getById(id,selectCB.addAvatar(cb))
+    Expert.getById(id,{join:{userId:select.mojoUser}},selectCB.addAvatar(cb))
   },
 
   getMe(cb) {
@@ -49,11 +49,23 @@ var get = {
   },
 
   search(term, cb) {
-    var searchFields = 'user.name user.email user.username name email username'
-      + 'gh.username tw.username user.social.gh.username user.social.tw.username'
-    var opts = { limit: 5, andQuery: { rate: { '$gt': 0 } }, select: select.search }
+    // var searchFields = 'user.name user.email user.username name email username'
+      // + 'user.auth.gh.username user.auth.tw.username user.auth.gh.username user.auth.tw.username'
+    var searchFields = 'name email username auth.gp.displayName'
+    var opts = { limit: 5, andQuery: { rate: { '$gt': 0 } } }
 
-    Expert.searchByRegex(term, searchFields, opts, selectCB.migrateSearch(cb))
+    User.searchByRegex(term, searchFields, {select:searchFields,limit:20}, (e,r) => {
+      var uIds = _.pluck(r,'_id')
+      Expert.getManyByQuery({userId:{$in:uIds}}, opts, (ee,rr)=>{
+        $log('ee'.yellow, ee, rr)
+        for (var expert of rr) {
+          $log('expert'.green, expert.userId)
+          // $log(_.find(r, u => _.idsEqual(u._id,expert.userId)))
+          expert.user = _.find(r, u => _.idsEqual(u._id,expert.userId))
+        }
+        selectCB.migrateSearch(cb)(ee, rr)
+      })
+    })
   },
 
   getByUsername(term, cb) {
@@ -81,50 +93,45 @@ var get = {
 
 }
 
-function updateWithTouch(expert, action, trackData, cb) {
-  var previousAction = (expert.lastTouch) ? expert.lastTouch.action : null
-  if (action != previousAction ||
-    moment(expert.lastTouch.utc).isBefore(moment().add(1, 'hours')))
-  {
-    expert.lastTouch = svc.newTouch.call(this, action)
-    expert.activity = expert.activity || []
-    if (_.idsEqual(this.user._id,expert.userId))  // Don't want activity for admins
-     expert.activity.push(expert.lastTouch)
-  }
+function saveWithTouch(original, ups, action, trackData, done) {
+  var lastTouch = svc.newTouch.call(this, action)
 
   var tagIdx = 0
-  for (var t of expert.tags) {
+  for (var t of ups.tags) {
     if (!t.sort)
       t.sort = tagIdx
     tagIdx = tagIdx + 1
   }
 
   //-- consistency with v0 + save db space
-  if (expert.user.social) {
-    if (expert.user.social.so)
-      expert.user.social.so.link = expert.user.social.so.link.replace('http://stackoverflow.com/users/','')
-    if (expert.user.google) {
-      expert.user.social.gp = expert.user.google
-      delete expert.user.google
-    }
-  }
+  // if (expert.user.social) {
+  //   if (expert.user.social.so)
+  //     expert.user.social.so.link = expert.user.social.so.link.replace('http://stackoverflow.com/users/','')
+  //   if (expert.user.google) {
+  //     expert.user.social.gp = expert.user.google
+  //     delete expert.user.google
+  //   }
+  // }
+  var cb = () => get.getMe.call(this, done)
 
   if (action == 'create') {
-    Expert.create(expert, cb)
+    ups.lastTouch = lastTouch
+    ups.activity = [lastTouch]
+    Expert.create(ups, cb)
   }
   else {
-
-    if (expert.gp || expert.gh || expert.so || expert.bb ||
-      expert.in || expert.tw || expert.name || expert.username ||
-      expert.gmail || expert.timezone || expert.location ||
-      expert.homepage || expert.karma)
+    var previousAction = original.lastTouch ? original.lastTouch.action : null
+    if (action != previousAction ||
+      moment(original.lastTouch.utc).isBefore(moment().add(1, 'hours')))
     {
-      Expert.updateUnset(expert._id, select.v0unset.split(' '), (e,r)=>{})
-      expert = _.omit(expert, select.v0unset.split(' '))
-      $log(`Migrating v0 expert ${expert._id} ${expert.user.name}`.yellow)
+      ups.lastTouch = lastTouch
+      ups.activity = original.activity
+
+      if (_.idsEqual(this.user._id,original.userId))  // Don't want activity for admins
+        ups.activity.push(lastTouch)
     }
 
-    Expert.updateSet(expert._id, _.omit(expert,['_id']), cb)
+    Expert.updateSet(original._id, _.omit(ups,['_id']), cb)
   }
 
   // if (trackData)
@@ -137,43 +144,41 @@ var save = {
 
   create(expert, cb) {
     var trackData = { name: this.user.name }
-    expert.user = selectFromObject(_.extend({social:this.user.auth},this.user), select.userCopy)
-    // $log('EXPERT.create', expert.user, this.user.auth)
+    // expert.user = selectFromObject(_.extend({social:this.user.auth},this.user), select.userCopy)
     expert.userId = this.user._id
-    $callSvc(updateWithTouch, this)(expert, 'create', trackData, (e,r) => {
-      // if (r._id)
-      //   $callSvc(UserSvc.setExpertCohort, this)(r._id)
-      selectCB.me(cb)(e,r)
-    })
+    saveWithTouch.call(this, null, expert, 'create', trackData, cb)
   },
 
   updateMe(original, ups, cb) {
+    $log('updateMe')
     var trackData = { name: this.user.name, _id: original._id }
-    ups.user = selectFromObject(_.extend({social:this.user.auth},this.user), select.userCopy)
-    var expert = selectFromObject(_.extend(original,ups), select.updateMe)
-    $callSvc(updateWithTouch, this)(expert, 'update', trackData, selectCB.me(cb))
+    // ups.user = selectFromObject(_.extend({social:this.user.auth},this.user), select.userCopy)
+    // var expert = selectFromObject(_.extend(original,ups), select.updateMe)
+    saveWithTouch.call(this, original, ups, 'update', trackData, cb)
     // $callSvc(UserSvc.setExpertCohort, this)(ups._id)
   },
 
   updateAvailability(original, availability, cb) {
     availability.lastTouch = svc.newTouch.call(this, availability.status)
-    Expert.updateSet(original._id, {availability}, selectCB.me(cb))
+    Expert.updateSet(original._id, {availability}, cb)
   },
 
   createDeal(expert, deal, cb) {
-    deal.lastTouch = svc.newTouch.call(this, 'createDeal')
-    deal.activity = [deal.lastTouch]
-    deal.rake = deal.rake || 10 //-- To become more intelligent and custom per deal
-    expert.deals = expert.deals || []
-    expert.deals.push(deal)
-    $callSvc(updateWithTouch, this)(expert, 'createDeal', null, selectCB.me(cb))
+    cb(V2DeprecatedError('Experts.createDeal'))
+    // deal.lastTouch = svc.newTouch.call(this, 'createDeal')
+    // deal.activity = [deal.lastTouch]
+    // deal.rake = deal.rake || 10 //-- To become more intelligent and custom per deal
+    // expert.deals = expert.deals || []
+    // expert.deals.push(deal)
+    // $callSvc(updateWithTouch, this)(expert, 'createDeal', null, selectCB.me(cb))
   },
 
   deactivateDeal(expert, dealId, cb) {
-    var deal = _.find(expert.deals,(d)=>_.idsEqual(d._id,dealId))
-    deal.lastTouch = svc.newTouch.call(this, 'dectivateDeal')
-    deal.expiry = new Date
-    $callSvc(updateWithTouch, this)(expert, 'dectivateDeal', null, selectCB.me(cb))
+    cb(V2DeprecatedError('Experts.deactivateDeal'))
+    // var deal = _.find(expert.deals,(d)=>_.idsEqual(d._id,dealId))
+    // deal.lastTouch = svc.newTouch.call(this, 'dectivateDeal')
+    // deal.expiry = new Date
+    // $callSvc(updateWithTouch, this)(expert, 'dectivateDeal', null, selectCB.me(cb))
   },
 
   addNote(original, note, cb)

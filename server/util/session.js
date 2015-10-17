@@ -51,16 +51,21 @@ module.exports = function(app, initSessionStore, done)
       if (!Strategy) Strategy = require(`passport-${provider}`).Strategy
 
       var success = (req, token, refresh, resp, cb) => {
-        $log('resp', resp)
+        $log('oauth.resp'.cyan, JSON.stringify(_.omit(resp,'_raw')).gray)
         require('../services/auth').link.call(req, provider, resp._json, {token,refresh}, cb)
       }
 
       config.auth[provider].passReqToCallback = true
+      config.auth[provider].callbackURL = `${config.auth.oauth.callbackHost}/auth/${provider}/callback`
+      // $log('config.oauth'.gray, provider, config.auth[provider].callbackURL)
+
       passport.use(provider, new Strategy(config.auth[provider], success))
 
       return function(req, res, next) {
-        var opts = {}
-
+        var opts = {
+          // failureRedirect: `${config.auth.loginUrl}?fail=${provider}`,
+          // scope: scope
+        }
         // if (opts.assignProperty) delete opts.assignProperty
 
         // If the users is ALREADY logged in (got a session), then we

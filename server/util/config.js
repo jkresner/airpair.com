@@ -68,7 +68,7 @@ var cfg = {
       scope: ['email','talent']                                            },
     slack: {
       short: 'sl',
-      slackTeam: 'T06U2HQQ3',
+      team: 'T06U2HQQ3',
       clientID: '6954602819.6963320480',
       clientSecret: 'ef0b1b25910627ce92f721bda02ba757',
       scope: ['identify','read','post','client']                           },

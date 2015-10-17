@@ -441,7 +441,7 @@ feedback = ->
 
 module.exports = ->
 
-  @timeout 40000
+  @timeout 60000
 
   before (done) ->
     @braintreepaymentStub = SETUP.stubBraintreeChargeWithMethod()

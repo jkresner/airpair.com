@@ -1,4 +1,4 @@
-var {User}                   = DAL
+ var {User}                   = DAL
 var bcrypt                   = require('bcrypt')
 var {query,data,select}      = require('./users.data')
 var logging                  = config.log.auth
@@ -65,7 +65,7 @@ function localSignup(email, password, name, done) {
 
 
 function localLogin(email, password, done) {
-  $log('AUTH.localLogin'.yellow, email)
+  // $log('AUTH.localLogin'.yellow, email)
   User.getByQuery(query.existing.byEmail(email), (e, existing) => {
     if (e) return done(e)
 
@@ -91,20 +91,51 @@ var _setProfileTokens = (profile, token, refresh) => {
 }
 
 
+var odata = {
+  gp(p) {
+    if (!p.displayName && p.name && p.name.constructor == String) {
+      p.displayName = p.name
+      delete p.name
+    }
+
+    var name = p.displayName
+    var email = p.email || p.emails[0].value
+    var emailVerified = p.verified_email || p.verified
+
+    p.email = email
+
+    return {name,email,emailVerified,profile:p}
+  },
+  al(p) {
+    var username = p.angellist_url.replace('https://angel.co/','')
+    return {profile: _.extend({username}, _.omit(p,'facebook_url','behance_url','dribbble_url')) }
+  },
+  sl(p) {
+    var username = p.info.user.name
+    var selected = util.selectFromObject(p.info.user,['id','real_name','tz_offset','profile.email'])
+    return { profile: _.extend({username},selected) }
+  },
+  tw(p) { return {profile:p} },
+  in(p) { return {profile:p} },
+  bb(p) { return {profile:p} },
+  gh(p) { return {profile:p} },
+  so(p) { return {profile:p} },
+}
+
+
 function oauthLogin(provider, profile, {token,refresh}, done) {
   if (!config.auth[provider] && config.auth[provider].login !== true)
     return Done(Error(`AUTH.Login with ${provider} not supported`))
 
+  $log(`AUTH.oathLogin.${provider}`.yellow, provider.white, profile.displayName||profile.name)
+
   var {short} = config.auth[provider]
-  var name = profile.displayName || profile.name
-  var {email,id,verified_email} = profile
+  var {profile,name,email,emailVerified} = odata[short](profile)
+
+  if (!email) return done(Error(`auth.Login failed. ${provider} profile has no email`))
+  if (!name) return done(Error(`auth.Login failed. ${provider} profile has no name`))
+
   var existsQuery = query.existing[short](profile)
-
-  // $log(`AUTH.oathLogin.${provider}`.yellow, provider.white, profile.name, existsQuery)
-
-  if (!email) return Done(Error(`auth.Login failed. ${provider} profile has no email`))
-  if (!name) return Done(Error(`auth.Login failed. ${provider} profile has no name`))
-
   User.getManyByQuery(existsQuery, (e, existing) => {
     if (e)
       done(e)
@@ -114,8 +145,6 @@ function oauthLogin(provider, profile, {token,refresh}, done) {
       var user = existing[0]
       var {auth} = user
 
-      // if (provider == 'google')
-      // if (!email) email = profile.emails[0].value
       var mergedProfile = _.extend(_.get(existing[0],`auth.${short}`)||{},profile)
       auth[short] = _setProfileTokens(mergedProfile,token,refresh)
 
@@ -125,8 +154,8 @@ function oauthLogin(provider, profile, {token,refresh}, done) {
       done(Error(`AUTH.Signup with ${provider} not supported`))
     else
     {
-      var user    = {name}
-      user.emails = [{value:email,primary:true,verified:verified_email||false}]
+      var user    = {name,email,emailVerified}
+      user.emails = [{value:email,primary:true,verified:emailVerified||false}]
       user.auth   = {}
       user.auth[short] = _setProfileTokens(profile,token,refresh)
       if (true || logging) $log('oauthLogin.Signup'.yellow, this.sessionID, user.name)
@@ -137,13 +166,13 @@ function oauthLogin(provider, profile, {token,refresh}, done) {
 
 
 function link(provider, profile, {token,refresh}, done) {
-  $log(`AUTH.link.${provider}`.yellow, profile.name || profile.displayName)
   var {user} = this
-
   if (!user) return oauthLogin.call(this, provider, profile, {token,refresh}, done)
 
+  $log(`AUTH.link.${provider}`.yellow, user.name)
+
   var {short} = config.auth[provider]
-  var {name,email,id,verified_email} = profile
+  var {profile} = odata[short](profile)
 
   User.getById(user._id, {select:`auth.${short}`}, (e, {auth})=>{
     if (auth[short]) {
@@ -163,8 +192,6 @@ function link(provider, profile, {token,refresh}, done) {
     analytics.event(`link:${short}`, user, trackData)
   })
 
-  // if (short == 'al')
-  //   profile.username = profile._json.angellist_url.replace('https://angel.co/','')
   // if (short == 'tw')
   //   ups.bio = profile._json.description
   // if (short == 'sl') {
@@ -193,7 +220,7 @@ function passwordReset(email, cb) {
     //-- Update the user record regardless if anonymous or authenticated
     // User.updateSet(user._id, ups, (e,r) => {
       // if (e) return cb(e)
-    mailman.sendTemplate('user-password-change',{hash}, user)
+    mailman.sendTemplate('user-password-change',{hash,email}, user)
     return cb(null, {email})
     // })
   })

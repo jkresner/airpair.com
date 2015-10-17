@@ -349,7 +349,7 @@ var admin = {
     suggested = _.without(suggested,existing)
 
     adm.lastTouch = svc.newTouch.call(this, `remove:${expert.name}`)
-    Request.updateSet(request._id, _.extend(request, {suggested,adm}), select.cb.adm(cb))
+    Request.updateSet(request._id, {suggested,adm}, select.cb.adm(cb))
   }
 }
 

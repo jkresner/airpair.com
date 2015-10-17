@@ -207,7 +207,9 @@ var util = {
 
   selectFromObject(obj, selectList) {
     if (!obj || !selectList) return obj
-    else return nestedPick(obj, _.keys(selectList))
+    var keys = selectList
+    if (selectList.constructor == Object) keys = _.keys(selectList)
+    return nestedPick(obj, keys)
   },
 
 

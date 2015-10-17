@@ -39,12 +39,15 @@ var authGithub = {
 var authGoogle = {
   id:                        { type: String, index, unique, sparse },
   displayName:               { type: String, trim },
-  // name:                      { type: String, trim },
-  link:                      { type: String, trim, lowercase },
   picture:                   { type: String, trim, lowercase },
   gender:                    { type: String, trim, lowercase },
+  emails:                    { type: [] },
+  verified:                  { type: Boolean },
+  url:                       { type: String, trim, lowercase },
+  link:                      { type: String, trim, lowercase },
+  //-- legacy
+  name:                      {}, //{ type: String, trim },
   email:                     { type: String, trim },
-  // emails:                    { type: [] },
   verified_email:            { type: Boolean },
   tokens:                    { type: {} }
 }
@@ -117,8 +120,9 @@ return asSchema({
     firstRequest:            { type: {}, required: false }  // used to target users arriving from specific campains
   },
 
+  roles:                   { type: [String], required: false },
+
   legacy: {                  required:false, type: {
-    roles:                   { type: [String], required: false },
     siteNotifications:       { type: [], required: false },
     tags:                    { type: [], required: false },
     bookmarks:               { type: [], required: false }

@@ -333,12 +333,9 @@ review = ->
               customerMailSpy = sinon.spy(mailman, 'sendTemplate')
               reply = expertComment: "I'm available one", expertAvailability: "Yes", expertStatus: "available"
               PUT "/requests/#{r._id}/reply/#{rAbha.suggested[0].expert._id}", reply, (r1) ->
-                $log('AFTER REPLY'.blue)
                 expect(r1.status).to.equal('review')
                 update = expertComment: "Still available", expertAvailability: "Y", expertStatus: "available"
-                $log('r1'.blue, r1)
                 PUT "/requests/#{r._id}/reply/#{rAbha.suggested[0].expert._id}", update, (r2) ->
-                  $log('222 AFTER REPLY'.blue)
                   LOGIN {key:'admin'}, ->
                     GET "/adm/requests/user/#{sbrih._id}", {}, (rAdm) ->
                       expect(rAdm.length).to.equal(1)
