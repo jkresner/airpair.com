@@ -1,8 +1,9 @@
 global.UserGraph = {}
 
 MIGRATED =
-  attrs_gone:  '__v local social googleId bitbucketId bitbucket githubId github linkedinId '+
-               'linkedin stackId stack twitterId twitter'
+  attrs_gone:  '__v local social googleId localization ' +
+               'bitbucketId bitbucket githubId github linkedinId '+
+               'linkedin stackId stack twitterId twitter '
   projectedGH: ["tokens","updated_at","created_at","following","followers","public_gists",
                 "public_repos","bio","hireable","email","location","blog","company",
                 "name","gravatar_id","avatar_url","id","login"]
@@ -21,13 +22,13 @@ checkCLEAN = ->
 
 # expected fields exist
 checkCONSISTENT = ->
-  Users.find({}, {'_id':1,'name':1,'auth.gh.id':1,'auth.gp.id':1,'auth.password':1}).toArray (e, all) ->
+  Users.find({}).toArray (e, all) ->
     for o in all
       expectObjectId(o._id)
       expectAttr(o, 'name')
       expectAttr(o, 'auth')
 
-      expectAttrUndefined(o, attr) for attr in MIGRATED.attrs_gone
+      expect(o[attr]).to.be.undefined for attr in MIGRATED.attrs_gone
 
       UserGraph[o._id] = { name: o.name || o.auth.gp.name }
       if _.get(o,'auth.gh.id')
@@ -42,7 +43,8 @@ renameAttrs = ->
   location = (cb) ->
     rename 'localization.timezoneData.timeZoneId', 'location.timeZoneId', true, ->
       rename 'localization.location', 'location.name', true, ->
-        rename 'localization.locationData.name', 'location.shortName', true, cb
+        rename 'localization.locationData.name', 'location.shortName', true, ->
+          rename 'localization.locationData', 'raw.locationData', true, cb
 
   social = (cb) ->
     rename 'google', 'social.gp', true,  ->
@@ -77,7 +79,7 @@ renameAttrs = ->
   legacy = (cb) ->
     rename 'siteNotifications', 'legacy.siteNotifications', true, ->
       rename 'tags', 'legacy.tags', true, ->
-        rename 'bookmarks', 'legacy.bookmarks', true, ->
+        rename 'bookmarks', 'legacy.bookmarks', true, cb
 
 
   location -> social -> auth -> tokens -> legacy ->
@@ -102,7 +104,7 @@ renameAttrs = ->
         expect(u.auth.in.firstName).to.equal(orig.linkedin.name.givenName)
       steveLuu: (u, orig) ->
         expect(u.auth.gp.id).to.equal(orig.google.id)
-        expect(u.auth.gp.verified_email is "true").to.be.true
+        # expect(u.auth.gp.verified_email is "true").to.be.true
       katharineVanderDrift: (u, orig) ->
         expectExactFields(u.location,'name timeZoneId shortName')
         expect(u.location.name).to.equal('San Francisco, CA, USA')
@@ -112,7 +114,7 @@ renameAttrs = ->
 
 
 unsetAttrs = ->
-  toUnset = MIGRATED.attrs_gone + ' localization.timezone localization.timezoneData '+
+  toUnset = MIGRATED.attrs_gone +
     'cohort.expert cohort.engagement.visits cohort.engagement.visit_last cohort.maillists'
   toUnset += v.replace(/ /g," auth.#{k}.") for k,v of {
     sl: ' provider'
@@ -150,8 +152,8 @@ unsetAttrs = ->
         if u.auth.gp.verified_email is not true
           expect(u.auth.gp.verified_email).to.equal("true")
       katharineVanderDrift: (u, orig) ->
-        expectExactFields(u,'_id cohort name email emailVerified bookmarks tags primaryPayMethodId localization location auth')
-        expectExactFields(u.localization,['locationData'])
+        expectExactFields(u,'_id cohort name email emailVerified legacy primaryPayMethodId raw location auth')
+        expectExactFields(u.raw,['locationData'])
         expect(u.location.name).to.equal('San Francisco, CA, USA')
         expect(u.location.shortName).to.equal('San Francisco')
         expect(u.location.timeZoneId).to.equal('America/Los_Angeles')
@@ -173,7 +175,7 @@ unsetAttrs = ->
         expectExactFields(u.auth, 'gh gp al sl password')
         expect(u.auth.al.provider).to.be.undefined
         expect(u.auth.al.tokens.apcom.token).to.exist
-        expect(u.localization.timezoneData).to.be.undefined
+        expect(u.raw.timezoneData).to.be.undefined
 
 
 cleanAuthGoogle = ->

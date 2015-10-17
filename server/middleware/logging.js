@@ -63,7 +63,7 @@ var middleware = {
 
       var uid = (req.user) ? req.user.email : req.sessionID
 
-      if (true || config.env != 'test' || global.verboseErrHandler) {
+      if (config.env != 'test' || global.verboseErrHandler) {
 
         var ref = (req.header('Referer')) ? ` <<< ${req.header('Referer')}` : ''
         var ip = req.ip ? req.ip.replace('::ffff:','') : ''

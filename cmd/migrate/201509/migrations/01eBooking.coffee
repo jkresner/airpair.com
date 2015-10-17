@@ -1,10 +1,10 @@
 
 
 unsets = ->
-  attrs = ['createdById','gcal.organizer','gcal.creator','gcal.kind','gcal.sequence']
+  attrs = 'createdById gcal.organizer gcal.creator gcal.kind gcal.sequence'
   $unset = {}
-  $unset[attr] = 1 for attr in attrs
-  $log('unset.BOOKING.attrs'.cyan, attrs.join(','))
+  $unset[attr] = 1 for attr in attrs.split(' ')
+  $log('unset.BOOKING.attrs'.yellow, attrs.gray)
   Bookings.updateMany {}, {$unset}, ->
     DONE()
 

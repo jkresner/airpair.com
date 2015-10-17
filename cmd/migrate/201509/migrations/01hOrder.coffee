@@ -124,8 +124,8 @@ module.exports = ->
     IT "Removes credit orders older than 3 months", removesCreditOrders
     IT "Company replaced with by", migratesOlderOrders
     IT "Can unset undesired attrs", unsets
-    IT "Renames fields", orderRenameAttrs
-    IT "Fixes v1 expert ObjectIds", fixesInfoExpertObjectIds
+    # IT "Renames fields", orderRenameAttrs
+    # IT "Fixes v1 expert ObjectIds", fixesInfoExpertObjectIds
 
 
 

@@ -12,13 +12,6 @@ fixesObjectIds = ->
       DONE()
 
 
-# unsets = ->
-#   attrs = ['__v']
-#   $unset = {}
-#   $unset[attr] = 1 for attr in attrs
-#   $log('unset.POST.attrs'.cyan, attrs.join(','))
-#   Posts.updateMany {}, {$unset}, ->
-#     DONE()
 
 
 module.exports = ->
@@ -28,4 +21,3 @@ module.exports = ->
   describe 'Migrating posts fields'.white.bold, ->
 
     IT "Fixes objectIds", fixesObjectIds
-    # IT "Can unset undesired attrs", unsets

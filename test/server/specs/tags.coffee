@@ -288,9 +288,14 @@ module.exports = ->
     DB.ensureDoc 'User', FIXTURE.users.admin, ->
       done()
 
-  DESCRIBE("Get", get)
-  DESCRIBE("Create", create)
-  DESCRIBE("Update ", update)
+  if againstProd
+    DESCRIBE "SKIP TAGS", ->
+      it "Better make this open again"
+
+  else
+    DESCRIBE("Get", get)
+    DESCRIBE("Create", create)
+    DESCRIBE("Update ", update)
 
 
 

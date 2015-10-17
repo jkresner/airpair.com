@@ -15,6 +15,7 @@ global.idToMoment            = util.MongoUtil.idToMoment
 global.specInit = (ctx) ->
   ctx.timeout(4000000)
   before ->
+    global.JSONSTRING = {}
     global.Tags = DB.Collections.tags
     global.Users = DB.Collections.users
     global.Experts = DB.Collections.experts
@@ -27,6 +28,8 @@ global.specInit = (ctx) ->
     global.ORDER = FIXTURE.orders
     global.EXPERT = FIXTURE.experts
 
+  after ->
+    delete global.JSONSTRING
 
 
 

@@ -37,6 +37,34 @@ module.exports = {
        locale: 'en' },
   },
 
+
+  google_aptst34: {
+    provider: 'google',
+    id: '103121129755643370673',
+    displayName: 'Air Pair',
+    name: { familyName: 'Pair', givenName: 'Air' },
+    emails: [ { value: 'airpairtest34@gmail.com', type: 'account' } ],
+    photos: [ { value: 'https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg?sz=50' } ],
+    gender: 'male',
+    _raw: '{\n "kind": "plus#person",\n "etag": "\\"i9aZP8TD8jXVPIxD0T0PWsMRx6s/PORXWY4d6k_ZqVAtXvU9LAW-krg\\"",\n "gender": "male",\n "emails": [\n  {\n   "value": "airpairtest34@gmail.com",\n   "type": "account"\n  }\n ],\n "objectType": "person",\n "id": "103121129755643370673",\n "displayName": "Air Pair",\n "name": {\n  "familyName": "Pair",\n  "givenName": "Air"\n },\n "image": {\n  "url": "https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg?sz=50",\n  "isDefault": true\n },\n "isPlusUser": false,\n "language": "en",\n "verified": false\n}\n',
+    _json:
+     { kind: 'plus#person',
+       etag: '"i9aZP8TD8jXVPIxD0T0PWsMRx6s/PORXWY4d6k_ZqVAtXvU9LAW-krg"',
+       gender: 'male',
+       emails: [{"value":"airpairtest34@gmail.com","type":"account"}],
+       objectType: 'person',
+       id: '103121129755643370673',
+       displayName: 'Air Pair',
+       name: { familyName: 'Pair', givenName: 'Air' },
+       image:
+        { url: 'https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg?sz=50',
+          isDefault: true },
+       isPlusUser: false,
+       language: 'en',
+       verified: false
+     }
+  },
+
   github_jk: { id: '979542',
     displayName: 'Jonathon Kresner',
     username: 'jkresner',

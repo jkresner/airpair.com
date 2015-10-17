@@ -31,9 +31,8 @@ checkConsistent = ->
     for o in all
       expectObjectId(o._id)
       expectAttr(o, 'name', String)
-      expectAttr(o, 'slug')
-
-      expectAttrUndefined(o, attr) for attr in migrated.attrs_gone.split(' ')
+      expectAttr(o, 'slug', String)
+      expect(o[attr]).to.be.undefined for attr in migrated.attrs_gone.split(' ')
 
       TagsBySlug[o.slug] = o
       TagIds[o._id] = true
@@ -67,4 +66,3 @@ module.exports = ->
   DESCRIBE 'CHECK', ->
     IT "Clean", checkClean
     IT "Consistent", checkConsistent
-

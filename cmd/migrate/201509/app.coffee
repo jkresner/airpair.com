@@ -10,7 +10,7 @@ module.exports =
 
     global.fields =
       user:
-        known: ['_id','cohort','name','email','emailVerified','bookmarks','tags','primaryPayMethodId','localization','location','auth','siteNotifications','username','initials','bio','roles']
+        known: ['_id','cohort','name','email','emailVerified','legacy','primaryPayMethodId','raw','location','auth','username','initials','bio', 'roles']
 
 
     global.q =
@@ -30,6 +30,12 @@ module.exports =
         $unset[attr] = 1 for attr in fieldsStr.split(' ')
         {$unset}
 
+    global.inQuery = (ids, attr) ->
+      attr = '_id' if !attr?
+      q = {}
+      q[attr] = { $in:_.map(ids,(id)->ObjectId(id)) }
+      q
+
 
     global.renameModelAttr = (collectionName) ->
       (attrOld,attrNew,overwrite,cb) ->
@@ -44,13 +50,20 @@ module.exports =
 
 
 
+    global.STRINGIFY = (obj) ->
+      if !JSONSTRING[obj._id]
+        JSONSTRING[obj._id] = JSON.stringify(obj).gray
+      JSONSTRING[obj._id]
 
-    global.inQuery = (ids, attr) ->
-      attr = '_id' if !attr?
-      q = {}
-      q[attr] = { $in:_.map(ids,(id)->ObjectId(id)) }
-      q
 
+    global.expectAttr = (obj, attr, constructor) ->
+      expect(obj[attr], attr.white+" missing on: "+STRINGIFY(obj)).to.exist
+      if (constructor)
+        expect(obj[attr].constructor, "#{attr}.constuctor #{obj[attr].constructor.name.cyan} but expecting #{constructor.name.cyan} on: "+STRINGIFY(obj)).to.equal(constructor)
+
+
+    # global.expectAttrUndefined = (obj, attr) ->
+    #   expect(obj[attr], attr.white+" shoud not be found on "+STRINGIFY(obj)).to.be.undefined
 
 
     global.refIncrement = (hashTable, key) ->
@@ -58,7 +71,6 @@ module.exports =
         hashTable[key]++
       else
         hashTable[key] = 1
-
 
 
     global.resolveResult = (collectionName, fixtureName) ->
@@ -74,16 +86,6 @@ module.exports =
     global.expectObjectId = (val) ->
       expect(val, "Expected ObjectId null").to.exist
       expect(val.constructor is ObjectId, "Expected ObjectId #{val.toString().white}".gray+" #{val.constructor} not an ObjectId".gray).to.be.true
-
-
-    global.expectAttr = (obj, attr, constructor) ->
-      expect(obj[attr], attr.white+" missing on "+JSON.stringify(obj).gray).to.exist
-      if constructor?
-        expect(obj[attr].constructor, "#{attr}.constuctor #{obj[attr].constructor.name.cyan} but expecting #{constructor.name.cyan}").to.equal(constructor)
-
-
-    global.expectAttrUndefined = (obj, attr) ->
-      expect(obj[attr], attr.white+" shoud not be found on "+JSON.stringify(obj).gray).to.be.undefined
 
 
     global.expectAllPromises = (resolveFn, promObjList) ->

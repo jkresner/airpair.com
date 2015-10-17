@@ -62,12 +62,12 @@ migratesOlderTags = ->
       # expectExactFields t, ['_id','sort']
       newSlimTag(t._id,sort)
     else if t._id?
-      expect(tagIds[t._id], "tag._id expected to exist #{JSON.stringify(t)}").to.exist
+      expect(TagIds[t._id], "tag._id expected to exist #{JSON.stringify(t)}").to.exist
       newSlimTag(t._id,sort++)
     else
       expect(t.soId, "tag.soId expected to exist #{JSON.stringify(t)}").to.exist
-      expect(tagsBySlug[t.soId]).to.exist #?||_.contains(changed, t.soId)
-      newSlimTag(tagsBySlug[t.soId]._id,sort++)
+      expect(TagsBySlug[t.soId]).to.exist #?||_.contains(changed, t.soId)
+      newSlimTag(TagsBySlug[t.soId]._id,sort++)
 
 
   Requests.find({}, {userId:1,tags:1,suggested:1,company:1,by:1}).toArray (e, all) ->
@@ -120,7 +120,7 @@ unsets = ->
     'marketingTags']
   $unset = {}
   $unset[attr] = 1 for attr in attrs
-  $log('unset.REQUEST.attrs'.cyan, attrs.join(','))
+  $log('unset.REQUEST.attrs'.yellow, attrs.join(','))
   Requests.updateMany {}, {$unset}, ->
     DONE()
 

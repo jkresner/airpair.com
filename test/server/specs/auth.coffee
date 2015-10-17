@@ -1,3 +1,5 @@
+qExists = require('../../../server/services/users.data').query.existing
+
 
 signup = ->
 
@@ -40,7 +42,7 @@ signup = ->
 
 
 
-  IT 'Can sign up as new user with google', ->
+  IT 'Can sign up as new user with google (old format)', ->
     DB.removeDocs 'User', { 'auth.gp.id': FIXTURE.oauth.google_rbrw.id }, ->
       profile = FIXTURE.oauth.google_rbrw._json
       token = 'rbrw_token'
@@ -54,8 +56,8 @@ signup = ->
             expect(s.roles).to.be.undefined  # new users have undefined roles
             expect(s.cohort.engagement).to.exist
             expectAttr(s.auth.gp,'email')
-            expectAttr(s.auth.gp,'link')
-            expectAttrUndefined(s.auth.gp,'id')
+            # expectAttr(s.auth.gp,'link')
+            # expectAttrUndefined(s.auth.gp,'id')
             DB.docById 'User', s._id, (u) ->
               expectIdsEqual(s._id, u._id)
               expectAttr(u.auth.gp, 'id', String)
@@ -66,12 +68,36 @@ signup = ->
               DONE()
 
 
+  IT 'Can sign up as new user with google (new format)', ->
+    DB.removeDocs 'User', { 'auth.gp.id': FIXTURE.oauth.google_aptst34.id }, ->
+      profile = FIXTURE.oauth.google_aptst34._json
+      token = 'aptst34_token'
+      AuthService.link.call SETUP.userSession(), 'google', profile, {token}, (e,usr) ->
+        FIXTURE.users.aptst34 = usr
+        LOGIN {key:'aptst34'}, (s0) ->
+          GET '/session/full', (s) ->
+            expect(s._id).to.equal(usr._id.toString())
+            expect(s.email).to.equal(usr.email)
+            expect(s.name).to.equal(usr.name)
+            expect(s.roles).to.be.undefined  # new users have undefined roles
+            expect(s.cohort.engagement).to.exist
+            expectAttr(s.auth.gp,'email')
+            # expectAttrUndefined(s.auth.gp,'id')
+            DB.docById 'User', s._id, (u) ->
+              expectIdsEqual(s._id, u._id)
+              expectAttr(u.auth.gp, 'id', String)
+              expectAttr(u.auth.gp, 'email', String)
+              expectAttrUndefined(u.auth.gp, 'locale')
+              expect(u.auth.gp.tokens[config.auth.oauth.appKey].token).to.equal('aptst34_token')
+              DONE()
+
   IT 'Cannot sign up with local credentials and existing gmail', ->
-    d = name: "AirPair Experts", email: "experts@airpair.com", password: "Yoyoyoyoy"
-    DB.ensureDoc 'User', FIXTURE.users.apexperts, ->
-      SUBMIT '/auth/signup', d, {status:400, contentType: /json/ }, (err) ->
-        expectStartsWith(err.message, 'Signup fail. Account with email already exists.')
-        DONE()
+    DB.removeDocs 'User', qExists.byEmail("experts@airpair.com"), ->
+      d = name: "AirPair Experts", email: "experts@airpair.com", password: "Yoyoyoyoy"
+      DB.ensureDoc 'User', FIXTURE.users.apexperts, ->
+        SUBMIT '/auth/signup', d, {status:400, contentType: /json/ }, (err) ->
+          expectStartsWith(err.message, 'Signup fail. Account with email already exists.')
+          DONE()
 
 
   IT 'Cannot sign up with local credentials and existing local email', ->
@@ -137,21 +163,23 @@ login = ->
 
   IT 'Signup with google in one app and log back in with google in another', ->
     {ape1} = FIXTURE.users
-    DB.ensureDoc 'User', ape1, ->
-      profile = ape1.auth.gp
-      token = 'ape1_gp_test_token'
-      AuthService.link.call SETUP.userSession(), 'google', profile, {token}, (e, r1) ->
-        expectIdsEqual(r1._id, ape1._id)
-        AuthService.link.call {user:r1}, 'google', profile, {token}, (e, r2) ->
-          expectIdsEqual(r2._id, ape1._id)
-          DB.docById 'User', ape1._id, (r3) ->
-            expect(r3.auth.gp.id).to.equal(profile.id)
-            expect(config.auth.oauth.appKey).to.equal('apcom')
-            expect(r3.auth.gp.tokens['apcom'].token).to.equal('ape1_gp_test_token')
-            expect(r3.auth.gp.tokens['consult'].token).to.equal(ape1.auth.gp.tokens['consult'].token)
-            expect(r3.auth.gh.tokens['consult'].token).to.equal(ape1.auth.gh.tokens['consult'].token)
-            expect(r3.auth.gh.tokens['apcom']).to.be.undefined
-            DONE()
+    DB.removeDocs 'User', qExists.byEmail('airpairtest1@gmail.com'), ->
+      DB.ensureDoc 'User', ape1, ->
+        profile = ape1.auth.gp
+        token = 'ape1_gp_test_token'
+        AuthService.link.call SETUP.userSession(), 'google', profile, {token}, (e, r1) ->
+          expect(e).to.be.null
+          expectIdsEqual(r1._id, ape1._id)
+          AuthService.link.call {user:r1}, 'google', profile, {token}, (e, r2) ->
+            expectIdsEqual(r2._id, ape1._id)
+            DB.docById 'User', ape1._id, (r3) ->
+              expect(r3.auth.gp.id).to.equal(profile.id)
+              expect(config.auth.oauth.appKey).to.equal('apcom')
+              expect(r3.auth.gp.tokens['apcom'].token).to.equal('ape1_gp_test_token')
+              expect(r3.auth.gp.tokens['consult'].token).to.equal(ape1.auth.gp.tokens['consult'].token)
+              expect(r3.auth.gh.tokens['consult'].token).to.equal(ape1.auth.gh.tokens['consult'].token)
+              expect(r3.auth.gh.tokens['apcom']).to.be.undefined
+              DONE()
 
 
   it 'Github signup can add password and login with email/password'
@@ -355,12 +383,14 @@ module.exports = ->
 
 
   before (done) ->
+    global.JSONSTRING = {}
     global.AuthService = require('../../../server/services/auth')
     done()
 
 
   after ->
     global.AuthService = undefined
+    delete global.JSONSTRING
 
 
   beforeEach ->

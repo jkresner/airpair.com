@@ -3,7 +3,7 @@ var RequestsSvc             = require('../services/requests')
 var OrdersSvc               = require('../services/orders')
 var ChatsSvc                = require('../services/chats')
 var TemplateSvc             = require('../services/templates')
-var {Booking,User}          = DAL
+var {Booking,User,Expert}   = DAL
 var Roles                   = require('../../shared/roles').booking
 var BookingdUtil            = require('../../shared/bookings')
 var {select,query,opts}     = require('./bookings.data')
@@ -56,9 +56,11 @@ var get = {
 
   getByExpertId(user, cb)
   {
-    if (!user.cohort || ! user.cohort.expert) return cb(null,null)
-    var options = _.extend({select:select.listIndex},opts.orderByDate)
-    Booking.getManyByQuery({ expertId: user.cohort.expert._id }, options, select.cb.listIndex(cb))
+    Expert.getByQuery({userId:user._id}, (e,expert) => {
+      if (!expert) return cb(null,null)
+      var options = _.extend({select:select.listIndex},opts.orderByDate)
+      Booking.getManyByQuery({ expertId: expert._id }, options, select.cb.listIndex(cb))
+    })
   },
 
   //-- TODO: differentiate between admin getByExpertID and just the expert getting by their own Id

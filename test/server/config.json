@@ -15,7 +15,7 @@
   },
   "mongo": {
     "url":                { "appConfig": "mongoUrl" },
-    "collections":        ["V1Tests","Users","Experts","Bookings","Orders",
+    "collections":        [ "Users","Experts","Bookings","Orders",
                            "Companies","Paymethods","Payouts","Posts",
                            "Requests","Tags","Templates","Views","Impressions",
                            "Sessions","Events"]
