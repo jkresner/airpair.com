@@ -226,7 +226,7 @@ module.exports = function(env) {
 
     cfg.auth.slack.clientID = process.env.AUTH_SLACK_CLIENTID
     cfg.auth.slack.clientSecret = process.env.AUTH_SLACK_CLIENTSECRET
-    cfg.auth.slack.slackTeam = process.env.AUTH_SLACK_SLACKTEAM
+    cfg.auth.slack.team = process.env.AUTH_SLACK_SLACKTEAM
 
     cfg.build = dist.build
     cfg.bundle.indexScript = `/static/${dist['js/index.js']}`
