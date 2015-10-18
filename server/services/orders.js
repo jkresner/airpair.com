@@ -211,7 +211,7 @@ function makeOrder(byUser, lineItems, payMethodId, forUserId, requestId, dealId,
 
 function chargeAndTrackOrder(o, errorCB, saveCB)
 {
-  analytics.event('order', o.by, {total:o.total})
+  analytics.event('order', o.by, {_id:o._id,total:o.total})
   if (o.total == 0) saveCB(null, o)
   else
   {
@@ -351,6 +351,7 @@ function bookUsingCredit(expert, minutes, total, lineItems, expectedCredit, payM
 
 function _createBookingOrder(expert, time, minutes, type, credit, payMethodId, request, lineItems, total, cb)
 {
+  // $log('_createBookingOrder.expert', expert)
   if (credit && credit > 0)
   {
     bookUsingCredit.call(this, expert, minutes, total, lineItems, credit, payMethodId, request, cb)
@@ -438,10 +439,13 @@ var save = {
     }
     else if (requestSuggestion) {
       this.machineCall = true // so we get back all data for the request
-      RequestsSvc.getRequestForBookingExpert.call(this, requestSuggestion.requestId, expert._id, (e, request) => {
+      RequestsSvc.getRequestForBookingExpert.call(this, requestSuggestion.requestId, expert, (e, request) => {
         if (e) return cb(e)
         //-- TODO look at the data from db instead of being passed from client
-        expert = requestSuggestion.suggestion.expert
+        // $log('suggested expert'.white, requestSuggestion.suggestion.expert)
+        // $log('suggested expert'.yellow, requestSuggestion.suggestion)
+        // expert = requestSuggestion.suggestion.expert
+        // $log('suggested rate', requestSuggestion.suggestion.expert.rate)
         expert.rate = requestSuggestion.suggestion.suggestedRate.expert
         var unitPrice = requestSuggestion.suggestion.suggestedRate.total
         if (type == 'opensource') unitPrice = unitPrice - 10

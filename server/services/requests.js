@@ -86,13 +86,14 @@ var get = {
     Request.getManyByQuery({userId:this.user._id}, opts, select.cb.adm(cb))
   },
 
-  getRequestForBookingExpert(id, expertId, cb) {
+  getRequestForBookingExpert(id, expert, cb) {
     var {user} = this
     Request.getById(id, select.cb.byRole(this, cb, (e,r) => {
       if (isExpert(user,r)) return cb(Error(`Cannot book yourself on request[${id}]`))
       if (!isCustomerOrAdmin(user,r)) return cb(Error(`Could not find request[${id}] belonging to user[${user._id}]`))
-      var suggestion = _.find(r.suggested,(s) => _.idsEqual(s.expert._id,expertId) && s.expertStatus == 'available')
-      if (!suggestion) return cb(Error(`No available expert[${expertId}] on request[${r._id}] for booking`))
+      var suggestion = _.find(r.suggested,(s) => _.idsEqual(s.expert._id,expert._id) && s.expertStatus == 'available')
+      if (!suggestion) return cb(Error(`No available expert[${expert._id}] on request[${r._id}] for booking`))
+      Object.assign(suggestion.expert, _.pick(expert,'name','username','initials','avatar','location','timezone'))
       cb(null, r)
     }))
   },

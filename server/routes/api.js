@@ -80,7 +80,7 @@ other: Router()
 
   .get('/requests', API.Requests.getMy)
   .get('/requests/:id', API.Requests.getByIdForUser)
-  .get('/requests/:id/book/:expertId', API.Requests.getRequestForBookingExpert)
+  .get('/requests/:id/book/:expertshaped', API.Requests.getRequestForBookingExpert)
   .put('/requests/:request/verify', API.Requests.sendVerifyEmailByCustomer)
   .put('/requests/:request', API.Requests.updateByCustomer)
   .put('/requests/:request/reply/:expertshaped', API.Requests.replyByExpert)
