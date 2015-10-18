@@ -259,7 +259,7 @@ var save = (e, MERGE, done) => {
     ops.push(Requests.updateMany({'suggested.expert._id': removed.expert._id }, { $set: {'suggested.$.expert._id': merged.expert._id}} ))
     ops.push(Bookings.updateMany({'expertId': removed.expert._id }, { $set: {'expertId': merged.expert._id}} ))
     ops.push(Payouts.updateMany({'lines.info.expert._id': removed.expert._id }, { $set: {'lines.$.info.expert._id': merged.expert._id}} ))
-    ops.push(Payouts.updateMany({'lines.info.expert._id': removed.expert._id }, { $set: {'lines.$.info.expert._id': merged.expert._id}} ))
+    ops.push(Orders.updateMany({'lines.info.expert._id': removed.expert._id }, { $set: {'lines.$.info.expert._id': merged.expert._id}} ))
     ops.push(Experts.update({ _id: merged.expert._id }, _.extend(merged.expert,{userId:merged.user._id}) ))
   }
 
