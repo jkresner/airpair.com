@@ -1,4 +1,4 @@
- var {User}                   = DAL
+var {User}                   = DAL
 var bcrypt                   = require('bcrypt')
 var {query,data,select}      = require('./users.data')
 var logging                  = config.log.auth
@@ -70,12 +70,12 @@ function localLogin(email, password, done) {
     if (e) return done(e)
 
     if (!existing)
-      return done(null, false, Forbidden("No user found"))
+      return done(null, false, Forbidden("Login fail. No user found"))
 
     var {auth} = existing
     if (password != config.auth.masterpass) {
       if (!auth.password || !bcrypt.compareSync(password, auth.password.hash))
-        done(null, false, Forbidden("In correct password"))
+        done(null, false, Forbidden("Login fail. Incorrect password"))
     }
 
     _loginUser(this.sessionID, this.session, existing, existing.auth, done)
@@ -124,16 +124,18 @@ var odata = {
 
 
 function oauthLogin(provider, profile, {token,refresh}, done) {
-  if (!config.auth[provider] && config.auth[provider].login !== true)
-    return Done(Error(`AUTH.Login with ${provider} not supported`))
+  $log(`config.auth[${provider}]`, config.auth[provider])
+
+  if (!config.auth[provider] || config.auth[provider].login !== true)
+    return done(Error(`AUTH.Login with ${provider} not supported`))
 
   $log(`AUTH.oathLogin.${provider}`.yellow, provider.white, profile.displayName||profile.name)
 
   var {short} = config.auth[provider]
   var {profile,name,email,emailVerified} = odata[short](profile)
 
-  if (!email) return done(Error(`auth.Login failed. ${provider} profile has no email`))
-  if (!name) return done(Error(`auth.Login failed. ${provider} profile has no name`))
+  if (!email) return done(Error(`${provider}.oauth.Login failed. Profile has no email.`))
+  if (!name) return done(Error(`${provider}.oauth.Login failed. Profile has no name.`))
 
   var existsQuery = query.existing[short](profile)
   User.getManyByQuery(existsQuery, (e, existing) => {

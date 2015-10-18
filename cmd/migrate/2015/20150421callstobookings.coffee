@@ -74,7 +74,7 @@ getAllCalls = (cb) ->
           participants:     [custParticipant,expParticipant]
           type:             c.type
           minutes:          c.duration*60
-          createdById:      ObjectId("52ad320166a6f999a465fdc5") # team@airpair.com
+          # createdById:      ObjectId("52ad320166a6f999a465fdc5") # team@airpair.com
           status:           c.status
           datetime:         c.datetime
           gcal:             c.gcal

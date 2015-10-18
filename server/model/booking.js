@@ -33,7 +33,7 @@ var SuggestedTime = asSchema({
 
 return asSchema({
 
-  createdById:    { type: Id, ref: 'User', index, required }, // Could be initiated by the expert or customer
+  // createdById:    { type: Id, ref: 'User', index, required }, // Could be initiated by the expert or customer
   customerId:     { type: Id, ref: 'User', index, required },
   expertId:       { type: Id, ref: 'Expert', index },
   participants:   { type: [Participant] },

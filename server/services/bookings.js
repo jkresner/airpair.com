@@ -170,7 +170,7 @@ var save = {
         var touch = svc.newTouch.call(this, 'create')
         var booking = {
           _id: bookingId,
-          createdById: user._id,
+          // createdById: user._id,   GONE
           customerId: user._id, // consider use case of expert creating booking
           expertId: expert._id,
           participants,
