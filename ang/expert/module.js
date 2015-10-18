@@ -76,7 +76,7 @@ angular.module("APExpert", ['APTagInput','APPayPal'])
       if (key != 'total' && $scope.checkedOrders[key])
       {
         var o = _.find($scope.payoutOrders,(o)=>o._id==key)
-        total += o.line[0].owed
+        total += o.lines[0].owed
         return key
       }
     })

@@ -14,17 +14,18 @@ checkCONSISTENT = ->
 
 
 
-fixesObjectIds = ->
-  Posts.find({}, {by:1}).toArray (e, all) ->
-    ups = []
-    for o in all
-      newBy = _id: o.by.userId
-      ups.push updateOne: { q: {_id:o._id}, u: { $set: {by:newBy} }, upsert: false }
+# undone as brought down the site and needs to be coded to handle
+# fixesObjectIds = ->
+#   Posts.find({}, {by:1}).toArray (e, all) ->
+#     ups = []
+#     for o in all
+#       newBy = _id: o.by.userId
+#       ups.push updateOne: { q: {_id:o._id}, u: { $set: {by:newBy} }, upsert: false }
 
-    if ups.length == 0 then return DONE()
-    Posts.bulkWrite ups, {ordered:false}, (e,r) ->
-      $log('update.POSTS.fixingByObjectIds'.yellow, r.modifiedCount)
-      DONE()
+#     if ups.length == 0 then return DONE()
+#     Posts.bulkWrite ups, {ordered:false}, (e,r) ->
+#       $log('update.POSTS.fixingByObjectIds'.yellow, r.modifiedCount)
+#       DONE()
 
 
 
@@ -35,8 +36,8 @@ module.exports = ->
   specInit(@)
 
 
-  DESCRIBE 'MIGRATE', ->
-    IT "Fixes objectIds", fixesObjectIds
+  # DESCRIBE 'MIGRATE', ->
+    # IT "Fixes objectIds", fixesObjectIds
 
 
   DESCRIBE 'CHECK', ->
