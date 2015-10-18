@@ -61,7 +61,7 @@ views = ->
   after -> cache.slack_users = undefined
 
   IT 'New booking from request can be viewed by creator', ->
-    STORY.newRequest 'jkgm', {reply:{userKey:'gnic',expertId:FIXTURE.experts.gnic._id},book:true}, (r1, b1, sCust, sExp2) ->
+    STORY.newRequest 'jkgm', {reply:{userKey:'gnic'},book:true}, (r1, b1, sCust, sExp2) ->
       GET "/bookings/#{b1._id}", (b2) ->
         expect(b2.orderId).to.be.undefined
         expect(b2.order._id).to.exist
@@ -446,8 +446,8 @@ module.exports = ->
   before (done) ->
     @braintreepaymentStub = SETUP.stubBraintreeChargeWithMethod()
     global.moment = require("moment-timezone")
-    SETUP.ensureExpert 'gnic', (sExp) ->
-      SETUP.ensureExpert 'dros', (sExp) ->
+    SETUP.ensureExpert 'gnic', ->
+      SETUP.ensureExpert 'dros', ->
         done()
 
   beforeEach ->

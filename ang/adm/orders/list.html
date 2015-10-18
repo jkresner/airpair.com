@@ -47,7 +47,7 @@
         <a ng-if="o.requestId" href="/adm/request/{{o.requestId}}" target="_blank">=> req</a>
       </td>
       <td>
-        <div ng-repeat="l in o.lineItems">
+        <div ng-repeat="l in o.lines">
           <span>{{l.total}}</span> <em>{{l.type}}</em> {{ l.info.name }} {{ l.info.type }} {{ l.info.source }}
         </div>
       </td>

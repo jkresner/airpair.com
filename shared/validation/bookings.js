@@ -170,7 +170,7 @@ var validation = {
     if (_.idsEqual(original.expertId,suggestion.expert._id)) `Cannot swap expert with themselves`
     if (!_.idsEqual(order._id,original.orderId)) `Cannot alter order[${order._id}] not belonging to booking[${booking._id}]`
 
-    var bookingLine = _.find(order.lineItems,(li)=>li.type=='airpair'&&_.idsEqual(li.info.expert._id,original.expertId))
+    var bookingLine = _.find(order.lines,(li)=>li.type=='airpair'&&_.idsEqual(li.info.expert._id,original.expertId))
     if (!bookingLine) return `Cannot bookingLine with expert[${booking.expert}] from booking[${booking._id}]`
     if (bookingLine.paidout) return `Cannot swap expert for already paid our bookingLine[${bookingLine._id}]`
   },

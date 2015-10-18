@@ -19,7 +19,6 @@ var select = {
     'recordings': 1,
     'customerId': 1,
     'expertId': 1,
-    'createdById':1,
     'order':1,
     'orderId':1,     // leave this one for the create action
     'request': 1,
@@ -49,7 +48,6 @@ var select = {
     'expertId': 1,
     'type': 1,
     'minutes': 1,
-    'createdById':1,
     'status':1,
     'datetime':1,
     'recordings':1,
@@ -131,11 +129,11 @@ var select = {
           if (!b.order)
             $log('no order'.gray, b._id)
           else
-            b.paidout = _.find(b.order.lineItems||[],(li)=>
+            b.paidout = _.find(b.order.lines||[],(li)=>
               li.info!=null&&li.info.paidout!=null)
 
           if (b.paidout) b.paidout = b.paidout.info
-          if (b.order) delete b.order.lineItems
+          if (b.order) delete b.order.lines
         }
         select.cb.inflate(cb,select.listAdmin)(e,r)
       }
@@ -156,7 +154,7 @@ var select = {
       return (e,r) => {
         if (e) return cb(e)
         if (r.order) {
-          for (var li of r.order.lineItems) {
+          for (var li of r.order.lines) {
             if (li.info) {
               if (li.info.paidout != null) r.order.paidout = li.info.paidout
               if (li.info.released != null) r.order.released = li.info.released
@@ -169,7 +167,7 @@ var select = {
             }
           }
 
-          delete r.order.lineItems
+          delete r.order.lines
         }
         if (r.recordings && r.recordings.length > 0)
         {
@@ -202,12 +200,12 @@ var opts = {
   },
   forAdmin: {
     join: {
-      'orderId': '_id type lineItems.info.released lineItems.info.paidout lineItems.info.expert requestId',
+      'orderId': '_id type lines.info.released lines.info.paidout lines.info.expert requestId',
     }
   },
   forParticipant: {
     join: {
-      'orderId': '_id type lineItems.info.released lineItems.info.paidout requestId',
+      'orderId': '_id type lines.info.released lines.info.paidout requestId',
       // 'requestId': '_id title brief tags',
       // 'chatId': '_id info.name',
     }
@@ -215,8 +213,8 @@ var opts = {
   adminList: {
     sort: { 'datetime': -1 },
     join: {
+      'orderId': '_id type lines.info.released lines.info.paidout requestId',
       'chatId': '_id info.name',
-      'orderId': '_id type lineItems.info.released lineItems.info.paidout requestId',
     }
   }
 }

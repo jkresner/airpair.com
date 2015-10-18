@@ -262,7 +262,7 @@ var save = {
     activity.push(lastTouch)
 
     OrdersSvc.getByIdForAdmin(original.orderId,(e,order) =>{
-      var li = _.find(order.lineItems,(l)=>l.type == 'airpair')
+      var li = _.find(order.lines,(l)=>l.type == 'airpair')
       var paidout = (li) ? li.info.paidout : true
       // $log('original'.yellow, original, paidout)
 
@@ -451,10 +451,10 @@ var admin = {
   //-- Short cut needs to be replaced by something much more robust
   cheatExpertSwap(booking, order, request, suggestionId, cb)
   {
-    var lineItems = order.lineItems
+    var lines = order.lines
     var suggestion = _.find(request.suggested, (s)=> _.idsEqual(suggestionId,s._id))
     var expert = suggestion.expert
-    var bookingLine = _.find(lineItems,(li)=>li.type=='airpair'&&_.idsEqual(li.info.expert._id,booking.expertId))
+    var bookingLine = _.find(lines,(li)=>li.type=='airpair'&&_.idsEqual(li.info.expert._id,booking.expertId))
     var prevExpert = bookingLine.info.expert
 
     User.getById(expert.userId,'localization name email', (e, expertUser) => {
@@ -489,7 +489,7 @@ var admin = {
       var participants = _.without(booking.participants,toRemove)
       participants.push(BookingdUtil.participantFromUser("expert", expertUser))
 
-      DAL.Order.updateSet(order._id, { lineItems }, (e,r) =>
+      DAL.Order.updateSet(order._id, { lines }, (e,r) =>
         updateForAdmin(this, booking, {expertId,participants}, 'adm-swap-expert', cb))
     })
   },
