@@ -108,29 +108,29 @@ function $$log(action, data, user, sessionID, ctx) {
   var ref = ((data.ref) ? (` <<< `.cyan+`${data.ref}`.replace(/\/+$/, '').blue) : '')
     .replace('https://','').replace('http://','').replace('www.','');
 
-  switch (action) {
-    case 'First':
+  switch (action.toUpperCase()) {
+    case 'FIRST':
       $log(uid, `FIRST   > ${data.url}`.cyan+ref)
       break
-    case 'View':
+    case 'VIEW':
       $log(uid, `VIEW    > ${data.url}`.cyan+ref)
       break
-    case 'Login':
+    case 'LOGIN':
       $log(uid, `LOGIN   > ${data._id}`.green)
       break
-    case 'Signup':
+    case 'SIGNUP':
       $log(uid, `SINGUP  > ${data._id}`.green)
       break
-    case 'Request':
+    case 'REQUEST':
       $log(uid, `REQUEST > ${data.action}`, `http://adm.airpa.ir/r/${data._id}`.white)
       break
-    case 'Order':
+    case 'ORDER':
       $log(uid, `ORDER  > $${data.total}`, `http://adm.airpa.ir/o/${data._id}`.white)
       break
-    case 'Payment':
+    case 'PAYMENT':
       $log(uid, `PAYMENT > $${data.total}`, `http://adm.airpa.ir/o/${data.orderId}`.white)
       break
-    case 'Save':
+    case 'SAVE':
       if (data.type == 'paymethod')
         $log(uid, `PAYM    > ${data.method} ${data.cardType} SAVED!!!`.yellow)
       else if (data.type == 'email')

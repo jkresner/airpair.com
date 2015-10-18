@@ -130,6 +130,12 @@ var newer = {
     }
   },
 
+  ricd: {
+    "_id" : ObjectId("53f6e6758f8c80299bcc43b3"),
+    "email" : "rdeslonde@deslondesoftware.com",
+    "name" : "Richard DesLonde"
+  },
+
   gnic: {
     "_id" : ObjectId("51ba69f466a6f999a465f3b5"),
     "emails": { value: "faction.gregory@gmail.com", verified: true, primary: true },
@@ -1522,7 +1528,156 @@ var newer = {
           "tokens" : {}
       }
     }
-},
+  },
+
+  byrn: {
+    "_id" : ObjectId("53e52ceb8f8c80299bcc402c"),
+    "email" : "byron@acklenavenue.com",
+    "emailVerified" : true,
+    "name" : "Byron Sommardahl",
+    "username" : "sommardahl",
+    "initials" : "BS",
+    "bio" : "Learning how to behave in public, trying to make the world a better place, creating software. Byron is the CTO at Acklen Avenue based in Nashville, TN. He leads and continually trains a team of more than 20 distributed software developers.",
+    "location" : {
+      "timeZoneId" : "America/Chicago",
+      "name" : "Nashville, TN, USA",
+      "shortName" : "Nashville"
+    },
+    "auth" : {
+        "so" : {
+            "badge_counts" : {
+                "bronze" : 85,
+                "silver" : 27,
+                "gold" : 4
+            },
+            "account_id" : 71147,
+            "last_modified_date" : 1411103781,
+            "last_access_date" : 1426263763,
+            "reputation_change_year" : 127,
+            "reputation_change_quarter" : 127,
+            "reputation_change_month" : 15,
+            "reputation_change_week" : 0,
+            "reputation_change_day" : 0,
+            "reputation" : 4949,
+            "creation_date" : 1257622792,
+            "user_type" : "registered",
+            "user_id" : 205753,
+            "age" : 36,
+            "accept_rate" : 84,
+            "location" : "Nashville, TN",
+            "website_url" : "http://Byron.Sommardahl.com",
+            "link" : "http://stackoverflow.com/users/205753/byron-sommardahl",
+            "display_name" : "Byron Sommardahl",
+            "profile_image" : "https://www.gravatar.com/avatar/fe96f357f8493e9ca722951dcde75fd7?s=128&d=identicon&r=PG",
+            "tokens" : {}
+        },
+        "gp" : {
+            "email" : "byron@acklenavenue.com",
+            "domain" : "acklenavenue.com",
+            "verified" : false,
+            "circledByCount" : 41,
+            "language" : "en",
+            "isPlusUser" : true,
+            "placesLived" : [
+                {
+                    "primary" : true,
+                    "value" : "Nashville, TN"
+                }
+            ],
+            "organizations" : [
+                {
+                    "primary" : false,
+                    "endDate" : "2001",
+                    "startDate" : "1998",
+                    "type" : "school",
+                    "title" : "Bible and Ministry",
+                    "name" : "Lipscomb University"
+                },
+                {
+                    "primary" : true,
+                    "startDate" : "2010",
+                    "type" : "work",
+                    "title" : "CTO",
+                    "name" : "Acklen Avenue"
+                }
+            ],
+            "image" : {
+                "isDefault" : false,
+                "url" : "https://lh4.googleusercontent.com/-k9tn_s7QUow/AAAAAAAAAAI/AAAAAAAAAKM/2b6JfsBeOPg/photo.jpg?sz=50"
+            },
+            "url" : "https://plus.google.com/107057123438352887411",
+            "name" : {
+                "givenName" : "Byron",
+                "familyName" : "Sommardahl"
+            },
+            "displayName" : "Byron Sommardahl",
+            "id" : "107057123438352887411",
+            "objectType" : "person",
+            "emails" : [
+                {
+                    "type" : "account",
+                    "value" : "byron@acklenavenue.com"
+                }
+            ],
+            "gender" : "male",
+            "etag" : "\"i9aZP8TD8jXVPIxD0T0PWsMRx6s/8_M13OmF4U46aWuzDKm1qEL4F2k\"",
+            "kind" : "plus#person",
+            "tokens" : {}
+        },
+        "gh" : {
+            "login" : "bsommardahl",
+            "id" : 239087,
+            "avatar_url" : "https://avatars.githubusercontent.com/u/239087?v=3",
+            "gravatar_id" : "",
+            "name" : "Byron Sommardahl",
+            "company" : "Acklen Avenue",
+            "blog" : "http://awkwardcoder.com",
+            "location" : "Santa Ana, FM, Honduras",
+            "email" : "byron@acklenavenue.com",
+            "hireable" : false,
+            "bio" : null,
+            "public_repos" : 29,
+            "public_gists" : 63,
+            "followers" : 10,
+            "following" : 0,
+            "created_at" : "2010-04-07T22:14:10Z",
+            "updated_at" : "2015-03-20T20:11:37Z",
+            "tokens" : {}
+        },
+        "in" : {
+            "lastName" : "Sommardahl",
+            "id" : "sAkwbA-d9p",
+            "firstName" : "Byron",
+            "tokens" : {}
+        },
+        "tw" : {
+            "id" : 13804552,
+            "name" : "Byron Sommardahl",
+            "screen_name" : "sommardahl",
+            "location" : "Nashville, TN",
+            "profile_location" : null,
+            "description" : "Learning how to behave in public, trying to make the world a better place, creating software.",
+            "url" : "http://t.co/IrZXxYVrjj",
+            "protected" : false,
+            "followers_count" : 95,
+            "friends_count" : 129,
+            "listed_count" : 2,
+            "created_at" : "Fri Feb 22 04:20:29 +0000 2008",
+            "favourites_count" : 2,
+            "utc_offset" : -18000,
+            "time_zone" : "Central Time (US & Canada)",
+            "geo_enabled" : true,
+            "verified" : false,
+            "lang" : "en",
+            "profile_image_url" : "http://pbs.twimg.com/profile_images/2725307866/22d006d8ff698ff0fcf2bcca848c401f_normal.jpeg",
+            "following" : false,
+            "notifications" : false,
+            "suspended" : false,
+            "needs_phone_verification" : false,
+            "tokens" : {}
+        }
+    }
+  },
 
 
 }

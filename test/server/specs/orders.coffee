@@ -167,7 +167,7 @@ bookingOrders = ->
         expect(booking1.order).to.be.undefined
         expect(_.idsEqual(booking1.expertId, FIXTURE.experts.dros._id)).to.be.true
         expect(_.idsEqual(booking1.customerId, s._id)).to.be.true
-        expect(_.idsEqual(booking1.createdById, s._id)).to.be.true
+        # expect(_.idsEqual(booking1.createdById, s._id)).to.be.true
         expect(booking1.type).to.equal('private')
         expect(booking1.minutes).to.equal(120)
         expect(booking1.status).to.equal('pending')
@@ -337,7 +337,7 @@ bookingOrders = ->
               expect(_.idsEqual(booking1.customerId, s._id)).to.be.true
               expect(booking1.type).to.equal('private')
               expect(booking1.minutes).to.equal(90)
-              expect(_.idsEqual(booking1.createdById, s._id)).to.be.true
+              # expect(_.idsEqual(booking1.createdById, s._id)).to.be.true
               expect(booking1.status).to.equal('pending')
               GET "/billing/orders", (orders) ->
                 expect(orders.length).to.equal(2)
@@ -508,6 +508,28 @@ bookingOrders = ->
   #             DONE()
 
 
+prodData = ->
+
+  before -> SETUP.analytics.on()
+  after -> SETUP.analytics.off()
+
+  IT 'Richard can re-book byron', ->
+    {byrn} = FIXTURE.experts
+    SETUP.ensureExpert 'byrn', ->
+    STORY.newUser 'ricd', {login:true,paymethod:true}, (s) ->
+      request = _.extend {userId:s._id}, _.omit(FIXTURE.requests.preMigrateRebook,'userId')
+      expect(request.budget, 150)
+      expect(request.suggested[1].expert.rate, 110)
+      DB.ensureDoc 'Request', request, ->
+        GET "/requests/#{request._id}/book/#{byrn._id}", (r2) ->
+          expect(r2.suggested[1].expert.name).to.equal("Byron Sommardahl")
+          suggestion = r2.suggested[1]
+          book = datetime: moment().add(1, 'day'), minutes: 60, type: 'private', payMethodId: s.primaryPayMethodId, request: { requestId: request._id, suggestion }
+          POST "/bookings/#{byrn._id}", book, (booking1) ->
+            expect(booking1.orderId).to.exist
+            DB.docById 'Order', booking1.orderId, (order) ->
+              expect(order.total).to.equal(146)
+              DONE()
 
 
 module.exports = ->
@@ -531,5 +553,5 @@ module.exports = ->
 
   DESCRIBE "Credit", creditOrders
   DESCRIBE "Bookings", bookingOrders
-
+  DESCRIBE "Prod data", prodData
 
