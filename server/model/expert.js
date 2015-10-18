@@ -31,7 +31,6 @@ var DealSchema = asSchema({
 var ExpertSchema = asSchema({
 
   userId:         { type: Id, ref: 'User', unique, required },
-  pic:            { type: String },
 
   lastTouch:      Touch,
   activity:       [Touch],
@@ -41,35 +40,36 @@ var ExpertSchema = asSchema({
   tags:           { type: [Reftag] },
   gmail:          { type: String },
 
-  user:           {},
+  // user:           {},
 
   // deprecated v0 user props
-  name:           { type: String },
-  username:       { type: String },
-  email:          { type: String },
-  timezone:       String,
-  location:       String,
-  homepage:       String,
-  gp:             {},          // googleplus
-  gh:             {},          // github
-  so:             {},          // stackoverflow
-  bb:             {},          // bitbucket
-  in:             {},          // linkedIn
-  tw:             {},          // twitter
+  // pic:            { type: String },
+  // name:           { type: String },
+  // username:       { type: String },
+  // email:          { type: String },
+  // timezone:       String,
+  // location:       String,
+  // homepage:       String,
+  // gp:             {},          // googleplus
+  // gh:             {},          // github
+  // so:             {},          // stackoverflow
+  // bb:             {},          // bitbucket
+  // in:             {},          // linkedIn
+  // tw:             {},          // twitter
 
-  deals:          [DealSchema],
+  deals:            [DealSchema],
 
-  availability:   {
+  availability: {
     // lastTouch:    Touch,
-    status:       String,
-    busyUntil:    { type: Date },
-    times:        { type: String },
-    minRate:      { type: Number },
-    hours:        { type: String }
+    status:         { type: String },
+    busyUntil:      { type: Date },
+    times:          { type: String },
+    minRate:        { type: Number },
+    hours:          { type: String }
   },
 
   // deprecated v0 settings props
-  minRate:        Number,
+  // minRate:        Number,
   // status:         String,
   // availability:   String,
   // hours:          String,
@@ -79,8 +79,8 @@ var ExpertSchema = asSchema({
   // to get rid of
   // matching
   mojo:           { required: true, type: Number, default: 0 },
-  matching:       {
-    replies:      {
+  matching: {
+    replies: {
       suggested:  Number,
       replied:    Number,
       lastSuggest:Date,
@@ -103,78 +103,16 @@ var ExpertSchema = asSchema({
   notes:          { type: [Note] },
 
   // deprecated other
-  bookMe:         {}
+  // bookMe:         {}
 
   // reviews:        [Shared.Survey]
 
 })
 
 // Does not work errrr.
-ExpertSchema.index({'_id':1,'reviews.by._id':1},{ unique, sparse })
+// ExpertSchema.index({'_id':1,'reviews.by._id':1},{ unique, sparse })
 
 
 return ExpertSchema
 
 }
-
-// var UserCopy = {
-//   _id:              { unique: true, sparse: true, required: true, type: ObjectId, ref: 'User' },
-//   email:            { type: String, unique: true, sparse: true, trim: true, lowercase: true },
-//   emailVerified:    { type: Boolean, required: true, default: false },
-//   name:             { type: String, trim: true },
-//   bio:              { type: String },
-//   initials:         { type: String, lowercase: true, trim: true },
-//   username:         { type: String, unique: true, sparse: true, lowercase: true, trim: true },
-//   localization:     { location: String, timezone: String },
-//   social:       {
-//     gh: {
-//       username:       { type: String },
-//       _json: {
-//         avatar_url:   { type: String },
-//         public_repos: { type: Number },
-//         public_gists: { type: Number },
-//         followers:    { type: Number },
-//       }
-//     },
-//     so: {
-//       link:           { type: String },
-//       reputation:     { type: String },
-//       badge_counts:   { type: {} }
-//     },
-//     bb: {
-//       username:       { type: String } },
-//     in: {
-//       id:             { type: String } },
-//     tw: {
-//       username:       { type: String },
-//       _json: {
-//         description:  { type: String },
-//         followers_count: { type: String }
-//       }
-//     },
-//     al: {
-//       username:       { type: String } },
-//     gp: {
-//       id:             { type: String },
-//       _json: {
-//         picture:      { type: String },
-//       }
-//     }
-//   }
-// }
-
-
-// var Bookme = {
-
-//   enabled:        { required: true, type: Boolean    },  // allow us or the expert to turn themselves off
-//   urlSlug:        { required: true, type: String, index: true }, // https://www.airpair.com/@domenic (urlSlug == 'domnic')
-//   noIndex:        { type: Boolean, default: false    },  // no index for crawlers
-//   rate:           { required: true, type: Number     },  // experts external rate
-//   rake:           { required: true, type: Number     },  // allow the expert commission deals
-//   coupons:        [{}],                                  // allow the expert to hand out promotions
-//   urlBlog:        String,                                // www.airpair.com/node.js/expert-training-domenic-denicola
-//   youTubeId:      String,                                // youtube movie
-//   // creditRequestIds: { type: [ObjectId] },  # Requests that credits can be applied for
-
-// }
-

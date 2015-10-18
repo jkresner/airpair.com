@@ -99,6 +99,7 @@ var middleware = {
       $callSvc(ExpertsSvc.getMe,req)(function(e, r) {
         if (e) return next(e)
         else {
+          // if (r._id)
           req.expert = r
           next()
         }

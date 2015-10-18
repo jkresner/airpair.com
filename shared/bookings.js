@@ -44,8 +44,8 @@ var utilFns = {
   },
 
   participantFromUser(role, user) {
-    var timeLoc = !user.localization || !user.localization.timezoneData ? {} :
-      { location:user.localization.location, timeZoneId:user.localization.timezoneData.timeZoneId }
+    var timeLoc = !user.location ? {} :
+      { location:user.location.name, timeZoneId:user.location.timeZoneId }
 
     return _.extend(timeLoc, { role, info: { _id: user._id, name: user.name, email: user.email } })
   },

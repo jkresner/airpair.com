@@ -14,7 +14,7 @@ create = ->
 
   IT "Cannot create expert profile without required user info", ->
     d = rate: 80, breif: 'yo', tags: [FIXTURE.tags.angular]
-    STORY.newUser 'alyr', {login:true,data:{localization:null}}, (salyr, salyrKey) ->
+    STORY.newUser 'alyr', {login:true,data:{location:null}}, (salyr, salyrKey) ->
       POST "/experts/me", d, { status: 403 }, (r) ->
         expectStartsWith(r.message, "Cannot create expert without username")
         PUT "/users/me/username", { username: salyrKey }, (r) ->
@@ -24,7 +24,7 @@ create = ->
               POST "/experts/me", d, { status: 403 }, (r) ->
                 expectStartsWith(r.message, "Cannot create expert without location")
                 PUT "/users/me/location", FIXTURE.wrappers.localization_melbourne.locationData, (r) ->
-                  expect(r.localization).to.exist
+                  expect(r.location).to.exist
                   POST "/experts/me", d, { status: 403 }, (r) ->
                     expectStartsWith(r.message, "Cannot create expert without bio")
                     PUT "/users/me/bio", { bio: 'a bio'}, (r) ->
@@ -43,14 +43,15 @@ create = ->
               PUT "/users/me/location", FIXTURE.wrappers.localization_melbourne.locationData, ->
                 PUT "/users/me/bio", { bio: 'a bio for apexpert 1'}, ->
                   POST "/experts/me", d, (expert) ->
+                    $log('expert', expert)
                     expect(expert._id).to.exist
                     # expect(expert.lastTouch).to.exist
                     expect(expert.name).to.equal(USERS.ape1.name)
                     expect(expert.username).to.equal('apexpert1')
                     expect(expert.initials).to.equal('ap')
                     expect(expert.location).to.equal('Melbourne VIC, Australia')
-                    expectStartsWith(expert.timezone, 'Australian ')
-                    expect(expert.gh.username).to.equal('airpairtest1')
+                    expectStartsWith(expert.timezone, 'Australia')
+                    expect(expert.gh.login).to.equal('airpairtest1')
                     expect(expert.gh.provider).to.be.undefined
                     expect(expert.gp.id).to.equal('107399914803761861041')
                     expect(expert.gp.name).to.be.undefined
@@ -61,34 +62,35 @@ create = ->
 
 
 
-# migrate = ->
 
-#   IT "Can update expert profile as new v1 user", ->
-#     SETUP.createNewExpert 'ape1', {}, (s, expert) ->
-#       expect(expert.lastTouch.action, 'create')
-#       expect(expert.rate, 70)
-#       expect(!_.idsEqual(s._id,expert._id))
-#       GET "/experts/me", {}, (exp2) ->
-#         expect(exp2._id).to.exist
-#         expect(exp2.lastTouch).to.exist
-#         expect(exp2.name).to.equal(USERS.ape1.name)
-#         expect(exp2.username).to.equal(expert.username)
-#         expect(exp2.initials).to.equal(expert.initials)
-#         expect(exp2.location).to.equal('Melbourne VIC, Australia')
-#         expect(exp2.timezone).to.equal('Australian Eastern Standard Time')
-#         expect(exp2.bio).to.equal(expert.bio)
-#         expect(exp2.breif).to.equal(expert.breif)
-#         expect(exp2.rate).to.equal(70)
-#         expect(exp2.tags.length).to.equal(1)
-#         expect(exp2.gh.username).to.equal('airpairtest1')
-#         expect(exp2.gh.followers).to.exist
-#         expect(exp2.gp.id).to.equal('107399914803761861041')
-#         expect(exp2.gp._json.picture).to.equal('https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg')
-#         exp2.rate = 150
-#         PUT "/experts/#{expert._id}/me", exp2, {}, (expert2) ->
-#           expect(expert.lastTouch.action, 'update')
-#           expect(expert.rate, 150)
-#           DONE()
+
+  IT "Update update expert profile", ->
+    STORY.newExpert 'ape1', {}, (s, expert) ->
+      DB.docById 'Expert', expert._id, (dExpert) ->
+        expect(dExpert.lastTouch.action, 'create')
+        expect(dExpert.rate, 70)
+        expect(!_.idsEqual(s._id, dExpert._id))
+        GET "/experts/me", (exp2) ->
+          expect(exp2._id).to.exist
+          expect(exp2.lastTouch).to.exist
+          expect(exp2.name).to.contain(USERS.ape1.name)
+          expect(exp2.username).to.contain(expert.username)
+          expect(exp2.initials).to.equal(expert.initials)
+          expect(exp2.location).to.equal('Melbourne VIC, Australia')
+          expect(exp2.timezone).to.contain('Australia')
+          expect(exp2.bio).to.equal(expert.bio)
+          expect(exp2.breif).to.equal(expert.breif)
+          expect(exp2.rate).to.equal(70)
+          expect(exp2.tags.length).to.equal(1)
+          expect(exp2.gh.login).to.equal('airpairtest1')
+          expect(exp2.gh.followers).to.exist
+          expect(exp2.gp.id).to.contain('107399914803761861041')
+          exp2.rate = 150
+          PUT "/experts/#{expert._id}/me", exp2, (exp3) ->
+            expect(exp3.rate, 150)
+            DB.docById 'Expert', expert._id, (dExpert2) ->
+              expect(dExpert2.lastTouch.action, 'update')
+              DONE()
 
 
 
@@ -256,15 +258,16 @@ create = ->
 
 admin = ->
 
-  IT "Delete by id", ->
-    SETUP.ensureExpert 'dlim', ->
-      DB.docById 'User', USERS.dlim._id, (s) ->
-        expertId = s.cohort.expert._id
-        LOGIN {key:'admin'}, ->
-          DELETE "/adm/experts/#{expertId}", ->
-            DB.docById 'Expert', expertId, (r) ->
-              expect(r).to.be.null
-              DONE()
+  it "Delete an expert"
+  # IT "Delete by id", ->
+  #   SETUP.ensureExpert 'dlim', ->
+  #     DB.docById 'User', USERS.dlim._id, (s) ->
+  #       expertId = s.cohort.expert._id
+  #       LOGIN {key:'admin'}, ->
+  #         DELETE "/adm/experts/#{expertId}", ->
+  #           DB.docById 'Expert', expertId, (r) ->
+  #             expect(r).to.be.null
+  #             DONE()
 
   IT "Get newest experts", ->
     LOGIN {key:'admin'}, ->
@@ -280,10 +283,7 @@ admin = ->
         DONE()
 
 
-
-# admin = ->
-
-#   it.skip "Get experts history", ->
+  it "Get experts history", ->
 #     LOGIN 'admin', ->
 #       # expertId = "524304901c9b0f0200000012" ## Matias
 #       expertId = "53cfe315a60ad902009c5954" ## Michael P
@@ -311,13 +311,6 @@ admin = ->
 #           expect(booking.participants[0].role).to.equal('customer')
 #           expect(booking.participants[0].info.name).to.exist
 #         DONE()
-
-
-#   IT "Get deals for tag"
-
-
-#   it.skip "Get deals for expert", ->
-#     DONE()
 
 
 #   IT "Add no tag expert deal available to everyone with not expiration", ->
@@ -455,7 +448,10 @@ module.exports = ->
 
   before (done) ->
     global.USERS = FIXTURE.users
-    SETUP.initExperts done
+    qExists = require('../../../server/services/users.data').query.existing
+    DB.removeDocs 'User', qExists.byEmail('airpairtest1@gmail.com'), ->
+    SETUP.ensureExpert 'snug', ->
+      done()
 
   after ->
     global.USERS = null

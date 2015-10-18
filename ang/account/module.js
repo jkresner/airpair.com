@@ -20,33 +20,38 @@ angular.module("APProfile", [])
     })
   }
 
-  if ($scope.session)
-    $scope.data = _.pick($scope.session, 'name','email','initials','username')
-
-  $scope.updateEmail = function(model) {
-    if (!model.$valid || $scope.data.email == $scope.session.email) return
-    $scope.emailChangeFailed = ""
-
-    SessionService.changeEmail({ email: $scope.data.email },
-      (result) => {
-        $scope.data.email = result.email
-      }
-      ,
-      (e) => {
-        $scope.emailChangeFailed = e.message
-        $scope.data.email = null
-      }
-    )
+  if ($scope.session) {
+    $scope.data = _.pick($scope.session, ['name','email','initials','username'])
+    if ($scope.session.location) {
+      $scope.data.location = $scope.session.location.name,
+      $scope.data.timeZoneId = $scope.session.location.timeZoneId
+    }
   }
 
-  $scope.sendVerificationEmail = function() {
-    SessionService.changeEmail({email:$scope.session.email}, function(result){
-      $scope.emailAlerts = [{ type: 'success', msg: `Verification email sent to ${$scope.session.email}` }]
-    }, function(e){
-      console.log('sendVerificationEmail.back', e, e.message)
-      $scope.emailAlerts = [{ type: 'danger', msg: `${e.message||e} failed` }]
-    })
-  };
+  // $scope.updateEmail = function(model) {
+  //   if (!model.$valid || $scope.data.email == $scope.session.email) return
+  //   $scope.emailChangeFailed = ""
+
+  //   SessionService.changeEmail({ email: $scope.data.email },
+  //     (result) => {
+  //       $scope.data.email = result.email
+  //     }
+  //     ,
+  //     (e) => {
+  //       $scope.emailChangeFailed = e.message
+  //       $scope.data.email = null
+  //     }
+  //   )
+  // }
+
+  // $scope.sendVerificationEmail = function() {
+  //   SessionService.changeEmail({email:$scope.session.email}, function(result){
+  //     $scope.emailAlerts = [{ type: 'success', msg: `Verification email sent to ${$scope.session.email}` }]
+  //   }, function(e){
+  //     console.log('sendVerificationEmail.back', e, e.message)
+  //     $scope.emailAlerts = [{ type: 'danger', msg: `${e.message||e} failed` }]
+  //   })
+  // };
 
   $scope.sendPasswordChange = function() {
     SessionService.requestPasswordChange({email:$scope.session.email}, function(result){
@@ -61,7 +66,7 @@ angular.module("APProfile", [])
 
   $scope.alerts = []
 
-  $scope.data = { password: '', hash: $location.search().token };
+  $scope.data = { password: '', hash: $location.search().token, email: $location.search().email };
 
   $scope.savePassword = function() {
     SessionService.changePassword($scope.data, function(result){

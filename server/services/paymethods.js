@@ -114,7 +114,7 @@ var save = {
 
             if (ctx.user.email) { //-- When admin looks at request, don't trigger analtyics
               var cardType = payMethodInfo.cardType || payMethodInfo.id
-              analytics.track(ctx.user, null, 'Save', { type: 'paymethod', method: o.type, cardType })
+              analytics.event('Save', ctx.user, { type: 'paymethod', method: o.type, cardType })
             }
 
             if (o.makeDefault)

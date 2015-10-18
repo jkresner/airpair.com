@@ -21,21 +21,21 @@ var setup = {
     })
   },
 
-  initExperts(done)
-  {
-    DB.docById('expert',FIXTURE.experts.admb._id, function(r) {
-      if (r) return done()
-      setup.ensureExpert('dros', () =>
-        setup.ensureExpert('tmot', () =>
-          setup.ensureExpert('snug', () =>
-            done() )))
+  // initExperts(done)
+  // {
+  //   DB.docById('expert',FIXTURE.experts.admb._id, function(r) {
+  //     if (r) return done()
+  //     setup.ensureExpert('dros', () =>
+  //       setup.ensureExpert('tmot', () =>
+  //         setup.ensureExpert('snug', () =>
+  //           done() )))
 
-        //   SETUP.ensureV0Expert('rbig', () =>
-        //     SETUP.ensureV1LoggedInExpert('abha', () =>
-        //         SETUP.ensureV0Expert('admb', () => done() ))))))
+  //       //   SETUP.ensureV0Expert('rbig', () =>
+  //       //     SETUP.ensureV1LoggedInExpert('abha', () =>
+  //       //         SETUP.ensureV0Expert('admb', () => done() ))))))
 
-    })
-  }
+  //   })
+  // }
 
 }
 

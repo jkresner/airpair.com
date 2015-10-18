@@ -1,7 +1,7 @@
 // $timelapsed("APP READ")
 var start       = new Date().getTime()
 var mw          = require('./middleware/_middleware')
-var session     = require('./identity/session')
+var session     = require('./util/session')
 var routes      = require('./routes/index')
 require('./util/cache')
 

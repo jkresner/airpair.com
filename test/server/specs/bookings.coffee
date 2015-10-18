@@ -441,13 +441,14 @@ feedback = ->
 
 module.exports = ->
 
-  @timeout 40000
+  @timeout 60000
 
   before (done) ->
     @braintreepaymentStub = SETUP.stubBraintreeChargeWithMethod()
     global.moment = require("moment-timezone")
     SETUP.ensureExpert 'gnic', (sExp) ->
-      SETUP.initExperts done
+      SETUP.ensureExpert 'dros', (sExp) ->
+        done()
 
   beforeEach ->
     # STUB.sync(Wrappers.Slack, 'checkUserSync', null)

@@ -44,11 +44,41 @@ colors.setTheme({
 })
 
 config.colors = colors
-
 config.log.auth = false
+config.log.da = false
+
+
+global.againstProd = true
+
 
 SCREAM(__dirname, config, loginHandler).run()
 
+
+
+
+global.STRINGIFY = (obj) ->
+  if !JSONSTRING[obj._id]
+    JSONSTRING[obj._id] = JSON.stringify(obj).gray
+  JSONSTRING[obj._id]
+
+
+global.expectAttr = (obj, attr, constructor) ->
+  expect(obj[attr], attr.white+" missing on: "+STRINGIFY(obj)).to.exist
+  if (constructor)
+    expect(obj[attr].constructor, "#{attr}.constuctor #{obj[attr].constructor.name.cyan} but expecting #{constructor.name.cyan} on: "+STRINGIFY(obj)).to.equal(constructor)
+
+
+global.expectAttrUndefined = (obj, attr) ->
+  expect(obj[attr], attr.white+" shoud not be found on "+STRINGIFY(obj)).to.be.undefined
+
+
+global.specInit = (ctx) ->
+
+  before ->
+    global.JSONSTRING = {}
+
+  after ->
+    delete global.JSONSTRING
 
     # $timelapsed("BEFORE start")
     # global.verboseErrHandler  = true   # true => lots of red detail

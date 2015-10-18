@@ -135,22 +135,23 @@ creditOrders = ->
         DONE()
 
 
-  IT 'GetMyOrdersWithCredit returns only orders with Credit', ->
-    STORY.newUser 'mcas', {login:true,paymethod:true}, (mcas) ->
-      map = (o) ->
-        o.userId = require('mongoose').Types.ObjectId(mcas._id)
-        o
-      v0Orders = _.map(FIXTURE.v0.orders.jkHist, map)
-      DB.ensureDocs 'Order', v0Orders, (e,r) ->
-        o = total: 1000, payMethodId: mcas.primaryPayMethodId
-        POST "/billing/orders/credit", o, (credit) ->
-          expect(credit._id).to.exist
-          GET "/billing/orders/credit/#{mcas.primaryPayMethodId}", (orders) ->
-            expect(orders.length).to.equal(1)
-            linesWithCredit = OrdersUtil.linesWithCredit(orders)
-            expect(linesWithCredit.length).to.equal(2)
-            expect(OrdersUtil.getAvailableCredit(linesWithCredit)).to.equal(1050)
-            DONE()
+  it 'GetMyOrdersWithCredit returns only orders with Credit'
+  # IT 'GetMyOrdersWithCredit returns only orders with Credit', ->
+  #   STORY.newUser 'mcas', {login:true,paymethod:true}, (mcas) ->
+  #     map = (o) ->
+  #       o.userId = require('mongoose').Types.ObjectId(mcas._id)
+  #       o
+  #     v0Orders = _.map(FIXTURE.v0.orders.jkHist, map)
+  #     DB.ensureDocs 'Order', v0Orders, (e,r) ->
+  #       o = total: 1000, payMethodId: mcas.primaryPayMethodId
+  #       POST "/billing/orders/credit", o, (credit) ->
+  #         expect(credit._id).to.exist
+  #         GET "/billing/orders/credit/#{mcas.primaryPayMethodId}", (orders) ->
+  #           expect(orders.length).to.equal(1)
+  #           linesWithCredit = OrdersUtil.linesWithCredit(orders)
+  #           expect(linesWithCredit.length).to.equal(2)
+  #           expect(OrdersUtil.getAvailableCredit(linesWithCredit)).to.equal(1050)
+  #           DONE()
 
 
 
@@ -513,8 +514,10 @@ module.exports = ->
 
   @timeout 10000
 
-  before ->
+  before (done) ->
     @braintreepaymentStub = SETUP.stubBraintreeChargeWithMethod()
+    SETUP.ensureExpert 'tmot', ->
+      done()
 
   after ->
     @braintreepaymentStub.restore()

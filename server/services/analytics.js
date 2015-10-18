@@ -28,6 +28,11 @@ var util = {
 
 }
 
+var Events = analyticsDB.model('Event', new mongoose.Schema({
+  uId:       { type: Id, index: true, sparse: true },
+  name:      { type: String, required: true },
+  data:      { type: {}, required: false },
+})).collection
 
 // cleanup 2015.07.13
 // db.views.update({ __v: { $exists:1 } },{ $unset: { __v: "1" } },{ 'multi': true })
@@ -37,7 +42,7 @@ var util = {
 // db.views.update({ utc: { $exists:1 } },{ $unset: { utc: "1" } },{ 'multi': true })
 var objectType = ['post','workshop','expert','tag','landing']
 var Views = analyticsDB.model('View', new mongoose.Schema({
-  userId:       { type: Id, ref: 'User', index: true, sparse: true },
+  userId:       { type: Id, index: true, sparse: true },
   anonymousId:  { type: String, index: true, sparse: true },
   objectId:     { type: Id, required: true },
   type:         { enum: objectType, type: String, required: true, lowercase: true },
@@ -50,40 +55,31 @@ var Views = analyticsDB.model('View', new mongoose.Schema({
 
 
 var viewSvc = {
-
-  getByUserId(userId, cb)
-  {
+  getByUserId(userId, cb) {
     if (logging) $log('views.getByUserId'.trace, userId)
     userId = ObjectId(userId.toString())
     Views.find({userId}).sort({_id:-1}).toArray(cb)
   },
-
-  getByAnonymousId(anonymousId, cb)
-  {
+  getByAnonymousId(anonymousId, cb) {
     if (logging) $log('views.getByAnonymousId'.trace, anonymousId)
     Views.find({anonymousId}).sort({_id:-1}).toArray(cb)
   },
-
-  alias(anonymousId, userId, cb)
-  {
+  alias(anonymousId, userId, cb) {
     if (logging) $log('views.alias'.trace, anonymousId, userId)
     userId = ObjectId(userId.toString())
     Views.update({anonymousId}, {$set:{userId}}, { multi: true }, cb)
   },
-
-  create(o, cb)
-  {
+  create(o, cb) {
     if (o.userId) o.userId = ObjectId(o.userId.toString())
     if (logging) $log('views.create'.trace, o)
     Views.insert(o, cb)
   }
-
 }
 
 
 var Impressions = analyticsDB.model('Impression', new mongoose.Schema({
   img:          { type: String, required: true },
-  uId:          { type: Id, ref: 'User', index: true, sparse: true },
+  uId:          { type: Id, index: true, sparse: true },
   sId:          { type: String, ref: 'v1Session', index: true, sparse: true },
   ip:           { type: String, required: true },
   ref:          { type: String, required: true },
@@ -104,7 +100,7 @@ var impressionSvc = {
 
 function $$log(action, data, user, sessionID, ctx) {
   //-- TODO think about adding persistence
-  var uid = (user) ? user.email.gray || user._id.gray
+  var uid = (user) ? user.name.gray || user._id.toString().gray
     : `${sessionID.substring(0,12)}${(ctx&&ctx.ip)?ctx.ip.replace(':ffff',''):''}`.cyan
 
   uid = uid+"                                     ".substring(0,37-uid.length)
@@ -164,6 +160,13 @@ var analytics = {
   },
 
 
+  echo(user, sessionID, event, properties, context, done) {
+    $$log(event,properties,user,sessionID, context)
+    done = done || (doneBackup || function() {})
+    done()
+  },
+
+
   impression(user, sessionID, img, context, done) {
     var d = {img,ip:context.ip}
     var userId = (user) ? user._id: null
@@ -172,15 +175,6 @@ var analytics = {
     if (context.referer) d.ref = context.referer
     if (context.userAgent) d.ua = context.userAgent
     impressionSvc.create(d, () => {})
-    done = done || (doneBackup || function() {})
-    done()
-  },
-
-
-  track(user, sessionID, event, properties, context, done) {
-    // var payload = util.buildSegmentPayload('track', user, sessionID, {event,properties,context})
-    // segment.track(payload, done || doneBackup)
-    $$log(event,properties,user,sessionID, context)
     done = done || (doneBackup || function() {})
     done()
   },
@@ -214,39 +208,27 @@ var analytics = {
   },
 
 
-  identify(user, context, identifyEvent, identifyEventProps, done) {
-    // var traits = util.segmentTraitsFromUser(user)
-    // var context = null // ?? to populate
+  event(name, user, data, context, done) {
+    // $log('event'.cyan, name, data, user)
+    $$log(name, data, user, null, context)
+    var o = { uId: ObjectId(user._id.toString()), name }
+    if (data && data.constructor == Object)
+      o.data = data
 
-    done()
-    // segment.identify(util.buildSegmentPayload('identify', user, null, {traits,context}), () => {
-    //   if (logging) $log('**** identified'.yellow)
-    //   analytics.track(user, null, identifyEvent, identifyEventProps, context, () => {
-    //     if (logging) $log(`**** ${identifyEvent}`.yellow)
-    //     done()
-    //   })
-    //   segment.flush()
-    // })
+    var cb = done || (doneBackup || function() {})
+    Events.insert(o, cb)
   },
 
 
-  alias(sessionID, user, aliasEvent, done) {
-    if (logging) $log('alias', user.email, sessionID, aliasEvent, done)
-    var userId = user._id.toString()
+  alias(user, sessionID, eventName, data, done) {
+    if (logging) $log('alias', user.email, sessionID, done)
 
-    // segment.alias({ previousId: sessionID, userId: user.email }, (e, b) => {
-    //   if (logging) $log('**** aliased'.blue)
-    //   analytics.track(user, null, aliasEvent, {_id:user._id,email:user.email,sessionID}, null, () => {
-    //     if (logging) $log(`**** ${aliasEvent}`.blue)
-    //     done()
-    //   })
-    // })
-    // segment.flush()
-
+    analytics.event(eventName, user, data)
     viewSvc.alias(sessionID, user._id, ()=>{})
+    impressionSvc.alias(sessionID, user._id, ()=>{})
 
-
-    done()
+    var cb = done || (doneBackup || function() {})
+    cb()
   },
 
 
@@ -255,46 +237,47 @@ var analytics = {
   // existingUser = not null if they are logging in, null if it's a singup
   // sessionID = the random Id of their current session
   upsert(user, existingUser, sessionID, cb) {
-    var {aliases} = user.cohort
-    var noAliases = !aliases || aliases.length == 0
+    throw "No way"
+    // var {aliases} = user.cohort
+    // var noAliases = !aliases || aliases.length == 0
 
-    var properties = {_id:user._id,email:user.email,googleId:user.googleId,sessionID}
+    // var properties = {_id:user._id,email:user.email,googleId:user.googleId,sessionID}
 
-    // This is a new user (easy peasy)
-    if (noAliases && !existingUser) {
-      aliases = [sessionID] // we make the assumption that we're going to alias on the update
+    // // This is a new user (easy peasy)
+    // if (noAliases && !existingUser) {
+    //   aliases = [sessionID] // we make the assumption that we're going to alias on the update
 
 
-      //Add an event to make tracking local vs google signups easier and more consistent
-      if (user.googleId)
-        analytics.track(user, null, 'Save', {type:'email',email:user.google._json.email}, {sessionID}, ()=>{
-          analytics.alias(sessionID, user, 'Signup', () =>
-            analytics.track(user, null, 'Login', _.extend(properties,{type:'google'}), {}, () => {}))
-        })
-      else
-        analytics.alias(sessionID, user, 'Signup', () =>
-          analytics.track(user, null, 'Login', _.extend(properties,{type:'password'}), {}, () => {}))
+    //   //Add an event to make tracking local vs google signups easier and more consistent
+    //   if (user.googleId)
+    //     analytics.track(user, null, 'Save', {type:'email',email:user.google._json.email}, {sessionID}, ()=>{
+    //       analytics.alias(sessionID, user, 'Signup', () =>
+    //         analytics.track(user, null, 'Login', _.extend(properties,{type:'google'}), {}, () => {}))
+    //     })
+    //   else
+    //     analytics.alias(sessionID, user, 'Signup', () =>
+    //       analytics.track(user, null, 'Login', _.extend(properties,{type:'password'}), {}, () => {}))
 
-      cb(aliases)
-    }
-    else
-    {
-      aliases = aliases || []
+    //   cb(aliases)
+    // }
+    // else
+    // {
+    //   aliases = aliases || []
 
-      //-- This is an existing user from a new device / browser
-      if ( ! _.contains(aliases, sessionID) ) {
-        if (logging) $log('newAnonSessionID', sessionID)
-        aliases.push(sessionID)
-      }
+    //   //-- This is an existing user from a new device / browser
+    //   if ( ! _.contains(aliases, sessionID) ) {
+    //     if (logging) $log('newAnonSessionID', sessionID)
+    //     aliases.push(sessionID)
+    //   }
 
-      //-- but update all the anonymous views to the userId
-      viewSvc.alias(sessionID, user._id, ()=>{})
-      impressionSvc.alias(sessionID, user._id, ()=>{})
+    //   //-- but update all the anonymous views to the userId
+    //   viewSvc.alias(sessionID, user._id, ()=>{})
+    //   impressionSvc.alias(sessionID, user._id, ()=>{})
 
-      var context = {sessionID} // ??
-      analytics.identify(user, context, 'Login', _.extend(properties,{type:'revisit'}), () => {})
-      cb(aliases)
-    }
+    //   var context = {sessionID} // ??
+    //   analytics.identify(user, context, 'Login', _.extend(properties,{type:'revisit'}), () => {})
+    //   cb(aliases)
+    // }
   },
 
 }

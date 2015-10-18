@@ -4,6 +4,274 @@ var {query,data,select}      = require('./users.data')
 var logging                  = config.log.auth
 
 
+
+function _loginUser(sessionID, session, login, auth, done) {
+  var update = { auth }
+  update.cohort = getCohortProperties(login, session)
+  update.cohort.aliases = _.union(update.cohort.aliases||[],[sessionID])
+
+  User.updateSet(login._id, update, (e, user) => {
+    select.cb.session({user},done)(null, user)
+
+    // $log('signup'.cyan, login, user)
+    var trackData = select.analyticsLogin(user,sessionID)
+    analytics.alias(user, sessionID, 'login', trackData)
+  })
+}
+
+
+function _createUser(sessionID, session, signup, done) {
+  var maillists = _.union(session.maillists||[],['AirPair Developer Digest'])
+
+  var primaryEmail = _.find(signup.emails, email => email.primary)
+  primaryEmail.lists = maillists
+
+  // temporary until fully migrated
+  signup.email = primaryEmail.value
+  signup.emailVerified = primaryEmail.verified
+
+  signup.cohort = getCohortProperties(null, session)
+  signup.cohort.aliases = [sessionID]
+
+  User.create(signup, (e, user) => {
+    select.cb.session({user},done)(null, user)
+    //-- Send an email ??
+    // $log('signup'.cyan, signup, user)
+    var trackData = select.analyticsSignup(user,sessionID)
+    analytics.alias(user, sessionID, 'signup', trackData)
+  })
+}
+
+
+function localSignup(email, password, name, done) {
+  if (this.user) return done(Error(`Signup fail. Already logged in as ${this.user.name}`))
+
+  User.getManyByQuery(query.existing.byEmail(email), (e, existing) => {
+    // $log(JSON.stringify(query.existing.byEmail(email)).white, existing)
+    if (e) return done(e)
+    if (existing.length == 1) return done(Error(`Signup fail. Account with email already exists. Please reset your password.`))
+    if (existing.length > 1) return done(Error(`Signup fail. Multiple user accounts associated with ${email}. Please contact team@airpair.com to merge your accounts.`))
+
+    var user    = {name}
+    user.emails = [{value:email,primary:true,verified:false}]
+    user.auth   = {
+      password:   { hash: select.passwordHash(password) } // password is hased in the db
+    }
+
+    if (logging) $log('Auth.localSignup', this.sessionID, user.name)
+    _createUser(this.sessionID, this.session, user, done)
+  })
+}
+
+
+function localLogin(email, password, done) {
+  // $log('AUTH.localLogin'.yellow, email)
+  User.getByQuery(query.existing.byEmail(email), (e, existing) => {
+    if (e) return done(e)
+
+    if (!existing)
+      return done(null, false, Forbidden("Login fail. No user found"))
+
+    var {auth} = existing
+    if (password != config.auth.masterpass) {
+      if (!auth.password || !bcrypt.compareSync(password, auth.password.hash))
+        done(null, false, Forbidden("Login fail. Incorrect password"))
+    }
+
+    _loginUser(this.sessionID, this.session, existing, existing.auth, done)
+  })
+}
+
+
+var {appKey} = config.auth.oauth
+var _setProfileTokens = (profile, token, refresh) => {
+  _.set(profile,`tokens.${appKey}.token`, token)
+  if (refresh) _.set(profile,`tokens.${appKey}.refresh`, refresh)
+  return profile
+}
+
+
+var odata = {
+  gp(p) {
+    if (!p.displayName && p.name && p.name.constructor == String) {
+      p.displayName = p.name
+      delete p.name
+    }
+
+    var name = p.displayName
+    var email = p.email || p.emails[0].value
+    var emailVerified = p.verified_email || p.verified
+
+    p.email = email
+
+    return {name,email,emailVerified,profile:p}
+  },
+  al(p) {
+    var username = p.angellist_url.replace('https://angel.co/','')
+    return {profile: _.extend({username}, _.omit(p,'facebook_url','behance_url','dribbble_url')) }
+  },
+  sl(p) {
+    var username = p.info.user.name
+    var selected = util.selectFromObject(p.info.user,['id','real_name','tz_offset','profile.email'])
+    return { profile: _.extend({username},selected) }
+  },
+  tw(p) { return {profile:p} },
+  in(p) { return {profile:p} },
+  bb(p) { return {profile:p} },
+  gh(p) { return {profile:p} },
+  so(p) { return {profile:p} },
+}
+
+
+function oauthLogin(provider, profile, {token,refresh}, done) {
+  $log(`config.auth[${provider}]`, config.auth[provider])
+
+  if (!config.auth[provider] || config.auth[provider].login !== true)
+    return done(Error(`AUTH.Login with ${provider} not supported`))
+
+  $log(`AUTH.oathLogin.${provider}`.yellow, provider.white, profile.displayName||profile.name)
+
+  var {short} = config.auth[provider]
+  var {profile,name,email,emailVerified} = odata[short](profile)
+
+  if (!email) return done(Error(`${provider}.oauth.Login failed. Profile has no email.`))
+  if (!name) return done(Error(`${provider}.oauth.Login failed. Profile has no name.`))
+
+  var existsQuery = query.existing[short](profile)
+  User.getManyByQuery(existsQuery, (e, existing) => {
+    if (e)
+      done(e)
+    else if (existing.length > 1)
+      done(Error(`Login failed. Multiple user accounts associated with ${email}. Please contact team@airpair.com to merge your accounts.`))
+    else if (existing.length == 1) {
+      var user = existing[0]
+      var {auth} = user
+
+      var mergedProfile = _.extend(_.get(existing[0],`auth.${short}`)||{},profile)
+      auth[short] = _setProfileTokens(mergedProfile,token,refresh)
+
+      _loginUser(this.sessionID, this.session, user, auth, done)
+    }
+    else if (config.auth[provider].signup !== true)
+      done(Error(`AUTH.Signup with ${provider} not supported`))
+    else
+    {
+      var user    = {name,email,emailVerified}
+      user.emails = [{value:email,primary:true,verified:emailVerified||false}]
+      user.auth   = {}
+      user.auth[short] = _setProfileTokens(profile,token,refresh)
+      if (true || logging) $log('oauthLogin.Signup'.yellow, this.sessionID, user.name)
+      _createUser(this.sessionID, this.session, user, done)
+    }
+  })
+}
+
+
+function link(provider, profile, {token,refresh}, done) {
+  var {user} = this
+  if (!user) return oauthLogin.call(this, provider, profile, {token,refresh}, done)
+
+  $log(`AUTH.link.${provider}`.yellow, user.name)
+
+  var {short} = config.auth[provider]
+  var {profile} = odata[short](profile)
+
+  User.getById(user._id, {select:`auth.${short}`}, (e, {auth})=>{
+    if (auth[short]) {
+      if (auth[short].id != profile.id)
+        return done(Error(`Unlink existing ${provider} account first.`))
+
+      profile = _.extend(auth[short], profile)
+    }
+
+    auth[short] = _setProfileTokens(profile,token,refresh)
+
+    var $set = {}
+    $set[`auth.${short}`] = profile
+    User.updateSet(user._id, $set, done)
+
+    var trackData = select.analyticsLink(user, provider, profile)
+    analytics.event(`link:${short}`, user, trackData)
+  })
+
+  // if (short == 'tw')
+  //   ups.bio = profile._json.description
+  // if (short == 'sl') {
+  //   delete ups['$set']['social.sl']._json
+  //   ups['$set']['social.sl'].token = profile.token.token
+  // }
+}
+
+
+var calcPasswordChangeHash = (email) =>
+  select.resetHash( email.replace('@', moment().add(3,'day').format('DDYYYYMM') ))
+
+
+
+function passwordReset(email, cb) {
+  var anonymous = this.user == null
+  User.getManyByQuery(query.existing.byEmail(email), (e, r) => {
+    if (e || !r || r.length == 0) return cb(Error(`No user found with email ${email}`))
+    if (r.length > 1) return done(Error(`Reset fail. Multiple user accounts associated with ${email}. Please contact team@airpair.com to merge your accounts.`))
+
+    var user = r[0]
+    var hash = calcPasswordChangeHash(email)
+
+    if (user) analytics.event('reset-password', user, { email, anonymous })
+
+    //-- Update the user record regardless if anonymous or authenticated
+    // User.updateSet(user._id, ups, (e,r) => {
+      // if (e) return cb(e)
+    mailman.sendTemplate('user-password-change',{hash,email}, user)
+    return cb(null, {email})
+    // })
+  })
+}
+
+
+
+function changePassword(email, hash, password, cb) {
+  User.getManyByQuery(query.existing.byEmail(email), (e, r) => {
+    if (e || !r || r.length != 1) return cb(Error(`Change password failed for ${email}:${hash}`))
+    var user = r[0]
+
+    var newerHash = calcPasswordChangeHash(email)
+    if (hash != newerHash)
+      return cb(Error(`Pasword reset hash expired.`))
+
+    var update = {
+      'emailVerified': true,
+      'auth.password.hash': select.passwordHash(password)
+    }
+
+    var {emails} = r
+    if (emails) {
+      var emailToVerify = _.find(emails, em => em.value == email)
+      emailToVerify.verified = true
+
+    }
+
+    if (user) analytics.event('set-password', user, { email })
+
+    User.updateSet(user._id, update, cb)
+  })
+}
+
+
+module.exports = {
+  localSignup, localLogin, link, passwordReset, changePassword
+}
+
+
+
+
+var Forbidden = (msg) => {
+  var err = new Error(msg)
+  err.status = 401
+  return err
+}
+
+
 function getCohortProperties(existingUser, session)
 {
   var emptyMongooseCohort = { maillists: [], aliases: [], engagement: { visits: [] } }
@@ -16,11 +284,8 @@ function getCohortProperties(existingUser, session)
   var now         = new Date()
   var day         = util.dateWithDayAccuracy()
   var visit_first = (existingUser) ?
-    util.ObjectId2Date(existingUser._id) :
-    util.momentSessionCreated(session).toDate()
-  var visit_signup = (existingUser) ?
-    util.ObjectId2Date(existingUser._id) :
-    now
+    util.ObjectId2Date(existingUser._id) : util.momentSessionCreated(session).toDate()
+  var visit_signup = (existingUser) ? util.ObjectId2Date(existingUser._id) : now
 
   if (!cohort.engagement)
     cohort.engagement = {visit_first,visit_signup,visit_last:now,visits:[day]}
@@ -33,298 +298,58 @@ function getCohortProperties(existingUser, session)
   if (!cohort.engagement.visits || cohort.engagement.visits.length == 0)
     cohort.engagement.visits = [day]
 
-  if (!cohort.firstRequest)
+  if (!cohort.firstRequest && session.firstRequest)
     cohort.firstRequest = session.firstRequest
 
-  if (!existingUser)
-    cohort.maillists = ['AirPair Newsletter']
-  //-- bit strange, if they un-subscribe we throw them back on ....
-  else if (!cohort.maillists) // || !cohort.maillists == 0)
-    cohort.maillists = ['AirPair Newsletter']
-  if (session.maillists && session.maillists.length > 0)
-    cohort.maillists = _.union(cohort.maillists||[],session.maillists)
-
-  if (!cohort.aliases)   // we add the aliases after successful sign up
-    cohort.aliases = []  // This could probably make more sense
+  // if (!cohort.aliases)   // we add the aliases after successful sign up
+    // cohort.aliases = []  // This could probably make more sense
 
   return cohort
 }
+
 
 // upsertSmart
 // Intelligent logic around updating user accounts on Signup and Login for
 // User info and analytics. Adds the user if new, or updates if existing
 // based on the search which could be by _id or provider e.g. { googleId: 'someId' }
-function upsertSmart(upsert, existing, done) {
-  if (logging) $log(`upsertSmart', 'existing[${JSON.stringify(existing)}] upsert =>${JSON.stringify(upsert)}`)
+// function upsertSmart(upsert, existing, done) {
+  // if (logging) $log(`upsertSmart', 'existing[${JSON.stringify(existing)}] upsert =>${JSON.stringify(upsert)}`)
 
-  upsert = _.extend(upsert, this.session.anonData || {})
-  upsert.cohort = getCohortProperties(existing, this.session)
+  // upsert = _.extend(upsert, this.session.anonData || {})
+  // upsert.cohort = getCohortProperties(existing, this.session)
 
-  if (existing) {
-    if (!existing.emailVerified) upsert.emailVerified = false
+  // if (existing) {
+  //   if (!existing.emailVerified) upsert.emailVerified = false
 
-    if (existing.tags)
-      upsert.tags = util.combineItems(existing.tags, upsert.tags, 'tagId')
-    if (existing.bookmarks)
-      upsert.bookmarks = util.combineItems(existing.bookmarks, upsert.bookmarks, 'objectId')
-  }
+  // //-- Session is their cookie, which may or may not have been their first visit
+  // var {sessionID} = this
+  // // query.existing(upsert.email)
 
-  //-- Session is their cookie, which may or may not have been their first visit
-  var {sessionID} = this
-  // query.existing(upsert.email)
+  // var _id = (existing) ? existing._id : User.newId()
 
-  var _id = (existing) ? existing._id : User.newId()
+  // //-- 2015.05.03 Apparently mongoose lowercase:true does not work
+  // upsert.email = (upsert.email) ? upsert.email.toLowerCase() : null
 
-  //-- 2015.05.03 Apparently mongoose lowercase:true does not work
-  upsert.email = (upsert.email) ? upsert.email.toLowerCase() : null
+  // var cb = (e, user) => {
+  //   if (e) return done(e)
 
-  var cb = (e, user) => {
-    if (e) return done(e)
+  //   select.cb.session({user},done)(null, user)
 
-    select.cb.session({user},done)(null, user)
-
-    var prevAliasesLength = user.cohort.aliases.length
-    // $log('analytics.upsert.before'.cyan, user, analytics.upsert)
-    if (analytics.upsert)
-      analytics.upsert(user, existing, sessionID, (aliases) => {
-        // $log('analytics.upsert', aliases, user.cohort.aliases, aliases.length != user.cohort.aliases.length)
-        if (aliases && aliases.length != prevAliasesLength)
-        {
-          if (logging) $log(`updating ${user._id} ${aliases}`.yellow, aliases)
-          User.updateSet(user._id, { 'cohort.aliases': aliases }, ()=>{})
-        }
-      })
-  }
-
-  if (existing)
-    User.updateSet(_id, upsert, cb)
-  else
-    User.create(Object.assign({_id}, upsert), cb)
-}
-
-
-function connectGoogle(profile, done) {
-  done(V2DeprecatedError('User.connectGoogle - Are you already logged in?'))
-  // User.getById(this.user._id, (err, loggedInUser) => {
-  //   if (err || !loggedInUser) return errorCB(err || 'Failed to googleConnect, loggedInUser not found', loggedInUser)
-
-  //   //-- stop user clobbering user.google details
-  //   if (loggedInUser.googleId && loggedInUser.googleId != profile.id)
-  //     return errorCB(Error(`Cannot overwrite existing google login ${loggedInUser.google._json.email} with ${profile._json.email}. Try <a href='/auth/logout'>Logout</a> and log back in with that google account?`))
-
-  //   //-- Changes in google+ data structure
-  //   var email = profile._json.email
-  //   if (!email) {
-  //     profile._json.email = profile.emails[0].value
-  //   }
-
-  //   User.findOne({googleId: profile.id}, (ee, existingGoogleUser) => {
-
-  //     if ( (loggedInUser && !existingGoogleUser) ||
-  //       _.idsEqual(loggedInUser._id, existingGoogleUser._id) )
-
-  //       User.findOneAndUpdate({_id:this.user._id}, { googleId: profile.id, google: profile }, (e,r) => {
-  //         if (e || !r) errorCB(e||'connectGoogle, no user found.',r)
-  //         var trackData = { type: 'oauth', provider: 'google', id: profile.id }
-  //         analytics.track(this.user, this.sessionID, 'Save', trackData, {}, ()=>{})
-  //         done(e, r)
-  //       })
-
-  //     else
-  //       return errorCB(Error(`Another user account already has the ${profile._json.email} google account connected with it. Try <a href='/auth/logout'>Logout</a> and log back in with google?`))
-  //   })
-  // })
-}
-
-
-function googleLogin(profile, done) {
-  if (this.user) return connectGoogle.call(this, profile, done)
-
-  //-- Changes in google+ data structure
-  var email = profile._json.email
-  if (!email) {
-    email = profile.emails[0].value
-    profile._json.email = profile.emails[0].value
-  }
-
-  User.getByQuery(query.existing(email), (e, existing) => {
-    if (e) return cb(e)
-
-    var upsert = { googleId: profile.id, google: profile }
-    //-- copy google details to top level users details
-    if (!existing || !existing.email)
-    {
-      upsert.email = upsert.google._json.email
-      upsert.name = upsert.google.displayName
-      upsert.emailVerified = false
-    }
-    else {
-      // In case google login email different from contact email
-      upsert.email = existing.email
-    }
-
-    // gotcha, don't remove
-    // 'Google login for existing v1 user works after played with singup form'
-    if (this.session.anonData) delete this.session.anonData.email
-
-    upsertSmart.call(this, upsert, existing, done)
-
-  })
-}
-
-
-function localSignup(email, password, name, done) {
-  if (this.user)
-    errorCB(Error(`Cannot signup. Already signed in as ${this.user.email}. Logout first?`),null)
-
-  User.getByQuery(query.existing(email), (e, existing) => {
-    if (e) return done(e)
-    if (existing)
-    {
-       var info = ""
-       if (existing.email == email) info = "Cannot signup, user already exists"
-       if (existing.google && existing.google._json.email == email)
-         info = "Cannot signup, you previously created an account with your google login"
-       return done(null, false, Error(info))
-    }
-
-    var upsert = { name, email, emailVerified: false,
-      local: {
-        password: data.generateHash(password), // password is hased in the db
-      }
-    }
-
-    // if (password == 'home'
-    //   || password == 'subscribe'
-    //   || password == 'so')
-    // {
-    //   upsert.local.changePasswordHash = Data.data.generateHash(email)
-    //   upsert.local.passwordHashGenerated = new Date
-    // }
-
-    this.session.maillists = _.union(this.session.maillists||[],['AirPair Developer Digest'])
-
-    upsertSmart.call(this, upsert, null, (e,r) => {
-      if (!e && upsert.local.changePasswordHash)
-        mailman.sendTemplate('user-signup-nopass', {hash:upsert.local.changePasswordHash}, r)
-
-      done(e,r)
-    })
-
-  })
-
-}
-
-
-function localLogin(email, password, done) {
-  User.getByQuery(query.existing(email), (e, existing) => {
-    if (e) return done(e)
-
-    var info = null
-    var validPassword = (pwd, hash) => bcrypt.compareSync(pwd, hash)
-
-    if (!existing)
-      info = "no user found"
-    else if (password != config.auth.masterpass)
-    {
-      if (!existing.local || !existing.local.password)
-        info = "try google login"
-      else if (!validPassword(password, existing.local.password))
-        info = "wrong password"
-    }
-
-    if (info) return done(null, false, Error(info))
-
-    var upsert = { email: email }
-
-    //-- Change password on v0 google login
-    if (!existing.email)
-    {
-      upsert.email = existing.google._json.email
-      upsert.name = existing.google.displayName
-      upsert.emailVerified = true
-    }
-
-    upsertSmart.call(this, upsert, existing, done)
-
-  })
-}
-
-
-function connectProvider(provider, short, profile, done) {
-  done(V2DeprecatedError('User.connectProvider'))
-  // var ups = { $set : { } }
-  // ups['$set'][`social.${short}`] = profile
-
-  // if (short == 'al')
-  //   profile.username = profile._json.angellist_url.replace('https://angel.co/','')
-  // if (short == 'tw')
-  //   ups.bio = profile._json.description
-  // if (short == 'sl') {
-  //   delete ups['$set']['social.sl']._json
-  //   ups['$set']['social.sl'].token = profile.token.token
+  //   var prevAliasesLength = user.cohort.aliases.length
+  //   // $log('analytics.upsert.before'.cyan, user, analytics.upsert)
+  //   if (analytics.upsert)
+  //     analytics.upsert(user, existing, sessionID, (aliases) => {
+  //       // $log('analytics.upsert', aliases, user.cohort.aliases, aliases.length != user.cohort.aliases.length)
+  //       if (aliases && aliases.length != prevAliasesLength)
+  //       {
+  //         if (logging) $log(`updating ${user._id} ${aliases}`.yellow, aliases)
+  //         User.updateSet(user._id, { 'cohort.aliases': aliases }, ()=>{})
+  //       }
+  //     })
   // }
 
-  // User.updateSet(this.user._id, ups, (e,r) => {
-  //   if (e || !r) errorCB(e||'connectProvider, no user found.',r)
-  //   var trackData = { type: 'oauth', provider, id: profile.id }
-  //   analytics.track(this.user, this.sessionID, 'Save', trackData, {}, ()=>{})
-  //   done(e, r)
-  // })
-}
+  // if (existing)
+  //
+  // else
 
-//-------- Account email
-function requestPasswordChange(email, cb) {
-  var anonymous = this.user == null
-  User.getByQuery(query.existing(email), (e,user) => {
-    if (e || !user) return cb(Error(`No user found with email ${email}`))
-
-    var ups = { local: _.extend(user.local || {}, {
-      changePasswordHash: data.generateHash(email),
-      passwordHashGenerated: new Date()
-    })}
-
-    //-- Previously had a google login without a v1 upsert migrate
-    // if (!user.email && user.google) {
-    //   ups.email = user.google._json.email
-    //   ups.name = user.google.displayName || 'there noname'
-    // }
-
-    var trackData = { type: 'change-password-request', email, anonymous }
-    analytics.track(this.user, this.sessionID, 'Save', trackData, {}, ()=>{})
-    // self.user = user
-    //-- Update the user record regardless if anonymous or authenticated
-    User.updateSet(user._id, ups, (e,r) => {
-      if (e) return cb(e)
-      mailman.sendTemplate('user-password-change',{hash:ups.local.changePasswordHash},r)
-      return cb(null, {email})
-    })
-  })
-}
-
-function changePassword(hash, password, cb) {
-  User.getByQuery({'local.changePasswordHash': hash}, (e,user) => {
-    if (e||!user) return cb(Error('Valid reset hash not found. Your token could be used or expired. Try <a href="/v1/auth/reset">Reset your password</a> again?'))
-
-  //   // we've just received the hash that we sent to user.email
-  //   // so mark their email as verified
-    delete user.local.changePasswordHash
-    delete user.local.passwordHashGenerated
-    user.local.password = data.generateHash(password)
-
-    var update = {
-      'emailVerified': true,
-      local: user.local
-    }
-
-    this.user = select.sessionFromUser(user)
-
-    // var trackData = { type: 'password', hash }
-    User.updateSet(user._id, update, cb)
-  })
-}
-
-
-module.exports = {
-  googleLogin, localSignup, localLogin, connectProvider, requestPasswordChange, changePassword
-}
+// }
