@@ -2,30 +2,29 @@
 
   var self = {};
 
+  // self.resolveExpert = function(args) {
+  //   return ['$rootScope', '$location', '$q',
+  //     function($rootScope, $location, $q) {
+  //       // console.log('resolveExpert')
+  //       if (!$rootScope.session) {
+  //         $location.path('/login')
+  //         return $q.reject()
+  //       }
+  //       else if (!$rootScope.session._id) {
+  //         $location.path('/login')
+  //         return $q.reject()
+  //       }
+  //       else if (!$rootScope.session.cohort ||
+  //         !$rootScope.session.cohort.expert ||
+  //         !$rootScope.session.cohort.expert._id
+  //       ) {
+  //         $location.path('/be-an-expert')
+  //         return $q.reject()
+  //       }
 
-  self.resolveExpert = function(args) {
-    return ['$rootScope', '$location', '$q',
-      function($rootScope, $location, $q) {
-        // console.log('resolveExpert')
-        if (!$rootScope.session) {
-          $location.path('/login')
-          return $q.reject()
-        }
-        else if (!$rootScope.session._id) {
-          $location.path('/login')
-          return $q.reject()
-        }
-        else if (!$rootScope.session.cohort ||
-          !$rootScope.session.cohort.expert ||
-          !$rootScope.session.cohort.expert._id
-        ) {
-          $location.path('/be-an-expert')
-          return $q.reject()
-        }
-
-        return $q
-      }];
-  }
+  //       return $q
+  //     }];
+  // }
 
 
   self.resolveSession = function(args) {
@@ -64,17 +63,17 @@
     // console.log('trackRoute', analytics)
     if (window.analytics)
     {
-      if (locationPath == '/login')
-        analytics.track('Route',{ category: 'auth', name: 'login' })
+      // if (locationPath == '/login')
+        // analytics.track('Route',{ category: 'auth', name: 'login' })
 
-      else if (locationPath == '/v1/auth/signup')
-        analytics.track('Route',{ category: 'auth', name: 'signup' })
+      // else if (locationPath == '/signup')
+      //   analytics.track('Route',{ category: 'auth', name: 'signup' })
 
-      else if (locationSearch && (locationSearch.utm_campaign || locationSearch.utm_source))
-      {
-        console.log('trackUtmRoute', locationSearch)
-        analytics.track('Route',{ category: 'utm', name: locationPath.substring(1,locationPath.length) })
-      }
+      // else if (locationSearch && (locationSearch.utm_campaign || locationSearch.utm_source))
+      // {
+        // console.log('trackUtmRoute', locationSearch)
+        // analytics.track('Route',{ category: 'utm', name: locationPath.substring(1,locationPath.length) })
+      // }
     }
   }
 

@@ -146,24 +146,38 @@ var data = {
       return r
     },
     expertToSuggestion(r, by, type, expertStatus) {
+      // $log('expertToSuggestion', r, by)
       type = type || 'staff'
       expertStatus = expertStatus || 'waiting'
 
-      if (r.user) {
-        delete r.user._id
-        var social = r.user.social
+
+
+      // if (r.user) {
+        // delete r.user._id
+        // var social = r.user.social
         // how we handle staying v0 on front-end
-        r = _.extend(_.extend(r,r.user),r.social)
-        r.location = r.localization.location
-        r.timezone = r.localization.timezone
-      }
+        // r = _.extend(_.extend(r,r.user),r.social)
+        // r.location = r.location.name
+        // r.timezone = r.location.timeZoneId
+      // }
 
       var _id = new require('mongoose').Types.ObjectId()
-      var initials = (by.email.indexOf('@airpair.com')==-1) ? r.user.initials
+      var initials = (by.email.indexOf('@airpair.com')==-1) ? r.initials
         : by.email.replace('@airpair.com','')
       return {
+        expertStatus,
         matchedBy: { _id, type, userId: by._id, initials },
-        expert: r, expertStatus
+        expert: {
+          _id: r._id,
+          email: r.email,
+          userId: r.userId,
+          name: r.name,
+          location: r.location,
+          timezone: r.timezone,
+          avatar: r.avatar,
+          rate: r.rate,
+          tags: r.tags
+        },
       }
     },
     template: {
@@ -201,19 +215,13 @@ var data = {
               r.suggested = data.select.meSuggested(r, ctx.user._id, expert._id)
               if (r.suggested.length == 0 && expert && expert.rate)
                 r.suggested.push({expert})
-              else if (r.suggested.length == 1 && expert.isV0)
-                r.suggested[0].expert.isV0 = true
               else if (r.suggested.length == 1 && !r.suggested[0].expert.userId) {
                 // how we handle staying v0 on front-end
                 r.suggested[0].expert.userId = ctx.user._id
                 r.suggested[0].expert.rate = expert.rate
                 r.suggested[0].expert.tags = expert.tags
-                if (r.user) {
-                  var social = r.user.social
-                  r = _.extend(_.extend(r,r.user),r.social)
-                  r.location = r.localization.location
-                  r.timezone = r.localization.timezone
-                }
+                r.location = r.location
+                r.timezone = r.timezone
               }
               else if (r.suggested.length > 1)
                 throw Error("Cannot selectByExpert and have more than 1 suggested")

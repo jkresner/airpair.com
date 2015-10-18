@@ -70,7 +70,7 @@ orderDeals = ->
                 expectIdsEqual(booking1.customerId, s._id)
                 expect(booking1.type).to.equal('private')
                 expect(booking1.minutes).to.equal(120)
-                expect(_.idsEqual(booking1.createdById, s._id)).to.be.true
+                expect(_.idsEqual(booking1.customerId, s._id)).to.be.true
                 expect(booking1.status).to.equal('pending')
                 GET "/billing/orders", {}, (orders1) ->
                   expect(orders1.length).to.equal(2)

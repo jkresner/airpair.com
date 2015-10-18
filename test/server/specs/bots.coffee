@@ -44,7 +44,7 @@ api = ->
 
 
   IT 'Does not exec analytics or store session on 404', ->
-    trackSpy = STUB.spy(analytics, 'track')
+    trackSpy = STUB.spy(analytics, 'echo')
     PAGE '/feed', Opts({status:404}, UAUser), (resp) ->
       # global.cookie = resp.headers['set-cookie']
       # expect(global.cookie).to.be.undefined

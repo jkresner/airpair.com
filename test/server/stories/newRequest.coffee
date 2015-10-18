@@ -25,7 +25,7 @@ requestForAdmin = (sCust, userKey, r, cb) ->
       expect(rAdm.length).to.equal(1)
       expect(rAdm[0].lastTouch._id).to.exist
       expectStartsWith(rAdm[0].lastTouch.by.name,FIXTURE.users[userKey].name)
-      $log(rAdm[0])
+      # $log(rAdm[0])
       expect(rAdm[0].adm.active).to.be.true
       expect(rAdm[0].adm.owner).to.be.undefined
       expect(rAdm[0].adm.lastTouch).to.be.undefined
@@ -60,7 +60,7 @@ module.exports = (custKey, opts, done) ->
     else if !opts.reply
       done request, custSession
     else
-      {expertId} = opts.reply
+      expertId = FIXTURE.experts[opts.reply.userKey]._id
       LOGIN {key:opts.reply.userKey}, (expertSession) ->
         reply = expertComment: "I'll take it", expertAvailability: "Real-time", expertStatus: "available"
         PUT "/requests/#{request._id}/reply/#{expertId}", reply, (r1) ->

@@ -29,7 +29,7 @@ header ul { display:none!important }
 
     <h4>Step 2) </h4>
 
-    <a id="loginGoogleAuth" track-click="auth" class="btn btn-error" ng-href="/v1/auth/google?loginHint={{login.email}}&returnTo=/bookings/{{_id}}/spin" target="_self">g+ Login to {{login.email}}</a>
+    <a id="loginGoogleAuth" track-click="auth" class="btn btn-error" ng-href="/auth/google/callback?loginHint={{login.email}}&returnTo=/bookings/{{_id}}/spin" target="_self">g+ Login to {{login.email}}</a>
   {{/if}}
 
 {{else}}

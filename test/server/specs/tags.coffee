@@ -8,7 +8,7 @@ get = ->
 
   IT 'getById returns all tag data for admin', ->
     LOGIN {key:'admin'}, ->
-      GET "/adm/tags/5149dccb5fc6390200000013", {}, (t) ->
+      GET "/adm/tags/5149dccb5fc6390200000013", (t) ->
         expectIdsEqual(t._id,"5149dccb5fc6390200000013")
         expect(t.name).to.equal('AngularJS')
         expect(t.short).to.equal('Angular')
@@ -284,9 +284,18 @@ update = ->
 
 module.exports = ->
 
-  DESCRIBE("Get", get)
-  DESCRIBE("Create", create)
-  DESCRIBE("Update ", update)
+  before (done) ->
+    DB.ensureDoc 'User', FIXTURE.users.admin, ->
+      done()
+
+  if againstProd
+    DESCRIBE "SKIP TAGS", ->
+      it "Better make this open again"
+
+  else
+    DESCRIBE("Get", get)
+    DESCRIBE("Create", create)
+    DESCRIBE("Update ", update)
 
 
 

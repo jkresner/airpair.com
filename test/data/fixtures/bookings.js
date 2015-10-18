@@ -2,7 +2,6 @@ module.exports = {
 
   swap1: {
     "_id": ObjectId("54dc2d2fd137810a00f2813b"),
-    "createdById": ObjectId("54b49bf67b1047516695d508"),
     "customerId": ObjectId("54b49bf67b1047516695d508"),
     "expertId": ObjectId("53041710a9a333020000001d"),
     "type": "opensource",
@@ -75,7 +74,6 @@ module.exports = {
 
   timezones: {
     "_id": ObjectId("558aa2454be238d1956cb8aa"),
-    "createdById": ObjectId("552d81ec35c4e411001ae059"),
     "customerId": ObjectId("552d81ec35c4e411001ae059"),
     "expertId": ObjectId("529e685c1a4bf00200000017"),
     "type": "private",
@@ -116,7 +114,6 @@ module.exports = {
 
   admUpdate: {
      "_id":         ObjectId("558a5926e19a011100849e52"),
-     "createdById": ObjectId("54d390c41f49fb0a00ecb076"),
      "customerId":  ObjectId("54d390c41f49fb0a00ecb076"),
      "expertId":    ObjectId("54f8cba24b346e0c00097a6a"),
      // "orderId":     ObjectId("558a5925e19a011100849e4f"),

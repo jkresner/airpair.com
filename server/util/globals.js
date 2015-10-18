@@ -25,7 +25,7 @@ module.exports = function(config)
     }
 
   //-- makes app a tests load 300ms faster
-  global.analytics    = { track: ()=>{}, view: ()=>{}, alias: ()=>{}, identify: ()=>{}, impression: ()=>{} }
+  global.analytics    = { echo: ()=>{}, event: ()=>{}, view: ()=>{}, alias: ()=>{}, impression: ()=>{} }
   global.Wrappers     = require('../services/wrappers/_index')
 
   global.mailman = { init() { global.mailman = require('./mailman')() } }
