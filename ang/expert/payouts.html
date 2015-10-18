@@ -115,29 +115,29 @@
         </tr>
         <tr ng-repeat="o in payoutOrders">
           <td>
-            <span ng-if="o.lineItems[0].info.released && !o.lineItems[0].info.paidout">
+            <span ng-if="o.lines[0].info.released && !o.lines[0].info.paidout">
               <input id="{{o._id}}" type="checkbox" ng-model="checkedOrders[o._id]" ng-change="watchOrdersToPayout()" />
             </span>
           </td>
           <td>
-            <span ng-if="o.lineItems[0].info.released && !o.lineItems[0].info.paidout">
+            <span ng-if="o.lines[0].info.released && !o.lines[0].info.paidout">
               <label for="{{o._id}}">Collect</label>
             </span>
-            <span class="paidout" ng-if="o.lineItems[0].info.paidout">paidout</span>
-            <span class="pending" ng-if="!o.lineItems[0].info.released">pending</span>
+            <span class="paidout" ng-if="o.lines[0].info.paidout">paidout</span>
+            <span class="pending" ng-if="!o.lines[0].info.released">pending</span>
           </td>
-          <td>${{o.lineItems[0].owed}}</td>
+          <td>${{o.lines[0].owed}}</td>
           <td>
-            <a ng-if="o.lineItems[0].bookingId" href="/bookings/{{o.lineItems[0].bookingId._id}}" target="_blank">{{o.lineItems[0].bookingId.datetime | locaTime : 'YYYY.MM ddd DD, HH:00' }}</a>
-            <ul ng-if="o.lineItems[0].info.bookingIds">
-              <li ng-repeat="b in o.lineItems[0].info.bookingIds">
+            <a ng-if="o.lines[0].bookingId" href="/bookings/{{o.lines[0].bookingId._id}}" target="_blank">{{o.lines[0].bookingId.datetime | locaTime : 'YYYY.MM ddd DD, HH:00' }}</a>
+            <ul ng-if="o.lines[0].info.bookingIds">
+              <li ng-repeat="b in o.lines[0].info.bookingIds">
                 <a href="/bookings/{{b}}" target="_blank">
                   {{b | objectIdToDate : 'YYYY.MM ddd DD, HH:00' }}</a>
               </li>
             </ul>
           </td>
-          <td>{{o.lineItems[0].info.minutes}}
-            {{o.lineItems[0].info.type}}
+          <td>{{o.lines[0].info.minutes}}
+            {{o.lines[0].info.type}}
           </td>
           <td>{{o.by.name}}
           </td>

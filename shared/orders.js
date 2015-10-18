@@ -18,7 +18,7 @@ module.exports = {
   },
 
   lineForPayout(order) {
-    return _.find(order.lineItems,(l) =>
+    return _.find(order.lines,(l) =>
       l.info && l.info.expert && l.info.paidout != null)
   },
 
@@ -31,7 +31,7 @@ module.exports = {
       total: 0
     }
     orders.forEach(function(order){
-      order.lineItems.forEach(function(li){
+      order.lines.forEach(function(li){
         if (li.type == 'airpair' && li.info) lines.push(li)
       })
     })
@@ -61,7 +61,7 @@ module.exports = {
   linesWithCredit(orders) {
     var lines = []
     orders.forEach(function(order){
-      order.lineItems.forEach(function(li){
+      order.lines.forEach(function(li){
         if (li.type == 'credit' && li.info && li.info.remaining > 0) lines.push(li)
       })
     })
@@ -84,7 +84,7 @@ module.exports = {
   linesWithMinutesRemaining(orders) {
     var lines = []
     orders.forEach(function(order){
-      order.lineItems.forEach(function(li){
+      order.lines.forEach(function(li){
         if (li.type == 'deal' && li.info && li.info.remaining > 0) lines.push(li)
       })
     })
@@ -108,7 +108,7 @@ module.exports = {
     if (!orders || orders.length == 0) return {}
     var experts = {}
     orders.forEach((o) =>
-      o.lineItems.forEach((li) => {
+      o.lines.forEach((li) => {
         if (li.type == 'deal') {
           if (!experts[li.info.expert._id])
             experts[li.info.expert._id] = { _id: li.info.expert._id, name: li.info.expert.name, lines: [li], remaining: li.info.remaining }
@@ -125,7 +125,7 @@ module.exports = {
 
     var lines = []
     orders.forEach((o) =>
-      _.map(o.lineItems, (li) => {
+      _.map(o.lines, (li) => {
         li.orderId = o._id
         lines.push(li)
       })

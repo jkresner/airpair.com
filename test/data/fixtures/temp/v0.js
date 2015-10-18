@@ -236,7 +236,7 @@ module.exports = {
           "name" : "airpair, inc.",
           "_id" : "5181ed3e312c520200000004"
         },
-        "lineItems" : [
+        "lines" : [
           {
             "qty" : 1,
             "suggestion" : {
@@ -317,7 +317,7 @@ module.exports = {
           "name" : "AirPair",
           "_id" : "5181ed3e312c520200000004"
         },
-        "lineItems" : [
+        "lines" : [
           {
             "type" : "opensource",
             "total" : 84,

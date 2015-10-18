@@ -25,7 +25,6 @@ get = ->
   IT 'Booked expert can see single transaction pending', ->
     SETUP.ensureExpert 'dymo', ->
       opts = book: true, reply: { userKey: 'dymo' }
-      $log('I got my request', FIXTURE.experts.dymo._id)
       STORY.newRequest 'rusc', opts, (request, booking, customerSession, expertSession) ->
         LOGIN {key:'dymo'}, ->
           GET "/billing/orders/payouts", (orders) ->
@@ -34,14 +33,14 @@ get = ->
             expect(orders[0].profit).to.be.undefined
             expect(orders[0].userId).to.equal(customerSession._id)
             expect(orders[0].by.name).to.equal(customerSession.name)
-            expect(orders[0].lineItems.length).to.equal(1)
-            expect(orders[0].lineItems[0].type).to.equal('airpair')
-            expect(orders[0].lineItems[0].info.expert._id).to.equal(booking.expertId)
-            expect(orders[0].lineItems[0].info.paidout).to.equal(false)
-            expect(orders[0].lineItems[0].owed).to.equal(70)
-            expect(orders[0].lineItems[0].total).to.be.undefined
-            expect(orders[0].lineItems[0].profit).to.be.undefined
-            expect(orders[0].lineItems[0].info.released).to.be.undefined
+            expect(orders[0].lines.length).to.equal(1)
+            expect(orders[0].lines[0].type).to.equal('airpair')
+            expect(orders[0].lines[0].info.expert._id).to.equal(booking.expertId)
+            expect(orders[0].lines[0].info.paidout).to.equal(false)
+            expect(orders[0].lines[0].owed).to.equal(70)
+            expect(orders[0].lines[0].total).to.be.undefined
+            expect(orders[0].lines[0].profit).to.be.undefined
+            expect(orders[0].lines[0].info.released).to.be.undefined
             summary = payoutSummary(orders)
             expect(summary.owed.count).to.equal(0)
             expect(summary.owed.total).to.equal(0)
@@ -78,23 +77,23 @@ get = ->
       STORY.newRequest 'kyau', opts, (request, booking, customerSession, expertSession) ->
         LOGIN { key:'admin' }, ->
           PUT "/billing/orders/#{booking.orderId}/release", {}, (released) ->
-            expect(released.lineItems.length).to.equal(2)
-            expect(released.lineItems[1].info.paidout).to.equal(false)
-            expect(released.lineItems[1].info.released).to.exist
-            expect(released.lineItems[1].info.released.by).to.exist
-            expect(released.lineItems[1].info.released.action).to.equal('release')
+            expect(released.lines.length).to.equal(2)
+            expect(released.lines[1].info.paidout).to.equal(false)
+            expect(released.lines[1].info.released).to.exist
+            expect(released.lines[1].info.released.by).to.exist
+            expect(released.lines[1].info.released.action).to.equal('release')
             LOGIN {key:'admb'}, ->
               GET "/billing/orders/payouts", (orders) ->
                 expect(orders.length).to.equal(1)
-                expect(orders[0].lineItems.length).to.equal(1)
-                expect(orders[0].lineItems[0].type).to.equal('airpair')
-                expect(orders[0].lineItems[0].info.paidout).to.equal(false)
-                expect(orders[0].lineItems[0].owed).to.equal(70)
-                expect(orders[0].lineItems[0].total).to.be.undefined
-                expect(orders[0].lineItems[0].profit).to.be.undefined
-                expect(orders[0].lineItems[0].info.released).to.exist
-                expect(orders[0].lineItems[0].info.released.utc).to.exist
-                expectIdsEqual(orders[0].lineItems[0].info.released.by._id, FIXTURE.users.admin._id)
+                expect(orders[0].lines.length).to.equal(1)
+                expect(orders[0].lines[0].type).to.equal('airpair')
+                expect(orders[0].lines[0].info.paidout).to.equal(false)
+                expect(orders[0].lines[0].owed).to.equal(70)
+                expect(orders[0].lines[0].total).to.be.undefined
+                expect(orders[0].lines[0].profit).to.be.undefined
+                expect(orders[0].lines[0].info.released).to.exist
+                expect(orders[0].lines[0].info.released.utc).to.exist
+                expectIdsEqual(orders[0].lines[0].info.released.by._id, FIXTURE.users.admin._id)
                 summary = payoutSummary(orders)
                 expect(summary.owed.count).to.equal(1)
                 expect(summary.owed.total).to.equal(70)
@@ -181,7 +180,7 @@ get = ->
         releaseOrderAndLogExpertBackIn booking.orderId, expertSession, ->
           GET "/billing/orders/payouts", (orders) ->
             expect(orders.length).to.equal(1)
-            lineToPayout = orders[0].lineItems[0]
+            lineToPayout = orders[0].lines[0]
             expect(lineToPayout.info.paidout).to.equal(false)
             expect(lineToPayout.info.released.utc).to.exist
             summary = payoutSummary(orders)
@@ -203,7 +202,7 @@ get = ->
               expect(payout.lines[0].type).to.equal('airpair')
               GET "/billing/orders/payouts", (orders2) ->
                 expect(orders2.length).to.equal(1)
-                paidoutLine = orders2[0].lineItems[0]
+                paidoutLine = orders2[0].lines[0]
                 expect(paidoutLine.info.paidout).to.equal(payout._id)
                 expect(paidoutLine.info.released.utc).to.exist
                 summary2 = payoutSummary(orders2)
@@ -229,11 +228,11 @@ get = ->
   #         PUT "/adm/bookings/#{booking1._id}/associate-chat", {type:'slack',providerId}, {}, (bChat) ->
   #           LOGIN s.userKey, ->
   #             PUT "/billing/orders/#{booking1.orderId}/release", {}, {}, (released1) ->
-  #               expect(released1.lineItems.length).to.equal(2)
-  #               expect(released1.lineItems[1].info.paidout).to.equal(false)
-  #               expect(released1.lineItems[1].info.released).to.exist
-  #               expect(released1.lineItems[1].info.released.action).to.equal('release')
-  #               expectIdsEqual(released1.lineItems[1].info.released.by._id, s._id)
+  #               expect(released1.lines.length).to.equal(2)
+  #               expect(released1.lines[1].info.paidout).to.equal(false)
+  #               expect(released1.lines[1].info.released).to.exist
+  #               expect(released1.lines[1].info.released.action).to.equal('release')
+  #               expectIdsEqual(released1.lines[1].info.released.by._id, s._id)
   #               expect(pairbotStub.calledOnce, "pairbot not called").to.be.true
   #               expect(pairbotStub.args[0][0]).to.equal(providerId)
   #               expect(pairbotStub.args[0][1]).to.equal('expert-payment-released')
@@ -245,11 +244,11 @@ get = ->
   #                 LOGIN expertSession.userKey, ->
   #                   GET "/billing/orders/payouts", {}, (orders) ->
   #                     expect(orders.length).to.equal(1)
-  #                     expect(orders[0].lineItems.length).to.equal(1)
-  #                     expect(orders[0].lineItems[0].type).to.equal('airpair')
-  #                     expect(orders[0].lineItems[0].info.released).to.exist
-  #                     expect(orders[0].lineItems[0].info.released.utc).to.exist
-  #                     expectIdsEqual(orders[0].lineItems[0].info.released.by._id, s._id)
+  #                     expect(orders[0].lines.length).to.equal(1)
+  #                     expect(orders[0].lines[0].type).to.equal('airpair')
+  #                     expect(orders[0].lines[0].info.released).to.exist
+  #                     expect(orders[0].lines[0].info.released.utc).to.exist
+  #                     expectIdsEqual(orders[0].lines[0].info.released.by._id, s._id)
   #                     summary = payoutSummary(orders)
   #                     expect(summary.owed.count).to.equal(1)
   #                     expect(summary.paid.count).to.equal(0)
@@ -266,9 +265,9 @@ get = ->
             expectStartsWith(err.message, "Payout[#{booking1.orderId}] must be released by owner")
             GET "/billing/orders/payouts", {}, (orders) ->
               expect(orders.length).to.equal(1)
-              expect(orders[0].lineItems.length).to.equal(1)
-              expect(orders[0].lineItems[0].type).to.equal('airpair')
-              expect(orders[0].lineItems[0].info.released).to.be.undefined
+              expect(orders[0].lines.length).to.equal(1)
+              expect(orders[0].lines[0].type).to.equal('airpair')
+              expect(orders[0].lines[0].info.released).to.be.undefined
               summary = payoutSummary(orders)
               expect(summary.owed.count).to.equal(0)
               expect(summary.paid.count).to.equal(0)
@@ -392,8 +391,8 @@ get = ->
     #     LOGIN {key:'evan'}, ->
     #       GET "/billing/orders/payouts", (orders) ->
     #         expect(orders.length).to.equal(1)
-    #         expect(orders[0].lineItems.length).to.equal(1)
-    #         li = orders[0].lineItems[0]
+    #         expect(orders[0].lines.length).to.equal(1)
+    #         li = orders[0].lines[0]
     #         expect(li.owed).to.equal(70)
     #         expect(li.type).to.equal('airpair')
     #         expect(li.suggestion).to.be.undefined

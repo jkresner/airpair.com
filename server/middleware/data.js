@@ -110,7 +110,7 @@ var middleware = {
       if (logging) $log('populate.orderBooking'.trace, req.user._id)
       if (!req.order) return next()
       var BookingsSvc = require("../services/bookings")
-      var line = _.find(req.order.lineItems,(l) =>l.info && l.info.paidout != null)
+      var line = _.find(req.order.lines,(l) =>l.info && l.info.paidout != null)
       if (!line && !line.bookingId) return next()
       $callSvc(BookingsSvc.getByIdForParticipant,req)(line.bookingId, (e, r) => {
         if (e) return next(e)
