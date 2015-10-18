@@ -8,7 +8,7 @@
 
   <h2>One-click signup</h2>
 
-    <a id="loginGoogleAuth" track-click="auth" class="btn btn-error" ng-href="{{'/v1/auth/google' + ((returnTo) ? '?returnTo='+returnTo : '') }}" target="_self">Login with google</a>
+    <a id="loginGoogleAuth" track-click="auth" class="btn btn-error" ng-href="{{'/auth/google/callback' + ((returnTo) ? '?returnTo='+returnTo : '') }}" target="_self">Login with google</a>
 
   <p class="googInfo">
   * You will be temporarily redirected to a google login page</p>
@@ -44,7 +44,7 @@
     </div>
 
     <section class="password">
-      <a href="/v1/auth/reset">Forgotten password?</a>
+      <a href="/password-reset">Forgotten password?</a>
     </section>
 
 <!--     <section class="new">

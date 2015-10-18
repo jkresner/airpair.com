@@ -9,11 +9,7 @@ angular.module("APAuth", ['ngRoute','ngMessages','APFormsDirectives','APFilters'
       template: require('./login.html')
     });
 
-    // $routeProvider.when('/v1/auth/signup', {
-    //   template: require('./signup.html')
-    // });
-
-    $routeProvider.when('/v1/auth/reset', {
+    $routeProvider.when('/password-reset', {
       template: require('./passwordreset.html'),
     });
 
@@ -51,19 +47,19 @@ angular.module("APAuth", ['ngRoute','ngMessages','APFormsDirectives','APFilters'
     }
   })
 
-  .controller('SignupCtrl', function($scope, $window, $location, SessionService) {
+  // .controller('SignupCtrl', function($scope, $window, $location, SessionService) {
 
-    SessionService.onAuthenticated(() => { if ($scope.session._id) $location.path('/')})
+  //   SessionService.onAuthenticated(() => { if ($scope.session._id) $location.path('/')})
 
-    var self = this;
-    this.submit = function(isValid, formData) {
-      if (!isValid) return
-      SessionService.signup(formData,
-        () => $window.location = '',
-        (e) => $scope.signupFail = e.message || e
-      )
-    }
-  })
+  //   var self = this;
+  //   this.submit = function(isValid, formData) {
+  //     if (!isValid) return
+  //     SessionService.signup(formData,
+  //       () => $window.location = '',
+  //       (e) => $scope.signupFail = e.message || e
+  //     )
+  //   }
+  // })
 
   .controller('PasswordResetCtrl', function($scope, ServerErrors, SessionService) {
 

@@ -3,12 +3,12 @@ angular.module("APExpert", ['APTagInput','APPayPal'])
 .config((apRouteProvider) => {
 
   var authd = apRouteProvider.resolver(['session'])
-  var exprd = apRouteProvider.resolver(['expert'])
+  // var exprd = apRouteProvider.resolver(['expert'])
   var route = apRouteProvider.route
   route('/be-an-expert', 'ExpertApplication', require('./beanexpert.html'),{resolve: authd})
   // route('/me/profile-preview', 'ProfilePreview', require('./profilepreview.html'),{resolve: authd})
-  route('/payouts', 'Payouts', require('./payouts.html'),{resolve: exprd})
-  route('/office', 'ExpertDashboard', require('./office.html'),{resolve: exprd})
+  route('/payouts', 'Payouts', require('./payouts.html'),{resolve: authd})
+  route('/office', 'ExpertDashboard', require('./office.html'),{resolve: authd})
 })
 
 
@@ -51,7 +51,7 @@ angular.module("APExpert", ['APTagInput','APPayPal'])
     if (r.length == 1)
       $scope.data.payoutmethodId = r[0]._id
 
-    var slack = $scope.session.social.sl
+    var slack = $scope.session.auth.sl
     $scope.connectedSlack = slack && slack.username
   }
 
@@ -101,11 +101,12 @@ angular.module("APExpert", ['APTagInput','APPayPal'])
 
 .controller('ExpertApplicationCtrl', ($rootScope, $scope, DataService, SessionService, Util) => {
 
+
   $scope.formRequires = () => {
     var d = $scope.data, requires = false;
     if (!d.initials) requires = "Initials required"
     if (!d.location) requires = "Location not selected"
-    if (!d.timezone) requires = "Timezone not selected"
+    if (!d.timeZoneId) requires = "Timezone not selected"
     if (!d.username) requires = "Username required"
     if (!d.rate) requires = "Rate not selected"
     if (!d.bio || d.bio.length < 100) requires = "Min 100 character bio required"
@@ -135,12 +136,14 @@ angular.module("APExpert", ['APTagInput','APPayPal'])
   }
 
   if (!$scope.data) $scope.data = { bio: $scope.session.bio }
-  $scope.socialCount = _.keys($scope.session.social||{}).length
+  $scope.socialCount = _.keys($scope.session.auth||{}).length
 
   DataService.experts.getMe({}, (expert) => {
     expert.username= $scope.session.username
     $scope.expert = expert
     $scope.data = expert,_.extend(expert, $scope.data||{})
+    $scope.data.location = $scope.session.location.name,
+    $scope.data.timeZoneId = $scope.session.location.timeZoneId
   })
 
   $scope.save = () => {

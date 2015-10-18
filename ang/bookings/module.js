@@ -67,6 +67,11 @@ angular.module("APBookings", [])
       booking: _.omit(r,'order','request','chat','chatSyncOptions','slackin')
     }
 
+    // if ($scope.session) {
+    //   $scope.data = _.pick($scope.session, ['name','email','initials','username'])
+    //   $scope.data.location = $scope.session.location.name,
+    //   $scope.data.timeZoneId = $scope.session.location.timeZoneId
+    // }
 
     if ($scope.session.timeZoneId)
       scope.currentTimezone = moment.tz(moment().format('z')).format('z')

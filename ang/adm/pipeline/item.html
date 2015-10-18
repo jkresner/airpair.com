@@ -20,7 +20,7 @@
     </div>
 
     <b>{{request.by.name}}</b> : {{request.by.email}}
-    <div>{{user.localization.timezone}}|{{user.localization.location}}</div>
+    <div>{{user.location.timeZoneId}}|{{user.location.name}}</div>
 
     <div class="has" ng-repeat="pm in paymethods"><b>{{pm.name}}</b></div>
     <div ng-if="!paymethods || paymethods.length == 0" class="nopaymethods"><b>No pay methods</b>
