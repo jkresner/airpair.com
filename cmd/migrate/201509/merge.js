@@ -37,15 +37,18 @@ var _resolve = (A, B) => ({
     return val
   },
   bookmarks() {
-    return A.bookmarks || B.bookmarks //-- too lazy to merge
+    return either('legacy.bookmarks',A,B) //-- too lazy to merge
   },
   tags() {
-    return A.tags || B.tags //-- too lazy to merge
+    return either('legacy.tags',A,B) //-- too lazy to merge
+  },
+  siteNotifications() {
+    return either('legacy.siteNotifications',A,B) //-- too lazy to merge
   },
   name(override) {
     var val = override
     if (!A.name && !B.name)
-      val = A.linked.gp.name || B.linked.gp.name
+      val = A.auth.gp.name || B.auth.gp.name
     else if (A.name == B.name)
       val = A.name
     else {
@@ -56,7 +59,7 @@ var _resolve = (A, B) => ({
     if (verbose) $log('user.name'.blue, val)
     return val
   },
-  emails(linked) {
+  emails(auth) {
     var val = { emails: A.emails||[] }
 
     if (!A.emailVerified && B.emailVerified)
@@ -64,7 +67,7 @@ var _resolve = (A, B) => ({
 
     val.email = A.email.toLowerCase()
     val.emailVerified = A.emailVerified || false
-    if (!val.emailVerified && _.get(linked, 'gp.verified_email') && A.email == linked.gp.email)
+    if (!val.emailVerified && _.get(auth, 'gp.verified_email') && A.email == auth.gp.email)
       val.emailVerified = true
 
     if ( !_.find(val.emails, em => em.value.toLowerCase() == A.email ) )
@@ -102,56 +105,53 @@ var _resolve = (A, B) => ({
     if (verbose) $log('user.initials'.blue, val)
     return val.toLowerCase()
   },
-  siteNotifications() {
-    return A.siteNotifications || B.siteNotifications //-- too lazy to merge
-  },
   bio() {
     if (verbose) $log('user.bio'.blue, A.bio || B.bio)
     return A.bio || B.bio //-- too lazy to merge
   },
   location() {
-    return { location: A.location||B.location, localization: A.localization||B.localization }
+    return { location: A.location||B.location, raw: A.raw||B.raw }
   },
-  linked(override) {
-    if (!A.linked || !B.linked) return A.linked || B.linked
+  auth(override) {
+    if (!A.auth || !B.auth) return A.auth || B.auth
 
     var val = {}
 
-    if (either('linked.password',A,B))
-      val.password = either('linked.password',A,B)
+    if (either('auth.password',A,B))
+      val.password = either('auth.password',A,B)
 
-    if (either('linked.bb',A,B))
-      val.bb = !both('linked.bb',A,B) ? either('linked.bb',A,B) :
-        (_.get(B.linked,'bb.token.attributes.refreshToken') ? B.linked.bb : A.linked.bb)
+    if (either('auth.bb',A,B))
+      val.bb = !both('auth.bb',A,B) ? either('auth.bb',A,B) :
+        (_.get(B.auth,'bb.token.attributes.refreshToken') ? B.auth.bb : A.auth.bb)
 
-    if (either('linked.in',A,B))
-      val.in = !both('linked.in',A,B) ? either('linked.in',A,B) :
-        (_.get(B,'linked.in.token.attributes.tokenSecret') ? B.linked.in : A.linked.in)
+    if (either('auth.in',A,B))
+      val.in = !both('auth.in',A,B) ? either('auth.in',A,B) :
+        (_.get(B,'auth.in.token.attributes.tokenSecret') ? B.auth.in : A.auth.in)
 
-    if (either('linked.so',A,B))
-      val.so = !both('linked.so',A,B) ? either('linked.so',A,B) :
-        (B.linked.so.reputation > A.linked.so.reputation ? A.linked.so : B.linked.so)
+    if (either('auth.so',A,B))
+      val.so = !both('auth.so',A,B) ? either('auth.so',A,B) :
+        (B.auth.so.reputation > A.auth.so.reputation ? A.auth.so : B.auth.so)
 
-    if (either('linked.tw',A,B))
-      val.tw = !both('linked.tw',A,B) ? either('linked.tw',A,B) :
-        (B.linked.tw.followers_count > A.linked.tw.followers_count ? B.linked.tw : A.linked.tw)
+    if (either('auth.tw',A,B))
+      val.tw = !both('auth.tw',A,B) ? either('auth.tw',A,B) :
+        (B.auth.tw.followers_count > A.auth.tw.followers_count ? B.auth.tw : A.auth.tw)
 
-    if (either('linked.sl',A,B))
-      val.sl = !both('linked.sl',A,B) ? either('linked.sl',A,B) : A.linked.sl
+    if (either('auth.sl',A,B))
+      val.sl = !both('auth.sl',A,B) ? either('auth.sl',A,B) : A.auth.sl
 
-    if (either('linked.gh',A,B))
-      val.gh = !both('linked.gh',A,B) ? either('linked.gh',A,B) :
-        (B.linked.gh.updated_at > A.linked.gh.updated_at ? B.linked.gh : A.linked.gh)
+    if (either('auth.gh',A,B))
+      val.gh = !both('auth.gh',A,B) ? either('auth.gh',A,B) :
+        (B.auth.gh.updated_at > A.auth.gh.updated_at ? B.auth.gh : A.auth.gh)
 
-    if (either('linked.al',A,B))
-      val.al = !both('linked.al',A,B) ? either('linked.al',A,B) :
-        (B.linked.al.followers_count > A.linked.al.followers_count ? B.linked.al : A.linked.al)
+    if (either('auth.al',A,B))
+      val.al = !both('auth.al',A,B) ? either('auth.al',A,B) :
+        (B.auth.al.followers_count > A.auth.al.followers_count ? B.auth.al : A.auth.al)
 
-    if (either('linked.gp',A,B) && !both('linked.gp',A,B)) val.gp = either('linked.gp',A,B)
-    else if (both('linked.gp',A,B)) {
+    if (either('auth.gp',A,B) && !both('auth.gp',A,B)) val.gp = either('auth.gp',A,B)
+    else if (both('auth.gp',A,B)) {
       if (!_.has(override||{},'gp.email'))
-        throw Error(`override.gp.email required when gp different for A[${A.linked.gp.email}] and B[${B.linked.gp.email}]`)
-      val.gp = B.linked.gp.email == override.gp.email ? B.linked.gp : A.linked.gp
+        throw Error(`override.gp.email required when gp different for A[${A.auth.gp.email}] and B[${B.auth.gp.email}]`)
+      val.gp = B.auth.gp.email == override.gp.email ? B.auth.gp : A.auth.gp
     }
 
     return val
@@ -183,17 +183,19 @@ var mergeUserDocs = (e, MERGE, A, B, Overrides, done) => {
   R._id = A._id > B._id ? A._id : B._id
   $log('user._id'.blue, M._id, 'created', idToMoment(M._id,'YYMMDD'))
 
+  if (either('legacy',A,B))                     M.legacy = {}
+  if (either('legacy.bookmarks',A,B))           M.legacy.bookmarks = resolve.bookmarks()
+  if (either('legacy.tags',A,B))                M.legacy.tags = resolve.tags()
+  if (either('legacy.siteNotifications',A,B))   M.legacy.siteNotifications = resolve.siteNotifications()
+
   if (either('cohort',A,B))              M.cohort = resolve.cohort(M._id)
-  if (either('bookmarks',A,B))           M.bookmarks = resolve.bookmarks()
-  if (either('tags',A,B))                M.tags = resolve.tags()
   if (either('username',A,B))            M.username = resolve.username(Overrides.username)
-  if (either('siteNotifications',A,B))   M.siteNotifications = resolve.siteNotifications()
   if (either('initials',A,B))            M.initials = resolve.initials(Overrides.initials)
   if (either('bio',A,B))                 M.bio = resolve.bio()
   if (either('location',A,B))            Object.assign(M, resolve.location())
-  if (either('linked',A,B))              M.linked = resolve.linked(Overrides.linked)
+  if (either('auth',A,B))              M.auth = resolve.auth(Overrides.auth)
   if (either('primaryPayMethodId',A,B))  M.primaryPayMethodId = resolve.primaryPayMethodId()
-  Object.assign(M, resolve.emails(M.linked))
+  Object.assign(M, resolve.emails(M.auth))
   M.name = resolve.name(Overrides.name)
   M.meta = { activity: [{_id: new ObjectId(), by: {name:'jk'}, action: `merged:[${R._id}]`}] }
 
@@ -300,11 +302,11 @@ module.exports = function(userA, userB, overrides, done) {
 
   expect(A.email, JSON.stringify(A) + ` != `.grey + JSON.stringify(B) ).not.equal(B.email)
   expect(A._id).not.equal(B._id)
-  if (A.linked.gh && B.linked.gh)
-    expect(A.linked.gh.id).to.equal(B.linked.gh.id)
+  if (A.auth.gh && B.auth.gh)
+    expect(A.auth.gh.id).to.equal(B.auth.gh.id)
 
   for (var attr in A)
-    expect(['emails','meta'].concat(fields.user.known).indexOf(attr), `A.unknown user field ${attr}`).not.equal(-1)
+    expect(['emails','meta'].concat(fields.user.known).indexOf(attr), `A[${A._id}].unknown user field ${attr}`).not.equal(-1)
   for (var attr in B)
     expect(fields.user.known.indexOf(attr), `B.unknown user field ${attr}`).not.equal(-1)
 

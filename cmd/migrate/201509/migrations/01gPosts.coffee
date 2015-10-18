@@ -1,4 +1,19 @@
 
+checkCONSISTENT = ->
+  Posts.find({}, {'by':1}).toArray (e, all) ->
+    count = 0
+    for o in all
+      count++
+      expect(o.by._id, "by.user._id does not exist for #{o._id}").to.exist
+      expect(o.by._id.constructor == ObjectId).to.be.true
+      if UserGraph[o.by._id]?
+        refIncrement UserGraph[o.by._id], 'posts'
+      else
+        # $log(o)
+    DONE()
+
+
+
 fixesObjectIds = ->
   Posts.find({}, {by:1}).toArray (e, all) ->
     ups = []
@@ -16,8 +31,14 @@ fixesObjectIds = ->
 
 module.exports = ->
 
+
   specInit(@)
 
-  describe 'Migrating posts fields'.white.bold, ->
 
+  DESCRIBE 'MIGRATE', ->
     IT "Fixes objectIds", fixesObjectIds
+
+
+  DESCRIBE 'CHECK', ->
+    IT "Consistent", checkCONSISTENT
+

@@ -9,7 +9,12 @@ module.exports = {
     '544f394d8f8c80299bcc4d93','5407f09c8f8c80299bcc45b5',
     '54de72d1bb6e680a0011c65c','547e0ad18f8c80299bcc5312',
     '53be741b8f8c80299bcc38b5',
-    '54b4107a7b1047516695d4d7'
+    '54b4107a7b1047516695d4d7',
+
+    // duplicate prob
+    '537501e11c67d1a4859d321d',
+    '53223b141c67d1a4859d279a','53d6c19d8f8c80299bcc3bfd'
+
   ],
 
   jkap: {
