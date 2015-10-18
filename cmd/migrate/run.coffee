@@ -36,7 +36,10 @@ global.specInit = (ctx) ->
 SCREAM          = require('meanair-scream')
 
 
-config          = require('./201509/setup')('test')
+config          =
+  mongoUrl: 'mongodb://localhost/airpair_dev'
+  # mongoUrl: 'mongodb://localhost/meanair-auth-migrate'
+
 
 
 SCREAM(__dirname, config).run()

@@ -1,4 +1,45 @@
 
+
+checkCONSISTENT = ->
+  Requests.find({},{by:1,company:1,userId:1,status:1,tags:1,'suggested.expertStatus':1,'suggested.expert':1}).toArray (e, all) ->
+    count = 0
+    noUser = 0
+    for o in all
+      count++
+      expect(o.by, "by does not exist for #{o._id}[#{count}]").to.exist
+      expect(o.userId, "userId does not exist for #{o._id}[#{count}]").to.exist
+      expect(o.userId.constructor == ObjectId).to.be.true
+      expect(o.status, "status does not exist for #{o._id}[#{count}]").to.exist
+      expect(o.tags, "tags does not exist for #{o._id}[#{count}]").to.exist
+
+      # $log('request[]', UserGraph[o.userId])
+      if !UserGraph[o.userId]?
+        # $log("No user[#{o.userId}] for request[#{o._id}][#{count}]")
+        noUser++
+      else
+        refIncrement UserGraph[o.userId], 'requests'
+
+      for s in o.suggested || []
+        expect(s.expert._id, "s.expert._id does not exist for #{o._id}").to.exist
+        expect(s.expert._id.constructor == ObjectId, "s.expert._id no an ObjectId for #{o._id}").to.exist
+        if (s.expert.userId)
+          $log("#{idToMoment(o._id,'YY.MM')} [#{o._id}]")
+        else
+          expect(s.expert.userId, "s.expert.userId should not exist for #{o._id}").to.be.undefined
+
+        expect(s.expertStatus, "s.expertStatus should exist for #{o._id}").to.exist
+        # $log('ExpertGraph[s.expert._id]', ExpertGraph[s.expert._id])
+        if ExpertGraph[s.expert._id]?
+          userId = ExpertGraph[s.expert._id].user
+          expect(userId, "s.expert._id => userId #{s}").to.exist
+          refIncrement UserGraph[userId], 'suggests'
+
+    $log('noUser', noUser)
+    DONE()
+
+
+
+
 migratesOlderTags = ->
 
   checks = -> expectAllPromises resolveResult('Requests','requests'),
@@ -133,11 +174,17 @@ culls = ->
 
 module.exports = ->
 
+
   specInit(@)
 
-  describe 'Migrating request fields'.white.bold, ->
 
-    IT "Can unset undesired attrs", unsets
-    IT "Tags are all slim", migratesOlderTags
-    IT "Culls strange ones", culls
+  # DESCRIBE 'MIGRATE', ->
+    # IT "Can unset undesired attrs", unsets
+    # IT "Tags are all slim", migratesOlderTags
+    # IT "Culls strange ones", culls
+
+
+  DESCRIBE 'CHECK', ->
+    IT "Consistent", checkCONSISTENT
+
 

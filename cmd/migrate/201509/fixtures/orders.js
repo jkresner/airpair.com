@@ -1,14 +1,16 @@
 module.exports = {
 
 
-byStaff: {
-  "52b3c4ff66a6f999a465fe3e": "expert@airpair.com",
-  "5175efbfa3802cc4d5a5e6ed": "jk@airpair.com",
-  "5277c72066a6f999a465face": "dickhead@airpair.com"
-},
+  byStaff: {
+    "52b3c4ff66a6f999a465fe3e": "expert@airpair.com",
+    "5175efbfa3802cc4d5a5e6ed": "jk@airpair.com",
+    "5277c72066a6f999a465face": "dickhead@airpair.com",
+    "547654088f8c80299bcc527b": "mc@airpair.com",
+    "5305ad4e1c67d1a4859d2404": "mi@airpair.com"
+  },
 
 
-workshopCredit: {
+  workshopCredit: {
     "_id" : ObjectId("547654e0871cf00b00df0999"),
     "by" : {
         "email" : "mc@airpair.com",
@@ -47,7 +49,7 @@ workshopCredit: {
     "total" : 0,
     "userId" : ObjectId("547654088f8c80299bcc527b"),
     "utc" : ISODate("2014-11-26T22:32:00.471Z")
-}
+  }
 
 
 }

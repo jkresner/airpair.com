@@ -157,11 +157,11 @@ module.exports = ->
   specInit(@)
 
 
-  DESCRIBE 'MIGRATE', ->
-    IT "Cull experts without userId", cull
-    IT "Can unset undesired attrs", unsets
-    IT "Consistentify experts", consistentData
-    IT "All tags are slim", migratesOlderTags
+  # DESCRIBE 'MIGRATE', ->
+  #   IT "Cull experts without userId", cull
+  #   IT "Can unset undesired attrs", unsets
+  #   IT "Consistentify experts", consistentData
+  #   IT "All tags are slim", migratesOlderTags
 
 
   DESCRIBE 'CHECK', ->
