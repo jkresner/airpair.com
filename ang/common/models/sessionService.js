@@ -3,7 +3,7 @@ angular.module('APSvcSession', [])
 
   .constant('API', '/v1/api')
 
-  .constant('Auth', '/v1/auth')
+  .constant('Auth', '/auth')
 
   .factory('Notifications', function NotificationsFactory($rootScope, $location) {
 
@@ -27,8 +27,7 @@ angular.module('APSvcSession', [])
         $rootScope.session = r
         $rootScope.notifications = Notifications.calculateNextNotification()
 
-        if (window.analytics && trackingData) analytics.track('Save', trackingData);
-
+        // if (window.analytics && trackingData) analytics.track('Save', trackingData);
         successFn(r)
       }
     }
@@ -69,22 +68,6 @@ angular.module('APSvcSession', [])
       $http.post(`${Auth}/signup`, data).success(setScope(success)).error(error);
     }
 
-    this.subscribe = function(data, success, error) {
-      $http.post(`${Auth}/subscribe`, data).success(setScope(success)).error(error);
-    }
-
-    this.homeSignup = function(data, success, error) {
-      $http.post(`${Auth}/signup-home`, data).success(setScope(success)).error(error);
-    }
-
-    this.soSignup = function(data, success, error) {
-      $http.post(`${Auth}/signup-so`, data).success(setScope(success)).error(error);
-    }
-
-    this.postCompSignup = function(data, success, error) {
-      $http.post(`${Auth}/signup-postcomp`, data).success(setScope(success)).error(error);
-    }
-
     this.changeEmail = function(data, success, error) {
       var trackingData = { type:'email', email: data.email }
       $http.put(`${API}/users/me/email`, data).success(setScope(success, trackingData)).error(error);
@@ -104,19 +87,32 @@ angular.module('APSvcSession', [])
       $http.put(`${API}/users/me/email-verify`, data).success(setScope(success)).error(error);
     }
 
+    // this.updateTag = function(data, success, error) {
+    //   $http.put(`${API}/users/me/tag/${encodeURIComponent(data.slug)}`, {}).success(setScope(success)).error(error)
+    // }
+    // this.updateBookmark = function(data, success, error) {
+    //   $http.put(`${API}/users/me/bookmarks/${data.type}/${data.objectId}`, {}).success(setScope(success)).error(error)
+    // }
+    // this.tags = function(data, success, error) {
+    //   $http.put(`${API}/users/me/tags`, data).success(setScope(success)).error(error);
+    // }
+    // this.bookmarks = function(data, success, error) {
+    //   $http.put(`${API}/users/me/bookmarks`, data).success(setScope(success)).error(error);
+    // }
+    // this.getSiteNotifications = function(data, success, error) {
+    //   $http.get(`${API}/users/me/site-notifications`).success(success).error(error)
+    // }
+    // this.toggleSiteNotification = function(data, success, error) {
+    //   $http.put(`${API}/users/me/site-notifications`, data).success(success).error(error)
 
-    this.updateTag = function(data, success, error) {
-      $http.put(`${API}/users/me/tag/${encodeURIComponent(data.slug)}`, {}).success(setScope(success)).error(error)
-    }
-    this.updateBookmark = function(data, success, error) {
-      $http.put(`${API}/users/me/bookmarks/${data.type}/${data.objectId}`, {}).success(setScope(success)).error(error)
-    }
-    this.tags = function(data, success, error) {
-      $http.put(`${API}/users/me/tags`, data).success(setScope(success)).error(error);
-    }
-    this.bookmarks = function(data, success, error) {
-      $http.put(`${API}/users/me/bookmarks`, data).success(setScope(success)).error(error);
-    }
+    // this.getMaillists = function(data, success, error) {
+    //   $http.get(`${API}/users/me/maillists`, data).success(success).error(error)
+    // }
+
+    // this.toggleMaillist = function(data, success, error) {
+    //   $http.put(`${API}/users/me/maillists`, data).success(success).error(error)
+    // }
+    // }
 
 
     this.updateBio = function(data, success, error) {
@@ -131,16 +127,6 @@ angular.module('APSvcSession', [])
     this.updateUsername = function(data, success, error) {
       $http.put(`${API}/users/me/username`, data).success(setScope(success)).error(error)
     }
-    this.updateBio = function(data, success, error) {
-      $http.put(`${API}/users/me/bio`, data).success(setScope(success)).error(error)
-    }
-
-    this.getSiteNotifications = function(data, success, error) {
-      $http.get(`${API}/users/me/site-notifications`).success(success).error(error)
-    }
-    this.toggleSiteNotification = function(data, success, error) {
-      $http.put(`${API}/users/me/site-notifications`, data).success(success).error(error)
-    }
 
     this.requestPasswordChange = function(data, success, error) {
       $http.post(`/auth/password-reset`, data).success(success).error(error)
@@ -148,14 +134,6 @@ angular.module('APSvcSession', [])
 
     this.changePassword = function(data, success, error) {
       $http.post(`/auth/password-set`, data).success(setScope(success)).error(error)
-    }
-
-    this.getMaillists = function(data, success, error) {
-      $http.get(`${API}/users/me/maillists`, data).success(success).error(error)
-    }
-
-    this.toggleMaillist = function(data, success, error) {
-      $http.put(`${API}/users/me/maillists`, data).success(success).error(error)
     }
 
   })

@@ -32,11 +32,11 @@ angular.module("APProfileDirectives", [])
           $scope.data.timezone = session.localization.timezone
         }
 
-        if (!$scope.data.username && $scope.session.social) {
-          var social = $scope.session.social
-          if (social.gh || social.tw)
+        if (!$scope.data.username && $scope.session.auth) {
+          var social = $scope.session.auth
+          if (social.gh && social.gh.login || social.gh.username)
           {
-            var username = social.gh.username || social.tw.username
+            var username = social.gh.login || social.gh.username
             SessionService.updateUsername({username}, function(result){
               $scope.data.username = username
             }, function(e){})
@@ -100,14 +100,15 @@ angular.module("APProfileDirectives", [])
       $scope.return = $scope.returnTo || $location.path()
 
       $rootScope.$watch('session', (session) => {
-        if (session.social) {
-          if (session.social.gh) $scope.data.gh = session.social.gh.username
-          if (session.social.tw) $scope.data.tw = session.social.tw.username
-          if (session.social.so) $scope.data.so = session.social.so.link
-          if (session.social.in) $scope.data.in = session.social.in.id
-          if (session.social.bb) $scope.data.bb = session.social.bb.username
-          if (session.social.al) $scope.data.al = session.social.al.username
-          if (session.social.gp) $scope.data.gp = session.social.gp.link
+        if (session.auth) {
+          if (session.auth.gh) $scope.data.gh = session.auth.gh.login
+          if (session.auth.tw) $scope.data.tw = session.auth.tw.screen_name
+          if (session.auth.so) $scope.data.so = session.auth.so.link
+          if (session.auth.in) $scope.data.in = session.auth.in.id
+          if (session.auth.bb) $scope.data.bb = session.auth.bb.username
+          if (session.auth.al) $scope.data.al = session.auth.al.username
+          if (session.auth.gp) $scope.data.gp =
+            session.auth.gp.link || session.auth.gp.url || session.auth.gp.id
         }
       })
 

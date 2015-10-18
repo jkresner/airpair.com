@@ -1,29 +1,29 @@
 
 <div class="oauth gh">
-  <a ng-if="!data.gh" class="none" ng-href="/auth/github?returnTo={{return}}" target="_self">Github</a>
-  <a ng-if="data.gh" ng-href="/auth/github?returnTo={{return}}" target="_self">Github</a>
+  <a ng-if="!data.gh" class="none" ng-href="/auth/github/callback?returnTo={{return}}" target="_self">Github</a>
+  <a ng-if="data.gh" ng-href="/auth/github/callback?returnTo={{return}}" target="_self">Github</a>
 </div>
 <div class="oauth tw">
-  <a ng-if="!data.tw" class="none" href="/auth/twitter?returnTo={{return}}" target="_self">Twitter</a>
-  <a ng-if="data.tw" href="/auth/twitter?returnTo={{return}}" target="_self">Twitter</a>
+  <a ng-if="!data.tw" class="none" href="/auth/twitter/callback?returnTo={{return}}" target="_self">Twitter</a>
+  <a ng-if="data.tw" href="/auth/twitter/callback?returnTo={{return}}" target="_self">Twitter</a>
 </div>
 <!-- <div class="oauth so">
   <a ng-if="!data.so" class="none" href="/auth/stackexchange?returnTo={{return}}" target="_self">Stackoverflow</a>
   <a ng-if="data.so" href="/auth/stackexchange?returnTo={{return}}" target="_self">Stackoverflow</a>
 </div> -->
 <div class="oauth in">
-  <a ng-if="!data.in" class="none" href="/auth/linkedin?returnTo={{return}}" target="_self">LinkedIn</a>
-  <a ng-if="data.in" href="/auth/linkedin?returnTo={{return}}" target="_self">LinkedIn</a>
+  <a ng-if="!data.in" class="none" href="/auth/linkedin/callback?returnTo={{return}}" target="_self">LinkedIn</a>
+  <a ng-if="data.in" href="/auth/linkedin/callback?returnTo={{return}}" target="_self">LinkedIn</a>
 </div>
 <div class="oauth gp">
-  <a ng-if="!data.gp" class="none" href="/auth/google?returnTo={{return}}" target="_self">Google+</a>
-  <a ng-if="data.gp" href="/auth/google?returnTo={{return}}" target="_self">Google+</a>
+  <a ng-if="!data.gp" class="none" href="/auth/google/callback?returnTo={{return}}" target="_self">Google+</a>
+  <a ng-if="data.gp" href="/auth/google/callback?returnTo={{return}}" target="_self">Google+</a>
 </div>
 <div class="oauth bb">
-  <a ng-if="!data.bb" class="none" href="/auth/bitbucket?returnTo={{return}}" target="_self">BitBucket</a>
-  <a ng-if="data.bb" href="/auth/bitbucket?returnTo={{return}}" target="_self">BitBucket</a>
+  <a ng-if="!data.bb" class="none" href="/auth/bitbucket/callback?returnTo={{return}}" target="_self">BitBucket</a>
+  <a ng-if="data.bb" href="/auth/bitbucket/callback?returnTo={{return}}" target="_self">BitBucket</a>
 </div>
 <div class="oauth al">
-  <a ng-if="!data.al" class="none" href="/auth/angellist?returnTo={{return}}" target="_self">AngelList</a>
-  <a ng-if="data.al" href="/auth/angellist?returnTo={{return}}" target="_self">AngelList</a>
+  <a ng-if="!data.al" class="none" href="/auth/angellist/callback?returnTo={{return}}" target="_self">AngelList</a>
+  <a ng-if="data.al" href="/auth/angellist/callback?returnTo={{return}}" target="_self">AngelList</a>
 </div>

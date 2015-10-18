@@ -1,13 +1,13 @@
 <section id="book" ng-if="session._id">
 
-  <section ng-if="!session.localization" id="review">
+  <section ng-if="!session.location" id="review">
     <section class="localization">
       <p style="padding:20px 5px">Please provide your location</p>
       <location-input data="data" on-select="updateLocation"></location-input>
     </section>
   </section>
 
-  <section id="schedule" ng-if="booking && booking.payMethodId && session.localization">
+  <section id="schedule" ng-if="booking && booking.payMethodId && session.location">
 
     <form id="bookForm" novalidate name="bookForm" ng-submit="submit(bookForm.$valid, data)">
 
