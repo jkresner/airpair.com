@@ -254,8 +254,6 @@ bookingOrders = ->
             expect(orders1.length).to.equal(2)
             creditOrder = orders1[1]
             redeemOrder = orders1[0]
-            $log('creditOrder'.white, creditOrder)
-            $log('redeemOrder'.white, redeemOrder)
             expect(creditOrder.total).to.equal(500)
             expect(creditOrder.lines.length).to.equal(1)
             expect(creditOrder.payment.type).to.equal('braintree')

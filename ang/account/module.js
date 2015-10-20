@@ -22,11 +22,14 @@ angular.module("APProfile", [])
 
   if ($scope.session) {
     $scope.data = _.pick($scope.session, ['name','email','initials','username'])
-    if ($scope.session.location) {
+  }
+
+  $rootScope.$watch('session.location', () =>{
+    if ($rootScope.session.location) {
       $scope.data.location = $scope.session.location.name,
       $scope.data.timeZoneId = $scope.session.location.timeZoneId
     }
-  }
+  })
 
   // $scope.updateEmail = function(model) {
   //   if (!model.$valid || $scope.data.email == $scope.session.email) return
