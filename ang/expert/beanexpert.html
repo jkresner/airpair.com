@@ -10,7 +10,7 @@
 
   <section class="connect">
 
-    <h3 class="underline">Connected social accounts</h3>
+    <h3 class="underline">1. Connected social accounts</h3>
 
     <p ng-if="socialCount < 2">Connect at least 2 social profiles. Social data helps us match you with pairs.
     </p>
@@ -21,13 +21,13 @@
 
   <section class="info" ng-if="socialCount > 1">
 
-    <h3 class="underline">Personal info</h3>
+    <h3 class="underline">2. Personal info</h3>
 
     <user-info></user-info>
   </section>
 
-  <section class="profile" ng-if="socialCount > 1">
-    <h3 class="underline">Profile info</h3>
+  <section class="profile" ng-if="socialCount > 1 && session.location">
+    <h3 class="underline">3. Profile info</h3>
 
     <div class="form-group">
       <label class="control-label">Rate on your profile<span> (includes AirPair cut)</span></label>
@@ -68,24 +68,24 @@
       </div>
       <alert ng-repeat="alert in profileAlerts" type="{{alert.type}}"><span ng-bind-html="alert.msg | html"></span></alert>
     </form>
-
+<!--
     <div class="form-group">
       <label class="control-label">Why do you want to AirPair?</label>
       <textarea id="profileBrief" textarea-grow name="brief" type="text" class="form-control" placeholder="Enter a 2-3 sentences on why you want to AirPair" ng-model="data.brief" tabindex="303"
       ></textarea>
-    </div>
+    </div> -->
 
   </section>
 
-  <section class="tags" ng-if="socialCount > 1">
-    <h3 class="underline"><span ng-if="!data._id">3</span> Technologies you want to help with</h3>
+  <section class="tags" ng-if="socialCount > 1 && session.location">
+    <h3 class="underline">4. Technologies you want to help with</h3>
     <p>These can be different to "your stack" used to customize your experience on AirPair.com.</p>
     <tag-input></tag-input>
     <hr style="clear:both;border-color:white" />
   </section>
 
 
-  <section class="submit" ng-if="socialCount > 1">
+  <section class="submit" ng-if="socialCount > 1 && session.location">
     <hr style="clear:both" />
     <a ng-click="save()" class="btn" ng-disabled="formRequires()" tabindex="401">Submit expert application</a>
     <p ng-if="requires">* {{requires}}</p>

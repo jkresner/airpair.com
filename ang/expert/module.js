@@ -6,7 +6,6 @@ angular.module("APExpert", ['APTagInput','APPayPal'])
   // var exprd = apRouteProvider.resolver(['expert'])
   var route = apRouteProvider.route
   route('/be-an-expert', 'ExpertApplication', require('./beanexpert.html'),{resolve: authd})
-  // route('/me/profile-preview', 'ProfilePreview', require('./profilepreview.html'),{resolve: authd})
   route('/payouts', 'Payouts', require('./payouts.html'),{resolve: authd})
   route('/office', 'ExpertDashboard', require('./office.html'),{resolve: authd})
 })
@@ -72,7 +71,7 @@ angular.module("APExpert", ['APTagInput','APPayPal'])
     var total = 0
 
     $scope.data.orders = _.map(_.keys($scope.checkedOrders),(key) => {
-      console.log('$scope.checkedOrders[key])', $scope.checkedOrders[key])
+      // console.log('$scope.checkedOrders[key])', $scope.checkedOrders[key])
       if (key != 'total' && $scope.checkedOrders[key])
       {
         var o = _.find($scope.payoutOrders,(o)=>o._id==key)
@@ -80,7 +79,7 @@ angular.module("APExpert", ['APTagInput','APPayPal'])
         return key
       }
     })
-    console.log('checkedOrders', $scope.checkedOrders)
+    // console.log('checkedOrders', $scope.checkedOrders)
     $scope.checkedOrders.total = total
   }
 
@@ -105,8 +104,8 @@ angular.module("APExpert", ['APTagInput','APPayPal'])
   $scope.formRequires = () => {
     var d = $scope.data, requires = false;
     if (!d.initials) requires = "Initials required"
-    if (!d.location) requires = "Location not selected"
-    if (!d.timeZoneId) requires = "Timezone not selected"
+    // if (!d.location) requires = "Location not selected"
+    // if (!d.timeZoneId) requires = "Timezone not selected"
     if (!d.username) requires = "Username required"
     if (!d.rate) requires = "Rate not selected"
     if (!d.bio || d.bio.length < 100) requires = "Min 100 character bio required"
@@ -142,8 +141,8 @@ angular.module("APExpert", ['APTagInput','APPayPal'])
     expert.username= $scope.session.username
     $scope.expert = expert
     $scope.data = expert,_.extend(expert, $scope.data||{})
-    $scope.data.location = $scope.session.location.name,
-    $scope.data.timeZoneId = $scope.session.location.timeZoneId
+    // $scope.data.location = $scope.session.location.name,
+    // $scope.data.timeZoneId = $scope.session.location.timeZoneId
   })
 
   $scope.save = () => {
@@ -158,10 +157,12 @@ angular.module("APExpert", ['APTagInput','APPayPal'])
         window.location = '/office'
       })
   }
+
+  $rootScope.$watch('session.location', () => {
+    if ($rootScope.session.location) {
+      $scope.data.location = $scope.session.location.name,
+      $scope.data.timeZoneId = $scope.session.location.timeZoneId
+    }
+  })
 })
 
-
-// .controller('ProfilePreviewCtrl', ($scope, $location, $q, SessionService) => {
-
-
-// })
