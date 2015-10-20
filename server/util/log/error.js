@@ -20,13 +20,13 @@ var knownNonErrors = [
   'Cannot signup, you previously created an account with your google login',
   'Another user account already has the',
   'already registered',
-  'already taken, please choose a different username',
   'no user found',
   'wrong password',
   'No user found with email',
   //auth,
   "Login fail. No user found",
   "Login fail. Incorrect password",
+  'already taken, please choose a different username',
   //slack
   'already_in_team',
   'already_invited'

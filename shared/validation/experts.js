@@ -2,7 +2,7 @@ var validation = {
 
   getHistory(user, expert)
   {
-    var isAdmin = _.contains(user.roles, 'admin')
+    var isAdmin = _.contains(user.roles||[], 'admin')
     var isOwner = _.idsEqual(expert.userId, user._id)
 
     if ( !isAdmin && !isOwner )

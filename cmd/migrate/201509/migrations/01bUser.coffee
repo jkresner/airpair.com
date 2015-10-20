@@ -33,7 +33,17 @@ checkCONSISTENT = ->
       UserGraph[o._id] = { name: o.name || o.auth.gp.name }
       if _.get(o,'auth.gh.id')
         UserGraph[o._id]['gh'] = o.auth.gh.id
-    DONE()
+
+    Paymethods.find({}, {'userId':1}).toArray (e, all) ->
+      count = 0
+      for o in all
+        count++
+        if UserGraph[o.userId]?
+          refIncrement UserGraph[o.userId], 'paymethods'
+        else
+          # $log(o)
+
+      DONE()
 
 
 renameAttrs = ->
@@ -226,11 +236,11 @@ module.exports = ->
   specInit(@)
 
 
-  DESCRIBE 'MIGRATE', ->
-    IT "Rename login attrs", renameAttrs
-    IT "Clean auth.google data", cleanAuthGoogle
-    IT "Unset attrs gone", unsetAttrs
-    IT "Sets name for all users", setName
+  # DESCRIBE 'MIGRATE', ->
+  #   IT "Rename login attrs", renameAttrs
+  #   IT "Clean auth.google data", cleanAuthGoogle
+  #   IT "Unset attrs gone", unsetAttrs
+  #   IT "Sets name for all users", setName
 
 
   DESCRIBE 'CHECK', ->

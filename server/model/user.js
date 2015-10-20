@@ -9,7 +9,7 @@ Enum.USER = {
 
 var authGithub = {
   login:                     { type: String, trim },
-  id:                        { type: Number },
+  id:                        { type: Number, index, sparse, unique },
   avatar_url:                { type: String, trim },
   gravatar_id:               { type: String, trim },
   name:                      { type: String, trim },

@@ -27,7 +27,7 @@ var save = {
 
       for (var order of orders) {
 
-        var line = _.find(order.lineItems,(l)=>l.info && l.info.expert &&
+        var line = _.find(order.lines,(l)=>l.info && l.info.expert &&
           l.info.paidout == false && _.idsEqual(l.info.expert._id,expert._id) )
 
         if (!line) return cb(Error(`Problem paying out line from[${order._id}]`))
@@ -47,7 +47,7 @@ var save = {
         if (e) return cb(e)
         payout = _.extend(payout,{userId,total,payment,lines})
         Payout.create(payout, cb)
-        Order.updateSetBulk(orders,(e,r)=>{
+        Order.updateSetBulk(orders, (e,r)=>{
           if (e) $error('ERROR: payoutOrder => bulk order update'.red, e)
         })
       })

@@ -124,7 +124,7 @@ var odata = {
 
 
 function oauthLogin(provider, profile, {token,refresh}, done) {
-  $log(`config.auth[${provider}]`, config.auth[provider])
+  // $log(`config.auth[${provider}]`, config.auth[provider])
 
   if (!config.auth[provider] || config.auth[provider].login !== true)
     return done(Error(`AUTH.Login with ${provider} not supported`))

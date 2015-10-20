@@ -150,8 +150,8 @@ var Lines = {
 
 
 //-- Create the order object without saving anything
-//-- Use the lineItems, paymethod and who the orders is for
-function makeOrder(byUser, lineItems, payMethodId, forUserId, requestId, dealId, errorCB, cb)
+//-- Use the lines items, paymethod and who the orders is for
+function makeOrder(byUser, lines, payMethodId, forUserId, requestId, dealId, errorCB, cb)
 {
   var byUserId = ObjectId(byUser._id.toString())
   forUserId = (forUserId) ? ObjectId(forUserId.toString()) : byUserId
@@ -162,15 +162,16 @@ function makeOrder(byUser, lineItems, payMethodId, forUserId, requestId, dealId,
     userId: forUserId, // May be different from the identity (which could be an admin)
     total: 0,
     profit: 0,
-    lineItems: lineItems,
+    lines: lines,
     by: {
       _id:  byUserId,
       name: byUser.name,
-      email: byUser.email
+      email: byUser.email,
+      avatar: byUser.avatar || require('../util/md5').gravatarUrl(byUser.email)
     }
   }
 
-  for (var li of o.lineItems)
+  for (var li of o.lines)
   {
     o.total += li.total
     o.profit += li.profit
@@ -252,64 +253,66 @@ function trackOrderPayment(order) {
 
 function bookUsingDeal(bookingId, expert, time, minutes, type, dealId, cb)
 {
-  get.getMyOrdersForDeal.call(this, dealId, (e, orders) => {
-    var lines = OrderUtil.linesWithMinutesRemaining(orders)
-    var availableMinutes = OrderUtil.getAvailableMinutesRemaining(lines)
-    if (availableMinutes < minutes)
-      return cb(Error(`Not enough remaining minutes. ${availableMinutes} found.`))
+  // Make sure to test before making available again
+  cb(V2DeprecatedError('Orders.bookUsingDeal'))
+  // get.getMyOrdersForDeal.call(this, dealId, (e, orders) => {
+  //   var linesWithMins = OrderUtil.linesWithMinutesRemaining(orders)
+  //   var availableMinutes = OrderUtil.getAvailableMinutesRemaining(linesWithMins)
+  //   if (availableMinutes < minutes)
+  //     return cb(Error(`Not enough remaining minutes. ${availableMinutes} found.`))
 
-    var {deal} = lines[0].info
-    var unitPrice = (deal.price/(deal.minutes/60))
-    var profit = (deal.rake/100)*deal.price
-    var unitProfit = (profit/(deal.minutes/60))
-    // $log('profit', profit, unitPrice, 'unitProfit'.white, unitProfit)
-    var lineItems = [Lines.booking(bookingId, expert, time, minutes, type, unitPrice, unitProfit)]
+  //   var {deal} = linesWithMins[0].info
+  //   var unitPrice = (deal.price/(deal.minutes/60))
+  //   var profit = (deal.rake/100)*deal.price
+  //   var unitProfit = (profit/(deal.minutes/60))
+  //   // $log('profit', profit, unitPrice, 'unitProfit'.white, unitProfit)
+  //   var lines = [Lines.booking(bookingId, expert, time, minutes, type, unitPrice, unitProfit)]
 
-    var need = minutes
-    var ordersToUpdate = []
-    for (var o of orders) {
-      for (var li of o.lineItems) {
-        if (need > 0 && li.type == 'deal' && li.info.remaining > 0)
-        {
-          var deducted = need
-          if (li.info.remaining < need)
-            deducted = li.info.remaining
+  //   var need = minutes
+  //   var ordersToUpdate = []
+  //   for (var o of orders) {
+  //     for (var li of o.lines) {
+  //       if (need > 0 && li.type == 'deal' && li.info.remaining > 0)
+  //       {
+  //         var deducted = need
+  //         if (li.info.remaining < need)
+  //           deducted = li.info.remaining
 
-          var redeemedLine = Lines.redeemeddealtime(deducted, unitPrice, li)
-          lineItems.unshift(redeemedLine)
-          li.info.remaining = li.info.remaining - deducted
-          li.info.redeemedLines.push({ lineItemId: redeemedLine._id, minutes: deducted, partial: deducted!=need })
+  //         var redeemedLine = Lines.redeemeddealtime(deducted, unitPrice, li)
+  //         lines.unshift(redeemedLine)
+  //         li.info.remaining = li.info.remaining - deducted
+  //         li.info.redeemedLines.push({ lineItemId: redeemedLine._id, minutes: deducted, partial: deducted!=need })
 
-          ordersToUpdate = _.union(ordersToUpdate,[o._id])
-          need = need - deducted
-        }
-      }
-    }
+  //         ordersToUpdate = _.union(ordersToUpdate,[o._id])
+  //         need = need - deducted
+  //       }
+  //     }
+  //   }
 
-    ordersToUpdate = _.map(ordersToUpdate, (id) => _.find(orders,(o)=> _.idsEqual(o._id, id) ) )
+  //   ordersToUpdate = _.map(ordersToUpdate, (id) => _.find(orders,(o)=> _.idsEqual(o._id, id) ) )
 
-    makeOrder(this.user, lineItems, null, null, null, dealId, cb, (e, order) => {
+  //   makeOrder(this.user, lines, null, null, null, dealId, cb, (e, order) => {
 
-      chargeAndTrackOrder(order, cb, (e,o) => {
-        // console.log('inserting deal minutes redeemed order', order.total, order._id, order.userId)
-        Order.bulkOperation([o], ordersToUpdate, [], (e,r) => cb(e,o))
-      })
-    })
-  })
+  //     chargeAndTrackOrder(order, cb, (e,o) => {
+  //       // console.log('inserting deal minutes redeemed order', order.total, order._id, order.userId)
+  //       Order.bulkOperation([o], ordersToUpdate, [], (e,r) => cb(e,o))
+  //     })
+  //   })
+  // })
 }
 
 function bookUsingCredit(expert, minutes, total, lineItems, expectedCredit, payMethodId, request, cb)
 {
   get.getMyOrdersWithCredit.call(this, payMethodId, (e, orders) => {
-    var lines = OrderUtil.linesWithCredit(orders)
-    var availablCredit = OrderUtil.getAvailableCredit(lines)
+    var linesWithCredit = OrderUtil.linesWithCredit(orders)
+    var availablCredit = OrderUtil.getAvailableCredit(linesWithCredit)
     if (expectedCredit != availablCredit)
       return cb(Error(`ExpectedCredit $${expectedCredit}, not found. ${availablCredit} found.`))
 
     var need = total
     var ordersToUpdate = []
     for (var o of orders) {
-      for (var li of o.lineItems) {
+      for (var li of o.lines) {
         if (need > 0 && li.type == 'credit' && li.info.remaining > 0)
         {
           var deducted = need
@@ -349,18 +352,18 @@ function bookUsingCredit(expert, minutes, total, lineItems, expectedCredit, payM
 
 
 
-function _createBookingOrder(expert, time, minutes, type, credit, payMethodId, request, lineItems, total, cb)
+function _createBookingOrder(expert, time, minutes, type, credit, payMethodId, request, lines, total, cb)
 {
   // $log('_createBookingOrder.expert', expert)
   if (credit && credit > 0)
   {
-    bookUsingCredit.call(this, expert, minutes, total, lineItems, credit, payMethodId, request, cb)
+    bookUsingCredit.call(this, expert, minutes, total, lines, credit, payMethodId, request, cb)
   }
   else
   {
     var requestId = (request) ? request._id : null
-    lineItems.unshift(Lines.payg(total))
-    makeOrder(this.user, lineItems, payMethodId, null, requestId, null, cb, (e, order) => {
+    lines.unshift(Lines.payg(total))
+    makeOrder(this.user, lines, payMethodId, null, requestId, null, cb, (e, order) => {
       chargeAndTrackOrder(order, cb, (e,o) => {
         if (request) $callSvc(RequestsSvc.updateWithBookingByCustomer,this)(request, o, (e,r) => {})
         Order.create(o, cb)
@@ -377,12 +380,12 @@ var save = {
   {
     var deal = _.find(expert.deals,(d)=>_.idsEqual(d._id,dealId))
     var expires = util.dateWithDayAccuracy(moment().add(3,'month'))
-    var lineItems = []
+    var lines = []
 
     //(expert, dealId, total, minutes, rake, expires, source)
-    lineItems.push(Lines.deal(expert, deal, expires, `$${deal.price} Special w ${expert.name||expert.user.name}`))
+    lines.push(Lines.deal(expert, deal, expires, `$${deal.price} Special w ${expert.name||expert.user.name}`))
 
-    makeOrder(this.user, lineItems, payMethodId, null, null, dealId, cb, (e, order) => {
+    makeOrder(this.user, lines, payMethodId, null, null, dealId, cb, (e, order) => {
       // $log('buyCredit.order', order)
       chargeAndTrackOrder(order, cb, (e,o) => Order.create(o, cb))
     })
@@ -392,21 +395,21 @@ var save = {
   {
     var expires = util.dateWithDayAccuracy(moment().add(3,'month'))
 
-    var lineItems = []
-    lineItems.push(Lines.credit(true, total, expires, `$${total} Credit Purchase`))
+    var lines = []
+    lines.push(Lines.credit(true, total, expires, `$${total} Credit Purchase`))
 
 
     if (total == 1000)
-      lineItems.push(Lines.credit(false, 50, expires, `Credit Bonus (5% on $${total})`))
+      lines.push(Lines.credit(false, 50, expires, `Credit Bonus (5% on $${total})`))
     if (total == 3000)
-      lineItems.push(Lines.credit(false, 300, expires, `Credit Bonus (10% on $${total})`))
+      lines.push(Lines.credit(false, 300, expires, `Credit Bonus (10% on $${total})`))
     if (total == 5000)
-      lineItems.push(Lines.credit(false, 1000, expires, `Credit Bonus (20% on $${total})`))
+      lines.push(Lines.credit(false, 1000, expires, `Credit Bonus (20% on $${total})`))
 
     if (coupon == "letspair")
-      lineItems.push(Lines.discount("letspair", 100, 'Credit Announcement Promo', this.user) )
+      lines.push(Lines.discount("letspair", 100, 'Credit Announcement Promo', this.user) )
 
-    makeOrder(this.user, lineItems, payMethodId, null, null, null, cb, (e, order) => {
+    makeOrder(this.user, lines, payMethodId, null, null, null, cb, (e, order) => {
       // $log('buyCredit.order', order)
       chargeAndTrackOrder(order, cb, (e,o) => Order.create(o, cb))
     })
@@ -417,8 +420,8 @@ var save = {
     var expires = util.dateWithDayAccuracy(moment().add(3,'month'))
 
     var fullSource = `${source} from ${this.user.name}`
-    var lineItems = []
-    lineItems.push(Lines.credit(false, total, expires, fullSource))
+    var lines = []
+    lines.push(Lines.credit(false, total, expires, fullSource))
 
     var forUser = {
       _id: this.user._id, // airpair account manager
@@ -427,7 +430,7 @@ var save = {
     }
 
     mailman.sendTemplate('customer-got-credit', {total,fromName:this.user.name}, toUser)
-    makeOrder(forUser, lineItems, null, toUser._id, null, null, cb, (e, order) =>
+    makeOrder(forUser, lines, null, toUser._id, null, null, cb, (e, order) =>
       chargeAndTrackOrder(order, cb, (e,o) => Order.create(o, cb))
     )
   },
@@ -451,29 +454,29 @@ var save = {
         if (type == 'opensource') unitPrice = unitPrice - 10
         var unitProfit = unitPrice - expert.rate
         var total = minutes/60 * unitPrice
-        var lineItems = [Lines.booking(bookingId, expert, time, minutes, type, unitPrice, unitProfit)]
-        _createBookingOrder.call(this, expert, time, minutes, type, credit, payMethodId, request, lineItems, total, cb)
+        var lines = [Lines.booking(bookingId, expert, time, minutes, type, unitPrice, unitProfit)]
+        _createBookingOrder.call(this, expert, time, minutes, type, credit, payMethodId, request, lines, total, cb)
       })
     }
     else {
       var unitPrice = OrderUtil.calculateUnitPrice(expert,type)
       var unitProfit = OrderUtil.calculateUnitProfit(expert, type)
       var total = minutes/60 * unitPrice
-      var lineItems = [Lines.booking(bookingId, expert, time, minutes, type, unitPrice, unitProfit)]
-      _createBookingOrder.call(this, expert, time, minutes, type, credit, payMethodId, null, lineItems, total, cb)
+      var lines = [Lines.booking(bookingId, expert, time, minutes, type, unitPrice, unitProfit)]
+      _createBookingOrder.call(this, expert, time, minutes, type, credit, payMethodId, null, lines, total, cb)
     }
   },
 
   releasePayout(order, booking, cb)
   {
-    var {lineItems} = order
+    var {lines} = order
 
-    var payoutLine = _.find(lineItems, (li) =>
+    var payoutLine = _.find(lines, (li) =>
       li.info && li.info.paidout === false)
 
     payoutLine.info.released = svc.newTouch.call(this,'release')
 
-    Order.updateSet(order._id, {lineItems}, (e,r)=>{
+    Order.updateSet(order._id, {lines}, (e,r)=>{
       if (booking && booking.chat) {
         var d = {byName:this.user.name,bookingId:booking._id}
         pairbot.sendSlackMsg(booking.chat.providerId, 'expert-payment-released', d)

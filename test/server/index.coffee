@@ -48,7 +48,7 @@ config.log.auth = false
 config.log.da = false
 
 
-global.againstProd = true
+global.againstProd = false
 
 
 SCREAM(__dirname, config, loginHandler).run()

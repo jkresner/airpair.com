@@ -57,12 +57,9 @@ var get = {
     User.searchByRegex(term, searchFields, {select:searchFields,limit:20}, (e,r) => {
       var uIds = _.pluck(r,'_id')
       Expert.getManyByQuery({userId:{$in:uIds}}, opts, (ee,rr)=>{
-        $log('ee'.yellow, ee, rr)
-        for (var expert of rr) {
-          $log('expert'.green, expert.userId)
-          // $log(_.find(r, u => _.idsEqual(u._id,expert.userId)))
+        for (var expert of rr)
           expert.user = _.find(r, u => _.idsEqual(u._id,expert.userId))
-        }
+
         selectCB.migrateSearch(cb)(ee, rr)
       })
     })
@@ -150,7 +147,7 @@ var save = {
   },
 
   updateMe(original, ups, cb) {
-    $log('updateMe')
+    // $log('updateMe')
     var trackData = { name: this.user.name, _id: original._id }
     // ups.user = selectFromObject(_.extend({social:this.user.auth},this.user), select.userCopy)
     // var expert = selectFromObject(_.extend(original,ups), select.updateMe)

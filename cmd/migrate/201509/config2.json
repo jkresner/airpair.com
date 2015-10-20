@@ -1,5 +1,5 @@
 {
-  "specs":                "03aMergeGithub",
+  "specs":                "all",
   "stubs": {
     "on":                 true
   },
@@ -14,17 +14,18 @@
   },
   "mongo": {
     "url":                { "appConfig": "mongoUrl" },
-    "collections":        ["orders","users","experts","tags","paymethods","payouts","requests","bookings","posts"]
+    "collections":        ["orders","users","experts","tags","paymethods","payouts","requests","bookings","posts",
+                          "chats","companies","redirects","templates"]
   },
   "paths": {
     "app":                "./201509/app.coffee",
     "fixtures":           "./201509/fixtures",
-    "bson":               "./201509/bson/2passed",
+    "bson":               "./201509/bson/1passed",
     "specs":              "./201509/migrations"
   },
   "seed": {
     "force":              true,
-    "clean":              false,
+    "clean":              true,
     "model":              "User",
     "key":                "jkap",
     "timeout":            30000

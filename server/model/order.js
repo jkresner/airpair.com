@@ -25,11 +25,17 @@ return asSchema({
   userId:         { type: Id, ref: 'User', required },
 
   // The user that create the order (often same as userId, but can be an admin)
-  by:             { type: {}, required },
+  by: {
+    _id:          { type: Id, ref: 'User', required },
+    name:         { type: String, required },
+    avatar:       { type: String, required },
+    email:        { type: String, required },
+    org:          {}
+  },
 
-  lineItems:      { type: [LineItem] },
+  lines:          { type: [LineItem] },
 
-  // when the order was made
+  // when the order was made (convinient for querying)
   utc:            { type: Date, 'default': Date },
 
   // Total amount paid by customer

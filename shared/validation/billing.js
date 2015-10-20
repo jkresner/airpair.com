@@ -63,7 +63,7 @@ var validation = {
     if (!Roles.isOwnerOrAdmin(user,original))
       return `Payout[${original._id}] must be released by owner`
 
-    var payoutLines = _.filter(original.lineItems, (l) =>
+    var payoutLines = _.filter(original.lines, (l) =>
       l.info && l.info.paidout === false)
 
     if (payoutLines.length != 1) return `[${payoutLines.length}] Payout lines is invalid for releasing a payout`
@@ -84,7 +84,7 @@ var validation = {
 
     for (var i=0;i<orders.length;i++)
     {
-      var payoutLine = _.find(orders[i].lineItems,(l) => l && l.info &&
+      var payoutLine = _.find(orders[i].lines,(l) => l && l.info &&
         l.info.expert && l.info.paidout == false && l.info.released
       )
       if (!payoutLine) return `Cannot payout. Order[${orders[i]._id}] does not have payout belonging to you`

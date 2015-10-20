@@ -50,8 +50,11 @@ var inflateHtml = function(isAnon, cb) {
   }
 };
 
-var userCommentByte = (byte) =>
-  _.extend(_.pick(byte,'_id','name'), {avatar: md5.gravatarUrl(byte.email)})
+var userCommentByte = (byte) => {
+  var avatar = byte.email ? md5.gravatarUrl(byte.email) :
+    "/static/img/pages/posts/storm.png"
+  return _.extend(_.pick(byte,'_id','name'), {avatar})
+}
 
 
 var select = {
