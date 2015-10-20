@@ -4,8 +4,8 @@ var svc = require('../services/posts')
 function reviewParamFn(req, res, next, id) {
   $callSvc(svc.getReview,req)(req.post, id, function(e, r) {
     if (!r && !e) {
-      e = new Error404(`${paramName} not found.`,
-        paramName != 'post'&& paramName != 'workshop')
+      e = new Error(`post not found.`)
+      e.status = 404
     }
     req.postreview = r
     next(e, r)

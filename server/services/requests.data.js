@@ -121,11 +121,11 @@ var data = {
       'company.contacts.email':1,
     },
     meSuggested(r, userId, expertId) {
+      if (userId) $log('meSuggested no longer supports userId', userId)
       // $log('meSuggested'.yellow, r.suggested, userId, new ObjectId())
-      var sug = _.find(r.suggested,(s)=>
-        (expertId) ? _.idsEqual(expertId,s.expert._id) :
-                     _.idsEqual(userId,s.expert.userId))
-      return (sug) ? [sug] : []
+      if (expertId)
+        var sug = _.find(r.suggested, s => _.idsEqual(expertId,s.expert._id))
+      return sug ? [sug] : []
     },
     byView(request, view) {
       var r = migrateV0(request)

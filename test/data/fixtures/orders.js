@@ -21,7 +21,7 @@ module.exports = {
         "id" : "6zq77y2"
     },
     "utc" : ISODate("2015-02-12T04:33:50.050Z"),
-    "lineItems" : [
+    "lines" : [
         {
             "_id" : ObjectId("54dc2d2ed137810a00f28139"),
             "type" : "payg",
@@ -77,7 +77,7 @@ module.exports = {
         "name" : "Individual",
         "_id" : "53965a64b0177a0200f7b738"
     },
-    "lineItems" : [
+    "lines" : [
         {
         "type" : "opensource",
         "total" : 90,
@@ -154,7 +154,7 @@ module.exports = {
     "owner" : "",
     "marketingTags" : [],
     "utc" : ISODate("2015-07-08T14:26:24.895Z"),
-    "lineItems" : [
+    "lines" : [
         {
             "type" : "deal",
             "qty" : 1,

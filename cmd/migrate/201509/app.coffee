@@ -27,7 +27,7 @@ module.exports =
           query
       unset: (fieldsStr) =>
         $unset = {}
-        $unset[attr] = 1 for attr in fieldsStr.split(' ')
+        $unset[attr] = "1" for attr in fieldsStr.split(' ')
         {$unset}
 
     global.inQuery = (ids, attr) ->
@@ -155,7 +155,7 @@ module.exports =
           Requests.findOne({'suggested.expert._id':removed.expert._id},{'suggested.expert':1}),
           Bookings.findOne({'expertId':removed.expert._id},{'expertId':1})
           Payouts.findOne({'lines.info.expert._id':removed.expert._id},{'expertId':1})
-          # Orders.findOne({$or:['lines.info.expert._id':removed.expert._id,'lineItem.suggestion.expert._id':removed.expert._id]},{'userId':1,'lineItems':1}),
+          # Orders.findOne({$or:['lines.info.expert._id':removed.expert._id,'lines.suggestion.expert._id':removed.expert._id]},{'userId':1,'lines':1}),
         ]
 
       Promise.all(ops).then(success, DONE)

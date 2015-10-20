@@ -289,7 +289,7 @@ var save = {
       User.getByQuery({username}, '_id username name', (e,r) => {
         // Should be checked already before validate
         if (r && !_.idsEqual(this.user._id, r._id))
-          return cb(`${username} already taken, please choose a different username`)
+          return cb(Error(`${username} already taken, please choose a different username`))
         updateAsIdentity.call(this, {username}, null, cb)
       })
   },
