@@ -92,7 +92,7 @@ signup = ->
               DONE()
 
   IT 'Cannot sign up with local credentials and existing gmail', ->
-    DB.removeDocs 'User', qExists.byEmail("experts@airpair.com"), ->
+    DB.removeDocs 'User', qExists.byEmails(["experts@airpair.com"]), ->
       d = name: "AirPair Experts", email: "experts@airpair.com", password: "Yoyoyoyoy"
       DB.ensureDoc 'User', FIXTURE.users.apexperts, ->
         SUBMIT '/auth/signup', d, {status:400, contentType: /json/ }, (err) ->
@@ -133,6 +133,7 @@ signup = ->
     ANONSESSION (r) ->
       PAGE '/', {}, ->
         SUBMIT '/auth/signup', d, {}, (newUser) ->
+          expect(newUser._id).to.exist
           setTimeout checkCohort(ObjectId(newUser._id)), 150
 
 
@@ -145,12 +146,14 @@ login = ->
   IT 'Can signup with local credentials then login with google of same email', ->
     signup = email: 'airpairone001@gmail.com', name: 'AIr One', password: 'pass2'
     DB.removeDocs 'User', { email:'airpairone001@gmail.com'}, ->
+      $log('signup'.white, signup)
       SUBMIT '/auth/signup', signup, {}, (s) ->
         expect(s._id).to.exist
         expect(s.email).to.equal('airpairone001@gmail.com')
         LOGOUT ->
           profile = FIXTURE.oauth.google_aone._json
           token = 'aone_token'
+          $log('try oauth'.white, profile)
           AuthService.link.call SETUP.userSession(), 'google', profile, {token}, (e, r) ->
             expect(e).to.be.null
             expect(r._id).to.exist
@@ -163,7 +166,7 @@ login = ->
 
   IT 'Signup with google in one app and log back in with google in another', ->
     {ape1} = FIXTURE.users
-    DB.removeDocs 'User', qExists.byEmail('airpairtest1@gmail.com'), ->
+    DB.removeDocs 'User', qExists.byEmails(['airpairtest1@gmail.com']), ->
       DB.ensureDoc 'User', ape1, ->
         profile = ape1.auth.gp
         token = 'ape1_gp_test_token'
@@ -358,6 +361,7 @@ password = ->
 link = ->
 
   IT 'Link github with local user / password', ->
+    STUB.cb(Wrappers.GitHub, 'getEmails', [{email:'jk@gmail.com',verified:true},{email:'jk@airpair.com',primary:true,verified:true}])
     STORY.newUser 'jkjk', (s) ->
       profile = FIXTURE.oauth.github_jk._json
       profile.id += parseInt(profile.id+timeSeed())

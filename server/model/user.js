@@ -1,4 +1,4 @@
-module.exports = ({ Id, Enum, Touch, Reftag, Note, Location },
+module.exports = ({ Id, Enum, Touch, Reftag, Note, Location, Photo },
   { asSchema, required, trim, lowercase, index, unique, sparse }) => {
 
 Enum.USER = {
@@ -82,6 +82,8 @@ return asSchema({
   emailVerified:            { type: Boolean, required, default: false },
 
   emails:                   { type: [email] }, // requied true
+  photos:                   { type: [Photo] },
+
 
   primaryPayMethodId:       { type: Id, ref: 'PayMethod' }, // null indicates user has no payMethod
 
@@ -93,7 +95,6 @@ return asSchema({
   raw: {
     locationData:           { type: {}, required: false } // Used to recalcuate timeZone
   },
-
 
   auth: {                               // Full copies of profile data from oAuth
     password: {
@@ -120,7 +121,7 @@ return asSchema({
     firstRequest:            { type: {}, required: false }  // used to target users arriving from specific campains
   },
 
-  roles:                   { type: [String], required: false },
+  roles:                     { type: [String], required: false },
 
   legacy: {                  required:false, type: {
     siteNotifications:       { type: [], required: false },

@@ -449,7 +449,7 @@ module.exports = ->
   before (done) ->
     global.USERS = FIXTURE.users
     qExists = require('../../../server/services/users.data').query.existing
-    DB.removeDocs 'User', qExists.byEmail('airpairtest1@gmail.com'), ->
+    DB.removeDocs 'User', qExists.byEmails(['airpairtest1@gmail.com']), ->
     SETUP.ensureExpert 'snug', ->
       done()
 
