@@ -65,8 +65,16 @@ function getEmails(token, cb) {
   var emailsOpts  = _.omit(config.auth.oauth.github.emails,'path')
 
   get(_.extend({path:`${emailsPath}?access_token=${token}`},emailsOpts),
-      res => res.on('data', d => cb(null, JSON.parse(d.toString())) )
- ).on('error', cb)
+    res => res.on('data', d => {
+      var json = JSON.parse(d.toString())
+      if (json.message) {
+        $log('Github.user.getemails message'.magenta, json.message)
+        if (json.message.match(/Bad credentials/)) return cb(Error(`Github.emails: ${json.message}`))
+      }
+
+      cb(null, json)
+    })
+  ).on('error', cb)
 }
 
 
