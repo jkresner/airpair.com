@@ -46,11 +46,7 @@ var select = {
     'name': 1,
     'initials': 1
   },
-  search: '_id email name initials username bio auth.gp',
-  // siteNotifications: {
-  //   '_id': 0,
-  //   'siteNotifications': 1
-  // }
+  search: '_id email name initials username bio auth.gp'
 }
 
 var data = {
@@ -62,7 +58,7 @@ var data = {
     search: select.search,
 
     analyticsSignup(user, sessionID, session) {
-      return {name:user.name,sessionID}
+      return {_id:user._id,name:user.name,sessionID}
     },
 
     analyticsLogin(user, sessionID, session) {

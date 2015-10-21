@@ -24,9 +24,12 @@ var knownNonErrors = [
   'wrong password',
   'No user found with email',
   //auth,
+  "Login failed. github.oauth profile has no verified email",
+  "Login failed. Name required on github profile",
   "Login fail. No user found",
   "Login fail. Incorrect password",
   'already taken, please choose a different username',
+  "Failed to fetch user profile",
   //slack
   'already_in_team',
   'already_invited'

@@ -70,7 +70,9 @@ var cfg = {
       short: 'so',
       clientID: '1451',
       clientSecret: 'CCkJpq3BY3e)lZFNsgkCkA((',
-      key: 'dTtlx1WL0TJvOKPfoU88yg(('                                      },
+      key: 'dTtlx1WL0TJvOKPfoU88yg((',
+      scope: []
+    },
     angellist: {
       short: 'al',
       clientID: 'b6e2b75a1e20367c9b2bd267dbbd06269193814b83c2a492',
