@@ -254,10 +254,6 @@ function oauthLogin(provider, profile, {token,refresh}, done) {
 
 
 function link(provider, profile, {token,refresh}, done) {
-  if (provider == 'github' && !profile.emails)
-    return Wrappers.GitHub.getEmails(token, (e,emails) => e ? done(e) :
-      link.call(this, 'github', _.extend({emails},profile), {token,refresh}, done) )
-
   var {user} = this
   if (!user) return oauthLogin.call(this, provider, profile, {token,refresh}, done)
 
@@ -283,13 +279,6 @@ function link(provider, profile, {token,refresh}, done) {
     var trackData = select.analyticsLink(user, provider, profile)
     analytics.event(`link:${short}`, user, trackData)
   })
-
-  // if (short == 'tw')
-  //   ups.bio = profile._json.description
-  // if (short == 'sl') {
-  //   delete ups['$set']['social.sl']._json
-  //   ups['$set']['social.sl'].token = profile.token.token
-  // }
 }
 
 

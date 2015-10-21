@@ -25,7 +25,7 @@ connect: Router()
   .post('/signup', mw.localAuth(passport, 'signup', (req, email, password, done) =>
     AuthSvc.localSignup.call(req, email, password, req.body.name, done)))
 
-  .get('/github/callback', MW.oauth('github'))
+  .get('/github/callback', MW.oauth('github', require('./passport-github')))
   .get('/google/callback', MW.oauth('google', require('passport-google-oauth').OAuth2Strategy))
   .get('/twitter/callback', mw.authd, MW.oauth('twitter'))
   .get('/bitbucket/callback', mw.authd, MW.oauth('bitbucket'))

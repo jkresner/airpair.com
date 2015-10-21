@@ -12,14 +12,7 @@ var cfg = {
     defaultRedirectUrl:   '/',
     oauth: {
       appKey:             'apcom',
-      callbackHost:       'http://localhost:3333',
-      github: {
-        emails: {
-          hostname:         'api.github.com',
-          path:             '/user/emails',
-          headers:          { 'User-Agent': 'airpair.com' }
-        }
-      }
+      callbackHost:       'http://localhost:3333'
     },
     masterpass:           'youshallpass',
     local: {
@@ -31,15 +24,17 @@ var cfg = {
       resetSalt:          '$2a$08$Qn0unnOa4XH0pN.IRZHB4u'
     },
     github: {
-      short: 'gh',
-      login: true,
-      signup: true,
-      clientID: '378dac2743563e96c747',
-      clientSecret: 'f52d233259426f769850a13c95bfc3dbe7e3dbf2',
-      adminAccessToken: 'b9d09cce1129b4ee1f4b97cc44c3b753cb9d8795', //jkyahoo
-      org: 'JustASimpleTestOrg',
-      scope: [ 'user' ]                                             },
-      //, 'public_repo'
+      short:              'gh',
+      login:              true,
+      signup:             true,
+      clientID:           '378dac2743563e96c747',
+      clientSecret:       'f52d233259426f769850a13c95bfc3dbe7e3dbf2',
+      emails:             true,
+      userAgent:          'airpair.com',
+      scope:              [ 'user' ],    //, 'public_repo'
+      adminAccessToken:   'b9d09cce1129b4ee1f4b97cc44c3b753cb9d8795', //jkyahoo
+      org:                'JustASimpleTestOrg',
+    },
     google: {
       short: 'gp',
       login: true,
