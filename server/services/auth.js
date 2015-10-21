@@ -255,7 +255,7 @@ function oauthLogin(provider, profile, {token,refresh}, done) {
 
 function link(provider, profile, {token,refresh}, done) {
   if (provider == 'github' && !profile.emails)
-    return Wrappers.GitHub.getEmails(token, (e,emails) =>
+    return Wrappers.GitHub.getEmails(token, (e,emails) => e ? done(e) :
       link.call(this, 'github', _.extend({emails},profile), {token,refresh}, done) )
 
   var {user} = this
