@@ -9,7 +9,6 @@ requests = ->
   IT 'Pipeliner can reply to a new request', ->
     data = type: 'other', tags: [FIXTURE.tags.node]
     STORY.newRequest 'hubr', {forAdmin,data}, (r) ->
-      $log('GOTREQUEST'.yellow, r)
       msg = type: 'received', subject: "test subject", markdown: "test body"
       PUT "/adm/requests/#{r._id}/message", msg, (r1) ->
         adm1 = r1.adm

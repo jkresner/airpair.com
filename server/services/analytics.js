@@ -99,11 +99,11 @@ var impressionSvc = {
 
 
 function $$log(action, data, user, sessionID, ctx) {
-  //-- TODO think about adding persistence
-  var uid = (user) ? user.name.gray || user._id.toString().gray
-    : `${sessionID.substring(0,12)}${(ctx&&ctx.ip)?ctx.ip.replace(':ffff',''):''}`.cyan
 
-  uid = uid+"                                     ".substring(0,37-uid.length)
+  var uid = user ? user.name.gray || user._id.toString().gray
+    : `${(ctx&&ctx.ip)?ctx.ip.replace(':ffff','').split(',')[0]:''}\t ${sessionID.substring(0,12)}`.cyan
+
+  uid = uid+"                                     ".substring(0,37-uid.length)+' '
 
   var ref = ((data.ref) ? (` <<< `.cyan+`${data.ref}`.replace(/\/+$/, '').blue) : '')
     .replace('https://','').replace('http://','').replace('www.','');
@@ -125,7 +125,7 @@ function $$log(action, data, user, sessionID, ctx) {
       $log(uid, `REQUEST > ${data.action}`, `http://adm.airpa.ir/r/${data._id}`.white)
       break
     case 'ORDER':
-      $log(uid, `ORDER  > $${data.total}`, `http://adm.airpa.ir/o/${data._id}`.white)
+      $log(uid, `ORDER   > $${data.total}`, `http://adm.airpa.ir/o/${data._id}`.white)
       break
     case 'PAYMENT':
       $log(uid, `PAYMENT > $${data.total}`, `http://adm.airpa.ir/o/${data.orderId}`.white)

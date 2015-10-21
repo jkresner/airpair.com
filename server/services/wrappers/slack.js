@@ -18,7 +18,17 @@ var clientCall = (user, method, data, cbProp, select, cb) => {
       else
         r = util.selectFromObject(r, select)
     }
-    if (logging) $log(`slack[${method}].result`.wrappercall, (r && r.length) ? r.length : 1, (r && r.length) ? r[0] : r)
+    if (logging) {
+      var logMethod = `slack.api[${method}]`.green
+      if (method == 'users.list') $log(logMethod, r.length)
+      else if (method == 'chat.postMessage') $log(logMethod, r.text)
+      else if (method == 'groups.info') $log(logMethod, r.purpose.value, r.members)
+      else if (method == 'groups.history') $log(logMethod.green, r.length)
+      else if (method == 'groups.rename') $log(logMethod.green, r.id, r.name)
+      else if (method == 'groups.setPurpose') $log(logMethod.green, r.purpose)
+      else
+        $log(`slack[${method}].result`.green, (r && r.length) ? r.length : 1, (r && r.length) ? r[0] : r)
+    }
     cb(null, r)
   })
 }

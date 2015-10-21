@@ -122,7 +122,7 @@ function saveWithTouch(original, ups, action, trackData, done) {
       moment(original.lastTouch.utc).isBefore(moment().add(1, 'hours')))
     {
       ups.lastTouch = lastTouch
-      ups.activity = original.activity
+      ups.activity = original.activity || []
 
       if (_.idsEqual(this.user._id,original.userId))  // Don't want activity for admins
         ups.activity.push(lastTouch)

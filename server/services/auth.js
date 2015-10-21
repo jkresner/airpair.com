@@ -197,7 +197,7 @@ function oauthLogin(provider, profile, {token,refresh}, done) {
   if (!config.auth[provider] || config.auth[provider].login !== true)
     return done(Error(`AUTH.Login with ${provider} not supported`))
 
-  $log(`AUTH.oathLogin.${provider}`.yellow, profile.displayName||profile.name)
+  $log(`AUTH.oathLogin.${provider}`.yellow, profile.displayName||profile.name||profile.id)
 
   var {short} = config.auth[provider]
   var existsQuery = query.existing[short](profile)
@@ -217,19 +217,24 @@ function oauthLogin(provider, profile, {token,refresh}, done) {
 
     var _odata = odata[short](profile, existing)
     var {name,email,emailVerified,emails,photos} = _odata
-    profile = _odata.profile
-
-
 
     if (!email) {
       e = `Login failed. ${provider}.oauth profile has no verified email.`
+      if (provider == 'github') e += `<p><a href="https://github.com/settings/emails" target="_blank">Verify an email</a> then try again.</p>`
     }
     if (!name) {
       e = `Login failed. Name required on ${provider} profile.`
       if (provider == 'github') e += `<p><a href="https://github.com/settings/profile" target="_blank">Add your name</a> then try again.</p>`
     }
 
-    if (e) return done(Error(e))
+    if (e) {
+      var logProfile = _.omit(profile,'email','url','total_private_repos','following_url','followers_url','private_gists','public_gists','gists_url','starred_url','subscriptions_url','events_url','received_events_url','html_url','organizations_url','repos_url','owned_private_repos','type','site_admin','plan','disk_usage','collaborators','hireable','following','company','blog','bio')
+      for (var attr in logProfile) { if (!logProfile[attr]) delete logProfile[attr] }
+      $log(`AUTH.Login.${provider} invalid`.yellow, logProfile)
+      return done(Error(e))
+    }
+
+    profile = _odata.profile
 
     if (existing.length == 1)
     {
