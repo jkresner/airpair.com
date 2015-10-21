@@ -59,6 +59,18 @@ var wrap = (fn, fnName) => {
 
 
 
+function getEmails(token, cb) {
+  var get = require('https').get
+  var emailsPath = config.auth.oauth.github.emails.path
+  var emailsOpts  = _.omit(config.auth.oauth.github.emails,'path')
+
+  get(_.extend({path:`${emailsPath}?access_token=${token}`},emailsOpts),
+      res => res.on('data', d => cb(null, JSON.parse(d.toString())) )
+ ).on('error', cb)
+}
+
+
+
 function getTeamId(org, teamName, cb)
 {
   //-- TODO, this doesn't page and it NEEDS to
@@ -336,6 +348,7 @@ var gh = {
 }
 
 var wrapper = _.wrapFnList(gh, wrap)
+wrapper.getEmails = getEmails
 wrapper.init = init
 module.exports = wrapper
 
