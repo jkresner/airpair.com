@@ -291,7 +291,7 @@ function passwordReset(email, cb) {
   var anonymous = this.user == null
   User.getManyByQuery(query.existing.byEmails([email]), (e, r) => {
     if (e || !r || r.length == 0) return cb(Error(`No user found with email ${email}`))
-    if (r.length > 1) return done(Error(`Reset fail. Multiple user accounts associated with ${email}. Please contact team@airpair.com to merge your accounts.`))
+    if (r.length > 1) return cb(Error(`Reset fail. Multiple user accounts associated with ${email}. Please contact team@airpair.com to merge your accounts.`))
 
     var user = r[0]
     var hash = calcPasswordChangeHash(email)
