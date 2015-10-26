@@ -1,4 +1,4 @@
-module.exports = ({ Id, Enum, Touch, Reftag, Note, Location },
+module.exports = ({ Id, Enum, Touch, Reftag, Note, Location, Photo },
   { asSchema, required, trim, lowercase, index, unique, sparse }) => {
 
 Enum.USER = {
@@ -17,6 +17,7 @@ var authGithub = {
   blog:                      { type: String, trim, lowercase },
   location:                  { type: String, trim },
   email:                     { type: String, trim },
+  emails:                    { type: {}, required: false },
   hireable:                  { type: Boolean },
   bio:                       { type: String, trim },
   public_repos:              { type: Number },
@@ -41,7 +42,7 @@ var authGoogle = {
   displayName:               { type: String, trim },
   picture:                   { type: String, trim, lowercase },
   gender:                    { type: String, trim, lowercase },
-  emails:                    { type: [] },
+  emails:                    { type: {}, required: false },
   verified:                  { type: Boolean },
   url:                       { type: String, trim, lowercase },
   link:                      { type: String, trim, lowercase },
@@ -82,6 +83,8 @@ return asSchema({
   emailVerified:            { type: Boolean, required, default: false },
 
   emails:                   { type: [email] }, // requied true
+  photos:                   { type: [Photo] },
+
 
   primaryPayMethodId:       { type: Id, ref: 'PayMethod' }, // null indicates user has no payMethod
 
@@ -93,7 +96,6 @@ return asSchema({
   raw: {
     locationData:           { type: {}, required: false } // Used to recalcuate timeZone
   },
-
 
   auth: {                               // Full copies of profile data from oAuth
     password: {
@@ -120,7 +122,7 @@ return asSchema({
     firstRequest:            { type: {}, required: false }  // used to target users arriving from specific campains
   },
 
-  roles:                   { type: [String], required: false },
+  roles:                     { type: [String], required: false },
 
   legacy: {                  required:false, type: {
     siteNotifications:       { type: [], required: false },

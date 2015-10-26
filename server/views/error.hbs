@@ -16,10 +16,35 @@
   <main>
     <header>Error</header>
 
+    {{#if error.accountMergeError}}
+    <section style="max-width:620px">
+      <h2>Duplicate accounts found</h2>
+
+      <p>{{{ error.message }}}</p>
+
+      <h3>To merge</h3>
+
+      <p>Email <b>team@airpair.com</b> with the subject <code>Account merge</code> and in your email
+      let us know which address you would like as your account's primary email.
+      </p>
+
+      <p>We'll then run a quick script that crawls all the data / history related to your duplicate accounts and
+      merges everything together. Once done, we'll reply to let you know you're good to go.
+      </p>
+
+      <p>Thanks for your patience!</p>
+
+      <p>
+        Jonathon Kresner
+        <br />AirPair CEO
+      </p>
+    </section>
+    {{else}}
+
     <section class="errorpage">
       <h3>{{{ error.message }}}</h3>
-
     </section>
+    {{/if}}
 
   </main>
 </div>

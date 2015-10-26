@@ -46,11 +46,7 @@ var select = {
     'name': 1,
     'initials': 1
   },
-  search: '_id email name initials username bio auth.gp',
-  // siteNotifications: {
-  //   '_id': 0,
-  //   'siteNotifications': 1
-  // }
+  search: '_id email name initials username bio auth.gp'
 }
 
 var data = {
@@ -62,7 +58,7 @@ var data = {
     search: select.search,
 
     analyticsSignup(user, sessionID, session) {
-      return {name:user.name,sessionID}
+      return {_id:user._id,name:user.name,sessionID}
     },
 
     analyticsLogin(user, sessionID, session) {
@@ -212,26 +208,32 @@ var data = {
 
   query: {
     existing: {
-      byEmail(email) {
-        email = email.toLowerCase()
+      byEmails(emails) {
+        emails = emails.map(em => em.toLowerCase())
         return { '$or': [
-          { 'email' : email },
-          { 'emails.value' : email },
-          { 'auth.gp.email' : email },
-          { 'auth.gh.email' : email },
-          { 'auth.gh.emails.email' : email }
+          { 'email' : { $in: emails } },
+          { 'emails.value' : { $in: emails } },
+          { 'auth.gp.emails.value' : { $in: emails } },
+          { 'auth.gp.email' : { $in: emails } },
+          { 'auth.gh.email' : { $in: emails } },
+          { 'auth.gh.emails.email' : { $in: emails } },
         ]}
       },
       gp(profile) {
-        var {email,id} = profile
-        if (!email) email = profile.emails[0].value
-        var q = data.query.existing.byEmail(email.toLowerCase())
+        var emails = _.pluck(profile.emails||[], 'value')
+        if (emails.length == 0) {
+          if (!profile.email) throw Error("Google profile has no email")
+          else emails = [profile.email.toLowerCase()]
+        }
+        var q = data.query.existing.byEmails(emails)
         q['$or'].push({'auth.gp.id':profile.id})
         return q
       },
-      gh(emails) {
-        email = email.toLowerCase()
-        return { '$or': [{email:{$in:emails}},{'auth.gh.email':{$in:emails}}] }
+      gh(profile) {
+        var emails = _.pluck(profile.emails, 'email')
+        var q = data.query.existing.byEmails(emails)
+        q['$or'].push({'auth.gh.id':profile.id})
+        return q
       }
     }
   },

@@ -31,17 +31,17 @@ var inflateHtml = function(isAnon, cb) {
     var supped = PostsUtil.extractSupReferences(r.md)
     r.references = PostsUtil.markupReferences(supped.references, marked)
     if (isAnon) {
-      // marked.setOptions({highlight: function(code, lang) {
-      //   var maxLines = 0
-      //   var obs = ""
-      //   for (var line of code.split('\n')) {
-      //     if (++maxLines < 4)
-      //       obs += '\n' + line.replace(/(\S\S)(\S\S)/g,'$1{}{}')
-      //   }
-      //   return obs.replace('\n','') // trim first \n
-      // }})
+      marked.setOptions({highlight: function(code, lang) {
+        var maxLines = 0
+        var obs = ""
+        for (var line of code.split('\n')) {
+          if (++maxLines < 4)
+            obs += '\n' + line.replace(/(\S\S)(\S\S)/g,'$1{}{}')
+        }
+        return obs.replace('\n','') // trim first \n
+      }})
       r.html = marked(supped.markdown)
-      // marked.setOptions({highlight:null})
+      marked.setOptions({highlight:null})
     }
     else
       r.html = marked(supped.markdown)

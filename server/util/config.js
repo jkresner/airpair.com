@@ -12,7 +12,8 @@ var cfg = {
     defaultRedirectUrl:   '/',
     oauth: {
       appKey:             'apcom',
-      callbackHost:       'http://localhost:3333' },
+      callbackHost:       'http://localhost:3333'
+    },
     masterpass:           'youshallpass',
     local: {
       passReqToCallback:  true,
@@ -22,10 +23,22 @@ var cfg = {
     password: {
       resetSalt:          '$2a$08$Qn0unnOa4XH0pN.IRZHB4u'
     },
+    github: {
+      short:              'gh',
+      login:              true,
+      signup:             true,
+      clientID:           '378dac2743563e96c747',
+      clientSecret:       'f52d233259426f769850a13c95bfc3dbe7e3dbf2',
+      emails:             true,
+      userAgent:          'airpair.com',
+      scope:              [ 'user' ],    //, 'public_repo'
+      adminAccessToken:   'b9d09cce1129b4ee1f4b97cc44c3b753cb9d8795', //jkyahoo
+      org:                'JustASimpleTestOrg',
+    },
     google: {
+      short: 'gp',
       login: true,
       signup: true,
-      short: 'gp',
       clientID: '1019727294613-rjf83l9dl3rqb5courtokvdadaj2dlk5.apps.googleusercontent.com',
       clientSecret: 'Kd6ceFORVbABH7p5UbKURexZ',
       scope: [ 'profile', 'email',
@@ -34,14 +47,6 @@ var cfg = {
       short: 'tw',
       consumerKey: 'Tfw8PWs5LcxqrWlFJWUhXf8i8',
       consumerSecret: 'yoA38VC94a2gcxJ7ewCyNn8nPu7bHVVVMTauZTanlvkgXBWNOE' },
-    github: {
-      short: 'gh',
-      clientID: '378dac2743563e96c747',
-      clientSecret: 'f52d233259426f769850a13c95bfc3dbe7e3dbf2',
-      adminAccessToken: 'b9d09cce1129b4ee1f4b97cc44c3b753cb9d8795', //jkyahoo
-      org: 'JustASimpleTestOrg',
-      scope: [ 'user' ]                                             },
-      //, 'public_repo'
     paypal: {
       mode: 'sandbox',
       clientID: 'AVk7JRBmL3kzKnxrLC8Ze98l2rg__gK1PhASloHmd0wsDvsvkSJd_QnWx3xE',
@@ -60,7 +65,9 @@ var cfg = {
       short: 'so',
       clientID: '1451',
       clientSecret: 'CCkJpq3BY3e)lZFNsgkCkA((',
-      key: 'dTtlx1WL0TJvOKPfoU88yg(('                                      },
+      key: 'dTtlx1WL0TJvOKPfoU88yg((',
+      scope: []
+    },
     angellist: {
       short: 'al',
       clientID: 'b6e2b75a1e20367c9b2bd267dbbd06269193814b83c2a492',
