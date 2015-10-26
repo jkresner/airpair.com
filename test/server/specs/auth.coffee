@@ -92,7 +92,7 @@ signup = ->
               DONE()
 
   IT 'Cannot sign up with local credentials and existing gmail', ->
-    DB.removeDocs 'User', qExists.byEmail("experts@airpair.com"), ->
+    DB.removeDocs 'User', qExists.byEmails(["experts@airpair.com"]), ->
       d = name: "AirPair Experts", email: "experts@airpair.com", password: "Yoyoyoyoy"
       DB.ensureDoc 'User', FIXTURE.users.apexperts, ->
         SUBMIT '/auth/signup', d, {status:400, contentType: /json/ }, (err) ->
@@ -109,8 +109,29 @@ signup = ->
           DONE()
 
 
-  it 'github login links to accounts with email matching any other provider', ->
-  it 'github login saves all emails to user record', ->
+  it 'Fail gracefully to signup with github when user does not grant permission', ->
+  # IT 'Fail gracefully to signup with github when user does not grant permission', ->
+    # DB.removeDocs 'User', { 'auth.gh.id': FIXTURE.oauth.github_ludofleury.id }, ->
+    #   profile = FIXTURE.oauth.github_ludofleury._json
+    #   token = 'ludofleury_token'
+    #   AuthService.link.call SETUP.userSession(), 'github', profile, {token}, (e,usr) ->
+    #     expect(e).to.be.null
+    #     FIXTURE.users.ludofleury = usr
+    #     LOGIN {key:'ludofleury'}, (s0) ->
+    #       GET '/session/full', (s) ->
+    #         expect(s._id).to.equal(usr._id.toString())
+    #         expect(s.email).to.equal(usr.email)
+    #         expect(s.name).to.equal(usr.name)
+    #         expect(s.cohort.engagement).to.exist
+    #         expectAttr(s.auth.gh,'username')
+    #         # expectAttrUndefined(s.auth.gp,'id')
+    #         DB.docById 'User', s._id, (u) ->
+    #           expectIdsEqual(s._id, u._id)
+    #           expectAttr(u.auth.gh, 'id', Number)
+    #           expectAttr(u.auth.gh, 'emails', Array)
+    #           expect(u.auth.gh.tokens[config.auth.oauth.appKey].token).to.equal('ludofleury_token')
+    #           DONE()
+
 
   IT 'New user has correct cohort information', ->
     SETUP.analytics.on()
@@ -133,6 +154,7 @@ signup = ->
     ANONSESSION (r) ->
       PAGE '/', {}, ->
         SUBMIT '/auth/signup', d, {}, (newUser) ->
+          expect(newUser._id).to.exist
           setTimeout checkCohort(ObjectId(newUser._id)), 150
 
 
@@ -141,16 +163,20 @@ login = ->
   before () -> SETUP.analytics.on()
   after () -> SETUP.analytics.off()
 
+  it 'github login links to accounts with email matching any other provider', ->
+  it 'github login saves all emails to user record', ->
 
   IT 'Can signup with local credentials then login with google of same email', ->
     signup = email: 'airpairone001@gmail.com', name: 'AIr One', password: 'pass2'
     DB.removeDocs 'User', { email:'airpairone001@gmail.com'}, ->
+      $log('signup'.white, signup)
       SUBMIT '/auth/signup', signup, {}, (s) ->
         expect(s._id).to.exist
         expect(s.email).to.equal('airpairone001@gmail.com')
         LOGOUT ->
           profile = FIXTURE.oauth.google_aone._json
           token = 'aone_token'
+          $log('try oauth'.white, profile)
           AuthService.link.call SETUP.userSession(), 'google', profile, {token}, (e, r) ->
             expect(e).to.be.null
             expect(r._id).to.exist
@@ -163,7 +189,7 @@ login = ->
 
   IT 'Signup with google in one app and log back in with google in another', ->
     {ape1} = FIXTURE.users
-    DB.removeDocs 'User', qExists.byEmail('airpairtest1@gmail.com'), ->
+    DB.removeDocs 'User', qExists.byEmails(['airpairtest1@gmail.com']), ->
       DB.ensureDoc 'User', ape1, ->
         profile = ape1.auth.gp
         token = 'ape1_gp_test_token'
@@ -358,6 +384,7 @@ password = ->
 link = ->
 
   IT 'Link github with local user / password', ->
+    STUB.cb(Wrappers.GitHub, 'getEmails', [{email:'jk@gmail.com',verified:true},{email:'jk@airpair.com',primary:true,verified:true}])
     STORY.newUser 'jkjk', (s) ->
       profile = FIXTURE.oauth.github_jk._json
       profile.id += parseInt(profile.id+timeSeed())
@@ -401,7 +428,7 @@ module.exports = ->
     SETUP.analytics.off()
 
 
-  describe "OLD", ->
+  describe.only "OLD", ->
     DESCRIBE("Signup", signup)
     DESCRIBE("Login", login)
     DESCRIBE("Password: ", password)

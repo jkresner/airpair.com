@@ -25,14 +25,14 @@ connect: Router()
   .post('/signup', mw.localAuth(passport, 'signup', (req, email, password, done) =>
     AuthSvc.localSignup.call(req, email, password, req.body.name, done)))
 
-  .get('/github/callback', MW.oauth('github'))
+  .get('/github/callback', MW.oauth('github', require('./passport-github')))
   .get('/google/callback', MW.oauth('google', require('passport-google-oauth').OAuth2Strategy))
   .get('/twitter/callback', mw.authd, MW.oauth('twitter'))
   .get('/bitbucket/callback', mw.authd, MW.oauth('bitbucket'))
   .get('/linkedin/callback', mw.authd, MW.oauth('linkedin'))
   .get('/angellist/callback', mw.authd, MW.oauth('angellist'))
   .get('/slack/callback', mw.authd, MW.oauth('slack', require('./passport-slack')))
-  // .get('/stackexchange/callback', mw.authd, MW.oauth('stackexchange', require('./passport-stackexchange')))
+  .get('/stackexchange/callback', mw.authd, MW.oauth('stackexchange', require('./passport-so')))
   .post('/password-reset', (req, res, next) => {
     var validation = require("../../shared/validation/users")
     var inValid = validation.requestPasswordChange(req.user, req.body.email)

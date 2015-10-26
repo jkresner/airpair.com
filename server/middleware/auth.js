@@ -53,9 +53,14 @@ var middleware = {
 
   showAuthdPageViews() {
     return function(req, res, next) {
+
       if (req.isAuthenticated()) {
+        var ref = req.header('Referer')
+        var refStr = (ref ? (` <<< `.cyan+`${ref}`.replace(/\/+$/, '').blue) : '')
+          .replace('https://','').replace('http://','').replace('www.','')
+
         if (req.originalUrl.indexOf('/api') == -1)
-          $log(req.user.name.white+`\t\t${req.originalUrl}`.cyan)
+          $log(req.user.name.gray+`\t\t${req.originalUrl}`.cyan, refStr)
       }
       next()
     }

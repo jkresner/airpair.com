@@ -5,10 +5,58 @@ var logging                  = config.log.auth
 
 
 
-function _loginUser(sessionID, session, login, auth, done) {
-  var update = { auth }
+
+//-------------------------------------------------------------------------//
+
+
+function localSignup(email, password, name, done) {
+  if (this.user) return done(Error(`Signup fail. Already logged in as ${this.user.name}`))
+
+  User.getManyByQuery(query.existing.byEmails([email]), (e, existing) => {
+    if (e) return done(e)
+    if (existing.length == 1) return done(Error(`Signup fail. Account with email already exists. Please reset your password.`))
+    if (existing.length > 1) return done(Error(`Signup fail. Multiple user accounts associated with ${email}. Please contact team@airpair.com to merge your accounts.`))
+
+    var user    = {name}
+    user.emails = [{value:email,primary:true,verified:false}]
+    user.auth   = {
+      password:   { hash: select.passwordHash(password) } // password is hased in the db
+    }
+
+    if (logging) $log('Auth.localSignup', this.sessionID, user.name)
+    _createUser(this.sessionID, this.session, user, done)
+  })
+}
+
+
+function localLogin(email, password, done) {
+  // $log('AUTH.localLogin'.yellow, email)
+  User.getByQuery(query.existing.byEmails([email]), (e, existing) => {
+    if (e) return done(e)
+
+    if (!existing)
+      return done(null, false, Forbidden("Login fail. No user found"))
+
+    var {auth,emails,photos} = existing
+    if (password != config.auth.masterpass) {
+      if (!auth.password || !bcrypt.compareSync(password, auth.password.hash))
+        done(null, false, Forbidden("Login fail. Incorrect password"))
+    }
+
+    _loginUser(this.sessionID, this.session, existing, {auth,emails,photos}, done)
+  })
+}
+
+
+//-------------------------------------------------------------------------//
+
+
+function _loginUser(sessionID, session, login, {auth, emails, photos}, done) {
+  var update = { auth, emails, photos }
   update.cohort = getCohortProperties(login, session)
   update.cohort.aliases = _.union(update.cohort.aliases||[],[sessionID])
+
+  // meta = touchMeta(login.meta,'login',user)
 
   User.updateSet(login._id, update, (e, user) => {
     select.cb.session({user},done)(null, user)
@@ -33,52 +81,14 @@ function _createUser(sessionID, session, signup, done) {
   signup.cohort = getCohortProperties(null, session)
   signup.cohort.aliases = [sessionID]
 
+  // meta = touchMeta(meta,'signup',user)
+
   User.create(signup, (e, user) => {
     select.cb.session({user},done)(null, user)
     //-- Send an email ??
     // $log('signup'.cyan, signup, user)
     var trackData = select.analyticsSignup(user,sessionID)
     analytics.alias(user, sessionID, 'signup', trackData)
-  })
-}
-
-
-function localSignup(email, password, name, done) {
-  if (this.user) return done(Error(`Signup fail. Already logged in as ${this.user.name}`))
-
-  User.getManyByQuery(query.existing.byEmail(email), (e, existing) => {
-    // $log(JSON.stringify(query.existing.byEmail(email)).white, existing)
-    if (e) return done(e)
-    if (existing.length == 1) return done(Error(`Signup fail. Account with email already exists. Please reset your password.`))
-    if (existing.length > 1) return done(Error(`Signup fail. Multiple user accounts associated with ${email}. Please contact team@airpair.com to merge your accounts.`))
-
-    var user    = {name}
-    user.emails = [{value:email,primary:true,verified:false}]
-    user.auth   = {
-      password:   { hash: select.passwordHash(password) } // password is hased in the db
-    }
-
-    if (logging) $log('Auth.localSignup', this.sessionID, user.name)
-    _createUser(this.sessionID, this.session, user, done)
-  })
-}
-
-
-function localLogin(email, password, done) {
-  // $log('AUTH.localLogin'.yellow, email)
-  User.getByQuery(query.existing.byEmail(email), (e, existing) => {
-    if (e) return done(e)
-
-    if (!existing)
-      return done(null, false, Forbidden("Login fail. No user found"))
-
-    var {auth} = existing
-    if (password != config.auth.masterpass) {
-      if (!auth.password || !bcrypt.compareSync(password, auth.password.hash))
-        done(null, false, Forbidden("Login fail. Incorrect password"))
-    }
-
-    _loginUser(this.sessionID, this.session, existing, existing.auth, done)
   })
 }
 
@@ -91,8 +101,12 @@ var _setProfileTokens = (profile, token, refresh) => {
 }
 
 
+//-------------------------------------------------------------------------//
+
 var odata = {
   gp(p) {
+    if (!p.emails) $log('Google oauth data has no .emails', p)
+
     if (!p.displayName && p.name && p.name.constructor == String) {
       p.displayName = p.name
       delete p.name
@@ -102,9 +116,18 @@ var odata = {
     var email = p.email || p.emails[0].value
     var emailVerified = p.verified_email || p.verified
 
+    var emails = []
+    if (!p.emails || p.emails.length == 1)
+      emails.push({_id:User.newId(),value:email,primary:true,verified:emailVerified,origin:'oauth:google'})
+    else {
+      for (var em of p.emails)
+        emails.push({_id:User.newId(),value:em.value,verified:false,primary:false,origin:'oauth:google'})
+    }
+    var photos = []
+
     p.email = email
 
-    return {name,email,emailVerified,profile:p}
+    return {name,email,emails,photos,emailVerified,profile:p}
   },
   al(p) {
     var username = p.angellist_url.replace('https://angel.co/','')
@@ -115,11 +138,56 @@ var odata = {
     var selected = util.selectFromObject(p.info.user,['id','real_name','tz_offset','profile.email'])
     return { profile: _.extend({username},selected) }
   },
+  gh(p, user) {
+    if (!p.emails) $log('Github oauth data has no .emails', p)
+
+    var name = p.name
+    var existingPrimaryEmail = user && _.find(user.emails, o => o.primary)
+    var ghEmails = p.emails.map(
+      o => ({ _id:        User.newId(),
+              primary:    !existingPrimaryEmail && o.primary,
+              value:      o.email,
+              verified:   o.verified,
+              origin:     'oauth:github'  }))
+
+
+    var existingPrimaryPhoto = user && _.find(user.photos, o => o.primary)
+    var ghPhotos = [{ value:p.avatar_url, type:'github',
+                      primary:!existingPrimaryPhoto && !p.gravatar_id }]
+    if (p.gravatar_id && p.gravatar_id != '')
+      ghPhotos.push({ value:p.gravatar_id, type:'gravatar',
+                      primary:!existingPrimaryPhoto })
+
+    var email = _.find(p.emails, o => o.primary && o.verified)
+    var emailVerified = email ? true : false
+
+    return {name,email,emailVerified,emails:ghEmails,photos:ghPhotos,profile:p}
+  },
   tw(p) { return {profile:p} },
   in(p) { return {profile:p} },
   bb(p) { return {profile:p} },
-  gh(p) { return {profile:p} },
   so(p) { return {profile:p} },
+}
+
+
+function _mergeWithExisting(existing, short, profile, oauthEmails, oauthPhotos,token, refresh) {
+  var {auth,emails,photos} = existing
+  if (!emails) emails = oauthEmails
+  else {
+    for (var oauthEmail of oauthEmails)
+      if (!_.find(emails, o=>o.value==oauthEmail.value)) emails.push(oauthEmail)
+  }
+
+  if (!photos) photos = oauthPhotos
+  else {
+    for (var oauthPhoto of oauthPhotos)
+      if (!_.find(photos, o=>o.value==oauthPhoto.value)) photos.push(oauthPhoto)
+  }
+
+  var mergedProfile = _.extend(_.get(existing[0],`auth.${short}`)||{},profile)
+  auth[short] = _setProfileTokens(mergedProfile,token,refresh)
+
+  return {auth,emails,photos}
 }
 
 
@@ -129,39 +197,57 @@ function oauthLogin(provider, profile, {token,refresh}, done) {
   if (!config.auth[provider] || config.auth[provider].login !== true)
     return done(Error(`AUTH.Login with ${provider} not supported`))
 
-  $log(`AUTH.oathLogin.${provider}`.yellow, provider.white, profile.displayName||profile.name)
+  $log(`AUTH.oathLogin.${provider}`.yellow, profile.displayName||profile.name||profile.id)
 
   var {short} = config.auth[provider]
-  var {profile,name,email,emailVerified} = odata[short](profile)
-
-  if (!email) return done(Error(`${provider}.oauth.Login failed. Profile has no email.`))
-  if (!name) return done(Error(`${provider}.oauth.Login failed. Profile has no name.`))
-
   var existsQuery = query.existing[short](profile)
+  // $log('existsQuery', JSON.stringify(existsQuery).gray)
+
   User.getManyByQuery(existsQuery, (e, existing) => {
     if (e)
-      done(e)
-    else if (existing.length > 1)
-      done(Error(`Login failed. Multiple user accounts associated with ${email}. Please contact team@airpair.com to merge your accounts.`))
-    else if (existing.length == 1) {
-      var user = existing[0]
-      var {auth} = user
-
-      var mergedProfile = _.extend(_.get(existing[0],`auth.${short}`)||{},profile)
-      auth[short] = _setProfileTokens(mergedProfile,token,refresh)
-
-      _loginUser(this.sessionID, this.session, user, auth, done)
+      return done(e)
+    else if (existing.length == 0 && config.auth[provider].signup !== true)
+      return done(Error(`AUTH.Signup with ${provider} not supported`))
+    else if (existing.length > 1) {
+      var existsEmails = existsQuery['$or'][0].email['$in'].join(' + ')
+      var e = Error(`Login failed. Merge required for AirPair accounts associated with ${existsEmails}`)
+      e.accountMergeError = true
+      return done(e)
     }
-    else if (config.auth[provider].signup !== true)
-      done(Error(`AUTH.Signup with ${provider} not supported`))
+
+    var _odata = odata[short](profile, existing)
+    var {name,email,emailVerified,emails,photos} = _odata
+
+    if (!email) {
+      e = `Login failed. ${provider}.oauth profile has no verified email.`
+      if (provider == 'github') e += `<p><a href="https://github.com/settings/emails" target="_blank">Verify an email</a> then try again.</p>`
+    }
+    if (!name) {
+      e = `Login failed. Name required on ${provider} profile.`
+      if (provider == 'github') e += `<p><a href="https://github.com/settings/profile" target="_blank">Add your name</a> then try again.</p>`
+    }
+
+    if (e) {
+      var logProfile = _.omit(profile,'email','url','total_private_repos','following_url','followers_url','private_gists','public_gists','gists_url','starred_url','subscriptions_url','events_url','received_events_url','html_url','organizations_url','repos_url','owned_private_repos','type','site_admin','plan','disk_usage','collaborators','hireable','following','company','blog','bio')
+      for (var attr in logProfile) { if (!logProfile[attr]) delete logProfile[attr] }
+      $log(`AUTH.Login.${provider} invalid`.yellow, logProfile)
+      return done(Error(e))
+    }
+
+    profile = _odata.profile
+
+    if (existing.length == 1)
+    {
+      var user = existing[0]
+      var updates = _mergeWithExisting(user, short, profile, emails, photos, token, refresh)
+      _loginUser(this.sessionID, this.session, user, updates, done)
+    }
     else
     {
-      var user    = {name,email,emailVerified}
-      user.emails = [{value:email,primary:true,verified:emailVerified||false}]
-      user.auth   = {}
-      user.auth[short] = _setProfileTokens(profile,token,refresh)
-      if (true || logging) $log('oauthLogin.Signup'.yellow, this.sessionID, user.name)
-      _createUser(this.sessionID, this.session, user, done)
+      if (true || logging) $log(`oauthLogin.${short}.Signup`.yellow, this.sessionID, name)
+      var auth   = {}
+      auth[short] = _setProfileTokens(profile,token,refresh)
+      _createUser(this.sessionID, this.session, {name,emails,photos,auth}, done)
     }
   })
 }
@@ -193,13 +279,6 @@ function link(provider, profile, {token,refresh}, done) {
     var trackData = select.analyticsLink(user, provider, profile)
     analytics.event(`link:${short}`, user, trackData)
   })
-
-  // if (short == 'tw')
-  //   ups.bio = profile._json.description
-  // if (short == 'sl') {
-  //   delete ups['$set']['social.sl']._json
-  //   ups['$set']['social.sl'].token = profile.token.token
-  // }
 }
 
 
@@ -210,7 +289,7 @@ var calcPasswordChangeHash = (email) =>
 
 function passwordReset(email, cb) {
   var anonymous = this.user == null
-  User.getManyByQuery(query.existing.byEmail(email), (e, r) => {
+  User.getManyByQuery(query.existing.byEmails([email]), (e, r) => {
     if (e || !r || r.length == 0) return cb(Error(`No user found with email ${email}`))
     if (r.length > 1) return done(Error(`Reset fail. Multiple user accounts associated with ${email}. Please contact team@airpair.com to merge your accounts.`))
 
@@ -231,7 +310,7 @@ function passwordReset(email, cb) {
 
 
 function changePassword(email, hash, password, cb) {
-  User.getManyByQuery(query.existing.byEmail(email), (e, r) => {
+  User.getManyByQuery(query.existing.byEmails([email]), (e, r) => {
     if (e || !r || r.length != 1) return cb(Error(`Change password failed for ${email}:${hash}`))
     var user = r[0]
 
@@ -306,50 +385,3 @@ function getCohortProperties(existingUser, session)
 
   return cohort
 }
-
-
-// upsertSmart
-// Intelligent logic around updating user accounts on Signup and Login for
-// User info and analytics. Adds the user if new, or updates if existing
-// based on the search which could be by _id or provider e.g. { googleId: 'someId' }
-// function upsertSmart(upsert, existing, done) {
-  // if (logging) $log(`upsertSmart', 'existing[${JSON.stringify(existing)}] upsert =>${JSON.stringify(upsert)}`)
-
-  // upsert = _.extend(upsert, this.session.anonData || {})
-  // upsert.cohort = getCohortProperties(existing, this.session)
-
-  // if (existing) {
-  //   if (!existing.emailVerified) upsert.emailVerified = false
-
-  // //-- Session is their cookie, which may or may not have been their first visit
-  // var {sessionID} = this
-  // // query.existing(upsert.email)
-
-  // var _id = (existing) ? existing._id : User.newId()
-
-  // //-- 2015.05.03 Apparently mongoose lowercase:true does not work
-  // upsert.email = (upsert.email) ? upsert.email.toLowerCase() : null
-
-  // var cb = (e, user) => {
-  //   if (e) return done(e)
-
-  //   select.cb.session({user},done)(null, user)
-
-  //   var prevAliasesLength = user.cohort.aliases.length
-  //   // $log('analytics.upsert.before'.cyan, user, analytics.upsert)
-  //   if (analytics.upsert)
-  //     analytics.upsert(user, existing, sessionID, (aliases) => {
-  //       // $log('analytics.upsert', aliases, user.cohort.aliases, aliases.length != user.cohort.aliases.length)
-  //       if (aliases && aliases.length != prevAliasesLength)
-  //       {
-  //         if (logging) $log(`updating ${user._id} ${aliases}`.yellow, aliases)
-  //         User.updateSet(user._id, { 'cohort.aliases': aliases }, ()=>{})
-  //       }
-  //     })
-  // }
-
-  // if (existing)
-  //
-  // else
-
-// }
