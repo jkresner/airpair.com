@@ -43,7 +43,6 @@ var mg = {
     suggested: [
       exp('https://www.airpair.com/adm/experts/52f24f1890df5e0200000083',110,'Evgeny Zislis','evgeny@devops.co.il'),
       exp('https://www.airpair.com/adm/experts/51b0f3a1aa6f420200000008',160,'Greg Osuri','gosuri@gmail.com'),
-      exp('https://www.airpair.com/adm/experts/546ebc2d09c43002002f8122',100,'Dale-Kurt Murray','dalekurt.murray@gmail.com'),
       exp('https://www.airpair.com/adm/experts/5333a0de5ba0eb020000001b',110,'Jeff Kingyens','jeff.kingyens@gmail.com'),
       exp('https://www.airpair.com/adm/experts/54876c0987c8e1020001c6a9',100,'Josh Padnick','josh@phoenixdevops.com'),
     ]
