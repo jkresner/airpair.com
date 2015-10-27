@@ -39,7 +39,7 @@
       <option value="12">Dec</option>
     </select>
 
-    <input form-control name="expirationYear" id="cardExpirationYear" data-braintree-name="expirationYear" ng-model="card.expirationYear" type="number" placeholder="Year" required tabindex="1204" min="2016" max="2022">
+    <input form-control name="expirationYear" id="cardExpirationYear" data-braintree-name="expirationYear" ng-model="card.expirationYear" type="number" placeholder="Year" required tabindex="1204" min="2015" max="2022">
 
     <div class="error" ng-if="formGroup.showError(cardinfoForm.expirationMonth)" ng-messages="cardinfoForm.expirationMonth.$error">
       <div ng-message="required">Month required</div>
