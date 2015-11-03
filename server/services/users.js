@@ -335,20 +335,5 @@ var save = {
 }
 
 
-// function callAuthSvcFn(thisCtx, fnName, args) {
-//   var cb = args[args.length-1]
-//   args = [].slice.call(args)
-//   var cbSessioned = cbSession(thisCtx,cb)
-//   args.push(cbSessioned)
-//   UserAuth[fnName].apply(thisCtx, args)
-// }
-
-// var authWraps = {
-//   googleLogin() { callAuthSvcFn(this,'googleLogin',arguments) },
-//   localSignup() { callAuthSvcFn(this,'localSignup',arguments) },
-//   localLogin() { callAuthSvcFn(this,'localLogin',arguments) },
-//   connectProvider() { callAuthSvcFn(this,'connectProvider',arguments) }
-// }
-
 
 module.exports = Object.assign(get,save)

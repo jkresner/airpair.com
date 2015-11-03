@@ -193,7 +193,7 @@ var mergeUserDocs = (e, MERGE, A, B, Overrides, done) => {
   if (either('initials',A,B))            M.initials = resolve.initials(Overrides.initials)
   if (either('bio',A,B))                 M.bio = resolve.bio()
   if (either('location',A,B))            Object.assign(M, resolve.location())
-  if (either('auth',A,B))              M.auth = resolve.auth(Overrides.auth)
+  if (either('auth',A,B))                M.auth = resolve.auth(Overrides.auth)
   if (either('primaryPayMethodId',A,B))  M.primaryPayMethodId = resolve.primaryPayMethodId()
   Object.assign(M, resolve.emails(M.auth))
   M.name = resolve.name(Overrides.name)
@@ -272,7 +272,8 @@ var save = (e, MERGE, done) => {
   ops.push(Requests.updateMany({userId: removed.user._id }, { $set: { userId: merged.user._id }}))
   ops.push(Paymethods.updateMany({userId: removed.user._id }, { $set: { userId: merged.user._id }}))
   ops.push(Payouts.updateMany({userId: removed.user._id }, { $set: { userId: merged.user._id }}))
-  ops.push(Posts.updateMany({'by._id': removed.user._id }, { $set: { 'by._id': merged.user._id }}))
+  // ops.push(Posts.updateMany({'by._id': removed.user._id }, { $set: { 'by._id': merged.user._id }}))
+  ops.push(Posts.updateMany({'by.userId': removed.user._id }, { $set: { 'by._id': merged.user._id, 'by.userId': merged.user._id }}))
   ops.push(Users.remove({ _id: removed.user._id }))
   ops.push(Users.update({ _id: merged.user._id }, merged.user ))
 
