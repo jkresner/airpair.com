@@ -59,42 +59,6 @@
 #  1405.09 536bc2471c67d1a4859d3159         B1 R2
 
 
-
-v1ActiveCustomers =
-#  1508.27 55df1705a1d69b1100773842 P1      O6 B6 R1 r3
-#  1509.03 55e7a1f6d409a1110093d758 P1      O1 B1 R1        chris@threadbase.com
-  chrisbrunk:
-    U: A: '55e7a1f6d409a1110093d758', B: '55df1705a1d69b1100773842'
-    O: linked: { gp: { email:'chris@threadbase.com'} }
-    R: paymethods:2,requests:2,bookings:7,ordered:7,released:3, fn:({merged,removed}) ->
-      expect(merged.user.email).to.equal('chris@threadbase.com')
-# 1504.23 5537ec60079dc61100fd93db P2      O2 B2 R1
-# 1507.01 5592c4bd0ae3231100ce5230       O1
-  larryerickson:
-    U: A: '55e7a1f6d409a1110093d758', B: '55df1705a1d69b1100773842'
-    O: linked: { gp: { email:'chris@threadbase.com'} }
-    R: paymethods:2,requests:2,bookings:7,ordered:7,released:3, fn:({merged,removed}) ->
-      expect(merged.user.email).to.equal('chris@threadbase.com')
-
-
-
-
-
-# {
-#   "_id": "5592c4bd0ae3231100ce5230",
-#   "email": "lerickson@etechsystems.com",
-#   "name": "Larry Erickson",
-#   "initials": "LGE"
-# }
-
-# {
-#   "_id": "5537ec60079dc61100fd93db",
-#   "email": "larry.erickson@gmail.com",
-#   "name": "Larry Erickson",
-#   "initials": "LGE",
-#   "avatar": "//0.gravatar.com/avatar/157d677b2449cbca671d98097b54f88a"
-# }
-
 module.exports = {
   # authors,
   # singleProfileExperts,

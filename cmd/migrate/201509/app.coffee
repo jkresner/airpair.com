@@ -10,7 +10,7 @@ module.exports =
 
     global.fields =
       user:
-        known: ['_id','cohort','name','email','emailVerified','legacy','primaryPayMethodId','raw','location','auth','username','initials','bio', 'roles']
+        known: ['_id','cohort','name','email','emailVerified','legacy','primaryPayMethodId','raw','location','auth','username','initials','bio','roles','photos','emails']
 
 
     global.q =
@@ -184,7 +184,7 @@ module.exports =
       ops = [
         Users.findOne({'_id':u._id}),
         Paymethods.find({'userId':u._id},{'userId':1}).toArray(),
-        Posts.find({'by._id':u._id},{'by':1}).toArray(),
+        Posts.find($or:[{'by._id':u._id},{'by.userId':u._id}],{'by':1}).toArray(),
         Requests.find({'userId':u._id},{'userId':1}).toArray(),
         Bookings.find({'customerId':u._id},{'customerId':1}).toArray()
         Payouts.find({'userId':u._id},{'userId':1}).toArray()
@@ -204,25 +204,26 @@ module.exports =
     global.uInfoChain = (u) ->
       {posts,expert,suggests,booked,bookings,requests,paymethods,ordered,orders,paidout,released} = UserGraph[u._id]
       if !u.email&&!u.linked then u.email = ' '
-      "\n #{idToMoment(u._id).format('YYMM.DD').gray} #{u._id} " +
-      "#{ (if posts then 'A'+posts else '').yellow }" +
-      "#{ (if paymethods then 'P'+paymethods else '').white }" +
-      "\t" +
-      "#{ (if expert then 'E ' else '').magenta }" +
-      "#{ (if suggests then 'S'+suggests+' ' else '').magenta }" +
-      "#{ (if booked then 'B'+booked else '').magenta } " +
-      "#{ (if ordered then 'O'+ordered else '').magenta } " +
-      "#{ (if paidout then 'P'+paidout else '').magenta } " +
-      "\t" +
-      "#{ (if orders then 'O'+orders else '').green } " +
-      "#{ (if bookings then 'B'+bookings else '').green } " +
-      "#{ (if requests then 'R'+requests else '').green } " +
-      "#{ (if released then 'r'+released else '').green } " +
-      "#{ if u.linked && u.linked.gh then u.linked.gh.login.yellow+'\t' else ''}" +
-      "\t#{if u.email then u.email.white else u.linked.gp.email.gray}"+
-      "\t#{(u.name||'').cyan}"
-
-
+      "\n#{idToMoment(u._id).format('YYMM.DD').gray}  " +
+      "#{ (if posts then 'A'+posts else '--').yellow } " +
+      "#{ (if paymethods then 'P'+paymethods else '--').white } " +
+      "| ".gray +
+      "#{ (if expert then 'E:' else '--').magenta } " +
+      "#{ (if suggests then 'S'+suggests else '--').magenta } " +
+      "#{ (if booked then 'B'+booked else '--').magenta } " +
+      "#{ (if ordered then 'O'+ordered else '--').magenta } " +
+      "#{ (if paidout then 'P'+paidout else '--').magenta } " +
+      "| ".gray +
+      "#{ (if orders then 'O'+orders else '--').green } " +
+      "#{ (if bookings then 'B'+bookings else '--').green } " +
+      "#{ (if requests then 'R'+requests else '--').green } " +
+      "#{ (if released then 'r'+released else '--').green } " +
+      "| ".gray +
+      "#{ if u.linked && u.linked.gh then u.linked.gh.login.yellow+'\t' else ' '}" +
+      "#{ if u.email then u.email.white else u.linked.gp.email.gray}" +
+      "\t#{(u.name||'').cyan}" +
+      "\t#{u._id}" +
+      "#{ if UserGraph[u._id].expert then ':'.white+UserGraph[u._id].expert else ''}"
 
 
 
