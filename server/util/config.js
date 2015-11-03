@@ -31,7 +31,7 @@ var cfg = {
       clientSecret:       'f52d233259426f769850a13c95bfc3dbe7e3dbf2',
       emails:             true,
       userAgent:          'airpair.com',
-      scope:              [ 'user' ],    //, 'public_repo'
+      scope:              [ 'user:email' ],    //, 'public_repo'
       adminAccessToken:   'b9d09cce1129b4ee1f4b97cc44c3b753cb9d8795', //jkyahoo
       org:                'JustASimpleTestOrg',
     },
