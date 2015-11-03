@@ -88,14 +88,10 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
 })
 
 
-// .controller('RequestTypesCtrl', function($scope) {
-
-// })
-
-
 
 .controller('ReviewCtrl', function($scope, $routeParams, $location, $timeout, DataService, Shared, ServerErrors, SessionService, PageHlpr) {
   $scope.requestId = $routeParams.id;
+  $scope.returnTo = window.location.pathname
 
   if (!$scope.requestId) return $location.path('/')
 
@@ -104,11 +100,10 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
     $scope.isAnon = true
     $scope.reviewClass = 'anon'
     $scope.r.by.name = "Login to view more detail"
-    $scope.returnTo = window.location.pathname
     return
   }
 
-  DataService.requests.getReviewById($scope.requestId, function(r) {
+  var getReview = () => DataService.requests.getReviewById($scope.requestId, function(r) {
     $scope.r = r
     $scope.isAdmin = Shared.roles.isAdmin($scope.session)
     $scope.isCustomer = Shared.roles.request.isCustomer($scope.session,r)
@@ -119,8 +114,8 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
     if ($scope.isCustomer) { // || $scope.isAdmin
       $scope.displayRate = r.budget
 
-      if (!$scope.session.emailVerified)
-        $scope.reviewClass = 'verifyEmail'
+      // if (!$scope.session.emailVerified)
+        // $scope.reviewClass = 'verifyEmail'
       // else (!$scope.session.primaryPayMethodId)
         // $scope.reviewClass = 'addPayMethod'
 
@@ -140,10 +135,11 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
       $scope.isExpert = Shared.roles.request.isExpert($scope.session,r)
       if ($scope.isExpert) {
         var sug = r.suggested[0]
-        if (sug.expert.isV0) {
-          $scope.isV0Expert = true
-          if (!$scope.reviewClass) $scope.reviewClass = 'inactive isV0Expert'
-        }
+
+        console.log('sug', sug.expert, sug.expert.timezone)
+        // if (!sug.expert.timezone)
+          // window.location = `/be-an-expert?review=${window.location.pathname}`
+
         $scope.displayRate = sug.suggestedRate.expert
         $scope.notYetReplied = !sug.expertStatus || sug.expertStatus == 'waiting'
         if ($scope.notYetReplied)
@@ -158,36 +154,35 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
         }
         // console.log('$scope', $scope.isExpert, $scope.expertEdit, $scope.data, sug)
       }
+
+      $timeout(function(){ PageHlpr.highlightSyntax({ addCtrs: false })}, 500)
     }
-
-    $scope.setExpertEdit = () => $scope.expertEdit = true
-
-    $scope.submit = (formValid, data) => {
-      if (formValid)
-      {
-        if ($scope.data.expertStatus != 'available')
-          $scope.data.expertAvailability = "Not available"
-
-        var expertId = $scope.r.suggested[0].expert._id
-        DataService.requests.replyByExpert($scope.r._id, expertId, $scope.data,
-          (result) => {
-            $scope.r = result;
-            $scope.expertEdit = false;
-            if ($scope.data.expertStatus == 'available') {
-              // $scope.openChat($scope.r.userId)
-              // corechat.sendMessageToRoom(corechat.activeRoomId, $scope.data.expertComment);
-            }
-
-        }, ServerErrors.add)
-      }
-
-    }
-
-    $timeout(function(){ PageHlpr.highlightSyntax({ addCtrs: false })}, 500)
 
   }, function(er) {
     console.log('request not found')
   })
 
+
+  $scope.setExpertEdit = () => $scope.expertEdit = true
+
+  $scope.submit = (formValid, data) => {
+    if (formValid)
+    {
+      if ($scope.data.expertStatus != 'available')
+        $scope.data.expertAvailability = "Not available"
+
+      var expertId = $scope.r.suggested[0].expert._id
+      DataService.requests.replyByExpert($scope.r._id, expertId, $scope.data,
+        (result) => {
+          // $scope.r = result;
+          // $scope.expertEdit = false;
+          // console.log('$scope.expertEdit', $scope.expertEdit, $scope.isExpert)
+          getReview();
+      }, ServerErrors.add)
+    }
+
+  }
+
+  getReview();
 
 })

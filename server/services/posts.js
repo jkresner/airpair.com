@@ -545,7 +545,7 @@ var save = {
 var saveReviews = {
 
   review(post, review, cb) {
-    review.by = _.pick(this.user,'_id','name')
+    review.by = _.pick(this.user,'_id','name','email')
     review.type = `post-survey-inreview`
     if (post.published) review.type.replace('inreview','published')
 
@@ -573,44 +573,43 @@ var saveReviews = {
   },
 
   reviewReply(post, original, reply, cb) {
-    cb(V2DeprecatedError('Posts.reviewReply'))
     // Damn this is annoying... alternative is to stuff the email into the author object
     // But we'd have to look at mongo consistency updates :/
-    // $callSvc(UserSvc.getById, {user:{_id:post.by.userId}})(post.by.userId, (ee, author) => {
-    //   var review = _.find(post.reviews,(r)=>_.idsEqual(r._id,original._id))
-    //   reply._id = svc.newId()
-    //   reply.by = svc.userByte.call(this)
-    //   review.replies.push(reply)
+    User.getById(post.by.userId, (ee, author) => {
+      var review = _.find(post.reviews,(r)=>_.idsEqual(r._id,original._id))
+      reply._id = Post.newId()
+      reply.by = _.pick(this.user,'_id','name','email')
+      review.replies.push(reply)
 
-    //   var threadParticipants =
-    //     _.uniq( _.union([author,review.by],_.pluck(review.replies,'by')), (p)=>p.email)
+      var threadParticipants =
+        _.uniq( _.union([author,review.by],_.pluck(review.replies,'by')), (p)=>p.email)
 
-    //   var thisParticipant = _.find(threadParticipants, (p)=>p.email == this.user.email)
-    //   if (thisParticipant) threadParticipants = _.without(threadParticipants, thisParticipant)
+      var thisParticipant = _.find(threadParticipants, (p)=>p.email == this.user.email)
+      if (thisParticipant) threadParticipants = _.without(threadParticipants, thisParticipant)
 
-    //   mailman.sendTemplateMails('post-review-reply-notification',
-    //     selectTmpl.reviewReplyNotify(post,reply), threadParticipants)
+      mailman.sendTemplateMails('post-review-reply-notification',
+        selectTmpl.reviewReplyNotify(post,reply), threadParticipants)
 
-    //   post.stats = PostsUtil.calcStats(post)
-    //   svc.update(post._id, post, select.cb.statsView(cb))
-    // })
+      var stats = PostsUtil.calcStats(post)
+      var {reviews} = post
+      Post.updateSet(post._id, {reviews,stats}, select.cb.statsView(cb))
+    })
   },
 
   reviewUpvote(post, original, cb) {
-    cb(V2DeprecatedError('Posts.reviewUpvote'))
-    // var review = _.find(post.reviews,(r)=>_.idsEqual(r._id,original._id))
-    // var vote = { _id: svc.newId(), val: 1, by: svc.userByte.call(this) }
-    // review.votes.push(vote)
-    // post.stats = PostsUtil.calcStats(post)
-    // svc.update(post._id, post, select.cb.statsView(cb))
+    var review = _.find(post.reviews,(r)=>_.idsEqual(r._id,original._id))
+    var vote = { _id: Post.newId(), val: 1, by: _.pick(this.user,'_id','name','email') }
+    review.votes.push(vote)
+    stats = PostsUtil.calcStats(post)
+    var {reviews} = post
+    Post.updateSet(post._id, {reviews,stats}, select.cb.statsView(cb))
   },
 
   reviewDelete(post, original, cb) {
-    cb(V2DeprecatedError('Posts.reviewDelete'))
-    // var review = _.find(post.reviews,(r)=>_.idsEqual(r._id,original._id))
-    // var reviews = _.without(post.reviews,review)
-    // var stats = PostsUtil.calcStats(_.extend(post,{reviews}))
-    // svc.updateWithSet(post._id, {reviews,stats}, select.cb.statsView(cb))
+    var review = _.find(post.reviews,(r)=>_.idsEqual(r._id,original._id))
+    var reviews = _.without(post.reviews,review)
+    var stats = PostsUtil.calcStats(_.extend(post,{reviews}))
+    Post.updateSet(post._id, {reviews,stats}, select.cb.statsView(cb))
   },
 
 }

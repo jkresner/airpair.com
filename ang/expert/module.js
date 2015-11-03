@@ -98,8 +98,10 @@ angular.module("APExpert", ['APTagInput','APPayPal'])
 })
 
 
-.controller('ExpertApplicationCtrl', ($rootScope, $scope, DataService, SessionService, Util) => {
+.controller('ExpertApplicationCtrl', ($rootScope, $scope, $location, DataService, SessionService, Util) => {
+  console.log('window.location', window.location)
 
+  $scope.returnTo = window.location.pathname + window.location.search
 
   $scope.formRequires = () => {
     var d = $scope.data, requires = false;
@@ -140,7 +142,7 @@ angular.module("APExpert", ['APTagInput','APPayPal'])
   DataService.experts.getMe({}, (expert) => {
     expert.username= $scope.session.username
     $scope.expert = expert
-    $scope.data = expert,_.extend(expert, $scope.data||{})
+    $scope.data = _.extend(expert, $scope.data||{})
     // $scope.data.location = $scope.session.location.name,
     // $scope.data.timeZoneId = $scope.session.location.timeZoneId
   })
@@ -148,13 +150,15 @@ angular.module("APExpert", ['APTagInput','APPayPal'])
   $scope.save = () => {
     if ($scope.requires) return alert($scope.requires)
 
+    var returnUrl = $location.search().review ? $location.search().review : '/office'
+
     if ($scope.data._id)
       DataService.experts.updateMe(_.pick($scope.data,'_id','userId','tags','rate','brief'), (expert) => {
-        window.location = '/office'
+        window.location = returnUrl
       })
     else
       DataService.experts.create(_.pick($scope.data,'tags','rate','brief'), (expert) => {
-        window.location = '/office'
+        window.location = returnUrl
       })
   }
 
