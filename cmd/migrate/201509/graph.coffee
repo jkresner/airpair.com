@@ -30,7 +30,7 @@ module.exports = (done) ->
   expert = (cb) -> Experts.find({},{_id:1,userId:1}).toArray (e, all) ->
     $log('graph'.gray, 'experts', all.length)
     for o in all
-      expect(UserGraph[o.userId]).to.exist
+      expect(UserGraph[o.userId], "User for expert does not exist #{o._id}").to.exist
       UserGraph[o.userId].expert = o._id
       ExpertGraph[o._id] = user: o.userId
     cb()
@@ -47,7 +47,7 @@ module.exports = (done) ->
           # expect(s.expert._id.constructor == ObjectId, "s.expert._id no an ObjectId for #{o._id}").to.be.true
           if ExpertGraph[s.expert._id]?
             userId = ExpertGraph[s.expert._id].user
-            expect(userId, "s.expert._id => userId #{s}").to.exist
+            # expect(userId, "s.expert._id => userId #{s}").to.exist
             refIncrement UserGraph[userId], 'suggests'
     cb()
 
@@ -85,8 +85,10 @@ module.exports = (done) ->
   post = (cb) -> Posts.find({}, {'by':1}).toArray (e, all) ->
     $log('graph'.gray, 'posts', all.length)
     for o in all
-      expect(o.by._id.constructor == ObjectId).to.be.true
-      refIncrement UserGraph[o.by._id], 'posts' if UserGraph[o.by._id]?
+      # expect(o.by._id.constructor == ObjectId).to.be.true
+      # refIncrement UserGraph[o.by._id], 'posts' if UserGraph[o.by._id]?
+      expect(o.by.userId.constructor == ObjectId).to.be.true
+      refIncrement UserGraph[o.by.userId], 'posts' if UserGraph[o.by.userId]?
     cb()
 
   order = (cb) -> Orders.find({}).toArray (e, all) ->
