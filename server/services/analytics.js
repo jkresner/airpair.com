@@ -3,14 +3,6 @@ var mongoose = require('mongoose')
 var {ObjectId} = mongoose.Types
 var Id = mongoose.Schema.ObjectId
 
-var {mongoUrl} = config.analytics
-var analyticsDB = mongoose.createConnection(mongoUrl)
-analyticsDB.on('error', e =>
-  $log('ERROR on mongo connect to analytics {mongoUrl}:'.red, e))
-analyticsDB.once('open', e =>
-  $log(`CONNECTED to ${mongoUrl}  (for analytics)`.white))
-
-
 
 var util = {
 
@@ -28,30 +20,43 @@ var util = {
 
 }
 
-var Events = analyticsDB.model('Event', new mongoose.Schema({
-  uId:       { type: Id, index: true, sparse: true },
-  name:      { type: String, required: true },
-  data:      { type: {}, required: false },
-})).collection
 
-// cleanup 2015.07.13
-// db.views.update({ __v: { $exists:1 } },{ $unset: { __v: "1" } },{ 'multi': true })
-// db.views.update({ userId: null },{ $unset: { userId: "1" } },{ 'multi': true })
-// db.views.remove({ utc: { $lt:ISODate('2015-08-02 10:00:00.002Z') }, userId:{$exists:0}, campaign: {$exists:0}, referer: {$exists:0}  })
-//-- (Don't need utc if already have the _id)
-// db.views.update({ utc: { $exists:1 } },{ $unset: { utc: "1" } },{ 'multi': true })
-var objectType = ['post','workshop','expert','tag','landing']
-var Views = analyticsDB.model('View', new mongoose.Schema({
-  userId:       { type: Id, index: true, sparse: true },
-  anonymousId:  { type: String, index: true, sparse: true },
-  objectId:     { type: Id, required: true },
-  type:         { enum: objectType, type: String, required: true, lowercase: true },
-  url:          { type: String, required: true },
-  campaign:     { type: {} },
-  ip:           { type: String },
-  ua:           { type: String },
-  referer:      { type: String }
-})).collection
+if (config.analytics.on)
+{
+
+  var {mongoUrl} = config.analytics
+  var analyticsDB = mongoose.createConnection(mongoUrl)
+  analyticsDB.on('error', e =>
+    $log('ERROR on mongo connect to analytics {mongoUrl}:'.red, e))
+  analyticsDB.once('open', e =>
+    $log(`CONNECTED to ${mongoUrl}  (for analytics)`.white))
+
+  var Events = analyticsDB.model('Event', new mongoose.Schema({
+    uId:       { type: Id, index: true, sparse: true },
+    name:      { type: String, required: true },
+    data:      { type: {}, required: false },
+  })).collection
+
+  // cleanup 2015.07.13
+  // db.views.update({ __v: { $exists:1 } },{ $unset: { __v: "1" } },{ 'multi': true })
+  // db.views.update({ userId: null },{ $unset: { userId: "1" } },{ 'multi': true })
+  // db.views.remove({ utc: { $lt:ISODate('2015-08-02 10:00:00.002Z') }, userId:{$exists:0}, campaign: {$exists:0}, referer: {$exists:0}  })
+  //-- (Don't need utc if already have the _id)
+  // db.views.update({ utc: { $exists:1 } },{ $unset: { utc: "1" } },{ 'multi': true })
+  var objectType = ['post','workshop','expert','tag','landing']
+  var Views = analyticsDB.model('View', new mongoose.Schema({
+    userId:       { type: Id, index: true, sparse: true },
+    anonymousId:  { type: String, index: true, sparse: true },
+    objectId:     { type: Id, required: true },
+    type:         { enum: objectType, type: String, required: true, lowercase: true },
+    url:          { type: String, required: true },
+    campaign:     { type: {} },
+    ip:           { type: String },
+    ua:           { type: String },
+    referer:      { type: String }
+  })).collection
+
+}
 
 
 var viewSvc = {
