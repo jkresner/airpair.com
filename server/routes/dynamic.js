@@ -6,10 +6,12 @@ var {populate}                      = require('../middleware/data')
 
 module.exports = function(app) {
 
+  // for (var slug of ['angularjs']) //,'firebase'
+  //   app.get(`/${slug}`, populate.tagPage(slug), trackView('tag'),
+  //     app.renderHbsViewData('tag', null, (req, cb) => cb(null, req.tagpage) ))
 
-  for (var slug of ['angularjs']) //,'firebase'
-    app.get(`/${slug}`, populate.tagPage(slug), trackView('tag'),
-      app.renderHbsViewData('tag', null, (req, cb) => cb(null, req.tagpage) ))
+
+
 
   for (var slug of ['reactjs', 'python', 'node.js', 'ember.js', 'keen-io', 'rethinkdb',
     'ionic', 'swift', 'android', 'ruby' ])

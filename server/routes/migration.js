@@ -1,4 +1,5 @@
 module.exports = [
+  {o:'/angularjs', c:'angularjs-tutorial'},
   {o:'/mailjet', c:'mailjet-support-and-api-integration-help'},
   {o:'/evernote', c:'evernote-support-api-integration-help'},
   {o:'/pubnub', c:'pubnub-support-and-api-integration-help'},
@@ -63,7 +64,6 @@ module.exports = [
   {o:'/git/learn-git-basics', c:'learn-git-basics-1'},
   {o:'/go/go-training-erik-st-martin/', c:'go-training-erik-st-martin-1'},
   {o:'/google-app-engine/cloud-scalability-homejoy', c:'cloud-scalability-homejoy-1'},
-  {o:'/graph-database/graph-database-expert-wes-freeman', c:'graph-database-expert-wes-freeman-1'},
   {o:'/hadoop/hadoop-expert-patrick-lie', c:'hadoop-expert-patrick-lie-1'},
   {o:'/heroku/expert-jed-schneider', c:'expert-jed-schneider-1'},
   {o:'/hipaa/hipaa-expert-jason-wang', c:'hipaa-expert-jason-wang-1'},
