@@ -66,7 +66,7 @@ var get = {
   },
 
   getByIdForReview(id, cb) {
-    Request.getById(id, select.cb.byRole(this,cb,cb))
+    Request.getById(id, {join: {'suggested.expert.userId':'auth'}}, select.cb.byRole(this,cb,cb))
   },
 
   getByIdForBookingInflate(id, cb)

@@ -13,16 +13,15 @@ var inflatedTags = (tags) => {
   return inflatedTags
 }
 
-
 function migrateV0(r) {
   if (r.budget)
   {
-    if (!r.by && r.company && r.company.contacts)
-    {
-      var c = r.company.contacts[0]
-      r.by = { name:c.fullName, email:c.gmail, avatar: md5.gravatarUrl(c.gmail) }
-      for (var t of r.tags) t.slug = t.short
-    }
+    // if (!r.by && r.company && r.company.contacts)
+    // {
+    //   var c = r.company.contacts[0]
+    //   r.by = { name:c.fullName, email:c.gmail, avatar: md5.gravatarUrl(c.gmail) }
+    //   for (var t of r.tags) t.slug = t.short
+    // }
     if (!r.time) r.time = 'regular'
     if (!r.experience) r.experience = 'proficient'
     if (r.owner && (!r.adm || !r.adm.owner))
@@ -31,7 +30,8 @@ function migrateV0(r) {
       else r.adm.owner = r.owner
     }
   }
-  if (r.adm && r.adm.lastTouch && !r.adm.lastTouch.utc) r.adm.lastTouch = { utc: r.adm.lastTouch }
+  if (r.adm && r.adm.lastTouch && !r.adm.lastTouch.utc)
+    r.adm.lastTouch = { utc: r.adm.lastTouch }
 
   return r
 }
@@ -138,8 +138,18 @@ var data = {
             s.expert.avatar = md5.gravatarUrl(s.expert.email)
           if (!s.suggestedRate)
             Rates.addSuggestedRate(r, s, true)
+          if (s.expert.userId && s.expert.userId.auth) {
+            var {auth} = s.expert.userId
+            if (auth.gh) s.expert.gh = { username: auth.gh.login }
+            if (auth.so) s.expert.so = { link: auth.so.link }
+            if (auth.bb) s.expert.bb = { id: auth.bb.id }
+            if (auth.in) s.expert.id = { id: auth.in.id }
+            if (auth.tw) s.expert.tw = { username: auth.tw.screen_name }
+            s.expert.userId = s.expert.userId._id
+          }
         }
       }
+
       if (view != 'admin')
         r = util.selectFromObject(r, data.select[view])
       // $log('selected', view, request.suggested, r)
@@ -149,7 +159,6 @@ var data = {
       // $log('expertToSuggestion', r, by)
       type = type || 'staff'
       expertStatus = expertStatus || 'waiting'
-
 
 
       // if (r.user) {
