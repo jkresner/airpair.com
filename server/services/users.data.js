@@ -51,6 +51,8 @@ var select = {
 
 var data = {
 
+  bcrypt,
+
   select: {
     session: select.session,
     sessionFull: select.sessionFull,
@@ -84,17 +86,20 @@ var data = {
 
     passwordHash(pwd) {
       var hash = null
-      while (!hash || util.endsWith(hash,'.'))
-        hash = bcrypt.hashSync(pwd, bcrypt.genSaltSync(8))
+      while (!hash || hash[hash.length-1] == '.') {
+        var hash = bcrypt.hashSync(pwd, bcrypt.genSaltSync(8))
+        $logIt('auth.pw.set', 'while', hash)
+      }
 
       return hash
     },
 
-    resetHash(seedStr, hash) {
-      var hash = null
-      while (!hash || util.endsWith(hash,'.'))
-        hash = bcrypt.hashSync(seedStr, config.auth.password.resetSalt)
-
+    resetHash(email) {
+      var seedStr = email.replace('@', moment().add(3,'day').format('DDYYYYMM'))
+      $logIt('auth.reset', 'before.while', seedStr, hash)
+      var hash = bcrypt.hashSync(seedStr, config.auth.password.resetSalt)
+      if (hash[hash.length-1] == '.')
+        hash[hash.length-1] = 'a'
       return hash
     },
 
