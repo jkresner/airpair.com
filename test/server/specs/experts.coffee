@@ -43,7 +43,6 @@ create = ->
               PUT "/users/me/location", FIXTURE.wrappers.localization_melbourne.locationData, ->
                 PUT "/users/me/bio", { bio: 'a bio for apexpert 1'}, ->
                   POST "/experts/me", d, (expert) ->
-                    $log('expert', expert)
                     expect(expert._id).to.exist
                     # expect(expert.lastTouch).to.exist
                     expect(expert.name).to.equal(USERS.ape1.name)
@@ -64,7 +63,7 @@ create = ->
 
 
 
-  IT "Update update expert profile", ->
+  IT "Update expert profile", ->
     STORY.newExpert 'ape1', {}, (s, expert) ->
       DB.docById 'Expert', expert._id, (dExpert) ->
         expect(dExpert.lastTouch.action, 'create')

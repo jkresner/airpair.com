@@ -1,7 +1,6 @@
-var {User}                   = DAL
-var bcrypt                   = require('bcrypt')
-var {query,data,select}      = require('./users.data')
-var logging                  = config.log.auth
+var {User}                     = DAL
+var {query,data,select,bcrypt} = require('./users.data')
+var logging                    = config.log.auth
 
 
 
@@ -105,9 +104,8 @@ var _setProfileTokens = (profile, token, refresh) => {
 
 var odata = {
   gp(p) {
-    if (!p.emails) $log('Google oauth data has no .emails', p)
-
-    if (!p.displayName && p.name && p.name.constructor == String) {
+    // if (!p.emails) $log('Google oauth data has no .emails', p)
+    if (!p.displayName && p.name && p.name.constructor === String) {
       p.displayName = p.name
       delete p.name
     }
@@ -282,11 +280,6 @@ function link(provider, profile, {token,refresh}, done) {
 }
 
 
-var calcPasswordChangeHash = (email) =>
-  select.resetHash( email.replace('@', moment().add(3,'day').format('DDYYYYMM') ))
-
-
-
 function passwordReset(email, cb) {
   var anonymous = this.user == null
   User.getManyByQuery(query.existing.byEmails([email]), (e, r) => {
@@ -294,14 +287,18 @@ function passwordReset(email, cb) {
     if (r.length > 1) return cb(Error(`Reset fail. Multiple user accounts associated with ${email}. Please contact team@airpair.com to merge your accounts.`))
 
     var user = r[0]
-    var hash = calcPasswordChangeHash(email)
+    $logIt('auth.reset', 'before.calcHash', email)
+    var hash = select.resetHash(email)
+    $logIt('auth.reset', 'after.calcHash', hash)
 
     if (user) analytics.event('reset-password', user, { email, anonymous })
 
     //-- Update the user record regardless if anonymous or authenticated
     // User.updateSet(user._id, ups, (e,r) => {
       // if (e) return cb(e)
+    $logIt('auth.reset', 'before.sendMail', _.pick(user,'name','email'))
     mailman.sendTemplate('user-password-change',{hash,email}, user)
+    $logIt('auth.reset', 'before.cb')
     return cb(null, {email})
     // })
   })
@@ -314,7 +311,7 @@ function changePassword(email, hash, password, cb) {
     if (e || !r || r.length != 1) return cb(Error(`Change password failed for ${email}:${hash}`))
     var user = r[0]
 
-    var newerHash = calcPasswordChangeHash(email)
+    var newerHash = select.resetHash(email)
     if (hash != newerHash)
       return cb(Error(`Pasword reset hash expired.`))
 

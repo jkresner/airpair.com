@@ -1,6 +1,6 @@
 injectOAuthPayoutMethod = (user, providerName, pmKey,cb) ->
   require('../../../server/services/paymethods').addOAuthPayoutmethod.call({user},
-    providerName, FIXTURE.paymethods[pmKey],{},(e,r)->cb(r))
+    providerName, FIXTURE.clone('paymethods.'+pmKey),{},(e,r)->cb(r))
 
 UNIQUIFY_USER = (key) ->
   uniqueKey = FIXTURE.uniquify('users', key, 'name email auth.gh.id auth.gp.id googleId')
@@ -9,6 +9,15 @@ UNIQUIFY_USER = (key) ->
 
 newUser = require('./newUser')
 
+defaults =
+  melbourne:
+    name:       FIXTURE.wrappers.localization_melbourne.locationData.formatted_address,
+    short:      FIXTURE.wrappers.localization_melbourne.locationData.name,
+    timeZoneId: FIXTURE.wrappers.localization_melbourne.timezoneData.timeZoneId
+  gh:
+    FIXTURE.clone('users.ape1').auth.gh
+  gp:
+    FIXTURE.clone('users.ape1').auth.gp
 
 module.exports = (key, opts, done) ->
 
@@ -19,28 +28,28 @@ module.exports = (key, opts, done) ->
   {data,login} = opts
 
   user = UNIQUIFY_USER(key)
-  # $log('user.key'.white, user.key)
+  # $log('user.key'.white, user.key, user)
   user.username = user.key
   user.initials = "ap-#{timeSeed()}"
   user.bio = "a bio for apexpert 1 #{timeSeed()}"
-  user.location =
-    name:       FIXTURE.wrappers.localization_melbourne.locationData.formatted_address,
-    short:      FIXTURE.wrappers.localization_melbourne.locationData.name,
-    timeZoneId: FIXTURE.wrappers.localization_melbourne.timezoneData.timeZoneId
+  user.location = defaults.melbourne
 
   if (user.auth)
-    user.auth.gh = _.extend(FIXTURE.users.ape1.auth.gh||{},user.auth.gh||{})
+    user.auth.gh = _.extend(defaults.gh||{},user.auth.gh||{})
   else
-    user.auth = { gh: FIXTURE.users.ape1.auth.gh }
+    user.auth = { gh: defaults.gh }
 
-  user.auth.gp = _.extend(FIXTURE.users.ape1.auth.gp||{},user.auth.gp||{})
+  user.auth.gp = _.extend(defaults.gp||{},user.auth.gp||{})
+
+  if (user.auth.gh) then user.auth.gh.id += timeSeed()
+  if (user.auth.gp) then user.auth.gp.id += timeSeed()
 
   expData = opts.data || {}
   if (expData.user)
     Object.assign(user,expData.user)
 
 
-  DB.ensureDoc 'User', user, ->
+  DB.ensureDoc 'User', user, (e, r) ->
     FIXTURE.users[user.key] = user
     LOGIN {key:user.key}, (s) ->
       s.userKey = user.key

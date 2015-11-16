@@ -514,10 +514,11 @@ prodData = ->
   after -> SETUP.analytics.off()
 
   IT 'Richard can re-book byron', ->
-    {byrn} = FIXTURE.experts
+    byrn = FIXTURE.clone('experts.byrn')
+    preMigrateRebook = FIXTURE.clone('requests.preMigrateRebook',{omit:'userId'})
     SETUP.ensureExpert 'byrn', ->
     STORY.newUser 'ricd', {login:true,paymethod:true}, (s) ->
-      request = _.extend {userId:s._id}, _.omit(FIXTURE.requests.preMigrateRebook,'userId')
+      request = _.extend {userId:s._id}, preMigrateRebook
       expect(request.budget, 150)
       expect(request.suggested[1].expert.rate, 110)
       DB.ensureDoc 'Request', request, ->

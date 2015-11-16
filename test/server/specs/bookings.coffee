@@ -3,14 +3,14 @@ BookingUtil = require("../../../shared/bookings")
 util = ->
 
   IT "Can get multiTime", ->
-    tzBooking = FIXTURE.bookings.timezones
+    tzBooking = FIXTURE.clone('bookings.timezones')
     tzBooking.datetime = ISODate("2016-06-25T00:00:00.000Z")
     expect(tzBooking.participants.length).to.equal(2)
     expect(tzBooking.participants[0].timeZoneId).to.equal("America/Los_Angeles")
     expect(tzBooking.participants[1].timeZoneId).to.equal("America/Chicago")
     multitime = BookingUtil.multitime(tzBooking)
     expectStartsWith(multitime, "Sat 25 00:00 UTC | Fri 24 5PM PDT | Fri 24 7PM CDT")
-    bOld = FIXTURE.bookings.swap1
+    bOld = FIXTURE.clone('bookings.swap1')
     bOld.datetime = ISODate("2015-03-12T03:15:18.576Z")
     multitime2 = BookingUtil.multitime(bOld)
     expectStartsWith(multitime2, "Thu 12 03:15 UTC")
@@ -18,7 +18,7 @@ util = ->
 
 
   IT "Purpose for pending status", ->
-    b = FIXTURE.bookings.timezones
+    b = FIXTURE.clone('bookings.timezones')
     b.datetime = ISODate("2016-06-25T00:00:00.000Z")
     expect(b.status).to.equal("pending")
     expect(b.participants.length).to.equal(2)
@@ -28,6 +28,8 @@ util = ->
     expect(b.participants[1].timeZoneId).to.equal("America/Chicago")
     {name,purpose} = BookingUtil.chatGroup(b)
     expectStartsWith(name, "morgan-billy")
+    # During Daylight Savings
+    purpose = purpose.replace /ST,/g, "DT,"
     expectStartsWith(purpose, "http://booking.airpa.ir/558aa2454be238d1956cb8aa Morgan (PDT, San Francisco, CA, USA) + Billy (CDT, Houston, TX, USA). WAITING to confirm 90 mins @ Sat 25 00:00 UTC | Fri 24 5PM PDT | Fri 24 7PM CDT")
     DONE()
 
@@ -35,22 +37,29 @@ util = ->
   IT "Purpose for confirmed status", ->
     b = _.extend _.extend({},FIXTURE.bookings.timezones), { datetime: ISODate("2016-06-25T00:00:00.000Z"), status: 'confirmed' }
     purpose = BookingUtil.chatGroup(b).purpose
+    # During Daylight Savings
+    purpose = purpose.replace /ST,/g, "DT,"
     expectStartsWith(purpose, "http://booking.airpa.ir/558aa2454be238d1956cb8aa Morgan (PDT, San Francisco, CA, USA) + Billy (CDT, Houston, TX, USA). CONFIRMED 90 mins @ Sat 25 00:00 UTC | Fri 24 5PM PDT | Fri 24 7PM CDT")
     DONE()
 
 
   IT "Purpose for followup status", ->
-    b = _.extend _.extend({},FIXTURE.bookings.specChar), { datetime: ISODate("2016-05-25T11:30:00.000Z"), status: 'followup' }
+    b = FIXTURE.clone('bookings.specChar')
+    b = _.extend b, { datetime: ISODate("2016-05-25T11:30:00.000Z"), status: 'followup' }
     {name,purpose} = BookingUtil.chatGroup(b)
     expectStartsWith(name, "michael-jj")
+    # During Daylight Savings
+    purpose = purpose.replace /ST,/g, "DT,"
     expectStartsWith(purpose, "http://booking.airpa.ir/559dc6ff476dc61100a02069 Michael (PDT, San Francisco, CA, USA) + JJ (EDT, New York, NY, USA). FEEDBACK required to payout expert for 60 mins on Wed 25 11:30 UTC | 4:30AM PDT | 7:30AM EDT")
     DONE()
 
 
   IT "Purpose for old no timeZoneId bookings", ->
-    bOld = FIXTURE.bookings.noTimezones
+    bOld = FIXTURE.clone('bookings.noTimezones')
     bOld.datetime = ISODate("2015-03-12T03:30:18.576Z")
     purpose = BookingUtil.chatGroup(bOld).purpose
+    # During Daylight Savings
+    purpose = purpose.replace /ST,/g, "DT,"
     expectStartsWith(purpose, "http://booking.airpa.ir/54dc2d2fd137810a00f2813b Daniel + Adam. FEEDBACK required to payout expert for 60 mins on Thu 12 03:30 UTC")
     DONE()
 

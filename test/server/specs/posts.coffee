@@ -72,13 +72,13 @@ reviews = ->
 
 
   IT "Cannot submit anonymous review", ->
-    POST "/posts/review/#{POSTS.higherOrder._id}", postReview, { status: 401 }, (r) ->
+    POST "/posts/review/#{higherOrder._id}", postReview, { status: 401 }, (r) ->
       DONE()
 
 
   IT "Can submit review for published post", ->
     STORY.newUser 'jkap', (s) ->
-      POST "/posts/#{POSTS.higherOrder._id}/review", postReview, (p1) ->
+      POST "/posts/#{higherOrder._id}/review", postReview, (p1) ->
         expect(p1.reviews.length>0).to.be.true
         review = _.find(p1.reviews,(rev)->_.idsEqual(rev.by._id,s._id))
         expectIdsEqual(review.by._id, s._id)
@@ -90,7 +90,7 @@ reviews = ->
 
   IT "Sends appropriate email notifications for reviews and replies", ->
     STORY.newUser 'tiagorg', (sTiagorg, authorKey) ->
-      post = _.omit(POSTS.higherOrder, 'reviews','stats')
+      post = FIXTURE.clone('posts.higherOrder', {omit:'reviews stats'})
       post._id = new ObjectId()
       post.by.userId = sTiagorg._id
       post.by.name = sTiagorg.name
@@ -156,7 +156,7 @@ reviews = ->
 
 
   IT "Review fails without valid rating and feedback", ->
-    post = POSTS.higherOrder
+    post = higherOrder
     STORY.newUser 'rvw3', (rvw3) ->
       POST "/posts/#{post._id}/review", {}, { status: 403 }, (e1) ->
         expectContains(e1.message, "5 star rating required")
@@ -176,17 +176,17 @@ reviews = ->
 module.exports = ->
 
   before (done) ->
-    global.POSTS = FIXTURE.posts
+    global.higherOrder = FIXTURE.posts.higherOrder
     DB.ensureDoc 'User', FIXTURE.users.tiagorg, ->
-      DB.ensureDoc 'Post', POSTS.higherOrder, ->
+      DB.ensureDoc 'Post', higherOrder, ->
         done()
 
   after ->
-    global.POSTS = null
+    delete global.higherOrder
 
   beforeEach ->
     STUB.cb(Wrappers.Slack, 'getUsers', FIXTURE.wrappers.slack_users_list)
 
-  # DESCRIBE("Browsing", browsing)
+  DESCRIBE("Browsing", browsing)
   DESCRIBE("Reviews", reviews)
 

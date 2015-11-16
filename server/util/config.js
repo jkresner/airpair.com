@@ -119,11 +119,7 @@ var cfg = {
     login: { email: 'support@airpair.com', password: 'helsyea' }
   },
   http: {
-    static:               { dir: 'public', maxAge: null },
-    sessionStore: {
-      autoReconnect:      true,
-      collection:         'v1sessions'
-    }
+    static:               { dir: 'public', maxAge: null }
   },
   log: {
     ads:                  process.env.LOG_ADS || false,
@@ -145,7 +141,13 @@ var cfg = {
       smtp: { service: '', auth: { user: '', pass: '' } }
     },
   },
-  mongoUrl: 'mongodb://localhost/airpair_dev',
+  model: {
+    mongoUrl:                 'mongodb://localhost/airpair_dev',
+    sessionStore: {
+      autoReconnect:          true,
+      collection:             'v1sessions'
+    }
+  },
   payments: {
     braintree: {
       environment: 'Sandbox',
@@ -189,10 +191,10 @@ module.exports = function(env) {
     cfg.analytics.mongoUrl = 'mongodb://localhost/airpair_test'
     cfg.auth.oauth.callbackHost = 'http://localhost:4444'
     cfg.port = 4444
-    cfg.mongoUrl = "mongodb://localhost/airpair_test"
+    cfg.model.mongoUrl = "mongodb://localhost/airpair_test"
     cfg.testlogin = true
     cfg.log.mail = false
-    cfg.http.sessionStore.collection = 'sessions'
+    cfg.model.sessionStore.collection = 'sessions'
   }
 
   if (env == 'staging' || env == 'production') {
@@ -202,7 +204,7 @@ module.exports = function(env) {
 
     cfg.analytics.on = true
     cfg.analytics.mongoUrl = process.env.ANALYTICS_MONGOURL
-    cfg.mongoUrl = process.env.MONGOURL
+    cfg.model.mongoUrl = process.env.MONGOURL
 
     cfg.auth.masterpass = process.env.AUTH_MASTERPASS,
     cfg.auth.oauth.callbackHost = process.env.AUTH_OAUTH_CALLBACKHOST
@@ -311,7 +313,7 @@ module.exports = function(env) {
   cfg.ads.staticDir = `${cfg.appdir}/public/${cfg.ads.staticDir}`
 
   //v2 temp settings
-  cfg.appModelDir = `${cfg.appdir}/server/model`
+  cfg.model.dir = `${cfg.appdir}/server/model`
 
   return cfg;
 }

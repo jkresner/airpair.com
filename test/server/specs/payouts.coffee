@@ -23,10 +23,10 @@ get = ->
 
 
   IT 'Booked expert can see single transaction pending', ->
-    SETUP.ensureExpert 'dymo', ->
-      opts = book: true, reply: { userKey: 'dymo' }
+    STORY.newExpert 'dymo', (s, expert) ->
+      opts = book: true, reply: { userKey: s.userKey }
       STORY.newRequest 'rusc', opts, (request, booking, customerSession, expertSession) ->
-        LOGIN {key:'dymo'}, ->
+        LOGIN {key:s.userKey}, ->
           GET "/billing/orders/payouts", (orders) ->
             expect(orders.length).to.equal(1)
             expect(orders[0].total).to.be.undefined
@@ -53,12 +53,12 @@ get = ->
 
 
   IT 'Expert can see multiple transactions pending', ->
-    SETUP.ensureExpert 'dces', ->
-      opts = book: true, reply: { userKey: 'dces' }
+    STORY.newExpert 'dces', (sExp, expert) ->
+      opts = book: true, reply: { userKey: sExp.userKey }
       STORY.newRequest 'dros', opts, (request1, booking1, customerSession1, expertSession) ->
-        opts2 = book: true, reply: { expertId: FIXTURE.experts.dces._id, userKey: 'dces' }
+        opts2 = book: true, reply: { userKey: sExp.userKey }
         STORY.newRequest 'brfi', opts2, (request2, booking2, customerSession2, expertSession) ->
-          LOGIN {key:'dces'}, ->
+          LOGIN {key:sExp.userKey}, ->
             GET "/billing/orders/payouts", (orders) ->
               expect(orders.length).to.equal(2)
               summary = payoutSummary(orders)
@@ -72,8 +72,8 @@ get = ->
 
 
   IT 'Expert can see single transaction released by admin', ->
-    SETUP.ensureExpert 'admb', ->
-      opts = book: true, reply: { userKey: 'admb' }
+    STORY.newExpert 'admb', (sExp, expert) ->
+      opts = book: true, reply: { userKey: sExp.userKey }
       STORY.newRequest 'kyau', opts, (request, booking, customerSession, expertSession) ->
         LOGIN { key:'admin' }, ->
           PUT "/billing/orders/#{booking.orderId}/release", {}, (released) ->
@@ -82,7 +82,7 @@ get = ->
             expect(released.lines[1].info.released).to.exist
             expect(released.lines[1].info.released.by).to.exist
             expect(released.lines[1].info.released.action).to.equal('release')
-            LOGIN {key:'admb'}, ->
+            LOGIN {key:sExp.userKey}, ->
               GET "/billing/orders/payouts", (orders) ->
                 expect(orders.length).to.equal(1)
                 expect(orders[0].lines.length).to.equal(1)
@@ -126,15 +126,16 @@ get = ->
 
 
   IT 'Expert can see multiple transactions of mixed status', ->
-    SETUP.ensureExpert 'phlf', ->
-      opts1 = book: true, reply: { userKey: 'phlf' }
+    STORY.newExpert 'phlf', (sExp, expert) ->
+      opts = book: true, reply: { userKey: sExp.userKey }
+      opts1 = book: true, reply: { userKey: sExp.userKey }
       STORY.newRequest 'hubi', opts1, (request1, booking1, customerSession1, expertSession) ->
         STORY.newRequest 'mois', opts1, (request2, booking2, customerSession2, expertSession) ->
           STORY.newRequest 'jkjk', opts1, (request3, booking3, customerSession3, expertSession) ->
             LOGIN {key:'admin'},  ->
               PUT "/billing/orders/#{booking1.orderId}/release", {}, {}, (released1) ->
                 # PUT "/billing/orders/#{booking2.orderId}/release", {}, {}, (released2) ->
-                LOGIN {key:'phlf'}, ->
+                LOGIN {key:sExp.userKey}, ->
                   GET "/billing/orders/payouts", (orders) ->
                     expect(orders.length).to.equal(3)
                     summary = payoutSummary(orders)

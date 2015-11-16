@@ -14,23 +14,22 @@
     "errors":             "true"
   },
   "mongo": {
-    "url":                { "appConfig": "mongoUrl" },
     "collections":        [ "Users","Experts","Bookings","Orders",
                            "Companies","Paymethods","Payouts","Posts",
                            "Requests","Tags","Templates","Views","Impressions",
-                           "Sessions","Events"]
+                           "Sessions","Events"],
+    "seed": {
+      "force":              false,
+      "model":              "User",
+      "key":                "jkap",
+      "timeout":            30000
+    },
+    "url":                "mongodb://localhost/airpair_test"
   },
   "paths": {
-    "specs":              "specs",
     "fixtures":           "../data/fixtures",
     "bson":               "../data/bson",
     "stories":            "stories"
-  },
-  "seed": {
-    "force":              false,
-    "model":              "User",
-    "key":                "jkap",
-    "timeout":            30000
   },
   "http": {
     "api": {
@@ -39,7 +38,6 @@
   },
   "appConfig": {
     "expect": {
-      "mongoUrl":               "mongodb://localhost/airpair_test",
       "auth.github.org":        "JustASimpleTestOrg",
       "auth.slack.slackTeam":   "T02ATFDPL",
       "chat.slack.support":     "U06UD6SES"

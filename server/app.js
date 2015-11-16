@@ -26,9 +26,18 @@ function run(config, done)
   app.use(express.static(config.http.appStaticDir.replace('dist','public'), config.http.static))
   app.use(mw.logging.slowrequests)
 
-  require(`meanair-model`)(config).connect((e, DAL) => {
-    global.DAL = DAL
+  global.$logIt = function() {
+    var args = [].slice.call(arguments)
+    if (args[0].indexOf('model') == 0) return
+    args[0] = args[0].white
+    console.log.apply(null,args)
+  }
+
+  var model = require(`meanair-model`)(done)
+  model.connect(() => {
+    global.DAL = model.DAL
     $timelapsed("DAL Connected", DAL)
+
     global.svc = {
       newTouch(action) { return { action, _id: DAL.User.newId(),
           utc: new Date(), by: { _id: this.user._id, name: this.user.name } } }
@@ -38,62 +47,58 @@ function run(config, done)
     app.use('/rss', routes('rss')(app))
 
     app.use(mw.auth.setNonSessionUrl(app))
+    session(app, (sessionMW, cb) => cb(model.sessionStore(sessionMW)))
 
-    var initSessionStore = (seshMW, callback) => callback(DAL.sessionStore(seshMW))
+    $log(`           SessionStoreReady   ${new Date().getTime()-start}`.appload)
 
-    session(app, initSessionStore, () => {
+    app.use('/visit', routes('ads')(app))
 
-      $log(`           SessionStoreReady   ${new Date().getTime()-start}`.appload)
+    //-- Do not move connect-livereload before session middleware
+    if (config.livereload) app.use(require('connect-livereload')({ port: 35729 }))
 
-      app.use('/visit', routes('ads')(app))
+    var hbsEngine   = require('./views/_hbsEngine')
+    hbsEngine(app)
 
-      //-- Do not move connect-livereload before session middleware
-      if (config.livereload) app.use(require('connect-livereload')({ port: 35729 }))
+    app.use(mw.logging.domainWrap)
+    app.use(mw.data.cache.itemReady('tags'))
+    app.use(mw.auth.showAuthdPageViews())
 
-      var hbsEngine   = require('./views/_hbsEngine')
-      hbsEngine(app)
+    mailman.init()
+    pairbot.init()
 
-      app.use(mw.logging.domainWrap)
-      app.use(mw.data.cache.itemReady('tags'))
-      app.use(mw.auth.showAuthdPageViews())
+    app.get('/', mw.analytics.trackFirstRequest, mw.auth.authdRedirect('/dashboard'), app.renderHbs('home') )
+    // app.use('/auth', routes('auth')(app))
+    routes('auth')(app)
+    app.use('/v1/api/matching', routes('api').matching)
+    app.use('/v1/api/adm/bookings', routes('api').spinning)
+    app.use('/v1/api/adm', routes('api').admin)
+    app.use('/v1/api', routes('api').other)
+    app.use('/v1/api/posts', routes('api').posts)
+    $timelapsed("APP ROUTES API")
+    app.use(['^/matchmaking*','^/adm/bookings*'],
+      mw.authz.plnr, app.renderHbsAdmin('adm/pipeliner'))
 
-      mailman.init()
-      pairbot.init()
+    app.use(['^/adm/pipeline*','^/adm/request*','^/adm/users*','^/adm/orders*','^/adm/experts*','^/adm/posts*','^/adm/redirects*'],
+      mw.authz.adm, app.renderHbsAdmin('adm/admin'))
 
-      app.get('/', mw.analytics.trackFirstRequest, mw.auth.authdRedirect('/dashboard'), app.renderHbs('home') )
-      // app.use('/auth', routes('auth')(app))
-      routes('auth')(app)
-      app.use('/v1/api/matching', routes('api').matching)
-      app.use('/v1/api/adm/bookings', routes('api').spinning)
-      app.use('/v1/api/adm', routes('api').admin)
-      app.use('/v1/api', routes('api').other)
-      app.use('/v1/api/posts', routes('api').posts)
-      $timelapsed("APP ROUTES API")
-      app.use(['^/matchmaking*','^/adm/bookings*'],
-        mw.authz.plnr, app.renderHbsAdmin('adm/pipeliner'))
+    app.use(mw.seo.noTrailingSlash) // Must be after root '/' route
+    app.use(routes('redirects').addPatterns(app))
 
-      app.use(['^/adm/pipeline*','^/adm/request*','^/adm/users*','^/adm/orders*','^/adm/experts*','^/adm/posts*','^/adm/redirects*'],
-        mw.authz.adm, app.renderHbsAdmin('adm/admin'))
+    app.use(mw.analytics.trackFirstRequest)
+    routes('redirects').addRoutesFromDb(app, () => {
 
-      app.use(mw.seo.noTrailingSlash) // Must be after root '/' route
-      app.use(routes('redirects').addPatterns(app))
+      app.use(routes('landing')(app))
+      app.use(routes('dynamic')(app))
+      app.get(routes('whiteList'), app.renderHbs('base') )
 
-      app.use(mw.analytics.trackFirstRequest)
-      routes('redirects').addRoutesFromDb(app, () => {
+      app.use(mw.logging.pageNotFound)
+      app.use(mw.logging.errorHandler(app))
 
-        app.use(routes('landing')(app))
-        app.use(routes('dynamic')(app))
-        app.get(routes('whiteList'), app.renderHbs('base') )
-
-        app.use(mw.logging.pageNotFound)
-        app.use(mw.logging.errorHandler(app))
-
-        var cb = done || (e => {})
-        app.listen(config.port, () => {
-          $log(`           Listening after ${new Date().getTime()-start}ms on port ${config.port}`.appload)
-          cb()
-        }).on('error', cb)
-      })
+      var cb = done || (e => {})
+      app.listen(config.port, () => {
+        $log(`           Listening after ${new Date().getTime()-start}ms on port ${config.port}`.appload)
+        cb()
+      }).on('error', cb)
     })
   })
 

@@ -22,38 +22,36 @@ global.expectTouch = (touch, byId, action) ->
   expect(touch.action).to.equal(action)
 
 
-loginHandler = (req, cb) ->
+login = (req, cb) ->
   fixtureUser = FIXTURE.users[req.body.key]
-  if !fixtureUser
-    throw Error("Could not find FIXTURE.user for {key:#{req.body.key}}")
+  if !fixtureUser then throw Error("Could not find FIXTURE.user for {key:#{req.body.key}}")
   {email} = FIXTURE.users[req.body.key]
   fn = require('../../server/services/auth').localLogin
   fn.call req, email, config.auth.masterpass, (e,r) ->
     req.session.passport = { user: r } if r
     cb(e,r)
 
-colors.setTheme({
-  spec: ['yellow','dim','bold']
-  # subspec: ['yellow','dim']
-  expectederr: 'red'
-  appload: 'white'
-  update: 'yellow'
-  trace: 'grey'
-  validation: 'blue'
-  wrappercall: 'white'
-})
+# colors.setTheme({
+#   spec: ['yellow','dim','bold']
+#   # subspec: ['yellow','dim']
+#   expectederr: 'red'
+#   appload: 'white'
+#   update: 'yellow'
+#   trace: 'grey'
+#   validation: 'blue'
+#   wrappercall: 'white'
+# })
 
 config.colors = colors
-config.log.auth = false
-config.log.da = false
+# config.log.auth = false
+# config.log.da = false
+# global.verboseErrHandler  = true   # true => lots of red detail
 
 
 global.againstProd = false
 
 
-SCREAM(__dirname, config, loginHandler).run()
-
-
+SCREAM(__dirname, config, {login}).run()
 
 
 global.STRINGIFY = (obj) ->

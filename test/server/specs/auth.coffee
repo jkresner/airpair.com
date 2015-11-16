@@ -43,9 +43,9 @@ signup = ->
 
 
   IT 'Can sign up as new user with google (old format)', ->
+    profile = FIXTURE.clone('oauth.google_rbrw')._json
+    token = 'rbrw_token'
     DB.removeDocs 'User', { 'auth.gp.id': FIXTURE.oauth.google_rbrw.id }, ->
-      profile = FIXTURE.oauth.google_rbrw._json
-      token = 'rbrw_token'
       AuthService.link.call SETUP.userSession(), 'google', profile, {token}, (e,usr) ->
         FIXTURE.users.rbrw = usr
         LOGIN {key:'rbrw'}, (s0) ->
@@ -69,9 +69,9 @@ signup = ->
 
 
   IT 'Can sign up as new user with google (new format)', ->
+    profile = FIXTURE.clone('oauth.google_aptst34')._json
+    token = 'aptst34_token'
     DB.removeDocs 'User', { 'auth.gp.id': FIXTURE.oauth.google_aptst34.id }, ->
-      profile = FIXTURE.oauth.google_aptst34._json
-      token = 'aptst34_token'
       AuthService.link.call SETUP.userSession(), 'google', profile, {token}, (e,usr) ->
         FIXTURE.users.aptst34 = usr
         LOGIN {key:'aptst34'}, (s0) ->
@@ -91,6 +91,7 @@ signup = ->
               expect(u.auth.gp.tokens[config.auth.oauth.appKey].token).to.equal('aptst34_token')
               DONE()
 
+
   IT 'Cannot sign up with local credentials and existing gmail', ->
     DB.removeDocs 'User', qExists.byEmails(["experts@airpair.com"]), ->
       d = name: "AirPair Experts", email: "experts@airpair.com", password: "Yoyoyoyoy"
@@ -109,7 +110,7 @@ signup = ->
           DONE()
 
 
-  it 'Fail gracefully to signup with github when user does not grant permission', ->
+  it 'Fail gracefully to signup with github when user does not grant permission'
   # IT 'Fail gracefully to signup with github when user does not grant permission', ->
     # DB.removeDocs 'User', { 'auth.gh.id': FIXTURE.oauth.github_ludofleury.id }, ->
     #   profile = FIXTURE.oauth.github_ludofleury._json
@@ -167,16 +168,16 @@ login = ->
   it 'github login saves all emails to user record', ->
 
   IT 'Can signup with local credentials then login with google of same email', ->
+    profile = FIXTURE.clone('oauth.google_aone')._json
+    token = 'aone_token'
     signup = email: 'airpairone001@gmail.com', name: 'AIr One', password: 'pass2'
     DB.removeDocs 'User', { email:'airpairone001@gmail.com'}, ->
-      $log('signup'.white, signup)
+      # $log('signup'.white, signup)
       SUBMIT '/auth/signup', signup, {}, (s) ->
         expect(s._id).to.exist
         expect(s.email).to.equal('airpairone001@gmail.com')
         LOGOUT ->
-          profile = FIXTURE.oauth.google_aone._json
-          token = 'aone_token'
-          $log('try oauth'.white, profile)
+          # $log('try oauth'.white, profile)
           AuthService.link.call SETUP.userSession(), 'google', profile, {token}, (e, r) ->
             expect(e).to.be.null
             expect(r._id).to.exist
@@ -188,11 +189,11 @@ login = ->
 
 
   IT 'Signup with google in one app and log back in with google in another', ->
-    {ape1} = FIXTURE.users
+    ape1 = FIXTURE.clone('users.ape1')
+    profile = ape1.auth.gp
+    token = 'ape1_gp_test_token'
     DB.removeDocs 'User', qExists.byEmails(['airpairtest1@gmail.com']), ->
       DB.ensureDoc 'User', ape1, ->
-        profile = ape1.auth.gp
-        token = 'ape1_gp_test_token'
         AuthService.link.call SETUP.userSession(), 'google', profile, {token}, (e, r1) ->
           expect(e).to.be.null
           expectIdsEqual(r1._id, ape1._id)
@@ -249,11 +250,11 @@ login = ->
 
 
   IT 'Login from a new anonymous session adds sessionID to aliases', ->
+    ape1 = FIXTURE.clone('users.ape1')
+    profile = ape1.auth.gp
+    token = 'ape1_gp_test_token'
     SETUP.analytics.on()
-    {ape1} = FIXTURE.users
     DB.ensureDoc 'User', ape1, ->
-      profile = ape1.auth.gp
-      token = 'ape1_gp_test_token'
       AuthService.link.call SETUP.userSession(), 'google', profile, {token}, (e, r1) ->
         expectIdsEqual(r1._id, ape1._id)
         DB.docById 'User', ape1._id, (r3) ->
@@ -384,11 +385,11 @@ password = ->
 link = ->
 
   IT 'Link github with local user / password', ->
-    STUB.cb(Wrappers.GitHub, 'getEmails', [{email:'jk@gmail.com',verified:true},{email:'jk@airpair.com',primary:true,verified:true}])
+    profile = FIXTURE.clone('oauth.github_jk')._json
+    profile.id += parseInt(profile.id+timeSeed())
+    profile.emails = [{email:'jk@gmail.com',verified:true},{email:'jk@airpair.com',primary:true,verified:true}]
+    token = 'jkjk_token'
     STORY.newUser 'jkjk', (s) ->
-      profile = FIXTURE.oauth.github_jk._json
-      profile.id += parseInt(profile.id+timeSeed())
-      token = 'jkjk_token'
       AuthService.link.call {user:s}, 'github', profile, {token}, (e,usr) ->
         FIXTURE.users[s.userKey] = usr
         GET '/session/full', (s1) ->
@@ -428,7 +429,7 @@ module.exports = ->
     SETUP.analytics.off()
 
 
-  describe.only "OLD", ->
+  describe "OLD", ->
     DESCRIBE("Signup", signup)
     DESCRIBE("Login", login)
     DESCRIBE("Password: ", password)

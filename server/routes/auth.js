@@ -68,7 +68,7 @@ module.exports = function(app) {
 
   if (config.auth.test) {
     // config.auth.test.defaultLoginLogic = mw.logic.auth.link
-    app.post(`/auth${config.auth.test.loginUrl}`, config.auth.test.loginHandler)
+    app.post(config.auth.test.loginUrl, config.auth.test.loginHandler)
   }
 
   app.get('/logout', mw.setReturnTo, (req, res, next) => {
