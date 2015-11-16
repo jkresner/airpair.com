@@ -1,4 +1,6 @@
 """
+  1) Update local mongo copy
+  2) Set the checkKey in the /specs/merge file to look up the users to merge
   coffee --nodejs "--harmony_destructuring" cmd/tools/merger/run.coffee
 """
 
@@ -8,10 +10,10 @@ setup.colors.APPLOAD         = setup.colors.white
 setup.colors.setTheme({appload: 'APPLOAD'})
 global.config                = setup.initConfig('prod')
 config.analytics.on          = false
-config.mongoUrl              = 'mongodb://localhost/airpair_dev'
+# config.mongoUrl              = 'mongodb://localhost/airpair_dev'
 
 
-config.mongoUrl              = 'mongodb://heroku:PQDUBfuFXxtCHT-LpObnI_pS_nx7bEzs2vGtbP3pqxhZUeMGo1p7WXwAYLK9RqhiqD6ftG9-zmQ1CVWnWqeTEQ@candidate.14.mongolayer.com:10507/app33053049'
+config.mongoUrl              = 'mongodb://heroku:'
 config.mail.transport =
   default: 'smtp'
   smtp:

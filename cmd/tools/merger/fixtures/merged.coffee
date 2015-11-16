@@ -52,10 +52,32 @@ nov_04_2015 =
   #   M: ['br@webworker.io','mail@bernhardrode.de']
   #   O: username: "ebbo", auth: { gp: {email: 'ebbo1983@gmail.com' } }
   #   R: paymethods:0,orders:0,bookings:0,requests:0,released:0,booked:0,ordered:0,suggests:0, fn:({merged,removed}) ->
+# 1511.04  -- -- | -- -- -- -- -- | -- -- -- -- |  stevetyler.uk@gmail.com        Steve Tyler 563936b42ff26b1100a56221
+# 1509.25  -- P1 | -- -- -- -- -- | O3 B2 R1 r1 |  stevetylerconsulting@gmail.com Steve Tyler 5605240220d5ea1100149710
+#   Steve_Tyler:
+#     M: ['stevetylerconsulting@gmail.com','stevetyler.uk@gmail.com']
+#     O: auth: { gp: {email: 'stevetylerconsulting@gmail.com' } }
+#     R: paymethods:1,orders:3,bookings:2,requests:1,released:1,booked:0,ordered:0,suggests:0, fn:({merged,removed}) ->
 
+# 1511.04  -- -- | -- -- -- -- -- | -- -- -- -- |  stevetyler.uk@gmail.com        Steve Tyler 563936b42ff26b1100a56221
+# 1509.25  -- P1 | -- -- -- -- -- | O3 B2 R1 r1 |  stevetylerconsulting@gmail.com Steve Tyler 5605240220d5ea1100149710
+#   Steve_Tyler:
+#     M: ['stevetylerconsulting@gmail.com','stevetyler.uk@gmail.com']
+#     O: auth: { gp: {email: 'stevetylerconsulting@gmail.com' } }
+#     R: paymethods:1,orders:3,bookings:2,requests:1,released:1,booked:0,ordered:0,suggests:0, fn:({merged,removed}) ->
 
+#   Steve_Tyler:
+#     M: ['stevetylerconsulting@gmail.com','stevetyler.uk@gmail.com']
+#     O: auth: { gp: {email: 'stevetylerconsulting@gmail.com' } }
+#     R: paymethods:1,orders:3,bookings:2,requests:1,released:1,booked:0,ordered:0,suggests:0, fn:({merged,removed}) ->
 
+nov_14_2015 =
+  Mickey_Puri:
+    M: ['mickeypuri@hotmail.com','mpuri@synergist.co.uk']
+    O: auth: { gp: {email: 'mickeypuri@hotmail.com' } }
+    R: paymethods:0,orders:0,bookings:0,requests:2,released:0,booked:0,ordered:0,suggests:0, fn:({merged,removed}) ->
 
+#
 
   # Dan_Metthews:
     # M: ['dan@bluefoc.us','dan@ticketevolution.com','dan.matthews@teamsnap.com','dan@sensiblesittersinc.com','dan@matthews.es']
@@ -65,4 +87,4 @@ nov_04_2015 =
 
 
 
-module.exports = nov_04_2015
+module.exports = nov_14_2015

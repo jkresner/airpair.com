@@ -82,7 +82,9 @@ module.exports = ->
 
   #   before (done) ->
   #     @timeout(10000)
-  #     checkKey = 'Bernhard_Rode'
+
+  #     checkKey = 'Mickey_Puri'
+
   #     global.merging = FIXTURE.merged[checkKey]
   #     global.merging.byName = checkKey.replace('_',' ')
   #     require('../../../migrate/201509/graph')(done)
@@ -91,7 +93,7 @@ module.exports = ->
   #   IT "Emails match existing users", checkEmails
 
 
-  DESCRIBE 'MERGE', ->
+  DESCRIBE 'MERGES', ->
 
     before (done) ->
       Templates.findOne {key:'user-merged'}, (e, tmpl) ->
