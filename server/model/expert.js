@@ -1,9 +1,8 @@
-module.exports = ({ Id, Enum, Touch, Reftag, Note },
+module.exports = ({ Id, Enum, Touch, Reftag, Note, Meta },
   { asSchema, required, trim, lowercase, unique, sparse }) => {
 
 
 var DealSchema = asSchema({
-  lastTouch:      Touch,
   expiry:         { type: Date, required },     // used as a flag that the deal is not longer available
   price:          { type: Number, required },
   minutes:        { type: Number, required },
@@ -24,7 +23,11 @@ var DealSchema = asSchema({
       name:       { type: String }
     }
   }],
-  activity:       [Touch]   // updates + views + (expert) shares
+
+  //-- legacy
+  lastTouch:      Touch,
+  activity:       [Touch],   // updates + views + (expert) shares
+
 })
 
 
@@ -32,8 +35,11 @@ var ExpertSchema = asSchema({
 
   userId:         { type: Id, ref: 'User', unique, required },
 
+  //-- legacy
   lastTouch:      Touch,
   activity:       [Touch],
+  //-- new
+  meta:           Meta,
 
   rate:           { type: Number },
   brief:          { type: String },
@@ -60,7 +66,7 @@ var ExpertSchema = asSchema({
   deals:            [DealSchema],
 
   availability: {
-    // lastTouch:    Touch,
+    updated:        { type: Touch },
     status:         { type: String },
     busyUntil:      { type: Date },
     times:          { type: String },

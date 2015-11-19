@@ -31,9 +31,9 @@ var get = {
     var exclude = q.exclude || []
     var tags = q.tags.map(tid=>cache.tags[tid])
     var budget = q.budget || 0
-    var includeBusy = q.includeBusy
+    var includeBusy = true //q.includeBusy
 
-    // $log('query.ranked(tags,exclude,0,includeBusy) }', query.ranked(tags,exclude,0,includeBusy))
+    // console.log('query.ranked(tags,exclude,0,includeBusy) }', query.ranked(tags,exclude,0,includeBusy))
 
     Expert.aggregate([
         { $match: query.ranked(tags,exclude,0,includeBusy) } /* Query can go here, if you want to filter results. */
@@ -41,7 +41,7 @@ var get = {
       , { $project: _.extend({ common:1, primary: { $setIntersection: ['$tags._id',[tags[0]]] } }, select.matches) } /* select the tokens field as something we want to "send" to the next command in the chain */
       , { $project: _.extend({ commonLen: { $size: '$common' }, primaryLen: { $size: '$primary' } }, select.matches) }
       , { $sort: { commonLen: -1, primaryLen: -1 } }
-      , { $limit: 200 }
+      , { $limit: 300 }
     ], (e, experts) => {
       if (e || !experts || experts.length == 0) return cb(e,experts)
       // $log('prim', experts.map(ex=>ex.userId))
@@ -59,7 +59,7 @@ var get = {
 
           var filtered = inflated.filter(exp=>exclude.indexOf(exp.username)==-1)
           var sorted = _.sortBy(filtered, u => u.score).reverse()
-          var results = _.take(sorted, 100)
+          var results = _.take(sorted, 200)
           // $log('experts', results)
           cb(null, results)
         })(ee, experts)
@@ -71,8 +71,9 @@ var get = {
   getGroupMatch(tags, q, cb) {
     var filterQ = (group) =>
       _.take(_.filter(group.suggested,(s) =>
-        s.minRate <= q.maxRate  &&
+        s.availability.minRate <= q.maxRate  &&
         !_.contains(q.exclude,s._id)), q.take)
+
 
     var groupMatch = (tag) => {
       var {slug} = tag

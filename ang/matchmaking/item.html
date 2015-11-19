@@ -104,13 +104,15 @@
       <hr />
 
       <ul>
-        <li class="match" ng-repeat="m in matches">
+        <li class="match {{m.availability.status}}" ng-repeat="m in matches">
           <a ng-click="selectExpert(m)">
-            <img ng-src="{{m.avatar}}?s=40" class="user" /></a>
+            <img ng-src="{{m.avatar}}?s=40" class="user" />
+            <div expert-avail data="m.availability"></div>
+          </a>
           <social-links profile="m"></social-links>
           <social-scores profile="m"></social-scores>
           <div>{{gh}}</div>
-          <time>{{m.lastTouch.utc | agoTime }}</time>
+          <time ng-if="m.lastTouch">{{m.lastTouch._id | objectIdToAgoTime }}</time>
           <b>Mojo: {{m.score}}</b>
           <a href="/adm/experts/{{m._id}}" target="_blank">{{m.name}}</a>
           <i>{{m.location}}</i>

@@ -11,6 +11,7 @@ require('./common/util.js');
 require('./common/directives/forms/forms.js');
 require('./common/directives/forms/inputs.js');
 require('./common/directives/forms/tagInput.js');
+require('./common/directives/experts.js');
 require('./common/directives/deals.js');
 require('./common/directives/requests.js');
 require('./common/directives/mailtemplates.js');
