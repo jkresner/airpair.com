@@ -52,27 +52,27 @@ var wrapper = {
 
   getClientToken(cb) {
     var payload = {}
-    this.api.clientToken.generate(payload, (e, r) => cb(e, e?null: {btoken:r.clientToken}, payload))
+    this.api.clientToken.generate(payload, (e, r) => cb(e, r, payload))
   },
 
   chargeWithMethod(amount, orderId, paymentMethodToken, cb) {
     var payload = { amount, paymentMethodToken, options : { submitForSettlement: true } }
     payload.orderId = orderId.toString() // braintree complains if we give it a mongo.ObjectId
 
-    this.api.transaction.sale(payload, (e, r) => cb(e, e?null: r, payload))
+    this.api.transaction.sale(payload, (e, r) => cb(e, e?null:r, payload))
   },
 
   addPaymentMethod(customerId, user, company, paymentMethodNonce, cb) {
-    var payload = customerId
-    this.api.customer.find(payload, function (ee, existing) {
+    this.api.customer.find(customerId, (ee, existing) => {
       if (existing)
       {
-        payload = { customerId, paymentMethodNonce }
-        this.api.paymentMethod.create(payload, (e, r) => cb(e, e?null: r.paymentMethod, payload))
+        var payload = { customerId, paymentMethodNonce }
+        this.api.paymentMethod.create(payload, (e, r) =>
+          cb(e, e?null:Object.assign({success:true},r.paymentMethod), payload))
       }
       else
       {
-        payload = {
+        var payload = {
           id: customerId,
           firstName: util.firstName(user.name),
           lastName: util.lastName(user.name),
@@ -89,7 +89,9 @@ var wrapper = {
           payload.customFields.companyId = company._id.toString()
         }
 
-        this.api.customer.create(payload, (e, r) => cb(e, e?null: r.customer.creditCards[0], payload))
+        this.api.customer.create(payload, (e, r) =>
+          cb(e, e?null:Object.assign({success:true},r.customer.creditCards[0]), payload)
+        )
       }
     })
   }

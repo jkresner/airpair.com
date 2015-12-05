@@ -39,7 +39,7 @@ create = ->
 
 
   IT 'Can update request type with no technology tags', ->
-    STORY.newUser 'scol', (s) ->
+    STORY.newUser 'uris', (s) ->
       d = type: 'code-review'
       POST '/requests', d, {}, (r1) ->
         expect(r1._id).to.exist
@@ -51,7 +51,7 @@ create = ->
 
 
   IT 'Can update a request after verifying email', ->
-    STORY.newUser 'narv', (s) ->
+    STORY.newUser 'nevk', (s) ->
       # expect(s.emailVerified).to.be.false
       d = type: 'troubleshooting', tags: [FIXTURE.tags.node]
       POST '/requests', d, (r1) ->
@@ -71,7 +71,7 @@ create = ->
           LOGIN {key:'admin'}, ->
             GET "/adm/requests/user/#{s._id}", (rAdm) ->
               expect(rAdm.length).to.equal(1)
-              expectTouch(rAdm[0].lastTouch, s._id, 'updateByCustomer')
+              EXPECT.touch(rAdm[0].lastTouch, s._id, 'updateByCustomer')
               expect(rAdm[0].adm.active).to.be.true
               expect(rAdm[0].adm.submitted).to.be.undefined
               DONE()
@@ -121,7 +121,7 @@ create = ->
 
 
   IT 'Delete an incomplete request as owner', ->
-    STORY.newUser 'kyla', (s) ->
+    STORY.newUser 'dily', (s) ->
       d = type: 'mentoring'
       POST '/requests', d, {}, (r) ->
         expect(r._id).to.exist
@@ -136,7 +136,7 @@ create = ->
       d = type: 'code-review'
       POST '/requests', d, {}, (r) ->
         expect(r._id).to.exist
-        STORY.newUser 'auka', (s2) ->
+        STORY.newUser 'clew', (s2) ->
           DELETE "/requests/#{r._id}", { status: 403 }, (rDel) ->
             LOGIN {key:'admin'}, (sAdmin) ->
               GET "/adm/requests/user/#{s._id}", {}, (reqs1) ->
@@ -150,7 +150,7 @@ create = ->
 review = ->
 
   IT 'Review a request as anon, customer and other', ->
-    STORY.newUser 'mfly', (s) ->
+    STORY.newUser 'soik', (s) ->
       d = tags: [FIXTURE.tags.angular], type: 'troubleshooting', experience: 'advanced', brief: 'this is a another anglaur test yo', hours: "2", time: 'regular', budget: 150
       POST '/requests', d, {}, (r) ->
         expect(r._id).to.exist
@@ -175,7 +175,7 @@ review = ->
                 expect(sSnug.name).to.equal("Ra'Shaun Stovall")
                 GET "/requests/review/#{r._id}", {}, (rExpert) ->
                   expect(_.idsEqual(r._id,rExpert._id)).to.be.true
-                  expect(rExpert.by.name.indexOf("Michael Flynn")).to.equal(0)
+                  expect(rExpert.by.name.indexOf("Somik Rana")).to.equal(0)
                   expect(rAnon.userId).to.be.undefined
                   expect(rAnon.budget).to.be.undefined
                   DONE()
@@ -295,7 +295,7 @@ review = ->
 
 
   IT 'Update reply to a request as an expert', ->
-    STORY.newUser 'mikf', (s) ->
+    STORY.newUser 'miks', (s) ->
       d = tags: [FIXTURE.tags.angular], type: 'resources', experience: 'proficient', brief: 'bah bah anglaur test yo4', hours: "1", time: 'rush'
       POST '/requests', d, {}, (r0) ->
         PUT "/requests/#{r0._id}", _.extend(r0,{budget:150}), {}, (r) ->
@@ -357,7 +357,7 @@ review = ->
 
 
   IT 'Can get data to book expert on request rate', ->
-    STORY.newUser 'pcor', (spcor, spcorKey) ->
+    STORY.newUser 'peco', (spcor, spcorKey) ->
       d = tags: [FIXTURE.tags.angular], type: 'resources', experience: 'proficient', brief: 'bah bah anglaur test yo4', hours: "1", time: 'rush'
       POST '/requests', d, (r0) ->
         PUT "/requests/#{r0._id}", _.extend(r0,{budget:300}), (r) ->
@@ -410,10 +410,7 @@ module.exports = ->
       done()
 
   beforeEach ->
-    STUB.sync(Wrappers.Slack, 'checkUserSync', null)
-    STUB.cb(Wrappers.Slack, 'getUsers', FIXTURE.wrappers.slack_users_list)
-    STUB.cb(Wrappers.Slack, 'getChannels', FIXTURE.wrappers.slack_channels_list)
-    STUB.cb(Wrappers.Slack, 'getGroups', FIXTURE.wrappers.slack_groups_list)
+    STUB.SlackCommon()
 
 
   DESCRIBE "Create", create

@@ -492,7 +492,9 @@ module.exports = {
 
   //https://api.stackexchange.com/tags/ember.js/wikis?site=stackoverflow
   stackoverflow_wiki_ember: {
-    items: [
+    ok: true,
+    body: {
+      items: [
       {
         excerpt_last_edit_date: 1413395402,
         body_last_edit_date: 1420351795,
@@ -503,15 +505,28 @@ module.exports = {
     has_more: false,
     quota_max: 300,
     quota_remaining: 283
+    }
   },
 
-  stackoverflow_wiki_ios8: { items:
-    [ { excerpt_last_edit_date: 1411277797, body_last_edit_date: 1408087005,
-       excerpt: 'iOS 8 is the eighth version of Apple&#39;s iOS mobile operating system. It was announced at Apple&#39;s Worldwide Developers Conference (WWDC) on June 2, 2014 and was later released to the public on September 17, 2014.  See https://www.apple.com/ios/ios8/developer/ for more information.', tag_name: 'ios8' } ],
-    has_more: false, quota_max: 300, quota_remaining: 270 },
+
+  stackoverflow_wiki_ios8: {
+    ok: true,
+    body: {
+      items: [
+      {
+        excerpt_last_edit_date: 1411277797, body_last_edit_date: 1408087005,
+        excerpt: 'iOS 8 is the eighth version of Apple&#39;s iOS mobile operating system. It was announced at Apple&#39;s Worldwide Developers Conference (WWDC) on June 2, 2014 and was later released to the public on September 17, 2014.  See https://www.apple.com/ios/ios8/developer/ for more information.',
+        tag_name: 'ios8'
+      }
+      ],
+      has_more: false, quota_max: 300, quota_remaining: 270
+    }
+  },
 
   //https://api.stackexchange.com/tags/ember.js/info?site=stackoverflow
   stackoverflow_info_ember: {
+    ok: true,
+    body: {
     "items":[
       {
         "has_synonyms":true,
@@ -524,6 +539,7 @@ module.exports = {
     "has_more":false,
     "quota_max":300,
     "quota_remaining":281
+    }
   },
 
   //https://api.stackexchange.com/tags/ember.js/synonyms?site=stackoverflow

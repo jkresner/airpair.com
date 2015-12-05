@@ -127,9 +127,9 @@ get = ->
 create = ->
 
   before ->
-    @soApiGetStub = STUB.stubWrapperAPICall 'StackExchange', 'get'
-    @soResponseCB = (fixtureKey) ->
-      (url, cb) -> cb null, ({ok:true,body:FIXTURE.wrappers[fixtureKey]})
+    @SO_API = STUB.wrapper('StackExchange').api('get')
+    # @soResponseCB = (fixtureKey) ->
+      # (url, cb) -> cb null, ({ok:true,body:FIXTURE.wrappers[fixtureKey]})
 
 
   # IT '401 on Create from 3rd party term for anonymous', ->
@@ -137,7 +137,7 @@ create = ->
   #     DONE()
 
   IT 'Create by soId fails for invalid SO tag', ->
-    @soApiGetStub @soResponseCB('stackoverflow_wiki_nofoundtag')
+    @SO_API.fix('stackoverflow_wiki_nofoundtag')
     LOGIN {key:'admin'}, =>
       POST '/tags', { tagfrom3rdparty: 'sdgvbffaddbsdf' }, { status: 404 }, (e) ->
         EXPECT.startsWith(e.message, "tagfrom3rdparty not found")
@@ -145,7 +145,7 @@ create = ->
 
   IT 'Create by soId for valid SO tag ios8', ->
     DB.removeDocs 'Tag', { slug: 'ios8' }, ->
-    @soApiGetStub @soResponseCB('stackoverflow_wiki_ios8')
+    @SO_API.fix('stackoverflow_wiki_ios8')
     LOGIN {key:'admin'}, ->
       POST '/tags', { tagfrom3rdparty: 'ios8' }, {}, (t) ->
         expect(t._id).to.exist
@@ -175,7 +175,7 @@ create = ->
 
   IT 'Create from 3rd party term matching existing soId updates data for existing tag', ->
     DB.ensureDocs 'Tag', [FIXTURE.tags['ember.js']], ->
-    @soApiGetStub @soResponseCB('stackoverflow_wiki_ember')
+    @SO_API.fix('stackoverflow_wiki_ember')
     LOGIN {key:'admin'}, ->
       GET '/adm/tags/5181d0aa66a6f999a465eceb', {}, (emb1) ->
         expect(emb1.name).to.equal("EmberJS")
@@ -288,14 +288,10 @@ module.exports = ->
     DB.ensureDoc 'User', FIXTURE.users.admin, ->
       done()
 
-  # if againstProd
-    # DESCRIBE "SKIP TAGS", ->
-      # it "Better make this open again"
 
-  # else
-    DESCRIBE("Get", get)
-    DESCRIBE("Create", create)
-    DESCRIBE("Update ", update)
+  DESCRIBE("Get", get)
+  DESCRIBE("Create", create)
+  DESCRIBE("Update ", update)
 
 
 

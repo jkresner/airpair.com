@@ -8,7 +8,7 @@ requests = ->
 
   IT 'Pipeliner can reply to a new request', ->
     data = type: 'other', tags: [FIXTURE.tags.node]
-    STORY.newRequest 'hubr', {forAdmin,data}, (r) ->
+    STORY.newRequest 'jjel', {forAdmin,data}, (r) ->
       msg = type: 'received', subject: "test subject", markdown: "test body"
       PUT "/adm/requests/#{r._id}/message", msg, (r1) ->
         adm1 = r1.adm
@@ -37,7 +37,7 @@ requests = ->
 
   IT 'Pipeliner can farm a new request', ->
     data = type: 'other', tags: [FIXTURE.tags.node]
-    STORY.newRequest 'hbri', {forAdmin,data}, (r) ->
+    STORY.newRequest 'chiu', {forAdmin,data}, (r) ->
       PUT "/adm/requests/#{r._id}/message", { type: 'received', subject: "s", markdown: "b" }, {}, (r1) ->
         tweet = requestUtil.buildDefaultFarmTweet(r)
         PUT "/adm/requests/#{r._id}/farm", { tweet }, {}, (r1) ->
@@ -305,10 +305,7 @@ module.exports = ->
 
 
   beforeEach ->
-    STUB.sync(Wrappers.Slack, 'checkUserSync', null)
-    STUB.cb(Wrappers.Slack, 'getUsers', FIXTURE.wrappers.slack_users_list)
-    STUB.cb(Wrappers.Slack, 'getChannels', FIXTURE.wrappers.slack_channels_list)
-    STUB.cb(Wrappers.Slack, 'getGroups', FIXTURE.wrappers.slack_groups_list)
+    STUB.SlackCommon()
 
 
   DESCRIBE "Request", requests

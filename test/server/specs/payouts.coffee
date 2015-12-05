@@ -130,7 +130,7 @@ get = ->
       opts = book: true, reply: { userKey: sExp.userKey }
       opts1 = book: true, reply: { userKey: sExp.userKey }
       STORY.newRequest 'hubi', opts1, (request1, booking1, customerSession1, expertSession) ->
-        STORY.newRequest 'mois', opts1, (request2, booking2, customerSession2, expertSession) ->
+        STORY.newRequest 'acob', opts1, (request2, booking2, customerSession2, expertSession) ->
           STORY.newRequest 'jkjk', opts1, (request3, booking3, customerSession3, expertSession) ->
             LOGIN {key:'admin'},  ->
               PUT "/billing/orders/#{booking1.orderId}/release", {}, {}, (released1) ->

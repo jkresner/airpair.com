@@ -4,14 +4,14 @@ braintree_test_nouce = 'fake-valid-nonce'
 noAnalytics = ->
 
   before ->
-    @braintreeTokenStub = STUB.stubWrapperInnerAPI 'Braintree', 'clientToken.generate'
-    @braintreeCustomerStub = STUB.stubWrapperInnerAPI 'Braintree', 'customer.find'
-    @braintreeCreateStub = STUB.stubWrapperInnerAPI 'Braintree', 'customer.find'
-    @braintreeCB = (key) -> (params, cb) -> cb(null, FIXTURE.wrappers[key])
+    @brainAPI = STUB.wrapper('Braintree').api
+    # @braintreeCustomerStub = brainAPI('customer.find')
+    # @braintreeCreateStub = brainAPI('customer.find')
+    # @braintreeCB = (key) -> (params, cb) -> cb(null, FIXTURE.wrappers[key])
 
 
   IT 'Gets braintree token on new loggedin user get-paymethods', ->
-    stub = @braintreeTokenStub @braintreeCB('braintree_newuser_token')
+    stub = @brainAPI('clientToken.generate').fix('braintree_api_newuser_testtoken')
     STORY.newUser 'nkig', {login:true}, (s) ->
       GET '/billing/paymethods', (r) ->
         expect(r.btoken).to.exist

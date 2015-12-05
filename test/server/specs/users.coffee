@@ -32,9 +32,9 @@ update = ->
         DONE()
 
   IT 'Set and unset username', ->
+    username = "tybr#{@timeSeed}"
     STORY.newUser 'tybr', (tybr) ->
       expect(tybr.username).to.be.undefined
-      username = "tybr#{timeSeed()}"
       PUT '/users/me/username', { username }, (u1) ->
         expect(u1.username).to.equal(username)
         PUT '/users/me/username', { username: "" }, (u2) ->
@@ -97,10 +97,7 @@ update = ->
 module.exports = ->
 
   beforeEach ->
-    # STUB.sync(Wrappers.Slack, 'checkUserSync', null)
-    STUB.cb(Wrappers.Slack, 'getUsers', FIXTURE.wrappers.slack_users_list)
-    STUB.cb(Wrappers.Slack, 'getChannels', FIXTURE.wrappers.slack_channels_list)
-    STUB.cb(Wrappers.Slack, 'getGroups', FIXTURE.wrappers.slack_groups_list)
+    STUB.SlackCommon()
 
   DESCRIBE("anonymous", anonymous)
   DESCRIBE("Get", get)

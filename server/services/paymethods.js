@@ -42,7 +42,8 @@ var get = {
           if (pm.type.indexOf('payout') == -1) nonPayoutMethods.push(pm)
 
         if (nonPayoutMethods.length == 0)
-          return Wrappers.Braintree.getClientToken(cb)
+          return Wrappers.Braintree.getClientToken((e,r)=>
+                          cb(e, e?null: {btoken:r.clientToken}))
         else
           cb(e, nonPayoutMethods)
         // if (nonPayoutMethods.length > 0) return cb(e,nonPayoutMethods)
