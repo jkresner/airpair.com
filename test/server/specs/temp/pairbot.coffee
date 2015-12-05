@@ -10,8 +10,8 @@ module.exports = -> describe "pairbot: ", ->
     hangoutUrl = "https://talkgadet.com/test-spinning-test"
     pairbot.get 'hangout-started-slack', {hangoutUrl}, (e,msg) ->
       expect(e).to.be.null
-      # expectContains(msg,"New post for review")
-      # expectContains(msg,"https://www.airpair.com/posts/review/#{d._id}")
+      # EXPECT.contains(msg,"New post for review")
+      # EXPECT.contains(msg,"https://www.airpair.com/posts/review/#{d._id}")
       DONE()
 
   describe.skip "posts ", ->
@@ -20,7 +20,7 @@ module.exports = -> describe "pairbot: ", ->
       pairbot.sendPostSubmitted data.posts.mmTopAngMistakes, (e,r) ->
         expect(e).to.be.null
         msg = r.message
-        # expectContains(msg,"New post for review")
+        # EXPECT.contains(msg,"New post for review")
         DONE()
 
 

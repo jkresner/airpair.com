@@ -107,6 +107,11 @@ module.exports = {
     success: true
   },
 
+  braintree_api_newuser_testtoken: {
+    clientToken: 'fake-valid-nonce',
+    success: true
+  },
+
   braintree_charge_success: {
     "transaction":{
       "id":"5fkkvj",
@@ -219,7 +224,7 @@ module.exports = {
     reminders: { useDefault: true }
   },
 
-  youtube_codereview_list : {
+  youtube_api_codereview_list : {
     "kind":"youtube#videoListResponse","etag":"\"9iWEWaGPvvCMMVNTPHF9GiusHJA/d_9TlsQaaaSBJaA9-DuaomZyt9Q\"",
     "pageInfo":{"totalResults":1,"resultsPerPage":1},
     "items":[{"kind":"youtube#video","etag":"\"9iWEWaGPvvCMMVNTPHF9GiusHJA/-1hpkzxagLVFa1ufDiRdB8fpD_g\"","id":"MEv4SuSJgwk",
@@ -630,6 +635,46 @@ module.exports = {
     name: 'zz-test-5590ba6953c6b'
   },
 
+  slack_getGroupWithHistory: {
+    info: {
+      "id":"G06UFP6AX",
+      "name":"steve-gregory-55b9dba","is_group":true,"created":1435548980,
+      "creator":"U06UCSHL0","is_archived":false,"is_mpim":false,"is_open":true,"last_read":"1435548980.000003",
+      "latest":{"text":"<!group> Sun 06 11:58 UTC | 10:58PM AEDT | 11:58AM GMT has been confirmed Daniel Roseman for <http://booking.airpa.ir/5656f3eaf2d231370211bba4|booking.airpa.ir/5656f3eaf2d231370211bba4>. Please be online 10 minutes before to start on time.","username":"pairbot","type":"message","subtype":"bot_message","ts":"1448538984.498078"},"unread_count":190,"unread_count_display":187,"members":["U06U2HQQK","U06UBBT9V","U06UCKSSF","U06UCSHL0"],"topic":{"value":"","creator":"","last_set":0},"purpose":{"value":"http://booking.airpa.ir/55b9dba1f07139aed9500482 Steve (AEST, Melbourne VIC, Australia) + gregory (PDT, Los Angeles, CA, USA). FEEDBACK required to payout expert for 120 mins on Sat 01 08:09 UTC | 6:09PM AEST | 1:09AM PDT","creator":"U06UCSHL0","last_set":1438243537}
+    },
+    messages: [
+      {"text":"<!group> Sun 06 11:47 UTC | 10:47PM AEDT | 11:47AM GMT has been confirmed Daniel Roseman for <http://booking.airpa.ir/5656f134ebcdc4da01c6a3bd|booking.airpa.ir/5656f134ebcdc4da01c6a3bd>. Please be online 10 minutes before to start on time.","username":"pairbot","type":"message","subtype":"bot_message","ts":"1448538290.491640"},
+      {"text":"<!group> Sun 06 11:46 UTC | 10:46PM AEDT | 11:46AM GMT has been confirmed Daniel Roseman for <http://booking.airpa.ir/5656f11374f74fd5010c43c7|booking.airpa.ir/5656f11374f74fd5010c43c7>. Please be online 10 minutes before to start on time.","username":"pairbot","type":"message","subtype":"bot_message","ts":"1448538258.491325"},
+      {"text":"<!group> Sun 06 11:45 UTC | 10:45PM AEDT | 11:45AM GMT has been confirmed Daniel Roseman for <http://booking.airpa.ir/5656f0d3f8f94ccb0149ad38|booking.airpa.ir/5656f0d3f8f94ccb0149ad38>. Please be online 10 minutes before to start on time.","username":"pairbot","type":"message","subtype":"bot_message","ts":"1448538193.490676"},
+      {"text":"<!group> Sun 06 11:44 UTC | 10:44PM AEDT | 11:44AM GMT has been confirmed Daniel Roseman for <http://booking.airpa.ir/5656f0abe0a965c8010590c9|booking.airpa.ir/5656f0abe0a965c8010590c9>. Please be online 10 minutes before to start on time.","username":"pairbot","type":"message","subtype":"bot_message","ts":"1448538153.490278"},
+      {"user":"U06UCSHL0","purpose":"https://airpair.com/bookings/55990dcbbd5a78d846d185ad Jonathon (AEST, Melbourne VIC, Australia) + Giorgio (AEST, Melbourne VIC, Australia). WAITING to confirm 120 mins @ Tue 07 10AM UTC | 8PM AEST.","type":"message","subtype":"group_purpose","text":"<@U06UCSHL0|customer-support> set the group's purpose: https://airpair.com/bookings/55990dcbbd5a78d846d185ad Jonathon (AEST, Melbourne VIC, Australia) + Giorgio (AEST, Melbourne VIC, Australia). WAITING to confirm 120 mins @ Tue 07 10AM UTC | 8PM AEST.","ts":"1436093743.000002"},{"user":"U06UCKSSF","inviter":"U06UCSHL0","type":"message","subtype":"group_join","text":"<@U06UCKSSF|jkgmail> has joined the group","ts":"1435550337.000006"},
+      {"user":"U06U2HQQK","inviter":"U06UCSHL0","type":"message","subtype":"group_join","text":"<@U06U2HQQK|jk> has joined the group","ts":"1435548980.000005"},{"user":"U06UBBT9V","inviter":"U06UCSHL0","type":"message","subtype":"group_join","text":"<@U06UBBT9V|pairbot> has joined the group","ts":"1435548980.000004"},{"user":"U06UCSHL0","purpose":"I have a test purpose 1435549133","type":"message","subtype":"group_purpose","text":"<@U06UCSHL0|customer-support> set the group's purpose: I have a test purpose 1435549133","ts":"1435548980.000003"},
+    ]
+  },
+
+  slack_api_group_info: {
+    "group":{"id":"G06UFP6AX","name":"steve-gregory-55b9dba","is_group":true,"created":1435548980,
+    "creator":"U06UCSHL0","is_archived":false,"is_mpim":false,"is_open":true,"last_read":"1435548980.000003",
+    "latest":{"text":"<!group> Sun 06 11:58 UTC | 10:58PM AEDT | 11:58AM GMT has been confirmed Daniel Roseman for <http://booking.airpa.ir/5656f3eaf2d231370211bba4|booking.airpa.ir/5656f3eaf2d231370211bba4>. Please be online 10 minutes before to start on time.","username":"pairbot","type":"message","subtype":"bot_message","ts":"1448538984.498078"},"unread_count":190,"unread_count_display":187,"members":["U06U2HQQK","U06UBBT9V","U06UCKSSF","U06UCSHL0"],"topic":{"value":"","creator":"","last_set":0},"purpose":{"value":"http://booking.airpa.ir/55b9dba1f07139aed9500482 Steve (AEST, Melbourne VIC, Australia) + gregory (PDT, Los Angeles, CA, USA). FEEDBACK required to payout expert for 120 mins on Sat 01 08:09 UTC | 6:09PM AEST | 1:09AM PDT","creator":"U06UCSHL0","last_set":1438243537}}
+  },
+
+  slack_api_groups_history: {
+    messages: [
+      {"text":"<!group> Sun 06 11:58 UTC | 10:58PM AEDT | 11:58AM GMT has been confirmed Daniel Roseman for <http://booking.airpa.ir/5656f3eaf2d231370211bba4|booking.airpa.ir/5656f3eaf2d231370211bba4>. Please be online 10 minutes before to start on time.","username":"pairbot","type":"message","subtype":"bot_message","ts":"1448538984.498078"},
+      {"text":"<!group> Sun 06 11:54 UTC | 10:54PM AEDT | 11:54AM GMT has been confirmed Daniel Roseman for <http://booking.airpa.ir/5656f2f40334f31c02d6e8fd|booking.airpa.ir/5656f2f40334f31c02d6e8fd>. Please be online 10 minutes before to start on time.","username":"pairbot","type":"message","subtype":"bot_message","ts":"1448538738.495585"},
+      {"text":"<!group> Sun 06 11:49 UTC | 10:49PM AEDT | 11:49AM GMT has been confirmed Daniel Roseman for <http://booking.airpa.ir/5656f1adca22e6ef016c6c1a|booking.airpa.ir/5656f1adca22e6ef016c6c1a>. Please be online 10 minutes before to start on time.","username":"pairbot","type":"message","subtype":"bot_message","ts":"1448538411.492630"},
+      {"text":"<!group> Sun 06 11:48 UTC | 10:48PM AEDT | 11:48AM GMT has been confirmed Daniel Roseman for <http://booking.airpa.ir/5656f189037d48e9018f077f|booking.airpa.ir/5656f189037d48e9018f077f>. Please be online 10 minutes before to start on time.","username":"pairbot","type":"message","subtype":"bot_message","ts":"1448538375.492339"},
+      {"text":"<!group> Sun 06 11:47 UTC | 10:47PM AEDT | 11:47AM GMT has been confirmed Daniel Roseman for <http://booking.airpa.ir/5656f15ca9c012e001aa42ce|booking.airpa.ir/5656f15ca9c012e001aa42ce>. Please be online 10 minutes before to start on time.","username":"pairbot","type":"message","subtype":"bot_message","ts":"1448538331.491989"},
+      {"text":"<!group> Sun 06 11:47 UTC | 10:47PM AEDT | 11:47AM GMT has been confirmed Daniel Roseman for <http://booking.airpa.ir/5656f134ebcdc4da01c6a3bd|booking.airpa.ir/5656f134ebcdc4da01c6a3bd>. Please be online 10 minutes before to start on time.","username":"pairbot","type":"message","subtype":"bot_message","ts":"1448538290.491640"},
+      {"text":"<!group> Sun 06 11:46 UTC | 10:46PM AEDT | 11:46AM GMT has been confirmed Daniel Roseman for <http://booking.airpa.ir/5656f11374f74fd5010c43c7|booking.airpa.ir/5656f11374f74fd5010c43c7>. Please be online 10 minutes before to start on time.","username":"pairbot","type":"message","subtype":"bot_message","ts":"1448538258.491325"},
+      {"text":"<!group> Sun 06 11:45 UTC | 10:45PM AEDT | 11:45AM GMT has been confirmed Daniel Roseman for <http://booking.airpa.ir/5656f0d3f8f94ccb0149ad38|booking.airpa.ir/5656f0d3f8f94ccb0149ad38>. Please be online 10 minutes before to start on time.","username":"pairbot","type":"message","subtype":"bot_message","ts":"1448538193.490676"},
+      {"text":"<!group> Sun 06 11:44 UTC | 10:44PM AEDT | 11:44AM GMT has been confirmed Daniel Roseman for <http://booking.airpa.ir/5656f0abe0a965c8010590c9|booking.airpa.ir/5656f0abe0a965c8010590c9>. Please be online 10 minutes before to start on time.","username":"pairbot","type":"message","subtype":"bot_message","ts":"1448538153.490278"},
+      {"user":"U06UCSHL0","purpose":"https://airpair.com/bookings/55990dcbbd5a78d846d185ad Jonathon (AEST, Melbourne VIC, Australia) + Giorgio (AEST, Melbourne VIC, Australia). WAITING to confirm 120 mins @ Tue 07 10AM UTC | 8PM AEST.","type":"message","subtype":"group_purpose","text":"<@U06UCSHL0|customer-support> set the group's purpose: https://airpair.com/bookings/55990dcbbd5a78d846d185ad Jonathon (AEST, Melbourne VIC, Australia) + Giorgio (AEST, Melbourne VIC, Australia). WAITING to confirm 120 mins @ Tue 07 10AM UTC | 8PM AEST.","ts":"1436093743.000002"},{"user":"U06UCKSSF","inviter":"U06UCSHL0","type":"message","subtype":"group_join","text":"<@U06UCKSSF|jkgmail> has joined the group","ts":"1435550337.000006"},
+      {"user":"U06U2HQQK","inviter":"U06UCSHL0","type":"message","subtype":"group_join","text":"<@U06U2HQQK|jk> has joined the group","ts":"1435548980.000005"},{"user":"U06UBBT9V","inviter":"U06UCSHL0","type":"message","subtype":"group_join","text":"<@U06UBBT9V|pairbot> has joined the group","ts":"1435548980.000004"},{"user":"U06UCSHL0","purpose":"I have a test purpose 1435549133","type":"message","subtype":"group_purpose","text":"<@U06UCSHL0|customer-support> set the group's purpose: I have a test purpose 1435549133","ts":"1435548980.000003"},
+      {"user":"U06UCSHL0","type":"message","subtype":"group_join","text":"<@U06UCSHL0|customer-support> has joined the group","ts":"1435548980.000002"}
+    ],
+    has_more: false
+  },
 
   google_cal_list: [
     {

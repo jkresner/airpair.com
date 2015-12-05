@@ -2,7 +2,7 @@ signup = ->
 
   it 'Can signup from homepage and set password', itDone ->
     spy = sinon.spy(mailman,'sendTemplate')
-    clone = SETUP.userData('mris')
+    clone = DATA.newSignupData('mris')
     http(global.app).put('/v1/api/users/me/email')
       .send({email:clone.email}).expect(200)
       .end (err, resp) ->
@@ -52,7 +52,7 @@ signup = ->
 
   # it 'Can signup from post subscribe and set password', itDone ->
   #   spy = sinon.spy(mailman,'sendTemplate')
-  #   clone = SETUP.userData('mirs')
+  #   clone = DATA.newSignupData('mirs')
   #   http(global.app).put('/v1/api/users/me/email')
   #     .send({email:clone.email}).expect(200)
   #     .end (err, resp) ->

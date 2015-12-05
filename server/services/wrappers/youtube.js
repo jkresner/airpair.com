@@ -6,7 +6,7 @@ var wrapper = {
 
   init()
   {
-    wrapper.oauthClients        = []
+    this.oauthClients        = []
     var google                  = require('googleapis')
     var OAuth2Client            = google.auth.OAuth2
     var {clientID,clientSecret} = config.auth.google
@@ -16,39 +16,38 @@ var wrapper = {
       var refresh_token = pair.split(":")[1];
       var client = new OAuth2Client(clientID, clientSecret)
       client.setCredentials({ refresh_token })
-      wrapper.oauthClients.push(client)
+      this.oauthClients.push(client)
     }
 
-    wrapper.api = google.youtube('v3')
+    this.api = google.youtube('v3')
   },
 
 
   getVideoInfo(id, cb)
   {
-    wrapper._fetchVideoInfo = function(clientIndex, id) {
-      var auth = wrapper.oauthClients[clientIndex]
-      if (logging) $log("fetching video info with oauth index".trace, clientIndex)
+    var _fetchVideoInfo = (clientIndex, id) => {
+      var auth = this.oauthClients[clientIndex]
+      if (logging) $log("video.info fetch w oauth index", clientIndex)
 
-      wrapper.api.videos.list({auth, id, part:"snippet"}, (e, r) => {
-
+      this.api.videos.list({auth, id, part:"snippet"}, (e, r) => {
         if (r && r.items && r.items.length > 0)
           cb(e, r.items[0])
 
         else if (clientIndex < wrapper.oauthClients.length - 1)
           //try with the next client
-          wrapper._fetchVideoInfo(clientIndex+1, id)
+          _fetchVideoInfo(clientIndex+1, id)
 
         else
           cb(e || "No YouTube video found", r)
 
       })
     }
-    wrapper._fetchVideoInfo(0, id)
+    _fetchVideoInfo(0, id)
   },
 
   getAllChannels(cb)
   {
-    wrapper.api.channels.list({auth:wrapper.oauthClients[0], part:"contentDetails", mine: true }, cb)
+    this.api.channels.list({auth:wrapper.oauthClients[0], part:"contentDetails", mine: true }, cb)
   },
 
   getAllVideos(cb)
@@ -69,7 +68,7 @@ var wrapper = {
       var q = {auth,part:"snippet",maxResults,type,forMine:true}
       if (pageToken) q.pageToken = pageToken
 
-      wrapper.api.search.list(q, (e, search) => {
+      this.api.search.list(q, (e, search) => {
         if (e) $log('e'.red, e)
         else {
           // $log('search', search.pageInfo, 'nextPage', search.nextPageToken)
@@ -112,7 +111,7 @@ var wrapper = {
   {
     var auth = wrapper.oauthClients[0]
     var id = vid.id
-    wrapper.api.videos.list({auth, id, part:"status", maxResults: 1 }, (e, r) => {
+    this.api.videos.list({auth, id, part:"status", maxResults: 1 }, (e, r) => {
       if (e) $log('e'.red, id, e)
 
       var {status} = r.items[0]
@@ -128,7 +127,7 @@ var wrapper = {
         status.publicStatsViewable = false
       }
 
-      wrapper.api.videos.update({auth, resource:{id,status}, part:'status'}, cb)
+      this.api.videos.update({auth, resource:{id,status}, part:'status'}, cb)
     })
   }
   // https://www.youtube.com/video_acls_ajax?action_update_private_video_acls=1

@@ -540,19 +540,15 @@ module.exports = ->
   before (done) ->
     DB.ensureDoc 'User', FIXTURE.users.admin, ->
     SETUP.ensureExpert 'dros', ->
-    @braintreepaymentStub = SETUP.stubBraintreeChargeWithMethod()
-    SETUP.ensureExpert 'tmot', ->
-      done()
+      SETUP.ensureExpert 'tmot', ->
+        done()
 
   after ->
-    @braintreepaymentStub.restore()
+
 
   beforeEach ->
-    STUB.sync(Wrappers.Slack, 'checkUserSync', null)
-    STUB.callback(Wrappers.Slack, 'getUsers', FIXTURE.wrappers.slack_users_list)
-    STUB.callback(Wrappers.Slack, 'getChannels', FIXTURE.wrappers.slack_channels_list)
-    STUB.callback(Wrappers.Slack, 'getGroups', FIXTURE.wrappers.slack_groups_list)
-
+    STUB.SlackCommon()
+    STUB.BraintreeCharge()
 
   DESCRIBE "Credit", creditOrders
   DESCRIBE "Bookings", bookingOrders

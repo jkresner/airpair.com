@@ -5,6 +5,33 @@ global.STRINGIFY = (obj) ->
   JSONSTRING[obj._id]
 
 
+DATA.newSession = (userKey) ->
+  suffix = DATA.timeSeed()
+  session = cookie:
+    originalMaxAge: 2419200000,
+    _expires: moment().add(2419200000, 'ms').subtract(1,'s')
+
+  # ?? not the best setting global here ....
+  cookieCreatedAt = util.momentSessionCreated(session)
+  Object.assign({user:null,sessionID:"test#{userKey}#{suffix}"},{session})
+
+
+
+DATA.newSignup = (name) ->
+  ident = name.toLowerCase().replace(/ /g,'.')
+  seed = { name, email: "#{ident}@testpair.com" }
+  suffix = DATA.timeSeed()
+  Object.assign({userKey: ident.substring(0, 4)+suffix}, {
+    email: seed.email.replace('@',suffix+'@')
+    name: seed.name+suffix
+    password: 'testpass'+suffix })
+
+  # key = FIXTURE.uniquify('users',key,'email name')
+  # Object.assign(FIXTURE.users[key], {password:'testpass'+DATA.timeSeed()})
+  # return _.extend({key}, FIXTURE.users[key])
+
+
+
 SPEC.init = (ctx) ->
 
   before ->
@@ -33,6 +60,9 @@ STUB.SlackCommon = ->
   cache.slack_users = FIXTURE.wrappers.slack_users_list
   @Slack.cb('getChannels', 'slack_channels_list')
   @Slack.cb('getGroups', 'slack_groups_list')
+  @Slack.cb('getGroupWithHistory', 'slack_getGroupWithHistory')
+  # @Slack.api('groups.info').fix('slack_group_info')
+  # @Slack.api('groups.history').fix('slack_groups_history')
 
 
 STUB.BraintreeCharge = (key) ->
@@ -56,7 +86,7 @@ EXPECT.ObjectId = (val) ->
   expect(val, "Expected ObjectId null").to.exist
   expect(val.constructor is ObjectId, "Expected ObjectId #{val.toString().white}".gray+" #{val.constructor} not an ObjectId".gray).to.be.true
 
-EXPECT.expectTouch = (touch, byId, action) ->
+EXPECT.touch = (touch, byId, action) ->
   expect(touch._id).to.exist
   # expect(touch._id.constructor is ObjectId).to.be.true
   # expectObjectId(touch._id)

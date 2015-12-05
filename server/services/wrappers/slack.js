@@ -11,6 +11,7 @@ var cCall = function(user, method, data, cbProp, select, cb) {
   else client = this.api.getClient(user.token)
   var start = new Date()
   client.api(method, data, (e,response) => {
+    // if (method == 'groups.info') $log(method.white, JSON.stringify(response))
     var duration = new Date() - start
     if (duration > 1000) console.log(`[slack.${method}].slow`.cyan, `${duration}`.red)
     if (e) return cb(e)
@@ -26,9 +27,9 @@ var cCall = function(user, method, data, cbProp, select, cb) {
       if (method == 'users.list') $log(logMethod, r.length)
       else if (method == 'chat.postMessage') $log(logMethod, r.text)
       else if (method == 'groups.info') $log(logMethod, r.purpose.value, r.members)
-      else if (method == 'groups.history') $log(logMethod.green, r.length)
-      else if (method == 'groups.rename') $log(logMethod.green, r.id, r.name)
-      else if (method == 'groups.setPurpose') $log(logMethod.green, r.purpose)
+      else if (method == 'groups.history') $log(logMethod, r.length)
+      else if (method == 'groups.rename') $log(logMethod, r.id, r.name)
+      else if (method == 'groups.setPurpose') $log(logMethod, r.purpose)
       else
         $log(`slack[${method}].result`, (r && r.length) ? r.length : 1, (r && r.length) ? r[0] : r)
     }
@@ -177,7 +178,7 @@ var wrapper = {
   searchGroupsByName(term, cb)
   {
     term = term.toLowerCase()
-    wrapper.getGroups('pairbot', (e,r)=>{
+    this.getGroups('pairbot', (e,r)=>{
       if (e) return cb(e)
       var groups = []
       for (var p of r)

@@ -39,10 +39,12 @@ module.exports = (key, opts, done) ->
   # $log('create user'.yellow, user.key.white, user)
   DB.Collections.users.insert user, (e, r) ->
     if (e) then $log('DB.insert.user', e)
+    # $log('STORY.newUser'.yellow, user.key.white, user._id)
     if login
       LOGIN user, (session) ->
         if (paymethodId)
           session.primaryPayMethodId = paymethodId # convinience
+        # $log('STORY.newUser.loggedIn'.yellow, session, user.key)
         done session, user.key
     else
       done user.key

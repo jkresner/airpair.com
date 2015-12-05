@@ -30,8 +30,7 @@ api = ->
     PAGE '/fasdfasdfaeed', Opts({status:200},BADBot), (resp) ->
       expect(resp).to.equal('')
       PAGE '/fasdfasdfaeed', Opts({status:404},GOODBot), (resp2) ->
-        $log('todo: special page for bot 404?'.yellow)
-        expectContains(resp2, ">Page not found</h")
+        EXPECT.contains(resp2, ">Page not found</h")
         DONE()
 
 
@@ -39,7 +38,7 @@ api = ->
     PAGE '/', Opts({status:200},BADBot), (resp) ->
       expect(resp).to.equal('')
       PAGE '/', Opts({status:200},GOODBot), (resp2) ->
-        expectContains(resp2, "<title>Software Micro-Consulting via Video Chat | AirPair</title>")
+        EXPECT.contains(resp2, "<title>Software Micro-Consulting via Video Chat | AirPair</title>")
         DONE()
 
 
@@ -61,7 +60,7 @@ api = ->
         expectSessionStored s, DONE
 
 
-  IT '/angularjs (unauthenticated) Persists session or uaFireFox', ->
+  SKIP '/angularjs (unauthenticated) Persists session or uaFireFox', ->
     viewSpy = STUB.spy(analytics, 'view')
     PAGE '/angularjs', Opts({status:200}, UAUser), (resp) ->
       GET '/session/full', (s) ->
@@ -78,22 +77,22 @@ api = ->
             DONE()
 
 
-  IT '/angularjs (no user-agent) Does not persist session', ->
+  SKIP '/angularjs (no user-agent) Does not persist session', ->
     viewSpy = STUB.spy(analytics, 'view')
     PAGE '/angularjs', Opts({status:200}, UANone), (resp) ->
       expect(viewSpy.callCount).to.equal(0)
       expectSessionNotStored { sessionID: 'unNOwnSZ3Wi8bDEnaKzhygGG2a2RkjZ2' }, DONE
 
 
-  IT '/angularjs (uaGooglebot) does not persist session or view', ->
+  SKIP '/angularjs (uaGooglebot) does not persist session or view', ->
     viewSpy = STUB.spy(analytics, 'view')
     PAGE '/angularjs', Opts({status:200}, GOODBot), (resp) ->
-      expectContains(resp, "AngularJS experts</h")
+      EXPECT.contains(resp, "AngularJS experts</h")
       expect(viewSpy.callCount).to.equal(0)
       expectSessionNotStored { sessionID: 'unNOwnSZ3Wi8bDEnaKzhygGG2a2RkjZ2' }, DONE
 
 
-  IT '/angularjs (uaUser) Persists utms and referer', ->
+  SKIP '/angularjs (uaUser) Persists utms and referer', ->
     viewSpy = STUB.spy(analytics, 'view')
     ref = 'https://www.airpair.com/'
     utms = 'utm_source=team-email&utm_medium=email&utm_term=angular-workshops&utm_content=nov14-workshops-ty&utm_campaign=wks14-4'

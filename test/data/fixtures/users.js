@@ -3,9 +3,37 @@ var newer = {
 
   jkap: { _id:ObjectId("5175efbfa3802cc4d5a5e6ed"),name:"Jonathon Kresner",email:"jk@airpair.com" },
   jkjk: { name:"Jon Kresner",email:"jonk@airpair.com" },
+  jkre: { name:"Jonathon Kresner",email:"jkresner@gmail.com" },
+  jkgm: { name:"Jonathon Gmail",email:"jkresner@gmail.com" },
 
   jjel: { name:"James Jelinek",email:"jelinek@gmail.com" },
   jaje: { name:"James Jelinek",email:"jelinek@test.com" },
+
+  kelf: { name:"Kelly Ford",email:"kelf@gmail.com" },
+  chup: { name:"Chris Upton",email:"chrisupton@hotmail.com" },
+  chiu: { name:"Chris Upton",email:"chirsitup@gmail.com" },
+  chri: { name:"Chris Upton",email:"chirsitup@ap.com" },
+  clew: { name:"Chris Lewis",email:"clew@test.com" },
+  chle: { name:"Chris Lewis",email:"clew@hotmail.com" },
+  crus: { name: "Chelsea Rustrum", email: "chelsea.rustrum@rustrum.com"},
+  grnv: { name:"Gregory Nicola",email:"gnicola@msn.com" },
+  gniv: { name:"Gregory Nic",email:"gnicvy@msn.com" },
+  mrik: { name:"Mike Risse",email:"miks.rie@hotmail.com" },
+  miks: { name:"Mike Risse",email:"miks.ri@hotmail.com" },
+  misr: { name:"Mike Risse",email:"miks.rsse@hotmail.com" },
+  krez: { name:"Jonathon Krezner",email:"krez@hotmail.com" },
+  ckni: { name:"Chris McKnight",email:"cknight@hotmail.com" },
+  somr: { name:"Somik Rana",email:"somik@gmail.com" },
+  soik: { name:"Somik Rana",email:"somik@hotmail.com" },
+  sora: { name:"Somik Rana",email:"somik@mail.com" },
+  jpie: { name:"Jason Pierce ",email:"jasonpierce@gmail.com" },
+  jasp: { name:"Jason Pierce ",email:"jasonpierce@hotmail.com" },
+  uris: { name:"Uri Shaked",email:"urish@apr.com" },
+  usha: { name:"Uri Shaked",email:"urish@gmail.com" },
+  ajac: { name:"Adam Jacobs",email:"adamjay@hotmail.com" },
+  acob: { name:"Adam Jacobs",email:"adamcobbs@gmail.com" },
+  nevk: { name:"Nevan King",email:"nevking@gmail.com" },
+  nkig: { name:"Nevan King",email:"nevanking@hotmail.com" },
 
 
   aone: {

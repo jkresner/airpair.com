@@ -5,7 +5,7 @@ signup = ->
 
 
   IT 'Can sign up as new user with local credentials', ->
-    d = SETUP.usrData('Steve Purves')
+    d = DATA.newSignup('Steve Purves')
     SUBMIT '/auth/signup', d, {}, (r) ->
       expect(r._id).to.exist
       expect(r.google).to.be.undefined
@@ -46,7 +46,7 @@ signup = ->
     profile = FIXTURE.clone('oauth.google_rbrw')._json
     token = 'rbrw_token'
     DB.removeDocs 'User', { 'auth.gp.id': FIXTURE.oauth.google_rbrw.id }, ->
-      AuthService.link.call SETUP.userSession(), 'google', profile, {token}, (e,usr) ->
+      AuthService.link.call DATA.newSession(), 'google', profile, {token}, (e,usr) ->
         FIXTURE.users.rbrw = usr
         LOGIN {key:'rbrw'}, (s0) ->
           GET '/session/full', (s) ->
@@ -55,15 +55,15 @@ signup = ->
             expect(s.name).to.equal(usr.name)
             expect(s.roles).to.be.undefined  # new users have undefined roles
             expect(s.cohort.engagement).to.exist
-            expectAttr(s.auth.gp,'email')
-            # expectAttr(s.auth.gp,'link')
-            # expectAttrUndefined(s.auth.gp,'id')
+            EXPECT.attr(s.auth.gp,'email')
+            # EXPECT.attr(s.auth.gp,'link')
+            # EXPECT.attrUndefined(s.auth.gp,'id')
             DB.docById 'User', s._id, (u) ->
               EXPECT.equalIds(s._id, u._id)
-              expectAttr(u.auth.gp, 'id', String)
-              expectAttr(u.auth.gp, 'email', String)
-              expectAttr(u.auth.gp, 'link', String)
-              expectAttrUndefined(u.auth.gp, 'locale')
+              EXPECT.attr(u.auth.gp, 'id', String)
+              EXPECT.attr(u.auth.gp, 'email', String)
+              EXPECT.attr(u.auth.gp, 'link', String)
+              EXPECT.attrUndefined(u.auth.gp, 'locale')
               expect(u.auth.gp.tokens[config.auth.oauth.appKey].token).to.equal('rbrw_token')
               DONE()
 
@@ -72,7 +72,7 @@ signup = ->
     profile = FIXTURE.clone('oauth.google_aptst34')._json
     token = 'aptst34_token'
     DB.removeDocs 'User', { 'auth.gp.id': FIXTURE.oauth.google_aptst34.id }, ->
-      AuthService.link.call SETUP.userSession(), 'google', profile, {token}, (e,usr) ->
+      AuthService.link.call DATA.newSession(), 'google', profile, {token}, (e,usr) ->
         FIXTURE.users.aptst34 = usr
         LOGIN {key:'aptst34'}, (s0) ->
           GET '/session/full', (s) ->
@@ -81,13 +81,13 @@ signup = ->
             expect(s.name).to.equal(usr.name)
             expect(s.roles).to.be.undefined  # new users have undefined roles
             expect(s.cohort.engagement).to.exist
-            expectAttr(s.auth.gp,'email')
-            # expectAttrUndefined(s.auth.gp,'id')
+            EXPECT.attr(s.auth.gp,'email')
+            # EXPECT.attrUndefined(s.auth.gp,'id')
             DB.docById 'User', s._id, (u) ->
               EXPECT.equalIds(s._id, u._id)
-              expectAttr(u.auth.gp, 'id', String)
-              expectAttr(u.auth.gp, 'email', String)
-              expectAttrUndefined(u.auth.gp, 'locale')
+              EXPECT.attr(u.auth.gp, 'id', String)
+              EXPECT.attr(u.auth.gp, 'email', String)
+              EXPECT.attrUndefined(u.auth.gp, 'locale')
               expect(u.auth.gp.tokens[config.auth.oauth.appKey].token).to.equal('aptst34_token')
               DONE()
 
@@ -102,7 +102,7 @@ signup = ->
 
 
   IT 'Cannot sign up with local credentials and existing local email', ->
-    d = SETUP.userData('jaje')
+    d = DATA.newSignup('James Jelinek')
     SUBMIT '/auth/signup', d, {}, (r) ->
       LOGOUT ->
         SUBMIT '/auth/signup', d, {status:400}, (err) ->
@@ -115,7 +115,7 @@ signup = ->
     # DB.removeDocs 'User', { 'auth.gh.id': FIXTURE.oauth.github_ludofleury.id }, ->
     #   profile = FIXTURE.oauth.github_ludofleury._json
     #   token = 'ludofleury_token'
-    #   AuthService.link.call SETUP.userSession(), 'github', profile, {token}, (e,usr) ->
+    #   AuthService.link.call DATA.newSession(), 'github', profile, {token}, (e,usr) ->
     #     expect(e).to.be.null
     #     FIXTURE.users.ludofleury = usr
     #     LOGIN {key:'ludofleury'}, (s0) ->
@@ -124,12 +124,12 @@ signup = ->
     #         expect(s.email).to.equal(usr.email)
     #         expect(s.name).to.equal(usr.name)
     #         expect(s.cohort.engagement).to.exist
-    #         expectAttr(s.auth.gh,'username')
-    #         # expectAttrUndefined(s.auth.gp,'id')
+    #         EXPECT.attr(s.auth.gh,'username')
+    #         # EXPECT.attrUndefined(s.auth.gp,'id')
     #         DB.docById 'User', s._id, (u) ->
     #           EXPECT.equalIds(s._id, u._id)
-    #           expectAttr(u.auth.gh, 'id', Number)
-    #           expectAttr(u.auth.gh, 'emails', Array)
+    #           EXPECT.attr(u.auth.gh, 'id', Number)
+    #           EXPECT.attr(u.auth.gh, 'emails', Array)
     #           expect(u.auth.gh.tokens[config.auth.oauth.appKey].token).to.equal('ludofleury_token')
     #           DONE()
 
@@ -143,7 +143,7 @@ signup = ->
           expect(cohort.engagement.visit_signup).to.be.exist
           expect(cohort.engagement.visit_last).to.be.exist
           expect(cohort.engagement.visit_last).to.be.exist
-          expectAttr(cohort.firstRequest, 'url', String)
+          EXPECT.attr(cohort.firstRequest, 'url', String)
           expect(moment(cohort.engagement.visits[0]).unix()).to.equal(moment(util.dateWithDayAccuracy()).unix())
           expect(cohort.aliases.length).to.equal(1)
           DB.docsByQuery 'Event', {uId:userId}, (r2) ->
@@ -151,7 +151,7 @@ signup = ->
             SETUP.analytics.on()
             DONE()
 
-    d = SETUP.usrData('Dilys sun')
+    d = DATA.newSignup('Dilys sun')
     ANONSESSION (r) ->
       PAGE '/', {}, ->
         SUBMIT '/auth/signup', d, {}, (newUser) ->
@@ -178,7 +178,7 @@ login = ->
         expect(s.email).to.equal('airpairone001@gmail.com')
         LOGOUT ->
           # $log('try oauth'.white, profile)
-          AuthService.link.call SETUP.userSession(), 'google', profile, {token}, (e, r) ->
+          AuthService.link.call DATA.newSession(), 'google', profile, {token}, (e, r) ->
             expect(e).to.be.null
             expect(r._id).to.exist
             EXPECT.equalIds(r._id, s._id)
@@ -194,7 +194,7 @@ login = ->
     token = 'ape1_gp_test_token'
     DB.removeDocs 'User', qExists.byEmails(['airpairtest1@gmail.com']), ->
       DB.ensureDoc 'User', ape1, ->
-        AuthService.link.call SETUP.userSession(), 'google', profile, {token}, (e, r1) ->
+        AuthService.link.call DATA.newSession(), 'google', profile, {token}, (e, r1) ->
           expect(e).to.be.null
           EXPECT.equalIds(r1._id, ape1._id)
           AuthService.link.call {user:r1}, 'google', profile, {token}, (e, r2) ->
@@ -214,7 +214,7 @@ login = ->
 
   it 'Signup / login always uses lowercase and handles mixed-case input'
 #   # IT 'Signup / login always uses lowercase and handles mixed-case input', ->
-#   #   akumD = SETUP.userData('akum')
+#   #   akumD = DATA.newSignup('"Ash Kumar"')
 #   #   # akumD_google =
 #   #   #   "provider" : "google",
 #   #   #   "id" : "1999923803#{timeSeed()}",
@@ -240,7 +240,7 @@ login = ->
 #   #         expect(r2._id).to.exist
 #   #         GET "/session/full", (s) ->
 #   #           EXPECT.startsWith(s.name, "Ash Kumar")
-#   #         # svcCtx = SETUP.userSession('akum')
+#   #         # svcCtx = DATA.newSession('akum')
 #   #         # AuthService.googleLogin.call svcCtx, akumD_google, (ee,user) ->
 #   #           # EXPECT.equalIds(user._id,resp2.body._id)
 #   #           # expect(user.google).to.exist
@@ -255,7 +255,7 @@ login = ->
     token = 'ape1_gp_test_token'
     SETUP.analytics.on()
     DB.ensureDoc 'User', ape1, ->
-      AuthService.link.call SETUP.userSession(), 'google', profile, {token}, (e, r1) ->
+      AuthService.link.call DATA.newSession(), 'google', profile, {token}, (e, r1) ->
         EXPECT.equalIds(r1._id, ape1._id)
         DB.docById 'User', ape1._id, (r3) ->
           expect(r3.cohort.aliases.length).to.equal(2)
@@ -356,7 +356,7 @@ password = ->
     #               data = { hash: generated_hash2, password: new_password }
     #               # $log('data', data)
     #               PUT "/users/me/password", data, {unauthenticated: true}, (s) ->
-    #                 AuthService.localLogin.call SETUP.userSession(), user.email, new_password, (e,r) ->
+    #                 AuthService.localLogin.call DATA.newSession(), user.email, new_password, (e,r) ->
     #                   db.readDoc 'User', user._id, (rrrrr) ->
     #                     expect(r
 
@@ -386,7 +386,7 @@ link = ->
 
   IT 'Link github with local user / password', ->
     profile = FIXTURE.clone('oauth.github_jk')._json
-    profile.id += parseInt(profile.id+timeSeed())
+    profile.id += parseInt(profile.id+@timeSeed)
     profile.emails = [{email:'jk@gmail.com',verified:true},{email:'jk@airpair.com',primary:true,verified:true}]
     token = 'jkjk_token'
     STORY.newUser 'jkjk', (s) ->
@@ -398,7 +398,7 @@ link = ->
           expect(s1.auth.gh.login).to.equal(profile.login)
           expect(s1.auth.gh.id).to.be.undefined
           DB.docById 'User', s._id, (r) ->
-            expectAttr(r.auth.gh, 'id', Number)
+            EXPECT.attr(r.auth.gh, 'id', Number)
             expect(r.auth.gh.id).to.equal(profile.id)
             expect(r.auth.gh.username).to.be.undefined
             expect(r.auth.gh.login).to.equal(profile.login)
@@ -423,17 +423,16 @@ module.exports = ->
 
   beforeEach ->
     STUB.sync(Wrappers.Slack, 'checkUserSync', null)
-    STUB.callback(Wrappers.Slack, 'getUsers', FIXTURE.wrappers.slack_users_list)
+    STUB.wrapper('Slack').cb('getUsers', 'slack_users_list')
 
   afterEach ->
     SETUP.analytics.off()
 
 
-  describe "OLD", ->
-    DESCRIBE("Signup", signup)
-    DESCRIBE("Login", login)
-    DESCRIBE("Password: ", password)
-    DESCRIBE("LINK", link)
+  DESCRIBE("Signup", signup)
+  DESCRIBE("Login", login)
+  DESCRIBE("Password: ", password)
+  DESCRIBE("LINK", link)
 
   # describe "NEW", ->
     # IT 'New github sign can return to old page', ->

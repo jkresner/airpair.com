@@ -113,7 +113,7 @@ views = ->
 
 
   IT 'Aliases anonymous user with new user signup', ->
-    signup = Object.assign({password: 'yo yo'}, FIXTURE.users.wlmo)
+    signup = DATA.newSignup("Will Moss")
     DB.removeDocs 'User', { name: signup.name }, ->
     ANONSESSION (s) ->
       anonymousId = s.sessionID
@@ -160,10 +160,10 @@ views = ->
 
 
   IT 'Login local from existing sessionID does not alias', ->
+    singup = DATA.newSignup("Jason Pierce")
     ANONSESSION ->
       utms = ''
       PAGE "#{publishedPostUrl}?#{utms}", {}, ->
-      singup = SETUP.userData('jpie')
       SUBMIT '/auth/signup', singup, {}, (r) ->
         GET '/session/full', (s) ->
           expect(s._id).to.exist
@@ -177,9 +177,9 @@ views = ->
 
 
   IT 'Login from two sessionIDs aliases and aliases views', ->
+    singup = DATA.newSignup("Somik Rana")
     anonymousId = null
     anonymousId2 = null
-    singup = SETUP.userData('sora')
 
     session2Callback = (anonymousId) -> ANONSESSION (s2) ->
       anonymousId2 = s2.sessionID

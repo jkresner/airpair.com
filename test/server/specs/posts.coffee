@@ -20,7 +20,7 @@ browsing = ->
   IT "Request post by non-existing slug", ->
     fakeUrl = "/angularjs/posts/the-definitive-ionic-starter-gu"
     PAGE fakeUrl, {status:404}, (r) ->
-      expectContains(r,'not found')
+      EXPECT.contains(r,'not found')
       DONE()
 
 
@@ -38,8 +38,8 @@ browsing = ->
     url = post.meta.canonical.replace('https://www.airpair.com', '')
     DB.ensureDoc 'Post', post, ->
       PAGE url, {}, (html) ->
-        expectContains(html, '<h1 class="entry-title" itemprop="headline">Mastering ES6 higher-order functions for Arrays</h1>')
-        expectContains(html, '<li><a href="/posts/tag/javascript" target="_self">javascript</a></li>')
+        EXPECT.contains(html, '<h1 class="entry-title" itemprop="headline">Mastering ES6 higher-order functions for Arrays</h1>')
+        EXPECT.contains(html, '<li><a href="/posts/tag/javascript" target="_self">javascript</a></li>')
         DONE()
 
 
@@ -49,14 +49,14 @@ browsing = ->
     DB.ensureDoc 'Post', post, ->
       LOGIN {key:'snug'}, ->
         PAGE url, {}, (html) ->
-          expectContains(html, '<h1 class="entry-title" itemprop="headline">Mastering ES6 higher-order functions for Arrays</h1>')
-          expectContains(html, '<li><a href="/posts/tag/javascript" target="_self">javascript</a></li>')
+          EXPECT.contains(html, '<h1 class="entry-title" itemprop="headline">Mastering ES6 higher-order functions for Arrays</h1>')
+          EXPECT.contains(html, '<li><a href="/posts/tag/javascript" target="_self">javascript</a></li>')
           DONE()
 
 
   IT "2015 100k writing competition", ->
     PAGE '/100k-writing-competition', {status:200}, (html) ->
-      expectContains(html, '<h1>2015 Developer Writing Competition</h1>')
+      EXPECT.contains(html, '<h1>2015 Developer Writing Competition</h1>')
       DONE()
 
 
@@ -159,14 +159,14 @@ reviews = ->
     post = higherOrder
     STORY.newUser 'rvw3', (rvw3) ->
       POST "/posts/#{post._id}/review", {}, { status: 403 }, (e1) ->
-        expectContains(e1.message, "5 star rating required")
+        EXPECT.contains(e1.message, "5 star rating required")
         r2 = { questions: [
           { idx: 0, key: 'rating', promt: 'How many stars?', answer: "yo" }] }
         POST "/posts/#{post._id}/review", r2, { status: 403 }, (e2) ->
-          expectContains(e2.message, "5 star rating required")
+          EXPECT.contains(e2.message, "5 star rating required")
           r3 = { questions: [ postReview.questions[0] ] }
           POST "/posts/#{post._id}/review", r3, { status: 403 }, (e3) ->
-            expectContains(e3.message, "5 star feedback required")
+            EXPECT.contains(e3.message, "5 star feedback required")
             DONE()
 
 

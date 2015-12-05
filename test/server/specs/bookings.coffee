@@ -2,6 +2,9 @@ BookingUtil = require("../../../shared/bookings")
 
 util = ->
 
+  beforeEach ->
+    STUB.SlackCommon()
+
   IT "Can get multiTime", ->
     tzBooking = FIXTURE.clone('bookings.timezones')
     tzBooking.datetime = ISODate("2016-06-25T00:00:00.000Z")
@@ -66,16 +69,13 @@ util = ->
 
 views = ->
 
-  # beforeEach -> STUB.sync(Wrappers.Slack, 'checkUserSync', null)
-  before -> cache.slack_users = FIXTURE.wrappers.slack_users_list
-  after -> cache.slack_users = undefined
 
   IT 'New booking from request can be viewed by creator', ->
     STORY.newRequest 'jkgm', {reply:{userKey:'gnic'},book:true}, (r1, b1, sCust, sExp2) ->
       GET "/bookings/#{b1._id}", (b2) ->
         expect(b2.orderId).to.be.undefined
         expect(b2.order._id).to.exist
-        expect(b2.order.paidout==false).to.be.true
+        expect(b2.order.paidout is false).to.be.true
         expect(b2.requestId).to.be.undefined
         EXPECT.equalIds(r1._id,b2.request._id)
         expect(b2.request.brief).to.exist
@@ -83,14 +83,14 @@ views = ->
         expect(b2.request.adm).to.be.undefined
         expect(b2.request.budget).to.be.undefined
         expect(b2.participants.length).to.equal(2)
-        expect(b2.participants[1].chat).to.exist
+        expect(b2.participants[1].chat, 'participants.chat missing').to.exist
         expect(b2.participants[1].info.name).to.equal('gregorynicholas')
         expect(b2.chat).to.be.undefined
         LOGIN {key:"admin"}, ->
           d = {type:'slack',providerId:"G06UFJCQ2"}
           # $log('try associate good!!!'.magenta)
           PUT "/bookings/#{b1._id}/associate-chat", d, (b3) ->
-            expect(b3.chat).to.exist
+            expect(b3.chat, 'b3.chat missing').to.exist
             LOGIN {key:'gnic'}, ->
               GET "/bookings/#{b1._id}", (b4) ->
                 # $log('b4'.magenta, b4)
@@ -99,18 +99,20 @@ views = ->
 
 
   # it 'New booking can be viewed by expert', ->
-
-
   # it 'Can be viewed by additional participants', ->
 
 
 scheduling = ->
 
-  beforeEach ->
-    STUB.sync(Wrappers.Slack, 'checkUserSync', null)
+  before ->
+    config.calendar.on = true
 
-  before -> config.calendar.on = true
-  after -> config.calendar.on = false
+  beforeEach ->
+    STUB.SlackCommon()
+
+  after ->
+    config.calendar.on = false
+
 
   IT 'New booking has default prefered uncomfirmed time', ->
     # expect("email to expert to include preferred time").to.be.true
@@ -130,7 +132,7 @@ scheduling = ->
         expect(b1.activity).to.be.undefined
         expect(b1.notes).to.be.undefined
         DB.docById 'Booking', b1._id, (b2) ->
-          # expectTouch(b2.lastTouch, s._id, "create")
+          # EXPECT.touch(b2.lastTouch, s._id, "create")
           expect(b2.activity.length).to.equal(1)
           expect(b2.notes.length).to.equal(0)
           DONE()
@@ -141,7 +143,7 @@ scheduling = ->
     time1 = moment().add(1, 'day')
     STORY.newBooking 'chle', data:{datetime:time1}, (s, b1) ->
       expect(b1.suggestedTimes.length).to.equal(1)
-      expectSameMoment(b1.suggestedTimes[0].time,time1)
+      EXPECT.equalMoments(b1.suggestedTimes[0].time,time1)
       time2 = moment().add(3, 'day')
       d = { _id:b1._id, time:time2}
       PUT "/bookings/#{b1._id}/suggest-time", d, {}, (b2) ->
@@ -149,30 +151,30 @@ scheduling = ->
         expect(b2.suggestedTimes.length).to.equal(2)
         expect(b2.suggestedTimes[0]._id).to.exist
         expect(b2.suggestedTimes[1]._id).to.exist
-        expectSameMoment(b2.suggestedTimes[0].time,time1)
+        EXPECT.equalMoments(b2.suggestedTimes[0].time,time1)
         EXPECT.equalIds(b2.suggestedTimes[0].byId, s._id)
-        expectSameMoment(b2.suggestedTimes[1].time,time2)
+        EXPECT.equalMoments(b2.suggestedTimes[1].time,time2)
         EXPECT.equalIds(b2.suggestedTimes[1].byId, s._id)
         DB.docById 'Booking', b1._id, (b3) ->
           expect(b3.activity.length).to.equal(2)
-          expectTouch(b3.activity[0], s._id, "create")
-          expectTouch(b3.activity[1], s._id, "suggest-time")
-          expectTouch(b3.lastTouch, s._id, "suggest-time")
+          EXPECT.touch(b3.activity[0], s._id, "create")
+          EXPECT.touch(b3.activity[1], s._id, "suggest-time")
+          EXPECT.touch(b3.lastTouch, s._id, "suggest-time")
           LOGIN {key:'dros'}, (sDros) ->
             time3 = moment().add(4, 'day')
             d2 = { _id:b1._id, time:time3}
             PUT "/bookings/#{b1._id}/suggest-time", d2, {}, (b4) ->
               expect(b4.status).to.equal("pending")
               expect(b4.suggestedTimes.length).to.equal(3)
-              expectSameMoment(b4.suggestedTimes[0].time,time1)
-              expectSameMoment(b4.suggestedTimes[1].time,time2)
-              expectSameMoment(b4.suggestedTimes[2].time,time3)
+              EXPECT.equalMoments(b4.suggestedTimes[0].time,time1)
+              EXPECT.equalMoments(b4.suggestedTimes[1].time,time2)
+              EXPECT.equalMoments(b4.suggestedTimes[2].time,time3)
               EXPECT.equalIds(b4.suggestedTimes[2].byId, sDros._id)
               DB.docById 'Booking', b1._id, (b5) ->
                 expect(b5.activity.length).to.equal(3)
-                expectTouch(b5.lastTouch, sDros._id, "suggest-time")
-                expectTouch(b5.activity[1],s._id,"suggest-time")
-                expectTouch(b5.activity[2],sDros._id,"suggest-time")
+                EXPECT.touch(b5.lastTouch, sDros._id, "suggest-time")
+                EXPECT.touch(b5.activity[1],s._id,"suggest-time")
+                EXPECT.touch(b5.activity[2],sDros._id,"suggest-time")
                 DONE()
 
 
@@ -186,9 +188,8 @@ scheduling = ->
 
 
   IT 'Can confirm customer booking suggested time by expert', ->
-    stubber = STUB.wrapperAPI 'Calendar', 'events.insert'
-    stubCal = stubber (obj, cb) -> cb null, FIXTURE.wrappers.google_cal_create
-    $log('stubCal', stubCal)
+    stubCal = STUB.wrapper('Calendar').api('events.insert').fix('google_cal_create')
+    # $log('stubCal', stubCal)
     # email notifications sent
     # stubMail = SETUP.stub mailman, 'send'
     spyPairbot = STUB.spy pairbot, 'sendSlackMsg'
@@ -202,7 +203,7 @@ scheduling = ->
           expect(b2.activity).to.be.undefined
           expect(b2.notes).to.be.undefined
           expect(b2.status).to.equal("confirmed")
-          expectSameMoment(b2.datetime, datetime)
+          EXPECT.equalMoments(b2.datetime, datetime)
           expect(spyPairbot.calledOnce).to.be.true
           expect(spyPairbot.args[0][0]).to.equal("G06UFP6AX")
           expect(spyPairbot.args[0][1]).to.equal('booking-confirm-time')
@@ -212,16 +213,15 @@ scheduling = ->
           EXPECT.equalIds(b2.suggestedTimes[0].confirmedById,sDros._id)
           expect(stubCal.calledOnce).to.be.true
           DB.docById 'Booking', b1._id, (b3) ->
-            expectTouch(b3.lastTouch, sDros._id, "confirm-time")
-            expectTouch(b3.activity[0],s._id, "create")
-            expectTouch(b3.activity[1],FIXTURE.users.admin._id, "associate-chat")
-            expectTouch(b3.activity[2],sDros._id, "confirm-time")
+            EXPECT.touch(b3.lastTouch, sDros._id, "confirm-time")
+            EXPECT.touch(b3.activity[0],s._id, "create")
+            EXPECT.touch(b3.activity[1],FIXTURE.users.admin._id, "associate-chat")
+            EXPECT.touch(b3.activity[2],sDros._id, "confirm-time")
             DONE()
 
 
   IT 'Expert can suggest alternative which can be confirmed by customer', ->
-    stubber = STUB.wrapperAPI 'Calendar', 'events.insert'
-    stubCal = stubber (obj,cb) -> cb null, FIXTURE.wrappers.google_cal_create
+    stubCal = STUB.wrapper('Calendar').api('events.insert').fix('google_cal_create')
     # email notifications sent
     stubMail = STUB.callback mailman, 'send', {}
     stubPairBot = STUB.callback pairbot, 'sendSlackMsg', {}
@@ -231,7 +231,7 @@ scheduling = ->
       suggestedTimeOriginal = b1.suggestedTimes[0]
       expect(suggestedTimeOriginal._id).to.exist
       DB.docById 'Booking', b1._id, (b1raw) ->
-        expectObjectId(b1raw.suggestedTimes[0]._id)
+        EXPECT.ObjectId(b1raw.suggestedTimes[0]._id)
       LOGIN {key:'gnic'}, (sGnic) ->
         time2 = moment().add(17, 'day')
         d = { _id:b1._id, time:time2}
@@ -240,7 +240,7 @@ scheduling = ->
           expect(b2.activity).to.be.undefined
           expect(b2.notes).to.be.undefined
           expect(b2.status).to.equal("pending")
-          expectSameMoment(b2.datetime, datetime)
+          EXPECT.equalMoments(b2.datetime, datetime)
           expect(b2.suggestedTimes.length).to.equal(2)
           expect(b2.suggestedTimes[0]._id).to.exist
           expect(b2.suggestedTimes[1]._id).to.exist
@@ -250,21 +250,21 @@ scheduling = ->
             timeId = b2.suggestedTimes[1]._id
             PUT "/bookings/#{b1._id}/confirm-time", {_id:b1._id, timeId}, {}, (b3) ->
               expect(b3.status).to.equal("confirmed")
-              expectSameMoment(b3.datetime, time2)
+              EXPECT.equalMoments(b3.datetime, time2)
               expect(stubPairBot.calledOnce).to.be.false
               expect(stubCal.calledOnce).to.be.true
               expect(b3.suggestedTimes.length).to.equal(2)
-              expectSameMoment(b3.suggestedTimes[0].time,datetime)
+              EXPECT.equalMoments(b3.suggestedTimes[0].time,datetime)
               EXPECT.equalIds(b3.suggestedTimes[0].byId,s._id)
               expect(b3.suggestedTimes[0].confirmedById).to.be.undefined
-              expectSameMoment(b3.suggestedTimes[1].time,time2)
+              EXPECT.equalMoments(b3.suggestedTimes[1].time,time2)
               EXPECT.equalIds(b3.suggestedTimes[1].byId,sGnic._id)
               EXPECT.equalIds(b3.suggestedTimes[1].confirmedById,s._id)
               DB.docById 'Booking', b1._id, (bDb1) ->
-                expectTouch(bDb1.lastTouch, s._id, "confirm-time")
-                expectTouch(bDb1.activity[0],s._id, "create")
-                expectTouch(bDb1.activity[1],sGnic._id, "suggest-time")
-                expectTouch(bDb1.activity[2],s._id, "confirm-time")
+                EXPECT.touch(bDb1.lastTouch, s._id, "confirm-time")
+                EXPECT.touch(bDb1.activity[0],s._id, "create")
+                EXPECT.touch(bDb1.activity[1],sGnic._id, "suggest-time")
+                EXPECT.touch(bDb1.activity[2],s._id, "confirm-time")
                 DONE()
 
 
@@ -272,7 +272,7 @@ scheduling = ->
 recordings = ->
 
   beforeEach ->
-    STUB.sync(Wrappers.Slack, 'checkUserSync', null)
+    STUB.SlackCommon()
 
   # describe.skip "YouTube Wrapper", ->
 
@@ -292,8 +292,9 @@ recordings = ->
 
 
 
-  SKIP "given a YouTube ID, allows a booking to be annotated with YouTube data", ->
-    # listStub = SETUP.stubYouTube 'videos','list',null,FIXTURE.wrappers.youtube_codereview_list
+  IT "given a YouTube ID, allows a booking to be annotated with YouTube data", ->
+    listStub = STUB.wrapper('YouTube').api('videos.list').fix('youtube_api_codereview_list')
+    slackGroupSearchStub = STUB.wrapper('Slack').cb('searchGroupsByName','slack_groups_list')
     STORY.newUser 'miks', {login:true,location:true,paymethod:true}, (s) ->
       airpair1 = datetime: moment().add(2, 'day'), minutes: 120, type: 'private', payMethodId: s.primaryPayMethodId
       POST "/bookings/#{FIXTURE.experts.dros._id}", airpair1, (booking1) ->
@@ -455,19 +456,18 @@ module.exports = ->
   @timeout 60000
 
   before (done) ->
-    @braintreepaymentStub = SETUP.stubBraintreeChargeWithMethod()
     global.moment = require("moment-timezone")
     SETUP.ensureExpert 'gnic', ->
       SETUP.ensureExpert 'dros', ->
         done()
 
   beforeEach ->
-    STUB.callback(Wrappers.Slack, 'getUsers', FIXTURE.wrappers.slack_users_list)
-    STUB.callback(Wrappers.Slack, 'getChannels', FIXTURE.wrappers.slack_channels_list)
-    STUB.callback(Wrappers.Slack, 'getGroups', FIXTURE.wrappers.slack_groups_list)
+    cache.slack_users = FIXTURE.wrappers.slack_users_list
+    STUB.BraintreeCharge()
 
   after ->
-    @braintreepaymentStub.restore()
+    cache.slack_users = undefined
+
 
   DESCRIBE("Util", util)
   DESCRIBE("Viewing", views)

@@ -135,7 +135,7 @@ var save = {
           // Wrappers.Slack.postMessage('pairbot', channels.pipeline.id, msg, ()=>{})
         }
         if (r.info.purpose.value != purpose) {
-          $log('update purpose'.update, r.info.purpose.value, purpose)
+          $log('update purpose', r.info.purpose.value, purpose)
           Wrappers.Slack.setGroupPurpose({},rr.providerId,purpose,()=>{})
         }
 
