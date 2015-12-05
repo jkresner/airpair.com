@@ -2,14 +2,17 @@ var logging                       = true
 var {select}                      = require('../chats.data')
 var {owner,support,pairbot,jk}    = config.chat.slack
 
-
-var clientCall = (user, method, data, cbProp, select, cb) => {
+var clientCall;
+var cCall = function(user, method, data, cbProp, select, cb) {
   var client = null
-  if (user == 'owner') client = wrapper.api.owner
-  else if (user == 'support') client = wrapper.api.support
-  else if (user == 'pairbot') client = wrapper.api.pairbot
-  else client = wrapper.api.getClient(user.token)
+  if (user == 'owner') client = this.api.owner
+  else if (user == 'support') client = this.api.support
+  else if (user == 'pairbot') client = this.api.pairbot
+  else client = this.api.getClient(user.token)
+  var start = new Date()
   client.api(method, data, (e,response) => {
+    var duration = new Date() - start
+    if (duration > 1000) console.log(`[slack.${method}].slow`.cyan, `${duration}`.red)
     if (e) return cb(e)
     var r = (cbProp) ? response[cbProp] : response
     if (select) {
@@ -27,7 +30,7 @@ var clientCall = (user, method, data, cbProp, select, cb) => {
       else if (method == 'groups.rename') $log(logMethod.green, r.id, r.name)
       else if (method == 'groups.setPurpose') $log(logMethod.green, r.purpose)
       else
-        $log(`slack[${method}].result`.green, (r && r.length) ? r.length : 1, (r && r.length) ? r[0] : r)
+        $log(`slack[${method}].result`, (r && r.length) ? r.length : 1, (r && r.length) ? r[0] : r)
     }
     cb(null, r)
   })
@@ -37,14 +40,17 @@ var wrapper = {
 
   init() {
     var SlackAPI = require('slackey')
-    wrapper.api = new SlackAPI({})
+    this.api = new SlackAPI({})
 
     //-- Has full access (team@)
-    wrapper.api.owner = wrapper.api.getClient(owner.token)
+    this.api.owner = wrapper.api.getClient(owner.token)
     //-- Should be in every private group (support@)
-    wrapper.api.support = wrapper.api.getClient(support.token)
+    this.api.support = wrapper.api.getClient(support.token)
     //-- Should be in every private group (bot)
-    wrapper.api.pairbot = wrapper.api.getClient(pairbot.token)
+    this.api.pairbot = wrapper.api.getClient(pairbot.token)
+
+    var self = this
+    clientCall = function() { cCall.apply(self, arguments) }
   },
 
   teamInfo(cb)

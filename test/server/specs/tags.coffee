@@ -9,11 +9,11 @@ get = ->
   IT 'getById returns all tag data for admin', ->
     LOGIN {key:'admin'}, ->
       GET "/adm/tags/5149dccb5fc6390200000013", (t) ->
-        expectIdsEqual(t._id,"5149dccb5fc6390200000013")
+        EXPECT.equalIds(t._id,"5149dccb5fc6390200000013")
         expect(t.name).to.equal('AngularJS')
         expect(t.short).to.equal('Angular')
         expect(t.slug).to.equal('angularjs')
-        expectStartsWith(t.desc,"AngularJS is an open-source JavaScript framework.")
+        EXPECT.startsWith(t.desc,"AngularJS is an open-source JavaScript framework.")
         expect(t.tokens).to.equal('ang,angular,angular.js,angular-js,angular js')
         expect(t.meta.title).to.equal("AngularJS Articles, Workshops & Developers ready to help. A top resource!")
         expect(t.meta.description).to.equal("AngularJS Articles, Workshops & Developers ready to help. One of the web's top AngularJS resources - totally worth bookmarking!")
@@ -140,7 +140,7 @@ create = ->
     @soApiGetStub @soResponseCB('stackoverflow_wiki_nofoundtag')
     LOGIN {key:'admin'}, =>
       POST '/tags', { tagfrom3rdparty: 'sdgvbffaddbsdf' }, { status: 404 }, (e) ->
-        expectStartsWith(e.message, "tagfrom3rdparty not found")
+        EXPECT.startsWith(e.message, "tagfrom3rdparty not found")
         DONE()
 
   IT 'Create by soId for valid SO tag ios8', ->
@@ -152,7 +152,7 @@ create = ->
         expect(t.name).to.equal('ios8')
         expect(t.short).to.equal('ios8')
         expect(t.slug).to.equal('ios8')
-        expectStartsWith(t.desc, "iOS 8 is the eighth version of Apple&#39;s iOS mobile operating system.")
+        EXPECT.startsWith(t.desc, "iOS 8 is the eighth version of Apple&#39;s iOS mobile operating system.")
         expect(t.tokens).to.be.undefined
         expect(t.soId).to.be.undefined
         expect(t.so).to.be.undefined
@@ -163,7 +163,7 @@ create = ->
           expect(t2.name).to.equal('ios8')
           expect(t2.short).to.equal('ios8')
           expect(t2.slug).to.equal('ios8')
-          expectStartsWith(t2.desc, "iOS 8 is the eighth version of Apple&#39;s iOS mobile operating system.")
+          EXPECT.startsWith(t2.desc, "iOS 8 is the eighth version of Apple&#39;s iOS mobile operating system.")
           expect(t2.tokens).to.be.undefined
           expect(t2.soId).to.equal('ios8')
           expect(t2.so.tag_name).to.equal('ios8')
@@ -182,10 +182,10 @@ create = ->
         expect(emb1.short).to.equal("Ember")
         expect(emb1.slug).to.equal("ember.js")
         expect(emb1.soId).to.equal("ember.js")
-        expectStartsWith(emb1.desc,"Ember.js itsa an advanced front end MVC")
+        EXPECT.startsWith(emb1.desc,"Ember.js itsa an advanced front end MVC")
         expect(emb1.tokens).to.equal("ember,emberjs,emb")
         POST '/tags', { tagfrom3rdparty: 'ember.js' }, {}, (emb2) ->
-          expectIdsEqual(emb1._id,emb2._id).to.exist
+          EXPECT.equalIds(emb1._id,emb2._id).to.exist
           expect(emb2.name).to.equal("EmberJS")
           expect(emb2.short).to.equal("Ember")
           expect(emb2.slug).to.equal("ember.js")
@@ -217,7 +217,7 @@ update = ->
         expect(t.slug).to.equal("ios")
         t.slug = "appleos"
         PUT '/adm/tags/514825fa2a26ea020000001b', t, { status: 403 }, (err) ->
-          expectStartsWith(err.message, "Cannot change tag slug")
+          EXPECT.startsWith(err.message, "Cannot change tag slug")
           DONE()
 
   # IT 'Admin update tag with minimal meta', ->
@@ -227,7 +227,7 @@ update = ->
   #       expect(exp1.name).to.equal("express")
   #       expect(exp1.short).to.equal("express")
   #       expect(exp1.slug).to.equal("express")
-  #       expectStartsWith(exp1.desc,"Express is a minimalistic web application")
+  #       EXPECT.startsWith(exp1.desc,"Express is a minimalistic web application")
   #       expect(exp1.tokens).to.be.undefined
   #       expect(exp1.soId).to.equal("express")
   #       expect(exp1.so).to.be.undefined
@@ -259,7 +259,7 @@ update = ->
   #         expect(exp2.meta.ogUrl).to.equal("https://www.airpair.com/express")
   #         expect(exp2.gh).to.be.undefined
   #         expect(exp2.ghId).to.be.undefined
-  #         expectStartsWith(exp2.desc,"ExpressJS 4.0 is here!")
+  #         EXPECT.startsWith(exp2.desc,"ExpressJS 4.0 is here!")
   #         DONE()
 
 
@@ -288,11 +288,11 @@ module.exports = ->
     DB.ensureDoc 'User', FIXTURE.users.admin, ->
       done()
 
-  if againstProd
-    DESCRIBE "SKIP TAGS", ->
-      it "Better make this open again"
+  # if againstProd
+    # DESCRIBE "SKIP TAGS", ->
+      # it "Better make this open again"
 
-  else
+  # else
     DESCRIBE("Get", get)
     DESCRIBE("Create", create)
     DESCRIBE("Update ", update)

@@ -29,7 +29,7 @@ browsing = ->
     post = FIXTURE.posts.pubedArchitec
     DB.ensureDoc 'Post', post, ->
       PAGE "/posts/review/#{post._id}", { status: 301 }, (e) ->
-        expectStartsWith(e, 'Moved Permanently. Redirecting to https://www.airpair.com/scalable-architecture-with-docker-consul-and-nginx')
+        EXPECT.startsWith(e, 'Moved Permanently. Redirecting to https://www.airpair.com/scalable-architecture-with-docker-consul-and-nginx')
         DONE()
 
 
@@ -81,7 +81,7 @@ reviews = ->
       POST "/posts/#{higherOrder._id}/review", postReview, (p1) ->
         expect(p1.reviews.length>0).to.be.true
         review = _.find(p1.reviews,(rev)->_.idsEqual(rev.by._id,s._id))
-        expectIdsEqual(review.by._id, s._id)
+        EXPECT.equalIds(review.by._id, s._id)
         expect(review.questions.length).to.equal(2)
         expect(review.questions[0].key).to.equal('rating')
         expect(review.questions[1].key).to.equal('feedback')
@@ -107,8 +107,8 @@ reviews = ->
               expect(spyReviewNotify.callCount).to.equal(1)
               expect(spyReviewNotify.args[0][0]).to.equal('post-review-notification')
               tmp1Data = spyReviewNotify.args[0][1]
-              # expectIdsEqual(spyReviewNotify.args[0][0]._id, post.by.userId)
-              expectIdsEqual(tmp1Data._id, post._id)
+              # EXPECT.equalIds(spyReviewNotify.args[0][0]._id, post.by.userId)
+              EXPECT.equalIds(tmp1Data._id, post._id)
               expect(tmp1Data.title).to.equal(post.title)
               expect(tmp1Data.reviewerFullName).to.equal(rev0.name)
               expect(tmp1Data.rating).to.equal(postReview.questions[0].answer)
@@ -117,7 +117,7 @@ reviews = ->
               expect(spyReviewReplyNotify.args[0][0]).to.equal('post-review-reply-notification')
               tmp2Data = spyReviewReplyNotify.args[0][1]
               toUsers1 = spyReviewReplyNotify.args[0][2]
-              expectIdsEqual(tmp2Data._id, post._id)
+              EXPECT.equalIds(tmp2Data._id, post._id)
               expect(tmp2Data.title).to.equal(post.title)
               expect(tmp2Data.comment).to.equal('I say 1 reply to your review')
               expect(tmp2Data.replierFullName).to.equal(rev1.name)
@@ -133,7 +133,7 @@ reviews = ->
                   toUsers3 = spyReviewReplyNotify.args[1][2]
                   expect(toUsers3[0].name).to.equal(rev0.name)
                   expect(toUsers3[1].name).to.equal(rev1.name)
-                  expectIdsEqual(tmp3Data._id, post._id)
+                  EXPECT.equalIds(tmp3Data._id, post._id)
                   expect(tmp3Data.title).to.equal(post.title)
                   expect(tmp3Data.replierFullName).to.equal(post.by.name)
                   expect(tmp3Data.comment).to.equal('I say 2 reply to your review')

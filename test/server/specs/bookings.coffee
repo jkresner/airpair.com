@@ -9,11 +9,11 @@ util = ->
     expect(tzBooking.participants[0].timeZoneId).to.equal("America/Los_Angeles")
     expect(tzBooking.participants[1].timeZoneId).to.equal("America/Chicago")
     multitime = BookingUtil.multitime(tzBooking)
-    expectStartsWith(multitime, "Sat 25 00:00 UTC | Fri 24 5PM PDT | Fri 24 7PM CDT")
+    EXPECT.startsWith(multitime, "Sat 25 00:00 UTC | Fri 24 5PM PDT | Fri 24 7PM CDT")
     bOld = FIXTURE.clone('bookings.swap1')
     bOld.datetime = ISODate("2015-03-12T03:15:18.576Z")
     multitime2 = BookingUtil.multitime(bOld)
-    expectStartsWith(multitime2, "Thu 12 03:15 UTC")
+    EXPECT.startsWith(multitime2, "Thu 12 03:15 UTC")
     DONE()
 
 
@@ -22,15 +22,15 @@ util = ->
     b.datetime = ISODate("2016-06-25T00:00:00.000Z")
     expect(b.status).to.equal("pending")
     expect(b.participants.length).to.equal(2)
-    expectStartsWith(b.participants[0].info.name, "Morgan")
+    EXPECT.startsWith(b.participants[0].info.name, "Morgan")
     expect(b.participants[0].timeZoneId).to.equal("America/Los_Angeles")
-    expectStartsWith(b.participants[1].info.name, "Billy")
+    EXPECT.startsWith(b.participants[1].info.name, "Billy")
     expect(b.participants[1].timeZoneId).to.equal("America/Chicago")
     {name,purpose} = BookingUtil.chatGroup(b)
-    expectStartsWith(name, "morgan-billy")
+    EXPECT.startsWith(name, "morgan-billy")
     # During Daylight Savings
     purpose = purpose.replace /ST,/g, "DT,"
-    expectStartsWith(purpose, "http://booking.airpa.ir/558aa2454be238d1956cb8aa Morgan (PDT, San Francisco, CA, USA) + Billy (CDT, Houston, TX, USA). WAITING to confirm 90 mins @ Sat 25 00:00 UTC | Fri 24 5PM PDT | Fri 24 7PM CDT")
+    EXPECT.startsWith(purpose, "http://booking.airpa.ir/558aa2454be238d1956cb8aa Morgan (PDT, San Francisco, CA, USA) + Billy (CDT, Houston, TX, USA). WAITING to confirm 90 mins @ Sat 25 00:00 UTC | Fri 24 5PM PDT | Fri 24 7PM CDT")
     DONE()
 
 
@@ -39,7 +39,7 @@ util = ->
     purpose = BookingUtil.chatGroup(b).purpose
     # During Daylight Savings
     purpose = purpose.replace /ST,/g, "DT,"
-    expectStartsWith(purpose, "http://booking.airpa.ir/558aa2454be238d1956cb8aa Morgan (PDT, San Francisco, CA, USA) + Billy (CDT, Houston, TX, USA). CONFIRMED 90 mins @ Sat 25 00:00 UTC | Fri 24 5PM PDT | Fri 24 7PM CDT")
+    EXPECT.startsWith(purpose, "http://booking.airpa.ir/558aa2454be238d1956cb8aa Morgan (PDT, San Francisco, CA, USA) + Billy (CDT, Houston, TX, USA). CONFIRMED 90 mins @ Sat 25 00:00 UTC | Fri 24 5PM PDT | Fri 24 7PM CDT")
     DONE()
 
 
@@ -47,10 +47,10 @@ util = ->
     b = FIXTURE.clone('bookings.specChar')
     b = _.extend b, { datetime: ISODate("2016-05-25T11:30:00.000Z"), status: 'followup' }
     {name,purpose} = BookingUtil.chatGroup(b)
-    expectStartsWith(name, "michael-jj")
+    EXPECT.startsWith(name, "michael-jj")
     # During Daylight Savings
     purpose = purpose.replace /ST,/g, "DT,"
-    expectStartsWith(purpose, "http://booking.airpa.ir/559dc6ff476dc61100a02069 Michael (PDT, San Francisco, CA, USA) + JJ (EDT, New York, NY, USA). FEEDBACK required to payout expert for 60 mins on Wed 25 11:30 UTC | 4:30AM PDT | 7:30AM EDT")
+    EXPECT.startsWith(purpose, "http://booking.airpa.ir/559dc6ff476dc61100a02069 Michael (PDT, San Francisco, CA, USA) + JJ (EDT, New York, NY, USA). FEEDBACK required to payout expert for 60 mins on Wed 25 11:30 UTC | 4:30AM PDT | 7:30AM EDT")
     DONE()
 
 
@@ -60,12 +60,13 @@ util = ->
     purpose = BookingUtil.chatGroup(bOld).purpose
     # During Daylight Savings
     purpose = purpose.replace /ST,/g, "DT,"
-    expectStartsWith(purpose, "http://booking.airpa.ir/54dc2d2fd137810a00f2813b Daniel + Adam. FEEDBACK required to payout expert for 60 mins on Thu 12 03:30 UTC")
+    EXPECT.startsWith(purpose, "http://booking.airpa.ir/54dc2d2fd137810a00f2813b Daniel + Adam. FEEDBACK required to payout expert for 60 mins on Thu 12 03:30 UTC")
     DONE()
 
 
 views = ->
 
+  # beforeEach -> STUB.sync(Wrappers.Slack, 'checkUserSync', null)
   before -> cache.slack_users = FIXTURE.wrappers.slack_users_list
   after -> cache.slack_users = undefined
 
@@ -76,7 +77,7 @@ views = ->
         expect(b2.order._id).to.exist
         expect(b2.order.paidout==false).to.be.true
         expect(b2.requestId).to.be.undefined
-        expectIdsEqual(r1._id,b2.request._id)
+        EXPECT.equalIds(r1._id,b2.request._id)
         expect(b2.request.brief).to.exist
         expect(b2.request.title).to.exist
         expect(b2.request.adm).to.be.undefined
@@ -123,7 +124,7 @@ scheduling = ->
         expect(b1.suggestedTimes.length).to.equal(1)
         expect(b1.suggestedTimes[0]._id).to.exist
         expect(b1.suggestedTimes[0].confirmedById).to.be.undefined
-        expectIdsEqual(b1.suggestedTimes[0].byId, s._id)
+        EXPECT.equalIds(b1.suggestedTimes[0].byId, s._id)
         expect(moment(b1.suggestedTimes[0].time).isSame(pairDateTime)).to.be.true
         expect(b1.lastTouch).to.be.undefined
         expect(b1.activity).to.be.undefined
@@ -149,9 +150,9 @@ scheduling = ->
         expect(b2.suggestedTimes[0]._id).to.exist
         expect(b2.suggestedTimes[1]._id).to.exist
         expectSameMoment(b2.suggestedTimes[0].time,time1)
-        expectIdsEqual(b2.suggestedTimes[0].byId, s._id)
+        EXPECT.equalIds(b2.suggestedTimes[0].byId, s._id)
         expectSameMoment(b2.suggestedTimes[1].time,time2)
-        expectIdsEqual(b2.suggestedTimes[1].byId, s._id)
+        EXPECT.equalIds(b2.suggestedTimes[1].byId, s._id)
         DB.docById 'Booking', b1._id, (b3) ->
           expect(b3.activity.length).to.equal(2)
           expectTouch(b3.activity[0], s._id, "create")
@@ -166,7 +167,7 @@ scheduling = ->
               expectSameMoment(b4.suggestedTimes[0].time,time1)
               expectSameMoment(b4.suggestedTimes[1].time,time2)
               expectSameMoment(b4.suggestedTimes[2].time,time3)
-              expectIdsEqual(b4.suggestedTimes[2].byId, sDros._id)
+              EXPECT.equalIds(b4.suggestedTimes[2].byId, sDros._id)
               DB.docById 'Booking', b1._id, (b5) ->
                 expect(b5.activity.length).to.equal(3)
                 expectTouch(b5.lastTouch, sDros._id, "suggest-time")
@@ -180,13 +181,14 @@ scheduling = ->
       timeId = b1.suggestedTimes[0]._id
       GET "/bookings", ->
         PUT "/bookings/#{b1._id}/confirm-time", {_id:b1._id, timeId}, {status:403}, (err) ->
-          expectStartsWith(err.message, 'Cannot confirm your own time')
+          EXPECT.startsWith(err.message, 'Cannot confirm your own time')
           DONE()
 
 
   IT 'Can confirm customer booking suggested time by expert', ->
-    stubber = STUB.stubWrapperInnerAPI 'Calendar', 'events.insert'
-    stubCal = stubber (obj,cb) -> cb null, FIXTURE.wrappers.google_cal_create
+    stubber = STUB.wrapperAPI 'Calendar', 'events.insert'
+    stubCal = stubber (obj, cb) -> cb null, FIXTURE.wrappers.google_cal_create
+    $log('stubCal', stubCal)
     # email notifications sent
     # stubMail = SETUP.stub mailman, 'send'
     spyPairbot = STUB.spy pairbot, 'sendSlackMsg'
@@ -206,8 +208,8 @@ scheduling = ->
           expect(spyPairbot.args[0][1]).to.equal('booking-confirm-time')
           expect(spyPairbot.args[0][2].byName).to.equal(sDros.name)
           expect(b2.suggestedTimes.length).to.equal(1)
-          expectIdsEqual(b2.suggestedTimes[0].byId,s._id)
-          expectIdsEqual(b2.suggestedTimes[0].confirmedById,sDros._id)
+          EXPECT.equalIds(b2.suggestedTimes[0].byId,s._id)
+          EXPECT.equalIds(b2.suggestedTimes[0].confirmedById,sDros._id)
           expect(stubCal.calledOnce).to.be.true
           DB.docById 'Booking', b1._id, (b3) ->
             expectTouch(b3.lastTouch, sDros._id, "confirm-time")
@@ -218,11 +220,11 @@ scheduling = ->
 
 
   IT 'Expert can suggest alternative which can be confirmed by customer', ->
-    stubber = STUB.stubWrapperInnerAPI 'Calendar', 'events.insert'
+    stubber = STUB.wrapperAPI 'Calendar', 'events.insert'
     stubCal = stubber (obj,cb) -> cb null, FIXTURE.wrappers.google_cal_create
     # email notifications sent
-    stubMail = STUB.cb mailman, 'send', {}
-    stubPairBot = STUB.cb pairbot, 'sendSlackMsg', {}
+    stubMail = STUB.callback mailman, 'send', {}
+    stubPairBot = STUB.callback pairbot, 'sendSlackMsg', {}
     datetime = moment().add(11, 'day')
     STORY.newBooking 'kelf', data:{datetime,expertKey:'gnic'}, (s, b1) ->
       expect(b1.suggestedTimes.length).to.equal(1)
@@ -244,7 +246,7 @@ scheduling = ->
           expect(b2.suggestedTimes[1]._id).to.exist
           expect(stubPairBot.calledOnce).to.be.false
           LOGIN {key:s.userKey}, ->
-            expectIdsEqual(b2.suggestedTimes[1].byId,sGnic._id)
+            EXPECT.equalIds(b2.suggestedTimes[1].byId,sGnic._id)
             timeId = b2.suggestedTimes[1]._id
             PUT "/bookings/#{b1._id}/confirm-time", {_id:b1._id, timeId}, {}, (b3) ->
               expect(b3.status).to.equal("confirmed")
@@ -253,11 +255,11 @@ scheduling = ->
               expect(stubCal.calledOnce).to.be.true
               expect(b3.suggestedTimes.length).to.equal(2)
               expectSameMoment(b3.suggestedTimes[0].time,datetime)
-              expectIdsEqual(b3.suggestedTimes[0].byId,s._id)
+              EXPECT.equalIds(b3.suggestedTimes[0].byId,s._id)
               expect(b3.suggestedTimes[0].confirmedById).to.be.undefined
               expectSameMoment(b3.suggestedTimes[1].time,time2)
-              expectIdsEqual(b3.suggestedTimes[1].byId,sGnic._id)
-              expectIdsEqual(b3.suggestedTimes[1].confirmedById,s._id)
+              EXPECT.equalIds(b3.suggestedTimes[1].byId,sGnic._id)
+              EXPECT.equalIds(b3.suggestedTimes[1].confirmedById,s._id)
               DB.docById 'Booking', b1._id, (bDb1) ->
                 expectTouch(bDb1.lastTouch, s._id, "confirm-time")
                 expectTouch(bDb1.activity[0],s._id, "create")
@@ -290,8 +292,8 @@ recordings = ->
 
 
 
-  IT "given a YouTube ID, allows a booking to be annotated with YouTube data", ->
-    listStub = SETUP.stubYouTube 'videos','list',null,FIXTURE.wrappers.youtube_codereview_list
+  SKIP "given a YouTube ID, allows a booking to be annotated with YouTube data", ->
+    # listStub = SETUP.stubYouTube 'videos','list',null,FIXTURE.wrappers.youtube_codereview_list
     STORY.newUser 'miks', {login:true,location:true,paymethod:true}, (s) ->
       airpair1 = datetime: moment().add(2, 'day'), minutes: 120, type: 'private', payMethodId: s.primaryPayMethodId
       POST "/bookings/#{FIXTURE.experts.dros._id}", airpair1, (booking1) ->
@@ -309,7 +311,7 @@ recordings = ->
             expect(booking.recordings.length).to.equal(1)
             # expect(booking.recordings[0].title).to.equal("Online Rails Code Review with RoR Expert Edward Anderson - AirPair")
             expect(booking.recordings[0].type).to.equal("youtube")
-            listStub.restore()
+            # listStub.restore()
             DONE()
 
 
@@ -395,35 +397,35 @@ feedback = ->
   #     SETUP.newBookedExpert 'stco', {}, (s, b1) ->
   #       expect(b1.status).to.equal('pending')
   #       PUT "/bookings/#{b1._id}/#{b1.expertId}/customer-feedback", {}, {status:403}, (e) ->
-  #         expectStartsWith(e.message,"Booking [#{b1._id}] must be in folloup or complete state")
+  #         EXPECT.startsWith(e.message,"Booking [#{b1._id}] must be in folloup or complete state")
   #         LOGIN {key:'dros'}, (sDros) ->
   #           timeId = b1.suggestedTimes[0]._id
   #           PUT "/bookings/#{b1._id}/confirm-time", {_id:b1._id, timeId}, {}, (b2) ->
   #             expect(b2.status).to.equal("confirmed")
   #             LOGIN {key:s.userKey}, (s2) ->
   #               PUT "/bookings/#{b1._id}/#{b1.expertId}/customer-feedback", {}, {status:403}, (e2) ->
-  #                 expectStartsWith(e2.message,"Booking [#{b1._id}] must be in folloup or complete state")
+  #                 EXPECT.startsWith(e2.message,"Booking [#{b1._id}] must be in folloup or complete state")
   #                 LOGIN {key:"admin"}, ->
   #                   d = _.extend(_.pick(b2,'type','minutes','createdById','status','datetime','gcal'),{status:'canceled'})
   #                   PUT "/adm/bookings/#{b1._id}", d, {}, (b3) ->
   #                     expect(b3.status).to.equal("canceled")
   #                     LOGIN {key:s.userKey}, (s3) ->
   #                       PUT "/bookings/#{b1._id}/#{b1.expertId}/customer-feedback", {}, {status:403}, (e3) ->
-  #                         expectStartsWith(e3.message,"Booking [#{b1._id}] must be in folloup or complete state")
+  #                         EXPECT.startsWith(e3.message,"Booking [#{b1._id}] must be in folloup or complete state")
   #                         DONE()
 
   it 'Can give booking feedback as the customer without expert feedback'
   # IT 'Can give booking feedback as the customer without expert feedback', ->
   #   SETUP.newBookingInFollowupState 'stcx', {}, (b1, sCust, sExp) ->
   #     PUT "/bookings/#{b1._id}/#{b1.expertId}/customer-feedback", {}, {status:403}, (e) ->
-  #       expectStartsWith(e.message,"Booking customer feedback review required")
+  #       EXPECT.startsWith(e.message,"Booking customer feedback review required")
   #       rev1 = { questions: [
   #         { idx: 0, key: 'rating', promt: 'How many stars?', answer: "Awesome 1" }] }
   #       body1 = { review: rev1 }
   #       PUT "/bookings/#{b1._id}/#{b1.expertId}/customer-feedback", body1, {}, (b3) ->
   #         expect(b3.status).to.equal('followup')
   #         expect(b3.reviews.length).to.equal(1)
-  #         expectIdsEqual(b3.reviews[0].by._id,sCust._id)
+  #         EXPECT.equalIds(b3.reviews[0].by._id,sCust._id)
   #         expect(b3.reviews[0].type).to.equal('booking-customer-feedback')
   #         expect(b3.reviews[0].questions.length).to.equal(1)
   #         expect(b3.reviews[0].questions[0].key).to.equal('rating')
@@ -443,7 +445,7 @@ feedback = ->
   #           expect(b2.status).to.equal("followup")
   #           LOGIN {key:'dros'}, ->
   #             PUT "/bookings/#{b1._id}/#{b1.expertId}/customer-feedback", {}, {status:403}, (e) ->
-  #               expectStartsWith(e.message,"Not a customer on booking")
+  #               EXPECT.startsWith(e.message,"Not a customer on booking")
   #               DONE()
 
 
@@ -460,10 +462,9 @@ module.exports = ->
         done()
 
   beforeEach ->
-    # STUB.sync(Wrappers.Slack, 'checkUserSync', null)
-    STUB.cb(Wrappers.Slack, 'getUsers', FIXTURE.wrappers.slack_users_list)
-    STUB.cb(Wrappers.Slack, 'getChannels', FIXTURE.wrappers.slack_channels_list)
-    STUB.cb(Wrappers.Slack, 'getGroups', FIXTURE.wrappers.slack_groups_list)
+    STUB.callback(Wrappers.Slack, 'getUsers', FIXTURE.wrappers.slack_users_list)
+    STUB.callback(Wrappers.Slack, 'getChannels', FIXTURE.wrappers.slack_channels_list)
+    STUB.callback(Wrappers.Slack, 'getGroups', FIXTURE.wrappers.slack_groups_list)
 
   after ->
     @braintreepaymentStub.restore()

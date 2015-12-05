@@ -45,7 +45,7 @@ create = ->
         expect(r1._id).to.exist
         r1.type = 'mentoring'
         PUT "/requests/#{r1._id}", r1, (r2) ->
-          expectIdsEqual(r1._id,r2._id)
+          EXPECT.equalIds(r1._id,r2._id)
           expect(r2.type).to.equal('mentoring')
           DONE()
 
@@ -62,7 +62,7 @@ create = ->
         # expect(spy.args[0][0]).to.equal('user-verify-email')
         # {hash} = spy.args[0][1]
         # expect(hash).to.exist
-        # expectIdsEqual(spy.args[0][2], r1._id)
+        # EXPECT.equalIds(spy.args[0][2], r1._id)
         # PUT '/users/me/email-verify', { hash }, {}, (s1) ->
           # expect(s1.emailVerified).to.be.true
         r1.experience = 'proficient'
@@ -191,13 +191,13 @@ review = ->
   #         GET "/requests/review/#{r._id}", {}, (rAsv0) ->
   #           expect(rAsv0.status).to.equal('received')
   #           seAsv0 = rAsv0.suggested[0].expert
-  #           expectIdsEqual(seAsv0._id, FIXTURE.experts.asv0._id)
+  #           EXPECT.equalIds(seAsv0._id, FIXTURE.experts.asv0._id)
   #           expect(seAsv0.matching).to.be.undefined
   #           expect(seAsv0.activity).to.be.undefined
   #           expect(seAsv0.isV0).to.be.true
   #           reply = expertComment: "I'll take it", expertAvailability: "Real-time", expertStatus: "available"
   #           PUT "/requests/#{r._id}/reply/#{seAsv0._id}", reply, { status: 403 }, (err) ->
-  #             expectStartsWith(err.message, "Must migrate expert profile to reply")
+  #             EXPECT.startsWith(err.message, "Must migrate expert profile to reply")
   #             DONE()
 
   it 'Review a request as v0 expert after migration'
@@ -212,7 +212,7 @@ review = ->
   #             $log('rAsv1', rAsv1)
   #             expect(rAsv1.status).to.equal('received')
   #             seAsv1 = rAsv1.suggested[0].expert
-  #             expectIdsEqual(seAsv1._id, FIXTURE.experts.asv0._id)
+  #             EXPECT.equalIds(seAsv1._id, FIXTURE.experts.asv0._id)
   #             expect(seAsv1.isV0).to.be.undefined
   #             expect(seAsv1.matching).to.be.undefined
   #             expect(seAsv1.activity).to.be.undefined
@@ -224,7 +224,7 @@ review = ->
   #               expect(r1.suggested[0].expertStatus).to.equal("available")
   #               expect(r1.suggested[0].expertComment).to.equal("I will take it")
   #               expect(r1.suggested[0].expertAvailability).to.equal("Realest time")
-  #               expectIdsEqual(sAsv0._id,r1.suggested[0].expert.userId)
+  #               EXPECT.equalIds(sAsv0._id,r1.suggested[0].expert.userId)
   #               expect(r1.suggested[0].expert.location).to.equal("Melbourne VIC, Australia")
   #               expect(r1.suggested[0].expert.timezone).to.equal("Australian Eastern Standard Time")
   #               expect(r1.suggested[0].expert.name).to.equal("Ashish Awaghad")
@@ -253,7 +253,7 @@ review = ->
 #               expect(rAbha.brief).to.exist
 #               expect(rAbha.suggested.length).to.equal(1)
 #               expect(rAbha.suggested[0].expert.minRate).to.equal(70)
-#               expectStartsWith(rAbha.suggested[0].expert.email, "abeisgreat")
+#               EXPECT.startsWith(rAbha.suggested[0].expert.email, "abeisgreat")
 #               expect(rAbha.suggested[0].suggestedRate.expert).to.equal(85)
 #               expect(rAbha.suggested[0].suggestedRate.total).to.equal(130)
 #               reply = expertComment: "I'll take it", expertAvailability: "Real-time", expertStatus: "available"
@@ -285,9 +285,9 @@ review = ->
 #                     expect(rAdm[0].adm.reviewable).to.exist
 #                     $log('we got all the way here', customerMailSpy.callCount)
 #                     expect(customerMailSpy.callCount).to.equal(1)
-#                     expectStartsWith(customerMailSpy.args[0][0].name,"Michael Flynn")
+#                     EXPECT.startsWith(customerMailSpy.args[0][0].name,"Michael Flynn")
 #                     expect(customerMailSpy.args[0][1]).to.equal("Abe Haskins")
-#                     expectIdsEqual(customerMailSpy.args[0][2],r1._id)
+#                     EXPECT.equalIds(customerMailSpy.args[0][2],r1._id)
 #                     expect(customerMailSpy.args[0][3]).to.be.true
 #                     customerMailSpy.restore()
 #                     DONE()
@@ -350,7 +350,7 @@ review = ->
                       expect(customerMailSpy.args[2][0]).to.equal("pipeliner-notify-reply")
                       expAvailArgs = customerMailSpy.args[1]
                       expect(expAvailArgs[1].expertName).to.equal("Ra'Shaun Stovall")
-                      expectStartsWith(expAvailArgs[2].name,"Brian Hur")
+                      EXPECT.startsWith(expAvailArgs[2].name,"Brian Hur")
                       expect(expAvailArgs[3]).to.be.undefined
                       customerMailSpy.restore()
                       DONE()
@@ -370,7 +370,7 @@ review = ->
                   expect(r1.status).to.equal('received')
                   LOGIN {key:spcorKey}, (sCustomer) ->
                     GET "/requests/#{r._id}/book/#{expertId}", { status: 400 }, (freview) ->
-                      expectStartsWith(freview.message, 'No available expert')
+                      EXPECT.startsWith(freview.message, 'No available expert')
                       callback()
 
           testAvailable = () ->
@@ -384,7 +384,7 @@ review = ->
                     GET "/requests/#{r._id}/book/#{expertId}", {}, (review) ->
                       expect(review.status).to.equal('review')
                       expect(review.suggested.length).to.equal(1)
-                      expectIdsEqual(review.suggested[0].expert._id,expertId)
+                      EXPECT.equalIds(review.suggested[0].expert._id,expertId)
                       expect(review.suggested[0].suggestedRate).to.exist
                       expect(review.suggested[0].suggestedRate.expert).to.equal(155)
                       expect(review.suggested[0].suggestedRate.total).to.equal(240)

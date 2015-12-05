@@ -10,11 +10,8 @@
     "error":              "red",
     "expectederr":        "blue"
   },
-  "verbose": {
-    "errors":             "true"
-  },
   "mongo": {
-    "collections":        [ "Users","Experts","Bookings","Orders",
+    "collections":        ["Users","Experts","Bookings","Orders",
                            "Companies","Paymethods","Payouts","Posts",
                            "Requests","Tags","Templates","Views","Impressions",
                            "Sessions","Events"],

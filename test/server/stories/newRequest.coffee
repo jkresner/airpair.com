@@ -24,7 +24,7 @@ requestForAdmin = (sCust, userKey, r, cb) ->
       expect(r.status).to.equal('received')
       expect(rAdm.length).to.equal(1)
       expect(rAdm[0].lastTouch._id).to.exist
-      expectStartsWith(rAdm[0].lastTouch.by.name,FIXTURE.users[userKey].name)
+      EXPECT.startsWith(rAdm[0].lastTouch.by.name,FIXTURE.users[userKey].name)
       # $log(rAdm[0])
       expect(rAdm[0].adm.active).to.be.true
       expect(rAdm[0].adm.owner).to.be.undefined

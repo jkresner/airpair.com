@@ -4,7 +4,7 @@ raw = ->
     d = { tagsString: "angularjs", expertFirstName: "Jony", requestByFullName:"Jane Dow",_id:"55371ce4b38fc91937086df7",accountManagerName:"Jonathon Kresner" }
     mailman.get 'expert-suggest', d, (e,r) ->
       expect(e).to.be.null
-      expectStartsWith(r.subject,"angularjs AirPair?")
+      EXPECT.startsWith(r.subject,"angularjs AirPair?")
       md = r.markdown
       expectContains(md,"Hi Jony,")
       expectContains(md,"for Jane Dow")
@@ -19,7 +19,7 @@ raw = ->
     mailman.sendMarkdown "angularJS Test AirPair?", md, {email:'jkresner@gmail.com',name:"Jony Expert"}, 'team', (e,r) ->
       expect(e).to.be.null
       expectContains(r.from,'AirPair <team@airpair.com>')
-      expectStartsWith(r.subject,"angularJS Test AirPair?")
+      EXPECT.startsWith(r.subject,"angularJS Test AirPair?")
       expectContains(r.html, "<p>Hi Jony,</p>\n")
       expectContains(r.html, "<p>for Jane Dow</p>\n")
       DONE()
@@ -59,7 +59,7 @@ raw = ->
 #         expect(send.callCount).to.equal(1)
 #         mail = send.args[0][0]
 #         # $log('mail'.cyan, mail)
-#         expectStartsWith(mail.subject,'{Payment} $17332 by Jony 5')
+#         EXPECT.startsWith(mail.subject,'{Payment} $17332 by Jony 5')
 #         # expect(mail.text).to.be.null
 #         # expect(mail.html).to.be.null
 #         expect(mail.to.constructor).to.equal(Array)
@@ -89,14 +89,14 @@ spinners = ->
       airpair1 = datetime: moment().add(2, 'day'), minutes: 120, type: 'private', payMethodId: s.primaryPayMethodId
       POST "/bookings/#{FIXTURE.experts.dros._id}", airpair1, {}, (booking1) ->
         expect(send.callCount).to.equal(3)
-        expectStartsWith(send.args[1][0].subject, "{Booking} by #{s.name} for #{booking1.participants[1].info.name}")
+        EXPECT.startsWith(send.args[1][0].subject, "{Booking} by #{s.name} for #{booking1.participants[1].info.name}")
         expectContains(send.args[1][0].text, "/#{booking1._id}")
         expectContains(send.args[1][0].text, "http://adm.airpa.ir/b/#{booking1._id}")
         expectContains(send.args[1][0].text, 'Daniel Roseman')
         expectContains(send.args[1][0].text, s.name)
         expectContains(send.args[1][0].html, booking1._id)
         expectContains(send.args[1][0].from,'AP <team@airpair.com>')
-        expectStartsWith(send.args[2][0].subject, "You got booked to AirPair with #{s.name}")
+        EXPECT.startsWith(send.args[2][0].subject, "You got booked to AirPair with #{s.name}")
         expectContains(send.args[2][0].from,'Pairbot <team@airpair.com>')
         DONE()
 
@@ -104,7 +104,7 @@ spinners = ->
 #     it 'Pipeliners notify request and reply', itDone ->
 #       SETUP.newCompleteRequest 'jkjk', {}, (r,s) ->
 #         expect(send.callCount).to.equal(1)
-#         expectStartsWith(send.args[0][0].subject, "{Request} RUSH $100 #{s.name}")
+#         EXPECT.startsWith(send.args[0][0].subject, "{Request} RUSH $100 #{s.name}")
 #         expectContains(send.args[0][0].text, "/#{r._id}")
 #         expectContains(send.args[0][0].text, "http://adm.airpa.ir/r/#{r._id}")
 #         expectContains(send.args[0][0].text, "RUSH")
@@ -114,11 +114,11 @@ spinners = ->
 #           PUT "/requests/#{r._id}/reply/#{FIXTURE.experts.snug._id}", reply, {}, (r2) ->
 #             expect(send.callCount).to.equal(3)
 #             # $log(send.args[1][1].subject)
-#             expectStartsWith(send.args[1][0].subject, "[Reply] AVAILABLE by Ra'Shaun Stovall for #{s.name}")
+#             EXPECT.startsWith(send.args[1][0].subject, "[Reply] AVAILABLE by Ra'Shaun Stovall for #{s.name}")
 #             expectContains(send.args[1][0].text, "http://adm.airpa.ir/r/#{r._id}")
 #             expectContains(send.args[1][0].text, "/#{r._id}")
 #             expectContains(send.args[1][0].from, 'AP <team@airpair.com>')
-#             expectStartsWith(send.args[2][0].subject, "[AirPair] Ra'Shaun Stovall is bookable for 24 hours")
+#             EXPECT.startsWith(send.args[2][0].subject, "[AirPair] Ra'Shaun Stovall is bookable for 24 hours")
 #             expectContains(send.args[2][0].text, "https://www.airpair.com/review/#{r._id}")
 #             expectContains(send.args[2][0].from, 'Pairbot <team@airpair.com>')
 #             DONE()
@@ -131,7 +131,7 @@ spinners = ->
       mailman.sendTemplate 'expert-booked', d, {name:'Karan Kurani',email:'karankurani@testmail.com'}, ->
         expect(send.callCount).to.equal(1)
         mail = send.args[0][0]
-        expectStartsWith(mail.subject,'You got booked to AirPair with Jonyisalive 5')
+        EXPECT.startsWith(mail.subject,'You got booked to AirPair with Jonyisalive 5')
         expectContains(mail.from,'Pairbot <team@airpair.com>')
         expectContains(mail.text,'https://www.airpair.com/bookings/55555ae4b38fc91937086df7')
         expectContains(mail.text,'60 minutes')
@@ -156,7 +156,7 @@ spinners = ->
 #       mailman.sendTemplate 'post-review-notification', d, {name:"Jonathon Kresner",email:'jk@airpair.com'}, (e, mail) ->
 #         expect(send.callCount).to.equal(1)
 #         mail = send.args[0][0]
-#         expectStartsWith(mail.subject,'4 Star Review for ExpressJS and PassportJS Sessions Deep Dive')
+#         EXPECT.startsWith(mail.subject,'4 Star Review for ExpressJS and PassportJS Sessions Deep Dive')
 #         expectContains(mail.from,'Pairbot <team@airpair.com>')
 #         expectContains(mail.text,'http://author.airpa.ir/contributors/541a36c3535a850b00b05697')
 #         expectContains(mail.text,'Karan Kurani')
@@ -185,9 +185,9 @@ module.exports = ->
   beforeEach ->
     @send = STUB.spy(global.mailman,'send')
     STUB.sync(Wrappers.Slack, 'checkUserSync', null)
-    STUB.cb(Wrappers.Slack, 'getUsers', FIXTURE.wrappers.slack_users_list)
-    STUB.cb(Wrappers.Slack, 'getChannels', FIXTURE.wrappers.slack_channels_list)
-    STUB.cb(Wrappers.Slack, 'getGroups', FIXTURE.wrappers.slack_groups_list)
+    STUB.callback(Wrappers.Slack, 'getUsers', FIXTURE.wrappers.slack_users_list)
+    STUB.callback(Wrappers.Slack, 'getChannels', FIXTURE.wrappers.slack_channels_list)
+    STUB.callback(Wrappers.Slack, 'getGroups', FIXTURE.wrappers.slack_groups_list)
 
   after ->
     @braintreepaymentStub.restore()

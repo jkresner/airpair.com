@@ -42,7 +42,7 @@ signup = ->
                   .send({email:clone.email,password:clone.password}).expect(200)
                   .end (err, resp) ->
                     s4 = resp.body
-                    expectIdsEqual(s2._id,s4._id)
+                    EXPECT.equalIds(s2._id,s4._id)
                     expect(s4.emailVerified).to.equal(true)
                     expect(s4.email).to.equal(clone.email)
                     cookie = resp.headers['set-cookie']
@@ -89,7 +89,7 @@ signup = ->
   #                 .send({email:clone.email,password:clone.password}).expect(200)
   #                 .end (err, resp) ->
   #                   s4 = resp.body
-  #                   expectIdsEqual(s2._id,s4._id)
+  #                   EXPECT.equalIds(s2._id,s4._id)
   #                   expect(s4.emailVerified).to.equal(true)
   #                   expect(s4.email).to.equal(clone.email)
   #                   cookie = resp.headers['set-cookie']

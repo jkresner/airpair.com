@@ -20,12 +20,12 @@ var scopeString = config.auth.paypal.scope.join().replace(/,/g,' ')
 
 var wrapper = {
 
-  loginUrl: () => wrapper.openIdConnect.authorizeUrl({'scope': scopeString }),
+  loginUrl: () => this.openIdConnect.authorizeUrl({'scope': scopeString }),
 
   init() {
-    wrapper.api = global.API_PAYPAL || require('paypal-rest-sdk')
-    wrapper.openIdConnect = wrapper.api.openIdConnect
-    wrapper.api.configure({
+    this.api = global.API_PAYPAL || require('paypal-rest-sdk')
+    this.openIdConnect = this.api.openIdConnect
+    this.api.configure({
       'mode': config.auth.paypal.mode,
       'client_id': config.auth.paypal.clientID,
       'client_secret': config.auth.paypal.clientSecret,
@@ -44,9 +44,9 @@ var wrapper = {
     }
 
     var authCode = req.query.code
-    wrapper.openIdConnect.tokeninfo.create(authCode, function (ee, tokeninfo) {
+    this.openIdConnect.tokeninfo.create(authCode, function (ee, tokeninfo) {
       if (ee) return error('openIdConnect.tokeninfo',ee)
-      wrapper.openIdConnect.userinfo.get(tokeninfo.access_token, function (e, userinfo) {
+      this.openIdConnect.userinfo.get(tokeninfo.access_token, function (e, userinfo) {
         if (e) return error('openIdConnect.userinfo', e)
         if (!userinfo) return error("no user info")
         // console.log('tokeninfo', tokeninfo, 'userinfo', userinfo)
@@ -77,7 +77,7 @@ var wrapper = {
       }]
     };
 
-    wrapper.api.payout.create(payload, 'true', (e, payout) => {
+    this.api.payout.create(payload, 'true', (e, payout) => {
       var logging = config.env != 'test'
       if (e) {
         if (logging) $log(`paypal.payout.error`.red, JSON.stringify(e).red, JSON.stringify(payload).white)

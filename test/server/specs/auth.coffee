@@ -29,7 +29,7 @@ signup = ->
         expect(s.auth).to.be.undefined # holds password field
         # expect(s.auth.password).to.be.undefined
         DB.docById 'User', s._id, (u) ->
-          expectIdsEqual(s._id, u._id)
+          EXPECT.equalIds(s._id, u._id)
           expect(u.name).to.equal(s.name)
           expect(u.auth).to.exist
           expect(u.auth.password).to.exist
@@ -59,7 +59,7 @@ signup = ->
             # expectAttr(s.auth.gp,'link')
             # expectAttrUndefined(s.auth.gp,'id')
             DB.docById 'User', s._id, (u) ->
-              expectIdsEqual(s._id, u._id)
+              EXPECT.equalIds(s._id, u._id)
               expectAttr(u.auth.gp, 'id', String)
               expectAttr(u.auth.gp, 'email', String)
               expectAttr(u.auth.gp, 'link', String)
@@ -84,7 +84,7 @@ signup = ->
             expectAttr(s.auth.gp,'email')
             # expectAttrUndefined(s.auth.gp,'id')
             DB.docById 'User', s._id, (u) ->
-              expectIdsEqual(s._id, u._id)
+              EXPECT.equalIds(s._id, u._id)
               expectAttr(u.auth.gp, 'id', String)
               expectAttr(u.auth.gp, 'email', String)
               expectAttrUndefined(u.auth.gp, 'locale')
@@ -97,7 +97,7 @@ signup = ->
       d = name: "AirPair Experts", email: "experts@airpair.com", password: "Yoyoyoyoy"
       DB.ensureDoc 'User', FIXTURE.users.apexperts, ->
         SUBMIT '/auth/signup', d, {status:400, contentType: /json/ }, (err) ->
-          expectStartsWith(err.message, 'Signup fail. Account with email already exists.')
+          EXPECT.startsWith(err.message, 'Signup fail. Account with email already exists.')
           DONE()
 
 
@@ -106,7 +106,7 @@ signup = ->
     SUBMIT '/auth/signup', d, {}, (r) ->
       LOGOUT ->
         SUBMIT '/auth/signup', d, {status:400}, (err) ->
-          expectStartsWith(err.message, 'Signup fail. Account with email already exists.')
+          EXPECT.startsWith(err.message, 'Signup fail. Account with email already exists.')
           DONE()
 
 
@@ -127,7 +127,7 @@ signup = ->
     #         expectAttr(s.auth.gh,'username')
     #         # expectAttrUndefined(s.auth.gp,'id')
     #         DB.docById 'User', s._id, (u) ->
-    #           expectIdsEqual(s._id, u._id)
+    #           EXPECT.equalIds(s._id, u._id)
     #           expectAttr(u.auth.gh, 'id', Number)
     #           expectAttr(u.auth.gh, 'emails', Array)
     #           expect(u.auth.gh.tokens[config.auth.oauth.appKey].token).to.equal('ludofleury_token')
@@ -181,7 +181,7 @@ login = ->
           AuthService.link.call SETUP.userSession(), 'google', profile, {token}, (e, r) ->
             expect(e).to.be.null
             expect(r._id).to.exist
-            expectIdsEqual(r._id, s._id)
+            EXPECT.equalIds(r._id, s._id)
             DB.docById 'User', s._id, (r2) ->
               expect(r2.auth.gp.id).to.equal(FIXTURE.oauth.google_aone.id)
               expect(r2.email).to.equal('airpairone001@gmail.com')
@@ -196,9 +196,9 @@ login = ->
       DB.ensureDoc 'User', ape1, ->
         AuthService.link.call SETUP.userSession(), 'google', profile, {token}, (e, r1) ->
           expect(e).to.be.null
-          expectIdsEqual(r1._id, ape1._id)
+          EXPECT.equalIds(r1._id, ape1._id)
           AuthService.link.call {user:r1}, 'google', profile, {token}, (e, r2) ->
-            expectIdsEqual(r2._id, ape1._id)
+            EXPECT.equalIds(r2._id, ape1._id)
             DB.docById 'User', ape1._id, (r3) ->
               expect(r3.auth.gp.id).to.equal(profile.id)
               expect(config.auth.oauth.appKey).to.equal('apcom')
@@ -239,10 +239,10 @@ login = ->
 #   #       SUBMIT '/v1/auth/login', akumD, {}, (r2) ->
 #   #         expect(r2._id).to.exist
 #   #         GET "/session/full", (s) ->
-#   #           expectStartsWith(s.name, "Ash Kumar")
+#   #           EXPECT.startsWith(s.name, "Ash Kumar")
 #   #         # svcCtx = SETUP.userSession('akum')
 #   #         # AuthService.googleLogin.call svcCtx, akumD_google, (ee,user) ->
-#   #           # expectIdsEqual(user._id,resp2.body._id)
+#   #           # EXPECT.equalIds(user._id,resp2.body._id)
 #   #           # expect(user.google).to.exist
 #   #           # expect(user.email).to.equal(lower)
 #   #           DONE()
@@ -256,7 +256,7 @@ login = ->
     SETUP.analytics.on()
     DB.ensureDoc 'User', ape1, ->
       AuthService.link.call SETUP.userSession(), 'google', profile, {token}, (e, r1) ->
-        expectIdsEqual(r1._id, ape1._id)
+        EXPECT.equalIds(r1._id, ape1._id)
         DB.docById 'User', ape1._id, (r3) ->
           expect(r3.cohort.aliases.length).to.equal(2)
           DONE()
@@ -290,10 +290,10 @@ password = ->
             data = { email: user.email, hash: generated_hash, password: new_password }
             SUBMIT "/auth/password-set", data, {}, (s) ->
               GET "/session/full", (s2) ->
-                expectIdsEqual(s._id, s2._id)
+                EXPECT.equalIds(s._id, s2._id)
                 LOGOUT ->
                   SUBMIT '/auth/login', {email:user.email,password:new_password}, {}, (s3) ->
-                    expectIdsEqual(s._id, s3._id)
+                    EXPECT.equalIds(s._id, s3._id)
                     DONE()
 
 
@@ -318,7 +318,7 @@ password = ->
             SUBMIT "/auth/password-set", data, (s2) ->
               LOGOUT ->
                 SUBMIT '/auth/login', {email:s.email,password:new_password}, (s3) ->
-                  expectIdsEqual(s._id,s3._id)
+                  EXPECT.equalIds(s._id,s3._id)
                   DONE()
 
 
@@ -393,7 +393,7 @@ link = ->
       AuthService.link.call {user:s}, 'github', profile, {token}, (e,usr) ->
         FIXTURE.users[s.userKey] = usr
         GET '/session/full', (s1) ->
-          expectIdsEqual(s._id, s1._id)
+          EXPECT.equalIds(s._id, s1._id)
           expect(s1.auth.gh.username).to.be.undefined
           expect(s1.auth.gh.login).to.equal(profile.login)
           expect(s1.auth.gh.id).to.be.undefined
@@ -423,7 +423,7 @@ module.exports = ->
 
   beforeEach ->
     STUB.sync(Wrappers.Slack, 'checkUserSync', null)
-    STUB.cb(Wrappers.Slack, 'getUsers', FIXTURE.wrappers.slack_users_list)
+    STUB.callback(Wrappers.Slack, 'getUsers', FIXTURE.wrappers.slack_users_list)
 
   afterEach ->
     SETUP.analytics.off()

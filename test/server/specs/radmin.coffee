@@ -31,7 +31,7 @@ requests = ->
         expect(r1.messages[0].subject).to.equal("test subject")
         expect(r1.messages[0].body).to.equal("test body")
         PUT "/adm/requests/#{r._id}/message", msg, {status:403}, (rFail) ->
-          expectStartsWith(rFail.message,'Can not send the same message type once')
+          EXPECT.startsWith(rFail.message,'Can not send the same message type once')
           DONE()
 
 
@@ -57,7 +57,7 @@ requests = ->
           expect(adm1.closed).to.be.undefined
           expect(r1.messages.length).to.equal(1)
           PUT "/adm/requests/#{r._id}/farm", { tweet }, {status:403}, (rFail) ->
-            expectStartsWith(rFail.message,'Can only share request once')
+            EXPECT.startsWith(rFail.message,'Can only share request once')
             DONE()
 
 
@@ -83,8 +83,8 @@ requests = ->
                       PUT "/adm/requests/#{r._id}/remove/#{phlfExp._id}", {}, (reqRexp) ->
                         expect(reqRexp.suggested.length).to.equal(0)
                         expect(spy.callCount).to.equal(1)
-                        expectStartsWith(spy.args[0][0], "angularjs AirPair?")
-                        expectStartsWith(spy.args[0][1], "Hi Phil,")
+                        EXPECT.startsWith(spy.args[0][0], "angularjs AirPair?")
+                        EXPECT.startsWith(spy.args[0][1], "Hi Phil,")
                         DONE()
 
 
@@ -101,7 +101,7 @@ requests = ->
   #     db.ensureDoc 'Request', FIXTURE.requests.suggestReply, () ->
   #       LOGIN 'admin', (adm) ->
   #         GET "/adm/requests/#{_id}", {}, (r) ->
-  #           expectIdsEqual(r._id, _id)
+  #           EXPECT.equalIds(r._id, _id)
   #           expect(r.suggested.length).to.equal(0)
   #           query = requestUtil.mojoQuery(r)
   #           GET "/experts/mojo/rank?#{query}", {}, (matches) ->
@@ -139,20 +139,20 @@ requests = ->
   #               expect(r2.suggested.length).to.equal(1)
   #               sug = r2.suggested[0]
   #               expect(sug.matchedBy._id).to.exist
-  #               expectIdsEqual(sug.matchedBy.userId,FIXTURE.users.admin._id)
+  #               EXPECT.equalIds(sug.matchedBy.userId,FIXTURE.users.admin._id)
   #               expect(sug.matchedBy.initials).to.equal('ad')
   #               expect(sug.matchedBy.type).to.equal('staff')
-  #               expectIdsEqual(sug.expert._id,FIXTURE.experts.azv0._id)
+  #               EXPECT.equalIds(sug.expert._id,FIXTURE.experts.azv0._id)
   #               expect(sug.expert.avatar).to.exist
   #               LOGIN 'azv0', (sAzv0) ->
   #                 GET "/requests/review/#{r._id}", {}, (rAzv0) ->
   #                   expect(rAzv0.status).to.equal('waiting')
   #                   seAzv0 = rAzv0.suggested[0].expert
-  #                   expectIdsEqual(seAzv0._id, FIXTURE.experts.azv0._id)
+  #                   EXPECT.equalIds(seAzv0._id, FIXTURE.experts.azv0._id)
   #                   expect(seAzv0.isV0).to.be.true
   #                   reply = expertComment: "I'll take it", expertAvailability: "Real-time", expertStatus: "available"
   #                   PUT "/requests/#{r._id}/reply/#{seAzv0._id}", reply, { status: 403 }, (err) ->
-  #                     expectStartsWith(err.message, "Must migrate expert profile to reply")
+  #                     EXPECT.startsWith(err.message, "Must migrate expert profile to reply")
   #                     DONE()
 
 
@@ -178,7 +178,7 @@ requests = ->
     STORY.newRequest 'tylb', {forAdmin,data}, (r,sCust) ->
       expect(r.adm.close).to.be.undefined
       expect(r.lastTouch.action).to.equal('updateByCustomer')
-      expectIdsEqual(r.lastTouch.by._id,sCust._id)
+      EXPECT.equalIds(r.lastTouch.by._id,sCust._id)
       # bit whacky to get the client to do this, but ehhhhh
       r.adm.owner = adm.email.replace("@airpair.com","")
       r.status = 'junk'
@@ -186,9 +186,9 @@ requests = ->
         expect(r2.status).to.equal('junk')
         expect(r2.adm.closed).to.exist
         expect(r2.adm.lastTouch.action).to.equal('closed:junk')
-        expectIdsEqual(r2.adm.lastTouch.by._id,adm._id)
+        EXPECT.equalIds(r2.adm.lastTouch.by._id,adm._id)
         expect(r2.lastTouch.action).to.equal('updateByCustomer')
-        expectIdsEqual(r2.lastTouch.by._id,sCust._id)
+        EXPECT.equalIds(r2.lastTouch.by._id,sCust._id)
         DONE()
 
 
@@ -203,7 +203,7 @@ requests = ->
   #       expect(r2.status).to.equal('canceled')
   #       expect(r2.adm.closed).to.exist
   #       expect(r2.adm.lastTouch.action).to.equal('closed:canceled')
-  #       expectIdsEqual(r2.adm.lastTouch.by._id,adm._id)
+  #       EXPECT.equalIds(r2.adm.lastTouch.by._id,adm._id)
   #       DONE()
 
 
@@ -215,14 +215,14 @@ requests = ->
   #     r.adm.owner = adm.email.replace("@airpair.com","")
   #     r.status = 'complete'
   #     PUT "/adm/requests/#{r._id}", r, { status: 403 }, (e1) ->
-  #       expectStartsWith(e1.message,"Cannot complete a request with no booked experts")
+  #       EXPECT.startsWith(e1.message,"Cannot complete a request with no booked experts")
 
   #       # TODO finish full story and test complete update at the end
 
   #       # expect(r2.status).to.equal('complete')
   #       # expect(r2.adm.closed).to.exist
   #       # expect(r2.adm.lastTouch.action).to.equal('closed:complete')
-  #       # expectIdsEqual(r2.adm.lastTouch.by._id,adm._id)
+  #       # EXPECT.equalIds(r2.adm.lastTouch.by._id,adm._id)
   #       DONE()
 
 
@@ -245,7 +245,7 @@ requests = ->
   #               expect(r3.adm.booked).to.be.undefined
   #               r3.status = "booked"
   #               PUT "/adm/requests/#{r1._id}", r3, { status: 403}, (err) ->
-  #                 expectStartsWith(err.message, "Cannot set booked status manually")
+  #                 EXPECT.startsWith(err.message, "Cannot set booked status manually")
   #                 DONE()
 
 

@@ -18,56 +18,15 @@ var stubs = {
 
   analytics: analyticsSetup,
 
-  stubBraintreeChargeWithMethod() {
-    if (global.withoutStubs) return emptyStub()
-    if (!Wrappers.Braintree.api) Wrappers.Braintree.init()
-    return sinon.stub(Wrappers.Braintree.api.transaction,'sale', (payload, cb) => {
-      var resp = _.clone(FIXTURE.wrappers.braintree_charge_success)
-      resp.transaction.amount = payload.amount.toString()
-      resp.transaction.orderId = payload.orderId.toString()
-      // resp.transaction.customer.id = userId.toString()
-      // resp.transaction.customer.firstName = userId.toString()
-      // resp.transaction.customer.lastName = userId.toString()
-      // resp.transaction.customer.email = userId.toString()
-      // $log('brain stub'.yellow, resp)
-      cb(null, resp)
-    })
-  },
 
-  stubPayPalPayout() {
-    // if (global.withoutStubs) return emptyStub()
-    // if (!Wrappers.PayPal.api) Wrappers.PayPal.init()
-    // return sinon.stub(Wrappers.PayPal.api.payout,'create',
-    var respCB = key =>
-      (payload,syncmode,cb) => {
-        var resp = _.clone(FIXTURE.wrappers[key])
-        resp.items[0].payout_item.receiver = payload.items[0].receiver
-        resp.items[0].payout_item.amount = payload.items[0].amount.toString()
-        // $log('returnstub'.magenta, resp)
-        cb(null, resp)
-      }
-
-    var stubber = STUB.stubWrapperInnerAPI('PayPal', 'payout.create')
-    return stubber(respCB('paypal_single_payout_success'))
-  },
-
-  // stubBraintree(obj, fnName, err, response) {
+  // stubYouTube(obj, fnName, err, response) {
   //   if (global.withoutStubs) return emptyStub()
-  //   if (!Wrappers.Braintree.api) Wrappers.Braintree.init()
-  //   return sinon.stub(Wrappers.Braintree.api[obj], fnName, (payload, cb) => {
-  //     // $log('Braintree.stubbed', obj, fnName)
+  //   if (!Wrappers.YouTube.api) Wrappers.YouTube.init()
+  //   return sinon.stub(Wrappers.YouTube.api[obj], fnName, (payload, cb) => {
+  //     // $log('YouTube.stubbed', obj, fnName)
   //     cb(err, response)
   //   })
   // },
-
-  stubYouTube(obj, fnName, err, response) {
-    if (global.withoutStubs) return emptyStub()
-    if (!Wrappers.YouTube.api) Wrappers.YouTube.init()
-    return sinon.stub(Wrappers.YouTube.api[obj], fnName, (payload, cb) => {
-      // $log('YouTube.stubbed', obj, fnName)
-      cb(err, response)
-    })
-  },
 
 
   // stubStackOverflowTagInfo(response) {
@@ -80,13 +39,13 @@ var stubs = {
   // },
 
 
-  stubGoogleCalendar(objectName, fnName, response) {
-    if (global.withoutStubs) return emptyStub()
-    if (!Wrappers.Calendar.api) Wrappers.Calendar.init()
-    return sinon.stub(Wrappers.Calendar.api[objectName], fnName, (obj,cb) => {
-      cb(null, response)
-    })
-  },
+  // stubGoogleCalendar(objectName, fnName, response) {
+  //   if (global.withoutStubs) return emptyStub()
+  //   if (!Wrappers.Calendar.api) Wrappers.Calendar.init()
+  //   return sinon.stub(Wrappers.Calendar.api[objectName], fnName, (obj,cb) => {
+  //     cb(null, response)
+  //   })
+  // },
 
 
   stubGoogleTimezone(response) {
@@ -108,19 +67,12 @@ var stubs = {
   //   })
   // },
 
-  stubSlackSync(fnName, result) {
-    if (global.withoutStubs) return emptyStub()
-    return sinon.stub(Wrappers.Slack, fnName, function() {
-      return result
-    })
-  },
-
-  stubMailchimpLists(response) {
-    if (global.withoutStubs) return emptyStub()
-    return sinon.stub(MailChimpApi.prototype,'call', (a,b,c,cb) => {
-      cb(null, response)
-    })
-  },
+  // stubSlackSync(fnName, result) {
+  //   if (global.withoutStubs) return emptyStub()
+  //   return sinon.stub(Wrappers.Slack, fnName, function() {
+  //     return result
+  //   })
+  // }
 
 }
 

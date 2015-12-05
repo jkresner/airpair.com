@@ -43,7 +43,7 @@ update = ->
 
   IT 'Change name', ->
     STORY.newUser 'snug', (s) ->
-      expectStartsWith(s.name, "Ra'Shaun")
+      EXPECT.startsWith(s.name, "Ra'Shaun")
       PUT '/users/me/name', { name: 'Godly Jacob' }, (u1) ->
         expect(u1.name).to.equal('Godly Jacob')
         DONE()
@@ -51,7 +51,7 @@ update = ->
   IT 'Set initials', ->
     STORY.newUser 'misr', (s) ->
       GET "/session/full", (u0) ->
-        expectIdsEqual(s._id,u0._id)
+        EXPECT.equalIds(s._id,u0._id)
         expect(u0.name).to.equal(s.name)
         expect(u0.initials).to.be.undefined
         PUT '/users/me/initials', { initials: 'GJ' }, (u1) ->
