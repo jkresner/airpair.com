@@ -90,8 +90,8 @@ module.exports = function(app) {
           else
             data[`${partialName}Render`] = true
 
-          if (!data.meta) data.meta = pageMeta
-          var canonical = (data.meta) ? data.meta.canonical : ""
+          if (!data.htmlHead) data.htmlHead = pageMeta
+          var canonical = (data.htmlHead) ? data.htmlHead.canonical : ""
           var viewName = './baseServer.hbs'
           if (_.contains(landingPartials,partialName)) viewName = './baseLanding.hbs' // hacky yuk
           res.status(200).render(viewName,

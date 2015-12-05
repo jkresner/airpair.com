@@ -1,6 +1,6 @@
 var {Survey} = require("../models/_shared")
 
-module.exports = ({ Id, Enum, Touch, Reftag, Note, Htmlhead },
+module.exports = ({ Id, Enum, Touch, Reftag, Note, Htmlhead, Meta },
   { asSchema, required, trim, lowercase, index, unique, sparse }) => {
 
 
@@ -9,7 +9,9 @@ var Author = {
   expertId:     { type: Id, ref: 'Expert' },
   name:         { type: String, required },
   avatar:       { type: String, required },
-  bio:          { type: String, required },
+
+  //-- legacy to replace
+  bio:          { type: String },
   username:     { type: String, lowercase },
   social:       {
       gh: {     username: { type: String } },
@@ -34,17 +36,6 @@ var StatsSummary = {
   words:            { type: Number },
 }
 
-var Github =    {
-  repoInfo:     {
-    authorTeamId:   { type: String },
-    authorTeamName: { type: String },
-    author:         { type: String },
-    url:            { type: String, lowercase },
-    // SHA of file ?
-  },
-  events:           [],
-  stats:            [] //Object?
-}
 
 var Forker = asSchema({
   userId:       { type: Id, ref: 'User', required, index },
@@ -64,36 +55,63 @@ var PublishEvent = asSchema({
 
 return asSchema({
 
+  //-- un-nest userId
   by:               Author,
-  created:          { type: Date, required, 'default': Date },
 
-  lastTouch:        Touch,
-  //-- consider removing 'updated' as supersceded by lastTouch
-  updated:          { type: Date, required, 'default': Date },
+  // detail: {
+    title:            { type: String, required, trim },
+    slug:             { type: String, unique, sparse, lowercase, trim },
+    tags:             [Reftag],
+    //-- rename to tileUrl ?
+    assetUrl:         { type: String, trim },
+    //-- renamed from meta to htmlHeader ?
+    htmlHead:         Htmlhead, //-- todo, rename field
+  // }
 
-  submitted:        { type: Date },
+  // content
+  md:               { type: String, required },
+  tmpl:             { type: String, enum: Enum.POST.TEMPLATE },
 
-  published:        { type: Date }, // first time
-  publishedBy: {
-    _id:            { type: Id, ref: 'User' },
-    name:           { type: String },
-  },
-  publishedCommit:  { type: {} }, // sha hash or whole commit object
-  publishedUpdated: { type: Date }, // lasttime timestamp of update
+  //-- new
+  meta:             Meta,
+
+  // history: {
+    created:          { type: Date, required, 'default': Date },
+    //-- consider removing 'updated' as supersceded by lastTouch
+    updated:          { type: Date, required, 'default': Date },
+    //
+    editHistory:      [Touch],
+    submitted:        { type: Date },
+    published:        { type: Date }, // first time
+    publishedBy: {
+      _id:            { type: Id, ref: 'User' },
+      name:           { type: String },
+    },
+    publishedCommit:  { type: {} }, // sha hash or whole commit object
+    publishedUpdated: { type: Date }, // lasttime timestamp of update
+    publishHistory:   [PublishEvent],
+
+    // legacy
+    lastTouch:        {},
+  // },
+
 
   reviews:          [asSchema(Survey)],
+  // reviews:          [], //[asSchema(Survey)],
   forkers:          [Forker],
-  github:           { type: Github },
-  slug:             { type: String, unique, sparse, lowercase, trim },
-  title:            { type: String, required, trim },
-  md:               { type: String, required  },
-  assetUrl:         { type: String, trim },
-  tags:             [Reftag],
-  tmpl:             { type: String, enum: Enum.POST.TEMPLATE },
-  meta:             Htmlhead,
 
-  editHistory:      [Touch],
-  publishHistory:   [PublishEvent],
+  // TO review in 0.6.3
+  github: {
+    repoInfo: {
+      authorTeamId:   { type: String },
+      authorTeamName: { type: String },
+      author:         { type: String },
+      url:            { type: String, lowercase },
+      // SHA of file ?
+    },
+    events:           [],
+    stats:            [] //Object?
+  },
 
   stats:            StatsSummary,
 

@@ -145,7 +145,7 @@ module.exports = ->
     global.UAUser = {ua:uaFirefox}
     {higherOrder} = FIXTURE.posts
     DB.ensureDoc 'Post', higherOrder, ->
-      global.publishedPostUrl = higherOrder.meta.canonical.replace('https://www.airpair.com', '')
+      global.publishedPostUrl = higherOrder.htmlHead.canonical.replace('https://www.airpair.com', '')
       done()
 
   after ->

@@ -11,8 +11,6 @@ module.exports = function(app) {
   //     app.renderHbsViewData('tag', null, (req, cb) => cb(null, req.tagpage) ))
 
 
-
-
   for (var slug of ['reactjs', 'python', 'node.js', 'ember.js', 'keen-io', 'rethinkdb',
     'ionic', 'swift', 'android', 'ruby' ])
     app.get(`^/${slug}`, //trackView('tag'),
@@ -60,11 +58,6 @@ module.exports = function(app) {
         }))
 
 
-    // .get('/blog',
-    //   app.renderHbsViewData('blog', null,
-    //   (req, cb) => API.Posts.svc.getUsersPublished('52ad320166a6f999a465fdc5', cb) ))
-
-
     .get('/software-experts',
       app.renderHbsViewData('posts', { title: "Software Posts, Tutorials & Articles" },
         (req, cb) => cache.getOrSetCB('postAllPub',API.Posts.svc.getAllPublished,cb) ))
@@ -98,31 +91,31 @@ module.exports = function(app) {
       $callSvc(API.Posts.svc.getByIdForReview, req)(req.params.id, (e,r) => {
         if (!r) return res.redirect('https://author.airpair.com/')
         else if (r.published) return res.redirect(301, r.url)
-        res.redirect(301, req.originalUrl.replace('/post','https://author.airpair.com'))
-      //   req.post = r
-        // next()
-        })
-      })
-      // ,app.renderHbsViewData('post', null, (req, cb) => cb(null, req.post)))
+        // res.redirect(301, req.originalUrl.replace('/post','https://author.airpair.com'))
+        req.post = r
+        next()
+      })},
+      app.renderHbsViewData('post', null, (req, cb) => cb(null, req.post)))
 
 
     .get('/posts/preview/:id',
       noCrawl('/posts'),
       authd, populate.user, function(req, res, next) {
-        res.redirect(req.originalUrl.replace('/post','https://author.airpair.com'))
-      // $callSvc(API.Posts.svc.getByIdForPreview, req)(req.params.id, (e,r) => {
-      //   if (!r) return res.redirect('/posts/me')
-      //   if (!_.idsEqual(r.by.userId,req.user._id) &&
-      //       !_.contains(req.user.roles,'admin') &&
-      //       !_.find(r.forkers,(f)=>_.idsEqual(f.userId,req.user._id))
-      //     )
-      //     return next(Error("Post unavailable for you to preview, did you fork it already?"))
+        // res.redirect(req.originalUrl.replace('/post','https://author.airpair.com'))
+      $callSvc(API.Posts.svc.getByIdForPreview, req)(req.params.id, (e,r) => {
+        $log('e,r',e,r)
+        if (!r) return res.redirect('https://author.airpair.com')
+        if (!_.idsEqual(r.by.userId,req.user._id) &&
+            !_.contains(req.user.roles,'admin') &&
+            !_.find(r.forkers,(f)=>_.idsEqual(f.userId,req.user._id))
+          )
+          return next(Error("Post unavailable for you to preview, did you fork it already?"))
 
-      //   req.post = r
-      //   next()
-      // })},
-      })
-    // ,app.renderHbsViewData('post', null, (req, cb) => cb(null, req.post)))
+        req.post = r
+        next()
+        })
+      },
+      app.renderHbsViewData('post', null, (req, cb) => cb(null, req.post)))
 
 
     .get('/bookings/:id/spin*',

@@ -35,7 +35,7 @@ browsing = ->
 
   IT "Anon view a published post", ->
     post = FIXTURE.posts.higherOrder
-    url = post.meta.canonical.replace('https://www.airpair.com', '')
+    url = post.htmlHead.canonical.replace('https://www.airpair.com', '')
     DB.ensureDoc 'Post', post, ->
       PAGE url, {}, (html) ->
         EXPECT.contains(html, '<h1 class="entry-title" itemprop="headline">Mastering ES6 higher-order functions for Arrays</h1>')
@@ -45,7 +45,7 @@ browsing = ->
 
   IT "Authd view a published post", ->
     post = FIXTURE.posts.higherOrder
-    url = post.meta.canonical.replace('https://www.airpair.com', '')
+    url = post.htmlHead.canonical.replace('https://www.airpair.com', '')
     DB.ensureDoc 'Post', post, ->
       LOGIN {key:'snug'}, ->
         PAGE url, {}, (html) ->

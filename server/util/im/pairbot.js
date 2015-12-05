@@ -54,8 +54,8 @@ module.exports = function(imProvider)
         pretext: `PUBLISHED by ${post.by.name}`,
         image_url: `https://www.airpair.com/posts/thumb/${post._id}`,
         title: post.title,
-        title_link: post.meta.canonical,
-        text: `Lend a hand.\nReview & share => ${post.meta.canonical}`,
+        title_link: post.htmlHead.canonical,
+        text: `Lend a hand.\nReview & share => ${post.htmlHead.canonical}`,
       }
       imProvider.postAttachments('pairbot', postsChannelId, [attachment], cb || emtpyCb)
     },
@@ -66,7 +66,7 @@ module.exports = function(imProvider)
         pretext: `Updates SYNCED`,
         thumb_url: `https://www.airpair.com/posts/thumb/${post._id}`,
         title: post.title,
-        title_link: post.meta.canonical,
+        title_link: post.htmlHead.canonical,
         text: `Update your review (if you left one)`,
       }
       imProvider.postAttachments('pairbot', postsChannelId, [attachment], cb || emtpyCb)

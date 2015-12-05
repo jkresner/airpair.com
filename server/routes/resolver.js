@@ -5,7 +5,7 @@ module.exports = function(app) {
     var PostsSvc = require("../services/posts")
     $callSvc(PostsSvc.getByIdFromCache, req)(req.params.id, (e,r) => {
       if (e || !r) res.status(404)
-      else res.redirect(301, r.meta.ogImage)
+      else res.redirect(301, r.htmlHead.ogImage)
       res.end()
     })
   })

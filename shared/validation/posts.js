@@ -91,17 +91,17 @@ var validation = {
 
     if (!publishData.tmpl)
       return `Post template name must be provided`
-    if (!publishData.meta)
+    if (!publishData.htmlHead)
       return `Post meta data required`
-    if (!publishData.meta.title ||
-        !publishData.meta.canonical ||
-        !publishData.meta.description)
+    if (!publishData.htmlHead.title ||
+        !publishData.htmlHead.canonical ||
+        !publishData.htmlHead.description)
       return `Post meta title, canonical & description required`
-    if (!publishData.meta.ogTitle ||
-        !publishData.meta.ogImage ||
-        !publishData.meta.ogDescription)
+    if (!publishData.htmlHead.ogTitle ||
+        !publishData.htmlHead.ogImage ||
+        !publishData.htmlHead.ogDescription)
       return `Post open graph title, image & description required`
-    if (publishData.meta.ogImage.indexOf('https://') != 0)
+    if (publishData.htmlHead.ogImage.indexOf('https://') != 0)
       return `Open graph image & asset url must be fully qualified https:// url`
   },
 

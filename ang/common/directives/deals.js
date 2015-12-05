@@ -1,17 +1,17 @@
 angular.module("APDealsDirectives", [])
 
 
-.directive('dealTile', function() {
+// .directive('dealTile', function() {
 
-  return {
-    restrict: 'E',
-    template: require('./dealTile.html'),
-    link(scope, element, attrs) {
-      scope.post = scope.$eval(attrs.post)
-    }
-  }
+//   return {
+//     restrict: 'E',
+//     template: require('./dealTile.html'),
+//     link(scope, element, attrs) {
+//       scope.post = scope.$eval(attrs.post)
+//     }
+//   }
 
-})
+// })
 
 
 .directive('dealForm', (DataService) => {

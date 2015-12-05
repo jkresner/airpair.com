@@ -240,7 +240,7 @@ module.exports = ->
     DB.ensureDoc 'User', FIXTURE.users.admin, ->
     {higherOrder} = FIXTURE.posts
     DB.ensureDoc 'Post', higherOrder, ->
-      global.publishedPostUrl = higherOrder.meta.canonical.replace('https://www.airpair.com', '')
+      global.publishedPostUrl = higherOrder.htmlHead.canonical.replace('https://www.airpair.com', '')
       done()
 
   after ->

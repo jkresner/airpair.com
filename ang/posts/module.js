@@ -33,29 +33,29 @@ angular.module("APPosts", ['Providers'])
 
 })
 
-.directive('apPostListItem', function() {
+// .directive('apPostListItem', function() {
 
-  return {
-    restrict: 'E',
-    template: require('./postListItem.html'),
-    link(scope, element, attrs) {
-      scope.post = scope.$eval(attrs.post)
-    }
-  }
+//   return {
+//     restrict: 'E',
+//     template: require('./postListItem.html'),
+//     link(scope, element, attrs) {
+//       scope.post = scope.$eval(attrs.post)
+//     }
+//   }
 
-})
+// })
 
-.directive('welcomePostItem', function() {
+// .directive('welcomePostItem', function() {
 
-  return {
-    restrict: 'E',
-    template: require('./postListItem2.html'),
-    link(scope, element, attrs) {
-      scope.post = scope.$eval(attrs.post)
-    }
-  }
+//   return {
+//     restrict: 'E',
+//     template: require('./postListItem2.html'),
+//     link(scope, element, attrs) {
+//       scope.post = scope.$eval(attrs.post)
+//     }
+//   }
 
-})
+// })
 
 
 .directive('postTile', function() {
@@ -175,17 +175,17 @@ angular.module("APPosts", ['Providers'])
 
 
 
-.directive('apPost', function(PageHlpr) {
+// .directive('apPost', function(PageHlpr) {
 
-  return {
-    template: require('./post.html'),
-    controller($scope, $timeout, DataService) {
-      $scope.$watch('preview.body', () =>{
-        $timeout(function() {
-          PageHlpr.highlightSyntax();
-        }, 10)
-      })
-    }
-  }
+//   return {
+//     template: require('./post.html'),
+//     controller($scope, $timeout, DataService) {
+//       $scope.$watch('preview.body', () =>{
+//         $timeout(function() {
+//           PageHlpr.highlightSyntax();
+//         }, 10)
+//       })
+//     }
+//   }
 
-})
+// })
