@@ -406,7 +406,7 @@ module.exports = ->
 
   before (done) ->
     DB.ensureDoc 'User', FIXTURE.users.admin, ->
-    SETUP.ensureExpert 'snug', ->
+    DB.ensureExpert 'snug', ->
       done()
 
   beforeEach ->

@@ -22,7 +22,7 @@ expectSessionStored = (session, cb) ->
 api = ->
 
   before (done) ->
-    SETUP.analytics.on()
+    STUB.analytics.on()
     done()
 
 

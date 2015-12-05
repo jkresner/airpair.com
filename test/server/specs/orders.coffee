@@ -510,13 +510,13 @@ bookingOrders = ->
 
 prodData = ->
 
-  before -> SETUP.analytics.on()
-  after -> SETUP.analytics.off()
+  before -> STUB.analytics.on()
+  after -> STUB.analytics.off()
 
   IT 'Richard can re-book byron', ->
     byrn = FIXTURE.clone('experts.byrn')
     preMigrateRebook = FIXTURE.clone('requests.preMigrateRebook',{omit:'userId'})
-    SETUP.ensureExpert 'byrn', ->
+    DB.ensureExpert 'byrn', ->
     STORY.newUser 'ricd', {login:true,paymethod:true}, (s) ->
       request = _.extend {userId:s._id}, preMigrateRebook
       expect(request.budget, 150)
@@ -539,8 +539,8 @@ module.exports = ->
 
   before (done) ->
     DB.ensureDoc 'User', FIXTURE.users.admin, ->
-    SETUP.ensureExpert 'dros', ->
-      SETUP.ensureExpert 'tmot', ->
+    DB.ensureExpert 'dros', ->
+      DB.ensureExpert 'tmot', ->
         done()
 
   after ->

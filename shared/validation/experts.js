@@ -11,32 +11,30 @@ var validation = {
 
   create(user, expert)
   {
-    if ( !user.username ) return `Cannot create expert without username`
-    if ( !user.initials ) return `Cannot create expert without initials`
-    if ( !user.location ) return `Cannot create expert without location`
-    if ( !user.bio ) return `Cannot create expert without bio`
+    // if ( !user.username ) return `Cannot create expert without username`
+    // if ( !user.initials ) return `Cannot create expert without initials`
+    // if ( !user.location ) return `Cannot create expert without location`
+    // if ( !user.bio ) return `Cannot create expert without bio`
 
-    var socialCount = _.keys(user.auth||{}).length
+    // var socialCount = _.keys(user.auth||{}).length
 
-    if ( socialCount < 2 ) return `Must connect at least 2 social account to create expert profile`
+    // if ( socialCount < 2 ) return `Must connect at least 2 social account to create expert profile`
 
-    if ( !expert.rate ) return `Cannot create expert without rate`
+    // if ( !expert.rate ) return `Cannot create expert without rate`
     // if ( !expert.brief ) return `Cannot create expert without brief`
-    if ( !expert.tags || expert.tags.length == 0 ) return `Cannot create expert without tags`
+    // if ( !expert.tags || expert.tags.length == 0 ) return `Cannot create expert without tags`
   },
 
   updateMe(user, original, ups)
   {
-    if ( !_.idsEqual(original._id, ups._id) )
-      return `Cannot update expert _id does not match original`
+    // if ( !_.idsEqual(original._id, ups._id) )
+    //   return `Cannot update expert _id does not match original`
 
-    if ( !_.idsEqual(original.userId, ups.userId) )
-      return `Cannot update expert, not your userId`
+    // if ( !_.idsEqual(original.userId, ups.userId) )
+    //   return `Cannot update expert, not your userId`
 
-    var create = validation.create(user, ups)
-    if (create) return create.replace('create','update')
-
-    if ( original.breif && !ups.brief ) return `Cannot update expert without brief`
+    // var create = validation.create(user, ups)
+    // if (create) return create.replace('create','update')
   },
 
   updateAvailability(user, original, availability)

@@ -175,7 +175,7 @@ get = ->
   IT 'Expert can collect a single released transaction to their verified paypal account', ->
     STORY.newExpert 'admb', {payoutmethod:true}, (expert, expertSession, payoutmethod) ->
       opts = book:true, payoutmethod:true, reply: expertSession
-      STORY.newRequest 'josh', opts, (request, booking, customerSession) ->
+      STORY.newRequest 'jbay', opts, (request, booking, customerSession) ->
         releaseOrderAndLogExpertBackIn booking.orderId, expertSession, ->
           GET "/billing/orders/payouts", (orders) ->
             expect(orders.length).to.equal(1)

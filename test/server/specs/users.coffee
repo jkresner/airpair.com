@@ -32,9 +32,9 @@ update = ->
         DONE()
 
   IT 'Set and unset username', ->
-    username = "tybr#{@timeSeed}"
-    STORY.newUser 'tybr', (tybr) ->
-      expect(tybr.username).to.be.undefined
+    username = "dily#{@timeSeed}"
+    STORY.newUser 'dily', (dily) ->
+      expect(dily.username).to.be.undefined
       PUT '/users/me/username', { username }, (u1) ->
         expect(u1.username).to.equal(username)
         PUT '/users/me/username', { username: "" }, (u2) ->

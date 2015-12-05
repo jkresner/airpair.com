@@ -22,7 +22,8 @@ matchmaking = ->
       GET "/experts/mojo/rank?#{query}", (experts) ->
         expect(experts.length).to.equal(1)
         # expect(experts.length).to.equal(65)
-        expect(experts[0].score).to.equal(46307)
+        # expect(experts[0].score).to.equal(46307)
+        expect(experts[0].score).to.equal(165000)
         DONE()
 
 
@@ -56,7 +57,7 @@ matchmaking = ->
       LOGIN {key:'admin'}, ->
         qq = 'tags=operating-system'
         GET "/experts/mojo/rank?#{qq}", (experts) ->
-          expect(experts.length).to.equal(0)
+          expect(experts.length).to.equal(1)
           # expect(experts.length).to.equal(3)
           DONE()
 
@@ -68,15 +69,13 @@ matchmaking = ->
 
 module.exports = ->
 
+
   before (done) ->
     DB.removeDocs 'Expert', {_id: FIXTURE.experts.louf.id }, ->
-      SETUP.ensureExpert 'louf', ->
+      DB.ensureExpert 'louf', ->
         DB.ensureDoc 'Request', FIXTURE.requests.matchSwift, ->
           reqs.matchSwift = FIXTURE.requests.matchSwift
           done()
 
-  if global.againstProd
-    describe "skiiping mojo", ->
-      it "SKIPPED"
-  else
-    DESCRIBE "matchmaking: ", matchmaking
+
+  DESCRIBE "matchmaking: ", matchmaking

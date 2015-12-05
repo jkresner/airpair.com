@@ -100,7 +100,7 @@ signup = ->
 
 module.exports = ->
 
-  before -> SETUP.analytics.on()
+  before -> STUB.analytics.on()
 
   describe("Signup: ".subspec, signup)
   describe("Dashboard: ".subspec, dashboard)

@@ -1,3 +1,8 @@
+global.ANONSESSION = (cb) ->
+  global.COOKIE = null
+  GET '/session/full', cb
+
+
 # mmmmmmm
 global.STRINGIFY = (obj) ->
   if !JSONSTRING[obj._id]
@@ -31,6 +36,10 @@ DATA.newSignup = (name) ->
   # return _.extend({key}, FIXTURE.users[key])
 
 
+DB.ensureExpert = (key, done) ->
+  DB.ensureDocs 'User', [FIXTURE.users[key]], (e) =>
+    DB.ensureDocs 'Expert', [FIXTURE.experts[key]], (ee) => done()
+
 
 SPEC.init = (ctx) ->
 
@@ -53,6 +62,26 @@ SPEC.init = (ctx) ->
   # global.stubs              = SETUP.initStubs()
 
 
+STUB.analytics =
+  stubbed: false,
+  on: () -> global.analytics = require('../../server/services/analytics').analytics
+  off: () -> global.analytics = {
+    echo: ()=>{},
+    event: ()=>{},
+    view: ()=>{},
+    alias: ()=>{},
+    identify: ()=>{}
+  }
+
+
+
+STUB.Timezone = (response) ->
+  STUB.cb Wrappers.Timezone,'getTimezoneFromCoordinates', response || data.wrappers.timezone_melbourne
+
+  # (loc,n,cb) ->
+  #   cb(null,
+
+
 STUB.SlackCommon = ->
   STUB.sync(Wrappers.Slack, 'checkUserSync', null)
   @Slack = STUB.wrapper('Slack')
@@ -66,6 +95,7 @@ STUB.SlackCommon = ->
 
 
 STUB.BraintreeCharge = (key) ->
+  STUB.wrapper('Braintree').cb('addPaymentMethod', 'braintree_add_company_card')
   STUB.wrapper('Braintree').api('transaction.sale').fromCtx (payload) ->
     r = FIXTURE.clone('wrappers.'+(key||'braintree_charge_success'))
     r.transaction.amount = payload.amount.toString()

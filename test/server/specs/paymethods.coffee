@@ -97,8 +97,8 @@ noAnalytics = ->
 
 # withAnalytics = ->
 
-#   before -> SETUP.analytics.on()
-#   after -> SETUP.analytics.off()
+#   before -> STUB.analytics.on()
+#   after -> STUB.analytics.off()
 
 #   IT 'Can add braintree payment method to new user with Analytics', ->
 #     SETUP.addAndLoginLocalUser 'evan', (s) ->

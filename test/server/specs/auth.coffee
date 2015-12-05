@@ -135,7 +135,7 @@ signup = ->
 
 
   IT 'New user has correct cohort information', ->
-    SETUP.analytics.on()
+    STUB.analytics.on()
     checkCohort = (userId) ->
       ->
         DB.docById 'User', userId, (r) ->
@@ -148,7 +148,7 @@ signup = ->
           expect(cohort.aliases.length).to.equal(1)
           DB.docsByQuery 'Event', {uId:userId}, (r2) ->
             expect(r2.length).to.equal(1)
-            SETUP.analytics.on()
+            STUB.analytics.on()
             DONE()
 
     d = DATA.newSignup('Dilys sun')
@@ -161,8 +161,8 @@ signup = ->
 
 login = ->
 
-  before () -> SETUP.analytics.on()
-  after () -> SETUP.analytics.off()
+  before () -> STUB.analytics.on()
+  after () -> STUB.analytics.off()
 
   it 'github login links to accounts with email matching any other provider', ->
   it 'github login saves all emails to user record', ->
@@ -253,7 +253,7 @@ login = ->
     ape1 = FIXTURE.clone('users.ape1')
     profile = ape1.auth.gp
     token = 'ape1_gp_test_token'
-    SETUP.analytics.on()
+    STUB.analytics.on()
     DB.ensureDoc 'User', ape1, ->
       AuthService.link.call DATA.newSession(), 'google', profile, {token}, (e, r1) ->
         EXPECT.equalIds(r1._id, ape1._id)
@@ -426,7 +426,7 @@ module.exports = ->
     STUB.wrapper('Slack').cb('getUsers', 'slack_users_list')
 
   afterEach ->
-    SETUP.analytics.off()
+    STUB.analytics.off()
 
 
   DESCRIBE("Signup", signup)

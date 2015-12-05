@@ -1,4 +1,3 @@
-var old = require('./temp/users')
 var newer = {
 
   jkap: { _id:ObjectId("5175efbfa3802cc4d5a5e6ed"),name:"Jonathon Kresner",email:"jk@airpair.com" },
@@ -14,6 +13,7 @@ var newer = {
   clew: { name:"Chris Lewis",email:"clew@test.com" },
   chle: { name:"Chris Lewis",email:"clew@hotmail.com" },
   crus: { name:"Chelsea Rustrum", email: "chelsea.rustrum@rustrum.com"},
+  rusc: { name: "Rustrum Rustrum", email: "rustrum.chelsea@rustrum.com"},
   grnv: { name:"Gregory Nicola",email:"gnicola@msn.com" },
   gniv: { name:"Gregory Nic",email:"gnicvy@msn.com" },
   mrik: { name:"Mike Risse",email:"miks.rie@hotmail.com" },
@@ -48,9 +48,23 @@ var newer = {
   joba: { name:"Josh Baylin", email: "josh.baylin@gmail.com"},
   brih: { name:"Brian Hur", email: "brian.hur@ghotmail.com"},
   johb: { name:"Josh Baylin", email: "josh.baylin@hotmail.com"},
-  // jbay: { name: "Josh Baylin", email: "josh.b@hotmail.com"},
+  tylb: { name:"Tyler Baur", email: "tylb@airtest.com"},
+  tjar: { name:"Ted Jardine", email: "tj@airtest.com"},
+  tard: { name:"Ted Jardine", email: "tj@test.com"},
+  tedj: { name:"Ted Jardine", email: "tedj@terst.com"},
+  bfie: { name:"Brian Fiester", email: "brian@dreamstarstudios.com"},
+  brfi: { name:"Brian Fiester", email: "brian@testtest.com"},
+  jbay: { name:"Josh Baylin", email: "josh.b@hotmail.com"},
   // jbbb: { name: "Josh Baylin", email: "josh.bbb@hotmail.com"},
 
+  rev0 : { name: "Review10", email: "reviwer10@hotmail.com"},
+  rev1 : { name: "Review11", email: "reviwer11@hotmail.com"},
+  rev2 : { name: "Review12", email: "reviwer12@hotmail.com"},
+  rev3 : { name: "Review13", email: "reviwer13@hotmail.com"},
+  rvw1 : { name: "Review01", email: "reviwer01@hotmail.com"},
+  rvw2 : { name: "Review02", email: "reviwer02@hotmail.com"},
+  rvw3 : { name: "Review03", email: "reviwer03@hotmail.com"},
+  rvw4 : { name: "Review04", email: "reviwer04@hotmail.com"},
 
   aone: {
     _id: ObjectId("5452cea65f221efa174237b4"),
@@ -1723,7 +1737,65 @@ var newer = {
     }
   },
 
+  tiagorg: {
+    "_id" : ObjectId("538bae591c67d1a4859d3381"),
+    "cohort" : {},
+    "email" : "tiagoromerogarcia@gmail.com",
+    "emailVerified" : true,
+    "name" : "Tiago Romero Garcia",
+    "initials" : "TG",
+    "username" : "tiagorg",
+    "social" : {
+      "gh" : {
+        "provider" : "github",
+        "id" : 764487,
+        "displayName" : "Tiago Garcia",
+        "username" : "tiagorg",
+        "profileUrl" : "https://github.com/tiagorg",
+        "emails" : [{"value" : ""}],
+        "_json" : {
+          "login" : "tiagorg",
+          "id" : 764487,
+          "avatar_url" : "https://avatars.githubusercontent.com/u/764487?v=3",
+          "gravatar_id" : "",
+          "url" : "https://api.github.com/users/tiagorg",
+          "html_url" : "https://github.com/tiagorg",
+          "followers_url" : "https://api.github.com/users/tiagorg/followers",
+          "following_url" : "https://api.github.com/users/tiagorg/following{/other_user}",
+          "gists_url" : "https://api.github.com/users/tiagorg/gists{/gist_id}",
+          "starred_url" : "https://api.github.com/users/tiagorg/starred{/owner}{/repo}",
+          "subscriptions_url" : "https://api.github.com/users/tiagorg/subscriptions",
+          "organizations_url" : "https://api.github.com/users/tiagorg/orgs",
+          "repos_url" : "https://api.github.com/users/tiagorg/repos",
+          "events_url" : "https://api.github.com/users/tiagorg/events{/privacy}",
+          "received_events_url" : "https://api.github.com/users/tiagorg/received_events",
+          "type" : "User",
+          "site_admin" : false,
+          "name" : "Tiago Garcia",
+          "company" : "Avenue Code",
+          "blog" : "http://tiagorg.com",
+          "location" : "Alameda, CA",
+          "email" : "",
+          "hireable" : false,
+          "bio" : null,
+          "public_repos" : 61,
+          "public_gists" : 4,
+          "followers" : 17,
+          "following" : 9,
+          "created_at" : "2011-05-02T22:34:14Z",
+          "updated_at" : "2015-04-04T21:35:42Z",
+          "private_gists" : 0,
+          "total_private_repos" : 1,
+          "owned_private_repos" : 0,
+          "disk_usage" : 107108,
+          "collaborators" : 0,
+        }
+      }
+    },
+    "bio" : "Technical Manager at @AvenueCode and Technical Leader at @Macys, heavily interested in cutting-edge front-end technologies. http://tiagorg.com",
+    "roles" : [ "editor" ]
+  }
 
 }
 
-module.exports = Object.assign(old, newer)
+module.exports = newer

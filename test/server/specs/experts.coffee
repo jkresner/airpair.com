@@ -1,95 +1,66 @@
 create = ->
 
-  IT "Cannot get my expert profile as anonymous user", ->
-    GET "/experts/me", { status: 401 }, (r) ->
-      DONE()
 
 
-  IT "Cannot create / update expert profile as anonymous user", ->
-    PAGE "/", {}, ->
-      POST "/experts/me", {_id: newId(), user: USERS['jk'] }, { status: 401 }, (r) ->
-        PUT "/experts/me", {_id: newId(), user: USERS['jk'] }, { status: 401 }, (r) ->
-          DONE()
-
-
-  IT "Cannot create expert profile without required user info", ->
-    d = rate: 80, breif: 'yo', tags: [FIXTURE.tags.angular]
-    STORY.newUser 'alyr', {login:true,data:{location:null}}, (salyr, salyrKey) ->
-      POST "/experts/me", d, { status: 403 }, (r) ->
-        expectStartsWith(r.message, "Cannot create expert without username")
-        PUT "/users/me/username", { username: salyrKey }, (r) ->
-          POST "/experts/me", d, { status: 403 }, (r) ->
-            expectStartsWith(r.message, "Cannot create expert without initials")
-            PUT "/users/me/initials", { initials: 'ar' }, (r) ->
-              POST "/experts/me", d, { status: 403 }, (r) ->
-                expectStartsWith(r.message, "Cannot create expert without location")
-                PUT "/users/me/location", FIXTURE.wrappers.localization_melbourne.locationData, (r) ->
-                  expect(r.location).to.exist
-                  POST "/experts/me", d, { status: 403 }, (r) ->
-                    expectStartsWith(r.message, "Cannot create expert without bio")
-                    PUT "/users/me/bio", { bio: 'a bio'}, (r) ->
-                      POST "/experts/me", d, { status: 403 }, (r) ->
-                        expectStartsWith(r.message, "Must connect at least 2 social account to create expert profile")
-                        DONE()
-
-
-  IT "Can create expert profile with required user info", ->
-    d = rate: 80, breif: 'yo', tags: [FIXTURE.tags.angular]
-    DB.ensureDoc 'User', USERS.ape1, ->
-      DB.removeDocs 'Expert', { userId: USERS.ape1._id }, ->
-        LOGIN {key:'ape1'}, (s) ->
-          PUT "/users/me/username", { username: 'apexpert1' }, ->
-            PUT "/users/me/initials", { initials: 'ap' }, ->
-              PUT "/users/me/location", FIXTURE.wrappers.localization_melbourne.locationData, ->
-                PUT "/users/me/bio", { bio: 'a bio for apexpert 1'}, ->
-                  POST "/experts/me", d, (expert) ->
-                    expect(expert._id).to.exist
-                    # expect(expert.lastTouch).to.exist
-                    expect(expert.name).to.equal(USERS.ape1.name)
-                    expect(expert.username).to.equal('apexpert1')
-                    expect(expert.initials).to.equal('ap')
-                    expect(expert.location).to.equal('Melbourne VIC, Australia')
-                    expectStartsWith(expert.timezone, 'Australia')
-                    expect(expert.gh.login).to.equal('airpairtest1')
-                    expect(expert.gh.provider).to.be.undefined
-                    expect(expert.gp.id).to.equal('107399914803761861041')
-                    expect(expert.gp.name).to.be.undefined
-                    expect(expert.actvity).to.be.undefined
-                    # DB.docById 'User', s._id, (user) ->
-                      # expect(user.cohort.expert._id).to.exist
-                    DONE()
-
-
-
-
-
-  IT "Update expert profile", ->
+  IT "Error on Update expert profile", ->
     STORY.newExpert 'ape1', {}, (s, expert) ->
       DB.docById 'Expert', expert._id, (dExpert) ->
-        expect(dExpert.lastTouch.action, 'create')
+        # expect(dExpert.lastTouch.action, 'create')
         expect(dExpert.rate, 70)
         expect(!_.idsEqual(s._id, dExpert._id))
         GET "/experts/me", (exp2) ->
           expect(exp2._id).to.exist
-          expect(exp2.lastTouch).to.exist
-          expect(exp2.name).to.contain(USERS.ape1.name)
-          expect(exp2.username).to.contain(expert.username)
-          expect(exp2.initials).to.equal(expert.initials)
+          # expect(exp2.lastTouch).to.exist
+          expect(exp2.name).to.contain(FIXTURE.users.ape1.name)
+          # expect(exp2.username).to.contain(expert.username)
+          # expect(exp2.initials).to.equal(expert.initials)
           expect(exp2.location).to.equal('Melbourne VIC, Australia')
           expect(exp2.timezone).to.contain('Australia')
           expect(exp2.bio).to.equal(expert.bio)
-          expect(exp2.breif).to.equal(expert.breif)
+          # expect(exp2.breif).to.equal(expert.breif)
           expect(exp2.rate).to.equal(70)
           expect(exp2.tags.length).to.equal(1)
-          expect(exp2.gh.login).to.equal('airpairtest1')
-          expect(exp2.gh.followers).to.exist
-          expect(exp2.gp.id).to.contain('107399914803761861041')
+          # expect(exp2.gh.login).to.equal('airpairtest1')
+          # expect(exp2.gh.followers).to.exist
+          # expect(exp2.gp.id).to.contain('107399914803761861041')
           exp2.rate = 150
-          PUT "/experts/#{expert._id}/me", exp2, (exp3) ->
-            expect(exp3.rate, 150)
-            DB.docById 'Expert', expert._id, (dExpert2) ->
-              expect(dExpert2.lastTouch.action, 'update')
-              DONE()
+          PUT "/experts/#{expert._id}/me", exp2, {status:400}, (err) ->
+            EXPECT.contains(err.message, 'Go to consult.airpair')
+            DONE()
+            # DB.docById 'Expert', expert._id, (dExpert2) ->
+            #   expect(dExpert2.lastTouch.action, 'update')
+            #   DONE()
+
+
+
+
+  IT "Error on create expert profile with required user info", ->
+    d = rate: 80, breif: 'yo', tags: [FIXTURE.tags.angular]
+    username =  'apexpert1'+@timeSeed
+    DB.ensureDoc 'User', FIXTURE.users.ape1, ->
+      DB.removeDocs 'Expert', { userId: FIXTURE.users.ape1._id }, ->
+        LOGIN {key:'ape1'}, (s) ->
+          PUT "/users/me/username", { username }, ->
+            PUT "/users/me/initials", { initials: 'ap' }, ->
+              PUT "/users/me/location", FIXTURE.wrappers.localization_melbourne.locationData, ->
+                PUT "/users/me/bio", { bio: 'a bio for apexpert 1'}, ->
+                  POST "/experts/me", {rate:20,tags:[FIXTURE.tags.angular]}, { status: 400 }, (err) ->
+                    EXPECT.contains(err.message, 'profile deprecated in v2 migratio')
+                    # expect(expert._id).to.exist
+                    # expect(expert.lastTouch).to.exist
+                    # expect(expert.name).to.equal(USERS.ape1.name)
+                    # expect(expert.username).to.equal('apexpert1')
+                    # expect(expert.initials).to.equal('ap')
+                    # expect(expert.location).to.equal('Melbourne VIC, Australia')
+                    # EXPECT.startsWith(expert.timezone, 'Australia')
+                    # expect(expert.gh.login).to.equal('airpairtest1')
+                    # expect(expert.gh.provider).to.be.undefined
+                    # expect(expert.gp.id).to.equal('107399914803761861041')
+                    # expect(expert.gp.name).to.be.undefined
+                    # expect(expert.actvity).to.be.undefined
+                    # DB.docById 'User', s._id, (user) ->
+                      # expect(user.cohort.expert._id).to.exist
+                    DONE()
 
 
 
@@ -163,10 +134,10 @@ create = ->
 #           LOGIN 'azv0', (sAzv0) ->
 #             eData = tags: azv0Exp.tags, rate: 150, username: azv0Exp.username, initials: 'az', bio: 'a bio for az'
 #             SETUP.applyToBeAnExpert eData, (exp) ->
-#               expectIdsEqual(exp._id,azv0Exp._id)
-#               expectIdsEqual(exp.userId,azv0User._id)
+#               EXPECT.equalIds(exp._id,azv0Exp._id)
+#               EXPECT.equalIds(exp.userId,azv0User._id)
 #               db.readDoc 'User', USERS.azv0._id, (azv0U2) ->
-#                 expectIdsEqual(azv0U2._id, azv0User._id)
+#                 EXPECT.equalIds(azv0U2._id, azv0User._id)
 #                 expect(azv0U2.email).to.exist
 #                 expect(azv0U2.name).to.exist
 #                 # TODO after v0 is gone, impl wiping
@@ -202,7 +173,7 @@ create = ->
 #                 expect(azv0U2.roles.length).to.equal(0)
 #                 expect(azv0U2.emailVerified).to.be.true
 #                 db.readDoc 'Expert', FIXTURE.experts.azv0._id, (azv0E2) ->
-#                   expectIdsEqual(azv0U2.cohort.expert._id, azv0E2._id)
+#                   EXPECT.equalIds(azv0U2.cohort.expert._id, azv0E2._id)
 #                   expect(azv0E2.brief).to.exist
 #                   expect(azv0E2.gmail).to.exist
 #                   expect(azv0E2.pic).to.exist
@@ -257,7 +228,7 @@ create = ->
 
 admin = ->
 
-  it "Delete an expert"
+  SKIP "Delete an expert"
   # IT "Delete by id", ->
   #   SETUP.ensureExpert 'dlim', ->
   #     DB.docById 'User', USERS.dlim._id, (s) ->
@@ -275,7 +246,7 @@ admin = ->
         DONE()
 
 
-  IT "Get recently active experts", ->
+  SKIP "Get recently active experts", ->
     LOGIN {key:'admin'}, ->
       GET "/adm/experts/active", (experts) ->
         expect(experts.length>0).to.be.true
@@ -295,11 +266,11 @@ admin = ->
 #           expect(req.suggested.length).to.equal(1)
 #           expect(req.by).to.exist
 #           expect(req.company).to.be.undefined
-#           expectIdsEqual(req.suggested[0].expert._id,expertId)
+#           EXPECT.equalIds(req.suggested[0].expert._id,expertId)
 #         $log('bookings', history.bookings.length, history.bookings[0].participants[0])
 #         expect(history.bookings.length > 0).to.be.true
 #         for booking in (history.bookings)
-#           expectIdsEqual(booking.expertId, expertId)
+#           EXPECT.equalIds(booking.expertId, expertId)
 #           expect(booking.type).to.exist
 #           expect(booking.status).to.exist
 #           expect(booking.customerId).to.exist
@@ -338,7 +309,7 @@ admin = ->
 #               expect(e3.deals[0].lastTouch.utc).to.exist
 #               expect(e3.deals[0].activity.length).to.equal(1)
 #               expect(e3.deals[0].activity[0].action).to.equal('createDeal')
-#               expectIdsEqual(e3.deals[0].lastTouch.by._id, USERS.admin._id)
+#               EXPECT.equalIds(e3.deals[0].lastTouch.by._id, USERS.admin._id)
 #               expect(e3.deals[0].redeemed.length).to.equal(0)
 #               DONE()
 
@@ -359,7 +330,7 @@ admin = ->
 #             expect(e2.deals[0].type).to.equal('offline')
 #             expect(e2.deals[0].description).to.equal('code required deal')
 #             expect(e2.deals[0].rake).to.equal(10)
-#             expectIdsEqual(e2.deals[0].tag._id, FIXTURE.tags.angular._id)
+#             EXPECT.equalIds(e2.deals[0].tag._id, FIXTURE.tags.angular._id)
 #             expect(e2.deals[0].tag.name).to.equal('AngularJS')
 #             expect(e2.deals[0].target.type).to.equal('code')
 #             expect(e2.deals[0].target.objectId).to.be.undefined
@@ -384,14 +355,14 @@ admin = ->
 #             expect(e2.deals[0].rake).to.equal(10)
 #             expect(e2.deals[0].tag).to.be.undefined
 #             expect(e2.deals[0].target.type).to.equal('user')
-#             expectIdsEqual(e2.deals[0].target.objectId,sdel1._id)
+#             EXPECT.equalIds(e2.deals[0].target.objectId,sdel1._id)
 #             expect(e2.deals[0].code).to.be.undefined
 #             db.readDoc 'Expert', expert._id, (e3) ->
 #               expect(e3.deals[0].lastTouch.action).to.equal('createDeal')
 #               expect(e3.deals[0].lastTouch.utc).to.exist
 #               expect(e3.deals[0].activity.length).to.equal(1)
 #               expect(e3.deals[0].activity[0].action).to.equal('createDeal')
-#               expectIdsEqual(e3.deals[0].lastTouch.by._id, s._id)
+#               EXPECT.equalIds(e3.deals[0].lastTouch.by._id, s._id)
 #               DONE()
 
 
@@ -427,7 +398,7 @@ admin = ->
 #     SETUP.createNewExpert 'tmot', {}, (s, expert) ->
 #       d1 = { rake:5, price: 100, minutes: 100, type: 'airpair', target: { type: 'all'} }
 #       POST "/experts/#{expert._id}/deal", d1, {status:403}, (err) ->
-#         expectStartsWith(err.message,"Client does not determine deal rake")
+#         EXPECT.startsWith(err.message,"Client does not determine deal rake")
 #         LOGIN 'admin', ->
 #           d2 = { rake:5, price: 100, minutes: 100, type: 'airpair', target: { type: 'all'} }
 #           POST "/experts/#{expert._id}/deal", d2, {}, (e2) ->
@@ -446,14 +417,13 @@ admin = ->
 module.exports = ->
 
   before (done) ->
-    global.USERS = FIXTURE.users
     qExists = require('../../../server/services/users.data').query.existing
     DB.removeDocs 'User', qExists.byEmails(['airpairtest1@gmail.com']), ->
-    SETUP.ensureExpert 'snug', ->
-      done()
+      DB.ensureExpert 'snug', ->
+        done()
 
   after ->
-    global.USERS = null
+
 
   DESCRIBE("Create: ", create)
   # DESCRIBE("Migrate: ", migrate)

@@ -89,12 +89,12 @@ reviews = ->
 
 
   IT "Sends appropriate email notifications for reviews and replies", ->
+    post = FIXTURE.clone('posts.higherOrder', {omit:'reviews stats'})
+    post._id = new ObjectId()
+    post.slug = post.slug + @timeSeed
     STORY.newUser 'tiagorg', (sTiagorg, authorKey) ->
-      post = FIXTURE.clone('posts.higherOrder', {omit:'reviews stats'})
-      post._id = new ObjectId()
       post.by.userId = sTiagorg._id
       post.by.name = sTiagorg.name
-      post.slug = post.slug + timeSeed()
       DB.ensureDoc 'Post', post, ->
       spyReviewNotify = STUB.spy(mailman,'sendTemplate')
       spyReviewReplyNotify = STUB.spy(mailman,'sendTemplateMails')
@@ -185,7 +185,7 @@ module.exports = ->
     delete global.higherOrder
 
   beforeEach ->
-    STUB.cb(Wrappers.Slack, 'getUsers', FIXTURE.wrappers.slack_users_list)
+    STUB.wrapper('Slack').cb('getUsers', 'slack_users_list')
 
   DESCRIBE("Browsing", browsing)
   DESCRIBE("Reviews", reviews)

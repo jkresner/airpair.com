@@ -457,8 +457,8 @@ module.exports = ->
 
   before (done) ->
     global.moment = require("moment-timezone")
-    SETUP.ensureExpert 'gnic', ->
-      SETUP.ensureExpert 'dros', ->
+    DB.ensureExpert 'gnic', ->
+      DB.ensureExpert 'dros', ->
         done()
 
   beforeEach ->

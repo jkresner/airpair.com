@@ -236,7 +236,7 @@ module.exports = ->
   @timeout(10000)
 
   before (done) ->
-    SETUP.analytics.on()
+    STUB.analytics.on()
     DB.ensureDoc 'User', FIXTURE.users.admin, ->
     {higherOrder} = FIXTURE.posts
     DB.ensureDoc 'Post', higherOrder, ->
