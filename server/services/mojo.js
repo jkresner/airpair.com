@@ -1,5 +1,7 @@
-var { Expert,Booking,
-            User,Request }   = DAL
+var { Expert,
+      Booking,
+      User,
+      Request }              = DAL
 var MatchGroup               = require('../models/matchgroup')
 var md5                      = require('../util/md5')
 var {ObjectId2Date}          = util
@@ -8,24 +10,9 @@ var {select,query}           = require('./experts.data')
 
 var get = {
 
-  getForExpertsPage(cb) {
-    cb(Error("getForExpertsPage not implemented"))
-  },
+  getForExpertsPage(cb) { cb(Error("getForExpertsPage not implemented")) },
+  getMatchesForDashboard(cb) { cb(V2DeprecatedError("Mojo.getMatchesForDashboard")) },
 
-  /// VERY TEMPORARY SOLUTIOn
-  getMatchesForDashboard(cb) {
-    cb(V2DeprecatedError("Mojo.getMatchesForDashboard"))
-    //tags, bookmarks, requests,
-  //   require('../models/user').findOne({_id:this.user._id}, (e,user) =>{
-  //       var tags = _.map(user.tags,(t)=>{return { _id: t.tagId } })
-  //       get.getMatchesForRequest({tags,suggested:[]}, (e,r) => {
-  //         r = _.take(r, 2)
-  //         if (r[0]) r[0].tags = _.take(_.pluck(r[0].tags,'short'), 3)
-  //         if (r[1]) r[1].tags = _.take(_.pluck(r[1].tags,'short'), 3)
-  //         cb(null, r)
-  //       })
-  //     })
-  },
 
   getRanked(meExpert, q, cb) {
     var exclude = q.exclude || []
@@ -33,33 +20,46 @@ var get = {
     var budget = q.budget || 0
     var includeBusy = true //q.includeBusy
 
-    // console.log('query.ranked(tags,exclude,0,includeBusy) }', query.ranked(tags,exclude,0,includeBusy))
+    var intersections = { overlap: { $setIntersection: ['$tags._id',tags.map(t=>t._id)] } }
+    intersections.one = { $setIntersection: ['$tags._id',[tags[0]._id]] }
+    intersections.two = tags[1] ? { $setIntersection: ['$tags._id',[tags[1]._id]] } : { $literal: [] }
+    intersections.three = tags[2] ? { $setIntersection: ['$tags._id',[tags[2]._id]] } : { $literal: [] }
+
+
 
     Expert.aggregate([
-        { $match: query.ranked(tags,exclude,0,includeBusy) } /* Query can go here, if you want to filter results. */
-      , { $project: _.extend({ common: { $setIntersection: ['$tags._id',tags] } }, select.matches) } /* select the tokens field as something we want to "send" to the next command in the chain */
-      , { $project: _.extend({ common:1, primary: { $setIntersection: ['$tags._id',[tags[0]]] } }, select.matches) } /* select the tokens field as something we want to "send" to the next command in the chain */
-      , { $project: _.extend({ commonLen: { $size: '$common' }, primaryLen: { $size: '$primary' } }, select.matches) }
-      , { $sort: { commonLen: -1, primaryLen: -1 } }
-      , { $limit: 300 }
+      /* Query can go here, if you want to filter results. */
+      { $match: query.ranked(tags,exclude,0,includeBusy) },
+      /* select the tokens field as something we want to "send" to the next command in the chain */
+      { $project: Object.assign(intersections, select.matches) },
+      /* calculate a combine score weighting the tags in order */
+      { $project: Object.assign({ tagScore: { $add: [
+          { $size: '$overlap' },
+          { $multiply: [10,{$size:'$one'}] },
+          { $multiply: [6,{$size:'$two'}] },
+          { $multiply: [2,{$size:'$three'}] }
+        ]}}, select.matches) },
+      { $sort: { tagScore: -1 } },
+      { $limit: 150 }
     ], (e, experts) => {
       if (e || !experts || experts.length == 0) return cb(e,experts)
-      // $log('prim', experts.map(ex=>ex.userId))
+
       User.getManyById(experts.map(ex=>ex.userId), {select:select.mojoUser}, (ee, rr) =>{
         var userHash = {}
         for (var u of rr) userHash[u._id] = u
-        for (var exp of experts) exp.user = userHash[exp.userId]
+        for (var exp of experts) Object.assign(exp, {user:userHash[exp.userId]})
 
+        // $log('prim'.white, experts[0])
         select.cb.inflateList((e, inflated) => {
-          // $log('inflated', exclude, inflated)
+          // $log('inflated'.white, exclude, inflated[0])
           for (var exp of inflated) {
             exp.score = get.calcMojo(exp, q.tags)
-            // $log('exp.score', exp.score)
+            // $log('exp.score', exp.score, exp.name.gray, exp.primaryLen, exp.commonLen)
           }
 
           var filtered = inflated.filter(exp=>exclude.indexOf(exp.username)==-1)
           var sorted = _.sortBy(filtered, u => u.score).reverse()
-          var results = _.take(sorted, 200)
+          var results = _.take(sorted, 100)
           // $log('experts', results)
           cb(null, results)
         })(ee, experts)
@@ -104,20 +104,11 @@ var get = {
   //  social
   //  internal
   calcMojo(expert, tagIdsOrdered) {
-    var requirements = 0
+    var requirements = 0     // tags + rate + availability
     var tagMatchCount = 0
     var tagSort = 0
-    // $log('exper tags', expertTags)
-    for (var tag of tagIdsOrdered) {
-      var match = _.find(expert.tags,(t)=>_.idsEqual(t._id,tag))
-      // $log('tagToScore', expert, tag, expert.tags.length, match)
-      if (match) {
-        tagMatchCount = tagMatchCount+1
-        requirements = requirements + (10 - tagSort)*20
-      }
-      tagSort = tagSort+3 // TODO, increment outside conditional
-    }
-    requirements = (requirements + tagMatchCount * 30)*200
+
+    requirements = (expert.tagScore * 30)*500
 
     var engagement = 0
     var experience = 0
@@ -127,16 +118,16 @@ var get = {
       experience = expert.matching.experience.customers * 10
                  + expert.matching.experience.hours * 2
     }
-    engagement = engagement*200
-    experience = experience*200
+    engagement = engagement*100
+    experience = experience*150
 
     var social = 0;
 
     // $log('calcMojo'.blue, requirements, expert.gh, expert.so)
-    // $log('social', expert._id, expert.gh)
+    // $log('social', expert.bb, expert.in)
     if (expert.gh) social += Math.floor(expert.gh.followers/20)
     if (expert.so) social += social + Math.floor(expert.so.reputation/150)
-    // if (expert.tw) socialScore += socialScore + Math.floor(expert.tw.followers)
+    if (expert.tw) social += social + Math.floor(expert.tw.followers/40)
     // if (expert.in) socialScore += socialScore + Math.floor(expert.in.endorsements)
     // if (expert.bb) socialScore += socialScore + Math.floor(expert.bb.followers)
 

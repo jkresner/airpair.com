@@ -13,17 +13,21 @@
   <table class="table table-condensed table-striped orders">
     <tr>
       <th style="width:100px"></th>
+      <th style="width:180px">Social</th>
       <th style="width:150px">Expert</th>
       <th style="width:200px">Availability</th>
       <th style="width:150px">Engagement</th>
       <th style="width:140px">Experience</th>
-      <th style="width:180px">Social</th>
       <th style="width:190px">Tags</th>
     </tr>
     <tr ng-repeat="o in experts">
       <td style="padding:10px">
         <a href="/adm/experts/{{o._id}}"><img ng-src="{{o.avatar}}" /></a>
         <b>{{o.location}}</b>
+      </td>
+      <td>
+         <social-links profile="o.social"></social-links>
+         <social-scores profile="o.social"></social-scores>
       </td>
       <td>
         {{o.name}} ({{o.score}})
@@ -53,13 +57,6 @@
       <td>
         {{o.matching.experience.hours}}
         {{o.matching.experience.customers}}
-      </td>
-      <td>
-         <social-links profile="o"></social-links>
-        <social-scores profile="o"></social-scores>
-         <!-- <div ng-if="o.gh">gh.followers: {{o.gh._json.followers}}</div>
-         <div ng-if="o.tw">tw.followers: {{o.tw._json.followers_count}}</div>
-         <div ng-if="o.so">so.reputation: {{o.so.reputation}}</div> -->
       </td>
       <td class="t">
         <b>[{{o.tags.length}}]</b>

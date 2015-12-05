@@ -79,7 +79,7 @@ var get = {
   },
 
   getActiveForAdmin(cb) {
-    Expert.getManyByQuery({}, options.active100, selectCB.inflateList(cb))
+    Expert.getManyByQuery({meta:{$exists:1}}, options.active100, selectCB.inflateList(cb))
   },
 
   getByDeal(id, cb) {
@@ -90,74 +90,77 @@ var get = {
 
 }
 
-function saveWithTouch(original, ups, action, trackData, done) {
-  var lastTouch = svc.newTouch.call(this, action)
+// function saveWithTouch(original, ups, action, trackData, done) {
+//   var lastTouch = svc.newTouch.call(this, action)
 
-  var tagIdx = 0
-  for (var t of ups.tags) {
-    if (!t.sort)
-      t.sort = tagIdx
-    tagIdx = tagIdx + 1
-  }
+//   var tagIdx = 0
+//   for (var t of ups.tags) {
+//     if (!t.sort)
+//       t.sort = tagIdx
+//     tagIdx = tagIdx + 1
+//   }
 
-  //-- consistency with v0 + save db space
-  // if (expert.user.social) {
-  //   if (expert.user.social.so)
-  //     expert.user.social.so.link = expert.user.social.so.link.replace('http://stackoverflow.com/users/','')
-  //   if (expert.user.google) {
-  //     expert.user.social.gp = expert.user.google
-  //     delete expert.user.google
-  //   }
-  // }
-  var cb = () => get.getMe.call(this, done)
+//   //-- consistency with v0 + save db space
+//   // if (expert.user.social) {
+//   //   if (expert.user.social.so)
+//   //     expert.user.social.so.link = expert.user.social.so.link.replace('http://stackoverflow.com/users/','')
+//   //   if (expert.user.google) {
+//   //     expert.user.social.gp = expert.user.google
+//   //     delete expert.user.google
+//   //   }
+//   // }
+//   var cb = () => get.getMe.call(this, done)
 
-  if (action == 'create') {
-    ups.lastTouch = lastTouch
-    ups.activity = [lastTouch]
-    Expert.create(ups, cb)
-  }
-  else {
-    var previousAction = original.lastTouch ? original.lastTouch.action : null
-    if (action != previousAction ||
-      moment(original.lastTouch.utc).isBefore(moment().add(1, 'hours')))
-    {
-      ups.lastTouch = lastTouch
-      ups.activity = original.activity || []
+//   if (action == 'create') {
+//     ups.lastTouch = lastTouch
+//     ups.activity = [lastTouch]
+//     Expert.create(ups, cb)
+//   }
+//   else {
+//     var previousAction = original.lastTouch ? original.lastTouch.action : null
+//     if (action != previousAction ||
+//       moment(original.lastTouch.utc).isBefore(moment().add(1, 'hours')))
+//     {
+//       ups.lastTouch = lastTouch
+//       ups.activity = original.activity || []
 
-      if (_.idsEqual(this.user._id,original.userId))  // Don't want activity for admins
-        ups.activity.push(lastTouch)
-    }
+//       if (_.idsEqual(this.user._id,original.userId))  // Don't want activity for admins
+//         ups.activity.push(lastTouch)
+//     }
 
-    Expert.updateSet(original._id, _.omit(ups,['_id']), cb)
-  }
+//     Expert.updateSet(original._id, _.omit(ups,['_id']), cb)
+//   }
 
-  // if (trackData)
-  //   analytics.track(this.user, this.sessionID, 'Save',
-  //     _.extend(trackData,{type:expert,action}), {}, ()=>{})
-}
+//   // if (trackData)
+//   //   analytics.track(this.user, this.sessionID, 'Save',
+//   //     _.extend(trackData,{type:expert,action}), {}, ()=>{})
+// }
 
 
 var save = {
 
   create(expert, cb) {
-    var trackData = { name: this.user.name }
+    cb(V2DeprecatedError('Experts.create. Go to consult.airpair.com/profile'))
+    // var trackData = { name: this.user.name }
     // expert.user = selectFromObject(_.extend({social:this.user.auth},this.user), select.userCopy)
-    expert.userId = this.user._id
-    saveWithTouch.call(this, null, expert, 'create', trackData, cb)
+    // expert.userId = this.user._id
+    // saveWithTouch.call(this, null, expert, 'create', trackData, cb)
   },
 
   updateMe(original, ups, cb) {
+    cb(V2DeprecatedError('Experts.updateMe. Go to consult.airpair.com/profile'))
     // $log('updateMe')
-    var trackData = { name: this.user.name, _id: original._id }
+    // var trackData = { name: this.user.name, _id: original._id }
     // ups.user = selectFromObject(_.extend({social:this.user.auth},this.user), select.userCopy)
     // var expert = selectFromObject(_.extend(original,ups), select.updateMe)
-    saveWithTouch.call(this, original, ups, 'update', trackData, cb)
+    // saveWithTouch.call(this, original, ups, 'update', trackData, cb)
     // $callSvc(UserSvc.setExpertCohort, this)(ups._id)
   },
 
   updateAvailability(original, availability, cb) {
-    availability.lastTouch = svc.newTouch.call(this, availability.status)
-    Expert.updateSet(original._id, {availability}, cb)
+    cb(V2DeprecatedError('Experts.updateMe. Go to consult.airpair.com/availability'))
+    // availability.lastTouch = svc.newTouch.call(this, availability.status)
+    // Expert.updateSet(original._id, {availability}, cb)
   },
 
   createDeal(expert, deal, cb) {

@@ -46,23 +46,6 @@ var ExpertSchema = asSchema({
   tags:           { type: [Reftag] },
   gmail:          { type: String },
 
-  // user:           {},
-
-  // deprecated v0 user props
-  // pic:            { type: String },
-  // name:           { type: String },
-  // username:       { type: String },
-  // email:          { type: String },
-  // timezone:       String,
-  // location:       String,
-  // homepage:       String,
-  // gp:             {},          // googleplus
-  // gh:             {},          // github
-  // so:             {},          // stackoverflow
-  // bb:             {},          // bitbucket
-  // in:             {},          // linkedIn
-  // tw:             {},          // twitter
-
   deals:            [DealSchema],
 
   availability: {
@@ -73,14 +56,6 @@ var ExpertSchema = asSchema({
     minRate:        { type: Number },
     hours:          { type: String }
   },
-
-  // deprecated v0 settings props
-  // minRate:        Number,
-  // status:         String,
-  // availability:   String,
-  // hours:          String,
-  // busyUntil:      { type: Date, default: Date },
-  // updatedAt:      { type: Date, default: Date },
 
   // to get rid of
   // matching
@@ -107,16 +82,8 @@ var ExpertSchema = asSchema({
   },
 
   notes:          { type: [Note] },
-
-  // deprecated other
-  // bookMe:         {}
-
-  // reviews:        [Shared.Survey]
-
 })
 
-// Does not work errrr.
-// ExpertSchema.index({'_id':1,'reviews.by._id':1},{ unique, sparse })
 
 
 return ExpertSchema

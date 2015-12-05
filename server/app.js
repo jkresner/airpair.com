@@ -67,7 +67,7 @@ function run(config, done)
     pairbot.init()
 
     app.get('/', mw.analytics.trackFirstRequest, mw.auth.authdRedirect('/dashboard'), app.renderHbs('home') )
-    // app.use('/auth', routes('auth')(app))
+
     routes('auth')(app)
     app.use('/v1/api/matching', routes('api').matching)
     app.use('/v1/api/adm/bookings', routes('api').spinning)

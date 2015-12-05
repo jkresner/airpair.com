@@ -60,7 +60,7 @@
     </div>
     <img ng-src="{{selected.avatar}}?s=50" class="user" />
     <b>{{selected.score}}</b>${{selected.rate}}|${{selected.minRate}}
-    <br /><a href="/adm/experts/{{m._id}}" target="_blank">{{selected.name}}</a>
+    <br /><a href="/adm/experts/{{selected._id}}" target="_blank">{{selected.name}}</a>
     <br />Customers: {{selected.matching.experience.customers}}
     <br />Hours: {{selected.matching.experience.hours}}
     <br />Suggested: {{selected.matching.replies.suggested}}
@@ -109,8 +109,8 @@
             <img ng-src="{{m.avatar}}?s=40" class="user" />
             <div expert-avail data="m.availability"></div>
           </a>
-          <social-links profile="m"></social-links>
-          <social-scores profile="m"></social-scores>
+          <social-links profile="m.social"></social-links>
+          <social-scores profile="m.social"></social-scores>
           <div>{{gh}}</div>
           <time ng-if="m.lastTouch">{{m.lastTouch._id | objectIdToAgoTime }}</time>
           <b>Mojo: {{m.score}}</b>

@@ -5,7 +5,7 @@ function exp(_id) {
 }
 
 
-var mg = {
+var mg = config.env != "test" ? {
 
   'android': {
     primary: 'android',
@@ -165,7 +165,7 @@ var mg = {
     ]
   },
 
-}
+} : {}
 
 
 DAL.Expert.getManyById(expertIds, {select:'_id availability rate userId',join:{userId:'name email'}}, (e, experts) => {
@@ -183,7 +183,7 @@ DAL.Expert.getManyById(expertIds, {select:'_id availability rate userId',join:{u
       o.availability.updated &&
       o.availability.status == 'ready' )
 
-    $log('automatch'.gray, `${tech} (${mg[tech].auto.join(',')})`.white, _.pluck(mg[tech].suggested,'name').join(', '))
+    // $log('automatch'.gray, `${tech} (${mg[tech].auto.join(',')})`.white, _.pluck(mg[tech].suggested,'name').join(', '))
   }
 })
 

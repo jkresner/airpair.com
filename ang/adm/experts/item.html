@@ -12,7 +12,7 @@
 
   <div class="display-group" ng-if="data.user">
     <img class="pic" ng-src="{{data.pic}}">
-    <social-links profile='data.user.social'></social-links>
+    <social-links profile='data.user.auth'></social-links>
     <div user-info info="data.user"></div>
   </div>
   <div class="display-group" ng-if="!data.user">

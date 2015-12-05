@@ -1,7 +1,7 @@
 var md5           = require('../util/md5')
 var {selectFromObject}    = util
 
-var mojoUser = 'availability email name initials username location auth.gp.id auth.gp.link auth.gp.email auth.gh.login auth.gh.followers auth.so.link auth.so.reputation auth.bb.username auth.in.id auth.tw.username'
+var mojoUser = 'availability email name initials username location auth.gp.id auth.gp.link auth.gp.email auth.gh.login auth.gh.followers auth.so.link auth.so.reputation auth.bb.username auth.in.id auth.tw.screen_name auth.tw.followers_count'
 
 var data = {
 
@@ -118,14 +118,19 @@ var data = {
     migrateInflate(r) {
       if (!r.user) return
 
-      var social = r.user.auth
+      var {auth} = r.user
       delete r.user.auth
+
+      if (auth && auth.tw) {
+        auth.tw.followers = auth.tw.followers_count
+        delete auth.tw.followers_count
+      }
 
       // $log('social'.white, r.user)
       // how we handle staying v0 on front-end
       r.userId = r.user._id
       delete r.user._id
-      r = _.extend(_.extend(r,r.user),social)
+      r = _.extend(_.extend(r,r.user),{social:auth})
 
       if (!r.email && r.gp && r.gp.email) r.email = r.gp.email
       r.avatar = r.email ? md5.gravatarUrl(r.email) :
@@ -236,17 +241,15 @@ var data = {
       // $log('getRanked', query)
 
       var q = {
-        'rate': { $gt: 0 },
         'tags._id': { $in: tags.map(t=>t._id) }
       }
 
       if (!includeBusy)
         q['availability.status'] = { $ne: 'busy' }
 
-      if (exclude) {
-        q['username'] = { $nin: exclude }
-        q['user.username'] = { $nin: exclude }
-      }
+      // if (exclude) {
+        // q['user.username'] = { $nin: exclude }
+      // }
 
       // TODO add minimum rate filter
       // if (query.rate)

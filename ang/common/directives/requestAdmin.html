@@ -24,7 +24,8 @@
     <span ng-if="!request.experience">-</span>
     <span ng-if="request.experience">{{request.experience}}</span>
     <ul>
-      <li ng-repeat="t in request.tags | orderBy : 'sort' ">{{t.sort+1}}. &nbsp;{{t.slug}}</li>
+      <li ng-repeat="t in request.tags | orderBy : 'sort' ">{{t.sort+1}}. &nbsp;
+      <a ng-href="http://stackoverflow.com/tags/{{t.slug}}/info" target="_blank">{{t.slug}}</a></li>
     </ul>
     <span ng-if="request.tags.length == 0">-</span>
   </div>
