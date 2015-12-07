@@ -11,17 +11,32 @@ module.exports = function(app) {
 
     .use(noCrawl('/'))
 
-    .get('/heroku-151014-node.js',
-       trackAdClick('https://signup.heroku.com/nodese?c=70130000001xtjz&utm_campaign=Web%20-%20Signup%20-%20Endemic%20-%20Air%20Pair%20ROS%20Heroku%20-%20Q3%20Nodese&utm_medium=display&utm_source=airpair&utm_term=node&utm_content=top-900-banner'),
+
+
+    .get('/heroku-151205-node.js',
+       trackAdClick('https://signup.heroku.com/nodese?c=70130000000NYVEAA4&utm_campaign=Display%20-Endemic%20- Airpair%20-Node%20-%20Signup&utm_medium=display&utm_source=airpair&utm_content=signup&utm_term=node&utm_content=top-900-banner'),
         (req, res, cb) => res.redirect(req.ad.url) )
 
-    .get('/heroku-151014-php',
-       trackAdClick('https://signup.heroku.com/php?c=70130000001xtkF&utm_campaign=Web%20-%20Signup%20-%20Endemic%20-%20Air%20Pair%20ROS%20Heroku%20-%20Q3_PHP&utm_medium=display&utm_source=airpair&utm_content=&utm_term=php&utm_content=top-900-banner'),
+    .get('/heroku-151205-php',
+       trackAdClick('https://signup.heroku.com/php?c=70130000000NYVFAA4&utm_campaign=Display%20-%20Endemic%20-Airpair%20-%20PHP%20-%20Signup&utm_medium=display&utm_source=airpair&utm_content=signup&utm_term=php&utm_content=top-900-banner'),
         (req, res, cb) => res.redirect(req.ad.url) )
 
-    .get('/heroku-151014-java',
-       trackAdClick('https://signup.heroku.com/java?c=70130000001xtkF&utm_campaign=Web%20-%20Signup%20-%20Endemic%20-%20Air%20Pair%20ROS%20Heroku%20-%20Q3_JAVA&utm_medium=display&utm_source=airpair&utm_content=&utm_term=java&utm_content=top-900-banner'),
+    .get('/heroku-151205-java',
+       trackAdClick('https://signup.heroku.com/java?c=70130000000NYVGAA4&utm_campaign=Display%20-%20Endemic%20-Airpair%20-Java%20-%20Signup&utm_medium=display&utm_source=airpair&utm_content=signup&utm_term=java&utm_content=top-900-banner'),
         (req, res, cb) => res.redirect(req.ad.url) )
+
+
+    // .get('/heroku-151014-node.js',
+    //    trackAdClick('https://signup.heroku.com/nodese?c=70130000001xtjz&utm_campaign=Web%20-%20Signup%20-%20Endemic%20-%20Air%20Pair%20ROS%20Heroku%20-%20Q3%20Nodese&utm_medium=display&utm_source=airpair&utm_term=node&utm_content=top-900-banner'),
+    //     (req, res, cb) => res.redirect(req.ad.url) )
+
+    // .get('/heroku-151014-php',
+    //    trackAdClick('https://signup.heroku.com/php?c=70130000001xtkF&utm_campaign=Web%20-%20Signup%20-%20Endemic%20-%20Air%20Pair%20ROS%20Heroku%20-%20Q3_PHP&utm_medium=display&utm_source=airpair&utm_content=&utm_term=php&utm_content=top-900-banner'),
+    //     (req, res, cb) => res.redirect(req.ad.url) )
+
+    // .get('/heroku-151014-java',
+    //    trackAdClick('https://signup.heroku.com/java?c=70130000001xtkF&utm_campaign=Web%20-%20Signup%20-%20Endemic%20-%20Air%20Pair%20ROS%20Heroku%20-%20Q3_JAVA&utm_medium=display&utm_source=airpair&utm_content=&utm_term=java&utm_content=top-900-banner'),
+    //     (req, res, cb) => res.redirect(req.ad.url) )
 
     // .get('/lob-150812',
     //    trackAdClick('https://lob.com/?utm_source=airpair&utm_medium=bannertop900'),
