@@ -1,30 +1,3 @@
-handlebars            = require('handlebars')
-marked                = require('marked')
-
-
-checkName = ->
-  if !merging.byName then DONE()
-  Users.find({name:merging.byName}).toArray (e, users) ->
-    expect(users.length, "Only #{users.length} matching name #{merging.byName}").to.be.at.least(2)
-    $log("\nFound #{users.length} matching #{merging.byName}:\n".green)
-    text = ""
-    text += uInfoChain(user) for user in users
-    $log(text)
-    $log("\n")
-    DONE()
-
-
-checkEmails = ->
-  emails = merging.M
-  expect(emails.length, "Two emails required for merge").to.be.at.least(2)
-  Users.find({email:{$in:emails}}).toArray (e, users) ->
-    expect(users.length, "Only #{users.length} matching emails #{emails} #{JSON.stringify(users).white}").to.be.equal(emails.length)
-    $log("\nFound #{users.length} matching #{emails}:\n".green)
-    $log(uInfoChain(user)) for user in users
-    $log("\n")
-    DONE()
-
-
 mergeFixture = ->
 
   mergeByEmails = (uaEmail, ubEmail, overrides, expects, cb) ->
@@ -49,21 +22,18 @@ mergeFixture = ->
         if e
           return reject(e)
         try
-          if !r.replay
-            expectFn r
-            tmplData =
-              emails:         M.join(' & ')
-              primaryEmail:   M[0]
-              firstName:      util.firstName(r.merged.user.name)
+          expectFn r
+          tmplData =
+            emails:         M.join(' & ')
+            primaryEmail:   M[0]
+            firstName:      util.firstName(r.merged.user.name)
 
-            subject = TEMPLATE.subjectFn(tmplData)
-            body = TEMPLATE.markdownFn(tmplData)
-            mailman.sendMarkdown subject, body, r.merged.user, 'jk', ->
-              mailman.sendMarkdown subject, body, r.removed.user, 'jk', ->
-                resolve key
-          else
-            console.log('Replay     '.green.dim, key)
-            resolve key
+          subject = TEMPLATE.subjectFn(tmplData)
+          body = TEMPLATE.markdownFn(tmplData)
+          mailman.sendMarkdown subject, body, r.merged.user, 'jk', ->
+            # $log('removed', r.removed.user)
+            mailman.sendMarkdown subject, body, r.removed.user, 'jk', ->
+              resolve key
         catch err
           reject(err)
 
@@ -78,24 +48,12 @@ module.exports = ->
 
   specInit(@)
 
-  # DESCRIBE 'CHECK', ->
-
-  #   before (done) ->
-  #     @timeout(10000)
-
-  #     checkKey = 'Mickey_Puri'
-
-  #     global.merging = FIXTURE.merged[checkKey]
-  #     global.merging.byName = checkKey.replace('_',' ')
-  #     require('../../../migrate/201509/graph')(done)
-
-  #   IT "Name matches more than one user", checkName
-  #   IT "Emails match existing users", checkEmails
-
-
   DESCRIBE 'MERGES', ->
 
     before (done) ->
+      handlebars     = require('handlebars')
+      marked         = require('marked')
+      global.mailman = require('../../../../server/util/mailman')()
       Templates.findOne {key:'user-merged'}, (e, tmpl) ->
         global.TEMPLATE =
           markdownFn: handlebars.compile(tmpl.markdown)
@@ -103,3 +61,18 @@ module.exports = ->
         done()
 
     IT "Merges FIXTURE.merged users", mergeFixture
+
+    # IT "Send emails (if expects failed after merging)", ->
+    #   name = 'Agam Duo'
+    #   primary = { name, email: 'agamdua@gmail.com' }
+    #   merged = { name, email: 'agam@comfylabs.io' }
+    #   tmplData =
+    #     emails:         [primary.email,merged.email].join(' & ')
+    #     primaryEmail:   primary.email
+    #     firstName:      util.firstName(name)
+
+    #   subject = TEMPLATE.subjectFn(tmplData)
+    #   body = TEMPLATE.markdownFn(tmplData)
+    #   mailman.sendMarkdown subject, body, primary, 'jk', ->
+    #     mailman.sendMarkdown subject, body, merged, 'jk', ->
+    #       DONE()

@@ -1,0 +1,11 @@
+#!/bin/sh
+mongodump -h $1 -d $2 -u heroku -p $3 -o ~/ap_mongo -c users
+mongodump -h $1 -d $2 -u heroku -p $3 -o ~/ap_mongo -c experts
+mongodump -h $1 -d $2 -u heroku -p $3 -o ~/ap_mongo -c requests
+mongodump -h $1 -d $2 -u heroku -p $3 -o ~/ap_mongo -c tags
+mongodump -h $1 -d $2 -u heroku -p $3 -o ~/ap_mongo -c templates
+mongodump -h $1 -d $2 -u heroku -p $3 -o ~/ap_mongo -c orders
+mongodump -h $1 -d $2 -u heroku -p $3 -o ~/ap_mongo -c bookings
+mongodump -h $1 -d $2 -u heroku -p $3 -o ~/ap_mongo -c paymethods
+mongodump -h $1 -d $2 -u heroku -p $3 -o ~/ap_mongo -c posts
+mongorestore --drop --db airpair_dev ~/ap_mongo/$2

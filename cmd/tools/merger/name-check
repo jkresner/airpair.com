@@ -1,0 +1,4 @@
+#!/bin/sh
+# Usage:
+#   /cmd/tools/merger/name-check <full_name> (using underscores instead of spaces)
+coffee --nodejs "--harmony_destructuring" cmd/tools/merger/run.coffee -c local.json -s checkname -n $1 $2 $3
