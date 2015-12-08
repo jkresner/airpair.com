@@ -5,7 +5,7 @@ cull = ->
     expectAllPromises resolveResult('Users','users'),
       jlem1: (u, orig) ->
         expectObjIdsEqual(u, FIXTURE.users.jlem1)
-        expectIdsEqual("54d390c41f49fb0a00ecb076", orig._id)
+        EXPECT.equalIds("54d390c41f49fb0a00ecb076", orig._id)
         expect(u.emailVerified).to.be.tru
 
 

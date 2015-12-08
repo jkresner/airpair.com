@@ -25,8 +25,8 @@ checkCONSISTENT = ->
   Users.find({}).toArray (e, all) ->
     for o in all
       expectObjectId(o._id)
-      expectAttr(o, 'name')
-      expectAttr(o, 'auth')
+      EXPECT.attr(o, 'name')
+      EXPECT.attr(o, 'auth')
 
       expect(o[attr]).to.be.undefined for attr in MIGRATED.attrs_gone
 
@@ -96,8 +96,8 @@ renameAttrs = ->
 
     expectAllPromises resolveResult('Users','premigrated'),
       maxAltschuler: (u, orig) ->
-        expectIdsEqual(orig._id, FIXTURE.premigrated.maxAltschuler._id)
-        expectIdsEqual(u._id, orig._id)
+        EXPECT.equalIds(orig._id, FIXTURE.premigrated.maxAltschuler._id)
+        EXPECT.equalIds(u._id, orig._id)
         expect(u.google).to.be.undefined
         expect(u.auth.gp.id).to.equal(orig.google.id)
         expect(u.auth.gp.provider).to.be.undefined

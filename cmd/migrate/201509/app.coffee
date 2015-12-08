@@ -5,12 +5,12 @@ module.exports =
   run: (config, done) ->
 
     global.config = config
-    $log('APP ==> '+ config.mongoUrl.white)
+    $log('APP ==> '+ config.model.mongoUrl.white)
 
 
     global.fields =
       user:
-        known: ['_id','cohort','name','email','emailVerified','legacy','primaryPayMethodId','raw','location','auth','username','initials','bio','roles','photos','emails']
+        known: ['_id','cohort','name','email','emailVerified','legacy','primaryPayMethodId','raw','location','auth','username','initials','bio','roles','photos','emails','meta']
 
 
     global.q =
@@ -56,13 +56,13 @@ module.exports =
       JSONSTRING[obj._id]
 
 
-    global.expectAttr = (obj, attr, constructor) ->
+    EXPECT.attr = (obj, attr, constructor) ->
       expect(obj[attr], attr.white+" missing on: "+STRINGIFY(obj)).to.exist
       if (constructor)
         expect(obj[attr].constructor, "#{attr}.constuctor #{obj[attr].constructor.name.cyan} but expecting #{constructor.name.cyan} on: "+STRINGIFY(obj)).to.equal(constructor)
 
 
-    # global.expectAttrUndefined = (obj, attr) ->
+    # global.EXPECT.attrUndefined = (obj, attr) ->
     #   expect(obj[attr], attr.white+" shoud not be found on "+STRINGIFY(obj)).to.be.undefined
 
 
@@ -174,7 +174,7 @@ module.exports =
           expect(r[++opIdx].length, "#{u.name}[#{u._id}]: paidout mismatch").to.equal(paidout||0)
           expect(r[++opIdx].length, "#{u.name}[#{u._id}]: released mismatch").to.equal(released||0)
           if expertId?
-            expectIdsEqual(r[++opIdx]._id, expertId)
+            EXPECT.equalIds(r[++opIdx]._id, expertId)
             expect(r[++opIdx].length, "#{u.name}: suggests mismatch").to.equal(suggests||0)
             expect(r[++opIdx].length, "#{u.name}: booked mismatch").to.equal(booked||0)
           cb()

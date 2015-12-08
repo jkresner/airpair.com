@@ -44,13 +44,13 @@ migratesOlderTags = ->
 
   checks = -> expectAllPromises resolveResult('Requests','requests'),
     zesty1: (o, orig) ->
-      expectIdsEqual(o._id, orig._id)
+      EXPECT.equalIds(o._id, orig._id)
       expectExactFields(o.by,['name','email','avatar','org'])
       expect(o.by.name).to.equal("Chris Hollindale")
       expect(o.tags.length).to.equal(2)
-      expectIdsEqual(o.tags[0]._id, FIXTURE.tags['ruby-on-rails']._id)
+      EXPECT.equalIds(o.tags[0]._id, FIXTURE.tags['ruby-on-rails']._id)
       expect(o.tags[0].sort).to.equal(0)
-      expectIdsEqual(o.tags[1]._id, "5181d0aa66a6f999a465ed67")
+      EXPECT.equalIds(o.tags[1]._id, "5181d0aa66a6f999a465ed67")
       expect(o.tags[1].sort).to.equal(1)
       expectExactFields(o.tags[1],['_id','sort'])
       expect(o.events).to.be.undefined
@@ -64,31 +64,31 @@ migratesOlderTags = ->
       expect(o.budget).to.equal(210)
       expectExactFields(o.by,['name','email','avatar'])
       expect(o.by.name).to.equal("Ben Townsend")
-      expectIdsEqual(o.userId,"55e78240d409a1110093d252")
+      EXPECT.equalIds(o.userId,"55e78240d409a1110093d252")
       expect(o.marketingTags).to.be.undefined
       expect(o.user).to.be.undefined
       expect(o.messages.length).to.equal(1)
       expect(o.adm).to.exist
       expect(o.lastTouch).to.exist
       expect(o.tags.length).to.equal(3)
-      expectIdsEqual(o.tags[0]._id, "5181d0aa66a6f999a465ecfe")
+      EXPECT.equalIds(o.tags[0]._id, "5181d0aa66a6f999a465ecfe")
       expect(o.tags[0].sort).to.equal(0)
-      expectIdsEqual(o.tags[1]._id, "5398a4831c67d1a4859d3476")
+      EXPECT.equalIds(o.tags[1]._id, "5398a4831c67d1a4859d3476")
       expect(o.tags[1].sort).to.equal(1)
       expectExactFields(o.tags[1],['_id','sort'])
-      expectIdsEqual(o.tags[2]._id, "514825fa2a26ea0200000007")
+      EXPECT.equalIds(o.tags[2]._id, "514825fa2a26ea0200000007")
       expect(o.tags[2].sort).to.equal(2)
       expect(o.suggested.length).to.equal(7)
       expectExactFields(o.suggested[0].expert,['_id','email','rate','location','timezone','tags'])
       expect(o.suggested[0].expert.email).to.equal("josh@phoenixdevops.com")
       expect(o.suggested[0].expert.tags.length).to.equal(3)
-      expectIdsEqual(o.suggested[0].expert.tags[0]._id, "514825fa2a26ea0200000007")
+      EXPECT.equalIds(o.suggested[0].expert.tags[0]._id, "514825fa2a26ea0200000007")
       expect(o.suggested[0].expert.tags[0].sort).to.equal(0)
       expectExactFields(o.suggested[0].expert.tags[0],['_id','sort'])
-      expectIdsEqual(o.suggested[0].expert.tags[1]._id, "5181d0ab66a6f999a465ef77")
+      EXPECT.equalIds(o.suggested[0].expert.tags[1]._id, "5181d0ab66a6f999a465ef77")
       expect(o.suggested[0].expert.tags[1].sort).to.equal(1)
       expectExactFields(o.suggested[0].expert.tags[1],['_id','sort'])
-      expectIdsEqual(o.suggested[0].expert.tags[2]._id, "5358c8081c67d1a4859d2f18")
+      EXPECT.equalIds(o.suggested[0].expert.tags[2]._id, "5358c8081c67d1a4859d2f18")
       expect(o.suggested[0].expert.tags[2].sort).to.equal(2)
       expectExactFields(o.suggested[0].expert.tags[2],['_id','sort'])
 
