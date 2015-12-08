@@ -4,10 +4,6 @@
     "spec":               "white",
     "error":              "red"
   },
-  "verbose": {
-    "errors":             true,
-    "info":               false
-  },
   "mongo": {
     "url":                "mongodb://localhost/airpair_dev",
     "collections":        ["orders","users","experts","tags","paymethods","payouts","requests","bookings","posts","templates"]
