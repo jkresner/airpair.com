@@ -15,7 +15,7 @@ views = ->
           expect(r.length).to.equal(1)
           expect(r[0].userId).to.be.undefined
           expect(r[0].anonymousId).to.equal(anonymousId)
-          expectIdsEqual(r[0].objectId, "55c02b22d131551100f1f0da")
+          EXPECT.equalIds(r[0].objectId, "55c02b22d131551100f1f0da")
           expect(r[0].ip).to.exist
           expect(r[0].type).to.equal('post')
           expect(r[0].url).to.equal(publishedPostUrl)
@@ -46,7 +46,7 @@ views = ->
           expect(r[0].type).to.equal('ad')
           expect(r[0].referer).to.equal('https://www.airpair.com/js/js-framework-comparison')
           expect(r[0].url).to.equal('https://keen.io/?utm_source=airpair&utm_medium=banner&utm_campaign=custom_analytics')
-          expectIdsEqual(r[0].objectId,"55aa28f643f81ad565104e6f")
+          EXPECT.equalIds(r[0].objectId,"55aa28f643f81ad565104e6f")
           DONE()
         _.delay(viewCheck, 100)
 
@@ -70,7 +70,7 @@ views = ->
         viewCheck = => DB.docsByQuery 'View', {userId}, (r) ->
           expect(spy.callCount).to.equal(1)
           expect(r.length).to.equal(1)
-          expectIdsEqual(r[0].userId,userId)
+          EXPECT.equalIds(r[0].userId,userId)
           expect(r[0].anonymousId).to.be.undefined
           {campaign} = r[0]
           expect(campaign.source).to.be.undefined
@@ -81,7 +81,7 @@ views = ->
           LOGIN {key:'admin'}, ->
             GET "/adm/views/user/#{userId}", {}, (r2) ->
               expect(r2.length).to.equal(1)
-              expectIdsEqual(r2[0].userId,userId)
+              EXPECT.equalIds(r2[0].userId,userId)
               DONE()
         _.delay(viewCheck, 150)
 
@@ -113,7 +113,7 @@ views = ->
 
 
   IT 'Aliases anonymous user with new user signup', ->
-    signup = Object.assign({password: 'yo yo'}, FIXTURE.users.wlmo)
+    signup = DATA.newSignup("Will Moss")
     DB.removeDocs 'User', { name: signup.name }, ->
     ANONSESSION (s) ->
       anonymousId = s.sessionID
@@ -123,15 +123,15 @@ views = ->
         SUBMIT '/auth/signup', signup, {}, (sFull) ->
           userId = ObjectId(sFull._id)
           expect(sFull._id).to.exist
-          expectStartsWith(sFull.name, "Will Moss")
+          EXPECT.startsWith(sFull.name, "Will Moss")
           expect(spy.callCount).to.equal(1)
-          expectIdsEqual(spy.args[0][0]._id, sFull._id)
+          EXPECT.equalIds(spy.args[0][0]._id, sFull._id)
           expect(spy.args[0][1]).to.equal(s.sessionID)
           expect(spy.args[0][2]).to.equal('signup')
           DB.docsByQuery 'View', {userId}, (r) ->
             expect(r.length).to.equal(1)
-            expectIdsEqual(r[0].userId,userId)
-            expectIdsEqual(r[0].anonymousId,s.sessionID)
+            EXPECT.equalIds(r[0].userId,userId)
+            EXPECT.equalIds(r[0].anonymousId,s.sessionID)
             DONE()
 
 
@@ -160,10 +160,10 @@ views = ->
 
 
   IT 'Login local from existing sessionID does not alias', ->
+    singup = DATA.newSignup("Jason Pierce")
     ANONSESSION ->
       utms = ''
       PAGE "#{publishedPostUrl}?#{utms}", {}, ->
-      singup = SETUP.userData('jpie')
       SUBMIT '/auth/signup', singup, {}, (r) ->
         GET '/session/full', (s) ->
           expect(s._id).to.exist
@@ -171,15 +171,15 @@ views = ->
             spyAlias = STUB.spy(analytics,'alias')
             SUBMIT '/auth/login', singup, {}, (r3) ->
               expect(spyAlias.callCount).to.equal(1)
-              expectIdsEqual(spyAlias.args[0][0]._id, s._id)
+              EXPECT.equalIds(spyAlias.args[0][0]._id, s._id)
               expect(spyAlias.args[0][2]).to.equal('login')
               DONE()
 
 
   IT 'Login from two sessionIDs aliases and aliases views', ->
+    singup = DATA.newSignup("Somik Rana")
     anonymousId = null
     anonymousId2 = null
-    singup = SETUP.userData('sora')
 
     session2Callback = (anonymousId) -> ANONSESSION (s2) ->
       anonymousId2 = s2.sessionID
@@ -236,11 +236,11 @@ module.exports = ->
   @timeout(10000)
 
   before (done) ->
-    SETUP.analytics.on()
+    STUB.analytics.on()
     DB.ensureDoc 'User', FIXTURE.users.admin, ->
     {higherOrder} = FIXTURE.posts
     DB.ensureDoc 'Post', higherOrder, ->
-      global.publishedPostUrl = higherOrder.meta.canonical.replace('https://www.airpair.com', '')
+      global.publishedPostUrl = higherOrder.htmlHead.canonical.replace('https://www.airpair.com', '')
       done()
 
   after ->

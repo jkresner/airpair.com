@@ -194,8 +194,8 @@ bookingOrders = ->
           expect(order.lines[1].unitPrice).to.equal(140)
           expect(order.lines[1].info.paidout).to.equal(false)
           expect(order.lines[1].info.type).to.equal('private')
-          expectIdsEqual(order.lines[1].info.expert._id, FIXTURE.experts.dros._id)
-          expectIdsEqual(order.lines[1].bookingId._id,booking1._id)
+          EXPECT.equalIds(order.lines[1].info.expert._id, FIXTURE.experts.dros._id)
+          EXPECT.equalIds(order.lines[1].bookingId._id,booking1._id)
           DONE()
 
 
@@ -280,8 +280,8 @@ bookingOrders = ->
             expect(redeemOrder.lines[0].qty).to.equal(1)
             expect(redeemOrder.lines[0].balance).to.equal(-260)
             expect(redeemOrder.lines[1].type).to.equal('airpair')
-            # expectIdsEqual(redeemOrder.lines[1].bookingId,booking1._id)
-            expectIdsEqual(redeemOrder.lines[1].bookingId._id,booking1._id)
+            # EXPECT.equalIds(redeemOrder.lines[1].bookingId,booking1._id)
+            EXPECT.equalIds(redeemOrder.lines[1].bookingId._id,booking1._id)
             expect(redeemOrder.lines[1]._id).to.exist
             expect(redeemOrder.lines[1].total).to.equal(260)
             expect(redeemOrder.lines[1].qty).to.equal(2)
@@ -510,13 +510,13 @@ bookingOrders = ->
 
 prodData = ->
 
-  before -> SETUP.analytics.on()
-  after -> SETUP.analytics.off()
+  before -> STUB.analytics.on()
+  after -> STUB.analytics.off()
 
   IT 'Richard can re-book byron', ->
     byrn = FIXTURE.clone('experts.byrn')
     preMigrateRebook = FIXTURE.clone('requests.preMigrateRebook',{omit:'userId'})
-    SETUP.ensureExpert 'byrn', ->
+    DB.ensureExpert 'byrn', ->
     STORY.newUser 'ricd', {login:true,paymethod:true}, (s) ->
       request = _.extend {userId:s._id}, preMigrateRebook
       expect(request.budget, 150)
@@ -539,20 +539,16 @@ module.exports = ->
 
   before (done) ->
     DB.ensureDoc 'User', FIXTURE.users.admin, ->
-    SETUP.ensureExpert 'dros', ->
-    @braintreepaymentStub = SETUP.stubBraintreeChargeWithMethod()
-    SETUP.ensureExpert 'tmot', ->
-      done()
+    DB.ensureExpert 'dros', ->
+      DB.ensureExpert 'tmot', ->
+        done()
 
   after ->
-    @braintreepaymentStub.restore()
+
 
   beforeEach ->
-    STUB.sync(Wrappers.Slack, 'checkUserSync', null)
-    STUB.cb(Wrappers.Slack, 'getUsers', FIXTURE.wrappers.slack_users_list)
-    STUB.cb(Wrappers.Slack, 'getChannels', FIXTURE.wrappers.slack_channels_list)
-    STUB.cb(Wrappers.Slack, 'getGroups', FIXTURE.wrappers.slack_groups_list)
-
+    STUB.SlackCommon()
+    STUB.BraintreeCharge()
 
   DESCRIBE "Credit", creditOrders
   DESCRIBE "Bookings", bookingOrders

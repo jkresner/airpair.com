@@ -32,9 +32,9 @@ update = ->
         DONE()
 
   IT 'Set and unset username', ->
-    STORY.newUser 'tybr', (tybr) ->
-      expect(tybr.username).to.be.undefined
-      username = "tybr#{timeSeed()}"
+    username = "dily#{@timeSeed}"
+    STORY.newUser 'dily', (dily) ->
+      expect(dily.username).to.be.undefined
       PUT '/users/me/username', { username }, (u1) ->
         expect(u1.username).to.equal(username)
         PUT '/users/me/username', { username: "" }, (u2) ->
@@ -43,7 +43,7 @@ update = ->
 
   IT 'Change name', ->
     STORY.newUser 'snug', (s) ->
-      expectStartsWith(s.name, "Ra'Shaun")
+      EXPECT.startsWith(s.name, "Ra'Shaun")
       PUT '/users/me/name', { name: 'Godly Jacob' }, (u1) ->
         expect(u1.name).to.equal('Godly Jacob')
         DONE()
@@ -51,7 +51,7 @@ update = ->
   IT 'Set initials', ->
     STORY.newUser 'misr', (s) ->
       GET "/session/full", (u0) ->
-        expectIdsEqual(s._id,u0._id)
+        EXPECT.equalIds(s._id,u0._id)
         expect(u0.name).to.equal(s.name)
         expect(u0.initials).to.be.undefined
         PUT '/users/me/initials', { initials: 'GJ' }, (u1) ->
@@ -97,10 +97,7 @@ update = ->
 module.exports = ->
 
   beforeEach ->
-    # STUB.sync(Wrappers.Slack, 'checkUserSync', null)
-    STUB.cb(Wrappers.Slack, 'getUsers', FIXTURE.wrappers.slack_users_list)
-    STUB.cb(Wrappers.Slack, 'getChannels', FIXTURE.wrappers.slack_channels_list)
-    STUB.cb(Wrappers.Slack, 'getGroups', FIXTURE.wrappers.slack_groups_list)
+    STUB.SlackCommon()
 
   DESCRIBE("anonymous", anonymous)
   DESCRIBE("Get", get)

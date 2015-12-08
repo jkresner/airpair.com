@@ -28,7 +28,7 @@ function run(config, done)
 
   global.$logIt = function() {
     var args = [].slice.call(arguments)
-    if (args[0].indexOf('model') == 0) return
+    if (args[0].match(/(model|modl)/i) != null) return
     args[0] = args[0].white
     console.log.apply(null,args)
   }
@@ -67,7 +67,7 @@ function run(config, done)
     pairbot.init()
 
     app.get('/', mw.analytics.trackFirstRequest, mw.auth.authdRedirect('/dashboard'), app.renderHbs('home') )
-    // app.use('/auth', routes('auth')(app))
+
     routes('auth')(app)
     app.use('/v1/api/matching', routes('api').matching)
     app.use('/v1/api/adm/bookings', routes('api').spinning)

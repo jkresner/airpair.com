@@ -30,22 +30,24 @@ var get = {
   },
 
   getByIdForEditingInfo(post, cb) {
-    select.cb.editInfoView(cb)(null, post)
+    cb(V2DeprecatedError('Posts.getByIdForEditingInfo'))
+    // select.cb.editInfoView(cb)(null, post)
   },
 
   getByIdForEditing(post, cb) {
-    if (!post.submitted) return select.cb.editView(cb)(null, post)
+    cb(V2DeprecatedError('Posts.getByIdForEditing'))
+    // if (!post.submitted) return select.cb.editView(cb)(null, post)
 
-    var owner = org
-    if ( Roles.isForker(this.user, post) )
-      owner = this.user.social.gh.username
-    else if ( !Roles.isOwnerOrEditor(this.user, post) )
-      return cb(`Cannot edit this post. You need to fork ${post.slug}`)
+    // var owner = org
+    // if ( Roles.isForker(this.user, post) )
+    //   owner = this.user.social.gh.username
+    // else if ( !Roles.isOwnerOrEditor(this.user, post) )
+    //   return cb(`Cannot edit this post. You need to fork ${post.slug}`)
 
-    github2.getFile(this.user, owner, post.slug, "/post.md", 'edit', (e, postMDfile) => {
-      var mdOverride = (postMDfile) ? postMDfile.string : null
-      select.cb.editView(cb, mdOverride, owner)(e, post)
-    })
+    // github2.getFile(this.user, owner, post.slug, "/post.md", 'edit', (e, postMDfile) => {
+    //   var mdOverride = (postMDfile) ? postMDfile.string : null
+    //   select.cb.editView(cb, mdOverride, owner)(e, post)
+    // })
   },
 
   getByIdForContributors(post, cb) {
@@ -128,11 +130,11 @@ var get = {
       if (!post.tmpl)
         post.tmpl = 'default'
 
-      if (!post.meta || !post.meta.canonical)
+      if (!post.htmlHead || !post.htmlHead.canonical)
       {
         var primarytag = _.find(post.tags,(t) => t.sort==0 || post.tags[0])
-        post.meta = post.meta || {}
-        post.meta.canonical = `/${primarytag.slug}/posts/${post.slug}`
+        post.htmlHead = post.htmlHead || {}
+        post.htmlHead.canonical = `/${primarytag.slug}/posts/${post.slug}`
       }
 
       if (!post.github) return cb(null, post)
@@ -146,23 +148,22 @@ var get = {
   },
 
   getByIdForPreview(_id, cb) {
-    cb(V2DeprecatedError('Posts.getByIdForPreview'))
-    // svc.searchOne({_id}, { fields: select.display }, (e,r) => {
-    //   if (e || !r) return cb(e,r)
-    //   if (!r.submitted || !r.github) return select.cb.displayView(false, null, cb)(null, r)
+    Post.getById(_id, { select: select.display }, (e,r) => {
+      if (e || !r) return cb(e,r)
+      if (!r.submitted || !r.github) return select.cb.displayView(false, null, cb)(null, r)
 
-    //   //-- Allow admins to preview a post without a fork
-    //   if (!Roles.isForker(this.user, r) &&
-    //     !_.idsEqual(this.user._id, r.by.userId)
-    //     )
-    //     return select.cb.displayView(false, null, cb)(null, r)
+      //-- Allow admins to preview a post without a fork
+      if (!Roles.isForker(this.user, r) &&
+        !_.idsEqual(this.user._id, r.by.userId)
+        )
+        return select.cb.displayView(false, null, cb)(null, r)
 
-    //   $callSvc(get.getGitHEAD, this)(r, (ee, head) => {
-    //     if (head && head.string)
-    //       r.md = head.string
-    //     select.cb.displayView(false, null, cb)(ee, r)
-    //   })
-    // })
+      $callSvc(get.getGitHEAD, this)(r, (ee, head) => {
+        if (head && head.string)
+          r.md = head.string
+        select.cb.displayView(false, null, cb)(ee, r)
+      })
+    })
   },
 
   getBySlugForPublishedView(slug, cb) {
@@ -174,7 +175,7 @@ var get = {
   getByIdForReview(_id, cb) {
     Post.getById(_id, { select: select.display }, (e,r) => {
       if (e||!r) return cb(e,r)
-      if (r.published) return cb(null, {published:true, url: r.meta.canonical})
+      if (r.published) return cb(null, {published:true, url: r.htmlHead.canonical})
       if (!r.submitted) return cb(null, null)
       select.cb.displayView(this.user==null, null, cb)(e,r)
     })
@@ -353,9 +354,9 @@ var getAdmin = {
 
 //   // Only set the thumb is the ogImage is still the movie, we want to let it
 //   // be customized even though the main assetUrl is a youtube movie
-//   if (updates.meta && updates.assetUrl.indexOf('http://youtu.be/') != -1
-//     && updates.meta.ogImage == updates.assetUrl)
-//     updates.meta.ogImage = util.getYouTubeThumb(post.assetUrl)
+//   if (updates.htmlHead && updates.assetUrl.indexOf('http://youtu.be/') != -1
+//     && updates.htmlHead.ogImage == updates.assetUrl)
+//     updates.htmlHead.ogImage = util.getYouTubeThumb(post.assetUrl)
 
 //   var update = _.extend(updates,{updated,lastTouch,editHistory})
 
@@ -388,7 +389,7 @@ var save = {
     //   // if (social) ups.by.social = social
 
     // if (original.assetUrl != ups.assetUrl && (original.submitted || original.published))
-    //   ups.meta = _.extend(original.meta, _.extend(ups.meta||{},{ogImage:ups.assetUrl}))
+    //   ups.htmlHead = _.extend(original.htmlHead, _.extend(ups.htmlHead||{},{ogImage:ups.assetUrl}))
 
     // updateWithEditTouch.call(this, original, ups, act, select.cb.editInfoView(cb))
     // })
@@ -413,13 +414,13 @@ var save = {
 
     // post.by = publishData.by
     // post.tmpl = publishData.tmpl
-    // post.meta = publishData.meta
-    // post.meta.ogType = 'article'
+    // post.htmlHead = publishData.htmlHead
+    // post.htmlHead.ogType = 'article'
 
-    // if (post.meta.canonical.indexOf('/') == 0)
-    //   post.meta.canonical = post.meta.canonical.replace('/', 'https://www.airpair.com/')
+    // if (post.htmlHead.canonical.indexOf('/') == 0)
+    //   post.htmlHead.canonical = post.htmlHead.canonical.replace('/', 'https://www.airpair.com/')
 
-    // post.meta.ogUrl = post.meta.canonical
+    // post.htmlHead.ogUrl = post.htmlHead.canonical
 
     // // if (post.by.expertId)
     // // To link expert we are required to publish twice, which a bit awkward,
@@ -445,8 +446,8 @@ var save = {
     //     post.submitted = new Date()
     //     post.github = { repoInfo }
     //     post.slug = slug
-    //     post.meta = post.meta || {}
-    //     post.meta.ogImage = post.assetUrl
+    //     post.htmlHead = post.htmlHead || {}
+    //     post.htmlHead.ogImage = post.assetUrl
     //     updateWithEditTouch.call(this, post, 'submittedForReview', cb)
 
     //     if (cache) cache.flush('posts')

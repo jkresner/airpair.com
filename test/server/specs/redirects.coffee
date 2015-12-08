@@ -1,13 +1,6 @@
 basic = ->
 
 
-  # IT '403 for non admin on get redirects', ->
-  #   opts = status: 403
-  #   SETUP.addAndLoginLocalUser 'dily', (s) ->
-  #     GET '/adm/redirects', opts, ->
-  #       DONE()
-
-
   IT 'can create redirect as admin', ->
     LOGIN {key:'admin'}, (s) ->
       GET '/adm/redirects', {}, (r1) ->

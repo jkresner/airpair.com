@@ -135,7 +135,7 @@ function api() {
 //         cookie = resp.headers['set-cookie']
 //         GET('/session/full', {}, (s) => {
 //           expect(s.tags[0].name).to.equal('MongoDB')
-//           var signup = SETUP.userData('ramo')
+//           var signup = DATA.newSignupData('ramo')
 //           http(global.app).post('/v1/auth/signup')
 //             .send(signup)
 //             .set('cookie',cookie)
@@ -238,7 +238,7 @@ function api() {
 //         cookie = resp.headers['set-cookie']
 //         GET('/session/full', {}, (s) => {
 //           expect(s.bookmarks[0].title).to.equal('ExpressJS and PassportJS Sessions Deep Dive')
-//           var singup = SETUP.userData('alry')
+//           var singup = DATA.newSignupData('alry')
 //           http(global.app).post('/v1/auth/signup').send(singup)
 //             .set('cookie',cookie)
 //             .end( (err, resp) =>
@@ -299,7 +299,7 @@ function api() {
 // function profileAnonymous() {
 
 //   IT('Can update email', (done) => {
-//     var clone = SETUP.userData('kfor')
+//     var clone = DATA.newSignupData('kfor')
 //     PUT('/users/me/email',{email:clone.email}, {unauthenticated:true}, (r) => {
 //       expect(r.email).to.equal(clone.email)
 //       expect(r.authenticated).to.equal(false)
@@ -316,7 +316,7 @@ function api() {
 //   })
 
 //   it('Can update name', function(done) {
-//     var clone = SETUP.userData('mthm')
+//     var clone = DATA.newSignupData('mthm')
 //     http(global.app)
 //       .put('/v1/api/users/me/name')
 //       .send({name:clone.name})
@@ -340,7 +340,7 @@ function api() {
 
 
 //   it('Can update email and name', function(done) {
-//     var clone = SETUP.userData('cmck')
+//     var clone = DATA.newSignupData('cmck')
 //     http(global.app)
 //       .put('/v1/api/users/me/email')
 //       .send({email:clone.email})

@@ -1,10 +1,10 @@
-  <title>{{#if meta.title }}{{meta.title}}{{else}} {{ title }} | AirPair {{/if}}</title>
-  {{#if meta.description }}<meta name="description" content="{{ meta.description }}"/>{{/if}}
-  {{#if meta.noindex }}<meta name="robots" content="noindex, follow">{{/if}}
+  <title>{{#if htmlHead.title }}{{htmlHead.title}}{{else}} {{ title }} | AirPair {{/if}}</title>
+  {{#if htmlHead.description }}<meta name="description" content="{{ htmlHead.description }}"/>{{/if}}
+  {{#if htmlHead.noindex }}<meta name="robots" content="noindex, follow">{{/if}}
   <meta property="og:locale" content="en_US"/>
-  {{#if meta.ogType }}<meta property="og:type" content="{{meta.ogType}}"/>{{else}}<meta property="og:type" content="article"/>{{/if}}
-  {{#if meta.ogTitle }}<meta property="og:title" content="{{meta.ogTitle}}"/>{{/if}}
-  {{#if meta.ogDescription }}<meta property="og:description" content="{{meta.ogDescription}}"/>{{/if}}
-  {{#if meta.ogImage }}<meta property="og:image" content="{{meta.ogImage}}"/>{{/if}}
-  {{#if meta.ogUrl }}<meta property="og:url" content="{{meta.ogUrl}}"/>{{/if}}
-  {{#if meta.canonical }}<link rel="canonical" href="{{ meta.canonical }}" />{{/if}}
+  {{#if htmlHead.ogType }}<meta property="og:type" content="{{htmlHead.ogType}}"/>{{else}}<meta property="og:type" content="article"/>{{/if}}
+  {{#if htmlHead.ogTitle }}<meta property="og:title" content="{{htmlHead.ogTitle}}"/>{{/if}}
+  {{#if htmlHead.ogDescription }}<meta property="og:description" content="{{htmlHead.ogDescription}}"/>{{/if}}
+  {{#if htmlHead.ogImage }}<meta property="og:image" content="{{htmlHead.ogImage}}"/>{{/if}}
+  {{#if htmlHead.ogUrl }}<meta property="og:url" content="{{htmlHead.ogUrl}}"/>{{/if}}
+  {{#if htmlHead.canonical }}<link rel="canonical" href="{{ htmlHead.canonical }}" />{{/if}}

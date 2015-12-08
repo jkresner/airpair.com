@@ -48,7 +48,7 @@ var get = {
       User.getById(r.userId, (ee,user) => {
         r.user = user
         var exclude = _.map(r.suggested||[],(s)=>s.expert._id.toString())
-        MojoSvc.getGroupMatch(r.tags, {take:5,exclude,maxRate:r.budget},(ee,group)=>{
+        MojoSvc.getGroupMatch(r.tags, {take:10,exclude,maxRate:r.budget},(ee,group)=>{
           // $log('getByIdForMatchmaker', r.tags, ee, group)
           r.groupMatch = group
           return cb(ee,r)

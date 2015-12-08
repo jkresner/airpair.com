@@ -2,7 +2,7 @@ signup = ->
 
   it 'Can signup from homepage and set password', itDone ->
     spy = sinon.spy(mailman,'sendTemplate')
-    clone = SETUP.userData('mris')
+    clone = DATA.newSignupData('mris')
     http(global.app).put('/v1/api/users/me/email')
       .send({email:clone.email}).expect(200)
       .end (err, resp) ->
@@ -42,7 +42,7 @@ signup = ->
                   .send({email:clone.email,password:clone.password}).expect(200)
                   .end (err, resp) ->
                     s4 = resp.body
-                    expectIdsEqual(s2._id,s4._id)
+                    EXPECT.equalIds(s2._id,s4._id)
                     expect(s4.emailVerified).to.equal(true)
                     expect(s4.email).to.equal(clone.email)
                     cookie = resp.headers['set-cookie']
@@ -52,7 +52,7 @@ signup = ->
 
   # it 'Can signup from post subscribe and set password', itDone ->
   #   spy = sinon.spy(mailman,'sendTemplate')
-  #   clone = SETUP.userData('mirs')
+  #   clone = DATA.newSignupData('mirs')
   #   http(global.app).put('/v1/api/users/me/email')
   #     .send({email:clone.email}).expect(200)
   #     .end (err, resp) ->
@@ -89,7 +89,7 @@ signup = ->
   #                 .send({email:clone.email,password:clone.password}).expect(200)
   #                 .end (err, resp) ->
   #                   s4 = resp.body
-  #                   expectIdsEqual(s2._id,s4._id)
+  #                   EXPECT.equalIds(s2._id,s4._id)
   #                   expect(s4.emailVerified).to.equal(true)
   #                   expect(s4.email).to.equal(clone.email)
   #                   cookie = resp.headers['set-cookie']
@@ -100,7 +100,7 @@ signup = ->
 
 module.exports = ->
 
-  before -> SETUP.analytics.on()
+  before -> STUB.analytics.on()
 
   describe("Signup: ".subspec, signup)
   describe("Dashboard: ".subspec, dashboard)

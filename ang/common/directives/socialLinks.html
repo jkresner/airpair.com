@@ -1,5 +1,5 @@
 <div class="sociallinks">
-  <a ng-if="p.gh" href="//github.com/{{ p.gh.username }}" target="_blank" class="gh-white icon"></a>
+  <a ng-if="p.gh" href="//github.com/{{ p.gh.username || p.gh.login }}" target="_blank" class="gh-white icon"></a>
 
   <a ng-if="p.so" href="//stackoverflow.com/users/{{ p.so.link }}" target="_blank" class="so-white icon"></a>
 
@@ -7,7 +7,7 @@
 
   <a ng-if="p.in" href="//linkedin.com/x/profile/sy5n2q8o2i49/{{ p.in.id }}" target="_blank" class="in-white icon"></a>
 
-  <a ng-if="p.tw" href="//twitter.com/{{ p.tw.username }}" target="_blank" class="tw-white icon"></a>
+  <a ng-if="p.tw" href="//twitter.com/{{ p.tw.screen_name }}" target="_blank" class="tw-white icon"></a>
 
   <a ng-if="p.gp" href="{{ p.gp.link }}" target="_blank" class="gp-white icon"></a>
 

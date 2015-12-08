@@ -1,7 +1,7 @@
 var md5           = require('../util/md5')
 var {selectFromObject}    = util
 
-var mojoUser = 'email name initials username location auth.gp.id auth.gp.link auth.gp.email auth.gh.login auth.gh.followers auth.so.link auth.so.reputation auth.bb.username auth.in.id auth.tw.username'
+var mojoUser = 'availability email name initials username location auth.gp.id auth.gp.link auth.gp.email auth.gh.login auth.gh.followers auth.so.link auth.so.reputation auth.bb.username auth.in.id auth.tw.screen_name auth.tw.followers_count'
 
 var data = {
 
@@ -22,8 +22,9 @@ var data = {
       'bb': 1,
       'in': 1,
       'tw': 1,
+      'availability': 1,
       'matching': 1,
-      'lastTouch.utc': 1,
+      'lastTouch._id': 1
     },
     search: {
       '_id': 1,
@@ -94,39 +95,42 @@ var data = {
     //   'social.tw.username': 1,
     //   'social.tw.followers_count': 1,
     // },
-    updateME: {
-      '_id': 1,
-      'userId': 1,
-      'user': 1,
-      'settings': 1,
-      'rate': 1,
-      'brief': 1,
-      'tags': 1,
-      'homepage': 1,
-      'matching': 1,
-      'activity': 1,
-      'lastTouch': 1,
-      'availability': 1,
-      'gmail': 1,
-      'pic': 1,
+    // updateME: {
+    //   '_id': 1,
+    //   'userId': 1,
+    //   'user': 1,
+    //   'settings': 1,
+    //   'rate': 1,
+    //   'brief': 1,
+    //   'tags': 1,
+    //   'homepage': 1,
+    //   'matching': 1,
+    //   'activity': 1,
+    //   'lastTouch': 1,
+    //   'availability': 1,
+    //   'gmail': 1,
+    //   'pic': 1,
       // 'karma': 1,
       //v0 ?
       // bookMe: 1
-    },
+    // },
     v0unset:'name email username location timezone homepage karma gh gp tw in al so bb',
     migrateInflate(r) {
-      // $log('migrateInflate'.yellow, r._id, r, r.user)
       if (!r.user) return
 
-
-      var social = r.user.auth
+      var {auth} = r.user
       delete r.user.auth
+
+      if (auth && auth.tw) {
+        auth.tw.followers = auth.tw.followers_count
+        delete auth.tw.followers_count
+      }
 
       // $log('social'.white, r.user)
       // how we handle staying v0 on front-end
       r.userId = r.user._id
       delete r.user._id
-      r = _.extend(_.extend(r,r.user),social)
+      r = _.extend(_.extend(r,r.user),{social:auth})
 
       if (!r.email && r.gp && r.gp.email) r.email = r.gp.email
       r.avatar = r.email ? md5.gravatarUrl(r.email) :
@@ -237,17 +241,15 @@ var data = {
       // $log('getRanked', query)
 
       var q = {
-        'rate': { $gt: 0 },
         'tags._id': { $in: tags.map(t=>t._id) }
       }
 
       if (!includeBusy)
         q['availability.status'] = { $ne: 'busy' }
 
-      if (exclude) {
-        q['username'] = { $nin: exclude }
-        q['user.username'] = { $nin: exclude }
-      }
+      // if (exclude) {
+        // q['user.username'] = { $nin: exclude }
+      // }
 
       // TODO add minimum rate filter
       // if (query.rate)
@@ -259,86 +261,87 @@ var data = {
 
   options: {
     newest100: { limit: 100, sort: { '_id': -1 }, join: { 'userId': mojoUser } },
-    active100: { limit: 100, sort: { 'lastTouch.utc': -1 }, join: { 'userId': mojoUser } },
+
+    active100: { limit: 100, sort: { 'meta.lastTouch._id': -1 }, join: { 'userId': mojoUser } },
   },
 
   data: {
-    getForExpertsPage: {
-      experts: [
-        {
-          _id: '5230d1a9746ee90200000018',
-          name: 'Ari Lerner',
-          username: 'auser',
-          avatar: 'https://avatars1.githubusercontent.com/u/529',
-          tags: ['angularjs','ruby-on-rails','erlang'],
-          bio: 'ng-book author',
-          rate: 280
-        },
-        {
-          _id: '524304901c9b0f0200000012',
-          name: 'Matias Niemelä',
-          username: 'matsko',
-          avatar: '//secure.gravatar.com/avatar/3c0ca2c60c5cc418c6b3dbed47b23b69',
-          tags: ['angularjs', 'html5', 'testing'],
-          bio: 'AngularJS Core Team Member',
-          rate: 280
-        },
-        {
-          _id: '52fb2ea294ba990200000037',
-          name: 'Basarat Ali',
-          username: 'basarat',
-          avatar: '//secure.gravatar.com/avatar/1400be56ff17549b926dd3260da4a494',
-          tags: ['typescript','javascript','angularjs'],
-          bio: '',
-          rate: 130
-        },
-        {
-          _id: '52728efff7f1d4020000001a',
-          name: 'Todd Motto',
-          username: 'toddmotto',
-          avatar: '//secure.gravatar.com/avatar/b56bb22b3a4b83c6b534b4c114671380',
-          tags: ['angularjs','chrome','html5'],
-          bio: 'Google Developer Expert',
-          rate: 250
-        },
-        {
-          _id: '532950ab264a24020000001f',
-          name: 'Abe Haskins',
-          username: 'abeisgreat',
-          avatar: '//secure.gravatar.com/avatar/fbb79df0f24e736c8e37f9f195a738cc',
-          tags: ['angularjs','firebase','angularfire'],
-          bio: 'AngularFire Contributor',
-          rate: 220
-        },
-        {
-          _id: '5395ecdb09353b020021bf24',
-          name: 'Uri Shaked',
-          username: 'urish',
-          avatar: '//secure.gravatar.com/avatar/fbf41c66afb1e3807b7b330c2d8fcc28',
-          tags: ['angularjs', 'node.js', 'gulp'],
-          bio: 'Google Developer Expert',
-          rate: 160
-        },
-        {
-          _id: '52f16191b437df020000003d',
-          name: 'Mark Meyer',
-          username: 'nuclearghost',
-          avatar: '//secure.gravatar.com/avatar/6c2f0695e0ca4445a223ce325c7fb970',
-          tags: ['angularjs','angular-ui','ios'],
-          bio: '',
-          rate: 90
-        },
-        {
-          _id: '5387a1e7e558890200722fd5',
-          name: 'Fernando Villalobos',
-          username: 'fervisa',
-          avatar: '//secure.gravatar.com/avatar/0e74aa62f0a56b438237adf678eae3a0',
-          tags: ['angularjs','coffeescript','ruby'],
-          bio: '',
-          rate: 40
-        }
-      ]
-    }
+    // getForExpertsPage: {
+    //   experts: [
+    //     {
+    //       _id: '5230d1a9746ee90200000018',
+    //       name: 'Ari Lerner',
+    //       username: 'auser',
+    //       avatar: 'https://avatars1.githubusercontent.com/u/529',
+    //       tags: ['angularjs','ruby-on-rails','erlang'],
+    //       bio: 'ng-book author',
+    //       rate: 280
+    //     },
+    //     {
+    //       _id: '524304901c9b0f0200000012',
+    //       name: 'Matias Niemelä',
+    //       username: 'matsko',
+    //       avatar: '//secure.gravatar.com/avatar/3c0ca2c60c5cc418c6b3dbed47b23b69',
+    //       tags: ['angularjs', 'html5', 'testing'],
+    //       bio: 'AngularJS Core Team Member',
+    //       rate: 280
+    //     },
+    //     {
+    //       _id: '52fb2ea294ba990200000037',
+    //       name: 'Basarat Ali',
+    //       username: 'basarat',
+    //       avatar: '//secure.gravatar.com/avatar/1400be56ff17549b926dd3260da4a494',
+    //       tags: ['typescript','javascript','angularjs'],
+    //       bio: '',
+    //       rate: 130
+    //     },
+    //     {
+    //       _id: '52728efff7f1d4020000001a',
+    //       name: 'Todd Motto',
+    //       username: 'toddmotto',
+    //       avatar: '//secure.gravatar.com/avatar/b56bb22b3a4b83c6b534b4c114671380',
+    //       tags: ['angularjs','chrome','html5'],
+    //       bio: 'Google Developer Expert',
+    //       rate: 250
+    //     },
+    //     {
+    //       _id: '532950ab264a24020000001f',
+    //       name: 'Abe Haskins',
+    //       username: 'abeisgreat',
+    //       avatar: '//secure.gravatar.com/avatar/fbb79df0f24e736c8e37f9f195a738cc',
+    //       tags: ['angularjs','firebase','angularfire'],
+    //       bio: 'AngularFire Contributor',
+    //       rate: 220
+    //     },
+    //     {
+    //       _id: '5395ecdb09353b020021bf24',
+    //       name: 'Uri Shaked',
+    //       username: 'urish',
+    //       avatar: '//secure.gravatar.com/avatar/fbf41c66afb1e3807b7b330c2d8fcc28',
+    //       tags: ['angularjs', 'node.js', 'gulp'],
+    //       bio: 'Google Developer Expert',
+    //       rate: 160
+    //     },
+    //     {
+    //       _id: '52f16191b437df020000003d',
+    //       name: 'Mark Meyer',
+    //       username: 'nuclearghost',
+    //       avatar: '//secure.gravatar.com/avatar/6c2f0695e0ca4445a223ce325c7fb970',
+    //       tags: ['angularjs','angular-ui','ios'],
+    //       bio: '',
+    //       rate: 90
+    //     },
+    //     {
+    //       _id: '5387a1e7e558890200722fd5',
+    //       name: 'Fernando Villalobos',
+    //       username: 'fervisa',
+    //       avatar: '//secure.gravatar.com/avatar/0e74aa62f0a56b438237adf678eae3a0',
+    //       tags: ['angularjs','coffeescript','ruby'],
+    //       bio: '',
+    //       rate: 40
+    //     }
+    //   ]
+    // }
   }
 
 }

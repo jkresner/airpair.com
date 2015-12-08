@@ -12,7 +12,7 @@ var initAPIWrap = (wrapperName, wrapperFile) => {
         if (!wrapper.api) {
           //this. ugly solution
           wrapper.init()
-          if (logging) $log(`initApi.${wrapperName}`.wrappercall, fnName)
+          if (logging) $log(`initApi.${wrapperName}`.white, fnName)
         }
         return fn.apply(this, arguments)
       }}

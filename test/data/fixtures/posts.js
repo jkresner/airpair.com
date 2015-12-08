@@ -435,7 +435,7 @@ module.exports = {
         "userId" : ObjectId("538bae591c67d1a4859d3381")
     },
     "assetUrl" : "https://cloud.githubusercontent.com/assets/764487/9474195/82d6a242-4b35-11e5-87a0-43561850b53a.jpg",
-    "meta" : {
+    "htmlHead" : {
         "ogUrl" : "https://www.airpair.com/javascript/posts/mastering-es6-higher-order-functions-for-arrays",
         "ogType" : "article",
         "ogTitle" : "Mastering ES6 higher-order functions for Arrays",
@@ -726,7 +726,7 @@ module.exports = {
     },
     "__v" : 0,
     "assetUrl" : "https://maorigeek.s3.amazonaws.com/uploads/docker_whale.png_1411805342.jpg_1421807584.jpg",
-    "meta" : {
+    "htmlHead" : {
         "ogUrl" : "https://www.airpair.com/scalable-architecture-with-docker-consul-and-nginx",
         "ogType" : "article",
         "ogTitle" : "Scalable Architecture DR CoN: Docker, Registrator, Consul, Consul Template and Nginx",

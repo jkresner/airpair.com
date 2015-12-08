@@ -21,12 +21,12 @@ orderDeals = ->
         SETUP.addAndLoginLocalUserWithPayMethod 'del1', (s) ->
           GET "/experts/deal/#{dealId}", {}, (e3) ->
             expect(e3.deals.length).to.equal(1)
-            expectIdsEqual(dealId,e3.deals[0]._id)
-            expectIdsEqual(expert._id, e3._id)
+            EXPECT.equalIds(dealId,e3.deals[0]._id)
+            EXPECT.equalIds(expert._id, e3._id)
             GET "/experts/deal/#{code}", {}, (e4) ->
               expect(e4.deals.length).to.equal(1)
-              expectIdsEqual(dealId,e4.deals[0]._id)
-              expectIdsEqual(expert._id, e4._id)
+              EXPECT.equalIds(dealId,e4.deals[0]._id)
+              EXPECT.equalIds(expert._id, e4._id)
               DONE()
 
 
@@ -42,8 +42,8 @@ orderDeals = ->
               DONE()
 
             # expect(e4.deals.length).to.equal(1)
-            # expectIdsEqual(dealId,e4.deals[0]._id)
-            # expectIdsEqual(expert._id, e4._id)
+            # EXPECT.equalIds(dealId,e4.deals[0]._id)
+            # EXPECT.equalIds(expert._id, e4._id)
 
 
 
@@ -66,8 +66,8 @@ orderDeals = ->
               POST "/bookings/#{expert._id}", airpair1, {}, (booking1) ->
                 expect(booking1._id).to.exist
                 expect(booking1.orderId).to.exist
-                expectIdsEqual(booking1.expertId, expert._id)
-                expectIdsEqual(booking1.customerId, s._id)
+                EXPECT.equalIds(booking1.expertId, expert._id)
+                EXPECT.equalIds(booking1.customerId, s._id)
                 expect(booking1.type).to.equal('private')
                 expect(booking1.minutes).to.equal(120)
                 expect(_.idsEqual(booking1.customerId, s._id)).to.be.true
@@ -88,8 +88,8 @@ orderDeals = ->
                   expect(dealOrder.lines[0].balance).to.equal(0)
                   expect(dealOrder.lines[0].info.remaining).to.equal(180)
                   expect(dealOrder.lines[0].info.redeemedLines.length).to.equal(1)
-                  expectIdsEqual(dealOrder.lines[0].info.expert._id,expert._id)
-                  expectIdsEqual(dealOrder.lines[0].info.deal._id,b.dealId)
+                  EXPECT.equalIds(dealOrder.lines[0].info.expert._id,expert._id)
+                  EXPECT.equalIds(dealOrder.lines[0].info.deal._id,b.dealId)
 
                   expect(_.idsEqual(redeemOrder._id,booking1.orderId)).to.be.true
                   expect(redeemOrder.payment.type).to.equal('$0 order')
@@ -104,8 +104,8 @@ orderDeals = ->
                   expect(redeemOrder.lines[0].unitPrice).to.equal(-30)
                   expect(redeemOrder.lines[0].qty).to.equal(2)
                   expect(redeemOrder.lines[0].balance).to.equal(0)
-                  expectIdsEqual(redeemOrder.lines[1].bookingId._id,booking1._id)
-                  # expectIdsEqual(redeemOrder.lines[1].bookingId,booking1._id)
+                  EXPECT.equalIds(redeemOrder.lines[1].bookingId._id,booking1._id)
+                  # EXPECT.equalIds(redeemOrder.lines[1].bookingId,booking1._id)
                   expect(redeemOrder.lines[1].type).to.equal('airpair')
                   expect(redeemOrder.lines[1]._id).to.exist
                   expect(redeemOrder.lines[1].total).to.equal(60)
@@ -136,7 +136,7 @@ orderDeals = ->
                       expect(availableMinutes2).to.equal(120)
                       airpair3 = dealId: b.dealId, datetime: moment().add(4, 'day'), minutes: 180, type: 'private', payMethodId: s.primaryPayMethodId
                       POST "/bookings/#{expert._id}", airpair3, { status: 400 }, (err) ->
-                        expectStartsWith(err.message,'Not enough remaining minutes.')
+                        EXPECT.startsWith(err.message,'Not enough remaining minutes.')
                         db.readDoc 'Order', dealOrder._id, (orderDB) ->
                           expect(orderDB.payMethod).to.be.undefined
                           DONE()

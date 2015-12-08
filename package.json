@@ -1,6 +1,6 @@
 {
   "name": "airpair.com",
-  "version": "1.6.0",
+  "version": "0.6.0",
   "description": "site running airpair.com",
   "main": "index.js",
   "engines": {
@@ -36,7 +36,7 @@
     "lodash": "3.10.1",
     "mailchimp": "1.1.0",
     "marked": "0.3.5",
-    "meanair-model": "0.6.1",
+    "meanair-model": "0.6.2",
     "moment": "2.10.3",
     "moment-timezone": "0.4.0",
     "mongoose": "4.1.9",
@@ -79,8 +79,8 @@
     "gulp-rev": "6.0.1",
     "gulp-util": "3.0.6",
     "gulp-uglify": "1.4.1",
-    "meanair-scream": "0.6.0",
-    "meanair-shared": "0.6.0",
+    "meanair-scream": "0.6.1",
+    "meanair-shared": "0.6.2",
     "merge-stream": "1.0.0",
     "stringify": "3.1.0",
     "uglifyify": "3.0.1",

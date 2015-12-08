@@ -1,27 +1,7 @@
-{{!-- <header class="entry-header">
-  <ol class="entry-meta breadcrumb">
-    <li><a href="/posts" target="_self">Posts</a></li>
-    {{#if primarytag}}<li>
-      <a href="{{ primarytag.postsUrl }}" target="_self">{{ primarytag.slug }}</a>
-    </li>
-    {{/if}}
-    <li>
-      <span class="entry-author" itemprop="author" itemscope="itemscope" itemtype="//schema.org/Person">
-      {{#if by.username}}
-        <a href="/me/{{by.username}}" class="entry-author-link" itemprop="url" rel="author" target="_self">
-        <span class="entry-author-name" itemprop="name">{{by.name}}</span></a>
-      {{else}}
-        <span class="entry-author-name" itemprop="name">{{by.name}}</span>
-      {{/if}}
-      </span>
-    </li>
-  </ol>
-</header> --}}
-
 {{#if published }}
 <div class="banner-top">
-  <a rel="nofollow" href="/visit/heroku-151014-{{adtag}}" class="banner banner-top banner-heroku-adtag" target="_blank">
-    <img src="/ad/heroku/900x90.1.{{adtag}}.signup.png" alt="Deploy {{adtag}} on Heroku" />
+  <a rel="nofollow" href="/visit/heroku-151208-{{adtag}}" class="banner banner-top banner-heroku-adtag" target="_blank">
+    <img src="/ad/heroku/900x90.q4.1.signup.{{adtag}}.png" alt="Deploy {{adtag}} on Heroku" />
   </a>
 </div>
 {{/if}}
@@ -53,7 +33,7 @@
     <hr />
     <div>
       <label>{{ by.name }}</label>
-      <social-links profile='{{ JSON by.social }}'></social-links>
+      {{!-- <social-links profile='{{ JSON by.social }}'></social-links> --}}
       <figcaption>
         {{by.bio}}
       </figcaption>
@@ -141,8 +121,8 @@
 
 {{#if published }}
 <div class="banner-top">
-  <a rel="nofollow" href="/visit/heroku-151014-{{adtag}}" class="banner banner-top banner-heroku-adtag" target="_blank">
-    <img src="/ad/heroku/900x90.1.{{adtag}}.signup.png" alt="Deploy {{adtag}} on Heroku" />
+<a rel="nofollow" href="/visit/heroku-151208-{{adtag}}" class="banner banner-top banner-heroku-adtag" target="_blank">
+    <img src="/ad/heroku/900x90.q4.1.signup.{{adtag}}.png" alt="Deploy {{adtag}} on Heroku" />
   </a>
 </div>
 {{/if}}

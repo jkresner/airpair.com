@@ -24,8 +24,8 @@ updateUser = (userKey, _id, ups, done) ->
 
 
 addLocalUser = (userKey, opts, done) ->
-  clone = SETUP.userData(userKey)
-  newSession = SETUP.userSession(userKey)
+  clone = DATA.newSignupData(userKey)
+  newSession = DATA.newSession(userKey)
   UserService.localSignup.call newSession, clone.email, clone.password, clone.name, (e, r) ->
     expect(r.email)
     FIXTURE.users[clone.userKey] = r
@@ -86,7 +86,7 @@ stories = {
 
 
   addAndLoginUserWithRole: (userKey, role, done) ->
-    session = SETUP.userSession()
+    session = DATA.newSession()
 
     # so we aren't aliasing on every login
     session.sessionID = 'test'+userKey

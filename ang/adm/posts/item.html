@@ -1,8 +1,8 @@
 <article>
  <header class="entry-header">
-    <img class="entry-header-image" itemprop="image" ng-src="{{ post.meta.ogImage }}" align="left" />
+    <img class="entry-header-image" itemprop="image" ng-src="{{ post.htmlHeader.ogImage }}" align="left" />
 
-    <div ng-if="!post.meta || !post.meta.ogImage" class="emptyOgImage">
+    <div ng-if="!post.htmlHeader || !post.htmlHeader.ogImage" class="emptyOgImage">
       <p>Image not yet supplied.</p>
     </div>
 
@@ -33,7 +33,7 @@
   </header>
   <div class="entry-content" itemprop="text">
     <h2 class="entry-title" itemprop="headline">{{ post.title }}</h2>
-    <p>{{ post.meta.description }}</p>
+    <p>{{ post.htmlHeader.description }}</p>
   </div>
 
   <footer class="entry-footer" style="width:50%">

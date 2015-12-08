@@ -8,7 +8,7 @@ angular.module("ADMPosts", [])
 
 })
 
-.directive('apPostListItem', function($parse) {
+.directive('admPostListItem', function($parse) {
   return {
     template: require('./item.html'),
     link: function(scope, element, attrs) {

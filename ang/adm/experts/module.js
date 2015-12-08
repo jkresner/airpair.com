@@ -1,4 +1,4 @@
-angular.module("ADMExperts", ['APDealsDirectives'])
+angular.module("ADMExperts", ['APDealsDirectives','APExpertsDirectives'])
 
 .config((apRouteProvider) => {
 
@@ -41,7 +41,7 @@ angular.module("ADMExperts", ['APDealsDirectives'])
   $scope.query = null
   $scope.newest = () => AdmDataService.experts.getNew({}, setScope)
   $scope.active = () => AdmDataService.experts.getActive({}, setScope)
-  $scope.newest()
+  $scope.active()
 
   $scope.$watch('request.tags', function(req) {
     if ($scope.request.tags.length < 1) return

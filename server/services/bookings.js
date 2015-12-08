@@ -26,7 +26,7 @@ function getChat(booking, syncMode, exitCB, cb) {
     return ChatsSvc.searchParticipantSyncOptions(booking.participants, (e,match,chatSyncOptions) => {
       if (match) {
         $callSvc(save.associateChat,this)(booking, 'slack', match.info.id, (e,r) => {
-          $log('auto.associateChat.success'.update, match.info.name)
+          $log('auto.associateChat.success', match.info.name)
           exitCB(e, r)
         })
       }
@@ -405,7 +405,7 @@ var admin = {
 
   addYouTubeData(original, youTubeId, cb)
   {
-    if (logging) $log('bookings.addYouTubeData'.update, original._id, youTubeId)
+    if (logging) $log('bookings.addYouTubeData', original._id, youTubeId)
     var {status,recordings} = original
     Wrappers.YouTube.getVideoInfo(youTubeId, (e, response) => {
       if (e) return cb(Error(e))

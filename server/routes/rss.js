@@ -40,7 +40,7 @@ function generatePostFeedItem(data) {
   // $log('generatePostFeedItem',data)
   return {
     title: data.title,
-    description: (data.meta) ? data.meta.description : 'No meta',
+    description: (data.htmlHead) ? data.htmlHead.description : 'No meta',
     author: data.by.name,
     date: data.published,
     url: data.url,

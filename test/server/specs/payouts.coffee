@@ -93,7 +93,7 @@ get = ->
                 expect(orders[0].lines[0].profit).to.be.undefined
                 expect(orders[0].lines[0].info.released).to.exist
                 expect(orders[0].lines[0].info.released.utc).to.exist
-                expectIdsEqual(orders[0].lines[0].info.released.by._id, FIXTURE.users.admin._id)
+                EXPECT.equalIds(orders[0].lines[0].info.released.by._id, FIXTURE.users.admin._id)
                 summary = payoutSummary(orders)
                 expect(summary.owed.count).to.equal(1)
                 expect(summary.owed.total).to.equal(70)
@@ -130,7 +130,7 @@ get = ->
       opts = book: true, reply: { userKey: sExp.userKey }
       opts1 = book: true, reply: { userKey: sExp.userKey }
       STORY.newRequest 'hubi', opts1, (request1, booking1, customerSession1, expertSession) ->
-        STORY.newRequest 'mois', opts1, (request2, booking2, customerSession2, expertSession) ->
+        STORY.newRequest 'acob', opts1, (request2, booking2, customerSession2, expertSession) ->
           STORY.newRequest 'jkjk', opts1, (request3, booking3, customerSession3, expertSession) ->
             LOGIN {key:'admin'},  ->
               PUT "/billing/orders/#{booking1.orderId}/release", {}, {}, (released1) ->
@@ -148,36 +148,34 @@ get = ->
                     DONE()
 
 
-  it 'Paypal sandbox works'
-  # IT 'Paypal sandbox works', ->
-  #   # These can start failing with 500 INTERNAL ERROR if there isn't enough
-  #   # balance in the test account (really annoying)
-  #   @payoutStub.restore()
-  #   pp = require('../../server/services/wrappers/paypal')
-  #   payoutId = newId()
-  #   pp.payout "expert_engb_verified@airpair.com",90,payoutId,'note', (e,p) ->
-  #     # $log('e', e, 'p', JSON.stringify(p))
-  #     expect(e).to.be.null
-  #     expect(p.items[0].transaction_status).to.equal("SUCCESS")
-  #     DONE()
+  IT 'Paypal sandbox works', ->
+    # These can start failing with 500 INTERNAL ERROR if there isn't enough
+    # balance in the test account (really annoying)
+    @payoutStub.restore()
+    pp = require('../../../server/services/wrappers/paypal')
+    payoutId = DATA.newId()
+    pp.payout "expert_engb_verified@airpair.com",90,payoutId,'note', (e,p) ->
+      # $log('e', e, 'p', JSON.stringify(p))
+      expect(e).to.be.null
+      expect(p.items[0].transaction_status).to.equal("SUCCESS")
+      DONE()
 
 
-  it 'Paypal sandbox passes back error for non existing address'
-  # IT 'Paypal sandbox passes back error for non existing address', ->
-  #   @payoutStub.restore()
-  #   pp = require('../../server/services/wrappers/paypal')
-  #   payoutId = newId()
-  #   pp.payout "expert_nonexisting@airpair.com",90,payoutId,'note', (e,p) ->
-  #     # $log('e', e, 'p', JSON.stringify(p))
-  #     expect(e).to.exist
-  #     expect(p.items[0].transaction_status).to.equal("UNCLAIMED")
-  #     DONE()
+  IT 'Paypal sandbox passes back error for non existing address', ->
+    @payoutStub.restore()
+    pp = require('../../../server/services/wrappers/paypal')
+    payoutId = DATA.newId()
+    pp.payout "expert_nonexisting@airpair.com",90,payoutId,'note', (e,p) ->
+      # $log('e', e, 'p', JSON.stringify(p))
+      expect(e).to.exist
+      expect(p.items[0].transaction_status).to.equal("UNCLAIMED")
+      DONE()
 
 
   IT 'Expert can collect a single released transaction to their verified paypal account', ->
     STORY.newExpert 'admb', {payoutmethod:true}, (expert, expertSession, payoutmethod) ->
       opts = book:true, payoutmethod:true, reply: expertSession
-      STORY.newRequest 'josh', opts, (request, booking, customerSession) ->
+      STORY.newRequest 'jbay', opts, (request, booking, customerSession) ->
         releaseOrderAndLogExpertBackIn booking.orderId, expertSession, ->
           GET "/billing/orders/payouts", (orders) ->
             expect(orders.length).to.equal(1)
@@ -190,15 +188,15 @@ get = ->
             d = orders: _.pluck(orders,'_id')
             POST "/payouts/#{payoutmethod._id}", d, (payout) ->
               expect(payout._id).to.exist
-              expectIdsEqual(payout.userId, expertSession._id)
+              EXPECT.equalIds(payout.userId, expertSession._id)
               expect(payout.total).to.equal(70)
               expect(payout.payment).to.exist
-              expectIdsEqual(payout.payMethodId, payoutmethod._id)
+              EXPECT.equalIds(payout.payMethodId, payoutmethod._id)
               expect(payout.lines.length).to.equal(1)
               expect(payout.lines[0]._id).to.exist
-              expectIdsEqual(payout.lines[0].order._id, orders[0]._id)
+              EXPECT.equalIds(payout.lines[0].order._id, orders[0]._id)
               expect(payout.lines[0].order.by.email).to.equal(customerSession.email)
-              expectIdsEqual(payout.lines[0].order.lineItemId, lineToPayout._id)
+              EXPECT.equalIds(payout.lines[0].order.lineItemId, lineToPayout._id)
               expect(payout.lines[0].total).to.equal(70)
               expect(payout.lines[0].type).to.equal('airpair')
               GET "/billing/orders/payouts", (orders2) ->
@@ -233,15 +231,15 @@ get = ->
   #               expect(released1.lines[1].info.paidout).to.equal(false)
   #               expect(released1.lines[1].info.released).to.exist
   #               expect(released1.lines[1].info.released.action).to.equal('release')
-  #               expectIdsEqual(released1.lines[1].info.released.by._id, s._id)
+  #               EXPECT.equalIds(released1.lines[1].info.released.by._id, s._id)
   #               expect(pairbotStub.calledOnce, "pairbot not called").to.be.true
   #               expect(pairbotStub.args[0][0]).to.equal(providerId)
   #               expect(pairbotStub.args[0][1]).to.equal('expert-payment-released')
   #               expect(pairbotStub.args[0][2].byName).to.equal(s.name)
-  #               expectIdsEqual(pairbotStub.args[0][2].bookingId,booking1._id)
+  #               EXPECT.equalIds(pairbotStub.args[0][2].bookingId,booking1._id)
   #               pairbotStub.restore()
   #               PUT "/billing/orders/#{booking1.orderId}/release", {}, {status:403}, (err2) ->
-  #                 expectStartsWith(err2.message, "Order[#{booking1.orderId}] has already been released")
+  #                 EXPECT.startsWith(err2.message, "Order[#{booking1.orderId}] has already been released")
   #                 LOGIN expertSession.userKey, ->
   #                   GET "/billing/orders/payouts", {}, (orders) ->
   #                     expect(orders.length).to.equal(1)
@@ -249,7 +247,7 @@ get = ->
   #                     expect(orders[0].lines[0].type).to.equal('airpair')
   #                     expect(orders[0].lines[0].info.released).to.exist
   #                     expect(orders[0].lines[0].info.released.utc).to.exist
-  #                     expectIdsEqual(orders[0].lines[0].info.released.by._id, s._id)
+  #                     EXPECT.equalIds(orders[0].lines[0].info.released.by._id, s._id)
   #                     summary = payoutSummary(orders)
   #                     expect(summary.owed.count).to.equal(1)
   #                     expect(summary.paid.count).to.equal(0)
@@ -263,7 +261,7 @@ get = ->
       STORY.newBooking 'anca', data:{expertKey}, (s, booking1) ->
         LOGIN {key:expertKey}, ->
           PUT "/billing/orders/#{booking1.orderId}/release", {}, {status:403}, (err) ->
-            expectStartsWith(err.message, "Payout[#{booking1.orderId}] must be released by owner")
+            EXPECT.startsWith(err.message, "Payout[#{booking1.orderId}] must be released by owner")
             GET "/billing/orders/payouts", {}, (orders) ->
               expect(orders.length).to.equal(1)
               expect(orders[0].lines.length).to.equal(1)
@@ -320,7 +318,7 @@ get = ->
                         d = orders: _.pluck(orders,'_id')
                         POST "/payouts/#{payoutmethod._id}", d, (payout) ->
                           expect(payout._id).to.exist
-                          expectIdsEqual(payout.userId, expertSession._id)
+                          EXPECT.equalIds(payout.userId, expertSession._id)
                           expect(payout.total).to.equal(210)
                           expect(payout.lines.length).to.equal(3)
                           DONE()
@@ -341,8 +339,8 @@ get = ->
                         d1 = orders: [orders[0]._id,orders[1]._id]
                         POST "/payouts/#{payoutmethod._id}", d1, (payout1) ->
                           expect(payout1.total).to.equal(140)
-                          expectIdsEqual(payout1.lines[0].order._id,orders[1]._id)
-                          expectIdsEqual(payout1.lines[1].order._id,orders[0]._id)
+                          EXPECT.equalIds(payout1.lines[0].order._id,orders[1]._id)
+                          EXPECT.equalIds(payout1.lines[1].order._id,orders[0]._id)
                           d2 = orders: [orders[2]._id]
                           POST "/payouts/#{payoutmethod._id}", d2, (payout2) ->
                             expect(payout2.total).to.equal(70)
@@ -375,7 +373,7 @@ get = ->
   #                     d1 = orders: [orders[0]._id]
   #                     POST "/payouts/#{payoutmethod._id}", d1, {}, (payout1) ->
   #                       expect(payout1.total).to.equal(540)
-  #                       expectIdsEqual(payout1.lines[0].order._id,orders[0]._id)
+  #                       EXPECT.equalIds(payout1.lines[0].order._id,orders[0]._id)
   #                       GET "/payouts/me", {}, (payouts) ->
   #                         expect(payouts.length).to.equal(1)
   #                         expect(payouts[0].total).to.equal(540)
@@ -397,7 +395,7 @@ get = ->
     #         expect(li.owed).to.equal(70)
     #         expect(li.type).to.equal('airpair')
     #         expect(li.suggestion).to.be.undefined
-    #         expectIdsEqual(li.info.expert.userId,sEvan._id)
+    #         EXPECT.equalIds(li.info.expert.userId,sEvan._id)
     #         expect(li.info.paidout).to.be.true
     #         expect(li.info.bookingIds.length).to.equal(1)
     #         DONE()
@@ -411,25 +409,14 @@ module.exports = ->
     DB.ensureDoc 'User', FIXTURE.users.admin, ->
       done()
 
-  beforeEach ->
-    @payoutStub = SETUP.stubPayPalPayout()
-    @braintreepaymentStub = SETUP.stubBraintreeChargeWithMethod()
-    STUB.sync(Wrappers.Slack, 'checkUserSync', null)
-    STUB.cb(Wrappers.Slack, 'getUsers', FIXTURE.wrappers.slack_users_list)
-    STUB.cb(Wrappers.Slack, 'getChannels', FIXTURE.wrappers.slack_channels_list)
-    STUB.cb(Wrappers.Slack, 'getGroups', FIXTURE.wrappers.slack_groups_list)
+  beforeEach (done) ->
+    @payoutStub = STUB.PayPalPayout()
+    STUB.SlackCommon()
+    STUB.BraintreeCharge()
+    done()
 
-  afterEach ->
-    @braintreepaymentStub.restore()
 
-  if global.againstProd
-
-    DESCRIBE "SKIP PAYOUTS", ->
-      it "Better make this open again"
-
-  else
-
-    DESCRIBE("Get", get)
+  DESCRIBE("Get", get)
 
 
 

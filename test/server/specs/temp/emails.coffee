@@ -37,7 +37,7 @@
   #     ANONSESSION (sAnon) ->
   #       expect(sAnon.maillists).to.be.undefined
   #       PUT '/users/me/maillists', { name: 'AirPair Developer Digest' }, { status: 403 }, (err) ->
-  #         expectStartsWith(err.message, "Invalid email address")
+  #         EXPECT.startsWith(err.message, "Invalid email address")
   #         DONE()
 
 
@@ -167,7 +167,7 @@
 # #     #   d = getNewUserData('spur')
 # #     #   SETUP.addAndLoginLocalUser 'spur', (userKey) ->
 # #     #     GET '/billing/orders', { status: 403 }, (err) ->
-# #     #       expectStartsWith(err.message,'e-mail not verified')
+# #     #       EXPECT.startsWith(err.message,'e-mail not verified')
 # #     #       DONE()
 
 
@@ -186,7 +186,7 @@
 # #     #   SETUP.addAndLoginLocalUser 'stev', (s) ->
 # #     #     POST '/requests', { type: 'troubleshooting', tags: [data.tags.node] }, {}, (r1) ->
 # #     #       PUT "/requests/#{r1._id}", _.extend(r1,{experience:'beginner'}), {status:403}, (rFail) ->
-# #     #         expectStartsWith(rFail.message,'Email verification required')
+# #     #         EXPECT.startsWith(rFail.message,'Email verification required')
 # #     #         PUT '/users/me/email', { email: s.email }, {}, (s2) ->
 # #     #           expect(spy.callCount).to.equal(1)
 # #     #           hash = spy.args[0][1].hash
@@ -204,7 +204,7 @@
 # #     #     LOGIN 'narv', (snarv) ->
 # #     #       POST '/requests', { type: 'troubleshooting', tags: [data.tags.node] }, {}, (r1) ->
 # #     #         PUT "/requests/#{r1._id}", _.extend(r1,{experience:'beginner'}), {status:403}, (rFail) ->
-# #     #           expectStartsWith(rFail.message,'Email verification required')
+# #     #           EXPECT.startsWith(rFail.message,'Email verification required')
 # #     #           PUT '/users/me/email', { email: data.users.narv.email }, {}, (s2) ->
 # #     #             expect(spy.callCount).to.equal(1)
 # #     #             hash = spy.args[0][1].hash
@@ -224,7 +224,7 @@
 # #     #     LOGIN 'narv', (snarv) ->
 # #     #       POST '/requests', { type: 'troubleshooting', tags: [data.tags.node] }, {}, (r1) ->
 # #     #         PUT "/requests/#{r1._id}", _.extend(r1,{experience:'beginner'}), {status:403}, (rFail) ->
-# #     #           expectStartsWith(rFail.message,'Email verification required')
+# #     #           EXPECT.startsWith(rFail.message,'Email verification required')
 # #     #           PUT '/users/me/email', { email: "vikram@test.com" }, {}, (s2) ->
 # #     #             # second put forces verify mode
 # #     #             PUT '/users/me/email', { email: "vikram@test.com" }, {}, (s2) ->
@@ -246,5 +246,5 @@
 # #     #   SETUP.addAndLoginLocalUser 'step', (s) ->
 # #     #     fakeHash = 'ABCDEF1234567'
 # #     #     PUT "/users/me/email-verify", { hash: fakeHash }, { status: 400 }, (r) ->
-# #     #       expectStartsWith(r.message,"e-mail verification failed")
+# #     #       EXPECT.startsWith(r.message,"e-mail verification failed")
 # #     #       DONE()

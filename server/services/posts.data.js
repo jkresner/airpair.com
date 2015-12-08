@@ -31,14 +31,20 @@ var inflateHtml = function(isAnon, cb) {
     var supped = PostsUtil.extractSupReferences(r.md)
     r.references = PostsUtil.markupReferences(supped.references, marked)
     if (isAnon) {
+      var odd = false
       marked.setOptions({highlight: function(code, lang) {
-        var maxLines = 0
-        var obs = ""
-        for (var line of code.split('\n')) {
-          if (++maxLines < 4)
-            obs += '\n' + line.replace(/(\S\S)(\S\S)/g,'$1{}{}')
+        odd = !odd
+        if (odd) {
+          var maxLines = 0
+          var obs = ""
+          for (var line of code.split('\n')) {
+            if (++maxLines < 4)
+              obs += '\n' + line.replace(/(\S\S)(\S\S)/g,'$1{}{}')
+          }
+          return obs.replace('\n','') // trim first \n
         }
-        return obs.replace('\n','') // trim first \n
+        else
+          return code
       }})
       r.html = marked(supped.markdown)
       marked.setOptions({highlight:null})
@@ -62,9 +68,9 @@ var select = {
     'by.userId': 1,
     'by.name': 1,
     'by.avatar': 1,
-    'meta.canonical': 1,
-    'meta.description': 1,
-    'meta.ogImage': 1,
+    'htmlHead.canonical': 1,
+    'htmlHead.description': 1,
+    'htmlHead.ogImage': 1,
     'github.repoInfo': 1,
     'title':1,
     'slug': 1,
@@ -79,6 +85,7 @@ var select = {
     'by.name': 1,
     'by.avatar': 1,
     'meta': 1,
+    'htmlHead': 1,
     'title':1,
     'slug': 1,
     'github.repoInfo': 1,
@@ -94,8 +101,8 @@ var select = {
   listComp: {
     'by.name': 1,
     'by.avatar': 1,
-    'meta.canonical': 1,
-    'meta.ogImage': 1,
+    'htmlHead.canonical': 1,
+    'htmlHead.ogImage': 1,
     'title':1,
     'slug': 1,
     'stats': 1,
@@ -106,8 +113,8 @@ var select = {
     'by.name': 1,
     'by.avatar': 1,
     'title': 1,
-    'meta.canonical': 1,
-    'meta.ogImage': 1
+    'htmlHead.canonical': 1,
+    'htmlHead.ogImage': 1
   },
   display: {
     '_id': 1,
@@ -125,7 +132,7 @@ var select = {
     'social.tw.username':1,
     'social.al.username': 1,
     'social.gp.link': 1,
-    'meta': 1,
+    'htmlHead': 1,
     'github.repoInfo': 1,
     'reviews._id': 1,
     'reviews.by': 1,
@@ -150,27 +157,27 @@ var select = {
     'lastTouch.by._id':1,
     'lastTouch.by.name':1,
   },
-  edit: {
-    '_id': 1,
-    'by.userId':1,
-    'by.name': 1,
-    'by.avatar': 1,
-    'meta': 1,
-    'github.repoInfo': 1,
-    'title':1,
-    'slug': 1,
-    'created': 1,
-    'published': 1,
-    'submitted': 1,
-    'tags': 1,
-    'assetUrl': 1,
-    'repo': 1,
-    'stats': 1, //-- To know if the post is publishable
-    'synced': 1,
-    'md': 1
-  },
-  editInfo:
-    '_id by title created published submitted tags assetUrl',
+  // edit: {
+  //   '_id': 1,
+  //   'by.userId':1,
+  //   'by.name': 1,
+  //   'by.avatar': 1,
+  //   'htmlHead': 1,
+  //   'github.repoInfo': 1,
+  //   'title':1,
+  //   'slug': 1,
+  //   'created': 1,
+  //   'published': 1,
+  //   'submitted': 1,
+  //   'tags': 1,
+  //   'assetUrl': 1,
+  //   'repo': 1,
+  //   'stats': 1, //-- To know if the post is publishable
+  //   'synced': 1,
+  //   'md': 1
+  // },
+  // editInfo:
+  //   '_id by title created published submitted tags assetUrl',
     // 'github.repoInfo': 1,
   stats: {
     '_id': 1,
@@ -179,7 +186,7 @@ var select = {
     'by.name': 1,
     'by.avatar': 1,
     'slug': 1,
-    'meta': 1,
+    'htmlHead': 1,
     'forkers':1,
     'reviews._id': 1,
     'reviews.by': 1,
@@ -199,22 +206,22 @@ var select = {
     'lastTouch.action': 1,
     'lastTouch.by.name': 1
   },
-  pr: {
-    'pullRequests.url':1,
-    'pullRequests.html_url':1,
-    'pullRequests.id':1,
-    'pullRequests.number':1,
-    'pullRequests.state':1,
-    'pullRequests.title':1,
-    'pullRequests.user.login':1,
-    'pullRequests.user.avatar_url':1,
-    'pullRequests.created_at':1,
-    'pullRequests.updated_at':1,
-    'pullRequests.closed_at': null,
-    'pullRequests.merged_at': null,
-    'pullRequests.merge_commit_sha': 1,
-    'pullRequests.statuses_url': 1
-  },
+  // pr: {
+  //   'pullRequests.url':1,
+  //   'pullRequests.html_url':1,
+  //   'pullRequests.id':1,
+  //   'pullRequests.number':1,
+  //   'pullRequests.state':1,
+  //   'pullRequests.title':1,
+  //   'pullRequests.user.login':1,
+  //   'pullRequests.user.avatar_url':1,
+  //   'pullRequests.created_at':1,
+  //   'pullRequests.updated_at':1,
+  //   'pullRequests.closed_at': null,
+  //   'pullRequests.merged_at': null,
+  //   'pullRequests.merge_commit_sha': 1,
+  //   'pullRequests.statuses_url': 1
+  // },
   generateToc(md) {
     marked(generateToc(md))
   },
@@ -238,7 +245,7 @@ var select = {
   },
   url(post) {
     if (post.submitted && !post.published) return `/posts/review/${post._id}`
-    else if (post.meta) return post.meta.canonical
+    else if (post.htmlHead) return post.htmlHead.canonical
   },
   tmpl: {
     reviewNotify(post, review) {
@@ -336,9 +343,9 @@ var select = {
         r.primarytag.postsUrl = (topTagPage) ? `/${r.primarytag.slug}` : `/posts/tag/${r.primarytag.slug}`
 
         r.adtag = 'node.js'
-        if (_.find(r.tags, t => t.slug.indexOf('java')!=-1 && t.slug.indexOf('javascript')==-1))
+        if (_.find(r.tags, t => t.slug.match(/java/i) && !t.slug.match(/javascript/i)))
           r.adtag = 'java'
-        if (_.find(r.tags, t => t.slug.indexOf('php')!=-1 || t.slug.indexOf('wordpress')!=-1))
+        if (_.find(r.tags, t => t.slug.match(/(php|wordpress)/i)))
           r.adtag = 'php'
 
 
@@ -347,7 +354,7 @@ var select = {
           r.publishReady = (r.stats.reviews > 2) && (r.stats.rating > 3.5)
         }
         if (!r.published)
-          r.meta = { noindex: true }
+          r.htmlHead = { noindex: true }
         else
           //-- Stop using disqus once deployed the review system
           r.showDisqus = moment(r.published) < moment('20150201', 'YYYYMMDD')

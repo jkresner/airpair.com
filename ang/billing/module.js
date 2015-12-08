@@ -12,7 +12,7 @@ angular.module("APBilling", ['ngRoute', 'APPaymentDirectives', 'APBillingDirecti
   route('/billing/book/:id', 'BillingBookExpert', require('./book.html'), { resolve: authd })
   route('/billing/book/:id/:rid', 'BillingBookExpert', require('./book.html'), { resolve: authd })
   route('/billing/deal/:id', 'BillingDeal', require('./deal.html'), { resolve: authd })
-  route('/experts', 'BillingExperts', require('./experts.html'), { resolve: authd })
+  // route('/experts', 'BillingExperts', require('./experts.html'), { resolve: authd })
 })
 
 .factory('submitPaymentText', function submitPaymentTextFactory() {
@@ -229,13 +229,13 @@ angular.module("APBilling", ['ngRoute', 'APPaymentDirectives', 'APBillingDirecti
 })
 
 
-.controller('BillingExpertsCtrl', function($scope, DataService) {
+// .controller('BillingExpertsCtrl', function($scope, DataService) {
 
-  DataService.experts.getForExpertsPage({}, (r) => {
-    $scope.experts = r.experts
-  })
+//   // DataService.experts.getForExpertsPage({}, (r) => {
+//   //   $scope.experts = r.experts
+//   })
 
-})
+// })
 
 
 

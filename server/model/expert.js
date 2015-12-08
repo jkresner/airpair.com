@@ -1,9 +1,8 @@
-module.exports = ({ Id, Enum, Touch, Reftag, Note },
+module.exports = ({ Id, Enum, Touch, Reftag, Note, Meta },
   { asSchema, required, trim, lowercase, unique, sparse }) => {
 
 
 var DealSchema = asSchema({
-  lastTouch:      Touch,
   expiry:         { type: Date, required },     // used as a flag that the deal is not longer available
   price:          { type: Number, required },
   minutes:        { type: Number, required },
@@ -24,7 +23,11 @@ var DealSchema = asSchema({
       name:       { type: String }
     }
   }],
-  activity:       [Touch]   // updates + views + (expert) shares
+
+  //-- legacy
+  lastTouch:      Touch,
+  activity:       [Touch],   // updates + views + (expert) shares
+
 })
 
 
@@ -32,49 +35,27 @@ var ExpertSchema = asSchema({
 
   userId:         { type: Id, ref: 'User', unique, required },
 
+  //-- legacy
   lastTouch:      Touch,
   activity:       [Touch],
+  //-- new
+  meta:           Meta,
 
   rate:           { type: Number },
   brief:          { type: String },
   tags:           { type: [Reftag] },
   gmail:          { type: String },
 
-  // user:           {},
-
-  // deprecated v0 user props
-  // pic:            { type: String },
-  // name:           { type: String },
-  // username:       { type: String },
-  // email:          { type: String },
-  // timezone:       String,
-  // location:       String,
-  // homepage:       String,
-  // gp:             {},          // googleplus
-  // gh:             {},          // github
-  // so:             {},          // stackoverflow
-  // bb:             {},          // bitbucket
-  // in:             {},          // linkedIn
-  // tw:             {},          // twitter
-
   deals:            [DealSchema],
 
   availability: {
-    // lastTouch:    Touch,
+    updated:        { type: Touch },
     status:         { type: String },
     busyUntil:      { type: Date },
     times:          { type: String },
     minRate:        { type: Number },
     hours:          { type: String }
   },
-
-  // deprecated v0 settings props
-  // minRate:        Number,
-  // status:         String,
-  // availability:   String,
-  // hours:          String,
-  // busyUntil:      { type: Date, default: Date },
-  // updatedAt:      { type: Date, default: Date },
 
   // to get rid of
   // matching
@@ -101,16 +82,8 @@ var ExpertSchema = asSchema({
   },
 
   notes:          { type: [Note] },
-
-  // deprecated other
-  // bookMe:         {}
-
-  // reviews:        [Shared.Survey]
-
 })
 
-// Does not work errrr.
-// ExpertSchema.index({'_id':1,'reviews.by._id':1},{ unique, sparse })
 
 
 return ExpertSchema

@@ -1,28 +1,42 @@
 var logging                       = false
 var {firstName,lastName}          = require('../../../shared/util')
-var api                           = null
-var addPaymentMethodOpts          = null
 
 
 //-- Delay initialization of api to first call to speed app load
 var wrap = (fn, fnName) =>
   function () {
-
-    var cb = arguments[arguments.length-1]
-    var wrappedCB = (operation, payload, translate) =>
-      (e,r) => {
-        if (e) { $error(`braintree.${operation}.ERROR [${e}] ${JSON.stringify(payload)}`); cb(e) }
-        else if (!r.success) { $error(`braintree.${operation}.ERROR [${r.message}] ${JSON.stringify(payload)}`); cb(r) }
-        else {
-          // $log('r', JSON.stringify(r).white)
-          if (translate) r = translate(r)
-          if (logging) $log(`braintree.${operation}`, r)
-          r.type = "braintree"
-          cb(null, r)
-        }
+    var start = new Date()
+    // var cb = arguments[arguments.length-1]
+    // var wrappedCB = (operation, payload, translate) =>
+      // (e,r) => {
+      //   if (e) { $error(`braintree.${operation}.ERROR [${e}] ${JSON.stringify(payload)}`); cb(e) }
+      //   else if (!r.success) { $error(`braintree.${operation}.ERROR [${r.message}] ${JSON.stringify(payload)}`); cb(r) }
+      //   else {
+      //     // $log('r', JSON.stringify(r).white)
+      //     if (translate) r = translate(r)
+      //     if (logging) $log(`braintree.${operation}`, r)
+      //     r.type = "braintree"
+      //     cb(null, r)
+      //   }
+      // }
+    // arguments[arguments.length-1] = wrappedCB
+    var args = [].slice.call(arguments)
+    var cb = args.pop()
+    args.push(function(e, r, payload) {
+      // $log('back from api call'.white, e, r, payload)
+      var duration = new Date() - start
+      if (duration > 1000) console.log(`[braintree.${fnName}].slow`.cyan, `${duration}`.red)
+      if (e) $error(`braintree.${fnName}.ERROR [${e.message}] ${JSON.stringify(payload)}`)
+      else if (!r.success) {
+        $error(`braintree.${fnName}.ERROR [${r.message}] ${JSON.stringify(payload)}`)
+        e = r
+      } else {
+        // $log('r', JSON.stringify(r).white)
+        r.type = "braintree"
       }
-    arguments[arguments.length-1] = wrappedCB
-    fn.apply(this, arguments)
+      cb.apply(this, arguments)
+    })
+    fn.apply(this, args)
   }
 
 
@@ -32,28 +46,29 @@ var wrapper = {
     var braintree = global.API_BRAINTREE || require('braintree')
     var {merchantId, publicKey, privateKey} = config.payments.braintree
     var environment = braintree.Environment[config.payments.braintree.environment]
-    wrapper.api = braintree.connect({ environment, merchantId, publicKey, privateKey })
+    this.api = braintree.connect({ environment, merchantId, publicKey, privateKey })
     addPaymentMethodOpts = {}; // { verifyCard: config.payments.braintree.verifyCards
   },
 
   getClientToken(cb) {
-    wrapper.api.clientToken.generate({}, cb('clientToken.generate',{},(r)=> {
-      return { btoken: r.clientToken } }))
+    var payload = {}
+    this.api.clientToken.generate(payload, (e, r) => cb(e, r, payload))
   },
 
   chargeWithMethod(amount, orderId, paymentMethodToken, cb) {
-    orderId = orderId.toString() // braintree complains if we give it a mongo.ObjectId
-    var payload = { amount, orderId, paymentMethodToken, options : { submitForSettlement: true } }
+    var payload = { amount, paymentMethodToken, options : { submitForSettlement: true } }
+    payload.orderId = orderId.toString() // braintree complains if we give it a mongo.ObjectId
 
-    wrapper.api.transaction.sale(payload, cb('transaction.sale', payload, null))
+    this.api.transaction.sale(payload, (e, r) => cb(e, e?null:r, payload))
   },
 
   addPaymentMethod(customerId, user, company, paymentMethodNonce, cb) {
-    wrapper.api.customer.find(customerId, function (ee, existing) {
+    this.api.customer.find(customerId, (ee, existing) => {
       if (existing)
       {
         var payload = { customerId, paymentMethodNonce }
-        wrapper.api.paymentMethod.create(payload, cb('paymentMethod.create', payload, (r) => r.paymentMethod))
+        this.api.paymentMethod.create(payload, (e, r) =>
+          cb(e, e?null:Object.assign({success:true},r.paymentMethod), payload))
       }
       else
       {
@@ -74,7 +89,9 @@ var wrapper = {
           payload.customFields.companyId = company._id.toString()
         }
 
-        wrapper.api.customer.create(payload, cb('customer.create', payload, (r) => r.customer.creditCards[0]))
+        this.api.customer.create(payload, (e, r) =>
+          cb(e, e?null:Object.assign({success:true},r.customer.creditCards[0]), payload)
+        )
       }
     })
   }
