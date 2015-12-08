@@ -17,6 +17,7 @@ var mg = config.env != "test" ? {
       exp('53a8caf02f37250200b4b88a'),//'Yossi Elkrief','elkriefy@gmail.com'),
       exp('52dadcbdf3e5820200000012'),//'Roger Stringer','freekrai@gmail.com'),
       exp('550ac497b4533e0c006f6b04'),//'Pulkit Goyal','pulkit110@gmail.com'),
+      exp('5657097ed64e391200396764'),//'Nicolas De Smyter'
     ]
   },
 
@@ -38,6 +39,9 @@ var mg = config.env != "test" ? {
       exp('530f0d2967a7f9020000001e'),//'Benjamin Roth','benjamin@rubyist.fr'),
       exp('5563bdcd29ae0d11007e2681'),//'Nathan Walker','walkerrunpdx@gmail.com'),
       exp('522f3616b4b1c60200000041'),//'Backnol Yogendran','backnol@gmail.com'),
+      exp('5632042ae827aa1100e51d28'),//'David Rodenas'
+      exp('5657097ed64e391200396764'),//'Nicolas De Smyter'
+      exp('521bce214336a8020000003a'),//'Phillip R. Berger'
     ]
   },
 
@@ -60,6 +64,7 @@ var mg = config.env != "test" ? {
       exp('52267f2a7087f90200000008'),//'Michael Grassotti ','mgrassotti@gmail.com '),
       exp('549f9d443a0ad90200e7a72e'),//'Brandon J McKay','themckaystudios@gmail.com'),
       exp('52f1bda790df5e0200000041'),//'Joe Fiorini','joe@joefiorini.com')
+      exp('564f0d81f79b3a1200a2c297')//'Michael (Black) Ritter'
     ]
   },
 
@@ -82,6 +87,9 @@ var mg = config.env != "test" ? {
       exp('530bbd360f7d3b0200000031'),//'Jeff Linwood','jlinwood@gmail.com'),
       exp('550c62e5bbbbef0c004b559c'),//'Adam Cooper','adambco@me.com'),
       exp('550c62e5bbbbef0c004b559c'),//'Josh Brown','josh@roadfiresoftware.com'),
+      exp('52192128ccf13e020000000d'),//Jonathan Dalrymple
+      exp('524c8b42a42aa00200000050'),//Aaron Crespo
+      exp('54482438c3a742020081e1eb'),//Nicholas Iannone
     ]
   },
 
@@ -105,6 +113,7 @@ var mg = config.env != "test" ? {
     auto: ['ruby-on-rails-4','ruby-on-rails-3.2','ruby-on-rails-3.1','ruby-on-rails-3'],
     manual: ['rake','rspec','ruby'],
     suggested: [
+      exp('51d5683b0c857e020000000e'),//'Pedro Nascimento'
       exp('522f3616b4b1c60200000041'),//'Backnol Yogendran','backnol@gmail.com'),
       exp('54c85ee6a4f65e03005d1640'),//'Thomas Beihl','tmbeihl@tmbeihl.com'),
       exp('52d6053a174f2a0200000019'),//'Jared Smith','jared.smith88@me.com'),
@@ -115,7 +124,8 @@ var mg = config.env != "test" ? {
       exp('5468a10302bae60200444e47'),//'Ivan Turkovic','ivan.turkovic@gmail.com'),
       exp('52286f4fcf430c0200000011'),//'Marek Publicewicz','kingeri@gmail.com'),
       exp('55b00cb5841879110096f2b4'),//'Adam Lieskovsky','adamliesko@gmail.com'),
-      // exp('',80 ,'',''),
+      exp('56623ab5b1a9981100f60652'),//Len Smith
+      exp('53fcc9ae1b6f310200a53ea2'),//Joanne Cheng
     ]
   },
 
@@ -127,7 +137,8 @@ var mg = config.env != "test" ? {
       exp('52127d5fc6a5870200000007'),//'Ra\'Shaun Stovall','rashaunstovall@gmail.com'),
       exp('549f9d443a0ad90200e7a72e'),//'Brandon J McKay','themckaystudios@gmail.com'),
       exp('550224e596bc290c00ccf0a5'),//'Rich McLaughlin','rsmclaug@gmail.com'),
-      exp('537a8e0c77bbd10200a70b0f'),//'Anatoliy Zaslavskiy','adz@nycitt.com"'),
+      // exp('537a8e0c77bbd10200a70b0f'),//'Anatoliy Zaslavskiy','adz@nycitt.com"'),
+      exp('521bce214336a8020000003a'),//'Phillip R. Berger'
     ]
   },
 
@@ -136,10 +147,12 @@ var mg = config.env != "test" ? {
     auto: [],
     manual: ['react','react-native'],
     suggested: [
+      exp('563135ece770281100006233'),//'Alexandre Kirszenberg'
       exp('533afde08ae986020000000f'),//'Abraham Polishchuk','apolishc@gmail.com'),
       exp('55b907fe6480e81100a60279'),//'Gordon Dent','gordonmdent@gmail.com'),
       exp('5230d1a9746ee90200000018'),//'Ari Lerner','writeari@gmail.com'),
       exp('557216ce825eb311004fa2fc'),//'Frankie Bagnardi','f.bagnardi@gmail.com'),
+      exp('56623ab5b1a9981100f60652'),//Len Smith
     ]
   },
 
@@ -183,7 +196,7 @@ DAL.Expert.getManyById(expertIds, {select:'_id availability rate userId',join:{u
       o.availability.updated &&
       o.availability.status == 'ready' )
 
-    // $log('automatch'.gray, `${tech} (${mg[tech].auto.join(',')})`.white, _.pluck(mg[tech].suggested,'name').join(', '))
+    $log('automatch'.gray, `${tech} (${mg[tech].auto.join(',')})`.white, _.pluck(mg[tech].suggested,'name').join(', '))
   }
 })
 

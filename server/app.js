@@ -28,7 +28,7 @@ function run(config, done)
 
   global.$logIt = function() {
     var args = [].slice.call(arguments)
-    if (args[0].indexOf('model') == 0) return
+    if (args[0].match(/(model|modl)/i) != null) return
     args[0] = args[0].white
     console.log.apply(null,args)
   }
