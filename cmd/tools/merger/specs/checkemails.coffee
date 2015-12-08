@@ -20,6 +20,8 @@ module.exports = ->
         sortHash[email] = i++
       Users.find({$or:[{'email':{$in:emails}},{'auth.gh.email':{$in:emails}},{'auth.gh.emails.email':{$in:emails}}]}).toArray (e, users) ->
         users.sort((u)->sortHash[u.email])
+        if users.length == 1
+          $log(uInfoChain(users[0]))
         expect(users.length, "Only #{users.length} matching emails #{emails} #{JSON.stringify(users).white}").to.be.at.least(2)
         $log("\nFound #{users.length} matching #{emails}:\n".green)
         $log(uInfoChain(user)) for user in users
