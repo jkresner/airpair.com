@@ -1,27 +1,16 @@
 {
-  "stubs": {
-    "on":                 false
-  },
   "colors": {
     "seed":               "magenta",
     "spec":               "white",
     "error":              "red"
   },
-  "verbose": {
-    "errors":             true,
-    "info":               false
-  },
   "mongo": {
-    "url":                { "appConfig": "mongoUrl" },
+    "url":                "mongodb://localhost/airpair_dev",
     "collections":        ["orders","users","experts","tags","paymethods","payouts","requests","bookings","posts","templates"]
   },
   "paths": {
     "app":                "../../migrate/201509/app.coffee",
-    "fixtures":           "./fixtures",
-    "specs":              "./specs"
-  },
-  "init": {
-    "timeout":            4000
+    "fixtures":           "./fixtures"
   }
 }
 

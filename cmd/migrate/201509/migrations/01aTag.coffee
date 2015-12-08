@@ -30,8 +30,8 @@ checkConsistent = ->
   Tags.find({}).toArray (e, all) ->
     for o in all
       expectObjectId(o._id)
-      expectAttr(o, 'name', String)
-      expectAttr(o, 'slug', String)
+      EXPECT.attr(o, 'name', String)
+      EXPECT.attr(o, 'slug', String)
       expect(o[attr]).to.be.undefined for attr in migrated.attrs_gone.split(' ')
 
       TagsBySlug[o.slug] = o

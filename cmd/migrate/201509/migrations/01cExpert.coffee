@@ -9,11 +9,11 @@ checkClean = ->
       expectObjectId(o._id)
       expectObjectId(o.userId)
       expect(o.rate && o.rate > 0, "rate for {o._id}").to.be.true
-      # expectAttr(o,'brief', String)
-      expectAttr(o,'tags')
+      # EXPECT.attr(o,'brief', String)
+      EXPECT.attr(o,'tags')
       for t in o.tags
-        expectAttr(t,'_id',ObjectId)
-        expectAttr(t,'sort',Number)
+        EXPECT.attr(t,'_id',ObjectId)
+        EXPECT.attr(t,'sort',Number)
         # expect(o.sort?, "tag no sort #{JSON.stringify(o)}").to.exist
       if !UserGraph[o.userId]
         $log('No user for Expert: '.red.dim, o)
@@ -94,13 +94,13 @@ migratesOlderTags = ->
   checks = -> expectAllPromises resolveResult('Experts','experts'),
     ashokVarma: (o, orig) ->
       expect(o.tags.length).to.equal(8)
-      expectIdsEqual(o.tags[0]._id, FIXTURE.tags.android._id)
+      EXPECT.equalIds(o.tags[0]._id, FIXTURE.tags.android._id)
       expect(o.tags[0].sort).to.equal(0)
-      expectIdsEqual(o.tags[3]._id, FIXTURE.tags.javascript._id)
+      EXPECT.equalIds(o.tags[3]._id, FIXTURE.tags.javascript._id)
       expect(o.tags[3].sort).to.equal(3)
-      expectIdsEqual(o.tags[5]._id, FIXTURE.tags["ruby-on-rails"]._id)
+      EXPECT.equalIds(o.tags[5]._id, FIXTURE.tags["ruby-on-rails"]._id)
       expect(o.tags[5].sort).to.equal(5)
-      expectIdsEqual(o.tags[7]._id, "5181d0aa66a6f999a465ece5")
+      EXPECT.equalIds(o.tags[7]._id, "5181d0aa66a6f999a465ece5")
       expect(o.tags[7].sort).to.equal(7)
     alexandruVladutu: (o, orig) ->
       expect(o.tags.length).to.equal(6)

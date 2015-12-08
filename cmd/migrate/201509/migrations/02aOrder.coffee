@@ -59,8 +59,8 @@ checkCONSISTENT = ->
       else
         noRequestId.push o._id
 
-      expectAttr(o, 'by', Object)
-      expectAttr(o.by, '_id', ObjectId)
+      EXPECT.attr(o, 'by', Object)
+      EXPECT.attr(o.by, '_id', ObjectId)
 
       expectObjectId(o.userId)
       if UserGraph[o.userId]?
@@ -68,7 +68,7 @@ checkCONSISTENT = ->
       else if !orderedByStaff
         $log("order[#{o._id}] by userId[#{o.userId}].USER no longer exists".red, o._id)
 
-      expectAttr(o, 'lines', Array)
+      EXPECT.attr(o, 'lines', Array)
       if o.lines[0].type != 'ticket' && o.lines[0].type != 'credit'
 
         if o.userId.toString() != o.by._id.toString() && !orderedByStaff
@@ -83,7 +83,7 @@ checkCONSISTENT = ->
           if li.suggestion
             if li.suggestion.expert._id?
               expert = li.suggestion.expert
-              expectAttr(expert, 'userId', ObjectId)
+              EXPECT.attr(expert, 'userId', ObjectId)
               if !orderedByStaff
                 expect(expert.userId, "suggestion.expert.userId shouldn't be equal to o.UserId: "+JSONSTRING[o._id]).to.not.equal(o.userId.toString())
             else
@@ -95,7 +95,7 @@ checkCONSISTENT = ->
             expect(li.info.expert.userId, "line.info.expert.userId should be undefined").to.be.undefined
 
           if expert?
-            expectAttr(expert,'_id', ObjectId)
+            EXPECT.attr(expert,'_id', ObjectId)
             if ExpertGraph[expert._id]?
               refIncrement UserGraph[ExpertGraph[expert._id].user], 'ordered'
             else
@@ -121,15 +121,15 @@ fixesUserIdsNotEqualExpertUserId = ->
     ups = []
     for o in all
       expectObjectId(o.userId)
-      expectAttr(o,'company', Object)
+      EXPECT.attr(o,'company', Object)
       expect(o.lines.length, "more than one line #{o._id}").to.equal(1)
       # $log(o.lines[0].suggestion)
-      expectAttr(o.company.contacts[0], 'userId', String)
+      EXPECT.attr(o.company.contacts[0], 'userId', String)
       contactUserId = o.company.contacts[0].userId
       orderUserId = o.userId.toString()
       if contactUserId != orderUserId && !ORDER.byStaff[orderUserId]?
-        expectAttr(o.lines[0].suggestion, 'expert', Object)
-        expectAttr(o.lines[0].suggestion.expert, 'userId', String)
+        EXPECT.attr(o.lines[0].suggestion, 'expert', Object)
+        EXPECT.attr(o.lines[0].suggestion.expert, 'userId', String)
         {expert} = o.lines[0].suggestion
         if expert._id? && expert.userId == orderUserId
           # $log('Got screwed up Order.userId == expert._id'.red)
@@ -222,7 +222,7 @@ fixesExpertObjectIds = ->
           if !l.suggestion.expert._id
             $log('o', o, l.suggestion)
           else
-            expectAttr(l.suggestion.expert, '_id', String)
+            EXPECT.attr(l.suggestion.expert, '_id', String)
             l.suggestion.expert._id = ObjectId(l.suggestion.expert._id.toString())
             l.suggestion.expert.userId = ObjectId(l.suggestion.expert.userId.toString())
             ups.push( updateOne: { q: {_id:o._id}, u: { $set: {lines:o.lines} }, upsert: false } )

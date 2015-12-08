@@ -60,7 +60,7 @@ var _resolve = (A, B) => ({
     return val
   },
   emails(auth) {
-    var val = { emails: A.emails||[] }
+    var val = { emails: A.emails||B.emails||[] }
 
     if (!A.emailVerified && B.emailVerified)
       $log(`WARN: Sure you want ${A.email}(no verified) vs ${B.email}(verified)?`.white)
@@ -75,6 +75,9 @@ var _resolve = (A, B) => ({
 
     if ( !_.find(val.emails, em => em.value.toLowerCase() == B.email ) )
       val.emails.push({value:B.email,verified:B.emailVerified||false})
+
+    val.emails.forEach(em => em.primary = em.value == A.email)
+    val.emails.forEach(em => em._id = em._id || new ObjectId())
 
     if (verbose) $log('user.emails'.blue, val)
     return val
@@ -200,6 +203,7 @@ var mergeUserDocs = (e, MERGE, A, B, Overrides, done) => {
   M.meta = { activity: [{_id: new ObjectId(), by: {name:'jk'}, action: `merged:[${R._id}]`}] }
 
   Object.assign(MERGE.merged, { user: M })
+  Object.assign(R, {name: M.name}, { email: A.email == M.email ? B.email : A.email})
   Object.assign(MERGE.removed, { user: R })
 
   done(e, MERGE)
@@ -238,6 +242,8 @@ var mergeExpertDocs = (A, B) =>
       M.gmail = moreRecent.gmail || either('gmail', AE, BE)
     if (either('activity', AE, BE))
       M.activity = _.union(AE.activity||[],BE.activity||[])
+    if (either('meta', AE, BE))
+      M.meta = Object.extend(AE.meta||{},BE.meta||{})
 
     Object.assign(MERGE.merged, { expert: M })
     Object.assign(MERGE.removed, { expert: R })
@@ -266,15 +272,17 @@ var save = (e, MERGE, done) => {
   if (merged.expert)
     ops.push(Experts.updateMany({ userId: removed.user._id }, { $set: { userId: merged.user._id }}))
 
+  ops.push(Users.remove({ _id: removed.user._id }))
   ops.push(Bookings.updateMany({customerId: removed.user._id }, { $set: { customerId: merged.user._id }}))
   ops.push(Bookings.updateMany({'participants.info._id': removed.user._id }, { $set: {'participants.$.info._id': merged.user._id}} ))
   ops.push(Orders.updateMany({userId: removed.user._id }, { $set: { userId: merged.user._id }}))
+  ops.push(Orders.updateMany({'lines.info.released.by._id': removed.user._id }, { $set: { 'lines.$.info.released.by._id': merged.user._id }}))
   ops.push(Requests.updateMany({userId: removed.user._id }, { $set: { userId: merged.user._id }}))
   ops.push(Paymethods.updateMany({userId: removed.user._id }, { $set: { userId: merged.user._id }}))
   ops.push(Payouts.updateMany({userId: removed.user._id }, { $set: { userId: merged.user._id }}))
+  ops.push(Payouts.updateMany({'lines.info.released.by._id': removed.user._id }, { $set: { 'lines.$.info.released.by._id': merged.user._id }}))
   // ops.push(Posts.updateMany({'by._id': removed.user._id }, { $set: { 'by._id': merged.user._id }}))
   ops.push(Posts.updateMany({'by.userId': removed.user._id }, { $set: { 'by._id': merged.user._id, 'by.userId': merged.user._id }}))
-  ops.push(Users.remove({ _id: removed.user._id }))
   ops.push(Users.update({ _id: merged.user._id }, merged.user ))
 
   Promise.all(ops)
@@ -304,7 +312,7 @@ module.exports = function(userA, userB, overrides, done) {
   expect(A.email, JSON.stringify(A) + ` != `.grey + JSON.stringify(B) ).not.equal(B.email)
   expect(A._id).not.equal(B._id)
   if (A.auth.gh && B.auth.gh)
-    expect(A.auth.gh.id).to.equal(B.auth.gh.id)
+    expect(A.auth.gh.id, 'Github ids are not the same').to.equal(B.auth.gh.id)
 
   for (var attr in A)
     expect(['emails','meta'].concat(fields.user.known).indexOf(attr), `A[${A._id}].unknown user field ${attr}`).not.equal(-1)

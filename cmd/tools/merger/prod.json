@@ -1,0 +1,22 @@
+{
+  "stubs": {
+    "on":                 false
+  },
+  "colors": {
+    "seed":               "magenta",
+    "spec":               "white",
+    "error":              "red"
+  },
+  "mongo": {
+    "url":                "{{required}}",
+    "collections":        ["orders","users","experts","tags","paymethods","payouts","requests","bookings","posts","templates"]
+  },
+  "paths": {
+    "app":                "../../migrate/201509/app.coffee",
+    "fixtures":           "./fixtures"
+  },
+  "init": {
+    "timeout":            4000
+  }
+}
+
