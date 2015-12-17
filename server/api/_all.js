@@ -13,6 +13,5 @@ module.exports = {
   Companys:     require('./companys'),
   Views:        require('./views'),
   Requests:     require('./requests'),
-  Payouts:      require('./payouts'),
   Chat:         require('./chat'),
 }

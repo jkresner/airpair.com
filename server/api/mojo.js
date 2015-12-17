@@ -4,7 +4,6 @@ module.exports = require('./_api').initAPI(
   getMe: (req) => [],
   getForExpertsPage: (req) => [],
   getRanked: (req) => [req.expert,req.query],
-  // getMatchesForRequest: (req) => [req.request],
   getMatchesForDashboard: (req) => [],
   updateMatchingStats: (req) => [req.expertshaped,req.request],
 }, {

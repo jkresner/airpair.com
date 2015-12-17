@@ -47,12 +47,6 @@ var cfg = {
       short: 'tw',
       consumerKey: 'Tfw8PWs5LcxqrWlFJWUhXf8i8',
       consumerSecret: 'yoA38VC94a2gcxJ7ewCyNn8nPu7bHVVVMTauZTanlvkgXBWNOE' },
-    paypal: {
-      mode: 'sandbox',
-      clientID: 'AVk7JRBmL3kzKnxrLC8Ze98l2rg__gK1PhASloHmd0wsDvsvkSJd_QnWx3xE',
-      clientSecret: 'EGLE0xD3MJO4dY6GxGVngdU8ssl5cHke1vVmuCzmmS0KD4QFjvHEpmb2YgRT',
-      scope: [ 'profile', 'email', 'address', 'openid',
-        'https://uri.paypal.com/services/paypalattributes']                },
     linkedin: {
       short: 'in',
       consumerKey: 'sy5n2q8o2i49',
@@ -214,9 +208,6 @@ module.exports = function(env) {
     cfg.auth.twitter.consumerKey = process.env.AUTH_TWITTER_CONSUMER_KEY,
     cfg.auth.twitter.consumerSecret = process.env.AUTH_TWITTER_CONSUMER_SECRET
 
-    cfg.auth.paypal.mode = 'live'
-    cfg.auth.paypal.clientID = process.env.AUTH_PAYPAL_CLIENTID,
-    cfg.auth.paypal.clientSecret = process.env.AUTH_PAYPAL_CLIENTSECRET
     cfg.auth.linkedin.consumerKey = process.env.AUTH_LINKEDIN_CONSUMERKEY
     cfg.auth.linkedin.consumerSecret = process.env.AUTH_LINKEDIN_CONSUMERSECRET
     cfg.auth.bitbucket.consumerKey = process.env.AUTH_BITBUCKET_CONSUMERKEY

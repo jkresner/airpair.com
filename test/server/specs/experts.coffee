@@ -24,8 +24,7 @@ create = ->
           # expect(exp2.gh.followers).to.exist
           # expect(exp2.gp.id).to.contain('107399914803761861041')
           exp2.rate = 150
-          PUT "/experts/#{expert._id}/me", exp2, {status:400}, (err) ->
-            EXPECT.contains(err.message, 'Go to consult.airpair')
+          PUT "/experts/#{expert._id}/me", exp2, {contentType:/text/,status:404}, (err) ->
             DONE()
             # DB.docById 'Expert', expert._id, (dExpert2) ->
             #   expect(dExpert2.lastTouch.action, 'update')
@@ -44,8 +43,8 @@ create = ->
             PUT "/users/me/initials", { initials: 'ap' }, ->
               PUT "/users/me/location", FIXTURE.wrappers.localization_melbourne.locationData, ->
                 PUT "/users/me/bio", { bio: 'a bio for apexpert 1'}, ->
-                  POST "/experts/me", {rate:20,tags:[FIXTURE.tags.angular]}, { status: 400 }, (err) ->
-                    EXPECT.contains(err.message, 'profile deprecated in v2 migratio')
+                  POST "/experts/me", {rate:20,tags:[FIXTURE.tags.angular]}, { contentType:/text/,status: 404 }, (err) ->
+
                     # expect(expert._id).to.exist
                     # expect(expert.lastTouch).to.exist
                     # expect(expert.name).to.equal(USERS.ape1.name)

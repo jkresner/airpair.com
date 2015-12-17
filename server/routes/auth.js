@@ -6,17 +6,6 @@ var passport                 = require('passport')
 
 var routes = {
 
-
-v1: Router()
-  //-- Don't want returnTo over ridden on oauth callbacks
-  .get('/paypal/callback', mw.authd, Wrappers.PayPal.handleOAuthCallback,
-    mw.handleOAuthSuccess('paypal', 'paymethods', 'addOAuthPayoutmethod'))
-
-  // Looks at the querystring and save to session if ?returnTo=xxx exists
-  .use(mw.setReturnTo)
-  .use(mw.noCrawl('/'))
-  .get('/paypal-loginurl', mw.authd, (req,res) => res.json({url:Wrappers.PayPal.loginUrl()}) ),
-
 connect: Router()
   .use(mw.setReturnTo)
 
@@ -77,7 +66,6 @@ module.exports = function(app) {
     res.redirect(config.auth.loginUrl)
   })
 
-  app.use('/v1/auth', routes.v1)
   app.use('/auth', routes.connect)
 
 }

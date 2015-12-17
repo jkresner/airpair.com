@@ -17,9 +17,9 @@ var api = initAPI(
   svc
 , {
 
-  getByIdForEditingInfo: (req) => [req.post],
-  getByIdForEditing: (req) => [req.post],
-  getByIdForSubmitting: (req) => [req.post],
+  // getByIdForEditingInfo: (req) => [req.post],
+  // getByIdForEditing: (req) => [req.post],
+  // getByIdForSubmitting: (req) => [req.post],
   getByIdForForking: (req) => [req.post],
   getByIdForPublishing: (req) => [req.post],
   getByIdForContributors: (req) => [req.post],
@@ -35,13 +35,13 @@ var api = initAPI(
   getAllForAdmin: (req) => [],
   getNewFoAdmin: (req) => [],
 
-  checkSlugAvailable: (req) => [req.post, req.params.slug],
-  update: (req) => [req.post,req.body],
-  updateMarkdown: (req) => [req.post,req.body],
+  // checkSlugAvailable: (req) => [req.post, req.params.slug],
+  // update: (req) => [req.post,req.body],
+  // updateMarkdown: (req) => [req.post,req.body],
   publish: (req) => [req.post,req.body],
-  submitForReview: (req) => [req.post, req.body.slug],
-  propagateMDfromGithub: (req) => [req.post],
-  updateGithubHead: (req) => [req.post, req.body.md, req.body.commitMessage],
+  // submitForReview: (req) => [req.post, req.body.slug],
+  // propagateMDfromGithub: (req) => [req.post],
+  // updateGithubHead: (req) => [req.post, req.body.md, req.body.commitMessage],
   addForker: (req) => [req.post],
   clobberFork: (req) => [req.post],
   deleteById: (req) => [req.post],
