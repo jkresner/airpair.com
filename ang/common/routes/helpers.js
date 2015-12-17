@@ -2,30 +2,6 @@
 
   var self = {};
 
-  // self.resolveExpert = function(args) {
-  //   return ['$rootScope', '$location', '$q',
-  //     function($rootScope, $location, $q) {
-  //       // console.log('resolveExpert')
-  //       if (!$rootScope.session) {
-  //         $location.path('/login')
-  //         return $q.reject()
-  //       }
-  //       else if (!$rootScope.session._id) {
-  //         $location.path('/login')
-  //         return $q.reject()
-  //       }
-  //       else if (!$rootScope.session.cohort ||
-  //         !$rootScope.session.cohort.expert ||
-  //         !$rootScope.session.cohort.expert._id
-  //       ) {
-  //         $location.path('/be-an-expert')
-  //         return $q.reject()
-  //       }
-
-  //       return $q
-  //     }];
-  // }
-
 
   self.resolveSession = function(args) {
     return ['SessionService', '$rootScope', '$window', '$location', '$q',

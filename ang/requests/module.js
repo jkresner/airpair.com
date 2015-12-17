@@ -11,20 +11,17 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
     list:   { template: require('./list.html'), controller: 'RequestListCtrl' },
     create: { resolve: authd, template: require('./new.html'), controller: 'RequestCtrl' },
     edit: { resolve: authd, template: require('./edit.html'), controller: 'RequestEditCtrl' },
-    // help: { resolve: authd, template: require('./types.html'), controller: 'RequestTypesCtrl' },
     review: { template: require('./review.html'), controller: 'ReviewCtrl' }
   };
 
   $routeProvider
     .when('/requests', actions.list)
-    // .when('/help/types', actions.help)
     .when('/help/request', actions.create)
     .when('/find-an-expert', actions.create)
     .when('/hire-software-developers', actions.create)
     .when('/meet-experts', actions.create)
     .when('/help/request/:id', actions.edit)
     .when('/meet-experts/:id', actions.edit)
-    // .when('/reviews', actions.review)
     .when('/review/:id', actions.review)
 
 })
@@ -134,25 +131,22 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
 
       $scope.isExpert = Shared.roles.request.isExpert($scope.session,r)
       if ($scope.isExpert) {
-        var sug = r.suggested[0]
-
-        console.log('sug', sug.expert, sug.expert.timezone)
-        // if (!sug.expert.timezone)
-          // window.location = `/be-an-expert?review=${window.location.pathname}`
+        var sug = _.find(r.suggested, s => s.expert.userId == $scope.session._id)
+        if (!sug) sug = r.suggested[0]
+        $scope.expertId = sug.expert._id
 
         $scope.displayRate = sug.suggestedRate.expert
         $scope.notYetReplied = !sug.expertStatus || sug.expertStatus == 'waiting'
+
         if ($scope.notYetReplied)
         {
           $scope.data = {expertStatus:"",expertComment:"",expertAvailability:""}
-          $scope.expertEdit = true;
         }
         else {
           var {expertStatus,expertComment,expertAvailability} = sug
           $scope.data = {expertStatus,expertComment,expertAvailability}
-          $scope.expertEdit = false;
         }
-        // console.log('$scope', $scope.isExpert, $scope.expertEdit, $scope.data, sug)
+        $scope.expertEdit = true;
       }
 
       $timeout(function(){ PageHlpr.highlightSyntax({ addCtrs: false })}, 500)
@@ -171,8 +165,7 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
       if ($scope.data.expertStatus != 'available')
         $scope.data.expertAvailability = "Not available"
 
-      var expertId = $scope.r.suggested[0].expert._id
-      DataService.requests.replyByExpert($scope.r._id, expertId, $scope.data,
+      DataService.requests.replyByExpert($scope.r._id, $scope.expertId, $scope.data,
         (result) => {
           // $scope.r = result;
           // $scope.expertEdit = false;

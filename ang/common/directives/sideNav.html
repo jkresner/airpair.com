@@ -1,72 +1,33 @@
 <div ng-if="session._id" >
 
-<header>
-  <div class="toggle" id="sideNavToggle" track-click="sideNav" data="{{ toggleAction }}" track-click-if="!session._id" ng-click="sideNav.toggle()"></div>
-</header>
+<header class="help">
 
-
-<section class="help">
   <a href="/help/request" class="btn btn-inverse" target="_self">
     <div class="pair"></div><span>get help</span>
   </a>
-</section>
+
+</header>
 
 
 <section class="main">
   <ul>
     <li><a href="/dashboard"><div class="dashboard"></div><span>dashboard</span></a></li>
-    <!-- <li><a id="navStackToggle" track-click="sideNav" href="#" ng-click="openStack()">
-        <div class="stack"></div><span>stack</span>
-      </a>
-    </li> -->
-    <!--<li><a href="/experts">experts</a></li>
-    <li><a href="#">airpairs</a></li> -->
-<!--     <li>
-      <a id="navBookmarksToggle" track-click="sideNav" href="#" ng-click="openBookmarks()"><div class="bookmarks"></div><span>bookmarks</span>
-      </a>
-    </li> -->
     <li><a href="/billing"><div class="billing"></div><span>billing</span></a></li>
     <li><a href="/me" class="avatar"><div><img ng-src="{{ session.avatar }}?s=31" /></div><span>account</span></a></li>
-<!--     <li><a href="/settings"><div class="settings"></div><span>settings</span></a></li> -->
-    <!-- <li><a href="/logout" target="_self"><div class="logout"></div><span>logout</span></a></li> -->
   </ul>
 
   <footer>
     <ul class="more">
-      <li><a href="mailto:team@airpair.com" target="_blank" class="ct">contact airpair</a></li>
-      <!-- <li class="nomob"><a href="/workshops" target="_self" class="wk">2014 Workshops</a></li> -->
+      <li><a href="mailto:team@airpair.com" target="_blank" class="ct">contact us</a></li>
+      <li><a href="https://consult.airpair.com?utm_content=apcom_side_nav" target="_blank" class="pp">Start consulting</a></li>
+      <li><a href="https://author.airpair.com?utm_content=apcom_side_nav" target="_blank" class="pp">Author content</a></li>
       <li><a href="/tos" target="_blank" class="pp">Terms of Service</a></li>
       <li><a href="/privacy" target="_blank" class="pp">Privacy Policy</a></li>
-<!--       <li><a href="/rss" target="_self" class="rss">Rss</a></li> -->
       <li><a href="/logout" target="_self" class="logout">Logout</a></li>
-      <li>&copy; 2015 airpair, inc.</li>
+      <li>&copy; 2016 airpair, inc.</li>
     </ul>
   </footer>
 
 </section>
-
-<section class="expert">
-  <ul>
-    <li><a href="/be-an-expert" class="avatar"><div><img ng-src="{{ session.avatar }}?s=31" /></div><span>profile</span></a></li>
-    <li><a href="/office"><div class="dashboard"></div><span>office</span></a></li>
-<!--     <li><a href="/availability"><div class="deals"></div><span>availability</span></a></li> -->
-    <!-- <li><a href="/deals"><div class="deals"></div><span>deals</span></a></li> -->
-    <li><a href="/payouts"><div class="billing"></div><span>payouts</span></a></li>
-<!--     <li><a href="/settings"><div class="settings"></div><span>settings</span></a></li> -->
-  </ul>
-
-
-  <footer>
-    <ul class="more">
-      <li><a href="/tos" target="_blank" class="pp">terms of service</a></li>
-      <li><a href="/privacy" target="_blank" class="pp">privacy policy</a></li>
-      <li>&copy; 2015 airpair, inc.</li>
-    </ul>
-  </footer>
-
-</section>
-
 
 </div>
-
-<div stack></div>
