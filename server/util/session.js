@@ -51,7 +51,12 @@ module.exports = function(app, initSessionStore)
       if (!Strategy) Strategy = require(`passport-${provider}`).Strategy
 
       var success = (req, token, refresh, resp, cb) => {
-        $log('oauth.resp'.cyan, JSON.stringify(resp._json).gray)
+        // if (provider == 'github') {
+        //   var gh = resp._json
+        //   $log('oauth.gh.resp'.cyan, `${gh.id} ${gh.login} ${gh.email} flw:${gh.followers}|${gh.following} ${gh.created_at}`.gray)
+        // }
+        // else
+        //   $log('oauth.resp'.cyan, JSON.stringify(resp._json).gray)
         require('../services/auth').link.call(req, provider, resp._json, {token,refresh}, cb)
       }
 

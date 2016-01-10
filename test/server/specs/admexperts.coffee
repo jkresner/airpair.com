@@ -190,6 +190,7 @@ module.exports = ->
 
   before (done) ->
     qExists = require('../../../server/services/users.data').query.existing
+    DB.ensureDoc 'User', FIXTURE.users.admin, ->
     DB.removeDocs 'User', qExists.byEmails(['airpairtest1@gmail.com']), ->
       DB.ensureExpert 'snug', ->
         done()
@@ -197,8 +198,6 @@ module.exports = ->
   after ->
 
 
-  DESCRIBE("Create: ", create)
-  # DESCRIBE("Migrate: ", migrate)
   DESCRIBE("Admin: ", admin)
 
 

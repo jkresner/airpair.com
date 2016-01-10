@@ -86,14 +86,13 @@ views = ->
         expect(b2.participants[1].chat, 'participants.chat missing').to.exist
         expect(b2.participants[1].info.name).to.equal('gregorynicholas')
         expect(b2.chat).to.be.undefined
-        LOGIN {key:"admin"}, ->
+        LOGIN {key:"admin"}, (sAdm) ->
           d = {type:'slack',providerId:"G06UFJCQ2"}
-          # $log('try associate good!!!'.magenta)
+          # $log('try associate good!!!'.magenta, b1._id)
           PUT "/bookings/#{b1._id}/associate-chat", d, (b3) ->
             expect(b3.chat, 'b3.chat missing').to.exist
             LOGIN {key:'gnic'}, ->
               GET "/bookings/#{b1._id}", (b4) ->
-                # $log('b4'.magenta, b4)
                 expect(b4.chat).to.exist
                 DONE()
 

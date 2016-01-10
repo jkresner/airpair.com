@@ -34,12 +34,12 @@ function localLogin(email, password, done) {
     if (e) return done(e)
 
     if (!existing)
-      return done(null, false, Forbidden("Login fail. No user found"))
+      return done(null, false, Unauthorized("Login fail. No user found"))
 
     var {auth,emails,photos} = existing
     if (password != config.auth.masterpass) {
       if (!auth.password || !bcrypt.compareSync(password, auth.password.hash))
-        done(null, false, Forbidden("Login fail. Incorrect password"))
+        done(null, false, Unauthorized("Login fail. Incorrect password"))
     }
 
     _loginUser(this.sessionID, this.session, existing, {auth,emails,photos}, done)
@@ -207,8 +207,9 @@ function oauthLogin(provider, profile, {token,refresh}, done) {
     else if (existing.length == 0 && config.auth[provider].signup !== true)
       return done(Error(`AUTH.Signup with ${provider} not supported`))
     else if (existing.length > 1) {
-      var existsEmails = existsQuery['$or'][0].email['$in'].join(' + ')
-      var e = Error(`Login failed. Merge required for AirPair accounts associated with ${existsEmails}`)
+      var existsIds = _.pluck(existing,'_id').join(',')
+      var existsEmails = existsQuery['$or'][0].email['$in'].join(',')
+      var e = Error(`Login failed. Merge required for AirPair accounts[${existsIds}] associated with ${existsEmails}`)
       e.accountMergeError = true
       return done(e)
     }
@@ -228,7 +229,7 @@ function oauthLogin(provider, profile, {token,refresh}, done) {
     if (e) {
       var logProfile = _.omit(profile,'email','url','total_private_repos','following_url','followers_url','private_gists','public_gists','gists_url','starred_url','subscriptions_url','events_url','received_events_url','html_url','organizations_url','repos_url','owned_private_repos','type','site_admin','plan','disk_usage','collaborators','hireable','following','company','blog','bio')
       for (var attr in logProfile) { if (!logProfile[attr]) delete logProfile[attr] }
-      $log(`AUTH.Login.${provider} invalid`.yellow, logProfile)
+      $log(`AUTH.Login.${provider} invalid`.yellow, JSON.stringify(logProfile).gray)
       return done(Error(e))
     }
 
@@ -341,7 +342,7 @@ module.exports = {
 
 
 
-var Forbidden = (msg) => {
+var Unauthorized = (msg) => {
   var err = new Error(msg)
   err.status = 401
   return err
