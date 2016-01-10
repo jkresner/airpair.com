@@ -106,8 +106,6 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
     $scope.isCustomer = Shared.roles.request.isCustomer($scope.session,r)
     $scope.replies = _.filter(r.suggested,(s)=>s.expertComment!=null)
 
-    // console.log('$scope.session.primaryPayMethodId', $scope.session.primaryPayMethodId)
-
     if ($scope.isCustomer) { // || $scope.isAdmin
       $scope.displayRate = r.budget
 
@@ -130,24 +128,8 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
         $scope.reviewClass = 'inactive booked'
 
       $scope.isExpert = Shared.roles.request.isExpert($scope.session,r)
-      if ($scope.isExpert) {
-        var sug = _.find(r.suggested, s => s.expert.userId == $scope.session._id)
-        if (!sug) sug = r.suggested[0]
-        $scope.expertId = sug.expert._id
-
-        $scope.displayRate = sug.suggestedRate.expert
-        $scope.notYetReplied = !sug.expertStatus || sug.expertStatus == 'waiting'
-
-        if ($scope.notYetReplied)
-        {
-          $scope.data = {expertStatus:"",expertComment:"",expertAvailability:""}
-        }
-        else {
-          var {expertStatus,expertComment,expertAvailability} = sug
-          $scope.data = {expertStatus,expertComment,expertAvailability}
-        }
-        $scope.expertEdit = true;
-      }
+      if ($scope.isExpert)
+        window.location = `https://consult.airpair.com/job/${requestId}`
 
       $timeout(function(){ PageHlpr.highlightSyntax({ addCtrs: false })}, 500)
     }
@@ -156,25 +138,6 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
     console.log('request not found')
   })
 
-
-  $scope.setExpertEdit = () => $scope.expertEdit = true
-
-  $scope.submit = (formValid, data) => {
-    if (formValid)
-    {
-      if ($scope.data.expertStatus != 'available')
-        $scope.data.expertAvailability = "Not available"
-
-      DataService.requests.replyByExpert($scope.r._id, $scope.expertId, $scope.data,
-        (result) => {
-          // $scope.r = result;
-          // $scope.expertEdit = false;
-          // console.log('$scope.expertEdit', $scope.expertEdit, $scope.isExpert)
-          getReview();
-      }, ServerErrors.add)
-    }
-
-  }
 
   getReview();
 

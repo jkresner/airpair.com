@@ -101,26 +101,6 @@ var validation = {
       if (existing) return `Can not send the same message type once`
     }
   },
-  replyByExpert(user, request, expert, reply)
-  {
-    // $log('replyByExpert.validation'.yellow, expert)
-    if (!_.idsEqual(expert.userId,user._id))
-      return `Must be logged in expert to reply to request as expert`
-
-    if (!request.adm || !request.adm.active) return `Cannot reply to this request, as it is not active`
-
-    // if (!request.suggested.available > 3) return 'Only 4 experts can reply'
-    // if (expert.isV0) return `Must migrate expert profile to reply`
-
-    if (!expert.initials) return `Expert initials required`
-    if (!expert.location) return `Expert location`
-    if (!expert.timezone) return `Expert timezone`
-    if (!expert.email) return `Expert email`
-
-    if (!reply.expertComment) return `Reply comment required`
-    if (!reply.expertStatus) return `Reply status required`
-    if (!reply.expertAvailability) return  `Reply availability required`
-  },
   deleteById(user, original)
   {
     var isAdmin = _.contains(user.roles, 'admin')

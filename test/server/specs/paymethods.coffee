@@ -118,28 +118,6 @@ noAnalytics = ->
 #             DONE()
 
 
-# payouts = ->
-
-#   IT 'Can get expert payout methods', ->
-#     STORY.newExpert 'louf', (expert, sAbha) ->
-#       GET '/billing/payoutmethods', {}, (pms) ->
-#         expect(pms.length).to.equal(0)
-#         SETUP.injectOAuthPayoutMethod sAbha,'paypal','payout_paypal_enus_verified', (pm) ->
-#           expect(pm._id).to.exist
-#           expect(pm.type).to.equal('payout_paypal')
-#           expect(pm.info.verified_account).to.equal('true')
-#           GET '/billing/payoutmethods', {}, (pms2) ->
-#             expect(pms2.length).to.equal(1)
-#             DONE()
-
-
-#   IT 'Fail to add unverified paypal payout method', ->
-#     STORY.newExpert 'admb', (expert, sTmot) ->
-#       SETUP.injectOAuthPayoutMethod sTmot,'paypal','payout_paypal_enus_unverified', (pm) ->
-#         expect(pm).to.be.undefined
-#         DONE()
-
-
 module.exports = ->
 
   @timeout(10000)

@@ -105,21 +105,21 @@ var data = {
       'lastTouch':1,
       'adm': 1
     },
-    experts: {
-      '_id':1,
-      'title': 1,
-      'userId':1,
-      'by':1,
-      'suggested':1,
-      'calls._id':1,
-      'calls.expertId':1,
-      'calls.type':1,
-      'calls.duration':1,
-      'calls.datetime':1,
-      'calls.status':1,
-      'company.contacts.fullName':1,
-      'company.contacts.email':1,
-    },
+    // experts: {
+    //   '_id':1,
+    //   'title': 1,
+    //   'userId':1,
+    //   'by':1,
+    //   'suggested':1,
+    //   'calls._id':1,
+    //   'calls.expertId':1,
+    //   'calls.type':1,
+    //   'calls.duration':1,
+    //   'calls.datetime':1,
+    //   'calls.status':1,
+    //   'company.contacts.fullName':1,
+    //   'company.contacts.email':1,
+    // },
     meSuggested(r, userId, expertId) {
       if (userId) $log('meSuggested no longer supports userId', userId)
       // $log('meSuggested'.yellow, r.suggested, userId, new ObjectId())
@@ -240,17 +240,17 @@ var data = {
           }
         }
       },
-      experts(ctx, cb) {
-        return  (e,r) => {
-          if (e) return cb(e)
-          if (r.length) {
-            for (var req of r) {
-              req.suggested = data.select.meSuggested(req, ctx.user._id, ctx.expertId)
-            }
-          }
-          cb(null,r)
-        }
-      },
+      // experts(ctx, cb) {
+      //   return  (e,r) => {
+      //     if (e) return cb(e)
+      //     if (r.length) {
+      //       for (var req of r) {
+      //         req.suggested = data.select.meSuggested(req, ctx.user._id, ctx.expertId)
+      //       }
+      //     }
+      //     cb(null,r)
+      //   }
+      // },
     }
   },
 
@@ -274,9 +274,9 @@ var data = {
         ] }
     },
 
-    experts(expert) {
-      return {'suggested.expert._id':expert._id}
-    },
+    // experts(expert) {
+    //   return {'suggested.expert._id':expert._id}
+    // },
 
     incomplete: {
       'budget' : { '$exists': false }, status: { $in: ['received'] }

@@ -451,6 +451,26 @@ feedback = ->
 
 
 
+  # IT 'Cannot release a payment if not customer or admin', ->
+  #   STORY.newExpert 'dros', { payoutmethod: true }, (expert, expertSession, payoutmethod) ->
+  #     expertKey = expertSession.userKey
+  #     STORY.newBooking 'anca', data:{expertKey}, (s, booking1) ->
+  #       LOGIN {key:expertKey}, ->
+  #         PUT "/billing/orders/#{booking1.orderId}/release", {}, {status:403}, (err) ->
+  #           EXPECT.startsWith(err.message, "Payout[#{booking1.orderId}] must be released by owner")
+  #           GET "/billing/orders/payouts", {}, (orders) ->
+  #             expect(orders.length).to.equal(1)
+  #             expect(orders[0].lines.length).to.equal(1)
+  #             expect(orders[0].lines[0].type).to.equal('airpair')
+  #             expect(orders[0].lines[0].info.released).to.be.undefined
+  #             summary = payoutSummary(orders)
+  #             expect(summary.owed.count).to.equal(0)
+  #             expect(summary.paid.count).to.equal(0)
+  #             expect(summary.pending.count).to.equal(1)
+  #             DONE()
+
+
+
 module.exports = ->
 
   @timeout 60000
@@ -474,4 +494,5 @@ module.exports = ->
   DESCRIBE("Scheduling", scheduling)
   DESCRIBE("Recordings", recordings)
   # DESCRIBE("Feedback", feedback)
+  # DESCRIBE("Escrow", escrow)
 

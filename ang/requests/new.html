@@ -5,36 +5,9 @@
   </ol>
 </header>
 
-<h1 style="font-size:28px;font-weight:bold;margin-top:0;color:#3f4549">Happy holidays!</h1>
-
-<section id="request" ng-if="session._id" class="comingsoon">
-
-
-  <div style="max-width:380px;color:#3f4549">
-
-
-    <p style="font-size:18px">
-      On behalf of our Team, we hope 2015 was fruitful
-      and your software dreams came true.
-      <b>Thank you</b> for your support. We look
-
-    </p>
-
-
-    <h3>Open hours</h3>
-
-    <p style="font-size:16px">
-      We've got a big 2016 planned, so we sent our team
-      on holidays over the silly season. We'll be open
-      for business as usual December 28th and 29th and from
-      the 2nd of January onwards.
-    </p>
-
-
+<section id="request" ng-if="session._id">
+  <div class="requests" style="display:none">
+    <div request-list-item req="request"></div>
   </div>
 
-
-  <!-- <div request></div> -->
-
-</section>
-
+  <div request></div>

@@ -7,20 +7,6 @@
 
 <section ng-if="r" id="review" class="{{reviewClass}}">
 
-  <div ng-if="isExpert" class="alert alert-warning" style="float:right;width:220px">
-    <h4><b>Happy holidays!</b></h4>
-    <p>Thanks for your support in 2015.</p>
-    <p>If you haven't seen, this is the last feature moving shortly
-    moving to our new dedicated expert portal.</p>
-    <h3><a href="https://consult.airpair.com/">consult.airpair</a></h3>
-    <p>
-      You may get an error replying, but if you
-      <a href="https://consult.airpair.com/profile">update your profile</a>
-      it will work.
-    </p>
-  </div>
-
-
   <section ng-if="isCustomer && !session.location" class="localization">
     <p style="padding:20px 10px">Please provide your location / timezone to help with scheduling</p>
     <location-input data="data" on-select="updateLocation"></location-input>
@@ -30,54 +16,6 @@
     <h5>{{ r.title || 'Spec' }}</h5>
     <request-review-summary></request-review-summary>
   </section>
-
-  <section ng-if="isExpert && expertEdit" id="reply">
-
-    <section class="inactiveMSG">
-      <h3>Too late ...</h3>
-      <p>This request is no longer active. It's already been fulfiled, or solved.
-      Gotta be fast these days, I tell ya :p
-      </p>
-    </section>
-
-    <form ng-if="data" id="replyForm" class="expertReplyForm" novalidate name="replyForm" ng-submit="submit(replyForm.$valid, data)">
-
-    <h3>Want this AirPair?</h3>
-
-    <div form-group class="expertStatus">
-      <input form-control id="expertAvailable" name="expertStatus" ng-model="data.expertStatus" type="radio" value="available" required>
-      <label for="expertAvailable">I'm available</label>
-
-      <input form-control id="expertBusy" name="expertStatus" ng-model="data.expertStatus" type="radio" value="busy" required>
-      <label for="expertBusy">No thanks</label>
-
-      <div class="error" ng-if="formGroup.showError(replyForm.expertStatus)" ng-messages="replyForm.expertStatus.$error">
-          <div ng-message="required">Required</div>
-      </div>
-    </div>
-
-    <hr />
-    <div form-group ng-if="data.expertStatus">
-      <label for="expertComment">Message to customer</label>
-      <textarea form-control id="expertComment" name="expertComment" ng-model="data.expertComment"  required></textarea>
-      <div class="error" ng-if="formGroup.showError(replyForm.expertComment)" ng-messages="replyForm.expertComment.$error">
-          <div ng-message="required">Required</div>
-      </div>
-    </div>
-
-    <div form-group ng-if="data.expertStatus == 'available'">
-      <label for="expertAvailabilityTxt">Availability</label>
-      <textarea form-control id="expertAvailabilityTxt" name="expertAvailability" ng-model="data.expertAvailability" required></textarea>
-      <div class="error" ng-if="formGroup.showError(replyForm.expertAvailability)" ng-messages="replyForm.expertAvailability.$error">
-      </div>
-    </div>
-
-    <button ng-if="(data.expertStatus && data.expertComment)" type="submit" class="btn btn-primary">Send reply</button>
-
-  </form>
-
-  </section>
-
 
   <section class="replies" ng-if="isAnon">
     <form>
@@ -140,10 +78,6 @@
             <social-links profile="s.expert"></social-links>
             <div ng-bind-html="s.expertComment | markdownAsHtml"></div>
           </div>
-          <section ng-if="isExpert">
-            <strong ng-if="s.expertStatus == 'available'">${{s.suggestedRate.expert}}<span>/hr</span></strong>
-            <a ng-click="setExpertEdit()" class="btn">Edit reply</a>
-          </section>
           <section ng-if="(isCustomer || isAdmin) && s.expertStatus == 'available'">
             <strong>${{s.suggestedRate.total}}<span>/hr</span></strong>
             <a href="/billing/book/{{s.expert._id}}/{{r._id}}" class="btn">Book</a>

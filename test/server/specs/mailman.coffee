@@ -101,29 +101,6 @@ spinners = ->
         DONE()
 
 
-#     it 'Pipeliners notify request and reply', itDone ->
-#       SETUP.newCompleteRequest 'jkjk', {}, (r,s) ->
-#         expect(send.callCount).to.equal(1)
-#         EXPECT.startsWith(send.args[0][0].subject, "{Request} RUSH $100 #{s.name}")
-#         EXPECT.contains(send.args[0][0].text, "/#{r._id}")
-#         EXPECT.contains(send.args[0][0].text, "http://adm.airpa.ir/r/#{r._id}")
-#         EXPECT.contains(send.args[0][0].text, "RUSH")
-#         EXPECT.contains(send.args[0][0].text, s.name)
-#         LOGIN 'snug', (sExp) ->
-#           reply = expertComment: "I'll take it", expertAvailability: "Real-time", expertStatus: "available"
-#           PUT "/requests/#{r._id}/reply/#{FIXTURE.experts.snug._id}", reply, {}, (r2) ->
-#             expect(send.callCount).to.equal(3)
-#             # $log(send.args[1][1].subject)
-#             EXPECT.startsWith(send.args[1][0].subject, "[Reply] AVAILABLE by Ra'Shaun Stovall for #{s.name}")
-#             EXPECT.contains(send.args[1][0].text, "http://adm.airpa.ir/r/#{r._id}")
-#             EXPECT.contains(send.args[1][0].text, "/#{r._id}")
-#             EXPECT.contains(send.args[1][0].from, 'AP <team@airpair.com>')
-#             EXPECT.startsWith(send.args[2][0].subject, "[AirPair] Ra'Shaun Stovall is bookable for 24 hours")
-#             EXPECT.contains(send.args[2][0].text, "https://www.airpair.com/review/#{r._id}")
-#             EXPECT.contains(send.args[2][0].from, 'Pairbot <team@airpair.com>')
-#             DONE()
-
-
     IT 'Expert gets notification on booking', ->
       send = @send
       _id = ObjectId("55555ae4b38fc91937086df7")
