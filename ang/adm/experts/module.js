@@ -73,7 +73,7 @@ angular.module("ADMExperts", ['APDealsDirectives','APExpertsDirectives'])
     $scope.bookings = history.bookings
   }
 
-  DataService.experts.getHistory({_id}, setHistoryScope)
+  // DataService.experts.getHistory({_id}, setHistoryScope)
 
   $scope.saveNote = (body) =>
     AdmDataService.experts.saveNote({_id,body},setScope)

@@ -50,3 +50,21 @@ angular.module("ADMUsers", [])
 
 
 })
+
+
+.directive('slackStatus', (AdmDataService) => {
+  return {
+    template: require('./slackStatus.html'),
+    scope: {
+      chat: '=member',
+      userId: '=userid'
+    },
+    controller($scope, $element, $attrs) {
+      console.log('slackStatus', $scope.chat)
+      $scope.inviteToTeam = () =>
+        AdmDataService.chats.inviteToTeam({_id:$scope.userId}, (r)=>
+          $scope.invitedToSlackTeam = true
+        )
+    }
+  }
+})
