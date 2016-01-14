@@ -114,6 +114,16 @@ var get = {
   //   this.expertId = expert._id
   //   Request.getManyByQuery(query.experts(expert), { select: select.experts }, select.cb.experts(this, cb))
   // },
+
+  getAllowed(cb) {
+    Order.getManyByQuery({userId:this.user._id}, (e,r) => {
+      var total = 0
+      for (var order of r) total+=order.total
+      if (total < 180) cb(null, {require:'spend'})
+      else if (!this.user.location) cb(null, {require:'location'})
+      else cb(null,{welcome:this.user._id})
+    })
+  }
 }
 
 var admSet = (request, properties) =>

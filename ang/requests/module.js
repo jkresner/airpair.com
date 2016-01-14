@@ -42,14 +42,12 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
 })
 
 
-.controller('RequestCtrl', function($rootScope, $scope, StaticDataService, RequestHelper) {
+.controller('RequestCtrl', function($rootScope, $scope, DataService, RequestHelper) {
   //-- In case the come through from request scope from another page like review
   if ($scope.request) return window.location = '/help/request'
 
-  $scope.customers = StaticDataService.getRecentCustomers();
-  $scope.reviews = StaticDataService.getRecentReviews();
 
-  RequestHelper.setRequestTagsFromSession($scope)
+
 
 })
 

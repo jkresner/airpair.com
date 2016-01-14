@@ -329,3 +329,25 @@ angular.module("APRequestDirectives", [])
   };
 
 })
+
+
+
+.directive('requestGate', function(DataService, RequestHelper) {
+
+  return {
+    template: require('./gatevnext.html'),
+    controller($scope, $attrs) {
+      DataService.requests.getAuthd({}, function(r) {
+        if (r.welcome) {
+          $scope.reqsAuthd = true
+          RequestHelper.setRequestTagsFromSession($scope)
+        }
+        else if (r.require == 'spend')
+          $scope.topUp = true
+        else if (r.require == 'location')
+          $scope.setLoc = true
+      })
+    }
+  };
+
+})

@@ -5,27 +5,18 @@
 </header>
 
 <section id="dashboard" ng-if="session._id">
-<!--
-  <section ng-if="seen" class="notifications">
-    <div ng-if="!seen.hello" id="hello">
-      <a class="close" ng-click="closeNotification('hello')">x</a>
-      <h1><img ng-src="/static/img/css/request/ap-circle-mediumm.png" /> Welcome to AirPair</h1>
-      <p>This is your dashboard where you can customize the site, see your upcoming
-      pairing sessions and more!</p>
-    </div>
-  </section> -->
 
-  <section class="main">
-    <dashboard-bookings></dashboard-bookings>
-    <dashboard-requests></dashboard-requests>
-    <!-- <dashboard-experts></dashboard-experts> -->
-  </section>
+  <request-gate></request-gate>
 
-  <section class="side">
-    <dashboard-rebook ng-if="rebookings.length > 0"></dashboard-rebook>
-    <!-- <dashboard-stack></dashboard-stack> -->
-    <!-- <div class="bookmarks" dashboard-bookmarks></div> -->
-    <!-- <div class="dash-posts" dashboard-posts></div> -->
-  </section>
+  <div ng-if="reqsAuthd">
+    <section class="main">
+      <dashboard-bookings></dashboard-bookings>
+      <dashboard-requests></dashboard-requests>
+    </section>
+
+    <section class="side">
+      <dashboard-rebook ng-if="rebookings.length > 0"></dashboard-rebook>
+    </section>
+  </div>
 
 </section>

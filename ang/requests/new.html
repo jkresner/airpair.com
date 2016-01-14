@@ -1,13 +1,16 @@
 <header>
   <ol class="entry-meta breadcrumb">
-    <li><a href="/dashboard">Dashboard</a></li>
-    <li class="current">Get Help</li>
+    <li><a href="/dashboard">Expert help</a></li>
+    <li class="current">Get paired</li>
   </ol>
 </header>
 
 <section id="request" ng-if="session._id">
-  <div class="requests" style="display:none">
-    <div request-list-item req="request"></div>
+
+  <request-gate></request-gate>
+
+  <div ng-if="reqsAuthd">
+    <div request></div>
   </div>
 
-  <div request></div>
+</section>

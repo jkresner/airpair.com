@@ -38,6 +38,10 @@ module.exports = function(app) {
     //     cb(null, req.landing) })
     // )
 
+    .get('/2016-marketplace-survey',
+      app.renderHbsViewData('marketplaceSurvey', null, (req, cb) => {
+        cb(null, {}) }))
+
 
     .get('/100k-writing-competition',
       (req, res, next) => {

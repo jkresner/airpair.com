@@ -1,6 +1,7 @@
 module.exports = require('./_api').initAPI(
   require('../services/requests')
 ,{
+  getAllowed: (req) => [],
   getByIdForUser: (req) => [req.params.id],
   getByIdForAdmin: (req) => [req.params.id],
   getActiveForAdmin: (req) => [],

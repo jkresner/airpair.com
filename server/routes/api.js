@@ -78,6 +78,7 @@ other: Router()
 
   .post('/tags', bodyParam('tagfrom3rdparty'), API.Tags.createFrom3rdParty)
 
+  .get('/requests-authd', populate.user, API.Requests.getAllowed)
   .get('/requests', API.Requests.getMy)
   .get('/requests/:id', API.Requests.getByIdForUser)
   .get('/requests/:id/book/:expertshaped', API.Requests.getRequestForBookingExpert)

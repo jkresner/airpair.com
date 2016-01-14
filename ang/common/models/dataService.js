@@ -102,6 +102,7 @@ angular.module('APDataSvc', [])
     this.experts = expertFns;
 
     var requestFns = {
+      getAuthd: GET((d)=>`/requests-authd`),
       create: POST((d)=>`/requests`,null,(d)=>{return{type:'request',step:'type',value:d.type}}),
       update: PUT((d)=>`/requests/${d._id}`,null,(d)=>{ return{type:'request',step:d.step}}),
       getMyRequests: GET((d)=>`/requests`),
