@@ -110,10 +110,20 @@ var get = {
     Request.getManyByQuery(query.waiting, { sort: { 'adm.submitted': -1 }, select: select.pipeline }, select.cb.adm(cb))
   },
 
-  getExperts(expert, cb) {
-    this.expertId = expert._id
-    Request.getManyByQuery(query.experts(expert), { select: select.experts }, select.cb.experts(this, cb))
-  },
+  // getExperts(expert, cb) {
+  //   this.expertId = expert._id
+  //   Request.getManyByQuery(query.experts(expert), { select: select.experts }, select.cb.experts(this, cb))
+  // },
+
+  getAllowed(cb) {
+    Order.getManyByQuery({userId:this.user._id}, (e,r) => {
+      var total = 0
+      for (var order of r) total+=order.total
+      if (total < 180) cb(null, {require:'spend'})
+      else if (!this.user.location) cb(null, {require:'location'})
+      else cb(null,{welcome:this.user._id})
+    })
+  }
 }
 
 var admSet = (request, properties) =>
@@ -184,54 +194,6 @@ var save = {
     Request.updateSet(request._id, {adm,status,lastTouch}, select.cb.byRole(this,cb,cb))
   },
 
-  replyByExpert(request, expert, reply, cb)
-  {
-    var {suggested,adm,lastTouch,status,_id} = request
-    var replyStatus = reply.expertStatus.toUpperCase()
-
-    reply.reply = { time: new Date() }
-    // data.events.push @newEvent "expert reviewed", eR
-    var existing = _.find(suggested, (s) => _.idsEqual(s.expert._id, expert._id))
-
-    var previouslyNotAvailable = !existing || existing.expertStatus != 'available'
-
-    if (!existing) {
-      var newSuggestion = _.extend(select.expertToSuggestion(expert, this.user), reply)
-      newSuggestion._id =  Request.newId()
-      Rates.addSuggestedRate(request, newSuggestion)
-      newSuggestion.matchedBy = { _id: Request.newId(),
-        type: 'self', userId: this.user._id, initials: expert.initials }
-      suggested.push(newSuggestion)
-    }
-    else {
-      existing.expert = select.expertToSuggestion(expert, this.user).expert
-      existing = _.extend(existing, reply)
-      Rates.addSuggestedRate(request, existing)
-    }
-
-    var d = {_id,isAvailable:replyStatus=="AVAILABLE", expertName: expert.name}
-
-    if (d.isAvailable && (status == 'received' || status == 'waiting'))
-      status = 'review'
-
-    if (previouslyNotAvailable && d.isAvailable)
-      PaymethodsSvc.hasPaymethods(request.userId, (e,hasPaymethods) =>
-        mailman.sendTemplate('expert-available',
-          _.extend({noPaymethods: !hasPaymethods },d), request.by))
-
-    // sug.events.push @newEvent "expert updated"
-    // sug.expert.paymentMethod = type: 'paypal', info: { email: eR.payPalEmail }
-
-    var dRep = { status: replyStatus, byName:this.user.name, requestByName:request.by.name }
-    mailman.sendTemplate('pipeliner-notify-reply', _.extend(dRep,d), 'pipeliners')
-
-    lastTouch = svc.newTouch.call(this, `replyByExpert:${reply.expertStatus}`)
-    if (!adm.reviewable && reply.expertStatus == 'available')
-      adm = admSet(request,{reviewable:new Date()})
-
-    // $log('replyByExpert'.blue, suggested)
-    Request.updateSet(request._id, {suggested,adm,lastTouch,status}, select.cb.byRole(this,cb,cb))
-  },
   deleteById(o, cb)
   {
     Request.delete(o, cb)

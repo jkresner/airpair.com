@@ -220,68 +220,6 @@ update = ->
           EXPECT.startsWith(err.message, "Cannot change tag slug")
           DONE()
 
-  # IT 'Admin update tag with minimal meta', ->
-  #   DB.ensureDocs 'Tag', [FIXTURE.tags.express], ->
-  #   LOGIN {key:'admin'}, ->
-  #     GET '/adm/tags/514825fa2a26ea0200000016', {}, (exp1) ->
-  #       expect(exp1.name).to.equal("express")
-  #       expect(exp1.short).to.equal("express")
-  #       expect(exp1.slug).to.equal("express")
-  #       EXPECT.startsWith(exp1.desc,"Express is a minimalistic web application")
-  #       expect(exp1.tokens).to.be.undefined
-  #       expect(exp1.soId).to.equal("express")
-  #       expect(exp1.so).to.be.undefined
-  #       expect(exp1.gh).to.be.undefined
-  #       expect(exp1.ghId).to.be.undefined
-  #       expect(exp1.meta).to.be.undefined
-  #       exp1.name = "ExpressJS"
-  #       exp1.short = "Express"
-  #       exp1.desc = "ExpressJS 4.0 is here!"
-  #       exp1.tokens = "expr,express,express.js"
-  #       exp1.meta =
-  #         title: "ExpressJS Developers, Articles, Tutorials and more",
-  #         description: "ExpressJS Express for NodeJS",
-  #         canonical: "https://www.airpair.com/express"
-  #       PUT "/adm/tags/#{exp1._id}", exp1, {}, (exp2) ->
-  #         expect(exp2.name).to.equal("ExpressJS")
-  #         expect(exp2.short).to.equal("Express")
-  #         expect(exp2.slug).to.equal("express")
-  #         expect(exp2.tokens).to.equal("expr,express,express.js")
-  #         expect(exp2.soId).to.equal("express")
-  #         expect(exp2.so).to.be.undefined
-  #         expect(exp2.meta.title).to.equal("ExpressJS Developers, Articles, Tutorials and more")
-  #         expect(exp2.meta.description).to.equal("ExpressJS Express for NodeJS")
-  #         expect(exp2.meta.canonical).to.equal("https://www.airpair.com/express")
-  #         expect(exp2.meta.ogType).to.equal("website")
-  #         expect(exp2.meta.ogTitle).to.equal("ExpressJS Developers, Articles, Tutorials and more")
-  #         expect(exp2.meta.ogDescription).to.equal("ExpressJS Express for NodeJS")
-  #         expect(exp2.meta.ogImage).to.equal("https://www.airpair.com/static/img/css/tags/express-og.png")
-  #         expect(exp2.meta.ogUrl).to.equal("https://www.airpair.com/express")
-  #         expect(exp2.gh).to.be.undefined
-  #         expect(exp2.ghId).to.be.undefined
-  #         EXPECT.startsWith(exp2.desc,"ExpressJS 4.0 is here!")
-  #         DONE()
-
-
-  # IT 'Admin update tag with verbose meta', ->
-  #   DB.ensureDocs 'Tag', [FIXTURE.tags.express], ->
-  #   LOGIN {key:'admin'}, ->
-  #     GET '/adm/tags/514825fa2a26ea0200000016', {}, (exp1) ->
-  #       exp1.meta =
-  #         title: "ExpressJS Developers, Articles, Tutorials and more",
-  #         description: "ExpressJS Express for NodeJS",
-  #         canonical: "https://www.airpair.com/express"
-  #         ogTitle: "2 ExpressJS Articles, Workshops and Developers",
-  #         ogDescription: "2 One of the best collections of #Express People anywhere",
-  #       PUT "/adm/tags/#{exp1._id}", exp1, {}, (exp2) ->
-  #         expect(exp2.meta.title).to.equal("ExpressJS Developers, Articles, Tutorials and more")
-  #         expect(exp2.meta.description).to.equal("ExpressJS Express for NodeJS")
-  #         expect(exp2.meta.canonical).to.equal("https://www.airpair.com/express")
-  #         expect(exp2.meta.ogTitle).to.equal("2 ExpressJS Articles, Workshops and Developers")
-  #         expect(exp2.meta.ogDescription).to.equal("2 One of the best collections of #Express People anywhere")
-  #         DONE()
-
-
 module.exports = ->
 
   before (done) ->

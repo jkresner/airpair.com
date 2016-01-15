@@ -254,51 +254,51 @@ function trackOrderPayment(order) {
 function bookUsingDeal(bookingId, expert, time, minutes, type, dealId, cb)
 {
   // Make sure to test before making available again
-  cb(V2DeprecatedError('Orders.bookUsingDeal'))
-  // get.getMyOrdersForDeal.call(this, dealId, (e, orders) => {
-  //   var linesWithMins = OrderUtil.linesWithMinutesRemaining(orders)
-  //   var availableMinutes = OrderUtil.getAvailableMinutesRemaining(linesWithMins)
-  //   if (availableMinutes < minutes)
-  //     return cb(Error(`Not enough remaining minutes. ${availableMinutes} found.`))
+  // cb(V2DeprecatedError('Orders.bookUsingDeal'))
+  get.getMyOrdersForDeal.call(this, dealId, (e, orders) => {
+    var linesWithMins = OrderUtil.linesWithMinutesRemaining(orders)
+    var availableMinutes = OrderUtil.getAvailableMinutesRemaining(linesWithMins)
+    if (availableMinutes < minutes)
+      return cb(Error(`Not enough remaining minutes. ${availableMinutes} found.`))
 
-  //   var {deal} = linesWithMins[0].info
-  //   var unitPrice = (deal.price/(deal.minutes/60))
-  //   var profit = (deal.rake/100)*deal.price
-  //   var unitProfit = (profit/(deal.minutes/60))
-  //   // $log('profit', profit, unitPrice, 'unitProfit'.white, unitProfit)
-  //   var lines = [Lines.booking(bookingId, expert, time, minutes, type, unitPrice, unitProfit)]
+    var {deal} = linesWithMins[0].info
+    var unitPrice = (deal.price/(deal.minutes/60))
+    var profit = (deal.rake/100)*deal.price
+    var unitProfit = (profit/(deal.minutes/60))
+    // $log('profit', profit, unitPrice, 'unitProfit'.white, unitProfit)
+    var lines = [Lines.booking(bookingId, expert, time, minutes, type, unitPrice, unitProfit)]
 
-  //   var need = minutes
-  //   var ordersToUpdate = []
-  //   for (var o of orders) {
-  //     for (var li of o.lines) {
-  //       if (need > 0 && li.type == 'deal' && li.info.remaining > 0)
-  //       {
-  //         var deducted = need
-  //         if (li.info.remaining < need)
-  //           deducted = li.info.remaining
+    var need = minutes
+    var ordersToUpdate = []
+    for (var o of orders) {
+      for (var li of o.lines) {
+        if (need > 0 && li.type == 'deal' && li.info.remaining > 0)
+        {
+          var deducted = need
+          if (li.info.remaining < need)
+            deducted = li.info.remaining
 
-  //         var redeemedLine = Lines.redeemeddealtime(deducted, unitPrice, li)
-  //         lines.unshift(redeemedLine)
-  //         li.info.remaining = li.info.remaining - deducted
-  //         li.info.redeemedLines.push({ lineItemId: redeemedLine._id, minutes: deducted, partial: deducted!=need })
+          var redeemedLine = Lines.redeemeddealtime(deducted, unitPrice, li)
+          lines.unshift(redeemedLine)
+          li.info.remaining = li.info.remaining - deducted
+          li.info.redeemedLines.push({ lineItemId: redeemedLine._id, minutes: deducted, partial: deducted!=need })
 
-  //         ordersToUpdate = _.union(ordersToUpdate,[o._id])
-  //         need = need - deducted
-  //       }
-  //     }
-  //   }
+          ordersToUpdate = _.union(ordersToUpdate,[o._id])
+          need = need - deducted
+        }
+      }
+    }
 
-  //   ordersToUpdate = _.map(ordersToUpdate, (id) => _.find(orders,(o)=> _.idsEqual(o._id, id) ) )
+    ordersToUpdate = _.map(ordersToUpdate, (id) => _.find(orders,(o)=> _.idsEqual(o._id, id) ) )
 
-  //   makeOrder(this.user, lines, null, null, null, dealId, cb, (e, order) => {
+    makeOrder(this.user, lines, null, null, null, dealId, cb, (e, order) => {
 
-  //     chargeAndTrackOrder(order, cb, (e,o) => {
-  //       // console.log('inserting deal minutes redeemed order', order.total, order._id, order.userId)
-  //       Order.bulkOperation([o], ordersToUpdate, [], (e,r) => cb(e,o))
-  //     })
-  //   })
-  // })
+      chargeAndTrackOrder(order, cb, (e,o) => {
+        // console.log('inserting deal minutes redeemed order', order.total, order._id, order.userId)
+        Order.bulkOperation([o], ordersToUpdate, [], (e,r) => cb(e,o))
+      })
+    })
+  })
 }
 
 function bookUsingCredit(expert, minutes, total, lineItems, expectedCredit, payMethodId, request, cb)

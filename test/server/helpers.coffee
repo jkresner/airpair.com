@@ -103,14 +103,6 @@ STUB.BraintreeCharge = (key) ->
     [null, r]
 
 
-STUB.PayPalPayout = (key) ->
-  STUB.wrapper('PayPal').api('payout.create').fromCtx (payload,syncmode) ->
-    r = FIXTURE.clone("wrappers."+(key||'paypal_single_payout_success'))
-    r.items[0].payout_item.receiver = payload.items[0].receiver
-    r.items[0].payout_item.amount = payload.items[0].amount.toString()
-    [null, r]
-
-
 
 EXPECT.ObjectId = (val) ->
   expect(val, "Expected ObjectId null").to.exist

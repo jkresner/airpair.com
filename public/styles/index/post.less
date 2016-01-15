@@ -4,6 +4,50 @@
 @mainElmWidth:640px;
 @mainElmPad:0px;
 
+
+
+.banner {
+  position:relative;
+  border:solid 1px white;
+}
+.banner:hover {
+  border:solid 1px @orange;
+  .btn { background:@orangehighlight; }
+}
+
+.banner-top {
+  height:92px;
+  a {
+    height:92px;width:100%;
+    display:block;margin:0;padding:0;
+  }
+  img {
+    width:100%;display:block;margin:0;padding:0
+  }
+  margin:20px 0;
+  width:902px;
+}
+
+
+@media only screen and (max-width:900px) {
+  .banner-top {
+    a { width:640px; }
+  }
+
+}
+
+@media only screen and (max-width:640px) {
+  .banner-top {
+    position:fixed;
+    bottom:0;
+    height:34px;
+    a { height:34px;width:320px; }
+    img { width:98%;margin-top:auto }
+  }
+}
+
+
+
 section.notifications {
   > #postinreview {
     h2 { font-size:24px;margin:0 auto;text-align:center;font-weight:bold;

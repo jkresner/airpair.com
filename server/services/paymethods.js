@@ -136,20 +136,7 @@ var save = {
     else
       return cb(`${o.type} not supported a payment type`)
   },
-  addOAuthPayoutmethod(provider, oAuthProfileInfo, oAuthTokenInfo, cb) {
-    var pm = { type: `payout_${provider}`, info: oAuthProfileInfo }
-    if (provider == 'paypal')
-    {
-      if (oAuthProfileInfo.verified_account != 'true')
-        return cb(Error(`${oAuthProfileInfo.email} paypal account not verified. Please go to paypal.com and verify your account.`))
 
-      pm.name = `Paypal ${oAuthProfileInfo.email}`
-    }
-    else {
-      return cb(Error(`${provider} not a valid payout provider`))
-    }
-    save.addPaymethod.call(this, pm, cb)
-  },
   deletePaymethod(paymethod, cb) {
     UserSvc.getSession.call(this, (e, user) => {
       if (user.primaryPayMethodId && _.idsEqual(user.primaryPayMethodId,paymethod._id))
@@ -165,20 +152,7 @@ var save = {
       Wrappers.Stripe.createCharge(amount, orderId, payMethod.info.id, cb)
     else
       return cb(`${payMethod.type} not supported a payment type`)
-  },
-  payout(amount, payoutId, payMethod, cb) {
-    var note =
-`Thank you.
-
-Full detail of this payment can be found at:
-
-https://www.airpair.com/payouts/${payoutId}
-`
-    if (payMethod.type == 'payout_paypal')
-      Wrappers.PayPal.payout(payMethod.info.email, amount, payoutId, note, cb)
-    else
-      return cb(`${payMethod.type} not supported a payment type`)
-  },
+  }
 }
 
 

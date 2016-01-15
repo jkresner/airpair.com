@@ -11,20 +11,17 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
     list:   { template: require('./list.html'), controller: 'RequestListCtrl' },
     create: { resolve: authd, template: require('./new.html'), controller: 'RequestCtrl' },
     edit: { resolve: authd, template: require('./edit.html'), controller: 'RequestEditCtrl' },
-    // help: { resolve: authd, template: require('./types.html'), controller: 'RequestTypesCtrl' },
     review: { template: require('./review.html'), controller: 'ReviewCtrl' }
   };
 
   $routeProvider
     .when('/requests', actions.list)
-    // .when('/help/types', actions.help)
     .when('/help/request', actions.create)
     .when('/find-an-expert', actions.create)
     .when('/hire-software-developers', actions.create)
     .when('/meet-experts', actions.create)
     .when('/help/request/:id', actions.edit)
     .when('/meet-experts/:id', actions.edit)
-    // .when('/reviews', actions.review)
     .when('/review/:id', actions.review)
 
 })
@@ -45,14 +42,12 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
 })
 
 
-.controller('RequestCtrl', function($rootScope, $scope, StaticDataService, RequestHelper) {
+.controller('RequestCtrl', function($rootScope, $scope, DataService, RequestHelper) {
   //-- In case the come through from request scope from another page like review
   if ($scope.request) return window.location = '/help/request'
 
-  $scope.customers = StaticDataService.getRecentCustomers();
-  $scope.reviews = StaticDataService.getRecentReviews();
 
-  RequestHelper.setRequestTagsFromSession($scope)
+
 
 })
 
@@ -109,8 +104,6 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
     $scope.isCustomer = Shared.roles.request.isCustomer($scope.session,r)
     $scope.replies = _.filter(r.suggested,(s)=>s.expertComment!=null)
 
-    // console.log('$scope.session.primaryPayMethodId', $scope.session.primaryPayMethodId)
-
     if ($scope.isCustomer) { // || $scope.isAdmin
       $scope.displayRate = r.budget
 
@@ -133,27 +126,8 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
         $scope.reviewClass = 'inactive booked'
 
       $scope.isExpert = Shared.roles.request.isExpert($scope.session,r)
-      if ($scope.isExpert) {
-        var sug = r.suggested[0]
-
-        console.log('sug', sug.expert, sug.expert.timezone)
-        // if (!sug.expert.timezone)
-          // window.location = `/be-an-expert?review=${window.location.pathname}`
-
-        $scope.displayRate = sug.suggestedRate.expert
-        $scope.notYetReplied = !sug.expertStatus || sug.expertStatus == 'waiting'
-        if ($scope.notYetReplied)
-        {
-          $scope.data = {expertStatus:"",expertComment:"",expertAvailability:""}
-          $scope.expertEdit = true;
-        }
-        else {
-          var {expertStatus,expertComment,expertAvailability} = sug
-          $scope.data = {expertStatus,expertComment,expertAvailability}
-          $scope.expertEdit = false;
-        }
-        // console.log('$scope', $scope.isExpert, $scope.expertEdit, $scope.data, sug)
-      }
+      if ($scope.isExpert)
+        window.location = `https://consult.airpair.com/job/${requestId}`
 
       $timeout(function(){ PageHlpr.highlightSyntax({ addCtrs: false })}, 500)
     }
@@ -162,26 +136,6 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
     console.log('request not found')
   })
 
-
-  $scope.setExpertEdit = () => $scope.expertEdit = true
-
-  $scope.submit = (formValid, data) => {
-    if (formValid)
-    {
-      if ($scope.data.expertStatus != 'available')
-        $scope.data.expertAvailability = "Not available"
-
-      var expertId = $scope.r.suggested[0].expert._id
-      DataService.requests.replyByExpert($scope.r._id, expertId, $scope.data,
-        (result) => {
-          // $scope.r = result;
-          // $scope.expertEdit = false;
-          // console.log('$scope.expertEdit', $scope.expertEdit, $scope.isExpert)
-          getReview();
-      }, ServerErrors.add)
-    }
-
-  }
 
   getReview();
 

@@ -21,6 +21,7 @@ require('./common/models/sessionService.js');
 require('./common/models/dataService.js');
 require('./common/models/staticDataService.js');
 require('./common/util.js');
+require('./common/filters.js');
 require('./common/directives/hangouts.js');
 require('./common/directives/forms/forms.js');
 require('./common/directives/forms/inputs.js');
@@ -35,18 +36,15 @@ require('./common/directives/notifications.js');
 require('./common/directives/serverTemplates.js');
 require('./common/directives/providers.js');
 require('./common/directives/profiles.js');
-require('./common/directives/paypal.js');
-require('./common/filters/filters.js');
 require('./common/pageHelpers.js');
 require('./common/routes/routes.js');
-require('./auth/module.js');
-require('./posts/module.js');
-require('./billing/module.js');
-require('./account/module.js');
-require('./requests/module.js');
+require('./auth/module.js')
+require('./posts/module.js')
+require('./billing/module.js')
+require('./account/module.js')
+require('./requests/module.js')
 require('./bookings/module.js')
 require('./dashboard/module.js')
-require('./expert/module.js')
 
 
 angular.module("AP", ['ngRoute', 'ngAnimate',
@@ -59,7 +57,7 @@ angular.module("AP", ['ngRoute', 'ngAnimate',
   'APProfileDirectives', 'APSurveyDirectives',
   'APSideNav', 'APHangouts',
   'APAuth', 'APPosts', 'APProfile', 'APBilling',
-  'APRequests','APBookings', 'APDashboard', 'APExpert'])
+  'APRequests','APBookings', 'APDashboard'])
 
 .config(function($locationProvider, $routeProvider) {
 

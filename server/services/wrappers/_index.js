@@ -28,7 +28,6 @@ module.exports = {
   Timezone:       initAPIWrap('Timezone', 'gtimezone'),
   Calendar:       initAPIWrap('Calendar', 'gcal'),
   GitHub:         initAPIWrap('GitHub'),
-  PayPal:         initAPIWrap('PayPal'),
   Stripe:         initAPIWrap('Stripe'),
   Braintree:      initAPIWrap('Braintree'),
   YouTube:        initAPIWrap('YouTube'),

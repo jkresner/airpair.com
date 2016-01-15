@@ -99,11 +99,6 @@ angular.module("APBilling", ['ngRoute', 'APPaymentDirectives', 'APBillingDirecti
 })
 
 
-.controller('BillingMembershipCtrl', function($scope, DataService) {
-
-  // console.log('in membership billing')
-
-})
 
 
 .directive('bookExpert', function() {

@@ -1,6 +1,7 @@
 module.exports = require('./_api').initAPI(
   require('../services/requests')
 ,{
+  getAllowed: (req) => [],
   getByIdForUser: (req) => [req.params.id],
   getByIdForAdmin: (req) => [req.params.id],
   getActiveForAdmin: (req) => [],
@@ -15,7 +16,6 @@ module.exports = require('./_api').initAPI(
   sendVerifyEmailByCustomer: (req) => [req.request,req.body.email],
   updateByCustomer: (req) => [req.request,req.body],
   updateByAdmin: (req) => [req.request,req.body],
-  replyByExpert: (req) => [req.request,req.expertshaped,req.body],
   farmByAdmin: (req) => [req.request,req.body.tweet],
   sendMessageByAdmin: (req) => [req.request,req.body],
   addSuggestion: (req) => [req.request,req.expertshaped,req.body.msg],

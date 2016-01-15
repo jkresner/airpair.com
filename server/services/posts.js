@@ -336,8 +336,6 @@ var getAdmin = {
 }
 
 
-
-
 // function updateWithEditTouch(original, updates, action, cb) {
 //   var updated = new Date() //-- think about removing this
 //   var previousAction = (original.lastTouch) ? original.lastTouch.action : null
@@ -365,35 +363,6 @@ var getAdmin = {
 
 
 var save = {
-
-  create(o, cb) {
-    cb(V2DeprecatedError('Posts.create'))
-    // o.created = new Date()
-    // o.by = PostsUtil.authorFromUser(o.by)
-    // o.lastTouch = svc.newTouch.call(this, 'createByAuthor')
-    // o.editHistory = [o.lastTouch]
-    // o.md = "new"
-    // if (o.assetUrl) delete o.assetUrl
-    // Post.create(o, select.cb.editInfoView(cb))
-    // UserSvc.changeBio.call(this, o.by.bio,() => {})
-  },
-
-  update(original, ups, cb) {
-    cb(V2DeprecatedError('Posts.update'))
-    // $log('Post.update.ups', ups)
-    // var act = (Roles.isOwner(this.user, original)) ? 'updateByAuthor' : 'updateByEditor'
-    // var {userId} = original.by
-    // // UserSvc.getById.call({_id:userId}, (ee, user) =>
-    // // {
-    //   // var social = PostsUtil.authorFromUser(user).social
-    //   // if (social) ups.by.social = social
-
-    // if (original.assetUrl != ups.assetUrl && (original.submitted || original.published))
-    //   ups.htmlHead = _.extend(original.htmlHead, _.extend(ups.htmlHead||{},{ogImage:ups.assetUrl}))
-
-    // updateWithEditTouch.call(this, original, ups, act, select.cb.editInfoView(cb))
-    // })
-  },
 
   publish(post, publishData, cb) {
     cb(V2DeprecatedError('Posts.publish'))
@@ -435,87 +404,6 @@ var save = {
     //   pairbot.sendPostPublished(post)
   },
 
-  submitForReview(post, slug, cb) {
-    cb(V2DeprecatedError('Posts.submitForReview'))
-    // TemplateSvc.mdFile('post-repo-readme', post, (readmeMD) => {
-    //   var trackData = { type: 'post-submit', name: post.title, postId: post._id, author: post.by.name, repo: slug }
-    //   analytics.track(this.user, this.sessionID, 'Save', trackData, {}, ()=>{})
-
-    //   github2.setupPostRepo(this.user, slug, org, post._id, post.md, readmeMD, (e, repoInfo) => {
-    //     if (e) return cb(e)
-    //     post.submitted = new Date()
-    //     post.github = { repoInfo }
-    //     post.slug = slug
-    //     post.htmlHead = post.htmlHead || {}
-    //     post.htmlHead.ogImage = post.assetUrl
-    //     updateWithEditTouch.call(this, post, 'submittedForReview', cb)
-
-    //     if (cache) cache.flush('posts')
-    //     pairbot.sendPostSubmitted(post)
-    //   })
-    // })
-  },
-
-  propagateMDfromGithub(post, cb) {
-    cb(V2DeprecatedError('Posts.propagateMDfromGithub'))
-    // github.getStats(org, post.slug, this.user, null, (err,resp)=>{
-      // post.github.stats = resp
-      // setEventData(post, (err, resp) =>{
-        // if(err) return cb(err)
-    // github2.getFile(this.user, org, post.slug, "/post.md", 'edit', (e, head) => {
-    //   if (e) return cb(e)
-    //   var commit = head.sha
-    //   post.md = head.string
-    //   post.publishedCommit = commit
-    //   if (post.published) {
-    //     post.publishHistory = post.publishHistory || []
-    //     post.publishHistory.push({
-    //       commit, touch: svc.newTouch.call(this, 'publish')})
-    //     post.publishedBy = _.pick(this.user, '_id', 'name', 'email')
-    //     post.publishedUpdated = new Date()
-    //   }
-    //   updateWithEditTouch.call(this, post, 'propagateMDfromGithub', cb)
-    // })
-      // })
-    // })
-  },
-
-  updateMarkdown(original, ups, cb) {
-    cb(V2DeprecatedError('Posts.updateMarkdown'))
-    // $log('Post.updateMarkdown.ups', ups)
-
-    // var editCB = select.cb.editView(cb)
-
-    // if (!original.submitted)
-    //   return updateWithEditTouch.call(this, original, {md:ups.md}, 'updateMarkdownByAuthor', editCB)
-
-    // if (Roles.isForker(this.user, original)) {
-    //   cb(V2DeprecatedError('Posts.updateMarkdown.byForker'))
-    //   // var owner = this.user.social.gh.username
-    //   // github2.updateFile(this.user, owner, original.slug, "post.md", 'edit', ups.md, ups.commitMessage, (ee, result) => {
-    //   //   updateWithEditTouch.call(this, original, 'updateHEADonFork', select.cb.editView(cb, ups.md, owner))
-    //   // })
-    // }
-    // else if (Roles.isOwner(this.user, original)) {
-    //   cb(V2DeprecatedError('Posts.updateMarkdown.forSubmitted'))
-    //   // var owner = org
-    //   // github2.updateFile(this.user, owner, original.slug, "post.md", 'edit', ups.md, ups.commitMessage, (ee, result) => {
-    //   //   if (ee) return cb(ee)
-    //   //   // if (!original.published) {
-    //   //     // original.md = postMD
-    //   //     // original.publishedCommit = result.commit
-    //   //   // }
-    //   //   // setEventData(original, (err,resp) => {
-    //   //     // if (err) return cb(err)
-    //   //     // $log('setEventData.resp', resp)
-    //   //   updateWithEditTouch.call(this, original, 'updateHEAD', select.cb.editView(cb, ups.md, owner))
-    //   //   // })
-    //   // })
-    // } else {
-    //   cb(Error("Must be a forker to update post HEAD"))
-    // }
-  },
-
   addForker(post, cb) {
     cb(V2DeprecatedError('Posts.addForker'))
     // github2.addContributor(this.user, org, post.slug, (e, fork) => {
@@ -530,11 +418,6 @@ var save = {
     // })
   },
 
-  clobberFork(post, cb) {
-    cb(V2DeprecatedError('Posts.clobberFork'))
-    // console.log("clobber fork")
-    // cb(null, "clobbered")
-  },
 
   deleteById(post, cb) {
     Post.delete(post, cb)

@@ -1,6 +1,6 @@
 var {Template}            = DAL
 var handlebars            = require('handlebars')
-var marked                = require('marked')
+
 
 var get = {
 

@@ -77,7 +77,7 @@ module.exports = function(app) {
       })
     }
 
-  var landingPartials = ['sowelcome','postscomp']
+  var landingPartials = ['marketplaceSurvey','postscomp']
 
   app.renderHbsViewData = (partialName, pageMeta, viewDataFn) =>
     (req, res) => {

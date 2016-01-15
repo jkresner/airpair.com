@@ -4,7 +4,6 @@ module.exports = require('./_api').initAPI(
   addPaymethod: (req) => [req.body],
   deletePaymethod: (req) => [req.paymethod],
   getMyPaymethods: (req) => [],
-  getMyPayoutmethods: (req) => [],
   getUserPaymethodsByAdmin: (req) => [req.params.id]
 }, {
   'paymethod':'getById'

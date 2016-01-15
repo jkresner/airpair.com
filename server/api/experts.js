@@ -8,9 +8,6 @@ module.exports = require('./_api').initAPI(
   getNewForAdmin: (req) => [],
   getActiveForAdmin: (req) => [],
   getHistory: (req) => [req.expertshaped],
-  create: (req) => [req.body],
-  updateMe: (req) => [req.expertshaped,req.body],
-  updateAvailability: (req) => [req.expertshaped,req.body.availability],
   deleteById: (req) => [req.expert],
 
   getByDeal: (req) => [req.params.id],

@@ -19,7 +19,7 @@
   <main ng-view>
     <div id="serverTemplate">
       {{#with viewData}}
-        {{#if sowelcomeRender}}<cta-sowelcome></cta-sowelcome>{{/if}}
+        {{#if marketplaceSurveyRender }}{{> marketplaceSurvey }}{{/if}}
         {{#if postscompRender}}{{> postscomp }}{{/if}}
       {{/with}}
     </div>

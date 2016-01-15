@@ -10,11 +10,13 @@ newCompleteRequest = (userKey, requestData, cb) ->
       experience: 'beginner',
       brief: 'this is a test yo',
       hours: "1",
-      time: 'rush'
+      time: 'rush',
+
     request = _.extend(request, requestData)
     POST '/requests', request, (r0) ->
       PUT "/requests/#{r0._id}", _.extend(r0,{budget,title:'test'}), (r) ->
-        cb(r, sCustomer, sKey)
+        DB.docById 'Request', r._id, (rr) ->
+          cb(rr, sCustomer, sKey)
 
 
 
@@ -60,10 +62,17 @@ module.exports = (custKey, opts, done) ->
     else if !opts.reply
       done request, custSession
     else
-      expertId = FIXTURE.experts[opts.reply.userKey]._id
       LOGIN {key:opts.reply.userKey}, (expertSession) ->
-        reply = expertComment: "I'll take it", expertAvailability: "Real-time", expertStatus: "available"
-        PUT "/requests/#{request._id}/reply/#{expertId}", reply, (r1) ->
+        expertId = FIXTURE.experts[opts.reply.userKey]._id
+        request.suggested = [{
+          _id: DATA.newId(),
+          expert: { _id: ObjectId(expertId) },
+          expertComment: "I'll take it",
+          expertAvailability: "Real-time",
+          expertStatus: "available",
+          suggestedRate: { total: request.budget, expert: request.budget - 20 }
+        }]
+        DB.ensureDoc 'Request', request, (e, r1) ->
           if !opts.book
             done r1, custSession, expertSession
           else

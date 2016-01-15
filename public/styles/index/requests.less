@@ -355,7 +355,7 @@ form.requestForm {
     top:30px;
     display:block;
     hr { border:solid 1px @lightblue }
-    min-height:260px;
+    min-height:560px;
     max-height:260px;
     margin:0 0 50px 0;
     background:@lightblue;
@@ -471,11 +471,10 @@ form.requestForm {
         p { margin:-6px 10px 5px 20px;display:inline-block; }
       }
     }
-
   }
 
   section.brief {
-    textarea { height:150px }
+    textarea { height:450px;font-size:12px;border-width:1px }
     .btn { margin-top:2px }
     .md {
       margin:-12px 4px 0 0 ;
@@ -715,13 +714,15 @@ section#review {
 
   > section {
     margin-top:0px;
-    width:640px;
+    // width:640px;
     position:relative;
   }
 
   #info {
-    margin-bottom:60px;
+    .btn-inverse { float:right;padding:2px 18px }
+    margin: 0 5px 60px 5px;
     border-bottom:solid 1px @lightblue;
+    h5 { padding-top:4px }
     img { height:30px;display:inline-block; }
     article { border-top:solid 2px @lightblue; h6 { font-weight:bold;text-transform:uppercase; } }
     article > * { display:inline-block;vertical-align:top }
@@ -734,7 +735,7 @@ section#review {
     }
     time { width:18% }
     .entry-content { width:26% }
-    .entry-author { width:10% }
+    .entry-author { display:none }
     .suggested { width:15% }
     span { display:inline-block;background:@turquoise;font-weight:bold;color:white;
        padding:4px 8px;border:solid 1px @lightblue }
@@ -743,8 +744,9 @@ section#review {
 
   .replies {
     ul { .ulNoStyle }
-    li { position:relative;border-bottom:solid 1px @lightblue;margin-bottom:10px;width:100% }
-    .message { max-width:360px;
+    li { position:relative;margin-bottom:10px;width:100% }
+
+    .message {
       > img { top:0 }
       h3 { margin-top:0;color:@darkblue;line-height:22px }
     }
@@ -768,33 +770,42 @@ section#review {
     }
   }
 
+  section img.user {
+    padding:2px;
+    width:50px;height:50px;
+  }
+
   .message {
-    > img { position:absolute;top:10px;left:0;width:100px;height:100px;padding:0 }
+    > img.user { position:absolute;top:0;left:15px; }
+    label { position:absolute;top:58px;left:0;width:80px;text-align:center;font-size:12px }
+    border:solid 2px @reallypalegray;
     vertical-align:top;
     display:inline-block;
-    padding:0px 30px 10px 40px;
-    margin-left:80px;
-    width:560px;
+    padding:8px 30px 10px 15px;
+    margin:0 0 20px 100px;
     min-height:180px;
-    h4 { margin-bottom:10px;padding:0;line-height:20px; }
-    h4 + div { border-top:solid 1px white;padding-top:10px }
+    width:640px;
+    // h4 { margin-bottom:10px;padding:0;line-height:20px; }
+    // h4 + div { border-top:solid 1px white;padding-top:10px }
   }
 
   #brief {
     .message {
-      background:@palegray; }
-  }
-
-  form {
-    h3 { margin-top:0 }
-    margin:-30px 0 30px 0;
-    .lightblueForm;
-    .expertStatus {
-      padding-top:10px;
-      input { width:inherit;display:inline;margin:0px 10px 0 15px }
+      background:@paleblue;
     }
+    h2, h3, h4 { margin-top:2px }
+    pre { background:white }
   }
 
+  // form {
+  //   h3 { margin-top:0 }
+  //   margin:-30px 0 30px 0;
+  //   .lightblueForm;
+  //   .expertStatus {
+  //     padding-top:10px;
+  //     input { width:inherit;display:inline;margin:0px 10px 0 15px }
+  //   }
+  // }
 
   @media only screen and (max-width:640px) {
     > section { width:310px }
@@ -822,7 +833,6 @@ section#review {
     #brief {
       width:310px;
       padding-top:20px;
-      img.user { width:50px;height:50px }
     }
   }
 }
