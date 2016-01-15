@@ -7,18 +7,23 @@
 
 <section ng-if="r" id="review" class="{{reviewClass}}">
 
-  <section ng-if="isCustomer && !session.location" class="localization">
-    <p style="padding:20px 10px">Please provide your location / timezone to help with scheduling</p>
+
+  <section ng-if="!session.location" class="localization">
+    <p style="padding:20px 10px">Provide your location / timezone to help with scheduling</p>
     <location-input data="data" on-select="updateLocation"></location-input>
   </section>
 
+
   <section id="info">
+    <a href="/help/request/{{r._id}}" class="btn btn-sm btn-inverse">Edit request</a>
     <h5>{{ r.title || 'Spec' }}</h5>
     <request-review-summary></request-review-summary>
   </section>
 
-  <section class="replies" ng-if="isAnon">
-    <form>
+
+  <section class="replies">
+
+    <form ng-if="isAnon">
       <h3>Want AirPairs like this?</h3>
       <ul>
         <li>- Get paid to help people</li>
@@ -26,46 +31,35 @@
       </ul>
       <a id="loginAuth" track-click="auth" class="btn btn-error gh-white" ng-href="{{'/auth/github/callback' + ((returnTo) ? '?returnTo='+returnTo : '') }}" target="_self" style="width:100%">Login w github to reply</a>
     </form>
-  </section>
 
-
-  <section ng-if="!isExpert && !isCustomer && !isAnon && !isAdmin" class="replies" ng-if="isAnon">
-    <form>
+    <form ng-if="!isCustomer && !isAnon && !isAdmin">
       <h3>One more step</h3>
       <a ng-href="https://consult.airpair.com/profile" target="_self" class="btn" style="width:100%">Setup your expert profile</a>
     </form>
-  </section>
 
 
-  <!-- [[{{session.emailVerified}}::{{isCustomer}}]] -->
-  <section class="replies" ng-if="!isAnon && !session.emailVerified && isCustomer">
-    <div>
+    <div ng-if="isCustomer">
       <div class="message noexperts">
         <img class="user" itemprop="image" src="/static/img/css/chat/pairy.png" />
-        <h4>Pairy</h4>
-        <div><p ng-if="isCustomer" class="important">You must set an account password and verify your email before experts can see this request.</p></div>
-        <div><p ng-if="!isCustomer" class="important">You must verify your email before replying.</p></div>
+        <label>Pairy</label>
+        <!-- <div><p ng-if="isCustomer" class="important">You must set an account password and verify your email before experts can see this request.</p></div> -->
+        <!-- <div><p ng-if="!isCustomer" class="important">You must verify your email before replying.</p></div> -->
+
+        <div ng-if="(isCustomer || isAdmin) && replies == 0">
+          <p>No experts have replied yet. <!-- Consider uping the rate? --></p>
+        </div>
       </div>
-      <section>
+
+      <!-- <section>
         <strong>*</strong>
         <a href="/me" class="btn">Set password</a>
 
-      </section>
+      </section> -->
     </div>
   </section>
 
-  <section class="replies" ng-if="(isCustomer || isAdmin || (isExpert && !expertEdit)) && session.emailVerified">
 
-    <div ng-if="(isCustomer || isAdmin) && replies == 0">
-      <div class="message noexperts">
-        <img class="user" itemprop="image" src="/static/img/css/chat/pairy.png" />
-        <h4>Pairy</h4>
-        <div><p>No experts have replied yet. <!-- Consider uping the rate? --></p></div>
-      </div>
-      <section>
-        <a href="/help/request/{{r._id}}" class="btn">Edit request</a>
-      </section>
-    </div>
+  <section class="replies" ng-if="(isCustomer || isAdmin || (isExpert && !expertEdit)) && session.emailVerified">
 
     <ul>
       <li ng-repeat="s in replies">
@@ -93,7 +87,7 @@
     <div class="entry-author">
       <div class="message">
         <img class="entry-author-image user" itemprop="image" ng-src="{{ (r.by) ? r.by.avatar : r.company.contacts[0].pic }}?s=100" />
-        <h4 ng-if="r.by.name">{{r.by.name}}</h4>
+        <label ng-if="r.by.name">{{r.by.name.split(' ')[0]}}</label>
         <div ng-bind-html="r.brief | markdownAsHtml"></div>
       </div>
     </div>

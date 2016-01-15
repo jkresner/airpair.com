@@ -30,7 +30,7 @@ angular.module("APRequestDirectives", [])
   var order = [
     'type',
     'tags',
-    'experience',
+    // 'experience',
     'brief',
     'time',
     'hours',
@@ -48,7 +48,7 @@ angular.module("APRequestDirectives", [])
     var c = scope.done.current
     if (c == 'type') return scope.done.type
     if (c == 'tags') return scope.request.tags && scope.request.tags.length > 0
-    if (c == 'experience') return scope.request.experience
+    // if (c == 'experience') return scope.request.experience
     if (c == 'brief') return scope.request.brief && scope.request.brief.length > 10
     if (c == 'hours') return scope.request.hours
     if (c == 'budget') return scope.request.budget
@@ -93,7 +93,7 @@ angular.module("APRequestDirectives", [])
       type: false,
       tags: false,
       brief: false,
-      experience: false,
+      // experience: true,
       time: false,
       hours: false,
       budget: false,
@@ -106,7 +106,7 @@ angular.module("APRequestDirectives", [])
     {
       scope.done.type = (r.type) ? true : false,
       scope.done.tags = (r.tags && r.tags.length > 0) ? true : false,
-      scope.done.experience = (r.experience) ? true : false,
+      // scope.done.experience = (r.experience) ? true : false,
       scope.done.brief = (r.brief) ? true : false,
       scope.done.hours = (r.hours) ? true : false,
       scope.done.time = (r.time) ? true : false,
@@ -115,7 +115,7 @@ angular.module("APRequestDirectives", [])
 
       var current = 'submit'
       if (!scope.done.tags) current = 'tags'
-      else if (!scope.done.experience) current = 'experience'
+      // else if (!scope.done.experience) current = 'experience'
       else if (!scope.done.brief) current = 'brief'
       else if (!scope.done.hours) current = 'hours'
       else if (!scope.done.time) current = 'time'
@@ -215,13 +215,16 @@ angular.module("APRequestDirectives", [])
 
       $scope.setType = function(val) {
         if ($scope.request) $scope.request.type = val
-        else $scope.request = { type: val }
+        else $scope.request = { type: val, experience: 'proficient' }
         stepForward('type')
       }
 
       $scope.setTime = () => stepForward('time')
       $scope.setBuget = () => stepForward('budget')
-      $scope.setExperience = () => stepForward('experience')
+      // $scope.setExperience = () => {
+      //   $scope.request.experience = 'proficient'
+      //   stepForward('breif')
+      // }
       $scope.setHours = () => {
         stepForward('hours')
       }
@@ -234,21 +237,6 @@ angular.module("APRequestDirectives", [])
       $scope.submit = () => stepForward('submit')
 
       StepHelper.setDefaultState($scope)
-
-      // $timeout(() => {
-      //   $scope.setType('mentoring')
-      //   $scope.doneTags()
-      //   $scope.request.experience = "beginner"
-      //   $scope.setExperience()
-      //   $scope.request.brief = "beginner troubles yo"
-      //   $scope.stepForward()
-      //   $scope.request.time = "regular"
-      //   $scope.setTime()
-      //   $scope.request.hours = "1"
-      //   $scope.setHours()
-      //   // $scope.request.budget = "90"
-      //   // $scope.setBuget()
-      // }, 300)
 
       $scope.setPayMethods = function(val) {
         // console.log('setPayMethods', val)
