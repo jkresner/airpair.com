@@ -2,10 +2,10 @@ express                = require('express')
 domain                 = require('domain')
 
 module.exports =
-  run: (config, done) ->
+  run: (config, {done}) ->
 
     global.config = config
-    $log('APP ==> '+ config.model.mongoUrl.white)
+    $log('APP ==> '+ config.model.domain.mongoUrl.white)
 
 
     global.fields =
@@ -112,9 +112,41 @@ module.exports =
 
 
 
-    global.checkMergeRemovedGraph = (removed, cb) ->
+    global.checkMergeRemovedGraph = ({removed,merged}, cb) ->
+
+      safeRuId = $in: [removed.user._id, removed.user._id.toString()]
+
+      qExpertUserId = 'userId':safeRuId
+
+      ops = [
+        Users.findOne('_id':safeRuId),
+        Paymethods.findOne({'userId':safeRuId},{'userId':1}),
+        Posts.findOne({'by._id':safeRuId},{'by._id':1}),
+        Requests.findOne({'userId':safeRuId},{'userId':1}),
+        Bookings.findOne({'customerId':safeRuId},{'customerId':1}),
+        Bookings.findOne({'participants.info._id':safeRuId},{'expertId':1})
+        Orders.findOne({$or:['userId':safeRuId,'by._id':removed.user._id]},{'userId':1,'by':1}),
+        Payouts.findOne({'userId':safeRuId},{'userId':1}),
+        Payouts.findOne({'lines.info.released.by._id':safeRuId},{'lines.info.released':1}),
+        Experts.findOne(qExpertUserId)
+      ]
+
+      if removed.expert?
+        safeReId = $in: [removed.expert._id, removed.expert._id.toString()]
+        ops = ops.concat [
+          Experts.findOne({'_id':safeRuId},{'userId':1}),
+          Requests.findOne({'suggested.expert._id':safeReId},{'suggested.expert':1}),
+          Bookings.findOne({'expertId':safeReId},{'expertId':1})
+          Payouts.findOne({'lines.info.expert._id':safeReId},{'expertId':1})
+          # Orders.findOne({$or:['lines.info.expert._id':removed.expert._id,'lines.suggestion.expert._id':removed.expert._id]},{'userId':1,'lines':1}),
+        ]
+
       success = (r) ->
-        # $log('inRemoved.success'.cyan)
+        removedU = "#{removed.user._id}".gray
+        mergedU = "#{merged.user._id}".green
+        failPrfx = "Removed.usr[#{removedU}]"+" not relinked to Merged.usr[".red+mergedU+" @ ".red
+
+        $log('inRemoved.success'.cyan, failPrfx)
         try
           opIdx = -1
           expect(r[++opIdx], "Removed USER should be removed").to.be.null
@@ -124,9 +156,11 @@ module.exports =
           expect(r[++opIdx], "Removed User.Bookings should be relinked to Merged.userId").to.be.null
           expect(r[++opIdx], "Removed User.Booking.participants should be relinked to Merged.userId").to.be.null
           expect(r[++opIdx], "Removed User.Orders should be relinked to Merged.userId").to.be.null
-          expect(r[++opIdx], "Removed User.Payouts should be relinked to Merged.userId got #{r[opIdx]}").to.be.null
-          expect(r[++opIdx], "Removed User.Payouts.released should be relinked to Merged.userId got #{r[opIdx]}").to.be.null
-          expect(r[++opIdx], "Removed User.Expert should be relinked to Merged.userId").to.be.null
+          ++opIdx
+          expect(r[++opIdx], "Removed User.Payouts should be relinked to Merged.userId[] got #{r[opIdx]}").to.be.null
+          expect(r[++opIdx], "#{failPrfx}Payouts.released.userId. Got #{JSON.stringify(r[opIdx])}".red).to.be.null
+          $log('check Experts', qExpertUserId, r[opIdx+1])
+          expect(r[++opIdx], "Removed User.Expert should be relinked to Merged.userId").to.be.undefined # got #{JSON.stringify(_.pick(r[++opIdx]||{},'_id','userId'))
           if removed.expert?
             expect(r[++opIdx], "Removed Expert should be removed").to.be.null
             expect(r[++opIdx], "Removed Suggests[#{JSON.stringify(r[opIdx]).gray}] for [#{removed.expert._id}] should be relinked to Merged.expertId").to.be.null
@@ -136,33 +170,29 @@ module.exports =
         catch e
           DONE e
 
-      ops = [
-        Users.findOne('_id':removed.user._id),
-        Paymethods.findOne({'userId':removed.user._id},{'userId':1}),
-        Posts.findOne({'by._id':removed.user._id},{'by._id':1}),
-        Requests.findOne({'userId':removed.user._id},{'userId':1}),
-        Bookings.findOne({'customerId':removed.user._id},{'customerId':1}),
-        Bookings.findOne({'participants.info._id':removed.user._id},{'expertId':1})
-        Orders.findOne({$or:['userId':removed.user._id,'by._id':removed.user._id]},{'userId':1,'by':1}),
-        Payouts.findOne({'userId':removed.user._id},{'userId':1}),
-        Payouts.findOne({'lines.info.released.by._id':removed.user._id},{'lines.info.released':1}),
-        Experts.findOne('userId':removed.user._id)
-      ]
-
-      if removed.expert?
-        ops = ops.concat [
-          Experts.findOne({'_id':removed.expert._id},{'userId':1}),
-          Requests.findOne({'suggested.expert._id':removed.expert._id},{'suggested.expert':1}),
-          Bookings.findOne({'expertId':removed.expert._id},{'expertId':1})
-          Payouts.findOne({'lines.info.expert._id':removed.expert._id},{'expertId':1})
-          # Orders.findOne({$or:['lines.info.expert._id':removed.expert._id,'lines.suggestion.expert._id':removed.expert._id]},{'userId':1,'lines':1}),
-        ]
-
       Promise.all(ops).then(success, DONE)
 
 
-
     global.checkMergeMergedGraph = (u,expertId,{paymethods,posts,requests,bookings,suggests,booked,paidout,released}, cb) ->
+
+      safeRuId = $in: [u._id, u._id.toString()]
+
+      ops = [
+        Users.findOne({'_id':safeRuId}),
+        Paymethods.find({'userId':safeRuId},{'userId':1}).toArray(),
+        Posts.find($or:[{'by._id':safeRuId},{'by.userId':u._id}],{'by':1}).toArray(),
+        Requests.find({'userId':safeRuId},{'userId':1}).toArray(),
+        Bookings.find({'customerId':safeRuId},{'customerId':1}).toArray()
+        Payouts.find({'userId':safeRuId},{'userId':1}).toArray()
+        Payouts.find({'lines.info.released.by._id':safeRuId},{'lines.info.released':1}).toArray()
+      ]
+
+      if expertId? then ops = ops.concat [
+        Experts.findOne({'userId':u._id},{'userId':1}),
+        Requests.find('suggested.expert._id':expertId,{'suggested.expert':1}).toArray(),
+        Bookings.find({expertId},{'expertId':1}).toArray()
+      ]
+
       success = (r) ->
         try
           opIdx = -1
@@ -172,7 +202,7 @@ module.exports =
           expect(r[++opIdx].length, "#{u.name}[#{u._id}]: requests mismatch").to.equal(requests||0)
           expect(r[++opIdx].length, "#{u.name}[#{u._id}]: bookings mismatch").to.equal(bookings||0)
           expect(r[++opIdx].length, "#{u.name}[#{u._id}]: paidout mismatch").to.equal(paidout||0)
-          expect(r[++opIdx].length, "#{u.name}[#{u._id}]: released mismatch").to.equal(released||0)
+          expect(r[++opIdx].length, "#{u.name}[#{u._id}]: released mismatch #{JSON.stringify(r[opIdx])}").to.equal(released||0)
           if expertId?
             EXPECT.equalIds(r[++opIdx]._id, expertId)
             expect(r[++opIdx].length, "#{u.name}: suggests mismatch").to.equal(suggests||0)
@@ -181,21 +211,6 @@ module.exports =
         catch e
           DONE e
 
-      ops = [
-        Users.findOne({'_id':u._id}),
-        Paymethods.find({'userId':u._id},{'userId':1}).toArray(),
-        Posts.find($or:[{'by._id':u._id},{'by.userId':u._id}],{'by':1}).toArray(),
-        Requests.find({'userId':u._id},{'userId':1}).toArray(),
-        Bookings.find({'customerId':u._id},{'customerId':1}).toArray()
-        Payouts.find({'userId':u._id},{'userId':1}).toArray()
-        Payouts.find({'lines.info.released.by._id':u._id},{'lines.info.released':1}).toArray()
-      ]
-
-      if expertId? then ops = ops.concat [
-        Experts.findOne({'userId':u._id},{'userId':1}),
-        Requests.find('suggested.expert._id':expertId,{'suggested.expert':1}).toArray(),
-        Bookings.find({expertId},{'expertId':1}).toArray()
-      ]
 
       Promise.all(ops).then(success, DONE)
 

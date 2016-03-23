@@ -4,10 +4,9 @@
   coffee --nodejs "--harmony_destructuring" cmd/tools/merger/run.coffee
 """
 
+colors                       = require('colors')
 SCREAM                       = require('meanair-scream')
-setup                        = require('../../../server/util/_setup')
-setup.colors.APPLOAD         = setup.colors.white
-setup.colors.setTheme({appload: 'APPLOAD'})
+MAServer                     = require('meanair-server')
 meanair = util               : require('meanair-shared').TypesUtil
 global.domain                = require('domain')
 global.idToDate              = meanair.util.BSONID.toDate
@@ -38,12 +37,18 @@ cmd = SCREAM.Commander [
 
 
 run = (mongoUrl, mailTransport) ->
-  global.config                = setup.initConfig('prod')
-  config.model.mongoUrl        = screamconfig.mongo.url
-  config.analytics.on          = false
-  config.mail.transport        = mailTransport if mailTransport
+  appRoot                      = __dirname.replace('cmd/tools/merger', 'server')
+  global.config                = MAServer.Config(appRoot, 'test', true)
+  if mailTransport
+    config.comm.mode           = 'live'
+    config.wrappers.smtp       = mailTransport
+  config.model.domain          = { mongoUrl }
+  config.model.analytics       = "{{undefine}}"
+  console.log('config', config)
+  setup                        = require('../../../server/util/_setup')
   setup.initGlobals(config)
-  SCREAM(__dirname, config, {cmd:cmd}).run()
+  SCREAM(__dirname, {cmd}).run({config,opts:{MAServer,tracking:{},done: (e) => console.log('ee', e)}})
+
 
 localConfig = ->
   global.screamconfig          = require('./local.json')
@@ -54,13 +59,10 @@ localConfig = ->
 
 prodConfig = ->
   global.screamconfig          = require('./prod.json')
-  mailman                      =
-  prodMail =
-    default: 'smtp'
-    smtp:
-      service: 'Gmail',
-      auth: { user: 'team@airpair.com', pass: 'UX6BbgZg' }
-  run screamconfig.mongo.url, prodMail
+  smtp =
+    service: 'Gmail',
+    auth: { user: 'team@airpair.com', pass: 'UX6BbgZg' }
+  run screamconfig.mongo.url, smtp
 
 
 if (cmd.liverun)

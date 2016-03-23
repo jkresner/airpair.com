@@ -11,7 +11,7 @@ mergeFixture = ->
             if r.merged.expert
               mergedExpertId = ObjectId(r.merged.expert._id)
             checkMergeMergedGraph M, mergedExpertId, expects, ->
-              checkMergeRemovedGraph r.removed, (ee) ->
+              checkMergeRemovedGraph r, (ee) ->
                 cb ee, r
 
   expectAllMerges = (promObjList) ->

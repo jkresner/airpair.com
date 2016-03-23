@@ -42,4 +42,4 @@ config          =
 
 
 
-SCREAM(__dirname, config).run()
+SCREAM(__dirname).run({config})

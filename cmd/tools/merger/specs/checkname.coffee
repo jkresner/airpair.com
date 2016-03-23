@@ -21,7 +21,7 @@ module.exports = ->
         $log("\n")
         expect(users.length, "Only #{users.length} matching name #{dupName}").to.be.at.least(2)
         $log("\nFound #{users.length} matching #{dupName}:\n".green)
-        $log("cmd/dev/merge-checkemails "+_.pluck(users,'email').join(','))
+        $log(("cmd/tools/merger/emails-check "+_.pluck(users,'email').join(',')).yellow)
         $log("\n")
         DONE()
 
