@@ -1,6 +1,6 @@
 var {User}                     = DAL
 var {query,data,select,bcrypt} = require('./users.data')
-var logging                    = config.log.auth
+var logging                    = false // config.log.auth
 
 
 
@@ -23,7 +23,7 @@ function localSignup(email, password, name, done) {
     }
 
     if (logging) $log('Auth.localSignup', this.sessionID, user.name)
-    _createUser(this.sessionID, this.session, user, done)
+    _createUser.call(this, this.sessionID, this.session, user, done)
   })
 }
 
@@ -60,8 +60,8 @@ function _loginUser(sessionID, session, login, {auth, emails, photos}, done) {
   User.updateSet(login._id, update, (e, user) => {
     select.cb.session({user},done)(null, user)
 
-    // $log('signup'.cyan, login, user)
     var trackData = select.analyticsLogin(user,sessionID)
+    // $log('login'.yellow, trackData)
     analytics.alias(user, sessionID, 'login', trackData)
   })
 }
@@ -85,14 +85,14 @@ function _createUser(sessionID, session, signup, done) {
   User.create(signup, (e, user) => {
     select.cb.session({user},done)(null, user)
     //-- Send an email ??
-    // $log('signup'.cyan, signup, user)
     var trackData = select.analyticsSignup(user,sessionID)
+    // $log('signup'.yellow, this.ctx, trackData)
     analytics.alias(user, sessionID, 'signup', trackData)
   })
 }
 
 
-var {appKey} = config.auth.oauth
+var {appKey} = config.auth
 var _setProfileTokens = (profile, token, refresh) => {
   _.set(profile,`tokens.${appKey}.token`, token)
   if (refresh) _.set(profile,`tokens.${appKey}.refresh`, refresh)
@@ -190,21 +190,20 @@ function _mergeWithExisting(existing, short, profile, oauthEmails, oauthPhotos,t
 
 
 function oauthLogin(provider, profile, {token,refresh}, done) {
-  // $log(`config.auth[${provider}]`, config.auth[provider])
 
-  if (!config.auth[provider] || config.auth[provider].login !== true)
+  if (!config.auth.oauth[provider] || config.auth.oauth[provider].login !== true)
     return done(Error(`AUTH.Login with ${provider} not supported`))
 
   $log(`AUTH.oathLogin.${provider}`.yellow, profile.displayName||profile.name||profile.id)
 
-  var {short} = config.auth[provider]
+  var {short} = config.auth.oauth[provider]
   var existsQuery = query.existing[short](profile)
   // $log('existsQuery', JSON.stringify(existsQuery).gray)
 
   User.getManyByQuery(existsQuery, (e, existing) => {
     if (e)
       return done(e)
-    else if (existing.length == 0 && config.auth[provider].signup !== true)
+    else if (existing.length == 0 && config.auth.oauth[provider].signup !== true)
       return done(Error(`AUTH.Signup with ${provider} not supported`))
     else if (existing.length > 1) {
       var existsIds = _.pluck(existing,'_id').join(',')
@@ -246,7 +245,7 @@ function oauthLogin(provider, profile, {token,refresh}, done) {
       if (true || logging) $log(`oauthLogin.${short}.Signup`.yellow, this.sessionID, name)
       var auth   = {}
       auth[short] = _setProfileTokens(profile,token,refresh)
-      _createUser(this.sessionID, this.session, {name,emails,photos,auth}, done)
+      _createUser.call(this, this.sessionID, this.session, {name,emails,photos,auth}, done)
     }
   })
 }
@@ -258,7 +257,7 @@ function link(provider, profile, {token,refresh}, done) {
 
   $log(`AUTH.link.${provider}`.yellow, user.name)
 
-  var {short} = config.auth[provider]
+  var {short} = config.auth.oauth[provider]
   var {profile} = odata[short](profile)
 
   User.getById(user._id, {select:`auth.${short}`}, (e, {auth})=>{
@@ -276,7 +275,7 @@ function link(provider, profile, {token,refresh}, done) {
     User.updateSet(user._id, $set, done)
 
     var trackData = select.analyticsLink(user, provider, profile)
-    analytics.event(`link:${short}`, user, trackData)
+    analytics.event.call({user}, `link:${short}`, trackData)
   })
 }
 
@@ -292,7 +291,8 @@ function passwordReset(email, cb) {
     var hash = select.resetHash(email)
     $logIt('auth.reset', 'after.calcHash', hash)
 
-    if (user) analytics.event('reset-password', user, { email, anonymous })
+    if (user)
+      analytics.event.call({user}, 'reset-password', { email, anonymous })
 
     //-- Update the user record regardless if anonymous or authenticated
     // User.updateSet(user._id, ups, (e,r) => {
@@ -328,7 +328,8 @@ function changePassword(email, hash, password, cb) {
 
     }
 
-    if (user) analytics.event('set-password', user, { email })
+    if (user)
+      analytics.event.call({user}, 'set-password', { email })
 
     User.updateSet(user._id, update, cb)
   })

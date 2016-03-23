@@ -1,27 +1,18 @@
-var {Redirect}              = DAL
 
+module.exports = {
 
-
-var get = {
   getAllRedirects(cb) {
     var opts = { select: '_id previous current type', sort: 'previous' }
-    Redirect.getManyByQuery({}, opts, cb)
-  }
-}
-
-
-var save = {
+    DAL.Redirect.getAll(opts, cb)
+  },
 
   createRedirect(o, cb) {
     o.created = new Date()
-    Redirect.create(o, cb)
+    DAL.Redirect.create(o, cb)
   },
 
   deleteRedirectById(_id, cb) {
-    Redirect.delete({_id}, cb)
+    DAL.Redirect.delete({_id}, cb)
   }
 
 }
-
-
-module.exports = _.extend(get, save)

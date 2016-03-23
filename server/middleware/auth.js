@@ -1,6 +1,6 @@
 var logging                = false
 var {isBot,stringToJson}   = util
-
+var BOTS = config.middleware.ctx.bot
 
 
 var setSessionVarFromQuery = (varName) =>
@@ -127,7 +127,7 @@ var middleware = {
   checkToPersistSession(expressSession) {
     return (req, res, next) => {
       if (logging) $log(`mw.checkToPersistSession ${req.url} ${!isBot(req.get('user-agent'))}`.cyan)
-      if (isBot(req.get('user-agent')) || req.nonSessionUrl) {
+      if (isBot(req.get('user-agent'), BOTS.all) || req.nonSessionUrl) {
         req.session = {}
         req.sessionID = 'unNOwnSZ3Wi8bDEnaKzhygGG2a2RkjZ2' //-- hard coded consistent uid
         return next() //-- Do not track the session
@@ -139,7 +139,7 @@ var middleware = {
 
   setAnonSessionData(req, res, next) {
     if (logging) $log(`mw.setAnonSessionData ${!req.isAuthenticated()} ${req.url}`.cyan)
-    if (isBot(req.header('user-agent'))) return next()
+    if (isBot(req.header('user-agent'), BOTS.all)) return next()
 
     if (!req.isAuthenticated()) {
       if (!req.session.anonData) req.session.anonData = {}
@@ -156,7 +156,7 @@ var middleware = {
     return (req, res, next) => {
       var userAgent = req.get('user-agent')
 
-      if (util.isBot(userAgent, config.bots.all)) {
+      if (isBot(userAgent, BOTS.all)) {
         var referer = req.header('Referer')
         var ref = (referer) ? ` <<< ${referer}` : ''
         if (true || logging)

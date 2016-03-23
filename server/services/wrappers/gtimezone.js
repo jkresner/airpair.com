@@ -5,7 +5,7 @@ var wrapper = {
 
   init() {
     this.api = global.API_GOOGLE_TIMEZONE || require('node-google-timezone')
-    this.api.key(config.timezone.google.apiKey)
+    this.api.key(config.wrappers.timezone.google.apiKey)
   },
 
   getTimezoneFromCoordinates({lat,lng}, timestamp, cb)

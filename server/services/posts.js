@@ -7,7 +7,7 @@ var selectTmpl            = select.tmpl
 var {selectFromObject}    = require('../../shared/util')
 var PostsUtil             = require('../../shared/posts')
 var Roles                 = require('../../shared/roles').post
-var {org}                 = config.auth.github
+// var {org}                 = config.auth.github
 
 
 var get = {
@@ -29,50 +29,9 @@ var get = {
     })
   },
 
-  getByIdForEditingInfo(post, cb) {
-    cb(V2DeprecatedError('Posts.getByIdForEditingInfo'))
-    // select.cb.editInfoView(cb)(null, post)
-  },
-
-  getByIdForEditing(post, cb) {
-    cb(V2DeprecatedError('Posts.getByIdForEditing'))
-    // if (!post.submitted) return select.cb.editView(cb)(null, post)
-
-    // var owner = org
-    // if ( Roles.isForker(this.user, post) )
-    //   owner = this.user.social.gh.username
-    // else if ( !Roles.isOwnerOrEditor(this.user, post) )
-    //   return cb(`Cannot edit this post. You need to fork ${post.slug}`)
-
-    // github2.getFile(this.user, owner, post.slug, "/post.md", 'edit', (e, postMDfile) => {
-    //   var mdOverride = (postMDfile) ? postMDfile.string : null
-    //   select.cb.editView(cb, mdOverride, owner)(e, post)
-    // })
-  },
 
   getByIdForContributors(post, cb) {
     cb(V2DeprecatedError('Posts.getByIdForContributors'))
-    // analytics.track(this.user, this.sessionID, 'getPullRequests', {slug:post.slug},null,()=>{})
-
-    // var done = (e, pullRequests) => {
-    //   post.pullRequests = selectFromObject({pullRequests}, select.pr).pullRequests
-    //   var {openPRs,closedPRs,acceptedPRs} = PostsUtil.calcStats(post)
-    //   if (!post.stats
-    //     || post.stats.acceptedPRs != acceptedPRs
-    //     || post.stats.closedPRs != closedPRs
-    //     || post.stats.openPRs != openPRs
-    //     )
-    //   {
-    //     // Unfortunately this is not right, we need to query the github api again to see if they were merged
-    //     post.stats = _.extend(post.stats||{},{acceptedPRs,openPRs,closedPRs})
-    //     svc.update(post._id, post, select.cb.statsView(cb))
-    //   } else
-    //     select.cb.statsView(cb)(null, post)
-    // }
-
-    // cache.pullRequests(post.slug, (cb) => {
-    //   github2.getPullRequests.call(this, 'admin', org, post.slug, cb)
-    // }, done)
   },
 
   getByIdForSubmitting(post, cb) {
@@ -122,29 +81,30 @@ var get = {
   },
 
   getByIdForPublishing(post, cb) {
-    ExpertSvc.getByQuery({userId:post.by.userId}, (e, expert) => {
-      if (expert) {
-        post.by.expertId = expert._id
-        post.by.username = expert.username
-      }
-      if (!post.tmpl)
-        post.tmpl = 'default'
+    cb(V2DeprecatedError('Posts.getByIdForPublishing'))
+    // ExpertSvc.getByQuery({userId:post.by.userId}, (e, expert) => {
+    //   if (expert) {
+    //     post.by.expertId = expert._id
+    //     post.by.username = expert.username
+    //   }
+    //   if (!post.tmpl)
+    //     post.tmpl = 'default'
 
-      if (!post.htmlHead || !post.htmlHead.canonical)
-      {
-        var primarytag = _.find(post.tags,(t) => t.sort==0 || post.tags[0])
-        post.htmlHead = post.htmlHead || {}
-        post.htmlHead.canonical = `/${primarytag.slug}/posts/${post.slug}`
-      }
+    //   if (!post.htmlHead || !post.htmlHead.canonical)
+    //   {
+    //     var primarytag = _.find(post.tags,(t) => t.sort==0 || post.tags[0])
+    //     post.htmlHead = post.htmlHead || {}
+    //     post.htmlHead.canonical = `/${primarytag.slug}/posts/${post.slug}`
+    //   }
 
-      if (!post.github) return cb(null, post)
+    //   if (!post.github) return cb(null, post)
 
-      github2.getFile('admin', org, post.slug, "/post.md", 'edit', (ee, head) => {
-        if (!ee && head.string)
-          post.mdHEAD = head.string
-        cb(ee, post)
-      })
-    })
+    //   github2.getFile('admin', org, post.slug, "/post.md", 'edit', (ee, head) => {
+    //     if (!ee && head.string)
+    //       post.mdHEAD = head.string
+    //     cb(ee, post)
+    //   })
+    // })
   },
 
   getByIdForPreview(_id, cb) {

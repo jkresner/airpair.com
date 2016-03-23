@@ -1,4 +1,5 @@
-var {Survey} = require("../models/_shared")
+// var {Survey} = require("../models/_shared")
+var Survey = {}
 
 module.exports = ({ Id, Enum, Touch, Reftag, Note, Htmlhead, Meta },
   { asSchema, required, trim, lowercase, index, unique, sparse }) => {

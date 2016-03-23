@@ -1,16 +1,15 @@
 var domain = require('domain')
-
+var logging = true
 
 var middleware = {
 
   badBot(req, res, next) {
-    var logging = true
+    var BOTS = config.middleware.ctx.bot
     var userAgent = req.get('user-agent')
-
-    if (util.isBot(userAgent, config.bots.all)) {
+    if (util.isBot(userAgent, BOTS.all)) {
       var referer = req.header('Referer')
       var ref = (referer ? ` <<< `.cyan+referer.blue : '').replace('https://','')
-      if (util.isBot(userAgent, config.bots.bad)) {
+      if (util.isBot(userAgent, BOTS.bad)) {
         $log(`__BADBOT${req.ip}\t ${userAgent||'UA:null'} ${req.originalUrl}`.cyan, ref)
         return res.status(200).send('')
       }
@@ -60,7 +59,7 @@ var middleware = {
 
   errorHandler(app) {
     return function(e, req, res, next) {
-
+      console.log('in global.errorHandler'.red, e, e.stack.toString().white)
       var uid = (req.user) ? req.user.email : req.sessionID
 
       if (config.env != 'test' || global.verboseErrHandler) {

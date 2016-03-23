@@ -1,8 +1,12 @@
-var {Survey,UserByte} = require("./../models/_shared")
-
-
 module.exports = ({ Id, Enum, Touch, Note },
   { asSchema, required, trim, index, lowercase }) => {
+
+
+var UserByte = {
+  _id:        { type: Id, ref: 'User' },
+  name:       String,
+  email:      { type: String, lowercase: true } // We can use the email to infalte the avatar
+}
 
 
 var Recording = {

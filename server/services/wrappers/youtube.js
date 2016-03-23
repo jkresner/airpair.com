@@ -9,9 +9,9 @@ var wrapper = {
     this.oauthClients        = []
     var google                  = require('googleapis')
     var OAuth2Client            = google.auth.OAuth2
-    var {clientID,clientSecret} = config.auth.google
+    var {clientID,clientSecret} = config.auth.oauth.google
 
-    for (var pair of config.youtube.refreshTokens.split('::'))
+    for (var pair of config.wrappers.youtube.refreshTokens.split('::'))
     {
       var refresh_token = pair.split(":")[1];
       var client = new OAuth2Client(clientID, clientSecret)

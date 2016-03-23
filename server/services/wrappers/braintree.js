@@ -44,10 +44,10 @@ var wrapper = {
 
   init() {
     var braintree = global.API_BRAINTREE || require('braintree')
-    var {merchantId, publicKey, privateKey} = config.payments.braintree
-    var environment = braintree.Environment[config.payments.braintree.environment]
+    var {merchantId, publicKey, privateKey} = config.wrappers.braintree
+    var environment = braintree.Environment[config.wrappers.braintree.environment]
     this.api = braintree.connect({ environment, merchantId, publicKey, privateKey })
-    addPaymentMethodOpts = {}; // { verifyCard: config.payments.braintree.verifyCards
+    addPaymentMethodOpts = {}; // { verifyCard: config.wrappers.braintree.verifyCards
   },
 
   getClientToken(cb) {

@@ -1,7 +1,6 @@
 var Rates                 = require('../services/requests.rates')
 var md5                   = require('../util/md5')
 var Roles                 = require('../../shared/roles.js').request
-var {ObjectId}            = require('mongoose').Schema
 
 var inflatedTags = (tags) => {
   if (!tags || !tags.length) return []
@@ -41,8 +40,8 @@ var statusHash =
 //chosen , // released
 
 
-var hexSeconds = Math.floor(moment('20141220','YYYYMMDD')/1000).toString(16)
-var id2015 = new ObjectId(hexSeconds + "0000000000000000").path
+// var hexSeconds = Math.floor(moment('20141220','YYYYMMDD')/1000).toString(16)
+// var id2015 = new ObjectId(hexSeconds + "0000000000000000").path
 
 var data = {
 
@@ -170,7 +169,7 @@ var data = {
         // r.timezone = r.location.timeZoneId
       // }
 
-      var _id = new require('mongoose').Types.ObjectId()
+      var _id = DAL.Request.newId()
       var initials = (by.email.indexOf('@airpair.com')==-1) ? r.initials
         : by.email.replace('@airpair.com','')
       return {
@@ -289,7 +288,7 @@ var data = {
     },
 
     '2015': {
-      'budget' : { '$exists': true }, '_id' : { '$gt': id2015 }
+      'budget' : { '$exists': true }    //, '_id' : { '$gt': id2015 }
     },
 
     waiting: {

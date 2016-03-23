@@ -104,13 +104,13 @@ views = ->
 scheduling = ->
 
   before ->
-    config.calendar.on = true
+    config.wrappers.calendar.on = true
 
   beforeEach ->
     STUB.SlackCommon()
 
   after ->
-    config.calendar.on = false
+    config.wrappers.calendar.on = false
 
 
   IT 'New booking has default prefered uncomfirmed time', ->

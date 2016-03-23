@@ -9,82 +9,81 @@ views = ->
 
   IT 'Can track an anonymous post view', ->
     ANONSESSION (s) ->
-      anonymousId = s.sessionID
-      analytics.setCallback =>
-        viewCheck = => DB.docsByQuery 'View', {anonymousId}, (r) ->
-          expect(r.length).to.equal(1)
-          expect(r[0].userId).to.be.undefined
-          expect(r[0].anonymousId).to.equal(anonymousId)
-          EXPECT.equalIds(r[0].objectId, "55c02b22d131551100f1f0da")
-          expect(r[0].ip).to.exist
-          expect(r[0].type).to.equal('post')
-          expect(r[0].url).to.equal(publishedPostUrl)
-          expect(r[0].ua).to.equal('Mozilla/5.0 (Windows NT 5.1; rv:31.0) Gecko/20100101 Firefox/31.0')
-          expect(r[0].referer).to.equal('http://airpair.com/posts')
-          {campaign} = r[0]
-          expect(campaign.source).to.equal('test1src')
-          expect(campaign.content).to.equal('test1ctn')
-          expect(campaign.medium).to.be.undefined
-          expect(campaign.term).to.be.undefined
-          expect(campaign.campaign).to.be.undefined
-          DONE()
-        _.delay(viewCheck, 100)
+      sId = s.sessionID
+      # analytics.setCallback =>
+      viewCheck = => DB.docsByQuery 'View', {sId}, (r) ->
+        expect(r.length).to.equal(1)
+        expect(r[0].uId).to.be.undefined
+        expect(r[0].sId).to.equal(sId)
+        EXPECT.equalIds(r[0].oId, "55c02b22d131551100f1f0da")
+        expect(r[0].ip).to.exist
+        expect(r[0].type).to.equal('post')
+        expect(r[0].url).to.equal(publishedPostUrl)
+        expect(r[0].ua).to.equal('Mozilla/5.0 (Windows NT 5.1; rv:31.0) Gecko/20100101 Firefox/31.0')
+        expect(r[0].ref).to.equal('http://airpair.com/posts')
+        {utm} = r[0]
+        expect(utm.source).to.equal('test1src')
+        expect(utm.content).to.equal('test1ctn')
+        expect(utm.medium).to.be.undefined
+        expect(utm.term).to.be.undefined
+        expect(utm.campaign).to.be.undefined
+        DONE()
+      _.delay(viewCheck, 100)
       PAGE "#{publishedPostUrl}?utm_source=test1src&utm_content=test1ctn", {referer:'http://airpair.com/posts'}, ->
 
 
   IT 'Can track an anonymous ad click view', ->
     ANONSESSION (s) ->
-      anonymousId = s.sessionID
+      sId = s.sessionID
       spy = STUB.spy(analytics,'view')
-      analytics.setCallback =>
-        viewCheck = => DB.docsByQuery 'View', {anonymousId}, (r) ->
-          expect(r.length).to.equal(1)
-          expect(r[0].userId).to.be.undefined
-          expect(r[0].anonymousId).to.equal(anonymousId)
-          expect(r[0].ip).to.exist
-          expect(r[0].ua).to.exist
-          expect(r[0].type).to.equal('ad')
-          expect(r[0].referer).to.equal('https://www.airpair.com/js/js-framework-comparison')
-          expect(r[0].url).to.equal('https://keen.io/?utm_source=airpair&utm_medium=banner&utm_campaign=custom_analytics')
-          EXPECT.equalIds(r[0].objectId,"55aa28f643f81ad565104e6f")
-          DONE()
-        _.delay(viewCheck, 100)
+      viewCheck = => DB.docsByQuery 'View', {sId}, (r) ->
+        expect(r.length).to.equal(1)
+        expect(r[0].uId).to.be.undefined
+        expect(r[0].sId).to.equal(sId)
+        expect(r[0].ip).to.exist
+        expect(r[0].ua).to.exist
+        expect(r[0].type).to.equal('ad')
+        expect(r[0].ref).to.equal('https://www.airpair.com/js/js-framework-comparison')
+        expect(r[0].url).to.equal('https://keen.io/?utm_source=airpair&utm_medium=banner&utm_campaign=custom_analytics')
+        EXPECT.equalIds(r[0].oId,"55aa28f643f81ad565104e6f")
+        DONE()
 
       PAGE "/visit/keen.io-072015", {status:302,referer:'https://www.airpair.com/js/js-framework-comparison'}, ->
         expect(spy.callCount).to.equal(1)
-        expect(spy.args[0][0]).to.be.undefined
+        expect(spy.args[0][0]).to.equal('ad')
         expect(spy.args[0][1]).to.exist
-        expect(spy.args[0][2]).to.equal('ad')
-        expect(spy.args[0][3]).to.equal('Keen.io jul custom analytics')
+        expect(spy.args[0][1].title).to.equal('Keen.io jul custom analytics')
+
+        # expect(spy.args[0][0]).to.be.undefined
+        # expect(spy.args[0][3]).to.equal('Keen.io jul custom analytics')
         # expect(spy.args[0][4].tags).to.exist
-        expect(spy.args[0][5].referer).to.equal('https://www.airpair.com/js/js-framework-comparison')
-        expect(spy.args[0][5].utms).to.be.undefined
-        expect(spy.args[0][6]).to.be.undefined
+        # expect(spy.args[0][5].ref).to.equal('https://www.airpair.com/js/js-framework-comparison')
+        # expect(spy.args[0][5].utm).to.be.undefined
+        # expect(spy.args[0][6]).to.be.undefined
+        _.delay(viewCheck, 100)
 
 
   IT 'Can track logged in post view', ->
     STORY.newUser 'krez', (s) ->
       spy = STUB.spy(analytics,'view')
-      userId = ObjectId(s._id)
-      analytics.setCallback =>
-        viewCheck = => DB.docsByQuery 'View', {userId}, (r) ->
-          expect(spy.callCount).to.equal(1)
-          expect(r.length).to.equal(1)
-          EXPECT.equalIds(r[0].userId,userId)
-          expect(r[0].anonymousId).to.be.undefined
-          {campaign} = r[0]
-          expect(campaign.source).to.be.undefined
-          expect(campaign.content).to.be.undefined
-          expect(campaign.medium).to.be.undefined
-          expect(campaign.term).to.be.undefined
-          expect(campaign.name).to.equal('test2nm')
-          LOGIN {key:'admin'}, ->
-            GET "/adm/views/user/#{userId}", {}, (r2) ->
-              expect(r2.length).to.equal(1)
-              EXPECT.equalIds(r2[0].userId,userId)
-              DONE()
-        _.delay(viewCheck, 150)
-
+      uId = ObjectId(s._id)
+      viewCheck = => DB.docsByQuery 'View', {uId}, (r) ->
+        expect(spy.callCount).to.equal(1)
+        expect(r.length).to.equal(1)
+        EXPECT.equalIds(r[0].uId,uId)
+        expect(r[0].sId).to.be.undefined
+        {utm} = r[0]
+        expect(utm.source).to.be.undefined
+        expect(utm.content).to.be.undefined
+        expect(utm.medium).to.be.undefined
+        expect(utm.term).to.be.undefined
+        expect(utm.campaign).to.equal('test2nm')
+        # LOGIN {key:'admin'}, ->
+          # GET "/adm/views/user/#{userId}", {}, (r2) ->
+            # expect(r2.length).to.equal(1)
+            # EXPECT.equalIds(r2[0].uId,userId)
+        DONE()
+      _.delay(viewCheck, 150)
       PAGE "#{publishedPostUrl}?utm_campaign=test2nm", {}, ->
 
   # # it('Can track post view action', function(done) {
@@ -116,7 +115,7 @@ views = ->
     signup = DATA.newSignup("Will Moss")
     DB.removeDocs 'User', { name: signup.name }, ->
     ANONSESSION (s) ->
-      anonymousId = s.sessionID
+      sId = s.sessionID
       utms = 'utm_campaign=testSingup&utm_source=test8src&utm_content=test8ctn'
       PAGE "#{publishedPostUrl}?#{utms}", {}, ->
         spy = STUB.spy(analytics,'alias')
@@ -128,11 +127,13 @@ views = ->
           EXPECT.equalIds(spy.args[0][0]._id, sFull._id)
           expect(spy.args[0][1]).to.equal(s.sessionID)
           expect(spy.args[0][2]).to.equal('signup')
-          DB.docsByQuery 'View', {userId}, (r) ->
+
+          viewCheck = => DB.docsByQuery 'View', {uId:userId}, (r) ->
             expect(r.length).to.equal(1)
-            EXPECT.equalIds(r[0].userId,userId)
-            EXPECT.equalIds(r[0].anonymousId,s.sessionID)
+            EXPECT.equalIds(r[0].uId,userId)
+            EXPECT.equalIds(r[0].sId,s.sessionID)
             DONE()
+          _.delay(viewCheck, 150)
 
 
 
@@ -188,12 +189,12 @@ views = ->
       PAGE publishedPostUrl, {}, ->
         PAGE publishedPostUrl, {}, ->
 
-          DB.docsByQuery 'View', {anonymousId:anonymousId2}, (v2) ->
+          DB.docsByQuery 'View', {sId:anonymousId2}, (v2) ->
             expect(v2.length).to.equal(2)
-            expect(v2[0].userId).to.be.undefined
-            expect(v2[1].userId).to.be.undefined
-            expect(v2[0].anonymousId).to.equal(anonymousId2)
-            expect(v2[1].anonymousId).to.equal(anonymousId2)
+            expect(v2[0].uId).to.be.undefined
+            expect(v2[1].uId).to.be.undefined
+            expect(v2[0].sId).to.equal(anonymousId2)
+            expect(v2[1].sId).to.equal(anonymousId2)
 
             # spyIdentify = STUB.spy(analytics,'identify')
             spyAlias = STUB.spy(analytics,'alias')
@@ -210,7 +211,7 @@ views = ->
 
               GET '/session/full', (s3) ->
                 userId = ObjectId(s3._id)
-                viewCheck = => DB.docsByQuery 'View', {userId}, (v3) ->
+                viewCheck = => DB.docsByQuery 'View', {uId:userId}, (v3) ->
                   expect(v3.length).to.equal(4)
                   DONE()
                 _.delay(viewCheck, 50)
@@ -220,12 +221,12 @@ views = ->
       PAGE publishedPostUrl, {}, ->
         PAGE publishedPostUrl, {}, ->
 
-          DB.docsByQuery 'View', {anonymousId}, (v1) ->
+          DB.docsByQuery 'View', {sId:anonymousId}, (v1) ->
             expect(v1.length).to.equal(2)
-            expect(v1[0].userId).to.be.undefined
-            expect(v1[1].userId).to.be.undefined
-            expect(v1[0].anonymousId).to.equal(anonymousId)
-            expect(v1[1].anonymousId).to.equal(anonymousId)
+            expect(v1[0].ud).to.be.undefined
+            expect(v1[1].uId).to.be.undefined
+            expect(v1[0].sId).to.equal(anonymousId)
+            expect(v1[1].sId).to.equal(anonymousId)
 
           SUBMIT '/auth/signup', singup, {}, (s0) ->
             session2Callback(anonymousId)

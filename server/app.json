@@ -1,0 +1,168 @@
+{
+  "ads": {
+    "on":                      true,
+    "staticDir":               "/static/img/ads"
+  },
+  "analytics": {
+    "appKey":                  "apcom"
+  },
+  "auth": {
+    "appKey":                  "apcom",
+    "masterpass":              "youshallpass",
+    "local": {
+      "passReqToCallback":     true,
+      "usernameField":         "email",
+      "passwordField":         "password"
+    },
+    "password": {
+      "resetSalt":             "$2a$08$Qn0unnOa4XH0pN.IRZHB4u"
+    },
+    "oauth": {
+      "github": {
+        "short":               "gh",
+        "login":               true,
+        "signup":              true,
+        "clientID":            "378dac2743563e96c747",
+        "clientSecret":        "f52d233259426f769850a13c95bfc3dbe7e3dbf2",
+        "emails":              true,
+        "userAgent":           "airpair.com",
+        "scope":               [ "user:email" ]
+      },
+      "google": {
+        "short":               "gp",
+        "login":               true,
+        "signup":              true,
+        "clientID":            "1019727294613-rjf83l9dl3rqb5courtokvdadaj2dlk5.apps.googleusercontent.com",
+        "clientSecret":        "Kd6ceFORVbABH7p5UbKURexZ",
+        "scope":               ["profile","email","https://www.googleapis.com/auth/plus.profile.emails.read"]
+      },
+      "twitter": {
+        "short":               "tw",
+        "consumerKey":         "Tfw8PWs5LcxqrWlFJWUhXf8i8",
+        "consumerSecret":      "yoA38VC94a2gcxJ7ewCyNn8nPu7bHVVVMTauZTanlvkgXBWNOE"
+      },
+      "linkedin": {
+        "short":               "in",
+        "consumerKey":         "sy5n2q8o2i49",
+        "consumerSecret":      "lcKjdbFSNG3HfZsd"
+      },
+      "bitbucket": {
+        "short":               "bb",
+        "consumerKey":         "QNw3HsMSKzM6ptP4G4",
+        "consumerSecret":      "Cx5pvK2ZEjsymVxME42hSffkzkaQ9Buf"
+      },
+      "stackexchange": {
+        "short":               "so",
+        "clientID":            "1451",
+        "clientSecret":        "CCkJpq3BY3e)lZFNsgkCkA((",
+        "key":                 "dTtlx1WL0TJvOKPfoU88yg((",
+        "scope":               []
+      },
+      "angellist": {
+        "short":               "al",
+        "clientID":            "b6e2b75a1e20367c9b2bd267dbbd06269193814b83c2a492",
+        "clientSecret":        "e702b47dca92523fd99a3cc8f8262acfea8a52b19c5809cd",
+        "scope":               ["email","talent"]
+      },
+      "slack": {
+        "short":               "sl",
+        "team":                "T06U2HQQ3",
+        "clientID":            "6954602819.6963320480",
+        "clientSecret":        "ef0b1b25910627ce92f721bda02ba757",
+        "scope":               ["identify","read","post","client"]
+      }
+    }
+  },
+  "comm": {
+    "senders": {
+      "err":                   { "name": "ERR", "app": "AP", "email": "team@airpair.com" }
+    }
+  },
+  "chat": {
+    "slackin":                 { "host": "http://slackin.airpair.com" },
+    "slack": {
+      "owner":                 { "id": "U06U2HQQK", "token": "xoxp-6954602819-6954602835-7019593206-19f426" },
+      "support":               { "id": "U06UCSHL0", "token": "xoxp-6954602819-6964901680-6965169622-a2bb52" },
+      "jk":                    { "id": "U06U2HQQK", "token": "xoxp-6954602819-6954602835-7019593206-19f426" },
+      "pairbot":               { "id": "U06UBBT9V", "token": "xoxb-6963401335-ziIikHY5Uo9zyG6NPQ9ijoam" },
+      "channels":              {
+        "pipeline":            { "id": "C06KZHXAS" },
+        "posts":               { "id": "C06UBRE77" }
+      }
+    }
+  },
+  "http": {
+    "static": {
+      "bundles": {
+        "css/libs.css":        "/static.airpair.com/css/libs.css",
+        "css/index.css":       "static/styles/index.css",
+        "css/adm.css":         "static/styles/adm.css",
+        "js/index.js":         "js/index.js",
+        "js/adm.js":           "js/adm.js"
+      },
+      "dirs":                  "public,public/static/img/ads"
+    }
+  },
+  "middleware": {
+    "ctx": {
+      "bot": {
+        "all": "googlebot|TweetmemeBot|TurnitinBot|SMTBot|MegaIndex|Domain Re-Animator Bot|ToutiaoSpider|uk_lddc_bot|MJ12bot|CPython|libwww-perl|Superfeedr|Mechanize|AdsBot-Google|gurujibot|bitlybot|twitterbot|scritch|yandexbot|slurp|msnbot|bingbot|rogerbot|MetaURI|Hatena|PaperLiBot|QuerySeekerSpider|AhrefsBot|EmailMarketingRobot|ShowyouBot|Baiduspider|YisouSpider|facebookexternalhit|archive.org_bot|Y!J-ASR",
+        "bad": "MegaIndex|datasift|uk_lddc_bot|MJ12bot|CPython|libwww-perl|Superfeedr|Nutch|Mechanize"
+      },
+      "uId":                   true
+    },
+    "dirs":                    "{{undefine}}",
+    "sesssion": {
+      "secret":                "airyv1",
+      "name":                  "aps"
+    }
+  },
+  "model": {
+    "analytics": {
+      "collections":           { "event": "Event", "impression": "Impression", "view": "View" },
+      "mongoUrl":              "mongodb://localhost/airpair_analytics"
+    },
+    "session":                 { "collection": "v1sessions" }
+  },
+  "routes": {
+    "redirects":               { "on": true }
+  },
+  "wrappers": {
+    "bitly": {
+      "shortDomain":           "http://airpa.ir/",
+      "accessToken":           "b93731e13c8660c7700aca6c3934660ea16fbd5f"
+    },
+    "braintree": {
+      "environment":           "Sandbox",
+      "verifyCards":           false,
+      "merchantId":            "chkr49r8yxk5y65p",
+      "publicKey":             "3pwpby7rrfdr3x3m",
+      "privateKey":            "7d5586d4be9ba9e36daebfa814f0584a"
+    },
+    "calendar": {
+      "on":                    false,
+      "google": {
+        "ownerRefreshToken":   "setyourenvironentvarible",
+        "calendarId":          "setyourenvironentvarible@airpair.com"
+      }
+    },
+    "hangout": {
+      "appId":                 "140030887085",
+      "login":                 { "email": "support@airpair.com", "password": "helsyea" }
+    },
+    "ses":                     { "accessKeyId": "--", "secretAccessKey": "--" },
+    "smtp":                    { "service": "--", "auth": { "user": "--", "pass": "--" } },
+    "stripe": {
+      "publishedKey":          "pk_test_aj305u5jk2uN1hrDQWdH0eyl",
+      "secretKey":             "sk_test_8WOe71OlRWPyB3rDRcnthSCc"
+    },
+    "timezone":                { "google": { "apiKey": "AIzaSyANXimipzhyZ-Mp2_RrzjKKp4nXq5VpMGk" } },
+    "twitter": {
+      "access_token":          "test",
+      "access_token_secret":   "test",
+      "consumer_key":          "test",
+      "consumer_secret":       "test"
+    },
+    "youtube":                 { "refreshTokens": "airpairtest34@gmail.com:1/ButgPHQTginqD-zDnOHHhxiVRSlGDw5iGY9pPIrOsrQ" }
+  }
+}

@@ -8,7 +8,6 @@ var {select,opts,query}       = Data
 var OrderUtil                 = require('../../shared/orders.js')
 var DateTime                  = util.datetime
 var {base}                    = Data
-var {ObjectId}                = require('mongoose').Types
 
 
 OrderUtil.calculateUnitPrice = (expert, type) => expert.rate + base[type]
@@ -106,10 +105,10 @@ var Lines = {
   deal(expert, deal, expires, source)
   {
     var total = parseInt(deal.price)
-    var exp = { _id: ObjectId(expert._id), name: expert.name, avatar: expert.avatar, userId: ObjectId(expert.userId) }
+    var exp = { _id: DAL.User.toId(expert._id), name: expert.name, avatar: expert.avatar, userId: DAL.User.toId(expert.userId) }
     var info = { name: `${deal.minutes} Minutes`, source, remaining: deal.minutes, expires, redeemedLines: [],
                  deal: _.pick(deal,'rake','type','minutes','price','target','_id'), expert: exp }
-    info.deal._id = ObjectId(info.deal._id)
+    info.deal._id = DAL.Order.toId(info.deal._id)
     // var profit = (deal.rake/100)*total
     // var qty = (parseInt(deal.minutes)/60).toFixed(1)
     // var unitPrice = (total/qty).toFixed(2)
@@ -153,11 +152,11 @@ var Lines = {
 //-- Use the lines items, paymethod and who the orders is for
 function makeOrder(byUser, lines, payMethodId, forUserId, requestId, dealId, errorCB, cb)
 {
-  var byUserId = ObjectId(byUser._id.toString())
-  forUserId = (forUserId) ? ObjectId(forUserId.toString()) : byUserId
+  var byUserId = DAL.User.toId(byUser._id)
+  forUserId = (forUserId) ? DAL.User.toId(forUserId) : byUserId
 
   var o = {
-    _id: new ObjectId(),
+    _id: DAL.Order.newId(),
     utc: new Date(),
     userId: forUserId, // May be different from the identity (which could be an admin)
     total: 0,
@@ -212,7 +211,7 @@ function makeOrder(byUser, lines, payMethodId, forUserId, requestId, dealId, err
 
 function chargeAndTrackOrder(o, errorCB, saveCB)
 {
-  analytics.event('order', o.by, {_id:o._id,total:o.total})
+  analytics.event.call({user:o.by},'order', {_id:o._id,total:o.total})
   if (o.total == 0) saveCB(null, o)
   else
   {
@@ -247,7 +246,7 @@ function chargeAndTrackOrder(o, errorCB, saveCB)
 function trackOrderPayment(order) {
   var d = {byName:order.by.name,total:order.total, _id:order._id}
   mailman.sendTemplate('pipeliner-notify-purchase', d, 'pipeliners')
-  analytics.event('payment', order.by, {orderId:order._id, total:order.total})
+  analytics.event.call({user:order.by},'payment', {orderId:order._id, total:order.total})
 }
 
 

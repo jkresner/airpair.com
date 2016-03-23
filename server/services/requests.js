@@ -142,7 +142,7 @@ var save = {
     // o.lastTouch = svc.newTouch.call(this, 'create')
     // o.adm = { active:true }
 
-    analytics.echo(o.by, null, 'Request', {_id:o._id,action:'start'})
+    // analytics.echo(o.by, null, 'Request', {_id:o._id,action:'start'})
 
     if (this.user.emailVerified) {
       // Send here's a link to update your request.
@@ -171,7 +171,7 @@ var save = {
       mailman.sendTemplate('pipeliner-notify-request', d, 'pipeliners')
 
       original.adm = admSet(original,{active:true,submitted:new Date()})
-      analytics.echo(original.by, null, 'Request', {_id:original._id,action:'submit'})
+      // analytics.echo(original.by, null, 'Request', {_id:original._id,action:'submit'})
     }
 
     // var ups = _.extend(original, update)

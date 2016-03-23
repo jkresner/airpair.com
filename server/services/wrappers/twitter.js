@@ -3,7 +3,7 @@ var wrapper = {
 
   init() {
     var Twit = require('twit')
-    wrapper.api = new Twit(config.share.tw)
+    wrapper.api = new Twit(config.wrappers.twitter)
   },
 
   postTweet(content, cb) {

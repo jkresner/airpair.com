@@ -61,7 +61,8 @@ module.exports = function(app) {
   }
 
   app.get('/logout', mw.setReturnTo, (req, res, next) => {
-    if (req.user) analytics.event('logout', req.user, {})
+    if (req.user)
+      analytics.event.call(Object.assign(req.ctx, {user:req.user,sessionId:req.sessionID}), 'logout', req.user)
     req.logout()
     res.redirect(config.auth.loginUrl)
   })

@@ -1,9 +1,14 @@
 var groups        = ['pipeliners','spinners']
 var lists         = {}
-var {sender}      = config.mail
 var emptyCB       = (e,r) => { if (e) $log('mailman.send.error'.red, e) }
 var TemplateSvc   = null
 var tmplSvc       = $require('../services/templates', TemplateSvc)
+
+
+var sender      = { "pairbot": "Pairbot <team@airpair.com>",
+                    "ap": "AP <team@airpair.com>",
+                    "jk": "Jonathon Kresner <team@airpair.com>",
+                    "team": "AirPair <team@airpair.com>" }
 
 var senderTansport = {
   ap: 'ses',
@@ -14,6 +19,7 @@ var senderTansport = {
 
 module.exports = function()
 {
+  // var cfg           = config.v1.mail
   var $$log = function() {
     var args = [].slice.call(arguments)
     var named = args.shift()
@@ -28,22 +34,21 @@ module.exports = function()
 
   function initTransports() {
     var {createTransport}   = require('nodemailer')
-    var {markdown}          = require('nodemailer-markdown')
+    var compileMarkdown = require('nodemailer-markdown').markdown()
+    // console.log('initTransports'.yellow, cfg.transport)
 
-    var defaultTransport = config.mail.transport.default
-
-    if (config.mail.transport.default == 'stub') {
+    if (config.comm.mode == 'stub') {
       var stubTransport = require('nodemailer-stub-transport')
       var stub = createTransport(stubTransport())
-      stub.use('compile', markdown())
+      stub.use('compile', compileMarkdown)
       return { ses: stub, smtp: stub, stub }
     }
     else {
       var sesTransport  = require('nodemailer-ses-transport')
-      var ses           = createTransport(sesTransport(config.mail.transport.ses))
-      var smtp          = createTransport(config.mail.transport.smtp)
-      smtp.use('compile', markdown())
-      ses.use('compile', markdown())
+      var ses           = createTransport(sesTransport(config.wrappers.ses))
+      var smtp          = createTransport(config.wrappers.smtp)
+      smtp.use('compile', compileMarkdown)
+      ses.use('compile', compileMarkdown)
       return { ses, smtp }
     }
   }
@@ -66,13 +71,13 @@ module.exports = function()
       if (!mm.transports)
         mm.transports = initTransports()
 
-      mail.from = (mail.sender) ? config.mail.sender[mail.sender] : config.mail.sender.team
+      mail.from = mail.sender ? sender[mail.sender] : sender.team
       transportType = transportType ||  senderTansport[mail.sender]
 
       if (!_.contains(['ses','smtp','stub'], transportType))
         return $log('transportType'.red, transportType, mail)
 
-      mm.transports[transportType||config.mail.transport.default].sendMail(mail, (e, info) => {
+      mm.transports[transportType].sendMail(mail, (e, info) => {
         $$log(null,transportType.cyan, mail.from.split(' ')[0].gray, mail.to, mail.subject.yellow)
         if (config.log.mail) $log(mail.text)
         if (cb) cb(e, mail)

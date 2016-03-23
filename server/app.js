@@ -1,49 +1,56 @@
-// $timelapsed("APP READ")
-var start       = new Date().getTime()
-var mw          = require('./middleware/_middleware')
-var session     = require('./util/session')
-var routes      = require('./routes/index')
-require('./util/cache')
+function run(config, {MAServer,tracking,done}) {
 
-// DO NOT MOVE ANYTHING IN THIS FILE
-// middleware order is 112% crucial to not screw up sessions
+  // $timelapsed("APP START")
+  // $log(`APP v${config.build.version}   Start   ${start}`.appload)
 
-function run(config, done)
-{
-  $timelapsed("APP START")
-  $log(`APP v${config.build.version}   Start   ${start}`.appload)
+  var start       = new Date().getTime()
 
-  var express = require('express')
-  var app = express()
-
-  app.use(mw.logging.badBot)
-  app.use(routes('blackList'), (r,res) => res.status(404).send(''))
-  routes('resolver')(app)
+  var app         = MAServer.App(config, done)
 
   //-- We don't want to serve sessions for static resources
   //-- Save database write on every resources
-  app.use(express.static(config.http.appStaticDir, config.http.static))
-  app.use(express.static(config.http.appStaticDir.replace('dist','public'), config.http.static))
-  app.use(mw.logging.slowrequests)
+  // for (var dir of config.http.static.dirs) {
+    // console.log('static.dir'.white, dir)
+    // app.use(express.static(dir, config.http.static))
+  // }
+  // app.use(express.static(config.http.static.dirs[0], config.http.static))
+  // app.use(mw.logging.slowrequests)
 
-  global.$logIt = function() {
-    var args = [].slice.call(arguments)
-    if (args[0].match(/(model|modl)/i) != null) return
-    args[0] = args[0].white
-    console.log.apply(null,args)
-  }
+  // global.$logIt = function() {
+  //   var args = [].slice.call(arguments)
+  //   if (args[0].match(/modl/i) != null) return
+  //   args[0] = args[0].white
+  //   console.log.apply(null,args)
+  // }
 
   var model = require(`meanair-model`)(done)
   model.connect(() => {
+
     global.DAL = model.DAL
-    $timelapsed("DAL Connected", DAL)
+    // $timelapsed("DAL Connected", DAL)
+    var mw          = require('./middleware/_middleware')
+    var session     = require('./util/session')
+    var routes      = require('./routes/index')
+    require('./util/cache')
+    app.use(mw.logging.badBot)
+    app.use(routes('blackList'), (r,res) => res.status(404).send(''))
+    routes('resolver')(app)
+
+
+    app.meanair.lib({passport:require('passport')})
+               .set(model, {analytics:MAServer.Analytics(config, tracking)})
+    //            .merge(require('meanair-auth'))
+               .chain({api:false,session:false,plugins:false})
+    //            .run()
+
+
+    global.wrapAnalytics()
 
     global.svc = {
       newTouch(action) { return { action, _id: DAL.User.newId(),
           utc: new Date(), by: { _id: this.user._id, name: this.user.name } } }
     }
 
-    // Don't persist or track sessions for rss
     app.use('/rss', routes('rss')(app))
 
     app.use(mw.auth.setNonSessionUrl(app))
@@ -54,7 +61,7 @@ function run(config, done)
     app.use('/visit', routes('ads')(app))
 
     //-- Do not move connect-livereload before session middleware
-    if (config.livereload) app.use(require('connect-livereload')({ port: 35729 }))
+    // if (config.livereload) app.use(require('connect-livereload')({ port: 35729 }))
 
     var hbsEngine   = require('./views/_hbsEngine')
     hbsEngine(app)
@@ -69,6 +76,7 @@ function run(config, done)
     app.get('/', mw.analytics.trackFirstRequest, mw.auth.authdRedirect('/dashboard'), app.renderHbs('home') )
 
     routes('auth')(app)
+
     app.use('/v1/api/matching', routes('api').matching)
     app.use('/v1/api/adm/bookings', routes('api').spinning)
     app.use('/v1/api/adm', routes('api').admin)
@@ -86,7 +94,6 @@ function run(config, done)
 
     app.use(mw.analytics.trackFirstRequest)
     routes('redirects').addRoutesFromDb(app, () => {
-
       app.use(routes('landing')(app))
       app.use(routes('dynamic')(app))
       app.get(routes('whiteList'), app.renderHbs('base') )
@@ -95,8 +102,8 @@ function run(config, done)
       app.use(mw.logging.errorHandler(app))
 
       var cb = done || (e => {})
-      app.listen(config.port, () => {
-        $log(`           Listening after ${new Date().getTime()-start}ms on port ${config.port}`.appload)
+      app.listen(config.http.port, () => {
+        // $log(`           Listening after ${new Date().getTime()-start}ms on port ${config.port}`.appload)
         cb()
       }).on('error', cb)
     })

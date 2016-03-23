@@ -1,6 +1,6 @@
 
 // Couple of handy globals (this won't get out of hand)
-module.exports = function(config)
+module.exports = function(config, _analytics)
 {
   global.util           = require('../../shared/util')
   global._              = require('lodash')
@@ -25,22 +25,23 @@ module.exports = function(config)
     }
 
   //-- makes app a tests load 300ms faster
-  global.analytics    = { echo: ()=>{}, event: ()=>{}, view: ()=>{}, alias: ()=>{}, impression: ()=>{} }
+  // global.analytics    = { echo: ()=>{}, event: ()=>{}, view: ()=>{}, alias: ()=>{}, impression: ()=>{} }
   global.Wrappers     = require('../services/wrappers/_index')
 
   global.mailman = { init() { global.mailman = require('./mailman')() } }
   global.pairbot = { init() { global.pairbot = require('./im/pairbot')() } }
 
   //-- Services we want to stub can be set on global here
-  if (config.env == 'test')
-  {
-    global.MailChimpApi   = require('mailchimp/lib/mailchimp/MailChimpAPI_v2_0')
-  }
-  else
-  {
-    if (config.analytics.on)
-      global.analytics    = require('./../services/analytics').analytics
-  }
+  // if (config.env == 'test')
+  // {
+    // global.MailChimpApi   = require('mailchimp/lib/mailchimp/MailChimpAPI_v2_0')
+  // }
+  // else
+  // {
+    // if (config.analytics.on)
+      // global.analytics = require('./../services/analytics')(_analytics)
+
+  // }
 }
 
 

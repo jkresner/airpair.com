@@ -1,6 +1,14 @@
-{colors,initGlobals,initConfig} = require('./../../server/util/_setup')
-config = initConfig('test')
-config.colors = colors
+# {colors,initGlobals,initConfig} = require('./../../server/util/_setup')
+# config = initConfig('test')
+# config.colors = colors
+# initGlobals(config)
+
+MAServer         = require('meanair-server')
+appRoot          = __dirname.replace('test', '')
+config           = MAServer.Config(appRoot, 'test', true)
+
+
+{initGlobals} = require('./../../server/util/_setup')
 initGlobals(config)
 
 
@@ -14,6 +22,13 @@ opts.login = (req, cb) ->
     cb(e,r)
 
 
+SCREAM = require('meanair-scream')(__dirname, opts)
+SCREAM.run({
+  config,
+  opts: {
+    MAServer,
+    tracking: require('../../server/app.track'),
+    done: (e) => console.log('ee', e)
+  }
+})
 
-SCREAM = require('meanair-scream')(__dirname, config, opts)
-SCREAM.run()

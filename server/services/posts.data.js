@@ -206,22 +206,6 @@ var select = {
     'lastTouch.action': 1,
     'lastTouch.by.name': 1
   },
-  // pr: {
-  //   'pullRequests.url':1,
-  //   'pullRequests.html_url':1,
-  //   'pullRequests.id':1,
-  //   'pullRequests.number':1,
-  //   'pullRequests.state':1,
-  //   'pullRequests.title':1,
-  //   'pullRequests.user.login':1,
-  //   'pullRequests.user.avatar_url':1,
-  //   'pullRequests.created_at':1,
-  //   'pullRequests.updated_at':1,
-  //   'pullRequests.closed_at': null,
-  //   'pullRequests.merged_at': null,
-  //   'pullRequests.merge_commit_sha': 1,
-  //   'pullRequests.statuses_url': 1
-  // },
   generateToc(md) {
     marked(generateToc(md))
   },
@@ -384,6 +368,7 @@ var select = {
         similarFn(r, (ee,similar) => {
           for (var p of similar) p.tags = inflatedTags(p)
           r.similar = similar
+          r.url = r.htmlHead.canonical
           cb(null, r)
         })
       })

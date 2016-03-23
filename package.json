@@ -1,6 +1,6 @@
 {
   "name": "airpair.com",
-  "version": "0.6.1",
+  "version": "0.6.3",
   "description": "site running airpair.com",
   "main": "index.js",
   "engines": {
@@ -8,7 +8,7 @@
     "npm": "2.14.4"
   },
   "scripts": {
-    "start": "node --harmony_destructuring bootstrap.js",
+    "start": "node --harmony_destructuring ./server/index.js",
     "test": "cmd/test",
     "gv": "heroku logs --tail --source app"
   },
@@ -26,20 +26,17 @@
     "colors": "1.0.3",
     "connect-mongo": "0.8.2",
     "cookie-parser": "1.3.5",
-    "express": "4.13.3",
     "express-session": "1.11.3",
     "express-hbs": "^0.7.11",
-    "github": "0.2.4",
     "googleapis": "2.1.1",
     "handlebars": "^2.0.0",
     "htmlparser2": "3.8.3",
     "lodash": "3.10.1",
-    "mailchimp": "1.1.0",
-    "marked": "0.3.5",
-    "meanair-model": "0.6.3",
+    "meanair-model": "0.6.4",
+    "meanair-server": "0.6.3",
+    "meanair-shared": "0.6.3",
     "moment": "2.10.6",
     "moment-timezone": "0.4.0",
-    "mongoose": "4.1.9",
     "node-google-timezone": "0.0.2",
     "nodemailer": "1.4.0",
     "nodemailer-markdown": "1.0.0",

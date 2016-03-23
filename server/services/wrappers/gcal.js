@@ -17,15 +17,17 @@ var owner2colorIndex = {
   '11': 11 //dc2127 bold red
 }
 
-var {calendarId,owner,ownerRefreshToken} = config.calendar.google
-var auth  = null
+
+var auth  = null, calendarId;
 
 var wrapper = {
 
   init() {
+    var {ownerRefreshToken} = config.wrappers.calendar.google
+    calendarId = config.wrappers.calendar.google.calendarId
     var google = require('googleapis')
     var OAuth2Client = google.auth.OAuth2
-    auth = new OAuth2Client(config.auth.google.clientID, config.auth.google.clientSecret)
+    auth = new OAuth2Client(config.auth.oauth.google.clientID, config.auth.oauth.google.clientSecret)
     auth.setCredentials({ refresh_token: ownerRefreshToken })
     wrapper.api = google.calendar('v3')
   },
@@ -80,10 +82,10 @@ var wrapper = {
 
     if (logging) $log('Calendar.createEvent:'.yellow, createData)
 
-    if (config.calendar.on) wrapper.api.events.insert(createData, cb)
+    if (config.wrappers.calendar.on) wrapper.api.events.insert(createData, cb)
     else {
-      console.warn('config.calendar is off'.red);
-      cb(null,{'off':'this is a config.calendar.off response',attendees:[{},{}]})
+      console.warn('config.wrappers.calendar is off'.red);
+      cb(null,{'off':'this is a config.wrappers.calendar.off response',attendees:[{},{}]})
     }
   },
 
@@ -101,11 +103,11 @@ var wrapper = {
 
     if (logging) $log('Calendar.updateEvent:'.yellow, patchData)
 
-    if (config.calendar.on)
+    if (config.wrappers.calendar.on)
       wrapper.api.events.patch(patchData, cb)
     else {
-      console.warn('config.calendar is off'.red);
-      cb(null,{'off':'this is a config.calendar.off response',attendees:[{},{}]})
+      console.warn('config.wrappers.calendar is off'.red);
+      cb(null,{'off':'this is a config.wrappers.calendar.off response',attendees:[{},{}]})
     }
   }
 

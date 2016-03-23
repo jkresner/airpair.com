@@ -11,17 +11,17 @@
     "expectederr":        "blue"
   },
   "mongo": {
-    "collections":        ["Users","Experts","Bookings","Orders",
-                           "Companies","Paymethods","Payouts","Posts",
-                           "Requests","Tags","Templates","Views","Impressions",
-                           "Sessions","Events"],
+    "collections":           ["Users","Experts","Bookings","Orders",
+                             "Companies","Paymethods","Payouts","Posts",
+                             "Requests","Tags","Templates","Views","Impressions",
+                             "Sessions","Events"],
     "seed": {
-      "force":              false,
-      "model":              "User",
-      "key":                "jkap",
-      "timeout":            30000
+      "force":               false,
+      "model":               "User",
+      "key":                 "jkap",
+      "timeout":             30000
     },
-    "url":                "mongodb://localhost/airpair_test"
+    "url":                   "mongodb://localhost/airpair_test"
   },
   "paths": {
     "fixtures":           "../data/fixtures",

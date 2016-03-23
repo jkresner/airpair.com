@@ -62,16 +62,19 @@ SPEC.init = (ctx) ->
   # global.stubs              = SETUP.initStubs()
 
 
+
 STUB.analytics =
   stubbed: false,
-  on: () -> global.analytics = require('../../server/services/analytics').analytics
-  off: () -> global.analytics = {
-    echo: ()=>{},
-    event: ()=>{},
-    view: ()=>{},
-    alias: ()=>{},
-    identify: ()=>{}
-  }
+  on: () -> {}
+    # global.analytics = require('../../server/services/analytics')(global._analytics)
+  off: () -> {}
+   # global.analytics = {
+    # echo: ()=>{},
+#     event: ()=>{},
+#     view: ()=>{},
+#     alias: ()=>{},
+#     # identify: ()=>{}
+#   }
 
 
 

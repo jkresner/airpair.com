@@ -1,6 +1,5 @@
-var RedirectsAPI = require('../api/redirects')
-var PostsAPI = require('../api/posts')
 var {trackView} = require('../middleware/analytics')
+var PostsAPI = require('../api/posts')
 
 
 var mw = {
@@ -50,9 +49,9 @@ module.exports = {
   },
 
   addRoutesFromDb(app, cb) {
-    if (!config.redirects.on) return cb()
+    if (!config.routes.redirects.on) return cb()
 
-    RedirectsAPI.svc.getAllRedirects((e,all) =>{
+    DAL.Redirect.getAll({select: '_id previous current type', sort: {previous:1}}, (e,all) => {
       var tempMigrates = require('./migration')
       for (var m of tempMigrates) all.push({type:'canonical-post',current:m.o,previous:m.c})
 

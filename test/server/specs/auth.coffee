@@ -64,7 +64,7 @@ signup = ->
               EXPECT.attr(u.auth.gp, 'email', String)
               EXPECT.attr(u.auth.gp, 'link', String)
               EXPECT.attrUndefined(u.auth.gp, 'locale')
-              expect(u.auth.gp.tokens[config.auth.oauth.appKey].token).to.equal('rbrw_token')
+              expect(u.auth.gp.tokens[config.auth.appKey].token).to.equal('rbrw_token')
               DONE()
 
 
@@ -88,7 +88,7 @@ signup = ->
               EXPECT.attr(u.auth.gp, 'id', String)
               EXPECT.attr(u.auth.gp, 'email', String)
               EXPECT.attrUndefined(u.auth.gp, 'locale')
-              expect(u.auth.gp.tokens[config.auth.oauth.appKey].token).to.equal('aptst34_token')
+              expect(u.auth.gp.tokens[config.auth.appKey].token).to.equal('aptst34_token')
               DONE()
 
 
@@ -130,12 +130,12 @@ signup = ->
     #           EXPECT.equalIds(s._id, u._id)
     #           EXPECT.attr(u.auth.gh, 'id', Number)
     #           EXPECT.attr(u.auth.gh, 'emails', Array)
-    #           expect(u.auth.gh.tokens[config.auth.oauth.appKey].token).to.equal('ludofleury_token')
+    #           expect(u.auth.gh.tokens[config.auth.appKey].token).to.equal('ludofleury_token')
     #           DONE()
 
 
   IT 'New user has correct cohort information', ->
-    STUB.analytics.on()
+    # STUB.analytics.on()
     checkCohort = (userId) ->
       ->
         DB.docById 'User', userId, (r) ->
@@ -146,6 +146,7 @@ signup = ->
           EXPECT.attr(cohort.firstRequest, 'url', String)
           expect(moment(cohort.engagement.visits[0]).unix()).to.equal(moment(util.dateWithDayAccuracy()).unix())
           expect(cohort.aliases.length).to.equal(1)
+          $log('check.userId'.magenta, userId)
           DB.docsByQuery 'Event', {uId:userId}, (r2) ->
             expect(r2.length).to.equal(1)
             STUB.analytics.on()
@@ -161,8 +162,10 @@ signup = ->
 
 login = ->
 
-  before () -> STUB.analytics.on()
-  after () -> STUB.analytics.off()
+  before () ->
+  # STUB.analytics.on()
+  after () ->
+  # STUB.analytics.off()
 
   it 'github login links to accounts with email matching any other provider', ->
   it 'github login saves all emails to user record', ->
@@ -201,7 +204,7 @@ login = ->
             EXPECT.equalIds(r2._id, ape1._id)
             DB.docById 'User', ape1._id, (r3) ->
               expect(r3.auth.gp.id).to.equal(profile.id)
-              expect(config.auth.oauth.appKey).to.equal('apcom')
+              expect(config.auth.appKey).to.equal('apcom')
               expect(r3.auth.gp.tokens['apcom'].token).to.equal('ape1_gp_test_token')
               expect(r3.auth.gp.tokens['consult'].token).to.equal(ape1.auth.gp.tokens['consult'].token)
               expect(r3.auth.gh.tokens['consult'].token).to.equal(ape1.auth.gh.tokens['consult'].token)

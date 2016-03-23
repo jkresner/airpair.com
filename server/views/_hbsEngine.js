@@ -1,4 +1,3 @@
-var marked 		     = require('marked')
 var hbs 			     = require('express-hbs')
 var {getSession}   = require('./../services/users')
 
@@ -40,12 +39,14 @@ function registerHelpers(hbs)
 }
 
 module.exports = function(app) {
-
-  var hbsEngine = hbs.express3({ partialsDir: `${config.appdir}/server/views/partials` })
+  var partialsDir = `${config.views.dirs[0]}/partials`
+  // console.log('hbsEngine.viewsDirs'.white, config.views.dirs)
+  // console.log('hbsEngine.partialsDir'.white, partialsDir)
+  var hbsEngine = hbs.express3({partialsDir})
 
   registerHelpers(hbs);
 
-  app.set('views', `${config.appdir}/server/views`)
+  app.set('views', config.views.dirs[0])
   app.engine('hbs', hbsEngine);
 
   var combineBaseData = (req, data) => {
