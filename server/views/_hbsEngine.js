@@ -44,6 +44,16 @@ module.exports = function(app) {
   // console.log('hbsEngine.partialsDir'.white, partialsDir)
   var hbsEngine = hbs.express3({partialsDir})
 
+  app.locals.js = {}
+  app.locals.css = {}
+  // app.locals.about = {}
+  for (var bundle in config.http.static.bundles) {
+    var href = '/'+config.http.static.bundles[bundle]
+    var key = bundle.split('.')[0] // remove extension
+    if (key.match(/^(js\/)/)) app.locals.js[key.replace('js/','')] = href
+    if (key.match(/^(css\/)/)) app.locals.css[key.replace('css/','')] = href
+  }
+
   registerHelpers(hbs);
 
   app.set('views', config.views.dirs[0])
@@ -53,7 +63,7 @@ module.exports = function(app) {
     if (!data) data = {}
     data.build = config.build
     data.authenticated = !!(req.user && req.user._id)
-    data.config = { analytics: config.analytics, bundle: config.bundle, hangout: config.hangout }
+    data.config = { analytics: config.analytics, hangout: config.hangout }
     data.campPeriod = moment().format('MMMYY').toLowerCase()
     return data;
   }
@@ -61,7 +71,7 @@ module.exports = function(app) {
   app.renderErrorPage = (error) =>
     (req,res) => {
       // $callSvc(getSession,req)((e,session) => {
-      res.status(error.status||400).render(`./error.hbs`, {error,build:config.build,config:{bundle: config.bundle}})
+      res.status(error.status||400).render(`./error.hbs`, {error,build:config.build,config:{}})
       // })
     }
 

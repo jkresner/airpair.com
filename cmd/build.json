@@ -1,24 +1,34 @@
 {
-  "log": {
-    "config":                true,
-    "times":                 true,
-    "wire":                  true
-  },
-  "dirs": {
-    "web":                   "public",
-    "dev":                   "public/static",
-    "dist":                  "dist",
-    "server":                "server"
+  "browserify": {
+    "transforms": {
+      "ngAnnotate":          true,
+      "stringify":           [".html"],
+      "es6ify":              { "exclude": "components" }
+    },
+    "src":                   "web/js",
+    "dest":                  "build",
+    "entries":               ["index.js","adm.js"]
   },
   "clean": {
     "dirs":                  ["dist","dev"]
   },
   "default":                 ["nodemon","watch"],
   "dist":                    {},
+  "dirs": {
+    "web":                   "web",
+    "dev":                   "web/build",
+    "dist":                  "web/dist",
+    "server":                "server"
+  },
   "less": {
     "src":                   "css",
-    "dest":                  "public/css",
+    "dest":                  "build/css",
     "imports":               ["css"]
+  },
+  "log": {
+    "config":                false,
+    "times":                 false,
+    "wire":                  false
   },
   "nodemon": {
     "dirs":                  ["server","server/.lib","shared"],
@@ -37,18 +47,8 @@
     "livereload":            { "port": 35729 },
     "path": {
       "livereload":          ["server/views/*",
-                              "public/static/css/*",
-                              "public/static/js/*"]
+                              "web/build/css/*",
+                              "web/build/js/*"]
     }
-  },
-  "browserify": {
-    "transforms": {
-      "ngAnnotate":          true,
-      "stringify":           [".html"],
-      "es6ify":              { "exclude": "lib" }
-    },
-    "src":                   "ang",
-    "dest":                  "public/static",
-    "entries":               ["index.js","adm.js"]
   }
 }

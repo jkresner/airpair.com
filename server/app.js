@@ -36,7 +36,6 @@ function run(config, {MAServer,tracking,done}) {
     app.use(routes('blackList'), (r,res) => res.status(404).send(''))
     routes('resolver')(app)
 
-
     app.meanair.lib({passport:require('passport')})
                .set(model, {analytics:MAServer.Analytics(config, tracking)})
     //            .merge(require('meanair-auth'))
@@ -54,14 +53,14 @@ function run(config, {MAServer,tracking,done}) {
     app.use('/rss', routes('rss')(app))
 
     app.use(mw.auth.setNonSessionUrl(app))
+
     session(app, (sessionMW, cb) => cb(model.sessionStore(sessionMW)))
 
     $log(`           SessionStoreReady   ${new Date().getTime()-start}`.appload)
 
+
     app.use('/visit', routes('ads')(app))
 
-    //-- Do not move connect-livereload before session middleware
-    // if (config.livereload) app.use(require('connect-livereload')({ port: 35729 }))
 
     var hbsEngine   = require('./views/_hbsEngine')
     hbsEngine(app)

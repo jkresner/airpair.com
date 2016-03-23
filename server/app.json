@@ -95,12 +95,12 @@
     "static": {
       "bundles": {
         "css/libs.css":        "/static.airpair.com/css/libs.css",
-        "css/index.css":       "static/styles/index.css",
-        "css/adm.css":         "static/styles/adm.css",
+        "css/index.css":       "css/index.css",
+        "css/adm.css":         "css/adm.css",
         "js/index.js":         "js/index.js",
         "js/adm.js":           "js/adm.js"
       },
-      "dirs":                  "public,public/static/img/ads"
+      "dirs":                  "ads,public,build"
     }
   },
   "middleware": {

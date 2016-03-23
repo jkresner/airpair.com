@@ -26,14 +26,11 @@ build/Release
 # Deployed apps should consider commenting this line out:
 # see https://npmjs.org/doc/faq.html#Should-I-check-my-node_modules-folder-into-git
 node_modules
-!public/lib/fonts
-!public/lib/bootstrap/bootstrap.css
-!public/lib/prism
-!public/lib/jquery-ui-custom
-public/static/js/*
-public/static/styles/*
-public/lib/*
-^/dist
+
+server/app.prod.env
+
+web/build/*
+web/components/*
 
 # bson files
 cmd/migrate/**/*/bson
