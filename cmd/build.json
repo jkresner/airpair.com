@@ -1,0 +1,54 @@
+{
+  "log": {
+    "config":                true,
+    "times":                 true,
+    "wire":                  true
+  },
+  "dirs": {
+    "web":                   "public",
+    "dev":                   "public/static",
+    "dist":                  "dist",
+    "server":                "server"
+  },
+  "clean": {
+    "dirs":                  ["dist","dev"]
+  },
+  "default":                 ["nodemon","watch"],
+  "dist":                    {},
+  "less": {
+    "src":                   "css",
+    "dest":                  "public/css",
+    "imports":               ["css"]
+  },
+  "nodemon": {
+    "dirs":                  ["server","server/.lib","shared"],
+    "config": {
+      "restartable":         false,
+      "verbose":             true,
+      "ignore":              ["*DS_Store","web/*","test/*","cmd/*"],
+      "stdout":              true,
+      "stdin":               true,
+      "execMap":             { "js": "node --harmony_destructuring" },
+      "script":              "index.js",
+      "ext":                 "js json hbs env"
+    }
+  },
+  "watch": {
+    "livereload":            { "port": 35729 },
+    "path": {
+      "livereload":          ["server/views/*",
+                              "public/static/css/*",
+                              "public/static/js/*"]
+    }
+  },
+  "browserify": {
+    "transforms": {
+      "ngAnnotate":          true,
+      "stringify":           [".html"],
+      "es6ify":              { "exclude": "lib" }
+    },
+    "src":                   "ang",
+    "dest":                  "public/static",
+    "entries":               ["index.js","adm.js"]
+  }
+}

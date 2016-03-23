@@ -1,0 +1,9 @@
+#!/bin/sh
+CYAN='\033[0;36m'
+NC='\033[0m' # No Color
+printf "${CYAN}CMD: Symlink default build cms${NC}\n"
+mkdir -p cmd/build;
+cd cmd/build;
+for l in $(find . -type l); do unlink $l;done;
+for f in $(ls -d ../../node_modules/meanair-build/cmd/build/*); do ln -nsf $f;done;
+cd ../../;
