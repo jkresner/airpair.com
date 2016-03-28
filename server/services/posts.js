@@ -176,7 +176,7 @@ var get = {
         callback(e,r)
       }))
     }
-    cache.getOrSetCB('2015postcomp', getWinners, cb)
+    cache.get('2015postcomp', getWinners, cb)
   },
 
   getRecentPublished(cb) {

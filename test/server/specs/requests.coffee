@@ -2,9 +2,9 @@
 create = ->
 
 
-  IT '401 for non authenticated request', ->
+  IT '403 for non authenticated request', ->
     d = type: 'mentoring', experience: 'beginner', brief: 'this is a test yo', hours: "1", time: 'rush', budget: 90
-    POST '/requests', d, { status: 401 }, ->
+    POST '/requests', d, { status: 403 }, ->
       DONE()
 
 

@@ -1,5 +1,5 @@
 var md5             = require('../util/md5')
-var logging         = config.log.auth || false
+var logging         = true // config.log.auth || false
 var bcrypt          = require('bcrypt')
 
 
@@ -60,11 +60,11 @@ var data = {
     search: select.search,
 
     analyticsSignup(user, sessionID, session) {
-      return {_id:user._id,name:user.name,sessionID}
+      return {uId:user._id,name:user.name,sId:sessionID}
     },
 
     analyticsLogin(user, sessionID, session) {
-      return {name:user.name,sessionID}
+      return {name:user.name,sId:sessionID}
     },
 
     analyticsLink(user, provider, profile) {
@@ -107,39 +107,36 @@ var data = {
     inflateTagsAndBookmarks(user, cb) {
       var noInflate = !user || (!user.tags && !user.bookmarks)
       if (noInflate) return cb(null, user)
+      // if (logging) $log('inflateTagsAndBookmarks.start')
 
-      cache.ready(['tags','posts','workshops'], () => {
-        // if (logging) $log('inflateTagsAndBookmarks.start')
-
-        var tags = []
-        for (var t of (user.tags || []))
-        {
-          var tt = cache['tags'][t.tagId]
-          if (tt) {
-            var {name,slug} = tt
-            tags.push( _.extend({name,slug},t) )
-          }
-          else
-            $log(`tag with Id ${t.tagId} not in cache`)
-            // return cb(Error(`tag with Id ${t.tagId} not in cache`))
+      var tags = []
+      for (var t of (user.tags || []))
+      {
+        var tt = cache['tags'][t.tagId]
+        if (tt) {
+          var {name,slug} = tt
+          tags.push( _.extend({name,slug},t) )
         }
+        else
+          $log(`tag with Id ${t.tagId} not in cache`)
+          // return cb(Error(`tag with Id ${t.tagId} not in cache`))
+      }
 
-        var bookmarks = []
-        for (var b of (user.bookmarks || []))
-        {
-          var bb = cache[b.type+'s'][b.objectId]
-          if (bb) {
-            var {title,url} = bb
-            bookmarks.push( _.extend({title,url},b) )
-          }
-          else
-            $log(`${b.type} with Id ${b.objectId} not in cache`)
-            // return cb(Error(`${b.type} with Id ${b.objectId} not in cache`))
+      var bookmarks = []
+      for (var b of (user.bookmarks || []))
+      {
+        var bb = cache[b.type+'s'][b.objectId]
+        if (bb) {
+          var {title,url} = bb
+          bookmarks.push( _.extend({title,url},b) )
         }
+        else
+          $log(`${b.type} with Id ${b.objectId} not in cache`)
+          // return cb(Error(`${b.type} with Id ${b.objectId} not in cache`))
+      }
 
-        // if (logging) $log('inflateTagsAndBookmarks.done', {tags, bookmarks})
-        cb(null, _.extend(user, {tags, bookmarks}))
-      })
+      // if (logging) $log('inflateTagsAndBookmarks.done', {tags, bookmarks})
+      cb(null, _.extend(user, {tags, bookmarks}))
     },
 
     // providerProfile: {

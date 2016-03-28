@@ -146,7 +146,6 @@ signup = ->
           EXPECT.attr(cohort.firstRequest, 'url', String)
           expect(moment(cohort.engagement.visits[0]).unix()).to.equal(moment(util.dateWithDayAccuracy()).unix())
           expect(cohort.aliases.length).to.equal(1)
-          $log('check.userId'.magenta, userId)
           DB.docsByQuery 'Event', {uId:userId}, (r2) ->
             expect(r2.length).to.equal(1)
             STUB.analytics.on()
@@ -436,6 +435,3 @@ module.exports = ->
   DESCRIBE("Login", login)
   DESCRIBE("Password: ", password)
   DESCRIBE("LINK", link)
-
-  # describe "NEW", ->
-    # IT 'New github sign can return to old page', ->

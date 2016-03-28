@@ -14,7 +14,7 @@
     "collections":           ["Users","Experts","Bookings","Orders",
                              "Companies","Paymethods","Payouts","Posts",
                              "Requests","Tags","Templates","Views","Impressions",
-                             "Sessions","Events"],
+                             "Sessions","Events","Campaigns"],
     "seed": {
       "force":               false,
       "model":               "User",

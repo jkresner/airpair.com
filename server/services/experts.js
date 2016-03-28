@@ -139,30 +139,6 @@ var get = {
 
 var save = {
 
-  create(expert, cb) {
-    cb(V2DeprecatedError('Experts.create. Go to consult.airpair.com/profile'))
-    // var trackData = { name: this.user.name }
-    // expert.user = selectFromObject(_.extend({social:this.user.auth},this.user), select.userCopy)
-    // expert.userId = this.user._id
-    // saveWithTouch.call(this, null, expert, 'create', trackData, cb)
-  },
-
-  updateMe(original, ups, cb) {
-    cb(V2DeprecatedError('Experts.updateMe. Go to consult.airpair.com/profile'))
-    // $log('updateMe')
-    // var trackData = { name: this.user.name, _id: original._id }
-    // ups.user = selectFromObject(_.extend({social:this.user.auth},this.user), select.userCopy)
-    // var expert = selectFromObject(_.extend(original,ups), select.updateMe)
-    // saveWithTouch.call(this, original, ups, 'update', trackData, cb)
-    // $callSvc(UserSvc.setExpertCohort, this)(ups._id)
-  },
-
-  updateAvailability(original, availability, cb) {
-    cb(V2DeprecatedError('Experts.updateMe. Go to consult.airpair.com/availability'))
-    // availability.lastTouch = svc.newTouch.call(this, availability.status)
-    // Expert.updateSet(original._id, {availability}, cb)
-  },
-
   createDeal(expert, deal, cb) {
     cb(V2DeprecatedError('Experts.createDeal'))
     // deal.lastTouch = svc.newTouch.call(this, 'createDeal')

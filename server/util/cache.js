@@ -1,5 +1,4 @@
 var logging = false
-global.cache = {}
 
 //-- For O(1) access instead of O(N)
 function hashEm(list, objectName, hashAttributeName) {
@@ -20,39 +19,33 @@ function itemReady(key, cb)
     var svc = require(`../services/${key}`)
     svc.getAllForCache( (e, list) => {
       cache[key] = hashEm(list, key, '_id')
-      if (key == 'tags')
-        cache['tag_slugs'] = hashEm(list, key, 'slug')
+      // if (key == 'tags')
+        // cache['tag_slugs'] = hashEm(list, key, 'slug')
       cb()
     })
   }
 }
 
 
-cache.ready = function(keys, cb)
-{
-  itemReady('tags', () => {
-    itemReady('workshops', () => {
-      itemReady('posts', cb)
-    })
+itemReady('workshops', () => {
+  itemReady('posts', () => {
+    // $log('CACHED.POSTS')
   })
-}
+})
+
+
+
+// cache.ready = function(keys, cb)
+// {
+  // itemReady('tags', () => {
+  // })
+// }
 
 
 cache.flush = function(key, cb)
 {
   if (key == 'posts') cache.postAllPublished = null
   delete cache[key]
-}
-
-
-cache.getOrSetCB = function(key, getFn, cb) {
-  if (cache[key]) return cb(null, cache[key])
-  if (logging) $log(`cache.getOrSet ${key}`)
-  getFn((e,r)=>{
-    if (e) return cb(e)
-    cache[key] = r
-    cb(null,r)
-  })
 }
 
 
@@ -65,33 +58,37 @@ cache.bookmark = function(type, id)
 
 cache.tmpl = function(type, key, cb)
 {
-  itemReady('templates', () =>
-    cb( cache['templates'][`${type}:${key}`] )
-  )
+  cb( cache['templates'][`${type}:${key}`] )
 }
 
 
-cache.tagBySlug = function(slug, cb)
+cache.tagBySlug = function(slug)
 {
-  if (!cache['tag_slugs']) return { slug: 'cache-not-loaded', name: 'tagBySlug' }
+  if (!cache['tag_slugs']) {
+    $log('building.cache.tag_slugs', Object.keys(cache.tags).length)
+    cache['tag_slugs'] = {}
+    Object.keys(cache.tags).forEach( id =>
+      cache['tag_slugs'][cache.tags[id].slug] = cache.tags[id])
+  }
+
   return cache['tag_slugs'][slug]
 }
 
 
-//-- Could make this generic, but we don't want to allow the cache to start
-//-- accepting arbitary things
-cache.pullRequests = function(repo, getterCB, cb)
-{
-  if (!cache['post_prs']) cache['post_prs'] = {}
-  if (cache['post_prs'][repo])
-    return cb(null, cache['post_prs'][repo])
-  getterCB((e,r)=>{
-    if (e) return cb(e)
-    cache['post_prs'][repo] = r
-    $log("set cache['post_prs']".trace, repo)
-    cb(null,r)
-  })
-}
+// //-- Could make this generic, but we don't want to allow the cache to start
+// //-- accepting arbitary things
+// cache.pullRequests = function(repo, getterCB, cb)
+// {
+//   if (!cache['post_prs']) cache['post_prs'] = {}
+//   if (cache['post_prs'][repo])
+//     return cb(null, cache['post_prs'][repo])
+//   getterCB((e,r)=>{
+//     if (e) return cb(e)
+//     cache['post_prs'][repo] = r
+//     $log("set cache['post_prs']".trace, repo)
+//     cb(null,r)
+//   })
+// }
 
 
 cache.slackUsers = function(getterCB, cb)

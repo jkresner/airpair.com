@@ -74,9 +74,9 @@ requests = ->
               reqs1[0].status = 'waiting'
               reqs1[0].adm.owner = 'ad'
               PUT "/adm/requests/#{r._id}", reqs1[0], (reqWexp) ->
-                PUT "/matching/experts/#{phlfExp._id}/matchify/#{r._id}", {}, (exp1) ->
+                PUT "/adm/experts/#{phlfExp._id}/matchify/#{r._id}", {}, (exp1) ->
                   ds = msg: exp1.suggest
-                  PUT "/matching/requests/#{r._id}/add/#{phlfExp._id}", ds, (reqWexp) ->
+                  PUT "/adm/requests/#{r._id}/add/#{phlfExp._id}", ds, (reqWexp) ->
                     GET "/adm/requests/user/#{s._id}", (reqs2) ->
                       expect(reqs2.length).to.equal(1)
                       expect(reqs2[0].suggested.length).to.equal(1)

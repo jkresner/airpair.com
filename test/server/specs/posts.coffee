@@ -4,7 +4,6 @@ browsing = ->
 
   IT '200 on rss', ->
     opts = status: 200, unauthenticated: true, contentType: /rss/
-    $log('calling PAGE', opts)
     PAGE "/rss", opts, -> DONE()
 
 
@@ -39,6 +38,7 @@ browsing = ->
     url = post.htmlHead.canonical.replace('https://www.airpair.com', '')
     DB.ensureDoc 'Post', post, ->
       PAGE url, {}, (html) ->
+        EXPECT.contains(html, '<title>Mastering ES6 higher-order functions for Arrays</title>')
         EXPECT.contains(html, '<h1 class="entry-title" itemprop="headline">Mastering ES6 higher-order functions for Arrays</h1>')
         EXPECT.contains(html, '<li><a href="/posts/tag/javascript" target="_self">javascript</a></li>')
         DONE()
@@ -50,16 +50,10 @@ browsing = ->
     DB.ensureDoc 'Post', post, ->
       LOGIN {key:'snug'}, ->
         PAGE url, {}, (html) ->
+          EXPECT.contains(html, '<title>Mastering ES6 higher-order functions for Arrays</title>')
           EXPECT.contains(html, '<h1 class="entry-title" itemprop="headline">Mastering ES6 higher-order functions for Arrays</h1>')
           EXPECT.contains(html, '<li><a href="/posts/tag/javascript" target="_self">javascript</a></li>')
           DONE()
-
-
-  IT "2015 100k writing competition", ->
-    PAGE '/100k-writing-competition', {status:200}, (html) ->
-      EXPECT.contains(html, '<h1>2015 Developer Writing Competition</h1>')
-      DONE()
-
 
 
 module.exports = ->

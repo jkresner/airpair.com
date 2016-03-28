@@ -103,26 +103,26 @@ var middleware = {
   //   }
   // },
 
-  setNonSessionUrl() {
-    return function(req, res, next) {
-      if (logging) $log(`setNonSessionUrl ${req.url}`.cyan, req.originalUrl)
-      var nonSessionUrls = [
-        '/feed',
-        '/android/rss',
-        '/rails/consulting',
-        '/static/styles/'
-      ]
+  // setNonSessionUrl() {
+  //   return function(req, res, next) {
+  //     if (logging) $log(`setNonSessionUrl ${req.url}`.cyan, req.originalUrl)
+  //     var nonSessionUrls = [
+  //       '/feed',
+  //       '/android/rss',
+  //       '/rails/consulting',
+  //       '/static/styles/'
+  //     ]
 
-      for (var url of nonSessionUrls)
-        if (req.originalUrl.indexOf(url) == 0)
-          req.nonSessionUrl = true
+  //     for (var url of nonSessionUrls)
+  //       if (req.originalUrl.indexOf(url) == 0)
+  //         req.nonSessionUrl = true
 
-      if (req.type == "HEAD")
-        req.nonSessionUrl = true
+  //     if (req.type == "HEAD")
+  //       req.nonSessionUrl = true
 
-      next()
-    }
-  },
+  //     next()
+  //   }
+  // },
 
   checkToPersistSession(expressSession) {
     return (req, res, next) => {
@@ -137,50 +137,36 @@ var middleware = {
   },
 
 
-  setAnonSessionData(req, res, next) {
-    if (logging) $log(`mw.setAnonSessionData ${!req.isAuthenticated()} ${req.url}`.cyan)
-    if (isBot(req.header('user-agent'), BOTS.all)) return next()
+  // noCrawl(redirectUrl) {
+  //   return (req, res, next) => {
+  //     var userAgent = req.get('user-agent')
 
-    if (!req.isAuthenticated()) {
-      if (!req.session.anonData) req.session.anonData = {}
-    }
-    else if (req.session.anonData) {
-      req.session.anonData = null
-      delete req.session.anonData
-    }
+  //     if (isBot(userAgent, BOTS.all)) {
+  //       var referer = req.header('Referer')
+  //       var ref = (referer) ? ` <<< ${referer}` : ''
+  //       if (true || logging)
+  //         $log(`nocrawl ${req.ip}`.cyan,`${userAgent}`.blue,`${req.originalUrl} ${ref}`.gray)
+  //       res.redirect(301, redirectUrl)
+  //     }
+  //     else
+  //       next()
+  //   }
+  // },
 
-    next()
-  },
 
-  noCrawl(redirectUrl) {
-    return (req, res, next) => {
-      var userAgent = req.get('user-agent')
+  // authd(req, res, next) {
+  //   if (logging) $log(`mw.authd[${req.url}] ${req.isAuthenticated()}`.cyan)
+  //   if (req.isAuthenticated()) return next()
 
-      if (isBot(userAgent, BOTS.all)) {
-        var referer = req.header('Referer')
-        var ref = (referer) ? ` <<< ${referer}` : ''
-        if (true || logging)
-          $log(`nocrawl ${req.ip}`.cyan,`${userAgent}`.blue,`${req.originalUrl} ${ref}`.gray)
-        res.redirect(301, redirectUrl)
-      }
-      else
-        next()
-    }
-  },
-
-  authd(req, res, next) {
-    if (logging) $log(`mw.authd[${req.url}] ${req.isAuthenticated()}`.cyan)
-    if (req.isAuthenticated()) return next()
-
-    var apiRequest = req.originalUrl.indexOf('/api/') > -1
-    if (apiRequest) res.status(401).json({})
-    else {
-      // save url user is trying to access for graceful redirect after login
-      if (req.session) req.session.returnTo = req.url
-      res.redirect(config.auth.loginUrl)
-      // next()
-    }
-  },
+  //   var apiRequest = req.originalUrl.indexOf('/api/') > -1
+  //   if (apiRequest) res.status(401).json({})
+  //   else {
+  //     // save url user is trying to access for graceful redirect after login
+  //     if (req.session) req.session.returnTo = req.url
+  //     res.redirect(config.auth.loginUrl)
+  //     // next()
+  //   }
+  // },
 
 
   authdRedirect(toUrl,statusCode) {
@@ -236,13 +222,13 @@ var middleware = {
   },
 
 
-  setFastSingupPassword(password) {
-    return (req, res, next) => {
-      if (logging) $log('mw.setFastSingupPassword'.cyan)
-      req.body.password = password || 'fast-ap-signup'
-      next()
-    }
-  },
+  // setFastSingupPassword(password) {
+  //   return (req, res, next) => {
+  //     if (logging) $log('mw.setFastSingupPassword'.cyan)
+  //     req.body.password = password || 'fast-ap-signup'
+  //     next()
+  //   }
+  // },
 
   setReturnTo: setSessionVarFromQuery('returnTo'),
 

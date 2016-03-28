@@ -1,4 +1,4 @@
-var logging = false
+var logging = true
 
 var resolver = {
   fnLookup: {},
@@ -29,7 +29,6 @@ var ErrorApi404 = (msg) => {
 
 var middleware = {
 
-  json2mb: require('body-parser').json({limit: '2mb'}),
 
   bodyParam(paramName) {
     return (req, res, next) => {
@@ -54,57 +53,22 @@ var middleware = {
     }
   },
 
-  cache: {
-
-    itemReady(key) {
-      return (req, res, next) =>
-        cache.ready([key], next)
-    },
-
-    slackReady(req, res, next) {
-      if (logging) $log('cache.slackReady')
-      Wrappers.Slack.getUsers(next)
-    },
-
-    templatesReady(req, res, next) {
-      if (logging) $log('cache.templatesReady')
-      cache.tmpl('','',()=>{next()})
-    },
-
-  },
-
   populate: {
 
-    user(req, res, next) {
-      var UserSvc = require("../services/users")
-      if (logging) $log('bodyParamFn', paramName, req.body[paramName])
 
-      $callSvc(UserSvc.getMe, req)(function(e, r) {
-        // if (!e && !r)
-        //   e = ErrorApi404(`${paramName} not found.`)
-        // else if (!e && typeof param == 'array' && param.length != r.length)
-        //   e = (`Not all ${paramName} found.`)
-        if (e) return next(e)
-        else {
-          req.user = r
-          // $log(`req.${paramName}`, req[paramName])
-          next()
-        }
-      })
-    },
-
-    expert(req, res, next) {
-      var ExpertsSvc = require("../services/experts")
-      if (logging) $log('populate.expert', req.user._id)
-      $callSvc(ExpertsSvc.getMe,req)(function(e, r) {
-        if (e) return next(e)
-        else {
-          // if (r._id)
-          req.expert = r
-          next()
-        }
-      })
-    },
+    // expert(req, res, next) {
+    //   var ExpertsSvc = require("../services/experts")
+    //   if (logging) $log('populate.expert', req.user._id)
+    //   $callSvc(ExpertsSvc.getMe,req)(function(e, r) {
+    //     if (e) return next(e)
+    //     else {
+    //       // if (r._id)
+    //       req.expert = r
+    //       $log('populate.expert', req.expert)
+    //       next()
+    //     }
+    //   })
+    // },
 
     orderBooking(req, res, next) {
       if (logging) $log('populate.orderBooking', req.user._id)
@@ -119,22 +83,22 @@ var middleware = {
       })
     },
 
-    tagPage(slug) {
-      return function(req, res, next) {
-        var TagsSvc = require("../services/tags")
-        if (logging) $log('populate.tagsPage', slug)
-        $callSvc(TagsSvc.getTagPage,req)(slug, function(e, r) {
-          if (e) return next(e)
-          else {
-            req.tagpage = r
-            req.tagpage.meta = r.tag.meta
-            req.tag = r.tag
-            // $log('req.tagpage', req.tagpage)
-            next()
-          }
-        })
-      }
-    }
+    // tagPage(slug) {
+    //   return function(req, res, next) {
+    //     var TagsSvc = require("../services/tags")
+    //     if (logging) $log('populate.tagsPage', slug)
+    //     $callSvc(TagsSvc.getTagPage,req)(slug, function(e, r) {
+    //       if (e) return next(e)
+    //       else {
+    //         req.tagpage = r
+    //         req.tagpage.meta = r.tag.meta
+    //         req.tag = r.tag
+    //         // $log('req.tagpage', req.tagpage)
+    //         next()
+    //       }
+    //     })
+    //   }
+    // }
 
   }
 

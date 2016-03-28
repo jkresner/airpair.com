@@ -1,7 +1,9 @@
 {
+  "about":                     "package.json",
   "ads": {
     "on":                      true,
-    "staticDir":               "/static/img/ads"
+    "campaigns":               "70130000000NeguAAC",
+    "dir":                     "/web/ads"
   },
   "analytics": {
     "appKey":                  "apcom"
@@ -74,8 +76,13 @@
     }
   },
   "comm": {
+    "mode":                    "stub",
     "senders": {
       "err":                   { "name": "ERR", "app": "AP", "email": "team@airpair.com" }
+    },
+    "dispatch": {
+      "transports":            ["ses"],
+      "groups":                { "errors": "{{required}}" }
     }
   },
   "chat": {
@@ -100,7 +107,7 @@
         "js/index.js":         "js/index.js",
         "js/adm.js":           "js/adm.js"
       },
-      "dirs":                  "ads,public,build"
+      "dirs":                  "public,build"
     }
   },
   "middleware": {
@@ -119,13 +126,22 @@
   },
   "model": {
     "analytics": {
-      "collections":           { "event": "Event", "impression": "Impression", "view": "View" },
+      "collections":           { "event": "Event", "impression": "Impression", "view": "View", "issue": "Issue", "campaign": "Campaign" },
       "mongoUrl":              "mongodb://localhost/airpair_analytics"
+    },
+    "cache": {
+      "tags":                  { "getter": "tags.getForCache" },
+      "templates":             { "getter": "templates.getForCache" }
     },
     "session":                 { "collection": "v1sessions" }
   },
   "routes": {
     "redirects":               { "on": true }
+  },
+  "views": {
+    "dirs":                    "views,views/pages",
+    "helpers":                 true,
+    "partials":                { "dirs": "views/partials" }
   },
   "wrappers": {
     "bitly": {
