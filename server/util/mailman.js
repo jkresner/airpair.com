@@ -1,6 +1,13 @@
 var groups        = ['pipeliners','spinners']
 var lists         = {}
 var emptyCB       = (e,r) => { if (e) $log('mailman.send.error'.red, e) }
+var $trace        = require('./log/trace')
+var $require      = (path, obj) =>
+      function() {
+        if (!obj) obj = require(path)
+        return obj
+      }
+
 var TemplateSvc   = null
 var tmplSvc       = $require('../services/templates', TemplateSvc)
 

@@ -1,9 +1,5 @@
-var {bodyParam,populate}    = require('../middleware/data')
-
-
 module.exports = function(app, mw) {
 
-  var API = require('../api/_all')
 
   app.use('/v1/api/adm', app.Router()
     .param('expert', API.Experts.paramFns.getByIdForAdmin)
@@ -29,6 +25,7 @@ module.exports = function(app, mw) {
     .get('/redirects', API.Redirects.getAllRedirects)
     .post('/redirects', API.Redirects.createRedirect)
     .delete('/redirects/:id', API.Redirects.deleteRedirectById)
+    .use(mw.$.cachedTags)
     .get('/requests/active', API.Requests.getActiveForAdmin)
     .get('/requests/2015', API.Requests.get2015ForAdmin)
     .get('/requests/incomplete', API.Requests.getIncompleteForAdmin)
@@ -92,6 +89,7 @@ module.exports = function(app, mw) {
 
   app.use('/v1/api', app.Router()
     .param('tag', API.Tags.paramFns.getBySlug)
+    // .param('tagfrom3rdparty', 'tags', 'getBy3rdParty')
     .param('request', API.Requests.paramFns.getByIdForAdmin)
     .param('booking', API.Bookings.paramFns.getById)
     .param('bookingforparticipant', API.Bookings.paramFns.getByIdForParticipant)
@@ -112,7 +110,9 @@ module.exports = function(app, mw) {
 
     .use(mw.$.authd)
     .use(mw.$.cachedTags)
-    .post('/tags', bodyParam('tagfrom3rdparty'), API.Tags.createFrom3rdParty)
+    .use(mw.$.cachedTemplates)
+
+    // .post('/tags', mw.data.recast('tag','body.tagfrom3rdparty'), API.Tags.createFrom3rdParty)
 
     .get('/requests-authd', mw.$.inflateMe, API.Requests.getAllowed)
     .get('/requests', API.Requests.getMy)
@@ -124,8 +124,6 @@ module.exports = function(app, mw) {
     .delete('/requests/:request', API.Requests.deleteById)
 
   //   .get('/users/me/provider-scopes', populate.user, API.Users.getProviderScopes)
-  //   .get('/users/me/site-notifications', API.Users.getSiteNotifications)
-  //   .put('/users/me/site-notifications', API.Users.toggleSiteNotification)
   //   .put('/users/me/email-verify', mw.$.onFirstReq, API.Users.verifyEmail)
     .put('/users/me/initials', API.Users.changeInitials)
     .put('/users/me/email', API.Users.changeEmail)
@@ -158,7 +156,7 @@ module.exports = function(app, mw) {
 
     .use(mw.$.cachedSlackUsers)
     .use(mw.$.inflateMe)
-    .put('/billing/orders/:order/release', populate.orderBooking, API.Orders.releasePayout)
+    .put('/billing/orders/:order/release', mw.$.inflateOrderBooking, API.Orders.releasePayout)
     .post('/bookings/:expertshaped', API.Bookings.createBooking)
     .get('/bookings', API.Bookings.getByUserId)
     .get('/bookings/expert', API.Bookings.getByExpertId)

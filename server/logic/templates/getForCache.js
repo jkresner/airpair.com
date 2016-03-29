@@ -1,6 +1,3 @@
-var handlebars            = require('handlebars')
-
-
 module.exports = ({Template}, {Project, Opts}, Shared) => ({
 
   exec(cb) {

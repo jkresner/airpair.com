@@ -1,8 +1,6 @@
-var API = require('../api/_all')
-var auth = require('../middleware/auth')
-
-
 module.exports = function(app, mw) {
+
+  var PostsSvc = require('../services/posts')
 
   app.get('/', mw.$.onFirstReq,
     mw.res.forbid('authd', usr => usr, { redirect: req => '/dashboard' }),
@@ -12,7 +10,7 @@ module.exports = function(app, mw) {
   app.get('/100k-writing-competition',
     mw.$.onFirstReq,
     (req, res, next) => {
-      $callSvc(API.Posts.svc.getAll2015CompWinners,req)((e,r)=>{
+      PostsSvc.get2015CompWinners((e,r) => {
         req.landing = {
           _id: '54c937cc85e52c93f2c72bf4',
           title: 'AirPair Writing Contest',
@@ -51,7 +49,8 @@ module.exports = function(app, mw) {
            '/experts',
            '/me*',
            '/requests*',
-           '/settings'], mw.$.authd, mw.$.clientPage)
+           '/settings'],
+           mw.$.badBot, mw.$.authd, mw.$.clientPage)
 
 
   app.use(['/v1/*',
@@ -74,6 +73,7 @@ module.exports = function(app, mw) {
            '^/adm/orders*',
            '^/adm/experts*',
            '^/adm/posts*',
-           '^/adm/redirects*'], mw.$.adm, mw.$.adminPage)
+           '^/adm/redirects*'],
+           mw.$.badBot, mw.$.adm, mw.$.adminPage)
 
 }

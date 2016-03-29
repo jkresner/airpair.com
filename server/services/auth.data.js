@@ -1,7 +1,6 @@
 var md5             = require('../util/md5')
 var logging         = true // config.log.auth || false
 
-
 var select = {
   session: {
     '_id': 1,
@@ -37,26 +36,27 @@ var select = {
     'auth.gp.url': 1,
     'auth.gp.email': 1,
     'auth.sl.username': 1
-  },
-  usersInRole: {
-    '_id': 1,
-    'roles': 1,
-    'email': 1,
-    'name': 1,
-    'initials': 1
-  },
-  search: '_id email name initials username bio auth.gp'
+  }
 }
 
 
 var data = {
 
 
+
   select: {
     session: select.session,
     sessionFull: select.sessionFull,
     usersInRole: select.usersInRole,
-    search: select.search,
+
+    // analyticsSignup(user, sessionID, session) {
+      // return {uId:user._id,name:user.name,sId:sessionID}
+    // },
+
+//
+    // analyticsLink(user, provider, profile) {
+      // return {name:user.name,provider,username:profile.username||profile.login||profile.id}
+    // },
 
     sessionFromUser(user) {
       return util.selectFromObject(user, select.session)
@@ -109,21 +109,22 @@ var data = {
           // return cb(Error(`tag with Id ${t.tagId} not in cache`))
       }
 
-      var bookmarks = []
-      for (var b of (user.bookmarks || []))
-      {
-        var bb = cache[b.type+'s'][b.objectId]
-        if (bb) {
-          var {title,url} = bb
-          bookmarks.push( _.extend({title,url},b) )
-        }
-        else
-          $log(`${b.type} with Id ${b.objectId} not in cache`)
-          // return cb(Error(`${b.type} with Id ${b.objectId} not in cache`))
-      }
+      // var bookmarks = []
+      // for (var b of (user.bookmarks || []))
+      // {
+      //   var bb = cache[b.type+'s'][b.objectId]
+      //   if (bb) {
+      //     var {title,url} = bb
+      //     bookmarks.push( _.extend({title,url},b) )
+      //   }
+      //   else
+      //     $log(`${b.type} with Id ${b.objectId} not in cache`)
+      //     // return cb(Error(`${b.type} with Id ${b.objectId} not in cache`))
+      // }
 
       // if (logging) $log('inflateTagsAndBookmarks.done', {tags, bookmarks})
-      cb(null, _.extend(user, {tags, bookmarks}))
+      // cb(null, _.extend(user, {tags, bookmarks}))
+      cb(null, _.extend(user, {tags}))
     },
 
     // providerProfile: {
@@ -134,7 +135,7 @@ var data = {
     // },
 
     cb: {
-      session(ctx, cb) {
+      session(cb) {
         return (e, r) => {
           if (e || r == null) {
             if (!e && r == null) { e = Error('Session user does not exist') }
@@ -171,27 +172,7 @@ var data = {
           // if (ctx.user)
             // ctx.session.passport.user = data.select.sessionFromUser(obj)
         }
-      },
-      searchResults(cb) {
-        return (e, r) => {
-          for (var u of r)
-          // {
-            // if (u.google) {
-            //   if (!u.email && u.google._json.email) u.email = u.google._json.email
-            //   if (!u.name && u.google.displayName) u.name = u.google.displayName
-            // }
-            u = data.select.setAvatar(u);
-          // }
-          cb(e,r)
-        }
-      },
-      // siteNotifications(cb) {
-      //   return (e,r) => {
-      //     if (e) return cb(e)
-      //     r = util.selectFromObject(r, select.siteNotifications)
-      //     cb(null, r.siteNotifications || [])
-      //   }
-      // },
+      }
     }
   },
 
@@ -228,45 +209,14 @@ var data = {
   },
 
   opts: {
-    search: { limit:4, select: select.search }
+
   },
 
   data: {
 
-    anonAvatars: [
-      "/static/img/css/sidenav/default-cat.png",
-      "/static/img/css/sidenav/default-mario.png",
-      "/static/img/css/sidenav/default-stormtrooper.png"
-    ],
-
-    maillists: [
-      { id: '903d16f497',
-       web_id: 117353,
-       name: 'AirPair Newsletter',
-       description: 'General annoucements from the AirPair team. We don\'t plan to use this very often moving forward',
-       subscribe_url_short: 'http://eepurl.com/Q_gVj' },
-      { id: '89214a2507',
-       web_id: 209265,
-       name: 'AirPair Developer Digest',
-       description: 'New content published on AirPair daily, every other day or weekly depending on your preferences',
-       subscribe_url_short: 'http://eepurl.com/bhlYr5' },
-      { id: '69de3eea5d',
-       web_id: 224469,
-       name: 'AirPair Authors',
-       description: 'Stay in touch with the AirPair authoring community and news about AirPair\'s Social Authoring platform',
-       subscribe_url_short: 'http://eepurl.com/bhlYrH' },
-      { id: 'f905e62324',
-       web_id: 224465,
-       name: 'AirPair Experts',
-       description: 'Tips for getting more AirPairs, news about Expert features and more',
-       subscribe_url_short: 'http://eepurl.com/bhlYrP' },
-    ]
-
   },
-
-
-
 }
+
 
 
 module.exports = data

@@ -1,8 +1,7 @@
 function run(config, {MAServer,tracking,done}) {
-  global.config         = config
 
-  var start             = new Date().getTime()
   var app               = MAServer.App(config, done)
+  var analytics         = MAServer.Analytics(config, tracking)
 
   var model             = require(`meanair-model`)(done)
   model.connect(() => {
@@ -11,65 +10,53 @@ function run(config, {MAServer,tracking,done}) {
     global.cache = model.cache
     require('./util/cache')
 
+    global.API = require('./api/_all')
+    global.util           = require('../shared/util')
+    _.wrapFnList          = util.wrapFnList
+
+    global.$callSvc       = (fn, ctx) =>
+      function() {
+        var thisCtx = { user: ctx.user, sessionID: ctx.sessionID, session: ctx.session }
+        // $log('fn', fn, thisCtx, arguments)
+        fn.apply(thisCtx, arguments)
+      }
+
+    global.Wrappers = require('./services/wrappers/_index')
     global.mailman = require('./util/mailman')()
-    global.pairbot = require('./util/im/pairbot')()
-
-    // var mw          = require('./middleware/_middleware')
-    var routes      = require('./routes/index')
-
-
-    global.svc = {
-      newTouch(action) { return { action, _id: DAL.User.newId(),
-          utc: new Date(), by: { _id: this.user._id, name: this.user.name } } }
-    }
-
-    var map = app.meanair.lib({passport:require('passport')})
-               .set(model, {analytics:MAServer.Analytics(config, tracking)})
-    //            .merge(require('meanair-auth'))
-               .chain({api:false,session:false,plugins:false})
+    global.pairbot = require('./util/pairbot')()
+    global.svc = { newTouch(action) { return { action, _id: DAL.User.newId(),
+      utc: new Date(), by: { _id: this.user._id, name: this.user.name } } } }
 
 
-    var mw = app.meanair.middleware
+    var mapp = app.meanair.lib({passport:require('passport')})
+               .set(model, {analytics})
+               .merge(require('meanair-auth'))
 
 
-    app.use(mw.$.cachedTags)
-    app.use(mw.$.cachedTemplates)
-
-    // routes('resolver')(app)
-
-    app.use('/rss', routes('rss')(app, mw))
     // app.use(mw.auth.setNonSessionUrl(app))
-
-    var session     = require('./util/session')
-    session(app, (sessionMW, cb) => cb(model.sessionStore(sessionMW)))
-
-    routes('ads')(app, mw)
-
     // app.use(mw.auth.showAuthdPageViews())
 
-    routes('auth')(app, mw)
-    routes('api')(app, mw)
 
-    app.use(mw.$.badBot)
+    var chain = (e, map) => {
 
+      var restrict = req => req.ctx.bot||req.nonSessionUrl
+      config.middleware.session.regulate = {restrict}
+      config.routes.redirects = {map}
 
-    // app.use(routes('redirects').addPatterns(app))
+      mapp.chain(config.middleware, config.routes)
+          .run()
+    }
 
-    // routes('redirects').addRoutesFromDb(app, () => {
-      routes('dynamic')(app, mw)
-      routes('pages')(app, mw)
-      // app.get(routes('whiteList'), app.renderHbs('base') )
+    if (config.routes.redirects.on)
+      DAL.Redirect.getAll(chain)
+    else
+      chain(null, {})
 
-    map.run()
-
-    // })
   })
 
-  return app;
+
+  return app
 }
-
-
-// app.use(routes('blackList'), (r,res) => res.status(404).send(''))
 
 
 module.exports = { run }

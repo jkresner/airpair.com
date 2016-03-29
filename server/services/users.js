@@ -3,6 +3,7 @@ var {User}                   = DAL
 var {select,query,opts,data} = require('./users.data')
 var cbSession                = select.cb.session
 
+
 var get = {
 
   search(searchTerm, cb) {
@@ -40,23 +41,13 @@ var get = {
 
   getUsersInRole(role, cb) {
     User.getManyByQuery({ roles:role }, { select: select.usersInRole }, cb)
-  },
-
-  getProviderScopes(cb) {
-    cb(V2DeprecatedError('User.getProviderScopes'))
-    // Wrappers.GitHub.getScopes(this.user, cb)
-  },
-
-  getSiteNotifications(cb) {
-    cb(V2DeprecatedError('User.getSiteNotifications'))
-    // svc.searchOne({ _id:this.user._id }, {}, Data.select.cb.siteNotifications(cb))
   }
 
 }
 
 //-- Not sure, but this will probably become intelligent
 function updateAsIdentity(data, trackData, cb) {
-  if (!this.user) return cb(V2DeprecatedError('User.anon.updateAsIdentity'))
+  if (!this.user) return cb(Error('User.anon.updateAsIdentity'))
 
   if (trackData)
     analytics.echo(this.user, this.sessionID, 'Save', trackData, {}, ()=>{})
@@ -140,55 +131,6 @@ function updateAsIdentity(data, trackData, cb) {
 
 var save = {
 
-  //-------- Tags and bookmarks
-
-  toggleTag(tag, cb) {
-    cb(V2DeprecatedError('User.toggleTag'))
-    // var name = tag.name
-    // var tagId = tag._id
-    // tag = { _id: svc.newId().toString(), tagId: tag._id, sort: 0 }
-    // var tagCompator = (i) => _.idsEqual(i.tagId, tagId)
-    // var trackData = { type: 'tag', name }
-    // toggleSessionItem.call(this, 'tags', tag, 3, 6, tagCompator, trackData, cb)
-  },
-
-  toggleBookmark(type, id, cb) {
-    cb(V2DeprecatedError('User.toggleBookmark'))
-    // if (!type) $log('toggleBookmark.type', type, cb)
-    // var bookmark = { _id: svc.newId().toString(), objectId: id, type, sort: 0 }
-    // var bookmarkComparator = (i) => _.idsEqual(i.objectId,id)
-    // var props = cache.bookmark(type,id)
-    // var trackData = { type: 'bookmark', objectType: type, objectId: id, url: props.url, name: props.title }
-    // toggleSessionItem.call(this, 'bookmarks', bookmark, 3, 15, bookmarkComparator, trackData, cb)
-  },
-
-
-  updateBookmarks(bookmarks, cb) {
-    cb(V2DeprecatedError('User.updateBookmarks'))
-    // updateAsIdentity.call(this, {bookmarks}, null, cb)
-  },
-
-  toggleSiteNotification(name, cb) {
-    cb(V2DeprecatedError('User.toggleSiteNotification'))
-    // var opts = { fields: { _id:1,siteNotifications:1} }
-    // svc.searchOne({ _id:this.user._id }, opts, (e,r) => {
-    //   if (e) return cb(e)
-    //   var siteNotifications = (r) ? r.siteNotifications : []
-    //   if (!siteNotifications || siteNotifications.length == 0)
-    //     siteNotifications = [{name}]
-    //   else
-    //   {
-    //     var existing = _.find(siteNotifications, (n) => n.name == name)
-    //     if (existing)
-    //       siteNotifications = _.without(siteNotifications, existing)
-    //     else
-    //       siteNotifications.push({name})
-    //   }
-
-    //   svc.update(this.user._id, {siteNotifications}, Data.select.cb.siteNotifications(cb))
-    // })
-  },
-
   // Change email can be used both to change an email
   // and to set and send a new email hash for verification
   changeEmail(email, cb) {
@@ -209,56 +151,6 @@ var save = {
     //     }
     //     updateAsIdentity.call(this, {email}, null, cb)
     //   })
-  },
-
-  updateEmailToBeVerified(email, errorCB, successCB) {
-    cb(V2DeprecatedError('User.updateEmailToBeVerified'))
-    // email = email.toLowerCase()
-    // var {user} = this
-    // var trackData = { type: 'email', email, previous: user.email, previousVerified: user.emailVerified }
-
-    // svc.searchOne({_id:this.user._id}, {}, (ee, r) => {
-    //   if (r.email == email && r.emailVerified) return errorCB(Error(`${email} already verified`))
-
-    //   var ups = { local: r.local || {} }
-
-    //   if (r.email != email) {
-    //     ups.email = email
-    //     ups.emailVerified = false
-    //   }
-
-    //   if (!r.local || !r.local.changeEmailHash || !r.local.emailHashGenerated
-    //     || !moment(r.local.emailHashGenerated).isAfter(moment().add(-3,'hours')))
-    //   {
-    //     ups.local.changeEmailHash = Data.data.generateHash(email)
-    //     ups.local.emailHashGenerated = new Date
-    //   }
-
-    //   updateAsIdentity.call(this, ups, trackData, (e,user) => {
-    //     if (e) {
-    //       if (e.message.indexOf('duplicate key error index') != -1) return errorCB(Error('Email belongs to another account'))
-    //     }
-    //     successCB(e, user, ups.local.changeEmailHash)
-    //   })
-    // })
-  },
-
-  //-------- Admin user updates
-
-  toggleUserInRole(userId, role, cb) {
-    cb(V2DeprecatedError('User.toggleUserInRole'))
-    // svc.searchOne({ _id:userId }, null, (e,r) => {
-    //   if (!r.roles)
-    //     r.roles = [role]
-    //   else if ( _.contains(r.roles, role) )
-    //     r.roles = _.without(r.roles, role)
-    //   else
-    //     r.roles.push(role)
-
-    //   // note here we are not updating as the identity
-    //   // so we call svc.update rather than update
-    //   svc.update(userId, r, cb)
-    // })
   },
 
 

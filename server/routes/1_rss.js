@@ -5,7 +5,7 @@ var RSS                   = require('rss')
 var allFeedOptions = {
   site_url: 'https://www.airpair.com',
   image_url: 'https://www.airpair.com/static/img/css/airpair-circle.png',
-  copyright: '2015 AirPair Inc',
+  copyright: '2016 AirPair Inc',
   language: 'en',
   ttl: '60'
 }
@@ -106,13 +106,14 @@ function rssRenderer() {
   return  _rss
 }
 
-module.exports = function(app) {
-  var rss = rssRenderer()
-  var router = require('express').Router()
+module.exports = function(app, mw) {
+  if (config.routes.rss.on !== true) return
 
-  .get('/', rss.mixed)
+  var rss = rssRenderer()
+
+  app.use('/rss', app.Router()
+    .get('/', rss.mixed)
   // .get('/posts', rss.posts)
   // .get('/workshops', rss.workshops)
-
-  return router
+  )
 }

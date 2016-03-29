@@ -6,7 +6,7 @@ var RequestsSvc               = require('./requests')
 var Data                      = require('./orders.data')
 var {select,opts,query}       = Data
 var OrderUtil                 = require('../../shared/orders.js')
-var DateTime                  = util.datetime
+var DateTime                  = require('../../shared/util').datetime
 var {base}                    = Data
 
 

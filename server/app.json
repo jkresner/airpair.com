@@ -24,6 +24,7 @@
         "short":               "gh",
         "login":               true,
         "signup":              true,
+        "logic":              "loginCust",
         "clientID":            "378dac2743563e96c747",
         "clientSecret":        "f52d233259426f769850a13c95bfc3dbe7e3dbf2",
         "emails":              true,
@@ -32,8 +33,8 @@
       },
       "google": {
         "short":               "gp",
-        "login":               true,
-        "signup":              true,
+        "login":               false,
+        "signup":              false,
         "clientID":            "1019727294613-rjf83l9dl3rqb5courtokvdadaj2dlk5.apps.googleusercontent.com",
         "clientSecret":        "Kd6ceFORVbABH7p5UbKURexZ",
         "scope":               ["profile","email","https://www.googleapis.com/auth/plus.profile.emails.read"]
@@ -119,9 +120,11 @@
       "uId":                   true
     },
     "dirs":                    "{{undefine}}",
+    "plugins":                 false,
     "sesssion": {
-      "secret":                "airyv1",
-      "name":                  "aps"
+      "authedData":            "_id name email roles",
+      "name":                  "aps",
+      "secret":                "airyv1"
     }
   },
   "model": {
@@ -136,7 +139,8 @@
     "session":                 { "collection": "v1sessions" }
   },
   "routes": {
-    "redirects":               { "on": true }
+    "redirects":               { "on": true },
+    "rss":                     { "on": true }
   },
   "views": {
     "dirs":                    "views,views/pages",

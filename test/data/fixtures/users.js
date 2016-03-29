@@ -100,6 +100,31 @@ var newer = {
         "gender" : "male",
         "locale" : "en",
         "hd" : "airpair.com"
+      },
+      "gh" : {
+        "login" : "airpairadm",
+        "id" : 11262312,
+        "avatar_url" : "https://avatars.githubusercontent.com/u/11261012?v=3",
+        "html_url" : "https://github.com/airpairadm",
+        "gists_url" : "https://api.github.com/users/airpairadm/gists{/gist_id}",
+        "starred_url" : "https://api.github.com/users/airpairadm/starred{/owner}{/repo}",
+        "subscriptions_url" : "https://api.github.com/users/airpairadm/subscriptions",
+        "organizations_url" : "https://api.github.com/users/airpairadm/orgs",
+        "repos_url" : "https://api.github.com/users/airpairadm/repos",
+        "public_repos" : 0,
+        "public_gists" : 0,
+        "followers" : 0,
+        "following" : 0,
+        "created_at" : "2015-03-01T21:12:29Z",
+        "updated_at" : "2015-03-01T22:22:16Z",
+        "private_gists" : 0,
+        "total_private_repos" : 0,
+        "owned_private_repos" : 0,
+        "disk_usage" : 0,
+        "collaborators" : 0,
+        "tokens" : {
+          'consult': { "token" : "835b520ebd5710972d421cf8c190c59adccf39e7" }
+        }
       }
     },
     "email" : "ad@airpair.com",

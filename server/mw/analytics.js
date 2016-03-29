@@ -11,30 +11,23 @@
 
 module.exports = (app, mw) => {
 
+  var {view, impression} = global.analytics
 
-  mw.cache('trackPost', mw.analytics.view('post', analytics.view, {
+  mw.cache('trackPost', mw.analytics.view('post', view, {
     project: d => ({_id:d._id,url:d.url.replace('https://www.airpair.com', '')})
   }))
 
 
-  mw.cache('trackAdImpression', mw.analytics.impression('ad', analytics.impression, {
-
-  }))
+  mw.cache('trackAdImpression', mw.analytics.impression('ad', impression))
     // (req, res, next) => {
     //   //-- TODO cache ads and do it properly!
     //   req.ad = { img: req.originalUrl.replace('/ad/','') }
     // },
 
-
-
-  mw.cache('trackAdClick', mw.analytics.view('ad', analytics.view, {
-
-  }))
+  mw.cache('trackAdClick', mw.analytics.view('ad', view))
     // (req, res, next) => {
       //-- TODO cache ads and do it properly!
       // req.ad = { img: req.originalUrl.replace('/ad/','') }
     // },
-
-
 
 }

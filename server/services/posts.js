@@ -167,7 +167,7 @@ var get = {
     }))
   },
 
-  getAll2015CompWinners(cb) {
+  get2015CompWinners(cb) {
     var getWinners = function(callback) {
       var q = query.comp2015winners()
       var options = Object.assign({ select: Data.select.listComp}, opts.highestRating)

@@ -3,6 +3,67 @@ phlfKey = null
 phlfExp = null
 forAdmin = true
 
+
+experts = ->
+
+  SKIP "Delete an expert"
+  # IT "Delete by id", ->
+  #   SETUP.ensureExpert 'dlim', ->
+  #     DB.docById 'User', USERS.dlim._id, (s) ->
+  #       expertId = s.cohort.expert._id
+  #       LOGIN {key:'admin'}, ->
+  #         DELETE "/adm/experts/#{expertId}", ->
+  #           DB.docById 'Expert', expertId, (r) ->
+  #             expect(r).to.be.null
+  #             DONE()
+
+
+  IT "Get newest experts", ->
+    LOGIN {key:'admin'}, ->
+      GET "/adm/experts/new", (experts) ->
+        expect(experts.length>0).to.be.true
+        DONE()
+
+
+  SKIP "Get recently active experts", ->
+    LOGIN {key:'admin'}, ->
+      GET "/adm/experts/active", (experts) ->
+        expect(experts.length>0).to.be.true
+        DONE()
+
+
+  SKIP "Get experts history"
+#     LOGIN 'admin', ->
+#       # expertId = "524304901c9b0f0200000012" ## Matias
+#       expertId = "53cfe315a60ad902009c5954" ## Michael P
+#       GET "/experts/#{expertId}/history", {}, (history) ->
+#         expect(history.requests.length > 0).to.be.true
+#         # $log('history.requests', history.requests.length)
+#         for req in history.requests
+#           expect(req.calls).to.be.undefined
+#           expect(req.adm).to.be.undefined
+#           expect(req.suggested.length).to.equal(1)
+#           expect(req.by).to.exist
+#           expect(req.company).to.be.undefined
+#           EXPECT.equalIds(req.suggested[0].expert._id,expertId)
+#         $log('bookings', history.bookings.length, history.bookings[0].participants[0])
+#         expect(history.bookings.length > 0).to.be.true
+#         for booking in (history.bookings)
+#           EXPECT.equalIds(booking.expertId, expertId)
+#           expect(booking.type).to.exist
+#           expect(booking.status).to.exist
+#           expect(booking.customerId).to.exist
+#           expect(booking.datetime).to.exist
+#           expect(booking.minutes).to.exist
+#           expect(booking.participants.length>0).to.be.true
+#           $log('cust', booking.participants[0])
+#           expect(booking.participants[0].role).to.equal('customer')
+#           expect(booking.participants[0].info.name).to.exist
+#         DONE()
+
+
+
+
 requests = ->
 
 
@@ -295,17 +356,26 @@ requests = ->
     #                         DONE()
 
 
+
 module.exports = ->
 
   before (done) ->
-    STORY.newExpert 'phlf', {}, (s, exp) ->
-      phlfKey = s.userKey
-      phlfExp = exp
-      done()
+    qExists = require('../../../server/services/users.data').query.existing
+    DB.ensureDoc 'User', FIXTURE.users.admin, ->
+    DB.removeDocs 'User', qExists.byEmails(['airpairtest1@gmail.com']), ->
+      DB.ensureExpert 'snug', ->
+        STORY.newExpert 'phlf', {}, (s, exp) ->
+          phlfKey = s.userKey
+          phlfExp = exp
+          done()
+
 
 
   beforeEach ->
     STUB.SlackCommon()
 
 
-  DESCRIBE "Request", requests
+
+  DESCRIBE("Experts: ", experts)
+  DESCRIBE("Request", requests)
+

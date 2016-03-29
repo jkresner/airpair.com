@@ -3,7 +3,7 @@ var {Expert,User}         = DAL
 var UserSvc               = require('../services/users')
 var RequestSvc            = require('../services/requests')
 var BookingSvc            = require('../services/bookings')
-var {selectFromObject}    = util
+var {selectFromObject}    = require('../../shared/util')
 var {select,options}      = require('./experts.data')
 var selectCB              = select.cb
 

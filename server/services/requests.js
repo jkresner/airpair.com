@@ -146,7 +146,7 @@ var save = {
 
     if (this.user.emailVerified) {
       // Send here's a link to update your request.
-      $log('******* Should impl request started email')
+      // $log('******* Should impl request started email')
     }
 
     Request.create(o, select.cb.byRole(this,cb,cb))

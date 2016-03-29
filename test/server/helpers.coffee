@@ -10,6 +10,14 @@ global.STRINGIFY = (obj) ->
   JSONSTRING[obj._id]
 
 
+DATA.loginProfile = (login) ->
+  suffix = DATA.timeSeed()
+  u = FIXTURE.clone("users.#{login}")
+  profile = u.auth.gh if u.auth && u.auth.gh
+  if profile then profile else Object.assign(FIXTURE.clone('users.ape1').auth.gh,{id:suffix,login})
+
+
+
 DATA.newSession = (userKey) ->
   suffix = DATA.timeSeed()
   session = cookie:
@@ -53,18 +61,13 @@ SPEC.init = (ctx) ->
   # global.verboseErrHandler  = true   # true => lots of red detail
   # global.withoutStubs       = false    # true => real (slow) apis calls
   # $log("   Stubs:".white, if withoutStubs then "TURNED OFF!".red else "on".gray)
-
   # global.data               = require('./../data/data')
   # global.SETUP              = require('./setup/_setup')
-  # global.timeSeed           = SETUP.timeSeed
-  # global.newId              = SETUP.newId
-
-  # global.stubs              = SETUP.initStubs()
-
 
 
 STUB.analytics =
   stubbed: false,
+  mute: () -> config.log.trk.event = false
   on: () -> {}
     # global.analytics = require('../../server/services/analytics')(global._analytics)
   off: () -> {}
@@ -76,6 +79,7 @@ STUB.analytics =
 #     # identify: ()=>{}
 #   }
 
+STUB.analytics.mute()
 
 
 STUB.Timezone = (response) ->

@@ -1,8 +1,6 @@
 var {User}                     = DAL
-var {query,data,select,bcrypt} = require('./users.data')
+var {query,data,select}        = require('./auth.data')
 var logging                    = false // config.log.auth
-
-
 
 
 //-------------------------------------------------------------------------//
@@ -16,20 +14,23 @@ function localSignup(email, password, name, done) {
     if (existing.length == 1) return done(Error(`Signup fail. Account with email already exists. Please reset your password.`))
     if (existing.length > 1) return done(Error(`Signup fail. Multiple user accounts associated with ${email}. Please contact team@airpair.com to merge your accounts.`))
 
-    var user    = {name}
-    user.emails = [{value:email,primary:true,verified:false}]
-    user.auth   = {
+    var signup    = {name}
+    signup.emails = [{value:email,primary:true,verified:false}]
+    signup.auth   = {
       password:   { hash: select.passwordHash(password) } // password is hased in the db
     }
 
-    if (logging) $log('Auth.localSignup', this.sessionID, user.name)
-    _createUser.call(this, this.sessionID, this.session, user, done)
+    // if (logging) $log('Auth.localSignup', this.sessionID, user.name)
+    _createUser.call(this, this.sessionID, this.session, signup,
+      (ee, user) => {
+        done(ee, user)
+        analytics.alias(this, user, 'signup', {user,email,type:'local'})
+      })
   })
 }
 
 
 function localLogin(email, password, done) {
-  // $log('AUTH.localLogin'.yellow, email)
   User.getByQuery(query.existing.byEmails([email]), (e, existing) => {
     if (e) return done(e)
 
@@ -42,7 +43,11 @@ function localLogin(email, password, done) {
         done(null, false, Unauthorized("Login fail. Incorrect password"))
     }
 
-    _loginUser(this.sessionID, this.session, existing, {auth,emails,photos}, done)
+    _loginUser(this.sessionID, this.session, existing, {auth,emails,photos},
+      (ee, r) => {
+        done(ee, r)
+        analytics.alias(this, r, 'login', {user:r,email,type:'pwd'})
+      })
   })
 }
 
@@ -57,13 +62,7 @@ function _loginUser(sessionID, session, login, {auth, emails, photos}, done) {
 
   // meta = touchMeta(login.meta,'login',user)
 
-  User.updateSet(login._id, update, (e, user) => {
-    select.cb.session({user},done)(null, user)
-
-    var trackData = select.analyticsLogin(user,sessionID)
-    // $log('login'.yellow, trackData)
-    analytics.alias(user, sessionID, 'login', trackData)
-  })
+  User.updateSet(login._id, update, select.cb.session(done))
 }
 
 
@@ -82,13 +81,7 @@ function _createUser(sessionID, session, signup, done) {
 
   // meta = touchMeta(meta,'signup',user)
 
-  User.create(signup, (e, user) => {
-    select.cb.session({user},done)(null, user)
-    //-- Send an email ??
-    var trackData = select.analyticsSignup(user,sessionID)
-    // $log('signup'.yellow, this.ctx, trackData)
-    analytics.alias(user, sessionID, 'signup', trackData)
-  })
+  User.create(signup, select.cb.session(done))
 }
 
 
@@ -329,7 +322,7 @@ function changePassword(email, hash, password, cb) {
     }
 
     if (user)
-      analytics.event.call({user}, 'set-password', { email })
+      analytics.event(assign(this,{user}), 'set-password', { email })
 
     User.updateSet(user._id, update, cb)
   })

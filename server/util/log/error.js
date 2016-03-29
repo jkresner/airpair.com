@@ -62,7 +62,7 @@ module.exports = function(e, user, req)
 
     if (req.header('user-agent'))
     {
-      var isBot = (util.isBot(req.header('user-agent'))) ? 'true' : 'false'
+      var isBot = (util.isBot(req.header('user-agent'), /bot/i)) ? 'true' : 'false'
       msg += `\n isBot:${isBot}:${req.header('user-agent')}`
     }
 

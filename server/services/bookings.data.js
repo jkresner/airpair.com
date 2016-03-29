@@ -1,5 +1,5 @@
 var md5                   = require('../util/md5')
-var {selectFromObject}              = util
+var {selectFromObject}              = require('../../shared/util')
 var {Slack}                         = Wrappers
 var {filterSlackHistory,participantSlackHandle,
   rebookUrl,multitime,
