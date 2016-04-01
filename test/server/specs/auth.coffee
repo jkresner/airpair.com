@@ -140,9 +140,9 @@ signup = ->
       ->
         DB.docById 'User', userId, (r) ->
           {cohort} = r
-          expect(cohort.engagement.visit_signup).to.be.exist
-          expect(cohort.engagement.visit_last).to.be.exist
-          expect(cohort.engagement.visit_last).to.be.exist
+          expect(cohort.engagement.visit_signup).to.exist
+          expect(cohort.engagement.visit_last).to.exist
+          expect(cohort.engagement.visit_last).to.exist
           EXPECT.attr(cohort.firstRequest, 'url', String)
           expect(moment(cohort.engagement.visits[0]).unix()).to.equal(moment(util.dateWithDayAccuracy()).unix())
           expect(cohort.aliases.length).to.equal(1)

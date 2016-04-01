@@ -4,6 +4,13 @@ if log && process.env['LOG_APP_MUTE'] then log.app.mute = process.env['LOG_APP_M
 # if (process.env[`LOG_${cfg.logFlag}`]) = cfg.logFlag ? 'white' : undefined
 
 
+# mmmmmmm
+global.STRINGIFY = (obj) ->
+  if !JSONSTRING[obj._id]
+    JSONSTRING[obj._id] = JSON.stringify(obj).gray
+  JSONSTRING[obj._id]
+
+
 DATA.newSession = (userKey) ->
   suffix = DATA.timeSeed()
   session = cookie:
@@ -15,15 +22,9 @@ DATA.newSession = (userKey) ->
   assign({user:null,sessionID:"test#{userKey}#{suffix}"},{session})
 
 
-# mmmmmmm
-global.STRINGIFY = (obj) ->
-  if !JSONSTRING[obj._id]
-    JSONSTRING[obj._id] = JSON.stringify(obj).gray
-  JSONSTRING[obj._id]
-
 DATA.defaultGH = (name, login, suffix) ->
   profile = FIXTURE.users[FIXTURE.uniquify('users','ape1','_id')].auth.gh
-  profile.id = parseInt(profile.id + suffix)
+  profile.id = (profile.id||1)+moment().unix() + Math.random(2,20)
   profile.login = "#{login}#{suffix}"
   profile.name = profile.name || name || login
   profile
@@ -31,13 +32,14 @@ DATA.defaultGH = (name, login, suffix) ->
 DATA.ghProfile = (login, uniquify) ->
   suffix = DATA.timeSeed()
   if uniquify is true
-    u = FIXTURE.users[FIXTURE.uniquify("users", login, '_id name email')] if !u
+    u = FIXTURE.users[FIXTURE.uniquify("users", login, '_id username name email auth.gh.login auth.gh.id')] if !u
     $log("FIXTURE.users.#{login} MISSING") if !u
     profile = u.auth.gh if u.auth && u.auth.gh
     profile = DATA.defaultGH(u.name || login, login, suffix) if !profile
   else
     profile = FIXTURE.users[login].auth.gh
     profile = DATA.defaultGH(login, login, suffix) if !profile
+  # $log('profile', profile)
   profile
 
 
@@ -73,6 +75,7 @@ global.SIGNUP = (login, cb) ->
 
 DB.ensureExpert = (key, done) ->
   DB.ensureDocs 'User', [FIXTURE.users[key]], (e) =>
+    # $log("ensureExpert.user.#{key}", e)
     DB.ensureDocs 'Expert', [FIXTURE.experts[key]], (ee) => done()
 
 
@@ -110,8 +113,8 @@ STUB.analytics =
 STUB.analytics.mute()
 
 
-STUB.Timezone = (response) ->
-  STUB.cb Wrappers.Timezone,'getTimezoneFromCoordinates', response || data.wrappers.timezone_melbourne
+STUB.Timezone = (key) ->
+  STUB.wrapper('Timezone').cb('getTimezoneFromCoordinates', key||'timezone_melbourne')
 
   # (loc,n,cb) ->
   #   cb(null,
