@@ -11,23 +11,26 @@
 
 module.exports = (app, mw) => {
 
-  var {view, impression} = global.analytics
-
-  mw.cache('trackPost', mw.analytics.view('post', view, {
-    project: d => ({_id:d._id,url:d.url.replace('https://www.airpair.com', '')})
-  }))
+  mw.cache('trackImpression', mw.analytics.impression({type:'ad',onBot:(()=>{})}))
 
 
-  mw.cache('trackAdImpression', mw.analytics.impression('ad', impression))
+  mw.cache('trackAuth', mw.analytics.event('auth'))
+
+
+  mw.cache('trackClick', mw.analytics.view('ad'))
     // (req, res, next) => {
-    //   //-- TODO cache ads and do it properly!
+    //   -- TODO cache ads and do it properly!
     //   req.ad = { img: req.originalUrl.replace('/ad/','') }
     // },
 
-  mw.cache('trackAdClick', mw.analytics.view('ad', view))
-    // (req, res, next) => {
-      //-- TODO cache ads and do it properly!
-      // req.ad = { img: req.originalUrl.replace('/ad/','') }
-    // },
+  mw.cache('trackTag', mw.analytics.view('tag', {onBot:()=>{}}))
+  mw.cache('trackJob', mw.analytics.view('job', {onBot:()=>{}}))
+  mw.cache('trackWorkshop', mw.analytics.view('workshop', {onBot:()=>{}}))
+  mw.cache('trackLanding', mw.analytics.view('landing', {onBot:()=>{}}))
+  mw.cache('trackPost', mw.analytics.view('post', {
+      project: d => ({_id:d._id,url:d.url.replace('https://www.airpair.com', '')}),
+      onBot:(()=>{})
+    })
+  )
 
 }

@@ -78,4 +78,4 @@ module.exports = ->
           done()
 
 
-  DESCRIBE "matchmaking: ", matchmaking
+  SKIP "matchmaking: ", matchmaking

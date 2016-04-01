@@ -83,9 +83,25 @@ raw = ->
 
 spinners = ->
 
+
+  IT 'Expert gets notification on booking', ->
+    send = @send
+    _id = ObjectId("55555ae4b38fc91937086df7")
+    d = {byName:"Jonyisalive 5", expertName:"Jonathon Kaye", bookingId:_id,minutes:60}
+    mailman.sendTemplate 'expert-booked', d, {name:'Karan Kurani',email:'karankurani@testmail.com'}, ->
+      expect(send.callCount).to.equal(1)
+      mail = send.args[0][0]
+      EXPECT.startsWith(mail.subject,'You got booked to AirPair with Jonyisalive 5')
+      EXPECT.contains(mail.from,'Pairbot <team@airpair.com>')
+      EXPECT.contains(mail.text,'https://www.airpair.com/bookings/55555ae4b38fc91937086df7')
+      EXPECT.contains(mail.text,'60 minutes')
+      EXPECT.contains(mail.html,'55555ae4b38fc91937086df7')
+      DONE()
+
+
   IT 'Pipeliners notify booking', ->
     send = @send
-    STORY.newUser 'ckni', {paymethod:true,login:true}, (s) ->
+    STORY.newUser 'phlf', {paymethod:true,login:true}, (s) ->
       airpair1 = datetime: moment().add(2, 'day'), minutes: 120, type: 'private', payMethodId: s.primaryPayMethodId
       POST "/bookings/#{FIXTURE.experts.dros._id}", airpair1, {}, (booking1) ->
         expect(send.callCount).to.equal(3)
@@ -99,24 +115,6 @@ spinners = ->
         EXPECT.startsWith(send.args[2][0].subject, "You got booked to AirPair with #{s.name}")
         EXPECT.contains(send.args[2][0].from,'Pairbot <team@airpair.com>')
         DONE()
-
-
-    IT 'Expert gets notification on booking', ->
-      send = @send
-      _id = ObjectId("55555ae4b38fc91937086df7")
-      d = {byName:"Jonyisalive 5", expertName:"Jonathon Kaye", bookingId:_id,minutes:60}
-      mailman.sendTemplate 'expert-booked', d, {name:'Karan Kurani',email:'karankurani@testmail.com'}, ->
-        expect(send.callCount).to.equal(1)
-        mail = send.args[0][0]
-        EXPECT.startsWith(mail.subject,'You got booked to AirPair with Jonyisalive 5')
-        EXPECT.contains(mail.from,'Pairbot <team@airpair.com>')
-        EXPECT.contains(mail.text,'https://www.airpair.com/bookings/55555ae4b38fc91937086df7')
-        EXPECT.contains(mail.text,'60 minutes')
-        EXPECT.contains(mail.html,'55555ae4b38fc91937086df7')
-        DONE()
-
-
-
 
 #   describe 'Posts: ', ->
 
@@ -152,10 +150,14 @@ module.exports = ->
   before (done) ->
     global.origMailman      = global.mailman
     global.config.log.mail = true
-    global.mailman = require('../../../server/util/mailman')()
-    global.mailman.getGroupList 'spinners', ->
-      global.mailman.getGroupList 'pipeliners', ->
-        done()
+    DB.ensureExpert 'dros', ->
+      DB.ensureDoc 'User', FIXTURE.users.admin, ->
+        LOGIN 'admin', (s) ->
+          GET '/adm/requests/active', (r) ->
+            # phlfKey = s.userKey
+            # phlfExp = exp
+            global.mailman = require('../../../server/util/mailman')()
+            done()
 
 
   beforeEach ->

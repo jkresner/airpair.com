@@ -19,10 +19,10 @@ module.exports = (app, mw) => {
     },
     onFirst(req, res) {
       if (!req.session.anonData) req.session.anonData = {}
-      res.once('finish', () => {
-        req.session.firstRequest.status = res.statusCode
-        analytics.event(req, 'firstReq', req.session.firstRequest)
-      })
+      // res.once('finish', () => {
+        // req.session.firstRequest.status = res.statusCode
+        // analytics.event(req, 'firstReq', req.session.firstRequest)
+      // })
     }
   }))
 
@@ -33,10 +33,11 @@ module.exports = (app, mw) => {
 
   mw.cache('noBot', mw.req.noCrawl({content:'',
     onDisallow(req) {
+
       // $log('TODO... write crawl errors to analytics db')
     }}))
 
-  mw.cache('badBot', mw.req.noCrawl({group:'bad',content:'',
+  mw.cache('badBot', mw.req.noCrawl({group:'bad|ua:none',content:'',
     onDisallow(req) {
       // $log('TODO... write crawl errors to analytics db')
     }}))

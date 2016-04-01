@@ -15,7 +15,7 @@ expectSessionStored = (session, cb) ->
   a_uid = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[\,\-_]*).{24,}/
   expect(session.sessionID).to.match(a_uid)
   DB.docsByQuery 'Session', {_id:session.sessionID}, (s) ->
-    expect(s.length).to.equal(1)
+    expect(s.length, "Session not found with id #{session.sessionID}").to.equal(1)
     cb()
 
 
@@ -95,9 +95,9 @@ api = ->
 
   IT '/100k-writing-competition (uaUser) Persists utms and referer', ->
     # viewSpy = STUB.spy(analytics, 'view')
-    ref = 'https://www.airpair.com/'
+    referer = 'https://www.airpair.com/'
     utms = 'utm_source=team-email&utm_medium=email&utm_term=angular-workshops&utm_content=nov14-workshops-ty&utm_campaign=wks14-4'
-    PAGE "/100k-writing-competition?#{utms}", Opts({status:200,referer:ref}, UAUser), (resp) ->
+    PAGE "/100k-writing-competition?#{utms}", Opts({status:200,referer}, UAUser), (resp) ->
       # expect(viewSpy.calledOnce).to.be.true
       GET '/session/full', (s) ->
         expect(s.authenticated).to.equal(false)
@@ -107,7 +107,7 @@ api = ->
             expect(views[0].url).to.equal('/100k-writing-competition')
             expect(views[0].type).to.equal('landing')
             expect(views[0].utm).to.exist
-            expect(views[0].ref).to.equal(ref)
+            expect(views[0].ref).to.equal(referer)
             expect(views[0].utm.source).to.equal('team-email')
             expect(views[0].utm.medium).to.equal('email')
             expect(views[0].utm.term).to.equal('angular-workshops')

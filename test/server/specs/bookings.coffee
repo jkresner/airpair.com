@@ -475,7 +475,6 @@ module.exports = ->
   @timeout 60000
 
   before (done) ->
-    global.moment = require("moment-timezone")
     DB.ensureExpert 'gnic', ->
       DB.ensureExpert 'dros', ->
         done()
@@ -488,10 +487,10 @@ module.exports = ->
     cache.slack_users = undefined
 
 
-  DESCRIBE("Util", util)
-  DESCRIBE("Viewing", views)
-  DESCRIBE("Scheduling", scheduling)
-  DESCRIBE("Recordings", recordings)
+  SKIP("Util", util)
+  SKIP("Viewing", views)
+  SKIP("Scheduling", scheduling)
+  SKIP("Recordings", recordings)
   # DESCRIBE("Feedback", feedback)
   # DESCRIBE("Escrow", escrow)
 

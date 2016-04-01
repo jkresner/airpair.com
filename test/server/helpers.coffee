@@ -1,21 +1,7 @@
-global.ANONSESSION = (cb) ->
-  global.COOKIE = null
-  GET '/session/full', cb
-
-
-# mmmmmmm
-global.STRINGIFY = (obj) ->
-  if !JSONSTRING[obj._id]
-    JSONSTRING[obj._id] = JSON.stringify(obj).gray
-  JSONSTRING[obj._id]
-
-
-DATA.loginProfile = (login) ->
-  suffix = DATA.timeSeed()
-  u = FIXTURE.clone("users.#{login}")
-  profile = u.auth.gh if u.auth && u.auth.gh
-  if profile then profile else Object.assign(FIXTURE.clone('users.ape1').auth.gh,{id:suffix,login})
-
+{log} = config
+if log && process.env['LOG_APP_VERBOSE'] then log.app.verbose = process.env['LOG_APP_VERBOSE']
+if log && process.env['LOG_APP_MUTE'] then log.app.mute = process.env['LOG_APP_MUTE']
+# if (process.env[`LOG_${cfg.logFlag}`]) = cfg.logFlag ? 'white' : undefined
 
 
 DATA.newSession = (userKey) ->
@@ -26,18 +12,59 @@ DATA.newSession = (userKey) ->
 
   # ?? not the best setting global here ....
   cookieCreatedAt = util.momentSessionCreated(session)
-  Object.assign({user:null,sessionID:"test#{userKey}#{suffix}"},{session})
+  assign({user:null,sessionID:"test#{userKey}#{suffix}"},{session})
 
 
+# mmmmmmm
+global.STRINGIFY = (obj) ->
+  if !JSONSTRING[obj._id]
+    JSONSTRING[obj._id] = JSON.stringify(obj).gray
+  JSONSTRING[obj._id]
 
-DATA.newSignup = (name) ->
-  ident = name.toLowerCase().replace(/ /g,'.')
-  seed = { name, email: "#{ident}@testpair.com" }
+DATA.defaultGH = (name, login, suffix) ->
+  profile = FIXTURE.users[FIXTURE.uniquify('users','ape1','_id')].auth.gh
+  profile.id = parseInt(profile.id + suffix)
+  profile.login = "#{login}#{suffix}"
+  profile.name = profile.name || name || login
+  profile
+
+DATA.ghProfile = (login, uniquify) ->
   suffix = DATA.timeSeed()
-  Object.assign({userKey: ident.substring(0, 4)+suffix}, {
-    email: seed.email.replace('@',suffix+'@')
-    name: seed.name+suffix
-    password: 'testpass'+suffix })
+  if uniquify is true
+    u = FIXTURE.users[FIXTURE.uniquify("users", login, '_id name email')] if !u
+    $log("FIXTURE.users.#{login} MISSING") if !u
+    profile = u.auth.gh if u.auth && u.auth.gh
+    profile = DATA.defaultGH(u.name || login, login, suffix) if !profile
+  else
+    profile = FIXTURE.users[login].auth.gh
+    profile = DATA.defaultGH(login, login, suffix) if !profile
+  profile
+
+
+global.ANONSESSION = (cb) ->
+  global.COOKIE = null
+  GET '/session/full', cb
+
+
+global.SIGNUP = (login, cb) ->
+  profile = DATA.ghProfile login, true
+  LOGIN profile, cb
+
+
+
+
+
+
+
+
+# DATA.newSignup = (name) ->
+#   ident = name.toLowerCase().replace(/ /g,'.')
+#   seed = { name, email: "#{ident}@testpair.com" }
+#   suffix = DATA.timeSeed()
+#   Object.assign({userKey: ident.substring(0, 4)+suffix}, {
+#     email: seed.email.replace('@',suffix+'@')
+#     name: seed.name+suffix
+#     password: 'testpass'+suffix })
 
   # key = FIXTURE.uniquify('users',key,'email name')
   # Object.assign(FIXTURE.users[key], {password:'testpass'+DATA.timeSeed()})
@@ -64,13 +91,14 @@ SPEC.init = (ctx) ->
   # global.data               = require('./../data/data')
   # global.SETUP              = require('./setup/_setup')
 
-
+analyticsCfg = _.clone(config.analytics)
 STUB.analytics =
   stubbed: false,
   mute: () -> config.log.trk.event = false
-  on: () -> {}
+  unmute: () -> config.log.trk.event = process.env['LOG_TRK_EVENT']
+  on: () -> config.analytics = analyticsCfg
     # global.analytics = require('../../server/services/analytics')(global._analytics)
-  off: () -> {}
+  off: () -> config.analytics = false
    # global.analytics = {
     # echo: ()=>{},
 #     event: ()=>{},

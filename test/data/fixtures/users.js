@@ -320,11 +320,7 @@ var newer = {
             "url" : "https://lh5.googleusercontent.com/-1R1aMkFsXWM/AAAAAAAAAAI/AAAAAAAABgo/PKlxamXUklE/photo.jpg?sz=50"
         },
         "url" : "https://plus.google.com/103602126141908605207",
-        "name" : {
-            "givenName" : "Daniel",
-            "familyName" : "Roseman"
-        },
-        "displayName" : "Daniel Roseman",
+        "name" : "Daniel Roseman",
         "id" : "103602126141908605207",
         "objectType" : "person",
         "emails" : [{ "type" : "account", "value" : "daniel@roseman.org.uk" }],
@@ -344,6 +340,7 @@ var newer = {
         "avatar_url" : "https://gravatar.com/avatar/0f4cefeedec5163556751d61625eedd0?d=https%3A%2F%2Fidenticons.github.com%2F098e1fe65009e1827566072fb4db0173.png&r=x",
         "id" : 131395,
         "login" : "danielroseman",
+        "name" : "Daniel Roseman",
         tokens: {}
       },
       "sl" : {

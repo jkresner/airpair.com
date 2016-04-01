@@ -2,13 +2,13 @@ module.exports = function(app, mw) {
 
   var PostsSvc = require('../services/posts')
 
-  app.get('/', mw.$.onFirstReq,
+  app.get('/', mw.$.badBot, mw.$.onFirstReq,
     mw.res.forbid('authd', usr => usr, { redirect: req => '/dashboard' }),
     mw.$.landingPage('home'))
 
 
   app.get('/100k-writing-competition',
-    mw.$.onFirstReq,
+    mw.$.badBot, mw.$.onFirstReq,
     (req, res, next) => {
       PostsSvc.get2015CompWinners((e,r) => {
         req.landing = {
@@ -32,7 +32,7 @@ module.exports = function(app, mw) {
         next()
       })
     },
-    mw.analytics.view('landing', analytics.view),
+    mw.$.trackLanding,
     mw.$.landingPage('postsComp')
   )
 

@@ -62,7 +62,7 @@ module.exports = (custKey, opts, done) ->
     else if !opts.reply
       done request, custSession
     else
-      LOGIN {key:opts.reply.userKey}, (expertSession) ->
+      LOGIN {key:opts.reply.userKey,retainSession:false}, (expertSession) ->
         expertId = FIXTURE.experts[opts.reply.userKey]._id
         request.suggested = [{
           _id: DATA.newId(),

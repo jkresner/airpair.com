@@ -32,22 +32,20 @@ module.exports = function(DAL, Data, Shared, Lib) {
         if (inValid) return done(Shared.Unauthorized(inValid))
 
         $logIt('auth.login', 'gh:login', `${profile.login}: ${JSON.stringify(profile).gray}`)
+        if (existing) Object.assign(this,{existing})
+        var fn = existing ? 'loginOAuth' : 'signupOAuth'
 
-        Object.assign(this,{existing})
-        var fn = this.user ? 'linkOAuth' : 'loginOAuth'
         Lib[fn](this, 'gh', 'github', profile, tokens, (e,r) => {
+          this.ctx.analytics = { event: `${existing?'login':'signup'}:gh:oauth`, alias: r }
           if (e) return done(e)
           r.avatar = r.photos ? r.photos[0].value : null
           done(e, r)
-
-          analytics.event.call(this, `login`,
-            assign({type:'auth:oauth',gh:r.auth.gh.login},_.pick(r,'name','_id')))
         })
       })
     },
 
 
-    project: Data.Project.session
+    project: Data.Project.full
 
   }
 }

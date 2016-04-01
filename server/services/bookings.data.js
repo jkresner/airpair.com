@@ -1,6 +1,5 @@
 var md5                   = require('../util/md5')
 var {selectFromObject}              = require('../../shared/util')
-var {Slack}                         = Wrappers
 var {filterSlackHistory,participantSlackHandle,
   rebookUrl,multitime,
   customers,experts}                = require("../../shared/bookings")
@@ -73,7 +72,7 @@ var select = {
   inflateParticipantInfo(participants) {
     for (var p of (participants || [])) {
       p.info.avatar = md5.gravatarUrl(p.info.email)
-      p.chat = p.chat || { slack: Slack.checkUserSync(p.info) }
+      p.chat = p.chat || { slack: Wrappers.Slack.checkUserSync(p.info) }
       if (p.chat.slack == null) delete p.chat
     }
   },
@@ -82,7 +81,7 @@ var select = {
     chat.members = {}
     for (var m of chat.info.members||[])
       if (!_.contains([pairbot.id,jk.id,support.id],m))
-        chat.members[m] = Slack.checkUserSync({id:m}) || {id:m}
+        chat.members[m] = Wrappers.Slack.checkUserSync({id:m}) || {id:m}
     chat.history = filterSlackHistory(chat.history)
   },
   slackMsgTemplateData(b, extraData, meId) {

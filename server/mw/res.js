@@ -13,10 +13,10 @@ module.exports = (app, mw) => {
 
 
   mw.cache('notFound', mw.res.notFound({
-    onBot: (req, res) => {
+    onBot: (req, res, next) => {
       // $log('notFound'.white, req.ctx.bot)
       if (req.ctx.bot && req.ctx.bot.match('disallow')) {
-        analytics.issue.call(req.ctx, 'security', { crawl: 404, url: req.originalUrl })
+        analytics.issue(req.ctx, 'security', { crawl: 404, url: req.originalUrl })
         return res.status(200).send('')
       }
       return res.status(404).send('Page not found')
@@ -29,8 +29,8 @@ module.exports = (app, mw) => {
     quiet: _.get(config, 'log.app.quiet'),
     // formatter: (req, e) => `${e.message}`,
     onError: (req, e) => {
-      // $log('onError'.cyan, e, e.stack)
-      if (config.comm.dispatch.groups.errors)
+      // $log('onError'.cyan, config.comm.dispatch.groups.errors)
+      if (config.env != 'test' && config.comm.dispatch.groups.errors)
         COMM('ses').error(e, {
           subject:`{AP} ${e.message}`,
           text: $request(req, e, {body:true}) + '\n\n' + e.stack.toString() })

@@ -47,21 +47,6 @@ var interpolate = {
     )
   },
 
-  mail(key, data, to, cb) {
-    var tData = data
-    if (to && to.name)
-      tData = _.extend({firstName:util.firstName(to.name)},data)
-
-    cache.tmpl('mail', key, (tmpl) => {
-      cb(null, {
-        to: (to.constructor === Array) ? to : [`${to.name} <${to.email}>`],
-        subject: tmpl.subjectFn(tData).replace(/&#x27;/g,"'"),
-        markdown: tmpl.markdownFn(tData).replace(/&#x27;/g,"'"),
-        sender: tmpl.sender
-      })
-    })
-  },
-
   slackMSGSync(key, data) {
     var tmpl = cache.templates[`slack-message:${key}`]
 

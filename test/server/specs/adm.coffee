@@ -6,60 +6,19 @@ forAdmin = true
 
 experts = ->
 
-  SKIP "Delete an expert"
-  # IT "Delete by id", ->
-  #   SETUP.ensureExpert 'dlim', ->
-  #     DB.docById 'User', USERS.dlim._id, (s) ->
-  #       expertId = s.cohort.expert._id
-  #       LOGIN {key:'admin'}, ->
-  #         DELETE "/adm/experts/#{expertId}", ->
-  #           DB.docById 'Expert', expertId, (r) ->
-  #             expect(r).to.be.null
-  #             DONE()
-
 
   IT "Get newest experts", ->
-    LOGIN {key:'admin'}, ->
+    LOGIN 'admin', (s) ->
       GET "/adm/experts/new", (experts) ->
         expect(experts.length>0).to.be.true
         DONE()
 
 
   SKIP "Get recently active experts", ->
-    LOGIN {key:'admin'}, ->
-      GET "/adm/experts/active", (experts) ->
-        expect(experts.length>0).to.be.true
-        DONE()
-
-
-  SKIP "Get experts history"
-#     LOGIN 'admin', ->
-#       # expertId = "524304901c9b0f0200000012" ## Matias
-#       expertId = "53cfe315a60ad902009c5954" ## Michael P
-#       GET "/experts/#{expertId}/history", {}, (history) ->
-#         expect(history.requests.length > 0).to.be.true
-#         # $log('history.requests', history.requests.length)
-#         for req in history.requests
-#           expect(req.calls).to.be.undefined
-#           expect(req.adm).to.be.undefined
-#           expect(req.suggested.length).to.equal(1)
-#           expect(req.by).to.exist
-#           expect(req.company).to.be.undefined
-#           EXPECT.equalIds(req.suggested[0].expert._id,expertId)
-#         $log('bookings', history.bookings.length, history.bookings[0].participants[0])
-#         expect(history.bookings.length > 0).to.be.true
-#         for booking in (history.bookings)
-#           EXPECT.equalIds(booking.expertId, expertId)
-#           expect(booking.type).to.exist
-#           expect(booking.status).to.exist
-#           expect(booking.customerId).to.exist
-#           expect(booking.datetime).to.exist
-#           expect(booking.minutes).to.exist
-#           expect(booking.participants.length>0).to.be.true
-#           $log('cust', booking.participants[0])
-#           expect(booking.participants[0].role).to.equal('customer')
-#           expect(booking.participants[0].info.name).to.exist
-#         DONE()
+    # LOGIN {key:'admin'}, ->
+    #   GET "/adm/experts/active", (experts) ->
+    #     expect(experts.length>0).to.be.true
+    #     DONE()
 
 
 
@@ -69,7 +28,7 @@ requests = ->
 
   IT 'Pipeliner can reply to a new request', ->
     data = type: 'other', tags: [FIXTURE.tags.node]
-    STORY.newRequest 'jjel', {forAdmin,data}, (r) ->
+    STORY.newRequest 'dros', {forAdmin,data}, (r) ->
       msg = type: 'received', subject: "test subject", markdown: "test body"
       PUT "/adm/requests/#{r._id}/message", msg, (r1) ->
         adm1 = r1.adm
@@ -369,13 +328,10 @@ module.exports = ->
           phlfExp = exp
           done()
 
-
-
   beforeEach ->
     STUB.SlackCommon()
 
 
-
-  DESCRIBE("Experts: ", experts)
-  DESCRIBE("Request", requests)
+  SKIP("Experts: ", experts)
+  SKIP("Request", requests)
 

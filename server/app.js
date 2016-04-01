@@ -1,4 +1,4 @@
-function run(config, {MAServer,tracking,done}) {
+function run({config,MAServer,tracking}, done) {
 
   var app               = MAServer.App(config, done)
   var analytics         = MAServer.Analytics(config, tracking)

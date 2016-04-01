@@ -343,37 +343,4 @@ var Unauthorized = (msg) => {
 }
 
 
-function getCohortProperties(existingUser, session)
-{
-  var emptyMongooseCohort = { maillists: [], aliases: [], engagement: { visits: [] } }
 
-  var cohort = (existingUser) ? existingUser.cohort : null
-  cohort = cohort || {}
-  if (_.isEqual(cohort,emptyMongooseCohort)) cohort = {}
-  // if (true) $log('getCohortProperties'.cyan, cohort)
-
-  var now         = new Date()
-  var day         = util.dateWithDayAccuracy()
-  var visit_first = (existingUser) ?
-    util.ObjectId2Date(existingUser._id) : util.momentSessionCreated(session).toDate()
-  var visit_signup = (existingUser) ? util.ObjectId2Date(existingUser._id) : now
-
-  if (!cohort.engagement)
-    cohort.engagement = {visit_first,visit_signup,visit_last:now,visits:[day]}
-  if (!cohort.engagement.visit_first)
-    cohort.engagement.visit_first = visit_first
-  if (!cohort.engagement.visit_signup)
-    cohort.engagement.visit_signup = visit_signup
-  if (!cohort.engagement.visit_last)
-    cohort.engagement.visit_last = now
-  if (!cohort.engagement.visits || cohort.engagement.visits.length == 0)
-    cohort.engagement.visits = [day]
-
-  if (!cohort.firstRequest && session.firstRequest)
-    cohort.firstRequest = session.firstRequest
-
-  // if (!cohort.aliases)   // we add the aliases after successful sign up
-    // cohort.aliases = []  // This could probably make more sense
-
-  return cohort
-}

@@ -16,27 +16,7 @@ var get = {
   },
 
   getSession(cb) {
-    // // $log('getSession anonymous'.magenta, this.user == null)
-    if (this.user)
-      User.getById(this.user._id,{ select: select.sessionFull }, cbSession(this, cb))
-    else
-    {
-      // var avatar = Data.data.anonAvatars[_.random(1)]
 
-      // if (this.session.anonData && this.session.anonData.email)
-      // {
-      //   Data.select.setAvatar(this.session.anonData)
-      //   avatar = this.session.anonData.avatar
-      // }
-
-      var session = _.extend({
-        authenticated: false,
-        sessionID: this.sessionID,
-        // avatar
-      }, this.session.anonData)
-
-      select.inflateTagsAndBookmarks(session, cb)
-    }
   },
 
   getUsersInRole(role, cb) {

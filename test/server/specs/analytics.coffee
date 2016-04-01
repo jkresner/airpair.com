@@ -28,7 +28,7 @@ views = ->
         expect(utm.term).to.be.undefined
         expect(utm.campaign).to.be.undefined
         DONE()
-      _.delay(viewCheck, 100)
+      _.delay(viewCheck, 300)
       PAGE "#{publishedPostUrl}?utm_source=test1src&utm_content=test1ctn", {referer:'http://airpair.com/posts'}, ->
 
 
@@ -67,7 +67,8 @@ views = ->
 
 
   IT 'Can track logged in post view', ->
-    STORY.newUser 'krez', (s) ->
+    DB.removeDocs 'User', { 'auth.gh.id': 215283 }, ->
+    LOGIN 'admb', (s) ->
       # spy = STUB.spy(analytics,'view')
       uId = ObjectId(s._id)
       viewCheck = => DB.docsByQuery 'View', {uId}, (r) ->
@@ -115,26 +116,25 @@ views = ->
 
 
   IT 'Aliases anonymous user with new user signup', ->
-    signup = DATA.newSignup("Will Moss")
-    DB.removeDocs 'User', { name: signup.name }, ->
+    # signup = DATA.newSignup("Will Moss")
+    DB.removeDocs 'User', { 'auth.gh.id': 1655968 }, ->
     ANONSESSION (s) ->
       sId = s.sessionID
       utms = 'utm_campaign=testSingup&utm_source=test8src&utm_content=test8ctn'
       PAGE "#{publishedPostUrl}?#{utms}", {}, ->
-        spy = STUB.spy(analytics,'alias')
-        SUBMIT '/auth/signup', signup, {}, (sFull) ->
-          $log('sFull', sFull)
-          userId = ObjectId(sFull._id)
+        # spy = STUB.spy(analytics,'alias')
+        LOGIN 'tmot', (sFull) ->
+        # SUBMIT '/auth/signup', signup, {}, (sFull) ->
           expect(sFull._id).to.exist
-          EXPECT.startsWith(sFull.name, "Will Moss")
+          uId = ObjectId(sFull._id)
+          EXPECT.startsWith(sFull.name, "Todd Motto")
           # expect(spy.callCount).to.equal(1)
           # EXPECT.equalIds(spy.args[0][0]._id, sFull._id)
           # expect(spy.args[0][1]).to.equal(s.sessionID)
           # expect(spy.args[0][2]).to.equal('signup')
-
-          viewCheck = => DB.docsByQuery 'View', {uId:userId}, (r) ->
+          viewCheck = => DB.docsByQuery 'View', {uId:uId}, (r) ->
             expect(r.length).to.equal(1)
-            EXPECT.equalIds(r[0].uId,userId)
+            EXPECT.equalIds(r[0].uId,uId)
             EXPECT.equalIds(r[0].sId,s.sessionID)
             DONE()
           _.delay(viewCheck, 150)
@@ -164,25 +164,27 @@ views = ->
   #         DONE()
 
 
-  IT 'Login local from existing sessionID does not alias', ->
-    singup = DATA.newSignup("Jason Pierce")
+  SKIP 'Login local from existing sessionID does not alias', ->
+    # singup = DATA.newSignup("Jason Pierce")
     ANONSESSION ->
       utms = ''
       PAGE "#{publishedPostUrl}?#{utms}", {}, ->
-      SUBMIT '/auth/signup', singup, {}, (r) ->
-        GET '/session/full', (s) ->
+        LOGIN 'dros', (s) ->
+        # SUBMIT '/auth/signup', singup, {}, (r) ->
+          # GET '/session/full', (s) ->
           expect(s._id).to.exist
           PAGE '/logout', { status:302 }, ->
-            spyAlias = STUB.spy(analytics,'alias')
-            SUBMIT '/auth/login', singup, {}, (r3) ->
-              expect(spyAlias.callCount).to.equal(1)
-              EXPECT.equalIds(spyAlias.args[0][0]._id, s._id)
-              expect(spyAlias.args[0][2]).to.equal('login')
+            # spyAlias = STUB.spy(analytics,'alias')
+            LOGIN 'dros', (s) ->
+            # SUBMIT '/auth/login', singup, {}, (r3) ->
+              # expect(spyAlias.callCount).to.equal(1)
+              # EXPECT.equalIds(spyAlias.args[0][0]._id, s._id)
+              # expect(spyAlias.args[0][2]).to.equal('login')
               DONE()
 
 
   IT 'Login from two sessionIDs aliases and aliases views', ->
-    singup = DATA.newSignup("Somik Rana")
+    DB.removeDocs 'User', { 'auth.gh.id': 465691 }, ->
     anonymousId = null
     anonymousId2 = null
 
@@ -193,7 +195,7 @@ views = ->
       PAGE publishedPostUrl, {}, ->
         PAGE publishedPostUrl, {}, ->
 
-          DB.docsByQuery 'View', {sId:anonymousId2}, (v2) ->
+          DB.docsByQuery 'views', {sId:anonymousId2}, (v2) ->
             expect(v2.length).to.equal(2)
             expect(v2[0].uId).to.be.undefined
             expect(v2[1].uId).to.be.undefined
@@ -201,16 +203,17 @@ views = ->
             expect(v2[1].sId).to.equal(anonymousId2)
 
             # spyIdentify = STUB.spy(analytics,'identify')
-            spyAlias = STUB.spy(analytics,'alias')
+            # spyAlias = STUB.spy(analytics,'alias')
 
-            SUBMIT '/auth/login', singup, {}, ->
+            LOGIN 'mkod', ->
+            # SUBMIT '/auth/login', singup, {}, ->
 
               # expect(spyIdentify.called).to.be.false
               # expect(spyAlias.callCount).to.equal(1)
               # expect(spyAlias.args[0][2]).to.equal('Login')
 
               # expect(spyIdentify.called).to.be.true
-              expect(spyAlias.called).to.be.true
+              # expect(spyAlias.called).to.be.true
               # expect(spyAlias.args[0][2]).to.equal('Login')
 
               GET '/session/full', (s3) ->
@@ -232,8 +235,9 @@ views = ->
             expect(v1[0].sId).to.equal(anonymousId)
             expect(v1[1].sId).to.equal(anonymousId)
 
-          SUBMIT '/auth/signup', singup, {}, (s0) ->
-            session2Callback(anonymousId)
+          LOGIN 'mkod', (s) ->
+          # SUBMIT '/auth/signup', singup, {}, (s0) ->
+            session2Callback(s.sessionID)
 
 
 module.exports = ->

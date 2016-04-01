@@ -4,7 +4,7 @@ OrdersUtil = require '../../../shared/orders'
 creditOrders = ->
 
   IT '300 credit purchase', ->
-    STORY.newUser 'somr', {login:true,paymethod:true}, (s) ->
+    STORY.newUser 'dymo', {login:true,paymethod:true}, (s) ->
       o = total: 300, payMethodId: s.primaryPayMethodId
       POST "/billing/orders/credit", o, (r) ->
         expect(r._id).to.exist

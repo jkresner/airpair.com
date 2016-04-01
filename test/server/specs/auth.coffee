@@ -4,7 +4,7 @@ qExists = require('../../../server/services/users.data').query.existing
 signup = ->
 
 
-  IT 'Can sign up as new user with local credentials', ->
+  SKIP 'Can sign up as new user with local credentials', ->
     d = DATA.newSignup('Steve Purves')
     SUBMIT '/auth/signup', d, {}, (r) ->
       expect(r._id).to.exist
@@ -42,7 +42,7 @@ signup = ->
 
 
 
-  IT 'Can sign up as new user with google (old format)', ->
+  SKIP 'Can sign up as new user with google (old format)', ->
     profile = FIXTURE.clone('oauth.google_rbrw')._json
     token = 'rbrw_token'
     DB.removeDocs 'User', { 'auth.gp.id': FIXTURE.oauth.google_rbrw.id }, ->
@@ -68,7 +68,7 @@ signup = ->
               DONE()
 
 
-  IT 'Can sign up as new user with google (new format)', ->
+  SKIP 'Can sign up as new user with google (new format)', ->
     profile = FIXTURE.clone('oauth.google_aptst34')._json
     token = 'aptst34_token'
     DB.removeDocs 'User', { 'auth.gp.id': FIXTURE.oauth.google_aptst34.id }, ->
@@ -92,7 +92,7 @@ signup = ->
               DONE()
 
 
-  IT 'Cannot sign up with local credentials and existing gmail', ->
+  SKIP 'Cannot sign up with local credentials and existing gmail', ->
     DB.removeDocs 'User', qExists.byEmails(["experts@airpair.com"]), ->
       d = name: "AirPair Experts", email: "experts@airpair.com", password: "Yoyoyoyoy"
       DB.ensureDoc 'User', FIXTURE.users.apexperts, ->
@@ -101,7 +101,7 @@ signup = ->
           DONE()
 
 
-  IT 'Cannot sign up with local credentials and existing local email', ->
+  SKIP 'Cannot sign up with local credentials and existing local email', ->
     d = DATA.newSignup('James Jelinek')
     SUBMIT '/auth/signup', d, {}, (r) ->
       LOGOUT ->
@@ -151,10 +151,10 @@ signup = ->
             STUB.analytics.on()
             DONE()
 
-    d = DATA.newSignup('Dilys sun')
+    # d = DATA.newSignup('Dilys sun')
     ANONSESSION (r) ->
       PAGE '/', {}, ->
-        SUBMIT '/auth/signup', d, {}, (newUser) ->
+        SIGNUP 'dysn', (newUser) ->
           expect(newUser._id).to.exist
           setTimeout checkCohort(ObjectId(newUser._id)), 150
 
@@ -169,7 +169,7 @@ login = ->
   it 'github login links to accounts with email matching any other provider', ->
   it 'github login saves all emails to user record', ->
 
-  IT 'Can signup with local credentials then login with google of same email', ->
+  SKIP 'Can signup with local credentials then login with google of same email', ->
     profile = FIXTURE.clone('oauth.google_aone')._json
     token = 'aone_token'
     signup = email: 'airpairone001@gmail.com', name: 'AIr One', password: 'pass2'
@@ -190,7 +190,7 @@ login = ->
               DONE()
 
 
-  IT 'Signup with google in one app and log back in with google in another', ->
+  SKIP 'Signup with google in one app and log back in with google in another', ->
     ape1 = FIXTURE.clone('users.ape1')
     profile = ape1.auth.gp
     token = 'ape1_gp_test_token'
@@ -253,13 +253,14 @@ login = ->
 
   IT 'Login from a new anonymous session adds sessionID to aliases', ->
     ape1 = FIXTURE.clone('users.ape1')
-    profile = ape1.auth.gp
-    token = 'ape1_gp_test_token'
+    # profile = ape1.auth.gp
+    # token = 'ape1_gp_test_token'
     STUB.analytics.on()
     DB.ensureDoc 'User', ape1, ->
-      AuthService.link.call DATA.newSession(), 'google', profile, {token}, (e, r1) ->
+      LOGIN 'ape1', (r1) ->
+      # AuthService.link.call DATA.newSession(), 'google', profile, {token}, (e, r1) ->
         EXPECT.equalIds(r1._id, ape1._id)
-        DB.docById 'User', ape1._id, (r3) ->
+        DB.docById 'User', r1._id, (r3) ->
           expect(r3.cohort.aliases.length).to.equal(2)
           DONE()
 
@@ -433,5 +434,5 @@ module.exports = ->
 
   DESCRIBE("Signup", signup)
   DESCRIBE("Login", login)
-  DESCRIBE("Password: ", password)
-  DESCRIBE("LINK", link)
+  SKIP("Password: ", password)
+  SKIP("LINK", link)

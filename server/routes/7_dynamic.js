@@ -9,7 +9,7 @@ module.exports = function(app, mw) {
 
   for (var slug of ['reactjs','python','node.js','ember.js','keen-io','rethinkdb','ionic','swift','android','ruby'])
     app.get(`^/${slug}`,
-      mw.analytics.view('tag', analytics.view),
+      mw.$.trackTag,
       mw.$.hybridPage('tag') )
 
 
@@ -29,7 +29,7 @@ module.exports = function(app, mw) {
         }), mw.$.serverPage('workshops'))
 
     .get('/:tag/workshops/:workshop',
-        mw.analytics.view('workshop', analytics.view, {project:d=>assign(d,{})}),
+        mw.$.trackWorkshop,
         (req, res, next) => {
           req.workshop.meta = { title: req.workshop.name,
             canonical: `https://www.airpair.com/${req.workshop.url}` }
@@ -40,7 +40,7 @@ module.exports = function(app, mw) {
 
     // .get('/requirements/:job',
     .get('/review/:job',
-      mw.analytics.view('job', analytics.view),
+      mw.$.trackJob,
       (req, res, next) => {
           for (var sug of req.job.suggested || [])
             if (sug.expertComment)
