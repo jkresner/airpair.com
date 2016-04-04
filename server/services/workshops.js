@@ -1,65 +1,23 @@
 
-
-// var fields = {
-//   listSelect: { title:1,slug:1,time:1,tags:1,'speakers.name':1,'speakers.gravatar':1 },
-//   rssSelect: { title:1,description:1,slug:1,time:1,tags:1,'speakers.name':1 }
-// }
-
 var workshops = {
 
   getAll(cb) {
-    var options = {sort: {'time' : -1 } }
-    // svc.searchMany({},{ fields: fields.listSelect, options }, (e, r) => {
-      // console.log(JSON.stringify(r))
-    for (var w of ALL)
-    {
-      w.url = `${w.tags[0]}/workshops/${w.slug}`
-      w.speaker = w.speakers[0]
-    }
     cb(null, ALL)
-    // })
   },
 
   getAllForCache(cb) {
-    workshops.getAll(cb)
-  },
-
-  getAllForRss(cb) {
-    cb(V2DeprecatedError('Workshops.getAllForRss'))
-    // var options = {sort: {'time': -1}, limit: 9}
-    // svc.searchMany({},{ fields: fields.rssSelect, options }, (e, r) => {
-    //   for (var w of r) {
-    //     w.url = `https://www.airpair.com/${w.tags[0]}/workshops/${w.slug}`
-    //     var betterTags = []
-    //     for (var t of w.tags) betterTags.push({name:t})
-    //     w.tags = betterTags
-    //   }
-    //   cb(e, r)
-    // })
-  },
-
-  getBySlug(slug, cb) {
-    var r = _.find(ALL,w => w.slug == slug)
-    // svc.searchOne({slug:slug},null, (e, r) => {
-    if (r) { r.url = `${r.tags[0]}/workshops/${r.slug}`; }
-    cb(null, r)
-    // })
-  },
-
-  getByTag(tagSlug, cb) {
-    // throw new Error('Workshops.getByTag deprecated in v2 migration. Please let us know how the UX got you here!')
-    // svc.searchMany({'tags': new RegExp(tagSlug, "i") },{fields:fields.listSelect}, (e, r) => {
-    var regEx = new RegExp(tagSlug, "i")
-    var r = _.filter(ALL, w => _.find(w.tags, t=>t.match(regEx)) )
-    for (var w of r)
-    {
-      w.url = `${w.tags[0]}/workshops/${w.slug}`
-      w.speaker = w.speakers[0]
-    }
-    cb(null, r)
-
-    // })
+    workshops.getAll((e,r) =>
+      cb(null, r.map(w => {
+        w._id = w.slug
+        w.url = `${w.tags[0]}/workshops/${w.slug}`
+        w.by = w.speakers[0]
+        w.htmlHead = { title: w.title, canonical: `https://www.airpair.com/${w.url}` }
+        delete w.slug
+        return w
+      }))
+    )
   }
+
 }
 
 module.exports = workshops
@@ -405,7 +363,7 @@ var ALL = [
         "teams"
     ],
     "time" : moment("2014-08-12T15:00:00.000Z"),
-    "title" : "",
+    "title" : "Simplifying Rails Tests",
     "updatedAt" : moment("2014-08-01T21:20:10.000Z"),
     "youtube" : "eWthxP4MZXE"
 },{

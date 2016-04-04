@@ -15,13 +15,7 @@ module.exports = (app, mw) => {
 
 
   mw.cache('trackAuth', mw.analytics.event('auth'))
-
-
   mw.cache('trackClick', mw.analytics.view('ad'))
-    // (req, res, next) => {
-    //   -- TODO cache ads and do it properly!
-    //   req.ad = { img: req.originalUrl.replace('/ad/','') }
-    // },
 
   mw.cache('trackTag', mw.analytics.view('tag', {onBot:()=>{}}))
   mw.cache('trackJob', mw.analytics.view('job', {onBot:()=>{}}))

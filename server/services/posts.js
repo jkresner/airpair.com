@@ -1,5 +1,4 @@
 var {Post, Expert, User}  = DAL
-var TemplateSvc           = require('../services/templates')
 var github2               = Wrappers.GitHub
 var Data                  = require('./posts.data')
 var {query, select, opts} = Data

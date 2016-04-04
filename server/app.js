@@ -10,7 +10,7 @@ function run({config,MAServer,tracking}, done) {
     global.cache = model.cache
     require('./util/cache')
 
-    global.API = require('./api/_all')
+    global.API            = require('./api/_all')
     global.util           = require('../shared/util')
     _.wrapFnList          = util.wrapFnList
 
