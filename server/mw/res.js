@@ -2,12 +2,13 @@ module.exports = (app, mw) => {
 
 
   var {bundles} = config.http.static
-  var about = _.pick(config.about, ['name','version','author','bugs','repository'])
+  var about = _.pick(config.about, ['name','version','author'])
+
 
   mw.cache('adminPage', mw.res.page('admin', {about,bundles,layout:false}))
+  mw.cache('clientPage', mw.res.page('client', {about,bundles,layout:'client'}))
   mw.cache('landingPage', page => mw.res.page(page, {about,bundles,layout:'landing'}))
   mw.cache('serverPage', page => mw.res.page(page, {about,bundles,layout:'server'}))
-  mw.cache('clientPage', mw.res.page('client', {about,bundles,layout:'client'}))
   mw.cache('hybridPage', page => mw.res.page(page, {about,bundles,layout:'hybrid'}))
 
 

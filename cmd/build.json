@@ -46,9 +46,13 @@
   "watch": {
     "livereload":            { "port": 35729 },
     "path": {
+      "browserify":          ["ang/**/*.js",
+                              "ang/**/*.html",
+                              "web/.lib/**/*.js",
+                              "web/.lib/**/*.html"],
       "livereload":          ["server/views/*",
-                              "web/build/css/*",
-                              "web/build/js/*"]
+                              "web/build/css/*.css",
+                              "web/build/js/*.js"]
     }
   }
 }

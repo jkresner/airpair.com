@@ -1,6 +1,6 @@
 window.$ = window.jQuery = require('./../components/jquery/dist/jquery.js');
 window._ = require('./../components/lodash/dist/lodash.js');
-window.moment = require('./../components/moment-timezone/builds/moment-timezone-with-data-2010-2020.js');
+require('./components/moment-timezone-with-data-2010-2020.js');
 require('./../components/angular/angular.js');
 require('./../components/angular-route/angular-route.js');
 require('./../components/angular-messages/angular-messages.js');

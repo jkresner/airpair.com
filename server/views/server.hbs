@@ -1,9 +1,12 @@
 <!DOCTYPE html>
 <html lang="en-US" prefix="og: http://ogp.me/ns#">
-<head>{{> htmlHead }}</head>
+<head>
+  {{> htmlHead }}
+</head>
 <body>
+  {{> siteNav }}
   <div class="main-wrap">
-    <main>{{body}}</main>
+    <main>{{{body}}}</main>
   </div>
 
   <script type="text/javascript" src="{{js.index}}"></script>

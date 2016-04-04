@@ -21,12 +21,12 @@ module.exports = (hbs) => {
   // });
 
 
-  // hbs.registerHelper('isoMoment', date => moment(date).toISOString());
+  hbs.registerHelper('isoMoment', date => moment(date).toISOString())
 
-  // hbs.registerHelper('dateFormat', (date, format) => {
-  //   if (!date) { return ""; }
-  //   return moment(date).format(format)
-  // })
+  hbs.registerHelper('dateFormat', (date, format) => {
+    if (!date) { return ""; }
+    return moment(date).format(format)
+  })
 
 
 }
