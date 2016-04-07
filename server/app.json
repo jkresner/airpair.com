@@ -121,12 +121,13 @@
       "uId":                   true
     },
     "dirs":                    "{{undefine}}",
-    "plugins":                 false,
+    "livereload":              { "port": 0 },
     "session": {
-      "authedData":            "_id name email roles",
+      "authedData":            "_id name email username roles",
       "name":                  "aps",
       "secret":                "airyv1"
-    }
+    },
+    "slow":                    null
   },
   "model": {
     "analytics": {

@@ -48,6 +48,7 @@ function resolveParamFn(Svc, svcFnName, paramName, objectName, Validation) {
         }
       }
       req[objectName||paramName] = r
+      req.locals.r = r
       if (logging) $log('paramFn'.yellow, objectName||paramName, r!=null, req[objectName||paramName])
       next(e, r)
     })

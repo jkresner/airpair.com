@@ -7,9 +7,12 @@ module.exports = (app, mw) => {
 
   mw.cache('adminPage', mw.res.page('admin', {about,bundles,layout:false}))
   mw.cache('clientPage', mw.res.page('client', {about,bundles,layout:'client'}))
-  mw.cache('landingPage', page => mw.res.page(page, {about,bundles,layout:'landing'}))
-  mw.cache('serverPage', page => mw.res.page(page, {about,bundles,layout:'server'}))
   mw.cache('hybridPage', page => mw.res.page(page, {about,bundles,layout:'hybrid'}))
+  mw.cache('postPage', mw.res.page('post', {about,bundles,layout:'hybrid'}))
+  mw.cache('serverPage', page => mw.res.page(page, {about,bundles,layout:'server'}))
+  mw.cache('landingPage', (req,res,next) =>
+    mw.res.page(req.landing.key, {about,bundles,layout:'landing'})(req,res,next))
+
 
 
 

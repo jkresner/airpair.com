@@ -59,7 +59,9 @@ browsing = ->
 module.exports = ->
 
   before (done) ->
+    STUB.analytics.on()
     global.higherOrder = FIXTURE.posts.higherOrder
+    DB.ensureDoc 'User', FIXTURE.users.snug, ->
     DB.ensureDoc 'User', FIXTURE.users.tiagorg, ->
       DB.ensureDoc 'Post', higherOrder, ->
         done()

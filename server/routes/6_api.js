@@ -1,7 +1,11 @@
 module.exports = function(app, mw) {
 
+  var api = app.API('session')
+    .uses('noBot session')
+    .get({'full':                  ''})
 
-  app.use('/v1/api/adm', app.Router()
+
+  app.use('/v1/api/adm', mw.$.noBot, mw.$.session, app.Router()
     .param('expert', API.Experts.paramFns.getByIdForAdmin)
     .param('request', API.Requests.paramFns.getByIdForAdmin)
     .param('order', API.Orders.paramFns.getByIdForAdmin)
@@ -66,7 +70,7 @@ module.exports = function(app, mw) {
   )
 
 
-  app.use('/v1/api/posts', app.Router()
+  app.use('/v1/api/posts', mw.$.noBot, mw.$.session, app.Router()
     .param('tag', API.Tags.paramFns.getBySlug)
     // .param('expert', API.Experts.paramFns.getByIdForAdmin)
     .param('post', API.Posts.paramFns.getById)
@@ -89,7 +93,7 @@ module.exports = function(app, mw) {
   )
 
 
-  app.use('/v1/api', app.Router()
+  app.use('/v1/api', mw.$.noBot, mw.$.session, app.Router()
     .param('tag', API.Tags.paramFns.getBySlug)
     // .param('tagfrom3rdparty', 'tags', 'getBy3rdParty')
     .param('request', API.Requests.paramFns.getByIdForAdmin)

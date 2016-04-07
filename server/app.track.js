@@ -6,7 +6,9 @@ module.exports = ({select,inflate,chain}) => ({
 
   signup: d => ({name:d.user.name}),
 
-  link: d => ({name:d.user.name,provider:d.provider})
+  link: d => ({name:d.user.name,provider:d.provider}),
+
+  logout: d => ({name:d.user.name})
 
   // setPass: r => [`post:new`, assign(by(r), _.pick(r,'title'))],
 

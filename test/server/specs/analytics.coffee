@@ -10,7 +10,6 @@ views = ->
   IT 'Can track an anonymous post view', ->
     ANONSESSION (s) ->
       sId = s.sessionID
-      # analytics.setCallback =>
       viewCheck = => DB.docsByQuery 'View', {sId}, (r) ->
         expect(r.length).to.equal(1)
         expect(r[0].uId).to.be.undefined
@@ -33,46 +32,40 @@ views = ->
 
 
   IT 'Can track an anonymous ad click view', ->
-    # spy = STUB.spy(analytics, 'view')
+    spy = STUB.spy(analytics, 'view')
     ANONSESSION (s) ->
       sId = s.sessionID
-      # $log('SPY'.white, analytics.view)
       viewCheck = => DB.docsByQuery 'View', {sId}, (r) ->
-        # $log('viewCheck', spy.callCount)
         expect(r.length).to.equal(1)
-        expect(r[0].uId).to.be.undefined
+        expect(Object.keys(r[0]).length).to.equal(9)
+        expect(r[0]._id).to.exist
+        expect(r[0].app).to.equal('apcom')
+        EXPECT.equalIds(r[0].oId,"56f97837b60d99e0d793cafc")
         expect(r[0].sId).to.equal(sId)
+        expect(r[0].uId).to.be.undefined
+        expect(r[0].type).to.equal('ad')
         expect(r[0].ip).to.exist
         expect(r[0].ua).to.exist
-        expect(r[0].type).to.equal('ad')
         expect(r[0].ref).to.equal('https://www.airpair.com/js/js-framework-comparison')
         expect(r[0].url).to.equal('https://signup.heroku.com/nodese?c=70130000000NeguAAC&utm_campaign=Display%20-Endemic%20-Airpair%20-Node%20-%20Signup&utm_medium=display&utm_source=airpair&utm_term=node&utm_content=signup')
-        EXPECT.equalIds(r[0].oId,"56f97837b60d99e0d793cafc")
         DONE()
 
-      PAGE "/visit/heroku-160228-node.js", {status:302,referer:'https://www.airpair.com/js/js-framework-comparison'}, ->
-        # $log('called', spy.callCount)
-        # expect(spy.callCount).to.equal(1)
-        # expect(spy.args[0][0]).to.equal('ad')
-        # expect(spy.args[0][1]).to.exist
-        # expect(spy.args[0][1].title).to.equal("2016 Q2 Heroku Signup")
-
-        # expect(spy.args[0][0]).to.be.undefined
-        # expect(spy.args[0][3]).to.equal('Keen.io jul custom analytics')
-        # expect(spy.args[0][4].tags).to.exist
-        # expect(spy.args[0][5].ref).to.equal('https://www.airpair.com/js/js-framework-comparison')
-        # expect(spy.args[0][5].utm).to.be.undefined
-        # expect(spy.args[0][6]).to.be.undefined
+      PAGE "/ad/visit/heroku-160228-node.js", {status:302,referer:'https://www.airpair.com/js/js-framework-comparison'}, ->
+        expect(spy.callCount).to.equal(1)
+        expect(spy.args[0][1]).to.equal('ad')
+        expect(spy.args[0][2]).to.exist
+        expect(spy.args[0][2].tag).to.equal('node.js')
+        expect(spy.args[0][2].utm).to.be.undefined
         _.delay(viewCheck, 100)
 
 
   IT 'Can track logged in post view', ->
     DB.removeDocs 'User', { 'auth.gh.id': 215283 }, ->
     LOGIN 'admb', (s) ->
-      # spy = STUB.spy(analytics,'view')
+      spy = STUB.spy(analytics,'view')
       uId = ObjectId(s._id)
       viewCheck = => DB.docsByQuery 'View', {uId}, (r) ->
-        # expect(spy.callCount).to.equal(1)
+        expect(spy.callCount).to.equal(1)
         expect(r.length).to.equal(1)
         EXPECT.equalIds(r[0].uId,uId)
         expect(r[0].sId).to.exist
@@ -82,13 +75,178 @@ views = ->
         expect(utm.medium).to.be.undefined
         expect(utm.term).to.be.undefined
         expect(utm.campaign).to.equal('test2nm')
-        # LOGIN {key:'admin'}, ->
-          # GET "/adm/views/user/#{userId}", {}, (r2) ->
-            # expect(r2.length).to.equal(1)
-            # EXPECT.equalIds(r2[0].uId,userId)
         DONE()
       _.delay(viewCheck, 150)
       PAGE "#{publishedPostUrl}?utm_campaign=test2nm", {}, ->
+
+
+
+  IT 'Aliases anonymous user with new user signup', ->
+    DB.removeDocs 'User', { 'auth.gh.id': 1655968 }, ->
+    ANONSESSION (s) ->
+      sId = s.sessionID
+      utms = 'utm_campaign=testSingup&utm_source=test8src&utm_content=test8ctn'
+      PAGE "#{publishedPostUrl}?#{utms}", {}, ->
+        spy = STUB.spy(analytics,'event')
+        SIGNUP 'tmot', (sFull) ->
+          expect(spy.callCount).to.equal(1)
+          expect(sFull._id).to.exist
+          uId = ObjectId(sFull._id)
+          EXPECT.startsWith(sFull.name, "Todd Motto")
+          EXPECT.equalIds(spy.args[0][2].user._id, sFull._id)
+          EXPECT.startsWith(spy.args[0][2].user.name, 'Todd Motto')
+          expect(spy.args[0][1]).to.equal("signup:oauth:gh")
+          # expect(spy.args[0][1]).to.equal(s.sessionID)
+          # expect(spy.args[0][2]).to.equal('signup')
+          viewCheck = => DB.docsByQuery 'View', {uId}, (r) ->
+            expect(r.length).to.equal(1)
+            expect(Object.keys(r[0]).length).to.equal(10)
+            EXPECT.equalIds(r[0].uId, uId)
+            EXPECT.equalIds(r[0].sId, s.sessionID)
+            expect(r[0].app).to.equal('apcom')
+            EXPECT.equalIds(r[0].oId, FIXTURE.posts.higherOrder._id)
+            expect(r[0].type).to.equal('post')
+            expect(r[0].ref).to.be.undefined
+            expect(r[0].url).to.equal("#{publishedPostUrl}")
+            expect(r[0].ip).to.exist
+            expect(r[0].ua).to.exist
+            expect(Object.keys(r[0].utm).length).to.equal(3)
+            expect(r[0].utm.campaign).to.equal('testSingup')
+            expect(r[0].utm.source).to.equal('test8src')
+            expect(r[0].utm.content).to.equal('test8ctn')
+            DONE()
+          _.delay(viewCheck, 150)
+
+
+
+  IT 'Can track an anonymous workshop view', ->
+    ANONSESSION (s) ->
+      anonymousId = s.sessionID
+      spy = sinon.spy(analytics,'view')
+      PAGE "/ruby-on-rails/workshops/simplifying-rails-tests", { 'referer', 'http://airpair.com/workshops' }, (html) ->
+        expect(spy.callCount).to.equal(1)
+        expect(spy.args[0][1]).to.equal('workshop')
+        expect(spy.args[0][2].title).to.equal('Simplifying Rails Tests')
+        DONE()
+
+
+  IT 'Login from existing sessionID does not alias', ->
+    utms = ''
+    ANONSESSION (anon) ->
+      {sessionID} = anon
+      expect(sessionID).to.exist
+      PAGE "#{publishedPostUrl}?#{utms}", {}, ->
+        SIGNUP 'dros', (s) ->
+          expect(s._id).to.exist
+          DB.docById 'User', s._id, (rUser1) ->
+            expect(rUser1.cohort.aliases.length).to.equal(1)
+            expect(rUser1.cohort.aliases[0]).to.equal(sessionID)
+          PAGE '/auth/logout', { status:302 }, ->
+            spyAlias = STUB.spy(analytics,'event')
+            LOGIN s.username, (s2) ->
+              expect(spyAlias.callCount).to.equal(1)
+              # $log('spyAlias.args[0][0].analytics', spyAlias.args[0][0].analytics)
+              expect(spyAlias.args[0][1]).to.equal('login:oauth:gh')
+              expect(spyAlias.args[0][0].analytics.alias).to.exist
+              EXPECT.equalIds(spyAlias.args[0][0].analytics.alias._id, s._id)
+              EXPECT.equalIds(spyAlias.args[0][2].user._id, s._id)
+              dbCheck = ->
+                DB.docsByQuery 'View', {sId:sessionID}, (r) ->
+                  expect(r.length).to.equal(1)
+                  EXPECT.equalIds(r[0].uId, s._id)
+                  DB.docsByQuery 'Event', {sId:sessionID}, (r2) ->
+                    expect(r2.length).to.equal(3)
+                    # $log('r2', r2)
+                    EXPECT.equalIds(r2[0].uId, s._id)
+                    EXPECT.equalIds(r2[1].uId, s._id)
+                    EXPECT.equalIds(r2[2].uId, s._id)
+                    DB.docById 'User', s._id, (rUser2) ->
+                      expect(rUser2.cohort.aliases.length).to.equal(1)
+                      expect(rUser2.cohort.aliases[0]).to.equal(sessionID)
+                      DONE()
+              _.delay(dbCheck, 250)
+
+
+
+  IT 'Login from two sessionIDs aliases and aliases views', ->
+    DB.removeDocs 'User', { 'auth.gh.id': 465691 }, ->
+    anonymousId = null
+    anonymousId2 = null
+
+    session2Callback = () -> ANONSESSION (s2) ->
+
+      anonymousId2 = s2.sessionID
+      expect(anonymousId2).to.not.equal(anonymousId)
+
+      PAGE "/job/#{FIXTURE.requests.aJob._id}", {}, ->
+        PAGE "/review/#{FIXTURE.requests.aJob._id}", {}, ->
+
+          DB.docsByQuery 'views', {sId:anonymousId2}, (v2) ->
+            expect(v2.length).to.equal(2)
+            expect(v2[0].uId).to.be.undefined
+            expect(v2[1].uId).to.be.undefined
+            expect(v2[0].sId).to.equal(anonymousId2)
+            expect(v2[1].sId).to.equal(anonymousId2)
+
+            LOGIN 'mkod', ->
+              # expect(spyAlias.callCount).to.equal(1)
+              # expect(spyAlias.args[0][2]).to.equal('Login')
+
+              # expect(spyIdentify.called).to.be.true
+              # expect(spyAlias.called).to.be.true
+              # expect(spyAlias.args[0][2]).to.equal('Login')
+
+              GET '/session/full', (s3) ->
+                userId = ObjectId(s3._id)
+                viewCheck = => DB.docsByQuery 'View', {uId:userId}, (v3) ->
+                  expect(v3.length).to.equal(4)
+                  DB.docById 'User', s3._id, (rUser) ->
+                    expect(rUser.cohort.aliases.length).to.equal(2)
+                    expect(rUser.cohort.aliases[0]).to.equal(anonymousId)
+                    expect(rUser.cohort.aliases[1]).to.equal(anonymousId2)
+                    DONE()
+                _.delay(viewCheck, 50)
+
+    ANONSESSION (s) ->
+      anonymousId = s.sessionID
+      PAGE "/job/#{FIXTURE.requests.aJob._id}", {}, ->
+        PAGE "/review/#{FIXTURE.requests.aJob._id}", {}, ->
+
+          DB.docsByQuery 'View', {sId:anonymousId}, (v1) ->
+            expect(v1.length).to.equal(2)
+            expect(v1[0].ud).to.be.undefined
+            expect(v1[1].uId).to.be.undefined
+            expect(v1[0].sId).to.equal(anonymousId)
+            expect(v1[1].sId).to.equal(anonymousId)
+            expect(v1[0].type).to.equal('job')
+            expect(v1[1].type).to.equal('job')
+
+          LOGIN 'mkod', (s) ->
+            session2Callback()
+
+
+module.exports = ->
+
+  @timeout(10000)
+
+  before (done) ->
+    STUB.analytics.on()
+    DB.ensureDoc 'User', FIXTURE.users.admin, ->
+    DB.ensureExpert 'byrn', ->
+    DB.ensureDoc 'Request', FIXTURE.requests.aJob, -> DB.ensureDoc 'User', FIXTURE.users.ricd, ->
+    {higherOrder} = FIXTURE.posts
+    DB.ensureDoc 'Post', higherOrder, ->
+      global.publishedPostUrl = higherOrder.htmlHead.canonical.replace('https://www.airpair.com', '')
+      done()
+
+  after ->
+    global.publishedPostUrl = undefined
+
+
+  DESCRIBE("Views", views)
+
+
+
 
   # # it('Can track post view action', function(done) {
   # #   //-- will have to be implemented in a front-end integration test
@@ -113,147 +271,3 @@ views = ->
   # # Signup (server:distinctId:userId)
   # # View (server:distinctId:userId)
   # # })
-
-
-  IT 'Aliases anonymous user with new user signup', ->
-    # signup = DATA.newSignup("Will Moss")
-    DB.removeDocs 'User', { 'auth.gh.id': 1655968 }, ->
-    ANONSESSION (s) ->
-      sId = s.sessionID
-      utms = 'utm_campaign=testSingup&utm_source=test8src&utm_content=test8ctn'
-      PAGE "#{publishedPostUrl}?#{utms}", {}, ->
-        # spy = STUB.spy(analytics,'alias')
-        LOGIN 'tmot', (sFull) ->
-        # SUBMIT '/auth/signup', signup, {}, (sFull) ->
-          expect(sFull._id).to.exist
-          uId = ObjectId(sFull._id)
-          EXPECT.startsWith(sFull.name, "Todd Motto")
-          # expect(spy.callCount).to.equal(1)
-          # EXPECT.equalIds(spy.args[0][0]._id, sFull._id)
-          # expect(spy.args[0][1]).to.equal(s.sessionID)
-          # expect(spy.args[0][2]).to.equal('signup')
-          viewCheck = => DB.docsByQuery 'View', {uId:uId}, (r) ->
-            expect(r.length).to.equal(1)
-            EXPECT.equalIds(r[0].uId,uId)
-            EXPECT.equalIds(r[0].sId,s.sessionID)
-            DONE()
-          _.delay(viewCheck, 150)
-
-
-
-  it 'Can track an anonymous workshop view'
-  #   ANONSESSION (s) ->
-  #     anonymousId = s.sessionID
-  #     spy = sinon.spy(analytics,'view')
-
-  #     GETP("/any-tag/workshops/simplifying-rails-tests")
-  #       .set('referer', 'http://airpair.com/workshops')
-  #       .expect('Content-Type', /text/)
-  #       .end (err, resp) ->
-  #         if (err) then throw err
-  #         expect(spy.callCount).to.equal(1)
-  #         expect(spy.args[0][0]).to.be.undefined
-  #         expect(spy.args[0][1]).to.exist
-  #         expect(spy.args[0][2]).to.equal('workshop')
-  #         expect(spy.args[0][3]).to.equal('Breaking Up (with) Your Test Suite')
-  #         expect(spy.args[0][4].tags).to.exist
-  #         expect(spy.args[0][5].referer).to.equal('http://airpair.com/workshops')
-  #         expect(spy.args[0][5].campaign).to.be.undefined
-  #         expect(spy.args[0][6]).to.be.undefined
-  #         spy.restore()
-  #         DONE()
-
-
-  SKIP 'Login local from existing sessionID does not alias', ->
-    # singup = DATA.newSignup("Jason Pierce")
-    ANONSESSION ->
-      utms = ''
-      PAGE "#{publishedPostUrl}?#{utms}", {}, ->
-        LOGIN 'dros', (s) ->
-        # SUBMIT '/auth/signup', singup, {}, (r) ->
-          # GET '/session/full', (s) ->
-          expect(s._id).to.exist
-          PAGE '/logout', { status:302 }, ->
-            # spyAlias = STUB.spy(analytics,'alias')
-            LOGIN 'dros', (s) ->
-            # SUBMIT '/auth/login', singup, {}, (r3) ->
-              # expect(spyAlias.callCount).to.equal(1)
-              # EXPECT.equalIds(spyAlias.args[0][0]._id, s._id)
-              # expect(spyAlias.args[0][2]).to.equal('login')
-              DONE()
-
-
-  IT 'Login from two sessionIDs aliases and aliases views', ->
-    DB.removeDocs 'User', { 'auth.gh.id': 465691 }, ->
-    anonymousId = null
-    anonymousId2 = null
-
-    session2Callback = (anonymousId) -> ANONSESSION (s2) ->
-      anonymousId2 = s2.sessionID
-      expect(anonymousId2).to.not.equal(anonymousId)
-
-      PAGE publishedPostUrl, {}, ->
-        PAGE publishedPostUrl, {}, ->
-
-          DB.docsByQuery 'views', {sId:anonymousId2}, (v2) ->
-            expect(v2.length).to.equal(2)
-            expect(v2[0].uId).to.be.undefined
-            expect(v2[1].uId).to.be.undefined
-            expect(v2[0].sId).to.equal(anonymousId2)
-            expect(v2[1].sId).to.equal(anonymousId2)
-
-            # spyIdentify = STUB.spy(analytics,'identify')
-            # spyAlias = STUB.spy(analytics,'alias')
-
-            LOGIN 'mkod', ->
-            # SUBMIT '/auth/login', singup, {}, ->
-
-              # expect(spyIdentify.called).to.be.false
-              # expect(spyAlias.callCount).to.equal(1)
-              # expect(spyAlias.args[0][2]).to.equal('Login')
-
-              # expect(spyIdentify.called).to.be.true
-              # expect(spyAlias.called).to.be.true
-              # expect(spyAlias.args[0][2]).to.equal('Login')
-
-              GET '/session/full', (s3) ->
-                userId = ObjectId(s3._id)
-                viewCheck = => DB.docsByQuery 'View', {uId:userId}, (v3) ->
-                  expect(v3.length).to.equal(4)
-                  DONE()
-                _.delay(viewCheck, 50)
-
-    ANONSESSION (s) ->
-      anonymousId = s.sessionID
-      PAGE publishedPostUrl, {}, ->
-        PAGE publishedPostUrl, {}, ->
-
-          DB.docsByQuery 'View', {sId:anonymousId}, (v1) ->
-            expect(v1.length).to.equal(2)
-            expect(v1[0].ud).to.be.undefined
-            expect(v1[1].uId).to.be.undefined
-            expect(v1[0].sId).to.equal(anonymousId)
-            expect(v1[1].sId).to.equal(anonymousId)
-
-          LOGIN 'mkod', (s) ->
-          # SUBMIT '/auth/signup', singup, {}, (s0) ->
-            session2Callback(s.sessionID)
-
-
-module.exports = ->
-
-  @timeout(10000)
-
-  before (done) ->
-    STUB.analytics.on()
-    DB.ensureDoc 'User', FIXTURE.users.admin, ->
-    {higherOrder} = FIXTURE.posts
-    DB.ensureDoc 'Post', higherOrder, ->
-      global.publishedPostUrl = higherOrder.htmlHead.canonical.replace('https://www.airpair.com', '')
-      done()
-
-  after ->
-    global.publishedPostUrl = undefined
-
-
-  DESCRIBE("Views", views)

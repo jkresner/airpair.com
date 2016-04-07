@@ -118,33 +118,6 @@ var validation = {
       return `Must be editor to delete a post in review`
   },
 
-  // submitForReview(user, post, slug)
-  // {
-  //   var isOwner = _.idsEqual(post.by.userId, user._id)
-  //   if (!isOwner)
-  //     return `Post can only be submitted for review by its owner`
-  //   if (!user.social || !user.social.gh)
-  //     return `User must authorize GitHub to submit post for review`
-  //   if (!slug)
-  //     return `Must have slug to submit for review`
-  //   if (!validSlug(slug))
-  //     return `${slug} not a valid post slug to submit for review`
-  //   if (slug.length > 50)
-  //     return `${slug} is too long, you don't want an ugly long url, it's not good for SEO!`
-  //   if (slug.indexOf('--') != -1)
-  //     return `We don't like double '--' in slugs, looks ugly when sharing your post around!`
-  //   if (post.submitted)
-  //     return `This post has already been submitted for review`
-  //   if (!post.md)
-  //     return `Posts markdown required`
-  //   if (post.github)
-  //     return `Post already has associated git repo`
-  //   if (!post.published) {
-  //     var wcount = wordcount(post.md)
-  //     if (wordsTogoForReview(wcount) > 0)
-  //       return `Post word count [${wcount}] too short for review`
-  //   }
-  // },
 
   propagateMDfromGithub(user, post){
     var isEditor = user.roles && _.contains(user.roles, "editor")
@@ -193,17 +166,6 @@ var validation = {
       return `Can not fork post that is not yet submitted for review`
   },
 
-  clobberFork(user, post){
-    console.log("clobbering validation")
-    //TODO handle the case where the user isn't a forker
-  },
-
-  // getGitHEAD(user, post){
-  //   // var isOwner = _.idsEqual(post.by.userId, user._id)
-
-  //   if (!user.social || !user.social.gh)
-  //     return `User must <a href="/auth/github?returnTo=/posts/edit/${post._id}" target="_self">authorize GitHub</a> to pull from GitHub`
-  // },
 
   review(user, post, review)
   {

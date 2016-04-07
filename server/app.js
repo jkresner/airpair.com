@@ -36,22 +36,15 @@ function run({config,MAServer,tracking}, done) {
     // app.use(mw.auth.setNonSessionUrl(app))
     // app.use(mw.auth.showAuthdPageViews())
 
+    cache.get('redirects', cb =>
+      config.routes.redirects ? DAL.Redirect.getAll((e,r) => cb(e, r)) : cb(),
+      () => {
+        var restrict = req => req.ctx.bot||req.nonSessionUrl
+        config.middleware.session.regulate = {restrict}
 
-    var chain = (e, map) => {
-
-      var restrict = req => req.ctx.bot||req.nonSessionUrl
-      config.middleware.session.regulate = {restrict}
-      config.routes.redirects = {map}
-
-      mapp.chain(config.middleware, config.routes)
-          .run()
-    }
-
-    if (config.routes.redirects.on)
-      DAL.Redirect.getAll(chain)
-    else
-      chain(null, {})
-
+        mapp.chain(config.middleware, config.routes)
+            .run()
+    })
   })
 
 

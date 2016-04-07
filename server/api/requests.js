@@ -24,7 +24,7 @@ module.exports = require('./_api').initAPI(
   deleteById: (req) => [req.request],
 }, {
   request:'getByIdForAdmin',
-  review:'getByIdForReview'
+  job:'getByIdForReview'
 },
   require('../../shared/validation/requests.js')
 )

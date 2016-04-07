@@ -19,9 +19,9 @@
   }
 
   window.viewData = {
-    session: {{ JSON session }},
-    canonical: '{{ canonical }}',
-    {{#if r.tag}}, tag: {{ JSON r.tag }} {{/if}}
+    session: {{{ JSON session }}}, {{#if r.htmlHead }}
+    canonical: '{{{ r.htmlHead.canonical }}}', {{/if}}{{#if r.tag}}
+    tag: {{{ JSON r.tag }}} {{/if}}
   }
 
   </script>

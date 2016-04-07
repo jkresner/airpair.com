@@ -26,6 +26,7 @@ api = ->
     done()
 
 
+
   IT 'Returns empty 200 on bad urls for bad bots', ->
     PAGE '/fasdfasdfaeed', Opts({status:200},BADBot), (resp) ->
       expect(resp).to.equal('')
@@ -43,12 +44,11 @@ api = ->
 
 
   IT 'Does not exec analytics or store session on 404', ->
-    # trackSpy = STUB.spy(analytics, 'echo')
-    trackSpy = STUB.spy(analytics, 'event')
+    # trackSpy = STUB.spy(analytics, 'event')
     PAGE '/feed', Opts({status:404}, UAUser), (resp) ->
       # global.cookie = resp.headers['set-cookie']
       # expect(global.cookie).to.be.undefined
-      expect(trackSpy.callCount).to.equal(0)
+      # expect(trackSpy.callCount).to.equal(0)
       expectSessionNotStored { sessionID: 'unNOwnSZ3Wi8bDEnaKzhygGG2a2RkjZ2' }, DONE
 
 
@@ -56,7 +56,7 @@ api = ->
     # viewSpy1 = STUB.spy(analytics, 'view')
     PAGE '/', Opts({status:200}, UAUser), (resp) ->
       GET '/session/full', (s) ->
-        # expect(viewSpy1.callCount).to.equal(0)
+        # expect(viewSpy1.callCount).to.equal(1)
         expect(s.authenticated).to.equal(false)
         expectSessionStored s, DONE
 

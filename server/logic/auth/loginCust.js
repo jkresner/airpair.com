@@ -36,7 +36,7 @@ module.exports = function(DAL, Data, Shared, Lib) {
         var fn = existing ? 'loginOAuth' : 'signupOAuth'
 
         Lib[fn](this, 'gh', 'github', profile, tokens, (e,r) => {
-          this.ctx.analytics = { event: `${existing?'login':'signup'}:gh:oauth`, alias: r }
+          assign(this.analytics, {event:`${existing?'login':'signup'}:oauth:gh`, alias:r, data:{user:_.pick(r,"_id","name")} })
           if (e) return done(e)
           r.avatar = r.photos ? r.photos[0].value : null
           done(e, r)

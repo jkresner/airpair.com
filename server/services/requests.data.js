@@ -12,28 +12,28 @@ var inflatedTags = (tags) => {
   return inflatedTags
 }
 
-function migrateV0(r) {
-  if (r.budget)
-  {
-    // if (!r.by && r.company && r.company.contacts)
-    // {
-    //   var c = r.company.contacts[0]
-    //   r.by = { name:c.fullName, email:c.gmail, avatar: md5.gravatarUrl(c.gmail) }
-    //   for (var t of r.tags) t.slug = t.short
-    // }
-    if (!r.time) r.time = 'regular'
-    if (!r.experience) r.experience = 'proficient'
-    if (r.owner && (!r.adm || !r.adm.owner))
-    {
-      if (!r.adm) r.adm = { owner: r.owner }
-      else r.adm.owner = r.owner
-    }
-  }
-  if (r.adm && r.adm.lastTouch && !r.adm.lastTouch.utc)
-    r.adm.lastTouch = { utc: r.adm.lastTouch }
+// function migrateV0(r) {
+//   if (r.budget)
+//   {
+//     // if (!r.by && r.company && r.company.contacts)
+//     // {
+//     //   var c = r.company.contacts[0]
+//     //   r.by = { name:c.fullName, email:c.gmail, avatar: md5.gravatarUrl(c.gmail) }
+//     //   for (var t of r.tags) t.slug = t.short
+//     // }
+//     if (!r.time) r.time = 'regular'
+//     if (!r.experience) r.experience = 'proficient'
+//     if (r.owner && (!r.adm || !r.adm.owner))
+//     {
+//       if (!r.adm) r.adm = { owner: r.owner }
+//       else r.adm.owner = r.owner
+//     }
+//   }
+//   if (r.adm && r.adm.lastTouch && !r.adm.lastTouch.utc)
+//     r.adm.lastTouch = { utc: r.adm.lastTouch }
 
-  return r
-}
+//   return r
+// }
 
 var statusHash =
   {'available':1,'underpriced':2,'busy':3,'abstained':4,'opened':5,'waiting':6 }
@@ -127,11 +127,13 @@ var data = {
       return sug ? [sug] : []
     },
     byView(request, view) {
-      var r = migrateV0(request)
+      // var r = migrateV0(request)
+      var r = request
       r.tags = _.sortBy(r.tags,(t)=>t.sort)
       r.rags = inflatedTags(r.tags)
       if (r.suggested) {
         r.suggested = _.sortBy(r.suggested, (s)=>statusHash[s.expertStatus])
+
         for (var s of r.suggested) {
           if (s.expert.email)
             s.expert.avatar = md5.gravatarUrl(s.expert.email)
@@ -152,6 +154,7 @@ var data = {
       if (view != 'admin')
         r = util.selectFromObject(r, data.select[view])
       // $log('selected', view, request.suggested, r)
+
       return r
     },
     expertToSuggestion(r, by, type, expertStatus) {
@@ -233,6 +236,18 @@ var data = {
               }
               else if (r.suggested.length > 1)
                 throw Error("Cannot selectByExpert and have more than 1 suggested")
+
+              for (var sug of r.suggested || [])
+                if (sug.expertComment)
+                  sug.expertComment = util.htmlEscape(sug.expertComment)
+
+              if (r.brief) r.brief = util.htmlEscape(r.brief)
+
+              r.htmlHead = {
+                title: `AirPair | ${util.tagsString(r.tags)} Request`,
+                canonical: `https://www.airpair.com/review/${r._id}`,
+                noindex: true
+              }
 
               cb(null, data.select.byView(r, 'review'))
             })

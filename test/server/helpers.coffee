@@ -50,6 +50,7 @@ global.ANONSESSION = (cb) ->
 
 global.SIGNUP = (login, cb) ->
   profile = DATA.ghProfile login, true
+  FIXTURE.users[profile.login] = {auth:{gh:profile}}
   LOGIN profile, cb
 
 

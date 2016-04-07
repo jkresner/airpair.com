@@ -14,15 +14,6 @@ experts = ->
         DONE()
 
 
-  SKIP "Get recently active experts", ->
-    # LOGIN {key:'admin'}, ->
-    #   GET "/adm/experts/active", (experts) ->
-    #     expect(experts.length>0).to.be.true
-    #     DONE()
-
-
-
-
 requests = ->
 
 
@@ -323,15 +314,14 @@ module.exports = ->
     DB.ensureDoc 'User', FIXTURE.users.admin, ->
     DB.removeDocs 'User', qExists.byEmails(['airpairtest1@gmail.com']), ->
       DB.ensureExpert 'snug', ->
-        STORY.newExpert 'phlf', {}, (s, exp) ->
-          phlfKey = s.userKey
-          phlfExp = exp
+        DB.ensureExpert 'phlf', ->
+          phlfKey = 'phlf'
           done()
 
   beforeEach ->
     STUB.SlackCommon()
 
 
-  SKIP("Experts: ", experts)
+  DESCRIBE("Experts: ", experts)
   SKIP("Request", requests)
 

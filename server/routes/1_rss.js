@@ -10,12 +10,6 @@ var allFeedOptions = {
   ttl: '60'
 }
 
-// var postsFeedOptions = {
-//   title: 'AirPair Posts',
-//   description: 'Blog Posts from AirPair',
-//   feed_url: 'https://www.airpair.com/rss/posts',
-//   categories: []
-// }
 
 
 var mixedFeedOptions = {
@@ -110,10 +104,5 @@ module.exports = function(app, mw) {
   if (config.routes.rss.on !== true) return
 
   var rss = rssRenderer()
-
-  app.use('/rss', app.Router()
-    .get('/', rss.mixed)
-  // .get('/posts', rss.posts)
-  // .get('/workshops', rss.workshops)
-  )
+  app.get('/rss', rss.mixed)
 }
