@@ -1,10 +1,5 @@
 {
   "about":                     "package.json",
-  "ads": {
-    "on":                      true,
-    "campaigns":               "70130000000NeguAAC",
-    "dir":                     "/web/ads"
-  },
   "analytics": {
     "appKey":                  "apcom"
   },
@@ -24,7 +19,7 @@
         "short":               "gh",
         "login":               true,
         "signup":              true,
-        "logic":              "loginCust",
+        "logic":               "loginCust",
         "clientID":            "378dac2743563e96c747",
         "clientSecret":        "f52d233259426f769850a13c95bfc3dbe7e3dbf2",
         "emails":              true,
@@ -120,8 +115,8 @@
       },
       "uId":                   true
     },
-    "dirs":                    "{{undefine}}",
-    "livereload":              { "port": 0 },
+    "dirs":                    "mw",
+    "livereload":              { "port": 35729 },
     "session": {
       "authedData":            "_id name email username roles",
       "name":                  "aps",
@@ -141,6 +136,10 @@
     "session":                 { "collection": "v1sessions" }
   },
   "routes": {
+    "ads": {
+      "campaigns":             "70130000000NeguAAC",
+      "dir":                   "web/ads"
+    },
     "redirects":               { "on": true },
     "rss":                     { "on": true }
   },

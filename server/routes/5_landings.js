@@ -1,8 +1,12 @@
 module.exports = function(app, mw) {
 
 
-  var livereload = mw.$.livereload ? 'livereload ' : ''
-  var preMW = mw.$$(livereload+'badBot session onFirstReq')
+  if (config.middleware.livereload)
+    app.use(mw.res.livereload(config.middleware.livereload))
+
+
+  // var livereload = mw.$.livereload ? 'livereload ' : ''
+  var preMW = mw.$$('badBot session onFirstReq')
   var postMW = mw.$$('trackLanding landingPage')
 
 
@@ -15,13 +19,13 @@ module.exports = function(app, mw) {
   app.Route('get', '/100k-writing-competition', preMW, [
     (req, res, next) => {
       API.Posts.svc.get2015CompWinners((e,r) => {
-        req.landing = {
+        req.locals.r = {
           key: 'postsComp',
           _id: '54c937cc85e52c93f2c72bf4',
           title: 'AirPair Writing Contest',
           url: '/100k-writing-competition',
           launched: 'Mon Feb 2 2015 11:00:00 GMT-0800 (PST)',
-          meta: { title: 'Fork Up! AirPair\'s $100,000.00 Git-Powered Developer Writing Competition',
+          htmlHead: { title: 'Fork Up! AirPair\'s $100,000.00 Git-Powered Developer Writing Competition',
             description: 'AirPair has released a set of new Github API powered publishing tools. To celebrate, AirPair is distributing over $100k in cash prizes to the best posts submitted before May 30th, 2015.',
             canonical: 'https://www.airpair.com/100k-writing-competition',
             ogType: 'Article',
@@ -34,6 +38,7 @@ module.exports = function(app, mw) {
             category: _.filter(r, p=>p.prize.sponsor=='airpair')
           }
         }
+        req.landing = req.locals.r
         next()
       })
     }], postMW)

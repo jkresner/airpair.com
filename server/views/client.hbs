@@ -5,9 +5,10 @@
 </head>
 <body>
   {{> siteNav }}
+
   <div class="main-wrap">
     <div notifications></div>
-    <main ng-view></main>
+    <main ng-view>{{{body}}}</main>
   </div>
 
   <script type="text/javascript" src="{{js.index}}"></script>

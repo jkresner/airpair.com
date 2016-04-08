@@ -10,45 +10,41 @@
 @import "./index/tags.less";
 @import "./index/requests.less";
 @import "./index/experts.less";
-@import "./index/animations.less";
 @import "./index/landing.less";
 @import "./index/dashboard.less";
 @import "./index/booking.less";
 
-section#index {
-
-  .screenshot {
-    width:59%;margin:5px 0 0 40px;display:block;float:right;
-  }
-
-  .container { width:100%;padding-left:0 }
-  .row { margin-left:0 }
-  .row > div { padding:0 }
-
-
-  @media only screen and (max-width:640px) {
-    .screenshot {
-      margin:10px 0;
-      width:94%;
-      float:none;
-    }
-  }
-}
 
 section#auth {
   padding-top:30px;
   text-align:center;
   width:100%;
 
-  section#newuser {
-    padding:10px 0 20px 0;
+
+  .opt {
+    color:@darkgray;
+    &:hover {
+      color:@orange;
+      h2 { font-weight:400 }
+      .btn {
+        background-color:@orangehighlight;
+      }
+    }
+  }
+
+  .choice .option h2 {
+    color:@blackgray;
+    font-size:28px;
+    margin-left:40px;margin-right:40px;
+    text-align:center;
+    max-width:100%
   }
 
   .option {
-    min-height:340px;
+    width:46%;
+    height:320px;
     margin:30px 8px;
     background:white;
-    opacity:0.9;
   }
 
   .btn {
@@ -59,21 +55,51 @@ section#auth {
     form { margin-bottom:20px }
     .form-group { text-align:center; }
     input { width:80%;margin:auto }
-    // label { display:none }
-  }
+    margin:10px;
+    border:none;
 
-  .github {
-    .gh-white {
-      padding-left:40px;
+    .btn {
+      margin-top:18px;
+      height:44px;
+      line-height:44px;
+      font-size:18px;
+      padding:0px 0px 0px 32px;
       background-repeat:no-repeat;
       background-color:@orange;
+      background-size:44px 44px;
+      background-position:6px 1px;
     }
-    .gh-white:hover {
-      background-image:url('../img/icons/gh-white.png');
-      background-color:@orangehighlight;
-    }
+
     .oauthInfo { font-size:12px;margin:20px 0 0 0 }
   }
+
+
+  .github {
+    background:#f7f7f7;
+    .btn {
+      background-position:8px 2px;
+      background-image:url('../img/icons/gh-white.png');
+    }
+  }
+
+  .author {
+    background:#F2FAF9;
+    .btn {
+      background-position:12px 2px;
+      background-size:40px 40px;
+      background-image:url('https://static.airpair.com/img/author/airpair-author-bw.png');
+    }
+  }
+
+  .consult {
+    background:#FCFBF5;
+    .btn {
+      background-position:7px 5px;
+      background-size:34px 34px;
+      background-image:url('https://static.airpair.com/img/icons/ap-white.png');
+    }
+  }
+
 
   .local {
     form { margin-bottom:0 }
@@ -104,13 +130,21 @@ section#auth {
 
 
   @media only screen and (max-width:900px) {
+    .choice .option h2 {
+      font-size:22px;
+      padding-bottom:4px;
+      margin-left:24px;margin-right:24px;
+    }
+
     .option {
       width:300px;
       margin:10px auto;
       min-height:280px;
-      h2 { font-size:24px; }
-      p.googInfo { text-align:center;margin:20px auto }
+      p.oauthInfo { text-align:center;margin:20px auto 10px auto }
+
+      .btn { font-size:15px;background-image:none;padding:0 }
     }
+
   }
 
   @media only screen and (max-width:420px) {
@@ -122,15 +156,13 @@ section#auth {
 
     text-align:center;
     .option {
-      margin:10px auto 0px auto;
+      margin:10px auto 20px auto;
       min-height:200px;
       width:94%;
       display:block;
       padding:15px 5px;
     }
 
-    .btn { font-size:14px }
-    p.help-text { display:none }
   }
 
 }

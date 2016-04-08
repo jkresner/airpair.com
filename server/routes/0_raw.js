@@ -26,14 +26,17 @@ module.exports = function(app, mw, {redirects}) {
     // map.set("/c\\+\\+","/c++","/posts/tag/c++", "302")
 
     cache['redirects'].filter(r => r.type == "301" || r.type == "302")
-      .forEach(r => map.set(r.previous, r.current))
+      .forEach(r => map.set(new RegExp(`^${r.previous}$`,'i'), r.current))
+
+
+    $logIt('cfg.route', 'redirects.on', `${cache['redirects'].length} cached, ${map.size} forwards`)
 
     app.use(mw.req.forward({map}))
 
   }
 
   if (config.middleware.slow)
-    app.use(mw.req.slow())
+    app.use(mw.req.slow(config.middleware.slow))
 
 }
 

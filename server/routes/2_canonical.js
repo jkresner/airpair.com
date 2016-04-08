@@ -1,26 +1,24 @@
-// Assumption is we've already got the redirects on hand
 module.exports = function(app, mw, {redirects}) {
 
   if (!redirects) return
 
+  var canonicalPosts = cache['redirects'].filter(r => r.type == "canonical-post")
+  canonicalPosts.forEach(function({current,previous}) {
+    app.get(current,
 
-  var resolvePost = (canonicalUrl, slug) =>
-    app.get(canonicalUrl,
-      mw.$.badBot, mw.$.session, mw.$.onFirstReq,
+      mw.$.badBot, mw.$.session, mw.$.onFirstReq, mw.$.cachedTags, mw.$.cachedAds,
 
-      (req, res, next) => API.Posts.svc.getBySlugForPublishedView.call(req, slug, (e, post) => {
+      (req, res, next) => API.Posts.svc.getBySlugForPublishedView.call(req, previous, (e, post) => {
         if (!post) return next(`Post with slug[${slug}] not found`)
           // if (config.log.redirects) mailman.sendError(`Did not find canonical post ${canonical} by slug ${slug}`)
         req.post = post
         assign(req.locals, {r:post,htmlHead:post.htmlHead})
         next()
       }),
+      mw.$.inflateAds, mw.$.trackPost, mw.$.postPage)
+  })
 
-      mw.$.trackPost, mw.$.postPage)
-
-
-  cache['redirects'].filter(r => r.type == "canonical-post")
-    .forEach(r => resolvePost(r.previous, r.current))
+  $logIt('cfg.route', `canonical:GET`, `${canonicalPosts.length} posts`)
 
 }
 

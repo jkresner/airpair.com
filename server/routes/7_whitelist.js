@@ -7,7 +7,6 @@ module.exports = function(app, mw) {
            '/booking/*',
            '/dashboard',
            '/experts',
-           '/login',
            '/me*',
            '/help*',
            '/requests*',
@@ -15,7 +14,8 @@ module.exports = function(app, mw) {
            mw.$.noBot, mw.$.session, mw.$.authd, mw.$.clientPage)
 
 
-  app.use(['/find-an-expert',
+  app.use(['/login',
+           '/find-an-expert',
            '/hire-software-developers',
            '*pair-programming*',
            ], mw.$.badBot, mw.$.session, mw.$.onFirstReq, mw.$.clientPage)

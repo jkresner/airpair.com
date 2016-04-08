@@ -21,16 +21,17 @@ body > footer {
 
 body > header {
   height:@headerHeight;
-  border-bottom:solid 1px @lightgray;
+  // border-bottom:solid 1px @lightgray;
   background-color:@gitgray;
 
   > a {
-    padding:9px 24px 4px 0px;
+    margin:1px 0px 0px 25px;
+    padding:2px 24px 2px 0px;
     background:url('@{static}/img/header/logo.png') no-repeat;
-    background-position:25px 9px;
-    background-size:90px 22px;
+    background-position:5px center;
+    background-size:90px 26px;
     width:140px;
-    height:40px;
+    height:@headerHeight;
     display:block;
     float:left;
   }
@@ -40,6 +41,7 @@ body > header {
     float:right;
     list-style:none;
     margin-bottom:0;
+    .ps { font-weight:normal; }
   }
 
   li {
@@ -89,17 +91,21 @@ body > header {
   }
 
   @media only screen and (max-width:640px) {
-    padding:7px 4px 7px 8px;
+    padding:4px 4px 4px 0px;
     > a {
       padding:0px;
       background-position:5px 3px;
       width:100px;
+      margin-left:12px;
     }
     ul {
-      padding:1px 3px;
+      padding:2px 6px 2px 2px;
     }
 
-    .ps { }
+    li { margin:0; }
+    li { a { padding:5px 10px;display:block;font-size:13px } }
+    .bk { padding:6px 1px;color:@graycomment }
+
     div { display:none }
     .wk { display:none }
     .more { display:none }
@@ -306,7 +312,7 @@ nav#side {
     display:none!important;
     footer { display:none; }
   }
-}
+}w
 
 nav#side.collapse {
   width:40px;
@@ -331,13 +337,19 @@ nav#side.collapse {
 
 
 .topUpGate {
+  padding-top:20px;
   > div {
-    h4 { color:black }
-    > .msg { max-width:640px;color:#3f4549; }
-    > .survey { float:right;
+    h4 { color:@orange;font-weight:400;line-height:26px;text-transform:uppercase;max-width:120px;font-size:23px  }
+    > .msg { max-width:620px;color:#3f4549; }
+    > .survey {
+      position:relative;
+      float:right;
+      background:#F2FAF9;
       max-width:220px;
-      p { font-size:13px;text-align:justify; }
+      padding:90px 12px 110px 12px;
+      p { margin-bottom:20px;color:@textgray;font-size:18px }
       span { font-size:11px;text-align:right;padding:2px }
+      img { max-width:88%;position:absolute;top:16px;opacity:0.9  }
     }
     p { font-size:17px }
     .btn { width:100% }

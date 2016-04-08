@@ -5,16 +5,56 @@
 
 <div class="choice" ng-if="!session._id">
 
-<div class="github option">
+  <a class="opt" ng-href="{{'/auth/github/callback' + (returnTo ? '?returnTo='+returnTo : '') }}" target="_self">
+  <div class="github option">
 
-  <h3>One-click login/signup</h3>
+    <h2>airpair.com</h2>
 
-    <a id="loginGoogleAuth" track-click="auth" class="btn btn-error gh-white" ng-href="{{'/auth/github/callback' + ((returnTo) ? '?returnTo='+returnTo : '') }}" target="_self">Login with github</a>
+    <ul>
+      <li>Hire software expertise by the hour</li>
+    </ul>
 
-  <p class="oauthInfo">
-  * You'll be temporarily redirected to a github login page</p>
+    <div class="btn">Login with GitHub</div>
 
-</div>
+    <p class="oauthInfo">* Email scope required</p>
+  </div>
+  </a>
+
+
+
+  <a class="opt" href="https://author.airpair.com/" target="_self">
+  <div class="github author option">
+
+    <h2>author.airpair.com</h2>
+
+    <ul>
+      <li>Author & publish blog posts</li>
+    </ul>
+
+    <div class="btn">Start contributing</div>
+
+    <p class="oauthInfo">* create an airpair.com account first</p>
+
+  </div>
+  </a>
+
+
+  <a class="opt" href="https://consult.airpair.com/" target="_self">
+  <div class="consult option">
+
+    <h2>consult.airpair.com</h2>
+
+    <ul>
+      <li>Explore micro-consulting opportunities</li>
+    </ul>
+
+    <div class="btn">Get micro-consulting</div>
+
+    <p class="oauthInfo">* create an airpair.com account first</p>
+
+  </div>
+  </a>
+
 
 <!-- <div class="local option">
 

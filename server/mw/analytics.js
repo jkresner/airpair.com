@@ -13,7 +13,7 @@ module.exports = (app, mw) => {
 
   mw.cache('trackImpression', mw.analytics.impression({
       type:'ad',
-      project:  d => ({_id:d._id,img:d.img,tag:d.tag})
+      project: d => ({type:'ad',oId:d._id,img:`${d.brand}/${d.img}`})
     }
   ))
 
@@ -33,7 +33,6 @@ module.exports = (app, mw) => {
       project: d => ({_id:d._id,url:d.url.replace('https://www.airpair.com', '')}),
     }
   ))
-
 
 
   mw.cache('trackAuth', mw.analytics.event('auth'))

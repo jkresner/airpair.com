@@ -1,6 +1,6 @@
 module.exports = function(app, mw) {
 
-  var api = app.API('session')
+  app.API('session')
     .uses('noBot session')
     .get({'full':                  ''})
 

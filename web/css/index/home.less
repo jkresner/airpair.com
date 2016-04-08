@@ -7,6 +7,7 @@ main#home {
   text-align:center;
   color:@gray;
   padding-top:30px;
+  max-width:900px;
 
   p { font-size:20px }
   em { font-weight:bold;font-style:normal; }
@@ -244,11 +245,11 @@ main#home {
 
     section.header
     {
-      table { margin-top:-40px; }
+      table { margin-top:-10px; }
       span { display:none; }
       h2 {
         line-height:32px;
-        font-size:18px;
+        font-size:20px;
       }
     }
 
@@ -262,37 +263,38 @@ main#home {
   body > footer { position:inherit; }
   main#home {
     section.header {
-      height:160px;
+      height:140px;
       img { display:none; }
+      h4 { max-width:90%;margin:20px auto 0 auto;font-size:14px }
     }
-    section#join {
-      padding-top:10px;
-      height:380px;
-      li { margin:5px;width:60px;height:60px }
-      img { width:60px;height:60px;margin:0 }
-      form {
-        height:80px;
-        .inputPlaceholderMob { font-size:14px }
-        input::-webkit-input-placeholder { .inputPlaceholderMob }
-        input::-moz-placeholder { .inputPlaceholderMob }
-        input:-ms-input-placeholder { .inputPlaceholderMob }
-        input { width:100%;font-size:14px }
-        .homeNameDiv {
-          position:inherit;
-          width:100%;
-          left:0;
-        }
-        button {
-          margin:80px 0 0 0;padding:10px;right:8px;
-        }
-        span {
-          font-size:12px;
-          top:92px;
-          left:10px;
-          right:inherit;
-        }
-      }
-    }
+    // section#join {
+    //   padding-top:10px;
+    //   height:380px;
+    //   li { margin:5px;width:60px;height:60px }
+    //   img { width:60px;height:60px;margin:0 }
+    //   form {
+    //     height:80px;
+    //     .inputPlaceholderMob { font-size:14px }
+    //     input::-webkit-input-placeholder { .inputPlaceholderMob }
+    //     input::-moz-placeholder { .inputPlaceholderMob }
+    //     input:-ms-input-placeholder { .inputPlaceholderMob }
+    //     input { width:100%;font-size:14px }
+    //     .homeNameDiv {
+    //       position:inherit;
+    //       width:100%;
+    //       left:0;
+    //     }
+    //     button {
+    //       margin:80px 0 0 0;padding:10px;right:8px;
+    //     }
+    //     span {
+    //       font-size:12px;
+    //       top:92px;
+    //       left:10px;
+    //       right:inherit;
+    //     }
+    //   }
+    // }
   }
 }
 

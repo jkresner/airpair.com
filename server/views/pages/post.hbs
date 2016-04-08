@@ -1,13 +1,13 @@
-{{#with r}}
 
-{{#if published }}
+{{#if r.published }}
 <div class="banner-top">
-  <a rel="nofollow" href="/visit/heroku-151208-{{adtag}}" class="banner banner-top banner-heroku-adtag" target="_blank">
-    <img src="/ad/heroku/900x90.q4.1.signup.{{adtag}}.png" alt="Deploy {{adtag}} on Heroku" />
+  <a rel="nofollow" href="/visit/{{ads.top.shortUrl}}" class="banner banner-top banner-heroku-{{r.adtag}}" target="_blank">
+    <img src="/ad/{{ads.top.img}}" alt="Deploy {{r.adtag}} on Heroku" />
   </a>
 </div>
 {{/if}}
 
+{{#with r}}
 <article class="blogpost">
 
   <h1 class="entry-title" itemprop="headline">{{ title }}</h1>
@@ -121,10 +121,10 @@
 <div id="disqus_thread"></div>
 {{/if}}
 
-{{#if published }}
-<div class="banner-top">
-<a rel="nofollow" href="/visit/heroku-151208-{{adtag}}" class="banner banner-top banner-heroku-adtag" target="_blank">
-    <img src="/ad/heroku/900x90.q4.1.signup.{{adtag}}.png" alt="Deploy {{adtag}} on Heroku" />
+{{#if r.published }}
+<div class="banner-bottom">
+  <a rel="nofollow" href="/visit/{{ads.bottom.shortUrl}}" class="banner banner-top banner-heroku-{{r.adtag}}" target="_blank">
+    <img src="/ad/{{ads.bottom.img}}" alt="Deploy {{r.adtag}} on Heroku" />
   </a>
 </div>
 {{/if}}

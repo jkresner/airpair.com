@@ -101,8 +101,10 @@ function rssRenderer() {
 }
 
 module.exports = function(app, mw) {
-  if (config.routes.rss.on !== true) return
+  if (config.routes.rss !== true) return
 
   var rss = rssRenderer()
   app.get('/rss', rss.mixed)
+
+  $logIt('cfg.route', `rss:GET`, '/rss')
 }
