@@ -7,7 +7,7 @@
 views = ->
 
 
-  IT 'Can track an anonymous post view', ->
+  IT 'Track anonymous post view', ->
     ANONSESSION (s) ->
       sId = s.sessionID
       viewCheck = => DB.docsByQuery 'View', {sId}, (r) ->
@@ -31,35 +31,8 @@ views = ->
       PAGE "#{publishedPostUrl}?utm_source=test1src&utm_content=test1ctn", {referer:'http://airpair.com/posts'}, ->
 
 
-  IT 'Can track an anonymous ad click view', ->
-    spy = STUB.spy(analytics, 'view')
-    ANONSESSION (s) ->
-      sId = s.sessionID
-      viewCheck = => DB.docsByQuery 'View', {sId}, (r) ->
-        expect(r.length).to.equal(1)
-        expect(Object.keys(r[0]).length).to.equal(9)
-        expect(r[0]._id).to.exist
-        expect(r[0].app).to.equal('apcom')
-        EXPECT.equalIds(r[0].oId,"56f97837b60d99e0d793cafc")
-        expect(r[0].sId).to.equal(sId)
-        expect(r[0].uId).to.be.undefined
-        expect(r[0].type).to.equal('ad')
-        expect(r[0].ip).to.exist
-        expect(r[0].ua).to.exist
-        expect(r[0].ref).to.equal('https://www.airpair.com/js/js-framework-comparison')
-        expect(r[0].url).to.equal('https://signup.heroku.com/nodese?c=70130000000NeguAAC&utm_campaign=Display%20-Endemic%20-Airpair%20-Node%20-%20Signup&utm_medium=display&utm_source=airpair&utm_term=node&utm_content=signup')
-        DONE()
 
-      PAGE "/ad/visit/heroku-160228-node.js", {status:302,referer:'https://www.airpair.com/js/js-framework-comparison'}, ->
-        expect(spy.callCount).to.equal(1)
-        expect(spy.args[0][1]).to.equal('ad')
-        expect(spy.args[0][2]).to.exist
-        expect(spy.args[0][2].tag).to.equal('node.js')
-        expect(spy.args[0][2].utm).to.be.undefined
-        _.delay(viewCheck, 100)
-
-
-  IT 'Can track logged in post view', ->
+  IT 'Track authed post view', ->
     DB.removeDocs 'User', { 'auth.gh.id': 215283 }, ->
     LOGIN 'admb', (s) ->
       spy = STUB.spy(analytics,'view')
@@ -81,7 +54,35 @@ views = ->
 
 
 
-  IT 'Aliases anonymous user with new user signup', ->
+  IT 'Track anonymous ad (click) view', ->
+    spy = STUB.spy(analytics, 'view')
+    ANONSESSION (s) ->
+      sId = s.sessionID
+      viewCheck = => DB.docsByQuery 'View', {sId}, (r) ->
+        expect(r.length).to.equal(1)
+        expect(Object.keys(r[0]).length).to.equal(9)
+        expect(r[0]._id).to.exist
+        expect(r[0].app).to.equal('apcom')
+        EXPECT.equalIds(r[0].oId,"56f97837b60d99e0d793cafc")
+        expect(r[0].sId).to.equal(sId)
+        expect(r[0].uId).to.be.undefined
+        expect(r[0].type).to.equal('ad')
+        expect(r[0].ip).to.exist
+        expect(r[0].ua).to.exist
+        expect(r[0].ref).to.equal('https://www.airpair.com/js/js-framework-comparison')
+        expect(r[0].url).to.equal('https://signup.heroku.com/nodese?c=70130000000NYVFAA4&utm_campaign=Display%20-Endemic%20-Airpair%20-Node%20-%20Signup&utm_medium=display&utm_source=airpair&utm_term=node&utm_content=deploy-free')
+        DONE()
+
+      PAGE "/visit/heroku-160328-node.js", {status:302,referer:'https://www.airpair.com/js/js-framework-comparison'}, ->
+        expect(spy.callCount).to.equal(1)
+        expect(spy.args[0][1]).to.equal('ad')
+        expect(spy.args[0][2]).to.exist
+        expect(spy.args[0][2].tag).to.equal('node.js')
+        expect(spy.args[0][2].utm).to.be.undefined
+        _.delay(viewCheck, 100)
+
+
+  IT 'Aliases anonymous sessionId with new signup user._id', ->
     DB.removeDocs 'User', { 'auth.gh.id': 1655968 }, ->
     ANONSESSION (s) ->
       sId = s.sessionID
@@ -119,7 +120,7 @@ views = ->
 
 
 
-  IT 'Can track an anonymous workshop view', ->
+  IT 'Track anonymous workshop view', ->
     ANONSESSION (s) ->
       anonymousId = s.sessionID
       spy = sinon.spy(analytics,'view')
@@ -130,7 +131,11 @@ views = ->
         DONE()
 
 
-  IT 'Login from existing sessionID does not alias', ->
+
+aliases = ->
+
+
+  IT 'sessionID is not duplicate in aliases with multiple logins', ->
     utms = ''
     ANONSESSION (anon) ->
       {sessionID} = anon
@@ -167,8 +172,7 @@ views = ->
               _.delay(dbCheck, 250)
 
 
-
-  IT 'Login from two sessionIDs aliases and aliases views', ->
+  IT 'Two sessionIDs added from unique sessions', ->
     DB.removeDocs 'User', { 'auth.gh.id': 465691 }, ->
     anonymousId = null
     anonymousId2 = null
@@ -225,6 +229,13 @@ views = ->
             session2Callback()
 
 
+
+impressions = ->
+
+  SKIP "Tracks single impression for repeat of same add on page"
+
+
+
 module.exports = ->
 
   @timeout(10000)
@@ -244,6 +255,8 @@ module.exports = ->
 
 
   DESCRIBE("Views", views)
+  DESCRIBE("Aliases", aliases)
+  DESCRIBE("Impressions", impressions)
 
 
 

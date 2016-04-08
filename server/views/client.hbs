@@ -11,12 +11,15 @@
     <main ng-view>{{{body}}}</main>
   </div>
 
+  {{> siteFooter }}
+
   <script type="text/javascript" src="{{js.index}}"></script>
   <script type="text/javascript">
 
     window.viewData = { session: {{{ JSON session }}} };
 
   </script>
+
 
   {{> initPage }}
 </body>

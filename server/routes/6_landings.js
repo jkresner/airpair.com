@@ -5,18 +5,16 @@ module.exports = function(app, mw) {
     app.use(mw.res.livereload(config.middleware.livereload))
 
 
-  // var livereload = mw.$.livereload ? 'livereload ' : ''
-  var preMW = mw.$$('badBot session onFirstReq')
-  var postMW = mw.$$('trackLanding landingPage')
+  var landing = mw.$$('badBot session reqFirst')
+  var keyed = key => (req, res, next) => next(null, req.landing = {key})
+  var landed = mw.$$('trackLanding landingPage')
 
 
-  app.Route('get', '/', preMW, [
-    (req, res, next) => next(null, req.landing = {key:'home'}),
-    mw.res.forbid('authd', usr => usr, { redirect: req => '/dashboard' })
-    ], postMW)
+  app.get('/', landing, keyed('home'), mw.res.forbid('authd',
+    usr => usr, { redirect: r => '/dashboard' }), landed)
 
 
-  app.Route('get', '/100k-writing-competition', preMW, [
+  app.get('/100k-writing-competition', landing,
     (req, res, next) => {
       API.Posts.svc.get2015CompWinners((e,r) => {
         req.locals.r = {
@@ -41,12 +39,20 @@ module.exports = function(app, mw) {
         req.landing = req.locals.r
         next()
       })
-    }], postMW)
+    }, landed)
 
 
-  app.Route('get', '/2016-marketplace-survey', preMW, [
-    (req, res, next) => next(null, req.landing = {key:'marketplaceSurvey'}),
-    mw.$.authd ], postMW)
+  app.get(['/airconf','airconf2014','/workshops'],
+    landing, keyed('workshops'), mw.$.cachedAds,
+      (req, res, next) => next(null, assign(req.locals, { r: _.values(cache.workshops),
+        htmlHead: { title: "Software Workshops, Webinars & Screencasts" }
+      })), landed)
 
+
+
+
+  // app.Route('get', '/2016-marketplace-survey', preMW, [
+  //   (req, res, next) => next(null, req.landing = {key:'marketplaceSurvey'}),
+  //   mw.$.authd ], postMW)
 
 }

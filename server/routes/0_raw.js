@@ -18,11 +18,12 @@ module.exports = function(app, mw, {redirects}) {
     //-- More so for some reason it's important to test the fully encoded
     //-- Version of the url first
     var map = new Map()
-    map.set(/%E2%80%A6/,'%E2%80%A6','')
-    map.set(/%20%e2%80%a6/,'%20%e2%80%a6','')
-    map.set(/%20%E2%80%A6/,'%20%E2%80%A6','')
-    map.set(/%20\.\.\./,'%20...','')
-    map.set(/\.\.\./,'...','')
+    map.set(/%E2%80%A6/,'')
+    map.set(/%20%e2%80%a6/,'')
+    map.set(/%20%E2%80%A6/,'')
+    map.set(/%20\.\.\./,'%20...')
+    map.set(/\.\.\./,'')
+    map.set(/^\/logout$/,'/auth/logout')
     // map.set("/c\\+\\+","/c++","/posts/tag/c++", "302")
 
     cache['redirects'].filter(r => r.type == "301" || r.type == "302")
@@ -33,10 +34,17 @@ module.exports = function(app, mw, {redirects}) {
 
     app.use(mw.req.forward({map}))
 
+    //-- TODO : pattern
+    // router.get('/author/*', (req,res) => { res.redirect(301, '/posts')})
   }
 
   if (config.middleware.slow)
     app.use(mw.req.slow(config.middleware.slow))
 
+  if (config.middleware.ctx.dirty)
+    app.use(mw.$.reqDirty)
+
 }
+
+
 

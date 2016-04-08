@@ -104,7 +104,6 @@ module.exports = function(app, mw) {
     .param('expertshaped', API.Experts.paramFns.getById)
     .param('order', API.Orders.paramFns.getByIdForAdmin)
 
-    .get('/session/full', mw.$.onFirstReq, API.Users.getSession)
   //   .put('/users/me/tag/:tag', mw.$.setAnonSessionData, API.Users.toggleTag)
   //   .put('/users/me/tags', mw.$.setAnonSessionData, API.Users.updateTags)
   //   .put('/users/me/bookmarks', mw.$.setAnonSessionData, API.Users.updateBookmarks)

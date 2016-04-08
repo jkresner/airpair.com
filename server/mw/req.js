@@ -1,19 +1,22 @@
 module.exports = (app, mw) => {
 
-  // var log = global.config.env != 'test' ? console.log : (() => {})
 
-  // mw.cache('wrap', mw.req.wrap({
-    // context: config.middleware.ctx,
-    // onStart: (r) => log(`[req ${r.ctx.ip}]`[r.ctx.bot==false?'white':'magenta'].dim),
-    // onEnd: (r, res) => log(`[res ${r.ctx.ip}] ${r.user?r.user.name:r.sessionID}`.gray.dim)
-  // }))
+  var staleUrls = config.middleware.ctx.dirty.urlstale.split(' ')
+  mw.cache('reqDirty', (req, res, next) => {
+    for (var url in staleUrls)
+      if (req.originalUrl.indexOf(url) == 1) req.ctx.dirty = 'urlstale'
+    next()
+  })
+
+  var restrict = req => req.ctx.bot||req.ctx.dirty
+  mw.cache('session', mw.session.touch(app.meanair.model.sessionStore,
+    assign({ restrict }, config.middleware.session)) )
 
 
-  mw.cache('onFirstReq', mw.session.orient({
+  mw.cache('reqFirst', mw.session.orient({
     skipIf(req) {
       if (req.isAuthenticated()) {
-        if (req.session && req.session.anonData)
-          delete req.session.anonData
+        if (req.session.anonData) delete req.session.anonData
         return true
       }
     },
@@ -33,13 +36,12 @@ module.exports = (app, mw) => {
 
   mw.cache('noBot', mw.req.noCrawl({content:'',
     onDisallow(req) {
-
-      // $log('TODO... write crawl errors to analytics db')
+      // $log('TODO... write crawl issue to analytics db or similar')
     }}))
 
   mw.cache('badBot', mw.req.noCrawl({group:'bad|ua:none',content:'',
     onDisallow(req) {
-      // $log('TODO... write crawl errors to analytics db')
+      // $log('TODO... write crawl issue to analytics db or similar')
     }}))
 
 }

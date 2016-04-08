@@ -2,8 +2,9 @@ function run({config,MAServer,tracking}, done) {
 
   var app               = MAServer.App(config, done)
   var analytics         = MAServer.Analytics(config, tracking)
-
+  var Auth              = require('meanair-auth')
   var model             = require(`meanair-model`)(done)
+
   model.connect(() => {
 
     global.DAL = model.DAL
@@ -28,25 +29,18 @@ function run({config,MAServer,tracking}, done) {
       utc: new Date(), by: { _id: this.user._id, name: this.user.name } } } }
 
 
-    var mapp = app.meanair.lib({passport:require('passport')})
-               .set(model, {analytics})
-               .merge(require('meanair-auth'))
+    cache.get('redirects',
 
+      cb => config.routes.redirects ? DAL.Redirect.getAll(cb) : cb(null,{}),
 
-    // app.use(mw.auth.setNonSessionUrl(app))
-    // app.use(mw.auth.showAuthdPageViews())
+      () => app.meanair.lib({passport:require('passport')})
+                       .set(model, {analytics})
+                       .merge(Auth)
+                       .chain(config.middleware, config.routes)
+                       .run()
+    )
 
-    cache.get('redirects', cb =>
-      config.routes.redirects ? DAL.Redirect.getAll((e,r) => cb(e, r)) : cb(),
-      () => {
-        var restrict = req => req.ctx.bot||req.nonSessionUrl
-        config.middleware.session.regulate = {restrict}
-
-        mapp.chain(config.middleware, config.routes)
-            .run()
-    })
   })
-
 
   return app
 }

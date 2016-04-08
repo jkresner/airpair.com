@@ -6,6 +6,7 @@ angular.module("ADMPipeline", ["APRequestDirectives","APProfileDirectives"])
   route('/adm/pipeline', 'Pipeline', require('./list.html'))
   route('/adm/pipeline-2015', 'Pipeline2015', require('./2015.html'))
   route('/adm/request/:id', 'Request', require('./item.html'))
+  route('/adm/match/:id', 'Matching', require('./match.html'))
 
 })
 
@@ -161,51 +162,58 @@ angular.module("ADMPipeline", ["APRequestDirectives","APProfileDirectives"])
 })
 
 
-// .controller('PipelineMetricsCtrl', function($scope, AdmDataService) {
+.controller('MatchingCtrl', ($scope, $routeParams, $location, AdmDataService, RequestsUtil) => {
+  var _id = $routeParams.id
+  $scope.request = {}
+  $scope.select = {}
 
-    // var todays = [], incomplete = [], complete = [];
-    // _.each(requests, (r) => {
-    //   r.created = util.ObjectId2Moment(r._id)
-    //   r.submitted = r.adm.submitted||r.created.format()
-    //   // console.log('r.submitted', r.submitted)
-    //   //-- Deal gracefully with v0
-    //   if (!r.adm.owner && r.owner) r.adm.owner = r.owner
-    //   if (!r.adm.lastTouch) r.adm.lastTouch = moment().add(-1, 'days').format()
+  $scope.highlightedTag = (tagId) =>
+    _.find($scope.focusTagIds,(id)=>id==tagId)
 
-    //   // console.log('r.created', r.created.format(), util.dateInRange(r.created, $scope.today, $scope.tomorrow))
-    //   if (util.dateInRange(r.created, $scope.today, $scope.tomorrow)) todays.push(r)
-    //   if (r.budget) {
-    //     count = count+1
-    //     r.num = count
-    //     // console.log('complete', count, r._id, r.budget, r.adm.lastTouch)
-    //     complete.push(r)
-    //   }
-    //   else incomplete.push(r)
-    // })
+  $scope.getMatches = (request) => {
+    var query = RequestsUtil.mojoQuery(request)
+    AdmDataService.matchmaking.getRanked({_id, query}, function (experts) {
+      $scope.matches = experts;
+      // console.log('$scope.matches', $scope.matches.length)
+    })
+  }
 
-    // var budgetCount=0, briefCount=0, tagsCount=0, typeCount=0;
-    // for (var i=0;i<todays.length;i++)
-    // {
-    //   budgetCount += todays[i].budget ? 1 : 0
-    //   briefCount += todays[i].brief ? 1 : 0
-    //   tagsCount += (todays[i].tags.length > 0) ? 1 : 0
-    //   typeCount += todays[i].type ? 1 : 0
-    // }
-
-    // $scope.requests = { todays, incomplete, complete }
-
-    // console.log('setScope', requests.length, $scope.requests.complete.length, moment().diff(start,'milliseconds'))
-    // $scope.requests = requestsUtil.sortByLastAdmTouch($scope.requests.complete)
+  $scope.$watch('request', function(r) {
+    if (!$scope.user) return
+    $scope.meta = RequestsUtil.calcMeta(r)
+    $scope.focusTagIds = _.pluck(r.tags,'_id')
+  })
 
 
-    // $scope.todays = { budgetCount, briefCount, tagsCount, typeCount }
+  AdmDataService.matchmaking.getRequest({_id}, function (r) {
+    $scope.user = r.user
+    $scope.request = r
+    $scope.groupMatch = r.groupMatch
+    $scope.getMatches(r)
+  },
+    () => $location.path('/adm/pipeline')
+  )
 
-// })
+  $scope.addSuggestion = (expertId) => {
+    var expert = _.find($scope.matches, (e) => e._id == expertId)
+    var msg = $scope.selected.suggest
+    AdmDataService.matchmaking.addSuggestion({_id, expertId, msg}, function (r) {
+      $scope.request = r
+      $scope.matches = _.without($scope.matches, expert)
+      $scope.selected = null
+    })
+  }
 
+  $scope.groupSuggest = (tagId) => {
+    AdmDataService.matchmaking.groupSuggest({_id, tagId}, function (r) {
+      $scope.request = r
+      $scope.matches = _.without($scope.matches, expert)
+    })
+  }
 
+  $scope.selectExpert = (expert) =>
+    AdmDataService.matchmaking.matchifyExpert({expertId:expert._id,requestId:_id}, function(r) {
+      $scope.selected = r
+    })
 
-
-// .controller('PipelineIncompleteCtrl', function($scope, AdmDataService) {
-
-
-// })
+})

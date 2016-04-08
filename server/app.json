@@ -5,15 +5,6 @@
   },
   "auth": {
     "appKey":                  "apcom",
-    "masterpass":              "youshallpass",
-    "local": {
-      "passReqToCallback":     true,
-      "usernameField":         "email",
-      "passwordField":         "password"
-    },
-    "password": {
-      "resetSalt":             "$2a$08$Qn0unnOa4XH0pN.IRZHB4u"
-    },
     "oauth": {
       "github": {
         "short":               "gh",
@@ -113,12 +104,15 @@
         "all": "googlebot|TweetmemeBot|TurnitinBot|SMTBot|MegaIndex|Domain Re-Animator Bot|ToutiaoSpider|uk_lddc_bot|MJ12bot|CPython|libwww-perl|Superfeedr|Mechanize|AdsBot-Google|gurujibot|bitlybot|twitterbot|scritch|yandexbot|slurp|msnbot|bingbot|rogerbot|MetaURI|Hatena|PaperLiBot|QuerySeekerSpider|AhrefsBot|EmailMarketingRobot|ShowyouBot|Baiduspider|YisouSpider|facebookexternalhit|archive.org_bot|Y!J-ASR",
         "bad": "MegaIndex|datasift|uk_lddc_bot|MJ12bot|CPython|libwww-perl|Superfeedr|Nutch|Mechanize"
       },
-      "uId":                   true
+      "uId":                   true,
+      "dirty": {
+        "urlstale":            "android/rss feed rails/consulting static/styles"
+      }
     },
     "dirs":                    "mw",
     "livereload":              { "port": 35729 },
     "session": {
-      "authedData":            "_id name email username roles",
+      "authdData":            "_id name email username avatar roles",
       "name":                  "aps",
       "secret":                "airyv1"
     },
@@ -133,7 +127,7 @@
       "tags":                  { "getter": "tags.getForCache" },
       "templates":             { "getter": "templates.getForCache" }
     },
-    "session":                 { "collection": "v1sessions" }
+    "session":                 { "collection": "sessions_apcom" }
   },
   "routes": {
     "ads": {

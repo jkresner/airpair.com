@@ -18,13 +18,10 @@ module.exports = function(app, mw) {
            '/find-an-expert',
            '/hire-software-developers',
            '*pair-programming*',
-           ], mw.$.badBot, mw.$.session, mw.$.onFirstReq, mw.$.clientPage)
+           ], mw.$.badBot, mw.$.session, mw.$.reqFirst, mw.$.clientPage)
 
 
-
-  app.use(['^/matchmaking*',
-           '^/adm/*'],
-           mw.$.noBot, mw.$.session, mw.$.adm, mw.$.adminPage)
+  app.use('^/adm/*', mw.$.noBot, mw.$.session, mw.$.adm, mw.$.adminPage)
 
 
 }

@@ -326,7 +326,9 @@ var select = {
         var topTagPage = _.find(topTapPages,(s) => r.primarytag.slug==s)
         r.primarytag.postsUrl = (topTagPage) ? `/${r.primarytag.slug}` : `/posts/tag/${r.primarytag.slug}`
 
-        r.adtag = 'node.js'
+        r.adtag = 'ruby'
+        if (_.find(r.tags, t => t.slug.match(/javascript|node/i)))
+          r.adtag = 'node.js'
         if (_.find(r.tags, t => t.slug.match(/java/i) && !t.slug.match(/javascript/i)))
           r.adtag = 'java'
         if (_.find(r.tags, t => t.slug.match(/(php|wordpress)/i)))
