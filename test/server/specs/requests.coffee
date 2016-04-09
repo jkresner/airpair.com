@@ -131,7 +131,7 @@ create = ->
             DONE()
 
 
-  IT 'Cannot delete a request unless owner or admin', ->
+  SKIP 'Cannot delete a request unless owner or admin', ->
     STORY.newUser 'kyau', (s) ->
       d = type: 'code-review'
       POST '/requests', d, {}, (r) ->

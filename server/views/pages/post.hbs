@@ -66,32 +66,28 @@
       <post-rail-stars></post-rail-stars>
     {{/if}}
     {{/if}}
+
     {{#if published }}
+      {{#if authenticated }}
     <h6>Need 1 on 1 expert help?</h6>
+
     <div class="gethelp">
       <img src="{{by.avatar}}?s=100" />
       <span><b>PAIR UP</b> with<br /> experts like <br />{{by.name}}</span>
-      {{#if authenticated}}
-  {{!-- {{#if by.expertId }}
-  <div class="book-cta">
-    <b>Want help from a top {{primarytag.name}} developer?</b> {{by.name}} is available for live {{primarytag.name}} pair programming on AirPair.
-    <a id="postTopBookAuthor" data="{{ by.expertId }}" track-click="book" href="/billing/book/{{by.expertId}}">&gt;&gt; Video chat with {{by.name}}</a>
-  </div>
-  {{/if}} --}}
         {{#if by.expertId }}
           <a id="postSideBookAuthor" data="{{by.expertId}}" track-click="book" href="/billing/book/{{by.expertId}}" class="btn btn-sm">Book</a>
         {{/if}}
-      {{else}}
-        <a href="/login" class="btn btn-sm">Login</a>
-      {{/if}}
     </div>
-    {{else}}
-    <h6>Help make this post better!</h6>
+      {{/if}}
+    {{/if}}
+
+    {{!-- <h6>Help make this post better!</h6>
     <div class="fork">
       <a href="/posts/fork/{{_id}}" class="btn">Fork this post!</a>
       <p>Forked <b>{{forkers.length}}</b> times so far</p>
     </div>
-    {{/if}}
+     --}}
+
   </div>
 
   {{#if references}}

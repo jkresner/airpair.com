@@ -19,18 +19,6 @@ angular.module("APDashboard", ['APFilters', 'APSvcSession',
     }
   }
 })
-// .directive('dashboardStack', function() {
-//   return { template: require('./stack.html') }
-// })
-// .directive('dashboardBookmarks', function() {
-//   return { template: require('./bookmarks.html') }
-// })
-// .directive('dashboardPosts', function() {
-//   return { template: require('./posts.html') }
-// })
-.directive('dashboardExperts', function() {
-  return { template: require('./experts.html') }
-})
 .directive('dashboardRequests', function() {
   return {
     restrict: 'E',
@@ -73,16 +61,6 @@ angular.module("APDashboard", ['APFilters', 'APSvcSession',
       r.forEach((n)=>$scope.seen[n.name] = true)
     }
 
-    // SessionService.getSiteNotifications({}, setSeen)
-
-    $scope.closeNotification = (name) =>
-      SessionService.toggleSiteNotification({name}, setSeen)
-
-    if ($scope.session.tags && $scope.session.tags.length > 0) {
-      // DataService.experts.getForDashboard({}, function(r) {
-      //   $scope.experts = r
-      // })
-    }
   })
 
 })

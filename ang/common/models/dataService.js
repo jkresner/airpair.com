@@ -1,4 +1,3 @@
-var headings = [];
 var lazyErrorCb = function(resp) {
   // console.log('error:', resp);
 }

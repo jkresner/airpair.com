@@ -1,17 +1,6 @@
-module.exports = function(app, mw, {ads}) {
+module.exports = function(app, mw) {
 
-// if (config.auth.test) {
-//     // config.auth.test.defaultLoginLogic = mw.logic.auth.oauth
-//     app.post(config.auth.test.loginUrl, config.auth.test.loginHandler)
-//   }
-
-
-//   var AuthSvc                  = require('../services/auth')
 //   var {localAuth}              = require('../middleware/auth')
-
-
-//   app.get('/logout', mw.$.authd, mw.$.setReturnTo, mw.auth.logout({track:analytics.event}))
-
 
 //   app.use('/auth',
 //     app.Router()
@@ -27,7 +16,7 @@ module.exports = function(app, mw, {ads}) {
 //         var validation = require("../../shared/validation/users")
 //         var inValid = validation.requestPasswordChange(req.user, req.body.email)
 //         if (inValid) return res.status(403).json({message:inValid})
-//         $callSvc(AuthSvc.passwordReset,req)(req.body.email, (e,r) => {
+//         AuthSvc.passwordReset,req)(req.body.email, (e,r) => {
 //           if (e) { e.fromApi = true; return next(e) }
 //           res.json(r)
 //         })
@@ -91,53 +80,6 @@ module.exports = function(app, mw, {ads}) {
   // },
 
 
-  // showAuthdPageViews() {
-  //   return function(req, res, next) {
-
-  //     if (req.isAuthenticated()) {
-  //       var ref = req.header('Referer')
-  //       var refStr = (ref ? (` <<< `.cyan+`${ref}`.replace(/\/+$/, '').blue) : '')
-  //         .replace('https://','').replace('http://','').replace('www.','')
-
-  //       if (req.originalUrl.indexOf('/api') == -1)
-  //         $log(req.user.name.gray+`\t\t${req.originalUrl}`.cyan, refStr)
-  //     }
-  //     next()
-  //   }
-  // },
-
-  // checkToPersistSession(expressSession) {
-    // return (req, res, next) => {
-      // if (logging) $log(`mw.checkToPersistSession ${req.url} ${!isBot(req.get('user-agent'))}`.cyan)
-      // if (isBot(req.get('user-agent'), BOTS.all) || req.nonSessionUrl) {
-        // req.session = {}
-        // req.sessionID = 'unNOwnSZ3Wi8bDEnaKzhygGG2a2RkjZ2' //-- hard coded consistent uid
-        // return next() //-- Do not track the session
-      // }
-      // return expressSession(req, res, next)
-    // }
-  // },
-
-  // setAppUrlRegexList(app) {
-  //   app.routeRegexps = []
-  //   for (var stack of app._router.stack) {
-  //     if (stack.route && !stack.regexp.fast_slash)
-  //       app.routeRegexps.push(stack.regexp)
-  //     else if (stack.name == 'router') {
-  //       if (!stack.regexp.fast_slash) {
-  //         app.routeRegexps.push(stack.regexp)
-  //       }
-  //       for (var rstack of stack.handle.stack)
-  //       {
-  //         if (!rstack.regexp.fast_slash)
-  //           app.routeRegexps.push(rstack.regexp)
-  //       }
-  //     }
-  //   }
-  //   app.routeRegexps.splice(-1,1) //-- /^\/(?:([^\/]+?))\/?$/i  (don't include catch all route)
-  //   if (logging) $log(`setAppUrlRegexList`.cyan, app.routeRegexps.length)
-  // },
-
   // setUrlMatch(app) {
   //   return function(req, res, next) {
   //     if (logging) $log(`setUrlMatch ${req.url}`.cyan, req.url, req.originalUrl)
@@ -155,38 +97,9 @@ module.exports = function(app, mw, {ads}) {
   //   }
   // },
 
-  // setNonSessionUrl() {
-  //   return function(req, res, next) {
-  //     if (logging) $log(`setNonSessionUrl ${req.url}`.cyan, req.originalUrl)
-  //     var nonSessionUrls = [
-  //       '/feed',
-  //       '/android/rss',
-  //       '/rails/consulting',
-  //       '/static/styles/'
-  //     ]
-
-  //     for (var url of nonSessionUrls)
-  //       if (req.originalUrl.indexOf(url) == 0)
-  //         req.nonSessionUrl = true
-
+  // setNonSession() {
   //     if (req.type == "HEAD")
-  //       req.nonSessionUrl = true
-
-  //     next()
-  //   }
-  // },
-
-
-  // authdRedirect(toUrl,statusCode) {
-  //   return (req, res, next) => {
-  //     if (logging) $log(`mw.authdRedirect ${req.isAuthenticated()}`.cyan)
-  //     if (!req.isAuthenticated()) return next()
-  //     else
-  //     {
-  //       res.redirect(statusCode||302, toUrl)
-  //       res.end()
-  //     }
-  //   }
+  //       req.nonSession = true
   // },
 
 

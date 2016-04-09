@@ -13,7 +13,6 @@ require('./../../ang/common/directives/forms/forms.js');
 require('./../../ang/common/directives/forms/inputs.js');
 require('./../../ang/common/directives/forms/tagInput.js');
 require('./../../ang/common/directives/experts.js');
-require('./../../ang/common/directives/deals.js');
 require('./../../ang/common/directives/requests.js');
 require('./../../ang/common/directives/mailtemplates.js');
 require('./../../ang/common/directives/profiles.js');
@@ -23,30 +22,28 @@ require('./../../ang/common/models/viewDataService.js');
 require('./../../ang/common/models/dataService.js');
 require('./../../ang/common/models/sessionService.js');
 require('./../../ang/common/models/adminDataService.js');
-require('./../../ang/common/models/mmDataService.js');
 require('./../../ang/common/routes/routes.js');
-require('./../../ang/posts/module.js');
-require('./../../ang/adm/posts/module.js');
+// require('./../../ang/posts/module.js');
+// require('./../../ang/adm/posts/module.js');
 require('./../../ang/adm/users/module.js');
 require('./../../ang/adm/redirects/module.js');
 require('./../../ang/adm/orders/module.js');
 require('./../../ang/adm/pipeline/module.js');
 require('./../../ang/adm/bookings/module.js');
 require('./../../ang/adm/experts/module.js');
-require('./../../ang/matchmaking/module.js');
+
 
 angular.module('ADM', [
   'ngRoute', 'ui.bootstrap', 'ui.bootstrap.datetimepicker', 'APViewData',
   'APSvcSession', 'APSvcAdmin', 'APDataSvc', 'APNotifications', 'APRoutes', 'APUtil',
   'APFilters', 'APFormsDirectives', 'APInputs', 'APTagInput', 'APMailTemplates', 'APHangouts', 'APRequestDirectives',
   'ADMPipeline',
-  'ADMPosts',
+  // 'ADMPosts',
   'ADMUsers',
   'ADMRedirects',
   'ADMOrders',
   'ADMBookings',
   'ADMExperts',
-  'APMatchmaking',
   ])
 
   .config(function($locationProvider, $routeProvider) {
@@ -58,11 +55,6 @@ angular.module('ADM', [
   .run(function($rootScope, $location, SessionService, ViewData) {
     $rootScope.session.primaryPayMethodId='adm';
     SessionService.onAuthenticated( (session) => {});
-
-    // $rootScope.$on('$routeChangeSuccess', function() {
-      // var path = $location.path()
-      //$('#chat').toggle(path.indexOf('orders') == -1 && path.indexOf('bookings') == -1)
-    // })
   })
 
   .factory('ServerErrors', function serverErrorsFactory($rootScope, $location) {

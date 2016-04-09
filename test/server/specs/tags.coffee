@@ -229,7 +229,7 @@ module.exports = ->
 
   DESCRIBE("Get", get)
   SKIP("Create", create)
-  DESCRIBE("Update ", update)
+  SKIP("Update ", update)
 
 
 

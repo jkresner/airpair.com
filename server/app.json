@@ -113,7 +113,7 @@
     "dirs":                    "mw",
     "livereload":              { "port": 35729 },
     "session": {
-      "authdData":            "_id name email username avatar roles",
+      "authdData":            "_id name email username avatar",
       "name":                  "aps",
       "secret":                "airyv1"
     },

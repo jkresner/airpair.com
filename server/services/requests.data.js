@@ -220,37 +220,37 @@ var data = {
           }
           else {
             //-- Yes this is not the right place for this ...
-            var ExpertsSvc            = require('./experts')
-            $callSvc(ExpertsSvc.getMe,ctx)((ee,expert) => {
-              // -- we don't want experts to see other reviews
-              r.suggested = data.select.meSuggested(r, ctx.user._id, expert._id)
-              if (r.suggested.length == 0 && expert && expert.rate)
-                r.suggested.push({expert})
-              else if (r.suggested.length == 1 && !r.suggested[0].expert.userId) {
-                // how we handle staying v0 on front-end
-                r.suggested[0].expert.userId = ctx.user._id
-                r.suggested[0].expert.rate = expert.rate
-                r.suggested[0].expert.tags = expert.tags
-                r.location = r.location
-                r.timezone = r.timezone
-              }
-              else if (r.suggested.length > 1)
-                throw Error("Cannot selectByExpert and have more than 1 suggested")
+            // var ExpertsSvc            = require('./experts')
+            // $...callSvc(ExpertsSvc.getMe,ctx)((ee,expert) => {
+            //   // -- we don't want experts to see other reviews
+            //   r.suggested = data.select.meSuggested(r, ctx.user._id, expert._id)
+            //   if (r.suggested.length == 0 && expert && expert.rate)
+            //     r.suggested.push({expert})
+            //   else if (r.suggested.length == 1 && !r.suggested[0].expert.userId) {
+            //     // how we handle staying v0 on front-end
+            //     r.suggested[0].expert.userId = ctx.user._id
+            //     r.suggested[0].expert.rate = expert.rate
+            //     r.suggested[0].expert.tags = expert.tags
+            //     r.location = r.location
+            //     r.timezone = r.timezone
+            //   }
+            //   else if (r.suggested.length > 1)
+            //     throw Error("Cannot selectByExpert and have more than 1 suggested")
 
-              for (var sug of r.suggested || [])
-                if (sug.expertComment)
-                  sug.expertComment = util.htmlEscape(sug.expertComment)
+            //   for (var sug of r.suggested || [])
+            //     if (sug.expertComment)
+            //       sug.expertComment = util.htmlEscape(sug.expertComment)
 
-              if (r.brief) r.brief = util.htmlEscape(r.brief)
+            //   if (r.brief) r.brief = util.htmlEscape(r.brief)
 
-              r.htmlHead = {
-                title: `AirPair | ${util.tagsString(r.tags)} Request`,
-                canonical: `https://www.airpair.com/review/${r._id}`,
-                noindex: true
-              }
+            //   r.htmlHead = {
+            //     title: `AirPair | ${util.tagsString(r.tags)} Request`,
+            //     canonical: `https://www.airpair.com/review/${r._id}`,
+            //     noindex: true
+            //   }
 
               cb(null, data.select.byView(r, 'review'))
-            })
+            // })
           }
         }
       },

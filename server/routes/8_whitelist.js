@@ -1,16 +1,14 @@
 module.exports = function(app, mw) {
 
 
-  app.use(['/billing*',
+  app.use(['/account',
+           '/billing*',
            '/bookings',
            '/bookings/*',
            '/booking/*',
            '/dashboard',
-           '/experts',
-           '/me*',
            '/help*',
-           '/requests*',
-           '/settings'],
+           '/requests*'],
            mw.$.noBot, mw.$.session, mw.$.authd, mw.$.clientPage)
 
 

@@ -23,17 +23,17 @@ var api = initAPI(
   getByIdForForking: (req) => [req.post],
   getByIdForPublishing: (req) => [req.post],
   getByIdForContributors: (req) => [req.post],
-  getMyPosts: (req) => [],
-  getPostsInReview: (req) => [],
+  // getMyPosts: (req) => [],
+  // getPostsInReview: (req) => [],
   // getUserForks: (req) => [],
-  getTableOfContents: (req) => [req.body.md],
+  // getTableOfContents: (req) => [req.body.md],
   getRecentPublished: (req) => [],
   getAllPublished: (req) => [],  //-- For indexable page
   getByTag: (req) => [req.tag],
-  getUsersPublished: (req) => [req.params.id],
+  // getUsersPublished: (req) => [req.params.id],
 
-  getAllForAdmin: (req) => [],
-  getNewFoAdmin: (req) => [],
+  // getAllForAdmin: (req) => [],
+  // getNewFoAdmin: (req) => [],
 
   // checkSlugAvailable: (req) => [req.post, req.params.slug],
   // update: (req) => [req.post,req.body],
@@ -43,13 +43,13 @@ var api = initAPI(
   // propagateMDfromGithub: (req) => [req.post],
   // updateGithubHead: (req) => [req.post, req.body.md, req.body.commitMessage],
   addForker: (req) => [req.post],
-  clobberFork: (req) => [req.post],
-  deleteById: (req) => [req.post],
+  // clobberFork: (req) => [req.post],
+  // deleteById: (req) => [req.post],
 
   review: (req) => [req.post, req.body],
   reviewUpdate: (req) => [req.post, req.postreview, req.body],
   reviewReply: (req) => [req.post, req.postreview, req.body],
-  reviewUpvote: (req) => [req.post, req.postreview],
+  // reviewUpvote: (req) => [req.post, req.postreview],
   reviewDelete: (req) => [req.post, req.postreview]
 
 
@@ -65,3 +65,4 @@ var api = initAPI(
 
 
 module.exports = _.extend(api, {reviewParamFn})
+

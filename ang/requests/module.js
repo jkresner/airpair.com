@@ -23,6 +23,7 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
     .when('/help/request/:id', actions.edit)
     .when('/meet-experts/:id', actions.edit)
     .when('/review/:id', actions.review)
+    .when('/job/:id', actions.review)
 
 })
 

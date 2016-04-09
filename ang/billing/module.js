@@ -1,6 +1,24 @@
-require('./directives');
+angular.module("APBilling", ['ngRoute', 'APPaymentDirectives','APExpertsDirectives'])
 
-angular.module("APBilling", ['ngRoute', 'APPaymentDirectives', 'APBillingDirectives','APExpertsDirectives'])
+.directive('transactionList', function(OrdersUtil) {
+
+  return {
+    template: require('./transactions.html'),
+    link(scope, element, attrs) {},
+    controller($scope) {
+      $scope.$parent.$watch('orders', function(val) {
+        // console.log('tras.watch.orders', val)
+        if (val.length > 0)
+        {
+          $scope.transactions = OrdersUtil.ordersToLinesWithRunningBalance($scope.orders)
+          $scope.balance = $scope.transactions[0].runningBalance
+        }
+      })
+    }
+  }
+
+})
+
 
 .config(function(apRouteProvider) {
 
@@ -11,7 +29,7 @@ angular.module("APBilling", ['ngRoute', 'APPaymentDirectives', 'APBillingDirecti
   route('/billing/top-up', 'BillingTopUp', require('./topup.html'), { resolve: authd })
   route('/billing/book/:id', 'BillingBookExpert', require('./book.html'), { resolve: authd })
   route('/billing/book/:id/:rid', 'BillingBookExpert', require('./book.html'), { resolve: authd })
-  route('/billing/deal/:id', 'BillingDeal', require('./deal.html'), { resolve: authd })
+  // route('/billing/deal/:id', 'BillingDeal', require('./deal.html'), { resolve: authd })
   // route('/experts', 'BillingExperts', require('./experts.html'), { resolve: authd })
 })
 
@@ -234,29 +252,29 @@ angular.module("APBilling", ['ngRoute', 'APPaymentDirectives', 'APBillingDirecti
 
 
 
-.controller('BillingDealCtrl', ($scope, DataService, $routeParams, $location, ServerErrors) => {
-  var _id = $routeParams.id
-  DataService.experts.getDeal({_id}, (r) => {
-    $scope.expert = r
-    $scope.deal = _.find(r.deals,(d)=>d._id==_id)
-    if (!$scope.deal) $location.path("/billing")
-  })
+// .controller('BillingDealCtrl', ($scope, DataService, $routeParams, $location, ServerErrors) => {
+//   var _id = $routeParams.id
+//   DataService.experts.getDeal({_id}, (r) => {
+//     $scope.expert = r
+//     $scope.deal = _.find(r.deals,(d)=>d._id==_id)
+//     if (!$scope.deal) $location.path("/billing")
+//   })
 
-  DataService.billing.getPaymethods({}, (r) => {
-    if (r.btoken) $location.path("/billing")
-    else {
-      $scope.paymethods = r
-      $scope.payMethodId = r[0]._id
-    }
-  }, ServerErrors.add)
+//   DataService.billing.getPaymethods({}, (r) => {
+//     if (r.btoken) $location.path("/billing")
+//     else {
+//       $scope.paymethods = r
+//       $scope.payMethodId = r[0]._id
+//     }
+//   }, ServerErrors.add)
 
 
-  $scope.orderDeal = () => {
-    var o = { expertId: $scope.expert._id, payMethodId: $scope.payMethodId, dealId: $scope.deal._id }
-    DataService.billing.orderDeal(o, (r) => {
-      $location.path("/billing/book/"+$scope.expert._id)
-    })
-  }
+//   $scope.orderDeal = () => {
+//     var o = { expertId: $scope.expert._id, payMethodId: $scope.payMethodId, dealId: $scope.deal._id }
+//     DataService.billing.orderDeal(o, (r) => {
+//       $location.path("/billing/book/"+$scope.expert._id)
+//     })
+//   }
 
-})
+// })
 

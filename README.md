@@ -1,138 +1,212 @@
-airpair.com
+airpair.com Deploy checklist
 ===========
 
-anon
-- home
--- all links
-- posts
--- software experts
---- all tiles
---- all bottom links
--- by tag
---- all tiles
-- post
--- 
-- tag
-- /angular
+[ ]-- meanair-server 
+[ ]--- honey.Router (overrised GET/set and uses chain helpers to overcome use shit)
 
-auth
-- login
--- google
--- email / password
--- send password reset
-- signup
--- google
 
-account
-- set password
-- user info
-- send email verification
-- verify email
-- [off] maillists
-- send password reset
-- logout
+BROWSE ANON
+[ ]- /
+[ ]- /tos
+[ ]- /angularjs
+[ ]- /posts/tag/angularjs 
+[ ]- /posts/tag/redis
+[ ]- /software-experts
+[ ]- /javascript
+[ ]- /posts/tag/javascript ?
+[ ]- /js/js-framework-comparison
+[ ]- /angularjs/posts/transclusion-template-scope-in-angular-directives
+[ ]-- Not spewing ...
 
-requests
+
+BROWSE AUTHD
+[ ]- /software-experts 
+[ ]- /account
+[ ]- /dashboard
+[ ]-- As gated user
+[ ]-- As theshold user (over $500+)
+[ ]- /billing
+[ ]-- As new user
+[ ]-- As historical user
+[ ]- /billing/book/55007705d8457a0c007dfdbe
+[ ]- /job/:id
+[-]- /billing/book/:expert/:request
+[-]- /bookings/:id
+
+
+BROWSE ADM
+[ ]- pipeline
+[ ]- request
+[ ]- match
+[ ]- bookings
+[ ]- booking
+[ ]- order
+[ ]- orders
+[ ]- user
+[ ]- experts
+[ ]- expert
+[ ]- redirects
+
+
+DATA
+[ ]- Fix reviews 
+[ ]- Write migration script + run loacally
+
+
+BROWSE BOT
+[ ]- mw.trace stops at noBot
+[ ]- track.issue crawl
+
+
+NOTIFICATIONS
+[ ]- custom formatter 
+[ ]-- ISSUE + EMAIL
+[ ]--- [Errors]
+[ ]--- [Crawl:non-badBot]
+[ ]-- ISSUE
+[ ]--- [404]
+[ ]--- [Crawl:badBot]
+[ ]-- EVENT + EMAIL
+[ ]--- [paymethod-create]
+[ ]--- [order]
+[ ]--- [booking]
+[ ]-- EVENT 
+[ ]--- [paymethod-remove]
+[ ]--- [login]
+[ ]--- [login-fail]
+[ ]--- [logout]
+[ ]-- VIEW
+[ ]--- Ad click
+[ ]--- Post
+[ ]--- Landing
+[ ]---- Home
+[ ]---- Posts
+[ ]---- Posts by tag (make all references _self)
+[ ]-- IMPRESSIONS
+[ ]--- [ad]
+
+
+ 
+
+CRITICAL APCOM FEATURES
+[ ]- Redirects
+[ ]-- 301           /me => /account
+[ ]-- 301           /setting => /account
+[ ]-- 301           /hire-developers => landing page about airpair
+[ ]-- Canon         /js/javascript-framework-comparison
+[ ]-- Rewrite       /js/javascript-framework-comparison%E2%80%A6
+[ ]--- Posts index
+[ ]--- Post
+[ ]--- Similar post
+[ ]--- Login
+[ ]----- POSTReview
+[ ]----- POSTReview update
+[ ]----- [BUGHUNT] Review
+
+
+CRITICAL ADSERVE FEATURES
+[ ]-- Works w migrated schema
+[ ]-- Campaign REPORT
+
+
+CRITICAL AUTHOR FEATURES
+[ ]-- Compiling
+[?]-- Pass existing tests
+
+
+DOUBLE TEST
+[ ]- Impressions
+[ ]-- Clicks tracking properly
+[ ]- HIGH
+[ ]-- Important pages social share well
+[ ]--- head:titles
+[ ]--- head:keywords
+[ ]--- head:canonical
+[ ]--- head:ogImage
+[ ]--- head:ogDescription
+
+
+DEPLOY STEPS
+[ ]- Fix reviews data
+[ ] - Modules tests run, code committed + published
+[ ]   shared       .6.3   
+[ ]   scream       .6.4
+[ ]   server       .6.4
+[ ]   middleware   .6.4
+[ ]   model        .6.4
+[ ]   auth         .6.4
+[ ]   apcom        .6.4
+[ ]- Backup most recent [domain] + [analytics]
+[ ]- Stop [adserve] [author] [consult] apps
+[ ]- run [analytics] field name migrate scripts
+[ ]- Deploy airpair.com
+[ ]-- update live config
+[ ]-- deploy
+[ ]-- remove unused config
+[ ]- Deploy author
+[ ]- Deploy adserve
+[ ]- consult
+
+
+===========================================================
+
+
+NON-CRITICAL FEATURES
+[ ]----- POSTReview delete
+[ ]----- POSTReview upvote/downvote
+[ ]-- mw.reqDirty based on cloudflare spoofing detection
+[ ]-- VIEW
+[ ]---- Workshop
+[ ]---- Job
+[-]-- /book/toddmotto
+[-] book from request
+[ ]-- /adm/posts
+[ ]-- Server rendered post comments
+[ ]-- View POST Blank as landing (/code-review + /code-mentoring + /scream.js)
+[ ]- Redirects
+[-]-- 301           /angular/posts => /learn-angularjs
+[-]-- 301           /posts/tag/nginx => /learn-nginx
+[-]-- ???           /pair-programming
+[-]-- ???           /find-an-expert
+[-]-- ???           /be-an-expert
+[ ]-- SPIN flow
+[ ]-- cmd/build/sitemap
+[ ]-- cmd/build/robot.txt
+===
+::requests
 - new 
 - review (as customer)
 -- add timezone
 - edit
 - list (history)
 -- delete (incomplete)
-
-billing
-- welcome (history)
+::billing
 -- add card
 - top-up
-- book
--- without request
--- from request
-- [off] deal
-- [off] experts
-
-bookings
 - item
 -- suggest time
 - history (un-finished)
-
-dashboard
--- recent bookings
--- recent requests
--- rebook experts
-
-expert
-- office
-- bookings
-- be-an-expert
-- [off] payouts
-
-matchmaking
-- item
-- list
-
-posts
-- list (all)
 - list (in-review)
-- list (tag)
-- create (info)
-- edit (editor)
-- submit (create repo)
 - fork
-- publish
 - contributors
 - review (widget)
-
-post
-- item
-- review (widget)
+====
 
 
-adm 
-- pipeline
-- bookings
-- experts
-- orders
-- users
-- redirects
+AIRPAIRCOM CODE
+[✓]- Review wishlist
+[ ]--- remove global.util in app.js + _.wrapFnList
+[ ]--- remove $callSvc completely
+[-]--- move config.chat to => wrappers.slack
+[-]--- clean out /shared/validations /shared/mail /shared/util
 
-
-v2.0.0 ux
----------
-
-Header
-/hire-developers      => landing page about airpair
-/softwhare-expert     => banner or info up to the top about airpair
-/consult              => goes to consult.airpair.com homepage
-
-Home
-- Add more technologies
-
-Software Experts
-- Improve page
-
-Dashboard
-- Make it easier to make a request
-
-Login (+ signup)
-- Email for team setup
-
-
-Hangout Info
-============
-
-1. Be prepared for serious frustration. The Google Hangout API is powerful, but painfully awkward.
-
-2. Create an app within the Google API console. Currently, this is only supported in the old version.
-  * Find the old version by first going to https://code.google.com/apis/console. You will immediately be redirected to *the new Google Developers Console*. Click on the "Prefer the old console Go back" link at the top.
-  * Follow the instructions at https://developers.google.com/+/hangouts/getting-started until you get to step 6. Copy `public/hangout/hangoutApp.xml` to a public facing URL and enter it instead.
-3. Enter your new app id as an environment variable `AIRPAIR_HANGOUT_APP_ID`. Without this, you will be using the production hangout app.
-
-The 'Enter a hangout' link at the bottom of the screen never worked for me. I was able to load a private app sometimes using the instructions at https://developers.google.com/+/hangouts/running#running-private but for a long time the Developer tab was missing. I ended up just marking the app as public; this requires you to be Chrome Web Store verified. I think this costs $10 or something along those lines.
-
-Google caches the results of your hangoutapp.xml file making iterative development of it painful. It's also a nuisance to copy your XML file whenever you make a change. For this reason, most of the hangout app lives in `index.html`, `index.css`, and `index.js` in `public/hangout`. Most changes shouldn't require modification of `hangoutApp.xml`. Modify the iFrame URL to point to localhost:9001 so the iFrame loads from your localhost. This must be served over https or it will be denied because some cross-domain security issues. I ran a simple node.js proxy server https://github.com/cameronhunter/local-ssl-proxy to deal with this.
-
-## Hangout Development Tips
-
-* Rather than start a new hangout every time, reload the hangout frame w/ right-click, reload frame
-* You can debug the javascript code from the XML file by entering the __gadget_1 frame in the Developer console (initially says "\<Top Frame\>")
-* You can debug the javascript code in the iFrame by entering the iFrame (index.html) frame.
+MEANAIR CODE
+[✓]- Review wishlist
+[ ]-- shared
+[ ]--- browser proof / no ES6
+[ ]-- middleware
+[✓]-- middleware
+[✓]--- make analytics consistent
+[ ]--- mw.data.cached getter flexibilty
+[-]--- mw.data.cached multiple items/keys
+[-]--- mw.res.rss

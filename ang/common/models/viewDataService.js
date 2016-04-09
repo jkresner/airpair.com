@@ -14,7 +14,6 @@ angular.module('APViewData', [])
     if (vd.workshop) $rootScope.workshop = vd.workshop
     if (vd.expert) $rootScope.expert = vd.expert
     if (vd.review) $rootScope.request = window.request
-    if (vd.chatSettings) $rootScope.chatSettings = vd.chatSettings
     if (vd.hangoutAppId) $rootScope.hangoutAppId = vd.hangoutAppId
     if (vd.book) {
       $rootScope.expert = window.expert

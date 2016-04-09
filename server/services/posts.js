@@ -21,20 +21,20 @@ var get = {
   },
 
   //-- used for api param fn
-  getByIdFromCache(_id, cb) {
-    cache.ready(['posts'], () => {
-      var post = cache.posts[_id]
-      cb(null, post)
-    })
-  },
+  // getByIdFromCache(_id, cb) {
+  //   cache.ready(['posts'], () => {
+  //     var post = cache.posts[_id]
+  //     cb(null, post)
+  //   })
+  // },
 
 
   getByIdForContributors(post, cb) {
     cb(V2DeprecatedError('Posts.getByIdForContributors'))
   },
 
-  getByIdForSubmitting(post, cb) {
-    cb(V2DeprecatedError('Posts.getByIdForContributors'))
+  // getByIdForSubmitting(post, cb) {
+    // cb(V2DeprecatedError('Posts.getByIdForContributors'))
     // post = selectFromObject(post, select.editInfo)
     // post.submit = { repoAuthorized: false }
     // post.slug = post.title.toLowerCase()
@@ -57,7 +57,7 @@ var get = {
     //     cb(e, post)
     //   })
     // })
-  },
+  // },
 
   getByIdForForking(post, cb) {
     cb(V2DeprecatedError('Posts.getByIdForForking'))
@@ -79,8 +79,8 @@ var get = {
     // })
   },
 
-  getByIdForPublishing(post, cb) {
-    cb(V2DeprecatedError('Posts.getByIdForPublishing'))
+  // getByIdForPublishing(post, cb) {
+    // cb(V2DeprecatedError('Posts.getByIdForPublishing'))
     // ExpertSvc.getByQuery({userId:post.by.userId}, (e, expert) => {
     //   if (expert) {
     //     post.by.expertId = expert._id
@@ -104,28 +104,29 @@ var get = {
     //     cb(ee, post)
     //   })
     // })
-  },
+  // },
 
-  getByIdForPreview(_id, cb) {
-    Post.getById(_id, { select: select.display }, (e,r) => {
-      if (e || !r) return cb(e,r)
-      if (!r.submitted || !r.github) return select.cb.displayView(false, null, cb)(null, r)
+  // getByIdForPreview(_id, cb) {
+  //   Post.getById(_id, { select: select.display }, (e,r) => {
+  //     if (e || !r) return cb(e,r)
+  //     if (!r.submitted || !r.github) return select.cb.displayView(false, null, cb)(null, r)
 
-      //-- Allow admins to preview a post without a fork
-      if (!Roles.isForker(this.user, r) &&
-        !_.idsEqual(this.user._id, r.by.userId)
-        )
-        return select.cb.displayView(false, null, cb)(null, r)
+  //     //-- Allow admins to preview a post without a fork
+  //     if (!Roles.isForker(this.user, r) &&
+  //       !_.idsEqual(this.user._id, r.by.userId)
+  //       )
+  //       return select.cb.displayView(false, null, cb)(null, r)
 
-      $callSvc(get.getGitHEAD, this)(r, (ee, head) => {
-        if (head && head.string)
-          r.md = head.string
-        select.cb.displayView(false, null, cb)(ee, r)
-      })
-    })
-  },
+  //     $callSvc(get.getGitHEAD, this)(r, (ee, head) => {
+  //       if (head && head.string)
+  //         r.md = head.string
+  //       select.cb.displayView(false, null, cb)(ee, r)
+  //     })
+  //   })
+  // },
 
   getBySlugForPublishedView(slug, cb) {
+    $log('getBySlugForPublishedView', slug)
     Post.getByQuery(query.published({slug}), { select: select.display },
       select.cb.displayView(this.user == null, get.getSimilar, cb)
     )
@@ -200,19 +201,19 @@ var get = {
   },
 
 
-  getUsersPublished(userId, cb) {
-    cb(V2DeprecatedError('Posts.getUsersPublished'))
+  // getUsersPublished(userId, cb) {
+    // cb(V2DeprecatedError('Posts.getUsersPublished'))
     // var options = { fields: select.list, options: opts.publishedNewest() }
     // svc.searchMany(query.published({ 'by.userId': userId }), options, select.cb.addUrl((e,r)=>{
     //   if (e) return cb(e)
     //   cb(null, {featured: r,archive: []})
     // }))
-  },
+  // },
 
   // Everything needed for airpair.com/posts/me
-  getMyPosts(cb) {
-    cb(V2DeprecatedError('Posts.getMyPosts'))
-    // if (!this.user) return $callSvc(get.getRecentPublished,this)(cb)
+  // getMyPosts(cb) {
+    // cb(V2DeprecatedError('Posts.getMyPosts'))
+    // if (!this.user) return $..callSvc(get.getRecentPublished,this)(cb)
 
     // var fields = _.extend({md:1},select.stats) // meed md for wordcount
 
@@ -229,7 +230,7 @@ var get = {
     //     select.cb.statsViewList(cb)(null, posts)
     //   }))
     // })
-  },
+  // },
 
   getPostsInReview(cb) {
     cb(V2DeprecatedError('Posts.getPostsInReview'))
@@ -246,8 +247,8 @@ var get = {
   //   svc.searchMany(query.forker(this.user._id), { field: Data.select.list }, select.cb.addUrl(cb))
   // },
 
-  getGitHEAD(post, cb) {
-    cb(V2DeprecatedError('Posts.getGitHEAD'))
+  // getGitHEAD(post, cb) {
+    // cb(V2DeprecatedError('Posts.getGitHEAD'))
     // var owner = org
 
     // if ( Roles.isForker(this.user, post) )
@@ -256,10 +257,10 @@ var get = {
     //   return cb(`Cannot get git HEAD. You have not forked ${post.slug}`)
 
     // github2.getFile(this.user, owner, post.slug, "/post.md", 'edit', cb)
-  },
+  // },
 
-  checkSlugAvailable(post, slug, cb) {
-    cb(V2DeprecatedError('Posts.checkSlugAvailable'))
+  // checkSlugAvailable(post, slug, cb) {
+    // cb(V2DeprecatedError('Posts.checkSlugAvailable'))
     // svc.searchOne({slug}, null, (e,r) => {
     //   if (r)
     //     if (!_.idsEqual(post._id,r._id))  //-- for posts that were published before the git authoring stuff
@@ -270,7 +271,7 @@ var get = {
     //     cb(null, repoStatus)
     //   })
     // })
-  },
+  // },
 
   getReview(post, reviewId, cb) {
     return cb(null, _.find(post.reviews,(r)=>_.idsEqual(r._id,reviewId)))

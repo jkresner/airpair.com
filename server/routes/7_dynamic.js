@@ -18,16 +18,6 @@ module.exports = function(app, mw) {
     .param('post', API.Posts.paramFns.getBySlugForPublishedView)
 
 
-  // .get('/book/:username', function(req, res, next) {
-  //   API.Experts.svc.getByUsername.call(req, req.params.username, (e,r) => {
-  //     if (!r) return res.redirect('/')
-  //     r.meta = { canonical: `https://www.airpair.com/book/${r.username}`, title: r.name }
-  //     req.expert = r
-  //     req.locals.r = r
-  //     req.locals.htmlHead = r.meta
-  //     next()
-  //   })}, mw.$.hybridPage('book'))
-
 
   // for (var slug of ['angularjs']) //,'firebase'
   //   app.get(`/${slug}`, populate.tagPage(slug), trackView('tag'),
@@ -64,11 +54,11 @@ module.exports = function(app, mw) {
         '/:tag/tips-n-tricks/:post'
        ],
     mw.$.badBot, mw.$.session, mw.$.reqFirst, mw.$.cachedAds, mw.$.inflateAds,
-    mw.$.trackPost,
     (req, res, next) => {
       $log('post:post.view|pre.render', req.locals.r.url)
       next(null, req.locals.htmlHead = req.locals.r.htmlHead)
     },
+    mw.$.trackPost,
     mw.$.postPage)
 
 
@@ -85,5 +75,17 @@ module.exports = function(app, mw) {
   )
 
   $logIt('cfg.route', 'obj   GET', 'lol')
+
+
+
+  // .get('/book/:username', function(req, res, next) {
+  //   API.Experts.svc.getByUsername.call(req, req.params.username, (e,r) => {
+  //     if (!r) return res.redirect('/')
+  //     r.meta = { canonical: `https://www.airpair.com/book/${r.username}`, title: r.name }
+  //     req.expert = r
+  //     req.locals.r = r
+  //     req.locals.htmlHead = r.meta
+  //     next()
+  //   })}, mw.$.hybridPage('book'))
 
 }

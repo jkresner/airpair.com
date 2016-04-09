@@ -4,18 +4,22 @@ module.exports = (app, mw) => {
   var {bundles} = config.http.static
   var about = _.pick(config.about, ['name','version','author'])
 
+  // assign(app.locals,{host:{static:'https://static.airpair.com'}})
 
   mw.cache('adminPage', mw.res.page('admin', {about,bundles,layout:false}))
 
   mw.cache('clientPage', mw.res.page('client', {about,bundles,layout:false}))
 
-  mw.cache('hybridPage', page => mw.res.page(page, {about,bundles,layout:'hybrid'}))
-
-  mw.cache('postPage', mw.res.page('post', {about,bundles,layout:'hybrid'}))
-
   mw.cache('serverPage', page => mw.res.page(page, {about,bundles,layout:'server'}))
 
-  mw.cache('landingPage', (req,res,next) => {
+  mw.cache('hybridPage', page => mw.res.page(page, {about,bundles,layout:'hybrid'}))
+
+  mw.cache('postPage', function(req,res,next) {
+    var page = req.locals.r.tmpl == 'faq' ? 'faq' : 'post'
+    mw.res.page(page,{about,bundles,layout:'hybrid'})(req,res,next)
+  })
+
+  mw.cache('landingPage', function(req,res,next) {
     if (!req.locals.htmlHead) throw Error("Set landingPage req.locals.htmlHead")
     mw.res.page(req.locals.r.key, {about,bundles,layout:'landing'})(req,res,next)
   })

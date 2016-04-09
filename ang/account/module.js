@@ -1,24 +1,62 @@
-angular.module("APProfile", [])
+angular.module("APAccount", [])
 
 .config((apRouteProvider) => {
 
   var authd = apRouteProvider.resolver(['session']);
   var route = apRouteProvider.route
-  route('/me/password', 'Password', require('./password.html'))
-  route('/me', 'Account', require('./account.html'),{resolve: authd})
+  route('/login', 'Login', require('./login.html'),{resolve: authd})
+  route('/account', 'Account', require('./account.html'),{resolve: authd})
+  // route('/me/password', 'Password', require('./password.html'))
+  // route('/password-reset', 'PasswordResetCtrl', require('./passwordreset.html'))
 })
+
+
+  // .run(function($rootScope, SessionService) {
+
+  //   SessionService.onAuthenticated( (session) => {
+  //     // window.firebaseToken = session.firebaseToken;
+  //   })
+
+  // })
+
+
+
+.controller('LoginCtrl', function($rootScope, $scope, $window, $timeout, $location, SessionService) {
+  var self = this;
+
+  $scope.returnTo = $location.search().returnTo;
+  $scope.data = {};
+
+  if ($location.search().as)
+    $scope.data.email = $location.search().as
+
+  this.submit = function(isValid, formData) {
+    if (!isValid) return
+    SessionService.login(formData,
+      (result) => {
+       // $window.location = '',
+        $timeout(() => { window.location = $scope.returnTo || '/'}, 250)
+      },
+      (e) => {
+        $scope.loginFail = e.message || e
+      }
+    )
+  }
+})
+
+
 
 
 .controller('AccountCtrl', function($rootScope, $scope, $location, ServerErrors, SessionService) {
 
-  if ($location.search().verify)
-  {
-    SessionService.verifyEmail({hash:$location.search().verify}, function(result){
-      $scope.emailAlerts = [{ type: 'success', msg: `${$scope.session.email} verified ! Next step setup your <a href="/billing">Billing info</a>.` }]
-    }, function(e){
-      $scope.emailAlerts = [{ type: 'danger', msg: `${e.message||e}` }]
-    })
-  }
+  // if ($location.search().verify)
+  // {
+  //   SessionService.verifyEmail({hash:$location.search().verify}, function(result){
+  //     $scope.emailAlerts = [{ type: 'success', msg: `${$scope.session.email} verified ! Next step setup your <a href="/billing">Billing info</a>.` }]
+  //   }, function(e){
+  //     $scope.emailAlerts = [{ type: 'danger', msg: `${e.message||e}` }]
+  //   })
+  // }
 
   if ($scope.session) {
     $scope.data = _.pick($scope.session, ['name','email','initials','username'])
@@ -56,33 +94,50 @@ angular.module("APProfile", [])
   //   })
   // };
 
-  $scope.sendPasswordChange = function() {
-    SessionService.requestPasswordChange({email:$scope.session.email}, function(result){
-      $scope.passwordAlerts = [{ type: 'success', msg: `Password reset sent to ${$scope.session.email}` }]
-    }, ServerErrors.add)
-  }
+  // $scope.sendPasswordChange = function() {
+  //   SessionService.requestPasswordChange({email:$scope.session.email}, function(result){
+  //     $scope.passwordAlerts = [{ type: 'success', msg: `Password reset sent to ${$scope.session.email}` }]
+  //   }, ServerErrors.add)
+  // }
 
 })
 
 
-.controller('PasswordCtrl', function($scope, $location, ServerErrors, SessionService) {
+// .controller('PasswordCtrl', function($scope, $location, ServerErrors, SessionService) {
 
-  $scope.alerts = []
+//   $scope.alerts = []
 
-  $scope.data = { password: '', hash: $location.search().token, email: $location.search().email };
+//   $scope.data = { password: '', hash: $location.search().token, email: $location.search().email };
 
-  $scope.savePassword = function() {
-    SessionService.changePassword($scope.data, function(result){
-      var msg = `New password set`
-      if (!$scope.session._id) msg = `New password set. Return to <a href="/login">Login</a>`
+//   $scope.savePassword = function() {
+//     SessionService.changePassword($scope.data, function(result){
+//       var msg = `New password set`
+//       if (!$scope.session._id) msg = `New password set. Return to <a href="/login">Login</a>`
 
-      $scope.alerts = [{ type: 'success', msg }]
-      $scope.done = true
+//       $scope.alerts = [{ type: 'success', msg }]
+//       $scope.done = true
 
-    }, ServerErrors.add)
-  }
+//     }, ServerErrors.add)
+//   }
 
-  if (!$scope.data.hash)
-    $scope.alerts.push({ type: 'danger', msg: `Password token expired` })
+//   if (!$scope.data.hash)
+//     $scope.alerts.push({ type: 'danger', msg: `Password token expired` })
 
-})
+// })
+
+  // .controller('PasswordResetCtrl', function($scope, ServerErrors, SessionService) {
+
+  //   SessionService.onAuthenticated(() => { if ($scope.session._id) $location.path('/')})
+
+  //   $scope.data = { email: "" }
+
+  //   var self = this;
+  //   self.submitReset = function(isValid, formData) {
+  //     if (!isValid) return
+  //     SessionService.requestPasswordChange(formData, function(result){
+  //       $scope.passwordAlerts = [{ type: 'success', msg: `Password reset sent to ${result.email}` }]
+  //     }, ServerErrors.add)
+  //   };
+  // })
+
+
