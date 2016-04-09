@@ -17,29 +17,44 @@ module.exports = (app, mw) => {
     }
   ))
 
-  mw.cache('trackClick', mw.analytics.view('ad', {
+  mw.cache('trackAuth', mw.analytics.event('auth'))
+
+  //-- because the db is not yet connected
+  var trackView = function () { global.analytics.view.apply(this, arguments) }
+
+  mw.cache('trackClick', mw.analytics.view('ad', trackView, {
       project:  d => ({_id:d._id,img:d.img,tag:d.tag,url:d.url})
     }
   ))
 
-  mw.cache('trackWorkshop', mw.analytics.view('workshop', {
+
+  mw.cache('trackWorkshop', mw.analytics.view('workshop', trackView, {
       onBot: () => {},
-      project: d => ({_id:d._id,title:d.title,tag:d.tag})
+      project: d => ({_id:d._id,url:d.url})
     }
   ))
 
-  mw.cache('trackPost', mw.analytics.view('post', {
+  mw.cache('trackPost', mw.analytics.view('post', trackView, {
       onBot: () => {},
       project: d => ({_id:d._id,url:d.url.replace('https://www.airpair.com', '')}),
     }
   ))
 
+  mw.cache('trackLanding', mw.analytics.view('landing', trackView, {
+      onBot: ()=>{},
+      project: d => ({_id:d._id,key:d.key,url:d.url}),
+    }
+  ))
 
-  mw.cache('trackAuth', mw.analytics.event('auth'))
+  mw.cache('trackTag', mw.analytics.view('tag', trackView, {
+      onBot:()=>{}
+    }
+  ))
 
-
-  mw.cache('trackTag', mw.analytics.view('tag', {onBot:()=>{}}))
-  mw.cache('trackLanding', mw.analytics.view('landing', {onBot:()=>{}}))
-  mw.cache('trackJob', mw.analytics.view('job', {onBot:()=>{},project:r=>({_id:r._id})}))
+  mw.cache('trackJob', mw.analytics.view('job', trackView, {
+      onBot:()=>{},
+      project:r=>({_id:r._id})
+    }
+  ))
 
 }

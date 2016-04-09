@@ -1,7 +1,9 @@
 module.exports = function(app, mw, {ads}) {
 
+  if (!ads) return
 
-  $logIt('cfg.route', `ads:${ads.dir}/heroku`)
+
+  $logIt('cfg.route', `file  GET`, `\\\\${ads.dir.replace('/','\\')}\\heroku\\:file`)
   app.use('/ad/heroku', mw.$.noBot, mw.$.session, mw.$.cachedAds,
     (req, res, next) => {
       req.ad = cache.ads[`heroku${req.url}`]
@@ -11,19 +13,19 @@ module.exports = function(app, mw, {ads}) {
     app.Static(`${ads.dir}/heroku`)) //no max age, we want no cacheing
 
 
+  $logIt('cfg.route', `click GET`, `/visit/:ad`)
   app.get('/visit/:short', mw.$.noBot, mw.$.session, mw.$.cachedAds,
     (req, res, next) => {
       var {ads} = cache
       for (var img in ads)
-        ads[img].shortUrl == req.params.short ? req.ad = ads[img] : 0
+        ads[img].shortUrl == req.params.short ? req.locals.r = ads[img] : 0
 
       // $log('req.ad', req.ad, req.ctx, req.sessionID, req.session)
-      req.ad ? next() : res.status(404).send('Not found')
+      req.locals.r ? next() : res.status(404).send('Not found')
     },
     mw.$.trackClick,
     (req, res, next) => {
-      // $log('trackedClick'.yellow, req.ad.url, req.header('Referer'))
-      res.redirect(req.ad.url)
+      res.redirect(req.locals.r.url)
     })
 
 }

@@ -1,26 +1,20 @@
-
-var workshops = {
-
-  getAll(cb) {
-    cb(null, ALL)
-  },
+module.exports = {
 
   getAllForCache(cb) {
-    workshops.getAll((e,r) =>
-      cb(null, r.map(w => {
-        w._id = w.slug
-        w.url = `${w.tags[0]}/workshops/${w.slug}`
-        w.by = w.speakers[0]
-        w.htmlHead = { title: w.title, canonical: `https://www.airpair.com/${w.url}` }
-        delete w.slug
-        return w
-      }))
-    )
+    var r = ALL.map(w => {
+      w._id = DAL.User.toId(w._id)
+      w.url = `/${w.tags[0]}/workshops/${w.slug}`
+      w.by = w.speakers[0]
+      w.htmlHead = { title: w.title, canonical: `https://www.airpair.com${w.url}` }
+      delete w.slug
+      return w
+    })
+
+    if (!cb) return r
+    else cb(null, r)
   }
 
 }
-
-module.exports = workshops
 
 
 var ALL = [
@@ -358,7 +352,7 @@ var ALL = [
         }
     ],
     "tags" : [
-        "rails",
+        "ruby-on-rails",
         "testing",
         "teams"
     ],

@@ -120,15 +120,31 @@ views = ->
 
 
 
-  IT 'Track anonymous workshop view', ->
+  IT 'Track anon workshop view', ->
     ANONSESSION (s) ->
-      anonymousId = s.sessionID
+      sId = s.sessionID
       spy = sinon.spy(analytics,'view')
-      PAGE "/ruby-on-rails/workshops/simplifying-rails-tests", { 'referer', 'http://airpair.com/workshops' }, (html) ->
+      PAGE "/ruby-on-rails/workshops/simplifying-rails-tests", { 'referer':'http://airpair.com/workshops' }, (html) ->
         expect(spy.callCount).to.equal(1)
         expect(spy.args[0][1]).to.equal('workshop')
-        expect(spy.args[0][2].title).to.equal('Simplifying Rails Tests')
-        DONE()
+        EXPECT.equalIds(spy.args[0][2]._id, '53dc048a6a45650200845f23')
+        expect(spy.args[0][2].url).to.equal("/ruby-on-rails/workshops/simplifying-rails-tests")
+        viewCheck = => DB.docsByQuery 'View', {sId}, (r) ->
+          expect(r.length).to.equal(1)
+          expect(r[0].uId).to.be.undefined
+          expect(r[0].utm).to.be.undefined
+          expect(Object.keys(r[0]).length).to.equal(9)
+          EXPECT.equalIds(r[0].sId, s.sessionID)
+          expect(r[0].app).to.equal('apcom')
+          EXPECT.equalIds(r[0].oId, '53dc048a6a45650200845f23')
+          expect(r[0].type).to.equal('workshop')
+          expect(r[0].ref).to.equal('http://airpair.com/workshops')
+          expect(r[0].url).to.equal("/ruby-on-rails/workshops/simplifying-rails-tests")
+          expect(r[0].ua).to.exist
+          expect(r[0].ip).to.exist
+          expect(r[0]._id).to.exist
+          DONE()
+        _.delay(viewCheck, 150)
 
 
 
@@ -232,7 +248,7 @@ aliases = ->
 
 impressions = ->
 
-  SKIP "Tracks single impression for repeat of same add on page"
+  SKIP "Tracks single impression for 2 x repeat of same ad on page"
 
 
 

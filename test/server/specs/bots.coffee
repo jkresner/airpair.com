@@ -39,7 +39,7 @@ api = ->
     PAGE '/', Opts({status:200},BADBot), (resp) ->
       expect(resp).to.equal('')
       PAGE '/', Opts({status:200},GOODBot), (resp2) ->
-        EXPECT.contains(resp2, "<title>Software Micro-Consulting")
+        EXPECT.contains(resp2, "<title>airpair | Coding help, Software consultants & Programming resources")
         DONE()
 
 
@@ -70,11 +70,11 @@ api = ->
         expectSessionStored s, ->
           DB.docsByQuery 'View', { sId:s.sessionID }, (views) ->
             expect(views.length).to.equal(1)
-            expect(views[0].url).to.equal('/100k-writing-competition')
+            expect(views[0].sId).to.equal(s.sessionID)
             expect(views[0].type).to.equal('landing')
+            expect(views[0].url).to.equal('/100k-writing-competition')
             expect(views[0].utm).to.be.undefined
             expect(views[0].uId).to.be.undefined
-            expect(views[0].sId).to.equal(s.sessionID)
             DONE()
 
 

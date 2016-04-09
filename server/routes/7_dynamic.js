@@ -41,6 +41,7 @@ module.exports = function(app, mw) {
     mw.$.trackJob, mw.$.hybridPage('job'))
 
 
+
   .get('/posts/review/:id',
     mw.$.noBot,
     function(req, res, next) {
@@ -57,34 +58,32 @@ module.exports = function(app, mw) {
     }, mw.$.postPage)
 
 
-  .get('/software-experts',
-    mw.$.badBot, mw.$.session, mw.$.reqFirst, mw.$.cachedAds,
-    function(req, res, next) {
-      cache.get('postAllPub', API.Posts.svc.getAllPublished, (e, r) => {
-        req.locals.r = r
-        req.locals.htmlHead = { title: "Software Posts, Tutorials & Articles" }
-        req.landing = { key: 'posts' }
-        next()
-      })
-    }, mw.$.inflateAds, mw.$.hybridPage('posts'))
 
-
-  .get('/:tag/posts/:post',
+  .get(['/:tag/posts/:post',
+        '/:tag/tutorial/:post',
+        '/:tag/tips-n-tricks/:post'
+       ],
     mw.$.badBot, mw.$.session, mw.$.reqFirst, mw.$.cachedAds, mw.$.inflateAds,
-    (req, res, next) => next(null, req.locals.htmlHead = req.locals.r.htmlHead),
-    mw.$.trackPost, mw.$.postPage)
+    mw.$.trackPost,
+    (req, res, next) => {
+      $log('post:post.view|pre.render', req.locals.r.url)
+      next(null, req.locals.htmlHead = req.locals.r.htmlHead)
+    },
+    mw.$.postPage)
 
 
-  .get('/:tag/workshops/:slug',
+
+  .get('/:tagshort/workshops/:slug',
     mw.$.badBot, mw.$.session, mw.$.reqFirst, mw.$.cachedAds,
     (req, res, next) => {
-      req.workshop = cache.workshops[req.params.slug]
-      if (req.workshop) next(null, req.locals.r = req.workshop)
-      else next("Workshop not found")
+      var r = _.find(cache.workshops, w => w.url == req.originalUrl)
+      r ? next(null, assign(req.locals,{r,htmlHead:r.htmlHead})) : next("Workshop not found")
     },
     mw.$.trackWorkshop,
     mw.$.serverPage('workshop'))
 
   )
+
+  $logIt('cfg.route', 'obj   GET', 'lol')
 
 }

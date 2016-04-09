@@ -26,13 +26,9 @@ function itemReady(key, cb)
   }
 }
 
-
-itemReady('workshops', () => {
-  itemReady('posts', () => {
-    // $log('CACHED.POSTS')
-  })
+itemReady('posts', () => {
+  // $log('CACHED.POSTS')
 })
-
 
 
 // cache.ready = function(keys, cb)

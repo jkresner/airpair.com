@@ -15,8 +15,10 @@ module.exports = (app, mw) => {
 
   mw.cache('serverPage', page => mw.res.page(page, {about,bundles,layout:'server'}))
 
-  mw.cache('landingPage', (req,res,next) =>
-    mw.res.page(req.landing.key, {about,bundles,layout:'landing'})(req,res,next))
+  mw.cache('landingPage', (req,res,next) => {
+    if (!req.locals.htmlHead) throw Error("Set landingPage req.locals.htmlHead")
+    mw.res.page(req.locals.r.key, {about,bundles,layout:'landing'})(req,res,next)
+  })
 
 
   mw.cache('notFound', mw.res.notFound({

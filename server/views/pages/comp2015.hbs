@@ -3,7 +3,7 @@
 
 <div class="fold">
     <section>
-    <img class="logo" src="/img/pages/postscomp/writing-logo.png" />
+    <div class="img complogo"></div>
     <h1>2015 Developer Writing Competition</h1>
 
     </section>
@@ -11,22 +11,22 @@
 
       <h4>In partnership with</h4>
 
-      <img src="/img/pages/postscomp/logo-keen-io.png" />
-      <img src="/img/pages/postscomp/logo-pubnub.png" />
-      <img src="/img/pages/postscomp/logo-coreos.png" />
-      <img src="/img/pages/postscomp/logo-rethinkdb.png" />
-      <img src="/img/pages/postscomp/logo-ironio.png" />
-      <img src="/img/pages/postscomp/logo-firebase.png" />
-      <img src="/img/pages/postscomp/logo-neo4j.png" />
-      <img src="/img/pages/postscomp/logo-twilio.png" />
-      <img src="/img/pages/postscomp/logo-ionic.png" />
-      <img src="/img/pages/postscomp/logo-mongodb.png" />
-      <img src="/img/pages/postscomp/logo-hashicorp.png" />
-      <img src="/img/pages/postscomp/logo-thoughtworks.png" />
-      <img src="/img/pages/postscomp/logo-braintree.png" />
-      <img src="/img/pages/postscomp/logo-pivotaltracker.png" />
-      <img src="/img/pages/postscomp/logo-contentful.png" />
-      <img src="/img/pages/postscomp/logo-sendgrid.png" />
+      <div class="keen-io"></div>
+      <div class="pubnub"></div>
+      <div class="coreos"></div>
+      <div class="rethinkdb"></div>
+      <div class="ironio"></div>
+      <div class="firebase"></div>
+      <div class="neo4j"></div>
+      <div class="twilio"></div>
+      <div class="ionic"></div>
+      <div class="mongodb"></div>
+      <div class="hashicorp"></div>
+      <div class="thoughtworks"></div>
+      <div class="braintree"></div>
+      <div class="pivotaltracker"></div>
+      <div class="contentful"></div>
+      <div class="sendgrid"></div>
 
     </section>
   </div>
@@ -63,7 +63,7 @@
           AirPair's 100k Writing Competition was a celebration of our <i>Social Authoring</i> experiment. We'll be holding another competition in 2016.
         </p>
 
-        <img class="flow" src="/img/pages/posts/authoring-flow.png" />
+        <div class="flow" />
 
       </div>
       <br /><br />
@@ -117,7 +117,34 @@
     <h2 class="underline">Sponsor prize winners</h2>
 
     <div>
-      {{#each prizes.sponsor}}{{> postCompListItem this}}{{/each}}
+      {{#each prizes.sponsor}}
+<article class="posttile comppost" itemscope="itemscope" itemtype="http://schema.org/BlogPosting" itemprop="blogPost">
+  <div class="logo {{logo}}"></div>
+  <h3 class="sponsor">{{sponsor}}</h3>
+  <h5>{{prize}}</h5>
+
+  <span class="entry-author" itemprop="author" itemscope="itemscope" itemtype="http://schema.org/Person">
+    <span class="entry-author-name" itemprop="name">{{ by }}</span>
+  </span>
+
+  <a href="https://www.airpair.com/{{ url }}" title="{{ title }}" target="_blank" rel="bookmark">
+    <header class="entry-header">
+      <img class="entry-header-image" itemprop="image" src="{{ tileImg }}" align="left" />
+    </header>
+
+    <div class="entry-content" itemprop="text">
+      <h2 class="entry-title" itemprop="headline">{{ title }}
+      </h2>
+      <div class="stars" stars val="{{rating}}"></div>
+      <i>reviewed by {{reviews}}</i>
+    </div>
+  </a>
+
+  <footer class="entry-footer">
+    <img class="entry-author-img" itemprop="image" ng-src="{{ avatar }}?s=50" />
+  </footer>
+</article>
+      {{/each}}
     </div>
 
   </section>
@@ -130,7 +157,34 @@
     <h2 class="underline">Category prize winners (sponsored by AirPair)</h2>
 
     <div>
-      {{#each prizes.category}}{{> postCompListItem this }}{{/each}}
+      {{#each prizes.category}}
+<article class="posttile comppost" itemscope="itemscope" itemtype="http://schema.org/BlogPosting" itemprop="blogPost">
+  <div class="logo {{logo}}"></div>
+  <h3 class="sponsor">airpair</h3>
+  <h5>{{prize}}</h5>
+
+  <span class="entry-author" itemprop="author" itemscope="itemscope" itemtype="http://schema.org/Person">
+    <span class="entry-author-name" itemprop="name">{{ by }}</span>
+  </span>
+
+  <a href="https://www.airpair.com/{{ url }}" title="{{ title }}" target="_blank" rel="bookmark">
+    <header class="entry-header">
+      <img class="entry-header-image" itemprop="image" src="{{ tileImg }}" align="left" />
+    </header>
+
+    <div class="entry-content" itemprop="text">
+      <h2 class="entry-title" itemprop="headline">{{ title }}
+      </h2>
+      <div class="stars" stars val="{{rating}}"></div>
+      <i>reviewed by {{reviews}}</i>
+    </div>
+  </a>
+
+  <footer class="entry-footer">
+    <img class="entry-author-img" itemprop="image" ng-src="{{ avatar }}?s=50" />
+  </footer>
+</article>
+      {{/each}}
     </div>
 
   </section>
