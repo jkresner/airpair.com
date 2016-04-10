@@ -23,7 +23,8 @@
   window.viewData = {
     session: {{{ JSON session }}}, {{#if r.htmlHead }}
     canonical: '{{{ r.htmlHead.canonical }}}', {{/if}}{{#if r.tag}}
-    tag: {{{ JSON r.tag }}} {{/if}}
+    tag: {{{ JSON r.tag }}}, {{/if}}{{#if r.htmlHead.ogTypePost }}
+    post: {{{ JSON r }}}, {{/if}}
   }
 
   </script>

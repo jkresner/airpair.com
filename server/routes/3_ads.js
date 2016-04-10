@@ -6,8 +6,8 @@ module.exports = function(app, mw, {ads}) {
   $logIt('cfg.route', `file  GET`, `\\\\${ads.dir.replace('/','\\')}\\heroku\\:file`)
   app.use('/ad/heroku', mw.$.noBot, mw.$.session, mw.$.cachedAds,
     (req, res, next) => {
-      req.ad = cache.ads[`heroku${req.url}`]
-      return req.ad ? next() : res.status(404).send(`heroku${req.url}: Not found`)
+      req.locals.r = cache.ads[`heroku${req.url}`]
+      return req.locals.r ? next() : res.status(404).send(`heroku${req.url}: Not found`)
     },
     mw.$.trackImpression,
     app.Static(`${ads.dir}/heroku`)) //no max age, we want no cacheing

@@ -15,9 +15,7 @@ module.exports = (app, mw) => {
   mw.cache('hybridPage', page => mw.res.page(page, {about,bundles,layout:'hybrid'}))
 
   mw.cache('postPage', function(req,res,next) {
-    var page = req.locals.r.tmpl == 'faq' ? 'faq' : 'post'
-    mw.res.page(page,{about,bundles,layout:'hybrid'})(req,res,next)
-  })
+    mw.res.page(req.locals.r.tmpl,{about,bundles,layout:'hybrid'})(req,res,next) })
 
   mw.cache('landingPage', function(req,res,next) {
     if (!req.locals.htmlHead) throw Error("Set landingPage req.locals.htmlHead")

@@ -16,6 +16,7 @@ module.exports = (app, mw) => {
             ad.brand = c.brand.toLowerCase()
             ad.shortUrl = ad.shortUrl.replace('https://www.airpair.com/visit/','')
             ad.img = ad.img.replace('https://www.airpair.com/ad/','')
+            ad.positions = ad.positions.map(p=>p.replace('post:',''))
             ads[ad.img] = ad
             ads.tagged[ad.tag] = (ads.tagged[ad.tag] || []).concat([ad.img])
           }
@@ -83,15 +84,14 @@ module.exports = (app, mw) => {
   mw.cache('inflateMeExpert', mw.data.recast('expert','user._id',{queryKey:'userId'}))
 
 
-  mw.cache('inflateAds', (req, res, next) => {
-    var {ads} = cache
-    var tag = req.locals.r.adtag || 'ruby'
-    req.locals.ads = {
-      'top': ads[ads.tagged[tag].filter(img => ads[img].positions.indexOf('post:top')!=1)],
-      'bottom': ads[ads.tagged[tag].filter(img => ads[img].positions.indexOf('post:top')!=1)]
-    }
-    next()
-  })
+  mw.cache('inflateAds', (req, res, next) =>
+    next(null, req.ctx.bot ? 0 :     // don't want ads indexed
+      cache.ads.tagged[req.locals.r.adtag || 'ruby']
+        .map(img => cache.ads[img])
+        .forEach(ad => ad.positions
+          .forEach(p => req.locals.ads
+            ? req.locals.ads[p] = assign({position:p},ad)  // only handles one, not elegent atm
+            : req.locals.ads = { [p] : assign({position:p},ad) } )) ) )
 
 
   mw.cache('inflateLanding', key => function(req, res, next) { next(null,

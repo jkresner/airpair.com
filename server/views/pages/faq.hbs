@@ -1,9 +1,11 @@
+{{#with r}}
+
 <article class="blogpost faq">
 
   <h1 class="entry-title" itemprop="headline">{{ title }}</h1>
 
 
-  <div class="fork">
+{{!--   <div class="fork">
     {{#if github }}
     <h6>Something off?</h6>
     <div class="fork">
@@ -12,7 +14,7 @@
     </div>
     {{/if}}
   </div>
-
+ --}}
 
   <post no-compile>{{{ html }}}</post>
 
@@ -27,3 +29,6 @@
   {{/if}}
 
 </article>
+
+
+{{/with}}

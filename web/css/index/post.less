@@ -1,31 +1,58 @@
 @import "ap.less";
 
-@sideRailWidth:212px;
+@sideRailWidth:220px;
 @mainElmWidth:640px;
 @mainElmPad:0px;
 
 
 
-.banner {
+div.sponsor {
   position:relative;
-  border:solid 1px white;
-}
-.banner:hover {
-  border:solid 1px @orange;
-  .btn { background:@orangehighlight; }
+  display:block;
+  a { display:block;margin:0;padding:0;width:100% }
+  img { width:100%;display:block;margin:0;padding:0 }
+  pre {
+    display:none;border-radius:0;
+    span { font-weight:bold; }
+    em { font-style:normal; }
+  }
+  // border:solid 1px white;
+  // &:hover { border:solid 1px @orange; }
 }
 
-.banner-top, .banner-bottom {
-  height:92px;
-  a {
-    height:92px;width:100%;
-    display:block;margin:0;padding:0;
+.sponsor-heroku {
+  a { background-color:#684fb6; }
+  pre {
+    color:white;
+    background-color:#684fb6;
+    span { color:@bluehighlight; }
+    em { color:pink }
   }
-  img {
-    width:100%;display:block;margin:0;padding:0
-  }
-  margin:20px 0;
+}
+
+div.sponsor-top, div.sponsor-bottom {
+  margin:30px 0;
   width:902px;
+  a { height:92px; }
+  pre { display:none!important }
+}
+
+
+div.sponsor-side {
+  margin:0;
+  width:220px;
+  // padding-bottom:0;
+  a { opacity:0.9;padding:2px 0 5px 0 }
+  img { height:250px; }
+  pre {
+    display:block;margin:0!important;opacity:0.8;
+    font-size:11px;line-height:13px;
+    padding:3px 4px!important;
+  }
+  &:hover {
+    a { opacity:1 }
+    pre { opacity:0.9 }
+  }
 }
 
 
@@ -249,6 +276,7 @@ article.faq {
   }
 
   .share {
+    border-bottom:0;
     height:44px;
     .rail;
     margin:14px 0 12px 0;
@@ -288,18 +316,19 @@ article.faq {
 
   #table-of-contents {
     .rail;
-    margin:10px 0 0px 0;
-    font-weight: bold;
+    margin:0;
+    padding:0;
+    line-height:18px;
+    font-size:11px;
+    font-weight:bold;
     text-transform:uppercase;
-    padding: 0;
-    // margin: 0 0 10px 0;
-    font-size:10px;
   }
   #table-of-contents + ul {
     .rail;
     margin:0;
-    list-style:none;
+    padding-top:5px;
     padding-left:0;
+    list-style:none;
     font-size:13px;
     z-index:0;
     max-height:540px;

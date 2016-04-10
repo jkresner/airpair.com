@@ -30,26 +30,26 @@ var inflateHtml = function(isAnon, cb) {
     r.toc = marked(generateToc(r.md))
     var supped = PostsUtil.extractSupReferences(r.md)
     r.references = PostsUtil.markupReferences(supped.references, marked)
-    if (isAnon) {
-      var odd = false
-      marked.setOptions({highlight: function(code, lang) {
-        odd = !odd
-        if (odd) {
-          var maxLines = 0
-          var obs = ""
-          for (var line of code.split('\n')) {
-            if (++maxLines < 4)
-              obs += '\n' + line.replace(/(\S\S)(\S\S)/g,'$1{}{}')
-          }
-          return obs.replace('\n','') // trim first \n
-        }
-        else
-          return code
-      }})
-      r.html = marked(supped.markdown)
-      marked.setOptions({highlight:null})
-    }
-    else
+    // if (isAnon) {
+      // var odd = false
+      // marked.setOptions({highlight: function(code, lang) {
+        // odd = !odd
+        // if (odd) {
+          // var maxLines = 0
+          // var obs = ""
+          // for (var line of code.split('\n')) {
+            // if (++maxLines < 4)
+              // obs += '\n' + line.replace(/(\S\S)(\S\S)/g,'$1{}{}')
+          // }
+          // return obs.replace('\n','') // trim first \n
+        // }
+        // else
+          // return code
+      // }})
+      // r.html = marked(supped.markdown)
+      // marked.setOptions({highlight:null})
+    // }
+    // else
       r.html = marked(supped.markdown)
 
     cb(e,r)
@@ -217,7 +217,7 @@ var select = {
       rev.replies = _.map(rev.replies || [], (reply) =>
         _.extend(reply, {by: userCommentByte(reply.by)}) )
       return rev
-    })
+    }) || []
   },
   mapForkers(forkers) {
     return _.map(forkers,(f)=> {
@@ -314,8 +314,14 @@ var select = {
         //     // r.html = r.html.replace(m,`<div class="signup"></div>${m.split('\n')[0]}</code></pre>`)
         //   }
           // r.html = r.html.replace(/<pre/g,'<pre signup ')
-
         // }
+
+        //-------
+
+        r.tmpl = !r.tmpl || r.tmpl == 'default' ? 'post_v1' : r.tmpl
+        if (r.tmpl == 'post_v1')
+          r.htmlHead.css = [] // ['/lib.css'] // grab archived css
+        //-----
 
         if (!r.tags || r.tags.length == 0) {
           $log(`post ${r.title} [${r._id}] has no tags`.red)
@@ -339,12 +345,14 @@ var select = {
           r.stats = r.stats || PostsUtil.calcStats(r)
           r.publishReady = (r.stats.reviews > 2) && (r.stats.rating > 3.5)
         }
+
         if (!r.published)
           r.htmlHead = { noindex: true }
         else
           //-- Stop using disqus once deployed the review system
           r.showDisqus = moment(r.published) < moment('20150201', 'YYYYMMDD')
 
+        r.htmlHead.ogTypePost = true
 
         r.forkers = select.mapForkers(r.forkers || [])
         r.reviews = select.mapReviews(r.reviews)

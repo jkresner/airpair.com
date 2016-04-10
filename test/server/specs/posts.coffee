@@ -44,6 +44,9 @@ browsing = ->
         DONE()
 
 
+  SKIP "Anon view on an faq", -> DONE()
+
+
   IT "Authd view a published post", ->
     post = FIXTURE.posts.higherOrder
     url = post.htmlHead.canonical.replace('https://www.airpair.com', '')
