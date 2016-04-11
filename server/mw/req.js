@@ -1,4 +1,4 @@
-module.exports = (app, mw) => {
+module.exports = (app, mw, cfg) => {
 
 
   // CF-Connecting-IP === X-Forwarded-For (if no spoofing)
@@ -14,10 +14,6 @@ module.exports = (app, mw) => {
       if (req.originalUrl.indexOf(url) == 1) req.ctx.dirty = 'urlstale'
     next()
   })
-
-  var restrict = req => req.ctx.bot||req.ctx.dirty
-  mw.cache('session', mw.session.touch(app.meanair.model.sessionStore,
-    assign({ restrict }, config.middleware.session)) )
 
 
   mw.cache('reqFirst', mw.session.orient({

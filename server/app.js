@@ -31,7 +31,7 @@ function run({config,MAServer,tracking}, done) {
 
     cache.get('redirects',
 
-      cb => config.routes.redirects ? DAL.Redirect.getAll(cb) : cb(null,{}),
+      cb => config.routes.redirects ? DAL.Redirect.getAll(cb) : cb(null,[]),
 
       () => app.meanair.lib({passport:require('passport')})
                        .set(model, {analytics})

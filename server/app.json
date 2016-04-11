@@ -115,7 +115,8 @@
     "session": {
       "authdData":            "_id name email username avatar",
       "name":                  "aps",
-      "secret":                "airyv1"
+      "secret":                "airyv1",
+      "store":                 { "collection": "sessions_apcom" }
     },
     "slow":                    null
   },
@@ -127,8 +128,7 @@
     "cache": {
       "tags":                  { "getter": "tags.getForCache" },
       "templates":             { "getter": "templates.getForCache" }
-    },
-    "session":                 { "collection": "sessions_apcom" }
+    }
   },
   "routes": {
     "ads": {
@@ -138,10 +138,12 @@
     "redirects":               { "on": true },
     "rss":                     { "on": true }
   },
-  "views": {
-    "dirs":                    "views,views/pages",
-    "helpers":                 true,
-    "partials":                { "dirs": "views/partials" }
+  "templates": {
+    "dirs": {
+      "views":                 "templates,templates/pages",
+      "partials":              "templates/partials",
+      "helpers":               "templates/helpers"
+    }
   },
   "wrappers": {
     "bitly": {
