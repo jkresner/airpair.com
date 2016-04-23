@@ -11,9 +11,11 @@ function run({config,MAServer,tracking}, done) {
     global.cache = model.cache
     require('./util/cache')
 
-    global.API            = require('./api/_all')
-    global.util           = require('../shared/util')
-    _.wrapFnList          = util.wrapFnList
+    global.analytics    = analytics.connect(DAL)
+
+    global.API          = require('./api/_all')
+    global.util         = require('../shared/util')
+    _.wrapFnList        = util.wrapFnList
 
     global.$callSvc       = (fn, ctx) =>
       function() {
@@ -22,9 +24,9 @@ function run({config,MAServer,tracking}, done) {
         fn.apply(thisCtx, arguments)
       }
 
-    global.Wrappers = require('./services/wrappers/_index')
-    global.mailman = require('./util/mailman')()
-    global.pairbot = require('./util/pairbot')()
+    global.Wrappers     = require('./services/wrappers/_index')
+    global.mailman      = require('./util/mailman')()
+    global.pairbot      = require('./util/pairbot')()
     global.svc = { newTouch(action) { return { action, _id: DAL.User.newId(),
       utc: new Date(), by: { _id: this.user._id, name: this.user.name } } } }
 

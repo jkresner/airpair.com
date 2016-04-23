@@ -11,28 +11,33 @@ module.exports = function(app, mw) {
     }, mw.$.serverPage('spin'))
 
 
-  app.use(app.Router()
-    .use(mw.$.cachedTags)
-    .param('tag', API.Tags.paramFns.getBySlug)
+  // app.use(app.Router()
+  app.use(mw.$.cachedTags)
+    // .param('tag', API.Tags.paramFns.getBySlug)
     .param('job', API.Requests.paramFns.getByIdForReview)
-    .param('post', API.Posts.paramFns.getBySlugForPublishedView)
+    // .param('post', API.Posts.paramFns.getBySlugForPublishedView)
 
 
 
   // for (var slug of ['angularjs']) //,'firebase'
   //   app.get(`/${slug}`, populate.tagPage(slug), trackView('tag'),
   //     app.renderHbsViewData('tag', null, (req, cb) => cb(null, req.tagpage) ))
-  // for (var slug of ['reactjs','python','node.js','ember.js','keen-io','rethinkdb','ionic','swift','android','ruby'])
-  //   router.get(`^/${slug}`, mw.$.trackTag, mw.$.hybridPage('tag'))
+  for (var slug of ['reactjs','python','node.js','ember.js','keen-io','rethinkdb','ionic','swift','android','ruby'])
+    app.get(`^/${slug}`, function(req, res, next) {
+      next(null, req.locals.r = _.find(cache.tags, t => t.slug == req.originalUrl.replace(/\//g, '')))
+      },
+      // mw.$.trackTag,
+      mw.$.hybridPage('tag'))
 
 
-  .get(['/job/:job','/review/:job'],
+  app.get(['/job/:job','/review/:job'],
     mw.$.badBot, mw.$.session, mw.$.reqFirst,
-    mw.$.trackJob, mw.$.hybridPage('job'))
+    mw.$.trackJob,
+    mw.$.hybridPage('job'))
 
 
 
-  .get('/posts/review/:id',
+  app.get('/posts/review/:id',
     mw.$.noBot,
     function(req, res, next) {
       API.Posts.svc.getByIdForReview.call(req, req.params.id, (e,r) => {
@@ -48,22 +53,7 @@ module.exports = function(app, mw) {
     }, mw.$.postPage)
 
 
-
-  .get(['/:tag/posts/:post',
-        '/:tag/tutorial/:post',
-        '/:tag/tips-n-tricks/:post'
-       ],
-    mw.$.badBot, mw.$.session, mw.$.reqFirst, mw.$.cachedAds, mw.$.inflateAds,
-    (req, res, next) => {
-      $log('post:post.view|pre.render', req.locals.r.url)
-      next(null, req.locals.htmlHead = req.locals.r.htmlHead)
-    },
-    mw.$.trackPost,
-    mw.$.postPage)
-
-
-
-  .get('/:tagshort/workshops/:slug',
+  app.get('/:tagshort/workshops/:slug',
     mw.$.badBot, mw.$.session, mw.$.reqFirst, mw.$.cachedAds,
     (req, res, next) => {
       var r = _.find(cache.workshops, w => w.url == req.originalUrl)
@@ -72,7 +62,7 @@ module.exports = function(app, mw) {
     mw.$.trackWorkshop,
     mw.$.serverPage('workshop'))
 
-  )
+  // )
 
   $logIt('cfg.route', 'obj   GET', 'lol')
 

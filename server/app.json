@@ -125,10 +125,7 @@
       "collections":           { "event": "Event", "impression": "Impression", "view": "View", "issue": "Issue", "campaign": "Campaign" },
       "mongoUrl":              "mongodb://localhost/airpair_analytics"
     },
-    "cache": {
-      "tags":                  { "getter": "tags.getForCache" },
-      "templates":             { "getter": "templates.getForCache" }
-    }
+    "cache":                   { "on": true }
   },
   "routes": {
     "ads": {

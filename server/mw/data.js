@@ -1,33 +1,34 @@
-module.exports = (app, mw) => {
+module.exports = ({meanair}, mw) => {
 
-  mw.cache('cachedTags',        mw.data.cached('tags'))
-  mw.cache('cachedTemplates',   mw.data.cached('templates'))
+  var {logic} = meanair
+
+
+  mw.cache('cachedAds',         mw.data.cached('ads',logic.ads.getForCache.exec))
+  mw.cache('cachedTags',        mw.data.cached('tags',logic.tags.getForCache.exec))
+  mw.cache('cachedTemplates',   mw.data.cached('templates',logic.templates.getForCache.exec))
   mw.cache('cachedSlackUsers',  (req, res, next) => Wrappers.Slack.getUsers(next))
+  mw.cache('cachedPublished', (req, res, next) =>
+    cache.get('published', API.Posts.svc.getAllPublished, next))
 
 
-  mw.cache('cachedAds', (req,res,next) =>
-    cache.get('ads', cb =>
-      DAL.Campaign.getManyByQuery({code:{$in:config.routes.ads.campaigns.split(',')}},
-        { select: '_id name code brand ads._id ads.img ads.url ads.shortUrl ads.positions ads.tag' }, (e, campaigns) => {
-        var ads = { tagged: {} }
-        for (var c of campaigns || [])
-          for (var ad of c.ads) {
-            ad.campaign = c.code
-            ad.brand = c.brand.toLowerCase()
-            ad.shortUrl = ad.shortUrl.replace('https://www.airpair.com/visit/','')
-            ad.img = ad.img.replace('https://www.airpair.com/ad/','')
-            ad.positions = ad.positions.map(p=>p.replace('post:',''))
-            ads[ad.img] = ad
-            ads.tagged[ad.tag] = (ads.tagged[ad.tag] || []).concat([ad.img])
-          }
-        // $log('ads', ads)
-        cb(e, ads)
-      }),
-      (e, ads) => next()
-    ))
+  mw.cache('logic', (path, opts) => function(req, res, next) {
+    opts = opts || {}
 
+    var [group,fn] = path.split('.')
+    var args = [(e,r) => {
+      if (r && r.htmlHead) req.locals.htmlHead = r.htmlHead
+      if (!r && opts.required !== false)
+        e = assign(Error(`Not Found ${req.originalUrl}`),{status:404})
 
-  mw.cache('cachedPublished', (req, res, next) => cache.get('published', API.Posts.svc.getAllPublished, next))
+      next(e, req.locals.r = logic[group][fn].project(r))
+    }]
+    for (var arg in req.params) args.unshift(req.params[arg])
+    // $log('logic.'.white, args)
+    var inValid = logic[group][fn].validate.apply(this, _.union([req.user],args))
+    if (inValid) return next(inValid)
+    // $log('logic.'.white, fn, logic[group][fn], args)
+    logic[group][fn].exec.apply(this, args)
+  })
 
 
 

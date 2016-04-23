@@ -50,7 +50,7 @@
                               "ang/**/*.html",
                               "web/.lib/**/*.js",
                               "web/.lib/**/*.html"],
-      "livereload":          ["server/views/*",
+      "livereload":          ["server/templates/*",
                               "web/build/css/*.css",
                               "web/build/js/*.js"]
     }

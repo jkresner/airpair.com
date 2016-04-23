@@ -1,11 +1,12 @@
 module.exports = function(app, mw) {
 
   app.API('session')
-    .uses('noBot session')
+    .uses('noBot')
     .get({'full':                  ''})
 
 
-  app.use('/v1/api/adm', mw.$.noBot, mw.$.session, app.Router()
+  app.honey.Router('adm:api', { mount: '/v1/api/adm', type: 'api' })
+    .use([mw.$.noBot, mw.$.session, mw.$.adm])
     .param('expert', API.Experts.paramFns.getByIdForAdmin)
     .param('request', API.Requests.paramFns.getByIdForAdmin)
     .param('order', API.Orders.paramFns.getByIdForAdmin)
@@ -13,7 +14,6 @@ module.exports = function(app, mw) {
     .param('tag', API.Tags.paramFns.getBySlug)
     .param('expertshaped', API.Experts.paramFns.getById)
     .param('booking', API.Bookings.paramFns.getById)
-    .use(mw.$.adm)
     .get('/tags', API.Tags.getAllForCache)
     .get('/tags/:id', API.Tags.getById)
     .post('/tags', API.Tags.createByAdmin)
@@ -29,7 +29,6 @@ module.exports = function(app, mw) {
     .get('/redirects', API.Redirects.getAllRedirects)
     .post('/redirects', API.Redirects.createRedirect)
     .delete('/redirects/:id', API.Redirects.deleteRedirectById)
-    .use(mw.$.cachedTags)
     .use(mw.$.cachedTemplates)
     .get('/requests/active', API.Requests.getActiveForAdmin)
     .get('/requests/2015', API.Requests.get2015ForAdmin)
@@ -67,14 +66,14 @@ module.exports = function(app, mw) {
     // .post('/experts/:expert/note', API.Experts.addNote)
     .put('/bookings/chat/invite-to-team/:userId', API.Chat.inviteToTeam)
     .post('/bookings/chat/:booking/message', API.Bookings.postChatMessage)
-  )
 
 
-  app.use('/v1/api/posts', mw.$.noBot, mw.$.session, app.Router()
+  app.honey.Router('posts:api', { mount: '/v1/api/posts', type: 'api' })
     .param('tag', API.Tags.paramFns.getBySlug)
     // .param('expert', API.Experts.paramFns.getByIdForAdmin)
     .param('post', API.Posts.paramFns.getById)
     .param('postreview', API.Posts.reviewParamFn)
+    .use(mw.$.session)
     .use(mw.$.cachedTags)
     .get('/tagged/:tag', API.Posts.getByTag)
     .use(mw.$.authd)
@@ -90,10 +89,10 @@ module.exports = function(app, mw) {
   //   .get('/review', API.Posts.getPostsInReview)
   //   .get('/recent', API.Posts.getRecentPublished)
   //   .get('/by/:id', API.Posts.getUsersPublished)
-  )
 
 
-  app.use('/v1/api', mw.$.noBot, mw.$.session, app.Router()
+
+  app.honey.Router('general:api', { mount: '/v1/api', type: 'api' })
     .param('tag', API.Tags.paramFns.getBySlug)
     // .param('tagfrom3rdparty', 'tags', 'getBy3rdParty')
     .param('request', API.Requests.paramFns.getByIdForAdmin)
@@ -108,15 +107,14 @@ module.exports = function(app, mw) {
   //   .put('/users/me/tags', mw.$.setAnonSessionData, API.Users.updateTags)
   //   .put('/users/me/bookmarks', mw.$.setAnonSessionData, API.Users.updateBookmarks)
   //   .put('/users/me/bookmarks/:type/:id', mw.$.setAnonSessionData, API.Users.toggleBookmark)
+    .use(mw.$.session)
+    .use(mw.$.cachedTemplates)
 
     .get('/requests/review/:id', API.Requests.getByIdForReview)
 
     .get('/tags/search/:id', API.Tags.search)
 
     .use(mw.$.authd)
-    .use(mw.$.cachedTags)
-    .use(mw.$.cachedTemplates)
-
     // .post('/tags', mw.data.recast('tag','body.tagfrom3rdparty'), API.Tags.createFrom3rdParty)
 
     .get('/requests-authd', mw.$.inflateMe, API.Requests.getAllowed)
@@ -172,6 +170,5 @@ module.exports = function(app, mw) {
     .put('/bookings/:booking/create-chat', API.Bookings.createChat)
     .put('/bookings/:booking/associate-chat', API.Bookings.associateChat)
     .put('/bookings/:booking/:expert/customer-feedback', API.Bookings.customerFeedback)
-  )
 
 }

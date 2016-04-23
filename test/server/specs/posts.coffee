@@ -20,7 +20,7 @@ browsing = ->
   IT "Request post by non-existing slug", ->
     fakeUrl = "/angularjs/posts/the-definitive-ionic-starter-gu"
     PAGE fakeUrl, {status:404}, (r) ->
-      EXPECT.contains(r,'not found')
+      EXPECT.contains(r,'Not Found')
       DONE()
 
 

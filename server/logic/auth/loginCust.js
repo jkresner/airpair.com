@@ -32,7 +32,7 @@ module.exports = function(DAL, Data, Shared, Lib) {
         if (inValid) return done(Shared.Unauthorized(inValid))
 
         $logIt('auth.login', 'gh:login', `${profile.login}: ${JSON.stringify(profile).gray}`)
-        if (existing) Object.assign(this,{existing})
+        if (existing) assign(this,{existing})
         var fn = existing ? 'loginOAuth' : 'signupOAuth'
 
         Lib[fn](this, 'gh', 'github', profile, tokens, (e,r) => {

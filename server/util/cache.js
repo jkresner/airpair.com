@@ -31,13 +31,6 @@ itemReady('posts', () => {
 })
 
 
-// cache.ready = function(keys, cb)
-// {
-  // itemReady('tags', () => {
-  // })
-// }
-
-
 cache.flush = function(key, cb)
 {
   if (key == 'posts') cache.postAllPublished = null
@@ -54,6 +47,8 @@ cache.bookmark = function(type, id)
 
 cache.tmpl = function(type, key, cb)
 {
+  // console.log(`cache['templates']`, cache['templates'].length, type, key,
+    // cache['templates'][`${type}:${key}`])
   cb( cache['templates'][`${type}:${key}`] )
 }
 
@@ -61,7 +56,7 @@ cache.tmpl = function(type, key, cb)
 cache.tagBySlug = function(slug)
 {
   if (!cache['tag_slugs']) {
-    $log('building.cache.tag_slugs', Object.keys(cache.tags).length)
+    // $log('building.cache.tag_slugs', Object.keys(cache.tags).length)
     cache['tag_slugs'] = {}
     Object.keys(cache.tags).forEach( id =>
       cache['tag_slugs'][cache.tags[id].slug] = cache.tags[id])

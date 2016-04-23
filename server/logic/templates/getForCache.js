@@ -2,7 +2,7 @@ module.exports = ({Template}, {Project, Opts}, Shared) => ({
 
   exec(cb) {
     Template.getManyByQuery({}, {}, (e,r) => {
-      var compiled = []
+      var compiled = {}
       for (var tmpl of r) {
         var compiledTmpl = {
           _id: `${tmpl.type}:${tmpl.key}`,
@@ -21,7 +21,7 @@ module.exports = ({Template}, {Project, Opts}, Shared) => ({
           compiledTmpl.sender = tmpl.sender || 'team'
         }
 
-        compiled.push(compiledTmpl)
+        compiled[compiledTmpl._id] = compiledTmpl
       }
       cb(e, compiled)
     })

@@ -12,16 +12,12 @@ module.exports = (app, mw) => {
     }
   ))
 
-
   mw.cache('trackAuth', mw.analytics.event('auth', track('event')))
-
-
 
   mw.cache('trackClick', mw.analytics.view('ad', track('view'), {
       project:  d => ({_id:d._id,img:d.img,tag:d.tag,url:d.url})
     }
   ))
-
 
   mw.cache('trackWorkshop', mw.analytics.view('workshop', track('view'), {
       onBot: () => {},
@@ -42,13 +38,14 @@ module.exports = (app, mw) => {
   ))
 
   mw.cache('trackTag', mw.analytics.view('tag', track('view'), {
-      onBot:()=>{}
+      onBot:()=>{},
+      project:d=>({_id:d._id})
     }
   ))
 
   mw.cache('trackJob', mw.analytics.view('job', track('view'), {
       onBot:()=>{},
-      project:r=>({_id:r._id})
+      project:d=>({_id:d._id})
     }
   ))
 

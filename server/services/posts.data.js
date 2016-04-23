@@ -10,7 +10,7 @@ var selectFromObj = function(obj, fieldsString) {
   return selectFromObject(obj, fieldsObj)
 }
 
-var topTapPages = ['angularjs']
+// var topTapPages = ['angularjs']
 
 var inflatedTags = (tags) => {
   if (!tags || !tags.length) return []
@@ -98,16 +98,16 @@ var select = {
     'lastTouch': 1,
     'tags': 1
   },
-  listComp: {
-    'by.name': 1,
-    'by.avatar': 1,
-    'htmlHead.canonical': 1,
-    'htmlHead.ogImage': 1,
-    'title':1,
-    'slug': 1,
-    'stats': 1,
-    'prize': 1,
-  },
+  // listComp: {
+  //   'by.name': 1,
+  //   'by.avatar': 1,
+  //   'htmlHead.canonical': 1,
+  //   'htmlHead.ogImage': 1,
+  //   'title':1,
+  //   'slug': 1,
+  //   'stats': 1,
+  //   'prize': 1,
+  // },
   listCache: {
     '_id': 1,
     'by.name': 1,
@@ -253,29 +253,29 @@ var select = {
         cb(e,r)
       }
     },
-    editInfoView(cb) {
-      return (e,r) => {
-        if (e || !r) return cb(e,r)
-        cb(null, selectFromObj(r, select.editInfo))
-      }
-    },
-    editView(cb, overrideMD, owner) {
-      return (e,r) => {
-        if (e && !r) return cb(e,r)
-        else if (e) {
-          if (e.message.indexOf("Not Found") != -1)
-            return cb(Error(`Could not read ${r.slug} repo`))
-          return cb(e,r)
-        }
-        r = selectFromObject(r, select.edit)
-        r.repo = `${owner}/${r.slug}`
-        if (overrideMD) {
-          r.synced = r.md == overrideMD
-          r.md = overrideMD // hack for front-end editor to show latest edit
-        }
-        cb(null,r)
-      }
-    },
+    // editInfoView(cb) {
+    //   return (e,r) => {
+    //     if (e || !r) return cb(e,r)
+    //     cb(null, selectFromObj(r, select.editInfo))
+    //   }
+    // },
+    // editView(cb, overrideMD, owner) {
+    //   return (e,r) => {
+    //     if (e && !r) return cb(e,r)
+    //     else if (e) {
+    //       if (e.message.indexOf("Not Found") != -1)
+    //         return cb(Error(`Could not read ${r.slug} repo`))
+    //       return cb(e,r)
+    //     }
+    //     r = selectFromObject(r, select.edit)
+    //     r.repo = `${owner}/${r.slug}`
+    //     if (overrideMD) {
+    //       r.synced = r.md == overrideMD
+    //       r.md = overrideMD // hack for front-end editor to show latest edit
+    //     }
+    //     cb(null,r)
+    //   }
+    // },
     statsView(cb) {
       return (e,r) => {
         if (e || !r) return cb(e,r)
@@ -318,27 +318,9 @@ var select = {
 
         //-------
 
-        r.tmpl = !r.tmpl || r.tmpl == 'default' ? 'post_v1' : r.tmpl
-        if (r.tmpl == 'post_v1')
-          r.htmlHead.css = [] // ['/lib.css'] // grab archived css
+
         //-----
 
-        if (!r.tags || r.tags.length == 0) {
-          $log(`post ${r.title} [${r._id}] has no tags`.red)
-          return cb(null,r)
-        }
-
-        r.primarytag = _.find(r.tags,(t) => t.sort==0) || r.tags[0]
-        var topTagPage = _.find(topTapPages,(s) => r.primarytag.slug==s)
-        r.primarytag.postsUrl = (topTagPage) ? `/${r.primarytag.slug}` : `/posts/tag/${r.primarytag.slug}`
-
-        r.adtag = 'ruby'
-        if (_.find(r.tags, t => t.slug.match(/javascript|node/i)))
-          r.adtag = 'node.js'
-        if (_.find(r.tags, t => t.slug.match(/java/i) && !t.slug.match(/javascript/i)))
-          r.adtag = 'java'
-        if (_.find(r.tags, t => t.slug.match(/(php|wordpress)/i)))
-          r.adtag = 'php'
 
 
         if (r.submitted) {
@@ -409,12 +391,12 @@ var query = {
     return andQuery(query, andCondition)
   },
 
-  comp2015winners() {
-    return {
-      'prize' : { '$exists': true },
-      'prize.comp': '2015_q1'
-    }
-  },
+  // comp2015winners() {
+  //   return {
+  //     'prize' : { '$exists': true },
+  //     'prize.comp': '2015_q1'
+  //   }
+  // },
 
   //posts published before now or readyForReview
   publishedReviewReady(andCondition) {
@@ -427,40 +409,40 @@ var query = {
     return andQuery(query, andCondition)
   },
 
-  inReview(andCondition) {
-    var query = [
-      { 'submitted': {'$exists': true } },
-      { 'published': {'$exists': false } },
-      { '$or': [
-          {'submitted': {'$gt': moment().add(-10,'day').toDate() }},
-          {'updated':   {'$gt': moment().add(-10,'day').toDate() }}
-        ]
-      }
-    ]
-    return andQuery(query, andCondition)
-  },
+  // inReview(andCondition) {
+  //   var query = [
+  //     { 'submitted': {'$exists': true } },
+  //     { 'published': {'$exists': false } },
+  //     { '$or': [
+  //         {'submitted': {'$gt': moment().add(-10,'day').toDate() }},
+  //         {'updated':   {'$gt': moment().add(-10,'day').toDate() }}
+  //       ]
+  //     }
+  //   ]
+  //   return andQuery(query, andCondition)
+  // },
 
-  stale(andCondition) {
-    var query = [
-      { 'submitted': {'$exists': true } },
-      { 'submitted': {'$lt': moment().add(-10,'day').toDate() } },
-      { 'published': {'$exists': false } },
-    ]
-    return andQuery(query, andCondition)
-  },
+  // stale(andCondition) {
+  //   var query = [
+  //     { 'submitted': {'$exists': true } },
+  //     { 'submitted': {'$lt': moment().add(-10,'day').toDate() } },
+  //     { 'published': {'$exists': false } },
+  //   ]
+  //   return andQuery(query, andCondition)
+  // },
 
-  inDraft(andCondition) {
-    return { $and:[
-      { _id },
-      { 'tags': {'$exists': true } },
-      { 'assetUrl': {'$exists': true } },
-      { 'by.userId': userId }
-    ]}
-  },
+  // inDraft(andCondition) {
+  //   return { $and:[
+  //     { _id },
+  //     { 'tags': {'$exists': true } },
+  //     { 'assetUrl': {'$exists': true } },
+  //     { 'by.userId': userId }
+  //   ]}
+  // },
 
-  updated: {
-    updated : { '$exists': true }
-  },
+  // updated: {
+  //   updated : { '$exists': true }
+  // },
 
   forker(userId) {
     return {
@@ -472,12 +454,12 @@ var query = {
     }
   },
 
-  myPosts(userId) {
-    return {$or: [
-      { forkers: { $elemMatch: { userId } } },
-      { 'by.userId':userId }
-    ]}
-  }
+  // myPosts(userId) {
+  //   return {$or: [
+  //     { forkers: { $elemMatch: { userId } } },
+  //     { 'by.userId':userId }
+  //   ]}
+  // }
 }
 
 

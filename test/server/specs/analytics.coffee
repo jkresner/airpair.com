@@ -190,23 +190,23 @@ aliases = ->
 
   IT 'Two sessionIDs added from unique sessions', ->
     DB.removeDocs 'User', { 'auth.gh.id': 465691 }, ->
-    anonymousId = null
-    anonymousId2 = null
+    sessionId1 = null
+    sessionId2 = null
 
     session2Callback = () -> ANONSESSION (s2) ->
 
-      anonymousId2 = s2.sessionID
-      expect(anonymousId2).to.not.equal(anonymousId)
+      sessionId2 = s2.sessionID
+      expect(sessionId2).to.not.equal(sessionId1)
 
       PAGE "/job/#{FIXTURE.requests.aJob._id}", {}, ->
         PAGE "/review/#{FIXTURE.requests.aJob._id}", {}, ->
 
-          DB.docsByQuery 'views', {sId:anonymousId2}, (v2) ->
+          DB.docsByQuery 'views', {sId:sessionId2}, (v2) ->
             expect(v2.length).to.equal(2)
             expect(v2[0].uId).to.be.undefined
             expect(v2[1].uId).to.be.undefined
-            expect(v2[0].sId).to.equal(anonymousId2)
-            expect(v2[1].sId).to.equal(anonymousId2)
+            expect(v2[0].sId).to.equal(sessionId2)
+            expect(v2[1].sId).to.equal(sessionId2)
 
             LOGIN 'mkod', ->
               # expect(spyAlias.callCount).to.equal(1)
@@ -222,25 +222,23 @@ aliases = ->
                   expect(v3.length).to.equal(4)
                   DB.docById 'User', s3._id, (rUser) ->
                     expect(rUser.cohort.aliases.length).to.equal(2)
-                    expect(rUser.cohort.aliases[0]).to.equal(anonymousId)
-                    expect(rUser.cohort.aliases[1]).to.equal(anonymousId2)
+                    expect(rUser.cohort.aliases[0]).to.equal(sessionId1)
+                    expect(rUser.cohort.aliases[1]).to.equal(sessionId2)
                     DONE()
                 _.delay(viewCheck, 50)
 
     ANONSESSION (s) ->
-      anonymousId = s.sessionID
+      sessionId1 = s.sessionID
       PAGE "/job/#{FIXTURE.requests.aJob._id}", {}, ->
         PAGE "/review/#{FIXTURE.requests.aJob._id}", {}, ->
-
-          DB.docsByQuery 'View', {sId:anonymousId}, (v1) ->
+          DB.docsByQuery 'View', {sId:sessionId1}, (v1) ->
             expect(v1.length).to.equal(2)
             expect(v1[0].ud).to.be.undefined
             expect(v1[1].uId).to.be.undefined
-            expect(v1[0].sId).to.equal(anonymousId)
-            expect(v1[1].sId).to.equal(anonymousId)
+            expect(v1[0].sId).to.equal(sessionId1)
+            expect(v1[1].sId).to.equal(sessionId1)
             expect(v1[0].type).to.equal('job')
             expect(v1[1].type).to.equal('job')
-
           LOGIN 'mkod', (s) ->
             session2Callback()
 

@@ -15,7 +15,7 @@ module.exports = (app, mw) => {
   mw.cache('hybridPage', page => mw.res.page(page, {about,bundles,layout:'hybrid'}))
 
   mw.cache('postPage', function(req,res,next) {
-    mw.res.page(req.locals.r.tmpl,{about,bundles,layout:'hybrid'})(req,res,next) })
+    mw.res.page(req.locals.r.tmpl, {about,bundles,layout:'hybrid'})(req,res,next) })
 
   mw.cache('landingPage', function(req,res,next) {
     if (!req.locals.htmlHead) throw Error("Set landingPage req.locals.htmlHead")
@@ -24,13 +24,14 @@ module.exports = (app, mw) => {
 
 
   mw.cache('notFound', mw.res.notFound({
-    onBot: (req, res, next) => {
+    onBot(req, res, next) {
       // $log('notFound'.white, req.ctx.bot)
-      if (req.ctx.bot && req.ctx.bot.match('disallow')) {
-        analytics.issue(req.ctx, 'security', { crawl: 404, url: req.originalUrl })
+      // if (req.ctx.bot && req.ctx.bot.match('disallow')) {
+      analytics.issue(req.ctx, 'crawl', 'security', { crawl: 404, url: req.originalUrl })
+      if (req.ctx.bot.match('bad'))
         return res.status(200).send('')
-      }
-      return res.status(404).send('Page not found')
+      else
+        return res.status(404).send('Page not found')
     }
   }))
 
@@ -40,11 +41,22 @@ module.exports = (app, mw) => {
     quiet: _.get(config, 'log.app.quiet'),
     // formatter: (req, e) => `${e.message}`,
     onError: (req, e) => {
-      // $log('onError'.cyan, config.comm.dispatch.groups.errors)
-      if (config.env != 'test' && config.comm.dispatch.groups.errors)
+      try {
+        var msg = e.message.replace(/ /g,'')
+        var name = e.status || (msg.length > 24 ? msg.substring(0,24) : msg)
+        if (config.env.match(/prod/i))
+          analytics.issue(req.ctx, name, 'error', {stack:e.stack,msg:e.message})
+      }
+      catch (ERR) {
+        console.log('SHEEEET'.red, ERR.stack, e.stack)
+      }
+
+      if (config.env.match(/prod/i) && config.comm.dispatch.groups.errors)
         COMM('ses').error(e, {
           subject:`{AP} ${e.message}`,
           text: $request(req, e, {body:true}) + '\n\n' + e.stack.toString() })
+      else if (global.config.log.app.verbose)
+        $log('mw.onError[VERBOSE]'.cyan, e.stack)
     }
   }))
 
