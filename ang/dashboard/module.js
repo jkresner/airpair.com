@@ -8,8 +8,7 @@ angular.module("APDashboard", ['APFilters', 'APSvcSession',
   };
 
   $routeProvider
-    .when('/', actions.list)
-    .when('/dashboard', actions.list)
+    .when('/home', actions.list)
 })
 
 .directive('dashboardRebook', function(Util) {
@@ -33,37 +32,25 @@ angular.module("APDashboard", ['APFilters', 'APSvcSession',
 })
 
 
-.controller('DashboardCtrl', function($scope, $location, DataService,
-  SessionService, StaticDataService, BookingsUtil) {
 
-  SessionService.onAuthenticated(function() {
+.controller('DashboardCtrl', function($scope,  DataService, SessionService, BookingsUtil) {
 
-    if (!$scope.session._id)
-      return window.location = "/"
+  if (!$scope.session._id)
+    return window.location = "/"
 
-    $scope.util = BookingsUtil
+  $scope.util = BookingsUtil
 
-    DataService.bookings.getBookings({}, (r) => {
-      $scope.bookings = _.take(r,4)
-      var rebookings = {}
-      r.forEach((b)=>{
-        if (!rebookings[b.expertId]) rebookings[b.expertId] = b
-      })
-      $scope.rebookings = _.values(rebookings)
+  DataService.bookings.getBookings({}, (r) => {
+    $scope.bookings = _.take(r,4)
+    var rebookings = {}
+    r.forEach((b)=>{
+      if (!rebookings[b.expertId]) rebookings[b.expertId] = b
     })
+    $scope.rebookings = _.values(rebookings)
+  })
 
-    DataService.requests.getMyRequests({}, (r) => {
-      $scope.requests = r
-    })
-
-    var setSeen = (r) => {
-      $scope.seen = []
-      r.forEach((n)=>$scope.seen[n.name] = true)
-    }
-
+  DataService.requests.getMyRequests({}, (r) => {
+    $scope.requests = r
   })
 
 })
-
-
-

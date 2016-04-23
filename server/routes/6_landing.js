@@ -25,7 +25,7 @@ module.exports = function(app, mw) {
         title: 'Fork Up! AirPair\'s $100,000.00 Git-Powered Developer Writing Competition',
         description: 'AirPair has released a set of new Github API powered publishing tools. To celebrate, AirPair is distributing over $100k in cash prizes to the best posts submitted before May 30th, 2015.',
         canonical: 'https://www.airpair.com/100k-writing-competition',
-        ogType: 'Article',
+        ogType: 'article',
         ogTitle: 'Fork Up! AirPair\'s $100,000.00 Git-Powered Developer Writing Competition',
         ogDescription: 'AirPair has released a set of new Github API powered publishing tools. To celebrate, AirPair is distributing over $100k in cash prizes to the best posts submitted before May 30th, 2015.',
         ogImage: 'https://www.airpair.com/static/img/pages/postscomp/og.png',
@@ -47,41 +47,61 @@ module.exports = function(app, mw) {
       _id: Id("5706abc347ba64cb164bec08"),
       key: 'posts',
       url: '/software-experts',
-      htmlHead: { title: "Software Programming Guides and Tutorials for Top Software Experts" }
+      htmlHead: { title: "Software Programming Guides and Tutorials from Top Software Experts and Consultants" }
+    },
+    tag: {
+      _id: Id("5706abc347ba64cb164bec18"),
+      key: 'tag',
+      url: '/{{tagslug}}',
+      htmlHead: {
+        title: "$tag Programming Guides and Tutorials from Top $tag Developers and expert consultants",
+        ogType: "technology",
+      }
     }
   }
 
 
-  if (config.middleware.livereload)
-    app.use(mw.res.livereload(config.middleware.livereload))
+
+  mw.cache('inflateLanding', key => function(req, res, next) { next(null,
+    assign(req.locals, { r:cache['landing'][key], htmlHead: cache['landing'][key].htmlHead } ) ) })
 
 
-  var landing = mw.$$('badBot session reqFirst')
-  var landed = mw.$$('trackLanding landingPage')
+  var topTags = 'reactjs python javascript node.js ember.js keen-io rethinkdb ionic swift android ruby'.split(' ')
 
-  mw.$chain = {}
-  mw.$chain.landingPage = (key, custom) =>
-    $logIt('cfg.route', 'html  GET', cache.landing[key].url) ||
-    _.union(landing, [mw.$.inflateLanding(key)], custom, landed)
-
-
-  app.get('/', mw.$chain.landingPage('home',
-    [mw.res.forbid('authd', usr => usr, { redirect: req => '/dashboard' })] ))
-
-
-  app.get('/software-experts', mw.$chain.landingPage('posts',
-    [ mw.$.cachedPublished, mw.$.cachedAds, mw.$.inflateAds,
-      (req, res, next) => next(null, assign(req.locals.r, cache.published)) ] ))
+  function tagPageData(req, res, next) {
+    var tag = cache.tagBySlug(req.params.tagslug||req.url.replace('/', ''))
+    if (!tag) return next(assign(Error(`Not found ${req.originalUrl}`),{status:404}))
+    var {title,canonical} = req.locals.r.htmlHead
+    canonical = canonical || `https://www.airpair.com/posts/tag/${tag.slug}`
+    req.locals.r.htmlHead = assign({}, req.locals.r.htmlHead, {
+      title:title.replace('$tag',tag.name).replace('$tag',`${tag.short}`),
+      canonical: topTags.indexOf(tag.slug) == -1 ? canonical : canonical.replace('/posts/tag','')
+    })
+    API.Posts.svc.getByTag(tag, (e,r) => next(e, assign(req.locals.r,tag,r,{url:req.originalUrl})))
+  }
 
 
-  app.get('/100k-writing-competition', mw.$chain.landingPage('comp2015'))
+  var router = app.honey.Router('landing')
+    .use(mw.$.livereload)
+    .use([mw.$.badBot,mw.$.session,mw.$.reqFirst])
+    .use([mw.$.trackLanding,mw.$.landingPage],{end:true})
 
+    .get('/', mw.$.inflateLanding('home'),
+      mw.res.forbid('authd', usr => usr, { redirect: req => '/home' }))
 
+    .get('/software-experts', mw.$.inflateLanding('posts'),
+      mw.$.cachedPublished, mw.$.inflateAds,
+      (req, res, next) => next(null, assign(req.locals.r, cache.published)) )
 
-  app.get(['/airconf','airconf2014','/workshops'], mw.$chain.landingPage('workshops',
-    [mw.$.cachedAds, mw.$.inflateAds]))
+    .get('/100k-writing-competition', mw.$.inflateLanding('comp2015'))
 
+    .get(['/airconf','airconf2014','/workshops'],
+      mw.$.inflateLanding('workshops'),
+      mw.$.inflateAds)
 
+    .get(`/posts/tag/:tagslug`, mw.$.cachedTags, mw.$.inflateLanding('tag'), tagPageData)
+
+  topTags.forEach(slug => router.get(`/${slug}`, mw.$.cachedTags, mw.$.inflateLanding('tag'), tagPageData))
 
 
 

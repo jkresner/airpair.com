@@ -8,7 +8,7 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
   var authd = resolver(['session']);
 
   var actions = {
-    list:   { template: require('./list.html'), controller: 'RequestListCtrl' },
+    list:   { resolve: authd, template: require('./list.html'), controller: 'RequestListCtrl' },
     create: { resolve: authd, template: require('./new.html'), controller: 'RequestCtrl' },
     edit: { resolve: authd, template: require('./edit.html'), controller: 'RequestEditCtrl' },
     review: { template: require('./review.html'), controller: 'ReviewCtrl' }
@@ -32,10 +32,6 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
 
 .controller('RequestListCtrl', function($scope, $location, DataService, SessionService) {
 
-  SessionService.onAuthenticated(function() {
-    if (!$scope.session._id) $location.path(`/`)
-  })
-
   DataService.requests.getMyRequests({}, function(result) {
     $scope.requests = result
   })
@@ -46,11 +42,8 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
 .controller('RequestCtrl', function($rootScope, $scope, DataService, RequestHelper) {
   //-- In case the come through from request scope from another page like review
   if ($scope.request) return window.location = '/help/request'
-
-
-
-
 })
+
 
 .controller('RequestEditCtrl', function($scope, $routeParams, $location, DataService, SessionService, Shared, ServerErrors) {
   var _id = $routeParams.id;

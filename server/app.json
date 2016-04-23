@@ -118,7 +118,7 @@
       "secret":                "airyv1",
       "store":                 { "collection": "sessions_apcom" }
     },
-    "slow":                    null
+    "slow":                    1000
   },
   "model": {
     "analytics": {

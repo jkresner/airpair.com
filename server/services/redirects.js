@@ -2,7 +2,7 @@
 module.exports = {
 
   getAllRedirects(cb) {
-    var opts = { select: '_id previous current type', sort: 'previous' }
+    var opts = { select: '_id previous current type', sort: { 'current': -1 } }
     DAL.Redirect.getAll(opts, cb)
   },
 

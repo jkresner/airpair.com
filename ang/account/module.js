@@ -4,7 +4,7 @@ angular.module("APAccount", [])
 
   var authd = apRouteProvider.resolver(['session']);
   var route = apRouteProvider.route
-  route('/login', 'Login', require('./login.html'),{resolve: authd})
+  route('/login', 'Login', require('./login.html'))
   route('/account', 'Account', require('./account.html'),{resolve: authd})
   // route('/me/password', 'Password', require('./password.html'))
   // route('/password-reset', 'PasswordResetCtrl', require('./passwordreset.html'))

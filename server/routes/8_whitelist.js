@@ -1,25 +1,24 @@
 module.exports = function(app, mw) {
 
 
-  app.use(['/account',
+  app.get(['/account',
            '/billing*',
            '/bookings',
            '/bookings/*',
            '/booking/*',
-           '/dashboard',
            '/help*',
+           '/home',
            '/requests*'],
-           mw.$.noBot, mw.$.session, mw.$.authd, mw.$.clientPage)
+           mw.$.noBot, mw.$.session, mw.$.authd, mw.$.inflateMe, mw.$.clientPage)
 
 
-  app.use(['/login',
-           '/find-an-expert',
+  app.get(['/find-an-expert',
            '/hire-software-developers',
            '*pair-programming*',
-           ], mw.$.badBot, mw.$.session, mw.$.reqFirst, mw.$.clientPage)
+           ], mw.$.badBot, mw.$.rewrites, mw.$.session, mw.$.reqFirst, mw.$.clientPage)
 
 
-  app.use('^/adm/*', mw.$.noBot, mw.$.session, mw.$.adm, mw.$.adminPage)
+  app.get('^/adm/*', mw.$.noBot, mw.$.session, mw.$.adm, mw.$.adminPage)
 
 
 }

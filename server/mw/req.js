@@ -1,5 +1,8 @@
 module.exports = (app, mw, cfg) => {
 
+  if (config.middleware.livereload)
+    mw.cache('livereload', mw.res.livereload(config.middleware.livereload))
+
 
   // CF-Connecting-IP === X-Forwarded-For (if no spoofing)
   // First exception: CF-Connecting-IP

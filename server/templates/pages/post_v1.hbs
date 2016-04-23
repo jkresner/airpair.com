@@ -105,10 +105,10 @@
   {{/if}}
 
 </article>
-
+{{!--
 {{#if submitted }}
   <div id="reviews" post-reviews reviews='{{ JSON reviews }}' byid="{{by.userId}}"></div>
-{{/if}}
+{{/if}} --}}
 
 
 {{#if showDisqus }}
@@ -153,7 +153,7 @@
 
 {{!-- in use [2015.12.06] --}}
 <article class="posttile" itemscope="itemscope" itemtype="http://schema.org/BlogPosting" itemprop="blogPost">
-  <a href="{{ url }}" title="{{ title }}" target="_self" rel="bookmark">
+  <a href="{{ htmlHead.canonical }}" title="{{ title }}" target="_self" rel="bookmark">
     <header class="entry-header">
       <img class="entry-header-image" itemprop="image" src="{{ htmlHead.ogImage }}" align="left" />
       <div class="glass"></div>

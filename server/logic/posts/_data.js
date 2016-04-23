@@ -3,7 +3,8 @@ var views = {
            + ' reviews._id reviews.by reviews.updated reviews.replies reviews.votes reviews.questions.key reviews.questions.answer'
            + ' forkers title tmpl slug stats created published submitted tags assetUrl'
            + ' lastTouch.utc lastTouch.action lastTouch.by._id lastTouch.by.name'
-           + ' url html toc'
+           + ' url html toc similar adtag',
+  list:    '_id by.userId by.name by.avatar htmlHead.canonical htmlHead.description htmlHead.ogImage github.repoInfo title slug created published submitted tags stats'
 }
 
 
@@ -98,26 +99,28 @@ module.exports = new LogicDataHelper(
     },
 
     adTag: d => {
-      // $log('adTag'.yellow, d.tags)
       if (!d.tags || d.tags.length == 0) {
         $log(`post ${d.title} [${d._id}] has no tags`.red)
         return cb(null, d)
       }
 
-      d.primarytag = _.find(d.tags,(t) => t.sort==0) || d.tags[0]
+      // $log('adTag'.yellow, d.tags, d.adtag)
+      d.primarytag = d.adtag || _.find(d.tags, t => t.sort==0) || d.tags[0]
       // var topTagPage = _.find(topTapPages,(s) => d.primarytag.slug==s)
       d.primarytag.postsUrl = // topTagPage ? `/${d.primarytag.slug}` :
         `/posts/tag/${d.primarytag.slug}`
 
-      d.adtag = 'ruby'
-      if (_.find(d.tags, t => t.slug.match(/javascript|node/i)))
-        d.adtag = 'node.js'
-      if (_.find(d.tags, t => t.slug.match(/java/i) && !t.slug.match(/javascript/i)))
-        d.adtag = 'java'
-      if (_.find(d.tags, t => t.slug.match(/(php|wordpress)/i)))
-        d.adtag = 'php'
+      var adtag = 'ruby'
+      if (d.adtag && d.adtag.slug.match(/(ruby|node.js|java|php)$/i))
+        adtag = d.adtag.slug
+      else if (_.find(d.tags, t => t.slug.match(/javascript|angular|node|mean/i)))
+        adtag = 'node.js'
+      else if (_.find(d.tags, t => t.slug.match(/java/i) && !t.slug.match(/javascript/i)))
+        adtag = 'java'
+      else if (_.find(d.tags, t => t.slug.match(/(php|wordpress)/i)))
+        adtag = 'php'
 
-      return d
+      return assign(d, {adtag})
     },
 
 
@@ -170,9 +173,10 @@ module.exports = new LogicDataHelper(
 
 
     displayPublished: d => {
-      // $log('displayPublished'.yellow, d.by.name)
+      // $log('displayPublished'.yellow, d.by.name, d.adtag)
       var r =
-      chain(d, inflate.tags, 'bodyHtml', 'url', 'tocHtml', 'tmpl', select.display, 'adTag', 'other')
+      chain(d, inflate.tags, 'bodyHtml', 'url', 'tocHtml', 'tmpl', 'adTag', select.display, 'other')
+      for (var sim of r.similar) sim.url = sim.htmlHead.canonical
       // chain(d, select.display, 'bodyHtml', 'tocHtml', 'tmpl', 'url', 'inflate.tags')
       // $log('displayPublished'.magenta, d.reviews.length)
       return r
@@ -197,7 +201,8 @@ module.exports = new LogicDataHelper(
 
   //-- Query Opts
   {
-    published: { select: views.display + ' md slug' }
+    published: { select: `${views.display} md slug'` },
+    publishedNewest: (limit) => ({ limit, select: views.list, sort: { 'published': -1 } })
   }
 
 )

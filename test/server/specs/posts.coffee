@@ -14,7 +14,7 @@ browsing = ->
 
   IT '200 on unauthenticated Posts by tag', ->
     opts = status: 200, unauthenticated: true
-    GET("/posts/tagged/javascript", opts, -> DONE() )
+    PAGE("/posts/tag/javascript", opts, -> DONE() )
 
 
   IT "Request post by non-existing slug", ->

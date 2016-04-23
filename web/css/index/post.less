@@ -9,7 +9,9 @@
 div.sponsor {
   position:relative;
   display:block;
-  a { display:block;margin:0;padding:0;width:100% }
+  a { opacity:0.95;display:block;margin:0;padding:0;width:100%;
+    &:hover { opacity:1 }
+  }
   img { width:100%;display:block;margin:0;padding:0 }
   pre {
     display:none;border-radius:0;
@@ -520,7 +522,7 @@ article.faq {
 .postfooter {
   padding:10px;
   position:relative;
-  z-index:10px;
+  z-index:10;
   background:@gitgray;
   .tags {
     .ulNoStyle
@@ -532,6 +534,13 @@ article.faq {
     margin:15px 0;
     a { margin-bottom:8px!important }
   }
+}
+.postfooter + #posts {
+  padding-top:20px;
+  position: relative;
+  z-index:10;
+  background:white;
+  #allposts { padding:0 }
 }
 
 #reviews {

@@ -53,8 +53,8 @@ var get = {
 
   getMyDealOrdersForExpert(expertId, cb)
   {
-    var q = query.dealsForExpertWithMinutesRemaining(this.user._id, expertId)
-    Order.getManyByQuery(q, opts.orderByOldest, cb)
+    // var q = query.dealsForExpertWithMinutesRemaining(this.user._id, expertId)
+    // Order.getManyByQuery(q, opts.orderByOldest, cb)
   },
 
   getByQueryForAdmin(start, end, userId, cb)
@@ -211,16 +211,16 @@ function makeOrder(byUser, lines, payMethodId, forUserId, requestId, dealId, err
 
 function chargeAndTrackOrder(o, errorCB, saveCB)
 {
-  analytics.event.call({user:o.by},'order', {_id:o._id,total:o.total})
+  // analytics.event.call({user:o.by},'order', {_id:o._id,total:o.total})
   if (o.total == 0) saveCB(null, o)
   else
   {
     if (logging) $log('orders.svc.charge', o)
     PaymethodsSvc.charge(o.total, o._id, o.payMethod, (e,r) => {
-      if (e) {
-        $log('e', e)
+      if (e)
+        // $log('e', e)
         return errorCB(e)
-      }
+
       if (logging) $log('payment.created', r)
       trackOrderPayment.call(this, o)
 
@@ -246,7 +246,7 @@ function chargeAndTrackOrder(o, errorCB, saveCB)
 function trackOrderPayment(order) {
   var d = {byName:order.by.name,total:order.total, _id:order._id}
   mailman.sendTemplate('pipeliner-notify-purchase', d, 'pipeliners')
-  analytics.event.call({user:order.by},'payment', {orderId:order._id, total:order.total})
+  // analytics.event.call({user:order.by},'payment', {orderId:order._id, total:order.total})
 }
 
 
@@ -341,7 +341,7 @@ function bookUsingCredit(expert, minutes, total, lineItems, expectedCredit, payM
     makeOrder(this.user, lineItems, payMethodId, null, requestId, null, cb, (e, order) => {
 
       chargeAndTrackOrder(order, cb, (e,o) => {
-        if (request) $callSvc(RequestsSvc.updateWithBookingByCustomer,this)(request, o, (e,r) => {})
+        if (request) RequestsSvc.updateWithBookingByCustomer.call(this, request, o, (e,r) => {})
         // console.log('inserting cred redeemed order', order.total, order._id, order.userId)
         Order.bulkOperation([o], ordersToUpdate, [], (e,r) => cb(e,o))
       })
@@ -364,7 +364,7 @@ function _createBookingOrder(expert, time, minutes, type, credit, payMethodId, r
     lines.unshift(Lines.payg(total))
     makeOrder(this.user, lines, payMethodId, null, requestId, null, cb, (e, order) => {
       chargeAndTrackOrder(order, cb, (e,o) => {
-        if (request) $callSvc(RequestsSvc.updateWithBookingByCustomer,this)(request, o, (e,r) => {})
+        if (request) RequestsSvc.updateWithBookingByCustomer.call(this, request, o, (e,r) => {})
         Order.create(o, cb)
       })
     })

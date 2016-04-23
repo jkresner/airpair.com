@@ -184,9 +184,9 @@ var util = {
   },
 
 
-  momentSessionCreated(session) {
-    return new moment(session.cookie._expires).subtract(session.cookie.originalMaxAge,'ms')
-  },
+  // momentSessionCreated(session) {
+  //   return new moment(session.cookie._expires).subtract(session.cookie.originalMaxAge,'ms')
+  // },
 
 
   dateWithDayAccuracy(mom) {

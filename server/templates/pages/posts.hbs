@@ -1,3 +1,5 @@
+{{> siteNav }}
+
 {{!-- <header>
   <ol class="entry-meta breadcrumb">
     <li><a href="/software-experts" target="_self">Posts</a></li>
@@ -19,7 +21,7 @@
 
 {{#if latest}}
   <h2 class="underline">Latest software tutorials & guides
-    <a href="https://author.airpair.com/" class="btn btn-inverse" target="_self">Contribute a post</a>
+{{!--     <a href="https://author.airpair.com/" class="btn btn-inverse" target="_self">Contribute a post</a> --}}
   </h2>
 
   <div class="popular nobookmarks">
@@ -34,7 +36,8 @@
 {{#if top}}
   <div>
     <h2 class="underline">Highest rated posts
-      <a href="https://author.airpair.com/" class="btn btn-inverse" target="_self">Contribute a post</a></h2>
+      {{!-- <a href="https://author.airpair.com/" class="btn btn-inverse" target="_self">Contribute a post</a>--}}
+    </h2>
     {{#each top}}{{> postListItem this}}{{/each}}
   </div>
 {{/if}}
@@ -43,7 +46,7 @@
 {{#if popular}}
   <div class="popular nostars nobookmarks">
     <h2 class="underline">Popular software blog posts
-      <a href="https://author.airpair.com/" class="btn btn-inverse" target="_self">Contribute a post</a>
+{{!--       <a href="https://author.airpair.com/" class="btn btn-inverse" target="_self">Contribute a post</a> --}}
     </h2>
     {{#each popular}}{{> postListItem this}}{{/each}}
   </div>
@@ -62,7 +65,7 @@
 
 {{#if archive}}
   <h2 class="underline">All software tutorials
-    <a href="https://author.airpair.com/" class="btn btn-inverse" target="_self">Contribute a post</a>
+{{!--     <a href="https://author.airpair.com/" class="btn btn-inverse" target="_self">Contribute a post</a> --}}
   </h2>
 
   <ul class="archive-posts">

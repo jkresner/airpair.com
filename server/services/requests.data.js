@@ -4,12 +4,12 @@ var Roles                 = require('../../shared/roles.js').request
 
 var inflatedTags = (tags) => {
   if (!tags || !tags.length) return []
-  var inflatedTags = []
-  for (var tag of tags||[]) {
+  var inflated = []
+  for (var tag of tags) {
     if (cache.tags[tag._id])
-      inflatedTags.push(Object.assign(tag, _.pick(cache.tags[tag._id],'name','slug','short')))
+      inflated.push(assign(tag, _.pick(cache.tags[tag._id],'name','slug','short')))
   }
-  return inflatedTags
+  return inflated
 }
 
 // function migrateV0(r) {

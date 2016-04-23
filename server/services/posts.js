@@ -126,7 +126,7 @@ var get = {
   // },
 
   getBySlugForPublishedView(slug, cb) {
-    $log('getBySlugForPublishedView', slug)
+    // $log('getBySlugForPublishedView', slug)
     Post.getByQuery(query.published({slug}), { select: select.display },
       select.cb.displayView(this.user == null, get.getSimilar, cb)
     )
@@ -195,9 +195,9 @@ var get = {
   },
 
   getByTag(tag, cb) {
-    var options = Object.assign({ select: select.list}, opts.publishedNewest())
+    var options = assign({ select: select.list}, opts.publishedNewest())
     var q = query.published({'tags._id': tag._id})
-    Post.getManyByQuery(q, options, select.cb.addUrl((e,r) => cb(null, {tag,posts:r}) ))
+    Post.getManyByQuery(q, options, select.cb.addUrl((e,r) => cb(null, {latest:r}) ))
   },
 
 

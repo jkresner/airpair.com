@@ -8,11 +8,15 @@ module.exports = (app, mw) => {
 
   mw.cache('adminPage', mw.res.page('admin', {about,bundles,layout:false}))
 
-  mw.cache('clientPage', mw.res.page('client', {about,bundles,layout:false}))
+  mw.cache('clientPage', function(req,res,next) {
+    if (req.user) req.user = _.pick(req.user,'_id','name','location','avatar')
+    mw.res.page('client', {about,bundles,layout:false})(req, res, next)
+  })
 
-  mw.cache('serverPage', page => mw.res.page(page, {about,bundles,layout:'server'}))
-
-  mw.cache('hybridPage', page => mw.res.page(page, {about,bundles,layout:'hybrid'}))
+  mw.cache('hybridPage', page => function(req,res,next) {
+    if (req.user) req.user = _.pick(req.user,'_id','name','location', 'avatar'))
+    mw.res.page(page, {about,bundles,layout:'hybrid'})(req, res, next)
+  })
 
   mw.cache('postPage', function(req,res,next) {
     mw.res.page(req.locals.r.tmpl, {about,bundles,layout:'hybrid'})(req,res,next) })
@@ -22,11 +26,11 @@ module.exports = (app, mw) => {
     mw.res.page(req.locals.r.key, {about,bundles,layout:'landing'})(req,res,next)
   })
 
+  mw.cache('serverPage', page => mw.res.page(page, {about,bundles,layout:'server'}))
+
 
   mw.cache('notFound', mw.res.notFound({
     onBot(req, res, next) {
-      // $log('notFound'.white, req.ctx.bot)
-      // if (req.ctx.bot && req.ctx.bot.match('disallow')) {
       analytics.issue(req.ctx, 'crawl', 'security', { crawl: 404, url: req.originalUrl })
       if (req.ctx.bot.match('bad'))
         return res.status(200).send('')
@@ -55,8 +59,8 @@ module.exports = (app, mw) => {
         COMM('ses').error(e, {
           subject:`{AP} ${e.message}`,
           text: $request(req, e, {body:true}) + '\n\n' + e.stack.toString() })
-      else if (global.config.log.app.verbose)
-        $log('mw.onError[VERBOSE]'.cyan, e.stack)
+      // else if (global.config.log.app.verbose)
+        // $log('mw.onError[VERBOSE]'.cyan, e.stack)
     }
   }))
 

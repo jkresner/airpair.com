@@ -8,9 +8,17 @@ module.exports = ({Post}, {Project,Opts,Query}, Shared, Lib) => ({
 
 
   exec(postslug, tagslug, cb) {
-    // $log('SVC.'.yellow, tagslug, postslug, Query.published({slug:postslug}))
-    Post.getByQuery(Query.published({slug:postslug}), {}, cb) // Opts.published
-      // select.cb.displayView(this.user == null, get.getSimilar, cb)
+    // $log('log.'.yellow, tagslug, postslug)
+    var adtag = cache.tagBySlug(tagslug) || {}
+
+    Post.getByQuery(Query.published({slug:postslug}), Opts.published, (e, r) =>
+      //-- TODO, consider caching similar posts ?>
+      e || !r ? cb(e) : Post.getManyByQuery(
+        Query.published({_id:{$ne:r._id},'tags._id':adtag._id || r.tags[0]._id}),
+        Opts.publishedNewest(3),
+        (ee, similar) => cb(ee, ee ? null : assign(r,{similar},adtag._id?{adtag}:{}))
+      )
+    )
   },
 
 

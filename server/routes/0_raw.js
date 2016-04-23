@@ -1,7 +1,7 @@
-module.exports = function(app, mw, {redirects}) {
+module.exports = function(app, mw, {ads,redirects}) {
 
 
-  app.get('/posts/thumb/:id', (req,res,next) => {
+  app.get('/posts/thumb/:id', mw.$.noBot, (req,res,next) => {
     var post = cache.post[req.params.id]
     if (!post) res.status(404)
     else res.redirect(301, post.htmlHead.ogImage)
@@ -9,40 +9,27 @@ module.exports = function(app, mw, {redirects}) {
   })
 
 
-  if (redirects && redirects.on) {
+  if (ads)
 
-    if (config.log.app.verbose)
-      $log('WARN'.magenta, 'Treating all 302 redirects as Permanent 301'.white)
+    app.honey.Router('ads',{type:'ad'})
+      .use([mw.$.noBot, mw.$.session, mw.$.cachedAds])
 
-    //-- Express routes don't handle spaces, so always put in %20
-    //-- More so for some reason it's important to test the fully encoded
-    //-- Version of the url first
-    var map = new Map()
-    map.set(/%E2%80%A6/,'')
-    map.set(/%20%e2%80%a6/,'')
-    map.set(/%20%E2%80%A6/,'')
-    map.set(/%20\.\.\./,'%20...')
-    map.set(/\.\.\./,'')
-    map.set(/^\/logout$/,'/auth/logout')
-    // map.set("/c\\+\\+","/c++","/posts/tag/c++", "302")
+      .static('/ad/heroku', (req, res, next) => {
+          req.locals.r = cache.ads[`heroku${req.url}`]
+          return req.locals.r ? next() : res.status(404).send(`heroku${req.url}: Not found`)
+        }, mw.$.trackImpression, {dir:`${ads.dir}/heroku`})
 
-    cache['redirects'].filter(r => r.type == "301" || r.type == "302")
-      .forEach(r => map.set(new RegExp(`^${r.previous}$`,'i'), r.current))
+      .get('/visit/:short', (req, res, next) => {
+          var {ads} = cache
+          for (var img in ads)
+            ads[img].shortUrl == req.params.short ? req.locals.r = ads[img] : 0
 
+          req.locals.r ? next() : res.status(404).send('Not found')
+        },
+        mw.$.trackClick,
+        (req, res, next) => res.redirect(req.locals.r.url)
+      )
 
-    $logIt('cfg.route', 'redirects.on', `${cache['redirects'].length} cached, ${map.size} forwards`)
-
-    app.use(mw.req.forward({map}))
-
-    //-- TODO : pattern
-    // router.get('/author/*', (req,res) => { res.redirect(301, '/posts')})
-  }
-
-  if (config.middleware.slow)
-    app.use(mw.req.slow(config.middleware.slow))
-
-  if (config.middleware.ctx.dirty)
-    app.use(mw.$.reqDirty)
 
 }
 

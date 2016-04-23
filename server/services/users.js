@@ -19,9 +19,9 @@ var get = {
 
   },
 
-  getUsersInRole(role, cb) {
-    User.getManyByQuery({ roles:role }, { select: select.usersInRole }, cb)
-  }
+  // getUsersInRole(role, cb) {
+  //   User.getManyByQuery({ roles:role }, { select: select.usersInRole }, cb)
+  // }
 
 }
 
@@ -208,4 +208,4 @@ var save = {
 
 
 
-module.exports = Object.assign(get,save)
+module.exports = assign(get,save)

@@ -103,13 +103,6 @@ module.exports = function(app, mw) {
   // },
 
 
-  // authAlreadyDone(req, res, next) {
-  //   if (logging) $log(`mw.authAlreadyDone ${req.isAuthenticated()}`.cyan)
-  //   if (req.isAuthenticated()) { $log('authAlreadyDONE'.red); middleware.authDone(req, res, next) }
-  //   else { next() }
-  // },
-
-
   // handleOAuthSuccess(providerName, svcName, fnName) {
   //   return (req, res, next) => {
   //     if (logging) $log(`mw.handleOAuthSuccess ${req.authInfo.userinfo}`.cyan)
