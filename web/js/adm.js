@@ -34,9 +34,12 @@ require('./../../ang/adm/experts/module.js');
 
 
 angular.module('ADM', [
-  'ngRoute', 'ui.bootstrap', 'ui.bootstrap.datetimepicker', 'APViewData',
-  'APSvcSession', 'APSvcAdmin', 'APDataSvc', 'APNotifications', 'APRoutes', 'APUtil',
-  'APFilters', 'APFormsDirectives', 'APInputs', 'APTagInput', 'APMailTemplates', 'APHangouts', 'APRequestDirectives',
+  'ngRoute', 'ui.bootstrap', 'ui.bootstrap.datetimepicker',
+  'APViewData',
+  'APSvcSession', 'APSvcAdmin', 'APDataSvc',
+  'APNotifications', 'APRoutes', 'APUtil',
+  'APFilters', 'APInputs', 'APTagInput', 'APMailTemplates', 'APHangouts',
+  'APFormsDirectives', 'APRequestDirectives',
   'ADMPipeline',
   // 'ADMPosts',
   'ADMUsers',

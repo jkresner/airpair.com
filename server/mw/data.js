@@ -6,7 +6,7 @@ module.exports = ({meanair}, mw) => {
   mw.cache('cachedAds',         mw.data.cached('ads',logic.ads.getForCache.exec))
   mw.cache('cachedTags',        mw.data.cached('tags',logic.tags.getForCache.exec))
   mw.cache('cachedTemplates',   mw.data.cached('templates',logic.templates.getForCache.exec))
-  mw.cache('cachedSlackUsers',  (req, res, next) => Wrappers.Slack.getUsers(next))
+  mw.cache('cachedSlackUsers',  mw.data.cached('slack_users', Wrappers.Slack.getUsers))
   mw.cache('cachedPublished', (req, res, next) =>
     cache.get('published', API.Posts.svc.getAllPublished, next))
 

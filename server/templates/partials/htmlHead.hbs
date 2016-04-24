@@ -3,7 +3,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="{{#if noindex }}no{{/if}}index, follow">{{#if htmlHead}}{{#with htmlHead}}{{#if description }}<meta name="description" content="{{ description }}"/>{{/if}}<meta property="og:locale" content="en_US"/>{{#if ogType }}<meta property="og:type" content="{{ogType}}"/>{{else}}<meta property="og:type" content="article"/>{{/if}}{{#if ogTitle }}<meta property="og:title" content="{{ogTitle}}"/>{{/if}}{{#if ogDescription }}<meta property="og:description" content="{{ogDescription}}"/>{{/if}}{{#if ogImage }}<meta property="og:image" content="{{ogImage}}"/>{{/if}}{{#if ogUrl }}<meta property="og:url" content="{{ogUrl}}"/>{{/if}}{{#if canonical }}<link rel="canonical" href="{{ canonical }}" />{{/if}}{{/with}}{{/if}}{{#if htmlHead.css}}{{#each htmlHead.css}}
 <link rel="stylesheet" href="{{ this }}" type="text/css" />{{/each}}{{else}}
-<link rel="stylesheet" href="https://static.airpair.com/css/fonts.css" type="text/css" />
+<link rel="stylesheet" href="{{ cfg.static.host }}/css/fonts.css" type="text/css" />
 <link rel="stylesheet" href="{{ css.libs }}" type="text/css" />
 <link rel="stylesheet" href="{{ css.index }}" type="text/css" />{{/if}}
 <link rel="apple-touch-icon" sizes="57x57" href="https://static.airpair.com/ico/apple-icon-57x57.png">

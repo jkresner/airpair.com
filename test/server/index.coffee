@@ -5,6 +5,8 @@ config                       = MAServer.Config(appRoot, 'test', true)
 config.auth.test =
   loginFnName: 'loginCust'
 
+if process.env.LOG_MW_TRACE
+  config.log.mw.trace = 'white'
 
 OPTS = {}
 OPTS.onReady = -> require('./helpers')

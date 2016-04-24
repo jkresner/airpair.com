@@ -1,32 +1,34 @@
 module.exports = (app, mw) => {
 
 
-  var {bundles} = config.http.static
+  var {bundles,host} = config.http.static
   var about = _.pick(config.about, ['name','version','author'])
+  var cfg = { static: { host } }
+  var pageOpts = layout => ({about,bundles,layout,cfg})
 
-  // assign(app.locals,{host:{static:'https://static.airpair.com'}})
 
-  mw.cache('adminPage', mw.res.page('admin', {about,bundles,layout:false}))
+  mw.cache('adminPage', mw.res.page('admin', pageOpts('admin')))
 
   mw.cache('clientPage', function(req,res,next) {
     if (req.user) req.user = _.pick(req.user,'_id','name','location','avatar')
-    mw.res.page('client', {about,bundles,layout:false})(req, res, next)
+    mw.res.page('client', pageOpts(false))(req, res, next)
   })
 
   mw.cache('hybridPage', page => function(req,res,next) {
-    if (req.user) req.user = _.pick(req.user,'_id','name','location', 'avatar'))
-    mw.res.page(page, {about,bundles,layout:'hybrid'})(req, res, next)
+    if (req.user) req.user = _.pick(req.user,'_id','name','location', 'avatar')
+    mw.res.page(page, pageOpts('hybrid'))(req, res, next)
   })
 
   mw.cache('postPage', function(req,res,next) {
-    mw.res.page(req.locals.r.tmpl, {about,bundles,layout:'hybrid'})(req,res,next) })
+    mw.res.page(req.locals.r.tmpl, pageOpts('hybrid'))(req,res,next)
+  })
 
   mw.cache('landingPage', function(req,res,next) {
     if (!req.locals.htmlHead) throw Error("Set landingPage req.locals.htmlHead")
-    mw.res.page(req.locals.r.key, {about,bundles,layout:'landing'})(req,res,next)
+    mw.res.page(req.locals.r.key, pageOpts('landing'))(req,res,next)
   })
 
-  mw.cache('serverPage', page => mw.res.page(page, {about,bundles,layout:'server'}))
+  mw.cache('serverPage', page => mw.res.page(page, pageOpts('server')))
 
 
   mw.cache('notFound', mw.res.notFound({

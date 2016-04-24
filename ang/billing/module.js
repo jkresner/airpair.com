@@ -81,9 +81,7 @@ angular.module("APBilling", ['ngRoute', 'APPaymentDirectives','APExpertsDirectiv
 
   $scope.$watch("creditAmount", $scope.setSubmitCardText)
 
-  $scope.deletePayMethod = function(_id) {
-    DataService.billing.deletePaymethod({_id}, (r) => getPayMethods())
-  }
+  $scope.deletePayMethod = _id => DataService.billing.deletePaymethod({_id}, getPayMethods)
 })
 
 
@@ -241,41 +239,4 @@ angular.module("APBilling", ['ngRoute', 'APPaymentDirectives','APExpertsDirectiv
 .controller('BillingBookExpertCtrl', ($scope) => {
 
 })
-
-
-// .controller('BillingExpertsCtrl', function($scope, DataService) {
-
-//   // DataService.experts.getForExpertsPage({}, (r) => {
-//   //   $scope.experts = r.experts
-//   })
-
-// })
-
-
-
-// .controller('BillingDealCtrl', ($scope, DataService, $routeParams, $location, ServerErrors) => {
-//   var _id = $routeParams.id
-//   DataService.experts.getDeal({_id}, (r) => {
-//     $scope.expert = r
-//     $scope.deal = _.find(r.deals,(d)=>d._id==_id)
-//     if (!$scope.deal) $location.path("/billing")
-//   })
-
-//   DataService.billing.getPaymethods({}, (r) => {
-//     if (r.btoken) $location.path("/billing")
-//     else {
-//       $scope.paymethods = r
-//       $scope.payMethodId = r[0]._id
-//     }
-//   }, ServerErrors.add)
-
-
-//   $scope.orderDeal = () => {
-//     var o = { expertId: $scope.expert._id, payMethodId: $scope.payMethodId, dealId: $scope.deal._id }
-//     DataService.billing.orderDeal(o, (r) => {
-//       $location.path("/billing/book/"+$scope.expert._id)
-//     })
-//   }
-
-// })
 

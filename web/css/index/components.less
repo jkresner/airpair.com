@@ -1,3 +1,6 @@
+// @static:'https://static.airpair.com';
+@static:'http://localhost:8000';
+
 @orange:#ce5424;
 @lightorange:#DD8766;
 @orangehighlight:#ff5f2e;
@@ -72,9 +75,6 @@
 
 @done:green;
 @danger:#FFBABA;
-
-
-
 
 .pending {
   color:#8a6d3b;
@@ -170,35 +170,35 @@ section.notifications {
    }
 }
 .gh-white {
-  background-image:url('../img/icons/gh-white.png');
+  background-image:url('@{static}/img/icons/gh-white.png');
   background-color: #3B3B3B;
 }
 .tw-white {
-  background-image: url('../img/icons/tw-white.png');
+  background-image: url('@{static}/img/icons/tw-white.png');
   background-color: #00AFEA;
 }
 .bb-white {
-  background-image: url('../img/icons/bb-white.png');
+  background-image: url('@{static}/img/icons/bb-white.png');
   background-color: #1A4F7E;
 }
 .in-white {
-  background-image: url('../img/icons/in-white.png');
+  background-image: url('@{static}/img/icons/in-white.png');
   background-color: #0081AF;
 }
 .so-white {
-  background-image: url('../img/icons/so-white.png');
+  background-image: url('@{static}/img/icons/so-white.png');
   background-color: #FFA43C;
 }
 .gp-white {
-  background-image: url('../img/icons/gp-white.png');
+  background-image: url('@{static}/img/icons/gp-white.png');
   background-color: #FF4747;
 }
 .al-white {
-  background-image: url('../img/icons/al-white.png');
+  background-image: url('@{static}/img/icons/al-white.png');
   background-color:black;
 }
 .hm-white {
-  background-image: url('../img/icons/hm-white.png');
+  background-image: url('@{static}/img/icons/hm-white.png');
   background-color: #25DBBF;
 }
 
@@ -684,7 +684,7 @@ ul.dropdown-menu {
   }
 
   input[type=radio]:checked + label {
-    background-image:url(../img/css/radio-selected.png);
+    background-image:url('@{static}/img/css/radio-selected.png');
     // // padding-top:0;
     // // margin-top:8px!important;
     // // height:22px;
@@ -728,7 +728,7 @@ ul.dropdown-menu {
 ul.stars {
   .ulNoStyle;
   li {
-    background:url('../img/css/sm-icon-star.png');
+    background:url('@{static}/img/css/sm-icon-star.png');
     background-size:100%;
     background-repeat:no-repeat;
     font-weight:bold;
@@ -745,16 +745,3 @@ ul.stars {
 }
 
 
-#dealForm {
-  label {
-    width:100%;
-    span { float:right;font-weight:normal;display:inline-block; }
-  }
-  .form-group { display:inline-block; }
-  .target-type, .code { display:block }
-  .price, .rake, .type, .minutes, .expiry, .code { width:48%;margin-right:1% }
-  .tag { width:100%; input { width:48% } .selected { float:right;width:44%  } }
-  p { display:none }
-  .btn { width:100% }
-
-}

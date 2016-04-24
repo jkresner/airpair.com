@@ -100,21 +100,8 @@ a:hover { text-decoration:none }
   top:0;bottom:0;left:0;right:0;
 }
 
-section.comingsoon {
-  background:url(../img/css/playtime.jpg);
-  width:900px;
-  height:600px;
-
-  @media only screen and (max-width: 640px) {
-    background:none;
-    width:inherit;
-    height:inherit;
-  }
-}
-
-section.errorpage {
-  background:url(../img/css/playtime.jpg) no-repeat;
-  background-position-y:40px;
+section.comingsoon,  section.errorpage {
+  background:url('@{static}/img/css/playtime.jpg');
   width:900px;
   height:600px;
 

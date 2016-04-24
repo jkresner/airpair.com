@@ -320,10 +320,11 @@ angular.module("APRequestDirectives", [])
 
 
 
+
 .directive('requestGate', function(DataService, RequestHelper) {
 
   return {
-    template: require('./gatevnext.html'),
+    template: require('../../dashboard/gatevnext.html'),
     controller($scope, $attrs) {
       DataService.requests.getAuthd({}, function(r) {
         if (r.welcome) {

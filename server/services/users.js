@@ -16,7 +16,7 @@ var get = {
   },
 
   getSession(cb) {
-
+    cb(null, this.user)
   },
 
   // getUsersInRole(role, cb) {

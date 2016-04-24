@@ -1,5 +1,10 @@
 module.exports = function(app, mw) {
 
+
+  app.use('/login', mw.$.noBot, mw.$.session, mw.$.clientPage)
+
+
+
 //   var {localAuth}              = require('../middleware/auth')
 
 //   app.use('/auth',

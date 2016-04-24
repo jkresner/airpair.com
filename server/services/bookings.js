@@ -2,7 +2,7 @@ var logging                 = false
 var RequestsSvc             = require('../services/requests')
 var OrdersSvc               = require('../services/orders')
 var ChatsSvc                = require('../services/chats')
-var TemplateSvc             = require('../services/templates')
+// var TemplateSvc             = require('../services/templates')
 var {Booking,User,Expert}   = DAL
 var Roles                   = require('../../shared/roles').booking
 var BookingdUtil            = require('../../shared/bookings')
@@ -45,6 +45,7 @@ var get = {
 
   getForParticipant(booking, cb)
   {
+    // $log('getForParticipant'.yellow, booking)
     cb(null, booking)
   },
 
@@ -71,6 +72,7 @@ var get = {
 
   getByIdForParticipant(_id, callback)
   {
+    // $log('getByIdForParticipant'.yellow, _id)
     var {query} = this
     if (query && query.refresh) cache.flush('slack_users')
 
@@ -79,10 +81,10 @@ var get = {
       r.slackin = config.chat.slackin
       if (eee) return cb(eee)
       if (!r.order) return cb(null,r) // an edgecase migrated booking from v0 call
-      getChat.call(this, r, 'auto', callback, (ee,r)=>{
-        if (!r.order.requestId || ee) return cb(ee,r)
-        $callSvc(RequestsSvc.getByIdForBookingInflate,this)(r.order.requestId, (e,request) =>
-          cb(e,_.extend(r,{request})))
+      getChat.call(this, r, 'auto', callback, (ee, chat) => {
+        if (!r.order.requestId || ee) return cb(ee, r)
+        RequestsSvc.getByIdForBookingInflate.call(this, r.order.requestId,
+          (e,request) => cb(e,_.extend(r,{request})))
       })
     })
   },
@@ -125,11 +127,52 @@ var get = {
       if (eee) return cb(eee)
       if (!r.order) return cb(null,r) // an edgecase migrated booking from v0 call
       getChat.call(this, r, 'all', callback, (ee,r) => {
+
+      function slackMSGSync(key, data) {
+        var tmpl = cache.templates[`slack-message:${key}`]
+
+        if (!tmpl)
+          $log(`template slack-message:${key} not found in cache`.warning)
+
+        else if (tmpl.subtype == 'message')
+          return {
+            type: 'message',
+            text: tmpl.markdownFn(data)
+          }
+
+        else if (tmpl.subtype == 'attachment')
+          return {
+            type: 'attachment',
+            fallback: tmpl.fallbackFn(data),
+            color:  tmpl.color,
+            pretext: tmpl.subjectFn(data),
+            thumb_url: tmpl.thumbnailFn(data),
+            title: data.title,
+            title_link: tmpl.linkFn(data),
+            text: tmpl.markdownFn(data),
+          }
+        }
+        function slackMSGsforBookingStatus(data) {
+          var {status} = data
+          var msgs = {}
+          for (var tmlpKey of _.keys(cache.templates)) {
+            if (tmlpKey.indexOf(`slack-message:booking-${status}-`)==0)
+            {
+              var type = cache.templates[tmlpKey].subtype
+              var msgKey = tmlpKey.replace(`slack-message:booking-${status}-`,'')
+              msgs[msgKey] = slackMSGSync(`booking-${status}-${msgKey}`,data)  //message|attachment
+            }
+          }
+          return msgs
+        }
+
         if (r.chat)
-          r.botMsgs = TemplateSvc.slackMSGsforBookingStatus(select.slackMsgTemplateData(r))
+          r.botMsgs = slackMSGsforBookingStatus(select.slackMsgTemplateData(r))
+
+
         if (!r.order.requestId || ee)
           return cb(ee,r)
-        $callSvc(RequestsSvc.getByIdForBookingInflate, this)(r.order.requestId, (e,request) =>
+        RequestsSvc.getByIdForBookingInflate.call(this, r.order.requestId, (e,request) =>
           cb(e,_.extend(r,{request})))
       })
     })

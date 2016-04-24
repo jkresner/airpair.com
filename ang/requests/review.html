@@ -1,10 +1,3 @@
-<header>
-  <ol class="entry-meta breadcrumb">
-    <li><a href="/dashboard">Dashboard</a></li>
-    <li class="current">Request</li>
-  </ol>
-</header>
-
 <section ng-if="r" id="review" class="{{reviewClass}}">
 
 
@@ -40,7 +33,8 @@
 
     <div ng-if="isCustomer">
       <div class="message noexperts">
-        <img class="user" itemprop="image" src="/static/img/css/chat/pairy.png" />
+        <span class="img user pairy" itemprop="image"></span>
+        <!-- <img src="/static/img/css/chat/pairy.png" /> -->
         <label>Pairy</label>
         <!-- <div><p ng-if="isCustomer" class="important">You must set an account password and verify your email before experts can see this request.</p></div> -->
         <!-- <div><p ng-if="!isCustomer" class="important">You must verify your email before replying.</p></div> -->
@@ -50,11 +44,6 @@
         </div>
       </div>
 
-      <!-- <section>
-        <strong>*</strong>
-        <a href="/me" class="btn">Set password</a>
-
-      </section> -->
     </div>
   </section>
 
@@ -94,9 +83,6 @@
 
   </section>
 
-  <section id="expertReview">
-
-  </section>
 
 </section>
 

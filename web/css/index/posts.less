@@ -142,14 +142,14 @@
       width:206px;height:32px;display:block;
       font-size:14px;
       padding:5px 28px 0 4px;
-      background:no-repeat url('../img/icons/author.png');
+      background:no-repeat url('@{static}/img/icons/author.png');
       background-size:26px 26px;
       background-position:97% 2px;
       background-position-x:97%;
       background-position-y:2px;
     }
     .btn:hover {
-      background:@orangehighlight no-repeat url('../img/icons/author-white.png');
+      background:@orangehighlight no-repeat url('@{static}/img/icons/author-white.png');
       background-size:26px 26px;
       background-position:97% 2px;
       background-position-x:97%;
@@ -289,7 +289,7 @@
         background-color:@error;
       }
       a.edit {
-        background:url('../img/pages/posts/author-white.png');
+        background:url('@{static}/img/pages/posts/author-white.png');
         background-size:74%;
         background-position:3px 4px;
         background-color:@orange;
@@ -305,7 +305,7 @@
         background-color:@lightgray;
       }
       a.contribitors {
-        background:url('../img/pages/posts/sm-icon-fork.png');
+        background:url('@{static}/img/pages/posts/sm-icon-fork.png');
         background-size:88%;
         background-position:1px 1px;
         background-color:@lightgray;
@@ -362,7 +362,7 @@
       a.icon { border-radius:50%;height:40px;width:40px;display:inline-block;margin:15px 0 }
       a.icon:hover { background-color:@orangehighlight }
       a.edit {
-        background:@orange url('../img/pages/posts/author-white.png') no-repeat;
+        background:@orange url('@{static}/img/pages/posts/author-white.png') no-repeat;
         background-size:78%;
         background-position:3px 4px;
       }
@@ -467,270 +467,6 @@ section#postpublish {
 }
 
 
-section.authoringnotsupported {
-  h3 { font-size:20px }
-  text-align:center;
-  width:300px;
-  margin:auto;
-  display:none;
-  @media(max-width:1279px) {
-    display:block;
-  }
-}
-
-.postpreviewpanes {
-  .absstrech;
-  top:90px;
-
-  .editor-wrap {
-    .absstrech;
-    left:70px;right:30px;
-  }
-
-  #editor {
-    .absstrech;
-  }
-
-  .preview {
-    .absstrech;
-    direction:rtl;
-    article { direction:ltr; }
-    h1.entry-title { margin-top:0;padding-top:0 }
-  }
-
-}
-
-
-section#postinfo {
-  .postpreviewpanes;
-
-  #editor {
-    width:500px;
-  }
-
-  .flowpic {
-    position:absolute;
-    opacity:1;
-    margin:20px 10px;
-    top:85px;
-    max-width:420px;
-    text-align:center;
-    display:block;
-    z-index:2;
-  }
-  .startmsg {
-    opacity:0.7;
-    background:white;
-    h3 { margin:5px auto 20px auto }
-    padding:10px 10px 20px 10px;
-    color:black;
-    font-size:13px;
-    margin:0px auto 20px auto;text-align:center;
-    border-bottom:solid 1px @lightgray;
-    max-width:620px;
-    p { margin-top:120px; }
-    em { font-weight:bold;font-style:normal; }
-  }
-
-  .form {
-    .absstrech;
-    background:@lightblue;padding:30px;
-    // border-radius:10px;
-    textarea { height:85px }
-    hr { clear:both }
-    .btn { width:100% }
-    label i {
-      font-size:12px;
-      font-weight:normal
-    }
-  }
-
-  .connect-icons {
-    .oauth { width:30px;margin:1px 5px 6px 1px;padding:0 }
-    .oauth a { background-size:90%;background-position:2px 3px;
-      height:30px;padding:8px 0 0 30px;font-size:11px;margin:0;border-radius:50%;overflow:hidden; }
-  }
-
-  .tag-input-group {
-    .nomobile { display:none }
-    label { display:none }
-    .drag { display:none }
-    .selected {
-      width:280px;
-      display:block;
-      float:none;
-      li { display:inline;background:none;border:none }
-      .remove { float:none;background:none;color:red;display:inline;font-size:12px }
-      .order { display: none; }
-    }
-  }
-
-  .preview {
-    padding-left:25px;
-    left:500px;
-    width:665px;
-    #body { display:none; }
-    hr { display:none }
-    footer {
-      direction:ltr;
-      text-align:left;
-    }
-  }
-
-  .form-actions {
-    text-align:center;
-    p { margin-top:15px }
-    img { max-width:80% }
-  }
-
-  @media screen and (max-width:1279px) {
-    display:none;
-  }
-}
-
-
-section#posteditor {
-  .postpreviewpanes;
-  top:40px;
-
-  .editor-wrap {
-    left:60px;right:20px;
-  }
-
-  .poststauts {
-    position:absolute;
-    top:0;
-    left:60px;right:20px;
-    height:34px;
-    padding:6px 7px 5px 7px;
-    background:@lightblue;
-    border-bottom:solid 2px @bluegray;
-    font-size:13px;
-    .tip {
-      display:inline-block;
-      position:absolute;top:6px;right:7px;
-      z-index:10;
-      a { font-weight:bold }
-    }
-    .status {
-      z-index:10;
-      display:inline-block;
-      position:absolute;top:6px;left:7px;
-      .saved { color:darkgreen; }
-      .unsaved { color:@darkyellow; }
-    }
-    &.saved {
-      background:#E6F0E6;
-    }
-    &.unsaved {
-      background:#FAF5E6;
-    }
-  }
-
-  .preview {
-    overflow-y:scroll;
-    overflow-x:hidden;
-    width:660px;
-    article {
-      width:640px;
-    }
-    top:34px;
-    left:530px;
-    bottom:110px;
-    .author { display:none }
-    .author + hr { display:none }
-    p.asset { display:none }
-    p.asset + hr { display:none }
-    footer { display:none }
-  }
-
-  #editor {
-    top:34px;
-    bottom:110px;
-    width:530px;
-    // max-width:620px;
-    .ace_editor {
-      .ace_content { padding-top:5px; }
-      font-size:11px;
-      .absstrech;
-    }
-    .ace_gutter { display:none }
-  }
-
-  .form-actions {
-    border-top:solid 1px @bluegray;
-    height:110px;
-    position:absolute;
-    bottom:0;left:0;right:0;
-    hr { border-color:@lightblue }
-    background:@lightblue;
-    padding:10px 30px 10px 60px;
-    .btn { width:160px;margin:0px 5px;font-size:14px;float:right;background-repeat:no-repeat; }
-    .btn-sync { background-image:url('../img/icons/gh-white.png');background-size:34%;background-position:3px 3px }
-    .btn-pr { background-image:url('../img/pages/posts/pr-white.png');background-size:24%;background-position:2px 2px }
-    .btn[disabled=disabled] { background-image:none!important }
-    .commitmsg {
-      float:right;
-      clear:right;
-      margin:5px 5px 10px 5px;
-      input { width:670px }
-    }
-    span { font-weight:bold }
-
-    label { display:block;font-size:18px;
-      padding:6px 0 0 10px;font-weight:normal }
-
-    #tips {
-      background:@palegray;
-      padding:20px
-    }
-  }
-
-  @media screen and (max-width:1279px) {
-    display:none;
-  }
-  @media screen and (min-width:1300px) {
-    #editor {
-      width:550px;
-      .ace_editor {
-        font-size:12px;
-      }
-    }
-    .preview {
-      left:550px;
-    }
-  }
-  @media screen and (min-width:1340px) {
-    #editor {
-      width:600px;
-      .ace_editor {
-        font-size:13px;
-      }
-    }
-    .preview {
-      left:600px;
-    }
-  }
-  @media screen and (min-width:1390px) {
-    #editor {
-      width:650px;
-      .ace_gutter { display:inline-block; }
-    }
-    .preview {
-      left:650px;
-      width:inherit;
-      article { margin:auto }
-    }
-  }
-  @media screen and (min-width:1440px) {
-    #editor {
-      width:700px;
-    }
-    .preview {
-      left:700px;
-    }
-  }
-}
 
 
 //-- A list (tile grid) of posts
@@ -855,92 +591,8 @@ section#posts {
   }
 
   #author { padding-top:10px }
-
-  .editor {
-    padding:10px 16px 0px 16px;
-    span { font-weight:normal;font-size:11px }
-    .meta {
-      display:none;
-      width:100%;
-      float:right;
-      .dates .form-group
-      {
-        float:left;width:60%;
-      }
-      .dates section
-      {
-        margin:0px 0px 2px 0px;
-        line-height:10px;
-        float:right;
-        width:32%;
-        font-size:10px;
-        label { font-size:10px;display:block;margin-bottom:5px  }
-        span { display:block;margin-bottom:6px }
-      }
-    }
-    .md { float:left;width:64%;
-      display:none;
-      textarea { padding:4px;height:340px;font-size:14px }
-    }
-    .md + .meta {
-      width:34%;
-    }
-    .form-actions {
-      height:40px;
-      clear:both;
-      text-align:center;
-      .btn { width:19%;margin:0px 2px 8px 2px;padding:3px 0px;display:none }
-      .btnPreview { display:inline-block; }
-    }
-
-    .tag-input-group {
-      .nomobile { display:none }
-      label { display:none }
-      .drag { display:none }
-      .selected {
-        display:block;
-        float:none;
-        li { display:inline;background:none;border:none }
-        .remove { float:none;background:none;color:red;display:inline;font-size:12px }
-        .order { display: none; }
-      }
-    }
-  }
-
-  .editor + hr { margin:4px 0 0 0;border-color:@lightblue; }
   .preview + hr { margin:0px 0px 4px 0px;border-color:@lightblue; }
 
-  #tips { display:none; }
-
-  // .edit {
-    // #preview {
-      // .preview {
-        // width:914px;max-height:300px;overflow-y:scroll;
-        // border-right:solid 1px @lightblue;
-      // }
-    // }
-
-    // #tips { display:block;background-color:@lightblue;padding:4px 6px;font-size:10px;line-height:14px;min-height:80px }
-    // #tips ul { padding:4px 14px }
-  // }
-
-  .edit, .publish {
-
-    .form-actions { .btn { display:inline-block } }
-    .editor { background-color:@lightblue; }
-    .md { display:block }
-    .meta { display:block }
-
-    .publishMeta input { font-size:11px;padding:4px;height:26px }
-
-    article { border:solid 2px @bluegray;background:white }
-    article header { background:@bluegray }
-  }
-
-  @media screen and (max-width:640px) {
-    //-- don't show myposts UI on mobile. might even be worth disabling xhr in angular
-    section#myposts { display:none }
-  }
 }
 
 

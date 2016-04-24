@@ -11,16 +11,6 @@ angular.module("APAccount", [])
 })
 
 
-  // .run(function($rootScope, SessionService) {
-
-  //   SessionService.onAuthenticated( (session) => {
-  //     // window.firebaseToken = session.firebaseToken;
-  //   })
-
-  // })
-
-
-
 .controller('LoginCtrl', function($rootScope, $scope, $window, $timeout, $location, SessionService) {
   var self = this;
 
@@ -43,8 +33,6 @@ angular.module("APAccount", [])
     )
   }
 })
-
-
 
 
 .controller('AccountCtrl', function($rootScope, $scope, $location, ServerErrors, SessionService) {

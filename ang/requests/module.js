@@ -5,7 +5,7 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
 
 .config(function($locationProvider, $routeProvider) {
 
-  var authd = resolver(['session']);
+  var authd = resolver(['session'])
 
   var actions = {
     list:   { resolve: authd, template: require('./list.html'), controller: 'RequestListCtrl' },
@@ -26,8 +26,6 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
     .when('/job/:id', actions.review)
 
 })
-
-.run(function($rootScope, SessionService) {})
 
 
 .controller('RequestListCtrl', function($scope, $location, DataService, SessionService) {
@@ -78,8 +76,8 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
 
 
 
-.controller('ReviewCtrl', function($scope, $routeParams, $location, $timeout, DataService, Shared, ServerErrors, SessionService, PageHlpr) {
-  $scope.requestId = $routeParams.id;
+.controller('ReviewCtrl', function($scope, $routeParams, $timeout, DataService, Shared, SessionService, PageHlpr) {
+  $scope.requestId = $routeParams.id
   $scope.returnTo = window.location.pathname
 
   if (!$scope.requestId) return $location.path('/')

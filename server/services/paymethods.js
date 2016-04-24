@@ -1,6 +1,6 @@
 var logging            = false
 var Rates              = require('./requests.rates')
-var {Paymethod}        = DAL
+var {Paymethod,User}   = DAL
 
 var CompanysSvc        = require('./companys')
 var UserSvc            = require('./users')
@@ -115,7 +115,7 @@ var save = {
 
             if (ctx.user.email) { //-- When admin looks at request, don't trigger analtyics
               var cardType = payMethodInfo.cardType || payMethodInfo.id
-              analytics.event.call(ctx, 'Save', { type: 'paymethod', method: o.type, cardType })
+              // analytics.event.call(ctx, 'Save', { type: 'paymethod', method: o.type, cardType })
             }
 
             if (o.makeDefault)
@@ -138,9 +138,10 @@ var save = {
   },
 
   deletePaymethod(paymethod, cb) {
-    UserSvc.getSession.call(this, (e, user) => {
+
+    User.getById(this.user._id, (e, user) => {
       if (user.primaryPayMethodId && _.idsEqual(user.primaryPayMethodId,paymethod._id))
-        UserSvc.changePrimaryPayMethodId.call(this, null, () => {})
+        User.updateUnset(this.user._id, ['primaryPayMethodId'], () => {})
       // Settings.remove({userId:this.user._id}, () => {})
       Paymethod.delete(paymethod, cb)
     })

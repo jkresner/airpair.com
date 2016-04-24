@@ -91,6 +91,7 @@ var wrapper = {
 
         this.api.customer.create(payload, (e, r) => {
           console.log('braintree.customer.create'.yellow, r)
+          if (!e && r.success === false) e = Error(r.message)
           cb(e, e?null:Object.assign({success:true},r.customer.creditCards[0]), payload)
         })
       }

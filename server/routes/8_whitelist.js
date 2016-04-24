@@ -18,7 +18,4 @@ module.exports = function(app, mw) {
            ], mw.$.badBot, mw.$.rewrites, mw.$.session, mw.$.reqFirst, mw.$.clientPage)
 
 
-  app.get('^/adm/*', mw.$.noBot, mw.$.session, mw.$.adm, mw.$.adminPage)
-
-
 }

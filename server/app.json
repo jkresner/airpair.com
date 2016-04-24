@@ -89,7 +89,7 @@
     "static": {
       "host":                  "http://localhost:8000",
       "bundles": {
-        "css/libs.css":        "/static.airpair.com/css/libs.css",
+        "css/libs.css":        "css/libs.css",
         "css/index.css":       "css/index.css",
         "css/adm.css":         "css/adm.css",
         "js/index.js":         "js/index.js",

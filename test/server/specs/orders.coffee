@@ -199,7 +199,7 @@ bookingOrders = ->
           DONE()
 
 
-  IT 'Book 2 hour with pay as you go private two gets email + name on participant', ->
+  SKIP 'Book 2 hour with pay as you go private two gets email + name on participant', ->
     STORY.newExpert 'louf', {rate:140}, (sExp, expert) ->
       STORY.newUser 'jkjk', {login:true,paymethod:true,location:true}, (s) ->
         airpair1 = datetime: moment().add(2, 'day'), minutes: 120, type: 'private', payMethodId: s.primaryPayMethodId
@@ -517,20 +517,20 @@ prodData = ->
     byrn = FIXTURE.clone('experts.byrn')
     preMigrateRebook = FIXTURE.clone('requests.preMigrateRebook',{omit:'userId'})
     DB.ensureExpert 'byrn', ->
-    STORY.newUser 'ricd', {login:true,paymethod:true}, (s) ->
-      request = assign {userId:s._id}, preMigrateRebook
-      expect(request.budget, 150)
-      expect(request.suggested[1].expert.rate, 110)
-      DB.ensureDoc 'Request', request, ->
-        GET "/requests/#{request._id}/book/#{byrn._id}", (r2) ->
-          expect(r2.suggested[1].expert.name).to.equal("Byron Sommardahl")
-          suggestion = r2.suggested[1]
-          book = datetime: moment().add(1, 'day'), minutes: 60, type: 'private', payMethodId: s.primaryPayMethodId, request: { requestId: request._id, suggestion }
-          POST "/bookings/#{byrn._id}", book, (booking1) ->
-            expect(booking1.orderId).to.exist
-            DB.docById 'Order', booking1.orderId, (order) ->
-              expect(order.total).to.equal(146)
-              DONE()
+      STORY.newUser 'ricd', {login:true,paymethod:true}, (s) ->
+        request = assign {userId:s._id}, preMigrateRebook
+        expect(request.budget, 150)
+        expect(request.suggested[1].expert.rate, 110)
+        DB.ensureDoc 'Request', request, ->
+          GET "/requests/#{request._id}/book/#{byrn._id}", (r2) ->
+            expect(r2.suggested[1].expert.name).to.equal("Byron Sommardahl")
+            suggestion = r2.suggested[1]
+            book = datetime: moment().add(1, 'day'), minutes: 60, type: 'private', payMethodId: s.primaryPayMethodId, request: { requestId: request._id, suggestion }
+            POST "/bookings/#{byrn._id}", book, (booking1) ->
+              expect(booking1.orderId).to.exist
+              DB.docById 'Order', booking1.orderId, (order) ->
+                expect(order.total).to.equal(146)
+                DONE()
 
 
 module.exports = ->

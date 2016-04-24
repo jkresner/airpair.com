@@ -1,11 +1,11 @@
-angular.module("ADMExperts", ['APDealsDirectives','APExpertsDirectives'])
+angular.module("ADMExperts", ['APExpertsDirectives'])
 
 .config((apRouteProvider) => {
 
   var route = apRouteProvider.route
   route('/adm/experts', 'Experts', require('./list.html'))
   route('/adm/experts/:id', 'Expert', require('./item.html'))
-  route('/adm/experts/:id/deals', 'Deals', require('./deals.html'))
+  // route('/adm/experts/:id/deals', 'Deals', require('./deals.html'))
 
 })
 
@@ -13,14 +13,15 @@ angular.module("ADMExperts", ['APDealsDirectives','APExpertsDirectives'])
   return { template: require('./userInfo.html'), scope: { info: '=info' } }
 })
 
+
 .directive('expertAvailability', (DataService) => {
   return {
     template: require('./availability.html'),
     controller($scope, $attrs) {
       $scope.submitAvailability = (_id, availability) => {
-        DataService.experts.updateAvailability({_id,availability},(r)=>
-          window.location = window.location
-        )
+        // DataService.experts.updateAvailability({_id,availability},(r)=>
+          // window.location = window.location
+        // )
       }
     }
   }
@@ -81,20 +82,20 @@ angular.module("ADMExperts", ['APDealsDirectives','APExpertsDirectives'])
 })
 
 
-.controller('DealsCtrl', ($scope, $routeParams, ServerErrors, AdmDataService) => {
+// .controller('DealsCtrl', ($scope, $routeParams, ServerErrors, AdmDataService) => {
 
-  var _id = $routeParams.id
+//   var _id = $routeParams.id
 
-  var setScope = (r) => {
-    $scope.expert = r
-    $scope.deals = r.deals
-    $scope.selected = null
-    $scope.expired = _.filter(r.deals,(d)=>d.expiry&&moment(d.expiry).isBefore(moment()))
-    $scope.current = _.filter(r.deals,(d)=>d.expiry==null||moment(d.expiry).isAfter(moment()))
-  }
-  $scope.setScope = setScope
+//   var setScope = (r) => {
+//     $scope.expert = r
+//     $scope.deals = r.deals
+//     $scope.selected = null
+//     $scope.expired = _.filter(r.deals,(d)=>d.expiry&&moment(d.expiry).isBefore(moment()))
+//     $scope.current = _.filter(r.deals,(d)=>d.expiry==null||moment(d.expiry).isAfter(moment()))
+//   }
+//   $scope.setScope = setScope
 
-  AdmDataService.experts.getBydId({_id}, setScope,
-    ServerErrors.fetchFailRedirect('/adm/experts'))
+//   AdmDataService.experts.getBydId({_id}, setScope,
+//     ServerErrors.fetchFailRedirect('/adm/experts'))
 
-})
+// })

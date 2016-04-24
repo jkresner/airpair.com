@@ -2,13 +2,31 @@ var postsChannelId = config.chat.slack.channels.posts.id
 
 module.exports = function(imProvider)
 {
-  var TemplateSvc = null
+  function slackMSGSync(key, data) {
+    var tmpl = cache.templates[`slack-message:${key}`]
 
-  var tmplSvc       = () => {
-    if (!TemplateSvc)
-      TemplateSvc = require('../../services/templates')
-    return TemplateSvc
+    if (!tmpl)
+      $log(`template slack-message:${key} not found in cache`.warning)
+
+    else if (tmpl.subtype == 'message')
+      return {
+        type: 'message',
+        text: tmpl.markdownFn(data)
+      }
+
+    else if (tmpl.subtype == 'attachment')
+      return {
+        type: 'attachment',
+        fallback: tmpl.fallbackFn(data),
+        color:  tmpl.color,
+        pretext: tmpl.subjectFn(data),
+        thumb_url: tmpl.thumbnailFn(data),
+        title: data.title,
+        title_link: tmpl.linkFn(data),
+        text: tmpl.markdownFn(data),
+      }
   }
+
 
   var emtpyCb = (e,r) => {}
 
@@ -20,17 +38,16 @@ module.exports = function(imProvider)
 
     sendSlackMsg(channelId, tmpl, data, cb) {
       var cb = cb || emtpyCb
-      tmplSvc().slackMSG(tmpl, data, (e, msg) => {
-        var text = data.text || msg.text
-        if (msg.type == 'message')
-          imProvider.postMessage('pairbot', channelId, text, cb)
-        if (msg.type == 'attachment')
-          imProvider.postAttachments('pairbot', channelId, [_.extend(msg,{text})], cb)
-      })
+      var msg = slackMSGSync(tmpl, data)
+      var text = data.text || msg.text
+      if (msg.type == 'message')
+        imProvider.postMessage('pairbot', channelId, text, cb)
+      if (msg.type == 'attachment')
+        imProvider.postAttachments('pairbot', channelId, [_.extend(msg,{text})], cb)
     },
 
     get(tmpl, data, cb) {
-      tmplSvc().slackMSG(tmpl, data, (e, msg) => cb(e,msg))
+      cb(null, slackMSGSync(tmpl, data))
     },
 
     //-- TODO: move into db

@@ -82,13 +82,16 @@ var wrapper = {
 
   getUsers(cb)
   {
-    cache.slackUsers((callback)=>{
-      clientCall('owner', 'users.list', null, 'members', select.slackUser, (e,r)=>{
-        // global.userHash = {}
-        // for (var u of r || []) global.userHash[u.id] = u.name
-        callback(e,r)
-      })
-    }, cb)
+    // cache.slackUsers((callback)=>{
+    clientCall('owner', 'users.list', null, 'members', select.slackUser, (e,r) => {
+      if (e) return cb(e)
+      global.userHash = {}
+      for (var u of r) userHash[u.id] = u.name
+      cb(null, r)
+    })
+      //
+      //
+    // }, cb)
   },
 
   checkUserSync(info)

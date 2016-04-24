@@ -3,8 +3,12 @@ module.exports = function(app, mw, {redirects}) {
   var router = app.honey.Router('posts')
     .use(mw.$.livereload)
     .use([mw.$.badBot, mw.$.rewrites, mw.$.session, mw.$.reqFirst, mw.$.cachedTags])
-    .use([mw.$.inflateAds, mw.$.trackPost, mw.$.postPage], {end:true})
+    .useEnd([mw.$.inflateAds, mw.$.trackPost, mw.$.postPage])
 
+    .get(['^/:adtag/posts/:postslug',
+          '^/:adtag/tutorial/:postslug',
+          '^/:adtag/tips-n-tricks/:postslug'],
+          mw.$.logic('posts.getPublishedBySlug'))
 
   if (redirects) {
     // var count = 0
@@ -21,11 +25,6 @@ module.exports = function(app, mw, {redirects}) {
       .forEach(r => mapCannonical(r))
   }
 
-
-  router.get(['^/:adtag/posts/:postslug',
-              '^/:adtag/tutorial/:postslug',
-              '^/:adtag/tips-n-tricks/:postslug'],
-              mw.$.logic('posts.getPublishedBySlug'))
 
 }
 
