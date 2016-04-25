@@ -1,7 +1,17 @@
-@import "ap.less";
 @headerHeight:40px;
 @sideNavWidth:140px;
 @sideChatWidth:220px;
+
+html, body{
+  height:100%;
+}
+
+body {
+  background-color:white;
+  color:@mediumgray;
+  font-family:Open Sans,Century Gothic
+}
+
 
 body > footer {
   font-size:11px;
@@ -222,3 +232,14 @@ main {
   }
 }
 
+section.comingsoon,  section.errorpage {
+  background:url('@{static}/2015/img/css/playtime.jpg');
+  width:900px;
+  height:600px;
+
+  @media only screen and (max-width: 640px) {
+    background:none;
+    width:inherit;
+    height:inherit;
+  }
+}

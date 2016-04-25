@@ -134,8 +134,6 @@
     .entry-author-image {
       position:absolute;bottom:4px;left:5px;
       height:36px;border-radius:50%; }
-    // .entry-author-name { position:absolute;bottom:15px;right:40px
-    // }
 
     .entry-content {
       .entry-header-image { max-width:100%;height:20px;margin:5px }
@@ -246,23 +244,29 @@ form.requestForm {
       display:inline-block;
       text-align:center;
       margin:0px 2px;
+      background:url('@{static}/2015/img/css/request/prev.png') no-repeat center;
+      background-color:@lightorange;
     }
 
     a.forward {
-      background-color:@orange;
+      background:url('@{static}/2015/img/css/request/next.png') no-repeat center;
+      background-color:@lightorange;
     }
 
     a.wait {
       cursor:inherit;
+      background:url('@{static}/2015/img/css/request/next.png') no-repeat center;
+      background-color:@lightgray;
     }
 
     > :first-child {
+      background-size:20%;
       background-color:@lightorange;
       border-top-left-radius:10px;
       border-bottom-left-radius:10px;
     }
     > :last-child {
-      background-color:@lightgray;
+      background-size:20%;
       border-top-right-radius:10px;
       border-bottom-right-radius:10px;
     }
@@ -751,15 +755,12 @@ section#review {
       background-repeat:no-repeat!important;
       background-size:11%!important;
       background-position:5% 5%!important;
-      &:hover { background-color:@orangehighlight;
-        background-image:url('@{static}/img/icons/gh-white.png');
-      }
     }
   }
 
   section {
     span.pairy {
-      background-image:url('@{static}/img/avatar/pairy.png');
+      background-image:url('@{static}/2015/img/avatar/pairy.png');
       background-color:@orange;
       background-size:100%
     }

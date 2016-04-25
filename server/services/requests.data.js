@@ -127,6 +127,7 @@ var data = {
       return sug ? [sug] : []
     },
     byView(request, view) {
+      // $log('byView', view)
       // var r = migrateV0(request)
       var r = request
       r.tags = _.sortBy(r.tags,(t)=>t.sort)
@@ -155,7 +156,7 @@ var data = {
         r = util.selectFromObject(r, data.select[view])
       // $log('selected', view, request.suggested, r)
 
-      return r
+      return assign(r,{view})
     },
     expertToSuggestion(r, by, type, expertStatus) {
       // $log('expertToSuggestion', r, by)
@@ -212,13 +213,14 @@ var data = {
       byRole(ctx, errorCb, cb) {
         return (e, r) => {
           if (e || !r) return errorCb(e, r)
-
           if (!ctx.user) return cb(null, data.select.byView(r, 'anon'))
-          else if (Roles.isCustomerOrAdmin(ctx.user, r)) {
-            if (ctx.machineCall) cb(null, data.select.byView(r, 'admin'))
-            else cb(null, data.select.byView(r, 'customer'))
+          else if (_.idsEqual(ctx.user._id, r.userId)) {
+            // if (ctx.machineCall) cb(null, data.select.byView(r, 'admin'))
+            // else
+              cb(null, data.select.byView(r, 'customer'))
           }
           else {
+
             //-- Yes this is not the right place for this ...
             // var ExpertsSvc            = require('./experts')
             // $...callSvc(ExpertsSvc.getMe,ctx)((ee,expert) => {
@@ -249,7 +251,7 @@ var data = {
             //     noindex: true
             //   }
 
-              cb(null, data.select.byView(r, 'review'))
+              cb(null, data.select.byView(r, 'anon'))
             // })
           }
         }

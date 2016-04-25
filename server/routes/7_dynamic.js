@@ -1,13 +1,15 @@
 module.exports = function(app, mw) {
 
-  app.use(/^\/(job|review)/, mw.$.cachedTags)
+  app.use(/^\/(job|review)/,
+      mw.$.badBot, mw.$.session, mw.$.cachedTags)
 
   app.honey.Router('dynamic')
     .use(mw.$.livereload)
-    .use([mw.$.badBot, mw.$.session, mw.$.reqFirst])
     .param('job', API.Requests.paramFns.getByIdForReview)
     .get(['/job/:job','/review/:job'],
           mw.$.trackJob, mw.$.hybridPage('job'))
+
+    .use([mw.$.badBot, mw.$.session, mw.$.reqFirst])
 
     .get('/bookings/:id/spin*',
       function(req, res, next) {

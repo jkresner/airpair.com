@@ -87,7 +87,7 @@ module.exports = function(app, mw) {
     .use([mw.$.trackLanding,mw.$.landingPage],{end:true})
 
     .get('/', mw.$.inflateLanding('home'),
-      mw.res.forbid('authd', usr => usr, { redirect: req => '/home' }))
+      mw.res.forbid('home!anon', function({user}) { if (user) return 'authd' }, { redirect: req => '/home' }))
 
     .get('/software-experts', mw.$.inflateLanding('posts'),
       mw.$.cachedPublished, mw.$.inflateAds,

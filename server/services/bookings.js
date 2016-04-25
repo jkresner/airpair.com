@@ -25,7 +25,7 @@ function getChat(booking, syncMode, exitCB, cb) {
   if (syncMode == 'auto')
     return ChatsSvc.searchParticipantSyncOptions(booking.participants, (e,match,chatSyncOptions) => {
       if (match) {
-        $callSvc(save.associateChat,this)(booking, 'slack', match.info.id, (e,r) => {
+        save.associateChat.call(this, booking, 'slack', match.info.id, (e,r) => {
           $log('auto.associateChat.success', match.info.name)
           exitCB(e, r)
         })
@@ -243,7 +243,7 @@ var save = {
     lastTouch = svc.newTouch.call(this, 'suggest-time')
     activity.push(lastTouch)
     Booking.updateSet(original._id, {suggestedTimes,lastTouch,activity}, (e,r) => {
-      $callSvc(get.getByIdForParticipant,this)(original._id,cb)
+      get.getByIdForParticipant.call(this, original._id,cb)
       if (original.chat)
         pairbot.sendSlackMsg(original.chat.providerId, 'booking-suggest-time',
           select.slackMsgTemplateData(r,{byName:this.user.name,suggestedMultitime:BookingdUtil.multitime(r,time)},this.user._id) )
@@ -259,7 +259,7 @@ var save = {
     lastTouch = svc.newTouch.call(this, 'remove-time')
     activity.push(lastTouch)
     Booking.updateSet(original._id, {suggestedTimes,lastTouch,activity}, (e,r) => {
-      $callSvc(get.getByIdForParticipant,this)(original._id,cb)
+      get.getByIdForParticipant.call(this, original._id,cb)
     })
   },
 
@@ -280,7 +280,7 @@ var save = {
     createBookingGoogleCalendarEvent(original, cb, (gcal) => {
       var ups = {suggestedTimes,lastTouch,activity,datetime,status,gcal}
       Booking.updateSet(original._id, ups, (e,r) => {
-        $callSvc(get.getByIdForParticipant,this)(original._id,cb)
+        get.getByIdForParticipant.call(this, original._id,cb)
         if (original.chat)
           pairbot.sendSlackMsg(original.chat.providerId, 'booking-confirm-time',
             select.slackMsgTemplateData(r,{byName:this.user.name}) )
@@ -322,7 +322,7 @@ var save = {
   createChat(original, type, groupchat, cb)
   {
     select.inflateParticipantInfo(original.participants)
-    $callSvc(ChatsSvc.createCreate, this)(type, groupchat, original.participants, (e,chat)=>{
+    ChatsSvc.createCreate.call(this, type, groupchat, original.participants, (e,chat)=>{
       if (e) return cb(e)
       var {activity,lastTouch} = original
       lastTouch = svc.newTouch.call(this, 'create-chat')
@@ -335,7 +335,7 @@ var save = {
 
   associateChat(original, type, providerId, cb)
   {
-    $callSvc(ChatsSvc.createSync, this)(type, providerId, (e,chat)=>{
+    ChatsSvc.createSync.call(this, type, providerId, (e,chat)=>{
       if (e) return cb(e)
       var {activity,lastTouch} = original
       activity = activity || []
@@ -358,12 +358,12 @@ function updateForAdmin(thisCtx, booking, updates, action, cb) {
   Booking.updateSet(booking._id, _.extend(updates,{lastTouch,activity}), (e,r)=>{
     if (e) return cb(e)
     if (!r.chatId)
-      $callSvc(get.getByIdForAdmin, thisCtx)(r._id, cb)
+      get.getByIdForAdmin.call(thisCtx, r._id, cb)
     else {
       var groupInfo = BookingdUtil.chatGroup(r)
-      $callSvc(ChatsSvc.sync, thisCtx)(r.chatId, groupInfo, (ee,chat)=>{
+      ChatsSvc.sync.call(thisCtx, r.chatId, groupInfo, (ee,chat)=>{
         if (ee) return cb(ee)
-        $callSvc(get.getByIdForAdmin, thisCtx)(r._id, cb)
+        get.getByIdForAdmin.call(thisCtx, r._id, cb)
       })
     }
   })

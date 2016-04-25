@@ -1,5 +1,16 @@
 module.exports = (app, mw) => {
 
+  mw.cache('authd', mw.res.forbid('anon',
+      function(req) { if (!req.user) return 'not authed' }))
+
+  var admId = config.env == 'test' ? "54551be15f221efa174238d1" :
+                                     "5175efbfa3802cc4d5a5e6ed"
+
+  mw.cache('adm', mw.res.forbid('!adm', function(req) {
+    if (!req.user) return 'not authd'
+    if (req.user._id != admId) return 'non admin'
+  }))
+
 
   var {bundles,host} = config.http.static
   var about = _.pick(config.about, ['name','version','author'])

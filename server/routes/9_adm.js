@@ -1,7 +1,7 @@
 module.exports = function(app, mw) {
 
 
-  app.get('^/adm/*', mw.$.noBot, mw.$.session, mw.$.adm, mw.$.adminPage)
+  app.get('^/adm/*', mw.$.session, mw.$.adm, mw.$.adminPage)
 
 
   app.honey.Router('adm:api', { mount: '/v1/api/adm', type: 'api' })
@@ -21,15 +21,6 @@ module.exports = function(app, mw) {
     .get('/redirects', API.Redirects.getAllRedirects)
     .post('/redirects', API.Redirects.createRedirect)
     .delete('/redirects/:id', API.Redirects.deleteRedirectById)
-    .get('/requests/active', API.Requests.getActiveForAdmin)
-    .get('/requests/2015', API.Requests.get2015ForAdmin)
-    .get('/requests/incomplete', API.Requests.getIncompleteForAdmin)
-    .get('/requests/:id', API.Requests.getByIdForAdmin)
-    .get('/requests/user/:id', API.Requests.getByUserIdForAdmin)
-    .put('/requests/:request', API.Requests.updateByAdmin)
-    .put('/requests/:request/message', API.Requests.sendMessageByAdmin)
-    .put('/requests/:request/farm', API.Requests.farmByAdmin)
-    .put('/requests/:request/remove/:expert', API.Requests.removeSuggestion)
     // .get('/requests/:id', API.Requests.getByIdForMatchmaker)
     .put('/requests/:request/add/:expertshaped', API.Requests.addSuggestion)
     .put('/experts/:expertshaped/matchify/:request', API.Mojo.updateMatchingStats)
@@ -38,7 +29,16 @@ module.exports = function(app, mw) {
     .get('/experts/:id', API.Experts.getByIdForAdmin)
     .delete('/experts/:expert', API.Experts.deleteById)
     // .post('/experts/:expert/note', API.Experts.addNote)
+    .get('/requests/active', API.Requests.getActiveForAdmin)
+    .get('/requests/2015', API.Requests.get2015ForAdmin)
+    .get('/requests/incomplete', API.Requests.getIncompleteForAdmin)
+    .get('/requests/user/:id', API.Requests.getByUserIdForAdmin)
+    .put('/requests/:request', API.Requests.updateByAdmin)
+    .put('/requests/:request/message', API.Requests.sendMessageByAdmin)
+    .put('/requests/:request/farm', API.Requests.farmByAdmin)
+    .put('/requests/:request/remove/:expert', API.Requests.removeSuggestion)
     .use(mw.$.cachedSlackUsers)
+    .get('/requests/:id', API.Requests.getByIdForAdmin)
     .put('/chat/invite-to-team/:userId', API.Chat.inviteToTeam)
     // .put('/chat/sync-ims', API.Chat.syncIMs)
     .get('/bookings/:start/:end/:userId?', API.Bookings.getByQueryForAdmin)

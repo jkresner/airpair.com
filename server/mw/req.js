@@ -36,11 +36,6 @@ module.exports = (app, mw, cfg) => {
   }))
 
 
-  var admId = config.env == 'test' ? "54551be15f221efa174238d1" :
-                                     "5175efbfa3802cc4d5a5e6ed"
-
-  mw.cache('adm', mw.res.forbid('nonAdm', usr => !usr||usr._id!=admId ))
-
 
   mw.cache('noBot', mw.req.noCrawl({content:'',
     onDisallow(req) {

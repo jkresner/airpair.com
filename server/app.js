@@ -1,5 +1,7 @@
 function run({config,MAServer,tracking}, done) {
 
+  //⬡
+
   var app               = MAServer.App(config, done)
   var analytics         = MAServer.Analytics(config, tracking)
   var Auth              = require('meanair-auth')
@@ -16,13 +18,6 @@ function run({config,MAServer,tracking}, done) {
     global.API          = require('./api/_all')
     global.util         = require('../shared/util')
     _.wrapFnList        = util.wrapFnList
-
-    global.$callSvc       = (fn, ctx) =>
-      function() {
-        var thisCtx = { user: ctx.user, sessionID: ctx.sessionID, session: ctx.session }
-        // $log('fn', fn, thisCtx, arguments)
-        fn.apply(thisCtx, arguments)
-      }
 
     global.Wrappers     = require('./services/wrappers/_index')
     global.mailman      = require('./util/mailman')()

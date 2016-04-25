@@ -5,13 +5,14 @@ module.exports = function(app, mw) {
     .get({'full':                  ''})
 
 
-  app.use('/v1/api/*', [mw.$.noBot, mw.$.session, mw.$.cachedTags,mw.$.cachedTemplates])
-  app.use('/v1/api/bookings/*', [mw.$.cachedSlackUsers])
+  app.use('/v1/api', [mw.$.noBot, mw.$.session, mw.$.cachedTags, mw.$.cachedTemplates])
+  app.use(['/v1/api/bookings/*',
+           '/v1/api/requests/*'], [mw.$.cachedSlackUsers])
 
 
   app.honey.Router('posts:api', { mount: '/v1/api/posts', type: 'api' })
     .param('post', API.Posts.paramFns.getById)
-    .param('postreview', API.Posts.reviewParamFn)
+    // .param('postreview', API.Posts.reviewParamFn)
     // .get('/tagged/:tag', API.Posts.getByTag)
     // .use(mw.$.authd)
     .useEnd(mw.$.apiJson)
@@ -47,9 +48,9 @@ module.exports = function(app, mw) {
     .get('/requests', API.Requests.getMy)
     .get('/requests/:id', API.Requests.getByIdForUser)
     .get('/requests/:id/book/:expertshaped', API.Requests.getRequestForBookingExpert)
-    .put('/requests/:request/verify', API.Requests.sendVerifyEmailByCustomer)
-    .put('/requests/:request', API.Requests.updateByCustomer)
     .post('/requests', API.Requests.create)
+    // .put('/requests/:request/verify', API.Requests.sendVerifyEmailByCustomer)
+    .put('/requests/:request', API.Requests.updateByCustomer)
     .delete('/requests/:request', API.Requests.deleteById)
   //   .get('/users/me/provider-scopes', populate.user, API.Users.getProviderScopes)
   //   .put('/users/me/email-verify', mw.$.onFirstReq, API.Users.verifyEmail)

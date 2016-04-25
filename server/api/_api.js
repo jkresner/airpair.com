@@ -36,7 +36,7 @@ function resolveParamFn(Svc, svcFnName, paramName, objectName, Validation) {
   return (req, res, next, id) => {
     if (logging) $log('paramFn'.cyan, paramName, objectName, svcFnName, id)
     if (id) id = id.trim()
-    $callSvc(Svc[svcFnName],req)(id, function(e, r) {
+    Svc[svcFnName].call({user:req.user,sessionID:req.sessionID,session:req.session}, id, function(e, r) {
       if (!r && !e) {
         e = Error404(`${paramName} not found.`,
           !_.contains(['post','postpublished','workshop'], paramName))
@@ -73,7 +73,7 @@ function serve(Svc, svcFnName, argsFn, Validation) {
     }
     args.push(cbSend(req,res,next))
     if (!Svc[svcFnName]) throw Error(`Service function ${svcFnName} not defined`)
-    Svc[svcFnName].apply(req, args)
+    Svc[svcFnName].apply({user:req.user,sessionID:req.sessionID,session:req.session}, args)
   }
 }
 

@@ -1,19 +1,19 @@
 var {initAPI} = require('./_api')
 var svc = require('../services/posts')
 
-function reviewParamFn(req, res, next, id) {
-  $callSvc(svc.getReview,req)(req.post, id, function(e, r) {
-    if (!r && !e) {
-      e = new Error(`post not found.`)
-      e.status = 404
-    }
-    req.postreview = r
-    next(e, r)
-  })
-}
+// function reviewParamFn(req, res, next, id) {
+//svc.getReview,req)(req.post, id, function(e, r) {
+//     if (!r && !e) {
+//       e = new Error(`post not found.`)
+//       e.status = 404
+//     }
+//     req.postreview = r
+//     next(e, r)
+//   })
+// }
 
 
-var api = initAPI(
+module.exports = initAPI(
   svc
 , {
 
@@ -56,13 +56,10 @@ var api = initAPI(
 }, {
   'post':'getById',
   'postpublished':'getBySlugForPublishedView',
-  'postreview': 'getReview'
+  // 'postreview': 'getReview'
 },
   require('../../shared/validation/posts.js')
 ,
   'post'
 )
-
-
-module.exports = _.extend(api, {reviewParamFn})
 

@@ -26,26 +26,26 @@ var get = {
   },
 
   getHistory(expert, cb) {
-    var user = { _id: expert.userId }
-    $callSvc(RequestSvc.getExperts,{user})(expert,(ee,requests)=>{
-      if (ee) return cb(ee)
-      var calls = []
-      for (var req of requests) {
-        if (!req.by && req.company) {
-          req.by = {_id:req.userId,
-            name: req.company.contacts[0].fullName,
-            email: req.company.contacts[0].email
-          }
-        }
-        if (req.company) delete req.company
-      }
-      $callSvc(BookingSvc.getByExpertIdForMatching,this)(expert._id,(e,bookings)=>{
-        if (e) return cb(ee)
-        cb(null,{requests,bookings:
-          _.sortBy(_.union(calls,bookings),(b)=>-1*moment(b.datetime).unix())
-        })
-      })
-    })
+    // var user = { _id: expert.userId }
+    // $callSvc(RequestSvc.getExperts,{user})(expert,(ee,requests)=>{
+    //   if (ee) return cb(ee)
+    //   var calls = []
+    //   for (var req of requests) {
+    //     if (!req.by && req.company) {
+    //       req.by = {_id:req.userId,
+    //         name: req.company.contacts[0].fullName,
+    //         email: req.company.contacts[0].email
+    //       }
+    //     }
+    //     if (req.company) delete req.company
+    //   }
+    //   $callSvc(BookingSvc.getByExpertIdForMatching,this)(expert._id,(e,bookings)=>{
+    //     if (e) return cb(ee)
+    //     cb(null,{requests,bookings:
+    //       _.sortBy(_.union(calls,bookings),(b)=>-1*moment(b.datetime).unix())
+    //     })
+    //   })
+    // })
   },
 
   search(term, cb) {

@@ -175,7 +175,7 @@ review = ->
                 expect(sSnug.name).to.equal("Ra'Shaun Stovall")
                 GET "/requests/review/#{r._id}", {}, (rExpert) ->
                   expect(_.idsEqual(r._id,rExpert._id)).to.be.true
-                  expect(rExpert.by.name.indexOf("Somik Rana")).to.equal(0)
+                  expect(rExpert.by.name).to.be.undefined
                   expect(rAnon.userId).to.be.undefined
                   expect(rAnon.budget).to.be.undefined
                   DONE()
@@ -238,4 +238,4 @@ module.exports = ->
 
 
   DESCRIBE "Create", create
-  DESCRIBE "Review", review
+  DESCRIBE "Job", review

@@ -1,54 +1,30 @@
-<section ng-if="r" id="review" class="{{reviewClass}}">
+<section ng-if="r" id="review" class="{{reviewClass || r.view}}">
 
 
-  <section ng-if="!session.location" class="localization">
+  <section ng-if="r.view == 'customer' && !session.location" class="localization">
     <p style="padding:20px 10px">Provide your location / timezone to help with scheduling</p>
     <location-input data="data" on-select="updateLocation"></location-input>
   </section>
 
 
   <section id="info">
-    <a href="/help/request/{{r._id}}" class="btn btn-sm btn-inverse">Edit request</a>
+    <a href="/help/request/{{r._id}}" class="btn btn-sm btn-inverse" ng-if="r.view == 'customer'">Edit request</a>
     <h5>{{ r.title || 'Spec' }}</h5>
     <request-review-summary></request-review-summary>
   </section>
 
 
-  <section class="replies">
+  <section class="replies" ng-if="replies">
 
-    <form ng-if="isAnon">
-      <h3>Want AirPairs like this?</h3>
-      <ul>
-        <li>- Get paid to help people</li>
-        <li>- Sharpen your communication skills</li>
-      </ul>
-      <a id="loginAuth" track-click="auth" class="btn btn-error gh-white" ng-href="{{'/auth/github/callback' + ((returnTo) ? '?returnTo='+returnTo : '') }}" target="_self" style="width:100%">Login w github to reply</a>
-    </form>
-
-    <form ng-if="!isCustomer && !isAnon && !isAdmin">
-      <h3>One more step</h3>
-      <a ng-href="https://consult.airpair.com/profile" target="_self" class="btn" style="width:100%">Setup your expert profile</a>
-    </form>
-
-
-    <div ng-if="isCustomer">
+    <div ng-if="replies.length == 0">
       <div class="message noexperts">
         <span class="img user pairy" itemprop="image"></span>
-        <!-- <img src="/static/img/css/chat/pairy.png" /> -->
         <label>Pairy</label>
-        <!-- <div><p ng-if="isCustomer" class="important">You must set an account password and verify your email before experts can see this request.</p></div> -->
-        <!-- <div><p ng-if="!isCustomer" class="important">You must verify your email before replying.</p></div> -->
-
-        <div ng-if="(isCustomer || isAdmin) && replies == 0">
           <p>No experts have replied yet. <!-- Consider uping the rate? --></p>
         </div>
       </div>
 
     </div>
-  </section>
-
-
-  <section class="replies" ng-if="(isCustomer || isAdmin || (isExpert && !expertEdit)) && session.emailVerified">
 
     <ul>
       <li ng-repeat="s in replies">
@@ -61,7 +37,7 @@
             <social-links profile="s.expert"></social-links>
             <div ng-bind-html="s.expertComment | markdownAsHtml"></div>
           </div>
-          <section ng-if="(isCustomer || isAdmin) && s.expertStatus == 'available'">
+          <section ng-if="&& s.expertStatus == 'available'">
             <strong>${{s.suggestedRate.total}}<span>/hr</span></strong>
             <a href="/billing/book/{{s.expert._id}}/{{r._id}}" class="btn">Book</a>
           </section>
@@ -83,6 +59,19 @@
 
   </section>
 
+  <section class="replies" ng-if="r.view == 'anon'">
+    <hr style="clear:both" />
+
+    <form>
+      <h3>Want AirPairs like this?</h3>
+      <ul>
+        <li>- Get paid to help people</li>
+        <li>- Sharpen your communication skills</li>
+      </ul>
+      <a class="btn" style="width:100%" ng-href='https://consult.airpair.com/jobs/{{r._id}}' target="_self">Reply @ consult.airpair.com</a>
+    </form>
+
+  </section>
 
 </section>
 

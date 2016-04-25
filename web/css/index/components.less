@@ -76,6 +76,99 @@
 @done:green;
 @danger:#FFBABA;
 
+.underlinedHeading {
+  padding-bottom:6px;border-bottom:solid 1px @lightblue;
+  button { background:none;border:none;
+   color:@orange;text-transform:uppercase; }
+  button:hover { color:@orangehighlight; }
+  button:disabled {
+    font-weight:bold;
+    color:@mediumgray;
+  }
+  > .btn { float:right }
+}
+
+h1 { font-size:48px;line-height:72px;font-weight:300 }
+h1.underline { .underlinedHeading; }
+h2 { font-size:36px;line-height:60px;font-weight:300 }
+h3 { font-size:24px;line-height:36px;font-weight:400 }
+h3.underline {
+  .underlinedHeading;line-height:28px;
+  button { padding-bottom:0 }
+  .btn-inverse { min-width:120px;padding:3px 9px; }
+}
+h4 { font-size:18px;line-height:30px;font-weight:400 }
+h5 { font-size:12px;line-height:20px;font-weight:400 }
+h6 { font-size:10px; }
+
+@media only screen and (max-width:640px) {
+  h1 { font-size:30px;line-height:42px;font-weight:300 }
+  h2 { font-size:24px;line-height:36px;font-weight:300 }
+  h3 { font-size:16px;line-height:24px;font-weight:400 }
+  h4 { font-size:12px;line-height:20px;font-weight:400 }
+  h5 { font-size:10px;line-height:20px;font-weight:400 }
+  h6 { font-size:10px; }
+}
+
+a { text-decoration:none;cursor:pointer; }
+a:hover { text-decoration:none }
+
+
+.placeholdertext {
+  @textcolor:@darkbluegray;
+  &::-webkit-input-placeholder { color:@textcolor; }
+  &:-moz-placeholder { color:@textcolor; } /* Firefox 18- */
+  &::-moz-placeholder { color:@textcolor; } /* Firefox 19+ */
+  &:-ms-input-placeholder { color:@textcolor; }
+}
+
+.form-control {
+  .placeholdertext;
+  border:solid 1px red;
+}
+
+.error { color:@error }
+
+.btn {
+  background:@orange;
+  color:white;
+  border:none;
+  padding:8px 20px;
+  // padding: 9px 20px;
+  font-size:16px;
+  letter-spacing:1px;
+  text-transform:uppercase;
+}
+.btn:hover {
+  color:white;
+  background: @orangehighlight;
+  transition: background 0.1s;
+}
+
+.btn-inverse {
+  color:@orange;
+  border:solid 1px @orange;
+  background:white;
+}
+
+.btn-sm {
+  padding:4px 10px;
+  font-size:12px;
+}
+
+.btn-tiny {
+  padding:3px 5px;
+  font-size:11px;
+}
+
+.absstrech {
+  position:absolute;
+  top:0;bottom:0;left:0;right:0;
+}
+
+
+
+
 .pending {
   color:#8a6d3b;
   background-color:#fcf8e3;
@@ -660,7 +753,7 @@ ul.dropdown-menu {
 
   input[type=radio] + label {
     background-size:22px;
-    background-image:url(../img/css/radio.png);
+    background-image:url('@{static}/2015/img/css/radio.png');
     background-repeat:no-repeat;
     background-position:0px 6px;
     -webkit-touch-callout: none;
@@ -684,12 +777,7 @@ ul.dropdown-menu {
   }
 
   input[type=radio]:checked + label {
-    background-image:url('@{static}/img/css/radio-selected.png');
-    // // padding-top:0;
-    // // margin-top:8px!important;
-    // // height:22px;
-    // background-position:0 -15px;
-    // background-size:22px;
+    background-image:url('@{static}/2015/img/css/radio-selected.png');
   }
 
   input[type=radio] + label {
@@ -697,32 +785,6 @@ ul.dropdown-menu {
     background-position:0px 8px;
     margin:0px 15px 18px 0;
   }
-
-  // input[type=radio]+label { margin-bottom:9px;line-height:22px }
-  // input[type=radio]+label span { font-size:12px;color:@mediumgray; }
-  // input[type=radio]:checked + label {
-  //   margin-top:16px;
-  //   margin-bottom:0px;line-height:22px;
-  //   padding-top:2px;
-  //   height:30px;
-  //   line-height:20px;
-  //   img { margin:-5px 10px 0 0 }
-  //   background-position: 0 -22px;
-  // }
-
-  // input[type=radio] {
-  //     display:inline;
-  //   }
-  //   input[type=radio] + label {
-  //     padding-top:0px;
-  //     height:24px;
-  //     margin:0 20px 0px 0;
-  //     background-position:0 2px;
-  //   }
-  //   input[type=radio]:checked + label {
-  //     background-position:0 -22px;
-  //   }
-
 }
 
 ul.stars {
