@@ -5,6 +5,7 @@ var tracking    = require('./app.track')
 
 console.log('config', config)
 
+config.routes.rss.on = true
 config.routes.redirects.on = true
 
 require('./app').run({ config, MAServer, tracking },
