@@ -138,19 +138,6 @@ module.exports = function()
           mm.send(mail, cb||emptyCB))
     },
 
-
-    sendError(text, subject) {
-      if (config.log.error.email) {
-        if (!mm.transports) mm.transports = initTransports()
-
-        mm.transports.ses.sendMail({
-          text,
-          to: config.log.error.email.to,
-          from: config.log.error.email.from,
-          subject: subject || config.log.error.email.subject
-        },()=>{})
-      }
-    }
   })
 
   var $$log = function() { mm.$$trace.apply(this, arguments) }

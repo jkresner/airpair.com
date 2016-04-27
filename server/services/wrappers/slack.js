@@ -1,6 +1,6 @@
 var logging                       = true
 var {select}                      = require('../chats.data')
-var {owner,support,pairbot,jk}    = config.chat.slack
+var {owner,support,pairbot,jk}    = config.wrappers.chat.slack
 
 var clientCall;
 var cCall = function(user, method, data, cbProp, select, cb) {

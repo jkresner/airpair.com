@@ -5,7 +5,7 @@ config                       = MAServer.Config(appRoot, 'test', true)
 config.auth.test =
   loginFnName: 'loginCust'
 
-if process.env.LOG_MW_TRACE
+if process.env.LOG_MW_TRACE || config.log.app.verbose
   config.log.mw.trace = 'white'
 
 OPTS = {}

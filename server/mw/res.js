@@ -1,7 +1,5 @@
 module.exports = (app, mw) => {
 
-  mw.cache('authd', mw.res.forbid('anon',
-      function(req) { if (!req.user) return 'not authed' }))
 
   var admId = config.env == 'test' ? "54551be15f221efa174238d1" :
                                      "5175efbfa3802cc4d5a5e6ed"
@@ -42,6 +40,16 @@ module.exports = (app, mw) => {
   mw.cache('serverPage', page => mw.res.page(page, pageOpts('server')))
 
 
+  mw.cache('authd', mw.res.forbid('anon',
+    function(req) {
+      if (!req.user) {
+        global.analytics.issue(req.ctx, 'forbidanon', 'security_low',
+          { mw:'authd',rule:'!req.user', 'req.user': req.user })
+        return 'not authed'
+      }
+    }
+  ))
+
   mw.cache('notFound', mw.res.notFound({
     onBot(req, res, next) {
       analytics.issue(req.ctx, 'crawl', 'security', { crawl: 404, url: req.originalUrl })
@@ -68,12 +76,26 @@ module.exports = (app, mw) => {
         console.log('SHEEEET'.red, ERR.stack, e.stack)
       }
 
-      if (config.env.match(/prod/i) && config.comm.dispatch.groups.errors)
+
+    // sendError(text, subject) {
+    //   if (config.log.error.email) {
+    //     if (!mm.transports) mm.transports = initTransports()
+
+    //     mm.transports.ses.sendMail({
+    //       text,
+    //       to: config.log.error.email.to,
+    //       from: config.log.error.email.from,
+    //       subject: subject || config.log.error.email.subject
+    //     },()=>{})
+    //   }
+    // }
+
+      if (config.env.match(/prod/i)
+          && config.comm.dispatch.groups.errors)
+
         COMM('ses').error(e, {
           subject:`{AP} ${e.message}`,
-          text: $request(req, e, {body:true}) + '\n\n' + e.stack.toString() })
-      // else if (global.config.log.app.verbose)
-        // $log('mw.onError[VERBOSE]'.cyan, e.stack)
+          text: require('../util/log/request')(req, e) })
     }
   }))
 

@@ -36,7 +36,8 @@ module.exports = function(req, e)
     msg += `\n${req.method} ${req.url}`
     msg += `\n${req.headers['x-forwarded-for'] || req.connection.remoteAddress}`
 
-    var uid = (req.user) ? req.user.email : req.sessionID
+    var user = req.user
+    var uid = user ? user.email : req.sessionID
     var userInfo = (user && user.name) ?
       `\n${user.name} ${user.email} ${user._id}` : `\nanonymous ${uid}`
 
@@ -64,7 +65,6 @@ module.exports = function(req, e)
     msg += `\n\n ${e.stack}`
   }
 
-  console.log(msg.red)
+  return msg
 
-  mailman.sendError(`${msg}`, e.message)
 }

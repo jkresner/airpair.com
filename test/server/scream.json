@@ -22,8 +22,8 @@
     "url":                   "mongodb://localhost/airpair_test"
   },
   "paths": {
-    "fixtures":              "../data/fixtures",
     "bson":                  "../data/bson",
+    "fixtures":              "../data/fixtures",
     "stories":               "stories"
   },
   "http": {

@@ -1,58 +1,29 @@
 airpair.com Deploy checklist
 ===========
 
+TRACKED
+[ ] landing      /   
+[ ] view:post    /reactjs/posts/reactjs-a-guide-for-rails-developers 
+    2ximpressions 
+[ ] landing      /software-experts
+[ ] issue        /asdfasdfd
+[ ] landing      /javascript
+[ ] view:post    /js/javascript-framework-comparison
+    2ximpressions 
+[ ] view:ad      click()
+[-] issue [Crawl:badBot]
+[ ] event        login
+    aliases impressions
+    aliases views
+    aliases events
 
-COMPILE author.airpair.com
-[ ]-- Pass tests
-[ ]-- Run through pages
-[ ]-- Use stylesheets from static server
 
-
-CRITICAL ADSERVE FEATURES
-[ ]-- ROI REPORT
-
-
-NOTIFICATIONS 
-[ ]- custom formatter 
-[ ]-- ISSUE + EMAIL
-[ ]--- [Errors]
-[-]--- [Crawl:non-badBot]
-[-]-- ISSUE
-[-]--- [404]
-[-]--- [Crawl:badBot]
-[-]-- EVENT + EMAIL
-[-]--- [paymethod-create]
-[-]--- [order]
-[-]--- [booking]
-[-]-- EVENT 
-[-]--- [paymethod-remove]
-[-]--- [login]
-[-]--- [login-fail]
-[-]--- [logout]
-[-]-- VIEW
-[-]--- Ad click
-[-]--- Post
-[-]--- Landing
-[-]---- Home
-[-]---- Posts
-[-]---- Posts by tag (make all references _self)
-[-]-- IMPRESSIONS
-[-]--- [ad]
-
+EMAIL NOTIFICATIONS
+[ ]-- [Errors]
+[-]-- [Crawl:non-badBot]
 
 
 DEPLOY PRIMARY - STEPS
-[✓]- Stop [adserve] [author] [consult] apps
-[✓]- Disable reviews / comments temporarily
-[ ] - Modules tests run, code committed + published
-[✓]   shared       .6.3   
-[✓]   scream       .6.4
-[✓]   model        .6.4-rc
-[ ]   middleware   .6.4
-[ ]   server       .6.4-rc
-[ ]   auth         .6.4
-[ ]   apcom        .6.4
-[ ]- Backup most recent [domain] + [analytics]
 [ ]- run [analytics] field name migrate scripts
 [ ]- Deploy static
 [ ]- Deploy airpair.com
@@ -60,7 +31,14 @@ DEPLOY PRIMARY - STEPS
 [ ]-- deploy
 [ ]-- remove unused config
 [ ]-- do smoke tests
+
+
+CRITICAL ADSERVE FEATURES
+[ ]-- ROI REPORT
 [ ]- Deploy adserve
+[✓]-- Pass tests
+[ ]-- Run through pages
+[ ]-- Use stylesheets from static server
 [ ]- Deploy author
 
 
@@ -106,10 +84,10 @@ SMOKE TEST
 
 - - - - - - - - - - - -
 
+
 DEPLOY SECONDARY - STEPS
 [ ]- Fix reviews data
 [ ]- consult
-
 
 
 DOUBLE TEST
@@ -123,6 +101,9 @@ DOUBLE TEST
 [ ]--- head:ogImage
 [ ]--- head:ogDescription
 
+CRITICAL AUTHOR FEATURES
+[ ]-- Compiling
+[?]-- Pass existing tests
 
 BROWSE BOT
 [ ]- mw.trace stops at noBot
@@ -143,13 +124,16 @@ OTHER APCOM FEATURES TO TEST
 [ ]----- POSTReview
 [ ]----- POSTReview update
 [ ]----- [BUGHUNT] Review
-
-
-
-
-CRITICAL AUTHOR FEATURES
-[ ]-- Compiling
-[?]-- Pass existing tests
+[ ]- custom formatter 
+[-]-- EVENT 
+[-]--- [paymethod-remove]
+[-]--- [login]
+[-]--- [login-fail]
+[-]--- [logout]
+[-]-- EVENT + EMAIL
+[-]--- [paymethod-create]
+[-]--- [order]
+[-]--- [booking]
 
 
 
@@ -212,3 +196,17 @@ MEANAIR CODE
 [✓]- Review wishlist
 [ ]-- shared
 [ ]--- browser proof / no ES6
+
+DEPOY
+[✓]- Stop [adserve] [author] [consult] apps
+[✓]- Disable reviews / comments temporarily
+[✓] - Modules tests run, code committed + published
+[✓]   shared       .6.3   
+[✓]   scream       .6.4
+[✓]   middleware   .6.4
+[✓]   server       .6.4
+[✓]   model        .6.4-rc
+[✓]   auth         .6.4
+[ ]   apcom        .6.4
+[✓]- Backup most recent [domain] + [analytics]
+

@@ -1,5 +1,5 @@
 var {Chat,User}             = DAL
-var {channels}              = config.chat.slack
+var {channels}              = config.wrappers.chat.slack
 
 var get = {
 

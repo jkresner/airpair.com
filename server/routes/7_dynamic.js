@@ -5,20 +5,21 @@ module.exports = function(app, mw) {
 
   app.honey.Router('dynamic')
     .use(mw.$.livereload)
+
     .param('job', API.Requests.paramFns.getByIdForReview)
     .get(['/job/:job','/review/:job'],
           mw.$.trackJob, mw.$.hybridPage('job'))
 
     .use([mw.$.badBot, mw.$.session, mw.$.reqFirst])
 
-    .get('/bookings/:id/spin*',
-      function(req, res, next) {
-        API.Bookings.svc.getByIdForSpinning.call(req, req.params.id, req.query.email, (e,r) => {
-          if (!r) return res.status(200).send('')
-          req.locals.r = r
-          next()
-        })
-      }, mw.$.serverPage('spin'))
+    // .get('/bookings/:id/spin*',
+    //   function(req, res, next) {
+    //     API.Bookings.svc.getByIdForSpinning.call(req, req.params.id, req.query.email, (e,r) => {
+    //       if (!r) return res.status(200).send('')
+    //       req.locals.r = r
+    //       next()
+    //     })
+    //   }, mw.$.serverPage('spin'))
 
 
     .get('/posts/review/:id',

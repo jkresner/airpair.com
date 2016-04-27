@@ -37,6 +37,7 @@ module.exports = function(DAL, Data, Shared, Lib) {
 
         Lib[fn](this, 'gh', 'github', profile, tokens, (e,r) => {
           assign(this.analytics, {event:`${existing?'login':'signup'}:oauth:gh`, alias:r, data:{user:_.pick(r,"_id","name")} })
+          // $log('req.analytics', this.analytics)
           if (e) return done(e)
           r.avatar = r.photos ? r.photos[0].value : null
           done(e, r)

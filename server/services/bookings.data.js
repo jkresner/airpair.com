@@ -3,7 +3,7 @@ var {selectFromObject}              = require('../../shared/util')
 var {filterSlackHistory,participantSlackHandle,
   rebookUrl,multitime,
   customers,experts}                = require("../../shared/bookings")
-var {pairbot,jk,support}            = config.chat.slack
+var {pairbot,jk,support}            = config.wrappers.chat.slack
 
 var select = {
   itemIndex: {

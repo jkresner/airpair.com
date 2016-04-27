@@ -1,4 +1,4 @@
-var postsChannelId = config.chat.slack.channels.posts.id
+var postsChannelId = config.wrappers.chat.slack.channels.posts.id
 
 module.exports = function(imProvider)
 {

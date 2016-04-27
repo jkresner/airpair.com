@@ -30,8 +30,7 @@ function run({config,MAServer,tracking}, done) {
 
       cb => config.routes.redirects ? DAL.Redirect.getAll(cb) : cb(null,[]),
 
-      () => app.meanair.lib({passport:require('passport')})
-                       .set(model, {analytics})
+      () => app.meanair.set(model, {analytics})
                        .merge(Auth)
                        .chain(config.middleware, config.routes)
                        .run()
