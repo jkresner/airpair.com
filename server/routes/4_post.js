@@ -5,10 +5,6 @@ module.exports = function(app, mw, {redirects}) {
     .use([mw.$.badBot, mw.$.rewrites, mw.$.session, mw.$.reqFirst, mw.$.cachedTags])
     .useEnd([mw.$.inflateAds, mw.$.trackPost, mw.$.postPage])
 
-    .get(['^/:adtag/posts/:postslug',
-          '^/:adtag/tutorial/:postslug',
-          '^/:adtag/tips-n-tricks/:postslug'],
-          mw.$.logic('posts.getPublishedBySlug'))
 
   if (redirects) {
     // var count = 0
@@ -24,6 +20,13 @@ module.exports = function(app, mw, {redirects}) {
       .filter(r => r.type == "canonical-post")
       .forEach(r => mapCannonical(r))
   }
+
+
+  router
+    .get(['^/:adtag/posts/:postslug',
+          '^/:adtag/tutorial/:postslug',
+          '^/:adtag/tips-n-tricks/:postslug'],
+          mw.$.logic('posts.getPublishedBySlug'))
 
 
 }

@@ -71,10 +71,12 @@ module.exports = function(app, mw) {
   function tagPageData(req, res, next) {
     var tag = cache.tagBySlug(req.params.tagslug||req.url.replace('/', ''))
     if (!tag) return next(assign(Error(`Not found ${req.originalUrl}`),{status:404}))
-    var {title,canonical} = req.locals.r.htmlHead
+    var {canonical} = req.locals.r.htmlHead
+
+
     canonical = canonical || `https://www.airpair.com/posts/tag/${tag.slug}`
     req.locals.r.htmlHead = assign({}, req.locals.r.htmlHead, {
-      title:title.replace('$tag',tag.name).replace('$tag',`${tag.short}`),
+      title:`${tag.name} Programming Guides and Tutorials from Top ${tag.short} Developers and expert consultants`,
       canonical: topTags.indexOf(tag.slug) == -1 ? canonical : canonical.replace('/posts/tag','')
     })
     API.Posts.svc.getByTag(tag, (e,r) => next(e, assign(req.locals.r,tag,r,{url:req.originalUrl})))
