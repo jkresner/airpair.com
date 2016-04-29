@@ -34,7 +34,7 @@ module.exports = (app, mw) => {
 
   mw.cache('trackImpression', mw.analytics.impression(track('impression'), {
       type:'ad',
-      project: d => ({type:'ad',oId:d._id,img:`${d.brand}/${d.img}`})
+      project: d => ({type:'ad',oId:d._id,img:d.img})
     }
   ))
 

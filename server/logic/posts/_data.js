@@ -62,7 +62,7 @@ module.exports = new LogicDataHelper(
 
     other: d => {
       if (d.submitted) {
-        d.stats = d.stats || PostsUtil.calcStats(r)
+        d.stats = d.stats || PostsUtil.calcStats(d)
         d.publishReady = (d.stats.reviews > 2) && (d.stats.rating > 3.5)
       }
 
@@ -115,7 +115,7 @@ module.exports = new LogicDataHelper(
         adtag = d.adtag.slug
       else if (_.find(d.tags, t => t.slug.match(/javascript|angular|node|mean/i)))
         adtag = 'node.js'
-      else if (_.find(d.tags, t => t.slug.match(/java/i) && !t.slug.match(/javascript/i)))
+      else if (_.find(d.tags, t => t.slug.match(/java|spring/i) && !t.slug.match(/javascript/i)))
         adtag = 'java'
       else if (_.find(d.tags, t => t.slug.match(/(php|wordpress)/i)))
         adtag = 'php'
