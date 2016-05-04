@@ -122,7 +122,7 @@
   "routes": {
     "ads": {
       "campaigns":             "70130000000NeguAAC",
-      "dir":                   "web/ads"
+      "dir":                   "web/public/ads"
     },
     "redirects":               { "on": true },
     "rss":                     { "on": true }
