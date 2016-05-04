@@ -51,3 +51,14 @@ db.impressions.update({img:'heroku/900x90.q4.1.signup.java.png',_id:{$gt:ObjectI
 
 
 
+
+"""
+april 30
+
+"""
+db.impressions.update({img:'heroku/heroku/900x90.q2-1.ruby.png'}, {$set: { img:'heroku/900x90.q2-1.ruby.png'}}, {multi:true})
+db.impressions.update({img:'heroku/heroku/220x250.q2-1.ruby.png'}, {$set: { img:'heroku/220x250.q2-1.ruby.png'}}, {multi:true})
+db.impressions.update({img:'heroku/heroku/220x250.q2-1.node.js.png'}, {$set: { img:'heroku/220x250.q2-1.node.js.png'}}, {multi:true})
+db.impressions.update({img:'heroku/heroku/900x90.q2-1.node.js.png'}, {$set: { img:'heroku/900x90.q2-1.node.js.png'}}, {multi:true})
+db.impressions.update({img:'heroku/heroku/900x90.q2-1.php.png'}, {$set: { img:'heroku/900x90.q2-1.php.png'}}, {multi:true})
+db.impressions.update({img:'heroku/heroku/900x90.q2-1.java.png'}, {$set: { img:'heroku/900x90.q2-1.java.png'}}, {multi:true})
