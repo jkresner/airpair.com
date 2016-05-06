@@ -87,7 +87,7 @@
   },
   "log": {
     "cfg":                     { "route": false },
-    "mw":                      { "trace": false, "forbid": false },
+    "mw":                      { "trace": false, "forbid": false, "api": false },
     "modl":                    { "cache": "green" }
   },
   "middleware": {
