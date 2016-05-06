@@ -325,10 +325,10 @@ angular.module("APRequestDirectives", [])
 
   return {
     template: require('../../dashboard/gatevnext.html'),
-    controller($scope, $attrs) {
+    controller($rootScope, $scope, $attrs) {
       DataService.requests.getAuthd({}, function(r) {
         if (r.welcome) {
-          $scope.reqsAuthd = true
+          $rootScope.reqsAuthd = true
           RequestHelper.setRequestTagsFromSession($scope)
         }
         else if (r.require == 'spend')

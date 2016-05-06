@@ -40,17 +40,22 @@ angular.module("APDashboard", ['APFilters', 'APSvcSession',
 
   $scope.util = BookingsUtil
 
-  DataService.bookings.getBookings({}, (r) => {
-    $scope.bookings = _.take(r,4)
-    var rebookings = {}
-    r.forEach((b)=>{
-      if (!rebookings[b.expertId]) rebookings[b.expertId] = b
-    })
-    $scope.rebookings = _.values(rebookings)
+  $scope.$watch('reqsAuthd', (granted) => {
+    if (granted) {
+      DataService.bookings.getBookings({}, (r) => {
+        $scope.bookings = _.take(r,4)
+        var rebookings = {}
+        r.forEach((b)=>{
+          if (!rebookings[b.expertId]) rebookings[b.expertId] = b
+        })
+        $scope.rebookings = _.values(rebookings)
+      })
+
+      DataService.requests.getMyRequests({}, (r) => {
+        $scope.requests = r
+      })
+    }
   })
 
-  DataService.requests.getMyRequests({}, (r) => {
-    $scope.requests = r
-  })
 
 })
