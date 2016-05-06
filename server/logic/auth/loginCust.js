@@ -11,12 +11,16 @@ module.exports = function(DAL, Data, Shared, Lib) {
     if (!tokens.token) return `Github user token required`
     if (!profile.login) return `Github login/username required`
     if (!profile.id) return `Github user id required`
+    // if (!profile.name) return `Github name required`
 
     if (user && user.auth && user.auth.gh) {
       var current = user.auth.gh
       if (current.id != profile.id)
         return `GitHub OAuth fail with [${profile.id}:${profile.login}]. Already logged in with [${current.id}:${current.login}]`
     }
+
+    var email = _.find(profile.emails, o => o.primary && o.verified)
+    if (!email) return `Verify your GitHub email`
   }
 
   return {
