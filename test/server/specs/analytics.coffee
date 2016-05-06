@@ -83,7 +83,6 @@ views = ->
 
 
   IT 'Aliases anonymous sessionId with new signup user._id', ->
-    DB.removeDocs 'User', { 'auth.gh.id': 1655968 }, ->
     ANONSESSION (s) ->
       sId = s.sessionID
       utms = 'utm_campaign=testSingup&utm_source=test8src&utm_content=test8ctn'

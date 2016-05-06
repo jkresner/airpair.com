@@ -104,6 +104,7 @@ var newer = {
       "gh" : {
         "login" : "airpairadm",
         "id" : 11262312,
+        "emails": [{ email: "admin@airpair.com", verified: true, primary: true }],
         "avatar_url" : "https://avatars.githubusercontent.com/u/11261012?v=3",
         "html_url" : "https://github.com/airpairadm",
         "gists_url" : "https://api.github.com/users/airpairadm/gists{/gist_id}",
@@ -188,6 +189,7 @@ var newer = {
       "gh" : {
         "login" : "airpairtest1",
         "id" : 11261012,
+        "emails": [{ email: "airpairtest1@gmail.com", verified: true, primary: true }],
         "avatar_url" : "https://avatars.githubusercontent.com/u/11261012?v=3",
         "html_url" : "https://github.com/airpairtest1",
         "gists_url" : "https://api.github.com/users/airpairtest1/gists{/gist_id}",
@@ -340,6 +342,7 @@ var newer = {
         "avatar_url" : "https://gravatar.com/avatar/0f4cefeedec5163556751d61625eedd0?d=https%3A%2F%2Fidenticons.github.com%2F098e1fe65009e1827566072fb4db0173.png&r=x",
         "id" : 131395,
         "login" : "danielroseman",
+        "emails": [{ email: "drosey@airpair.com", verified: true, primary: true }],
         "name" : "Daniel Roseman",
         tokens: {}
       },
@@ -397,6 +400,7 @@ var newer = {
       "gh" : {
           "login" : "snuggs",
           "id" : 38223,
+          "emails": [{ email: "rashaunstovall@gmail.com", verified: true, primary: true }],
           "followers" : 109,
           "following" : 70,
           "tokens" : {}
@@ -560,6 +564,7 @@ var newer = {
             "avatar_url" : "https://gravatar.com/avatar/e27f554e9ed800bca61642acaba29452?d=https%3A%2F%2Fidenticons.github.com%2Fa685c3dd1f8b2f0ad020d21e95ad4c4d.png&r=x",
             "id" : 534999,
             "login" : "loufranco",
+            "emails": [{ email: "loumfranco@gmail.com", verified: true, primary: true }],
             "tokens" : {}
         },
         "tw" : {
@@ -659,7 +664,6 @@ var newer = {
         "public_repos" : 19,
         "bio" : null,
         "hireable" : true,
-        "email" : "todd@toddmotto.com",
         "location" : "Wiltshire, UK",
         "blog" : "http://toddmotto.com",
         "company" : null,
@@ -668,6 +672,7 @@ var newer = {
         "avatar_url" : "https://2.gravatar.com/avatar/b56bb22b3a4b83c6b534b4c114671380?d=https%3A%2F%2Fidenticons.github.com%2Fe305539e5c84315438eb3167673a893e.png&r=x",
         "id" : 1655968,
         "login" : "toddmotto",
+        "emails": [{ email: "todd@toddmotto.com", verified: true, primary: true }],
         "tokens" : {}
       },
       "in" : {
@@ -787,6 +792,7 @@ var newer = {
         "blog" : "http://philfreo.com/",
         "company" : "Close.io",
         "name" : "Phil Freo",
+        "emails": [{ email: "phil@philfreo.com", verified: true, primary: true }],
         "gravatar_id" : "529a6049c4ad4483dbc62add6da06e1a",
         "avatar_url" : "https://0.gravatar.com/avatar/529a6049c4ad4483dbc62add6da06e1a?d=https%3A%2F%2Fidenticons.github.com%2F6b68046389020611bcec0f52271e28b6.png&r=x",
         "id" : 97612,
@@ -825,22 +831,22 @@ var newer = {
     }
   },
 
-  submPostAuthor: {
-    "_id" : "54f3a1004da2eed243659ce9",
-    "name" : "Robot21425252608",
-    "email" : "robot21425252608@hotmail.com",
-    "emailVerified" : true,
-    "local" : {
-        "password" : "sadfasdfgasdgasdfasdf"
-    },
-    "cohort" : {},
-    "auth" : {
-        "gh" : {
-            "username" : "airpairtest1", "token" : { "token" : "835b520ebd5710972d421cf8c190c59adccf39e7" }
-        }
-    },
-    "bio" : "yo yyoy o"
-  },
+  // submPostAuthor: {
+  //   "_id" : "54f3a1004da2eed243659ce9",
+  //   "name" : "Robot21425252608",
+  //   "email" : "robot21425252608@hotmail.com",
+  //   "emailVerified" : true,
+  //   "local" : {
+  //       "password" : "sadfasdfgasdgasdfasdf"
+  //   },
+  //   "cohort" : {},
+  //   "auth" : {
+  //       "gh" : {
+  //           "username" : "airpairtest1", "token" : { "token" : "835b520ebd5710972d421cf8c190c59adccf39e7" }
+  //       }
+  //   },
+  //   "bio" : "yo yyoy o"
+  // },
 
   dymo: {
     "_id" : ObjectId("534d3e5d1c67d1a4859d2d5b"),
@@ -901,6 +907,7 @@ var newer = {
         "name" : "Alexander Dymo",
         "gravatar_id" : "",
         "avatar_url" : "https://avatars.githubusercontent.com/u/5263?v=3",
+        "emails": [{ email: "alex@alexdymo.com", verified: true, primary: true }],
         "id" : 5263,
         "login" : "adymo",
         "tokens" : {}
@@ -1022,6 +1029,7 @@ var newer = {
         "company" : "Divux Systems",
         "name" : "Daniel Cestari",
         "gravatar_id" : "",
+        "emails": [{ email: "dcestari@gmail.com", verified: true, primary: true }],
         "avatar_url" : "https://avatars.githubusercontent.com/u/216160?v=3",
         "id" : 216160,
         "login" : "dcestari",
@@ -1150,6 +1158,7 @@ var newer = {
       "gh" : {
           "login" : "abliss",
           "id" : 215283,
+          "emails": [{ email: "abliss@gmail.com", verified: true, primary: true }],
           "avatar_url" : "https://avatars.githubusercontent.com/u/215283?v=3",
           "gravatar_id" : "",
           "name" : "Adam Bliss",
@@ -1271,6 +1280,7 @@ var newer = {
         "blog" : null,
         "company" : null,
         "name" : "Pentium10",
+        "emails": [{ email: "pentium10@gmail.com", verified: true, primary: true }],
         "gravatar_id" : "4a682874e7a4757dc02a9823e277e235",
         "avatar_url" : "https://gravatar.com/avatar/4a682874e7a4757dc02a9823e277e235?d=https%3A%2F%2Fidenticons.github.com%2Fcc75ea4d8af87f7b833d7014bf74bdf3.png&r=x",
         "id" : 465691,
@@ -1412,6 +1422,7 @@ var newer = {
       "gh" : {
         "login" : "mperrenoud",
         "id" : 2049534,
+        "emails": [{ email: "mperren@gmail.com", verified: true, primary: true }],
         "avatar_url" : "https://avatars.githubusercontent.com/u/2049534?v=3",
         "gravatar_id" : "",
         "name" : "Michael Perrenoud",
@@ -1564,6 +1575,7 @@ var newer = {
           "company" : null,
           "name" : "Evan R",
           "gravatar_id" : "",
+          "emails": [{ email: "goldcpufish@gmail.com", verified: true, primary: true }],
           "avatar_url" : "https://avatars.githubusercontent.com/u/934880?v=3",
           "id" : 934880,
           "login" : "Eunoia",
@@ -1707,6 +1719,7 @@ var newer = {
         "gh" : {
             "login" : "bsommardahl",
             "id" : 239087,
+            "emails": [{ email: "byron@acklenavenue.com", verified: true, primary: true }],
             "avatar_url" : "https://avatars.githubusercontent.com/u/239087?v=3",
             "gravatar_id" : "",
             "name" : "Byron Sommardahl",
@@ -1774,7 +1787,7 @@ var newer = {
         "displayName" : "Tiago Garcia",
         "username" : "tiagorg",
         "profileUrl" : "https://github.com/tiagorg",
-        "emails" : [{"value" : ""}],
+        "emails": [{ email: "tiagoromerogarcia@gmail.com", verified: true, primary: true }],
         "_json" : {
           "login" : "tiagorg",
           "id" : 764487,

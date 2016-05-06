@@ -23,23 +23,27 @@ DATA.newSession = (userKey) ->
 
 
 DATA.defaultGH = (name, login, suffix) ->
-  profile = FIXTURE.users[FIXTURE.uniquify('users','ape1','_id')].auth.gh
+  profile = FIXTURE.users[FIXTURE.uniquify('users','ape1','auth.gh.email')].auth.gh
   profile.id = (profile.id||1)+moment().unix() + Math.random(2,20)
   profile.login = "#{login}#{suffix}"
   profile.name = profile.name || name || login
+  profile.emails = [{email:profile.email,verified:true,primary:true}]
   profile
 
 DATA.ghProfile = (login, uniquify) ->
   suffix = DATA.timeSeed()
   if uniquify is true
-    u = FIXTURE.users[FIXTURE.uniquify("users", login, '_id username name email auth.gh.login auth.gh.id')] if !u
+    u = FIXTURE.users[FIXTURE.uniquify("users", login, 'username name email auth.gh.email auth.gh.login auth.gh.id auth.gp.id auth.gp.email')] if !u
+    # $log('u'.magenta, u.email)
     $log("FIXTURE.users.#{login} MISSING") if !u
     profile = u.auth.gh if u.auth && u.auth.gh
     profile = DATA.defaultGH(u.name || login, login, suffix) if !profile
+    profile.emails = [{email:profile.email||u.email,verified:true,primary:true}]
   else
     profile = FIXTURE.users[login].auth.gh
     profile = DATA.defaultGH(login, login, suffix) if !profile
   # $log('profile', profile)
+  # expect(profile.emails, "FIXTURE.ghProfile #{login} missing emails").to.exist
   profile
 
 

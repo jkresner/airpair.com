@@ -252,14 +252,12 @@ login = ->
 
 
   IT 'Login from a new anonymous session adds sessionID to aliases', ->
-    ape1 = FIXTURE.clone('users.ape1')
-    # profile = ape1.auth.gp
-    # token = 'ape1_gp_test_token'
+    key = FIXTURE.uniquify('users','ape1', 'email auth.gp.id auth.gh.id auth.gh.login auth.gh.emails.email')
+    ape = FIXTURE.users[key]
     STUB.analytics.on()
-    DB.ensureDoc 'User', ape1, ->
-      LOGIN 'ape1', (r1) ->
-      # AuthService.link.call DATA.newSession(), 'google', profile, {token}, (e, r1) ->
-        EXPECT.equalIds(r1._id, ape1._id)
+    DB.ensureDoc 'User', ape, (e, r0) ->
+      LOGIN key, (r1) ->
+        EXPECT.equalIds(r1._id, ape._id)
         DB.docById 'User', r1._id, (r3) ->
           expect(r3.cohort.aliases.length).to.equal(2)
           DONE()

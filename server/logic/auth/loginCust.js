@@ -20,7 +20,7 @@ module.exports = function(DAL, Data, Shared, Lib) {
     }
 
     var email = _.find(profile.emails, o => o.primary && o.verified)
-    if (!email) return `Verify your GitHub email`
+    if (!email) return `No verified email on GitHub account ${profile.login}`
   }
 
   return {
