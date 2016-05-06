@@ -1,6 +1,9 @@
 function run({config,MAServer,tracking}, done) {
 
-  //⬡
+  config.about = _.omit(config.about,'scripts','engines','dependencies','devDependencies','private','license')
+  config.routes.redirects.on = true
+  config.routes.rss = { on: true }
+  console.log('config', _.omit(config,'wrappers'))
 
   var app               = MAServer.App(config, done)
   var analytics         = MAServer.Analytics(config, tracking)

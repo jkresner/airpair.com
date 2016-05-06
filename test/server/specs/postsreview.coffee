@@ -118,6 +118,5 @@ module.exports = ->
     STUB.wrapper('Slack').cb('getUsers', 'slack_users_list')
 
 
-  it "skip post reviews"
-  # DESCRIBE("Reviews", reviews)
+  SKIP("Reviews", reviews)
 

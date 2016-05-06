@@ -54,7 +54,6 @@ module.exports = function(app, mw) {
       key: 'tag',
       url: '/{{tagslug}}',
       htmlHead: {
-        title: "$tag Programming Guides and Tutorials from Top $tag Developers and expert consultants",
         ogType: "technology",
       }
     }
@@ -71,11 +70,8 @@ module.exports = function(app, mw) {
   function tagPageData(req, res, next) {
     var tag = cache.tagBySlug(req.params.tagslug||req.url.replace('/', ''))
     if (!tag) return next(assign(Error(`Not found ${req.originalUrl}`),{status:404}))
-    var {canonical} = req.locals.r.htmlHead
-
-
-    canonical = canonical || `https://www.airpair.com/posts/tag/${tag.slug}`
-    req.locals.r.htmlHead = assign({}, req.locals.r.htmlHead, {
+    var canonical = `https://www.airpair.com/posts/tag/${tag.slug}`
+    req.locals.htmlHead = assign({}, req.locals.r.htmlHead, {
       title:`${tag.name} Programming Guides and Tutorials from Top ${tag.short} Developers and expert consultants`,
       canonical: topTags.indexOf(tag.slug) == -1 ? canonical : canonical.replace('/posts/tag','')
     })

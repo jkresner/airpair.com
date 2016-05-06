@@ -106,5 +106,5 @@ module.exports = function(app, mw) {
   var rss = rssRenderer()
   app.get('/rss', rss.mixed)
 
-  $logIt('cfg.route', `rss:GET`, '/rss')
+  $logIt('cfg.route', `rss   GET`, '/')
 }

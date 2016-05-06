@@ -16,20 +16,24 @@ module.exports = function(app, mw, {redirects}) {
     map.set(/\.\.\./,'')
     mw.cache('rewrites', mw.req.forward({map,name:'rewrites'}))
 
+    $logIt('cfg.route', 'rewrites', `added ${map.size} rules`)
+
     var map2 = new Map()
+
+    $logIt('cfg.route', 'redirects', `added ${cache['redirects'].length} exact + ${map2.size} pattern match forwards`)
+
+    cache['redirects'].filter(r => r.type == "301" || r.type == "302")
+      .forEach(r => map2.set(new RegExp(`^${r.previous}$`,'i'), r.current))
+
     //-- TODO : patterns
     map2.set(/^\/logout$/,'/auth/logout')
     map2.set("/c\\+\\+","/c++","/posts/tag/c++")
     map2.set('/author/*', '/software-experts')
-    cache['redirects'].filter(r => r.type == "301" || r.type == "302")
-      .forEach(r => map2.set(new RegExp(`^${r.previous}$`,'i'), r.current))
-    // mw.cache('forwards', mw.req.forward({map:map2}))
+    map2.set("^/*/workshops",'/workshops')
 
     map2.forEach((value,key)=>app.get(key,(req,res,next)=>{
-      res.redirect(value)
+      res.redirect(301, value)
     }))
-
-    $logIt('cfg.route', 'redirects', `${cache['redirects'].length} cached, ${map.size} rewrites, ${map2.size} forwards`)
 
   }
 
