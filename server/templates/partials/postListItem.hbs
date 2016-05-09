@@ -17,7 +17,7 @@
     <div class="entry-content" itemprop="text">
       {{#if stats.reviews}}
       <h6><b>{{stats.reviews}}</b> x</h6>
-      <div class="stars" stars val="{{stats.rating}}"></div>
+      <div class="stars">{{post_stars stats.rating}}</div>
       {{/if}}
       <h2 class="entry-title" itemprop="headline">{{ title }}</h2>
 
@@ -29,6 +29,6 @@
   </a>
   <footer class="entry-footer">
     {{!--<bookmarkerserver type="'post'" object-id="'{{_id}}'"></bookmarkerserver>--}}
-    <img class="entry-author-img" itemprop="image" ng-src="{{ by.avatar }}?s=50" />
+    <img class="entry-author-img" itemprop="image" src="{{ by.avatar }}?s=50" />
   </footer>
 </article>

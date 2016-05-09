@@ -21,7 +21,7 @@
       position:absolute;top:3px;left:12px;right:12px;
       margin:0px;padding:5px 5px 5px 5px;color:black;font-size:13px;line-height:16px }
   }
-  h6 { margin:0;padding:0;float:left;width:30px;display:inline-block;font-size:13px }
+  h6 { margin:0;padding:0;float:left;width:36px;display:inline-block;font-size:13px }
 
   .stars {
     display:inline-block;
@@ -73,7 +73,7 @@
       position:absolute;right:12px;bottom:108px }
   }
   .entry-author-img {
-    position:absolute;opacity:0.9;
+    position:absolute;opacity:0.9;width:50px;height:50px;
     right:5px;bottom:5px;border-radius:50%;
   }
   .entry-author-img:hover {
@@ -147,7 +147,7 @@
       background-position-y:2px;
     }
     .btn:hover {
-      background:@orangehighlight no-repeat url('@{static}/img/icons/author-white.png');
+      background:@orangehighlight no-repeat url('@{static}/img/author/airpair-author-bw');
       background-size:26px 26px;
       background-position:97% 2px;
       background-position-x:97%;
@@ -160,7 +160,8 @@
     li { display:block }
   }
   .nostars {
-    h6 { display:none } .stars { display:none }
+    // h6 { display:none }
+    // .stars { display:none }
   }
   .nobookmarks {
     .bookmark  { display:none }
@@ -287,7 +288,7 @@
         background-color:@error;
       }
       a.edit {
-        background:url('@{static}/img/pages/posts/author-white.png');
+        background:url('@{static}/img/author/airpair-author-bw.png');
         background-size:74%;
         background-position:3px 4px;
         background-color:@orange;
@@ -360,7 +361,7 @@
       a.icon { border-radius:50%;height:40px;width:40px;display:inline-block;margin:15px 0 }
       a.icon:hover { background-color:@orangehighlight }
       a.edit {
-        background:@orange url('@{static}/img/pages/posts/author-white.png') no-repeat;
+        background:@orange url('@{static}/img/author/airpair-author-bw.png') no-repeat;
         background-size:78%;
         background-position:3px 4px;
       }
