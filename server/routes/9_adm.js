@@ -55,7 +55,6 @@ module.exports = function(app, mw) {
     // .get('/tags', API.Tags.getAllForCache)
     // .post('/tags', API.Tags.createByAdmin)
     // .get('/experts/mojo/me', API.Mojo.getMatchesForRequest)
-    // .get('/experts/dashboard', API.Experts.getMatchesForDashboard)
     // .get('/experts', API.Experts.getForExpertsPage)
     // .post('/bookings/:booking/note', API.Bookings.addNote)
     // .post('/experts/:expert/note', API.Experts.addNote)

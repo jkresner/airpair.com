@@ -65,7 +65,7 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
     }
 
     if (!Shared.roles.request.isCustomerOrAdmin($scope.session, r))
-      $location.path('/dashboard')
+      $location.path('/')
     else
       $scope.request = r
   }, function(er) {

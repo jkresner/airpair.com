@@ -89,13 +89,6 @@ angular.module('APDataSvc', [])
       getMe: GET((d)=>`/experts/me`),
       getById: GET((d)=>`/experts/${d._id}`),
       getHistory: GET((d)=>`/experts/${d._id}/history`),
-      getForDashboard: GET((d)=>`/experts/dashboard`),
-      // create: POST((d)=>`/experts/me`),
-      // updateMe: PUT((d)=>`/experts/${d._id}/me`),
-      // updateAvailability: PUT((d)=>`/experts/${d._id}/availability`),
-      getDeal: GET((d)=>`/experts/deal/${d._id}`),
-      saveDeal: POST((d)=>`/experts/${d.expertId}/deal`),
-      // expireDeal: PUT((d)=>`/experts/${d._id}/deal/${d.dealId}/expire`),
     }
 
     this.experts = expertFns;
