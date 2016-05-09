@@ -2,7 +2,7 @@ module.exports = function(app, mw, {ads,redirects}) {
 
 
   app.get('/posts/thumb/:id', mw.$.noBot, (req,res,next) => {
-    var post = cache.post[req.params.id]
+    var post = cache.posts[req.params.id]
     if (!post) res.status(404)
     else res.redirect(301, post.htmlHead.ogImage)
     res.end()

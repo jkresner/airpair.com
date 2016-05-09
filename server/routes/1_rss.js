@@ -4,7 +4,7 @@ var RSS                   = require('rss')
 
 var allFeedOptions = {
   site_url: 'https://www.airpair.com',
-  image_url: 'https://www.airpair.com/static/img/css/airpair-circle.png',
+  image_url: 'https://static.airpair.com/img/icons/icon220.png',
   copyright: '2016 AirPair Inc',
   language: 'en',
   ttl: '60'
@@ -104,7 +104,7 @@ module.exports = function(app, mw) {
   if (!config.routes.rss) return
 
   var rss = rssRenderer()
-  app.get('/rss', rss.mixed)
+  app.get(['/rss','/rss/posts'], rss.mixed)
 
   $logIt('cfg.route', `rss   GET`, '/')
 }

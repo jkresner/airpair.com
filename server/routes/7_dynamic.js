@@ -40,7 +40,8 @@ module.exports = function(app, mw) {
     .get('/:tagshort/workshops/:slug',
       (req, res, next) => {
         var r = _.find(cache.workshops, w => w.url == req.originalUrl)
-        r ? next(null, assign(req.locals,{r,htmlHead:r.htmlHead})) : next("Workshop not found")
+        r ? next(null, assign(req.locals,{r,htmlHead:r.htmlHead}))
+          : res.redirect(302,'/workshops')
       },
       mw.$.inflateAds,
       mw.$.trackWorkshop,

@@ -66,6 +66,8 @@ module.exports = (app, mw) => {
     quiet: _.get(config, 'log.app.quiet'),
     // formatter: (req, e) => `${e.message}`,
     onError: (req, e) => {
+      if (!e.message) e = Error(e)
+
       try {
         var msg = e.message.replace(/ /g,'')
         var name = e.status || (msg.length > 24 ? msg.substring(0,24) : msg)
@@ -75,6 +77,11 @@ module.exports = (app, mw) => {
       catch (ERR) {
         console.log('SHEEEET'.red, ERR.stack, e.stack)
       }
+
+      if ( e.message.match(/not found/i)
+        && !e.message.match(/<</i)
+        && req.ctx.ref)
+        e.message = `${e.message} << ${req.ctx.ref}`
 
 
     // sendError(text, subject) {

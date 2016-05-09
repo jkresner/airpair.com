@@ -52,7 +52,10 @@ module.exports = (app, mw) => {
 
   mw.cache('trackPost', mw.analytics.view('post', track('view'), {
       onBot: () => {},
-      project: d => ({_id:d._id,url:d.url.replace('https://www.airpair.com', '')}),
+      project: d => ({_id:d._id,
+        url: d.url.replace('https://www.airpair.com', '')
+                  .replace('http://www.airpair.com', '')
+      }),
     }
   ))
 

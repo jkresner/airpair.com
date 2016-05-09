@@ -94,8 +94,10 @@
     "api":                     { "baseUrl": "/v1/api" },
     "ctx": {
       "bot": {
-        "all": "googlebot|TweetmemeBot|TurnitinBot|SMTBot|MegaIndex|Domain Re-Animator Bot|ToutiaoSpider|uk_lddc_bot|MJ12bot|CPython|libwww-perl|Superfeedr|Mechanize|AdsBot-Google|gurujibot|bitlybot|twitterbot|scritch|yandexbot|slurp|msnbot|bingbot|rogerbot|MetaURI|Hatena|PaperLiBot|QuerySeekerSpider|AhrefsBot|EmailMarketingRobot|ShowyouBot|Baiduspider|YisouSpider|facebookexternalhit|archive.org_bot|Y!J-ASR",
-        "bad": "MegaIndex|Feedly|datasift|uk_lddc_bot|MJ12bot|CPython|libwww-perl|Superfeedr|Nutch|Mechanize|cf-news"
+        "ok": "sogou|googlebot|bing",
+        "all": "scraper|spider|bot|googlebot|Tweetmeme|Turnitin|SMTBot|MegaIndex|Domain Re-Animator|Toutiao|uk_lddc_bot|MJ12bot|CPython|libwww-perl|Superfeedr|Mechanize|AdsBot-Google|gurujibot|bitlybot|twitterbot|scritch|yandexbot|slurp|msnbot|bingbot|rogerbot|MetaURI|Hatena|PaperLiBot|QuerySeekerSpider|AhrefsBot|EmailMarketingRobot|ShowyouBot|Baiduspider|YisouSpider|facebookexternalhit|archive.org_bot|Y!J-ASR",
+        "bad": "scraper|MegaIndex|NetShelter|SeznamBot|Feedly|datasift|uk_lddc_bot|MJ12bot|CPython|libwww-perl|Superfeedr|Nutch|Mechanize|cf-news",
+        "reader": "Blogtrottr|Windows-RSS|Tiny RSS|SimplePie"
       },
       "uId":                   true,
       "dirty": {

@@ -30,6 +30,7 @@ module.exports = function(app, mw, {redirects}) {
     map2.set("/c\\+\\+","/c++","/posts/tag/c++")
     map2.set('/author/*', '/software-experts')
     map2.set("^/*/workshops",'/workshops')
+    map2.set("^/images/landing/airconf",'/workshops')
 
     map2.forEach((value,key)=>app.get(key,(req,res,next)=>{
       res.redirect(301, value)
