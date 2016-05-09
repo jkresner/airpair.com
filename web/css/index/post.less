@@ -247,11 +247,13 @@ article.faq {
 
   .rail1CTA {
     .rail;
-    h6 { padding-top:15px };
     .railstars {
+      text-align:center;
       padding-top:4px;
-      ul.stars { height:35px;margin:0;padding:0;float:left;max-width:130px }
-      a { height:35px;text-transform:uppercase;float:right }
+      margin-top:-10px;
+      h6 { padding-top:0!important;margin:0!important; };
+      ul.stars { height:30px;margin:4px auto!important;padding:0;max-width:130px; }
+      // a { height:35px;text-transform:uppercase;float:right }
     }
     .gethelp {
       .btn { position:absolute;top:8px;right:0px;padding:3px 18px;
@@ -542,17 +544,16 @@ article.faq {
 }
 
 #reviews {
-  max-width:640px;
+  width:101%;
   padding:30px 0 0 0;
   position:relative;
   background:white;
-  form { .lightblueForm;
+  form {
     background-color:#151821;
     color:white;
     padding-top:15px;
     text-align:left;
     select { color:@darkorange }
-    // input { color:@darkorange }
     textarea { min-height:100px;color:@darkorange }
     h4 { font-size:24px }
     .btn { width:100% }
@@ -567,26 +568,28 @@ article.faq {
   }
   .noReviews { border-top:solid 1px @lightblue;margin-top:5px;padding-top:10px }
   ul.reviews {
-    max-width:640px;
+    max-width:100%;
     margin-top:-5px!important;
     .ulNoStyle;
     > li {
-      display:block;border-top:solid 1px @lightblue;
+      margin:10px 0px 10px 70px;
+      display:block;border:solid 1px @graypale;
+      border-radius:16px;
       position:relative;
-      padding:10px 0 10px 50px;
-      img.user { margin-right:5px;position:absolute;left:0;top:14px }
-      .stars { position:absolute;right:0;top:8px }
+      padding:6px 5px 10px 10px;
+      img.user { margin-right:5px;position:absolute;left:-65px;top:4px;width:50px;height:50px }
+      .stars { position:absolute;right:8px;top:8px }
       label { font-size:12px;color:@blue }
       time { font-size:10px }
       p { line-height:21px;margin-top:0px;color:@textgray;font-size:15px }
       header { border:none;margin-bottom:2px }
       ul.replies {
-        margin-left:0;padding-left:0;
+        margin-left:70px;padding-left:0;
         li {
           padding-top:2px;
           display:block;
           // border-top:solid 1px @palegray;
-          position:relative;padding-left:50px;img { top:6px } }
+          position:relative;padding:4px;img { top:6px } }
       }
       footer {
         menu { padding-left:0;margin-top:0;

@@ -15,7 +15,7 @@ var generateToc         = require('../../services/postsToc')
 var md5                 = require('../../util/md5')
 var userCommentByte = (byte) => {
   var avatar = byte.email ? md5.gravatarUrl(byte.email) :
-    "/static/img/pages/posts/storm.png"
+    "https://static.airpair.com/img/avatar/stormtrooper.png"
   return _.extend(_.pick(byte,'_id','name'), {avatar})
 }
 var PostsUtil = {

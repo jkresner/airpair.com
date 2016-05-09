@@ -97,8 +97,7 @@ return asSchema({
   // },
 
 
-  reviews:          [asSchema(Survey)],
-  // reviews:          [], //[asSchema(Survey)],
+  reviews:          [Survey],
   forkers:          [Forker],
 
   // TO review in 0.6.3
@@ -114,14 +113,7 @@ return asSchema({
     stats:            [] //Object?
   },
 
-  stats:            StatsSummary,
-
-  prize: {
-    comp:       { type: String, enum: Enum.POST.COMP },
-    sponsor:    { type: String },
-    name:       { type: String },
-    tag:        { type: String },
-  }
+  stats:            StatsSummary
 
 })
 

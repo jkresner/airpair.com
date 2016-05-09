@@ -9,10 +9,3 @@ angular.module("APExpertsDirectives", [])
   }
 }))
 
-
-.directive('expertAvail', () => ({
-  template: require('./expertAvail.html'),
-  scope: {
-    availability: "=data"
-  }
-}))
