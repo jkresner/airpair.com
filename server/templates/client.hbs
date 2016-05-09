@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en-US" prefix="og: http://ogp.me/ns#" ng-app="AP" ng-strict-di>
+<head>
+  {{> htmlHead }}
+</head>
+<body>
+  {{> siteNav }}
+
+  <div class="main-wrap">
+    <div notifications></div>
+    <main ng-view>{{{body}}}</main>
+  </div>
+
+  {{> siteFooter }}
+
+  <script type="text/javascript" src="{{ cfg.static.host }}{{js.index}}"></script>
+  <script type="text/javascript">
+
+    window.viewData = { session: {{{ JSON session }}} };
+
+  </script>
+
+
+  {{> initPage }}
+</body>
+</html>
+
+
+
+

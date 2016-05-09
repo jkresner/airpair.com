@@ -1,6 +1,5 @@
 var md5             = require('../util/md5')
-var logging         = config.log.auth || false
-var bcrypt          = require('bcrypt')
+var logging         = true // config.log.auth || false
 
 
 var select = {
@@ -11,34 +10,7 @@ var select = {
     'emailVerified': 1,
     'roles': 1,
   },
-  sessionFull: {
-    // '__v': 1,
-    '_id': 1,
-    'roles': 1,
-    'email': 1,
-    'emailVerified': 1,
-    'primaryPayMethodId': 1,
-    'name': 1,
-    'initials': 1,
-    'username': 1,
-    'bio': 1,
-    'tags': 1,
-    'bookmarks': 1,
-    'cohort.engagement': 1,
-    'cohort.expert._id': 1,
-    'location': 1,
-    'auth.gh.login': 1,
-    'auth.so.link': 1,
-    'auth.bb.username': 1,
-    'auth.in.id': 1,
-    'auth.tw.screen_name': 1,
-    'auth.al.angellist_url': 1,
-    'auth.gp.id': 1,
-    'auth.gp.link': 1,
-    'auth.gp.url': 1,
-    'auth.gp.email': 1,
-    'auth.sl.username': 1
-  },
+
   usersInRole: {
     '_id': 1,
     'roles': 1,
@@ -49,27 +21,15 @@ var select = {
   search: '_id email name initials username bio auth.gp'
 }
 
+
 var data = {
 
-  bcrypt,
 
   select: {
     session: select.session,
     sessionFull: select.sessionFull,
     usersInRole: select.usersInRole,
     search: select.search,
-
-    analyticsSignup(user, sessionID, session) {
-      return {_id:user._id,name:user.name,sessionID}
-    },
-
-    analyticsLogin(user, sessionID, session) {
-      return {name:user.name,sessionID}
-    },
-
-    analyticsLink(user, provider, profile) {
-      return {name:user.name,provider,username:profile.username||profile.login||profile.id}
-    },
 
     sessionFromUser(user) {
       return util.selectFromObject(user, select.session)
@@ -107,39 +67,36 @@ var data = {
     inflateTagsAndBookmarks(user, cb) {
       var noInflate = !user || (!user.tags && !user.bookmarks)
       if (noInflate) return cb(null, user)
+      // if (logging) $log('inflateTagsAndBookmarks.start')
 
-      cache.ready(['tags','posts','workshops'], () => {
-        // if (logging) $log('inflateTagsAndBookmarks.start')
-
-        var tags = []
-        for (var t of (user.tags || []))
-        {
-          var tt = cache['tags'][t.tagId]
-          if (tt) {
-            var {name,slug} = tt
-            tags.push( _.extend({name,slug},t) )
-          }
-          else
-            $log(`tag with Id ${t.tagId} not in cache`)
-            // return cb(Error(`tag with Id ${t.tagId} not in cache`))
+      var tags = []
+      for (var t of (user.tags || []))
+      {
+        var tt = cache['tags'][t.tagId]
+        if (tt) {
+          var {name,slug} = tt
+          tags.push( _.extend({name,slug},t) )
         }
+        else
+          $log(`tag with Id ${t.tagId} not in cache`)
+          // return cb(Error(`tag with Id ${t.tagId} not in cache`))
+      }
 
-        var bookmarks = []
-        for (var b of (user.bookmarks || []))
-        {
-          var bb = cache[b.type+'s'][b.objectId]
-          if (bb) {
-            var {title,url} = bb
-            bookmarks.push( _.extend({title,url},b) )
-          }
-          else
-            $log(`${b.type} with Id ${b.objectId} not in cache`)
-            // return cb(Error(`${b.type} with Id ${b.objectId} not in cache`))
+      var bookmarks = []
+      for (var b of (user.bookmarks || []))
+      {
+        var bb = cache[b.type+'s'][b.objectId]
+        if (bb) {
+          var {title,url} = bb
+          bookmarks.push( _.extend({title,url},b) )
         }
+        else
+          $log(`${b.type} with Id ${b.objectId} not in cache`)
+          // return cb(Error(`${b.type} with Id ${b.objectId} not in cache`))
+      }
 
-        // if (logging) $log('inflateTagsAndBookmarks.done', {tags, bookmarks})
-        cb(null, _.extend(user, {tags, bookmarks}))
-      })
+      // if (logging) $log('inflateTagsAndBookmarks.done', {tags, bookmarks})
+      cb(null, _.extend(user, {tags, bookmarks}))
     },
 
     // providerProfile: {

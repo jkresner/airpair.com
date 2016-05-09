@@ -88,14 +88,16 @@ var get = {
 
   getRequestForBookingExpert(id, expert, cb) {
     var {user} = this
-    Request.getById(id, select.cb.byRole(this, cb, (e,r) => {
+    Request.getById(id, //select.cb.byRole(this, cb,
+      (e,r) => {
       if (isExpert(user,r)) return cb(Error(`Cannot book yourself on request[${id}]`))
       if (!isCustomerOrAdmin(user,r)) return cb(Error(`Could not find request[${id}] belonging to user[${user._id}]`))
       var suggestion = _.find(r.suggested,(s) => _.idsEqual(s.expert._id,expert._id) && s.expertStatus == 'available')
       if (!suggestion) return cb(Error(`No available expert[${expert._id}] on request[${r._id}] for booking`))
       Object.assign(suggestion.expert, _.pick(expert,'name','username','initials','avatar','location','timezone'))
       cb(null, r)
-    }))
+    })
+    // )
   },
 
   getActiveForAdmin(cb) {
@@ -119,7 +121,7 @@ var get = {
     Order.getManyByQuery({userId:this.user._id}, (e,r) => {
       var total = 0
       for (var order of r) total+=order.total
-      if (total < 180) cb(null, {require:'spend'})
+      if (total < 500) cb(null, {require:'spend'})
       else if (!this.user.location) cb(null, {require:'location'})
       else cb(null,{welcome:this.user._id})
     })
@@ -142,23 +144,23 @@ var save = {
     // o.lastTouch = svc.newTouch.call(this, 'create')
     // o.adm = { active:true }
 
-    analytics.echo(o.by, null, 'Request', {_id:o._id,action:'start'})
+    // analytics.echo(o.by, null, 'Request', {_id:o._id,action:'start'})
 
     if (this.user.emailVerified) {
       // Send here's a link to update your request.
-      $log('******* Should impl request started email')
+      // $log('******* Should impl request started email')
     }
 
     Request.create(o, select.cb.byRole(this,cb,cb))
   },
-  sendVerifyEmailByCustomer(original, email, cb) {
-    cb(V2DeprecatedError('Request.sendVerifyEmailByCustomer'))
+  // sendVerifyEmailByCustomer(original, email, cb) {
+    // cb(V2DeprecatedError('Request.sendVerifyEmailByCustomer'))
     // UserSvc.updateEmailToBeVerified.call(this, email, cb, (e,r, hash)=>{
     //   if (e) return cb(e)
     //   mailman.sendTemplate('user-verify-email',{hash}, r)
     //   select.cb.byRole(this,cb,cb)(null, original)
     // })
-  },
+  // },
   updateByCustomer(original, update, cb) {
     // $log('updateByCustomer'.cyan, update)
 
@@ -171,7 +173,7 @@ var save = {
       mailman.sendTemplate('pipeliner-notify-request', d, 'pipeliners')
 
       original.adm = admSet(original,{active:true,submitted:new Date()})
-      analytics.echo(original.by, null, 'Request', {_id:original._id,action:'submit'})
+      // analytics.echo(original.by, null, 'Request', {_id:original._id,action:'submit'})
     }
 
     // var ups = _.extend(original, update)
@@ -285,24 +287,24 @@ var admin = {
   },
 
 
-  groupSuggest(request, tag, cb)
-  {
-    var {adm,suggested,budget} = request
-    adm.lastTouch = svc.newTouch.call(this, `suggestGroup:${tag.slug}`)
+  // groupSuggest(request, tag, cb)
+  // {
+  //   var {adm,suggested,budget} = request
+  //   adm.lastTouch = svc.newTouch.call(this, `suggestGroup:${tag.slug}`)
 
-    var exclude = _.map(request.suggested||[],(s)=>s.expert._id.toString())
-    MojoSvc.getGroupMatch([tag], {take:5,exclude,maxRate:budget}, (e,group) => {
-      for (var expert of group.suggested) {
-        var suggest = select.expertToSuggestion(expert, this.user, group.type)
-        // suggest._id = Request.newId()
-        suggested.push(suggest)
-      }
+  //   var exclude = _.map(request.suggested||[],(s)=>s.expert._id.toString())
+  //   MojoSvc.getGroupMatch([tag], {take:5,exclude,maxRate:budget}, (e,group) => {
+  //     for (var expert of group.suggested) {
+  //       var suggest = select.expertToSuggestion(expert, this.user, group.type)
+  //       // suggest._id = Request.newId()
+  //       suggested.push(suggest)
+  //     }
 
-      Request.updateSet(request._id, {suggested,adm}, select.cb.adm(cb))
-      var tmplData = select.template.expertAutomatch(request, tag.name)
-      mailman.sendTemplateMails('expert-automatch', tmplData, group.suggested)
-    })
-  },
+  //     Request.updateSet(request._id, {suggested,adm}, select.cb.adm(cb))
+  //     var tmplData = select.template.expertAutomatch(request, tag.name)
+  //     mailman.sendTemplateMails('expert-automatch', tmplData, group.suggested)
+  //   })
+  // },
 
 
   removeSuggestion(request, expert, cb)

@@ -26,15 +26,15 @@ var wrap = (fn, fnName) =>
       // $log('back from api call'.white, e, r, payload)
       var duration = new Date() - start
       if (duration > 1000) console.log(`[braintree.${fnName}].slow`.cyan, `${duration}`.red)
-      if (e) $error(`braintree.${fnName}.ERROR [${e.message}] ${JSON.stringify(payload)}`)
-      else if (!r.success) {
-        $error(`braintree.${fnName}.ERROR [${r.message}] ${JSON.stringify(payload)}`)
-        e = r
-      } else {
+      if (e || !r.success) {
+        $log(`braintree.${fnName}.ERROR [${(e||r).message}] ${JSON.stringify(payload)}`.red)
+        return cb(e ? Error(e.message) : Error(r.message))
+      }
+      else {
         // $log('r', JSON.stringify(r).white)
         r.type = "braintree"
+        cb.apply(this, arguments)
       }
-      cb.apply(this, arguments)
     })
     fn.apply(this, args)
   }
@@ -44,10 +44,10 @@ var wrapper = {
 
   init() {
     var braintree = global.API_BRAINTREE || require('braintree')
-    var {merchantId, publicKey, privateKey} = config.payments.braintree
-    var environment = braintree.Environment[config.payments.braintree.environment]
+    var {merchantId, publicKey, privateKey} = config.wrappers.braintree
+    var environment = braintree.Environment[config.wrappers.braintree.environment]
     this.api = braintree.connect({ environment, merchantId, publicKey, privateKey })
-    addPaymentMethodOpts = {}; // { verifyCard: config.payments.braintree.verifyCards
+    addPaymentMethodOpts = {}; // { verifyCard: config.wrappers.braintree.verifyCards
   },
 
   getClientToken(cb) {
@@ -90,7 +90,8 @@ var wrapper = {
         }
 
         this.api.customer.create(payload, (e, r) => {
-          console.log('braintree.customer.create', r)
+          console.log('braintree.customer.create'.yellow, r)
+          if (!e && r.success === false) e = Error(r.message)
           cb(e, e?null:Object.assign({success:true},r.customer.creditCards[0]), payload)
         })
       }

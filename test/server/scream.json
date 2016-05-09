@@ -1,43 +1,34 @@
 {
-  "specs":                "all",
+  "specs":                   "all",
   "stubs": {
-    "on":                  true
+    "on":                    true
   },
   "colors": {
-    "appload":            "white",
-    "seed":               "magenta",
-    "spec":               "white",
-    "error":              "red",
-    "expectederr":        "blue"
+    "appload":               "white",
+    "seed":                  "magenta",
+    "spec":                  "white",
+    "error":                 "red",
+    "expectederr":           "blue"
   },
   "mongo": {
-    "collections":        ["Users","Experts","Bookings","Orders",
-                           "Companies","Paymethods","Payouts","Posts",
-                           "Requests","Tags","Templates","Views","Impressions",
-                           "Sessions","Events"],
+    "collections":           ["Users","Experts","Bookings","Orders",
+                             "Companies","Paymethods","Payouts","Posts",
+                             "Requests","Tags","Templates","Views","Impressions",
+                             "Sessions","Events","Campaigns"],
     "seed": {
-      "force":              false,
-      "model":              "User",
-      "key":                "jkap",
-      "timeout":            30000
+      "without":             "FIXTURE.users.jkap",
+      "timeout":             30000
     },
-    "url":                "mongodb://localhost/airpair_test"
+    "url":                   "mongodb://localhost/airpair_test"
   },
   "paths": {
-    "fixtures":           "../data/fixtures",
-    "bson":               "../data/bson",
-    "stories":            "stories"
+    "bson":                  "../data/bson",
+    "fixtures":              "../data/fixtures",
+    "stories":               "stories"
   },
   "http": {
     "api": {
-      "urlPath":          "/v1/api"
-    }
-  },
-  "appConfig": {
-    "expect": {
-      "auth.github.org":        "JustASimpleTestOrg",
-      "auth.slack.slackTeam":   "T02ATFDPL",
-      "chat.slack.support":     "U06UD6SES"
+      "baseUrl":             "/v1/api"
     }
   }
 }

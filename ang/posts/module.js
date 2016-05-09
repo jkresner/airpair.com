@@ -1,80 +1,5 @@
 angular.module("APPosts", ['Providers'])
 
-.config(function(apRouteProvider) {
-
-  var authd = apRouteProvider.resolver(['session'])
-  var route = apRouteProvider.route
-
-  route('/posts/tag/:tagslug', 'PostsTagList', require('./listTag.html'))
-  route('/reactjs', 'PostsTagList', require('./listTag.html'))
-  route('/python', 'PostsTagList', require('./listTag.html'))
-  route('/node.js', 'PostsTagList', require('./listTag.html'))
-  route('/ember.js', 'PostsTagList', require('./listTag.html'))
-  route('/keen-io', 'PostsTagList', require('./listTag.html'))
-  route('/rethinkdb', 'PostsTagList', require('./listTag.html'))
-  route('/ionic', 'PostsTagList', require('./listTag.html'))
-  route('/swift', 'PostsTagList', require('./listTag.html'))
-  route('/android', 'PostsTagList', require('./listTag.html'))
-  route('/ruby', 'PostsTagList', require('./listTag.html'))
-})
-
-.controller('PostsTagListCtrl', function($scope, $routeParams, $location, DataService) {
-  console.log('PostsTagListCtrl')
-
-  if ($routeParams.tagslug)
-    $scope.tagslug = $routeParams.tagslug
-  else
-    $scope.tagslug = $location.url().replace('/','')
-
-  DataService.posts.getTagsPosts({tagSlug:$scope.tagslug}, function (result) {
-    $scope.tag = result.tag;
-    $scope.tagposts = result.posts;
-  })
-
-})
-
-// .directive('apPostListItem', function() {
-
-//   return {
-//     restrict: 'E',
-//     template: require('./postListItem.html'),
-//     link(scope, element, attrs) {
-//       scope.post = scope.$eval(attrs.post)
-//     }
-//   }
-
-// })
-
-// .directive('welcomePostItem', function() {
-
-//   return {
-//     restrict: 'E',
-//     template: require('./postListItem2.html'),
-//     link(scope, element, attrs) {
-//       scope.post = scope.$eval(attrs.post)
-//     }
-//   }
-
-// })
-
-
-.directive('postTile', function() {
-
-  return {
-    restrict: 'E',
-    template: require('./postTile.html'),
-    link(scope, element, attrs) {
-      scope.post = scope.$eval(attrs.post)
-    }
-  }
-
-})
-
-
-// .directive('bannerPosttop', function() {
-//   return { template: require('./bannerPosttop.html') }
-// })
-
 
 .directive('postReviews', () => {
   return {
@@ -174,18 +99,3 @@ angular.module("APPosts", ['Providers'])
 })
 
 
-
-// .directive('apPost', function(PageHlpr) {
-
-//   return {
-//     template: require('./post.html'),
-//     controller($scope, $timeout, DataService) {
-//       $scope.$watch('preview.body', () =>{
-//         $timeout(function() {
-//           PageHlpr.highlightSyntax();
-//         }, 10)
-//       })
-//     }
-//   }
-
-// })

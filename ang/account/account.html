@@ -8,42 +8,13 @@
 
   <h3 class="underline">Contact info</h3>
 
-<!--   <section class="email">
-
-    <h3 ng-if="!session.emailVerified" style="margin-top:0px">Verify your email to continue</h3>
-
-    <form id="emailForm" novalidate name="emailForm" ng-submit="submit(emailForm.$valid, data)" ng-class="(session.emailVerified) ? '' : 'verify'">
-
-      <div form-group class="email-group verified-{{session.emailVerified}}">
-        <label class="control-label" for="sessionEmail">Contact email</label>
-        <span class="verifyEmail" ng-if="session.emailVerified == false">{{session.email}} is unverified ...</span>
-        <input id="sessionEmail" name="email" form-control type="email" placeholder="Primary contact email" ng-model="data.email" ng-blur="updateEmail(emailForm.email)" required tabindex="1">
-        <div class="error" ng-if="formGroup.showError(emailForm.email)" ng-messages="emailForm.email.$error">
-          <div ng-message="required">Field required</div>
-          <div ng-message="email">Invalid email</div>
-        </div>
-        <span class="error">{{ emailChangeFailed }}</span>
-
-        <div>
-          <alert ng-repeat="alert in emailAlerts" type="{{alert.type}}">
-            <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>
-            <span ng-bind-html="alert.msg | html"></span></alert>
-        </div>
-      </div>
-      <div class="verifyEmail" ng-if="session.emailVerified == false">
-        <a href="#" ng-click="sendVerificationEmail()" class="btn">Send verification email</a>
-      </div>
-      <hr />
-    </form>
-
-  </section> -->
 
  <section class="info">
       <user-info></user-info>
   </section>
 
-  <section class="avatar">
-    <img class="avatar" ng-src="{{session.avatar}}?s=200" title="Avatars are gravtars from your email." />
+  <section class="avatar" style="padding:0px 20px 0px 30px">
+    <img class="avatar" ng-src="{{session.avatar}}?s=160" title="Avatars are gravtars from your email." style="max-width:80%" />
     <p style="font-size:12px">
     <span ng-if="session.email">Update the <b><a href="http://www.gravatar.com/" target="_blank">gravatar</a></b> for {{ session.email }}</span>
     <span ng-if="!session.email">Enter an email address</span>
@@ -51,40 +22,6 @@
     </p>
   </section>
 
-
-  <section class="password">
-    <h3 class="underline">Login info</h3>
-
-    <div>
-      <h4>Password login</h4>
-      <a href="#" ng-click="sendPasswordChange()" class="btn btn-sm">Send password reset email</a>
-      <alert ng-repeat="alert in passwordAlerts" type="{{alert.type}}"><span ng-bind-html="alert.msg | html"></span></alert>
-    </div>
-    <div>
-      <h4>Google oauth login</h4>
-      <p ng-if="session.auth.gp">Google login with <b>{{session.auth.gp.email}}</b> enabled</p>
-      <p ng-if="!session.auth.gp">Google login not setup</p>
-    </div>
-  </section>
-
-
-  <section class="connect">
-
-    <h3 class="underline">Connected social accounts</h3>
-    <div social-connect return-to="'/me'" class="connect-icons"></div>
-
-  </section>
-
-
-<!--   <section class="chat">
-  <h3 class="underline">Chat</h3>
-
-    <a href="/auth/slack?returnTo=/me" target="_self" class="btn">Connect slack</a>
-    <span ng-if="session.auth.sl" style="color:green;padding-left:10px">Slack user <b>{{session.auth.sl.username}}</b> connected.</span>
-
-
-  </section>
- -->
 
   <section class="logoutClick">
     <h3 class="underline">Logout</h3>

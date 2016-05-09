@@ -1,7 +1,14 @@
 module.exports = {
 
   REDIRECT: {
-    TYPE: ['301','302','410','canonical-post']
+    TYPE: [
+      '301', // forward (string/pattern) from => to
+      '302', // forward (string/pattern) from => to
+      '410', // forward (string/pattern) from => to
+      'canonical-post',
+      'canonical-cachedkey', // loads an object from cache
+      'rewrite', // map pattern/regex <> replace
+    ]
   },
 
   REQUEST: {

@@ -1,9 +1,10 @@
-var groups        = ['pipeliners','spinners']
-var lists         = {}
-var {sender}      = config.mail
 var emptyCB       = (e,r) => { if (e) $log('mailman.send.error'.red, e) }
-var TemplateSvc   = null
-var tmplSvc       = $require('../services/templates', TemplateSvc)
+var $trace        = require('./log/trace')
+
+var sender      = { "pairbot": "Pairbot <team@airpair.com>",
+                    "ap": "AP <team@airpair.com>",
+                    "jk": "Jonathon Kresner <team@airpair.com>",
+                    "team": "AirPair <team@airpair.com>" }
 
 var senderTansport = {
   ap: 'ses',
@@ -14,36 +15,47 @@ var senderTansport = {
 
 module.exports = function()
 {
+
   var $$log = function() {
     var args = [].slice.call(arguments)
     var named = args.shift()
     mm.$$trace(named, args)
   }
 
-  var tmplSvc       = () => {
-    if (!mm.TemplateSvc)
-      mm.TemplateSvc = require('../services/templates')
-    return mm.TemplateSvc
-  }
+  var tmplSvc       = () => ({
+    mail(key, data, to, cb) {
+      var tData = data
+      if (to && to.name)
+        tData = _.extend({firstName:util.firstName(to.name)},data)
+
+      cache.tmpl('mail', key, (tmpl) => {
+        cb(null, {
+          to: (to.constructor === Array) ? to : [`${to.name} <${to.email}>`],
+          subject: tmpl.subjectFn(tData).replace(/&#x27;/g,"'"),
+          markdown: tmpl.markdownFn(tData).replace(/&#x27;/g,"'"),
+          sender: tmpl.sender
+        })
+      })
+    }
+  })
 
   function initTransports() {
     var {createTransport}   = require('nodemailer')
-    var {markdown}          = require('nodemailer-markdown')
+    var compileMarkdown = require('nodemailer-markdown').markdown()
+    // console.log('initTransports'.yellow, cfg.transport)
 
-    var defaultTransport = config.mail.transport.default
-
-    if (config.mail.transport.default == 'stub') {
+    if (config.comm.mode == 'stub') {
       var stubTransport = require('nodemailer-stub-transport')
       var stub = createTransport(stubTransport())
-      stub.use('compile', markdown())
+      stub.use('compile', compileMarkdown)
       return { ses: stub, smtp: stub, stub }
     }
     else {
       var sesTransport  = require('nodemailer-ses-transport')
-      var ses           = createTransport(sesTransport(config.mail.transport.ses))
-      var smtp          = createTransport(config.mail.transport.smtp)
-      smtp.use('compile', markdown())
-      ses.use('compile', markdown())
+      var ses           = createTransport(sesTransport(config.wrappers.ses))
+      var smtp          = createTransport(config.wrappers.smtp)
+      smtp.use('compile', compileMarkdown)
+      ses.use('compile', compileMarkdown)
       return { ses, smtp }
     }
   }
@@ -66,13 +78,13 @@ module.exports = function()
       if (!mm.transports)
         mm.transports = initTransports()
 
-      mail.from = (mail.sender) ? config.mail.sender[mail.sender] : config.mail.sender.team
+      mail.from = mail.sender ? sender[mail.sender] : sender.team
       transportType = transportType ||  senderTansport[mail.sender]
 
       if (!_.contains(['ses','smtp','stub'], transportType))
         return $log('transportType'.red, transportType, mail)
 
-      mm.transports[transportType||config.mail.transport.default].sendMail(mail, (e, info) => {
+      mm.transports[transportType].sendMail(mail, (e, info) => {
         $$log(null,transportType.cyan, mail.from.split(' ')[0].gray, mail.to, mail.subject.yellow)
         if (config.log.mail) $log(mail.text)
         if (cb) cb(e, mail)
@@ -86,36 +98,33 @@ module.exports = function()
     },
 
 
-    getGroupList(group, cb) {
-      if (lists[group])
-        return cb(null, lists[group])
+    // getGroupList(group, cb) {
+    //   if (lists[group])
+    //     return cb(null, lists[group])
 
-      var {getUsersInRole}  = require('../services/users')
-      var role = group.slice(0,-1)
-      getUsersInRole(role, (e, users) => {
-        if (e) return cb(e)
-        lists[group] = _.map(users, (to) => `${to.name} <${to.email}>` )
-        $$log({group}, lists[group])
-        cb(null, lists[group])
-      })
-    },
+    //   var {getUsersInRole}  = require('../services/users')
+    //   var role = group.slice(0,-1)
+    //   getUsersInRole(role, (e, users) => {
+    //     if (e) return cb(e)
+    //     lists[group] = _.map(users, (to) => `${to.name} <${to.email}>` )
+    //     $$log({group}, lists[group])
+    //     cb(null, lists[group])
+    //   })
+    // },
 
 
-    sendGroupMail(tmplName, tmplData, toGroup, callback) {
-      var cb = callback || emptyCB
-      mm.getGroupList(toGroup, (e, to) => {
-        if (e) return cb(e)
-        tmplSvc().mail(tmplName, tmplData, to, (ee, mail) => {
-          mm.send(mail, cb)
-        })
-      })
-    },
+    // sendGroupMail(tmplName, tmplData, toGroup, callback) {
+    //   var cb = callback || emptyCB
+    //   mm.getGroupList(toGroup, (e, to) => {
+    //     if (e) return cb(e)
+    //     tmplSvc().mail(tmplName, tmplData, to, (ee, mail) => {
+    //       mm.send(mail, cb)
+    //     })
+    //   })
+    // },
 
 
     sendTemplate(tmplName, tmplData, to, cb) {
-      if (_.contains(groups,to))
-        return mm.sendGroupMail.apply(this, arguments)
-
       tmplSvc().mail(tmplName, tmplData, to, (e, mail) =>
         mm.send(mail, cb||emptyCB))
     },
@@ -129,19 +138,6 @@ module.exports = function()
           mm.send(mail, cb||emptyCB))
     },
 
-
-    sendError(text, subject) {
-      if (config.log.error.email) {
-        if (!mm.transports) mm.transports = initTransports()
-
-        mm.transports.ses.sendMail({
-          text,
-          to: config.log.error.email.to,
-          from: config.log.error.email.from,
-          subject: subject || config.log.error.email.subject
-        },()=>{})
-      }
-    }
   })
 
   var $$log = function() { mm.$$trace.apply(this, arguments) }

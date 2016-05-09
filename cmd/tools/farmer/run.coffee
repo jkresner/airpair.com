@@ -1,5 +1,5 @@
 """
-  coffee cmd/tools/farmer/run.coffee
+  mocha --compilers coffee:coffee-script/register cmd/tools/farmer/run.coffee
 """
 
 setup = require('../../../server/util/_setup')
@@ -25,22 +25,18 @@ config.mail =
 
 
 outReach =
-  rId: "562333ba5bd2641100d20aaa"
-  tagSlug: "tesseract"
-  tagName: "Tesseract"
-  hrRate: "190"
-  problemDescription: "configure tesseract to read driver license images from 50 indian states."
-  customerName: "Nikhil Sama"
+  rId: "566981e222649211006d1bdc"
+  tagSlug: "propel"
+  tagName: "Propel"
+  hrRate: "180"
+  problemDescription: "refactoring a WordPress Multisite using Propel."
+  customerName: "Lakeshore RV"
   experts: [
-    { n: '', e: '', so: ''}
-    { n: '', e: '', so: ''}
-    { n: '', e: '', so: ''}
-    { n: '', e: '', so: ''}
-    { n: '', e: '', so: ''}
-    { n: '', e: '', so: ''}
-    { n: '', e: '', so: ''}
-    { n: '', e: '', so: ''}
-    { n: '', e: '', so: ''}
+    { n: 'William Durand', e: 'will@drnd.me', so: '636505/william-durand' }
+    { n: 'Jan Fabry', e: 'jan.fabry@monkeyman.be', so: '74619/jan-fabry' }
+    { n: 'Jon', e: 'jonblog.20111018.ws@jondh.me.uk', so: '472495/halfer' }
+    { n: 'Gabor de Mooij', e: 'gabor@redbeanphp.com', so: '237628/gabor-de-mooij' }
+    { n: 'Sebastian Krebs', e: 'krebs@kingcrunch.de', so: '421223/kingcrunch' }
   ]
 
 
@@ -51,7 +47,7 @@ describe 'Farmer: ', ->
 
   before (done) ->
     setup.initGlobals(config)
-    global.app = require('../../server/app').run(config, done)
+    global.app = require('../../../server/app').run(config, done)
 
 
   it 'Send all outReach', (done) ->

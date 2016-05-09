@@ -1,8 +1,6 @@
 var {User}                     = DAL
-var {query,data,select,bcrypt} = require('./users.data')
-var logging                    = config.log.auth
-
-
+var {query,data,select}        = require('./auth.data')
+var logging                    = false // config.log.auth
 
 
 //-------------------------------------------------------------------------//
@@ -16,20 +14,23 @@ function localSignup(email, password, name, done) {
     if (existing.length == 1) return done(Error(`Signup fail. Account with email already exists. Please reset your password.`))
     if (existing.length > 1) return done(Error(`Signup fail. Multiple user accounts associated with ${email}. Please contact team@airpair.com to merge your accounts.`))
 
-    var user    = {name}
-    user.emails = [{value:email,primary:true,verified:false}]
-    user.auth   = {
+    var signup    = {name}
+    signup.emails = [{value:email,primary:true,verified:false}]
+    signup.auth   = {
       password:   { hash: select.passwordHash(password) } // password is hased in the db
     }
 
-    if (logging) $log('Auth.localSignup', this.sessionID, user.name)
-    _createUser(this.sessionID, this.session, user, done)
+    // if (logging) $log('Auth.localSignup', this.sessionID, user.name)
+    _createUser.call(this, this.sessionID, this.session, signup,
+      (ee, user) => {
+        done(ee, user)
+        analytics.alias(this, user, 'signup', {user,email,type:'local'})
+      })
   })
 }
 
 
 function localLogin(email, password, done) {
-  // $log('AUTH.localLogin'.yellow, email)
   User.getByQuery(query.existing.byEmails([email]), (e, existing) => {
     if (e) return done(e)
 
@@ -42,7 +43,11 @@ function localLogin(email, password, done) {
         done(null, false, Unauthorized("Login fail. Incorrect password"))
     }
 
-    _loginUser(this.sessionID, this.session, existing, {auth,emails,photos}, done)
+    _loginUser(this.sessionID, this.session, existing, {auth,emails,photos},
+      (ee, r) => {
+        done(ee, r)
+        analytics.alias(this, r, 'login', {user:r,email,type:'pwd'})
+      })
   })
 }
 
@@ -57,13 +62,7 @@ function _loginUser(sessionID, session, login, {auth, emails, photos}, done) {
 
   // meta = touchMeta(login.meta,'login',user)
 
-  User.updateSet(login._id, update, (e, user) => {
-    select.cb.session({user},done)(null, user)
-
-    // $log('signup'.cyan, login, user)
-    var trackData = select.analyticsLogin(user,sessionID)
-    analytics.alias(user, sessionID, 'login', trackData)
-  })
+  User.updateSet(login._id, update, select.cb.session(done))
 }
 
 
@@ -82,17 +81,11 @@ function _createUser(sessionID, session, signup, done) {
 
   // meta = touchMeta(meta,'signup',user)
 
-  User.create(signup, (e, user) => {
-    select.cb.session({user},done)(null, user)
-    //-- Send an email ??
-    // $log('signup'.cyan, signup, user)
-    var trackData = select.analyticsSignup(user,sessionID)
-    analytics.alias(user, sessionID, 'signup', trackData)
-  })
+  User.create(signup, select.cb.session(done))
 }
 
 
-var {appKey} = config.auth.oauth
+var {appKey} = config.auth
 var _setProfileTokens = (profile, token, refresh) => {
   _.set(profile,`tokens.${appKey}.token`, token)
   if (refresh) _.set(profile,`tokens.${appKey}.refresh`, refresh)
@@ -190,21 +183,20 @@ function _mergeWithExisting(existing, short, profile, oauthEmails, oauthPhotos,t
 
 
 function oauthLogin(provider, profile, {token,refresh}, done) {
-  // $log(`config.auth[${provider}]`, config.auth[provider])
 
-  if (!config.auth[provider] || config.auth[provider].login !== true)
+  if (!config.auth.oauth[provider] || config.auth.oauth[provider].login !== true)
     return done(Error(`AUTH.Login with ${provider} not supported`))
 
   $log(`AUTH.oathLogin.${provider}`.yellow, profile.displayName||profile.name||profile.id)
 
-  var {short} = config.auth[provider]
+  var {short} = config.auth.oauth[provider]
   var existsQuery = query.existing[short](profile)
   // $log('existsQuery', JSON.stringify(existsQuery).gray)
 
   User.getManyByQuery(existsQuery, (e, existing) => {
     if (e)
       return done(e)
-    else if (existing.length == 0 && config.auth[provider].signup !== true)
+    else if (existing.length == 0 && config.auth.oauth[provider].signup !== true)
       return done(Error(`AUTH.Signup with ${provider} not supported`))
     else if (existing.length > 1) {
       var existsIds = _.pluck(existing,'_id').join(',')
@@ -246,7 +238,7 @@ function oauthLogin(provider, profile, {token,refresh}, done) {
       if (true || logging) $log(`oauthLogin.${short}.Signup`.yellow, this.sessionID, name)
       var auth   = {}
       auth[short] = _setProfileTokens(profile,token,refresh)
-      _createUser(this.sessionID, this.session, {name,emails,photos,auth}, done)
+      _createUser.call(this, this.sessionID, this.session, {name,emails,photos,auth}, done)
     }
   })
 }
@@ -258,7 +250,7 @@ function link(provider, profile, {token,refresh}, done) {
 
   $log(`AUTH.link.${provider}`.yellow, user.name)
 
-  var {short} = config.auth[provider]
+  var {short} = config.auth.oauth[provider]
   var {profile} = odata[short](profile)
 
   User.getById(user._id, {select:`auth.${short}`}, (e, {auth})=>{
@@ -276,7 +268,7 @@ function link(provider, profile, {token,refresh}, done) {
     User.updateSet(user._id, $set, done)
 
     var trackData = select.analyticsLink(user, provider, profile)
-    analytics.event(`link:${short}`, user, trackData)
+    analytics.event.call({user}, `link:${short}`, trackData)
   })
 }
 
@@ -292,7 +284,8 @@ function passwordReset(email, cb) {
     var hash = select.resetHash(email)
     $logIt('auth.reset', 'after.calcHash', hash)
 
-    if (user) analytics.event('reset-password', user, { email, anonymous })
+    if (user)
+      analytics.event.call({user}, 'reset-password', { email, anonymous })
 
     //-- Update the user record regardless if anonymous or authenticated
     // User.updateSet(user._id, ups, (e,r) => {
@@ -328,7 +321,8 @@ function changePassword(email, hash, password, cb) {
 
     }
 
-    if (user) analytics.event('set-password', user, { email })
+    if (user)
+      analytics.event(assign(this,{user}), 'set-password', { email })
 
     User.updateSet(user._id, update, cb)
   })
@@ -349,37 +343,4 @@ var Unauthorized = (msg) => {
 }
 
 
-function getCohortProperties(existingUser, session)
-{
-  var emptyMongooseCohort = { maillists: [], aliases: [], engagement: { visits: [] } }
 
-  var cohort = (existingUser) ? existingUser.cohort : null
-  cohort = cohort || {}
-  if (_.isEqual(cohort,emptyMongooseCohort)) cohort = {}
-  // if (true) $log('getCohortProperties'.cyan, cohort)
-
-  var now         = new Date()
-  var day         = util.dateWithDayAccuracy()
-  var visit_first = (existingUser) ?
-    util.ObjectId2Date(existingUser._id) : util.momentSessionCreated(session).toDate()
-  var visit_signup = (existingUser) ? util.ObjectId2Date(existingUser._id) : now
-
-  if (!cohort.engagement)
-    cohort.engagement = {visit_first,visit_signup,visit_last:now,visits:[day]}
-  if (!cohort.engagement.visit_first)
-    cohort.engagement.visit_first = visit_first
-  if (!cohort.engagement.visit_signup)
-    cohort.engagement.visit_signup = visit_signup
-  if (!cohort.engagement.visit_last)
-    cohort.engagement.visit_last = now
-  if (!cohort.engagement.visits || cohort.engagement.visits.length == 0)
-    cohort.engagement.visits = [day]
-
-  if (!cohort.firstRequest && session.firstRequest)
-    cohort.firstRequest = session.firstRequest
-
-  // if (!cohort.aliases)   // we add the aliases after successful sign up
-    // cohort.aliases = []  // This could probably make more sense
-
-  return cohort
-}

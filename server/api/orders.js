@@ -8,7 +8,7 @@ module.exports = require('./_api').initAPI(
   getMyOrders: (req) => [],
   getMyOrdersWithCredit: (req) => [req.params.id],
   getByQueryForAdmin: (req) => [req.params.start,req.params.end,req.params.userId],
-  getMyDealOrdersForExpert: (req) => [req.params.id],
+  // getMyDealOrdersForExpert: (req) => [req.params.id],
   releasePayout: (req) => [req.order,req.booking],
 }, {
   order:'getByIdForAdmin',

@@ -1,6 +1,7 @@
-global.ANONSESSION = (cb) ->
-  global.COOKIE = null
-  GET '/session/full', cb
+{log} = config
+if log && process.env['LOG_APP_VERBOSE'] then log.app.verbose = process.env['LOG_APP_VERBOSE']
+if log && process.env['LOG_APP_MUTE'] then log.app.mute = process.env['LOG_APP_MUTE']
+# if (process.env[`LOG_${cfg.logFlag}`]) = cfg.logFlag ? 'white' : undefined
 
 
 # mmmmmmm
@@ -18,18 +19,59 @@ DATA.newSession = (userKey) ->
 
   # ?? not the best setting global here ....
   cookieCreatedAt = util.momentSessionCreated(session)
-  Object.assign({user:null,sessionID:"test#{userKey}#{suffix}"},{session})
+  assign({user:null,sessionID:"test#{userKey}#{suffix}"},{session})
 
 
+DATA.defaultGH = (name, login, suffix) ->
+  profile = FIXTURE.users[FIXTURE.uniquify('users','ape1','auth.gh.email')].auth.gh
+  profile.id = (profile.id||1)+moment().unix() + Math.random(2,20)
+  profile.login = "#{login}#{suffix}"
+  profile.name = profile.name || name || login
+  profile.emails = [{email:profile.email,verified:true,primary:true}]
+  profile
 
-DATA.newSignup = (name) ->
-  ident = name.toLowerCase().replace(/ /g,'.')
-  seed = { name, email: "#{ident}@testpair.com" }
+DATA.ghProfile = (login, uniquify) ->
   suffix = DATA.timeSeed()
-  Object.assign({userKey: ident.substring(0, 4)+suffix}, {
-    email: seed.email.replace('@',suffix+'@')
-    name: seed.name+suffix
-    password: 'testpass'+suffix })
+  if uniquify is true
+    u = FIXTURE.users[FIXTURE.uniquify("users", login, 'username name email auth.gh.email auth.gh.login auth.gh.id auth.gp.id auth.gp.email')] if !u
+    # $log('u'.magenta, u.email)
+    $log("FIXTURE.users.#{login} MISSING") if !u
+    profile = u.auth.gh if u.auth && u.auth.gh
+    profile = DATA.defaultGH(u.name || login, login, suffix) if !profile
+    profile.emails = [{email:profile.email||u.email,verified:true,primary:true}]
+  else
+    profile = FIXTURE.users[login].auth.gh
+    profile = DATA.defaultGH(login, login, suffix) if !profile
+  # $log('profile', profile)
+  # expect(profile.emails, "FIXTURE.ghProfile #{login} missing emails").to.exist
+  profile
+
+
+global.ANONSESSION = (cb) ->
+  global.COOKIE = null
+  GET '/session/full', cb
+
+
+global.SIGNUP = (login, cb) ->
+  profile = DATA.ghProfile login, true
+  FIXTURE.users[profile.login] = {auth:{gh:profile}}
+  LOGIN profile, cb
+
+
+
+
+
+
+
+
+# DATA.newSignup = (name) ->
+#   ident = name.toLowerCase().replace(/ /g,'.')
+#   seed = { name, email: "#{ident}@testpair.com" }
+#   suffix = DATA.timeSeed()
+#   Object.assign({userKey: ident.substring(0, 4)+suffix}, {
+#     email: seed.email.replace('@',suffix+'@')
+#     name: seed.name+suffix
+#     password: 'testpass'+suffix })
 
   # key = FIXTURE.uniquify('users',key,'email name')
   # Object.assign(FIXTURE.users[key], {password:'testpass'+DATA.timeSeed()})
@@ -38,6 +80,7 @@ DATA.newSignup = (name) ->
 
 DB.ensureExpert = (key, done) ->
   DB.ensureDocs 'User', [FIXTURE.users[key]], (e) =>
+    # $log("ensureExpert.user.#{key}", e)
     DB.ensureDocs 'Expert', [FIXTURE.experts[key]], (ee) => done()
 
 
@@ -53,30 +96,30 @@ SPEC.init = (ctx) ->
   # global.verboseErrHandler  = true   # true => lots of red detail
   # global.withoutStubs       = false    # true => real (slow) apis calls
   # $log("   Stubs:".white, if withoutStubs then "TURNED OFF!".red else "on".gray)
-
   # global.data               = require('./../data/data')
   # global.SETUP              = require('./setup/_setup')
-  # global.timeSeed           = SETUP.timeSeed
-  # global.newId              = SETUP.newId
 
-  # global.stubs              = SETUP.initStubs()
-
-
+analyticsCfg = _.clone(config.analytics)
 STUB.analytics =
   stubbed: false,
-  on: () -> global.analytics = require('../../server/services/analytics').analytics
-  off: () -> global.analytics = {
-    echo: ()=>{},
-    event: ()=>{},
-    view: ()=>{},
-    alias: ()=>{},
-    identify: ()=>{}
-  }
+  mute: () -> config.log.trk.event = false
+  unmute: () -> config.log.trk.event = process.env['LOG_TRK_EVENT']
+  on: () -> config.analytics = analyticsCfg
+    # global.analytics = require('../../server/services/analytics')(global._analytics)
+  off: () -> config.analytics = false
+   # global.analytics = {
+    # echo: ()=>{},
+#     event: ()=>{},
+#     view: ()=>{},
+#     alias: ()=>{},
+#     # identify: ()=>{}
+#   }
+
+STUB.analytics.mute()
 
 
-
-STUB.Timezone = (response) ->
-  STUB.cb Wrappers.Timezone,'getTimezoneFromCoordinates', response || data.wrappers.timezone_melbourne
+STUB.Timezone = (key) ->
+  STUB.wrapper('Timezone').cb('getTimezoneFromCoordinates', key||'timezone_melbourne')
 
   # (loc,n,cb) ->
   #   cb(null,

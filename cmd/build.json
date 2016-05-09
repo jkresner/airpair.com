@@ -1,0 +1,58 @@
+{
+  "browserify": {
+    "transforms": {
+      "ngAnnotate":          true,
+      "stringify":           [".html"],
+      "es6ify":              { "exclude": "components" }
+    },
+    "src":                   "web/js",
+    "dest":                  "build",
+    "entries":               ["index.js","adm.js"]
+  },
+  "clean": {
+    "dirs":                  ["dist","dev"]
+  },
+  "default":                 ["nodemon","watch"],
+  "dist":                    {},
+  "dirs": {
+    "web":                   "web",
+    "dev":                   "web/build",
+    "dist":                  "web/dist",
+    "server":                "server"
+  },
+  "less": {
+    "src":                   "css",
+    "dest":                  "build/css",
+    "imports":               ["css"]
+  },
+  "log": {
+    "config":                false,
+    "times":                 false,
+    "wire":                  false
+  },
+  "nodemon": {
+    "dirs":                  ["server","server/.lib","shared"],
+    "config": {
+      "restartable":         false,
+      "verbose":             true,
+      "ignore":              ["*DS_Store","web/*","test/*","cmd/*"],
+      "stdout":              true,
+      "stdin":               true,
+      "execMap":             { "js": "node --harmony_destructuring" },
+      "script":              "index.js",
+      "ext":                 "js json hbs env"
+    }
+  },
+  "watch": {
+    "livereload":            { "port": 35729 },
+    "path": {
+      "browserify":          ["ang/**/*.js",
+                              "ang/**/*.html",
+                              "web/.lib/**/*.js",
+                              "web/.lib/**/*.html"],
+      "livereload":          ["server/templates/*",
+                              "web/build/css/*.css",
+                              "web/build/js/*.js"]
+    }
+  }
+}

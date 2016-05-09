@@ -1,0 +1,78 @@
+<section ng-if="r" id="review" class="{{reviewClass || r.view}}">
+
+
+  <section ng-if="r.view == 'customer' && !session.location" class="localization">
+    <p style="padding:20px 10px">Provide your location / timezone to help with scheduling</p>
+    <location-input data="data" on-select="updateLocation"></location-input>
+  </section>
+
+
+  <section id="info">
+    <a href="/help/request/{{r._id}}" class="btn btn-sm btn-inverse" ng-if="r.view == 'customer'">Edit request</a>
+    <h5>{{ r.title || 'Spec' }}</h5>
+    <request-review-summary></request-review-summary>
+  </section>
+
+
+  <section class="replies" ng-if="replies">
+
+    <div ng-if="replies.length == 0">
+      <div class="message noexperts">
+        <span class="img user pairy" itemprop="image"></span>
+        <label>Pairy</label>
+          <p>No experts have replied yet. <!-- Consider uping the rate? --></p>
+        </div>
+      </div>
+
+    </div>
+
+    <ul>
+      <li ng-repeat="s in replies">
+        <div>
+          <div class="message noexperts">
+            <img class="user" itemprop="image" ng-src="{{s.expert.avatar}}?s=100" />
+            <h3>{{s.expert.name}}</h3>
+            <h5>{{s.expert.timezone}} | {{s.expert.location}}</h5>
+            <p>{{s.expertAvailability}}</p>
+            <social-links profile="s.expert"></social-links>
+            <div ng-bind-html="s.expertComment | markdownAsHtml"></div>
+          </div>
+          <section ng-if="&& s.expertStatus == 'available'">
+            <strong>${{s.suggestedRate.total}}<span>/hr</span></strong>
+            <a href="/billing/book/{{s.expert._id}}/{{r._id}}" class="btn">Book</a>
+          </section>
+        </div>
+      </li>
+    </ul>
+
+  </section>
+
+  <section id="brief">
+
+    <div class="entry-author">
+      <div class="message">
+        <img class="entry-author-image user" itemprop="image" ng-src="{{ (r.by) ? r.by.avatar : r.company.contacts[0].pic }}?s=100" />
+        <label ng-if="r.by.name">{{r.by.name.split(' ')[0]}}</label>
+        <div ng-bind-html="r.brief | markdownAsHtml"></div>
+      </div>
+    </div>
+
+  </section>
+
+  <section class="replies" ng-if="r.view == 'anon'">
+    <hr style="clear:both" />
+
+    <form>
+      <h3>Want AirPairs like this?</h3>
+      <ul>
+        <li>- Get paid to help people</li>
+        <li>- Sharpen your communication skills</li>
+      </ul>
+      <a class="btn" style="width:100%" ng-href='https://consult.airpair.com/jobs/{{r._id}}' target="_self">Reply @ consult.airpair.com</a>
+    </form>
+
+  </section>
+
+</section>
+
+

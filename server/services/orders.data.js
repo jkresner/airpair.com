@@ -1,6 +1,6 @@
 var {selectFromObject}    = require('../../shared/util')
 var md5                   = require('../util/md5')
-var ObjectId              = require('mongoose').Types.ObjectId
+// var ObjectId              = require('mongoose').Types.ObjectId
 
 var base = {
   'opensource': 20,
@@ -102,24 +102,24 @@ var query = {
           {'lines.info.remaining': { '$gt': 0 }}
       ] }
   },
-  dealMinutesRemaining: function(userId, dealId) {
-    return {
-      'userId':userId,
-      'lines.type' : 'deal',
-      'lines.info' : { '$exists': true },
-      'lines.info.deal._id' : ObjectId(dealId.toString()),
-      'lines.info.remaining': { '$gt': 0 }
-    }
-  },
-  dealsForExpertWithMinutesRemaining: function(userId, expertId) {
-    return {
-      'userId': userId,
-      'lines.type' : 'deal',
-      'lines.info' : { '$exists': true },
-      'lines.info.expert._id' : ObjectId(expertId.toString()),
-      'lines.info.remaining': { '$gt': 0 }
-    }
-  },
+  // dealMinutesRemaining: function(userId, dealId) {
+  //   return {
+  //     'userId':userId,
+  //     'lines.type' : 'deal',
+  //     'lines.info' : { '$exists': true },
+  //     'lines.info.deal._id' : ObjectId(dealId.toString()),
+  //     'lines.info.remaining': { '$gt': 0 }
+  //   }
+  // },
+  // dealsForExpertWithMinutesRemaining: function(userId, expertId) {
+  //   return {
+  //     'userId': userId,
+  //     'lines.type' : 'deal',
+  //     'lines.info' : { '$exists': true },
+  //     'lines.info.expert._id' : ObjectId(expertId.toString()),
+  //     'lines.info.remaining': { '$gt': 0 }
+  //   }
+  // },
   expertPayouts: function(expertId) {
     return {
        'lines.type' : { $ne: 'deal' },

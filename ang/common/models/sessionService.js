@@ -8,11 +8,10 @@ angular.module('APSvcSession', [])
   .factory('Notifications', function NotificationsFactory($rootScope, $location) {
 
     this.calculateNextNotification = () => {
-      var usr = $rootScope.session
-      if ($location.path().indexOf('/login') == 0 ||
-        $location.path().indexOf('/posts/new') == 0 || !usr) return null
-      else if (!usr._id && usr.bookmarks && usr.bookmarks.length > 0) return { saveBookmarks: true }
-      else if (!usr.emailVerified && usr._id && $location.path().indexOf('/me') != 0) return { verifyEmail: true }
+      // var usr = $rootScope.session
+      // if ($location.path().indexOf('/login') == 0 ||
+      //   $location.path().indexOf('/posts/new') == 0 || !usr) return null
+      // else if (!usr._id && usr.bookmarks && usr.bookmarks.length > 0) return { saveBookmarks: true }
       return null
     }
 
@@ -60,13 +59,13 @@ angular.module('APSvcSession', [])
     }
 
 
-    this.login = function(data, success, error) {
-      $http.post(`${Auth}/login`, data).success(setScope(success)).error(error);
-    }
+    // this.login = function(data, success, error) {
+    //   $http.post(`${Auth}/login`, data).success(setScope(success)).error(error);
+    // }
 
-    this.signup = function(data, success, error) {
-      $http.post(`${Auth}/signup`, data).success(setScope(success)).error(error);
-    }
+    // this.signup = function(data, success, error) {
+    //   $http.post(`${Auth}/signup`, data).success(setScope(success)).error(error);
+    // }
 
     this.changeEmail = function(data, success, error) {
       var trackingData = { type:'email', email: data.email }
@@ -82,10 +81,10 @@ angular.module('APSvcSession', [])
       $http.put(`${API}/users/me/location`, data).success(setScope(success)).error(error);
     }
 
-    this.verifyEmail = function(data, success, error)
-    {
-      $http.put(`${API}/users/me/email-verify`, data).success(setScope(success)).error(error);
-    }
+    // this.verifyEmail = function(data, success, error)
+    // {
+    //   $http.put(`${API}/users/me/email-verify`, data).success(setScope(success)).error(error);
+    // }
 
     // this.updateTag = function(data, success, error) {
     //   $http.put(`${API}/users/me/tag/${encodeURIComponent(data.slug)}`, {}).success(setScope(success)).error(error)
@@ -128,12 +127,12 @@ angular.module('APSvcSession', [])
       $http.put(`${API}/users/me/username`, data).success(setScope(success)).error(error)
     }
 
-    this.requestPasswordChange = function(data, success, error) {
-      $http.post(`/auth/password-reset`, data).success(success).error(error)
-    }
+    // this.requestPasswordChange = function(data, success, error) {
+    //   $http.post(`/auth/password-reset`, data).success(success).error(error)
+    // }
 
-    this.changePassword = function(data, success, error) {
-      $http.post(`/auth/password-set`, data).success(setScope(success)).error(error)
-    }
+    // this.changePassword = function(data, success, error) {
+    //   $http.post(`/auth/password-set`, data).success(setScope(success)).error(error)
+    // }
 
   })

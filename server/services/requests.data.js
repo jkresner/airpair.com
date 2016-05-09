@@ -1,48 +1,47 @@
 var Rates                 = require('../services/requests.rates')
 var md5                   = require('../util/md5')
 var Roles                 = require('../../shared/roles.js').request
-var {ObjectId}            = require('mongoose').Schema
 
 var inflatedTags = (tags) => {
   if (!tags || !tags.length) return []
-  var inflatedTags = []
-  for (var tag of tags||[]) {
+  var inflated = []
+  for (var tag of tags) {
     if (cache.tags[tag._id])
-      inflatedTags.push(Object.assign(tag, _.pick(cache.tags[tag._id],'name','slug','short')))
+      inflated.push(assign(tag, _.pick(cache.tags[tag._id],'name','slug','short')))
   }
-  return inflatedTags
+  return inflated
 }
 
-function migrateV0(r) {
-  if (r.budget)
-  {
-    // if (!r.by && r.company && r.company.contacts)
-    // {
-    //   var c = r.company.contacts[0]
-    //   r.by = { name:c.fullName, email:c.gmail, avatar: md5.gravatarUrl(c.gmail) }
-    //   for (var t of r.tags) t.slug = t.short
-    // }
-    if (!r.time) r.time = 'regular'
-    if (!r.experience) r.experience = 'proficient'
-    if (r.owner && (!r.adm || !r.adm.owner))
-    {
-      if (!r.adm) r.adm = { owner: r.owner }
-      else r.adm.owner = r.owner
-    }
-  }
-  if (r.adm && r.adm.lastTouch && !r.adm.lastTouch.utc)
-    r.adm.lastTouch = { utc: r.adm.lastTouch }
+// function migrateV0(r) {
+//   if (r.budget)
+//   {
+//     // if (!r.by && r.company && r.company.contacts)
+//     // {
+//     //   var c = r.company.contacts[0]
+//     //   r.by = { name:c.fullName, email:c.gmail, avatar: md5.gravatarUrl(c.gmail) }
+//     //   for (var t of r.tags) t.slug = t.short
+//     // }
+//     if (!r.time) r.time = 'regular'
+//     if (!r.experience) r.experience = 'proficient'
+//     if (r.owner && (!r.adm || !r.adm.owner))
+//     {
+//       if (!r.adm) r.adm = { owner: r.owner }
+//       else r.adm.owner = r.owner
+//     }
+//   }
+//   if (r.adm && r.adm.lastTouch && !r.adm.lastTouch.utc)
+//     r.adm.lastTouch = { utc: r.adm.lastTouch }
 
-  return r
-}
+//   return r
+// }
 
 var statusHash =
   {'available':1,'underpriced':2,'busy':3,'abstained':4,'opened':5,'waiting':6 }
 //chosen , // released
 
 
-var hexSeconds = Math.floor(moment('20141220','YYYYMMDD')/1000).toString(16)
-var id2015 = new ObjectId(hexSeconds + "0000000000000000").path
+// var hexSeconds = Math.floor(moment('20141220','YYYYMMDD')/1000).toString(16)
+// var id2015 = new ObjectId(hexSeconds + "0000000000000000").path
 
 var data = {
 
@@ -128,11 +127,14 @@ var data = {
       return sug ? [sug] : []
     },
     byView(request, view) {
-      var r = migrateV0(request)
+      // $log('byView', view)
+      // var r = migrateV0(request)
+      var r = request
       r.tags = _.sortBy(r.tags,(t)=>t.sort)
       r.rags = inflatedTags(r.tags)
       if (r.suggested) {
         r.suggested = _.sortBy(r.suggested, (s)=>statusHash[s.expertStatus])
+
         for (var s of r.suggested) {
           if (s.expert.email)
             s.expert.avatar = md5.gravatarUrl(s.expert.email)
@@ -153,7 +155,8 @@ var data = {
       if (view != 'admin')
         r = util.selectFromObject(r, data.select[view])
       // $log('selected', view, request.suggested, r)
-      return r
+
+      return assign(r,{view})
     },
     expertToSuggestion(r, by, type, expertStatus) {
       // $log('expertToSuggestion', r, by)
@@ -170,7 +173,7 @@ var data = {
         // r.timezone = r.location.timeZoneId
       // }
 
-      var _id = new require('mongoose').Types.ObjectId()
+      var _id = DAL.Request.newId()
       var initials = (by.email.indexOf('@airpair.com')==-1) ? r.initials
         : by.email.replace('@airpair.com','')
       return {
@@ -210,33 +213,46 @@ var data = {
       byRole(ctx, errorCb, cb) {
         return (e, r) => {
           if (e || !r) return errorCb(e, r)
-
           if (!ctx.user) return cb(null, data.select.byView(r, 'anon'))
-          else if (Roles.isCustomerOrAdmin(ctx.user, r)) {
-            if (ctx.machineCall) cb(null, data.select.byView(r, 'admin'))
-            else cb(null, data.select.byView(r, 'customer'))
+          else if (_.idsEqual(ctx.user._id, r.userId)) {
+            // if (ctx.machineCall) cb(null, data.select.byView(r, 'admin'))
+            // else
+              cb(null, data.select.byView(r, 'customer'))
           }
           else {
-            //-- Yes this is not the right place for this ...
-            var ExpertsSvc            = require('./experts')
-            $callSvc(ExpertsSvc.getMe,ctx)((ee,expert) => {
-              // -- we don't want experts to see other reviews
-              r.suggested = data.select.meSuggested(r, ctx.user._id, expert._id)
-              if (r.suggested.length == 0 && expert && expert.rate)
-                r.suggested.push({expert})
-              else if (r.suggested.length == 1 && !r.suggested[0].expert.userId) {
-                // how we handle staying v0 on front-end
-                r.suggested[0].expert.userId = ctx.user._id
-                r.suggested[0].expert.rate = expert.rate
-                r.suggested[0].expert.tags = expert.tags
-                r.location = r.location
-                r.timezone = r.timezone
-              }
-              else if (r.suggested.length > 1)
-                throw Error("Cannot selectByExpert and have more than 1 suggested")
 
-              cb(null, data.select.byView(r, 'review'))
-            })
+            //-- Yes this is not the right place for this ...
+            // var ExpertsSvc            = require('./experts')
+            // $...callSvc(ExpertsSvc.getMe,ctx)((ee,expert) => {
+            //   // -- we don't want experts to see other reviews
+            //   r.suggested = data.select.meSuggested(r, ctx.user._id, expert._id)
+            //   if (r.suggested.length == 0 && expert && expert.rate)
+            //     r.suggested.push({expert})
+            //   else if (r.suggested.length == 1 && !r.suggested[0].expert.userId) {
+            //     // how we handle staying v0 on front-end
+            //     r.suggested[0].expert.userId = ctx.user._id
+            //     r.suggested[0].expert.rate = expert.rate
+            //     r.suggested[0].expert.tags = expert.tags
+            //     r.location = r.location
+            //     r.timezone = r.timezone
+            //   }
+            //   else if (r.suggested.length > 1)
+            //     throw Error("Cannot selectByExpert and have more than 1 suggested")
+
+            //   for (var sug of r.suggested || [])
+            //     if (sug.expertComment)
+            //       sug.expertComment = util.htmlEscape(sug.expertComment)
+
+            //   if (r.brief) r.brief = util.htmlEscape(r.brief)
+
+            //   r.htmlHead = {
+            //     title: `AirPair | ${util.tagsString(r.tags)} Request`,
+            //     canonical: `https://www.airpair.com/review/${r._id}`,
+            //     noindex: true
+            //   }
+
+              cb(null, data.select.byView(r, 'anon'))
+            // })
           }
         }
       },
@@ -289,7 +305,7 @@ var data = {
     },
 
     '2015': {
-      'budget' : { '$exists': true }, '_id' : { '$gt': id2015 }
+      'budget' : { '$exists': true }    //, '_id' : { '$gt': id2015 }
     },
 
     waiting: {

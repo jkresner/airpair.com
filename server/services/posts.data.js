@@ -10,7 +10,7 @@ var selectFromObj = function(obj, fieldsString) {
   return selectFromObject(obj, fieldsObj)
 }
 
-var topTapPages = ['angularjs']
+// var topTapPages = ['angularjs']
 
 var inflatedTags = (tags) => {
   if (!tags || !tags.length) return []
@@ -30,26 +30,26 @@ var inflateHtml = function(isAnon, cb) {
     r.toc = marked(generateToc(r.md))
     var supped = PostsUtil.extractSupReferences(r.md)
     r.references = PostsUtil.markupReferences(supped.references, marked)
-    if (isAnon) {
-      var odd = false
-      marked.setOptions({highlight: function(code, lang) {
-        odd = !odd
-        if (odd) {
-          var maxLines = 0
-          var obs = ""
-          for (var line of code.split('\n')) {
-            if (++maxLines < 4)
-              obs += '\n' + line.replace(/(\S\S)(\S\S)/g,'$1{}{}')
-          }
-          return obs.replace('\n','') // trim first \n
-        }
-        else
-          return code
-      }})
-      r.html = marked(supped.markdown)
-      marked.setOptions({highlight:null})
-    }
-    else
+    // if (isAnon) {
+      // var odd = false
+      // marked.setOptions({highlight: function(code, lang) {
+        // odd = !odd
+        // if (odd) {
+          // var maxLines = 0
+          // var obs = ""
+          // for (var line of code.split('\n')) {
+            // if (++maxLines < 4)
+              // obs += '\n' + line.replace(/(\S\S)(\S\S)/g,'$1{}{}')
+          // }
+          // return obs.replace('\n','') // trim first \n
+        // }
+        // else
+          // return code
+      // }})
+      // r.html = marked(supped.markdown)
+      // marked.setOptions({highlight:null})
+    // }
+    // else
       r.html = marked(supped.markdown)
 
     cb(e,r)
@@ -98,16 +98,16 @@ var select = {
     'lastTouch': 1,
     'tags': 1
   },
-  listComp: {
-    'by.name': 1,
-    'by.avatar': 1,
-    'htmlHead.canonical': 1,
-    'htmlHead.ogImage': 1,
-    'title':1,
-    'slug': 1,
-    'stats': 1,
-    'prize': 1,
-  },
+  // listComp: {
+  //   'by.name': 1,
+  //   'by.avatar': 1,
+  //   'htmlHead.canonical': 1,
+  //   'htmlHead.ogImage': 1,
+  //   'title':1,
+  //   'slug': 1,
+  //   'stats': 1,
+  //   'prize': 1,
+  // },
   listCache: {
     '_id': 1,
     'by.name': 1,
@@ -206,22 +206,6 @@ var select = {
     'lastTouch.action': 1,
     'lastTouch.by.name': 1
   },
-  // pr: {
-  //   'pullRequests.url':1,
-  //   'pullRequests.html_url':1,
-  //   'pullRequests.id':1,
-  //   'pullRequests.number':1,
-  //   'pullRequests.state':1,
-  //   'pullRequests.title':1,
-  //   'pullRequests.user.login':1,
-  //   'pullRequests.user.avatar_url':1,
-  //   'pullRequests.created_at':1,
-  //   'pullRequests.updated_at':1,
-  //   'pullRequests.closed_at': null,
-  //   'pullRequests.merged_at': null,
-  //   'pullRequests.merge_commit_sha': 1,
-  //   'pullRequests.statuses_url': 1
-  // },
   generateToc(md) {
     marked(generateToc(md))
   },
@@ -233,7 +217,7 @@ var select = {
       rev.replies = _.map(rev.replies || [], (reply) =>
         _.extend(reply, {by: userCommentByte(reply.by)}) )
       return rev
-    })
+    }) || []
   },
   mapForkers(forkers) {
     return _.map(forkers,(f)=> {
@@ -269,29 +253,29 @@ var select = {
         cb(e,r)
       }
     },
-    editInfoView(cb) {
-      return (e,r) => {
-        if (e || !r) return cb(e,r)
-        cb(null, selectFromObj(r, select.editInfo))
-      }
-    },
-    editView(cb, overrideMD, owner) {
-      return (e,r) => {
-        if (e && !r) return cb(e,r)
-        else if (e) {
-          if (e.message.indexOf("Not Found") != -1)
-            return cb(Error(`Could not read ${r.slug} repo`))
-          return cb(e,r)
-        }
-        r = selectFromObject(r, select.edit)
-        r.repo = `${owner}/${r.slug}`
-        if (overrideMD) {
-          r.synced = r.md == overrideMD
-          r.md = overrideMD // hack for front-end editor to show latest edit
-        }
-        cb(null,r)
-      }
-    },
+    // editInfoView(cb) {
+    //   return (e,r) => {
+    //     if (e || !r) return cb(e,r)
+    //     cb(null, selectFromObj(r, select.editInfo))
+    //   }
+    // },
+    // editView(cb, overrideMD, owner) {
+    //   return (e,r) => {
+    //     if (e && !r) return cb(e,r)
+    //     else if (e) {
+    //       if (e.message.indexOf("Not Found") != -1)
+    //         return cb(Error(`Could not read ${r.slug} repo`))
+    //       return cb(e,r)
+    //     }
+    //     r = selectFromObject(r, select.edit)
+    //     r.repo = `${owner}/${r.slug}`
+    //     if (overrideMD) {
+    //       r.synced = r.md == overrideMD
+    //       r.md = overrideMD // hack for front-end editor to show latest edit
+    //     }
+    //     cb(null,r)
+    //   }
+    // },
     statsView(cb) {
       return (e,r) => {
         if (e || !r) return cb(e,r)
@@ -330,35 +314,27 @@ var select = {
         //     // r.html = r.html.replace(m,`<div class="signup"></div>${m.split('\n')[0]}</code></pre>`)
         //   }
           // r.html = r.html.replace(/<pre/g,'<pre signup ')
-
         // }
 
-        if (!r.tags || r.tags.length == 0) {
-          $log(`post ${r.title} [${r._id}] has no tags`.red)
-          return cb(null,r)
-        }
+        //-------
 
-        r.primarytag = _.find(r.tags,(t) => t.sort==0) || r.tags[0]
-        var topTagPage = _.find(topTapPages,(s) => r.primarytag.slug==s)
-        r.primarytag.postsUrl = (topTagPage) ? `/${r.primarytag.slug}` : `/posts/tag/${r.primarytag.slug}`
 
-        r.adtag = 'node.js'
-        if (_.find(r.tags, t => t.slug.match(/java/i) && !t.slug.match(/javascript/i)))
-          r.adtag = 'java'
-        if (_.find(r.tags, t => t.slug.match(/(php|wordpress)/i)))
-          r.adtag = 'php'
+        //-----
+
 
 
         if (r.submitted) {
           r.stats = r.stats || PostsUtil.calcStats(r)
           r.publishReady = (r.stats.reviews > 2) && (r.stats.rating > 3.5)
         }
+
         if (!r.published)
           r.htmlHead = { noindex: true }
         else
           //-- Stop using disqus once deployed the review system
           r.showDisqus = moment(r.published) < moment('20150201', 'YYYYMMDD')
 
+        r.htmlHead.ogTypePost = true
 
         r.forkers = select.mapForkers(r.forkers || [])
         r.reviews = select.mapReviews(r.reviews)
@@ -384,6 +360,7 @@ var select = {
         similarFn(r, (ee,similar) => {
           for (var p of similar) p.tags = inflatedTags(p)
           r.similar = similar
+          r.url = r.htmlHead.canonical
           cb(null, r)
         })
       })
@@ -414,12 +391,12 @@ var query = {
     return andQuery(query, andCondition)
   },
 
-  comp2015winners() {
-    return {
-      'prize' : { '$exists': true },
-      'prize.comp': '2015_q1'
-    }
-  },
+  // comp2015winners() {
+  //   return {
+  //     'prize' : { '$exists': true },
+  //     'prize.comp': '2015_q1'
+  //   }
+  // },
 
   //posts published before now or readyForReview
   publishedReviewReady(andCondition) {
@@ -432,40 +409,40 @@ var query = {
     return andQuery(query, andCondition)
   },
 
-  inReview(andCondition) {
-    var query = [
-      { 'submitted': {'$exists': true } },
-      { 'published': {'$exists': false } },
-      { '$or': [
-          {'submitted': {'$gt': moment().add(-10,'day').toDate() }},
-          {'updated':   {'$gt': moment().add(-10,'day').toDate() }}
-        ]
-      }
-    ]
-    return andQuery(query, andCondition)
-  },
+  // inReview(andCondition) {
+  //   var query = [
+  //     { 'submitted': {'$exists': true } },
+  //     { 'published': {'$exists': false } },
+  //     { '$or': [
+  //         {'submitted': {'$gt': moment().add(-10,'day').toDate() }},
+  //         {'updated':   {'$gt': moment().add(-10,'day').toDate() }}
+  //       ]
+  //     }
+  //   ]
+  //   return andQuery(query, andCondition)
+  // },
 
-  stale(andCondition) {
-    var query = [
-      { 'submitted': {'$exists': true } },
-      { 'submitted': {'$lt': moment().add(-10,'day').toDate() } },
-      { 'published': {'$exists': false } },
-    ]
-    return andQuery(query, andCondition)
-  },
+  // stale(andCondition) {
+  //   var query = [
+  //     { 'submitted': {'$exists': true } },
+  //     { 'submitted': {'$lt': moment().add(-10,'day').toDate() } },
+  //     { 'published': {'$exists': false } },
+  //   ]
+  //   return andQuery(query, andCondition)
+  // },
 
-  inDraft(andCondition) {
-    return { $and:[
-      { _id },
-      { 'tags': {'$exists': true } },
-      { 'assetUrl': {'$exists': true } },
-      { 'by.userId': userId }
-    ]}
-  },
+  // inDraft(andCondition) {
+  //   return { $and:[
+  //     { _id },
+  //     { 'tags': {'$exists': true } },
+  //     { 'assetUrl': {'$exists': true } },
+  //     { 'by.userId': userId }
+  //   ]}
+  // },
 
-  updated: {
-    updated : { '$exists': true }
-  },
+  // updated: {
+  //   updated : { '$exists': true }
+  // },
 
   forker(userId) {
     return {
@@ -477,12 +454,12 @@ var query = {
     }
   },
 
-  myPosts(userId) {
-    return {$or: [
-      { forkers: { $elemMatch: { userId } } },
-      { 'by.userId':userId }
-    ]}
-  }
+  // myPosts(userId) {
+  //   return {$or: [
+  //     { forkers: { $elemMatch: { userId } } },
+  //     { 'by.userId':userId }
+  //   ]}
+  // }
 }
 
 

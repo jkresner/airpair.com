@@ -2,9 +2,9 @@
 create = ->
 
 
-  IT '401 for non authenticated request', ->
+  IT '403 for non authenticated request', ->
     d = type: 'mentoring', experience: 'beginner', brief: 'this is a test yo', hours: "1", time: 'rush', budget: 90
-    POST '/requests', d, { status: 401 }, ->
+    POST '/requests', d, { status: 403 }, ->
       DONE()
 
 
@@ -29,7 +29,7 @@ create = ->
         expect(r.lastTouch).to.be.undefined
         expect(r.adm).to.be.undefined
         expect(r.events).to.be.undefined
-        LOGIN {key:'admin'}, ->
+        LOGIN 'admin', {retainSession:false}, ->
           GET "/adm/requests/user/#{s._id}", {}, (rAdm) ->
             expect(rAdm.length).to.equal(1)
             expect(rAdm[0].suggested.length).to.equal(0)
@@ -68,7 +68,7 @@ create = ->
         r1.experience = 'proficient'
         PUT "/requests/#{r1._id}", r1, (r2) ->
           expect(r2.experience).to.equal('proficient')
-          LOGIN {key:'admin'}, ->
+          LOGIN 'admin', {retainSession:false}, ->
             GET "/adm/requests/user/#{s._id}", (rAdm) ->
               expect(rAdm.length).to.equal(1)
               EXPECT.touch(rAdm[0].lastTouch, s._id, 'updateByCustomer')
@@ -110,7 +110,7 @@ create = ->
                     r7.title = 'A test title'
                     PUT putUrl, r7, {}, (r8) ->
                       expect(r8.title).to.equal('A test title')
-                      LOGIN {key:'admin'}, ->
+                      LOGIN 'admin', {retainSession:false}, ->
                         GET "/adm/requests/user/#{s._id}", {}, (rAdm) ->
                           expect(rAdm.length).to.equal(1)
                           expect(rAdm[0].suggested.length).to.equal(0)
@@ -131,14 +131,14 @@ create = ->
             DONE()
 
 
-  IT 'Cannot delete a request unless owner or admin', ->
+  SKIP 'Cannot delete a request unless owner or admin', ->
     STORY.newUser 'kyau', (s) ->
       d = type: 'code-review'
       POST '/requests', d, {}, (r) ->
         expect(r._id).to.exist
         STORY.newUser 'clew', (s2) ->
           DELETE "/requests/#{r._id}", { status: 403 }, (rDel) ->
-            LOGIN {key:'admin'}, (sAdmin) ->
+            LOGIN 'admin', {retainSession:false}, ->
               GET "/adm/requests/user/#{s._id}", {}, (reqs1) ->
                 expect(reqs1.length).to.equal(1)
                 DELETE "/requests/#{r._id}", {}, (rDel2) ->
@@ -171,11 +171,11 @@ review = ->
               expect(rAnon.budget).to.be.undefined
               expect(rAnon.suggested).to.be.undefined
               expect(rAnon.hours).to.be.undefined
-              LOGIN {key:'snug'}, (sSnug) ->
+              LOGIN 'snug', {retainSession:false}, (sSnug) ->
                 expect(sSnug.name).to.equal("Ra'Shaun Stovall")
                 GET "/requests/review/#{r._id}", {}, (rExpert) ->
                   expect(_.idsEqual(r._id,rExpert._id)).to.be.true
-                  expect(rExpert.by.name.indexOf("Somik Rana")).to.equal(0)
+                  expect(rExpert.by.name).to.be.undefined
                   expect(rAnon.userId).to.be.undefined
                   expect(rAnon.budget).to.be.undefined
                   DONE()
@@ -188,7 +188,7 @@ review = ->
       POST '/requests', d, (r0) ->
         PUT "/requests/#{r0._id}", _.extend(r0,{budget:300}), (r) ->
           testNotAvailable = (callback) ->
-            LOGIN {key:'snug'}, (sAbha) ->
+            LOGIN 'snug', {retainSession:false}, (sAbha) ->
               GET "/requests/review/#{r._id}", (rAbha) ->
                 reply = expertComment: "I'm busy", expertAvailability: "Nah need a holiday", expertStatus: "busy"
                 expertId = rAbha.suggested[0].expert._id
@@ -200,13 +200,13 @@ review = ->
                       callback()
 
           testAvailable = () ->
-            LOGIN {key:'snug'}, (sAbha) ->
+            LOGIN 'snug', {retainSession:false}, (sAbha) ->
               GET "/requests/review/#{r._id}", {}, (rAbha) ->
                 reply = expertComment: "good", expertAvailability: "ok", expertStatus: "available"
                 expertId = rAbha.suggested[0].expert._id
                 PUT "/requests/#{r._id}/reply/#{expertId}", reply, {}, (r2) ->
                   expect(r2.status).to.equal('review')
-                  LOGIN {key:spcorKey}, (sCustomer) ->
+                  LOGIN {key:spcorKey}, {retainSession:false}, (sCustomer) ->
                     GET "/requests/#{r._id}/book/#{expertId}", {}, (review) ->
                       expect(review.status).to.equal('review')
                       expect(review.suggested.length).to.equal(1)
@@ -238,4 +238,4 @@ module.exports = ->
 
 
   DESCRIBE "Create", create
-  DESCRIBE "Review", review
+  DESCRIBE "Job", review

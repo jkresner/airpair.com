@@ -81,10 +81,10 @@ var save = {
     if (cache) cache.flush('tags')
   },
 
-  createByAdmin(o, cb) {
-    Tag.create(o, null, cb)
-    if (cache) cache.flush('tags')
-  },
+  // createByAdmin(o, cb) {
+  //   Tag.create(o, null, cb)
+  //   if (cache) cache.flush('tags')
+  // },
 
   updateByAdmin(orignal, ups, cb) {
     cb(V2DeprecatedError('Tags.updateByAdmin'))

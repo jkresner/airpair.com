@@ -243,21 +243,24 @@ var mergeExpertDocs = (A, B) =>
     if (either('activity', AE, BE))
       M.activity = _.union(AE.activity||[],BE.activity||[])
     if (either('meta', AE, BE))
-      M.meta = Object.extend(AE.meta||{},BE.meta||{})
+      M.meta = Object.assign(AE.meta||{},BE.meta||{})
 
     Object.assign(MERGE.merged, { expert: M })
     Object.assign(MERGE.removed, { expert: R })
-    if (verbose) $log('Merge::EXPERT::'.cyan, e, MERGE, '\n\n')
+    if (true || verbose)
+      $log('Merge::EXPERT::'.cyan, e, MERGE, '\n\n')
     mergeUserDocs(e, MERGE, A, B, Overrides, done)
   }
 
 
 var save = (e, MERGE, done) => {
-  if (verbose) $log('MERGE:::'.cyan, e, MERGE, '\n\n')
+  if (verbose) $log('MERGE.save:::'.cyan, e, MERGE, '\n\n')
   if (e) return done(e)
 
   var {merged,removed} = MERGE
   var ops = []
+
+  var safeRuId = { $in: [removed.user._id, removed.user._id.toString()] }
 
   //-- todo, search for other userId nested with expert copies
   if (removed.expert) {
@@ -269,6 +272,7 @@ var save = (e, MERGE, done) => {
     ops.push(Experts.update({ _id: merged.expert._id }, _.extend(merged.expert,{userId:merged.user._id}) ))
   }
 
+  console.log('merged.expert'.yellow, merged.expert, removed.user._id, merged.user._id)
   if (merged.expert)
     ops.push(Experts.updateMany({ userId: removed.user._id }, { $set: { userId: merged.user._id }}))
 
@@ -276,11 +280,11 @@ var save = (e, MERGE, done) => {
   ops.push(Bookings.updateMany({customerId: removed.user._id }, { $set: { customerId: merged.user._id }}))
   ops.push(Bookings.updateMany({'participants.info._id': removed.user._id }, { $set: {'participants.$.info._id': merged.user._id}} ))
   ops.push(Orders.updateMany({userId: removed.user._id }, { $set: { userId: merged.user._id }}))
-  ops.push(Orders.updateMany({'lines.info.released.by._id': removed.user._id }, { $set: { 'lines.$.info.released.by._id': merged.user._id }}))
+  ops.push(Orders.updateMany({'lines.info.released.by._id': safeRuId }, { $set: { 'lines.$.info.released.by._id': merged.user._id }}))
   ops.push(Requests.updateMany({userId: removed.user._id }, { $set: { userId: merged.user._id }}))
   ops.push(Paymethods.updateMany({userId: removed.user._id }, { $set: { userId: merged.user._id }}))
-  ops.push(Payouts.updateMany({userId: removed.user._id }, { $set: { userId: merged.user._id }}))
-  ops.push(Payouts.updateMany({'lines.info.released.by._id': removed.user._id }, { $set: { 'lines.$.info.released.by._id': merged.user._id }}))
+  ops.push(Payouts.updateMany({userId: safeRuId}, { $set: { userId: merged.user._id }}))
+  ops.push(Payouts.updateMany({'lines.info.released.by._id': safeRuId }, { $set: { 'lines.$.info.released.by._id': merged.user._id }}))
   // ops.push(Posts.updateMany({'by._id': removed.user._id }, { $set: { 'by._id': merged.user._id }}))
   ops.push(Posts.updateMany({'by.userId': removed.user._id }, { $set: { 'by._id': merged.user._id, 'by.userId': merged.user._id }}))
   ops.push(Users.update({ _id: merged.user._id }, merged.user ))
@@ -288,7 +292,7 @@ var save = (e, MERGE, done) => {
   Promise.all(ops)
     .then((vals) => {
       MERGE.ops = vals.map( v => ({result:v.result}) )
-      if (verbose) $log('MERGED\n'.green, MERGE.merged, '\nremoved'.magenta, MERGE.removed, '\n', 'ops'.yellow, MERGE.ops, '\n\n\n') // MERGED.ops)
+      if (verbose) $log('MERGED.then\n'.green, MERGE.merged, '\nremoved'.green, MERGE.removed, '\n', 'ops'.green, MERGE.ops, '\n\n\n') // MERGED.ops)
       try {
         done(null, MERGE)
       } catch (e) {

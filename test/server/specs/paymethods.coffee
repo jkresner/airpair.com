@@ -122,7 +122,7 @@ module.exports = ->
 
   @timeout(10000)
 
-  DESCRIBE("Analytics off", noAnalytics)
+  SKIP("Analytics off", noAnalytics)
   # DESCRIBE("Analytics on", withAnalytics)
   # DESCRIBE("Payouts", payouts)
 

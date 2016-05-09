@@ -2,9 +2,8 @@ var { Expert,
       Booking,
       User,
       Request }              = DAL
-var MatchGroup               = require('../models/matchgroup')
-var md5                      = require('../util/md5')
-var {ObjectId2Date}          = util
+// var MatchGroup               = require('../models/matchgroup')
+var {ObjectId2Date}          = require('../../shared/util')
 var {select,query}           = require('./experts.data')
 
 
@@ -15,8 +14,11 @@ var get = {
 
 
   getRanked(meExpert, q, cb) {
+    // console.log('getRanked.meExpert', meExpert)
+    // console.log('getRanked.q.tags', q.tags)
     var exclude = q.exclude || []
-    var tags = q.tags.map(tid=>cache.tags[tid])
+
+    var tags = q.tags
     var budget = q.budget || 0
     var includeBusy = true //q.includeBusy
 
@@ -24,8 +26,6 @@ var get = {
     intersections.one = { $setIntersection: ['$tags._id',[tags[0]._id]] }
     intersections.two = tags[1] ? { $setIntersection: ['$tags._id',[tags[1]._id]] } : { $literal: [] }
     intersections.three = tags[2] ? { $setIntersection: ['$tags._id',[tags[2]._id]] } : { $literal: [] }
-
-
 
     Expert.aggregate([
       /* Query can go here, if you want to filter results. */

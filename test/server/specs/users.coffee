@@ -22,7 +22,8 @@ get = ->
 
 update = ->
 
-  IT 'Add location / timezone', ->
+  SKIP 'Add location / timezone', ->
+    STUB.Timezone()
     # stubs.timezone.restore()
     STORY.newUser 'chri', {location:undefined,login:true}, (chri) ->
       PUT '/users/me/location', FIXTURE.wrappers.gplaces_succcessful_place, (user) ->
@@ -31,7 +32,7 @@ update = ->
         expect(user.location.timeZoneId).to.equal('Asia/Calcutta')
         DONE()
 
-  IT 'Set and unset username', ->
+  SKIP 'Set and unset username', ->
     username = "dily#{@timeSeed}"
     STORY.newUser 'dily', (dily) ->
       expect(dily.username).to.be.undefined

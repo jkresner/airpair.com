@@ -3,7 +3,7 @@ var {Expert,User}         = DAL
 var UserSvc               = require('../services/users')
 var RequestSvc            = require('../services/requests')
 var BookingSvc            = require('../services/bookings')
-var {selectFromObject}    = util
+var {selectFromObject}    = require('../../shared/util')
 var {select,options}      = require('./experts.data')
 var selectCB              = select.cb
 
@@ -26,26 +26,26 @@ var get = {
   },
 
   getHistory(expert, cb) {
-    var user = { _id: expert.userId }
-    $callSvc(RequestSvc.getExperts,{user})(expert,(ee,requests)=>{
-      if (ee) return cb(ee)
-      var calls = []
-      for (var req of requests) {
-        if (!req.by && req.company) {
-          req.by = {_id:req.userId,
-            name: req.company.contacts[0].fullName,
-            email: req.company.contacts[0].email
-          }
-        }
-        if (req.company) delete req.company
-      }
-      $callSvc(BookingSvc.getByExpertIdForMatching,this)(expert._id,(e,bookings)=>{
-        if (e) return cb(ee)
-        cb(null,{requests,bookings:
-          _.sortBy(_.union(calls,bookings),(b)=>-1*moment(b.datetime).unix())
-        })
-      })
-    })
+    // var user = { _id: expert.userId }
+    // $callSvc(RequestSvc.getExperts,{user})(expert,(ee,requests)=>{
+    //   if (ee) return cb(ee)
+    //   var calls = []
+    //   for (var req of requests) {
+    //     if (!req.by && req.company) {
+    //       req.by = {_id:req.userId,
+    //         name: req.company.contacts[0].fullName,
+    //         email: req.company.contacts[0].email
+    //       }
+    //     }
+    //     if (req.company) delete req.company
+    //   }
+    //   $callSvc(BookingSvc.getByExpertIdForMatching,this)(expert._id,(e,bookings)=>{
+    //     if (e) return cb(ee)
+    //     cb(null,{requests,bookings:
+    //       _.sortBy(_.union(calls,bookings),(b)=>-1*moment(b.datetime).unix())
+    //     })
+    //   })
+    // })
   },
 
   search(term, cb) {
@@ -138,30 +138,6 @@ var get = {
 
 
 var save = {
-
-  create(expert, cb) {
-    cb(V2DeprecatedError('Experts.create. Go to consult.airpair.com/profile'))
-    // var trackData = { name: this.user.name }
-    // expert.user = selectFromObject(_.extend({social:this.user.auth},this.user), select.userCopy)
-    // expert.userId = this.user._id
-    // saveWithTouch.call(this, null, expert, 'create', trackData, cb)
-  },
-
-  updateMe(original, ups, cb) {
-    cb(V2DeprecatedError('Experts.updateMe. Go to consult.airpair.com/profile'))
-    // $log('updateMe')
-    // var trackData = { name: this.user.name, _id: original._id }
-    // ups.user = selectFromObject(_.extend({social:this.user.auth},this.user), select.userCopy)
-    // var expert = selectFromObject(_.extend(original,ups), select.updateMe)
-    // saveWithTouch.call(this, original, ups, 'update', trackData, cb)
-    // $callSvc(UserSvc.setExpertCohort, this)(ups._id)
-  },
-
-  updateAvailability(original, availability, cb) {
-    cb(V2DeprecatedError('Experts.updateMe. Go to consult.airpair.com/availability'))
-    // availability.lastTouch = svc.newTouch.call(this, availability.status)
-    // Expert.updateSet(original._id, {availability}, cb)
-  },
 
   createDeal(expert, deal, cb) {
     cb(V2DeprecatedError('Experts.createDeal'))

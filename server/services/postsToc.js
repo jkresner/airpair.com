@@ -1,7 +1,6 @@
 'use strict';
 
 var htmlparser = require('htmlparser2');
-var marked = require('marked');
 
 function addLinenos(lines, headers) {
   var current = 0, line;

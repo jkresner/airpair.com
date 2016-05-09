@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>err:airpair.com</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="stylesheet" href="https://static.airpair.com/css/err.css" type="text/css" />
+  </head>
+<body>
+
+  <header>
+    <div>
+      <a href="/" tile="airpair.com - Software Micro-Consulting & Programming Resources" target="_self"></a>
+    </div>
+    <var>{{error.status}}</var>
+  </header>
+
+  <main>
+    <section id="error">
+      <h1>{{error.message}}</h1>
+
+
+{{#if error.accountMergeError}}
+  <section style="max-width:620px">
+    <h2>Duplicate accounts found</h2>
+
+    <p>{{{ error.message }}}</p>
+
+    <h3>To merge</h3>
+
+    <p>Email <b>team@airpair.com</b> with the subject <code>Account merge</code> and in your email
+    let us know which address you would like as your account's primary email.
+    </p>
+
+    <p>We'll then run a quick script that crawls all the data / history related to your duplicate accounts and
+    merges everything together. Once done, we'll reply to let you know you're good to go.
+    </p>
+
+    <p>Thanks for your patience!</p>
+
+    <p>
+      Jonathon Kresner
+      <br />AirPair CEO
+    </p>
+  </section>
+{{else}}
+
+
+
+{{#if error.stack}}<pre>{{error.stack}}</pre>{{/if}}
+    </section>
+
+    {{#if about.bugs}}
+    <section id="report">
+      <h2>Please tell us what happened</h2>
+      <p>We keep track of and fix bugs reports via our issue tracker.
+        Please help us by reporting this issue including details like the device you use and
+        if possible how to reproduce.
+      </p>
+      <span class="bugs"><a href="{{about.bugs.url}}/new?title=[{{about.version}}] {{error.message}}" class="btn" target="_blank">Report <span>{{error.message}}</span></a></span>
+    </section>
+    {{/if}}
+
+{{/if}}
+
+  </main>
+
+
+{{#if about}}
+  <footer>
+    <ul>
+{{#if about.name}}
+      <li class="nm">
+        <span class="name">{{about.name}}</span>
+        {{#if about.version}}<span class="version">v{{about.version}}</span>{{/if}}</li>
+{{/if}}{{#if about.author}}
+      <li class="cp">&copy; 2016 {{about.author}}{{#if about.contact}}
+        <a href="{{about.contact.url}}" target="_blank" class="ctc">Contact</a></li>
+{{/if}}{{/if}}
+    </ul>
+  </footer>
+{{/if}}
+
+</body>
+</html>

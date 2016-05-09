@@ -16,22 +16,22 @@ var validation = {
     if (query.level)
       return `getRanked does not yet support level`
 
-    var tagIds = []
+    var tags = []
     for (var slug of query.tags.split(','))
     {
       if (slug.indexOf('#'))
         slug = slug.replace('#','%23')
       var tag = cache.tagBySlug(slug)
       if (!tag) return `Tag ${slug} not valid to query`
-      tagIds.push(tag._id.toString())
+      tags.push(tag)
     }
-    query.tags = tagIds
+    query.tags = tags
 
     if (query.exclude) query.exclude = query.exclude.split(',')
 
     if (isAdmin(user))
       query.limit = query.limit || 500
-    else if (!expert._id)
+    else if (!expert || !expert._id)
       query.limit = 3
     else if (expert._id && !expert.matching)
       query.limit = 4

@@ -1,5 +1,5 @@
 var bitlyUrl = 'https://api-ssl.bitly.com/v3'
-var {accessToken,shortDomain} = config.bitly
+var {accessToken,shortDomain} = config.wrappers.bitly
 
 var wrapper = {
 

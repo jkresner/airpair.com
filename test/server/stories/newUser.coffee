@@ -1,7 +1,7 @@
 
-UNIQUIFY_USER = (key) ->
-  uniqueKey = FIXTURE.uniquify('users', key, 'name email username auth.gh.id auth.gp.id auth.password.value')
-  Object.assign(FIXTURE.users[uniqueKey],{key:uniqueKey,_id:new ObjectId()})
+# UNIQUIFY_USER = (key) ->
+  # uniqueKey = FIXTURE.uniquify('users', key, 'name email username auth.gh.id auth.gp.id auth.password.value')
+  # assign(FIXTURE.users[uniqueKey],{key:uniqueKey,_id:new ObjectId()})
 
 
 module.exports = (key, opts, done) ->
@@ -10,7 +10,10 @@ module.exports = (key, opts, done) ->
     opts = {login:true}
 
   {data,paymethod,login} = opts
-  user = UNIQUIFY_USER(key)
+  user = FIXTURE.clone("users.#{key}")
+  user._id = new ObjectId()
+
+  suffix = DATA.timeSeed()
 
   paymethodId = if paymethod is true then new ObjectId() else null
   if paymethodId
@@ -20,28 +23,34 @@ module.exports = (key, opts, done) ->
 
   # temporary stuff
   user.emailVerified = true
+  user.email = user.email.replace('@',"#{suffix}@")
   user.location =
     name:       FIXTURE.wrappers.localization_melbourne.locationData.formatted_address,
-    short:      FIXTURE.wrappers.localization_melbourne.locationData.name,
+    shortName:  FIXTURE.wrappers.localization_melbourne.locationData.name,
     timeZoneId: FIXTURE.wrappers.localization_melbourne.timezoneData.timeZoneId
 
 
   user.emails = [{value:user.email,primary:true,verified:true}]
 
-  Object.assign(user, opts.data||{})
+  assign(user, opts.data||{})
 
-  user.auth = {}
-  if opts.oauth
-    user.auth[oauth] = 'bhac'
-  else
-    user.auth.password = hash: 'basdfsdfsdf'
+  user.auth = { gh: DATA.ghProfile(key, true) }
+  user.username = user.auth.gh.login
+  user.key = key+suffix
+
+  FIXTURE.users[user.key] = user
+  # $log('user', user.location, FIXTURE.users[user.key])
+  # if opts.oauth
+    # user.auth[oauth] = 'bhac'
+  # else
+    # user.auth.password = hash: 'basdfsdfsdf'
 
   # $log('create user'.yellow, user.key.white, user)
   DB.Collections.users.insert user, (e, r) ->
     if (e) then $log('DB.insert.user', e)
-    # $log('STORY.newUser'.yellow, user.key.white, user._id)
+    # $log('STORY.newUser'.yellow, user.key.white, FIXTURE.users[user.key])
     if login
-      LOGIN user, (session) ->
+      LOGIN user.auth.gh, {retainSession:false}, (session) ->
         if (paymethodId)
           session.primaryPayMethodId = paymethodId # convinience
         # $log('STORY.newUser.loggedIn'.yellow, session, user.key)

@@ -1,6 +1,24 @@
-require('./directives');
+angular.module("APBilling", ['ngRoute', 'APPaymentDirectives','APExpertsDirectives'])
 
-angular.module("APBilling", ['ngRoute', 'APPaymentDirectives', 'APBillingDirectives','APExpertsDirectives'])
+.directive('transactionList', function(OrdersUtil) {
+
+  return {
+    template: require('./transactions.html'),
+    link(scope, element, attrs) {},
+    controller($scope) {
+      $scope.$parent.$watch('orders', function(val) {
+        // console.log('tras.watch.orders', val)
+        if (val.length > 0)
+        {
+          $scope.transactions = OrdersUtil.ordersToLinesWithRunningBalance($scope.orders)
+          $scope.balance = $scope.transactions[0].runningBalance
+        }
+      })
+    }
+  }
+
+})
+
 
 .config(function(apRouteProvider) {
 
@@ -11,13 +29,10 @@ angular.module("APBilling", ['ngRoute', 'APPaymentDirectives', 'APBillingDirecti
   route('/billing/top-up', 'BillingTopUp', require('./topup.html'), { resolve: authd })
   route('/billing/book/:id', 'BillingBookExpert', require('./book.html'), { resolve: authd })
   route('/billing/book/:id/:rid', 'BillingBookExpert', require('./book.html'), { resolve: authd })
-  route('/billing/deal/:id', 'BillingDeal', require('./deal.html'), { resolve: authd })
-  // route('/experts', 'BillingExperts', require('./experts.html'), { resolve: authd })
 })
 
 .factory('submitPaymentText', function submitPaymentTextFactory() {
   this.getText = (scope, val) => {
-    // console.log('SubmitPaymentText', val)
     if (!val || val == "") scope.cardSubmitText = "Save card for later"
     else if (val == "300") scope.cardSubmitText = "Pay $300, get $300 Credit"
     else if (val == "500") scope.cardSubmitText = "Pay $500, get $500 Credit"
@@ -43,12 +58,12 @@ angular.module("APBilling", ['ngRoute', 'APPaymentDirectives', 'APBillingDirecti
 
   DataService.billing.getMyOrders({}, (r) => {
     $scope.orders = r
-    $scope.expertsWithRemainingTime = OrdersUtil.getExpertsWithAvailableMins(r)
+    // $scope.expertsWithRemainingTime = OrdersUtil.getExpertsWithAvailableMins(r)
   })
 
   $scope.orderSuccess = (r) => {
     $scope.orders = _.union($scope.orders,[r])
-    console.log('orderSuccess', $scope.orders)
+    // console.log('orderSuccess', $scope.orders)
   }
 
   $scope.creditAmount = null
@@ -66,10 +81,9 @@ angular.module("APBilling", ['ngRoute', 'APPaymentDirectives', 'APBillingDirecti
 
   $scope.$watch("creditAmount", $scope.setSubmitCardText)
 
-  $scope.deletePayMethod = function(_id) {
-    DataService.billing.deletePaymethod({_id}, (r) => getPayMethods())
-  }
+  $scope.deletePayMethod = _id => DataService.billing.deletePaymethod({_id}, getPayMethods)
 })
+
 
 .controller('BillingTopUpCtrl', function($scope, $location, DataService, ServerErrors, submitPaymentText) {
 
@@ -112,9 +126,9 @@ angular.module("APBilling", ['ngRoute', 'APPaymentDirectives', 'APBillingDirecti
       }
 
       $scope.data = {} // to collect location / timezone
-      $scope.updateLocation = (locationData) => {
-        SessionService.changeLocationTimezone(locationData, (r)=> {})
-      }
+      $scope.updateLocation = (locationData) =>
+        SessionService.changeLocationTimezone(locationData, r => {})
+
 
       $scope.calcSummary = function() {
         if (!$scope.expert || !$scope.booking) return
@@ -154,7 +168,7 @@ angular.module("APBilling", ['ngRoute', 'APPaymentDirectives', 'APBillingDirecti
         })
       }
 
-      var setExpert = (expert) => {
+      var setExpert = expert => {
         _id = expert._id
         $scope.expert = expert
         $scope.booking.expertId = expert._id
@@ -171,32 +185,32 @@ angular.module("APBilling", ['ngRoute', 'APPaymentDirectives', 'APBillingDirecti
 
       $scope.$watch('booking.payMethodId', function(val) {
         if (!val) return
-        DataService.billing.getMyOrdersWithCredit({payMethodId:val}, (r) => {
+        DataService.billing.getMyOrdersWithCredit({payMethodId:val}, r => {
           $scope.orders = r
           $scope.booking.credit = OrdersUtil.getAvailableCredit(OrdersUtil.linesWithCredit(r))
           $scope.calcSummary()
         })
       })
 
-      DataService.billing.getMyOrdersForExpert({_id},(r) => {
-        var lines = OrdersUtil.linesWithMinutesRemaining(r)
-        if (!lines || lines.length == 0) return
-        $scope.availableMinutes = OrdersUtil.getAvailableMinutesRemaining(lines)
-        if ($scope.availableMinutes > 0) $scope.redeemableTime = [{val:30,name:'30 mins'}]
-        if ($scope.availableMinutes > 59) $scope.redeemableTime.push({val:60,name:'60 min'})
-        if ($scope.availableMinutes > 89) $scope.redeemableTime.push({val:90,name:'90 min'})
-        if ($scope.availableMinutes > 119) $scope.redeemableTime.push({val:120,name:'2 hr'})
-        if ($scope.availableMinutes > 170) $scope.redeemableTime.push({val:180,name:'3 hr'})
-        if ($scope.availableMinutes > 180) $scope.redeemableTime.push({val:$scope.availableMinutes,name:$scope.availableMinutes+' min (all)'})
-        $scope.booking.dealId = lines[0].info.deal._id
-      })
+      // DataService.billing.getMyOrdersForExpert({_id},(r) => {
+      //   var lines = OrdersUtil.linesWithMinutesRemaining(r)
+      //   if (!lines || lines.length == 0) return
+      //   $scope.availableMinutes = OrdersUtil.getAvailableMinutesRemaining(lines)
+      //   if ($scope.availableMinutes > 0) $scope.redeemableTime = [{val:30,name:'30 mins'}]
+      //   if ($scope.availableMinutes > 59) $scope.redeemableTime.push({val:60,name:'60 min'})
+      //   if ($scope.availableMinutes > 89) $scope.redeemableTime.push({val:90,name:'90 min'})
+      //   if ($scope.availableMinutes > 119) $scope.redeemableTime.push({val:120,name:'2 hr'})
+      //   if ($scope.availableMinutes > 170) $scope.redeemableTime.push({val:180,name:'3 hr'})
+      //   if ($scope.availableMinutes > 180) $scope.redeemableTime.push({val:$scope.availableMinutes,name:$scope.availableMinutes+' min (all)'})
+      //   $scope.booking.dealId = lines[0].info.deal._id
+      // })
 
 
-      DataService.billing.getPaymethods({}, (r) => {
+      DataService.billing.getPaymethods({}, r => {
         if (r.btoken) $location.path("/billing")
         else {
           $scope.booking.payMethodId = r[0]._id.toString()
-          $scope.paymethods = _.map(r,(p)=>{return {name:p.name,_id:p._id.toString()} })
+          $scope.paymethods = _.map(r, p => ({name:p.name,_id:p._id.toString()}) )
         }
       })
 
@@ -205,58 +219,24 @@ angular.module("APBilling", ['ngRoute', 'APPaymentDirectives', 'APBillingDirecti
 
       $scope.submitDeferred = () => {
         var deferred = $q.defer()
-        DataService.billing.bookExpert($scope.booking, (r) => {
+        DataService.billing.bookExpert($scope.booking, r => {
           $location.path(`/bookings/${r._id}`)
           deferred.resolve(r)
         },
-        deferred.reject)
+        e => {
+          alert(e.message || e)
+          deferred.reject(e)
+        })
 
         return deferred.promise
       }
     }
-  };
+  }
 
 })
 
 
 .controller('BillingBookExpertCtrl', ($scope) => {
-
-})
-
-
-// .controller('BillingExpertsCtrl', function($scope, DataService) {
-
-//   // DataService.experts.getForExpertsPage({}, (r) => {
-//   //   $scope.experts = r.experts
-//   })
-
-// })
-
-
-
-.controller('BillingDealCtrl', ($scope, DataService, $routeParams, $location, ServerErrors) => {
-  var _id = $routeParams.id
-  DataService.experts.getDeal({_id}, (r) => {
-    $scope.expert = r
-    $scope.deal = _.find(r.deals,(d)=>d._id==_id)
-    if (!$scope.deal) $location.path("/billing")
-  })
-
-  DataService.billing.getPaymethods({}, (r) => {
-    if (r.btoken) $location.path("/billing")
-    else {
-      $scope.paymethods = r
-      $scope.payMethodId = r[0]._id
-    }
-  }, ServerErrors.add)
-
-
-  $scope.orderDeal = () => {
-    var o = { expertId: $scope.expert._id, payMethodId: $scope.payMethodId, dealId: $scope.deal._id }
-    DataService.billing.orderDeal(o, (r) => {
-      $location.path("/billing/book/"+$scope.expert._id)
-    })
-  }
 
 })
 

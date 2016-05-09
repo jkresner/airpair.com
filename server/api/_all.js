@@ -1,6 +1,5 @@
 
 module.exports = {
-  Workshops:    require('./workshops'),
   Posts:        require('./posts'),
   Users:        require('./users'),
   Tags:         require('./tags'),
@@ -11,7 +10,6 @@ module.exports = {
   Experts:      require('./experts'),
   Mojo:         require('./mojo'),
   Companys:     require('./companys'),
-  Views:        require('./views'),
   Requests:     require('./requests'),
   Chat:         require('./chat'),
 }

@@ -8,8 +8,7 @@ angular.module("APDashboard", ['APFilters', 'APSvcSession',
   };
 
   $routeProvider
-    .when('/', actions.list)
-    .when('/dashboard', actions.list)
+    .when('/home', actions.list)
 })
 
 .directive('dashboardRebook', function(Util) {
@@ -18,18 +17,6 @@ angular.module("APDashboard", ['APFilters', 'APSvcSession',
       $scope.firstName = Util.firstName
     }
   }
-})
-// .directive('dashboardStack', function() {
-//   return { template: require('./stack.html') }
-// })
-// .directive('dashboardBookmarks', function() {
-//   return { template: require('./bookmarks.html') }
-// })
-// .directive('dashboardPosts', function() {
-//   return { template: require('./posts.html') }
-// })
-.directive('dashboardExperts', function() {
-  return { template: require('./experts.html') }
 })
 .directive('dashboardRequests', function() {
   return {
@@ -45,47 +32,30 @@ angular.module("APDashboard", ['APFilters', 'APSvcSession',
 })
 
 
-.controller('DashboardCtrl', function($scope, $location, DataService,
-  SessionService, StaticDataService, BookingsUtil) {
 
-  SessionService.onAuthenticated(function() {
+.controller('DashboardCtrl', function($scope,  DataService, SessionService, BookingsUtil) {
 
-    if (!$scope.session._id)
-      return window.location = "/"
+  if (!$scope.session._id)
+    return window.location = "/"
 
-    $scope.util = BookingsUtil
+  $scope.util = BookingsUtil
 
-    DataService.bookings.getBookings({}, (r) => {
-      $scope.bookings = _.take(r,4)
-      var rebookings = {}
-      r.forEach((b)=>{
-        if (!rebookings[b.expertId]) rebookings[b.expertId] = b
+  $scope.$watch('reqsAuthd', (granted) => {
+    if (granted) {
+      DataService.bookings.getBookings({}, (r) => {
+        $scope.bookings = _.take(r,4)
+        var rebookings = {}
+        r.forEach((b)=>{
+          if (!rebookings[b.expertId]) rebookings[b.expertId] = b
+        })
+        $scope.rebookings = _.values(rebookings)
       })
-      $scope.rebookings = _.values(rebookings)
-    })
 
-    DataService.requests.getMyRequests({}, (r) => {
-      $scope.requests = r
-    })
-
-    var setSeen = (r) => {
-      $scope.seen = []
-      r.forEach((n)=>$scope.seen[n.name] = true)
-    }
-
-    // SessionService.getSiteNotifications({}, setSeen)
-
-    $scope.closeNotification = (name) =>
-      SessionService.toggleSiteNotification({name}, setSeen)
-
-    if ($scope.session.tags && $scope.session.tags.length > 0) {
-      // DataService.experts.getForDashboard({}, function(r) {
-      //   $scope.experts = r
-      // })
+      DataService.requests.getMyRequests({}, (r) => {
+        $scope.requests = r
+      })
     }
   })
 
+
 })
-
-
-

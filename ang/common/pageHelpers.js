@@ -76,14 +76,14 @@ angular.module("APPageHelpers", [])
 
       element.className = 'language-'+config.lang
       Prism.highlightElement(element, false, function() {
-        if (!$rootScope.session._id) {
-          element.parentNode.className = "signup " + element.parentNode.className
-          element.parentNode.innerHTML = element.parentNode.innerHTML + `
-          <span class="cta">
-            <div></div><a href="/auth/github/callback?returnTo=${window.location.pathname}" target="_self">Signin with GitHub</a>
-            <p>To see full unobfuscated code samples</p>
-          </span>`
-        }
+        // if (!$rootScope.session._id) {
+        //   element.parentNode.className = "signup " + element.parentNode.className
+        //   element.parentNode.innerHTML = element.parentNode.innerHTML + `
+        //   <span class="cta">
+        //     <div></div><a href="/auth/github/callback?returnTo=${window.location.pathname}" target="_self">Signin with GitHub</a>
+        //     <p>To see full unobfuscated code samples</p>
+        //   </span>`
+        // }
       });
   }
 
@@ -178,7 +178,7 @@ angular.module("APPageHelpers", [])
       var offset = $('.railMarker').offset().top;
       var shareHeight = $('.share').height() + 22;
       var cta1Height = $('.rail1CTA').height() + 16;
-      var tocH3Height = 40;
+      var tocH3Height = $('#table-of-contents').height()
 
       $('.share').css('position', 'fixed').css('left', offsetLeft);
       $('.rail1CTA').css('position', 'fixed').css('left', offsetLeft);
@@ -200,16 +200,15 @@ angular.module("APPageHelpers", [])
         $('#table-of-contents + ul').css('top', scrollSet + shareHeight + cta1Height + tocH3Height);
       }
     }
-    else
-    {
-      $('.railBookmarkCTA').hide()
+    // else
+    // {
       // if (window.scrollY < (offset + 100)) {
         // $('.rail1CTA').css('top', offset+10 - window.scrollY);
         // $('.rail1CTA').toggle(true)
       // }
       // else
         // $('.rail1CTA').toggle(false)
-    }
+    // }
   }
 
   this.fixRailElements = fixRailElements

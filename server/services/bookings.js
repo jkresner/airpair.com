@@ -2,7 +2,7 @@ var logging                 = false
 var RequestsSvc             = require('../services/requests')
 var OrdersSvc               = require('../services/orders')
 var ChatsSvc                = require('../services/chats')
-var TemplateSvc             = require('../services/templates')
+// var TemplateSvc             = require('../services/templates')
 var {Booking,User,Expert}   = DAL
 var Roles                   = require('../../shared/roles').booking
 var BookingdUtil            = require('../../shared/bookings')
@@ -25,7 +25,7 @@ function getChat(booking, syncMode, exitCB, cb) {
   if (syncMode == 'auto')
     return ChatsSvc.searchParticipantSyncOptions(booking.participants, (e,match,chatSyncOptions) => {
       if (match) {
-        $callSvc(save.associateChat,this)(booking, 'slack', match.info.id, (e,r) => {
+        save.associateChat.call(this, booking, 'slack', match.info.id, (e,r) => {
           $log('auto.associateChat.success', match.info.name)
           exitCB(e, r)
         })
@@ -45,6 +45,7 @@ var get = {
 
   getForParticipant(booking, cb)
   {
+    // $log('getForParticipant'.yellow, booking)
     cb(null, booking)
   },
 
@@ -71,6 +72,7 @@ var get = {
 
   getByIdForParticipant(_id, callback)
   {
+    // $log('getByIdForParticipant'.yellow, _id)
     var {query} = this
     if (query && query.refresh) cache.flush('slack_users')
 
@@ -79,10 +81,10 @@ var get = {
       r.slackin = config.chat.slackin
       if (eee) return cb(eee)
       if (!r.order) return cb(null,r) // an edgecase migrated booking from v0 call
-      getChat.call(this, r, 'auto', callback, (ee,r)=>{
-        if (!r.order.requestId || ee) return cb(ee,r)
-        $callSvc(RequestsSvc.getByIdForBookingInflate,this)(r.order.requestId, (e,request) =>
-          cb(e,_.extend(r,{request})))
+      getChat.call(this, r, 'auto', callback, (ee, chat) => {
+        if (!r.order.requestId || ee) return cb(ee, r)
+        RequestsSvc.getByIdForBookingInflate.call(this, r.order.requestId,
+          (e,request) => cb(e,_.extend(r,{request})))
       })
     })
   },
@@ -125,11 +127,52 @@ var get = {
       if (eee) return cb(eee)
       if (!r.order) return cb(null,r) // an edgecase migrated booking from v0 call
       getChat.call(this, r, 'all', callback, (ee,r) => {
+
+      function slackMSGSync(key, data) {
+        var tmpl = cache.templates[`slack-message:${key}`]
+
+        if (!tmpl)
+          $log(`template slack-message:${key} not found in cache`.warning)
+
+        else if (tmpl.subtype == 'message')
+          return {
+            type: 'message',
+            text: tmpl.markdownFn(data)
+          }
+
+        else if (tmpl.subtype == 'attachment')
+          return {
+            type: 'attachment',
+            fallback: tmpl.fallbackFn(data),
+            color:  tmpl.color,
+            pretext: tmpl.subjectFn(data),
+            thumb_url: tmpl.thumbnailFn(data),
+            title: data.title,
+            title_link: tmpl.linkFn(data),
+            text: tmpl.markdownFn(data),
+          }
+        }
+        function slackMSGsforBookingStatus(data) {
+          var {status} = data
+          var msgs = {}
+          for (var tmlpKey of _.keys(cache.templates)) {
+            if (tmlpKey.indexOf(`slack-message:booking-${status}-`)==0)
+            {
+              var type = cache.templates[tmlpKey].subtype
+              var msgKey = tmlpKey.replace(`slack-message:booking-${status}-`,'')
+              msgs[msgKey] = slackMSGSync(`booking-${status}-${msgKey}`,data)  //message|attachment
+            }
+          }
+          return msgs
+        }
+
         if (r.chat)
-          r.botMsgs = TemplateSvc.slackMSGsforBookingStatus(select.slackMsgTemplateData(r))
+          r.botMsgs = slackMSGsforBookingStatus(select.slackMsgTemplateData(r))
+
+
         if (!r.order.requestId || ee)
           return cb(ee,r)
-        $callSvc(RequestsSvc.getByIdForBookingInflate, this)(r.order.requestId, (e,request) =>
+        RequestsSvc.getByIdForBookingInflate.call(this, r.order.requestId, (e,request) =>
           cb(e,_.extend(r,{request})))
       })
     })
@@ -200,7 +243,7 @@ var save = {
     lastTouch = svc.newTouch.call(this, 'suggest-time')
     activity.push(lastTouch)
     Booking.updateSet(original._id, {suggestedTimes,lastTouch,activity}, (e,r) => {
-      $callSvc(get.getByIdForParticipant,this)(original._id,cb)
+      get.getByIdForParticipant.call(this, original._id,cb)
       if (original.chat)
         pairbot.sendSlackMsg(original.chat.providerId, 'booking-suggest-time',
           select.slackMsgTemplateData(r,{byName:this.user.name,suggestedMultitime:BookingdUtil.multitime(r,time)},this.user._id) )
@@ -216,7 +259,7 @@ var save = {
     lastTouch = svc.newTouch.call(this, 'remove-time')
     activity.push(lastTouch)
     Booking.updateSet(original._id, {suggestedTimes,lastTouch,activity}, (e,r) => {
-      $callSvc(get.getByIdForParticipant,this)(original._id,cb)
+      get.getByIdForParticipant.call(this, original._id,cb)
     })
   },
 
@@ -237,7 +280,7 @@ var save = {
     createBookingGoogleCalendarEvent(original, cb, (gcal) => {
       var ups = {suggestedTimes,lastTouch,activity,datetime,status,gcal}
       Booking.updateSet(original._id, ups, (e,r) => {
-        $callSvc(get.getByIdForParticipant,this)(original._id,cb)
+        get.getByIdForParticipant.call(this, original._id,cb)
         if (original.chat)
           pairbot.sendSlackMsg(original.chat.providerId, 'booking-confirm-time',
             select.slackMsgTemplateData(r,{byName:this.user.name}) )
@@ -279,7 +322,7 @@ var save = {
   createChat(original, type, groupchat, cb)
   {
     select.inflateParticipantInfo(original.participants)
-    $callSvc(ChatsSvc.createCreate, this)(type, groupchat, original.participants, (e,chat)=>{
+    ChatsSvc.createCreate.call(this, type, groupchat, original.participants, (e,chat)=>{
       if (e) return cb(e)
       var {activity,lastTouch} = original
       lastTouch = svc.newTouch.call(this, 'create-chat')
@@ -292,7 +335,7 @@ var save = {
 
   associateChat(original, type, providerId, cb)
   {
-    $callSvc(ChatsSvc.createSync, this)(type, providerId, (e,chat)=>{
+    ChatsSvc.createSync.call(this, type, providerId, (e,chat)=>{
       if (e) return cb(e)
       var {activity,lastTouch} = original
       activity = activity || []
@@ -315,12 +358,12 @@ function updateForAdmin(thisCtx, booking, updates, action, cb) {
   Booking.updateSet(booking._id, _.extend(updates,{lastTouch,activity}), (e,r)=>{
     if (e) return cb(e)
     if (!r.chatId)
-      $callSvc(get.getByIdForAdmin, thisCtx)(r._id, cb)
+      get.getByIdForAdmin.call(thisCtx, r._id, cb)
     else {
       var groupInfo = BookingdUtil.chatGroup(r)
-      $callSvc(ChatsSvc.sync, thisCtx)(r.chatId, groupInfo, (ee,chat)=>{
+      ChatsSvc.sync.call(thisCtx, r.chatId, groupInfo, (ee,chat)=>{
         if (ee) return cb(ee)
-        $callSvc(get.getByIdForAdmin, thisCtx)(r._id, cb)
+        get.getByIdForAdmin.call(thisCtx, r._id, cb)
       })
     }
   })

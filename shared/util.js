@@ -184,9 +184,9 @@ var util = {
   },
 
 
-  momentSessionCreated(session) {
-    return new moment(session.cookie._expires).subtract(session.cookie.originalMaxAge,'ms')
-  },
+  // momentSessionCreated(session) {
+  //   return new moment(session.cookie._expires).subtract(session.cookie.originalMaxAge,'ms')
+  // },
 
 
   dateWithDayAccuracy(mom) {
@@ -214,10 +214,9 @@ var util = {
 
 
   isBot(useragent, pattern) {
-    // $log('isBot?', !useragent || useragent == "null")
+    // $log('isBot?', !useragent || useragent == "null", pattern)
     if (!useragent || useragent == "null" || useragent == "") return true // browser and even bots should have a defined user agent
     var source = useragent.replace(/^\s*/, '').replace(/\s*$/, '')
-    pattern = pattern || ((config) ? config.bots.all : /bot/i)
     return pattern.test(source)
   },
 

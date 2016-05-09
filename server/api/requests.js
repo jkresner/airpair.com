@@ -7,7 +7,7 @@ module.exports = require('./_api').initAPI(
   getActiveForAdmin: (req) => [],
   get2015ForAdmin: (req) => [],
   getByIdForMatchmaker: (req) => [req.params.id],
-  getWaitingForMatchmaker: (req) => [],
+  // getWaitingForMatchmaker: (req) => [],
   getIncompleteForAdmin: (req) => [],
   getByUserIdForAdmin: (req) => [req.params.id],
   getByIdForReview: (req) => [req.params.id],
@@ -19,12 +19,12 @@ module.exports = require('./_api').initAPI(
   farmByAdmin: (req) => [req.request,req.body.tweet],
   sendMessageByAdmin: (req) => [req.request,req.body],
   addSuggestion: (req) => [req.request,req.expertshaped,req.body.msg],
-  groupSuggest: (req) => [req.request,req.tag],
+  // groupSuggest: (req) => [req.request,req.tag],
   removeSuggestion: (req) => [req.request,req.expert],
   deleteById: (req) => [req.request],
 }, {
   request:'getByIdForAdmin',
-  review:'getByIdForReview'
+  job:'getByIdForReview'
 },
   require('../../shared/validation/requests.js')
 )

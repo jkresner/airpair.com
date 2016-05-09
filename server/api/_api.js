@@ -9,33 +9,34 @@ var Error404 = (msg, fromApi) => {
 }
 
 
-var cbSend = (req, res, next) => {
-  var httpMethod = req.method
-  return (e, r) => {
-    if (logging) { $log('cbSend'.cyan, e, r) }
-    if (e)
-    {
-      e.fromApi = true
-      return next(e)
-    }
-    else if (httpMethod != 'DELETE')
-    {
-      if (!r) { return res.status(404).json({}) }
-      return res.json(r)
-    }
-    else
-    {
-      return res.status(200).json({})
-    }
-  }
-}
+var cbSend = (req, res, next) =>
+//   var httpMethod = req.method
+  (e, r) =>
+//     if (logging) { $log('cbSend'.cyan, e, r) }
+    next(e, e ? null : assign(req.locals,{r}))
+//     {
+//       e.fromApi = true
+      // return next(e)
+//     }
+//     else if (httpMethod != 'DELETE')
+//     {
+//       if (!r) { return res.status(404).json({}) }
+//       return res.json(r)
+//     }
+//     else
+//     {
+//       return res.status(200).json({})
+//     }
+//   }
+  // next()
+
 
 
 function resolveParamFn(Svc, svcFnName, paramName, objectName, Validation) {
   return (req, res, next, id) => {
     if (logging) $log('paramFn'.cyan, paramName, objectName, svcFnName, id)
     if (id) id = id.trim()
-    $callSvc(Svc[svcFnName],req)(id, function(e, r) {
+    Svc[svcFnName].call({user:req.user,sessionID:req.sessionID,session:req.session}, id, function(e, r) {
       if (!r && !e) {
         e = Error404(`${paramName} not found.`,
           !_.contains(['post','postpublished','workshop'], paramName))
@@ -48,6 +49,7 @@ function resolveParamFn(Svc, svcFnName, paramName, objectName, Validation) {
         }
       }
       req[objectName||paramName] = r
+      req.locals.r = r
       if (logging) $log('paramFn'.yellow, objectName||paramName, r!=null, req[objectName||paramName])
       next(e, r)
     })
@@ -59,23 +61,19 @@ function resolveParamFn(Svc, svcFnName, paramName, objectName, Validation) {
 function serve(Svc, svcFnName, argsFn, Validation) {
   return (req, res, next) => {
     if (logging) $log('serve.Svc'.cyan, svcFnName, argsFn)
-    var callback = cbSend(req,res,next)
     var args = argsFn(req)
     if (Validation) {
       if (req.method != 'GET' || Validation[svcFnName])
       {
         if (!Validation[svcFnName]) throw Error(`Validation function ${svcFnName} not define`)
         var inValid = Validation[svcFnName].apply({}, _.union([req.user],args))
-        if (inValid) {
-          var e = Error(inValid)
-          e.status = 403
-          return callback(e)
-        }
+        if (inValid)
+          return next(assign(Error(inValid),{status:403}))
       }
     }
-    args.push(callback)
+    args.push(cbSend(req,res,next))
     if (!Svc[svcFnName]) throw Error(`Service function ${svcFnName} not defined`)
-    $callSvc(Svc[svcFnName],req).apply(this, args)
+    Svc[svcFnName].apply({user:req.user,sessionID:req.sessionID,session:req.session}, args)
   }
 }
 

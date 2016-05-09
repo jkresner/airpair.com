@@ -1,5 +1,4 @@
 var {Post, Expert, User}  = DAL
-var TemplateSvc           = require('../services/templates')
 var github2               = Wrappers.GitHub
 var Data                  = require('./posts.data')
 var {query, select, opts} = Data
@@ -7,7 +6,7 @@ var selectTmpl            = select.tmpl
 var {selectFromObject}    = require('../../shared/util')
 var PostsUtil             = require('../../shared/posts')
 var Roles                 = require('../../shared/roles').post
-var {org}                 = config.auth.github
+// var {org}                 = config.auth.github
 
 
 var get = {
@@ -22,61 +21,20 @@ var get = {
   },
 
   //-- used for api param fn
-  getByIdFromCache(_id, cb) {
-    cache.ready(['posts'], () => {
-      var post = cache.posts[_id]
-      cb(null, post)
-    })
-  },
+  // getByIdFromCache(_id, cb) {
+  //   cache.ready(['posts'], () => {
+  //     var post = cache.posts[_id]
+  //     cb(null, post)
+  //   })
+  // },
 
-  getByIdForEditingInfo(post, cb) {
-    cb(V2DeprecatedError('Posts.getByIdForEditingInfo'))
-    // select.cb.editInfoView(cb)(null, post)
-  },
-
-  getByIdForEditing(post, cb) {
-    cb(V2DeprecatedError('Posts.getByIdForEditing'))
-    // if (!post.submitted) return select.cb.editView(cb)(null, post)
-
-    // var owner = org
-    // if ( Roles.isForker(this.user, post) )
-    //   owner = this.user.social.gh.username
-    // else if ( !Roles.isOwnerOrEditor(this.user, post) )
-    //   return cb(`Cannot edit this post. You need to fork ${post.slug}`)
-
-    // github2.getFile(this.user, owner, post.slug, "/post.md", 'edit', (e, postMDfile) => {
-    //   var mdOverride = (postMDfile) ? postMDfile.string : null
-    //   select.cb.editView(cb, mdOverride, owner)(e, post)
-    // })
-  },
 
   getByIdForContributors(post, cb) {
     cb(V2DeprecatedError('Posts.getByIdForContributors'))
-    // analytics.track(this.user, this.sessionID, 'getPullRequests', {slug:post.slug},null,()=>{})
-
-    // var done = (e, pullRequests) => {
-    //   post.pullRequests = selectFromObject({pullRequests}, select.pr).pullRequests
-    //   var {openPRs,closedPRs,acceptedPRs} = PostsUtil.calcStats(post)
-    //   if (!post.stats
-    //     || post.stats.acceptedPRs != acceptedPRs
-    //     || post.stats.closedPRs != closedPRs
-    //     || post.stats.openPRs != openPRs
-    //     )
-    //   {
-    //     // Unfortunately this is not right, we need to query the github api again to see if they were merged
-    //     post.stats = _.extend(post.stats||{},{acceptedPRs,openPRs,closedPRs})
-    //     svc.update(post._id, post, select.cb.statsView(cb))
-    //   } else
-    //     select.cb.statsView(cb)(null, post)
-    // }
-
-    // cache.pullRequests(post.slug, (cb) => {
-    //   github2.getPullRequests.call(this, 'admin', org, post.slug, cb)
-    // }, done)
   },
 
-  getByIdForSubmitting(post, cb) {
-    cb(V2DeprecatedError('Posts.getByIdForContributors'))
+  // getByIdForSubmitting(post, cb) {
+    // cb(V2DeprecatedError('Posts.getByIdForContributors'))
     // post = selectFromObject(post, select.editInfo)
     // post.submit = { repoAuthorized: false }
     // post.slug = post.title.toLowerCase()
@@ -99,7 +57,7 @@ var get = {
     //     cb(e, post)
     //   })
     // })
-  },
+  // },
 
   getByIdForForking(post, cb) {
     cb(V2DeprecatedError('Posts.getByIdForForking'))
@@ -121,52 +79,54 @@ var get = {
     // })
   },
 
-  getByIdForPublishing(post, cb) {
-    ExpertSvc.getByQuery({userId:post.by.userId}, (e, expert) => {
-      if (expert) {
-        post.by.expertId = expert._id
-        post.by.username = expert.username
-      }
-      if (!post.tmpl)
-        post.tmpl = 'default'
+  // getByIdForPublishing(post, cb) {
+    // cb(V2DeprecatedError('Posts.getByIdForPublishing'))
+    // ExpertSvc.getByQuery({userId:post.by.userId}, (e, expert) => {
+    //   if (expert) {
+    //     post.by.expertId = expert._id
+    //     post.by.username = expert.username
+    //   }
+    //   if (!post.tmpl)
+    //     post.tmpl = 'default'
 
-      if (!post.htmlHead || !post.htmlHead.canonical)
-      {
-        var primarytag = _.find(post.tags,(t) => t.sort==0 || post.tags[0])
-        post.htmlHead = post.htmlHead || {}
-        post.htmlHead.canonical = `/${primarytag.slug}/posts/${post.slug}`
-      }
+    //   if (!post.htmlHead || !post.htmlHead.canonical)
+    //   {
+    //     var primarytag = _.find(post.tags,(t) => t.sort==0 || post.tags[0])
+    //     post.htmlHead = post.htmlHead || {}
+    //     post.htmlHead.canonical = `/${primarytag.slug}/posts/${post.slug}`
+    //   }
 
-      if (!post.github) return cb(null, post)
+    //   if (!post.github) return cb(null, post)
 
-      github2.getFile('admin', org, post.slug, "/post.md", 'edit', (ee, head) => {
-        if (!ee && head.string)
-          post.mdHEAD = head.string
-        cb(ee, post)
-      })
-    })
-  },
+    //   github2.getFile('admin', org, post.slug, "/post.md", 'edit', (ee, head) => {
+    //     if (!ee && head.string)
+    //       post.mdHEAD = head.string
+    //     cb(ee, post)
+    //   })
+    // })
+  // },
 
-  getByIdForPreview(_id, cb) {
-    Post.getById(_id, { select: select.display }, (e,r) => {
-      if (e || !r) return cb(e,r)
-      if (!r.submitted || !r.github) return select.cb.displayView(false, null, cb)(null, r)
+  // getByIdForPreview(_id, cb) {
+  //   Post.getById(_id, { select: select.display }, (e,r) => {
+  //     if (e || !r) return cb(e,r)
+  //     if (!r.submitted || !r.github) return select.cb.displayView(false, null, cb)(null, r)
 
-      //-- Allow admins to preview a post without a fork
-      if (!Roles.isForker(this.user, r) &&
-        !_.idsEqual(this.user._id, r.by.userId)
-        )
-        return select.cb.displayView(false, null, cb)(null, r)
+  //     //-- Allow admins to preview a post without a fork
+  //     if (!Roles.isForker(this.user, r) &&
+  //       !_.idsEqual(this.user._id, r.by.userId)
+  //       )
+  //       return select.cb.displayView(false, null, cb)(null, r)
 
-      $callSvc(get.getGitHEAD, this)(r, (ee, head) => {
-        if (head && head.string)
-          r.md = head.string
-        select.cb.displayView(false, null, cb)(ee, r)
-      })
-    })
-  },
+  //     $callSvc(get.getGitHEAD, this)(r, (ee, head) => {
+  //       if (head && head.string)
+  //         r.md = head.string
+  //       select.cb.displayView(false, null, cb)(ee, r)
+  //     })
+  //   })
+  // },
 
   getBySlugForPublishedView(slug, cb) {
+    // $log('getBySlugForPublishedView', slug)
     Post.getByQuery(query.published({slug}), { select: select.display },
       select.cb.displayView(this.user == null, get.getSimilar, cb)
     )
@@ -207,7 +167,7 @@ var get = {
     }))
   },
 
-  getAll2015CompWinners(cb) {
+  get2015CompWinners(cb) {
     var getWinners = function(callback) {
       var q = query.comp2015winners()
       var options = Object.assign({ select: Data.select.listComp}, opts.highestRating)
@@ -216,7 +176,7 @@ var get = {
         callback(e,r)
       }))
     }
-    cache.getOrSetCB('2015postcomp', getWinners, cb)
+    cache.get('2015postcomp', getWinners, cb)
   },
 
   getRecentPublished(cb) {
@@ -235,25 +195,25 @@ var get = {
   },
 
   getByTag(tag, cb) {
-    var options = Object.assign({ select: select.list}, opts.publishedNewest())
+    var options = assign({ select: select.list}, opts.publishedNewest())
     var q = query.published({'tags._id': tag._id})
-    Post.getManyByQuery(q, options, select.cb.addUrl((e,r) => cb(null, {tag,posts:r}) ))
+    Post.getManyByQuery(q, options, select.cb.addUrl((e,r) => cb(null, {latest:r}) ))
   },
 
 
-  getUsersPublished(userId, cb) {
-    cb(V2DeprecatedError('Posts.getUsersPublished'))
+  // getUsersPublished(userId, cb) {
+    // cb(V2DeprecatedError('Posts.getUsersPublished'))
     // var options = { fields: select.list, options: opts.publishedNewest() }
     // svc.searchMany(query.published({ 'by.userId': userId }), options, select.cb.addUrl((e,r)=>{
     //   if (e) return cb(e)
     //   cb(null, {featured: r,archive: []})
     // }))
-  },
+  // },
 
   // Everything needed for airpair.com/posts/me
-  getMyPosts(cb) {
-    cb(V2DeprecatedError('Posts.getMyPosts'))
-    // if (!this.user) return $callSvc(get.getRecentPublished,this)(cb)
+  // getMyPosts(cb) {
+    // cb(V2DeprecatedError('Posts.getMyPosts'))
+    // if (!this.user) return $..callSvc(get.getRecentPublished,this)(cb)
 
     // var fields = _.extend({md:1},select.stats) // meed md for wordcount
 
@@ -270,7 +230,7 @@ var get = {
     //     select.cb.statsViewList(cb)(null, posts)
     //   }))
     // })
-  },
+  // },
 
   getPostsInReview(cb) {
     cb(V2DeprecatedError('Posts.getPostsInReview'))
@@ -287,8 +247,8 @@ var get = {
   //   svc.searchMany(query.forker(this.user._id), { field: Data.select.list }, select.cb.addUrl(cb))
   // },
 
-  getGitHEAD(post, cb) {
-    cb(V2DeprecatedError('Posts.getGitHEAD'))
+  // getGitHEAD(post, cb) {
+    // cb(V2DeprecatedError('Posts.getGitHEAD'))
     // var owner = org
 
     // if ( Roles.isForker(this.user, post) )
@@ -297,10 +257,10 @@ var get = {
     //   return cb(`Cannot get git HEAD. You have not forked ${post.slug}`)
 
     // github2.getFile(this.user, owner, post.slug, "/post.md", 'edit', cb)
-  },
+  // },
 
-  checkSlugAvailable(post, slug, cb) {
-    cb(V2DeprecatedError('Posts.checkSlugAvailable'))
+  // checkSlugAvailable(post, slug, cb) {
+    // cb(V2DeprecatedError('Posts.checkSlugAvailable'))
     // svc.searchOne({slug}, null, (e,r) => {
     //   if (r)
     //     if (!_.idsEqual(post._id,r._id))  //-- for posts that were published before the git authoring stuff
@@ -311,7 +271,7 @@ var get = {
     //     cb(null, repoStatus)
     //   })
     // })
-  },
+  // },
 
   getReview(post, reviewId, cb) {
     return cb(null, _.find(post.reviews,(r)=>_.idsEqual(r._id,reviewId)))

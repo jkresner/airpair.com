@@ -5,13 +5,13 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
 
 .config(function($locationProvider, $routeProvider) {
 
-  var authd = resolver(['session']);
+  var authd = resolver(['session'])
 
   var actions = {
-    list:   { template: require('./list.html'), controller: 'RequestListCtrl' },
+    list:   { resolve: authd, template: require('./list.html'), controller: 'RequestListCtrl' },
     create: { resolve: authd, template: require('./new.html'), controller: 'RequestCtrl' },
     edit: { resolve: authd, template: require('./edit.html'), controller: 'RequestEditCtrl' },
-    review: { template: require('./review.html'), controller: 'ReviewCtrl' }
+    review: { template: require('./job.html'), controller: 'JobCtrl' }
   };
 
   $routeProvider
@@ -23,17 +23,12 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
     .when('/help/request/:id', actions.edit)
     .when('/meet-experts/:id', actions.edit)
     .when('/review/:id', actions.review)
+    .when('/job/:id', actions.review)
 
 })
 
-.run(function($rootScope, SessionService) {})
-
 
 .controller('RequestListCtrl', function($scope, $location, DataService, SessionService) {
-
-  SessionService.onAuthenticated(function() {
-    if (!$scope.session._id) $location.path(`/`)
-  })
 
   DataService.requests.getMyRequests({}, function(result) {
     $scope.requests = result
@@ -45,11 +40,8 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
 .controller('RequestCtrl', function($rootScope, $scope, DataService, RequestHelper) {
   //-- In case the come through from request scope from another page like review
   if ($scope.request) return window.location = '/help/request'
-
-
-
-
 })
+
 
 .controller('RequestEditCtrl', function($scope, $routeParams, $location, DataService, SessionService, Shared, ServerErrors) {
   var _id = $routeParams.id;
@@ -73,7 +65,7 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
     }
 
     if (!Shared.roles.request.isCustomerOrAdmin($scope.session, r))
-      $location.path('/dashboard')
+      $location.path('/')
     else
       $scope.request = r
   }, function(er) {
@@ -84,59 +76,33 @@ angular.module("APRequests", ['APFilters', 'APSvcSession',
 
 
 
-.controller('ReviewCtrl', function($scope, $routeParams, $location, $timeout, DataService, Shared, ServerErrors, SessionService, PageHlpr) {
-  $scope.requestId = $routeParams.id;
-  $scope.returnTo = window.location.pathname
+.controller('JobCtrl', function($scope, $routeParams, $timeout, DataService, Shared, SessionService, PageHlpr) {
+  $scope.requestId = $routeParams.id
 
-  if (!$scope.requestId) return $location.path('/')
+  if (!$scope.requestId || !$scope.job) return window.location = '/'
 
-  if ($scope.session && $scope.session.authenticated == false) {
-    $scope.r = $scope.request
-    $scope.isAnon = true
-    $scope.reviewClass = 'anon'
-    $scope.r.by.name = "Login to view more detail"
-    return
+  $scope.r = $scope.job
+  $scope.isAnon = $scope.r.view == 'anon'
+  $scope.replies = null
+  if ($scope.r.suggested) $scope.replies =
+    _.filter($scope.r.suggested,(s)=>s.expertComment!=null)
+
+  if ($scope.r.view == 'customer' || $scope.r.view == 'admin') {
+    $scope.displayRate = $scope.r.budget
+    $scope.data = {} // to collect location / timezone
+    $scope.updateLocation = $scope.updateLocation = (locationData) => {
+      SessionService.changeLocationTimezone(locationData, (r)=> {})
+    }
   }
+  else
+  {
+    if ($scope.r.status == 'canceled' || $scope.r.status == 'complete')
+      $scope.reviewClass = 'inactive'
 
-  var getReview = () => DataService.requests.getReviewById($scope.requestId, function(r) {
-    $scope.r = r
-    $scope.isAdmin = Shared.roles.isAdmin($scope.session)
-    $scope.isCustomer = Shared.roles.request.isCustomer($scope.session,r)
-    $scope.replies = _.filter(r.suggested,(s)=>s.expertComment!=null)
+    if ($scope.r.status == 'booked')
+      $scope.reviewClass = 'inactive booked'
 
-    if ($scope.isCustomer) { // || $scope.isAdmin
-      $scope.displayRate = r.budget
-
-      // if (!$scope.session.emailVerified)
-        // $scope.reviewClass = 'verifyEmail'
-      // else (!$scope.session.primaryPayMethodId)
-        // $scope.reviewClass = 'addPayMethod'
-
-      $scope.data = {} // to collect location / timezone
-      $scope.updateLocation = $scope.updateLocation = (locationData) => {
-        SessionService.changeLocationTimezone(locationData, (r)=> {})
-      }
-    }
-    else
-    {
-      if (r.status == 'canceled' || r.status == 'complete')
-        $scope.reviewClass = 'inactive'
-
-      if (r.status == 'booked')
-        $scope.reviewClass = 'inactive booked'
-
-      $scope.isExpert = Shared.roles.request.isExpert($scope.session,r)
-      if ($scope.isExpert)
-        window.location = `https://consult.airpair.com/job/${requestId}`
-
-      $timeout(function(){ PageHlpr.highlightSyntax({ addCtrs: false })}, 500)
-    }
-
-  }, function(er) {
-    console.log('request not found')
-  })
-
-
-  getReview();
+    $timeout(function(){ PageHlpr.highlightSyntax({ addCtrs: false })}, 500)
+  }
 
 })

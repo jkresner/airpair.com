@@ -13,21 +13,23 @@ angular.module('APViewData', [])
     if (vd.post) $rootScope.post = vd.post
     if (vd.workshop) $rootScope.workshop = vd.workshop
     if (vd.expert) $rootScope.expert = vd.expert
-    if (vd.review) $rootScope.request = window.request
-    if (vd.chatSettings) $rootScope.chatSettings = vd.chatSettings
     if (vd.hangoutAppId) $rootScope.hangoutAppId = vd.hangoutAppId
     if (vd.book) {
       $rootScope.expert = window.expert
       window.expert = null
+    }
+    if (window.job) {
+      $rootScope.job = window.job
+      window.job = null
     }
 
     if (vd.session) {
       vd.session.unauthenticated = (vd.session.authenticated!=null
         && vd.session.authenticated == false)
       $rootScope.session = vd.session
-      delete window.viewData.session
     }
 
+    delete window.viewData
   }
 
   return this;

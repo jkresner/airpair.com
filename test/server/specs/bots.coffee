@@ -15,7 +15,7 @@ expectSessionStored = (session, cb) ->
   a_uid = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[\,\-_]*).{24,}/
   expect(session.sessionID).to.match(a_uid)
   DB.docsByQuery 'Session', {_id:session.sessionID}, (s) ->
-    expect(s.length).to.equal(1)
+    expect(s.length, "Session not found with id #{session.sessionID}").to.equal(1)
     cb()
 
 
@@ -26,11 +26,12 @@ api = ->
     done()
 
 
+
   IT 'Returns empty 200 on bad urls for bad bots', ->
     PAGE '/fasdfasdfaeed', Opts({status:200},BADBot), (resp) ->
       expect(resp).to.equal('')
       PAGE '/fasdfasdfaeed', Opts({status:404},GOODBot), (resp2) ->
-        EXPECT.contains(resp2, ">Page not found</h")
+        EXPECT.contains(resp2, "Page not found")
         DONE()
 
 
@@ -38,80 +39,80 @@ api = ->
     PAGE '/', Opts({status:200},BADBot), (resp) ->
       expect(resp).to.equal('')
       PAGE '/', Opts({status:200},GOODBot), (resp2) ->
-        EXPECT.contains(resp2, "<title>Software Micro-Consulting via Video Chat | AirPair</title>")
+        EXPECT.contains(resp2, "<title>airpair | Coding help, Software consultants & Programming resources")
         DONE()
 
 
   IT 'Does not exec analytics or store session on 404', ->
-    trackSpy = STUB.spy(analytics, 'echo')
+    # trackSpy = STUB.spy(analytics, 'event')
     PAGE '/feed', Opts({status:404}, UAUser), (resp) ->
       # global.cookie = resp.headers['set-cookie']
       # expect(global.cookie).to.be.undefined
-      expect(trackSpy.callCount).to.equal(0)
+      # expect(trackSpy.callCount).to.equal(0)
       expectSessionNotStored { sessionID: 'unNOwnSZ3Wi8bDEnaKzhygGG2a2RkjZ2' }, DONE
 
 
   IT '/ (unauthenticated) Persists session for uaFireFox', ->
-    viewSpy1 = STUB.spy(analytics, 'view')
+    # viewSpy1 = STUB.spy(analytics, 'view')
     PAGE '/', Opts({status:200}, UAUser), (resp) ->
       GET '/session/full', (s) ->
-        expect(viewSpy1.callCount).to.equal(0)
+        # expect(viewSpy1.callCount).to.equal(1)
         expect(s.authenticated).to.equal(false)
         expectSessionStored s, DONE
 
 
-  SKIP '/angularjs (unauthenticated) Persists session or uaFireFox', ->
-    viewSpy = STUB.spy(analytics, 'view')
-    PAGE '/angularjs', Opts({status:200}, UAUser), (resp) ->
+  IT '/100k-writing-competition (unauthenticated) Persists session for uaFireFox', ->
+    # viewSpy = STUB.spy(analytics, 'view')
+    PAGE '/100k-writing-competition', Opts({status:200}, UAUser), (resp) ->
       GET '/session/full', (s) ->
-        expect(viewSpy.calledOnce).to.be.true
+        # expect(viewSpy.calledOnce).to.be.true
         expect(s.authenticated).to.equal(false)
         expectSessionStored s, ->
-          DB.docsByQuery 'View', { anonymousId:s.sessionID }, (views) ->
+          DB.docsByQuery 'View', { sId:s.sessionID }, (views) ->
             expect(views.length).to.equal(1)
-            expect(views[0].url).to.equal('/angularjs')
-            expect(views[0].type).to.equal('tag')
-            expect(views[0].campaign).to.be.undefined
-            expect(views[0].userId).to.be.undefined
-            expect(views[0].anonymousId).to.equal(s.sessionID)
+            expect(views[0].sId).to.equal(s.sessionID)
+            expect(views[0].type).to.equal('landing')
+            expect(views[0].url).to.equal('/100k-writing-competition')
+            expect(views[0].utm).to.be.undefined
+            expect(views[0].uId).to.be.undefined
             DONE()
 
 
-  SKIP '/angularjs (no user-agent) Does not persist session', ->
-    viewSpy = STUB.spy(analytics, 'view')
-    PAGE '/angularjs', Opts({status:200}, UANone), (resp) ->
-      expect(viewSpy.callCount).to.equal(0)
+  IT '/100k-writing-competition (no user-agent) Does not persist session', ->
+    # viewSpy = STUB.spy(analytics, 'view')
+    PAGE '/100k-writing-competition', Opts({status:200}, UANone), (resp) ->
+      # expect(viewSpy.callCount).to.equal(0)
       expectSessionNotStored { sessionID: 'unNOwnSZ3Wi8bDEnaKzhygGG2a2RkjZ2' }, DONE
 
 
-  SKIP '/angularjs (uaGooglebot) does not persist session or view', ->
-    viewSpy = STUB.spy(analytics, 'view')
-    PAGE '/angularjs', Opts({status:200}, GOODBot), (resp) ->
-      EXPECT.contains(resp, "AngularJS experts</h")
-      expect(viewSpy.callCount).to.equal(0)
+  IT '/100k-writing-competition (uaGooglebot) does not persist session or view', ->
+    # viewSpy = STUB.spy(analytics, 'view')
+    PAGE '/100k-writing-competition', Opts({status:200}, GOODBot), (resp) ->
+      EXPECT.contains(resp, "100k Writing Competition")
+      # expect(viewSpy.callCount).to.equal(0)
       expectSessionNotStored { sessionID: 'unNOwnSZ3Wi8bDEnaKzhygGG2a2RkjZ2' }, DONE
 
 
-  SKIP '/angularjs (uaUser) Persists utms and referer', ->
-    viewSpy = STUB.spy(analytics, 'view')
-    ref = 'https://www.airpair.com/'
+  IT '/100k-writing-competition (uaUser) Persists utms and referer', ->
+    # viewSpy = STUB.spy(analytics, 'view')
+    referer = 'https://www.airpair.com/'
     utms = 'utm_source=team-email&utm_medium=email&utm_term=angular-workshops&utm_content=nov14-workshops-ty&utm_campaign=wks14-4'
-    PAGE "/angularjs?#{utms}", Opts({status:200,referer:ref}, UAUser), (resp) ->
-      expect(viewSpy.calledOnce).to.be.true
+    PAGE "/100k-writing-competition?#{utms}", Opts({status:200,referer}, UAUser), (resp) ->
+      # expect(viewSpy.calledOnce).to.be.true
       GET '/session/full', (s) ->
         expect(s.authenticated).to.equal(false)
         expectSessionStored s, ->
-          DB.docsByQuery 'View', { anonymousId:s.sessionID }, (views) ->
+          DB.docsByQuery 'View', { sId:s.sessionID }, (views) ->
             expect(views.length).to.equal(1)
-            expect(views[0].url).to.equal('/angularjs')
-            expect(views[0].type).to.equal('tag')
-            expect(views[0].campaign).to.exist
-            expect(views[0].referer).to.equal(ref)
-            expect(views[0].campaign.source).to.equal('team-email')
-            expect(views[0].campaign.medium).to.equal('email')
-            expect(views[0].campaign.term).to.equal('angular-workshops')
-            expect(views[0].campaign.content).to.equal('nov14-workshops-ty')
-            expect(views[0].campaign.name).to.equal('wks14-4')
+            expect(views[0].url).to.equal('/100k-writing-competition')
+            expect(views[0].type).to.equal('landing')
+            expect(views[0].utm).to.exist
+            expect(views[0].ref).to.equal(referer)
+            expect(views[0].utm.source).to.equal('team-email')
+            expect(views[0].utm.medium).to.equal('email')
+            expect(views[0].utm.term).to.equal('angular-workshops')
+            expect(views[0].utm.content).to.equal('nov14-workshops-ty')
+            expect(views[0].utm.campaign).to.equal('wks14-4')
             DONE()
 
   #   it 'Views from bots are not saved', (d) ->

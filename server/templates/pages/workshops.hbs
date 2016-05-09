@@ -1,0 +1,30 @@
+<br />
+
+<section id="workshops">
+
+  <section id="allworkshops">
+    <h3>2014 workshops</h3>
+    <div class="workshops">
+      {{#each r.lineup }}
+        <article itemprop="blogPost" itemtype="http://schema.org/BlogPosting" itemscope="itemscope">
+          <a rel="bookmark" target="_self" href="{{ url }}">
+
+            <header>
+              <time datetime="{{ isoMoment time }}">
+                {{!-- {{ dateFormat time 'dddd DD MMM, YYYY' }} --}}
+              </time>
+            </header>
+
+            <div>
+              <h2 class="entry-title">{{title}}</h2>
+              <h5 class="entry-author">{{ by.name }}</h5>
+              <img src="//0.gravatar.com/avatar/{{by.gravatar}}?s=90">
+            </div>
+          </a>
+          <footer class="entry-footer"></footer>
+        </article>
+      {{/each}}
+    </div>
+  </section>
+
+</section>

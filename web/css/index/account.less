@@ -1,0 +1,388 @@
+section#account {
+
+  h3 { margin:10px 0 30px 0 }
+  padding-top:20px;
+
+  section { padding:20px 0 10px 0 }
+  hr { clear:both;maring-top:40px }
+  label > span { font-weight:normal;font-size:12px;text-decoration:none }
+
+  section.email {
+    vertical-align:top;
+
+    span.verifyEmail { color:@error;font-size:11px;float:right;margin:3px }
+
+    form {
+      border-radius:5px;
+      width:100%;
+      hr { clear:both;border:none }
+    }
+    form.verify
+    {
+      padding:30px 20px 10px 20px;
+      background:@lightblue;
+
+      div.email-group {
+       	float:left;
+       	width:410px;
+        #sessionEmail {
+          width:100%;
+        }
+      }
+
+      div.verifyEmail {
+        float:left;
+        max-width:580px;
+        max-width:300px;
+        height:100px;
+        padding:26px 5px;
+      }
+      a.btn { width:340px }
+
+      .alert-success {
+        height:34px;
+        padding:0px 5px;
+        div {
+          font-weight:bold;
+          padding:10px;
+        }
+      }
+
+      @media only screen and (max-width: 640px) {
+         div.email-group { width:280px; }
+         div.verifyEmail{ padding:5px 0px; }
+         a.btn { width:240px }
+      }
+    }
+  }
+
+  section.avatar {
+    vertical-align:top;
+    width:50%;
+    display:inline-block;
+    img { border-radius:160px;margin:10px auto 0px auto;display:block }
+    p { text-align:center;margin-top:10px }
+   }
+
+  section.info {
+    vertical-align:top;
+    display:inline-block;
+    width:48%;
+  }
+
+  section.password {
+    .btn { width:48% }
+  }
+
+  section.connect {
+    margin-top:20px;
+  }
+}
+
+.localization {
+  padding-bottom:10px;
+  label.timezone {
+    display:block;
+    color:green;margin:-12px 0 0px 2px;font-size:12px;font-weight:normal;  }
+}
+
+
+section#password {
+  padding:40px 0;
+  h2 { font-size:32px }
+  .reset {
+    min-width:310px;
+    input { max-width:300px;margin:auto }
+  }
+
+  .option { margin-bottom:5px }
+
+  .alert-success { margin:0 auto 30px auto;max-width:600px }
+
+  @media only screen and (max-width:900px) {
+    h2 { font-size:22px; }
+    .reset {
+      input { max-width:240px; }
+    }
+
+    .btn { font-size:16px;width:90% }
+  }
+}
+
+
+
+
+section#auth {
+  padding-top:30px;
+  text-align:center;
+  width:100%;
+
+
+  .opt {
+    color:@darkgray;
+    &:hover {
+      color:@orange;
+      h2 { font-weight:400 }
+      .btn {
+        background-color:@orangehighlight;
+      }
+    }
+  }
+
+  .choice .option h2 {
+    color:@blackgray;
+    font-size:28px;
+    margin-left:40px;margin-right:40px;
+    text-align:center;
+    max-width:100%
+  }
+
+  .option {
+    width:46%;
+    height:320px;
+    margin:30px 8px;
+    background:white;
+  }
+
+  .btn {
+    width:80%;
+  }
+
+  .option {
+    form { margin-bottom:20px }
+    .form-group { text-align:center; }
+    input { width:80%;margin:auto }
+    margin:10px;
+    border:none;
+
+    .btn {
+      margin-top:18px;
+      height:44px;
+      line-height:44px;
+      font-size:18px;
+      padding:0px 0px 0px 32px;
+      background-repeat:no-repeat;
+      background-color:@orange;
+      background-size:44px 44px;
+      background-position:6px 1px;
+    }
+
+    .oauthInfo { font-size:12px;margin:20px 0 0 0 }
+  }
+
+
+  .github {
+    background:#f7f7f7;
+    .btn {
+      background-position:8px 2px;
+      background-image:url('@{static}/img/icons/gh-white.png');
+    }
+  }
+
+  .author {
+    background:#F2FAF9;
+    .btn {
+      background-position:12px 2px;
+      background-size:40px 40px;
+      background-image:url('@{static}/img/author/airpair-author-bw.png');
+    }
+  }
+
+  .consult {
+    background:#FCFBF5;
+    .btn {
+      background-position:7px 5px;
+      background-size:34px 34px;
+      background-image:url('@{static}/img/icons/ap-white.png');
+    }
+  }
+
+
+  .local {
+    form { margin-bottom:0 }
+    .alert-danger {
+      padding-bottom:10px;max-width:300px;margin:15px auto 0px auto
+    }
+
+    .password {
+      margin-top:10px
+    }
+
+    .new {
+      p { margin-bottom:0 }
+      padding-top:5px;
+    }
+
+  }
+
+  p.help-text { margin:20px 0 0 0 }
+
+  .reset {
+    .alert-success {
+      margin:20px auto;
+      padding:10px;
+      max-width:280px;
+    }
+  }
+
+
+  @media only screen and (max-width:900px) {
+    .choice .option h2 {
+      font-size:22px;
+      padding-bottom:4px;
+      margin-left:24px;margin-right:24px;
+    }
+
+    .option {
+      width:300px;
+      margin:10px auto;
+      min-height:280px;
+      p.oauthInfo { text-align:center;margin:20px auto 10px auto }
+
+      .btn { font-size:15px;background-image:none;padding:0 }
+    }
+
+  }
+
+  @media only screen and (max-width:420px) {
+    h1 { display:none }
+    h3 { font-weight:bold }
+    p { max-width:240px;margin:auto }
+
+    .choice { margin-left:-5px; }
+
+    text-align:center;
+    .option {
+      margin:10px auto 20px auto;
+      min-height:200px;
+      width:94%;
+      display:block;
+      padding:15px 5px;
+    }
+
+  }
+
+}
+
+
+section#dashboard {
+
+
+  section.main {
+    float:left;
+    width:640px;
+    h3 { .hUnderline }
+    .experts {
+      // .entry-meta { display:none }
+    }
+  }
+
+  section.side {
+    float:right;
+    width:220px;
+
+    .tags { padding-top:14px }
+
+    .rebookings {
+      ul { .ulNoStyle;padding:10px 25px;background:@gitgray }
+      li { display:block;width:180px;padding:10px 0;
+        img { display:inline-block;vertical-align:top;border:solid 2px @bluegray;border-radius:50% }
+        div { width:90px;margin-left:10px;display:inline-block;vertical-align:top; }
+        h4 { margin:0;padding:2px 0 0 0;font-size:15px;line-height:18px }
+        span { color:@gray;display:block;font-size:10px;margin-top:1px }
+        time { color:@gray;display:block;font-size:11px;margin-bottom:1px }
+        p { font-weight:bold;text-transform:uppercase;font-size:16px }
+        &:hover {
+          img { border-color:@orangehighlight }
+          h4 { color:@orangehighlight; }
+          p { color:@orangehighlight; }
+          span { color:@orange }
+          time { color:@orange }
+        }
+      }
+    }
+
+    .bookmarks {
+      ul { margin:0;padding:0 }
+      li { width:200px;overflow:hidden; }
+      h3 { .hUnderline }
+    }
+
+    .dash-posts {
+      h3 { .hUnderline }
+      article { margin:0;max-width:100%;
+        .entry-content { padding:5px 10px }
+      }
+    }
+  }
+
+  h3 {
+    a { float:right;font-size:14px;padding-top:4px }
+  }
+
+  @media only screen and (max-width:640px) {
+    section.main, section.side {
+      float:none;
+      width:280px;
+      margin:auto;
+    }
+  }
+}
+
+section#bookingslist {
+  ul { .ulNoStyle;
+    margin:25px 0 50px 0;
+    li {
+      > time { margin-bottom:2px;display:block }
+      width:152px;height:130px;
+      display:inline-block;margin-right:8px;
+      margin-bottom:30px;
+    }
+    h6 { margin:3px;float:right }
+    a {
+      .tile;
+      padding:5px;
+      display:block;
+      width:100%;
+      height:100%;
+      // border:solid 2px @lightblue;
+      img { display:block;border-radius:50% }
+      time { color:@mediumgray;margin-top:15px;display:block }
+      h5 { color:@darkgray;font-weight:bold;margin-top:5px }
+
+      &:hover { h5 { color:@orange } }
+    }
+  }
+}
+
+
+.topUpGate {
+  padding-top:20px;
+  > div {
+    h4 { color:@orange;font-weight:400;line-height:26px;text-transform:uppercase;max-width:120px;font-size:23px  }
+    > .msg { max-width:580px;color:#3f4549; }
+    > .survey {
+      position:relative;
+      float:right;
+      background:#F2FAF9;
+      max-width:220px;
+      padding:90px 12px 80px 12px;
+      p { margin-bottom:20px;color:@textgray;font-size:18px }
+      span { font-size:11px;text-align:right;padding:2px }
+      img { max-width:88%;position:absolute;top:16px;opacity:0.9  }
+    }
+    p { font-size:17px }
+    .btn { width:100% }
+    .banner-bottom { clear:both; }
+    .banner-bottom hr { margin:40px;clear:both; }
+  }
+  @media only screen and (max-width:640px) {
+    section.msg, section.survey {
+      float:none;
+      width:280px;
+      margin:auto;
+    }
+  }
+}
+
+

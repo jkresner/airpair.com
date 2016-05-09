@@ -218,11 +218,176 @@ dec_08_2015 =
 #   R: bookings:9,requests:4,paymethods:1,orders:19, fn:->
 # 1409.13  -- -- | -- -- -- -- -- | -- -- -- -- |  joshmh@gmail.com Joshua Harvey 54131b9c8f8c80299bcc4708
 # 1404.28  -- -- | -- -- -- -- -- | -- -- -- -- |  josh@lamassu.is  Josh Harvey 535d7a381c67d1a4859d2fc3
-Joshua_Harvey:
-  M: ['joshmh@gmail.com','josh@lamassu.is']
-  O: name: 'Joshua Harvey', auth: { gp: { email: 'joshmh@gmail.com' } }
-  R: fn:->
+# Joshua_Harvey:
+#   M: ['joshmh@gmail.com','josh@lamassu.is']
+#   O: name: 'Joshua Harvey', auth: { gp: { email: 'joshmh@gmail.com' } }
+#   R: fn:->
+# 1305.24  A1 -- | E: S6 -- -- -- | O1 -- R3 -- |  david@vydra.net  David Vydra 519e326c66a6f999a465f2e3:519e32955d732b0200000004
+# 1308.30  -- -- | -- -- -- -- -- | -- -- -- -- |  dvydra@bigvisible.com  David Vydra 521fb99f66a6f999a465f725
+# David_Vydra:
+#   M: ['david@vydra.net','dvydra@bigvisible.com']
+#   O: auth: { gp: { email: 'david@vydra.net' } }
+#   R: posts:1,suggests:6,requests:3,orders:1, fn:->
+# 1512.12  -- -- | -- -- -- -- -- | -- -- R1 -- |  rcraft323@gmail.com  Rachel  566b3f08e2fba511002205b9
+# 1512.12  -- -- | -- -- -- -- -- | -- -- R1 -- |  rachel.craft@accenture.com Rachel  566b3d9de2fba5110022057e
+# Rachel_Craft:
+#   M: ['rcraft323@gmail.com','rachel.craft@accenture.com']
+#   O: { name: 'Rachel Craft' }
+#   R: requests:2, fn:->
+# 1408.01  A1 -- | E: S5 B2 O1 -- | -- -- -- -- |  danielricecodes@gmail.com  Daniel Rice 53da92ff8f8c80299bcc3cf0:53da9e1349679b0200579302
+# 1410.14  -- -- | -- -- -- -- -- | -- -- -- -- |  daniel.rice@ldstudios.co Daniel Rice 543c6b658f8c80299bcc4b8d
+# 1508.08  -- -- | -- -- -- -- -- | -- -- R2 -- |  daniel.l.rice@gmail.com  Daniel Rice 55c5d8148a5b961100719277
+# Daniel_Rice:
+#   M: ['danielricecodes@gmail.com','daniel.rice@ldstudios.co']
+#   O: auth: { gp: { email: 'danielricecodes@gmail.com' } }
+#   R: posts:1,suggests:5,booked:2,ordered:1, fn:->
+# Daniel_Rice:
+#   M: ['danielricecodes@gmail.com','daniel.l.rice@gmail.com']
+#   O: auth: { gp: { email: 'danielricecodes@gmail.com' } }
+#   R: posts:1,suggests:5,booked:2,requests:2,ordered:1, fn:->
+# 1411.08  -- -- | -- -- -- -- -- | -- -- -- -- |  gian.schenker@gmail.com  Hans Schenker 545de5158f8c80299bcc4f3d
+# 1412.04  -- -- | -- -- -- -- -- | -- -- -- -- |  hans.schenker@windowslive.com  Hans Schenker 548006948f8c80299bcc5354
+# Hans_Schenker:
+#   M: ['gian.schenker@gmail.com','hans.schenker@windowslive.com']
+#   O: {}
+#   R:  fn:->
+# Benjamin_Stalder:
+#   M: ['benjaminstalder@gmx.ch','benjamin.stalder@gmail.com',]
+#   O: name: 'Benjamin Stalder'
+#   R: {}, fn:->
+# 1411.09  -- -- | -- -- -- -- -- | -- -- R1 -- |  illucentinfo@gmail.com Andrew Starodubtsev 545ea4668f8c80299bcc4f4d
+# 1512.23  -- -- | -- -- -- -- -- | -- -- -- -- |  soho@illucent.info Andrew Starodubtsev 56795c524c59f81100204561
+# Andrew_Starodubtsev:
+#   M: ['illucentinfo@gmail.com','soho@illucent.info']
+#   O: username: 'illucent'
+#   R: requests:1, fn:->
+# 1402.20  -- -- | E: S3 -- -- -- | -- -- R1 -- |  arnold.almeida@gmail.com Arnold Almeida  53057a991c67d1a4859d23fe:53057b93e078d20200000033
+# 1403.27  -- -- | -- -- -- -- -- | -- -- -- -- |  arnold@floatingpoints.com.au Arnold Almeida  533402391c67d1a4859d2a25
+# Arnold_Almeida:
+#   M: ['arnold.almeida@gmail.com','arnold@floatingpoints.com.au']
+#   O: auth: { gp: { email: 'arnold.almeida@gmail.com' } }
+#   R: suggests:3,requests:1, fn:->
+# 1308.14  -- -- | E: S4 -- -- -- | -- -- -- -- |  bipinshashi@gmail.com  Bipen Sasi  520a7d1166a6f999a465f5b7:520a7d5f6a428f0200000007
+# 1306.24  -- -- | -- -- -- -- -- | -- -- -- -- |  bipen@partcle.com  Bipen Sasi  51c7e88366a6f999a465f3f0
+# Bipen_Sasi:
+#   M: ['bipinshashi@gmail.com','bipen@partcle.com']
+#   O: auth: { gp: { email: 'bipinshashi@gmail.com' } }
+#   R: suggests:4, fn:->
 
+# -- Turns out this case fails as only the first line is updated and the account we didn't want to keep id came first
+# 1409.23  -- P1 | -- -- -- -- -- | O17 B14 R2 r1 |  vikram@freado.com  Vikram Narayan  5421793a8f8c80299bcc4852
+# 1404.17  -- -- | -- -- -- -- -- | -- -- -- -- |  vikram.ascendus@gmail.com  Vikram Narayan  534fa51b1c67d1a4859d2dbf
+# Vikram_Narayan:
+#   M: ['vikram@freado.com','vikram.ascendus@gmail.com']
+#   O: auth: { gp: { email: 'vikram@freado.com' } }
+#   R: bookings:14,requests:2,paymethods:1,orders:17,released:1, fn:->
+# Just need to fix this scenario by hand unfortunately
+# [{
+#   "_id":"55ae9c8eb2320c1100bc3fbd",
+#   "lines":[
+#     {"info":{"released":{"by":{"name":"Jonathon Kresner","_id":"5175efbfa3802cc4d5a5e6ed"},"utc":"2015-06-24T20:39:53.311Z","action":"release"}}},
+#     {"info":{"released":{"by":{"name":"Jonathon Kresner","_id":"5175efbfa3802cc4d5a5e6ed"},"utc":"2015-07-01T16:39:44.326Z","action":"release"}}},
+#     {"info":{"released":{"by":{"name":"Vikram Narayan","_id":"534fa51b1c67d1a4859d2dbf"},"utc":"2015-07-15T14:21:58.537Z","action":"release"}}},
+#     {"info":{"released":{"by":{"name":"Vikram Narayan","_id":"5421793a8f8c80299bcc4852"},"utc":"2015-07-21T14:40:32.160Z","action":"release"}}}]
+#  },
+#  {
+#     "_id":"55b285b089693d1100983ea9",
+#     "lines":[
+#       {"info":{"released":{"by":{"name":"Jonathon Kresner","_id":"5175efbfa3802cc4d5a5e6ed"},"utc":"2015-07-21T19:47:39.729Z","action":"release"}}},
+#       {"info":{"released":{"by":{"name":"Vikram Narayan","_id":"534fa51b1c67d1a4859d2dbf"},"utc":"2015-07-22T14:40:49.296Z","action":"release"}}}]
+#   },
+#   {
+#     "_id":"55c251ca3f30f0110059b685",
+#     "lines":[{"info":{"released":{"by":{"name":"Vikram Narayan","_id":"534fa51b1c67d1a4859d2dbf"},"utc":"2015-08-05T16:02:32.111Z","action":"release"}}},
+#     {"info":{"released":{"by":{"name":"Vikram Narayan","_id":"5421793a8f8c80299bcc4852"},"utc":"2015-08-05T16:02:18.137Z","action":"release"}}}
+#   ]}]
+# 1412.11  -- P1 | -- -- -- -- -- | -- -- R1 -- |  josh@coderly.com Josh Smith  5488dead8f8c80299bcc548f
+# 1405.06  -- P1 | -- -- -- -- -- | O7 B7 R4 -- |  joshdotsmith@gmail.com Josh Smith  5367f9dc1c67d1a4859d30e6
+# Josh_Smith:
+#   M: ['josh@coderly.com','joshdotsmith@gmail.com']
+#   O: auth: { gp: { email: 'josh@coderly.com' } }
+#   R: bookings:7,requests:5,paymethods:2,orders:7, fn:->
+
+# 1503.23  -- -- | -- -- -- -- -- | -- -- -- -- |  cklanac@gmail.com  Chris Klanac  550edce17d6ec20c0042d41f
+# 1408.23  -- -- | -- -- -- -- -- | -- -- -- -- |  cklanac@chicagoworks.com Chris Klanac (ChicagoWorks) 53f89ba78f8c80299bcc43e5
+# Chris_Klanac:
+#   M: ['cklanac@gmail.com','cklanac@chicagoworks.com']
+#   O: name: 'Chris Klanac', auth: { gp: { email: 'cklanac@gmail.com' } }
+#   R:  fn:->
+# 1411.19  -- -- | -- -- -- -- -- | -- -- -- -- |  jeff@jeffandshauna.net Jeff McCoy  546bde958f8c80299bcc5106
+# 1501.21  -- -- | -- -- -- -- -- | -- -- R1 -- |  me@jeffm.us  Jeff McCoy  54be8497acea3609006443d3
+# Jeff_McCoy:
+#   M: ['me@jeffm.us','jeff@jeffandshauna.net']
+#   O: {}
+#   R: requests:1, fn: ->
+# 1601.05  -- -- | -- -- -- -- -- | O1 -- R1 -- |  inform@forbiddencolors.com Kirk Bradley Peterkin 568ba4708ee8bf1100e7dcd1
+# 1405.16  -- P1 | -- -- -- -- -- | O6 B5 R1 -- |  forbiddenkirk@gmail.com  Kirk Peterkin 5374e0681c67d1a4859d3219
+# Kirk_Bradley_Peterkin:
+#   M: ['forbiddenkirk@gmail.com','inform@forbiddencolors.com']
+#   O: name: 'Kirk Bradley Peterkin'
+#   R: bookings:5,requests:2,paymethods:1,orders:7, fn:->
+# 1309.09  -- -- | E: S3 -- -- -- | -- -- -- -- |  matthias.berth@gmail.com Matthias Berth  522c907166a6f999a465f7a5:522c90d7d574040200000031
+# 1504.30  -- P1 | E: S10 B8 O8 P6 | -- -- -- -- |  matthias@matthiasberth.com  Matthias Berth  5541e8105daca31100cfc794:5549dd2d102a521100065004
+# Matthias_Berth:
+#   M: ['matthias@matthiasberth.com','matthias.berth@gmail.com']
+#   O: auth: { gp: { email: 'matthias@matthiasberth.com' } }
+#   R: suggests:10,booked:8,paymethods:1,ordered:8,paidout:6, fn:->
+# 1411.05  A2 -- | E: S2 -- -- -- | -- -- -- -- |  eric@furrybytes.com  Eric Goebelbecker 54594bd48f8c80299bcc4ea0:54f8d3a32da06c0c00c6b24c
+# 1408.01  -- -- | -- -- -- -- -- | O1 -- -- -- |  egoebelbecker@gmail.com  Eric Goebelbecker 53da949d8f8c80299bcc3cf3
+# Eric_Goebelbecker:
+#   M: ['eric@furrybytes.com','egoebelbecker@gmail.com']
+#   O: {}
+#   R: posts:2,suggests:2,orders:1, fn:->
+# 1404.16  A1 -- | E: S36 B10 O10 -- | -- -- -- -- |  tobias.talltorp@gmail.com Tobias Talltorp 534e4cf61c67d1a4859d2d89:534e4d53c38f940200000047
+# 1601.12  -- -- | -- -- -- -- -- | -- -- -- -- |  tobias@talltorp.se Tobias Talltorp 5694c6b93dcfc411004faa96
+# 1406.12  -- P1 | E: -- -- -- -- | O6 B5 R8 -- |  mikeumus@gmail.com Michael Mooring 53992c2e1c67d1a4859d3485:5399522bc314d602005bf7f4
+# 1406.17  -- -- | -- -- -- -- -- | -- -- -- -- |  mike@betabulls.com Michael Duane Mooring 539fcec51c67d1a4859d3522
+# Michael_Mooring:
+#   M: ['mikeumus@gmail.com','mike@betabulls.com']
+#   O: name: 'Michael Mooring', auth: { gp: { email: 'mikeumus@gmail.com' } }
+#   R: bookings:5,requests:8,paymethods:1,orders:6, fn:->
+# 1504.01  -- -- | -- -- -- -- -- | -- -- -- -- |  mohan.kethees@gmail.com  Mohan Kethees 551b486610cb481100e322af
+# 1504.03  A2 -- | E: S3 -- -- -- | -- -- -- -- |  vanthiyathevan17@gmail.com Suntharesan Mohan 551d49993aed9e1100ff4238:551d4f6f3aed9e1100ff4404
+# Mohan_Kethees:
+#   M: ['mohan.kethees@gmail.com','vanthiyathevan17@gmail.com']
+#   O: name: 'Mohan Kethees', initials: 'MK', username: 'vanthiyathevan', auth: { gp: { email: 'mohan.kethees@gmail.com' } }
+#   R: posts:2,suggests:3, fn:->
+# 1601.20  -- P1 | -- -- -- -- -- | O1 -- R1 -- |  sim@fastignite.com Simeon Simeonov 569fb7bda32a211100ee91c0
+# 1409.17  -- P1 | -- -- -- -- -- | -- -- R2 -- |  sim@shopximity.com Simeon Simeonov 541a40c18f8c80299bcc47b8
+# Simeon_Simeonov:
+#   M: ['sim@fastignite.com','sim@shopximity.com']
+#   O: username: 'ssimeonov'
+#   R: requests:3,paymethods:2,orders:1, fn:->
+# 1402.14  -- -- | -- -- -- -- -- | -- -- R2 -- |  vendiddy@gmail.com Venkat Dinavahi 52fced131c67d1a4859d22f6
+# 1404.21  -- P1 | -- -- -- -- -- | O7 B8 R6 r1 |  venkat@coderly.com Venkat Dinavahi 53543d7c1c67d1a4859d2e2f
+# Venkat_Dinavahi:
+#   M: ['vendiddy@gmail.com','venkat@coderly.com']
+#   O: auth: { gp: { email: 'vendiddy@gmail.com' } }
+#   R: bookings:8,requests:8,paymethods:1,orders:7,released:1, fn:->
+# 1402.17  -- -- | -- -- -- -- -- | -- -- R1 -- |  dowdjj@gmail.com  John Dowd 5300c37a1c67d1a4859d233d
+# 1312.02  -- -- | E: S4 B1 O1 -- | O1 B4 R1 -- |  john@sofwarellc.com  John dowd 529bba4a66a6f999a465fcd7:5445c7ce9916ed02004a2ceb
+# John_Dowd:
+#   M: ['dowdjj@gmail.com','john@sofwarellc.com']
+#   O: name: 'John Dowd', auth: { gp: { email: 'john@sofwarellc.com' } }
+#   R: suggests:4,booked:1,bookings:4,requests:2,ordered:1,orders:1, fn:->
+# 1312.30  -- -- | -- -- -- -- -- | -- -- R1 -- |  ionel.mc@gmail.com Ionel Cristian Mărieș 52c239de66a6f999a465fea7
+# 1501.09  -- -- | -- -- -- -- -- | -- -- -- -- |  contact@ionelmc.ro Ionel Cristian Mărieș 54b001127b1047516695d40a
+  # Ionel_Cristian_Mărieș:
+  #   M: ['ionel.mc@gmail.com','contact@ionelmc.ro']
+  #   O: {}
+  #   R: requests:1, fn:->
+# 1412.13  -- -- | -- -- -- -- -- | -- -- R1 -- |  tpaktopsp@gmail.com  Maxim Filimonov 548d06e88f8c80299bcc5547
+# 1502.01  -- P1 | -- -- -- -- -- | O1 B1 R2 -- |  maxim@play2lead.com.au Maxim Filimonov 54cebe9c83e5610900a5f5f7
+# Maxim_Filimonov:
+#   M: ['tpaktopsp@gmail.com','maxim@play2lead.com.au']
+#   O: auth: { gp: { email: 'tpaktopsp@gmail.com' } }
+#   R: bookings:1,requests:3,paymethods:1,orders:1, fn:->
+# 1504.14  -- -- | -- -- -- -- -- | -- -- -- -- |  simon@projectearth.co.za Simon Scheepers 552dd86d7c47651100175b1d
+# 1508.26  -- -- | -- -- -- -- -- | -- -- -- -- |  simon@gunslinger.com.au  Simon Scheepers 55de49d0a1d69b1100770662
+Simon_Scheepers:
+  M: ['simon@projectearth.co.za','simon@gunslinger.com.au']
+  O: {}
+  R: {}, fn:->
 
 
 module.exports = dec_08_2015

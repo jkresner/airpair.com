@@ -1,0 +1,98 @@
+<section id="auth" ng-controller="LoginCtrl as LoginCtrl">
+
+  <p ng-if="session._id"><br /><br />You are logged in as {{ session.name }}. <br /><br />Want to <a href="/logout" target="_self">Logout</a>?</p>
+
+
+<div class="choice" ng-if="!session._id">
+
+  <a class="opt" ng-href="{{'/auth/github/callback' + (returnTo ? '?returnTo='+returnTo : '') }}" target="_self">
+  <div class="github option">
+
+    <h2>airpair.com</h2>
+
+    <ul>
+      <li>Hire software expertise by the hour</li>
+    </ul>
+
+    <div class="btn">Login with GitHub</div>
+
+    <p class="oauthInfo">* Email scope required</p>
+  </div>
+  </a>
+
+
+
+  <a class="opt" href="https://author.airpair.com/" target="_self">
+  <div class="github author option">
+
+    <h2>author.airpair.com</h2>
+
+    <ul>
+      <li>Author & publish blog posts</li>
+    </ul>
+
+    <div class="btn">Start contributing</div>
+
+    <p class="oauthInfo">* create an airpair.com account first</p>
+
+  </div>
+  </a>
+
+
+  <a class="opt" href="https://consult.airpair.com/" target="_self">
+  <div class="consult option">
+
+    <h2>consult.airpair.com</h2>
+
+    <ul>
+      <li>Explore micro-consulting opportunities</li>
+    </ul>
+
+    <div class="btn">Get micro-consulting</div>
+
+    <p class="oauthInfo">* create an airpair.com account first</p>
+
+  </div>
+  </a>
+
+<!--
+<div class="local option">
+
+  <h2>Password login</h2>
+
+  <form novalidate name="loginForm" ng-submit="LoginCtrl.submit(loginForm.$valid, data)">
+    <div form-group>
+      <label class="control-label sr-only" for="loginEmail">Email</label>
+      <input id="loginEmail" form-control type="email" placeholder="Email" name="email" ng-model="data.email" required>
+      <div class="error" ng-if="formGroup.showError(loginForm.email)" ng-messages="loginForm.email.$error">
+        <div ng-message="required">Field required</div>
+        <div ng-message="email">Invalid email</div>
+      </div>
+    </div>
+    <div form-group>
+      <label class="control-label sr-only" for="loginPassword">Password</label>
+      <input id="loginPassword" form-control type="password" placeholder="Password" name="password" ng-model="data.password" required>
+      <div class="error" ng-if="formGroup.showError(loginForm.password)" ng-messages="loginForm.password.$error">
+        <div ng-message="required">Password required</div>
+      </div>
+    </div>
+
+    <button id="loginPassowrdAuth" track-click="auth" type="submit" class="btn btn-warning btn-lg">Login</button>
+
+    <div class="alert alert-danger" ng-if="loginFail">
+      <b>Login failed:</b> <span ng-if="loginFail">{{loginFail}}</span>.
+      <b><a href="#" ng-click="openProfile()">Create an account?</a></b></p>
+    </div>
+
+    <section class="password">
+      <a href="/password-reset">Forgotten password?</a>
+    </section>
+
+  </form>
+
+</div> -->
+
+
+</div>
+
+</section>

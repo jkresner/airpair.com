@@ -27,7 +27,7 @@ var initAPIWrap = (wrapperName, wrapperFile) => {
 module.exports = {
   Timezone:       initAPIWrap('Timezone', 'gtimezone'),
   Calendar:       initAPIWrap('Calendar', 'gcal'),
-  GitHub:         initAPIWrap('GitHub'),
+  GitPublisher:   initAPIWrap('GitPublisher'),
   Stripe:         initAPIWrap('Stripe'),
   Braintree:      initAPIWrap('Braintree'),
   YouTube:        initAPIWrap('YouTube'),

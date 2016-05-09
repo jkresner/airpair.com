@@ -6,9 +6,8 @@ var RequestsSvc               = require('./requests')
 var Data                      = require('./orders.data')
 var {select,opts,query}       = Data
 var OrderUtil                 = require('../../shared/orders.js')
-var DateTime                  = util.datetime
+var DateTime                  = require('../../shared/util').datetime
 var {base}                    = Data
-var {ObjectId}                = require('mongoose').Types
 
 
 OrderUtil.calculateUnitPrice = (expert, type) => expert.rate + base[type]
@@ -54,8 +53,8 @@ var get = {
 
   getMyDealOrdersForExpert(expertId, cb)
   {
-    var q = query.dealsForExpertWithMinutesRemaining(this.user._id, expertId)
-    Order.getManyByQuery(q, opts.orderByOldest, cb)
+    // var q = query.dealsForExpertWithMinutesRemaining(this.user._id, expertId)
+    // Order.getManyByQuery(q, opts.orderByOldest, cb)
   },
 
   getByQueryForAdmin(start, end, userId, cb)
@@ -106,10 +105,10 @@ var Lines = {
   deal(expert, deal, expires, source)
   {
     var total = parseInt(deal.price)
-    var exp = { _id: ObjectId(expert._id), name: expert.name, avatar: expert.avatar, userId: ObjectId(expert.userId) }
+    var exp = { _id: DAL.User.toId(expert._id), name: expert.name, avatar: expert.avatar, userId: DAL.User.toId(expert.userId) }
     var info = { name: `${deal.minutes} Minutes`, source, remaining: deal.minutes, expires, redeemedLines: [],
                  deal: _.pick(deal,'rake','type','minutes','price','target','_id'), expert: exp }
-    info.deal._id = ObjectId(info.deal._id)
+    info.deal._id = DAL.Order.toId(info.deal._id)
     // var profit = (deal.rake/100)*total
     // var qty = (parseInt(deal.minutes)/60).toFixed(1)
     // var unitPrice = (total/qty).toFixed(2)
@@ -153,11 +152,11 @@ var Lines = {
 //-- Use the lines items, paymethod and who the orders is for
 function makeOrder(byUser, lines, payMethodId, forUserId, requestId, dealId, errorCB, cb)
 {
-  var byUserId = ObjectId(byUser._id.toString())
-  forUserId = (forUserId) ? ObjectId(forUserId.toString()) : byUserId
+  var byUserId = DAL.User.toId(byUser._id)
+  forUserId = (forUserId) ? DAL.User.toId(forUserId) : byUserId
 
   var o = {
-    _id: new ObjectId(),
+    _id: DAL.Order.newId(),
     utc: new Date(),
     userId: forUserId, // May be different from the identity (which could be an admin)
     total: 0,
@@ -212,16 +211,16 @@ function makeOrder(byUser, lines, payMethodId, forUserId, requestId, dealId, err
 
 function chargeAndTrackOrder(o, errorCB, saveCB)
 {
-  analytics.event('order', o.by, {_id:o._id,total:o.total})
+  // analytics.event.call({user:o.by},'order', {_id:o._id,total:o.total})
   if (o.total == 0) saveCB(null, o)
   else
   {
     if (logging) $log('orders.svc.charge', o)
     PaymethodsSvc.charge(o.total, o._id, o.payMethod, (e,r) => {
-      if (e) {
-        $log('e', e)
+      if (e)
+        // $log('e', e)
         return errorCB(e)
-      }
+
       if (logging) $log('payment.created', r)
       trackOrderPayment.call(this, o)
 
@@ -247,7 +246,7 @@ function chargeAndTrackOrder(o, errorCB, saveCB)
 function trackOrderPayment(order) {
   var d = {byName:order.by.name,total:order.total, _id:order._id}
   mailman.sendTemplate('pipeliner-notify-purchase', d, 'pipeliners')
-  analytics.event('payment', order.by, {orderId:order._id, total:order.total})
+  // analytics.event.call({user:order.by},'payment', {orderId:order._id, total:order.total})
 }
 
 
@@ -342,7 +341,7 @@ function bookUsingCredit(expert, minutes, total, lineItems, expectedCredit, payM
     makeOrder(this.user, lineItems, payMethodId, null, requestId, null, cb, (e, order) => {
 
       chargeAndTrackOrder(order, cb, (e,o) => {
-        if (request) $callSvc(RequestsSvc.updateWithBookingByCustomer,this)(request, o, (e,r) => {})
+        if (request) RequestsSvc.updateWithBookingByCustomer.call(this, request, o, (e,r) => {})
         // console.log('inserting cred redeemed order', order.total, order._id, order.userId)
         Order.bulkOperation([o], ordersToUpdate, [], (e,r) => cb(e,o))
       })
@@ -365,7 +364,7 @@ function _createBookingOrder(expert, time, minutes, type, credit, payMethodId, r
     lines.unshift(Lines.payg(total))
     makeOrder(this.user, lines, payMethodId, null, requestId, null, cb, (e, order) => {
       chargeAndTrackOrder(order, cb, (e,o) => {
-        if (request) $callSvc(RequestsSvc.updateWithBookingByCustomer,this)(request, o, (e,r) => {})
+        if (request) RequestsSvc.updateWithBookingByCustomer.call(this, request, o, (e,r) => {})
         Order.create(o, cb)
       })
     })
