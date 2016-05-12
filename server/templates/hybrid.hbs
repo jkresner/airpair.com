@@ -21,7 +21,7 @@
   }
 
   window.viewData = {
-    session: {{{ JSON session }}}, {{#if r.htmlHead }}
+    session: {{{ JSONSESSION session }}}, {{#if r.htmlHead }}
     canonical: '{{{ r.htmlHead.canonical }}}', {{/if}}{{#if r.tag}}
     tag: {{{ JSON r.tag }}}, {{/if}}{{#if r.htmlHead.ogTypePost }}
     post: {{{ JSONPOST r }}}, {{/if}}

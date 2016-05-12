@@ -5,12 +5,12 @@ var utilFns = {
   //   return /^[a-z0-9]+([a-z0-9\-\.]+)*$/.test(slug)
   // },
 
-  // wordcount(md) {
-  //   var s = md.replace(/(^\s*)|(\s*$)/gi,"");
-  //   s = s.replace(/[ ]{2,}/gi," ");
-  //   s = s.replace(/\n /,"\n");
-  //   return s.split(' ').length;
-  // },
+  wordcount(md) {
+    var s = md.replace(/(^\s*)|(\s*$)/gi,"");
+    s = s.replace(/[ ]{2,}/gi," ");
+    s = s.replace(/\n /,"\n");
+    return s.split(' ').length;
+  },
 
   wordsTogoForReview(wordcount) {
     var remainder = wordcount%50;

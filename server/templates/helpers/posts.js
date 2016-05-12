@@ -1,6 +1,11 @@
 module.exports = {
 
 
+  JSONSESSION(o) {
+    return JSON.stringify(_.pick(o,'authenticated','id','_id','name','email','avatar'))
+      //,'roles'))
+  },
+
   JSONPOST(o) {
     return JSON.stringify(_.pick(o,'_id'))
   },

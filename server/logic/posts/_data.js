@@ -7,7 +7,7 @@ var views = {
 }
 
 
-var post                = require('../../../shared/posts')
+var postUtil                = require('../../../shared/posts')
 var generateToc         = require('../../services/postsToc')
 
 
@@ -49,7 +49,7 @@ module.exports = new LogicDataHelper(
 
       if (submitted) {
         d.submitted = submitted
-        d.stats = d.stats || posts.calcStats(d)
+        d.stats = d.stats || postUtil.calcStats(d)
         d.publishReady = (d.stats.reviews > 2) && (d.stats.rating > 3.5)
       }
 
@@ -126,8 +126,8 @@ module.exports = new LogicDataHelper(
 
     bodyHtml: d => {
       // $log('bodyHtml'.yellow, d.tags, cache.tags.length)
-      var supped = post.extractSupReferences(d.md)
-      d.references = post.markupReferences(supped.references, marked)
+      var supped = postUtil.extractSupReferences(d.md)
+      d.references = postUtil.markupReferences(supped.references, marked)
 
       return assign(d, {html:marked(supped.markdown)})
       // $log('inflateHtml'.yellow, d.tags)
