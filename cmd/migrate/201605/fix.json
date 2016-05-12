@@ -1,0 +1,51 @@
+{
+  "specs":                "fixdata",
+  "mongo": {
+    "collections":        ["posts",
+       "posts_150818",
+       "posts_150929",
+       "posts_151012",
+       "posts_151013",
+       "posts_151014",
+       "posts_151017",
+       "posts_151019",
+       "posts_151027",
+       "posts_151103",
+       "posts_151114",
+       "posts_151119",
+       "posts_151122",
+       "posts_151203",
+       "posts_151205",
+       "posts_151206",
+       "posts_151214",
+       "posts_151227",
+       "posts_151231",
+       "posts_160104",
+       "posts_160110",
+       "posts_160115",
+       "posts_160119",
+       "posts_160123",
+       "posts_160125",
+       "posts_160128",
+       "posts_160201",
+       "posts_160209",
+       "posts_160220",
+       "posts_160302",
+       "posts_160325",
+       "posts_160410",
+       "posts_160427"
+    ],
+    "url":                "mongodb://localhost/posts-historical",
+    "pluralize":          false,
+    "seed": {
+      "without":          "FIXTURE.posts.a",
+      "timeout":          30000
+    }
+  },
+  "paths": {
+    "bson":               "./bson",
+    "fixtures":           "./fixtures"
+  }
+}
+
+

@@ -88,16 +88,8 @@ var utilFns = {
 
   extendWithReviewsSummary(post) {
     post.stars = { total: 0 }
-    post.reviews= _.map(post.reviews, (r) => {
-      r.rating = _.find(r.questions,(q)=>q.key == 'rating').answer
-      r.feedback = _.find(r.questions,(q)=>q.key == 'feedback').answer
-      post.stars.total += parseInt(r.rating)
-      return r
-    })
-    if (post.stars.total > 0) {
-      post.stars.avg = post.stars.total/post.reviews.length
-    }
-
+    post.reviews.forEach(r => post.stars.total += parseInt(r.val))
+    post.stars.avg = post.stars.total/post.reviews.length
     return post
   },
 

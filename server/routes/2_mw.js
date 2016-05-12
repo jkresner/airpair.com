@@ -33,6 +33,9 @@ module.exports = function(app, mw, {redirects}) {
     map2.set("airconf-promo",'/workshops')
     map2.set("^/images/landing/airconf",'/workshops')
 
+    for (var slug of 'angularjs aws firebase python node.js android selenium reactjs ruby-on-rails mean-stack'.split(' '))
+      map2.set("^/${slug}/posts",'/posts/tag/{slug}')
+
     map2.forEach((value,key)=>app.get(key,(req,res,next)=>{
       res.redirect(301, value)
     }))

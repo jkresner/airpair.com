@@ -6,23 +6,30 @@ module.exports = ({ Id, Enum, Touch, Reftag, Note, Htmlhead, Meta },
 
 
 var Author = {
-  userId:       { type: Id, ref: 'User', required, index },
-  expertId:     { type: Id, ref: 'Expert' },
-  name:         { type: String, required },
-  avatar:       { type: String, required },
+  // userId:       { type: Id, ref: 'User', required, index },
+  // expertId:     { type: Id, ref: 'Expert' },
+  // name:         { type: String, required },
+  // avatar:       { type: String, required },
 
-  //-- legacy to replace
-  bio:          { type: String },
-  username:     { type: String, lowercase },
-  social:       {
-      gh: {     username: { type: String } },
-      so: {     link: { type: String } },
-      bb: {     username: { type: String } },
-      in: {     id: { type: String } },
-      tw: {     username: { type: String } },
-      al: {     username: { type: String } },
-      gp: {     link: { type: String } }
-  }
+  // //-- legacy to replace
+  // bio:          { type: String },
+  // username:     { type: String, lowercase },
+  // social:       {
+  //     gh: {     username: { type: String } },
+  //     so: {     link: { type: String } },
+  //     bb: {     username: { type: String } },
+  //     in: {     id: { type: String } },
+  //     tw: {     username: { type: String } },
+  //     al: {     username: { type: String } },
+  //     gp: {     link: { type: String } }
+  // }
+  //
+  // new
+  // _id
+  // bio
+  //avatar
+  //email
+  //links
 }
 
 var StatsSummary = {
@@ -34,73 +41,55 @@ var StatsSummary = {
   closedPRs:        { type: Number },
   openPRs:          { type: Number },
   shares:           { type: Number },
-  words:            { type: Number },
+  words:            { type: Number }
 }
 
 
 var Forker = asSchema({
   userId:       { type: Id, ref: 'User', required, index },
-  name:         { type: String, trim },
-  email:        { type: String, trim, lowercase },
-  social:       {
-    gh:         { username: { type: String } }
-  }
+  // name:         { type: String, trim },
+  // email:        { type: String, trim, lowercase },
+  // social:       {
+    // gh:         { username: { type: String } }
+  // }
 })
 
 
-var PublishEvent = asSchema({
-  touch:        Touch,
-  commit:       { type: {} }, // sha hash
-})
+// var PublishEvent = asSchema({
+//   touch:        Touch,
+//   commit:       { type: {} }, // sha hash
+// })
 
 
 return asSchema({
 
   //-- un-nest userId
-  by:               Author,
-
-  // detail: {
+  by:              Author,
+  // info: {
     title:            { type: String, required, trim },
     slug:             { type: String, unique, sparse, lowercase, trim },
     tags:             [Reftag],
     //-- rename to tileUrl ?
     assetUrl:         { type: String, trim },
-    //-- renamed from meta to htmlHeader ?
-    htmlHead:         Htmlhead, //-- todo, rename field
+    htmlHead:         Htmlhead,
   // }
 
-  // content
-  md:               { type: String, required },
-  tmpl:             { type: String, enum: Enum.POST.TEMPLATE },
+  reviews:         [Survey],
+  forkers:         [Forker],
+  subscribed:      [asSchema({
+    userId:        { type: Id, ref: 'User', required, index },
+    mail:          { type: String, required }
+        // "off" for no emails, "primary" for user.email or an address
+  })],
 
-  //-- new
-  meta:             Meta,
+  stats:            StatsSummary,
 
-  // history: {
-    created:          { type: Date, required, 'default': Date },
-    //-- consider removing 'updated' as supersceded by lastTouch
-    updated:          { type: Date, required, 'default': Date },
-    //
-    editHistory:      [Touch],
-    submitted:        { type: Date },
-    published:        { type: Date }, // first time
-    publishedBy: {
-      _id:            { type: Id, ref: 'User' },
-      name:           { type: String },
-    },
-    publishedCommit:  { type: {} }, // sha hash or whole commit object
-    publishedUpdated: { type: Date }, // lasttime timestamp of update
-    publishHistory:   [PublishEvent],
+  // content: {
+    md:               { type: String, required },
+    tmpl:             { type: String, enum: Enum.POST.TEMPLATE },
+  // }
 
-    // legacy
-    lastTouch:        {},
-  // },
-
-
-  reviews:          [Survey],
-  forkers:          [Forker],
-
-  // TO review in 0.6.3
+  // TO review in 0.6.5
   github: {
     repoInfo: {
       authorTeamId:   { type: String },
@@ -113,7 +102,26 @@ return asSchema({
     stats:            [] //Object?
   },
 
-  stats:            StatsSummary
+  //-- new
+  meta:             Meta,
+  history:          {},
+    // created:          { type: Date, required, 'default': Date },
+    //-- consider removing 'updated' as supersceded by lastTouch
+    // updated:          { type: Date, required, 'default': Date },
+    //
+    // editHistory:      [Touch],
+    // submitted:        { type: Date },
+    // published:        { type: Date }, // first time
+    // publishedBy: {
+      // _id:            { type: Id, ref: 'User' },
+      // name:           { type: String },
+    // },
+    // publishedCommit:  { type: {} }, // sha hash or whole commit object
+    // publishedUpdated: { type: Date }, // lasttime timestamp of update
+    // publishHistory:   [PublishEvent],
+    // legacy
+    // lastTouch:        {},
+  // },
 
 })
 

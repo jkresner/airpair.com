@@ -10,12 +10,12 @@ module.exports = function(app, mw) {
            '/v1/api/requests/*'], [mw.$.cachedSlackUsers])
 
 
-  app.honey.Router('posts:api', { mount: '/v1/api/posts', type: 'api' })
-    .param('post', API.Posts.paramFns.getById)
+  // app.honey.Router('posts:api', { mount: '/v1/api/posts', type: 'api' })
+    // .param('post', API.Posts.paramFns.getById)
     // .param('postreview', API.Posts.reviewParamFn)
     // .get('/tagged/:tag', API.Posts.getByTag)
     // .use(mw.$.authd)
-    .useEnd(mw.$.apiJson)
+    // .useEnd(mw.$.apiJson)
     // .post('/:post/review', API.Posts.review)
     // .put('/:post/review/:postreview', API.Posts.reviewUpdate)
     // .put('/:post/review/:postreview/reply', API.Posts.reviewReply)

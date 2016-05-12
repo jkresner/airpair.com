@@ -1,10 +1,10 @@
 <header>
-  <img ng-src="{{r.by.avatar}}?s=40" class="user" />
+  <img ng-src="{{r.by.pic}}?s=40" class="user" />
   <label>{{r.by.name}}</label>
   <time>{{r._id | objectIdToAgoTime }} <span ng-if="r.updated">+ updated {{ r.updated | agoTime }}</span></time>
-  <stars val="r.rating"></stars>
+  <stars val="r.val"></stars>
 </header>
-<p>{{r.feedback}}</p>
+<div>{{r.said | markdownHtml }}</div>
 <footer>
   <menu>
 <!--
@@ -41,10 +41,10 @@
   </menu>
   <ul class="replies">
     <li ng-repeat="reply in r.replies">
-      <img ng-src="{{reply.by.avatar}}?s=40" class="user" />
-      <label>{{reply.by.name}}</label>
+      <img ng-src="{{reply.by.pic}}?s=40" class="user" />
+      <label>{{reply.by.username||reply.by.name}}</label>
       <time>{{reply._id | objectIdToAgoTime }}</time>
-      <p>{{reply.comment}}</p>
+      <p>{{reply.said| markdownHtml}}</p>
     </li>
   </ul>
   <textarea textarea-grow class="form-control" ng-if="replyOpen"

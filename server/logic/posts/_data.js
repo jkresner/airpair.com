@@ -1,10 +1,9 @@
 var views = {
-  display: '_id by.userId by.name by.avatar by.expertId by.bio by.username by.social htmlHead github.repoInfo'
-           + ' reviews._id reviews.by reviews.updated reviews.replies reviews.votes reviews.questions.key reviews.questions.answer'
-           + ' forkers title tmpl slug stats created published submitted tags assetUrl'
-           + ' lastTouch.utc lastTouch.action lastTouch.by._id lastTouch.by.name'
-           + ' url html toc similar adtag',
-  list:    '_id by.userId by.name by.avatar htmlHead.canonical htmlHead.description htmlHead.ogImage github.repoInfo title slug created published submitted tags stats'
+  display: '_id by stats htmlHead meta.lastTouch github.repoInfo'
+           + ' reviews forkers title tmpl slug tags assetUrl'
+           + ' url html toc similar adtag submitted published',
+  list:    '_id by history htmlHead.canonical htmlHead.description htmlHead.ogImage github.repoInfo title slug tags stats',
+  cache:   '_id by.name by.avatar title htmlHead.canonical htmlHead.ogImage history.subscribed history.published'
 }
 
 
@@ -12,87 +11,59 @@ var post                = require('../../../shared/posts')
 var generateToc         = require('../../services/postsToc')
 
 
-var md5                 = require('../../util/md5')
-var userCommentByte = (byte) => {
-  var avatar = byte.email ? md5.gravatarUrl(byte.email) :
-    "https://static.airpair.com/img/avatar/stormtrooper.png"
-  return _.extend(_.pick(byte,'_id','name'), {avatar})
-}
-var PostsUtil = {
-  mapReviews(reviews) {
-    return _.map(reviews,(rev)=> {
-      rev.by = userCommentByte(rev.by)
-      rev.votes = _.map(rev.votes || [], (vote) =>
-        _.extend(vote, {by: userCommentByte(vote.by)}) )
-      rev.replies = _.map(rev.replies || [], (reply) =>
-        _.extend(reply, {by: userCommentByte(reply.by)}) )
-      return rev
-    }) || []
-  },
-  mapForkers(forkers) {
-    return _.map(forkers,(f)=> {
-      var ff = userCommentByte(f)
-      ff.username = f.social.gh.username
-      ff.userId = f.userId
-      return ff
-    })
-  },
-  extendWithReviewsSummary(post) {
-    post.stars = { total: 0 }
-    post.reviews= _.map(post.reviews, (r) => {
-      r.rating = _.find(r.questions,(q)=>q.key == 'rating').answer
-      r.feedback = _.find(r.questions,(q)=>q.key == 'feedback').answer
-      post.stars.total += parseInt(r.rating)
-      return r
-    })
-    if (post.stars.total > 0) {
-      post.stars.avg = post.stars.total/post.reviews.length
-    }
-
-    return post
-  }
-}
-
 module.exports = new LogicDataHelper(
 
   views,
 
-  ({chain, select, inflate}) => ({
+  ({chain, select, inflate, md5}) => ({
 
+    subscribedHash: d => {
+      // $log('subHash'.yellow, d.subscribed)
+      if (!d.subHash) {
+        d.subHash = {}
+        d.subscribed = d.subscribed || [{userId:d.by._id,mail:'primary'}]
+        for (var sub of d.subscribed) {
+          d.subHash[sub.userId] = _.omit(sub,'_id','userId','auth','photos', 'email', 'username', 'name')
+          d.subHash[sub.userId].name = sub.username || sub.name
+          assign(d.subHash[sub.userId], { _id: sub.userId,
+            pic: sub.photos ? sub.photos[0].value : `//0.gravatar.com/avatar/${md5(sub.email)}` })
+          if (sub.auth && sub.auth.gh) d.subHash[sub.userId].gh = sub.auth.gh.login
+        }
+      }
+      return d
+    },
+
+    reviews: d => {
+      // $log('reviews'.yellow, d.reviews)
+      d.reviews = (d.reviews||[]).map(rev => assign(rev, {
+        by: d.subHash[rev.by],
+        votes: (rev.votes||[]).map(v => assign(v,{by:d.subHash[v.by]})),
+        replies: (rev.replies||[]).map(r => assign(r,{by:d.subHash[r.by]}))
+      }))
+      return d
+    },
 
     other: d => {
-      if (d.submitted) {
-        d.stats = d.stats || PostsUtil.calcStats(d)
+      // $log('other'.yellow, d)
+      var {submitted,published} = d.history
+
+      if (submitted) {
+        d.submitted = submitted
+        d.stats = d.stats || posts.calcStats(d)
         d.publishReady = (d.stats.reviews > 2) && (d.stats.rating > 3.5)
       }
 
-      if (!d.published)
+      if (!published)
         d.htmlHead = { noindex: true }
-      else
+      else {
+        d.published = published
         //-- Stop using disqus once deployed the review system
         d.showDisqus = moment(d.published) < moment('20150201', 'YYYYMMDD')
+      }
 
       d.htmlHead.ogTypePost = true
 
-      d.forkers = PostsUtil.mapForkers(d.forkers || [])
-      d.reviews = PostsUtil.mapReviews(d.reviews)
-      if (d.reviews.length > 0)
-        d = PostsUtil.extendWithReviewsSummary(d)
-
-      // if (!similarFn)
-        // similarFn = (p, done) => done(null,[])
-
-      //-- Temporarily fix broken posts
-      if (d.by.social) {
-        if (typeof d.by.social.gh == 'string') d.by.social.gh = { username: d.by.social.gh }
-        if (typeof d.by.social.tw == 'string') d.by.social.tw = { username: d.by.social.tw }
-        if (typeof d.by.social.so == 'string') d.by.social.so = { link: d.by.social.so }
-        if (typeof d.by.social.in == 'string') d.by.social.in = { id: d.by.social.in }
-        if (typeof d.by.social.bb == 'string') d.by.social.bb = { id: d.by.social.bb }
-        if (typeof d.by.social.al == 'string') d.by.social.al = { username: d.by.social.al }
-        if (typeof d.by.social.gp == 'string') d.by.social.gp = { link: d.by.social.gp }
-      }
-
+      d.forkers = (d.forkers||[]).map(f => assign(f,d.subHash[f.userId]))
       d.by.firstName = util.firstName(d.by.name)
 
       return d
@@ -110,23 +81,46 @@ module.exports = new LogicDataHelper(
       d.primarytag.postsUrl = // topTagPage ? `/${d.primarytag.slug}` :
         `/posts/tag/${d.primarytag.slug}`
 
-      var adtag = 'ruby'
-      if (d.adtag && d.adtag.slug.match(/(ruby|node.js|java|php)$/i))
-        adtag = d.adtag.slug
-      else if (_.find(d.tags, t => t.slug.match(/javascript|angular|node|mean/i)))
+      var hasMatch = pattern => _.find(d.tags, t => t.slug.match(pattern))
+      var override = d.adtag ? d.adtag.slug : false
+
+      // Set of tags valid for the campaign
+      var campaign = /(ruby|node.js|java|php)$/i
+      var defaulttag = 'ruby'
+
+      // Starts with the default catch all tag when we don't match any rules
+      var adtag = defaulttag
+
+      // Override value can set ahead of time on a specific piece of content
+      // * Allows full control when content matches multiple campaign tags
+      // * Must be a valid campaign tag else its ignored
+      var overridetag = override && override.match(campaign) ? override : null
+
+      // If we've match a custom chosen override tag we've done
+      if (overridetag)
+        adtag = overridetag
+
+      // Looks at each tag of the content/post and matches if on the values
+      // is anywhere in the tag name (case insensitive)
+      // E.g. node| matches: "node.js", "nodejs" "node.version.6.0" "server-node"
+      else if (hasMatch(/javascript|angular|node|mean|npm/i))
         adtag = 'node.js'
-      else if (_.find(d.tags, t => t.slug.match(/java|spring/i) && !t.slug.match(/javascript/i)))
+
+      // Only looks at this set if no match above (..|angular|node|etc.)
+      // If no match Will continue to the next (..php|laravel|etc.)
+      else if (hasMatch(/java|android|spring|jvm|clojure/i))
         adtag = 'java'
-      else if (_.find(d.tags, t => t.slug.match(/(php|wordpress)/i)))
+
+      // If no match found here, we've already set the default - ruby
+      else if (hasMatch(/(php|laravel|wordpress|joomla)/i))
         adtag = 'php'
 
       return assign(d, {adtag})
     },
 
 
-
     tocHtml: d => {
-      // $log('tocHtml'.yellow, d.tags)
+      // $log('tocHtml'.yellow)
       return assign(d, {toc:marked(generateToc(d.md))})
     },
 
@@ -173,36 +167,44 @@ module.exports = new LogicDataHelper(
 
 
     displayPublished: d => {
-      // $log('displayPublished'.yellow, d.by.name, d.adtag)
+      // $log('displayPublished'.yellow, d.by.name, d.adtag, d.tags)
       var r =
-      chain(d, inflate.tags, 'bodyHtml', 'url', 'tocHtml', 'tmpl', 'adTag', select.display, 'other')
+      chain(d, inflate.tags, 'bodyHtml', 'url', 'tocHtml', 'tmpl', 'adTag', 'subscribedHash', 'reviews', 'other', select.display)
       for (var sim of r.similar) sim.url = sim.htmlHead.canonical
-      // chain(d, select.display, 'bodyHtml', 'tocHtml', 'tmpl', 'url', 'inflate.tags')
       // $log('displayPublished'.magenta, d.reviews.length)
       return r
-    }
-    ,
+    },
 
 
     url: d => assign(d, { url :
-      d.submitted && !d.published ? `/posts/review/${d._id}` :
+      d.history.submitted && !d.history.published ? `/posts/review/${d._id}` :
       `${d.htmlHead ? d.htmlHead.canonical : '/posts/preview/'+d._id }`
     }),
+
+
+    tileList: r =>
+      chain(r, inflate.tags, select.list, 'url')
 
 
   }),
 
   //-- Queries
   {
-    published: (andQuery) => _.assign(andQuery||{},
-      {'published': { '$exists': 1 }},
-      {'published': { '$lt': new Date() }}),
+    cached: { $or: [
+      { 'history.submitted' : {'$exists': true }},
+      { 'history.published' : {'$exists': true }}] },
+
+    published(andQuery) { return assign(andQuery||{}, {
+        'history.published' : { '$exists': 1 },
+        'history.published' : { '$lt': new Date() }
+      })
+    }
   },
 
   //-- Query Opts
   {
-    published: { select: `${views.display} md slug'` },
-    publishedNewest: (limit) => ({ limit, select: views.list, sort: { 'published': -1 } })
+    published: { select: `${views.display} md slug subscribed history` },
+    publishedNewest: (limit) => ({ limit, select: views.list, sort: { 'history.published': -1 } })
   }
 
 )

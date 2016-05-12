@@ -29,7 +29,7 @@ function generatePostFeedItem(data) {
     title: data.title,
     description: (data.htmlHead) ? data.htmlHead.description : 'No meta',
     author: data.by.name,
-    date: data.published,
+    date: data.history.published,
     url: data.url,
     categories: _.pluck(data.tags, 'name')
   }
