@@ -65,16 +65,11 @@
 {{#if r.published }}
 
   {{#if authenticated }}
-    <h6>Need 1 on 1 expert help?</h6>
+{{!--     <h6>Need 1 on 1 expert help?</h6>
 
     <div class="gethelp">
-      <img src="{{r.by.avatar}}?s=100" />
-      <span><b>PAIR UP</b> with<br /> experts like <br />{{r.by.name}}</span>
-        {{#if r.by.expertId }}
-          <a id="postSideBookAuthor" data="{{r.by.expertId}}" track-click="book" href="/billing/book/{{r.by.expertId}}" class="btn btn-sm">Book</a>
-        {{/if}}
     </div>
-
+ --}}
   {{else}}
 
     {{#with ads.side}}{{>banner}}{{/with}}

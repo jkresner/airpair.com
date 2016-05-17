@@ -1,7 +1,8 @@
 {
   "about":                     "package.json",
   "analytics": {
-    "appKey":                  "apcom"
+    "appKey":                  "apcom",
+    "on":                      true
   },
   "auth": {
     "appKey":                  "apcom",

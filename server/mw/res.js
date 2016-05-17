@@ -12,7 +12,7 @@ module.exports = (app, mw) => {
 
   var {bundles,host} = config.http.static
   var about = _.pick(config.about, ['name','version','author'])
-  var cfg = { static: { host } }
+  var cfg = { static: { host }, analytics: config.analytics }
   var pageOpts = layout => ({about,bundles,layout,cfg})
 
 

@@ -23,9 +23,10 @@ module.exports = new LogicDataHelper(
         d.subHash = {}
         d.subscribed = d.subscribed || [{userId:d.by._id,mail:'primary'}]
         for (var sub of d.subscribed) {
-          d.subHash[sub.userId] = _.omit(sub,'_id','userId','auth','photos', 'email', 'username', 'name')
+          d.subHash[sub.userId] = _.omit(sub,'_id','userId','auth','photos', 'email', 'mail', 'username', 'name')
           d.subHash[sub.userId].name = sub.username || sub.name
-          assign(d.subHash[sub.userId], { _id: sub.userId,
+          assign(d.subHash[sub.userId], {
+           // _id: sub.userId,
             pic: sub.photos ? sub.photos[0].value : `//0.gravatar.com/avatar/${md5(sub.email)}` })
           if (sub.auth && sub.auth.gh) d.subHash[sub.userId].gh = sub.auth.gh.login
         }
