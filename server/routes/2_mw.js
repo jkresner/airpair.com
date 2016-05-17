@@ -33,7 +33,7 @@ module.exports = function(app, mw, {redirects}) {
     map2.set("airconf-promo",'/workshops')
     map2.set("^/images/landing/airconf",'/workshops')
 
-    for (var slug of 'angularjs aws firebase python node.js android selenium reactjs ruby-on-rails mean-stack'.split(' '))
+    for (var slug of 'angularjs aws firebase python node.js android selenium reactjs ruby-on-rails mean-stack javascript'.split(' '))
       map2.set(`/${slug}/posts`,`/posts/tag/${slug}`)
 
 
