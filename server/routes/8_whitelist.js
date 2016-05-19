@@ -15,6 +15,7 @@ module.exports = function(app, mw) {
   app.get(['/find-an-expert',
            '/hire-software-developers',
            '*pair-programming*',
+           '/static/img/pages/postscomp/*',
            ], mw.$.badBot, mw.$.rewrites, mw.$.session, mw.$.reqFirst, mw.$.clientPage)
 
 

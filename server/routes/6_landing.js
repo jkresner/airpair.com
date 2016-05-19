@@ -64,7 +64,7 @@ module.exports = function(app, mw) {
     assign(req.locals, { r:cache['landing'][key], htmlHead: cache['landing'][key].htmlHead } ) ) })
 
 
-  var topTags = 'reactjs python javascript node.js ember.js keen-io rethinkdb ionic swift android ruby'.split(' ')
+  var topTags = 'android mongodb twilio reactjs neo4j python javascript node.js ember.js keen-io rethinkdb firebase ionic swift android php ruby'.split(' ')
 
 
   var {getPostsByTag} = app.meanair.logic.posts
@@ -81,7 +81,7 @@ module.exports = function(app, mw) {
   }
 
 
-  var router = app.honey.Router('landing')
+  var router = app.honey.Router('landing',{type:'html'})
     .use(mw.$.livereload)
     .use([mw.$.badBot,mw.$.session,mw.$.reqFirst])
     .use([mw.$.trackLanding,mw.$.landingPage],{end:true})

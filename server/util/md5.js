@@ -14,7 +14,7 @@ function gravatarUrl(email) {
     $log(`gravatarUrl.err called with null email`.red)
     return null
   }
-  return `//0.gravatar.com/avatar/${md5(email)}`
+  return `https://0.gravatar.com/avatar/${md5(email)}`
 }
 
 

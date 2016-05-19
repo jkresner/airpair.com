@@ -1,6 +1,6 @@
 module.exports = function(app, mw, {redirects}) {
 
-  var router = app.honey.Router('posts')
+  var router = app.honey.Router('posts', {type:'html'})
     .use(mw.$.livereload)
     .use([mw.$.badBot, mw.$.rewrites, mw.$.session, mw.$.reqFirst, mw.$.cachedTags])
     .useEnd([mw.$.inflateAds, mw.$.trackPost, mw.$.postPage])

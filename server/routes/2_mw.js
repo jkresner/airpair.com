@@ -14,7 +14,9 @@ module.exports = function(app, mw, {redirects}) {
     map.set(/%20%E2%80%A6/,'')
     map.set(/%20\.\.\./,'%20...')
     map.set(/\.\.\./,'')
-    mw.cache('rewrites', mw.req.forward({map,name:'rewrites'}))
+    map.set(/^\/static\/img\/pages\/postscomp\/prize-/, '/img/software/')
+    map.set(/^\/static\/img\/pages\/postscom\/logo-/, '/img/software/')
+    mw.cache('rewrites', mw.req.forward({map, name:'rewrites'}))
 
     $logIt('cfg.route', 'rewrites', `added ${map.size} rules`)
 

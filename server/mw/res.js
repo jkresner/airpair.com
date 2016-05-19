@@ -44,7 +44,7 @@ module.exports = (app, mw) => {
     function(req) {
       if (!req.user) {
         global.analytics.issue(req.ctx, 'forbidanon', 'security_low',
-          { mw:'authd',rule:'!req.user', 'req.user': req.user })
+          { mw:'authd', rule:'!req.user', 'req.user': req.user })
         return 'not authed'
       }
     }

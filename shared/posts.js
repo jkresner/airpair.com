@@ -102,43 +102,6 @@ var utilFns = {
   },
 
 
-  // splitLines(lines, colLength, doc) {
-  //   var i=0
-  //   var changed = false
-  //   // console.log('lines', colLength, lines.length, lines)
-  //   while (lines[i] != null)
-  //   {
-  //     // console.log('i', lines[i].length, lines[i].indexOf(' '), lines[i])
-  //     if (lines[i].length > colLength && lines[i].indexOf(' ') != -1)
-  //     {
-  //       changed = true
-  //       var line = lines[i].substring(0,colLength)
-  //       var lineColLength = line.lastIndexOf(' ')
-  //       if (lineColLength == -1) {
-  //         lineColLength = lines[i].indexOf(' ')
-  //       }
-  //       var extra = lines[i].substring(lineColLength+1, lines[i].length)
-  //       lines[i] = lines[i].substring(0,lineColLength)
-
-  //       // console.log(':::line[i+1]', lines[i+1].length)
-  //       if (!lines[i+1])
-  //         lines[i+1] = extra
-  //       else if (lines[i+1].length == 0)
-  //         lines.splice(i+1,0,extra)
-  //       else {
-  //         // console.log('extra', extra)
-  //         lines[i+1] = extra + ' ' + lines[i+1]
-  //       }
-
-  //       // console.log('line[i+1]', lines[i+1])
-  //     }
-
-  //     i = i + 1;
-  //   }
-  //   if (changed && doc) doc.setValue(lines.join('\n'))
-  //   // console.log('done', lines.length)
-  //   return lines
-  // }
 
 }
 

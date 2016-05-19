@@ -1,6 +1,6 @@
 {
   "name": "airpair.com",
-  "version": "0.6.3",
+  "version": "0.6.3-patch.2",
   "description": "site running airpair.com",
   "author": "airpair inc.",
   "privarte": true,
@@ -24,7 +24,7 @@
     "htmlparser2": "3.8.3",
     "meanair-auth": "0.6.4-patch.1",
     "meanair-model": "0.6.4",
-    "meanair-server": "0.6.4-patch.1",
+    "meanair-server": "0.6.4-patch.2",
     "meanair-shared": "0.6.3",
     "node-google-timezone": "0.0.2",
     "nodemailer": "1.4.0",
