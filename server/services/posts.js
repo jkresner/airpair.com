@@ -1,8 +1,4 @@
 var {Post}                   = DAL
-// var {query, select, opts} = require('./posts.data')
-// var PostsUtil             = require('../../shared/posts')
-// var {org}                 = config.auth.github
-// var selectTmpl            = select.tmpl
 
 var query = {
   cached: { $or: [{ 'history.submitted' : {'$exists': true }}, { 'history.published' : {'$exists': true }}] },
@@ -13,7 +9,7 @@ var query = {
                       {'by._id' : { '$ne': '52ad320166a6f999a465fdc5' }} ]}
 }
 var select = {
-  list: '_id by.name by.avatar title tags htmlHead.canonical htmlHead.ogImage history',
+  list: '_id by.name by.avatar title tags htmlHead.canonical htmlHead.ogImage htmlHead.description history',
   cb: {
     addUrl(cb) {
       return (e,r) => {

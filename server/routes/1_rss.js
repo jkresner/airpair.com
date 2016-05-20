@@ -1,110 +1,53 @@
-var logging               = true
-var PostsSvc              = null
-var RSS                   = require('rss')
+module.exports = function(app, mw, {rss}) {
 
-var allFeedOptions = {
-  site_url: 'https://www.airpair.com',
-  image_url: 'https://static.airpair.com/img/icons/icon220.png',
-  copyright: '2016 AirPair Inc',
-  language: 'en',
-  ttl: '60'
-}
+  if (!rss || !rss.on) return
 
+  var RSS  = require('rss')
+  var feed = new RSS({
+    site_url: 'https://www.airpair.com',
+    image_url: 'https://static.airpair.com/img/icons/icon48.png',
+    feed_url: 'https://www.airpair.com/rss',
+    copyright: '2016 AirPair Inc',
+    language: 'en',
+    ttl: '60',
+    title: 'AirPair Software Coding Tutorials & More',
+    description: 'Posts by Software Experts from AirPair',
+    categories: [],
+    items: []
+  })
 
+  function toFeed(items) {
+    feed.pubDate = moment().toDate() // whenever we regenerate the feed
+    for (var {title,htmlHead,by,history,url,tags} of items) {
+      var description = htmlHead ? htmlHead.description : 'No meta'
+      var categories = _.pluck(tags||[], 'name')
 
-var mixedFeedOptions = {
-  title: 'AirPair Software Coding Tutorials & More',
-  description: 'Posts by Software Experts from AirPair',
-  feed_url: 'https://www.airpair.com/rss',
-  categories: []
-}
+      if (categories.length == 0) $log('feed_item_TAGS_PROB'.red, title)
+      if (!url) $log('feed_item_URL_PROB'.red, title, categories)
 
-function defineRssFeed(options) {
-  return new RSS(_.extend(allFeedOptions, options));
-}
+      feed.item({ author: by.name,
+                  categories,
+                  description,
+                  date: history.published,
+                  title,
+                  url })
 
-function generatePostFeedItem(data) {
-  // $log('generatePostFeedItem',data)
-  return {
-    title: data.title,
-    description: (data.htmlHead) ? data.htmlHead.description : 'No meta',
-    author: data.by.name,
-    date: data.history.published,
-    url: data.url,
-    categories: _.pluck(data.tags, 'name')
-  }
-}
-
-
-var rssCache = {}
-
-function rssRenderer() {
-  var render = (res, the_feed) => {
-    res.status(200)
-      .type('application/rss+xml')
-      .send(the_feed.xml())
-  }
-
-  var populate = (the_feed, items, generateFeedItem) => {
-    the_feed.pubDate = moment().toDate(); // whenever we regenerate the feed
-    var catNames = []
-    for (var item of items) {
-      var feed_item = generateFeedItem(item);
-      if (!feed_item.url) $log('feed_item_URL_PROBLEM'.red, item.title.white, item.categories)
-      if (feed_item.categories.length == 0) $log('feed_item_TAGS_PROBLEM'.red, item.title.white)
-      catNames = _.union( catNames, feed_item.categories )
-      the_feed.item(feed_item)
+      feed.categories.concat(categories)
     }
-    the_feed.categories.push(_.unique( catNames ))
+    feed.categories = _.unique(feed.categories)
+    return feed.xml()
   }
 
-  var feeds = {}
+  var getPosts = require('../services/posts').getRecentPublished
+  var urls = rss.urls.split(',').map(url => `/${url}`)
 
+  app.honey
+    .Router('rss', { type:'rss' })
+    .get(urls, (req, res, next) =>
+      cache.get('rssposts', getPosts, (e, items) =>
+        res.status(200)
+           .type('application/rss+xml')
+           .send(toFeed(items))
+    ))
 
-  var _rss = {
-
-    posts(req, res) {
-      if (!PostsSvc) PostsSvc = require('../services/posts')
-
-      feeds.posts = defineRssFeed( mixedFeedOptions || postsFeedOptions )
-      feeds.posts.items = []
-      feeds.posts.categories = []
-
-      if (rssCache.posts)
-      {
-        if (logging) $log(`RSS[${rssCache.posts.length}] posts from cache`)
-        populate(feeds.posts, rssCache.posts, generatePostFeedItem)
-        return render(res, feeds.posts)
-      }
-
-      PostsSvc.getRecentPublished((e, posts) => {
-        if (e) {
-          $log(('error retrieving posts for rss feed:' + e).red)
-          return render(res, feeds.posts)
-        }
-
-        $log(`RSS[${posts.length}] posts from db`)
-        rssCache = _.extend(rssCache,{posts})
-        populate(feeds.posts, posts, generatePostFeedItem)
-        render(res, feeds.posts)
-      })
-    },
-
-
-    mixed(req, res) {
-      return _rss.posts(req, res)
-
-    }
-  }
-
-  return  _rss
-}
-
-module.exports = function(app, mw) {
-  if (!config.routes.rss) return
-
-  var rss = rssRenderer()
-  app.get(['/rss','/rss/posts'], rss.mixed)
-
-  $logIt('cfg.route', `rss   GET`, '/')
 }

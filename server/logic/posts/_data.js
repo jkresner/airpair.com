@@ -172,6 +172,7 @@ module.exports = new LogicDataHelper(
       var r =
       chain(d, inflate.tags, 'bodyHtml', 'url', 'tocHtml', 'tmpl', 'adTag', 'subscribedHash', 'reviews', 'other', select.display)
       for (var sim of r.similar) sim.url = sim.htmlHead.canonical
+      if (!r.similar || r.similar.length == 0) r.similar = false
       // $log('displayPublished'.magenta, d.reviews.length)
       return r
     },

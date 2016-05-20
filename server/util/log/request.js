@@ -33,7 +33,7 @@ module.exports = function(req, e)
   var msg = e.message || e
 
   if (req) {
-    msg += `\n${req.method} ${req.url}`
+    msg += `\n${req.method} ${config.http.host}${req.url}`
     msg += `\n${req.headers['x-forwarded-for'] || req.connection.remoteAddress}`
 
     var user = req.user

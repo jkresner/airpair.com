@@ -140,9 +140,10 @@
   {{/if}}
 </footer>
 
-{{#if published }}
+{{#if published }}{{#if similar }}
 <div id="posts">
   <section id="allposts" class="similar">
+
     <h3 class="underline">Similar posts <a href="/software-experts" class="btn btn-sm btn-inverse" target="_self">All posts</a></h3>
     <div class="similar nostars">{{#each similar}}
 
@@ -184,6 +185,6 @@
     </div>
   </section>
 </div>
-{{/if}}
+{{/if}}{{/if}}
 
 {{/with}}

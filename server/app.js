@@ -2,7 +2,7 @@ function run({config,MAServer,tracking}, done) {
 
   config.about = _.omit(config.about,'scripts','engines','dependencies','devDependencies','private','license')
   config.routes.redirects.on = true
-  config.routes.rss = { on: true }
+  config.routes.rss.on = config.routes.rss.on === 'true' ? true : false
   // console.log('config', _.omit(config,'wrappers','auth','logic'))
 
   var app               = MAServer.App(config, done)
