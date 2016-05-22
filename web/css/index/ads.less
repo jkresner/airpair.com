@@ -1,0 +1,66 @@
+
+
+div.sponsor {
+  position:relative;
+  display:block;
+  a { opacity:0.95;display:block;margin:0;padding:0;width:100%;
+    &:hover { opacity:1 }
+  }
+  img { width:100%;display:block;margin:0;padding:0 }
+  pre {
+    display:none;border-radius:0;
+    span { font-weight:bold; }
+    em { font-style:normal; }
+  }
+}
+
+.sponsor-heroku {
+  a { background-color:#684fb6; }
+  pre {
+    color:white;
+    background-color:#684fb6;
+    span { color:@bluehighlight; }
+    em { color:pink }
+  }
+}
+
+div.sponsor-top, div.sponsor-bottom {
+  margin:30px 0;
+  width:902px;
+  a { height:92px; }
+  pre { display:none!important }
+}
+
+
+div.sponsor-side {
+  margin:0;
+  width:220px;
+  a { opacity:0.9;padding:2px 0 5px 0 }
+  img { height:250px; }
+  pre {
+    display:block;margin:0!important;opacity:0.8;
+    font-size:11px;line-height:13px;
+    padding:3px 4px!important;
+  }
+  &:hover {
+    a { opacity:1 }
+    pre { opacity:0.9 }
+  }
+}
+
+
+
+@media only screen and (max-width:900px) {
+  .banner-top a { width:640px }
+}
+
+@media only screen and (max-width:640px) {
+  .banner-top {
+    position:fixed;
+    bottom:0;
+    height:34px;
+    a { height:34px;width:320px; }
+    img { width:98%;margin-top:auto }
+  }
+}
+

@@ -147,33 +147,17 @@
 
     <div class="radios">
       <input id="requestTimeRegular" name="time" ng-model="request.time" type="radio" value="regular" ng-click="setTime()">
-      <label for="requestTimeRegular"><!-- <img src="/static/img/css/request/time-regular.png"> -->In 1-2 Days</label>
+      <label for="requestTimeRegular">In 1-2 Days</label>
     </div>
 
-    <!-- <div class="radios">
-      <input id="requestTimeRush" name="time" ng-model="request.time" type="radio" value="rush" ng-click="setTime()">
-      <label for="requestTimeRush"><img src="/static/img/css/request/time-rush.png">In 1-2 Hours <i>+ $20/hr rush fee paid to expert</i></label>
-    </div>
- -->
     <div class="radios">
       <input id="requestTimeLater" name="time" ng-model="request.time" type="radio" value="later" ng-click="setTime()">
-      <label for="requestTimeLater"><!-- <img src="/static/img/css/request/time-later.png"> -->I don't know yet
+      <label for="requestTimeLater">I don't know yet
     </div>
 
   </div>
 
-  <div class="entercard" ng-if="entercard">
-<!--     <a class="exitcard" ng-click="exitcard()">x</a>
-    <label class="control-label" for="requestTime">Add your card for fast help</label>
-    <div class="radios">
-      <input id="requestTimeRush" name="time2" value="rush" checked="true" type="radio">
-      <label for="requestTimeRush"><img src="/static/img/css/request/time-rush.png">In 1-2 Hours </label>
-    </div>
-
-    <payment-info hide-card-nickname="true"></payment-info>
-
-    <p>Your Card will not be charged yet</p> -->
-  </div>
+  <div class="entercard" ng-if="entercard"></div>
 
 </section>
 
@@ -189,49 +173,12 @@
     </textarea>
   </div>
   <a href="https://guides.github.com/features/mastering-markdown/" target="_blank" class="md">
-<!--     <img src="/static/img/css/request/markdown.png" /> -->
+<!--     <img src="https://static.airpair.com/img/ui/markdown.png" /> -->
     markdown supported
   </a>
   <hr />
 
 </section>
-
-<!--
-<section ng-class="stepClass('experience')">
-
-  <div form-group ng-if="request.tags && request.tags.length > 0">
-
-    <label class="control-label" for="requestExperience" ng-if="request.tags.length == 1">What's your experience with {{request.tags[0].slug}}?</label>
-    <label class="control-label" for="requestExperience" ng-if="request.tags.length > 1">What's your experience using {{tagsString()}} together?</label>
-
-    <!-- <i>Well make sure to match you with an equal or more experienced expert.</i>
-     <div class="experienceOptions radios">
-      <span>
-        <input id="requestExperienceBeginner" name="experience" ng-model="request.experience" type="radio" value="beginner"
-        ng-change="setExperience()"
-        >
-        <label for="requestExperienceBeginner"><img src="/static/img/css/request/experience-beginner.png" /> Beginner</label> <i>Basic setup and functionality</i>
-      </span>
-
-      <span>
-        <input id="requestExperienceProficient" name="experience" ng-model="request.experience" type="radio" value="proficient"
-        ng-change="setExperience()"
-        >
-        <label for="requestExperienceProficient"><img src="/static/img/css/request/experience-proficient.png" /> Proficient</label> <i>Typical development issues</i>
-      </span>
-
-      <span>
-        <input id="requestExperienceAdvanced" name="experience" ng-model="request.experience" type="radio" value="advanced"
-        ng-change="setExperience()"
-        >
-        <label for="requestExperienceAdvanced"><img src="/static/img/css/request/experience-advanced.png" /> Advanced</label> <i>Trying to do something crazy here</i>
-      </span>
-    </div>
-
-  </div>
-
-
-</section> -->
 
 <section ng-class="stepClass('tags')">
 
