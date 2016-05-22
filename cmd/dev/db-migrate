@@ -1,2 +1,0 @@
-#!/bin/sh
-coffee --nodejs "--harmony_destructuring" cmd/migrate/run.coffee $1 $2 $3 $4 $5 $6

@@ -1,86 +1,65 @@
 module.exports = function(app, mw, {redirects,tags}) {
 
-  if (!redirects || !redirects.on) return
+  if ((redirects||{}).on !== true) return
 
 
-  var rewritesOpts = { name: 'rewrites', map: new Map()
-    .set(/%E2%80%A6/,'')
-    .set(/%20%e2%80%a6/,'')
-    .set(/%20%E2%80%A6/,'')
-    .set(/%20\.\.\./,'%20...')
-    .set(/\.\.\./,'')
-    .set(/^\/static\/img\/pages\/postscomp\/prize-/, '/img/software/')
-    .set(/^\/static\/img\/pages\/postscom\/logo-/, '/img/software/') }
-  mw.cache('rewrites', mw.req.forward(rewritesOpts))
+  var rules = cache.httpRules
 
-  $logIt('cfg.route', 'rewrites', `added ${rewritesOpts.size} rules`)
+  cache.httpRules['301'] = rules['301'].concat(tags.top.split(',').map(slug => (
+      { match:`^/${slug}/posts`, to:`/posts/tag/${slug}` }) ))
 
+  cache.httpRules['rewrite'] = rules['rewrite'].concat([
+    // { match: '%E2%80%A6', to: '' },
+    // { match: '%20%e2%80%a6', to: '' },
+    // { match: /%20\.\.\./i, to: '%20...' }  //?
+    // { match: '\\.\\.\\.', to: '' },
+    { match: '^/static/img/pages/postscomp/(prize|logo)-', to: '/img/software/' } ])
 
-  var forwards = new Map()
-    .set(/^\/logout$/,'/auth/logout')
-    .set("/c\\+\\+","/c++","/posts/tag/c++")
-    .set('/author/*', '/software-experts')
-    .set("^/*/workshops",'/workshops')
-    .set("airconf-promo",'/workshops')
-    .set("^/images/landing/airconf",'/workshops')
+  var moved_perm = rules['301'].map(r => ({ match: new RegExp(r.match,'i'), to: r.to }))
+  var moved_temp = rules['302'].map(r => ({ match: new RegExp(r.match,'i'), to: r.to }))
+  var gone       = rules['410'].map(r => new RegExp(r.match,'i'))
+  var not_imp    = rules['501'].map(r => new RegExp(r.match,'i'))
+  var bait       = rules['bait'].map(r => new RegExp(r.match,'i'))
+  var rewrite    = rules['rewrite'].map(r => [new RegExp(r.match,'i'), r.to])
 
-  tags.top.split(',')
-    .forEach(slug => forwards.set(`^/${slug}/posts`,`/posts/tag/${slug}`))
+  if (moved_perm.length>0) $logIt('cfg.route', 'moved_perm', moved_perm)
+  if (moved_temp.length>0) $logIt('cfg.route', 'moved_temp', moved_temp)
+  if (gone.length>0)       $logIt('cfg.route', 'gone', gone)
+  if (not_imp.length>0)    $logIt('cfg.route', 'not_imp', not_imp)
+  if (bait.length>0) $logIt('cfg.route', 'bait', bait)
+  if (rewrite.length>0) $logIt('cfg.route', 'rewrite', rewrite)
 
-  cache['redirects']
-    .filter( r => r.type.match(/(301|302)/) )
-    .forEach( r => forwards.set(new RegExp(`^${r.previous}$`,'i'), r.current))
+  app
+    .use(mw.req.forward({name:'rewrite', map: new Map(rewrite)}))
 
-  forwards.forEach((val, key) =>
-    app.get(key, (req,res,next) => {
-      var q = req.originalUrl.split('?')[1]
-      res.redirect(301, `${val}${q?'?'+q:''}`) }) )
-
-  if (config.log.app.verbose)
-    $log('WARN'.magenta, 'Treating 302 redirects as 301 Permanent'.white)
-
-  $logIt('cfg.route', 'forwards', `added ${forwards.size} exact + match forwards`)
+  var redir = (rule, status) => (req, res, next) => {
+    var url = req.originalUrl
+    if (url.match('^/v1/api/')) return next()
+    $log(`${url} >> ${status} =>`, url.replace(url.split('?')[0], rule.to), rule.match)
+    res.redirect(status, req.url.replace(req.url.split('?')[0], rule.to))
+  }
 
 
-  var notImp = ['/rules.abe', '/.well-known/dnt-policy.txt']
-  app.get(notImp, mw.$.session, (req, res, next) => {
-    $log('[501]notImp'.magenta, req.originalUrl, req.ctx.ip, req.ctx.ua)
-    res.status(501).send('') })
+  for (var rule of moved_perm) app
+    .get(rule.match, redir(rule, 301))
+
+  for (var rule of moved_temp) app
+    .get(rule.match, redir(rule, 302))
 
 
-  cache['abuse'] = {}
+  app.honey.Router('routerules')
+    .use(mw.$.session)
+    .get(not_imp, (req, res) => res.status(501).send(''))
+    .get(bait, (req, res) => res.send(cache.abuse.increment(418, req)))
+    .get(gone, (req, res) => res.send(cache.abuse.increment(410, req)))
 
-  app.use((req, res, next) => {
-    var {ip,ref,ua,sId} = req.ctx
-    if (!cache.abuse[ip] || cache.abuse[ip].length < 6)
-      return next()
-    var sip = { t:moment().format(), u: req.originalUrl }
-    if (ref) sip.r = ref
-    cache.abuse[ip].push(sip)
-    $log('[500]abuse', cache.abuse[ip].length, ip, sId, ua, sip)
-    res.status(500).send('')
-  })
 
-  var dirtUrls = [ //cache['redirects'].filter( r => r.type == '418' )
-    'phpMyAdmin',
-    'htaccess.txt',
-    'readme.txt',
-    'readme.html',
-    'license.txt'
-  ].map( r => new RegExp(`${r}`,'i') )
+  // $logIt('cfg.route', 'rewrites', `added ${rewritesOpts.size} rules`)
+  // $logIt('cfg.route', 'forwards', `added ${forwards.size} exact + match forwards`)
 
-  app.get(dirtUrls, mw.$.session,
-    (req, res, next) => {
-      var {ip,ref,ua} = req.ctx
-      var sip = { t:moment().format(), u: req.originalUrl }
-      if (ref) sip.r = ref
-
-      if (!cache.abuse[ip]) cache.abuse[ip] = []
-      cache.abuse[ip].push(sip)
-
-      $log('tea.send(418)', cache.abuse[ip].length, ua, sip)
-      res.status(418).send('Relax. Close your eyes...')
-    })
+  //-- write tests and add these
+  // app.post('/*', mw.$.noBot)
+  // app.put('/*', mw.$.noBot)
+  // app.delete('/*', mw.$.noBot)
 
 }
-

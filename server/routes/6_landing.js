@@ -1,4 +1,4 @@
-module.exports = function(app, mw) {
+module.exports = function(app, mw, {tags}) {
 
   if (config.env != 'dev')
     cache.workshops = require('../services/workshops').getAllForCache()
@@ -28,7 +28,7 @@ module.exports = function(app, mw) {
         ogType: 'article',
         ogTitle: 'Fork Up! AirPair\'s $100,000.00 Git-Powered Developer Writing Competition',
         ogDescription: 'AirPair has released a set of new Github API powered publishing tools. To celebrate, AirPair is distributing over $100k in cash prizes to the best posts submitted before May 30th, 2015.',
-        ogImage: 'https://www.airpair.com/static/img/pages/postscomp/og.png',
+        ogImage: 'https://static.airpair.com/2015/comp/og.png',
         css: ['2015/css/libs-279957f0b8','2015/comp/app'].map(url => `${config.http.static.host}/${url}.css`),
       },
       prizes: {
@@ -64,9 +64,6 @@ module.exports = function(app, mw) {
     assign(req.locals, { r:cache['landing'][key], htmlHead: cache['landing'][key].htmlHead } ) ) })
 
 
-  var topTags = 'android mongodb twilio reactjs neo4j python javascript node.js ember.js keen-io rethinkdb firebase ionic swift android php ruby'.split(' ')
-
-
   var {getPostsByTag} = app.meanair.logic.posts
   function tagPageData(req, res, next) {
     var tag = cache.tagBySlug(req.params.tagslug||req.url.replace('/', ''))
@@ -74,7 +71,7 @@ module.exports = function(app, mw) {
     var canonical = `https://www.airpair.com/posts/tag/${tag.slug}`
     req.locals.htmlHead = assign({}, req.locals.r.htmlHead, {
       title:`${tag.name} Programming Guides and Tutorials from Top ${tag.short} Developers and expert consultants`,
-      canonical: topTags.indexOf(tag.slug) == -1 ? canonical : canonical.replace('/posts/tag','')
+      canonical: tags.top.indexOf(tag.slug) == -1 ? canonical : canonical.replace('/posts/tag','')
     })
     getPostsByTag.exec(tag, (e,r) => next(e,
       assign(req.locals.r, tag, {latest:getPostsByTag.project(r)}, {url:req.originalUrl})))
@@ -101,7 +98,8 @@ module.exports = function(app, mw) {
 
     .get(`/posts/tag/:tagslug`, mw.$.cachedTags, mw.$.inflateLanding('tag'), tagPageData)
 
-  topTags.forEach(slug => router.get(`/${slug}`, mw.$.cachedTags, mw.$.inflateLanding('tag'), tagPageData))
+  tags.top.split(' ').forEach(slug => router
+    .get(`/${slug}`, mw.$.cachedTags, mw.$.inflateLanding('tag'), tagPageData) )
 
 
 

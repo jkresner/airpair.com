@@ -2,25 +2,14 @@ module.exports = function(app, mw, {redirects}) {
 
   var router = app.honey.Router('posts', {type:'html'})
     .use(mw.$.livereload)
-    .use([mw.$.badBot, mw.$.rewrites, mw.$.session, mw.$.reqFirst, mw.$.cachedTags])
+    .use([mw.$.badBot, mw.$.session, mw.$.reqFirst, mw.$.cachedTags])
     .useEnd([mw.$.inflateAds, mw.$.trackPost, mw.$.postPage])
 
-
-  if (redirects) {
-    // var count = 0
-    function mapCannonical({current,previous}) {
-      // count++
-      router.get(current, function(req, res, next) {
-        next(null, assign(req.params,{adtag:'canon',postslug:previous}))
-      },
-      mw.$.logic('posts.getPublishedBySlug'))
-    }
-
-    cache['redirects']
-      .filter(r => r.type == "canonical-post")
-      .forEach(r => mapCannonical(r))
-  }
-
+  var adtag = {adtag:'canon'}
+  for (var {match,to} of cache.httpRules['canonical-post']) router
+    .get(match
+      , (req, res, next) => next(null, assign(req.params,adtag,{postslug:to}) )
+      , mw.$.logic('posts.getPublishedBySlug') )
 
   router
     .get(['^/:adtag/posts/:postslug',
@@ -30,8 +19,3 @@ module.exports = function(app, mw, {redirects}) {
 
 
 }
-
-
-
-
-

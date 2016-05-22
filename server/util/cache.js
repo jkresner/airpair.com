@@ -1,52 +1,55 @@
-var logging = false
+// var logging = false
 
 //-- For O(1) access instead of O(N)
-function hashEm(list, objectName, hashAttributeName) {
-  // $log(`hashing.${objectName}`, hashAttributeName, list.length)
-  var hash = []
-  for (var o of list) {
-    var id = o[hashAttributeName]
-    hash[id] = o
-  }
-  return hash
-}
+// function hashEm(list, objectName, hashAttributeName) {
+//   // $log(`hashing.${objectName}`, hashAttributeName, list.length)
+//   var hash = []
+//   for (var o of list) {
+//     var id = o[hashAttributeName]
+//     hash[id] = o
+//   }
+//   return hash
+// }
 
 
-function itemReady(key, cb)
-{
-  if (cache[key] != null) return cb()
-  else {
-    var svc = require(`../services/${key}`)
-    svc.getAllForCache( (e, list) => {
-      cache[key] = hashEm(list, key, '_id')
-      // if (key == 'tags')
-        // cache['tag_slugs'] = hashEm(list, key, 'slug')
-      cb()
-    })
-  }
-}
+// function itemReady(key, cb)
+// {
+//   if (cache[key] != null) return cb()
+//   else {
+//     var svc = require(`../services/${key}`)
+//     svc.getAllForCache( (e, list) => {
+//       cache[key] = hashEm(list, key, '_id')
+//       // if (key == 'tags')
+//         // cache['tag_slugs'] = hashEm(list, key, 'slug')
+//       cb()
+//     })
+//   }
+// }
 
-itemReady('posts', () => {
-  // $log('CACHED.POSTS')
-})
-
-
-cache.flush = function(key, cb)
-{
-  if (key == 'posts') cache.postAllPublished = null
-  delete cache[key]
-}
+// itemReady('posts', () => {
+//   // throw Error('CACHE.bookmark deprcated')
+//   $log('old.CACHED.POSTS.ready')
+// })
 
 
-cache.bookmark = function(type, id)
-{
-  if (!cache[type+'s']) return { url: 'cache not loaded', title: '' }
-  return cache[type+'s'][id]
-}
+// cache.flush = function(key, cb)
+// {
+//   if (key == 'posts') cache.postAllPublished = null
+//   delete cache[key]
+// }
+
+
+// cache.bookmark = function(type, id)
+// {
+  // throw Error('CACHE.bookmark deprcated')
+  // if (!cache[type+'s']) return { url: 'cache not loaded', title: '' }
+  // return cache[type+'s'][id]
+// }
 
 
 cache.tmpl = function(type, key, cb)
 {
+  // $log('old.CACHED.tmpl')
   // console.log(`cache['templates']`, cache['templates'].length, type, key,
     // cache['templates'][`${type}:${key}`])
   cb( cache['templates'][`${type}:${key}`] )
@@ -82,17 +85,17 @@ cache.tagBySlug = function(slug)
 // }
 
 
-// cache.slackUsers = function(getterCB, cb)
-// {
-//   if (cache['slack_users'])
-//     return cb(null, cache['slack_users'])
-//   getterCB((e,r)=>{
-//     if (e) return cb(e)
-//     cache['slack_users'] = r
-//     $log("set cache['slack_users']".trace, r.length)
-//     cb(null,r)
-//   })
-// }
+cache.slackUsers = function(getterCB, cb)
+{
+  if (cache['slack_users'])
+    return cb(null, cache['slack_users'])
+  getterCB((e,r)=>{
+    if (e) return cb(e)
+    cache['slack_users'] = r
+    $log("set cache['slack_users']".trace, r.length)
+    cb(null,r)
+  })
+}
 
 
 cache.slackGroups = function(getterCB, cb)
