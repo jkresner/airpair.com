@@ -85,29 +85,6 @@ module.exports = function(app, mw) {
   // },
 
 
-  // setUrlMatch(app) {
-  //   return function(req, res, next) {
-  //     if (logging) $log(`setUrlMatch ${req.url}`.cyan, req.url, req.originalUrl)
-  //     var url = req.originalUrl.split('?')[0]
-  //     for (var regexp of app.routeRegexps)
-  //     {
-  //       var match = regexp.test(url)
-  //       if (match) {
-  //         req.urlMatch = true
-  //         $log(regexp , req.urlMatch, url)
-  //         return next()
-  //       }
-  //     }
-  //     next()
-  //   }
-  // },
-
-  // setNonSession() {
-  //     if (req.type == "HEAD")
-  //       req.nonSession = true
-  // },
-
-
   // handleOAuthSuccess(providerName, svcName, fnName) {
   //   return (req, res, next) => {
   //     if (logging) $log(`mw.handleOAuthSuccess ${req.authInfo.userinfo}`.cyan)

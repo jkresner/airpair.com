@@ -91,7 +91,7 @@ var save = {
       Chat.getByQuery({providerId},(ee,rr)=>{
         if (ee) return cb(ee,rr)
         if (!rr) {
-          $log('history'.cyan, r.info)
+          // $log('history'.cyan, r.info)
           var o = {
             type: "group",
             synced: new Date,

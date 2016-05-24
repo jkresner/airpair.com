@@ -306,7 +306,7 @@ function bookUsingCredit(expert, minutes, total, lineItems, expectedCredit, payM
     var linesWithCredit = OrderUtil.linesWithCredit(orders)
     var availablCredit = OrderUtil.getAvailableCredit(linesWithCredit)
     if (expectedCredit != availablCredit)
-      return cb(Error(`ExpectedCredit $${expectedCredit}, not found. ${availablCredit} found.`))
+      return cb(assign(Error(`ExpectedCredit $${expectedCredit}, not found. ${availablCredit} found.`),{status:403}))
 
     var need = total
     var ordersToUpdate = []

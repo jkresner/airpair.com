@@ -31,9 +31,6 @@ module.exports = function(imProvider)
   var emtpyCb = (e,r) => {}
 
 
-  if (!imProvider)
-    imProvider = Wrappers.Slack
-
   var pairbot = {
 
     sendSlackMsg(channelId, tmpl, data, cb) {
@@ -41,9 +38,9 @@ module.exports = function(imProvider)
       var msg = slackMSGSync(tmpl, data)
       var text = data.text || msg.text
       if (msg.type == 'message')
-        imProvider.postMessage('pairbot', channelId, text, cb)
+        Wrappers.Slack.postMessage('pairbot', channelId, text, cb)
       if (msg.type == 'attachment')
-        imProvider.postAttachments('pairbot', channelId, [_.extend(msg,{text})], cb)
+        Wrappers.Slack.postAttachments('pairbot', channelId, [_.extend(msg,{text})], cb)
     },
 
     get(tmpl, data, cb) {
@@ -61,7 +58,7 @@ module.exports = function(imProvider)
         title_link: `https://www.airpair.com/posts/review/${post._id}`,
         text: `Don't be shy.\nTell ${post.by.name} what you think => https://www.airpair.com/posts/review/${post._id}`,
       }
-      imProvider.postAttachments('pairbot', postsChannelId, [attachment], cb || emtpyCb)
+      Wrappers.Slack.postAttachments('pairbot', postsChannelId, [attachment], cb || emtpyCb)
     },
 
     sendPostPublished(post, cb) {
@@ -74,7 +71,7 @@ module.exports = function(imProvider)
         title_link: post.htmlHead.canonical,
         text: `Lend a hand.\nReview & share => ${post.htmlHead.canonical}`,
       }
-      imProvider.postAttachments('pairbot', postsChannelId, [attachment], cb || emtpyCb)
+      Wrappers.Slack.postAttachments('pairbot', postsChannelId, [attachment], cb || emtpyCb)
     },
 
     sendPostSynced(post, cb) {
@@ -86,7 +83,7 @@ module.exports = function(imProvider)
         title_link: post.htmlHead.canonical,
         text: `Update your review (if you left one)`,
       }
-      imProvider.postAttachments('pairbot', postsChannelId, [attachment], cb || emtpyCb)
+      Wrappers.Slack.postAttachments('pairbot', postsChannelId, [attachment], cb || emtpyCb)
     },
 
   }

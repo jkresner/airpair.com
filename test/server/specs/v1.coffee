@@ -4,6 +4,8 @@ module.exports = ->
     DB.removeDocs 'User', { email:'airpairtest1@gmail.com' }, ->
       DB.ensureDoc 'User', FIXTURE.users.admin, ->
     DB.ensureExpert 'snug', ->
+    DB.ensureExpert 'louf', ->
+    DB.ensureExpert 'tmot', ->
     DB.ensureExpert 'gnic', ->
     DB.ensureExpert 'dros', ->
     DB.ensureExpert 'phlf', ->
@@ -12,10 +14,13 @@ module.exports = ->
 
   beforeEach ->
     STUB.SlackCommon()
-    # STUB.wrapper('Slack').cb('getUsers', 'slack_users_list')
-
+    STUB.BraintreeCharge()
 
 
   DESCRIBE "Adm",  -> require("./v1/adm")
+  DESCRIBE "Paymethods",  -> require("./v1/paymethods")
+  DESCRIBE "Orders",  -> require("./v1/orders")
   DESCRIBE "Bookings",  -> require("./v1/bookings")
   DESCRIBE "Mailman",   require("./v1/mailman")
+  DESCRIBE "Jobs", -> require("./v1/jobs")
+  DESCRIBE "Mojo", -> require("./v1/mojo")

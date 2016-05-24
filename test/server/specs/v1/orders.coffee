@@ -1,5 +1,4 @@
-util = require '../../../shared/util'
-OrdersUtil = require '../../../shared/orders'
+OrdersUtil = require '../../../../shared/orders'
 
 creditOrders = ->
 
@@ -241,16 +240,16 @@ bookingOrders = ->
 
 
   IT 'Book 3 hour at 150 from 500 credit', ->
-    STORY.newUser 'usha', {login:true,paymethod:true,location:true}, (s) ->
+    STORY.newUser 'usha', {login:true,paymethod:true,location:true}, (s) =>
       o = total: 500, payMethodId: s.primaryPayMethodId
-      POST "/billing/orders/credit", o, (r) ->
+      POST "/billing/orders/credit", o, (r) =>
         airpair1 = datetime: moment().add(2, 'day'), minutes: 120, type: 'opensource', credit: 500, payMethodId: s.primaryPayMethodId
-        POST "/bookings/#{FIXTURE.experts.dros._id}", airpair1, (booking1) ->
+        POST "/bookings/#{FIXTURE.experts.dros._id}", airpair1, (booking1) =>
           expect(booking1._id).to.exist
           expect(booking1.minutes).to.equal(120)
           expect(booking1.orderId).to.exist
           expect(booking1.type).to.equal('opensource')
-          GET "/billing/orders", (orders1) ->
+          GET "/billing/orders", (orders1) =>
             expect(orders1.length).to.equal(2)
             creditOrder = orders1[1]
             redeemOrder = orders1[0]
@@ -297,11 +296,11 @@ bookingOrders = ->
             expect(lines1.length).to.equal(1)
             expect(availableCredit1).to.equal(240)
             airpair2 = datetime: moment().add(3, 'day'), minutes: 60, type: 'private', credit: 240, payMethodId: s.primaryPayMethodId
-            POST "/bookings/#{FIXTURE.experts.dros._id}", airpair2, (booking2) ->
+            POST "/bookings/#{FIXTURE.experts.dros._id}", airpair2, (booking2) =>
               expect(booking2._id).to.exist
               expect(booking2.minutes).to.equal(60)
               expect(booking2.type).to.equal('private')
-              GET "/billing/orders", (orders2) ->
+              GET "/billing/orders", (orders2) =>
                 expect(orders2.length).to.equal(3)
                 expect(orders2[1].total).to.equal(0)
                 expect(orders2[1].payment.type).to.equal('$0 order')
@@ -310,7 +309,7 @@ bookingOrders = ->
                 availableCredit2 = OrdersUtil.getAvailableCredit(lines2)
                 expect(availableCredit2).to.equal(100)
                 airpair3 = datetime: moment().add(4, 'day'), minutes: 60, type: 'private', credit: 200, payMethodId: s.primaryPayMethodId
-                POST "/bookings/#{FIXTURE.experts.dros._id}", airpair3, { status: 400 }, (err) ->
+                POST "/bookings/#{FIXTURE.experts.dros._id}", airpair3, { status: 403, contentType:/json/ }, (err) =>
                   expect(err.message.indexOf('ExpectedCredit $200')).to.equal(0)
                   DONE()
 
@@ -318,7 +317,7 @@ bookingOrders = ->
   IT 'Fail to Book 1 hour at 150 with no credit or payMethodId', ->
     STORY.newUser 'jasp', {login:true,paymethod:true,location:true}, (s) ->
       airpair = datetime: moment().add(1, 'day'), minutes: 60, type: 'private', credit: 150, payMethodId: s.primaryPayMethodId
-      POST "/bookings/#{FIXTURE.experts.dros._id}", airpair, { status: 400 }, (err, resp) ->
+      POST "/bookings/#{FIXTURE.experts.dros._id}", airpair, { status: 403 }, (err, resp) ->
         expect(err.message.indexOf('ExpectedCredit $150')).to.equal(0)
         DONE()
 
@@ -510,9 +509,6 @@ bookingOrders = ->
 
 prodData = ->
 
-  before -> STUB.analytics.on()
-  after -> STUB.analytics.off()
-
   IT 'Richard can re-book byron', ->
     byrn = FIXTURE.clone('experts.byrn')
     preMigrateRebook = FIXTURE.clone('requests.preMigrateRebook',{omit:'userId'})
@@ -533,25 +529,8 @@ prodData = ->
                 DONE()
 
 
-module.exports = ->
 
-  @timeout 10000
-
-  before (done) ->
-    DB.ensureDoc 'User', FIXTURE.users.admin, ->
-    DB.ensureExpert 'dros', ->
-      DB.removeDocs 'User', { 'auth.gh.id': 1655968 }, ->
-      DB.ensureExpert 'tmot', ->
-        done()
-
-  after ->
-
-
-  beforeEach ->
-    STUB.SlackCommon()
-    STUB.BraintreeCharge()
-
-  DESCRIBE "Credit", creditOrders
-  DESCRIBE "Bookings", bookingOrders
-  DESCRIBE "Prod data", prodData
+DESCRIBE "Credit", creditOrders
+DESCRIBE "Bookings", bookingOrders
+DESCRIBE "Prod data", prodData
 

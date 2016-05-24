@@ -1,5 +1,4 @@
-
-create = ->
+DESCRIBE "Create", ->
 
 
   IT '403 for non authenticated request', ->
@@ -49,32 +48,6 @@ create = ->
           expect(r2.type).to.equal('mentoring')
           DONE()
 
-
-  IT 'Can update a request after verifying email', ->
-    STORY.newUser 'nevk', (s) ->
-      # expect(s.emailVerified).to.be.false
-      d = type: 'troubleshooting', tags: [FIXTURE.tags.node]
-      POST '/requests', d, (r1) ->
-        # spy = STUB.spy(mailman,'sendTemplate')
-        # $log('r1', r1)
-        # PUT "/requests/#{r1._id}/verify", {email:s.email}, {}, (v) ->
-        # expect(spy.callCount).to.equal(1)
-        # expect(spy.args[0][0]).to.equal('user-verify-email')
-        # {hash} = spy.args[0][1]
-        # expect(hash).to.exist
-        # EXPECT.equalIds(spy.args[0][2], r1._id)
-        # PUT '/users/me/email-verify', { hash }, {}, (s1) ->
-          # expect(s1.emailVerified).to.be.true
-        r1.experience = 'proficient'
-        PUT "/requests/#{r1._id}", r1, (r2) ->
-          expect(r2.experience).to.equal('proficient')
-          LOGIN 'admin', {retainSession:false}, ->
-            GET "/adm/requests/user/#{s._id}", (rAdm) ->
-              expect(rAdm.length).to.equal(1)
-              EXPECT.touch(rAdm[0].lastTouch, s._id, 'updateByCustomer')
-              expect(rAdm[0].adm.active).to.be.true
-              expect(rAdm[0].adm.submitted).to.be.undefined
-              DONE()
 
 
   IT 'Submit a full request with emailVerified', ->
@@ -147,7 +120,9 @@ create = ->
                     DONE()
 
 
-review = ->
+
+DESCRIBE "Reply", ->
+
 
   IT 'Review a request as anon, customer and other', ->
     STORY.newUser 'soik', (s) ->
@@ -226,16 +201,3 @@ review = ->
 
 
 
-module.exports = ->
-
-  before (done) ->
-    DB.ensureDoc 'User', FIXTURE.users.admin, ->
-    DB.ensureExpert 'snug', ->
-      done()
-
-  beforeEach ->
-    STUB.SlackCommon()
-
-
-  DESCRIBE "Create", create
-  DESCRIBE "Job", review

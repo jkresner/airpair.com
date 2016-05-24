@@ -89,14 +89,13 @@ module.exports = ->
     global.origMailman     = global.mailman
     global.config.log.mail = true
     global.mailman = require('../../../../server/util/mailman')()
-    # force tmpl cache hack
-    LOGIN 'admin', (s) -> GET '/adm/requests/active', ->
-      done()
+    LOGIN 'admin', (s) ->
+      GET '/adm/requests/active', -> done() # force tmpl cache hack
 
 
   beforeEach ->
     @send = STUB.spy(global.mailman,'send')
-    STUB.BraintreeCharge()
+
 
   after ->
     global.mailman = global.origMailman

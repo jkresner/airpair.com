@@ -22,10 +22,10 @@ module.exports = (userKey, opts, cb) ->
       if (!bookingData.slackChatId)
         cb sessionCustomer, booking
       else
-        LOGIN {key:"admin"}, ->
+        LOGIN "admin", {retainSession:false}, ->
           c = type:'slack',providerId:bookingData.slackChatId
           PUT "/bookings/#{booking._id}/associate-chat", c, (b1) ->
-            LOGIN {key:userKey}, ->
+            LOGIN userKey, {retainSession:false}, ->
               cb sessionCustomer, b1
 
 

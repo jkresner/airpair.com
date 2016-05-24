@@ -42,7 +42,7 @@ module.exports = (app, mw, {abuse}) => {
 
   mw.cache('error', mw.res.error({
     render: { layout:false, about },
-    quiet: _.get(config, 'log.app.quiet'),
+    terse: _.get(config, 'log.app.terse'),
     // formatter: (req, e) => `${e.message}`,
     onError: (req, e) => {
       if (!e.message) e = Error(e)
@@ -57,7 +57,7 @@ module.exports = (app, mw, {abuse}) => {
         console.log('SHEEEET'.red, ERR.stack, e.stack)
       }
 
-      if (e.message.match(/not found/i)) {
+      if (e.message.match(/not found/i) && e.status !== 403) {
         cache.abuse.increment(404, req)
         if (req.ctx.ref && !e.message.match(/<</i))
           e.message = `${e.message} << ${req.ctx.ref}`

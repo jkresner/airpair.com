@@ -176,7 +176,7 @@ slackUsers = ->
 #     stubData = _.extend {}, data.wrappers.slack_createGroup_wPurpose
 #     stubData = _.extend stubData, { purpose: { value: purpose }, name }
 #     stub = SETUP.stubSlack('createGroup', stubData)
-#     {owner,support,pairbot} = config.chat.slack
+#     {owner,support,pairbot} = config.wrappers.chat.slack
 #     members = [owner.id,support.id,pairbot.id]
 #     Wrappers.Slack.createGroup {}, {purpose,name}, members, (e,r)->
 #       expect(r.purpose.value).to.equal(purpose)
