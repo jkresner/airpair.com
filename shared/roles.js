@@ -1,7 +1,7 @@
 var {idsEqual} = require('./util')
 
-var isAdmin = (user) =>
-  user ? _.contains(user.roles, 'admin') : false
+var isAdmin = user =>
+  config.middleware.forbid.nonAdm.allow.match(user._id)
 
 
 var roles = {

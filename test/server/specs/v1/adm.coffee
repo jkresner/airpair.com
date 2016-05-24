@@ -1,4 +1,5 @@
-requestUtil = require('../../../shared/requests')
+qExists = require('../../../../server/services/users.data').query.existing
+requestUtil = require('../../../../shared/requests')
 phlfKey = null
 phlfExp = null
 forAdmin = true
@@ -306,22 +307,6 @@ requests = ->
     #                         DONE()
 
 
-
-module.exports = ->
-
-  before (done) ->
-    qExists = require('../../../server/services/users.data').query.existing
-    DB.ensureDoc 'User', FIXTURE.users.admin, ->
-    DB.removeDocs 'User', qExists.byEmails(['airpairtest1@gmail.com']), ->
-      DB.ensureExpert 'snug', ->
-        DB.ensureExpert 'phlf', ->
-          phlfKey = 'phlf'
-          done()
-
-  beforeEach ->
-    STUB.SlackCommon()
-
-
-  DESCRIBE("Experts: ", experts)
-  SKIP("Request", requests)
+DESCRIBE("Experts: ", experts)
+DESCRIBE.skip("Request", requests)
 

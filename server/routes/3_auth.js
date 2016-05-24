@@ -1,8 +1,8 @@
 module.exports = function(app, mw) {
 
+  app.use('/auth', mw.$.cachedTags)
 
-  app.use('/login', mw.$.noBot, mw.$.session, mw.$.clientPage)
-
+  app.get('/login', mw.$.noBot, mw.$.session, mw.$.clientPage)
 
 
 //   var {localAuth}              = require('../middleware/auth')

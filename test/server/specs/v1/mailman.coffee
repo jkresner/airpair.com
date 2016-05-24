@@ -1,4 +1,5 @@
-raw = ->
+mm = ->
+
 
   IT 'Get rendered markdown without sending', ->
     d = { tagsString: "angularjs", expertFirstName: "Jony", requestByFullName:"Jane Dow",_id:"55371ce4b38fc91937086df7",accountManagerName:"Jonathon Kresner" }
@@ -26,64 +27,6 @@ raw = ->
 
 
 
-
-
-
-
-
-
-#   describe 'Users auto: ', ->
-
-# # 'expert-available'
-# # 'expert-booked'
-# # 'user-password-change'
-# # 'user-signup-nopass'
-# # 'user-verify-email'
-
-#   describe 'Pipeliners auto: ', ->
-
-# # 'pipeliner-notify-addpaymethod'
-# # 'pipeliner-notify-purchase'
-# # 'pipeliner-notify-booking'
-# # 'pipeliner-notify-request'
-# # 'pipeliner-notify-reply'
-# # 'expert-suggest'
-# # 'customer-got-credit'
-
-
-#     it 'Pipeliners notify purchase mass database template to pipeliners', itDone ->
-#       _id = ObjectId("55371ce4b38fc91937086df7")
-#       d = { byName:"Jony 5", total:17332, _id }
-#       mailman.sendGroupMail 'pipeliner-notify-purchase', d, 'pipeliners', (e, r) ->
-#         expect(e).to.be.null
-#         expect(send.callCount).to.equal(1)
-#         mail = send.args[0][0]
-#         # $log('mail'.cyan, mail)
-#         EXPECT.startsWith(mail.subject,'{Payment} $17332 by Jony 5')
-#         # expect(mail.text).to.be.null
-#         # expect(mail.html).to.be.null
-#         expect(mail.to.constructor).to.equal(Array)
-#         expect(send.args[0][1].constructor).to.equal(Function)
-#         expect(send.args[0][2]).to.be.undefined
-#         EXPECT.contains(r.from,'AP <team@airpair.com>')
-#         EXPECT.contains(r.text,'http://adm.airpa.ir/o/55371ce4b38fc91937086df7')
-#         EXPECT.contains(r.text,'$17332')
-#         EXPECT.contains(r.text,'Jony 5')
-#         EXPECT.contains(r.html,'55371ce4b38fc91937086df7')
-#         DONE()
-
-
-#   # it.skip 'Pipeliners notify payment added', itDone ->
-#   #   d = {byName:"Jonyisalive 5"}
-#   #   mailman.send 'pipeliners', 'pipeliner-notify-addpaymethod', d, ->
-
-#     it.skip 'Admin can give credit', itDone ->
-
-
-
-spinners = ->
-
-
   IT 'Expert gets notification on booking', ->
     send = @send
     _id = ObjectId("55555ae4b38fc91937086df7")
@@ -101,6 +44,8 @@ spinners = ->
 
   IT 'Pipeliners notify booking', ->
     send = @send
+    # phlfKey = s.userKey
+    # phlfExp = exp
     STORY.newUser 'phlf', {paymethod:true,login:true}, (s) ->
       airpair1 = datetime: moment().add(2, 'day'), minutes: 120, type: 'private', payMethodId: s.primaryPayMethodId
       POST "/bookings/#{FIXTURE.experts.dros._id}", airpair1, {}, (booking1) ->
@@ -117,10 +62,8 @@ spinners = ->
         DONE()
 
 #   describe 'Posts: ', ->
-
 # # 'post-review-notification'
 # # 'post-review-reply-notification'
-
 #     it 'Sends review notificaton', itDone ->
 #       d =
 #         _id: "541a36c3535a850b00b05697",
@@ -139,30 +82,20 @@ spinners = ->
 #         DONE()
 
 
-#   describe 'Other: ', ->
-# # expert-farm
-
-
-
 module.exports = ->
 
 
   before (done) ->
-    global.origMailman      = global.mailman
+    global.origMailman     = global.mailman
     global.config.log.mail = true
-    DB.ensureExpert 'dros', ->
-      DB.ensureDoc 'User', FIXTURE.users.admin, ->
-        LOGIN 'admin', (s) ->
-          GET '/adm/requests/active', (r) ->
-            # phlfKey = s.userKey
-            # phlfExp = exp
-            global.mailman = require('../../../server/util/mailman')()
-            done()
+    global.mailman = require('../../../../server/util/mailman')()
+    # force tmpl cache hack
+    LOGIN 'admin', (s) -> GET '/adm/requests/active', ->
+      done()
 
 
   beforeEach ->
     @send = STUB.spy(global.mailman,'send')
-    STUB.SlackCommon()
     STUB.BraintreeCharge()
 
   after ->
@@ -170,9 +103,6 @@ module.exports = ->
     global.origMailman = undefined
 
 
-
-
-  DESCRIBE "Raw", raw
-  DESCRIBE "Spinners", spinners
+  DESCRIBE "render", mm
 
 

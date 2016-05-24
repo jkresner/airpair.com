@@ -223,7 +223,7 @@ var newer = {
 
   gnic: {
     "_id" : ObjectId("51ba69f466a6f999a465f3b5"),
-    "emails": { value: "faction.gregory@gmail.com", verified: true, primary: true },
+    "emails": [{ value: "faction.gregory@gmail.com", verified: true, primary: true }],
     "email" : "faction.gregory@gmail.com",
     "emailVerified" : true,
     "name" : "gregorynicholas",
@@ -235,6 +235,28 @@ var newer = {
       "shortName" : "Los Angeles",
       "name" : "Los Angeles, CA, USA"
     },
+    "auth":{
+      gh: {
+        "login" : "gnic",
+        "id" : 11264512,
+        "emails": [{ email: "faction.gregory@gmail.com", verified: true, primary: true }],
+        "avatar_url" : "https://avatars.githubusercontent.com/u/11261012?v=3",
+        "public_repos" : 0,
+        "public_gists" : 0,
+        "followers" : 0,
+        "following" : 0,
+        "created_at" : "2015-03-01T21:12:29Z",
+        "updated_at" : "2015-03-01T22:22:16Z",
+        "private_gists" : 0,
+        "total_private_repos" : 0,
+        "owned_private_repos" : 0,
+        "disk_usage" : 0,
+        "collaborators" : 0,
+        "tokens" : {
+          'apcom': { "token" : "835b520ebd5710972d421cf8c190c59adccf39e7" }
+        }
+      }
+    }
   },
 
   dros: {

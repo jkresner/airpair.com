@@ -182,7 +182,7 @@ var save = {
     //         () => Wrappers.Slack.getIMChats(u.social.sl, print(u))
 
     //     for (var u of users) {
-    //       if (u.social.sl.id != config.chat.slack.jk.io)
+    //       if (u.social.sl.id != config.wrappers.chat.slack.jk.io)
     //       {
     //         read++
     //         _.delay(getIt(u), read*1000)

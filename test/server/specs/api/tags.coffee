@@ -220,17 +220,7 @@ update = ->
           EXPECT.startsWith(err.message, "Cannot change tag slug")
           DONE()
 
-module.exports = ->
 
-  before (done) ->
-    DB.ensureDoc 'User', FIXTURE.users.admin, ->
-      done()
-
-
-  DESCRIBE("Get", get)
-  SKIP("Create", create)
-  SKIP("Update ", update)
-
-
-
-
+DESCRIBE("Get", get)
+SKIP("Create", create)
+SKIP("Update ", update)

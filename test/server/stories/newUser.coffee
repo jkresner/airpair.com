@@ -36,6 +36,7 @@ module.exports = (key, opts, done) ->
 
   user.auth = { gh: DATA.ghProfile(key, true) }
   user.username = user.auth.gh.login
+
   user.key = key+suffix
 
   FIXTURE.users[user.key] = user
@@ -48,12 +49,12 @@ module.exports = (key, opts, done) ->
   # $log('create user'.yellow, user.key.white, user)
   DB.Collections.users.insert user, (e, r) ->
     if (e) then $log('DB.insert.user', e)
-    # $log('STORY.newUser'.yellow, user.key.white, FIXTURE.users[user.key])
     if login
+      # $log('STORY.newUser'.yellow, user.key.white)
       LOGIN user.auth.gh, {retainSession:false}, (session) ->
+        # $log('STORY.newUser.session'.yellow, session, user.key)
         if (paymethodId)
           session.primaryPayMethodId = paymethodId # convinience
-        # $log('STORY.newUser.loggedIn'.yellow, session, user.key)
         done session, user.key
     else
       done user.key

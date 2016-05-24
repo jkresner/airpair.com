@@ -12,9 +12,9 @@
   },
   "mongo": {
     "collections":           ["Users","Experts","Bookings","Orders",
-                             "Companies","Paymethods","Payouts","Posts",
-                             "Requests","Tags","Templates","Views","Impressions",
-                             "Sessions","Events","Campaigns"],
+                             "Paymethods","Payouts","Posts",
+                             "Redirects","Requests","Tags","Templates","Views",
+                             "Impressions","Sessions","Events","Campaigns"],
     "seed": {
       "without":             "FIXTURE.users.jkap",
       "timeout":             30000

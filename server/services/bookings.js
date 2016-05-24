@@ -72,13 +72,13 @@ var get = {
 
   getByIdForParticipant(_id, callback)
   {
-    // $log('getByIdForParticipant'.yellow, _id)
+    // $log('getByIdForParticipant'.yellow, _id, this.user)
     var {query} = this
     if (query && query.refresh) cache.flush('slack_users')
 
     var cb = select.cb.itemIndex(callback)
     Booking.getById(_id, opts.forParticipant, (eee,r) => {
-      r.slackin = config.chat.slackin
+      r.slackin = config.wrappers.chat.slackin
       if (eee) return cb(eee)
       if (!r.order) return cb(null,r) // an edgecase migrated booking from v0 call
       getChat.call(this, r, 'auto', callback, (ee, chat) => {
@@ -335,14 +335,14 @@ var save = {
 
   associateChat(original, type, providerId, cb)
   {
-    ChatsSvc.createSync.call(this, type, providerId, (e,chat)=>{
+    ChatsSvc.createSync.call(this, type, providerId, (e,chat)  =>{
       if (e) return cb(e)
       var {activity,lastTouch} = original
       activity = activity || []
       lastTouch = svc.newTouch.call(this, 'associate-chat')
       activity.push(lastTouch)
       Booking.updateSet(original._id, {chatId:chat._id,activity,lastTouch}, (e,r)=>{
-        get.getByIdForParticipant(original._id, cb)
+        get.getByIdForParticipant.call(this, original._id, cb)
       })
     })
   }

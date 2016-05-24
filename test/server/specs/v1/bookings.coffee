@@ -1,9 +1,7 @@
-BookingUtil = require("../../../shared/bookings")
+BookingUtil = require("../../../../shared/bookings")
 
 util = ->
 
-  beforeEach ->
-    STUB.SlackCommon()
 
   IT "Can get multiTime", ->
     tzBooking = FIXTURE.clone('bookings.timezones')
@@ -71,13 +69,16 @@ views = ->
 
 
   IT 'New booking from request can be viewed by creator', ->
-    STORY.newRequest 'jkgm', {reply:{userKey:'gnic'},book:true}, (r1, b1, sCust, sExp2) ->
+    @timeout(10000)
+    STUB.restoreAll()
+    STUB.BraintreeCharge()
+    STORY.newRequest 'louf', {reply:{userKey:'gnic'},book:true}, (r1, b1, sCust, sExp2) ->
       GET "/bookings/#{b1._id}", (b2) ->
         expect(b2.orderId).to.be.undefined
         expect(b2.order._id).to.exist
         expect(b2.order.paidout is false).to.be.true
         expect(b2.requestId).to.be.undefined
-        EXPECT.equalIds(r1._id,b2.request._id)
+        EXPECT.equalIds(r1._id, b2.request._id)
         expect(b2.request.brief).to.exist
         expect(b2.request.title).to.exist
         expect(b2.request.adm).to.be.undefined
@@ -86,12 +87,11 @@ views = ->
         expect(b2.participants[1].chat, 'participants.chat missing').to.exist
         expect(b2.participants[1].info.name).to.equal('gregorynicholas')
         expect(b2.chat).to.be.undefined
-        LOGIN {key:"admin"}, (sAdm) ->
+        LOGIN "admin", {retainSession:false}, (sAdm) ->
           d = {type:'slack',providerId:"G06UFJCQ2"}
-          # $log('try associate good!!!'.magenta, b1._id)
           PUT "/bookings/#{b1._id}/associate-chat", d, (b3) ->
             expect(b3.chat, 'b3.chat missing').to.exist
-            LOGIN {key:'gnic'}, ->
+            LOGIN 'gnic', {retainSession:false}, ->
               GET "/bookings/#{b1._id}", (b4) ->
                 expect(b4.chat).to.exist
                 DONE()
@@ -105,9 +105,6 @@ scheduling = ->
 
   before ->
     config.wrappers.calendar.on = true
-
-  beforeEach ->
-    STUB.SlackCommon()
 
   after ->
     config.wrappers.calendar.on = false
@@ -270,8 +267,6 @@ scheduling = ->
 
 recordings = ->
 
-  beforeEach ->
-    STUB.SlackCommon()
 
   # describe.skip "YouTube Wrapper", ->
 
@@ -470,27 +465,22 @@ feedback = ->
 
 
 
-module.exports = ->
 
-  @timeout 60000
+# @timeout 60000
 
-  before (done) ->
-    DB.ensureExpert 'gnic', ->
-      DB.ensureExpert 'dros', ->
-        done()
+# before (done) ->
 
-  beforeEach ->
-    cache.slack_users = FIXTURE.wrappers.slack_users_list
-    STUB.BraintreeCharge()
+beforeEach ->
+  cache.slack_users = FIXTURE.wrappers.slack_users_list
+  STUB.BraintreeCharge()
 
-  after ->
-    cache.slack_users = undefined
+after ->
+  cache.slack_users = undefined
 
-
-  SKIP("Util", util)
-  SKIP("Viewing", views)
-  SKIP("Scheduling", scheduling)
-  SKIP("Recordings", recordings)
-  # DESCRIBE("Feedback", feedback)
-  # DESCRIBE("Escrow", escrow)
+DESCRIBE("Util", util)
+DESCRIBE("Viewing", views)
+SKIP("Scheduling", scheduling)
+SKIP("Recordings", recordings)
+# DESCRIBE("Feedback", feedback)
+# DESCRIBE("Escrow", escrow)
 

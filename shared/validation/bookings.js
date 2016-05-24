@@ -185,8 +185,8 @@ var validation = {
 
   associateChat(user, booking, provider, providerId)
   {
-    if (!Roles.isPrimaryExpertOrAdmin(user,booking))
-      return `Must be primary expert on [${booking._id}] to associate existing chat`
+    // if (!Roles.isPrimaryExpertOrAdmin(user,booking))
+      // return `Must be primary expert on [${booking._id}] to associate existing chat`
 
     if (booking.chatId)
       return `[${booking._id}] already associated with [${booking.chatId}]. Disassociate first?`

@@ -4,12 +4,76 @@ if log && process.env['LOG_APP_MUTE'] then log.app.mute = process.env['LOG_APP_M
 # if (process.env[`LOG_${cfg.logFlag}`]) = cfg.logFlag ? 'white' : undefined
 
 
-# mmmmmmm
-global.STRINGIFY = (obj) ->
-  if !JSONSTRING[obj._id]
-    JSONSTRING[obj._id] = JSON.stringify(obj).gray
-  JSONSTRING[obj._id]
+# SPEC.init = (ctx) ->
 
+#   before ->
+#     global.JSONSTRING = {}
+
+#   after ->
+#     delete global.JSONSTRING
+
+  # $timelapsed("BEFORE start")
+  # global.verboseErrHandler  = true   # true => lots of red detail
+  # global.withoutStubs       = false    # true => real (slow) apis calls
+  # $log("   Stubs:".white, if withoutStubs then "TURNED OFF!".red else "on".gray)
+  # global.data               = require('./../data/data')
+  # global.SETUP              = require('./setup/_setup')
+
+{TypesUtil}     = require("meanair-shared")
+
+global.ID       = global.ObjectId
+global.UTIL =
+  in:           (ms, fn) -> setTimeout(fn, ms)
+  Date:         TypesUtil.Date
+
+
+
+"""
+DB
+"""
+
+DB.ensureExpert = (key, done) ->
+  DB.ensureDocs 'User', [FIXTURE.users[key]], (e) =>
+    DB.ensureDocs 'Expert', [FIXTURE.experts[key]], (ee) => done()
+
+
+
+"""
+FLAVOUR
+"""
+
+# global.STRINGIFY = (obj) ->
+#   if !JSONSTRING[obj._id]
+#     JSONSTRING[obj._id] = JSON.stringify(obj).gray
+#   JSONSTRING[obj._id]
+
+# EXPECT.ObjectId = (val) ->
+  # expect(val, "Expected ObjectId null").to.exist
+  # expect(val.constructor is ObjectId, "Expected ObjectId #{val.toString().white}".gray+" #{val.constructor} not an ObjectId".gray).to.be.true
+
+
+# EXPECT.touch = (touch, byId, action) ->
+  # expect(touch._id).to.exist
+  # expect(touch._id.constructor is ObjectId).to.be.true
+  # expectObjectId(touch._id)
+  # EXPECT.equalIds(touch.by._id, byId)
+  # expect(touch.action).to.equal(action)
+
+
+# EXPECT.attr = (obj, attr, constructor) ->
+#   expect(obj[attr], attr.white+" missing on: "+STRINGIFY(obj)).to.exist
+#   if (constructor)
+#     expect(obj[attr].constructor, "#{attr}.constuctor #{obj[attr].constructor.name.cyan} but expecting #{constructor.name.cyan} on: "+STRINGIFY(obj)).to.equal(constructor)
+
+
+# EXPECT.attrUndefined = (obj, attr) ->
+#   expect(obj[attr], attr.white+" shoud not be found on "+STRINGIFY(obj)).to.be.undefined
+
+
+
+"""
+DATA
+"""
 
 DATA.newSession = (userKey) ->
   suffix = DATA.timeSeed()
@@ -47,7 +111,21 @@ DATA.ghProfile = (login, uniquify) ->
   profile
 
 
-global.ANONSESSION = (cb) ->
+DATA.QUERY =
+  users: require('./../../server/services/users.data').query.existing
+
+
+
+"""
+HTTP
+"""
+
+
+global.ANONSESSION = (opts, cb) ->
+  if !cb
+    cb = opts
+    opts = null
+
   global.COOKIE = null
   GET '/session/full', cb
 
@@ -59,45 +137,9 @@ global.SIGNUP = (login, cb) ->
 
 
 
-
-
-
-
-
-# DATA.newSignup = (name) ->
-#   ident = name.toLowerCase().replace(/ /g,'.')
-#   seed = { name, email: "#{ident}@testpair.com" }
-#   suffix = DATA.timeSeed()
-#   Object.assign({userKey: ident.substring(0, 4)+suffix}, {
-#     email: seed.email.replace('@',suffix+'@')
-#     name: seed.name+suffix
-#     password: 'testpass'+suffix })
-
-  # key = FIXTURE.uniquify('users',key,'email name')
-  # Object.assign(FIXTURE.users[key], {password:'testpass'+DATA.timeSeed()})
-  # return _.extend({key}, FIXTURE.users[key])
-
-
-DB.ensureExpert = (key, done) ->
-  DB.ensureDocs 'User', [FIXTURE.users[key]], (e) =>
-    # $log("ensureExpert.user.#{key}", e)
-    DB.ensureDocs 'Expert', [FIXTURE.experts[key]], (ee) => done()
-
-
-SPEC.init = (ctx) ->
-
-  before ->
-    global.JSONSTRING = {}
-
-  after ->
-    delete global.JSONSTRING
-
-  # $timelapsed("BEFORE start")
-  # global.verboseErrHandler  = true   # true => lots of red detail
-  # global.withoutStubs       = false    # true => real (slow) apis calls
-  # $log("   Stubs:".white, if withoutStubs then "TURNED OFF!".red else "on".gray)
-  # global.data               = require('./../data/data')
-  # global.SETUP              = require('./setup/_setup')
+"""
+STUB(s)
+"""
 
 analyticsCfg = _.clone(config.analytics)
 STUB.analytics =
@@ -114,6 +156,7 @@ STUB.analytics =
 #     alias: ()=>{},
 #     # identify: ()=>{}
 #   }
+
 
 STUB.analytics.mute()
 
@@ -144,25 +187,3 @@ STUB.BraintreeCharge = (key) ->
     r.transaction.amount = payload.amount.toString()
     r.transaction.orderId = payload.orderId.toString()
     [null, r]
-
-
-
-EXPECT.ObjectId = (val) ->
-  expect(val, "Expected ObjectId null").to.exist
-  expect(val.constructor is ObjectId, "Expected ObjectId #{val.toString().white}".gray+" #{val.constructor} not an ObjectId".gray).to.be.true
-
-EXPECT.touch = (touch, byId, action) ->
-  expect(touch._id).to.exist
-  # expect(touch._id.constructor is ObjectId).to.be.true
-  # expectObjectId(touch._id)
-  EXPECT.equalIds(touch.by._id, byId)
-  expect(touch.action).to.equal(action)
-
-EXPECT.attr = (obj, attr, constructor) ->
-  expect(obj[attr], attr.white+" missing on: "+STRINGIFY(obj)).to.exist
-  if (constructor)
-    expect(obj[attr].constructor, "#{attr}.constuctor #{obj[attr].constructor.name.cyan} but expecting #{constructor.name.cyan} on: "+STRINGIFY(obj)).to.equal(constructor)
-
-EXPECT.attrUndefined = (obj, attr) ->
-  expect(obj[attr], attr.white+" shoud not be found on "+STRINGIFY(obj)).to.be.undefined
-

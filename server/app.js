@@ -1,9 +1,7 @@
 function run({config,MAServer,tracking}, done) {
 
   config.about = _.omit(config.about,'scripts','engines','dependencies','devDependencies','private','license')
-  config.routes.redirects.on = true
-  config.routes.rss.on = config.routes.rss.on === 'true' ? true : false
-  // console.log('config', _.omit(config,'wrappers','auth','logic'))
+  global.config = config
 
   var app               = MAServer.App(config, done)
   var analytics         = MAServer.Analytics(config, tracking)
@@ -12,7 +10,7 @@ function run({config,MAServer,tracking}, done) {
 
   model.connect(() => {
 
-    global.DAL = model.DAL
+    global.DAL = assign(model.DAL,{ENUM:model.Enum})
     global.cache = model.cache
     require('./util/cache')
 
@@ -28,15 +26,13 @@ function run({config,MAServer,tracking}, done) {
     global.svc = { newTouch(action) { return { action, _id: DAL.User.newId(),
       utc: new Date(), by: { _id: this.user._id, name: this.user.name } } } }
 
+    cache.get('httpRules', API.Redirects.svc.getForCache, () =>
 
-    cache.get('redirects',
+      app.meanair.set(model, {analytics})
+                 .merge(Auth)
+                 .chain(config.middleware, config.routes)
+                 .run()
 
-      cb => config.routes.redirects ? DAL.Redirect.getAll(cb) : cb(null,[]),
-
-      () => app.meanair.set(model, {analytics})
-                       .merge(Auth)
-                       .chain(config.middleware, config.routes)
-                       .run()
     )
 
   })

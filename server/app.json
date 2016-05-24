@@ -97,15 +97,16 @@
       "bot": {
         "ok": "sogou|googlebot|bing",
         "all": "scraper|spider|bot|googlebot|Tweetmeme|Turnitin|SMTBot|MegaIndex|Domain Re-Animator|Toutiao|uk_lddc_bot|MJ12bot|CPython|libwww-perl|Superfeedr|Mechanize|AdsBot-Google|gurujibot|bitlybot|twitterbot|scritch|yandexbot|slurp|msnbot|bingbot|rogerbot|MetaURI|Hatena|PaperLiBot|QuerySeekerSpider|AhrefsBot|EmailMarketingRobot|ShowyouBot|Baiduspider|YisouSpider|facebookexternalhit|archive.org_bot|Y!J-ASR",
-        "bad": "scraper|panscient.com|MegaIndex|NetShelter|DarcyRipper|Go-http-client|SeznamBot|Feedly|datasift|uk_lddc_bot|MJ12bot|CPython|libwww-perl|Superfeedr|Nutch|Mechanize|cf-news|Dataprovider",
+        "bad": "scraper|ltx71|panscient.com|MegaIndex|NetShelter|DarcyRipper|Go-http-client|SeznamBot|Feedly|datasift|uk_lddc_bot|MJ12bot|CPython|libwww-perl|Superfeedr|Nutch|Mechanize|cf-news|Dataprovider",
         "reader": "Blogtrottr|Windows-RSS|Tiny RSS|SimplePie"
       },
-      "uId":                   true,
-      "dirty": {
-        "urlstale":            "android/rss feed rails/consulting static/styles"
-      }
+      "uId":                   true
     },
     "dirs":                    "mw",
+    "forbid": {
+      "abuse":                 { "limit": 6 },
+      "nonAdm":                { "allow": "54551be15f221efa174238d1" }
+    },
     "livereload":              { "port": 35729 },
     "session": {
       "authdData":            "_id name email username avatar",
@@ -129,9 +130,11 @@
     },
     "tags": {
       "dir":                   "web/public/img/tag",
-      "top":                   "angularjs,aws,firebase,python,node.js,android,selenium,reactjs,ruby,ruby-on-rails,mean-stack,javascript"
+      "top":                   "angularjs,android,aws,docker,ember.js,firebase,javascript,keen-io,mean-stack,mongodb,neo4j,node.js,python,php,reactjs,rethinkdb,ruby,ruby-on-rails,selenium,swift,twilio"
     },
-    "redirects":               { "on": true },
+    "redirects": {
+      "on":                    true
+    },
     "rss": {
       "on":                    true,
       "urls":                  "atom,data.atom,data.rss,rss/posts,rss/workshops,.rss,rss.xml,rss"

@@ -21,7 +21,7 @@ newCompleteRequest = (userKey, requestData, cb) ->
 
 
 requestForAdmin = (sCust, userKey, r, cb) ->
-  LOGIN {key:'admin'}, ->
+  LOGIN 'admin', ->
     GET "/adm/requests/user/#{r.userId}", (rAdm) ->
       expect(r.status).to.equal('received')
       expect(rAdm.length).to.equal(1)
@@ -62,10 +62,12 @@ module.exports = (custKey, opts, done) ->
     else if !opts.reply
       done request, custSession
     else
-      LOGIN {key:opts.reply.userKey,retainSession:false}, (expertSession) ->
+      # $log('STORY.newRequest'.yellow, custKey, request._id, opts.reply.userKey)
+      LOGIN opts.reply.userKey, {retainSession:false}, (expertSession) ->
+        # $log('STORY.newRequest'.yellow, expertSession)
         expertId = FIXTURE.experts[opts.reply.userKey]._id
         request.suggested = [{
-          _id: DATA.newId(),
+          _id: ID(),
           expert: { _id: ObjectId(expertId) },
           expertComment: "I'll take it",
           expertAvailability: "Real-time",
@@ -76,7 +78,7 @@ module.exports = (custKey, opts, done) ->
           if !opts.book
             done r1, custSession, expertSession
           else
-            LOGIN {key:custKey}, ->
+            LOGIN custKey, {retainSession:false}, ->
               GET "/requests/#{request._id}/book/#{expertId}", (r2) ->
                 airpair1 = datetime: moment().add(2, 'day'), minutes: 60, type: 'private', payMethodId: custSession.primaryPayMethodId, request: { requestId: request._id, suggestion: r2.suggested[0] }
                 POST "/bookings/#{expertId}", airpair1, (booking) ->

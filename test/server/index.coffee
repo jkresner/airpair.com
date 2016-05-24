@@ -1,28 +1,25 @@
-OPTS = {}
-OPTS.onReady = -> require('./helpers')
-OPTS.login =
-  clearSessions: false
-  testUrl: '/auth/test/login'
-  testHandler: (req, res, cb) ->
-    profile = if req.body.key then DATA.ghProfile(req.body.key) else req.body
-    token = _.get(profile,"tokens.apcom.token") || "test"
-    # $log('testHandler', profile.emails)
-    config.auth.test.loginFn.call req, 'github', profile, {token}, cb
-
-
-SCREAM = require('meanair-scream')(__dirname, OPTS)
-
+SCREAM                       = require('meanair-scream')
 
 appRoot                      = __dirname.replace('test', '')
 MAServer                     = require('meanair-server')
 tracking                     = require('../../server/app.track')
 config                       = MAServer.Config(appRoot, 'test', true)
-config.auth.test             = loginFnName: 'loginCust'
+config.test = auth:
+  login:                     { fnName: 'loginCust', url: '/auth/test/login' }
 
 
-if config.log.app.verbose
-  config.log.mw.trace = 'white'
+
+OPTS =
+  setup:                    done: -> require('./helpers')
+  login:
+    clearSessions:          false
+    test:                   config.test.auth.login
+    fn: (data, cb) ->
+      profile = if data.key then DATA.ghProfile(data.key) else data
+      token = _.get(profile,"tokens.apcom.token") || "test"
+      # $log('fn.profile', profile.login, config.test.auth.login.fn)
+      config.test.auth.login.fn.call @, 'github', profile, {token}, cb
 
 
-SCREAM.run({ config, MAServer, tracking },
-           done: (e) => console.log('test.err', e) if e)
+SCREAM(OPTS).run (done) ->
+  require('../../server/app').run { config, MAServer, tracking }, done
