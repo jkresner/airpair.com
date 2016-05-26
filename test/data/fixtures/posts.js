@@ -730,6 +730,55 @@ module.exports = {
         "commit" : "613d60ea55325d483117011996534e9db0647ed2"
       }
     }
+  },
+
+  angg: {
+    "_id" : ObjectId("542c4b4f8e66ce0b00c885a4"),
+    "assetUrl" : "https://i.imgur.com/GA8g15e.jpg",
+    "by" : {
+        "_id" : ObjectId("527280b766a6f999a465fa9e"),
+        "name" : "Todd Motto",
+        "email" : "todd@toddmotto.com",
+        "avatar" : "https://avatars.githubusercontent.com/u/1655968?v=3",
+        "bio" : "Todd Motto is a Google Developer Expert, Lead Front-End Engineer at Appsbroker, conference speaker and open source evangelist. His award-winning Javascript tool Conditionizr was .NET Magazine's Open Source Project of the Year finalist.",
+        "links" : {
+            "gh" : "toddmotto",
+            "so" : "http://stackoverflow.com/users/3198969/todd-motto",
+            "in" : "hw_opPXmqj",
+            "tw" : "toddmotto",
+            "gp" : "104675806858920385950"
+        }
+    },
+    "md" : "## 1 Intro to AngularJS\nAngular is a client-side MVW JavaScript framework for writing compelling web applications. It's built and maintained by Google and offers a futuristic spin on the web and its upcoming features and standards.\n\nMVW stands for Model-View-Whatever, which gives us flexibility over design patterns when developing applications. We might choose an MVC (Model-View-Controller) ",
+    "slug" : "angularjs-tutorial",
+    "tags" : [
+        {
+            "_id" : ObjectId("5149dccb5fc6390200000013"),
+            "name" : "AngularJS",
+            "slug" : "angularjs"
+        }
+    ],
+    "title" : "AngularJS Tutorial: A Comprehensive 10,000 Word Guide",
+    "htmlHead" : {
+        "title" : "AngularJS Tutorial: a comprehensive 10,000 word guide",
+        "canonical" : "http://www.airpair.com/angularjs",
+        "ogType" : "article",
+        "ogTitle" : "AngularJS Tutorial: a comprehensive 10,000 word guide",
+        "ogVideo" : null,
+        "ogUrl" : "http://www.airpair.com/angularjs",
+        "ogDescription" : "Written by Google Developer Expert (GDE) Todd Motto, this Angular tutorial serves as an ultimate resource for learning AngularJS.",
+        "description" : "Written by Google Developer Expert (GDE) Todd Motto, this Angular tutorial serves as an ultimate resource for learning AngularJS.",
+        "ogImage" : "https://i.imgur.com/GA8g15e.jpg"
+    },
+    "history" : {
+      "created" : ISODate("2014-10-01T18:43:27.202Z"),
+      "updated" : ISODate("2015-02-03T18:11:28.825Z"),
+      "published" : ISODate("2014-10-03T02:21:49.051Z"),
+      "live" : {
+        "published" : ISODate("2014-10-03T02:21:49.051Z"),
+        "by" : ObjectId("5175efbfa3802cc4d5a5e6ed")
+      }
+    }
   }
 
 }

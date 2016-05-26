@@ -120,10 +120,7 @@
 
 <footer class="postfooter {{#if showDisqus }}afterdisqus{{/if}}">
   <h5>Tagged under</h5>
-  <ul class="posttags">{{#each tags}}
-    <li><a href="/posts/tag/{{ slug }}" target="_self">{{ slug }}</a></li>
-  {{/each}}
-  </ul>
+  <ul class="posttags">{{#each tags}}<li><a href="/posts/tag/{{ slug }}" target="_self" title="{{name}} tutorials & {{short}} guides">{{ slug }}</a></li>{{/each}}</ul>
 
   {{#if published }}
   <div class="share-horizontal">
@@ -154,11 +151,7 @@
       <img class="entry-header-image" itemprop="image" src="{{ htmlHead.ogImage }}" align="left" />
       <div class="glass"></div>
       <p>
-        <span class="entry-categories">
-        {{#each tags}}
-          <em>{{ slug }}</em>
-        {{/each}}
-        </span>
+        <span class="entry-categories">{{#each tags}}<em>{{ slug }}</em>{{/each}}</span>
         {{ htmlHead.description }}
       </p>
     </header>

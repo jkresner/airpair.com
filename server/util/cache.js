@@ -59,10 +59,10 @@ cache.tmpl = function(type, key, cb)
 cache.tagBySlug = function(slug)
 {
   if (!cache['tag_slugs']) {
-    // $log('building.cache.tag_slugs', Object.keys(cache.tags).length)
+    // $log('building.cache.tag_slugs', cache.tags)
     cache['tag_slugs'] = {}
-    Object.keys(cache.tags).forEach( id =>
-      cache['tag_slugs'][cache.tags[id].slug] = cache.tags[id])
+    for (var key in cache.tags)
+      cache['tag_slugs'][cache.tags[key].slug] = cache.tags[key]
   }
 
   return cache['tag_slugs'][slug]

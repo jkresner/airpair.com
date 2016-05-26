@@ -18,11 +18,11 @@ module.exports = {
         '^/static/img/icons/gh-white.png',
         'airconf-promo'                         ].map( previous => ({type:'410',previous}) ),
 
-       [//{ type: '301', previous: '^/logout', current: '/auth/logout'},
-        //{ type: '301', previous: '/c\\+\\+', current: '/posts/tag/c++'},
+       [{ type: '301', previous: '^/logout', current: '/auth/logout'},
         { type: '301', previous: '/author/*', current: '/software-experts'},
-        { type: '301', previous: 'workshops', current: '/workshops'}
-        ],
+        { type: '301', previous: 'workshops', current: '/workshops'},
+        { type: '301', previous: '/c\\+\\+', current: '/posts/tag/c++'},
+       ],
 
        ['images/pages/marketing',
         'images/landing/airconf',
@@ -36,7 +36,8 @@ module.exports = {
 
 
       for (var {type,previous,current} of all)
-        r[type].push({match:(previous+'$').replace('*$','*'),to:current})
+        r[type].push({to: current,
+          match: `${previous}${type.match('canonical')?'':'$'}`.replace('*$','*') })
 
       cb(null, r)
     })

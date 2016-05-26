@@ -54,6 +54,16 @@ global.HTML = ({test}, match, opts) =>
       expect(html).to.have.string('<meta name="robots" content="index, follow">')
     DONE()
 
+global.REDIRECT = ({test}, to, opts) =>
+  status = (opts||{}).status || 301
+  PAGE test.title, { contentType: /text/, status }, (txt) =>
+    if status == 301
+      expect(txt).to.have.string("Moved Permanently\. Redirecting to #{to}")
+    if status == 302
+      expect(txt).to.have.string("Found\. Redirecting to #{to}")
+    DONE()
+
+
 # global.STRINGIFY = (obj) ->
 #   if !JSONSTRING[obj._id]
 #     JSONSTRING[obj._id] = JSON.stringify(obj).gray
@@ -139,13 +149,13 @@ global.ANONSESSION = (opts, cb) ->
     opts = null
 
   global.COOKIE = null
-  GET '/session/full', cb
+  GET '/session/full', {unauthenticated:true}, cb
 
 
 global.SIGNUP = (login, cb) ->
   profile = DATA.ghProfile login, true
   FIXTURE.users[profile.login] = {auth:{gh:profile}}
-  LOGIN profile, cb
+  LOGIN profile, {retainSession:true}, cb
 
 
 

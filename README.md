@@ -34,26 +34,10 @@ DEPLOY PRIMARY - STEPS
 
 
 CRITICAL ADSERVE FEATURES
-[ ]-- ROI REPORT
-[ ]- Deploy adserve
-[✓]-- Pass tests
 [ ]-- Run through pages
-[ ]-- Use stylesheets from static server
 [ ]- Deploy author
 
 
-SMOKE TEST
-- BROWSE ANON
-[ ]- /
-[ ]- /tos
-[ ]- /angularjs
-[ ]- /posts/tag/angularjs 
-[ ]- /posts/tag/redis
-[ ]- /software-experts
-[ ]- /javascript
-[ ]- /posts/tag/javascript ?
-[ ]- /js/javascript-framework-comparison
-[ ]- /angularjs/posts/transclusion-template-scope-in-angular-directives
 - AUTHD NEW
 [ ]- /software-experts 
 [ ]- /account
@@ -139,11 +123,6 @@ OTHER APCOM FEATURES TO TEST
 
 ===========================================================
 
-
-[ ]-- meanair-server 
-[ ]--- honey.Router (overrised GET/set and uses chain helpers to overcome use shit)
-
-
 NON-CRITICAL FEATURES
 [ ]----- POSTReview delete
 [ ]----- POSTReview upvote/downvote
@@ -189,7 +168,6 @@ NON-CRITICAL FEATURES
 AIRPAIRCOM CODE
 [✓]- Review wishlist
 [ ]--- remove global.util in app.js + _.wrapFnList
-[-]--- move config.chat to => wrappers.slack
 [-]--- clean out /shared/validations /shared/mail /shared/util
 
 MEANAIR CODE

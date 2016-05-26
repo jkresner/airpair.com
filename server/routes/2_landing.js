@@ -40,14 +40,20 @@ module.exports = function(app, mw, {tags}) {
       _id: Id("5706abc347ba64cb164bec10"),
       key: 'workshops',
       url: '/workshops',
-      htmlHead: { title: "Software Workshops, Webinars & Screencasts" },
+      htmlHead: {
+        canonical: 'https://www.airpair.com/workshops',
+        title: "Software Workshops, Webinars & Screencasts"
+      },
       lineup: cache.workshops
     },
     posts: {
       _id: Id("5706abc347ba64cb164bec08"),
       key: 'posts',
       url: '/software-experts',
-      htmlHead: { title: "Software Programming Guides and Tutorials from Top Software Experts and Consultants" }
+      htmlHead: {
+        canonical: 'https://www.airpair.com/software-experts',
+        title: "Software Programming Guides and Tutorials from Top Software Experts and Consultants"
+      }
     },
     tag: {
       _id: Id("5706abc347ba64cb164bec18"),
@@ -71,7 +77,7 @@ module.exports = function(app, mw, {tags}) {
     var canonical = `https://www.airpair.com/posts/tag/${tag.slug}`
     req.locals.htmlHead = assign({}, req.locals.r.htmlHead, {
       title:`${tag.name} Programming Guides and Tutorials from Top ${tag.short} Developers and expert consultants`,
-      canonical: tags.top.indexOf(tag.slug) == -1 ? canonical : canonical.replace('/posts/tag','')
+      canonical: tags.top.indexOf(tag.slug) == -1 || tag.slug == 'angularjs' ? canonical : canonical.replace('/posts/tag','')
     })
     getPostsByTag.exec(tag, (e,r) => next(e,
       assign(req.locals.r, tag, {latest:getPostsByTag.project(r)}, {url:req.originalUrl})))
@@ -86,20 +92,20 @@ module.exports = function(app, mw, {tags}) {
     .get('/', mw.$.inflateLanding('home'),
       mw.res.forbid('home!anon', function({user}) { if (user) return 'authd' }, { redirect: req => '/home' }))
 
+    .get(tags.top.split('|').map(slug=>`/${slug}$`).concat(`/posts/tag/:tagslug$`),
+      mw.$.cachedTags, mw.$.inflateLanding('tag'), tagPageData)
+
     .get('/software-experts', mw.$.inflateLanding('posts'),
       mw.$.cachedPublished, mw.$.inflateAds,
       (req, res, next) => next(null, assign(req.locals.r, cache.published)) )
 
     .get('/100k-writing-competition', mw.$.inflateLanding('comp2015'))
 
-    .get(['/airconf','airconf2014','/workshops'],
-      mw.$.inflateLanding('workshops'),
-      mw.$.inflateAds)
+    .get('/workshops', mw.$.inflateLanding('workshops'), mw.$.inflateAds)
 
-    .get(`/posts/tag/:tagslug`, mw.$.cachedTags, mw.$.inflateLanding('tag'), tagPageData)
 
-  tags.top.split(' ').forEach(slug => router
-    .get(`/${slug}`, mw.$.cachedTags, mw.$.inflateLanding('tag'), tagPageData) )
+  // tags.top.split(' ').forEach(slug => router
+    // .get(`/()`,) )
 
 
 

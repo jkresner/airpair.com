@@ -33,13 +33,17 @@ module.exports = (app, mw, cfg) => {
   }))
 
 
-  mw.cache('noBot', mw.req.noCrawl({content:'',
+  mw.cache('noBot', mw.req.noCrawl({
+    group: 'null|search|ban|lib|proxy|reader|uncategorized',
+    content:'',
     onDisallow(req) {
       // $log('TODO... write crawl issue to analytics db or similar')
     }}))
 
 
-  mw.cache('badBot', mw.req.noCrawl({group:'bad|ua:none',content:'',
+  mw.cache('badBot', mw.req.noCrawl({
+    content:'',
+    group: 'null|search|ban|lib|proxy|reader|uncategorized',
     onDisallow(req) {
       // $log('TODO... write crawl issue to analytics db or similar')
     }}))

@@ -1,5 +1,4 @@
 module.exports = ({meanair}, mw) => {
-
   var {logic} = meanair
 
 
@@ -24,7 +23,6 @@ module.exports = ({meanair}, mw) => {
     for (var arg in req.params) args.unshift(req.params[arg])
     var inValid = logic[group][fn].validate.apply(this, _.union([req.user],args))
     if (inValid) return next(inValid)
-    // $log('mw.logic'.yellow, args)
     logic[group][fn].exec.apply(this, args)
   })
 

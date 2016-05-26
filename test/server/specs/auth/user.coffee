@@ -35,7 +35,7 @@ update = ->
 
   IT 'Change name', ->
     STORY.newUser 'snug', (s) ->
-      EXPECT.startsWith(s.name, "Ra'Shaun")
+      expect(s.name).to.match(/^Ra'Shaun/)
       PUT '/users/me/name', { name: 'Godly Jacob' }, (u1) =>
         expect(u1.name).to.equal('Godly Jacob')
         DONE()
