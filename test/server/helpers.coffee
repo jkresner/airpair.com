@@ -42,6 +42,18 @@ DB.ensureExpert = (key, done) ->
 FLAVOUR
 """
 
+global.HTML = ({test}, match, opts) =>
+  status = (opts||{}).status || 200
+  nomatch = (opts||{}).no || []
+  PAGE test.title, { contentType: /html/, status }, (html) =>
+    expect(html).match(pattern) for pattern in match
+    expect(html).not.match(pattern) for pattern in nomatch
+    if test.parent.title.match(/noindex/i)
+      expect(html).to.have.string('<meta name="robots" content="noindex, follow">')
+    else if test.parent.title.match(/index/i)
+      expect(html).to.have.string('<meta name="robots" content="index, follow">')
+    DONE()
+
 # global.STRINGIFY = (obj) ->
 #   if !JSONSTRING[obj._id]
 #     JSONSTRING[obj._id] = JSON.stringify(obj).gray

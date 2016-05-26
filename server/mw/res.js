@@ -9,6 +9,7 @@ module.exports = (app, mw, {abuse}) => {
   mw.cache('adminPage', mw.res.page('admin', pageOpts('admin')))
 
   mw.cache('clientPage', function(req,res,next) {
+    req.locals.noindex = true
     if (req.user) req.user = _.pick(req.user,'_id','name','location','avatar')
     mw.res.page('client', pageOpts(false))(req, res, next)
   })
@@ -19,6 +20,7 @@ module.exports = (app, mw, {abuse}) => {
   })
 
   mw.cache('postPage', function(req,res,next) {
+    if (req.locals.r.tmpl == 'faq') req.locals.noindex = true
     mw.res.page(req.locals.r.tmpl, pageOpts('hybrid'))(req,res,next)
   })
 
