@@ -4,24 +4,8 @@ if log && process.env['LOG_APP_MUTE'] then log.app.mute = process.env['LOG_APP_M
 # if (process.env[`LOG_${cfg.logFlag}`]) = cfg.logFlag ? 'white' : undefined
 
 
-# SPEC.init = (ctx) ->
-
-#   before ->
-#     global.JSONSTRING = {}
-
-#   after ->
-#     delete global.JSONSTRING
-
-  # $timelapsed("BEFORE start")
-  # global.verboseErrHandler  = true   # true => lots of red detail
-  # global.withoutStubs       = false    # true => real (slow) apis calls
-  # $log("   Stubs:".white, if withoutStubs then "TURNED OFF!".red else "on".gray)
-  # global.data               = require('./../data/data')
-  # global.SETUP              = require('./setup/_setup')
 
 {TypesUtil}     = require("meanair-shared")
-
-global.ID       = global.ObjectId
 global.UTIL =
   in:           (ms, fn) -> setTimeout(fn, ms)
   Date:         TypesUtil.Date
@@ -114,6 +98,7 @@ DATA.defaultGH = (name, login, suffix) ->
   profile.name = profile.name || name || login
   profile.emails = [{email:profile.email,verified:true,primary:true}]
   profile
+
 
 DATA.ghProfile = (login, uniquify) ->
   suffix = DATA.timeSeed()

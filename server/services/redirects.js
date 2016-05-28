@@ -22,9 +22,10 @@ module.exports = {
 
         // { match: '%E2%80%A6', to: '' },
         // { match: '%20%e2%80%a6', to: '' },
-        // { match: /%20\.\.\./i, to: '%20...' }  //?
+         //?
         // { match: /\.\.\./, to: '' },
-       [{ type:'rewrite', previous: '^/static/img/pages/postscomp/(prize|logo)-', current: '/img/software/' },
+       [//{ type:'rewrite', previous: '(...)+', current: '' },
+        { type:'rewrite', previous: '/static/img/pages/postscomp/((prize)|(logo))+-', current: '/img/software/' },
         // { type:'rewrite', previous: '\\.\\.\\.', current: '' }
         ],
 
@@ -49,8 +50,7 @@ module.exports = {
 
 
       for (var {type,previous,current} of all)
-        r[type].push({to: current,
-          match: `${previous}` })  //${type.match('canonical')?'':'$'}`.replace('*$','*')
+        r[type].push({to:`${current}`, match: previous })  //${type.match('canonical')?'':'$'}`.replace('*$','*')
 
       if (!cfg.posts) return cb(null, r)
 
