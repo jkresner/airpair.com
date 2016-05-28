@@ -1,4 +1,5 @@
-module.exports = function(app, mw, {tags}) {
+module.exports = function(app, mw, {landing}) {
+  if (!landing) return
 
   if (config.env != 'dev')
     cache.workshops = require('../services/workshops').getAllForCache()
@@ -77,7 +78,7 @@ module.exports = function(app, mw, {tags}) {
     var canonical = `https://www.airpair.com/posts/tag/${tag.slug}`
     req.locals.htmlHead = assign({}, req.locals.r.htmlHead, {
       title:`${tag.name} Programming Guides and Tutorials from Top ${tag.short} Developers and expert consultants`,
-      canonical: tags.top.indexOf(tag.slug) == -1 || tag.slug == 'angularjs' ? canonical : canonical.replace('/posts/tag','')
+      canonical: landing.tags.top.indexOf(tag.slug) == -1 || tag.slug == 'angularjs' ? canonical : canonical.replace('/posts/tag','')
     })
     getPostsByTag.exec(tag, (e,r) => next(e,
       assign(req.locals.r, tag, {latest:getPostsByTag.project(r)}, {url:req.originalUrl})))
@@ -92,7 +93,7 @@ module.exports = function(app, mw, {tags}) {
     .get('/', mw.$.inflateLanding('home'),
       mw.res.forbid('home!anon', function({user}) { if (user) return 'authd' }, { redirect: req => '/home' }))
 
-    .get(tags.top.split('|').map(slug=>`/${slug}$`).concat(`/posts/tag/:tagslug$`),
+    .get(landing.tags.top.split('|').map(slug=>`/${slug}`).concat(`/posts/tag/:tagslug$`),
       mw.$.cachedTags, mw.$.inflateLanding('tag'), tagPageData)
 
     .get('/software-experts', mw.$.inflateLanding('posts'),
@@ -102,11 +103,6 @@ module.exports = function(app, mw, {tags}) {
     .get('/100k-writing-competition', mw.$.inflateLanding('comp2015'))
 
     .get('/workshops', mw.$.inflateLanding('workshops'), mw.$.inflateAds)
-
-
-  // tags.top.split(' ').forEach(slug => router
-    // .get(`/()`,) )
-
 
 
 }

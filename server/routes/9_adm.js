@@ -1,7 +1,8 @@
-module.exports = function(app, mw) {
+module.exports = function(app, mw, {adm}) {
+  if (!adm) return;
 
 
-  app.get('^/adm/*', mw.$.session, mw.$.adm, mw.$.adminPage)
+  app.get('/adm/*', mw.$.session, mw.$.adm, mw.$.adminPage)
 
 
   app.honey.Router('adm:api', { mount: '/v1/api/adm', type: 'api' })

@@ -47,196 +47,6 @@ module.exports = {
           "val" : "4",
           "said" : "Good stuff!"
         },
-
-        // {
-        //     "_id" : ObjectId("55dd1e01f8279f110030ae39"),
-        //     "by" : {
-        //         "_id" : ObjectId("527bd05966a6f999a465fb0c"),
-        //         "name" : "Eric Mann",
-        //         "email" : "eric@eam.me"
-        //     },
-        //     "type" : "post-survey-inreview",
-        //     "votes" : [
-        //         {
-        //             "_id" : ObjectId("55ddedb0f8279f110030e465"),
-        //             "val" : 1,
-        //             "by" : {
-        //                 "_id" : ObjectId("538bae591c67d1a4859d3381"),
-        //                 "name" : "Tiago Romero Garcia",
-        //                 "email" : "tiagoromerogarcia@gmail.com"
-        //             }
-        //         }
-        //     ],
-        //     "replies" : [
-        //         {
-        //             "_id" : ObjectId("55ddedc31241ac1100837e2c"),
-        //             "comment" : "Thanks Eric for your super valuable feedback!",
-        //             "by" : {
-        //                 "_id" : ObjectId("538bae591c67d1a4859d3381"),
-        //                 "name" : "Tiago Romero Garcia",
-        //                 "email" : "tiagoromerogarcia@gmail.com"
-        //             }
-        //         }
-        //     ],
-        //     "questions" : [
-        //         {
-        //             "_id" : ObjectId("55dd1e01f8279f110030ae3b"),
-        //             "idx" : 0,
-        //             "key" : "rating",
-        //             "prompt" : "How would you rate the quality of this post?",
-        //             "answer" : "5"
-        //         },
-        //         {
-        //             "_id" : ObjectId("55dd1e01f8279f110030ae3a"),
-        //             "idx" : 1,
-        //             "key" : "feedback",
-        //             "prompt" : "Overall comment",
-        //             "answer" : "Higher-order array functions are tricky to grasp, so seeing applicable code examples (particularly the same example re-used in different situations) makes the sophisticated code and syntax much more approachable."
-        //         }
-        //     ]
-        // },
-        // {
-        //     "updated" : ISODate("2015-08-26T14:05:35.685Z"),
-        //     "_id" : ObjectId("55ddc784f8279f110030d967"),
-        //     "by" : {
-        //         "_id" : ObjectId("54f711888438550c00e98aa0"),
-        //         "name" : "Rich McLaughlin",
-        //         "email" : "rsmclaug@gmail.com"
-        //     },
-        //     "type" : "post-survey-inreview",
-        //     "votes" : [
-        //         {
-        //             "by" : {
-        //                 "_id" : ObjectId("538bae591c67d1a4859d3381"),
-        //                 "name" : "Tiago Romero Garcia",
-        //                 "email" : "tiagoromerogarcia@gmail.com"
-        //             },
-        //             "val" : 1,
-        //             "_id" : ObjectId("55ddedb1f8279f110030e467")
-        //         }
-        //     ],
-        //     "replies" : [
-        //         {
-        //             "by" : {
-        //                 "_id" : ObjectId("538bae591c67d1a4859d3381"),
-        //                 "name" : "Tiago Romero Garcia",
-        //                 "email" : "tiagoromerogarcia@gmail.com"
-        //             },
-        //             "comment" : "Hey Rich! Thanks so much for your feedback! Great idea, I will add a synopsis :)",
-        //             "_id" : ObjectId("55ddede01241ac1100837e3b")
-        //         }
-        //     ],
-        //     "questions" : [
-        //         {
-        //             "answer" : "5",
-        //             "prompt" : "How would you rate the quality of this post?",
-        //             "key" : "rating",
-        //             "idx" : 0,
-        //             "_id" : ObjectId("55ddc7aff8279f110030d978")
-        //         },
-        //         {
-        //             "answer" : "Great examples, Tiago.  This is a really strong follow up to your previous post.  Don't forget to add your synopsis section :)  I would add a prominent link to your previous post in the synopsis as well",
-        //             "prompt" : "Overall comment",
-        //             "key" : "feedback",
-        //             "idx" : 1,
-        //             "_id" : ObjectId("55ddc7aff8279f110030d977")
-        //         }
-        //     ]
-        // },
-        // {
-        //     "_id" : ObjectId("55de2919a1d69b110076ffcb"),
-        //     "by" : {
-        //         "_id" : ObjectId("533afd421c67d1a4859d2b28"),
-        //         "name" : "Abraham Polishchuk",
-        //         "email" : "apolishc@gmail.com"
-        //     },
-        //     "type" : "post-survey-inreview",
-        //     "votes" : [
-        //         {
-        //             "by" : {
-        //                 "_id" : ObjectId("538bae591c67d1a4859d3381"),
-        //                 "name" : "Tiago Romero Garcia",
-        //                 "email" : "tiagoromerogarcia@gmail.com"
-        //             },
-        //             "val" : 1,
-        //             "_id" : ObjectId("55df43c3a1d69b11007744bd")
-        //         }
-        //     ],
-        //     "replies" : [
-        //         {
-        //             "_id" : ObjectId("55df43d2a1d69b11007744c5"),
-        //             "comment" : "That is great to know Abraham! Thanks for your feedback.",
-        //             "by" : {
-        //                 "_id" : ObjectId("538bae591c67d1a4859d3381"),
-        //                 "name" : "Tiago Romero Garcia",
-        //                 "email" : "tiagoromerogarcia@gmail.com"
-        //             }
-        //         }
-        //     ],
-        //     "questions" : [
-        //         {
-        //             "_id" : ObjectId("55de2919a1d69b110076ffcd"),
-        //             "idx" : 0,
-        //             "key" : "rating",
-        //             "prompt" : "How would you rate the quality of this post?",
-        //             "answer" : "5"
-        //         },
-        //         {
-        //             "_id" : ObjectId("55de2919a1d69b110076ffcc"),
-        //             "idx" : 1,
-        //             "key" : "feedback",
-        //             "prompt" : "Overall comment",
-        //             "answer" : "A great followup to your last article. And I learned some good stuff (I was unaware of .some() for instance). "
-        //         }
-        //     ]
-        // },
-        // {
-        //     "type" : "post-survey-inreview",
-        //     "by" : {
-        //         "_id" : ObjectId("52d604b666a6f999a465ff3c"),
-        //         "name" : "Jared Smith",
-        //         "email" : "jared.smith88@me.com"
-        //     },
-        //     "_id" : ObjectId("55df4340d77a1b1100809e9f"),
-        //     "votes" : [
-        //         {
-        //             "by" : {
-        //                 "_id" : ObjectId("538bae591c67d1a4859d3381"),
-        //                 "name" : "Tiago Romero Garcia",
-        //                 "email" : "tiagoromerogarcia@gmail.com"
-        //             },
-        //             "val" : 1,
-        //             "_id" : ObjectId("55df43d4a1d69b11007744c7")
-        //         }
-        //     ],
-        //     "replies" : [
-        //         {
-        //             "_id" : ObjectId("55df43d8a1d69b11007744cb"),
-        //             "comment" : "Thanks Jared!",
-        //             "by" : {
-        //                 "_id" : ObjectId("538bae591c67d1a4859d3381"),
-        //                 "name" : "Tiago Romero Garcia",
-        //                 "email" : "tiagoromerogarcia@gmail.com"
-        //             }
-        //         }
-        //     ],
-        //     "questions" : [
-        //         {
-        //             "answer" : "5",
-        //             "prompt" : "How would you rate the quality of this post?",
-        //             "key" : "rating",
-        //             "idx" : 0,
-        //             "_id" : ObjectId("55df4340d77a1b1100809ea1")
-        //         },
-        //         {
-        //             "answer" : "Great post!",
-        //             "prompt" : "Overall comment",
-        //             "key" : "feedback",
-        //             "idx" : 1,
-        //             "_id" : ObjectId("55df4340d77a1b1100809ea0")
-        //         }
-        //     ]
-        // },
         {
           "_id" : ObjectId("55ea6e2a244a461100582db1"),
           "by" : ObjectId("55ea653e244a461100582ccc"),
@@ -283,14 +93,14 @@ module.exports = {
     },
     "assetUrl" : "https://cloud.githubusercontent.com/assets/764487/9474195/82d6a242-4b35-11e5-87a0-43561850b53a.jpg",
     "htmlHead" : {
-        "ogUrl" : "https://www.airpair.com/javascript/posts/mastering-es6-higher-order-functions-for-arrays",
-        "ogType" : "article",
-        "ogTitle" : "Mastering ES6 higher-order functions for Arrays",
-        "title" : "Mastering ES6 higher-order functions for Arrays",
-        "description" : "Higher-order functions are beautifully concise yet expressive when dealing with data. Elevate your functional programming skills by learning ES6 higher-order functions for Arrays!",
-        "ogDescription" : "Higher-order functions are beautifully concise yet expressive when dealing with data. Elevate your functional programming skills by learning ES6 higher-order functions for Arrays!",
-        "canonical" : "https://www.airpair.com/javascript/posts/mastering-es6-higher-order-functions-for-arrays",
-        "ogImage" : "https://cloud.githubusercontent.com/assets/764487/9474195/82d6a242-4b35-11e5-87a0-43561850b53a.jpg"
+      "ogUrl" : "https://www.airpair.com/javascript/posts/mastering-es6-higher-order-functions-for-arrays",
+      "ogType" : "article",
+      "ogTitle" : "Mastering ES6 higher-order functions for Arrays",
+      "title" : "Mastering ES6 higher-order functions for Arrays",
+      "description" : "Higher-order functions are beautifully concise yet expressive when dealing with data. Elevate your functional programming skills by learning ES6 higher-order functions for Arrays!",
+      "ogDescription" : "Higher-order functions are beautifully concise yet expressive when dealing with data. Elevate your functional programming skills by learning ES6 higher-order functions for Arrays!",
+      "canonical" : "https://www.airpair.com/javascript/posts/mastering-es6-higher-order-functions-for-arrays",
+      "ogImage" : "https://cloud.githubusercontent.com/assets/764487/9474195/82d6a242-4b35-11e5-87a0-43561850b53a.jpg"
     },
     "slug" : "mastering-es6-higher-order-functions-for-arrays",
     "github" : {

@@ -1,32 +1,13 @@
-module.exports = function(app, mw) {
+module.exports = function(app, mw, api) {
+  if (!api) return;
 
   app.API('session')
     .uses('noBot')
     .get({'full':                  ''})
 
-
   app.use('/v1/api', [mw.$.noBot, mw.$.session, mw.$.cachedTags, mw.$.cachedTemplates])
   app.use(['/v1/api/bookings/*',
            '/v1/api/requests/*'], [mw.$.cachedSlackUsers])
-
-
-  // app.honey.Router('posts:api', { mount: '/v1/api/posts', type: 'api' })
-    // .param('post', API.Posts.paramFns.getById)
-    // .param('postreview', API.Posts.reviewParamFn)
-    // .get('/tagged/:tag', API.Posts.getByTag)
-    // .use(mw.$.authd)
-    // .useEnd(mw.$.apiJson)
-    // .post('/:post/review', API.Posts.review)
-    // .put('/:post/review/:postreview', API.Posts.reviewUpdate)
-    // .put('/:post/review/:postreview/reply', API.Posts.reviewReply)
-    // .put('/:post/review/:postreview/upvote', API.Posts.reviewUpvote)
-    // .delete('/:post/review/:postreview',
-    // mw.$.adm, API.Posts.reviewDelete)
-    // .get('/me', API.Posts.getMyPosts)
-    //   .get('/review', API.Posts.getPostsInReview)
-    //   .get('/recent', API.Posts.getRecentPublished)
-    //   .get('/by/:id', API.Posts.getUsersPublished)
-
 
   app.honey.Router('general:api', { mount: '/v1/api', type: 'api' })
     // .param('tag', API.Tags.paramFns.getBySlug)

@@ -3,7 +3,7 @@ module.exports = function(app, mw) {
   app.use(/^\/(job|review)/,
       mw.$.badBot, mw.$.session, mw.$.cachedTags)
 
-  app.honey.Router('dynamic', {type:'html'})
+  app.honey.Router('dynamic', {type:'html',sitemap:false})
     .use(mw.$.livereload)
 
     .param('job', API.Requests.paramFns.getByIdForReview)

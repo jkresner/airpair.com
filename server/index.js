@@ -3,8 +3,17 @@ var MAServer    = require('meanair-server')
 var config      = MAServer.Config(__dirname, process.env.ENV || 'dev', true)
 var tracking    = require('./app.track')
 
-require('./app').run({ config, MAServer, tracking },
-    e => e ? $log('APP.ERROR'.red, e) : '')
+var app = require('./app').run({ config, MAServer, tracking },
+  function(e) {
+    if (e) return $log('APP.ERROR'.red, e)
+//     var urls = app.sitemap.map(url => `<url><loc>${url}</loc></url>`)
+//     require('fs').writeFileSync(
+//       __dirname.replace('server','web/robots/sitemap.xml'),
+// `<?xml version="1.0" encoding="UTF-8"?>
+// <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+//   ${urls.join('\n  ')}
+// </urlset>`)
+  })
 
 
 

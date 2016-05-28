@@ -43,9 +43,18 @@ module.exports = (app, mw, cfg) => {
 
   mw.cache('badBot', mw.req.noCrawl({
     content:'',
-    group: 'null|search|ban|lib|proxy|reader|uncategorized',
+    group: 'null|ban|lib',
     onDisallow(req) {
       // $log('TODO... write crawl issue to analytics db or similar')
+    }}))
+
+
+
+  mw.cache('nonSearch', mw.req.noCrawl({
+    content:'',
+    group: 'null|other|ban|lib|proxy|reader',
+    onDisallow(req) {
+      console.log(`mw.nonSeach[${req.ctx.ud}]\t${req.ctx.ip}`.cyan, req.ctx.ua.gray)
     }}))
 
 }

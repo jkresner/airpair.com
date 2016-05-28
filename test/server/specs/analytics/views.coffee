@@ -1,5 +1,5 @@
-{canonical} = FIXTURE.posts.higherOrder.htmlHead
-postUrl = canonical.replace('https://www.airpair.com', '')
+postUrl = FIXTURE.posts.higherOrder.htmlHead
+                 .canonical.replace('https://www.airpair.com', '')
 
 
 IT 'Track anonymous post view', ->

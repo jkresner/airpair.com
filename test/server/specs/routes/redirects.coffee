@@ -1,34 +1,12 @@
-# forbid = ->
-  # IT 'Redirect non-admin'
-    # LOGIN {key:'admin'}, (s) ->
-    #   GET '/adm/redirects', {}, (r1) ->
-    #     beforeCount = r1.length
-    #     suffix = moment().format('X')
-    #     d = previous: "/previous-#{suffix}", current: "/current-#{suffix}"
-    #     POST '/adm/redirects', d, {}, (redirect) ->
-    #       expect(redirect._id).to.exist
-    #       expect(redirect.previous).to.equal(d.previous)
-    #       GET '/adm/redirects', {}, (r2) ->
-    #         expect(beforeCount+1).to.equal(r2.length)
-    #         expect(_.find(r2,(r)->r.previous==d.previous)).to. exist
-    #         DONE()
-    # IT 'index meta /hire-developers through airpair (partial)', ->
-    # IT '/dashboard', ->
-    # IT '/matching', ->
-    # IT '/authoring', ->
-    # IT '/requests', ->
-
-
-
 rules   = []
 ok      = 0
 perm_to = (to) -> (res) ->
   fail = res.indexOf("Moved Permanently. Redirecting to #{to}") isnt 0
-  if fail then $log "Fail 301 => #{to}\nGot #{res}"
+  if fail then $log "Fail 301 => #{to}\n#{'Got:'.gray}#{res}".red
   DONE() if rules.length is ++ok
 temp_to = (to) -> (res) ->
   fail = res.indexOf("Found. Redirecting to #{to}") isnt 0
-  if fail then $log "Fail 302 => #{to}\nGot #{res}"
+  if fail then $log "Fail 302 => #{to}\nGot #{res}".red
   DONE() if rules.length is ++ok
 
 
@@ -56,11 +34,12 @@ moved301 = ->
   IT 'EXACT', ->
     PAGE(rule[0], {status:301}, perm_to(rule[1])) for rule in [
       ['/airconf2014', '/workshops']
-      ['/android/posts', '/posts/tag/android']
+      ['/android/posts', '/android']
       ['/author/jk', '/software-experts']
       ['/c++', '/posts/tag/c++']
-      ['/javascript/posts', '/posts/tag/javascript']
+      ['/javascript/posts', '/javascript']
       ['/logout', '/auth/logout']
+      ['/dashboard', '/home']
     ]
 
 
@@ -87,4 +66,10 @@ beforeEach ->
 DESCRIBE("Rewrite", rewrite)
 DESCRIBE("301", moved301)
 DESCRIBE("302", moved302)
+
+DESCRIBE "Anon", ->
+
+  SKIP '/requests', ->
+  SKIP '/home', ->
+    # IT 'index meta /hire-developers through airpair (partial)', ->
 

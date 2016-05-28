@@ -22,7 +22,7 @@ module.exports = {
       GoogleFavicon:       'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.75 Safari/537.36 Google Favicon'
       GoogleImageProxy:    'Mozilla/5.0 (Windows NT 5.1; rv:11.0) Gecko Firefox/11.0 (via ggpht.com GoogleImageProxy)'
 
-    searcy:
+    search:
       Baiduspider:         'Mozilla/5.0 (compatible; Baiduspider/2.0; +http://www.baidu.com/search/spider.html)'
       Bing:                'Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)'
       Google:              'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)'

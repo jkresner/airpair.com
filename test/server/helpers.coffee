@@ -42,27 +42,6 @@ DB.ensureExpert = (key, done) ->
 FLAVOUR
 """
 
-global.HTML = ({test}, match, opts) =>
-  status = (opts||{}).status || 200
-  nomatch = (opts||{}).no || []
-  PAGE test.title, { contentType: /html/, status }, (html) =>
-    expect(html).match(pattern) for pattern in match
-    expect(html).not.match(pattern) for pattern in nomatch
-    if test.parent.title.match(/noindex/i)
-      expect(html).to.have.string('<meta name="robots" content="noindex, follow">')
-    else if test.parent.title.match(/index/i)
-      expect(html).to.have.string('<meta name="robots" content="index, follow">')
-    DONE()
-
-global.REDIRECT = ({test}, to, opts) =>
-  status = (opts||{}).status || 301
-  PAGE test.title, { contentType: /text/, status }, (txt) =>
-    if status == 301
-      expect(txt).to.have.string("Moved Permanently\. Redirecting to #{to}")
-    if status == 302
-      expect(txt).to.have.string("Found\. Redirecting to #{to}")
-    DONE()
-
 
 # global.STRINGIFY = (obj) ->
 #   if !JSONSTRING[obj._id]
@@ -146,10 +125,9 @@ HTTP
 global.ANONSESSION = (opts, cb) ->
   if !cb
     cb = opts
-    opts = null
 
   global.COOKIE = null
-  GET '/session/full', {unauthenticated:true}, cb
+  GET '/session/full', opts, cb
 
 
 global.SIGNUP = (login, cb) ->
@@ -157,6 +135,33 @@ global.SIGNUP = (login, cb) ->
   FIXTURE.users[profile.login] = {auth:{gh:profile}}
   LOGIN profile, {retainSession:true}, cb
 
+
+global.HTML = ({test}, match, opts) =>
+  status = (opts||{}).status || 200
+  nomatch = (opts||{}).no || []
+  PAGE test.title, { contentType: /html/, status }, (html) =>
+    expect(html).match(pattern) for pattern in match
+    expect(html).not.match(pattern) for pattern in nomatch
+    if test.parent.title.match(/noindex/i)
+      expect(html).to.have.string('<meta name="robots" content="noindex, follow">')
+    else if test.parent.title.match(/index/i)
+      expect(html).to.have.string('<meta name="robots" content="index, follow">')
+    DONE()
+
+
+global.IMG = ({test}, opts) =>
+  status = (opts||{}).status || 200
+  PAGE test.title, { contentType: /image/, status }, (image) =>
+    DONE()
+
+# global.REDIRECT = ({test}, to, opts) =>
+#   status = (opts||{}).status || 301
+#   PAGE test.title, { contentType: /text/, status }, (txt) =>
+#     if status == 301
+#       expect(txt).to.have.string("Moved Permanently\. Redirecting to #{to}")
+#     if status == 302
+#       expect(txt).to.have.string("Found\. Redirecting to #{to}")
+#     DONE()
 
 
 """

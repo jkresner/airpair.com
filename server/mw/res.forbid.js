@@ -12,19 +12,20 @@ module.exports = (app, mw, {forbid}) => {
     cache.abuse[ip].push(action)
 
     req.res.status(status)
-    $log(`[${status}]abuse ${ip}`.magenta, `[${cache.abuse[ip].length}]`.white, action.u.white, ua.gray)
-
-    return status >= 500 ? '' : 'Relax. Close your eyes.'
+    console.log(`[${status}]abuse\t${ip}`.cyan, `[${cache.abuse[ip].length}/${forbid.abuse.limit}]`.white, action.u.white+(ref?` << ${ref}`.red:''), ua.gray)
+    return status == 418 ? 'Relax. Close your eyes.' : ''
   }
 
 
-
   mw.
-    // need to enhance forbid to give other responses like 500
-    cache('abuser', mw.res.forbid('abuse', function(req) {
-      if ((cache.abuse[req.ctx.ip]||[]).length > forbid.abuse.limit)
-        return cache.abuse.increment(500, req) + `++${abused.length} abusive requests`
-    }))
+    // ? enhance forbid to give other responses like 500
+    cache('abuser', function(req, res, next) {
+      // $log('check abuse', `[${req.ctx.ip}]`, (cache.abuse[req.ctx.ip]||[]).length)
+      if ((cache.abuse[req.ctx.ip]||[]).length >= forbid.abuse.limit)
+        return res.send(cache.abuse.increment(500, req))
+      else
+        next()
+    })
 
   mw.
     cache('adm', mw.res.forbid('!adm', function({user}) {

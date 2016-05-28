@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <url>
+    <loc>https://www.airpair.com</loc>
+    <image:image>
+      <image:loc>https://www.airpair.com/img/software/node.js.png</image:loc>
+      <image:title>Node.js Logo</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.airpair.com/img/software/angularjs.png</image:loc>
+      <image:title>AngularJS Logo</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.airpair.com/img/software/python.png</image:loc>
+      <image:title>Python Logo</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.airpair.com/img/software/android.png</image:loc>
+      <image:title>Android Logo</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.airpair.com/img/software/reactjs.png</image:loc>
+      <image:title>ReactJS Logo</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.airpair.com/img/software/ruby.png</image:loc>
+      <image:title>Ruby Language Logo</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.airpair.com/img/software/php.png</image:loc>
+      <image:title>PHP Logo</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.airpair.com/img/software/ionic.png</image:loc>
+      <image:title>Ionic Logo</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.airpair.com/img/software/swift.png</image:loc>
+      <image:title>Swift Logo</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.airpair.com/img/software/twilio.png</image:loc>
+      <image:title>Twilio Logo</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.airpair.com/img/software/keen-io.png</image:loc>
+      <image:title>Keen.io Logo</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.airpair.com/img/software/neo4j.png</image:loc>
+      <image:title>Neo4j Logo</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.airpair.com/img/software/rethinkdb.png</image:loc>
+      <image:title>RethinkDB Logo</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.airpair.com/img/software/firebase.png</image:loc>
+      <image:title>Firebase Logo</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.airpair.com/img/software/mongodb.png</image:loc>
+      <image:title>MongoDB Logo</image:title>
+    </image:image>
+  </url>
+</urlset>

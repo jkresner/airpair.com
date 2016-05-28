@@ -1,4 +1,6 @@
 SCREAM                       = require('meanair-scream')
+MAServer                     = require('meanair-server')
+tracking                     = require('../../server/app.track')
 test =
   auth:
     login:                   { fnName: 'loginCust', url: '/auth/test/login' }
@@ -19,8 +21,7 @@ OPTS =
 
 
 SCREAM(OPTS).run (done) ->
-  MAServer                     = require('meanair-server')
-  tracking                     = require('../../server/app.track')
+
   appRoot     = __dirname.replace('test', '')
   config      = MAServer.Config(appRoot, 'test', true)
   config.test = test

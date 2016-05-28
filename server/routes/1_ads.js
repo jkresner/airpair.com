@@ -1,6 +1,5 @@
 module.exports = function(app, mw, {ads}) {
-
-  if (!ads) return
+  if (!ads) return;
 
   app.honey.Router('ads',{type:'ad'})
 

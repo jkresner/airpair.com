@@ -1,6 +1,5 @@
 module.exports = function(app, mw, {rss}) {
-
-  if (!rss || !rss.on) return
+  if (!rss) return
 
   var RSS  = require('rss')
   var feed = new RSS({
@@ -41,9 +40,8 @@ module.exports = function(app, mw, {rss}) {
   var getPosts = require('../services/posts').getRecentPublished
   var urls = rss.urls.split(',').map(url => `/${url}`)
 
-  app.honey
-    .Router('rss', { type:'rss' })
-    .get(urls, (req, res, next) =>
+  app.honey.Router('rss', { type:'rss' })
+    .get(urls, mw.$.badBot, (req, res, next) =>
       cache.get('rssposts', getPosts, (e, items) =>
         res.status(200)
            .type('application/rss+xml')

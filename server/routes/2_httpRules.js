@@ -1,64 +1,53 @@
-module.exports = function(app, mw, {redirects,tags}) {
-  if ((redirects||{}).on !== true) return
-
+module.exports = function(app, mw, {httpRules,landing}) {
+  if (!httpRules) return;
 
   var rules = cache.httpRules
 
-
-  cache.httpRules['301'] = rules['301'].concat(tags.top.split(',').map(slug => (
-      { match:`^/${slug}/posts$`, to:`/posts/tag/${slug}` }) ))
-
-  cache.httpRules['rewrite'] = rules['rewrite'].concat([
-    // { match: '%E2%80%A6', to: '' },
-    // { match: '%20%e2%80%a6', to: '' },
-    // { match: /%20\.\.\./i, to: '%20...' }  //?
-    // { match: '\\.\\.\\.', to: '' },
-    { match: '^/static/img/pages/postscomp/(prize|logo)-', to: '/img/software/' } ])
-
   var agg = { '301':[],'302':[],'410':[],'501':[],'bait':[],'rewrite':[] }
-  var moved_perm = rules['301'].forEach(r =>
-    agg['301'][r.to] = _.union(agg['301'][r.to]||[],[new RegExp(r.match,'i')]) )
+  rules['301'].forEach(r =>
+    agg['301'][r.to] = _.union(agg['301'][r.to]||[],[r.match]) )
 
-  // $log("agg['301']".yellow, agg['301'])
-  // var moved_temp = rules['302'].forEach(r => ({ match: new RegExp(r.match,'i'), to: r.to }))
-  // var gone       = rules['410'].forEach(r => new RegExp(r.match,'i'))
-  // var not_imp    = rules['501'].forEach(r => new RegExp(r.match,'i'))
-  // var bait       = rules['bait'].forEach(r => new RegExp(r.match,'i'))
-  // var rewrite    = rules['rewrite'].forEach(r => [new RegExp(r.match,'i'), r.to])
-  // if (moved_perm.length>0) $logIt('cfg.route', 'moved_perm', moved_perm)
-  // if (moved_temp.length>0) $logIt('cfg.route', 'moved_temp', moved_temp)
-  // if (gone.length>0)       $logIt('cfg.route', 'gone', gone)
-  // if (not_imp.length>0)    $logIt('cfg.route', 'not_imp', not_imp)
-  // if (bait.length>0) $logIt('cfg.route', 'bait', bait)
-  // if (rewrite.length>0) $logIt('cfg.route', 'rewrite', rewrite)
+  rules['302'].forEach(r =>
+    agg['302'][r.to] = _.union(agg['302'][r.to]||[],[r.match]) )
 
-  // app
-    // .use(mw.req.forward({name:'rewrite', map: new Map(rewrite)}))
+  var gone       = rules['410'].length > 0 ? rules['410'].map(r => r.match) : false
+  var not_imp    = rules['501'].length > 0 ? rules['501'].map(r => r.match) : false
+  var bait       = rules['bait'].length > 0 ? rules['bait'].map(r => r.match) : false
 
-  var redir = (to, status) => (req, res, next) => {
-    var url = req.originalUrl
-    if (url.match('^/v1/api/')) return next()
-    // $log(`${url} >> ${status} =>`, url.replace(url.split('?')[0], to, agg[status][to])
-    res.redirect( status, req.url.replace(req.url.split('?')[0], agg[status][to.toString()]) )
+  var rewrite    = rules['rewrite'].map(r => [new RegExp(r.match), r.to])
+  if (rewrite.length>0) $logIt('cfg.route', 'rewrite', rewrite.map(r=>`${r[0]} : ${r[1].gray}`).join('\n\t\t\t       '))
+
+  app
+    .use(mw.req.forward({name:'rewrite', map: new Map(rewrite)}))
+
+  var redir = (to, status) => {
+    $logIt('cfg.route', `${status}   >>>`, to.gray)
+    return (req, res, next) => {
+      if (req.url.match('^/v1/api/')) return next()
+      res.redirect( status, req.url.replace(req.url.split('?')[0], to) )
+    }
   }
 
 
-  for (var to in agg['301']) app
+  var router = app.honey.Router('httpRules', { type:'rule' })
+    .use(mw.$.session)
+
+  if (not_imp.length) $logIt('cfg.route', `501   >>>\t\t       [${not_imp.length}]`) + router
+    .get(not_imp, (req, res) => console.log(`[501] ${req.url} ${req.ctx.ip} ${req.ctx.ua}`.cyan) +
+      res.set('Content-Type','text/plain').status(501).send(''))
+
+  if (gone) $logIt('cfg.route', `410   >>>\t\t       [${gone.length}]`) + router
+    .get(gone, (req, res) => res.send(cache.abuse.increment(410, req)))
+
+  if (bait) $logIt('cfg.route', `418   >>>\t\t       [${bait.length}]`) + router
+    .get(bait, (req, res) => res.send(cache.abuse.increment(418, req)))
+
+  for (var to in agg['301']) router
     .get(agg['301'][to], redir(to, 301))
 
-  // for (var rule of moved_temp) app
-    // .get(rule.match, redir(rule, 302))
+  for (var to in agg['302']) router
+    .get(agg['302'][to], redir(to, 302))
 
-
-  app.honey.Router('httpRules')
-    .use(mw.$.session)
-    // .get(not_imp, (req, res) => res.status(501).send(''))
-    // .get(bait, (req, res) => res.send(cache.abuse.increment(418, req)))
-    // .get(gone, (req, res) => res.send(cache.abuse.increment(410, req)))
-
-
-  // $logIt('cfg.route', 'rewrites', `added ${rewritesOpts.size} rules`)
-  // $logIt('cfg.route', 'forwards', `added ${forwards.size} exact + match forwards`)
 
   //-- write tests and add these
   // app.post('/*', mw.$.noBot)

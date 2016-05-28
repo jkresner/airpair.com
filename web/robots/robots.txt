@@ -1,3 +1,5 @@
+Sitemap: https://www.airpair.com/index_sitemap.xml
+
 User-agent: *
 Disallow: /static/
 Disallow: /airpair.me/
@@ -11,7 +13,11 @@ Disallow: /javascripts/
 Disallow: /feed
 Disallow: /login
 Disallow: /singup
+Disallow: /register
 Disallow: /review/
 Disallow: /page/
 Disallow: /l/
 Disallow: /airconf/
+Disallow: /posts/fork/
+Disallow: /posts/submit/
+Disallow: /posts/review/
