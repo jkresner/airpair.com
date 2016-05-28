@@ -2,17 +2,11 @@ module.exports = function(app, mw, {static,landing}) {
   if (!static) return;
 
 
-  if (mw.$.abuser)
-    app.use(mw.$.abuser)
+  if (config.env == 'dev')
 
+    app.honey.Router('fonts', {type:'fonts'})
 
-  if (slow)
-    app.use(mw.req.slow(slow, {
-      onSlow({ctx,originalUrl,method,body}, duration) {
-        analytics.issue(ctx, 'req:slow', 'performance',
-          assign({ duration, url: originalUrl, method }, body ? {body} : {}) )
-      }}
-    ))
+      .static('/fonts', { dir:`${config.appDir}/web/fonts`})
 
 
   if (static.img)

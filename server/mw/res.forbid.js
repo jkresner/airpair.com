@@ -21,6 +21,10 @@ module.exports = (app, mw, {forbid}) => {
     // ? enhance forbid to give other responses like 500
     cache('abuser', function(req, res, next) {
       // $log('check abuse', `[${req.ctx.ip}]`, (cache.abuse[req.ctx.ip]||[]).length)
+
+      // global.analytics.issue(ctx, 'forbidabuser', 'security_medium',
+        // { mw:'forbid', name:'adm', rule:'!req.user', user: user||'anon' })
+
       if ((cache.abuse[req.ctx.ip]||[]).length >= forbid.abuse.limit)
         return res.send(cache.abuse.increment(500, req))
       else
@@ -28,19 +32,22 @@ module.exports = (app, mw, {forbid}) => {
     })
 
   mw.
-    cache('adm', mw.res.forbid('!adm', function({user}) {
+    cache('adm', mw.res.forbid('!adm', function({ctx,user}) {
+      if (forbid.nonAdm.allow.match((user||{_id:'anon'})._id)) return
+
+      global.analytics.issue(ctx, 'forbid!adm', 'security_medium',
+        { mw:'forbid', name:'adm', rule:'!req.user', user: user||'anon' })
+
       if (!user) return 'not authd'
-      if (!forbid.nonAdm.allow.match(user._id)) return 'non admin'
+      return 'non admin'
     }))
 
   mw.
     cache('authd', mw.res.forbid('anon', function({ctx,user}) {
       if (user) return
-
-      global.analytics.issue(ctx, 'forbidanon', 'security_low',
-        { mw:'forbid', name:'authd', rule:'!req.user', user: user||'anon' })
-
       return 'anon'
+    }, {
+      redirect: ({session}) => `/login${(session||{}).returnTo ? `?returnTo=${session.returnTo}` : ''}`
     }))
 
 

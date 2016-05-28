@@ -26,12 +26,12 @@ module.exports = {
       Baiduspider:         'Mozilla/5.0 (compatible; Baiduspider/2.0; +http://www.baidu.com/search/spider.html)'
       Bing:                'Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)'
       Google:              'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)'
-      uk_lddc:             'bl.uk_lddc_bot/3.1.1 (+http://www.bl.uk/aboutus/legaldeposit/websites/websites/faqswebmaster/index.html)'
       Yandex:              'Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)'
       Yahoo:               'Mozilla/5.0 (compatible; Yahoo! Slurp; http://help.yahoo.com/help/us/ysearch/slurp)'
 
     ban:
       Sogou:               'Sogou web spider/4.0(+http://www.sogou.com/docs/help/webmasters.htm#07)'
+      uk_lddc:             'bl.uk_lddc_bot/3.1.1 (+http://www.bl.uk/aboutus/legaldeposit/websites/websites/faqswebmaster/index.html)'
 
     reader:
       flipboard:           'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:28.0) Gecko/20100101 Firefox/28.0 (FlipboardProxy/1.1; +http://flipboard.com/browserproxy)'

@@ -34,7 +34,7 @@ module.exports = (app, mw, {abuse}) => {
   mw.cache('notFound', mw.res.notFound({
     onBot(req, res, next) {
       analytics.issue(req.ctx, 'crawl', 'security', { crawl: 404, url: req.originalUrl })
-      if (req.ctx.bot.match('bad'))
+      if (/ban|lib/.test(req.ctx.ud))
         return res.status(200).send('')
       else
         return res.status(404).send('Page not found')

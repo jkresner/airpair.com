@@ -83,7 +83,8 @@
         "js/index.js":         "js/index.js",
         "js/adm.js":           "js/adm.js"
       },
-      "dirs":                  "public,build"
+      "dirs":                  "public,build",
+      "sitemap":               true
     }
   },
   "log": {
@@ -94,11 +95,17 @@
   "middleware": {
     "api":                     { "baseUrl": "/v1/api" },
     "ctx": {
-      "bot": {
-        "ok": "sogou|googlebot|bing",
-        "all": "scraper|spider|bot|googlebot|Tweetmeme|Turnitin|SMTBot|MegaIndex|Domain Re-Animator|Toutiao|uk_lddc_bot|MJ12bot|CPython|libwww-perl|Superfeedr|Mechanize|AdsBot-Google|gurujibot|bitlybot|twitterbot|scritch|yandexbot|slurp|msnbot|bingbot|rogerbot|MetaURI|Hatena|PaperLiBot|QuerySeekerSpider|AhrefsBot|EmailMarketingRobot|ShowyouBot|Baiduspider|YisouSpider|facebookexternalhit|archive.org_bot|Y!J-ASR",
-        "bad": "scraper|ltx71|panscient.com|MegaIndex|NetShelter|DarcyRipper|Go-http-client|SeznamBot|Feedly|datasift|uk_lddc_bot|MJ12bot|CPython|libwww-perl|Superfeedr|Nutch|Mechanize|cf-news|Dataprovider",
-        "reader": "Blogtrottr|Windows-RSS|Tiny RSS|SimplePie"
+      "ud": {
+        "android":             "Andoid",
+        "search":              "archive.org|Baiduspider|bingbot|adsbot-google|Googlebot|Hatena|YandexBot|Yahoo! Slurp|Y!J-ASR",
+        "ban":                 "AhrefsBot|datasift.com|dataprovider.com|Domain Re-Animator|cf-news|EmailMarketingRobot|GurujiBot|ltx71|MegaIndex|MetaURI|MJ12bot|Nutch|panscient.com|QuerySeekerSpider|rogerbot|scraper|SeznamBot|ShowyouBot|SMTBot|sogou|Turnitin|uk_lddc_bot|YisouSpider",
+        "ios":                 "Apple-i",
+        "mobile":              "iPhone|iPod|Mobile",
+        "lib":                 "CPython|DarcyRipper|Go http client|libwww-perl|Mechanize|jsoup",
+        "tablet":              "iPad",
+        "proxy":               "bitlybot|Googlebot-Image|facebookexternalhit|Slack-ImgProxy|Slackbot-LinkExpanding|SkypeUriPreview",
+        "reader":              "Blogtrottr|Evernote|Feedly|PaperLiBot|Superfeedr|tt-rss.org|Toutiao|Windows-RSS",
+        "uncategorized":       "simplepie|twitterbot|scritch|netshelter"
       },
       "uId":                   true
     },
@@ -124,21 +131,27 @@
     "cache":                   { "on": true }
   },
   "routes": {
+    "adm":                     { "api": { "mount": "/v1/api/adm" } },
     "ads": {
       "campaigns":             "70130000000NeguAAC",
       "dir":                   "web/public/ads"
     },
-    "tags": {
-      "dir":                   "web/public/img/tag",
-      "top":                   "angularjs,android,aws,docker,ember.js,firebase,javascript,keen-io,mean-stack,mongodb,neo4j,node.js,python,php,reactjs,rethinkdb,ruby,ruby-on-rails,selenium,swift,twilio"
+    "api":                     { "mount": "/v1/api" },
+    "httpRules": {
+      "posts":                 { "on": true }
     },
-    "redirects": {
-      "on":                    true
+    "landing": {
+      "tags": {
+        "dir":                 "web/public/img/tag",
+        "top":                 "android|aws|docker|ember.js|firebase|ios|ionic|javascript|keen-io|mean-stack|mongodb|neo4j|node.js|python|php|reactjs|rethinkdb|ruby|ruby-on-rails|selenium|swift|twilio"
+      },
+      "workshops":             { "on": true }
     },
-    "rss": {
-      "on":                    true,
-      "urls":                  "atom,data.atom,data.rss,rss/posts,rss/workshops,.rss,rss.xml,rss"
-    }
+    "static": {
+      "img":                   { "types": "img" },
+      "robots":                { "types": "text" }
+    },
+    "rss":                     { "urls": "atom,data.atom,data.rss,rss/posts,rss/workshops,.rss,rss.xml,rss" }
   },
   "templates": {
     "dirs": {
@@ -167,15 +180,15 @@
       }
     },
     "chat": {
-      "slackin":                 { "host": "http://slackin.airpair.com" },
+      "slackin":               { "host": "http://slackin.airpair.com" },
       "slack": {
-        "owner":                 { "id": "U06U2HQQK", "token": "xoxp-6954602819-6954602835-7019593206-19f426" },
-        "support":               { "id": "U06UCSHL0", "token": "xoxp-6954602819-6964901680-6965169622-a2bb52" },
-        "jk":                    { "id": "U06U2HQQK", "token": "xoxp-6954602819-6954602835-7019593206-19f426" },
-        "pairbot":               { "id": "U06UBBT9V", "token": "xoxb-6963401335-ziIikHY5Uo9zyG6NPQ9ijoam" },
-        "channels":              {
-          "pipeline":            { "id": "C06KZHXAS" },
-          "posts":               { "id": "C06UBRE77" }
+        "owner":               { "id": "U06U2HQQK", "token": "xoxp-6954602819-6954602835-7019593206-19f426" },
+        "support":             { "id": "U06UCSHL0", "token": "xoxp-6954602819-6964901680-6965169622-a2bb52" },
+        "jk":                  { "id": "U06U2HQQK", "token": "xoxp-6954602819-6954602835-7019593206-19f426" },
+        "pairbot":             { "id": "U06UBBT9V", "token": "xoxb-6963401335-ziIikHY5Uo9zyG6NPQ9ijoam" },
+        "channels": {
+          "pipeline":          { "id": "C06KZHXAS" },
+          "posts":             { "id": "C06UBRE77" }
         }
       }
     },

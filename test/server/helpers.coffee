@@ -32,10 +32,30 @@ global.UTIL =
 DB
 """
 
+
 DB.ensureExpert = (key, done) ->
   DB.ensureDocs 'User', [FIXTURE.users[key]], (e) =>
     DB.ensureDocs 'Expert', [FIXTURE.experts[key]], (ee) => done()
 
+
+DB.noSession = ({sessionID}, cb) ->
+  a_uid = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[\,\-_]*).{24,}/
+  expect(sessionID).to.match(a_uid)
+  DB.docsByQuery 'Session', {_id:sessionID}, (s) ->
+    expect(s.length).to.equal(0)
+    DB.docsByQuery 'View', { sId:sessionID }, (views) ->
+      expect(views.length).to.equal(0)
+      DB.docsByQuery 'Impression', { sId:sessionID }, (impressions) ->
+        expect(impressions.length).to.equal(0)
+        cb()
+
+
+DB.expectSession = ({sessionID}, cb) ->
+  a_uid = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[\,\-_]*).{24,}/
+  expect(sessionID).to.match(a_uid)
+  DB.docsByQuery 'Session', {_id:sessionID}, (s) ->
+    expect(s.length, "db.Session({_id:#{sessionID}).length == #{s.length}").to.equal(1)
+    cb()
 
 
 """

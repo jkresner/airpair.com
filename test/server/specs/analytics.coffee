@@ -1,9 +1,10 @@
 module.exports = ->
 
   before (done) ->
-    DB.ensureDoc 'User', FIXTURE.users.admin, ->
+    {admin,ricd} = FIXTURE.users
+    DB.ensureDocs 'User', [admin,ricd], ->
     DB.ensureExpert 'byrn', ->
-    DB.ensureDoc 'Request', FIXTURE.requests.aJob, -> DB.ensureDoc 'User', FIXTURE.users.ricd, ->
+    DB.ensureDoc 'Request', FIXTURE.requests.aJob, ->
     done()
 
   DESCRIBE "Google Analytics",   -> require("./analytics/ga")

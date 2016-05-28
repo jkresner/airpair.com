@@ -22,7 +22,6 @@ rewrite = ->
 
 
   SKIP 'DOTS', ->
-
     PAGE(rule[0], {status:301}, perm_to(rule[1])) for rule in [
       ['/ruby-on-rails-4/posts/how-to-set-up-authentication-with-angularjs-and-ruby-on-rails...', '/ruby-on-rails-4/posts/how-to-set-up-authentication-with-angularjs-and-ruby-on-rails']
     ]
@@ -59,6 +58,16 @@ moved302 = ->
     ]
 
 
+  IT 'ANON', ->
+    PAGE(rule[0], {status:302}, temp_to(rule[1])) for rule in [
+      ['/account', '/login?returnTo=/account']
+      ['/home', '/login?returnTo=/home']
+      ['/requests', '/login?returnTo=/requests']
+      ['/billing', '/login?returnTo=/billing']
+      ['/bookings/12334', '/login?returnTo=/bookings/12334']
+    ]
+
+
 beforeEach ->
   rules = ['1']
   ok = 0
@@ -67,9 +76,5 @@ DESCRIBE("Rewrite", rewrite)
 DESCRIBE("301", moved301)
 DESCRIBE("302", moved302)
 
-DESCRIBE "Anon", ->
 
-  SKIP '/requests', ->
-  SKIP '/home', ->
-    # IT 'index meta /hire-developers through airpair (partial)', ->
 

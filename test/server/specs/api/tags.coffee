@@ -44,8 +44,8 @@ get = ->
       expect(s[2].gh).to.be.undefined
       expect(s[2].ghId).to.be.undefined
       expect(s[2].meta).to.be.undefined
-      expect(s[1].name).to.equal('mongoengine')
-      expect(s[0].name).to.equal('mongoid')
+      expect(s[0].name).to.match(/mongoengine|mongoid/)
+      expect(s[1].name).to.match(/mongoengine|mongoid/)
       DONE()
 
 

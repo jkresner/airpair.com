@@ -12,8 +12,8 @@ module.exports = ->
   DESCRIBE "Rules",                -> require("./routes/rules")
 
   DESCRIBE "Pages (anon)",         -> require("./routes/pages.anon")
-  DESCRIBE.only "Pages (bots)",         -> require("./routes/pages.bots")
-  # DESCRIBE "Pages (authed)",       -> require("./routes/pages.authenticated")
+  DESCRIBE "Pages (bots)",         -> require("./routes/pages.bots")
+  DESCRIBE "Pages (authd)",        -> require("./routes/pages.authd")
   # DESCRIBE "Pages (adm)",          ->
 
     # IT 'Redirect non-admin'

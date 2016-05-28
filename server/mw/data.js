@@ -32,7 +32,7 @@ module.exports = ({meanair}, mw) => {
 
   //-- start:kinda hard ... --//
   mw.data.extend('inflateAds', x => function(req, res, next) {
-    if (req.ctx.bot) return next()  // don't want ads indexed
+    if (/lib|ban/.test(req.ctx.ud)) return next()  // don't want ads indexed
     cache.get('ads', logic.ads.getForCache.exec, (e, r) =>
       next(e, cache.ads.tagged[req.locals.r.adtag || 'ruby']
         .map(img => cache.ads[img])
