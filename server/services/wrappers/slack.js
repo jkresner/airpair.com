@@ -25,7 +25,7 @@ var cCall = function(user, method, data, cbProp, select, cb) {
     if (logging) {
       var logMethod = `slack.api[${method}]`.green
       if (method == 'users.list') $log(logMethod, r.length)
-      else if (method == 'chat.postMessage') $log(logMethod, r.text)
+      else if (method == 'chat.postMessage') $log(logMethod, r.text||(r.attachments?r.attachments[0].fallback:''))
       else if (method == 'groups.info') $log(logMethod, r.purpose.value, r.members)
       else if (method == 'groups.history') $log(logMethod, r.length)
       else if (method == 'groups.rename') $log(logMethod, r.id, r.name)

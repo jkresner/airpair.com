@@ -9,7 +9,8 @@ module.exports = ->
     DB.ensureExpert 'gnic', ->
     DB.ensureExpert 'dros', ->
     DB.ensureExpert 'phlf', ->
-      done()
+    LOGIN 'admin', (s) ->
+      GET '/adm/requests/active', -> done() # force tmpl cache hack
 
 
   beforeEach ->
@@ -21,6 +22,7 @@ module.exports = ->
   DESCRIBE "Paymethods",  -> require("./v1/paymethods")
   DESCRIBE "Orders",  -> require("./v1/orders")
   DESCRIBE "Bookings",  -> require("./v1/bookings")
-  DESCRIBE "Mailman",   require("./v1/mailman")
   DESCRIBE "Jobs", -> require("./v1/jobs")
   DESCRIBE "Mojo", -> require("./v1/mojo")
+  DESCRIBE "Mailman",   require("./v1/mailman")
+  DESCRIBE "Pairbot", -> require("./v1/pairbot")

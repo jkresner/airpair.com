@@ -87,12 +87,10 @@ mm = ->
 module.exports = ->
 
 
-  before (done) ->
+  before ->
     global.origMailman     = global.mailman
     global.config.log.mail = true
     global.mailman = require('../../../../server/util/mailman')()
-    LOGIN 'admin', (s) ->
-      GET '/adm/requests/active', -> done() # force tmpl cache hack
 
 
   beforeEach ->
@@ -105,5 +103,3 @@ module.exports = ->
 
 
   DESCRIBE "render", mm
-
-
