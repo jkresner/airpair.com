@@ -32,12 +32,15 @@ module.exports = (app, mw, cfg) => {
     }
   }))
 
+  var short = { get:'GET', put:'PUT', delete:'DEL', post:'POS' }
 
   mw.cache('noBot', mw.req.noCrawl({
     group: 'null|search|ban|lib|proxy|reader|uncategorized',
     content:'',
     onDisallow(req) {
-      // $log('TODO... write crawl issue to analytics db or similar')
+      var ua = (req.ctx.ua || '').gray
+      var mth = short[req.method] || req.method.toUpperCase()
+      console.log(`[${mth}${req.originalUrl}]noBot:${req.ctx.ud}\t${req.ctx.ip}`.cyan, ua)
     }}))
 
 
@@ -45,7 +48,9 @@ module.exports = (app, mw, cfg) => {
     content:'',
     group: 'null|ban|lib',
     onDisallow(req) {
-      // $log('TODO... write crawl issue to analytics db or similar')
+      var ua = (req.ctx.ua || '').gray
+      var mth = short[req.method] || req.method.toUpperCase()
+      console.log(`[${mth}${req.originalUrl}]banned:${req.ctx.ud}\t${req.ctx.ip}`.cyan, ua)
     }}))
 
 
@@ -54,7 +59,9 @@ module.exports = (app, mw, cfg) => {
     content:'',
     group: 'null|other|ban|lib|proxy|reader',
     onDisallow(req) {
-      console.log(`mw.nonSeach[${req.ctx.ud}]\t${req.ctx.ip}`.cyan, req.ctx.ua.gray)
+      var ua = (req.ctx.ua || '').gray
+      var mth = short[req.method] || req.method.toUpperCase()
+      console.log(`[${mth}${req.originalUrl}]nonSeach:${req.ctx.ud}\t${req.ctx.ip}`.cyan, ua)
     }}))
 
 }

@@ -12,7 +12,7 @@ module.exports = (app, mw, {forbid}) => {
     cache.abuse[ip].push(action)
 
     req.res.status(status)
-    console.log(`[${status}]abuse\t${ip}`.cyan, `[${cache.abuse[ip].length}/${forbid.abuse.limit}]`.white, action.u.white+(ref?` << ${ref}`.red:''), ua.gray)
+    console.log(`[${status}${action.u}${ref?` << ${ref}`.dim:''}]abuse`.cyan, `\t${ip}[${cache.abuse[ip].length}/${forbid.abuse.limit}]`.white, (ua||'').gray)
     return status == 418 ? 'Relax. Close your eyes.' : ''
   }
 

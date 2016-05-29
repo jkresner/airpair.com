@@ -47,8 +47,10 @@
 {{else}}
 
 
-
-{{#if error.stack}}<pre>{{error.stack}}</pre>{{/if}}
+{{#if quiet}}
+  {{else}}
+    {{#if error.stack}}<pre>{{error.stack}}</pre>{{/if}}
+{{/if}}
     </section>
 
     {{#if about.bugs}}

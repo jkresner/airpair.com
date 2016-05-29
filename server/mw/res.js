@@ -43,6 +43,7 @@ module.exports = (app, mw, {abuse}) => {
 
 
   mw.cache('error', mw.res.error({
+    quiet: config.env.match(/prod/i),
     render: { layout:false, about },
     terse: _.get(config, 'log.app.terse'),
     // formatter: (req, e) => `${e.message}`,
