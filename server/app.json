@@ -98,7 +98,7 @@
       "ud": {
         "android":             "Andoid",
         "search":              "archive.org|Baiduspider|bingbot|adsbot-google|Googlebot|Hatena|YandexBot|Yahoo! Slurp|Y!J-ASR",
-        "ban":                 "AhrefsBot|datasift.com|dataprovider.com|Domain Re-Animator|cf-news|EmailMarketingRobot|GurujiBot|ltx71|MegaIndex|MetaURI|MJ12bot|Nutch|panscient.com|QuerySeekerSpider|rogerbot|scraper|SeznamBot|ShowyouBot|SMTBot|sogou|Turnitin|uk_lddc_bot|YisouSpider",
+        "ban":                 "AhrefsBot|datasift.com|dataprovider.com|Domain Re-Animator|cf-news|EmailMarketingRobot|GurujiBot|ltx71|MegaIndex|MetaURI|MJ12bot|Nutch|panscient.com|QuerySeekerSpider|rogerbot|scraper|SeznamBot|ShowyouBot|SMTBot|Sogou|Turnitin|uk_lddc_bot|YisouSpider",
         "ios":                 "Apple-i",
         "mobile":              "iPhone|iPod|Mobile",
         "lib":                 "CPython|DarcyRipper|Go http client|libwww-perl|Mechanize|jsoup",
