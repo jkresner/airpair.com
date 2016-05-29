@@ -29,7 +29,7 @@ module.exports = function(DAL, Data, Shared, Lib) {
 
 
     exec(provider, profile, tokens, done) {
-      DAL.User.getByQuery({'auth.gh.id':profile.id}, (e, existing) => {
+      Lib.userByAuth(null, 'gh', profile, (e, existing) => {
         if (e) return done(e)
 
         var inValid = validate(this.user, existing, provider, profile, tokens)
@@ -40,11 +40,13 @@ module.exports = function(DAL, Data, Shared, Lib) {
         var fn = existing ? 'loginOAuth' : 'signupOAuth'
 
         Lib[fn](this, 'gh', 'github', profile, tokens, (e,r) => {
-          assign(this.analytics, {event:`${existing?'login':'signup'}:oauth:gh`,
-            alias:_.pick(r,["_id","name","email","username"]), data:{user:_.pick(r,["_id","name"])} })
-          // $log('req.analytics', this.analytics)
           if (e) return done(e)
           r.avatar = r.photos ? r.photos[0].value : null
+          r.username = r.username || profile.login
+
+          assign(this.analytics, {event:`${existing?'login':'signup'}:oauth:gh`,
+            alias:_.pick(r,["_id","name","email","username"]), data:{user:_.pick(r,["_id","name"])} })
+
           done(e, r)
         })
       })

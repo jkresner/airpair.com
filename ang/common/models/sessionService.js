@@ -37,7 +37,7 @@ angular.module('APSvcSession', [])
         return $q((r)=> { return r($rootScope.session) })
 
       cache = cache || $cacheFactory();
-      return $http.get(`${API}/session/full`, {cache:cache}).then(
+      return $http.get(`${API}/auth/session`, {cache:cache}).then(
         function(response) {
           if ($rootScope.session && $rootScope.session.tags) {
             return $rootScope.session

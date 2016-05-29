@@ -34,7 +34,7 @@ IT 'Add braintree paymethod to new user', ->
         expect(pms.length).to.equal(1)
         expect(pms[0].type).to.equal('braintree')
         expect(pms[0].name).to.equal('Default Card')
-        GET '/session/full', (s1) ->
+        GET '/auth/session', (s1) ->
           expect(s1.primaryPayMethodId).to.equal(pms[0]._id)
           DONE()
 
@@ -47,7 +47,7 @@ IT 'Can add multiple braintree payment methods to new user', ->
       POST '/billing/paymethods', d2, (r2) ->
         GET '/billing/paymethods', (pms2) ->
           expect(pms2.length).to.equal(2)
-          GET '/session/full', (s1) ->
+          GET '/auth/session', (s1) ->
             expect(s1.primaryPayMethodId).to.equal(r1._id)
             DONE()
 
@@ -74,10 +74,10 @@ IT 'Delete braintree paymethod', ->
     d = type: 'braintree', token: braintree_test_nouce, name: 'Default Card', makeDefault: true
     POST '/billing/paymethods', d, (r) ->
       expect(r._id).to.exist
-      GET '/session/full', (s1) ->
+      GET '/auth/session', (s1) ->
         expect(s1.primaryPayMethodId).to.equal(r._id)
         DELETE "/billing/paymethods/#{s1.primaryPayMethodId}", {}, () ->
-          GET '/session/full', (s2) ->
+          GET '/auth/session', (s2) ->
             expect(s2.primaryPayMethodId).to.be.undefined
             GET '/billing/paymethods', (pms) ->
               expect(pms.btoken).to.exist
@@ -102,7 +102,7 @@ IT 'Delete braintree paymethod', ->
 #           expect(pms.length).to.equal(1)
 #           expect(pms[0].type).to.equal('braintree')
 #           expect(pms[0].name).to.equal('Default Card')
-#           GET '/session/full', {}, (s1) ->
+#           GET '/auth/session', {}, (s1) ->
 #             expect(s1.primaryPayMethodId).to.equal(pms[0]._id)
 #             DONE()
 

@@ -32,7 +32,7 @@ IT 'Got cohort data', ->
 #     expect(r.auth).to.be.undefined  # holds password field
 #     expect(r.roles).to.be.undefined # new users have undefined roles
 #     expect(r.cohort.engagement).to.exist
-#     GET '/session/full', (s) ->
+#     GET '/auth/session', (s) ->
 #       expect(s._id).to.exist
 #       expect(s.avatar).to.exist
 #       # expect(s.google).to.be.undefined
@@ -65,7 +65,7 @@ IT 'Got cohort data', ->
 #     AuthService.link.call DATA.newSession(), 'google', profile, {token}, (e,usr) ->
 #       FIXTURE.users.rbrw = usr
 #       LOGIN {key:'rbrw'}, (s0) ->
-#         GET '/session/full', (s) ->
+#         GET '/auth/session', (s) ->
 #           expect(s._id).to.equal(usr._id.toString())
 #           expect(s.email).to.equal(usr.email)
 #           expect(s.name).to.equal(usr.name)
@@ -91,7 +91,7 @@ IT 'Got cohort data', ->
 #     AuthService.link.call DATA.newSession(), 'google', profile, {token}, (e,usr) ->
 #       FIXTURE.users.aptst34 = usr
 #       LOGIN {key:'aptst34'}, (s0) ->
-#         GET '/session/full', (s) ->
+#         GET '/auth/session', (s) ->
 #           expect(s._id).to.equal(usr._id.toString())
 #           expect(s.email).to.equal(usr.email)
 #           expect(s.name).to.equal(usr.name)
@@ -134,7 +134,7 @@ IT 'Got cohort data', ->
   #     expect(e).to.be.null
   #     FIXTURE.users.ludofleury = usr
   #     LOGIN {key:'ludofleury'}, (s0) ->
-  #       GET '/session/full', (s) ->
+  #       GET '/auth/session', (s) ->
   #         expect(s._id).to.equal(usr._id.toString())
   #         expect(s.email).to.equal(usr.email)
   #         expect(s.name).to.equal(usr.name)

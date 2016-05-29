@@ -6,7 +6,7 @@ SKIP 'Link github with local user / password', ->
   STORY.newUser 'jkjk', (s) ->
     AuthService.link.call {user:s}, 'github', profile, {token}, (e,usr) ->
       FIXTURE.users[s.userKey] = usr
-      GET '/session/full', (s1) ->
+      GET '/auth/session', (s1) ->
         EXPECT.equalIds(s._id, s1._id)
         expect(s1.auth.gh.username).to.be.undefined
         expect(s1.auth.gh.login).to.equal(profile.login)

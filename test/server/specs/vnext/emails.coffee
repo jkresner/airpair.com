@@ -111,7 +111,7 @@
 # #     #     expect(s.emailVerified).to.be.true
 # #     #     the_new_email = "hello" + moment().format('x') + "@mydomain.com"
 # #     #     PUT '/users/me/email', {email: the_new_email}, {}, ->
-# #     #       GET '/session/full', {}, (s2) ->
+# #     #       GET '/auth/session', {}, (s2) ->
 # #     #         expect(s2.email).to.equal(the_new_email)
 # #     #         expect(s2.emailVerified).to.be.false
 # #     #         DONE()

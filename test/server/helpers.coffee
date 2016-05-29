@@ -132,7 +132,7 @@ global.ANONSESSION = (opts, cb) ->
     cb = opts
 
   global.COOKIE = null
-  GET '/session/full', opts, cb
+  GET '/auth/session', opts, cb
 
 
 global.SIGNUP = (login, cb) ->

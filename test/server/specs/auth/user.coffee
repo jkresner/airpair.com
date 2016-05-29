@@ -42,7 +42,7 @@ update = ->
 
   IT 'Set initials', ->
     STORY.newUser 'misr', (s) =>
-      GET "/session/full", (u0) =>
+      GET "/auth/session", (u0) =>
         EXPECT.equalIds(s._id,u0._id)
         expect(u0.name).to.equal(s.name)
         expect(u0.initials).to.be.undefined

@@ -34,7 +34,7 @@ IT 'Does not exec analytics or store session on 404', ->
 IT '/ (unauthenticated) Persists session for uaFireFox', ->
   # viewSpy1 = STUB.spy(analytics, 'view')
   PAGE '/', Opts({status:200}, UAUser), (resp) ->
-    GET '/session/full', (s) ->
+    GET '/auth/session', (s) ->
       # expect(viewSpy1.callCount).to.equal(1)
       expect(s.authenticated).to.equal(false)
       DB.expectSession s, DONE
@@ -43,7 +43,7 @@ IT '/ (unauthenticated) Persists session for uaFireFox', ->
 IT '/100k-writing-competition (unauthenticated) Persists session for uaFireFox', ->
   # viewSpy = STUB.spy(analytics, 'view')
   PAGE '/100k-writing-competition', Opts({status:200}, UAUser), (resp) ->
-    GET '/session/full', (s) ->
+    GET '/auth/session', (s) ->
       # expect(viewSpy.calledOnce).to.be.true
       expect(s.authenticated).to.equal(false)
       DB.expectSession s, ->
@@ -78,7 +78,7 @@ IT '/100k-writing-competition (uaUser) Persists utms and referer', ->
   utms = 'utm_source=team-email&utm_medium=email&utm_term=angular-workshops&utm_content=nov14-workshops-ty&utm_campaign=wks14-4'
   PAGE "/100k-writing-competition?#{utms}", Opts({status:200,referer}, UAUser), (resp) ->
     # expect(viewSpy.calledOnce).to.be.true
-    GET '/session/full', (s) ->
+    GET '/auth/session', (s) ->
       expect(s.authenticated).to.equal(false)
       DB.expectSession  s, ->
         DB.docsByQuery 'View', { sId:s.sessionID }, (views) ->

@@ -1,9 +1,9 @@
 module.exports = function(app, mw, api) {
   if (!api) return;
 
-  app.API('session')
+  app.API('auth')
     .uses('noBot')
-    .get({'full':                  ''})
+    .get({'session':                  ''})
 
   app.use('/v1/api', [mw.$.noBot, mw.$.session, mw.$.cachedTags, mw.$.cachedTemplates])
   app.use(['/v1/api/bookings/*',

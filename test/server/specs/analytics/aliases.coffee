@@ -108,7 +108,7 @@ IT 'Two sessionIDs added from unique sessions', ->
             # expect(spyAlias.called).to.be.true
             # expect(spyAlias.args[0][2]).to.equal('Login')
 
-            GET '/session/full', (s3) ->
+            GET '/auth/session', (s3) ->
               userId = ObjectId(s3._id)
               viewCheck = => DB.docsByQuery 'View', {uId:userId}, (v3) ->
                 expect(v3.length).to.equal(4)

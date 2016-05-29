@@ -1,25 +1,46 @@
+before (done) ->
+  DB.removeDocs 'User', email: { $in: ["deebarizo@gmail.com"] }, ->
+    done()
+
+
 IT 'sessionId on unauthenticated session', ->
-  GET '/session/full', { unauthenticated: true }, (s) ->
+  GET '/auth/session', { unauthenticated: true }, (s) ->
     expect(s.authenticated).to.be.false
     expect(s.sessionID).to.exist
     DONE()
 
 
-IT 'Login from new anonymous session adds sessionID to aliases', ->
-  key = FIXTURE.uniquify('users','ape1', 'email auth.gp.id auth.gh.id auth.gh.login auth.gh.emails.email')
+IT 'Existing user login from new anon session adds new sessionID to aliases', ->
+  key = FIXTURE.uniquify('users','ape1', 'email auth.gp.id auth.gh.id auth.gh.login')
   ape = FIXTURE.users[key]
+  assign(ape.auth.gh.emails[0], {email:ape.email})
   DB.ensureDoc 'User', ape, (e, r0) ->
-    LOGIN key, (r1) ->
+    LOGIN key, { unauthenticated: true }, (r1) ->
       EXPECT.equalIds(r1._id, ape._id)
       DB.docById 'User', r1._id, (r3) ->
         expect(r3.cohort.aliases.length).to.equal(2)
         DONE()
 
 
-  # before () ->
-  # STUB.analytics.on()
-  # after () ->
-  # STUB.analytics.off()
+IT 'GH login no duplicate key error with existing gp profile', ->
+  deebarizo = FIXTURE.clone('users.deebarizo')
+  {gh} = deebarizo.auth
+  delete deebarizo.auth.gh
+  expect(deebarizo.auth.gh).to.be.undefined
+  DB.ensureDoc 'User', deebarizo, (e, uDB) ->
+    EXPECT.equalIdAttrs(deebarizo, uDB)
+    expect(uDB.auth.gp.email).to.equal("deebarizo@gmail.com")
+    expect(uDB.auth.gh).to.be.undefined
+    LOGIN 'deebarizo', (s1) ->
+      EXPECT.equalIdAttrs(uDB, s1)
+      expect(s1.avatar).to.equal(gh.avatar_url)
+      expect(s1.username).to.equal(gh.login)
+      DB.docById 'User', deebarizo._id, (uDB2) ->
+        expect(uDB2.auth.gp.email).to.equal("deebarizo@gmail.com")
+        expect(uDB2.auth.gh.emails[0].email).to.equal("deebarizo@gmail.com")
+        expect(uDB2.email).to.equal("deebarizo@gmail.com")
+        DONE()
+
 
   # it 'github login links to accounts with email matching any other provider', ->
   # it 'github login saves all emails to user record', ->
@@ -95,7 +116,7 @@ IT 'Login from new anonymous session adds sessionID to aliases', ->
 #   #     LOGOUT ->
 #   #       SUBMIT '/v1/auth/login', akumD, {}, (r2) ->
 #   #         expect(r2._id).to.exist
-#   #         GET "/session/full", (s) ->
+#   #         GET "/auth/session", (s) ->
 #   #           EXPECT.startsWith(s.name, "Ash Kumar")
 #   #         # svcCtx = DATA.newSession('akum')
 #   #         # AuthService.googleLogin.call svcCtx, akumD_google, (ee,user) ->
@@ -130,11 +151,11 @@ IT 'Login from new anonymous session adds sessionID to aliases', ->
 #           old_password = rrr.auth.password.value
 #           new_password = 'sellsellsell'
 #           expect(old_password!=new_password).to.be.true
-#           GET "/session/full", (s0) ->
+#           GET "/auth/session", (s0) ->
 #             expect(s0.authenticated is false).to.be.true
 #             data = { email: user.email, hash: generated_hash, password: new_password }
 #             SUBMIT "/auth/password-set", data, {}, (s) ->
-#               GET "/session/full", (s2) ->
+#               GET "/auth/session", (s2) ->
 #                 EXPECT.equalIds(s._id, s2._id)
 #                 LOGOUT ->
 #                   SUBMIT '/auth/login', {email:user.email,password:new_password}, {}, (s3) ->

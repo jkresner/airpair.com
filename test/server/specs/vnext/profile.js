@@ -16,7 +16,7 @@ function api() {
 //             expect(anon.bookmarks).to.be.undefined
 //             expect(anon.tags).to.be.undefined
 //             LOGIN(sWlmo.userKey, () => {
-//               GET('/session/full', {}, (sFull) => {
+//               GET('/auth/session', {}, (sFull) => {
 //                 expect(sFull.bookmarks.length).to.equal(1)
 //                 expect(sFull.bookmarks[0].title).to.equal("Starting a Mean Stack App")
 //                 expect(sFull.bookmarks[0].type).to.equal("post")
@@ -44,7 +44,7 @@ function api() {
 //       .expect('Content-Type', /json/)
 //       .end(function(err, resp){
 //         cookie = resp.headers['set-cookie']
-//         GET('/session/full', {}, function(s) {
+//         GET('/auth/session', {}, function(s) {
 //           expect(s.authenticated).to.be.false
 //           expect(s.sessionID).to.exist
 //           expect(s.tags).to.exist
@@ -116,7 +116,7 @@ function api() {
 //         PUT('/users/me/tag/node.js', {}, {}, function(s2){
 //           expect(s2.tags).to.exist
 //           expect(s2.tags.length).to.equal(0)
-//           GET('/session/full', {}, function(s) {
+//           GET('/auth/session', {}, function(s) {
 //             expect(s.authenticated).to.be.false
 //             expect(s.sessionID).to.exist
 //             expect(s.tags).to.exist
@@ -133,7 +133,7 @@ function api() {
 //       .put('/v1/api/users/me/tag/mongodb')
 //       .end( (err, resp) => {
 //         cookie = resp.headers['set-cookie']
-//         GET('/session/full', {}, (s) => {
+//         GET('/auth/session', {}, (s) => {
 //           expect(s.tags[0].name).to.equal('MongoDB')
 //           var signup = DATA.newSignupData('ramo')
 //           http(global.app).post('/v1/auth/signup')
@@ -148,7 +148,7 @@ function api() {
 //               expect(newUser.tags.length).to.equal(1)
 //               expect(newUser.tags[0].name).to.equal('MongoDB')
 //               expect(newUser.emailVerified).to.equal(false)
-//               GET('/session/full', {}, (sFull) => {
+//               GET('/auth/session', {}, (sFull) => {
 //                 expect(sFull._id).to.exist
 //                 expect(sFull.name).to.equal(signup.name)
 //                 expect(sFull.tags).to.exist
@@ -193,7 +193,7 @@ function api() {
 //       .end(function(err, resp){
 //         if (err) throw err
 //         cookie = resp.headers['set-cookie']
-//         GET('/session/full', {}, function(s) {
+//         GET('/auth/session', {}, function(s) {
 //           expect(s.authenticated).to.be.false
 //           expect(s.sessionID).to.exist
 //           expect(s.bookmarks).to.exist
@@ -215,7 +215,7 @@ function api() {
 //         cookie = resp.headers['set-cookie']
 //         PUT(`/users/me/bookmarks/post/${data.posts.v1AirPair._id}`, {}, {}, function(s2) {
 //           PUT(`/users/me/bookmarks/post/${data.posts.sessionDeepDive2._id}`, {}, {}, function(s3) {
-//             GET('/session/full', {}, function(s) {
+//             GET('/auth/session', {}, function(s) {
 //               expect(s.authenticated).to.be.false
 //               expect(s.sessionID).to.exist
 //               expect(s.bookmarks).to.exist
@@ -236,13 +236,13 @@ function api() {
 //       .put(`/v1/api/users/me/bookmarks/post/${data.posts.sessionDeepDive._id}`)
 //       .end( (err, resp) => {
 //         cookie = resp.headers['set-cookie']
-//         GET('/session/full', {}, (s) => {
+//         GET('/auth/session', {}, (s) => {
 //           expect(s.bookmarks[0].title).to.equal('ExpressJS and PassportJS Sessions Deep Dive')
 //           var singup = DATA.newSignupData('alry')
 //           http(global.app).post('/v1/auth/signup').send(singup)
 //             .set('cookie',cookie)
 //             .end( (err, resp) =>
-//               GET('/session/full', {}, (sFull) => {
+//               GET('/auth/session', {}, (sFull) => {
 //                 expect(sFull._id).to.exist
 //                 expect(sFull.name).to.equal(singup.name)
 //                 expect(sFull.bookmarks).to.exist
@@ -282,7 +282,7 @@ function api() {
 //         expect(s1.bookmarks[0].title).to.equal("Starting a Mean Stack App")
 //         expect(s1.bookmarks[0].type).to.equal("post")
 //         LOGIN(s.userKey, function() {
-//           GET('/session/full', {}, (sFull) => {
+//           GET('/auth/session', {}, (sFull) => {
 //             expect(sFull.bookmarks.length).to.equal(1)
 //             expect(sFull.bookmarks[0].title).to.equal("Starting a Mean Stack App")
 //             expect(sFull.bookmarks[0].type).to.equal("post")
@@ -305,7 +305,7 @@ function api() {
 //       expect(r.authenticated).to.equal(false)
 //       expect(r.avatar).to.exist
 //       expect(r.sessionID).to.exist
-//       GET('/session/full', {}, function(s) {
+//       GET('/auth/session', {}, function(s) {
 //         expect(s.email).to.equal(clone.email)
 //         expect(s.authenticated).to.equal(false)
 //         expect(s.avatar).to.exist
@@ -328,7 +328,7 @@ function api() {
 //         expect(resp.body.authenticated).to.equal(false)
 //         expect(resp.body.avatar).to.exist
 //         expect(resp.body.sessionID).to.exist
-//         GET('/session/full', {}, function(s) {
+//         GET('/auth/session', {}, function(s) {
 //           expect(s.name).to.equal(clone.name)
 //           expect(s.authenticated).to.equal(false)
 //           expect(s.avatar).to.exist
@@ -353,7 +353,7 @@ function api() {
 //         PUT('/users/me/name', {name:clone.name}, {}, (s2) => {
 //           expect(s2.email).to.equal(clone.email)
 //           expect(s2.name).to.equal(clone.name)
-//           GET('/session/full', {}, function(s) {
+//           GET('/auth/session', {}, function(s) {
 //             expect(s.name).to.equal(clone.name)
 //             expect(s.email).to.equal(clone.email)
 //             done()

@@ -215,6 +215,41 @@ var newer = {
     }
   },
 
+  deebarizo: {
+    "_id" : ObjectId("523c401d66a6f999a465f83c"),
+    "email" : "deebarizo@gmail.com",
+    "name" : "Dee Barizo",
+    "emailVerified" : true,
+    "cohort" : {
+      "engagement" : { "visit_signup" : ISODate("2013-09-20T12:31:25.000Z"), "visit_first" : ISODate("2013-09-20T12:31:25.000Z") },
+      "aliases" : ["a5CCDH5RTZMuSlxIsPtUhH_yROAyKscK"],
+      "firstRequest" : {
+        "ref" : "http://www.google.com/search?q=airpair&oq=airpair&aqs=chrome..69i57j0l5.2823j0j4&sourceid=chrome&es_sm=122&ie=UTF-8&gws_rd=ssl",
+        "url" : "/"
+      }
+    },
+    "auth": {
+      "gp": {
+        "email" : "deebarizo@gmail.com",
+        "verified" : false,
+        "circledByCount" : 10,
+        "language" : "en",
+        "isPlusUser" : true,
+        "image" : {"isDefault" : true,"url" : "https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg?sz=50"},
+        "url" : "https://plus.google.com/105008423010230387245",
+        "name" : {"givenName" : "Dee","familyName" : "Barizo"},
+        "displayName" : "Dee Barizo",
+        "id" : "105008423010230387245",
+        "objectType" : "person",
+        "emails" : [{"type" : "account","value" : "deebarizo@gmail.com"}],
+        "gender" : "male",
+        "etag" : "\"RqKWnRU4WW46-6W3rWhLR9iFZQM/Rpurz-xrUbCwE9oG0A6AsBTxMJo\"", "kind" : "plus#person", "tokens" : { "apcom" : { "token" : "ya29.oAEXjA883gTd_" } }
+      },
+      gh: {"login":"deebarizo","id":3536563,"avatar_url":"https://avatars.githubusercontent.com/u/3536563?v=3","gravatar_id":"","url":"https://api.github.com/users/deebarizo","html_url":"https://github.com/deebarizo","followers_url":"https://api.github.com/users/deebarizo/followers","following_url":"https://api.github.com/users/deebarizo/following{/other_user}","gists_url":"https://api.github.com/users/deebarizo/gists{/gist_id}","starred_url":"https://api.github.com/users/deebarizo/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/deebarizo/subscriptions","organizations_url":"https://api.github.com/users/deebarizo/orgs","repos_url":"https://api.github.com/users/deebarizo/repos","events_url":"https://api.github.com/users/deebarizo/events{/privacy}","received_events_url":"https://api.github.com/users/deebarizo/received_events","type":"User","site_admin":false,"name":null,"company":null,"blog":null,"location":null,"email":null,"hireable":null,"bio":null,"public_repos":4,"public_gists":0,"followers":0,"following":0,"created_at":"2013-02-11T22:20:55Z","updated_at":"2016-02-27T06:22:04Z","emails":[{"email":"deebarizo@gmail.com","primary":true,"verified":true}]}
+    },
+    "legacy" : { "tags" : null, "bookmarks" : null }
+  },
+
   ricd: {
     "_id" : ObjectId("53f6e6758f8c80299bcc43b3"),
     "email" : "rdeslonde@deslondesoftware.com",
