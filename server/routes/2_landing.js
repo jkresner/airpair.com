@@ -71,17 +71,19 @@ module.exports = function(app, mw, {landing}) {
     assign(req.locals, { r:cache['landing'][key], htmlHead: cache['landing'][key].htmlHead } ) ) })
 
 
+  var tagPages = cache.httpRules['canonical-tag']
+
   var {getPostsByTag} = app.meanair.logic.posts
   function tagPageData(req, res, next) {
-    var tag = cache.tagBySlug(req.params.tagslug||req.url.replace('/', ''))
+    var tag = cache.tagBySlug(req.url.replace(/\/|posts/g, '').split('?')[0])
     if (!tag) return next(assign(Error(`Not found ${req.originalUrl}`),{status:404}))
-    var canonical = `https://www.airpair.com/posts/tag/${tag.slug}`
+    var canonical = `https://www.airpair.com/${tag.slug}`
     req.locals.htmlHead = assign({}, req.locals.r.htmlHead, {
       title:`${tag.name} Programming Guides and Tutorials from Top ${tag.short} Developers and expert consultants`,
-      canonical: landing.tags.top.indexOf(tag.slug) == -1 || tag.slug == 'angularjs' ? canonical : canonical.replace('/posts/tag','')
+      canonical: tag.slug == 'angularjs' ? `${canonical}/posts` : canonical
     })
     getPostsByTag.exec(tag, (e,r) => next(e,
-      assign(req.locals.r, tag, {latest:getPostsByTag.project(r)}, {url:req.originalUrl})))
+      assign(req.locals.r, tag, { latest:getPostsByTag.project(r)}, {url:req.originalUrl})) )
   }
 
 
@@ -93,10 +95,10 @@ module.exports = function(app, mw, {landing}) {
     .get('/', mw.$.inflateLanding('home'),
       mw.res.forbid('home!anon', function({user}) { if (user) return 'authd' }, { redirect: req => '/home' }))
 
-    .get(landing.tags.top.split('|').map(slug=>`/${slug}`).concat(`/posts/tag/:tagslug$`),
+    .get(tagPages.map(t => t.url).concat(tagPages.map(t => `${t.url}/posts`)),
       mw.$.cachedTags, mw.$.inflateLanding('tag'), tagPageData)
 
-    .get('/software-experts', mw.$.inflateLanding('posts'),
+    .get(['/software-experts','/posts'], mw.$.inflateLanding('posts'),
       mw.$.cachedPublished, mw.$.inflateAds,
       (req, res, next) => next(null, assign(req.locals.r, cache.published)) )
 

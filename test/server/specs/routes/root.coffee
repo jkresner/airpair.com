@@ -25,7 +25,7 @@ describe " HUMANS".spec, ->
     DONE()
 
   IT '/robots.txt', -> PAGE '/robots.txt', { contentType: /text/ }, (txt) ->
-    expect(txt).to.equal('')
+    expect(txt).to.inc(['User-agent: *','Disallow: /'])
     DONE()
 
   IT '/rss', ->
@@ -33,7 +33,10 @@ describe " HUMANS".spec, ->
       expect(xml).to.match(/<rss xmlns:dc="http/)
       expect(xml).to.match(/<item><title><\!\[CDATA\[Mastering ES6 higher-order functions for Arrays\]\]><\/title><description><\!\[CDATA\[Higher-order functions are/)
       expect(xml).to.match(/Elevate your functional programming skills by learning ES6 higher-order functions for Arrays\!\]\]><\/description><link>https:\/\/www.airpair.com\/javascript\/posts\/mastering-es6-higher-order-functions-for-arrays/)
-      DONE()
+      PAGE '/data/rss', { contentType: /rss/, status: 200 }, (xml2) ->
+        expect(xml2).to.inc ['<rss xmlns:dc="http','Elevate your functional programming skills by learning ES6 higher-order functions for Arrays']
+        DONE()
+
 
 
 describe " SEARCH".spec, ->
@@ -63,7 +66,7 @@ describe " SEARCH".spec, ->
 
   IT '/robots.txt', ->
     optsExpect =
-    PAGE '/robots.txt', assign({contentType: /text/, status:200}, @optsExpect), (txt) ->
+    PAGE '/robots.txt', assign({contentType: /text/, status:200 }, @optsExpect), (txt) ->
       expect(txt).to.inc(['Sitemap: https://www.airpair.com/index_sitemap.xml',
                           'User-agent: *'
                           'Disallow: /static/'])
@@ -108,7 +111,7 @@ describe " BANNED".spec, ->
     DONE()
 
   IT '/robots.txt', -> PAGE '/robots.txt', @optsExpect, (txt) =>
-    expect(txt).to.equal('')
+    expect(txt).to.inc(['User-agent: *','Disallow: /'])
     DONE()
 
   IT '/rss', -> PAGE '/rss', @optsExpect, (txt) =>

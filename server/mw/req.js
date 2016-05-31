@@ -1,21 +1,5 @@
 module.exports = (app, mw, cfg) => {
 
-
-  // CF-Connecting-IP === X-Forwarded-For (if no spoofing)
-  // First exception: CF-Connecting-IP
-  // To provide the client (visitor) IP address for every request to the origin, CloudFlare adds the CF-Connecting-IP header.
-  // "CF-Connecting-IP: A.B.C.D"
-  // where A.B.C.D is the client's IP address, also known as the original visitor IP address.
-  // Second exception: X-Forwarded-For
-  // X-Forwarded-For is a well-established HTTP header used by proxies, including CloudFlare, to pass along other IP addresses in the request. This is often the same as CF-Connecting-IP, but there may be multiple layers of proxies in a request path.
-  // var staleUrls = config.middleware.ctx.dirty.urlstale.split(' ')
-  // mw.cache('reqDirty', (req, res, next) => {
-  //   for (var url in staleUrls)
-  //     if (req.originalUrl.indexOf(url) == 1) req.ctx.dirty = 'urlstale'
-  //   next()
-  // })
-
-
   mw.cache('reqFirst', mw.session.orient({
     skipIf(req) {
       if (req.isAuthenticated()) {
@@ -32,36 +16,6 @@ module.exports = (app, mw, cfg) => {
     }
   }))
 
-  var short = { get:'GET', put:'PUT', delete:'DEL', post:'POS' }
 
-  mw.cache('noBot', mw.req.noCrawl({
-    group: 'null|search|ban|lib|proxy|reader|uncategorized',
-    content:'',
-    onDisallow(req) {
-      var ua = (req.ctx.ua || '').gray
-      var mth = short[req.method] || req.method.toUpperCase()
-      console.log(`[${mth}${req.originalUrl}]noBot:${req.ctx.ud}\t${req.ctx.ip}`.cyan, ua)
-    }}))
-
-
-  mw.cache('badBot', mw.req.noCrawl({
-    content:'',
-    group: 'null|ban|lib',
-    onDisallow(req) {
-      var ua = (req.ctx.ua || '').gray
-      var mth = short[req.method] || req.method.toUpperCase()
-      console.log(`[${mth}${req.originalUrl}]banned:${req.ctx.ud}\t${req.ctx.ip}`.cyan, ua)
-    }}))
-
-
-
-  mw.cache('nonSearch', mw.req.noCrawl({
-    content:'',
-    group: 'null|other|ban|lib|proxy|reader',
-    onDisallow(req) {
-      var ua = (req.ctx.ua || '').gray
-      var mth = short[req.method] || req.method.toUpperCase()
-      console.log(`[${mth}${req.originalUrl}]nonSeach:${req.ctx.ud}\t${req.ctx.ip}`.cyan, ua)
-    }}))
 
 }

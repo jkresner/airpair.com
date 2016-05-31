@@ -97,15 +97,15 @@
     "ctx": {
       "ud": {
         "android":             "Andoid",
-        "search":              "archive.org|Baiduspider|bingbot|adsbot-google|Googlebot|Hatena|YandexBot|Yahoo! Slurp|Y!J-ASR",
-        "ban":                 "AhrefsBot|datasift.com|dataprovider.com|Domain Re-Animator|cf-news|EmailMarketingRobot|GurujiBot|ltx71|MegaIndex|MetaURI|MJ12bot|Nutch|panscient.com|QuerySeekerSpider|rogerbot|scraper|SeznamBot|ShowyouBot|SMTBot|Sogou|Turnitin|uk_lddc_bot|YisouSpider",
+        "search":              "archive.org|Baiduspider|bingbot|adsbot-google|Googlebot|Hatena|msnbot-media|Qwantify|YandexBot|Yahoo! Slurp|Y!J-ASR",
+        "ban":                 "AhrefsBot|CCBot|CloudFlare-Always|datasift.com|dataprovider.com|Domain Re-Animator|DotBot|cf-news|EmailMarketingRobot|GrapeshotCrawler|GurujiBot|ltx71|MegaIndex|MetaURI|MJ12bot|Nutch|panscient.com|Pingdom|Priceonomics|QuerySeekerSpider|rogerbot|scraper|SeznamBot|ShowyouBot|SMTBot|Sogou|Turnitin|uk_lddc_bot|YisouSpider",
         "ios":                 "Apple-i",
         "mobile":              "iPhone|iPod|Mobile",
-        "lib":                 "CPython|DarcyRipper|Go http client|libwww-perl|Mechanize|jsoup",
+        "lib":                 "CPython|DarcyRipper|Go http client|libwww-perl|Mechanize|jsoup|Wget",
         "tablet":              "iPad",
-        "proxy":               "bitlybot|Googlebot-Image|facebookexternalhit|Slack-ImgProxy|Slackbot-LinkExpanding|SkypeUriPreview",
+        "proxy":               "bitlybot|Googlebot-Image|Exabot|facebookexternalhit|Slack-ImgProxy|Slackbot-LinkExpanding|SkypeUriPreview",
         "reader":              "Blogtrottr|Evernote|Feedly|PaperLiBot|Superfeedr|tt-rss.org|Toutiao|Windows-RSS",
-        "uncategorized":       "simplepie|twitterbot|scritch|netshelter"
+        "uncategorized":       "simplepie|Twitterbot|scritch|netshelter"
       },
       "uId":                   true
     },
@@ -151,7 +151,7 @@
       "img":                   { "types": "img" },
       "robots":                { "types": "text" }
     },
-    "rss":                     { "urls": "atom,data.atom,data.rss,rss/posts,rss/workshops,.rss,rss.xml,rss" }
+    "rss":                     { "urls": "atom,data.atom,/data/atom,data/rss,data.rss,rss/posts,rss/workshops,.rss,rss.xml,rss" }
   },
   "templates": {
     "dirs": {

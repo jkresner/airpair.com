@@ -173,6 +173,7 @@ module.exports = new LogicDataHelper(
       chain(d, inflate.tags, 'bodyHtml', 'url', 'tocHtml', 'tmpl', 'adTag', 'subscribedHash', 'reviews', 'other', select.display)
       for (var sim of r.similar) sim.url = sim.htmlHead.canonical
       if (!r.similar || r.similar.length == 0) r.similar = false
+      for (var tag of r.tags) tag.url = tag.slug == 'angularjs' ? '/angularjs/posts' : `/${tag.slug}`
       // $log('displayPublished'.magenta, d.reviews.length)
       return r
     },

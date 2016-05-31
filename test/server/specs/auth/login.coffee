@@ -42,6 +42,21 @@ IT 'GH login no duplicate key error with existing gp profile', ->
         DONE()
 
 
+IT 'GH login of existing user has avatar for session', ->
+  darkangel = FIXTURE.clone('users.darkangel')
+  DB.ensureDoc 'User', darkangel, (e, uDB) ->
+    EXPECT.equalIdAttrs(darkangel, uDB)
+    expect(uDB.auth.gp.email).to.equal("darkangel51@gmail.com")
+    expect(uDB.auth.gh.emails[0].email).to.equal("caguilar@dwdandsolutions.com")
+    LOGIN 'darkangel', (s1) ->
+      EXPECT.equalIdAttrs(uDB, s1)
+      expect(s1.avatar).to.equal(darkangel.auth.gh.avatar_url)
+      DB.docById 'User', darkangel._id, (uDB2) ->
+        expect(uDB2.auth.gp.email).to.equal("darkangel51@gmail.com")
+        expect(uDB2.auth.gh.emails[0].email).to.equal("caguilar@dwdandsolutions.com")
+        expect(uDB2.email).to.equal("darkangel51@gmail.com")
+        DONE()
+
   # it 'github login links to accounts with email matching any other provider', ->
   # it 'github login saves all emails to user record', ->
 

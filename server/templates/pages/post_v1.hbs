@@ -120,7 +120,7 @@
 
 <footer class="postfooter {{#if showDisqus }}afterdisqus{{/if}}">
   <h5>Tagged under</h5>
-  <ul class="posttags">{{#each tags}}<li><a href="/posts/tag/{{ slug }}" target="_self" title="{{name}} tutorials & {{short}} guides">{{ slug }}</a></li>{{/each}}</ul>
+  <ul class="posttags">{{#each tags}}<li><a href="{{ url }}" target="_self" title="{{name}} tutorials & {{short}} guides">{{ slug }}</a></li>{{/each}}</ul>
 
   {{#if published }}
   <div class="share-horizontal">

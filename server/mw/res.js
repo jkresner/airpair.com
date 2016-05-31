@@ -60,7 +60,7 @@ module.exports = (app, mw, {abuse}) => {
       }
 
       if (e.message.match(/not found/i) && e.status !== 403) {
-        cache.abuse.increment(404, req)
+        if (!req.user) cache.abuse.increment(404, req)
         if (req.ctx.ref && !e.message.match(/<</i))
           e.message = `${e.message} << ${req.ctx.ref}`
       }

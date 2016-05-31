@@ -58,5 +58,7 @@ module.exports = {
 
     unknown:
       a:                   'Mozilla/5.0 (Linux; U; Android 4.4.2; zh-cn; GT-I9500 Build/KOT49H) AppleWebKit/537.36 (KHTML, like Gecko)Version/4.0 MQQBrowser/5.0 QQ-URL-Manager Mobile'
+      aa:                  'Mozilla/5.0 (Linux; Android 4.1.2; GT-S7390 Build/JZO54K) AppleWebKit/537.36 (KHTML, like Gecko)'
+      b:                   'Mozilla/5.0 (Windows; Windows NT 5.1; en-US) Firefox/3.5.0'
 
 }

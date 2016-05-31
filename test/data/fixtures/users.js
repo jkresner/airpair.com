@@ -1886,6 +1886,235 @@ var newer = {
     },
     "bio" : "Technical Manager at @AvenueCode and Technical Leader at @Macys, heavily interested in cutting-edge front-end technologies. http://tiagorg.com",
     "roles" : [ "editor" ]
+  },
+
+  darkangel: {
+    "_id" : ObjectId("5485f8dd8f8c80299bcc541a"),
+    "cohort" : {
+        "engagement" : {
+            "visit_signup" : ISODate("2014-12-08T19:15:41.689Z"),
+            "visit_first" : ISODate("2014-12-08T19:15:29.059Z"),
+            "visit_last" : ISODate("2016-01-16T06:40:03.758Z"),
+            "visits" : [
+                ISODate("2016-01-16T00:00:00.000Z")
+            ]
+        },
+        "aliases" : [
+            "eVv2oG3KZTFN49ZBcKcruAC5xOHneVwM",
+            "I4hVM88TEg8zmdfd_nQFnIkj6r-u7_Uu",
+            "FYHweW4tgdmPFCVzKED697_CNat3C0Rm",
+            "VszLnzJZ-a7a4XhB89ijMCxkWAfT1_J7",
+            "7AbQs-jdu3i_Hsvl1nh2HLEUI_ELG7sn",
+            "C8gVC6wt_T6h7b-dszxbPnZVZghGBBwK",
+            "0TVd0OIn4aXdnXXzx9mw9lPF09-BUzbX",
+            "7rLD1CV_XjLBFXRGC_WuNyfe49gl636k",
+            "rbZP5cZ1CSECOHMq-4A117RMqrbTbBAh"
+        ],
+        "firstRequest" : {
+            "url" : "/elasticsearch/posts/elasticsearch-robust-search-functionality?utm_source=twitter&utm_medium=social&utm_term=elasticsearch-functionality&utm_content=savvy1-tutorial&utm_campaign=social-blast-oct"
+        }
+    },
+    "email" : "darkangel51@gmail.com",
+    "emailVerified" : true,
+    "name" : "Carlos Aguilar",
+    "initials" : "CA",
+    "username" : "caguilar51",
+    "bio" : "Python and Ruby developer and DevOps guy. I love build interesting applications and the challenging projects",
+    "location" : { "timeZoneId" : "America/New_York", "name" : "Gaithersburg, Maryland, EE. UU.", "shortName" : "Gaithersburg" },
+    "auth" : {
+        "sl" : {
+            "tokens" : { "apcom" : { "token" : "xoxp" } },
+            "id" : "U04DMS9G3",
+            "username" : "caguilar51",
+            "teamId" : "T02ATFDPL",
+            "team" : "AirPair",
+            "slackUrl" : "https://airpair.slack.com/"
+        },
+        "tw" : {
+            "tokens" : {
+              "apcom" : { "token" : "173491052" },
+              "cnslt" : { "token" : "173495aN4d" }
+            },
+            "id" : 173491052,
+            "name" : "Carlos Aguilar",
+            "screen_name" : "caguilar51",
+            "location" : "Gaithersburg, MD",
+            "profile_location" : { },
+            "description" : "Python and Ruby developer and Devop guy. Learning objetive C and few other things",
+            "url" : "http://t.co/FzBXOB9LCK",
+            "protected" : false,
+            "followers_count" : 410,
+            "friends_count" : 1076,
+            "listed_count" : 14,
+            "created_at" : "Sun Aug 01 16:27:02 +0000 2010",
+            "favourites_count" : 424,
+            "utc_offset" : -18000,
+            "time_zone" : "Eastern Time (US & Canada)",
+            "geo_enabled" : true,
+            "verified" : false,
+            "lang" : "es",
+            "profile_image_url" : "http://pbs.twimg.com/profile_images/447135585589657600/0Wa1AWaF_normal.jpeg",
+            "profile_banner_url" : "https://pbs.twimg.com/profile_banners/173491052/1398214124",
+            "following" : false,
+            "notifications" : false,
+            "suspended" : false,
+            "needs_phone_verification" : false,
+            "id_str" : "173491052",
+            "entities" : {},
+            "statuses_count" : 1156,
+            "status" : {},
+            "contributors_enabled" : false,
+            "is_translator" : false,
+            "is_translation_enabled" : false,
+            "profile_background_color" : "1A1B1F",
+            "profile_background_image_url" : "http://abs.twimg.com/images/themes/theme9/bg.gif",
+            "profile_background_image_url_https" : "https://abs.twimg.com/images/themes/theme9/bg.gif",
+            "profile_background_tile" : false,
+            "profile_image_url_https" : "https://pbs.twimg.com/profile_images/447135585589657600/0Wa1AWaF_normal.jpeg",
+            "profile_link_color" : "2FC2EF",
+            "profile_sidebar_border_color" : "181A1E",
+            "profile_sidebar_fill_color" : "252429",
+            "profile_text_color" : "666666",
+            "profile_use_background_image" : true,
+            "has_extended_profile" : true,
+            "default_profile" : false,
+            "default_profile_image" : false,
+            "follow_request_sent" : false
+        },
+        "in" : {
+            "publicProfileUrl" : "https://www.linkedin.com/in/caguilar51",
+            "positions" : {
+                "values" : [
+                    { "title" : "Freelancer", "summary" : "As a freelancer I had the chance to work in many different projects, fixing errors in existing software or building new solutions for some common problems on companies.", "id" : 290535978,
+                        "company" : { "name" : "Elance.com",
+                            "industry" : "Internet",
+                            "id" : 1596192
+                        }
+                    },
+                    { "title" : "Freelancer", "summary" : "I had worked on many projects related to application development mainly using Python y PHP.\n\nWorking here gained the level of Senior Backend Engineer. Among the companies for which I work I can mention the following:\n\nwww.yourstudentmap.com (CTO)\nwww.checkpoints.com (Clients dashboard development using php y oracle)\nwww.upgraded.to (Site like putlocker.com)\nwww.mtr-designs.com (App hooks for django-cms)\nwww.trueshelf.com (Askbot customization used by a Princeton teacher)\nwww.oneschool.com (Backend Engineer)", "id" : 290535940,
+                        "company" : { "type" : "Privately Held",
+                            "size" : "51-200 employees",
+                            "name" : "oDesk",
+                            "industry" : "Internet",
+                            "id" : 27851
+                        }
+                    },
+                    { "title" : "Owner", "summary" : "Lead project developer using Pytohn and PHP", "id" : 91742136,
+                        "company" : { "name" : "DWD&Solutions"
+                        }
+                    }
+                ],
+                "_total" : 3
+            },
+            "pictureUrl" : "https://media.licdn.com/mpr/mprx/0_k14DPdl_n-4RgXl0QvdtPw8DnrmJgTl06l2tPwCKWzsdCLQxHzH3jI9YZYa6OQK15rV1y2ruM6vo",
+            "numConnections" : 500,
+            "tokens" : {
+                "cnslt" : { "token" : "AQXRp7ov7n" },
+                "apcom" : { "token" : "39c52" }
+            },
+            "firstName" : "Carlos",
+            "id" : "2zJ1r0dLPH",
+            "lastName" : "Aguilar"
+        },
+        "gh" : {
+          "tokens" : {
+            "cnslt" : { "token" : "bd09" },
+            "apcom" : { "token" : "1b70" }
+          },
+          "emails" : [{ "email" : "caguilar@dwdandsolutions.com", "primary" : true, "verified" : true } ],
+          "updated_at" : "2016-05-11T03:22:07Z",
+          "created_at" : "2009-02-25T22:49:07Z",
+          "following" : 116,
+          "followers" : 33,
+          "public_gists" : 2,
+          "public_repos" : 31,
+          "bio" : null,
+          "hireable" : true,
+          "email" : "caguilar@dwdandsolutions.com",
+          "location" : "Gaithersburg, MD, USA",
+          "blog" : "http://elblogdedarkness51.blogspot.com",
+          "company" : "DWD&Solutions",
+          "name" : "Carlos Aguilar",
+          "gravatar_id" : "",
+          "avatar_url" : "https://avatars.githubusercontent.com/u/58022?v=3",
+          "id" : 58022,
+          "login" : "darkness51"
+        },
+        "bb" : {
+            "tokens" : { "apcom" : { "token" : "pVKpvZ" } },
+            "username" : "darkness51",
+            "first_name" : "",
+            "last_name" : "",
+            "display_name" : "darkness51",
+            "avatar" : "https://secure.gravatar.com/avatar/02d47e92847834fd9de17b749bfa11f9?d=https%3A%2F%2Fd3oaxc4q5k2d6q.cloudfront.net%2Fm%2F6580bb2d7ce5%2Fimg%2Fdefault_avatar%2F32%2Fuser_blue.png&s=32"
+        },
+        "gp" : {
+            "tokens" : { "apcom" : { "token" : "ya29.BALiJ6szOpr" } },
+            "gender" : "male",
+            "emails" : [ { "value" : "darkangel51@gmail.com", "type" : "account" } ],
+            "id" : "107910235700156907550",
+            "displayName" : "Carlos Aguilar",
+            "name" : { "familyName" : "Aguilar", "givenName" : "Carlos" },
+            "url" : "https://plus.google.com/+CarlosAguilarsv",
+            "image" : {},
+            "verified" : false,
+            "cover" : {},
+            "email" : "darkangel51@gmail.com"
+        },
+        "so" : {
+            "tokens" : { "apcom" : { "token" : "BI26", } },
+            "badge_counts" : { "bronze" : 1, "silver" : 0, "gold" : 0 },
+            "account_id" : 538986,
+            "last_modified_date" : 1332303065,
+            "last_access_date" : 1426720311,
+            "reputation_change_year" : 0,
+            "reputation_change_quarter" : 0,
+            "reputation_change_month" : 0,
+            "reputation_change_week" : 0,
+            "reputation_change_day" : 0,
+            "reputation" : 6,
+            "creation_date" : 1314050465,
+            "user_type" : "registered",
+            "user_id" : 906717,
+            "link" : "http://stackoverflow.com/users/906717/carlos-aguilar",
+            "display_name" : "Carlos Aguilar",
+            "profile_image" : "https://www.gravatar.com/avatar/d2b9063e2ae333b82b699752b2dcb9a9?s=128&d=identicon&r=PG"
+        }
+    },
+    "legacy" : {
+        "tags" : [{ "sort" : 0, "tagId" : ObjectId("5149dccb5fc6390200000013"), "_id" : ObjectId("548770ac5f84bc0b00053773") },
+                  { "sort" : 0, "tagId" : ObjectId("514830f257e7aa0200000014"), "_id" : ObjectId("548770b0bf8f300b0058c071") },
+                  { "sort" : 0, "tagId" : ObjectId("514825fa2a26ea020000002f"), "_id" : ObjectId("548770babf8f300b0058c073") },
+                  { "sort" : 0, "tagId" : ObjectId("514825fa2a26ea0200000021"), "_id" : ObjectId("548770c1bf8f300b0058c075") },
+                  { "sort" : 0, "tagId" : ObjectId("515499dcd96db10200000049"), "_id" : ObjectId("5487b5e45f84bc0b00053e58") } ]
+    },
+    "photos" : [
+      { "_id" : ObjectId("5699e5c3d3b0e311002370d6"), "value" : "https://avatars.githubusercontent.com/u/58022?v=3", "type" : "github", "primary" : true }
+    ],
+    "emails" : [
+      { "_id" : ObjectId("5699e5c3d3b0e311002370d5"), "primary" : true, "value" : "caguilar@dwdandsolutions.com", "verified" : true, "origin" : "oauth:github" }
+    ],
+    "meta" : {
+      "lastTouch" : {
+        "by" : { "name" : "Carlos Aguilar", "_id" : ObjectId("5485f8dd8f8c80299bcc541a") },
+        "_id" : ObjectId("573b73a00def071200c76d98"),
+        "action" : "login"
+      },
+      "activity" : [
+        { "_id" : ObjectId("5699e63461b0a2120044f24c"),
+          "action" : "login",
+          "by" : { "name" : "Carlos Aguilar", "_id" : ObjectId("5485f8dd8f8c80299bcc541a") }
+        },
+        { "action" : "login",
+            "_id" : ObjectId("5699ea1d61b0a2120044f25b"),
+            "by" : { "_id" : ObjectId("5485f8dd8f8c80299bcc541a"), "name" : "Carlos Aguilar" }
+        },
+        { "_id" : ObjectId("573b73a00def071200c76d98"),
+            "action" : "login",
+            "by" : { "name" : "Carlos Aguilar", "_id" : ObjectId("5485f8dd8f8c80299bcc541a") }
+        }
+      ]
+    }
   }
 
 }

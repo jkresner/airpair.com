@@ -1,0 +1,11 @@
+#!/bin/sh
+CYAN='\033[0;36m'
+NC='\033[0m' # No Color
+printf "${CYAN}CMD: Dump latest httpRules${NC}\n"
+mongodump -h $1 -d $2 -u heroku -p $3 -o ~/ap_mongo -c redirects
+mv ~/ap_mongo/$2/redirects.bson test/data/bson/redirects.bson
+printf "${CYAN}CMD: Dump airpair_test.posts${NC}\n"
+mongodump -h localhost -d airpair_test -o ~/ap_mongo -c posts
+mv ~/ap_mongo/airpair_test/posts.bson test/data/bson/posts.bson
+printf "${CYAN}CMD: cmd/test -s -o routes${NC}\n"
+cmd/test -s -o routes

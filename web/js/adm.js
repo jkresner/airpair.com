@@ -23,10 +23,7 @@ require('./../../ang/common/models/dataService.js');
 require('./../../ang/common/models/sessionService.js');
 require('./../../ang/common/models/adminDataService.js');
 require('./../../ang/common/routes/routes.js');
-// require('./../../ang/posts/module.js');
-// require('./../../ang/adm/posts/module.js');
 require('./../../ang/adm/users/module.js');
-require('./../../ang/adm/redirects/module.js');
 require('./../../ang/adm/orders/module.js');
 require('./../../ang/adm/pipeline/module.js');
 require('./../../ang/adm/bookings/module.js');
@@ -43,7 +40,6 @@ angular.module('ADM', [
   'ADMPipeline',
   // 'ADMPosts',
   'ADMUsers',
-  'ADMRedirects',
   'ADMOrders',
   'ADMBookings',
   'ADMExperts',

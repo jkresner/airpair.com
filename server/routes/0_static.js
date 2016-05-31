@@ -26,11 +26,21 @@ module.exports = function(app, mw, {static,landing}) {
 
     app.honey.Router('robots', static.robots)
 
+      .files(['robots.txt'],
+             mw.req.noCrawl({ group: 'null|other|ban|lib|proxy|reader',
+               content:'User-agent: *\nDisallow: /',
+               onDisallow: req => global.$logMW(req, '!seo')
+             }),
+             { dir:`${config.appDir}/web/robots`})
+
       .files(['sitemap.xml',
               'image_sitemap.xml',
-              'index_sitemap.xml',
-              'robots.txt'],
-             mw.$.nonSearch, { dir:`${config.appDir}/web/robots`})
+              'index_sitemap.xml'],
+              mw.req.noCrawl({ group: 'null|other|ban|lib|proxy|reader',
+                content:'',
+                onDisallow: req => global.$logMW(req, '!seo')
+              }),
+              { dir:`${config.appDir}/web/robots`})
 
 
 }
