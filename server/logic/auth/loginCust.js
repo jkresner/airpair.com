@@ -45,7 +45,9 @@ module.exports = function(DAL, Data, Shared, Lib) {
           r.username = r.username || profile.login
 
           assign(this.analytics, {event:`${existing?'login':'signup'}:oauth:gh`,
-            alias:_.pick(r,["_id","name","email","username"]), data:{user:_.pick(r,["_id","name"])} })
+            alias:_.pick(r,["_id","name","email","username"]), data:{user:_.pick(r,["_id","name","avatar"])} })
+
+          console.log('loginCust', r._id, r.name, r.avatar, r.photos)
 
           done(e, r)
         })

@@ -7,7 +7,8 @@
     <li class="ps"><a href="/software-experts" target="_self">Experts</a></li>
     {{!-- <li class="find nomob"><a href="/hire-software-developers" target="_self">Hire developers</a></li> --}}
     <li class="usr min640">
-      <a href="/account" target="_self"><img src="{{session.avatar}}&s=20&ap=nav" /></a>
+      {{#if session.avatar}}<a href="/account" target="_self"><img src="{{session.avatar}}&s=20&ap=nav" /></a>
+      {{else}}<a href="/account" target="_self"><img src="https://static.airpair.com/ico/favicon-32x32.png&ap=nav" /></a>{{/if}}
     </li>
     <li class="ath nomob"><a href="https://author.airpair.com/" target="_self"  rel="nofollow">Author</a></li>
     <li class="ath nomob"><a href="https://consult.airpair.com/" target="_self" rel="nofollow">Consult</a></li>
