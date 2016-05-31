@@ -18,7 +18,7 @@ rewrite = ->
     PAGE(rule[0], {status:301}, perm_to(rule[1])) for rule in [
       ['/static/img/pages/postscomp/prize-keen-io.png','/img/software/keen-io.png']
       ['/static/img/pages/postscomp/logo-android.png','/img/software/android.png']
-      ['/problem-solving','/pair-programming']
+      # ['/problem-solving','/pair-programming']
     ]
 
   IT 'EXTERNAL (sub-domain)', ->
@@ -33,6 +33,7 @@ rewrite = ->
       ['/posts/tag/angularjs', '/angularjs/posts']
       ['/posts/tag/javascript', '/javascript']
       ['/posts/tag/redis', '/redis']
+      ['/firebase/posts/firebase-support-and-api-integration-help', '/firebase']
     ]
 
 
@@ -45,6 +46,24 @@ rewrite = ->
     PAGE(rule[0], {status:301}, perm_to(rule[1])) for rule in [
       ['/ionic-framework/posts/ionic-firebase-password-manager&q=Create_a_Password_Management_App_Using_Ionic_Framework_%E2%80%A6','/ionic-framework/posts/ionic-firebase-password-manager&q=Create_a_Password_Management_App_Using_Ionic_Framework_']
       ['/python/posts/top-mistakes-python-big-data-analytics&quot;', '/python/posts/top-mistakes-python-big-data-analytics']
+      ['/android/android-camera-development"','/android/android-camera-development']
+      # ['/ionic-framework/posts.','/ionic-framework/posts']
+      # ['/ionic-framework/posts/%5C','/ionic-framework/posts/']
+    ]
+
+  IT 'API Pages', ->
+    PAGE(rule[0], {status:301}, perm_to(rule[1])) for rule in [
+      ['/human-api', '/software-experts']
+      ['/bit.ly', '/software-experts']
+      ['/spotify', '/software-experts']
+      ['/echo-nest', '/software-experts']
+      ['/tokbox', '/software-experts']
+      ['/hellosign', '/software-experts']
+      ['/vero/posts/vero-support-and-api-integration-help', '/software-experts']
+      ['/vero', '/software-experts']
+      ['/flydata', '/software-experts']
+      ['/twotap', '/software-experts']
+      ['/sinch', '/software-experts']
     ]
 
 
@@ -63,6 +82,8 @@ moved301 = ->
       ['/me', '/account']
       ['/javascript/javascript-performance-yehuda-katz','/javascript']
       ['/node_js','/node.js']
+      ['/node','/node.js']
+      ['/post/tag/node','/node.js']
       ['/seo/node.js-nginx-wordpress-seo','/nginx']
     ]
 
@@ -80,6 +101,11 @@ moved301 = ->
       ['/mobile-checkout/mobile-checkout-expert-radu-spineanu?utm_source=twitter&utm_medium=social&utm_term=mobile-checkout-expert','/software-experts?utm_source=twitter&utm_medium=social&utm_term=mobile-checkout-expert']
       ['/email-optimization/email-optimization-expert-james-lamont?utm_source=twitter','/software-experts?utm_source=twitter']
       ['/airconf-promo/jescalan?utm_source=meetup&utm_medium=email&utm_term=expert&utm_content=jescalan&utm_campaign=airconf', '/software-experts?utm_source=meetup&utm_medium=email&utm_term=expert&utm_content=jescalan&utm_campaign=airconf']
+    ]
+
+  SKIP 'CAPS', ->
+    PAGE(rule[0], {status:301}, perm_to(rule[1])) for rule in [
+      ['/Ruby', '/ruby']
     ]
 
 
@@ -104,6 +130,19 @@ moved302 = ->
   IT 'AIRPAIR.me', ->
     PAGE(rule[0], {status:302}, temp_to(rule[1])) for rule in [
       ['/me/joefiorini', '/javascript/emberjs-using-ember-cli']
+      ['/me/ddavison','/selenium/posts/selenium-tutorial-with-java']
+      ['/me/joefiorini','/javascript/emberjs-using-ember-cli']
+      ['/me/tiagorg','/javascript/posts/the-mind-boggling-universe-of-javascript-modules']
+      ['/me/gsans','/jasmine/posts/javascriptintegrating-jasmine-with-requirejs-amd']
+      ['/me/arunr','/angularjs/posts/travel-app-in-2-hours']
+      ['/me/marko','/java/posts/spring-streams-memory-efficiency']
+      ['/me/hackerpreneur','/express/posts/expressjs-and-passportjs-sessions-deep-dive']
+      ['/me/basarat','/typescript/expert-basarat']
+      ['/me/ryansb','/python/posts/django-flask-pyramid']
+      ['/me/mappmechanic','/angularjs/posts/build-a-real-time-hybrid-app-with-ionic-firebase']
+      ['/me/larskotthoff','/javascript/posts/d3-force-layout-internals']
+      ['/me/urish','/js/javascript-framework-comparison']
+      ['/me/kn0tch','/aws/posts/ntiered-aws-docker-terraform-guide']
     ]
 
 beforeEach ->

@@ -98,10 +98,10 @@
       "ud": {
         "android":             "Andoid",
         "search":              "archive.org|Baiduspider|bingbot|adsbot-google|Googlebot|Hatena|msnbot-media|Qwantify|YandexBot|Yahoo! Slurp|Y!J-ASR",
-        "ban":                 "AhrefsBot|CCBot|CloudFlare-Always|datasift.com|dataprovider.com|Domain Re-Animator|DotBot|cf-news|EmailMarketingRobot|GrapeshotCrawler|GurujiBot|ltx71|MegaIndex|MetaURI|MJ12bot|Nutch|panscient.com|Pingdom|Priceonomics|QuerySeekerSpider|rogerbot|scraper|SeznamBot|ShowyouBot|SMTBot|Sogou|Turnitin|uk_lddc_bot|YisouSpider",
+        "ban":                 "AhrefsBot|CCBot|cf-news|CloudFlare-Always|datasift.com|dataprovider.com|Domain Re-Animator|DotBot|EmailMarketingRobot|Genieo|GrapeshotCrawler|GurujiBot|HaosouSpider|ltx71|MegaIndex|MetaURI|MJ12bot|Nutch|panscient.com|Pingdom|Priceonomics|QuerySeekerSpider|rogerbot|scraper|Searchmetrics|SemrushBot|SeznamBot|ShowyouBot|SMTBot|Sogou|Turnitin|uk_lddc_bot|YisouSpider",
         "ios":                 "Apple-i",
         "mobile":              "iPhone|iPod|Mobile",
-        "lib":                 "CPython|DarcyRipper|Go http client|libwww-perl|Mechanize|jsoup|Wget",
+        "lib":                 "CPython|DarcyRipper|Go 1.1|Go http client|jsoup|libwww-perl|Mechanize|python-requests|Wget",
         "tablet":              "iPad",
         "proxy":               "bitlybot|Googlebot-Image|Exabot|facebookexternalhit|Slack-ImgProxy|Slackbot-LinkExpanding|SkypeUriPreview",
         "reader":              "Blogtrottr|Evernote|Feedly|PaperLiBot|Superfeedr|tt-rss.org|Toutiao|Windows-RSS",

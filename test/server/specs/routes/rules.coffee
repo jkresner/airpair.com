@@ -43,13 +43,11 @@ bait = ->
       expect(txt1).to.equal('Relax. Close your eyes.')
       DONE()
 
-
   IT 'BAIT WILDCARDS', ->
     PAGE '/s3.amazonaws.com/kennyonetime/blob_new.png', @optsExpect, (txt1) =>
       PAGE '/s3.amazonaws.com/kennyonetime/blob_edit.png', @optsExpect, (txt2) =>
         PAGE '/assets/plugins/jquery-file-upload/server/php', @optsExpect, (txt3) =>
           DONE()
-
 
   IT 'Root WILDCARDS', ->
     PAGE '/so17/php', @optsExpect, (txt1) =>
@@ -65,7 +63,21 @@ bait = ->
       expect(txt1).to.equal('Relax. Close your eyes.')
       PAGE '/index.xml?test=yo', @optsExpect, (txt2) =>
         expect(txt2).to.equal('Relax. Close your eyes.')
+        PAGE '/core/CHANGELOG.txt', @optsExpect, (txt3) =>
+          DONE()
+
+  IT 'Source files', ->
+    PAGE '/.editorconfig', @optsExpect, (txt1) =>
+      PAGE '/example.gitignore', @optsExpect, (txt2) =>
+        PAGE '/.gitattributes', @optsExpect, (txt3) =>
+          DONE()
+
+  IT 'Bad guesses', ->
+    PAGE '/search', @optsExpect, (txt1) =>
+      PAGE '/search?site=&ie=UTF-8&q=Yuri+Kochiyama&oi=ddle&ct=yuri-kochiyamas-95th-birthday-5723472594468864-hp&hl=en&sa=X&ved=0ahUKEwil6qbk4ebMAhUBVj4KHX2qCVIQPQgD', @optsExpect, (txt2) =>
         DONE()
+
+
 
 ban = ->
 
@@ -76,6 +88,8 @@ ban = ->
         expect(txt).to.equal('')
         DONE()
 
+  SKIP 'NO SESSION GENERATED FOR ABUSE REQUEST', ->
+# 2016-05-31T20:18:31.562886+00:00 app[web.1]: GET 134.249.131.0    5ynsvb17lMGb abuse < other         /administrator  <<< https://www.airpair.com/administrator Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.57 Safari/537.36
 
 
 DESCRIBE("501", notImp)

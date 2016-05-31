@@ -55,7 +55,11 @@ module.exports = function(app, mw, {httpRules,landing}) {
 
   //-- write tests and add these
   router.post(['/',
-               '/aws/posts/building-a-scalable-web-app-on-amazon-web-services-p1'
+               '/100k-writing-competition',
+               '/angularjs',
+               '/aws/posts/building-a-scalable-web-app-on-amazon-web-services-p1',
+               '/python/posts/django-flask-pyramid',
+               '/typescript/posts/typescript-development-with-gulp-and-sublime-text'
       ], mw.$.banEm)
   // app.put('/*', mw.$.noBot)
   // app.delete('/*', mw.$.noBot)
