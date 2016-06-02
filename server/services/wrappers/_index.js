@@ -1,5 +1,9 @@
 var logging                 = true
-
+function wrapFnList(fnsObj, wrapFn) {
+  for (var name in fnsObj)
+    fnsObj[name] = wrapFn(fnsObj[name], name)
+  return fnsObj
+}
 
 var initAPIWrap = (wrapperName, wrapperFile) => {
   setTimeout(()=>{
@@ -7,7 +11,7 @@ var initAPIWrap = (wrapperName, wrapperFile) => {
     var wrapper = require(`./${wrapperFile}`)
 
     var init = wrapper.init
-    wrapper = _.wrapFnList(wrapper, (fn, fnName) => {
+    wrapper = wrapFnList(wrapper, (fn, fnName) => {
       return function() {
         if (!wrapper.api) {
           //this. ugly solution

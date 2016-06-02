@@ -1,5 +1,7 @@
-module.exports = function(app, mw, {httpRules}) {
-  if (!httpRules.posts) return;
+module.exports = function(app, mw, {rules}) {
+
+  if (!(rules||{}).posts) return;
+
 
   var router = app.honey.Router('posts', {type:'html'})
     .use(mw.$.livereload)
@@ -9,7 +11,8 @@ module.exports = function(app, mw, {httpRules}) {
   canonMap = postslug => (req, res, next) =>
     next(null, assign(req.params,{adtag:'canon',postslug}))
 
-  for (var {url,slug} of cache.httpRules['canonical-post'])
-    router.get(url, canonMap(slug), mw.$.logic('posts.getPublishedBySlug'))
+  for (var {url,id} of cache['http-rules']['canonical-post'])
+    router.get(url, canonMap(id), mw.$.logic('posts.getPublishedBySlug'))
+
 
 }

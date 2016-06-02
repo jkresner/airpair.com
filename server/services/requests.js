@@ -170,7 +170,7 @@ var save = {
     {
       var d = {byName:this.user.name, _id:original._id,budget:update.budget,
         tags:util.tagsString(update.tags),time:update.time.toUpperCase()}
-      mailman.sendTemplate('pipeliner-notify-request', d, 'pipeliners')
+      mailman.sendTemplate('pipeliner-notify-request', d, { name:'JK', email: 'jk@airpair.com' })
 
       original.adm = admSet(original,{active:true,submitted:new Date()})
       // analytics.echo(original.by, null, 'Request', {_id:original._id,action:'submit'})

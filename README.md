@@ -167,7 +167,7 @@ NON-CRITICAL FEATURES
 
 AIRPAIRCOM CODE
 [✓]- Review wishlist
-[ ]--- remove global.util in app.js + _.wrapFnList
+[ ]--- remove global.util in app.js
 [-]--- clean out /shared/validations /shared/mail /shared/util
 
 MEANAIR CODE

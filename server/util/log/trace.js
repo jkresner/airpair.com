@@ -26,5 +26,7 @@ module.exports = function(namespace, obj, on)
       return fn.apply(this, arguments)
     }
 
-  return _.wrapFnList(obj, traceWrap)
+  for (var name in obj) obj[name] = traceWrap(obj[name], name)
+
+  return obj
 }

@@ -1,20 +1,21 @@
-module.exports = function(app, mw, {httpRules,landing}) {
-  if (!httpRules) return;
+module.exports = function(app, mw, {rules}) {
+  if (!rules) return;
 
-  var rules = cache.httpRules
+  var cached = cache['http-rules']
 
-  var agg = { '301':[],'302':[],'410':[],'501':[],'bait':[],'rewrite':[] }
-  rules['301'].forEach(r =>
+
+  var agg = { '410':cached['410'],'501':cached['501'],'bait':cached['bait'],
+    '301':{},
+    '302':{},
+    'rewrite':[] }
+
+  cached['301'].forEach(r =>
     agg['301'][r.to] = _.union(agg['301'][r.to]||[],[r.url]) )
 
-  rules['302'].forEach(r =>
+  cached['302'].forEach(r =>
     agg['302'][r.to] = _.union(agg['302'][r.to]||[],[r.url]) )
 
-  var gone       = rules['410'].length > 0 ? rules['410'].map(r => r.url) : false
-  var not_imp    = rules['501'].length > 0 ? rules['501'].map(r => r.url) : false
-  var bait       = rules['bait'].length > 0 ? rules['bait'].map(r => r.url) : false
-  var rewrites   = rules['rewrite'].map(r => [new RegExp(r.url,'i'),r.to])
-
+  var rewrites   = cached['rewrite'].map(r => [new RegExp(r.url,'i'),r.to])
 
   var redir = (to, status) => {
     $logIt('cfg.route', `${status}                >`, to.green)
@@ -42,15 +43,14 @@ module.exports = function(app, mw, {httpRules,landing}) {
   for (var to in agg['302']) router
     .get(agg['302'][to], redir(to, 302))
 
-  if (not_imp.length) $logIt('cfg.route', `501   >>>\t\t       [${not_imp.length}]`) + router
-    .get(not_imp, (req, res) => console.log(`[501] ${req.url} ${req.ctx.ip} ${req.ctx.ua}`.cyan) +
-      res.set('Content-Type','text/plain').status(501).send(''))
+  if (agg['501'].length > 0) $logIt('cfg.route', `501   >>>\t\t       [${agg['501'].length}]`) + router
+    .get(agg['501'], (req, res) => res.send(cache.abuse.increment(501, req)))
 
-  if (gone) $logIt('cfg.route', `410   >>>\t\t       [${gone.length}]`) + router
-    .get(gone, (req, res) => res.send(cache.abuse.increment(410, req)))
+  if (agg['410'].length > 0) $logIt('cfg.route', `410   >>>\t\t       [${agg['410'].length}]`) + router
+    .get(agg['410'], (req, res) => res.send(cache.abuse.increment(410, req)))
 
-  if (bait) $logIt('cfg.route', `418   >>>\t\t       [${bait.length}]`) + router
-    .get(bait, (req, res) => res.send(cache.abuse.increment(418, req)))
+  if (agg['bait'].length > 0) $logIt('cfg.route', `418   >>>\t\t       [${agg['bait'].length}]`) + router
+    .get(agg['bait'], (req, res) => res.send(cache.abuse.increment(418, req)))
 
 
   //-- write tests and add these
@@ -61,6 +61,16 @@ module.exports = function(app, mw, {httpRules,landing}) {
                '/python/posts/django-flask-pyramid',
                '/typescript/posts/typescript-development-with-gulp-and-sublime-text'
       ], mw.$.banEm)
+
+  router.get([
+    '/admin',
+    '*/admin/*',
+    '^/900x90.q2-1.*',
+    '^/220x250.q2-1.*',
+    ], mw.$.banEm)
+
+  app.head('*', (req, res, next) => res.end())
+
   // app.put('/*', mw.$.noBot)
   // app.delete('/*', mw.$.noBot)
 

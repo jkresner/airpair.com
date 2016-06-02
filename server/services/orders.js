@@ -245,7 +245,7 @@ function chargeAndTrackOrder(o, errorCB, saveCB)
 
 function trackOrderPayment(order) {
   var d = {byName:order.by.name,total:order.total, _id:order._id}
-  mailman.sendTemplate('pipeliner-notify-purchase', d, 'pipeliners')
+  mailman.sendTemplate('pipeliner-notify-purchase', d, { name:'JK', email: 'jk@airpair.com' })
   // analytics.event.call({user:order.by},'payment', {orderId:order._id, total:order.total})
 }
 

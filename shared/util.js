@@ -106,12 +106,6 @@ var util = {
     return id1.toString() == id2.toString()
   },
 
-  wrapFnList(fnsObject, wrapFn) {
-    for (var fnName of _.keys(fnsObject))
-      fnsObject[fnName] = wrapFn(fnsObject[fnName], fnName)
-    return fnsObject
-  },
-
   ObjectId2Date(id) {
     return new Date(parseInt(id.toString().slice(0, 8), 16) * 1000)
   },

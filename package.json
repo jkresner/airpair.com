@@ -1,6 +1,6 @@
 {
   "name": "airpair.com",
-  "version": "0.6.3-patch.3",
+  "version": "0.6.3-patch.4",
   "description": "site running airpair.com",
   "author": "airpair inc.",
   "privarte": true,
@@ -19,12 +19,12 @@
     "gv": "heroku logs --tail --source app"
   },
   "dependencies": {
-    "braintree": "1.29.0",
+    "braintree": "1.39.0",
     "googleapis": "2.1.1",
     "htmlparser2": "3.8.3",
     "meanair-auth": "0.6.4-patch.1",
     "meanair-model": "0.6.4",
-    "meanair-server": "0.6.4-patch.3",
+    "meanair-server": "0.6.4-patch.4",
     "meanair-shared": "0.6.3",
     "node-google-timezone": "0.0.2",
     "nodemailer": "1.4.0",

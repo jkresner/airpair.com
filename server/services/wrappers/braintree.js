@@ -99,4 +99,9 @@ var wrapper = {
   }
 }
 
-module.exports = _.wrapFnList(wrapper, wrap)
+
+wrapper.chargeWithMethod = wrap(wrapper['chargeWithMethod'], 'chargeWithMethod')
+wrapper.addPaymentMethod = wrap(wrapper['addPaymentMethod'], 'addPaymentMethod')
+
+
+module.exports = wrapper

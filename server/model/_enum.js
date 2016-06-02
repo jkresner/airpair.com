@@ -7,8 +7,9 @@ module.exports = {
       '410',                 // forward (string/pattern) from => to
       '501',                 // 501 Not implemented
       'bait',                // 418 teapot (RFC 2324) url.match(from:regex)
-      'canonical-cached',    // Resolve custom url -> cached item (no redirect)
+      // 'canonical-cached',    // Resolve custom url -> cached item (no redirect)
       'canonical-post',      // Resolve custom url -> post (no redirect)
+      'canonical-tag',
       'rewrite'              // 301 forward string.replace from(regex), to(string)
     ]
   },

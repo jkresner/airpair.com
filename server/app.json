@@ -98,10 +98,10 @@
       "ud": {
         "android":             "Andoid",
         "search":              "archive.org|Baiduspider|bingbot|adsbot-google|Googlebot|Hatena|msnbot-media|Qwantify|YandexBot|Yahoo! Slurp|Y!J-ASR",
-        "ban":                 "AhrefsBot|CCBot|cf-news|CloudFlare-Always|datasift.com|dataprovider.com|Domain Re-Animator|DotBot|EmailMarketingRobot|Genieo|GrapeshotCrawler|GurujiBot|HaosouSpider|ltx71|MegaIndex|MetaURI|MJ12bot|Nutch|panscient.com|Pingdom|Priceonomics|QuerySeekerSpider|rogerbot|scraper|Searchmetrics|SemrushBot|SeznamBot|ShowyouBot|SMTBot|Sogou|Turnitin|uk_lddc_bot|YisouSpider",
+        "ban":                 "AhrefsBot|BuckyOHare|CCBot|cf-news|CloudFlare-Always|datasift.com|dataprovider.com|Domain Re-Animator|DotBot|EmailMarketingRobot|Genieo|GrapeshotCrawler|GurujiBot|HaosouSpider|istellabot|ltx71|MegaIndex|MetaURI|MJ12bot|Nutch|panscient.com|Pingdom|Priceonomics|QuerySeekerSpider|rogerbot|scraper|Searchmetrics|SemrushBot|Sentinurl|SeznamBot|ShowyouBot|SMTBot|Sogou|Turnitin|uk_lddc_bot|YisouSpider",
         "ios":                 "Apple-i",
         "mobile":              "iPhone|iPod|Mobile",
-        "lib":                 "CPython|DarcyRipper|Go 1.1|Go http client|jsoup|libwww-perl|Mechanize|python-requests|Wget",
+        "lib":                 "CPython|DarcyRipper|Go 1.1|Go http client|jsoup|libwww-perl|Mechanize|Needle|Phantom|python-requests|Wget",
         "tablet":              "iPad",
         "proxy":               "bitlybot|Googlebot-Image|Exabot|facebookexternalhit|Slack-ImgProxy|Slackbot-LinkExpanding|SkypeUriPreview",
         "reader":              "Blogtrottr|Evernote|Feedly|PaperLiBot|Superfeedr|tt-rss.org|Toutiao|Windows-RSS",
@@ -116,10 +116,11 @@
     },
     "livereload":              { "port": 35729 },
     "session": {
-      "authdData":            "_id name email username avatar",
+      "authdData":             "_id name email username avatar",
       "name":                  "aps",
       "secret":                "airyv1",
-      "store":                 { "collection": "sessions_apcom" }
+      "store":                 { "collection": "sessions_apcom" },
+      "restrict":              "search|ban|lib|proxy|reader|uncategorized|null"
     },
     "slow":                    1000
   },
@@ -137,7 +138,8 @@
       "dir":                   "web/public/ads"
     },
     "api":                     { "mount": "/v1/api" },
-    "httpRules": {
+    "rules": {
+      "async":                 "http.getRules",
       "posts":                 { "on": true }
     },
     "landing": {

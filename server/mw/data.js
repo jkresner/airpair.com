@@ -6,8 +6,7 @@ module.exports = ({meanair}, mw) => {
   mw.cache('cachedTags',        mw.data.cached('tags',logic.tags.getForCache.exec))
   mw.cache('cachedTemplates',   mw.data.cached('templates',logic.templates.getForCache.exec))
   mw.cache('cachedSlackUsers',  mw.data.cached('slack_users', Wrappers.Slack.getUsers))
-  mw.cache('cachedPublished', (req, res, next) =>
-    cache.get('published', API.Posts.svc.getAllPublished, next))
+  mw.cache('cachedPublished',   mw.data.cached('published', API.Posts.svc.getAllPublished))
 
 
   mw.cache('logic', (path, opts) => function(req, res, next) {
@@ -32,7 +31,11 @@ module.exports = ({meanair}, mw) => {
 
   //-- start:kinda hard ... --//
   mw.data.extend('inflateAds', x => function(req, res, next) {
-    if (/lib|ban/.test(req.ctx.ud)) return next()  // don't want ads indexed
+    // $log('ud', req.ctx.ud, /lib|ban|search|reader/.test(req.ctx.ud))
+    if (/lib|ban|search|reader/.test(req.ctx.ud)) return next()  // don't want ads indexed
+    var rnd = parseInt(Math.random()*100)
+    if ((rnd%3)!=0) return next()
+
     cache.get('ads', logic.ads.getForCache.exec, (e, r) =>
       next(e, cache.ads.tagged[req.locals.r.adtag || 'ruby']
         .map(img => cache.ads[img])

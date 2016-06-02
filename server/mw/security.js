@@ -41,7 +41,8 @@ module.exports = (app, mw, {forbid}) => {
     if (ref) action.r = ref
 
     if (!cache.abuse[ip]) cache.abuse[ip] = []
-    cache.abuse[ip].push(action)
+    if (status != 501)
+      cache.abuse[ip].push(action)
 
     req.res.status(status)
     if (status != 500)

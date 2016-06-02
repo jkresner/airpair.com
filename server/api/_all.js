@@ -3,7 +3,6 @@ module.exports = {
   Posts:        require('./posts'),
   Users:        require('./users'),
   Tags:         require('./tags'),
-  Redirects:    require('./redirects'),
   Paymethods:   require('./paymethods'),
   Orders:       require('./orders'),
   Bookings:     require('./bookings'),

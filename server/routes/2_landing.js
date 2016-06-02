@@ -71,11 +71,9 @@ module.exports = function(app, mw, {landing}) {
     assign(req.locals, { r:cache['landing'][key], htmlHead: cache['landing'][key].htmlHead } ) ) })
 
 
-  var tagPages = cache.httpRules['canonical-tag']
-
   var {getPostsByTag} = app.meanair.logic.posts
   function tagPageData(req, res, next) {
-    var tag = cache.tagBySlug(req.url.replace(/\/|posts/g, '').split('?')[0])
+    var tag = cache.tagBySlug(req.url.split('?')[0].replace(/posts|\//g, ''))
     if (!tag) return next(assign(Error(`Not found ${req.originalUrl}`),{status:404}))
     var canonical = `https://www.airpair.com/${tag.slug}`
     req.locals.htmlHead = assign({}, req.locals.r.htmlHead, {
@@ -83,9 +81,8 @@ module.exports = function(app, mw, {landing}) {
       canonical: tag.slug == 'angularjs' ? `${canonical}/posts` : canonical
     })
     getPostsByTag.exec(tag, (e,r) => next(e,
-      assign(req.locals.r, tag, { latest:getPostsByTag.project(r)}, {url:req.originalUrl})) )
+      assign(req.locals.r, tag, { latest:getPostsByTag.project(r)}, {url:req.originalUrl.split('?')[0]})) )
   }
-
 
   var router = app.honey.Router('landing',{type:'html'})
     .use(mw.$.livereload)
@@ -95,7 +92,7 @@ module.exports = function(app, mw, {landing}) {
     .get('/', mw.$.inflateLanding('home'),
       mw.res.forbid('home!anon', function({user}) { if (user) return 'authd' }, { redirect: req => '/home' }))
 
-    .get(tagPages.map(t => t.url).concat(tagPages.map(t => `${t.url}/posts`)),
+    .get(cache['http-rules']['canonical-tag'].map(t => t.url),
       mw.$.cachedTags, mw.$.inflateLanding('tag'), tagPageData)
 
     .get(['/software-experts','/posts'], mw.$.inflateLanding('posts'),
