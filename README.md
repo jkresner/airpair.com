@@ -1,16 +1,22 @@
-airpair.com Deploy checklist
+airpair.com checklist
 ===========
 
+[ ]- Fix posts
+     - stats
+     - author images to be fully qualified
+[ ]- Reviews!
+     - load in disqus data
+[ ]- Deploy author
+
+
+https://medium.com/women-who-code-community/first-steps-getting-started-as-a-freelancer-8556ad4fb987
+
+
+Content take over
+- https://www.airpair.com/node.js/learn-node.js
+
 TRACKED
-[ ] landing      /   
-[ ] view:post    /reactjs/posts/reactjs-a-guide-for-rails-developers 
-    2ximpressions 
-[ ] landing      /software-experts
 [ ] issue        /asdfasdfd
-[ ] landing      /javascript
-[ ] view:post    /js/javascript-framework-comparison
-    2ximpressions 
-[ ] view:ad      click()
 [-] issue [Crawl:badBot]
 [ ] event        login
     aliases impressions
@@ -24,24 +30,11 @@ EMAIL NOTIFICATIONS
 
 
 DEPLOY PRIMARY - STEPS
-[ ]- run [analytics] field name migrate scripts
-[ ]- Deploy static
-[ ]- Deploy airpair.com
-[ ]-- update live config
-[ ]-- deploy
 [ ]-- remove unused config
-[ ]-- do smoke tests
-
-
-CRITICAL ADSERVE FEATURES
-[ ]-- Run through pages
-[ ]- Deploy author
 
 
 - AUTHD NEW
-[ ]- /software-experts 
 [ ]- /account
-[ ]- /home
 [ ]- /find-an-expert
 [ ]- /billing
 [ ]- /billing/book/55007705d8457a0c007dfdbe
@@ -53,24 +46,11 @@ CRITICAL ADSERVE FEATURES
 [ ]- /job/:id
 [ ]- /billing/book/:expert/:request
 [ ]- /bookings/:id
-- ADM
-[ ]- pipeline
-[ ]- request
-[ ]- match
-[ ]- bookings
-[ ]- booking
-[ ]- order
-[ ]- orders
-[ ]- user
-[ ]- experts
-[ ]- expert
-[ ]- redirects
 
 - - - - - - - - - - - -
 
 
 DEPLOY SECONDARY - STEPS
-[ ]- Fix reviews data
 [ ]- consult
 
 
@@ -96,11 +76,8 @@ BROWSE BOT
 
 OTHER APCOM FEATURES TO TEST
 [ ]- Redirects
-[ ]-- 301           /me => /account
-[ ]-- 301           /setting => /account
+[ ]-- 301           /settings => /account
 [ ]-- 301           /hire-developers => landing page about airpair
-[ ]-- Canon         /js/javascript-framework-comparison
-[ ]-- Rewrite       /js/javascript-framework-comparison%E2%80%A6
 [ ]--- Posts index
 [ ]--- Post
 [ ]--- Similar post
@@ -128,12 +105,9 @@ NON-CRITICAL FEATURES
 [ ]----- POSTReview upvote/downvote
 [ ]-- mw.reqDirty based on cloudflare spoofing detection
 [ ]-- VIEW
-[ ]---- Workshop
 [ ]---- Job
 [-]-- /book/toddmotto
 [-] book from request
-[ ]-- /adm/posts
-[ ]-- Server rendered post comments
 [ ]-- View POST Blank as landing (/code-review + /code-mentoring + /scream.js)
 [ ]- Redirects
 [-]-- 301           /angular/posts => /learn-angularjs
@@ -142,8 +116,6 @@ NON-CRITICAL FEATURES
 [-]-- ???           /find-an-expert
 [-]-- ???           /be-an-expert
 [ ]-- SPIN flow
-[ ]-- cmd/build/sitemap
-[ ]-- cmd/build/robot.txt
 ===
 ::requests
 - new 
@@ -174,17 +146,3 @@ MEANAIR CODE
 [✓]- Review wishlist
 [ ]-- shared
 [ ]--- browser proof / no ES6
-
-DEPOY
-[✓]- Stop [adserve] [author] [consult] apps
-[✓]- Disable reviews / comments temporarily
-[✓] - Modules tests run, code committed + published
-[✓]   shared       .6.3   
-[✓]   scream       .6.4
-[✓]   middleware   .6.4
-[✓]   server       .6.4
-[✓]   model        .6.4-rc
-[✓]   auth         .6.4
-[ ]   apcom        .6.4
-[✓]- Backup most recent [domain] + [analytics]
-

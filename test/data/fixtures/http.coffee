@@ -42,6 +42,7 @@ module.exports = {
     lib:
       jsoup:               'jsoup/1.8'
       ahc:                 'AHC/2.0'
+      phantom:             'Mozilla/5.0 (Unknown; Linux x86_64) AppleWebKit/538.1 (KHTML, like Gecko) PhantomJS/2.1.1 Safari/538.1'
 
     Google:
       GoogleSearch:        'Googlebot Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)'

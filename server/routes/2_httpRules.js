@@ -3,6 +3,9 @@ module.exports = function(app, mw, {rules}) {
 
   var cached = cache['http-rules']
 
+// https://www.bing.com/webmaster/help/bing-content-removal-tool-cb6c294d
+// Hackerfall
+// hackhands.com/building-instagram-clone-angularjs-satellizer-nodejs-mongodb/
 
   var agg = { '410':cached['410'],'501':cached['501'],'bait':cached['bait'],
     '301':{},
@@ -59,14 +62,20 @@ module.exports = function(app, mw, {rules}) {
                '/angularjs',
                '/aws/posts/building-a-scalable-web-app-on-amazon-web-services-p1',
                '/python/posts/django-flask-pyramid',
-               '/typescript/posts/typescript-development-with-gulp-and-sublime-text'
+               '/typescript/posts/typescript-development-with-gulp-and-sublime-text',
+               '/reactjs/posts/reactjs-a-guide-for-rails-developers',
       ], mw.$.banEm)
 
   router.get([
     '/admin',
     '*/admin/*',
+    '^/null/*',
     '^/900x90.q2-1.*',
     '^/220x250.q2-1.*',
+    '/CHANGELOG',
+    '/INSTALL',
+    '/MAINTAINERS',
+    '/media/com_joomla*'
     ], mw.$.banEm)
 
   app.head('*', (req, res, next) => res.end())

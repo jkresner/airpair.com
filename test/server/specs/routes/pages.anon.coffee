@@ -46,6 +46,7 @@ describe ' INDEX'.subspec, ->
     /<li><a href="\/javascript" target="_self" title="JavaScript tutorials & JS guides">javascript/]
   IT '/js/javascript-framework-comparison?utm_campaign=js-twit', -> HTML @, [html.post,js.index,
     /<title>AngularJS vs. Backbone.js vs. Ember.js/]
+
   IT '/angularjs/posts/transclusion-template-scope-in-angular-directives', -> HTML @, [html.post,js.index,
     /<title>Transclusion and Template Scope in Angular Directives Demystified/,
     /<meta property="og:title" content="Transclusion and Template Scope in Angular Directives Demystified"/,
@@ -63,4 +64,53 @@ describe ' INDEX'.subspec, ->
     HTML @, [/<title>Android Programming Guides/, html.landing], no: [js.index]
 
 
-# IT 'index meta /hire-developers through airpair (partial)', ->
+  # IT 'index meta /hire-developers through airpair (partial)', ->
+
+
+describe ' Session + Views'.subspec, ->
+
+  IT '/ (unauthenticated) Persists session for uaFireFox', ->
+    # viewSpy1 = STUB.spy(analytics, 'view')
+    PAGE '/', {status:200,ua:FIXTURE.http.UA.Firefox}, (resp) ->
+      GET '/auth/session', (s) ->
+        # expect(viewSpy1.callCount).to.equal(1)
+        expect(s.authenticated).to.equal(false)
+        DB.expectSession s, DONE
+
+  IT '/100k-writing-competition (unauthenticated) Persists session for uaFireFox', ->
+    # viewSpy = STUB.spy(analytics, 'view')
+    PAGE '/100k-writing-competition', {status:200,ua:FIXTURE.http.UA.Firefox}, (resp) ->
+      GET '/auth/session', (s) ->
+        # expect(viewSpy.calledOnce).to.be.true
+        expect(s.authenticated).to.equal(false)
+        DB.expectSession s, ->
+          DB.docsByQuery 'View', { sId:s.sessionID }, (views) ->
+            expect(views.length).to.equal(1)
+            expect(views[0].sId).to.equal(s.sessionID)
+            expect(views[0].type).to.equal('landing')
+            expect(views[0].url).to.equal('/100k-writing-competition')
+            expect(views[0].utm).to.be.undefined
+            expect(views[0].uId).to.be.undefined
+            DONE()
+
+  IT '/ionic (uaUser) Persists utms and referer', ->
+    # viewSpy = STUB.spy(analytics, 'view')
+    referer = 'https://www.airpair.com/'
+    utms = 'utm_source=team-email&utm_medium=email&utm_term=angular-workshops&utm_content=nov14-workshops-ty&utm_campaign=wks14-4'
+    PAGE "/ionic?#{utms}", {status:200,ua:FIXTURE.http.UA.Firefox,referer}, (resp) ->
+      # expect(viewSpy.calledOnce).to.be.true
+      GET '/auth/session', (s) ->
+        expect(s.authenticated).to.equal(false)
+        DB.expectSession  s, ->
+          DB.docsByQuery 'View', { sId:s.sessionID }, (views) ->
+            expect(views.length).to.equal(1)
+            expect(views[0].url).to.equal('/ionic')
+            expect(views[0].type).to.equal('landing')
+            expect(views[0].utm).to.exist
+            expect(views[0].ref).to.equal(referer)
+            expect(views[0].utm.source).to.equal('team-email')
+            expect(views[0].utm.medium).to.equal('email')
+            expect(views[0].utm.term).to.equal('angular-workshops')
+            expect(views[0].utm.content).to.equal('nov14-workshops-ty')
+            expect(views[0].utm.campaign).to.equal('wks14-4')
+            DONE()

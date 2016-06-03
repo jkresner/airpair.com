@@ -47,7 +47,7 @@ module.exports = function(DAL, Data, Shared, Lib) {
           assign(this.analytics, {event:`${existing?'login':'signup'}:oauth:gh`,
             alias:_.pick(r,["_id","name","email","username"]), data:{user:_.pick(r,["_id","name","avatar"])} })
 
-          console.log('loginCust', r._id, r.name, r.avatar, r.photos)
+          console.log('loginCust'.yellow, r._id, r.name.yellow, r.avatar, (r.photos||[]).map(p => `${p.type.blue}::${p.value}`).join(' | '))
 
           done(e, r)
         })

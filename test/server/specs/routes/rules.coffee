@@ -81,11 +81,33 @@ bait = ->
 
 ban = ->
 
-  IT 'INSTANT BAN', ->
-    SUBMIT '/', {}, {status:500,contentType:/text/}, (txt) ->
-      expect(txt).to.equal('')
-      PAGE '/', {status:500,contentType:/text/}, (txt) ->
-        expect(txt).to.equal('')
+  before -> @optsExpect = {status:500,contentType:/text/}
+
+  IT 'INSTANT http.POST BAN', ->
+    SUBMIT '/', {}, @optsExpect, (txt1) =>
+      expect(txt1).to.equal('')
+      PAGE '/', @optsExpect, (txt2) =>
+        expect(txt2).to.equal('')
+        DONE()
+
+
+  IT 'GET /900x90.q2-1.ruby.png', ->
+    PAGE '/900x90.q2-1.ruby.png', @optsExpect, (txt1) =>
+      PAGE '/',  @optsExpect, (txt2) =>
+        expect(txt1+txt2).to.equal('')
+        DONE()
+
+
+  IT 'GET /admin', ->
+    PAGE '/admin', @optsExpect, (txt1) =>
+      PAGE '/posts', @optsExpect, (txt2) =>
+        expect(txt1+txt2).to.equal('')
+        DONE()
+
+  IT 'GET //admin/Cms_Wysiwyg', ->
+    PAGE '//admin/Cms_Wysiwyg/directive/index', @optsExpect, (txt1) =>
+      PAGE '/javascript',  @optsExpect, (txt2) =>
+        expect(txt1+txt2).to.equal('')
         DONE()
 
   SKIP 'NO SESSION GENERATED FOR ABUSE REQUEST', ->
