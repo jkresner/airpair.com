@@ -31,7 +31,7 @@ module.exports = (app, mw, {abuse}) => {
 
   mw.cache('serverPage', page => mw.res.page(page, pageOpts('server')))
 
-  mw.cache('notFound', mw.res.notFound({
+  var notFound = mw.res.notFound({
     onBot(req, res, next) {
       analytics.issue(req.ctx, 'crawl', 'security', { crawl: 404, url: req.originalUrl })
       if (/ban|lib/.test(req.ctx.ud))
@@ -39,8 +39,10 @@ module.exports = (app, mw, {abuse}) => {
       else
         return res.status(404).send('Page not found')
     }
-  }))
+  })
 
+  mw.cache('notFound', (req, res, next) =>
+    mw.$.session(req, res, () => notFound(req, res, next)))
 
   mw.cache('error', mw.res.error({
     render: { layout:false, about, quiet: config.env.match(/prod/i) },

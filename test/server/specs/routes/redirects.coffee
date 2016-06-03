@@ -19,6 +19,7 @@ rewrite = ->
 
   SKIP 'Cloudflare', -> perm_to [
     ['node.js/learn-nodejs-', '/node.js/learn-nodejs']
+    ['/js/javascript-framework-comparison/?utm_campaign=js-twit', '/js/javascript-framework-comparison?utm_campaign=js-twit']
   ]
 
 
@@ -43,9 +44,6 @@ rewrite = ->
     ['/posts/tag/redis', '/redis']
     ['/posts/tag/sqlserver','/posts/tag/sql-server']
     ['/sqlserver','/sql-server']
-    ['/firebase/posts/firebase-support-and-api-integration-help', '/firebase']
-    ['/android/posts', '/android']
-    ['/javascript/posts', '/javascript']
   ]
 
 
@@ -63,6 +61,7 @@ rewrite = ->
 
   IT 'API Pages', -> perm_to [
     ['/bit.ly', '/software-experts']
+    ['/blossom', '/software-experts']
     ['/spotify', '/software-experts']
     ['/echo-nest', '/software-experts']
     ['/tokbox', '/software-experts']
@@ -74,6 +73,9 @@ rewrite = ->
     ['/sinch', '/software-experts']
     ['/human-api', '/software-experts']
     ['/human-api/posts/human-api-support-integration-help', '/software-experts']
+    ['/heroku/posts/heroku-support-integration-help', '/heroku']
+    ['/mailjet', '/software-experts']
+    ['/mailjet/SMTP-expert-florian-le-goff', '/software-experts']
   ]
 
 
@@ -91,14 +93,20 @@ moved301 = ->
     ['/node_js','/node.js']
     ['/node','/node.js']
     ['/posts/tag/node','/node.js']
+    ['/node.js/expert-ryan-schmukler','/node.js']
+    ['/angularjs/web-scraping-phantomjs-session','/angularjs']
     ['/seo/node.js-nginx-wordpress-seo','/nginx']
+    ['/firebase/posts/firebase-support-and-api-integration-help', '/firebase']
     ['/android-camera/posts/the-ultimate-android-camera-development-guide','/android/android-camera-development']
   ]
 
   IT 'WILDCARD', -> perm_to [
+    ['/android/posts', '/android']
+    ['/android/workshops', '/android']
+    ['/android/workshops?utm_campaign=wilder', '/android?utm_campaign=wilder']
+    ['/reactjs/workshops', '/reactjs']
+    ['/javascript/posts', '/javascript']
     ['/author/jk', '/software-experts']
-    ['/java/workshops', '/workshops']
-    ['/android/workshops?utm_campaign=wilder', '/workshops?utm_campaign=wilder']
     ['/analytics/consultant-keen-io-api-integration-seb-insua?utm_source=twitter&utm_medium=social&utm_term=analytics-consultant&utm_content=seb-insua&utm_campaign=social-blast-mar','/keen-io?utm_source=twitter&utm_medium=social&utm_term=analytics-consultant&utm_content=seb-insua&utm_campaign=social-blast-mar']
     ['/mobile-checkout/mobile-checkout-expert-radu-spineanu?utm_source=twitter&utm_medium=social&utm_term=mobile-checkout-expert','/software-experts?utm_source=twitter&utm_medium=social&utm_term=mobile-checkout-expert']
     ['/email-optimization/email-optimization-expert-james-lamont?utm_source=twitter','/software-experts?utm_source=twitter']
@@ -111,18 +119,23 @@ moved301 = ->
     ['/node.js/posts/learn-nodejs', '/node.js/learn-nodejs']
   ]
 
-
   SKIP 'CAPS', -> perm_to [
     ['/Ruby', '/ruby']
   ]
 
-  IT 'WEIRD CHARS', -> perm_to [
+  IT 'WEIRD Trailing CHARS', -> perm_to [
     ['/selenium/posts/selenium-tutorial-with-java).', '/selenium/posts/selenium-tutorial-with-java']
   ]
 
-  SKIP 'Strange tags', -> perm_to [
-    ['/c++', '/c++']
-    ['/c#', '/c#']
+  IT 'Strange tags', -> perm_to [
+    ['/c%2B%2B', '/c++']
+    ['/f', '/f#']
+  ]
+
+  IT 'Tags retired', ->  perm_to [
+    ['/selenium-2', '/selenium']
+    ['/python-2.7', '/python']
+    ['/report', '/reporting']
   ]
 
 postsredirects = ->
@@ -144,6 +157,9 @@ moved302 = ->
     ['/blog', '/software-experts']
   ]
 
+  IT 'Strange tags', -> temp_to [
+    ['/c', '/c#']
+  ]
 
   IT 'ANON', -> temp_to [
     ['/account', '/login?returnTo=/account']
@@ -152,6 +168,7 @@ moved302 = ->
     ['/billing', '/login?returnTo=/billing']
     ['/bookings/12334', '/login?returnTo=/bookings/12334']
   ]
+
 
   IT 'AIRPAIR.me', -> temp_to [
     ['/me/joefiorini', '/javascript/emberjs-using-ember-cli']

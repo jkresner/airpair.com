@@ -2,7 +2,6 @@ publishedPostUrl = FIXTURE.posts.higherOrder.htmlHead.canonical.replace('https:/
 BADBot =  unauthenticated:true, ua: FIXTURE.http.UA.ban.uk_lddc
 GOODBot = unauthenticated:true, ua: FIXTURE.http.UA.search.Google
 UANone =  unauthenticated:true, ua: 'null'
-UAUser =  ua: FIXTURE.http.UA.Firefox
 Opts = Object.assign
 
 
@@ -30,15 +29,6 @@ IT 'Returns empty 200 on good urls for bad bots', ->
     PAGE '/', Opts({status:200},GOODBot), (resp2) ->
       expect(resp2).inc "<title>airpair | Coding help, Software consultants & Programming resources"
       DONE()
-
-
-IT 'Does not exec analytics or store session on 404', ->
-  # trackSpy = STUB.spy(analytics, 'event')
-  PAGE '/register', Opts({status:404}, UAUser), (resp) ->
-    # global.cookie = resp.headers['set-cookie']
-    # expect(global.cookie).to.be.undefined
-    # expect(trackSpy.callCount).to.equal(0)
-    DB.noSession { sessionID: 'unNOwnSZ3Wi8bDEnaKzhygGG2a2RkjZ2' }, DONE
 
 
 IT '/100k-writing-competition (no user-agent) Does not persist session', ->

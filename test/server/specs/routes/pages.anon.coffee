@@ -39,6 +39,8 @@ describe ' INDEX'.subspec, ->
     /rel="canonical" href="https:\/\/www.airpair.com\/software-experts"/,
     html.landing]
 
+  IT '/c++/posts/preparing-for-cpp-interview', -> HTML @, [html.post,js.index]
+
   IT '/js/javascript-framework-comparison', -> HTML @, [html.post,js.index,
     /<title>AngularJS vs. Backbone.js vs. Ember.js/,
     /<meta property="og:title" content="AngularJS vs. Backbone.js vs. Ember.js"/,
@@ -49,8 +51,7 @@ describe ' INDEX'.subspec, ->
     /link rel="canonical" href="http:\/\/www.airpair.com\/js\/javascript-framework-comparison"/,
     /<li><a href="#2-meet-the-frameworks">2  Meet The Frameworks/,
     /<li><a href="\/javascript" target="_self" title="JavaScript tutorials & JS guides">javascript/]
-  IT '/js/javascript-framework-comparison?utm_campaign=js-twit', -> HTML @, [html.post,js.index,
-    /<title>AngularJS vs. Backbone.js vs. Ember.js/]
+
 
   IT '/angularjs/posts/transclusion-template-scope-in-angular-directives', -> HTML @, [html.post,js.index,
     /<title>Transclusion and Template Scope in Angular Directives Demystified/,
@@ -65,14 +66,30 @@ describe ' INDEX'.subspec, ->
 
   IT '/android', ->
     HTML @, [/<title>Android Programming Guides/, html.landing], no: [js.index]
+
   IT '/android?utm_source=newsletter-airpair&utm_medium=email&utm_term=android-code-review&utm_content=google-apps-deployment&utm_campaign=news-14', ->
     HTML @, [/<title>Android Programming Guides/, html.landing], no: [js.index]
+
+  IT '/workshops', -> HTML @, [
+    /<title>Software Workshops, Webinars & Screencasts/,
+    /rel="canonical" href="https:\/\/www.airpair.com\/workshops"/,
+    html.landing]
 
 
   # IT 'index meta /hire-developers through airpair (partial)', ->
 
 
 describe ' Session + Views'.subspec, ->
+
+
+  IT 'Does not exec analytics but stores session on 404', ->
+    # trackSpy = STUB.spy(analytics, 'event')
+    PAGE '/register', {status:404,ua:FIXTURE.http.UA.Firefox}, (resp) ->
+      GET '/auth/session', (s) ->
+        DB.docsByQuery 'View', { sId:s.sessionID }, (views) ->
+          expect(views.length).to.equal(0)
+          DB.expectSession s, DONE
+
 
   IT '/ (unauthenticated) Persists session for uaFireFox', ->
     # viewSpy1 = STUB.spy(analytics, 'view')

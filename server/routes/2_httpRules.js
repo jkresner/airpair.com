@@ -65,6 +65,7 @@ module.exports = function(app, mw, {rules}) {
                '/python/posts/django-flask-pyramid',
                '/typescript/posts/typescript-development-with-gulp-and-sublime-text',
                '/reactjs/posts/reactjs-a-guide-for-rails-developers',
+               '/ruby-on-rails-4/posts/authentication-with-angularjs-and-ruby-on-rails'
       ], mw.$.banEm)
 
   router.get([

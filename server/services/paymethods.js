@@ -127,7 +127,7 @@ var save = {
 
     if (o.type == 'braintree') {
       Wrappers.Braintree.addPaymentMethod(customerId, this.user, null, o.token, savePayMethod(this))
-      mailman.sendTemplate('pipeliner-notify-addpaymethod', {byName:`${this.user.name} https://www.airpair.com/adm/users/${o.userId}`}, { name:'JK', email: 'jk@airpair.com' })
+      mailman.sendTemplate('pipeliner-notify-addpaymethod', {byName:`${this.user.name} https://www.airpair.com/adm/users/${this.user._id}`}, { name:'JK', email: 'jk@airpair.com' })
     }
     else if (o.type == 'stripe')
       savePayMethod(this)(null, o.info)

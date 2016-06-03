@@ -55,16 +55,19 @@ module.exports = (app, mw, {forbid}) => {
   mw.
     // ? enhance forbid to give other responses like 500
     cache('abuser', function(req, res, next) {
-      // $log('check abuse', `[${req.ctx.ip}]`, (cache.abuse[req.ctx.ip]||[]).length)
 
+      // $log('check abuse', `[${req.ctx.ip}]`, (cache.abuse[req.ctx.ip]||[]).length)
       // global.analytics.issue(ctx, 'forbidabuser', 'security_medium',
         // { mw:'forbid', name:'adm', rule:'!req.user', user: user||'anon' })
 
-      if ((cache.abuse[req.ctx.ip]||[]).length < forbid.abuse.limit)
+      var block = ['109.49.166.123','47.59.122.29','94.61.126.56','185.101.177.67','88.22.74.114'].indexOf(req.ctx.ip) != -1 ||
+        ["2de8RMuTC9ThmjfYRBzXtESFQUR9rJrC", "9768VHFOcS6k05A1teN5By0qA2Hu4Gv5", "XGBHWUFZ0w6mlFws_LOPMIfEZU2DpLhs"].indexOf(req.ctx.sId) != -1
+
+      if (!block && (cache.abuse[req.ctx.ip]||[]).length < forbid.abuse.limit)
         return next()
 
       res.send(cache.abuse.increment(500, req))
-      $logMW(req, 'abuser')
+      $logMW(req, block ? 'abuser'.red : 'abuser')
       // var {ip,ref,ua} = req.ctx
       // console.log(`[500${req.originalUrl}${ref?` << ${ref}`.dim:''}]abuse`.cyan, `\t${ip}[${cache.abuse[ip].length}/${forbid.abuse.limit}]`.white, (ua||'').gray)
     })

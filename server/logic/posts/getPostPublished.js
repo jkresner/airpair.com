@@ -10,9 +10,8 @@ module.exports = ({Post,User}, {Project,Opts,Query}, Shared, Lib) => ({
   //-- TODO, consider caching similar posts ?>
   exec(url, cb) {
     var opts = assign(Opts.published,{})  //,{join:'subscribed.userId'}
-    // $log('log.'.yellow, tagslug.cyan, postslug.white, opts)
-    // console.log('url', url)
-    var match = new RegExp(`${url.split('?')[0]}`, 'i')
+    // console.log('url'.yellow, url)
+    var match = new RegExp(`${url.replace(/\+\+/g,'\\+\\+').split('?')[0]}$`, 'i')
 
     Post.getByQuery(Query.published({'htmlHead.canonical':match}), opts, (e, r) => {
       if (e || !r) return cb(e, r)

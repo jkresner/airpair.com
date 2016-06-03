@@ -6,10 +6,13 @@ var concatExperimental = all =>
    ],
 
    ['/v1/auth/login',
+    '/find-an-expert/request',
     '/testing/posts/airpair-v1-beta-testing',
     '/jobs/08-10/editorial-manager',
     '/android/UX-RX.com', //bing?
     '/((wordpress)|(ruby-on-rails)|(android))/rss',
+    '/static/img/pages/postscomp/banner.jpg',
+    '/static/img/css/sidenav/sprite.png',
     '/static/js/index-*',
     '/me/ehrenreilly',
     '/images/landing/airconf*'              ].map( url => ({type:'410',url,to:'/'}) ),
@@ -30,7 +33,8 @@ var concatExperimental = all =>
 
    [
     // { type: '301', url: '/Ruby', to: '/ruby' },
-    { type:'301', url: '^/f$', to: '/f%23' },
+    { type:'301', url: '^/c%2B%2B', to: '/c++'},
+    { type:'301', url: '^/f$', to: '/f#' },
     { type:'301', url: '^/airconf-promo/*', to: '/software-experts'},
     { type:'301', url: '/railsconf2014', to: '/ruby-on-rails' },
     { type:'301', url: '/angularjs/post$', to: '/angularjs/posts' },
@@ -39,25 +43,35 @@ var concatExperimental = all =>
     // { type:'301', url: '^/posts/me$', to: 'https://author.airpair.com/' },
     { type:'301', url: '/knockout/posts', to:'/knockout.js' },
     { type:'301', url: '/backbone.js/posts/expert-training-jonathon-kresner-1', to: '/backbone.js' },
-    { type:'301', url: '/android-camera/posts/the-ultimate-android-camera-development-guide', to: '/android/android-camera-development' },
     { type:'301', url: '/javascript/emberjs-vs-angularjs-opinions-contributors-video-chat', to:'/javascript' },
     { type:'301', url: '/javascript/javascript-performance-yehuda-katz', to:'/javascript' },
     { type:'301', url: '/seo/node.js-nginx-wordpress-seo', to: '/nginx' },
+    { type:'301', url: '/swift/posts/swift-tutorial-building-an-ios-application-part-3', to: '/swift/building-swift-app-tutorial-3' },
+    { type:'301', url: '/android-camera/posts/the-ultimate-android-camera-development-guide', to: '/android/android-camera-development' },
     { type:'301', url: '/node.js/((posts/learn-node((js)|(.js)))|(learn-node.js))', to: '/node.js/learn-nodejs' },
     { type:'301', url: '/android/andriod-studio-vs-eclipse', to: '/android/android-studio-vs-eclipse' },
-    { type:'301', url : "/selenium/posts/selenium-tutorial-with-java\\).", to: "/selenium/posts/selenium-tutorial-with-java" },
-    { type:'301', url: '*ashish-awaghad*', to: '/swift' },
+    { type:'301', url: '/selenium/posts/selenium-tutorial-with-java\\).', to: '/selenium/posts/selenium-tutorial-with-java' },
+    { type:'301', url: '/angularjs/web-scraping-phantomjs-session',  to: '/angularjs' },
     { type:'301', url: '/firebase/posts/firebase-support-and-api-integration-help', to: '/firebase' },
+    { type:'301', url: '/heroku/posts/heroku-support-integration-help', to: '/heroku' },
     { type:'301', url: '/meteor/posts/meteor-support-expert-help', to: '/meteor' },
-    { type:'301', url: '*((seb-insua)|(jordan-feldstein))*', to: '/keen-io' },
-    { type:'301', url: '*((nicholas-rempel)|(leore-avidar)|(justin-keller)|(trey-swann)|(radu-spineanu)|(james-lamont)|(julien-lemoine)|(christian-jensen)|(orlando-kalossakas)|(glen-de-cauwsemaecker)|(greg-schier))*', to: '/software-experts' },
-    { type:'301', url: '/((vero)|(venmo)|(human-api))*', to: '/software-experts' },
-    { type:'301', url: '^/((bit.ly)|(echo-nest)|(tokbox)|(twotap)|(hellosign)|(flydata)|(sinch)|(spotify)|(mailjet))', to: '/software-experts' },
+    { type:'301', url: '/twitter/posts/support-and-api-integration-help-with-twitter', to: '/twitter-api' },
+    { type:'301', url: '*tim-koopmans*', to: '/devops' },
+    { type:'301', url: '*ashish-awaghad*', to: '/swift' },
+    { type:'301', url: '*((ye-liu)|(dana-de-alasei)|(tony-child)|(tobias-talltorp))*', to: '/angularjs/posts' },
+    { type:'301', url: '*((ryan-schmukler))*', to: '/node.js' },
+    { type:'301', url: '*((seb-insua)|(jordan-feldstein)|(thomson-nguyen))*', to: '/keen-io' },
+    { type:'301', url: '/((vero)|(blossom)|(venmo)|(human-api)|(sendswithus))*', to: '/software-experts' },
+    { type:'301', url: '^/((bit.ly)|(echo-nest)|(tokbox)|(twotap)|(hellosign)|(flydata)|(sinch)|(spotify)|(mailjet)|(unbabel))', to: '/software-experts' },
     { type:'301', url: '^/((knockout)|(knockoutjs)|(unity)|(unity3d)|(magento)|(gamedev)|(unity3d)|(backbone))$', to: '/software-experts' },
+    { type:'301', url: '/selenium-2', to: '/selenium' },
+    { type:'301', url: '/report', to: '/reporting' },
+    { type:'301', url: '/python-2.7', to: '/python' },
+    { type:'301', url: '/codeigniter-2', to: '/php' },
    ],
 
    [
-    { type:'302', url: '^/c$', to: '/c%23' },
+    { type:'302', url: '^/c$', to: '/c#' },
     { type:'302', url: '/support', to: 'https://github.com/airpair/airpair-com-issues/issues' },
     { type:'302', url: '/meet-experts', to: '/software-experts' },
     { type:'302', url: '/me/andrewchen', to: '/software-experts' },
@@ -75,9 +89,13 @@ var concatExperimental = all =>
     { type:'302', url: '/me/urish', to: '/js/javascript-framework-comparison' },
     { type:'302', url: '/me/kn0tch', to: '/aws/posts/ntiered-aws-docker-terraform-guide' },
     { type:'302', url: '/me/glockjt', to: '/node.js/posts/nodejs-framework-comparison-express-koa-hapi' },
+    { type:'302', url: '/me/toddmotto', to: '/angularjs' },
+    { type:'302', url: '/me/nevanking', to: '/ios' },
+    { type:'302', url: '/me/brianmhunt', to: '/knockout/workshops/dynamic-html-with-knockout' }
    ],
 
   [ '/wp-((content)|(includes)|(config)|(admin))*',
+    '/node.js.js',
     '/images/pages/marketing*',
     '/images/landing/airconf*',
     '/s3.amazonaws.com/kennyonetime/blob*',
@@ -142,7 +160,8 @@ module.exports = (DAL, Data, Shared, Lib) => ({
             id: p.slug,
             url: p.htmlHead.canonical.replace(/^(https|http)/,'')
                                      .replace('://www.airpair.com','')
-                                     .replace('++','\\+\\+') }))
+                                     .replace('++','\\+\\+')
+                                   }))
 
           var tagpages = {}
           for (var tags of _.pluck(posts, 'tags'))
@@ -152,9 +171,13 @@ module.exports = (DAL, Data, Shared, Lib) => ({
           // $log('tags', tagpages)
           DAL.Tag.getManyById(Object.keys(tagpages), (ee, tags) => {
             r['canonical-tag'] = tags.map(t => {
+
               var url = `/${t.slug}`.replace('++','\\+\\+')
-              t.slug == 'angularjs' ? url = `/${t.slug}/posts`
-                : r['301'].push({url:`${url}/posts`,to:url})
+
+              if (t.slug == 'angularjs')
+                url = `/${t.slug}/posts`
+              else
+                r['301'].push({url:`^${url}/((post)|(workshop))s$`, to: url })
 
               return { id: t._id, count: tagpages[t._id], url }
             })
