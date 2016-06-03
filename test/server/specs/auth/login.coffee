@@ -74,6 +74,20 @@ IT 'GH login of existing user has avatar for session', ->
         DONE()
 
 
+IT 'Logout authd', ->
+  stpv = FIXTURE.clone('users.stpv')
+  DB.ensureDoc 'User', stpv, (e, uDB) ->
+    LOGIN 'stpv', (s1) ->
+      EXPECT.equalIdAttrs(stpv, s1)
+      PAGE '/auth/logout', {status:302,contentType:/text/}, (txt) ->
+        expect(txt).to.inc ['Found. Redirecting to /']
+        DONE()
+
+IT 'Logout anon', ->
+  PAGE '/auth/logout', {status:302,contentType:/text/}, (txt) ->
+    expect(txt).to.inc ['Found. Redirecting to /']
+    DONE()
+
   # it 'github login links to accounts with email matching any other provider', ->
   # it 'github login saves all emails to user record', ->
 

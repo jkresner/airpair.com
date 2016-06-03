@@ -39,7 +39,6 @@ var newer = {
   anca: { name:"Andrew Callahan",email:"andrew.allahan@test.com" },
   peco: { name:"Peter Corcoran", email: "peter.corcoran@hotmail.com"},
   kaun: { name:"Kyle Aungst", email: "kyle.aungst@ghotmail.com"},
-  spur: { name:"Steve Purves", email: "sjpurves@yahoo.com"},
   dysn: { name:"Dilys Sun", email: "dilys@hotmail.com"},
   dily: { name:"Dilys Sun", email: "dilys@gmail.com"},
   dsun: { name:"Di Sun", email: "disun@gmail.com"},
@@ -2115,7 +2114,50 @@ var newer = {
         }
       ]
     }
-  }
+  },
+
+  stpv: {
+    "_id": ObjectId("5229e0fd66a6f999a4651100"),
+    "email": "stevejpur@gpair.com",
+    "emails": [{value:"stevejpur@gpair.com",primary:true,verified:true}],
+    "name": "Steve Pur",
+    "username": "stevepur",
+    "bio": "Electronic engineering background w. 15 years commercial experience in scientific & number crunching apps; lots of work on desktop platforms but more and more web based stuff. troubleshooting, debugging & legacy work and test integration all great.",
+    "initials": "sp",
+    "auth": {
+      "gp": {
+        "tokens": {},
+        "gender": "male",
+        "emails": [{"value": "stevejpur@gpair.com","type": "account"}],
+        "id": "101062250088370367878",
+        "displayName": "Steve Purves",
+        "name": { "familyName": "Purves", "givenName": "Steve"},
+        "url": "https://plus.google.com/+StevePur",
+        "verified": true,
+        "email": "stevejpur@gpair.com"
+      },
+      "gh":{
+        "emails" : [ { "verified" : true, "primary" : true, "email" : "stevejpur@gpair.com" } ],
+        "updated_at" : "2015-09-10T22:53:25Z",
+        "created_at" : "2011-05-02T22:34:14Z",
+        "following" : 15,
+        "followers" : 39,
+        "public_gists" : 4,
+        "public_repos" : 74,
+        "bio" : null,
+        "hireable" : null,
+        "email" : null,
+        "location" : "Yosemite, CA",
+        "company" : "Steve",
+        "name" : "Steve Pur",
+        "gravatar_id" : "",
+        "avatar_url" : "https://avatars.githubusercontent.com/u/764487?v=3",
+        "id" : 764487,
+        "login" : "stevepur"
+      }
+    },
+    "avatar": "//0.gravatar.com/avatar/476dead963e27f8e52de1a013650e68f"
+  },
 
 }
 
