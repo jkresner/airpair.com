@@ -64,25 +64,50 @@ var utilFns = {
   // },
 
   calcStats(post) {
-    var totalStars = 0
-    var reviews = post.reviews || []
-    var stars = _.map(reviews, (r) => {
-      var s = parseInt(_.find(r.questions,(q)=>q.key=='rating').answer)
-      totalStars = totalStars + s
-      return s
-    })
+    var PRs = false
+    // var PRs = post.PRs || []
+    var feedback = post.reviews ? post.reviews.map(r => r.said) : []
+    var stars = post.reviews ? post.reviews.map(r => r.val) : []
 
-    return {
-      rating: (stars.length > 0) ? totalStars / stars.length : null,
-      reviews: reviews.length,
-      comments: reviews.length + _.flatten(_.pluck(reviews,'replies')||[]).length,
+    var stats = {
+      reviews: stars.length,
+      comments: feedback.length + _.flatten(_.pluck(post.reviews||[],'replies')||[]).length,
       forkers: (post.forkers||[]).length,
-      openPRs: _.where(post.pullRequests||[],(pr)=>pr.state=='open').length,  // not really correct at all grrr
-      closedPRs: _.where(post.pullRequests||[],(pr)=>pr.state=='closed').length,  // not really correct at all grrr
-      acceptedPRs: _.where(post.pullRequests||[],(pr)=>pr.state=='closed').length,  // not really correct at all grrr
-      shares: 0,            // figure it out later
+      // views: 0,            // figure it out later
+      // shares: 0,           // figure it out later
       words: utilFns.wordcount(post.md)
     }
+
+    var sum = 0
+    for (var i = 0, ii = stars.length; i < ii; ++i)
+      sum += stars[i]
+
+    if (sum > 0) stats.rating = parseInt((sum/stars.length)*100)/100
+
+    return !PRs ? stats : _.extend(stats, {
+      openPRs:     _.where(PRs, pr => pr.state=='open').length,  // not really correct at all grrr
+      closedPRs:   _.where(PRs, pr => pr.state=='closed').length,  // not really correct at all grrr
+      acceptedPRs: _.where(PRs, pr => pr.state=='closed').length,  // not really correct at all grrr
+    })
+    // var totalStars = 0
+    // var reviews = post.reviews || []
+    // var stars = _.map(reviews, (r) => {
+    //   var s = parseInt(_.find(r.questions,(q)=>q.key=='rating').answer)
+    //   totalStars = totalStars + s
+    //   return s
+    // })
+
+    // return {
+    //   rating: (stars.length > 0) ? totalStars / stars.length : null,
+    //   reviews: reviews.length,
+    //   comments: reviews.length + _.flatten(_.pluck(reviews,'replies')||[]).length,
+    //   forkers: (post.forkers||[]).length,
+    //   openPRs: _.where(post.pullRequests||[],(pr)=>pr.state=='open').length,  // not really correct at all grrr
+    //   closedPRs: _.where(post.pullRequests||[],(pr)=>pr.state=='closed').length,  // not really correct at all grrr
+    //   acceptedPRs: _.where(post.pullRequests||[],(pr)=>pr.state=='closed').length,  // not really correct at all grrr
+    //   shares: 0,            // figure it out later
+    //   words: utilFns.wordcount(post.md)
+    // }
   },
 
 

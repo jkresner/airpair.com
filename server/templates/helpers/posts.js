@@ -12,16 +12,16 @@ module.exports = {
 
   post_stars(stars) {
     var html = `<ul class="stars">`
-    if (stars >= 1) html + `<li></li>`
-    if (stars >= 1.5 && stars < 2) html += `<li class="half"></li>`
-    if (stars >= 2) html += `<li></li>`
-    if (stars >= 2.5 && stars < 3) html += `<li class="half"></li>`
-    if (stars >= 3) html += `<li></li>`
-    if (stars >= 3.5 && stars < 4) html += `<li class="half"></li>`
-    if (stars >= 4) html += `<li></li>`
-    if (stars >= 4.5 && stars < 5) html += `<li class="half"></li>`
-    if (stars >= 5) html += `<li></li>`
-    return html + `</ul>`
+    if (stars < 0.75) return `${html}<li class="half"></li></ul>`
+    html = `${html}<li></li>`
+    if (stars < 1.75) return `${html}${stars >= 1.25 ? '<li class="half"></li>' : ''}</ul>`
+    html = `${html}<li></li>`
+    if (stars < 2.75) return `${html}${stars >= 2.25 ? '<li class="half"></li>' : ''}</ul>`
+    html = `${html}<li></li>`
+    if (stars < 3.75) return `${html}${stars >= 3.25 ? '<li class="half"></li>' : ''}</ul>`
+    html = `${html}<li></li>`
+    if (stars < 4.75) return `${html}${stars >= 4.25 ? '<li class="half"></li>' : ''}</ul>`
+    return `${html}<li></li></ul>`
   }
 
 

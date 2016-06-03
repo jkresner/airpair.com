@@ -1,0 +1,16 @@
+{
+  "specs":                "stats",
+  "mongo": {
+    "collections":        ["posts"],
+    "url":                " ",
+    "seed": {
+      "without":          "FIXTURE.posts.higherOrder"
+    }
+  },
+  "paths": {
+    "bson":               "./bson2",
+    "fixtures":           "./fixtures"
+  }
+}
+
+
