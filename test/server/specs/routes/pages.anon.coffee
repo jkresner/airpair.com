@@ -3,6 +3,7 @@ html =
   faq: /class="blogpost faq">/
   landing: /<body class="landing">/
   post: /<article class="blogpost">/
+  postinreview: /Community Review/
 js =
   index: /javascript" src="https:\/\/static\.airpair\.com\/js\/index/
 
@@ -14,6 +15,10 @@ describe ' NOINDEX'.subspec, ->
   IT '/refund-policy', -> HTML @, [/<h1 class="entry-title" itemprop="headline">Refund Policy/,html.faq]
   IT '/login', -> HTML @, [js.index]
   IT '/hangout/index.html', -> HTML @, [/<img src="https:\/\/static.airpair.com\/img\/brand\/logo.png" \/>/], no: [js.index]
+
+  IT '/posts/review/551174c103d42a11002da48b', -> HTML @, [html.postinreview,
+    /<h1 class="entry-title" itemprop="headline">Moving Images on Open Stack<\/h1>/
+  ]
 
 describe ' INDEX'.subspec, ->
 

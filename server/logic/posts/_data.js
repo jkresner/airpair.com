@@ -178,6 +178,14 @@ module.exports = new LogicDataHelper(
       return r
     },
 
+    displayReview: d => {
+      if (d.history.published)
+        return select(chain(d, inflate.tags, 'url'), '_id url title history')
+
+      var r = chain(d, inflate.tags, 'bodyHtml', 'url', 'tocHtml', 'tmpl', 'subscribedHash', 'reviews', select.display)
+      r.tmpl = 'post_inreview'
+      return r
+    },
 
     url: d => assign(d, { url :
       d.history.submitted && !d.history.published ? `/posts/review/${d._id}` :
@@ -206,6 +214,7 @@ module.exports = new LogicDataHelper(
 
   //-- Query Opts
   {
+    inreview: { select: `${views.display} md slug subscribed history` },
     published: { select: `${views.display} md slug subscribed history` },
     publishedNewest: (limit) => ({ limit, select: views.list, sort: { 'history.published': -1 } })
   }

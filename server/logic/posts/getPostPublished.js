@@ -1,26 +1,28 @@
 module.exports = ({Post,User}, {Project,Opts,Query}, Shared, Lib) => ({
 
 
-  validate(user, postslug, tagslug) {
+  validate(user, url) {
     //-- post is published
     // if (!post.published) return 'Post not yet published'
   },
 
 
   //-- TODO, consider caching similar posts ?>
-  exec(postslug, tagslug, cb) {
-    var adtag = cache.tagBySlug(tagslug) || {}
+  exec(url, cb) {
     var opts = assign(Opts.published,{})  //,{join:'subscribed.userId'}
     // $log('log.'.yellow, tagslug.cyan, postslug.white, opts)
+    // console.log('url', url)
+    var match = new RegExp(`${url.split('?')[0]}`, 'i')
 
-    Post.getByQuery(Query.published({slug:postslug}), opts, (e, r) => {
+    Post.getByQuery(Query.published({'htmlHead.canonical':match}), opts, (e, r) => {
       if (e || !r) return cb(e, r)
-      var simQ = Query.published({_id:{$ne:r._id},'tags._id':adtag._id || r.tags[0]._id})
+      var adtag = cache.tags[r.tags[0]._id]
+      var simQ = Query.published({_id:{$ne:r._id},'tags._id':adtag._id})
       // $log('simQ'.yellow, simQ, Opts.publishedNewest(3))
       Post.getManyByQuery(simQ, Opts.publishedNewest(3), (ee, similar) => {
         if (ee) return cb(ee)
         // $log('similar'.yellow, ee, similar, r.subscribed, !r.subscribed)
-        assign(r,{similar},adtag._id?{adtag}:{})
+        assign(r,{similar,adtag})
         // $log('similar'.yellow, r)
         if (!r.subscribed || r.subscribed.length == 0) return cb(null, r)
         // $log('similar'.yellow, r.subscribed)

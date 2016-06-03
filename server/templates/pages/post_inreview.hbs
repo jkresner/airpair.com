@@ -1,0 +1,80 @@
+{{#with r}}
+
+<article class="blogpost">
+
+
+  <h1 class="entry-title" itemprop="headline">{{ title }}</h1>
+
+  <section class="notifications">
+    <div id="postinreview">
+      <h2><img ng-src="https://static.airpair.com/img/author/airpair-author.png" /> This post is under <a href="/posts/in-community-review" target="_self">Community Review</a></h2>
+      {{#unless publishReady}}
+      <p>Posts need a minimum of <a href="#reviews">3 reviews</a> with a minimum 3.5/5 star rating, to be published.</p>
+      {{/unless}}
+    </div>
+  </section>
+
+  <div class="railMarker"></div>
+
+  <h4 id="table-of-contents">Table of Contents</h4>
+  {{{toc}}}
+
+  <figure class="author">
+    <img alt="{{by.name}}" src="{{by.avatar}}?s=100">
+    <hr />
+    <div>
+      <label>{{ by.name }}</label>
+      {{!-- <social-links profile='{{ JSON by.social }}'></social-links> --}}
+      <figcaption>
+        {{by.bio}}
+      </figcaption>
+    </div>
+    <hr />
+  </figure>
+
+  <p class="asset">{{ v1postAssetUrlToMedia assetUrl }}</p>
+  <hr />
+
+  <post no-compile>{{{ html }}}</post>
+{{!--
+  <div class="share">
+    <div class="pw-widget pw-size-large pw-counter-show" pw:twitter-via="airpair">
+      <a class="pw-button-twitter"></a><a class="pw-button-facebook"></a><a class="pw-button-linkedin"></a><a class="pw-button-googleplus"></a><a class="pw-button-reddit"></a>
+      <a class="pw-button-post"></a>
+    </div>
+  </div>
+--}}
+
+
+  <div class="rail1CTA">
+    <post-rail-stars></post-rail-stars>
+    {{!-- <h6>Help make this post better!</h6>
+    <div class="fork">
+      <a href="/posts/fork/{{_id}}" class="btn">Fork this post!</a>
+      <p>Forked <b>{{forkers.length}}</b> times so far</p>
+    </div>
+     --}}
+  </div>
+
+  {{#if references}}
+  <div id="references" no-compile>
+    <h4>References</h4>
+    <ul class="references">
+      {{#each references}}<li>{{{this}}}</li>{{/each}}
+    </ul>
+  </div>
+  {{/if}}
+
+</article>
+
+
+<div id="reviews" post-reviews reviews='{{ JSON reviews }}' byid="{{by._id}}"></div>
+
+
+<footer class="postfooter">
+  <h5>Tagged under</h5>
+  <ul class="posttags">{{#each tags}}<li>{{ slug }}</li>{{/each}}</ul>
+</footer>
+
+
+{{/with}}

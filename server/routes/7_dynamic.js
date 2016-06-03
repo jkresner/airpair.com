@@ -22,17 +22,6 @@ module.exports = function(app, mw) {
     //   }, mw.$.serverPage('spin'))
 
 
-    .get('/posts/review/:id', mw.$.noBot,
-      function(req, res, next) {
-        API.Posts.svc.getByIdForReview.call(req, req.params.id, (e,r) => {
-          if (!r) return res.redirect('https://author.airpair.com/')
-          else if (r.history.published) return res.redirect(301, r.htmlHead.canonical)
-          req.locals.r = r
-          req.locals.htmlHead = r.htmlHead
-          next()
-        })
-      }, mw.$.postPage)
-
     .get('/:tagshort/workshops/:slug',
       (req, res, next) => {
         var r = _.find(cache.workshops, w => w.url == req.originalUrl)

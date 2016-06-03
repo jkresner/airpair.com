@@ -11,6 +11,7 @@ module.exports = ({meanair}, mw) => {
 
   mw.cache('logic', (path, opts) => function(req, res, next) {
     opts = opts || {}
+    opts.params = opts.params || []
     var [group,fn] = path.split('.')
     var args = [(e,r) => {
       if (r && r.htmlHead) req.locals.htmlHead = r.htmlHead
@@ -19,7 +20,10 @@ module.exports = ({meanair}, mw) => {
 
       next(e, e ? null : req.locals.r = logic[group][fn].project(r))
     }]
+
+    for (var arg of opts.params) req.params[arg] = req[arg]
     for (var arg in req.params) args.unshift(req.params[arg])
+
     var inValid = logic[group][fn].validate.apply(this, _.union([req.user],args))
     if (inValid) return next(inValid)
     logic[group][fn].exec.apply(this, args)

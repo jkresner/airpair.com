@@ -3,6 +3,7 @@ module.exports = function(app, mw, {rules}) {
 
   var cached = cache['http-rules']
 
+// https://coderwall.com/p/dbndpq/help-review-this-article-the-easy-way-to-integrate-stripe-payments
 // https://www.bing.com/webmaster/help/bing-content-removal-tool-cb6c294d
 // Hackerfall
 // hackhands.com/building-instagram-clone-angularjs-satellizer-nodejs-mongodb/

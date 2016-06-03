@@ -88,37 +88,6 @@ var get = {
   //   cb(V2DeprecatedError('Posts.getByIdForContributors'))
   // },
 
-  // getByIdForForking(post, cb) {
-  //   cb(V2DeprecatedError('Posts.getByIdForForking'))
-  //   // var {slug} = post
-  //   // post = selectFromObject(post, select.editInfo)
-  //   // post.submit = { repoAuthorized: false, slug }
-  //   // if (!this.user.social || !this.user.social.gh) return cb(null, post)
-  //   // post.submit.owner = this.user.social.gh.username
-  //   // $callSvc(UserSvc.getProviderScopes, this)((e, providers) => {
-  //   //   if (e && e.message == "GitHub token auth failed")
-  //   //     post.submit.repoAuthorized = false
-  //   //   else if (e)
-  //   //     return cb(Error(`getByIdForForking. Failed to get user providers scopes for [${this.user._id}][${this.user.social.gh.username}]`))
-  //   //   else {
-  //   //     var scope = _.find(providers.github, (s) => s.indexOf("repo") != -1)
-  //   //     post.submit.repoAuthorized = scope != null
-  //   //   }
-  //   //   cb(null, post)
-  //   // })
-  // },
-
-  getByIdForReview(_id, cb) {
-    // cb(V2DeprecatedError('svc.Posts.get.getByIdForReview'))
-    Post.getById(_id, { select: '_id history title htmlHead' }, cb)
-    //   if (e||!r) return cb(e,r)
-    //   if (r.published) return cb(null, {published:true, url: r.htmlHead.canonical})
-    //   if (!r.submitted) return cb(null, null)
-      // select.cb.displayView(this.user==null, null, cb)(e,r)
-    // })
-  },
-
-
   //-- Placeholder for showing similar posts to a currently displayed post
   // getSimilar(original, cb) {
   //   var tagId = original.primarytag._id
@@ -126,11 +95,6 @@ var get = {
   //   Post.getManyByQuery(query.published({'tags._id':tagId}), options, select.cb.addUrl(cb))
   // },
 
-  // getByTag(tag, cb) {
-  //   var options = assign({ select: select.list}, opts.publishedNewest())
-  //   var q = query.published({'tags._id': tag._id})
-  //   Post.getManyByQuery(q, options, select.cb.addUrl((e,r) => cb(null, {latest:r}) ))
-  // },
 
   getPostsInReview(cb) {
     cb(V2DeprecatedError('Posts.getPostsInReview'))

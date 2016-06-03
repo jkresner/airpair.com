@@ -109,8 +109,8 @@ moved301 = ->
     ['/node.js/learn-node.js', '/node.js/learn-nodejs']
     ['/node.js/posts/learn-node.js', '/node.js/learn-nodejs']
     ['/node.js/posts/learn-nodejs', '/node.js/learn-nodejs']
-
   ]
+
 
   SKIP 'CAPS', -> perm_to [
     ['/Ruby', '/ruby']
@@ -125,6 +125,17 @@ moved301 = ->
     ['/c#', '/c#']
   ]
 
+postsredirects = ->
+
+  IT 'Published post', -> perm_to [
+    ['/posts/review/545ac3ec2826860b007801c4', 'http://www.airpair.com/js/javascript-framework-comparison']
+  ]
+
+  IT.skip 'Move to author.airpair', -> perm_to [
+    # ['/posts/contributors/55e3705b0fa2cd11000e0cc5, 'stay on airpair.com?'
+    # ['/posts/preview/5514559c5955b711004d652e', 'https://author.airpair.com/?submitted=55386de99778e11100f6d9e0']
+    # ['/posts/me?submitted=55386de99778e11100f6d9e0', 'https://author.airpair.com/?submitted=55386de99778e11100f6d9e0']
+  ]
 
 moved302 = ->
 
@@ -165,8 +176,6 @@ beforeEach ->
   ok = 0
 
 DESCRIBE("Rewrite", rewrite)
+DESCRIBE("POSTS", postsredirects)
 DESCRIBE("301", moved301)
 DESCRIBE("302", moved302)
-
-
-

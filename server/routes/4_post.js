@@ -6,13 +6,23 @@ module.exports = function(app, mw, {rules}) {
   var router = app.honey.Router('posts', {type:'html'})
     .use(mw.$.livereload)
     .use([mw.$.badBot, mw.$.session, mw.$.reqFirst, mw.$.cachedTags])
-    .useEnd([mw.$.inflateAds, mw.$.trackPost, mw.$.postPage])
+    .useEnd([mw.$.postPage])
 
-  canonMap = postslug => (req, res, next) =>
-    next(null, assign(req.params,{adtag:'canon',postslug}))
+    .get('/posts/review/:id', mw.$.noBot, mw.$.logic('posts.getPostForReview'), (req, res, next) => {
+      var reqUrl = req.originalUrl
+      var {url,history,title} = req.locals.r
+      if ((history||{}).published)
+        return res.redirect(301, reqUrl.replace(reqUrl.split('?')[0], url))
 
-  for (var {url,id} of cache['http-rules']['canonical-post'])
-    router.get(url, canonMap(id), mw.$.logic('posts.getPublishedBySlug'))
+      req.locals.htmlHead.title = title
+      req.locals.noindex = true
+
+      next()
+    })
+
+
+  for (var {url} of cache['http-rules']['canonical-post'])
+    router.get(url, mw.$.logic('posts.getPostPublished',{params:['url']}), mw.$.inflateAds, mw.$.trackPost)
 
 
 }
