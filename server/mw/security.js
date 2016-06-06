@@ -34,6 +34,7 @@ module.exports = (app, mw, {forbid}) => {
 
 
   cache['abuse'] = {}
+  cache['iplog'] = {}
   cache.abuse.increment = function(status, req) {
     var {ip,ref,ua} = req.ctx
 
@@ -50,6 +51,32 @@ module.exports = (app, mw, {forbid}) => {
       // console.log(`[${status}${action.u}${ref?` << ${ref}`.dim:''}]abuse`.cyan, `\t${ip}[${cache.abuse[ip].length}/${forbid.abuse.limit}]`.white, (ua||'').gray)
     return status == 418 ? 'Relax. Close your eyes.' : ''
   }
+
+
+  mw.
+    // ? enhance forbid to give other responses like 500
+    cache('throttle', function(req, res, next) {
+      var {ctx} = req
+      var key = moment().format('DDHHmm')
+      var throttle = 0
+      cache['iplog'][key] = cache['iplog'][key] || []
+      cache['iplog'][key].push(ctx.ip)
+      for (var ip of cache['iplog'][key])
+        if (ip == ctx.ip) throttle++
+
+      if (throttle < forbid.throttle.limit)
+        return next()
+
+      while (!cache.abuse[ip] || cache.abuse[ip].length < forbid.abuse.limit)
+        cache.abuse.increment(500, req)
+
+      $log('throttle.user'.red, ctx.user, ctx.ip, throttle, throttle % forbid.throttle.limit)
+      res.send(cache.abuse.increment(500, req))
+      $logMW(req, 'throttle'.red)
+      if (throttle % forbid.throttle.limit == 0)
+        global.analytics.issue(ctx, 'scrape', 'security_high',
+          { mw:'throttle', name:'throttle', rule:`${key}[${ctx.ip}] > throttle.limit`, hits:cache['iplog'][key] })
+    })
 
 
   mw.
@@ -91,7 +118,7 @@ module.exports = (app, mw, {forbid}) => {
 
 
   mw.
-    cache('noBot', mw.req.noCrawl({ group: 'null|search|ban|lib|proxy|reader|uncategorized',
+    cache('noBot', mw.req.noCrawl({ group: 'null|search|ban|lib|proxy|reader',
       content:'',
       onDisallow: req => global.$logMW(req, '!bot') }
     ))

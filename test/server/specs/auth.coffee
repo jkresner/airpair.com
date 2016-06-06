@@ -4,6 +4,10 @@ module.exports = ->
     DB.ensureDoc 'User', FIXTURE.users.admin, ->
       done()
 
+  beforeEach ->
+    UTIL.clearIP()
+
+
   DESCRIBE "Signup",   -> require("./auth/signup")
   DESCRIBE "Login",    -> require("./auth/login")
   DESCRIBE "OAuth",    -> require("./auth/oauth")

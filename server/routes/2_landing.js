@@ -86,7 +86,7 @@ module.exports = function(app, mw, {landing}) {
 
   var router = app.honey.Router('landing',{type:'html'})
     .use(mw.$.livereload)
-    .use([mw.$.badBot,mw.$.session,mw.$.reqFirst])
+    .use([mw.$.badBot,mw.$.throttle,mw.$.session,mw.$.reqFirst])
     .use([mw.$.trackLanding,mw.$.landingPage],{end:true})
 
     .get('/', mw.$.inflateLanding('home'),
@@ -103,6 +103,8 @@ module.exports = function(app, mw, {landing}) {
 
     .get('/workshops', mw.$.inflateLanding('workshops'), mw.$.inflateAds)
 
+
+  // [GET/technologies]notFound res.empty[200] to search Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)
 
 }
 

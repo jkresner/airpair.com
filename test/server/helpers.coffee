@@ -9,7 +9,9 @@ if log && process.env['LOG_APP_MUTE'] then log.app.mute = process.env['LOG_APP_M
 global.UTIL =
   in:           (ms, fn) -> setTimeout(fn, ms)
   Date:         TypesUtil.Date
-
+  clearIP:      ->
+    delete global.cache.abuse['::ffff:127.0.0.1']
+    global.cache.iplog = {}
 
 
 """

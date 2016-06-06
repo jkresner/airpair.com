@@ -5,11 +5,12 @@ module.exports = ->
     DB.ensureDocs 'User', [admin,tiagorg,snug], -> done()
 
   beforeEach ->
-    delete global.cache.abuse['::ffff:127.0.0.1']
+    UTIL.clearIP()
 
   DESCRIBE "Root",                 -> require("./routes/root")
-  DESCRIBE "Redirects",            -> require("./routes/redirects")
   DESCRIBE "Rules",                -> require("./routes/rules")
+  DESCRIBE "Redirects",            -> require("./routes/redirects")
+  DESCRIBE "Posts",                -> require("./routes/redirects.posts")
 
   DESCRIBE "Pages (anon)",         -> require("./routes/pages.anon")
   DESCRIBE "Pages (bots)",         -> require("./routes/pages.bots")

@@ -2,13 +2,14 @@ module.exports = function(app, mw, {rules}) {
 
   if (!(rules||{}).posts) return;
 
+  var posturls = cache['http-rules']['canonical-post'].map(p => p.url)
+
   var router = app.honey.Router('posts', {type:'html'})
     .use(mw.$.livereload)
-    .use([mw.$.badBot, mw.$.session, mw.$.reqFirst, mw.$.cachedTags])
+    .use([mw.$.badBot, mw.$.session, mw.$.throttle, mw.$.reqFirst, mw.$.cachedTags])
     .useEnd([mw.$.postPage])
 
-    .get(cache['http-rules']['canonical-post'].map(p => p.url),
-      mw.$.logic('posts.getPostPublished',{params:['url']}), mw.$.inflateAds, mw.$.trackPost)
+    .get(posturls, mw.$.logic('posts.getPostPublished',{params:['url']}), mw.$.inflateAds, mw.$.trackPost)
 
     .get('/posts/review/:id', mw.$.noBot, mw.$.logic('posts.getPostForReview'), (req, res, next) => {
       var reqUrl = req.originalUrl
@@ -22,5 +23,6 @@ module.exports = function(app, mw, {rules}) {
       next()
     })
 
+    .post(posturls, mw.$.banEm)
 
 }

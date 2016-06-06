@@ -1,22 +1,24 @@
 module.exports = function(app, mw) {
 
-  app.use('/auth', mw.$.cachedTags)
+  app
+    .use('/auth', mw.$.cachedTags)
+    .use(/\/auth\/((twitter)|(bitbucket)|(linkedin)|(angellist)|(stackexchange)|(google)|(slack))$/, mw.$.authd)
+    .get('/login', mw.$.noBot, mw.$.session, mw.$.reqFirst, mw.$.clientPage)
 
-  app.get('/login', mw.$.noBot, mw.$.session, mw.$.reqFirst, mw.$.clientPage)
+
+  // app.routers['auth']
+    // .get('/login', mw.$.noBot, mw.$.session, mw.$.reqFirst, mw.$.clientPage)
+
+    // .get('/twitter/callback', mw.$.authd, MW.oauth('twitter'))
+    // .get('/bitbucket/callback', mw.$.authd, MW.oauth('bitbucket'))
+    // .get('/linkedin/callback', mw.$.authd, MW.oauth('linkedin'))
+    // .get('/angellist/callback', mw.$.authd, MW.oauth('angellist'))
+    // .get('/stackexchange/callback', mw.$.authd, MW.oauth('stackexchange', require('./passport-so')))
+    // .get('/google/callback', mw.$.authd, mw.auth.oauth('google', require('passport-google-oauth').OAuth2Strategy))
+    // .get('/slack/callback', mw.$.authd, mw.auth.oauth('slack', require('../middleware/passport-slack')))
 
 
 //   var {localAuth}              = require('../middleware/auth')
-
-//   app.use('/auth',
-//     app.Router()
-//       .use(mw.$.setReturnTo)
-//       // .get('/twitter/callback', mw.$.authd, MW.oauth('twitter'))
-//       // .get('/bitbucket/callback', mw.$.authd, MW.oauth('bitbucket'))
-//       // .get('/linkedin/callback', mw.$.authd, MW.oauth('linkedin'))
-//       // .get('/angellist/callback', mw.$.authd, MW.oauth('angellist'))
-//       // .get('/stackexchange/callback', mw.$.authd, MW.oauth('stackexchange', require('./passport-so')))
-//       // .get('/google/callback', mw.$.authd, mw.auth.oauth('google', require('passport-google-oauth').OAuth2Strategy))
-//       .get('/slack/callback', mw.$.authd, mw.auth.oauth('slack', require('../middleware/passport-slack')))
 //       .post('/password-reset', (req, res, next) => {
 //         var validation = require("../../shared/validation/users")
 //         var inValid = validation.requestPasswordChange(req.user, req.body.email)
@@ -42,7 +44,6 @@ module.exports = function(app, mw) {
 //           })
 //         })
 //       })
-//       .use(mw.$.cachedTags)
 //       .get('/github/callback', mw.auth.oauth('github', require('../middleware/passport-github')))
 //       .post('/login', localAuth('login', require('passport-local'), AuthSvc.localLogin))
 //       .post('/signup', localAuth('signup', require('passport-local'), (req, email, password, done) => {

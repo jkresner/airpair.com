@@ -1,6 +1,7 @@
 module.exports = ->
 
   beforeEach ->
+    UTIL.clearIP()
     STUB.wrapper('Slack').cb('getUsers', 'slack_users_list')
 
 

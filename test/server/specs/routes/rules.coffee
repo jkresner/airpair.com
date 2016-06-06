@@ -64,7 +64,9 @@ bait = ->
       PAGE '/index.xml?test=yo', @optsExpect, (txt2) =>
         expect(txt2).to.equal('Relax. Close your eyes.')
         PAGE '/core/CHANGELOG.txt', @optsExpect, (txt3) =>
-          DONE()
+          PAGE '/.git', @optsExpect, (txt3) =>
+            expect(txt2).to.equal('Relax. Close your eyes.')
+            DONE()
 
   IT 'Source files', ->
     PAGE '/.editorconfig', @optsExpect, (txt1) =>
@@ -72,10 +74,17 @@ bait = ->
         PAGE '/.gitattributes', @optsExpect, (txt3) =>
           DONE()
 
+  IT 'Old campaign links', ->
+    PAGE '/l/python/python-expert-daniel-roseman?utm_source=stackoverflow&utm_medium=banner&utm_term=python&utm_content=daniel-roseman-top&utm_campaign=so09',  @optsExpect, (txt7) =>
+      DONE()
+
+
   IT 'Bad guesses', ->
     PAGE '/search', @optsExpect, (txt1) =>
       PAGE '/search?site=&ie=UTF-8&q=Yuri+Kochiyama&oi=ddle&ct=yuri-kochiyamas-95th-birthday-5723472594468864-hp&hl=en&sa=X&ved=0ahUKEwil6qbk4ebMAhUBVj4KHX2qCVIQPQgD', @optsExpect, (txt2) =>
         DONE()
+
+
 
 
 
@@ -109,6 +118,18 @@ ban = ->
       PAGE '/javascript',  @optsExpect, (txt2) =>
         expect(txt1+txt2).to.equal('')
         DONE()
+
+  IT '+7 requests in 1 min', ->
+    optsOK = {status:200,contentType:/html/}
+    PAGE '/', optsOK, (html1) =>
+      PAGE '/', optsOK, (html2) =>
+        PAGE '/', optsOK, (html3) =>
+          PAGE '/', optsOK, (html4) =>
+            PAGE '/', optsOK, (html5) =>
+              PAGE '/', optsOK, (html6) =>
+                PAGE '/', optsOK, (html7) =>
+                  PAGE '/', @optsExpect, (txt8) =>
+                      DONE()
 
   SKIP 'NO SESSION GENERATED FOR ABUSE REQUEST', ->
 # 2016-05-31T20:18:31.562886+00:00 app[web.1]: GET 134.249.131.0    5ynsvb17lMGb abuse < other         /administrator  <<< https://www.airpair.com/administrator Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.57 Safari/537.36

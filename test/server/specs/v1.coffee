@@ -14,6 +14,7 @@ module.exports = ->
 
 
   beforeEach ->
+    UTIL.clearIP()
     STUB.SlackCommon()
     STUB.BraintreeCharge()
 

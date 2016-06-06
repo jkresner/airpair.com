@@ -84,7 +84,7 @@ describe ' Session + Views'.subspec, ->
 
   IT 'Does not exec analytics but stores session on 404', ->
     # trackSpy = STUB.spy(analytics, 'event')
-    PAGE '/register', {status:404,ua:FIXTURE.http.UA.Firefox}, (resp) ->
+    PAGE '/user/register', {status:404,ua:FIXTURE.http.UA.Firefox}, (resp) ->
       GET '/auth/session', (s) ->
         DB.docsByQuery 'View', { sId:s.sessionID }, (views) ->
           expect(views.length).to.equal(0)

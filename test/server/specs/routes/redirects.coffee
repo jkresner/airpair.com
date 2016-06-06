@@ -20,6 +20,7 @@ rewrite = ->
   SKIP 'Cloudflare', -> perm_to [
     ['node.js/learn-nodejs-', '/node.js/learn-nodejs']
     ['/js/javascript-framework-comparison/?utm_campaign=js-twit', '/js/javascript-framework-comparison?utm_campaign=js-twit']
+    ['/js/', '/js']
   ]
 
 
@@ -44,6 +45,7 @@ rewrite = ->
     ['/posts/tag/redis', '/redis']
     ['/posts/tag/sqlserver','/posts/tag/sql-server']
     ['/sqlserver','/sql-server']
+    ['/js', '/javascript']
   ]
 
 
@@ -57,25 +59,6 @@ rewrite = ->
     ['/android/android-camera-development"','/android/android-camera-development']
     # ['/ionic-framework/posts.','/ionic-framework/posts']
     # ['/ionic-framework/posts/%5C','/ionic-framework/posts/']
-  ]
-
-  IT 'API Pages', -> perm_to [
-    ['/bit.ly', '/software-experts']
-    ['/blossom', '/software-experts']
-    ['/spotify', '/software-experts']
-    ['/echo-nest', '/software-experts']
-    ['/tokbox', '/software-experts']
-    ['/hellosign', '/software-experts']
-    ['/vero/posts/vero-support-and-api-integration-help', '/software-experts']
-    ['/vero', '/software-experts']
-    ['/flydata', '/software-experts']
-    ['/twotap', '/software-experts']
-    ['/sinch', '/software-experts']
-    ['/human-api', '/software-experts']
-    ['/human-api/posts/human-api-support-integration-help', '/software-experts']
-    ['/heroku/posts/heroku-support-integration-help', '/heroku']
-    ['/mailjet', '/software-experts']
-    ['/mailjet/SMTP-expert-florian-le-goff', '/software-experts']
   ]
 
 
@@ -138,17 +121,6 @@ moved301 = ->
     ['/report', '/reporting']
   ]
 
-postsredirects = ->
-
-  IT 'Published post', -> perm_to [
-    ['/posts/review/545ac3ec2826860b007801c4', 'http://www.airpair.com/js/javascript-framework-comparison']
-  ]
-
-  IT.skip 'Move to author.airpair', -> perm_to [
-    # ['/posts/contributors/55e3705b0fa2cd11000e0cc5, 'stay on airpair.com?'
-    # ['/posts/preview/5514559c5955b711004d652e', 'https://author.airpair.com/?submitted=55386de99778e11100f6d9e0']
-    # ['/posts/me?submitted=55386de99778e11100f6d9e0', 'https://author.airpair.com/?submitted=55386de99778e11100f6d9e0']
-  ]
 
 moved302 = ->
 
@@ -167,6 +139,8 @@ moved302 = ->
     ['/requests', '/login?returnTo=/requests']
     ['/billing', '/login?returnTo=/billing']
     ['/bookings/12334', '/login?returnTo=/bookings/12334']
+    # ['/auth/slack?returnTo=/me', '/login?returnTo=/auth/slack%3FreturnTo%3D%2Fme']
+    ['/auth/slack?returnTo=/me', '/login']
   ]
 
 
@@ -193,6 +167,5 @@ beforeEach ->
   ok = 0
 
 DESCRIBE("Rewrite", rewrite)
-DESCRIBE("POSTS", postsredirects)
 DESCRIBE("301", moved301)
 DESCRIBE("302", moved302)
