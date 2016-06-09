@@ -56,14 +56,14 @@ var newer = {
   jbay: { name:"Josh Baylin", email: "josh.b@hotmail.com"},
   // jbbb: { name: "Josh Baylin", email: "josh.bbb@hotmail.com"},
 
-  rev0 : { name: "Review10", email: "reviwer10@hotmail.com"},
-  rev1 : { name: "Review11", email: "reviwer11@hotmail.com"},
-  rev2 : { name: "Review12", email: "reviwer12@hotmail.com"},
-  rev3 : { name: "Review13", email: "reviwer13@hotmail.com"},
-  rvw1 : { name: "Review01", email: "reviwer01@hotmail.com"},
-  rvw2 : { name: "Review02", email: "reviwer02@hotmail.com"},
-  rvw3 : { name: "Review03", email: "reviwer03@hotmail.com"},
-  rvw4 : { name: "Review04", email: "reviwer04@hotmail.com"},
+  // rev0 : { name: "Review10", email: "reviwer10@hotmail.com"},
+  // rev1 : { name: "Review11", email: "reviwer11@hotmail.com"},
+  // rev2 : { name: "Review12", email: "reviwer12@hotmail.com"},
+  // rev3 : { name: "Review13", email: "reviwer13@hotmail.com"},
+  // rvw1 : { name: "Review01", email: "reviwer01@hotmail.com"},
+  // rvw2 : { name: "Review02", email: "reviwer02@hotmail.com"},
+  // rvw3 : { name: "Review03", email: "reviwer03@hotmail.com"},
+  // rvw4 : { name: "Review04", email: "reviwer04@hotmail.com"},
 
   aone: {
     _id: ObjectId("5452cea65f221efa174237b4"),
@@ -2158,6 +2158,40 @@ var newer = {
     },
     "avatar": "//0.gravatar.com/avatar/476dead963e27f8e52de1a013650e68f"
   },
+
+  rykerrumsey: {
+    "_id" : ObjectId("54e661c10cb9400c009eb734"),
+    "name" : "Ryker Rumsey",
+    "email" : "rykerrumsey@outlook.com",
+    "emailVerified" : true,
+    "cohort" : {
+        "firstRequest" : {
+            "ref" : "https://www.google.ca/",
+            "url" : "/js/javascript-framework-comparison"
+        },
+        "aliases" : [
+            "ApIAP2mYG2_mYo-o3FFEYpbVVdl-oRJB",
+            "Kyt83vCED98Iq-Gp0WGI6zvXrHW1dlD9",
+            "Ry1FW6xhHSiRzMBa16rFULfzPOhmvmUx"
+        ],
+        "engagement" : {
+            "visits" : [
+                ISODate("2016-02-15T00:00:00.000Z")
+            ],
+            "visit_last" : ISODate("2016-02-15T10:24:16.342Z"),
+            "visit_signup" : ISODate("2015-02-19T22:20:49.868Z"),
+            "visit_first" : ISODate("2015-02-19T22:20:29.089Z")
+        }
+    },
+    "username" : "rykerrumsey",
+    "initials" : "RR",
+    "auth" : {
+        "password" : { "hash" : "$2a$08$2iZvXccTcZhWUmNteBZhreXwKqxRlcyXtxA.PlUZf6maslf.r9k/u" },
+        gh: {"login":"rykerrumsey","id":6579450,"avatar_url":"https://avatars.githubusercontent.com/u/6579450?v=3","gravatar_id":"","url":"https://api.github.com/users/rykerrumsey","html_url":"https://github.com/rykerrumsey","followers_url":"https://api.github.com/users/rykerrumsey/followers","following_url":"https://api.github.com/users/rykerrumsey/following{/other_user}","gists_url":"https://api.github.com/users/rykerrumsey/gists{/gist_id}","starred_url":"https://api.github.com/users/rykerrumsey/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/rykerrumsey/subscriptions","organizations_url":"https://api.github.com/users/rykerrumsey/orgs","repos_url":"https://api.github.com/users/rykerrumsey/repos","events_url":"https://api.github.com/users/rykerrumsey/events{/privacy}","received_events_url":"https://api.github.com/users/rykerrumsey/received_events","type":"User","site_admin":false,"name":"Ryker Rumsey","company":null,"blog":"http://www.rykerrumsey.com","location":"Calgary, AB","email":"rykerrumsey@outlook.com","hireable":true,"bio":null,"public_repos":2,"public_gists":0,"followers":3,"following":0,"created_at":"2014-02-03T22:30:03Z","updated_at":"2016-05-19T23:38:36Z","emails":[{"email":"rykerrumsey@outlook.com","primary":true,"verified":true}]}
+    },
+    "photos" : null,
+    "emails" : null
+  }
 
 }
 

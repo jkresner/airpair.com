@@ -60,6 +60,11 @@
 {{/if}}
 
 
+{{#if related}}<ul class="related">
+  {{#each related}}<li><a href="/{{slug}}">{{name}}</a></li>{{/each}}
+  </ul>
+{{/if}}
+
   {{/with}}
 
 </section>

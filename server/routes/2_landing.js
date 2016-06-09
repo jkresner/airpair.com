@@ -81,7 +81,9 @@ module.exports = function(app, mw, {landing}) {
       canonical: tag.slug == 'angularjs' ? `${canonical}/posts` : canonical
     })
     getPostsByTag.exec(tag, (e,r) => next(e,
-      assign(req.locals.r, tag, { latest:getPostsByTag.project(r)}, {url:req.originalUrl.split('?')[0]})) )
+      assign(req.locals.r, tag, { url:req.originalUrl.split('?')[0] },
+        { latest: getPostsByTag.project(r) },
+        { related: _.sortBy((_.uniq(_.flatten(_.pluck(r, 'tags')), t => t.slug)), t=>t.slug) } )) )
   }
 
   var router = app.honey.Router('landing',{type:'html'})

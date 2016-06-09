@@ -10,6 +10,10 @@ IT 'sessionId on unauthenticated session', ->
     DONE()
 
 
+SKIP 'Fail GH login of without github profile email verified', ->
+
+
+
 IT 'Existing user login from new anon session adds new sessionID to aliases', ->
   key = FIXTURE.uniquify('users','ape1', 'email auth.gp.id auth.gh.id auth.gh.login')
   ape = FIXTURE.users[key]
@@ -42,6 +46,24 @@ IT 'GH login no duplicate key error with existing gp profile', ->
         DONE()
 
 
+IT 'GH login of user with only v1 password login', ->
+  rykerrumsey = FIXTURE.clone('users.rykerrumsey')
+  {gh} = rykerrumsey.auth
+  delete rykerrumsey.auth.gh
+  DB.ensureDoc 'User', rykerrumsey, (e, uDB) ->
+    expect(uDB.auth.gh).to.be.undefined
+    expect(uDB.auth.password).to.exist
+    LOGIN 'rykerrumsey', (s1) ->
+      EXPECT.equalIdAttrs(uDB, s1)
+      expect(s1.avatar).to.equal(gh.avatar_url)
+      expect(s1.username).to.equal('rykerrumsey')
+      DB.docById 'User', rykerrumsey._id, (uDB2) ->
+        expect(uDB2.auth.gh).to.exist
+        expect(uDB2.photos.length).to.equal(1)
+        expect(uDB2.photos[0].value).to.equal(gh.avatar_url)
+        DONE()
+
+
 IT 'GH login of existing user has avatar for session', ->
   darkangel = FIXTURE.clone('users.darkangel')
   DB.ensureDoc 'User', darkangel, (e, uDB) ->
@@ -72,6 +94,8 @@ IT 'GH login of existing user has avatar for session', ->
         expect(uDB2.auth.gh.emails[0].email).to.equal("caguilar@dwdandsolutions.com")
         expect(uDB2.email).to.equal("darkangel51@gmail.com")
         DONE()
+
+
 
 
 IT 'Logout authd', ->
@@ -83,10 +107,15 @@ IT 'Logout authd', ->
         expect(txt).to.inc ['Found. Redirecting to /']
         DONE()
 
+
 IT 'Logout anon', ->
   PAGE '/auth/logout', {status:302,contentType:/text/}, (txt) ->
     expect(txt).to.inc ['Found. Redirecting to /']
     DONE()
+
+
+
+
 
   # it 'github login links to accounts with email matching any other provider', ->
   # it 'github login saves all emails to user record', ->

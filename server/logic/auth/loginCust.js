@@ -20,7 +20,7 @@ module.exports = function(DAL, Data, Shared, Lib) {
     }
 
     var email = _.find(profile.emails, o => o.primary && o.verified)
-    if (!email) return `No verified email on GitHub account ${profile.login}`
+    if (!email) return `No verified email on GitHub account ${profile.login}:${profile.id}`
   }
 
   return {
@@ -44,8 +44,10 @@ module.exports = function(DAL, Data, Shared, Lib) {
           r.avatar = r.photos ? r.photos[0].value : null
           r.username = r.username || profile.login
 
-          assign(this.analytics, {event:`${existing?'login':'signup'}:oauth:gh`,
-            alias:_.pick(r,["_id","name","email","username"]), data:{user:_.pick(r,["_id","name","avatar"])} })
+          assign(this.analytics, {
+            event:`${existing?'login':'signup'}:oauth:gh`,
+            alias: _.pick(r,["_id","name","email","username"]),
+            data: { user:_.pick(r,["_id","name","avatar"]), profile } })
 
           console.log('loginCust'.yellow, r._id, r.name.yellow, r.avatar, (r.photos||[]).map(p => `${p.type.blue}::${p.value}`).join(' | '))
 
