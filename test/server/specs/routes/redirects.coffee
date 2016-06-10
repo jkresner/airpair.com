@@ -77,7 +77,7 @@ moved301 = ->
     ['/node','/node.js']
     ['/posts/tag/node','/node.js']
     ['/node.js/expert-ryan-schmukler','/node.js']
-    ['/angularjs/web-scraping-phantomjs-session','/angularjs']
+    ['/angularjs/web-scraping-phantomjs-session','/node.js']
     ['/seo/node.js-nginx-wordpress-seo','/nginx']
     ['/firebase/posts/firebase-support-and-api-integration-help', '/firebase']
     ['/android-camera/posts/the-ultimate-android-camera-development-guide','/android/android-camera-development']

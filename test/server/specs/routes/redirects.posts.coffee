@@ -29,6 +29,7 @@ IT 'API Pages', -> perm_to [
   ['/vero/posts/vero-support-and-api-integration-help', '/software-experts']
   ['/vero', '/software-experts']
   ['/flydata', '/software-experts']
+  #/framed-data
   ['/twotap', '/software-experts']
   ['/sinch', '/software-experts']
   ['/human-api', '/software-experts']
@@ -42,9 +43,20 @@ IT 'API Pages', -> perm_to [
 
 IT 'Search leniences', -> perm_to [
   ['/javascript/integrating-stripe-into', '/javascript/integrating-stripe-into-angular-app']
+  # /ember.js/posts/expert-stefan-penner-1
+  # /ruby-on-rails/posts/rails-host
+  # /ruby-on-rails-problem-solving/page/2
+  # /python/python-expert-alexandre-gravier
+  # /python/posts/python-code-mentoring-web-scraping-1
+  # /reactjs/posts/reactjs-a-guide-for-rails-developers%EF%BC%89
+  # /node.js/posts/top-10-mistakes-node-d85
+  # /graph-database/graph-database-expert-wes-freeman
+  # /javascript/javascript-code-review
 ]
 
 
+# /translation/crowd-translation-code-mentor-vasco-pedro
+# /experts
 
 IT 'Published post', -> perm_to [
   ['/posts/review/545ac3ec2826860b007801c4', 'http://www.airpair.com/js/javascript-framework-comparison']
