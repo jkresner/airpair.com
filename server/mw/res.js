@@ -45,7 +45,7 @@ module.exports = (app, mw, {abuse}) => {
     mw.$.session(req, res, () => notFound(req, res, next)))
 
   mw.cache('error', mw.res.error({
-    render: { layout:false, about, quiet: config.env.match(/prod/i) },
+    render: { layout:false, about, quiet: /prod/i.test(config.env) },
     terse: _.get(config, 'log.app.terse'),
     // formatter: (req, e) => `${e.message}`,
     onError: (req, e) => {
@@ -54,20 +54,20 @@ module.exports = (app, mw, {abuse}) => {
       try {
         var msg = e.message.replace(/ /g,'')
         var name = e.status || (msg.length > 24 ? msg.substring(0,24) : msg)
-        if (config.env.match(/prod/i))
+        if (/prod/i.test(config.env))
           analytics.issue(req.ctx, name, 'error', {stack:e.stack,msg:e.message})
       }
       catch (ERR) {
         console.log('SHEEEET'.red, ERR.stack, e.stack)
       }
 
-      if (e.message.match(/not found/i) && e.status !== 403) {
+      if (/not found/i.test(e.message) && e.status !== 403) {
         if (!req.user) cache.abuse.increment(404, req)
         if (req.ctx.ref && !e.message.match(/<</i))
           e.message = `${e.message} << ${req.ctx.ref}`
       }
 
-      if (config.env.match(/prod/i) && config.comm.dispatch.groups.errors) {
+      if (/prod/i.test(config.env) && config.comm.dispatch.groups.errors) {
         COMM('ses').error(e, {
           subject:`{AP} ${e.message}`,
           text: require('../util/log/request')(req, e) })

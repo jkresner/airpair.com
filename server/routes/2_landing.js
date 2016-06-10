@@ -56,6 +56,15 @@ module.exports = function(app, mw, {landing}) {
         title: "Software Programming Guides and Tutorials from Top Software Experts and Consultants"
       }
     },
+    inreview: {
+      _id: Id("5706abc347ba64cb164bec10"),
+      key: 'inreview',
+      url: '/posts/in-community-review',
+      htmlHead: {
+        canonical: 'https://www.airpair.com/posts/in-community-review',
+        title: "Hot off the press"
+      }
+    },
     tag: {
       _id: Id("5706abc347ba64cb164bec18"),
       key: 'tag',
@@ -71,7 +80,7 @@ module.exports = function(app, mw, {landing}) {
     assign(req.locals, { r:cache['landing'][key], htmlHead: cache['landing'][key].htmlHead } ) ) })
 
 
-  var {getPostsByTag} = app.meanair.logic.posts
+  var {getPostsByTag,getPostsSubmitted} = app.meanair.logic.posts
   function tagPageData(req, res, next) {
     var tag = cache.tagBySlug(req.url.split('?')[0].replace(/posts|\//g, ''))
     if (!tag) return next(assign(Error(`Not found ${req.originalUrl}`),{status:404}))
@@ -100,6 +109,13 @@ module.exports = function(app, mw, {landing}) {
     .get(['/software-experts','/posts'], mw.$.inflateLanding('posts'),
       mw.$.cachedPublished, mw.$.inflateAds,
       (req, res, next) => next(null, assign(req.locals.r, cache.published)) )
+
+    .get('/posts/in-community-review', mw.$.noBot, mw.$.cachedTags,
+      mw.$.inflateLanding('inreview'),
+      (req, res, next) => {
+        getPostsSubmitted.exec((e,r) => next(e, assign(req.locals.r,
+          { latest: getPostsSubmitted.project(r) })))
+      })
 
     .get('/100k-writing-competition', mw.$.inflateLanding('comp2015'))
 

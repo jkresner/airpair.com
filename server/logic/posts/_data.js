@@ -2,7 +2,7 @@ var views = {
   display: '_id by stats htmlHead meta.lastTouch github.repoInfo'
            + ' reviews forkers title tmpl slug tags assetUrl'
            + ' url html toc similar adtag submitted published',
-  list:    '_id by history htmlHead.canonical htmlHead.description htmlHead.ogImage github.repoInfo title slug tags stats',
+  list:    '_id by history htmlHead.canonical htmlHead.description htmlHead.ogImage github.repoInfo title url slug tags stats',
   cache:   '_id by.name by.avatar title htmlHead.canonical htmlHead.ogImage history.subscribed history.published'
 }
 
@@ -193,8 +193,8 @@ module.exports = new LogicDataHelper(
     }),
 
 
-    tileList: r =>
-      chain(r, inflate.tags, select.list, 'url')
+    tileList: d =>
+      chain(d, inflate.tags, 'url', select.list)
 
 
   }),
@@ -209,14 +209,30 @@ module.exports = new LogicDataHelper(
         'history.published' : { '$exists': 1 },
         'history.published' : { '$lt': new Date() }
       })
-    }
+    },
+
+    submitted(opts) {
+      opts = opts || {}
+      // var [amount,measure] = config.authoring.stale.split(':')
+      // var staleTime = moment().add(amount, measure).toDate()
+
+      // var $or = [      { 'meta.lastTouch.utc': { '$gt': staleTime } },
+                       // { 'history.submitted':  { '$gt': staleTime } } ]
+      var q = { $and: [{ 'history.submitted' : {'$exists': true }},
+                       { 'history.published' : {'$exists': false }},
+                       // { $or }
+                       ] }
+
+      return q
+    },
   },
 
   //-- Query Opts
   {
     inreview: { select: `${views.display} md slug subscribed history` },
     published: { select: `${views.display} md slug subscribed history` },
-    publishedNewest: (limit) => ({ limit, select: views.list, sort: { 'history.published': -1 } })
+    publishedNewest: limit => ({ limit, select: views.list, sort: { 'history.published': -1 } }),
+    submitted: limit => ({ limit, select: views.list, sort: { 'meta.lastTouch._id': -1 } })
   }
 
 )
