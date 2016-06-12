@@ -15,7 +15,6 @@ OPTS =
     fn: (data, cb) ->
       profile = if data.key then DATA.ghProfile(data.key) else data
       token = _.get(profile,"tokens.apcom.token") || "test"
-      # $log('fn.profile', profile.login, config.test.auth.login.fn)
       config.test.auth.login.fn.call @, 'github', profile, {token}, cb
 
 

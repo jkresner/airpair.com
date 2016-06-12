@@ -102,13 +102,13 @@
       "ud": {
         "android":             "Andoid",
         "search":              "Applebot|archive.org|Baiduspider|bingbot|adsbot-google|Googlebot|Docoloc|Hackerfall|Hatena|msnbot-media|Qwantify|YandexBot|Yahoo! Slurp|Y!J-ASR",
-        "ban":                 "AhrefsBot|BuckyOHare|Buzzbot|CCBot|cf-news|coccoc|cognitiveseo|CloudFlare-Always|datasift.com|dataprovider.com|Domain Re-Animator|DotBot|EmailMarketingRobot|Genieo|GrapeshotCrawler|GurujiBot|HaosouSpider|Hubspotistellabot|linkdexbot|ltx71|Mediatoolkitbot|MegaIndex|MetaURI|MJ12bot|Nutch|OpenLinkProfiler|panscient.com|Pingdom|Priceonomics|QuerySeekerSpider|R6_CommentReader|rogerbot|scraper|Screaming Frog|Searchmetrics|SemrushBot|Sentinurl|SeznamBot|Sgrunt|ShowyouBot|SMTBot|Sogou|Turnitin|uk_lddc_bot|YisouSpider",
+        "ban":                 "AhrefsBot|BuckyOHare|Buzzbot|CCBot|cf-news|coccoc|cognitiveseo|CloudFlare-Always|datasift.com|dataprovider.com|Domain Re-Animator|DotBot|EmailMarketingRobot|Feedly|Genieo|GrapeshotCrawler|GurujiBot|HaosouSpider|Hubspotistellabot|linkdexbot|ltx71|Mediatoolkitbot|MegaIndex|MetaURI|MJ12bot|Nutch|OpenLinkProfiler|panscient.com|Pingdom|Priceonomics|QuerySeekerSpider|R6_CommentReader|rogerbot|scraper|Screaming Frog|Searchmetrics|SemrushBot|Sentinurl|SeznamBot|Sgrunt|ShowyouBot|SMTBot|Sogou|Turnitin|uk_lddc_bot|YisouSpider",
         "ios":                 "Apple-i",
         "mobile":              "iPhone|iPod|Mobile",
         "lib":                 "aria2|CPython|DarcyRipper|Go 1.1|Go http client|jsoup|libwww-perl|Mechanize|Melvil|Needle|Phantom|Presto|python-requests|RobotsTxtParser|Wget",
         "tablet":              "iPad",
         "proxy":               "BingPreview|bitlybot|Camo Asset|Googlebot-Image|Exabot|facebookexternalhit|Pinterest|Slack-ImgProxy|Slackbot-LinkExpanding|SkypeUriPreview|Twitterbot",
-        "reader":              "Blogtrottr|Evernote|Feedly|PaperLiBot|Superfeedr|tt-rss.org|Toutiao|Windows-RSS"
+        "reader":              "Blogtrottr|Evernote|PaperLiBot|Superfeedr|tt-rss.org|Toutiao|Windows-RSS"
       },
       "uId":                   true
     },

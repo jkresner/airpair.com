@@ -22,6 +22,11 @@ gone = ->
                   PAGE '/anythings', { status:500 }, (txt8) ->
                     DONE()
 
+  IT 'OLD WORDPRESS', ->
+    optsExpect = {status:410,contentType:/text/}
+    PAGE '/backbone-js/backbone-js-experts/page/3', optsExpect, (txt1) ->
+      expect(txt1).to.equal('')
+      DONE()
 
 bait = ->
 
@@ -37,6 +42,11 @@ bait = ->
               PAGE '/jobs/05-14/airpair-evangasdfasdft', {status:404}, (txt6) =>
                 PAGE '/jobs/07-07/advertising-specialist', {status:500}, (txt7) =>
                   DONE()
+
+  IT 'Platform probes', ->
+    PAGE '/_vti_bin/owssvr.dll?UL=1&ACT=4&BUILD=6606&STRMVER=4&CAPREQ=0', @optsExpect, (txt1) =>
+      DONE()
+
 
   IT 'Asset URLS', ->
     PAGE '/fckeditor//editor/filemanager/browser/default/connectors/asp/connector.asp?Command=GetFolders&Type=File&CurrentFolder=%2F/', @optsExpect, (txt1) =>
@@ -82,8 +92,10 @@ bait = ->
   IT 'Bad guesses', ->
     PAGE '/search', @optsExpect, (txt1) =>
       PAGE '/search?site=&ie=UTF-8&q=Yuri+Kochiyama&oi=ddle&ct=yuri-kochiyamas-95th-birthday-5723472594468864-hp&hl=en&sa=X&ved=0ahUKEwil6qbk4ebMAhUBVj4KHX2qCVIQPQgD', @optsExpect, (txt2) =>
-        DONE()
+          DONE()
 
+  SKIP 'Clashing with static dirs', ->
+    # PAGE '/static/frontend/Magento/luma/en_US/Magento_Customer/css/source/_module.less', @optsExpect, (txt3) =>
 
 
 

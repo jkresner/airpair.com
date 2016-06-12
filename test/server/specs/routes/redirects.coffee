@@ -73,6 +73,7 @@ moved301 = ->
     ['/dashboard', '/home']
     ['/me', '/account']
     ['/javascript/javascript-performance-yehuda-katz','/javascript']
+    ['/javascript/syncify-tutorial','/javascript']
     ['/node_js','/node.js']
     ['/node','/node.js']
     ['/posts/tag/node','/node.js']

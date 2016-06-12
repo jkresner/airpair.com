@@ -42,14 +42,15 @@ IT 'API Pages', -> perm_to [
 
 
 IT 'Search leniences', -> perm_to [
-  ['/javascript/integrating-stripe-into', '/javascript/integrating-stripe-into-angular-app']
+  ['/js/integrating-stripe-into', '/javascript/integrating-stripe-into-angular-app']
+  ['/node.js/posts/top-10-mistakes-node-d49', '/node.js/posts/top-10-mistakes-node-developers-make']
+  ['/node.js/posts/top-10-mistakes-node-d85', '/node.js/posts/top-10-mistakes-node-developers-make']
   # /ember.js/posts/expert-stefan-penner-1
   # /ruby-on-rails/posts/rails-host
   # /ruby-on-rails-problem-solving/page/2
   # /python/python-expert-alexandre-gravier
   # /python/posts/python-code-mentoring-web-scraping-1
   # /reactjs/posts/reactjs-a-guide-for-rails-developers%EF%BC%89
-  # /node.js/posts/top-10-mistakes-node-d85
   # /graph-database/graph-database-expert-wes-freeman
   # /javascript/javascript-code-review
 ]

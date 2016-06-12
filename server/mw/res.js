@@ -55,7 +55,7 @@ module.exports = (app, mw, {abuse}) => {
         var msg = e.message.replace(/ /g,'')
         var name = e.status || (msg.length > 24 ? msg.substring(0,24) : msg)
         if (/prod/i.test(config.env))
-          analytics.issue(req.ctx, name, 'error', {stack:e.stack,msg:e.message})
+          analytics.issue(req.ctx, name, 'error', {stack:e.stack,msg:e.message,url:req.originalUrl})
       }
       catch (ERR) {
         console.log('SHEEEET'.red, ERR.stack, e.stack)
