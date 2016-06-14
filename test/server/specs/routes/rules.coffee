@@ -5,6 +5,12 @@ notImp = ->
       expect(txt).to.equal('')
       DONE()
 
+  IT '/browserconfig.xml', ->
+    PAGE @test.title, {status:501}, (txt) ->
+      expect(txt).to.equal('')
+      DONE()
+
+
 
 gone = ->
 
@@ -30,22 +36,20 @@ gone = ->
 
 bait = ->
 
-  before -> @optsExpect = {status:418,contentType:/text/}
+  before (done) ->
+    @optsExpect = {status:418,contentType:/text/}
+    DB.removeDocs 'session', {}, ->
+      done()
 
-  IT 'BAIT URLS', ->
-    PAGE '/phpMyAdmin', @optsExpect, (txt1) =>
-      expect(txt1).to.equal('Relax. Close your eyes.')
-      PAGE '/phpmyadmin', @optsExpect, (txt2) =>
-        PAGE '/wp-test/phpMyAdmin/gooodey', @optsExpect, (txt3) =>
-          PAGE '/readme.txt', @optsExpect, (txt4) =>
-            PAGE '/license.txt?tasdfas=234sdfsd', @optsExpect, (txt5) =>
-              PAGE '/jobs/05-14/airpair-evangasdfasdft', {status:404}, (txt6) =>
-                PAGE '/jobs/07-07/advertising-specialist', {status:500}, (txt7) =>
-                  DONE()
+  # afterEach (done) ->
+  #   DB.docsByQuery 'session', {}, (ss) ->
+  #     expect(ss.length).to.equal(0)
+  #     done()
 
-  IT 'Platform probes', ->
-    PAGE '/_vti_bin/owssvr.dll?UL=1&ACT=4&BUILD=6606&STRMVER=4&CAPREQ=0', @optsExpect, (txt1) =>
-      DONE()
+
+  SKIP 'BAIT URLS', ->
+    # PAGE '/jobs/05-14/airpair-evangasdfasdft', {status:404}, (txt6) =>
+      # DONE()
 
 
   IT 'Asset URLS', ->
@@ -62,27 +66,10 @@ bait = ->
   IT 'Root WILDCARDS', ->
     PAGE '/so17/php', @optsExpect, (txt1) =>
       PAGE '/so19/node.js', @optsExpect, (txt2) =>
-        PAGE '/bitrix/admin', @optsExpect, (txt3) =>
-          PAGE '/administrator', @optsExpect, (txt4) =>
-            PAGE '/blog//?q=user', @optsExpect, (txt5) =>
-              PAGE '/feeds/posts/default', @optsExpect, (txt6) =>
-                DONE()
-
-  IT 'Ext WILDCARDS', ->
-    PAGE '/index.xml', @optsExpect, (txt1) =>
-      expect(txt1).to.equal('Relax. Close your eyes.')
-      PAGE '/index.xml?test=yo', @optsExpect, (txt2) =>
-        expect(txt2).to.equal('Relax. Close your eyes.')
-        PAGE '/core/CHANGELOG.txt', @optsExpect, (txt3) =>
-          PAGE '/.git', @optsExpect, (txt3) =>
-            expect(txt2).to.equal('Relax. Close your eyes.')
+        PAGE '/blog//?q=user', @optsExpect, (txt5) =>
+          PAGE '/feeds/posts/default', @optsExpect, (txt6) =>
             DONE()
 
-  IT 'Source files', ->
-    PAGE '/.editorconfig', @optsExpect, (txt1) =>
-      PAGE '/example.gitignore', @optsExpect, (txt2) =>
-        PAGE '/.gitattributes', @optsExpect, (txt3) =>
-          DONE()
 
   IT 'Old campaign links', ->
     PAGE '/l/python/python-expert-daniel-roseman?utm_source=stackoverflow&utm_medium=banner&utm_term=python&utm_content=daniel-roseman-top&utm_campaign=so09',  @optsExpect, (txt7) =>
@@ -98,38 +85,18 @@ bait = ->
     # PAGE '/static/frontend/Magento/luma/en_US/Magento_Customer/css/source/_module.less', @optsExpect, (txt3) =>
 
 
-
+optsBan = status:500, contentType:/text/
+testBan = ({test}) =>
+  PAGE test.title, optsBan, (txt1) =>
+    PAGE '/', optsBan, (txt2) =>
+      expect(txt1+txt2).to.equal('')
+      DONE()
 
 ban = ->
 
-  before -> @optsExpect = {status:500,contentType:/text/}
+  beforeEach ->
+    STUB.wrapper('Cloudflare').api('get').fix('cloudflare_block_ip_ok')
 
-  IT 'INSTANT http.POST BAN', ->
-    SUBMIT '/', {}, @optsExpect, (txt1) =>
-      expect(txt1).to.equal('')
-      PAGE '/', @optsExpect, (txt2) =>
-        expect(txt2).to.equal('')
-        DONE()
-
-
-  IT 'GET /900x90.q2-1.ruby.png', ->
-    PAGE '/900x90.q2-1.ruby.png', @optsExpect, (txt1) =>
-      PAGE '/',  @optsExpect, (txt2) =>
-        expect(txt1+txt2).to.equal('')
-        DONE()
-
-
-  IT 'GET /admin', ->
-    PAGE '/admin', @optsExpect, (txt1) =>
-      PAGE '/posts', @optsExpect, (txt2) =>
-        expect(txt1+txt2).to.equal('')
-        DONE()
-
-  IT 'GET //admin/Cms_Wysiwyg', ->
-    PAGE '//admin/Cms_Wysiwyg/directive/index', @optsExpect, (txt1) =>
-      PAGE '/javascript',  @optsExpect, (txt2) =>
-        expect(txt1+txt2).to.equal('')
-        DONE()
 
   IT '+7 requests in 1 min', ->
     optsOK = {status:200,contentType:/html/}
@@ -140,11 +107,37 @@ ban = ->
             PAGE '/', optsOK, (html5) =>
               PAGE '/', optsOK, (html6) =>
                 PAGE '/', optsOK, (html7) =>
-                  PAGE '/', @optsExpect, (txt8) =>
-                      DONE()
+                  # PAGE '/', optsBan, (txt8) =>
+                  DONE()
 
-  SKIP 'NO SESSION GENERATED FOR ABUSE REQUEST', ->
-# 2016-05-31T20:18:31.562886+00:00 app[web.1]: GET 134.249.131.0    5ynsvb17lMGb abuse < other         /administrator  <<< https://www.airpair.com/administrator Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.57 Safari/537.36
+  IT 'INSTANT http.POST BAN', ->
+    SUBMIT '/', {}, optsBan, (txt1) =>
+      expect(txt1).to.equal('')
+      PAGE '/', optsBan, (txt2) =>
+        expect(txt2).to.equal('')
+        DONE()
+
+
+  IT '/900x90.q2-1.ruby.png', -> testBan @
+  IT '/index.xml', -> testBan @
+  IT '/index.xml?test=yo', -> testBan @
+  IT '/core/CHANGELOG.txt', -> testBan @
+  IT '/.git', -> testBan @
+  IT '/.editorconfig', -> testBan @
+  IT '/example.gitignore', -> testBan @
+  IT '/.gitattributes', -> testBan @
+  IT '/phpMyAdmin', -> testBan @
+  IT '/phpmyadmin', -> testBan @
+  IT '/wp-test/phpMyAdmin/gooodey', -> testBan @
+  IT '/readme.txt', -> testBan @
+  IT '/license.txt?tasdfas=234sdfsd', -> testBan @
+  IT '/_vti_bin/owssvr.dll?UL=1&ACT=4&BUILD=6606&STRMVER=4&CAPREQ=0', -> testBan @
+  IT '/admin', -> testBan @
+  IT '//admin/Cms_Wysiwyg', -> testBan @
+  IT '//admin/Cms_Wysiwyg/directive/index', -> testBan @
+  IT '/bitrix/admin', -> testBan @
+  IT '/administrator', -> testBan @
+
 
 
 DESCRIBE("501", notImp)

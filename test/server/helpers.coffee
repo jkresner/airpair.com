@@ -11,6 +11,7 @@ global.UTIL =
   Date:         TypesUtil.Date
   clearIP:      ->
     delete global.cache.abuse['::ffff:127.0.0.1']
+    global.cache.abuse.ban = []
     global.cache.iplog = {}
 
 

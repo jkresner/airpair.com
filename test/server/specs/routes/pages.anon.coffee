@@ -40,6 +40,8 @@ describe ' INDEX'.subspec, ->
     html.landing]
 
   IT '/c++/posts/preparing-for-cpp-interview', -> HTML @, [html.post,js.index]
+  IT '/c++/posts/preparing-for-cpp-interview?&sa=U&ved=0ahUKEwiywpW7__zMAhWGF5oKHaf0BK8QFghqMBE&usg=AFQjCNGoXuRvcusgEhBwRgUl9qQw4r479w', -> HTML @, [html.post,js.index]
+
 
   IT '/js/javascript-framework-comparison', -> HTML @, [html.post,js.index,
     /<title>AngularJS vs. Backbone.js vs. Ember.js/,

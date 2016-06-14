@@ -8,7 +8,9 @@ module.exports = function(app, mw, {rules}) {
 // Hackerfall
 // hackhands.com/building-instagram-clone-angularjs-satellizer-nodejs-mongodb/
 
-  var agg = { '410':cached['410'],'501':cached['501'],'bait':cached['bait'],
+  var agg = { '410':cached['410'],'501':cached['501'],
+    'ban':cached['ban'],
+    'bait':cached['bait'],
     '301':{},
     '302':{},
     'rewrite':[] }
@@ -35,8 +37,13 @@ module.exports = function(app, mw, {rules}) {
     }
   }
 
+  app.get('*&sa=*', (req, res, next) => req.url.indexOf('?') !=-1 ? next() : res.redirect(301, req.url.replace('&sa=','?sa=')))
+  app.head('*', (req, res, next) => res.end())
+  app.propfind('*', (req, res, next) => res.end())
+
   var router = app.honey.Router('httpRules', { type:'rule' })
     .use(mw.$.session)
+    .post('/', mw.$.banPOST)
 
   for (var [pattern,sub] of rewrites) router
     .get(pattern, write({pattern,sub}))
@@ -56,23 +63,9 @@ module.exports = function(app, mw, {rules}) {
   if (agg['bait'].length > 0) $logIt('cfg.route', `418   >>>\t\t       [${agg['bait'].length}]`) + router
     .get(agg['bait'], (req, res) => res.send(cache.abuse.increment(418, req)))
 
+  if (agg['ban'].length > 0) $logIt('cfg.route', `500   >>>\t\t       [${agg['ban'].length}]`) + router
+    .get(agg['ban'], mw.$.banGET)
 
-  //-- write tests and add these
-  router.post('/', mw.$.banEm)
-
-  router.get([
-    '/admin',
-    '*/admin/*',
-    '^/null/*',
-    '^/900x90.q2-1.*',
-    '^/220x250.q2-1.*',
-    '/CHANGELOG',
-    '/INSTALL',
-    '/MAINTAINERS',
-    '/media/com_joomla*'
-    ], mw.$.banEm)
-
-  app.head('*', (req, res, next) => res.end())
 
   // app.put('/*', mw.$.noBot)
   // app.delete('/*', mw.$.noBot)

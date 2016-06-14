@@ -38,7 +38,7 @@ module.exports = ({meanair}, mw) => {
     // $log('ud', req.ctx.ud, /lib|ban|search|reader/.test(req.ctx.ud))
     if (/lib|ban|search|reader/.test(req.ctx.ud)) return next()  // don't want ads indexed
     var rnd = parseInt(Math.random()*100)
-    if ((rnd%3)!=0) return next()
+    if ((rnd%7)!=0) return next()
 
     cache.get('ads', logic.ads.getForCache.exec, (e, r) =>
       next(e, cache.ads.tagged[req.locals.r.adtag || 'ruby']

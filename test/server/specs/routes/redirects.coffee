@@ -57,6 +57,7 @@ rewrite = ->
     ['/ionic-framework/posts/ionic-firebase-password-manager&q=Create_a_Password_Management_App_Using_Ionic_Framework_%E2%80%A6','/ionic-framework/posts/ionic-firebase-password-manager&q=Create_a_Password_Management_App_Using_Ionic_Framework_']
     ['/python/posts/top-mistakes-python-big-data-analytics&quot;', '/python/posts/top-mistakes-python-big-data-analytics']
     ['/android/android-camera-development"','/android/android-camera-development']
+    ['/ruby-on-rails/posts/building-a-restful-api-in-a-rails-application]','/ruby-on-rails/posts/building-a-restful-api-in-a-rails-application']
     # ['/ionic-framework/posts.','/ionic-framework/posts']
     # ['/ionic-framework/posts/%5C','/ionic-framework/posts/']
   ]
@@ -101,6 +102,10 @@ moved301 = ->
     ['/node.js/learn-node.js', '/node.js/learn-nodejs']
     ['/node.js/posts/learn-node.js', '/node.js/learn-nodejs']
     ['/node.js/posts/learn-nodejs', '/node.js/learn-nodejs']
+  ]
+
+  IT 'GOOGLE keywords malformed', -> perm_to [
+    ['/c++/posts/preparing-for-cpp-interview&sa=U&ved=0ahUKEwiywpW7__WGF5oKHaf&usg=AFQjCNG', '/c++/posts/preparing-for-cpp-interview?sa=U&ved=0ahUKEwiywpW7__WGF5oKHaf&usg=AFQjCNG']
   ]
 
   SKIP 'CAPS', -> perm_to [

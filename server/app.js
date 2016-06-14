@@ -18,8 +18,8 @@ function run({config,MAServer,tracking}, done) {
 
     global.API          = require('./api/_all')
     global.util         = require('../shared/util')
-
     global.Wrappers     = require('./services/wrappers/_index')
+    global.Wrappers.plumbWrapped('Cloudflare')
     global.mailman      = require('./util/mailman')()
     global.pairbot      = require('./util/pairbot')()
     global.svc = { newTouch(action) { return { action, _id: DAL.User.newId(),

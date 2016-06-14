@@ -1,5 +1,23 @@
 module.exports = {
 
+  cloudflare_ok: {
+    ok: true,
+    result: []
+  },
+
+  cloudflare_block_ip_ok: {
+    ok: true,
+    result: {
+      id: '38f0c88b18d079d3f6484f91fd0b5f8f',
+      mode: 'block',
+      allowed_modes: [ 'block', 'challenge', 'whitelist', 'js_challenge' ],
+      status: 'active',
+      notes: 'issue:575f3c3f246b972f9d9272f4\Not Found\n::ffff:127.0.0.1\nMozilla/5.0 (Windows NT 5.1; rv:31.0) Gecko/20100101 Firefox/31.0',
+      configuration: { value: '0000:0000:0000:0000:0000:0000:ffff:127.', target: 'ip' },
+      created_on: '2016-06-13T23:01:22.488490Z',
+      modified_on: '2016-06-13T23:01:23.135805Z' }
+  },
+
   braintree_newuser_token: {
     clientToken: 'eyJ2ZXJzaW9uIjoyLCJhdXRob3JpemF0aW9uRmluZ2VycHJpbnQiOiJiYjU0ZWM3NGY5ZWFkYWMzNTNmYTljMGUxNWI0OGJlZDA3M2IwNWUzMTExMTVkNjY2YTEzMzg3ZGQwMTQ0OWU2fGNyZWF0ZWRfYXQ9MjAxNS0wMy0yNVQxMDowNjoyMy4yOTAxNTA5MTMrMDAwMFx1MDAyNm1lcmNoYW50X2lkPWNoa3I0OXI4eXhrNXk2NXBcdTAwMjZwdWJsaWNfa2V5PTNwd3BieTdycmZkcjN4M20iLCJjb25maWdVcmwiOiJodHRwczovL2FwaS5zYW5kYm94LmJyYWludHJlZWdhdGV3YXkuY29tOjQ0My9tZXJjaGFudHMvY2hrcjQ5cjh5eGs1eTY1cC9jbGllbnRfYXBpL3YxL2NvbmZpZ3VyYXRpb24iLCJjaGFsbGVuZ2VzIjpbXSwiY2xpZW50QXBpVXJsIjoiaHR0cHM6Ly9hcGkuc2FuZGJveC5icmFpbnRyZWVnYXRld2F5LmNvbTo0NDMvbWVyY2hhbnRzL2Noa3I0OXI4eXhrNXk2NXAvY2xpZW50X2FwaSIsImFzc2V0c1VybCI6Imh0dHBzOi8vYXNzZXRzLmJyYWludHJlZWdhdGV3YXkuY29tIiwiYXV0aFVybCI6Imh0dHBzOi8vYXV0aC52ZW5tby5zYW5kYm94LmJyYWludHJlZWdhdGV3YXkuY29tIiwiYW5hbHl0aWNzIjp7InVybCI6Imh0dHBzOi8vY2xpZW50LWFuYWx5dGljcy5zYW5kYm94LmJyYWludHJlZWdhdGV3YXkuY29tIn0sInRocmVlRFNlY3VyZUVuYWJsZWQiOmZhbHNlLCJwYXlwYWxFbmFibGVkIjp0cnVlLCJwYXlwYWwiOnsiZGlzcGxheU5hbWUiOiJBaXJQYWlyIiwiY2xpZW50SWQiOm51bGwsInByaXZhY3lVcmwiOiJodHRwOi8vZXhhbXBsZS5jb20vcHAiLCJ1c2VyQWdyZWVtZW50VXJsIjoiaHR0cDovL2V4YW1wbGUuY29tL3RvcyIsImJhc2VVcmwiOiJodHRwczovL2Fzc2V0cy5icmFpbnRyZWVnYXRld2F5LmNvbSIsImFzc2V0c1VybCI6Imh0dHBzOi8vY2hlY2tvdXQucGF5cGFsLmNvbSIsImRpcmVjdEJhc2VVcmwiOm51bGwsImFsbG93SHR0cCI6dHJ1ZSwiZW52aXJvbm1lbnROb05ldHdvcmsiOnRydWUsImVudmlyb25tZW50Ijoib2ZmbGluZSIsInVudmV0dGVkTWVyY2hhbnQiOmZhbHNlLCJicmFpbnRyZWVDbGllbnRJZCI6Im1hc3RlcmNsaWVudCIsIm1lcmNoYW50QWNjb3VudElkIjoiZzNmdzh5ZmJ3a2h4ZnBiYyIsImN1cnJlbmN5SXNvQ29kZSI6IlVTRCJ9LCJjb2luYmFzZUVuYWJsZWQiOmZhbHNlLCJtZXJjaGFudElkIjoiY2hrcjQ5cjh5eGs1eTY1cCIsInZlbm1vIjoib2ZmbGluZSJ9',
     success: true

@@ -33,11 +33,12 @@ module.exports = (app, mw, {abuse}) => {
 
   var notFound = mw.res.notFound({
     onBot(req, res, next) {
-      analytics.issue(req.ctx, 'crawl', 'security', { crawl: 404, url: req.originalUrl })
       if (/ban|lib/.test(req.ctx.ud))
         return res.status(200).send('')
-      else
-        return res.status(404).send('Page not found')
+
+      var context = _.selectFromObj(req.ctx, 'ip sId user ua ud')
+      analytics.issue(context, 'crawl', 'security', { crawl: 404, url: req.originalUrl, headers:req.headers })
+      res.status(404).send('Page not found')
     }
   })
 
@@ -54,8 +55,9 @@ module.exports = (app, mw, {abuse}) => {
       try {
         var msg = e.message.replace(/ /g,'')
         var name = e.status || (msg.length > 24 ? msg.substring(0,24) : msg)
+        var context = _.selectFromObj(req.ctx, 'ip sId user ua ud')
         if (/prod/i.test(config.env))
-          analytics.issue(req.ctx, name, 'error', {stack:e.stack,msg:e.message,url:req.originalUrl})
+          analytics.issue(context, name, 'error', {stack:e.stack,msg:e.message,url:req.originalUrl,headers:req.headers})
       }
       catch (ERR) {
         console.log('SHEEEET'.red, ERR.stack, e.stack)

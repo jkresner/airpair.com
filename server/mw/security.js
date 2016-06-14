@@ -33,11 +33,10 @@ module.exports = (app, mw, {forbid}) => {
   }
 
 
-  cache['abuse'] = {}
   cache['iplog'] = {}
+  cache['abuse'] = { ban: [] }
   cache.abuse.increment = function(status, req) {
     var {ip,ref,ua} = req.ctx
-
     var action = { t:moment().format(), u: req.originalUrl, status }
     if (ref) action.r = ref
 
@@ -52,6 +51,28 @@ module.exports = (app, mw, {forbid}) => {
     return status == 418 ? 'Relax. Close your eyes.' : ''
   }
 
+  var mwBan = (name) => function(req, res, next) {
+    var logBan = (er,r) => console.log(`CF.ban ${req.ctx.ip}`.red, `${req.ctx.ua}`.gray, er ? er : r.id)
+    if (config.env == 'test') {
+      if (cache['abuse'].ban.indexOf(req.ctx.ip) != -1) return res.status(500).send('')
+      logBan = () => {}
+    }
+
+    var data = { mw:'ban', headers: req.headers, name, url: req.originalUrl, user: req.user||'anon' }
+    if (req.body) data.body = req.body
+
+    analytics.issue(req.ctx, 'ban', 'security_high', data,
+      (e, i) => e ? 0 : Wrappers.Cloudflare.blockIssue(i, logBan))
+
+    $logMW(req, name)
+    cache['abuse'].ban.push(req.ctx.ip)
+    return res.send(cache.abuse.increment(500, req))
+  }
+
+  mw.
+    cache('banPOST', mwBan('banPOST'))
+  mw.
+    cache('banGET', mwBan('banGET'))
 
   mw.
     // ? enhance forbid to give other responses like 500
@@ -61,60 +82,33 @@ module.exports = (app, mw, {forbid}) => {
       var throttle = 0
       cache['iplog'][key] = cache['iplog'][key] || []
       cache['iplog'][key].push(ctx.ip)
-      for (var ip of cache['iplog'][key])
-        if (ip == ctx.ip) throttle++
+      for (var ip of cache['iplog'][key]) if (ip == ctx.ip) throttle++
 
       if (throttle < forbid.throttle.limit)
         return next()
 
-      while (!cache.abuse[ip] || cache.abuse[ip].length < forbid.abuse.limit)
-        cache.abuse.increment(500, req)
+      cache['abuse'].ban.push(ctx.ip)
 
       $log('throttle.user'.red, ctx.user, ctx.ip, throttle, throttle % forbid.throttle.limit)
       res.send(cache.abuse.increment(500, req))
       $logMW(req, 'throttle'.red)
       if (throttle % forbid.throttle.limit == 0)
         global.analytics.issue(ctx, 'scrape', 'security_high',
-          { mw:'throttle', name:'throttle', rule:`${key}[${ctx.ip}] > throttle.limit`, hits:cache['iplog'][key] })
+          { mw:'throttle', name:'throttle', rule:`${key}[${ctx.ip}] > throttle.limit`, hits:cache['iplog'][key], headers: req.headers })
     })
 
 
   mw.
-    // ? enhance forbid to give other responses like 500
     cache('abuser', function(req, res, next) {
-
-      // $log('check abuse', `[${req.ctx.ip}]`, (cache.abuse[req.ctx.ip]||[]).length)
-      // global.analytics.issue(ctx, 'forbidabuser', 'security_medium',
-        // { mw:'forbid', name:'adm', rule:'!req.user', user: user||'anon' })
-
-      var block = ['109.49.166.123','47.59.122.29','94.61.126.56','185.101.177.67','88.22.74.114'].indexOf(req.ctx.ip) != -1 ||
-        ["2de8RMuTC9ThmjfYRBzXtESFQUR9rJrC", "9768VHFOcS6k05A1teN5By0qA2Hu4Gv5", "XGBHWUFZ0w6mlFws_LOPMIfEZU2DpLhs"].indexOf(req.ctx.sId) != -1
-
-      if (!block && (cache.abuse[req.ctx.ip]||[]).length < forbid.abuse.limit)
+      var under = (cache.abuse[req.ctx.ip]||[]).length < forbid.abuse.limit
+      var ok = cache['abuse'].ban.indexOf(req.ctx.ip) == -1
+      // $log('check abuse'.yellow, `[${req.ctx.ip}]`, (cache.abuse[req.ctx.ip]||[]).length, cache['abuse'].ban.indexOf(req.ctx.ip))
+      if (under && ok)
         return next()
 
       res.send(cache.abuse.increment(500, req))
-      $logMW(req, block ? 'abuser'.red : 'abuser')
-      // var {ip,ref,ua} = req.ctx
-      // console.log(`[500${req.originalUrl}${ref?` << ${ref}`.dim:''}]abuse`.cyan, `\t${ip}[${cache.abuse[ip].length}/${forbid.abuse.limit}]`.white, (ua||'').gray)
+      $logMW(req, ok ? 'abuser' : 'banned'.red)
     })
-
-
-  mw.
-    cache('banEm', function(req, res, next) {
-      var {ip,ref,ua} = req.ctx
-
-      // global.analytics.issue(ctx, 'forbidabuser', 'security_medium',
-        // { mw:'forbid', name:'adm', rule:'!req.user', user: user||'anon' })
-
-      cache.abuse[ip] = cache.abuse[ip] || []
-      while (cache.abuse[ip].length < forbid.abuse.limit)
-        cache.abuse.increment(500, req)
-
-      $logMW(req, 'ban')
-      return res.send(cache.abuse.increment(500, req))
-    })
-
 
 
   mw.

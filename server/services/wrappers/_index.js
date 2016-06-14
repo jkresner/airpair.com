@@ -28,16 +28,37 @@ var initAPIWrap = (wrapperName, wrapperFile) => {
 }
 
 
+var plumbWrapped = function(name) {
+  var wrapper = require(`../../wrappers/${name.toLowerCase()}`)
+  var wrapped = (fn, fnName) => function() {
+    if (!Wrappers[name].api) {
+      Wrappers[name].init()
+      $logIt('wrpr.init', 'init', name, fnName)
+    }
+    return fn.apply(this, arguments)
+  }
+
+  global.Wrappers[name] = { init: wrapper.init }
+  for (var fn in wrapper)
+    if (fn != 'init' && fn != 'name')
+      global.Wrappers[name][fn] = wrapped(wrapper[fn], fn)
+
+  $logIt('app.wire', `wiredWrapper:${name}`, _.keys(Wrappers[name]))
+}
+
+
 module.exports = {
-  Timezone:       initAPIWrap('Timezone', 'gtimezone'),
-  Calendar:       initAPIWrap('Calendar', 'gcal'),
-  GitPublisher:   initAPIWrap('GitPublisher'),
-  Stripe:         initAPIWrap('Stripe'),
+  Bitly:          initAPIWrap('Bitly'),
   Braintree:      initAPIWrap('Braintree'),
-  YouTube:        initAPIWrap('YouTube'),
+  Calendar:       initAPIWrap('Calendar', 'gcal'),
   Slack:          initAPIWrap('Slack'),
   StackExchange:  initAPIWrap('StackExchange'),
+  Stripe:         initAPIWrap('Stripe'),
+  Timezone:       initAPIWrap('Timezone', 'gtimezone'),
   Twitter:        initAPIWrap('Twitter'),
-  Bitly:          initAPIWrap('Bitly'),
-  MailChimp:      initAPIWrap('MailChimp'),
+  YouTube:        initAPIWrap('YouTube'),
+
+  // MailChimp:      initAPIWrap('MailChimp'),
+  // GitPublisher:   initAPIWrap('GitPublisher'),
+  plumbWrapped,
 }

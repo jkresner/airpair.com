@@ -10,7 +10,6 @@ module.exports = function(app, mw, {rules}) {
     .useEnd([mw.$.postPage])
 
     .get(posturls, mw.$.logic('posts.getPostPublished',{params:['url']}), mw.$.inflateAds, mw.$.trackPost)
-
     .get('/posts/review/:id', mw.$.noBot, mw.$.logic('posts.getPostForReview'), (req, res, next) => {
       var reqUrl = req.originalUrl
       var {url,history,title} = req.locals.r
@@ -23,6 +22,6 @@ module.exports = function(app, mw, {rules}) {
       next()
     })
 
-    .post(posturls, mw.$.banEm)
+    .post(posturls, mw.$.banPOST)
 
 }
