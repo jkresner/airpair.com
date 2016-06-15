@@ -33,7 +33,7 @@ module.exports = ({Post}, {Project,Opts,Query}, Shared, Lib) => ({
                 'moving-from-sql-to-rethinkdb']
     var hot = [
       'getting-started-with-docker-for-the-nodejs-dev',
-      'complete-expressjs-nodejs-mongodb-crud-skeleton',
+      'top-10-mistakes-node-developers-make',
       'nodejs-framework-comparison-express-koa-hapi',
       'expressjs-and-passportjs-sessions-deep-dive'
     ]
