@@ -53,14 +53,14 @@ mm = ->
       POST "/bookings/#{FIXTURE.experts.dros._id}", airpair1, {}, (booking1) ->
         expect(send.callCount).to.equal(3)
         expect(send.args[1][0].subject.indexOf("{Booking} by #{s.name} for #{booking1.participants[1].info.name}")).to.equal(0)
-        EXPECT.contains(send.args[1][0].text, "/#{booking1._id}")
-        EXPECT.contains(send.args[1][0].text, "http://adm.airpa.ir/b/#{booking1._id}")
-        EXPECT.contains(send.args[1][0].text, 'Daniel Roseman')
-        EXPECT.contains(send.args[1][0].text, s.name)
-        EXPECT.contains(send.args[1][0].html, booking1._id)
-        EXPECT.contains(send.args[1][0].from,'AP <team@airpair.com>')
+        expect(send.args[1][0].text).to.inc ["/#{booking1._id}",
+                                            "http://adm.airpa.ir/b/#{booking1._id}",
+                                            'Daniel Roseman',
+                                            s.name]
+        expect(send.args[1][0].html, booking1._id)
+        expect(send.args[1][0].from).to.equal('AP <team@airpair.com>')
         expect(send.args[2][0].subject.indexOf("You got booked to AirPair with #{s.name}")).to.equal(0)
-        EXPECT.contains(send.args[2][0].from,'Pairbot <team@airpair.com>')
+        expect(send.args[2][0].from).to.equal('Pairbot <team@airpair.com>')
         DONE()
 
 #   describe 'Posts: ', ->
@@ -77,10 +77,10 @@ mm = ->
 #         expect(send.callCount).to.equal(1)
 #         mail = send.args[0][0]
 #         expect(mail.subject).indexOf('4 Star Review for ExpressJS and PassportJS Sessions Deep Dive')).to.equal(0)
-#         EXPECT.contains(mail.from,'Pairbot <team@airpair.com>')
-#         EXPECT.contains(mail.text,'http://author.airpa.ir/contributors/541a36c3535a850b00b05697')
-#         EXPECT.contains(mail.text,'Karan Kurani')
-#         EXPECT.contains(mail.html,'541a36c3535a850b00b05697')
+#         (mail.from,'Pairbot <team@airpair.com>')
+#         (mail.text,'http://author.airpa.ir/contributors/541a36c3535a850b00b05697')
+#         (mail.text,'Karan Kurani')
+#         (mail.html,'541a36c3535a850b00b05697')
 #         DONE()
 
 

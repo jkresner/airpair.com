@@ -7,6 +7,10 @@ module.exports = ->
     DB.ensureDoc 'Request', FIXTURE.requests.aJob, ->
     done()
 
+  beforeEach ->
+    UTIL.clearIP()
+
+
   DESCRIBE "Google Analytics",   -> require("./analytics/ga")
   DESCRIBE "Impressions",        -> require("./analytics/impressions")
   DESCRIBE "Views",              -> require("./analytics/views")
