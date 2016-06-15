@@ -6,7 +6,7 @@ module.exports = ({meanair}, mw) => {
   mw.cache('cachedTags',        mw.data.cached('tags',logic.tags.getForCache.exec))
   mw.cache('cachedTemplates',   mw.data.cached('templates',logic.templates.getForCache.exec))
   mw.cache('cachedSlackUsers',  mw.data.cached('slack_users', Wrappers.Slack.getUsers))
-  mw.cache('cachedPublished',   mw.data.cached('published', API.Posts.svc.getAllPublished))
+  mw.cache('cachedPublished',   mw.data.cached('published', logic.posts.recommended.exec))
 
 
   mw.cache('logic', (path, opts) => function(req, res, next) {
@@ -17,8 +17,9 @@ module.exports = ({meanair}, mw) => {
       if (r && r.htmlHead) req.locals.htmlHead = r.htmlHead
       if (!r && opts.required !== false)
         e = assign(Error(`Not Found ${req.originalUrl}`),{status:404})
-
-      next(e, e ? null : req.locals.r = logic[group][fn].project(r))
+      if (!e)
+        req.locals.r = assign(req.locals.r||{}, logic[group][fn].project(r))
+      return next(e)
     }]
 
     for (var arg of opts.params) req.params[arg] = req[arg]

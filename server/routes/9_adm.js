@@ -58,8 +58,6 @@ module.exports = function(app, mw, {adm}) {
     // .post('/experts/:expert/note', API.Experts.addNote)
     // .param('tagforadm', API.Tags.paramFns.getById)
     // .put('/tags/:tagforadm', API.Tags.updateByAdmin)
-    // .get('/posts', API.Posts.getNewFoAdmin)
-    // .get('/posts/all', API.Posts.getAllForAdmin)
     // .get('/views/user/:id', API.Views.getByUserId)
 
 

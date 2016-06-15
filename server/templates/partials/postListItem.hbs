@@ -18,6 +18,8 @@
       {{#if stats.reviews}}
       <h6><b>{{stats.reviews}}</b> x</h6>
       <div class="stars">{{post_stars stats.rating}}</div>
+      {{else}}
+      <div class="stars"></div>
       {{/if}}
       <h2 class="entry-title" itemprop="headline">{{ title }}</h2>
 

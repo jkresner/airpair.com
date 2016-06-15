@@ -1,10 +1,20 @@
 module.exports = function(app, mw, {landing}) {
   if (!landing) return
 
-  if (config.env != 'dev')
-    cache.workshops = require('../services/workshops').getAllForCache()
-
   var Id = DAL.User.toId
+
+  cache.workshops = config.env == 'dev' ? [] :
+    require('../services/workshops').getAllForCache()
+
+  var postsStats = {
+    total: cache['http-rules']['canonical-post'].length,
+    authors: 0,
+    tags: cache['http-rules']['canonical-tag'].length,
+    tag: {}
+  }
+  cache['http-rules']['canonical-tag'].forEach(t => postsStats.tag[t.id] = t.count)
+
+
 
   cache.landing = {
     home: {
@@ -54,7 +64,9 @@ module.exports = function(app, mw, {landing}) {
       htmlHead: {
         canonical: 'https://www.airpair.com/software-experts',
         title: "Software Programming Guides and Tutorials from Top Software Experts and Consultants"
-      }
+      },
+      hot: 'node.js',
+      stats: postsStats
     },
     inreview: {
       _id: Id("5706abc347ba64cb164bec10"),
@@ -69,31 +81,24 @@ module.exports = function(app, mw, {landing}) {
       _id: Id("5706abc347ba64cb164bec18"),
       key: 'tag',
       url: '/{{tagslug}}',
+    },
+    tags: {
+      _id: Id("57602ca61b80f345f5e7779b"),
+      key: 'tags',
+      url: '/learn-code',
       htmlHead: {
-        ogType: "technology",
+        title: "airpair | Coding help, Software consultants & Programming resources",
+        description: "Learn programming by code tutorials and software guides on technology at a time"
       }
-    }
+    },
   }
 
 
   mw.cache('inflateLanding', key => function(req, res, next) { next(null,
-    assign(req.locals, { r:cache['landing'][key], htmlHead: cache['landing'][key].htmlHead } ) ) })
+    assign(req.locals, {
+      r: _.omit(cache['landing'][key],'htmlHead'),
+      htmlHead: cache['landing'][key].htmlHead } ) ) })
 
-
-  var {getPostsByTag,getPostsSubmitted} = app.meanair.logic.posts
-  function tagPageData(req, res, next) {
-    var tag = cache.tagBySlug(req.url.split('?')[0].replace(/posts|\//g, ''))
-    if (!tag) return next(assign(Error(`Not found ${req.originalUrl}`),{status:404}))
-    var canonical = `https://www.airpair.com/${tag.slug}`
-    req.locals.htmlHead = assign({}, req.locals.r.htmlHead, {
-      title:`${tag.name} Programming Guides and Tutorials from Top ${tag.short} Developers and expert consultants`,
-      canonical: tag.slug == 'angularjs' ? `${canonical}/posts` : canonical
-    })
-    getPostsByTag.exec(tag, (e,r) => next(e,
-      assign(req.locals.r, tag, { url:req.originalUrl.split('?')[0] },
-        { latest: getPostsByTag.project(r) },
-        { related: _.sortBy((_.uniq(_.flatten(_.pluck(r, 'tags')), t => t.slug)), t=>t.slug) } )) )
-  }
 
   var router = app.honey.Router('landing',{type:'html'})
     .use(mw.$.livereload)
@@ -103,19 +108,38 @@ module.exports = function(app, mw, {landing}) {
     .get('/', mw.$.inflateLanding('home'),
       mw.res.forbid('home!anon', function({user}) { if (user) return 'authd' }, { redirect: req => '/home' }))
 
+    .get('/learn-code', mw.$.cachedTags, mw.$.inflateLanding('tags'), (req, res, next) => {
+      if (!req.locals.r.tags) {
+        var tags = []
+        for (var {id,count} of cache['http-rules']['canonical-tag'])
+          tags.push(assign({count}, cache['tags'][id]))
+        req.locals.r.tags = tags
+        cache.landing.tags.tags = tags
+      }
+      next()
+    })
+
+
     .get(cache['http-rules']['canonical-tag'].map(t => t.url),
-      mw.$.cachedTags, mw.$.inflateLanding('tag'), tagPageData)
+      mw.$.cachedTags,
+      mw.$.inflateLanding('tag'), (req, res, next) => {
+        var url = req.originalUrl.split('?')[0]
+        var tag = cache.tagBySlug(url.replace(/posts|\//g, ''))
+        if (!tag) return next(assign(Error(`Not found ${url}`),{status:404}))
+        req.params.tag = assign({url,related:postsStats.tag},tag)
+        next()
+      },
+      mw.$.logic('posts.getPostsByTag'))
 
     .get(['/software-experts','/posts'], mw.$.inflateLanding('posts'),
       mw.$.cachedPublished, mw.$.inflateAds,
       (req, res, next) => next(null, assign(req.locals.r, cache.published)) )
 
-    .get('/posts/in-community-review', mw.$.noBot, mw.$.cachedTags,
+    .get('/posts/in-community-review',
+      mw.$.noBot, mw.$.cachedTags,
       mw.$.inflateLanding('inreview'),
-      (req, res, next) => {
-        getPostsSubmitted.exec((e,r) => next(e, assign(req.locals.r,
-          { latest: getPostsSubmitted.project(r) })))
-      })
+      mw.$.logic('posts.getPostsSubmitted')
+    )
 
     .get('/100k-writing-competition', mw.$.inflateLanding('comp2015'))
 

@@ -98,6 +98,9 @@ ban = ->
     STUB.wrapper('Cloudflare').api('get').fix('cloudflare_block_ip_ok')
 
 
+  SKIP "GoooleWebsnippet https://developers.google.com/+/web/snippet/)", ->
+
+
   IT '+7 requests in 1 min', ->
     optsOK = {status:200,contentType:/html/}
     PAGE '/', optsOK, (html1) =>
@@ -129,7 +132,6 @@ ban = ->
   IT '/phpMyAdmin', -> testBan @
   IT '/phpmyadmin', -> testBan @
   IT '/wp-test/phpMyAdmin/gooodey', -> testBan @
-  IT '/readme.txt', -> testBan @
   IT '/license.txt?tasdfas=234sdfsd', -> testBan @
   IT '/_vti_bin/owssvr.dll?UL=1&ACT=4&BUILD=6606&STRMVER=4&CAPREQ=0', -> testBan @
   IT '/admin', -> testBan @
@@ -138,6 +140,7 @@ ban = ->
   IT '/bitrix/admin', -> testBan @
   IT '/administrator', -> testBan @
 
+  SKIP '/readme.txt', -> testBan @
 
 
 DESCRIBE("501", notImp)

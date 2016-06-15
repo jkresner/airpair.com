@@ -44,3 +44,12 @@ module.exports = ({Post,User}, {Project,Opts,Query}, Shared, Lib) => ({
 
 
 })
+
+
+
+  //-- Placeholder for showing similar posts to a currently displayed post
+  // getSimilar(original, cb) {
+  //   var tagId = original.primarytag._id
+  //   var options = Object.assign({ select: select.list }, opts.publishedNewest(3))
+  //   Post.getManyByQuery(query.published({'tags._id':tagId}), options, select.cb.addUrl(cb))
+  // },

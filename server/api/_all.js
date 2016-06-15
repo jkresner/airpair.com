@@ -1,6 +1,5 @@
 
 module.exports = {
-  Posts:        require('./posts'),
   Users:        require('./users'),
   Tags:         require('./tags'),
   Paymethods:   require('./paymethods'),

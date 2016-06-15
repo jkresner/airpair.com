@@ -1,15 +1,8 @@
 {{> siteNav }}
 
-{{!-- <header>
-  <ol class="entry-meta breadcrumb">
-    <li><a href="/software-experts" target="_self">Posts</a></li>
-    <li class="current">{{ tag.name }}</li>
-  </ol>
-</header> --}}
-
 <section id="allposts">
 
-  <h1 class="underline">Learn from top {{#if tag}}{{tag.name}}{{else}}software{{/if}} experts</h1>
+  <h1 class="underline">Learn code from {{#if tag}}{{tag.name}}{{else}}software{{/if}} experts</h1>
 
   {{#with r}}
 
@@ -18,6 +11,19 @@
     {{#each featured}}{{> postListItem this}}{{/each}}
   </div>
 {{/if}}
+
+{{#if hottag}}
+  <h2 class="underline">Explore {{r.hot}} resources or browse
+    <a href="/learn-code" class="btn btn-inverse" target="_self">{{r.stats.tags}} programming tags</a>
+  </h2>
+
+  <div class="popular nobookmarks">
+    {{#each hottag}}{{> postListItem this}}{{/each}}
+  </div>
+
+  <hr style="clear:both" />
+{{/if}}
+
 
 {{#if latest}}
   <h2 class="underline">Latest software tutorials & guides

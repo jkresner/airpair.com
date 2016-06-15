@@ -17,7 +17,8 @@ module.exports = function(app, mw, {rss}) {
 
   function toFeed(items) {
     feed.pubDate = moment().toDate() // whenever we regenerate the feed
-    for (var {title,htmlHead,by,history,url,tags} of items) {
+    for (var {title,htmlHead,by,history,tags} of items) {
+      var url = htmlHead.canonical
       var description = htmlHead ? htmlHead.description : 'No meta'
       var categories = _.pluck(tags||[], 'name')
 
@@ -37,12 +38,22 @@ module.exports = function(app, mw, {rss}) {
     return feed.xml()
   }
 
-  var getPosts = require('../services/posts').getRecentPublished
+
+  var getPosts = (query, cb) => cache.get('rss', function() {
+    var select = '_id by.name by.avatar title tags htmlHead.canonical htmlHead.ogImage htmlHead.description history'
+    var qOpts = { select, limit: 12, sort: { 'history.published': -1 }}
+    var query = { 'tmpl': { $ne: 'blank', $ne: 'faq' },
+      'history.published' : { $exists: true , $lt: new Date() },
+      'by._id':  { $ne: '52ad320166a6f999a465fdc5' } }
+    DAL.Post.getManyByQuery(query, qOpts, cb)
+  })
+
+
   var urls = rss.urls.split(',').map(url => `/${url}`)
 
   app.honey.Router('rss', { type:'rss' })
     .get(urls, mw.$.badBot, (req, res, next) =>
-      cache.get('rssposts', getPosts, (e, items) =>
+      getPosts(req.query || {}, (e, items) =>
         res.status(200)
            .type('application/rss+xml')
            .send(toFeed(items))

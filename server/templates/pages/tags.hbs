@@ -1,0 +1,10 @@
+{{> siteNav }}
+
+<section id="tagsall">
+
+    <h1>Learn to code by programing skills</h1>
+    <ul class="tags">
+{{#each r.tags }}<li><a href="/{{slug}}">{{name}}</a> ({{count}})</li>{{/each}}
+    </ul>
+
+</section>

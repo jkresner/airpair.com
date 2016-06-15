@@ -166,11 +166,22 @@ module.exports = new LogicDataHelper(
       return d
     },
 
+    otherByAuthor: d => {
+      var other = []
+      for (var id in cache['posts']) {
+        if (!_.idsEqual(d._id, id)) {
+          var p = cache['posts'][id]
+          if (_.idsEqual(d.by._id, p.by))
+            other.push({_id:id,by:d.by,url:p.url,ogImg:p.ogImg,title:p.title})
+        }
+      }
+      return assign(d, other.length > 0 ? {other} : {})
+    },
 
     displayPublished: d => {
       // $log('displayPublished'.yellow, d.by.name, d.adtag, d.tags)
       var r =
-      chain(d, inflate.tags, 'bodyHtml', 'url', 'tocHtml', 'tmpl', 'adTag', 'subscribedHash', 'reviews', 'other', select.display)
+      chain(d, inflate.tags, 'bodyHtml', 'url', 'tocHtml', 'tmpl', 'adTag', 'subscribedHash', 'reviews', 'other', select.display, 'otherByAuthor')
       for (var sim of r.similar) sim.url = sim.htmlHead.canonical
       if (!r.similar || r.similar.length == 0) r.similar = false
       for (var tag of r.tags) tag.url = tag.slug == 'angularjs' ? '/angularjs/posts' : `/${tag.slug}`
@@ -194,8 +205,33 @@ module.exports = new LogicDataHelper(
 
 
     tileList: d =>
-      chain(d, inflate.tags, 'url', select.list)
+      chain(d, inflate.tags, 'url', select.list),
 
+
+    submitted: d => {
+      var posts = chain(d, inflate.tags, 'url', select.list)
+      return { latest: posts }
+    },
+
+
+    byTag: d => {
+      var htmlHead = assign({}, {
+        ogType: "technology",
+        title:`${d.name} Programming Guides and Tutorials from Top ${d.short} Developers and expert consultants`,
+        canonical: `https://www.airpair.com${d.url}`
+      })
+
+      var workhops = cache.workshops.filter(w => w.tags.indexOf(d.slug))
+      var posts = chain(d.posts, inflate.tags, 'url', select.list)
+      var related = _.sortBy((_.uniq(_.flatten(_.pluck(posts, 'tags')), t => t.slug)), t => t.slug)
+                     .map(t => assign(t,{count:d.related[t._id]}))
+                     // .filter(t => d.related[t._id] > 1)
+      if (related.length > 16) related = _.take(_.sortBy(related, t => -1*t.count), 16)
+
+      var r = assign({htmlHead}, d, { posts: {latest:posts}, related })
+      if (workhops.length>0) r.workhops = workhops
+      return r
+    }
 
   }),
 
@@ -211,6 +247,12 @@ module.exports = new LogicDataHelper(
       })
     },
 
+    latest: { $and: [ {'history.published' : { '$exists': true }},
+                      {'history.published': { '$lt': new Date() }},
+                      {'tmpl' : { '$ne': 'blank' }},
+                      {'tmpl' : { '$ne': 'faq' }},
+                      {'by._id' : { '$ne': '52ad320166a6f999a465fdc5' }} ]},
+
     submitted(opts) {
       opts = opts || {}
       // var [amount,measure] = config.authoring.stale.split(':')
@@ -223,12 +265,15 @@ module.exports = new LogicDataHelper(
                        // { $or }
                        ] }
 
-      return q
+          return q
     },
+
+
   },
 
   //-- Query Opts
   {
+    latest: { select: views.list, sort: { 'history.published': -1, 'stats.reviews': -1, 'stats.rating': -1 } },
     inreview: { select: `${views.display} md slug subscribed history` },
     published: { select: `${views.display} md slug subscribed history` },
     publishedNewest: limit => ({ limit, select: views.list, sort: { 'history.published': -1 } }),

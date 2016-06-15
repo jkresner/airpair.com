@@ -9,7 +9,7 @@ module.exports = ({Post}, {Project,Opts,Query}, Shared, Lib) => ({
   },
 
 
-  project: Project.tileList
+  project: Project.submitted
 
 
 })

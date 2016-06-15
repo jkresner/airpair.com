@@ -4,7 +4,7 @@
 
   <h1>Learn {{r.name}} from top {{r.short}} developers</h1>
 
-  {{#with r}}
+  {{#with r.posts}}
 
 {{#if featured}}
   <div class="nobookmarks">
@@ -59,13 +59,17 @@
   </div>
 {{/if}}
 
+  {{/with}}
 
-{{#if related}}<ul class="related">
-  {{#each related}}<li><a href="/{{slug}}">{{name}}</a></li>{{/each}}
+
+{{#if r.related}}
+  <h3>Software Technologies related to {{r.name}}</h3>
+  <ul class="related">
+    {{#each r.related}}<li><a href="/{{slug}}">{{name}}</a> ({{count}})</li>{{/each}}
   </ul>
+  <a href="/learn-code">Learn code by programming tag<a/>
 {{/if}}
 
-  {{/with}}
 
 </section>
 
@@ -103,13 +107,5 @@
     <h2>{{tag.name}} Workshops</h2>
   </section>
 
-  <section id="tagpairing" class="pairing">
-    <h2>{{tag.name}} Pair Programming</h2>
-    <article class="more" itemprop="blogPost" itemtype="http://schema.org/BlogPosting" itemscope="itemscope">
-    </article>
-
-
-    <hr />
-  </section>
 --}}
 

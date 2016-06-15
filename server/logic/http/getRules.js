@@ -12,22 +12,29 @@ var concatExperimental = all =>
    ],
 
    [
-    '/our-customers',
     '/account/signup',
     '/android/UX-RX.com', //bing?
     '/backbone-js/backbone-js-experts*',
     '/find-an-expert/request',
-    '/testing/posts/airpair-v1-beta-testing',
+    '/graph-database/posts/graph-database-expert-wes-freeman-1',
     '/jobs/08-10/editorial-manager',
     '/jobs/06-14/full-stack-product-developer',
-    '/mean-stack/posts/2014-10-job-post-mean-stack-developer',
-    '/me/((dzello)|(mksm)|(ehrenreilly)|(shivangdoshi))',
-    '/graph-database/posts/graph-database-expert-wes-freeman-1',
-    '/python/posts/python-code-mentoring-web-scraping-1',
     '/lxc/workshops',
+    '/mean-stack/90-days-of-airpairing-on-airpair',
+    '/me/((dzello)|(mksm)|(ehrenreilly)|(shivangdoshi))',
+    '/mean-stack/posts/2014-10-job-post-mean-stack-developer',
+    '/our-customers',
+    '/python/posts/python-code-mentoring-web-scraping-1',
+    '/tag/spreadsheets',
+    '/testing/posts/airpair-v1-beta-testing',
     '^/preferences',
     '*rubykoans*',
     '/((wordpress)|(ruby-on-rails)|(android)|(python)|(devops))/rss',
+    '/img/((in)|(tw)|(airpair)).png',
+    '/images/logo4.png',
+    '/images/pages/marketing*',
+    '/images/homepage/step1brief.png',
+    '/images/landing/airconf*',
     '/static/img/ra1-icoset.png',
     '/static/fonts/k3k702ZOKiLJc3WVjuplzKRDOzjiPcYnFooOUGCOsRk.woff',
     '/static/img/css/sort-arrows.png',
@@ -35,20 +42,17 @@ var concatExperimental = all =>
     '/static/img/css/sidenav/sprite.png',
     '/static/img/pages/postscomp/banner.jpg',
     '/static/js/index-*',
-    '/img/((in)|(tw)|(airpair)).png',
     '/v1/auth/login',
     '/v1/posts/quick-guide-to-the-airpair-expert-cms',
     '/v1/img/css/bookmark.png',
     '/v1/img/css/sidenav/bookmark.png',
     '/v1/img/css/tags/angularjs-og.png',
-    '/images/logo4.png',
-    '/images/pages/marketing*',
-    '/images/homepage/step1brief.png',
-    '/images/landing/airconf*'              ].map( url => ({type:'410',url,to:'/'}) ),
+
+    ].map( url => ({type:'410',url,to:'/'}) ), [
 
     // { match: '%20%e2%80%a6', to: '' },
     //((so)|(gh)|(gp)|(al)|(bb)|(in)|(sl)|(tw))+-
-   [{ type:'rewrite', url: '%E2%80%A6', to: '' },
+    { type:'rewrite', url: '%E2%80%A6', to: '' },
     { type:'rewrite', url: '\\]$', to: '' },
     { type:'rewrite', url: '%22$', to: '' },
     { type:'rewrite', url: '&quot;$', to: '' },
@@ -67,6 +71,7 @@ var concatExperimental = all =>
    [
     // { type: '301', url: '/Ruby', to: '/ruby' },
     { type:'301', url: '/posts/new', to: 'https://author.airpair.com/new' },
+    { type:'301', url: '/posts/submit', to: 'https://author.airpair.com/submit' },
     { type:'301', url: '/posts/me', to: 'https://author.airpair.com/write' },
     { type:'301', url: '*expert-guide*', to: 'https://consult.airpair.com/'},
     { type:'301', url: '/posts/review/5664fc66760815e9036b9c43',  to: '/mean-stack' }, //(meanair docs)
@@ -84,12 +89,13 @@ var concatExperimental = all =>
     { type:'301', url: '/agile/guide-to-implementing-agile', to: '/agile/posts/guide-to-implementing-agile' },
     { type:'301', url: '/ruby-on-rails-tutoring', to: '/ruby-on-rails' },
     { type:'301', url: '/ruby-on-rails-4/posts/building-faster-with-rails-code-mentors-1', to: '/ruby-on-rails' },
-    { type:'301', url: '/ruby/ruby-problem-solving-for-sendwithus',  to: '/ruby' },
+    { type:'301', url: '/((ruby)|(ruby-on-rails/posts))/ruby-problem-solving-for-sendwith*',  to: '/ruby' },
     { type:'301', url: '/code-mentoring/ruby-on-rails', to: '/ruby-on-rails' },
     { type:'301', url: '/code-mentoring/.net', to: '/.net' },
     { type:'301', url: '/code-mentoring/ios', to: '/ios' },
     { type:'301', url: '/ios/posts/ios-training-for-couch-1', to: '/ios' },
     { type:'301', url: '/php/((posts/php-code-mentoring-1)|(troubleshooting-chris-christoff))', to: '/php' },
+    { type:'301', url: '/angularjs/posts/expert-training-author-ari-lerner-1', to: 'angularjs/expert-training-author-ari-lerner' },
     { type:'301', url: '/angularjs/posts/creating-container-components-part-((1-angular-1)|(3-angular-1)|(2-angular-2))-directive*', to: '/angularjs/posts' },
     { type:'301', url: '/angularjs/posts/creating-components-p((1-angular2))-directives', to: '/angularjs/posts' },
     { type:'301', url: '/angularjs/post$', to: '/angularjs/posts' },
@@ -109,6 +115,7 @@ var concatExperimental = all =>
     { type:'301', url: '/backbone.js/posts/expert-training-jonathon-kresner-1', to: '/backbone.js' },
     { type:'301', url: '/javascript/javascript-code-review', to: '/javascript' },
     { type:'301', url: '/jquery/jquery-((code-review)|(problem-solving))', to: '/javascript' },
+    { type:'301', url: '/ember.js/posts/ember.js-tutorial-using-ember-cli', to: '/javascript/emberjs-using-ember-cli' },
     { type:'301', url: '/javascript/((emberjs-vs-angularjs-opinions-contributors-video-chat)|(syncify-tutorial))', to:'/javascript' },
     { type:'301', url: '/javascript/((posts/javascript-teacher-aldo-bucchi-1)|(javascript-performance-yehuda-katz))', to:'/javascript' },
     { type:'301', url: '/angularjs/posts/expert-matias-niemela-1', to:'/angularjs/posts/component-based-angularjs-directives' },
@@ -124,12 +131,15 @@ var concatExperimental = all =>
     { type:'301', url: '/code-mentoring/posts/airpairs-been-turning-into-my-iphone-1', to: '/code-review' },
     { type:'301', url: '/ionic-framework/((posts/i)|(i))onic-socketio-chat-application-tutorial', to: '/ionic' },
     { type:'301', url: '/posts/tag/creating-a-photo-gallery-in-android-studio-with-list-fragments', to: '/android' },
+                     // /android/posts/adding-tampering-detection-to-your-android-app
+ // { type:'301', url: '/android/posts/adding-tampering-detection-to-your-android', to: '' },
     { type:'301', url: '/android/((android-problem-solving)|(button-fragment-android-studio))', to: '/android' },
     { type:'301', url: '/android-camera/posts/the-ultimate-android-camera-development-guide', to: '/android/android-camera-development' },
     { type:'301', url: '/android/andriod-studio-vs-eclipse', to: '/android/android-studio-vs-eclipse' },
     { type:'301', url: '/machine-learning/posts/machine-learning-expert-alexandre-gravier-1', to: '/android/android-studio-vs-eclipse' },
     { type:'301', url: '/node.js/((posts/learn-node((js)|(.js)))|(learn-node.js)|(node.js-code-mentoring))', to: '/node.js/learn-nodejs' },
     { type:'301', url: '/node.js/posts/top-10-mistakes-node-d((49|85))', to:'/node.js/posts/top-10-mistakes-node-developers-make' },
+    { type:'301', url: '/javascript/node', to: '/node.js' },
     { type:'301', url: '/swift/posts/swift-tutorial-building-an-ios-application-part-3', to: '/swift/building-swift-app-tutorial-3' },
     { type:'301', url: '/angularjs/((buidling-angularjs-app-tutorial)|(posts/angularjs-tutorial-building-a-web-app-in-5-minutes))', to: '/angularjs/building-angularjs-app-tutorial' },
     { type:'301', url: '/haskell/posts/haskell*', to: '/haskell-tutorial/intro-to-haskell-web-apps' },
@@ -145,14 +155,17 @@ var concatExperimental = all =>
     { type:'301', url: '*((tim-koopmans))*', to: '/devops' },
     { type:'301', url: '*((jason-sturges)|(vasco-pedro))*', to: '/javascript' },
     { type:'301', url: '*((ashish-awaghad)|(jason-adam)|(josh-kuhn)|(jason-adam))*', to: '/swift' },
-    { type:'301', url: '*((david-kay))*', to: '/ios' },
+    { type:'301', url: '*((david-kay)|(nevan-king)|(reynaldo-gonzales))*', to: '/ios' },
     { type:'301', url: '*((ye-liu)|(dana-de-alasei)|(tony-child)|(tobias-talltorp))*', to: '/angularjs/posts' },
     { type:'301', url: '*web-scraping-phantomjs-session*',  to: '/node.js' },
     { type:'301', url: '*((ryan-schmukler)|(peter-lyon)|(tim-caswell)|(philip-thomas))*', to: '/node.js' },
+    { type:'301', url: '*((justin-gordon))*', to: '/ruby' },
     { type:'301', url: '*((seb-insua)|(jordan-feldstein)|(thomson-nguyen))*', to: '/keen-io' },
     { type:'301', url: '/((framed-data)|(/www.framed.io)|(vero)|(blossom)|(venmo)|(human-api)|(sendswithus))*', to: '/software-experts' },
     { type:'301', url: '^/((echonest)|(bit.ly)|(echo-nest)|(tokbox)|(twotap)|(hellosign)|(flydata)|(sinch)|(spotify)|(mailjet)|(unbabel))', to: '/software-experts' },
     { type:'301', url: '^/((knockout)|(knockoutjs)|(unity)|(unity3d)|(magento)|(gamedev)|(unity3d)|(backbone))$', to: '/software-experts' },
+    { type:'301', url: '/bitly', to: '/api' },
+    { type:'301', url: '/mean', to: '/mean-stack' },
     { type:'301', url: '/selenium-2', to: '/selenium' },
     { type:'301', url: '/report', to: '/reporting' },
     { type:'301', url: '/python-2.7', to: '/python' },
@@ -166,7 +179,7 @@ var concatExperimental = all =>
     { type:'301', url: '/java8',  to: '/java' },
     { type:'301', url: '/((xamarin)|(core-location))',  to: '/ios' },
     { type:'301', url: '/ember-cli',  to: '/ember.js' },
-
+    { type:'301', url: '/.net-4.0',  to: '/.net' },
     // '/node.js/getting-started-with-docker-for-nodejs-dev'
     // '/node.js/posts/getting-started-with-docker-for-the-nodeis-dev'
     // '/node.js/post/getting-started-with-docker-for-the-node-dev',
@@ -175,6 +188,7 @@ var concatExperimental = all =>
    ],
 
    [
+    { type:'302', url: '/aws/posts/building-a-scalable-web-app-on-amazon-web-services-p2', to: '/aws' },
     { type:'302', url: '^/c$', to: '/c#' },
     { type:'302', url: '/((support)|(contact))', to: 'https://github.com/airpair/airpair-com-issues/issues' },
     { type:'302', url: '^/experts', to: '/software-experts' },
@@ -198,7 +212,6 @@ var concatExperimental = all =>
     { type:'302', url: '/me/kn0tch', to: '/aws/posts/ntiered-aws-docker-terraform-guide' },
     { type:'302', url: '/me/glockjt', to: '/node.js/posts/nodejs-framework-comparison-express-koa-hapi' },
     { type:'302', url: '/me/toddmotto', to: '/angularjs' },
-    { type:'302', url: '/me/nevanking', to: '/ios' },
     { type:'302', url: '/me/brianmhunt', to: '/knockout/workshops/dynamic-html-with-knockout' },
     { type:'302', url: '/me/ronlichty', to: '/agile-software/coach-and-trainer-ron-lichty' },
     { type:'302', url: '/me/elfoslav', to: '/meteor' },
@@ -233,7 +246,6 @@ var concatExperimental = all =>
     '*.((svn)|(bzr)|(hg)|(pub)|(nano_history))$',
     '*phpMyAdmin*',
     '*htaccess.txt',
-    '*readme.((txt)|(html)|(htm)|(md))',
     '*license.txt',
     '*bitrix/*',
     '*.php*',
@@ -241,7 +253,8 @@ var concatExperimental = all =>
     '*.txt$',
     '^/((administrator)|(manager))*',
     '/_vti_bin/*',
-    '/includes/showdebuginfo/serverDetails.asp',
+    '/js/registration_rules.asp',
+    '/includes/showdebuginfo/serverDetails.as*`',
     '^/core/*',
     '^/feeds/*',
     '^/advanced_search$',
@@ -249,15 +262,17 @@ var concatExperimental = all =>
     '^/installation*',                               ].map( url => ({type:'ban',url}) ),
 
   [
+    '*readme.((txt)|(html)|(htm)|(md))', // malformed post could blocks folks ...
     '^/book$',
     '^/blog/*',
     '^/gen204*',
     '^/hqdefault*',
     '^/feeds/*',
     '^/null/*',
+    '^/a/*',
     '^/l/*',
-    '^/search$',
     '^/so1*',
+    '^/search$',
     '^/undefined',
     '/angula',
     '/node.js.js',
@@ -299,11 +314,11 @@ module.exports = (DAL, Data, Shared, Lib) => ({
       if (!cfg.posts) return cb(null, r)
 
       DAL.Post.getManyByQuery({'history.published':{$exists:true, $lt: new Date}},
-        { select:'_id slug title tags htmlHead.canonical htmlHead.ogImage' },
+        { select:'_id by._id slug title tags htmlHead.canonical htmlHead.ogImage' },
         (e, posts) => {
           //-- used for post/thumb/{_id}
           cache.posts = {}
-          posts.forEach(p => cache.posts[p._id] = { slug: p.slug, ogImg: p.htmlHead.ogImage, url: p.htmlHead.canonical })
+          posts.forEach(p => cache.posts[p._id] = { slug: p.slug, ogImg: p.htmlHead.ogImage, url: p.htmlHead.canonical, by: p.by._id, title: p.title })
           r['canonical-post'] = posts.map(p => ({
             id: p.slug,
             url: p.htmlHead.canonical.replace(/^(https|http)/,'')
