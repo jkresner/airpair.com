@@ -72,9 +72,9 @@ angular.module("ADMPipeline", ["APRequestDirectives","APProfileDirectives"])
       setScope(r)
     })
 
-    AdmDataService.getUsersViews({_id:r.userId}, function (views) {
-      $scope.views = views.reverse()
-    })
+    // AdmDataService.getUsersViews({_id:r.userId}, function (views) {
+      // $scope.views = views.reverse()
+    // })
 
   },
     () => $location.path('/adm/pipeline')

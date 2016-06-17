@@ -1,7 +1,6 @@
 module.exports = function(app, mw) {
 
   app
-    .use('/auth', mw.$.cachedTags)
     .use(/\/auth\/((twitter)|(bitbucket)|(linkedin)|(angellist)|(stackexchange)|(google)|(slack))$/, mw.$.authd)
     .get('/login', mw.$.noBot, mw.$.session, mw.$.reqFirst, mw.$.clientPage)
 

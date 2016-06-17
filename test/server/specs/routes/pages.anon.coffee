@@ -28,6 +28,7 @@ describe ' INDEX'.subspec, ->
   IT '/javascript', -> HTML @, [/<title>JavaScript Programming Guides and Tutorials from Top JS Developers/,/rel="canonical" href="https:\/\/www.airpair.com\/javascript"/,html.landing]
   IT '/ios', -> HTML @, [/<title>iOS Programming Guides and Tutorials from Top ios Developers/,/rel="canonical" href="https:\/\/www.airpair.com\/ios"/,html.landing]
   IT '/100k-writing-competition', ->  HTML @, [/<title>Fork Up! AirPair/,/Git-Powered Developer Writing Competition/,/rel="canonical" href="https:\/\/www.airpair.com\/100k-writing-competition"/,html.landing]
+  IT '/learn-code', -> HTML @, [/Learn coding by programming language/,html.landing] #, no: [html.faq]
 
   IT '/software-experts', -> HTML @, [
     /<title>Software Programming Guides and Tutorials from Top Software Experts and Consultants/,
@@ -67,6 +68,9 @@ describe ' INDEX'.subspec, ->
     /<ul class="posttags"><li><a href="\/angularjs\/posts" target="_self" title="AngularJS tutorials & Angular guides">angularjs<\/a><\/li><\/ul>/]
 
   IT '/android', ->
+    HTML @, [/<title>Android Programming Guides/, html.landing], no: [js.index]
+
+  IT '/Android', ->
     HTML @, [/<title>Android Programming Guides/, html.landing], no: [js.index]
 
   IT '/android?utm_source=newsletter-airpair&utm_medium=email&utm_term=android-code-review&utm_content=google-apps-deployment&utm_campaign=news-14', ->

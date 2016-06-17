@@ -1,6 +1,7 @@
 // process.env.ENV = 'prod'
 var MAServer    = require('meanair-server')
 var config      = MAServer.Config(__dirname, process.env.ENV || 'dev', true)
+config.about    = _.omit(config.about,'scripts','engines','dependencies','devDependencies','private','license')
 var tracking    = require('./app.track')
 
 var app = require('./app').run({ config, MAServer, tracking },

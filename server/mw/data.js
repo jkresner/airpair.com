@@ -1,9 +1,8 @@
 module.exports = ({meanair}, mw) => {
   var {logic} = meanair
 
-
+  // mw.cache('cachedTags',        mw.data.cached('tags',logic.tags.getForCache.exec))
   mw.cache('cachedAds',         mw.data.cached('ads',logic.ads.getForCache.exec))
-  mw.cache('cachedTags',        mw.data.cached('tags',logic.tags.getForCache.exec))
   mw.cache('cachedTemplates',   mw.data.cached('templates',logic.templates.getForCache.exec))
   mw.cache('cachedSlackUsers',  mw.data.cached('slack_users', Wrappers.Slack.getUsers))
   mw.cache('cachedPublished',   mw.data.cached('published', logic.posts.recommended.exec))
@@ -12,13 +11,17 @@ module.exports = ({meanair}, mw) => {
   mw.cache('logic', (path, opts) => function(req, res, next) {
     opts = opts || {}
     opts.params = opts.params || []
+    opts.assign = opts.assign || false
     var [group,fn] = path.split('.')
     var args = [(e,r) => {
-      if (r && r.htmlHead) req.locals.htmlHead = r.htmlHead
+      if ((r||{}).htmlHead)
+        req.locals.htmlHead = assign(req.locals.htmlHead||{},r.htmlHead)
       if (!r && opts.required !== false)
         e = assign(Error(`Not Found ${req.originalUrl}`),{status:404})
-      if (!e)
-        req.locals.r = assign(req.locals.r||{}, logic[group][fn].project(r))
+      if (!e) {
+        if (opts.assign) req.locals.r[opts.assign] = logic[group][fn].project(r)
+        else req.locals.r = assign(req.locals.r||{}, logic[group][fn].project(r))
+      }
       return next(e)
     }]
 
@@ -38,8 +41,8 @@ module.exports = ({meanair}, mw) => {
   mw.data.extend('inflateAds', x => function(req, res, next) {
     // $log('ud', req.ctx.ud, /lib|ban|search|reader/.test(req.ctx.ud))
     if (/lib|ban|search|reader/.test(req.ctx.ud)) return next()  // don't want ads indexed
-    var rnd = parseInt(Math.random()*100)
-    if ((rnd%7)!=0) return next()
+    // var rnd = parseInt(Math.random()*100)
+    // if ((rnd%17)!=0) return next()
 
     cache.get('ads', logic.ads.getForCache.exec, (e, r) =>
       next(e, cache.ads.tagged[req.locals.r.adtag || 'ruby']

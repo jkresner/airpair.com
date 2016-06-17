@@ -149,6 +149,13 @@ moved302 = ->
     ['/auth/slack?returnTo=/me', '/login']
   ]
 
+  IT 'Old feature urls', ->  temp_to [
+    ['/settings', '/account']
+  ]
+
+  IT 'Old urls', -> temp_to [
+     ['/hire-developers', '/']
+   ]
 
   IT 'AIRPAIR.me', -> temp_to [
     ['/me/joefiorini', '/javascript/emberjs-using-ember-cli']

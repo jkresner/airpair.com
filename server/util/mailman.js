@@ -15,7 +15,6 @@ var senderTansport = {
 
 module.exports = function()
 {
-
   var $$log = function() {
     var args = [].slice.call(arguments)
     var named = args.shift()
@@ -28,13 +27,12 @@ module.exports = function()
       if (to && to.name)
         tData = _.extend({firstName:util.firstName(to.name)},data)
 
-      cache.tmpl('mail', key, (tmpl) => {
-        cb(null, {
-          to: (to.constructor === Array) ? to : [`${to.name} <${to.email}>`],
-          subject: tmpl.subjectFn(tData).replace(/&#x27;/g,"'"),
-          markdown: tmpl.markdownFn(tData).replace(/&#x27;/g,"'"),
-          sender: tmpl.sender
-        })
+      var tmpl = cache['templates'][`mail:${key}`]
+      cb(null, {
+        to: (to.constructor === Array) ? to : [`${to.name} <${to.email}>`],
+        subject: tmpl.subjectFn(tData).replace(/&#x27;/g,"'"),
+        markdown: tmpl.markdownFn(tData).replace(/&#x27;/g,"'"),
+        sender: tmpl.sender
       })
     }
   })

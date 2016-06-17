@@ -26,10 +26,10 @@ module.exports = (app, mw, {forbid}) => {
     var ref = ctx.ref ? ` <<< ${ctx.ref}`.blue : ''
     var ip = ctx.ip + pad.substr(0, 16-ctx.ip.length)
     var u = (ctx.user||{}).name ? ctx.user.name.white : false
-    var sId = (ctx.sId == 'unset' ? '_          _' : u || ctx.sId).substr(0,12)
+    var sId = (ctx.sId == 'unset' ? '_         _' : u || ctx.sId).substr(0,12)
 
     if (!logFilter.test(ua))
-      console.log(`${mth} ${ip} ${sId} ${UD} ${originalUrl} ${ref}`.dim.cyan, ua.gray)
+      console.log(`${sId} ${ip} ${UD} ${mth} ${originalUrl} ${ref}`.dim.cyan, ua.gray)
   }
 
 
@@ -52,7 +52,7 @@ module.exports = (app, mw, {forbid}) => {
   }
 
   var mwBan = (name) => function(req, res, next) {
-    var logBan = (er,r) => console.log(`CF.ban ${req.ctx.ip}`.red, `${req.ctx.ua}`.gray, er ? er : r.id)
+    var logBan = (er,r) => console.log(`CF.BAN > ${req.ctx.ip}`.red, `${req.ctx.ua}`.gray, JSON.stringify(cache.abuse[req.ctx.ip]||[]).gray, er ? er : r.id)
     if (config.env == 'test') {
       if (cache['abuse'].ban.indexOf(req.ctx.ip) != -1) return res.status(500).send('')
       logBan = () => {}

@@ -208,29 +208,26 @@ module.exports = new LogicDataHelper(
       chain(d, inflate.tags, 'url', select.list),
 
 
-    submitted: d => {
-      var posts = chain(d, inflate.tags, 'url', select.list)
-      return { latest: posts }
-    },
+    submitted: d =>
+      chain(d, inflate.tags, 'url', select.list),
 
 
     byTag: d => {
-      var htmlHead = assign({}, {
+      var tag = select(cache['tags'][d._id], 'name short url')
+      var htmlHead = {
         ogType: "technology",
-        title:`${d.name} Programming Guides and Tutorials from Top ${d.short} Developers and expert consultants`,
-        canonical: `https://www.airpair.com${d.url}`
-      })
+        title:`${tag.name} Programming Guides and Tutorials from Top ${tag.short} Developers and expert consultants`,
+        canonical: `https://www.airpair.com${tag.url}`
+      }
 
-      var workhops = cache.workshops.filter(w => w.tags.indexOf(d.slug))
+      // var workhops = cache.workshops.filter(w => w.tags.indexOf(d.slug))
       var posts = chain(d.posts, inflate.tags, 'url', select.list)
       var related = _.sortBy((_.uniq(_.flatten(_.pluck(posts, 'tags')), t => t.slug)), t => t.slug)
-                     .map(t => assign(t,{count:d.related[t._id]}))
-                     // .filter(t => d.related[t._id] > 1)
-      if (related.length > 16) related = _.take(_.sortBy(related, t => -1*t.count), 16)
+                     .map(t => cache['tags'][t._id])
+      if (related.length > 16) related = _.take(_.sortBy(related, t => -1*t.posts), 16)
 
-      var r = assign({htmlHead}, d, { posts: {latest:posts}, related })
-      if (workhops.length>0) r.workhops = workhops
-      return r
+      // if (workhops.length>0) r.workhops = workhops
+      return assign({ htmlHead, related, posts: {latest:posts} }, tag)
     }
 
   }),
@@ -281,5 +278,21 @@ module.exports = new LogicDataHelper(
   }
 
 )
-.addCacheInflate('tags', ['name','slug','short','desc'])
+.addCacheInflate('tags', ['name','url','short'])
+
+
+// //-- Could make this generic, but we don't want to allow the cache to start
+// //-- accepting arbitary things
+// cache.pullRequests = function(repo, getterCB, cb)
+// {
+//   if (!cache['post_prs']) cache['post_prs'] = {}
+//   if (cache['post_prs'][repo])
+//     return cb(null, cache['post_prs'][repo])
+//   getterCB((e,r)=>{
+//     if (e) return cb(e)
+//     cache['post_prs'][repo] = r
+//     $log("set cache['post_prs']".trace, repo)
+//     cb(null,r)
+//   })
+// }
 

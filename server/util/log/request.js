@@ -23,6 +23,8 @@ var knownNonErrors = [
 
 module.exports = function(req, e)
 {
+  var stackFilter = new RegExp(process.env.INSTRUMENT_FILTER||'test')
+
   if (!e) return
   if (e.message) {
     for (var known of knownNonErrors) {
@@ -62,7 +64,10 @@ module.exports = function(req, e)
   }
 
   if (e.stack) {
-    msg += `\n\n ${e.stack}`
+    var lines = []
+    for (var ln of e.stack.split('\n'))
+      if (!stackFilter.test(ln)) lines.push(ln)
+    msg += `\n\n${moment()}\n${lines.join('\n')}`
   }
 
   return msg

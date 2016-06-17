@@ -1,69 +1,69 @@
-var nestedPick = (object, keys) => {
-  if (!object) return null
+// var nestedPick = (object, keys) => {
+//   if (!object) return null
 
-  // Pick out elements marked as pick
-  var copy  = {}
-  var arrayKeys = {}
-  for (var key of keys)
-  {
-    var props = key.split('.')
-    if (props.length === 1)
-    {
-      // Pick the marked element
-      if (typeof object[key] !== "undefined" && object[key] !== null)
-        copy[key] = object[key]
-    }
-    else if (object[props[0]])
-    {
-      var nestedKey = key.replace(`${props[0]}.`,'')
-      // Pick recursively and apply only if something was picked
-      if (object[props[0]].constructor === Array) {
-        arrayKeys[props[0]] = arrayKeys[props[0]] || {}
-        arrayKeys[props[0]][nestedKey] = 1
-      }
-      else
-      {
-        //-- If an array
-        var result = nestedPick(object[props[0]], [nestedKey])
-        // $log('result'.yellow, props[0].yellow, result)
-        if (!_.isEmpty(result)) {
-          if (!copy[props[0]]) copy[props[0]] = result
-          else {
-            // $log('result', props[0].white, nestedKey.yellow, result)
-            // $log('copy[props[0]]', nestedKey.yellow, copy[props[0]])
-            if (nestedKey.indexOf('.') == -1) {
-              copy[props[0]] = _.extend(copy[props[0]],result)
-              // $log(`copy[${props[0]}]`.cyan, copy[props[0]])
-            } else {
-              var topProp = nestedKey.split('.')[0]
-              // $log(`topProp[${props[0]}]`.cyan, topProp, result)
-              if (copy[props[0]][topProp] && result[topProp])
-                copy[props[0]][topProp] = _.extend(copy[props[0]][topProp],result[topProp])
-              else if (result[topProp])
-                copy[props[0]][topProp] = result[topProp]
-              // $log(`topProp[${props[0]}]`.cyan, topProp, copy[props[0]])
-            }
-          }
-        }
-      }
-    }
-  }
-  for (var arrayKey of _.keys(arrayKeys))
-  {
-    copy[arrayKey] = []
-    // $log('arrayKeys[arrayKey]'.cyan, object[arrayKey], _.keys(arrayKeys[arrayKey]))
-    for (var i=0;i<object[arrayKey].length;i++) {
-      // $log('array item nestedKey'.red, arrayKeys[arrayKey], i, arrayKeys[arrayKey])
-      // $log('blue'.blue, object[arrayKey][i], _.keys(arrayKeys[arrayKey]))
-      var result = nestedPick(object[arrayKey][i], _.keys(arrayKeys[arrayKey]))
-      // $log('result'.red, result)
-      if (!_.isEmpty(result))
-        copy[arrayKey][i] = result
-    }
-  }
+//   // Pick out elements marked as pick
+//   var copy  = {}
+//   var arrayKeys = {}
+//   for (var key of keys)
+//   {
+//     var props = key.split('.')
+//     if (props.length === 1)
+//     {
+//       // Pick the marked element
+//       if (typeof object[key] !== "undefined" && object[key] !== null)
+//         copy[key] = object[key]
+//     }
+//     else if (object[props[0]])
+//     {
+//       var nestedKey = key.replace(`${props[0]}.`,'')
+//       // Pick recursively and apply only if something was picked
+//       if (object[props[0]].constructor === Array) {
+//         arrayKeys[props[0]] = arrayKeys[props[0]] || {}
+//         arrayKeys[props[0]][nestedKey] = 1
+//       }
+//       else
+//       {
+//         //-- If an array
+//         var result = nestedPick(object[props[0]], [nestedKey])
+//         // $log('result'.yellow, props[0].yellow, result)
+//         if (!_.isEmpty(result)) {
+//           if (!copy[props[0]]) copy[props[0]] = result
+//           else {
+//             // $log('result', props[0].white, nestedKey.yellow, result)
+//             // $log('copy[props[0]]', nestedKey.yellow, copy[props[0]])
+//             if (nestedKey.indexOf('.') == -1) {
+//               copy[props[0]] = _.extend(copy[props[0]],result)
+//               // $log(`copy[${props[0]}]`.cyan, copy[props[0]])
+//             } else {
+//               var topProp = nestedKey.split('.')[0]
+//               // $log(`topProp[${props[0]}]`.cyan, topProp, result)
+//               if (copy[props[0]][topProp] && result[topProp])
+//                 copy[props[0]][topProp] = _.extend(copy[props[0]][topProp],result[topProp])
+//               else if (result[topProp])
+//                 copy[props[0]][topProp] = result[topProp]
+//               // $log(`topProp[${props[0]}]`.cyan, topProp, copy[props[0]])
+//             }
+//           }
+//         }
+//       }
+//     }
+//   }
+//   for (var arrayKey of _.keys(arrayKeys))
+//   {
+//     copy[arrayKey] = []
+//     // $log('arrayKeys[arrayKey]'.cyan, object[arrayKey], _.keys(arrayKeys[arrayKey]))
+//     for (var i=0;i<object[arrayKey].length;i++) {
+//       // $log('array item nestedKey'.red, arrayKeys[arrayKey], i, arrayKeys[arrayKey])
+//       // $log('blue'.blue, object[arrayKey][i], _.keys(arrayKeys[arrayKey]))
+//       var result = nestedPick(object[arrayKey][i], _.keys(arrayKeys[arrayKey]))
+//       // $log('result'.red, result)
+//       if (!_.isEmpty(result))
+//         copy[arrayKey][i] = result
+//     }
+//   }
 
-  return copy
-}
+//   return copy
+// }
 
 
 var util = {
@@ -199,12 +199,12 @@ var util = {
   },
 
 
-  selectFromObject(obj, selectList) {
-    if (!obj || !selectList) return obj
-    var keys = selectList
-    if (selectList.constructor == Object) keys = _.keys(selectList)
-    return nestedPick(obj, keys)
-  },
+  // selectFromObject(obj, selectList) {
+  //   if (!obj || !selectList) return obj
+  //   var keys = selectList
+  //   if (selectList.constructor == Object) keys = _.keys(selectList)
+  //   return nestedPick(obj, keys)
+  // },
 
 
   isBot(useragent, pattern) {

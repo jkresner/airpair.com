@@ -6,16 +6,7 @@ module.exports = function(app, mw, {landing}) {
   cache.workshops = config.env == 'dev' ? [] :
     require('../services/workshops').getAllForCache()
 
-  var postsStats = {
-    total: cache['http-rules']['canonical-post'].length,
-    authors: 0,
-    tags: cache['http-rules']['canonical-tag'].length,
-    tag: {}
-  }
-  cache['http-rules']['canonical-tag'].forEach(t => postsStats.tag[t.id] = t.count)
-
-
-
+  var {canonical} = cache['http-rules']
   cache.landing = {
     home: {
       _id: Id("5706abc347ba64cb164bec06"),
@@ -66,7 +57,7 @@ module.exports = function(app, mw, {landing}) {
         title: "Software Programming Guides and Tutorials from Top Software Experts and Consultants"
       },
       hot: 'node.js',
-      stats: postsStats
+      stats: canonical.stats.posts
     },
     inreview: {
       _id: Id("5706abc347ba64cb164bec10"),
@@ -80,16 +71,18 @@ module.exports = function(app, mw, {landing}) {
     tag: {
       _id: Id("5706abc347ba64cb164bec18"),
       key: 'tag',
-      url: '/{{tagslug}}',
+      url: '{{tag_url}}',
     },
     tags: {
       _id: Id("57602ca61b80f345f5e7779b"),
       key: 'tags',
       url: '/learn-code',
       htmlHead: {
-        title: "airpair | Coding help, Software consultants & Programming resources",
-        description: "Learn programming by code tutorials and software guides on technology at a time"
-      }
+        title: "Learn coding by programming language",
+        description: "Learn programming by code tutorials and software guides on technology at a time",
+        canonical: 'https://www.airpair.com/learn-code',
+      },
+      tags: canonical['tag']
     },
   }
 
@@ -108,45 +101,24 @@ module.exports = function(app, mw, {landing}) {
     .get('/', mw.$.inflateLanding('home'),
       mw.res.forbid('home!anon', function({user}) { if (user) return 'authd' }, { redirect: req => '/home' }))
 
-    .get('/learn-code', mw.$.cachedTags, mw.$.inflateLanding('tags'), (req, res, next) => {
-      if (!req.locals.r.tags) {
-        var tags = []
-        for (var {id,count} of cache['http-rules']['canonical-tag'])
-          tags.push(assign({count}, cache['tags'][id]))
-        req.locals.r.tags = tags
-        cache.landing.tags.tags = tags
-      }
-      next()
-    })
+    .get(['/learn-code','/technologies'], mw.$.inflateLanding('tags'))
 
-
-    .get(cache['http-rules']['canonical-tag'].map(t => t.url),
-      mw.$.cachedTags,
-      mw.$.inflateLanding('tag'), (req, res, next) => {
-        var url = req.originalUrl.split('?')[0]
-        var tag = cache.tagBySlug(url.replace(/posts|\//g, ''))
-        if (!tag) return next(assign(Error(`Not found ${url}`),{status:404}))
-        req.params.tag = assign({url,related:postsStats.tag},tag)
-        next()
-      },
-      mw.$.logic('posts.getPostsByTag'))
+    .get(canonical.tag.map(t => t.url),
+      mw.$.inflateLanding('tag'),
+      mw.$.logic('posts.getPostsByTag',{params:['url']}))
 
     .get(['/software-experts','/posts'], mw.$.inflateLanding('posts'),
       mw.$.cachedPublished, mw.$.inflateAds,
       (req, res, next) => next(null, assign(req.locals.r, cache.published)) )
 
     .get('/posts/in-community-review',
-      mw.$.noBot, mw.$.cachedTags,
+      mw.$.noBot,
       mw.$.inflateLanding('inreview'),
-      mw.$.logic('posts.getPostsSubmitted')
+      mw.$.logic('posts.getPostsSubmitted',{assign:'posts'})
     )
 
     .get('/100k-writing-competition', mw.$.inflateLanding('comp2015'))
 
     .get('/workshops', mw.$.inflateLanding('workshops'), mw.$.inflateAds)
-
-
-  // [GET/technologies]notFound res.empty[200] to search Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)
-
 }
 

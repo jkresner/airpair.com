@@ -1,7 +1,7 @@
-var logging                  = false
 var {User}                   = DAL
 var {select,query,opts,data} = require('./users.data')
-var cbSession                = select.cb.session
+var selectFromObj         = require('meanair-shared').TypesUtil.Object.select
+var md5                   = require('../util/md5')
 
 
 var get = {
@@ -17,15 +17,11 @@ var get = {
 
   getSession(cb) {
     cb(null, this.user)
-  },
-
-  // getUsersInRole(role, cb) {
-  //   User.getManyByQuery({ roles:role }, { select: select.usersInRole }, cb)
-  // }
+  }
 
 }
 
-//-- Not sure, but this will probably become intelligent
+
 function updateAsIdentity(data, trackData, cb) {
   if (!this.user) return cb(Error('User.anon.updateAsIdentity'))
 
@@ -42,14 +38,16 @@ function updateAsIdentity(data, trackData, cb) {
   User.updateSet(user._id, data, (e,r) => {
     if (e) return cb(e)
     if (!r) return cb(Error(`Failed to update user with id: ${user._id}`))
-    var sessionOfUser = select.sessionFromUser(r)
+    var sessionOfUser = selectFromObj(r, '_id name emailVerified')
+    sessionOfUser.email = _.find(r.emails, em => em.primary).value
+    sessionOfUser.avatar = md5.gravatarUrl(r.email)
+    if (r.photos) sessionOfUser.avatar = _.find(r.photos, p=>p.primary) || sessionOfUser.avatar
 //      // console.log('track save', ctx, data)
-
 //      //-- Very magic important line
-    if (!_.isEqual(this.session.passport.user, sessionOfUser))
-      this.session.passport.user = sessionOfUser
+    // if (!_.isEqual(this.session.passport.user, sessionOfUser))
+    this.session.passport.user = sessionOfUser
 
-    cbSession(this, cb)(e,r)
+    cb(e, r)
   })
 
  // //      //-- Migrate social accounts to v1 structure
@@ -156,7 +154,10 @@ var save = {
   changeUsername(username, cb) {
     // var userId = this.user._id
     if (!username || username == '')
-      User.updateUnset(this.user._id, ['username'], cbSession(this, cb))
+      User.updateUnset(this.user._id, ['username'], (e,r) => {
+        //-- could think about update of passport.session when re-writing
+        cb(e, r)
+      })
     else
       User.getByQuery({username}, '_id username name', (e,r) => {
         // Should be checked already before validate
@@ -173,7 +174,6 @@ var save = {
   changeLocationTimezone(locationData, cb) {
     var timeZoneTimestamp = moment().unix()
     Wrappers.Timezone.getTimezoneFromCoordinates(locationData.coordinates, timeZoneTimestamp, (e,r) => {
-      if (logging) $log('changeLocationTimezone'.cyan, e, r)
       if (e) return cb(e)
 
       var updates = {
@@ -189,7 +189,7 @@ var save = {
     })
   },
 
-  verifyEmail(hash, cb) {
+  // verifyEmail(hash, cb) {
     // svc.searchOne({ email:this.user.email }, null, (e,r) => {
     //   if (e || !r) {
     //     $log('verifyEmail.error'.red, e, r)
@@ -202,7 +202,7 @@ var save = {
     //   else
     //     cb(Error("e-mail verification failed, hash is not valid"))
     // })
-  }
+  // }
 
 }
 

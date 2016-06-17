@@ -21,7 +21,7 @@ var validation = {
     {
       if (slug.indexOf('#'))
         slug = slug.replace('#','%23')
-      var tag = cache.tagBySlug(slug)
+      var tag = _.find(cache.tags,t => t.slug == slug)
       if (!tag) return `Tag ${slug} not valid to query`
       tags.push(tag)
     }

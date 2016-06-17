@@ -2,7 +2,7 @@
   "specs":                "stats",
   "mongo": {
     "collections":        ["posts"],
-    "url":                " ",
+    "url":                "mongodb://localhost/airpair_dev",
     "seed": {
       "without":          "FIXTURE.posts.higherOrder"
     }

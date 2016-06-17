@@ -5,9 +5,6 @@
 
   <h1 class="underline">Fresh posts ready for feedback</h1>
 
-  {{#with r}}
-  {{#each latest}}{{> postListItem this}}{{/each}}
-  {{/with}}
-
+  {{#each r.posts}}{{> postListItem this}}{{/each}}
 
 </section>

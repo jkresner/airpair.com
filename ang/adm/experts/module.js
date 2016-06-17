@@ -27,7 +27,7 @@ angular.module("ADMExperts", ['APExpertsDirectives'])
   }
 })
 
-.controller('ExpertsCtrl', ($scope, $location, AdmDataService, RequestsUtil, DateTime, MMDataService) => {
+.controller('ExpertsCtrl', ($scope, $location, AdmDataService, RequestsUtil, DateTime) => {
 
   $scope.selectExpert = (expert) =>
     $location.path(`/adm/experts/${expert._id}`)
@@ -48,7 +48,7 @@ angular.module("ADMExperts", ['APExpertsDirectives'])
     if ($scope.request.tags.length < 1) return
     // console.log('req', $scope.request.tags)
     $scope.query = RequestsUtil.mojoQuery($scope.request)
-    MMDataService.matchmaking.getRanked({_id:null, query:$scope.query}, function (experts) {
+    AdmDataService.matchmaking.getRanked({_id:null, query:$scope.query}, function (experts) {
       $scope.experts = experts;
     })
   })

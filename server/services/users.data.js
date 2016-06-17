@@ -27,13 +27,12 @@ var data = {
 
   select: {
     session: select.session,
-    sessionFull: select.sessionFull,
     usersInRole: select.usersInRole,
     search: select.search,
 
-    sessionFromUser(user) {
-      return util.selectFromObject(user, select.session)
-    },
+    // sessionFromUser(user) {
+      // return util.selectFromObject(user, select.session)
+    // },
 
     getAvatar(user) {
       return (user && user.email) ? md5.gravatarUrl(user.email) : undefined
@@ -107,44 +106,44 @@ var data = {
     // },
 
     cb: {
-      session(ctx, cb) {
-        return (e, r) => {
-          if (e || r == null) {
-            if (!e && r == null) { e = Error('Session user does not exist') }
-            if (logging) { $log('cbSession'.red, e, r) }
-            return cb(e, r)
-          }
-
-          // if (r.emails)
-            // r.email = _.find(r.emails, em => em.primary).value
-
-          // if (r.google && r.google._json) {
-          //   r.social = r.social || {}
-          //   r.social.gp = { link: r.google._json.link || r.google._json.url
-          //     , email: r.google._json.email }
+      // session(ctx, cb) {
+        // return (e, r) => {
+          // if (e || r == null) {
+          //   if (!e && r == null) { e = Error('Session user does not exist') }
+          //   if (logging) { $log('cbSession'.red, e, r) }
+          //   return cb(e, r)
           // }
 
-          var obj = util.selectFromObject(r, data.select.sessionFull)
-          if (obj.roles && obj.roles.length == 0) delete obj.roles
+          // // if (r.emails)
+          //   // r.email = _.find(r.emails, em => em.primary).value
 
-          // $log('session', obj.location)
-          if (obj.location)
-            obj.timeZoneId = obj.location.timeZoneId
+          // // if (r.google && r.google._json) {
+          // //   r.social = r.social || {}
+          // //   r.social.gp = { link: r.google._json.link || r.google._json.url
+          // //     , email: r.google._json.email }
+          // // }
 
-          data.select.setAvatar(obj)
-          data.select.inflateTagsAndBookmarks(obj, cb)
+          // var obj = util.selectFromObject(r, data.select.sessionFull)
+          // if (obj.roles && obj.roles.length == 0) delete obj.roles
 
-          if (obj.auth && obj.auth.al) {
-            obj.auth.al.username = obj.auth.al.angellist_url.replace('https://angel.co/','')
-            delete obj.auth.al.angellist_url
-          }
+          // // $log('session', obj.location)
+          // if (obj.location)
+          //   obj.timeZoneId = obj.location.timeZoneId
+
+          // data.select.setAvatar(obj)
+          // data.select.inflateTagsAndBookmarks(obj, cb)
+
+          // if (obj.auth && obj.auth.al) {
+          //   obj.auth.al.username = obj.auth.al.angellist_url.replace('https://angel.co/','')
+          //   delete obj.auth.al.angellist_url
+          // }
 
           // $log('session.obj', obj)
 
           // if (ctx.user)
             // ctx.session.passport.user = data.select.sessionFromUser(obj)
-        }
-      },
+        // }
+      // },
       searchResults(cb) {
         return (e, r) => {
           for (var u of r)
@@ -157,14 +156,7 @@ var data = {
           // }
           cb(e,r)
         }
-      },
-      // siteNotifications(cb) {
-      //   return (e,r) => {
-      //     if (e) return cb(e)
-      //     r = util.selectFromObject(r, select.siteNotifications)
-      //     cb(null, r.siteNotifications || [])
-      //   }
-      // },
+      }
     }
   },
 

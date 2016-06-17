@@ -1,5 +1,5 @@
 var md5                   = require('../util/md5')
-var {selectFromObject}              = require('../../shared/util')
+var selectFromObject         = require('meanair-shared').TypesUtil.Object.select
 var {filterSlackHistory,participantSlackHandle,
   rebookUrl,multitime,
   customers,experts}                = require("../../shared/bookings")
@@ -109,7 +109,7 @@ var select = {
         select.inflateParticipantInfo(b.participants)
         select.inflateChatInfo(b.chat)
         b.rebookUrl = rebookUrl(b)
-        return (selectFields) ? selectFromObject(b,selectFields) : b
+        return (selectFields) ? selectFromObject(b,Object.keys(selectFields)) : b
       }
 
       return (e,r) => {

@@ -1,9 +1,15 @@
 var logging                       = true
-var {select}                      = require('../chats.data')
+var select = {
+  team: 'id name',
+  slackGroup: 'id purpose.value topic.value members is_archived creator created name',
+  slackIM: 'id user created is_user_delete',
+  slackUser: 'id name deleted real_name tz_label profile.email'
+}
 var {owner,support,pairbot,jk}    = config.wrappers.chat.slack
+var selectFromObject         = require('meanair-shared').TypesUtil.Object.select
 
 var clientCall;
-var cCall = function(user, method, data, cbProp, select, cb) {
+var cCall = function(user, method, data, cbProp, selectAttrs, cb) {
   var client = null
   if (user == 'owner') client = this.api.owner
   else if (user == 'support') client = this.api.support
@@ -16,11 +22,11 @@ var cCall = function(user, method, data, cbProp, select, cb) {
     if (duration > 1000) console.log(`[slack.${method}].slow`.cyan, `${duration}`.red)
     if (e) return cb(e)
     var r = (cbProp) ? response[cbProp] : response
-    if (select) {
+    if (selectAttrs) {
       if (r.constructor === Array)
-        r = _.map(r,(elem)=>util.selectFromObject(elem, select))
+        r = r.map(elem => selectFromObject(elem, selectAttrs))
       else
-        r = util.selectFromObject(r, select)
+        r = selectFromObject(r, selectAttrs)
     }
     if (logging) {
       var logMethod = `slack.api[${method}]`.green
@@ -82,16 +88,14 @@ var wrapper = {
 
   getUsers(cb)
   {
-    // cache.slackUsers((callback)=>{
-    clientCall('owner', 'users.list', null, 'members', select.slackUser, (e,r) => {
-      if (e) return cb(e)
-      global.userHash = {}
-      for (var u of r) userHash[u.id] = u.name
-      cb(null, r)
-    })
-      //
-      //
-    // }, cb)
+    cache.get('slack_users', callback => {
+      clientCall('owner', 'users.list', null, 'members', select.slackUser, (e,r) => {
+        if (e) return cb(e)
+        global.userHash = {}
+        for (var u of r) userHash[u.id] = u.name
+        callback(null, r)
+      })
+    }, cb)
   },
 
   checkUserSync(info)
@@ -145,8 +149,9 @@ var wrapper = {
 
   inviteToTeam(fullName, email, cb)
   {
-    var first_name = util.firstName(fullName)
-    var last_name = util.lastName(fullName)
+    var n = fullName.split(' ')
+    var first_name = n.shift()
+    var last_name = n.length > 0 ? n.pop() : ''
     clientCall(owner, 'users.admin.invite', {first_name,last_name,email}, null, null, cb)
     cache.flush('slack_users')
   },
@@ -161,7 +166,7 @@ var wrapper = {
   {
     var user = (user.token) ? user : 'pairbot'
     if (user == 'pairbot')
-      cache.slackGroups((callback)=>{
+      cache.get('slack_groups', (callback) => {
         clientCall(user, 'groups.list', null, 'groups', select.slackGroup, (e,r)=>{
           if (e) return cb(e)
           var groups = []

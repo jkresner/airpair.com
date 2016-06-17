@@ -2,11 +2,11 @@ module.exports = function(app, mw, {rules}) {
 
   if (!(rules||{}).posts) return;
 
-  var posturls = cache['http-rules']['canonical-post'].map(p => p.url)
+  var posturls = cache['http-rules'].canonical.post.map(p => p.url)
 
   var router = app.honey.Router('posts', {type:'html'})
     .use(mw.$.livereload)
-    .use([mw.$.badBot, mw.$.session, mw.$.throttle, mw.$.reqFirst, mw.$.cachedTags])
+    .use([mw.$.badBot, mw.$.session, mw.$.throttle, mw.$.reqFirst])
     .useEnd([mw.$.postPage])
 
     .get(posturls, mw.$.logic('posts.getPostPublished',{params:['url']}), mw.$.inflateAds, mw.$.trackPost)

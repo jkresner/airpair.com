@@ -2,13 +2,13 @@ var logging                 = false
 var RequestsSvc             = require('../services/requests')
 var OrdersSvc               = require('../services/orders')
 var ChatsSvc                = require('../services/chats')
-// var TemplateSvc             = require('../services/templates')
 var {Booking,User,Expert}   = DAL
 var Roles                   = require('../../shared/roles').booking
 var BookingdUtil            = require('../../shared/bookings')
 var {select,query,opts}     = require('./bookings.data')
 var {inflate}               = select.cb
 
+function newTouch(action, {_id,name}) { return { _id: User.newId(), utc: new Date(), action, by: { _id, name } } }
 
 function getChat(booking, syncMode, exitCB, cb) {
 
@@ -210,7 +210,7 @@ var save = {
         if (e) return cb(e)
 
         var {user} = this
-        var touch = svc.newTouch.call(this, 'create')
+        var touch = newTouch('create', this.user)
         var booking = {
           _id: bookingId,
           // createdById: user._id,   GONE
@@ -240,7 +240,7 @@ var save = {
     var {suggestedTimes,lastTouch,activity} = original
     suggestedTimes = suggestedTimes || []
     suggestedTimes.push({time,byId:this.user._id})
-    lastTouch = svc.newTouch.call(this, 'suggest-time')
+    lastTouch = newTouch('suggest-time', this.user)
     activity.push(lastTouch)
     Booking.updateSet(original._id, {suggestedTimes,lastTouch,activity}, (e,r) => {
       get.getByIdForParticipant.call(this, original._id,cb)
@@ -256,7 +256,7 @@ var save = {
 
     var suggestedTime = _.find(suggestedTimes,(t)=>_.idsEqual(t._id,timeId))
     suggestedTimes = _.without(suggestedTimes,suggestedTime)
-    lastTouch = svc.newTouch.call(this, 'remove-time')
+    lastTouch = newTouch( 'remove-time', this.user)
     activity.push(lastTouch)
     Booking.updateSet(original._id, {suggestedTimes,lastTouch,activity}, (e,r) => {
       get.getByIdForParticipant.call(this, original._id,cb)
@@ -271,7 +271,7 @@ var save = {
     datetime = suggestedTime.time
     status = 'confirmed'
 
-    lastTouch = svc.newTouch.call(this, 'confirm-time')
+    lastTouch = newTouch( 'confirm-time', this.user)
     activity.push(lastTouch)
 
     suggestedTime.confirmedById = this.user._id
@@ -301,7 +301,7 @@ var save = {
     reviews.push(review)
 
     // $log('customerFeedback'.magenta, review, expert._id, expertReview)
-    lastTouch = svc.newTouch.call(this, 'customer-feedback')
+    lastTouch = newTouch( 'customer-feedback', this.user)
     activity.push(lastTouch)
 
     OrdersSvc.getByIdForAdmin(original.orderId,(e,order) =>{
@@ -325,7 +325,7 @@ var save = {
     ChatsSvc.createCreate.call(this, type, groupchat, original.participants, (e,chat)=>{
       if (e) return cb(e)
       var {activity,lastTouch} = original
-      lastTouch = svc.newTouch.call(this, 'create-chat')
+      lastTouch = newTouch( 'create-chat', this.user)
       activity.push(lastTouch)
       Booking.updateSet(original._id, {chatId:chat._id,activity,lastTouch}, (e,r)=>{
         get.getByIdForParticipant(original._id,cb)
@@ -339,7 +339,7 @@ var save = {
       if (e) return cb(e)
       var {activity,lastTouch} = original
       activity = activity || []
-      lastTouch = svc.newTouch.call(this, 'associate-chat')
+      lastTouch = newTouch( 'associate-chat', this.user)
       activity.push(lastTouch)
       Booking.updateSet(original._id, {chatId:chat._id,activity,lastTouch}, (e,r)=>{
         get.getByIdForParticipant.call(this, original._id, cb)
@@ -353,7 +353,7 @@ function updateForAdmin(thisCtx, booking, updates, action, cb) {
   //-- todo consider calculating status here
   var {activity,lastTouch} = booking
   activity = activity || []
-  lastTouch = svc.newTouch.call(thisCtx, action)
+  lastTouch = newTouch(action, thisCtx.user)
   activity.push(lastTouch)
   Booking.updateSet(booking._id, _.extend(updates,{lastTouch,activity}), (e,r)=>{
     if (e) return cb(e)

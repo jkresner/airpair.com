@@ -5,7 +5,7 @@ module.exports = function(app, mw, api) {
     .uses('noBot')
     .get({'session':                  ''})
 
-  app.use('/v1/api', [mw.$.noBot, mw.$.session, mw.$.cachedTags, mw.$.cachedTemplates])
+  app.use('/v1/api', [mw.$.noBot, mw.$.session, mw.$.cachedTemplates])
   app.use(['/v1/api/bookings/*',
            '/v1/api/requests/*'], [mw.$.cachedSlackUsers])
 

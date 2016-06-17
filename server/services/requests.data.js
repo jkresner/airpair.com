@@ -1,6 +1,7 @@
 var Rates                 = require('../services/requests.rates')
 var md5                   = require('../util/md5')
 var Roles                 = require('../../shared/roles.js').request
+var selectFromObj         = require('meanair-shared').TypesUtil.Object.select
 
 var inflatedTags = (tags) => {
   if (!tags || !tags.length) return []
@@ -153,7 +154,7 @@ var data = {
       }
 
       if (view != 'admin')
-        r = util.selectFromObject(r, data.select[view])
+        r = selectFromObj(r, Object.keys(data.select[view]))
       // $log('selected', view, request.suggested, r)
 
       return assign(r,{view})

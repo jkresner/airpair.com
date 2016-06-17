@@ -9,6 +9,8 @@ var MojoSvc                  = require('../services/mojo')
 var {select,query}           = require('./requests.data')
 var {isCustomer,isCustomerOrAdmin,isExpert} = Roles.request
 
+function newTouch(action, {_id,name}) { return { _id: User.newId(), utc: new Date(), action, by: { _id, name } } }
+
 
 var get = {
 
@@ -180,7 +182,7 @@ var save = {
     if (update.tags.length == 1) update.tags[0].sort = 0
 
     if (isCustomer(this.user, original)) {
-      update.lastTouch = svc.newTouch.call(this, 'updateByCustomer')
+      update.lastTouch = newTouch('updateByCustomer', this.user)
       // if (this.user.emailVerified)
       update.adm = admSet(original,{active:true})
     }
@@ -190,7 +192,7 @@ var save = {
   updateWithBookingByCustomer(request, order, cb) {
     var {adm} = request
     var status = 'booked'
-    var lastTouch = svc.newTouch.call(this, 'booked')
+    var lastTouch = newTouch('booked',this.user)
     if (!adm.booked) adm.booked = new Date
 
     Request.updateSet(request._id, {adm,status,lastTouch}, select.cb.byRole(this,cb,cb))
@@ -226,7 +228,7 @@ var admin = {
       update.adm.active = true
     }
 
-    adm.lastTouch = svc.newTouch.call(this, action)
+    adm.lastTouch = newTouch(action, this.user)
 
     var ups = _.extend(original, {adm,status})
     if (ups.user) {
@@ -245,7 +247,7 @@ var admin = {
     var {adm} = request
     Wrappers.Bitly.shorten(url, (e,shortLink) => {
       adm.farmed = new Date
-      adm.lastTouch = svc.newTouch.call(this, 'farm')
+      adm.lastTouch = newTouch('farm', this.user)
       Wrappers.Twitter.postTweet(`${tweet} ${shortLink}`, (e,r) => {
         if (e) return cb(e)
         Request.updateSet(request._id, {adm}, select.cb.adm(cb))
@@ -267,7 +269,7 @@ var admin = {
 
     mailman.sendMarkdown(message.subject, message.markdown, request.by, 'team')
 
-    adm.lastTouch = svc.newTouch.call(this, `sent:${message.type}`)
+    adm.lastTouch = newTouch(`sent:${message.type}`, this.user)
     messages.push(_.extend(message,{_id:Request.newId(),fromId:this.user._id,toId:request.userId,
       body: message.text||message.markdown}))
 
@@ -278,7 +280,7 @@ var admin = {
   addSuggestion(request, expert, msg, cb)
   {
     var {adm,suggested} = request
-    adm.lastTouch = svc.newTouch.call(this, `suggest:${expert.name}`)
+    adm.lastTouch = newTouch(`suggest:${expert.name}`, this.user)
     var suggest = select.expertToSuggestion(expert, this.user)
     suggest._id = Request.newId()
     suggested.push(suggest)
@@ -313,7 +315,7 @@ var admin = {
     var existing = _.find(suggested, (s) => _.idsEqual(s.expert._id,expert._id) )
     suggested = _.without(suggested,existing)
 
-    adm.lastTouch = svc.newTouch.call(this, `remove:${expert.name}`)
+    adm.lastTouch = newTouch(`remove:${expert.name}`, this.user)
     Request.updateSet(request._id, {suggested,adm}, select.cb.adm(cb))
   }
 }

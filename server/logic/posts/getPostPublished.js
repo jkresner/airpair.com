@@ -15,7 +15,7 @@ module.exports = ({Post,User}, {Project,Opts,Query}, Shared, Lib) => ({
 
     Post.getByQuery(Query.published({'htmlHead.canonical':match}), opts, (e, r) => {
       if (e || !r) return cb(e, r)
-      var adtag = cache.tags[r.tags[0]._id]
+      var adtag = cache['tags'][r.tags[0]._id]
       var simQ = Query.published({_id:{$ne:r._id},'tags._id':adtag._id})
       // $log('simQ'.yellow, simQ, Opts.publishedNewest(3))
       Post.getManyByQuery(simQ, Opts.publishedNewest(3), (ee, similar) => {
