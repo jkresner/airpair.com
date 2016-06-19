@@ -61,3 +61,14 @@ module.exports = ->
   # IT "https://github.com/bidhan-a", ->
     # ObjectId("571f067d6d4bed1100858e78")
     # Figure out banning mechanism
+
+"""
+ DESCRIBE('HUNCHES', () =>
+
+    IT "Impossible ref", ->
+      /^https\:\/\/airpair.com\/
+      /^http\:\/\/airpair.com\/
+      /^https\:\/\/www.airpair.com\/
+
+  )
+"""
