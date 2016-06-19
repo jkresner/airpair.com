@@ -1,7 +1,6 @@
-
-
-var ip = {
-  bing: /((157.55.39)|(40.77.167))\./   // http://www.bing.com/toolbox/verify-bingbot-verdict
+var bots = {
+  bing: /((157.55.39)|(40.77.167))\./,   // http://www.bing.com/toolbox/verify-bingbot-verdict
+  // yandex: '', // https://yandex.com/support/webmaster/robot-workings/check-yandex-robots.xml
 }
 
 
@@ -14,43 +13,47 @@ var concatExperimental = all =>
    ],
 
    [
+    '/page-sitemap.xml',
+    '/our-customers',
+    '/preferences',
+    '/((customer)|(expert))-faq',
     '/account/signup',
     '/android/UX-RX.com',
     '/backbone-js/backbone-js-experts*',
     '/find-an-expert/request',
     '/graph-database/posts/graph-database-expert-wes-freeman-1',
-    '/jobs/08-10/editorial-manager',
-    '/jobs/06-14/full-stack-product-developer',
+    '/jobs/((08-10/editorial-manager)|(full-stack-product-developer))',
     '/((lxc)|(cryptocurrency))/workshops',
+    '/mean-stack/posts/2014-10-job-post-mean-stack-developer',
     '/mean-stack/90-days-of-airpairing-on-airpair',
     '/me/((dzello)|(mksm)|(ehrenreilly)|(shivangdoshi))',
-    '/mean-stack/posts/2014-10-job-post-mean-stack-developer',
-    '/our-customers',
     '/python/posts/python-code-mentoring-web-scraping-1',
     '/tag/spreadsheets',
     '/testing/posts/airpair-v1-beta-testing',
+    '/todo-tech',
     '/sem',
-    '^/preferences',
+    '/seo/seo-focused-blogging-strategy',
     '*rubykoans*',
     '/((wordpress)|(ruby-on-rails)|(android)|(python)|(devops))/rss',
     '/img/((in)|(tw)|(airpair)).png',
     '/images/logo4.png',
+    '/images/avatars/nathan_ward.png',
     '/images/pages/marketing*',
     '/images/homepage/step1brief.png',
     '/images/landing/airconf*',
-    '/static/img/ra1-icoset.png',
     '/static/fonts/k3k702ZOKiLJc3WVjuplzKRDOzjiPcYnFooOUGCOsRk.woff',
     '/static/img/css/sort-arrows.png',
     '/static/img/css/blog/example2.jpg',
     '/static/img/css/bookmark.png',
     '/static/img/css/sidenav/sprite.png',
     '/static/img/pages/postscomp/banner.jpg',
+    '/static/img/ra1-icoset.png',
     '/static/js/index-*',
-    '/v1/auth/login',
-    '/v1/posts/quick-guide-to-the-airpair-expert-cms',
     '/v1/img/css/bookmark.png',
     '/v1/img/css/sidenav/bookmark.png',
     '/v1/img/css/tags/angularjs-og.png',
+    '/v1/auth/login',
+    '/v1/posts/quick-guide-to-the-airpair-expert-cms',
 
     ].map( url => ({type:'410',url,to:'/'}) ), [
 
@@ -93,6 +96,7 @@ var concatExperimental = all =>
     { type:'301', url: '/ruby-on-rails-tutoring', to: '/ruby-on-rails' },
     { type:'301', url: '/ruby-on-rails-4/posts/building-faster-with-rails-code-mentors-1', to: '/ruby-on-rails' },
     { type:'301', url: '/((ruby)|(ruby-on-rails/posts))/ruby-problem-solving-for-sendwith*',  to: '/ruby' },
+    { type:'301', url: '/performance-testing/performance-testing-expert', to: '/performance' },
     { type:'301', url: '/code-mentoring/ruby-on-rails', to: '/ruby-on-rails' },
     { type:'301', url: '/code-mentoring/.net', to: '/.net' },
     { type:'301', url: '/code-mentoring/ios', to: '/ios' },
@@ -119,6 +123,7 @@ var concatExperimental = all =>
     { type:'301', url: '/backbone.js/posts/expert-training-jonathon-kresner-1', to: '/backbone.js' },
     { type:'301', url: '/javascript/javascript-code-review', to: '/javascript' },
     { type:'301', url: '/jquery/jquery-((code-review)|(problem-solving))', to: '/javascript' },
+    { type:'301', url: '/javascript/posts/which-async-javascript-libraries-should-i-use', to: '/javascript/async-javascript-libraries' },
     { type:'301', url: '/ember.js/posts/ember.js-tutorial-using-ember-cli', to: '/javascript/emberjs-using-ember-cli' },
     { type:'301', url: '/javascript/((emberjs-vs-angularjs-opinions-contributors-video-chat)|(syncify-tutorial))', to:'/javascript' },
     { type:'301', url: '/javascript/((posts/javascript-teacher-aldo-bucchi-1)|(javascript-performance-yehuda-katz))', to:'/javascript' },
@@ -150,6 +155,7 @@ var concatExperimental = all =>
     { type:'301', url: '/swift/posts/swift-tutorial-building-an-ios-application-part-3', to: '/swift/building-swift-app-tutorial-3' },
     { type:'301', url: '/angularjs/((buidling-angularjs-app-tutorial)|(posts/angularjs-tutorial-building-a-web-app-in-5-minutes))', to: '/angularjs/building-angularjs-app-tutorial' },
     { type:'301', url: '/haskell/posts/haskell*', to: '/haskell-tutorial/intro-to-haskell-web-apps' },
+    { type:'301', url: '/java/java-problem-solving', to: '/java' },
     { type:'301', url: '/selenium/posts/selenium-tutorial-with-java\\).', to: '/selenium/posts/selenium-tutorial-with-java' },
     { type:'301', url: '/firebase/posts/firebase-support-and-api-integration-help', to: '/firebase' },
     { type:'301', url: '/heroku/posts/heroku-support-integration-help', to: '/heroku' },
@@ -158,8 +164,11 @@ var concatExperimental = all =>
     { type:'301', url: '/api-survey/posts/api-ification-of-the-web-2014-q1-1', to: '/api' },
     { type:'301', url: '/sendgrid/posts/sendgrid-salesforce-apex-library-1',  to: '/email' },
     { type:'301', url: '/salesforce/posts/support-and-api-integration-help-with-salesforce',  to: '/software-experts' },
+    { type:'301', url: '/evernote/posts/evernote-support-api-integration-help', to: '/api' },
+    { type:'301', url: '/tokbox/posts/tokbox-support-and-api-integration-help', to: '/api' },
     { type:'301', url: '/twitter/posts/support-and-api-integration-help-with-twitter', to: '/twitter-api' },
     { type:'301', url: '/mixpanel/posts/mixpanel-support-api-integration-help', to: '/analytics' },
+    { type:'301', url: '*((paul-sobocinski)|(harry-zhang))*', to: '/php' },
     { type:'301', url: '*((ran-nachmany))*', to: '/android' },
     { type:'301', url: '*((tim-koopmans))*', to: '/devops' },
     { type:'301', url: '*((jason-sturges)|(vasco-pedro))*', to: '/javascript' },
@@ -168,11 +177,12 @@ var concatExperimental = all =>
     { type:'301', url: '*((ye-liu)|(dana-de-alasei)|(tony-child)|(tobias-talltorp))*', to: '/angularjs/posts' },
     { type:'301', url: '*web-scraping-phantomjs-session*',  to: '/node.js' },
     { type:'301', url: '*((ryan-schmukler)|(peter-lyon)|(tim-caswell)|(philip-thomas))*', to: '/node.js' },
-    { type:'301', url: '*((justin-gordon))*', to: '/ruby' },
+    { type:'301', url: '*((justin-gordon)|(fernando-villalobos))*', to: '/ruby' },
     { type:'301', url: '*((seb-insua)|(jordan-feldstein)|(thomson-nguyen))*', to: '/keen-io' },
     { type:'301', url: '/((framed-data)|(/www.framed.io)|(vero)|(blossom)|(venmo)|(human-api)|(sendswithus))*', to: '/software-experts' },
     { type:'301', url: '^/((echonest)|(bit.ly)|(echo-nest)|(tokbox)|(twotap)|(hellosign)|(flydata)|(sinch)|(spotify)|(mailjet)|(unbabel))', to: '/software-experts' },
     { type:'301', url: '^/((knockout)|(knockoutjs)|(unity)|(unity3d)|(magento)|(gamedev)|(unity3d)|(backbone))$', to: '/software-experts' },
+    { type:'301', url: '/angularjs2', to: '/angular2' },
     { type:'301', url: '/bitly', to: '/api' },
     { type:'301', url: '/mean', to: '/mean-stack' },
     { type:'301', url: '/selenium-2', to: '/selenium' },
@@ -190,6 +200,7 @@ var concatExperimental = all =>
     { type:'301', url: '/ember-cli',  to: '/ember.js' },
     { type:'301', url: '/.net-4.0',  to: '/.net' },
     { type:'301', url: '/socketio',  to: '/node.js' },
+    { type:'301', url: '/((amazon-r)|(r))edshift',  to: '/aws' },
    ],
 
    [
@@ -260,6 +271,7 @@ var concatExperimental = all =>
     '*.txt$',
     '^/((administrator)|(manager))*',
     '/_vti_bin/*',
+    '/NewsType.asp',
     '/js/registration_rules.asp',
     '/includes/showdebuginfo/serverDetails.as*`',
     '^/core/*',

@@ -14,24 +14,25 @@ module.exports = (app, mw, {forbid}) => {
   //   next()
   // })
 
+  var whitelist = new RegExp(`^${forbid.ban.whitelist}`)
+
   var logFilter = /Pingdom|Sogou|CloudFlare-Always/
 
-  var short = { GET:'GET', PUT:'PUT', DELETE:'DEL', POST:'POS' }
+  var short = { GET:'GET'.dim, PUT:'PUT'.dim, DELETE:'DEL'.dim, POST:'POS'.dim }
   global.$logMW = (req, mwName) => {
-    var pad = '                '
+    if (logFilter.test(req.ctx.ua)) return
     var {ctx,originalUrl} = req
-    var ua = ctx.ua || ''
-    var UD = `${mwName} < ${ctx.ud}` + '                            '.substr(0,18-(mwName+ctx.ud).length)
-    var mth = short[req.method] || req.method.toUpperCase()
-    var ref = ctx.ref ? ` <<< ${ctx.ref}`.blue : ''
-    var ip = ctx.ip + pad.substr(0, 16-ctx.ip.length)
-    var u = (ctx.user||{}).name ? ctx.user.name.white : false
-    var sId = (ctx.sId == 'unset' ? '_         _' : u || ctx.sId).substr(0,12)
 
-    if (!logFilter.test(ua))
-      console.log(`${sId} ${ip} ${UD} ${mth} ${originalUrl} ${ref}`.dim.cyan, ua.gray)
+    var mth = `${short[req.method] || req.method.toUpperCase()}`
+    var ref = ctx.ref ? ` <<< ${ctx.ref.dim}` : ''
+
+    var sId = (!ctx.sId || ctx.sId == 'unset' ? '_          _' : ctx.sId).substr(0,12)
+    var ip = ctx.ip + '                '.substr(0, 16-ctx.ip.length)
+    var UD = `[${mwName}] ${ctx.ud.magenta}` + '                            '.substr(0,18-(mwName+ctx.ud).length)
+    var u = ((ctx.user||{}).name||'')
+
+    console.log(`${sId} ${ip} ${UD}`.dim.cyan+`${mth.cyan} ${originalUrl.magenta}${ref} ${u.white} `+`${ctx.ua||'ua:null'}`.gray)
   }
-
 
   cache['iplog'] = {}
   cache['abuse'] = { ban: [] }
@@ -51,50 +52,55 @@ module.exports = (app, mw, {forbid}) => {
     return status == 418 ? 'Relax. Close your eyes.' : ''
   }
 
-  var mwBan = (name) => function(req, res, next) {
-    var logBan = (er,r) => console.log(`CF.BAN > ${req.ctx.ip}`.red, `${req.ctx.ua}`.gray, JSON.stringify(cache.abuse[req.ctx.ip]||[]).gray, er ? er : r.id)
-    if (config.env == 'test') {
-      if (cache['abuse'].ban.indexOf(req.ctx.ip) != -1) return res.status(500).send('')
-      logBan = () => {}
-    }
 
-    var data = { mw:'ban', headers: req.headers, name, url: req.originalUrl, user: req.user||'anon' }
+  function flareBan(req, data) {
+    var {ip,ua,ud} = req.ctx
+    if (whitelist.test(ip) || /proxy|search|reader/.test(ud))
+      return console.log('!ban(whitelist)'.yellow, ip, ud, ua)
+
+    var ipAbuse = JSON.stringify(cache.abuse[ip]||[]).gray
+    cache['abuse'].ban.push(ip)
+    global.analytics.issue(req.ctx, 'ban', 'security_high', data, (e, i) =>
+      e || /test/.test(config.env) ? 0 : Wrappers.Cloudflare.blockIssue(i,
+        (er,r) => console.log(`CF.BAN > ${ip}`.red, `${ua}`.gray, ipAbuse, er ? er : r.id) )
+      )
+  }
+
+  var mwBan = (name) => function(req, res, next) {
+    var data = { mw:'ban', headers: req.headers, name, url: req.originalUrl, user: req.ctx.user||'anon' }
     if (req.body) data.body = req.body
 
-    analytics.issue(req.ctx, 'ban', 'security_high', data,
-      (e, i) => e ? 0 : Wrappers.Cloudflare.blockIssue(i, logBan))
-
+    res.send(cache.abuse.increment(500, req))
     $logMW(req, name)
-    cache['abuse'].ban.push(req.ctx.ip)
-    return res.send(cache.abuse.increment(500, req))
+    flareBan(req, data)
   }
 
   mw.
     cache('banPOST', mwBan('banPOST'))
   mw.
     cache('banGET', mwBan('banGET'))
-
   mw.
-    // ? enhance forbid to give other responses like 500
-    cache('throttle', function(req, res, next) {
-      var {ctx} = req
+    cache('throttle', function(req, res, next) {       // ? enhance forbid to give other responses like 500
+      var {ip,user} = req
       var key = moment().format('DDHHmm')
       var throttle = 0
       cache['iplog'][key] = cache['iplog'][key] || []
-      cache['iplog'][key].push(ctx.ip)
-      for (var ip of cache['iplog'][key]) if (ip == ctx.ip) throttle++
+      cache['iplog'][key].push(ip)
+      for (var hit of cache['iplog'][key]) if (hit == ip) throttle++
 
       if (throttle < forbid.throttle.limit)
         return next()
 
-      cache['abuse'].ban.push(ctx.ip)
-
-      $log('throttle.user'.red, ctx.user, ctx.ip, throttle, throttle % forbid.throttle.limit)
+      // $log('throttle.user'.red, user, ip, throttle, throttle % forbid.throttle.limit)
       res.send(cache.abuse.increment(500, req))
-      $logMW(req, 'throttle'.red)
-      if (throttle % forbid.throttle.limit == 0)
-        global.analytics.issue(ctx, 'scrape', 'security_high',
-          { mw:'throttle', name:'throttle', rule:`${key}[${ctx.ip}] > throttle.limit`, hits:cache['iplog'][key], headers: req.headers })
+
+      $logMW(req, 'throttle')
+      var data = { mw:'apcom_throttle', name:'throttle', rule:`${key}[${ip}] > throttle.limit`, hits:cache['iplog'][key], headers: req.headers }
+
+      if (throttle == 25)
+        flareBan(req, data)
+      else if ((throttle % forbid.throttle.limit) == 0)
+        global.analytics.issue(req.ctx, 'scrape', 'security_high', data)
     })
 
 
@@ -107,21 +113,21 @@ module.exports = (app, mw, {forbid}) => {
         return next()
 
       res.send(cache.abuse.increment(500, req))
-      $logMW(req, ok ? 'abuser' : 'banned'.red)
+      $logMW(req, ok ? 'abuser' : 'banned')
     })
 
 
   mw.
     cache('noBot', mw.req.noCrawl({ group: 'null|search|ban|lib|proxy|reader',
       content:'',
-      onDisallow: req => global.$logMW(req, '!bot') }
+      onDisallow: req => $logMW(req, 'bot(*)') }
     ))
 
 
   mw.
     cache('badBot', mw.req.noCrawl({ group: 'null|ban|lib',
       content:'',
-      onDisallow: req => global.$logMW(req, '!ban|!lib') }
+      onDisallow: req => $logMW(req, 'bot(ban|lib)') }
     ))
 
 

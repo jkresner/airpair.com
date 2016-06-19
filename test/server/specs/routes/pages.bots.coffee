@@ -1,6 +1,7 @@
 publishedPostUrl = FIXTURE.posts.higherOrder.htmlHead.canonical.replace('https://www.airpair.com', '')
-BADBot =  unauthenticated:true, ua: FIXTURE.http.UA.ban.uk_lddc
-GOODBot = unauthenticated:true, ua: FIXTURE.http.UA.search.Google
+{UA} = FIXTURE.http
+BADBot =  unauthenticated:true, ua: UA.ban.uk_lddc
+GOODBot = unauthenticated:true, ua: UA.search.Google
 UANone =  unauthenticated:true, ua: 'null'
 Opts = Object.assign
 
@@ -35,7 +36,7 @@ IT '/100k-writing-competition (no user-agent) Does not persist session', ->
   # viewSpy = STUB.spy(analytics, 'view')
   PAGE '/100k-writing-competition', Opts({status:200}, UANone), (resp) ->
     # expect(viewSpy.callCount).to.equal(0)
-    DB.noSession { sessionID: 'unNOwnSZ3Wi8bDEnaKzhygGG2a2RkjZ2' }, DONE
+    DONE()
 
 
 IT '/100k-writing-competition (uaGooglebot) does not persist session or view', ->
@@ -43,7 +44,22 @@ IT '/100k-writing-competition (uaGooglebot) does not persist session or view', -
   PAGE '/100k-writing-competition', Opts({status:200}, GOODBot), (resp) ->
     expect(resp).inc "100k Writing Competition"
     # expect(viewSpy.callCount).to.equal(0)
-    DB.noSession { sessionID: 'unNOwnSZ3Wi8bDEnaKzhygGG2a2RkjZ2' }, DONE
+    DONE()
+
+SKIP '/100k-writing-competition Yandex Indexing 200, MirrorDector 404', ->
+  indexBot = unauthenticated:true, ua: UA.Yandex.indexing
+  mirrorBot = unauthenticated:true, ua: UA.Yandex.mirrorDector
+  fakeBot = unauthenticated:true, ua: UA.Yandex.fake
+  $log('mirrorBot', mirrorBot)
+
+  # PAGE '/100k-writing-competition', Opts({status:200}, indexBot), (resp) ->
+    # expect(resp).inc "100k Writing Competition"
+
+  PAGE '/100k-writing-competition', Opts({status:404}, fakeBot), (resp) ->
+    DONE()
+
+
+
 
 
 #   it 'Views from bots are not saved', (d) ->

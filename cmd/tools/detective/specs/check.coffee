@@ -66,9 +66,9 @@ module.exports = ->
  DESCRIBE('HUNCHES', () =>
 
     IT "Impossible ref", ->
-      /^https\:\/\/airpair.com\/
       /^http\:\/\/airpair.com\/
-      /^https\:\/\/www.airpair.com\/
-
+      /^http\:\/\/www.airpair.com\/
+      /^https\:\/\/airpair.com\/
+      /^https\:\/\/www.airpair.com(*)\/$\/
   )
 """

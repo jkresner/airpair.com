@@ -26,7 +26,6 @@ module.exports = {
       Baiduspider:         'Mozilla/5.0 (compatible; Baiduspider/2.0; +http://www.baidu.com/search/spider.html)'
       Bing:                'Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)'
       Google:              'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)'
-      Yandex:              'Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)'
       Yahoo:               'Mozilla/5.0 (compatible; Yahoo! Slurp; http://help.yahoo.com/help/us/ysearch/slurp)'
 
     ban:
@@ -56,6 +55,14 @@ module.exports = {
       GoogleAdsMob:        'AdsBot-Google-Mobile-Apps'
       GoogleAdsense:       'Mediapartners-Google'
       GoogleAdsenseMob:    '*(compatible; Mediapartners-Google/2.1; +http://www.google.com/bot.html)'
+
+    # https://yandex.com/support/webmaster/robot-workings/check-yandex-robots.xml
+    Yandex:
+      accessibilty:        'Mozilla/5.0 (compatible; YandexAccessibilityBot/3.0; +http://yandex.com/bots)'
+      indexing:            'Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)'
+      mobile:              'Mozilla/5.0 (iPhone; CPU iPhone OS 8_1 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) Version/8.0 Mobile/12B411 Safari/600.1.4 (compatible; YandexBot/3.0; +http://yandex.com/bots)'
+      mirrorDector:        'Mozilla/5.0 (compatible; YandexBot/3.0; MirrorDetector; +http://yandex.com/bots)'
+      fake:                'Mozilla/4.0 (compatible; YandexBot/2.0; +http://yandex.com/bots)'
 
     unknown:
       a:                   'Mozilla/5.0 (Linux; U; Android 4.4.2; zh-cn; GT-I9500 Build/KOT49H) AppleWebKit/537.36 (KHTML, like Gecko)Version/4.0 MQQBrowser/5.0 QQ-URL-Manager Mobile'

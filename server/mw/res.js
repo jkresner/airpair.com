@@ -68,7 +68,7 @@ module.exports = (app, mw, {abuse}) => {
       if (/not found/i.test(e.message) && e.status !== 403) {
         if (!req.user) cache.abuse.increment(404, req)
         if (req.ctx.ref && !e.message.match(/<</i))
-          e.message = `${e.message} << ${req.ctx.ref}`
+          e.message = `${e.message} < ${req.ctx.ref}`
       }
 
       if (/prod/i.test(config.env) && config.comm.dispatch.groups.errors) {
