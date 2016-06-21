@@ -44,9 +44,8 @@
 
 
 module.exports = function(type, d, {sId,ip,ua,ud,user,ref}) {
-  //- used for quieter testing
-  console.log('')
-  if (!(global.config.analytics.log||{}).type) return
+  // - used for quieter testing
+  // if (!(global.config.analytics.log||{}).trk[type]) return
 
   var label = ''
   var info = ''

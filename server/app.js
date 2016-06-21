@@ -4,6 +4,7 @@ function run({config, MAServer,track}, done) {
   var app               = MAServer.App(config, done)
   var auth              = require('meanair-auth')
   var model             = require(`meanair-model`)(done)
+  var formatter         = require('../templates/log/analytics')
 
   model.connect(() => {
 
@@ -17,7 +18,7 @@ function run({config, MAServer,track}, done) {
     global.pairbot      = require('./util/pairbot')()
 
     app.meanair.set(model)
-               .track(config.analytics, {track,formatter:require('../templates/log/analytics')})
+               .track(config.analytics, {track,formatter})
                .merge(auth)
                .chain(config.middleware, config.routes, cache.require)
                .run()
