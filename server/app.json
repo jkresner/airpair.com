@@ -153,8 +153,8 @@
       "workshops":             { "on": true }
     },
     "static": {
-      "img":                   { "types": "img" },
-      "robots":                { "types": "text" }
+      "img":                   { "type": "img" },
+      "robots":                { "type": "text" }
     },
     "rules":                   { "on": true },
     "rss":                     { "urls": "atom,data.atom,/data/atom,data/rss,data.rss,rss/posts,rss/workshops,.rss,rss.xml,rss" }

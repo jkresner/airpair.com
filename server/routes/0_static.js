@@ -2,16 +2,9 @@ module.exports = function(app, mw, {static,landing}) {
   if (!static) return;
 
 
-  if (config.env == 'dev')
-
-    app.honey.Router('fonts', {type:'fonts'})
-
-      .static('/fonts', { dir:`${config.appDir}/web/fonts`})
-
-
   if (static.img)
 
-    app.honey.Router('img', static.img)
+    app.honey.Router('img', static.img, console.log('tag/img'.yellow, `${config.appDir}/${landing.tags.dir}`))
 
       .static('/img/software', { dir:`${config.appDir}/${landing.tags.dir}`})
 
@@ -43,6 +36,13 @@ module.exports = function(app, mw, {static,landing}) {
                 onDisallow: req => global.$logMW(req, '!seo')
               }),
               { dir:`${config.appDir}/web/robots`})
+
+
+  if (config.env == 'dev')
+
+    app.honey.Router('fonts', {type:'fonts'})
+
+      .static('/fonts', { dir:`${config.appDir}/web/fonts`})
 
 
 }
