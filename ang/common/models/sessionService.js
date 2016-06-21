@@ -24,8 +24,7 @@ angular.module('APSvcSession', [])
       return function(r) {
         r.unauthenticated = (r.authenticated!=null && r.authenticated == false)
         $rootScope.session = r
-        $rootScope.notifications = Notifications.calculateNextNotification()
-
+        // $rootScope.notifications = Notifications.calculateNextNotification()
         // if (window.analytics && trackingData) analytics.track('Save', trackingData);
         successFn(r)
       }
@@ -58,14 +57,10 @@ angular.module('APSvcSession', [])
       return this.getSession().then(null, fn);
     }
 
+    this.getAccount = function(success, error) {
+      $http.get(`${API}/auth/session`).success(success).error(error)
+    }
 
-    // this.login = function(data, success, error) {
-    //   $http.post(`${Auth}/login`, data).success(setScope(success)).error(error);
-    // }
-
-    // this.signup = function(data, success, error) {
-    //   $http.post(`${Auth}/signup`, data).success(setScope(success)).error(error);
-    // }
 
     this.changeEmail = function(data, success, error) {
       var trackingData = { type:'email', email: data.email }

@@ -5,9 +5,10 @@ describe " HUMANS".spec, ->
   IT '/post/thumb/:id', -> PAGE thumbUrl, {status:301,contentType:/text/}, (txt) -> DONE()
   IT '/img/software/android.png', -> IMG @
   IT '/ad/heroku/900x90.q2-1.node.js.png', -> IMG @
-  IT '/visit/heroku-160411-ruby', -> PAGE @test.title, {status:302,contentType:/text/}, (txt) ->
-    expect(txt).to.inc "Found. Redirecting to https://signup.heroku.com/ruby"
-    DONE()
+  IT '/visit/heroku-160411-ruby', ->
+    PAGE @test.title, {status:302,contentType:/text/}, (txt) ->
+      expect(txt).to.inc "Found. Redirecting to https://signup.heroku.com/ruby"
+      DONE()
 
 
   IT 'sitemap.xml', ->
@@ -21,7 +22,7 @@ describe " HUMANS".spec, ->
           DONE()
 
   IT '/humans.txt', -> PAGE '/humans.txt', { contentType: /text/ }, (txt) ->
-    expect(txt).to.match(/Chef:Jonathon Kresner/)
+    expect(txt).to.inc("Chef:Jonathon Kresner")
     DONE()
 
   IT '/robots.txt', -> PAGE '/robots.txt', { contentType: /text/ }, (txt) ->
@@ -30,13 +31,12 @@ describe " HUMANS".spec, ->
 
   IT '/rss', ->
     PAGE '/rss', { contentType: /rss/, status: 200 }, (xml) ->
-      expect(xml).to.match(/<rss xmlns:dc="http/)
-      expect(xml).to.match(/<item><title><\!\[CDATA\[Mastering ES6 higher-order functions for Arrays\]\]><\/title><description><\!\[CDATA\[Higher-order functions are/)
-      expect(xml).to.match(/Elevate your functional programming skills by learning ES6 higher-order functions for Arrays\!\]\]><\/description><link>https:\/\/www.airpair.com\/javascript\/posts\/mastering-es6-higher-order-functions-for-arrays/)
+      expect(xml).to.inc('<rss xmlns:dc="http')
+      expect(xml).to.inc("<item><title><![CDATA[Mastering ES6 higher-order functions for Arrays]]></title><description><![CDATA[Higher-order functions are")
+      expect(xml).to.inc("Elevate your functional programming skills by learning ES6 higher-order functions for Arrays!]]></description><link>https://www.airpair.com/javascript/posts/mastering-es6-higher-order-functions-for-arrays")
       PAGE '/data/rss', { contentType: /rss/, status: 200 }, (xml2) ->
         expect(xml2).to.inc ['<rss xmlns:dc="http','Elevate your functional programming skills by learning ES6 higher-order functions for Arrays']
         DONE()
-
 
 
 describe " SEARCH".spec, ->
@@ -75,8 +75,8 @@ describe " SEARCH".spec, ->
   IT '/rss', ->
     PAGE '/rss', assign({contentType: /rss/, status:200}, @optsExpect), (xml) ->
       expect(xml).to.inc(['<rss xmlns:dc="http',
-                          /<item><title><\!\[CDATA\[Mastering ES6 higher-order functions for Arrays\]\]><\/title><description><\!\[CDATA\[Higher-order functions/,
-                          /Elevate your functional programming skills by learning ES6 higher-order functions for Arrays\!\]\]><\/description><link>https:\/\/www.airpair.com\/javascript\/posts\/mastering-es6-higher-order-functions-for-arrays/])
+                          "<item><title><![CDATA[Mastering ES6 higher-order functions for Arrays]]></title><description><![CDATA[Higher-order functions",
+                          "Elevate your functional programming skills by learning ES6 higher-order functions for Arrays!]]></description><link>https://www.airpair.com/javascript/posts/mastering-es6-higher-order-functions-for-arrays"])
       DONE()
 
 
@@ -107,7 +107,7 @@ describe " BANNED".spec, ->
           DONE()
 
   IT '/humans.txt', -> PAGE '/humans.txt', @optsExpect, (txt) =>
-    expect(txt).to.match(/Chef:Jonathon Kresner/)
+    expect(txt).to.inc("Chef:Jonathon Kresner")
     DONE()
 
   IT '/robots.txt', -> PAGE '/robots.txt', @optsExpect, (txt) =>

@@ -5,7 +5,20 @@ module.exports = function(app, mw, api) {
     .uses('noBot')
     .get({'session':                  ''})
 
-  app.use('/v1/api', [mw.$.noBot, mw.$.session, mw.$.cachedTemplates])
+  // app.API('reviews')
+  //   .params('post postreview')
+  //   .uses('authd')
+  //   .get({ getMyReviews:           ''})
+  //   .put({ submitReview:          'post body'              })
+           // reply:                 'post postreview',
+           // upvote:                'post postreview'        })
+    // .put({'deleteReview': ,        'post postreview'})     // TODO only editors
+
+  // app.API('posts')
+    // .get({ getForks:               '' })
+            // getActivity:            'post'                 })
+
+  app.use('/v1/api', [mw.$.noBot, mw.$.session])
   app.use(['/v1/api/bookings/*',
            '/v1/api/requests/*'], [mw.$.cachedSlackUsers])
 

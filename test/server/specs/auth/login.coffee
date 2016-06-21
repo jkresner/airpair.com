@@ -37,7 +37,7 @@ IT 'GH login no duplicate key error with existing gp profile', ->
     expect(uDB.auth.gh).to.be.undefined
     LOGIN 'deebarizo', (s1) ->
       EXPECT.equalIdAttrs(uDB, s1)
-      expect(s1.avatar).to.equal(gh.avatar_url)
+      expect(gh.avatar_url).starts(s1.avatar)
       expect(s1.username).to.equal(gh.login)
       DB.docById 'User', deebarizo._id, (uDB2) ->
         expect(uDB2.auth.gp.email).to.equal("deebarizo@gmail.com")
@@ -55,7 +55,7 @@ IT 'GH login of user with only v1 password login', ->
     expect(uDB.auth.password).to.exist
     LOGIN 'rykerrumsey', (s1) ->
       EXPECT.equalIdAttrs(uDB, s1)
-      expect(s1.avatar).to.equal(gh.avatar_url)
+      expect(s1.avatar).to.equal(gh.avatar_url.split('?')[0])
       expect(s1.username).to.equal('rykerrumsey')
       DB.docById 'User', rykerrumsey._id, (uDB2) ->
         expect(uDB2.auth.gh).to.exist
@@ -72,7 +72,7 @@ IT 'GH login of existing user has avatar for session', ->
     expect(uDB.auth.gh.emails[0].email).to.equal("caguilar@dwdandsolutions.com")
     LOGIN 'darkangel', (s1) ->
       EXPECT.equalIdAttrs(uDB, s1)
-      expect(s1.avatar).to.equal(darkangel.auth.gh.avatar_url)
+      expect(s1.avatar).to.equal(darkangel.auth.gh.avatar_url.split('?')[0])
       DB.docById 'User', darkangel._id, (uDB2) ->
         expect(uDB2.auth.gp.email).to.equal("darkangel51@gmail.com")
         expect(uDB2.auth.gh.emails[0].email).to.equal("caguilar@dwdandsolutions.com")
@@ -88,30 +88,12 @@ IT 'GH login of existing user has avatar for session', ->
     expect(uDB.auth.gh.emails[0].email).to.equal("caguilar@dwdandsolutions.com")
     LOGIN 'darkangel', (s1) ->
       EXPECT.equalIdAttrs(uDB, s1)
-      expect(s1.avatar).to.equal(darkangel.auth.gh.avatar_url)
+      expect(s1.avatar).to.equal(darkangel.auth.gh.avatar_url.split('?')[0])
       DB.docById 'User', darkangel._id, (uDB2) ->
         expect(uDB2.auth.gp.email).to.equal("darkangel51@gmail.com")
         expect(uDB2.auth.gh.emails[0].email).to.equal("caguilar@dwdandsolutions.com")
         expect(uDB2.email).to.equal("darkangel51@gmail.com")
         DONE()
-
-
-
-
-IT 'Logout authd', ->
-  stpv = FIXTURE.clone('users.stpv')
-  DB.ensureDoc 'User', stpv, (e, uDB) ->
-    LOGIN 'stpv', (s1) ->
-      EXPECT.equalIdAttrs(stpv, s1)
-      PAGE '/auth/logout', {status:302,contentType:/text/}, (txt) ->
-        expect(txt).to.inc ['Found. Redirecting to /']
-        DONE()
-
-
-IT 'Logout anon', ->
-  PAGE '/auth/logout', {status:302,contentType:/text/}, (txt) ->
-    expect(txt).to.inc ['Found. Redirecting to /']
-    DONE()
 
 
 

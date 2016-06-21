@@ -11,4 +11,5 @@ module.exports = ->
   DESCRIBE "Signup",   -> require("./auth/signup")
   DESCRIBE "Login",    -> require("./auth/login")
   DESCRIBE "OAuth",    -> require("./auth/oauth")
+  DESCRIBE "Logout",   -> require("./auth/logout")
   DESCRIBE "User",     -> require("./auth/user")

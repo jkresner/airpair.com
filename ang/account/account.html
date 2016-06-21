@@ -4,13 +4,54 @@
   </ol>
 </header>
 
-<section id="account" ng-if="session">
+<section id="account" ng-if="data">
 
   <h3 class="underline">Contact info</h3>
 
 
  <section class="info">
-      <user-info></user-info>
+
+<form id="profileForm" novalidate name="profileForm" ng-submit="submit(profileForm.$valid, data)">
+
+  <div form-group>
+    <label class="control-label" for="profileName">Full name </label>
+    <input id="profileName" name="name" form-control type="text" placeholder="Full name" ng-model="data.name" required ng-minlength="4" ng-maxlength="60" ng-pattern="/\w+ \w+/" tabindex="102"
+      ng-blur="updateName()"
+    >
+    <div class="error" ng-if="formGroup.showError(profileForm.name)" ng-messages="profileForm.name.$error">
+      <div ng-message="required">Name required</div>
+      <div ng-message="minlength">Full name required (e.g. John Smith)</div>
+      <div ng-message="pattern">Full name required (e.g. John Smith)</div>
+      <div ng-message="maxlength">Full name max length 60 chars</div>
+    </div>
+  </div>
+
+  <div form-group>
+    <label class="control-label" for="profileInitials">Initials</label>
+    <input id="profileInitials" name="initials" type="text" form-control placeholder="2-3 letter initials for IM/chat" ng-model="data.initials" tabindex="103"
+      ng-blur="updateInitials()"
+    >
+  </div>
+  <div form-group>
+    <label class="control-label" for="profileUsername">Username</label>
+    <input id="profileUsername" name="username" form-control type="text" placeholder="Supply username for profile url" ng-model="data.username" ng-minlength="2" ng-pattern="/^\w+$/" tabindex="104"
+      ng-blur="updateUsername()"
+    >
+    <div class="error" ng-if="formGroup.showError(profileForm.username)" ng-messages="profileForm.username.$error">
+      <div ng-message="minlength">Min 2 characters</div>
+      <div ng-message="pattern">Username must be letters only</div>
+    </div>
+  </div>
+
+</form>
+
+<section class="localization">
+  <location-input data="data" on-select="updateLocation"></location-input>
+  <label ng-if="data.location" class="timezone">{{data.timeZoneId}}</label>
+</section>
+
+<alert ng-repeat="alert in profileAlerts" type="{{alert.type}}"><span ng-bind-html="alert.msg | html"></span></alert>
+
   </section>
 
   <section class="avatar" style="padding:0px 20px 0px 30px">

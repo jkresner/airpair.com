@@ -9,7 +9,7 @@ module.exports = new LogicDataHelper(views,
 
   //-- Queries
   {
-    'activeCampaigns': {code:{$in:config.routes.ads.campaigns.split(',')}}
+    // campaigns: codes => {code:{$in:codes}}
   },
 
   //-- Query Opts

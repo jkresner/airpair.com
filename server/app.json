@@ -2,7 +2,12 @@
   "about":                     "package.json",
   "analytics": {
     "appKey":                  "apcom",
-    "on":                      true
+    "on":                      true,
+    "model": {
+      "collections":           { "event": "Event", "impression": "Impression", "view": "View", "issue": "Issue", "campaign": "Campaign" },
+      "mongoUrl":              "mongodb://localhost/airpair_analytics",
+      "enums":                 false
+    }
   },
   "auth": {
     "appKey":                  "apcom",
@@ -77,18 +82,19 @@
     "static": {
       "host":                  "https://static.airpair.com",
       "bundles": {
-        "css/v1libs.css":      "css/libs-914db4fa9b.css",
-        "css/libs.css":        "css/libs.css",
-        "css/index.css":       "css/index.css",
-        "css/adm.css":         "css/adm.css",
-        "js/index.js":         "js/index.js",
-        "js/adm.js":           "js/adm.js"
+        "css/v1fonts.css":     "/2015/css/fonts.css",
+        "css/v1libs.css":      "/apcom/css/libs-914db4fa9b.css",
+        "css/libs.css":        "/css/libs.css",
+        "css/index.css":       "/css/index.css",
+        "css/adm.css":         "/css/adm.css",
+        "js/index.js":         "/js/index.js",
+        "js/adm.js":           "/js/adm.js"
       },
       "dirs":                  "public,build",
       "sitemap":               true,
       "opts": {
-        "index":                 false,
-        "redirect":              false
+        "index":               false,
+        "redirect":            false
       }
     }
   },
@@ -101,11 +107,8 @@
     "api":                     { "baseUrl": "/v1/api" },
     "ctx": {
       "ud": {
-        "android":             "Andoid",
         "search":              "Applebot|archive.org|Baiduspider|bingbot|adsbot-google|Googlebot|Docoloc|Hackerfall|Hatena|msnbot-media|Qwantify|YandexBot|Yahoo! Slurp|Y!J-ASR",
         "ban":                 "AhrefsBot|BuckyOHare|Buzzbot|CCBot|cf-news|coccoc|cognitiveseo|CloudFlare-Always|datasift.com|dataprovider.com|Domain Re-Animator|DotBot|EmailMarketingRobot|Feedly|Genieo|GrapeshotCrawler|GurujiBot|HaosouSpider|Hubspotistellabot|linkdexbot|ltx71|Mediatoolkitbot|MegaIndex|MetaURI|MJ12bot|Nutch|oai-finder|OpenLinkProfiler|panscient.com|Pingdom|Priceonomics|QuerySeekerSpider|R6_CommentReader|rogerbot|scraper|Screaming Frog|ScoutJet|Searchmetrics|SemrushBot|Sentinurl|SeznamBot|Sgrunt|ShowyouBot|SMTBot|Sogou|Turnitin|uk_lddc_bot|WPScan|YisouSpider",
-        "ios":                 "Apple-i",
-        "microsoft":           "MSIE|Windows",
         "mobile":              "iPhone|iPod|Mobile|Presto",
         "lib":                 "aria2|CPython|DarcyRipper|Go 1.1|Go http client|jsoup|libwww-perl|Mechanize|Melvil|Needle|Phantom|podder|python-requests|RobotsTxtParser|Wget",
         "tablet":              "iPad",
@@ -132,23 +135,16 @@
     "slow":                    1000
   },
   "model": {
-    "analytics": {
-      "collections":           { "event": "Event", "impression": "Impression", "view": "View", "issue": "Issue", "campaign": "Campaign" },
-      "mongoUrl":              "mongodb://localhost/airpair_analytics"
-    },
-    "cache":                   { "on": true }
+    "cache":                   { "require": "tags:tags,tmpl:templates,rules:routes" }
   },
   "routes": {
     "adm":                     { "api": { "mount": "/v1/api/adm" } },
     "ads": {
-      "campaigns":             "70130000000NeguAAC",
+      "campaigns":             "7013A000000mKoyQAE:heroku:2016-q3-heroku",
       "dir":                   "web/public/ads"
     },
     "api":                     { "mount": "/v1/api" },
-    "rules": {
-      "async":                 "http.getRules",
-      "posts":                 { "on": true }
-    },
+    "canonical":               { "async": "canonical", "posts": true },
     "landing": {
       "tags": {
         "dir":                 "web/public/img/tag",
@@ -160,6 +156,7 @@
       "img":                   { "types": "img" },
       "robots":                { "types": "text" }
     },
+    "rules":                   { "on": true },
     "rss":                     { "urls": "atom,data.atom,/data/atom,data/rss,data.rss,rss/posts,rss/workshops,.rss,rss.xml,rss" }
   },
   "templates": {
@@ -170,6 +167,7 @@
     }
   },
   "wrappers": {
+    "dirs":                    "wrappers",
     "bitly": {
       "shortDomain":           "http://airpa.ir/",
       "accessToken":           "b93731e13c8660c7700aca6c3934660ea16fbd5f"

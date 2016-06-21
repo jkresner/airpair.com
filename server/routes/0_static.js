@@ -27,7 +27,8 @@ module.exports = function(app, mw, {static,landing}) {
     app.honey.Router('robots', static.robots)
 
       .files(['robots.txt'],
-             mw.req.noCrawl({ group: 'null|other|ban|lib|proxy|reader',
+             mw.req.noCrawlAllow({
+               group: 'search',
                content:'User-agent: *\nDisallow: /',
                onDisallow: req => global.$logMW(req, '!seo')
              }),
@@ -36,7 +37,8 @@ module.exports = function(app, mw, {static,landing}) {
       .files(['sitemap.xml',
               'image_sitemap.xml',
               'index_sitemap.xml'],
-              mw.req.noCrawl({ group: 'null|other|ban|lib|proxy|reader',
+              mw.req.noCrawlAllow({
+                group: 'search',
                 content:'',
                 onDisallow: req => global.$logMW(req, '!seo')
               }),

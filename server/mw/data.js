@@ -1,37 +1,10 @@
 module.exports = ({meanair}, mw) => {
   var {logic} = meanair
 
-  // mw.cache('cachedTags',        mw.data.cached('tags',logic.tags.getForCache.exec))
   mw.cache('cachedAds',         mw.data.cached('ads',logic.ads.getForCache.exec))
-  mw.cache('cachedTemplates',   mw.data.cached('templates',logic.templates.getForCache.exec))
   mw.cache('cachedSlackUsers',  mw.data.cached('slack_users', Wrappers.Slack.getUsers))
   mw.cache('cachedPublished',   mw.data.cached('published', logic.posts.recommended.exec))
 
-
-  mw.cache('logic', (path, opts) => function(req, res, next) {
-    opts = opts || {}
-    opts.params = opts.params || []
-    opts.assign = opts.assign || false
-    var [group,fn] = path.split('.')
-    var args = [(e,r) => {
-      if ((r||{}).htmlHead)
-        req.locals.htmlHead = assign(req.locals.htmlHead||{},r.htmlHead)
-      if (!r && opts.required !== false)
-        e = assign(Error(`Not Found ${req.originalUrl}`),{status:404})
-      if (!e) {
-        if (opts.assign) req.locals.r[opts.assign] = logic[group][fn].project(r)
-        else req.locals.r = assign(req.locals.r||{}, logic[group][fn].project(r))
-      }
-      return next(e)
-    }]
-
-    for (var arg of opts.params) req.params[arg] = req[arg]
-    for (var arg in req.params) args.unshift(req.params[arg])
-
-    var inValid = logic[group][fn].validate.apply(this, _.union([req.user],args))
-    if (inValid) return next(inValid)
-    logic[group][fn].exec.apply(this, args)
-  })
 
   mw.cache('inflateMe', mw.data.recast('user','user._id',{required:false,merge:true}))
   mw.cache('inflateMeExpert', mw.data.recast('expert','user._id',{queryKey:'userId'}))

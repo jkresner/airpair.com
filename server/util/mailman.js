@@ -1,5 +1,34 @@
 var emptyCB       = (e,r) => { if (e) $log('mailman.send.error'.red, e) }
-var $trace        = require('./log/trace')
+var $trace        = function(namespace, obj, on) {
+  if (!config.log[namespace] && !on)
+    return _.extend({$$trace:()=>{}},obj)
+
+  var traceWrap = (fn, fnName) =>
+    function() {
+      obj.$$trace = function() {
+        var unnamed = [].slice.call(arguments)
+        var named = unnamed.shift()
+        var args = [`${namespace}.${fnName}`.cyan]
+        if (named)
+          for (var key of _.keys(named)||[]) {
+            args.push(key.trace)
+            args.push(named[key])
+          }
+        if (unnamed)
+          for (var d of unnamed || []) {
+            args.push(d)
+          }
+        console.log.apply(null, args)
+      }
+      // $log('fn', fnName, this.$$trace)
+      return fn.apply(this, arguments)
+    }
+
+  for (var name in obj) obj[name] = traceWrap(obj[name], name)
+
+  return obj
+}
+
 
 var sender      = { "pairbot": "Pairbot <team@airpair.com>",
                     "ap": "AP <team@airpair.com>",
@@ -27,7 +56,7 @@ module.exports = function()
       if (to && to.name)
         tData = _.extend({firstName:util.firstName(to.name)},data)
 
-      var tmpl = cache['templates'][`mail:${key}`]
+      var tmpl = cache['tmpl'][`mail:${key}`]
       cb(null, {
         to: (to.constructor === Array) ? to : [`${to.name} <${to.email}>`],
         subject: tmpl.subjectFn(tData).replace(/&#x27;/g,"'"),

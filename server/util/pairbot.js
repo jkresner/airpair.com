@@ -3,7 +3,7 @@ var postsChannelId = config.wrappers.chat.slack.channels.posts.id
 module.exports = function(imProvider)
 {
   function slackMSGSync(key, data) {
-    var tmpl = cache.templates[`slack-message:${key}`]
+    var tmpl = cache.tmpl[`slack-message:${key}`]
 
     if (!tmpl)
       $log(`template slack-message:${key} not found in cache`.warning)

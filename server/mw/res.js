@@ -1,7 +1,13 @@
 module.exports = (app, mw, {abuse}) => {
 
   var {bundles,host} = config.http.static
-  var about = _.pick(config.about, ['name','version','author'])
+  var hosted = ['css/v1fonts.css','css/v1libs.css']
+  if (/prod/.test(config.env)) hosted = Object.keys(bundles)
+  for (var b of hosted)
+    bundles[b] = `${host}${bundles[b]}`
+
+
+  var {about} = config
   var cfg = { static: { host }, analytics: config.analytics }
   var pageOpts = layout => ({about,bundles,layout,cfg})
 
@@ -35,7 +41,7 @@ module.exports = (app, mw, {abuse}) => {
 
   var notFound = mw.res.notFound({
     onBot(req, res, next) {
-      if (/ban|lib/.test(req.ctx.ud))
+      if (/ban|lib|null/.test(req.ctx.ud))
         return res.status(200).send('')
 
       var context = _.selectFromObj(req.ctx, 'ip sId user ua ud')
@@ -45,12 +51,14 @@ module.exports = (app, mw, {abuse}) => {
   })
 
   mw.cache('notFound', (req, res, next) =>
-    mw.$.session(req, res, () => notFound(req, res, next)))
+    mw.$.session(req, res, () => {
+      if (req.ctx.ud == 'null') req.ctx.ud = 'bot|null'
+      notFound(req, res, next)
+    }))
 
   mw.cache('error', mw.res.error({
     render: { layout:false, about, quiet: /prod/i.test(config.env) },
     terse: _.get(config, 'log.app.terse'),
-    // formatter: (req, e) => `${e.message}`,
     onError: (req, e) => {
       if (!e.message) e = Error(e)
 
@@ -71,11 +79,7 @@ module.exports = (app, mw, {abuse}) => {
           e.message = `${e.message} < ${req.ctx.ref}`
       }
 
-      if (/prod/i.test(config.env) && config.comm.dispatch.groups.errors) {
-        COMM('ses').error(e, {
-          subject:`{AP} ${e.message}`,
-          text: require('../util/log/request')(req, e) })
-      }
+      COMM('ses').error(e, { req, subject:`{AP} ${e.message}` })
     }
   }))
 

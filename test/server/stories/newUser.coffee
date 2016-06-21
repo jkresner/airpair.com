@@ -35,7 +35,7 @@ module.exports = (key, opts, done) ->
   assign(user, opts.data||{})
 
   user.auth = { gh: DATA.ghProfile(key, true) }
-  user.username = user.auth.gh.login
+  user.username = user.auth.gh.login || user.emails[0].value.split('@')[0]
 
   user.key = key+suffix
 

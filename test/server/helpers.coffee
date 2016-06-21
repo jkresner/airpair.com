@@ -179,8 +179,8 @@ STUB(s)
 analyticsCfg = _.clone(config.analytics)
 STUB.analytics =
   stubbed: false,
-  mute: () -> config.log.trk.event = false
-  unmute: () -> config.log.trk.event = process.env['LOG_TRK_EVENT']
+  mute: () -> config.analytics.log.trk.event = false
+  unmute: () -> config.analytics.log.trk.event = process.env['LOG_TRK_EVENT']
   on: () -> config.analytics = analyticsCfg
     # global.analytics = require('../../server/services/analytics')(global._analytics)
   off: () -> config.analytics = false

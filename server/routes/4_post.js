@@ -1,8 +1,8 @@
-module.exports = function(app, mw, {rules}) {
+module.exports = function(app, mw, {canonical}) {
 
-  if (!(rules||{}).posts) return;
+  if (!(canonical||{}).posts) return;
 
-  var posturls = cache['http-rules'].canonical.post.map(p => p.url)
+  var posturls = cache['canonical'].post.map(p => p.url)
 
   var router = app.honey.Router('posts', {type:'html'})
     .use(mw.$.livereload)

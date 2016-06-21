@@ -23,6 +23,7 @@ update = ->
     #     # expect(user.location.timeZoneId).to.equal('Asia/Calcutta')
     #     DONE()
 
+
   IT 'Set and unset username', ->
     username = "dily#{@testSeed}"
     STORY.newUser 'dily', (dily) =>
@@ -33,12 +34,14 @@ update = ->
           expect(u1.username).to.equal(username)
           DONE()
 
+
   IT 'Change name', ->
     STORY.newUser 'snug', (s) ->
       expect(s.name).to.match(/^Ra'Shaun/)
       PUT '/users/me/name', { name: 'Godly Jacob' }, (u1) =>
         expect(u1.name).to.equal('Godly Jacob')
         DONE()
+
 
   IT 'Set initials', ->
     STORY.newUser 'misr', (s) =>

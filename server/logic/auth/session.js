@@ -4,13 +4,12 @@ module.exports = function(DAL, Data, Shared, Lib) {
 
     // validate,
 
-    exec(done) {
+    exec(cb) {
       var authenticated = this.user != null
       if (authenticated)
-        DAL.User.getById(this.user._id, done)
+        DAL.User.getById(this.user._id, Data.Opts.full, cb)
       else
-        done(null, assign({ authenticated },
-            { sessionID: this.sessionID }, this.session.anonData))
+        cb(null, assign({ authenticated }, { sessionID: this.sessionID }, this.session.anonData))
 
         // var avatar = Data.data.anonAvatars[_.random(1)]
         // if (this.session.anonData && this.session.anonData.email)

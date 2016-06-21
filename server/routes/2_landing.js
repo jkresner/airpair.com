@@ -6,7 +6,8 @@ module.exports = function(app, mw, {landing}) {
   cache.workshops = config.env == 'dev' ? [] :
     require('../services/workshops').getAllForCache()
 
-  var {canonical} = cache['http-rules']
+
+  var canonical = cache['canonical']
   cache.landing = {
     home: {
       _id: Id("5706abc347ba64cb164bec06"),

@@ -82,11 +82,11 @@ module.exports = new LogicDataHelper(
       d.primarytag.postsUrl = // topTagPage ? `/${d.primarytag.slug}` :
         `/posts/tag/${d.primarytag.slug}`
 
-      var hasMatch = pattern => _.find(d.tags, t => t.slug.match(pattern))
+      var hasMatch = pattern => _.find(d.tags, t => pattern.test(t.slug))
       var override = d.adtag ? d.adtag.slug : false
 
       // Set of tags valid for the campaign
-      var campaign = /(ruby|node.js|java|php)$/i
+      var campaign = /(ruby|node.js|java|php|python)$/i
       var defaulttag = 'ruby'
 
       // Starts with the default catch all tag when we don't match any rules
@@ -104,17 +104,21 @@ module.exports = new LogicDataHelper(
       // Looks at each tag of the content/post and matches if on the values
       // is anywhere in the tag name (case insensitive)
       // E.g. node| matches: "node.js", "nodejs" "node.version.6.0" "server-node"
-      else if (hasMatch(/javascript|angular|node|mean|npm/i))
-        adtag = 'node.js'
 
       // Only looks at this set if no match above (..|angular|node|etc.)
       // If no match Will continue to the next (..php|laravel|etc.)
       else if (hasMatch(/java|android|spring|jvm|clojure/i))
         adtag = 'java'
 
+      else if (hasMatch(/node|mean|npm|express|mongoose/i))
+        adtag = 'node.js'
+
       // If no match found here, we've already set the default - ruby
       else if (hasMatch(/(php|laravel|wordpress|joomla)/i))
         adtag = 'php'
+
+      else if (hasMatch(/python|flask|django|google/i))
+        adtag = 'python'
 
       return assign(d, {adtag})
     },

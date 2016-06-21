@@ -67,7 +67,7 @@ var newer = {
 
   aone: {
     _id: ObjectId("5452cea65f221efa174237b4"),
-    email: 'airpairone001@gmail.com',
+    emails: [{value:'airpairone001@gmail.com'}],
     name: 'AirPair TestOne',
     auth:{
       password: { value: '$2a$08$Wk3aFR5GHTo4CMgWQgd3Ve9NZG2bZH6lT1YchsIZ99TAKUlhg.16W' }
@@ -127,7 +127,7 @@ var newer = {
         }
       }
     },
-    "email" : "ad@airpair.com",
+    "emails" : [{value:"ad@airpair.com"}],
     "name" : "Admin Daemon",
     "roles" : [ "admin" ]
   },
@@ -418,6 +418,8 @@ var newer = {
     "_id" : ObjectId("52127d4066a6f999a465f637"),
     "cohort" : {},
     "email" : "rashaunstovall@gmail.com",
+    "emails": [{value:"rashaunstovall@gmail.com",primary:true,verified:true}],
+    "photos": [{value:"52127d4066a6f999a465f637",primary:true,type:'gravatar'}],
     "emailVerified" : true,
     "name" : "Ra'Shaun Stovall",
     "bio" : "I explain to the reader my background relative to topic. They would like to know why I am a credible source. Speak directly to the reader with a warm tone.  I make them feel I care passionately about my work. Extra credit for including a  personal hobby.",

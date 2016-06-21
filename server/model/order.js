@@ -28,7 +28,7 @@ return asSchema({
   by: {
     _id:          { type: Id, ref: 'User', required },
     name:         { type: String, required },
-    avatar:       { type: String, required },
+    avatar:       { type: String },
     email:        { type: String, required },
     org:          {}
   },

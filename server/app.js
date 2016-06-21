@@ -1,34 +1,26 @@
-function run({config, MAServer,tracking}, done) {
+function run({config, MAServer,track}, done) {
 
-  global.config = config
-
-  var formatter         = require('./app.track.formatter')
-  var analytics         = MAServer.Analytics(config, tracking, formatter)
+  global.config         = config
   var app               = MAServer.App(config, done)
-  var Auth              = require('meanair-auth')
+  var auth              = require('meanair-auth')
   var model             = require(`meanair-model`)(done)
 
   model.connect(() => {
 
     global.DAL          = assign(model.DAL,{ENUM:model.Enum})
     global.cache        = model.cache
-    global.analytics    = analytics.connect(DAL)
 
-    cache.get('tags', require('./logic/tags/cached')(DAL).exec, () => {
+    global.API          = require('./api/_all')
+    global.util         = require('../shared/util')
+    global.Wrappers     = require('./services/wrappers/_index')
+    global.mailman      = require('./util/mailman')()
+    global.pairbot      = require('./util/pairbot')()
 
-      global.API          = require('./api/_all')
-      global.util         = require('../shared/util')
-      global.Wrappers     = require('./services/wrappers/_index')
-      global.Wrappers.plumbWrapped('Cloudflare')
-      global.mailman      = require('./util/mailman')()
-      global.pairbot      = require('./util/pairbot')()
-
-      app.meanair.set(model, {analytics})
-                 .merge(Auth)
-                 .chain(config.middleware, config.routes)
-                 .run()
-    })
-
+    app.meanair.set(model)
+               .track(config.analytics, {track,formatter:require('../templates/log/analytics')})
+               .merge(auth)
+               .chain(config.middleware, config.routes, cache.require)
+               .run()
 
   })
 

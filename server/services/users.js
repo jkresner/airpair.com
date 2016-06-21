@@ -28,24 +28,28 @@ function updateAsIdentity(data, trackData, cb) {
   if (trackData)
     analytics.echo(this.user, this.sessionID, 'Save', trackData, {}, ()=>{})
 
-  var {user} = this
+  // var {user} = this
 
     // var unset = { bitbucketId: 1 }
     // svc.updateWithUnset(id, unset, (e,user) => {})
 
     // o.updated = new Date() ??
     // authorization etc.
-  User.updateSet(user._id, data, (e,r) => {
+  User.updateSet(this.user._id, data, {select:'_id name username emails photos location initials'}, (e,r) => {
+    // console.log('user.updateAsIdentity e r'.white, e, r)
     if (e) return cb(e)
-    if (!r) return cb(Error(`Failed to update user with id: ${user._id}`))
-    var sessionOfUser = selectFromObj(r, '_id name emailVerified')
-    sessionOfUser.email = _.find(r.emails, em => em.primary).value
-    sessionOfUser.avatar = md5.gravatarUrl(r.email)
-    if (r.photos) sessionOfUser.avatar = _.find(r.photos, p=>p.primary) || sessionOfUser.avatar
-//      // console.log('track save', ctx, data)
+    if (!r) return cb(Error(`Failed to update user with id: ${this.user._id}`))
+
+    var session = _.select(r, '_id name username')
+    session.email = _.find(r.emails, em => em.primary).value
+    session.avatar = (r.photos ? r.photos[0].value : md5.gravatarUrl(session.email)).split('?')[0]
+
+    // console.log('user.updateAsIdentity'.white, r)
 //      //-- Very magic important line
     // if (!_.isEqual(this.session.passport.user, sessionOfUser))
-    this.session.passport.user = sessionOfUser
+    this.session.passport.user = session
+    console.log('user.updateAsIdentity'.yellow, this.session.passport.user)
+    // console.log('user.updateAsIdentity session'.white, session)
 
     cb(e, r)
   })

@@ -42,6 +42,7 @@ module.exports = function(DAL, Data, Shared, Lib) {
         Lib[fn](this, 'gh', 'github', profile, tokens, (e,r) => {
           if (e) return done(e)
           r.avatar = r.photos ? r.photos[0].value : null
+          if (r.avatar) r.avatar = r.avatar.split('?')[0]
           r.username = r.username || profile.login
 
           assign(this.analytics, {
@@ -49,7 +50,8 @@ module.exports = function(DAL, Data, Shared, Lib) {
             alias: _.pick(r,["_id","name","email","username"]),
             data: { user:_.pick(r,["_id","name","avatar"]), profile } })
 
-          console.log('loginCust'.yellow, r._id, r.name.yellow, r.avatar, (r.photos||[]).map(p => `${p.type.blue}::${p.value}`).join(' | '))
+          console.log('loginCust'.yellow, r._id, r.name.yellow, r.avatar,
+            (r.photos||[]).map(p => `${p.type.blue}::${p.value}`).join(' | '))
 
           done(e, r)
         })

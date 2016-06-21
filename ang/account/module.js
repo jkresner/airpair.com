@@ -37,6 +37,9 @@ angular.module("APAccount", [])
 
 .controller('AccountCtrl', function($rootScope, $scope, $location, ServerErrors, SessionService) {
 
+  SessionService.getAccount(function(user) {
+    // console.log('user', user)
+
   // if ($location.search().verify)
   // {
   //   SessionService.verifyEmail({hash:$location.search().verify}, function(result){
@@ -46,16 +49,60 @@ angular.module("APAccount", [])
   //   })
   // }
 
-  if ($scope.session) {
-    $scope.data = _.pick($scope.session, ['name','email','initials','username'])
-  }
+    var updateInfo = targetName => function() {
+      $scope.profileAlerts = []
+      var propName = targetName.toLowerCase()
+      if ($scope.data[propName]
+        && $scope.data[propName] != ''
+        && $scope.session[propName] != $scope.data[propName])
+      {
+        var up = {}
+        up[propName] = $scope.data[propName]
+        SessionService[`update${targetName}`](up, function(r) {
+          $rootScope.session = _.pick(r, 'name','email','initials','username', 'avatar')
+          if (r.location) {
+            $scope.data.location = r.location.name
+            $scope.data.timeZoneId = r.location.timeZoneId
+          }
+          $scope.profileAlerts.push({ type: 'success', msg: `${targetName} updated` })
+        }, function(e){
+          $scope.data.username = $rootScope.session.username
+          $scope.profileAlerts.push({ type: 'danger', msg: e.message })
+        })
+      }
 
-  $rootScope.$watch('session.location', () =>{
-    if ($rootScope.session.location) {
-      $scope.data.location = $scope.session.location.name,
-      $scope.data.timeZoneId = $scope.session.location.timeZoneId
+      if (!$scope.data.username && $scope.session.auth) {
+        var social = $scope.session.auth
+        if (social.gh && social.gh.login || social.gh.username)
+        {
+          var username = social.gh.login || social.gh.username
+          SessionService.updateUsername({username}, function(result){
+            $scope.data.username = username
+          }, function(e){})
+        }
+      }
     }
-  })
+
+    $scope.data = _.pick(user, 'name','email','initials','username','avatar')
+      // console.log('watching the change....', $rootScope.session.location)
+
+    if (user.location)
+    {
+      $scope.data.location = user.location.name
+      $scope.data.timeZoneId = user.location.timeZoneId
+    }
+
+
+    $scope.updateName = updateInfo('Name')
+    $scope.updateInitials = updateInfo('Initials')
+    $scope.updateUsername = updateInfo('Username')
+    $scope.updateLocation = (locationData) => {
+      SessionService.changeLocationTimezone(locationData, (r) => {
+        // $scope.data.location = r.location.name
+        $scope.data.timezone = r.location.timeZoneId
+      }, (e)=> {})
+    }
+
 
   // $scope.updateEmail = function(model) {
   //   if (!model.$valid || $scope.data.email == $scope.session.email) return
@@ -88,6 +135,7 @@ angular.module("APAccount", [])
   //   }, ServerErrors.add)
   // }
 
+  }, () => {})
 })
 
 
@@ -127,5 +175,70 @@ angular.module("APAccount", [])
   //     }, ServerErrors.add)
   //   };
   // })
+
+angular.module("APProfileDirectives", [])
+
+
+.directive('socialLinks', function() {
+
+  return {
+    template: require('./socialLinks.html'),
+    scope: { p: '=profile' },
+    link(scope, element, attrs) { },
+    controller($scope, $attrs) {
+      $scope.$watch('p', ()=>{
+        if (!$scope.p) return
+        if ($scope.p.so)
+          $scope.p.so.link =
+            $scope.p.so.link.replace('http://stackoverflow.com/users/','')
+      })
+    }
+  };
+
+})
+
+
+.directive('socialScores', function() {
+
+  return {
+    template: require('./socialScores.html'),
+    scope: { p: '=profile' },
+    link(scope, element, attrs) { },
+    controller($scope, $attrs) {
+    }
+  };
+
+})
+
+
+.directive('socialConnect', function($rootScope, $location) {
+
+  return {
+    template: require('./socialConnect.html'),
+    scope: {
+      returnTo: '=returnTo',
+    },
+    controller($scope, $attrs) {
+      $scope.data = {}
+      $scope.return = $scope.returnTo || $location.path()
+
+      $rootScope.$watch('session', (session) => {
+        if (session.auth) {
+          if (session.auth.gh) $scope.data.gh = session.auth.gh.login
+          if (session.auth.tw) $scope.data.tw = session.auth.tw.screen_name
+          if (session.auth.so) $scope.data.so = session.auth.so.link
+          if (session.auth.in) $scope.data.in = session.auth.in.id
+          if (session.auth.bb) $scope.data.bb = session.auth.bb.username
+          if (session.auth.gp) $scope.data.gp =
+            session.auth.gp.link || session.auth.gp.url || session.auth.gp.id
+          if (session.auth.al) $scope.data.al =
+            session.auth.al.username || session.auth.al.angellist_url
+        }
+      })
+
+    }
+  };
+
+})
 
 
