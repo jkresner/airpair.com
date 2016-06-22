@@ -2,8 +2,5 @@
 CYAN='\033[0;36m'
 NC='\033[0m' # No Color
 printf "${CYAN}CMD: Symlink img tags${NC}\n"
-mkdir -p web/public/img/tag;
-cd web/public/img/tag;
-for l in $(find . -type l); do unlink $l;done;
-for f in $(ls -d ../../../../../static/src/img/tag/*); do ln -nsf $f;done;
-cd ../../;
+rm -rf web/public/img/tag;
+cp -r ../static/src/img/tag web/public/img/tag;
