@@ -43,6 +43,7 @@
 // }
 
 module.exports = function(type, d, {sId,ip,ua,ud,user,ref}) {
+  // console.log('confg', config.analytics)
   // - used for quieter testing
   if (type == 'impression') return
   // if (!((global.config.analytics.log.trk||{})[type]) return
@@ -58,10 +59,14 @@ module.exports = function(type, d, {sId,ip,ua,ud,user,ref}) {
     info = JSON.stringify(_.omit(d.data,'headers')).white
   }
   else if (/view/.test(type)) {
-    label = `${d.type.toUpperCase()}`.cyan + '       '.substr(0, 7-d.type.length)
+    if (/ad/.test(d.type))
+      label = `AD:CLK  `.yellow
+    else if (/landing/.test(d.type))
+      label = `PAGE    `.dim
+    else
+      label = `${d.type.toUpperCase()}`.cyan + '       '.substr(0, 7-d.type.length)
     info = `${(d.url||'').cyan} ${ref?ref.replace(/(https|http)\:\/\//g,'<< ').replace('www.','').blue:''}`
   }
-
 
   var uID = !user ? `anon:${ud}`.cyan : `${user.name||user._id}`.white
 

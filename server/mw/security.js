@@ -118,14 +118,14 @@ module.exports = (app, mw, {forbid}) => {
 
 
   mw.
-    cache('noBot', mw.req.noCrawl({ group: 'null|search|ban|lib|proxy|reader',
+    cache('noBot', mw.req.noCrawl({ group: 'search|ban|lib|proxy|reader',
       content:'',
       onDisallow: req => $logMW(req, 'bot(*)') }
     ))
 
 
   mw.
-    cache('badBot', mw.req.noCrawl({ group: 'null|ban|lib',
+    cache('badBot', mw.req.noCrawl({ group: 'ban|lib',
       content:'',
       onDisallow: req => $logMW(req, 'bot(ban|lib)') }
     ))

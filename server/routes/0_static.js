@@ -2,7 +2,7 @@ module.exports = function(app, mw, {static,landing}) {
   if (!static) return;
 
 
-  if (static.img)
+  if (landing && static.img)
 
     app.honey.Router('img', static.img)
 

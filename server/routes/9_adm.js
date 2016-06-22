@@ -4,7 +4,6 @@ module.exports = function(app, mw, {adm}) {
 
   app.get('/adm/*', mw.$.session, mw.$.adm, mw.$.adminPage)
 
-
   app.honey.Router('adm:api', { mount: '/v1/api/adm', type: 'api' })
     .use(mw.$.adm)
     .useEnd(mw.$.apiJson)
@@ -35,7 +34,7 @@ module.exports = function(app, mw, {adm}) {
     .put('/requests/:request/message', API.Requests.sendMessageByAdmin)
     .put('/requests/:request/farm', API.Requests.farmByAdmin)
     .put('/requests/:request/remove/:expert', API.Requests.removeSuggestion)
-    .use(mw.$.cachedSlackUsers)
+    // .use(mw.$.cachedSlackUsers)
     .get('/requests/:id', API.Requests.getByIdForAdmin)
     .put('/chat/invite-to-team/:userId', API.Chat.inviteToTeam)
     // .put('/chat/sync-ims', API.Chat.syncIMs)

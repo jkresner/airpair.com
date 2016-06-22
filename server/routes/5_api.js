@@ -1,7 +1,7 @@
-module.exports = function(app, mw, api) {
+module.exports = function(app, mw, {api}) {
   if (!api) return;
 
-  app.API('auth')
+  app.API('auth', api)
     .uses('noBot')
     .get({'session':                  ''})
 
@@ -18,9 +18,15 @@ module.exports = function(app, mw, api) {
     // .get({ getForks:               '' })
             // getActivity:            'post'                 })
 
-  app.use('/v1/api', [mw.$.noBot, mw.$.session])
-  app.use(['/v1/api/bookings/*',
-           '/v1/api/requests/*'], [mw.$.cachedSlackUsers])
+
+  app.use(['/v1/api/adm/*',
+           '/v1/api/bookings*',
+           '/v1/api/requests*',
+           '/v1/api/billing*',
+           '/v1/api/experts*',
+           '/v1/api/users*',
+           '/v1/api/tags*'
+           ], [mw.$.noBot, mw.$.session, mw.$.cachedSlackUsers])
 
   app.honey.Router('general:api', { mount: '/v1/api', type: 'api' })
     // .param('tag', API.Tags.paramFns.getBySlug)

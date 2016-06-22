@@ -1,8 +1,9 @@
 module.exports = (DAL, Data, Shared, Lib) => ({
 
   exec(cb) {
-    // {-- TODO cleanup + move to more appropriate place
-    // if (!cfg.posts) return cb(null, {})
+
+    var cfg = _.get(config,'routes.canonical')
+    if (!cfg.posts) return cb(null, {})
 
     DAL.Post.getManyByQuery({'history.published':{$exists:true, $lt: new Date}},
       { select:'_id by._id slug title tags htmlHead.canonical htmlHead.ogImage' },
@@ -25,6 +26,8 @@ module.exports = (DAL, Data, Shared, Lib) => ({
           url: p.htmlHead.canonical.replace(/^(https|http)/,'')
                                    .replace('://www.airpair.com','')
                                    .replace('++','\\+\\+') }))
+
+        if (!cfg.tags) return cb(null, assign(r,{tag:[]}))
 
         r.tag = _.sortBy(Object.keys(tagged)
           .map(id => cache.tags[id])

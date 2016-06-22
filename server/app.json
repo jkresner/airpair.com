@@ -135,7 +135,7 @@
     "slow":                    1000
   },
   "model": {
-    "cache":                   { "require": "tags:tags,tmpl:templates,rules:routes" }
+    "cache":                   { "require": "tags:tags,tmpl:templates,rules:routes,ads:ads" }
   },
   "routes": {
     "adm":                     { "api": { "mount": "/v1/api/adm" } },
@@ -144,7 +144,7 @@
       "dir":                   "web/public/ads"
     },
     "api":                     { "mount": "/v1/api" },
-    "canonical":               { "async": "canonical", "posts": true },
+    "canonical":               { "async": "canonical", "posts": true, "tags": true },
     "landing": {
       "tags": {
         "dir":                 "web/public/img/tag",

@@ -5,7 +5,7 @@ var track    = require('./app.track')
 
 var app = require('./app').run({ config, MAServer, track },
   function(e) {
-    if (e) return $log('APP.ERROR'.red, e)
+    if (e) return $log('APP.ERROR'.red, e, e.stack)
 
 //     var urls = app.sitemap.map(url => `<url><loc>${url}</loc></url>`)
 //                           .join('\n  ')
