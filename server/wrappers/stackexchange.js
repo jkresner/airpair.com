@@ -1,32 +1,29 @@
-var logging                       = false
-
 var wrapper = {
 
+  name: "StackExchange",
+
   init() {
+    this.url = `http://api.stackexchange.com/`
     wrapper.api = require('superagent')
   },
 
-  getTagByStackoverflowSlug(term, cb) {
-    var encoded = encodeURIComponent(term)
-    if (logging)
-      $log('getTagByStackoverflowSlug', `http://api.stackexchange.com/tags/${encoded}/wikis?site=stackoverflow`)
+  getTagBySlug(term, cb) {
+    $logIt(`wrpr.call`, `Stack.getTagBySlug`, term)
 
+    var encoded = encodeURIComponent(term)
     wrapper.api
-      .get(`https://api.stackexchange.com/tags/${encoded}/wikis?site=stackoverflow`,
-      // .set('user-agent', "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.104 Safari/537.36")
+      .get(`{this.url}/tags/${encoded}/wikis?site=stackoverflow`,
       // .set('Accept','text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8')
       // .set('Accept', 'application/json')
       function(ee, res) {
-        if (logging || ee) $log('SO.res'.yellow, ee, res.ok, res.body)
+        if (ee) $log(`wrpr.StackExhange.err ${ee}`.red)
 
-        var err = new Error(`Stackoverflow tag ${term} not found`)
         if (!res.ok)
-         return cb(err)
+         return cb(new Error(`StackOverflow tag not found matching [${term}]`))
 
         // subscript for fucking invisible character
         // var d = JSON.parse(res.text.substring(1)).items[0])
         var d = res.body.items[0]
-
         if (!d)
           return cb(err)
 
@@ -38,8 +35,6 @@ var wrapper = {
           soId: d.tag_name,
           so: d
         })
-
-
       })
   }
 }

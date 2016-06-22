@@ -10,9 +10,9 @@ var wrapper = {
 
   getTimezoneFromCoordinates({lat,lng}, timestamp, cb)
   {
+    $logIt(`wrpr.call`, `timezone.fromCoordinates`)
     //-- Todo, figure out the timestamp approach to fix funny reported timezones
     if (!timestamp) timestamp = moment().unix()
-    $logIt(`wrpr.call`, `timezone.fromCoordinates`)
     this.api.data(lat,lng,timestamp,cb)
   }
 

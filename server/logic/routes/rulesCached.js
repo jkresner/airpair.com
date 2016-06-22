@@ -71,6 +71,7 @@ var concatExperimental = all =>
     { type:'rewrite', url: '/posts/tag/angularjs', to: '/angularjs/posts' },
     { type:'rewrite', url: '/posts/tag/node', to: '/node.js' },
     { type:'rewrite', url: '/posts/tag/', to: '/' },
+    { type:'rewrite', url: '/tags/search/', to: '/tags/search?q=' },
     { type:'rewrite', url: '^((/i.stack.)|(/i.)|(/))imgur.com/*', to: 'https://i.imgur.com/' },
     { type:'rewrite', url: '/images/icons/', to: 'https://static.airpair.com/img/icons/' },
     { type:'rewrite', url: '/static/img/icons/', to: 'https://static.airpair.com/img/icons/' },

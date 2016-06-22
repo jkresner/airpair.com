@@ -4,6 +4,9 @@ var views = {
 }
 
 
+var encodes = ['c%2B%2B','c%23','f%23']
+
+
 module.exports = new LogicDataHelper(views,
 
   () => ({

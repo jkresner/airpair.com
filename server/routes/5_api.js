@@ -3,7 +3,11 @@ module.exports = function(app, mw, {api}) {
 
   app.API('auth', api)
     .uses('noBot')
-    .get({'session':                  ''})
+    .get({'session':             ''                       })
+
+  app.API('tags')
+    .uses('noBot')
+    .get ({ search:               'query.q'               })
 
   // app.API('reviews')
   //   .params('post postreview')
@@ -25,12 +29,10 @@ module.exports = function(app, mw, {api}) {
            '/v1/api/billing*',
            '/v1/api/experts*',
            '/v1/api/users*',
-           '/v1/api/tags*'
            ], [mw.$.noBot, mw.$.session, mw.$.cachedSlackUsers])
 
   app.honey.Router('general:api', { mount: '/v1/api', type: 'api' })
-    // .param('tag', API.Tags.paramFns.getBySlug)
-    // .param('tagfrom3rdparty', 'tags', 'getBy3rdParty')
+    .param('tag', mw.$.paramTag)
     .param('expertshaped', API.Experts.paramFns.getById)
     .param('order', API.Orders.paramFns.getByIdForAdmin)
     .param('paymethod', API.Paymethods.paramFns.getById)
@@ -41,9 +43,7 @@ module.exports = function(app, mw, {api}) {
   //   .put('/users/me/bookmarks', mw.$.setAnonSessionData, API.Users.updateBookmarks)
   //   .put('/users/me/bookmarks/:type/:id', mw.$.setAnonSessionData, API.Users.toggleBookmark)
     .get('/requests/review/:id', API.Requests.getByIdForReview)
-    .get('/tags/search/:id', API.Tags.search)
     .use(mw.$.authd)
-    // .post('/tags', mw.data.recast('tag','body.tagfrom3rdparty'), API.Tags.createFrom3rdParty)
     .get('/requests-authd', mw.$.inflateMe, API.Requests.getAllowed)
     .get('/requests', API.Requests.getMy)
     .get('/requests/:id', API.Requests.getByIdForUser)

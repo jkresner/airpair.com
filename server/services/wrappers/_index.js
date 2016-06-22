@@ -33,7 +33,6 @@ module.exports = assign(global.Wrappers, {
   Braintree:      initAPIWrap('Braintree'),
   Calendar:       initAPIWrap('Calendar', 'gcal'),
   Slack:          initAPIWrap('Slack'),
-  StackExchange:  initAPIWrap('StackExchange'),
   Stripe:         initAPIWrap('Stripe'),
   Twitter:        initAPIWrap('Twitter'),
   YouTube:        initAPIWrap('YouTube')

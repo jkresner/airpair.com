@@ -5,15 +5,6 @@ test =
   auth:
     login:                   { fnName: 'loginCust', url: '/auth/test/login' }
 
-global.L = ->
-  args = [].slice.call(arguments)
-  if (args[0].test||{}).title
-    args[0] = "#{'IT'.cyan.dim} " +"#{args[0].test.title.gray}\t"
-  else
-    args.splice(0,1,"@?\t".gray)
-  args[1] = "#{JSON.stringify(args[1])}".yellow
-  console.log.apply(null, args)
-
 
 
 OPTS =

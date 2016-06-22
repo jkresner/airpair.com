@@ -9,7 +9,7 @@ module.exports = function(app, mw, {adm}) {
     .useEnd(mw.$.apiJson)
     .param('request', API.Requests.paramFns.getByIdForAdmin)
     .param('order', API.Orders.paramFns.getByIdForAdmin)
-    .param('tag', API.Tags.paramFns.getBySlug)
+    .param('tag', mw.$.paramTag)
     .param('expert', API.Experts.paramFns.getByIdForAdmin)
     .param('expertshaped', API.Experts.paramFns.getById)
     .param('booking', API.Bookings.paramFns.getById)
@@ -47,8 +47,8 @@ module.exports = function(app, mw, {adm}) {
     .put('/bookings/:booking/:order/:request/:id/swap', API.Bookings.cheatExpertSwap)
     .put('/bookings/chat/invite-to-team/:userId', API.Chat.inviteToTeam)
     .post('/bookings/chat/:booking/message', API.Bookings.postChatMessage)
-    .get('/tags/:id', API.Tags.getById)
 
+    // .get('/tags/:id', API.Tags.getById)
     // .get('/tags', API.Tags.getAllForCache)
     // .post('/tags', API.Tags.createByAdmin)
     // .get('/experts/mojo/me', API.Mojo.getMatchesForRequest)

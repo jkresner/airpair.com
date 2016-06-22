@@ -5,7 +5,14 @@ phlfExp = null
 forAdmin = true
 
 
+
 experts = ->
+
+
+  IT '401 on unauthenticated adm API call', ->
+    opts = status: 403, unauthenticated: true
+    GET("/adm/experts/new", opts, -> DONE() )
+
 
 
   IT "Get newest experts", ->
@@ -307,6 +314,49 @@ requests = ->
     #                         DONE()
 
 
-DESCRIBE("Experts: ", experts)
-DESCRIBE.skip("Request", requests)
+tags = ->
+
+  IT '401 on unauthenticated Tag.getById', ->
+    opts = status: 403, unauthenticated: true
+    GET("/adm/tags/5149dccb5fc6390200000013", opts, -> DONE() )
+
+
+  IT 'getById returns all tag data for admin', ->
+    LOGIN {key:'admin'}, ->
+      GET "/adm/tags/5149dccb5fc6390200000013", (t) ->
+        EXPECT.equalIds(t._id,"5149dccb5fc6390200000013")
+        expect(t.name).to.equal('AngularJS')
+        expect(t.short).to.equal('Angular')
+        expect(t.slug).to.equal('angularjs')
+        expect(t.desc.indexOf("AngularJS is an open-source JavaScript framework.")).to.equal(0)
+        expect(t.tokens).to.equal('ang,angular,angular.js,angular-js,angular js')
+        expect(t.meta.title).to.equal("AngularJS Articles, Workshops & Developers ready to help. A top resource!")
+        expect(t.meta.description).to.equal("AngularJS Articles, Workshops & Developers ready to help. One of the web's top AngularJS resources - totally worth bookmarking!")
+        expect(t.meta.ogType).to.equal("website")
+        expect(t.meta.ogTitle).to.equal("AngularJS Articles, Workshops and Developers")
+        expect(t.meta.ogDescription).to.equal("One of the best collections of #AngularJS Articles, Live Workshops and Developers on the web")
+        expect(t.meta.ogImage).to.equal( "https://www.airpair.com/static/img/css/tags/angularjs-og.png")
+        expect(t.meta.ogUrl).to.equal("https://www.airpair.com/angularjs")
+        expect(t.meta.canonical).to.equal("http://www.airpair.com/angularjs")
+        expect(t.soId).to.equal('angularjs')
+        expect(t.so).to.undefined
+        expect(t.ghId).to.undefined
+        expect(t.gh).to.undefined
+        DONE()
+
+
+  IT 'Cannot change slug update tag', ->
+    LOGIN {key:'admin'}, ->
+      GET '/adm/tags/514825fa2a26ea020000001b', {}, (t) ->
+        expect(t.slug).to.equal("ios")
+        t.slug = "appleos"
+        PUT '/adm/tags/514825fa2a26ea020000001b', t, { status: 403 }, (err) ->
+          EXPECT.startsWith(err.message, "Cannot change tag slug")
+          DONE()
+
+
+
+DESCRIBE("Experts", experts)
+DESCRIBE.skip("Requests", requests)
+DESCRIBE.skip("Tags", requests)
 

@@ -15,6 +15,16 @@ global.UTIL =
     global.cache.iplog = {}
 
 
+global.L = ->
+  args = [].slice.call(arguments)
+  if (args[0].test||{}).title
+    args[0] = "#{'IT'.cyan.dim} " +"#{args[0].test.title.gray}\t"
+  else
+    args.splice(0,1,"@?\t".gray)
+  args[1] = "#{JSON.stringify(args[1])}".yellow
+  console.log.apply(null, args)
+
+
 """
 DB
 """
@@ -49,34 +59,7 @@ DB.expectSession = ({sessionID}, cb) ->
 FLAVOUR
 """
 
-
-# global.STRINGIFY = (obj) ->
-#   if !JSONSTRING[obj._id]
-#     JSONSTRING[obj._id] = JSON.stringify(obj).gray
-#   JSONSTRING[obj._id]
-
-# EXPECT.ObjectId = (val) ->
-  # expect(val, "Expected ObjectId null").to.exist
-  # expect(val.constructor is ObjectId, "Expected ObjectId #{val.toString().white}".gray+" #{val.constructor} not an ObjectId".gray).to.be.true
-
-
-# EXPECT.touch = (touch, byId, action) ->
-  # expect(touch._id).to.exist
-  # expect(touch._id.constructor is ObjectId).to.be.true
-  # expectObjectId(touch._id)
-  # EXPECT.equalIds(touch.by._id, byId)
-  # expect(touch.action).to.equal(action)
-
-
-# EXPECT.attr = (obj, attr, constructor) ->
-#   expect(obj[attr], attr.white+" missing on: "+STRINGIFY(obj)).to.exist
-#   if (constructor)
-#     expect(obj[attr].constructor, "#{attr}.constuctor #{obj[attr].constructor.name.cyan} but expecting #{constructor.name.cyan} on: "+STRINGIFY(obj)).to.equal(constructor)
-
-
-# EXPECT.attrUndefined = (obj, attr) ->
-#   expect(obj[attr], attr.white+" shoud not be found on "+STRINGIFY(obj)).to.be.undefined
-
+##
 
 
 """

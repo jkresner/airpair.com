@@ -62,13 +62,13 @@ module.exports = function(type, d, {sId,ip,ua,ud,user,ref}) {
     if (/ad/.test(d.type))
       label = `AD:CLK  `.yellow
     else if (/landing/.test(d.type))
-      label = `PAGE    `.dim
+      label = `PAGE   `.cyan.dim
     else
       label = `${d.type.toUpperCase()}`.cyan + '       '.substr(0, 7-d.type.length)
     info = `${(d.url||'').cyan} ${ref?ref.replace(/(https|http)\:\/\//g,'<< ').replace('www.','').blue:''}`
   }
 
-  var uID = !user ? `anon:${ud}`.cyan : `${user.name||user._id}`.white
+  var uID = !user ? `anon${ud=='other'?'':':'+ud}`.cyan : `${user.name||user._id}`.white
 
   console.log( `${(sId||'_ _ _ _ _ _ _').substr(0,11)} ${ip+'                '.slice(ip, 16-ip.length).dim}`.cyan
             , label

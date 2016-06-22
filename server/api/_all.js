@@ -1,7 +1,6 @@
 
 module.exports = {
   Users:        require('./users'),
-  Tags:         require('./tags'),
   Paymethods:   require('./paymethods'),
   Orders:       require('./orders'),
   Bookings:     require('./bookings'),
