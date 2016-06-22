@@ -4,7 +4,7 @@ module.exports = function(app, mw, {static,landing}) {
 
   if (static.img)
 
-    app.honey.Router('img', static.img, console.log('tag/img'.yellow, `${config.appDir}/${landing.tags.dir}`))
+    app.honey.Router('img', static.img)
 
       .static('/img/software', { dir:`${config.appDir}/${landing.tags.dir}`})
 

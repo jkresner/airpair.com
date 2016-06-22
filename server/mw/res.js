@@ -5,7 +5,7 @@ module.exports = (app, mw, {abuse}) => {
   if (/prod/.test(config.env)) hosted = Object.keys(bundles)
   for (var b of hosted)
     bundles[b] = `${host}${bundles[b]}`
-  console.log('bundles', bundles)
+
 
   var {about} = config
   var cfg = { static: { host }, analytics: config.analytics }

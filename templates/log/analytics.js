@@ -42,10 +42,10 @@
   // }
 // }
 
-
 module.exports = function(type, d, {sId,ip,ua,ud,user,ref}) {
   // - used for quieter testing
-  // if (!(global.config.analytics.log||{}).trk[type]) return
+  if (type == 'impression') return
+  // if (!((global.config.analytics.log.trk||{})[type]) return
 
   var label = ''
   var info = ''
@@ -61,6 +61,8 @@ module.exports = function(type, d, {sId,ip,ua,ud,user,ref}) {
     label = `${d.type.toUpperCase()}`.cyan + '       '.substr(0, 7-d.type.length)
     info = `${(d.url||'').cyan} ${ref?ref.replace(/(https|http)\:\/\//g,'<< ').replace('www.','').blue:''}`
   }
+
+
   var uID = !user ? `anon:${ud}`.cyan : `${user.name||user._id}`.white
 
   console.log( `${(sId||'_ _ _ _ _ _ _').substr(0,11)} ${ip+'                '.slice(ip, 16-ip.length).dim}`.cyan
