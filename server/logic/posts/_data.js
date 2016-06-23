@@ -6,16 +6,16 @@ var views = {
   cache:   '_id by.name by.avatar title htmlHead.canonical htmlHead.ogImage history.subscribed history.published'
 }
 
-
 var postUtil                = require('../../../shared/posts')
-var generateToc         = require('../../services/postsToc')
+// var postUtil            = require('../../../../author/shared/posts')
+var generateToc         = require('../../../../author/server/logic/post/lib/toc')()
 
 
 module.exports = new LogicDataHelper(
 
   views,
 
-  ({chain, select, inflate, md5}) => ({
+  ({chain, select, inflate, md5}) => ({  //, {posts}) => ({
 
     subscribedHash: d => {
       // $log('subHash'.yellow, d.subscribed)

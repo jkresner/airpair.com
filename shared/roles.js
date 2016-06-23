@@ -1,4 +1,5 @@
-var {idsEqual} = require('./util')
+var idsEqual = (a,b) =>
+  a&&b ? a.toString() == b.toString() : false
 
 var isAdmin = user =>
   config.middleware.forbid.nonAdm.allow.match(user._id)
@@ -54,20 +55,6 @@ var roles = {
     isParticipantOrAdmin(user, o) {
       var isSpinner = _.contains(user.roles, 'spinner')
       return isAdmin(user) || isSpinner || roles.booking.isParticipant(user,o)
-    }
-  },
-  post: {
-    isOwner(user, post) {
-      return idsEqual(user._id, post.by.userId)
-    },
-    isOwnerOrEditor(user, post) {
-      var isEditor = _.contains(user.roles, 'editor')
-      var isOwner = idsEqual(user._id, post.by.userId)
-
-      return isAdmin(user) || isEditor || isOwner
-    },
-    isForker(user, post) {
-      return _.find(post.forkers, (f)=>idsEqual(user._id, f.userId))
     }
   }
 }

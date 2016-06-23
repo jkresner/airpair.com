@@ -4,6 +4,6 @@ module.exports = require('./_api').initAPI(
   inviteToTeam: (req) => [req.params.userId],
   syncIMs: (req) => []
 }, {
-},
-  require('../../shared/validation/chats.js')
-)
+}, {
+  inviteToTeam(user, userId) {},
+})

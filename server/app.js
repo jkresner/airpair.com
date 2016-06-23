@@ -24,7 +24,7 @@ function run({config, MAServer,track}, done) {
               app.chain(config.middleware, config.routes, cache.require)
                  .run()
 
-    setTimeout(ghhh, 400)
+    setTimeout(ghhh, /prod/i.test(config.env) ? 800 : 300)
 
   })
 

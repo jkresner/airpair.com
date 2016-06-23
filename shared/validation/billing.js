@@ -34,18 +34,18 @@ var validation = {
     if (!source) return `Source required`
   },
 
-  buyDeal(user, expert, dealId, payMethodId)
-  {
-    var deal = _.find(expert.deals,(d)=>_.idsEqual(d._id,dealId))
-    if (!deal)
-      return `Could not find deal`
+  // buyDeal(user, expert, dealId, payMethodId)
+  // {
+  //   var deal = _.find(expert.deals,(d)=>_.idsEqual(d._id,dealId))
+  //   if (!deal)
+  //     return `Could not find deal`
 
-    if (deal.expiry && moment(deal.expiry).isBefore(moment()))
-      return `Deal expired ${deal.expiry}`
+  //   if (deal.expiry && moment(deal.expiry).isBefore(moment()))
+  //     return `Deal expired ${deal.expiry}`
 
-    if (!payMethodId)
-      return `Paymethod requried`
-  },
+  //   if (!payMethodId)
+  //     return `Paymethod requried`
+  // },
 
   addPaymethod(user, paymethod)
   {

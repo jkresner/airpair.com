@@ -103,167 +103,167 @@ DESCRIBE "Viewing", ->
 #   # it 'Can be viewed by additional participants', ->
 
 
-# scheduling = ->
+scheduling = ->
 
-#   before ->
-#     config.wrappers.calendar.on = true
+  before ->
+    config.wrappers.calendar.on = true
 
-#   after ->
-#     config.wrappers.calendar.on = false
-
-
-#   IT 'New booking has default prefered uncomfirmed time', ->
-#     # expect("email to expert to include preferred time").to.be.true
-#     STORY.newUser 'clew', {login:true,location:true,paymethod:true}, (s) ->
-#       pairDateTime = moment().add(2, 'day')
-#       airpair1 = datetime: pairDateTime, minutes: 120, type: 'private', payMethodId: s.primaryPayMethodId
-#       POST "/bookings/#{FIXTURE.experts.dros._id}", airpair1, (b1) ->
-#         expect(b1._id).to.exist
-#         expect(b1.status).to.equal("pending")
-#         expect(b1.minutes).to.equal(120)
-#         expect(b1.suggestedTimes.length).to.equal(1)
-#         expect(b1.suggestedTimes[0]._id).to.exist
-#         expect(b1.suggestedTimes[0].confirmedById).to.be.undefined
-#         EXPECT.equalIds(b1.suggestedTimes[0].byId, s._id)
-#         expect(moment(b1.suggestedTimes[0].time).isSame(pairDateTime)).to.be.true
-#         expect(b1.lastTouch).to.be.undefined
-#         expect(b1.activity).to.be.undefined
-#         expect(b1.notes).to.be.undefined
-#         DB.docById 'Booking', b1._id, (b2) ->
-#           # EXPECT.touch(b2.lastTouch, s._id, "create")
-#           expect(b2.activity.length).to.equal(1)
-#           expect(b2.notes.length).to.equal(0)
-#           DONE()
+  after ->
+    config.wrappers.calendar.on = false
 
 
-
-#   IT 'Can suggest time if in pending', ->
-#     time1 = moment().add(1, 'day')
-#     STORY.newBooking 'chle', data:{datetime:time1}, (s, b1) ->
-#       expect(b1.suggestedTimes.length).to.equal(1)
-#       EXPECT.equalMoments(b1.suggestedTimes[0].time,time1)
-#       time2 = moment().add(3, 'day')
-#       d = { _id:b1._id, time:time2}
-#       PUT "/bookings/#{b1._id}/suggest-time", d, {}, (b2) ->
-#         expect(b2.status).to.equal("pending")
-#         expect(b2.suggestedTimes.length).to.equal(2)
-#         expect(b2.suggestedTimes[0]._id).to.exist
-#         expect(b2.suggestedTimes[1]._id).to.exist
-#         EXPECT.equalMoments(b2.suggestedTimes[0].time,time1)
-#         EXPECT.equalIds(b2.suggestedTimes[0].byId, s._id)
-#         EXPECT.equalMoments(b2.suggestedTimes[1].time,time2)
-#         EXPECT.equalIds(b2.suggestedTimes[1].byId, s._id)
-#         DB.docById 'Booking', b1._id, (b3) ->
-#           expect(b3.activity.length).to.equal(2)
-#           # EXPECT.touch(b3.activity[0], s._id, "create")
-#           # EXPECT.touch(b3.activity[1], s._id, "suggest-time")
-#           # EXPECT.touch(b3.lastTouch, s._id, "suggest-time")
-#           LOGIN {key:'dros'}, {retainSession:false}, (sDros) ->
-#             time3 = moment().add(4, 'day')
-#             d2 = { _id:b1._id, time:time3}
-#             PUT "/bookings/#{b1._id}/suggest-time", d2, {}, (b4) ->
-#               expect(b4.status).to.equal("pending")
-#               expect(b4.suggestedTimes.length).to.equal(3)
-#               EXPECT.equalMoments(b4.suggestedTimes[0].time,time1)
-#               EXPECT.equalMoments(b4.suggestedTimes[1].time,time2)
-#               EXPECT.equalMoments(b4.suggestedTimes[2].time,time3)
-#               EXPECT.equalIds(b4.suggestedTimes[2].byId, sDros._id)
-#               DB.docById 'Booking', b1._id, (b5) ->
-#                 expect(b5.activity.length).to.equal(3)
-#                 # EXPECT.touch(b5.lastTouch, sDros._id, "suggest-time")
-#                 # EXPECT.touch(b5.activity[1],s._id,"suggest-time")
-#                 # EXPECT.touch(b5.activity[2],sDros._id,"suggest-time")
-#                 DONE()
+  IT 'New booking has default prefered uncomfirmed time', ->
+    # expect("email to expert to include preferred time").to.be.true
+    STORY.newUser 'clew', {login:true,location:true,paymethod:true}, (s) ->
+      pairDateTime = moment().add(2, 'day')
+      airpair1 = datetime: pairDateTime, minutes: 120, type: 'private', payMethodId: s.primaryPayMethodId
+      POST "/bookings/#{FIXTURE.experts.dros._id}", airpair1, (b1) ->
+        expect(b1._id).to.exist
+        expect(b1.status).to.equal("pending")
+        expect(b1.minutes).to.equal(120)
+        expect(b1.suggestedTimes.length).to.equal(1)
+        expect(b1.suggestedTimes[0]._id).to.exist
+        expect(b1.suggestedTimes[0].confirmedById).to.be.undefined
+        EXPECT.equalIds(b1.suggestedTimes[0].byId, s._id)
+        expect(moment(b1.suggestedTimes[0].time).isSame(pairDateTime)).to.be.true
+        expect(b1.lastTouch).to.be.undefined
+        expect(b1.activity).to.be.undefined
+        expect(b1.notes).to.be.undefined
+        DB.docById 'Booking', b1._id, (b2) ->
+          # EXPECT.touch(b2.lastTouch, s._id, "create")
+          expect(b2.activity.length).to.equal(1)
+          expect(b2.notes.length).to.equal(0)
+          DONE()
 
 
-#   IT 'Can not confirm own suggested time', ->
-#     STORY.newBooking 'grnv', {}, (s, b1) ->
-#       timeId = b1.suggestedTimes[0]._id
-#       GET "/bookings", ->
-#         PUT "/bookings/#{b1._id}/confirm-time", {_id:b1._id, timeId}, {status:403}, (err) ->
-#           expect(err.indexOf(.message, 'Cannot confirm your own time').to.equal(0)
-#           DONE()
+
+  IT 'Can suggest time if in pending', ->
+    time1 = moment().add(1, 'day')
+    STORY.newBooking 'chle', data:{datetime:time1}, (s, b1) ->
+      expect(b1.suggestedTimes.length).to.equal(1)
+      EXPECT.equalMoments(b1.suggestedTimes[0].time,time1)
+      time2 = moment().add(3, 'day')
+      d = { _id:b1._id, time:time2}
+      PUT "/bookings/#{b1._id}/suggest-time", d, {}, (b2) ->
+        expect(b2.status).to.equal("pending")
+        expect(b2.suggestedTimes.length).to.equal(2)
+        expect(b2.suggestedTimes[0]._id).to.exist
+        expect(b2.suggestedTimes[1]._id).to.exist
+        EXPECT.equalMoments(b2.suggestedTimes[0].time,time1)
+        EXPECT.equalIds(b2.suggestedTimes[0].byId, s._id)
+        EXPECT.equalMoments(b2.suggestedTimes[1].time,time2)
+        EXPECT.equalIds(b2.suggestedTimes[1].byId, s._id)
+        DB.docById 'Booking', b1._id, (b3) ->
+          expect(b3.activity.length).to.equal(2)
+          # EXPECT.touch(b3.activity[0], s._id, "create")
+          # EXPECT.touch(b3.activity[1], s._id, "suggest-time")
+          # EXPECT.touch(b3.lastTouch, s._id, "suggest-time")
+          LOGIN {key:'dros'}, {retainSession:false}, (sDros) ->
+            time3 = moment().add(4, 'day')
+            d2 = { _id:b1._id, time:time3}
+            PUT "/bookings/#{b1._id}/suggest-time", d2, {}, (b4) ->
+              expect(b4.status).to.equal("pending")
+              expect(b4.suggestedTimes.length).to.equal(3)
+              EXPECT.equalMoments(b4.suggestedTimes[0].time,time1)
+              EXPECT.equalMoments(b4.suggestedTimes[1].time,time2)
+              EXPECT.equalMoments(b4.suggestedTimes[2].time,time3)
+              EXPECT.equalIds(b4.suggestedTimes[2].byId, sDros._id)
+              DB.docById 'Booking', b1._id, (b5) ->
+                expect(b5.activity.length).to.equal(3)
+                # EXPECT.touch(b5.lastTouch, sDros._id, "suggest-time")
+                # EXPECT.touch(b5.activity[1],s._id,"suggest-time")
+                # EXPECT.touch(b5.activity[2],sDros._id,"suggest-time")
+                DONE()
 
 
-#   IT 'Confirm customer booking suggested time by expert', ->
-#     stubCal = STUB.wrapper('Calendar').api('events.insert').fix('google_cal_create')
-#     # $log('stubCal', stubCal)
-#     # email notifications sent
-#     # stubMail = SETUP.stub mailman, 'send'
-#     spyPairbot = STUB.spy pairbot, 'sendSlackMsg'
-#     datetime = moment().add(10, 'day')
-#     slackChatId = "G06UFP6AX"
-#     STORY.newBooking 'gniv', data:{datetime,slackChatId}, (s, b1) ->
-#       LOGIN {key:'dros'}, {retainSession:false}, (sDros) ->
-#         timeId = b1.suggestedTimes[0]._id
-#         PUT "/bookings/#{b1._id}/confirm-time", {_id:b1._id, timeId}, {}, (b2) ->
-#           expect(b2.lastTouch).to.be.undefined
-#           expect(b2.activity).to.be.undefined
-#           expect(b2.notes).to.be.undefined
-#           expect(b2.status).to.equal("confirmed")
-#           EXPECT.equalMoments(b2.datetime, datetime)
-#           expect(spyPairbot.calledOnce).to.be.true
-#           expect(spyPairbot.args[0][0]).to.equal("G06UFP6AX")
-#           expect(spyPairbot.args[0][1]).to.equal('booking-confirm-time')
-#           expect(spyPairbot.args[0][2].byName).to.equal(sDros.name)
-#           expect(b2.suggestedTimes.length).to.equal(1)
-#           EXPECT.equalIds(b2.suggestedTimes[0].byId,s._id)
-#           EXPECT.equalIds(b2.suggestedTimes[0].confirmedById,sDros._id)
-#           expect(stubCal.calledOnce).to.be.true
-#           DB.docById 'Booking', b1._id, (b3) ->
-#             # EXPECT.touch(b3.lastTouch, sDros._id, "confirm-time")
-#             # EXPECT.touch(b3.activity[0],s._id, "create")
-#             # EXPECT.touch(b3.activity[1],FIXTURE.users.admin._id, "associate-chat")
-#             # EXPECT.touch(b3.activity[2],sDros._id, "confirm-time")
-#             DONE()
+  IT 'Can not confirm own suggested time', ->
+    STORY.newBooking 'grnv', {}, (s, b1) ->
+      timeId = b1.suggestedTimes[0]._id
+      GET "/bookings", ->
+        PUT "/bookings/#{b1._id}/confirm-time", {_id:b1._id, timeId}, {status:403}, (err) ->
+          expect(err.message).inc 'Cannot confirm your own time'
+          DONE()
 
 
-#   IT 'Expert can suggest alternative which can be confirmed by customer', ->
-#     stubCal = STUB.wrapper('Calendar').api('events.insert').fix('google_cal_create')
-#     # email notifications sent
-#     stubMail = STUB.callback mailman, 'send', {}
-#     stubPairBot = STUB.callback pairbot, 'sendSlackMsg', {}
-#     datetime = moment().add(11, 'day')
-#     STORY.newBooking 'kelf', data:{datetime,expertKey:'gnic'}, (s, b1) ->
-#       expect(b1.suggestedTimes.length).to.equal(1)
-#       suggestedTimeOriginal = b1.suggestedTimes[0]
-#       expect(suggestedTimeOriginal._id).to.exist
-#       DB.docById 'Booking', b1._id, (b1raw) ->
-#         expect(b1raw.suggestedTimes[0]._id).to.exist
-#       LOGIN 'gnic', {retainSession:false}, (sGnic) ->
-#         time2 = moment().add(17, 'day')
-#         d = { _id:b1._id, time:time2}
-#         PUT "/bookings/#{b1._id}/suggest-time", d, (b2) ->
-#           expect(b2.lastTouch).to.be.undefined
-#           expect(b2.activity).to.be.undefined
-#           expect(b2.notes).to.be.undefined
-#           expect(b2.status).to.equal("pending")
-#           EXPECT.equalMoments(b2.datetime, datetime)
-#           expect(b2.suggestedTimes.length).to.equal(2)
-#           expect(b2.suggestedTimes[0]._id).to.exist
-#           expect(b2.suggestedTimes[1]._id).to.exist
-#           expect(stubPairBot.calledOnce).to.be.false
-#           LOGIN {key:s.userKey}, {retainSession:false}, ->
-#             EXPECT.equalIds(b2.suggestedTimes[1].byId,sGnic._id)
-#             timeId = b2.suggestedTimes[1]._id
-#             PUT "/bookings/#{b1._id}/confirm-time", {_id:b1._id, timeId}, {}, (b3) ->
-#               expect(b3.status).to.equal("confirmed")
-#               EXPECT.equalMoments(b3.datetime, time2)
-#               expect(stubPairBot.calledOnce).to.be.false
-#               expect(stubCal.calledOnce).to.be.true
-#               expect(b3.suggestedTimes.length).to.equal(2)
-#               EXPECT.equalMoments(b3.suggestedTimes[0].time,datetime)
-#               EXPECT.equalIds(b3.suggestedTimes[0].byId,s._id)
-#               expect(b3.suggestedTimes[0].confirmedById).to.be.undefined
-#               EXPECT.equalMoments(b3.suggestedTimes[1].time,time2)
-#               EXPECT.equalIds(b3.suggestedTimes[1].byId,sGnic._id)
-#               EXPECT.equalIds(b3.suggestedTimes[1].confirmedById,s._id)
-#               DB.docById 'Booking', b1._id, (bDb1) ->
-#                 # EXPECT.touch(bDb1.lastTouch, s._id, "confirm-time")
-#                 # EXPECT.touch(bDb1.activity[0],s._id, "create")
-#                 # EXPECT.touch(bDb1.activity[1],sGnic._id, "suggest-time")
-#                 # EXPECT.touch(bDb1.activity[2],s._id, "confirm-time")
-#                 DONE()
+  IT 'Confirm customer booking suggested time by expert', ->
+    stubCal = STUB.wrapper('Calendar').api('events.insert').fix('google_cal_create')
+    # $log('stubCal', stubCal)
+    # email notifications sent
+    # stubMail = SETUP.stub mailman, 'send'
+    spyPairbot = STUB.spy pairbot, 'sendSlackMsg'
+    datetime = moment().add(10, 'day')
+    slackChatId = "G06UFP6AX"
+    STORY.newBooking 'gniv', data:{datetime,slackChatId}, (s, b1) ->
+      LOGIN {key:'dros'}, {retainSession:false}, (sDros) ->
+        timeId = b1.suggestedTimes[0]._id
+        PUT "/bookings/#{b1._id}/confirm-time", {_id:b1._id, timeId}, {}, (b2) ->
+          expect(b2.lastTouch).to.be.undefined
+          expect(b2.activity).to.be.undefined
+          expect(b2.notes).to.be.undefined
+          expect(b2.status).to.equal("confirmed")
+          EXPECT.equalMoments(b2.datetime, datetime)
+          expect(spyPairbot.calledOnce).to.be.true
+          expect(spyPairbot.args[0][0]).to.equal("G06UFP6AX")
+          expect(spyPairbot.args[0][1]).to.equal('booking-confirm-time')
+          expect(spyPairbot.args[0][2].byName).to.equal(sDros.name)
+          expect(b2.suggestedTimes.length).to.equal(1)
+          EXPECT.equalIds(b2.suggestedTimes[0].byId,s._id)
+          EXPECT.equalIds(b2.suggestedTimes[0].confirmedById,sDros._id)
+          expect(stubCal.calledOnce).to.be.true
+          DB.docById 'Booking', b1._id, (b3) ->
+            # EXPECT.touch(b3.lastTouch, sDros._id, "confirm-time")
+            # EXPECT.touch(b3.activity[0],s._id, "create")
+            # EXPECT.touch(b3.activity[1],FIXTURE.users.admin._id, "associate-chat")
+            # EXPECT.touch(b3.activity[2],sDros._id, "confirm-time")
+            DONE()
+
+
+  IT 'Expert can suggest alternative which can be confirmed by customer', ->
+    stubCal = STUB.wrapper('Calendar').api('events.insert').fix('google_cal_create')
+    # email notifications sent
+    stubMail = STUB.callback mailman, 'send', {}
+    stubPairBot = STUB.callback pairbot, 'sendSlackMsg', {}
+    datetime = moment().add(11, 'day')
+    STORY.newBooking 'kelf', data:{datetime,expertKey:'gnic'}, (s, b1) ->
+      expect(b1.suggestedTimes.length).to.equal(1)
+      suggestedTimeOriginal = b1.suggestedTimes[0]
+      expect(suggestedTimeOriginal._id).to.exist
+      DB.docById 'Booking', b1._id, (b1raw) ->
+        expect(b1raw.suggestedTimes[0]._id).to.exist
+      LOGIN 'gnic', {retainSession:false}, (sGnic) ->
+        time2 = moment().add(17, 'day')
+        d = { _id:b1._id, time:time2}
+        PUT "/bookings/#{b1._id}/suggest-time", d, (b2) ->
+          expect(b2.lastTouch).to.be.undefined
+          expect(b2.activity).to.be.undefined
+          expect(b2.notes).to.be.undefined
+          expect(b2.status).to.equal("pending")
+          EXPECT.equalMoments(b2.datetime, datetime)
+          expect(b2.suggestedTimes.length).to.equal(2)
+          expect(b2.suggestedTimes[0]._id).to.exist
+          expect(b2.suggestedTimes[1]._id).to.exist
+          expect(stubPairBot.calledOnce).to.be.false
+          LOGIN {key:s.userKey}, {retainSession:false}, ->
+            EXPECT.equalIds(b2.suggestedTimes[1].byId,sGnic._id)
+            timeId = b2.suggestedTimes[1]._id
+            PUT "/bookings/#{b1._id}/confirm-time", {_id:b1._id, timeId}, {}, (b3) ->
+              expect(b3.status).to.equal("confirmed")
+              EXPECT.equalMoments(b3.datetime, time2)
+              expect(stubPairBot.calledOnce).to.be.false
+              expect(stubCal.calledOnce).to.be.true
+              expect(b3.suggestedTimes.length).to.equal(2)
+              EXPECT.equalMoments(b3.suggestedTimes[0].time,datetime)
+              EXPECT.equalIds(b3.suggestedTimes[0].byId,s._id)
+              expect(b3.suggestedTimes[0].confirmedById).to.be.undefined
+              EXPECT.equalMoments(b3.suggestedTimes[1].time,time2)
+              EXPECT.equalIds(b3.suggestedTimes[1].byId,sGnic._id)
+              EXPECT.equalIds(b3.suggestedTimes[1].confirmedById,s._id)
+              DB.docById 'Booking', b1._id, (bDb1) ->
+                # EXPECT.touch(bDb1.lastTouch, s._id, "confirm-time")
+                # EXPECT.touch(bDb1.activity[0],s._id, "create")
+                # EXPECT.touch(bDb1.activity[1],sGnic._id, "suggest-time")
+                # EXPECT.touch(bDb1.activity[2],s._id, "confirm-time")
+                DONE()
 
 
 
@@ -335,7 +335,7 @@ DESCRIBE "Recordings", ->
 
 
   #owner of VfA4ELOHjmk is experts@airpair.com
-  SKIP "works with a private YouTube id if the owner is in process.env.AUTH_GOOGLE_REFRESH_TOKEN" , ->
+  # SKIP "works with a private YouTube id if the owner is in process.env.AUTH_GOOGLE_REFRESH_TOKEN" , ->
     # SETUP.addAndLoginLocalUserWhoCanMakeBooking 'cher', (s) ->
     #   airpair1 = datetime: moment().add(2, 'day'), minutes: 120, type: 'private', payMethodId: s.primaryPayMethodId
     #   POST "/bookings/#{FIXTURE.experts.dros._id}", airpair1, {}, (booking1) ->
@@ -467,14 +467,14 @@ DESCRIBE "Recordings", ->
 
 
 
-# beforeEach ->
-#   cache.slack_users = FIXTURE.wrappers.slack_users_list
+beforeEach ->
+  cache.slack_users = FIXTURE.wrappers.slack_users_list
 
-# after ->
-#   cache.slack_users = undefined
+after ->
+  cache.slack_users = undefined
 
 
-# DESCRIBE("Scheduling", scheduling)
+DESCRIBE("Scheduling", scheduling)
 # # DESCRIBE("Feedback", feedback)
 # # DESCRIBE("Escrow", escrow)
 

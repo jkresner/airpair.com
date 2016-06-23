@@ -31,7 +31,6 @@ var initAPIWrap = (wrapperName, wrapperFile) => {
 module.exports = assign(global.Wrappers, {
   Bitly:          initAPIWrap('Bitly'),
   Braintree:      initAPIWrap('Braintree'),
-  Calendar:       initAPIWrap('Calendar', 'gcal'),
   Slack:          initAPIWrap('Slack'),
   Stripe:         initAPIWrap('Stripe'),
   Twitter:        initAPIWrap('Twitter'),

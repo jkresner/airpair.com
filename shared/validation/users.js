@@ -1,11 +1,11 @@
-var validRoles = [
-    'admin',       // Get access to all admin backend app
-    'dev',         // Get application error notification
-    'spinner',     // Get bookings emails
-    'pipeliner',   // Get pipeline emails
-    'editor',      // Can publish posts
-    'reviewer',    // Can see unpublished posts
-    'matchmaker']  // Can make suggestions + schedule times
+// var validRoles = [
+//     'admin',       // Get access to all admin backend app
+//     'dev',         // Get application error notification
+//     'spinner',     // Get bookings emails
+//     'pipeliner',   // Get pipeline emails
+//     'editor',      // Can publish posts
+//     'reviewer',    // Can see unpublished posts
+//     'matchmaker']  // Can make suggestions + schedule times
 
 
 var validateEmail = (email) =>
@@ -25,22 +25,22 @@ module.exports = {
     return validateEmail(email)
   },
 
-  localLogin: (user) =>
-  {
-    if (user && user._id)
-      return `Cannot login. Already signed in as ${user.name}. Logout first?`
-  },
-  localSignup: (user, email, name, password) =>
-  {
-    if (user && user._id)
-      return `Cannot signup. Already signed in as ${user.name}. Logout first?`
-    if (!email || !email.match(/.+@.+\.+.+/))
-      return `Email address required`
-    if (!name)
-      return `Name required`
-    if (!password)
-      return `Password required`
-  },
+  // localLogin: (user) =>
+  // {
+  //   if (user && user._id)
+  //     return `Cannot login. Already signed in as ${user.name}. Logout first?`
+  // },
+  // localSignup: (user, email, name, password) =>
+  // {
+  //   if (user && user._id)
+  //     return `Cannot signup. Already signed in as ${user.name}. Logout first?`
+  //   if (!email || !email.match(/.+@.+\.+.+/))
+  //     return `Email address required`
+  //   if (!name)
+  //     return `Name required`
+  //   if (!password)
+  //     return `Password required`
+  // },
   //,
   // googleLogin: (user, email, name) =>
   // {
@@ -49,8 +49,8 @@ module.exports = {
   //   if (!email || !email.match(/.+@.+\.+.+/))
   //     return `Invalid email address`
   // },
-  fullUpdatedCohort(user) {
-  },
+  // fullUpdatedCohort(user) {
+  // },
 
   changeUsername(user, username) {
     //-- Can set the username to nothing
@@ -82,15 +82,15 @@ module.exports = {
       return "Invalid hash"
   },
 
-  toggleUserInRole(user, userId, role) {
-    if (!userId) return "userId required"
+  // toggleUserInRole(user, userId, role) {
+  //   if (!userId) return "userId required"
 
-    if (!_.contains(validRoles, role))
-      return `${role} is not a valid role`
+  //   if (!_.contains(validRoles, role))
+  //     return `${role} is not a valid role`
 
-    var isAdmin = _.contains(user.roles, 'admin')
-    if (!isAdmin && !isExpert) return "Can only toggle role if admin"
-  },
+  //   var isAdmin = _.contains(user.roles, 'admin')
+  //   if (!isAdmin && !isExpert) return "Can only toggle role if admin"
+  // },
 
   toggleTag(user, tag) {
     if (!tag) return "tag required"
@@ -115,24 +115,24 @@ module.exports = {
     if (!hash) return "email verify hash required"
   },
 
-  toggleSiteNotification(user, name) {
-    if (!name) return "site notification name required"
-    if (name != 'hello') return `${name} unknown site notification`
-  },
+  // toggleSiteNotification(user, name) {
+  //   if (!name) return "site notification name required"
+  //   if (name != 'hello') return `${name} unknown site notification`
+  // },
 
-  toggleMaillist(user, body) {
-    var name = body.name
-    if (!name) return "mail list name required"
-    if (name != 'AirPair Newsletter' &&
-      name != 'AirPair Developer Digest' &&
-      name != 'AirPair Authors' &&
-      name != 'AirPair Experts'
-      ) return `${name} unknown mail list`
+  // toggleMaillist(user, body) {
+  //   var name = body.name
+  //   if (!name) return "mail list name required"
+  //   if (name != 'AirPair Newsletter' &&
+  //     name != 'AirPair Developer Digest' &&
+  //     name != 'AirPair Authors' &&
+  //     name != 'AirPair Experts'
+  //     ) return `${name} unknown mail list`
 
-    if (!user) {
-      var email = body.email
-      return validateEmail(email)
-    }
-  },
+  //   if (!user) {
+  //     var email = body.email
+  //     return validateEmail(email)
+  //   }
+  // },
 
 }

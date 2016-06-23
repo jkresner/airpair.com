@@ -68,9 +68,9 @@
 
 var util = {
 
-  endsWith(str, suffix) {
-    return str.indexOf(suffix, str.length - suffix.length) !== -1;
-  },
+  // endsWith(str, suffix) {
+  //   return str.indexOf(suffix, str.length - suffix.length) !== -1;
+  // },
 
 
   datetime: {
@@ -101,6 +101,11 @@ var util = {
     return isAfterStart && isBeforeEnd
   },
 
+
+  dateWithDayAccuracy(mom) {
+    if (!mom) mom = moment()
+    return moment(mom.format('YYYY-MM-DD'), 'YYYY-MM-DD').toDate()
+  },
 
   idsEqual(id1, id2) {
     return id1.toString() == id2.toString()
@@ -183,11 +188,6 @@ var util = {
   // },
 
 
-  dateWithDayAccuracy(mom) {
-    if (!mom) mom = moment()
-    return moment(mom.format('YYYY-MM-DD'), 'YYYY-MM-DD').toDate()
-  },
-
 
   firstName(name) {
     return name.split(' ')[0]
@@ -207,12 +207,12 @@ var util = {
   // },
 
 
-  isBot(useragent, pattern) {
-    // $log('isBot?', !useragent || useragent == "null", pattern)
-    if (!useragent || useragent == "null" || useragent == "") return true // browser and even bots should have a defined user agent
-    var source = useragent.replace(/^\s*/, '').replace(/\s*$/, '')
-    return pattern.test(source)
-  },
+  // isBot(useragent, pattern) {
+  //   // $log('isBot?', !useragent || useragent == "null", pattern)
+  //   if (!useragent || useragent == "null" || useragent == "") return true // browser and even bots should have a defined user agent
+  //   var source = useragent.replace(/^\s*/, '').replace(/\s*$/, '')
+  //   return pattern.test(source)
+  // },
 
   stringToJson(content) {
     return (typeof content == 'string') ? JSON.parse(content) : content
@@ -238,29 +238,6 @@ var util = {
         ts += `, ${oBrace}${t[i].slug}${cBrace}`
     }
     return ts
-  },
-
-  parseYouTubeId(str) {
-    str = str.trim()
-    var variable = '([a-zA-Z0-9_-]*)'
-
-    // e.g. http://www.youtube.com/watch?v=aANmpDSTcXI&otherjunkparams
-    var match = str.match("v="+variable);
-    // e.g. youtu.be/aANmpDSTcXI
-    if (!match)
-      match = str.match("youtu\.be/" + variable)
-    // e.g. aANmpDSTcXI
-    if (!match)
-      match = str.match(variable)
-    if (!match)
-      return null
-    return match[1]
-  },
-
-  getYouTubeThumb(url) {
-    if (url.indexOf('http://youtu.be/') == -1) return null
-    var youTubeId = url.replace('http://youtu.be/', '')
-    return `https://img.youtube.com/vi/${youTubeId}/hqdefault.jpg`
   }
 
 }

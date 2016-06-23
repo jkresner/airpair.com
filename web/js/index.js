@@ -34,7 +34,7 @@ require('./../../ang/common/directives/requests.js');
 require('./../../ang/common/directives/notifications.js');
 require('./../../ang/common/directives/serverTemplates.js');
 require('./../../ang/common/directives/providers.js');
-require('./../../ang/common/directives/profiles.js');
+// require('./../../ang/common/directives/profiles.js');
 require('./../../ang/common/pageHelpers.js');
 require('./../../ang/common/routes/routes.js');
 require('./../../ang/account/module.js')

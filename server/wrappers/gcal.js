@@ -1,44 +1,29 @@
+var auth = null, calendarId = null, google = require('googleapis');
 
-var logging = false
-
-// https://developers.google.com/google-apps/calendar/v3/reference/colors/get
-var owner2colorIndex = {
-  '0': undefined, // default color for the calendar, #9A9CFF
-  '1': 1,  //a4bdfc blue
-  '2': 2,  //7ae7bf green
-  '3': 3,  //dbadff purple
-  '4': 4,  //ff887c red
-  '5': 5,  //fbd75b yellow
-  jk: 6,  //ffb878 orange
-  '7': 7,  //46d6db turqoise
-  '8': 8,  //e1e1e1 gray
-  '9': 9,  //5484ed bold blue
-  '10': 10, //51b749 bold green
-  '11': 11 //dc2127 bold red
-}
-
-
-var auth  = null, calendarId;
 
 var wrapper = {
 
+  name: 'Calendar',
+
   init() {
-    var {ownerRefreshToken} = config.wrappers.calendar.google
-    calendarId = config.wrappers.calendar.google.calendarId
-    var google = require('googleapis')
+    var cfg = global.config.wrappers.calendar
+    var {clientID,clientSecret,refresh_token} = cfg.google
+    calendarId = cfg.google.calendarId
+
     var OAuth2Client = google.auth.OAuth2
-    auth = new OAuth2Client(config.auth.oauth.google.clientID, config.auth.oauth.google.clientSecret)
-    auth.setCredentials({ refresh_token: ownerRefreshToken })
-    wrapper.api = google.calendar('v3')
+    auth = new OAuth2Client(clientID, clientSecret)
+    auth.setCredentials({refresh_token})
+
+    this.api = google.calendar('v3')
   },
 
   //-- user this for dev
   listCalendars(cb) {
-    wrapper.api.calendarList.list({ auth }, cb)
+    this.api.calendarList.list({ auth }, cb)
   },
 
   listEvents(cb) {
-    wrapper.api.events.list({ auth, calendarId }, function(err, data) {
+    this.api.events.list({ auth, calendarId }, function(err, data) {
       if (err) return console.log('An error occured', err)
       console.log('events', data.length)
       cb(data)
@@ -46,13 +31,30 @@ var wrapper = {
   },
 
   getEvent(eventId, cb) {
-    wrapper.api.events.get({ auth, calendarId, eventId }, function(err, event) {
+    this.api.events.get({ auth, calendarId, eventId }, function(err, event) {
       if (err) return cb(err)
       cb(null, event)
     })
   },
 
+
   createEvent(eventName, sendNotifications, start, minutes, attendees, description, admInitials, cb) {
+
+    // https://developers.google.com/google-apps/calendar/v3/reference/colors/get
+    var owner2colorIndex = {
+      '0': undefined, // default color for the calendar, #9A9CFF
+      '1': 1,  //a4bdfc blue
+      '2': 2,  //7ae7bf green
+      '3': 3,  //dbadff purple
+      '4': 4,  //ff887c red
+      '5': 5,  //fbd75b yellow
+      jk: 6,  //ffb878 orange
+      '7': 7,  //46d6db turqoise
+      '8': 8,  //e1e1e1 gray
+      '9': 9,  //5484ed bold blue
+      '10': 10, //51b749 bold green
+      '11': 11 //dc2127 bold red
+    }
 
     var colorId = undefined
     // if (admInitials) {
@@ -80,9 +82,10 @@ var wrapper = {
       }
     }
 
-    if (logging) $log('Calendar.createEvent:'.yellow, createData)
+    $logIt('wrpr.call', 'Calendar.createEvent:', JSON.stringify(createData))
 
-    if (config.wrappers.calendar.on) wrapper.api.events.insert(createData, cb)
+    if (config.wrappers.calendar.on)
+      this.api.events.insert(createData, cb)
     else {
       console.warn('config.wrappers.calendar is off'.red);
       cb(null,{'off':'this is a config.wrappers.calendar.off response',attendees:[{},{}]})
@@ -101,10 +104,10 @@ var wrapper = {
       }
     }
 
-    if (logging) $log('Calendar.updateEvent:'.yellow, patchData)
+    $logIt('wrpr.call', 'Calendar.updateEvent:', JSON.stringify(patchData))
 
     if (config.wrappers.calendar.on)
-      wrapper.api.events.patch(patchData, cb)
+      this.api.events.patch(patchData, cb)
     else {
       console.warn('config.wrappers.calendar is off'.red);
       cb(null,{'off':'this is a config.wrappers.calendar.off response',attendees:[{},{}]})

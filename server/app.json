@@ -66,7 +66,8 @@
         "clientSecret":        "ef0b1b25910627ce92f721bda02ba757",
         "scope":               ["identify","read","post","client"]
       }
-    }
+    },
+    "pwdm":                    false
   },
   "comm": {
     "mode":                    "stub",
@@ -102,6 +103,9 @@
     "cfg":                     { "route": false },
     "mw":                      { "trace": false, "forbid": false, "api": false },
     "modl":                    { "cache": "green" }
+  },
+  "logic": {
+    "wax":                     { "dirs": "/author/shared" }
   },
   "middleware": {
     "api":                     { "baseUrl": "/v1/api" },
@@ -182,8 +186,11 @@
     "calendar": {
       "on":                    false,
       "google": {
-        "ownerRefreshToken":   "setyourenvironentvarible",
-        "calendarId":          "setyourenvironentvarible@airpair.com"
+        "clientID":            "1019727294613-rjf83l9dl3rqb5courtokvdadaj2dlk5.apps.googleusercontent.com",
+        "clientSecret":        "Kd6ceFORVbABH7p5UbKURexZ",
+        "calendarId":          "setyourenvironentvarible@group.calendar.google.com",
+        "owner":               "setyourenvironentvarible@airpair.com",
+        "refresh_token":       "setyourenvironentvarible"
       }
     },
     "chat": {

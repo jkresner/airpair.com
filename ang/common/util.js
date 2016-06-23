@@ -24,6 +24,6 @@ angular.module("APUtil", [])
   return require('../../shared/orders.js')
 })
 
-.factory('PostsUtil', function postsUtilFactory() {
-  return require('../../shared/posts.js')
-})
+// .factory('PostsUtil', function postsUtilFactory() {
+//   return require('../../shared/posts.js')
+// })

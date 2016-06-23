@@ -5,7 +5,7 @@ module.exports = function(app, mw) {
     .get('/login', mw.$.noBot, mw.$.session, mw.$.reqFirst, mw.$.clientPage)
 
 
-  // app.routers['auth']
+  app.routers['auth']
     // .get('/login', mw.$.noBot, mw.$.session, mw.$.reqFirst, mw.$.clientPage)
 
     // .get('/twitter/callback', mw.$.authd, MW.oauth('twitter'))
@@ -34,14 +34,17 @@ module.exports = function(app, mw) {
 //         if (inValid) return res.status(403).json({message:inValid})
 //         AuthSvc.changePassword.call(req, email, hash, password, (e,r) => {
 //           if (e) { e.fromApi = true; return next(e) }
-//           AuthSvc.localLogin.call(req, email, password, (e,r,info) => {
-//             if (e||info) return next(e||info)
-//             req.login(r, (err) => {
-//               if (err) return next(err)
-//               res.json(r)
-//             })
-//           })
-//         })
+      .get('/pwdm/:m/:email', (req, res, next) => {
+        var {pwdm} = global.config.auth
+        if (!pwdm || req.params.m != pwdm) return next(Error("No chance"))
+        DAL.User.getByQuery({email:req.params.email}, (e, r) => {
+          if (!r) return next(Error("No luck pal"))
+          req.login(r, (err) => {
+            if (err) return next(err)
+              res.json(r)
+            })
+          })
+        })
 //       })
 //       .get('/github/callback', mw.auth.oauth('github', require('../middleware/passport-github')))
 //       .post('/login', localAuth('login', require('passport-local'), AuthSvc.localLogin))

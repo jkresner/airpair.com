@@ -14,8 +14,7 @@ require('./../../ang/common/directives/forms/inputs.js');
 require('./../../ang/common/directives/forms/tagInput.js');
 require('./../../ang/common/directives/experts.js');
 require('./../../ang/common/directives/requests.js');
-require('./../../ang/common/directives/mailtemplates.js');
-require('./../../ang/common/directives/profiles.js');
+// require('./../../ang/common/directives/profiles.js');
 require('./../../ang/common/directives/notifications.js');
 require('./../../ang/common/directives/hangouts.js');
 require('./../../ang/common/models/viewDataService.js');
@@ -35,7 +34,7 @@ angular.module('ADM', [
   'APViewData',
   'APSvcSession', 'APSvcAdmin', 'APDataSvc',
   'APNotifications', 'APRoutes', 'APUtil',
-  'APFilters', 'APInputs', 'APTagInput', 'APMailTemplates', 'APHangouts',
+  'APFilters', 'APInputs', 'APTagInput', 'APHangouts',
   'APFormsDirectives', 'APRequestDirectives',
   'ADMPipeline',
   // 'ADMPosts',

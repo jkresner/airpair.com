@@ -1,5 +1,28 @@
 var logging                     = false
 
+  // function parseYouTubeId(str) {
+  //   str = str.trim()
+  //   var variable = '([a-zA-Z0-9_-]*)'
+
+  //   // e.g. http://www.youtube.com/watch?v=aANmpDSTcXI&otherjunkparams
+  //   var match = str.match("v="+variable);
+  //   // e.g. youtu.be/aANmpDSTcXI
+  //   if (!match)
+  //     match = str.match("youtu\.be/" + variable)
+  //   // e.g. aANmpDSTcXI
+  //   if (!match)
+  //     match = str.match(variable)
+  //   if (!match)
+  //     return null
+  //   return match[1]
+  // },
+
+
+  // getYouTubeThumb(url) {
+  //   if (url.indexOf('http://youtu.be/') == -1) return null
+  //   var youTubeId = url.replace('http://youtu.be/', '')
+  //   return `https://img.youtube.com/vi/${youTubeId}/hqdefault.jpg`
+  // }
 
 var wrapper = {
 

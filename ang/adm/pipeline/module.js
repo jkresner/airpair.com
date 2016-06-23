@@ -217,3 +217,58 @@ angular.module("ADMPipeline", ["APRequestDirectives","APProfileDirectives"])
     })
 
 })
+
+
+.directive('mailLink', function($compile, $timeout, Util) {
+
+  var tmpls = {
+    received: { subject: "{{r.hours}} hour {{tagsString}} {{r.type}}",
+      text: require('./mail/received.txt.html') },
+    review: { subject: "Ready for some {{tagsString}} AirPairing?",
+      text: require('./mail/review.txt.html') },
+    cancelfromwaiting: { subject: "$10 credit for next time you try AirPair",
+      text: require('./mail/cancel.txt.html') },
+    generic: { subject: "{{r.hours}} hour {{tagsString}} {{r.type}}",
+      text: require('./mail/generic.txt.html') }
+  }
+
+  return {
+    template: require('./mail/mailto.html'),
+    scope: {
+      r: '=req',
+      to: '=to',
+      meta: '=meta',
+      templateName: '=name',
+      sendCallback: '=sendCallback'
+    },
+    controller($scope, $rootScope, $element, $attrs) {
+      var type = $scope.$eval($attrs.name)
+
+      $scope.send = () =>
+        $scope.$parent.send($scope.subject, $scope.message, type)
+
+      $scope.$watch('meta.noPaymethod', function() {
+        if (!$scope.r || !$scope.r.by) return
+
+        $scope.tagsString = Util.tagsString($scope.r.tags)
+        $scope.firstName = Util.firstName($scope.r.by.name)
+        $scope.accountManager = {
+          firstName: Util.firstName($rootScope.session.name),
+          name: $rootScope.session.name
+        }
+
+        $element.find('code').html(
+          $compile('<span>'+tmpls[type].subject+'</span>')($scope).contents())
+
+        $element.find('pre').html(
+          $compile('<div>'+tmpls[type].text+'</div>')($scope).contents())
+
+        $timeout(()=>$scope.message = $element.find('pre').text(),100)
+        $timeout(()=>$scope.subject = $element.find('code').text(),100)
+      })
+
+    }
+  };
+})
+
+

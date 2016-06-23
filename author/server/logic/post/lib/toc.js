@@ -2,6 +2,7 @@
 
 var htmlparser = require('htmlparser2');
 
+
 function addLinenos(lines, headers) {
   var current = 0, line;
 
@@ -163,7 +164,11 @@ function countHeaders (headers) {
   return headers;
 }
 
-module.exports = function(content, maxHeaderNo) {
+
+
+module.exports = (DAL, Data, Shared, Lib) =>
+
+function(content, maxHeaderNo) {
   var maxHeaderNo = maxHeaderNo || 4;
 
   // $log('transform.content', content)
@@ -195,5 +200,5 @@ module.exports = function(content, maxHeaderNo) {
         .join('\n')
     + '\n';
 
-  return toc;
-};
+  return toc
+}

@@ -11,6 +11,25 @@ angular.module("ADMBookings", [])
 .controller('BookingCtrl', ($scope, $routeParams, AdmDataService, DataService, ServerErrors,
     Util, BookingsUtil, OrdersUtil) =>
 {
+
+  function parseYouTubeId(str) {
+    str = str.trim()
+    var variable = '([a-zA-Z0-9_-]*)'
+
+    // e.g. http://www.youtube.com/watch?v=aANmpDSTcXI&otherjunkparams
+    var match = str.match("v="+variable);
+    // e.g. youtu.be/aANmpDSTcXI
+    if (!match)
+      match = str.match("youtu\.be/" + variable)
+    // e.g. aANmpDSTcXI
+    if (!match)
+      match = str.match(variable)
+    if (!match)
+      return null
+    return match[1]
+  }
+
+
   var _id = $routeParams.id
   $scope.data = {}
   $scope.util = BookingsUtil
@@ -66,7 +85,7 @@ angular.module("ADMBookings", [])
   $scope.updateStatus = (val) => updateBooking({status:val})
   $scope.addGcal = (val) => updateBooking({ sendGCal: { notify: val } })
   $scope.addYouTubeData = function(val){
-    var youTubeId = Util.parseYouTubeId(val);
+    var youTubeId = parseYouTubeId(val);
     AdmDataService.bookings.addYouTubeData({_id, youTubeId}, setScope)
   }
 
