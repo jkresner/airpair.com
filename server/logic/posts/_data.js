@@ -8,7 +8,7 @@ var views = {
 
 var postUtil                = require('../../../shared/posts')
 // var postUtil            = require('../../../../author/shared/posts')
-var generateToc         = require('../../../../author/server/logic/post/lib/toc')()
+var generateToc         = require('../../../author/server/logic/post/lib/toc')()
 
 
 module.exports = new LogicDataHelper(
