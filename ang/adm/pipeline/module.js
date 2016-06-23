@@ -1,4 +1,4 @@
-angular.module("ADMPipeline", ["APRequestDirectives","APProfileDirectives"])
+angular.module("ADMPipeline", ["APRequestDirectives"])
 
 .config(function(apRouteProvider) {
 

@@ -107,7 +107,7 @@ module.exports = new LogicDataHelper(
 
       // Only looks at this set if no match above (..|angular|node|etc.)
       // If no match Will continue to the next (..php|laravel|etc.)
-      else if (hasMatch(/java|android|spring|jvm|clojure/i))
+      else if (hasMatch(/java|android|spring|jvm|clojure/i) && !_.find(d.tags,t=>t.slug=='javascript'))
         adtag = 'java'
 
       else if (hasMatch(/node|mean|npm|express|mongoose/i))
