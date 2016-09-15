@@ -6,8 +6,8 @@ module.exports = function(app, mw, {ads}) {
   mw.data.extend('inflateAds', x => function(req, res, next) {
     // $log('ud', req.ctx.ud, /lib|ban|search|reader/.test(req.ctx.ud))
     if (/lib|ban|search|reader/.test(req.ctx.ud)) return next()  // don't want ads indexed
-    // var rnd = parseInt(Math.random()*100)
-    // if ((rnd%17)!=0) return next()
+    var rnd = parseInt(Math.random()*100)
+    if ((rnd%19)!=0) return next()
     // cache.get('ads', app.meanair.logic.ads.adsCached.exec, (e, r) =>
 
     // $log('cache.ads.tagged', cache.ads.tagged)
