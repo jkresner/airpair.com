@@ -1,9 +1,6 @@
-module.exports = ({Post}, {Project,Opts,Query}, Shared, Lib) => ({
+module.exports = ({Post}, {Project,Opts,Query}, DRY) => ({
 
-
-  validate(user) {},
-
-
+  
   exec(cb) {
     Post.getManyByQuery(Query.submitted(), Opts.submitted(12), cb)
   },

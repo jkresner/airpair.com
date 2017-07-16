@@ -1,9 +1,82 @@
 #!/bin/sh
-CYAN='\033[0;36m'
-NC='\033[0m' # No Color
-printf "${CYAN}CMD: Symlink default build cms${NC}\n"
-mkdir -p cmd/build;
-cd cmd/build;
-for l in $(find . -type l); do unlink $l;done;
-for f in $(ls -d ../../node_modules/meanair-build/cmd/build/*); do ln -nsf $f;done;
-cd ../../;
+CYAN='\033[0;36m';
+NC='\033[0m'; # No Color
+CMD="${CYAN}CMD/setup: ";
+
+printf "${CMD}CLEAN npm modules${NC} /node_modules\n"
+rm package-lock.json
+rm -rf node_modules
+
+printf "${CMD}LINK local npm modules${NC} /node_modules\n"
+npm link screamjs
+npm link honeycombjs
+npm link meanair-build
+printf "${CMD}Installing npm packages (could take a minute)${NC}\n"
+npm install;
+
+printf "${CMD}SYMLINK meanair-build/node_modules/gulp${NC}\n"
+cd node_modules;
+ln -nsf meanair-build/node_modules/gulp
+cd ../;
+
+# printf "${CMD}SYMLINK meanair-build/build/cmd/${NC}\n"
+# mkdir -p cmd/build;
+# cd cmd/build;
+# for l in $(find . -type l); do unlink $l;done;
+# for f in $(ls -d ../../node_modules/meanair-build/cmd/build/*); do ln -nsf $f;done;
+# cd ../../;
+# mkdir -p cmd/dev;
+# cd cmd/dev;
+# for l in $(find . -type l); do unlink $l;done;
+# for f in $(ls -d ../../node_modules/meanair-build/cmd/dev/*); do ln -nsf $f;done;
+# cd ../../;
+
+# printf "${CMD}SETUP git hooks${NC}\n"
+# rm -rf .git/hooks;
+# mkdir .git/hooks;
+# cd .git/hooks;
+# ln -nsf ../../cmd/dev/git-hook/pre-push;
+# cd ../../;
+
+# bower install;
+
+# printf "${CMD}COPY JS web/components${NC}\n"
+# rm -rf web/components;
+# mkdir -p web/components;
+# cd web/components;
+# for f in $(ls ../../../static/src/js/libs);do cp ../../../static/src/js/libs/$f $f;done;
+# cd ../../;
+
+
+
+# # printf "${CMD}UNLINK web/js|css${NC}\n"
+# # rm -rf web/js/.lib/;printf "${CYAN}CMD/setup: unlink${NC} web/js/.lib\n"
+# # rm -rf web/css/.lib/;printf "${CYAN}CMD/setup: unlink${NC} web/css/.lib\n"
+
+# # Link server/.lib source files
+# # mkdir -p shared/.lib;
+# # cd shared/.lib;
+# # for l in $(find . -type l); do unlink $l;done;
+# # for f in $(ls -d ../../node_modules/meanair-shared/lib/*.js);do ln -nsf $f;done;
+# # printf "${CMD}Shared source sym-linked under${NC} /shared/.lib\n"
+# # cd ../../
+
+# STATIC_CSS='../../../../../static/src/css'
+# LESS='web/css/app/posts';mkdir -p "${LESS}";cd "${LESS}";for l in $(find . -type l); do unlink $l;done;printf "${CYAN}CMD/setup: link  ${NC} /${LESS}/*.less\n"
+# for f in $(ls -d ../../../../../static/src/css/posts/*.less); do ln -nsf $f;done;cd ../../../../;printf "${CYAN}CMD/setup: linked${NC} ${STATIC_CSS}/posts\n";
+# LESS='web/css/.lib/component';mkdir -p "${LESS}";cd "${LESS}";for l in $(find . -type l); do unlink $l;done;printf "${CYAN}CMD/setup: link  ${NC} /${LESS}/*.less\n"
+# for f in $(ls -d ../../../../../static/src/css/component/*.less); do ln -nsf $f;done;cd ../../../../;printf "${CYAN}CMD/setup: linked${NC} ${STATIC_CSS}/component\n";
+# LESS='web/css/.lib/layout';mkdir -p "${LESS}";cd "${LESS}";for l in $(find . -type l); do unlink $l;done;printf "${CYAN}CMD/setup: link  ${NC} /${LESS}/*.less\n"
+# for f in $(ls -d ../../../../../static/src/css/layout/*.less); do ln -nsf $f;done;cd ../../../../;printf "${CYAN}CMD/setup: linked${NC} ${STATIC_CSS}/layout\n";
+# LESS='web/css/.lib/shared';mkdir -p "${LESS}";cd "${LESS}";for l in $(find . -type l); do unlink $l;done;printf "${CYAN}CMD/setup: link  ${NC} /${LESS}/*.less\n"
+# for f in $(ls -d ../../../../../static/src/css/shared/*.less); do ln -nsf $f;done;cd ../../../../;printf "${CYAN}CMD/setup: linked${NC} ${STATIC_CSS}/shared\n";
+# mkdir -p web/css/.lib/pages;
+# cd web/css/dist;
+# for l in $(find . -type l); do unlink $l;done;
+# ln -nsf ../../../../static/src/css/pages/err.less;
+# printf "${CMD}source sym-linked error.less${NC} /css/dist\n"
+# ln -nsf ../../../../../static/host/public/ico/author/favicon.ico;
+# printf "${CMD}Symlink favicon.ico ${NC}\n"
+
+
+

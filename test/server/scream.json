@@ -11,9 +11,8 @@
     "expectederr":           "blue"
   },
   "mongo": {
-    "collections":           ["Users","Experts","Bookings","Orders",
-                             "Paymethods","Payouts","Posts",
-                             "Redirects","Requests","Tags","Templates","Views",
+    "collections":           ["Users","Experts","Posts","Redirects",
+                             "Requests","Tags","Templates","Views",
                              "Impressions","Sessions","Events","Campaigns"],
     "seed": {
       "without":             "FIXTURE.users.jkap",

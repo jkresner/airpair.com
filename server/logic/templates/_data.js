@@ -1,16 +1,1 @@
-var views = {}
-
-
-module.exports = new LogicDataHelper(views,
-
-  () => ({
-
-  }),
-
-  {
-  },
-
-  {
-  }
-
-)
+module.exports = {}

@@ -8,7 +8,7 @@ var wrapper = {
   },
 
   getTagBySlug(term, cb) {
-    $logIt(`wrpr.call`, `Stack.getTagBySlug`, term)
+    LOG(`wrpr.call`, `Stack.getTagBySlug`, term)
 
     var encoded = encodeURIComponent(term)
     wrapper.api

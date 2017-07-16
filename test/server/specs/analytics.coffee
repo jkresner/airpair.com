@@ -4,7 +4,6 @@ module.exports = ->
     {admin,ricd} = FIXTURE.users
     DB.ensureDocs 'User', [admin,ricd], ->
     DB.ensureExpert 'byrn', ->
-    DB.ensureDoc 'Request', FIXTURE.requests.aJob, ->
     done()
 
   beforeEach ->

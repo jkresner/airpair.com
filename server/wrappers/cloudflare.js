@@ -1,5 +1,5 @@
 var base = 'https://api.cloudflare.com/client/v4'
-var obj = require('meanair-shared').TypesUtil.Object
+var obj = honey.util.Object
 var view = {
   getUser: 'id',
   getFirewall: 'id mode status notes modified_on'
@@ -15,7 +15,7 @@ var wrp = {
     this.cfg = {base,email,key}
     this.api = require('superagent')
     var request = (method, opName, cb) => (url, data) => {
-      $logIt(`wrpr.call`, `cloudflare.${opName}`, data ? JSON.stringify(data).gray : '')
+      LOG(`wrpr.call`, `cloudflare.${opName}`, data ? JSON.stringify(data).gray : '')
       var req = this.api[method](`${base}${url}`)
                   .accept('application/json')
                   .set('user-agent', 'airflare')
@@ -26,7 +26,7 @@ var wrp = {
 
       req.end((e, res) => {
         if (e || !res.ok) return cb(e, console.log('Oh no! error', e, res))
-        $logIt(`wrpr.cloudflare`, `${method.toUpperCase()}${url}`, JSON.stringify(res.body))
+        LOG(`wrpr.cloudflare`, `${method.toUpperCase()}${url}`, JSON.stringify(res.body))
         var r = res.body.result
         var attrs = view[opName]
         if (attrs)

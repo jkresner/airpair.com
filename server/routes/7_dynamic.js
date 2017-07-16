@@ -1,9 +1,9 @@
 module.exports = function(app, mw) {
 
-  app.use(/^\/(job|review)/,
+  app.use(/^\/(job)/,
       mw.$.badBot, mw.$.session)
 
-  app.honey.Router('dynamic', {type:'html',sitemap:false})
+  honey.Router('dynamic', {type:'html',sitemap:false})
     .use(mw.$.livereload)
 
     .param('job', API.Requests.paramFns.getByIdForReview)
@@ -12,34 +12,5 @@ module.exports = function(app, mw) {
 
     .use([mw.$.badBot, mw.$.session, mw.$.reqFirst])
 
-    // .get('/bookings/:id/spin*',
-    //   function(req, res, next) {
-    //     API.Bookings.svc.getByIdForSpinning.call(req, req.params.id, req.query.email, (e,r) => {
-    //       if (!r) return res.status(200).send('')
-    //       req.locals.r = r
-    //       next()
-    //     })
-    //   }, mw.$.serverPage('spin'))
-
-
-    .get('/:tagshort/workshops/:slug',
-      (req, res, next) => {
-        var r = _.find(cache.workshops, w => w.url == req.originalUrl)
-        r ? next(null, assign(req.locals,{r,htmlHead:r.htmlHead}))
-          : res.redirect(302,'/workshops')
-      },
-      mw.$.inflateAds,
-      mw.$.trackWorkshop,
-      mw.$.serverPage('workshop'))
-
-    .get('/book/:username', function(req, res, next) {
-      API.Experts.svc.getByUsername.call(req, req.params.username, (e,r) => {
-        if (!r) return res.redirect('/')
-        r.meta = { canonical: `https://www.airpair.com/book/${r.username}`, title: r.name }
-        req.expert = r
-        req.locals.r = r
-        req.locals.htmlHead = r.meta
-        next()
-      })}, mw.$.hybridPage('book'))
 
 }

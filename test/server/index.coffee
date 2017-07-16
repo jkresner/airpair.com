@@ -1,11 +1,7 @@
-SCREAM                       = require('meanair-scream')
-MAServer                     = require('meanair-server')
+SCREAM                       = require('screamjs')
+Honey                        = require('honeycombjs')
 track                        = require('../../server/app.track')
-test =
-  auth:
-    login:                   { fnName: 'loginCust', url: '/auth/test/login' }
-
-
+test = auth: { login: { fnName: 'loginCust', url: '/auth/test/login' } }
 
 OPTS =
   setup:           done: -> require('./helpers')
@@ -22,10 +18,9 @@ OPTS =
 SCREAM(OPTS).run (done) ->
 
   appRoot     = __dirname.replace('test', '')
-  config      = MAServer.Config(appRoot, 'test', true)
+  config      = Honey.Configure(appRoot, 'test', true)
   config.test = test
   for b in ['css/libs.css', 'css/index.css', 'css/adm.css', 'js/index.js', 'css/v1libs.css']
     config.http.static.bundles[b] = "https://static.airpair.com#{config.http.static.bundles[b]}"
 
-
-  require('../../server/app').run { config, MAServer, track }, done
+  require('../../server/app').run { config, Honey, track }, done

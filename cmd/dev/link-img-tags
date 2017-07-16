@@ -1,6 +1,0 @@
-#!/bin/sh
-CYAN='\033[0;36m'
-NC='\033[0m' # No Color
-printf "${CYAN}CMD: Symlink img tags${NC}\n"
-rm -rf web/public/img/tag;
-cp -r ../static/src/img/tag web/public/img/tag;

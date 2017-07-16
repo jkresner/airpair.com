@@ -1,0 +1,4 @@
+#!/bin/sh
+# Usage:
+#   /cmd/tools/user-check-gaurd
+coffee cmd/tools/gaurd/run.coffee -c 'local' -v

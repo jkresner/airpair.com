@@ -1,8 +1,8 @@
-module.exports = ({Tag}, DATA, Shared) => ({
+module.exports = ({Tag}, Data, DRY) => ({
 
   exec(cb) {
     var hash = {}
-    Tag.getManyByQuery({}, { select:'_id slug name short', sort:{slug:1} }, (e,r)=>{
+    Tag.getManyByQuery({}, Data.Opts.cached, (e,r)=>{
       for (var tag of r) hash[tag._id] = tag
       cb(null, hash)
     })

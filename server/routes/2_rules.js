@@ -24,14 +24,14 @@ module.exports = function(app, mw, {rules}) {
   var rewrites   = cached['rewrite'].map(r => [new RegExp(r.url,'i'),r.to])
 
   var redir = (to, status) => {
-    $logIt('cfg.route', `${status}                >`, to.green)
+    LOG('cfg.route', `${status}                >`, to.green)
     return (req, res, next) => {
       if (req.url.match('^/v1/api/')) return next()
       res.redirect( status, req.url.replace(req.url.split('?')[0], to) )
     }
   }
   var write = ({pattern,sub}) => {
-    $logIt('cfg.route', `301   >>>`, `${pattern} <> "${sub}"`)
+    LOG('cfg.route', `301   >>>`, `${pattern} <> "${sub}"`)
     return (req, res, next) => {
       res.redirect( 301, req.originalUrl.replace(pattern, sub) )
     }
@@ -41,7 +41,7 @@ module.exports = function(app, mw, {rules}) {
   app.head('*', (req, res, next) => res.end())
   app.propfind('*', (req, res, next) => res.end())
 
-  var router = app.honey.Router('httpRules', { type:'rule' })
+  var router = honey.Router('httpRules', { type:'rule' })
     .use(mw.$.session)
     .post('/', mw.$.banPOST)
 
@@ -54,16 +54,16 @@ module.exports = function(app, mw, {rules}) {
   for (var to in agg['302']) router
     .get(agg['302'][to], redir(to, 302))
 
-  if (agg['501'].length > 0) $logIt('cfg.route', `501   >>>\t\t       [${agg['501'].length}]`) + router
+  if (agg['501'].length > 0) LOG('cfg.route', `501   >>>\t\t       [${agg['501'].length}]`) + router
     .get(agg['501'], (req, res) => res.send(cache.abuse.increment(501, req)))
 
-  if (agg['410'].length > 0) $logIt('cfg.route', `410   >>>\t\t       [${agg['410'].length}]`) + router
+  if (agg['410'].length > 0) LOG('cfg.route', `410   >>>\t\t       [${agg['410'].length}]`) + router
     .get(agg['410'], (req, res) => res.send(cache.abuse.increment(410, req)))
 
-  if (agg['bait'].length > 0) $logIt('cfg.route', `418   >>>\t\t       [${agg['bait'].length}]`) + router
+  if (agg['bait'].length > 0) LOG('cfg.route', `418   >>>\t\t       [${agg['bait'].length}]`) + router
     .get(agg['bait'], (req, res) => res.send(cache.abuse.increment(418, req)))
 
-  if (agg['ban'].length > 0) $logIt('cfg.route', `500   >>>\t\t       [${agg['ban'].length}]`) + router
+  if (agg['ban'].length > 0) LOG('cfg.route', `500   >>>\t\t       [${agg['ban'].length}]`) + router
     .get(agg['ban'], mw.$.banGET)
 
 

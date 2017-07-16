@@ -1,4 +1,4 @@
-module.exports = ({Tag}, {Query,Opts}, Shared) => ({
+module.exports = ({Tag}, {Query,Opts}, DRY) => ({
 
   exec(term, cb) {
     var encodedTerm = '\"'+term+'\"'

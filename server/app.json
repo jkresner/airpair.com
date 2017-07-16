@@ -1,14 +1,5 @@
 {
   "about":                     "package.json",
-  "analytics": {
-    "appKey":                  "apcom",
-    "on":                      true,
-    "model": {
-      "collections":           { "event": "Event", "impression": "Impression", "view": "View", "issue": "Issue", "campaign": "Campaign" },
-      "mongoUrl":              "mongodb://localhost/airpair_analytics",
-      "enums":                 false
-    }
-  },
   "auth": {
     "appKey":                  "apcom",
     "oauth": {
@@ -71,13 +62,7 @@
   },
   "comm": {
     "mode":                    "stub",
-    "senders": {
-      "err":                   { "name": "ERR", "app": "AP", "email": "team@airpair.com" }
-    },
-    "dispatch": {
-      "transports":            ["ses"],
-      "groups":                { "errors": "{{required}}" }
-    }
+    "transports":              ["ses"]
   },
   "http": {
     "static": {
@@ -100,9 +85,23 @@
     }
   },
   "log": {
-    "cfg":                     { "route": false },
-    "mw":                      { "trace": false, "forbid": false, "api": false },
-    "modl":                    { "cache": "green" }
+    "appKey":                  "AP",
+    "analytics": {      
+      "on":                    true,
+      "model": {
+        "collections":         { "event": "Event", "impression": "Impression", "view": "View", "issue": "Issue", "campaign": "Campaign" },
+        "mongoUrl":            "mongodb://localhost/airpair_analytics",
+        "enums":               false
+      }
+    },
+    "it": {
+      "cfg":                   { "route": false },
+      "mw":                    { "trace": false, "forbid": false, "api": false },
+      "modl":                  { "cache": "green" }
+    },
+    "errors": {
+      "mail":                  { "sender": "ERR <team@airpair.com>", "to": "jk <jk@airpair.com>" }
+    }
   },
   "logic": {
     "wax":                     { "dirs": "/author/shared" }
@@ -139,7 +138,10 @@
     "slow":                    1000
   },
   "model": {
-    "cache":                   { "require": "tags:tags,tmpl:templates,rules:routes,ads:ads" }
+    "cache": {
+      "require":               "tags:tags,tmpl:templates,rules:routes,ads:ads",
+      "inflate":               { "tags": "name slug short desc" }
+    }                  
   },
   "routes": {
     "adm":                     { "api": { "mount": "/v1/api/adm" } },
@@ -165,10 +167,11 @@
   },
   "templates": {
     "dirs": {
-      "views":                 "templates,templates/pages",
-      "partials":              "templates/partials",
-      "helpers":               "templates/helpers"
-    }
+      "views":                 "tmpl,tmpl/page",
+      "partials":              "tmpl/partial",
+      "helpers":               "tmpl/helpers"
+    },
+    "model":                   "domain"
   },
   "wrappers": {
     "dirs":                    "wrappers",
@@ -176,41 +179,7 @@
       "shortDomain":           "http://airpa.ir/",
       "accessToken":           "b93731e13c8660c7700aca6c3934660ea16fbd5f"
     },
-    "braintree": {
-      "environment":           "Sandbox",
-      "verifyCards":           false,
-      "merchantId":            "chkr49r8yxk5y65p",
-      "publicKey":             "3pwpby7rrfdr3x3m",
-      "privateKey":            "7d5586d4be9ba9e36daebfa814f0584a"
-    },
-    "calendar": {
-      "on":                    false,
-      "google": {
-        "clientID":            "1019727294613-rjf83l9dl3rqb5courtokvdadaj2dlk5.apps.googleusercontent.com",
-        "clientSecret":        "Kd6ceFORVbABH7p5UbKURexZ",
-        "calendarId":          "setyourenvironentvarible@group.calendar.google.com",
-        "owner":               "setyourenvironentvarible@airpair.com",
-        "refresh_token":       "setyourenvironentvarible"
-      }
-    },
-    "chat": {
-      "slackin":               { "host": "http://slackin.airpair.com" },
-      "slack": {
-        "owner":               { "id": "U06U2HQQK", "token": "xoxp-6954602819-6954602835-7019593206-19f426" },
-        "support":             { "id": "U06UCSHL0", "token": "xoxp-6954602819-6964901680-6965169622-a2bb52" },
-        "jk":                  { "id": "U06U2HQQK", "token": "xoxp-6954602819-6954602835-7019593206-19f426" },
-        "pairbot":             { "id": "U06UBBT9V", "token": "xoxb-6963401335-ziIikHY5Uo9zyG6NPQ9ijoam" },
-        "channels": {
-          "pipeline":          { "id": "C06KZHXAS" },
-          "posts":             { "id": "C06UBRE77" }
-        }
-      }
-    },
     "cloudflare":              "team@airpair.com:c6abc4d5b9c3236a3f9b796aa8465d1e14c5b",
-    "hangout": {
-      "appId":                 "140030887085",
-      "login":                 { "email": "support@airpair.com", "password": "helsyea" }
-    },
     "ses":                     { "accessKeyId": "--", "secretAccessKey": "--" },
     "smtp":                    { "service": "--", "auth": { "user": "--", "pass": "--" } },
     "stripe": {

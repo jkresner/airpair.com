@@ -4,11 +4,9 @@ if log && process.env['LOG_APP_MUTE'] then log.app.mute = process.env['LOG_APP_M
 # if (process.env[`LOG_${cfg.logFlag}`]) = cfg.logFlag ? 'white' : undefined
 
 
-
-{TypesUtil}     = require("meanair-shared")
 global.UTIL =
   in:           (ms, fn) -> setTimeout(fn, ms)
-  Date:         TypesUtil.Date
+  Date:         require("honeycombjs").Util.Date
   clearIP:      ->
     delete global.cache.abuse['::ffff:127.0.0.1']
     global.cache.abuse.ban = []
@@ -56,13 +54,6 @@ DB.expectSession = ({sessionID}, cb) ->
 
 
 """
-FLAVOUR
-"""
-
-##
-
-
-"""
 DATA
 """
 
@@ -101,11 +92,6 @@ DATA.ghProfile = (login, uniquify) ->
   # $log('profile', profile)
   # expect(profile.emails, "FIXTURE.ghProfile #{login} missing emails").to.exist
   profile
-
-
-DATA.QUERY =
-  users: require('./../../server/services/users.data').query.existing
-
 
 
 """
@@ -181,27 +167,3 @@ STUB.analytics.mute()
 
 STUB.Timezone = (key) ->
   STUB.wrapper('Timezone').cb('getTimezoneFromCoordinates', key||'timezone_melbourne')
-
-  # (loc,n,cb) ->
-  #   cb(null,
-
-
-STUB.SlackCommon = ->
-  STUB.sync(Wrappers.Slack, 'checkUserSync', null)
-  @Slack = STUB.wrapper('Slack')
-  @Slack.cb('getUsers', 'slack_users_list')
-  cache.slack_users = FIXTURE.wrappers.slack_users_list
-  @Slack.cb('getChannels', 'slack_channels_list')
-  @Slack.cb('getGroups', 'slack_groups_list')
-  @Slack.cb('getGroupWithHistory', 'slack_getGroupWithHistory')
-  # @Slack.api('groups.info').fix('slack_group_info')
-  # @Slack.api('groups.history').fix('slack_groups_history')
-
-
-STUB.BraintreeCharge = (key) ->
-  STUB.wrapper('Braintree').cb('addPaymentMethod', 'braintree_add_company_card')
-  STUB.wrapper('Braintree').api('transaction.sale').fromCtx (payload) ->
-    r = FIXTURE.clone('wrappers.'+(key||'braintree_charge_success'))
-    r.transaction.amount = payload.amount.toString()
-    r.transaction.orderId = payload.orderId.toString()
-    [null, r]

@@ -1,30 +1,21 @@
-var views = {
+const Views = {
   cached: '_id slug name short',
   search: { _id:1, name:1, slug:1, desc:1, short:1, score: { $meta: "textScore" } }
 }
 
 
-var encodes = ['c%2B%2B','c%23','f%23']
+const encodes = ['c%2B%2B','c%23','f%23']
 
+const Query = {
+  search(term) { return { $text: { $search: '\"'+term+'\"' } } }
+}
 
-module.exports = new LogicDataHelper(views,
+const Opts = {
+  cached:       { select: Views.cached,  sort: { slug: 1 } },
+  sortByName:   { sort:   { name:1 } },
+  search:       { select: Views.search,
+                  limit:  10,
+                  sort:   { score: { $meta: "textScore" } } }
+}
 
-  () => ({
-
-  }),
-
-  {
-    search(term) { return { $text: { $search: '\"'+term+'\"' } } }
-  },
-
-  {
-    cached:       { select: views.cached },
-    sortByName:   { sort:   { name:1 } },
-    search:       {
-                    select: views.search,
-                    limit:  10,
-                    sort:   { score: { $meta: "textScore" } },
-                  }
-  }
-
-)
+module.exports = { Views, Query, Opts }

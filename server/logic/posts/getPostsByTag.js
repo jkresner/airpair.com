@@ -1,9 +1,6 @@
-module.exports = ({Post}, {Project,Opts,Query}, Shared, Lib) => ({
+module.exports = ({Post}, {Project,Opts,Query}, DRY) => ({
 
-
-  validate(user, tag) {},
-
-
+  
   exec(url, cb) {
     var url = url.split('?')[0].toLowerCase().replace('++','\\+\\+')
 

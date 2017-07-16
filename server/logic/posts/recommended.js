@@ -1,4 +1,4 @@
-module.exports = ({Post}, {Project,Opts,Query}, Shared, Lib) => ({
+module.exports = ({Post}, {Project,Opts,Query}, DRY) => ({
 
 
   validate(user) {},

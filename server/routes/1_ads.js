@@ -31,7 +31,7 @@ module.exports = function(app, mw, {ads}) {
 
 
 
-  var router = app.honey.Router('ads',{type:'ad'})
+  var router = honey.Router('ads',{type:'ad'})
 
     .use([mw.$.noBot, mw.$.session])
 

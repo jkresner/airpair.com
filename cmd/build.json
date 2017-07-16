@@ -9,9 +9,6 @@
     "dest":                  "build",
     "entries":               ["index.js","adm.js"]
   },
-  "clean": {
-    "dirs":                  ["dist","dev"]
-  },
   "default":                 ["nodemon","watch"],
   "dist":                    {},
   "dirs": {

@@ -4,7 +4,7 @@ module.exports = function(app, mw, {static,landing}) {
 
   if (landing && static.img)
 
-    app.honey.Router('img', static.img)
+    honey.Router('img', static.img)
 
       .static('/img/software', { dir:`${config.appDir}/${landing.tags.dir}`})
 
@@ -17,7 +17,7 @@ module.exports = function(app, mw, {static,landing}) {
 
   if (static.robots)
 
-    app.honey.Router('robots', static.robots)
+    honey.Router('robots', static.robots)
 
       .files(['robots.txt'],
              mw.req.noCrawlAllow({
@@ -40,7 +40,7 @@ module.exports = function(app, mw, {static,landing}) {
 
   if (config.env == 'dev')
 
-    app.honey.Router('fonts', {type:'fonts'})
+    honey.Router('fonts', {type:'fonts'})
 
       .static('/fonts', { dir:`${config.appDir}/web/fonts`})
 

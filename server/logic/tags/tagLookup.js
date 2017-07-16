@@ -1,4 +1,4 @@
-module.exports = ({Tag}, Data, Shared) => ({
+module.exports = ({Tag}, Data, DRY) => ({
 
 
   validation(user, lookup) {

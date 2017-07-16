@@ -4,7 +4,7 @@ module.exports = function(app, mw, {canonical}) {
 
   var posturls = cache['canonical'].post.map(p => p.url)
 
-  var router = app.honey.Router('posts', {type:'html'})
+  var router = honey.Router('posts', {type:'html'})
     .use(mw.$.livereload)
     .use([mw.$.badBot, mw.$.session, mw.$.throttle, mw.$.reqFirst])
     .useEnd([mw.$.postPage])

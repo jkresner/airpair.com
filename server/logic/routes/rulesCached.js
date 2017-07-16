@@ -321,7 +321,8 @@ module.exports = (DAL, Data, Shared, Lib) => ({
 
   exec(cb) {
     var r = { ban: [] }
-    for (var type of DAL.ENUM.REDIRECT.TYPE) r[type] = []
+    for (var type of honey.model.Enum.REDIRECT.TYPE) 
+      r[type] = []
 
     var cfg = _.get(config,'routes.rules')
     if (!cfg) return cb(null, r)

@@ -11,9 +11,6 @@ require('meanair-build')(gulp, cfg).configure({
   dirs: dirs => {
     for (var name in dirs) dirs[name] = join(rootDir, dirs[name])
   },
-  clean: clean => {
-    clean.dirs = clean.dirs.map(name=>cfg.dirs[name])
-  },
   less: less => {
     Object.assign(less, {
       src:     join(cfg.dirs.web, less.src, '*.less'),

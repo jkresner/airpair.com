@@ -1,30 +1,23 @@
-function run({config, MAServer,track}, done) {
+function run({config, Honey, track}, done) {
 
   global.config         = config
-  var app               = MAServer.App(config, done)
-  var auth              = require('meanair-auth')
-  var model             = require(`meanair-model`)(done)
-  var formatter         = require('../templates/log/analytics')
+  delete config.auth.oauth.bitbucket
+  delete config.auth.oauth.angellist
+
+  var app               = Honey.App(config, done)
+  var model             = Honey.Model(config, done)
+  // var formatter         = require('../templates/log/analytics')
 
   model.connect(() => {
 
-    global.DAL          = assign(model.DAL,{ENUM:model.Enum})
-    global.cache        = model.cache
+    app = app.honey.wire({model})
+              //  .track(config.analytics, {track,formatter})
+               .merge(Honey.Auth)
+               .inflate(config.model.cache)
+               .chain(config.middleware, config.routes, cache.require)
+               .run()
 
-    global.API          = require('./api/_all')
-    global.util         = require('../shared/util')
-    global.Wrappers     = require('./services/wrappers/_index')
-    global.mailman      = require('./util/mailman')()
-    global.pairbot      = require('./util/pairbot')()
-
-    app = app.meanair.set(model)
-               .track(config.analytics, {track,formatter})
-               .merge(auth)
-    ghhh = () =>
-              app.chain(config.middleware, config.routes, cache.require)
-                 .run()
-
-    setTimeout(ghhh, /prod/i.test(config.env) ? 800 : 300)
+    // hmmm setTimeout(ghhh, /prod/i.test(config.env) ? 800 : 300)
 
   })
 

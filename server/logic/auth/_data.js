@@ -1,19 +1,24 @@
-var views = {
-  anon:   'authenticated sessionID',
-  full:   '_id name avatar username email ' +
-          'photos emails ' +
-          'location initials bio cohort.engagement ' +
-          'auth.gh.login auth.so.link auth.bb.username auth.in.id auth.tw.screen_name auth.al.angellist_url auth.gp.id auth.gp.link auth.gp.url auth.gp.email auth.sl.username' +
-          'tags primaryPayMethodId emailVerified '
+const Views = {
+  anon:       'authenticated sessionID',
+  session:     config.middleware.session.authdData,
+  full:        '_id name avatar username email ' +
+               'photos emails ' +
+               'location initials bio cohort.engagement ' +
+               'auth.gh.login auth.so.link auth.bb.username auth.in.id auth.tw.screen_name auth.al.angellist_url auth.gp.id auth.gp.link auth.gp.url auth.gp.email auth.sl.username' +
+               'tags primaryPayMethodId emailVerified '
 }
 
+const Opts = {
+  existing:    { select: `_id auth name email emails photos ` },
+  full:        { select: Views.full }
+}
 
-module.exports = new LogicDataHelper(
+module.exports = { Views, Opts,
 
-  views,
+  Projections: ({select}, {view}) => ({
 
-  ({chain, select, inflate}) => ({
-
+    session: view.session,
+    
     full: r => {
       if (!r._id && r.sessionID) return r
       r.email = (_.find(r.emails, em => em.primary)||{}).value
@@ -22,16 +27,6 @@ module.exports = new LogicDataHelper(
       return chain(select.full(r))
     }
 
-  }),
+  })
 
-
-  {
-
-  },
-
-  {
-    full: { select: views.full }
-  }
-
-)
-// .addCacheInflate('tags', ['name','slug'])
+}
